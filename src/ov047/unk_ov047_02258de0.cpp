@@ -32,6 +32,20 @@
 #include "save/SaveData.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206fde4.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov047/unk_ov047_02258de0.h"
 
 
 class ActorTalkRequest;
@@ -82,30 +96,8 @@ BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
 void TalkRequest_SetTargetDone(void *self);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 Item_GetFossilGroup(u16 *p);
-s32 Fossil_CountInGroup(s32 id);
-s32 ItemPick_FromRange(u16 *a, u32 b, u32 c, void *d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 Random_GlobalBelow(s32 n);
-BOOL MenuCtrl_BuildPocketMask(PocketFilterFn cb);
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-s32 Museum_CountDonatedFossilsInGroup(void *g, s32 id);
-void *TownSessionState_Get();
-s32 TownSessionState_TestFlag(void *p, s32 a);
-void TownSessionState_SetFlag(void *p, s32 a);
-void Effect_End(s32 h);
-s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 h, void *b, void *c, void *d);
-void *PlayerData_GetCurrent();
-u16 Pocket_GetItem(s32 a);
-void Pocket_RemoveItem(s32 a);
-void Pocket_SetItem(u16 *p, s32 a, s32 b);
-BOOL ParcelErrand_IsFor(u32 a, u16 *p);
-u32 ParcelErrand_GetRecord(u32 a);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Clock_GetTimeOfDay();
-BOOL GameStart_IsActive();
-BOOL NetArea_IsLocalOwner();
 s32 Math_CountDownU16(void *p);
 s32 strncmp(const char *a, const char *b, u32 n);
 u32 strlen(const char *s);
@@ -379,10 +371,6 @@ struct SpNpcBlathersActEntry {
 };
 
 
-extern "C" void *SpNpcBlathers_Create();
-extern "C" BOOL SpNpcBlathers_IsDeliveryItem(u16 *p, s32 m);
-extern "C" BOOL SpNpcBlathers_IsUnidentifiedFossil(u16 *p, s32 m);
-extern "C" BOOL SpNpcBlathers_IsDonatableItem(u16 *p, s32 m);
 extern "C" void SpNpcBlathersTalk_GetScript(SpNpcBlathersTalk *self, SpNpcBlathersTalk::Fn *out, s32 idx);
 #define sSpNpcBlathersKey ((char *)"sp_npc_owl")
 #define sSpNpcBlathersSequence4Key ((char *)"sp_etc_sequence4")

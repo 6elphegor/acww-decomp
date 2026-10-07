@@ -13,6 +13,8 @@
 #include "game/TouchPickSphere.h"
 #include "gfx/DebugColor.h"
 #include "game/TouchPicker.h"
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov003/unk_ov003_022048c0.h"
 
 
 
@@ -35,7 +37,6 @@ BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker();
-void VillagerBoard_ResetTable();
 }
 
 class VillagerBoard;
@@ -68,7 +69,6 @@ public:
 typedef void (VillagerBoard::*Unk_022049a8_Fn)();
 typedef BOOL (VillagerBoard::*Unk_02204a24_Fn)();
 
-extern "C" VillagerBoard *VillagerBoard_Create();
 
 extern "C" VillagerBoard *sVillagerBoards[8];
 

@@ -13,13 +13,28 @@
 #include "save/Pattern.h"
 #include "save/SaveRecord4.h"
 #include "save/TownExchangeRecord.h"
+#define PROTO_LOCAL_BottleLetterRecord_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GulliverQuest_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostAndFound_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RecycleBin_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoostGuestRoll_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveData_ConstructDateRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownState_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TurnipMarket_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Weather_Construct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209d70c.h"
 
 extern "C" {
 s32 ClockOffset_Clear(void *p);
 u32 ClockOffset_CalcMinutes(void *p, void *q);
 u16 ClockOffset_CalcSeconds(void *p, void *q);
 void Clock_Init(void);
-void MenuCtrl_GetDateTime(void *);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
@@ -33,9 +48,6 @@ extern "C" void _ZN18ConstellationStoreC2Ev(void *);
 extern "C" void _ZN15TownStyleRecordD2Ev(void *);
 extern "C" void RecycleBin_Construct(void *);
 extern "C" void LostAndFound_Construct(void *);
-extern "C" void ChestStorage_Destruct(void *);
-extern "C" void ChestStorage_Construct(void *);
-extern "C" void EventWeekSlots_Construct(void *);
 extern "C" void TownState_Construct(void *);
 extern "C" void HappyRoomDate_Construct(void *);
 extern "C" void TownId_Construct(void *);
@@ -43,9 +55,7 @@ extern "C" void SaveVillagers_Construct(void *);
 extern "C" void RoostGuestRoll_Construct(void *);
 extern "C" void GulliverQuest_Construct(void *);
 extern "C" void TurnipMarket_Construct(void *);
-extern "C" void LostChildRecord_Construct(void *);
 extern "C" void BottleLetterRecord_Construct(void *);
-extern "C" void PlayerDataArray_Construct(void *);
 extern "C" void SaveData_ConstructDateRecord(void *);
 extern "C" void AbleShop_Construct(void *);
 extern "C" void Weather_Construct(void *);

@@ -15,6 +15,23 @@
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
+#define PROTO_LOCAL_ChatBalloon_PackSyncVar  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChatBalloon_ReceiveRemote  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DebugVar_GetStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_AsciiToGame  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_ClearAlt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
 
 extern "C" const s32 data_020c8cb4;
 extern "C" const s32 data_020c8cb8;
@@ -187,35 +204,20 @@ extern u8 data_020d467c[];
 extern void *const gSpriteSeqTable[45];
 extern s32 gGfxMainOnTop;
 
-s32 PlayerActor_GetAction(s32 a);
 BOOL TalkRequest_IsActive();
-BOOL HudObjGfx_IsMsgUiActive();
 s32 Scene_GetCurrent();
-void String_Load2d(ChatBalloonText *buf, u8 *c, s32 z);
-void Snd_PlaySe(u32 a);
-void *PlayerData_GetCurrent();
 void StrBuf_ClearAlt(void *p);
 void StrBuf_AsciiToGame(EncodedStringBaseRef *p, void *q);
 void StrBuf_GameToAscii(ChatBalloonName *a, EncodedStringBaseRef *b);
-void CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
-u32 CommSyncVar_GetVarSize(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
-void ChatQuickMsg_CheckButtons(void *self);
 void ChatBalloon_ReceiveRemote();
-u8 ChatBalloon_ReadSyncVar(s32 idx);
-void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x);
-void ChatBalloon_Post(s32 idx, StrBuf *a, MsgString *b);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 s32 DebugVar_GetStub(s32 a, s32 b);
 void Math_StepS32(void *p, s32 a, s32 b);
 s32 *_ZN10SpriteAnim6getSeqEv(void *p);
 void StrBuf_Clear(void *buf);
-BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
-s32 MenuCtrl_GetTransitionProgressOrFull(void);
-s32 MenuCtrl_GetTransitionProgress(void);
 s32 func_01ffcb0c(s32 a, s32 b);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 static inline BOOL IsPositive(s32 v) {
@@ -337,7 +339,6 @@ void ChatBalloon::update() {
 }
 extern const u32 sChatBalloonTextSeqs[4];
 // 0x020d90d4: scene registration record of ChatBalloonProc_Create (referenced only from the table word 0x020e2158)
-extern "C" ChatBalloonProc *ChatBalloonProc_Create();
 
 void ChatBalloon::updateSlideOffset() {
     s32 a, t, t2;

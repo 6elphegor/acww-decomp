@@ -22,6 +22,30 @@
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
 #include "ui/LetterLayout.h"
+#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDefaults_Store  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterLayout_HighlightSignature  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_GetPaper  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_IsBottle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_LoadPaperBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_0206cbdc.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov095/unk_02292360.h"
+#include "proto/ov122/unk_ov122_02296840.h"
 
 class EncodedString;
 
@@ -52,105 +76,26 @@ extern "C" {
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u16 gPad[];
-void Snd_PlaySe(u32 v);
-s32 Text_GetLength(void *p, s32 n);
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 void EncodedString_SetRaw(void *p, const void *src, s32 len);
-s32 String_CensorTaboo(void *p);
 u32 PlayerData_GetCurrent();
 void LetterDefaults_Store(void *a, void *b);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_OpenAddresseePage(void *p, u32 a, u32 b);
 void Menu_PlayScrollTickSe(void *p);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
-void Keyboard_ResetCursor(void *s);
-s32 Keyboard_GetCursorX(void *s);
-s32 Keyboard_GetCursorY(void *s);
-s32 Keyboard_ClearHighlight(void *s);
 extern u8 gU8None;
-s32 Text_MeasureWidth(void *p, s32 v);
-BOOL MenuCtrl_IsTouch();
-u32 Keyboard_DeleteRange(void *st, u8 *a, u32 b, u32 c, s32 d);
-s32 Keyboard_HitTestText(void *st, void *a, s32 b, s32 c, u32 d, u8 *out);
-void Keyboard_ResetKeyPalettes(void *st);
-BOOL Keyboard_IsSlotDisabled(void *st, s32 v);
-void Keyboard_HighlightKey(void *st, s32 v);
-BOOL Keyboard_IsOnButtonKey(void *st, s32 v);
 s32 _ZN21MenuBottomButtonsBody10getTargetYEi(void *p, s32 v);
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
-s32 Mem_Clear(void *p, s32 n);
-s32 Mem_Copy(void *dst, void *src, u32 n);
-BOOL MenuCtrl_IsForceCloseDue();
-s32 Keyboard_PressCursorKey(void *st);
-u32 Keyboard_MoveCursor(void *st, u32 v);
-s32 Keyboard_HandleModeKey(void *st, s32 k, s32 v);
-BOOL Keyboard_IsControlCode(void *st, s32 v);
-BOOL Keyboard_IsFull(void *st);
-BOOL Keyboard_IsTooWide(void *st);
-s32 Keyboard_ResetTypedRun(void *st);
-s32 Keyboard_BeginPaste(void *st);
-s32 Keyboard_EndPaste(void *st);
 s32 Keyboard_PlayPasteSe(void *st);
 s32 Keyboard_PlayCopySe(void *st);
-BOOL Keyboard_InsertCharMultiline(void *st, u8 *a, s32 b, u8 *out, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
-BOOL Keyboard_InsertChar(void *st, u8 *a, s32 b, u8 *out, s32 c, s32 d, s32 e, s32 f);
-u8 *Keyboard_ModifyCharKey103(void *st, u8 *p);
-u8 *Keyboard_ModifyCharKey104(void *st, u8 *p);
-u8 *Keyboard_ModifyCharKey105(void *st, u8 *p);
 BOOL Keyboard_ReplaceCharBeforeCursor(void *st, u8 *a, u8 *b, s32 c, s32 d, s32 e);
-s32 Keyboard_TouchKey(void *st, s32 a, s32 b);
-s32 Keyboard_GetKeyCode(void *st, s32 a, s32 b);
-s32 Keyboard_StartKeyRepeat(void *st);
-BOOL Keyboard_TickKeyRepeat(void *st);
-s32 Keyboard_GetPressedKey(void *st);
-BOOL Keyboard_UpdatePressedKey(void *st);
-BOOL Keyboard_TouchPageTab(void *st);
-s32 Keyboard_SetMode(void *st, s32 a, s32 b, s32 c);
 void PopupChoice_DecideAddressee(void *p, s32 v);
 extern u32 gCurrentHeap;
-void Gfx2d_HideLayer(s32 a);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *Letter_GetPaper(void *p);
 void Menu_LoadPaperBg(void *p, s32 a);
-s32 MenuCtrl_GetArg();
 s32 Letter_IsBottle(void *p);
-void Keyboard_LoadObjGfx(void *p);
-void Keyboard_DisableModifierKeys(void *p);
-void Keyboard_UpdateModifierKeys(void *p, s32 a);
-void Keyboard_EndFrame(void *p, s32 a);
-void Keyboard_LoadScreenNow(void *p, s32 a);
-void Keyboard_LoadScreenFile(void *p, const char *q);
-void Keyboard_SetAltWriteLayout(void *p);
-void Keyboard_Shutdown(void *p);
-void Keyboard_Init(void *p, s32 a);
-void Keyboard_Reload(void *p, s32 a);
-void Keyboard_RestoreLastPage(void *p, s32 a);
-void Keyboard_EnableKey(void *p, s32 a);
-void Keyboard_DisableKey(void *p, s32 a);
-u32 Keyboard_GetTypedRunLength(void *p);
-void ProcBase_RequestDelete(void *p);
-u32 ProcBase_GetParent(void *self);
-u32 MenuCtrl_GetSavedSlot();
-void MenuCtrl_SetSavedSlot(u32 a);
-void MenuCtrl_TickForceClose();
-BOOL MenuCtrl_IsButtons();
-void Gfx2d_EnableSubWindows(u32 a);
-void Gfx2d_DisableSubWindows(u32 a);
-void Gfx2d_SetSubWin0Planes(u32 a, u32 b);
-void Gfx2d_SetSubWinOutPlanes(u32 a);
-void Gfx2d_SetWindowRect(u32 a, u32 b, u32 c, u32 d, u32 e);
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void Oam_DrawObj(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
 void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
 void PopupChoice_Draw(void *p);
 void func_0206fca8(void *p);
@@ -163,17 +108,11 @@ void Menu_PlayScrollGrabSe(void *p);
 s32 _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(void *p, u32 a, u32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
-void _ZN14LetterRenderer17highlightGreetingEjj(void *self, s32 a, s32 b, s32 c);
 void _ZN17MenuBottomButtons6drawAtEi(void *self, s32 a);
 void LetterLayout_HighlightSignature(void *self, s32 a, s32 b, s32 c);
 void PopupChoice_ForceClose(void *self);
 void PopupChoice_Update(void *self);
 void PopupChoice_LoadChoiceBg(void *self);
-void Keyboard_SetTextFieldPos(void *self, s32 a, s32 b);
-void Keyboard_DrawLengthGaugeAt(void *self, u32 a, void *b, u32 c);
-void Keyboard_DrawCopyPasteKeys(void *self, u32 a, void *b);
-void Keyboard_DrawCaret(void *self, s32 a, s32 b, s32 c);
-void Keyboard_Draw(void *self, u32 a, void *b, u32 c);
 }
 
 // Vtable 0x0229a1b8, size 0x4664
@@ -365,8 +304,6 @@ public:
     /* 0x455c */ MenuErrorMessage errorMessage;
 };
 
-extern "C" void LetterWriteMenu_SetupBgLayers();
-extern "C" LetterWriteMenu *LetterWriteMenu_Create();
 // Scene registration entry read by main: factory, then two ids
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
 extern "C" const u8 data_ov122_0229a004[4] = {3, 4, 0, 0};

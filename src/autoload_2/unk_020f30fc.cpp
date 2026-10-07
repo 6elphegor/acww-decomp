@@ -111,7 +111,6 @@ extern "C" {
 extern SndPosList *gSndPosList;
 extern SndSeqHandle gSndBgmHandle;
 extern u16 gSndPanTrackMask;
-void Fatal_Trap(void);
 void SndList_InitLink(void **p);
 void *SndList_GetLast(void **p);
 void *SndList_GetFirst(void **p);
@@ -189,6 +188,9 @@ public:
 #include "snd/CreatureSndChannel.h"
 // vtable 0x0213b968 (data_0213b970)
 #include "snd/SkySndChannel.h"
+#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020f30fc.h"
+#include "proto/main/unk_0206d49c.h"
 
 // Definitions in descending address order (mwcc emits a file's functions last to first). The compiler-generated functions land by
 // themselves: C1 before C2, an out-of-line destructor as D2 D0 D1, a link-once implicit destructor (D1 D0) at the very top.

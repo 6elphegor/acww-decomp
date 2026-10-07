@@ -1,6 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/ov001/unk_ov001_02226c24.h"
 
 struct WfcVramBankState {
     u32 bg, obj, bgExtPltt, objExtPltt, tex, texPltt, clearImage, subBg, subObj, subBgExtPltt, subObjExtPltt, arm7, lcdc;
@@ -20,13 +22,6 @@ u32 GX_DisableBankForSubBGExtPltt();
 u32 GX_DisableBankForSubOBJExtPltt();
 u32 GX_DisableBankForARM7();
 u32 GX_DisableBankForLCDC();
-void GX_SetBankForBG(u32);
-void GX_SetBankForOBJ(u32);
-void GX_SetBankForBGExtPltt(u32);
-void GX_SetBankForOBJExtPltt(u32);
-void GX_SetBankForTex(u32);
-void GX_SetBankForTexPltt(u32);
-void GX_SetBankForClearImage(u32);
 void GX_SetBankForSubBG(u32);
 void GX_SetBankForSubOBJ(u32);
 void GX_SetBankForSubBGExtPltt(u32);
@@ -37,12 +32,6 @@ void PM_SetLCDPower(s32);
 void PMi_SendLEDPatternCommand(s32);
 s32 PM_GetLEDPattern(u32 *);
 void MIi_CpuClearFast(u32, void *, u32);
-s32 WfcUtil_StrNLen(u8 *s, s32 n);
-void WfcUtil_RestoreLed();
-void WfcUtil_UpdateLed();
-void WfcGx_ClearVram();
-void WfcGx_RestoreVramBanks();
-void WfcGx_SaveVramBanks();
 }
 
 extern "C" WfcVramBankState sWfcSavedVramBanks = {0};

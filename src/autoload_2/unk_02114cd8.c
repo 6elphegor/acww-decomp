@@ -5,6 +5,8 @@
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "proto/autoload_2/unk_02114cd8.h"
+#include "proto/autoload_2/unk_02114d84.h"
 typedef int s32;
 
 extern void *data_021fce8c; // OSi_UserExceptionHandler
@@ -20,7 +22,6 @@ void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);  // OS_SetIrqFunc
 void OS_SetIrqFunction(u32 mask, void *func);              // OS_SetIrqFunction
 void OS_EnableIrqMask(u32 mask);                          // OS_EnableIrqMask
 void OSi_ExceptionHandler(void);                              // OSi_ExceptionHandler (original asm, outside all units)
-void OSi_CountUpTick(void);
 void OSi_SetTimerReserved(s32 n);
 
 #define reg_OS_TM0CNT_L (*(volatile u16 *)0x04000100)

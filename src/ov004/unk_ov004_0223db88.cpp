@@ -6,6 +6,9 @@
 #include "item/ItemId.h"
 #include "save/MuseumData.h"
 #include "sys/ProcProfile.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/ov004/unk_ov004_02213b90.h"
+#include "proto/ov004/unk_ov004_0223db88.h"
 
 
 // Spawn-definition record (0x1c bytes).
@@ -51,7 +54,6 @@ extern const MuseumInfoPointSet sMuseumInfoPointsByScene[];
 s32 FX_Div(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Scene_GetCurrent();
-void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u32 MuseumInfoPoint_GetItemCount(Rec *r);
 s32 MuseumInfoPoint_GetItemList(Rec *r);
 s16 MuseumInfoPoint_GetMessage(Rec *r);
@@ -62,7 +64,6 @@ void *MuseumInfoPoint_GetPos(Rec *r);
 void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32 d, u8 e);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void BlockMap_SetItem(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
-s32 Ftr_GetUnk05(void *p);
 }
 
 class MuseumRoom : public GameProc {
@@ -90,9 +91,6 @@ public:
     virtual BOOL setupExhibits();
 };
 
-extern "C" MuseumRoom *MuseumRoom_Create();
-extern "C" MuseumRoomUnk53 *MuseumRoomUnk53_Create();
-extern "C" MuseumFossilRoom *MuseumFossilRoom_Create();
 // Static Rec objects of __sinit: ctor = MuseumInfoPoint_InitFromDef (plain function), dtor = the 2-byte function at 0x223e010
 extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d);
 struct MuseumInfoPoint : Rec {

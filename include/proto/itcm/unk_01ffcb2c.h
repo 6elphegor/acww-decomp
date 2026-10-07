@@ -1,0 +1,49 @@
+#ifndef PROTO_PROTO_ITCM_UNK_01FFCB2C_H
+#define PROTO_PROTO_ITCM_UNK_01FFCB2C_H
+
+// Prototypes of the functions defined in src/itcm/unk_01ffcb2c.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+struct CellGrid;
+struct Chunk;
+struct Obj;
+#ifdef __cplusplus
+#include "gfx/Camera.h"
+#include "gfx/VecFx32.h"
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_HBlank_Handler
+void HBlank_Handler(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_func_01ffcc10
+BOOL func_01ffcc10(void *a, Obj *o);
+#endif
+#ifndef PROTO_LOCAL_TownBlockMap_IsBuried
+BOOL TownBlockMap_IsBuried(CellGrid *g, s32 x, s32 z);
+#endif
+#ifndef PROTO_LOCAL_Camera_GetLookAtPoint
+void Camera_GetLookAtPoint(VecFx32 *out, Camera *c);
+#endif
+#ifndef PROTO_LOCAL_Camera_GetLookAtOffset
+void Camera_GetLookAtOffset(VecFx32 *out, Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CollisionMap_GetBlockRef
+Chunk *CollisionMap_GetBlockRef(s32 x, s32 z);
+#endif
+#ifndef PROTO_LOCAL_Ground_GetUnitAttr
+u32 Ground_GetUnitAttr(s32 x, s32 y);
+#endif
+}
+#endif
+
+#endif

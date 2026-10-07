@@ -2,6 +2,24 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "net/WfcRect.h"
+#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcOptions_Exit  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_0220de1c.h"
+#include "proto/ov001/unk_ov001_0220e61c.h"
+#include "proto/ov001/unk_ov001_0220eb90.h"
+#include "proto/ov001/unk_ov001_0220f9e4.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221ea94.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 #pragma thumb off
 
@@ -29,62 +47,19 @@ extern "C" {
 void GX_LoadBG2Scr(void);
 void GX_LoadBG2Char(void);
 void WfcUtil_LoadFileTo(void *, void *);
-void *WfcUtil_LocalizePath(void *);
-void WfcCursor_ShowCorners(u32, u32, u32, u32);
-s32 WfcFade_IsBusy(s32);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcSysInfo_DrawInfo();
-void WfcUtil_SetScene(void *);
-s32 WfcUtil_RequestPaletteLine(void *, u32, u32);
 s32 FX_ModS32(s32, s32);
-void WfcSound_Play(s32);
-s32 WfcButtonBar_IsClosed();
 void WfcOam_FreeEntry(void *);
-void WfcCursor_Clear();
-void WfcUtil_HideTopMessage();
-void WfcFs_FreeFile(void *);
 void WfcGx_HidePlanes(s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
-void WfcUtil_SetScreenFlags(s32, s32);
-void WfcTopMenu_Enter();
-void WfcErase_Enter();
-void WfcTransferIntro_Enter();
-void WfcButtonBar_Close();
-void WfcFade_Start(s32, s32, s32, s32);
-void WfcButtonBar_DisableInput();
-void WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
 void DWCi_BM_GetWiFiInfo(void *);
-void WfcButtonBar_ForceResult(s32);
-void WfcOptions_HighlightSelection();
 s32 WfcInput_IsTouchPressedIn(void *);
-void WfcButtonBar_SetResult(s32);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
-void WfcButtonBar_EnableInput();
-void WfcUtil_OpenButtonBar(s32);
-void *WfcFs_LoadFile(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, s32);
 void DC_FlushRange(void *, s32);
 void GX_LoadBGPltt(void *, s32, s32);
 GXOamAttr *WfcObj_CreateSingle(s32, s32);
-s32 WfcTop_LoadScreen(s32);
-void WfcSysInfo_FadeIn();
-void WfcSysInfo_Enter();
 void WfcOptions_Exit();
-void WfcOptions_FadeOut();
-void WfcOptions_StartExit();
-void WfcOptions_HandleResult();
-void WfcOptions_Update();
-void WfcOptions_WaitButtonBar();
-void WfcOptions_WaitFadeIn();
-void WfcOptions_FadeIn();
-void WfcOptions_MoveCursor(s32);
-void WfcOptions_Idle();
-void WfcOptions_HandleInput();
-void WfcOptions_LoadBg();
-void WfcOptions_Enter();
 }
 
 extern "C" void WfcOptions_Enter() {

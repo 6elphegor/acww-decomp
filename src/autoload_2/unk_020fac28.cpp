@@ -4,6 +4,8 @@
 #include "gfx/SplRes.h"
 #include "gfx/V3.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020fac28.h"
+#include "proto/autoload_2/unk_021104ac.h"
 
 static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
@@ -146,7 +148,6 @@ void MI_Copy36B(s32 *src, s32 *dst);
 void MTX_MultVec33(V3Arr *v, V3Arr *m, V3Arr *out);
 void MTX_MultVec43(V3Arr *v, s32 *m, V3Arr *out);
 void MTX_RotX43_(s32 *m, s32 s, s32 c);
-void G3_MultMtx43(s32 *m);
 void *spl_pop_front(void *list);
 void spl_push_front(void *list, void *node);
 s32 FX_Div(s32 a, s32 b);

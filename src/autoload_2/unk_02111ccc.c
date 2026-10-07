@@ -1,3 +1,5 @@
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_02111ccc.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -14,8 +16,6 @@ extern s32 data_021fcbfc;
 extern const u16 data_02139f44[8];
 extern u32 data_021fcbf4, data_021fcc00, data_021fcc04, data_021fcc08;
 void MI_WaitDma(s32 dmaNo);                                   // MI_WaitDma
-void GX_SetBankForTexPltt(s32 bank);
-void GX_SetBankForTex(u32 bank);
 s32 GX_ResetBankForTexPltt(void);
 void MI_DmaCopy32Async(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg);
 

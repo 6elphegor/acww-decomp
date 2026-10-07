@@ -3,6 +3,8 @@
 // exceptions on like the original: __SkipUnwindInfo and __SetupFrameInfo own their .exceptix index entries in main
 // (0x020c2bbc-0x020c2bd4); __FindExceptionTable and __PopStackFrame make no calls and get none.
 #include "types.h"
+#include "proto/autoload_2/unk_02133b68.h"
+#include "proto/autoload_2/unk_02133d04.h"
 
 // Index entry of main's .exceptix (12 bytes): function, size | 1 if the unwind data is inline, data/table pointer.
 typedef struct ExceptionTableIndex {
@@ -46,7 +48,6 @@ typedef struct ThrowContext {
 extern char __exception_table_start__[];
 extern char __exception_table_end__[];
 
-extern "C" char *__DecodeUnsignedNumber(char *p, u32 *value);
 
 // __PopStackFrame-like: restore the registers a frame saved (mask from the function header, highest first) and step to the caller:
 // returns the frame's saved lr.

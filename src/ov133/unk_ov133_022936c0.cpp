@@ -13,6 +13,20 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov130/unk_ov130_02292360.h"
+#include "proto/ov133/unk_ov133_022936c0.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -30,48 +44,9 @@ extern u8 gTouchChanged;
 extern u8 gU8None;
 extern u16 gPad[];
 
-void BgScreen_SetRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void Snd_PlaySe(s32 v);
-void Snd_PlayKeySe(u32 a);
-void *FriendEntry_GetFriendData(void *p);
-BOOL DwcFriendData_ToCodeDigits(void *a, u8 *buf);
-void *PlayerData_GetCurrent();
-void *PlayerWifiData_GetDwcUserData(void *p);
-void DwcFriendData_Clear(void *p);
-BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *ctx);
-void MenuCtrl_SetResult(u32 v);
-s32 MenuCtrl_GetMode();
-void FriendEntry_Clear(void *p);
-void NumberPad_PlayCancelSe();
-s32 MenuCtrl_SetFriendPageFromIndex();
-s32 Net_GetMode();
-s32 MenuCtrl_GetIndex();
-u32 DwcFriendData_GetBytes(void *p);
-BOOL Net_WifiAddFriend(u32 a, u32 b);
-void *ProcBase_GetParent(void *self);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-u64 PlayerWifiData_GetFriendCode(void *p);
 void *FriendList_GetEntries(void *p);
-BOOL DwcFriendData_IsValid(void *p);
 BOOL DwcFriendData_Compare(u32 a, void *p);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-void ProcBase_RequestDelete(void *p);
-void String_Load2dMenu(void *p, s32 a);
-void File_LoadToBuffer(void *a, void *b, s32 c);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Snd_SetKeySeMode(s32 a);
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void NumberPad_LoadObjGraphics(s32 a);
-void NumberPad_LoadBgGraphics(s32 a);
 void NumberPad_DrawKeypadFrame(s32 a);
 void MenuButtons_LoadTextColors(void *self);
 void _ZN14FriendCodeMenu12stateMessageEv();

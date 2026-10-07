@@ -1,0 +1,67 @@
+#ifndef PROTO_PROTO_MAIN_UNK_02041868_H
+#define PROTO_PROTO_MAIN_UNK_02041868_H
+
+// Prototypes of the functions defined in src/main/unk_02041868.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "game/Unk_02042104_Date.h"
+#include "town/TownUpdateThread.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_TownBbs_UpdateDaily
+void TownBbs_UpdateDaily();
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_Create
+void TownUpdateThread_Create();
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_Destroy
+void TownUpdateThread_Destroy();
+#endif
+#ifndef PROTO_LOCAL_TownJunkInsects_Refresh
+void TownJunkInsects_Refresh();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_TownBbs_GetDaysToPost
+s32 TownBbs_GetDaysToPost(void *o, u8 *a, Unk_02042104_Date *d);
+#endif
+#ifndef PROTO_LOCAL_TownBbs_CatchUpPelicanDate
+void TownBbs_CatchUpPelicanDate(void *o, u8 *base, Unk_02042104_Date *d);
+#endif
+#ifndef PROTO_LOCAL_TownBbs_PostEventsForDay
+void TownBbs_PostEventsForDay(void *o, u8 *base, Unk_02042104_Date *d);
+#endif
+#ifndef PROTO_LOCAL_TownBbs_PostDays
+void TownBbs_PostDays(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag0);
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_Main
+void TownUpdateThread_Main(u8 *arg);
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_SetArgs
+void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_Request
+void TownUpdateThread_Request(u8 *a, u8 *b, u32 c, u8 d);
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_StartCtx
+s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_Start
+s32 TownUpdateThread_Start();
+#endif
+#ifndef PROTO_LOCAL_TownUpdateThread_PollDone
+BOOL TownUpdateThread_PollDone();
+#endif
+}
+#endif
+
+#endif

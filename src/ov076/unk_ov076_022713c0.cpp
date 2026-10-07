@@ -27,6 +27,15 @@
 #include "item/ItemPickSpec.h"
 #include "actor/ActorProfile.h"
 #include "npc/NpcLookAt.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov076/unk_ov076_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -49,24 +58,12 @@ struct Unk_ov076_02271a3c_Bits {
 
 extern "C" {
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void Pocket_AddItem(u16 *, s32);
-void Pocket_RemoveItem(s32 c);
-s32 Pocket_FindEmpty();
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32));
-s32 MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void EventWeekSlots_MarkPlayer(u32 id);
 void TalkRequest_SetTargetDone(void *self);
 void Math_StepAngle(void *a, s32 b, s32 c);
-void ProcBase_RequestDelete(void *self);
-void FieldFish_ScareAround(VecFx32 *v, s32 a);
-void Effect_Create(s32 a, VecFx32 *v, s32 b, s32 c);
-void Snd_SeEmitterPlayOneShotAlt(void *self, s32 a, s32 b, s32 c);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u32 gVec3Zero;
@@ -174,8 +171,6 @@ extern u8 sSpNpcPascalKey[];
 extern u8 sSpNpcPascalModelPath[];
 extern u8 sSpNpcPascalTexturePath[];
 extern const TalkStartMsg sSpNpcPascalTopicMsgs[3];
-BOOL SpNpcPascal_IsScallop(u16 *p, s32 x);
-SpNpcPascal *SpNpcPascal_Create();
 }
 
 typedef BOOL (SpNpcPascal::*SpNpcPascalActFn)();

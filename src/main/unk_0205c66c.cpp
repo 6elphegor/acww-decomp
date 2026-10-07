@@ -2,6 +2,10 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205c66c.h"
+#include "proto/main/unk_02063f3c.h"
 
 
 
@@ -24,23 +28,11 @@ extern PlayerBodyModelPool sPlayerBodyModelPool;
 extern void *gPlayerBodyModelHeap;
 extern u8 *gCommManager;
 
-void *Heap_AllocAligned(void *, u32, s32);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *);
-s32 File_LoadToBuffer(char *, void *, u32);
-s32 PlayerBodyModelHeap_Destroy();
-s32 PlayerBodyModelHeap_Create(void *parent);
 s32 NNS_G3dGetTex(void *);
-u32 PlayerBodyModel_GetTexVramSize();
-u32 PlayerBodyModel_GetTex4x4VramSize();
-u32 PlayerBodyModel_GetPlttVramSize();
-u32 PlayerBodyModel_GetBufferSize();
-char *PlayerBodyModel_GetPath(u32 i);
-TexVramTask *PlayerBodyModelRef_GetTexTask(u8 *p);
-void *PlayerBodyModelRef_GetVramSlot(u8 *p);
-void *PlayerBodyModelRef_GetBuffer(u8 *p);
 }
 
 extern "C" void PlayerBodyModelPool_Create(void *parent) {

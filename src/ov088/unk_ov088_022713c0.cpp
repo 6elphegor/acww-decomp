@@ -34,6 +34,19 @@
 #include "game/Unk_0201acf8.h"
 #include "player/PlayerData.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020a8c9c.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov088/unk_ov088_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -48,11 +61,9 @@ struct VisitorPos;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *p);
 void EventWeekSlots_MarkPlayer(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 u32 Math_CountDownU8(void *p);
@@ -73,15 +84,8 @@ void *TownSessionState_Get();
 VisitorPos *TownSessionState_GetVisitorPos(void *p);
 extern u32 gRandom[];
 extern VecFx32 gVec3Zero;
-void Emotion_SetSlot(s32 a, s32 b);
-u32 Emotion_GetSlot(s32 i);
-s32 Emotion_FindFreeSlot();
-s32 Emotion_CountLearned();
 void MI_CpuFill8(void *p, s32 v, u32 n);
-void String_Load(void *a, u8 *b, const char *c);
-void *Choice_GetBmgName(s32 v);
 BOOL func_0202e360();
-BOOL EventAnnounce_IsBusy();
 extern u32 __ptmf_null[];
 }
 
@@ -175,7 +179,6 @@ struct SpNpcShrunkActEntry {
     BOOL (SpNpcShrunk::*exit)();
 };
 
-extern "C" SpNpcShrunk *SpNpcShrunk_Create();
 
 typedef void (SpNpcShrunkTalk::*Unk_ov088_02272618_Fn)();
 typedef BOOL (SpNpcShrunk::*Unk_ov088_022726ac_Fn)();

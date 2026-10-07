@@ -16,6 +16,20 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_GetPocketSelectLabel  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov101/unk_ov101_02294c40.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -29,19 +43,7 @@ extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
 u32 MenuCtrl_GetPocketSelectLabel();
-u32 MenuCtrl_GetPocketSelectMask();
-void MenuCtrl_SetResult(u32 v);
-void MenuCtrl_SetIndex(u32 v);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Snd_PlaySe(u32 v);
-void ProcBase_RequestDelete(void *p);
-void *ProcBase_GetParent(void *p);
 
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_Update(void *p);
@@ -55,43 +57,9 @@ void PopupChoice_Open(void *p, u32 v);
 void PopupChoice_Close(void *p, u32 v);
 BOOL PopupChoice_MoveCursor(void *p, u32 a, void *b, u32 c);
 BOOL PopupChoice_TickDecideDelay(void *p);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 
-void Inventory_PlayTouchSe();
-void InventoryItemGrid_MarkSlot(void *p, u32 v);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_SetCursorSlot(void *p, u32 v);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-u32 InventoryItemGrid_GetSlotFlags(void *p, u32 v);
-u32 InventoryItemGrid_GetSlotItem(void *p, u32 v);
-BOOL InventoryItemGrid_IsSlotEmpty(void *p, u32 v);
-BOOL InventoryItemGrid_IsSlotDisabled(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
-void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
-void InventoryItemGrid_RefreshSlot(void *p, u32 a);
-void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 a);
-void InventoryItemGrid_DisableSlot(void *p, u32 a);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
-void InventoryItemGrid_ClearSlot(void *p, u32 idx);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-void InventoryItemGrid_DrawHeldItem(void *p, s32 a, s32 b);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_Load(void *p, s32 a);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
-void InventoryItemGrid_PreUpdate(void *p);
-void InventoryBg_Exit(void *p);
-void InventoryItemGrid_Exit(void *p);
-void InventoryItemGrid_Init(void *p, s32 a);
-void InventoryBg_Init(void *p, s32 a);
-void InventoryItemGrid_LoadPockets(void *p);
-void LetterGrid_LoadPocketLetters(void *p);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void InventoryBg_DrawSprite(void *p, s32 a);
 }
 
 static inline BOOL Unk_ov101_02296280_Both()
@@ -309,7 +277,6 @@ BOOL PocketItemSelectMenu::onDraw() {
     return TRUE;
 }
 
-extern "C" PocketItemSelectMenu *PocketItemSelectMenu_Create();
 
 
 // Declarations for data defined further down (definition order sets the data layout)

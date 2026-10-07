@@ -21,6 +21,10 @@
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "net/CommManager.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02036c58.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/ov004/unk_ov004_022257e4.h"
 
 
 
@@ -97,7 +101,6 @@ void RoomObjRes_Free(void *);
 void CheckInGate_SetInstance(Cls *c);
 
 void _ZN9ModelAnim7replaceEiiiit(void *, s32, s32, s32, s32, u16);
-void Snd_PlaySe(u32);
 void Math_ApproachS32Max(s32 *, s32, s32, s32);
 s32 _ZN12G3dResAccess10findMatIdxEi(void *, u32);
 s32 BoxCollider_Unregister(void *);
@@ -108,10 +111,7 @@ s32 func_01ffcb0c(s32, s32);
 s32 Scene_GetCurrent(void);
 void NNS_G3dBindMdlTex(void *, void *);
 void NNS_G3dBindMdlPltt(void *, void *);
-void *BgModelCache_Get(void);
 void *_ZN12BgModelCache12getGroundTexEv(void *);
-s32 TownSessionState_Get(void);
-s32 TownSessionState_GetTravelState(s32);
 s32 _ZN15TownTravelState7getModeEv(s32);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
@@ -124,8 +124,6 @@ extern "C" const u8 data_ov004_0224016c[];
 #define data_ov004_02240150 (sCheckInGateHourLight + 4)
 #define data_ov004_02240154 (sCheckInGateHourLight + 8)
 
-extern "C" CheckInGate *CheckInGate_Create();
-extern "C" CheckInGate *CheckInGate_Create();// declarations (definition order below sets the data layout)
 extern "C" { extern DebugColor data_ov004_02250c48; }
 extern "C" { extern DebugColor data_ov004_02250c4c; }
 extern "C" { extern DebugColor data_ov004_02250c40; }

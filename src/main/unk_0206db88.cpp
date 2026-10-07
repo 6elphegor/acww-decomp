@@ -5,6 +5,23 @@
 #include "gfx/BgVramTask.h"
 #include "nitro/io_access.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_MenuScreen_StepAct08  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuScreen_StepAct09  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020f4a5c.h"
+#include "proto/itcm/unk_01ffcc60.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206db88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02097444.h"
 
 
 extern "C" {
@@ -18,96 +35,20 @@ extern u8 gCurrentHeap[];
 extern u8 sMenuWipeEdge[24];
 extern u8 sMenuWipeLine;
 
-u8 *Snd_MelodyGetDefaultPattern(void *);
-u8 *Snd_MelodyApplyRandomPattern(void *);
-void Snd_MelodyPlayRandom(void *, u32);
-BOOL Snd_MelodyIsPlaying(void *);
-void Snd_MelodyPlayNote(void *, u32);
-void Snd_MelodyStartTrackA(void *);
-void Snd_MelodyPlay(void *, u32);
-void Snd_MelodyPlayAt(void *, u32, u32);
-void Snd_MelodyPlayPattern(void *, u32, void *);
-void Snd_MelodySetPattern(void *, void *);
 s64 func_02133540(u32, u32, u32);
 #define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
-void *MelodyTrack_dtor(void *);
-void Gfx2d_DisableMainWindows(u32);
-void Gfx2d_ResetLayer(u32);
-void MenuCtrl_ClearScreenChanging();
-void Gfx2d_EnableMainWindows(u32);
-void Gfx2d_SetMainWin1Planes(u32);
-void Gfx2d_SetMainWinOutPlanes(u32);
-void Gfx2d_HideMainPlanes(u32);
-BOOL Camera_RestorePrevMode();
-void Gfx2d_SetLayerPriority(u32, u32);
-void MenuCtrl_ClearTransitionActive();
-void Gfx2d_ShowLayer(u32);
-void HudObjGfx_LoadForSceneSub();
 void Sky_SetEngine(u32);
-void MenuCtrl_ClearMenuOnTop();
 void ScreenLayers_ReleaseStub(u32);
 s32 func_01ffcb0c(s32, s32);
-void MenuCtrl_SetTransitionProgress(s32);
-BOOL Camera_IsViewPushed();
-void Camera_PopView();
 void ScreenLayers_AcquireStub(u32);
 void Sky_Disable();
-void Gfx2d_SetMainBgModeState(u32);
-void Gfx2d_HideSubPlanes(u32);
-void MenuCtrl_SetMenuOnTop();
-BOOL Camera_SetMode1();
-void MenuCtrl_SetTransitionActive();
-void Gfx2d_SetMainWin1Rect(s32, s32, s32, s32);
-BOOL Stub_ReturnFalse();
-void MenuCtrl_SetScreenChanging();
-u32 PlayerData_GetCurrent();
 u16 *_ZN10PlayerData22getInventoryBackgroundEv(void *self);
-void *Heap_AllocTail(void *, u32);
-void Heap_Free(void *, void *);
-void ClothTex_LoadItem(void *, void *, u32);
-void *ClothTex_GetPlttData(void *);
-void *ClothTex_GetTexData(void *);
-s32 Gfx2d_LoadPaletteRange(void *, u32, u32, u32, u32);
-void Gfx2d_LinearToTiles4bppBytes(void *, void *, u32, u32);
-s32 Gfx2d_LoadCharRange(void *, u32, u32, u32, u32);
-s32 Gfx2d_LoadScreenFile(const char *, void *, u32);
-void Str_SPrintf(char *, const void *, ...);
-s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
-s32 Gfx2d_LoadCharFile(void *, void *, u32, u32, u32, u32);
-void Gfx2d_SetLayerControl(u32, u32, u32, u32);
 BOOL HBlank_Add(void *, void (*)(void), void (*)(void), s32);
 void HBlank_Remove(void *);
-void MenuScreen_WipeHBlank(void);
-s32 Gfx2d_SetLayerOffset(u32, u32, u32);
 
-BOOL MenuScreen_StepAct00();
-BOOL MenuScreen_StepAct01();
-BOOL MenuScreen_StepAct02();
-BOOL MenuScreen_StepAct03();
-BOOL MenuScreen_StepAct04();
-BOOL MenuScreen_StepAct05();
-BOOL MenuScreen_StepAct06();
-BOOL MenuScreen_StepNop();
 BOOL MenuScreen_StepAct08();
 BOOL MenuScreen_StepAct09();
-BOOL MenuScreen_StepAct0A();
-BOOL MenuScreen_StepAct0B();
 
-void MenuScreen_WipeOutVBlank(void);
-void MenuScreen_WipeInVBlank(void);
-BOOL MenuScreen_IsWiping();
-void MenuScreen_StartWipeOut();
-void MenuScreen_StartWipeIn();
-void MenuScreen_StopWipe();
-void MenuScreen_SetupSubBg();
-void MenuScreen_SetupMainBg();
-void MenuScreen_ClearState();
-BOOL MenuScreen_LoadBackground(u32);
-BOOL MenuScreen_LoadStdBackground(u32);
-BOOL MenuScreen_HasFlags(u32);
-void MenuScreen_ClearFlags(u32);
-void MenuScreen_SetFlags(u32);
-void Gfx_LightenPalette16(u16 *, u16 *);
 }
 
 // 4-byte bss slots accessed as u8/u16/s16

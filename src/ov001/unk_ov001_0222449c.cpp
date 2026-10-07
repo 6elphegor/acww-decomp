@@ -3,6 +3,11 @@
 #include "nitro/gxoam.h"
 #include "net/WfcObjGroup.h"
 #include "net/WfcPool.h"
+#define PROTO_LOCAL_WfcOam_GetEntry  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_0222449c.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
 
 #pragma thumb off
 
@@ -21,18 +26,14 @@ WfcObjList *sWfcObj;
 extern "C" {
 s32 OS_DisableIrqMask(s32);
 void OS_EnableIrqMask(s32);
-void Fatal_Trap();
 void WfcPool_Put(WfcPool *, void *);
 WfcObjGroup *WfcPool_Get(WfcPool *);
-void WfcPool_Destroy(void *, ...);
-WfcPool *WfcPool_CreateFrom(s32, u8 *, u32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(u32, u32);
 void WfcList_PushFront(void *, void *);
 void WfcList_PushBack(void *, void *);
 void WfcList_InsertBefore(void *, void *);
 void WfcList_Remove(void *);
-void WfcList_Destroy(void *, ...);
 void *WfcList_Create();
 GXOamAttr *WfcOam_GetEntry(s32, s32);
 void WfcObj_GetPos(WfcObjGroup *self, s32 idx, u32 *o1, u32 *o2);

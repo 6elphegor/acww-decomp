@@ -9,6 +9,21 @@
 #include "actor/Actor.h"
 #include "game/StrBSizeData.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_BuildingInfo_GetKind  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BuildingInfo_GetProfile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldStructureHeap_Destroy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldStructureMgr_DestroyHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldStructureMgr_SpawnAll  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldStructureMgr_SpawnBuilding  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldStructureMgr_Unregister  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 // TU21 of ov003: house models, scene 0x022324ec (0x022187fc-0x02219294)
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
@@ -88,8 +103,6 @@ public:
 };
 
 extern "C" {
-s32 Taxi_IsArriving();
-s32 Taxi_IsLeaving();
 s32 MapBlockAcre_getAcreId(void *c);
 void MapBlock_SetItem(void *c, u16 *p, s32 a, s32 b, s32 d);
 void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
@@ -99,14 +112,10 @@ s32 CommManager_isSlotActive(void *self, u32 v);
 s32 TownBlockMap_Get();
 s32 Town_FindTownHallFront(s32 k, s32 *a, s32 *b, s32 *c);
 void *TownStyleRecordView_getHouseStyles(void *p);
-s32 TownStyle_GetVillagerHouseStyle(void *p, s32 i);
-void *File_LoadAllocF(void *heap, s32 a, const char *fmt, ...);
 void *NNS_G3dGetTex(void *p);
 s32 Gfx3d_LoadTex(void *p, s32 a);
 void *Gfx3d_CopyTex(void *p, void *heap);
-void Mem_Free(void *p);
 s32 Gfx3d_LoadTexAndPltt(void *p, s32 a);
-void *File_LoadAlloc(const char *s, void *heap, s32 a, s32 b);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 u16 *BuildingActor_getItemId(void *p);
@@ -120,8 +129,6 @@ s32 BuildingActor_openDoorForEntry(void *p);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void FieldStructureHeap_Destroy(s32 a);
-void FieldStructureHeap_Create(s32 a, s32 b);
-void *StrBSize_Get(s32 p);
 s32 StrBSizeData_getSolidUnitCount(void *self);
 s32 StrBSizeData_getSolidUnit(void *self, s32 *a, s32 *b, s32 *c, u32 i);
 void Ground_SetQuadrantsBlocked(s32 x, s32 y, u32 v);
@@ -133,15 +140,10 @@ void BuildingInfo_Destroy(void *o);
 s32 Actor_spawn(s32 self, void *b, void *c, void *d, void *e);
 void TownMap_placeStructure(void *self, u16 *p, s32 x, s32 y, u8 z);
 void FieldStructureMgr_Unregister(s32 a);
-void Field_CacheExitedBuildingKey();
-void FieldStructureMgr_Register(s32 a);
-void GameProc_CreateChild(s32 a, u32 *b, s32 c, s32 d);
 void Gfx3d_LoadPltt(void *, s32);
 extern u32 gSaveTownState[];
 s32 TownState_FindEvent(void *, s32);
 s32 NNS_FndMountArchive(char *, const char *, void *);
-void Str_SPrintf(char *, const char *, ...);
-void *NNS_FndGetArchiveFileByName(const char *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
@@ -149,29 +151,12 @@ void NNS_FndUnmountArchive(char *);
 }
 
 extern "C" {
-void BuildingList_Clear();
-void BuildingList_Init();
 void FieldStructureMgr_DestroyHeap(s32 a);
-void FieldStructureMgr_CreateHeap(s32 a);
-void func_ov003_02219160(s32 a);
-void func_ov003_02219164(s32 a);
-void *BuildingList_FindByItem(u32 id);
-void *Building_FindNearPos(s32 a);
-s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y);
 s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag);
 s32 FieldStructureMgr_SpawnAll(void *self);
-s32 VillagerHouseTex_Load(VillagerHouseTex *self);
-void VillagerHouseTex_Clear(VillagerHouseTex *o);
-void HouseLightUpDeco_Clear(HouseLightUpDeco *o);
-void HouseLightUpDeco_Release(void *p);
-s32 Field_GetStructureTexSuffix();
-s32 HouseLightUpDeco_Load(HouseLightUpDeco *r);
-s32 PlayerHouseTex_Load(void **out);
-void PlayerHouseTex_Release(void *p);
 }
 
 
-extern "C" void *FieldStructureMgr_Create();
 
 // the TU's bss objects; the three static objects have constructors and destructors (see __sinit)
 extern "C" {
@@ -493,7 +478,6 @@ s32 BuildingList_Add(void *p) {
     return 0;
 }
 
-s32 BuildingList_IndexOf(void *p);
 
 s32 BuildingList_Remove(void *p) {
     s32 i = BuildingList_IndexOf(p);

@@ -13,6 +13,20 @@
 #include "talk/EncodedString.h"
 #include "talk/MsgString9B.h"
 #include "talk/EncodedString8.h"
+#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_IsValid  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0208f268.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
 
 
 
@@ -50,15 +64,12 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-s32 EffectSpl_CreateTracked(void *, s32, s32, void *);
 }
 
 extern "C" {
-s32 EffectSpl_CreateOneShot(void *, s32, s32, void *);
 }
 
 extern "C" {
-s32 EffectSpl_ApplySceneTint(void *);
 }
 
 extern "C" {
@@ -74,11 +85,9 @@ s32 func_02090538(void *);
 }
 
 extern "C" {
-void Vec_RotateY(void *, s32);
 }
 
 extern "C" {
-s32 Vec_SafeNormalize(void *);
 }
 
 extern "C" {
@@ -94,35 +103,27 @@ s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 }
 
 extern "C" {
-s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
-s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 }
 
 extern "C" {
-void EffectCb_PlaceEmitter(EffectSplEmitter *o, EffectSlot *e, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 EffectCb_PlaceFacingBack(EffectSplEmitter *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 EffectCb_PlaceFacing(EffectSplEmitter *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 EffectCb_InitOneShot(EffectSplEmitter *o);
 }
 
  // extern "C"
@@ -151,7 +152,6 @@ extern TownId gSaveTownId;
 s32 TownId_IsValid(TownId *self);
 void TownId_CopyTo(TownId *self, TownId *o);
 void TownId_CopyFrom(TownId *self, TownId *o);
-void TownId_Assign(TownId *self, TownId *o);
 void TownId_Clear(TownId *self);
 void TownId_Destruct(TownId *self);
 void TownId_Construct(TownId *self, void *o);
@@ -162,11 +162,9 @@ extern u8 gSavePlayers[];
 }
 
 extern "C" {
-s32 PlayerDataArray_FindById(void *, void *);
 }
 
 extern "C" {
-s32 PlayerActor_Get(s32);
 }
 
 extern "C" {
@@ -174,7 +172,6 @@ s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
 }
 
 extern "C" {
-u32 Random_GlobalBelow(u32);
 }
 
 extern "C" {
@@ -182,15 +179,12 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 PlayerActor_GetActor(s32);
 }
 
 extern "C" {
-BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
 }
 
 extern "C" {
-s32 PlayerActor_IsInAction(s32, s32);
 }
 
 extern "C" {
@@ -200,16 +194,6 @@ s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 extern "C" {
 s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
-extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f);
-extern "C" s32 PlayerActor_GetLocalSessionSlot();
-extern "C" s32 PlayerActor_GetObjectSize();
-extern "C" s32 PlayerActor_GetObjectAlign();
-extern "C" s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d);
-extern "C" BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
-extern "C" u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n);
-extern "C" u16 PlayerId_GenerateRandomId();
-extern "C" void *PlayerId_GetTownId(void *p);
-extern "C" s32 PlayerId_FindResidentIndex(void *x);
 
 extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
 {

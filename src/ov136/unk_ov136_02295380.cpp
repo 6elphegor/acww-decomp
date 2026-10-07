@@ -7,6 +7,13 @@
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
 #include "ui/HandCursor.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov134/unk_ov134_02291f60.h"
+#include "proto/ov136/unk_ov136_02295380.h"
 
 class DateTimePicker;
 
@@ -23,35 +30,9 @@ extern u8 gTouchChanged;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void MenuCtrl_SetDateTime(void *p);
-void MenuCtrl_SetResult(u32 v);
-void Gfx2d_SetSubBgModeState(u32 a);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 void MenuButtons_LoadTextColors(void *self);
 
 // ov134 library functions (plain symbols; first argument is the DateTimePicker object)
-s32 DateTimePicker_HitTestList(DateTimePicker *p, s32 a, s32 b);
-BOOL DateTimePicker_UpdateListClose(DateTimePicker *p);
-void DateTimePicker_CancelList(DateTimePicker *p);
-void DateTimePicker_DecideList(DateTimePicker *p);
-BOOL DateTimePicker_UpdateListOpen(DateTimePicker *p);
-void DateTimePicker_OpenList(DateTimePicker *p, u32 a);
-s32 DateTimePicker_GetCursorField(DateTimePicker *p);
-s32 DateTimePicker_HitTestTimeField(DateTimePicker *p, u8 a, u8 b);
-BOOL DateTimePicker_UpdateHandAnim(DateTimePicker *p);
-BOOL DateTimePicker_EndHandDrag(DateTimePicker *p);
-void DateTimePicker_UpdateHandDrag(DateTimePicker *p, u8 a, u8 b);
 BOOL DateTimePicker_GrabHand(DateTimePicker *p, u8 a, u8 b);
 void DateTimePicker_Draw(DateTimePicker *p, s32 a, s32 b);
 void DateTimePicker_LoadObjGraphics(DateTimePicker *p);
@@ -75,7 +56,6 @@ class TimeSelectMenu;
 typedef void (TimeSelectMenu::*Unk_ov136_022963b0_Fn)();
 
 
-extern "C" TimeSelectMenu *TimeSelectMenu_Create();
 
 // Vtable 0x022963b0
 class TimeSelectMenu : public MenuProc {

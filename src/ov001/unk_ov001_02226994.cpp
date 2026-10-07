@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcListNode.h"
+#define PROTO_LOCAL_WfcPool_CreateFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcVram_Init  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02226994.h"
 
 
 struct WfcVramBlock {
@@ -32,11 +36,9 @@ void WfcList_PushBack(WfcListNode *head, WfcListNode *node);
 void WfcList_InsertBefore(WfcListNode *head, WfcListNode *node);
 void WfcList_Remove(WfcListNode *node);
 WfcListNode *WfcList_Create();
-void Fatal_Trap();
 s32 OS_DisableIrqMask(s32);
 s32 OS_EnableIrqMask(s32);
 void WfcVram_FreeObjChar(WfcListNode *p);
-WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out);
 void WfcVram_Init();
 }
 

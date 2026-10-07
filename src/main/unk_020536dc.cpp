@@ -2,31 +2,19 @@
 #include "gfx/ThreeLayerAnimModel.h"
 #include "gfx/GfxFrameHooks.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020e8208.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_020536dc.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020b8340.h"
 
 extern "C" {
 extern volatile u32 gGfxMainOnTop;
-void Oam_FlushBuffers();
-void Oam_LoadBuffers();
-void ScreenTransition_VBlank();
-void Gfx3d_ApplyClearColor();
-void Gfx2d_ApplyDisplayControl();
-void Gfx2d_FlushRegisters();
-void ScreenTransition_Update();
-void Oam_ResetBuffers();
-void Gfx3d_BeginFrame();
-void Gfx2d_BeginFrame();
-void Gfx2d_ResetState();
-void Gfx3d_InitEngine();
-void Gfx_InitNop();
-void ScreenTransition_Init();
 void GX_SetBankForLCDC(s32);
-void Gfx3d_Init();
-void Gfx2d_LoadBackdropColor();
-void VramQueue2d_Init();
-void VramQueueTex_Init();
 void GX_DisableBankForLCDC();
 void MIi_CpuClearFast(u32, void *, u32);
-void Gfx_ResetScene();
 }
 
 

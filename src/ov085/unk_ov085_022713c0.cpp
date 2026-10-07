@@ -30,6 +30,14 @@
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
 #include "talk/MsgString.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020a8c9c.h"
+#include "proto/ov085/unk_ov085_022713c0.h"
 
 #pragma opt_loop_invariants off
 
@@ -41,25 +49,14 @@ struct TalkStartMsg;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-s32 Pocket_FindEmpty();
-s32 Pocket_FindItem(u16 *p);
-void Pocket_AddItem(u16 *p, s32 v);
-void Pocket_RemoveItem(s32 v);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 Random_GlobalBelow(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
-void *TownSessionState_Get();
-BOOL TownSessionState_TestFlag(void *p, s32 v);
-void TownSessionState_SetFlag(void *p, s32 v);
-void ContestRecord_JudgeGardens(void *p);
 void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
@@ -129,23 +126,14 @@ struct SpNpcTortimerBrightNightsActEntry {
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void TalkRequest_SetTargetDone(void *p);
-u32 Random_GlobalBelow(u32 n);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 Pocket_FindItem(u16 *p);
-void Pocket_AddItem(u16 *p, s32 v);
-void Pocket_RemoveItem(s32 v);
-void ContestRecord_BeginFestival(void *p, s32 v);
 void *SaveVillagers_Get(void *tbl, s32 idx);
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 void *Item_GetSaveData();
 s32 _ZN10PlayerData11getPlayerIdEv(void *self);
 void *SaveVillagers_FindBestFriendOf(void *p, s32 v);
-void MailText_SetSlot(s32 a, MsgString9B *o);
-void Bbs_PostMsgToday(u32 a, u8 *b);
 void SaveVillagers_ClearTalkedToday(void *p);
-void *Choice_GetBmgName(s32 v);
 s32 SaveVillagers_Count(void *p);
 extern u8 gSaveVillagers[];
 extern u8 sSpNpcTortimerBrightNightsModelPath[];
@@ -153,7 +141,6 @@ extern u8 sSpNpcTortimerBrightNightsTexturePath[];
 extern SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3];
 }
 
-extern "C" SpNpcTortimerBrightNights *SpNpcTortimerBrightNights_Create();
 SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3] = {
     {&SpNpcTortimerBrightNights::setupAct00, &SpNpcTortimerBrightNights::mainAct00},
     {&SpNpcTortimerBrightNights::setupAct01, &SpNpcTortimerBrightNights::mainAct01},

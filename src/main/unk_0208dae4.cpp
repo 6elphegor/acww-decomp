@@ -3,12 +3,13 @@
 #include "ui/UiWidget.h"
 #include "ui/ScrollKnob.h"
 #include "ui/HudUnkIcon.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0208dae4.h"
+#include "proto/main/unk_02094810.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 TalkRequest_IsActive();
 s32 Scene_GetCurrent();
-s32 PlayerActor_GetAction(s32 v);
 }
 
 extern s32 gGfxMainOnTop;
@@ -21,7 +22,6 @@ struct SpriteAnimSeq;
 
 
 
-extern "C" BOOL HudUnkIcon_CanShow();
 
 void HudUnkIcon::updateHidden() {
     if (HudUnkIcon_CanShow() != 0) {

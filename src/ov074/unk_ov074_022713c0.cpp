@@ -34,6 +34,21 @@
 #include "save/Pattern.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
+#define PROTO_LOCAL_ClothTex_GetBufferSize  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SpNpcBlanca_FindSidestepPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov074/unk_ov074_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -118,18 +133,12 @@ extern s32 gCameraLookAt[];
 extern s16 data_02135f44[];
 
 void *BlancaFaceRecord_getPattern(u8 *p);
-s32 ClothTex_LoadPatternThunk(u32 h, void *x);
-u32 ClothTex_GetTexThunk(u32 h);
 u32 ClothTex_GetBufferSize();
 u32 Heap_Alloc(u32 *a, u32 b);
 void Heap_Free(u32 *a, u32 b);
-BOOL NpcActor_IsFrontAngle(s16 a);
-s32 MenuCtrl_IsResultOk();
-PlayerData *PlayerData_GetCurrent();
 s32 Impression_Evaluate(void *a, s32 b, s32 c);
 void BlancaFaceRecord_setConcept(u8 *p, s32 v);
 void BlancaFaceRecord_setState(u8 *p, s32 v);
-s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 TalkWindowState_setNextMessage(void *self, u8 *b, char *c);
 void TalkWindowState_setSlotFromString(void *self, s32 a, u8 *b, char *c);
@@ -142,9 +151,7 @@ void PatternInfo_getTitle(Unk_ov074_02271564_A *a, void *b);
 void func_02072064(Unk_ov074_02271564_A *a);
 BOOL PlayerId_isValid(Unk_ov074_02271564_B *b);
 BOOL PlayerId_equals(Unk_ov074_02271564_B *a, void *b);
-u32 PlayerId_GetTownId(Unk_ov074_02271564_B *a);
 void func_020942c8(Unk_ov074_02271564_B *a);
-s32 memcmp(void *a, void *b, s32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
 u32 NpcActor_getAngleTo(void *p, u32 x);
@@ -154,7 +161,6 @@ s32 Random_Next(u8 *p);
 s32 NpcActionCtrl_isActionDone(void *p);
 s32 NpcActionCtrl_getAction(void *p);
 s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-s32 Math_AngleXZ(void *a, s32 *b);
 VecFx32 *NpcMoveCtrl_getDestination(void *p);
 s32 MatTexVramTask_request(void *p, u32 a, u32 *b, u32 c, s32 d, s32 e);
 void NpcFootstepFx_disableFootsteps(void *p);
@@ -252,14 +258,7 @@ struct SpNpcBlancaActEntry {
 
 
 extern "C" {
-SpNpcBlanca *SpNpcBlanca_Create();
-void SpNpcBlanca_ChangeAct(SpNpcBlanca *self, s32 state);
-s32 SpNpcBlanca_IsInCameraBox(void *self);
-s32 SpNpcBlanca_TryAvoidObstacle(void *self);
-s32 SpNpcBlanca_SteerAroundObstacle(void *self);
 s32 SpNpcBlanca_FindSidestepPos(void *self, void *out, void *x);
-s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b);
-s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b);
 extern u8 sSpNpcBlancaModelPath[];
 extern SpNpcBlancaActEntry sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];

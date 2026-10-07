@@ -1,0 +1,24 @@
+#ifndef PROTO_PROTO_MAIN_UNK_02088B98_H
+#define PROTO_PROTO_MAIN_UNK_02088B98_H
+
+// Prototypes of the functions defined in src/main/unk_02088b98.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_ActorCollider_InitList
+void ActorCollider_InitList(void);
+#endif
+#ifndef PROTO_LOCAL_ActorCollider_ClearList
+void ActorCollider_ClearList(void);
+#endif
+#ifndef PROTO_LOCAL_ActorCollider_ResolveAll
+void ActorCollider_ResolveAll();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#endif

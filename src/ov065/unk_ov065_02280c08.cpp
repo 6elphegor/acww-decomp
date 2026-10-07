@@ -8,6 +8,14 @@
 #include "net/gpiProfile.h"
 #include "net/gpi.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02280c08.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU47: GP gpiPeer.c (0x02280c08..0x0228176c)
 
@@ -26,21 +34,15 @@ namespace Na {
 
 
 extern "C" {
-void strzcpy(void *, const void *, s32);
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
 s32 gpiProcessConnect(void *, void *, char *);
 s32 gpiProcessNewProfile(void *, void *, char *);
 s32 gpiProcessGetInfo(void *, void *, char *);
 s32 gpiProcessRegisterUniqueNick(void *, void *, char *);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(u32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
-s32 memset(void *, s32, u32);
-s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiSendOrBufferString(void *, void *, const char *);
 s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
@@ -105,15 +107,8 @@ namespace Nb {
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-char *strstr(const char *, const char *);
-s32 strcmp(const char *, const char *);
-s32 atol(const char *);
-s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-void *memset(void *, s32, s32);
 
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 DArrayImplementation *ArrayNew(s32, s32, void (*)(void *));
 void ArrayDeleteAt(DArrayImplementation *, s32);
 void *ArrayNth(DArrayImplementation *, s32);
@@ -148,7 +143,6 @@ s32 gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, char *, s32, s32);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
-void gpiDebug(GPConnection *, const char *, ...);
 
 s32 gpiCanFreeProfile(GPIProfile *);
 s32 gpiProcessPeerInitiatingConnection(GPConnection *, GPIPeer *);

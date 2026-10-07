@@ -3,6 +3,11 @@
 #include "town/TownUpdateThread.h"
 #include "game/EventDayEntry.h"
 #include "game/Unk_02042104_Date.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/main/unk_02041868.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov003/unk_ov003_02225800.h"
 
 
 struct TownJunkInsectFlags { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
@@ -27,8 +32,6 @@ void Town_GetEnvironmentRank();
 s32 _ZN11CommManager12isSlotActiveEi(u32, u32);
 s32 Scene_InTown();
 s32 Scene_InTownUnk31();
-void Insect_EnableTrashFlies();
-void Heap_Free(u32, u32);
 s32 OS_IsThreadTerminated(void *t);
 void OS_KillThread(u32, u32);
 void TownUpdateThread_Kill(TownUpdateThread *p);
@@ -43,7 +46,6 @@ s32 TownBbs_GetDaysToPost(void *o, u8 *a, Unk_02042104_Date *d);
 void TownBbs_CatchUpPelicanDate(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostDays(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag);
 void TownBbs_PostEventsForDay(void *o, u8 *base, Unk_02042104_Date *d);
-s32 PlayerDataArray_CountUsed(void *p);
 s32 Game_IsIntroPeriod();
 s32 DateTime_DiffDays(Unk_02042104_Date *a, Unk_02042104_Date *b);
 void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
@@ -53,15 +55,12 @@ void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
 s32 EventSchedule_CollectDayAll(EventDayEntry *z, Unk_02042104_Date *d);
 void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
 void TownUpdateThread_Main(u8 *arg);
-void OS_ExitThread();
 u32 DC_FlushAll();
-void Heap_SetThreadHeap(uptr a, uptr b);
 void Town_AdvanceDays(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
 void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
 void TownUpdateThread_Init(TownUpdateThread *p);
-void *Heap_Alloc(uptr heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void OS_WakeupThreadDirect(void *th);
 }

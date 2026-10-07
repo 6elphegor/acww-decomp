@@ -4,6 +4,22 @@
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "npc/VillagerId.h"
+#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_ConstructCopy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_CopyTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/main/unk_020030d8.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02087e70.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // VillagerId helpers (VillagerId_Copy..VillagerId_CopyFrom are plain functions; its TownId part uses the TownId_* helpers)
@@ -15,13 +31,6 @@ void TownId_Destruct(VillagerId *p);
 void TownId_Construct(VillagerId *p);
 void TownId_CopyTo(VillagerId *p, VillagerId *other);
 void TownId_CopyFrom(VillagerId *p, VillagerId *other);
-void HudObjGfx_LoadSlideIcon(u32 a);
-void HudObjGfx_LoadLinkIcon(u32 v);
-BOOL MenuCtrl_IsTransitionActive();
-s32 MenuCtrl_GetTransitionProgressOrFull();
-s32 Net_GetMode();
-s32 Net_GetLinkLevel();
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 extern const s8 sHudIconSlideOffsets[8];

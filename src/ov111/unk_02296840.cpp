@@ -19,6 +19,28 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_BgScreen_ReplaceRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChatBalloon_Post  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_TouchSendKey  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov095/unk_02292360.h"
+#include "proto/ov111/unk_02296840.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -42,109 +64,15 @@ extern u32 gCurrentHeap;
 extern uptr sChatSendAnimScreens[];
 extern char data_ov111_022989c8[];
 
-void Gfx2d_ShowLayer(s32 v);
-void Gfx2d_HideLayer(s32 v);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_LoadCharFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void Snd_PlaySe(u32 v);
-void ChatBalloon_Dismiss(s32 a);
 void ChatBalloon_Post(s32 a, void *p, void *q);
-void Mem_Clear(void *p, s32 n);
-s32 Mem_Copy(void *src, void *dst, s32 n);
-s32 Text_GetLength(void *p, s32 n);
-s32 Text_MeasureWidth(void *p, s32 n);
-s32 File_LoadAlloc(u32 id, u32 g, s32 a, s32 b);
-void MenuCtrl_ClearChatDraft();
-void MenuCtrl_SetChatDraft(void *p);
-s32 MenuCtrl_GetChatDraft();
-s32 MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
 void BgScreen_ReplaceRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void PlayerActor_OnChatCloseNop();
-void PlayerActor_OnChatOpenNop();
-void PlayerActor_RequestEmotion(void *p);
-void PlayerActor_RequestAct13();
-PlayerData *PlayerData_GetCurrent();
 void MsgTextLabel_Destroy(void *p);
 void *MsgTextLabel_CreateVram(u32 a, u32 b, u32 c);
-void String_CensorTaboo(void *p);
-void Heap_Free(u32 g, s32 a);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
-s32 MenuTabBar_NextTab(s32 v);
-s32 MenuTabBar_PrevTab(s32 v);
-s32 MenuTabBar_HitTestTouch();
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
-void Keyboard_SelectSendKey(void *p);
-void Keyboard_LoadEmotionIcons(void *p);
 void Keyboard_PlayPasteSe(void *p);
 void Keyboard_PlayCopySe(void *p);
-s32 Keyboard_PressCursorKey(void *s);
-s32 Keyboard_MoveCursor(void *p, s32 v);
-void Keyboard_ResetCursor(void *s);
-s32 Keyboard_GetCursorY(void *s);
-s32 Keyboard_GetCursorX(void *s);
-void Keyboard_SelectMenuTabKey(void *p, s32 v);
-void Keyboard_EnterTabRowAtX2(void *p, s32 v);
-void Keyboard_DrawLengthGauge(void *p, u32 a, u32 b, u32 c);
-void Keyboard_DrawCopyPasteKeysChat(void *p, u32 a, u32 b);
-void Keyboard_DrawCaret(void *p, u32 a, u32 b, u32 c);
-u32 Keyboard_GetSelectedEmotion(void *p);
-void Keyboard_SelectEmotionByCode(void *s, u32 a);
-void Keyboard_ClearSelectedEmotion(void *p);
-BOOL Keyboard_TouchEmotionKey(void *p);
-s32 Keyboard_TouchPageTab(void *p);
 BOOL Keyboard_TouchSendKey(void *s);
-void Keyboard_DrawSendKey(void *p, u32 a, u32 b, u32 c, u32 d);
-void Keyboard_DrawEmotionKeys(void *p, u32 a, u32 b);
-void Keyboard_Draw(void *p, u32 a, u32 b, u32 c);
-void Keyboard_LoadObjGfx(void *p);
-void Keyboard_EndPaste(void *p);
-void Keyboard_BeginPaste(void *p);
-u32 Keyboard_GetTypedRunLength(void *p);
-void Keyboard_ShrinkTypedRun(void *s);
-void Keyboard_ResetTypedRun(void *s);
-s32 Keyboard_HandleModeKey(void *s, u32 a, u32 b);
-u8 Keyboard_HitTestText(void *s, void *buf, u32 a, u32 b, u32 c, void *d);
-u32 Keyboard_ModifyCharKey105(void *p, u32 a);
-u32 Keyboard_ModifyCharKey104(void *p, u32 a);
-u32 Keyboard_ModifyCharKey103(void *p, u32 a);
 BOOL Keyboard_ReplaceCharBeforeCursor(void *p, void *q, u32 a, u32 b, u32 c, u32 d);
-u32 Keyboard_DeleteRange(void *p, void *q, u32 a, u32 b, u32 c);
-BOOL Keyboard_InsertChar(void *p, void *q, u32 a, void *r, u32 b, u32 c, u32 d, u32 e);
-BOOL Keyboard_IsControlCode(void *s, u32 a);
-void Keyboard_UpdateModifierKeys(void *s, s32 a);
-void Keyboard_DisableModifierKeys(void *s);
-s32 Keyboard_TickKeyRepeat(void *p);
-void Keyboard_StartKeyRepeat(void *s);
-s32 Keyboard_UpdatePressedKey(void *p);
-void Keyboard_MarkScreenDirty(void *p);
-void Keyboard_EndFrame(void *s, s32 a);
-void Keyboard_LoadScreenNow(void *p, s32 v);
-void Keyboard_LoadScreenFile(void *p, void *q);
-void Keyboard_Shutdown(void *p);
-void Keyboard_Init(void *p, s32 a);
-s32 Keyboard_SetMode(void *s, s32 a, s32 b, s32 c);
-void Keyboard_RestoreLastPage(void *p, s32 v);
-s32 Keyboard_GetKeyCode(void *s, s32 a, u32 b);
-s32 Keyboard_GetPressedKey(void *p);
-s32 Keyboard_TouchKey(void *s, s32 a, s32 b);
-void Keyboard_HighlightKey(void *s, s32 i);
-s32 Keyboard_ClearHighlight(void *s);
-void Keyboard_ResetKeyPalettes(void *p);
-BOOL Keyboard_IsTooWide(void *s);
-BOOL Keyboard_IsFull(void *s);
-void Keyboard_EnableKey(void *s, s32 a);
-void Keyboard_DisableKey(void *s, s32 a);
-BOOL Keyboard_IsSlotDisabled(void *s, s32 i);
 }
 
 
@@ -304,7 +232,6 @@ void ChatMenu_ResumeInput(S *s);
 void ChatMenu_StartButtonInput(S *s);
 void ChatMenu_StartTouchInput(S *s);
 void ChatMenu_LoadBg(S *s);
-void ChatMenu_SetupBgLayer();
 BOOL ChatMenu_RequestTab(S *s, s32 a, u32 b);
 BOOL ChatMenu_HandleTabSwitch(S *s);
 }
@@ -317,7 +244,6 @@ static inline BOOL Both() {
 }
 
 
-extern "C" ChatMenu *ChatMenu_Create();
 
 extern "C" ChatMenu *ChatMenu_Create() { return new ChatMenu(); }
 

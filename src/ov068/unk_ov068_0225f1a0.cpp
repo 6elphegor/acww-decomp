@@ -43,6 +43,61 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/MsgString.h"
 #include "talk/VillagerTalk.h"
+#define PROTO_LOCAL_ContestRecord_SetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldInsect_GetPosAndKind  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_CanSeePlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_ChangeState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_CheckHeldItemChange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_DirCrossesPlayerTalk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_FindChatPartner  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_GetRouteTarget  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_IsNearPlayerTalkSpot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_IsPlayerShowingCatch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_IsState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_OrderByFriendship  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_Resume  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_SaveResumeState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_SetResumeState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_StartCooldown  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_StartRoute  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_TryStartChat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillagerAi_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillager_IsNearCameraFocus  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillager_SimulateFishCatch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldVillager_SimulateInsectCatch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FishShadow_GetPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_GetSpecies  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN13FieldVillager28acceptsInteractionOutOfRangeEPv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/ov003/unk_ov003_022192b4.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov068/unk_ov068_0225f1a0.h"
+#include "proto/ov068/unk_ov068_0226647c.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -691,15 +746,12 @@ namespace ns_0225f1a0 {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 FishShadow_GetFishId(s32);
 s32 FishShadow_GetPos(void *, s32);
-s32 FieldInsect_GetKindAndAlarm(u8 *, u8);
 s32 FieldInsect_GetPosAndKind(void *, u8);
 s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void NpcLookAt_setTargetPos(void *, void *);
-u32 FieldVillager_GetMood(void *);
 s32 VillagerTalk_hasPartner(void *);
 s32 VillagerTalk_getEventKind(void *);
 void *VillagerTalk_getPartner(void *);
@@ -711,11 +763,7 @@ void FieldVillagerAi_ChangeState(void *, void *, s32);
 void FieldVillagerAi_StartCooldown(void *);
 void FieldVillagerAi_SaveResumeState(void *);
 s32 FieldVillagerAi_IsState(void *, s32);
-s32 FieldVillagerAi_IsFreeIdle(void *);
-s32 FieldVillager_GetTalkRepeat(void *);
-void FieldVillager_StopEmotion(void *);
 void *X_func_ov068_02265f58(void *);
-void *PlayerData_GetCurrent();
 s32 VillagerMemory_IsUsed(void *);
 s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
@@ -736,8 +784,6 @@ s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
-s32 Random_GlobalBelow(s32);
-void Effect_PlayById(s32, void *, s32, s32);
 }
 }
 
@@ -748,20 +794,16 @@ extern s16 data_020c6cc0;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 FieldVillager_GetMood(void *);
 s32 FieldVillagerAi_IsState(void *, s32);
 s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
-s32 FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
-void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 VillagerActor_isFlag834(void *);
 void VillagerActor_clearFlag834(void *);
 s32 NpcActor_isNear(void *, s32, s32);
 s32 Character_isInFacingArcOf(void *, s32, s32, s32);
 s32 NpcTalkCtrl_isBusy(void *);
-void *PlayerActor_GetCharacter(s32);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
@@ -787,7 +829,6 @@ void Villager_HalveTalkUrge(s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 }
 extern "C" BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(FieldVillager *o, s32 x);
-extern "C" BOOL _ZN13FieldVillager18acceptsInteractionEPv(u8 *o);
 typedef void (FieldVillagerAiStates::*Fn_225fd54)(FieldVillager *);
 extern "C" {
 extern Fn_225fd54 sAdmireCatchSteps[2];
@@ -833,11 +874,8 @@ extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-void FieldItemFx_StartPitfallClose(s32, void *);
-void FieldItemFx_StartPitfallHole(s32, void *);
 void NpcAnimCtrl_setAnimSpeedFixed(void *, s32);
 void VillagerActor_clearFlag834(void *);
 void VillagerActor_setFlag834(void *);
@@ -851,25 +889,19 @@ void HeldToolModel_playPitfallHoleAnim(void *, u32, s32);
 void HeldToolModel_playPitfallFallAnim(void *, u32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void Character_clearTalkStartMode(void *);
-void *PlayerActor_GetCharacter(s32);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void VillagerMood_disableEffects(void *);
-void Effect_End(s32);
 void Effect_SetPosition(s32, void *, s32, s32);
-s32 Effect_Create(s32, void *, s32, s32);
-void Effect_PlayById(s32, void *, s32, s32);
 void Npc_GetStateHeldItem(void *, void *);
 void GroundInfo_initAtPos(void *, void *, s32, s32);
 void GroundInfo_Destruct(void *);
-void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcAnimCtrl_playHoldItemPose(void *, void *, void *, s32, s32);
 s32 AnimFrameCtrl_isFinished(void *);
 void FieldPos_SnapToUnitCenter(void *, void *);
 }
-extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
 typedef void (FieldVillagerAiStates::*Fn_226071c)(FieldVillager *);
 extern "C" {
 extern Fn_226071c sPitfallClimbOutSteps[1];
@@ -886,7 +918,6 @@ extern void *data_ov068_0226fa30[2];
 extern void *data_ov068_0226fa40[2];
 extern void *data_ov068_0226fa58[2];
 }
-extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
 }
 
 namespace ns_02260f90 {
@@ -897,7 +928,6 @@ extern u8 gVec3Zero[];
 extern void *gSceneBlockMap;
 s32 FieldVillagerAi_Resume(void *, void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -909,7 +939,6 @@ void HeldToolModel_playAnim(void *, s32, s32, s32);
 void *HeldToolModel_getModel(void *);
 void AnimFrameCtrl_setup(void *, s32, s32, s32, s32);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
-void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
 void Npc_GetStateHeldItem(void *, void *);
 void VillagerActor_setFlag834(void *);
 void VillagerTalk_setSpeakerStateUnk(void *, void *);
@@ -919,8 +948,6 @@ void TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void TalkRequestFlags_ClearEventWarpBlock(void);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-void PlayerActor_SetSlotFlag(s32, s32);
-void Camera_SetModeDefault(void);
 s32 NpcTalkCtrl_isBusy(void *);
 void *ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, void *);
@@ -931,7 +958,6 @@ s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s
 void FieldPos_FromBlockUnit(VecFx32 *, s32, s32, s32, s32);
 s16 Math_AngleXZ(VecFx32 *, VecFx32 *);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
-void Bgm_RequestSilence(s32, s32, s32);
 void VillagerStates_SetBirthdayVisitor(s32);
 void TalkRequestFlags_SetEventWarpBlock(void);
 }
@@ -979,8 +1005,6 @@ extern FieldVillagerApproachFx sApproachAnimFx[];
 s32 X_func_ov068_0225f83c(void *);
 void X_func_ov068_0225f838(...);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-s32 FieldVillagerAi_WasHitByNet(void *, void *);
-void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -997,12 +1021,8 @@ s32 NpcActor_getAngleTo(void *, void *);
 s32 Vec_Distance(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
-s32 Random_GlobalBelow(s32);
-void Effect_Create(u32, void *, void *, s32);
-void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
 void Villager_HalveTalkUrge(s32);
 void Villager_AddTalkUrge(s32, s32);
-void *PlayerActor_GetCharacter(s32);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 }
 typedef void (FieldVillagerAiPlayerStates::*Fn_2261900)(FieldVillager *);
@@ -1043,14 +1063,10 @@ extern s32 sChatDurations[];
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_SetTargetDone(void *);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
-void *PlayerActor_GetCharacter(s32);
 void *X_func_ov068_02265f58(void *);
 s32 VillagerMemory_getFriendship(void *);
 s32 VillagerData_getVillagerId(s32);
-s32 VillagerId_GetPersonality(s32);
 s32 NpcActor_getAngleTo(void *, void *);
-void FieldVillager_StopEmotion(void *);
-void PlayerActor_LocalRequestAct11();
 void NpcTalkCtrl_requestState4(void *, s32, s32, s32, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 FieldVillager *VillagerTalk_getPartner(void *);
@@ -1067,15 +1083,9 @@ void VillagerActor_setFlag834(void *);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 Talk_PickWeightedIndex(void *, s32);
 s32 VillagerActor_isFlag834(void *);
-s32 FieldVillagerAi_WasHitByNet(void *, void *);
 s32 VillagerTalk_isInvitedByPartner(void *);
-s32 FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
-s32 FieldVillagerAi_AddRandomMood(void *, void *, void *, s32, s32, s32);
-s32 PlayerData_GetCurrent();
-s32 Random_GlobalBelow(s32);
 void NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void NpcActionCtrl_requestStand(void *, s32, u32);
-s32 FieldVillagerAi_GetPartnerRelationLevel(void *, void *);
 s32 SaveVillagers_GetRelationLevelOf(void *, s32, s32);
 s32 PlayerData_getPlayerId(...);
 s32 PlayerId_isValid(s32);
@@ -1134,13 +1144,8 @@ s32 FieldVillagerAi_OrderByFriendship(void *, void *, void *, s32, s32);
 u16 *VillagerDataProfileView_getShirt(void *);
 u8 *VillagerData_getPattern(void *);
 u8 *VillagerData_getVillagerId(void *);
-u8 *FieldVillagerAi_PickOtherAblePattern(void *, void *);
 void Villager_ShareTrendWith(void *, void *);
 void Villagers_ShareNickname(void *, void *, s32);
-void FieldVillagerAi_AddPartnerRelation(void *, void *, void *);
-void FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
-void FieldVillagerAi_AddRandomMood(void *, void *, void *, s32, s32, s32);
-void FieldVillagerAi_AddRandomPairRelation(void *, void *, void *);
 void VillagerDataProfileView_setShirt(void *, u16 *);
 void NpcActionCtrl_requestAct14(void *, s32, u16 *);
 s32 VillagerId_GetSpecies(void *);
@@ -1156,7 +1161,6 @@ s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
 s32 Pattern_equals(void *, void *);
 s32 VillagerId_isValid(void *);
-s32 memcmp(void *, void *, s32);
 void *SaveVillagers_Get(void *, s32);
 s32 Villager_GetWhereabouts(void *);
 s32 Random_PickSetBit(s32, s32, s32);
@@ -1192,17 +1196,14 @@ extern Unk_ov068_02263b90_Fn data_ov068_0226f910;
 void *AbleSistersPatterns_getPattern(void *, u8);
 s32 Pattern_equals(void *, void *);
 u32 Random_PickSetBit(u32, u32, u32);
-s32 PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(...);
 s32 PlayerId_isValid(void *);
 void *Villager_FindMemory(u32, void *);
 s32 VillagerMemory_getFriendship(void *);
-s32 Random_GlobalBelow(s32);
 s32 VillagerMood_addMood(void *, s32, s32);
 void VillagerMood_requestApply(void *);
 s32 VillagerData_getVillagerId(void *);
 void *SaveVillagers_PickRandomExcept(void *, void *, s32);
-void func_02133ef8(void *, s32);
 FieldVillager *VillagerTalk_getPartner(void *);
 s32 SaveVillagers_FindIndex(void *, s32);
 s32 SaveVillagers_GetRelationLevel(void *, s32, s32);
@@ -1211,7 +1212,6 @@ s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_SetTargetDone(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
-void FieldVillager_StopEmotion(void *);
 void NpcActor_resetLastTaughtEmotion(void *);
 s32 VillagerTalk_hasPartner(void *);
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
@@ -1228,7 +1228,6 @@ s32 FieldVillagerAi_SetResumeState(void *, s32);
 s32 NpcFootstepFx_playFootstepSe(void *, void *);
 void *Villager_GetState(void *);
 s32 Villager_GetIndex(void *);
-s32 VillagerHouse_TryOpenDoorForExit(s32 a);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, s32, s32);
 void VillagerState_SetRole(void *, s32);
 void VillagerState_SetPresence(void *, s32);
@@ -1242,30 +1241,13 @@ s32 VillagerState_GetRole(void *);
 s32 Villager_GetWhereabouts(void *);
 s32 Villager_IsAsleep(void *, s32);
 s32 FieldVillager_IsNearCameraFocus(void *, void *);
-void *PlayerActor_GetCharacter(s32);
 s32 NpcActor_isNear(void *, void *, s32);
 void VillagerRoute_reset(void *);
 void X_func_ov068_02265fb4(void *);
 void Villager_RaiseTalkUrge(void *, s32);
-void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
 s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
-void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
-void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
-void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t);
-void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t);
-void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t);
-s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
-s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
 }
-extern "C" void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
 extern "C" s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
-extern "C" void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
-extern "C" void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
-extern "C" void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t);
-extern "C" void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t);
-extern "C" void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t);
-extern "C" s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
-extern "C" s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
 typedef void (FieldVillagerAiTalk::*Fn_22638c0)(FieldVillager *);
 extern "C" {
 extern Fn_22638c0 sTalkSteps[2];
@@ -1308,10 +1290,8 @@ extern u32 __ptmf_null[];
 extern u8 gRandom[];
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 s32 PlayerData_testFlag(void *, s32);
 void *Villager_GetState(void *);
-void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 void X_func_ov068_0225f630(void *, void *);
 s32 X_func_ov068_0225f83c(void *);
@@ -1321,7 +1301,6 @@ void VillagerState_SetPresence(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
 void Villager_PlaceReceivedItems(void *);
 void VillagerActor_setFlag834(void *);
-s32 Random_GlobalBelow(s32);
 void VillagerMood_disableEffects(void *);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1334,18 +1313,14 @@ void FieldPos_FromUnitCenter(void *, u32, u32);
 void Math_StepS32(void *, s32, s32);
 void NpcFootstepFx_playFootstepSe(void *, void *);
 void *Villager_GetIndex(void *);
-s32 VillagerHouse_TryOpenDoorForEntry(void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, u32, s32);
 void NpcFootstepFx_disableFootsteps(void *);
 s32 FieldVillager_IsNearCameraFocus(void *, void *);
 s32 VillagerActor_updateCatchPlans(void *, void *, void *, s32);
-void FieldVillager_UpdateCatchSim(void *);
 void Villager_RaiseTalkUrge(void *, s32);
 s32 VillagerRoute_isActive(void *);
 void FieldVillagerAi_StartRoute(void *, s32, void *);
-s32 FieldVillagerAi_IsAtHomeDoor(void *, void *);
-s32 FieldVillagerAi_ShouldGoHome(void *, void *);
 s32 VillagerRoute_getStage(void *);
 void VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 VillagerRoute_runStep(void *, void *);
@@ -1354,21 +1329,13 @@ s32 Unk_0201acf8_getLevel(void *);
 s32 Random_Next(void *);
 s32 FieldVillagerAi_GetRouteTarget(void *, void *, void *);
 s32 FieldVillagerAi_IsNearPlayerTalkSpot(void *, void *, s32);
-s32 FieldVillagerAi_PathCrossesPlayerTalk(void *, void *, void *);
 s16 Math_AngleXZ(void *, void *);
-s32 NpcActor_IsFrontAngle(s32);
-s32 FieldVillager_GetMood(void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
-s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *, void *);
 void *NpcMoveCtrl_getDestination(void *);
 void Npc_GetStateHeldItem(void *, void *);
-s32 FieldVillagerAi_TryFallInPitfall(void *, void *);
-s32 FieldVillagerAi_WasHitByNet(void *, void *);
 s32 FieldVillagerAi_CanSeePlayer(void *, void *);
 s32 FieldVillagerAi_TryStartChat(void *, void *);
 s32 FieldVillagerAi_CheckHeldItemChange(void *, void *);
-s32 FieldVillagerAi_ShouldAdmireCatch(void *, void *);
-s32 FieldVillagerAi_HandleBlockedMove(void *, void *);
 }
 typedef void (FieldVillagerAiStates::*Fn_226410c)(FieldVillager *);
 extern "C" {
@@ -1386,8 +1353,6 @@ extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
 extern void *gSceneBlockMap;
 extern u8 gVec3Zero[];
-u32 FieldVillager_GetMood(void *);
-u32 PlayerActor_GetLocalShownItem();
 s32 NpcActor_getDistanceToPlayer(void *, s32);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 s32 NpcLookAt_isOnTarget(void *);
@@ -1400,17 +1365,13 @@ s32 FieldAction_PollResult(s32 idx);
 void FieldAction_Release(s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 BlockMap_IsBuriedAtUnit(void *, s32, s32);
-s32 Random_GlobalBelow(s32);
 void VillagerTalk_setPartner(void *, void *);
 void VillagerTalk_setInvitedByPartner(void *, u32);
 void FieldVillagerAi_SaveResumeState(void *);
 void FieldVillagerAi_ChangeState(void *, void *, s32);
 void FieldVillagerAi_SetResumeState(void *, s32);
-void *NpcRegistry_GetVillager(s32);
 void *VillagerData_getVillagerId(void *);
-s32 memcmp(void *, void *, s32);
 s32 Math_AngleXZ(void *, void *);
-s32 NpcLookAt_IsWithin(s32, s32);
 s32 NpcMoveCtrl_hasArrived(void *, void *, s32);
 s32 NpcActor_findAvoidPos(void *, void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
@@ -1423,23 +1384,17 @@ s32 VillagerRoute_isActive(void *);
 void FieldVillagerAi_StartRoute(void *, s32, void *);
 s32 VillagerRoute_runStep(void *, void *);
 s32 TalkRequest_IsTalking();
-void *PlayerActor_GetCharacter(s32);
 void *TalkRequest_GetTalkTarget();
 void Vec_Sub(void *, void *, void *);
-void Vec_ShiftRight(void *, s32);
 void Vec_Add(void *, void *, void *);
-void Vec_RotateY(void *, s32);
 s32 Vec_NotEqual(void *, void *);
 s32 func_01ffcb0c(s32, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
-void *PlayerData_GetCurrent();
 s32 PlayerData_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
 s32 FieldVillagerAi_DirCrossesPlayerTalk(void *, void *, VecFx32 *);
 s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
-s32 FieldVillagerAi_WasHitByNet(void *, FieldVillager *);
-s32 FieldVillagerAi_IsBuriedPitfallAt(void *, Vec2 *);
 void *FieldVillagerAi_FindChatPartner(void *, FieldVillager *);
 void X_func_ov068_02265dc8(void *);
 s32 NpcActionCtrl_getAction(void *);
@@ -1450,8 +1405,6 @@ s32 VillagerState_GetActivity(void *);
 void Clock_GetDateTime(void *);
 void Npc_GetStateHeldItem(u16 *, void *);
 void VillagerTalk_setSpeakerStateUnk(void *, u16 *);
-s32 Trend_IsValid(s32);
-void Trend_GetToolItem(u16 *, s32);
 void Villager_GetUmbrella(u16 *, void *);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -1491,31 +1444,20 @@ static inline BOOL Unk_ov068_022652d0_B(BOOL v) {
     }
     return FALSE;
 }
-extern "C" BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, FieldVillager *o);
 extern "C" s32 FieldVillagerAi_IsPlayerShowingCatch(void *self);
-extern "C" s32 FieldVillagerAi_WasHitByNet(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_TryFallInPitfall(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Vec2 *v);
 extern "C" BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, FieldVillager *o);
 extern "C" void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_HandleBlockedMove(void *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
-extern "C" s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b);
-extern "C" s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, VecFx32 *b);
-extern "C" BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_ShouldGoHome(void *self, FieldVillager *o);
 }
 
 namespace ns_02265324 {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 FishShadow_GetFishId(s32);
 s32 FishShadow_GetPos(void *, s32);
-s32 FieldInsect_GetKindAndAlarm(u8 *, u8);
 s32 FieldInsect_GetPosAndKind(void *, u8);
 s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
@@ -1528,7 +1470,6 @@ void VillagerTalk_setPartner(void *, u32);
 void VillagerTalk_setInvitedByPartner(void *, u32);
 void VillagerMood_requestApply(void *);
 void *X_func_ov068_02265f58(void *);
-void *PlayerData_GetCurrent();
 s32 VillagerMemory_IsUsed(void *);
 s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
@@ -1549,8 +1490,6 @@ s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
-s32 Random_GlobalBelow(s32);
-void Effect_PlayById(s32, void *, s32, s32);
 extern s32 sRandomRouteTypes[];
 extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
@@ -1567,13 +1506,11 @@ void *Villager_GetState(void *);
 s32 PlayerData_testFlag(void *, s32);
 void Clock_GetDateTime(void *);
 void *VillagerData_getVillagerId(void *);
-s32 VillagerId_GetPersonality(void *);
 s32 Personality_IsAsleep(s32, void *);
 s32 VillagerId_isValid(void *);
 s32 VillagerState_GetActivity(void *);
 s32 VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 VillagerRoute_isActive(void *);
-s32 Random_GlobalBelow(s32);
 s32 VillagerRoute_getStage(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void NpcFootstepFx_enableFootsteps(void *);
@@ -1583,7 +1520,6 @@ void VillagerMood_enableEffects(void *);
 void VillagerRoute_Destruct(void *);
 void VillagerRoute_resetTarget(void *);
 void VillagerRoute_reset(void *);
-void *PlayerActor_GetCharacter(s32);
 s32 Villager_IsTalkUrgeFull(void *, s32);
 s32 Scene_InTownUnk31();
 s32 NpcActor_getDistanceTo(void *, void *);
@@ -1597,18 +1533,15 @@ s32 VillagerState_GetTalkRepeat(void *);
 s32 VillagerState_GetMood(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
-s32 Emotion_GetEntry(s32);
 void NpcEmotionFx_startEntry(void *, s32, s32);
 s32 TalkRequest_IsTalking();
 s32 VillagerTalk_getEventKind(void *);
 void X_func_ov068_0225f630(void *, void *);
 s32 Villager_GetPlan(void *);
-s32 VillagerPlanBlock_GetPlan(s32);
 s32 VillagerPlan_getState(s32);
 s32 Talk_PickWeightedIndex(void *, s32);
 s32 FishPick_PickForDate(void *, s32, s32, s32, s32, s32, s32);
 s32 InsectPick_PickForMonth(void *, s32, s32, s32, s32, s32);
-s32 Contest_GetCatchSize(void *);
 s32 ContestRecord_getSize(void *);
 void ContestRecord_setHolderVillager(void *, void *);
 void ContestRecord_setSize(void *, s32);
@@ -1617,21 +1550,14 @@ s32 BlockMap_BlockHasAllAttr(u32, s32, s32, s32);
 s32 Weather_GetFallingPrecip();
 void *VillagerState_GetHeldItem(void *);
 void VillagerState_SetHeldItem(void *, void *);
-void Trend_GetToolItem(void *, s32);
 s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
 void Villager_GetUmbrella(void *, void *);
 void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx);
-void *FieldVillager_GetTalkRepeat(FieldVillager *o);
-void FieldVillager_StopEmotion(FieldVillager *o);
-s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self);
-s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, VecFx32 *a, VecFx32 *b);
-void FieldVillagerAi_ClearResumeState(FieldVillagerAi *self);
 void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
 void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o);
 void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b);
 void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b);
-s32 FieldVillager_CanSimulateCatch(FieldVillager *o);
 s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v);
 }
 static inline BOOL Unk_ov068_02265a40_R(volatile u16 *p, u32 lo, u32 hi) {
@@ -1651,29 +1577,17 @@ static inline BOOL Unk_ov068_02265c24_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 extern "C" void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o);
-extern "C" s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self);
 extern "C" s32 FieldVillager_IsNearCameraFocus(FieldVillagerFocusRange *r, FieldVillager *o);
-extern "C" s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, VecFx32 *a, VecFx32 *b);
-extern "C" s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o);
-extern "C" void FieldVillagerAi_InitTimers(FieldVillagerAi *self);
 extern "C" void FieldVillagerAi_StartCooldown(FieldVillagerAi *self);
-extern "C" s32 FieldVillagerAi_IsFreeIdle(FieldVillagerAi *self);
 extern "C" s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v);
 extern "C" s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o);
 extern "C" s32 FieldVillagerAi_Resume(FieldVillagerAi *self, FieldVillager *o);
-extern "C" void FieldVillagerAi_ClearResumeState(FieldVillagerAi *self);
 extern "C" void FieldVillagerAi_SaveResumeState(FieldVillagerAi *self);
 extern "C" void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
 extern "C" void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx);
 extern "C" void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o);
-extern "C" void *FieldVillager_GetTalkRepeat(FieldVillager *o);
-extern "C" u32 FieldVillager_GetMood(FieldVillager *o);
-extern "C" void FieldVillager_StopEmotion(FieldVillager *o);
-extern "C" void FieldVillager_UpdateCatchSim(FieldVillager *o);
 extern "C" void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b);
 extern "C" void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b);
-extern "C" s32 FieldVillager_CanSimulateCatch(FieldVillager *o);
-extern "C" void FieldVillager_UpdateUmbrella(FieldVillager *o);
 }
 
 namespace ns_02265d34 {
@@ -1691,28 +1605,21 @@ void X_func_ov068_0225f8f0(void *);
 void X_func_ov068_0225f900(void *);
 void X_func_ov068_0225f6b0(void *);
 void X_func_ov068_0225f670(void *, void *);
-void FieldVillagerAi_InitTimers(void *);
 void FieldVillagerAi_ChangeState(void *, void *, s32);
 void X_func_ov068_0226581c(void *);
-void FieldVillager_UpdateUmbrella(void *);
 void *VillagerData_getVillagerId(void *);
 s32 VillagerId_isValid(void *);
 u8 *Villager_GetState(void *);
 s32 VillagerState_GetActivity(void *);
 void *Villager_GetPlan(void *);
-void *VillagerPlanBlock_GetPlan(void *);
 void Clock_GetDateTime(void *);
-s32 Trend_IsValid(s32);
 s32 VillagerPlan_getState(void *);
 s32 VillagerPlan_isTrendOlderThan(void *, void *, s32);
 s32 VillagerTalk_getEventKind(void *);
-s32 Random_GlobalBelow(s32);
 void VillagerState_SetActivity(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 ActorCollider_isHitByGroup(void *, s32);
-void *PlayerActor_GetCharacter(s32);
 s32 Math_AngleXZ(void *, void *);
-void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
 BOOL PlayerId_isValid(void *);
 BOOL Villager_FindMemory(void *, void *);
@@ -1724,7 +1631,6 @@ void Villager_HalveTalkUrge(void *);
 s32 Villager_HasFlea(void *);
 s32 func_0202d8ec(void *);
 void HeldToolModel_release(void *);
-void Effect_End(s32);
 s32 func_0201b138(void *);
 void HeldToolModel_draw(void *, void *);
 s32 func_0202d948(void *);
@@ -1743,10 +1649,6 @@ s32 func_01ffcb0c(s32, s32);
 static inline BOOL Unk_ov068_02266320_IsZero(s32 v) {
     return v == 0 ? TRUE : FALSE;
 }
-extern "C" s32 Camera_UpdateSway(Camera *c);
-extern "C" void Camera_SetSwayPattern2(Camera *c, s32 idx);
-extern "C" void Camera_SetSwayPattern(Camera *c, s32 idx);
-extern "C" FieldVillager *FieldVillager_Create();
 }
 
 namespace nsD {

@@ -12,6 +12,8 @@
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickSphere.h"
 #include "game/TouchPicker.h"
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov004/unk_ov004_022136d0.h"
 
 
 
@@ -64,8 +66,6 @@ public:
 typedef void (RoomBoardSign::*Unk_022137c4_Fn)();
 typedef BOOL (RoomBoardSign::*Unk_02213840_Fn)();
 
-extern "C" RoomBoardSign *RoomBoardSign_Create();
-extern "C" void RoomBoardSign_ClearRegistry();
 
 // ---------------------------------------------------------------- data
 
@@ -74,7 +74,6 @@ extern "C" s16 sRoomBoardSignSpawnMsg;
 extern "C" u8 sRoomBoardSignCount;
 extern "C" DebugColor data_ov004_02250174;
 extern "C" DebugColor data_ov004_02250180;
-extern "C" RoomBoardSign *RoomBoardSign_Create();
 extern "C" DebugColor data_ov004_0225017c(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov004_02250184(0x14, 0x14, 0x1f, 0x1f);
 extern "C" DebugColor data_ov004_02250188(0x1f, 0x1f, 0x14, 0x1f);

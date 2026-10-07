@@ -6,6 +6,18 @@
 #include "save/SaveData.h"
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBank_PayInterest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBank_SendDonationLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBank_SendMilestoneLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0211ea4c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
 
 
 struct PlayerBank {
@@ -26,24 +38,15 @@ extern s32 data_020e1e04;
 extern s32 data_020e1e08;
 extern s32 data_020e1e0c;
 
-s32 PlayerData_GetCurrent(void);
 s32 _ZN10PlayerData14getBankAccountEv(s32);
 s32 _ZN10PlayerData11getPlayerIdEv(s32);
-s32 MenuCtrl_IsClockMovedForward(void);
 void _ZN11MsgString9CC2Ev(void *);
 void TownId_GetNameString(void *, void *);
-void MailText_SetSlot(s32, void *);
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 s32 _s32_div_f(s32, s32);
 void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
-BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
-void CARD_SetPulledOutCallback(s32 (*f)());
-s32 Startup_OnCardPulledOut();
-void PlayerBank_SetBalance(PlayerBank *p, u32 v);
-u32 PlayerBank_GetBalance(PlayerBank *p);
-u32 PlayerBank_GetDonationLevel(PlayerBank *p);
 }
 
 s32 data_020e1e08 = 6;

@@ -3,6 +3,21 @@
 #include "net/CommManager.h"
 #include "save/TownExchangeRecord.h"
 #include "ui/HudController.h"
+#define PROTO_LOCAL_CommSub_RecvTownTune  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Melody_Pack  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
 
 // U119: network message handlers 0x0206f4f0-0x0206f804 (the handler table sCommSubHandlers is in the next unit)
 
@@ -20,43 +35,12 @@ extern u8 gSaveRecycleBin[];
 extern u8 gFieldSceneKind;
 extern u32 data_020c7c1c;
 
-s32 Snd_PlaySe(u32 a);
-void *Hud_GetCountdown();
 s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 void Melody_Pack(void *a, void *b);
-void Melody_ApplyEditPattern();
 void SaveVillagers_ClearTuneRequester(void *a);
-void *Heap_AllocTail(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
-s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
-BOOL LetterDelivery_HasFreeOutgoingSlot(void);
-void *BottleLetterRecord_GetLetter(void *p);
-void Letter_Clear(void *self);
-void *TownExchange_GetLetter(void *p);
-void Letter_Copy(void *p, void *q);
-void NetBuf_UnpackPair20(void *a, void *b, void *c);
-s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
 s32 BottleThrow_SetTarget(void *a, u8 b);
-u8 *PlayerActor_GetActor(u8 x);
-BOOL HeldInsect_GetStage(u8 x);
-void HeldInsect_Start(u32 a, u8 b);
-s32 HeldInsect_Release(u8 a, s32 b);
-s32 Bbs_AddPost(void *p);
 
-void CommSub_RecvCountdownRequest(u8 *p);
-void HudCountdown_StartWithSe(u32 x);
 void CommSub_RecvTownTune(u8 *p);
-void CommSub_RecvPostReply(u8 *p);
-void CommSub_RecvPostLetter(u8 *p, u32 code);
-void CommSub_Send(u32 a, u32 b, ...);
-void CommSub_SetPostReply(u8 v);
-u8 CommSub_GetPostReply();
-void CommSub_ClearBottleLetter();
-void CommSub_RecvBottleLetter(u8 *p);
-void CommSub_RecvItemList15(u8 *p);
-void CommSub_RecvReleaseOrThrow(u8 *p, u32 id);
-void CommSub_RecvInsectRelease(u8 *p, u32 id);
-void CommSub_RecvBbsPost(u8 *p);
 }
 
 u8 sCommSubPostReply = 0x18;

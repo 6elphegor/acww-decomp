@@ -3,6 +3,13 @@
 
 #include "ds_stdarg.h"
 #include "gfx/G3dResAccess.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_021127c0.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02055c38.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 
 struct FileLzHeader {
@@ -25,19 +32,6 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
-}
-
-extern "C" {
-s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
-}
-
-extern "C" {
-s32 memcmp(const void *src1, const void *src2, u32 n);
-}
-
-extern "C" {
-void *_ZN12G3dResAccess12findPlttDataEv(void *a, s32 b);
 }
 
 extern "C" {
@@ -50,7 +44,15 @@ extern "C" {
 }
 
 extern "C" {
-void *_ZN12G3dResAccess11findTexDataEv(void *a, s32 b);
+}
+
+extern "C" {
+}
+
+extern "C" {
+}
+
+extern "C" {
 }
 
 extern "C" {
@@ -83,7 +85,6 @@ s32 FS_UnloadOverlay(s32 a, s32 b);
 }
 
 extern "C" {
-s32 File_LoadOverlayEx(s32 a, s32 b);
 }
 
 extern "C" {
@@ -91,19 +92,15 @@ extern u8 gRandom[];
 }
 
 extern "C" {
-void File_OpenOrPanic(FSFile *f, u32 a);
 }
 
 extern "C" {
-BOOL File_Open(FSFile *f, u32 a);
 }
 
 extern "C" {
-void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize);
 }
 
 extern "C" {
-void *Heap_AllocAligned(void *heap, u32 size, s32 align);
 }
 
 extern "C" {
@@ -111,15 +108,12 @@ extern void *gCurrentHeap;
 }
 
 extern "C" {
-s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 }
 
 extern "C" {
-s32 Str_VSPrintf(char *buf, const char *fmt, va_list va);
 }
 
 extern "C" {
-void FS_InitFile(void *f);
 }
 
 extern "C" {
@@ -147,27 +141,21 @@ u32 _u32_div_f(u32 a, u32 b);
 }
 
 extern "C" {
-u16 TownId_GenerateId(void *p);
 }
 
 extern "C" {
-void TownId_Clear(u16 *p);
 }
 
 extern "C" {
-void BlinkTimer_StartBlink(u8 *p);
 }
 
 extern "C" {
-s32 File_GetDecodedSize(FSFile *f);
 }
 
 extern "C" {
-void File_ReadRange(FSFile *f, void *dst, u32 size, u32 off);
 }
 
 extern "C" {
-s32 File_ReadAll(FSFile *f, void *dst, u32 n);
 }
 
 extern "C" {
@@ -176,7 +164,6 @@ u32 Heap_setFlags(void *h, u32 flags);
 }
 
 extern "C" {
-void *Heap_Alloc(void *h, u32 size);
 }
 
 extern "C" {
@@ -185,7 +172,6 @@ u32 Heap_getMaxFreeBlockSize(void *h);
 }
 
 extern "C" {
-void Heap_Free(void *h, void *p);
 }
 
 extern "C" {
@@ -209,11 +195,9 @@ extern void *gRootHeap;
 }
 
 extern "C" {
-s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va);
 }
 
 extern "C" {
-s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 }
 
 struct FileBlockCache {
@@ -230,41 +214,6 @@ extern "C" {
 enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_TF0 = 0xf0 };
 }
 
-extern "C" BOOL File_Exists(u32 a);
-extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off);
-extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c);
-extern "C" void File_ReadRange(FSFile *f, void *dst, u32 size, u32 off);
-extern "C" s32 File_LoadOverlay(s32 x);
-extern "C" s32 File_UnloadOverlay(s32 x);
-extern "C" void BlinkTimer_Construct();
-extern "C" void BlinkTimer_Destruct();
-extern "C" void BlinkTimer_StartBlink(u8 *p);
-extern "C" BOOL BlinkTimer_Update(u8 *p);
-extern "C" void BlinkTimer_Clear(u8 *p);
-extern "C" void BlinkTimer_BlinkNow(u8 *p);
-extern "C" s32 Math_AngleToSide(s32 x);
-extern "C" s32 Math_AngleToDir4(s32 x);
-extern "C" s32 Math_AngleToDir8(s32 x);
-extern "C" u32 Random_GlobalBelow(u32 n);
-extern "C" u32 Random_GlobalBelow2(u32 n);
-extern "C" s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b);
-extern "C" void G3dRes_CopyTexByName(void *a, void *b, s32 c, s32 d);
-extern "C" void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d);
-extern "C" BOOL Mem_Differs(const void *a, const void *b, u32 n);
-extern "C" s32 Str_SPrintf(char *buf, const char *fmt, ...);
-extern "C" s32 Str_VSPrintf(char *buf, const char *fmt, va_list va);
-extern "C" s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
-extern "C" void TownId_Construct();
-extern "C" void TownId_Destruct();
-extern "C" void TownId_Clear(u16 *p);
-extern "C" void TownId_Assign(void *dst, void *src);
-extern "C" void TownId_CopyFrom(u16 *dst, u16 *src);
-extern "C" void TownId_CopyTo(u16 *src, u16 *dst);
-extern "C" u16 *TownId_GetName(u16 *p);
-extern "C" BOOL TownId_IsValid(u16 *p);
-extern "C" void TownId_SetId(u16 *p, u16 v);
-extern "C" u16 TownId_GenerateId(void *p);
-extern "C" void TownId_InitWithName(u16 *p, const void *src);
 
 
 

@@ -1,3 +1,4 @@
+#include "proto/autoload_2/unk_021104ac.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK graphics (G2/G3/GX), autoload_2 0x021115f4-0x02111864. ARM code, mwcc 1.2/base with -O4,p.
 typedef unsigned char u8;
@@ -14,12 +15,6 @@ typedef int BOOL;
 extern s32 data_0213bfec; // sDmaNo (-1 = use the CPU)
 extern void MI_DmaCopy32(s32 dmaNo, const void *src, void *dst, u32 size);
 extern void MIi_CpuCopy32(const void *src, void *dst, u32 size);
-extern void *G2S_GetBG3CharPtr(void);
-extern void *G2_GetBG3CharPtr(void);
-extern void *G2S_GetBG2CharPtr(void);
-extern void *G2_GetBG2CharPtr(void);
-extern void *G2S_GetBG1CharPtr(void);
-extern void *G2_GetBG1CharPtr(void);
 
 // GX_LoadBG1Char
 void GX_LoadBG1Char(const void *src, u32 offset, u32 size) {

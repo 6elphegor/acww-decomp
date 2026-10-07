@@ -9,6 +9,8 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "gfx/DebugColor.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov003/unk_ov003_022141bc.h"
 
 
 
@@ -23,8 +25,6 @@
 
 
 extern "C" {
-BOOL MenuCtrl_IsFinished();
-BOOL MenuCtrl_OpenLauncher(u32 a);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 }
@@ -52,7 +52,6 @@ public:
     /* 0x2b0 */ s32 boardState;
 };
 
-extern "C" void *BulletinBoard_Create();
 
 typedef void (BulletinBoard::*Unk_02214208_Fn)();
 typedef BOOL (BulletinBoard::*Unk_02214284_Fn)();

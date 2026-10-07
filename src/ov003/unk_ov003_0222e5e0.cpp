@@ -1,6 +1,9 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "net/CommManager.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov003/unk_ov003_0222e5e0.h"
 
 // TU26 of ov003: the 0x80-byte table of eight 0x10-byte records (bss 0x0225b468)
 struct InsectNetSyncRec {
@@ -16,11 +19,6 @@ struct InsectNetSyncRec {
 extern "C" {
 extern CommManager *gCommManager;
 
-BOOL NetArea_IsLocalOwner();
-void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
-void NetBuf_PackPair20(void *p, s32 a, s32 b);
-s32 CommSyncVar_GetVarSize(s32 a);
-s32 CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
 void MI_CpuCopy8(void *, void *, s32);
 }
 

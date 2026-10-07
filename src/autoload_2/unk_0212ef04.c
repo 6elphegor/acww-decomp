@@ -1,9 +1,9 @@
+#include "proto/autoload_2/unk_0212ef04.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned int u32;
 typedef int s32;
 
 extern double __ieee754_pow(double, double);
-extern double copysign(double, double);
 
 static inline int __fpclassifyd(double x) {
     switch (*(1 + (s32 *)&x) & 0x7ff00000) {

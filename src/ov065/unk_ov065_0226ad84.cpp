@@ -4,6 +4,8 @@
 #include "net/WifiApControl.h"
 #include "net/WifiApConfig.h"
 #include "net/WifiApContext.h"
+#include "proto/ov065/unk_ov065_0226aca8.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
 
 
 
@@ -40,31 +42,7 @@ u8 WifiAp_ProcessSearch();
 u8 WifiAp_ProcessStartup();
 u8 WifiAp_ProcessNetSetup();
 
-u32 WifiLink_GetLinkLevel();
 
-s32 WifiAp_GetLinkLevel();
-BOOL WifiAp_MacEquals(u8 *a, u8 *b);
-void WifiAp_HashGetDigest(u8 *out, void *ctx);
-void WifiAp_HashSetSource(void *ctx, const void *data, u32 len);
-void WifiAp_HashReset(void *ctx);
-s32 WifiAp_GetConnectResultKind();
-void WifiAp_FreeContext();
-u32 WifiAp_FoldApIndex(u32 x);
-void WifiAp_SetConnectedApType(u32 v);
-u32 WifiAp_GetErrorCode();
-void WifiAp_SetError(u32 v);
-u8 WifiAp_GetState();
-void WifiAp_SetState(u8 v);
-void *WifiAp_GetBlock(u32 m);
-void WifiAp_FreeAll();
-void WifiAp_FreeBlock(u32 m, void *a, u32 b);
-void *WifiAp_AllocBlock(u32 m, u32 a);
-void WifiAp_SetApEntry(u32 idx, void *dst);
-s32 WifiAp_RequestCleanup();
-u32 WifiAp_GetConnectedApType();
-s32 WifiAp_GetStatus();
-s32 WifiAp_Process();
-s32 WifiAp_Init(WifiApConfig *cfg);
 
 s32 WifiAp_Init(WifiApConfig *cfg) {
     WifiApContext *ec;

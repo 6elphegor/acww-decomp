@@ -2,12 +2,12 @@
 #include "town/TownAcreGrid.h"
 #include "sys/RecordFile.h"
 #include "town/TownAcreCell.h"
+#include "proto/main/unk_02063904.h"
 
 // TU179: 0x0209b5d4-0x0209b63c. Fills the inner 4x4 cells of the 6x6 grid from a cached record and remembers the
 // record number in .bss (autoload_3 0x021d7128).
 
 extern "C" {
-s32 Random_GlobalBelow(s32);
 }
 
 

@@ -10,6 +10,18 @@
 #include "menu/MenuLauncher.h"
 #include "player/PlayerData.h"
 #include "ui/HandCursor.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov130/unk_ov130_02292360.h"
+#include "proto/ov132/unk_ov132_022936c0.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -19,52 +31,16 @@ extern u8 gTouchChanged[];
 extern u8 gTouchCurX[];
 extern u8 gTouchCurY[];
 
-void Snd_PlaySe(u32 id);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void *PlayerData_GetCurrent();
-s32 MenuCtrl_GetMode();
-void MenuCtrl_SetResult(s32 a);
-s32 MenuCtrl_IsTouch();
-s32 MenuCtrl_IsButtons();
-void MenuCtrl_SetAmount();
-void PlayerBank_SetBalance(void *p, s32 v);
-s32 PlayerBank_GetBalance(void *p);
-void PlayerInventory_AddBells(void *p, s32 v, s32 w);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
-s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
-void *ProcBase_GetParent(void *p);
-void String_Load2dMenu(void *self, s32 v);
-s32 File_LoadToBuffer(const char *a, void *b, s32 c);
 s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void _ZN10BgVramTask13requestScreenEjhjj(void *self, void *buf, s32 a, s32 b, s32 c);
-s32 NumberPad_LoadBgGraphics(s32 a);
-void ProcBase_RequestDelete(void *p);
 
 void _ZN9HouseData7setDebtEi(void *self, s32 v);
 s32 _ZN9HouseData7getDebtEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
 
 // ov130 (library overlay) plain functions; first argument is the NumberPad object
-s32 NumberPad_GetValue(void *self);
-s32 NumberPad_GetTopAmount(void *self);
-s32 NumberPad_GetBottomAmount(void *self);
-void NumberPad_SetAmounts(void *self, s32 a, s32 b, s32 c);
-void NumberPad_Draw(void *self, s32 a);
-s32 NumberPad_IsCursorOnButton(void *self);
-s32 NumberPad_GetCursorY(void *self);
-s32 NumberPad_GetCursorX(void *self);
 void NumberPad_StopKeyRepeat(void *self);
-void NumberPad_TickKeyRepeat(void *self);
-s32 NumberPad_PressCursorKey(void *self);
-s32 NumberPad_IsCursorOnOk(void *self);
-s32 NumberPad_MoveCursor(void *self, s32 a);
-s32 NumberPad_ClearValue(void *self);
-s32 NumberPad_HitTestKey(void *self, u32 a, u32 b);
 void NumberPad_PressKey(void *self);
 }
 
@@ -155,7 +131,6 @@ public:
 };
 
 
-extern "C" BankMenu *BankMenu_Create();
 
 static inline BOOL Unk_ov132_02293d40_Both() {
     if (gTouchHeld[0] != 0 && gTouchChanged[0] != 0) {

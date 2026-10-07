@@ -1,0 +1,130 @@
+#ifndef PROTO_PROTO_MAIN_UNK_020501D4_H
+#define PROTO_PROTO_MAIN_UNK_020501D4_H
+
+// Prototypes of the functions defined in src/main/unk_020501d4.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "text/Unk_02050288.h"
+#include "types.h"
+class TextSystemModule;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Text_InitSystem
+void Text_InitSystem(void);
+#endif
+#ifndef PROTO_LOCAL_Text_ShutdownSystem
+void Text_ShutdownSystem(void);
+#endif
+#ifndef PROTO_LOCAL_TextLabel_FlushGroup1
+void TextLabel_FlushGroup1(void);
+#endif
+#ifndef PROTO_LOCAL_Text_ResetLabels
+void Text_ResetLabels(void);
+#endif
+#ifndef PROTO_LOCAL_TextLabel_FlushGroup0
+void TextLabel_FlushGroup0(void);
+#endif
+#ifndef PROTO_LOCAL_TextLabel_DestroyAll
+void TextLabel_DestroyAll(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr9
+int Text_GetSpecialCharStr9(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr10
+int Text_GetSpecialCharStr10(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_TextSystemModule_Create
+TextSystemModule *TextSystemModule_Create(void);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_Clear
+void StrBuf_Clear(StrBuf *buf);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_SetCString
+BOOL StrBuf_SetCString(StrBuf *buf, const char *src);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_Copy
+BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_GameToAscii
+BOOL StrBuf_GameToAscii(StrBuf *out, StrBuf *in);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_ClearAlt
+void StrBuf_ClearAlt(StrBuf *buf);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_SetBytes
+BOOL StrBuf_SetBytes(StrBuf *buf, const void *src, s32 len);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_AsciiToGame
+BOOL StrBuf_AsciiToGame(StrBuf *dst, StrBuf *src);
+#endif
+#ifndef PROTO_LOCAL_StrBuf_GetBytes
+BOOL StrBuf_GetBytes(StrBuf *obj, u8 *dst, s32 size);
+#endif
+#ifndef PROTO_LOCAL_GameFont_Load
+void GameFont_Load(GameFontDesc *font, const char *name, void *arg2, GameFontDesc *ext, u8 arg4);
+#endif
+#ifndef PROTO_LOCAL_GameFont_Free
+void GameFont_Free(GameFontDesc *font);
+#endif
+#ifndef PROTO_LOCAL_GameFont_GetGlyphWidth
+u32 GameFont_GetGlyphWidth(GameFontDesc *font, u32 c);
+#endif
+#ifndef PROTO_LOCAL_GameFont_GetGlyphBitmap
+const u8 *GameFont_GetGlyphBitmap(GameFontDesc *font, u32 c);
+#endif
+#ifndef PROTO_LOCAL_GameFont_FindGlyph
+s32 GameFont_FindGlyph(GameFontDesc *font, s32 c);
+#endif
+#ifndef PROTO_LOCAL_TextLabel_FlushGroup
+void TextLabel_FlushGroup(s32 arg0);
+#endif
+#ifndef PROTO_LOCAL_Text_GameCharToAscii
+BOOL Text_GameCharToAscii(char *out, u32 index);
+#endif
+#ifndef PROTO_LOCAL_Text_AsciiToGameCharPtr
+BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
+#endif
+#ifndef PROTO_LOCAL_Text_AsciiToGameChar
+BOOL Text_AsciiToGameChar(u8 *out, u32 c);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr1
+const u8 *Text_GetSpecialCharStr1(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr4
+const u8 *Text_GetSpecialCharStr4(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr6
+const u8 *Text_GetSpecialCharStr6(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr7
+const u8 *Text_GetSpecialCharStr7(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr5
+const u8 *Text_GetSpecialCharStr5(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr2
+const u8 *Text_GetSpecialCharStr2(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr3
+const u8 *Text_GetSpecialCharStr3(void);
+#endif
+#ifndef PROTO_LOCAL_Text_ToUpper
+u32 Text_ToUpper(u32 key);
+#endif
+#ifndef PROTO_LOCAL_Text_GetCharSortKey
+u16 Text_GetCharSortKey(u32 index);
+#endif
+}
+#endif
+
+#endif

@@ -7,6 +7,13 @@
 #include "menu/DateTimePicker.h"
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov134/unk_ov134_02291f60.h"
+#include "proto/ov135/unk_ov135_02295380.h"
 
 extern "C" {
 extern const u8 sClockAdjustCursorLeftTable[7];
@@ -22,43 +29,13 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gSaveData[];
 
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-void MenuCtrl_SetClockEdited();
-void MenuCtrl_SetResult(u32 v);
-s32 MenuCtrl_GetMode();
-void MenuCtrl_SetDateTime(void *p);
-void MenuCtrl_SetClockMovedBack();
-void MenuCtrl_SetClockMovedForward();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 ClockOffset_CalcMinutes(void *p, void *q);
 u16 ClockOffset_CalcSeconds(void *p, void *q);
 void Clock_Init();
-void *ProcBase_GetParent(void *self);
-void ProcBase_RequestDelete(void *p);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 void MenuButtons_LoadTextColors(void *self);
 
 // ov134 library object (DateTimePicker) plain functions; first argument is the object
-u32 DateTimePicker_HitTestList(void *self, u8 a, u8 b);
-BOOL DateTimePicker_UpdateListClose(void *self);
-void DateTimePicker_CancelList(void *self);
-void DateTimePicker_DecideList(void *self);
-BOOL DateTimePicker_UpdateListOpen(void *self);
-void DateTimePicker_OpenList(void *self, u32 a);
-s32 DateTimePicker_GetCursorField(void *self);
-s32 DateTimePicker_HitTestField(void *self, u8 a, u8 b);
-BOOL DateTimePicker_UpdateHandAnim(void *self);
-BOOL DateTimePicker_EndHandDrag(void *self);
-void DateTimePicker_UpdateHandDrag(void *self, u8 a, u8 b);
 BOOL DateTimePicker_GrabHand(void *self, u8 a, u8 b);
 void DateTimePicker_Draw(void *self, s32 a, s32 b);
 void DateTimePicker_LoadObjGraphics(void *self);

@@ -9,9 +9,15 @@
 #include "npc/VillagerAnimHeapRefPool.h"
 #include "npc/NpcSpawner.h"
 #include "npc/NpcBodyAnimPool.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020821c4.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02097444.h"
 
 extern "C" {
-VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 }
 
 extern "C" {
@@ -59,7 +65,6 @@ extern u8 data_021ed315, gSaveBlancaFace;
 }
 
 extern "C" {
-void AnimSlotRef_Assign(void *p);
 }
 
 extern "C" {
@@ -67,23 +72,18 @@ void FieldPos_SnapToUnitCenter(void *g, void *v);
 }
 
 extern "C" {
-void *TownSessionState_Get();
 }
 
 extern "C" {
-void *TownSessionState_GetVisitorFlags(void *p);
 }
 
 extern "C" {
-void *TownSessionState_GetVisitorPos(void *p);
 }
 
 extern "C" {
-void *TownSessionState_GetPeteFall(void *p);
 }
 
 extern "C" {
-void *TownSessionState_GetKatieState(void *p);
 }
 
 extern "C" {
@@ -111,11 +111,9 @@ s32 func_02086fd0(void *a);
 }
 
 extern "C" {
-s32 Random_GlobalBelow(s32 a);
 }
 
 extern "C" {
-s32 PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -135,23 +133,18 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 Visitor_IsNookJobActive();
 }
 
 extern "C" {
-s32 Visitor_IsTaxiActive();
 }
 
 extern "C" {
-s32 Visitor_FindActiveEventEntry(void *tbl, s32 x);
 }
 
 extern "C" {
-s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
 }
 
 extern "C" {
-s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 }
 
 extern "C" {
@@ -159,7 +152,6 @@ void Clock_GetDateTime(void *p);
 }
 
 extern "C" {
-s32 Event_IsActive(s32 a, void *p);
 }
 
 extern "C" {
@@ -167,11 +159,9 @@ s32 func_0208723c(void *p);
 }
 
 extern "C" {
-s32 LostChild_IsKaitlinDue();
 }
 
 extern "C" {
-s32 LostChild_IsKatieDue();
 }
 
 extern "C" {
@@ -213,10 +203,8 @@ NpcResPool::~NpcResPool() {}
 
 
 extern "C" {
-BOOL Visitor_FindBlanca(BOOL flag);
 }
 
 extern "C" {
-BOOL Visitor_FindKaitlin(BOOL flag);
 }
 

@@ -12,6 +12,51 @@
 #include "snd/BgmManager.h"
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_BgmClock_Exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmClock_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmClock_Reset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmClock_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmSceneFade_Reset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmSceneFade_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmTracks_FadeInForScene  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmTracks_FadeOutForScene  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmTracks_OnBgmStart  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmTracks_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_GetClock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_GetPlayingRequest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_GetSceneFade  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_GetTracks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_Release  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_ReleasePriority  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_ReleaseTransient  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_Request  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_RequestSilence  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_RequestTransient  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_ResetAll  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FaintBgm_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Taxi_IsArriving  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034048.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02036c58.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov004/unk_ov004_0222a500.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -20,19 +65,10 @@ extern u8 sSceneWallpapers[];
 extern u8 sRoomWallFloorNoItem[];
 extern void *gCommManager;
 extern u8 gSavePlayers[];
-void *RoomShell_GetPrevCarpet();
-void *RoomShell_GetPrevWallpaper();
-void *RoomShell_SetCarpet(u16 *id, s32 a, s32 b);
-void *RoomShell_SetWallpaper(u16 *id, s32 a, s32 b);
-void *RoomWallFloor_SetCarpet(u16 *id, s32 a, s32 b, s32 c);
-void *RoomWallFloor_SetWallpaper(u16 *id, s32 a, s32 b, s32 c);
-void RoomWallFloor_Send(u16 *id, s32 a, s32 b, s32 c);
-void RoomWallFloor_MakeDesignItem(u16 *out, s32 a);
 void func_02004b60();
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
-u32 PlayerDataArray_FindById(void *a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
 void func_020728d4(void *p);
@@ -41,7 +77,6 @@ void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
 BOOL Taxi_IsArriving();
-void Melody_StartTrackA(s32 a);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
@@ -49,45 +84,27 @@ s32 Scene_GetPrevious(void);
 s32 Scene_InTownUnk31(void);
 s32 Scene_GetWarpRequest(void);
 s32 SceneWarp_GetScene(s32 req);
-s32 Snd_SetBgmTrackVariant(s32 a);
-void Snd_FadeInBgmTracks(s32 a);
-void Snd_FadeOutBgmTracks(s32 a);
-void PlayerActor_GetSlotHeldItem(void *p, s32 n);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-s32 PlayerActor_GetActionOrSpawnAction(void);
 s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
 s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
 void Snd_DuckSubPlayers(s32);
-void Snd_RestoreSubPlayers(void);
-void Snd_MoveBgmVolume(s32 a, s32 b);
-void Snd_StopBgm(s32 a);
-void Snd_PlayBgm(u32 a);
 s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
 s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
-s32 EventAnnounce_GetActiveEvent(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-s32 Taxi_IsLeaving(void);
 s32 _ZN10PlayerData10getErrandsEv(s32 a);
-s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
-void func_02133ef8(void *, u32);
 s32 Clock_GetYear(void);
 void Clock_GetDayMonth(u16 *);
 void Clock_GetMinuteHour(u16 *);
 s32 Clock_GetSecond(void);
-void BgHeap_Destroy(void);
-void Str_SPrintf(void *buf, const void *fmt, ...);
-void *BgModel_LoadFile(void *, void *);
-void *File_LoadAlloc(void *, void *, s32, s32);
 s32 NNS_FndMountArchive(void *, const void *, void *);
 void NNS_FndUnmountArchive(void *);
-void *NNS_FndGetArchiveFileByName(const void *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_021065dc(void *);
 void *func_021065f8(void *, s32);
@@ -100,8 +117,6 @@ void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
 void Gfx3d_LoadTexAndPltt(void *, s32);
 void *Gfx3d_CopyTex(void *, void *);
-void Mem_Free(void *);
-void *Heap_Alloc(void *, u32);
 void *func_0204df64(void *);
 extern u8 sBgAcreArcPathFmt[], sBgArchiveName[], sBgAcreBmdPath[], sBgAcreBclPath[], sBgAcreBsdPath[];
 extern u8 sBgAcreBcaPath[], sBgAcreBmaPath[], sBgAcreBtaPath[], sBgAcreMgtPath[], sBgAcreTexPathFmt[];
@@ -111,8 +126,6 @@ extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern u8 gSaveTownMap[];
 extern u8 gBgModelCache[];
-void *BgModel_LoadBcl(s32 id, void *heap);
-s32 BgModel_GetGrassType(void *);
 }
 // ---- unified class definitions of the unit (union of the views of the five source files) ----
 class BgmRequest;
@@ -260,19 +273,10 @@ extern u8 sRoomWallFloorNoItem[];
 extern void *gCommManager;
 extern u8 gSavePlayers[];
 extern Unk_02034574_Fn data_020d8dac;
-void *RoomShell_GetPrevCarpet();
-void *RoomShell_GetPrevWallpaper();
-void *RoomShell_SetCarpet(u16 *id, s32 a, s32 b);
-void *RoomShell_SetWallpaper(u16 *id, s32 a, s32 b);
-void *RoomWallFloor_SetCarpet(u16 *id, s32 a, s32 b, s32 c);
-void *RoomWallFloor_SetWallpaper(u16 *id, s32 a, s32 b, s32 c);
-void RoomWallFloor_Send(u16 *id, s32 a, s32 b, s32 c);
-void RoomWallFloor_MakeDesignItem(u16 *out, s32 a);
 void func_02004b60();
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
-u32 PlayerDataArray_FindById(void *a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
 void func_020728d4(void *p);
@@ -281,7 +285,6 @@ void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
 BOOL Taxi_IsArriving();
-void Melody_StartTrackA(s32 a);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 extern BgmManager *data_021c1b3c;
 s32 _ZN10BgmManager11findPlayingEv(BgmManagerView *o);
@@ -294,47 +297,29 @@ s32 Scene_GetPrevious(void);
 s32 Scene_InTownUnk31(void);
 s32 Scene_GetWarpRequest(void);
 s32 SceneWarp_GetScene(s32 req);
-s32 Snd_SetBgmTrackVariant(s32 a);
-void Snd_FadeInBgmTracks(s32 a);
-void Snd_FadeOutBgmTracks(s32 a);
-void PlayerActor_GetSlotHeldItem(void *p, s32 n);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 extern ProcBase *gActorDefaultParent;
-s32 PlayerActor_GetActionOrSpawnAction(void);
 s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
 s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
 void Snd_DuckSubPlayers(s32);
-void Snd_RestoreSubPlayers(void);
-void Snd_MoveBgmVolume(s32 a, s32 b);
-void Snd_StopBgm(s32 a);
-void Snd_PlayBgm(u32 a);
 VecFx32Ctor *PlayerActor_GetBodyPos(u32 n);
 s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
 s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
-s32 EventAnnounce_GetActiveEvent(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-s32 Taxi_IsLeaving(void);
 s32 _ZN10PlayerData10getErrandsEv(s32 a);
-s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
-void func_02133ef8(void *, u32);
 s32 Clock_GetYear(void);
 void Clock_GetDayMonth(u16 *);
 void Clock_GetMinuteHour(u16 *);
 s32 Clock_GetSecond(void);
-void BgHeap_Destroy(void);
-void Str_SPrintf(void *buf, const void *fmt, ...);
-void *BgModel_LoadFile(void *, void *);
-void *File_LoadAlloc(void *, void *, s32, s32);
 s32 NNS_FndMountArchive(void *, const void *, void *);
 void NNS_FndUnmountArchive(void *);
-void *NNS_FndGetArchiveFileByName(const void *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_021065dc(void *);
 void *func_021065f8(void *, s32);
@@ -347,8 +332,6 @@ void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
 void Gfx3d_LoadTexAndPltt(void *, s32);
 void *Gfx3d_CopyTex(void *, void *);
-void Mem_Free(void *);
-void *Heap_Alloc(void *, u32);
 void *func_0204df64(void *);
 extern u8 sBgAcreArcPathFmt[], sBgArchiveName[], sBgAcreBmdPath[], sBgAcreBclPath[], sBgAcreBsdPath[];
 extern u8 sBgAcreBcaPath[], sBgAcreBmaPath[], sBgAcreBtaPath[], sBgAcreMgtPath[], sBgAcreTexPathFmt[];
@@ -358,8 +341,6 @@ extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern u8 gSaveTownMap[];
 extern u8 gBgModelCache[];
-void *BgModel_LoadBcl(s32 id, void *heap);
-s32 BgModel_GetGrassType(void *);
 extern Unk_021e5890_T data_021e5890;
 }
 
@@ -377,44 +358,29 @@ extern const u16 sHourlyBgmIds[0x18];
 // own functions
 extern "C" {
 BgmRequest *Bgm_GetPlayingRequest();
-void Bgm_EndSceneBgm();
-void Bgm_StartSceneBgm();
 void Bgm_ResetAll();
-void Bgm_DisableHourChime(void);
-void Bgm_EnableHourChime(void);
-u16 Bgm_GetCurrent(void);
 void Bgm_ReleaseTransient(s32 a);
 void Bgm_ReleasePriority(s32 a);
 void Bgm_Release(s32 a);
 void Bgm_RequestTransient(s32 a, s32 b);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, u8 d);
-void BgmTracks_UpdateWeatherVariant(s32 x);
-void BgmTracks_ApplySceneMask(void);
 void BgmTracks_Update(s32 a);
 void BgmTracks_OnBgmStart(s32 a, s32 b);
-void BgmTracks_FadeInScene22(void);
-void BgmTracks_FadeOutScene22(void);
 void BgmTracks_FadeInForScene(void);
 void BgmTracks_FadeOutForScene(void);
 void FaintBgm_Update(void);
 BgmSceneFade *Bgm_GetSceneFade(void);
-void *Bgm_GetRoomBgm(void);
-void *Bgm_GetFieldBgm(void);
 void *Bgm_GetTracks(void);
 void *Bgm_GetClock(void);
 void BgmSceneFade_Update(void *p);
 void BgmSceneFade_Reset(BgmSceneFade *p);
-s32 Bgm_IsSameSceneBgm(void);
-s32 Bgm_GetSceneBgmId(s32 a);
 void BgmClock_Reset(BgmClock *p);
 void BgmClock_Update(BgmClock *p);
 void BgmClock_Exit(void);
 void BgmClock_Init(BgmClock *p);
 #define BgmClock_dtor _ZN8BgmClockD1Ev
-void BgmClock_dtor(void);
 #define BgmClock_ctor _ZN8BgmClockC1Ev
-void BgmClock_ctor(void);
 }
 
 namespace Ns_02034ae8 {

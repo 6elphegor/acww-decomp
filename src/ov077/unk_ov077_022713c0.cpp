@@ -27,6 +27,17 @@
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerSpNpcRecord.h"
+#define PROTO_LOCAL_PlayerActor_LocalPlayAnim99  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov077/unk_ov077_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -36,27 +47,12 @@ class SpNpcResettiTalk;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void TalkRequestFlags_ClearResetti();
 void TalkRequestFlags_SetResetti();
 s32 Math_IsInRange(void *p, u32 lo, u32 hi);
-u32 Random_GlobalBelow(u32 n);
-void Snd_SeEmitterPlayOneShotAlt(void *p, u32 a, u32 b, u32 c);
-void Bgm_Release(s32 a);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Bgm_ReleasePriority(s32 a);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 s32 Math_CountDownU8(void *p);
-BOOL MenuCtrl_IsFinished();
-BOOL MenuCtrl_IsResultOk();
-s32 PlayerActor_GetCharacter(s32 v);
-s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
-void Effect_End(s32 h);
 BOOL TalkRequest_SetTargetDone(void *p);
-void *TownSessionState_Get();
-void *TownSessionState_GetResettiFlag(void *p);
 void _ZN16ResettiVisitFlag3setEj(void *p, u32 v);
-s32 ProcBase_RequestDelete(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, void *v);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
@@ -177,7 +173,6 @@ extern u8 sSpNpcResettiModelPath[23];
 extern u8 sSpNpcResettiTexturePath[27];
 extern SpNpcResettiTalkScript sSpNpcResettiTalkScripts[3];
 extern SpNpcResettiActEntry sSpNpcResettiActTable[6];
-SpNpcResetti *SpNpcResetti_Create();
 }
 
 u8 sSpNpcResettiKey[13] = {'s','p','_','n','p','c','_','r','e','s','e','t',0};

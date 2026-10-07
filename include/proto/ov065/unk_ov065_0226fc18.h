@@ -1,0 +1,149 @@
+#ifndef PROTO_PROTO_OV065_UNK_OV065_0226FC18_H
+#define PROTO_PROTO_OV065_UNK_OV065_0226FC18_H
+
+// Prototypes of the functions defined in src/ov065/unk_ov065_0226fc18.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "net/DwcConnInfo.h"
+#include "net/DwcControl.h"
+#include "net/DwcMatchControl.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_DwcCore_Shutdown
+void DwcCore_Shutdown(void);
+#endif
+#ifndef PROTO_LOCAL_DwcCore_Nop
+void DwcCore_Nop(void);
+#endif
+#ifndef PROTO_LOCAL_DwcCore_Process
+void DwcCore_Process();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_ClearTables
+void DwcConn_ClearTables();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_OnGt2SocketError
+void DwcConn_OnGt2SocketError(void *socket);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_DwcCore_CheckFatalError
+s32 DwcCore_CheckFatalError(void);
+#endif
+#ifndef PROTO_LOCAL_DwcLogin_Start
+void DwcLogin_Start(s32 a, s32 b, DwcDoneCallback c, s32 d);
+#endif
+#ifndef PROTO_LOCAL_DwcFriend_UpdateServersAsync
+s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, s32 f3, s32 p5, s32 p6, s32 p7);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_SetupGameServer
+void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, s32 c, s32 d, s32 e);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_ConnectToFriendServer
+void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, s32 arg, s32 d, s32 e);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_SetClosedCallback
+void DwcConn_SetClosedCallback(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_CloseAllConnections
+s32 DwcConn_CloseAllConnections();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_CloseConnection
+s32 DwcConn_CloseConnection(u32 a);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetConnectionCount
+s32 DwcConn_GetConnectionCount();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetMyAid
+u32 DwcConn_GetMyAid();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetAidList
+s32 DwcConn_GetAidList(u8 **out);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetAidBitmap
+u32 DwcConn_GetAidBitmap();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_IsAidValid
+u32 DwcConn_IsAidValid(u32 bit);
+#endif
+#ifndef PROTO_LOCAL_DwcCore_GetState
+s32 DwcCore_GetState();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_CreateGt2Socket
+s32 DwcConn_CreateGt2Socket();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_FindConnectionByAid
+u32 DwcConn_FindConnectionByAid(u32 v);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetAid
+u32 DwcConn_GetAid(u32 v);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetSlotIndex
+u32 DwcConn_GetSlotIndex(u32 v);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_FindFreeSlot
+s32 DwcConn_FindFreeSlot();
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetSlot
+u32 *DwcConn_GetSlot(u32 idx);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_FindSlotByProfileId
+u32 *DwcConn_FindSlotByProfileId(u32 key, s32 n);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetConnInfo
+DwcConnInfo *DwcConn_GetConnInfo(u32 idx);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_IsAidConnected
+u32 DwcConn_IsAidConnected(u32 v);
+#endif
+#ifndef PROTO_LOCAL_DwcCore_SetState
+void DwcCore_SetState(s32 s);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_RemoveAid
+u32 DwcConn_RemoveAid(u32 c);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_AidListToBitmap
+u32 DwcConn_AidListToBitmap(u8 *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_DwcCore_HandleGpResult
+s32 DwcCore_HandleGpResult(s32 x);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_HandleGt2Result
+s32 DwcConn_HandleGt2Result(s32 x);
+#endif
+#ifndef PROTO_LOCAL_DwcLogin_OnLoginDone
+void DwcLogin_OnLoginDone(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_DwcFriend_OnUpdateDone
+void DwcFriend_OnUpdateDone(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnMatchDone
+void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4);
+#endif
+#ifndef PROTO_LOCAL_DwcCore_OnGpError
+void DwcCore_OnGpError(s32 a, u32 *b);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_OnGpBuddyMessage
+void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_OnGt2Receive
+void DwcConn_OnGt2Receive(s32 a, s32 b, s32 c, s32 d);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_OnGt2Closed
+void DwcConn_OnGt2Closed(s32 a0, s32 a1);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_OnGt2Ping
+void DwcConn_OnGt2Ping(s32 a, s32 b);
+#endif
+}
+#endif
+
+#endif

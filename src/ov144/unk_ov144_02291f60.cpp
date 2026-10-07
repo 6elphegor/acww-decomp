@@ -14,6 +14,21 @@
 #include "talk/MsgString.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02060034.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov144/unk_ov144_02291f60.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -77,18 +92,11 @@ extern u8 gTouchChanged;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u32 gCurrentHeap;
-MusicMenu *MusicMenu_Create();
 
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
-void Snd_PlaySe(s32 a);
-void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 BOOL BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 s32 MenuCursorBase_getScreenY(void *p);
 BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
 void MenuScrollKnob_grab(void *p);
@@ -101,18 +109,10 @@ void MsgString_copy(void *p, void *q);
 void LabelString_createLabel(void *obj, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void LabelString_redrawAligned(void *obj, s32 a, s32 b);
 void LabelString_destroyLabel(void *obj);
-u16 *HouseRoom_GetCurrentSong();
-s32 SongSet_HasSong(u32 id);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 s32 ScrollKnob_areAnimsDone(void *p);
 void HandCursor_disableObjWindow(void *p);
 void Math_StepS32(void *p, s32 v, s32 n);
-s32 Pocket_FindEmpty();
-void Pocket_SetItem(u16 *p, s32 a, s32 b);
-void SongSet_RemoveSong(u32 v);
-void MenuCtrl_SetResult(s32 v);
-void MenuCtrl_SetSongItem(u32 v);
-s32 MenuCtrl_IsTouch();
 s32 func_02133150(s32 a, s32 b);
 s32 MenuCursorBase_setPoseRelease(void *p);
 void MenuCursor_setPosePress(void *p);
@@ -133,11 +133,6 @@ s32 MenuScrollKnob_release(void *p);
 s32 MenuScrollKnob_hitTest(void *p, s32 x, s32 y);
 void MenuErrorMessage_open(void *p, void *q, s32 a, s32 b);
 void MenuProc_restartKeyRepeat(void *p);
-void FtrMgr_BroadcastStereosAct0();
-void ProcBase_RequestDelete(void *p);
-s32 ProcBase_GetParent(void *self);
-void Gfx2d_ShowLayer(u32 x);
-void Gfx2d_ResetLayer(u32 x);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
 void MenuLauncher_onChildClosed(s32 self);
 void HandCursor_enableObjWindow(void *p);
@@ -154,16 +149,7 @@ void MenuBottomButtons_drawAt(void *p, s32 a);
 void MenuCursorBase_drawWrapped(void *p);
 void MenuBottomButtons_setLayoutSingle05(void *p, s32 a);
 void BgVramTask_cancel(void *p);
-void Gfx2d_LoadCharFile(const char *s, u32 a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadPaletteFile(const char *s, u32 a, s32 b, s32 c, s32 d, s32 e);
-void File_LoadToBuffer(const char *s, void *d, s32 n);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void MenuCtrl_TickForceClose();
-BOOL MenuCtrl_IsForceCloseDue();
 void Oam_DrawCell(u32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-BOOL MenuCtrl_IsButtons();
 }
 
 extern "C" ProcProfile sMusicMenuProfile = {(void *(*)())MusicMenu_Create, 0xb9, 0xbd};

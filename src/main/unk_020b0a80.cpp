@@ -2,18 +2,46 @@
 #include "types.h"
 #include "nitro/io_access.h"
 #include "game/GroundInfo.h"
+#define PROTO_LOCAL_Main_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_020fe5c0.h"
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_02114624.h"
+#include "proto/autoload_2/unk_02114d84.h"
+#include "proto/itcm/unk_01ffc538.h"
+#include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/itcm/unk_01ffcc60.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020376c0.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_020536dc.h"
+#include "proto/main/unk_02060b7c.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c9f8.h"
+#include "proto/main/unk_020b0a80.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b7d84.h"
+#include "proto/ov004/unk_ov004_0222a500.h"
 
 extern "C" {
 // Other files
-u32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {
-u32 Item_GetBuildingIndex(u32 a);
 }
 
 extern "C" {
-u32 Math_CountBits4(u32 a);
 }
 
 extern "C" {
@@ -60,11 +88,9 @@ void GroundInfo_Destruct(void *p);
 }
 
 extern "C" {
-u16 *RoomShell_GetCarpet(void);
 }
 
 extern "C" {
-u32 ItemInfo_GetIndoorUnk1(u16 *p);
 }
 
 extern "C" {
@@ -72,7 +98,6 @@ void BuildingInfo_Copy(void *p, const void *q);
 }
 
 extern "C" {
-void Melody_PlayAt(void *p, s32 a);
 }
 
 extern "C" {
@@ -100,7 +125,6 @@ void func_02072824(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-u32 BuildingInfo_GetCapacity(void *p);
 }
 
 extern "C" {
@@ -108,7 +132,6 @@ void BuildingInfo_Destroy(void *p);
 }
 
 extern "C" {
-BOOL Building_IsOwnerAsleep(u32 a);
 }
 
 extern "C" {
@@ -196,7 +219,6 @@ void func_020a7c58(void *p);
 }
 
 extern "C" {
-void Mem_Clear(void *p, u32 n);
 }
 
 extern "C" {
@@ -208,15 +230,12 @@ void func_020942f8(void *p);
 }
 
 extern "C" {
-void OS_Init(void);
 }
 
 extern "C" {
-void OS_InitTick(void);
 }
 
 extern "C" {
-void GX_Init(void);
 }
 
 extern "C" {
@@ -236,11 +255,9 @@ void OS_RestoreInterrupts(u32 a);
 }
 
 extern "C" {
-void WVR_StartUpAsync(u32 a, void (*cb)(u32, u32), u32 c);
 }
 
 extern "C" {
-void Startup_SetCardPulledOutCallback(void);
 }
 
 extern "C" {
@@ -248,15 +265,12 @@ void FS_Init(u32 a);
 }
 
 extern "C" {
-void OverlayMgr_Init(void);
 }
 
 extern "C" {
-void Heap_InitSystem(void);
 }
 
 extern "C" {
-void OverlayMgr_GetInfo(void *p, void *a);
 }
 
 extern "C" {
@@ -272,15 +286,12 @@ void OS_SetArenaHi(u32 a, u32 b);
 }
 
 extern "C" {
-void Fatal_Trap(void);
 }
 
 extern "C" {
-void FX_Init(void);
 }
 
 extern "C" {
-void Math_InitSqrt64(void);
 }
 
 extern "C" {
@@ -292,11 +303,9 @@ void OS_SetIrqFunction(u32 a, void (*cb)(void));
 }
 
 extern "C" {
-void HBlank_Handler(void);
 }
 
 extern "C" {
-void Main_VBlankCallback(void);
 }
 
 extern "C" {
@@ -316,7 +325,6 @@ void Backup_InitDefault(void);
 }
 
 extern "C" {
-void Main_LoadBuildTime(void);
 }
 
 extern "C" {
@@ -328,23 +336,18 @@ void OverlayHandle_Unload(void *p);
 }
 
 extern "C" {
-void Touch_Init(void);
 }
 
 extern "C" {
-void Main_InitTick(void);
 }
 
 extern "C" {
-void Heap_CreateProcHeap(u32 a, u32 b);
 }
 
 extern "C" {
-void Gfx_Init(void);
 }
 
 extern "C" {
-void Snd_Init(void);
 }
 
 extern "C" {
@@ -360,72 +363,55 @@ void Field_ResetActions(void);
 }
 
 extern "C" {
-void CommCaution_LoadMessages(void);
 }
 
 extern "C" {
-void Main_EmptyInitStub(void);
 }
 
 extern "C" {
-void Random_SeedGlobal(void);
 }
 
 extern "C" {
-void Main_InitNop(void);
 }
 
 extern "C" {
-void GameRoot_Boot(void);
 }
 
 extern "C" {
 // This file
-void Startup_FillOverlayArea(void);
 }
 
 extern "C" {
-void Startup_SetupMainArena(void);
 }
 
 extern "C" {
-void Startup_OnWvrStartUp(u32 a, u32 b);
 }
 
 extern "C" {
-void Main_InitStub(void);
 }
 
 extern "C" {
-void Main_InitVBlank(void);
 }
 
 extern "C" {
-u32 Footstep_GetSeForAttr(u32 a);
 }
 
 extern "C" {
-u32 GroundAttr_GetAtPos(u32 a);
 }
 
 extern "C" {
-u32 GroundAttr_ResolveCarpet(u32 a);
 }
 
 extern "C" {
-u32 Footstep_AttrToSe(u32 a);
 }
 
 extern "C" {
-u32 BuildingOccupancy_CountForScene(u32 a);
 }
 
 extern "C" {
-u32 BuildingOccupancy_GetPlayersForScene(u32 a);
 }
 
 extern "C" {
-u8 HouseVisitor_IsPresent(void);
 }
 
 extern "C" {

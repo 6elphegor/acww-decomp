@@ -1,20 +1,18 @@
 #include "types.h"
 #include "npc/VillagerId.h"
+#define PROTO_LOCAL_TownId_IsValid  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_IsValidSpecies  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_02063904.h"
 
 extern "C" {
 extern u32 gSaveTownId;
-void TownId_Assign(void *p, void *s);
 u32 TownId_IsValid(void *p);
-void Str_SPrintf(void *buf, void *fmt, u32 a, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 VillagerId_IsValidSpecies(u32 id);
 }
 
 
-extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
-extern "C" u32 Villager_PersonalityToGender(u32 t);
-extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
-extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
 extern const u32 sPersonalityVoiceTypes[];
 extern char *sPersonalityPrefixes[6];

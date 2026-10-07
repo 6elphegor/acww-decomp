@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 struct WfcButtonBar {
     void *buttonObjs[2];
@@ -33,24 +35,10 @@ void WfcObj_Free(void *);
 void WfcObj_SetPriority(void *, s32, s32);
 void WfcObj_GetPos(void *, u32, s32 *, s32 *);
 void WfcObj_SetPos(void *, s32, s32, s32);
-void WfcTask_RequestDelete(u32, u32);
 void WfcTask_SetFunc(u32, WfcTaskFunc);
-u32 WfcTask_Add(u32, WfcTaskFunc, u32, u32);
 void WfcHeap_FreeAndClear(void *);
 void WfcUtil_RectFromPosSize(void *, void *, void *);
 s32 WfcInput_IsTouchPressedIn(void *);
-void WfcButtonBar_DestroyTask(u32 task);
-void WfcButtonBar_SetY(s32 y);
-void WfcButtonBar_PressAnimTask(u32 task);
-void WfcButtonBar_SlideOutTask(u32 task);
-void WfcButtonBar_InputTask(u32 task);
-void WfcButtonBar_PressAnimTask(u32 task);
-void WfcButtonBar_DestroyTask(u32 task);
-void WfcButtonBar_SlideOutTask(u32 task);
-void WfcButtonBar_InputTask(u32 task);
-void WfcButtonBar_SettleTask(u32 task);
-void WfcButtonBar_SlideInTask(u32 task);
-void WfcButtonBar_SetY(s32 y);
 }
 
 #pragma thumb off

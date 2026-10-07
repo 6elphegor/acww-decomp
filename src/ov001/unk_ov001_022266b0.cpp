@@ -1,6 +1,9 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcListNode.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 
 struct WfcOamBuffer {
@@ -13,10 +16,7 @@ extern "C" {
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_Alloc(s32, s32);
 void *WfcPool_Get(void *);
-void *WfcPool_CreateFrom(s32, void *, s32);
 void WfcPool_Put(void *, void *);
-void WfcTask_Delete(s32, void *);
-void *WfcTask_Add(s32, void *, s32, s32);
 s32 OS_DisableIrqMask(s32);
 s32 OS_EnableIrqMask(s32);
 void DC_FlushRange(void *, u32);
@@ -28,14 +28,7 @@ void WfcList_PushFront(WfcListNode *head, WfcListNode *node);
 void WfcList_PushBack(WfcListNode *head, WfcListNode *node);
 void WfcList_InsertBefore(WfcListNode *head, WfcListNode *node);
 void WfcList_Remove(WfcListNode *node);
-void WfcList_Destroy(void *a, ...);
 WfcListNode *WfcList_Create();
-u8 *WfcOam_GetEntry(s32 a, s32 b);
-void WfcOam_FreeEntry(u32 *p);
-void *WfcOam_AllocEntry(s32 idx, void *dst);
-void WfcOam_Shutdown();
-void WfcOam_TransferTask();
-void WfcOam_Init();
 }
 
 extern "C" WfcOamBuffer *sWfcOamBuf = 0;

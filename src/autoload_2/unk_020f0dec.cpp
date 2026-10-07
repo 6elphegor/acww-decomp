@@ -9,6 +9,10 @@
 // perhaps SndMgr_PlayTalkVoice, are this file's first part); nothing in the data decides it, so the unit takes only what is proven.
 #include "types.h"
 #include "snd/SndMgr.h"
+#define PROTO_LOCAL_NNS_SndCaptureStopEffect  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0206d49c.h"
 
 
 // the sound manager (C linkage name as in symbols.txt; other files use gSndBgmHandle / bc0 / be0 = members at +0x3c / +0x40 / +0x60,
@@ -16,7 +20,6 @@
 SndMgr gSndMgr;
 
 extern "C" {
-void Fatal_Trap(void); // Thumb, in main: fatal stop
 void *NNS_SndHeapCreate(u32 a, u32 b);
 void Snd_InitSystem(u32 a, u32 b, u32 c, u32 d);
 u32 CARD_GetThreadPriority(void);
@@ -27,11 +30,7 @@ void NNS_SndArcStrmInit(u32 a, void *b);
 void NNS_SndStrmHandleInit(void *p);
 void Snd_LoadGroup(u32 a);
 void Snd_InitHandle(void *p);
-u32 OS_GetTick(void);
 void Snd_Main(void);
-void SndMgr_UpdateVoice(SndMgr *self);
-void SndMgr_UpdateTrackRamps(SndMgr *self);
-void SndMgr_UpdateVolumeRamps(SndMgr *self);
 void Snd_StartOutputEffect(u32 a);
 void NNS_SndCaptureChangeOutputEffect(u32 a);
 void NNS_SndCaptureStopEffect(SndMgr *self);

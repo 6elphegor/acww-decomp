@@ -18,6 +18,14 @@ typedef int BOOL;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
 #include "sys/PMCbInfo.h"
+#include "proto/autoload_2/unk_021093f4.h"
+#include "proto/autoload_2/unk_021096d4.h"
+#include "proto/autoload_2/unk_02109830.h"
+#include "proto/autoload_2/unk_0210a9c4.h"
+#include "proto/autoload_2/unk_0210b1b0.h"
+#include "proto/autoload_2/unk_0210da28.h"
+#include "proto/autoload_2/unk_02116c0c.h"
+#include "proto/itcm/unk_01ff9e10.h"
 
 typedef struct Seq Seq;
 typedef struct Handle { Seq *seq; } Handle;
@@ -115,17 +123,11 @@ extern void FX_DivAsync(s32, s32);
 extern s32 FX_GetDivResult(void);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void AlarmCallback__stream(void);
 extern u32 _u32_div_f();
-extern void NNSi_SndCaptureEndSleep(void);
-extern void NNSi_SndCaptureBeginSleep(void);
-extern void NNSi_SndCaptureMain(void);
-extern void NNSi_SndCaptureInit(void);
 extern void NNS_SndHeapClear(void *);
 extern void *NNS_SndHeapAlloc();
 extern void *NNS_SndHeapCreate(void *, u32);
 extern void NNS_SndHeapDestroy(void *);
-extern void NNSi_SndArcStrmMain(void);
 extern u32 NNSi_SndFaderIsFinished(void *);
 extern void NNSi_SndFaderUpdate(void *);
 extern s32 NNSi_SndFaderGet(void *);
@@ -154,7 +156,6 @@ extern void SND_SetPlayerTempoRatio();
 extern void SND_StartPreparedSeq(u32);
 extern void SND_PrepareSeq();
 extern void SND_StopSeq(u32);
-extern void SND_Init(void);
 extern u32 SND_IsFinishedCommandTag(u32);
 extern u32 SND_GetCurrentCommandTag(void);
 extern u32 SND_WaitForCommandProc(u32);
@@ -189,13 +190,9 @@ s32 NNS_SndAllocAlarm(void);
 void NNSi_SndPlayerStopSeq(Seq *, s32);
 void InitPlayer(Seq *);
 void PlayerHeapDisposeCallback(HeapBlk *);
-void NNSi_SndPlayerMain(void);
-void NNSi_SndPlayerInit(void);
-void NNSi_SndInitResourceMgr(void);
 u32 BeginSleep(void);
 u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
 u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
-void EndSleep(void);
 
 typedef struct TexSrt {
     u8 pad[0x18];

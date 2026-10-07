@@ -33,6 +33,19 @@
 #include "player/PlayerSpNpcRecord.h"
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetLocalSessionSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetSlotHeldItem  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0204f134.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov081/unk_ov081_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -59,32 +72,15 @@ struct SpNpcTortimerFishingTourneyEntryLocal {
 
 extern "C" {
 s32 FishPick_PickAnyHour(void *a, void *b, void *c, u32 d, u32 e);
-u32 FishTable_IsLateMonth(u32 a);
-u32 FishTable_GetForDate(u32 a, u32 b);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
-void ContestRecord_GetItem(u16 *out, void *p);
-void ContestRecord_SetItem(void *p, u16 *q);
 void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
-void *PlayerData_GetCurrent();
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
 void PlayerActor_GetSlotHeldItem(u16 *out, s32 v);
 s32 PlayerActor_GetLocalSessionSlot(u16 *p);
 void Clock_GetDateTime(void *p);
-s32 Pocket_FindItem(u16 *p);
-s32 Pocket_FindEmpty();
-void Pocket_RemoveItem(s32 v);
-void Pocket_AddItem(u16 *p, s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-s32 Pocket_GetItem(s32 i);
-s32 Contest_GetCatchSize(u16 *p);
-s32 memcmp(void *a, void *b, u32 n);
-u32 Random_GlobalBelow(u32 n);
-void ContestRecord_BeginContestDay(void *g, u32 a);
-u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 void *SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv(void *self);
@@ -185,10 +181,8 @@ extern "C" {
 extern SpNpcTortimerFishingTourneyActEntry sSpNpcTortimerFishingTourneyActTable[3];
 extern u8 sSpNpcTortimerFishingTourneyTexturePath[];
 extern u8 sSpNpcTortimerFishingTourneyModelPath[];
-BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x);
 }
 
-extern "C" SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create();
 
 extern "C" {
 void _ZN27SpNpcTortimerFishingTourney10setupAct00Ev();

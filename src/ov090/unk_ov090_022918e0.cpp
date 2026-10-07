@@ -18,34 +18,20 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206db88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
 
 extern "C" {
-void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Snd_PlaySe(s32 a);
-void MenuScreen_ClearState();
-BOOL MenuScreen_IsClosed();
-BOOL MenuScreen_IsOpen();
-void MenuCtrl_SetButtons();
-void MenuCtrl_SetTouch();
-void MenuCtrl_RemoveOpenMenu(void *p);
-void MenuCtrl_AddOpenMenu(void *p);
-void Gfx2d_EnableMainWindows(s32 a);
-void Gfx2d_SetMainWin0Planes(s32 a);
-s32 Gfx2d_GetMainWindows();
-void Gfx2d_RemoveMainWinOutPlanes(s32 a);
-void Gfx2d_SetMainWinOutPlanes(s32 a);
-void Gfx2d_EnableSubWindows(s32 a);
-void Gfx2d_SetSubWin0Planes(s32 a, s32 b);
-void Gfx2d_SetSubWinOutPlanes(s32 a);
-void Gfx2d_DisableSubWindows(s32 a);
-void Gfx2d_DisableMainWindows(s32 a);
-void *Heap_AllocTail(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
-void *memset(void *p, s32 v, u32 n);
-void *ProcBase_GetParent(void *p);
-void ProcBase_SetExecutePriority(void *p, u32 v);
-void ProcBase_SetDrawPriority(void *p, u32 v);
 
 extern void *gMenuHeap;
 extern u8 gTouchHeld;
@@ -67,26 +53,6 @@ typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
 // ---------------------------------------------------------------- ov090 declarations
 extern "C" {
-void Gfx2d_SetSubBgModeState(u32 a);
-s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
-void Str_SPrintf(char *buf, const char *fmt, ...);
-BOOL File_LoadToBuffer(const void *a, void *b, s32 c);
-BOOL MenuCtrl_RequestOpenNested(u32 v);
-void MenuCtrl_SetMode(u8 v);
-u32 MenuCtrl_GetMode();
-void MenuScreen_BeginClose();
-void MenuCtrl_ClearSavedSlot();
-void MenuScreen_ReleaseCloseHold();
-BOOL Save_WritePlayerFriendList();
-void MenuScreen_Reset();
-void Snd_EndMenuDuck();
-void MenuCtrl_ClearSyncMsgMenu();
-void MenuCtrl_SetSyncMsgMenu();
-void MenuScreen_BeginOpen();
-void Snd_BeginMenuDuck();
-void MenuCtrl_SyncFromInputMode();
-void ProcBase_RequestDelete(void *p);
-s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 
 extern u32 gCurrentHeap;
 extern u8 gTouchCurX;
@@ -110,12 +76,6 @@ typedef void (MenuTabBar::*Unk_ov090_022921e0_Fn)();
 
 
 extern "C" {
-MenuTabBar *MenuTabBar_Create();
-s32 MenuTabBar_TabFromX(s32 a);
-u8 MenuTabBar_NextTab(u8 a);
-u8 MenuTabBar_PrevTab(u8 a);
-s32 MenuTabBar_GetTabX(s32 a);
-s32 MenuTabBar_HitTestTouch();
 }
 
 extern "C" u8 sTabSwitchCooldown;

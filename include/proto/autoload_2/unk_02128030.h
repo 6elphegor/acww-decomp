@@ -1,0 +1,47 @@
+#ifndef PROTO_PROTO_AUTOLOAD_2_UNK_02128030_H
+#define PROTO_PROTO_AUTOLOAD_2_UNK_02128030_H
+
+// Prototypes of the functions defined in src/autoload_2/unk_02128030.c (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "types64.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_memcpy
+void *memcpy(void *dst, const void *src, u32 n);
+#endif
+#ifndef PROTO_LOCAL_memmove
+void *memmove(void *dst, const void *src, u32 n);
+#endif
+#ifndef PROTO_LOCAL_memset
+void *memset(void *dst, int val, u32 n);
+#endif
+#ifndef PROTO_LOCAL_memchr
+void *memchr(const void *src, int val, u32 n);
+#endif
+#ifndef PROTO_LOCAL_memcmp
+int memcmp(const void *src1, const void *src2, u32 n);
+#endif
+#ifndef PROTO_LOCAL_mbtowc
+int mbtowc(u16 *pwc, const char *s, u32 n);
+#endif
+#ifndef PROTO_LOCAL___mbtowc_noconv
+int __mbtowc_noconv(u16 *pwc, const char *s, u32 n);
+#endif
+#ifndef PROTO_LOCAL___wctomb_noconv
+int __wctomb_noconv(char *s, u16 wc);
+#endif
+#ifndef PROTO_LOCAL_mbstowcs
+int mbstowcs(u16 *pwcs, const char *s, u32 n);
+#endif
+#ifndef PROTO_LOCAL_scalbn
+s64 scalbn(s64 a, s32 delta);
+#endif
+}
+#endif
+
+#endif

@@ -34,6 +34,23 @@
 #include "room/FtrActorTable.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkWindow_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Equal  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov004/unk_ov004_02218988.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
@@ -106,23 +123,16 @@ extern u8 data_ov004_022507d8[0x28];
 extern u8 data_ov004_02250800[0x28];
 extern u8 data_ov004_02250828[0x28];
 
-void *FtrActorTable_GetInstance();
 void *FtrActorTable_get(void *, s32);
-s32 FtrMgr_IsPickableByIndex(s32);
 void *FtrActor_GetFtrIndex(...);
 void FtrActor_GetCenter(void *, void *);
 void *FtrActorTable_countUsed(...);
-void FtrMgr_SetSaleMode();
-void FtrMgr_RemoveActorByIndex(s32);
-void *FtrActorGrid_GetInstance();
 s32 FtrActorGrid_getIndex(void *, s32, s32, s32);
 
 u32 Item_MakeFurniture(void *, u32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 u32 Item_FindMoneyBagForAmount(void *, u32, u32);
-s32 Random_GlobalBelow(s32);
-void *PlayerActor_GetBodyPos(s32);
 s32 Ground_IsOnLockedExit(void *);
 void Ground_UnlockExit();
 void Ground_LockExit(s32);
@@ -130,7 +140,6 @@ void TalkRequest_AddPlayerTalk6(void *, s32);
 s32 TalkRequest_IsActive();
 void Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
-void HouseVisitor_SetPresent();
 void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
@@ -140,14 +149,9 @@ void VillagerId_makeFileName(void *, const void *, u32, const void *);
 void ActorTalkRequest_setSubSceneKind(void *, s32, s32);
 void ActorTalkRequest_openSubScene(void *, s32);
 void ActorTalkRequest_requestGiveItem(void *, void *, s32, s32, s32);
-void *PlayerData_GetCurrent();
 void *PlayerData_getInventory(void *);
 void *PlayerData_getPlayerId(void *);
-s32 NpcActor_CheckPayoutFits(void *, void *, s32);
-void NpcActor_PayPlayer(void *, void *);
-s32 PlayerInventory_CanAddBells(void *, void *, s32, s32);
 void TalkWindowState_setNextMessage(void *, void *, const void *);
-void Hud_Show();
 void Villager_SetFleaMarketVisited(void *, void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 s32 VillagerMemory_RecordTalk(void *, s32, s32, s32);
@@ -156,8 +160,6 @@ s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_GetMemorySlotForNew(void *);
 void VillagerMemory_setReceivedItem(void *, void *);
 void Villager_AddReceivedItem(void *, void *);
-s32 MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
 s32 Item_GetPrice(void *);
 s32 Villager_FindMemory(void *, void *);
 s32 VillagerMemory_getFriendship(s32);
@@ -167,9 +169,7 @@ s32 func_02132c80(s32, s32);
 s32 func_021329d0(s32);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-s32 MenuCtrl_GetAmount();
 void ActorTalkRequest_setNumberSlot(void *, s32, u32, s32, s32, s32);
-s32 Hud_Hide();
 void TalkRequest_SetTargetDone(void *);
 void SceneWarp_RequestExit(s32, s32);
 s32 Scene_GetWarpRequest();
@@ -190,11 +190,7 @@ s32 NpcActor_getAngleTo(void *, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 u32 *TalkWindow_Get(s32);
 u32 Math_CountDownU8(void *);
-void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
-s32 Building_PlayDoorChime();
-void HouseVisitor_ClearPresent();
 void VillagerStates_SetFleaMarketBuyer(s32);
-void *PlayerActor_GetActor(s32);
 s32 VillagerState_ResetRole(void *);
 void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, u32);
@@ -204,7 +200,6 @@ s32 PlayerId_isValid(void *);
 s32 VillagerMemory_isFleaMarketVisited(s32);
 void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
-s32 FtrInfo_GetUnk05(s32 n);
 u8 Scene_GetPrevious();
 s32 SceneId_IsTownUnk31(u32 scene);
 }
@@ -309,7 +304,6 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" FleaMarketBuyerVillager *FleaMarketBuyerVillager_Create();
 extern "C" ActorProfile sFleaMarketBuyerVillagerProfile = {(void *(*)())FleaMarketBuyerVillager_Create, 0x87, 0x8b, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_02250828[0x28];

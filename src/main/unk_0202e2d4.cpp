@@ -19,6 +19,10 @@
 #include "net/CommManager.h"
 #include "npc/NpcActionCtrl.h"
 #include "npc/NpcFaceAnim.h"
+#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020a427c.h"
 
 // The NpcActor destructor (and its seEmitter member's) is inlined into the derived destructor in this file.
 inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
@@ -36,11 +40,7 @@ extern u8 gFieldSceneKind;
 s32 sSpNpcWalkAnimSpeedScale = data_020c6cf0 - 0x8000;
 
 extern "C" {
-void Proc_CreateRoot();
-s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 PM_GetBattery(s32 *out);
-void ProcBase_RequestDelete();
-void _ZN8ProcBase10postCreateEi(void *self, int a);
 s32 SpNpc_GetInfoByte0(u16 *p);
 void Npc_GetName(u32 a, u16 *p);
 }
@@ -55,10 +55,7 @@ extern "C" void SndSeEmitter_dtorBase(void *p);
 
 
 extern "C" {
-void NpcRegistry_RemoveSpNpc(void *p);
-BOOL NetArea_IsLocalOwner();
 BOOL Vec_NotEqual(void *a, void *b);
-BOOL NpcRegistry_AddSpNpc(void *p, void *q);
 s32 SpNpcAnimHeapRef_GetHeap(void *p);
 }
 

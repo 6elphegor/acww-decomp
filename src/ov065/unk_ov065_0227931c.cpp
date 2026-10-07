@@ -4,6 +4,12 @@
 #include "net/SockHostEnt.h"
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227931c.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
@@ -52,16 +58,8 @@ u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GOAGetLastError(s32 s);
 s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
-u32 STD_GetStringLength(const char *s);
-char *STD_CopyString(char *d, const char *s);
-void *GsUtil_Alloc(u32 n);
-void *GsUtil_Realloc(void *p, s32 n);
-void GsUtil_Free(void *p);
 void OS_Sleep(s32 ms);
-u64 OS_GetTick();
 u64 func_02132ef8(u64 a, u32 b, u32 c);
-void memcpy(void *d, const void *s, u32 n);
-void memset(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 CheckRcode(s32 a, s32 b);
@@ -116,14 +114,9 @@ BOOL ghiAppendDataToBuffer(void *, u8 *, s32);
 void ghiFreeBuffer(void *);
 BOOL ghiInitBuffer(void *, void *, s32, s32);
 BOOL ghiResizeBuffer(void *, s32);
-void GsUtil_Free(void *);
-void *GsUtil_Realloc(void *, u32);
-void *GsUtil_Alloc(u32);
 void ghiPostCleanupState(void *);
 BOOL ghiIsPostAutoFree(void *);
 void ghiFreePost(void *);
-void memmove(void *, void *, u32);
-void memset(void *, s32, u32);
 
 void ghiUnlock();
 void ghiLock();
@@ -194,7 +187,6 @@ void ghiLock();
 void ghiFreeLock();
 void ghiCreateLock();
 void ghiCleanupConnections();
-void GsUtil_Free(void *);
 s32 ArrayLength(void *);
 GHIPostState *ArrayNth(void *, s32);
 s32 ghiSendBufferedData(GHIConnection *);
@@ -206,8 +198,6 @@ BOOL ghiInitBuffer(GHIConnection *, void *, s32, s32);
 void ghiAppendCharToBuffer(void *, s32);
 BOOL ghiAppendDataToBuffer(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 STD_GetStringLength(const char *);
-s32 strchr(const char *, s32);
 s32 fread(void *, s32, s32, u32);
 
 s32 ghiProcessConnection(GHIConnection *);

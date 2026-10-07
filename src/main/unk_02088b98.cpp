@@ -12,6 +12,8 @@
 // Included here, after the twins above: the class definition order decides the vtable order in .data.
 #include "actor/ActorCollider.h"
 #include "gfx/SpriteAnim.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02088b98.h"
 
 // A bss word of this file, used by other files through its address.
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
@@ -26,11 +28,8 @@ extern "C" {
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 _ZN5Actor8findByIdEj(s32 v);
-void ActorCollider_ClearList(void);
-void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Vec_MagXZ(VecFx32 *v);
 }
 
 ActorCollider *gActorColliderList;

@@ -1,0 +1,84 @@
+#ifndef PROTO_PROTO_OV065_UNK_OV065_0227A284_H
+#define PROTO_PROTO_OV065_UNK_OV065_0227A284_H
+
+// Prototypes of the functions defined in src/ov065/unk_ov065_0227a284.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "net/ghttpConnection.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Unk_ov065_0227ae94_pool_order
+__declspec(weak) void Unk_ov065_0227ae94_pool_order(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_ghiParseURL
+BOOL ghiParseURL(GHIConnection *u);
+#endif
+#ifndef PROTO_LOCAL_ghiParseStatus
+s32 ghiParseStatus(GHIConnection *self);
+#endif
+#ifndef PROTO_LOCAL_ghiDeliverIncomingFileData
+s32 ghiDeliverIncomingFileData(GHIConnection *self, char *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_ghiParseChunkSize
+s32 ghiParseChunkSize(GHIConnection *self);
+#endif
+#ifndef PROTO_LOCAL_ghiAppendToChunkHeaderBuffer
+void ghiAppendToChunkHeaderBuffer(GHIConnection *self, char *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_ghiProcessIncomingFileData
+s32 ghiProcessIncomingFileData(GHIConnection *self, char *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_ghiIsPostAutoFree
+s32 ghiIsPostAutoFree(GHIPost *t);
+#endif
+#ifndef PROTO_LOCAL_ghiPostAddString
+s32 ghiPostAddString(GHIPost *self, char *a, char *b);
+#endif
+#ifndef PROTO_LOCAL_ghiPostGetNoFilesContentLength
+s32 ghiPostGetNoFilesContentLength(GHIConnection *self);
+#endif
+#ifndef PROTO_LOCAL_ghiPostGetHasFilesContentLength
+s32 ghiPostGetHasFilesContentLength(GHIConnection *self);
+#endif
+#ifndef PROTO_LOCAL_ghiPostGetContentLength
+s32 ghiPostGetContentLength(GHIConnection *self);
+#endif
+#ifndef PROTO_LOCAL_ghiPostStateInit
+s32 ghiPostStateInit(GHIPostState *it);
+#endif
+#ifndef PROTO_LOCAL_ghiPostInitState
+s32 ghiPostInitState(GHIConnection *self);
+#endif
+#ifndef PROTO_LOCAL_ghiPostStringStateDoPosting
+s32 ghiPostStringStateDoPosting(GHIPostState *st, GHIConnection *c);
+#endif
+#ifndef PROTO_LOCAL_ghiPostFileDiskStateDoPosting
+s32 ghiPostFileDiskStateDoPosting(GHIPostState *st, GHIConnection *c);
+#endif
+#ifndef PROTO_LOCAL_ghiPostFileMemoryStateDoPosting
+s32 ghiPostFileMemoryStateDoPosting(GHIPostState *st, GHIConnection *c);
+#endif
+#ifndef PROTO_LOCAL_ghiPostStateDoPosting
+s32 ghiPostStateDoPosting(GHIPostState *st, GHIConnection *c, s32 first);
+#endif
+#ifndef PROTO_LOCAL_ghiPostDoPosting
+s32 ghiPostDoPosting(GHIConnection *c);
+#endif
+#ifndef PROTO_LOCAL_ghiProcessConnection
+s32 ghiProcessConnection(GHIConnection *c);
+#endif
+}
+#endif
+
+#endif

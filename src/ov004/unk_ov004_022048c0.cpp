@@ -16,6 +16,10 @@
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickTriangle.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov004/unk_ov004_022048c0.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -34,11 +38,9 @@
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 u16 *NookPoints_GetValuePtr(void *p);
 s32 NookPoints_GetRank(u32 x);
 s32 NookPoints_GetToNextRank(u16 *p);
-s32 String_FormatNumber(MsgString25 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 TouchPicker *Scene_GetTouchPicker();
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);

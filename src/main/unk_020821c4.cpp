@@ -9,12 +9,13 @@
 #include "npc/NpcBodyAnimSlot.h"
 #include "npc/VillagerAnimHeapRefPool.h"
 #include "player/HeldItemModel.h"
+#define PROTO_LOCAL_AnimSlotRef_Assign  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_020821c4.h"
 
 
 
 extern "C" {
-void HeldItemModel_Release(void *);
-void HeldItemModel_Setup(void *, u32, u32, u16 *, u32, u32);
 void NpcTexPatBufRef_Assign(void *, s32 v);
 void SpNpcAnimHeapRef_Assign(void *, s32 x);
 void VillagerAnimHeapRef_Assign(void *, s32 x);
@@ -51,7 +52,6 @@ extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 
 
 extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
-extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 
 // ---- 0x020e07b4
 struct NpcTexPatBufRefSlot : NpcResSlot {

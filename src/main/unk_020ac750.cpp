@@ -40,6 +40,37 @@
 #include "room/FtrActorTable.h"
 #include "save/SaveData.h"
 #include "save/TownId.h"
+#define PROTO_LOCAL_Bbs_PostMsgToday  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_FillFromRange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_OneEx  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Item_ToPlacedForm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e82bc.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/itcm/unk_01ff8ad4.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/main/unk_020abea8.h"
+#include "proto/main/unk_020ac750.h"
+#include "proto/main/unk_020af258.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov004/unk_ov004_0223e9bc.h"
 
 // ======== types of unk_020abbcc.cpp ========
 
@@ -158,16 +189,12 @@ extern "C" {
 s32 Bbs_PostMsgToday(u8 *a, const void *b);
 }
 extern "C" {
-void MailText_SetSlotMonth(s32 a, s32 b);
 }
 extern "C" {
-void MailText_SetSlotDayOrdinal(s32 a, s32 b);
 }
 extern "C" {
-void MailText_SetSlot(s32 a, void *b);
 }
 extern "C" {
-u8 *Random_GlobalBelow(s32 a);
 }
 extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *p);
@@ -197,19 +224,15 @@ extern "C" {
 void BlockMap_SetItemAtUnit(void *a, void *b, s32 c, s32 d, s32 e);
 }
 extern "C" {
-s32 Snd_PlaySe(s32 a);
 }
 extern "C" {
-void Snd_VolumeOn();
 }
 extern "C" {
-void Snd_VolumeOff();
 }
 extern "C" {
 void *func_0223xxxx();
 }
 extern "C" {
-void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
 void ItemPick_FillFromRange(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, const void *h, s32 i);
@@ -233,30 +256,24 @@ extern "C" {
 void PM_GetBackLight(void *a, void *b);
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 extern "C" {
 void *func_020986c8(void *a);
 }
 extern "C" {
-BOOL Catalog_HasItem(void *a, void *b);
 }
 extern "C" {
-void Snowman_SendLetter(u32 a);
 }
 extern "C" {
-void *FtrActorGrid_GetInstance();
 }
 extern "C" {
 void *_ZN12FtrActorGrid8getActorEiii(void *a, s32 b, s32 c, s32 d);
 }
 extern "C" {
-void *FtrActorTable_GetInstance();
 }
 extern "C" {
 }
 extern "C" {
-void FtrMgr_RemoveActorByIndex(s32 idx);
 }
 extern "C" {
 void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b);
@@ -280,7 +297,6 @@ extern "C" {
 void _ZN6LetterD1Ev(void *a);
 }
 extern "C" {
-s32 Snowball_TryPushAny(s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
 BOOL StockList_IsSold(u32 i, u32 n, u8 *bits);
@@ -289,22 +305,16 @@ extern "C" {
 u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 extern "C" {
-BOOL LidSleep_TestFlag(s32 m);
 }
 extern "C" {
-void LidSleep_ClearFlag(s32 m);
 }
 extern "C" {
-void LidSleep_SetFlag(s32 m);
 }
 extern "C" {
-void LidSleep_BacklightOff();
 }
 extern "C" {
-void LidSleep_BacklightRestore();
 }
 extern "C" {
-void LidSleep_WakeLcd();
 }
 extern "C" {
 void ShopAckCounter_Clear(Counter *p);
@@ -647,10 +657,8 @@ extern "C" {
 void NookPoints_SendMemberLetters();
 }
 extern "C" {
-int PlayerDataArray_CountUsed(void*);
 }
 extern "C" {
-void* PlayerData_GetResident(void*, int);
 }
 extern "C" {
 int _ZN10PlayerData6isUsedEv(void*);
@@ -677,7 +685,6 @@ extern "C" {
 Z ItemPick_One(ItemPickSpec, int, void*, int, int, int);
 }
 extern "C" {
-int ItemList_GetTownClassRank(u16*, int);
 }
 extern "C" {
 int NookShop_GetReopenDateTime(D*);
@@ -1232,7 +1239,6 @@ extern "C" {
 u32 Item_GetFurnitureIndex(u16*);
 }
 extern "C" {
-u32 Random_GlobalBelow(u32);
 }
 extern "C" {
 void AbleShop_RestockEnd(S1*);
@@ -1709,7 +1715,6 @@ extern "C" {
 s32 FengShui_GetSouthTotal();
 }
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 PickedItem ItemPick_One(ItemPickSpec *q, u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -1718,10 +1723,8 @@ extern "C" {
 u32 _ZN22DateSeededRandomSource6randomEj(void *p, u32 v);
 }
 extern "C" {
-u32 ItemInfo_GetFullHeadwearClass1dCount();
 }
 extern "C" {
-u32 ItemInfo_GetHatClass1dCount();
 }
 extern "C" {
 void StockList_Clear(void *a, void *b, u32 n);
@@ -1742,7 +1745,6 @@ extern "C" {
 u32 _ZN8SaveData8testFlagEj(void *p, u32 n);
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
@@ -1754,10 +1756,8 @@ extern "C" {
 u32 _ZN11CommManager8isOnlineEv(u32 v);
 }
 extern "C" {
-void MailText_SetSlot(u32 a, void *b);
 }
 extern "C" {
-void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
 int _ZN10PlayerData6isUsedEv(void *p);
@@ -1766,19 +1766,16 @@ extern "C" {
 u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
 }
 extern "C" {
-u32 PlayerDataArray_FindById(void *p, void *q);
 }
 extern "C" {
 void Letter_ComposeFromMail(Letter *c, u8 *a, const char *s, const u32 *p, const u32 *q, void *r);
 }
 extern "C" {
-u32 LetterDelivery_PutInAddresseeMailbox(Letter *c);
 }
 extern "C" {
 void LetterDelivery_QueueOutgoing(Letter *c, u32 i);
 }
 extern "C" {
-u32 String_LoadResolveAltText(void *w, u8 *b, const char *s);
 }
 extern "C" {
 u32 TownBlockMap_Get();
@@ -2386,22 +2383,17 @@ extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 extern "C" {
-void NNS_G3dGeFlushBuffer(void);
 }
 extern "C" {
-void G3_LoadMtx43(void *p);
 }
 extern "C" {
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 }
 extern "C" {
 u32 _s32_div_f(u32 a, u32 b);
 }
 extern "C" {
-void *Heap_Alloc(s32 heap, u32 size);
 }
 extern "C" {
-void Heap_Free(s32 heap, void *p);
 }
 extern "C" {
 void func_02135558(void (*f)(), void *p);
@@ -2413,13 +2405,10 @@ extern "C" {
 void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
-void Mtx43_RotateX(void *m, s32 a);
 }
 extern "C" {
-void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
 void MTX_Concat43(void *a, void *b, void *c);
@@ -2443,10 +2432,8 @@ extern "C" {
 BOOL Scene_InMuseumRoom(void);
 }
 extern "C" {
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 }
 extern "C" {
-void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 }
 extern "C" {
 void func_0205553c(void *a, VecFx32 *scale);
@@ -2530,7 +2517,6 @@ extern "C" {
 extern u8 sObjShadowPlttNameFmt[];
 }
 extern "C" {
-void *File_Load(void *p);
 }
 extern "C" {
 u8 *NNS_G3dGetTex(void *p);
@@ -2542,10 +2528,8 @@ extern "C" {
 u8 *Gfx3d_CopyTex(void *p, s32 heap);
 }
 extern "C" {
-void Mem_Free(void *p);
 }
 extern "C" {
-void Str_SPrintf(char *buf, const void *fmt, ...);
 }
 extern "C" {
 u32 func_02057100(u8 *base, char *name);
@@ -2593,7 +2577,6 @@ extern "C" {
 void NookShop_UpdateDaily(void *p, int v);
 }
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 u32 ShopAckCounter_Add(void *p);
@@ -2620,13 +2603,10 @@ extern "C" {
 u32 Shop_IsPurchaseSynced(void);
 }
 extern "C" {
-u32 _ZN15ShopStockPlacer13callGetItemAtEv(u32 a, u32 b);
 }
 extern "C" {
-u16 *ShopStock_GetItemAtTile(u32 a, u32 b);
 }
 extern "C" {
-u16 *ShopStock_GetItemAt(s32 x, s32 y);
 }
 extern "C" {
 u32 ReddShop_FindItem(void *p, u32 v);
@@ -2638,18 +2618,15 @@ extern "C" {
 BOOL NookShop_CanTakeCatalogOrder(void);
 }
 extern "C" {
-void Item_FromPlacedForm(void *a, void *b);
 }
 extern "C" {
 }
 extern "C" {
-void MailText_SetSlot(u32 a, void *b);
 }
 extern "C" {
 void _ZN6LetterC1Ev(void *p);
 }
 extern "C" {
-void *PlayerData_GetCurrent(void);
 }
 extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
@@ -2687,7 +2664,6 @@ void _ZN6LetterD1Ev(void *p);
 extern "C" {
 }
 extern "C" {
-BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 }
 extern "C" {
 u32 Scene_GetCurrent(void);
@@ -2699,7 +2675,6 @@ extern "C" {
 u32 NookShop_FindItem(void *p, u16 *v);
 }
 extern "C" {
-u32 ShopStock_GetCode22Index(u32 a, u32 b);
 }
 extern "C" {
 u32 _ZN6TownId15getTownRelationEv(void *p);
@@ -2708,7 +2683,6 @@ extern "C" {
 u32 NookShop_SellSlot(void *p, u32 a, u32 b, u32 c);
 }
 extern "C" {
-BOOL ShopStock_FindTileOfStock(u32 *x, u32 *y, u32 a);
 }
 extern "C" {
 void Shop_RemoveSoldItemAt(u32 x, u32 y, u32 c, u32 e);
@@ -2803,19 +2777,14 @@ extern "C" {
 extern u8 data_020e2e74[];
 }
 extern "C" {
-void ObjShadow_NormalizeAxes(void *a, void *b);
 }
 extern "C" {
-u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 c);
 }
 extern "C" {
-u8 ObjShadow_GetCharaAlpha(VecFx32 *p, s32 q);
 }
 extern "C" {
-u8 ObjShadow_GetObjAlpha(VecFx32 *p, s32 q);
 }
 extern "C" {
-void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c);
 }
 
 static inline BOOL inRange2(const u16 &a, const u16 &b) {

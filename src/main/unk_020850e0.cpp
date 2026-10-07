@@ -9,6 +9,15 @@
 #include "player/PlayerId.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_VisitorPos_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VisitorPos_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020030d8.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02097444.h"
 
 
 
@@ -50,8 +59,6 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 MI_CpuCopy8(void *, void *, s32);
 void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
-void NetBuf_PackPair20(void *, s32, s32);
-void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
 #define RoomFreeUnitMap_ctor _ZN15RoomFreeUnitMapC1Ev
 void RoomFreeUnitMap_ctor(void *);
@@ -63,14 +70,10 @@ void *MapBlock_GetItemPtr(void *, s32, s32, s32);
 void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-void *PlayerData_GetCurrent();
-s32 Catalog_HasAllFish();
-s32 Catalog_HasAllInsects();
 void Clock_GetDateTime(void *);
 s32 Event_GetState(s32, void *, s32);
 void _ZN15ShopClosingTime16clearClosingTimeEv(void *);
 void _ZN17VisitorSpawnFlags5clearEv(void *);
-void VisitorPos_Clear(void *);
 void _ZN17VisitorSpawnFlags8destructEv(void *);
 void _ZN16ResettiVisitFlag8destructEv(void *);
 void _ZN13PeteFallState8destructEv(void *);
@@ -85,19 +88,11 @@ void _ZN15TownTravelState9constructEv(void *);
 void _ZN13PeteFallState9constructEv(void *);
 void _ZN16ResettiVisitFlag9constructEv(void *);
 void _ZN17VisitorSpawnFlags9constructEv(void *);
-void VillagerId_Clear(void *p);
-s32 Random_GlobalBelow(s32);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 s32 _s32_div_f(s32, s32);
-s32 CountSetBits(u32 v);
-s32 Contest_GetFlowerKind(u32 *out, u16 *p);
-s32 Contest_IsNextToGroundAttr4(s32 *pos);
-s32 ContestRecord_ScoreVillagerGarden(void *obj, void *grid);
-s32 ContestRecord_ScorePlayerGarden(void *self, void *grid);
-s32 Random_GlobalBelow2(s32);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 Item_GetFishBaseSize(u16 *);
@@ -105,8 +100,6 @@ s32 Item_GetInsectBaseSize(u16 *);
 void Clock_GetDate(void *);
 s32 Date_DaysBetween(void *, void *);
 s32 Event_GetDaysSinceStart(s32);
-void *PlayerData_GetResident(void *, s32);
-void TownSessionState_SetFlag(void *self, u32 bit);
 }
 
 struct ClockDateBytes {

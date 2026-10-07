@@ -39,6 +39,36 @@ typedef u32 FileBufSlot;
 #include "gfx/TwoLayerAnimModel.h"
 #include "player/PlayerData.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_Camera_IsBlockingFocusView  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EffectSpl_CreateTracked  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldObj_LoadPaletteFiles  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldObj_LoadTextureFiles  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Insect_SpawnBeeSwarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ObjShadow_DrawRock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ObjShadow_DrawTree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TreeAnimSet_Request  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TreeAnim_Begin  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Tree_DropBeeHive  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Tree_DropFruit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0208f268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov003/unk_ov003_022192b4.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -307,29 +337,21 @@ BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 PendingUnit_Find(void *p, s32 a);
 BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 z);
-void *PlayerActor_GetActor(s32 a);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-s32 Math_AngleToDir8(s32 a);
 u8 *PendingUnit_Get(s32 i);
 
 s32 FieldItemFxTable_StartForPlayer(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
 s32 FieldItemFxTable_Start(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
 }
 // ---- prototypes of this file's functions
-extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b);
 extern "C" s32 FieldItemFx_StartPop(s32 a, s32 b, P2 c);
 extern "C" void FieldItemFx_StartTreeDrop(s32 a, s32 v, P2 p, V3 q, s16 t, s32 x);
 extern "C" void FieldItemFx_StartTreeDropFloat(s32 a, s32 v, P2 p, V3 q, s32 w);
 extern "C" void FieldItemFx_StartBeeHiveDrop(s32 a, s32 v, P2 p, V3 q);
-extern "C" s32 FieldItemFx_StartDigUpTree(s32 a, s32 b, s32 c);
 extern "C" void FieldItemFx_StartPlant(s32 a, s32 b, P2 c, V3 d);
-extern "C" s32 FieldItemFx_StartHoleShrink(s32 a, s32 b);
 extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c);
-extern "C" s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n);
-extern "C" s32 FieldItemFx_FindLandingUnit(s32 *p);
 extern "C" void FieldItemFx_StartStrikeEject(s32 a, s32 v, P2 p, V3 q);
-extern "C" s32 FieldItemFx_StartPitfallClose(s32 a, s32 b);
 }
 
 namespace ns_02219b84 {
@@ -400,7 +422,6 @@ u8 *PendingUnit_Get(s32 i);
 
 s32 FieldItemFx_Finish(Ent *e);
 s32 FieldItemFx_Init(Ent *e, s32 g, P2 p, V3 v, s32 a, u32 b, void *map, s32 c, s32 d);
-s32 Field_SetUnitItem(s32 x, s32 y, s32 t, s32 z);
 s32 FieldObj_DrawItemIcon(void *o, u32 t, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f);
 s32 FieldObj_DrawGrass(void *o, volatile u16 *t, Blk m);
 s32 FieldObj_DrawFlower(void *o, volatile u16 *t, Blk m);
@@ -535,24 +556,18 @@ void GroundInfo_Destruct(GroundInfoBase *b);
 void VEC_Add(void *a, void *b, void *out);
 void Vec_Add(VecFx32 *out, void *m, VecFx32 *v);
 s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
-void EffectModel_Start(s32 a, void *fn);
 void Sky_PlayBalloonDropSe(s32 a);
 void Sky_EndBalloonDrop(void);
 void PlayerActor_LocalRequestAct77From(void *p);
 void FieldItemFx_Finish(Unk_ov003_0221a4a0 *p);
 s32 FieldItemFx_ReleasePending(Unk_ov003_0221a4a0 *p);
 s32 FieldItemFx_Clear(Unk_ov003_0221a4a0 *p);
-u32 FieldItemFx_FindLandingUnit(void *p);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
-void *PlayerData_GetCurrent(void);
 void PlayerData_setFlag(void *p, s32 a);
-void Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
-void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void Insect_SpawnBeeSwarm(void *p);
 s32 FieldItemFx_StartPop(u32 a, u32 b, void *p);
 void Town_SetBeesReleased(void);
-void FieldItemFx_SplashPosCallback(void *p);
 }
 struct Unk_ov003_0221a664_Obj {
     s32 pad_00;
@@ -611,7 +626,6 @@ extern "C" void FieldItemFx_InitHoleShrink(Unk_ov003_0221a4a0 *self, Vec2 *p);
 extern "C" void FieldItemFx_UpdateHoleShrink(Unk_ov003_0221a4a0 *self);
 extern "C" void FieldItemFx_InitStrikeShake(Unk_ov003_0221a4a0 *self, Vec2 *p);
 extern "C" void FieldItemFx_UpdateStrikeShake(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_SplashPosCallback(void *p);
 extern "C" void FieldItemFx_InitBalloonDrop(Unk_ov003_0221a4a0 *self, VecFx32 *p);
 extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self);
 }
@@ -667,9 +681,7 @@ extern VecFx32 *data_ov003_0223291c[];
 
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
-s32 Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
 void VEC_Add(void *a, void *b, void *c);
-s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 z);
 s32 Item_IsFlower(void *c);
@@ -684,8 +696,6 @@ s32 PendingUnit_ApplyAt(void *p, s32 z);
 s32 PendingUnit_CommitAt(void *p, s32 z);
 void *TownBlockMap_Get();
 s32 PendingUnit_ApplyAtIfAid(const P2 &p, s32 a, s32 b);
-void Heap_Free(void *heap, void *p);
-void *File_LoadAlloc(void *s, void *heap, s32 a, s32 b);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
@@ -693,7 +703,6 @@ void AnimModel_attachAnim(void *self);
 s32 Item_IsTreeGrown(void *c);
 s32 Town_CanReleaseBees();
 s32 TreeAnim_Begin(void *self, s32 a);
-s32 Tree_GetDropSide(s32 a, void *p);
 s32 Tree_DropFruit(void *c, s32 a, P2 p);
 s32 Tree_DropBeeHive(s32 a, P2 p);
 s32 FieldItemFx_StartTreeDrop(s32 a, s32 v, P2 p, V3 q, s16 t, s32 x);
@@ -726,9 +735,6 @@ extern "C" void TreeAnim_DropItems(TreeAnim *self, void *cell);
 extern "C" s32 TreeAnim_Start(TreeAnim *self, s32 a, P2 p, s32 kind, s32 idx, s32 last);
 extern "C" void TreeAnim_Reset(TreeAnim *self);
 extern "C" void TreeAnim_ModelCallback(NNSG3dRS *rs);
-extern "C" void TreeAnimSet_LoadAnims(u32 (*arr)[4]);
-extern "C" void TreeAnimSet_FreeAnims(u32 (*arr)[4]);
-extern "C" s32 TreeAnimSet_GetAnimPath(void *self, u32 a, u32 b);
 extern "C" void TreeAnimRequest_Resolve(TreeAnimRequest *self);
 extern "C" void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self);
 extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 pos, s32 kind, u16 w, s32 x, s16 y, s32 z);
@@ -764,7 +770,6 @@ extern s32 sFieldObjectAnimHeap;
 extern u8 *gFieldObjectManager;
 
 s32 CommManager_isOnline(void *p);
-void *PlayerData_GetCurrent(void);
 s32 PlayerData_testFlag(void *p, s32 a);
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void Vec_Add(VecFx32 *out, VecFx32 *a, void *m);
@@ -775,13 +780,11 @@ s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 void FieldItemFx_StartTreeDrop(s32 a, s32 id, VecXZ *p, VecFx32 *v, s32 f, s32 i);
 void *Field_AidOrLocal(void *p);
-u16 *PlayerActor_GetActor(void *p);
 void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
 s32 PendingUnit_Find(VecXZ *p, s32 a);
 void TreeAnim_DropItems(TreeAnim *o, u16 *cell);
 void PendingUnit_ApplyAtIfAid(VecXZ *p, s32 id, s32 a);
-void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void TreeAnim_Reset(TreeAnim *o);
 void CachedModel_release(void *p);
 void SndSeEmitter_callStop(void *p);
@@ -812,7 +815,6 @@ void PendingUnit_ApplyAt(VecXZ *p, s32 a);
 void TreeAnimRequest_Resolve(TreeAnimRequest *e);
 void TreeAnim_Start(TreeAnim *a, s32 id, VecXZ *p, s32 c, s32 n, s32 d);
 
-s32 Tree_GetDropSide(TreeAnim *o, VecFx32 *p);
 }
 // ---- prototypes of this file's functions
 extern "C" { void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o); }
@@ -838,8 +840,6 @@ typedef TreeLeafFxParams PRec;
 typedef TreeAnim Elem2;
 extern "C" {
 
-void TreeAnimSet_FreeAnims(void *p);
-void TreeAnimSet_LoadAnims(void *p);
 void TreeAnim_Release(void *p);
 void TreeAnim_Draw(void *p);
 void TreeAnim_Update(void *p);
@@ -855,8 +855,6 @@ s32 func_02133150(s32 a, s32 b);
 u32 TownState_GetSeasonPeriod();
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 EffectSpl_CreateTracked(s32, void *, s32, void *);
-s32 EffectCb_UpdateTint(void *);
-s32 EffectCb_InitAtPos(void *);
 s32 Scene_InTown();
 s32 BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 BlockMap_SetBuriedAtUnit(void *grid, s32 x, s32 y);
@@ -889,15 +887,11 @@ Rec *TreeLeafFx_SpawnLeaves(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5)
 Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5);
 void TreeLeafFx_GetTreeType(Set *self, Rec *r, s32 *o1, s32 *o2, VecFx32 *out, u16 *tile, Pos *pos);
 Rec *TreeLeafFx_FindFree(Set *self);
-s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self);
-s32 TreeLeafFx_OnEffectStep(EffectEmitterEntry *self);
-void TreeLeafFx_OnEffectInit(EffectEmitterEntry *self);
 void TreeLeafFx_UpdatePos(Rec *r, Tgt *t);
 void TreeLeafFx_ApplyParams(Rec *r, Tgt *t);
 PRec *TreeLeafFx_GetParams(Rec *r);
 void TreeLeafFx_SetRecord(Rec *r, s32 a1, s32 a2, s32 a3, u32 c, VecFx32 *pos, s32 flag);
 void TreeLeafFx_Free(Rec *r);
-void Field_SetUnitItem(s32 x, s32 y, u32 tile, s32 flag);
 }
 // ---- prototypes of this file's functions
 extern "C" { void Field_SetUnitItem(s32 x, s32 y, u32 tile, s32 flag); }
@@ -1006,7 +1000,6 @@ s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 u16 *BlockMap_GetItemPtrAtPos(void *g, V3 *pos, s32 layer);
-s32 TownBlockMap_IsBuried(void *g, s32 x, s32 z);
 s32 Item_GetInfoUnk07(u16 *c);
 void FieldObj_DrawModel(O *o, void *p, Blk m);
 void FieldObj_DrawDesign(O *o, u16 *t, Blk m);
@@ -1264,9 +1257,6 @@ void Mtx43_RotateX(Blk *m, s32 a);
 void Mtx43_RotateXYZ(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(Blk *m, s32 x, s32 y, s32 z);
 void NNS_G3dMdlSetMdlAlphaAll(void *p, s32 a);
-void Heap_Free(void *heap, void *p);
-void *ExpHeap_CreateInPlace(void *p, u32 n);
-void *ExpHeap_Create(u32 n, void *heap);
 s32 Item_GetInfoUnk07(volatile u16 *p);
 u32 TownState_GetSeasonPeriod();
 void Field_OnEnter();
@@ -1283,7 +1273,6 @@ void FieldItemFxTable_Init(void *t);
 void TreeAnimSet_Update(void *t);
 void TreeAnimSet_Init(void *t);
 void TreeLeafFx_Init(void *t);
-BOOL FieldObj_LoadIconModels(Obj *o);
 s32 FieldObj_LoadPaletteFiles(Obj *o, void *a, void *b, void *c, s32 d);
 
 s32 FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f);
@@ -1294,7 +1283,6 @@ BOOL FieldObj_LoadCrackModels(Obj *o, u32 idx);
 s32 FieldObj_LoadCrackPalette(Obj *o, void *a, void *b);
 BOOL FieldObj_LoadHoleModels(Obj *o, u32 idx);
 s32 FieldObj_LoadHolePalette(Obj *o, void *a, void *b);
-void *FieldObj_GetGroundTexSet();
 BOOL FieldObj_LoadGrassModels(Obj *o, u32 idx);
 s32 FieldObj_LoadGrassPalette(Obj *o, void *a, void *b);
 s32 FieldObj_LoadFlowerTextures(Obj *o, void *a, void *b);
@@ -1429,27 +1417,9 @@ s32 ModelSet_Load(void *t, void *file, void *heap);
 void *ModelSet_Find(void *t, void *name);
 s32 CachedModel_loadWithTex(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
 u32 TownState_GetSeasonPeriod();
-void Heap_Free(void *heap, void *p);
 
 s32 FieldObj_LoadPaletteFiles(Obj *o, void *a, void *b, void *c, s32 d);
 s32 FieldObj_LoadTextureFiles(Obj *o, void *a, void *b, void *c, s32 d);
-s32 FieldObj_LoadTreeTextures(Obj *o, u32 *a, u32 *b);
-s32 FieldObj_LoadTreePalettes(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d);
-s32 FieldObj_LoadCedarTextures(Obj *o, u32 *a, u32 *b);
-s32 FieldObj_LoadCedarPalettes(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d);
-s32 FieldObj_LoadLitCedarTexture(Obj *o, u32 *a, u32 *b);
-s32 FieldObj_LoadLitCedarPalette(Obj *o, u32 *a, u32 *b);
-s32 FieldObj_LoadPalmTextures(Obj *o, u32 *a, u32 *b);
-s32 FieldObj_LoadTreeSaplingModels(Obj *o, u32 *a, u32 *b, void *c);
-s32 FieldObj_LoadCedarSaplingModel(Obj *o, u32 *a, u32 *b, void *c);
-s32 FieldObj_LoadPalmSaplingModel(Obj *o, u32 *a, u32 *b, void *c);
-void *FieldObj_GetPalmModelPath(Obj *o, u32 i);
-void *FieldObj_GetCedarModelPath(Obj *o, u32 i);
-void *FieldObj_GetPalmAnimModelPath(Obj *o, u32 i);
-void *FieldObj_GetCedarAnimModelPath(Obj *o, u32 i);
-void *FieldObj_GetTreeAnimModelPath(Obj *o, u32 i, u32 j);
-void *FieldObj_GetTreeModelPath(Obj *o, u32 i, u32 j);
-s32 FieldObj_GetSeasonSet(Obj *o, u32 i);
 
 BOOL FieldObj_LoadDandelionModels(Obj *o);
 BOOL FieldObj_LoadSpecialFlowerModels(Obj *o, u32 *a, u32 *b);
@@ -1458,7 +1428,6 @@ s32 FieldObj_LoadSpecialFlowerTextures(Obj *o, void *a, void *b);
 BOOL FieldObj_LoadFlowerModels(Obj *o, u32 *a, u32 *b);
 s32 FieldObj_LoadFlowerPalettes(Obj *o, void *a, void *b);
 s32 FieldObj_LoadFlowerTextures(Obj *o, void *a, void *b);
-BOOL FieldObj_LoadTrees();
 void FieldObj_FreePalmFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
 void FieldObj_FreeLitCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b);
 void FieldObj_FreeCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
@@ -1489,7 +1458,6 @@ extern "C" void FieldObj_FreeTreeFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b
 extern "C" void FieldObj_FreeCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
 extern "C" void FieldObj_FreeLitCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b);
 extern "C" void FieldObj_FreePalmFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
-extern "C" BOOL FieldObj_LoadTrees();
 extern "C" s32 FieldObj_LoadFlowerTextures(Obj *o, void *a, void *b);
 extern "C" s32 FieldObj_LoadFlowerPalettes(Obj *o, void *a, void *b);
 extern "C" BOOL FieldObj_LoadFlowerModels(Obj *o, u32 *a, u32 *b);
@@ -1547,9 +1515,7 @@ BOOL ModelSet_Load(void *t, void *file, void *heap);
 void *ModelSet_Find(void *t, void *name);
 void Gfx3d_LoadPltt(void *a, u32 b);
 void Gfx3d_LoadTex(void *a, u32 b);
-u32 Item_GetIconModelName(s32 a, s32 b);
 s32 TownState_GetSeasonPeriod();
-void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGetTex(void *file);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *ModelSlotPool_acquire(void *a, void *b);
@@ -1571,17 +1537,8 @@ void ModelAnim_addToRenderObj(void *a, void *b);
 void SndSeEmitter_dtor(void *p);
 void SndSeEmitter_ctor(void *p);
 
-void *FieldObj_GetPalmModelPath(FieldObjectManager *self, s32 i);
-void *FieldObj_GetCedarModelPath(FieldObjectManager *self, s32 i);
-s32 FieldObj_GetSeasonSet(void *self, s32 i);
-void *FieldObj_GetTreeModelPath(void *self, s32 a, s32 i);
-u32 FieldObj_GetTreeTexturePaths(void *self, s32 i);
-BOOL FieldObj_LoadStumpModels(FieldObjectManager *self);
-BOOL FieldObj_LoadStoneModels(FieldObjectManager *self);
 BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n);
 BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n);
-u8 *FieldObj_GetShapeRecord(u8 *p);
-u8 *FishShadow_GetActive(s32 i);
 }
 // ---- prototypes of this file's functions
 extern "C" { void *FieldObjectManager_Create(); }
@@ -2067,19 +2024,7 @@ extern "C" char data_ov003_02233a3c[0x24];
 extern "C" uptr data_ov003_02232640[1];
 extern "C" uptr data_ov003_02232750[2];
 extern "C" char data_ov003_022333e0[0x20];
-extern "C" void TreeLeafFx_OnEffectUpdate();
-extern "C" void TreeLeafFx_OnEffectStep();
-extern "C" void TreeLeafFx_OnEffectInit();
-extern "C" void FieldObj_LoadDesigns();
 extern "C" void FieldObj_LoadTurnips();
-extern "C" void FieldObj_LoadCracks();
-extern "C" void FieldObj_LoadHoles();
-extern "C" void FieldObj_LoadGrass();
-extern "C" void FieldObj_LoadFlowers();
-extern "C" void FieldObj_LoadTrees();
-extern "C" void FieldObj_LoadStumps();
-extern "C" void FieldObj_LoadStones();
-extern "C" void FieldObjectManager_Create();
 // ================================================================ data (creation order)
 extern "C" char data_ov003_02232eb4[0x1c] = "/fg/flower/rose/rose.nsbmd";
 extern "C" const u32 data_ov003_0222f178[3] = {

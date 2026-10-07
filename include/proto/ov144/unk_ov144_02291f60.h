@@ -1,0 +1,19 @@
+#ifndef PROTO_PROTO_OV144_UNK_OV144_02291F60_H
+#define PROTO_PROTO_OV144_UNK_OV144_02291F60_H
+
+// Prototypes of the functions defined in src/ov144/unk_ov144_02291f60.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class MusicMenu;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_MusicMenu_Create
+MusicMenu *MusicMenu_Create();
+#endif
+}
+#endif
+
+#endif

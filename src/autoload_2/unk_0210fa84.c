@@ -4,6 +4,7 @@
 // 6 clearImage, 7 bgExtPltt, 8 objExtPltt, 9 subBg, 10 subObj, 11 subBgExtPltt, 12 subObjExtPltt); the game and
 // the delinked callers also refer to its members by their own symbols (data_021fcbda ... data_021fcbf0).
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_0210fa84.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -17,13 +18,6 @@ extern void GX_VRAMCNT_SetLCDC_(u32 mask);
 #define reg_GX_DISP3DCNT (*(volatile u16 *)0x04000060)
 #define VRAMCNT(n) (*(volatile u8 *)(0x04000240 + (n)))
 
-void GX_SetBankForBG(int bank);
-void GX_SetBankForOBJ(int bank);
-void GX_SetBankForBGExtPltt(int bank);
-void GX_SetBankForOBJExtPltt(int bank);
-void GX_SetBankForTex(int bank);
-void GX_SetBankForTexPltt(int bank);
-void GX_SetBankForClearImage(int bank);
 
 // GX_SetBankForBG
 void GX_SetBankForBG(int bank) {

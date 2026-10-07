@@ -9,6 +9,11 @@
 #include "gfx/SplEmitterViews.h"
 #include "snd/SndBgmHd.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020f7a5c.h"
+#include "proto/autoload_2/unk_020f8b44.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/autoload_2/unk_02111ccc.h"
+#include "proto/autoload_2/unk_0211220c.h"
 
 
 
@@ -249,7 +254,6 @@ extern s16 data_021f5c30;
 extern s16 data_021f5c34;
 void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
 void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
-void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void Snd_StopHandle(void *p, u32 v);
 void Snd_InitHandle(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
@@ -258,8 +262,6 @@ void BgmSyncSnd_ReadHeader(Rb *r);
 void BgmSyncSnd_ReadVars(Rb *r);
 void BgmSyncSnd_SelectStep(Rb *r);
 void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
-s32 BgmSyncSnd_CalcPhase(Rb *r);
-void BgmSyncSnd_SetState(Rb *r, u32 mode);
 void func_020f9690(Entry *e, void *list);
 void spl_init(Entry *e, void *tab, void *v);
 Entry *spl_pop_front(void *list);
@@ -274,12 +276,8 @@ void spl_calc_magnet(void);
 void spl_calc_spin(void);
 void spl_calc_scfield(void);
 void spl_calc_convergence(void);
-void GX_BeginLoadTexPltt(void);
 void GX_LoadTexPltt(void *dst, u32 a, u32 n);
-void GX_EndLoadTexPltt(void);
-void GX_BeginLoadTex(void);
 void GX_LoadTex(void *dst, u32 a, u32 n);
-void GX_EndLoadTex(void);
 s32 SPL_LoadTexPlttByCallbackFunction(Fp *self, Cb cb);
 u32 sAllocTexPalette(u32 a, u32 b);
 s32 SPL_LoadTexByCallbackFunction(Fp *self, Cb cb);

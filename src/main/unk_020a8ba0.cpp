@@ -22,167 +22,140 @@
 #include "talk/MsgQuery.h"
 #include "talk/MsgCopyProcessor.h"
 #include "talk/MsgUiProc.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020029e8.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_020a8ba0.h"
+#include "proto/main/unk_020b7190.h"
 
 
 extern "C" {
 // Other files
-BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
 }
 
 extern "C" {
-BOOL Text_GameCharToAscii(char *out, u32 index);
 }
 
 extern "C" {
-const char *Text_GetSpecialCharStr3(void);
 }
 
 extern "C" {
-const char *Text_GetSpecialCharStr2(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr10(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr9(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr5(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr7(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr6(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr4(void);
 }
 
 extern "C" {
-u8 *Text_GetSpecialCharStr1(void);
 }
 
 extern "C" {
-BOOL StrBuf_SetBytes(StrBuf *buf, const void *src, s32 len);
 }
 
 extern "C" {
-void StrBuf_Clear(StrBuf *buf);
 }
 
 extern "C" {
-void AbAllObjGfx_Upload(void);
 }
 
 extern "C" {
-void Gfx2d_HideMainPlanes(u32 arg);
 }
 
 extern "C" {
-void Gfx2d_ShowMainPlanes(u32 arg);
 }
 
 extern "C" {
-void HudObjGfx_ClearMsgUiActive(void);
 }
 
 extern "C" {
-void HudObjGfx_SetMsgUiActive(void);
 }
 
 extern "C" {
-void HudObjGfx_LoadForScene(void);
 }
 
 extern "C" {
-void File_ReadRange(void *file, void *buf, u32 size, u32 offset);
 }
 
 extern "C" {
-BOOL Talk_IsAltTextEnabled(void);
 }
 
 extern "C" {
-void TalkWindow_DrawAll(void);
 }
 
 extern "C" {
-void TalkWindow_UpdateAll(void);
 }
 
 extern "C" {
-void TalkWindow_DestroyAll(void);
 }
 
 extern "C" {
-void TalkWindow_CreateAll(void);
 }
 
 extern "C" {
-u8 Talk_ColorTagToTextColor(u32 x);
 }
 
 extern "C" {
-void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" {
-void InputModeIcon_Draw(void);
 }
 
 extern "C" {
-void InputModeIcon_Update(void);
 }
 
 extern "C" {
-void InputModeIcon_Exit(void);
 }
 
 extern "C" {
-void InputModeIcon_Init(void);
 }
 
 extern "C" {
-BOOL InputMode_IsButtons(void);
 }
 
 extern "C" {
-void InputMode_SetTouch(void);
 }
 
 extern "C" {
-void InputMode_SetButtons(void);
 }
 
 extern "C" {
-void FieldInfoBalloon_Draw(void);
 }
 
 extern "C" {
-void FieldInfoBalloon_Update(void);
 }
 
 extern "C" {
-void FieldInfoBalloon_Release(void);
 }
 
 extern "C" {
-void FieldInfoBalloon_Init(void);
 }
 
 extern "C" {
-void *Heap_Alloc(void *heap, u32 size);
 }
 
 extern "C" {
-void Heap_Free(void *heap, void *ptr);
 }
 
 extern "C" {
@@ -206,7 +179,6 @@ void FS_CloseFile(void *file);
 }
 
 extern "C" {
-void FS_InitFile(void *file);
 }
 
 extern "C" {
@@ -214,11 +186,9 @@ BOOL FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {
-char *strchr(char *s, s32 c);
 }
 
 extern "C" {
-int strcmp(const u8 *a, const u8 *b);
 }
 
 extern "C" {
@@ -226,7 +196,6 @@ char *strncpy(char *dst, const char *src, u32 n);
 }
 
 extern "C" {
-char *strcpy(char *dst, const char *src);
 }
 
 extern "C" {
@@ -429,7 +398,6 @@ extern MsgCopyProcessor gMsgCopyProcessor;
 extern MsgQuery gMsgQuery;
 extern Flag18 data_021edcfc;
 // prototypes (test harness)
-extern "C" MsgUiProc *MsgUiProc_Create(void);
 
 
 // mwcc 1.2 emits functions in reverse order, so they are defined here from highest to lowest address

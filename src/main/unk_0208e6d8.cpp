@@ -7,21 +7,18 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "ui/UiWidget.h"
 #include "ui/InputModeIcon.h"
 #include "sys/ProcProfile.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0208e6d8.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, u32 h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Gfx2d_SetMainObjWinPlanes(u32 a);
-s32 Gfx2d_SetMainWinOutPlanes(u32 a);
-s32 Gfx2d_EnableMainWindows(u32 a);
-s32 Gfx2d_DisableMainWindows(u32 a);
-s32 Snd_StopSe(u32 a, u32 b);
-void Snd_PlaySeOnHandle(u32 a);
 s32 TalkRequestFlags_IsSceneHold();
 extern u32 data_020d5b0c[][2];
 extern u8 data_020d5d34[];
 extern u32 *data_020d5d0c[];
 }
-extern "C" u64 OS_GetTick(void);
 
 extern const u8 sCommIconShowDelays[4];
 extern const u8 sCommIconHideDelays[4];
@@ -103,15 +100,10 @@ public:
 };
 
 
-extern "C" TransitionCommIconProc *TransitionCommIconProc_Create();
 
 extern TransitionCommIcon sTransitionCommIcon;
 
 extern "C" {
-void TransitionCommIcon_Draw();
-void TransitionCommIcon_Update();
-void TransitionCommIcon_Exit();
-void TransitionCommIcon_Init();
 }
 
 typedef void (TransitionCommIcon::*Unk_020e10f8_Fn)();

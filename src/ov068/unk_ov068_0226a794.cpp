@@ -23,6 +23,20 @@
 #include "player/Unk_02007694.h"
 #include "save/SaveData.h"
 #include "snd/BuildingSeEmitter.h"
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalRequestDoorEnter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkWindow_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/ov068/unk_ov068_0226a794.h"
 
 
 
@@ -183,55 +197,34 @@ public:
 extern "C" {
 extern s16 sKappnTaxiLeaveTimer;
 extern u8 gSaveData[];
-void *PlayerSession_GetSessionFlags();
 void *PlayerActor_GetPlayerData(void *);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
 void PlayerActor_SetLastPlayDate(void *, void *, void *);
-void *PlayerActor_Get(s32);
 void TalkRequestFlags_ClearSceneHold();
 void *Scene_GetWarpRequest();
 void SceneWarp_RequestFade(void *, s32, s32, s32);
-void *PlayerData_GetCurrent();
-void *PlayerData_GetCurrentIndex();
-void PlayerActor_SetHeadTilt(s32, s32, s32);
-void *PlayerActor_GetActor(s32);
 s32 Math_AngleDiffAbs(s32, s32);
-void *BuildingList_FindByItem(s32);
 s32 PlayerActor_RequestWalkTo(void *, s32, s32);
 void TalkRequestFlags_SetSceneHold();
-void Field_SetDoorExitMode(s32);
 void SceneWarp_RequestExit(void *, s32);
 void *Scene_GetCurrent(void *);
 void Scene_SetTownReturnPos(void *, void *, void *, s32, s32, s32, s32);
 s32 PlayerActor_LocalRequestDoorEnter(s32, void *, void *, s32);
-s32 PlayerActor_IsScriptedWalking(s32);
 u32 *TalkWindow_Get(s32);
 void func_02094030(void *);
 void Npc_GetName(void *, void *);
 void func_02094018(void *);
-void PlayerActor_KeepAnimForNextAction();
-void PlayerActor_RequestTurnTo(s32, s32);
-void Effect_End(s32);
 void Effect_SetPosition(s32, void *, s32, s32);
-s32 Effect_Create(s32, void *, s32, s32);
 VecFx32Copy *PlayerActor_GetBodyPos(s32);
 void Vec_Sub(VecFx32Copy *, VecFx32Copy *, VecFx32Copy *);
 void Vec_Add(VecFx32Copy *, void *, VecFx32Copy *);
 s32 Math_Atan2(s32, s32);
 s32 FX_Div(s32, s32);
-void Taxi_ClearArriving();
-void Taxi_ClearLeaving();
-void PlayerActor_SetEventLock(s32);
-BOOL Taxi_IsArriving();
-BOOL Taxi_IsLeaving();
 void Scene_ResetTownReturnPos(s32 unused);
-BOOL KappnTaxi_RequestPlayerGetOut();
-s32 KappnTaxi_RequestPlayerGetIn();
 }
 
 
-extern "C" void *KappnTaxi_Create();
 
 extern "C" DebugColor data_ov068_02271090(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov068_02271098(0x14, 0x14, 0x1f, 0x1f);

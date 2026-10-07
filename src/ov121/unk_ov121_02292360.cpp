@@ -19,6 +19,29 @@
 #include "save/PatternOrder.h"
 #include "talk/EncodedString16Buf.h"
 #include "talk/LabelBalloonText.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_AllocTail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuScreen_UploadClothPattern  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034048.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov004/unk_ov004_0222a500.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov121/unk_ov121_02292360.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -125,56 +148,21 @@ s32 PlayerData_getIndex(void *p);
 BOOL BgVramTask_requestScreen(void *p, void *a, u32 b, u32 c, u32 d);
 void BgVramTask_cancel(void *p);
 
-void *PlayerData_GetCurrent();
-u32 Room_CountOccupants();
-s32 Pocket_FindEmpty();
-s32 Pocket_AddItem(u16 *p, u32 v);
-void Snd_PlaySe(s32 id);
 s32 StrBuf_GameToAscii(void *p, void *q);
 s32 FieldAction_RequestDrop(u32 p, u32 a);
-s32 RoomWallFloor_SetWallpaperDesign(u32 a, u32 b, u32 c, u32 d);
-s32 RoomWallFloor_SetCarpetDesign(u32 a, u32 b, u32 c, u32 d);
 s32 MenuScreen_UploadClothPattern(u16 *a, void *b, void *c, void *d);
 void MI_CpuCopy8(const void *a, void *b, u32 n);
-s32 Camera_IsViewPushed();
-s32 Camera_PopView();
-s32 Camera_PushView();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
 s32 FieldAction_PollDrop(s32 h);
 void FieldAction_Release(s32 h);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 void MIi_CpuCopy16(s32 a, void *b, s32 c);
-void File_LoadToBuffer(const char *a, void *b, s32 c);
 BOOL Scene_InHouseRoom();
 void *Heap_AllocTail(void *a, s32 b);
 void Heap_Free(void *a, void *b);
-void Gfx2d_LinearToTilesInRow32(s32 a, void *b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadPaletteRange(void *a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-BOOL PlayerActor_IsChangingHeldItem();
-BOOL PlayerActor_IsChangingClothes();
-BOOL PlayerActor_RequestWearShirt(u16 *v);
-BOOL PlayerActor_RequestWearHat(u16 *v);
-BOOL PlayerActor_RequestChangeHeldItem(u16 *v);
 
 // ov002 / ov004 / ov090 (methods reached as free functions, or plain functions)
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 u8 PopupChoice_DecideCancel(void *p, s32 v);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *p);
@@ -222,15 +210,7 @@ s32 FtrMgr_FindPlacementMyDesignA(u32 *out, u32 a, u32 b);
 s32 FtrMgr_FindPlacementMyDesignD(u32 *out, u32 a, u32 b);
 s32 FtrMgr_FindPlacementMyDesignC(u32 *out, u32 a, u32 b);
 s32 FtrMgr_FindPlacementMyDesignB(u32 *out, u32 a, u32 b);
-s32 FtrMgr_SpawnFromArg(u32 a);
-u16 *RoomShell_GetWallpaper();
-u16 *RoomShell_GetCarpet();
 
-s32 MenuTabBar_TabFromX(s32 v);
-s32 MenuTabBar_GetTabX(s32 i);
-s32 MenuTabBar_NextTab(s32 i);
-s32 MenuTabBar_PrevTab(s32 i);
-s32 MenuTabBar_HitTestTouch();
 void func_ov090_02291d2c(void *p);
 void MenuTabBar_selectTab(void *p, u32 b);
 
@@ -418,7 +398,6 @@ public:
 
 typedef void (DesignTab::*Unk_ov121_02294d68_Fn)();
 
-extern "C" DesignTab *DesignTab_Create();
 
 static inline BOOL Unk_ov121_02293188_InRange(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;

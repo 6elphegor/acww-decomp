@@ -1,13 +1,14 @@
 #include "types.h"
 #include "gfx/Mtx43.h"
 #include "save/MuseumData.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0206fde4.h"
 
 
 
 
 extern "C" {
 extern Mtx43 data_021cb69c;
-s32 Item_GetFossilGroup(u16 *p);
 }
 
 Mtx43 sCpuMtxStack[31];

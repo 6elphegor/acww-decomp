@@ -5,6 +5,7 @@
 // one address (relocs.txt had them as ov147 bss + 0x2e8c).
 #include "types.h"
 #include "sys/ProcProfile.h"
+#include "proto/main/unk_0208f268.h"
 
 extern ProcProfile sGameRootProfile;
 extern ProcProfile data_020e3fd4;
@@ -218,7 +219,6 @@ extern ProcProfile sNpcSpawnerProfile;
 extern ProcProfile sHandOverItemProfile;
 extern ProcProfile data_020e1178;
 // the effect process's profile is gap data (DS layout, a 4-byte create pointer): a C copy for the host's layout
-extern "C" void *EffectSplProc_Create();
 static ProcProfile sEffectSplProcProfileHost = {(void *(*)())EffectSplProc_Create, 0xd2, 0xd5};
 #define data_020e1178 sEffectSplProcProfileHost
 extern ProcProfile sResidentSelectProfile;

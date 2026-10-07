@@ -6,6 +6,9 @@
 #include "room/HouseRoom.h"
 #include "room/HouseData.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_OS_GetOwnerInfo  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_02060034.h"
 
 
 
@@ -32,11 +35,6 @@ BOOL BlockMap_FindItemAnyAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 void *BlockMap_SetItemAtUnit(void *g, u16 *a, s32 x, s32 z, u8 d);
 void OS_GetOwnerInfo(u8 *buf);
-void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, s32 d, s32 e);
-u32 HouseData_GetRoomFlagMask(u32 x);
-BOOL HouseData_IsValidRoomIndex(s32 i);
-u16 House_GetLevelAcreId();
-BOOL PlayerHouse_ReplaceStructure(s32 x);
 }
 
 extern "C" {
@@ -47,11 +45,6 @@ void _ZN6ItemIdD1Ev(void *p);
 void _ZN6ItemIdC1Ev(void *p);
 void *Clock_GetTimeSeed();
 s32 Random_SetSeed(void *a, void *b);
-void SongSet_ClearBit(u8 *bits, u32 i);
-void SongSet_SetBit(u8 *bits, u32 i);
-BOOL SongSet_TestBit(u8 *bits, u32 i);
-BOOL HouseRoom_SetCurrentSong(u16 *p);
-BOOL HouseRoom_SetSongForScene(s32 a, u16 *p);
 }
 
 

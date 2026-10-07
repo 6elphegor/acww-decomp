@@ -1,5 +1,12 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0221eb38.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 typedef void (*WfcLoadFunc)(void *, s32, u32);
 
@@ -9,22 +16,8 @@ extern void *gWfcMsgBank;
 extern void DC_FlushRange(void *, u32);
 extern void *strncpy(void *, void *, u32);
 
-extern void *WfcText_CreateBgCanvas(s32, s32);
-extern void *WfcMsg_GetString(void *, s32);
-extern u32 WfcUtil_GetLanguage();
-extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
-extern void WfcText_RequestTransfer(void *);
-extern void WfcText_DrawText(void *, u32, u32, s32, s32, s32);
-extern void WfcUtil_GetScreenFlags(void *, void *);
-extern s32 WfcButtonBar_Create(s32);
-extern s32 WfcHeader_Create(s32);
-extern s32 WfcHeader_SetStep(s32);
-extern void *WfcFs_LoadFile(void *, void *, u32);
-extern void WfcFs_FreeFile(void *);
 
 void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
-u8 *WfcUtil_LocalizePath(u8 *p);
-u32 WfcUtil_GetTextFlags();
 }
 
 extern "C" const u8 data_ov001_02229b7c[8] = {0x6a, 0x65, 0x66, 0x67, 0x69, 0x73, 0, 0};

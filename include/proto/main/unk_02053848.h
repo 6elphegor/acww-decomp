@@ -1,0 +1,53 @@
+#ifndef PROTO_PROTO_MAIN_UNK_02053848_H
+#define PROTO_PROTO_MAIN_UNK_02053848_H
+
+// Prototypes of the functions defined in src/main/unk_02053848.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "gfx/NNSG3dRS.h"
+struct NNSG3dResJntAnm;
+#ifdef __cplusplus
+#include "gfx/ModelSet.h"
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_AnimModel_SwitchAnmObj
+void AnimModel_SwitchAnmObj(void *pv, void *qv);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_ModelSet_Load
+BOOL ModelSet_Load(ModelSet *t, void *file, void *heap);
+#endif
+#ifndef PROTO_LOCAL_ModelSet_Find
+void *ModelSet_Find(ModelSet *t, void *name);
+#endif
+#ifndef PROTO_LOCAL_ModelSet_Release
+BOOL ModelSet_Release(ModelSet *t);
+#endif
+#ifndef PROTO_LOCAL_Anim_GetFrameCountForMode
+u16 Anim_GetFrameCountForMode(u32 kind, NNSG3dResJntAnm *p);
+#endif
+#ifndef PROTO_LOCAL_JointCb_UseRestTranslation
+void JointCb_UseRestTranslation(NNSG3dRS *o, s32 x);
+#endif
+#ifndef PROTO_LOCAL_BlendAnimModel_Play
+void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
+#endif
+#ifndef PROTO_LOCAL_BlendAnimModel_Play2
+void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
+#endif
+#ifndef PROTO_LOCAL_ThreeLayerAnimModel_AssignJointsToLayer2
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);
+#endif
+}
+#endif
+
+#endif

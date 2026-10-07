@@ -25,6 +25,26 @@
 #include "town/BuildingCollider.h"
 #include "game/TouchPickTriangle.h"
 #include "game/CollisionTriangle.h"
+#include "proto/autoload_2/unk_020e82bc.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_0209c08c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_022187f8.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 
 
@@ -136,19 +156,10 @@ void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
 void _ZN17BuildingSeEmitter11setPositionEP7VecFx32(void *self, VecFx32 *v, u32 extra);
-StrBSizeData *StrBSize_Get(u16 *p);
 
 void BuildingInfo_Copy(void *self, const u8 *src);
 void BuildingInfo_Destroy(void *self);
-s32 BuildingInfo_GetViewRangeBack(void *self);
-s32 BuildingInfo_GetViewRangeFront(void *self);
-s32 BuildingInfo_GetViewRangeX(void *self);
-s32 BuildingInfo_GetFlickeringLights(void *self);
-s32 BuildingInfo_GetInteriorScene(void *self);
-s32 BuildingInfo_GetEntranceType(void *self);
 
-void Snd_SeEmitterPlayHeld(void *, u32, u32, u32);
-void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
 void SndSeEmitter_callStop(void *);
 void SndSeEmitter_callUpdateRelative(void *, void *);
 void SndSeEmitter_callInit(void *);
@@ -156,112 +167,68 @@ void BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 Math_Atan2(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void Vec_Add(VecFx32 *, void *, VecFx32 *);
 void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void TalkAutoAdvance_start(void *, u32);
-void BuildingOccupancy_Leave(u32, u32);
-void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos(s32 unused);
 s32 Math_AngleDiffAbs(s32, s32);
-s32 Vec_DistXZ(void *, void *);
-s32 *PlayerActor_GetBodyPos(u32);
-BOOL PlayerActor_LocalRequestDoorEnter(u32, s32 *, s32 *, s32);
-BOOL PlayerActor_IsStowFinished();
-void PlayerActor_RequestStowThenAct10(u32);
-BOOL PlayerActor_IsEnteringDoor();
-void Camera_SetMode3();
 void TalkRequest_SetTargetDone(void *);
-BOOL PlayerActor_LocalRequestDoorApproach(s32 *, s32 *, s16 *);
 s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Ground_GetDefaultY(u32);
 void Scene_SetTownReturnPos(void *, s32, VecFx32 *, u32, s32, u32, u32);
-void Building_SetLastEntranceType();
 
-s32 BuildingOccupancy_GetAnswer(u32);
-void BuildingOccupancy_RequestEnter(u32);
 BOOL Item_IsNookShop(u16 *);
 void AnimModel_stepAnim(void *);
 BOOL AnimFrameCtrl_isFinished(void *);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
 void BlendAnimModel_initAnim(void *, void *, s32, s32, s32, s32);
-void Melody_PlayAt(void *, s32);
-s32 PlayerActor_TestSlotFlag(s32, s32);
 BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
-s32 TouchPick_GetTappedObject(void *, s32 *, u8 *);
-void *PlayerActor_GetActor(u32);
-BOOL BuildingState_Set(u32, u32);
 
-void *Heap_Alloc(void *heap, u32 size);
-u32 BuildingList_IndexOf(void *p);
-void Field_SetDoorExitMode(u32 a);
-BOOL PlayerActor_LocalRequestDoorExit();
 s32 TriangleTrigger_Unregister(void *node);
 void TriangleTrigger_Register(void *node);
-s32 WorldCurve_ToCurved(void *out, void *in);
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-void Mtx43_RotateX(void *m, s32 a);
-BOOL PlayerActor_IsInterruptibleByMenu();
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-void *File_LoadAlloc(void *a, void *heap, s32 c, s32 d);
-BOOL File_Exists(void *p);
 s32 NNS_FndMountArchive(void *buf, char *name, void *data);
-void *NNS_FndGetArchiveFileByName(void *name);
 void NNS_FndUnmountArchive(void *buf);
 void *func_02106654();
 void *func_02106670(void *p, s32 a);
 void *func_02106690();
 void *func_021066ac(void *p, s32 a);
 void *NNS_G3dGetTex(void *p);
-void Mem_Free(void *p);
 BOOL Gfx3d_LoadTex(void *p, u32 a);
 BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
 void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
-s32 BuildingState_Get(u32);
-s32 Field_GetStructureTexSuffix();
-void FieldStructureMgr_GetPlayerHouseTex();
-s32 PlayerHouseTex_Get();
-void BuildingList_Remove(void *);
-void BuildingList_Add(void *);
 BOOL Model_setResource(void *, void *, s32);
 void AnimModel_allocAnmObj(void *, void *);
 void AnimModel_attachAnim(void *);
 void Model_clearResource(void *);
 void Model_setInitCallback(void *, void *, void *);
 void func_020548a0(void *);
-void ModelSlotHandle_Destroy(void *);
 void Clock_GetMinuteHour(void *);
 void BuildingLights_setLit(void *, s32, s32, s32);
 void BuildingLights_updateLights(void *, void *);
 void BuildingLights_bind(void *, void *, s32);
 void func_020b200c(void *);
-void CharInteractSync_ReleaseLock();
 void NookShop_SetVisitState(u32);
 BOOL func_02002d9c(void *);
 s32 func_02002dd0(void *, u32);
 BOOL func_0203e638(void *);
 BOOL func_0203e650(void *);
 void Character_setCharId(void *, u32);
-BOOL Camera_IsBlockingFocusView(void *, s32, s32);
-s32 WorldCurve_Apply(void *, void *);
 void NNS_G3dBindMdlPltt(void *, s32);
 void NNS_G3dBindMdlTex(void *, s32);
 
 void func_020548d0(void *);
 void func_020b2034(void *);
-void ModelSlotHandle_Init(void *);
 void *func_021065dc();
 u32 func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet();
 void MTX_MultVec43(s32, s32, VecFx32 *);
-void WorldCurve_FromCurved(void *, VecFx32 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
 void Building_LocalToWorld(void *p, s32 a, s32 b);

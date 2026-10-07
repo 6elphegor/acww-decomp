@@ -3,13 +3,16 @@
 
 #include "ds_stdarg.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_021127c0.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
-void Fatal_Panic(const char *fmt, ...);
-void FS_InitFile(void *f);
 BOOL FS_OpenFile(void *f, const char *path);
 BOOL FS_LoadOverlay(s32 target, u32 id);
 BOOL FS_CloseFile(void *f);
@@ -18,32 +21,15 @@ s32 FS_ReadFile(void *f, void *dst, u32 n);
 void MI_UncompressLZ8(const void *src, void *dst);
 #define Heap_setFlags _ZN4Heap8setFlagsEj
 u32 Heap_setFlags(void *h, u32 flags);
-void *Heap_Alloc(void *h, u32 size);
 #define Heap_getMaxFreeBlockSize _ZN4Heap19getMaxFreeBlockSizeEv
 u32 Heap_getMaxFreeBlockSize(void *h);
-void Heap_Free(void *h, void *p);
-void *Heap_AllocAligned(void *heap, u32 size, s32 align);
 void DC_StoreAll();
 void DC_FlushAll();
 void MI_InitUncompContextLZ(void *st, void *dst, void *src);
 s32 MI_ReadUncompLZ8(void *st, void *p, s32 n);
-s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 extern void *gCurrentHeap;
 extern void *gRootHeap;
 
-void File_OpenOrPanic(void *file, const char *path);
-BOOL File_Open(void *file, const char *path);
-void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize);
-s32 File_GetDecodedSizeByPath(u32 a);
-s32 File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...);
-void *File_LoadF(const char *fmt, ...);
-void *File_LoadAllocF(s32 a, s32 b, const char *fmt, ...);
-void *File_Load(u32 a);
-BOOL File_LoadOverlayEx(s32 target, u32 id);
-s32 File_GetDecodedSize(FSFile *f);
-s32 File_ReadAll(FSFile *f, void *dst, u32 n);
-s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va);
-s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 }
 
 BOOL File_LoadOverlayEx(s32 target, u32 id) {

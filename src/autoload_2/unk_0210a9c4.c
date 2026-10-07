@@ -13,6 +13,7 @@ typedef enum { SND_WAVE_FORMAT_PCM8, SND_WAVE_FORMAT_PCM16 } SNDWaveFormat;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
 #include "sys/PMCbInfo.h"
+#include "proto/autoload_2/unk_0210a9c4.h"
 typedef struct Strm {
     NNSFndLink link;        // 0x00
     PMCbInfo pm0;           // 0x08
@@ -79,8 +80,6 @@ extern u32 data_027e038c;
 extern s32 data_027e0390;
 extern CapMsg data_021fb808[];
 extern u32 data_021fb774;
-extern void NNSi_SndCaptureStop(void);
-extern void CaptureThread(void *);
 extern s32 NNS_SndAllocAlarm(void);
 extern BOOL NNS_SndLockCapture(u32);
 extern void SND_SetupChannelPcm(s32 ch, s32 format, void *data, s32 loop, s32 loopStart, s32 loopLen, s32 volume,

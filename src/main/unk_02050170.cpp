@@ -1,11 +1,12 @@
 #include "types.h"
 #include "save/Backup.h"
+#include "proto/autoload_2/unk_0211dc4c.h"
+#include "proto/main/unk_02050170.h"
 
 
 extern "C" Backup gBackup;
 
 extern "C" s32 CARD_IsAvailable(void);
-extern "C" void CARD_Init(void);
 extern "C" s32 OS_GetLockID(void);
 extern "C" void CARD_LockBackup(u16 v);
 extern "C" void CARD_IdentifyBackup(s32 v);

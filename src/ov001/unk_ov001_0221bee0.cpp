@@ -1,6 +1,15 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221bee0.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -9,29 +18,9 @@ s32 GX_LoadBG2Scr();
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
 void WfcUtil_LoadFileTo(void *, void *);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowBottomMessage(s32);
-s32 WfcSound_Play(s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetEditParams(s32, s32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcUtil_HideTopMessage();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
 
-void WfcUsbDone_CountDown();
-void WfcUsbDone_Exit();
-void WfcUsbDone_FadeOut();
-void WfcUsbDone_Idle();
-void WfcUsbDone_Update();
-void WfcUsbDone_WaitFadeIn();
-void WfcUsbDone_FadeIn();
-void WfcUsbDone_LoadBg();
-void WfcUsbDone_Enter();
-void WfcTestConfirm_Enter();
 }
 
 extern "C" u8 sWfcUsbDoneTimer = 0;

@@ -1,3 +1,5 @@
+#include "proto/itcm/unk_01ff8000.h"
+#include "proto/itcm/unk_01ff8228.h"
 // mwcc-flags: -nothumb
 // NitroSDK OS (os_irqTable.c): OS_IRQTable, the interrupt handler table, and OSi_IrqCallbackInfo, the DMA/timer
 // callback records, DTCM .data 0x027e0000-0x027e00b8. A data-only unit: the file's handlers (OSi_IrqDma0..3,
@@ -22,15 +24,6 @@ typedef struct OSIrqCallbackInfo {
     void *arg;
 } OSIrqCallbackInfo;
 
-void OS_IrqDummy(void); // OS_IrqDummy
-void OSi_IrqDma0(void);
-void OSi_IrqDma1(void);
-void OSi_IrqDma2(void);
-void OSi_IrqDma3(void);
-void OSi_IrqTimer0(void);
-void OSi_IrqTimer1(void);
-void OSi_IrqTimer2(void);
-void OSi_IrqTimer3(void);
 
 #pragma section DTCM begin
 

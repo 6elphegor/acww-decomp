@@ -4,6 +4,10 @@
 #include "net/SockCoreCommand.h"
 #include "net/SockCoreConfig.h"
 #include "net/SockCoreSocket.h"
+#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/ov065/unk_ov065_0225f5c8.h"
 
 // ---- types of the former unk_0225f1a0.cpp part (functions 0x0225f5c8..0x0225fa6c)
 
@@ -47,10 +51,7 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 v);
 void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
-void OS_WakeupThread(void *q);
 s32 OS_InitMessageQueue(void *, void *, s32);
-void OS_UnlockMutex(void *m);
-void OS_LockMutex(void *m);
 void OS_InitMutex(void *);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);

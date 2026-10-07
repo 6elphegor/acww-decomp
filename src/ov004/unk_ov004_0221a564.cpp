@@ -35,6 +35,16 @@
 #include "npc/VillagerId.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov004/unk_ov004_0221a564.h"
 
 class SickVillager;
 
@@ -127,10 +137,7 @@ void TalkWindowState_openChoices(void *, s32);
 s32 TalkWindowState_setNextMessage(void *, void *, const void *);
 void *VillagerData_getVillagerId(void *);
 void VillagerId_makeFileName(void *, const void *, s32, const void *);
-s32 MenuCtrl_BuildPocketMask(void *);
-s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_SetTargetDone(void *);
-void *PlayerActor_GetActor(u32);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 NpcActionCtrl_requestEmotion(void *, u32, u32, u32);
@@ -141,23 +148,12 @@ s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, 
 void VillagerMood_playMood3Effect(void *, void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 Vec_NotEqual(void *, void *);
 s32 Vec_DistXZ(void *, void *);
-s32 Random_GlobalBelow(s32);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 void *SaveVillagers_GetUnk3830(void *);
 void *SickVillagerRecord_getTodaysVisitor(void *);
 void ActorTalkRequest_setPlayerNameSlot(void *, void *, s32);
-s32 Snd_PlaySe(s32);
-BOOL SickVillager_IsMedicine(u16 *p, s32 x);
-BOOL SickVillager_HasCurrentVisitor(void *o);
-void SickVillager_SetCurrentVisitor();
-s32 MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-s32 Pocket_RemoveItem(s32 c);
 void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
-void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
 void SickVillagerRecord_setTodaysVisitor(void *, void *);
 s32 SickVillagerRecord_hasTodaysVisitor(void *);
@@ -266,7 +262,6 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" SickVillager *SickVillager_Create();
 extern "C" {
 void _ZN12SickVillager9mainAct05Ev();
 void _ZN12SickVillager9drawModelEv();

@@ -5,6 +5,8 @@
 // no vtable (the class SndObj only DECLARES its virtuals), all data and callees extern.
 #include "types.h"
 #include "snd/SndMgr.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_0210c084.h"
 
 class SndObj {
 public:
@@ -55,33 +57,18 @@ void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, u32 a);
 void NNS_SndPlayerSetPlayerVolume(u32 a, u32 b);
 void NNS_SndPlayerStopSeq(void *p, s32 frames);
-s32 NNS_SndArcPlayerStartSeq(void *p, u32 a);
 u32 func_0210e648(void *p);
 void *Snd_GetVolumeCurve(void);
 void SndVolumeCurve_Set(void *p, u32 a);
 
-u16 SndMgr_GetVoiceSeqIndex(SndMgr *self, u16 id);
-u8 SndMgr_ClampVolume(SndMgr *self, u8 v);
-void SndMgr_UpdateTrackRamps(SndMgr *self);
-s16 SndRamp_Step(SndRamp *r);
-void SndRamp_Start(SndRamp *r, s16 target, u32 frames);
-void SndRamp_Set(SndRamp *r, s32 v);
-void SndMgr_SetSubPlayerVolume(SndMgr *self, s32 v);
-void SndMgr_SetPlayerVolumes(SndMgr *self, s32 a, s32 b);
-void SndMgr_ApplyPan(SndMgr *self, u32 flag);
-void SndMgr_StopSe(SndMgr *self, s32 a, u32 b);
 void NNS_SndPlayerMoveVolume(void *p, s32 v, u32 w);
 void NNS_SndArcStrmMoveVolume(void *p, s32 v, u32 w);
 void NNS_SndArcStrmStop(void *p, s32 v);
 void NNS_SndArcStrmStart(void *p, u32 a, u32 b);
 s32 func_0210e5fc(void *p);
-void NNS_SndArcLoadBank(void *a, u32 b);
 u32 Snd_GetHeap(void);
 void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
-void SndMgr_StopBgmSeq(SndMgr *self, s32 frames);
-void SndMgr_StartBgmSeq(SndMgr *self, u32 a, u32 b);
 
-void SndMgr_PlayVoice(SndMgr *self, s32 a, u8 b, s32 c);
 }
 
 static inline BOOL isSet(void *p) {

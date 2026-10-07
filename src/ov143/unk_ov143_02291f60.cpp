@@ -12,6 +12,23 @@
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
 #include "nitro/gxoam.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Melody_Pack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Melody_Unpack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov143/unk_ov143_02291f60.h"
 
 struct MelodyPlayingNoteCell {
     u32 w0;
@@ -49,7 +66,6 @@ extern u32 data_ov143_02293950[2];
 extern u32 data_ov143_022938c8[2];
 extern MelodyPlayingNoteCell data_ov143_02293a00;
 extern MelodyPlayingNoteCell data_ov143_022939e8;
-MelodyMenu *MelodyMenu_Create();
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchHeld;
@@ -62,44 +78,15 @@ extern u8 gSaveVillagers[];
 extern u8 gMelodyEditPattern[];
 extern void *gCurrentHeap;
 
-void Gfx2d_EndSubObjWinBrightness();
-void Gfx2d_BeginSubObjWinBrightness();
-s32 Gfx2d_SetSubBrightness(s32 a);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadCharFile(void *name, void *h, s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadScreenFile(void *name, void *h, s32 a);
-void Gfx2d_LoadPaletteFile(void *name, void *h, s32 a, s32 b, s32 c, s32 d);
-void Snd_PlaySe(s32 a);
-void File_LoadToBuffer(void *a, void *b, u32 c);
-void Melody_PlayEditPattern(u32 a);
-void Melody_PlayNote(u32 a);
 void Melody_Unpack(void *a, void *b);
 void Melody_Pack(void *a, void *b);
-void Melody_ApplyEditPattern();
-void MenuCtrl_SetResult(s32 v);
-BOOL MenuCtrl_IsResultOk();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void String_Load2dMenu(void *self, u32 id);
-s32 Comm_IsSeqConfirmed(s32 v);
 void SaveVillagers_ClearTuneRequester(void *a);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 void Oam_DrawObjRotated(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
-void *ProcBase_GetParent(void *self);
-void ProcBase_RequestDelete(void *p);
 void MenuButtons_LoadTextColors(void *p);
-BOOL MenuKeys_HasRight(u32 pad);
-BOOL MenuKeys_HasLeft(u32 pad);
-BOOL MenuKeys_HasDown(u32 pad);
-BOOL MenuKeys_HasUp(u32 pad);
 }
 
 

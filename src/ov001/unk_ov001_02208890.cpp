@@ -1,5 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 typedef void (*WfcLoadFunc)(void *, s32, u32);
 
@@ -8,18 +14,9 @@ extern void GX_LoadBG1Scr(void *, s32, u32);
 extern void GX_LoadBG1Char(void *, s32, u32);
 extern void DC_FlushRange(void *, u32);
 extern void MIi_CpuCopyFast(void *, void *, u32);
-extern u32 WfcUtil_GetStartMode();
-extern void *WfcFs_LoadFile(void *, void *, u32);
-extern void WfcFs_FreeFile(void *);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);
-extern void WfcTask_RequestDelete(s32, s32);
-extern void WfcTask_Add(s32, void *, s32, s32);
-extern u8 *WfcConfig_GetEdit();
 extern void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
-extern u8 *WfcUtil_LocalizePath(u8 *p);
-void WfcHighlight_Set(s32 n);
-void WfcHighlight_TransferTask(s32 a);
 extern void *sWfcHighlightScreens[20];
 extern u8 *sWfcHighlightScreen;
 }

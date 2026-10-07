@@ -12,6 +12,21 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_Camera_ProjectCurvedToScreen  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomCamera_StartBlendToPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_02229660.h"
+#include "proto/ov004/unk_ov004_0223e014.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
 
@@ -40,39 +55,19 @@ extern const Vec2 sResidentExtraLabelPos;
 extern const s32 sResidentCursorExtraOffset[];
 extern const s32 sResidentCursorOffsets[];
 #define data_ov004_022447f0 ((const s32 *)((const u8 *)sResidentCursorOffsets + 4))
-RoomTelephone *RoomTelephone_GetInstance();
-void Snd_PlaySe(s32 a);
 
-s32 PlayerDataArray_IsUsed(void *, s32);
-u8 *PlayerActor_GetCharacter(u32 id);
-void *PlayerData_GetResident(void *a, s32 i);
 void Camera_ProjectCurvedToScreen(s32 *a, s32 *b, void *c);
 void func_02094018(void *p);
 void func_02094030(void *);
 s32 *PlayerActor_GetBodyPos(u32);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
-void PlayerActor_RequestTurnTo(s32 a, u32 b);
-BOOL SaveManager_IsIdleForRoom(void);
-void SaveManager_RequestAct03(void);
 BOOL Math_CountDownU16(void *p);
-BOOL InputMode_IsTouch();
-BOOL InputMode_IsButtons();
-void InputMode_SetTouch(void);
-void InputMode_SetButtons(void);
 u8 *Scene_GetTouchPicker();
 s32 TouchPickResult_GetTarget(u8 *obj, void *out, s32 *a, u8 *b);
-void String_Load2d(void *o, u8 *p, u32 x);
 void Clock_GetDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
-s32 MenuCtrl_IsClockEdited(void);
-s32 MenuCtrl_ClearClockChangeFlags(void);
-s32 MenuCtrl_SetClockMovedForward(void);
-s32 MenuCtrl_SetClockMovedBack(void);
 void TalkRequestFlags_ClearSceneHold(void);
 void TalkRequestFlags_SetSceneHold(void);
-void PlayerActor_LocalRequestGetOutOfBed(u32 a, u32 b);
-BOOL RoomTelephone_IsTalking();
-BOOL RoomTelephone_StartAct0A();
 void RoomCamera_StartBlendToPlayer(void *self);
 }
 
@@ -84,7 +79,6 @@ struct ResidentSelectStateEntry {
 };
 extern ResidentSelectStateEntry sResidentSelectStates[];
 
-extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o);
 
 static inline BOOL Unk_ov004_0223e2f4_IsMode2() {
     if (gScreenTransition == 2) {
@@ -134,7 +128,6 @@ public:
     /* 0x338 */ MsgString9B phoneLabel;
 };
 
-extern "C" ResidentSelect *ResidentSelect_Create();
 ProcProfile sResidentSelectProfile = {(void *(*)())ResidentSelect_Create, 0xd3, 0xce};
 
 // state table (enter, exit) filled by __sinit from the 14 member-function-pointer constants

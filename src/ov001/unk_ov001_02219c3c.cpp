@@ -3,6 +3,33 @@
 #include "net/WfcRect.h"
 #include "ui/Unk_ov001_0221a40c.h"
 #include "menu/WfcConnSelectWork.h"
+#define PROTO_LOCAL_WfcConnSelect_LoadBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcFs_LoadFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcUtil_LocalizePath  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_022111c8.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_02219064.h"
+#include "proto/ov001/unk_ov001_0221962c.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221c180.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221d744.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221eb38.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 #pragma thumb off
 
@@ -27,33 +54,9 @@ extern const s8 data_ov001_0222a160[];
 extern const u16 sWfcConnSelectButtonPos[];
 extern const u8 sWfcConnSelectSlotCells[];
 
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_GetResult();
-void WfcButtonBar_Close();
-u8 *WfcConfig_GetEdit();
-void WfcFade_Start(s32, s32, s32, s32);
-void WfcUtil_SetScene(void *);
-void WfcButtonBar_DisableInput();
-void WfcFade_StartWait(s32);
-void WfcHeader_StartSlideOut();
-s32 WfcUtil_GetStartMode();
-void WfcSound_Play(s32);
-u32 WfcConfig_GetSlotStatus(u32);
-void WfcButtonBar_ForceResult(s32);
-s32 WfcUtil_GetLanguage();
-void WfcDialog_Open(s32, s32, s32, s32, s32);
-void WfcConnSelect_PressEraseButton();
-void WfcConfig_BeginEdit(s32);
-void WfcConnSelect_HighlightSelection();
 s32 WfcInput_IsTouchPressedIn(void *);
-void WfcButtonBar_SetResult(s32);
-void WfcConnSelect_DrawCursor();
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
-void WfcConnSelect_MoveCursor(s32);
-s32 WfcHeader_IsAnimating();
-void WfcButtonBar_EnableInput();
-void WfcUtil_OpenButtonBar(s32);
 void WfcGx_ShowPlanes(s32, s32);
 u32 WfcObj_Create(u32, u32, u32);
 void WfcObj_SetPos(u32, s32, u32, u32);
@@ -66,43 +69,9 @@ void GX_LoadOBJPltt();
 void *WfcUtil_LocalizePath(void *);
 u32 WfcFs_LoadFile(void *, s32, s32);
 u32 WfcHeap_AllocClear(s32, s32);
-void WfcHighlight_Set(s32);
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowStepIndicator(s32);
-void WfcUtil_RequestPaletteLine(void *, u32, u32);
-u32 WfcUtil_TestOptionFlag(s32);
-void WfcCursor_ShowCorners(u32, u32, u32, u32);
-s32 WfcButtonBar_IsClosed();
-void WfcCursor_Clear();
-void WfcUtil_HideTopMessage();
-void WfcFs_FreeFile(void *);
 void WfcGx_HidePlanes(s32, s32);
-void WfcUtil_SetScreenFlags(s32, s32);
-void WfcUtil_SetEditParams(s32, s32);
-void WfcManualSetup_SetMode(s32);
-void WfcApSearch_Enter();
-void WfcAossSetup_Enter();
-void WfcSimpleStartInit_Enter();
-void WfcManualSetup_Enter();
-void WfcConnSelect_Exit();
-void WfcUtil_QuitFadeOut();
-void WfcConnSelect_EraseDialog();
 
-void WfcConnSelect_FadeOut();
-void WfcConnSelect_StartExit();
-void WfcConnSelect_HandleSelection();
-void WfcConnSelect_Idle();
-void WfcConnSelect_HandleInput();
-void WfcConnSelect_Update();
-void WfcConnSelect_WaitButtonBar();
-void WfcConnSelect_WaitFadeIn();
-void WfcConnSelect_FadeIn();
-void WfcConnSelect_CreateSlotButtons();
 void WfcConnSelect_LoadBg();
-void WfcConnSelect_Enter();
-void WfcSetupMethod_HighlightOption();
-void WfcSetupMethod_MoveCursor(s32);
-void WfcSetupMethod_Exit();
 
 #define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
 
@@ -315,62 +284,17 @@ extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
 extern void GX_LoadBG2Scr();
 extern void GX_LoadOBJPltt();
-extern void WfcFade_Start(s32, s32, s32, s32);
 extern void WfcGx_ShowPlanes(s32, s32);
 extern void WfcGx_HidePlanes(s32, s32);
-extern void WfcUtil_SetScene(void *);
 extern void WfcUtil_LoadFileTo(void *, void *);
-extern void WfcUtil_ShowTopMessage(s32, s32, s32);
-extern void WfcHighlight_SetConnection();
-extern void WfcUtil_ShowStepIndicator(s32);
-extern void WfcUtil_ShowBottomMessage(s32);
-extern void WfcBusyIcon_Create(s32);
-extern void WfcApScan_Alloc();
-extern void WfcApScan_Start();
-extern void WfcSound_Play(s32);
-extern void WfcUtil_RequestPaletteLine(void *, s32, s32);
-extern u32 WfcConfig_GetSlotStatus(u32 idx);
 extern s32 WfcObj_SetModePalette(void *, s32, s32, s32);
-extern s32 WfcDialog_IsOpen();
-extern void WfcButtonBar_EnableInput();
-extern s32 WfcDialog_GetResult();
-extern void WfcDialog_Close();
-extern void WfcConfig_EraseSlot(s32);
 extern void *WfcObj_GetOam(void *, s32);
 extern void WfcCell_Copy(s32, s32, void *);
 extern void WfcObj_SetPos(void *, s32, s32, s32);
 extern void WfcObj_SetPriority(void *, s32, s32);
 extern void WfcObj_Free(void *);
-extern void WfcCursor_ShowCorners(s32, s32, s32, s32);
-extern void WfcCursor_ShowPair(s32, s32, s32, s32);
-extern s32 WfcFade_IsBusy(s32);
-extern s32 WfcHeader_IsSlideOutDone();
-extern s32 WfcButtonBar_IsClosed();
-extern void WfcCursor_Clear();
-extern void WfcUtil_HideTopMessage();
-extern void WfcFs_FreeFile(void *);
-extern void WfcUtil_SetScreenFlags(s32, s32);
-extern void WfcUtil_SetEditParams(s32, s32);
-extern u8 *WfcConfig_GetEdit();
-extern void WfcManualSetup_SetMode(s32);
 extern void WfcHeap_FreeAndClear(void *);
-extern void WfcTopMenu_Enter();
-extern void WfcSetupMethod_Enter();
-extern void WfcManualSetup_Enter();
-extern void WfcUsbIntro_Enter();
-extern void WfcConnSelect_Update();
 
-void WfcApSearch_WaitFadeIn();
-void WfcApSearch_FadeIn();
-void WfcApSearch_LoadBg();
-void WfcApSearch_Enter();
-void WfcConnSelect_HighlightSelection();
-void WfcConnSelect_WaitDialogClosed();
-void WfcConnSelect_EraseDialog();
-void WfcConnSelect_PressEraseButton();
-void WfcConnSelect_MoveCursor(u32 a);
-void WfcConnSelect_DrawCursor();
-void WfcConnSelect_Exit();
 
 #define REGSET(a, v) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= (v); *(volatile u16 *)(a) = t; } while (0)
 

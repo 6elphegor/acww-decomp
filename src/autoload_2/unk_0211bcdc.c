@@ -6,6 +6,11 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02117984.h"
+#include "proto/autoload_2/unk_0211bcdc.h"
+#include "proto/autoload_2/unk_0211c8e8.h"
+#include "proto/main/unk_0206d49c.h"
 typedef signed short s16;
 typedef signed int s32;
 typedef int BOOL;
@@ -169,12 +174,9 @@ extern RTCWork data_021feb90;
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
-extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
-extern void Fatal_Trap(void);
-extern void OS_InitMutex(void *p);
 extern BOOL RTCi_WriteRawStatus2Async(void);
 
 void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
@@ -182,7 +184,6 @@ void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
 void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
 u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
 void PMi_DummyCallback(u32 result, void *arg);
-void PMi_WaitBusy(void);
 BOOL PMi_Lock(void);
 void PMi_SendPxiData(u32 data);
 u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);

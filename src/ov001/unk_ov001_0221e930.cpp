@@ -1,31 +1,22 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/autoload_2/unk_021093f4.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
 extern "C" {
-s32 NNS_SndMain();
 s32 NNS_SndPlayerStopSeq(void *, u32);
 s32 NNS_SndPlayerSetTrackPitch(void *, s32, s32);
 s32 NNS_SndPlayerSetVolume(void *, s32);
-s32 NNS_SndArcPlayerStartSeqArc(void *, u32, s32);
-s32 NNS_SndInit();
 s32 NNS_SndArcInitOnMemory(void *, s32);
-s32 NNS_SndArcPlayerSetup(s32);
 s32 NNS_SndHandleInit(void *);
-s32 WfcTask_RequestDelete(s32, s32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_Alloc(u32, u32);
-s32 WfcFs_LoadFile(const char *, void *, u32);
-s32 WfcTask_Add(s32, void *, s32, s32);
 
-void WfcSound_MainTask();
-void WfcSound_Stop();
-void WfcSound_SetTrackPitch(s32 a, s32 b);
-void WfcSound_SetVolume(s32 a);
-s32 WfcSound_Play(s32 a);
-void WfcSound_Shutdown();
-void WfcSound_Init();
 }
 
 u8 *sWfcSound;

@@ -6,6 +6,7 @@
 #include "gfx/VramTask.h"
 #include "gfx/BgVramTask.h"
 #include "nitro/io_access.h"
+#include "proto/main/unk_020b8340.h"
 
 extern "C" {
 void List_Remove(void *list, void *node);
@@ -28,8 +29,6 @@ u8 BgTransfer_GetScreenCost(BgTransfer *p);
 
 
 extern "C" {
-void VramQueue2d_Dequeue(VramTask *p);
-BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
 

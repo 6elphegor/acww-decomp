@@ -3,6 +3,10 @@
 // function. mwcc 1.2/base, C++, ARM, -O4,p. The two H-blank handlers behind it (0x01ffcd50, 0x01ffceb8) are UNMATCHED, see notes.txt.
 #include "types.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_Main_VBlankCallback  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#include "proto/itcm/unk_01ffcc60.h"
+#include "proto/main/unk_020b8340.h"
 
 extern "C" {
 extern s32 sVBlankCount;
@@ -15,7 +19,6 @@ extern u8 sMenuWipeLine;
 extern u8 sMenuWipeEdge[];
 
 void OS_WakeupThread(void *queue); // OS_WakeupThread
-void VramQueueTex_Run(void);
 void HBlank_RunVBlank(void);
 }
 

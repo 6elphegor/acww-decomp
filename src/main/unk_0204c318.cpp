@@ -3,6 +3,8 @@
 #include "game/Unk_0204da0c_Size.h"
 #include "game/Unk_0204da0c_Map.h"
 #include "town/TownState.h"
+#include "proto/main/unk_0204c318.h"
+#include "proto/main/unk_02063904.h"
 
 
 
@@ -23,7 +25,6 @@ void TownState_ClearEvents(void *p);
 void TownState_PickNextWeekDate(void *p, void *q);
 void Town_ReplaceSouthCedars(void *p);
 void Town_InitNew();
-s32 Random_GlobalBelow(s32 a);
 }
 
 extern const u16 sNativeFruitTrees[6];

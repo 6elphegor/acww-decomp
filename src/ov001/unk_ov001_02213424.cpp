@@ -3,6 +3,23 @@
 #include "nitro/gxoam.h"
 #include "ui/WfcTextEdit.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTextEdit_Exit  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_02208c2c.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_02211b2c.h"
+#include "proto/ov001/unk_ov001_02213424.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02226c24.h"
 
 
 
@@ -20,68 +37,15 @@ extern u8 GX_LoadBG2Char[];
 extern u8 GX_LoadBGPltt[];
 extern u8 GX_LoadBG2Scr[];
 
-s32 WfcText_Clear(void *a, s32 b);
-s32 WfcText_DrawTextRect(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
-s32 WfcText_RequestTransfer(void *a);
-s32 WfcUtil_HideTopMessage();
 s32 WfcOam_FreeEntry(void *a);
-s32 WfcText_DestroyBgCanvas(u32 a);
 void WfcUtil_LoadFileTo(const char *a, void *b);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
-s32 WfcUtil_GetEditParams(void *a, void *b);
-s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
-s32 WfcUtil_SetEditParams(u32 a, u32 b);
-s32 WfcUtil_SetScene(void *p);
 s32 WfcHeap_FreeAndClear(void *a);
-s32 WfcTextKb_Exists();
-s32 WfcDialog_Open(u32 a, u32 b, u32 c, s32 d, u32 e);
-s32 WfcFade_IsBusy(u32 a);
-s32 WfcTextKb_Close();
-s32 WfcSound_Play(u32 a);
-s32 WfcFade_StartWait(u32 a);
-s32 WfcTextKb_GetKey();
-s32 WfcTextKb_SetDeleteEnabled(u32 a);
-s32 WfcTextKb_SetInsertEnabled(u32 a);
-s32 WfcTextKb_Create();
-s32 WfcFade_Start(u32 a, u32 b, u32 c, u32 d);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 void *WfcHeap_AllocClear(u32 a, u32 b);
-s32 WfcConfig_GetEditSsid(void *a);
-s32 WfcUtil_StrNLen(void *a, u32 b);
-void WfcHighlight_Set(u32 a);
-s32 WfcUtil_ShowTopMessage(u32 a, s32 b, u32 c);
-s32 WfcUtil_ShowStepIndicator(u32 a);
-void *WfcText_CreateBgCanvas(u32 a, u32 b);
 void *WfcObj_CreateSingle(u32 a, u32 b);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
 
-void WfcManualSetup_Enter();
-void WfcApList_Enter();
-void WfcTestConfirm_Enter();
-void WfcConfig_FormatEditDns2();
-void WfcConfig_SetEditWepKey();
-void WfcConfig_SetEditSsid();
-void WfcTextEdit_ReturnToInput();
-void WfcTextEdit_WaitErrorDialog();
-BOOL WfcTextEdit_ValidateInput();
-void WfcTextEdit_ApplyAndExit();
-void WfcTextEdit_WaitConfirmDialog();
-void WfcTextEdit_UpdateCaret();
-void WfcTextEdit_DrawText();
 void WfcTextEdit_Exit();
-void WfcTextEdit_WaitKeyboardClosed();
-void WfcTextEdit_CloseKeyboard();
-void WfcTextEdit_StartExit();
-void WfcTextEdit_Idle();
-void WfcTextEdit_HandleKey();
-void WfcTextEdit_Update();
-void WfcTextEdit_WaitKeyboard();
-void WfcTextEdit_OpenKeyboard();
-void WfcTextEdit_FadeIn();
-void WfcTextEdit_LoadBg();
-void WfcTextEdit_Enter();
 
 const u8 data_ov001_0222a058[4] = {0x20, 0x31, 0, 0};
 const u16 data_ov001_0222a05c[2] = {0x0e, 0x10};

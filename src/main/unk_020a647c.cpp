@@ -1,13 +1,12 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetStateBlockHeader.h"
+#include "proto/main/unk_020a647c.h"
 
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 Scene_GetCurrent();
-void NetArea_ReadStateBPart0();
-void NetArea_WriteStateBPart0();
 }
 
 extern CommManager *gCommManager;

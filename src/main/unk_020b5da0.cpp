@@ -2,8 +2,9 @@
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "sys/SceneBase.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020b5da0.h"
 
-extern "C" void Snd_CreateScene(void);
 
 
 class DummyScene3 : public SceneBase {

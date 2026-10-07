@@ -1,6 +1,21 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_02218300.h"
+#include "proto/ov001/unk_ov001_02218844.h"
+#include "proto/ov001/unk_ov001_02218dc8.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -8,56 +23,10 @@ extern "C" {
 
 s32 OS_Sleep(s32);
 s32 GX_LoadBG2Scr();
-s32 WfcSimpleStartWait_LoadBg();
-s32 WfcHighlight_SetConnection();
-s32 WfcUtil_ShowBottomMessage(s32);
-s32 WfcBusyIcon_Create(s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetEditParams(s32, s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcSound_Play(s32);
-s32 WfcSound_Stop();
-s32 WfcSimpleStart_GetState();
-s32 WfcSimpleStart_ApplyResult();
-s32 WfcSimpleStart_End();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcButtonBar_DisableInput();
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_IsClosed();
-s32 WfcBusyIcon_Delete();
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcUtil_HideTopMessage();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_Close();
-s32 WfcButtonBar_GetResult();
 s32 WfcInput_IsKeyPressed(s32);
-s32 WfcButtonBar_SetResult(s32);
-s32 WfcButtonBar_EnableInput();
-s32 WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcSetupMethod_Enter();
-s32 WfcSimpleStartDone_Enter();
-void WfcSimpleStartRecv_StartExit();
-void WfcSimpleStartRecv_WaitDialogClosed();
-void WfcSimpleStartRecv_FailDialog();
-void WfcSimpleStartRecv_FadeOut();
-void WfcSimpleStartRecv_Exit();
-void WfcSimpleStartRecv_Update();
-void WfcSimpleStartRecv_WaitFadeIn();
-void WfcSimpleStartRecv_WaitButtonBar();
-void WfcSimpleStartRecv_FadeIn();
-void WfcSimpleStartRecv_CheckStatus();
-void WfcSimpleStartRecv_HandleInput();
-void WfcSimpleStartRecv_Idle();
-void WfcSimpleStartRecv_HandleResult();
-BOOL WfcSimpleStartRecv_IsLidClosed();
-void WfcSimpleStartRecv_LoadBg();
 
 }
 

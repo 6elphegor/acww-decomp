@@ -1,5 +1,14 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#define PROTO_LOCAL_WfcMove_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcMove_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransfer_Task  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0220cd24.h"
+#include "proto/ov001/unk_ov001_02222e84.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 typedef void (*WfcTransferCallback)(u32);
 
@@ -28,25 +37,14 @@ WfcTransferWork *sWfcTransfer;
 extern "C" {
 extern void *gWfcMsgBank;
 
-extern void Fatal_Trap();
 extern void MIi_CpuCopy16(void *, void *, u32);
 
-extern u32 WfcUtil_GetLanguage();
-extern void *WfcMsg_GetString(void *, s32);
-extern s32 WfcMove_RequestCancel();
 extern void WfcMove_Init(void *, void *);
-extern s32 WfcMove_Start();
 extern void WfcMove_Update(void *);
-extern void WfcMove_GetState(u8 *, u8 *);
-extern void *WfcMove_GetChildUser();
-extern void WfcMove_StartDownload();
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);
-extern void WfcTask_RequestDelete(s32, s32);
-extern void *WfcTask_Add(s32, void *, s32, s32);
 
 void WfcTransfer_Task(s32 a);
-void WfcTransfer_EndTask(s32 a);
 
 #pragma thumb off
 

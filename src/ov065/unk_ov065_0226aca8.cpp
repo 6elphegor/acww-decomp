@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "proto/ov065/unk_ov065_0226aca8.h"
 
 extern "C" {
 
@@ -8,7 +9,6 @@ s32 _s32_div_f(s32, s32);
 volatile u8 sWifiRssiCount[4];
 u8 sWifiRssiSamples[16];
 
-u8 WifiLink_GetAverageRssi();
 
 u8 WifiLink_GetAverageRssi() {
     u32 sum = 0;

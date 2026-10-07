@@ -5,6 +5,28 @@
 #include "item/FutureLetter.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
+#define PROTO_LOCAL_InputMode_SetButtons  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InputMode_SetTouch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_ReturnFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_SetButtons  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_SetFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_SetTouch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_StoreFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206db88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
 
 
 // 8-byte list head sOpenMenuList: inline constructor, no destructor
@@ -80,200 +102,31 @@ extern u8 gTouchCurX;
 extern u16 gPad[];
 
 // functions of other units
-void Mem_Clear(void *, s32);
-void Mem_Copy(u32, void *, s32);
 void MI_CpuCopy8(void *, const void *, u32);
-void *Inventory_GetEmptyLetter(void);
 void Letter_Copy(void *, void *);
-void Letter_MarkSent(void *);
-u32 PlayerData_GetCurrent(void);
-void *PlayerData_GetFutureLetter(u32);
-void *FutureLetter_GetLetter(void *);
 void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
-void Pocket_SetItem(u16 *, u32, u32);
-void Text_BuildCharWidthTable();
-s32 InputMode_IsButtons();
 s32 InputMode_SetTouch();
 s32 InputMode_SetButtons();
-void OverlayMgr_Release(u32);
-void OverlayMgr_Acquire(u32);
-s32 GameProc_CreateChild(u32, u32, u32, u32);
 void List_Remove(void *, void *);
 void List_PushBack(void *, u32);
-void MenuScreen_Update();
-BOOL Stub_ReturnFalse();
 s32 Scene_GetCurrent();
 BOOL TalkRequest_IsActive();
-s32 Hud_GetSceneHudKind();
 void TalkRequest_AddMenu(u32);
-void MenuScreen_Reset();
-void MenuHeap_Destroy();
 void PrioList_Init(void *);
-void MenuHeap_Create(u32, u32);
-void MenuScreen_ClearState();
 void PendingUnit_ClearActiveOfAid(u32);
-void HudCountdown_StartWithSe(u32);
 
 // functions of this unit
-void MenuCtrl_ClearChatDraft(void);
-void MenuCtrl_RestorePockets(void);
-void MenuCtrl_BackupPockets(void);
-BOOL MenuCtrl_HasFlags(u32);
-void MenuCtrl_ClearFlags(u32);
-void MenuCtrl_SetFlags(u32);
 s32 MenuCtrl_SetButtons();
 s32 MenuCtrl_SetTouch();
-BOOL MenuCtrl_IsTransitionActive();
-BOOL MenuCtrl_IsIdle();
-BOOL MenuCtrl_RequestOpen(u32);
-BOOL MenuCtrl_OpenLauncher(u32);
-void MenuCtrl_SetText(u32, u32);
-void MenuCtrl_SetArg(u32);
-BOOL MenuCtrl_IsLoaded(s32);
-void MenuCtrl_ClearReleasePending(s32);
-void MenuCtrl_SetReleasePending(s32);
-void MenuCtrl_ClearLoaded(s32);
-void MenuCtrl_SetLoaded(s32);
-BOOL MenuCtrl_IsReleasePending(s32);
-BOOL MenuCtrl_ReleaseOverlays(u32);
-BOOL MenuCtrl_LoadRequestedOverlays();
-BOOL MenuCtrl_CreateRequestedMenu();
-void MenuCtrl_ReleaseClosedMenus();
-void MenuCtrl_ResetForceClose(void);
-void MenuCtrl_ResetFlags();
-MenuManager *MenuManager_Create();
 }
 
 // prototypes of the unit's functions
 extern "C" {
-void CommSub_StartCountdown(u8 *o);
-void CommSub_RecvClearPendingUnit(u8 *o);
-MenuManager *MenuManager_Create();
-void MenuCtrl_AddOpenMenu(u32 v);
-void MenuCtrl_RemoveOpenMenu(u8 *o);
-void MenuCtrl_ReleaseClosedMenus();
-BOOL MenuCtrl_CreateRequestedMenu();
-BOOL MenuCtrl_LoadRequestedOverlays();
-BOOL MenuCtrl_ReleaseOverlays(u32 i);
-void MenuCtrl_ResetFlags();
-BOOL MenuCtrl_IsIdle();
-BOOL MenuCtrl_IsMenuOpen();
-BOOL MenuCtrl_RequestOpen(u32 v);
-BOOL MenuCtrl_RequestOpenNested(u32 v);
-BOOL MenuCtrl_RequestOpenMenu12(u32 v);
-BOOL MenuCtrl_IsLoaded(s32 i);
-void MenuCtrl_SetLoaded(s32 i);
-void MenuCtrl_ClearLoaded(s32 i);
-BOOL MenuCtrl_IsReleasePending(s32 i);
-void MenuCtrl_SetReleasePending(s32 i);
-void MenuCtrl_ClearReleasePending(s32 i);
-void MenuCtrl_SetFlags(u32 m);
-void MenuCtrl_ClearFlags(u32 m);
-BOOL MenuCtrl_HasFlags(u32 m);
-void MenuCtrl_ClearMenuOnTop();
-void MenuCtrl_SetMenuOnTop();
-BOOL MenuCtrl_IsMenuOnTop();
 s32 MenuCtrl_SetTouch();
 s32 MenuCtrl_SetButtons();
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-void MenuCtrl_SyncFromInputMode();
-s32 Menu_GetIconCharIndex(s32 v);
-void BgScreen_SetRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void BgScreen_ReplaceRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 from, u32 to);
-void MenuCtrl_SetTransitionProgress(s32 v);
-s32 MenuCtrl_GetTransitionProgress();
-s32 MenuCtrl_GetTransitionProgressOrFull();
-BOOL MenuCtrl_IsTransitionActive();
-void MenuCtrl_SetTransitionActive();
-void MenuCtrl_ClearTransitionActive();
-BOOL MenuCtrl_IsScreenChanging();
-void MenuCtrl_SetScreenChanging();
-void MenuCtrl_ClearScreenChanging();
-u32 MenuCtrl_GetArg();
-void MenuCtrl_SetArg(u32 v);
-u32 MenuCtrl_GetMode();
-void MenuCtrl_SetMode(u32 v);
-u32 MenuCtrl_GetIndex();
-void MenuCtrl_SetIndex(u32 v);
-BOOL MenuCtrl_IsResultOk();
-BOOL MenuCtrl_IsResultDuplicateName();
-void MenuCtrl_SetResult(u32 v);
-void *MenuCtrl_GetText();
-void MenuCtrl_SetText(u32 a, u32 b);
-BOOL MenuCtrl_OpenLauncher(u32 a);
-BOOL MenuCtrl_OpenLauncherWithIndex(u32 a, u32 b);
-BOOL MenuCtrl_IsFinished();
-void MenuCtrl_ClearSavedSlot();
-void MenuCtrl_SetSavedSlot(u32 v);
-u32 MenuCtrl_GetSavedSlot();
-void MenuCtrl_BackupPockets();
-void MenuCtrl_RestorePockets();
-void MenuCtrl_SetChosenItems(u16 *src);
-u16 *MenuCtrl_GetChosenItems(void);
-void MenuCtrl_ReturnChosenItems(void *p);
-void MenuCtrl_ReplaceBackupItem(u32 key, u16 val);
-BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b);
-u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *));
-u16 MenuCtrl_GetPocketSelectMask(void);
-u8 MenuCtrl_GetPocketSelectLabel(void);
-BOOL MenuCtrl_OpenPostOffice(void);
-void MenuCtrl_SetPostOfficeResult(u32 v);
 void MenuCtrl_SetFutureLetter(void *a);
 void MenuCtrl_StoreFutureLetter(void);
 void MenuCtrl_ReturnFutureLetter(void);
-u32 MenuCtrl_GetPostOfficeOutcome(void);
-BOOL MenuCtrl_PostOfficeHadBadAddress(void);
-u8 MenuCtrl_GetPostOfficeFullMailboxes(void);
-BOOL MenuCtrl_PostOfficeWasRejected(void);
-BOOL MenuCtrl_PostOfficeHadNoLetter(void);
-BOOL MenuCtrl_PostOfficeLettersSent(void);
-u32 MenuCtrl_GetHandBells(void);
-void MenuCtrl_SetHandBells(u32 v);
-u32 MenuCtrl_GetAmount(void);
-void MenuCtrl_SetAmount(u32 v);
-void MenuCtrl_SetDateTime(void *a);
-void MenuCtrl_GetDateTime(void *a);
-BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b);
-void MenuCtrl_ClearPtrArgs(void);
-u32 MenuCtrl_GetPtrArg0(void);
-u32 MenuCtrl_GetPtrArg1(void);
-BOOL MenuCtrl_IsClockMovedBack(void);
-BOOL MenuCtrl_IsClockMovedForward(void);
-BOOL MenuCtrl_IsClockEdited(void);
-void MenuCtrl_SetClockMovedBack(void);
-void MenuCtrl_SetClockMovedForward(void);
-void MenuCtrl_SetClockEdited(void);
-void MenuCtrl_ClearClockChangeFlags(void);
-BOOL MenuCtrl_OpenPocketsFullInsect(u32 v);
-BOOL MenuCtrl_OpenPocketsFullFish(u32 a, u32 b);
-BOOL MenuCtrl_OpenPocketsFullPickUp(u32 v);
-BOOL MenuCtrl_OpenPocketsFullDug(u32 v);
-u16 MenuCtrl_GetPocketsFullItem(void);
-void MenuCtrl_SetPocketsFullItem(u32 v);
-void MenuCtrl_SetCatalogItem(u32 v);
-u16 MenuCtrl_GetCatalogItem(void);
-void MenuCtrl_SetSongItem(u32 v);
-u16 MenuCtrl_GetSongItem(void);
-BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c);
-void MenuCtrl_InitKeyboardState(void);
-u8 MenuCtrl_GetKeyboardPage(void);
-void MenuCtrl_SetKeyboardPage(u32 v);
-u8 MenuCtrl_GetKeyboardPageMode(u32 i);
-void MenuCtrl_SetKeyboardPageMode(u32 i, u32 v);
-void MenuCtrl_RequestForceClose(void);
-void MenuCtrl_ResetForceClose(void);
-void MenuCtrl_TickForceClose(void);
-s32 MenuCtrl_IsForceCloseDue(void);
-void MenuCtrl_SetSyncMsgMenu(void);
-void MenuCtrl_ClearSyncMsgMenu(void);
-BOOL MenuCtrl_IsSyncMsgMenu(void);
-BOOL MenuCtrl_IsFriendPageFromIndex(void);
-void MenuCtrl_SetFriendPageFromIndex(void);
-void MenuCtrl_ClearFriendPageFromIndex(void);
-void *MenuCtrl_GetChatDraft(void);
-void MenuCtrl_SetChatDraft(u32 a);
-void MenuCtrl_ClearChatDraft(void);
 }
 
 // ---- data ----

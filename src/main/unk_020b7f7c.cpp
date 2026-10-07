@@ -1,12 +1,15 @@
 #include "types.h"
 #include "sys/DebugText.h"
+#define PROTO_LOCAL_DebugText_VPrintf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_VSNPrintf  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_020b7f7c.h"
 
 extern "C" {
 void NNS_GfdInitFrmTexVramManager(u32 a, u32 b);
 void NNS_GfdInitFrmPlttVramManager(u32 a, u32 b);
 u32 GX_GetSizeOfTexPltt(void);
 u32 GX_GetBankForTex(void);
-void Fatal_Trap(void);
 void OS_VSNPrintf(char *buf, u32 size, const char *fmt, char *ap);
 }
 
@@ -18,18 +21,7 @@ extern u32 (*data_0213bc18)(u32);
 extern u32 sPlttVramUsed, sTexVramTexelBHi, sTexVramIdxBHi, sTexVramIdxAHi, sTexVramTexelAHi, sTexVramTexelBLo, sTexVramIdxBLo;
 extern u32 sTexVramIdxALo, sTexVramTexelALo, sPlttVramSize;
 
-extern "C" void DebugText_PutChar(u16 *dst, u32 base, s32 c);
-extern "C" void DebugText_PutString(u16 *dst, u32 base, const char *s);
 extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap);
-extern "C" void DebugText_Print(DebugText *self, u16 *dst, const char *s);
-extern "C" void DebugText_Printf(DebugText *self, u16 *a, const char *fmt, ...);
-extern "C" void TexVram_Alloc4x4(u32 *o0, u32 *o1, u32 size);
-extern "C" void TexVram_AllocNormal(u32 *o, u32 size);
-extern "C" u32 PlttVram_AllocRaw(u32 a);
-extern "C" u32 TexVram_Alloc(u32 a, u32 b);
-extern "C" u32 PlttVram_Alloc(u32 a);
-extern "C" void TexVram_InitManagers(void);
-extern "C" void TexVram_OnAllocFail(void);
 
 extern "C" void DebugText_PutChar(u16 *dst, u32 base, s32 c) {
     *dst = base + c;

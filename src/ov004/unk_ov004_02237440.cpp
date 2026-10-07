@@ -22,6 +22,54 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "save/MuseumData.h"
 #include "snd/SndEnvChannel.h"
+#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_ArachnidFacePlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_CheckScared  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_DragonflyAvoidWall  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_DragonflyFlyTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_DragonflyHover  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_DragonflyLand  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_FaceEachOther  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_FightCircleOther  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_FightCircleSelf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_FightClash  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_FightSkirmish  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_FleaJump  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_GetHomeDelta  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_HopperAvoidWall  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_HopperHop  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_MoleCricketCheckEmerge  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_MoleCricketCrawl  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_MosquitoChase  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_PillBugWalk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_RunCockroach  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_RunDragonfly  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_RunFlea  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_RunHopper  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_UpdateAlertLevel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MuseumInsect_WiggleHeading  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/ov004/unk_ov004_02213b90.h"
+#include "proto/ov004/unk_ov004_02237440.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -307,133 +355,31 @@ public:
 extern "C" {
 void * _ZN12MuseumInsect5crawlEv(void *self);
 void *_ZN16MuseumInsectRoomC1Ev(void *self);
-u32 MuseumInsect_GetTimeOfDayBit();
-MuseumInsect *MuseumInsect_FindDungBall();
-MuseumInsect *MuseumInsect_FindScorpion();
-void MuseumInsect_RevertOutOfBounds(void *m, u8 *s, s32 *p);
-void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s);
-BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v);
-s32 MuseumInsectRoom_FindFreeSlot();
-void *MuseumInsectRoom_Create();
-void MuseumInsect_InitPlacement(void *m, u8 *s);
-void MuseumInsect_UpdateDungBeetle(MuseumInsect *o);
-void MuseumInsect_SetupDungBeetle(MuseumInsect *o);
-void MuseumInsect_UpdateAnt();
-void MuseumInsect_SetupAnt(MuseumInsect *o);
-void MuseumInsect_UpdateFlea(MuseumInsect *o);
-void MuseumInsect_SetupFlea(MuseumInsect *o);
-void MuseumInsect_UpdateBee(MuseumInsect *o);
-void MuseumInsect_SetupBee(MuseumInsect *o);
-void MuseumInsect_SetupScorpion(MuseumInsect *o);
-void MuseumInsect_SetupTarantula(MuseumInsect *o);
-void MuseumInsect_UpdateArachnid(MuseumInsect *o);
-void MuseumInsect_UpdateSpider(MuseumInsect *o);
-void MuseumInsect_SetupSpider(MuseumInsect *o);
-void MuseumInsect_UpdateFly(MuseumInsect *o);
-void MuseumInsect_SetupFly(MuseumInsect *o);
-void MuseumInsect_UpdateHoneybee(MuseumInsect *o);
-void MuseumInsect_SetupHoneybee(MuseumInsect *o);
-void MuseumInsect_UpdatePillBug(MuseumInsect *o);
-void MuseumInsect_SetupPillBug(MuseumInsect *o);
-void MuseumInsect_UpdateMoleCricket(MuseumInsect *o);
-void MuseumInsect_SetupMoleCricket(MuseumInsect *o);
-void MuseumInsect_SetupOrchidMantis(MuseumInsect *o);
-void MuseumInsect_SetupMantis(MuseumInsect *o);
-void MuseumInsect_SetupLadybug(MuseumInsect *o);
-void MuseumInsect_SetupSnail(MuseumInsect *o);
-void MuseumInsect_UpdateWalker(MuseumInsect *o);
-void MuseumInsect_UpdatePondSkater(MuseumInsect *o);
-void MuseumInsect_SetupPondSkater(MuseumInsect *o);
-void MuseumInsect_SetupBandedDragonfly(MuseumInsect *o);
-void MuseumInsect_SetupDarnerDragonfly(MuseumInsect *o);
-void MuseumInsect_SetupRedDragonfly(MuseumInsect *o);
-void MuseumInsect_SetupDragonfly(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d, u8 e, s32 f);
-void MuseumInsect_UpdateDragonfly(MuseumInsect *o);
-void MuseumInsect_UpdateCockroach(MuseumInsect *o);
-void MuseumInsect_SetupCockroach(MuseumInsect *o);
-void MuseumInsect_SetupBellCricket(MuseumInsect *o);
-void MuseumInsect_SetupMigratoryLocust(MuseumInsect *o);
-void MuseumInsect_SetupLongLocust(MuseumInsect *o);
-void MuseumInsect_SetupCricket(MuseumInsect *o);
-void MuseumInsect_SetupGrasshopper(MuseumInsect *o);
-void MuseumInsect_UpdateHopper(MuseumInsect *o);
-void MuseumInsect_SetupHopper(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d);
-s32 MuseumInsect_RandTurn(s32 n);
-void MuseumInsect_ClampStep(void *out_, void *in_, s32 lim);
 void MuseumInsect_RunCockroach(void *r_);
-void MuseumInsect_RunDungBeetle(void *r_);
 BOOL MuseumInsect_ArachnidFacePlayer(void *r_);
-void MuseumInsect_ArachnidWalk(void *r_);
 void MuseumInsect_FightClash(void *r_);
-void MuseumInsect_FightPause(void *r_);
 void MuseumInsect_FightCircleSelf(void *r_);
 void MuseumInsect_FightCircleOther(void *r_);
 void MuseumInsect_FightSkirmish(void *r_);
-BOOL MuseumInsect_UpdateFight(MuseumInsect *o);
 BOOL MuseumInsect_FaceEachOther(MuseumInsect *a, MuseumInsect *b);
 void MuseumInsect_WiggleHeading(void *o_, s32 a, s32 b);
-void MuseumInsect_RunArachnid(void *o_);
-void MuseumInsect_MothHover(MuseumInsect *o);
-void MuseumInsect_RunMoth(void *o_);
-void MuseumInsect_GetPillBugWaypoint(void *v_, s32 k);
-void MuseumInsect_PillBugNextWaypoint(void *o_);
 void MuseumInsect_PillBugWalk(MuseumInsect *o);
-BOOL MuseumInsect_PillBugCheckCurl(MuseumInsect *o);
-void MuseumInsect_RunPillBug(void *o_);
-s32 MuseumInsect_SteerFromEdges(void *o_);
 void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p);
-void MuseumInsect_MoleCricketJump(MuseumInsect *self, s16 *p);
 void MuseumInsect_MoleCricketCheckEmerge(MuseumInsect *self);
-void MuseumInsect_RunMoleCricket(void *self_);
 void MuseumInsect_FleaJump(MuseumInsect *self);
 void MuseumInsect_RunFlea(void *self_);
-void MuseumInsect_FlyingInsectFly(MuseumInsect *self);
-void MuseumInsect_RunFlyingInsect(void *self_);
-void MuseumInsect_FireflyWander(MuseumInsect *self);
-void MuseumInsect_RunFirefly(void *self_);
 void MuseumInsect_MosquitoChase(MuseumInsect *self, s16 *p);
-void MuseumInsect_RunMosquito(void *self_);
-s32 MuseumInsect_RandTurn8(s32 n);
-void MuseumInsect_PondSkaterGlide(void *self_, s16 *p);
-void MuseumInsect_PondSkaterStartGlide(MuseumInsect *o, s16 *p);
-void MuseumInsect_RunPondSkater(void *o_);
-void MuseumInsect_HopperChirp(MuseumInsect *o);
 s32 MuseumInsect_HopperAvoidWall(MuseumInsect *o, s16 *p);
 void MuseumInsect_HopperHop(MuseumInsect *o);
 void MuseumInsect_RunHopper(void *o_);
-s32 MuseumInsect_DragonflyPickPerch(MuseumInsect *o);
 void MuseumInsect_DragonflyAvoidWall(MuseumInsect *o);
 void MuseumInsect_DragonflyFlyTo(MuseumInsect *o);
 void MuseumInsect_DragonflyHover(MuseumInsect *o);
 void MuseumInsect_DragonflyLand(MuseumInsect *o);
 void MuseumInsect_RunDragonfly(void *o_);
-void MuseumInsect_ButterflyFlapHeight(MuseumInsect *self, s16 *p);
-void MuseumInsect_ButterflyFly(MuseumInsect *self);
-void MuseumInsect_RunButterfly(void *self_);
 s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_);
-s32 MuseumInsect_TickAlert(void *self_);
-void MuseumInsect_TurnToTarget(void *self_, u32 a, s32 b);
-s32 MuseumInsect_GetEscapeHeading(s32 a, s32 b);
 void MuseumInsect_GetHomeDelta(MuseumInsect *self, s16 *a, s32 *b, VecFx32 *c);
 s32 MuseumInsect_CheckScared(void *self_);
-void MuseumInsect_BobHeight(void *self_, u32 a, s32 b, s32 c);
-void MuseumInsect_Wander(void *self_, s32 a, s32 b, u32 c);
-s32 MuseumInsect_GetSe(s32 a, s32 b);
-BOOL MuseumInsect_PlaySe(void *self_, s32 b);
-s32 MuseumInsect_TickTimer(void *self_);
-void MuseumInsect_StateRest(void *self_);
-void MuseumInsect_ApproachHome(void *self_);
-u8 MuseumInsect_ClampToBounds(void *o_, void *v_);
-BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_);
-void MuseumInsect_FlapWings(void *o_);
-void MuseumInsect_PointAtAngle(void *out_, void *base_, u32 ang, s32 rad);
-s16 MuseumInsect_RandHeading();
-void MuseumInsect_MakeStepDir(void *v_, s32 a);
-void MuseumInsect_SetProbePoints(MuseumInsect *o);
-u8 MuseumInsect_ProbeWalls(MuseumInsect *o);
-u8 MuseumInsect_ProbeFloor(MuseumInsect *o);
-u8 MuseumInsect_CheckWallsAhead(void *o_);
-u8 MuseumInsect_CheckFloorAhead(void *o_);
 extern u8 gCurrentHeap[];
 extern MuseumInsectParam sMuseumInsectParams[];
 extern MuseumInsect sMuseumInsects[0x20];
@@ -447,19 +393,14 @@ void func_020548a0(void *p);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_020548d0(void *p);
-void func_02000c8c();
-void FxVec3_Construct();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-s32 Random_GlobalBelow(s32 n);
-void *PlayerActor_GetActor(s32 a);
 s32 Vec_DistXZ(void *a, void *b);
 void Clock_GetMinuteHour(void *p);
 void func_0209c2d8(void *p);
 void func_0209c2dc(void *p);
 void func_02088bb0(void *p);
 void func_02088bc8(void *p);
-void Mem_Free(void *p);
 void AnimModel_detachVisAnim(void *p);
 void AnimModel_detachJointAnim(void *p);
 void SndEnvChannel_callRelease(void *p);
@@ -477,7 +418,6 @@ void *PooledModel_getModel(void *p);
 u32 NNS_G3dMdlGetMdlAlpha(u32 a, u32 b);
 void AnimModel_drawAnimated(void *obj, void *arg);
 void AnimModel_stepAnim(void *obj);
-void CharaShadow_DrawFaded(void *p, s32 a, u32 b, u8 c);
 s32 MuseumData_isDonated(void *tbl, void *v);
 void func_02031c48(void *p);
 void func_02031c10(void *p);
@@ -502,14 +442,8 @@ extern V3_7690 sMuseumFleaDrawScale;
 extern u8 sMuseumInsectFrame;
 extern Mtx43 data_021f47e0;
 extern u8 data_021ed0a0[];
-void func_02133ef8(void *p, s32 n);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-BOOL File_Exists(void *s);
-s32 File_LoadAlloc(void *s, s32 a, s32 b, s32 c);
 u32 ModelSlotPool_acquire(void *self, void *p);
 void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-void MuseumInsectHeap_Create();
-void MuseumInsectHeap_Destroy();
 BOOL PooledModel_loadFromSlot(void *self, u32 a, void *s);
 u32 ModelSlot_getHeap(u32 self);
 void Model_setResource(void *self, u32 a, s32 b);
@@ -541,30 +475,22 @@ void func_ov004_02239d18(void *o);
 void AnimModel_setFrame(void *p, s32 a);
 s32 Math_AngleXZ(void *a, void *b);
 extern s16 data_02136744[];
-void Vec_Sub(void *out, void *a, void *b);
-s32 Vec_SafeNormalize(void *v);
-s32 Vec_DotXZ(void *a, void *b);
 s32 Math_StepAngle(void *p, s32 target, s32 step);
 void GroundInfo_Destruct(void *p);
 extern s16 data_02135f44[];
 void func_ov004_0223a6e8(void *r, void *out);
 void *func_ov004_0223a570(void *r);
-void MuseumExhibitInfo_SpawnAutoTalk();
 s32 Math_ApproachS32(void *v, s32 a, s32 b, s32 c, s32 d);
-void Vec_ScaleTo(void *out, void *in, s32 s);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
 s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
 extern u8 gEffectSplDefaultInitCbs[];
 void EffectSpl_CreateOneShot(u32, void *, s32, void *);
 s32 FX_Div(s32, s32);
-s32 PlayerActor_RequestAct79();
 void func_ov004_02239a4c(void *, s32);
 s32 Math_ApproachVec(void *a, void *b, s32 c, s32 d, s32 e);
-s32 Effect_PlayById2(s32 a, void *b, void *c, s32 d);
 void SndEnvChannel_callRequest(void *o, s32 id);
 void SndEnvChannel_callRequestSustained(void *o, s32 id);
-void Vec_RotateY(void *v, s32 a);
 void func_ov004_02237690(void *p);
 }
 

@@ -54,16 +54,13 @@ extern "C" {
 extern Glob gSndMgr;
 extern Player gSndSeSystem;
 
-void _ZdlPv(void *p);
 void *Snd_GetHeap(void);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
-BOOL SndSeSystem_Setup(Player *o, u32 a, u32 b, Bytes4 s);
 void SndSeSystem_Shutdown(Player *p, s32 v);
 void NNS_SndHeapSaveState(void *p);
 void NNS_SndHeapLoadState(void *a, u32 b);
 void *NNS_SndHeapGetCurrentLevel(void *a);
-void NNS_SndArcLoadWaveArc(s32 a, void *b);
 void NNS_SndPlayerCreateHeap(s32 a, void *b, u32 c);
 void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
 void NNS_SndPlayerStopSeqByPlayerNo(s32 a, s32 b);
@@ -76,8 +73,6 @@ void SndMgr_SetVoiceType(Glob *g, u32 v);
 void SndMgr_stopAll(Glob *g);
 #define SndMgr_startOutputEffect _ZN6SndMgr17startOutputEffectEv
 void SndMgr_startOutputEffect(Glob *g);
-void Snd_ClearListenerCallbacks(void);
-void Snd_InstallListenerCallbacks(void);
 void Snd_SetUnusedFlag(s32 v);
 void MelodyPlayer_SetInstrument(F30 *a, s32 b);
 void MelodyPlayer_StopTrackB(F30 *v);
@@ -101,6 +96,16 @@ extern "C" Bytes4 data_0213b2c4 = {0x00, 0x02, 0xff, 0x00};
 // vtable 0x0213b8e0 (dsd label data_0213b8e8)
 #include "snd/SndSceneBase.h"
 #include "snd/SndMgr.h"
+#define PROTO_LOCAL_MelodyPlayer_SetInstrument  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_LoadBank  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetPlayerVolumes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetVoiceType  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_StartVolumeFadeIn  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_UpdateVolumeCurve  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_020edd58.h"
+#include "proto/autoload_2/unk_020f30fc.h"
+#include "proto/autoload_2/unk_0210c084.h"
 
 // vtable 0x0213b8ac (dsd label data_0213b8b4)
 class SndScene01 : public SndSceneBase {

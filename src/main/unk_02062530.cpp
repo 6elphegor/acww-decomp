@@ -7,6 +7,10 @@
 #include "talk/EncodedString.h"
 #include "item/ItemName.h"
 #include "talk/EncodedString16Buf.h"
+#define PROTO_LOCAL_FtrInfo_GetNameForm  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02061478.h"
 
 extern "C" {
 extern u8 gItemInfo[];
@@ -25,19 +29,15 @@ void *func_0206d86c(void *, s32);
 }
 
 extern "C" {
-s32 ItemInfo_GetKind(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetSeason(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetUnk07(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetClass(u16 *p);
 }
 
 extern "C" {
@@ -57,7 +57,6 @@ extern u16 sFirstHoldableItem[];
 }
 
 extern "C" {
-BOOL ItemInfo_IsHoldable(u16 *p);
 }
 
 extern "C" {
@@ -85,19 +84,15 @@ BOOL Item_IsFlowerAltItem(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetSeries(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetNameAttrA(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetNameAttrB(u16 *p);
 }
 
 extern "C" {
-s32 ItemInfo_GetUnk02(u16 *p);
 }
 
 static inline u16 Unk_020621d8_Idx(u32 i, u32 n, u32 base) {
@@ -105,9 +100,7 @@ static inline u16 Unk_020621d8_Idx(u32 i, u32 n, u32 base) {
     return base;
 }
 
-extern "C" void ItemInfo_CountClass1dHeadwear();
 
-extern "C" void ItemInfo_CountFlowerItems();
 
 static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
     if (Item_IsFurniture(g)) {
@@ -120,7 +113,6 @@ static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
     return FALSE;
 }
 
-extern "C" void ItemInfo_CountHoldable();
 
 static inline u8 *Unk_02061e0c_Lookup(u32 v) {
     u32 i = v & 0xfff;
@@ -145,7 +137,6 @@ static inline u16 Unk_02061e0c_Conv(u16 *p) {
     return 0x1000;
 }
 
-extern "C" u32 ItemInfo_GetPrice(u16 *p);
 
 static inline u8 *Unk_02062024_Lookup(u32 v) {
     u32 i = v & 0xfff;
@@ -153,9 +144,7 @@ static inline u8 *Unk_02062024_Lookup(u32 v) {
     return (u8 *)func_0206d86c(func_0206d794(gItemInfo), i);
 }
 
-extern "C" s32 ItemInfo_GetNameForm(u16 *);
 
-extern "C" u16 *ItemInfo_GetName(u16 *p);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Item table setup / string buffers
@@ -201,7 +190,6 @@ extern u8 sPathItemInfoSeries[];
 }
 
 extern "C" {
-BOOL ItemInfo_IsHoldable(u16 *p);
 }
 
 extern "C" {
@@ -261,15 +249,12 @@ BOOL func_0206d7ec(void *, void *, s32, void *, s32, void *, s32, s32);
 }
 
 extern "C" {
-void Item_FromPlacedForm(u16 *out, u16 *in);
 }
 
 extern "C" {
-u32 Series_GetName(s32);
 }
 
 extern "C" {
-void StrBuf_ClearAlt(void *);
 }
 
 extern "C" {
@@ -277,7 +262,6 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-u32 FtrInfo_GetName(s32);
 }
 
 extern "C" {
@@ -285,46 +269,32 @@ u32 FtrInfo_GetNameForm(s32);
 }
 
 extern "C" {
-u8 FtrInfo_GetNameAttrB(s32);
 }
 
 extern "C" {
-u8 FtrInfo_GetNameAttrA(s32);
 }
 
 extern "C" {
-void ItemInfoTables_FreeIndoor(void *);
 }
 
 extern "C" {
-void ItemInfoTables_LoadIndoor(void *, s32);
 }
 
 extern "C" {
-s32 ItemInfoTables_Close(void *);
 }
 
 extern "C" {
-s32 ItemInfoTables_Open(void *);
 }
 
 extern "C" {
-void ItemInfo_CountHoldable();
 }
 
 extern "C" {
-void ItemInfo_CountFlowerItems();
 }
 
 extern "C" {
-void ItemInfo_CountClass1dHeadwear();
 }
 
-extern "C" void ItemInfo_FreeIndoor();
-extern "C" void ItemInfo_LoadIndoor(s32 a);
-extern "C" s32 ItemInfo_Exit();
-extern "C" s32 ItemInfo_Init();
-extern "C" BOOL ItemInfo_IsReady();
 
 extern "C" void *func_02062404(void *o);
 

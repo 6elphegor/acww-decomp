@@ -4,6 +4,12 @@
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionSegment.h"
 #include "sys/ProcBase.h"
+#define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_0202e840.h"
 
 
 
@@ -12,23 +18,10 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(...);
-s32 Ground_GetUnitAttr(s32 x, s32 y);
 s32 VEC_DotProduct(void *a, void *b);
 void VEC_Add(void *o, void *a, void *b);
-void Vec_Add(void *o, void *a, void *b);
 s64 Vec_DistSq(void *a, void *b);
-void Vec_RotateY(void *v, s16 a);
-void Vec_Sub(void *o, void *a, void *b);
-void Vec_CrossCopy(void *o, void *a, void *b, void *c);
-s32 Vec_SafeNormalize(void *v);
-void Vec_Scale(void *v, s32 s);
-s32 Vec_Distance(void *a, void *b);
-s32 Vec_DistXZ(void *a, void *b);
-void *Proc_CreateRoot(u32 a, u32 b, u32 c);
-s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 PM_GetBattery(s32 *out);
-void ProcBase_RequestDelete(void *self);
-void _ZN8ProcBase10postCreateEi(void *self, int a);
 }
 
 

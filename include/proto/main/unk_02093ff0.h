@@ -1,0 +1,53 @@
+#ifndef PROTO_PROTO_MAIN_UNK_02093FF0_H
+#define PROTO_PROTO_MAIN_UNK_02093FF0_H
+
+// Prototypes of the functions defined in src/main/unk_02093ff0.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_PlayerId_GetTownId
+void *PlayerId_GetTownId(void *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerSession_RemovePitfallOnClimbOut
+void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_GetLocalSessionSlot
+s32 PlayerActor_GetLocalSessionSlot();
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_GetObjectSize
+s32 PlayerActor_GetObjectSize();
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_GetObjectAlign
+s32 PlayerActor_GetObjectAlign();
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_Spawn
+s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_PlayerId_ListContainsId
+BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
+#endif
+#ifndef PROTO_LOCAL_PlayerId_GenerateUniqueId
+u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n);
+#endif
+#ifndef PROTO_LOCAL_PlayerId_GenerateRandomId
+u16 PlayerId_GenerateRandomId();
+#endif
+#ifndef PROTO_LOCAL_PlayerId_FindResidentIndex
+s32 PlayerId_FindResidentIndex(void *x);
+#endif
+}
+#endif
+
+#endif

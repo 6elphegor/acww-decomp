@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/DwcGsHttpCallbackCtx.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02277e70.h"
 
 // ov065 TU34: GameSpy gsAvailable (0x02277e70..0x02278328)
 
@@ -21,10 +25,6 @@ struct GsAvailQuery {
 
 extern "C" {
 
-s32 STD_GetStringLength(const char *);
-void STD_CopyString(void *, const void *);
-s32 memcmp(const void *, const void *, s32);
-void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 
 extern s32 __GSIACResult;
@@ -33,8 +33,6 @@ extern char __GSIACGamename[];
 
 GsAvailQuery AC;
 
-void *DwcNet_Free(s32 a, void *b, s32 c);
-void *DwcNet_Alloc(s32 a, s32 b);
 s32 ghttpGetA(s32, s32, void *, void *);
 s32 ghttpPostA(s32, s32, s32, void *, void *);
 s32 ghttpPostAddStringA(s32 post, const char *name, const char *value);
@@ -51,10 +49,6 @@ s32 socket(s32, s32, s32);
 s32 get_sockaddrin(const char *, s32, void *);
 
 void DwcCore_SetError(s32, s32);
-s32 DwcGsHttp_ReportError(s32 e);
-s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, DwcGsHttpCallbackCtx *);
-s32 HandlePacket(s8 *, s32, u8 *, u32 *);
-void SendPacket();
 s32 sendto(s32, void *, s32, s32, void *, s32);
 }
 

@@ -1,0 +1,22 @@
+#ifndef PROTO_PROTO_OV004_UNK_OV004_0223E014_H
+#define PROTO_PROTO_OV004_UNK_OV004_0223E014_H
+
+// Prototypes of the functions defined in src/ov004/unk_ov004_0223e014.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class ResidentSelect;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_ResidentSelect_Create
+ResidentSelect *ResidentSelect_Create();
+#endif
+#ifndef PROTO_LOCAL_ResidentSelect_UpdateCursor
+void ResidentSelect_UpdateCursor(ResidentSelect *o);
+#endif
+}
+#endif
+
+#endif

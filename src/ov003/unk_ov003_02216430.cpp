@@ -11,6 +11,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "gfx/NNSG3dRS.h"
+#include "proto/ov003/unk_ov003_02216430.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -64,7 +65,6 @@ s32 _ZN12G3dResAccess11findNodeIdxEi(void *self, s32 i);
 extern "C" void TownHall_NodeCallback(NNSG3dRS *a);
 extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 extern "C" void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
-extern "C" void *TownHall_Create();
 
 class TownHall : public BuildingActor {
 public:

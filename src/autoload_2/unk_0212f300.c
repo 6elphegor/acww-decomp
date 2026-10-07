@@ -3,6 +3,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef unsigned char u8;
 #include "types64.h"
+#include "proto/autoload_2/unk_0212ef04.h"
 typedef struct {
     u8 sign;
     char unused;
@@ -21,9 +22,6 @@ extern int __less_dec(const decimal *, const decimal *);
 extern int __equals_dec(const decimal *, const decimal *);
 extern void __minus_dec(decimal *, const decimal *, const decimal *);
 extern void __num2dec_internal(decimal *, double);
-extern double pow(double, double);
-extern double ldexp(double, int);
-extern double copysign(double, double);
 
 #define INFINITY data_0213c31c
 #define pow_10 data_0213c574

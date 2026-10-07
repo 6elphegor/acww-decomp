@@ -8,6 +8,12 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "proto/autoload_2/unk_0210b448.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/autoload_2/unk_0210ec0c.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02119434.h"
 typedef signed char s8;
 typedef short s16;
 typedef int s32;
@@ -144,20 +150,14 @@ extern void NNS_FndAppendListObject(NNSFndList *, void *);
 extern void NNS_FndInitList(NNSFndList *, u16);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void OS_LockMutex(void *);
-extern void OS_UnlockMutex(void *);
-extern void OS_InitMutex(void *);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
-extern void OS_WakeupThread(void *);
 extern void MI_CpuFill8(u32, u32, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopyFast();
 extern void DC_FlushRange(void *, u32);
 extern void SND_SetSurroundDecay(u32);
-extern void FS_CancelFile(void *);
 extern void FS_CloseFile(void *);
-extern void FS_InitFile(void *);
 extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void NNS_SndStrmSetChannelPan(Ctx *, s32, s32);
 extern void NNS_SndStrmSetVolume(Ctx *, s32);
@@ -168,13 +168,11 @@ extern void NNS_SndStrmFreeChannel(Ctx *);
 extern BOOL NNS_SndStrmAllocChannel();
 extern void NNS_SndStrmInit(Ctx *);
 extern void NNS_SndCaptureStartEffect();
-extern FSFileID func_0210b48c(void);
 extern s32 NNS_SndArcReadFile();
 extern u32 NNS_SndArcGetFileOffset();
 extern u8 *NNS_SndArcGetStrmPlayerInfo();
 extern SInfo *NNS_SndArcGetStrmInfo();
 extern void *NNS_SndHeapAlloc();
-extern void StrmThreadProc();
 
 // in-unit prototypes
 void RequestNextStrm(Ctx *);
@@ -200,7 +198,6 @@ BOOL SetupStrmPlayers(void *);
 void OutputEffectHeadphone();
 void OutputEffectMono();
 void OutputEffectSurround();
-void OutputEffectNormal(void);
 void OutputEffectCallback();
 void NNS_SndCaptureChangeOutputEffect(s32);
 BOOL NNSi_SndFaderIsFinished(Fader *);

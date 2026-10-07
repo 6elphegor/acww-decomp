@@ -2,6 +2,7 @@
 #include "sys/RecordFile.h"
 #include "game/InfoTableSet.h"
 #include "nitro/io_access.h"
+#include "proto/main/unk_02052b50.h"
 
 extern "C" {
 extern u32 data_0213bfec;
@@ -43,34 +44,6 @@ struct FtrInfoRecord {
 #define CLAMP(n) if (n >= 0x6e9) n = 0x6e8;
 
 extern "C" {
-s32 FtrInfo_TestIndoorFlag2(s32 n);
-s32 FtrInfo_IsLucky(s32 n);
-s32 FtrInfo_GetDmaUnk04(s32 n);
-s32 Ftr_GetUnk06(s32 n);
-s32 FtrInfo_GetUnk06(s32 n);
-s32 Ftr_GetFlagPairB(s32 n);
-s32 FtrInfo_GetFlagPairB(s32 n);
-s32 Ftr_GetFlagPairA(s32 n);
-s32 FtrInfo_GetFlagPairA(s32 n);
-s32 FtrInfo_TestAlwaysFlag4(s32 n);
-s32 Ftr_GetCollectionGroup(s32 n);
-s32 FtrInfo_GetCollectionGroup(s32 n);
-s32 Ftr_GetUnk05(s32 n);
-s32 FtrInfo_GetUnk05(s32 n);
-s32 Ftr_GetClass(s32 n);
-s32 FtrInfo_GetClass(s32 n);
-s32 Ftr_GetSeries(s32 n);
-s32 FtrInfo_GetSeries(s32 n);
-void FtrInfoTables_FreeIndoor(void *p);
-void FtrInfoTables_LoadIndoor(void *p, s32 a);
-void FtrInfoTables_Close(void *p);
-void FtrInfoTables_Open(void *p);
-void Gfx_DisableAllBanks();
-u8 FtrInfo_GetIndoorUnk0(s32 i);
-BOOL FtrInfo_TestIndoorFlagC(s32 i);
-BOOL FtrInfo_TestIndoorFlag7(s32 i);
-s32 Item_GetFossilGroup(u16 *p);
-s32 FtrInfo_GetDmaUnk02(s32 i);
 }
 
 static inline BOOL Unk_02052dac_Bit(s32 v, s32 n) {

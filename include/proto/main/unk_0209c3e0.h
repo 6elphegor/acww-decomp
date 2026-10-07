@@ -1,0 +1,36 @@
+#ifndef PROTO_PROTO_MAIN_UNK_0209C3E0_H
+#define PROTO_PROTO_MAIN_UNK_0209C3E0_H
+
+// Prototypes of the functions defined in src/main/unk_0209c3e0.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "room/RoomObjActor.h"
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_RoomObjSync_Reset
+void RoomObjSync_Reset();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_RoomObjSync_ChangeState
+BOOL RoomObjSync_ChangeState(RoomObjActor *self, u8 v);
+#endif
+#ifndef PROTO_LOCAL_RoomObjSync_GetState
+u32 RoomObjSync_GetState(u32 idx);
+#endif
+#ifndef PROTO_LOCAL_RoomObjSync_SetState
+BOOL RoomObjSync_SetState(u32 idx, u8 v);
+#endif
+}
+#endif
+
+#endif

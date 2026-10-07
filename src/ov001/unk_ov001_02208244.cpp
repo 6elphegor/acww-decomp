@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 typedef void (*WfcLoadFunc)(void *, s32, u32);
 
@@ -10,13 +14,7 @@ extern "C" const u16 data_ov001_02229b74[4] = {0x14, 0, 0xd8, 0x40};
 extern "C" {
 extern void *gWfcMsgBank;
 extern void GXS_LoadBG0Scr(void *, s32, u32);
-extern void WfcText_DestroyBgCanvas(s32);
-extern void *WfcText_CreateBgCanvas(s32, s32);
-extern void *WfcMsg_GetStringWithDigit(void *, s32, s32, s32);
-extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
-extern void WfcText_RequestTransfer(void *);
 void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
-u32 WfcUtil_GetTextFlags();
 }
 
 #pragma thumb off

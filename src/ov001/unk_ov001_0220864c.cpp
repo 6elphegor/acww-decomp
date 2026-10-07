@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
 
 extern "C" {
 extern void WfcObj_Free(void *);
@@ -8,7 +9,6 @@ extern void WfcObj_SetPriority(void *, s32, s32);
 extern void WfcObj_SetPos(void *, s32, s32, s32);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_AllocClear(s32, s32);
-void WfcCursor_Clear();
 }
 
 extern "C" const u8 data_ov001_02229bc4[8] = {0x0a, 0x0b, 0x04, 0x05, 0x02, 0x03, 0x0c, 0x0d};

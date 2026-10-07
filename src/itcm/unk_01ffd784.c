@@ -6,6 +6,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
+#include "proto/itcm/unk_01ffd784.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;  // (long is 64 bits on 64-bit hosts)
@@ -25,7 +26,6 @@ extern void DC_WaitWriteBufferEmpty(void);
 extern void OSi_DoBoot(void);      // OSi_DoBoot (assembly)
 extern vu16 data_021fcf50;
 void OSi_ReadCardRom32(u32 src, void *dst, s32 len);
-void OSi_ReloadRomData(void);
 
 // MIi_DmaSetParams_wait
 void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {

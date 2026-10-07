@@ -2,6 +2,28 @@
 #include "gfx/VecFx32.h"
 #include "game/StarSkyView.h"
 #include "game/ConstellationRecord.h"
+#define PROTO_LOCAL_Constellation_GetRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_GetRecordAlt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_HighlightAll  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_SetLinePalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_DrawArrows  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_DrawScopeSprite  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_DrawStarMarker  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_FindConstellationByLine  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_IsConstellationFree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_RebuildScreen  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_ScrollByDir  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_ScrollX  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/ov127/unk_ov127_02291f60.h"
 
 // File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
 #pragma opt_loop_invariants off
@@ -24,49 +46,19 @@ extern "C" u8 data_ov127_02293fa0[4];
 
 extern "C" {
 extern void *gCurrentHeap;
-void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void File_LoadToBuffer(const char *a, void *b, u32 c);
-void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void Constellation_HighlightAll(void *p);
 void _ZN10BgVramTaskC1Ev(void *self);
 
 ConstellationRecord *Constellation_GetRecordAlt(s32 i);
 ConstellationRecord *Constellation_GetRecord(s32 i);
-s32 Constellation_CellToScreenIndex(s32 x, s32 y);
 void Constellation_SetLinePalette(void *p, u32 slot, s32 r);
 void _ZN10BgVramTask6cancelEv(void *self);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
-s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
-s32 Snd_StopSe(s32 a, s32 b);
-void Snd_PlaySeOnHandle(s32 a);
-s32 Snd_SetPanIfChanged(s32 a);
-void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
-void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-s32 Vec_MagXZ(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
-void StarSky_CollectStars(ConstellationRecord *p, u8 *out);
-u8 *StarSky_GetLineStars(u16 i);
-u32 StarSky_GetStarY(s32 i);
-u32 StarSky_GetStarX(s32 i);
-s32 StarSky_GetLineAt(s32 x, s32 y);
-s32 StarSky_GetLineAtCellIndex(s32 i);
-s32 StarSky_GetStarAtCellIndex(s32 i);
-void StarSky_ClearFlags(StarSkyView *s, u32 m);
-void StarSky_SetFlags(StarSkyView *s, u32 m);
-BOOL StarSky_HasFlags(StarSkyView *s, u32 m);
-s32 StarSky_GetScrollY(StarSkyView *s);
-s32 StarSky_GetScrollX(StarSkyView *s);
-s32 StarSky_GetOverscroll(StarSkyView *s);
-void StarSky_StepToTarget(StarSkyView *s);
-BOOL StarSky_ScreenToCell(StarSkyView *s, s32 x, s32 y, s32 *ox, s32 *oy);
-BOOL StarSky_ScrollY(StarSkyView *s, s32 a, s32 b);
 void StarSky_ScrollX(StarSkyView *s, s32 a);
 namespace Unk_ov127_02292698_Ns {
 s32 StarSky_ScrollX(StarSkyView *s, s32 a);

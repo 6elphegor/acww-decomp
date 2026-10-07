@@ -1,10 +1,11 @@
 #include "types.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020a6914.h"
 
 // 0x020a6914-0x020a6974: the seven functions between the linked units at 0x020a65fc (U199) and 0x020a6974 (U200).
 // Bodies unchanged from src/main/unk_020a6914.cpp.
 
 extern "C" {
-void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" void NetSceneMsg_Init(void) {}

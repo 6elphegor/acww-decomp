@@ -8,6 +8,38 @@
 #include "gfx/AnimModel.h"
 #include "gfx/PooledModel.h"
 #include "town/BuildingActor.h"
+#define PROTO_LOCAL_Bee_StingAndLeave  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Dragonfly_FindPerch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Dragonfly_FlyToPerch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Insect_SetAnimSpeed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Moth_CircleLight  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pondskater_Skate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Stinger_Threaten  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Stinger_TryAttack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Stinger_UpdateChase  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Stinger_Walk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_02212830.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/ov068/unk_ov068_022687c0.h"
 
 #pragma opt_loop_invariants off
 
@@ -36,35 +68,24 @@ extern s32 data_020c7c1c;
 extern u8 *gSceneBlockMap;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void Vec_Add(VecFx32 *out, void *a, void *b);
-void Effect_Create(s32 a, void *v, s32 b, void *h);
-void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
-void FieldFish_ScareAround(void *a, s32 b);
 void *_ZN11PooledModel8getModelEv(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s16 Math_AngleXZ(void *, void *);
-s32 Random_GlobalBelow(s32);
 s32 _s32_div_f(s32 a, s32 b);
 void Insect_GetDirVec(void *, s32);
 s32 Field_IsRafflesiaNear(void *a, void *b);
 s32 Field_FindFlowerNear(void *a, void *b, s32 c);
-s32 Insect_GetFlowerSpeciesMask(s32 a);
-s32 Insect_LikesFlower(s32 a, void *b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Flower_GetSpecies(void *cell);
 s32 Vec_DistXZ(void *a, void *b);
-void Insect_AdjustFlowerLandingPos(s32 code, s32 *v);
-void *Snowball_FindOtherInBallState(void *self);
 s32 Snowball_ChangeState(void *o, s32 st);
 s32 Snowball_Break(void *o, s32 a);
-s32 Vec_Distance(void *a, void *b);
 s32 Math_Atan2(s32 x, s32 z);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);
 s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
-void Snowman_SendPrizeLetter();
 void func_020339bc(void *o, void *pos, s32 a, s32 b);
 s32 func_02033914(void *o, s32 f);
 void GroundInfo_Destruct(void *o);
@@ -77,57 +98,33 @@ s32 VEC_Subtract(void *, void *, void *);
 s32 VEC_Add(void *, void *, void *);
 s32 Insect_ClampStepXZ(void *, void *, s32);
 s32 NNS_G3dMdlGetMdlAlpha(s32, s32);
-s32 PlayerActor_LocalFaint(s32);
 void Insect_PlaySe(void *, s32, s32);
 s32 Insect_FadeOut(Insect *, s32);
 s32 Insect_Despawn(Insect *);
 void Math_StepAngle(s16 *, s32, s32);
-void *PlayerActor_GetActor(s32);
 s32 Insect_UpdateAlarm(Insect *, V3 *);
 s32 Stinger_TryAttack(Insect *, u32, u32, s16 *);
 s32 Stinger_Threaten(Insect *, u32, u32);
 s32 Insect_GroundWalk(void *);
-s32 Insect_IsOverWater(void *);
-s32 PlayerActor_LocalBeeSting();
 void Town_ClearBeesReleased();
 void Bee_UpdateSwarmAnim(V3 *, AnimModel *, s32);
-void Bee_StretchSwarm(s32 *, s32);
-s32 MenuCtrl_IsMenuOpen(void);
 s32 Math_ApproachS32(s32 *, s32, s32, s32, s32);
 void Insect_FlapWings(void *);
 s32 Insect_CheckAlarm(void *);
 void Insect_FlutterBob(void *, s32, s32, s32);
 s32 PlayerActor_IsLocalAct67HitAt(void *);
-void *Snowball_GetLooseBall(s32);
 s32 Snowball_GetRadius(void *);
 s32 Snowball_TrySetPos(void *, void *);
-s32 Snowball_GetMaxRadius(void);
-s32 Snowball_GetMinRadius(void);
-s32 Insect_RandomTurn(s32, s32);
-s32 PlayerActor_RequestAct79(void);
-void Bgm_ReleasePriority(s32);
-void Bgm_Request(s32, s32, s32, s32);
-void PlayerActor_SetSlotFlag(s32, s32);
-void Bgm_RequestSilence(s32, s32, s32);
-s32 Insect_ApproachFlower(Insect *, s16 *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 Item_MakeBuilding(u32);
-void *StrBSize_Get(u16 *);
-void *BuildingList_FindByItem(u32);
 void Vec_Sub(void *, void *, void *);
 void Vec_RotateY(void *, s32);
 void Insect_SetAnimSpeed(void *, s32);
 s32 Ground_GetWaterKind(s32, s32);
-void Effect_PlayById2(s32, void *, void *, s32);
 s32 Insect_CheckObstacle(void *, s32, s32);
-void *NpcRegistry_GetBySlot(u32);
-s32 NpcRegistry_GetSlotCount();
 void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out);
-void Insect_AccumAlarmFromActor(Insect *o, u8 *flag, s32 a, s32 b);
 s32 Dragonfly_FindPerch(Insect *o);
 void Pondskater_Skate(Insect *o, s16 *p);
-void Pondskater_StartSkate(Insect *o, u16 *p);
-void Pondskater_CheckObstacle(Insect *o, u16 *p);
 void Dragonfly_FlyToPerch(Insect *o);
 void Moth_CircleLight(Insect *o);
 s32 Moth_SteerToLight(Insect *o, u16 *p, V3 *out);

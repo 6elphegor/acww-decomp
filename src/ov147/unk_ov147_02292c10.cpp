@@ -4,6 +4,14 @@
 #include "types.h"
 #include "menu/TitleBlinkText.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Gfx2d_GetMainPlanes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Gfx2d_HideMainPlanes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TitleBlinkText_HideBg3  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TitleBlinkText_LoadGraphics  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/ov147/unk_ov147_02292c10.h"
 
 extern "C" {
 extern s16 data_02135f44[];
@@ -12,8 +20,6 @@ void G2x_SetBlendAlpha_(u32 a, s32 b, s32 c, s32 d, s32 e);
 s32 _s32_div_f(s32 a, s32 b);
 s32 Gfx2d_HideMainPlanes(s32 a);
 u32 Gfx2d_GetMainPlanes(s32 a);
-void Gfx2d_ShowMainPlanes(s32 a);
-void Gfx2d_SetMainBg3Offset(s32 a, s32 b);
 void DC_FlushRange(void *p, u32 size);
 void GX_LoadBG3Scr(void *p, u32 a, u32 size);
 void GX_LoadBGPltt(void *p, u32 a, u32 size);
@@ -22,20 +28,8 @@ BOOL FS_OpenFile(void *file, const char *path);
 void FS_ReadFile(void *a, void *b, u32 size);
 void FS_CloseFile(void *a);
 void FS_InitFile(void *a);
-void *Mem_AllocTail(u32 size);
-s32 Mem_Free(void *p);
-void TitleBlinkText_SetupBg3();
 void TitleBlinkText_LoadGraphics(s32 a);
 void TitleBlinkText_HideBg3();
-void TitleBlinkText_ShowBg3();
-void TitleBlinkText_ReadScreen(void *a, void *b, void *c);
-void TitleBlinkText_ReadPalette(void *a, void *b, void *c);
-void TitleBlinkText_ReadChars(void *a, void *b, void *c);
-void TitleBlinkText_UploadScreen(void *p);
-void TitleBlinkText_UploadPalette(void *p);
-void TitleBlinkText_UploadChars(void *p);
-void *TitleBlinkText_Alloc(u32 size);
-void TitleBlinkText_Free(void *p);
 }
 
 

@@ -1,5 +1,25 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_0220de1c.h"
+#include "proto/ov001/unk_ov001_0220e320.h"
+#include "proto/ov001/unk_ov001_0220e61c.h"
+#include "proto/ov001/unk_ov001_0220eb90.h"
+#include "proto/ov001/unk_ov001_0220f9e4.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221ea94.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
 
 #pragma thumb off
 
@@ -19,100 +39,22 @@ struct WfcSysInfoStackPad {
 
 extern "C" {
 s32 WfcInput_IsKeyPressed(s32);
-void WfcButtonBar_SetResult(s32);
-void WfcErase_HandleResult();
-s32 WfcButtonBar_GetResult();
-void WfcButtonBar_EnableInput();
-void WfcUtil_SetScene(void *);
-s32 WfcFade_IsBusy(s32);
-void WfcUtil_OpenButtonBar(s32);
-void WfcFade_Start(s32, s32, s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
 void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Scr();
-void WfcHighlight_Set(s32);
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowBottomMessage(s32);
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
-void WfcButtonBar_DisableInput();
-void WfcFade_StartWait(s32);
-void WfcSound_Play(s32);
-void WfcConfig_EraseAll();
-s32 WfcButtonBar_IsClosed();
-void WfcText_DestroyBgCanvas(s32);
-void WfcUtil_HideTopMessage();
 void WfcGx_HidePlanes(s32, s32);
-void WfcUtil_SetScreenFlags(s32, s32);
-void WfcOptions_Enter();
-void WfcButtonBar_Close();
-void *WfcText_CreateBgCanvas(s32, s32);
 void OS_GetMacAddress(void *);
 void swprintf(void *, s32, void *, ...);
-void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 void DWCi_BM_GetWiFiInfo(void *);
-void WfcText_RequestTransfer(void *);
-void WfcErase_Idle();
-void WfcErase_HandleInput();
-void WfcErase_Update();
-void WfcErase_WaitButtonBar();
-void WfcErase_WaitFadeIn();
-void WfcErase_FadeIn();
-void WfcErase_LoadBg();
-void WfcErase_Enter();
-void WfcErased_PowerOff();
-void WfcErased_FadeOut();
-void WfcErased_StartExit();
-void WfcErased_HandleResult();
-void WfcErased_Idle();
-void WfcErased_HandleInput();
-void WfcErased_Update();
-void WfcErased_WaitButtonBar();
-void WfcErased_WaitFadeIn();
-void WfcErased_FadeIn();
-void WfcErased_LoadBg();
-void WfcErased_Enter();
-void WfcSysInfo_Exit();
-void WfcSysInfo_FadeOut();
-void WfcSysInfo_StartExit();
-void WfcSysInfo_HandleResult();
-void WfcSysInfo_Idle();
-void WfcSysInfo_HandleInput();
-void WfcSysInfo_Update();
-void WfcSysInfo_WaitButtonBar();
-void WfcSysInfo_WaitFadeIn();
-void WfcSysInfo_FadeIn();
-void WfcSysInfo_LoadBg();
-void WfcSysInfo_Enter();
 void GX_LoadBG2Char(void);
-void *WfcUtil_LocalizePath(void *);
-void WfcCursor_ShowCorners(u32, u32, u32, u32);
-void WfcSysInfo_DrawInfo();
-s32 WfcUtil_RequestPaletteLine(void *, u32, u32);
 s32 FX_ModS32(s32, s32);
-void WfcOam_FreeEntry(void *);
-void WfcCursor_Clear();
-void WfcFs_FreeFile(void *);
-void WfcTopMenu_Enter();
-void WfcTransferIntro_Enter();
-void WfcButtonBar_ForceResult(s32);
-void WfcOptions_HighlightSelection();
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyRepeat(s32);
-void *WfcFs_LoadFile(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, s32);
 void DC_FlushRange(void *, s32);
 void GX_LoadBGPltt(void *, s32, s32);
-s32 WfcTop_LoadScreen(s32);
-void WfcSysInfo_Enter();
-void WfcOptions_Exit();
-void WfcOptions_FadeOut();
-void WfcOptions_StartExit();
-void WfcOptions_HandleResult();
-void WfcOptions_Update();
-void WfcOptions_WaitButtonBar();
-void WfcOptions_WaitFadeIn();
-void WfcOptions_FadeIn();
 }
 
 extern "C" void WfcSysInfo_Enter() {

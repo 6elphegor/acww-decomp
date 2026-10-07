@@ -12,6 +12,12 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "types64.h"
+#define PROTO_LOCAL_memcmp  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0211d20c.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_02000b44.h"
+#include "proto/main/unk_0206d49c.h"
 
 typedef struct { u32 w0, w1, w2; } FD;               // 12-byte friend/id record
 typedef struct {
@@ -30,13 +36,7 @@ typedef struct { u32 year, month, day; s32 week; } Date;
 typedef struct { u32 hour, minute, second; } Time;
 
 extern void MI_CpuFill8(void *dst, u32 val, u32 len);
-extern u32 MATHi_CRC32InitTableRev(void *table, u32 poly);
-extern u32 MATH_CalcCRC32(void *table, void *data, u32 len);
-extern u64 OS_GetTick(void);
 extern u64 func_02133100(u64 a, u64 b);
-extern void MATHi_CRC8InitTable(void *table, u32 poly);
-extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
-extern void OSi_ReferSymbol(void *p);
 extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern const u32 data_0213bba8[];
@@ -56,11 +56,8 @@ extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern void DC_StoreRange(void *p, u32 n);
 extern void DC_InvalidateRange(void *p, u32 n);
 extern void MIi_CpuClear16(u16 v, void *dst, u32 n);
-extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
-extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
-extern void Fatal_Trap(void);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];
@@ -106,7 +103,6 @@ u8 *DWCi_BACKUPlConvWifiInfo(S *p);
 s32 DWC_BM_Init(u8 *p);
 BOOL DWCi_AUTH_MakeWiFiID(u32 v);
 BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v);
-extern void RTC_Init(void);
 extern s32 RTC_GetDate(Date *d);
 extern s32 RTC_GetTime(Time *t);
 extern s32 OS_IsTickAvailable(void);

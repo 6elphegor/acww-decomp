@@ -6,25 +6,25 @@
 #include "game/Unk_02037674_V3.h"
 #include "game/Unk_021e5890_T.h"
 #include "gfx/BgModelCache.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02036c58.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 extern "C" const u32 data_020c8b9c;
 extern "C" const u32 data_020c8ba0;
 
 extern "C" {
-void func_02133ef8(void *, u32);
-void Bgm_ReleasePriority(u32);
-void Bgm_RequestSilence(u32, u32, u32);
-void Bgm_Request(u32, u32, u32, u32);
-void Bgm_Release(u32 a);
 s32 Clock_GetYear(void);
 void Clock_GetDayMonth(u16 *);
 void Clock_GetMinuteHour(u16 *);
 s32 Clock_GetSecond(void);
-void BgHeap_Destroy(void);
-void Str_SPrintf(void *buf, const void *fmt, ...);
 s32 NNS_FndMountArchive(void *, const void *, void *);
 void NNS_FndUnmountArchive(void *);
-void *NNS_FndGetArchiveFileByName(const void *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_021065dc(void *);
 void *func_021065f8(void *, s32);
@@ -37,8 +37,6 @@ void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
 void Gfx3d_LoadTexAndPltt(void *, s32);
 void *Gfx3d_CopyTex(void *, void *);
-void Mem_Free(void *);
-void *Heap_Alloc(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
 void *_ZN7TownMap12getGrassTypeEv(void *);
 extern u16 sNewYearEveDate, sNewYearDayDate, sNewYearEveTime;
@@ -48,15 +46,10 @@ extern void *gCurrentHeap;
 extern Unk_021e5890_T data_021e5890;}
 
 extern "C" {
-void *File_LoadAlloc(void *, void *, s32, void *);
 extern char gSaveTownMap[];
 s32 Scene_GetCurrent(void);
 void _ZN7TownMap18updateGroundSeasonEv(char *);
-void BgHeap_Create(s32, s32);
 }
-extern "C" void *BgModel_LoadFile(void *a, void *b);
-extern "C" void *BgModel_LoadBcl(s32 id, void *heap);
-extern "C" s32 BgModel_GetGrassType(void *);
 class BgModelCacheObj;
 extern BgModelCacheObj gBgModelCache;
 extern const u8 sBgHeapSizeByRoom[];

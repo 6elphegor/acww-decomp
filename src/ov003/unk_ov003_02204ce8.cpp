@@ -32,6 +32,60 @@
 #include "snd/BgmManager.h"
 #include "snd/BgmVolumeMixer.h"
 #include "ui/HudController.h"
+#define PROTO_LOCAL_BugNet_HitTest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Building_OpenDoorForEntryAt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldItemFx_StartDigHole  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldItemFx_StartDigUpTree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldItemFx_StartHoleShrink  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FishDisplay_SetEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_PlayAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_SetAnimSpeed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_SetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Insect_GetCatchResult  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetBuf_PackPair20  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetBuf_PackTriple20  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetBuf_UnpackPair20  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetBuf_UnpackTriple20  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetBuf_WriteS16B  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_AxeSwingSetArgs  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_FieldStartToolAction  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_FishCastGetNetData  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_FishCastSetNetData  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_InsectShowCatchGetNetData  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_StowUmbrellaSetNetData  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Tree_KeepShaking  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Equal  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0204f2a4.h"
+#include "proto/main/unk_0205d7d8.h"
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/ov003/unk_ov003_022192b4.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -214,8 +268,6 @@ extern "C" s32 Unk_02006d14_getFieldAnswerKind(PlayerActor *self);
 
 // forward declarations (functions are emitted in descending address order)
 extern "C" BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, s32 *pos);
-extern "C" BOOL PlayerActor_FieldUseTool(PlayerActor *self);
-extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a);
 }
 
 namespace ns_022052f4 {
@@ -246,11 +298,7 @@ extern u8 sFishCastNearDist[];
 extern u8 sFieldFrontDist[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
-NpcActor *NpcRegistry_FindByKind(u32 a, u32 b);
-void *Snowball_FindByParam(u32 a);
 BOOL Unk_02006d14_isGuestInSession(Obj *o);
-u16 *PlayerSession_GetTanTimer();
-u8 *PlayerSession_GetSessionFlags();
 s32 PlayerActor_GetPlayerData(Obj *o);
 void Clock_GetDateTime(void *p);
 s32 PlayerActor_CompareLastPlayDateNow(Obj *o);
@@ -390,29 +438,19 @@ void PlayerActor_TurnAngle(void *a, s32 b);
 void Unk_020102ec_setAngleY(Obj *o, s16 *a);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
-void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 void Effect_SetPosition(s32 a, V3 *v, void *p, s32 b);
-void Effect_End(s32 a);
-s32 PlayerData_GetBySessionSlot(s32 a);
 void PlayerData_setHeldItem(s32 a, u16 *p);
 u16 *PlayerData_getHeldItem(s32 a);
 void HeldItemModel_SetItem(void *p, u16 *a, s32 b);
 void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-u8 *HeldItemModel_GetModel(void *p);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
-void Camera_SetModeDefault();
-void Camera_SetMode4();
 void BgmVolumeMixer_endFireworkDuck(void *p);
 void BgmVolumeMixer_startFireworkDuck(void *p);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
 V3 *FishCatch_GetPos(s32 a);
-s32 FishCatch_IsActive(s32 a);
-s32 BottleThrow_IsActive(s32 a);
 V3 *BottleThrow_GetPos(s32 a);
-void BottleThrow_Start(s32 a);
 
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 namespace ovcall {
@@ -425,8 +463,6 @@ s32 PlayerActor_FireworkCheckEnd(Obj *o);
 s32 PlayerActor_FireworkUpdate(Obj *o);
 }
 void PlayerActor_FishReleaseLook(Obj *o);
-void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b);
-void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b);
 s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e);
 void PlayerActor_ThrowBottleShowItem(Obj *o);
 void PlayerActor_ThrowBottleLook(Obj *o);
@@ -445,8 +481,6 @@ extern "C" void PlayerActor_MainFishRelease(Obj *o);
 extern "C" void PlayerActor_FishReleaseLook(Obj *o);
 extern "C" s32 PlayerActor_NetFishRelease(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupFishRelease(Obj *o, Msg *r);
-extern "C" void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b);
-extern "C" void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b);
 extern "C" s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e);
 extern "C" void PlayerActor_MainThrowBottle(Obj *o);
 extern "C" void PlayerActor_ThrowBottleLook(Obj *o);
@@ -519,42 +553,26 @@ s32 PlayerActor_getInputAngleRaw(Obj *o);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 s32 CommManager_isLocalSlot(void *g, s32 a);
-s32 PlayerData_GetBySessionSlot(s32 a);
 void PlayerData_setHeldItem(s32 a, u16 *p);
 u16 *PlayerData_getHeldItem(s32 a);
-s32 Pocket_FindItem(u16 *p);
-void PlayerActor_SetHoldableItem(s32 a, s32 b);
-void Pocket_RemoveItem(s32 a);
 void HeldItemModel_SetItem(void *p, u16 *a, s32 b);
 void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 void HeldItemModel_SetAnimSpeed(void *p, s32 a);
 void PlayerFaceTexRef_load(void *p, void *q);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 void Effect_SetPosition(s32 a, void *v, void *p, s32 b);
-void Effect_PlayById(s32 a, V3 *v, s32 b, s32 c);
-s32 PlayerData_GetCurrent();
-void PlayerData_SetStungFace(s32 a, s32 b);
 u8 *PlayerData_getFaceType(s32 a);
 s32 PlayerData_testFlag(s32 a, s32 b);
 void PlayerData_setFlag(s32 a, s32 b);
 void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
 void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
-void Camera_SetMode4();
-void Camera_SetModeDefault();
 void TalkRequest_FinishPlayerMessage();
-void Bgm_ReleasePriority(s32 a);
-void Bgm_Release(s32 a);
-s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void GroundInfo_initAtPos(void *out, V3 *v, s32 a, s32 b);
 void GroundInfo_Destruct(void *p);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 VEC_Mag(V3 *v);
-void Vec_Sub(V3 *out, V3 *a, V3 *b);
-s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
 s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b);
@@ -586,7 +604,6 @@ extern "C" void PlayerActor_SetupAct80(Obj *o);
 extern "C" s32 PlayerActor_RequestAct80(Obj *o, s32 a, s32 b);
 extern "C" void PlayerActor_MainBeeSting(Obj *o);
 extern "C" void PlayerActor_BeeStingUpdate(Obj *o);
-extern "C" void PlayerActor_NetBeeSting();
 extern "C" void PlayerActor_SetupBeeSting(Obj *o);
 extern "C" s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b);
 extern "C" void PlayerActor_MainPitfallClimbOut(Obj *o);
@@ -634,11 +651,7 @@ extern void *gCommManager;
 extern u8 data_ov003_02230ad0[];
 extern u8 data_ov003_02230ad8[];
 
-void Effect_End(s32 a);
 s32 Effect_SetPosition(s32 a, void *b, s32 c, s32 d);
-s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
-void Effect_PlayById(s32 a, V3 *b, s32 c, s32 d);
-void PlayerActor_SetHoldableItem(s32 a, s32 b);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 PlayerActor_getInputMagnitude(Obj *o);
@@ -667,15 +680,12 @@ void Unk_020102ec_setSpeed(Obj *o, s32 *a);
 void PlayerActor_GetHeldItem(u16 *a, Obj *o);
 s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Sky_WishOnShootingStar();
-void *PlayerData_GetCurrent();
 s32 PlayerData_testFlag(void *p, s32 a);
 s32 PlayerData_setFlag(void *p, s32 a);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
-s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
-s32 FieldItemFx_StartPitfallHole(s32 a, V3 *v);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 
 void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
@@ -688,8 +698,6 @@ s32 PlayerActor_PitfallFallEffect(Obj *o);
 void PlayerActor_EndPitfallFall(Obj *o, s32 a);
 s32 PlayerActor_NetPitfallFall(Obj *o, s32 a);
 s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a);
-void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b);
-void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b);
 s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 b, s32 c);
 void PlayerActor_MainAct72(Obj *o);
 void PlayerActor_Act72CheckEnd(Obj *o);
@@ -747,8 +755,6 @@ extern "C" s32 PlayerActor_PitfallFallEffect(Obj *o);
 extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a);
 extern "C" s32 PlayerActor_NetPitfallFall(Obj *o, s32 a);
 extern "C" s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a);
-extern "C" void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b);
-extern "C" void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b);
 extern "C" s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 b, s32 c);
 extern "C" void PlayerActor_MainAct72(Obj *o);
 extern "C" void PlayerActor_Act72CheckEnd(Obj *o);
@@ -819,9 +825,6 @@ void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void HeldItemModel_PlayAnim(void *a, u32 b, u32 c, u32 d);
 void FaintBgm_fadeOut(void *a);
 void FaintBgm_play(void *a);
-void Bgm_ReleasePriority(s32 a);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Snd_PlaySe(s32 a);
 s32 TalkRequest_FinishSceneEntry();
 void TalkRequest_AddLeaveRoom();
 s32 CommManager_isLocalSlot(void *g, u32 a);
@@ -833,14 +836,12 @@ s32 Town_FindPlayerHouse(s32 o, V3 *v, s32 *a, s32 *b);
 s32 Town_FindGateHouse(s32 o, V3 *v, s32 *a, s32 *b);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
-s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 s32 Effect_SetPosition(s32 h, void *a, void *b, s32 c);
 void NetBuf_UnpackTriple20(void *p, s32 *out, s32 *x, s32 *y, s32 *z);
 void NetBuf_PackTriple20(void *p, s32 a, s32 x, s32 y, s32 z);
 s32 Math_Atan2(s32 a, s32 b);
 void PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Tree_RequestShake(u32 a, Pair *p, s32 b);
-void PlayerActor_TreeShakeReleaseSetWork(void *r, s32 a, s32 b, s32 c, u32 d, u32 e);
 
 void PlayerActor_Act6ECheckEnd(Obj *o);
 void PlayerActor_Act6EUpdateAnim(Obj *o);
@@ -912,7 +913,6 @@ extern "C" void PlayerActor_MainTreeShakeRelease(Obj *o);
 extern "C" void PlayerActor_TreeShakeReleaseCheckEnd(Obj *o);
 extern "C" void PlayerActor_TreeShakeReleaseTurn(Obj *o);
 extern "C" void PlayerActor_TreeShakeReleaseUpdate(Obj *o);
-extern "C" void PlayerActor_NetTreeShakeRelease();
 extern "C" void PlayerActor_SetupTreeShakeRelease(Obj *o, Msg *m);
 }
 
@@ -1004,7 +1004,6 @@ void Unk_02006d14_playSe(Obj *o, s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void FieldPos_SnapToUnitCenter(V3 *out, s32 a);
 void FieldPos_FromUnitCenter(V3 *out, s32 a, s32 b);
-void Effect_Create(s32 a, void *b, void *c, s32 d);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 Math_Atan2(s32 a, s32 b);
@@ -1018,9 +1017,7 @@ void PlayerActor_Act66SetNetData(void *a, Pair *p);
 void PlayerActor_Act66SetWork(RecA *r, u32 a, s32 ang, V3 v);
 void PlayerActor_RequestAct66(Obj *o, Pair p, s32 a, s32 b, s32 c);
 
-void PlayerActor_TreeShakeReleaseSetWork(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
 s32 PlayerActor_RequestTreeShakeRelease(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d);
-void PlayerActor_TreeShakeReleaseSetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
 void PlayerActor_MainTreeShake(Obj *o);
 void PlayerActor_TreeShakeCheckEndRemote(Obj *o);
 void PlayerActor_TreeShakeCheckEnd(Obj *o);
@@ -1028,11 +1025,8 @@ void PlayerActor_TreeShakeTurn(Obj *o);
 void PlayerActor_EndTreeShake(Obj *o);
 void PlayerActor_NetTreeShake(Obj *o, s32 a);
 void PlayerActor_SetupTreeShake(Obj *o, u8 *m);
-void PlayerActor_TreeShakeGetNetData(u8 *p, s32 *a, s32 *b, u8 *c);
-void PlayerActor_TreeShakeSetNetData(u8 *p, s32 a, s32 b, u8 c);
 void PlayerActor_TreeShakeSetWork(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c);
 s32 PlayerActor_RequestTreeShake(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d);
-void PlayerActor_TreeShakeSetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
 void PlayerActor_MainAct67(Obj *o);
 void PlayerActor_Act67CheckEndRemote(Obj *o);
 void PlayerActor_Act67CheckEnd(Obj *o);
@@ -1052,9 +1046,7 @@ void PlayerActor_SetupAct66(Obj *o, u8 *m);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void PlayerActor_TreeShakeReleaseSetWork(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
 extern "C" s32 PlayerActor_RequestTreeShakeRelease(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d);
-extern "C" void PlayerActor_TreeShakeReleaseSetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
 extern "C" void PlayerActor_MainTreeShake(Obj *o);
 extern "C" void PlayerActor_TreeShakeCheckEndRemote(Obj *o);
 extern "C" void PlayerActor_TreeShakeCheckEnd(Obj *o);
@@ -1062,11 +1054,8 @@ extern "C" void PlayerActor_TreeShakeTurn(Obj *o);
 extern "C" void PlayerActor_EndTreeShake(Obj *o);
 extern "C" void PlayerActor_NetTreeShake(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupTreeShake(Obj *o, u8 *m);
-extern "C" void PlayerActor_TreeShakeGetNetData(u8 *p, s32 *a, s32 *b, u8 *c);
-extern "C" void PlayerActor_TreeShakeSetNetData(u8 *p, s32 a, s32 b, u8 c);
 extern "C" void PlayerActor_TreeShakeSetWork(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c);
 extern "C" s32 PlayerActor_RequestTreeShake(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d);
-extern "C" void PlayerActor_TreeShakeSetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
 extern "C" void PlayerActor_MainAct67(Obj *o);
 extern "C" void PlayerActor_Act67CheckEndRemote(Obj *o);
 extern "C" void PlayerActor_Act67CheckEnd(Obj *o);
@@ -1147,12 +1136,9 @@ void Unk_02007694_requestWaitMenu(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 void Sky_OnSlingshotFired(s32 h);
 void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
-s32 PlayerActor_GetSlotAction(s32 *out, s32 a, u32 b);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_Create(u32 id, V3 *v, s16 *h, u32 z);
 void Effect_SetPosition(s32 h, V3 *v, s16 *a, s16 *b);
-void Effect_End(s32 h);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 s32 Unk_02006d14_startFieldQuery(Obj *o, V3 *v, s32 a, s32 b);
 void Unk_02006d14_netSyncNearPoint(Obj *o, V3 *v);
@@ -1160,8 +1146,6 @@ void Unk_02006d14_turnToward(Obj *o, s32 a);
 s32 Math_Atan2(s32 a, s32 b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
-void FieldItemFx_StartFillHole(s32 h, V3 *v);
-void FieldItemFx_StartFillHoleWithItem(s32 h, V3 *v);
 void Character_detachTalkRequest(Obj *o, TalkMsgRequest *s);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
@@ -1172,8 +1156,6 @@ s32 PlayerActor_RequestSlingshot(Obj *o, s32 a, s16 b);
 void PlayerActor_WateringCanUpdate(Obj *o);
 void PlayerActor_WateringCanCheckEnd(Obj *o);
 void PlayerActor_WateringCanCheckEndRemote(Obj *o);
-void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out);
-void PlayerActor_WateringCanSetNetData(u8 *p, u32 v);
 s32 PlayerActor_RequestWateringCan(Obj *o, s32 a, s16 b);
 void PlayerActor_FillHoleTurn(Obj *o);
 void PlayerActor_FillHoleUpdate(Obj *o);
@@ -1187,7 +1169,6 @@ extern "C" void PlayerActor_Act66SetWork(u8 *r, u32 a, u32 b, V3 *v);
 extern "C" s32 PlayerActor_RequestAct66(Obj *o, Pair *p, u32 c, s32 b, s16 d);
 extern "C" void PlayerActor_Act66SetArgs(u8 *d, Pair v, u32 c);
 extern "C" void PlayerActor_MainSlingshotWatch(Obj *o);
-extern "C" void PlayerActor_NetSlingshotWatch();
 extern "C" void PlayerActor_SetupSlingshotWatch(Obj *o);
 extern "C" s32 PlayerActor_RequestSlingshotWatch(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_MainSlingshot(Obj *o);
@@ -1203,15 +1184,12 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o);
 extern "C" void PlayerActor_EndWateringCan(Obj *o);
 extern "C" s32 PlayerActor_NetWateringCan(Obj *o, s16 b);
 extern "C" void PlayerActor_SetupWateringCan(Obj *o);
-extern "C" void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out);
-extern "C" void PlayerActor_WateringCanSetNetData(u8 *p, u32 v);
 extern "C" s32 PlayerActor_RequestWateringCan(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_MainFillHole(Obj *o);
 extern "C" void PlayerActor_FillHoleCheckEnd(Obj *o);
 extern "C" void PlayerActor_FillHoleUpdate(Obj *o);
 extern "C" void PlayerActor_FillHoleTurn(Obj *o);
 extern "C" void PlayerActor_EndFillHole(Obj *o);
-extern "C" void PlayerActor_NetFillHole();
 extern "C" void PlayerActor_SetupFillHole(Obj *o, Msg *a);
 }
 
@@ -1276,28 +1254,16 @@ void Unk_02006d14_netSyncNearPoint(Obj *o, V3 *v);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 Math_Atan2(s32 a, s32 b);
-void NetBuf_WriteU16(void *p, u32 v);
-void Pocket_AddFoundItem(void *p);
-s32 MenuCtrl_OpenPocketsFullDug(u32 v);
-s32 MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
 void TalkRequest_FinishPlayerMessage();
 s32 TalkRequest_AddPlayerMessage();
-void Camera_SetMode4();
-void Camera_SetModeDefault();
 void Character_detachTalkRequest(Obj *o, MsgRequest *s);
 void Character_attachTalkRequest(Obj *o, MsgRequest *s);
-void *PlayerData_GetCurrent();
 void MsgRequest_setFileName(void *p, void *s);
 s32 PlayerData_testFlag(void *p, s32 a);
 void PlayerData_setFlag(void *p, s32 a);
 void func_02062650(void *b, void *s);
 void func_0206260c(void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
-void Bgm_ReleasePriority(s32 a);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-s32 Pocket_FindEmpty();
 s32 FieldAction_RequestToolAtPendingForAid(u32 a, s32 b, s32 c, u32 d);
 
 void PlayerActor_DigUpItemUpdate(Obj *o);
@@ -1305,17 +1271,13 @@ s32 PlayerActor_RequestFillHole(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
 void PlayerActor_MainBuryItem(Obj *o);
 void PlayerActor_BuryItemCheckEnd(Obj *o);
 void PlayerActor_BuryItemTurn(Obj *o);
-void PlayerActor_NetBuryItem();
 void PlayerActor_SetupBuryItem(Obj *o, Msg *m);
-void PlayerActor_BuryItemSetNetData(u8 *s, u32 v, u8 a, u8 b, u8 c);
 s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
 void PlayerActor_MainDugItemStore(Obj *o);
 void PlayerActor_DugItemStoreUpdate(Obj *o);
 void PlayerActor_DugItemStoreShrink(Obj *o);
 void PlayerActor_NetDugItemStore(Obj *o, s32 a);
 void PlayerActor_SetupDugItemStore(Obj *o, Msg *m);
-void PlayerActor_DugItemStoreGetNetData(u8 *s, u8 *a, u8 *b, u8 *c);
-void PlayerActor_DugItemStoreSetNetData(u8 *s, u8 a, u8 b, u8 c);
 s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e);
 void PlayerActor_MainDigUpItem(Obj *o);
 void PlayerActor_DigUpItemMessage(Obj *o);
@@ -1332,17 +1294,13 @@ extern "C" s32 PlayerActor_RequestFillHole(Obj *o, u32 k, Pair *p, u32 v, s32 a,
 extern "C" void PlayerActor_MainBuryItem(Obj *o);
 extern "C" void PlayerActor_BuryItemCheckEnd(Obj *o);
 extern "C" void PlayerActor_BuryItemTurn(Obj *o);
-extern "C" void PlayerActor_NetBuryItem();
 extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m);
-extern "C" void PlayerActor_BuryItemSetNetData(u8 *s, u32 v, u8 a, u8 b, u8 c);
 extern "C" s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
 extern "C" void PlayerActor_MainDugItemStore(Obj *o);
 extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o);
 extern "C" void PlayerActor_DugItemStoreShrink(Obj *o);
 extern "C" void PlayerActor_NetDugItemStore(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Msg *m);
-extern "C" void PlayerActor_DugItemStoreGetNetData(u8 *s, u8 *a, u8 *b, u8 *c);
-extern "C" void PlayerActor_DugItemStoreSetNetData(u8 *s, u8 a, u8 b, u8 c);
 extern "C" s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e);
 extern "C" void PlayerActor_MainDigUpItem(Obj *o);
 extern "C" void PlayerActor_DigUpItemMessage(Obj *o);
@@ -1395,7 +1353,6 @@ extern void *gCommManager;
 extern void *gSceneBlockMap;
 
 s32 Unk_020102ec_advanceAnim(Obj *o);
-void Effect_Create(s32 a, V3 *b, s16 *c, s32 d);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
@@ -1411,11 +1368,8 @@ s32 CommManager_isLocalSlot(void *g, s32 a);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, s32 b, s32 c);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 NetBuf_WriteU16(void *p, u32 a);
-u16 NetBuf_ReadU16(void *p);
 void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 y);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void VillagerTrend_OnItemDug(V3 *v);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void Unk_020102ec_moveWithCollision(Obj *o);
@@ -1429,7 +1383,6 @@ void PlayerActor_DigUpItemUpdate(Obj *o);
 void PlayerActor_EndDigUpItem(Obj *o, s32 p);
 void PlayerActor_NetDigUpItem(Obj *o, s32 a);
 void PlayerActor_SetupDigUpItem(Obj *o, Msg *m);
-void PlayerActor_DigUpItemGetNetData(u8 *p, s32 *xy, u16 *a, u8 *b);
 void PlayerActor_DigUpItemSetNetData(u8 *p, V2 v, u16 a, u8 b);
 s32 PlayerActor_RequestDigUpItemWith(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d);
 s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, u8 x, s32 c, s32 e);
@@ -1472,7 +1425,6 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o);
 extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p);
 extern "C" void PlayerActor_NetDigUpItem(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m);
-extern "C" void PlayerActor_DigUpItemGetNetData(u8 *p, s32 *xy, u16 *a, u8 *b);
 extern "C" void PlayerActor_DigUpItemSetNetData(u8 *p, V2 v, u16 a, u8 b);
 extern "C" s32 PlayerActor_RequestDigUpItemWith(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d);
 extern "C" s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, u8 x, s32 c, s32 e);
@@ -1552,7 +1504,6 @@ void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Effect_Create(s32 a, V3 *v, s16 *ang, ...);
 
 s32 FieldItemFx_StartStrikeResult(Pair *p);
 void Tree_RequestShake(s32 a, Pair p, s32 b);
@@ -1572,8 +1523,6 @@ void PlayerActor_ShovelStrikeUpdate(Obj *o);
 void PlayerActor_EndShovelStrike(Obj *o);
 void PlayerActor_NetShovelStrike(Obj *o, s32 x);
 void PlayerActor_SetupShovelStrike(Obj *o, Msg *m);
-void PlayerActor_ShovelStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d);
-void PlayerActor_ShovelStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e);
 void PlayerActor_ShovelStrikeSetWork(Rec *r, Pair p, u8 c);
 s32 PlayerActor_RequestShovelStrike(Obj *o, u32 id, Pair p, s32 b, s32 c);
 void PlayerActor_ShovelStrikeSetArgs(B3 *d, Pair p, u32 c);
@@ -1636,8 +1585,6 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o);
 extern "C" void PlayerActor_EndShovelStrike(Obj *o);
 extern "C" void PlayerActor_NetShovelStrike(Obj *o, s32 x);
 extern "C" void PlayerActor_SetupShovelStrike(Obj *o, Msg *m);
-extern "C" void PlayerActor_ShovelStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d);
-extern "C" void PlayerActor_ShovelStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e);
 extern "C" void PlayerActor_ShovelStrikeSetWork(Rec *r, Pair p, u8 c);
 extern "C" s32 PlayerActor_RequestShovelStrike(Obj *o, u32 id, Pair p, s32 b, s32 c);
 extern "C" void PlayerActor_ShovelStrikeSetArgs(B3 *d, Pair p, u32 c);
@@ -1730,7 +1677,6 @@ void Unk_020102ec_setSubCollider(Obj *o, V3 *v, s32 a, s32 b);
 s32 ActorCollider_submit(void *p);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
-s32 Effect_Create(u32 id, V3 *v, s16 *h, u32 z);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 void Unk_02006d14_turnToward(Obj *o, s32 a);
 s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
@@ -1738,25 +1684,12 @@ s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
 void WorldCurve_ToCurved(V3 *a, V3 *b);
-void Pocket_AddFoundItem(s16 *p);
-s32 MenuCtrl_OpenPocketsFullInsect(u32 a);
-s32 MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
 void Character_detachTalkRequest(Obj *o, Sec *s);
 void TalkRequest_FinishPlayerMessage();
-s32 Random_GlobalBelow(s32 a);
 
 s32 PlayerActor_ShovelDispatch(Obj *o, V3C v, s32 a);
 void PlayerActor_ApplyHoldOffset(S30 *p, s32 a);
-void HeldInsect_Remove(u8 id, s32 a);
-void HeldInsect_Release(u8 id, s32 a);
-s32 HeldInsect_GetStage(u8 id);
 V3 *HeldInsect_GetPos(u8 id);
-void HeldInsect_SetHandMatrix(u8 id, s16 *a, S30 *p, s32 f);
-void PlayerActor_InsectStoreSetNetAngle(u8 *p, s32 a);
-void PlayerActor_InsectStoreSetNetState(u8 *p, s32 a);
-s32 PlayerActor_InsectStoreGetNetState(u8 *p);
-s32 PlayerActor_InsectStoreGetNetAngle(u8 *p);
 
 s32 PlayerActor_RequestShovelWait(Obj *o, Pair p, s32 id, s16 e);
 void PlayerActor_ShovelWaitSetArgs(u8 *d, Pair v);
@@ -1767,11 +1700,8 @@ void PlayerActor_ShovelReadyTurn(Obj *o);
 void PlayerActor_ShovelReadyCheckEnd(Obj *o);
 void PlayerActor_ShovelReadyTrackTarget(Obj *o);
 void PlayerActor_ShovelReadyCheckEndRemote(Obj *o);
-void PlayerActor_ShovelReadyGetNetData(u8 *src, u8 *a, u8 *b, u8 *c);
-void PlayerActor_ShovelReadySetNetData(u8 *p, u8 a, u8 b, u32 c);
 void PlayerActor_ShovelReadySetWork(Rec *r, V3C v, s32 c, u32 d);
 s32 PlayerActor_RequestShovelReadyAt(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e);
-void PlayerActor_ShovelReadySetArgs(u8 *p, u8 a, u8 b, u32 c);
 namespace ovcall {
 s32 PlayerActor_InsectStoreUpdate(Obj *o);
 }
@@ -1798,12 +1728,9 @@ extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o);
 extern "C" void PlayerActor_ShovelReadyTurn(Obj *o);
 extern "C" s32 PlayerActor_NetShovelReady(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupShovelReady(Obj *o, Msg *r);
-extern "C" void PlayerActor_ShovelReadyGetNetData(u8 *src, u8 *a, u8 *b, u8 *c);
-extern "C" void PlayerActor_ShovelReadySetNetData(u8 *p, u8 a, u8 b, u32 c);
 extern "C" void PlayerActor_ShovelReadySetWork(Rec *r, V3C v, s32 c, u32 d);
 extern "C" s32 PlayerActor_RequestShovelReadyAt(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e);
 extern "C" s32 PlayerActor_RequestShovelReady(Obj *o, s32 a, s16 b);
-extern "C" void PlayerActor_ShovelReadySetArgs(u8 *p, u8 a, u8 b, u32 c);
 extern "C" void PlayerActor_MainInsectStore(Obj *o);
 extern "C" void PlayerActor_InsectStoreUpdate(Obj *o);
 }
@@ -1860,57 +1787,27 @@ void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02006d14_requestAct76(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 void Effect_SetPosition(s32 a, V3 *v, void *p, s32 b);
-void Effect_End(s32 a);
 s16 Math_Atan2(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
-s32 Random_GlobalBelow(s32 a);
 s32 TalkRequest_AddPlayerMessage();
 void Character_attachTalkRequest(Obj *o, MsgRequest *b);
 void Character_detachTalkRequest(Obj *o, MsgRequest *b);
 void MsgRequest_setFileName(void *p, void *q);
-void Catalog_AddCreature(s16 *p);
-void Camera_SetMode4();
-void Camera_SetModeDefault();
 void TalkRequest_FinishPlayerMessage();
-s32 Catalog_HasAllInsects();
-s32 Pocket_FindEmpty();
 s32 FieldAction_FindDropUnit(s32 a, s32 *p, u8 *out);
-void Bgm_Release(s32 a);
-void Bgm_ReleasePriority(s32 a);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-void *Hud_GetCountdown();
 void HudCountdown_incCountB(void *self);
 void VillagerTrend_OnInsectCaught(void *p);
-u32 NetBuf_ReadS16B(u8 *p);
 void NetBuf_WriteS16B(u8 *p, u32 a);
 
-void Insect_FinishCatch(u32 a);
 void PlayerActor_ApplyHoldOffset(T48 *t, V3 *d);
-void HeldInsect_Start(u32 a, u32 b);
-s32 HeldInsect_Release(u32 a, s32 b);
-s32 HeldInsect_GetStage(u32 a);
 V3 *HeldInsect_GetPos(u8 a);
-void HeldInsect_SetHandMatrix(u32 a, s16 *p, T48 *t, s32 b);
-u32 PlayerActor_InsectShowCatchGetNetState(u8 *p);
-s32 PlayerActor_InsectShowCatchGetNetAngle(u8 *p);
-void PlayerActor_InsectShowCatchSetNetAngle(u8 *p, s32 a);
-void PlayerActor_InsectShowCatchSetNetState(u8 *p, u32 a);
 void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
-void PlayerActor_InsectShowCatchSetNetData(u8 *p, u32 a, u32 b, u32 c, u32 d, s32 e);
 void PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s32 e);
 
 void PlayerActor_EndInsectStore(Obj *o);
 s32 PlayerActor_NetInsectStore(Obj *o, s32 a);
 void PlayerActor_SetupInsectStore(Obj *o, Msg *r);
-u32 PlayerActor_InsectStoreGetNetAngle(u8 *p);
-u32 PlayerActor_InsectStoreGetNetState(u8 *p);
-void PlayerActor_InsectStoreGetNetData(u8 *p, u8 *a, u8 *b, u16 *c);
-void PlayerActor_InsectStoreSetNetAngle(u8 *p, u32 a);
-void PlayerActor_InsectStoreSetNetState(u8 *p, u32 a);
-void PlayerActor_InsectStoreSetNetData(u8 *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_RequestInsectStore(Obj *o, u32 a, u32 b, s32 id, s32 e);
 void PlayerActor_MainInsectShowCatch(Obj *o);
 namespace ovcall {
@@ -1926,12 +1823,6 @@ void PlayerActor_SetupInsectShowCatch(Obj *o, Msg *r);
 extern "C" void PlayerActor_EndInsectStore(Obj *o);
 extern "C" s32 PlayerActor_NetInsectStore(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupInsectStore(Obj *o, Msg *r);
-extern "C" u32 PlayerActor_InsectStoreGetNetAngle(u8 *p);
-extern "C" u32 PlayerActor_InsectStoreGetNetState(u8 *p);
-extern "C" void PlayerActor_InsectStoreGetNetData(u8 *p, u8 *a, u8 *b, u16 *c);
-extern "C" void PlayerActor_InsectStoreSetNetAngle(u8 *p, u32 a);
-extern "C" void PlayerActor_InsectStoreSetNetState(u8 *p, u32 a);
-extern "C" void PlayerActor_InsectStoreSetNetData(u8 *p, u32 a, u32 b, u32 c);
 extern "C" s32 PlayerActor_RequestInsectStore(Obj *o, u32 a, u32 b, s32 id, s32 e);
 extern "C" void PlayerActor_MainInsectShowCatch(Obj *o);
 extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o);
@@ -1966,7 +1857,6 @@ extern u8 data_ov003_02230adc[];
 extern u8 data_ov003_02230ae0[];
 extern s16 data_02135f44[];
 
-u32 NetBuf_ReadS16B(void *p);
 void NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 CommManager_isLocalSlot(void *g, s32 a);
@@ -1976,12 +1866,10 @@ void Unk_020102ec_moveWithCollision(Obj *o);
 void Unk_020102ec_updateBodyCollider(Obj *o);
 s32 Unk_02006d14_netFollowTransform(Obj *o);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-u8 *HeldItemModel_GetModel(void *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
-s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void CollisionTag_Construct(void *p);
 void CollisionTag_Destruct(void *p);
 s32 Collision_TestSegment(void *p, V3 *a, V3 *b, s32 c);
@@ -1999,7 +1887,6 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 
 s32 Insect_GetCatchResult(s32 a, u32 b);
-s32 Insect_FinishCatch(s32 a);
 s32 PlayerActor_CheckToolHitActor(Obj *o);
 void PlayerActor_BugNetSwingTurn(Obj *o);
 void PlayerActor_BugNetSwingUpdate(Obj *o);
@@ -2017,12 +1904,7 @@ s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" u32 PlayerActor_InsectShowCatchGetNetAngle(void *p);
-extern "C" u32 PlayerActor_InsectShowCatchGetNetState(u8 *p);
 extern "C" void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u16 *e);
-extern "C" void PlayerActor_InsectShowCatchSetNetAngle(void *p, s32 a);
-extern "C" void PlayerActor_InsectShowCatchSetNetState(u8 *p, u32 a);
-extern "C" void PlayerActor_InsectShowCatchSetNetData(u8 *p, u32 a, u32 b, u32 c, u8 d, s16 e);
 extern "C" s32 PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e);
 extern "C" void PlayerActor_MainBugNetSwing(Obj *o);
 extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o);
@@ -2072,12 +1954,9 @@ s32 AnimFrameCtrl_isFinished(void *p);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 BugNet_HitTest(V3 *a, V3 *b, s32 c, u8 *d, s32 e);
-void FieldInsect_GetPosAndKind(V3 *v, u32 a);
-u32 FieldInsect_IsTreeKind(u32 a);
 s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *v, u8 *b);
 s32 PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *c);
 s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
-s32 Insect_TryCatch(u32 a);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -2101,17 +1980,11 @@ void FishBobber_startCatchLift(void *p);
 void PlayerActor_ApplyHoldOffset(Blk *b, u32 a);
 void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 void Fish_GetDisplayScale(V3 *v, s32 a);
-void FishCatch_NetSendStored(u32 a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-void Pocket_AddFoundItem(void *p);
-s32 MenuCtrl_OpenPocketsFullFish(u32 a, Act *b);
-s32 MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void Character_detachTalkRequest(Obj *o, TalkMsgRequest *s);
 void TalkRequest_FinishPlayerMessage();
-s32 MenuCtrl_GetPocketsFullItem();
 s32 FieldAction_RequestDropForAid(u32 a, u32 b);
 void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
 void Unk_02006d14_calcHandMtx(Obj *o);
@@ -2129,8 +2002,6 @@ void PlayerActor_FishStoreCheckEndRemote(Obj *o);
 void PlayerActor_FishStoreUpdate(Obj *o);
 s32 PlayerActor_NetFishStore(Obj *o, s16 a);
 void PlayerActor_SetupFishStore(Obj *o, u8 *b);
-u32 PlayerActor_FishStoreGetNetState(u8 *p);
-void PlayerActor_FishStoreSetNetState(u8 *p, u32 v);
 s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
 void PlayerActor_MainFishShowCatch(Obj *o);
 void PlayerActor_FishShowCatchUpdate(Obj *o);
@@ -2159,8 +2030,6 @@ extern "C" s32 PlayerActor_NetFishStore(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupFishStore(Obj *o, u8 *b);
 extern "C" s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
 extern "C" void PlayerActor_MainFishShowCatch(Obj *o);
-extern "C" u32 PlayerActor_FishStoreGetNetState(u8 *p);
-extern "C" void PlayerActor_FishStoreSetNetState(u8 *p, u32 v);
 }
 
 namespace ns_0220d6f4 {
@@ -2203,23 +2072,15 @@ void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
-void Camera_SetMode4();
 s32 TalkRequest_AddPlayerMessage();
 void Character_attachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
 void MsgRequest_setFileName(Sec *s, void *d);
-void Catalog_AddCreature(u16 *p);
-void Bgm_ReleasePriority(u32 a);
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
-s32 Catalog_HasAllFish();
-s32 Pocket_FindEmpty();
 s32 FieldAction_FindDropUnit(u32 a, u32 *b, u8 *out);
 void Character_detachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void TalkRequest_FinishPlayerMessage();
 s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
-void Camera_SetModeDefault();
 s32 FieldAction_RequestDropForAid(u32 a, u32 b);
 void FishBobber_startCatchLift(void *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
@@ -2227,7 +2088,6 @@ void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
 void Unk_02006d14_requestAct76(Obj *o, u32 a, u32 b, u32 c, u32 d, s32 e);
 s32 CommManager_isLocalSlot(void *g, u32 a);
 void VillagerTrend_OnFishCaught(void *p);
-void *Hud_GetCountdown();
 void HudCountdown_incCountA(void *self);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
@@ -2243,19 +2103,13 @@ s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02008040_requestAct79(Obj *o, s32 a, s32 b);
-void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
 
-void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out);
-void PlayerActor_FishShowCatchSetNetData(u8 *p, u32 v);
 s32 PlayerActor_RequestFishShowCatch(Obj *o, u32 a, s32 b, s16 c);
 void PlayerActor_FishLandCheckEnd(Obj *o);
 s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s16 b);
 void PlayerActor_FishEscapeCheckEnd(Obj *o);
 s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s16 b);
 void PlayerActor_FishReelInCheckEnd(Obj *o);
-void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out);
-void PlayerActor_FishReelInSetNetData(u8 *p, u32 v);
-void PlayerActor_FishReelInSetWork(u8 *p, u32 v);
 s32 PlayerActor_RequestFishReelIn(Obj *o, u32 a, s32 b, s16 c);
 
 void PlayerActor_FishShowCatchUpdate(Obj *o);
@@ -2284,8 +2138,6 @@ static inline BOOL Rng(volatile u16 *p, u32 lo, u32 hi) {
 extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o);
 extern "C" void PlayerActor_NetFishShowCatch(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p);
-extern "C" void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out);
-extern "C" void PlayerActor_FishShowCatchSetNetData(u8 *p, u32 v);
 extern "C" s32 PlayerActor_RequestFishShowCatch(Obj *o, u32 a, s32 b, s16 c);
 extern "C" void PlayerActor_MainFishLand(Obj *o);
 extern "C" void PlayerActor_FishLandCheckEnd(Obj *o);
@@ -2301,9 +2153,6 @@ extern "C" void PlayerActor_MainFishReelIn(Obj *o);
 extern "C" void PlayerActor_FishReelInCheckEnd(Obj *o);
 extern "C" void PlayerActor_NetFishReelIn(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupFishReelIn(Obj *o, u8 *p);
-extern "C" void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out);
-extern "C" void PlayerActor_FishReelInSetNetData(u8 *p, u32 v);
-extern "C" void PlayerActor_FishReelInSetWork(u8 *p, u32 v);
 extern "C" s32 PlayerActor_RequestFishReelIn(Obj *o, u32 a, s32 b, s16 c);
 }
 
@@ -2330,13 +2179,10 @@ s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 FishBobber_checkReelResult(void *p);
 s32 FishBobber_tryHook(void *p);
 s32 FishBobber_getFish(void *p);
-s32 HeldItemModel_IsBobberLanded(void *p);
 s32 Unk_02006d14_playSeAt(Obj *o, u32 a, void *b);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
-s32 Bgm_ReleasePriority(u32 a);
-s32 Bgm_RequestSilence(u32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
@@ -2357,7 +2203,6 @@ s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_turnToward(Obj *o, s32 a);
-s32 Camera_SetMode5();
 s32 NetBuf_UnpackTriple20(void *p, s32 *a, s32 *b, s32 *c, u8 *d);
 s32 NetBuf_PackTriple20(void *p, s32 a, s32 b, s32 c, u32 d);
 s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
@@ -2366,10 +2211,8 @@ s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
 s32 FishShadow_OnRodPulled(void *o);
-s32 FieldFish_ScareAround(void *p, s32 a);
 s32 PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 
-void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
 void PlayerActor_MainFishHook(Obj *o);
 void PlayerActor_FishHookCheckResult(Obj *o);
 s32 PlayerActor_NetFishHook(Obj *o, s16 a);
@@ -2406,7 +2249,6 @@ void PlayerActor_MainAxeBrokenMessage(Obj *o);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
 extern "C" void PlayerActor_MainFishHook(Obj *o);
 extern "C" void PlayerActor_FishHookCheckResult(Obj *o);
 extern "C" s32 PlayerActor_NetFishHook(Obj *o, s16 a);
@@ -2482,7 +2324,6 @@ extern void *gCommManager;
 extern s16 data_02135f44[];
 
 s32 CommManager_isLocalSlot(void *g, u32 a);
-s32 PlayerActor_SetHoldableItem(s32 a, u32 b);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
@@ -2496,11 +2337,6 @@ s32 TalkRequest_AddPlayerMessage();
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 Unk_02008040_requestAct77(Obj *o, s32 a, s32 b, s32 c);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-s32 Camera_SetModeDefault();
-s32 Camera_SetMode4();
-s32 Bgm_ReleasePriority(u32 a);
-s32 Bgm_RequestSilence(u32 a, u32 b, u32 c);
-s32 Bgm_Request(u32 a, u32 b, u32 c, u32 d);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_advanceAnim(Obj *o);
@@ -2511,13 +2347,10 @@ s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PendingUnit_ApplyAt(P2 *p, s32 a);
 s32 WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_PlayById(s32 a, V3 *b, s32 c, s32 d);
-s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 void MTX_MultVec43(V3 *a, Mtx *m, V3 *out);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Unk_02006d14_turnToCamera(Obj *o, s32 a);
 s32 Unk_02006d14_getHeldHoldableIndex(Obj *o);
-s32 PlayerData_GetBySessionSlot(u32 a);
 u16 *PlayerData_getHeldItem(s32 a);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 Unk_020102ec_setSpeed(Obj *o, s32 *a);
@@ -2542,8 +2375,6 @@ void PlayerActor_AxeBreakUpdate(Obj *o);
 void PlayerActor_EndAxeBreak(Obj *o);
 void PlayerActor_NetAxeBreak(Obj *o, s16 a);
 void PlayerActor_SetupAxeBreak(Obj *o, Msg *a);
-void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
-void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v);
 void PlayerActor_AxeBreakSetWork(Rec *r, u32 c, Pv p);
 s32 PlayerActor_RequestAxeBreak(Obj *o, u32 a, Pv p, s32 c, s16 e);
 void PlayerActor_AxeBreakSetArgs(Rec *r, u32 c, Pv p);
@@ -2586,8 +2417,6 @@ extern "C" void PlayerActor_MainAxeStrike(Obj *o);
 extern "C" void PlayerActor_AxeStrikeCheckEnd(Obj *o);
 extern "C" void PlayerActor_AxeStrikeHit(Obj *o);
 extern "C" void PlayerActor_AxeBrokenMessageInitWork(Rec *r);
-extern "C" void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
-extern "C" void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v);
 extern "C" void PlayerActor_AxeBreakSetWork(Rec *r, u32 c, Pv p);
 extern "C" void PlayerActor_AxeBreakSetArgs(Rec *r, u32 c, Pv p);
 extern "C" void PlayerActor_NetAxeChop(Obj *o);
@@ -2646,8 +2475,6 @@ void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 void Unk_020102ec_setSubCollider(Obj *o, V3 *v, s32 a, s32 b);
 void ActorCollider_submit(void *p);
-s32 Effect_Create(s32 a, void *b, void *c, s32 d);
-s32 Random_GlobalBelow(s32 a);
 s32 Ground_GetHeightAt(V3 *a, s32 *b, s32 c);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -2660,11 +2487,7 @@ void PlayerActor_AxeStrikeUpdate(Obj *o);
 void PlayerActor_EndAxeStrike(Obj *o);
 void PlayerActor_NetAxeStrike(Obj *o, s32 a);
 void PlayerActor_SetupAxeStrike(Obj *o, Msg *a);
-void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
-void PlayerActor_AxeStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
-void PlayerActor_AxeStrikeSetWork(u8 *d, u32 x, u32 y, s32 *s);
 s32 PlayerActor_RequestAxeStrike(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
-void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s);
 void PlayerActor_MainAct48(Obj *o);
 void PlayerActor_Act48CheckEnd(Obj *o);
 s32 PlayerActor_Act48Update(Obj *o);
@@ -2684,8 +2507,6 @@ void PlayerActor_AxeSwingTrackTarget(Obj *o);
 s32 PlayerActor_AxeSwingTurn(Obj *o);
 s32 PlayerActor_NetAxeSwing(Obj *o, s32 a);
 void PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
-void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
-void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
 void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a);
 s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
 s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
@@ -2724,15 +2545,9 @@ extern "C" void PlayerActor_AxeSwingTrackTarget(Obj *o);
 extern "C" s32 PlayerActor_AxeSwingTurn(Obj *o);
 extern "C" s32 PlayerActor_NetAxeSwing(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
-extern "C" void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
-extern "C" void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
 extern "C" s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
 extern "C" s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
-extern "C" void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
-extern "C" void PlayerActor_AxeStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
-extern "C" void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s);
 extern "C" void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a);
-extern "C" void PlayerActor_AxeStrikeSetWork(u8 *d, u32 x, u32 y, s32 *s);
 }
 
 namespace ns_0220fc88 {
@@ -2790,9 +2605,7 @@ s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_requestAct10(Obj *o, s32 a, s32 b, s32 c);
 s32 WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_Create(u32 id, V3 *v, s16 *h, u32 z);
 s32 Effect_SetPosition(s32 h, V3 *v, s16 *p, s16 *b);
-s32 Effect_End(s32 h);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -2801,22 +2614,18 @@ s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 TalkRequest_FinishSceneEntry();
 s32 HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-BlendAnimModel *HeldItemModel_GetModel(void *p);
 s32 PlayerActor_GetHeldItem(H *h, Obj *o);
 s32 PlayerActor_GetPlayerData(Obj *o);
 s32 PlayerData_setHeldItem(s32 r, void *p);
 s32 Unk_02006d14_applyHeldItemPose(Obj *o, s32 a, s32 b);
 s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
-s32 NetBuf_ReadS16B(void *p);
 s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 PlayerActor_RequestDoorEnter(Obj *o, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 PlayerActor_StowItemGetNetData(void *p, u8 *a, s32 *b, s32 *c, s16 *d);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
 s32 PlayerActor_StowItemSetWork(void *p, s32 st, u32 bits, s32 x, s32 y, s32 h, s32 v);
-s32 PlayerActor_StowItemSetNetData(void *p, u32 bits, s32 x, s32 y, s32 h);
 
 void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
 void PlayerActor_MainUmbrellaSpin(Obj *o);
@@ -2825,14 +2634,12 @@ void PlayerActor_UmbrellaSpinEffect(Obj *o);
 void PlayerActor_EndUmbrellaSpin(Obj *o);
 s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b);
 s32 PlayerActor_SetupUmbrellaSpin(Obj *o);
-void PlayerActor_UmbrellaSpinInitWork(u8 *p);
 s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b);
 void PlayerActor_MainStowUmbrella(Obj *o);
 void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
 void PlayerActor_StowUmbrellaUpdate(Obj *o);
 s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
 s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a);
-void PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
 s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
 void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
 s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
@@ -2852,14 +2659,12 @@ extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o);
 extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o);
 extern "C" s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b);
 extern "C" s32 PlayerActor_SetupUmbrellaSpin(Obj *o);
-extern "C" void PlayerActor_UmbrellaSpinInitWork(u8 *p);
 extern "C" s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_MainStowUmbrella(Obj *o);
 extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
 extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
 extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a);
-extern "C" void PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
 extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
 extern "C" void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
 extern "C" s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
@@ -2898,7 +2703,6 @@ extern void *gCommManager;
 
 s32 NetBuf_UnpackPair20(void *p, u32 a, u32 b);
 s32 NetBuf_PackPair20(void *p, u32 a, u32 b);
-u32 NetBuf_ReadS16B(void *p);
 void NetBuf_WriteS16B(void *p, s32 a);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
@@ -2913,22 +2717,15 @@ s32 Unk_02006d14_nudgeForward(Obj *o);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_IsFurniture(u16 *p);
-s32 Taxi_IsLeaving();
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_requestAct76(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 TalkRequest_FinishSceneEntry();
-void *TownSessionState_Get();
-s32 TownSessionState_TestFlag(void *p, s32 a);
-s32 TownSessionState_ClearFlag(void *p, s32 a);
-void *PlayerData_GetCurrent();
 s32 PlayerData_clearFlag(void *p, s32 a);
 s32 TownBbs_UpdateDaily();
-s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
 s32 Scene_GetCurrent();
 s32 PlayerData_testFlag(void *p, s32 a);
 s32 Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(s32 a);
-u32 Building_GetDoorAnimParamAt(void *p);
 s32 Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_020102ec_updateBodyCollider(Obj *o);
 s32 Unk_02006d14_playFootstepSe(Obj *o);
@@ -2936,10 +2733,6 @@ s32 PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 
 void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
 s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
-s32 Field_GetDoorExitMode();
-s32 Building_OpenDoorForExitAt(void *p);
-void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
-void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b);
 s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s16 d);
 s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b);
@@ -2970,12 +2763,9 @@ static inline BOOL Unk_ov003_022107fc_Eq(u16 *p, u16 *k) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, u32 b, u32 c, u16 *d);
-extern "C" void PlayerActor_StowItemSetNetData(u8 *p, u32 a, u32 b, u32 c, s16 d);
 extern "C" void PlayerActor_StowItemSetWork(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s32 f);
 extern "C" s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
 extern "C" void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
-extern "C" void PlayerActor_MainAct3C();
 extern "C" void PlayerActor_EndAct3C(Obj *o, s32 a);
 extern "C" s32 PlayerActor_NetAct3C(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupAct3C(Obj *o);
@@ -2985,11 +2775,8 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o);
 extern "C" void PlayerActor_DoorExitUpdate(Obj *o);
 extern "C" void PlayerActor_NetDoorExit(Obj *o, s32 a);
 extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m);
-extern "C" void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
-extern "C" void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b);
 extern "C" s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s16 d);
 extern "C" s32 PlayerActor_RequestDoorExit(Obj *o, s32 a, s32 b);
-extern "C" void PlayerActor_MainDoorEntered();
 extern "C" s32 PlayerActor_NetDoorEntered(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupDoorEntered(Obj *o);
 extern "C" s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b);
@@ -3036,10 +2823,8 @@ extern "C" {
 extern void *gCommManager;
 extern void *gSceneBlockMap;
 
-s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
 void NetBuf_PackPair20(void *p, s32 a, s32 b);
-u32 NetBuf_ReadS16B(void *p);
 void NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -3061,8 +2846,6 @@ s32 Unk_02006d14_netSyncNearUnit(Obj *o, Pair *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
-s32 Effect_Create(s32 a, V3 *b, s16 *c, s32 d);
-s32 Effect_PlayById2(s32 a, V3 *b, s32 c, s32 d);
 void VEC_Add(V3 *a, V3 *b, V3 *c);
 s32 Flower_SpawnPetalFxAt(u16 *a, Pair *b, s32 c, s32 d);
 void PendingUnit_ApplyAt(Pair *a, s32 b);
@@ -3074,16 +2857,12 @@ s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_PluckReachGetNetData(void *p, Pair *q);
 s32 PlayerActor_RequestPluckReach(Obj *o, Pair *q, s32 a, s32 b);
 
-void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
-void PlayerActor_DoorEnterSetNetData(u8 *p, u32 a, s32 b, s32 c, s16 e);
 void PlayerActor_DoorEnterSetWork(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e);
 s32 PlayerActor_RequestDoorEnter(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f);
 void PlayerActor_DoorEnterSetArgs(Rec *p, u32 a, s32 b, s32 c, s16 d);
 void PlayerActor_DoorApproachMove(Obj *o);
 void PlayerActor_DoorApproachUpdate(Obj *o);
 void PlayerActor_DoorApproachCheckEnd(Obj *o);
-void PlayerActor_DoorApproachGetNetData(u8 *p, s32 *a, s32 *b, s16 *c);
-void PlayerActor_DoorApproachSetNetData(u8 *p, s32 a, s32 b, s16 c);
 void PlayerActor_DoorApproachSetWork(Rec *p, s32 a, s32 b, s16 c);
 s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e);
 void PlayerActor_DoorApproachSetArgs(Rec *p, s32 a, s32 b, s16 c);
@@ -3098,8 +2877,6 @@ void PlayerActor_PluckReachCheckEnd(Obj *o);
 // forward declarations (functions are emitted in descending address order)
 extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x);
 extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m);
-extern "C" void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
-extern "C" void PlayerActor_DoorEnterSetNetData(u8 *p, u32 a, s32 b, s32 c, s16 e);
 extern "C" void PlayerActor_DoorEnterSetWork(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e);
 extern "C" s32 PlayerActor_RequestDoorEnter(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f);
 extern "C" void PlayerActor_DoorEnterSetArgs(Rec *p, u32 a, s32 b, s32 c, s16 d);
@@ -3109,8 +2886,6 @@ extern "C" void PlayerActor_DoorApproachUpdate(Obj *o);
 extern "C" void PlayerActor_DoorApproachMove(Obj *o);
 extern "C" void PlayerActor_NetDoorApproach(Obj *o, s32 x);
 extern "C" void PlayerActor_SetupDoorApproach(Obj *o, Msg *m);
-extern "C" void PlayerActor_DoorApproachGetNetData(u8 *p, s32 *a, s32 *b, s16 *c);
-extern "C" void PlayerActor_DoorApproachSetNetData(u8 *p, s32 a, s32 b, s16 c);
 extern "C" void PlayerActor_DoorApproachSetWork(Rec *p, s32 a, s32 b, s16 c);
 extern "C" s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e);
 extern "C" void PlayerActor_DoorApproachSetArgs(Rec *p, s32 a, s32 b, s16 c);
@@ -3119,7 +2894,6 @@ extern "C" void PlayerActor_PluckCheckEnd(Obj *o);
 extern "C" s32 PlayerActor_PluckApply(Obj *o);
 extern "C" void PlayerActor_PluckUpdate(Obj *o);
 extern "C" void PlayerActor_EndPluck(Obj *o);
-extern "C" void PlayerActor_NetPluck();
 extern "C" void PlayerActor_SetupPluck(Obj *o, Msg *m);
 extern "C" s32 PlayerActor_RequestPluck(Obj *o, s32 *p, s32 a, s32 b);
 extern "C" void PlayerActor_MainPluckReach(Obj *o);
@@ -3178,42 +2952,25 @@ void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_calcHandMtx(Obj *o);
 void Unk_020102ec_moveWithCollision(Obj *o);
 void Unk_02006d14_turnToCamera(Obj *o, s32 a);
-void Effect_End(s32 a);
 void Effect_SetPosition(s32 a, V3 *b, u32 c, u32 d);
-s32 Effect_CreateById(s32 a, V3 *b, u32 c, u32 d);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void Fish_GetDisplayScale(V3 *v, s32 a);
-void HeldInsect_SetHandMatrix(u8 id, s16 *a, Blk *p, s32 f);
-void HeldInsect_Remove(u8 a, s32 b);
-void HeldInsect_Start(u8 a, u8 b);
 s32 FishDisplay_SetEntry(void *a, s32 b, V3 *c, V3 *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void FishDisplay_Release(void *a);
-void *FishDisplay_Acquire();
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
 s32 func_02132a4c(s32 a);
 float func_02132594(float a, float b);
 void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
 s32 func_01ffcb0c(s32 a, s32 b);
-void PlayerActor_GetSlotHeldItem(u16 *p, u32 a);
-Obj *PlayerActor_Get(u32 a);
-void *PlayerActor_GetBodyPos(u32 a);
-u16 NetBuf_ReadU16(u8 *p);
-void NetBuf_WriteU16(u8 *p, s32 a);
 
 void PlayerActor_PluckReachGetNetData(u8 *p, Pair *o);
 void PlayerActor_PluckReachSetNetData(u8 *p, Pair *s);
 void PlayerActor_PluckReachSetArgs(u8 *p, Pair *s);
 void PlayerActor_Act11Update(Obj *o);
 s32 PlayerActor_RequestAct11(Obj *o, u32 p, s32 a, s16 b);
-void PlayerActor_Act11SetArgs(u8 *p, u32 v);
 void PlayerActor_ReleaseCreatureUpdate(Obj *o);
 void PlayerActor_ReleaseCreatureUpdateModel(Obj *o);
 void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
-u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p);
-void PlayerActor_ReleaseCreatureSetNetState(u8 *p, u32 v);
-void PlayerActor_ReleaseCreatureGetNetItem(u8 *p, u16 *out);
-void PlayerActor_ReleaseCreatureSetNetItem(u8 *p, s32 a);
 s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c);
 }
 
@@ -3237,24 +2994,14 @@ extern "C" void PlayerActor_Act11Update(Obj *o);
 extern "C" s32 PlayerActor_NetAct11(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupAct11(Obj *o, u8 *m);
 extern "C" s32 PlayerActor_RequestAct11(Obj *o, u32 p, s32 a, s16 b);
-extern "C" void PlayerActor_Act11SetArgs(u8 *p, u32 v);
 extern "C" void PlayerActor_MainReleaseCreature(Obj *o);
 extern "C" void PlayerActor_ReleaseCreatureUpdate(Obj *o);
 extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o);
 extern "C" void PlayerActor_EndReleaseCreature(Obj *o);
 extern "C" s32 PlayerActor_NetReleaseCreature(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m);
-extern "C" u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p);
-extern "C" void PlayerActor_ReleaseCreatureSetNetState(u8 *p, u32 v);
-extern "C" void PlayerActor_ReleaseCreatureGetNetItem(u8 *p, u16 *out);
-extern "C" void PlayerActor_ReleaseCreatureSetNetItem(u8 *p, s32 a);
 extern "C" s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c);
-extern "C" BOOL PlayerActor_LocalHoldsNet();
-extern "C" void PlayerActor_LocalPlayAnim99();
 extern "C" void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
-extern "C" void *PlayerActor_GetTrackTarget(u32 a);
-extern "C" BOOL PlayerActor_ConfirmReleaseCreature();
-extern "C" s32 PlayerActor_LocalRequestReleaseCreature(u32 a);
 }
 
 namespace ns_02212140 {
@@ -3281,11 +3028,9 @@ enum Unk_ov003_0221227c_Limit { UNK_ov003_0221227c_5 = 5 };
 extern "C" {
 extern CommManager *gCommManager;
 
-Obj *PlayerActor_Get(s32 id);
 void TalkRequest_FinishSlingshot();
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 s32 CommManager_isLocalSlot(CommManager *g, s32 a);
 s32 PlayerActor_RequestSlingshotWatch(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestThrowBottle(Obj *o, s32 a, s32 b);
@@ -3300,7 +3045,6 @@ s32 Math_Atan2(s32 a, s32 b);
 s32 Unk_02008040_requestAct77(Obj *o, s32 v, s32 a, s32 b);
 s32 PlayerActor_RequestFaint(Obj *o, u8 a, s32 b, s32 c);
 s32 Unk_02006d14_clearActionFlag(Obj *o, s32 a);
-void Bgm_Release(s32 a);
 s32 PlayerActor_RequestMailboxWait(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestMailboxClose(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestMailboxOpen(Obj *o, V3 v, s32 a, s32 b);
@@ -3316,7 +3060,6 @@ void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 s32 PlayerActor_RequestBuryItem(Obj *o, s32 a, Pair *p, u32 b, s32 c, s32 d);
 s32 PlayerActor_GetFrontUnitCenter(V3 *v, Obj *o);
 void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
-BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 static inline u16 Unk_ov003_022125ac_A(u32 x) {
@@ -3344,27 +3087,13 @@ static inline BOOL Unk_ov003_022125ac_R(u16 *p, u32 lo, u32 hi) {
 extern "C" s32 FieldPos_IsSameUnit(V3 *a, V3 *b);
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 PlayerActor_LocalEndWatch();
-extern "C" s32 PlayerActor_SetWatchMode(s32 a, s32 b);
-extern "C" s32 PlayerActor_LocalRequestThrowBottle();
-extern "C" s32 PlayerActor_LocalRequestAct11();
-extern "C" s32 PlayerActor_LocalBeeSting();
 extern "C" s32 PlayerActor_LocalRequestAct77From(V3 *p);
-extern "C" s32 PlayerActor_LocalFaint(s32 a);
-extern "C" s32 PlayerActor_LocalRequestMailboxWaitOrClose(s32 a);
 extern "C" s32 PlayerActor_LocalRequestMailboxOpen(V3 *p);
-extern "C" s32 PlayerActor_LocalRequestDoorExit();
-extern "C" s32 PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
-extern "C" s32 PlayerActor_LocalRequestDoorApproach(s32 *a, s32 *b, s16 *c);
-extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a);
 extern "C" s32 PlayerActor_LocalRequestBuryItem(V3 *p, u16 *b);
-extern "C" u16 PlayerActor_GetLocalShownItem();
-extern "C" s32 PlayerActor_IsLocalReleaseWaiting();
 extern "C" s32 PlayerActor_IsLocalAct67HitAt(V3 *a);
 extern "C" s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
 extern "C" s32 PlayerActor_GetDigCountdownAt(V3 *a, s32 b);
 extern "C" s32 FieldPos_IsSameUnit(V3 *a, V3 *b);
-extern "C" BOOL PlayerActor_TestSlotFlag9(s32 a);
 }
 
 namespace ns_02212140 {

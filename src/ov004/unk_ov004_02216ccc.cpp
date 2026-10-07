@@ -27,6 +27,12 @@
 #include "npc/VillagerId.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
+#define PROTO_LOCAL_RoomFreeUnitMap_Build  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomFreeUnitMap_Test  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomFreeUnitMap_TestUpper  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov004/unk_ov004_02216ccc.h"
 
 class HouseOwnerVillager;
 
@@ -94,7 +100,6 @@ s32 Villager_GetResidentStatus(void *);
 s32 NpcActor_getPlayerActor(void *, u32);
 void VillagerTalk_begin(void *, void *, s32);
 void ActorTalkRequest_setTalkPlayer(void *, s32);
-s32 NetArea_IsLocalOwner();
 s32 NpcTalkCtrl_isBusy(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -106,7 +111,6 @@ void TalkRequest_SetTargetDone(void *);
 void *ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
-s32 Random_GlobalBelow(u32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_FromUnitCenter(s32 *, s32, s32);
 s32 RoomFreeUnitMap_TestUpper(void *, s32, s32);
@@ -203,7 +207,6 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" HouseOwnerVillager *HouseOwnerVillager_Create();
 extern "C" ActorProfile sHouseOwnerVillagerProfile = {(void *(*)())HouseOwnerVillager_Create, 0x85, 0x89, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" const u8 data_ov004_02240090[4] = {0x28, 0x1e, 0x14, 0x0a};
 #define data_ov004_0225065c ((HouseOwnerStepDir *)((u8 *)sHouseOwnerStepDirs + 4))

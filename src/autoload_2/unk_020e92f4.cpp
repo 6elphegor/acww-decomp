@@ -7,6 +7,10 @@
 #include "gfx/VecFx32.h"
 #include "game/FxVec3.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/ov065/unk_ov065_02277e70.h"
+#include "proto/ov067/unk_ov067_0225f1a0.h"
 
 typedef volatile u64 vu64;
 
@@ -14,9 +18,6 @@ extern "C" {
 void VEC_Normalize(const VecFx32 *pSrc, VecFx32 *pDst); // VEC_Normalize
 void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
 s32 FX_Div(s32 a, s32 b); // FX_Div
-s32 Math_Sqrt64(u64 x);
-void Math_InitSqrt64(void);
-void Vec_NormalizeCopy(VecFx32 *out, VecFx32 *in);
 extern const s16 data_02135f44[]; // FX_SinCosTable_
 }
 
@@ -28,32 +29,15 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 #define FX_CosIdx(a) data_02135f44[((a) >> 4) * 2 + 1]
 
 extern "C" {
-void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
-void Net_Free(void *p); // free via hook sFreeHook
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
 
-s32 Wlx_GetState(void);
-s32 Wlx_StopExchange(void *p);
-s32 Wlx_StartExchange(void *p);
-void Wlx_Init(void *p, void *cb, u32 n);
-void Wlx_SetPacketSizes(u32 a, u32 b, u32 c);
-void Wlx_RegisterData(void *h, void *cb, void *a, u32 b, u32 c, u32 d);
 void DwcMatch_ClearServerLock(void);
 s32 DwcFriend_IsIdle(void);
 void DwcFriend_DeleteFriend(void *p);
 s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
-void DwcGsHttp_Get(void *a, void *b, void *c);
 void DWCi_Acc_LoginIdToUserName(void *a, u32 b, void *c);
-void Net_OnWlxStopped(void);
-void Net_OnWlxExchangeDone(void);
-void Net_OnGameStatsChallenge(void);
-void Net_OnWifiFriendDeleted(void);
-void Net_OnWifiServersUpdated(void);
-void Net_OnWifiFriendStatus(void);
-void Net_OnHttpDownloadDone(void);
-s64 Net_GetOwnFriendKey(void *p);
 s32 DWC_IsBuddyFriendData(void *p);
 s32 DWC_GetFriendDataType(void *p);
 s32 DWC_IsEqualFriendData(void *p, void *q);

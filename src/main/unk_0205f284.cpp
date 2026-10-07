@@ -14,6 +14,23 @@
 #include "actor/Character.h"
 #include "gfx/Model.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_FishBobber_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_0205f284.h"
+#include "proto/main/unk_02060034.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
 
 
 
@@ -33,55 +50,29 @@ extern CommManager *gCommManager;
 extern u8 gSaveSongSet[];
 extern u8 gSaveHouse[];
 
-s32 Effect_End(s32 h);
-s32 Effect_Create(u32 id, void *a, u32 b, u32 c);
 void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL FishShadow_FleeFromPlayer(void *p);
-void FishCatch_StartLift(void *p, s32 a);
 void FishCatch_EndForShadow(void *p);
 BOOL FishCatch_IsLandedForShadow(void *p);
 BOOL FishShadow_CheckReelResult(void *p);
 BOOL FishShadow_TryHook(void *p);
 void *NNS_G3dGetTex(void *p);
-void File_LoadToBuffer(char *name, void *p, u32 size);
-s32 Str_SPrintf(char *buf, char *fmt, ...);
 s32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(s32 a);
 u32 Scene_GetMaxCharacters(s32 a);
-u32 NpcSpawn_GetSpNpcSlotCount();
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(u32 heap);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(u32 heap);
-void *Heap_AllocAligned(u32 heap, u32 size, u32 align);
-s32 FishBobberHeap_Destroy();
-void FishBobberHeap_Create(void *parent);
 void *func_02060550(void *a, s32 b);
 void func_020607c8(void *a, u16 *b);
 u16 *func_020607d4(void *a);
-u32 FishBobber_GetPlttVramSize();
-u32 FishBobber_GetTex4x4VramSize();
-u32 FishBobber_GetTexVramSize();
-u32 FishBobber_GetModelSize();
-char *FishBobber_GetModelPath(u32 n);
-void SongSet_ClearBit(u8 *bits, u32 i);
-void SongSet_SetBit(u8 *bits, u32 i);
-BOOL SongSet_TestBit(u8 *bits, u32 i);
-BOOL HouseRoom_SetCurrentSong(u16 *p);
-BOOL HouseRoom_SetSongForScene(s32 a, u16 *p);
 extern s16 data_02135f44[];
 
-s32 PlayerPaletteHeap_Destroy();
-s32 PlayerPaletteHeap_Create();
-void NetBuf_WriteU16(void *p, s32 v);
-void CommRecord_PackSource(void *p, s32 a, u8 b);
-BOOL NetArea_IsLocalOwner();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
 BOOL func_02072e44(void *p);
-u16 NetBuf_ReadU16();
-void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
 BOOL SceneId_IsTown(u32 v);
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(u32 v);
@@ -92,18 +83,11 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
-s32 Effect_SetPosition(s32 h, VecFx32 *v, void *a, s32 b);
-void Vec_ShiftRightTo(VecFx32 *out, VecFx32 *in, s32 n);
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-void Vec_ShiftRight(VecFx32 *v, s32 n);
 void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
-void FieldFish_StartCastSplash();
 void WorldCurve_FromCurved(void *p, VecFx32 *v);
 void WorldCurve_ToCurved(VecFx32 *a, VecFx32 *b);
-BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag);
-void Fishing_CalcArcSpeed(VecFx32 *a, VecFx32 *b, s32 *c, s32 *d, u8 mode);
 }
 
 

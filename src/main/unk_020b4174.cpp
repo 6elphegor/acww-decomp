@@ -5,45 +5,30 @@
 #include "nitro/io_access.h"
 #include "save/SaveData.h"
 #include "save/SaveRecord4.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_020536dc.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020b4174.h"
+#include "proto/main/unk_020b8340.h"
 
 extern "C" const u8 data_020d0c08;
 
 extern "C" {
-void Gfx2d_SetBrightness(s32 x);
-void Gfx2d_SetMainPlanes(u32 x);
-void Gfx2d_SetSubPlanes(u32 x);
-void Gfx2d_SetSubBgMode(u32 x);
-void Gfx2d_SetMainBgMode(u32 x);
-void Gfx2d_ShowLayer(u32 x);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void Gfx2d_LoadCharFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
-void Gfx2d_LoadScreenFile(const char *path, void *heap, u32 a);
-void Gfx2d_LoadPaletteFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
-void Snd_PlaySe(u32 x);
-void Snd_CreateScene(void);
-void BgHeap_Destroy(void);
-void BgHeap_Create(u32 a, u32 b);
-void Gfx_DisableAllBanks(void);
-void Gfx_ResetScene(void);
 void VillagerStates_Init(void);
 void VillagerStates_Destroy(void);
-void GuestPlayers_ResetAll(void);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
-void SaveManager_SetSaveCorrupted(u32 x);
-void Save_InvalidateLetterStorage(void);
-u32 Save_SlotStampsMatch(void);
-u32 Save_ReadSlotAsyncStep(u32 a, void *p);
 void SceneWarp_RequestScene(void *p, u32 x);
 void FieldScene_Request(u32 a, u32 b);
 u8 *Scene_GetWarpRequest(void);
-void VramQueue2d_Init(void);
-void VramQueueTex_Init(void);
-u64 OS_GetTick(void);
 void GX_SetBankForSubBG(u32 x);
-void GX_SetBankForBG(u32 x);
-void *Heap_Alloc(void *heap, u32 size);
-void Heap_Free(void *heap, void *ptr);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
 extern u32 gVBlanksPerFrame;

@@ -1,6 +1,27 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_0220de1c.h"
+#include "proto/ov001/unk_ov001_0220e320.h"
+#include "proto/ov001/unk_ov001_0220e61c.h"
+#include "proto/ov001/unk_ov001_0220eb90.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221ea94.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -9,104 +30,20 @@ volatile u8 sWfcEraseConfirmed;
 }
 
 extern "C" {
-s32 WfcUtil_RequestPaletteLine(u32 *, u32, u32);
-s32 WfcSound_Play(s32);
-s32 WfcCursor_ShowCorners(u32, u32, u32, u32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcCursor_Clear();
-s32 WfcUtil_HideTopMessage();
-s32 WfcFs_FreeFile(u32 *);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcButtonBar_DisableInput();
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
 s32 WfcInput_IsTouchPressedIn(void *);
-s32 WfcButtonBar_SetResult(s32);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
-s32 WfcButtonBar_EnableInput();
-s32 WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcUtil_LocalizePath(void *);
-u32 *WfcFs_LoadFile(s32, s32, s32);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcTop_LoadScreen(s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcButtonBar_Close();
-s32 WfcButtonBar_IsClosed();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-void WfcUtil_QuitFadeOut();
-void WfcOptions_Enter();
-void WfcErased_Enter();
-void WfcConnSelect_Enter();
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
-void WfcTopMenu_Exit();
-void WfcTopMenu_FadeOut();
-void WfcTopMenu_StartExit();
-void WfcTopMenu_Update();
-void WfcTopMenu_WaitButtonBar();
-void WfcTopMenu_WaitFadeIn();
-void WfcTopMenu_FadeIn();
-void WfcTopMenu_Enter();
-void WfcErase_WaitDialogClosed();
-void WfcErase_WaitConfirmDialog();
-void WfcErase_Exit();
-void WfcErase_FadeOut();
-void WfcErase_StartExit();
-void WfcTopMenu_HandleInput();
-void WfcTopMenu_Idle();
-void WfcTopMenu_HandleResult();
-void WfcTopMenu_LoadBg();
-void WfcErase_HandleResult();
-void WfcUtil_ShowBottomMessage(s32);
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
-void WfcConfig_EraseAll();
-void *WfcText_CreateBgCanvas(s32, s32);
 void OS_GetMacAddress(void *);
 void swprintf(void *, s32, void *, ...);
-void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 void DWCi_BM_GetWiFiInfo(u64 *);
-void WfcText_RequestTransfer(void *);
-void WfcErase_Idle();
-void WfcErase_HandleInput();
-void WfcErase_Update();
-void WfcErase_WaitButtonBar();
-void WfcErase_WaitFadeIn();
-void WfcErase_FadeIn();
-void WfcErase_LoadBg();
-void WfcErase_Enter();
-void WfcErased_PowerOff();
-void WfcErased_FadeOut();
-void WfcErased_StartExit();
-void WfcErased_HandleResult();
-void WfcErased_Idle();
-void WfcErased_HandleInput();
-void WfcErased_Update();
-void WfcErased_WaitButtonBar();
-void WfcErased_WaitFadeIn();
-void WfcErased_FadeIn();
-void WfcErased_LoadBg();
-void WfcSysInfo_Exit();
-void WfcSysInfo_FadeOut();
-void WfcSysInfo_StartExit();
-void WfcSysInfo_HandleResult();
-void WfcSysInfo_Idle();
-void WfcSysInfo_HandleInput();
-void WfcSysInfo_Update();
-void WfcSysInfo_WaitButtonBar();
-void WfcSysInfo_WaitFadeIn();
-void WfcSysInfo_FadeIn();
 }
 
 extern "C" void WfcErase_Enter() {

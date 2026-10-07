@@ -1,0 +1,25 @@
+#ifndef PROTO_PROTO_OV065_UNK_OV065_0226ACA8_H
+#define PROTO_PROTO_OV065_UNK_OV065_0226ACA8_H
+
+// Prototypes of the functions defined in src/ov065/unk_ov065_0226aca8.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_WifiLink_GetAverageRssi
+u8 WifiLink_GetAverageRssi();
+#endif
+#ifndef PROTO_LOCAL_WifiLink_GetLinkLevel
+u32 WifiLink_GetLinkLevel();
+#endif
+#ifndef PROTO_LOCAL_WifiLink_AddRssiSample
+void WifiLink_AddRssiSample(s32 v);
+#endif
+}
+#endif
+
+#endif

@@ -12,6 +12,12 @@
 #include "gfx/G3dResAccess.h"
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 
@@ -42,7 +48,6 @@ void func_020a71d0(void *);
 }
 
 extern "C" {
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
 }
 
 extern "C" {
@@ -62,11 +67,9 @@ extern uptr sMailFolderDirs[];
 }
 
 extern "C" {
-void String_GetDayOrdinal(void *, s32);
 }
 
 extern "C" {
-void String_GetMonthName(void *, s32);
 }
 
 extern "C" {
@@ -106,11 +109,8 @@ extern "C" MailTextBuilder gMailTextBuilder;
 extern "C" PlayerOptions sPlayerOptions;
 extern "C" PlayerOptions *func_0203c9b4(PlayerOptions *p);
 extern "C" PlayerOptions *func_0203c9c4(PlayerOptions *p);
-extern "C" void PlayerOptions_OnDestruct();
-extern "C" void PlayerOptions_OnConstruct();
 
 extern "C" {
-void PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -118,19 +118,15 @@ PlayerOptions *_ZN10PlayerData10getOptionsEv();
 }
 
 extern "C" {
-PlayerOptions *PlayerOptions_Get();
 }
 
 extern "C" {
-s32 PlayerOptions_IsHiragana();
 }
 
 extern "C" {
-s32 PlayerOptions_IsStereo();
 }
 
 extern "C" {
-u32 PlayerOptions_GetTalkVoice();
 }
 
 // ---- 0x0203c638 .. 0x0203c924
@@ -176,7 +172,6 @@ extern "C" {
 }
 
 extern "C" {
-BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 }
 
 extern "C" {
@@ -184,12 +179,7 @@ extern u8 gSaveAbleSistersPatterns[];
 }
 
 extern "C" {
-BOOL ClothTex_LoadItem(void *self, u16 *p, void *q);
 }
-extern "C" void *ClothTex_GetTex(void *tex);
-extern "C" void *ClothTex_GetTexData(void *tex);
-extern "C" void *ClothTex_GetPlttData(void *tex);
-extern "C" BOOL ClothTex_LoadPattern(void *a, void *b);
 
 static inline BOOL Unk_0203c764_InRange(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;

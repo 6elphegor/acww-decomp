@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -11,21 +13,9 @@ void GX_LoadBG2Scr(void *, s32, u32);
 void MIi_CpuCopyFast(void *, void *, u32);
 void MIi_CpuCopy16(void *, void *, u32);
 void DC_FlushRange(void *, s32);
-void WfcTask_RequestDelete(s32, s32);
-u32 WfcTask_Add(s32, void *, s32, s32);
-void WfcTask_Delete(s32, s32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
 
-void WfcUtil_BgPaletteTask(s32);
-void WfcUtil_RequestBgPalette(s32);
-void WfcUtil_PaletteLineTask(s32);
-void WfcUtil_RequestPaletteLine(s32, s32, s32);
-void WfcBgMap_TransferTask();
-void WfcBgMap_Blit(u8 *, s32, s32, s32);
-void WfcBgMap_RequestTransfer();
-void WfcBgMap_Destroy();
-void WfcBgMap_Create(void *);
 }
 
 extern "C" WfcBgMap *sWfcBgMap = 0;

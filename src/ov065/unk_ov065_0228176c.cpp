@@ -8,6 +8,14 @@
 #include "net/gpi.h"
 #include "net/gp.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0228176c.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU48: GP gpiProfile.c (0x0228176c..0x02281a5c)
 
@@ -33,15 +41,8 @@ extern char data_ov065_0228da68[];
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-char *strstr(const char *, const char *);
-s32 strcmp(const char *, const char *);
-s32 atol(const char *);
-s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-void *memset(void *, s32, s32);
 
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 DArrayImplementation *ArrayNew(s32, s32, void (*)(void *));
 void ArrayDeleteAt(DArrayImplementation *, s32);
 void *ArrayNth(DArrayImplementation *, s32);
@@ -76,7 +77,6 @@ s32 gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, char *, s32, s32);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
-void gpiDebug(GPConnection *, const char *, ...);
 
 s32 gpiCanFreeProfile(GPIProfile *);
 s32 gpiProcessPeerInitiatingConnection(GPConnection *, GPIPeer *);
@@ -125,8 +125,6 @@ s32 TableRemove(void *, void *);
 void *TableLookup(void *, void *);
 s32 TableEnter(void *, void *);
 void *TableNew(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 void gpiSetErrorString(GPConnection *, const char *);
 void gpiSetError(GPConnection *, s32, const char *);
 s32 gpiCheckForError(GPConnection *, char *, s32);
@@ -137,8 +135,6 @@ s32 gpiAddCallback(GPConnection *, GPICallback, void *, void *, s32);
 void gpiRemoveOperation(GPConnection *, GPIOperation *);
 void gpiFreeInfoCache(void *);
 s32 strncmp(const char *, const char *, s32);
-s32 strcmp(const char *, const char *);
-s32 atol(void *);
 
 s32 gpiProcessSearch(GPConnection *, GPIOperation *);
 s32 gpiCheckForBuddy(GPConnection *, GPIProfile *, void *);
@@ -254,11 +250,6 @@ void gpiAppendStringToBuffer(GPConnection *, char **, const char *);
 void gpiAppendIntToBuffer(GPConnection *, char **, s32);
 s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
 s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
-void *GsUtil_Realloc(void *, s32);
-void strzcpy(char *, const char *, s32);
-void *memset(void *, s32, s32);
-char *STD_CopyString(char *, const char *);
-char *strstr(const char *, const char *);
 void msleep(s32);
 s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 

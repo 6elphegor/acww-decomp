@@ -1,3 +1,4 @@
+#include "proto/autoload_2/unk_02101818.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) code: gfd palette VRAM frame manager + g2d font (NNSG2dFont): autoload_2 0x02101818-0x02101de8.
 // ARM code, mwcc 1.2/base, -O4,p.
@@ -64,7 +65,6 @@ typedef struct Font {
 } Font;
 typedef struct TextRect { s32 width; s32 height; } TextRect;
 
-void NNS_GfdResetFrmPlttVramState(void);
 u32 NNS_GfdFreeFrmPlttVram(u32 key);
 u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt);
 extern s32 NNSi_G2dGetUnpackedFont(void *file, Font *font);

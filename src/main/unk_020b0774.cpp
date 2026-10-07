@@ -9,18 +9,19 @@
 #include "talk/ConstellationMsgString17.h"
 #include "talk/ConstellationEncodedString16.h"
 #include "player/PlayerId.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020b0774.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
 
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void File_LoadToBuffer(u32 a, void *b, u32 c);
-s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void _ZN10BgVramTask19requestPaletteRangeEjhjh(void *p, void *q, u32 a, u32 b, u32 c);
 void _ZN10BgVramTaskC1Ev(void *p);
-void Mem_Clear(void *p, u32 n);
 u32 _ZN8PlayerId5clearEv(void *p);
 }
 

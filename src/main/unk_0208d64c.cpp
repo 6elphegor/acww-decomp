@@ -3,9 +3,9 @@
 #include "ui/UiWidget.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
+#include "proto/main/unk_02087e70.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 

@@ -12,27 +12,27 @@
 #include "gfx/NNSG3dRenderObj.h"
 #include "gfx/NNSG3dRS.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/main/unk_02055c38.h"
+#include "proto/main/unk_02057180.h"
 
 
 
 
 extern "C" {
-void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
 }
 
 extern "C" {
-void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
 }
 
 extern "C" u8 *_ZN12G3dResAccess11getPlttDataEi(u8 *hdr, s32 idx);
-extern "C" s32 G3dTex_GetImageSize(u32 v);
 extern "C" void func_02056714(void *p);
 extern "C" s32 _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, void *c, void *d);
 extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
 extern "C" s32 NNS_G3dGetResDictIdxByName(void *a, void *b);
 extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
 extern "C" void *NNS_G3dGetTex(void *p);
-extern "C" void *Heap_Alloc(void *heap, u32 size);
 extern "C" BOOL _ZN11TexVramTask13requestMatTexEPvjj(void *a, void *b, u32 c, void *d);
 extern "C" void _ZN11TexVramTask6cancelEv(void *a);
 extern "C" void _ZN11TexVramTask5clearEv(void *a);
@@ -47,12 +47,7 @@ extern "C" u8 *NNSi_G3dGetTexPatAnmFV(u8 *p, s32 z, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 strlen(const char *s);
-extern "C" char *strcpy(char *dst, const char *src);
 void operator delete(void *p);
-extern "C" void Anim_NormalizeVec(VecFx32 *v);
-extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
-extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
-extern "C" s32 G3dRes_FindDictIdx(void *p, s32 a);
 extern "C" void *gCurrentHeap;
 
 

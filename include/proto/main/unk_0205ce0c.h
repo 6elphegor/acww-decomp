@@ -1,0 +1,41 @@
+#ifndef PROTO_PROTO_MAIN_UNK_0205CE0C_H
+#define PROTO_PROTO_MAIN_UNK_0205CE0C_H
+
+// Prototypes of the functions defined in src/main/unk_0205ce0c.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_CharaFaceAnimPool_Destroy
+void CharaFaceAnimPool_Destroy();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_CharaFaceAnimPool_Create
+void CharaFaceAnimPool_Create(u32 parent);
+#endif
+#ifndef PROTO_LOCAL_CharaFaceAnim_GetPath
+u8 *CharaFaceAnim_GetPath(u32 x);
+#endif
+#ifndef PROTO_LOCAL_CharaFaceAnim_GetAnimSize
+u32 CharaFaceAnim_GetAnimSize();
+#endif
+#ifndef PROTO_LOCAL_CharaFaceAnim_GetSlotSize
+u32 CharaFaceAnim_GetSlotSize();
+#endif
+#ifndef PROTO_LOCAL_CharaFaceAnim_GetKind
+u32 CharaFaceAnim_GetKind(u32 x);
+#endif
+}
+#endif
+
+#endif

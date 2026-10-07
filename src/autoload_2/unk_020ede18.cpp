@@ -228,6 +228,9 @@ extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
 }
 #ifdef HOST64
 #include "snd/SndSeEmitter.h"
+#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNS_SndArcPlayerStartSeqArcEx  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ede18.h"
 static_assert(sizeof(SndHandle) == sizeof(Group), "SndHandle views Group");
 static_assert(__builtin_offsetof(SndHandle, volCb) == __builtin_offsetof(Group, applyParamsFn), "SndHandle::volCb");
 #endif

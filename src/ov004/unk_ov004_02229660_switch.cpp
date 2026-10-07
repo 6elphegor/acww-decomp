@@ -25,6 +25,16 @@
 #include "net/CommManager.h"
 #include "save/SaveData.h"
 #include "talk/ChoiceList.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_02229660.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -166,28 +176,10 @@ void ChoiceList_setEntry(ChoiceList *p, u32 i, u8 *b, u32 n, void *d, s32 z, s32
 void ChoiceList_reset(ChoiceList *p, u32 n, s32 v);
 BOOL TouchPicker_addBox(TouchPicker *o, void *box, s32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
 void TouchPicker_pushBox(TouchPicker *o, void *p);
-s32 TalkWindow_Get(s32 a);
-BOOL MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
-BOOL MenuCtrl_OpenLauncher(u32 a);
 u32 Scene_GetCurrent();
 TouchPicker *Scene_GetTouchPicker();
-BOOL TouchPickResult_GetTarget(TouchPicker *obj, VecFx32 *out, s32 *a, u8 *b);
-s32 TouchPick_GetTappedObject(TouchPicker *o, u32 a, u32 b);
-void *PlayerActor_GetActor(u32 x);
-void *PlayerActor_GetCharacter(s32 v);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
-BOOL InputMode_IsTouch();
-void PlayerOptions_SetHiragana(u32 a);
-void PlayerOptions_SetStereo(u32 a);
-void PlayerOptions_SetTalkVoice(u32 a);
-u32 PlayerOptions_GetTalkVoice();
-void Snd_SetOutputMode(u32 a);
-void PlayerOptions_Commit();
-s32 Vec_DistXZ(s32 *a, s32 *b);
-void PlayerActor_LocalRequestPhoneHangUp(void *p);
-void PlayerActor_LocalRequestPhonePickUp(void *p);
 }
 
 
@@ -215,7 +207,6 @@ extern char sRoomTelephoneArcPath[];
 extern char sRoomTelephoneTexPath[];
 extern RoomTelephone *volatile sRoomTelephone;
 extern RoomTelephoneActEntry sRoomTelephoneActTable[15];
-RoomTelephone *RoomTelephone_Create();
 }
 
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).

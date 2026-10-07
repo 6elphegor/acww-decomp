@@ -34,6 +34,8 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "snd/BgmVolumeMixer.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/main/unk_02065e88.h"
 
 class MsgRequest;
 class MsgString;
@@ -3303,7 +3305,6 @@ void TalkFrame::setTextPalette(s32 idx) {
 
 // ======== unk_02068558.cpp ========
 namespace n9 {
-extern "C" void FS_InitFile(void *p);
 
 }
 BOOL TalkFrame::load(s32 a, u32 b, s32 c, u8 d) {

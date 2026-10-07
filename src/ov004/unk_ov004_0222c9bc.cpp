@@ -25,6 +25,23 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "save/MuseumData.h"
 #include "snd/SndSeEmitter.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistSqXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_0209c08c.h"
+#include "proto/ov004/unk_ov004_0222c9bc.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -569,15 +586,11 @@ extern V3 sRoomHasuPos;
 void MTX_MultVec43(V3 *, void *, V3 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void *FxVec3_Construct(void *);
-void func_02000c8c(void *);
 s32 Math_AngleXZ(void *, void *);
 void SndEnvChannel_callRelease(void *);
 void SndEnvChannel_callRequestSustained(void *, s32);
 void SndEnvChannel_callUpdateRelative(void *, V3 *);
 void SndEnvChannel_callReset(void *);
-s32 Snd_StopSe(s32, s32);
-void Snd_PlaySeOnHandle(u32 a);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 void GroundInfo_Destruct(void *o);
@@ -598,16 +611,10 @@ s32 CachedModel_allocJointRecord(void *, s32);
 void Model_setInitCallback(void *self, void *fn, void *arg);
 s32 Model_setResource(void *, s32, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
-void MuseumAquariumHeap_Destroy(void);
-void MuseumAquariumHeap_Create(void);
-s32 Str_SPrintf(char *, char *, ...);
-s32 Random_GlobalBelow(s32 n);
-s32 File_LoadAlloc(char *, s32, s32, s32);
 s32 MuseumData_isDonated(void *, u16 *);
 void StaticCollider_setupAtPos(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
 void ActorCollider_submit(void *a);
 P *PlayerActor_GetBodyPos(s32 n);
-P *PlayerActor_GetActor(s32 n);
 s32 PooledModel_getModel(void *);
 void PooledModel_unload(void *p);
 void PooledModel_reset(void *p);
@@ -621,8 +628,6 @@ s32 ModelSlotPool_acquire(void *, void *);
 void func_0209c2d8(void *p);
 void func_0209c2dc(void *p);
 s32 ModelSlot_getHeap(s32);
-void ModelSlotHandle_Destroy(u16 *);
-void ModelSlotHandle_Init(u16 *);
 void *Scene_GetTouchPicker(void);
 s32 TouchPickResult_GetTarget(void *, void *, void *, void *);
 void TouchPicker_addBox(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
@@ -636,9 +641,6 @@ s32 Random_Next(void *p);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateY(void *, s32);
 void Mtx43_RotateX(void *, s32);
-void Mem_Free(void *p);
-void Heap_Free(void *, void *);
-void *Heap_Alloc(void *heap, u32 size);
 s64 Vec_DistSqXZ(void *, void *);
 s32 Vec_Distance(void *a, void *b);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev

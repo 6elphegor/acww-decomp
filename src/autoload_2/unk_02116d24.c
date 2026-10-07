@@ -1,3 +1,9 @@
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02116c0c.h"
+#include "proto/autoload_2/unk_02116d24.h"
+#include "proto/autoload_2/unk_02117518.h"
+#include "proto/autoload_2/unk_02117e8c.h"
+#include "proto/itcm/unk_01ffa3cc.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK SND: snd_command.c (command lists, PXI command transfer), autoload_2 0x02116d24-0x02117518, with autoload_3
 // .bss 0x021fcf88-0x021fea60. ARM code, mwcc 1.2/base, -O4,p.
@@ -121,13 +127,9 @@ extern const u8 data_0213a0b4[724];
 extern SlotEnt data_027e032c[];
 
 extern u32 OS_DisableInterrupts(void);
-extern u32 OS_IsRunOnEmulator(void);
 extern void OS_RestoreInterrupts(u32);
 extern void OS_SpinWait(u32);
 extern void PxiFifoCallback(void);
-extern void OS_UnlockMutex(void *);
-extern void OS_LockMutex(void *);
-extern void OS_InitMutex(void *);
 extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
@@ -148,7 +150,6 @@ typedef union PxiMsg {
 #define reg_IPCFIFOSEND (*(volatile u32 *)0x04000188)
 
 s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
-void RequestCommandProc(void);
 Cmd *AllocCommand(void);
 u32 IsCommandAvailable(void);
 u32 SND_CountWaitingCommand(void);
@@ -159,14 +160,8 @@ Cmd *SND_RecvCommandReply(u32 flags);
 u32 SND_FlushCommand(u32 flags);
 void SND_PushCommand(Cmd *c);
 Cmd *SND_AllocCommand(u32 flags);
-void SND_CommandInit(void);
-void SND_AlarmInit(void);
 void SNDi_InitSharedWork(SndWork *w);
 u32 SNDi_GetFinishedCommandTag(void);
-void SNDi_UnlockMutex(void);
-void SNDi_LockMutex(void);
-void InitPXI(void);
-extern void PXI_InitFifo(void);
 extern void PXI_SetFifoRecvCallback(u32 tag, void (*cb)(void));
 extern u32 PXI_IsCallbackReady(u32 tag, u32 proc);// SND_CommandInit (probable)
 void SND_CommandInit(void) {

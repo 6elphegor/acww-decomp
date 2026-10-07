@@ -5,6 +5,13 @@
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/autoload_2/unk_0212fa54.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02288c78.h"
 
 extern "C" {
 char *data_ov065_0228e928[2] = {"queryid", "final"};
@@ -34,16 +41,12 @@ extern u32 SBNullServer;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
-s32 strstr(void *a, void *b);
-s32 func_02130b04(void *a, void *b);
 void SocketStartUp(void);
 s32 CanReceiveOnSocket(s32 s);
 s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
 s32 sendto(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
 s32 closesocket(s32 s);
 s32 socket(s32 a, s32 b, s32 c);
-void *GsUtil_Alloc(u32 n);
-void GsUtil_Free(void *p);
 void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
 s32 NTSLengthSB(u8 *buf, s32 n);
 void SBReleaseStr(s32 a, void *p);
@@ -111,14 +114,8 @@ extern u16 data_0213a510[];
 extern s32 __GSIACResult;
 extern s32 SBNullServer;
 
-s32 strcmp(const char *, const char *);
-u32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 atol(char *);
-s32 func_02130b04(char *, char *);
 
-s32 GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 s32 ArrayLength(void *);
 void *TableLookup(void *, void *);
 s32 TableEnter(void *, void *);

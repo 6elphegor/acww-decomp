@@ -1,10 +1,11 @@
 #include "types.h"
 #include "game/EventWeekSlots.h"
+#include "proto/main/unk_020406c4.h"
+#include "proto/main/unk_02063904.h"
 
 
 extern "C" {
 
-s32 Random_GlobalBelow(s32);
 void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 EventSchedule_CollectAtNoon(void *, s32, void *);

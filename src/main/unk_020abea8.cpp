@@ -14,6 +14,17 @@
 #include "gfx/ObjShadowStrip.h"
 #include "nitro/io_access.h"
 #include "gfx/G3dResAccess.h"
+#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ObjShadow_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/itcm/unk_01ff8ad4.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020abea8.h"
 
 
 
@@ -31,12 +42,7 @@
 extern "C" {
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void NNS_G3dGeFlushBuffer(void);
-void G3_LoadMtx43(void *p);
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 u32 _s32_div_f(u32 a, u32 b);
-void *Heap_Alloc(s32 heap, u32 size);
-void Heap_Free(s32 heap, void *p);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
 void MTX_Concat43(void *a, void *b, void *c);
@@ -50,19 +56,12 @@ void Clock_GetMinuteHour(void *p);
 extern s32 gCurrentHeap;
 extern s32 gBgHeap;
 extern u8 data_021f47e0[];
-void *File_Load(void *p);
 u8 *NNS_G3dGetTex(void *p);
 void Gfx3d_LoadTexAndPltt(void *p, s32 a);
 u8 *Gfx3d_CopyTex(void *p, s32 heap);
-void Mem_Free(void *p);
-void Str_SPrintf(char *buf, const void *fmt, ...);
 extern s32 gCamera;
 extern VecFx32 gCameraLookAt;
 extern u8 gViewMtx[];
-void ObjShadow_NormalizeAxes(void *a, void *b);
-u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 c);
-u8 ObjShadow_GetCharaAlpha(VecFx32 *p, s32 q);
-u8 ObjShadow_GetObjAlpha(VecFx32 *p, s32 q);
 }
 
 #define REG(a) (*(volatile u32 *)(a))

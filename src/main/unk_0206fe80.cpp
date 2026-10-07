@@ -9,6 +9,14 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b0e60.h"
 
 
 extern u32 data_020e0498;
@@ -31,32 +39,19 @@ extern u8 gSaveTownFlag[];
 extern s32 (*sPatternSourceGetters[])(s32);
 
 s32 FX_Div(s32 a, s32 b);
-void *PlayerData_GetResident(void *a, s32 i);
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
-s32 PlayerData_GetCurrentIndex();
-s32 PlayerData_IsResidentIndex(s32 t);
 void Clock_GetDateTime(void *p);
-s32 LetterDelivery_PutInAddresseeMailbox(void *p);
-void TownId_GetNameString(void *a, void *b);
-void MailText_SetSlot(s32 i, void *p);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
-void PatternSrc_Swap(u32 a, u8 b, u32 c, u8 d, s32 e);
-void PatternSrc_Copy(u32 a, u8 b, u32 c, u8 d, s32 e);
 s32 func_02071b00(void *p, s32 i);
-void ClothTex_LoadPattern(void *p, s32 v);
-s32 ClothTex_GetTex(void *p);
 void func_02056e88(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void *func_020986d4(void *p);
 void *func_02071c88(void *p, s32 i);
-void *PlayerData_GetCurrent();
 s32 func_02087298(void *p);
-s32 PresetPatternBuffer_Get();
 s32 func_020718e8(s32 t, s32 x);
 s32 func_020718e4(s32 t);
 void *SaveVillagers_Get(void *a, s32 x);
 s32 func_020805b8(void *p);
 s32 func_020b23a0(void *p);
-void TownFlag_GetPattern(s32 p);
 }
 
 

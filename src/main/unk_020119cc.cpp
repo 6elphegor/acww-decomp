@@ -56,6 +56,72 @@
 #include "player/PlayerId.h"
 #include "snd/SndSeEmitter.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_BlinkTimer_BlinkNow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BlinkTimer_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BlinkTimer_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Camera_FocusOnPair  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Camera_FocusOnPoint  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Emotion_GetEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HandOverItem_GetPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_GetModel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Melody_Unpack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcAction_PackItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcAction_UnpackAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcLookAt_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcNetRecord_SetSlotsAndSync  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetCharacter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SeEmitterPlayAlternate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_PickAttr200Target  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_PickCoastBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_PickOtherHouseBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_PickOwnHouseBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_PickPathUnitInBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerRoute_PickRandomBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/itcm/unk_01ffb4e8.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_02055c38.h"
+#include "proto/main/unk_020571f4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 
 struct Unk_02006d14_TalkBase;
@@ -475,7 +541,6 @@ extern u8 sSceneHudKinds[];
 extern u32 data_021bdd80[];
 extern u32 data_020d6f54[];
 extern HudObjGfx sHudObjGfx;
-void FS_InitFile(void *p);
 void *_ZN11HudObjGfxIo11freePaletteEv(void *p);
 void *_ZN11HudObjGfxIo9freeCharsEv(void *p);
 void _ZN11HudObjGfxIo21releaseSlideIconCharsEv(void *p);
@@ -491,26 +556,18 @@ void _ZN11HudObjGfxIo11uploadCharsEi(void *p, u32 v);
 s32 _ZN11HudObjGfxIo13loadKindCharsEi(void *p, u32 v);
 void _ZN11HudObjGfxIo15uploadKindCharsEi(void *p, u32 v);
 void _ZN11HudObjGfxIo16releaseKindCharsEv(void *p);
-s32 InputMode_IsTouch(void);
 s32 Scene_GetCurrent(void);
-s32 ChatBalloon_RefreshLabelsUnk(void);
-void *Mem_AllocTail(u32 size);
 void *FS_OpenFile(void *self, const char *path);
 s32 FS_ReadFile(void *self, void *buf, u32 size);
 s32 FS_CloseFile(void *self);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
-s32 Hud_GetSceneHudKind(void);
-void HudObjGfx_InitFile(void *p);
 #define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
 void SndSeEmitter_dtorBase(void *p);
 HeldItemModel *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
-void HeldItemModel_SetAnimSpeed(HeldItemModel *p, u32 v);
 BlendAnimModel *HeldItemModel_GetModel(HeldItemModel *p);
 void Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
 void HeldItemModel_Draw(HeldItemModel *p, void *src);
-void HeldItemModel_Update(HeldItemModel *p);
 void _ZN12NpcResHandle7releaseEv(void *p);
-void HeldItemModel_PlayAnim(HeldItemModel *p, u32 a, u32 b, u32 c);
 inline BOOL Unk_02011c44_InRange(u32 id, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (id >= lo && id <= hi) r = TRUE;
@@ -527,8 +584,6 @@ void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, VecFx32 *p);
 void _ZN13VillagerRoute14clearJunctionsEv(void *self);
 void _ZN13VillagerRoute16checkUnitChangedEj(void *self, u32 v);
 void *_ZN16NpcResHandleView16getHeldItemModelEv(void *);
-s32 HeldItemModel_PlayAnim(void *, u32, u32, u32);
-void HeldItemModel_SetItem(void *, void *, u32);
 s32 _ZN12NpcResHandle7acquireEv(void *);
 extern BlockMap *gSceneBlockMap;
 extern u8 gSaveVillagers[];
@@ -538,10 +593,8 @@ extern s32 sRouteDirs[];
 s32 MapBlock_HasAnyAttr(void *, u32);
 void *_ZN12MapBlockAcre8getUnk04Ev(void *self);
 s32 Random_PickSetBit(u32, s32, s32);
-s32 Random_GlobalBelow(u32);
 s32 _ZN12VillagerData13getVillagerIdEv(void *);
 void *SaveVillagers_PickRandomExcept(void *, void *, u32);
-void func_02133ef8(void *, u32);
 void VillagerRoute_PickPathUnitInBlock(Vec2 *out, void *self, void *a, BlockMap *w);
 void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
 void FieldPos_FromUnitCenter(VecFx32 *, s32, s32);
@@ -571,9 +624,7 @@ static inline MapBlock *GetCellD(BlockMap *w, u32 x, u32 y, MapBlock *volatile *
 void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v);
 void VillagerRoute_PickRandomBlock(Vec2 *out, void *self);
 void VillagerRoute_PickOwnHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickOwnHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj);
 void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj);
 void VillagerRoute_PickAttr200Target(Vec2 *out, void *self);
 }
 }
@@ -586,14 +637,12 @@ extern s32 sRouteDirs[];
 extern BlockMap *gSceneBlockMap;
 s32 _ZN8BlockMap17getWalkLinksAtPosEPv(BlockMap *o, VecFx32 *v);
 u32 BlockMap_GetBlockAttr(BlockMap *o, s32 x, s32 z);
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void FieldPos_ToBlockUnit2(RouteGridPos *a, RouteGridPos *c, VecFx32 *v);
 void FieldPos_FromBlockUnitCenter(VecFx32 *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, BlockMap *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
 s32 _ZN8BlockMap12getWalkLinksEii(BlockMap *o, u32 x, u32 z);
 void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
-s32 Random_GlobalBelow(s32 n);
 void FieldPos_ToUnit(u32 *x, u32 *z, VecFx32 *v);
 void FieldPos_FromUnitCenter(VecFx32 *out, u32 x, u32 z);
 void *MI_CpuFill8(void *, int, u32);
@@ -627,21 +676,16 @@ BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
 void FieldPos_ToUnit(u32* a, u32* b, u32 c);
 void MI_CpuFill8(void* p, u32 v, u32 n);
-BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 extern VillagerRouteType sVillagerRouteTypes[];
 s32 _ZN8NpcActor19getTeachableEmotionEv();
-s32 Emotion_FindSlot(u32 v);
-void Effect_Create(u32 a, void* b, void* c, u32 d);
 static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
 {
     if (v & m) return TRUE;
     return FALSE;
 }
-void Melody_Play(u32 a);
 void Camera_FocusOnPair(void* a, void* b);
 void Camera_FocusOnPoint(void* a);
 extern u16 data_020c6cc8;
-void VillagerRoute_Destruct();
 }
 }
 
@@ -650,15 +694,11 @@ namespace nE {
 extern "C" {
 
 s32 _ZN16ActorTalkRequest9startTaskEi(ActorTalkRequest *p, s32 a);
-u32 Camera_IsBlending(void);
-u32 Camera_GetBlendFramesLeft(void);
-void Camera_RetargetFocus(VecFx32 *v);
 void _ZN10MsgRequest11setFileNameEPKc(ActorTalkRequest *o, s32 a);
 s32 _ZN13NpcActionCtrl16requestTalkingOnEv(void *p);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void Melody_Play(u32 a);
 NpcActor *_ZN16ActorTalkRequest15getPartnerActorEv(ActorTalkRequest *o);
 u8 *_ZN16ActorTalkRequest15getSpeakerActorEv(ActorTalkRequest *o);
 void _ZN14NpcSpeechState12stopSpeakingEv(void *p);
@@ -667,12 +707,8 @@ void _ZN16ActorTalkRequest11playEmotionEjj(ActorTalkRequest *o, s32 a, s32 b);
 void _ZN16ActorTalkRequest4tickEv(ActorTalkRequest *o);
 void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b);
 void Camera_FocusOnPoint(VecFx32 *a);
-void Camera_SetModeDefault(void);
-s32 PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 extern u16 data_020c6cc8;
 extern NpcTalkCtrlState sNpcTalkCtrlStates[5];
-void NpcTalkCtrl_Destroy(void);
-void _ZN11NpcTalkCtrlC1Ev(void);
 }
 }
 
@@ -687,8 +723,6 @@ s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 BOOL _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u32 i, s32 j);
 void Melody_Unpack(void *p, void *q);
-void Melody_PlayEditPattern(u32 v);
-void Melody_PlayRandom(u32 v);
 extern u16 data_020c6cc8;
 extern s32 data_020ddf8c;
 extern u8 gMelodyEditPattern[];
@@ -706,21 +740,8 @@ u32 _ZN13NpcActionCtrl9getActionEv(u8 *p);
 u32 _ZN13NpcActionCtrl12isActionDoneEv(u8 *p);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-BOOL MenuCtrl_IsFinished();
-u16 MenuCtrl_BuildPocketMask(u32 p);
-BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b);
-BOOL MenuCtrl_OpenPostOffice();
-BOOL MenuCtrl_OpenLauncher(u32 a);
-BOOL MenuCtrl_OpenLauncherWithIndex(u32 a, u32 b);
-BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b);
-BOOL MenuCtrl_RequestOpenMenu12(u32 a);
-BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c);
-u32 TalkRequest_GetPlayerId();
 u32 PlayerActor_GetBodyPos(u32 n);
 s32 Math_AngleXZ(u32 a, u8 *b);
-void PlayerActor_SetHeadTilt(u32 a, s16 b, u32 c);
-void PlayerActor_RequestTurnTo(s32 a, u32 b);
-void PlayerActor_SetNoFaceTalkTarget(u32 a, u32 b);
 Actor *PlayerActor_GetCharacter(u32 a);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
@@ -735,39 +756,22 @@ extern "C" {
 extern u32 gVec3Zero;
 extern u16 data_020c6cc8;
 s32 Scene_GetCurrent(void);
-s32 Net_GetJoiningAid(void);
-s32 PlayerActor_GetLocalSessionSlot(void);
 u32 _ZN15TalkWindowState13getChoiceListEv(u32 a);
-void TownId_GetNameString(u32 a, void *b);
-void String_GetDayOrdinal(void *a, u32 b);
-void String_GetMonthName(void *a, u32 b);
-void String_FormatFixedPoint(void *a, s32 b, s32 c);
-void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void String_Load(void *a, u8 *b, u8 *c);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Npc_GetVoiceType(void *p);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
 s32 _ZN14NpcSpeechState10isSpeakingEv(void *p);
-s32 NpcFace_PickTalkMouth(void);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *p, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3);
 s32 *_ZN11NpcMoveCtrl17getCurSpeedPresetEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *p, u32 idx);
 s32 _ZN12NpcResHandle7releaseEv(void *p);
-s32 AnimSlotRef_GetAnimId(void *p);
-s32 AnimSlotRef_GetData(void *p);
-s32 AnimSlotRef_Load(void *p, u32 a, u32 b, u32 c);
-s32 CharaAnim_GetJointGroup(u32 a);
-s32 JointGroup_GetRangeCount(u32 i);
-u32 JointGroup_GetRangeFirst(s32 a, u32 b);
-u32 JointGroup_GetRangeLast(s32 a, u32 b);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 s0, u32 s1, u32 s2, u32 s3);
 s32 func_021065dc(s32 a);
 s32 func_021065f8(s32 a, s32 b);
 ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
-s32 TalkRequest_GetPlayerId(void);
 }
 }
 
@@ -776,12 +780,6 @@ namespace nI {
 extern "C" {
 
 BOOL Item_IsHoldable(u16 *p);
-s32 CharaAnim_GetHoldPoseMode(void *p);
-s32 CharaAnim_GetJointGroup(s32 a);
-s32 JointGroup_GetRangeLast(s32 a, s32 b);
-s32 JointGroup_GetRangeFirst(s32 a, s32 b);
-s32 JointGroup_GetRangeCount(u32 i);
-s32 HeldItem_GetHandPose(u16 *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
 void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *a, s32 b, s32 c);
 void BlendAnimModel_Play2(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
@@ -789,8 +787,6 @@ void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *a, void *b, s32 c, s32 d
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *a, s32 b);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *a);
 void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *a, s32 b);
-void AnimSlotRef_Load(void *a, s32 b, s32 c, s32 d);
-void *AnimSlotRef_GetData(void *a);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
 BOOL _ZN12NpcResHandle7acquireEv(void *a);
@@ -803,7 +799,6 @@ void _ZN11NpcMoveCtrl14setTargetAngleEs(void *a, s32 b);
 s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, VecFx32 *v);
 void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, VecFx32 *v);
-BOOL NpcActor_IsFrontAngle(s16 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 extern u16 data_020c6cc8;
@@ -828,7 +823,6 @@ extern u8 gVec3Zero[];
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 BOOL _ZN8NpcActor15netReadPositionEPiPh(Unk_02006d14 *o, s32 *v, s16 *a);
-BOOL NpcActor_IsFrontAngle(s16 a);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(NpcMoveCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(NpcMoveCtrl *p, s32 a);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(NpcMoveCtrl *p, void *v);
@@ -837,21 +831,8 @@ s32 _ZN11NpcAnimCtrl9getAnimIdEj(NpcAnimCtrl *p, u32 a);
 BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(NpcAnimCtrl *p, ...);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(NpcAnimCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *p, u32 a, u32 b);
-void Effect_PlayById2(u32 a, void *p, u32 b, u32 c);
-void Snd_SeEmitterPlayOneShotAlt(SndSeEmitterKind1 *p, u32 a, u32 b, u32 c);
-void HandOverItem_End(Unk_02006d14 *o);
-s32 Effect_End(s32 h);
 void Effect_SetPosition(s32 h, void *a, s16 *b, u32 c);
-s32 Effect_Create(u32 a, s32 *v, s16 *b, u32 c);
-BOOL HandOverItem_RequestMode(u32 a, Unk_02006d14 *o);
-s32 HandOverItem_IsModeActive(u32 a);
-BOOL HandOverItem_IsActive();
-void HandOverItem_SetNextMode(u32 a, Unk_02006d14 *o);
-void PlayerActor_PlayLocalSe(u32 a);
-BOOL HandOverItem_IsMaster(Unk_02006d14 *o);
-BOOL PlayerActor_RequestAct32();
 void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(Unk_02016a44_S0ec *p, u32 a, u32 b);
-void HandOverItem_GetItem(u16 *p);
 }
 }
 
@@ -862,52 +843,16 @@ namespace nK2 { BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *
 extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 void *_ZN13NpcActionCtrl12getCurParamsEv(NpcActionCtrl *s);
-BOOL HandOverItem_IsModeActive(u32 a);
-void HandOverItem_SetNextMode(u32 a, void *p);
-BOOL HandOverItem_SwitchMaster(void *p);
-BOOL PlayerActor_LocalRequestAct37(void);
 BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, u32 a);
-BOOL HandOverItem_RequestMode(u32 a, void *p);
-u32 HandOverItem_GetNextMode(void);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 s32 _ZN13NpcActionCtrl13setActionDoneEi(NpcActionCtrl *s, u32 a);
-void Snd_SeEmitterPlayOneShotAlt(void *a, u32 b, u32 c, u32 d);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
-void HandOverItem_End(void *p);
-void Effect_End(s32 a);
 s32 Effect_SetPosition(s32 a, void *b, void *c, u32 d);
-s32 Effect_Create(u32 a, void *b, void *c, u32 d);
-s32 Effect_PlayById2(u32 a, void *b, u32 c, u32 d);
-BOOL HandOverItem_IsActive(void);
-BOOL HandOverItem_IsMaster(void *p);
-BOOL PlayerActor_RequestAct32(void);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, u32 a, u32 b);
-BOOL HandOverItem_CanTake(void *p);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
 void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
-void _ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep13EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep08EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActionCtrl *s, NpcActor *c, void *p, u32 a, u8 b);
-void _ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActionCtrl *s, NpcActor *c, void *p, u32 a, u8 b);
-void _ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
 }
 }
 
@@ -919,20 +864,10 @@ extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 extern u32 sNpcGiveItemAnims[];
 NpcActionParams *_ZN13NpcActionCtrl12getCurParamsEv(void *s);
-BOOL HandOverItem_IsModeActive(u32 a);
-void HandOverItem_SetNextMode(u32 a, void *p);
-BOOL HandOverItem_SwitchMaster(void *p);
-BOOL PlayerActor_LocalRequestAct37(void);
 BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
-BOOL HandOverItem_RequestMode(u32 a, void *p);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 s32 _ZN13NpcActionCtrl13setActionDoneEi(void *s, u32 a);
-void Snd_SeEmitterPlayOneShotAlt(void *a, u32 b, u32 c, u32 d);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
-BOOL HandOverItem_IsActive(void);
-BOOL HandOverItem_IsMaster(void *p);
-BOOL PlayerActor_RequestAct32(void);
-BOOL HandOverItem_CanTake(void *p);
 BOOL HandOverItem_GetPos(void *p);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
@@ -941,10 +876,6 @@ void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Scene_GetCurrent(void);
-void PlayerActor_LocalRequestAct36(void *a, void *b, void *c, void *d, void *e);
-void PlayerActor_RequestAct30(void *a, void *b, void *c, void *d, void *e);
-void HandOverItem_Begin(void *a, s32 b, u32 c, s32 d, void *e, s32 f);
-void NpcAction_PackAnim(void *a, s32 b, u32 c, u32 d, u32 e);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *s);
 static inline BOOL Unk_02017d74_Is(u16 *p, u16 v) {
     if (Item_IsFurniture(p)) {
@@ -971,7 +902,6 @@ s32 _ZN13NpcActionCtrl13setActionDoneEi(NpcActionCtrl *s, u32 a);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(NpcActionCtrl *s);
 void _ZN13NpcActionCtrl9mainAct01EPh(NpcActionCtrl *s, NpcActor *c);
 void _ZN13NpcActionCtrl10setupAct01EPh(NpcActionCtrl *s, NpcActor *c);
-void NpcAction_PackTurn(void *p, s32 a, s32 b, u32 c);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *a, void *b);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
@@ -982,13 +912,10 @@ BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
 s32 _ZN13HeldToolModel12playWalkAnimEjj(void *a, u32 b, u32 c);
-void Snd_PlayAuxSe(u32 a);
-void Snd_SeEmitterPlayOneShotAlt(void *a, u32 b, u32 c, u32 d);
 s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
 s32 _ZN11NpcMoveCtrl15getDestinationBEv(void *a);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
-BOOL NpcActor_IsFrontAngle(s16 v);
 NpcEmotionEntry *Emotion_GetEntry(u32 i);
 }
 }
@@ -999,10 +926,6 @@ extern "C" {
 
 void *MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-u16 NetBuf_ReadU16(void *p);
-void NetBuf_WriteU16(void *p, u16 v);
-void NetBuf_UnpackPair20(void *p, u32 a, u32 b);
-void NetBuf_PackPair20(void *p, u32 a, u32 b);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *p, void *scene);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *owner, u32 v);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
@@ -1018,15 +941,8 @@ BOOL BlinkTimer_Update(void *p);
 extern u16 data_020c6cc8;
 extern u32 gVec3Zero[3];
 extern NpcActionEntry sNpcActionTable[];
-void NpcAction_PackMove(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1, u16 s2);
-void NpcAction_UnpackItem(u16 *out, void *in);
 void NpcAction_PackItem(void *unused, void *p, u16 *v);
 void NpcAction_UnpackAnim(u32 *a, u8 *b, u16 *c, u16 *d, u8 *src);
-void NpcAction_PackAnim(u8 *p, u32 a, u32 b, u32 c, u16 d);
-void NpcAction_UnpackTurn(void *a, void *b, u16 *c, u8 *d);
-void NpcAction_PackTurn(u8 *out, u16 a, u16 b, u32 c);
-void NpcAction_UnpackMove(u32 a, u32 b, u32 c, u32 d, void *s0, u16 *s1, u8 *out);
-void NpcAction_PackMove(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1, u16 s2);
 }
 }
 
@@ -1036,8 +952,6 @@ extern "C" {
 
 BOOL NpcLookAt_GetHeadPos(void *self, void *a);
 extern s32 sNpcTalkMouthAnims[];
-s32 CharaAnim_GetEyeAnim(void *p);
-s32 CharaAnim_GetMouthAnim(void *p);
 void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *h);
 void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *h);
 s32 NNS_G3dGetAnmByIdx(void *p, s32 v);
@@ -1045,31 +959,16 @@ void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *p, void *a, s32 b, s32 c, s32 d
 void _ZN12NpcResHandle7releaseEv(void *p);
 void BlinkTimer_BlinkNow(void *p);
 void BlinkTimer_Clear(void *p);
-void MatTexPatAnim_ResumeMaterial(void *p, void *q);
-void _ZN13MatTexPatAnim13pauseMaterialEv(void *p, void *q);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 BOOL _ZN12NpcResHandle7acquireEv(void *p);
 void NpcTexPatBufRef_LoadFile(void *a, s32 b);
 s32 NpcTexPatBufRef_GetBuffer(void *a);
-BOOL NpcLookAt_IsWithin(s32 a, s32 b);
-s32 NpcFace_PickTalkMouth();
-s32 Random_GlobalBelow(s32 a);
-s32 Snd_StopAuxSe();
-s32 Snd_SeEmitterPlayHeld(s32 a, s32 b, s32 c, s32 d);
-s32 Snd_SeEmitterPlayOneShot(s32 a, s32 b, s32 c, s32 d);
-s32 Snd_PlayAuxSeHeld(u16 a);
-s32 Snd_PlayAuxSe(u16 a);
 u8 *Emotion_GetEntry(u32 a);
 void Effect_SetPosition(s32 h, void *a, void *b, s32 c);
-void Effect_End(s32 h);
-s32 Effect_CreateWithParam(u32 id, u32 b, void *a, void *c);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void Math_StepAngle(s16 *p, s32 target, s32 step);
-s32 Vec_Distance(void *a, void *b);
-s32 NpcFace_PickTalkMouth();
 extern Unk_0201a1e0_Fn sNpcLookAtTypes[6];
-BOOL NpcLookAt_IsWithin(s32 a, s32 b);
 }
 }
 
@@ -1086,21 +985,15 @@ s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 Character *PlayerActor_GetCharacter(s32 h);
 BOOL PlayerActor_GetHeadPos(VecFx32 *out, s32 h);
 s32 Math_StepAngle(s16 *p, s32 v, s32 n);
-s32 Vec_Distance(void *a, void *b);
 s32 Vec_NotEqual(void *a, void *b);
-s32 Vec_Equal(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 Vec_DistXZ(void *a, void *b);
 s32 Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
-BOOL Npc_IsPosBlocked(VecFx32 *pos);
-void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang);
 s32 Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
 s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 Ground_GetExitAtPos(s32 id);
-BOOL FtrMgr_GetSurfaceHeightAtPos(s32 id);
 void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, s32 id, s32 a, s32 b);
 s32 Collision_HasUnitShapeAt(s32 id);
 void GroundInfo_Destruct(void *buf);
@@ -1109,8 +1002,6 @@ s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 static inline BOOL Unk_0201a834_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
-BOOL Npc_IsPosBlocked(VecFx32 *pos);
-void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang);
 }
 }
 
@@ -1125,45 +1016,26 @@ extern u16 data_020c6cc8;
 extern u8 *gSceneBlockMap;
 extern u8 *gCommManager;
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void *PlayerData_GetCurrent();
-s32 PlayerInventory_AddBells(void *p, s32 v, s32 n);
-s32 PlayerInventory_GetBellsRoom(void *p, s32 a, s32 b);
-s32 PlayerInventory_CanAddBells(void *p, s32 v, s32 n, s32 m);
 u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, VecFx32 *v);
 void FieldPos_SnapToUnitCenter(VecFx32 *out, VecFx32 *in);
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-void Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
-void func_02133ef8(void *p, u32 n);
 s32 _ZN11CommManager8isOnlineEv(u8 *g);
 VecFx32 *PlayerActor_GetBodyPos(u32 n);
-s32 PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
 void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 void _ZN8NpcActor12releaseModelEv(void *p);
 void _ZN8NpcActor12netSendStateEjz(void *p, s32 v);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
-void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
 s32 _ZN8NpcActor10isNetOwnerEv(void *p);
 s32 _ZN8NpcActor13netReadActionEPiS0_Ph(void *p, s32 *a, s32 *b, void *buf);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void NpcAction_UnpackMove(s32 *a, s32 *b, s32 *c, s32 *d, s16 *e, u16 *f, void *buf);
-void NpcAction_UnpackTurn(s16 *a, u16 *b, u16 *c, void *buf);
 void NpcAction_UnpackAnim(u32 *a, void *b, u16 *c, u16 *d, void *buf);
-void NpcAction_UnpackItem(u16 *a, void *buf);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, s32 a);
-s32 NetArea_IsLocalOwner();
 void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
 s32 Ground_GetDefaultY(s32 a);
 u32 WorldCurve_ToCurved(void *a, void *b);
 s32 _ZN8NpcActor15netIsTalkLockedEv(void *p);
 void _ZN13HeldToolModel6updateEP12Unk_02006d14(s32 v, void *p);
-void NpcActor_UpdateMovement(void *a, void *b);
-void NpcActor_PayPlayer(void *self, s32 v);
-s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
-void NpcActor_ChargePlayer(void *self, s32 v);
-BOOL NpcActor_CanPlayerPay(void *self, s32 v);
 void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
 }
 }
@@ -1180,29 +1052,17 @@ extern s32 data_020c6d20;
 extern u8 sNpcAvoidOffsets[];
 extern s32 gNpcModelHeap;
 extern s16 data_02135f44[];
-BOOL NetArea_IsLocalOwner();
 BOOL _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
 void *MI_CpuCopy8(void *dst, const void *src, u32 n);
 u8 Npc_GetInfoByte2(void *p);
-u8 *NpcNetRecord_GetVar(void *p);
 s32 Scene_GetCurrent();
-void NpcNetRecord_SetState(void *a, s32 b, void *c, s32 d, void *e, void *f);
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 v);
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
-void CommSyncVar_SetVar(s32 a, void *args, s32 b, s32 c);
-void NpcNetRecord_SetSlots(void *a, u32 b, u32 c);
-s32 NpcNetRecord_GetSlots(s32 a, s32 b, void *c);
 s32 NpcNetRecord_SetSlotsAndSync(s32 a, s32 b, s32 c, void *d);
-void NetBuf_UnpackPair20(void *a, void *b, void *c);
 s32 PlayerActor_GetCharacter(u32 id);
 BOOL PlayerActor_GetSlotPosXZ(u8 *a, void *b, void *c, s32 d, u32 e);
 s32 Math_AngleXZ(void *a, void *b);
-s32 Vec_Distance(void *a, void *b);
-BOOL Npc_IsPosBlocked(void *a);
-void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
-BOOL NpcActor_IsFrontAngle(s32 x);
-BOOL NpcActor_IsFrontAngle(s32 x);
 BOOL Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 BOOL Scene_InMuseumRoom();
@@ -1210,9 +1070,7 @@ s32 Scene_GetMuseumRoom();
 void JointCb_UseRestTranslation(void *self, u32 flags);
 void MTX_RotY33_(MtxFx33 *m, s32 a, s32 b);
 void MTX_RotX33_(MtxFx33 *m, s32 a, s32 b);
-void MTX_Concat33(MtxFx33 *a, MtxFx33 *b, MtxFx33 *out);
 s32 WorldCurve_Apply(VecFx32 *a, VecFx32 *b);
-s32 WorldCurve_GetRadius();
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p);
 void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
 void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
@@ -1354,25 +1212,6 @@ void _ZN13NpcActionCtrl9postAct0FEP12Unk_02006d14(void);
 void _ZN13NpcActionCtrl10setupAct0FEP12Unk_02006d14(void);
 void _ZN13NpcActionCtrl9postAct0EEv(void);
 void _ZN13NpcActionCtrl9mainAct0EEP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep13EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep08EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(void);
 void _ZN13NpcActionCtrl11act0EStep00EP8NpcActor(void);
 void _ZN13NpcActionCtrl10setupAct0EEP8NpcActor(void);
 void _ZN13NpcActionCtrl9postAct0DEP8NpcActor(void);
@@ -1437,9 +1276,7 @@ void _ZN16ActorTalkRequest19subSceneCloseWindowEv(void);
 void VillagerRoute_PickCoastBlock(void);
 void VillagerRoute_PickRandomBlock(void);
 void VillagerRoute_PickOwnHouseBlock(void);
-void VillagerRoute_PickOwnHouseDoor(void);
 void VillagerRoute_PickOtherHouseBlock(void);
-void VillagerRoute_PickOtherHouseDoor(void);
 void VillagerRoute_PickAttr200Target(void);
 }
 }

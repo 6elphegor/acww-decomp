@@ -16,6 +16,18 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov099/unk_ov099_02294c40.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -30,20 +42,7 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void Pocket_SetItem(u16 *p, s32 a, s32 b);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 void ChoiceIdList_Clear(void *p, u32 v);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
@@ -55,39 +54,8 @@ void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
 
-void InventoryBg_DrawSprite(void *p, s32 a);
-void InventoryBg_Exit(void *p);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_Load(void *p, s32 a);
-void InventoryBg_Init(void *p, s32 a);
-BOOL InventoryItemGrid_IsSlotEmpty(void *p, u32 v);
-void InventoryItemGrid_DrawHeldItem(void *p, s32 a, s32 b);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-BOOL InventoryItemGrid_IsSlotDisabled(void *p, u32 v);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-void InventoryItemGrid_RefreshSlot(void *p, u32 a);
-void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
-void InventoryItemGrid_ClearSlot(void *p, u32 idx);
-u8 InventoryItemGrid_GetSlotFlags(void *p, u32 idx);
-u16 InventoryItemGrid_GetSlotItem(void *p, u32 idx);
-void InventoryItemGrid_MarkSlot(void *p, u32 v);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_SetCursorSlot(void *p, u32 v);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
-void InventoryItemGrid_ShowSlotName(void *p, void *q, s32 a);
-void InventoryItemGrid_LoadPockets(void *p);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
-void InventoryItemGrid_Exit(void *p);
-void InventoryItemGrid_PreUpdate(void *p);
-void InventoryItemGrid_Init(void *p, s32 a);
-void LetterGrid_LoadPocketLetters(void *p);
-BOOL LetterGrid_IsSlotEmpty(void *p, u32 v);
-s32 LetterGrid_GetSlotY(void *p, u32 v);
-s32 LetterGrid_GetSlotX(void *p, u32 v);
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -267,7 +235,6 @@ void PocketMenuUnk_BeginTouchOnTarget(S *s, u32 a);
 void PocketMenuUnk_ReturnToIdle(S *s);
 void PocketMenuUnk_EnterButtonIdle(S *s);
 void PocketMenuUnk_EnterTouchIdle(S *s);
-S *PocketMenuUnk_Create();
 }
 
 

@@ -5,6 +5,12 @@
 #include "net/NasAuthWork.h"
 
 #include "types64.h"
+#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_0226ec94.h"
 
 // Word view of NetCheckParams for the struct copy in NetCheck_Start (a copy of the field-typed struct compiles differently).
 struct NetCheckParamsWords {
@@ -40,9 +46,7 @@ void OS_Sleep(s32 t);
 s32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(s32 v);
 void DWCi_BM_GetWiFiInfo(u64 *out);
-s32 atol(const char *s);
 s32 strlen(const char *s);
-s32 strcmp(const char *a, const char *b);
 void strncpy(char *dst, const char *src, u32 n);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);

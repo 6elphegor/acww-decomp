@@ -38,6 +38,44 @@
 #include "talk/MsgString.h"
 #include "talk/MsgString9B.h"
 #include "talk/MsgString9C.h"
+#define PROTO_LOCAL_AxBbsNotice_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_AxBbsNotice_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Comm_SendEmpty  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetOverlay_AssertAny  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetOverlay_AssertWifi  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetOverlay_AssertWireless  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_CountHostCandidates  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_GetScanResults  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_GetWifiFriendList  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_PollConnected  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WifiShutdownStepExt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WifiStartHost  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetName  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203eb78.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020c0324.h"
+#include "proto/ov004/unk_ov004_022257e4.h"
+#include "proto/ov004/unk_ov004_0223f43c.h"
+#include "proto/ov048/unk_ov048_02258de0.h"
 
 
 class ActorTalkRequest;
@@ -71,10 +109,6 @@ extern CommManager *gCommManager;
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u8 gSaveTownId[];
-s32 Net_GetMode();
-s32 Net_GetError();
-s32 Net_GetLastErrorCode();
-void Net_ClearWifiError();
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
@@ -84,110 +118,31 @@ void _ZN15EncodedString8BD1Ev(void *);
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 BOOL Math_CountDownU16(void *);
 s32 Math_IsInRange(s32, s32, s32);
-void * PlayerWifiData_GetOwnFriendData(void *);
-void * DwcFriendData_GetBytes(void *);
-void * PlayerWifiData_GetDwcUserData(void *p);
-BOOL Save_WritePlayerWifiData();
-BOOL Net_CheckUserDataChanged(void *);
-void Net_MakeOwnFriendData(void *, void *);
-s32 Net_WifiFindFriend(s32);
-s32 Net_WifiConnectToHost(s32);
-s32 Net_WifiGetFriendProfileId(s32);
 BOOL Net_WifiShutdownStepExt(s32);
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-void * PlayerData_GetCurrent();
-void GameStats_ApplyDownload();
-void AxMail_ApplyMail();
-void AxMail_ApplyBbs();
-void Wifi_StoreFriendList();
-BOOL Save_WritePlayerFriendList();
-BOOL SaveManager_HasAct13Failed();
-BOOL SaveManager_IsIdleAfterAct13();
-void SpNpcKatie_ChangeAct05();
-s32 SpNpcKatie_ResetAct();
-void SaveManager_RequestAct13();
-BOOL GameStats_PollDownload();
-BOOL GameStats_Download();
-BOOL GameStats_PollUpload();
-BOOL GameStats_Upload();
-BOOL AxMail_PollBbs();
-BOOL AxMail_DownloadBbs();
-BOOL AxMail_PollMail();
 BOOL Comm_SendEmpty();
 s32 Net_CountHostCandidates(s32);
 void * Net_GetScanResults(s32);
-s32 Net_GetBeaconGameInfoSize(void *);
-void * Net_GetBeaconGameInfo(void *);
-void Net_ConnectToParent(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
-BOOL AxMail_DownloadMail();
 s32 Net_PollConnected(...);
 s32 Net_GetWifiFriendList(s32);
-BOOL GameStart_IsActive();
-s32 CheckInGate_Close();
-s32 Comm_ResetNetSession();
-void NetOverlay_LoadWifi();
-void NetOverlay_Restore();
-void PlayerWifiData_Create(void *);
-s32 Net_IsWifiConfigValid(void *);
-s32 Net_HasWifiUserId(void *);
-s64 Net_GetOwnFriendKey(void *p);
-s32 CheckInGate_IsOpen();
-s32 CheckInGate_Open();
 s32 Talk_IsInOwnTown();
 u32 Clock_GetTimeOfDay();
 void * FriendList_GetEntries(void *);
-void * FriendEntry_GetFriendData(void *);
-s32 DwcFriendData_IsValid(void *);
-s32 NetOverlay_LoadWireless();
-s32 Comm_Start(s32, s32, s32);
-s32 Comm_End();
-BOOL NetArea_IsLocalOwner();
-TalkWindowState * TalkWindow_Get(s32);
-void SaveManager_RequestAct02();
 void * Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *, s32, s32, s32);
-void * TownSessionState_Get();
-void * TownSessionState_GetTravelState(void *);
-Actor *PlayerActor_GetActor(s32);
 void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
 void _ZN15TownTravelState7setModeEj(void *, s32);
 void _ZN15TownTravelState8setAngleEi(void *, s32);
 s32 Scene_SetSavedPos(void *, s32, VecFx32 *, s32, s32, s32, s32);
-void Camera_SaveView();
-void SaveManager_RequestAct17();
-void SaveManager_RequestAct14();
 s32 SceneWarp_RequestAt(void *, s32, VecFx32 *, s32, s32, s32, s32);
-s32 NetSession_GetLastSyncSlot();
-void * PlayerData_GetBySessionSlot(s32 slot);
 void SceneWarp_RequestExit(void *, s32);
 void PlayerActor_RequestWalkTo(void *, s32, s32);
-s32 PlayerActor_IsScriptedWalking(s32);
-s32 SaveManager_IsSessionJoined();
-void FieldInfoBalloon_ShowPleaseWait();
-s32 Net_GetJoiningAid();
-s32 PlayerActor_SetNetFollowPaused(s32, s32);
-void PlayerActor_SetNoFaceTalkTarget(s32, s32);
-s32 SaveManager_SetGatePassed();
-s32 LostChild_IsKatieDue();
-s32 TownId_IsValid(void *p);
-s32 memcmp(void *, void *, u32);
 u8 * _ZN5Actor13findByProfileEjPS_(s32, s32);
 s32 Math_CountDownU8(void *);
-s32 ScreenTransition_StartFadeOut(s32, s32);
-s32 Snd_FadeOutScene();
-s32 Random_GlobalBelow(s32);
-s32 Camera_SetMode15();
-s32 Camera_SetMode14();
-s32 PlayerActor_RequestTurnTo(s32, s32);
-s32 Camera_IsBlending();
 void TalkRequest_SetTargetDone(void *);
 s32 Net_WifiStartHost(s32);
-s32 Comm_BeginHostSession();
 void * TownId_GetName(void *);
-void Net_SetLocalGameInfo(void *, s32);
 VecFx32 * PlayerActor_GetBodyPos(s32);
 s32 _ZN10SpNpcActor8onDeleteEv();
 s32 Scene_GetCurrent();
@@ -199,20 +154,8 @@ void _ZN15TownTravelState9clearModeEv(void *);
 void TalkRequestFlags_SetSceneHold();
 s32 _ZN10SpNpcActor9preCreateEv();
 void TalkRequest_AddPlayerTalk6(void *, s32);
-BOOL SpNpcKatie_IsIdle();
 BOOL TalkRequest_IsActive();
-s32 Net_GetMyAid();
-void Net_SetJoiningAid(u32 v);
-s32 Comm_GetSyncState();
-void Comm_ClearSyncState();
-BOOL Comm_RequestSync(u32);
-void NetSession_SetSyncKind(u32);
-void NetSession_SetActiveSyncKind(u32);
-void * TownSessionState_GetKatieState(void *);
 BOOL _ZN15KatieVisitState11isFollowingEv(void *);
-s32 NetSession_GetSyncMemberMask();
-BOOL CommSend_PlayerData(void *, s32);
-void Comm_PrepareJoin(u32 a);
 
 }
 s32 NetOverlay_AssertWifi();
@@ -577,14 +520,11 @@ extern void *data_ov048_0225cae4[2];
 extern void *data_ov048_0225caec[2];
 extern Unk_ov048_State_Ent sSpNpcCopperActTable[];
 extern SpNpcCopperTalkScript sSpNpcCopperTalkScripts[];
-void SpNpcCopper_ChangeAct(void *p, s32 s);
 }
 
 extern "C" {
 void AxBbsNotice_Destruct(void *);
 void AxBbsNotice_Construct(void *);
-void AxMail_Destruct(void *);
-void AxMail_Construct(void *);
 void _ZN7PatternD1Ev(void *);
 void _ZN7PatternC1Ev(void *);
 }
@@ -1130,7 +1070,6 @@ extern "C" void _ZN11SpNpcCopper9mainAct01Ev();
 extern "C" void _ZN11SpNpcCopper10setupAct01Ev();
 extern "C" void _ZN11SpNpcCopper9mainAct00Ev();
 extern "C" void _ZN11SpNpcCopper10setupAct00Ev();
-extern "C" SpNpcCopper *SpNpcCopper_Create();
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" char sSpNpcCopperSequence4Key[];

@@ -2,20 +2,19 @@
 #include "ui/LabelString.h"
 #include "menu/MenuTextButton.h"
 #include "menu/GeneralMenuHeader.h"
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_FromEncodedBytes  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/ov124/unk_ov124_02296840.h"
 
 extern "C" {
-void String_Load2dMenu(void *a, u32 v);
 void String_FromEncodedBytes(void *p, void *s, s32 n);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadPaletteFileSlot(const char *buf, void *font, s32 a, u32 b, s32 c);
-void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
-void *File_LoadAlloc(void *a, void *b, s32 c, void *d);
-void Heap_Free(void *heap, void *p);
-s32 MenuCtrl_GetMode();
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
 
 extern void *gCurrentHeap;
 extern char data_ov124_02296e70[],data_ov124_02296e84[],data_ov124_02296e98[],data_ov124_02296eac[],data_ov124_02296ec0[],data_ov124_02296ed4[],data_ov124_02296ee8[],data_ov124_02296efc[],data_ov124_02296f10[],data_ov124_02296f24[];
@@ -32,7 +31,6 @@ struct GXOamAttr;
 
 
 extern "C" {
-s32 GeneralMenuHeader_GetStyle();
 }
 
 GeneralMenuHeader::GeneralMenuHeader() : titleLabel(), iconButton() {}

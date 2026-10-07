@@ -62,6 +62,99 @@
 #include "room/FtrPreviewer.h"
 #include "snd/SndSeEmitter.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_Bgm_Release  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Bgm_Request  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CarpetTex_GetTex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CarpetTex_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ClothTex_GetTex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ClothTex_LoadItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrActorGrid_GetInstance  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrActor_GetDragSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrActor_MakeSpawnArg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrActor_TestPlayerUnk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrBed_IsDma06Is5  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrBed_IsTileFree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrContactSet_GetInstance  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrInfo_TestIndoorFlag2  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_GetCycleCounter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_GetSurfaceHeight  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_GetSurfaceHeightAtPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_IsFurnitureUsable  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_IsShopScene  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_SetSwitchAll  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_SpawnFromArg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMoveAnim_GetHaniwaAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrPreviewer_GetInstance  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSound_GetSe1  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSound_GetSe3  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_ChangeAct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_RequestAct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_RequestToggleGyroid  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Ftr_GetUnk05  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Ftr_GetUnk06  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FurnitureManager_GetMoveAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FurnitureManager_GetTvTex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_IsNewResident  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_IsNewTown  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseRoom_ClearCurrentSong  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseRoom_GetCurrentSong  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseRoom_SetCurrentSong  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemInfo_IsReady  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Item_FromPlacedForm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MelodyBeat_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MelodyBeat_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_BuildPocketMask  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_GetIndex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_GetSongItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_IsFinished  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_IsResultOk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_OpenLauncher  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_OpenPocketSelect  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Model_BindMatTexByIdx  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Model_BindMatTexByName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PatternTexCache_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetActor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_KeepAnimForNextAction  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalRequestBedApproach  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalRequestGetOutOfBed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalRequestSeatApproach  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalRequestStorageClose  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalRequestStorageOpen  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_PlayLocalSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_TestLocalFlag02  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrentIndex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerInventory_SetWallet  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pocket_GetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pocket_SetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ProcBase_RequestDelete  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomFtrState_GetGyroidBeat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomFtrState_RemoveGyroidBeat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomFtrState_SetGyroidBeat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Room_CountOccupants  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct01  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncInit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncPollStarted  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncReadBeat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncRelease  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncSetStartBeat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncSetState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BgmSyncUpdate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_MelodyBeatInit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_MelodyBeatStart  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_MelodyBeatStop  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_MelodyBeatUpdate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SeEmitterPlayOneShot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Wallpaper_GetTex  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov004/unk_ov004_02209f70.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -161,10 +254,8 @@ extern u16 gFtrSoundNone;
 extern const u8 data_ov004_0224004c[];
 extern const char data_ov004_0224bb44[];
 
-void *FtrActorHeap_GetInstance(void);
 void _ZN12FtrActorHeap4freeEPv(void *heap, void *p);
 void *_ZN12FtrActorHeap5allocEv(void *heap, u32 size);
-void *memset(void *p, s32 v, u32 n);
 
 void _ZN8FtrActorC1Ev(void *);
 void _ZN8FtrActorC2Ev(void *);
@@ -177,7 +268,6 @@ void *_ZN11FtrModelRes10getAnimSetEv(void *);
 void *_ZN10FtrAnimSet6getBvaEj(void *, u32);
 u32 FtrActor_StepAnims(void *);
 u32 FtrActor_GetFtrIndex(void *);
-u32 FtrSound_GetSe0(u32);
 void *FtrContactSet_GetInstance(void);
 void *_ZN13FtrContactSet11findContactEPv(void *, void *);
 s32 *_ZN10FtrContact22getClampedContactPointEv(void *);
@@ -462,7 +552,6 @@ BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e,
 s32 _ZN8FtrActor9initAnimsEiiii(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 FtrActor_GetFtrIndex(void *p);
-s32 FtrSound_GetSe0(void);
 s32 _ZN8FtrActor17getAnimFrameCountEi(void *p);
 void FtrActor_StepAnims(void *p);
 void _ZN8FtrActor10playSound0Ev(void *p);

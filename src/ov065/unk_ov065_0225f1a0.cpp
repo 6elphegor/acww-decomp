@@ -3,6 +3,8 @@
 #include "net/SockCoreConfig.h"
 #include "net/SockCoreSocket.h"
 #include "net/IpStackConfig.h"
+#include "proto/main/unk_02000b44.h"
+#include "proto/ov065/unk_ov065_0225f1a0.h"
 
 extern "C" {
 extern SockCoreConfig *sSockCoreConfig;
@@ -21,7 +23,6 @@ extern SockCreateParams sSockTcpParams;
 extern SockCreateParams sSockSendOnlyParams;
 
 // main module
-void OSi_ReferSymbol(u32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 
@@ -35,12 +36,6 @@ void SockCore_FreeClosedSockets(void);
 s32 SockCore_CreateMsgPool(s32);
 s32 SockCore_Create(SockCreateParams *);
 
-BOOL SockCore_IsLinkUp(void);
-void SockCore_OnDhcpAddressReady(void);
-void SockCore_OnStaticAddressReady(void);
-void SockCore_SetupStackConfig(void);
-s32 SockCore_CreateMsgPoolAndDefaultSocket(void);
-s32 SockCore_Startup(SockCoreConfig *);
 }
 
 extern "C" {

@@ -57,7 +57,6 @@ typedef struct ExpHead {
     union { u16 raw; struct { u16 allocMode : 1; u16 pad : 15; } f; } feature;
 } ExpHead;
 
-extern u32 abs(s32);          // abs
 extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32(data, dest, size)
 extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
@@ -123,7 +122,6 @@ HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
 
 #define FRM(h) (&(h)->u.frm)
 
-extern void FS_InitFile(void *file);                   // FS_InitFile
 extern BOOL FS_OpenFile(void *file, const char *path); // FS_OpenFile
 extern void FS_CloseFile(void *file);                   // FS_CloseFile
 extern BOOL FS_UnloadArchive(void *arc);
@@ -152,7 +150,6 @@ extern u16 data_021f5cb0;
 extern s32 (*data_0213bc10)();
 extern s32 (*data_0213bc14)();
 
-void NNS_GfdResetFrmTexVramState(void);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
 s32 NNS_GfdFreeFrmTexVram();
@@ -204,7 +201,6 @@ void FreeHead(HeapHead *heap);
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-void *NNS_FndGetArchiveFileByName(const char *path);
 BOOL NNS_FndUnmountArchive(void *arc);
 BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
 BOOL func_0210149c(u32 *narc);
@@ -214,7 +210,6 @@ s32 FreePlttVram_();
 s32 AllocPlttVram_();
 s32 NNS_GfdFreeFrmTexVram();
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
-void NNS_GfdResetFrmTexVramState(void);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
@@ -238,6 +233,12 @@ BOOL func_0210149c(u32 *narc) {
 
 #include "sys/NNSFndArchive.h"
 #include "uptr.h"
+#define PROTO_LOCAL_FS_InitArchive  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_ReleaseArchiveName  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/autoload_2/unk_0210169c.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_0212703c.h"
 // NNS_FndMountArchive
 BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
     u8 *fat;

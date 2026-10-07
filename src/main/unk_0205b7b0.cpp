@@ -1,6 +1,26 @@
 #include "sys/Heap.h"
 #include "types.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_FrameHeap_Create  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomBclHeap_Create  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownBclHeap_Create  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205c66c.h"
+#include "proto/main/unk_0205ce0c.h"
+#include "proto/main/unk_0205d1f8.h"
+#include "proto/main/unk_0205d340.h"
+#include "proto/main/unk_0205d480.h"
+#include "proto/main/unk_0205d7d8.h"
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_0205edfc.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_0205f284.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_02093ff0.h"
 
 #define ALIGN4(x) (((x) + 3) & ~3)
 static inline u32 AL(u32 v, u32 a) {
@@ -80,49 +100,20 @@ extern u16 sCharaAnimJointGroups[];
 
 #define Heap_destroy2 _ZN4Heap8destroy2Ev
 void Heap_destroy2(void *heap);
-void *Heap_AllocAligned(void *, u32, s32);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *);
-void *ExpHeap_Create(u32 size, void *parent);
 void *FrameHeap_Create(u32 size, void *parent, ...);
-u32 PlayerActor_GetObjectSize(void);
-u32 PlayerActor_GetObjectAlign(void);
 s32 Town_GetMaxOutdoorVillagers(void);
 void *Scene_GetCurrent(void);
 s32 Scene_GetMaxCharacters(void *);
 s32 Scene_GetMaxPlayers(void *);
-s32 NpcSpawn_GetSpNpcSlotCount(void);
 u32 NpcModelHeap_GetVillagerModelSize(void);
 u32 NpcModelHeap_GetSpNpcModelSize(void);
-u32 FishBobber_GetModelSize(void);
-u32 HeldItem_GetAnimHeapSize(void);
-u32 PlayerBodyWork_GetHeapSize(void);
-u32 CharaFaceAnimWork_GetHeapSize(void);
-u32 HeldItem_GetModelBufferSize(void);
-u32 PlayerGlassesModel_GetBufferSize(void);
-u32 PlayerPalette_GetSlotSize(void);
-u32 PlayerHead_GetBufferSize(void);
-u32 PlayerBodyModel_GetBufferSize(void);
-u32 CharaFaceAnim_GetSlotSize(void);
-u32 PlayerFaceTex_GetBufferSize(void);
-u32 ClothTex_GetBufferSize(void);
-u32 CharaAnim_GetBodySlotSize(void);
-u32 CharaAnim_GetPartSlotSize(void);
-u32 CharaAnim_GetExtraSlotSize(void);
 void MI_CpuCopy8(void *, void *, u32);
-s32 File_LoadToBuffer(char *, void *, u32);
-s32 Str_SPrintf(char *, const char *, ...);
 BOOL Item_IsFurniture(u16 *);
-void CharaAnimHeap_Destroy(void);
-void CharaAnimHeap_Create(void *parent);
 
-void AnimSlotRef_CopyFromSlot(u8 *, s32);
-void AnimSlotRef_SetSlot(u8 *, u32);
-u32 JointGroup_GetRangeCount(u32);
-char *CharaAnim_GetPath(u32);
-void AnimSlotRef_Load(u8 *, s32, s32, s32);
 }
 
 extern const u8 sJointGroup3Ranges[4];

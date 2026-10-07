@@ -9,6 +9,13 @@
 #include "sys/TaskList.h"
 #include "sys/ListNode.h"
 #include "snd/Player.h"
+#include "proto/autoload_2/unk_020ed81c.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_021093f4.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_0206d49c.h"
 
 
 
@@ -21,7 +28,6 @@ typedef void (*GroupFn)(Group *g, s32 i, s32 v);
 
 
 extern "C" {
-void Fatal_Trap(void);
 BOOL List_PushBack(List *list, ListNode *node);
 BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
 extern QNode *gTaskCurrentNode;
@@ -32,7 +38,6 @@ extern TaskList gTaskCreateList;
 extern TaskList gTaskExecuteList;
 extern TaskList4 gProcTree;
 extern const char *const sTaskPhaseNames[];
-void *TreeNode_GetNextPreOrder(void *);
 extern void *gSndHeap;
 extern void *gSndCaptureBuffer;
 extern u8 gSndDefaultHandle[];
@@ -40,22 +45,16 @@ extern u8 data_021f5aac[];
 extern u8 data_021f5a1c[];
 void NNS_SndHandleInit(void *p);
 void NNS_SndPlayerStopSeq(void *p, u32 x);
-void NNS_SndArcPlayerStartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void NNS_SndArcPlayerStartSeqArc(void *a, u32 b, void *c);
 void NNS_SndHeapLoadState(void *a, u32 b);
 void *NNS_SndHeapGetCurrentLevel(void *a);
-s32 NNS_SndArcLoadGroup(u32 a, void *b);
 s32 NNS_SndHeapSaveState(void *a);
 void *NNS_SndHeapAlloc(void *a, u32 b, void (*c)(void), u32 d, u32 e);
 void *NNS_SndHeapCreate(u32 a, u32 b);
 void NNS_SndArcInit(void *a, u32 b, void *c, u32 d);
 void NNS_SndArcInitOnMemory(void *a, u32 b);
-s32 NNS_SndArcPlayerSetup(void *a);
-void NNS_SndInit(void);
 void NNS_SndCaptureStartOutputEffect(u32 a, u32 b, u32 c);
 void NNS_FndInitList(void *list, u16 offset);
 void NNS_SndHandleReleaseSeq(void *p);
-s32 NNS_SndMain(void);
 BOOL SndSeVoice_IsHeld(Ent *e);
 void SndSeVoice_Stop(Ent *e, s32 a);
 BOOL SndSeVoice_IsPlayingId(Ent *e, u32 a, u32 b);
@@ -73,12 +72,6 @@ void NNS_SndPlayerSetPlayerPriority(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
 void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
-u64 OS_GetTick(void);
-u32 SndVoice_GetSyllable(u32 a, u32 b);
-u32 SndMgr_GetVoiceSeqIndex(BgmObj *o, u32 id);
-s32 SndMgr_ClampVolume(BgmObj *o, s32 v);
-void SndMgr_PlayVoice(BgmObj *o, u32 a, s32 b, s32 c);
-void SndMgr_PlaySe(void *p, u32 v);
 extern u8 gSndMgr[];
 extern u8 data_021f5b64, data_021f5b60, data_021f5b48, data_021f5b58, data_021f5b54, data_021f5b4c, data_021f5b50;
 extern u8 data_021f5b6c, data_021f5b68, sVoicePendingVolume;
@@ -125,7 +118,6 @@ void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 #define TaskTree_run _ZN8TaskTree3runEv
 BOOL TaskTree_run(TaskList4 *l);
-s16 CmdSeq_Run(CmdSeq *o, s32 loop);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
 s32 Snd_LoadGroup(u32 a);

@@ -1,5 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02105d50.h"
+#include "proto/itcm/unk_01ff8ad4.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -38,8 +40,6 @@ typedef union Glb {
 extern Glb data_027e00c8;
 extern u8 data_027e01a8[], data_027e0184[];
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
-extern void NNS_G3dGeFlushBuffer(void);
-extern void NNS_G3dGetCurrentMtx(void *, u32);
 extern BOOL G3X_GetClipMtx(void *);
 extern u8 *NNS_G3dGlbGetInvV(void);
 extern u32 data_dummy_hw;

@@ -7,6 +7,11 @@
 #include "net/gpiPeer.h"
 #include "net/gpiTransfer.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02280740.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU46: GP gpiOperation.c (0x02280740..0x02280c08)
 
@@ -25,21 +30,15 @@ namespace Na {
 
 
 extern "C" {
-void strzcpy(void *, const void *, s32);
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
 s32 gpiProcessConnect(void *, void *, char *);
 s32 gpiProcessNewProfile(void *, void *, char *);
 s32 gpiProcessGetInfo(void *, void *, char *);
 s32 gpiProcessRegisterUniqueNick(void *, void *, char *);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(u32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
-s32 memset(void *, s32, u32);
-s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiSendOrBufferString(void *, void *, const char *);
 s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);

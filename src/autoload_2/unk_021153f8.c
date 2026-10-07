@@ -7,6 +7,12 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/autoload_2/unk_021153f8.h"
+#include "proto/autoload_2/unk_02117984.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/itcm/unk_01ffd784.h"
+#include "proto/main/unk_0206d49c.h"
 typedef int s32;
 
 // user data block in the shared area (0x027ffc80)
@@ -36,28 +42,21 @@ extern u16 data_021fcf50;          // OSi_ResetFlag
 
 u32 OS_DisableInterrupts(void);           // OS_DisableInterrupts_IrqAndFiq
 void OS_RestoreInterrupts(u32 state);     // OS_RestoreInterrupts_IrqAndFiq
-u64 OS_GetTick(void);           // OS_GetTick
 void OS_DisableIrqMask(u32 mask);      // OS_DisableIrqMask
 void OS_EnableIrqMask(u32 mask);      // OS_EnableIrqMask
 void OS_SetIrqMask(u32 mask);
 void OS_ResetRequestIrqMask(u32 mask);
-void OSi_DoResetSystem(void);
-void Fatal_Trap(void);          // OS_Terminate
 void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);
 void OSi_SetTimerReserved(s32 n);         // OSi_SetTimerReserved
 void OSi_AlarmHandler(void);
 u32 OS_GetLockID(void);
 void CARD_LockRom(u32 id);
 void MI_StopDma(s32 dmaNo);
-void PXI_Init(void);          // PXI_Init
 s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);  // PXI_SendWordByFifo
 s32 PXI_IsCallbackReady(u32 tag, u32 proc);           // PXI_IsCallbackReady
 void PXI_SetFifoRecvCallback(u32 tag, void *callback);    // PXI_SetFifoRecvCallback
 void MIi_CpuCopy16(const void *src, void *dest, u32 size); // MI_CpuCopy16
 void MI_CpuCopy8(const void *src, void *dest, u32 size); // MI_CpuCopy8
-void OSi_SetTimer(OSAlarm *alarm);
-void OSi_InsertAlarm(OSAlarm *alarm, u64 fire);
-void OS_CancelAlarm(OSAlarm *alarm);
 void OSi_CommonCallback(u32 tag, u32 data, s32 err);
 void OSi_SendToPxi(u32 data);
 

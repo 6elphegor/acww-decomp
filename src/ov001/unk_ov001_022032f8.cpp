@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_022032f8.h"
 
 typedef void (*AossWcmNotifyFunc)(s32, ...);
 
@@ -44,8 +45,6 @@ void *WifiLink_GetApListEntry(u32 a);
 extern u8 gWifiLinkAnyBssid[];
 extern u8 gWifiLinkAnySsid[];
 
-s32 Aoss_WcmToIdle(void);
-void Aoss_WcmCallback(void *p);
 }
 
 extern "C" void Aoss_WcmCallback(void *arg) {

@@ -20,6 +20,20 @@
 #include "ui/HandCursor.h"
 #include "ui/LabelBalloon.h"
 #include "ui/ScrollKnob.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov146/unk_ov146_02291f60.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -83,44 +97,19 @@ void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void BgVramTask_cancel(void *p);
 BOOL BgVramTask_requestScreen(void *a, void *b, u32 c, u32 d, u32 e);
 BOOL BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
-void String_SetSlot(s32 a, void *buf);
 BOOL EncodedString_SetRaw(void *dst, const void *src, s32 n);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Snd_PlaySe(u32 a);
 s32 func_02133150(s32 a, s32 b);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void String_Load2dMenu(LabelString *w, s32 a);
-void String_FromEncodedBytes(LabelString *dst, const void *s, s32 len);
-void MenuCtrl_SetResult(s32 a);
-void MenuCtrl_SetIndex(u32 v);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-u8 *Net_GetWifiFriendList();
 BOOL ScrollKnob_areAnimsDone(void *p);
 BOOL HandCursor_isAnimDone(void *p);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 void Math_StepS32(void *p, s32 a, s32 b);
-void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
-void File_LoadToBuffer(const char *a, void *b, s32 c);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(u32 x);
-void Gfx2d_ShowLayer(u32 x);
-void ProcBase_RequestDelete(void *p);
-s32 ProcBase_GetParent(void *p);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
 void MenuLauncher_onChildClosed(s32 self);
 void LabelBalloon_setPos(void *p, s32 a, s32 b);
 void LabelBalloon_showLayer2(void *p);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 s32 MenuCursorBase_getScreenY(void *p);
 BOOL MenuCursorBase_isMoving(void *p);
 void MenuCursorBase_drawWrapped(void *p);
@@ -277,7 +266,6 @@ public:
     /* 0x1a34 */ MenuScrollKnob knob;
 };
 
-extern "C" WfcFriendListMenu *WfcFriendListMenu_Create();
 
 extern "C" void _ZN17WfcFriendListMenu15execCursorPressEv();
 extern "C" void _ZN17WfcFriendListMenu15execKnobReleaseEv();

@@ -88,6 +88,17 @@ def scan(path):
                 rec = {'sym': sym, 'name': c.spelling, 'file': f, 'line': loc.line,
                        'def': c.is_definition(), 'result': res, 'params': params,
                        'decl': c.extent.start.file and _text(c)}
+                if c.kind == ci.CursorKind.FUNCTION_DECL:
+                    # a free function: its prototype as written, linkage, namespace, the named types it uses
+                    rec['c_linkage'] = (c.mangled_name or c.spelling) == c.spelling
+                    ns, p = [], c.semantic_parent
+                    while p is not None and p.kind == ci.CursorKind.NAMESPACE:
+                        ns.insert(0, p.spelling)
+                        p = p.semantic_parent
+                    rec['ns'] = '::'.join(ns)
+                    rec['types'] = _signature_types(c)
+                    if c.is_definition():
+                        rec['proto'] = _head_text(c, path)
                 if c.kind != ci.CursorKind.FUNCTION_DECL:
                     # a member: its class (qualified), whether static, the parameters as written
                     rec['cls'] = c.semantic_parent.type.spelling
@@ -119,6 +130,63 @@ def _has_virtual_dtor(cls):
             if d is not None and d.kind != ci.CursorKind.NO_DECL_FOUND and _has_virtual_dtor(d):
                 return True
     return False
+
+
+def _signature_types(c):
+    """The named types in a function's signature: [name, kind, file of the definition (or declaration)]."""
+    ci = _ci()
+    out, seen = [], set()
+    def walk(ty, depth=0):
+        if depth > 12:
+            return
+        k = ty.kind
+        if k in (ci.TypeKind.POINTER, ci.TypeKind.LVALUEREFERENCE, ci.TypeKind.RVALUEREFERENCE):
+            return walk(ty.get_pointee(), depth + 1)
+        if k in (ci.TypeKind.CONSTANTARRAY, ci.TypeKind.INCOMPLETEARRAY):
+            return walk(ty.element_type, depth + 1)
+        if k == ci.TypeKind.ELABORATED:
+            return walk(ty.get_named_type(), depth + 1)
+        if k == ci.TypeKind.FUNCTIONPROTO:
+            walk(ty.get_result(), depth + 1)
+            for a in ty.argument_types():
+                walk(a, depth + 1)
+            return
+        d = ty.get_declaration()
+        if d is None or d.kind == ci.CursorKind.NO_DECL_FOUND:
+            return
+        if d.kind == ci.CursorKind.TYPEDEF_DECL and d.location.file is None:
+            return
+        key = (d.spelling, d.kind.name)
+        if key in seen or not d.spelling:
+            return
+        seen.add(key)
+        dd = d.get_definition() or d
+        f = os.path.relpath(dd.location.file.name) if dd.location.file else None
+        qual = ty.get_canonical().spelling if d.kind != ci.CursorKind.TYPEDEF_DECL else d.spelling
+        out.append([d.spelling, d.kind.name, f, qual])
+        if d.kind == ci.CursorKind.TYPEDEF_DECL and (f is None or not f.startswith('include/')):
+            walk(d.underlying_typedef_type, depth + 1)
+    walk(c.result_type)
+    for a in c.get_arguments():
+        walk(a.type)
+    return out
+
+
+def _head_text(c, path):
+    """A definition's head as written in the source: from its start to the body's '{'."""
+    try:
+        start = c.extent.start.offset
+        body = None
+        for ch in c.get_children():
+            if ch.kind == _ci().CursorKind.COMPOUND_STMT:
+                body = ch.extent.start.offset
+        if body is None:
+            return None
+        with open(c.extent.start.file.name, 'rb') as fh:
+            src = fh.read()
+        return src[start:body].decode(errors='replace').strip()
+    except Exception:
+        return None
 
 
 def _text(c):

@@ -7,6 +7,13 @@
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
 #include "ui/HandCursor.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov134/unk_ov134_02291f60.h"
+#include "proto/ov138/unk_ov138_02295380.h"
 
 extern "C" {
 extern const u8 sDateSelectCursorLeftTable[5];
@@ -21,36 +28,11 @@ extern u8 gTouchChanged;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 
-void ProcBase_RequestDelete(void *p);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void MenuCtrl_SetClockEdited();
-s32 MenuCtrl_GetMode();
-BOOL MenuCtrl_IsButtons();
-void *ProcBase_GetParent(void *p);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 void MenuButtons_LoadTextColors(void *self);
 
 // ov134 library object (plain functions; first argument is the DateTimePicker object)
 void DateTimePicker_GetDateTime(void *self, void *out);
-void DateTimePicker_OpenList(void *self, u32 a);
-void DateTimePicker_DecideList(void *self);
-void DateTimePicker_CancelList(void *self);
-BOOL MenuCtrl_IsTouch();
-void MenuCtrl_SetDateTime(void *p);
-void MenuCtrl_SetResult(u32 v);
-s32 DateTimePicker_HitTestList(void *self, u32 a, u32 b);
-BOOL DateTimePicker_UpdateListClose(void *self);
-s32 DateTimePicker_GetCursorField(void *self);
-BOOL DateTimePicker_UpdateListOpen(void *self);
 s32 DateTimePicker_Draw(void *self, s32 a, s32 b);
-s32 DateTimePicker_HitTestDateField(void *self, u8 a, u8 b);
 void DateTimePicker_LoadObjGraphics(void *self);
 void DateTimePicker_LoadBgGraphics(void *self);
 void DateTimePicker_DrawTitleAndFields(void *self, s32 a);
@@ -157,7 +139,6 @@ public:
 };
 
 
-extern "C" DateSelectMenu *DateSelectMenu_Create();
 
 extern "C" DateSelectMenu *DateSelectMenu_Create() { return new DateSelectMenu(); }
 

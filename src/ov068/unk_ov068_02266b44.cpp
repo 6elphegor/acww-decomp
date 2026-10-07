@@ -29,6 +29,15 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/ov068/unk_ov068_02266b44.h"
 
 
 class FieldVillager;
@@ -56,26 +65,11 @@ class SpNpcNookIntroTalk;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
 u32 NookShop_GetLevel(void *p);
 u32 Math_CountDownU8(void *p);
-void ProcBase_RequestDelete(void *p);
-void Bgm_ReleasePriority(u32 a);
-void Bgm_Release(u32 a);
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-void Camera_SetModeDefault();
-void Camera_FocusOnPoint(VecFx32 *v);
-BOOL PlayerActor_IsScriptedWalking(s32 a);
-void *PlayerActor_GetBodyPos(s32 a);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
-void PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
-void GameStart_Clear();
-BOOL GameStart_IsNewResident();
-BOOL GameStart_IsNewTown();
-s32 PlayerDataArray_CountUsed(void *self);
 void PlayerData_clearFlag(void *self, s32 a);
 void *HouseData_getDebt(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
@@ -187,7 +181,6 @@ public:
     u8 pad_721[3];
 };
 
-extern "C" SpNpcNookIntro *SpNpcNookIntro_Create();
 #define data_ov068_0226fe1c (sNookIntroTalkScripts) // (the flag column: the entries' flag member on hosts)
 #define PMA(x) (*(SpNpcNookIntroTalkScriptFn *)(x))
 #define PMB(x) (*(SpNpcNookIntroActFn *)(x))

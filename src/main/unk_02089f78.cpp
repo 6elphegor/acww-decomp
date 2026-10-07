@@ -8,109 +8,90 @@
 #include "ui/HudProc.h"
 #include "ui/LabelBalloon.h"
 #include "ui/HudController.h"
+#include "proto/main/unk_020030d8.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_0208de68.h"
+#include "proto/main/unk_0208eeac.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 extern "C" {
-BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
 }
 
 extern "C" {
-void StrBuf_Clear(StrBuf *buf);
 }
 
 extern "C" {
-void HudUnkSlideIcon_Draw();
 }
 
 extern "C" {
-void HudLinkIcon_Draw();
 }
 
 extern "C" {
-void Hud_Draw();
 }
 
 extern "C" {
-void HudUnkIcon_Draw();
 }
 
 extern "C" {
-void HudLinkIcon_Update();
 }
 
 extern "C" {
-void HudUnkSlideIcon_Update();
 }
 
 extern "C" {
-void HudUnkIcon_Update();
 }
 
 extern "C" {
-void Hud_Update();
 }
 
 extern "C" {
-void Hud_Exit();
 }
 
 extern "C" {
-void HudUnkIcon_Exit();
 }
 
 extern "C" {
-void HudUnkSlideIcon_Exit();
 }
 
 extern "C" {
-void HudLinkIcon_Exit();
 }
 
 extern "C" {
-void HudLinkIcon_Reset();
 }
 
 extern "C" {
-void HudUnkSlideIcon_Reset();
 }
 
 extern "C" {
-void HudUnkIcon_Reset();
 }
 
 extern "C" {
-void Hud_Init();
 }
 
 extern "C" {
-BOOL InputMode_IsButtons();
 }
 
 extern "C" {
-BOOL InputMode_IsTouch();
 }
 
 extern "C" {
-void HudObjGfx_LoadCameraButton(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-void HudObjGfx_LoadKind(u32 a, u32 b);
 }
 
 extern "C" {
-void HudObjGfx_SetCountdownVariant(u32 a);
 }
 
 extern "C" {
-s32 Hud_GetSceneHudKind();
 }
 
 extern "C" {
-BOOL HudObjGfx_GetCountdownVariant();
 }
 
 extern "C" {

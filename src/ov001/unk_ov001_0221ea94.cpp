@@ -1,19 +1,16 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0221ea94.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
 extern "C" {
 s32 DC_FlushRange(void *, u32);
 s32 GXS_LoadBG1Scr(void *, u32, u32);
-s32 WfcFs_FreeFile(void *);
-void *WfcUtil_LocalizePath(u32);
-s32 WfcFs_LoadFile(void *, void *, u32);
-s32 WfcTask_RequestDelete(s32, s32);
-s32 WfcTask_Add(s32, void *, s32, s32);
 
-void WfcTop_TransferTask(s32 a);
-void WfcTop_LoadScreen(u32 i);
 }
 
 char data_ov001_0222b46c[] = "char/jtTop.nsc.l";

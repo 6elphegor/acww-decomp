@@ -35,6 +35,19 @@
 #include "talk/VillagerTalk.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString33.h"
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0213510c.h"
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov068/unk_ov068_0226dbe8.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -248,18 +261,9 @@ extern HouseVisitVillager *sHouseVisitVillager;
 extern u8 data_ov068_022712b8[0x28];
 extern u8 sHouseVisitMsgFileName[0x28];
 extern HouseVisitStarText data_ov068_02270a3c;
-HouseVisitVillager *HouseVisitVillager_Create();
 }
 
 extern "C" {
-void HouseVisit_SetFirstTalkDone(void *);
-BOOL HouseVisit_IsFirstTalkPending(void *);
-void HouseVisit_SetDoorTalkDone(void *);
-BOOL HouseVisit_IsDoorTalkDone(void *);
-void HouseVisit_SetCalled(void *);
-BOOL HouseVisit_IsCalled(void *);
-void HouseVisit_SetFinished(void *);
-BOOL HouseVisit_IsAppointmentNow(void *);
 }
 #define data_0213a740 __ptmf_null
 extern "C" Unk_ov068_02270afc_BFn __ptmf_null;
@@ -267,21 +271,17 @@ extern "C" Unk_ov068_02270afc_BFn __ptmf_null;
 namespace sA {
 extern "C" {
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *self, void *v);
-void func_02135558(void *obj, void (*dtor)(void *), void *dso);
 extern u16 data_020c6cc8;
 extern s32 data_020c8cbc;
 
 void Math_StepS32(void *dst, s32 v, s32 n);
 void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
-s32 Random_GlobalBelow(s32 n);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Vec_NotEqual(void *a, void *b);
-void *PlayerActor_GetActor(s32 n);
 void *PlayerActor_GetBodyPos(s32 n);
 BOOL Ground_IsOnLockedExit(void *v);
 u32 NpcActor_getAngleTo(void *p, void *q);
 s32 NpcActor_findAvoidPos(void *p, void *out);
-void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
 void Scene_SavePlayerPos(void *o, s32 v);
 void SceneWarp_RequestExit(void *o, s32 v);
@@ -319,16 +319,12 @@ void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
 s32 TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 NpcActionCtrl_isActionDone(void *);
-void Snd_SeEmitterPlayOneShot(void *, s32, s32, s32);
-void Building_PlayDoorChime();
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
 void RoomScoreEvaluator_Construct(void *);
 s32 HappyRoom_RateMainRoom(void *, void *);
-void HouseVisitor_SetPresent();
 void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, s32);
 void RoomScoreEvaluator_Destruct(void *);
-VillagerActor *PlayerActor_GetActor(s32);
 s32 Vec_DistXZ(void *, void *);
 }
 
@@ -338,11 +334,6 @@ extern u8 data_021be810[];
 extern u8 gTalkMsgIndexEnd;
 void VillagerId_makeFileName(void *, void *, u32, void *);
 void *VillagerData_getVillagerId(void *);
-u32 Random_GlobalBelow(s32);
-void Snd_PlaySe(s32);
-s32 VillagerId_GetPersonality(void *);
-s32 FtrMgr_PickFurnitureComment(s32);
-void *PlayerData_GetCurrent();
 void *PlayerData_getErrands(void *);
 }
 
@@ -352,11 +343,9 @@ extern "C" {
 extern Unk_ov068_0226ee74_Grid *gSceneBlockMap;
 
 
-void *PlayerData_GetCurrent();
 u8 *PlayerData_getErrands(void *);
 s32 ErrandRecord_setStep(void *, s32);
 s32 ErrandRecord_getStep(void *);
-s32 Random_GlobalBelow(s32);
 void MI_CpuCopy8(void *, void *, u32);
 void DateTime_AddMinutes(void *, s32);
 void Clock_GetDateTime(void *);
@@ -374,7 +363,6 @@ s32 func_0202d948(void *);
 void NpcFootstepFx_enableFootsteps(void *);
 u8 Scene_GetPrevious();
 s32 SceneId_IsTown(u32 a);
-void HouseVisitor_SetPresent();
 void RoomScoreEvaluator_Construct(void *);
 void RoomScoreEvaluator_Destruct(void *);
 void *HappyRoom_RateMainRoom(void *, void *);

@@ -1,4 +1,9 @@
 #include "types.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 extern "C" const u32 data_020ca638;
 
@@ -15,11 +20,9 @@ extern u8 gSaveHouse[];
 
 u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);
-void *FtrActorGrid_GetInstance();
 u8 *_ZN12FtrActorGrid8getActorEiii(void *p, s32 x, s32 y, s32 z);
 s32 FtrActor_GetFtrIndex(void *p);
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 FtrInfo_GetDmaUnk04(s32 n);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 s32 func_02072e44(void *p);
@@ -31,19 +34,10 @@ void func_020728a4(void *p, void *data, s32 size);
 s32 Scene_GetCurrent();
 s32 func_020529e4(void *p, s32 a, s32 b, void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
-s32 NetArea_IsLocalOwner();
-void FtrSync_ToggleGyroidAt(s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02060244(void *p, s32 a, s32 b);
 void *BlockMap_GetForArea(s32 a);
 s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 
-u32 Text_GetCharWidth(u32 c);
-u32 SpotSync_GetReserveResult();
-void SpotSync_RequestReserve(s32 *p);
-void SpotSync_Release(void *p);
-void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d);
-void FtrSync_SendRoomLight(s32 a, s32 b, s32 c);
-void FtrSync_ApplyRoomLight(s32 a, s32 b);
 
 }
 

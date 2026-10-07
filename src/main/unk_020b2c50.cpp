@@ -10,20 +10,18 @@
 #include "talk/MsgRequest.h"
 #include "talk/MsgWalker.h"
 #include "talk/MsgString33.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020b2c50.h"
 
 extern "C" {
-u32 Text_ToUpper(u32 key);
-u8 *Text_GetSpecialCharStr10(void);
-u8 *Text_GetSpecialCharStr9(void);
-u8 *Text_GetSpecialCharStr5(void);
 u32 Msg_GetCharFromEnd(u32 a, u32 b);
 u32 Msg_GetCharAt(u32 a, u32 b);
-int strcmp(const u8 *a, const u8 *b);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 s32 FX_Modf(s32 v, s32 *out);
-int Str_SPrintf(char *dst, const char *fmt, ...);
 char *Msg_SkipLines(char *p, u32 n);
-void func_02133ef8(void *p, u32 n);
 }
 
 
@@ -38,19 +36,6 @@ void func_02133ef8(void *p, u32 n);
 class StringBank;
 
 extern "C" {
-BOOL String_CharEqualsIgnoreCase(u32 a, u32 b);
-BOOL String_FormatNumber(MsgString *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused);
-BOOL String_AppendUnitSuffix(MsgString *out, s32 val, s32 kind);
-void Str_Reverse(char *s, u32 size);
-void Str_InsertThousandsSeparators(char *s, u32 size, s32 minRun);
-void Str_PadBackZeros(char *s, u32 size, s32 width);
-void Str_PadBackSpaces(char *s, u32 size, s32 width);
-void Str_PadFrontSpaces(char *s, u32 size, s32 width);
-void Str_WriteDigitsReversed(char *s, u32 size, s32 n, s32 maxDigits);
-void Str_ShiftRight(char *s, u32 size, s32 start, s32 shift);
-s32 Str_LenN(const char *s, u32 max);
-BOOL String_LoadResolveAltText(MsgString *buf, u8 *key, const char *name);
-BOOL String_Load(MsgString *buf, u8 *key, const char *name);
 }
 
 // ---- classes of this unit, declared in reverse order of their vtables in .data ----
@@ -221,8 +206,6 @@ struct Empty {
 };
 
 extern StringBank gStringBank;
-extern "C" MsgString256 *String_GetTabooScratch(void);
-extern "C" BOOL String_IsNonNullChar(u32 x);
 
 StringBank gStringBank;
 

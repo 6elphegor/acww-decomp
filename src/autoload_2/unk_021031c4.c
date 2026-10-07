@@ -1,3 +1,4 @@
+#include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) g2d text drawing + font (NFTR) resource loading.
 // autoload_2 0x021031c4-0x02103734. ARM, mwcc 1.2/base, -O4,p.
@@ -17,7 +18,6 @@ typedef struct BinHdr { u32 sig; u16 bom; u16 ver; u32 size; u16 hdrSize; u16 nB
 typedef struct BlockHdr { u32 kind; u32 size; } BlockHdr;
 typedef struct FInfo { u8 pad[6]; s8 f6; s8 f7; } FInfo;
 
-extern void Fatal_Trap(void);                       // OS_Terminate (Thumb)
 extern u8 *NNS_G2dFindBinaryBlock(BinHdr *, u32);               // find block by signature
 extern Rect NNSi_G2dFontGetTextRect(Font *, s32, s32, const u16 *);   // text rect (width, height)
 extern s32 NNSi_G2dFontGetTextHeight(Font *, s32, const u16 *);         // text height

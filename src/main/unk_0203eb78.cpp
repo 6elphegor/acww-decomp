@@ -10,6 +10,16 @@
 #include "gfx/WorldCurve.h"
 #include "player/PlayerData.h"
 #include "save/BbsBoard.h"
+#define PROTO_LOCAL_AxMail_Deliver  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_PutInMailbox  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_MarkReceived  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_SetRecipientResident  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203eb78.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
 
 
 
@@ -100,11 +110,9 @@ void Letter_MarkReceived(void *p);
 }
 
 extern "C" {
-s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
-s32 PlayerData_GetLastWifiMailId(s32 p);
 }
 
 extern "C" {
@@ -115,7 +123,6 @@ s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-s32 PlayerData_SetLastWifiMailId(s32 p, s32 v);
 }
 
 extern "C" {
@@ -125,7 +132,6 @@ extern "C" {
 }
 
 extern "C" {
-s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
@@ -149,7 +155,6 @@ s32 Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
-u32 WorldCurve_AngleToDistance(u32 x);
 }
 
 extern "C" {
@@ -157,19 +162,15 @@ u8 *func_02098314(s32 p);
 }
 
 extern "C" {
-s32 Emotion_FindSlot(u32 id);
 }
 
 extern "C" {
-s32 EmotionSlots_Get(u8 *p, s32 i);
 }
 
 extern "C" {
-void EmotionSlots_Set(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {
-s32 GameStart_IsActive(void);
 }
 
 extern "C" {

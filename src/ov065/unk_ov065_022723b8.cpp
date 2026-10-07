@@ -14,6 +14,19 @@
 #include "net/qr2.h"
 
 #include "types64.h"
+#define PROTO_LOCAL_NNProcessData  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0226f9e0.h"
+#include "proto/ov065/unk_ov065_022723b8.h"
+#include "proto/ov065/unk_ov065_02277140.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_02285778.h"
+#include "proto/ov065/unk_ov065_02286934.h"
+#include "proto/ov065/unk_ov065_022884fc.h"
 
 extern "C" {
 u8 sDwcMatchServerLock[4];
@@ -45,12 +58,8 @@ extern "C" {
 extern DwcFriendControl *sDwcFriendControl;
 extern DwcMatchControl *sDwcMatch;
 
-u64 OS_GetTick();
 s32 DWC_GetGsProfileId(s32, void *);
 s32 DWCi_Acc_IsValidFriendData(void *);
-s32 strcmp(const char *, const char *);
-s32 STD_GetStringLength(const char *);
-void STD_CopyString(char *, const char *);
 s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
@@ -71,18 +80,12 @@ void DwcFriend_Abort();
 void DwcFriend_Tick();
 s32 DwcFriend_HandleGpResult();
 s32 DwcFriend_GetBuddyStatus(void *, GPBuddyStatus *);
-s32 NasBase64_Decode(const char *, s32, char *, u32);
-s32 NasBase64_Encode(void *, s32, void *, u32);
 s32 DwcMatch_HandleGt2Result(s32 a);
 s32 DwcMatch_HandleNnResult(s32, s32);
 s32 DwcMatch_HandleNnStartResult(s32 a);
 s32 DwcMatch_SendNnRequest(void *);
 s32 DwcMatch_Fail(s32, s32);
-u64 DwcNet_GetTimeMs();
-s32 GsUtil_GetKeyValue(const char *, char *, char *, s32);
-s32 PersistThink();
 s32 gt2Connect(u32, s32, s32, char *, s32, s32, s32, s32);
-s32 gt2AddressToString(u32, u32, s32);
 s32 DwcMatch_CancelNewClient(u32);
 s32 DwcMatch_RestartAfterNnFailure(u32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
@@ -132,7 +135,6 @@ u32 SBServerGetIntValueA(u32 e, void *a, u32 b);
 void ServerBrowserRemoveServer(u32 list, u32 e);
 void SBServerAddIntKeyValue(u32 e, void *a, u32 b);
 void ServerBrowserSortA(u32 list, u32 a, void *b, u32 c);
-u32 DwcNet_Rand32(u32 a);
 s32 DwcMatch_GetServerProfileId(u32 e);
 s32 DwcMatch_StartServerQuery(u32 a);
 s32 DwcMatch_SendReservation(u32 a, u32 b);
@@ -147,8 +149,6 @@ void DwcLogin_Fail(s32 a, s32 b);
 void DwcFriend_Fail(s32 a, s32 b);
 void DwcCore_SetError(s32 a, s32 b);
 void DwcMatch_Fail(s32 a, s32 b);
-u64 DwcNet_GetTimeMs(void);
-u64 OS_GetTick(void);
 s32 DwcMatch_GetClientAidMask(u32 a);
 s32 DwcMatch_AdvanceConnect(u32 a);
 void DwcMatch_ResetSyncTimer(u32 a);
@@ -199,9 +199,7 @@ extern DwcMatchControl *sDwcMatch;
 extern u8 sDwcMatchUserKeys[];
 
 extern "C" {
-u64 DwcNet_GetTimeMs(void);
 s32 SBServerGetIntValueA(...);
-void DwcNet_Free(u32, u32, u32);
 void MIi_CpuClear32(u32, void *, u32);
 s32 DwcCore_GetState(u32);
 s32 DwcMatch_Restart(u32);
@@ -209,7 +207,6 @@ s32 DwcMatch_AdvanceConnect(u32);
 s32 DwcMatch_SendCommand(u32, u32, u32, u32, void *, u32);
 s32 DwcMatch_HandleResult(s32);
 s32 DwcMatch_CancelNewClient(u32);
-s32 DwcNet_SendData(u32, u32, void *, u32);
 s32 DwcConn_CloseConnection(u32);
 s32 gt2CloseAllConnectionsHard(u32);
 s32 gt2CloseConnectionHard(u32);
@@ -277,15 +274,11 @@ s32 DwcMatch_Fail(s32, s32);
 s32 qr2_send_statechanged(u32);
 s32 ServerBrowserFree(u32);
 s32 ServerBrowserClear(u32);
-s32 NNFreeNegotiateList(void);
 s32 gt2CloseAllConnectionsHard(u32);
-s32 NNCancel(u32);
 s32 DwcLogin_GetUserData(void);
 s32 gpGetBuddyIndex(u32, s32, void *);
 s32 gpGetBuddyStatus(u32, u32, void *);
-s32 GsUtil_GetKeyValue(const char *, void *, void *, s32);
 s32 DwcMatch_SendReservation(s32, s32);
-u64 OS_GetTick(void);
 s32 DWC_GetGsProfileId(s32, u8 *);
 s32 DWCi_Acc_IsValidFriendData(u8 *);
 s32 strtoul(void *, s32, s32);
@@ -329,7 +322,6 @@ extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern u8 sDwcMatchServerLock[];
 
 extern "C" {
-u64 OS_GetTick(void);
 void MIi_CpuCopy32(void *, void *, u32);
 u32 ServerBrowserGetServer(u32, s32);
 s32 SBServerGetIntValueA(...);
@@ -363,7 +355,6 @@ s32 DwcMatch_Restart(u32);
 s32 DwcMatch_OnCancelSyncCommand(u32, u32, u32);
 u32 DwcMatch_GetAidByProfileId(u32, s32);
 s32 DwcConn_CloseConnection(u32);
-u64 DwcNet_GetTimeMs(void);
 s32 DwcMatch_Fail(u32, s32);
 s32 DwcMatch_SendCloseOrder(void);
 s32 DwcMatch_HandleResult(s32);
@@ -409,9 +400,6 @@ extern DwcMatchUserKey sDwcMatchUserKeys[];
 
 extern "C" {
 
-char *strchr(const char *, s32);
-s32 STD_GetStringLength(const char *);
-void STD_CopyString(char *, const char *);
 void MI_CpuCopy8(const void *, void *, u32);
 void MIi_CpuCopy32(const void *, void *, u32);
 void MIi_CpuClear32(u32, void *, u32);
@@ -420,16 +408,13 @@ void MI_CpuFill8(void *, s32, u32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
 
 s32 gpSendBuddyMessageA(u32, u32, char *);
-s32 gt2AddressToString(u32, u32, s32);
 s32 ServerBrowserSendMessageToServerA(u32, s32, u32, void *, s32);
 s32 ServerBrowserSendNatNegotiateCookieToServerA(u32, s32, u32, u32);
 s32 DwcMatch_HandleSbResult(s32 a);
 s32 gt2GetRemoteIP(u32);
 s32 gt2GetLocalPort(u32);
-s32 NNBeginNegotiationWithSocket(s32, u32, u32, void *, void *, void *);
 void DwcMatch_OnNnComplete(u32, u32, u32, void *);
 s32 DwcMatch_OnNnProgress(void);
-u64 DwcNet_GetTimeMs(void);
 s32 SBServerHasPrivateAddress(u32);
 u32 SBServerGetPublicInetAddress(u32);
 u32 SBServerGetPublicQueryPort(u32);
@@ -437,14 +422,10 @@ u32 SBServerGetPrivateInetAddress(u32);
 u32 SBServerGetPrivateQueryPort(u32);
 s32 ServerBrowserGetMyPublicIPAddr(u32);
 s32 Sock_GetHostId(void);
-u32 DwcNet_Rand32(u32);
 s32 ServerBrowserClear(u32);
 s32 ServerBrowserLimitUpdateA(u32, u32, u32, void *, u32, void *, u32);
 s32 ServerBrowserFree(u32);
-s32 NNFreeNegotiateList(void);
-void DwcNet_Free(u32, u32, u32);
 void DwcMatch_ClearUserKeys(void);
-void qr2_register_keyA(u32, char *);
 
 
 s32 DwcMatch_GetArgField(char *out, const char *s, s32 n);
@@ -506,19 +487,14 @@ void OS_SNPrintf(char *, s32, const char *, ...);
 void MI_CpuFill8(void *, s32, s32);
 u32 strtoul(const char *, char **, s32);
 
-void DwcNet_Free(s32, u32, s32);
 void DwcMatch_ClearUserKeys(void);
-s32 GsUtil_FormatKeyValue(const char *, char *, char *, s32);
-s32 GsUtil_AppendKeyValue(const char *, char *, char *, s32);
 s32 DwcFriend_SetOwnStatus(s32, void *, s32);
 s32 DwcFriend_FindIndexByProfileId(s32);
 s32 DwcMatch_CancelNewClient(...);
 s32 DwcCore_GetState(void);
-s32 NNCancel(u32);
 s32 gt2CloseAllConnectionsHard(u32);
 s32 DwcMatch_RestartAfterCancel(void);
 s32 DwcMatch_Restart(u32);
-u64 DwcNet_GetTimeMs(void);
 s32 DwcMatch_SendSyncPacket(u32, s32);
 s32 DwcMatch_GetClientAidMask(u32);
 s32 DwcMatch_AdvanceConnect(u32);
@@ -528,7 +504,6 @@ s32 DwcCore_SetError(s32, s32);
 s32 DwcMatch_Cleanup(void);
 s32 DwcMatch_GetArgField(char *, const char *, s32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
-s32 gt2AddressToString(u32, u32, s32);
 s32 gt2Connect(u32, s32, s32, char *, s32, s32, s32, s32);
 s32 DwcMatch_HandleGt2Result(s32 a);
 s32 DwcConn_FindFreeSlot(void);
@@ -592,12 +567,9 @@ extern char NNMagicData[];
 
 
 extern "C" {
-u64 OS_GetTick(void);
 u64 func_02132ef8(u64 a, u64 b);
 void MIi_CpuClear32(u32 v, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, u32 n);
-s32 memcmp(void *, void *, u32);
-u64 DwcNet_GetTimeMs(void);
 
 s32 qr2_parse_queryA(void *, char *, void *, void *);
 s32 NNProcessData(char *, void *, void *);
@@ -618,7 +590,6 @@ s32 DwcMatch_AbortAndRestart(void);
 s32 DwcMatch_OnNnComplete(u32, u32, u32, void *);
 s32 ServerBrowserThink(u32);
 s32 qr2_send_statechanged(void *);
-s32 NNThink(void);
 s32 DwcMatch_RestartAfterCancel(void);
 s32 DwcMatch_ProcessCloseSync(void);
 s32 DwcMatch_ProcessCancelSync(void);
@@ -677,8 +648,6 @@ extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern DwcNetChannelTable *sDwcNetChannels;
 extern MATHRandContext32 sDwcNetRandState;
 
-void *DwcNet_Alloc(s32, s32);
-u64 DwcNet_GetTimeMs(void);
 s32 DwcConn_GetAid(s32);
 s32 DwcConn_FindConnectionByAid(s32);
 void DwcCore_SetError(s32, s32);
@@ -692,10 +661,8 @@ s32 gt2GetConnectionState(s32);
 s32 gt2Ping(s32);
 void gt2Send(s32, void *, s32, s32);
 void DwcMatch_OnSyncPacket(s32, s32, s32);
-u64 OS_GetTick(void);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
-s32 memcmp(void *, void *, s32);
 void strncpy(void *, void *, s32);
 void OS_GetMacAddress(void *);
 u64 func_02132ef8(u64, u64);
@@ -703,36 +670,6 @@ u64 func_02132ef8(u64, u64);
 void DwcMatch_ClearServerLock(void);
 BOOL DwcMatch_IsServerLocked(void);
 s32 DwcMatch_SetOption(s32 m, u8 *p);
-s32 DwcNet_GetSendSpace(s32 id);
-void DwcNet_RecvControlBody(s32 a, void *b, s32 c);
-void DwcNet_RecvBodyChunk(s32 id, void *buf, s32 n);
-void DwcNet_RecvHeader(s32 id, void *buf, s32 n);
-void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n);
-void DwcNet_RecvReliable(s32 a, void *buf, s32 n);
-void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f);
-u32 DwcNet_GetRecvState(s32 id);
-u32 DwcNet_IsSending(s32 id);
-DwcNetChannel *DwcNet_GetChannel(s32 id);
-void DwcNet_ClearChannelTable(void);
-void DwcNet_ResetChannel(s32 id);
-void DwcNet_ProcessSend(void);
-void DwcNet_OnPing(s32 a, s32 b);
-void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d);
-void DwcNet_InitChannelTable(void *p);
-s32 DwcNet_GetHeaderSize(s32 m);
-u32 DwcNet_ParseHeader(void *src);
-void DwcNet_BuildHeader(void *p, u32 a, u32 b);
-void DwcNet_SetMaxChunkSize(u32 v);
-void DwcNet_SetPingCallback(void *cb);
-void DwcNet_SetRecvCallback(void *cb);
-void DwcNet_SetSendDoneCallback(void *cb);
-void DwcNet_PingAid(s32 id);
-BOOL DwcNet_SetRecvBuffer(s32 id, u8 *buf, s32 n);
-BOOL DwcNet_SendData(s32 m, s32 id, u8 *buf, s32 n);
-BOOL DwcNet_SendReliable(s32 id, u8 *buf, s32 n);
-BOOL DwcNet_CanSend(s32 id, s32 m);
-BOOL DwcNet_CanSendReliable(s32 id);
-u32 DwcNet_Rand32(u32 n);
 
 void DwcMatch_ClearServerLock(void);
 BOOL DwcMatch_IsServerLocked(void);

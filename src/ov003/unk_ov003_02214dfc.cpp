@@ -12,6 +12,13 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "gfx/AnimModel.h"
+#define PROTO_LOCAL_ClothTex_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ClothTex_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02214dfc.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -70,19 +77,10 @@ extern "C" {
 extern u8 gSaveTownFlag[];
 void ClothTex_Destruct(void *);
 void ClothTex_Construct(void *);
-BOOL ClothTex_LoadPattern(void *a, void *b);
-void *ClothTex_GetTex(void *);
 void *_ZN19TownStyleRecordView11getTownFlagEv(void *);
-s32 TownFlag_GetPattern(s32);
-void TownFlag_SetPattern(s32, void *);
 s32 _ZN8TownFlag13getGateDesignEv(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 Field_GetStructureTexSuffix();
-u32 GateHouse_GetModelName();
-s32 GateHouse_GetDesign();
-void *GateHouse_Create();
 }
 #define TownStyleRecordView_getTownFlag _ZN19TownStyleRecordView11getTownFlagEv
 #define TownFlag_getGateDesign _ZN8TownFlag13getGateDesignEv

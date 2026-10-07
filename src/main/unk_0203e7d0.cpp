@@ -6,6 +6,15 @@
 #include "net/CommManager.h"
 #include "sys/ProcBase.h"
 #include "actor/Character.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_0203e438.h"
+#include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_0203eb78.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
 
 
 
@@ -53,7 +62,6 @@ void PrioList_Init(void *);
 }
 
 extern "C" {
-void TalkRequestPool_Reset(void);
 }
 
 extern "C" {
@@ -61,7 +69,6 @@ void TalkRequestFlags_Clear(u32);
 }
 
 extern "C" {
-BOOL PlayerActor_RequestAct10(void);
 }
 
 extern "C" {
@@ -69,31 +76,24 @@ void TalkRequest_SetTalkTarget(u32);
 }
 
 extern "C" {
-BOOL PlayerActor_RequestReturnToWait(void);
 }
 
 extern "C" {
-u32 MenuCtrl_IsFinished(u32);
 }
 
 extern "C" {
-BOOL MenuCtrl_IsIdle(void);
 }
 
 extern "C" {
-BOOL PlayerActor_CanOpenMenu(void);
 }
 
 extern "C" {
-BOOL PlayerActor_RequestAct05(void);
 }
 
 extern "C" {
-void MenuCtrl_RequestOpen(u32);
 }
 
 extern "C" {
-s32 Field_GetExitedBuildingKey(void);
 }
 
 extern "C" {
@@ -117,11 +117,9 @@ u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {
-s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 }
 
 extern "C" {
-long long Vec_MagSqXZ(VecFx32 *);
 }
 
 extern "C" {
@@ -137,30 +135,6 @@ void _ZN5Actor10postCreateEv(void *, s32);
 }
 
 extern "C" {
-void CharInteractSync_SendReply(u8 a, u32 aid, ...);
-}
-
-extern "C" {
-void CharInteractSync_ClearLock(u32 idx);
-}
-
-extern "C" {
-u32 CharInteractSync_IsFree(u32 idx, u32 id);
-}
-
-extern "C" {
-void CharInteractSync_RequestLock(u32);
-}
-
-extern "C" {
-s32 CharInteractSync_Check(u32);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *PlayerActor_GetActor(u32);
 }
 
 extern "C" {
@@ -176,11 +150,27 @@ extern "C" {
 }
 
 extern "C" {
-BOOL NetArea_IsLocalOwner(void);
 }
 
 extern "C" {
-void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode);
+}
+
+extern "C" {
+}
+
+extern "C" {
+}
+
+extern "C" {
+}
+
+extern "C" {
+}
+
+extern "C" {
+}
+
+extern "C" {
 }
 
 extern "C" {
@@ -188,11 +178,9 @@ void TalkRequestQueue_Reset(void);
 }
 
 extern "C" {
-void CharInteractSync_Reset(void);
 }
 
 extern "C" {
-Character *Character_FindByCharId(u32 id);
 }
 
 

@@ -1,6 +1,8 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetStateBlockHeader.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_020a6564.h"
 
 // TU198: 0x020a6564-0x020a65fc. Dispatches received records to two handlers through a table in .rodata
 // (0x020d07a8-0x020d07b0).
@@ -9,7 +11,6 @@
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 Scene_GetCurrent();
-void NpcNetRecord_ResetTalkSlots();
 }
 
 extern CommManager *gCommManager;
@@ -18,8 +19,6 @@ extern CommManager *gCommManager;
 typedef void (*NetStateAReader)(u8 *, u32);
 
 extern "C" {
-void NetArea_ReadStateANpcTalk(u8 *p);
-void NetArea_ReadStateAPart0();
 extern const NetStateAReader sNetStateAReaders[2];
 }
 

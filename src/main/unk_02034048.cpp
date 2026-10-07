@@ -3,6 +3,9 @@
 #include "net/CommManager.h"
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
+#include "proto/main/unk_02034048.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov004/unk_ov004_0222a500.h"
 
 // 2-byte element (0xfff1 = none), constructed by __sinit; destructor is in another unit (0x02004b60)
 class ItemId {
@@ -20,24 +23,11 @@ extern void *gCommManager;
 extern u8 gSavePlayers[];
 extern u8 gSaveHouse[];
 
-void *RoomShell_GetPrevCarpet();
-void *RoomShell_GetPrevWallpaper();
-void *RoomShell_SetCarpet(u16 *id, s32 a, s32 b);
-void *RoomShell_SetWallpaper(u16 *id, s32 a, s32 b);
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
-void *PlayerData_GetCurrent();
 u32 _ZN10PlayerData11getPlayerIdEv(void *);
-u32 PlayerDataArray_FindById(void *a, u32 b);
 s32 Scene_GetCurrent();
 BOOL SceneId_IsHouseRoom(s32 a);
 
-BOOL RoomWallFloor_SetSceneCarpet(u32 i, u16 *v);
-BOOL RoomWallFloor_SetSceneWallpaper(u32 i, u16 *v);
-void RoomWallFloor_Send(u16 *id, s32 a, s32 b, s32 c);
-void RoomWallFloor_MakeDesignItem(u16 *out, s32 a);
-void *RoomWallFloor_SetCarpet(u16 *id, s32 a, s32 b, s32 c);
-void *RoomWallFloor_SetWallpaper(u16 *id, s32 a, s32 b, s32 c);
-void RoomWallFloor_Set(u16 *a, s32 b, s32 c, s32 d, u8 e);
 }
 
 extern ItemId sRoomWallFloorNoItem;

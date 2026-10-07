@@ -4,6 +4,13 @@
 #include "uptr.h"
 #include "net/AossParam.h"
 #include "nitro/wm.h"
+#define PROTO_LOCAL_Aoss_ConnectAp  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Aoss_ScanAps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_CancelAlarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_CreateAlarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02202c44.h"
+#include "proto/ov001/unk_ov001_022032f8.h"
 
 typedef void *(*AossAllocFunc)(u32);
 typedef void (*AossFreeFunc)(void *);
@@ -51,28 +58,15 @@ void MIi_CpuCopy32(void *, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 
-void Aoss_SetBssDescSsid(void *, void *);
-s32 Aoss_WcmInit(void *, void *, u32);
-s32 Aoss_WcmConnect(void *, void *, u32);
-void Aoss_StoreConnectResult(void *, void *, s32);
 s32 Aoss_FreeScanBuffers();
 s32 Aoss_SetProgress(s32);
 s32 Aoss_RunProtocol(void *);
 void Aoss_SocketClose(s32);
-s32 Aoss_WcmStartSearch(s32, void *, s32, s32);
-s32 Aoss_WcmReadApList(void *, s32);
-s32 Aoss_WcmToIdle();
-s32 Aoss_WcmEndSearch();
-s32 Aoss_WcmDisconnect();
-s32 Aoss_WcmCleanup();
 s32 WifiLink_ClearApList();
 s32 WifiLink_Init(void *, s32);
 s32 WifiLink_StartupAsync(void *, void *);
 s32 WifiLink_ConnectAsync(void *, void *, s32);
 s32 WifiLink_CleanupAsync();
-void Aoss_WcmCallback(void);
-void Aoss_PostAlarmMsg(s32);
-void Aoss_PostWcmMsg(s32);
 void Aoss_ConvertBssDesc(WMBssDesc *, AossApInfo *);
 
 }

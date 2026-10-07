@@ -13,6 +13,18 @@
 #include "nitro/io_access.h"
 #include "gfx/Model.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_Gfx2d_TilesToLinear4bpp  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020af258.h"
+#include "proto/main/unk_020b2c50.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
@@ -57,26 +69,12 @@ public:
 
 
 extern "C" {
-void LidSleep_KeepSoundOff();
-s32 Snd_VolumeOff();
-void Gfx2d_SetMainPlanes(u32 v);
-void Gfx2d_SetSubPlanes(u32 v);
-void Gfx2d_SetMainWindows(u32 v);
-void Gfx2d_SetSubWindows(u32 v);
-u32 Gfx2d_GetMainPlanes();
-u32 Gfx2d_GetSubPlanes();
-u32 Gfx2d_GetMainWindows();
-u32 Gfx2d_GetSubWindows();
 char *Msg_SkipLines(char *p, u32 n);
 u32 TextLabel_MeasureMsgWidth(MsgString *obj);
-u8 *CommCaution_FormatErrorCode();
 void func_020b4154(void *);
 void func_020b413c(void *);
-void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
 void MsgTextLabel_Destroy(MsgTextLabel *obj);
-void *Mem_AllocTail(u32 size);
-void Mem_Free(void *p);
 void Gfx2d_TilesToLinear4bpp(void *src, void *dst, s32 w, s32 h);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 _ZN10G3dMatData10getTexAddrEv(void *p);
@@ -84,12 +82,6 @@ void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
-void String_Load2d(void *o, u8 *p, u32 x);
-void Str_SPrintf(void *buf, void *fmt, u32 a);
-void CommCaution_CopyString(void *a, void *b);
-void strcpy(void *a, void *b);
-s32 Net_GetLastErrorCode();
-s32 Net_GetMode();
 }
 
 extern u8 sCommCautionNumberGap[];
@@ -186,11 +178,7 @@ extern CautionMsgString256 sCommCautionEndedMsg;
 extern "C" {
 s32 Scene_GetCurrent(void);
 void OS_ResetSystem(s32);
-s32 Net_GetMode(void);
-s32 Net_GetError(void);
-void CommCaution_SaveErrorCode(void);
 void Backup_CancelAndWait(void);
-void Comm_Shutdown(void);
 s32 _s32_div_f(s32, s32);
 }
 extern void *gCommManager;

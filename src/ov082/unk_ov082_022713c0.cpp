@@ -33,6 +33,19 @@
 #include "player/PlayerSpNpcRecord.h"
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_ContestRecord_GetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ContestRecord_SetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov082/unk_ov082_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -49,26 +62,11 @@ struct Unk_ov082_022718b0_Rec {
 extern "C" {
 void ContestRecord_GetItem(u16 *out, void *p);
 void ContestRecord_SetItem(void *p, u16 *q);
-void *PlayerData_GetCurrent();
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
-void PlayerActor_GetSlotHeldItem(u16 *out, void *p);
-void *PlayerActor_GetLocalSessionSlot();
 void Clock_GetDateTime(void *p);
-s32 Pocket_FindItem(u16 *p);
-s32 Pocket_FindEmpty();
-void Pocket_RemoveItem(s32 v);
-void Pocket_AddItem(u16 *p, s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-s32 Pocket_GetItem(s32 i);
-s32 Contest_GetCatchSize(u16 *p);
-s32 memcmp(void *a, void *b, u32 n);
-u32 Random_GlobalBelow(u32 n);
-void ContestRecord_BeginContestDay(void *g, u32 a);
-u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 void *SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv(void *v);
@@ -169,10 +167,8 @@ extern "C" {
 extern SpNpcTortimerBugOffActEntry sSpNpcTortimerBugOffActTable[3];
 extern u8 sSpNpcTortimerBugOffTexturePath[];
 extern u8 sSpNpcTortimerBugOffModelPath[];
-BOOL SpNpcTortimerBugOff_IsInsect(u16 *p, s32 x);
 }
 
-extern "C" SpNpcTortimerBugOff *SpNpcTortimerBugOff_Create();
 
 // ---------------------------------------------------------------------------------------------------------------------
 SpNpcTortimerBugOff *SpNpcTortimerBugOff_Create() {

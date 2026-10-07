@@ -44,6 +44,14 @@
 #include "room/FtrHeadwear.h"
 #include "room/FtrKind25.h"
 #include "room/FtrCarpetSample.h"
+#define PROTO_LOCAL_FtrSound_GetSe0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -140,10 +148,8 @@ extern u16 gFtrSoundNone;
 extern const u8 data_ov004_0224004c[];
 extern const char data_ov004_0224bb44[];
 
-void *FtrActorHeap_GetInstance(void);
 void _ZN12FtrActorHeap4freeEPv(void *heap, void *p);
 void *_ZN12FtrActorHeap5allocEv(void *heap, u32 size);
-void *memset(void *p, s32 v, u32 n);
 
 void _ZN8FtrActorC1Ev(void *);
 void _ZN8FtrActorC2Ev(void *);
@@ -155,12 +161,10 @@ void _ZN15FtrSoundEmitter4playEjj(void *, u32, void *);
 u32 FtrActor_StepAnims(void *);
 u32 FtrActor_GetFtrIndex(void *);
 u32 FtrSound_GetSe0(u32);
-void *FtrContactSet_GetInstance(void);
 void *_ZN13FtrContactSet11findContactEPv(void *, void *);
 s32 *_ZN10FtrContact22getClampedContactPointEv(void);
 u32 _ZN10FtrContact12getPushAngleEv(void *);
 
-u32 ItemInfo_IsReady(void);
 void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 }
@@ -319,12 +323,8 @@ extern u8 data_ov004_02240024[];
 extern u8 data_ov004_02240038[];
 extern char data_ov004_0224bb50[];
 
-s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
-s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 Random_GlobalBelow(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
-BOOL CarpetTex_Load(u32 a, u16 *p);
-s32 CarpetTex_GetTex(s32 a);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -340,9 +340,7 @@ void _ZN9FtrSwitch3setEji(void *p, s32 a, s32 b);
 void _ZN13FtrGlowMatSet6updateEv(void *p);
 s32 _ZN9FtrSwitch4isOnEv(void *p);
 void _ZN13FtrGlowMatSet4initEjj(void *p, s32 a, s32 b);
-s32 FtrMgr_IsShopScene(void);
 void _ZN11FtrVisNodes10setVisibleEj(void *p, s32 a);
-s32 FtrPreviewer_GetInstance(void);
 s32 _ZN12FtrPreviewer14getFloorBufferEv(s32 a);
 s32 _ZN12FtrPreviewer14getSampleIndexEv(s32 a);
 }

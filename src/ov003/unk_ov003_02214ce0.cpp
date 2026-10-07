@@ -10,6 +10,8 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#define PROTO_LOCAL_Visitor_ScheduleLow  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov003/unk_ov003_02214ce0.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -70,7 +72,6 @@ public:
 };
 
 
-extern "C" void *GracieCar_Create();
 extern "C" u32 sGracieCarVisitorProfile = 0x6c;
 extern "C" ActorProfile sGracieCarProfile = { (void *(*)())GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
 

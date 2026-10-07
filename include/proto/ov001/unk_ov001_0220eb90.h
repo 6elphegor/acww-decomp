@@ -1,0 +1,65 @@
+#ifndef PROTO_PROTO_OV001_UNK_OV001_0220EB90_H
+#define PROTO_PROTO_OV001_UNK_OV001_0220EB90_H
+
+// Prototypes of the functions defined in src/ov001/unk_ov001_0220eb90.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_Enter
+void WfcOptions_Enter();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_LoadBg
+void WfcOptions_LoadBg();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_FadeIn
+void WfcOptions_FadeIn();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_WaitFadeIn
+void WfcOptions_WaitFadeIn();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_WaitButtonBar
+void WfcOptions_WaitButtonBar();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_Update
+void WfcOptions_Update();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_HandleInput
+void WfcOptions_HandleInput();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_Idle
+void WfcOptions_Idle();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_HandleResult
+void WfcOptions_HandleResult();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_StartExit
+void WfcOptions_StartExit();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_FadeOut
+void WfcOptions_FadeOut();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_Exit
+void WfcOptions_Exit();
+#endif
+#ifndef PROTO_LOCAL_WfcOptions_HighlightSelection
+void WfcOptions_HighlightSelection();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_WfcOptions_MoveCursor
+void WfcOptions_MoveCursor(s32 a);
+#endif
+}
+#endif
+
+#endif

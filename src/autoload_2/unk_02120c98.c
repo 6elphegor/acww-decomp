@@ -1,4 +1,10 @@
 #include "nitro/wm.h"
+#include "proto/autoload_2/unk_0211ef94.h"
+#include "proto/autoload_2/unk_02120c98.h"
+#include "proto/autoload_2/unk_02120ed4.h"
+#include "proto/autoload_2/unk_02120fe8.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (wireless manager) data sharing callbacks, autoload_2 0x02120c98-0x02120ed4.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p.
@@ -34,7 +40,6 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 WM_SetPortCallback(u32 port, WMCallback cb, void *arg);
@@ -43,7 +48,6 @@ extern void DC_StoreRange(void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
-extern u32 MATH_CountPopulation(u32);
 extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
@@ -51,14 +55,9 @@ extern u8 data_021fff00[];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
 void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
-void WmDataSharingReceiveCallback_Child(WMMsg *msg);
-void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
-void WmDataSharingSetDataCallback(WMMsg *msg);
 u32 WM_EndDataSharing(WMPool *ds);
 u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
-extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
-extern void WmDataSharingSetDataCallback(WMMsg *msg);
 extern u32 WM_EndDataSharing(WMPool *ds);
 extern u32 WM_EndKeySharing(WMPool *ds);
 extern u32 WM_StartKeySharing(WMPool *ds, u32 port);
@@ -195,7 +194,6 @@ extern u32 MBi_ReadFromCache(void *, u32, u32, u32);
 extern u32 MBi_IsTaskBusy(void *);
 extern void MBi_SetTask(void *, void *, u32, u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
-extern void Fatal_Trap(void);
 extern u32 MBi_ReloadCache(void);
 u32 MBi_CommParentSendBlock(void);
 void MBi_calc_sendblock(u32 idx);

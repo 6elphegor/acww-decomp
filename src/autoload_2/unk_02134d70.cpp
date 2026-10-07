@@ -5,6 +5,8 @@
 // runtime's ExceptionHandler.cp: `info`/`context` locals and an inline Branch() for the branch-following loop
 // (written with the iterator's members directly, mwcc keeps the action pointer in a register across that loop).
 #include "types.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/autoload_2/unk_0213510c.h"
 
 typedef struct ExceptionInfo {
     char *current_function;      // 0x00
@@ -51,9 +53,6 @@ typedef struct ActionIterator {
 extern "C" {
 void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info); // __SetupFrameInfo
 u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
-void _ZSt9terminatev(void); // terminate
-u8 *__DecodeUnsignedNumber(u8 *p, u32 *value); // __DecodeUnsignedNumber
-u8 *__DecodeSignedNumber(u8 *p, s32 *value); // __DecodeSignedNumber
 void FindExceptionRecord(char *retaddr, ExceptionInfo *info); // FindExceptionRecord
 }
 

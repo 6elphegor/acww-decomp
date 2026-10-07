@@ -7,6 +7,23 @@
 #include "net/PlayerNetSync.h"
 #include "item/ItemPickSpec.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_PlayerSession_GetLastPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
 
 
 
@@ -60,55 +77,42 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
 }
 
 extern "C" {
-void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
 }
 
 extern "C" {
-void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
 }
 
 extern "C" {
-s32 PlayerSessionTable_GetActor(void *p, s32 i);
 }
 
 extern "C" {
-BOOL PlayerActor_GetSlotAction(s32 *out, s32 a, s32 idx);
 }
 
 extern "C" {
-BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 }
 
 extern "C" {
-u32 PlayerActor_GetNetStateVar(s32 idx);
 }
 
 extern "C" {
-u32 PlayerActor_GetNetPosVar(s32 idx);
 }
 
 extern "C" {
-Actor *PlayerActor_Get(s32 idx);
 }
 
 extern "C" {
-BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 }
 
 extern "C" {
-s32 SaveManager_IsGatePassed();
 }
 
 extern "C" {
-s32 Net_GetJoiningAid();
 }
 
 extern "C" {
-s32 NetSession_GetLastSyncSlot();
 }
 
 extern "C" {
@@ -116,35 +120,27 @@ ProcBase *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
 }
 
 extern "C" {
-Actor *PlayerActor_GetActor(s32 idx);
 }
 
 extern "C" {
-u32 PlayerSession_FindFreeGfxSlot();
 }
 
 extern "C" {
-void PlayerSession_SetGfxSlot(s32 idx, u32 v);
 }
 
 extern "C" {
-s32 PlayerActor_GetLocalSessionSlot();
 }
 
 extern "C" {
-void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
 }
 
 extern "C" {
-BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 extern "C" {
-u8 *PlayerSession_GetLastScene(s32 idx);
 }
 
 extern "C" {
-s32 *PlayerSession_GetLastAction(s32 idx);
 }
 
 extern "C" {
@@ -152,19 +148,15 @@ s32 *PlayerSession_GetLastPos(s32 idx);
 }
 
 extern "C" {
-s16 *PlayerSession_GetLastAngle(s32 idx);
 }
 
 extern "C" {
-void ProcBase_RequestDelete(void *p);
 }
 
 extern "C" {
-u8 NetArea_GetSlotScene(s32 idx);
 }
 
 extern "C" {
-void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
 }
 
 extern "C" {
@@ -172,7 +164,6 @@ s32 func_0208f1c0(void *p);
 }
 
 extern "C" {
-void *TownExchange_GetLetter(void *p);
 }
 
 extern "C" {
@@ -188,7 +179,6 @@ s32 func_0208f15c(void *p);
 }
 
 extern "C" {
-s32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {
@@ -196,31 +186,24 @@ void func_0208f168(void *p);
 }
 
 extern "C" {
-void Letter_MarkSent(void *p);
 }
 
 extern "C" {
-void *BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
-void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
-void Letter_Clear(void *p);
 }
 
 extern "C" {
-s32 BottleLetter_IsBottleInTown();
 }
 
 extern "C" {
-s32 BottleLetter_PlaceBottle();
 }
 
 extern "C" {
-s32 BottleLetter_CreateGameLetter(u8 *p);
 }
 
 extern "C" {
@@ -248,15 +231,12 @@ s32 Town_WashUpBottle();
 }
 
 extern "C" {
-void Letter_ComposeBottleMail(void *a, void *b, void *c);
 }
 
 extern "C" {
-void *Inventory_GetEmptyLetter();
 }
 
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -264,19 +244,15 @@ void *func_020986c8(void *a);
 }
 
 extern "C" {
-void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
 }
 
 extern "C" {
-void CommSub_Send(s32 a, s32 b);
 }
 
 extern "C" {
-void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
-void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 
 extern "C" {

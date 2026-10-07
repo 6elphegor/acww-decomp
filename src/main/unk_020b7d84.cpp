@@ -1,9 +1,9 @@
 #include "types.h"
+#include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020b7d84.h"
 
 extern "C" {
-void TouchPanel_Update(void);
-void TouchPanel_Init(void);
-s32 Snd_SetPan(u32 a);
 }
 
 extern "C" {

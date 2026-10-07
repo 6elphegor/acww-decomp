@@ -8,6 +8,10 @@
 #include "town/TownState.h"
 #include "town/SceneMapModule.h"
 #include "room/HouseData.h"
+#define PROTO_LOCAL_House_GetLevelAcreId  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0204c50c.h"
+#include "proto/main/unk_02063904.h"
 
 
 
@@ -103,7 +107,6 @@ void Town_InitNew();
 }
 
 extern "C" {
-s32 Random_GlobalBelow(s32 a);
 }
 
 extern "C" {
@@ -127,11 +130,9 @@ s32 _ZN8BlockMap5buildEP13MapBlockEntryP12BlockMapSizei(void *a, void *b, void *
 }
 
 extern "C" {
-void Heap_Free(void *heap, void *p);
 }
 
 extern "C" {
-void *Heap_Alloc(void *heap, s32 size);
 }
 
 extern "C" {

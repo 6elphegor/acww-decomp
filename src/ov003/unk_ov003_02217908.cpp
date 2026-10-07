@@ -8,6 +8,11 @@
 #include "gfx/DebugColor.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "gfx/BgModelCache.h"
+#define PROTO_LOCAL_BgMgt_GetEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_FindSoundSrc  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02036c58.h"
+#include "proto/ov003/unk_ov003_02217908.h"
 
 // TU17 of ov003: ground helper free functions 0x02217908..0x02217b10 and the six colour constants of its header
 
@@ -40,8 +45,6 @@ extern s32 data_020c8cbc;
 extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
 
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-s32 BgMgt_GetCount(s16 *p);
 }
 Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
 extern "C" {
@@ -60,9 +63,6 @@ DebugColor data_ov003_02235464(20, 24, 24, 31);
 // ---- functions ----
 extern "C" {
 void FieldGround_ResetSoundSrc(GroundSoundSrc *r);
-s32 FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, VecFx32 *p, s32 k);
-void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y);
-void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y);
 }
 
 extern "C" BOOL FieldGround_DrawBackdrop(Model *p) {

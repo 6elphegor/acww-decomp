@@ -16,47 +16,25 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Inventory_PlayPutDownSe  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov100/unk_ov100_02294c40.h"
 
 extern "C" {
-void Gfx2d_ShowLayer(u32 x);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_LoadCharFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(void *a, s32 b, s32 c);
-void Gfx2d_LoadPaletteFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Snd_PlaySe(s32 a);
-void MenuCtrl_SetChosenItems(void *p);
-s32 MenuCtrl_RestorePockets();
-void MenuCtrl_BackupPockets();
-void MenuCtrl_SetResult(s32 a);
-s32 MenuCtrl_IsResultOk();
-void MenuCtrl_SetIndex(u32 a);
-s32 MenuCtrl_GetMode();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void String_Load2dMenu(void *p, s32 a);
-s32 Comm_IsSeqConfirmed(s32 a);
-s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
-void *ProcBase_GetParent(...);
-void ProcBase_RequestDelete(void *p);
 void MI_CpuCopy8(void *a, void *b, u32 c);
-void Inventory_PlayPickUpSe();
-void Inventory_PlayTouchSe();
 void Inventory_PlayPutDownSe(...);
-void InventoryItemGrid_LoadPockets(void *p);
-void InventoryItemGrid_LoadBox(void *p, void *q);
-void LetterGrid_LoadPocketLetters(void *p);
-void InventoryItemGrid_DrawBox(void *p, s32 a, s32 b);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void InventoryBg_DrawSprite(void *p, s32 a);
-BOOL InvItem_IsNonTransferable(u32 v);
-BOOL InvItem_IsTurnipFishOrInsect(u32 v);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 s32 PopupChoice_DecideCancel(void *p, s32 x);
@@ -64,34 +42,8 @@ void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
-void InventoryBg_Exit(void *a);
-void InventoryBg_Update(void *a);
-void InventoryBg_PreUpdate(void *a);
 void InventoryBg_LoadObjGraphics(void *a);
-void InventoryBg_Load(void *a, s32 b);
-void InventoryBg_Init(void *a, s32 b);
-BOOL InventoryItemGrid_IsSlotEmpty(void *p, u32 v);
-void InventoryItemGrid_DrawHeldItem(void *p, s32 a, s32 b);
-void InventoryItemGrid_DisableSlot(void *p, u32 v);
-BOOL InventoryItemGrid_IsSlotDisabled(void *p, u32 v);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-void InventoryItemGrid_RefreshSlot(void *p, u32 a);
-void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
-void InventoryItemGrid_ClearSlot(void *p, u32 v);
-u32 InventoryItemGrid_GetSlotFlags(void *p, u32 v);
-u32 InventoryItemGrid_GetSlotItem(void *p, u32 v);
-void InventoryItemGrid_MarkSlot(void *p, u32 v);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_SetCursorSlot(void *p, u32 v);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
-void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 v);
-u32 InventoryItemGrid_FindBoxSlotAt(void *p, u32 a, u32 b);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
-void InventoryItemGrid_Exit(void *a);
-void InventoryItemGrid_PreUpdate(void *a);
-void InventoryItemGrid_Init(void *a, s32 b);
 extern void *gCommManager;
 extern u8 gSaveLostAndFound[];
 extern u8 gSaveRecycleBin[];
@@ -239,7 +191,6 @@ public:
 typedef ShopSellMenu S;
 
 
-extern "C" ShopSellMenu *ShopSellMenu_Create();
 
 extern "C" void ShopSellMenu_PlaceCursorAtTarget(S *s);
 extern "C" void ShopSellMenu_PlaceCursorOnFirstChoice(S *s);

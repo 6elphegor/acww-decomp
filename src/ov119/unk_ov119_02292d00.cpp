@@ -19,6 +19,31 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_MenuCtrl_ClearFriendPageFromIndex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_GetIndex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov119/unk_ov119_02292d00.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -55,86 +80,30 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 
-void FriendRosterTab_SetupLayers();
 
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void *PlayerData_GetCurrent();
-void *PlayerData_GetBySessionSlot(u32 a);
-s32 PlayerWifiData_HasUserId(void *p);
-s32 PlayerWifiData_IsConfigValid(void *p);
-u64 PlayerWifiData_GetFriendCode(void *p);
-void *FriendEntry_GetFriendData(void *p);
 void *FriendList_GetEntries(void *p);
-void *DwcFriendData_GetBytes(void *p);
-BOOL DwcFriendData_IsValid(void *p);
-void *FriendEntry_GetTownName(void *p);
-void *FriendEntry_GetPlayerName(void *p);
-BOOL DwcFriendData_IsNotFriendKey(void *p);
 BOOL DwcFriendData_Compare(void *p, void *q);
 void FriendList_Compact(void *p);
-void FriendEntry_Clear(void *p);
-void *PlayerWifiData_GetOwnFriendData(void *a);
-void DwcFriendData_Copy(void *a, void *b);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void String_Load2dMenu(void *p, s32 a);
-void String_FromEncodedBytes(void *p, void *s, s32 n);
-void MenuCtrl_SetIndex(u32 v);
 void EncodedString_SetRaw(void *dst, void *src, s32 n);
 void String_SetSlot(s32 a, void *p);
-void String_Load2d(void *p, void *q, s32 a);
 void *Msg_SkipLines(void *p, s32 i);
 void TownId_GetNameString(void *a, void *b);
-void *TownId_GetName(void *a);
 void *PlayerId_GetTownId(void *a);
-void Mem_Copy(void *a, void *b, s32 c);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *src, void *dst, s32 n);
-BOOL Net_GetFriendDataType(void *p);
-BOOL Net_IsSameFriendData(void *p, void *q);
-s32 Net_IsBuddyFriendData(void *p);
-s32 Net_GetMode();
-void *Net_GetWifiFriendList();
-BOOL Net_WifiDeleteFriend(u32 a);
-BOOL Net_WifiAddFriend(u32 a, void *b);
-void Snd_PlaySe(u32 a);
 s32 Oam_GetObjX(void *p);
-s32 Oam_GetObjY(void *p);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsFriendPageFromIndex();
 u32 MenuCtrl_ClearFriendPageFromIndex();
 u32 MenuCtrl_GetIndex(u32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-s32 Gfx2d_LoadCharFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Gfx2d_LoadPaletteFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Gfx2d_LoadScreenFile(const char *a, u32 b, s32 c);
-BOOL File_LoadToBuffer(const char *a, void *b, s32 c);
 
-s32 MenuTabBar_GetTabX(s32 a);
-u8 MenuTabBar_NextTab(u8 a);
-u8 MenuTabBar_PrevTab(u8 a);
-s32 MenuTabBar_HitTestTouch();
 
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
 void PopupChoiceMenu_placeAbove(void *self, u32 a, u32 b);
 BOOL PopupChoice_TickDecideDelay(void *self);
 u8 PopupChoice_DecideCancel(void *self, s32 x);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
-void ChoiceIdList_Clear(void *p, s32 a);
-void ChoiceIdList_Add(void *p, s32 a, s32 b);
 BOOL PopupChoice_MoveCursor(void *p, u32 idx, void *q, u8 flag);
 s32 PopupChoice_Update(void *p);
 s32 PopupChoice_ForceClose(void *p);
@@ -478,7 +447,6 @@ extern "C" void *data_ov119_022955a0[2];
 extern "C" void *data_ov119_02295580[2];
 extern "C" void *data_ov119_02295600[2];
 extern "C" u32 data_ov119_02295680[10];
-extern "C" FriendRosterTab *FriendRosterTab_Create();
 extern "C" ProcProfile sFriendRosterTabProfile;
 extern "C" void *data_ov119_02295638[2];
 extern "C" void *data_ov119_02295630[2];

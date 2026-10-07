@@ -3,6 +3,13 @@
 #include "types.h"
 #include "nitro/wm.h"
 #include "nitro/os_rtc.h"
+#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcUsbScan_WmCallback  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov001/unk_ov001_0221f6a0.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -37,30 +44,17 @@ extern "C" WfcUsbScanWork *sWfcUsbScan;
 
 extern "C" {
 void DC_InvalidateRange(void *, s32);
-s32 memcmp(const void *, const void *, s32);
 void MI_CpuCopy8(const void *, const void *, s32);
 void WM_ReadStatus(void *);
 s32 WM_Reset(void *);
 s32 WM_End(void *);
 s32 WM_Initialize(void *, void *, s32);
 s32 WM_StartScanEx(void *, void *);
-u64 OS_GetTick();
 u32 WM_GetDispersionScanPeriod();
-void OS_GetOwnerInfo(void *);
 void Fatal_Trap(void *);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
-void WfcTask_Delete(s32, u32);
-void WfcTask_RequestDelete(s32, s32);
-u32 WfcTask_Add(s32, void *, s32, s32);
-void WfcUsbScan_TimeoutTask(s32);
-void WfcUsbScan_CheckGranted(void *);
-void WfcUsbScan_CollectAps(void *);
 void WfcUsbScan_WmCallback(void *);
-void WfcUsbScan_SetCallback(void (*)(s32));
-s32 WfcUsbScan_Stop();
-s32 WfcUsbScan_StartScan();
-s32 WfcUsbScan_Start(void (*)(s32));
 }
 
 s32 WfcUsbScan_Start(void (*cb)(s32))

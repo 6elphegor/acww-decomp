@@ -2,6 +2,9 @@
 #include "net/CommManager.h"
 #include "player/PlayerBodyWorkRef.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205edfc.h"
 
 
 struct PlayerBodyWorkPool {
@@ -14,17 +17,10 @@ struct PlayerBodyWorkPool {
 extern "C" {
 extern void *gPlayerBodyAnimHeap;
 extern CommManager *gCommManager;
-extern void PlayerBodyAnimHeap_Create(void *parent);
-extern s32 PlayerBodyAnimHeap_Destroy(void);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 extern void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 extern void Heap_adjust(void *p);
-extern void *FrameHeap_Create(u32 size, void *heap);
-u32 PlayerBodyWork_GetHeapSize(void);
-u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx);
-void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl);
-void PlayerBodyWorkPool_CreateHeaps(u32 *tbl);
 }
 
 PlayerBodyWorkPool sPlayerBodyWorkPool;

@@ -25,6 +25,69 @@
 #include "ui/HudController.h"
 #include "ui/LabelBalloon.h"
 #include "ui/LabelButton.h"
+#define PROTO_LOCAL_InventoryBg_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_ClearCursorSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_ClearMarks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_ClearSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawExtraMarks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawHeldItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawPockets  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_GetSlotFlags  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_GetSlotItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_IsSlotDisabled  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_IsSlotEmpty  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_LoadPockets  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_MarkSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_PreUpdate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_RefreshSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_SetCursorSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_SetSlotItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_StartPresentAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_UpdatePresentAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterGrid_IsSlotEmpty  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterGrid_LoadPocketLetters  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterGrid_StartPopAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterGrid_UpdatePopAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuScreen_UploadClothPattern  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_CanEditRoom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_DropLetterAt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_GetItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_GetItemFlags  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_GetLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_HitLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_HitPocket  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_IsSlotDisabled  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_IsSlotEmpty  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_SetSlotItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN10PocketMenu9mainAct28Ev  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN10PocketMenu9mainAct29Ev  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN10PocketMenu9mainAct2AEv  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN10PocketMenu9mainAct2BEv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov096/unk_02294c40.h"
+#include "proto/ov097/unk_0229b280.h"
+#include "proto/ov098/unk_ov098_0229b280.h"
 
 class PocketMenu;
 typedef void (PocketMenu::*Unk_ov096_0229aea8_Fn)();
@@ -73,14 +136,6 @@ extern u8 gTouchPressX;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-s32 Snd_PlaySe(s32 a);
-void Camera_PopView();
-void Camera_PushView();
-BOOL Camera_IsViewPushed();
 void FieldAction_Release(s32 a);
 s32 FieldAction_PollDrop(s32 a);
 s32 FieldAction_RequestDrop(s32 a, s32 b);
@@ -92,59 +147,20 @@ u32 Item_FindMoneyBagForAmount(u32 v, s32 a, s32 *out);
 BOOL func_0204bab8(u16 *p);
 BOOL Item_IsHoldable(u16 *p);
 u32 Item_GetPrice(u16 *p);
-void Letter_MarkRead(void *self);
-s32 Letter_InitBottleDraft(void *self);
-void Letter_InitDraft(void *p, u8 v);
 void *_ZN6LetterD1Ev(void *p);
 void *_ZN15MenuLabelButtonD1Ev(void *p);
 void *_ZN14LetterRendererD1Ev(void *p);
 void *_ZN16MenuErrorMessageD1Ev(void *p);
 void *_ZN15PopupChoiceMenuD1Ev(void *p);
-void *_ZN14MenuCursorBuf0D1Ev(void *p);
 void *_ZN12CursorMotionD1Ev(void *p);
 void *_ZN18TouchPromptBalloonD1Ev(void *p);
-void *_ZN11InventoryBgD1Ev(void *p);
 void *_ZN10LetterGridD1Ev(void *p);
 void *_ZN17InventoryItemGridD1Ev(void *p);
 void Letter_Copy(void *dst, void *src);
 void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
-s32 MenuCtrl_SetHandBells(s32 a);
-s32 MenuCtrl_GetSavedSlot();
-s32 MenuCtrl_SetSavedSlot(u32 a);
-void MenuCtrl_SetArg(void *p);
-s32 MenuCtrl_GetArg();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-s32 HudCountdown_StartWithSe(s32 a);
-s32 CommSub_Send(u8 a, s32 b);
-s32 Hud_GetCountdown();
-s32 PlayerActor_RequestHoldUpItem(u16 *p);
-s32 PlayerActor_RequestChangeHeldItem(u16 *p);
-s32 PlayerActor_RequestFaceChange();
-s32 PlayerActor_RequestWearHat(u16 *p);
-s32 PlayerActor_RequestWearFaceItem(u16 *p);
-s32 PlayerActor_RequestWearShirt(u16 *p);
-s32 PlayerActor_IsChangingHeldItem();
-s32 PlayerActor_IsChangingClothes();
-s32 PlayerActor_IsInAct05();
-void *PlayerData_GetCurrent();
-s32 PlayerInventory_SetWallet(void *p, s32 a, s32 b);
 u16 *_ZN10PlayerData22getInventoryBackgroundEv(void *p);
-s32 Pocket_FindEmpty();
-s32 Inventory_FindEmptyLetter();
 s32 Scene_InHouseRoom();
 void _ZN10BgVramTask6cancelEv(void *p);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
-s32 ChoiceIdList_Count(void *p);
-void ChoiceIdList_Clear(void *p, u32 v);
-s32 ChoiceIdList_Add(void *p, u32 a, u32 b);
 s32 PopupChoice_MoveCursor(void *p, s32 a, void *b, u32 c);
 s32 PopupChoice_TickDecideDelay(void *p);
 void PopupChoice_DecideAddressee(void *p, s32 a);
@@ -156,31 +172,7 @@ void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *self, s32 x);
 void PopupChoice_Open(void *self, s32 x);
 void PopupChoice_OpenAddresseePage(void *self, u32 a, s32 x);
-s32 MenuTabBar_TabFromX(s32 a);
-s32 MenuTabBar_NextTab(s32 a);
-s32 MenuTabBar_PrevTab(s32 a);
-s32 MenuTabBar_GetTabX(s32 a);
-s32 MenuTabBar_HitTestTouch();
-void Inventory_PlayPickUpSe();
-void Inventory_PlayTouchSe();
-void Inventory_PlayPutDownSe();
-BOOL InvItem_IsNonTransferable(u32 a);
-s32 InvItem_IsDeliveryItem(s32 a);
-void InventoryBg_ResetHighlight(void *p);
-void InventoryBg_SetHighlight(void *p, s32 a);
-BOOL InvItem_IsTurnipFishOrInsect(u32 a);
-void InventoryBg_SetBellsPanelMode(void *p, u32 a);
-void InventoryBg_StartBellRoll(void *o, u32 v);
-void InventoryBg_StopBlink(void *p);
-s32 InventoryBg_UpdateBlink(void *p);
-void InventoryBg_StartBlink(void *p, s32 a);
-void InventoryBg_DrawSprite(void *p, s32 a);
-void InventoryBg_LoadPictureForHeldItem(void *p);
-void InventoryBg_Exit(void *p);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_LoadGraphics(void *p);
 void InventoryBg_LoadBg(void *p, s32 a);
 void InventoryBg_Init(void *p, s32 a);
 s32 InventoryItemGrid_UpdatePresentAnim(void *p);
@@ -200,91 +192,27 @@ void InventoryItemGrid_MarkSlot(void *p, s32 a);
 void InventoryItemGrid_ClearMarks(void *p);
 void InventoryItemGrid_SetCursorSlot(void *p, s32 a);
 void InventoryItemGrid_ClearCursorSlot(void *p);
-s32 InventoryItemGrid_GetSlotY(void *p, u32 a);
-s32 InventoryItemGrid_GetSlotX(void *p, u32 a);
-void InventoryItemGrid_ShowSlotName(void *p, void *q, s32 a);
 void InventoryItemGrid_LoadPockets(void *p);
-s32 InventoryItemGrid_HitTestSlot21(void *p, s32 x, s32 y);
-s32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
-void InventoryItemGrid_Exit(void *p);
 void InventoryItemGrid_PreUpdate(void *p);
 void InventoryItemGrid_Init(void *p, s32 a);
 s32 LetterGrid_UpdatePopAnim(void *p);
 s32 LetterGrid_StartPopAnim(void *p);
 void LetterGrid_LoadPocketLetters(void *p);
 s32 LetterGrid_IsSlotEmpty(void *p, u32 a);
-s32 LetterGrid_GetSlotY(void *p, u32 a);
-s32 LetterGrid_GetSlotX(void *p, u32 a);
 void *PocketMenu_GetLetter(PocketMenu *s, u32 id);
 s32 PocketMenu_GetItemFlags(PocketMenu *s, u32 id);
 u32 PocketMenu_GetItem(PocketMenu *s, u32 id);
 s32 PocketMenu_IsSlotEmpty(PocketMenu *s, u32 id);
 s32 PocketMenu_IsSlotDisabled(PocketMenu *s, u32 id);
-s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id);
-s32 PocketMenu_GetTargetX(PocketMenu *s, u32 id);
-s32 PocketMenu_HitWalletAmount(PocketMenu *s, s32 x, s32 y);
-BOOL PocketMenu_HitWalletIcon(PocketMenu *s, s32 x, s32 y);
-BOOL PocketMenu_HitPlayer(PocketMenu *s, s32 x, s32 y);
-s32 PocketMenu_HitSpecialTarget(PocketMenu *s, s32 x, s32 y);
-BOOL PocketMenu_HitShirtBox(PocketMenu *s, s32 x, s32 y);
-void PocketMenu_SetLetter(PocketMenu *s, u32 id, void *p);
 s32 PocketMenu_DropLetterAt(PocketMenu *s, u32 id);
 u32 PocketMenu_HitLetter(PocketMenu *s, s32 a, s32 b, s32 c);
-u32 PocketMenu_LetterIndexToTarget(PocketMenu *s, u32 id);
-u32 PocketMenu_TargetToLetterIndex(PocketMenu *s, u32 id);
-u32 PocketMenu_FindEmptyPocket(PocketMenu *s);
-void PocketMenu_ClearLetter(PocketMenu *s, u32 id);
-void PocketMenu_ClearSlotItem(PocketMenu *s, u32 id);
 void PocketMenu_SetSlotItem(PocketMenu *s, u32 id, u32 a, u32 b);
-s32 PocketMenu_DropItemAt(PocketMenu *s, u32 id);
 u32 PocketMenu_HitPocket(PocketMenu *s, s32 a, s32 b, s32 c);
-u32 PocketMenu_PocketIndexToTarget(PocketMenu *s, u32 id);
-u32 PocketMenu_TargetToGridIndex(PocketMenu *s, u32 id);
-void PocketMenu_MoveCursorToTab(PocketMenu *s);
-u32 PocketMenu_IsSpecialTarget(PocketMenu *s, u32 id);
-u32 PocketMenu_IsTabTarget(PocketMenu *s, u32 id);
-u32 PocketMenu_IsLetterTarget(PocketMenu *s, u32 id);
-u32 PocketMenu_IsPocketTarget(PocketMenu *s, u32 id);
-void PocketMenu_CancelVramTasks(PocketMenu *s);
-void PocketMenu_StartRemoveBlink(PocketMenu *s);
-void PocketMenu_ShowMessage(PocketMenu *s, u32 a, u32 b, u32 c);
-void PocketMenu_FlyItemTo(PocketMenu *s, u32 a, u32 b, u32 c, u8 d);
-void PocketMenu_FlyHandTo(PocketMenu *s, u32 a, u32 b);
-void PocketMenu_PrepareTouchOptions(PocketMenu *s);
-void PocketMenu_EnterAddresseeButtons(PocketMenu *s);
-void PocketMenu_EnterAddresseeTouch(PocketMenu *s);
-void PocketMenu_ReturnToIdle(PocketMenu *s);
-void PocketMenu_EnterButtonIdle(PocketMenu *s);
-void PocketMenu_EnterTouchIdle(PocketMenu *s);
-void _ZN10PocketMenu9mainAct2FEv(PocketMenu *s);
-void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s);
-s32 PocketMenu_TickOptionDecide(PocketMenu *s);
-void _ZN10PocketMenu9mainAct1CEv(PocketMenu *s);
 s32 PocketMenu_CanEditRoom(void *self);
-s32 PocketMenu_RequestDropIndoor(void *self, s32 a);
-void PocketMenu_AddRoomItemOptions(void *scene, s32 a);
-s32 PocketMenu_CanDropOutdoor(void *self, s32 a);
-void PocketMenu_StartButtonDrag(PocketMenu *s, u32 a);
-void PocketMenu_StartTouchDrag(PocketMenu *s, u32 a);
-void PocketMenu_BeginTouchOnTarget(PocketMenu *s, u32 a);
-void PocketMenu_EnterAddresseeInput(PocketMenu *s);
 void _ZN10PocketMenu9mainAct29Ev(PocketMenu *s);
 void _ZN10PocketMenu9mainAct28Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct32Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct31Ev(PocketMenu *s);
 void _ZN10PocketMenu9mainAct2BEv(PocketMenu *s);
 void _ZN10PocketMenu9mainAct2AEv(PocketMenu *s);
-void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct24Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct23Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct22Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct21Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct20Ev(PocketMenu *s);
-void _ZN10PocketMenu9mainAct1FEv(PocketMenu *s);
-void _ZN10PocketMenu9mainAct1EEv(PocketMenu *s);
-void _ZN10PocketMenu9mainAct1DEv(PocketMenu *s);
-void _ZN10PocketMenu9mainAct1BEv(PocketMenu *s);
 }
 
 static inline BOOL Unk_ov096_02299778_Both() {
@@ -309,7 +237,6 @@ static inline BOOL Unk_ov096_02299778_Both() {
 #define unk_27fc ((u8 *)&errorMessage)
 
 
-extern "C" PocketMenu *PocketMenu_Create();
 extern "C" ProcProfile sPocketMenuProfile = {(void *(*)())PocketMenu_Create, 0x91, 0x95};
 
 static inline BOOL Unk_ov096_0229619c_Range(volatile u16 *p, u32 lo, u32 hi) {

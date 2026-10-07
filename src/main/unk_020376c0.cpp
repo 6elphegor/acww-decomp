@@ -1,6 +1,9 @@
 #include "uptr.h"
 #include "nitro/fs.h"
 #include "types.h"
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Main_LoadBuildTime  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020376c0.h"
 
 extern "C" {
 void FS_InitFile(void *);

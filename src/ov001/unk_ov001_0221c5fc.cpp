@@ -2,6 +2,22 @@
 #include "types.h"
 #include "nitro/os_rtc.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221bee0.h"
+#include "proto/ov001/unk_ov001_0221c180.h"
+#include "proto/ov001/unk_ov001_0221c5fc.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221f6a0.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -10,65 +26,13 @@ extern "C" {
 s32 GX_LoadBG2Scr();
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
-s32 OS_GetOwnerInfo(void *);
 void MIi_CpuClear16(u16, void *, u32);
 void MIi_CpuCopy16(void *, void *, u32);
 void WfcUtil_LoadFileTo(void *, void *);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowBottomMessage(s32);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcUtil_ShowStepIndicator(s32);
-s32 WfcSound_Play(s32);
-s32 WfcSound_Stop();
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_IsClosed();
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcUtil_HideTopMessage();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_Close();
-s32 WfcButtonBar_DisableInput();
-s32 WfcButtonBar_GetResult();
-s32 WfcButtonBar_EnableInput();
 s32 WfcInput_IsKeyPressed(s32);
-s32 WfcButtonBar_SetResult(s32);
-s32 WfcUtil_OpenButtonBar(s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcUsbScan_SetCallback(s32);
-s32 WfcUsbScan_Stop();
-s32 WfcBusyIcon_Delete();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcUtil_ShowBottomMessageNum(void *, s32);
-s32 WfcBusyIcon_Create(s32);
-s32 WfcUsbScan_Start(void *);
-s32 WfcConnSelect_Enter();
 
-void WfcUsbWait_WaitGrantedClosed();
-void WfcUsbWait_GrantedDialog();
-void WfcUsbWait_WaitNotFoundClosed();
-void WfcUsbWait_NotFoundDialog();
-void WfcUsbWait_OnScanResult(u32);
-void WfcUsbWait_Exit();
-void WfcUsbWait_FadeOut();
-void WfcUsbWait_StartExit();
-void WfcUsbWait_HandleResult();
-void WfcUsbWait_Idle();
-void WfcUsbWait_HandleInput();
-void WfcUsbWait_Update();
-void WfcUsbWait_WaitButtonBar();
-void WfcUsbWait_WaitFadeIn();
-void WfcUsbWait_FadeIn();
-void WfcUsbWait_LoadBg();
-void WfcUsbWait_Enter();
-s32 WfcUsbWait_IsLidClosed();
-void WfcUsbDone_Enter();
-void WfcUsbIntro_Enter();
 }
 
 extern "C" u8 sWfcUsbWaitResult = 0;

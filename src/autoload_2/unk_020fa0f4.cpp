@@ -10,6 +10,10 @@
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020fa0f4.h"
+#include "proto/autoload_2/unk_020fa398.h"
+#include "proto/autoload_2/unk_020fa39c.h"
+#include "proto/autoload_2/unk_021104ac.h"
 
 
 
@@ -36,8 +40,6 @@ struct Res {
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 void spl_push_front(void *list, void *e);
-void spl_set_tex(void *p);
-void spl_set_tex_dummy(void *p);
 void spl_gen_ptcl(void *e, void *l);
 void sDrawChild(Pm *m, u32 a);
 void sDrawParent(Pm *m, u32 a);
@@ -71,8 +73,6 @@ extern SetFn data_0213bb94[];
 void MTX_Scale43_(Mt *m, s32 x, s32 y, s32 z);
 void MTX_RotX43_(Mt *m, s32 s, s32 c);
 void MTX_Concat43(Mt *a, Mt *b, Mt *ab);
-void G3_MultMtx43(Mt *m);
-void G3_LoadMtx43(Mt *m);
 }
 
 

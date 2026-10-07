@@ -3,6 +3,18 @@
 #include "sys/OSThread.h"
 #include "sys/QNode.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/autoload_2/unk_021127c0.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_020b7f7c.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -108,47 +120,36 @@ extern u16 sCrashFontChars[], sCrashFontPalette[];
 }
 
 extern "C" {
-void CrashScreen_Frame(void);
 }
 
 extern "C" {
-void CrashScreen_Fill(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-void CrashScreen_WaitVBlank(void);
 }
 
 extern "C" {
-void CrashScreen_InitDisplay(void);
 }
 
 extern "C" {
-void CrashScreen_Clear(void);
 }
 
 extern "C" {
-void CrashScreen_DrawMain(void);
 }
 
 extern "C" {
-void CrashScreen_DrawStack(void);
 }
 
 extern "C" {
-BOOL CrashScreen_IsValidAddress(u32 addr, u32 len);
 }
 
 extern "C" {
-void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size);
 }
 
 extern "C" {
-void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
 }
 
 extern "C" {
-u64 OS_GetTick(void);
 }
 
 extern "C" {
@@ -160,11 +161,9 @@ void OS_DisableInterrupts(void);
 }
 
 extern "C" {
-void Gfx_ResetDisplayRegs(void);
 }
 
 extern "C" {
-void GX_SetBankForBG(u32 a);
 }
 
 extern "C" {
@@ -188,15 +187,12 @@ void GXS_LoadBGPltt(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-u32 G2_GetBG1ScrPtr(void);
 }
 
 extern "C" {
-u32 G2S_GetBG1ScrPtr(void);
 }
 
 extern "C" {
-void GX_DispOn(void);
 }
 
 extern "C" {
@@ -204,11 +200,9 @@ void MIi_CpuClearFast(u32 a);
 }
 
 extern "C" {
-void DebugText_Printf(DebugText *c, u8 *dst, const char *fmt, ...);
 }
 
 extern "C" {
-void DebugText_Print(DebugText *c, u8 *dst, const char *fmt);
 }
 
 extern "C" {
@@ -241,11 +235,9 @@ void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 }
 
 extern "C" {
-void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
 }
 
 extern "C" {
-s32 Fatal_Trap(void);
 }
 
 extern "C" {
@@ -331,11 +323,9 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-void *File_LoadAlloc(u32 a, u32 b, s32 c, s32 *out);
 }
 
 extern "C" {
-void Heap_Free(u32 a, void *b);
 }
 
 extern "C" {
@@ -413,89 +403,9 @@ Gfx2dDispCtrl sGfx2dDispCtrl;
 Gfx2dWindowBlend sGfx2dWindowBlend;
 
 // prototypes
-extern "C" s32 Gfx2d_GetLayerBgIndex(u32 n);
-extern "C" s32 Gfx2d_GetLayerPlaneMask(u32 n);
-extern "C" s32 Gfx2d_GetLayerBlendMask(u32 n);
-extern "C" s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
-extern "C" s32 Gfx2d_LoadPaletteFileSlot(u32 p0, u32 p1, u32 p2, s32 p3, u8 e);
-extern "C" s32 Gfx2d_LoadScreenFile(u32 p0, u32 p1, u32 p2);
-extern "C" s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
-extern "C" s32 Gfx2d_LoadCharFile8bpp(u32 p0, u32 p1, u32 p2, s32 p3, s32 a, s32 b);
-extern "C" s32 Gfx2d_LoadPaletteRange(u8 *dst, u32 n, s32 a, s32 b, u8 c);
-extern "C" s32 Gfx2d_LoadScreen(u8 *dst, u32 n, s32 size, s32 x);
-extern "C" s32 Gfx2d_LoadCharRange(u8 *dst, u32 n, s32 a, s32 b, s32 c);
-extern "C" void Gfx2d_SetLayerPriority(u32 n, u32 v);
-extern "C" void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-extern "C" void Gfx2d_SetLayerOffset(u32 n, u32 a, u32 b);
-extern "C" void Gfx2d_SetWindowRect(u32 n, u32 a, u32 b, u32 c, u32 d);
-extern "C" void Gfx2d_ResetLayer(u32 n);
-extern "C" void Gfx2d_HideLayer(u32 n);
-extern "C" void Gfx2d_ShowLayer(u32 n);
-extern "C" void Gfx2d_LinearToTiles4bppBytes(u8 *src, u8 *dst, s32 w, s32 h);
-extern "C" void Gfx2d_TilesInRow32ToLinear(u32 *src, u32 *dst, s32 x, s32 w, s32 h);
-extern "C" void Gfx2d_LinearToTilesInRow32(u32 *src, u32 *dst, s32 x, s32 w, s32 h);
-extern "C" void Gfx2d_LinearToTiles4bpp(u32 *src, u32 *dst, s32 w, s32 h);
-extern "C" void Gfx2d_TilesToLinear4bpp(u32 *src, u32 *dst, s32 w, s32 h);
-extern "C" void Gfx2d_LoadBackdropColor(void);
-extern "C" void Gfx2d_ResetState();
-extern "C" void Gfx2d_BeginFrame();
-extern "C" void Gfx2d_ApplyDisplayControl();
-extern "C" void Gfx2d_FlushRegisters();
 extern "C" void Gfx2d_InitBgOffset(Gfx2dOffset* p);
 extern "C" void Gfx2d_InitBgAffine(Gfx2dAffine* p);
 extern "C" void Gfx2d_InitWindowRect(Gfx2dWindowRect* p);
-extern "C" void Gfx2d_SetMainBg1Offset(u32 a, u32 b);
-extern "C" void Gfx2d_SetMainBg2Offset(s32 a, s32 b);
-extern "C" void Gfx2d_SetMainBg3Offset(s32 a, s32 b);
-extern "C" void Gfx2d_SetSubBg0Offset(u32 a, u32 b);
-extern "C" void Gfx2d_SetSubBg1Offset(u32 a, u32 b);
-extern "C" void Gfx2d_SetSubBg2Offset(s32 a, s32 b);
-extern "C" void Gfx2d_SetSubBg3Offset(s32 a, s32 b);
-extern "C" void Gfx2d_SetMainWin0Planes(u32 a);
-extern "C" void Gfx2d_SetMainWin1Planes(u32 a);
-extern "C" void Gfx2d_SetSubWin0Planes(u32 a, BOOL b);
-extern "C" void Gfx2d_SetSubWin1Planes(u32 a, BOOL b);
-extern "C" void Gfx2d_MarkSubWin0PlanesDirty(BOOL a);
-extern "C" void Gfx2d_MarkSubWin1PlanesDirty(BOOL a);
-extern "C" void Gfx2d_SetMainWinOutPlanes(u32 a);
-extern "C" void Gfx2d_RemoveMainWinOutPlanes(u32 a);
-extern "C" void Gfx2d_SetSubWinOutPlanes(u32 a);
-extern "C" void Gfx2d_SetMainObjWinPlanes(u32 a);
-extern "C" void Gfx2d_SetSubObjWinPlanes(u32 a);
-extern "C" void Gfx2d_SetMainWin0Rect(u32 a, u32 b, u32 c, u32 d);
-extern "C" void Gfx2d_SetMainWin1Rect(u32 a, u32 b, u32 c, u32 d);
-extern "C" void Gfx2d_SetSubWin0Rect(u32 a, u32 b, u32 c, u32 d);
-extern "C" void Gfx2d_SetSubWin1Rect(u32 a, u32 b, u32 c, u32 d);
-extern "C" void Gfx2d_SetMainBgModeState(u32 a);
-extern "C" void Gfx2d_SetSubBgModeState(u32 a);
-extern "C" void Gfx2d_SetMainBgMode(u32 a);
-extern "C" void Gfx2d_SetSubBgMode(u32 a);
-extern "C" u32 Gfx2d_GetMainWindows();
-extern "C" void Gfx2d_SetMainWindows(u32 a);
-extern "C" void Gfx2d_EnableMainWindows(u32 a);
-extern "C" void Gfx2d_DisableMainWindows(u32 a);
-extern "C" u32 Gfx2d_GetSubWindows();
-extern "C" void Gfx2d_SetSubWindows(u32 a);
-extern "C" void Gfx2d_EnableSubWindows(u32 a);
-extern "C" void Gfx2d_DisableSubWindows(u32 a);
-extern "C" u8 Gfx2d_GetMainPlanes(void);
-extern "C" void Gfx2d_SetMainPlanes(u8 a);
-extern "C" void Gfx2d_ShowMainPlanes(u8 a);
-extern "C" void Gfx2d_HideMainPlanes(u8 a);
-extern "C" u8 Gfx2d_GetSubPlanes(void);
-extern "C" void Gfx2d_SetSubPlanes(u8 a);
-extern "C" void Gfx2d_ShowSubPlanes(u8 a);
-extern "C" void Gfx2d_HideSubPlanes(u8 a);
-extern "C" void Gfx2d_SetBrightness(u32 a);
-extern "C" void Gfx2d_BeginSubObjWinBrightness(void);
-extern "C" void Gfx2d_EndSubObjWinBrightness(void);
-extern "C" void Gfx2d_SetSubBrightnessAllPlanes(void);
-extern "C" void Gfx2d_ExcludeSubBrightnessPlanes(u8 a);
-extern "C" void Gfx2d_SetSubBrightness(u8 a);
-extern "C" void Gfx2d_SetSubAlphaBlend(u8 a, u8 b, u8 c);
-extern "C" void Gfx2d_ResetSubBlend(void);
-extern "C" void Gfx2d_SetMainAlphaBlend(u8 a, u8 b, u8 c);
-extern "C" void Gfx2d_ResetMainBlend(void);
 
 extern "C" s32 Gfx2d_GetLayerBgIndex(u32 n) {
     switch (n) {

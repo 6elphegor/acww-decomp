@@ -5,6 +5,17 @@
 #include "nitro/os_rtc.h"
 
 #include "types64.h"
+#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
+#include "proto/ov065/unk_ov065_0226d128.h"
+#include "proto/ov065/unk_ov065_0226f9e0.h"
 
 
 
@@ -40,11 +51,9 @@ extern char *sNasLangCodeTable[7];
 extern char sNasDefaultUrl[0x20];
 extern DwcHttpParams sNasHttpParams;
 
-extern s32 memcmp(const void *a, const void *b, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void OS_GetMacAddress(void *p);
-extern void OS_GetOwnerInfo(void *p);
 extern s32 RTC_GetDate(void *p);
 extern s32 RTC_GetTime(void *p);
 extern u32 OS_DisableInterrupts(void);
@@ -57,8 +66,6 @@ extern void DWCi_BM_GetWiFiInfo(void *p);
 extern void OS_LockMutex(void *m);
 extern void OS_UnlockMutex(void *m);
 extern s32 OS_InitMutex(void *m);
-extern s32 atol(const char *str);
-extern s32 strtol(const char *s, char **end, s32 base);
 extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
 extern void DWCi_AUTH_RemakeWiFiID(void *p);
 extern void DWCi_AUTH_MakeWiFiID(u32 v);
@@ -66,15 +73,11 @@ extern void OS_JoinThread(void *p);
 extern s32 OS_IsThreadTerminated(void *t);
 extern s32 OS_WakeupThreadDirect(void *t);
 extern s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
-extern s64 OS_GetTick(void);
 extern void OS_Sleep(u32 ms);
-extern s32 strcmp(const char *a, const char *b);
-extern char *strcpy(char *dst, const char *src);
 
 extern void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
 extern u8 *WifiLink_GetConnectedBssid(void);
 extern u8 *WifiLink_GetConnectedSsid(u16 *out);
-extern u32 WifiAp_GetConnectedApType(void);
 extern s32 DwcHttp_AddField(void *l, const char *k, const char *v);
 extern s32 DwcHttp_AddHeader(void *a, const char *k, const char *v);
 extern s32 DwcHttp_AddFormParam(void *a, const char *k, const char *v, u32 n);
@@ -86,7 +89,6 @@ extern s32 DwcHttp_Init(u32 a, void *b);
 extern s32 DwcHttp_FinishHeaders(u32 a);
 extern s32 DwcHttp_StartThread(u32 a);
 extern s32 DwcHttp_Abort(void *c);
-extern s32 NasBase64_Decode(const char *s, s32 len, char *dst, u32 size);
 
 void NasAuth_SetState(s32 v);
 s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *a3, s32 a4, s32 a5);

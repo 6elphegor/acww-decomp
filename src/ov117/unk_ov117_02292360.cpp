@@ -5,6 +5,9 @@
 #include "npc/VillagerDataItemView.h"
 #include "room/HouseData.h"
 #include "town/TownBlockCell.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov117/unk_ov117_02292360.h"
 
 
 
@@ -40,15 +43,12 @@ TownMapImage *sTownMapImage;
 extern u8 gSaveHouse[];
 extern u8 gSaveVillagers[];
 
-void Mem_Free(void *p);
-void *Mem_Alloc(u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void CollisionMap_Select(s32 a);
 Unk_ov117_02292b54_Grid *TownBlockMap_Get();
 s32 BlockMap_FindItemAnyAttr(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-void *StrBSize_Get(u16 *t);
 u32 MapBlock_GetAttr(void *c);
 s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
 BOOL Ground_GetMapColors(u8 *out, s32 a, s32 b);

@@ -22,6 +22,33 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_Arbeit_OnBbsPosted  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_FromEncodedBytesEx  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206cbdc.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov095/unk_02292360.h"
+#include "proto/ov112/unk_ov112_02296840.h"
 
 // The extern "C" helpers reach the scene object as S.
 class BbsWriteMenu;
@@ -203,120 +230,28 @@ extern "C" u32 data_ov112_02299ac0[];
 extern "C" u32 data_ov112_02299ad8[];
 
 extern "C" {
-void Keyboard_Draw(void *p, u32 a, void *b, u32 c);
-void Keyboard_DrawCopyPasteKeys(void *p, u32 a, void *b);
-void Keyboard_DrawLengthGaugeAt(void *p, u32 a, void *b, u32 c);
-void Keyboard_SetTextFieldPos(void *p, s32 a, s32 b);
-void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
-void Snd_PlaySe(s32 a);
 void Math_StepU8(void *p, u32 v, u32 n);
-s32 Text_GetLength(void *p, s32 n);
 void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
-void Text_SplitLines(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
-BOOL MenuCtrl_IsTouch();
-void Bbs_AddPost(void *p);
 PlayerData *PlayerData_GetCurrent();
 s32 Arbeit_OnBbsPosted(void *m);
-u32 Keyboard_HitTestText(void *a, void *b, u32 c, u32 d, u32 e, void *f);
-u32 Keyboard_DeleteRange(void *a, void *b, u32 c, u32 d, u32 e);
-u32 Keyboard_GetTypedRunLength(void *p);
 void Menu_PlayScrollTickSe(void *p);
-void Mem_Clear(void *p, s32 n);
-s32 Mem_Copy(void *src, void *dst, s32 n);
-void Keyboard_ResetTypedRun(void *p);
-void Keyboard_BeginPaste(void *p);
-void Keyboard_EndPaste(void *p);
-void Keyboard_ShrinkTypedRun(void *p);
-s32 Keyboard_HandleModeKey(void *p, s32 key, s32 n);
 void Keyboard_PlayPasteSe(void *p);
 void Keyboard_PlayCopySe(void *p);
-s32 Keyboard_PressCursorKey(void *p);
-s32 Keyboard_ModifyCharKey103(void *p, s32 a);
-s32 Keyboard_ModifyCharKey104(void *p, s32 a);
-s32 Keyboard_ModifyCharKey105(void *p, s32 a);
 BOOL Keyboard_ReplaceCharBeforeCursor(void *p, void *q, s32 a, u32 b, s32 c, s32 d);
-BOOL Keyboard_InsertCharMultiline(void *p, void *q, s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
-BOOL Keyboard_IsControlCode(void *p, s32 key);
-BOOL Keyboard_IsFull(void *p);
-BOOL Keyboard_IsTooWide(void *p);
-void Keyboard_ClearHighlight(void *p);
-s32 Keyboard_TouchKey(void *p, u32 a, u32 b);
-s32 Keyboard_GetKeyCode(void *p, s32 a, s32 b);
-void Keyboard_HighlightKey(void *p, s32 a);
-void Keyboard_StartKeyRepeat(void *p);
-BOOL Keyboard_UpdatePressedKey(void *p);
-BOOL Keyboard_IsSlotDisabled(void *p, s32 a);
-BOOL Keyboard_IsOnButtonKey(void *p, s32 a);
-BOOL MenuKeys_HasRight(s32 p);
-BOOL MenuKeys_HasLeft(s32 p);
-void Gfx2d_LoadPaletteFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void File_LoadToBuffer(const char *a, void *b, s32 c);
 void BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadCharFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Menu_PlayScrollGrabSe(void *p);
-BOOL Keyboard_TickKeyRepeat(void *p);
-u32 Keyboard_GetPressedKey(void *p);
-u32 Keyboard_MoveCursor(void *p, u32 a);
-BOOL Keyboard_TouchPageTab(void *p);
-void Keyboard_SetMode(void *p, u32 a, u32 b, u32 c);
-void Keyboard_EndFrame(void *p, u32 a);
-void Keyboard_LoadScreenFile(void *p, const char *q);
-void Keyboard_LoadScreenNow(void *p, u32 a);
-void Keyboard_LoadLetterChars(void *p, u32 a);
-s32 Keyboard_LoadObjGfx(void *p);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void MenuCtrl_TickForceClose();
-BOOL MenuCtrl_IsForceCloseDue();
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Keyboard_Shutdown(void *p);
-void Keyboard_Init(void *p, s32 a);
-void Keyboard_RestoreLastPage(void *p, s32 a);
-s32 Text_MeasureWidth(void *p, s32 n);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void func_0206f874(void *p);
 void func_0206f85c(void *p);
-void String_Load2dMenu(void *o, u32 x);
 void func_02094030(void *p);
 void func_02094018(void *p);
-void String_SetSlot(s32 a, void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
-void Gfx2d_SetLayerOffset(u32 a, u32 b, u32 c);
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void Oam_DrawObj(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
-BOOL MenuCtrl_IsButtons();
-s32 Comm_IsSeqConfirmed(s32 a);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void *Heap_AllocTail(void *heap, s32 n);
-void Heap_Free(void *heap, void *p);
-void Gfx2d_EndSubObjWinBrightness();
-void Gfx2d_DisableSubWindows(s32 a);
-void Gfx2d_BeginSubObjWinBrightness();
-void Gfx2d_SetSubBrightness(s32 a);
-void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
-void Gfx2d_EnableSubWindows(s32 a);
-void Gfx2d_SetSubWin1Rect(s32 a, s32 b, s32 c, s32 d);
 void Clock_GetDate(void *p);
-void String_FromEncodedBytes(void *p, void *s, s32 n);
 void EncodedString_SetRaw(void *dst, void *src, s32 n);
-s32 String_CensorTaboo(void *p);
 void StrBuf_GetBytes(void *p, void *buf, s32 n);
-BOOL MenuKeys_HasDown(s32 p);
-BOOL MenuKeys_HasUp(s32 p);
-u32 Keyboard_GetCursorX(void *p);
-u32 Keyboard_GetCursorY(void *p);
-void Keyboard_ResetCursor(void *p);
-void Keyboard_EnableKey(void *p, s32 a);
-void Keyboard_DisableKey(void *p, s32 a);
-void Keyboard_DisableModifierKeys(void *p);
-void Keyboard_UpdateModifierKeys(void *p, u32 a);
-void Keyboard_ResetKeyPalettes(void *p);
 s32 func_02133150(s32 a, s32 b);
 }
 
@@ -377,7 +312,6 @@ extern "C" void BbsWriteMenu_SetupBgLayers(S *s);
 extern "C" void BbsWriteMenu_PostInput(S *s);
 
 
-extern "C" BbsWriteMenu *BbsWriteMenu_Create();
 
 static inline BOOL Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) return TRUE;

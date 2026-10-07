@@ -26,6 +26,15 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov086/unk_ov086_022713c0.h"
 
 #pragma opt_loop_invariants off
 
@@ -37,26 +46,15 @@ struct TalkStartMsg;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-s32 Pocket_FindEmpty();
-s32 Pocket_FindItem(u16 *p);
-void Pocket_AddItem(u16 *p, s32 v);
-void Pocket_RemoveItem(s32 v);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 Random_GlobalBelow(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
-void *TownSessionState_Get();
-BOOL TownSessionState_TestFlag(void *p, s32 v);
-void TownSessionState_SetFlag(void *p, s32 v);
-void ContestRecord_JudgeGardens(void *p);
 void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
-void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
@@ -124,15 +122,10 @@ struct Unk_ov086_022714e4_Ent {
 
 
 extern "C" {
-void String_Load(void *o, u8 *c, s32 a);
-void MailText_SetSlot(void *p, void *o);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
-void Catalog_AddItem(void *p, u16 *q, s32 a);
 void Clock_GetDate(void *p);
 s32 Clock_GetTimeOfDay();
-void *Inventory_GetEmptyLetter();
-s32 Inventory_FindEmptyLetter();
 extern u32 data_ov086_02271c20;
 extern u32 data_ov086_02271c24;
 extern const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4];
@@ -141,7 +134,6 @@ extern SpNpcTortimerCountdownActEntry sSpNpcTortimerCountdownActTable[3];
 
 extern "C" char sSpNpcTortimerCountdownFortuneStrKey[];
 extern "C" char sSpNpcTortimerCountdownFortuneStr2Key[];
-extern "C" SpNpcTortimerCountdown *SpNpcTortimerCountdown_Create();
 extern "C" u32 data_ov086_02271c24 = 0x1d;
 extern "C" u32 data_ov086_02271c20 = 0xe;
 extern "C" char sSpNpcTortimerCountdownFortuneStrKey[] = "st_fortune";

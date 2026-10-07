@@ -2,6 +2,9 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov004/unk_ov004_0222a374.h"
 
 // ---------------------------------------------------------------- PlayerBedSetter
 struct Unk_0204e858_Grid;
@@ -29,16 +32,12 @@ public:
 
 extern "C" {
 extern Unk_0204e858_Grid *gSceneBlockMap;
-void *PlayerData_Get(u32 i);
 s32 Item_IsFurniture(Unk_ov004_0222a374_Loc *l);
 s32 Item_GetFurnitureIndex(u16 *p);
 void Item_SetFurnitureDirection(Unk_ov004_0222a374_Loc *l, s32 v);
-s32 Ftr_GetUnk05(Unk_ov004_0222a374_Loc *l);
 void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32 x, s32 y, s32 z);
 }
 
-extern "C" PlayerBedSetter *PlayerBedSetter_Create();
-extern "C" void Room_PlacePlayerBeds();
 
 extern "C" ProcProfile sPlayerBedSetterProfile = { (void *(*)())PlayerBedSetter_Create, 0x2b, 0x31 };
 

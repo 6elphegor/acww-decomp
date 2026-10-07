@@ -11,6 +11,43 @@
 #include "ui/LetterRenderer.h"
 #include "nitro/io_access.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_File_ReadRange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Main_InitDwc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Main_LateUpdate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Main_WaitFrame  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Main_WaitVBlank  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_Update  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8208.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_02114cd8.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_020536dc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206d4a4.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_0209c390.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020af258.h"
+#include "proto/main/unk_020b7d84.h"
+#include "proto/main/unk_020b8340.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -95,55 +132,42 @@ s32 EncodedString_SetRaw(void *buf, const void *src, s32 len);
 }
 
 extern "C" {
-void Gfx2d_HideLayer(void *p);
 }
 
 extern "C" {
-void Gfx2d_SetLayerPriority(void *p, s32 v);
 }
 
 extern "C" {
-void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-void *Letter_GetPaper(void *p);
 }
 
 extern "C" {
-void Menu_LoadPaperBg(void *a, void *b);
 }
 
 extern "C" {
-void Mem_Clear(void *p, s32 n);
 }
 
 extern "C" {
-void Letter_GetRecipientNameBytes(void *dst, void *src);
 }
 
 extern "C" {
-s32 Text_GetLength(void *p, s32 n);
 }
 
 extern "C" {
-s32 Text_MeasureWidth(void *p, s32 n);
 }
 
 extern "C" {
-void Gfx2d_LoadScreenFile(char *s, u32 a, u32 b);
 }
 
 extern "C" {
-s32 CrashScreen_Run(void);
 }
 
 extern "C" {
-void OS_SetUserExceptionHandler(s32 a, s32 b);
 }
 
 extern "C" {
@@ -179,23 +203,18 @@ void DwcNet_SetAllocator(void *(*alloc)(u32, void *, u32), void (*free)(u32, voi
 }
 
 extern "C" {
-void OverlayMgr_Acquire(u32 id);
 }
 
 extern "C" {
-void OverlayMgr_Release(u32 id);
 }
 
 extern "C" {
-void *Mem_AllocAligned(u32 size, u32 align);
 }
 
 extern "C" {
-void Mem_Free(void *p);
 }
 
 extern "C" {
-void WfcUtil_Run(void *p, s32 a, s32 b);
 }
 
 extern "C" {
@@ -211,15 +230,6 @@ void WaitByLoop(s32 n);
 }
 
 extern "C" {
-void GX_DispOn(void);
-}
-
-extern "C" {
-void LidSleep_Init(void);
-}
-
-extern "C" {
-void Net_Update(void);
 }
 
 extern "C" {
@@ -232,15 +242,18 @@ extern "C" {
 }
 
 extern "C" {
-void Main_PreTaskUpdate(u32 v);
 }
 
 extern "C" {
-void Main_PreTaskHook(void);
 }
 
 extern "C" {
-void CommCaution_Update(s32 v);
+}
+
+extern "C" {
+}
+
+extern "C" {
 }
 
 extern "C" {
@@ -248,15 +261,12 @@ void Task_RunFrame(s32 v);
 }
 
 extern "C" {
-void CommCaution_Draw(void);
 }
 
 extern "C" {
-void Main_PostTaskUpdate(u32 v);
 }
 
 extern "C" {
-void Main_PostTaskHook(void);
 }
 
 extern "C" {
@@ -264,7 +274,6 @@ void Main_WaitFrame(void);
 }
 
 extern "C" {
-void Main_PostFrameUpdate(void);
 }
 
 extern "C" {
@@ -272,19 +281,15 @@ void Main_LateUpdate(u32 v);
 }
 
 extern "C" {
-void Main_PostTaskStub(void);
 }
 
 extern "C" {
-void Main_PreTaskStub(void);
 }
 
 extern "C" {
-void TextLabel_FlushGroup0(void);
 }
 
 extern "C" {
-void HudObjGfx_FlushCameraButton(void);
 }
 
 extern "C" {
@@ -300,51 +305,39 @@ void Snd_Update(s32 v);
 }
 
 extern "C" {
-void Gfx_VBlankFlush(void);
 }
 
 extern "C" {
-void CommCaution_UpdateBlendRegs(void);
 }
 
 extern "C" {
-void VramQueue2d_Run(void);
 }
 
 extern "C" {
-void NetSession_PostUpdate(void);
 }
 
 extern "C" {
-void Comm_Update(u32 v);
 }
 
 extern "C" {
-void Gfx_PostTaskUpdate(void);
 }
 
 extern "C" {
-void LidSleep_Update(void);
 }
 
 extern "C" {
-void Gfx_PreTaskUpdate(void);
 }
 
 extern "C" {
-void Comm_ProcessReceived(u32 v);
 }
 
 extern "C" {
-void Touch_Update(void);
 }
 
 extern "C" {
-void Pad_Update(void);
 }
 
 extern "C" {
-void SoftReset_Update(void);
 }
 
 extern "C" {
@@ -380,39 +373,30 @@ void FS_ConvertPathToFileID(void *p, void *q);
 }
 
 extern "C" {
-void *Mem_Alloc(u32 n);
 }
 
 extern "C" {
-void File_ReadRangeById(FSFileID p, void *dst, u32 n, s32 z);
 }
 
 extern "C" {
-void *Snd_MelodyUpdate(void *p);
 }
 
 extern "C" {
-void Snd_MelodyInit(void *p);
 }
 
 extern "C" {
-s32 Melody_ApplyEditPattern(void);
 }
 
 extern "C" {
-void Main_PxiSendWordRetry(s32 a, s32 b);
 }
 
 extern "C" {
-void Fatal_ExceptionCallback(void *arg, void *p);
 }
 
 extern "C" {
-void Main_DwcFree(u32 a, void *p);
 }
 
 extern "C" {
-void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
 
@@ -420,7 +404,6 @@ void *Main_DwcAlloc(u32 a, void *p, u32 n);
 // ---- free functions ----
 
 extern "C" {
-void Fatal_Handler(void *arg);
 }
 
 #pragma thumb off
@@ -429,19 +412,10 @@ void Fatal_Handler(void *arg);
 
 // ---- RecordFile: cached record table ----
 
-extern "C" void Fatal_ExceptionCallback(void *arg, void *p);
-extern "C" void Main_InitNop(void);
 extern "C" void Main_WaitVBlank(void);
 extern "C" void Main_WaitFrame(void);
-extern "C" void Main_PreTaskUpdate(u32 r);
-extern "C" void Main_PostTaskUpdate(u32 r);
-extern "C" void Main_PostFrameUpdate(void);
 extern "C" void Main_LateUpdate(u32 r);
-extern "C" void Main_PreTaskHook(void);
-extern "C" void Main_PostTaskHook(void);
-extern "C" void Main_Loop(void);
 extern "C" u32 Main_InitDwc(void);
-extern "C" u8 Main_TakeDwcInitResult(void);
 
 RecordFile::RecordFile() {
     fileId.arc = 0;

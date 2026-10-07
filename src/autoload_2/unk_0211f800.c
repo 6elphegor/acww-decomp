@@ -1,4 +1,8 @@
 #include "nitro/wm.h"
+#define PROTO_LOCAL_MATH_CountPopulation  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0211ef94.h"
+#include "proto/autoload_2/unk_0211f800.h"
+#include "proto/autoload_2/unk_02120fe8.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (wireless manager) API, autoload_2 0x0211f800-0x02120c98. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -45,7 +49,6 @@ extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckInitialized(void);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 WM_Init(void *buf, u16 dmaNo);
@@ -57,10 +60,7 @@ extern void MI_CpuFill8(void *, u32, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern u32 MATH_CountPopulation(u32);
 extern u32 WMi_StartParentEx(WMCallback cb, u32 arg);
-extern void WmDataSharingSetDataCallback(WMMsg *);
 
-int WM_GetMPReceiveBufferSize(void);
-int WM_GetMPSendBufferSize(void);
 u32 WM_SetMPDataToPortEx(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 u32 WmGetSharedDataAddress(u8 *base, u32 x, u32 y, u32 n);
 BOOL WmCheckParentParameter(u8 *p);

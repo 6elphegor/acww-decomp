@@ -2,6 +2,8 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ClockDateTime.h"
 #include "sys/ProcProfile.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/ov004/unk_ov004_0222bcfc.h"
 
 
 
@@ -22,8 +24,6 @@ public:
 extern "C" {
 u32 Scene_GetCurrent(void);
 void Clock_GetDateTime(void *p);
-void Snd_PlaySe(s32 a);
-NewYearCountdown *NewYearCountdown_Create();
 }
 
 extern "C" const u8 sNewYearCountdownScenes[0x34] = {

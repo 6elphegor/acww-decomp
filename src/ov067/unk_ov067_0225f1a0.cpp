@@ -2,6 +2,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "nitro/wm.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov067/unk_ov067_0225f1a0.h"
 
 struct WlxBlockEntry {
     u32 ggid;
@@ -155,7 +159,6 @@ extern "C" {
 s32 OS_DisableInterrupts(void);
 s32 OS_EnableInterrupts(void);
 void OS_RestoreInterrupts(s32);
-u64 OS_GetTick(void);
 s32 WM_GetNextTgid(void);
 s32 WM_EndScan(void (*)(WlxWmMsg *));
 void MIi_CpuClear32(u32, void *, u32);
@@ -171,9 +174,7 @@ s32 WM_SetParentParameter(void (*)(WlxWmMsg *), void *);
 s32 WM_StartParent(void (*)(WlxWmMsg *));
 void DC_InvalidateRange(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
-void Fatal_Trap(void);
 u32 _u32_div_f(u32, u32);
-u16 MATH_CalcChecksum8(u32, u32);
 s32 WM_Reset(void *);
 s32 WM_Disable(void *);
 s32 WM_PowerOff(void *);
@@ -192,26 +193,10 @@ extern WlxWork *sWlx;
 extern const u32 sWlxRoleTable[16];
 
 // functions of this overlay
-u16 WlxWm_NextAllowedChannel(s32 n);
-BOOL WlxDebug_CheckCallbackResult(u16 *m);
-BOOL WlxDebug_CheckApiResult(s32 code, s32 x);
-char *WlxDebug_GetWmErrorName(s32 n);
-char *WlxDebug_GetWmApiName(s32 n);
-void WlxDebug_Printf(const char *fmt, ...);
-void WlxBlock_OnDisconnectStub(void *, u32);
-void WlxBlock_OnConnectStub(void *, u32);
-BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg);
-void WlxBlock_StoreSegment(WlxBlock *w, s32 idx, void *src);
 void WlxBlock_BuildSend(WlxBlock *w, WlxMpPacket *msg);
-BOOL WlxBlock_SelectByBeacon(WlxBlock *w, u32 *x);
-void WlxBlock_OnMpEndStub(void *, void *);
 void WlxBlock_SetCurrent(WlxBlock *w, void *p);
 void *WlxBlock_GetCurrent(WlxBlock *w);
-void *WlxBlock_FindEntry(WlxBlock *w, void *start, u32 key, u32 flag);
-void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s);
-void WlxBlock_Reset(WlxBlock *w, u32 a, u32 b);
 void WlxBlock_Init(WlxBlock *w);
-void WlxWm_RequestState(WlxWmWork *x, u32 v);
 void WlxWm_Init(WlxWmWork *c, WMParentParam *s, WlxWmEventFn cb, u32 v);
 void WlxWm_ScanStep(WlxWmMsg *m);
 void WlxWm_MeasureChannelStep(WlxWmMsg *m);
@@ -219,27 +204,9 @@ void WlxWm_ConnectStep(WlxWmMsg *m);
 void WlxWm_OnChildEvent(WlxWmMsg *m);
 void WlxWm_StartParentStep(WlxWmMsg *m);
 void WlxWm_OnParentEvent(WlxWmMsg *m);
-void WlxWm_ResetStep(WMPortRecvCallback *m);
-void WlxWm_DisableStep(WMPortRecvCallback *m);
-void WlxWm_PowerOffStep(WMPortRecvCallback *m);
-void WlxWm_PowerOnStep(WMPortRecvCallback *m);
-void WlxWm_EnableStep(WMPortRecvCallback *m);
-void WlxWm_OnPortRecv(WMPortRecvCallback *m);
-void WlxWm_OnIndication(WMPortRecvCallback *m);
-void WlxWm_OnMpDataSent(void *m);
-void WlxWm_SetState(WlxWmWork *s, s32 st, u32 arg);
 void WlxWm_SendMpData(WlxWmWork *s);
-s32 WlxWm_CheckCallback(WlxWmWork *s, void *m);
-s32 WlxWm_CheckApiCall(WlxWmWork *s, u32 id, u32 arg);
-void WlxWm_HandleError(WlxWmWork *s, s32 id, u32 arg);
 void WlxWm_Fail(WlxWmWork *s);
-s32 WlxRole_NextIsParent(WlxRole *p);
 void WlxRole_Init(WlxRole *p);
-u16 Wlx_GetConnectedMask(void);
-s32 Wlx_IsParent(void);
-s32 Wlx_GetState(void);
-s32 Wlx_OnWmEvent(u32 cmd, void *arg);
-void Wlx_SelectNextEntry(void);
 }
 
 extern "C" char data_ov067_02261b3c[14];

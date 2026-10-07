@@ -9,6 +9,16 @@
 #include "net/IpSocket.h"
 #include "net/SslSha1Context.h"
 #include "nitro/os_rtc.h"
+#define PROTO_LOCAL_SslBigNum_ToBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SslMd5_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SslSha1_Update  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_02000b44.h"
+#include "proto/ov065/unk_ov065_02264d0c.h"
+#include "proto/ov065/unk_ov065_022671a0.h"
+#include "proto/ov065/unk_ov065_0226795c.h"
 
 namespace Unk_ov065_0226650c_Ns {
 
@@ -33,7 +43,6 @@ void MI_CpuCopy8(const void *, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 u32 strlen(const char *);
-s32 memcmp(const void *, const void *, u32);
 void RTC_GetDate(RTCDate *);
 u32 OS_GetThreadPriority(OSThread *);
 void OS_SetThreadPriority(OSThread *, u32);
@@ -47,20 +56,8 @@ void SslMd5_Update(void *, const void *, u32);
 void SslMd5_Final(void *, void *);
 SslSession *SslSession_FindById(u8 *);
 SslSession *SslSession_Add(u8 *);
-s32 SslCert_ReadDerLength(u8 **);
-void SslCert_AppendName(void *, u8 *, s32);
-u32 SslCert_ParseTime(const u8 *p, s32 mode);
 Key *SslCert_FindRootCa(Ctx *, u8 *);
-void SslBigNum_FromBytes(u16 *, u8 *, s32, s32);
-void SslBigNum_ModExpMontgomery(u16 *, u16 *, u16 *, s32, u16 *);
-void SslBigNum_Sub(u16 *, u16 *, u16 *, s32);
-void SslBigNum_Mul(u16 *, u16 *, u16 *, s32);
-void SslBigNum_Add(u16 *, u16 *, u16 *, s32);
-s32 SslBigNum_Sign(u16 *, s32);
-void SslBigNum_Negate(u16 *, s32);
-void SslBigNum_DivMod(s32, u16 *, u16 *, u16 *, s32, u16 *);
 void SslBigNum_ToBytes(u8 *, u16 *, s32, s32);
-void SslBigNum_ModExp(u16 *, u16 *, u16 *, s32, u16 *);
 
 // in range
 void Ssl_DeriveMasterSecret(Ctx *);
@@ -637,7 +634,6 @@ extern void (*sIpFree)(void *);
 // main module
 void *MI_CpuFill8(void *, s32, u32);
 void *MI_CpuCopy8(const void *, void *, u32);
-s32 memcmp(const void *, const void *, u32);
 
 // same overlay, out of range
 u8 *Tcp_Read(u32 *, Sess *);
@@ -649,8 +645,6 @@ void SslSha1_Init(void *);
 void SslMd5_Update(void *, const void *, u32);
 void SslMd5_Final(void *, void *);
 void SslMd5_Init(void *);
-void SslRc4_Crypt(void *, void *, u32);
-void SslRc4_Init(void *, void *, u32);
 void Ssl_HandleClientHello(St *, u8 *);
 void Ssl_HandleServerHello(St *, u8 *);
 void Ssl_HandleCertificate(St *, u8 *);
@@ -1151,15 +1145,11 @@ void SslMd5_Update(void *, u8 *, u32);
 void SslSha1_Update(void *, u8 *, u32);
 void SslSha1_Final(void *, void *);
 void SslSha1_FinalRaw(void *, void *);
-u32 Ssl_GetUnixTime();
-SslSession *SslSession_FindByPeer(u32, u32);
 SslSession *SslSession_Add(u8 *);
 void Ssl_DeriveKeyBlock(Ctx *);
 void Ssl_DeriveMasterSecret(Ctx *);
 void Ssl_CalcFinishedMd5(Ctx *, u8 *, u32);
 void Ssl_CalcFinishedSha1(Ctx *, u8 *, u32);
-void SslBigNum_FromBytes(u16 *, void *, s32, s32);
-void SslBigNum_ModExp(u16 *, u16 *, u16 *, s32, u16 *);
 s32 Ssl_ReadRecord(Sess *);
 s32 Ssl_EncryptRecord(Ctx *, u8 *);
 
@@ -1669,16 +1659,13 @@ void Ssl_ProcessRecord(void *, void *);
 s32 Ssl_ReadExact(void *, u32, IpSocket *);
 s32 Ssl_ReadRecord(IpSocket *);
 
-u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void OSi_ReferSymbol(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_JoinThread(void *);
 void OS_DestroyThread(void *);
 s32 OS_IsThreadTerminated(void *);
 void OS_WakeupThreadDirect(void *);
-void OS_YieldThread(void);
 void OS_Sleep(void);
 void OS_CreateThread(void *, void *, u32, void *, u32, u32);
 void OS_GetMacAddress(void *);

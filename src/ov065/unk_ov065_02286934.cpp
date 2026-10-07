@@ -9,6 +9,9 @@
 #include "net/qr2.h"
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov065/unk_ov065_02286934.h"
 
 
 
@@ -54,8 +57,6 @@ extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
-char *STD_CopyString(char *dst, const char *src);
-u32 STD_GetStringLength(const char *s);
 
 char *Sock_InetNtoA(GsInAddr a);
 SockHostEnt *Sock_GetHostByName(const char *name);
@@ -69,26 +70,12 @@ s32 socket(s32 a, s32 b, s32 c);
 SockHostEnt *getlocalhost();
 s32 IsPrivateIP(void *p);
 s32 CanReceiveOnSocket(s32 fd);
-s32 CheckMagic(void *p);
-s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
-s32 RemoveNegotiator(_NATNegotiator *ctx);
-s32 AddNegotiator();
 _NATNegotiator *FindNegotiatorForCookie(u32 cookie);
 
-u32 GetLocalIP();
-u32 GetLocalPort(s32 fd);
 void SendInitPackets(_NATNegotiator *ctx);
 void SendPingPacket(_NATNegotiator *ctx);
-u32 NameToIp(const char *name);
-u32 ResolveServer(const char *name, const char *s);
-s32 ResolveServers();
-void NNCancel(u32 cookie);
 void NegotiateThink(_NATNegotiator *ctx);
 void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa);
-void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
 }
 
 
@@ -152,8 +139,6 @@ extern Vec *negotiateList;
 extern s32 num_local_ips;
 extern u32 local_ip_list[];
 
-s32 memcmp(const void *, const void *, s32);
-void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 sendto(s32, void *, s32, s32, void *, s32);
 s32 closesocket(s32);

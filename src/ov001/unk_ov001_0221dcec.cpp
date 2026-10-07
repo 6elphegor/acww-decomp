@@ -1,6 +1,15 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/WfcConfigSlot.h"
+#define PROTO_LOCAL_MATH_CalcCRC16  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MATHi_CRC16InitTableRev  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcConfig_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcConfig_WriteSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcUtil_ParseIpDigits  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_atol  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_02226c24.h"
 
 struct WfcConfigSlotBody {
     u8 v[0xf0];
@@ -27,39 +36,12 @@ extern void DWCi_AUTH_GetNewWiFiInfo(void *);
 extern void *DWCi_BACKUPlConvWifiInfo(void *);
 extern u32 DWCi_BACKUPlConvMaskCidr(void *);
 extern void DWCi_BACKUPlConvMaskAddr(u32, void *);
-extern s32 memcmp(void *, const void *, u32);
 extern void OS_SPrintf(void *, const char *, u32, u32, u32, u32);
-extern s32 WfcUtil_StrNLen(void *, u32);
 extern void MATHi_CRC16InitTableRev(void *, u32);
 
-u32 WfcUtil_HexDigitValue(u32 c);
 void WfcUtil_ParseIpDigits(u8 *s, u8 *out);
 void WfcConfig_WriteSlot(s32 idx);
-void WfcConfig_EraseAll();
-void WfcConfig_EraseSlot(s32 idx);
 WfcConfigData *WfcConfig_Get();
-void WfcConfig_StoreAoss(u8 *src);
-void WfcConfig_StoreSimpleStart(u8 *src);
-void WfcConfig_CommitEdit();
-void WfcConfig_BeginEdit(s32 idx);
-u32 WfcConfig_GetSlotStatus(s32 idx);
-void WfcConfig_FormatEditDns2(void *p);
-void WfcConfig_FormatEditDns1(void *p);
-void WfcConfig_FormatEditGateway(void *p);
-void WfcConfig_FormatEditSubnetMask(void *p);
-void WfcConfig_FormatEditIp(s32 a);
-void WfcConfig_GetEditSsid(void *src);
-void WfcConfig_SetEditDns2(s32 a);
-void WfcConfig_SetEditDns1(s32 a);
-void WfcConfig_SetEditGateway(s32 a);
-void WfcConfig_SetEditSubnetMask(s32 a);
-void WfcConfig_SetEditIp(s32 a);
-void WfcConfig_SetEditWepKey(u8 *s);
-void WfcConfig_SetEditSsid(void *a);
-void WfcConfig_SetEditAutoDns(u32 v);
-void WfcConfig_SetEditAutoIp(u32 v);
-u8 *WfcConfig_GetEdit();
-void WfcConfig_Shutdown();
 void WfcConfig_Init();
 }
 

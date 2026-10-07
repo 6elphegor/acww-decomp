@@ -5,6 +5,15 @@
 #include "town/SceneMapInfo.h"
 #include "game/SceneInfo.h"
 #include "net/CommManager.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020af514.h"
+#include "proto/main/unk_020afeb4.h"
 
 extern "C" {
 u32 GroundSeason_IsSnowPhase(u32);
@@ -59,7 +68,6 @@ struct Data021e5890 {
     u8 f14 : 6;
 };
 extern Data021e5890 data_021e5890;
-BOOL Snowman_RemoveFromTown(u32 idx);
 }
 
 class SnowmanRecords {
@@ -86,15 +94,12 @@ struct Grid {
 
 extern "C" {
 extern void *gActorDefaultParent;
-void GameProc_CreateChild(u32, void *, u32, u32);
-u64 OS_GetTick();
 }
 
 class SceneSpawnGroup;
 
 typedef BOOL (*EntryFn)(SceneSpawnGroup *, u8 *, u32, u32);
 extern "C" EntryFn sSceneSpawnGroupHandlers[];
-extern "C" BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *, u8 *, u32, u32);
 extern "C" BOOL _ZN15SceneSpawnGroup21spawnPlayersAndCameraEPhjj(SceneSpawnGroup *, u8 *, u32, u32);
 extern "C" BOOL _ZN15SceneSpawnGroup11createProcsEPhy(SceneSpawnGroup *, u8 *, u32, u32);
 
@@ -147,13 +152,6 @@ Unk_020b4948 *Scene_GetWarpRequest();
 u32 Scene_GetCurrent();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InTown();
-s32 PlayerSession_GetDataIndex(u32);
-BOOL PlayerDataArray_IsUsed(void *, s32);
-u32 PlayerSession_FindFreeGfxSlot();
-void PlayerSession_SetGfxSlot(u32, u32);
-void PlayerActor_Spawn(u32, VecFx32 *, Vec3s *, u32);
-void Vec_RotateY(VecFx32 *, s32);
-void Vec_Add(VecFx32 *, VecFx32 *, VecFx32 *);
 
 struct Data020cbb18 {
     u8 pad[0x64];

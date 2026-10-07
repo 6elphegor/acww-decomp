@@ -5,6 +5,10 @@
 #include "net/DwcNetChannelTable.h"
 
 #include "types64.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_02277140.h"
+#include "proto/ov065/unk_ov065_02277974.h"
 
 // ov065_039: DWC-like send/receive channel table (0x0227702c..0x022778b0)
 
@@ -16,8 +20,6 @@ extern "C" {
 DwcNetChannelTable *sDwcNetChannels;
 MATHRandContext32 sDwcNetRandState;
 
-void *DwcNet_Alloc(s32, s32);
-u64 DwcNet_GetTimeMs(void);
 s32 DwcConn_GetAid(s32);
 s32 DwcConn_FindConnectionByAid(s32);
 void DwcCore_SetError(s32, s32);
@@ -31,43 +33,11 @@ s32 gt2GetConnectionState(s32);
 s32 gt2Ping(s32);
 void gt2Send(s32, void *, s32, s32);
 void DwcMatch_OnSyncPacket(s32, s32, s32);
-u64 OS_GetTick(void);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
-s32 memcmp(void *, const void *, s32);
 void strncpy(void *, const void *, s32);
 void OS_GetMacAddress(void *);
 
-s32 DwcNet_GetSendSpace(s32 id);
-void DwcNet_RecvControlBody(s32 a, void *b, s32 c);
-void DwcNet_RecvBodyChunk(s32 id, void *buf, s32 n);
-void DwcNet_RecvHeader(s32 id, void *buf, s32 n);
-void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n);
-void DwcNet_RecvReliable(s32 a, void *buf, s32 n);
-void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f);
-u32 DwcNet_GetRecvState(s32 id);
-u32 DwcNet_IsSending(s32 id);
-DwcNetChannel *DwcNet_GetChannel(s32 id);
-void DwcNet_ClearChannelTable(void);
-void DwcNet_ResetChannel(s32 id);
-void DwcNet_ProcessSend(void);
-void DwcNet_OnPing(s32 a, s32 b);
-void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d);
-void DwcNet_InitChannelTable(void *p);
-s32 DwcNet_GetHeaderSize(s32 m);
-u32 DwcNet_ParseHeader(void *src);
-void DwcNet_BuildHeader(void *p, u32 a, u32 b);
-void DwcNet_SetMaxChunkSize(u32 v);
-void DwcNet_SetPingCallback(void *cb);
-void DwcNet_SetRecvCallback(void *cb);
-void DwcNet_SetSendDoneCallback(void *cb);
-void DwcNet_PingAid(s32 id);
-BOOL DwcNet_SetRecvBuffer(s32 id, u8 *buf, s32 n);
-BOOL DwcNet_SendData(s32 m, s32 id, u8 *buf, s32 n);
-BOOL DwcNet_SendReliable(s32 id, u8 *buf, s32 n);
-BOOL DwcNet_CanSend(s32 id, s32 m);
-BOOL DwcNet_CanSendReliable(s32 id);
-u32 DwcNet_Rand32(u32 n);
 }
 
 u32 DwcNet_Rand32(u32 n) {

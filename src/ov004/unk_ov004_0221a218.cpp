@@ -28,6 +28,8 @@
 #include "talk/VillagerTalk.h"
 #include "talk/TalkTopicMsg.h"
 #include "npc/VillagerId.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/ov004/unk_ov004_0221a218.h"
 
 class CafeVillager;
 
@@ -58,7 +60,6 @@ extern u16 data_020c6cc8;
 extern CafeVillagerActEntry sCafeVillagerActTable[3];
 extern u8 data_ov004_022508e0[0x28];
 
-s32 Random_GlobalBelow(s32 a);
 void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void ActorTalkRequest_setTalkPlayer(void *o, s32 a);
@@ -121,7 +122,6 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" CafeVillager *CafeVillager_Create();
 extern "C" ActorProfile sCafeVillagerProfile = {(void *(*)())CafeVillager_Create, 0x88, 0x8c, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_022508e0[0x28];

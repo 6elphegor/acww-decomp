@@ -9,6 +9,12 @@
 #include "net/WifiApContext.h"
 #include "net/WifiLinkEvent.h"
 #include "net/SockStartupConfig.h"
+#define PROTO_LOCAL_WifiAp_GetBlock  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0226aca8.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
+#include "proto/ov065/unk_ov065_0226b3c4.h"
 
 
 extern "C" {
@@ -51,11 +57,7 @@ extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
 u8 *WifiAp_GetBlock(u32 id);
-s32 WifiAp_GetState(void);
 s32 WifiLink_GetPhase(void);
-s32 WifiAp_FoldApIndex(u32 v);
-void WifiAp_SetConnectedApType(u32 v);
-s32 WifiAp_SetError(s32 v);
 s32 WifiLink_StartupAsync(void *a, void *b);
 s32 WifiAp_OnLinkNotify(void *a);
 s32 WifiAp_BuildSearchList(s32 mode);
@@ -75,7 +77,6 @@ u32 NetCheck_GetErrorCode(void);
 s32 NetCheck_Abort(void);
 s32 NetCheck_Destroy(void);
 s32 NetCheck_Start(void);
-s64 OS_GetTick(void);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void DGT_Hash1Reset(void *ctx);
 void DGT_Hash1SetSource(void *ctx, void *p, u32 n);
@@ -304,21 +305,18 @@ extern u32 sWifiApScanChannelBits[];
 
 extern "C" {
 u8 *WifiAp_GetBlock(u32 id);
-s32 WifiAp_GetErrorCode(void);
 s32 WifiAp_GetErrorCodeForState(u8 *p);
 s32 WifiAp_CleanupStep(u8 *p);
 s32 WifiLink_GetPhase(void);
 s32 WifiLink_EndSearchAsync(void);
 s32 WifiLink_DisconnectAsync(void);
 s32 WifiLink_TerminateAsync(void);
-s32 WifiAp_SetError(s32 v);
 s32 WifiLink_SearchAsync(void *a, void *b, u32 c);
 s32 WifiAp_GetNthFoundChannel(u32 v);
 s32 WifiAp_RescanForState(s32 v);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void MIi_CpuClear32(u32 v, void *dst, u32 n);
 s32 strncmp(const void *a, const void *b, u32 n);
-s64 OS_GetTick(void);
 
 s32 WifiAp_GetNoApErrorCode(u8 *p);
 s32 WifiAp_GetWirelessOffError(void);
@@ -792,7 +790,6 @@ extern "C" {
 
 extern "C" {
 u8 *WifiAp_GetBlock(u32 id);
-s32 WifiAp_GetState(void);
 s32 WifiAp_SortFoundAp(s32 a, void *ctx);
 s32 WifiAp_AddFoundChannel(u32 v);
 s32 WifiAp_IsFreespot(void *rec);
@@ -807,7 +804,6 @@ s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_EndSearchAsync(void);
 s32 WifiLink_DisconnectAsync(void);
 s32 WifiLink_TerminateAsync(void);
-s32 WifiAp_SetError(s32 v);
 s32 SockCore_TryShutdown(void);
 s32 Sock_Cleanup(void);
 s32 NetCheck_Abort(void);
@@ -816,7 +812,6 @@ void MIi_CpuCopy32(void *src, void *dst, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, u32 n);
 s32 strncmp(void *a, void *b, u32 n);
-s64 OS_GetTick(void);
 
 s32 WifiAp_MatchSpecialSsid(WMBssDesc *rec);
 s32 WifiAp_MatchSearchEntry(WMBssDesc *rec, s32 n, WifiApSearchEntry *e);
@@ -1383,7 +1378,6 @@ extern WifiApControl *sWifiApControl;
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
 s32 func_02133150(s32, s32);
-void OS_InitMutex(void *);
 s32 DGT_Hash1GetDigest_R();
 s32 DGT_Hash1SetSource();
 s32 DGT_Hash1Reset();
@@ -1407,7 +1401,6 @@ u8 WifiAp_ProcessSearch();
 u8 WifiAp_ProcessStartup();
 u8 WifiAp_ProcessNetSetup();
 
-u8 WifiLink_GetAverageRssi();
 
 
 
@@ -1424,11 +1417,9 @@ u8 WifiLink_GetAverageRssi();
 
 
 
-void WifiAp_FreeBlock(u32, void *, u32);
 
 
 
-u8 WifiAp_GetState();
 void *WifiAp_GetBlock(u32);
 
 

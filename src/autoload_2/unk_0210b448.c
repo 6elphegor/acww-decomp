@@ -1,4 +1,8 @@
 #include "nitro/fs.h"
+#include "proto/autoload_2/unk_0210a9c4.h"
+#include "proto/autoload_2/unk_0210b1b0.h"
+#include "proto/autoload_2/unk_0210b448.h"
+#include "proto/autoload_2/unk_02119434.h"
 // NNS sound library (NitroSystem snd): sound archive access (NNSSndArc: SDAT header, FAT, INFO/SYMB blocks,
 // load from file via FS) and the sound heap (NNSSndHeap, a frame heap with save/load-state levels and free
 // callbacks), autoload_2 0x0210b448-0x0210c084, with the current archive pointer (autoload_3 .bss 0x021fbd68). The end
@@ -86,12 +90,9 @@ extern u32 data_021fb8a8;
 extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
 extern s32 NNSi_SndFaderGet(void *);
-extern void NNSi_SndCaptureStop(void);
-extern void CaptureThread(void *);
 extern void OS_InitMessageQueue(void *, void *, s32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
-extern void NNS_SndCaptureStopEffect(void);
 extern BOOL NNSi_SndCaptureStart(s32 mode, u32 bufL, u32 bufR, u32 len, s32 fmt, u32 a5, u32 a6, s32 loop, s32 rate, s32 vol, u32 pan1, u32 pan2, s32 nBlocks, CapCb cb, s32 cbArg);
 extern Arc *data_021fbd68;
 extern BOOL FS_SeekFile(void *, u32, u32);
@@ -100,7 +101,6 @@ extern u8 *NNSi_SndSeqArcGetSeqInfo(void *, u32);
 extern void *NNS_SndHeapAlloc(SndHeap *, u32, void (*)(void *, u32, void *, u32), void *, u32);
 extern void MIi_CpuCopy32(void *, void *, u32);
 extern BOOL FS_ConvertPathToFileID();
-extern void FS_InitFile(void *);
 extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void *NNS_FndAllocFromFrmHeapEx(void *, u32, u32);
 extern void NNS_FndAppendListObject(NNSFndList *, void *);
@@ -120,7 +120,6 @@ extern void NNS_FndFreeToFrmHeap(void *, u32);
 extern void NNS_FndDestroyFrmHeap(void *);
 extern void *NNS_FndCreateFrmHeapEx(u32, u32, u16);
 extern void NNS_SndHeapClear(SndHeap *);
-extern void EraseSync(void);
 extern BOOL NewSection(SndHeap *);
 extern BOOL InitHeap(SndHeap *, void *);// NNS_SndHeapCreate
 SndHeap *NNS_SndHeapCreate(u32 start, u32 size)

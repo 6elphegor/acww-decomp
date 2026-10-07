@@ -10,6 +10,10 @@
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
 #include "snd/Player.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_021093f4.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/main/unk_0206d49c.h"
 
 
 
@@ -18,7 +22,6 @@ typedef void (*GroupFn)(Group *g, s32 i, s32 v);
 
 
 extern "C" {
-void Fatal_Trap(void);
 extern void *gSndHeap;
 extern void *gSndCaptureBuffer;
 extern u8 gSndDefaultHandle[];
@@ -26,20 +29,14 @@ extern u8 data_021f5aac[];
 extern u8 data_021f5a1c[];
 void NNS_SndHandleInit(void *p);
 void NNS_SndPlayerStopSeq(void *p, u32 x);
-void NNS_SndArcPlayerStartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void NNS_SndArcPlayerStartSeqArc(void *a, u32 b, void *c);
 void NNS_SndHeapLoadState(void *a, u32 b);
 void *NNS_SndHeapGetCurrentLevel(void *a);
-s32 NNS_SndArcLoadGroup(u32 a, void *b);
 s32 NNS_SndHeapSaveState(void *a);
 void *NNS_SndHeapAlloc(void *a, u32 b, void (*c)(void), u32 d, u32 e);
 void *NNS_SndHeapCreate(u32 a, u32 b);
 void NNS_SndArcInit(void *a, u32 b, void *c, u32 d);
 void NNS_SndArcInitOnMemory(void *a, u32 b);
-s32 NNS_SndArcPlayerSetup(void *a);
-void NNS_SndInit(void);
 void NNS_SndCaptureStartOutputEffect(u32 a, u32 b, u32 c);
-s32 NNS_SndMain(void);
 
 }
 extern "C" {

@@ -5,6 +5,18 @@
 #include "player/FishBobberStates.h"
 #include "net/CommManager.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e82bc.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
 
 
 
@@ -15,31 +27,11 @@ extern u8 *gCommManager;
 extern s16 data_02135f44[];
 extern u8 sFishBobberPool[];
 
-s32 PlayerPaletteRef_GetSkin(u8 *p);
-s32 File_LoadToBuffer(void *path, void *dst, u32 size);
-s32 PlayerPaletteRef_GetHair(u8 *p);
-char *PlayerPalette_GetPath(u32 x);
-s32 PlayerPalette_GetSkinSize();
-s32 PlayerPalette_GetHairSize();
-s32 PlayerPalette_GetSlotSize();
-void PlayerPaletteRef_SetSlot(u8 *p, u8 v);
-s32 PlayerPalettePool_GetBuffer(u32 *a, u32 i);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
-void *Heap_AllocAligned(void *h, s32 size, s32 align);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 PlayerPaletteHeap_Destroy();
-s32 PlayerPaletteHeap_Create(void *parent);
-void PlayerPalettePool_FreeBuffers(u32 *a);
-void PlayerPalettePool_AllocBuffers(u32 *a);
-void NetBuf_WriteU16(void *p, s32 v);
-void CommRecord_PackSource(void *p, s32 a, u8 b);
-BOOL NetArea_IsLocalOwner();
 BOOL func_020729cc(void *p, s32 h);
-u16 NetBuf_ReadU16(void *src);
-void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
 BOOL SceneId_IsTown(u32 v);
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(u32 v);
@@ -50,19 +42,9 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
-s32 Effect_Create(s32 kind, VecFx32 *v, void *a, s32 b);
-s32 Effect_SetPosition(s32 h, VecFx32 *v, void *a, s32 b);
-s32 Effect_End(s32 h);
-void Vec_ShiftRightTo(VecFx32 *out, VecFx32 *in, s32 n);
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-void Vec_ShiftRight(VecFx32 *v, s32 n);
-void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
-void FieldFish_StartCastSplash();
 void *func_0205fd94(u8 *tbl, u32 idx);
-void WorldCurve_FromCurved(void *p, VecFx32 *v);
-void WorldCurve_ToCurved(VecFx32 *a, VecFx32 *b);
 s32 func_0205fbb8(void *p);
 void func_0205553c(void *e, s32 a);
 void GroundInfo_Destruct(void *p);
@@ -78,7 +60,6 @@ struct PlayerPalettePool {
 PlayerPalettePool sPlayerPalettePool;
 char sPlayerPalettePathBuf[0x14];
 
-extern "C" BOOL ItemSync_Apply(u8 *p);
 
 extern "C" BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag)
 {

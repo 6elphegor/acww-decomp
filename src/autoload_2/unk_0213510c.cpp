@@ -6,6 +6,11 @@
 // .exception 0x020c2b34-0x020c2bb0 (the try/catch tables of the __cxa_vec_* functions).
 // The .data range ends with the 12 zero bytes that align the end of autoload_2's data to 32 bytes (0x0213c6c0).
 #include "types.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02133b68.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/autoload_2/unk_0213510c.h"
 
 // The modern build has no C++ exceptions (the game never throws, it was built with -Cpp_exceptions off): the
 // try blocks run as plain blocks and their handlers are never entered.
@@ -102,24 +107,15 @@ extern "C" {
 void sys_writec(const u8 *p);
 int sys_readc(void);
 int __FindExceptionTable(ExceptionInfo *info, char *retaddr);
-u8 *__SkipUnwindInfo(u8 *p);
 void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info);
 u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
 void __TransferControl(ThrowContext *context, ExceptionInfo *info, char *pc);
-void abort(void); // abort
-void *_Znam(size_t size); // operator new[]
-void _ZdaPv(void *p); // operator delete[]
-void _ZSt9terminatev(void);
-void _ZSt9dthandlerv(void);
 void __cxa_vec_dtor(void *array, size_t count, size_t size, ObjFunc dtor);
 void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor);
-u8 *__DecodeUnsignedNumber(u8 *p, u32 *value);
-u8 *__DecodeSignedNumber(u8 *p, s32 *value);
 u8 NextAction(ActionIterator *iter);
 u8 CurrentAction(ActionIterator *iter);
 void FindExceptionRecord(char *retaddr, ExceptionInfo *info);
 ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr);
-int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
 void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
 CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info);
 int IsInSpecification(const char *throwtype, ExSpecification *spec);

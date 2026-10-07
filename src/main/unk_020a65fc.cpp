@@ -2,6 +2,15 @@
 #include "net/CommManager.h"
 #include "net/NetStateBlockHeader.h"
 #include "net/NetSessionParts.h"
+#define PROTO_LOCAL_NetStatusMsgBase_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetStatusMsgBase_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetStatusMsg_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetStatusMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetStatusUpdateMsg_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetStatusUpdateMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020a65fc.h"
+#include "proto/main/unk_020a6914.h"
 
 
 extern "C" {
@@ -13,11 +22,9 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-void CommRecord_UnpackSource(u8 *src, u8 *a, u8 *b);
 }
 
 extern "C" {
-void NetStatusMsgBase_Pack(u8 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
@@ -38,14 +45,10 @@ extern "C" {
 }
 
 extern "C" {
-void NetStatusMsg_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e);
 }
 
 extern "C" {
-void NetStatusMsgBase_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e);
 }
-extern "C" void NetArea_WriteStateAPart0();
-extern "C" void NetArea_WriteStateANpcTalk();
 
 extern void (*const sNetStateAWriters[2])(s32);
 void (*const sNetStateAWriters[2])(s32) = {(void (*)(s32))NetArea_WriteStateAPart0, (void (*)(s32))NetArea_WriteStateANpcTalk};

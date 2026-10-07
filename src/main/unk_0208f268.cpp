@@ -20,6 +20,22 @@
 #include "gfx/CachedModel.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_EffectSplEntry_Start  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EffectSpl_ToCurvedPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SPL_Create  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SPL_CreateWithInitialize  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SPL_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SPL_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020f8b44.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0208f268.h"
 
 struct Unk_0209002c_Handle;
 
@@ -39,13 +55,8 @@ void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 v);
 void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
-void Heap_Free(void *heap, void *p);
-u32 File_LoadAlloc(u32 res, void *heap, u32 a, s32 b);
 #define Heap_destroy _ZN4Heap7destroyEv
 void Heap_destroy(void *);
-void *ExpHeap_Create(u32, s32);
-void *Mem_Alloc(u32);
-void Mem_Free(void *);
 void *SPL_Create(void *, s32, s32);
 void *SPL_CreateWithInitialize(void *, u32, u32);
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
@@ -62,10 +73,7 @@ void MI_CpuCopy8(void *dst, void *src, u32 size);
 u16 SceneLights_GetBaseColor();
 u16 GroundSeason_GetColor();
 s32 TownState_GetSeasonPeriod();
-s32 File_Load(void *);
 void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
-s32 SPL_LoadTexByVRAMManager(u32 h);
-s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 }
 
 
@@ -208,31 +216,11 @@ extern s32 *sEffectSplEmitPos;
 extern s32 gCurrentHeap;
 extern u32 gViewMtx[];
 extern u8 data_021f47e0[];
-void *EffectSpl_Alloc(u32 size);
 
-void EffectSplEntry_Release(EffectEmitterEntry *);
 s32 EffectSplEntry_Start(EffectEmitterEntry *, s32, s32, s32, EffectEmitterCbs *, EffectEmitterTag);
-void EffectModels_DrawAll(EffectModelGroup *);
-void EffectModels_Start(EffectModelGroup *, s32, void (*)(EffectModel *));
-void EffectModelGroup_Start(EffectModelGroup *, void (*)(EffectModel *));
-void EffectModelGroup_Unload(EffectModelGroup *);
-void EffectModelGroup_Draw(EffectModelGroup *);
-void EffectModelGroup_Update(EffectModelGroup *);
-void EffectModelGroup_Load(EffectModelGroup *, s32);
-void EffectModels_UnloadAll(EffectModelGroup *);
-void EffectModels_UpdateAll(EffectModelGroup *);
-void EffectModels_LoadAll(EffectModelGroup *);
-EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, s32 a2, s32 a3, EffectEmitterCbs *cb, u32 b, u32 c);
-EffectEmitterEntry *EffectSplPool_FindInactive(EffectSplPool *p, s32 id);
 void EffectSplPool_ReleaseAll(EffectSplPool *p);
 void EffectSplPool_Update(EffectSplPool *p);
-s16 EffectSpl_GetSeasonTint();
-s16 EffectSpl_GetSeasonTintVariant(EffectSplEmitter *o);
-void EffectSpl_ApplySceneTint(EffectSplEmitter *o);
-void EffectSpl_InitEmitterAtPos(EffectSplEmitter *o);
 u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
-BOOL EffectSpl_LoadTextures(EffectSplProc *p);
-s32 EffectSpl_LoadArchive(void *unused);
 void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p);
 }
 

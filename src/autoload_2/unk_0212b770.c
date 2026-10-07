@@ -3,11 +3,12 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212b770.h"
 
 extern u16 data_0213a510[]; // __ctype_map
 extern u8 data_0213a490[];  // __upper_map
 extern int data_0220064c;   // errno
-int __StringRead(void *arg, int ch, int action); // __StringRead
 u32 _u32_div_f(u32 a, u32 b);
 
 #define isspace_(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[(c)] & 0x100))

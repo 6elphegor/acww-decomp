@@ -2,6 +2,12 @@
 #include "types.h"
 #include "net/WfcApScanEntry.h"
 #include "nitro/wm.h"
+#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WM_GetOtherElements  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcApScan_StoreResults  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcApScan_WmCallback  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov001/unk_ov001_0221d744.h"
 
 #pragma thumb off
 
@@ -10,7 +16,6 @@ struct WfcApScanParamCopy { u32 v[17]; };
 
 extern "C" {
 s32 DC_InvalidateRange(void *, s32);
-s32 memcmp(const void *, const void *, s32);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 WM_GetOtherElements(void *, void *);
 s32 Fatal_Trap(void *);
@@ -27,12 +32,6 @@ void *WfcHeap_AllocClear(s32, s32);
 
 void WfcApScan_StoreResults(WMStartScanExCallback *);
 void WfcApScan_WmCallback(u16 *);
-s32 WfcApScan_GetResults(WfcApScanEntry **out);
-BOOL WfcApScan_Stop();
-BOOL WfcApScan_StartScan();
-BOOL WfcApScan_Start();
-void WfcApScan_Free();
-void WfcApScan_Alloc();
 }
 
 extern "C" const u8 sWfcWpaOui[4] = { 0x00, 0x50, 0xf2, 0x01 };

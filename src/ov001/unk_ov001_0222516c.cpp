@@ -1,6 +1,13 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02101de8.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02226994.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -46,7 +53,6 @@ extern void *sWfcFontPaths[2];
 extern char data_ov001_0222b894[];
 extern char data_ov001_0222b8a4[];
 
-u32 WfcTask_Add(u32, void *, void *, u32);
 void *WfcHeap_AllocClear(u32, u32);
 void *WfcHeap_Alloc(u32, u32);
 void WfcHeap_FreeAndClear(void *);
@@ -54,48 +60,25 @@ void *WfcObj_GetOam(void *, u32);
 void WfcObj_SetAffineMode(void *, s32, u32, u32);
 void WfcObj_SetModePalette(void *, s32, u32, u32);
 void WfcObj_SetPriority(void *, s32, s32);
-void NNS_G2dArrangeOBJ1D(void *, u32, u32, s32, s32, s32, u32, s32);
 void NNSi_G2dTextCanvasDrawTextRect(void *, s32, s32, s32, s32, s32, s32, s32);
 u32 NNS_G2dFontFindGlyphIndex(void *, u32);
 void *NNS_G2dFontGetCharWidthsFromIndex(void *, u32);
 void NNS_G2dCharCanvasDrawChar(s32, void *, s32, s32, s32, u16);
 void NNSi_G2dTextCanvasDrawText(void *, s32, s32, s32, s32, s32);
-void WfcTask_Delete(u32, u32);
-void *G2_GetBG0CharPtr();
 void MIi_CpuClear16(u32, void *, u32);
 void DC_FlushRange(void *, u32);
 void GX_LoadBG0Char(void *, u32, u32);
 void GXS_LoadBG0Char(void *, u32, u32);
 void NNS_G2dCharCanvasInitForBG(void *, void *, u32, u32, u32);
-void *G2S_GetBG0ScrPtr();
-void *G2_GetBG0ScrPtr();
 void NNS_G2dMapScrToCharText(void *, u32, u32, s32, s32, s32, u32, s32);
 void WfcVram_FreeObjChar(void *);
 void WfcPool_Put(void *, void *);
 void *WfcPool_Get(void *);
-void *WfcVram_AllocObjChar(u32, u32, u32, s32 *);
 void *NNSi_G2dCalcRequiredOBJ(u32, u32);
 void NNS_G2dCharCanvasInitForOBJ1D(void *, u32, u32, u32, u32);
-void WfcFs_FreeFile(void *);
-void WfcPool_Destroy(void *);
-void *WfcPool_CreateFrom(u32, void *, u32);
-void *WfcFs_LoadFile(void *, u32, u32);
 void NNS_G2dFontInitUTF16(void *, void *);
-void WfcText_RequestTransfer(void *o);
-void WfcText_ArrangeObj(WfcTextCanvas *o, s32 a1, s32 a2, void *h, s32 a4);
-void WfcText_Clear(WfcTextCanvas *o, s32 a);
-void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx);
-void WfcText_DrawChar(s32 a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx);
-void WfcText_DrawText(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void WfcText_DestroyBgCanvas(u32 idx);
 void WfcText_ReleaseBgCanvas(WfcBgTextCanvas *o);
-void WfcText_BgTransferTask(u32 task, u8 *flag);
-WfcTextCanvas *WfcText_CreateBgCanvas(u32 idx, u32 slot);
 void WfcText_DestroyObjCanvas(WfcBgTextCanvas *o);
-WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot);
-void WfcText_Shutdown();
-void WfcText_Init();
 WfcTextWork *sWfcText;
 }
 

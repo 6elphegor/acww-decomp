@@ -23,6 +23,19 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov103/unk_ov103_02294c40.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -34,21 +47,8 @@ extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Letter_MarkRead(LetterView *self);
 void Letter_Copy(void *dst, void *src);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 void ChoiceIdList_Clear(void *p, u32 v);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
@@ -60,25 +60,7 @@ void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *p, s32 v);
 void PopupChoice_Open(void *p, u32 v);
 
-void InventoryBg_DrawSprite(void *p, s32 a);
-void InventoryBg_Exit(void *p);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_Load(void *p, s32 a);
-void InventoryBg_Init(void *p, s32 a);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void InventoryItemGrid_DisableSlotRange(void *p, u32 a, u32 b);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-void InventoryItemGrid_LoadPockets(void *p);
-void InventoryItemGrid_Exit(void *p);
-void InventoryItemGrid_PreUpdate(void *p);
-void InventoryItemGrid_Init(void *p, s32 a);
-void LetterGrid_LoadPocketLetters(void *p);
-BOOL LetterGrid_IsSlotEmpty(void *p, u32 a);
-s32 LetterGrid_GetSlotY(void *p, u32 a);
-s32 LetterGrid_GetSlotX(void *p, u32 a);
 }
 
 // ---- external classes (real names from symbols.txt) ----

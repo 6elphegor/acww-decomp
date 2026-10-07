@@ -5,25 +5,14 @@
 #include "menu/MenuProc.h"
 #include "menu/MenuLauncher.h"
 #include "sys/ProcProfile.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206db88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov092/unk_ov092_022918e0.h"
 
 extern "C" {
-u32 MenuCtrl_GetMode();
-void MenuScreen_BeginOpen();
-void MenuScreen_SetBackgroundKind(s32 a);
-void Snd_PlaySe(s32 a);
-void Snd_SetSceneBankVariant(s32 a);
-void Gfx2d_SetSubBgModeState(s32 a);
-void MenuCtrl_SetSyncMsgMenu();
-void MenuCtrl_RequestOpenNested(s32 a);
-void MenuCtrl_SetMode(s32 a);
-void MenuScreen_ReleaseCloseHold();
-void MenuScreen_BeginClose();
-void MenuCtrl_ClearSyncMsgMenu();
-void MenuScreen_Reset();
-void Snd_EndMenuDuck();
-void Snd_BeginMenuDuck();
-void MenuCtrl_SyncFromInputMode();
-void ProcBase_RequestDelete(void *self);
 extern u8 *data_021c1b3c;
 }
 

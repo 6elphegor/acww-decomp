@@ -13,6 +13,7 @@ typedef int BOOL;
 
 
 #include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_02105d50.h"
 typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 extern void NNS_G3dGeSendDL(void *, u32);
@@ -35,7 +36,6 @@ extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern u32 data_0213bd58[2];
 extern u32 data_0213bd5c;
-extern void NNS_G3dGetCurrentMtx(void *, void *);
 
 // NNS_G3dFuncSbc_CALLDL (9-byte SBC command: display list offset + size, sent via NNS_G3dGeSendDL)
 static inline u32 rd32(u8 *p) { return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24); }

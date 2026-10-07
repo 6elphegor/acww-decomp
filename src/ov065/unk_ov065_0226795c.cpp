@@ -2,6 +2,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/SslSha1Context.h"
+#define PROTO_LOCAL_SslSha1_StoreBe32  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SslSha1_Transform  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SslSha1_Update  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov065/unk_ov065_0226795c.h"
 #pragma opt_strength_reduction off
 
 namespace Unk_ov065_02268470_Ns {
@@ -12,19 +17,7 @@ extern void (*sIpFree)(void *);
 
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
-void memmove(void *dst, const void *src, u32 n);
 
-s32 SslBigNum_Sign(u16 *a, s32 n);
-s32 SslBigNum_GetLength(u16 *a, s32 n);
-void SslBigNum_DivMod(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp);
-void SslBigNum_Square(u16 *dst, u16 *a, s32 n);
-void SslBigNum_MulWord(u16 *dst, u16 *a, u32 m, s32 n);
-void SslBigNum_Mul(u16 *dst, u16 *a, u16 *b, s32 n);
-void SslBigNum_AddWordAt(u16 *a, u32 v, s32 i, s32 n);
-s32 SslBigNum_Compare(u16 *a, u16 *b, s32 n);
-void SslBigNum_Sub(u16 *dst, u16 *a, u16 *b, s32 n);
-void SslBigNum_AddWord(u16 *dst, u16 *src, u32 c, s32 n);
-void SslBigNum_Add(u16 *dst, u16 *a, u16 *b, s32 n);
 
 s32 SslBigNum_GetLength(u16 *a, s32 n)
 {
@@ -455,19 +448,8 @@ extern void (*sIpFree)(u8 *);
 
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, s32, u32);
-void memmove(void *, void *, u32);
 
-u32 SslBigNum_GetLength(u16 *, u32);
-void SslBigNum_ModInverse(u16 *, u16 *, u16 *, u32, u16 *);
-void SslBigNum_Mul(u16 *, u16 *, u16 *, u32);
-void SslBigNum_SubWord(u16 *, u16 *, u32, u32);
-void SslBigNum_DivMod(u16 *, u16 *, u16 *, u16 *, u32, u16 *);
-void SslBigNum_MontgomeryStep(u16 *, u16 *, u32, u32, u32, u16 *, u16 *, u16 *, u16 *);
-void SslBigNum_Square(u16 *, u16 *, u32);
 
-void SslBigNum_Add(u16 *, u16 *, u16 *, u32);
-s32 SslBigNum_Compare(u16 *, u16 *, u32);
-void SslBigNum_Sub(u16 *, u16 *, u16 *, u32);
 
 #define ROL(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 #define F0(b, c, d) ((((c) ^ (d)) & (b)) ^ (d))
@@ -479,8 +461,6 @@ void SslBigNum_Sub(u16 *, u16 *, u16 *, u32);
 #define R3(a, b, c, d, e, x) e += ROL(a, 5) + F1(b, c, d) + (x) + 0xca62c1d6; b = ROL(b, 30);
 #define X(k) SslSha1_ExpandWord((k), w)
 
-void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n);
-u32 SslSha1_ExpandWord(s32 i, u32 *w);
 
 void SslBigNum_MontgomeryStep(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3) {
     MI_CpuCopy8(a, (s32)b, n * 2);

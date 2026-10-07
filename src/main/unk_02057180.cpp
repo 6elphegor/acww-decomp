@@ -1,6 +1,6 @@
 #include "types.h"
+#include "proto/main/unk_02057180.h"
 
-extern "C" u32 G3dTex_GetTexelCount(u32 v);
 
 u16 sTexDimSizes[8] = {0x0008, 0x0010, 0x0020, 0x0040, 0x0080, 0x0100, 0x0200, 0x0400};
 

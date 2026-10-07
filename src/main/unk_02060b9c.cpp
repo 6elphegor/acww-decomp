@@ -2,6 +2,12 @@
 #include "town/TownBlockMap.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
+#define PROTO_LOCAL_ChestStorage_GetItems  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Save_ConvertFakePaintings  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_02097444.h"
 
 extern u8 sInsectSpawnDecSlot3[8];
 extern u8 sInsectSpawnFebSlot2[8];
@@ -111,7 +117,6 @@ void *HouseRoomMaps_Get(s32 i);
 }
 
 extern "C" {
-void *PlayerData_Get(s32 i);
 }
 
 extern "C" {
@@ -130,15 +135,12 @@ extern "C" {
 }
 
 extern "C" {
-void Catalog_AddItem(void *p, u16 *v, s32 z);
 }
 
 extern "C" {
-u16 RecycleBin_Get(s32 i);
 }
 
 extern "C" {
-void RecycleBin_Set(s32 i, u16 v);
 }
 
 extern "C" {
@@ -162,11 +164,9 @@ void BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
 }
 
 extern "C" {
-void Grid_ConvertFakePaintings(void *g);
 }
 
 extern "C" {
-void Item_ConvertFakePainting(u16 *out, u16 *in);
 }
 
 static inline BOOL Unk_02060e3c_Eq(u16 *a, u16 *b) {

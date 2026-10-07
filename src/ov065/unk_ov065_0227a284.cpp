@@ -5,6 +5,14 @@
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockAddrIn.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227a284.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
 
@@ -54,7 +62,6 @@ void ghiLock();
 void ghiFreeLock();
 void ghiCreateLock();
 void ghiCleanupConnections();
-void GsUtil_Free(void *);
 s32 ArrayLength(void *);
 GHIPostState *ArrayNth(void *, s32);
 s32 ghiSendBufferedData(GHIConnection *);
@@ -66,8 +73,6 @@ BOOL ghiInitBuffer(GHIConnection *, void *, s32, s32);
 void ghiAppendCharToBuffer(void *, s32);
 BOOL ghiAppendDataToBuffer(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 STD_GetStringLength(const char *);
-s32 strchr(const char *, s32);
 s32 fread(void *, s32, s32, u32);
 
 s32 ghiProcessConnection(GHIConnection *);
@@ -110,8 +115,6 @@ void *ArrayNth(DArrayImplementation *, s32);
 void ArrayFree(DArrayImplementation *);
 void ArrayAppend(DArrayImplementation *, void *);
 DArrayImplementation *ArrayNew(s32, s32, ArrayElementFreeFn);
-void *GsUtil_Alloc(s32);
-void GsUtil_Free(void *);
 char *goastrdup(const char *);
 s32 ghiDoReceive(void *, u8 *, s32 *);
 s32 ghiAppendDataToBuffer(void *, u8 *, s32);
@@ -119,17 +122,12 @@ void ghiResetBuffer(void *);
 void ghiCallProgressCallback(void *, u32, u32);
 s32 GOAGetLastError(s32);
 s32 ghiProcessIncomingFileData(void *, u8 *, s32);
-u32 STD_GetStringLength(const char *);
 void fclose(s32);
 s32 fseek(s32, s32, s32);
 s32 ftell(s32);
 void rewind(s32);
-void memmove(void *, void *, s32);
-char *strstr(char *, char *);
 u32 strspn(char *, char *);
-char *strchr(char *, s32);
 s32 strncmp(char *, char *, s32);
-s32 atol(char *);
 s32 OS_SPrintf(char *, char *, ...);
 
 s32 ghiPostGetContentLength(GHIConnection *self);
@@ -175,10 +173,6 @@ extern char *ghiProxyAddress;
 extern u16 ghiProxyPort;
 extern u16 data_0213a510[];
 
-char *strchr(const char *, s32);
-void memcpy(void *, const void *, s32);
-s32 sscanf(const char *, const char *, ...);
-char *strstr(const char *hay, const char *needle);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
@@ -255,15 +249,9 @@ typedef void (*GPCallback)(void *, void *, void *);
 
 
 extern "C" {
-s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
-s32 strcspn(const char *, const char *);
-char *strchr(const char *, s32);
-s32 atol(const char *);
-void *memset(void *, s32, s32);
 char *goastrdup(const char *);
 void gpiSetErrorString(void *, const char *);
-void strzcpy(char *, const char *, s32);
 s32 gpiSendBuddyMessage(void *, s32, s32, s32);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
@@ -276,7 +264,6 @@ s32 gpiGetProfile(void *, s32, void *);
 s32 gpiFindBuddy(void *, s32);
 s32 gpiCanFreeProfile(void *);
 s32 gpiRemoveProfile(void *, void *);
-void GsUtil_Free(void *);
 
 }
 

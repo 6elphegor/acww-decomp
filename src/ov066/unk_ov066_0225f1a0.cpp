@@ -4,6 +4,13 @@
 
 #include "nitro/os_alarm.h"
 #include "nitro/wm.h"
+#define PROTO_LOCAL_LocalWlBcn_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114d84.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov066/unk_ov066_0225f1a0.h"
 
 // Local wireless layer over NitroSDK WM (B33 LocalWl_*): four heap work areas, sLocalWl (LocalWlWork),
 // sLocalWlSession (LocalWlSession), sLocalWlMp (LocalWlMpWork, MP data layer on port 13) and sLocalWlScan
@@ -301,16 +308,11 @@ void (*sLocalWlFreeHook)(void *);
 
 u32 OS_DisableInterrupts(void);
 s32 OS_RestoreInterrupts(u32);
-s32 Fatal_Trap(void);
 void DC_InvalidateRange(void *p, s32 v);
 s32 DC_StoreRange(void *, s32);
-s32 OS_InitTick(void);
 s32 OS_CancelAlarms(u32);
 s32 OS_SetAlarmTag(void *, u32);
-s32 OS_CancelAlarm(void *);
 s32 OS_SetAlarm(void *, s64, void *, void *);
-s32 OS_CreateAlarm(void *);
-s32 OS_InitAlarm(void);
 void OS_GetMacAddress(void *p);
 s32 MIi_CpuClearFast(s32, void *, s32);
 s32 MIi_CpuCopyFast(void *, void *, s32);
@@ -338,178 +340,27 @@ s32 WM_StartMPEx(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
 s32 WM_SetEntry(void *, u32);
 s32 WM_MeasureChannel(void *, s32, s32, u32, s32);
 s32 WM_SetGameInfo(void *, u32, u32, u32, u32, u8);
-u32 MATH_CountPopulation(u32 x);
 u32 func_0213335c(u32 a, u32 b);
-s32 LocalWl_SetEventCallback(void (*fn)(void *));
-void LocalWl_PostEvent(u32 a, u32 b);
-void LocalWl_CallEventCallback(void *p);
-void LocalWl_SetError(u32 v);
-void LocalWl_Free(void *p);
-s32 LocalWl_Alloc(s32 a, s32 b);
-void LocalWl_ClearResetFlag(void);
-void LocalWl_OnReset(WMMsg *m);
-void LocalWl_Reset(void *p);
-void LocalWl_OnPowerOff(WMMsg *m);
-void LocalWl_OnPowerOn(WMMsg *m);
-void LocalWl_OnDisable(WMMsg *m);
-void LocalWl_OnEnable(WMMsg *m);
-void LocalWl_CallPowerApi(u32 idx);
-void LocalWl_OnPowerApiDone(WMMsg *m);
-void LocalWl_Advance(void);
-u32 LocalWl_IsBeaconValid(WMMsg *m);
 void * LocalWl_GetBeaconGameInfo(LocalWlBeacon *r);
-s32 LocalWl_GetBeaconGameInfoSize(LocalWlBeacon *r);
-s32 LocalWl_GetLinkLevel(void);
-void LocalWl_ResetIfActive(void);
-s32 LocalWl_IsAborting(void);
-void LocalWl_Abort(void);
-void LocalWl_Step(void);
-void LocalWl_StepChildMp(void);
-void LocalWl_StepParentMp(void);
-void LocalWl_StepMeasuring(void);
-void LocalWl_StepConnecting(void);
-void LocalWl_StepScanning(void);
-void LocalWl_StepParentWaiting(void);
-void LocalWl_StepIdle(void);
-void LocalWl_StepEnabled(void);
-void LocalWl_StepReady(void);
-s32 LocalWl_RequestMode(s32 a, u32 b, u32 c);
-s32 LocalWl_IsModeReached(void);
-s32 LocalWl_Finish(void);
-s32 LocalWl_Init(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32));
-void LocalWl_ResetSettings(u32 a);
-s32 LocalWl_GetState(void);
-void LocalWl_OnEndScan(WMStartScanCallback *m);
-s32 LocalWl_EndScan(void);
-void LocalWl_OnScan(WMStartScanCallback *m);
-void LocalWl_StartScan(void);
-s32 LocalWl_GetBeacon(u32 idx, u32 b);
-s32 LocalWl_GetBeaconCount(u32 idx);
-s32 LocalWl_FilterBeacon(void *a, u8 *b);
-void LocalWl_StopScanSoon(void);
-void LocalWl_OnScanStopTimer(void);
-void LocalWl_OnBeaconFound(WMStartScanCallback *m);
-void LocalWl_SetupScanParam(void);
-void LocalWl_StopScanLoop(void);
-void LocalWl_ScanNextChannel(void);
-void LocalWl_OnScanTimer(void);
-void LocalWl_StartScanLoop(s32 t);
-u32 LocalWl_GetScanChannel(u32 idx);
-void LocalWl_SetBeaconFilter(s32 v);
-void LocalWl_FreeScanWork(void);
-void LocalWl_AllocScanWork(void);
-void LocalWl_SetRecvCallback(u32 v);
-BOOL LocalWl_IsMacSet(u8 *p);
-u8 LocalWl_GetMemberCount(void);
-void LocalWl_StepAuto(void);
-BOOL LocalWl_JoinBestParent(void);
-void LocalWl_NextRoleTurn(void);
-void LocalWl_StartScanMode(void);
-s32 LocalWl_ConnectToParent(LocalWlBeacon *p, u32 a, u32 b);
-void LocalWl_StartParent(u32 v);
-s32 LocalWl_CompareMac(u8 *a, u8 *b);
-u32 LocalWl_ReadBe32(u8 *p);
-void LocalWl_OnConnectFailReset(WMMsg *m);
 void LocalWl_OnSetEntry(LocalWlEventMsg *m);
-void LocalWl_SetEntry(u32 a);
 void LocalWl_OnEndMp(LocalWlEventMsg *m);
-void LocalWl_EndMp(void);
 void LocalWl_OnMpEvent(LocalWlEventMsg *m);
-void LocalWl_StartMp(void);
 void LocalWl_OnSetGameInfo(LocalWlEventMsg *m);
-void LocalWl_UpdateGameInfo(void);
 void LocalWl_OnDisconnect(LocalWlEventMsg *m);
-s32 LocalWl_Disconnect(u32 a);
 void LocalWl_OnChildConnectEvent(LocalWlEventMsg *m);
-void LocalWl_StartConnect(u32 a);
 void LocalWl_OnEndParent(LocalWlEventMsg *m);
-void LocalWl_EndParent(void);
 void LocalWl_OnParentEvent(LocalWlEventMsg *m);
-void LocalWl_StartParentNow(void);
 void LocalWl_OnSetParentParameter(LocalWlEventMsg *m);
-void LocalWl_SetParentParameter(void);
-s32 LocalWl_CheckEndRequest(void);
-void LocalWl_RequestEnd(void);
-void LocalWl_ApplyMemberTable(void *m);
-void LocalWl_OnChildControl(WMPortRecvCallback *m);
-void LocalWl_OnParentLost(void);
-void LocalWl_OnChildEvent8Stub(void);
 void LocalWl_OnChildConnected(LocalWlEventMsg *m);
-void LocalWl_OnChildReady(u32 idx, u8 *src);
-void LocalWl_OnParentControl(WMPortRecvCallback *m);
 void LocalWl_OnChildLeft(LocalWlEventMsg *m);
 void LocalWl_OnChildJoined(LocalWlEventMsg *m);
-void LocalWl_OnBeaconSent(void);
-void LocalWl_CallMemberLeftCb(u32 a);
-void LocalWl_OnControlRecv(WMPortRecvCallback *m);
-void LocalWl_ClearMembers(void);
-void LocalWl_CountMembers(void);
-void LocalWl_MergeMemberTable(u8 *a, u8 *b);
-void LocalWl_OnMemberTableSent(void);
-void LocalWl_SendMemberTable(void);
-void LocalWl_SendReady(void);
-void LocalWl_SetMember(u32 idx, u8 *src);
-s32 LocalWl_SetGameInfo(void *a, u32 n);
-void LocalWl_ConnectToBeacon(u8 *p, u32 v);
-void LocalWl_ConnectToSelected(void);
-void LocalWl_BeginParent(u32 a);
-void LocalWl_BuildParentParameter(u32 a);
-void LocalWl_BuildGameInfo(u32 a, u32 b);
-s32 LocalWl_Send(u32 a, u32 b, u32 c, u32 d);
-s32 LocalWl_IsReadyToSend(void);
-u32 LocalWl_GetConnectedMask(void);
-u32 LocalWl_GetMyAid(void);
-u32 LocalWl_Rand(void);
-void LocalWl_StartSession(void);
-void LocalWl_FinishWm(void);
-void LocalWl_InitWm(void);
-void LocalWl_AllocBuffers(void);
-void LocalWl_ResetSessionInfo(void);
-s32 LocalWl_PickChannel(u32 start);
-void LocalWl_StartMeasureChannels(void);
-void LocalWl_OnMeasureChannel(WMMeasureChannelCallback *m);
-s32 LocalWl_MeasureChannel(u32 a);
-u32 LocalWl_NextAllowedChannel(u32 a);
-void LocalWl_UpdateAllowedChannels(void);
-s32 LocalWl_MeasureNextChannel(u32 i);
-void LocalWlBcn_RefreshTimeouts(LocalWlBeaconList *o, s32 x);
 void LocalWlBcn_Clear(LocalWlBeaconList *o);
 void LocalWlBcn_CancelAlarms(LocalWlBeaconList *o);
-LocalWlBeacon * LocalWlBcn_Get(LocalWlBeaconList *o, u32 i);
-u32 LocalWlBcn_Count(LocalWlBeaconList *o);
 void LocalWlBcn_OnExpire(LocalWlBeacon *r);
 s32 LocalWlBcn_Add(LocalWlBeaconList *o, s32 a, u8 *b, u32 c, u16 d, void *e);
 void LocalWlBcn_Free(LocalWlBeaconList *o);
-void LocalWlBcn_Init(LocalWlBeaconList *o, u32 id, s32 n);
-s32 LocalWlMp_SetRecvBuffer(s32 idx, u32 a, u32 b);
-void LocalWlMp_Reset(void);
-void LocalWlMp_OnDataRecv(WMPortRecvCallback *m);
-void LocalWlMp_OnDataDisconnectStub(WMPortRecvCallback *m);
-void LocalWlMp_OnPacket(WMPortRecvCallback *m);
-void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size);
-LocalWlMpFrame * LocalWlMp_FindFrame(u32 id, LocalWlMpFrame *head);
-void LocalWlMp_OnSetMpData(WMPortSendCallback *m);
-void LocalWlMp_SendControl(u32 a, u32 b, u32 c, u32 d);
-s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
-void LocalWlMp_OnMemberLeft(u32 idx);
-void LocalWlMp_ChildSendStep(void);
-void LocalWlMp_ParentSendStep(void);
-s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src);
 void LocalWlMp_DeliverFrame(LocalWlMpFramePayload *p);
-void LocalWlMp_ReceiveRecord(u32 idx, u8 *msg);
-void LocalWlMp_BuildChildPacket(void);
 void LocalWlMp_PutParentRecord(LocalWlMpFrame *o);
-u16 LocalWlMp_PutSendRecord(LocalWlMpRecord *rec);
-void LocalWlMp_OnFrameSent(void);
-void LocalWlMp_OnChildPacketSent(WMPortSendCallback *w);
-void LocalWlMp_FinishSend(void);
-void LocalWlMp_OnIndicationStub(void);
-s32 LocalWlMp_Send(u8 *a, u32 b, u32 c, void (*d)(u32));
-s32 LocalWlMp_IsReadyToSend(void);
-void LocalWlMp_Shutdown(void);
-void LocalWlMp_Start(u8 *msg);
-void LocalWlMp_ClearRing(LocalWlMpFrame *p, s32 n);
-void * LocalWlMp_AllocRing(s32 n);
 void LocalWl_ApplyConfig(LocalWlConfig *in);
 }
 
@@ -867,12 +718,7 @@ void LocalWlMp_ReceiveRecord(u32 idx, u8 *msg) {
 #define LocalWlMp_ClearRing ((void (*)(void *, s32))LocalWlMp_ClearRing)
 #define LocalWlMp_PutParentRecord ((void (*)(void *))LocalWlMp_PutParentRecord)
 #define LocalWlMp_ReceiveRecord ((void (*)(s32, void *))LocalWlMp_ReceiveRecord)
-void LocalWlMp_OnPacket(WMPortRecvCallback *m);
-void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size);
 void LocalWlMp_DeliverFrame(LocalWlMpFramePayload *p);
-LocalWlMpFrame *LocalWlMp_FindFrame(u32 id, LocalWlMpFrame *head);
-s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
-s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src);
 
 void LocalWlMp_DeliverFrame(LocalWlMpFramePayload *p) {
     u16 i;

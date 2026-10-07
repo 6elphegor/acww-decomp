@@ -32,6 +32,29 @@
 #include "save/PatternOrder.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov004/unk_ov004_0223e9bc.h"
+#include "proto/ov049/unk_ov049_02258de0.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -121,31 +144,21 @@ extern s16 data_020c6cc0;
 extern void *gSceneBlockMap;
 
 BOOL CommManager_isOnline(void *g);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void *PlayerActor_GetActor(s32 a);
 s32 TalkRequest_IsActive();
 BOOL NpcTalkCtrl_isBusy(void *self);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-void *FtrActorGrid_GetInstance();
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
 void *Scene_GetTouchPicker();
-void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
-u16 *ShopStock_GetItemAtTile(s32 a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-void Item_FromPlacedForm(u16 *a, u16 *b);
-void NpcActor_ChargePlayer(void *owner, s32 v);
-void Pocket_AddItem(void *p, s32 v);
 void AbleShop_BuyAt(s32 a, s32 b, s32 c);
 s32 VillagerTrend_OnClothesBought();
 void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
-void *PlayerData_GetCurrent();
-s32 MenuCtrl_GetIndex();
 void *PlayerData_getPatterns(void *h);
 void *PlayerPatterns_getPatternByOrder(void *a, s32 b);
 void *Pattern_getInfo(...);
@@ -156,58 +169,31 @@ void ChoiceList_reset(void *h, s32 a, s32 b);
 void ChoiceList_setEntry(void *h, s32 a, u8 *b, s32 c, u8 *d, char *e, s32 f);
 void ChoiceList_loadTexts(void *h);
 s32 TalkWindowState_setNextMessage(void *self, void *buf, void *cb);
-BOOL MenuCtrl_IsResultOk();
 void *PlayerData_getErrands(...);
 void *SickVillagerRecord_getParcelErrand(void *p);
 s32 Talk_IsInOwnTown();
-s32 Pocket_GetItem(s32 i);
-void Pocket_RemoveItem(s32 a);
 void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
-void *ParcelErrand_GetRecord(void *p);
 void ErrandRecord_setStep(void *p, s32 a);
-s32 PlayerActor_TestLocalFlag0F();
-void FtrMgr_RestoreDisplayedWearableAt(s32 a, s32 b);
-void FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b);
-s32 PlayerActor_IsInAction(s32 a, s32 b);
 void TalkWindowState_unlockAdvance(void *ctx);
-u16 *MenuCtrl_GetChosenItems();
 s32 Item_GetPrice(void *p);
 s32 func_02133150(s32 a, s32 b);
-BOOL NetArea_IsLocalOwner();
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *PlayerPatterns_getPatternOrder(void *self);
 s32 PatternOrder_getSlot(void *, s32);
-BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
-BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
 u16 *PlayerData_getShirt(void *);
 u16 *PlayerData_getHat(void *);
 u16 *PlayerData_getFaceItem(void *);
-void PlayerActor_RequestWearShirtAlt(u16 *);
-void PlayerActor_RequestWearHatAlt(u16 *);
-void PlayerActor_RequestWearFaceItemAlt(u16 *);
 void TalkWindowState_lockAdvance(void *);
 u32 ChoiceList_getResult(void *p);
 BOOL Talk_IsDramaPending(void *owner, void *buf, s32 n);
 void Talk_AdvanceDrama(void *, void *);
-s32 NpcRegistry_FindSpNpc(s32 n);
 void ActorTalkRequest_setPartnerActor(void *self, s32 v);
 void ActorTalkRequest_setPocketFilter(void *, void *, u32, u32);
 void ActorTalkRequest_openSubScene(void *self, s32 a);
-void PlayerActor_SetNoFaceTalkTarget(s32, s32);
-void Camera_RestorePrevMode();
-void Camera_SetMode4();
-s32 Pocket_FindEmpty();
-s32 NpcActor_CanPlayerPay(void *owner, s32 v);
-s32 NpcActor_CheckPayoutFits(void *, s32, s32);
-void NpcActor_PayPlayer(void *owner, s32 v);
 BOOL func_0204bab8(u16 *);
-void MenuCtrl_ReturnChosenItems(s32);
-s32 Random_GlobalBelow(s32 n);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
-BOOL GameStart_IsActive();
 u32 strlen(const char *s);
 s32 strncmp(void *a, const char *b, u32 n);
-BOOL ParcelErrand_IsFor(void *a, void *b);
 void ActorTalkRequest_setItemNameSlot(void *self, void *a, s32 b, s32 c);
 void *AbleSistersPatterns_getPattern(void *a, u32 b);
 void PatternInfo_getTitle(void *a, void *b);
@@ -215,7 +201,6 @@ void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
 const PlayerIdInlineCopy *PatternInfo_getAuthor(void *a);
 const PlayerIdInlineCopy *PlayerData_getPlayerId(...);
 const TownIdInlineCopy *PlayerId_GetTownId(PlayerIdInlineCopy *a);
-s32 memcmp(const void *a, const void *b, u32 n);
 BOOL PlayerId_equals(PlayerIdInlineCopy *a, PlayerIdInlineCopy *b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
 void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
@@ -235,8 +220,6 @@ void NpcActor_FindFreeUnitNear(VecFx32 *out, void *self, VecFx32 *v);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
 void NpcMoveCtrl_setWaypoint(void *self, VecFx32 *v);
 void BlockMap_getWalkLinksAtPos(void *g, void *v);
-s32 Vec_Equal(VecFx32 *a, void *b);
-s32 Vec_NotEqual(VecFx32 *a, void *b);
 s32 Math_CountDownU8(void *p);
 s32 Math_CountDownU16(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -456,8 +439,6 @@ extern char sSpNpcMabelTexturePath[];
 extern SpNpcMabelChoiceMenu sSpNpcMabelItemChoiceMenus[4];
 extern SpNpcMabelTalkScript sSpNpcMabelTalkScripts[10];
 extern SpNpcMabelActEntry sSpNpcMabelActTable[16];
-BOOL SpNpcMabel_IsDeliveryItem(u16 *p, s32 v);
-SpNpcMabel *SpNpcMabel_Create();
 }
 
 extern "C" void _ZN14SpNpcMabelTalk12onMenuChoiceEj();

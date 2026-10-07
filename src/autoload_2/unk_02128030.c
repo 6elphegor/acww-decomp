@@ -10,6 +10,11 @@ typedef signed int s32;
 #include "types64.h"
 
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
+#define PROTO_LOCAL___flush_all  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128a20.h"
+#include "proto/autoload_2/unk_0212ef04.h"
 
 // MSL FILE (offsets as used by the code: handle 0, mode 4, state 8, eof 12, error 13, ..., idle_proc 72)
 typedef struct FILE {
@@ -55,20 +60,14 @@ typedef struct LocaleCmpt { char **time; LocaleCase *chars; LocaleCtype *ctype; 
 extern LocaleCmpt data_0213c350; // current locale
 
 int OS_TryLockMutex(OSMutex *);
-void OS_LockMutex(OSMutex *);
-void OS_UnlockMutex(OSMutex *);
 int __fread(const void *, u32, u32, FILE *);
 int __flush_all(void);
 int __flush_buffer(FILE *, int);
-s64 frexp(s64 a, s32 *out);
-s64 ldexp(s64 a, s32 v);
 u32 strlen(const char *);
-void __fill_mem(void *dst, int val, u32 n);
 int _fseek(FILE *, u32, int);
 int fseek(FILE *, int, int);
 int fflush(FILE *);
 int _ftell(FILE *);
-int mbtowc(u16 *, const char *, u32);
 
 // memcpy
 void *memcpy(void *dst, const void *src, u32 n) {
@@ -357,8 +356,6 @@ extern LocaleCase data_0213c378;
 extern LocaleCtype data_0213c33c;
 extern u16 data_0213c400[58];
 extern char *data_0213c388[8];
-int __mbtowc_noconv(u16 *pwc, const char *s, u32 n);
-int __wctomb_noconv(char *s, u16 wc);
 u16 data_0213c400[58] = {
     2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
     34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 0, 0, 0, 0, 0, 0,

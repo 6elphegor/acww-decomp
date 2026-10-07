@@ -1,12 +1,13 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02055bcc.h"
 
 
 
 extern "C" {
 u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
-void *Heap_Alloc(void *h, u32 n);
 extern void *gCurrentHeap;
 }
 

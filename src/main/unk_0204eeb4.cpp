@@ -5,6 +5,13 @@
 #include "town/Unk_0204e858_Grid.h"
 #include "sys/OverlaySlot.h"
 #include "town/MapBlockEntry.h"
+#define PROTO_LOCAL_FS_GetOverlayFileID  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OverlayMgr_Acquire  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0204f134.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d49c.h"
 
 
 
@@ -67,15 +74,12 @@ void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
 }
 
 extern "C" {
-BOOL FishTable_IsLateMonth(u8 v);
 }
 
 extern "C" {
-void *Heap_AllocTail(void *heap, u32 size);
 }
 
 extern "C" {
-void Fatal_Trap();
 }
 
 extern "C" {
@@ -83,27 +87,21 @@ void OverlayMgr_UnloadSlot(OverlaySlot *e);
 }
 
 extern "C" {
-void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
 }
 
 extern "C" {
-void OverlayMgr_UnloadOverlay(u32 id);
 }
 
 extern "C" {
-void OverlayMgr_LoadOverlay(u32 id);
 }
 
 extern "C" {
-void OverlayMgr_GetInfo(void *p, u32 id);
 }
 
 extern "C" {
-void File_UnloadOverlay(u32 id);
 }
 
 extern "C" {
-void File_LoadOverlay(u32 id);
 }
 
 extern "C" {
@@ -155,15 +153,12 @@ void Clock_GetMinuteHour(void *p);
 }
 
 extern "C" {
-u8 FishTable_GetPeriod(u8 r);
 }
 
 extern "C" {
-u32 FishTable_GetHourSlot(u32 r);
 }
 
 extern "C" {
-void FishTable_Pick(void *a, void *b, s32 c, u32 d, u32 e);
 }
 
 extern "C" {
@@ -182,18 +177,8 @@ extern "C" {
 void *BlockMap_SetItem(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d);
 }
 // prototypes
-extern "C" u32 FishTable_GetHourSlot(u32 r);
-extern "C" BOOL FishTable_IsLateMonth(u8 v);
-extern "C" u8 FishTable_GetPeriod(u8 x);
-extern "C" s32 Fish_GetWaterKind(s32 r);
-extern "C" void OverlayMgr_GetInfo(void *p, u32 id);
-extern "C" void OverlayMgr_LoadOverlay(u32 id);
-extern "C" void OverlayMgr_UnloadOverlay(u32 id);
-extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
 extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e);
 extern "C" void OverlayMgr_Acquire(u32 id);
-extern "C" void OverlayMgr_Release(u32 id);
-extern "C" void OverlayMgr_Init();
 
 
 extern "C" u32 FishTable_GetHourSlot(u32 r) {

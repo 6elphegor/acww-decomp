@@ -5,12 +5,14 @@
 #include "gfx/VramTask.h"
 #include "gfx/MatTexVramTask.h"
 #include "gfx/G3dResAccess.h"
+#include "proto/autoload_2/unk_02111ccc.h"
+#include "proto/autoload_2/unk_0211220c.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020b8340.h"
+#include "proto/main/unk_020b8594.h"
 
 extern "C" {
 // Other files
-void Gfx2d_LoadPaletteRange(u32 a, u32 b, u32 c, u32 d, u32 e);
-void Gfx2d_LoadScreen(u32 a, u32 b, u32 c, u32 d);
-void Gfx2d_LoadCharRange(u32 a, u32 b, u32 c, u32 d, u32 e);
 u32 _ZN12G3dResAccess10getTexDataEi(void *p, u32 x);
 u32 _ZN12G3dResAccess11getPlttDataEi(void *p, u32 x);
 u32 _ZN10G3dMatData10getTexSizeEv(void *p);
@@ -19,12 +21,8 @@ u32 _ZN10G3dMatData11getPlttAddrEv(void *p);
 void DC_FlushRange(void *p, u32 x);
 void NNS_G3dTexLoad(void *p, u32 x);
 void NNS_G3dPlttLoad(void *p, u32 x);
-void GX_BeginLoadTexPltt(void);
 void GX_LoadTexPltt(u32 a, u32 b, u32 c);
-void GX_EndLoadTexPltt(void);
-void GX_BeginLoadTex(void);
 void GX_LoadTex(u32 a, u32 b, u32 c);
-void GX_EndLoadTex(void);
 }
 
 
@@ -39,8 +37,6 @@ u8 TexTransfer_GetPlttCost(TexTransfer *p);
 
 
 extern "C" {
-void VramQueue2d_Dequeue(VramTask *p);
-BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
 

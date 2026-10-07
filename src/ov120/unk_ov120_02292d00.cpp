@@ -13,6 +13,22 @@
 #include "talk/MsgString9C.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
+#define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov120/unk_ov120_02292d00.h"
 
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 #define func_02063870 _ZN11MsgString9CD1Ev
@@ -42,8 +58,6 @@
 #define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 
 extern "C" {
-s32 ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 void func_020b8800(void *p);
 void func_0206fca8(void *p);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
@@ -59,17 +73,7 @@ extern u32 gCurrentHeap;
 extern s32 *PlayerActor_GetBodyPos(s32 v);
 extern void Scene_GetWarpRequest();
 extern s32 *ScenePos_GetPos(void *p);
-void Gfx2d_LoadPaletteFile(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void Gfx2d_LoadCharFile(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
-void File_LoadToBuffer(const void *a, void *b, u32 c);
 void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
-void BgScreen_SetRectPalette(void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void Gfx2d_SetLayerOffset(u32 a, u32 b, u32 c);
-void Gfx2d_ResetLayer(u32 a);
-void Gfx2d_ShowLayer(u32 a);
 s32 BgVramTask_requestScreen(void *a, void *b, u32 c, u32 d, u32 e);
 void BgVramTask_cancel(void *p);
 void func_02063888(void *p);
@@ -77,14 +81,11 @@ void TownId_GetNameString(void *a, void *b);
 void func_02063870(void *p);
 void String_SetSlot(u32 a, void *b);
 void LabelString_createLabel(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
-void String_Load2dMenu(void *a, u32 b);
 void LabelString_redrawAligned(void *a, u32 b, u32 c);
 void TownMapImage_Build(void *a, void *b);
 void TownMapMarkers_Clear(void *p);
 void MenuCursorBase_drawWrapped(void *p);
 void func_ov117_02292cac();
-void *Heap_AllocTail(void *a, u32 b);
-void Heap_Free(void *a, void *b);
 void func_02135558(void *a, void *b, void *c);
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
@@ -102,10 +103,6 @@ void MenuCursor_setAnimIfChanged(void *p, u32 v);
 s32 MenuScrollKnob_getGripY(void *p);
 s32 MenuScrollKnob_getGripX(void *p);
 BOOL MenuScrollKnob_hitTest(void *p, u32 a, u32 b);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 struct Unk_ov120_02293a2c_Oam {
     u16 attr0;
     u16 a : 9;
@@ -124,17 +121,11 @@ s16 *TownMapMarkers_Get(void *p, s32 i);
 u32 TownMapMarkers_GetKind(void *p, s32 i);
 void MsgString_clear(void *p);
 void LabelString_destroyLabel(void *p);
-void *PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
-s32 PlayerDataArray_FindById(void *a, s32 b);
-BOOL PlayerDataArray_IsUsed(void *a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void MIi_CpuCopy16(void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
-void PopupChoice_CopyPlayerIdName(void *p, s32 a);
-void PopupChoice_CopyResidentName(void *p, s32 a);
-void PopupChoice_CopyVillagerName(void *p, s32 a);
 }
 
 
@@ -341,7 +332,6 @@ extern "C" void *data_ov120_02294f30[2];
 extern "C" u8 sMapViewPlacesButtonCells[32];
 extern "C" u8 sMapViewResidentsButtonCells[32];
 extern "C" u8 sMapViewFrameCells[80];
-extern "C" MapViewerMenu *MapViewerMenu_Create();
 
 
 extern "C" MapViewerMenu *MapViewerMenu_Create() { return new MapViewerMenu(); }

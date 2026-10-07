@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK graphics (G2/G3/GX), autoload_2 0x02110c98-0x02111404. ARM code, mwcc 1.2/base with -O4,p.
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02110c98.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -29,10 +30,6 @@ extern s32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b);
 extern void GXi_NopClearFifo128_(void *dst); // GXi_NopClearFifo128_ (assembly, outside this unit)
 extern s32 G3X_GetMtxStackLevelPJ(u32 *p);
 extern s32 G3X_GetMtxStackLevelPV(u32 *p);
-extern void G3X_InitTable(void);
-extern void G3X_ResetMtxStack(void);
-extern void G3X_InitMtxStack(void);
-extern void G3X_ClearFifo(void);
 
 // G3i_LookAt_
 void G3i_LookAt_(const VecFx32 *pos, const VecFx32 *up, const VecFx32 *target, BOOL send, MtxFx43 *mtx) {

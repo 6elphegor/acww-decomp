@@ -2,6 +2,9 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "net/WfcObjGroup.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224b14.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
 
 #pragma thumb off
 
@@ -17,11 +20,8 @@ extern "C" {
 void MIi_CpuCopy16(void *, void *, u32);
 void MIi_CpuClear32(s32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
-void WfcFs_FreeFile(void *);
-void *WfcFs_LoadFile(u32, void *, u32);
 WfcObjGroup *WfcObj_Alloc(s32, s32, s32);
 GXOamAttr *WfcObj_GetOam(WfcObjGroup *, s32);
-WfcObjGroup *WfcOam_AllocEntry(s32, void *);
 
 WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag);
 WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx);

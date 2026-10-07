@@ -7,6 +7,14 @@
 #include "net/SockHostEnt.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockAddrIn.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_02285778.h"
+#include "proto/ov065/unk_ov065_02286934.h"
 
 
 extern "C" { s32 data_ov065_02291504; } //@
@@ -29,14 +37,10 @@ typedef GTI2IncomingBufferMessage It;
 
 extern "C" {
 extern u8 data_ov065_0228e150[];
-s32 memcmp(void *, const void *, u32);
-s32 GsUtil_Free(void *);
 s32 ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 gti2CheckResponse(void *, void *);
-s32 gti2GetResponse(void *, void *);
 s32 gti2GetChallenge(void *);
 s32 gti2BufferShorten(void *, s32, s32);
 s32 gti2BufferWriteData(void *, void *, s32);
@@ -54,8 +58,6 @@ s32 gti2SendServerChallenge(Cn *, void *, void *);
 s32 gti2ConnectionMemoryError(Cn *);
 s32 gti2ConnectionCommunicationError(Cn *);
 s32 gti2ConnectionError(Cn *, s32, s32);
-s32 gti2SNDiff(u32, u32);
-s32 gti2UShortFromBuffer(void *, s32);
 s32 gti2HandleESN(Cn *, s32);
 
 s32 gti2HandleAck(Cn *c, void *p, s32 n);
@@ -114,8 +116,6 @@ typedef SockAddrIn Sa062;
 extern u16 data_0213a510[];
 
 extern "C" {
-void GsUtil_Free(void *p);
-void *GsUtil_Alloc(s32 n);
 void *ArrayNth(void *v, s32 i);
 void ArrayDeleteAt(void *v, s32 i);
 s32 ArrayLength(void *v);
@@ -155,19 +155,10 @@ s32 gt2CloseAllConnectionsHard(Sock062 *c);
 s32 gti2HandleConnectionReset(Sock062 *c, u32 ip, u32 port);
 s32 gti2ConnectionCommunicationError(Conn062 *p);
 s32 gti2ConnectionError(Conn062 *p, s32 a, s32 b);
-s16 gti2SNDiff(u32 a, u32 b);
 void gti2SocketError(Sock062 *c);
 void gti2FreeSocketConnection(Conn062 *p);
 Conn062 *gti2SocketFindConnection(Sock062 *c, u32 ip, u16 port);
 void gti2CloseSocket(Sock062 *c);
-void *gti2CreateConnectionObject();
-void gti2MessageCheck(char **s, s32 *len);
-s32 gt2StringToAddress(char *s, u32 *ip, u16 *port);
-void memset(void *p, s32 v, u32 n);
-void memcpy(void *d, void *s, u32 n);
-char *strchr(char *s, s32 c);
-s32 atol(char *s);
-u32 STD_GetStringLength(char *s);
 }
 
 extern "C" {
@@ -250,8 +241,6 @@ extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
-char *STD_CopyString(char *dst, const char *src);
-u32 STD_GetStringLength(const char *s);
 
 char *Sock_InetNtoA(GsInAddr a);
 SockHostEnt *Sock_GetHostByName(const char *name);
@@ -265,26 +254,12 @@ s32 socket(s32 a, s32 b, s32 c);
 SockHostEnt *getlocalhost();
 s32 IsPrivateIP(void *p);
 s32 CanReceiveOnSocket(s32 fd);
-s32 CheckMagic();
-s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
-s32 RemoveNegotiator(_NATNegotiator *ctx);
-s32 AddNegotiator();
 _NATNegotiator *FindNegotiatorForCookie(u32 cookie);
 
-u32 GetLocalIP();
-u32 GetLocalPort(s32 fd);
 void SendInitPackets(_NATNegotiator *ctx);
 void SendPingPacket(_NATNegotiator *ctx);
-u32 NameToIp(const char *name);
-u32 ResolveServer(const char *name, const char *s);
-s32 ResolveServers();
-void NNCancel(u32 cookie);
 void NegotiateThink(_NATNegotiator *ctx);
 void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa);
-void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
 }
 
 

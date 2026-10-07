@@ -11,6 +11,16 @@
 #include "net/gpiInfo.h"
 
 #include "types64.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0226f9e0.h"
+#include "proto/ov065/unk_ov065_02270e34.h"
+#include "proto/ov065/unk_ov065_02277140.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_02285778.h"
+#include "proto/ov065/unk_ov065_02286934.h"
 
 extern "C" {
 void (*sDwcLoginDoneCallback)(void *, void *, u32);
@@ -43,19 +53,13 @@ extern s32 sDwcErrorCode;
 extern u32 sDwcLoginDoneArg;
 extern DwcLoginControl *sDwcLoginControl;
 extern DwcNasLoginCallback sDwcLoginDoneCallback;
-void DwcInet_Process(void);
-s32 DwcInet_IsLinkLost(void);
-void DwcInet_WaitDisconnect(void);
 void qr2_shutdown(void *);
 void ServerBrowserFree(void *);
-void NNFreeNegotiateList(void);
-void CloseStatsConnection(void);
 void gpSetCallback(void *, s32, s32, s32);
 void gpProcess(void *);
 void gpDestroy(void *);
 void DwcFriend_ClearControl(void);
 void DwcMatch_Shutdown(void);
-void DwcNet_ClearChannelTable(void);
 void gt2CloseSocket(void *);
 void DwcMatch_OnGt2Connected(void);
 void DwcConn_OnGt2Receive(void);
@@ -66,24 +70,19 @@ void DwcLogin_InitControl(void *, void *, void *, void *, u32, void *, s32);
 void DwcLogin_OnLoginDone(void);
 void DwcFriend_InitControl(void *, void *, void *, void *, void *);
 void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, void *);
-void DwcNet_InitChannelTable(void *);
-u32 STD_GetStringLength(const char *);
 void MI_CpuCopy8(const void *, void *, u32);
 void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
 s32 gpGetInfo(void *, u32, s32, s32, void *, s32);
 s32 gpDisconnect(void *);
 s32 gpConnectPreAuthenticatedA(void *, void *, void *, s32, s32, void *, s32);
-s32 strcmp(const char *, const char *);
 void DWCi_Acc_SetLoginIdToUserData(void *, void *, u32);
 s32 NasAuth_GetState(void);
 void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
 s32 NasAuth_Start(void *, void *);
-void STD_CopyString(char *, const char *);
 void MI_CpuFill8(void *, s32, u32);
-u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u32);
 u64 func_02133100(u64, u32, u32);
 s32 DWCi_Acc_IsAuthentic(void *);
@@ -91,9 +90,6 @@ s32 DWCi_Acc_IsValidLoginId(void *);
 s32 DWCi_Acc_CheckConsoleUserId(void *);
 void DWCi_Acc_CreateTempLoginId(void *);
 void DWCi_Acc_SetPlayerId(void *, u32);
-void DwcNet_Free(s32, void *, s32);
-void DwcNet_Alloc(void);
-void *DwcNet_AllocAligned(s32, s32, s32);
 s32 DwcFriend_SetOwnStatus(s32, void *, void *);
 s32 DwcConn_CreateGt2Socket(void);
 s32 DwcMatch_StartQr2(u32);
@@ -132,10 +128,8 @@ struct Unk_ov065_02271ba0_Out {
 extern "C" {
 extern DwcLoginControl *sDwcLoginControl;
 extern DwcFriendControl *sDwcFriendControl;
-u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 void *MI_CpuFill8(void *, s32, u32);
-s32 strcmp(void *, void *);
 s32 DWC_GetFriendDataType(void *);
 s32 DWC_IsBuddyFriendData(void *);
 void DWCi_SetBuddyFriendData(void *);
@@ -161,7 +155,6 @@ s32 gpProfileSearchA(void *, s32, s32, s32, s32, void *, s32, s32, void *, s32);
 s32 DwcFriend_NotifyAdded(s32);
 s32 DwcFriend_GetProfileId(s32);
 s32 DwcFriend_Fail(s32, s32);
-s32 CloseStatsConnection(void);
 s32 DwcFriend_HandleGpResult(s32);
 s32 DwcFriend_MergeDuplicate(DwcFriendData *, s32, s32);
 s32 DwcFriend_SendBuddyRequest(s32);
@@ -195,12 +188,8 @@ namespace F02271da0 {
 extern "C" {
 extern DwcFriendControl *sDwcFriendControl;
 extern DwcMatchControl *sDwcMatch;
-u64 OS_GetTick();
 s32 DWC_GetGsProfileId(s32, void *);
 s32 DWCi_Acc_IsValidFriendData(void *);
-s32 strcmp(const char *, const char *);
-s32 STD_GetStringLength(const char *);
-void STD_CopyString(char *, const char *);
 s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
@@ -220,18 +209,12 @@ void DwcFriend_Abort();
 s32 DwcFriend_Tick();
 s32 DwcFriend_HandleGpResult(s32 r);
 s32 DwcFriend_GetBuddyStatus(void *, GPBuddyStatus *);
-s32 NasBase64_Decode(const char *, s32, char *, u32);
-s32 NasBase64_Encode(void *, s32, void *, u32);
 s32 DwcMatch_HandleGt2Result();
 s32 DwcMatch_HandleNnResult(s32, s32);
 s32 DwcMatch_HandleNnStartResult();
 s32 DwcMatch_SendNnRequest(void *);
 s32 DwcMatch_Fail(s32, s32);
-u64 DwcNet_GetTimeMs();
-s32 GsUtil_GetKeyValue(const char *, char *, char *, s32);
-s32 PersistThink();
 s32 gt2Connect(u32, s32, s32, char *, s32, s32, s32, s32);
-s32 gt2AddressToString(u32, u32, s32);
 s32 DwcMatch_CancelNewClient(u32);
 s32 DwcMatch_RestartAfterNnFailure(u32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);

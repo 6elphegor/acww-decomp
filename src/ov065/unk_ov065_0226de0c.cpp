@@ -3,6 +3,17 @@
 #include "net/DwcHttp.h"
 
 #include "types64.h"
+#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_022671a0.h"
+#include "proto/ov065/unk_ov065_0226de0c.h"
+#include "proto/ov065/unk_ov065_0226f9e0.h"
 
 // Word view of DwcHttpParams for the struct copy in DwcHttp_Init (a copy of the field-typed struct compiles differently).
 struct DwcHttpParamsWords {
@@ -27,11 +38,8 @@ extern u32 gOwnIp;
 extern OSThreadInfo data_021fcc2c;
 
 s32 strlen(const char *s);
-char *strstr(const char *hay, const char *needle);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-void memmove(void *dst, void *src, u32 n);
-s32 atol(const char *s);
 s32 OS_SNPrintf(char *buf, s32 size, const char *fmt, ...);
 void OS_Sleep(s32 ms);
 void OS_GetLowEntropyData(void *p);
@@ -43,20 +51,14 @@ s32 OS_JoinThread(void *t);
 s32 OS_IsThreadTerminated(void *t);
 s32 OS_WakeupThreadDirect(void *t);
 s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
-u64 OS_GetTick(void);
-s32 strcmp(const char *a, const char *b);
-char *strcpy(char *dst, const char *src);
 char *strncpy(char *dst, const char *src, u32 n);
 s32 strncmp(const char *a, const char *b, u32 n);
 
 // other TUs
-s32 NasBase64_Decode(const char *s, s32 len, char *dst, u32 size);
-s32 NasBase64_Encode(void *a, s32 b, void *c, s32 d);
 s32 Dns_Resolve(void *);
 void IpSoc_Use(void *);
 void IpSoc_Init();
 void IpSoc_Bind(u32, u32, u32);
-void Ssl_SetRootCaList(void *, u32);
 void Ssl_EnableOnCurrentSocket(u32);
 void SslRand_AddSeed(u8 *, u32);
 s32 IpSoc_TcpConnect();

@@ -4,6 +4,20 @@
 #include "save/SaveRecord4.h"
 #include "town/VisitorPos.h"
 #include "ui/HudController.h"
+#define PROTO_LOCAL_Melody_SetPacked  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0211d20c.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_02034048.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c3e0.h"
+#include "proto/main/unk_0209cb74.h"
+#include "proto/main/unk_020b0e60.h"
 
 struct ClockOffset {
     u32 minutes;
@@ -51,7 +65,6 @@ extern s32 gClock[7];
 
 extern "C" {
 void Town_CheckDayChange();
-void RTC_Init();
 void RTC_GetDateTime(void *date, void *time);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 void DateTime_SubSeconds(ClockDateTime *p, u32 n);
@@ -81,33 +94,14 @@ s32 Clock_GetWeekday();
 s32 Date_GetDaysInMonth(u32 y, u32 m);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 
-void NpcSpawn_ResetAll(void);
-void NpcNetRecords_InitVillagers(void);
 void SaveVillagers_ResetMoods(void *);
-void *TownSessionState_Get(void);
-void TownSessionState_Reset(u8 *self);
-void RoomFtrState_ResetAll(void);
-void RoomObjSync_Reset(void);
-void BuildingStates_Reset(void);
-void BuildingOccupancy_Reset(void);
-void RoomWallFloor_ClearScenes(void);
-void EventWeekSlots_OnLoad(void *);
 void Weather_Apply(void *);
 void Town_OnLoad(void);
 void NookShop_UpdateDaily(void *, s32);
 void Melody_SetPacked(void *);
-void *TownSessionState_GetKatieState(u8 *p);
 void _ZN15KatieVisitState12pickKatiePosEv(void *self);
-void *TownSessionState_GetPeteFall(u8 *p);
 void _ZN13PeteFallState5clearEv(void *self);
-void TownSessionState_CheckTortimerReward(void *self);
-void *TownSessionState_GetVisitorPos(u8 *p);
-s32 Hud_GetCountdown(void);
-void LowBattery_Reset(void);
 void SaveVillagers_PickGreeter(void *);
-void MenuCtrl_InitKeyboardState(void);
-void HouseVisitor_ClearPresent(void);
-void *PlayerData_GetCurrent(void);
 void SaveVillagers_InitTalkUrges(void *, void *);
 void VillagerStates_ResetIdleFrames(void);
 void VillagerStates_ClearUnk1dBit2(void);

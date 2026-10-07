@@ -1,6 +1,10 @@
 #include "types.h"
 #include "actor/CharaFaceAnimWorkRef.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205d1f8.h"
+#include "proto/main/unk_02082d74.h"
 
 extern "C" const u32 data_020cb35c;
 extern "C" const u32 data_020cb360;
@@ -19,9 +23,6 @@ extern void *gCharaFaceAnimWorkHeap;
 extern u8 *gCommManager;
 extern CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
 
-void CharaFaceAnimWorkHeap_Destroy();
-void CharaFaceAnimWorkHeap_Create(void *parent);
-void *FrameHeap_Create(u32 size, void *heap);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
@@ -29,8 +30,6 @@ void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
-u32 NpcSpawn_GetSpNpcSlotCount();
-u32 CharaFaceAnimWork_GetHeapSize();
 }
 
 

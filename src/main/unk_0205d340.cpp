@@ -1,24 +1,21 @@
 #include "types.h"
 #include "player/PlayerFaceTexRef.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205d340.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 extern "C" {
 extern void *gPlayerFaceTexHeap;
 extern u8 *gCommManager;
 extern char sPlayerFaceTexPathBuf[0x14];
 
-void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 File_LoadToBuffer(void *path, void *buf, s32 size);
-s32 PlayerFaceTexHeap_Destroy();
-s32 PlayerFaceTexHeap_Create(void *parent);
-s32 PlayerFaceTex_GetBufferSize();
-void *PlayerFaceTex_GetPath(u32 x);
-void PlayerFaceTexPool_AllocBuffers(u32 *arr);
 }
 
 struct PlayerFaceTexPool {

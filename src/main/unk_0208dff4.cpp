@@ -7,9 +7,10 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "ui/HudUnkIcon.h"
 #include "talk/MsgString.h"
 #include "ui/LabelButton.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02094810.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 extern "C" {
@@ -21,7 +22,6 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 PlayerActor_GetAction(s32 v);
 }
 
 extern "C" {

@@ -1,0 +1,47 @@
+#ifndef PROTO_PROTO_MAIN_UNK_020027B4_H
+#define PROTO_PROTO_MAIN_UNK_020027B4_H
+
+// Prototypes of the functions defined in src/main/unk_020027b4.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Gfx3d_InitEngine
+void Gfx3d_InitEngine(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx3d_Init
+void Gfx3d_Init(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx3d_BeginFrame
+void Gfx3d_BeginFrame(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx3d_LoadDefaultToonTable
+void Gfx3d_LoadDefaultToonTable(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx3d_ApplyClearColor
+void Gfx3d_ApplyClearColor(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Gfx3d_SetClearDepth
+void Gfx3d_SetClearDepth(u32 v);
+#endif
+#ifndef PROTO_LOCAL_Gfx3d_SetClearColor
+void Gfx3d_SetClearColor(u16 v);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_IsMainScreenLayer
+BOOL Gfx2d_IsMainScreenLayer(u32 x);
+#endif
+}
+#endif
+
+#endif

@@ -23,6 +23,29 @@
 #include "save/Pattern.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_GeneralMenuHeader_GetStyle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_InitWithName  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov095/unk_02292360.h"
+#include "proto/ov126/unk_02297060.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -107,64 +130,26 @@ extern u8 *gCommManager;
 extern u32 data_ov126_02299ad0[4];
 
 // main
-s32 MenuCtrl_GetMode();
-s32 MenuCtrl_GetIndex();
-void MenuCtrl_SetResult(s32 a);
-void *MenuCtrl_GetText();
-void MenuCtrl_SetIndex(u8 a);
-void MenuCtrl_SetText(void *p, u32 a);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-s32 MenuCtrl_SetFriendPageFromIndex();
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
-void Snd_PlaySe(u32 v);
-void Gfx2d_LoadCharFile(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadPaletteFile(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
 void EncodedString_SetRaw(void *a, void *b, s32 c);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
-s32 String_CensorTaboo(void *a);
 void EncodedString_fromMsgString(void *a, void *b);
 void StrBuf_GetBytes(void *a, void *b, s32 c);
-void *FriendEntry_GetPlayerName(void *a);
-void *FriendEntry_GetTownName(void *a);
-void Mem_Copy(void *a, void *b, s32 c);
-s32 Text_EqualsTrimmed(void *a, void *b, s32 c);
-void Mem_Clear(void *p, s32 v);
-s32 Text_GetLength(void *p, s32 v);
-u32 Text_MeasureWidth(void *p, u32 a);
-BOOL Text_GetTrimmedLength(void *p, u32 a);
 void *BlancaFaceRecord_getPattern(void *a);
 void *Pattern_getInfo(void *a);
 void PatternInfo_setTitleRaw(void *a, void *b);
 void PatternInfo_getTitleRaw(void *a, void *b);
-BOOL Constellation_IsNameTaken(void *a, s32 b);
-void Constellation_SetName(void *a, s32 b);
-void Constellation_CopyName(void *a, s32 b);
 s32 TownId_InitWithName(void *a, void *b);
-s32 PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
-s32 PlayerDataArray_FindById(void *a, s32 b);
-BOOL PlayerDataArray_IsUsed(void *a, s32 b);
-s32 PlayerData_GetResident(void *a, s32 b);
 s32 PlayerId_getName(s32 a);
 void PlayerId_setName(s32 a, void *b);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
-void String_LoadByIndex(void *p, const char *fmt, s32 a);
-BOOL String_EqualsEncodedBytes(void *p, void *q, u32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
 void ItemName_setFromItem(void *p, void *q);
 void MsgString_copy(void *p, void *q);
 void MsgString_clear(void *p);
 void String_SetSlot(s32 a, void *p);
-void String_Load2dMenu(void *p, s32 a);
 void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void LabelString_redrawAligned(void *p, s32 a, s32 b);
 void LabelString_destroyLabel(void *p);
@@ -172,14 +157,7 @@ s32 PlayerData_getPatterns(s32 a);
 s32 PlayerData_getFriendList(s32 a);
 void *PlayerPatterns_getPatternByOrder(s32 a, s32 b);
 void *FriendList_GetEntries(s32 a);
-void *FriendEntry_GetFriendData(void *p);
-void FriendEntry_Clear(void *p);
-void *DwcFriendData_GetBytes(void *p);
-BOOL Net_WifiAddFriend(u32 a, void *b);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 BOOL CommManager_isSlotActive(void *g, s32 v);
-s32 Net_GetMode();
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 BOOL HandCursor_getAnim(void *p);
 BOOL HandCursor_isAnimDone(void *p);
@@ -214,9 +192,6 @@ void MenuBottomButtons_drawAt(void *p, s32 a);
 void MenuBottomButtons_freeTexts(void *p);
 void MenuButtons_LoadTextColors(void *p);
 void MenuBottomButtonsBody_setLayoutYesNo09(void *p, s32 a);
-s32 MenuKeys_HasLeft(void *p);
-s32 MenuKeys_HasRight(void *p);
-s32 MenuKeys_HasDown(void *p);
 
 // ov124 / ov111 / ov115 / ov090 / ov092
 void GeneralMenuHeader_setTitleHighlight(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -236,57 +211,9 @@ void MenuLauncher_onChildClosed(void *p);
 void MenuLauncher_setNextRequest(void *p, s32 a, s32 b);
 
 // ov095 (menu sub-object at +0x144)
-BOOL Keyboard_IsSlotDisabled(void *p, s32 a);
-void Keyboard_HighlightKey(void *p, s32 a);
-void Keyboard_ShrinkTypedRun(void *p);
-void Keyboard_StartKeyRepeat(void *p);
-s32 Keyboard_PressCursorKey(void *p);
-s32 Keyboard_GetKeyCode(void *p, s32 a, s32 b);
-s32 Keyboard_GetCursorX(void *p);
-s32 Keyboard_GetCursorY(void *p);
-void Keyboard_ClearHighlight(void *p);
-void Keyboard_ResetCursor(void *p);
-s32 Keyboard_GetTypedRunLength(void *p);
-void Keyboard_ResetTypedRun(void *p);
-s32 Keyboard_HandleModeKey(void *p, u32 a, s32 b);
-s32 Keyboard_InsertChar(void *p, void *q, u32 a, void *r, s32 b, s32 c, s32 d, s32 e);
-s32 Keyboard_ModifyCharKey103(void *p, u32 a);
-s32 Keyboard_ModifyCharKey104(void *p, u32 a);
-s32 Keyboard_ModifyCharKey105(void *p, u32 a);
 s32 Keyboard_ReplaceCharBeforeCursor(void *p, void *q, u32 a, u32 b, s32 c, s32 d);
-s32 Keyboard_IsControlCode(void *p, u32 a);
-s32 Keyboard_IsFull(void *p);
-s32 Keyboard_IsTooWide(void *p);
-s32 Keyboard_TouchKey(void *p, s32 a, s32 b);
-void Keyboard_BeginPaste(void *p);
-void Keyboard_EndPaste(void *p);
 void Keyboard_PlayPasteSe(void *p);
 void Keyboard_PlayCopySe(void *p);
-u32 Keyboard_DeleteRange(void *p, void *q, u32 a, u32 b, s32 c);
-u32 Keyboard_HitTestText(void *p, void *q, u32 a, u32 b, u32 c, void *d);
-void Keyboard_ResetKeyPalettes(void *p);
-void Keyboard_DisableKey(void *p, s32 a);
-void Keyboard_EnableKey(void *p, s32 a);
-void Keyboard_DisableModifierKeys(void *p);
-void Keyboard_UpdateModifierKeys(void *p, s32 a);
-BOOL Keyboard_UpdatePressedKey(void *p);
-BOOL Keyboard_TickKeyRepeat(void *p);
-s32 Keyboard_GetPressedKey(void *p);
-void Keyboard_EnterTabRowAtX(void *p, s32 a);
-s32 Keyboard_MoveCursor(void *p, s32 a);
-void Keyboard_LoadObjGfx(void *p);
-BOOL Keyboard_TouchPageTab(void *p);
-void Keyboard_EndFrame(void *p, s32 a);
-void Keyboard_LoadScreenNow(void *p, s32 a);
-void Keyboard_LoadScreenFile(void *p, const void *q);
-void Keyboard_LoadLetterChars(void *p, s32 a);
-void Keyboard_Shutdown(void *p);
-void Keyboard_Init(void *p, s32 a);
-s32 Keyboard_SetMode(void *p, s32 a, s32 b, s32 c);
-void Keyboard_RestoreLastPage(void *p, s32 a);
-void Keyboard_Draw(void *p, u32 a, void *b, u32 c);
-void Keyboard_DrawCopyPasteKeys(void *p, u32 a, void *b);
-void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 }
 
 
@@ -467,7 +394,6 @@ public:
 };
 
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
-extern "C" NameEntryMenu *NameEntryMenu_Create();
 extern "C" ProcProfile data_ov126_022999e0 = {(void *(*)())NameEntryMenu_Create, 0xab, 0xaf};
 extern "C" u32 data_ov126_02299ad0[4] = {0x802040c8, 0x000051c0, 0x404000c8, 0xffff51c4};
 extern "C" void _ZN13NameEntryMenu15transitionAct01Ev();

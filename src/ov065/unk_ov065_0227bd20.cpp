@@ -4,6 +4,13 @@
 #include "net/gpiProfile.h"
 #include "net/gpiInfo.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227bd20.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
@@ -17,15 +24,9 @@ namespace Nb {
 
 typedef void (*GPCallback)(void *, void *, void *);
 extern "C" {
-s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
-s32 strcspn(const char *, const char *);
-char *strchr(const char *, s32);
-s32 atol(const char *);
-void *memset(void *, s32, s32);
 char *goastrdup(const char *);
 void gpiSetErrorString(void *, const char *);
-void strzcpy(char *, const char *, s32);
 s32 gpiSendBuddyMessage(void *, s32, s32, s32);
 s32 gpiDeleteBuddy(void *, s32);
 s32 gpiAuthBuddyRequest(void *, s32);
@@ -38,7 +39,6 @@ s32 gpiGetProfile(void *, s32, void *);
 s32 gpiFindBuddy(void *, s32);
 s32 gpiCanFreeProfile(void *);
 s32 gpiRemoveProfile(void *, void *);
-void GsUtil_Free(void *);
 }
 }
 
@@ -67,8 +67,6 @@ s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
 s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
 void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
-void gpiDebug(GPConnection *, const char *, ...);
-void *GsUtil_Realloc(void *, s32);
 s32 gpiCheckForError(GPConnection *, char *, s32);
 s32 gpiProcessRecvBuddyMessage(GPConnection *, char *);
 s32 gpiOperationsAreBlocking(GPConnection *);
@@ -81,17 +79,9 @@ s32 gpiCanFreeProfile(GPIProfile *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiInitProfiles(GPConnection *);
 void SocketStartUp();
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 void TableFree(void *);
 
-char *strstr(const char *, const char *);
-void memcpy(void *, const void *, s32);
-void memmove(void *, void *, u32);
-s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
-void memset(void *, s32, u32);
-void srand();
 
 s32 gpiReset(GPConnection *h);
 s32 gpiDestroy(GPConnection *h);

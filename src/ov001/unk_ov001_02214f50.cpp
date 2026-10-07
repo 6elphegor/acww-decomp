@@ -1,5 +1,17 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_022140bc.h"
+#include "proto/ov001/unk_ov001_02214f50.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -7,55 +19,13 @@
 extern "C" {
 extern void *gWfcMsgBank;
 
-s32 WfcAddrEdit_Idle();
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetEditParams(s32, s32);
-s32 WfcUtil_GetEditParams(void *, void *);
-s32 WfcUtil_GetLanguage();
-s32 WfcMsg_GetString(void *, s32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcSound_Play(s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcGx_HidePlanes(s32, s32);
 void WfcUtil_LoadFileTo(const char *, void *);
-s32 WfcText_CreateBgCanvas(s32, s32);
-s32 WfcButtonBar_IsClosed();
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcUtil_HideTopMessage();
-s32 WfcButtonBar_Close();
-s32 WfcButtonBar_DisableInput();
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
 s32 WfcInput_IsKeyPressed(s32);
-s32 WfcButtonBar_SetResult(s32);
-s32 WfcButtonBar_EnableInput();
-s32 WfcUtil_OpenButtonBar(s32);
-s32 WfcText_DrawMonospace(s32, s32, s32, s32, s32, void *, s32);
-s32 WfcUtil_GetTextFlags();
-s32 WfcText_DrawTextRect(s32, s32, s32, s32, s32, s32, s32, s32);
-s32 WfcText_RequestTransfer(s32);
-s32 WfcManualSetup_SetMode(s32);
 s32 swprintf(void *, s32, void *, s32);
 void GX_LoadBG2Scr(void *, s32, u32);
-void WfcConnSelect_Enter();
-void WfcManualSetup_Enter();
 
-void WfcError_SetCode(s32 a);
-void WfcError_Exit();
-void WfcError_FadeOut();
-void WfcError_StartExit();
-void WfcError_HandleResult();
-void WfcError_Idle();
-void WfcError_HandleInput();
-void WfcError_Update();
-void WfcError_WaitButtonBar();
-void WfcError_WaitFadeIn();
-void WfcError_FadeIn();
-void WfcError_DrawMessage();
-void WfcError_LoadBg();
-void WfcError_Enter();
 
 const u16 sWfcErrorTextRect[4] = {0x0d, 0x3c, 0xe6, 0x5e};
 const u8 sWfcErrorCodeFont[8] = {0, 1, 1, 1, 1, 1, 0, 0};

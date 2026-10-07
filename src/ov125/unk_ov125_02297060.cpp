@@ -16,6 +16,18 @@
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
 #include "ui/LabelBalloon.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov125/unk_ov125_02297060.h"
 
 struct PopupChoiceIdList;
 
@@ -26,38 +38,11 @@ extern u8 gTouchCurY;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern void *gCurrentHeap;
-void PatternSelect_LoadPatternIcons();
-void PatternSelect_SetupBgLayers();
-void ProcBase_RequestDelete(void *p);
-void *ProcBase_GetParent(void *p);
-void *Heap_AllocTail(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
-void *PlayerData_GetCurrent();
-void Gfx2d_LinearToTilesInRow32(void *a, void *b, u32 c, u32 d, u32 e);
-void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
-void Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void MIi_CpuCopy16(void *a, void *b, u32 n);
-void Gfx2d_ResetLayer(u32 x);
-void Gfx2d_ShowLayer(u32 x);
-void Gfx2d_SetSubBgModeState(u32 x);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
-s32 Snd_PlaySe(s32 a);
-void MenuCtrl_SetIndex(u32 a);
-void MenuCtrl_SetResult(u32 v);
-s32 MenuCtrl_GetMode();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
 void StrBuf_GameToAscii(void *p, void *q);
 
 
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
-void ChoiceIdList_Clear(void *p, u32 v);
-void ChoiceIdList_Add(void *p, u32 a, u32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
 BOOL PopupChoice_TickDecideDelay(void *p);
 u32 PopupChoice_DecideCancel(void *p, s32 x);
@@ -182,7 +167,6 @@ public:
 };
 
 extern "C" u16 sPatternSelectIconCell[4];
-extern "C" PatternSelectMenu *PatternSelectMenu_Create();
 extern "C" ProcProfile sPatternSelectMenuProfile = {(void *(*)())PatternSelectMenu_Create, 0xaa, 0xae};
 u16 sPatternSelectIconCell[4] = {0x00f0, 0x81f0, 0x40c0, 0xffff};
 // Data order: this unit is placed object by object (see object_order.txt).

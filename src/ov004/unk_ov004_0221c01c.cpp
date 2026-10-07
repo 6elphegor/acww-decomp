@@ -35,6 +35,20 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "player/PlayerSpNpcRecord.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov004/unk_ov004_0221c01c.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_022264a0.h"
 
 
 class ActorTalkRequest;
@@ -156,8 +170,6 @@ void NpcMoveCtrl_setTurnMode(void *self, u8 a);
 void NpcMoveAnimSet_setRunAnim(void *self, s32 a);
 void NpcMoveAnimSet_setWalkAnim(void *self, s32 a);
 void NpcMoveAnimSet_setStandAnim(void *self, s32 a);
-s32 NpcActor_CanPlayerPay(s32 p, s32 v);
-void NpcActor_ChargePlayer(s32 p, s32 v);
 s32 NpcActionCtrl_getAction(void *self);
 s32 NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
@@ -166,7 +178,6 @@ s32 NpcTalkCtrl_isBusy(void *self);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
 void TalkWindowState_setNextMessage(void *self, void *p, u32 d);
-void *PlayerData_GetCurrent(void);
 void *PlayerData_getSpNpcRecord(void *p);
 void *PlayerData_getPlayerId(void *p);
 s32 PlayerSpNpcRecord_getCafeVisits(void *p);
@@ -174,51 +185,19 @@ void PlayerSpNpcRecord_setCafeVisits(void *p, u32 v);
 void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
 u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 s32 PlayerId_getGender(void *p);
-void Snd_SeEmitterPlayOneShotAlt(void *p, u32 a, u32 b, u32 c);
-void Camera_UnmuteSe();
-void Bgm_ReleasePriority(u32 a);
-void Bgm_Release(u32 a);
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
-s32 Random_GlobalBelow(s32 n);
 s32 Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
-s32 GameStart_IsActive(void);
-s32 NetArea_IsLocalOwner(void);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 void *Actor_findByProfile(s32 a, s32 b);
 void Actor_spawn(s32 a, s32 b, const void *c, const void *d, s32 e);
 s32 SpNpcRoostGuest_getGuest(void *p);
-s32 PlayerActor_IsInAction(s32 a, s32 b);
-void Hud_Hide(void);
-void Hud_Show(void);
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 void Model_GetJointWorldMtx(void *p, void *q, s32 n);
 void ThreeLayerAnimModel_updateLayers3(void *p);
 void JointBlend_start(void *p, s32 n);
-s32 Bgm_GetCurrent(void);
 s32 Math_IsInRange(s32 a, s32 b, s32 c);
-u8 *Snd_GetBeatState(void);
 // other ov004 units
-void PlayerActor_LocalPlayAnim98();
-void CafeCoffeeSet_SetState09();
-s32 CafeCoffeeSet_IsAnim0CDone();
-void CafeCoffeeSet_SetState06();
-void CafeCoffeeSet_SetState07();
-void CafeCoffeeSet_SetState01();
-void CafeCoffeeSet_SetState00();
-s32 CafeCoffeeSet_GetState();
-void CafeCoffeeSet_SetState08();
-void PlayerActor_LocalRequestDrinkCoffee();
-s32 CafeCoffeeSet_IsAnim0BAtFrame9();
-void CafeCoffeeSet_SetState03();
-void CafeCoffeeSet_SetState04();
-void CafeCoffeeSet_SetState02();
-void CafeCoffeeSet_SetState05();
-void PlayerActor_LocalRequestStandUp(s32 a);
-void CafeCoffeeSet_SyncToBrewster(void);
 }
 
 class SpNpcBrewsterTalk : public ActorTalkRequest {

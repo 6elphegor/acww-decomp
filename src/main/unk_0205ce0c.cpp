@@ -1,6 +1,12 @@
 #include "types.h"
 #include "actor/CharaFaceAnimRef.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205ce0c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02082d74.h"
 
 
 struct CharaFaceAnimPool {
@@ -26,9 +32,6 @@ extern u8 *gCommManager;
 extern const u8 sCharaFaceAnimKinds[];
 extern u8 sCharaFaceAnimPathBuf[];
 
-void CharaFaceAnimHeap_Destroy();
-void CharaFaceAnimHeap_Create(void *parent);
-void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
@@ -36,15 +39,8 @@ void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
-u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
-s32 File_LoadToBuffer(void *name, void *buf, s32 size);
-void Str_SPrintf(void *buf, const char *fmt, u32 a, u32 b);
 
-u32 CharaFaceAnim_GetKind(u32 x);
-u32 CharaFaceAnim_GetSlotSize();
-u32 CharaFaceAnim_GetAnimSize();
-u8 *CharaFaceAnim_GetPath(u32 x);
 }
 
 extern "C" void CharaFaceAnimPool_Create(u32 parent) {

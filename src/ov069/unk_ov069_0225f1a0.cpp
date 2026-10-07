@@ -8,6 +8,8 @@
 #include "talk/VillagerTalkHolidayTopics.h"
 #include "talk/VillagerTalkRequestReplyTopics.h"
 #include "talk/VillagerTalkTopics.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov069/unk_ov069_0225f1a0.h"
 
 // ov069: the state tables of the menu object (three pointers to member functions per entry). They are built at
 // start-up (the NULL members are copied from __ptmf_null) and VillagerTalkTopics_CopyTables copies them into main's tables.
@@ -30,7 +32,6 @@ struct VillagerTalkTopicsSubFns {
     VillagerTalkTopicsSubFn b;
     VillagerTalkTopicsSubFn c;
 };
-extern "C" void memcpy(void *, const void *, s32);
 
 extern VillagerTalkTopicsSubFns sHouseVisitTsuTopicTable[3];
 extern VillagerTalkTopicsSubFns sTalkBeginTopics[17];

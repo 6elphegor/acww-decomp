@@ -1,6 +1,20 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02203b1c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 struct SimpleStartStatus {
     s32 v[3];
@@ -26,7 +40,6 @@ void *gWfcMsgBank;
 SimpleStartStatus *sWfcSimpleStartStatus;
 //ENDDEFS
 
-extern void Fatal_Trap();
 extern void OS_Sleep(s32);
 extern void GXS_LoadBG1Char();
 extern void GXS_LoadBGPltt();
@@ -38,49 +51,18 @@ extern void GX_LoadOBJ();
 extern void GX_LoadOBJPltt();
 extern void GXS_LoadBG1Scr();
 
-extern s32 SimpleStart_GetResult(void *);
-extern s32 SimpleStart_Stop();
-extern s32 SimpleStart_Start(s32, s32, void *, void *, void *, u32);
-extern void WfcConfig_StoreSimpleStart(void *);
-extern u32 WfcUtil_GetLanguage();
-extern s32 WfcUtil_GetStartMode();
-extern s32 WfcUtil_TestOptionFlag(s32);
-extern void WfcUtil_RequestExit();
-extern void WfcUtil_SetScreenFlags(s32, s32);
-extern void WfcUtil_SetScene(void *);
 extern void WfcMsg_Unload(void *);
 extern void *WfcMsg_Load(void *);
-extern void WfcMsg_FreePool();
-extern void WfcMsg_InitPool();
-extern void WfcTopMenu_Enter();
-extern void WfcConnSelect_Enter();
-extern void WfcConfig_Shutdown();
-extern void WfcConfig_Init();
-extern u8 *WfcUtil_LocalizePath(u8 *);
 extern void WfcUtil_LoadFileTo(void *, void *);
-extern void WfcCursor_Free();
-extern void WfcCursor_Init();
-extern void WfcHighlight_Free();
-extern void WfcHighlight_Init();
-extern void WfcUtil_ResetTopMessage();
-extern s32 WfcFade_IsBusy(s32);
 extern void WfcCell_Unload(s32);
 extern void WfcCell_Load(s32, void *);
-extern void WfcFade_Start(s32, s32, s32, s32);
 extern void WfcGx_ShowPlanes(s32, s32);
 extern void WfcHeap_Free(void *p);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_AllocClear(s32, s32);
 extern void *WfcHeap_Alloc(s32, s32);
-extern void WfcTask_SetListActive(s32, s32);
 
 #pragma thumb off
-void WfcUtil_Quit();
-void WfcBoot_Dispatch();
-void WfcBoot_FadeIn();
-void WfcBoot_Enter();
-void WfcSimpleStart_Free(void *p);
-void *WfcSimpleStart_Alloc(s32);
 void WfcSimpleStart_StatusCallback(SimpleStartStatus *);
 
 void WfcBoot_Enter() {

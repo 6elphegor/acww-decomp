@@ -3,12 +3,12 @@
 #include "sys/RecordFile.h"
 #include "town/TownAcreCell.h"
 #include "town/TownAcreGrid.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0209bca8.h"
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
-void Str_SPrintf(char *dst, const char *fmt, ...);
-s32 File_GetDecodedSizeByPath(const char *s);
-s32 Random_GlobalBelow(s32 n);
 s32 AcreAttr_GetType(s32 n);
 extern const u32 sPondAcreIds[6];
 }

@@ -1,6 +1,10 @@
 // mwcc-flags: -nothumb -O4,p
 // autoload_2 0x02125c94-0x0212703c: wireless helper (WH-like) state callback, job-queue thread, chunk reassembly. mwcc 1.2/base, -O4,p.
 #include "sys/OSThread.h"
+#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02125c94.h"
+#include "proto/main/unk_0206d49c.h"
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -55,8 +59,6 @@ extern void OS_SetThreadPriority(void *, u32);
 extern void OS_SleepThread(u32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
-extern void OS_ExitThread(void);
-extern void Fatal_Trap(void);
 extern u32 WM_GetAllowedChannel(void);
 
 typedef struct { u32 flag; u32 irq; } WLock;
@@ -102,9 +104,7 @@ typedef struct { u16 id; u16 res; u16 sub; u16 f6; u16 f8; u16 fa; u16 fc; u16 f
 extern void MBi_CheckWmErrcode(u32, u32);
 extern u32 WM_SetLifeTime(void *, u32, u32, u32, u32);
 void MBi_ParentCallback(WMsg2 *m);
-void MBi_OnInitializeDone(void);
 
-void MBi_InitTaskInfo(void *p);
 BOOL MBi_IsTaskAvailable(void);
 BOOL MBi_IsTaskBusy(WJob *job);
 void MBi_SetTask(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio);

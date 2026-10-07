@@ -1,0 +1,19 @@
+#ifndef PROTO_PROTO_OV145_UNK_OV145_02291F60_H
+#define PROTO_PROTO_OV145_UNK_OV145_02291F60_H
+
+// Prototypes of the functions defined in src/ov145/unk_ov145_02291f60.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class DonationMenu;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_DonationMenu_Create
+DonationMenu *DonationMenu_Create();
+#endif
+}
+#endif
+
+#endif

@@ -1,5 +1,13 @@
 #include "sys/DtorEntry.h"
 #include "nitro/fs.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02119020.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02119f84.h"
+#include "proto/autoload_2/unk_0211a258.h"
+#include "proto/autoload_2/unk_0211a6c0.h"
+#include "proto/autoload_2/unk_0211dc4c.h"
+#include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file / fs_archive / fs_overlay) + MATH_CalcHMACMD5, autoload_2 0x02119434-0x02119de4. ARM code.
 typedef unsigned char u8;
@@ -20,8 +28,6 @@ typedef struct DtorEntry DtorEntry;
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void OS_SleepThread(OSThreadQueue *);
-extern void OS_WakeupThread(OSThreadQueue *);
 extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
@@ -31,19 +37,15 @@ extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
 extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
 extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
-extern FSArc *FS_FindArchive(const char *name, int len);
-extern void FS_InitArchive(FSArc *arc);
 extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 extern u32 OS_GetLockID(void);
 extern void CARD_UnlockRom(u32);
 extern void CARD_LockRom(u32);
-extern void CARD_Init(void);
 extern void CARDi_ReadRom(u32 dma, u32 src, void *dst, u32 len, void (*cb)(FSArc *), FSArc *arg, BOOL async);
 extern void DC_FlushRange(u32 addr, u32 len);
 extern void DC_InvalidateRange(u32 addr, u32 len);
 extern void IC_InvalidateRange(u32 addr, u32 len);
 extern void MIi_UncompressBackward(u32 addr);
-extern void Fatal_Trap(void);
 extern void DGT_Hash2CalcHmac(void *digest, const void *data, u32 len, const void *key, u32 keylen);
 extern void DGT_Hash1Reset(MD5Context *ctx);
 extern void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
@@ -112,8 +114,6 @@ u32 FSi_ReadDummyCallback(void);
 u32 FSi_EmptyArchiveProc(void);
 u32 FSi_WriteDummyCallback(void);
 int FSi_ReadRomCallback(FSArc *arc, void *dst, u32 src, u32 len);
-void FSi_OnRomReadDone(FSArc *arc);
-void FS_InitFile(FSFile *file);
 void FSi_InitRom(u32 dma);
 BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
 BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
@@ -123,17 +123,10 @@ s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async);
 s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 BOOL FS_CloseFile(FSFile *file);
 BOOL FS_WaitAsync(FSFile *file);
-int FSi_ExecuteSyncCommand(FSFile *file);
-FSFile *FSi_NextCommand(volatile FSArc *arc);
-void FSi_ExecuteAsyncCommand(FSFile *file);
 BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len);
-void FS_StartOverlay(FSOverlayInfoHeader *h);
 BOOL FS_LoadOverlayImage(FSOverlayInfo *p);
 BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
 BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
-void FS_EndOverlay(FSOverlayInfo *p);
-FSFileID FS_GetOverlayFileID(const FSOverlayInfoHeader *h);
-void FS_ClearOverlayImage(FSOverlayInfoHeader *h);
 u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 
 // FS_Init

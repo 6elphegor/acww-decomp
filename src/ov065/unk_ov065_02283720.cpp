@@ -7,6 +7,12 @@
 #include "net/gpersist.h"
 #include "net/gt2Main.h"
 #include "net/gpiCallback.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 extern "C" u8 enc1[16];
 
@@ -59,13 +65,9 @@ extern char enc3[];
 extern void *serverreqs;
 
 extern "C" {
-void xcode_buf(char *, s32);
-s32 ProcessStatement(char *, s32);
-s32 FindFinal(char *, s32);
 void _strlwr(char *);
 s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
 s32 gpiProcess(void *, s32);
-void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 SockHostEnt *Sock_GetHostByName(const char *);
@@ -83,25 +85,17 @@ void ArrayFree(void *);
 void *ArrayNth(void *, s32);
 void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
-char *strstr(const char *, const char *);
-s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
-s32 sscanf(const char *, const char *, ...);
-s32 atol(const char *);
-s32 memset(void *, s32, u32);
 
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
-void strzcpy(char *, const char *, s32);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
 s32 gpiStartSearch(void *, void *, s32, s32, s32);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
-void CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {
@@ -160,39 +154,15 @@ extern char *sGsPersistXorKey;
 
 
 s32 strncmp(const char *, const char *, u32);
-s32 atol(const char *);
-char *strstr(const char *, const char *);
-u32 STD_GetStringLength(const char *);
-void STD_ConcatenateString(char *, const char *);
-void memmove(void *, void *, u32);
-void memcpy(void *, const void *, s32);
-s32 rand();
-void srand(s32);
-s32 abs(s32);
 
 void *ArrayNth(DArrayImplementation *, s32);
 s32 ArrayLength(DArrayImplementation *);
-void CallReqCallback(s32, s32, s32, char *, s32);
-s32 ProcessInBuffer(char *, s32);
-void ClosePendingCallbacks();
 s32 CanReceiveOnSocket(s32);
 s32 recv(s32, char *, s32, s32);
 void shutdown(s32, s32);
 void closesocket(s32);
-void GsUtil_Free(void *);
-void *GsUtil_Realloc(void *, s32);
-void *GsUtil_Alloc(s32);
 void gti2CloseSocket(GTI2Socket *);
 
-void ProcessPlayerAuth(char *, s32);
-void ProcessGetPid(char *, s32);
-void ProcessGetData(char *, s32);
-void ProcessSetData(char *, s32);
-s32 FindRequest(s32, s32, s32);
-char *value_for_key_safe(char *, char *);
-char *value_for_key(char *, char *);
-s32 SocketReadable(s32);
-void CloseStatsConnection();
 s32 gti2VerifyChallenge(u8 *);
 
 

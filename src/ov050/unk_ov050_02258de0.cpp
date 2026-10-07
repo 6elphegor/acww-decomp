@@ -34,6 +34,31 @@
 #include "snd/BgmManager.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerErrandSlot_GetRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerErrandSlot_GetVillager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerErrands_GetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pocket_FindEmpty  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02034048.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov004/unk_ov004_0223e9bc.h"
+#include "proto/ov004/unk_ov004_0223f43c.h"
+#include "proto/ov050/unk_ov050_02258de0.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -415,10 +440,6 @@ s32 NpcActionCtrl_getAction(void *self);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
 void NpcMoveCtrl_setWaypoint(void *self, VecFx32 *v);
-void NpcActor_PayPlayer(void *self, s32 v);
-s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
-void NpcActor_ChargePlayer(void *self, s32 v);
-s32 NpcActor_CanPlayerPay(void *self, s32 v);
 void NpcActor_FindFreeUnitNear(VecFx32 *out, void *self, VecFx32 *v);
 s32 Talk_IsInOwnTown(...);
 void Talk_AdvanceDrama(void *a, void *b);
@@ -426,13 +447,7 @@ s32 Talk_IsDramaPending(void *a, void *b, s32 c);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_LockExit(s32 a);
-void RoomWallFloor_RestoreCarpet(s32 a);
-void RoomWallFloor_RestoreWallpaper(s32 a);
-void RoomWallFloor_SetCarpet(void *a, s32 b, s32 c, s32 d);
-void RoomWallFloor_SetWallpaper(void *a, s32 b, s32 c, s32 d);
 void RoomBgm_forceClosingMusic(void *p);
-void Camera_RestorePrevMode();
-void Camera_SetModeDefault();
 void TalkRequest_SetTargetDone(void *self);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 s32 TalkRequest_IsActive();
@@ -451,24 +466,13 @@ s32 HouseData_getDebt(void *g);
 void HouseData_orderRoofPaint(void *g, u32 a);
 s32 HouseData_getLevel(void *m);
 BOOL HouseData_isUpgradePending(void *p);
-s32 Item_IsClass4Furniture(u16 *p);
-s32 Random_GlobalBelow(s32 a);
 void TalkWindowState_setSlotFromString(void *o, s32 a, void *b, void *c);
 void TalkWindowState_setSlot(void *self, s32 id, void *buf);
 void TalkWindowState_setNextMessage(void *o, void *p, void *q);
-s32 MenuCtrl_GetCatalogItem();
-void MenuCtrl_ReturnChosenItems(s32 v);
-u16 *MenuCtrl_GetChosenItems();
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
 void func_02071e74(void *self);
 BOOL CommManager_isOnline(void *g);
 void VillagerTrend_OnFurnitureBought();
 BOOL SaveVillagers_AllKnowPlayer(void *a, u32 b);
-void *TownSessionState_Get();
-void *TownSessionState_GetClosingTime(void *p);
-void TownSessionState_SetFlag(void *p, s32 v);
-s32 TownSessionState_TestFlag(void *p, s32 a);
 s32 TurnipMarket_getPrice(void *p);
 s32 ShopClosingTime_isPastClosingTime(void *p);
 s32 ShopClosingTime_setClosingTimeToday(void *p);
@@ -478,13 +482,7 @@ s32 PlayerSpNpcRecord_stampArbeitDate(void *p);
 u8 *PlayerSpNpcRecord_getArbeitDate(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
-void *PlayerActor_GetBodyPos(s32 a);
 void PlayerActor_RequestWalkTo(VecFx32 *v, s32 a, s32 b);
-s32 PlayerActor_IsInAction(s32 a, s32 b);
-BOOL PlayerActor_IsScriptedWalking(s32 a);
-void *PlayerActor_GetActor(s32 a);
-void *PlayerData_GetCurrent();
-void PlayerDataArray_FindById(void *a, s32 b);
 void PlayerData_clearFlag(void *p, s32 v);
 void PlayerData_setFlag(void *h, u32 a);
 s32 PlayerData_testFlag(void *h, s32 a);
@@ -493,37 +491,16 @@ void *PlayerData_getErrands(void *a);
 void *PlayerData_getSpNpcRecord(void *h);
 u16 *PlayerData_getShirt(void *a);
 u32 PlayerData_getPlayerId(...);
-s32 Pocket_FindItem(u16 *p);
 void Pocket_CountMatching(void *buf, void *fn);
 s32 Pocket_FindEmpty(...);
-s32 Pocket_AddItem(void *p, s32 v);
-u16 Pocket_GetItem(s32 a);
-void Pocket_RemoveItem(...);
 void *SickVillagerRecord_getParcelErrand(void *a);
-void Arbeit_Finish(void *h);
-void Arbeit_StartBbsTask(void *h);
-void Arbeit_StartWateringCanDelivery(void *h);
-void Arbeit_StartCarpetDelivery(void *h);
-void Arbeit_StartLetterTask(void *h);
-void Arbeit_StartFurnitureDelivery(void *h);
-s32 Arbeit_StartGreetings(void *h);
-void Arbeit_StartPlanting(void *h);
-BOOL Arbeit_IsOnDuty(void *a);
-void Arbeit_ClearOnDuty(void *h);
-void Arbeit_SetOnDuty(void *h);
-void Arbeit_Start(void *h);
-s32 PlayerErrands_GetDeliveryRecipientName(void *h, void *buf, void *v);
 void *PlayerErrands_GetSlot(void *a, s32 b);
-BOOL ParcelErrand_IsFor(void *a, u16 *p);
-void *ParcelErrand_GetRecord(void *a);
-BOOL PlayerErrandSlot_IsStepDone(void *a);
 void *PlayerErrandSlot_GetVillager(void *p, s32 v);
 void *PlayerErrandSlot_GetRecord(...);
 void ErrandRecord_setStep(void *p, s32 v);
 u32 ErrandRecord_getStep(void *p);
 u32 ErrandRecord_getKind(void *p);
 BOOL ErrandRecord_isActive(void *p);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Date_DaysBetween(void *o, void *p);
 s32 Clock_GetWeekday();
 void Clock_GetDate(void *o);
@@ -531,7 +508,6 @@ s32 DateTime_IsInvalid(u8 *p);
 void SaveData_clearFlag(void *g, s32 a);
 void SaveData_setFlag(void *g, s32 a);
 BOOL SaveData_testFlag(void *g, s32 a);
-s32 NetArea_IsLocalOwner();
 s32 ChoiceList_getResult(void *self);
 void NookShop_SendCatalogOrder(void *p);
 s32 NookShop_CanTakeCatalogOrder();
@@ -550,27 +526,13 @@ void SceneWarp_RequestExit(s32 a, s32 b);
 void *Scene_GetTouchPicker();
 s32 Scene_GetPrevious();
 void *Scene_GetCurrent();
-void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
 s32 Math_CountDownU16(void *p);
 s32 Math_CountDownU8(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 Vec_NotEqual(VecFx32 *a, void *b);
-s32 Vec_Equal(VecFx32 *a, void *b);
-void Vec_Sub(void *out, void *a, void *b);
 s32 strncmp(const char *a, const char *b, s32 n);
 s32 strlen(const char *s);
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
-void *FtrActorGrid_GetInstance();
-u16 *ShopStock_GetItemAt(s32 a, s32 b);
-void Camera_SetMode12();
-void Camera_SetMode11();
-BOOL SpNpcNookShop_IsEmptyItem(u16 *p);
-s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self);
-BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m);
-SpNpcNookShop *SpNpcNookShop_CreateTommy();
-SpNpcNookShop *SpNpcNookShop_CreateTimmy();
-SpNpcNookShop *SpNpcNookShop_Create();
 }
 
 #define func_ov050_0225bd54_self _ZN17SpNpcNookShopTalk17checkNotInUniformEP12TalkStartMsg

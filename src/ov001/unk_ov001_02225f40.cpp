@@ -2,6 +2,9 @@
 #include "types.h"
 #include "net/WfcRect.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_0211ba58.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02225f40.h"
 
 #pragma thumb off
 
@@ -39,14 +42,12 @@ typedef volatile u32 vu32;
 extern "C" {
 u32 OS_DisableIrqMask(u32 a);
 void OS_EnableIrqMask(u32 a);
-void Fatal_Trap();
 u32 TP_GetLatestIndexInAuto();
 void TP_GetCalibratedPoint(WfcPoint *p, void *e);
 u32 FX_ModS32(u32 a, u32 b);
 void WfcUtil_SetPoint(u32 a, u32 b, WfcPoint *out);
 void *WfcHeap_AllocClear(s32, s32);
 void WfcHeap_FreeAndClear(void *);
-void TP_RequestAutoSamplingStopAsync();
 void TP_WaitBusy(s32);
 s32 TP_CheckError(s32);
 s32 TP_GetUserInfo(void *);

@@ -18,6 +18,25 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "player/PlayerInventory.h"
+#define PROTO_LOCAL_LetterParty_GetName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterParty_GetNameBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterParty_SetVillager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_FillFromVillager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_FillVillagerToVillager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_LoadTemplate2d  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_SetTexts  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_ClearAlt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_Load2d  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_CopyTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02097444.h"
 
 // Object filled by LetterDefaults_Init (0x52 bytes).
 struct LetterDefaults {
@@ -63,47 +82,21 @@ extern u8 gSaveVillagers[];
 extern "C" {
 void *MI_CpuFill8(void *dst, u32 v, u32 n);
 void *MI_CpuCopy8(const void *src, void *dst, u32 n);
-void Mem_Copy(const void *src, void *dst, u32 n);
-void Mem_Clear(void *p, s32 n);
-s32 Text_GetLineEnd(void *p, s32 n, s32 z);
-s32 Text_GetLength(void *p, s32 n);
-s32 MailText_LoadLetter(void *a, void *b, void *c, void *d, void *e, void *f);
-s32 MailText_LoadLetterZ(void *a, void *b, void *c, void *d, void *e1, void *e2, void *e3, void *e4, void *name);
-void MailText_SetSlot(s32 i, void *x);
 void VillagerId_CopyFrom(void *o, void *x);
 void VillagerId_CopyTo(void *src, void *dst);
 void VillagerId_Copy(void *o, void *x);
-void String_Load2dMenu(void *o, u32 x);
-void String_ToEncodedBytes(void *o, void *x);
 void StrBuf_ClearAlt(void *o);
 void String_Load2d(void *dst, void *code, void *z);
-void *PlayerData_GetCurrent();
 u8 *_ZN15PlayerInventory9getUnk988Ev(void *);
-void *PlayerData_GetResident(void *, s32);
 void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 
 void LetterDefaults_Init(LetterDefaults *o);
 void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
-void LetterDefaults_Store(LetterDefaults *a, LetterView *b);
-void Letter_SetSignature(LetterView *o, u8 *p);
-u32 Letter_IsBottle(LetterView *self);
-void Letter_GetSenderNameBytes(LetterView *self, void *out);
 void Letter_SetTexts(LetterView *self, s32 *pv, void *a, void *b, void *c);
-void Letter_FillBottleMail(LetterView *self, void *a, void *b, void *c, s32 v);
-void Letter_FillSystemMail(LetterView *self, void *a, void *b, void *c, s32 v, u8 *pef, u8 *ped, void *obj);
 void Letter_FillVillagerToVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
 void Letter_FillFromVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
-void Letter_Clear(LetterView *self);
-void Letter_InitDraft(LetterView *self, u32 v);
-u32 LetterParty_IsType(LetterParty *self, u32 t);
-void LetterParty_SetType(LetterParty *self, u32 v);
-void LetterParty_SetBottle(LetterParty *self);
-void LetterParty_SetFutureSelf(LetterParty *self, void *src);
-void LetterParty_SetPlayer(LetterParty *self, void *src);
 void LetterParty_SetVillager(LetterParty *self, void *src);
-LetterParty *LetterParty_AsVillager(LetterParty *self);
-LetterParty *LetterParty_AsPlayer(LetterParty *self);
 void LetterParty_GetName(LetterParty *self, void *out);
 void LetterParty_GetNameBytes(LetterParty *self, void *out);
 }

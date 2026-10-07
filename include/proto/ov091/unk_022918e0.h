@@ -1,0 +1,19 @@
+#ifndef PROTO_PROTO_OV091_UNK_022918E0_H
+#define PROTO_PROTO_OV091_UNK_022918E0_H
+
+// Prototypes of the functions defined in src/ov091/unk_022918e0.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class LetterViewMenu;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_LetterViewMenu_Create
+LetterViewMenu *LetterViewMenu_Create();
+#endif
+}
+#endif
+
+#endif

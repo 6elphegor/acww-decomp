@@ -3,6 +3,16 @@
 #include "town/TownEventRecord.h"
 #include "town/TownBlockMap.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_ItemInfo_GetPrice  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Item_FromPlacedForm  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0204a780.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0204f2a4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
 
 // An 8-byte bss block (used by unk_02041e00.cpp).
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
@@ -177,16 +187,6 @@ BOOL Item_IsInRange(u16 *p, u32 lo, u32 hi);
 s32 Item_GetId(u16 *p);
 void Item_SetId(u16 *p, u32 v);
 void Item_Assign(u16 *p, u32 v);
-u32 Item_GetFlowerAltCount();
-u32 Item_GetFlowerItemCount();
-BOOL ItemInfo_TestFlag1(u16 *p);
-s32 ItemInfo_GetIndoorUnk0(u16 *p);
-s32 ItemInfo_TestFlag4(u16 *p);
-BOOL ItemInfo_TestFlag3(u16 *p);
-BOOL Ftr_TestIndoorFlagC(u16 *p);
-BOOL Ftr_TestIndoorFlag7(u16 *p);
-u32 Insect_GetBaseSize(u32 x);
-s32 Fish_GetBaseSize(s32 x);
 void Item_FromPlacedForm(void *p, u32 x);
 s32 Item_GetPrice(void *p);
 BOOL Item_IsTreeStage0(u16 *p);
@@ -328,20 +328,12 @@ BOOL Item_IsFurniture(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
 s32 Item_GetIdClass(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-u32 Fish_GetWaterKind(s32 x);
 void Item_Copy(u16 *dst, u16 *src);
-s32 ItemInfo_IsHoldable(u16 *p);
-s32 ItemInfo_GetKind(u16 *p);
-s32 ItemInfo_GetUnk07(u16 *p);
-s32 ItemInfo_GetUnk02(u16 *p);
 s32 ItemInfo_GetPrice(const ItemId &p);
 s32 NookShop_IsSaleTime(void *p);
 s32 NookPoints_GetRank(u32 x);
 u16 *NookPoints_GetValuePtr(u16 *p);
 u16 *_ZN10PlayerData13getNookPointsEv(void *p);
-void *PlayerData_GetCurrent();
-s32 FtrInfo_GetPrice(s32 x);
-s32 PlayerData_GetCurrentIndex();
 s32 Clock_GetDate(ClockDate *d);
 s32 Date_DaysBetween(ClockDate *a, ClockDate *b);
 s32 Clock_GetYear();
@@ -350,7 +342,6 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void DateTime_AddDays(void *p, s32 n);
-s32 Random_GlobalBelow(s32 n);
 TownBlockMap *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(TownBlockMap *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
 void BlockMap_SetItemAtUnit(TownBlockMap *w, u16 *item, s32 x, s32 y, u32 z);

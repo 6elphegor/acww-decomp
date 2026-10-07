@@ -5,6 +5,11 @@
 #include "gfx/Camera.h"
 #include "actor/Actor.h"
 #include "gfx/DebugColor.h"
+#define PROTO_LOCAL_Camera_GetLookAtPoint  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/ov068/unk_ov068_0226647c.h"
 
 
 class CameraEventModes;
@@ -36,8 +41,6 @@ extern u16 sTownTourBuildings[];
 extern const u32 sTownTourBuildingAttrs[];
 extern void *sTownTourOffsets[];
 VecFx32 *PlayerActor_GetBodyPos(s32 id);
-void Camera_StartBlend();
-void Camera_FinishBlend();
 void Camera_GetLookAtPoint(VecFx32 *out, CameraEventModes *self);
 void VEC_Add(VecFx32 *a, void *b, VecFx32 *c);
 void Math_StepS32Alt(void *a, s32 b, s32 c);
@@ -47,10 +50,6 @@ s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s
 void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
 s32 Math_CountDownU16(void *);
 s32 func_01ffcb0c(s32, s32);
-s32 Random_GlobalBelow(s32);
-s32 Camera_UpdateSway(Camera *c);
-void Camera_SetSwayPattern2(Camera *c, s32 idx);
-void Camera_SetSwayPattern(Camera *c, s32 idx);
 }
 
 class CameraEventModes {

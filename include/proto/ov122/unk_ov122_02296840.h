@@ -1,0 +1,29 @@
+#ifndef PROTO_PROTO_OV122_UNK_OV122_02296840_H
+#define PROTO_PROTO_OV122_UNK_OV122_02296840_H
+
+// Prototypes of the functions defined in src/ov122/unk_ov122_02296840.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class LetterWriteMenu;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_LetterWriteMenu_SetupBgLayers
+void LetterWriteMenu_SetupBgLayers();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_LetterWriteMenu_Create
+LetterWriteMenu *LetterWriteMenu_Create();
+#endif
+}
+#endif
+
+#endif

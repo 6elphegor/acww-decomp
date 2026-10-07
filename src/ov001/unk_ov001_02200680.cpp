@@ -3,6 +3,9 @@
 #include "types.h"
 #include "net/SockAddrIn.h"
 #include "net/AossParam.h"
+#define PROTO_LOCAL_Aoss_ConnectAp  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02200680.h"
+#include "proto/ov001/unk_ov001_02202c44.h"
 
 struct AossRandState {
     u32 seed;
@@ -170,15 +173,9 @@ s32 Sock_Poll(void *, s32, s64);
 s32 Sock_RecvFrom(s32, s32, s32, s32, u8 *);
 s32 Sock_Cleanup();
 s32 Sock_Startup(void *);
-s32 Aoss_WlanDisconnect();
 void *MI_CpuFill8(void *, s32, u32);
 void *MI_CpuCopy8(void *, void *, u32);
 void OS_Sleep(s32);
-void *Aoss_Alloc(s32 n);
-void Aoss_Free(void *p);
-s32 Aoss_NotifyProgress(s32 a);
-s32 Aoss_ScanAps(void *pp);
-void Aoss_Sleep(s32 ms);
 s32 Aoss_ConnectAp(void *cmd, void *p);
 }
 

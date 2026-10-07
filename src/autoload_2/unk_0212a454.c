@@ -1,3 +1,5 @@
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_0212a454.h"
 // mwcc-flags: -nothumb -O4,p
 // MSL C library strtold.c: __strtold, autoload_2 0x0212a454-0x0212b770, with the "NAN(" and
 // "INFINITY" initialisers of its local model[] arrays (.data 0x0213c528-0x0213c53c). ARM code, mwcc 1.2/base.
@@ -24,7 +26,6 @@ extern u8 data_0213a490[];
 extern float data_0213c31c;
 extern double data_0213c324;
 extern double __dec2num(const decimal *d);
-extern double nan(const char *);
 #define HUGE_VALF data_0213c31c
 #define HUGE_VAL data_0213c324
 #define isspace(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[c] & 0x100))

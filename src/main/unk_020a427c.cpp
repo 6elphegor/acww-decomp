@@ -9,6 +9,42 @@
 #include "save/TownId.h"
 #include "sys/ProcProfile.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_NetArea_BuildStateA  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetArea_BuildStateB  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetArea_SendStateA  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetArea_SendStateB  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSceneMsg_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSceneMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSceneMsg_Set  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetStatusUpdateMsg_Pack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSyncMsg_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSyncMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_02110c98.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_0208e6d8.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c9f8.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020a6388.h"
+#include "proto/main/unk_020a647c.h"
+#include "proto/main/unk_020a6564.h"
+#include "proto/main/unk_020a65fc.h"
+#include "proto/main/unk_020b7190.h"
 
 
 
@@ -21,14 +57,10 @@
 
 // stack objects with plain-function constructors and destructors
 extern "C" {
-void *NetStatusUpdateMsg_Init(void *);
-void *NetStatusUpdateMsg_Fini(void *);
 void NetStatusUpdateMsg_Pack(void *, u32, u32, u32, u32);
 void *NetSceneMsg_Init(void *);
 void *NetSceneMsg_Fini(void *);
 void NetSceneMsg_Set(void *, u32);
-void *NetStatusMsg_Init(void *);
-void *NetStatusMsg_Fini(void *);
 }
 
 struct NetStatusUpdateMsg {
@@ -178,49 +210,15 @@ static inline BOOL IsZero_020a5d4c(u8 v) {
 }
 
 extern "C" {
-void Gfx3d_InitEngine(void);
-void Snd_DestroyScene(void);
-s32 GameProc_CreateChild(u32 a, u32 b, s32 c, s32 d);
-void Scene_PostCreateStub(void);
 void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
-s32 CharInteractSync_Reset(void);
-void ScreenTransition_ShowCover(void);
-s32 ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c);
-s32 ScreenTransition_StartFadeOut(u32 a, u32 b);
 void Field_UpdateActions(void);
-void Gfx_ResetDisplayRegs(void);
-void MenuCtrl_ResetForceClose(void);
-s32 Comm_GetMemberMask(void);
-void Comm_ProcessReceived(s32 a);
-void TransitionCommIcon_Suspend(void);
-s32 PlayerData_IsUsedByIndex(s32 a);
-s32 PlayerData_Get(s32 a);
 LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(s32 a);
-void SoftReset_ClearSystems(void);
-void SaveManager_SetEndSessionSave(s32 a);
-void Net_SetJoiningAid(s32 a);
-void SaveManager_RequestAct1B(void);
-void SaveManager_RequestAct19(void);
-void SaveManager_RequestAct18(void);
-void SaveManager_RequestAct16(void);
-void SaveManager_RequestAct15(void);
-void NetArea_SetPendingStatus(u32 idx, u32 a, u32 b, u32 c, u32 d);
-void NetArea_SetMoveReady(s32, s32);
-void NetArea_SetSlotStatus(s32 a, s32 b, s32 c, s32 d, s32 e);
-void NetArea_QueueMoveRequest(s32 a, s32 b);
-void NetArea_OnSceneCreateNop(void);
-BOOL NetArea_IsBusyStubA();
-BOOL NetArea_IsBusyStubB();
-void NetArea_ParseStateB();
 void NetArea_BuildStateB(s32 a);
-void NetArea_ParseStateA();
 void NetArea_BuildStateA(s32 a);
-void NetSyncMsg_Pack(void *p, u32 a, u32 b, u32 c);
 void NetSyncMsg_Fini(void *p);
 void NetSyncMsg_Init(void *p);
-void NetStatusMsg_Pack(void *, s32, u32, u32, u32, u32);
 s32 Scene_GetWarpRequest(void);
 u32 Scene_GetRequestedScene(void);
 s32 SceneWarp_GetScene(s32 a);
@@ -228,23 +226,8 @@ void Scene_SavePlayerPos(s32 a, s32 b);
 void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
 void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 s32 Scene_GetCurrent(void);
-void FieldInfoBalloon_ShowCancelled(void);
-void FieldInfoBalloon_ShowSyncKindMsg(s32 a);
-void FieldInfoBalloon_ShowSyncWaitMsg(s32 a);
-void Net_WifiHostKeepAlive(void);
-u32 Net_GetConnectedMask(void);
-s32 ProcBase_HasCreatingChild(void *p);
-s32 ProcBase_RequestDelete(void *p);
-void GX_SetBankForTexPltt(s32 a);
-void GX_SetBankForTex(s32 a);
-void GX_SetBankForBGExtPltt(s32 a);
-void GX_SetBankForOBJ(s32 a);
-void GX_SetBankForBG(s32 a);
-void G3X_Init(void);
 s32 OS_ResetSystem(s32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-s32 memcmp(const void *a, const void *b, u32 n);
-void func_02133ef8(void *dst, u32 size);
 }
 
 extern NetSessionState gNetSessionState;
@@ -267,55 +250,8 @@ extern void *gActorDefaultParent;
 
 // own prototypes
 extern "C" {
-s32 NetArea_GetSlotScene(s32 a);
-s32 NetArea_IsSlotOwner(s32 a);
-s32 NetArea_IsSlotMoving(s32 a);
-s32 NetArea_IsLocalOwner();
-s32 NetArea_IsLocalMoving();
-s32 NetArea_FindOwner(u32 a);
-s32 NetArea_ResolveRoute(s32 a, s32 b, u32 c, u8 *d);
 void NetArea_SendStateA(s32 a);
 void NetArea_SendStateB(s32 a);
-s32 NetArea_FindSlotInScene(u32 a);
-void NetArea_SendMoveTarget();
-void NetSession_SetSyncState(s32 a, s32 b);
-s32 NetSession_GetSyncState(s32 a);
-void NetSession_SetSyncMemberMask(s32 a);
-u16 NetSession_GetSyncMemberMask();
-void NetSession_SetSyncRequester(s32 a);
-void NetSession_SetMemberSyncReply(s32 a, s32 b);
-void NetSession_SetSyncKind(s32 a);
-s32 NetSession_GetSyncKind();
-void NetSession_SetActiveSyncKind(s32 a);
-s32 NetSession_GetActiveSyncKind();
-s32 NetSession_GetLastSyncSlot();
-void NetSession_SetLastSyncSlot(s32 a);
-void NetArea_SetMoveState(s32 a);
-s32 NetArea_GetMoveState();
-void NetArea_SetMemberAck(s32 a, s32 b);
-void NetArea_SetStateRequester(s32 a);
-void NetArea_SetOwnerAck(s32 a);
-void NetArea_GetSlotStatus(s32 idx, u8 *a, u8 *b, u8 *c);
-void NetArea_OnStateAReceived();
-void NetArea_ApplyStateB();
-void NetArea_SendStateToNewOwner();
-void NetArea_SendStateToRequester();
-void NetSession_SetCtrl07Received(s32 a);
-void NetSession_GetCtrl07Received();
-BOOL NetArea_IsUnsharedScene(s32 v);
-void NetSession_Init();
-void NetSession_Exit();
-void NetSession_OnBeginHost();
-void NetSession_Reset();
-void NetSession_RemoveSlot(s32 a);
-void NetSession_Update();
-void NetSession_PostUpdate();
-SceneBase *SceneBase_Create(void);
-void SceneBase_SetupGraphics(void);
-void Scene_Request(u32 a, u32 b, u32 c, u32 d);
-void Scene_RequestBoot(void);
-BOOL Scene_CreateRequested(void);
-void Scene_CheckExit(void *p);
 }
 
 

@@ -1,9 +1,9 @@
 #include "types.h"
 #include "gfx/HudObjGfx.h"
+#include "proto/main/unk_020116e0.h"
 
 
 extern "C" {
-s32 Hud_GetSceneHudKind(void);
 }
 
 const char *HudObjGfx::getPalettePath(s32 mode) {

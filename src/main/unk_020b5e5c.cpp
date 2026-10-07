@@ -1,21 +1,21 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "room/FtrActorTable.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b705c.h"
+#include "proto/ov003/unk_ov003_022048c0.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/ov004/unk_ov004_022048c0.h"
+#include "proto/ov004/unk_ov004_022136d0.h"
+#include "proto/ov004/unk_ov004_02213b90.h"
+#include "proto/ov004/unk_ov004_02227e3c.h"
+#include "proto/ov004/unk_ov004_02229660.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 
-extern "C" s32 Snowball_FindByParam(s32 a);
-extern "C" s32 RoomBoardSign_GetByIndex(s32 a);
-extern "C" s32 RoomTelephone_GetInstance(void);
-extern "C" s32 RecycleBox_GetInstance(void);
-extern "C" s32 MuseumExhibitInfo_GetByIndex(s32 a);
-extern "C" s32 Atm_GetInstance(void);
-extern "C" s32 VillagerBoard_Get(s32 a);
-extern "C" s32 FtrActorTable_GetInstance(void);
-extern "C" s32 BuildingList_GetAt(s32 a);
-extern "C" s32 NpcRegistry_FindSpNpc(void *a);
-extern "C" s32 NpcRegistry_FindVillager(void *a);
-extern "C" s32 PlayerActor_GetCharacter(s32 id);
-extern "C" BOOL TouchPickKind_HasTarget(u8 v);
 
 
 extern "C" u8 gFieldSceneKind;
@@ -26,24 +26,6 @@ inline BOOL IsMode0() { return gFieldSceneKind == 0; }
 inline BOOL IsBoth() { return gTouchPrevHeld && gTouchPrevChanged; }
 inline BOOL IsMode1() { return gFieldSceneKind == 1; }
 
-extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32 *out, s32 *a, u8 *b);
-extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb);
-extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb);
-extern "C" s32 TouchTarget_ResolveNone(void);
-extern "C" s32 TouchTarget_ResolvePlayer(s32 a);
-extern "C" s32 TouchTarget_ResolveVillager(s32 a);
-extern "C" s32 TouchTarget_ResolveSpNpc(s32 a);
-extern "C" s32 TouchTarget_ResolveBuilding(s32 a);
-extern "C" s32 TouchTarget_ResolveBuildingAlt(s32 a);
-extern "C" s32 TouchTarget_ResolveFurniture(s32 a);
-extern "C" s32 TouchTarget_ResolveVillagerBoard(s32 a);
-extern "C" s32 TouchTarget_ResolveAtm(void);
-extern "C" s32 TouchTarget_ResolveMuseumInfo(s32 a);
-extern "C" s32 TouchTarget_ResolveRecycleBox(void);
-extern "C" s32 TouchTarget_ResolvePhone(void);
-extern "C" s32 TouchTarget_ResolveBoardSign(s32 a);
-extern "C" s32 TouchTarget_ResolveSnowball(s32 a);
-extern "C" s32 TouchTarget_Resolve(s32 idx, s32 arg);
 
 typedef s32 (*TouchTargetResolver)(s32);
 #define FN(f) ((TouchTargetResolver)(f))

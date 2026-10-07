@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02112458.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -17,11 +18,6 @@ s32 OSi_DoTryLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable
 s32 OSi_DoUnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq);
 s32 OS_LockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
 s32 OS_UnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
-void OSi_WaitByLoop(void);
-void OSi_FreeCardBus(void);
-void OSi_AllocateCardBus(void);
-void OSi_FreeCartridgeBus(void);
-void OSi_AllocateCartridgeBus(void);
 
 // OS_InitLock
 void OS_InitLock(void) {

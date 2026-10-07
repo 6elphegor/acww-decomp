@@ -21,6 +21,10 @@
 #include "room/RoomObjActor.h"
 #include "game/TouchPickTriangle.h"
 #include "gfx/TwoLayerAnimModel.h"
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0209c3e0.h"
+#include "proto/ov004/unk_ov004_02227e3c.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -152,9 +156,6 @@ s32 BoxCollider_Unregister(void *);
 s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 TalkRequest_SetTargetDone(void *);
-s32 RoomObjSync_ChangeState(void *, u32);
-s32 MenuCtrl_IsFinished(void);
-s32 MenuCtrl_OpenLauncher(u32);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 RoomObjRes_GetBca(void *, u32);
@@ -163,8 +164,6 @@ void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12TouchPickBoxC2Ev(void *self);
 void _ZN12TouchPickBoxD2Ev(void *self);
-RecycleBox *RecycleBox_Create();
-RecycleBox *RecycleBox_GetInstance();
 }// declarations (definition order below sets the data layout)
 extern "C" { extern DebugColor data_ov004_02250e70; }
 extern "C" { extern DebugColor data_ov004_02250e64; }

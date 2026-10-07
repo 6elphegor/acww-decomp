@@ -18,6 +18,20 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostFoundRecycleMenu_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov110/unk_ov110_02294c40.h"
 
 class LostFoundRecycleMenu;
 
@@ -34,36 +48,8 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 extern s32 gCurrentHeap;
 extern void *gCommManager;
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_LoadCharFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(const void *a, s32 b, s32 c);
-void Gfx2d_LoadPaletteFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Snd_PlaySe(s32 a);
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
-void MenuCtrl_SetChosenItems(void *p);
-s32 MenuCtrl_RestorePockets();
-void MenuCtrl_BackupPockets();
-void MenuCtrl_SetResult(s32 a);
-s32 MenuCtrl_IsResultOk();
-void MenuCtrl_SetIndex(u32 a);
-s32 MenuCtrl_GetMode();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void String_Load2dMenu(void *p, s32 a);
-s32 Comm_IsSeqConfirmed(s32 a);
-s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
-s32 ProcBase_GetParent(...);
-void ProcBase_RequestDelete(void *p);
 void MI_CpuCopy8(void *a, void *b, u32 c);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 s32 PopupChoice_DecideCancel(void *p, s32 x);
@@ -71,45 +57,8 @@ void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
-void Inventory_PlayPickUpSe();
-void Inventory_PlayTouchSe();
-void Inventory_PlayPutDownSe();
-BOOL InvItem_IsNonTransferable(u32 v);
-BOOL InvItem_IsTurnipFishOrInsect(u32 v);
-void InventoryBg_DrawSprite(void *p, s32 a);
-void InventoryBg_Exit(void *a);
-void InventoryBg_Update(void *a);
-void InventoryBg_PreUpdate(void *a);
 void InventoryBg_LoadObjGraphics(void *a);
-void InventoryBg_Load(void *a, s32 b);
-void InventoryBg_Init(void *a, s32 b);
-BOOL InventoryItemGrid_IsSlotEmpty(void *p, u32 v);
-void InventoryItemGrid_DrawHeldItem(void *p, s32 a, s32 b);
-void InventoryItemGrid_DrawBox(void *p, s32 a, s32 b);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void InventoryItemGrid_DisableSlot(void *p, u32 v);
-BOOL InventoryItemGrid_IsSlotDisabled(void *p, u32 v);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-void InventoryItemGrid_RefreshSlot(void *p, u32 a);
-void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
-void InventoryItemGrid_ClearSlot(void *p, u32 v);
-u32 InventoryItemGrid_GetSlotFlags(void *p, u32 v);
-u32 InventoryItemGrid_GetSlotItem(void *p, u32 v);
-void InventoryItemGrid_MarkSlot(void *p, u32 v);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_SetCursorSlot(void *p, u32 v);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
-void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 v);
-void InventoryItemGrid_LoadBox(void *a, void *b);
-void InventoryItemGrid_LoadPockets(void *a);
-u32 InventoryItemGrid_FindBoxSlotAt(void *p, u32 a, u32 b);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p, u32 x, u32 y);
-void InventoryItemGrid_Exit(void *a);
-void InventoryItemGrid_PreUpdate(void *a);
-void InventoryItemGrid_Init(void *a, s32 b);
-void LetterGrid_LoadPocketLetters(void *a);
 }
 
 
@@ -363,71 +312,10 @@ static inline BOOL func_ov110_0229726c(LostFoundRecycleMenu *s) { return s->isFo
 static inline void func_ov110_0229728c(LostFoundRecycleMenu *s) { s->runMainState(); }
 
 extern "C" {
-void LostFoundRecycleMenu_PickCancelChoice(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_MoveCursorToChoice(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_MoveCursorToTarget(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_HideCursor(LostFoundRecycleMenu *s);
-s32 LostFoundRecycleMenu_GetCursorTargetY(LostFoundRecycleMenu *s);
-s32 LostFoundRecycleMenu_GetCursorTargetX(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_ShowCursor(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_ExchangeHeldItem(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_ReleaseHeldItem(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_PickUpItem(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_TrackFlyingItem(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_TrackCursor(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_TrackTouch(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_DrawHeldItem(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_UpdateNameBalloon(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_PlaceNameBalloon(LostFoundRecycleMenu *s);
-BOOL LostFoundRecycleMenu_HasTouchMoved(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_MarkSlot(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_ClearMarks(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_SetCursorSlot(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_ClearCursorSlots(LostFoundRecycleMenu *s);
-u32 LostFoundRecycleMenu_GetSlotFlags(LostFoundRecycleMenu *s, u32 a);
-u32 LostFoundRecycleMenu_GetSlotItem(LostFoundRecycleMenu *s, u32 a);
-BOOL LostFoundRecycleMenu_IsSlotEmpty(LostFoundRecycleMenu *s, u32 a);
-BOOL LostFoundRecycleMenu_IsSlotDisabled(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_DisableRejectedItems(LostFoundRecycleMenu *s);
-BOOL LostFoundRecycleMenu_IsItemRejected(LostFoundRecycleMenu *s, u32 a);
-s32 LostFoundRecycleMenu_GetSlotY(LostFoundRecycleMenu *s, u32 a);
-u32 LostFoundRecycleMenu_GetSlotX(LostFoundRecycleMenu *s, u32 a);
-u32 LostFoundRecycleMenu_GridToBoxSlot(LostFoundRecycleMenu *s, u32 a);
-u32 LostFoundRecycleMenu_GridToBoxSlotOr0F(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_SetSlotItem(LostFoundRecycleMenu *s, u32 a, u32 b, u32 c);
-BOOL LostFoundRecycleMenu_DropHeldItem(LostFoundRecycleMenu *s, u32 a);
-u32 LostFoundRecycleMenu_FindSlotAt(LostFoundRecycleMenu *s, u32 a, u32 b, s32 c);
-u32 LostFoundRecycleMenu_GridToPocketSlot(LostFoundRecycleMenu *s, u32 a);
-u32 LostFoundRecycleMenu_ToGridSlot(LostFoundRecycleMenu *s, u32 a);
-BOOL LostFoundRecycleMenu_IsButtonSlot(LostFoundRecycleMenu *s, u32 a);
-BOOL LostFoundRecycleMenu_IsBoxSlot(LostFoundRecycleMenu *s, u32 a);
-BOOL LostFoundRecycleMenu_IsPocketSlot(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_CancelUploads(LostFoundRecycleMenu *s);
-u32 LostFoundRecycleMenu_FindFreeBoxSlot(LostFoundRecycleMenu *s);
-u32 LostFoundRecycleMenu_FindFreePocket(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_QuickMove(LostFoundRecycleMenu *s, u32 a, u32 b);
-void LostFoundRecycleMenu_FlyHeldToFreeSlot(LostFoundRecycleMenu *s, u32 a, s32 b);
-void LostFoundRecycleMenu_StartFlyHeldItem(LostFoundRecycleMenu *s, u32 a, u32 b);
-void LostFoundRecycleMenu_PickUpWithHand(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_PickUpWithTouch(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_TouchItem(LostFoundRecycleMenu *s, u32 a);
-void LostFoundRecycleMenu_ResumeInput(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_StartButtonInput(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_StartTouchInput(LostFoundRecycleMenu *s);
 void LostFoundRecycleMenu_LoadObjGraphics(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_LoadTopBg(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_LoadInventoryBg(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_SetupBgLayers();
-void LostFoundRecycleMenu_PostStateUpdate(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_PreStateUpdate(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_PostInputUpdate(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_PreInputUpdate(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_Exit(LostFoundRecycleMenu *s);
-void LostFoundRecycleMenu_Init(LostFoundRecycleMenu *s);
 }
 
 
-extern "C" LostFoundRecycleMenu *LostFoundRecycleMenu_Create();
 
 // Scene registration entry read by main: factory, then two ids
 extern "C" ProcProfile sLostFoundRecycleMenuProfile = {(void *(*)())LostFoundRecycleMenu_Create, 0x9d, 0xa1};

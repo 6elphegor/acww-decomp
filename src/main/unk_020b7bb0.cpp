@@ -3,11 +3,11 @@
 #include "ui/UiWidget.h"
 #include "ui/LabelBalloon.h"
 #include "ui/FieldInfoLabelBalloon.h"
+#include "proto/main/unk_02087e70.h"
 
 extern "C" {
 // Other files
 void *_ZN12LabelBalloon7getAnimEv(void *p);
-void Oam_DrawCell(s32 a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 }
 
 

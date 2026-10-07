@@ -7,6 +7,21 @@
 #include "game/Elem2a.h"
 #include "game/Loc488.h"
 #include "game/NookShop.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020af258.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
@@ -34,23 +49,18 @@ u8 *NookShop_GetLevel(void *p);
 }
 
 extern "C" {
-s32 Bbs_PostMsgToday(u8 *a, const void *b);
 }
 
 extern "C" {
-void MailText_SetSlotMonth(s32 a, s32 b);
 }
 
 extern "C" {
-void MailText_SetSlotDayOrdinal(s32 a, s32 b);
 }
 
 extern "C" {
-void MailText_SetSlot(s32 a, void *b);
 }
 
 extern "C" {
-u8 *Random_GlobalBelow(s32 a);
 }
 
 extern "C" {
@@ -90,15 +100,12 @@ void BlockMap_SetItemAtUnit(void *a, void *b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-s32 Snd_PlaySe(s32 a);
 }
 
 extern "C" {
-void Snd_VolumeOn();
 }
 
 extern "C" {
-void Snd_VolumeOff();
 }
 
 extern "C" {
@@ -106,19 +113,15 @@ void *func_0223xxxx();
 }
 
 extern "C" {
-void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-void ItemPick_FillFromRange(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, const void *h, s32 i);
 }
 
 extern "C" {
-void Item_ToPlacedForm(void *a, void *b, s32 c);
 }
 
 extern "C" {
-void ItemPick_OneEx(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, s32 h);
 }
 
 extern "C" {
@@ -138,7 +141,6 @@ void PM_GetBackLight(void *a, void *b);
 }
 
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -146,15 +148,12 @@ void *func_020986c8(void *a);
 }
 
 extern "C" {
-BOOL Catalog_HasItem(void *a, void *b);
 }
 
 extern "C" {
-void Snowman_SendLetter(u32 a);
 }
 
 extern "C" {
-void *FtrActorGrid_GetInstance();
 }
 
 extern "C" {
@@ -162,7 +161,6 @@ void *func_ov004_022355d8(void *a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-void *FtrActorTable_GetInstance();
 }
 
 extern "C" {
@@ -170,7 +168,6 @@ void func_ov004_02235740(void *a, void *b);
 }
 
 extern "C" {
-void FtrMgr_RemoveActorByIndex();
 }
 
 extern "C" {
@@ -182,7 +179,6 @@ u32 func_0209888c(void *a);
 }
 
 extern "C" {
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 
 extern "C" {
@@ -190,7 +186,6 @@ void func_02065588(void *a, u32 b, s32 c);
 }
 
 extern "C" {
-void LetterDelivery_QueueOutgoing(void *a, s32 b);
 }
 
 extern "C" {
@@ -202,7 +197,6 @@ void func_02065cc8(void *a);
 }
 
 extern "C" {
-s32 Snowball_TryPushAny(s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
@@ -214,27 +208,21 @@ u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 
 extern "C" {
-BOOL LidSleep_TestFlag(s32 m);
 }
 
 extern "C" {
-void LidSleep_ClearFlag(s32 m);
 }
 
 extern "C" {
-void LidSleep_SetFlag(s32 m);
 }
 
 extern "C" {
-void LidSleep_BacklightOff();
 }
 
 extern "C" {
-void LidSleep_BacklightRestore();
 }
 
 extern "C" {
-void LidSleep_WakeLcd();
 }
 
 extern "C" {
@@ -337,16 +325,6 @@ extern "C" {
 static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
 }
 // prototypes
-extern "C" s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e);
-extern "C" void LidSleep_Init();
-extern "C" void LidSleep_Update();
-extern "C" void LidSleep_KeepSoundOff();
-extern "C" void LidSleep_BacklightOff();
-extern "C" void LidSleep_BacklightRestore();
-extern "C" void LidSleep_WakeLcd();
-extern "C" BOOL LidSleep_TestFlag(s32 m);
-extern "C" void LidSleep_SetFlag(s32 m);
-extern "C" void LidSleep_ClearFlag(s32 m);
 
 
 extern "C" s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e) {

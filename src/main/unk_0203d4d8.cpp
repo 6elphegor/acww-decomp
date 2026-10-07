@@ -5,6 +5,19 @@
 #include "talk/TalkRequestEntry.h"
 #include "actor/Character.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_MenuCtrl_IsFinished  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetActor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN8ProcBase11postExecuteEv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203d4d8.h"
+#include "proto/main/unk_0203e438.h"
+#include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_0203eb78.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
 
 struct TalkRequestList {
     TalkRequestEntry *head;
@@ -33,58 +46,27 @@ extern s32 gActorDefaultParent;
 extern s32 gCommManager;
 
 Character *PlayerActor_GetActor(s32 id);
-Character *Character_FindByCharId(u32 id);
 TalkRequestEntry *TalkRequestPool_Alloc();
 void PrioList_Insert(TalkRequestList *l, TalkRequestEntry *t);
 void TalkRequestList_FreeAll(TalkRequestList *l);
 void List_Remove(void *l, void *t);
-void NetArea_SendStateToNewOwner();
-void NetArea_SendStateToRequester();
-void Scene_CheckExit(void *p);
 BOOL _ZN8ProcBase11postExecuteEv(void *a, u32 b);
 BOOL TalkRequest_IsActive();
-s32 CharInteractSync_CheckArea();
-void CharInteractSync_SendEvent(u32 id, u32 v);
-void CharInteractSync_SendQuery(u32 id, u32 v);
 void TalkRequest_SetTalkTarget(u32 v);
 void TalkRequest_FinishCurrent();
-void CharInteractSync_ReleaseLock();
-s32 CharInteractSync_Check(u32 id);
-void CharInteractSync_RequestLock(u32 id);
-BOOL PlayerActor_IsStowFinished();
-BOOL PlayerActor_SetEventLock(u32 v);
-BOOL PlayerActor_CanAcceptTalk();
-BOOL PlayerActor_RequestReturnToWait();
-BOOL PlayerActor_IsInterruptible();
-BOOL PlayerActor_IsEventIdle();
-BOOL PlayerActor_CanStartTalk();
-BOOL PlayerActor_RequestAct10();
-void PlayerActor_RequestStowThenAct10(u32 a);
-BOOL PlayerActor_LocalRequestExitWalkOut();
 u32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(u32 a, u32 b);
-BOOL PlayerActor_LocalRequestLeaveRoom();
-Character *Character_FindInteractionTarget(Character *o);
 BOOL TalkRequest_AcquireHostLock(TalkRequestEntry *t);
 
 void TalkRequestFlags_Set(u32 mask);
 BOOL TalkRequestFlags_Test(u32 mask);
 BOOL TalkRequest_AddPlayerExclusive(u32 x);
-void MenuCtrl_RequestForceClose(void);
 void TalkRequestEntry_Free(void *p);
 s32 _ZN15TalkWindowState13detachRequestEv(u32 x);
-u32 TalkWindow_Get(u32 x);
 s32 _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(u32 a, u32 b);
 u32 MenuCtrl_IsFinished(u32 a);
-BOOL MenuCtrl_IsIdle(void);
-BOOL PlayerActor_CanOpenMenu(void);
-BOOL PlayerActor_RequestAct05(void);
-void MenuCtrl_RequestOpen(u32 v);
 void TalkRequestQueue_Reset(void);
-s32 Field_GetExitedBuildingKey(void);
 void PrioList_Init(void *p);
-void TalkRequestPool_Reset(void);
-void CharInteractSync_Reset(void);
 BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e);
 BOOL TalkRequest_IsCurrentKind(u32 x);
 BOOL TalkRequestFlags_IsEventWarpBlock();

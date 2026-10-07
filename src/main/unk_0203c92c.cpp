@@ -1,6 +1,8 @@
 #include "types.h"
 #include "game/Unk_0203c92c_Bits.h"
 #include "player/PlayerOptions.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_02097444.h"
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -9,13 +11,8 @@ void MI_CpuCopy8(void *src, void *dst, u32 n);
 // ---- flag object at 0x021c3264
 
 PlayerOptions sPlayerOptions;
-extern "C" void PlayerOptions_CopyOut(void *src, void *dst);
-extern "C" void PlayerOptions_CopyIn(void *dst, void *src);
-extern "C" void PlayerOptions_OnDestruct();
-extern "C" void PlayerOptions_OnConstruct();
 
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -23,19 +20,15 @@ PlayerOptions *_ZN10PlayerData10getOptionsEv(void *self);
 }
 
 extern "C" {
-PlayerOptions *PlayerOptions_Get();
 }
 
 extern "C" {
-s32 PlayerOptions_IsHiragana();
 }
 
 extern "C" {
-s32 PlayerOptions_IsStereo();
 }
 
 extern "C" {
-u32 PlayerOptions_GetTalkVoice();
 }
 extern "C" PlayerOptions *PlayerOptions_Get() { return &sPlayerOptions; }
 

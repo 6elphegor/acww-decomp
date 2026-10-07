@@ -12,14 +12,29 @@
 #include "save/Pattern.h"
 #include "save/SaveRecord4.h"
 #include "town/TownBlockMap.h"
+#define PROTO_LOCAL_LostAndFound_InitRandom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Melody_ResetToDefault  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveData_InitCurrentPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveData_InitNew  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownExchange_InitNop  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_InitWithName  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/main/unk_0209c4a8.h"
+#include "proto/main/unk_0209d81c.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/main/unk_020b0e60.h"
 
 extern "C" {
 void SaveData_SyncClockOffset(void *);
-void SaveData_RefreshTownBlockMap(void *);
 void SaveData_InitNew(u8 *p);
 void SaveData_InitCurrentPlayer(u8 *p);
 void LostAndFound_InitRandom(void *);
-void EventWeekSlots_InitNew(void *);
 void TownState_InitNew(void *);
 void Town_ClearBorderTrees(void *);
 void HouseRoomMaps_BindBg(void);
@@ -41,27 +56,16 @@ void SaveVillagers_PlaceMissingHouses(void *);
 void SaveVillagers_DailyUpdate(void *, s32);
 void SaveVillagers_UpdateOutdoor(void *, s32);
 void SaveVillagers_InitNewTown(void *);
-void *TownSessionState_Get(void);
-void *TownSessionState_GetResettiFlag(u8 *p);
-void RoostGuestRoll_Init(void *);
-void GulliverQuest_Init(void *);
 void ReddLastSale_Clear(void *);
 void _ZN12TurnipMarket4initEv(void *);
 void _ZN16ResettiVisitFlag5clearEv(void *);
 void TownExchange_InitNop(void *);
-void *PlayerId_GetTownId(void *p);
-void *PlayerData_GetCurrent(void);
-void *PlayerData_GetResident(void *, s32);
-void PlayerData_SetStungFace(void *, s32);
-void RoomEntry_Reset();
 s32 ClockOffset_Clear(void *p);
 void Clock_GetDate(void *p);
 void Clock_Init(void);
 void AbleShop_InitNew(void *);
 void NookShop_InitNew(void *);
-void *LooseSnowballs_Get();
 void _ZN14LooseSnowballs5resetEv(void *self);
-void TownStyleRecord_InitNew(void *);
 void Weather_RerollRainSlantAlt();
 void Weather_RerollRainSlantAlt2();
 void Weather_InitNew(void *);

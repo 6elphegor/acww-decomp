@@ -29,6 +29,10 @@
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
 #include "npc/NpcMoveAnimSet.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov072/unk_ov072_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -62,11 +66,6 @@ void _ZN13GulliverQuest5startEv(void *self);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void EventWeekSlots_MarkPlayer(s32 a);
-s32 Pocket_FindItem(u16 *p);
-void Pocket_RemoveItem(s32 a);
-void Pocket_AddItem(u16 *p, s32 a);
-u32 Random_GlobalBelow(u32 n);
-void ItemPick_One(u16 *out, ItemPickSpec *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *TownBlockMap_Get();
 void *MapBlock_GetItemPtr(void *cell, s32 a, s32 b, s32 c);
 void MapBlock_SetItem(void *cell, u16 *h, s32 a, s32 b, s32 c);
@@ -76,9 +75,6 @@ u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 BOOL Item_IsMarker(void *p);
 BOOL Item_IsTreeStage0(void *p);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
-void SpNpcGulliver_ScatterShipParts();
-BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g);
-BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g);
 }
 
 
@@ -155,8 +151,6 @@ extern u8 sSpNpcGulliverTexturePath[27];
 extern const TalkStartMsg sSpNpcGulliverTopicMsgs[8];
 extern SpNpcGulliverTalkScript sSpNpcGulliverTalkScripts[2];
 extern SpNpcGulliverActEntry sSpNpcGulliverActTable[4];
-s32 SpNpcGulliver_TickTimer(void *self, s32 *p);
-SpNpcGulliver *SpNpcGulliver_Create();
 }
 
 DebugColor data_ov072_02272590(31, 20, 20, 31);

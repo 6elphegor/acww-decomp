@@ -10,6 +10,29 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_BgmTracks_FadeInScene22  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmTracks_FadeOutScene22  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ConstellationRecord_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_SetCreator  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_Store  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadScopeBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_Reset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarTwinkle_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarTwinkle_Update  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b0774.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov127/unk_ov127_02291f60.h"
+#include "proto/ov129/unk_022940e0.h"
 
 extern "C" {
 extern u16 gPad[];
@@ -22,69 +45,20 @@ extern u8 gTouchPressY;
 extern s32 gCurrentHeap;
 extern u8 *data_021c1b3c;
 
-s32 Snd_PlaySe(u32 id);
-s32 MenuCtrl_GetIndex();
-void *Constellation_GetRecord(s32 i);
-void MenuCtrl_SetResult(u32 a);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
 void ConstellationRecord_Clear(void *p);
 void Constellation_SetCreator(void *p);
 void Constellation_Store(void *p, s32 a, s32 b);
-void Constellation_CalcCentre(void *p, s32 *a, s32 *b);
-void StarTwinkle_Stop(void *a);
 void StarTwinkle_Init(void *a, s32 b);
 void StarTwinkle_Update(void *a);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadCharFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Snd_PlaySeOnHandle(s32 a);
-void Snd_StopSe(s32 a, s32 b);
-void PlayerActor_RequestAct10();
 void BgmTracks_FadeInScene22(void *a);
 void BgmTracks_FadeOutScene22(void *a);
-void Gfx2d_DisableSubWindows(s32 a);
-void Gfx2d_EnableSubWindows(s32 a);
-void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void PlayerActor_LocalRequestAct12();
 
-BOOL MenuKeys_HasLeft(s32 k);
-BOOL MenuKeys_HasRight(s32 k);
-BOOL MenuKeys_HasUp(s32 k);
-BOOL MenuKeys_HasDown(s32 k);
 void MenuButtons_LoadTextColors(void *p);
 
-u8 *StarSky_GetLineStars(s32 i);
-u32 StarSky_GetStarY(s32 i);
-u32 StarSky_GetStarX(s32 i);
-s32 StarSky_GetLinesAround(u16 *out, s32 x, s32 y);
-s32 StarSky_GetStarAt(s32 x, s32 y);
-s32 StarSky_GetLineAt(s32 x, s32 y);
-s32 StarSky_ScreenToCellInScope(void *s, s32 x, s32 y, s32 *ox, s32 *oy);
-void StarSky_SetScroll(void *s, s32 x, s32 y);
-void StarSky_RebuildScreen(void *s, s32 i, u32 v);
-void StarSky_SetScrollTarget(void *p, s32 x, s32 y);
-s32 StarSky_UpdateBounce(void *a);
-void StarSky_StartBounce(void *a, s32 b);
-void StarSky_ScrollInDir(void *a, s32 b, s32 c);
-s32 StarSky_HitArrow(void *a, s32 b, s32 c);
-void StarSky_ScrollX(void *a, s32 b);
-s32 StarSky_ScrollY(void *a, s32 b, s32 c);
 void StarSky_LoadSkyBg(void *a, s32 b);
 void StarSky_LoadScopeBg(void *a, s32 b, s32 c);
 void StarSky_LoadObjGraphics(void *a);
-void StarSky_Update(void *a);
-void StarSky_CancelUpload(void *a);
 void StarSky_Reset(void *a);
-void StarSky_DrawStarMarker(void *s, s32 a);
-void StarSky_DrawScopeSprite(void *s, s32 a);
-void StarSky_DrawArrows(void *s, s32 a, s32 b);
 
 void _ZN23ConstellationEditorMenu9mainAct04Ev();
 extern void *data_ov129_02296518[2];

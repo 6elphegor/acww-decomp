@@ -1,4 +1,10 @@
 #include "nitro/wm.h"
+#define PROTO_LOCAL_MATH_CountPopulation  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0211ef94.h"
+#include "proto/autoload_2/unk_02120c98.h"
+#include "proto/autoload_2/unk_02120ed4.h"
+#include "proto/autoload_2/unk_02120fe8.h"
+#include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM data sharing / request API plus an unidentified slot-cache helper, autoload_2 0x02120fe8-0x02121e5c.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p.
@@ -34,7 +40,6 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 WM_SetPortCallback(u32 port, WMCallback cb, void *arg);
@@ -51,15 +56,10 @@ extern u8 data_021fff00[0x80];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
 void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
-void WmDataSharingReceiveCallback_Child(WMMsg *msg);
-void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
-void WmDataSharingSetDataCallback(WMMsg *msg);
 u32 WM_EndDataSharing(WMPool *ds);
 u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
 extern void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
-extern void WmDataSharingReceiveCallback_Child(WMMsg *msg);
-extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
 extern u32 MBi_CommParentSendBlock(void);
 
 typedef struct {
@@ -118,7 +118,6 @@ extern u32 MBi_ReadFromCache(void *, u32, u32, u32);
 extern u32 MBi_IsTaskBusy(void *);
 extern void MBi_SetTask(void *, void *, u32, u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
-extern void Fatal_Trap(void);
 extern u32 MBi_ReloadCache(void);
 u32 MBi_CommParentSendBlock(void);
 void MBi_calc_sendblock(u32 idx);

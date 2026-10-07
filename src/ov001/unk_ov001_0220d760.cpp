@@ -1,6 +1,23 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_WfcTopMenu_HighlightSelection  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcUtil_RequestPaletteLine  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_0220e320.h"
+#include "proto/ov001/unk_ov001_0220eb90.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221ea94.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 #pragma thumb off
 
@@ -16,54 +33,17 @@ u32 *sWfcTopMenuPalette;
 
 extern "C" {
 s32 WfcUtil_RequestPaletteLine(u32 *, u32, u32);
-s32 WfcSound_Play(s32);
-s32 WfcCursor_ShowCorners(u32, u32, u32, u32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcCursor_Clear();
-s32 WfcUtil_HideTopMessage();
-s32 WfcFs_FreeFile(u32 *);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcButtonBar_DisableInput();
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
 s32 WfcInput_IsTouchPressedIn(void *);
-s32 WfcButtonBar_SetResult(s32);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
-s32 WfcButtonBar_EnableInput();
-s32 WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcUtil_LocalizePath(void *);
-u32 *WfcFs_LoadFile(s32, s32, s32);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcTop_LoadScreen(s32);
-void WfcUtil_QuitFadeOut();
-void WfcOptions_Enter();
-void WfcErased_Enter();
-void WfcConnSelect_Enter();
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
 
 s32 WfcTopMenu_HighlightSelection();
-void WfcTopMenu_MoveCursor(s32);
-void WfcTopMenu_Exit();
-void WfcTopMenu_FadeOut();
-void WfcTopMenu_StartExit();
-void WfcTopMenu_HandleResult();
-void WfcTopMenu_Idle();
-void WfcTopMenu_HandleInput();
-void WfcTopMenu_Update();
-void WfcTopMenu_WaitButtonBar();
-void WfcTopMenu_WaitFadeIn();
-void WfcTopMenu_FadeIn();
-void WfcTopMenu_LoadBg();
-void WfcTopMenu_Enter();
 }
 
 extern "C" void WfcTopMenu_Enter() {

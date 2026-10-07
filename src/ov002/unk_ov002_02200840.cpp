@@ -34,6 +34,27 @@
 #include "menu/PopupChoiceMenu.h"
 #include "talk/TalkMsgRequest.h"
 #include "menu/MenuErrorMessage.h"
+#define PROTO_LOCAL_MenuCtrl_RemoveOpenMenu  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN8ProcBase10postDeleteEv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206db88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -67,68 +88,14 @@ void MsgString_append(void *self, const void *s);
 void MsgString_appendString(void *self, void *src);
 void LabelButton_setLabelText(void *self, void *src);
 
-void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Snd_PlaySe(s32 a);
-void MenuScreen_ClearState();
-BOOL MenuScreen_IsClosed();
-BOOL MenuScreen_IsOpen();
-void MenuCtrl_SetButtons();
-void MenuCtrl_SetTouch();
 void MenuCtrl_RemoveOpenMenu(void *p);
-void MenuCtrl_AddOpenMenu(void *p);
-void Gfx2d_EnableMainWindows(s32 a);
-void Gfx2d_SetMainWin0Planes(s32 a);
-s32 Gfx2d_GetMainWindows();
-void Gfx2d_RemoveMainWinOutPlanes(s32 a);
-void Gfx2d_SetMainWinOutPlanes(s32 a);
-void Gfx2d_EnableSubWindows(s32 a);
-void Gfx2d_SetSubWin0Planes(s32 a, s32 b);
-void Gfx2d_SetSubWinOutPlanes(s32 a);
-void Gfx2d_DisableSubWindows(s32 a);
-void Gfx2d_DisableMainWindows(s32 a);
-void *Heap_AllocTail(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
-void *memset(void *p, s32 v, u32 n);
-void *ProcBase_GetParent(void *p);
-void ProcBase_SetExecutePriority(void *p, u32 v);
-void ProcBase_SetDrawPriority(void *p, u32 v);
 s32 func_01ffcb0c(s32 a, s32 b);
-void Letter_SetRecipientFutureSelf(void *p);
-void Letter_SetRecipientResident(void *p, s32 a);
-void Letter_SetRecipientVillager(void *p, s32 a);
-void String_Load2d(void *buf, u8 *c, s32 z);
-void String_FromEncodedBytes(void *dst, const void *s, s32 len);
-void String_Load2dMenu(void *a, s32 v);
-void *PlayerData_GetCurrent();
-s32 PlayerDataArray_FindById(void *a, s32 b);
-s32 PlayerDataArray_IsUsed(void *a, s32 b);
-void *PlayerData_GetResident(void *a, s32 b);
 s32 SaveVillagers_IsOccupied(void *a, s32 b);
 void *SaveVillagers_Get(void *a, s32 b);
 s32 Villager_FindMemory(void *a, s32 b);
-BOOL MenuCtrl_IsButtons();
-void Gfx2d_HideLayer(s32 a);
-s32 Gfx2d_GetLayerPlaneMask(s32 a);
-s32 Gfx2d_EndSubObjWinBrightness();
-s32 Gfx2d_BeginSubObjWinBrightness();
-void Gfx2d_GetLayerBlendMask(s32 a);
-void Gfx2d_ExcludeSubBrightnessPlanes();
-s32 Gfx2d_SetSubBrightness(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, u32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-u8 *File_LoadAlloc(const char *path, void *heap, s32 a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, s32 n);
 void MIi_CpuClear16(s32 v, void *dst, s32 n);
-void Gfx2d_LoadScreen(void *buf, s32 a, s32 b, s32 c);
-void Gfx2d_LoadPaletteFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void Gfx2d_LoadCharFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void Gfx2d_LoadScreenFile(char *buf, void *h, s32 x);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
-s32 MenuCtrl_IsForceCloseDue();
 
 extern void *gMenuHeap;
 extern void *gCurrentHeap;
@@ -156,7 +123,6 @@ extern void *_ZTV10MenuCursor[7];
 extern void *_ZTV14MenuCursorBuf0[7];
 extern void *_ZTV14MenuCursorBuf1[7];
 extern char _ZTV8GameProc[];
-void *_ZN8ProcBaseC2Ev(void *self);
 void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
 void *_ZN10HandCursorC2Ei(void *self, s32 flag);
 void *_ZN10HandCursorD2Ev(void *self);
@@ -183,7 +149,6 @@ void _ZN8UiWidget9setOriginEii();
 
 
 
-extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Overlay 2 classes
@@ -238,11 +203,6 @@ typedef PopupChoiceMenuBody Self;
 
 // Plain functions of the menu (they take the menu object first)
 extern "C" {
-void PopupChoice_SetAddresseeName(s32 unused, s32 x, u32 id);
-void PopupChoice_CopyVillagerName(s32 x, s32 y);
-void PopupChoice_CopyVillagerIdName(s32 a, s32 b);
-void PopupChoice_CopyResidentName(s32 x, s32 y);
-void PopupChoice_CopyPlayerIdName(s32 a, s32 b);
 BOOL PopupChoice_MoveCursor(Self *self, s32 p, u8 *pos, u32 n);
 BOOL PopupChoice_TickDecideDelay(Self *self);
 void PopupChoice_DecideAddressee(Self *self, u32 x);
@@ -270,17 +230,6 @@ void PopupChoice_LoadChoiceBg(Self *self);
 void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);
 void PopupChoice_SetPos(Self *self, s32 x, s32 y);
 void PopupChoice_ApplyScroll(Self *self, s32 x, s32 y);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
-s32 ChoiceIdList_Count(u8 *p);
-void ChoiceIdList_Clear(u8 *p, u8 v);
-BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
-void Menu_LoadPaperBg(s32 a, void *b);
-void Menu_PlayScrollGrabSe();
-void Menu_PlayScrollTickSe();
-void MenuButtons_LoadTextColors();
 }
 
 static inline BOOL Unk_ov002_022009d4_Both() {

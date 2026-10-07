@@ -8,6 +8,16 @@ class VillagerActor;
 #include "sys/CameraBase.h"
 #include "gfx/Camera.h"
 #include "player/PlayerData.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02097444.h"
 
 
 
@@ -70,7 +80,6 @@ void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void Camera_GetLookAtPoint(void *out, void *self);
 }
 
 extern "C" {
@@ -82,7 +91,6 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void Vec_ScaleTo(void *out, void *a, s32 n);
 }
 
 extern "C" {
@@ -98,11 +106,9 @@ void func_0203b768(void *self);
 }
 
 extern "C" {
-void WorldCurve_Update(void *a, void *b);
 }
 
 extern "C" {
-CameraPose *PlayerActor_GetBodyPos(s32 id);
 }
 
 extern "C" {
@@ -114,15 +120,12 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 NpcRegistry_PickRandomVillager(s32 a);
 }
 
 extern "C" {
-VillagerActor *NpcRegistry_GetVillager(s32 i);
 }
 
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -138,7 +141,6 @@ s32 SceneId_IsHouseRoom(void *a);
 }
 
 extern "C" {
-void Camera_FinishBlend();
 }
 
 extern "C" {
@@ -150,50 +152,39 @@ void func_02135558(void *a, void *b, void *c);
 }
 
 extern "C" {
-BOOL File_LoadToBufferF(u32 a, s32 b, void *s, s32 idx);
 }
 
 extern "C" {
 }
 
 extern "C" {
-BOOL Catalog_AddItem(void *a, u16 *p, s32 c);
 }
 
 extern "C" {
-BOOL Catalog_SetItem(u8 *base, u16 *p, s32 skip, s32 set);
 }
 
 extern "C" {
-BOOL Catalog_HasItem(u8 *base, u16 *p);
 }
 
 extern "C" {
-u8 *Catalog_GetBit(u8 *base, u8 *out, u16 *p);
 }
 
 extern "C" {
-s32 Catalog_CountRange(u16 base, u32 n);
 }
 
 extern "C" {
-s32 Catalog_CountInsects();
 }
 
 extern "C" {
-s32 Catalog_CountFish();
 }
 
 extern "C" {
-s32 Catalog_GetInsectTotal();
 }
 
 extern "C" {
-s32 Catalog_GetFishTotal();
 }
 
 extern "C" {
-void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 }
 
 extern "C" {

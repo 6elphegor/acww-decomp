@@ -13,6 +13,7 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "gfx/TwoLayerAnimModel.h"
+#include "proto/ov004/unk_ov004_02227d30.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -86,7 +87,6 @@ extern u32 gBgHeap;
 s32 RoomObjRes_GetBca(void *, u32);
 }
 
-extern "C" BarberPole *BarberPole_Create();
 extern "C" ActorProfile sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" BarberPole *BarberPole_Create() {

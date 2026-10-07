@@ -9,6 +9,25 @@
 #include "menu/MenuTextButton.h"
 #include "menu/MenuCursor.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_BgmTracks_FadeInScene22  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgmTracks_FadeOutScene22  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadScopeBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_Reset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarTwinkle_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarTwinkle_Update  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b0774.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov127/unk_ov127_02291f60.h"
+#include "proto/ov128/unk_ov128_022940e0.h"
 
 extern "C" {
 extern u8 gTouchHeld;
@@ -41,51 +60,16 @@ extern u32 data_ov128_02295540[32];
 extern u32 data_ov128_022955c0[32];
 
 // ov127 plain-C helpers on the sub-object at +0x478
-BOOL StarSky_UpdateBounce(void *s);
-void StarSky_StartBounce(void *s, s32 d);
-void StarSky_ScrollInDir(void *s, s32 d, s32 e);
-s32 StarSky_HitArrow(void *s, s32 x, s32 y);
-void StarSky_DrawArrows(void *s, s32 a, s32 b);
-void StarSky_CancelUpload(void *p);
-void StarSky_Update(void *s);
 void StarSky_LoadObjGraphics(void *s);
 void StarSky_LoadScopeBg(void *s, u32 v, u32 w);
 void StarSky_LoadSkyBg(void *s, u32 v);
 void StarSky_Reset(void *s);
-u8 *StarSky_GetOverscroll(void *p);
-BOOL StarSky_ScreenToCell(void *p, s32 a, u8 *b, s32 *c, s32 *d);
-s32 StarSky_GetLineAt(s32 a, s32 b);
-u32 StarSky_FindConstellationByLine(u32 a);
-s32 StarSky_GetScrollX(void *p);
-s32 StarSky_GetScrollY(void *p);
-void StarSky_ScrollX(void *p, s32 a);
-void StarSky_ScrollY(void *p, s32 a, s32 b);
 
-void StarTwinkle_Stop(void *p);
 void StarTwinkle_Init(void *p, s32 a);
 void StarTwinkle_Update(void *p);
-u8 *Constellation_GetRecord();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void PlayerActor_LocalRequestAct12();
-void PlayerActor_RequestAct10();
 void BgmTracks_FadeInScene22(void *p);
 void BgmTracks_FadeOutScene22(void *p);
-void Gfx2d_LoadCharFile(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void Gfx2d_DisableSubWindows(s32 a);
-void Gfx2d_EnableSubWindows(s32 a);
-void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void String_FromEncodedBytes(void *self, u8 *s, s32 n);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void StargazingMenu_SetupBgLayers();
 }
 
 static inline BOOL Unk_ov128_02294b44_Both() {

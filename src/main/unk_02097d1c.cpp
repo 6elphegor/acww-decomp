@@ -18,6 +18,48 @@
 #include "save/MotherLetterState.h"
 #include "save/SaveData.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_Catalog_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Catalog_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DramaRecord_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DramaRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EmotionSlots_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FutureLetter_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FutureLetter_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseVisitInvite_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MotherLetterState_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MotherLetterState_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBank_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBank_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerDailyTalkFlags_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerDailyTalkFlags_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerDataArray_GetRandomOther  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_UpdateDay  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerErrands_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerInventory_SetWallet  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerOptions_ConstructInPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerOptions_DestructInPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerSpNpcRecord_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerSpNpcRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerSpNpcRecord_InitNop  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerSpNpcRecord_SendMissingLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerWifiData_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerWifiData_Create  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerWifiData_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_LoadResolveAltText  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020030d8.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/main/unk_02098e90.h"
 
 class PlayerData;
 
@@ -26,30 +68,20 @@ s32 Item_GetPrice(u16 *p);
 void Letter_Clear(void *p);
 void LetterDefaults_Init(void *p);
 s32 Date_DaysBetween(void *a, void *b);
-void PlayerBank_PayInterest(s32 v);
-void PlayerBank_SendMilestoneLetter(s32 v);
-void PlayerBank_SendDonationLetter(s32 v);
 void PlayerSpNpcRecord_SendMissingLetter(void *p);
 void _ZN20PlayerDailyTalkFlags8clearAllEv(void *p);
 extern u8 gSaveData[];
 extern u8 data_020e1e20[];
 extern u8 gSavePlayers[];
 void *_ZN11MsgString9CC2Ev(void *p);
-void MailText_SetSlot(s32 a, void *b);
-s32 TopicWord_PickRandom(s32 *p, s32 i);
 void String_LoadResolveAltText(void *a, u8 *b, s32 c);
 void TownId_GetNameString(void *a, void *b);
 s32 Villager_SendLetter4(const char *a, s32 b, s32 c, void *d, void *e, void *f);
 s32 PlayerDataArray_GetRandomOther(void *a, void *b);
-void *PlayerErrands_GetSlot(void *a, s32 b);
-void PlayerErrandSlot_Clear(void *p);
 void HouseVisitInvite_Clear(void *p);
-void Catalog_SetItem(void *a, void *b, s32 c, s32 d);
 void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
-void ParcelErrand_Clear(void *p);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-void ItemPick_FromRange(void *a, s32 b, s32 c, s32 d, s32 e, void *f, s32 g, s32 h, s32 i, s32 j);
 void _ZN12ItemPickSpec3setEii(void *a, s32 b, s32 c);
 void ItemPickSpec_Destruct(void *a);
 void NookPoints_Init(void *);
@@ -57,7 +89,6 @@ void Catalog_Init(void *);
 void PlayerWifiData_Create(void *);
 void FriendList_Clear(void *);
 void PlayerSpNpcRecord_InitNop(void *);
-void DramaRecord_Clear(void *);
 void PlayerBank_Clear(void *);
 void EmotionSlots_Clear(void *);
 void MI_CpuFill8(void *, s32, u32);
@@ -65,13 +96,11 @@ void Catalog_Clear(void *);
 void PlayerErrands_Clear(void *);
 void NookPoints_Reset(void *);
 void MotherLetterState_Destruct(void *);
-void LostChildRecord_Destruct(void *);
 void DramaRecord_Destruct(void *);
 void PlayerSpNpcRecord_Destruct(void *);
 void NookPoints_Destroy(void *);
 void PlayerDailyTalkFlags_Destruct(void *);
 void PlayerBank_Destruct(void *);
-void FriendList_Destruct(void *);
 void PlayerWifiData_Destruct(void *);
 void _ZN13PlayerErrandsD1Ev(void *);
 void FutureLetter_Destruct(void *);
@@ -82,41 +111,25 @@ void PlayerOptions_ConstructInPlayer(void *);
 void FutureLetter_Construct(void *);
 void _ZN13PlayerErrandsC1Ev(void *);
 void PlayerWifiData_Construct(void *);
-void FriendList_Construct(void *);
 void PlayerBank_Construct(void *);
 void PlayerDailyTalkFlags_Construct(void *);
 void NookPoints_Create(void *);
 void PlayerSpNpcRecord_Construct(void *);
 void DramaRecord_Construct(void *);
-void LostChildRecord_Construct(void *);
 void MotherLetterState_Construct(void *);
-s32 PlayerErrands_GetDeliveryRecipientName(void *, void *, void *);
 u16 *func_02097f6c(void *, u32);
 s32 func_02097e98(void *, s32);
 s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
 void PocketMatches_Init(void *);
 BOOL func_020030b4(void *);
-void VillagerId_Copy(void *, void *);
-void VillagerId_Clear(void *);
-void VillagerId_Destruct(void *);
-void VillagerId_Construct(void *);
-void TownId_Assign(void *, void *);
-BOOL TownId_IsValid(void *);
-void TownId_Clear(void *);
-void TownId_Destruct(void *);
-void TownId_Construct(void *);
-s32 Random_GlobalBelow(s32);
-void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 void ItemPickSpec_Destruct(void *);
 extern u32 sForeignLetterPresentKinds[];
 void _ZN21ForeignVillagerRecordC1Ev(void *);
 void _ZN21ForeignVillagerRecordD1Ev(void *);
-void *PlayerData_GetCurrent();
 void PlayerInventory_SetWallet(void *p, s32 a, s32 b);
 BOOL _ZN21ForeignVillagerRecord5isSetEv(void *p);
 void _ZN21ForeignVillagerRecord5clearEv(void *p);
-s32 PlayerId_FindResidentIndex(void *id);
 void Clock_GetDate(void *out);
 }
 
@@ -130,9 +143,6 @@ void Clock_GetDate(void *out);
 
 
 extern "C" {
-BOOL Letter_IsValidIndex(s32 i);
-void PlayerData_SetStungFace(void *p, u32 flag);
-BOOL Pocket_IsValidIndex(s32 i);
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 }

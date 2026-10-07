@@ -4,6 +4,13 @@
 #include "net/WifiApConfig.h"
 
 #include "types64.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02277e70.h"
 
 // ov065_040: DWC net helpers: tick->ms, string key lookup, alloc wrappers, WiFi state machine, HTTP-ish task (0x02277974..0x02278250)
 
@@ -21,19 +28,13 @@ typedef void *(*DwcFreeHookFn)(s32, void *, s32);
 
 extern "C" {
 
-u64 OS_GetTick();
-char *strchr(const char *, s32);
-s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, s32);
 void strncpy(void *, const void *, s32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 void OS_Sleep(s32);
-s32 memcmp(const void *, const void *, s32);
-void STD_CopyString(void *, const void *);
 s32 OS_SPrintf(char *, const char *, ...);
-void memcpy(void *, const void *, s32);
 
 DwcFreeHookFn sDwcFreeHook;
 s32 __GSIACResult;
@@ -43,11 +44,6 @@ char GSIACHostname[0x40];
 char __GSIACGamename[0x40];
 extern u32 gSslRsaThreadPriority;
 
-s32 WifiAp_GetLinkLevel();
-s32 WifiAp_RequestCleanup();
-s32 WifiAp_GetStatus();
-void *WifiAp_Process();
-s32 WifiAp_Init(WifiApConfig *);
 s32 WifiLink_GetPhase();
 void DwcCore_SetError(s32, s32);
 void NasAuth_SetServerUrl(const char *);
@@ -63,36 +59,11 @@ s32 recvfrom(s32, void *, s32, s32, void *, void *);
 void closesocket(s32);
 u32 current_time();
 void SocketStartUp();
-void SendPacket();
 s32 socket(s32, s32, s32);
 s32 get_sockaddrin(const char *, s32, const char *);
-s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, DwcGsHttpCallbackCtx *);
-s32 HandlePacket(s8 *, s32, u8 *, u32 *);
 
-void DwcInet_InitEx(DwcInetControl *p, s32 x, s32 y, u32 z);
 void DwcInet_Init(DwcInetControl *p);
-void DwcInet_SelectAuthServer(s32 x);
-void DwcInet_StartConnect();
-BOOL DwcInet_IsConnectDone();
-void DwcInet_Process();
-s32 DwcInet_UpdateStatus();
-void DwcInet_WaitDisconnect();
-BOOL DwcInet_Disconnect();
-BOOL DwcInet_IsLinkLost();
-s32 DwcInet_GetLinkLevel();
 void DwcNet_SetAllocator(DwcAllocHookFn a, DwcFreeHookFn b);
-void *DwcNet_Alloc(s32 a, s32 b);
-void *DwcNet_AllocAligned(s32 a, s32 b, s32 c);
-void *DwcNet_Free(s32 a, void *b, s32 c);
-void *DwcNet_Realloc(s32 a, s32 b, s32 c, s32 d);
-void *DwcNet_ReallocAligned(s32 a, void *b, s32 c, s32 d, s32 e);
-void *GsUtil_Alloc(s32 a);
-void *GsUtil_Realloc(s32 a, s32 b);
-void *GsUtil_Free(s32 a);
-s32 GsUtil_FormatKeyValue(s32 a, s32 b, char *dst, s32 d);
-s32 GsUtil_AppendKeyValue(s32 a, s32 b, char *s, s32 d);
-s32 GsUtil_GetKeyValue(char *key, char *out, char *src, s32 sep);
-u64 DwcNet_GetTimeMs();
 }
 
 void DwcInet_InitEx(DwcInetControl *p, s32 x, s32 y, u32 z) {

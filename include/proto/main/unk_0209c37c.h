@@ -1,0 +1,22 @@
+#ifndef PROTO_PROTO_MAIN_UNK_0209C37C_H
+#define PROTO_PROTO_MAIN_UNK_0209C37C_H
+
+// Prototypes of the functions defined in src/main/unk_0209c37c.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_DebugVar_GetStub
+u32 DebugVar_GetStub();
+#endif
+#ifndef PROTO_LOCAL_DebugVar_GetPtr
+u16 *DebugVar_GetPtr(u32 a, u32 b);
+#endif
+}
+#endif
+
+#endif

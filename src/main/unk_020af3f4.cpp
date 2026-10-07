@@ -5,16 +5,19 @@
 #include "item/ItemName.h"
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snowman_SendLetter  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020af3f4.h"
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
-BOOL Catalog_HasItem(void *a, void *b);
-u8 *Random_GlobalBelow(s32 a);
-void MailText_SetSlot(s32 a, void *b);
 u32 _ZN10PlayerData11getPlayerIdEv(void *a);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
-void LetterDelivery_QueueOutgoing(void *a, s32 b);
 void Snowman_SendLetter(u32 a);
 extern u8 gLooseSnowballs[];
 extern const u16 sSnowmanPrizeItems[];

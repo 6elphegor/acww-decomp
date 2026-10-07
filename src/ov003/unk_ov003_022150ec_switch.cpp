@@ -14,6 +14,11 @@
 #include "town/KatrinaTent.h"
 #include "town/CountdownDigit.h"
 #include "town/CountdownSign.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_022150ec_switch.h"
 
 
 
@@ -42,7 +47,6 @@ extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
 extern u32 gFieldStructureHeap;
 
-void CountdownDigit_Update(void *p);
 void CountdownSign_ModelCallback(void *p);
 s32 _ZN5Model12getRenderObjEv(void *p);
 void _ZN9ModelAnim7replaceEiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
@@ -52,15 +56,11 @@ void Clock_GetDateTime(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
 void _ZN5Model15setInitCallbackEii(void *m, void (*fn)(void *), void *self);
 s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
-void Snd_PlaySe(u32 a);
 void _ZN13AnimFrameCtrl4stepEv(void *m);
 void _ZN13BuildingActor12updateMatrixEv(void *p);
-BOOL BuildingState_Set(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
-void *Heap_Alloc(u32 heap, u32 size);
-void memset(void *p, s32 v, u32 n);
 }
 
 

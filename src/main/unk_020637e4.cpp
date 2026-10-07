@@ -4,11 +4,12 @@
 #include "talk/EncodedString.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString9C.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_020637e4.h"
 
 extern "C" const u16 data_020cb6f4;
 
 extern "C" {
-void _ZdlPv(void *);
 void MI_CpuCopy8(void *, void *, u32);
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 }

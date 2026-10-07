@@ -1,0 +1,19 @@
+#ifndef PROTO_PROTO_OV101_UNK_OV101_02294C40_H
+#define PROTO_PROTO_OV101_UNK_OV101_02294C40_H
+
+// Prototypes of the functions defined in src/ov101/unk_ov101_02294c40.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class PocketItemSelectMenu;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PocketItemSelectMenu_Create
+PocketItemSelectMenu *PocketItemSelectMenu_Create();
+#endif
+}
+#endif
+
+#endif

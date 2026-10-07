@@ -1,4 +1,6 @@
 #include "sys/OSThread.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114410.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS mutex (os_mutex.c): autoload_2 0x02114410-0x02114528. ARM code, mwcc 1.2/base.
 typedef unsigned int u32;
@@ -10,8 +12,6 @@ u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts_IrqAndFiq
 void OS_RestoreInterrupts(u32 state); // OS_RestoreInterrupts_IrqAndFiq
 void OSi_DequeueItem(OSThread *thread, OSMutex *mutex); // OSi_RemoveMutexLink
 void OSi_EnqueueTail(OSThread *thread, OSMutex *mutex); // OSi_InsertMutexLink
-void OS_WakeupThread(OSThreadQueue *queue);              // OS_WakeupThread
-void OS_SleepThread(OSThreadQueue *queue);              // OS_SleepThread
 
 // OS_InitMutex
 void OS_InitMutex(OSMutex *mutex) {

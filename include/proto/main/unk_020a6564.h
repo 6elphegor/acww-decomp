@@ -1,0 +1,32 @@
+#ifndef PROTO_PROTO_MAIN_UNK_020A6564_H
+#define PROTO_PROTO_MAIN_UNK_020A6564_H
+
+// Prototypes of the functions defined in src/main/unk_020a6564.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_NetArea_ReadStateAPart0
+void NetArea_ReadStateAPart0();
+#endif
+#ifndef PROTO_LOCAL_NetArea_ParseStateA
+void NetArea_ParseStateA();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_NetArea_ReadStateANpcTalk
+void NetArea_ReadStateANpcTalk(u8 *p);
+#endif
+}
+#endif
+
+#endif

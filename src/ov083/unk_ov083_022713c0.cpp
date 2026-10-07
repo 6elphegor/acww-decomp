@@ -28,6 +28,11 @@
 #include "player/PlayerSpNpcRecord.h"
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov083/unk_ov083_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -38,21 +43,10 @@ class SpNpcTortimerFlowerFestTalk;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
-s32 Pocket_FindEmpty();
-s32 Pocket_FindItem(u16 *p);
-void Pocket_AddItem(u16 *p, s32 v);
-void Pocket_RemoveItem(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 Random_GlobalBelow(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
-void *TownSessionState_Get();
-BOOL TownSessionState_TestFlag(void *p, s32 v);
-void TownSessionState_SetFlag(void *p, s32 v);
-void ContestRecord_JudgeGardens(void *p);
-void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
@@ -131,7 +125,6 @@ SpNpcTortimerFlowerFestActEntry sSpNpcTortimerFlowerFestActTable[3] = {
 extern "C" u8 sSpNpcTortimerFlowerFestTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 extern "C" u8 sSpNpcTortimerFlowerFestModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create();
 extern "C" ActorProfile sSpNpcTortimerFlowerFestProfile = {(void *(*)())SpNpcTortimerFlowerFest_Create, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
 
 

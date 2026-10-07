@@ -1,3 +1,8 @@
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/autoload_2/unk_0210169c.h"
+#include "proto/autoload_2/unk_02119020.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_0212703c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) foundation library: list.c, heap.c, expheap.c, frmheap.c, an archive helper and the
 // graphics-foundation VRAM manager (gfd). UNMATCHED functions of N001 (best C; see the .diff files). ARM code, mwcc 1.2/base, -O4,p.
@@ -58,7 +63,6 @@ typedef struct ExpHead {
     union { u16 raw; struct { u16 allocMode : 1; u16 pad : 15; } f; } feature;
 } ExpHead;
 
-extern u32 abs(s32);          // abs
 extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32(data, dest, size)
 extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
@@ -124,12 +128,9 @@ HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
 
 #define FRM(h) (&(h)->u.frm)
 
-extern void FS_InitFile(void *file);                   // FS_InitFile
 extern BOOL FS_OpenFile(void *file, const char *path); // FS_OpenFile
 extern void FS_CloseFile(void *file);                   // FS_CloseFile
 extern BOOL FS_UnloadArchive(void *arc);
-extern void FS_ReleaseArchiveName(void *arc);                    // FS_ReleaseArchiveName
-extern void FS_InitArchive(void *arc);                    // FS_InitArchive
 extern u32 strlen(const char *s);                 // strlen
 extern BOOL FS_RegisterArchiveName(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
 extern BOOL FS_LoadArchive(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
@@ -153,7 +154,6 @@ extern u16 data_021f5cb0;
 extern s32 (*data_0213bc10)();
 extern s32 (*data_0213bc14)();
 
-void NNS_GfdResetFrmTexVramState(void);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 s32 NNS_GfdFreeFrmTexVram();
 
@@ -204,7 +204,6 @@ void FreeHead(HeapHead *heap);
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-u32 NNS_FndGetArchiveFileByName(const char *path);
 BOOL NNS_FndUnmountArchive(void *arc);
 BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
 BOOL func_0210149c(u32 *narc);
@@ -213,7 +212,6 @@ s32 AllocTexVram_();
 s32 FreePlttVram_();
 s32 AllocPlttVram_();
 s32 NNS_GfdFreeFrmTexVram();
-void NNS_GfdResetFrmTexVramState(void);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 

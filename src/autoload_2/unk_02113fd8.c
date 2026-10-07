@@ -8,6 +8,12 @@ typedef signed int s32;
 typedef int BOOL;
 
 #include "ds_stdarg.h"
+#include "proto/autoload_2/unk_021127c0.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/itcm/unk_01ffa3cc.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0206d49c.h"
 
 typedef struct OSThread OSThread;
 typedef struct OSMutex OSMutex;
@@ -43,26 +49,16 @@ extern u32 data_0213bff0;
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 e);
 u32 OS_GetProcMode(void);
-u32 OS_IsRunOnEmulator(void);
 void OS_LoadContext(OSThread *t);
 BOOL OS_SaveContext(OSThread *t);
-void OSi_IdleThreadProc(void *);
-void Fatal_Trap(void);
 u32 OS_GetLockID(void);
 u32 OS_ReadOwnerOfLockWord(u32 addr);
 u32 OS_TryLockCartridge(u32 id);
 void OS_UnlockCartridge(u32 id);
-void OS_VSNPrintf(char *dst, u32 len, const char *fmt, va_list ap);
-void OS_CreateAlarm(void *alarm);
-void OS_SetAlarm(void *alarm, u32 tick, u32 period, void (*cb)(void *), void *arg);
-void OS_CancelAlarm(void *alarm);
 void MIi_CpuClear32(u32 data, void *dest, u32 size);
 
-void OS_WakeupThread(OSThreadQueue *q);
 void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
 void OS_VSPrintf(char *dst, const char *fmt, va_list ap);
-void OS_SleepThread(OSThreadQueue *q);
-void OSi_RescheduleThread(void);
 void OS_WakeupThreadDirect(OSThread *t);
 u32 OS_DisableScheduler(void);
 u32 OS_EnableScheduler(void);
@@ -71,10 +67,7 @@ void OSi_InsertThreadToList(OSThread *t);
 OSThread *OSi_RemoveLinkFromQueue(OSThreadQueue *q);
 void OSi_InsertLinkToQueue(OSThreadQueue *q, OSThread *t);
 void OS_InitContext(OSContext *c, u32 pc, u32 sp);
-void OSi_ExitThread(void *arg);
-void OSi_ExitThread_Destroy(void);
 void OSi_ExitThread_ArgSpecified(OSThread *t, void *arg);
-void OS_ExitThread(void);
 void OSi_CancelThreadAlarmForSleep(OSThread *t);
 void OS_SetThreadDestructor(OSThread *t, void (*d)(void *));
 BOOL OS_SetThreadPriority(OSThread *t, u32 prio);

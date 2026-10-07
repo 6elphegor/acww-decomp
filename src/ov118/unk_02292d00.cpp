@@ -14,6 +14,26 @@
 #include "sys/ProcProfile.h"
 #include "talk/MsgString.h"
 #include "ui/HandCursor.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov118/unk_02292d00.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -28,64 +48,28 @@ extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 
-void String_Load2dMenu(void *self, u32 v);
 void _ZN11MsgString9CC2Ev(void *self);
 s32 _ZN10PlayerData11getPlayerIdEv(void *self);
-void Snd_PlaySePanned(u32 a, s32 b);
-void Snd_PlaySe(u32 v);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-s32 Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-BOOL MenuCtrl_IsForceCloseDue();
-BOOL MenuCtrl_TickForceClose();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 s32 _s32_div_f(s32 a, s32 b);
-s32 MenuTabBar_GetTabX(s32 v);
-s32 MenuTabBar_HitTestTouch();
-u32 MenuTabBar_NextTab(u32 v);
-u32 MenuTabBar_PrevTab(u32 v);
-u32 MenuTabBar_TabFromX(u32 v);
 void Menu_PlayScrollGrabSe(void *p);
 void Menu_PlayScrollTickSe(void *p);
 void TownMapMarkers_Clear(void *p);
 void TownMapImage_BuildMarkersGlobal(u32 v);
 void TownMapImage_DrawRowGlobal(u32 v);
 void TownMapImage_AllocGlobal();
-void InventoryBg_ClearDirty(void *a, void *b);
 s16 *TownMapMarkers_Get(void *p, s32 i);
 u32 TownMapMarkers_GetKind(void *p, s32 i);
-void *PlayerData_GetCurrent();
-s32 PlayerDataArray_FindById(void *a, s32 b);
-BOOL PlayerDataArray_IsUsed(void *a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
-void PopupChoice_CopyPlayerIdName(void *p, s32 a);
-void PopupChoice_CopyResidentName(void *p, s32 a);
-void PopupChoice_CopyVillagerName(void *p, s32 a);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadPaletteFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void Gfx2d_LoadCharFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
-void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
-void File_LoadToBuffer(const char *a, void *b, u32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void Math_StepS32(void *p, s32 a, s32 b);
-void *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetWarpRequest();
 void *ScenePos_GetPos(void *p);
 void TownId_GetNameString(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 }
 
 
@@ -273,7 +257,6 @@ struct Unk_ov118_02295500 {
 };
 
 
-extern "C" MapTab *MapTab_Create();
 
 extern "C" {
 void _ZN6MapTab11stateLoadBgEv();

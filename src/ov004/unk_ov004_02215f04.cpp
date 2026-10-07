@@ -25,6 +25,20 @@
 #include "npc/NpcMoveCtrl.h"
 #include "npc/NpcTalkCtrl.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_BirthdayHostVillager_Get  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov004/unk_ov004_02214948.h"
+#include "proto/ov004/unk_ov004_02215f04.h"
 
 
 
@@ -139,8 +153,6 @@ extern u8 gSaveData[];
 extern u8 gSaveVillagers[];
 extern Unk_0204e858_Grid *gSceneBlockMap;
 BirthdayHostVillager *BirthdayHostVillager_Get(...);
-s32 Vec_DistXZ(void *, void *);
-s32 Vec_NotEqual(void *, void *);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
 s32 NpcActionCtrl_getAction(void *);
@@ -150,14 +162,10 @@ s32 NpcActionCtrl_requestAction(void *, u32, s32, s32, s32, s16, s16, s32, s32, 
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 s32 NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u32);
-s32 Random_GlobalBelow(s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void NpcFootstepFx_enableFootsteps(void *);
-void Camera_FocusOnPoint(void *);
-void Camera_SetModeDefault();
 s32 VillagerMemory_RecordTalk(void *, s32, s32, s32);
 void *Villager_FindOrCreateMemory(void *, void *);
-void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
 void *VillagerData_getVillagerId(void *);
 s32 VillagerMemory_isTalkedToday(void *);
@@ -174,14 +182,10 @@ s32 SaveVillagers_IsOccupied(void *, void *);
 void *SaveVillagers_Get(void *, void *);
 s32 ActorTalkRequest_setVillagerNameSlot(void *, void *, u32);
 s32 func_0201bd20(void *, u32);
-s32 Math_AngleXZ(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
-void *PlayerActor_GetActor(s32);
 s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void func_02067a84(void *, void *, s32);
-s32 MenuCtrl_BuildPocketMask(void *);
-s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_SetTargetDone(void *);
 s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u8 gTalkMsgIndexEnd[];
@@ -190,32 +194,20 @@ void *func_020679b4(void *);
 s32 func_020aa514(void *);
 void func_02067abc(void *, void *, s32);
 void func_02014e60(void *, void *, s32, s32, s32);
-void Pocket_AddItem(void *, s32);
 void *func_02080dd8(void *);
 void func_02080da4(void *, s8);
 void func_0201578c(void *, void *, s32, s32);
 void func_0206338c(void *, s32, s32);
 void ItemPickSpec_Destruct(void *);
-void ItemPick_One(u16 *, void *, s32, s32, s32, s32, s32);
-void ItemPick_FtrWallCarpetByClass(u16 *, void *, s32);
-void *NpcRegistry_GetVillager(s32);
-s32 NpcRegistry_GetSlotCount();
-s32 MenuCtrl_IsFinished();
-s32 MenuCtrl_IsResultOk();
-void *MenuCtrl_GetIndex();
-u16 Pocket_GetItem();
 s32 Item_GetPrice(u16 *);
-void Pocket_RemoveItem(void *);
 void func_02014ce4(void *, void *, s32, s32, s32);
 void *Villager_GetPlan(void *);
-u32 VillagerPlanBlock_GetPlan(void *);
 u32 func_0209b354(u32);
 s32 Item_IsFurniture(void *);
 void VillagerTalk_begin(void *, void *, u32);
 s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
-void Vec_Add(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *func_0201bc4c(void *self, s32 n);
 void func_02015ab0(void *p, void *q);
@@ -227,12 +219,10 @@ s32 func_0201b138(void *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 extern s32 data_020c8cb4;
 extern s32 data_020c8cb8;
-s32 BirthdayHostVillager_HasReceivedGift();
 }
 
 
 
-extern "C" BirthdayGuestVillager *BirthdayGuestVillager_Create();
 extern "C" void _ZN21BirthdayGuestVillager9drawModelEv();
 extern "C" void *data_ov004_0224c158[2];
 extern "C" DebugColor data_ov004_02250588(0x1f, 0x14, 0x14, 0x1f);
@@ -251,7 +241,6 @@ u8 sBirthdayGuestMsgFile[0x28];
 }
 
 extern "C" BirthdayHostVillager *sBirthdayHostVillager;
-extern "C" s32 Room_PickRandomWalkTarget(VecFx32 *out, VecFx32 *in, s32 angle);
 
 
 extern "C" BirthdayGuestVillager *BirthdayGuestVillager_Create() {

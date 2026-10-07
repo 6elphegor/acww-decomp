@@ -5,6 +5,9 @@
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212fa54.h"
+#include "proto/ov065/unk_ov065_02277974.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
@@ -23,16 +26,12 @@ extern s32 __GSIACResult;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
-s32 strstr(void *a, void *b);
-s32 func_02130b04(void *a, void *b);
 void SocketStartUp(void);
 s32 CanReceiveOnSocket(s32 s);
 s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
 s32 sendto(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
 s32 closesocket(s32 s);
 s32 socket(s32 a, s32 b, s32 c);
-void *GsUtil_Alloc(u32 n);
-void GsUtil_Free(void *p);
 void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
 s32 NTSLengthSB(u8 *buf, s32 n);
 void SBReleaseStr(s32 a, void *p);

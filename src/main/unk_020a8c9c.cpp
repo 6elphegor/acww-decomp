@@ -16,6 +16,15 @@
 #include "talk/ChoiceList.h"
 #include "talk/ChoiceMenu.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_DebugVar_GetStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020a8c9c.h"
+#include "proto/main/unk_020b2c50.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
@@ -85,27 +94,21 @@ public:
 
 extern "C" {
 // Other files
-void Gfx2d_HideMainPlanes(s32 a);
 }
 
 extern "C" {
-void Gfx2d_ShowMainPlanes(s32 a);
 }
 
 extern "C" {
-void Gfx2d_SetMainBg1Offset(s32 a, s32 b);
 }
 
 extern "C" {
-s32 Snd_PlaySe(s32 id);
 }
 
 extern "C" {
-void Str_SPrintf(char *buf, const char *fmt, ...);
 }
 
 extern "C" {
-void Oam_DrawCell(s32 a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 }
 
 extern "C" {
@@ -210,15 +213,12 @@ BmgMsgAttr *Bmg_GetMsgAttr(BmgReader *p);
 }
 
 extern "C" {
-void String_Load2d(LabelButtonText *buf, u8 *str, s32 n);
 }
 
 extern "C" {
-void *Mem_AllocTail(u32 size);
 }
 
 extern "C" {
-void Heap_Free(void *heap, void *ptr);
 }
 
 extern "C" {
@@ -267,15 +267,12 @@ s32 _s32_div_f(s32 a, s32 b);
 
 extern "C" {
 // This file
-const void *Choice_GetBmgName(u32 i);
 }
 
 extern "C" {
-s32 ChoiceWindow_GetLabelTile(s32 a, s32 mode);
 }
 
 extern "C" {
-void ChoiceWindow_BlankTiles(void *p, u32 n);
 }
 
 extern "C" {

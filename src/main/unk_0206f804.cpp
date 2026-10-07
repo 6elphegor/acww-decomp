@@ -1,23 +1,14 @@
 #include "types.h"
 #include "talk/EncodedString41.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_0206f804.h"
 
 
 extern "C" {
 extern u8 sCommSubPostReply;
-s32 Text_GetLength(const u8 *str, s32 len);
 
-void CommSub_RecvClearPendingUnit(u8 *p, u32 x);
-void CommSub_StartCountdown(u8 *p, u32 x);
-void CommSub_RecvCountdownRequest(u8 *p, u32 x);
-void CommSub_RecvTownTune(u8 *p, u32 x);
-void CommSub_RecvPostReply(u8 *p, u32 x);
-void CommSub_RecvPostLetter(u8 *p, u32 x);
-void CommSub_ClearBottleLetter(u8 *p, u32 x);
-void CommSub_RecvBottleLetter(u8 *p, u32 x);
-void CommSub_RecvItemList15(u8 *p, u32 x);
-void CommSub_RecvReleaseOrThrow(u8 *p, u32 x);
-void CommSub_RecvInsectRelease(u8 *p, u32 x);
-void CommSub_RecvBbsPost(u8 *p, u32 x);
 
 typedef void (*CommSubHandler)(u8 *, u32);
 }

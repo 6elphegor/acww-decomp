@@ -2,14 +2,13 @@
 #include "town/TownAcreIndex.h"
 #include "town/TownAcreCell.h"
 #include "town/TownAcreGrid.h"
+#include "proto/main/unk_02037260.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0209b63c.h"
 
 
 
 extern "C" {
-s32 Random_GlobalBelow(s32);
-s32 AcreType_CountRiverBits(s32);
-s32 AcreType_GetAttr(s32);
-s32 AcreType_FindByAttr(s32);
 }
 
 
@@ -30,7 +29,6 @@ struct Unk_0209ba90_Dir {
     Unk_0209ba90_Dir(s16 a, s16 b) { x = a; y = b; }
 };
 
-extern "C" s32 AcreType_GetRiverVariant(s32 v);
 
 
 TownAcreCell *TownAcreGrid::getCell(s32 x, s32 y)

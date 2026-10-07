@@ -28,35 +28,7 @@ struct SpriteAnimSeq;
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void HudUnkSlideIcon_Draw();
-void HudLinkIcon_Draw();
-void HudUnkIcon_Draw();
-void HudLinkIcon_Update();
-void HudUnkSlideIcon_Update();
-void HudUnkIcon_Update();
-void HudUnkIcon_Exit();
-void HudUnkSlideIcon_Exit();
-void HudLinkIcon_Exit();
-void HudLinkIcon_Reset();
-void HudUnkSlideIcon_Reset();
-void HudUnkIcon_Reset();
-BOOL InputMode_IsButtons();
-BOOL InputMode_IsTouch();
-void HudObjGfx_LoadCameraButton(u32 a, u32 b, u32 c);
-void HudObjGfx_LoadKind(u32 a, u32 b);
-void HudObjGfx_SetCountdownVariant(u32 a);
-s32 Hud_GetSceneHudKind();
-BOOL HudObjGfx_GetCountdownVariant();
-s32 MenuCtrl_IsTransitionActive();
-s32 ChatBalloon_IsRemoteBusy();
-s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 PlayerData_GetCurrent();
-s32 MenuCtrl_GetHandBells();
-void Snd_StopBellRollSe();
-void Snd_StartBellRollSe();
-void Snd_PlaySe(s32 a);
 void String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
 void Math_StepS32Alt(void *p, s32 a, s32 b);
@@ -65,8 +37,6 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 BOOL TalkRequest_FinishCameraView();
 BOOL TalkRequest_IsCameraViewRunning();
 void TalkRequest_AddCameraView();
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_ResetForceClose();
 BOOL Input_IsTouchMode();
 BOOL Input_IsButtonMode();
 BOOL Input_IsAnyKeyTrig();
@@ -75,33 +45,18 @@ void Input_SetButtonMode();
 void Input_SetTouchMode();
 s32 Input_StoreMode();
 BOOL TalkRequest_IsActive();
-u32 PlayerActor_GetAction(s32 a);
-void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
-BOOL ChatBalloon_IsOwnBusy();
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Clock_GetRtcDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 void DateTime_Sub(void *a, void *b);
 s32 Scene_GetCurrent();
-void FieldInfoBalloon_ShowTimerMsg(s32 x);
-u64 OS_GetTick();
-s32 MenuCtrl_IsMenuOpen();
 void DateTime_AddSeconds(void *p, s32 v);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
 s32 Clock_GetWeekday();
-BOOL PlayerActor_IsInAction(s32 a, s32 b);
 
 // plain-named functions of the unit
-void Hud_Draw();
-void Hud_Update();
-void Hud_Exit();
-void Hud_Init();
-void Hud_ClearHideB();
-void Hud_Show();
-void Hud_Hide();
-s32 Hud_GetBells();
 
 // functions of the unit that other classes of the unit call (symbols.txt names)
 }
@@ -345,7 +300,21 @@ public:
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
-extern "C" HudProc *HudProc_Create();
+#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_020030d8.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_0208de68.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7190.h"
 
 
 extern HudController gHud;

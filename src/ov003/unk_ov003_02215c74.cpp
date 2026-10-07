@@ -19,6 +19,12 @@
 #include "gfx/Model.h"
 #include "net/CommManager.h"
 #include "npc/VillagerId.h"
+#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov003/unk_ov003_02215c74.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -84,11 +90,8 @@ BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 Villager_IsHouseAvailable(void *p);
 s32 Villager_GetWhereabouts(void *p);
-void NetArea_GetSlotStatus(s32 i, u8 *a, u8 *b, u8 *c);
 s32 SceneId_GetVillagerHouse(u32 a);
-s32 VillagerId_GetPersonality(void *);
 
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void Vec_Add(VecFx32 *out, void *a, void *b);
 void NNS_G3dBindMdlTex(void *a, s32 b);
 void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
@@ -96,18 +99,6 @@ void *_ZN12VillagerData13getVillagerIdEv(void *self);
 void *_ZN5Model12getRenderObjEv(void *self);
 void NNS_G3dBindMdlPltt(void *a, s32 b);
 
-s32 FieldStructureMgr_GetVillagerHouseTex();
-s32 VillagerHouseTex_GetDoorOutAnim(s32 a);
-s32 VillagerHouseTex_GetDoorInAnim(s32 a);
-void *FieldStructureMgr_GetLightUpDeco();
-BOOL HouseLightUpDeco_IsLoaded(void *p);
-void *HouseLightUpDeco_GetModel(void *p, s32 i);
-s32 HouseLightUpDeco_GetTex(void *p);
-s32 HouseLightUpDeco_GetTexPattern(void *p);
-s32 VillagerHouseTex_GetHouseTex(s32 a, s32 b);
-s32 VillagerHouseTex_GetLightTex(s32 a, s32 b);
-s32 Field_GetStructureTexSuffix();
-void *VillagerHouse_Create();
 }
 
 static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {

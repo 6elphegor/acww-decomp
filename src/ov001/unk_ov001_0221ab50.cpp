@@ -2,6 +2,35 @@
 #include "types.h"
 #include "ui/Unk_ov001_0221a40c.h"
 #include "menu/WfcConnSelectWork.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_02208a24.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_022111c8.h"
+#include "proto/ov001/unk_ov001_02214f50.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_02219064.h"
+#include "proto/ov001/unk_ov001_0221962c.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221b44c.h"
+#include "proto/ov001/unk_ov001_0221b8f4.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221eb38.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
 
 #pragma thumb off
 
@@ -34,93 +63,24 @@ extern s8 sWfcSetupMethodCursor;
 extern s8 sWfcSetupMethodColumn;
 extern void *sWfcSetupMethodPalette;
 
-extern s32 WfcFade_IsBusy(s32);
-extern void WfcButtonBar_Close();
-extern void WfcFade_Start(s32, s32, s32, s32);
-extern void WfcUtil_SetScene(void *);
-extern void WfcSetupMethod_Exit();
-extern void WfcButtonBar_DisableInput();
-extern void WfcFade_StartWait(s32);
-extern s32 WfcButtonBar_GetResult();
-extern void WfcSound_Play(s32);
-extern void WfcSetupMethod_HighlightOption();
-extern u32 WfcUtil_TestOptionFlag(s32);
 extern s32 WfcInput_IsTouchPressedIn(void *);
-extern void WfcButtonBar_SetResult(s32);
-extern void WfcCursor_ShowCorners(u32, u32, u32, u32);
 extern s32 WfcInput_IsKeyPressed(s32);
 extern s32 WfcInput_IsKeyRepeat(s32);
-extern void WfcSetupMethod_MoveCursor(s32);
-extern void WfcButtonBar_EnableInput();
-extern void WfcUtil_OpenButtonBar(s32);
 extern void WfcGx_ShowPlanes(s32, s32);
 extern void WfcUtil_LoadFileTo(void *, void *);
-extern u8 *WfcUtil_LocalizePath(void *);
-extern void *WfcFs_LoadFile(void *, s32, s32);
 extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
 extern void GX_LoadBG2Scr();
-extern u8 *WfcConfig_GetEdit();
 extern u8 *WfcConfig_Get();
-extern s32 WfcUtil_GetLanguage();
-extern void WfcHighlight_SetConnection();
-extern void WfcUtil_ShowTopMessage(s32, s32, s32);
-extern void WfcUtil_ShowStepIndicator(s32);
-extern void WfcSetupMethod_FadeIn();
 extern void WfcHeap_Free(s32);
 extern void WfcHeap_Alloc(s32, s32);
-extern s32 WifiAp_Process();
-extern void WfcLinkIcon_Delete();
-extern void WfcSound_Stop();
-extern void WifiAp_GetStatus();
-extern void WfcError_SetCode();
-extern void WfcConnTest_FadeOut();
-extern void WfcTask_RequestDelete(s32, s32);
-extern s32 WifiAp_RequestCleanup();
 extern void *DWCi_BACKUPlGetWifi();
 extern void MI_CpuCopy8(void *, void *, s32);
-extern void WfcBusyIcon_Delete();
-extern void WfcText_DestroyBgCanvas(s32);
 extern void WfcGx_HidePlanes(s32, s32);
-extern void WfcUtil_SetScreenFlags(s32, s32);
-extern void WfcError_Enter();
-extern void WfcTestSuccess_Enter();
-extern void WfcConnTest_Exit();
-extern void WfcConnTest_WaitFadeOut();
-extern void WfcConnTest_Idle();
-extern void WfcConnTest_WaitFadeIn();
-extern void WfcSetupMethod_WaitFadeIn();
-extern void WfcSetupMethod_WaitButtonBar();
-extern void WfcSetupMethod_Update();
-extern void WfcSetupMethod_FadeOut();
-extern void WfcSetupMethod_StartExit();
-extern void WfcSetupMethod_HandleResult();
-extern void WfcSetupMethod_Idle();
-extern void WfcSetupMethod_HandleInput();
-extern void func_ov001_0221b604();
-extern void func_ov001_0221b608();
-extern void func_ov001_0221b60c();
-extern void WfcUtil_GetEditParams(s32, void *);
 extern void MIi_CpuCopy32(void *, void *, s32);
-extern s32 WifiAp_Init(void *);
-extern void Fatal_Trap();
-extern void WifiAp_SetApEntry(s32, void *);
-extern void WfcTask_Add(s32, void *, s32, s32);
-extern void WfcConnTest_PollTask(s32);
 
 #define REGSET(a, v) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= (v); *(volatile u16 *)(a) = t; } while (0)
 
-void WfcSetupMethod_FadeOut();
-void WfcSetupMethod_StartExit();
-void WfcSetupMethod_HandleResult();
-void WfcSetupMethod_Idle();
-void WfcSetupMethod_HandleInput();
-void WfcSetupMethod_Update();
-void WfcSetupMethod_WaitButtonBar();
-void WfcSetupMethod_WaitFadeIn();
-void WfcSetupMethod_FadeIn();
-void WfcSetupMethod_LoadBg();
-void WfcSetupMethod_Enter();
 
 void WfcSetupMethod_Enter() {
     u8 *o = WfcConfig_GetEdit();
@@ -278,33 +238,9 @@ extern void *sWfcSetupMethodPalette;
 extern u8 data_ov001_0222b2d0[];
 extern const s8 sWfcSetupMethodNav[];
 
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_GetResult();
-void WfcButtonBar_Close();
-u8 *WfcConfig_GetEdit();
-void WfcFade_Start(s32, s32, s32, s32);
-void WfcUtil_SetScene(void *);
-void WfcButtonBar_DisableInput();
-void WfcFade_StartWait(s32);
-void WfcHeader_StartSlideOut();
-s32 WfcUtil_GetStartMode();
-void WfcSound_Play(s32);
-u32 WfcConfig_GetSlotStatus(u32);
-void WfcButtonBar_ForceResult(s32);
-s32 WfcUtil_GetLanguage();
-void WfcDialog_Open(s32, s32, s32, s32, s32);
-void WfcConnSelect_PressEraseButton();
-void WfcConfig_BeginEdit(s32);
-void WfcConnSelect_HighlightSelection();
 s32 WfcInput_IsTouchPressedIn(void *);
-void WfcButtonBar_SetResult(s32);
-void WfcConnSelect_DrawCursor();
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
-void WfcConnSelect_MoveCursor(s32);
-s32 WfcHeader_IsAnimating();
-void WfcButtonBar_EnableInput();
-void WfcUtil_OpenButtonBar(s32);
 void WfcGx_ShowPlanes(s32, s32);
 u32 WfcObj_Create(u32, u32, u32);
 void WfcObj_SetPos(u32, s32, u32, u32);
@@ -314,50 +250,12 @@ void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
 void GX_LoadOBJPltt();
-void *WfcUtil_LocalizePath(void *);
-u32 WfcFs_LoadFile(void *, s32, s32);
 u32 WfcHeap_AllocClear(s32, s32);
-void WfcHighlight_Set(s32);
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowStepIndicator(s32);
-void WfcUtil_RequestPaletteLine(void *, u32, u32);
-u32 WfcUtil_TestOptionFlag(s32);
-void WfcCursor_ShowCorners(u32, u32, u32, u32);
-s32 WfcButtonBar_IsClosed();
-void WfcCursor_Clear();
-void WfcUtil_HideTopMessage();
-void WfcFs_FreeFile(void *);
 void WfcGx_HidePlanes(s32, s32);
-void WfcUtil_SetScreenFlags(s32, s32);
-void WfcUtil_SetEditParams(s32, s32);
-void WfcManualSetup_SetMode(s32);
-void WfcApSearch_Enter();
-void WfcAossSetup_Enter();
-void WfcSimpleStartInit_Enter();
-void WfcManualSetup_Enter();
-void WfcConnSelect_Exit();
-void WfcUtil_QuitFadeOut();
-void WfcConnSelect_EraseDialog();
 
-void WfcConnSelect_FadeOut();
-void WfcConnSelect_StartExit();
-void WfcConnSelect_HandleSelection();
-void WfcConnSelect_Idle();
-void WfcConnSelect_HandleInput();
-void WfcConnSelect_Update();
-void WfcConnSelect_WaitButtonBar();
-void WfcConnSelect_WaitFadeIn();
-void WfcConnSelect_FadeIn();
-void WfcConnSelect_CreateSlotButtons();
-void WfcConnSelect_LoadBg();
-void WfcConnSelect_Enter();
-void WfcSetupMethod_HighlightOption();
-void WfcSetupMethod_MoveCursor(s32);
-void WfcSetupMethod_Exit();
 
 #define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
 
-void WfcSetupMethod_MoveCursor(s32 p);
 
 void WfcSetupMethod_Exit() {
     if (WfcFade_IsBusy(1)) return;

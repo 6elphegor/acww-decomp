@@ -10,6 +10,21 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206cbdc.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov113/unk_02291f60.h"
 
 class BbsReadMenu;
 
@@ -22,42 +37,11 @@ extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 data_ov113_022936a0[];
-s32 Snd_PlaySe(s32 a);
-u32 Bbs_GetPostCount();
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void String_Load2dMenu(void *o, u32 x);
-void String_FromEncodedBytes(void *dst, const void *s, s32 len);
-void String_FromEncodedBytesEx(void *dst, const void *s, s32 len, BOOL a, u32 b);
 void func_ov092_02291ce4(void *p, s32 a, s32 b);
 void func_ov092_02291c5c();
-void Gfx2d_HideLayer(s32 a);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_SetMainBgModeState(u32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
-s32 PlayerData_GetCurrentIndex();
-u8 *BbsPost_GetText(void *p);
-s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
-void String_SetSlot(s32 a, void *buf);
-s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
-BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
-s32 Gfx2d_LoadCharFile(void *, void *, u32, u32, u32, u32);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
-BbsReadMenu *BbsReadMenu_Create();
 }
 
 

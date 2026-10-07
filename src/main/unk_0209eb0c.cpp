@@ -1,11 +1,11 @@
 #include "types.h"
 #include "save/SaveRecord4.h"
+#include "proto/main/unk_02063904.h"
 
 // 0x0209eb0c-0x0209eb94: the last 13 functions of the file that U193 (0x0209e394-0x0209eb0c) comes from
 // (members of the 4-byte record class SaveRecord4 whose first methods are in U193, and of SaveChecksum).
 
 extern "C" {
-u32 Random_GlobalBelow(s32 n);
 }
 
 

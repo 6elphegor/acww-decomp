@@ -4,11 +4,11 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "sys/TreeNode.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 
 
 
 extern "C" {
-TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n);
 }
 
 // game copy of the SDK VEC_Add (the SDK one is at 0x01ffca8c)

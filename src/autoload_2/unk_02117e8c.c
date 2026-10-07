@@ -2,6 +2,8 @@
 // NitroSDK pxi_fifo.c: PXI_InitFifo, PXI_SetFifoRecvCallback, PXI_IsCallbackReady,
 // autoload_2 0x02117e8c-0x0211802c. ARM code, mwcc 1.2/base.
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02117e8c.h"
+#include "proto/itcm/unk_01ffa4a0.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -31,7 +33,6 @@ void OS_RestoreInterrupts(u32 state);   // OS_RestoreInterrupts
 void OS_ResetRequestIrqMask(u32 mask);    // OS_ResetRequestIrqMask
 void OS_SetIrqFunction(u32 mask, void (*handler)(void)); // OS_SetIrqFunction
 void OS_EnableIrqMask(u32 mask);    // OS_EnableIrqMask
-void PXIi_HandlerRecvFifoNotEmpty(void);        // PXIi_HandlerRecvFifoNotEmpty
 
 // PXI_InitFifo
 void PXI_InitFifo(void) {

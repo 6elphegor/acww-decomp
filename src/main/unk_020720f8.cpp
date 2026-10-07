@@ -14,6 +14,37 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_Comm_GetMemberMask  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Comm_RemoveMember  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Comm_ResetPeerState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Comm_Start  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Comm_WriteSyncReply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_GetName  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_0206f804.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098d20.h"
+#include "proto/main/unk_0209c3e0.h"
+#include "proto/main/unk_0209c4a8.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020a6388.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b7190.h"
 
 // ======== types of unk_02071ae0.cpp ========
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
@@ -61,10 +92,8 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void Net_OnHeapDestroyNop();
 }
 extern "C" {
-s32 NetHeap_Destroy();
 }
 extern "C" {
 #define Heap_setFlags _ZN4Heap8setFlagsEj
@@ -74,10 +103,8 @@ extern "C" {
 void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-s32 Net_Shutdown();
 }
 extern "C" {
-void Comm_ReportShutdownError();
 }
 extern "C" {
 }
@@ -85,7 +112,6 @@ extern "C" {
 void *_ZN11CommManager10getAuxBufBEv(CommManager *);
 }
 extern "C" {
-void NetHeap_Free(void *);
 }
 extern "C" {
 }
@@ -127,10 +153,8 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void CommSyncVar_Init();
 }
 extern "C" {
-void *NetHeap_Alloc(u32, u32);
 }
 extern "C" {
 void Net_Init(u32, u32, u32, u64, u32, void *, void *);
@@ -143,7 +167,6 @@ extern "C" {
 void MI_CpuFill8(void *, u32, u32);
 }
 extern "C" {
-u32 PlayerData_GetCurrent();
 }
 extern "C" {
 }
@@ -151,10 +174,8 @@ extern "C" {
 u8 *FriendList_GetEntries(void *p);
 }
 extern "C" {
-void *FriendEntry_GetFriendData(void *);
 }
 extern "C" {
-void *DwcFriendData_GetBytes(void *p);
 }
 extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
@@ -170,7 +191,6 @@ void *TownId_GetName(void *);
 extern "C" {
 }
 extern "C" {
-void *PlayerWifiData_GetDwcUserData(void *p);
 }
 extern "C" {
 s32 _Z21NetOverlay_AssertWifiv();
@@ -185,24 +205,6 @@ extern "C" {
 void Net_StartLocal(u32, void *);
 }
 extern "C" {
-void Comm_OnFriendDeletedNop();
-}
-extern "C" {
-void Comm_OnReceive(u32, u8 *, u32);
-}
-extern "C" {
-}
-extern "C" {
-s32 CommSyncVar_GetVarSize(u32);
-}
-extern "C" {
-void NetHeap_Create(u32, u32);
-}
-extern "C" {
-void Net_OnHeapCreatedNop();
-}
-extern "C" {
-void NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
 }
@@ -213,13 +215,22 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void NetSession_RemoveSlot(u32);
 }
 extern "C" {
-u32 NetSession_GetSyncState(u32);
 }
 extern "C" {
-void CommPacket_SetHeader(void *, u32, u32);
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
 }
 extern "C" {
 u32 Comm_GetMemberMask(u32);
@@ -231,16 +242,13 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void CommRecord_UnpackSource(u8 *, u8 *, u8 *);
 }
 extern "C" {
-u32 CommRecord_GetLength(u8 *);
 }
 extern "C" {
 void Scene_GetCurrent();
 }
 extern "C" {
-u32 NetArea_ResolveRoute(u32, u32, u32, u8 *);
 }
 extern "C" {
 }
@@ -252,7 +260,6 @@ extern "C" {
 void *_ZN11CommManager11getAckCountEi(CommManager *, u32);
 }
 extern "C" {
-void CommPacket_SetAckHeader(void *, void *);
 }
 extern "C" {
 void *_ZN11CommManager15getConfirmedSeqEv(CommManager *);
@@ -264,18 +271,6 @@ extern "C" {
 void OS_DisableInterrupts();
 }
 extern "C" {
-s32 CommPacket_GetAck(u8 *);
-}
-extern "C" {
-}
-extern "C" {
-s32 CommPacket_IsControl(u8 *);
-}
-extern "C" {
-s32 CommPacket_GetType(u8 *);
-}
-extern "C" {
-void CommCtrl_Dispatch(u8 *, u32, u32, s32);
 }
 extern "C" {
 }
@@ -286,7 +281,14 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void Net_SetRecvBuffer(u32, void *, u32);
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
 }
 extern "C" {
 void DC_FlushAll(u32);
@@ -295,40 +297,29 @@ extern "C" {
 void VillagerStates_ResetRuntime();
 }
 extern "C" {
-void *TownSessionState_Get();
 }
 extern "C" {
-void TownSessionState_Reset(void *self);
 }
 extern "C" {
-void RoomFtrState_ResetAll();
 }
 extern "C" {
-void RoomObjSync_Reset();
 }
 extern "C" {
-void BuildingStates_Reset();
 }
 extern "C" {
-void CharInteractSync_Reset();
 }
 extern "C" {
-void CommSub_ResetPostReply();
 }
 extern "C" {
 void *Item_MakeBuilding(u32);
 }
 extern "C" {
-void BuildingOccupancy_Leave(void *, u32);
 }
 extern "C" {
-void SpotSync_Release(u32);
 }
 extern "C" {
-void RoomEntry_Leave(u32, u32);
 }
 extern "C" {
-void PlayerSession_ResetLastState(u32);
 }
 extern "C" {
 void ReddPassword_ForgetVisitor();
@@ -336,8 +327,6 @@ void ReddPassword_ForgetVisitor();
 namespace Unk_02073e14_ns {
 extern "C" s32 Comm_ResetPeerState(s32);
 }
-extern "C" s32 Comm_IsSyncFinished(u32);
-extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b);
 
 extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
@@ -696,70 +685,49 @@ extern "C" {
 BOOL _Z20Comm_AnyPeerTimedOutv(CommManager *self);
 }
 extern "C" {
-BOOL Comm_QueueRecords(void *unused, u8 *buf, u32 n);
 }
 extern "C" {
-BOOL CommCaution_IsShutDown();
 }
 extern "C" {
-BOOL Comm_HasSendCreditAll();
 }
 extern "C" {
-void Comm_WriteAckHeaders();
 }
 extern "C" {
-void func_02133ef8(void *, u32);
 }
 extern "C" {
-s32 Comm_WriteSyncVars(u8 *dst, void *src, s32 n);
 }
 extern "C" {
-u32 Comm_CollectRecordsFor(u8 *dst, u32 id);
 }
 extern "C" {
-u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
 s32 Comm_WriteSyncReply(u32 a);
 }
 extern "C" {
-s32 Comm_IsSyncFinished(u32 a);
 }
 extern "C" {
-void Comm_EnterCritical();
 }
 extern "C" {
-void Comm_LeaveCritical();
 }
 extern "C" {
-void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
-s32 NetArea_GetMoveState();
 }
 extern "C" {
-void NetArea_SetMoveState(s32 a);
 }
 extern "C" {
-s32 CommPacket_GetAck(u8 *p);
 }
 extern "C" {
-BOOL Comm_SendEmpty();
 }
 extern "C" {
-BOOL Net_IsReadyToSend();
 }
 extern "C" {
-void CommPacket_SetHeader(u8 *p, u32 a, u32 b);
 }
 extern "C" {
-u32 Net_GetConnectedMask();
 }
 extern "C" {
-BOOL Net_PollConnected();
 }
 extern "C" {
-void Comm_Update(s32 a);
 }
 
 extern "C" void Comm_Update(s32 a) {
@@ -1029,103 +997,73 @@ extern "C" {
 void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
-void CommPacket_IsControl(u8 *p);
 }
 extern "C" {
-void CommPacket_SetHeader(u8 *p, u32 a, u32 b);
 }
 extern "C" {
-void Comm_IsWifi();
 }
 extern "C" {
-s32 Comm_End();
 }
 extern "C" {
-void NetSession_Reset();
 }
 extern "C" {
-void NetSession_OnBeginHost();
 }
 extern "C" {
-s32 NetSession_GetSyncState(s32 a);
 }
 extern "C" {
-void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
-void NetArea_SetSlotStatus(u32 a, s32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-u32 Net_GetMemberCount();
 }
 extern "C" {
-BOOL Net_IsReadyToSend();
 }
 extern "C" {
-BOOL Net_GetMyAid();
 }
 extern "C" {
-u32 Net_GetConnectedMask();
 }
 extern "C" {
-BOOL Net_PollConnected();
 }
 extern "C" {
-BOOL Net_SendPackets3(u8 *a, u32 b, u32 c, u32 d, u8 *e, u32 f, u16 g, u32 h, u8 *i, u32 j, u16 k, u32 l);
 }
 extern "C" {
-void Net_SetRecvBuffer(u16 a, u8 *p, u32 sz);
 }
 extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-BOOL Comm_IsConnectionLost(s32 a);
 }
 extern "C" {
-void Comm_SetLostFlag();
 }
 extern "C" {
-s32 Comm_Shutdown();
 }
 extern "C" {
 u32 Comm_GetMemberMask();
 }
 extern "C" {
-u32 Comm_GetRemoteMask();
 }
 extern "C" {
-void Comm_ClearSyncState();
 }
 extern "C" {
-s32 Comm_GetSyncState();
 }
 extern "C" {
-BOOL Comm_RequestSync(u8 a);
 }
 extern "C" {
-void Comm_SetRecvBuffers(u32 a);
 }
 extern "C" {
-void Comm_ResetNetSession();
 }
 extern "C" {
-void Comm_PrepareJoin(u32 a);
 }
 extern "C" {
-void Comm_BeginHostSession();
 }
 extern "C" {
-void Comm_SetRecvBuffersAsHost();
 }
 extern "C" {
-BOOL Comm_SendEmpty();
 }
 
 extern "C" BOOL Comm_SendEmpty() { return gCommManager->sendPackets(0, 0, 0, 0, 0, 0, 0, 0, 0); }
@@ -1484,49 +1422,35 @@ extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(void *g, u32 i);
 }
 extern "C" {
-s32 CommRecv_Dispatch(u32 x, u32 p, u32 len, u32 b, u32 c, u32 d);
 }
 extern "C" {
-u32 CommRecord_GetLength(u8 *p);
 }
 extern "C" {
-void CommRecord_UnpackSource(u8 *src, u8 *a, u8 *b);
 }
 extern "C" {
-void CommRecord_SetLength(void *out, u16 v);
 }
 extern "C" {
-void CommRecord_PackSource(void *out, u32 a, u32 b);
 }
 extern "C" {
-u32 CommSyncVar_GetVarOffset(u32 a);
 }
 extern "C" {
-u32 CommSyncVar_GetVarSize(u32 i);
 }
 extern "C" {
-u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-s32 NetArea_FindOwner(u32 a);
 }
 extern "C" {
-BOOL NetArea_IsSlotMoving(u32 a);
 }
 extern "C" {
-BOOL NetArea_IsLocalOwner();
 }
 extern "C" {
-void NetArea_IsUnsharedScene(s32 a);
 }
 extern "C" {
-void Comm_EnterCritical();
 }
 extern "C" {
-void Comm_LeaveCritical();
 }
 extern "C" {
 extern CommManager *gCommManager;
@@ -2153,40 +2077,28 @@ extern "C" {
 extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
-void *Mem_Alloc(u32 n);
 }
 extern "C" {
-void Mem_Free(void *p);
 }
 extern "C" {
-void AblePatternDefaults_Ctor(void *p);
 }
 extern "C" {
-void PlayerPatternDefaults_Ctor(void *p);
 }
 extern "C" {
-BOOL AblePatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-BOOL PlayerPatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-void AblePatternDefaults_Load(void *t);
 }
 extern "C" {
-void PlayerPatternDefaults_Load(void *t);
 }
 extern "C" {
-void *PatternPresetInfo_Get(void);
 }
 extern "C" {
-void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
 }
 extern "C" {
-Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
 }
 extern "C" {
-void TownId_SetId(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
 void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);
@@ -2195,31 +2107,25 @@ extern "C" {
 void _ZN6TownId7setTownEPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
-s32 memcmp(void *a, void *b, u32 n);
 }
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
-s32 Comm_AidToPeerIndex(s32 i);
 }
 extern "C" {
-s32 Comm_IsWifi();
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void *PatternTexCache_Get();
 }
 extern "C" {
 void _ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
 }
 extern "C" {
-s32 Fatal_Trap();
 }
 extern "C" {
 void _ZN13EncodedString13fromMsgStringEP9MsgString(EncodedString16Buf *o, void *x);

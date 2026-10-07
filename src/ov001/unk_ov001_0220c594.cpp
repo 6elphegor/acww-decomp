@@ -1,6 +1,26 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_0211bcdc.h"
+#include "proto/autoload_2/unk_0211d20c.h"
+#include "proto/itcm/unk_01ffc538.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_0220c37c.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225ea0.h"
+#include "proto/ov001/unk_ov001_022265ac.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
+#include "proto/ov001/unk_ov001_02226994.h"
+#include "proto/ov001/unk_ov001_02226c24.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 struct WfcParamBits {
     u32 startMode : 4;
@@ -17,76 +37,36 @@ void (*sWfcSceneFunc)();
 u32 sWfcScreenFlags[4];
 //ENDDEFS
 
-extern void Fatal_Trap();
 extern s32 DWC_BM_Init(u8 *buf);
 extern void VBlankIntrWait();
 
 
 extern void WfcHeap_Free(void *p);
-void WfcBoot_Enter();
-void WfcUtil_SetScene(void (*)());
-void WfcUtil_InitSystem();
-void WfcUtil_InitDisplay();
-void WfcUtil_Shutdown();
-s32 WfcUtil_CheckParams(s32, u32);
-void WfcAoss_Free(void *p);
-void *WfcAoss_Alloc(s32);
 extern void *WfcHeap_Alloc(s32, s32);
 extern void *WfcHeap_AllocClear(s32, s32);
 extern void WfcHeap_FreeAndClear(void *);
-extern void WfcConfig_StoreAoss(void *);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MI_CpuCopy8(void *, void *);
 extern void OS_GetMacAddress(void *);
-extern s32 GX_DispOff();
 extern void GX_VBlankIntr(s32);
-extern void GX_SetBankForBG(s32);
-extern void GX_SetBankForOBJ(s32);
 extern void GX_SetGraphicsMode(s32, s32, s32);
 extern void GXx_SetMasterBrightness_(u32, s32);
 extern void G2x_SetBlendBrightness_(u32, s32, s32);
 extern void GX_SetBankForSubBG(s32);
 extern void GX_SetBankForSubOBJ(s32);
 extern void GXS_SetGraphicsMode(s32);
-extern void GX_DispOn();
 extern s32 OS_IsTickAvailable();
 extern s32 OS_IsAlarmAvailable();
-extern void FX_Init();
 extern void FS_Init(s32);
-extern void TP_Init();
-extern void RTC_Init();
-extern void WfcUtil_RestoreLed();
 extern void WfcInput_Shutdown();
-extern void WfcIrq_Restore();
-extern void WfcSound_Shutdown();
 extern void WfcObj_Shutdown();
-extern void WfcOam_Shutdown();
-extern void WfcText_Shutdown();
-extern void WfcFade_Shutdown();
-extern void WfcFs_UnmountArchive();
-extern void WfcTask_Shutdown();
 extern s32 WfcHeap_Destroy();
-extern void WfcGx_RestoreVramBanks();
-extern void WfcText_Init();
-extern void WfcOam_Init();
-extern void WfcVram_Init();
 extern void WfcObj_Init();
-extern void WfcGx_SaveVramBanks();
 extern void WfcHeap_Init(u32);
-extern void WfcIrq_Init();
-extern void WfcTask_Init();
-extern void WfcFs_MountArchive();
 extern void WfcInput_Init();
-extern void WfcFade_Init();
-extern void WfcSound_Init();
 extern void WfcInput_Update();
-extern void WfcTask_RunList(s32);
-extern void WfcUtil_UpdateLidPower();
-extern void WfcUtil_UpdateLed();
-extern void WfcFs_FreeFile(void *);
 extern void *WfcPool_Get(void *);
 extern void WfcPool_Put(void *, void *);
-extern void *WfcFs_LoadFile(void *, void *, u32);
 
 
 #pragma thumb off

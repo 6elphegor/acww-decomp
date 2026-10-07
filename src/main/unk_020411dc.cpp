@@ -3,6 +3,19 @@
 #include "types.h"
 #include "snd/BgmSceneFade.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_IrisWipe_End  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_IrisWipe_SetupLayers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenTransition_HideCover  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenTransition_OnHidden  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_0208e6d8.h"
 
 
 struct ScreenTransitionType {
@@ -20,18 +33,7 @@ struct ScreenTransition {
 };
 
 extern "C" {
-void ScreenFade_Begin();
-void ScreenFade_End();
-void ScreenFade_Update();
-void ScreenFade_VBlank();
-void IrisWipe_Begin();
 void IrisWipe_End();
-void IrisWipe_Update();
-void IrisWipe_SwapTables();
-void CutTransition_Begin();
-void CutTransition_End();
-void CutTransition_Update();
-void CutTransition_VBlank();
 }
 
 extern const ScreenTransitionType sTransitionTypeTable[4];
@@ -61,44 +63,16 @@ static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
     MIi_CpuClear16(t, dst, size);
 }
 extern "C" {
-u32 G2_GetBG2ScrPtr();
-u32 G2_GetBG2CharPtr();
-u32 G2S_GetBG2ScrPtr();
-u32 G2S_GetBG2CharPtr();
-void Gfx2d_ShowMainPlanes(u32);
-void Gfx2d_ShowSubPlanes(u32);
-void Gfx2d_HideMainPlanes(u32);
-void Gfx2d_HideSubPlanes(u32);
 void ScreenLayers_ReleaseStub(u32);
 void ScreenLayers_AcquireStub(u32);
-void Gfx2d_SetMainPlanes(u32);
-void Gfx2d_SetSubPlanes(u32);
-void Gfx2d_SetBrightness(s32);
-s32 CommCaution_ArePlanesHidden();
 s32 Math_StepS32Alt(void *, u32, s32);
 s32 FX_Div(s32, s32);
-void TransitionCommIcon_RequestHide(u32);
-void TransitionCommIcon_RequestShow(u32);
-void Snd_FadeOutScene();
 s32 FX_Sqrt(s32);
-void Gfx2d_DisableMainWindows(u32);
-void Gfx2d_DisableSubWindows(u32);
 void HBlank_Remove(void *);
 s32 HBlank_Add(void *, void *, void *, u32);
-void Gfx2d_EnableMainWindows(u32);
-void Gfx2d_EnableSubWindows(u32);
-void Gfx2d_SetMainWin0Planes(u32);
-void Gfx2d_SetSubWin0Planes(u32, u32);
-void Gfx2d_SetMainWinOutPlanes(u32);
-void Gfx2d_SetSubWinOutPlanes(u32);
-void Gfx2d_SetMainWin0Rect(u32, u32, u32, u32);
-void Gfx2d_SetSubWin0Rect(u32, u32, u32, u32);
-void ScreenTransition_ShowCover();
 void ScreenTransition_OnHidden();
 void ScreenTransition_HideCover();
 void IrisWipe_SetupLayers();
-void IrisWipe_VBlankRegs();
-void IrisWipe_HBlank();
 }
 
 extern "C" void ScreenFade_Begin() {

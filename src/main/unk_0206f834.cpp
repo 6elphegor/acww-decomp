@@ -9,6 +9,31 @@
 #include "talk/EncodedString.h"
 #include "ui/LabelString.h"
 #include "talk/EncodedString41.h"
+#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_ToEncodedBytes  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_0206f804.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_0206fc44.h"
+#include "proto/main/unk_0206fde4.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
@@ -109,11 +134,9 @@ extern Mtx43 sCpuMtxStack[];
 }
 
 extern "C" {
-s32 Snd_PlaySe(u32 a);
 }
 
 extern "C" {
-void *Hud_GetCountdown();
 }
 
 extern "C" {
@@ -125,11 +148,9 @@ s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 extern "C" {
-void Melody_Pack(void *a, void *b);
 }
 
 extern "C" {
-void Melody_ApplyEditPattern();
 }
 
 extern "C" {
@@ -137,19 +158,15 @@ void SaveVillagers_ClearTuneRequester(void *a);
 }
 
 extern "C" {
-void *Heap_AllocTail(void *heap, u32 size);
 }
 
 extern "C" {
-void Heap_Free(void *heap, void *p);
 }
 
 extern "C" {
-s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 }
 
 extern "C" {
-BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 }
 
 extern "C" {
@@ -165,19 +182,15 @@ void func_02072824(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-void *BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
-void Letter_Clear();
 }
 
 extern "C" {
-void *TownExchange_GetLetter(void *p);
 }
 
 extern "C" {
-void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
@@ -189,11 +202,9 @@ void func_0208f1a8(void *p, s32 v);
 }
 
 extern "C" {
-void NetBuf_UnpackPair20(void *a, void *b, void *c);
 }
 
 extern "C" {
-s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
 }
 
 extern "C" {
@@ -201,31 +212,24 @@ s32 BottleThrow_SetTarget(void *a, u8 b);
 }
 
 extern "C" {
-u8 *PlayerActor_GetActor(u8 x);
 }
 
 extern "C" {
-BOOL HeldInsect_GetStage(u8 x);
 }
 
 extern "C" {
-void HeldInsect_Start(u32 a, u8 b);
 }
 
 extern "C" {
-s32 HeldInsect_Release(u8 a, s32 b);
 }
 
 extern "C" {
-s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
-s32 Text_GetLength(const u8 *str, s32 len);
 }
 
 extern "C" {
-s32 Text_GetTrimmedLength(const u8 *str, s32 len);
 }
 
 extern "C" {
@@ -237,15 +241,12 @@ BOOL StrBuf_GetBytes(EncodedString41 *buf, u8 *dst, s32 size);
 }
 
 extern "C" {
-void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 }
 
 extern "C" {
-void String_Load(void *a, u8 *b, void *c);
 }
 
 extern "C" {
-void String_Load2d(void *a, u8 *b, u32 c);
 }
 
 extern "C" {
@@ -253,7 +254,6 @@ u32 Msg_MeasureWidth(u32 arg);
 }
 
 extern "C" {
-void _ZdlPv(void *p);
 }
 
 extern "C" {
@@ -269,11 +269,9 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
 extern "C" {
-s32 Gfx2d_GetLayerBgIndex(u32 id);
 }
 
 extern "C" {
-s32 Gfx2d_IsMainScreenLayer(u32 id);
 }
 
 extern "C" {
@@ -293,7 +291,6 @@ void MTX_Identity43_(void *p);
 }
 
 extern "C" {
-s32 Item_GetFossilGroup(u16 *p);
 }
 
 extern "C" {
@@ -301,71 +298,54 @@ BOOL func_02070358(u32 a, u16 *p);
 }
 
 extern "C" {
-void HudCountdown_StartWithSe(u32 x);
 }
 
 extern "C" {
-void CommSub_RecvTownTune(u8 *p);
 }
 
 extern "C" {
-void CommSub_RecvPostReply(u8 *p);
 }
 
 extern "C" {
-void CommSub_RecvPostLetter(u8 *p, u32 code);
 }
 
 extern "C" {
-void CommSub_Send(u32 a, u32 b, ...);
 }
 
 extern "C" {
-void CommSub_SetPostReply(u8 v);
 }
 
 extern "C" {
-u8 CommSub_GetPostReply();
 }
 
 extern "C" {
-void CommSub_ClearBottleLetter();
 }
 
 extern "C" {
-void CommSub_RecvBottleLetter(u8 *p);
 }
 
 extern "C" {
-void CommSub_RecvItemList15(u8 *p);
 }
 
 extern "C" {
-void CommSub_RecvReleaseOrThrow(u8 *p, u32 id);
 }
 
 extern "C" {
-void CommSub_RecvInsectRelease(u8 *p, u32 id);
 }
 
 extern "C" {
-void CommSub_RecvBbsPost(u8 *p);
 }
 
 extern "C" {
-void CommSub_Dispatch(u8 *p, u32 x);
 }
 
 extern "C" {
-void CommSub_ResetPostReply();
 }
 
 extern "C" {
-BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len);
 }
 
 extern "C" {
-void String_FromEncodedBytesEx(MsgString *dst, const void *s, s32 len, BOOL a, u8 b);
 }
 
 extern "C" {
@@ -373,65 +353,46 @@ void String_ToEncodedBytes(MsgString *a, u8 *b);
 }
 
 extern "C" {
-void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len);
 }
 
 extern "C" {
-void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 }
 
 extern "C" {
-void String_LoadByIndex(void *a, void *c, u8 v);
 }
 
 extern "C" {
-void String_Load2dMenu(void *a, u8 v);
 }
 
 extern "C" {
-void String_Load2dMenuByRef(void *a, u8 *p);
 }
 
 extern "C" {
-void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w);
 }
 
 extern "C" {
-void CpuMtx_MultRot(void *a);
 }
 
 extern "C" {
-void CpuMtx_MultTrans(VecFx32 *v);
 }
 
 extern "C" {
-void CpuMtx_MultRotTrans(void *a, VecFx32 *v);
 }
 
 extern "C" {
-void CpuMtx_RestoreFromStack(u32 i);
 }
 
 extern "C" {
-void CpuMtx_StoreToStack(u32 i);
 }
 
 extern "C" {
-s32 Museum_CountDonatedFossilsInGroup(u32 a, s32 b);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 // prototypes (test harness)
-void String_Load2dMenuByRef(void *a, u8 *p);
-void String_Load2dMenu(void *a, u8 v);
-void String_LoadByIndex(void *a, void *c, u8 v);
-void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
-void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len);
 void String_ToEncodedBytes(MsgString *a, u8 *b);
-void String_FromEncodedBytesEx(MsgString *dst, const void *s, s32 len, BOOL a, u8 b);
-BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len);
 
 
 void LabelString::setLayerColors(u32 id, u8 x, u8 y) {

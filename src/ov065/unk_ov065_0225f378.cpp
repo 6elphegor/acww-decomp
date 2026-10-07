@@ -4,6 +4,8 @@
 #include "net/SockCoreCommand.h"
 #include "net/SockCoreSocket.h"
 #include "sys/OSMessageQueue.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/ov065/unk_ov065_0225f378.h"
 
 extern "C" {
 // TU01
@@ -16,7 +18,6 @@ s32 OS_ReceiveMessage(void *, void *, s32);
 s32 OS_SendMessage(void *, void *, s32);
 void OS_EnableScheduler(void);
 void OS_RestoreInterrupts(u32);
-void OSi_RescheduleThread(void);
 void OS_InitMessageQueue(void *, void *, s32);
 s32 OS_ReadMessage(void *, void *, s32);
 

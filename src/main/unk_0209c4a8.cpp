@@ -3,6 +3,8 @@
 #include "net/CommManager.h"
 #include "room/Unk_0209c41c_Actor.h"
 #include "actor/Actor.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_0209c4a8.h"
 
 
 struct SceneExitResolveOut {
@@ -50,26 +52,8 @@ void *Scene_GetWarpRequest();
 s32 SceneExit_Resolve(void *o, u32 id, u8 *a, VecFx32 *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
-Actor *PlayerActor_GetActor(u32 n);
 
-u32 RoomEntry_IsExclusiveScene(u32 v);
-void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, VecFx32 *v);
-void RoomEntryRequest_SetAngle(RoomEntryRequest *t, u32 v);
-void RoomEntryRequest_SetPos(RoomEntryRequest *t, VecFx32 *v);
-void RoomEntryRequest_SetScene(RoomEntryRequest *t, u32 v);
-void RoomEntryRequest_SetDoorKind(RoomEntryRequest *t, u32 v);
-void RoomEntryRequest_SetExitId(RoomEntryRequest *t, u32 v);
-void RoomEntryRequest_SetResult(RoomEntryRequest *t, u32 v);
-void RoomEntryRequest_Init(RoomEntryRequest *t);
-s32 SceneOccupantTable_CountWith(SceneOccupantBits *t, u32 i, u32 b);
-void SceneOccupantTable_Remove(SceneOccupantBits *t, u32 i, u32 b);
-void SceneOccupantTable_Add(SceneOccupantBits *t, u32 i, u32 b);
 void SceneOccupantTable_Clear(SceneOccupantBits *t);
-s32 SceneOccupants_CountWith(SceneOccupantBits *t, u32 b);
-s32 SceneOccupants_Count(SceneOccupantBits *t);
-u32 SceneOccupants_Has(SceneOccupantBits *t, u32 i);
-void SceneOccupants_Remove(SceneOccupantBits *t, u32 i);
-void SceneOccupants_Add(SceneOccupantBits *t, u32 i);
 void SceneOccupants_Clear(SceneOccupantBits *t);
 }
 
@@ -92,7 +76,6 @@ const u8 sExclusiveRoomScenes[4] = {0x1f, 0x1d, 0x22, 0x20};
 RoomEntryRequest sRoomEntryRequest;
 SceneOccupantTable sSceneOccupantTable;
 
-extern "C" void RoomEntry_Leave(u32 a, u32 b);
 
 SceneOccupants::SceneOccupants() {
     SceneOccupants_Clear(this);

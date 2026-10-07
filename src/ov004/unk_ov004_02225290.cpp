@@ -16,6 +16,10 @@
 #include "actor/Character.h"
 #include "room/RoomObjActor.h"
 #include "gfx/TwoLayerAnimModel.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0209c3e0.h"
+#include "proto/ov004/unk_ov004_02225290.h"
 
 
 
@@ -40,10 +44,6 @@ class BarberMachine;
 extern "C" {
 extern void *gBgHeap;
 
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 RoomObjSync_SetState(u32 v);
-s32 RoomObjSync_GetState(u32 v);
-s32 RoomObjSync_ChangeState(void *o, u32 v);
 void func_02002dd0(void *o, u32 v);
 void func_020555ec(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
@@ -52,7 +52,6 @@ s32 BoxCollider_Unregister(void *p);
 void BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
 void func_020566bc(void *p);
 void Math_ApproachS32Max(void *a, s32 b, s32 c, s32 d);
-void Snd_PlaySe(s32 a);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 s32 RoomObjRes_GetBca(void *o, u32 i);
@@ -91,7 +90,6 @@ typedef RoomObjActor M;
 typedef VecFx32 Vec;
 
 
-extern "C" BarberMachine *BarberMachine_Create();
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" ActorProfile sBarberMachineProfile;
 extern "C" BarberMachine *volatile sBarberMachine;

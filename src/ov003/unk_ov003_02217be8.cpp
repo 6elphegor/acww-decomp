@@ -17,6 +17,28 @@
 #include "gfx/BgModelCache.h"
 #include "gfx/Camera.h"
 #include "gfx/G3dResAccess.h"
+#define PROTO_LOCAL_FieldGround_DestroyEnvChannel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_DrawBackdrop  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_EndSoundSrc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_FindSoundSrc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_GetSoundSrcKind  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_GetSoundSrcPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_InitEnvChannel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_PlayEnvSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_ReleaseBackdrop  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_ReleaseEnvChannel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldGround_ResetEnvChannel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02036c58.h"
+#include "proto/main/unk_02037260.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/main/unk_020abea8.h"
+#include "proto/ov003/unk_ov003_02217be8.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -125,9 +147,6 @@ extern s32 data_020c8cbc;
 extern u8 data_021f47e0[];
 
 s32 G3dResAccess_findMatIdx(void *self, s32 a);
-s32 ObjShadow_Update();
-s32 CharaShadow_UpdateColor();
-void *BgModelCache_Get();
 s32 BgModelCache_getGroundTex(void *self);
 s32 BgModelCache_getRiverPatTex(void *self);
 s32 BgModelCache_getRiverPatAnm(void *self);
@@ -137,16 +156,11 @@ s32 BgModelCache_getBeBPatTex(void *self);
 s32 BgModelCache_getBeBPatAnm(void *self);
 void *BgModelCache_getAcre(void *self, s32 i);
 s32 MapBlockAcre_getAcreId(void *self);
-s32 Acre_GetAttr(s32 a);
 s32 Camera_getEyeCurveAngle(void *self);
-void Camera_GetLookAtBlock(void *, s32 *, s32 *);
-s32 WorldCurve_AngleToDistance(s32);
 s16 WorldCurve_ToCurved(VecFx32Ctor *out, VecFx32Ctor *v);
-s32 WorldCurve_GetAngleScale();
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
 void FieldPos_FromBlockUnitCenter(VecFx32Ctor *, s32, s32, s32, s32);
-void *Heap_Alloc(void *, s32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
 void Ground_SetWaveLevel(s32 v);
@@ -169,7 +183,6 @@ s32 FieldGround_DrawBackdrop(void *p);
 }
 
 
-extern "C" FieldGround *FieldGround_Create();
 
 extern "C" {
 // the six header colours first (in __sinit store order), then the unit's own data

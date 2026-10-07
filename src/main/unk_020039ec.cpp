@@ -5,6 +5,66 @@
 #include "snd/SndSceneBase.h"
 #include "snd/BgmSceneFade.h"
 #include "snd/SndMgr.h"
+#define PROTO_LOCAL_SndMgr_BeginMenuDuck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_EndMenuDuck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_FadeInBgmTracks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_FadeOutBgmTracks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_GetBeatState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_MoveBgmVolume  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlayAuxSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlayAuxSeHeld  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlayBgm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlayKeySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlaySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlaySeOnHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlaySePanned  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlayTalkVoice  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_RestoreSubPlayers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetBgmTrackVariant  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetKeySeMode  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetPan  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetPanIfChanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetSeHandleVolumes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_SetVoiceType  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_StartBellRollSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_StopAuxSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_StopBellRollSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_StopBgm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_StopSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_BeginMenuDuck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_EndMenuDuck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_FadeInBgmTracks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_FadeOutBgmTracks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_GetBeatState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_MoveBgmVolume  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlayAuxSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlayAuxSeHeld  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlayBgm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlayKeySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlaySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlaySeOnHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlaySePanned  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlayTalkVoice  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_RestoreSubPlayers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SetBgmTrackVariant  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SetKeySeMode  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SetPan  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SetPanIfChanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SetSeHandleVolumes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SetVoiceType  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_StartBellRollSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_StopAuxSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_StopBellRollSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_StopBgm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_StopSe  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_020f4a5c.h"
+#include "proto/autoload_2/unk_020f7a5c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_020b0e60.h"
 
 
 extern u32 gCamera;
@@ -20,15 +80,12 @@ SndSceneBase *gSndScene;
 u8 gSndHeapBuffer[0x80000];
 
 extern "C" {
-void MelodyBeat_Update(u32, void *);
 }
 
 extern "C" {
-s32 BgmSyncSnd_Update(u32, void *);
 }
 
 extern "C" {
-void MelodyPlayer_PlayAt(u32, void *, u32);
 }
 
 extern "C" {
@@ -64,7 +121,6 @@ extern "C" {
 }
 
 extern "C" {
-void *_Znwm(u32);
 }
 
 extern "C" {
@@ -76,11 +132,9 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 Taxi_IsArriving();
 }
 
 extern "C" {
-s32 Taxi_IsLeaving();
 }
 
 extern "C" {
@@ -280,7 +334,6 @@ void SndSeEmitter_playAlternate(void *self, u16 s);
 }
 
 extern "C" {
-void MelodyBeat_Start(void *self, u16 id);
 }
 
 extern "C" {
@@ -292,15 +345,12 @@ void MelodyBeat_Init(void *self);
 }
 
 extern "C" {
-u8 MelodyPlayer_IsPlaying(void *c);
 }
 
 extern "C" {
-s32 MelodyPlayer_Update(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_PlayNote(void *c, u32 idx);
 }
 
 extern "C" {
@@ -308,27 +358,21 @@ void MelodyPlayer_StartTrackA(void *c);
 }
 
 extern "C" {
-u8 *MelodyPlayer_ApplyRandomPattern(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_PlayRandom(void *c, u32 v);
 }
 
 extern "C" {
-void MelodyPlayer_Play(void *c, u32 v);
 }
 
 extern "C" {
-void MelodyPlayer_PlayPattern(void *c, u32 v, u8 *pat);
 }
 
 extern "C" {
-void MelodyPlayer_SetPattern(void *c, u8 *src);
 }
 
 extern "C" {
-u8 *Melody_GetDefaultPattern();
 }
 
 extern "C" {
@@ -336,19 +380,15 @@ void MelodyPlayer_Init(void *c);
 }
 
 extern "C" {
-s32 BgmSyncSnd_PollStarted(void *r);
 }
 
 extern "C" {
-void BgmSyncSnd_SetStartBeat(void *r, s8 v);
 }
 
 extern "C" {
-void BgmSyncSnd_ReadBeat();
 }
 
 extern "C" {
-void BgmSyncSnd_SetState(void *r, u32 mode);
 }
 
 extern "C" {
@@ -356,7 +396,6 @@ void BgmSyncSnd_Release(void *r);
 }
 
 extern "C" {
-void BgmSyncSnd_Init(void *r, u16 v);
 }
 
 extern "C" {
@@ -500,8 +539,6 @@ static inline BOOL Unk_020040cc_isB() { return gFieldSceneKind == 1; }
 
 extern "C" {
 extern s32 gCameraDistance;
-void Melody_Update(void);
-void Melody_Init(void);
 #define SndMgr_update _ZN6SndMgr6updateEv
 void SndMgr_update(void *a);
 #define SndMgr_init _ZN6SndMgr4initEjjj

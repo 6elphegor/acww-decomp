@@ -1,0 +1,18 @@
+#ifndef PROTO_PROTO_MAIN_UNK_020B8D98_H
+#define PROTO_PROTO_MAIN_UNK_020B8D98_H
+
+// Prototypes of the functions defined in src/main/unk_020b8d98.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_WallpaperTexBuf_Init
+void *WallpaperTexBuf_Init(void *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#endif

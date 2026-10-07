@@ -3,6 +3,13 @@
 #include "nitro/gxoam.h"
 #include "ui/WfcTextKb.h"
 #include "net/WfcRect.h"
+#define PROTO_LOCAL_WfcNumPad_Destroy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02208c2c.h"
+#include "proto/ov001/unk_ov001_0220aba4.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -78,29 +85,15 @@ extern void *WfcObj_Create(s32, s32, s32);
 extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
 extern void WfcObj_SetPriority(void *, s32, s32);
 extern void WfcObj_SetPos(void *, s32, s32, s32);
-extern void *WfcText_CreateObjCanvas(s32, s32, s32, s32, void *, s32);
-extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 extern void *WfcObj_Alloc(s32, s32, s32);
 extern void *WfcObj_GetOam(void *, s32);
 extern void WfcObj_Free(void *);
 extern void WfcText_DestroyObjCanvas(void *);
 extern void WfcOam_FreeEntry(void *);
 extern void WfcHeap_FreeAndClear(void *);
-extern void WfcTask_RequestDelete(s32, s32);
 extern void WfcTask_SetFunc(s32, void *);
-extern u32 WfcTask_Add(s32, void *, s32, s32);
-extern void WfcTextKb_SetRowY(u32, s32, s32);
-extern void WfcTextKb_SlideOutStep0();
-extern void WfcTextKb_SlideInStep0();
-extern void WfcNumPad_SetRowY(s32, s32);
 extern void WfcCell_Copy(s32, u32, u32);
-extern void WfcSound_Play(s32);
-void WfcNumPad_UpdateCursor();
 void WfcNumPad_Destroy(s32);
-void WfcNumPad_SlideOutStep4(s32);
-void WfcNumPad_SlideOutStep3(s32);
-void WfcNumPad_SlideOutStep2(s32);
-void WfcNumPad_SlideOutStep1(s32);
 
 
 }
@@ -126,7 +119,6 @@ extern u8 data_ov001_02229eac[];
 extern u8 data_ov001_02229eb0[];
 
 extern void WfcObj_SetModePalette(void *, s32, s32, u32);
-extern void WfcText_ArrangeObj(void *, u32, s32, void *, s32);
 extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
 extern void WfcObj_SetPos(void *, s32, u32, s32);
 extern void WfcUtil_RectFromPosSize(void *, void *, void *);
@@ -135,16 +127,7 @@ extern s32 WfcInput_IsTouchReleasedIn(void *);
 extern s32 WfcInput_IsKeyRepeat(u32);
 extern s32 WfcInput_IsKeyPressed(u32);
 extern s32 WfcInput_IsKeyReleased(u32);
-extern void WfcNumPad_MoveCursor(s32);
-extern void WfcSound_Play(s32);
-extern void WfcNumPad_UpdateCursor();
 
-void WfcNumPad_SetKeyHighlight(s32 a, u32 b);
-void WfcNumPad_SetRowY(s32 a, s32 b);
-void WfcNumPad_HandlePad();
-void WfcNumPad_SetPressedKey(s32 a);
-void WfcNumPad_HandleTouchHold();
-void WfcNumPad_HandleTouchRelease();
 
 
 }
@@ -172,33 +155,16 @@ extern u16 data_ov001_02229ed0[];
 
 extern void WfcUtil_RectFromPosSize(void *, void *, void *);
 extern s32 WfcInput_IsTouchPressedIn(void *);
-extern void WfcSound_Play(s32);
 extern void WfcObj_GetPos(void *, s32, s32 *, s32 *);
-extern void WfcNumPad_SetRowY(s32, s32);
-extern void WfcNumPad_UpdateCursor();
 extern s32 WfcTask_SetFunc(void *, void *);
-extern void WfcNumPad_HandleTouchRelease();
-extern void WfcNumPad_HandleTouchHold();
-extern void WfcNumPad_HandlePad();
 extern void WfcObj_Free(void *);
-extern void WfcNumPad_SlideOutStep0(void *);
 extern void *WfcHeap_AllocClear(s32, s32);
 extern void *WfcObj_CreateSingle(s32, s32);
 extern void *WfcObj_Create(s32, s32, s32);
 extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
 extern void WfcObj_SetPriority(void *, s32, s32);
-extern void *WfcText_CreateObjCanvas(s32, s32, s32, s32, void *, s32);
-extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 extern void *WfcObj_Alloc(s32, s32, s32);
-extern void *WfcTask_Add(s32, void *, s32, s32);
 
-void WfcNumPad_HandleTouchPress();
-void WfcNumPad_InputTask();
-void WfcNumPad_SlideInStep4(void *self);
-void WfcNumPad_SlideInStep3(void *self);
-void WfcNumPad_SlideInStep2(void *self);
-void WfcNumPad_SlideInStep1(void *self);
-void WfcNumPad_SlideInStep0(void *self);
 
 
 }
@@ -206,43 +172,16 @@ void WfcNumPad_SlideInStep0(void *self);
 
 namespace N_0ba08 {
 extern "C" {
-void WfcNumPad_Create();
-void WfcNumPad_Close();
-u32 WfcNumPad_GetKey();
-void WfcNumPad_SetDeleteEnabled(u32 v);
-void WfcNumPad_SetInsertEnabled(u32 v);
-void WfcNumPad_SetDotEnabled(u32 v);
-BOOL WfcNumPad_Exists();
-void WfcNumPad_SlideInStep0(void *self);
-void WfcNumPad_SlideInStep1(void *self);
-void WfcNumPad_SlideInStep2(void *self);
-void WfcNumPad_SlideInStep3(void *self);
-void WfcNumPad_SlideInStep4(void *self);
-void WfcNumPad_InputTask();
-void WfcNumPad_HandleTouchPress();
 }
 }
 
 namespace N_0b05c {
 extern "C" {
-void WfcNumPad_HandleTouchRelease();
-void WfcNumPad_HandleTouchHold();
-void WfcNumPad_SetPressedKey(s32 a);
-void WfcNumPad_HandlePad();
-void WfcNumPad_SetRowY(s32 a, s32 b);
-void WfcNumPad_SetKeyHighlight(s32 a, u32 b);
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void WfcNumPad_UpdateCursor();
-void WfcNumPad_MoveCursor(s32 a);
-void WfcNumPad_SlideOutStep0(s32 a);
-void WfcNumPad_SlideOutStep1(s32 a);
-void WfcNumPad_SlideOutStep2(s32 a);
-void WfcNumPad_SlideOutStep3(s32 a);
-void WfcNumPad_SlideOutStep4(s32 a);
 void WfcNumPad_Destroy(s32 a);
 }
 }

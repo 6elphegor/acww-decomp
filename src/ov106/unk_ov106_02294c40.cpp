@@ -23,6 +23,27 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterGrid_SetLetters23  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov106/unk_ov106_02294c40.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -41,35 +62,9 @@ extern u8 gU8None;
 extern s32 gCurrentHeap;
 extern u16 gPad[];
 
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(const char *a, s32 b, s32 c);
-void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Snd_PlaySe(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Catalog_SetItem(void *a, void *p, s32 skip, s32 set);
 u16 Item_MakePaper(void *p, s32 a);
-void Letter_MarkRead(void *a);
-void * Letter_GetPaper(void *p);
 void Letter_Clear(void *a);
 void Letter_Copy(void *p, void *q);
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_TickForceClose();
-void MenuCtrl_SetResult(s32 a);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void LetterList_Compact(void *a, s32 b);
-void * PlayerData_GetCurrent();
-s32 PlayerData_GetMailbox(void *p);
-s32 Inventory_FindEmptyLetter();
-void * ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *a);
-BOOL MenuKeys_HasRight(u32 pad);
-BOOL MenuKeys_HasLeft(u32 pad);
-BOOL MenuKeys_HasDown(u32 pad);
-BOOL MenuKeys_HasUp(u32 pad);
 void ChoiceIdList_Clear(void *p, u32 v);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 s32 PopupChoice_MoveCursor(void *a, s32 b, void *c, u32 d);
@@ -81,34 +76,9 @@ void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
 void MenuButtons_LoadTextColors(void *a);
-s32 Inventory_PlayPickUpSe();
-s32 Inventory_PlayTouchSe();
-s32 Inventory_PlayPutDownSe();
-void InventoryBg_DrawSprite(void *self, s32 a);
-void InventoryBg_Exit(void *a);
-void InventoryBg_Update(void *a);
-void InventoryBg_PreUpdate(void *a);
 void InventoryBg_LoadObjGraphics(void *a);
-void InventoryBg_Load(void *a, s32 b);
-void InventoryBg_Init(void *a, s32 b);
-void InventoryItemGrid_DrawPockets(void *self, s32 a, s32 b);
-void InventoryItemGrid_DisableSlotRange(void *p, s32 a, s32 b);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-void InventoryItemGrid_LoadPockets(void *a);
-void InventoryItemGrid_Exit(void *a);
-void InventoryItemGrid_PreUpdate(void *a);
-void InventoryItemGrid_Init(void *a, s32 b);
-BOOL LetterGrid_UpdatePopAnim(void *p);
-void LetterGrid_StartPopAnim(void *p);
 void LetterGrid_SetLetters23(void *a, void *b);
-void LetterGrid_LoadPocketLetters(void *a);
-BOOL LetterGrid_IsSlotEmpty(void *p, u32 a);
-s32 LetterGrid_GetSlotY(void *p, u32 a);
-s32 LetterGrid_GetSlotX(void *p, u32 a);
 
-MailboxMenu *MailboxMenu_Create();
-void MailboxMenu_SetupBgLayers();
 }
 
 class LetterView;

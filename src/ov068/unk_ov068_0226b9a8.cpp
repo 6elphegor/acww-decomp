@@ -16,6 +16,11 @@
 #include "room/RoomObjTexAuto.h"
 #include "gfx/G3dResAccess.h"
 #include "gfx/TwoLayerAnimModel.h"
+#define PROTO_LOCAL_RoomObj_LoadResourcesByName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomObj_ReleaseResources  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/ov051/unk_ov051_02258de0.h"
+#include "proto/ov068/unk_ov068_0226b9a8.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -104,9 +109,6 @@ extern "C" ActorProfile sTaxiInteriorProfile;
 extern "C" {
 extern void *gBgHeap;
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 i);
-void Snd_PlaySe(u32 a);
-void Snd_PlaySeOnHandle(u32 a);
-void Snd_StopSe(u32 a, u32 b);
 void *RoomObjRes_GetBma(void *p, u32 i);
 void *RoomObjRes_GetBta(void *p, u32 i);
 void RoomObj_LoadResourcesByName(char *s, void *a, void *b, void *c);
@@ -122,10 +124,6 @@ void ModelAnim_addToRenderObj(void *p, void *q);
 void AnimModel_drawAnimated(void *p, u32 a);
 void AnimModel_stepAnim(void *p);
 void AnimFrameCtrl_step(void *p);
-s32 SpNpcKappn_GetAnimState();
-s32 SpNpcKappn_GetAnimFrame();
-void TaxiInterior_SetPartAnim(void *self, u8 k, void *a, void *b, u8 s0, u32 s1, u16 s2, u16 s3);
-void TaxiInterior_OnModelNode(void *p, u32 b, void *c);
 void NNS_G3dMdlSetMdlAlpha(u32 p, s32 a, u8 b);
 void Model_setInitCallback(void *m, NNSG3dSbcCallBackFunc fn, void *self);
 s32 G3dResAccess_findMatIdx(u32 a, const char *s);
@@ -170,7 +168,6 @@ public:
     /* 0x5a2 */ u16 pad_5a2;
 };
 
-extern "C" TaxiInterior *TaxiInterior_Create();
 extern "C" ActorProfile sTaxiInteriorProfile = {(void *(*)())TaxiInterior_Create, 0x13, 0x17, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 TaxiInterior *sTaxiInterior;
@@ -181,7 +178,6 @@ extern "C" void TaxiInterior_ModelCallback(NNSG3dRS *p);
 
 extern "C" {
 s32 BlendAnimModel_getAnmRes(void *p);
-BOOL TaxiInterior_StartDriverAnim();
 }
 
 extern "C" TaxiInterior *TaxiInterior_Create() {

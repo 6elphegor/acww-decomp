@@ -8,6 +8,8 @@
 #include "sys/TreeNode.h"
 #include "sys/QNode.h"
 #include "sys/ProcBase.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/itcm/unk_01ffd0e4.h"
 
 class Heap;
 class ProcBase;
@@ -39,8 +41,6 @@ void List_PushBack(QList *l, QNode *n);
 void List_Remove(QList *l, QNode *n);
 void List_PushFront(QList *l, QNode *n);
 void Task_InsertByPriority(QList *l, QNode *n);
-void ProcBase_RequestDelete(ProcBase *p);
-ProcBase *ProcBase_GetParent(ProcBase *p);
 s32 ProcBase_RunPhase(ProcBase *p, PmfBool a, PmfBool b, PmfStatus c);
 }
 

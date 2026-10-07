@@ -17,6 +17,19 @@
 #include "save/MuseumData.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov145/unk_ov145_02291f60.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -86,12 +99,7 @@ extern u8 gTouchChanged;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern void *gCurrentHeap;
-DonationMenu *DonationMenu_Create();
 
-void String_FormatNumberWrapper(LabelString *w, s32 a, s32 b, s32 c, s32 d, s32 e);
-void String_Load2dMenu(LabelString *w, s32 a);
-void MenuCtrl_SetResult(s32 a);
-void Snd_PlaySe(s32 a);
 BOOL MuseumData_isDonated(void *a, void *b);
 s32 func_02133150(s32 a, s32 b);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
@@ -99,35 +107,17 @@ BOOL ScrollKnob_areAnimsDone(void *p);
 BOOL HandCursor_isAnimDone(void *p);
 BOOL HandCursor_getAnim(void *p);
 void Math_StepS32(void *p, s32 a, s32 b);
-BOOL MenuCtrl_IsTouch();
-s32 Gfx2d_LoadCharFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
-s32 Gfx2d_LoadPaletteFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
-s32 File_LoadToBuffer(const void *src, void *dst, s32 n);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void MenuButtons_LoadTextColors(void *p);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
 s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
 void BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 BOOL MuseumData_getDonorName(void *a, void *b, void *c);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
-void ProcBase_RequestDelete(void *p);
-s32 ProcBase_GetParent(void *p);
 void BgVramTask_cancel(void *p);
-void Gfx2d_ShowLayer(u32 x);
 void MenuLauncher_onChildClosed(s32 self);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void Gfx2d_ResetLayer(u32 x);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-BOOL MenuCtrl_IsButtons();
 void Menu_PlayScrollGrabSe(void *p);
 void Menu_PlayScrollTickSe(void *p);
 void MenuScrollKnob_grab(void *p);

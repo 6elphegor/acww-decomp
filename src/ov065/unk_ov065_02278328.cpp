@@ -5,6 +5,11 @@
 #include "net/gsPlatformUtil.h"
 #include "net/SockAddrIn.h"
 #include "net/SockHostEnt.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02278328.h"
 
 // ov065_041: generic vector / hash table / base64 / md5 hex / PRNG (0x022782f4..0x02278c14)
 
@@ -14,20 +19,11 @@ extern s32 randomnum;
 
 s32 sendto(s32, void *, s32, s32, void *, s32);
 SockHostEnt *Sock_GetHostByName(s32);
-void *GsUtil_Alloc(s32);
-void *GsUtil_Realloc(void *, s32);
-void GsUtil_Free(void *);
 s32 Sock_InetAtoN(s32, u32 *);
 s32 Sock_GetSockName(s32, void *);
 s32 CheckRcode(s32, s32);
-void WifiAp_HashReset(void *);
-void WifiAp_HashSetSource(void *, void *, s32);
-void WifiAp_HashGetDigest(void *, void *);
 void qsort(void *, s32, s32, ArrayCompareFn);
-void memmove(void *, void *, s32);
-void memcpy(void *, void *, s32);
 s32 OS_SPrintf(char *, char *, s32);
-u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 
 s32 inet_addr(s32);

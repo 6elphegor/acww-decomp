@@ -27,6 +27,40 @@
 #include "gfx/TexPatVramAnim.h"
 #include "room/FtrHeadwear.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_FtrFootprint_GetTileCount  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrFootprint_GetTileOffset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrFootprint_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_FindFacingFurniture  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_FindPlacement  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_TryPlaceAt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMoveAnim_Start  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DivScalar  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02003850.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b8d98.h"
+#include "proto/ov004/unk_ov004_02204f24.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -370,28 +404,14 @@ extern u8 *sHouseRoachVillager;
 void MTX_MultVec43(void *v, void *m, void *out);
 void VEC_Add(void *, void *, void *);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Vec_DistSq(void *, void *);
-s32 Math_AngleXZ(void *a, void *b);
 s32 Actor_spawn(u32, void *, s32, s32, u32);
 void TvSound_callRelease(void *);
 void TvSound_callReset(void *);
-u32 TvSound_GetMaxSize(void);
-void *TvSound_Create(void *, s32);
-s32 Snd_PosListCanInit();
-void Snd_PosNodeSetPitch(void *, u32);
-void Snd_PosNodeRelease(void *);
-void Snd_SetBgmPan(void *, u32);
-void Snd_PosNodePlayOnce(void *, u32, u32);
-void Snd_PosNodePlay(void *, u32, u32);
-void Snd_PosNodeInit(void *, u32);
-void Snd_PosListUpdate(void *);
-void Snd_PosListInit(void *);
 void func_02004b60();
 s32 Ground_GetExitAtPos(void *);
 s32 Ground_CanPlaceItem(s32 x, s32 y);
 void func_0203442c();
 void *MapBlock_GetItemPtr(void *, u32, u32, u8);
-void *CarpetTex_Init(void *);
 s32 Item_MakeFurniture(s32 a, s32 b);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *);
@@ -403,17 +423,10 @@ u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *w, s32 hx, s32 hy, s32 lx, s32 ly, u
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 s32 Backup_GetStatus(void *p);
-s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
-s32 FtrSync_ChangeAct(void *, s32, s32, s32);
 s16 *FtrFootprint_GetTileOffset(FtrFootprint *b, u32 i);
 u32 FtrFootprint_GetTileCount(FtrFootprint *b);
 void FtrFootprint_Destruct(FtrFootprint *b);
 void FtrFootprint_Init(FtrFootprint *b, void *cell);
-s32 FtrInfo_TestIndoorFlag2(s32 a);
-s32 FtrInfo_GetDmaUnk04(s32 a);
-s32 FtrInfo_TestAlwaysFlag4(s32);
-s32 FtrInfo_GetUnk05(s32 a);
-s32 FtrInfo_GetDmaUnk02(s32);
 void AnimModel_attachAnim(void *self);
 void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void AnimModel_setFrame(void *p);
@@ -432,17 +445,8 @@ BOOL TexPatVramAnim_update(void *p);
 BOOL TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, void *x, void *y, u32 flag);
 void func_02056d54(void *p);
 void func_02056d8c(void *p);
-void FurnitureHeap_Destroy();
-void FurnitureHeap_Create();
-void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 Random_GlobalBelow(s32 a);
-void *File_LoadAlloc(const char *a, void *b, s32 c, s32 d);
 s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 ActorCollider_submit(void *a);
-FtrActor *PlayerActor_GetActor(s32 a);
-s32 PlayerData_GetCurrent(void);
-s32 PlayerDataArray_FindById(void *a, s32 b);
 s32 PlayerData_getPlayerId(...);
 void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 s32 Date_GetWeatherPeriod(void *);
@@ -457,28 +461,21 @@ s32 Scene_InNookShop();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InUnk6To8();
 BOOL Scene_InHouseRoom();
-void *WallpaperTexBuf_Init(void *);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 void Mtx43_SetTranslate(s32 *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateY(s32 *m, s32 a);
-void *Mem_Free(void *p);
 void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, s32 size);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 #define Heap_destroy2 _ZN4Heap8destroy2Ev
 void Heap_destroy2(void *p);
-void *FrameHeap_Create(u32 size, void *heap);
-u32 ExpHeap_Create(u32, u32);
-s32 Vec_RotateY(VecFx32 *, s32);
 s32 Vec_DistXZ(void *a, void *b);
 void Vec_DivScalar(void *, s32);
 void Vec_Sub(void *out, void *a, void *b);
-void ProcBase_RequestDelete(void *p);
 #define SndPosList_release _ZN10SndPosList7releaseEv
 void SndPosList_release(void *);
-void *NNS_FndGetArchiveFileByName(const char *name);
 void NNS_FndUnmountArchive(void *buf);
 BOOL NNS_FndMountArchive(void *buf, const char *name, void *data);
 void *NNS_G3dGetTex(void *p);
@@ -491,12 +488,8 @@ s32 func_02133150(s32 a, s32 b);
 s32 FtrActor_startPull(void *, s32);
 s32 FtrActor_startPush(void *, s32);
 s32 FtrActor_startRotate(void *, s32);
-void FtrActor_GetItemId(u16 *out, FtrActor *o);
-s32 FtrActor_PredIsSeatOrBed(void *);
-BOOL FtrActor_PredIsStereo(FtrActor *);
 s32 FtrActor_canMoveBy(void *, void *);
 s32 FtrActor_canRotateBy(void *, s32);
-s32 FtrActor_AngleToDir(s32 a);
 u32 FtrActor_GetLayer(void *);
 s32 FtrActor_RequestToggle(void *);
 u32 FtrActor_GetFtrIndex(void *o);
@@ -508,9 +501,6 @@ BOOL FtrActor_isSoundingClock(FtrActor *);
 BOOL FtrActor_isCabinClock(FtrActor *);
 BOOL FtrActor_isGyroid(FtrActor *);
 BOOL FtrActor_isTvOn(FtrActor *);
-s32 FtrActor_GetArgMode(FtrActor *);
-s32 FtrActor_GetArgFtrIndex(FtrActor *);
-FtrActor *FtrActor_MakeSpawnArg(s32 a, s32 b, s32 c, s32 d, u32 e, s32 f);
 s32 func_ov004_0220af14(void *p);
 s32 func_ov004_0220af28(void *p);
 s32 FtrShirt_syncAct0(void *p);
@@ -526,77 +516,13 @@ u32 _ZN12FtrSoundList7getListEv(FtrSoundList *);
 }
 
 
-extern "C" FurnitureManager *FurnitureManager_Create();
-extern "C" u32 FtrMgr_IsSaleMode();
-extern "C" void FtrMgr_SetSaleMode();
-extern "C" FtrPreviewer *FtrPreviewer_GetInstance();
-extern "C" FtrSoundList *FurnitureManager_GetSoundList();
-extern "C" void FtrSoundEmitter_Destroy();
-extern "C" FtrActorHeap *FtrActorHeap_GetInstance();
-extern "C" FtrActorTable *FtrActorTable_GetInstance();
-extern "C" FtrActorGrid *FtrActorGrid_GetInstance();
-extern "C" FtrContactSet *FtrContactSet_GetInstance();
-extern "C" s32 FtrMgr_IsFurnitureEditable();
-extern "C" s32 FtrMgr_IsFurnitureUsable();
-extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self);
-extern "C" s32 FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d);
-extern "C" s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y);
-extern "C" s32 FtrMgr_GetSurfaceHeightAtPos(VecFx32 *p);
-extern "C" s32 FtrMgr_CheckBedStep(VecFx32 *pos, s32 ang, VecFx32 *out);
-extern "C" s32 FtrMgr_CheckBedStepFront(VecFx32 *pos, s32 ang);
-extern "C" s32 FtrMgr_CheckBedStepBack(VecFx32 *pos, s32 ang);
-extern "C" s32 FtrMgr_TestStepTarget(VecFx32 *p, s16 ang, s32 dist);
-extern "C" BOOL FtrMgr_CanStepForward(VecFx32 *pos, s32 ang);
-extern "C" BOOL FtrMgr_CanStepSidePlus90(VecFx32 *pos, s32 ang);
-extern "C" BOOL FtrMgr_CanStepSideMinus90(VecFx32 *pos, s32 ang);
-extern "C" BOOL FtrMgr_BroadcastStereosAct0();
-extern "C" void FtrMgr_SetSwitchAll(u32 v, BOOL (*f)(FtrActor *), s32 a);
-extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *));
-extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a);
-extern "C" u16 FtrMgr_GetCycleCounter();
-extern "C" s32 FtrMgr_PickFurnitureComment(u32 key);
-extern "C" u32 FtrMgr_GetMaxFurniture();
-extern "C" BOOL FtrMgr_IsShopScene();
-extern "C" void FtrMgr_CreateHook(void *);
-extern "C" void FtrMgr_SpawnAllFromMap(void *);
-extern "C" void FtrMgr_NotifyNearestCabinClock(void *);
-extern "C" void FtrMgr_NotifyNearestSoundingClock(void *);
-extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self);
 extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, u16 *p1, u16 *p2);
-extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d);
-extern "C" u8 FtrMgr_GetActorLayer(u32 i);
-extern "C" s32 FtrMgr_RemoveActor(s32 idx, u16 *p1, u16 *p2);
-extern "C" s32 FtrMgr_RemoveActorByIndex(s32 idx);
-extern "C" VecFx32 *FtrMgr_PollRemovedPos(s32 idx);
-extern "C" void FtrMgr_SetRemovePos(VecFx32 *v);
-extern "C" s32 FtrMgr_IsPickable(FtrActor *p);
-extern "C" s32 FtrMgr_IsPickableByIndex(s32 i);
-extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, s32 idx);
 extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
 extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode);
-extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c);
-extern "C" s32 FtrMgr_GetCurPlayerIndex();
 extern "C" s32 FtrMgr_FindPlacementMyDesignA(void *a, u32 b, u32 c);
 extern "C" s32 FtrMgr_FindPlacementMyDesignB(void *a, u32 b, u32 c);
 extern "C" s32 FtrMgr_FindPlacementMyDesignD(void *a, u32 b, u32 c);
 extern "C" s32 FtrMgr_FindPlacementMyDesignC(void *a, u32 b, u32 c);
-extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0);
-extern "C" s32 FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b);
-extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0);
-extern "C" s32 FtrMgr_RestoreDisplayedWearableAt(s32 a, s32 b);
-extern "C" BOOL FtrMgr_OnRemoteStorageOpen(void);
-extern "C" BOOL FtrMgr_OnRemoteStorageHold(void);
-extern "C" BOOL FtrMgr_OnRemoteStorageClose(void);
-extern "C" s32 FurnitureManager_GetTvTex(void);
-extern "C" s32 FurnitureManager_GetTvProgram(void);
-extern "C" TvSound *FurnitureManager_GetTvSound(void);
-extern "C" s32 FurnitureManager_GetTvLoopCount(void);
-extern "C" s32 FurnitureManager_GetTvFrame(void);
-extern "C" void FurnitureManager_SetTvProgramChanged(void);
-extern "C" u8 FurnitureManager_IsTvProgramChanged(void);
-extern "C" void FtrMoveFlag_Init(u8 *p);
-extern "C" void FtrMoveFlag_Destroy(u8 *p);
-extern "C" void *FurnitureManager_GetMoveAnim(void);
 extern "C" void FtrMoveAnim_NodeCallback(NNSG3dRS *o);
 extern "C" void FtrMoveAnim_InstallCallback(NNSG3dRS *o);
 extern "C" void *FtrMoveAnim_Construct(FtrMoveAnim *r);
@@ -604,57 +530,18 @@ extern "C" void *FtrMoveAnim_Destruct(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Load(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Unload(FtrMoveAnim *r);
 extern "C" void *FtrMoveAnim_GetMtx(FtrMoveAnim *r);
-extern "C" void FtrMoveAnim_SetPos(FtrMoveAnim *r, VecFx32 *v);
 extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, VecFx32 *pos, s32 e);
-extern "C" BOOL FtrMoveAnim_StartPush(FtrMoveAnim *r, volatile u8 *a, VecFx32 *b, s32 c);
-extern "C" BOOL FtrMoveAnim_StartPull(FtrMoveAnim *r, volatile u8 *a, VecFx32 *b, s32 c);
-extern "C" BOOL FtrMoveAnim_Step(FtrMoveAnim *r, volatile u8 *a, VecFx32 *out);
-extern "C" BOOL FtrMoveAnim_CreateHeap(FtrMoveAnim *r);
-extern "C" BOOL FtrMoveAnim_DestroyHeap(FtrMoveAnim *r);
-extern "C" BOOL FtrMoveAnim_LoadAnims(FtrMoveAnim *r);
-extern "C" BOOL FtrMoveAnim_ClearAnims(FtrMoveAnim *r);
-extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r);
-extern "C" BOOL FtrMoveAnim_ClearModel(FtrMoveAnim *r);
-extern "C" u32 FtrMoveAnim_GetPushAnim(FtrMoveAnim *r);
-extern "C" u32 FtrMoveAnim_GetPullAnim(FtrMoveAnim *r);
-extern "C" u32 FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 extern "C" void *TvProgSlot_Construct(TvProgSlot *p);
 extern "C" void *TvProgSlot_Destruct(TvProgSlot *p);
-extern "C" void TvProgSlot_Init(TvProgSlot *p, u32 a);
-extern "C" s32 TvWeather_GetName(u32 i);
-extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x);
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p);
 extern "C" void TvProgSlot_Update(TvProgSlot *p);
 extern "C" void TvProgSlot_Release(TvProgSlot *p);
-extern "C" s32 TvProgSlot_GetProgram(TvProgSlot *p);
-extern "C" s32 TvProgSlot_GetWeather(TvProgSlot *p);
-extern "C" u16 TvProgSlot_GetLoopCount(TvProgSlot *p);
-extern "C" u32 TvProgSlot_GetFrame(TvProgSlot *p);
 extern "C" void *TvScreen_Construct(TvScreen *q);
 extern "C" void *TvScreen_Destruct(TvScreen *q);
 extern "C" void TvScreen_Load(TvScreen *q);
-extern "C" BOOL TvScreen_SetProgram(TvScreen *o, s32 a, s32 b);
 extern "C" void TvScreen_UpdateSchedule(TvScreen *o);
 extern "C" void TvScreen_Update(TvScreen *o);
-extern "C" u8 TvSchedule_GetCurrentProgram(void *);
-extern "C" s32 TvWeather_IsUnkPeriod();
-extern "C" s32 TvWeather_GetForecastIndex(void *);
 extern "C" void TvScreen_Release(TvScreen *o);
-extern "C" BOOL TvScreen_IsLoaded(TvScreen *o);
-extern "C" s32 TvScreen_GetProgram(TvScreen *o);
-extern "C" s32 TvScreen_GetWeather(TvScreen *o);
-extern "C" s32 TvScreen_GetTex(TvScreen *o);
-extern "C" s32 TvScreen_GetSound(TvScreen *o);
-extern "C" s32 TvScreen_GetLoopCount(TvScreen *o);
-extern "C" s32 TvScreen_GetFrame(TvScreen *o);
-extern "C" const FtrSoundRecord *FtrSound_GetRecord(s32 idx);
-extern "C" u16 FtrSound_GetSe0(s32 idx);
-extern "C" u16 FtrSound_GetSe1(s32 idx);
-extern "C" u16 FtrSound_GetSe2(s32 idx);
-extern "C" u16 FtrSound_GetSe3(s32 idx);
-extern "C" void FtrMgr_PlaySeatSound1At(s32 a);
-extern "C" void FtrMgr_PlaySeatSound0At(s32 a);
-extern "C" void FtrMgr_PlaySeatSound2At(s32 a);
 
 #define TILE_ENTRY(name, base)                                              \
     extern "C" s32 name(void *a, u32 b, u32 c) {                            \

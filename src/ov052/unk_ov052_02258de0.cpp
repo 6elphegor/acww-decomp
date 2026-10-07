@@ -29,6 +29,19 @@
 #include "npc/NpcActionCtrl.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov004/unk_ov004_0223e9bc.h"
+#include "proto/ov052/unk_ov052_02258de0.h"
 
 
 class ActorTalkRequest;
@@ -42,55 +55,38 @@ struct SpNpcReddVecLocal : VecFx32 {
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
-s32 Pocket_FindEmpty();
-s32 Pocket_FindItem(u16 *p);
-void Pocket_AddItem(u16 *p, s32 v);
-void Pocket_RemoveItem(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 Random_GlobalBelow(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void Clock_GetDateTime(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
 void _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, void *v);
-void *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_UnlockExit();
 void Ground_LockExit(s32 a);
-void *PlayerActor_GetActor(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-void *FtrActorGrid_GetInstance();
 void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void *Scene_GetTouchPicker();
-void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
-u16 *ShopStock_GetItemAt(s32 a, s32 b);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetPrice(u16 *p);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
 BOOL Scene_GetPrevious();
-void NpcActor_ChargePlayer(void *o, s32 v);
-s32 NpcActor_CanPlayerPay(void *o, s32 v);
 void ReddShop_BuyAt(s32 a, s32 b, s32 c);
 BOOL ReddShop_IsPurchaseSynced();
 u16 *ReddShop_GetItem(void *tbl, s32 a, s32 b);
 void _ZN12ReddLastSale8setBuyerEPKS_(void *a, void *b);
 void _ZN12ReddLastSale7setItemEPKS_(void *a, void *b);
 void _ZN12ReddLastSale12copyItemFromEPKS_(void *dst, void *src);
-void *ReddLastSale_GetBuyer(void *p);
 void NpcActor_FindFreeUnitNear(void *out, void *self, void *v);
 s32 Math_CountDownU8(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 Vec_NotEqual(void *a, void *b);
-s32 Vec_Equal(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
-s32 memcmp(void *a, void *b, s32 n);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 extern u8 data_021ed284[];
 extern u8 data_021ed2c0[];
@@ -205,10 +201,6 @@ extern SpNpcReddActEntry sSpNpcReddActTable[11];
 extern u8 sSpNpcReddModelPath[];
 extern u8 sSpNpcReddTexturePath[];
 extern ActorProfile sSpNpcReddProfile;
-SpNpcRedd *SpNpcRedd_Create();
-BOOL SpNpcRedd_IsSoldOut(void *self);
-s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n);
-s32 SpNpcRedd_CountUnusedFlags(void *self, u8 *buf, s32 n);
 }
 
 static inline BOOL Unk_ov052_022595dc_Eq(u16 *p, u16 *k) {

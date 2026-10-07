@@ -82,6 +82,94 @@ public:
 #include "gfx/VecFx32.h"
 #include "player/PlayerData.h"
 #include "save/TownExchangeRecord.h"
+#define PROTO_LOCAL_BbsPost_SetTextFromMsg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BuildingOccupancy_OnEnterRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Building_ApplyStateRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommBlock_ParseAll  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommCtrl_RecvStateBlocks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_Act08  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_Act0C  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_Act25  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_Act3C  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_Act3D  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_BuildingEnter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_BuildingState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_FurniturePlace  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_FurnitureRemove  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_FurnitureState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_ObjectUseRelease  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_ObjectUseReply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_ObjectUseRequest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_RoomItemSet  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_VillagerMemoryInit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommRecv_VillagerMemorySetPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar18  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar19  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar1A  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar1B  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar1C  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar1D  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar1E  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommSyncVar_PackVar1F  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommVillager_UnpackAct3C  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommVillager_UnpackAct3D  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CommVillager_UnpackHeader  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_EndOverlay  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_StartOverlay  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_OnPlaceRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_OnRemoveRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_OnStateRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrSync_OnTopItemRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_AllocAligned  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InsectNetSync_PackVar  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetHeap_Alloc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetHeap_Free  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSceneMsg_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSceneMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSyncMsg_Fini  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSyncMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetSyncMsg_Unpack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlanErrand_SetFlag  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlanErrand_SetFossilGroup  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomEntry_RecvEnterReply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomEntry_RecvEnterRequest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomEntry_RecvLeave  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomObjSync_OnRecv  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0203eb60.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206f804.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020a6388.h"
+#include "proto/main/unk_020a65fc.h"
+#include "proto/main/unk_020a6914.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02225800.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -129,7 +217,6 @@ extern "C" {
 void _ZN11CommManager9endRecordEjj(void *, s32, s32);
 }
 extern "C" {
-void CommVillager_PackHeader(u8 *, s32, s32);
 }
 extern "C" {
 void *SpNpcAnimHeapPool_Get(void **, s32);
@@ -167,40 +254,29 @@ extern "C" {
 void Heap_adjust(void *);
 }
 extern "C" {
-void *FrameHeap_Create(s32, void *);
 }
 extern "C" {
 void *Heap_AllocAligned(void *, s32, s32);
 }
 extern "C" {
-void File_LoadToBuffer(void *, void *, s32);
 }
 extern "C" {
-void SpNpcAnimPoolHeap_Destroy();
 }
 extern "C" {
-void SpNpcAnimPoolHeap_Create();
 }
 extern "C" {
-void VillagerAnimPoolHeap_Destroy();
 }
 extern "C" {
-void VillagerAnimPoolHeap_Create();
 }
 extern "C" {
-void NpcTexPatBufHeap_Destroy();
 }
 extern "C" {
-void NpcTexPatBufHeap_Create();
 }
 extern "C" {
-void NpcModelHeap_Destroy();
 }
 extern "C" {
-void NpcModelHeap_Create(void *);
 }
 extern "C" {
-s32 NpcSpawn_GetSpNpcSlotCount();
 }
 extern "C" {
 s32 Town_GetMaxOutdoorVillagers();
@@ -245,13 +321,10 @@ extern "C" {
 BOOL Item_IsTreeStage0(void *);
 }
 extern "C" {
-s32 NpcRegistry_FindAt(s32, s32);
 }
 extern "C" {
-void *PlayerActor_GetBodyPos(s32);
 }
 extern "C" {
-s32 PlayerActor_GetCharacter(s32);
 }
 extern "C" {
 struct VillagerStateTable *VillagerStates_Get();
@@ -317,13 +390,11 @@ extern "C" {
 void func_0207ff14(void *, s32);
 }
 extern "C" {
-void CommSend_VillagerMemoryInit(s32 a, s32 b);
 }
 extern "C" {
 void CommVillager_UnpackHeader(s32 *a, s32 *b, u8 *p);
 }
 extern "C" {
-void CommVillager_PackHeader(u8 *p, s32 a, s32 b);
 }
 extern "C" {
 void *SpNpcAnimHeapRef_GetHeap(s32 *p);
@@ -479,16 +550,12 @@ extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 extern "C" {
-void Mem_Clear(void *p, u32 n);
 }
 extern "C" {
-void Bbs_PostMsgToday(u32 a, const char *s);
 }
 extern "C" {
-u16 NetBuf_ReadU16(void *p);
 }
 extern "C" {
-void NetBuf_WriteU16(void *p, u16 v);
 }
 extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *g);
@@ -527,58 +594,40 @@ extern "C" {
 void CommVillager_UnpackHeader(u32 *o0, u32 *o1, u8 *src);
 }
 extern "C" {
-void CommVillager_PackHeader(u8 *out, s32 a, s32 b);
 }
 extern "C" {
-void CommVillager_UnpackItems(s32 *out, u16 *dst, u8 *src);
 }
 extern "C" {
-void CommVillager_PackItems(u8 *out, s32 a, u16 *src);
 }
 extern "C" {
-void CommSend_VillagerShirt(u32 a, u16 *b);
 }
 extern "C" {
-void CommVillager_PackItem(u8 *out, s32 a, u16 *b);
 }
 extern "C" {
-void CommSend_VillagerAct3F(u32 a, u16 *b);
 }
 extern "C" {
-void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e);
 }
 extern "C" {
-void CommVillager_PackAct3D(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e);
 }
 extern "C" {
-void VillagerSync_Act3C(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void CommSend_VillagerAct3C(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void CommVillager_PackAct3C(u8 *out, s32 a, s32 b, u32 c);
 }
 extern "C" {
-void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c);
 }
 extern "C" {
-void CommSend_VillagerFriendship(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void CommSend_VillagerImpression(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void CommSend_VillagerItems(u32 a, u16 *b);
 }
 extern "C" {
-void CommSend_VillagerMemorySetPlayer(u32 a, u32 b);
 }
 extern "C" {
-void CommSend_VillagerMemoryInit(u32 a, u32 b);
 }
 
 
@@ -1073,10 +1122,8 @@ extern "C" {
 extern u8 *gNetHeap;
 }
 extern "C" {
-s32 Net_GetMode(void);
 }
 extern "C" {
-s32 Net_GetMyAid(void);
 }
 extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
@@ -1093,7 +1140,6 @@ extern "C" {
 void *Heap_AllocAligned(void *g, s32 a, s32 b);
 }
 extern "C" {
-void OverlayMgr_GetInfo(void *p, u32 id);
 }
 extern "C" {
 void FS_LoadOverlayImage(void *p);
@@ -1105,22 +1151,16 @@ extern "C" {
 void FS_EndOverlay(void *p);
 }
 extern "C" {
-s32 Net_IsWifiConfigValid(void *p);
 }
 extern "C" {
-s32 Net_HasWifiUserId(void *p);
 }
 extern "C" {
-s64 Net_GetOwnFriendKey(void *p);
 }
 extern "C" {
-void Net_CreateUserData(void *p, u32 v);
 }
 extern "C" {
-void Net_MakeOwnFriendData(void *p, u32 v);
 }
 extern "C" {
-void Mem_Clear(void *p, u32 n);
 }
 extern "C" {
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *), void *(*)(void *));
@@ -1129,19 +1169,15 @@ extern "C" {
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *));
 }
 extern "C" {
-s32 Net_GetFriendDataType(void *p);
 }
 extern "C" {
-u64 Net_GetFriendKey(u32 a);
 }
 extern "C" {
-BOOL Net_FriendKeyToFriendData(u32 ctx, void *out, u64 key);
 }
 extern "C" {
 void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 extern "C" {
-s32 Net_IsSameFriendData(void *p, void *q);
 }
 extern "C" {
 }
@@ -1155,7 +1191,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-u8 *BbsPost_GetText(void *p);
 }
 extern "C" {
 }
@@ -1189,7 +1224,6 @@ void StrBuf_GetBytes(void *p, void *q, u32 n);
 extern "C" {
 }
 extern "C" {
-void MailText_LoadBbs(void *a, void *b, u32 c);
 }
 extern "C" {
 void func_020a791c(void *p);
@@ -1198,55 +1232,39 @@ extern "C" {
 void func_020a78ac(void *p);
 }
 extern "C" {
-void _ZdlPv(void *);
 }
 extern "C" {
-void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e);
 }
 extern "C" {
-void _ZN13DwcFriendDataD1Ev(void *p);
 }
 extern "C" {
-void _ZN13DwcFriendDataC1Ev(void *p);
 }
 extern "C" {
-void *FriendEntry_GetFriendData(void *p);
 }
 extern "C" {
-void FriendEntry_Clear(void *p);
 }
 extern "C" {
-void DwcFriendData_Clear(void *p);
 }
 extern "C" {
-void *FriendEntry_Copy(void *p, void *q);
 }
 extern "C" {
-void *FriendEntry_Destruct(void *p);
 }
 extern "C" {
-void *FriendEntry_Construct(void *p);
 }
 extern "C" {
-BOOL DwcFriendData_IsValid(void *p);
 }
 extern "C" {
-void NetBuf_Unpack20(u8 *p, u32 *out, u8 *out2);
 }
 extern "C" {
-void NetBuf_UnpackPair20(u8 *p, u32 *out, u32 *x);
 }
 extern "C" {
-void NetBuf_PackPair20(u8 *p, s32 v, s32 x);
 }
 extern "C" {
-void NetBuf_Pack20(u8 *p, s32 v, u8 hi);
 }
 extern "C" {
 BOOL BbsPost_SetTextFromMsg(void *self, void *p);
 }
 extern "C" {
-BOOL Comm_HasSendCredit(u32 mask);
 }
 extern "C" {
 u64 _ll_mul(u64 a, u64 b);
@@ -1255,13 +1273,10 @@ extern "C" {
 FriendEntry *FriendList_GetEntries(FriendEntry *p);
 }
 extern "C" {
-u32 DwcFriendData_GetBytes(void *);
 }
 extern "C" {
-void Bbs_LoadMsg(void *a, u32 b, u32 c);
 }
 extern "C" {
-s32 DwcFriendData_IsFriendKey(void *p);
 }
 extern "C" {
 extern u8 data_021e87d8[];
@@ -1775,13 +1790,10 @@ extern "C" {
 s32 _ZN11CommManager10readRecordEPhj(CommManager *g, void *out, u32 idx);
 }
 extern "C" {
-void Insect_CancelCatch(u32 v);
 }
 extern "C" {
-u32 Insect_NetClaim(u32 v);
 }
 extern "C" {
-s32 Insect_OnClaimGranted(u32 v);
 }
 extern "C" {
 }
@@ -1809,7 +1821,6 @@ extern "C" {
 void RoomObjSync_OnRecv(void *p);
 }
 extern "C" {
-void BuildingOccupancy_OnLeaveRecord(void *p, u32 a);
 }
 extern "C" {
 void BuildingOccupancy_OnEnterRecord(void *p, u32 a);
@@ -1818,13 +1829,10 @@ extern "C" {
 void Building_ApplyStateRecord(void *p);
 }
 extern "C" {
-void SpotSync_OnRelease(u32 a);
 }
 extern "C" {
-void SpotSync_OnReserveReply(u32 a);
 }
 extern "C" {
-void SpotSync_OnReserveRequest(void *p, u32 a);
 }
 extern "C" {
 void FtrSync_OnToggleRecord(void *p);
@@ -1845,16 +1853,13 @@ extern "C" {
 void FtrSync_OnStateRecord(void *p);
 }
 extern "C" {
-void CharInteractSync_Dispatch(void *p, u32 a);
 }
 extern "C" {
-void *Heap_AllocTail(void *g, u32 a);
 }
 extern "C" {
 void Heap_Free(void *g, void *p);
 }
 extern "C" {
-void CommSub_Dispatch(void *p, u32 a);
 }
 extern "C" {
 void PatternSrc_ApplyNetMove(void *p);
@@ -1875,37 +1880,28 @@ extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
-s32 Mem_Differs(void *a, void *b, u32 n);
 }
 extern "C" {
-void NpcNetRecord_PackSpNpc(u32 a, u32 b);
 }
 extern "C" {
-void NpcNetRecord_PackVillager(u32 a, u32 b);
 }
 extern "C" {
-void NpcNetRecord_InitVillagerVar(u32 a, u32 b);
 }
 extern "C" {
-void PlayerActor_PackNetState(u32 a, u32 b);
 }
 extern "C" {
-void ChatBalloon_PackSyncVar(u32 a, u32 b, u32 c);
 }
 extern "C" {
 void InsectNetSync_PackVar(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void NetBuf_WriteS16B(u32 a, s32 b);
 }
 extern "C" {
-void NetBuf_PackPair20(u32 a, s32 b, s32 c);
 }
 extern "C" {
 s32 _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-s32 Net_IsReadyToSend();
 }
 extern "C" {
 }
@@ -1913,7 +1909,6 @@ extern "C" {
 s32 _ZN11CommManager10getSendBufEi(CommManager *g, u32 n);
 }
 extern "C" {
-void CommPacket_SetHeader(s32 p, u32 a, u32 b);
 }
 extern "C" {
 }
@@ -1921,16 +1916,12 @@ extern "C" {
 u32 _ZN11CommManager13getControlLenEv(CommManager *g);
 }
 extern "C" {
-void CommSyncVar_InitVar(u32 i);
 }
 extern "C" {
-u32 CommSyncVar_GetVarSize(u32 i);
 }
 extern "C" {
-void CommSyncVar_PackAngle(u32 a, s16 *b);
 }
 extern "C" {
-void CommSyncVar_PackPos(u32 a, s32 *b);
 }
 extern "C" {
 static inline BOOL Unk_02075e60_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
@@ -2247,25 +2238,19 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-void *SaveManager_Get();
 }
 extern "C" {
-s32 SaveManager_SetRecvAct04(void *, s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetRecvAct03(s32);
 }
 extern "C" {
-s32 SaveManager_SetRecvAct02(void *, s32, s32);
 }
 extern "C" {
-s32 NetSession_SetSyncState(void *, u32);
 }
 extern "C" {
 void _ZN11CommManager10readRecordEPhj(void *, void *, s32);
 }
 extern "C" {
-void CommVillager_UnpackItems(u32 *, u16 *, void *);
 }
 extern "C" {
 void *SaveVillagers_Get(void *, u32);
@@ -2274,7 +2259,6 @@ extern "C" {
 void *Villager_GetReceivedItem(void *, s32);
 }
 extern "C" {
-void CommVillager_UnpackItem(u32 *, u16 *, void *);
 }
 extern "C" {
 s32 _ZN23VillagerDataProfileView8setShirtEPt(void *, u16 *);
@@ -2283,10 +2267,8 @@ extern "C" {
 void *Villager_GetPlan(void *p);
 }
 extern "C" {
-void *VillagerPlanBlock_GetErrand(void *p);
 }
 extern "C" {
-void *PlanErrand_GetRecord(void *);
 }
 extern "C" {
 s32 _ZN12ErrandRecord8isActiveEv(void *);
@@ -2295,7 +2277,6 @@ extern "C" {
 s32 _ZN12ErrandRecord7getKindEv(void *);
 }
 extern "C" {
-u16 *PlanErrand_GetShownItem(void *);
 }
 extern "C" {
 s32 CommVillager_UnpackAct3D(u32 *, u8 *, u16 *, s32 *, u8 *, u32 *);
@@ -2310,12 +2291,10 @@ extern "C" {
 void _ZN12ErrandRecord5clearEv(void *self);
 }
 extern "C" {
-void *PlayerData_GetBySessionSlot(void *);
 }
 extern "C" {
 }
 extern "C" {
-s32 PlanErrand_Assign(void *, u32, u16 *, void *, s32);
 }
 extern "C" {
 void CommVillager_UnpackAct3C(u32 *, u8 *, u8 *, u16 *);
@@ -2324,7 +2303,6 @@ extern "C" {
 s32 _ZN12ErrandRecord7setStepEh(void *, u32);
 }
 extern "C" {
-void PlanErrand_ResetProgress(void *);
 }
 extern "C" {
 s32 PlanErrand_AdvanceStep(void *);
@@ -2336,7 +2314,6 @@ extern "C" {
 s32 PlanErrand_SetFlag(void *, u32);
 }
 extern "C" {
-void CommVillager_UnpackReceivedItem(u32 *, u32 *, u16 *, u8 *);
 }
 extern "C" {
 void *Villager_GetMemory(void *, u32);
@@ -2375,13 +2352,10 @@ extern "C" {
 s32 FieldAction_OnNetResult(void *, s32);
 }
 extern "C" {
-s32 PlayerActor_SetTan(u32, s32);
 }
 extern "C" {
-s32 PlayerActor_SetSwollenFace(u32, s32);
 }
 extern "C" {
-s32 PlayerActor_UnpackHair(u8 *, u8 *, u8 *);
 }
 extern "C" {
 }
@@ -2391,10 +2365,8 @@ extern "C" {
 s32 FishDisplay_OnNetPacket(void *, s32);
 }
 extern "C" {
-s32 PlayerActor_UnpackClothesChange(void *, u16 *, u32 *);
 }
 extern "C" {
-s32 PlayerActor_SetClothing(u16 *, u32, void *);
 }
 extern "C" {
 }
@@ -2407,16 +2379,12 @@ s32 Item_GetFurnitureIndex(void *);
 extern "C" {
 }
 extern "C" {
-u16 ItemInfo_GetHoldableIndex(u16 *);
 }
 extern "C" {
-s32 PlayerActor_SetHoldableItem(s32, void *);
 }
 extern "C" {
-void HeldInsect_Remove(u32, s32);
 }
 extern "C" {
-void Insect_OnNetRemove(u32);
 }
 extern "C" {
 void *TownBlockMap_Get();
@@ -2873,10 +2841,8 @@ extern "C" {
 s32 _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-BOOL Net_IsReadyToSend();
 }
 extern "C" {
-BOOL Comm_HasSendCredit(u32);
 }
 extern "C" {
 void _ZN11CommManager7isMyAidEj(void *, s32);
@@ -2885,13 +2851,11 @@ extern "C" {
 u8 *_ZN11CommManager10getSendBufEi(void *, s32);
 }
 extern "C" {
-void CommPacket_SetHeader(void *, s32, s32);
 }
 extern "C" {
 BOOL _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(void *, void *, u32, u32, u32, u32, u32, u32, u32, u32);
 }
 extern "C" {
-s32 Comm_GetRemoteMask();
 }
 extern "C" {
 u32 _ZN11CommManager13getControlLenEv(void *);
@@ -2900,16 +2864,12 @@ extern "C" {
 void *_ZN11CommManager13getSyncVarBufEv(void *);
 }
 extern "C" {
-u32 PlayerSession_GetDataIndex(u32);
 }
 extern "C" {
-u32 PlayerData_Get(u32);
 }
 extern "C" {
-void func_02133ef8(void *, u32);
 }
 extern "C" {
-void *TownExchange_GetForAid(u32);
 }
 extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
@@ -2917,7 +2877,6 @@ void MI_CpuCopy8(void *, void *, u32);
 extern "C" {
 }
 extern "C" {
-void *SaveManager_GetTownCompressBuf();
 }
 extern "C" {
 u32 _ZN18TownCompressBuffer7getSizeEv(void *self);
@@ -2932,16 +2891,6 @@ extern "C" {
 void _ZN11CommManager10readRecordEPhj(void *, void *, u32);
 }
 extern "C" {
-u32 NetBuf_ReadU16(void *);
-}
-extern "C" {
-void CommRecord_UnpackSource(void *, void *, void *);
-}
-extern "C" {
-void ItemSync_SetAtUnit(s32, s32, u32, u32, u32);
-}
-extern "C" {
-void ItemSync_Apply(void *);
 }
 extern "C" {
 }
@@ -2952,16 +2901,18 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void NetArea_OnStateAReceived();
 }
 extern "C" {
-void NetArea_SetOwnerAck(u32);
 }
 extern "C" {
-void NetArea_SetStateRequester(u32);
 }
 extern "C" {
-void NetArea_SetMemberAck(u32, u32);
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
 }
 extern "C" {
 void NetSyncMsg_Init(void *);
@@ -2970,52 +2921,38 @@ extern "C" {
 void NetSyncMsg_Unpack(void *, void *, void *, void *);
 }
 extern "C" {
-void NetSession_SetMemberSyncReply(u32, u32);
 }
 extern "C" {
-void NetSession_SetSyncKind(s32 a);
 }
 extern "C" {
-void NetSession_SetSyncRequester(s32 a);
 }
 extern "C" {
 void NetSyncMsg_Fini(void *);
 }
 extern "C" {
-void NetStatusUpdateMsg_Init(void *);
 }
 extern "C" {
-void NetStatusUpdateMsg_Unpack(void *, void *, void *, void *, void *);
 }
 extern "C" {
-void NetArea_SetPendingStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
-void NetStatusUpdateMsg_Fini(void *);
 }
 extern "C" {
-void NetArea_SetMoveReady(u32, u32);
 }
 extern "C" {
-void NetStatusMsg_Init(void *);
 }
 extern "C" {
-void NetStatusMsg_Unpack(void *, void *, void *, void *, void *, void *);
 }
 extern "C" {
-void NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
-void NetStatusMsg_Fini(void *);
 }
 extern "C" {
 void NetSceneMsg_Init(void *);
 }
 extern "C" {
-void NetSceneMsg_Get(void *, void *);
 }
 extern "C" {
-void NetArea_QueueMoveRequest(u32, u32);
 }
 extern "C" {
 void NetSceneMsg_Fini(void *);
@@ -3024,19 +2961,14 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-u32 SaveManager_Get();
 }
 extern "C" {
-void SaveManager_SetRecvAct07(u32, u32);
 }
 extern "C" {
-void SaveManager_SetRecvAct06(u32, u32, u32);
 }
 extern "C" {
-void Comm_RemoveMember(u32);
 }
 extern "C" {
-BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 mask);
 }
 
 
@@ -3344,73 +3276,52 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-s32 SaveManager_Get();
 }
 extern "C" {
-s32 SaveManager_SetCtrlAct17(s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetCtrlAct14Aid(s32);
 }
 extern "C" {
-s32 SaveManager_SetRecvAct06(s32, s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetCtrlAct12(s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetCtrlAct11(s32, s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetCtrlAct10(s32, s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetJoinDone(s32, s32);
 }
 extern "C" {
-s32 SaveManager_GetHostDateTime(s32);
 }
 extern "C" {
-s32 SaveManager_SetDateTimeReceived(s32, s32);
 }
 extern "C" {
-s32 SaveManager_SetJoinReady(s32, s32);
 }
 extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-s32 PlayerData_GetCurrent();
 }
 extern "C" {
-s32 PlayerData_GetLetterStorage(s32);
 }
 extern "C" {
 s32 _ZN15SaveManagerTalk13func_020a148cEv(s32);
 }
 extern "C" {
-s32 PlayerSession_SetDataIndex(s32, s32);
 }
 extern "C" {
-void NetStatusUpdateMsg_Init(void *);
 }
 extern "C" {
-void NetStatusUpdateMsg_Fini(void *);
 }
 extern "C" {
-void NetStatusUpdateMsg_Unpack(void *, u8 *, u8 *, u8 *, u32 *);
 }
 extern "C" {
-void NetStatusUpdateMsg_Pack(void *, u32, u32, u32, u32);
 }
 extern "C" {
-s32 NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
-u32 Net_GetMyAid();
 }
 extern "C" {
-s32 SaveManager_SetCtrlAct0E(s32, s32, s32);
 }
 extern "C" {
 void CommBlock_ParseAll(void *, s32, s32);
@@ -3423,28 +3334,21 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-s32 NetSession_SetCtrl07Received(s32);
 }
 extern "C" {
-s32 NetSession_SetSyncState(s32, u32);
 }
 extern "C" {
-s32 NetSession_SetSyncMemberMask(u16);
 }
 extern "C" {
-s32 PlayerData_Get(s32);
 }
 extern "C" {
-s32 TownExchange_GetForAid(s32);
 }
 extern "C" {
-s32 TownExchange_Clear(s32);
 }
 extern "C" {
 s32 _ZN15SaveManagerTalk19setTransferReceivedEjh(s32, s32, s32);
 }
 extern "C" {
-s32 SaveManager_GetTownCompressBuf();
 }
 extern "C" {
 s32 _ZN18TownCompressBuffer7getSizeEv(s32);
@@ -3453,22 +3357,17 @@ extern "C" {
 s32 _ZN18TownCompressThread5startEj(s32, s32);
 }
 extern "C" {
-s32 SaveManager_GetTownCompressThread();
 }
 extern "C" {
-s32 SaveManager_SetHostMemberMask(s32, u16);
 }
 extern "C" {
-s32 SaveManager_SetHostDataIndex(s32, u8);
 }
 extern "C" {
 void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-u32 Net_IsReadyToSend();
 }
 extern "C" {
-u32 Comm_HasSendCredit(u32);
 }
 extern "C" {
 s32 _ZN11CommManager7isMyAidEj(CommManager *, s32);
@@ -3477,22 +3376,17 @@ extern "C" {
 s32 _ZN11CommManager10getSendBufEi(CommManager *, s32);
 }
 extern "C" {
-s32 CommPacket_SetHeader(s32, s32, s32);
 }
 extern "C" {
 s32 _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(CommManager *, s32, u32, u32, s32, s32, s32, s32, s32, s32);
 }
 extern "C" {
-s32 PlayerSession_GetDataIndex(s32);
 }
 extern "C" {
-s32 CommSend_Chunked(void *, s32, s32, s32, s32);
 }
 extern "C" {
-void Comm_GetRemoteMask();
 }
 extern "C" {
-s32 NetArea_GetSlotStatus(u32, u8 *, u8 *, u8 *);
 }
 extern "C" {
 s32 Clock_GetDateTime(void *);
@@ -3836,132 +3730,23 @@ typedef void (*FPT_data_020cbb74)(void *, s32, s32);
 typedef void (*FPT_data_020cbc60)(u32, u32, u32, u32);
 typedef void (*FPT_data_020cbd60)(void *);
 typedef void (*FPT_data_020cbe78)(void *, u32, u32);
-void CommCtrl_Act17(void);
-void CommCtrl_RecvLetterStorageToHost(void);
-void CommCtrl_RecvPlayerDataToHost(void);
-void CommCtrl_Act14(void);
-void CommCtrl_Act13(void);
-void CommCtrl_Act12(void);
-void CommCtrl_Act11(void);
-void CommCtrl_Act10(void);
-void CommCtrl_RecvSlotStatusAll(void);
-void CommCtrl_Act0E(void);
 void CommCtrl_RecvStateBlocks(void);
-void CommCtrl_RecvSyncVarChunk(void);
-void CommCtrl_RecvJoinDone(void);
-void CommCtrl_RecvDateTime(void);
-void CommCtrl_RecvJoinReady(void);
-void CommCtrl_Act08(void);
-void CommCtrl_Act07(void);
-void CommCtrl_Act06(void);
-void CommCtrl_RecvNetState(void);
-void CommCtrl_RecvVisitorPlayerData(void);
-void CommCtrl_RecvVillagerTransferReply(void);
-void CommCtrl_RecvVillagerTransfer(void);
-void CommCtrl_RecvTownChunk(void);
-void CommCtrl_RecvMemberInfo(void);
-void CommRecv_ItemSetRequest(void);
-void CommRecv_ItemSet(void);
-void CommRecv_Act11(void);
-void CommRecv_Act10(void);
-void CommRecv_Act0F(void);
-void CommRecv_Act0E(void);
-void CommRecv_Act0D(void);
 void CommRecv_Act0C(void);
-void CommRecv_Act0B(void);
-void CommRecv_Act0A(void);
-void CommRecv_SlotStatus(void);
 void CommRecv_Act08(void);
-void CommRecv_Act07(void);
-void CommRecv_Act06(void);
-void CommRecv_PlayerLeft(void);
-void CommRecv_Act04(void);
-void CommRecv_Act03(void);
-void CommRecv_Act02(void);
-void CommRecv_OwnNetState(void);
-void CommRecv_PeerNetState(void);
-void CommRecv_VillagerItems(void);
-void CommRecv_VillagerShirt(void);
-void CommRecv_Act3F(void);
 void CommRecv_Act3D(void);
 void CommRecv_Act3C(void);
-void CommRecv_VillagerReceivedItem(void);
-void CommRecv_VillagerFriendship(void);
-void CommRecv_VillagerImpression(void);
 void CommRecv_VillagerMemorySetPlayer(void);
 void CommRecv_VillagerMemoryInit(void);
 void CommRecv_ObjectUseRelease(void);
 void CommRecv_ObjectUseReply(void);
 void CommRecv_ObjectUseRequest(void);
-void CommRecv_ItemActionResult(void);
-void CommRecv_ItemActionRequest(void);
-void CommRecv_TanChange(void);
-void CommRecv_FaceChange(void);
-void CommRecv_HairChange(void);
-void CommRecv_ClothesChange(void);
-void CommRecv_FishDisplay(void);
-void CommRecv_FieldActorRemove(void);
-void CommRecv_FieldActorRelease(void);
-void CommRecv_FieldActorClaimResult(void);
-void CommRecv_FieldActorClaimRequest(void);
-void CommRecv_ShopPurchaseAck(void);
-void CommRecv_ShopPurchase(void);
 void CommRecv_Act25(void);
-void CommRecv_BuildingLeave(void);
 void CommRecv_BuildingEnter(void);
 void CommRecv_BuildingState(void);
-void CommRecv_SpotRelease(void);
-void CommRecv_SpotReserveDenied(void);
-void CommRecv_SpotReserveGranted(void);
-void CommRecv_SpotReserveRequest(void);
-void CommRecv_FurnitureUseRequest(void);
 void CommRecv_FurniturePlace(void);
 void CommRecv_FurnitureRemove(void);
 void CommRecv_RoomItemSet(void);
-void CommRecv_HouseRoomFlag(void);
 void CommRecv_FurnitureState(void);
-void CommRecv_CharInteract(void);
-void CommRecv_SubCommand(void);
-void CommRecv_PatternMove(void);
-void CommRecv_RoomWallFloor(void);
-void CommSyncVar_PackSpNpc25(void);
-void CommSyncVar_PackSpNpc24(void);
-void CommSyncVar_PackSpNpc23(void);
-void CommSyncVar_PackSpNpc22(void);
-void CommSyncVar_PackSpNpc21(void);
-void CommSyncVar_PackSpNpc20(void);
-void CommSyncVar_PackSpNpc1F(void);
-void CommSyncVar_PackSpNpc1E(void);
-void CommSyncVar_PackSpNpc1D(void);
-void CommSyncVar_PackSpNpc1C(void);
-void CommSyncVar_PackSpNpc1B(void);
-void CommSyncVar_PackSpNpc1A(void);
-void CommSyncVar_PackSpNpc19(void);
-void CommSyncVar_PackSpNpc18(void);
-void CommSyncVar_PackSpNpc17(void);
-void CommSyncVar_PackSpNpc16(void);
-void CommSyncVar_PackSpNpc15(void);
-void CommSyncVar_PackSpNpc14(void);
-void CommSyncVar_PackSpNpc13(void);
-void CommSyncVar_PackSpNpc12(void);
-void CommSyncVar_PackSpNpc11(void);
-void CommSyncVar_PackSpNpc10(void);
-void CommSyncVar_PackSpNpc0F(void);
-void CommSyncVar_PackSpNpc0E(void);
-void CommSyncVar_PackSpNpc0D(void);
-void CommSyncVar_PackSpNpc0C(void);
-void CommSyncVar_PackSpNpc0B(void);
-void CommSyncVar_PackSpNpc0A(void);
-void CommSyncVar_PackSpNpc09(void);
-void CommSyncVar_PackSpNpc08(void);
-void CommSyncVar_PackSpNpc07(void);
-void CommSyncVar_PackSpNpc06(void);
-void CommSyncVar_PackSpNpc05(void);
-void CommSyncVar_PackSpNpc04(void);
-void CommSyncVar_PackSpNpc03(void);
-void CommSyncVar_PackSpNpc02(void);
-void CommSyncVar_PackSpNpc01(void);
-void CommSyncVar_PackSpNpc00(void);
 void CommSyncVar_PackVar1F(void);
 void CommSyncVar_PackVar1E(void);
 void CommSyncVar_PackVar1D(void);
@@ -3970,42 +3755,6 @@ void CommSyncVar_PackVar1B(void);
 void CommSyncVar_PackVar1A(void);
 void CommSyncVar_PackVar19(void);
 void CommSyncVar_PackVar18(void);
-void CommSyncVar_PackPlayerMsg3(void);
-void CommSyncVar_PackPlayerMsg2(void);
-void CommSyncVar_PackPlayerMsg1(void);
-void CommSyncVar_PackPlayerMsg0(void);
-void CommSyncVar_PackVillager7(void);
-void CommSyncVar_PackVillager6(void);
-void CommSyncVar_PackVillager5(void);
-void CommSyncVar_PackVillager4(void);
-void CommSyncVar_PackVillager3(void);
-void CommSyncVar_PackVillager2(void);
-void CommSyncVar_PackVillager1(void);
-void CommSyncVar_PackVillager0(void);
-void CommSyncVar_PackVar0B(void);
-void CommSyncVar_PackVar0A(void);
-void CommSyncVar_PackVar09(void);
-void CommSyncVar_PackVar08(void);
-void CommSyncVar_PackPlayerAngle3(void);
-void CommSyncVar_PackPlayerAngle2(void);
-void CommSyncVar_PackPlayerAngle1(void);
-void CommSyncVar_PackPlayerAngle0(void);
-void CommSyncVar_PackPlayerPos3(void);
-void CommSyncVar_PackPlayerPos2(void);
-void CommSyncVar_PackPlayerPos1(void);
-void CommSyncVar_PackPlayerPos0(void);
-void CommSyncVar_InitVillager7(void);
-void CommSyncVar_InitVillager6(void);
-void CommSyncVar_InitVillager5(void);
-void CommSyncVar_InitVillager4(void);
-void CommSyncVar_InitVillager3(void);
-void CommSyncVar_InitVillager2(void);
-void CommSyncVar_InitVillager1(void);
-void CommSyncVar_InitVillager0(void);
-void CommBlock_ReadAct01(void);
-void CommBlock_ReadAct00(void);
-void CommBlock_WriteAct01(void);
-void CommBlock_WriteAct00(void);
 }
 }
 namespace n0 {

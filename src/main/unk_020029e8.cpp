@@ -7,6 +7,19 @@
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
+#include "proto/autoload_2/unk_020e82bc.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02105d50.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_02110c98.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_020029e8.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -86,7 +99,6 @@ void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
-void G3X_SetToonTable(void *p);
 }
 
 extern "C" {
@@ -94,15 +106,12 @@ void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void G3X_Reset(void);
 }
 
 extern "C" {
-void GX_SetBankForTex(u32 a);
 }
 
 extern "C" {
-void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
@@ -110,15 +119,12 @@ void OS_EnableDTCM(void);
 }
 
 extern "C" {
-void G3X_Init(void);
 }
 
 extern "C" {
-void G3X_InitTable(void);
 }
 
 extern "C" {
-void G3X_InitMtxStack(void);
 }
 
 extern "C" {
@@ -126,7 +132,6 @@ void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
-void NNS_G3dInit(void);
 }
 
 extern "C" {
@@ -146,15 +151,12 @@ void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void Mem_Free(void *p);
 }
 
 extern "C" {
-void *File_Load(void *p);
 }
 
 extern "C" {
-void FS_InitFile(void *p);
 }
 
 extern "C" {
@@ -166,15 +168,12 @@ void List_PushBack(void *list, void *node);
 }
 
 extern "C" {
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void Mtx43_RotateX(void *m, s32 a);
 }
 
 extern "C" {
-void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
@@ -190,15 +189,12 @@ void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
-void TownId_Assign(void *p, void *s);
 }
 
 extern "C" {
-u32 TownId_IsValid(void *p);
 }
 
 extern "C" {
-void TownId_Clear(void *p);
 }
 
 extern "C" {
@@ -206,7 +202,6 @@ u32 Villager_GetSpeciesName(u32 a, u32 b);
 }
 
 extern "C" {
-void Str_SPrintf(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {
@@ -222,7 +217,6 @@ void *ProcList_FindById(void *list, u32 id);
 }
 
 extern "C" {
-void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
 extern "C" {
@@ -247,14 +241,7 @@ AbAllObjGfx sAbAllObjGfx;
 
 
 
-extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
-extern "C" u32 Villager_PersonalityToGender(u32 t);
-extern "C" u32 VillagerId_IsValidSpecies(u32 id);
-extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
-extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
-extern "C" void Gfx3d_InitEngine(void);
-extern "C" void AbAllObjGfx_InitFile(void *p);
 
 AbAllObjGfx::AbAllObjGfx() : paletteBuf(0), charBuf(0) {}
 

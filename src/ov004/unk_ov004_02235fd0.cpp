@@ -22,6 +22,19 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "snd/SndEnvChannel.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/ov004/unk_ov004_02235fd0.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -161,19 +174,13 @@ extern u32 gCurrentHeap;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 extern s16 data_02135f44[];
-HouseRoachManager *HouseRoachManager_Create();
-HouseRoach *HouseRoach_Create();
 
 BOOL Scene_InHouseRoom();
 s32 Scene_GetHouseRoom();
 void CachedModel_loadCached(void *p, u32 a, void *b);
-void *FrameHeap_CreateAsCurrent(u32 a, u32 b);
-void ProcBase_SetHeap(void *a, void *b);
 void AnimModel_allocAnmObj(void *p, void *q);
-void *File_Load(const char *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
-void Heap_RestoreCurrent();
 void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 q);
 void BlendAnimModel_initAnim(void *p, void *a, s32 b, s32 c, u16 d, u16 e);
@@ -185,20 +192,14 @@ void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_020548d0(void *p);
 void func_02088c4c(void *p);
-void func_02000c8c();
-void FxVec3_Construct();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-void *NpcRegistry_FindVillager(u32 i);
 BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 y);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 void *Item_GetFurnitureIndex(void *p);
 BOOL Item_IsFurniture(u16 *p);
-s32 Random_GlobalBelow(s32 n);
-void *PlayerActor_GetActor(u32 a);
 s32 Vec_DistXZ(void *a, void *b);
-void ProcBase_RequestDelete(void *p);
 void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
 void Clock_GetMinuteHour(void *p);
 s32 GroundInfo_initAtPos(void *o, void *v, s32 a, s32 b);
@@ -220,17 +221,12 @@ void Model_setAlpha(void *p, u32 v);
 void AnimModel_drawAnimated(void *p, u32 v);
 void AnimModel_stepAnim(void *p);
 void AnimModel_setFrame(void *p, s32 frame);
-void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
 BOOL ActorCollider_isHitByGroup(void *p, u32 mask);
 u32 WorldCurve_ToCurved(void *a, void *b);
-void Effect_PlayById(u32 a, void *v, s32 b, s32 c);
 s32 Math_AngleXZ(void *a, void *b);
 s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 ActorCollider_submit(void *a);
 
-void HouseRoach_FindVillager(void *self);
-BOOL HouseRoach_LoadCount(void *self);
-BOOL HouseRoach_SpawnInitial(void *owner);
 }
 
 extern "C" ProcProfile sHouseRoachManagerProfile;

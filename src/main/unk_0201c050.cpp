@@ -74,6 +74,51 @@
 #include "save/Pattern.h"
 #include "snd/SndSeEmitter.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_Drama_GetAvailablePart  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseVisitInvite_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseVisitInvite_IsFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HouseVisitInvite_Set  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_OneSimple  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Melody_SaveRandomPattern  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlanErrand_GetShownItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0201c050.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0204f134.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0205c91c.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b0774.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov003/unk_ov003_02225800.h"
 
 
 class VillagerTalk;
@@ -530,11 +575,6 @@ s32 _ZN19SpNpcAnimHeapHandle22getVillagerAnimHeapRefEv(void *);
 void _ZN18ReddPasswordStringC1Ev(void *);
 void _ZN18ReddPasswordStringD1Ev(void *);
 s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, u32, void *, u32, u32);
-u16 VillagerId_GetSpecies(void *);
-void Villager_MakePersonalityFileName(void *, s32, u32, u32);
-u8 VillagerId_GetPersonality(void *);
-s32 Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
-void Snd_PlaySe(u32 a);
 void NpcActor_OnJointCalc();
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *);
 void * VillagerMood_Destruct(void *);
@@ -637,18 +677,8 @@ void Talk_AdvanceDrama(void *, u32);
 BOOL Talk_IsDramaPending(void *, u8 *, u32);
 BOOL Talk_CheckAndSetPlayerFlag(u32, BOOL);
 void TalkChoiceList_SetIndices(u32, u8 *, s32, s32);
-void Bgm_ReleasePriority(u32);
-void Bgm_Release(u32);
-void Bgm_RequestSilence(s32, s32, s32);
-void Bgm_Request(s32, s32, s32, s32);
 s32 MapBlock_HasAnyAttr(void *, u32);
 u16 * MapBlock_GetItemPtr(void *, s32, s32, s32);
-void Camera_FocusOnPoint(void *);
-s32 Catalog_SetItem(s32, void *, u32, u32);
-void * ClothTex_GetTexThunk(s32 tex);
-void PlayerOptions_Commit();
-void PlayerOptions_SetHiragana(u32);
-void MailText_LoadLetter(void *, void *, void *, void *, void *, void *);
 s32 Event_GetState(u32, void *, u32);
 s32 Event_GetDaysSinceStart(u32);
 u32 Item_GetFurnitureIndex(void *);
@@ -658,46 +688,12 @@ u8 Item_GetShirtUnkGroup(void *);
 s32 Item_GetPrice(void *);
 TownBlockMap * TownBlockMap_Get();
 s32 BlockMap_BlockHasAllAttr(void *, s32, s32, s32);
-void * FishTable_IsLateMonth(u32);
-s32 FishTable_GetHourSlot(u32);
-void * FishTable_GetForDate(u32, void *);
-s32 Item_GetFossilGroup(u16 *);
-s32 Ftr_GetUnk05(void *);
 s32 FengShui_GetWestTotal();
-s32 CharaClothTexRef_GetBuffer(void *);
-void CharaClothTexRef_LoadPattern(void *, void *);
-s32 Insect_GetHabitat(u32);
-s32 Insect_HourToTimeSlot(u32);
-void * Insect_GetSpawnTable(s32);
-s32 ItemPick_FromRange(u16 *, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 void ItemPick_OneSimple(u16 *, Unk_0202368c_Obj *);
 void ItemPick_One(void *, void *, u32, u32, u32, u32, u32);
 void ItemPickSpec_Destruct(void *);
 void TownId_CopyFrom(void *, u32);
-void Str_SPrintf(u8 *, u8 *);
-s32 Random_GlobalBelow2(s32);
-s32 Random_GlobalBelow(s32);
-void * Letter_GetSenderPlayer(void *self);
-void Letter_FillVillagerToVillager(void *, void *, void *, void *, u32, void *, s32, s32);
-void Letter_Clear(void *);
 void Melody_SaveRandomPattern(void *);
-void MenuCtrl_GetDateTime(void *);
-u32 MenuCtrl_GetText();
-s32 MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-void VillagerSync_Shirt(void *, u16 *);
-void VillagerSync_Act3F(void *, void *);
-void VillagerSync_Act3D(void *, s32, void *, s32, s32);
-void VillagerSync_Act3C05(void *, u32);
-void VillagerSync_Act3C04(void *, u8);
-void VillagerSync_Act3C03(void *, s32);
-void VillagerSync_Act3C02(void *);
-void VillagerSync_Act3C01(void *);
-void VillagerSync_Act3C00(void *, u32);
-void VillagerSync_ReceivedItem(void *, u32, void *);
-void VillagerSync_Impression(void *, s32, s32);
-void VillagerSync_MemorySetPlayer(s32, s32);
-void VillagerSync_MemoryInit(s32, s32);
 u32 VillagerAnimHeapRef_GetHeap(u32);
 s32 TalkRepeat_GetLevel(void *);
 void * VillagerState_GetTalkRepeat(void *);
@@ -773,69 +769,14 @@ PersonalitySleepHours * Personality_GetSleepHours(void *);
 u8 Date_GetStarSignOf(void *);
 u32 Date_GetStarSign(u32, u32);
 u32 FurnitureTaste_GetTextIndex(void *);
-void NpcRegistry_RemoveVillager(void *);
-s32 NpcRegistry_AddVillager(void *, void *);
-void ContestRecord_GetItem(void *, ContestRecord *);
 s32 Drama_GetAvailablePart(u32, u32, u32, void *);
-void DramaRecord_SetLastPart(void *, u32);
-s32 Effect_Create(u32, void *, void *, u32);
-s32 PlayerId_FindResidentIndex(void *);
-u16 * PlayerId_GetTownId(void *);
-void * PlayerData_GetCurrent();
-s32 PlayerDataArray_FindById(void *, void *);
-s32 PlayerInventory_AddBells(s32, s32, u32);
-s32 PlayerData_HasStungFace(void *);
-s32 Pocket_FindItem(void *);
 s32 Pocket_CountMatching(void *, BOOL (*)(u16 *));
-s32 Pocket_CountKind(void *, u32);
-s32 Pocket_FindEmpty();
-void Pocket_AddItem(u16 *, s32);
-u32 Pocket_GetItem(s32);
-void Pocket_SetItem(u16 *, s32, s32);
-s32 Inventory_GetEmptyLetter();
-s32 Inventory_FindEmptyLetter();
-s32 FishSpawn_GetWeightClass(u32);
-s32 InsectSpawn_GetWeightClass(u32);
-void * PlayerErrandSlots_FindByVillager(s32, void *, s32);
-void * PlayerErrands_GetSlot(s32, void *);
 void HouseVisitInvite_Set(void *, void *, void *);
 s32 HouseVisitInvite_IsFrom(void *, void *);
 void HouseVisitInvite_Clear(void *);
-void PlayerErrandSlot_ComposeLetter(void *, s32);
-u8 * PlayerErrandSlot_GetPresentReaction(void *);
-void PlayerErrandSlot_SetPresentReaction(void *, s32);
-s32 PlayerErrandSlot_IsStepDone(void *);
-s32 Errand_CanOfferInPlanState(s32, s32);
-void * PlayerErrandSlot_GetVillager(void *, s32);
-void * PlayerErrandSlot_GetRecord(void *);
-void PlayerErrandSlot_Start(void *, s32, void *, void *);
-void PlayerErrandSlot_Clear(void *);
-void * VillagerPlanBlock_GetErrand(void *);
-void * VillagerPlanBlock_GetPlan(void *);
-u32 PlanErrand_AddCount(void *, u32);
-void FossilGroup_GetItem(u16 *, void *, s32);
-s32 FossilGroup_PickMissing(s32, s32);
-s32 FossilGroup_ToIndex(s32);
-s32 PlanErrand_TestFlag(void *, u8);
-void PlanErrand_SetFlag(void *, u8);
-void PlanErrand_SetFossilGroup(void *, s32);
-s32 PlanErrand_GetFossilGroup(void *);
 u16 * PlanErrand_GetShownItem(void *);
-u32 * PlanErrand_GetTime(void *);
-s32 PlanErrand_GetStepCount(s32);
 void * PlanErrand_GetPlayer(void *);
-s32 PlanErrand_GetStep(void *);
-void * PlanErrand_GetRecord(void *);
 void PlanErrand_AdvanceStep(void *);
-void PlanErrand_Assign(void *, s32, void *, s32, s32);
-void PlanErrand_ResetProgress(void *);
-void * Errand_GetSlotIndex(s32);
-s32 ErrandRecord_GetTime(void *);
-s32 Errand_GetGroup(s32);
-s32 Errand_GetClass(u32 x);
-s32 PlanState_GetGroup(s32);
-s32 Trend_IsValid(s32);
-u32 TopicWord_PickRandom(u32 *, u32);
 s32 Clock_GetTimeOfDay();
 s32 Date_GetNthWeekdayDay(s32, s32, s32, s32);
 void * Clock_GetYear();
@@ -848,10 +789,7 @@ s32 Clock_GetDateTime(void *);
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 s32 ReddPassword_CurrentPlayerKnows();
 s32 ReddShop_IsTentOpen();
-s32 Constellation_FindVisibleNow();
 void * Constellation_GetData();
-s32 ConstellationStore_IsUsed(void *, s32);
-s32 String_MakeNickname(void *, void *, u8 *);
 s32 Scene_GetCurrent();
 s32 Scene_InVillagerHouse();
 s32 Scene_GetVillagerHouse();
@@ -859,17 +797,12 @@ s32 Scene_InMuseumRoom();
 s32 SceneId_GetMuseumRoom(s32);
 s32 Scene_InNookShop();
 s32 Weather_GetFallingPrecip();
-s32 Vec_DistXZ(void *, void *);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
 void SndSeEmitter_dtor(void *);
 #define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
 void SndSeEmitter_ctor(void *);
 void * MI_CpuFill8(void *, s32, u32);
 s32 MI_CpuCopy8(void *, void *, s32);
-s32 memcmp(void *, void *, s32);
-void func_02133ef8(void *, u32);
-s32 Insect_IsBeeSwarmOut();
-s32 FieldInsect_GetPosAndKind(void *, u32);
 extern u32 __ptmf_null[2];
 extern u32 sMoodAnimIds[5];
 extern u32 sMoodAnimNextIds[5];

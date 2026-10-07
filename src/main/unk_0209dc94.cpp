@@ -19,23 +19,48 @@
 #include "save/SaveRecord4.h"
 #include "save/TownExchangeRecord.h"
 #include "save/TownId.h"
+#define PROTO_LOCAL_BottleLetterRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChestStorage_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ConstellationStore_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EventWeekSlots_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_EventWeekSlots_Reset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GulliverQuest_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostAndFound_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostAndFound_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RecycleBin_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RecycleBin_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoostGuestRoll_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveData_DestructDateRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownState_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TurnipMarket_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Weather_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c4a8.h"
+#include "proto/main/unk_0209d81c.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020c00c0.h"
 
 
 extern "C" {
 void SaveData_SyncClockOffset(void *);
-void SaveData_RefreshTownBlockMap(void *);
-void SaveData_InitNew(u8 *p);
-void SaveData_InitCurrentPlayer(u8 *p);
-void *PlayerData_GetCurrent();
-void RoomEntry_Reset();
 void Clock_Init();
 void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();
-void *LooseSnowballs_Get();
 void _ZN14LooseSnowballs5resetEv(void *);
 void VillagerStates_SetBirthdayVisitor(s32);
-void *TownSessionState_Get();
-void *TownSessionState_GetResettiFlag(void *);
 void _ZN16ResettiVisitFlag5clearEv(void *);
 void _ZN16ResettiVisitFlag3setEj(void *, u32);
 void SaveVillagers_UpdateAllRoomInfo(void *);
@@ -48,47 +73,31 @@ void _ZN7TownMap18updateGroundSeasonEv(void *);
 void TownMap_Generate(void *, u32);
 s32 Scene_GetCurrent();
 void HappyRoom_SendWelcomeLetter();
-s32 PlayerOptions_IsStereo();
-void Snd_SetOutputMode(void *);
-void LostChild_LoadFromTown();
-void BottleLetter_WashUpThrownBottle();
-void Constellation_ImportExchanged();
-void LetterDelivery_DeliverReceivedLetter();
-void GameStart_Clear();
 void Weather_RerollRainSlantAlt3();
 void Sky_RequestBirds();
 void _ZN12TurnipMarket12spoilOnResetEv(void *);
 void SaveVillagers_PickPlayerBirthdayVisitor(void *, s32);
 s32 VillagerStates_GetBirthdayVisitor();
 void ChestStorage_Clear(void *);
-void Pattern_RemovePlayerItems(s32);
 void ReddPassword_ForgetResident(u32);
-void *SaveManager_GetLetterStorage();
 void MI_CpuFill8(void *, s32, u32);
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
-void ChestStorage_Destruct(void *);
 void _ZN13PlayerMailboxD1Ev(void *);
 void TownId_Clear(void *);
-void PlayerDataArray_ResetAll(void *);
 void AbleShop_Reset(void *);
 void ReddShop_Reset(void *);
 void _ZN7TownMap5clearEv(void *);
 void TownState_Reset(void *);
-void Weather_SetDateToday(void *);
 void NookShop_Clear(void *);
 void _ZN12TurnipMarket5clearEv(void *);
 void _ZN12ReddLastSale5clearEv(void *);
-void GulliverQuest_Clear(void *);
 void LostAndFound_Clear(void *);
 void RecycleBin_Clear(void *);
 void ConstellationStore_Clear(void *);
-void ReceivedLetter_Clear(void *);
 void HappyRoomDate_SetToday(void *);
 void _ZN14SnowmanRecords8clearAllEv(void *);
 void EventWeekSlots_Reset(void *);
 void _ZN14RoostGuestRoll5clearEv(void *);
-void TownExchange_Clear(void *);
-void PlayerDataArray_Destruct(void *);
 void SaveVillagers_Clear(void *);
 void TownId_Destruct(void *);
 void RecycleBin_Destruct(void *);
@@ -103,7 +112,6 @@ void RoostGuestRoll_Destruct(void *);
 void GulliverQuest_Destruct(void *);
 void _ZN12ReddLastSaleD1Ev(void *);
 void TurnipMarket_Destruct(void *);
-void LostChildRecord_Destruct(void *);
 void BottleLetterRecord_Destruct(void *);
 void SaveData_DestructDateRecord(void *);
 void AbleShop_Destruct(void *);

@@ -14,6 +14,11 @@ typedef int BOOL;
 #define NULL 0
 
 #include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_021040ac.h"
+#include "proto/autoload_2/unk_02105d50.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/autoload_2/unk_02110c98.h"
+#include "proto/itcm/unk_01ff8ad4.h"
 typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 extern void NNS_G3dGeSendDL(void *, u32);
@@ -36,11 +41,7 @@ extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern u32 data_0213bd58[2];
 extern u32 data_0213bd5c;
-extern void NNS_G3dGetCurrentMtx(void *, void *);
 extern s8 data_02135d5c[];
-extern void G3X_Init(void);
-extern void NNS_G3dGlbInit(void);
-extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
 extern void MTX_Copy44To43_(void *, void *);
@@ -74,9 +75,6 @@ typedef struct MtxEnt { s32 m[25]; } MtxEnt;
 extern u32 data_021f70c4[0x1900 / 4];
 extern u8 data_021f7104[];
 extern void MIi_CpuClearFast(u32, void *, u32);
-extern void G3_MultMtx43(void *);
-extern void G3_MultMtx33(void *);
-extern void G3_LoadMtx43(void *);
 typedef struct RSBits { u8 pad[0xcc]; u32 bits[8]; } RSBits;
 static inline BOOL BitVecCheck(const u32 *vec, u32 idx) { return (BOOL)(vec[idx >> 5] & (1 << (idx & 31))); }
 static inline void BitVecSet(u32 *vec, u32 idx) { vec[idx >> 5] |= 1 << (idx & 31); }

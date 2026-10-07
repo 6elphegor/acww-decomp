@@ -12,6 +12,14 @@
 #include "talk/MsgString33.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
+#define PROTO_LOCAL_MailText_SetSlotDayOrdinal  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MailText_SetSlotMonth  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_GetDayOrdinal  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_GetMonthName  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
@@ -28,15 +36,8 @@ void *__cxa_vec_ctor(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 void _ZN11MsgString33D1Ev(void *);
 void _ZN11MsgString33C1Ev(void *);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void String_GetDayOrdinal(void *, s32);
 void String_GetMonthName(void *, s32);
-u8 *Text_GetSpecialCharStr6(void);
-u8 *Text_GetSpecialCharStr7(void);
-u8 *Text_GetSpecialCharStr4(void);
-u8 *Text_GetSpecialCharStr1(void);
-s32 Text_ToUpper(s32 v);
-void *PlayerData_GetCurrent(void);
 }
 
 extern char data_020d9434[];

@@ -2,18 +2,17 @@
 #include "types.h"
 #include "ui/WfcLinkIcon.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02208a24.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 extern "C" {
 extern void WfcCell_Copy(s32, u32, u32);
-extern void WfcTask_Delete(s32, u32);
-extern void WfcOam_FreeEntry(u32);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);
 extern GXOamAttr *WfcObj_CreateSingle(s32, s32);
-extern u32 WfcTask_Add(s32, void *, s32, s32);
 extern u32 WM_GetAllowedChannel();
 extern u32 WM_GetLinkLevel();
-void WfcLinkIcon_Task();
 extern WfcLinkIcon *sWfcLinkIcon;
 }
 

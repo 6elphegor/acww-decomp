@@ -8,6 +8,11 @@
 #include "net/IpStackConfig.h"
 #include "net/SslSession.h"
 #include "net/SslConnection.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_02000b44.h"
+#include "proto/ov065/unk_ov065_02261638.h"
 
 extern "C" u8 data_ov065_0228f3c0[0x800] = {0};
 extern "C" u8 sIpRecvThreadStack[0x800] = {0};
@@ -114,16 +119,13 @@ void Ssl_ProcessRecord(void *, void *);
 s32 Ssl_ReadExact(void *, u32, IpSocket *);
 s32 Ssl_ReadRecord(IpSocket *);
 
-u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void OSi_ReferSymbol(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_JoinThread(void *);
 void OS_DestroyThread(void *);
 s32 OS_IsThreadTerminated(void *);
 void OS_WakeupThreadDirect(void *);
-void OS_YieldThread(void);
 void OS_Sleep(u32 msec);
 void OS_CreateThread(void *, void *, u32, void *, u32, u32);
 void OS_GetMacAddress(void *);
@@ -425,9 +427,7 @@ extern ArpCacheEntry sArpCache[8];
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-u64 OS_GetTick();
 void OS_Sleep(s32);
-void OS_SleepThread(void *);
 s32 OS_IsThreadTerminated(void *);
 void OS_WakeupThreadDirect(void *);
 void MI_CpuFill8(void *, s32, u32);
@@ -927,7 +927,6 @@ extern u16 sMss;
 #define sRecvThreadTxBuf (data_ov065_0228ec1c + 0x22)
 
 // main module
-u64 OS_GetTick();
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 void OS_WakeupThreadDirect(u32);
@@ -1353,10 +1352,8 @@ extern u8 *(*sIpAlloc)(u32);
 extern void (*sIpFree)(u8 *);
 extern OSThreadInfo data_021fcc2c;
 
-u64 OS_GetTick();
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-void OS_YieldThread();
 void OS_WakeupThreadDirect(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
@@ -1746,13 +1743,9 @@ extern u16 sNextEphemeralPort;
 extern IpRandStateSigned sIpRandState;
 
 // main module
-u64 OS_GetTick();
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
 void OS_Sleep(s32);
-void OS_YieldThread();
-void OS_SleepThread(void *);
-void memmove(void *, void *, u32);
 s64 _ll_mul(s64, s64);
 
 // same overlay, out of range
@@ -2415,7 +2408,6 @@ extern IpFragEntry sIpFragTable[8];
 extern u8 sDhcpHostName[];
 extern OSThreadInfo data_021fcc2c;
 
-u64 OS_GetTick(void);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void OS_Sleep(s32 ms);

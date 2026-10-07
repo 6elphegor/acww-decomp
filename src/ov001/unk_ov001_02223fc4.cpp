@@ -1,6 +1,16 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/fs.h"
+#define PROTO_LOCAL_FS_InitArchive  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_ReleaseArchiveName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_UnloadArchiveTables  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcFs_MountArchive  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcFs_UnmountArchive  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 #pragma thumb off
 
@@ -18,13 +28,9 @@ void WfcPool_Put(void *, void *);
 void WfcPool_Get(void *);
 void *WfcHeap_Alloc(s32, s32);
 void *WfcHeap_AllocClear(s32, s32);
-void *WfcPool_CreateFrom(s32, void *, s32);
 
 s32 strlen(void *);
-s32 memcmp(void *, void *, s32);
-void FS_InitFile(void *);
 s32 FS_OpenFile(void *, void *);
-void Fatal_Trap();
 void FS_ReadFile(void *, void *, s32);
 void FS_CloseFile(void *);
 void MI_UncompressLZ8(void *, void *);
@@ -45,11 +51,6 @@ s32 FS_LoadArchive(void *, u32, u32, u32, u32, u32, void *, void *);
 void *FS_LoadArchiveTables(void *, void *, void *);
 void OS_SPrintf(void *, void *, void *);
 
-BOOL WfcUtil_StrEndsWith(void *a, void *b, s32 n);
-s32 WfcFs_OnReadDone(void *a);
-s32 WfcFs_ReadCallback(u8 *self, s32 x, s32 y, s32 z);
-s32 WfcFs_ArchiveProc(void *self, s32 code);
-BOOL WfcFs_WriteCallback();
 }
 
 extern "C" const char sWfcArchiveName[4];

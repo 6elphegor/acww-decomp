@@ -12,6 +12,10 @@
 #include "talk/EncodedString8B.h"
 #include "menu/MenuTitleBalloon.h"
 #include "menu/MenuTownListPanel.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020b2c50.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -42,13 +46,7 @@ public:
 extern "C" {
 extern u32 gCurrentHeap;
 
-s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
-s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
-void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len);
-void String_Load2dMenu(void *a, u8 v);
 BOOL EncodedString_SetRaw(void *, const void *, s32);
-u8 String_SetSlot(u32 idx, MsgString *other);
-BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 }
 

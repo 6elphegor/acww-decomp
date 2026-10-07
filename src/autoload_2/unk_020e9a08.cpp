@@ -10,6 +10,26 @@
 #include "gfx/VecFx32.h"
 #include "net/HexTable.h"
 #include "net/WifiPingState.h"
+#define PROTO_LOCAL_DwcGsHttp_Startup  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LocalWlMp_Start  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LocalWl_ConnectToParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_ConnectToParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WifiConnectStep  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WlxStartExchange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WlxStopExchange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Wlx_StartExchange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Wlx_StopExchange  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/ov065/unk_ov065_0226f9e0.h"
+#include "proto/ov065/unk_ov065_02277140.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02277e70.h"
+#include "proto/ov066/unk_ov066_0225f1a0.h"
+#include "proto/ov067/unk_ov067_0225f1a0.h"
 
 namespace NetA { // declarations as seen by the code of the former unit unk_020e9a08.cpp
 // RC_020e92f4 (companion of RC_020e8558): G002b without its first four functions (those belong to the heap file, now RC_020e8558).
@@ -22,9 +42,6 @@ extern "C" {
 void VEC_Normalize(VecFx32 *v); // VEC_Normalize
 void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
 s32 FX_Div(s32 a, s32 b); // FX_Div
-s32 Math_Sqrt64(u64 x);
-void Math_InitSqrt64(void);
-void Vec_NormalizeCopy(VecFx32 *out, VecFx32 *in);
 extern const s16 data_02135f44[]; // FX_SinCosTable_
 }
 
@@ -36,32 +53,17 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 #define FX_CosIdx(a) data_02135f44[((a) >> 4) * 2 + 1]
 
 extern "C" {
-void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
-void Net_Free(void *p); // free via hook sFreeHook
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
 
-s32 Wlx_GetState(void);
 s32 Wlx_StopExchange(void *p);
 s32 Wlx_StartExchange(void *p);
-void Wlx_Init(void *p, void *cb, u32 n);
-void Wlx_SetPacketSizes(u32 a, u32 b, u32 c);
-void Wlx_RegisterData(void *h, void *cb, void *a, u32 b, u32 c, u32 d);
 void DwcMatch_ClearServerLock(void);
 s32 DwcFriend_IsIdle(void);
 void DwcFriend_DeleteFriend(void *p);
 s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
-void DwcGsHttp_Get(void *a, void *b, void *c);
 void DWCi_Acc_LoginIdToUserName(void *a, u32 b, void *c);
-void Net_OnWlxStopped(void);
-void Net_OnWlxExchangeDone(void);
-void Net_OnGameStatsChallenge(void);
-void Net_OnWifiFriendDeleted(void);
-void Net_OnWifiServersUpdated(void);
-void Net_OnWifiFriendStatus(void);
-void Net_OnHttpDownloadDone(void);
-s64 Net_GetOwnFriendKey(void *p);
 s32 DWC_IsBuddyFriendData(void *p);
 s32 DWC_GetFriendDataType(void *p);
 s32 DWC_IsEqualFriendData(void *p, void *q);
@@ -92,40 +94,17 @@ extern u32 data_021f48e4;
 
 namespace NetB { // declarations as seen by the code of the former unit unk_020ea0b4.cpp
 extern "C" {
-void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
-void Net_Free(void *p); // free via hook sFreeHook
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
-u32 STD_GetStringLength(const char *s); // strlen
-void STD_CopyString(char *dst, const char *src); // strcpy
-void MATH_CalcSHA1(void *dst, const void *src, u32 n); // memcpy
 
-s32 Wlx_GetState(void);
 s32 Wlx_StopExchange(void *p);
 s32 Wlx_StartExchange(void *p);
-void Wlx_Init(void *p, void *cb, u32 n);
-void Wlx_SetPacketSizes(u32 a, u32 b, u32 c);
-void Wlx_RegisterData(void *h, void *cb, void *a, u32 b, u32 c, u32 d);
 void DwcMatch_ClearServerLock(void);
 s32 DwcFriend_IsIdle(void);
 void DwcFriend_DeleteFriend(void *p);
 s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
-void DwcGsHttp_Get(void *a, void *b, void *c);
-s32 NasBase64_Encode(void *a, u32 b, void *c, u32 d);
-void DwcGsHttp_PostCreate(void *p);
-void DwcGsHttp_PostAddString(void *p, const char *fmt, const void *arg);
-void DwcGsHttp_Post(void *a, void *b, void *c, u32 d);
 void DWCi_Acc_LoginIdToUserName(void *a, u32 b, void *c);
-void Net_OnWlxStopped(void);
-void Net_OnWlxExchangeDone(void);
-void Net_OnGameStatsChallenge(void);
-void Net_OnWifiFriendDeleted(void);
-void Net_OnWifiServersUpdated(void);
-void Net_OnWifiFriendStatus(void);
-void Net_OnHttpDownloadDone(void);
-void Net_OnGameStatsUploadDone(void);
-s64 Net_GetOwnFriendKey(void *p);
 s32 DWC_IsBuddyFriendData(void *p);
 s32 DWC_GetFriendDataType(void *p);
 s32 DWC_IsEqualFriendData(void *p, void *q);
@@ -141,30 +120,14 @@ BOOL DWC_CheckDirtyFlag(void *p);
 void DWC_ClearDirtyFlag(void *p);
 void DWC_CreateUserData(void *p, u32 v);
 void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
-void DwcNet_SetSendDoneCallback(void *p);
-void DwcNet_SetRecvCallback(void *p);
 void DwcConn_SetClosedCallback(void *p, u32 v);
 void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
 s32 DwcFriend_GetProfileId(void);
 s32 DwcFriend_FindIndexByProfileId(void);
-s32 LocalWl_GetState(void);
 s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
-void *LocalWl_GetBeacon(u32 a, u32 b);
-s32 LocalWl_IsBeaconValid(void *p);
-s32 LocalWl_GetBeaconGameInfoSize(void *p);
 s32 LocalWl_GetBeaconGameInfo(void *p);
-s32 LocalWl_SetGameInfo(void *a, u32 n);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(void);
-u32 Net_WifiFindFriend(void);
-u32 Net_GetLocalError(void);
-u32 Net_GetWifiError(void);
-void Net_OnWifiClientMatched(void);
-void Net_WifiCallbackNop(void);
-void Net_OnWifiSendDone(void);
-void Net_OnWifiRecv(void);
-void Net_OnWifiClosedNop(void);
-void Net_OnWifiHostMatched(void);
 extern u8 data_021f488c;
 extern u8 data_021f49e0[];
 extern u32 data_021f4910[];
@@ -203,7 +166,6 @@ extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 
-s64 Net_GetOwnFriendKey(void *p);
 s64 DWC_CreateFriendKey(void *p);
 s32 DWC_CreateExchangeToken(void *p, void *q);
 s32 DWCi_Acc_IsAuthentic(void *p);
@@ -215,30 +177,14 @@ BOOL DWC_CheckDirtyFlag(void *p);
 void DWC_ClearDirtyFlag(void *p);
 void DWC_CreateUserData(void *p, u32 v);
 void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
-void DwcNet_SetSendDoneCallback(void *p);
-void DwcNet_SetRecvCallback(void *p);
 void DwcConn_SetClosedCallback(void *p, u32 v);
 void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
 s32 DwcFriend_GetProfileId(u32 a);
 s32 DwcFriend_FindIndexByProfileId(u32 a);
-s32 LocalWl_GetState(void);
 s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
-void *LocalWl_GetBeacon(u32 a, u32 b);
-s32 LocalWl_IsBeaconValid(void *p);
-s32 LocalWl_GetBeaconGameInfoSize(void *p);
 s32 LocalWl_GetBeaconGameInfo(void *p);
-s32 LocalWl_SetGameInfo(void *a, u32 n);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(u32 *p);
-s32 Net_WifiFindFriend(u32 a);
-u32 Net_GetLocalError(void);
-u32 Net_GetWifiError(void);
-void Net_OnWifiClientMatched(void);
-void Net_WifiCallbackNop(void);
-void Net_OnWifiSendDone(void);
-void Net_OnWifiRecv(void);
-void Net_OnWifiClosedNop(void);
-void Net_OnWifiHostMatched(void);
 extern u8 data_021f488c;
 extern u8 data_021f49e0[];
 extern u32 data_021f4910[];
@@ -259,51 +205,16 @@ namespace NetD { // declarations as seen by the code of the former unit unk_020e
 extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
-u64 OS_GetTick(void); // OS_GetTick
 BOOL OS_ReadMessage(void *p, void *q, u32 v);
 
-s32 LocalWl_GetState(void);
-u32 LocalWl_IsReadyToSend(void);
-s32 LocalWl_GetBeaconCount(u32 a);
-s32 LocalWl_GetConnectedMask(void);
-s32 LocalWl_GetMyAid(void);
 u32 DwcConn_GetAidList(u8 **p);
 u32 DwcConn_GetMyAid(void);
-BOOL DwcNet_CanSendReliable(u32 a);
 u32 DwcConn_GetAidBitmap(void);
 s32 DwcFriend_CountValid(u8 *a, u32 b);
-u32 LocalWl_GetMemberCount(void);
-BOOL LocalWlMp_SetRecvBuffer(u32 a, u32 b, u32 c);
 s32 DwcConn_GetConnectionCount(void);
-BOOL DwcNet_SetRecvBuffer(u32 a, u32 b, u32 c);
-u32 DwcInet_GetLinkLevel(void);
-u32 LocalWl_GetLinkLevel(void);
-void Wlx_Stop(void);
 s32 DwcConn_CloseAllConnections(void);
-void DwcGsHttp_Cleanup(void);
 void DwcCore_Shutdown(void);
-BOOL DwcInet_Disconnect(void);
-void LocalWl_RequestMode(u32 a, u32 b, u32 c);
-void LocalWlMp_Shutdown(void);
-BOOL LocalWl_Finish(void);
 
-BOOL Net_IsReadyToSend(void);
-BOOL Net_WifiAllPeersSendable(void);
-BOOL Net_IsSendIdle(u32 a);
-BOOL Net_PollConnected(void);
-BOOL Net_SendNextQueued(void);
-void Net_ClearSendQueue(void);
-BOOL Net_QueueSendToMask(u32 a, u32 b, u16 c, u32 d);
-s32 Net_LocalCountBeacons(void);
-s32 Net_WifiCountFriends(void);
-u32 Net_GetError(void);
-void Net_WaitFrame(void);
-void Net_Free(void *p);
-u32 Net_LocalGetLinkLevel(void);
-u32 Net_WifiGetLinkLevel(void);
-BOOL Net_WifiShutdownStep(void);
-BOOL Net_LocalShutdown(void);
-BOOL Net_ShutdownOv067(void);
 
 extern u8 sNetMode;
 extern u8 sLocalPeerState[];
@@ -343,34 +254,13 @@ struct NetInit {
 };
 extern "C" {
 void DwcInet_Init(void *p);
-void DwcInet_SelectAuthServer(u32 a);
-void DwcInet_StartConnect(void);
-BOOL DwcInet_IsConnectDone(void);
-s32 DwcInet_UpdateStatus(void);
 void DwcGsHttp_Startup(void *p);
 void DwcCore_Init(void *a, void *b, u32 c, void *d, void *e, u32 f, u32 g, void *h, u32 i);
 void DwcLogin_Start(u32 a, u32 b, void *c, u32 d);
-void DwcNet_SetMaxChunkSize(u32 a);
-void DwcNet_SetPingCallback(void *p);
 void DwcNet_SetAllocator(void *a, void *b);
-void DwcInet_Process(void);
 void DwcCore_Process(void);
-void DwcGsHttp_Process(void);
-void LocalWl_Init(u32 a, void *b, void *c, u32 d);
-void LocalWl_SetEventCallback(void *p);
 void LocalWlMp_Start(void *p);
-void LocalWl_SetRecvCallback(void *p);
 void OS_InitMessageQueue(void *a, void *b, u32 n);
-void Net_WifiLockServer(void);
-void Net_WifiPingNextPeer(void);
-void Net_WifiCheckHostIdle(void);
-void *Net_DwcAllocHook(u32 a, u32 b, u32 c);
-void Net_DwcFreeHook(u32 a, void *b);
-void *Net_Alloc(u32 a, u32 b);
-void Net_OnLocalPeerEvent(u8 *p);
-void Net_OnLocalRecv(u32 a, u32 b, u32 c);
-u32 Net_GetConnectedMask(void);
-BOOL Net_IsLocalConnected(void);
 BOOL Net_WifiConnectStep(void);
 extern u8 data_021f48f4[];
 extern u8 data_021f4bc0[];
@@ -398,26 +288,11 @@ BOOL DwcMatch_IsServerLocked(void);
 void DwcMatch_ClearServerLock(void);
 void DwcMatch_SetOption(u32 a, u32 *b);
 BOOL DwcConn_IsAidValid(u32 a);
-void DwcNet_PingAid(u32 a);
-void DwcGsHttp_Get(void *a, void *b, void *c);
-void NasBase64_Decode(u32 a, u32 b, u32 c, u32 d);
 void DwcFriend_SetStatusData(void *p, u32 n);
 void DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
 u32 DwcFriend_GetStatusData(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
 BOOL DWC_IsValidFriendData(void *p);
-char *STD_CopyString(char *dst, const char *src);
-char *STD_ConcatenateString(char *dst, const char *src);
-u32 STD_GetStringLength(const char *s);
-void *MATH_CalcSHA1(void *dst, const void *src, u32 n);
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...);
-s64 Net_GetOwnFriendKey(void *p);
-void Net_OnHttpDownloadDone(void *a, void *b, u32 c, void *d);
-void Net_OnGameStatsDownloadDone(void *a, void *b, u32 c, u32 d);
-void Net_OnWifiFriendDeleted(u32 a);
-void Net_OnWifiFriendStatus(u32 a);
-void Net_OnWifiServersUpdated(u32 a);
-void Net_OnWifiPingReply(u32 a, u32 i);
-void Net_OnWifiLogin(u32 a, u32 b, u32 c);
 extern u8 data_0213b058;
 extern HexTable data_0213b070;
 extern u32 data_021f48e8;
@@ -433,14 +308,6 @@ struct NetSlot {
 extern "C" {
 BOOL OS_ReceiveMessage(void *q, void *msg, u32 flags);
 BOOL OS_SendMessage(void *q, u32 msg, u32 flags);
-s32 LocalWl_Send(u32 a, u32 b, u32 c, void *d);
-BOOL DwcNet_SendReliable(u32 a, u32 b, u32 c);
-void Main_WaitVBlank(void);
-void Net_Update(void);
-void Net_OnSendDone(u32 a);
-BOOL Net_QueueSendChecked(u32 a, u32 b, u32 c, u32 d);
-BOOL Net_QueueSendPerAid(u32 a, u32 b, u32 c, u32 d);
-BOOL Net_QueueSend(u32 a, u32 b, u32 c, u32 d);
 extern NetSlot sSendSlots[];
 }
 } // namespace NetD

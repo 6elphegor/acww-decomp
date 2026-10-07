@@ -10,6 +10,9 @@
 #include "town/BuildingActor.h"
 #include "game/Unk_02095774_Ent.h"
 #include "item/ItemName.h"
+#include "proto/main/unk_020abea8.h"
+#include "proto/ov003/unk_ov003_022173a4.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 
 
@@ -26,8 +29,6 @@
 extern "C" {
 extern SaveTownStateView data_021ed150;
 
-void ObjShadow_DrawSign(void *p);
-s32 Field_GetSpawnedKind1Count();
 }
 
 

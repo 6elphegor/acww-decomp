@@ -4,6 +4,36 @@
 #include "ui/WfcApList.h"
 #include "ui/WfcTextEdit.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_WfcApList_Enter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcApList_Exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcApList_LoadBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcApScan_GetResults  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcFs_LoadFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcUtil_LocalizePath  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_022118a8.h"
+#include "proto/ov001/unk_ov001_02211b2c.h"
+#include "proto/ov001/unk_ov001_02213424.h"
+#include "proto/ov001/unk_ov001_0221962c.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221cfc0.h"
+#include "proto/ov001/unk_ov001_0221d744.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02226c24.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -41,56 +71,16 @@ extern void *sWfcTextEditStoreFuncs[];
 
 void GX_LoadBG3Scr();
 s32 FX_DivS32(s32, s32);
-void WfcApList_HandleInput();
-void WfcApList_HandleScrollBar();
-void WfcApList_HandleResult();
-s32 WfcButtonBar_GetResult();
-void WfcButtonBar_EnableInput();
-void WfcUtil_SetScene(void *);
-s32 WfcFade_IsBusy(s32);
-void WfcUtil_OpenButtonBar(s32);
-void WfcFade_Start(s32, s32, s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
 GXOamAttr *WfcObj_CreateSingle(s32, s32);
 void WfcCell_Copy(s32, u32, void *);
-void WfcScrollBar_Create(s32, s32, s32, s32, s32);
 void WfcUtil_LoadFileTo(void *, void *);
 void *WfcUtil_LocalizePath(void *);
 void *WfcFs_LoadFile(void *, s32, s32);
-void WfcBgMap_Create(void *);
-void WfcBgMap_RequestTransfer();
 void *WfcHeap_AllocClear(s32, s32);
-void WfcUtil_GetEditParams(s32 *, s32 *);
 s32 WfcApScan_GetResults(void *);
-void WfcHighlight_SetConnection();
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowStepIndicator(s32);
-void *WfcText_CreateBgCanvas(s32, s32);
-void *WfcTask_Add(s32, void *, s32, s32);
-void WfcApList_Redraw();
-void WfcApList_UpdateCursor();
-void WfcApList_ApplyBgScrollTask();
-void WfcTextEdit_OpenKeyboard();
-void WfcTextEdit_Exit();
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-void WfcSound_Play(s32);
-s32 WfcUtil_StrNLen(void *, s32);
 
-void WfcApList_Update();
-void WfcApList_WaitButtonBar();
-void WfcApList_WaitFadeIn();
-void WfcApList_FadeIn();
-void WfcTextEdit_ReturnToInput();
-void WfcTextEdit_ApplyAndExit();
 
-void WfcApList_Update();
-void WfcApList_WaitButtonBar();
-void WfcApList_WaitFadeIn();
-void WfcApList_FadeIn();
-void WfcApList_CreateRowIcons();
-void WfcApList_InitScrollBar();
 void WfcApList_LoadBg();
 void WfcApList_Enter();
 void WfcApList_Enter() {
@@ -232,77 +222,20 @@ extern u8 gWfcScreenRect[];
 
 s32 FX_DivS32(s32, s32);
 s32 FX_ModS32(s32, s32);
-s32 WfcText_Clear(void *, s32);
-s32 WfcApList_DrawSsid(s32, s32);
-s32 WfcApList_SetRowIcons(s32, s32);
-s32 WfcText_RequestTransfer(void *);
-s32 WfcApList_LayoutRows();
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_IsClosed();
-s32 WfcTask_Delete(s32, void *);
 s32 WfcOam_FreeEntry(void *);
 s32 WfcText_ReleaseBgCanvas(void *);
-s32 WfcScrollBar_Destroy();
-s32 WfcCursor_Clear();
-s32 WfcUtil_HideTopMessage();
-s32 WfcBgMap_Destroy();
-s32 WfcFs_FreeFile(void *);
 s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcApScan_Free();
-u8 *WfcConfig_GetEdit();
-s32 WfcConfig_BeginEdit(s32);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcConfig_SetEditSsid(void *);
-s32 WfcUtil_SetEditParams(s32, s32);
 s32 WfcHeap_FreeAndClear(void *);
-s32 WfcButtonBar_Close();
-s32 WfcButtonBar_DisableInput();
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
-s32 WfcSound_Play(s32);
-s32 WfcApList_HighlightSearchButton();
-s32 WfcScrollBar_Disable();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcScrollBar_GetEvent();
-s32 WfcButtonBar_EnableInput();
-s32 WfcScrollBar_GetPos();
-s32 WfcApList_UpdateCursor();
-s32 WfcTask_Add(s32, void *, s32, s32);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsTouchReleasedIn(void *);
-s32 WfcButtonBar_SetResult(s32);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
 s32 WfcInput_IsKeyReleased(s32);
-s32 WfcApList_ScrollDown();
-s32 WfcApList_ScrollUp();
-s32 WfcApList_MoveCursor(s32);
 
-void WfcApList_ScrollUpTask();
-void WfcApList_ScrollDownTask();
-void WfcApList_WaitErrorDialog();
-void WfcSetupMethod_Enter();
-void WfcApSearch_Enter();
-void WfcTextEdit_Enter();
-void WfcTestConfirm_Enter();
 
-void WfcApList_Redraw();
 void WfcApList_Exit();
-void WfcApList_FadeOut();
-void WfcApList_StartExit();
-void WfcApList_HandleResult();
-void WfcApList_HandleScrollBar();
-void WfcApList_HandleInput();
 
-void WfcApList_Redraw();
 void WfcApList_Exit();
-void WfcApList_FadeOut();
-void WfcApList_StartExit();
-void WfcApList_HandleResult();
-void WfcApList_HandleScrollBar();
-void WfcApList_HandleInput();
 void WfcApList_HandleInput() {
     if (sWfcApList->scrollTask != 0) return;
     if (sWfcApList->isDragging != 0) return;
@@ -562,62 +495,16 @@ extern u8 sWfcApListCursor;
 extern u16 sWfcApListScroll;
 extern WfcApList *sWfcApList;
 
-s32 WfcFade_Start(u32 a, u32 b, u32 c, u32 d);
-s32 WfcUtil_SetScene(void *p);
-s32 WfcFade_IsBusy(u32 a);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 void WfcUtil_LoadFileTo(void *a, void *b);
-s32 WfcHighlight_SetConnection();
-s32 WfcUtil_ShowBottomMessage(u32 a);
-s32 WfcSound_Play(u32 a);
-s32 WfcDialog_IsOpen();
-s32 WfcButtonBar_EnableInput();
-s32 WfcScrollBar_Enable();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcUtil_RequestPaletteLine(void *a, u32 b, u32 c);
-void *WfcTask_Add(s32, void *, s32, s32);
-void WfcTask_RequestDelete(s32, s32);
-s32 WfcApList_Redraw();
-s32 WfcScrollBar_SetPos(u32 a);
-s32 WfcScrollBar_Disable();
-s32 WfcCursor_Clear();
-void WfcCursor_ShowPair(u32 a, u32 b, u32 c, u32 d);
 s32 FX_ModS32(s32, s32);
 s32 FX_DivS32(s32, s32);
-s32 WfcUtil_StrNLen(void *a, u32 b);
-void WfcText_DrawMonospace(void *a, u32 b, u32 c, u32 d, u32 e, void *f, u32 g);
 void *MI_CpuFill8(void *, s32, u32);
 
-void WfcAossDone_Exit();
-void WfcAossDone_Update();
-void WfcAossDone_WaitFadeIn();
-void WfcAossDone_FadeIn();
-void WfcApList_Update();
-void WfcApList_WaitDialogClosed();
-void WfcApList_ScrollDownTask(u32 a);
-void WfcApList_ScrollUpTask(u32 a);
-void WfcApList_UpdateCursor();
-void WfcApList_ScrollDown();
-void WfcAossDone_WaitTimer();
-void WfcApList_LayoutRows();
 }
 
 extern "C" {
 
-void WfcApList_WaitDialogClosed();
-void WfcApList_WaitErrorDialog();
-void WfcApList_HighlightSearchButton();
-void WfcApList_ScrollDown();
-void WfcApList_ScrollUp();
-void WfcApList_MoveCursor(s32 a);
-void WfcApList_UpdateCursor();
-void WfcApList_ApplyBgScrollTask();
-void WfcApList_ScrollDownTask(u32 a);
-void WfcApList_ScrollUpTask(u32 a);
-void WfcApList_LayoutRows();
-void WfcApList_SetRowIcons(s32 a, s32 b);
-void WfcApList_DrawSsid(s32 a, s32 b);
 void WfcApList_DrawSsid(s32 a, s32 b) {
     u16 buf[17];
     u32 r4 = a * 0x2a;

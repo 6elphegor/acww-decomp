@@ -12,6 +12,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "town/KatrinaTent.h"
+#include "proto/ov003/unk_ov003_02215ad8.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -60,7 +61,6 @@
 extern "C" {
 void Clock_GetDateTime(void *p);
 void Npc_GetName(void *p, void *q);
-void *KatrinaTent_Create();
 }
 
 

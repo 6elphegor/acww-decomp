@@ -32,6 +32,17 @@
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
 #include "save/PatternOrder.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov004/unk_ov004_0221d748.h"
 
 
 class ActorTalkRequest;
@@ -147,37 +158,20 @@ s32 ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, s32 a, s32 b);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
-s32 MenuCtrl_IsResultOk(void);
-u32 MenuCtrl_GetIndex(void);
-u16 *MenuCtrl_GetChosenItems(void);
-void *PlayerData_GetCurrent(void);
 void *PlayerData_getPatterns(void *p);
 void *PlayerPatterns_getPatternOrder(void *p);
 u32 PatternOrder_getSlot(void *p, u32 i);
-void PatternSrc_Swap(s32 a, s32 b, s32 c, s32 d, s32 e);
-void PatternSrc_Copy(s32 a, s32 b, s32 c, s32 d, s32 e);
-void Snd_SeEmitterPlayOneShotAlt(void *p, s32 a, s32 b, s32 c);
 u16 *PlayerData_getShirt(void *p);
 u16 *PlayerData_getHat(void *p);
-void PlayerActor_RequestWearShirtAlt(u16 *p);
-void PlayerActor_RequestWearHatAlt(u16 *p);
 void TalkWindowState_setNextMessage(void *o, void *p, u32 d);
 void *TalkWindowState_getChoiceList(void *o);
 s32 ChoiceList_getResult(void *p);
-void *JoinHistory_GetLatest(void);
-s32 PlayerData_GetBySessionSlot(void *p);
 void *PlayerData_getPlayerId(s32 v);
-void Visitor_GetTodaysNpc(u16 *p);
-s32 LostAndFound_HasAny(void);
-s32 LostAndFound_Count(void);
 s32 Talk_IsInOwnTown(void);
-s32 GameStart_IsActive(void);
-s32 Random_GlobalBelow(s32 n);
 s32 PlayerData_testFlag(void *p, s32 n);
 void PlayerData_setFlag(void *p, s32 n);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
-s32 NetArea_IsLocalOwner(void);
 void TalkRequest_SetTargetDone(void *p);
 s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_GetUnk3830(void *p);

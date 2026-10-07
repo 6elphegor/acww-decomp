@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcRect.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221ea94.h"
+#include "proto/ov001/unk_ov001_0221eb38.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -27,28 +31,8 @@ void WfcCell_Copy(s32, s32, void *);
 void *WfcObj_Create(s32, s32, s32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
-void WfcTask_RequestDelete(s32, s32);
 void WfcTask_SetFunc(s32, void *);
-u32 WfcTask_Add(s32, void *, s32, s32);
-void WfcTop_LoadScreen(s32);
-void WfcSound_Play(s32);
 
-void WfcHeader_SlideOutTask0(s32 a);
-void WfcHeader_SlideOutTask1(s32 a);
-void WfcHeader_SlideOutTask2(s32 a);
-void WfcHeader_SlideOutTask3(s32 a);
-void WfcHeader_SlideOutTask4(s32 r);
-void WfcHeader_SlideInDone(s32 r);
-void WfcHeader_SlideInTask4(s32 r);
-void WfcHeader_SlideInTask3(s32 r);
-void WfcHeader_SlideInTask2(s32 r);
-void WfcHeader_SlideInTask1(s32 r);
-void WfcHeader_SlideInTask0(s32 r);
-void WfcHeader_Create(s32 n);
-void WfcHeader_StartSlideOut();
-void WfcHeader_SetStep(s32 n);
-s32 WfcHeader_IsAnimating();
-BOOL WfcHeader_IsSlideOutDone();
 }
 
 void WfcHeader_Create(s32 n)

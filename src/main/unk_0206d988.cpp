@@ -1,4 +1,8 @@
 #include "types.h"
+#define PROTO_LOCAL_Melody_SaveDefaultPattern  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_MelodyGetDefaultPattern  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206d988.h"
 
 extern "C" {
 extern u8 gSaveTownTune[];
@@ -6,22 +10,8 @@ extern u8 gSaveTownTune[];
 s32 data_020ddf8c = -1;
 
 u8 *Snd_MelodyGetDefaultPattern(void *);
-u8 *Snd_MelodyApplyRandomPattern(void *);
-void Snd_MelodyPlayRandom(void *, u32);
-BOOL Snd_MelodyIsPlaying(void *);
-void *Snd_MelodyUpdate(void *);
-void Snd_MelodyPlayNote(void *, u32);
-void Snd_MelodyStartTrackA(void *);
-void Snd_MelodyPlay(void *, u32);
-void Snd_MelodyPlayAt(void *, u32, u32);
-void Snd_MelodyPlayPattern(void *, u32, void *);
-void Snd_MelodySetPattern(void *, void *);
-void Snd_MelodyInit(void *);
 s64 func_02133540(u32, u32, u32);
-void Melody_ApplyEditPattern();
 void Melody_SaveDefaultPattern();
-void Melody_Unpack(u32 *, u8 *);
-void Melody_Pack(u32 *, u8 *);
 }
 
 // 0x14-byte member, destructor MelodyTrack::~MelodyTrack (autoload_2, alias in aliases.txt)

@@ -15,6 +15,49 @@
 #include "item/ItemPickSpec.h"
 #include "player/PlayerData.h"
 #include "save/TownExchangeRecord.h"
+#define PROTO_LOCAL_FutureLetter_GetLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_DeliverOutgoing  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_FindAddresseePlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_FindAddresseeVillager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_HasFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_PutInMailbox  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterList_Compact  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_GetRecipientPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_GetRecipientVillager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_MarkSent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MotherLetter_GetFileName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MotherLetter_Send  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerDataArray_FindById  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b2c50.h"
 
 
 
@@ -93,101 +136,34 @@ ProcBase *func_02002d3c(s32 a, s32 b);
 void VillagerId_Destruct(void *);
 void VillagerId_Construct(void *);
 void VillagerId_CopyFrom(void *, void *);
-void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
-void MailText_SetSlot(s32, void *);
 void *Town_GetUpdater();
 s32 Town_WashUpBottle(void *p);
 TownBlockMap *TownBlockMap_Get();
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_0206338c(s32 a, s32 b);
 void func_02063870(void *);
 void func_02063888(void *);
-void TownId_GetNameString(void *, void *);
-s32 Random_GlobalBelow(u32 n);
 void *Letter_GetRecipientVillager(Letter *letter);
 void *Letter_GetRecipientPlayer(Letter *self);
-void Letter_ComposeBottleMail(void *a, void *b, void *c);
 s32 Letter_ComposeFromMail(void *, void *, u8 *, void *, void *, void *);
-void Letter_MarkReceived(void *);
 void Letter_MarkSent(void *p);
-void Letter_SetRecipientResident(void *, void *);
 void Letter_Clear(void *p);
 void Letter_Copy(void *p, void *q);
-s32 MenuCtrl_IsClockMovedForward(void);
-void CommSub_Send(s32 a, s32 b);
 u32 func_02072970(CommManager *p, u32 v);
 BOOL func_020729bc(CommManager *p, s32 v);
 u32 func_020729cc(CommManager *p, s32 v);
 u32 func_02072e88(CommManager *p, s32 v);
-void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
-void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
-void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
 void SaveVillagers_DeliverLetter(void *, void *);
 s32 SaveVillagers_FindIndex(void *, void *);
 s32 SaveVillagers_IsValidIndex(s32);
-void *ReceivedLetter_GetLetter(void *);
-s32 ReceivedLetter_HasLetter(void *);
-void *ReceivedLetter_Clear(void *);
-void *TownExchange_GetLetter(void *p);
-void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
-s32 PlayerActor_GetLocalSessionSlot();
-void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
-BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-Actor *PlayerActor_GetActor(s32 idx);
-u32 PlayerSession_FindFreeGfxSlot();
-void PlayerSession_SetGfxSlot(s32 idx, u32 v);
-s16 *PlayerSession_GetLastAngle(s32 idx);
-s32 *PlayerSession_GetLastPos(s32 idx);
-u8 *PlayerSession_GetLastScene(s32 idx);
-s32 *PlayerSession_GetLastAction(s32 idx);
-s32 PlayerSessionTable_GetActor(void *p, s32 i);
-BOOL PlayerActor_GetSlotAction(s32 *out, s32 a, s32 idx);
-BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
-BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
-u32 PlayerActor_GetNetStateVar(s32 idx);
-u32 PlayerActor_GetNetPosVar(s32 idx);
-Actor *PlayerActor_Get(s32 idx);
-void BottleLetter_WashUpThrownBottle();
-void BottleLetter_OnNewDay(s32 a);
-s32 BottleLetter_IsBottleInTown();
-s32 BottleLetter_PlaceBottle();
-s32 BottleLetter_CreateGameLetter(u8 *p);
-s32 BottleLetter_Open();
-u8 MotherLetter_GetMsgIndex(s32 x);
-u16 MotherLetter_GetPresent(s32 code);
 u8 *MotherLetter_GetFileName(s32 a);
 s32 MotherLetter_Send(s32 a, s32 b);
-s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d);
-void MotherLetter_ClearSent(s32 a, s32 n);
-s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k);
-s32 MotherLetter_CountUnsent(s32 a, s32 n);
-void MotherLetter_ResetOtherMonths(s32 x);
-u8 MotherLetter_GetMonthCount(u8 v);
-u32 MotherLetter_GetMonthFirst(u8 v);
-s32 MotherLetter_TrySendRandom(Unk_02096354_Arg *p);
-s32 MotherLetter_TrySendHoliday(Unk_02096354_Arg *p);
-s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p);
-void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n);
-void LetterDelivery_DeliverReceivedLetter(void);
-u8 LetterPaper_PickForMonth(u32 x);
-u8 LetterPaper_PickForPersonality(u32 i);
-u8 LetterPaper_PickRandom(u32 a, u32 b);
-void LetterDelivery_Update(void);
-s32 LetterDelivery_HasFreeOutgoingSlot(void);
 s32 LetterDelivery_HasFutureLetter(void *p);
-void LetterDelivery_PostOfficeClosedNop(void);
-s32 LetterList_CountUsed(void *base, s32 n);
 s32 LetterList_Compact(void *base, s32 n);
 s32 LetterDelivery_FindAddresseeVillager(Letter *);
 s32 LetterDelivery_FindAddresseePlayer(Letter *);
-BOOL LetterDelivery_HasKnownAddressee(Letter *e);
 BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag);
-void LetterDelivery_SendToVillager(Letter *e);
-BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag);
-BOOL LetterDelivery_IsMailboxFull(s32 idx);
 s32 LetterDelivery_DeliverOutgoing(void);
 void func_02096c58(u32 mask);
 void func_02096c68(u32 mask);
@@ -198,15 +174,7 @@ void func_02096d9c(u32 mask);
 void func_02096e00();
 LetterView *FutureLetter_GetLetter(void *);
 void func_02096ed4();
-void *BottleLetterRecord_GetLetter(void *p);
-s32 PlayerBank_SetBalance(s32, s32);
-s32 PlayerBank_GetBalance(s32);
-void *PlayerData_GetCurrent();
 s32 PlayerDataArray_FindById(void *, void *);
-u8 *PlayerData_GetResident(void *, s32);
-s32 PlayerDataArray_IsUsed(void *, s32);
-s32 PlayerData_IsResidentIndex(s32);
-void *PlayerData_GetMotherLetterState(void *);
 void *PlayerData_GetFutureLetter(void *);
 s32 func_02097ff4(s32, s32);
 s32 func_0209801c(s32, s32);
@@ -215,21 +183,14 @@ u8 *_ZN10PlayerData11getBirthdayEv(void *);
 s32 func_02098320(s32);
 void *_ZN10PlayerData8getIndexEv(void *);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
-void *Inventory_GetEmptyLetter();
 u32 Date_GetNthWeekdayDay(u32, u32, u32, u32);
 void DateTime_AddDays(void *, s32);
 s32 DateTime_Compare(void *, void *, u32);
 void Clock_GetDateTime(void *);
-s32 SaveManager_IsGatePassed();
-s32 Net_GetJoiningAid();
-s32 NetSession_GetLastSyncSlot();
-u8 NetArea_GetSlotScene(s32 idx);
-void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 void func_020b413c(void *);
 void func_020b4154(void *);
 s32 Scene_GetCurrent();
 s32 Scene_AllowsLetterDelivery(void);
-void ProcBase_RequestDelete(void *p);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
 }

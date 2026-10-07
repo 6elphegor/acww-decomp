@@ -5,29 +5,33 @@
 #include "menu/NumberPad.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_FillLargeDigits  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_FillSmallDigits  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_PrintLargeNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_PrintSmallNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_SetKeyPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov130/unk_ov130_02292360.h"
 
 extern "C" {
 extern void *gCurrentHeap;
 
-void Gfx2d_LoadPaletteFile(const void *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void Gfx2d_LoadCharFile(const void *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void Gfx2d_LoadCharRange(void *p, s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadPaletteFileSlot(const void *buf, void *h, s32 a, s32 b, s32 c);
-void Gfx2d_LoadScreen(void *p, s32 a, s32 b, s32 c);
-u8 *File_LoadAlloc(u32 id, void *heap, s32 a, void *out);
-void File_LoadToBuffer(u32 src, void *dst, s32 n);
-void Heap_Free(void *heap, void *p);
-void String_Load2dMenu(void *o, u32 v);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-s32 PlayerData_GetCurrent();
-void Snd_SetKeySeMode(u32 v);
 }
 
 
 
 extern "C" {
-void NumberPad_LoadObjGraphics(s32 n);
-void NumberPad_LoadBgGraphics(s32 x);
 }
 
 
@@ -138,34 +142,17 @@ struct Ov130S {
 };
 
 extern "C" {
-void Snd_PlaySe(s32 v);
-void Snd_PlayKeySe(u32 a);
 s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-BOOL MenuKeys_HasUp(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasRight(u32 v);
 
-void NumberPad_ClearFlags(Ov130S *s, u32 m);
-void NumberPad_SetFlags(Ov130S *s, u32 m);
-BOOL NumberPad_TestFlags(Ov130S *s, u32 m);
 void *NumberPad_AllocLabel(Ov130S *s);
 void NumberPad_ReleaseLabels(Ov130S *s);
-void NumberPad_PutSmallDigit(Ov130S *s, s32 idx, s32 x, s32 y);
 void NumberPad_PrintSmallNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n);
 void NumberPad_FillSmallDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n);
-void NumberPad_PutLargeDigit(Ov130S *s, s32 idx, s32 x, s32 y);
 void NumberPad_PrintLargeNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n);
 void NumberPad_FillLargeDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n);
 void NumberPad_RedrawValues(Ov130S *s);
 void NumberPad_ApplyKey(Ov130S *s);
-BOOL NumberPad_ClearValue(Ov130S *s);
-void NumberPad_PlayCancelSe();
-void NumberPad_PlayKeySe(u32 idx);
-void NumberPad_UnhighlightKey(Ov130S *s, u32 idx);
-void NumberPad_HighlightKey(Ov130S *s, u32 idx);
 void NumberPad_SetKeyPalette(Ov130S *s, u32 idx, s32 n);
 void NumberPad_ResetKeyPalettes(Ov130S *s);
 void NumberPad_PressKey(Ov130S *s);

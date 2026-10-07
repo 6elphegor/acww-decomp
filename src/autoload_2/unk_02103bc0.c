@@ -10,6 +10,8 @@ typedef int BOOL;
 
 // NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h; next and priority move on 64-bit hosts)
 #include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_02111ccc.h"
+#include "proto/autoload_2/unk_0211220c.h"
 typedef struct Node { int frame, ratio; void *resAnm; void *funcAnm; struct Node *next; void *resTex; u8 prio; } Node;
 #define NODE_RES_KIND(n) (*(u8 *)(n)->resAnm)
 #define RO(o) ((G3dRenderObj *)(o))
@@ -37,12 +39,8 @@ typedef struct TexData {
     u32 texOfs;         // 0x38
 } TexData;
 
-extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
 extern void GX_LoadTexPltt(void *, u32, u32);    // GX_LoadTex
-extern void GX_EndLoadTexPltt(void);                // GX_EndLoadTex
-extern void GX_BeginLoadTex(void);                // GX_BeginLoadTexPltt
 extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
-extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
 BOOL removeLink_(Node **head, Node *n);
 
 // remove a node from a singly linked list

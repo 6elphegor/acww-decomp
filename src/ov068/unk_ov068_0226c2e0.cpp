@@ -34,6 +34,25 @@
 #include "player/PlayerData.h"
 #include "save/SaveRecord4.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_CafeCoffeeSet_StartEffectB  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkWindow_Get  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_022264a0.h"
+#include "proto/ov004/unk_ov004_0223f2c8.h"
+#include "proto/ov004/unk_ov004_0223f43c.h"
+#include "proto/ov068/unk_ov068_0226c2e0.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -281,7 +300,6 @@ extern char sRoostTexMof[27];
 extern char sRoostModelEnd[23];
 extern char sRoostTexEnd[27];
 extern ActorProfile sSpNpcRoostGuestProfile;
-SpNpcRoostGuest *SpNpcRoostGuest_Create();
 extern char *sKkMouthTextures[6];
 extern const char *sRoostGuestMsgFiles[9];
 extern const char *sRoostGuestModelPaths[9];
@@ -296,20 +314,15 @@ namespace sA {
 extern "C" {
 extern u16 data_020c6cc8;
 
-void PlayerData_GetCurrent();
 VecFx32 *PlayerActor_GetBodyPos(s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *v);
-BOOL PlayerActor_IsInAction(s32 a, s32 b);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 BOOL Math_CountDownU16(void *p);
 void NpcLookAt_setManualAngles(void *self, s32 a, s16 b, s16 c, s16 d, s16 e);
 void TalkWindowState_setNextMessage(TalkWindowState *self, u8 *cmd, const char *tbl);
-BOOL Pocket_AddItem(u16 *p, s32 a);
 void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void Bgm_Release(u16 a);
 void LightSwitch_SetOff(s32 a, s32 b);
 void LightSwitch_SetOn(s32 a, s32 b, s32 c);
-BgmBeatPhase *Snd_GetBeatState();
 void NpcFaceAnim_setMouthTexture(void *self, u32 a);
 void NpcFaceAnim_resumeMouthMaterial(void *self);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
@@ -317,52 +330,22 @@ void NpcActionCtrl_requestStand(void *self, u32 a, u16 b);
 void ThreeLayerAnimModel_updateLayers3(void *self);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 *TalkWindow_Get(s32 a);
-s32 Random_GlobalBelow(s32 a);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-void *MenuCtrl_GetText();
 void EncodedString_SetRaw(void *a, void *b, u32 c);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 void TalkWindowState_setNamedSlot(TalkWindowState *self, s32 a, void *b, u32 c);
-BOOL MenuCtrl_IsResultOk();
-u32 MenuCtrl_GetIndex();
-s32 Pocket_FindItem(u16 *p);
-void Pocket_RemoveItem(s32 slot);
 u32 TalkWindowState_getChoiceList(TalkWindowState *self);
 u32 ChoiceList_getResult(u32 a);
 
-void KkShowFx_Stop();
-void KkShowFx_Update();
-void RoomCamera_KkShowResetShot();
-void KkShowFx_CallUnk1de4();
-void RoomCamera_KkShowPickShot();
-void KkShowFx_SetParam(s32 a);
-void KkShowFx_CallUnk1f70();
-BOOL KkShowFx_GetState();
-void RoomCamera_KkShowWideShot();
-void KkShowFx_Start();
 }
 
 }
 namespace sB {
 extern "C" {
-void *PlayerData_GetCurrent();
 void TalkRequest_SetTargetDone(void *p);
 void NpcActor_setTalkRequest(void *p, void *q);
 void NpcActor_setNpcHandle(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
-void ProcBase_RequestDelete(void *p);
-void Bgm_ReleasePriority(u32 a);
-void Bgm_EnableHourChime();
-void Bgm_DisableHourChime();
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Camera_SetModeDefault();
-s32 PlayerActor_IsInAction(s32 a, s32 b);
-void PlayerActor_LocalRequestStandUp(s32 a);
-void Camera_SetMode18();
-void KkShowFx_Stop();
 void CafeCoffeeSet_StartEffectB(void *p);
-void CafeCoffeeSet_SetFlagEF8();
 void NNS_G3dMdlSetMdlLightEnableFlagAll(s32 a, s32 b);
 void NpcAnimCtrl_playAnim(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
@@ -385,8 +368,6 @@ s32 RoostGuestRoll_getAfternoonGuest(void *p);
 s32 RoostGuestRoll_hasMorningGuest(void *p);
 s32 Actor_spawn(u32 a, u32 b, u32 c, u32 d, u32 e);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 Random_GlobalBelow(s32 a);
-s32 Pocket_FindItem(u16 *p);
 s32 PlayerData_testFlag(void *p, s32 a);
 void PlayerData_setFlag(void *p, s32 a);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
@@ -410,8 +391,6 @@ extern u8 gCommManager[];
 
 namespace sC {
 extern "C" {
-s32 PlayerData_GetCurrent();
-s32 ItemPick_FromRange(u16 *out, u32 lo, u32 n, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 }
 static inline BOOL Unk_ov068_0226c340_R(volatile u16 *p) {
     BOOL r = FALSE;
@@ -421,7 +400,6 @@ static inline BOOL Unk_ov068_0226c340_R(volatile u16 *p) {
     return r;
 }
 }
-extern "C" u16 RoostGuest_PickKKSong(void *self);
 
 extern "C" void *data_ov068_022703d4[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct02Ev, 0};
 extern "C" char sRoostTexMof[27] = "npc_sp/model/mof_tex.nsbtx";

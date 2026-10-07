@@ -9,6 +9,18 @@
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
 #include "snd/SndSeEmitter.h"
+#define PROTO_LOCAL_FtrMgr_GetSurfaceHeightAtPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemDropList_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/ov004/unk_ov004_0222bed0.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
@@ -73,19 +85,15 @@ extern CommManager *gCommManager;
 extern u8 data_021f47e0[];
 extern u8 gCameraLookAt[];
 
-void *PlayerActor_GetActor(u32 a);
 s32 CommManager_isOnline(void *g);
 void ModelSet_Release(void *p);
 s32 ModelSet_Load(void *p, void *a, s32 b);
 void *ModelSet_Find(void *p, u32 a);
-u32 Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(VecFx32Copy *out, s32 a, s32 b);
-s32 FtrMgr_GetSurfaceHeight(s32 a, s32 b);
 void SndSeEmitter_callStop(void *p);
 void SndSeEmitter_callUpdateRelative(void *p, void *v);
 void SndSeEmitter_callInit(void *p);
-s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void VEC_Add(void *a, void *b, void *c);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
@@ -104,27 +112,15 @@ void Scene_InTown(void);
 void BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
 u32 Scene_GetCurrent(void);
-void Snd_PlaySe(s32 a);
 
 // the manager's methods called as plain functions with the object first (the symbols.txt names)
 void Unk_c788_call(s32 mgr, u32 id, VecFx32Copy *a, VecFx32Copy *b, s32 c, s32 d, s32 e);
 void Unk_c7e0_call(s32 mgr, u32 id, VecFx32Copy *a, VecFx32Copy *b, s32 c, s32 d, s32 e);
 
-void ItemDropList_Release(RoomItemDrop *e);
 void ItemDropList_Draw(RoomItemDrop *e);
-void ItemDropList_Update(RoomItemDrop *e);
-void ItemDropList_Init(RoomItemDrop *e);
-void ItemDrop_Clear(RoomItemDrop *e);
-void ItemDrop_Settle(RoomItemDrop *e);
-void ItemDrop_Update(RoomItemDrop *e);
-void ItemDrop_SetTrajectory(RoomItemDrop *e, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, u32 v);
-void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v);
-s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, s32 s16v, u32 u8v);
-s32 ItemDrop_Start(s32 idx, u32 v, VecFx32Copy *a, VecFx32Copy *b, u32 f);
 }
 
 
-extern "C" RoomItemIcons *RoomItemIcons_Create();
 
 extern "C" ProcProfile sRoomItemIconsProfile = { (void *(*)())RoomItemIcons_Create, 0x8b, 0xd2 };
 extern "C" {

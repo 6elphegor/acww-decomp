@@ -5,18 +5,18 @@
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205d480.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 extern "C" {
-void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
-s32 PlayerGlassesModelHeap_Destroy();
-s32 PlayerGlassesModelHeap_Create(void *parent);
 extern void *gPlayerGlassesModelHeap;
 extern u8 *gCommManager;
 }
@@ -57,28 +57,6 @@ extern const u8 sPlayerGlassesFlowerModelIds[0xc];
 extern const u8 sPlayerGlassesAccessoryModelIds[0x40];
 extern char sPlayerGlassesModelPathBuf[0x14];
 
-void PlayerGlassesModelPool_Create(void *parent);
-void PlayerGlassesModelPool_Destroy();
-char *PlayerGlassesModel_GetPath(s32 x);
-s32 PlayerGlassesModel_GetBufferSize();
-u8 PlayerGlassesModel_GetAccessoryModelId(u32 i);
-u8 PlayerGlassesModel_GetFlowerModelId(u32 i);
-s32 PlayerGlassesModel_GetTexVramSize();
-s32 PlayerGlassesModel_GetTex4x4VramSize();
-s32 PlayerGlassesModel_GetPlttVramSize();
-void PlayerGlassesModelRef_Init(u8 *p);
-void PlayerGlassesModelRef_Destruct();
-void PlayerGlassesModelRef_SetSlot(u8 *p, u8 v);
-void PlayerGlassesModelRef_Release(u8 *p);
-void PlayerGlassesModelRef_CancelTexUpload(u8 *p);
-void PlayerGlassesModelRef_Load(u8 *p, s32 idx);
-void PlayerGlassesModelRef_RelocateTexture(u8 *p);
-BOOL PlayerGlassesModelRef_PollTexUpload(u8 *p);
-void *PlayerGlassesModelRef_GetBuffer(u8 *p);
-TexVramSlot *PlayerGlassesModelRef_GetVramSlot(u8 *p);
-TexVramTask *PlayerGlassesModelRef_GetTexTask(u8 *p);
-u8 PlayerGlassesModelRef_GetModelId(u8 *p);
-void PlayerGlassesModelRef_SetModelId(u8 *p, s32 v);
 }
 
 const u8 sPlayerGlassesFlowerModelIds[0xc] = {0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x00};

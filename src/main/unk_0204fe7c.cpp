@@ -1,11 +1,13 @@
 #include "types.h"
 #include "save/Backup.h"
+#include "proto/autoload_2/unk_0211dc4c.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0204f2a4.h"
+#include "proto/main/unk_0204fe7c.h"
 
 
 extern "C" Backup gBackup;
 
-extern "C" s32 OS_GetTick(void);
-extern "C" void CARD_CancelBackupAsync(void);
 extern "C" s32 CARD_TryWaitBackupAsync(void);
 extern "C" s32 CARD_GetResultCode(void);
 extern "C" void CARD_UnlockBackup(u16 v);
@@ -14,9 +16,6 @@ extern "C" s32 OS_GetLockID(void);
 extern "C" void CARD_LockBackup(u16 v);
 extern "C" s32 CARDi_RequestStreamCommand(u32 a, u32 b, u32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
 
-extern "C" void FishDisplay_RecvAct02(u8 *p, u32 v);
-extern "C" void FishDisplay_RecvAct01(u8 *p, u32 v);
-extern "C" void FishDisplay_RecvAct00(u8 *p, u32 v);
 
 extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c);
 extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c);

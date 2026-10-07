@@ -3,15 +3,15 @@
 #include "save/TownExchangeRecord.h"
 #include "game/ConstellationRecord.h"
 #include "item/Letter.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_020b0774.h"
 
 extern "C" {
 s32 func_02065578();
-void Letter_Clear(void *p);
-void LostChildRecord_Destruct(void *p);
-void LostChildRecord_Construct(void *p);
 void VillagerTransfer_DestructVillager(void *p);
 void VillagerTransfer_ConstructVillager(void *p);
-void ConstellationRecord_Clear(void *p);
 void MI_CpuFill8(void *p, s32 v, u32 n);
 }
 
@@ -31,8 +31,6 @@ public:
 
 TownExchangeRemoteRecords sTownExchangeRemoteRecords;
 
-extern "C" void *TownExchange_GetForAid(s32 i);
-extern "C" void *TownExchange_GetRemote(s32 i);
 
 TownExchangeRecord::TownExchangeRecord() {
     new (this) Letter();

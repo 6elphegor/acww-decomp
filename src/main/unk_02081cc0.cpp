@@ -2,6 +2,8 @@
 #include "npc/NpcResPool.h"
 #include "npc/NpcResHandleView.h"
 #include "npc/VillagerAnimHeapRefPool.h"
+#include "proto/main/unk_02081cc0.h"
+#include "proto/main/unk_020821c4.h"
 
 extern "C" {
 s32 NpcBodyAnimPool_Get();
@@ -11,7 +13,6 @@ s32 NpcFaceAnimPool_Get();
 s32 NpcTexPatHeapPool_Get();
 s32 NpcHeldItemModelPool_Get();
 s32 SpNpcAnimHeapRefPool_Get();
-s32 VillagerAnimHeapRefPool_Get();
 s32 _ZN20NpcHeldItemModelPool8getModelEj(void *, s32);
 s32 _ZN20NpcHeldItemModelPool8loadItemEjPt(void *, s32, s32);
 s32 _ZN17NpcTexPatHeapPool10getHeapRefEj(void *, s32);
@@ -20,7 +21,6 @@ s32 _ZN19NpcTexPatBufRefPool9getBufRefEj(void *, s32);
 s32 _ZN15NpcClothTexPool11getClothTexEj(void *, s32);
 s32 _ZN20SpNpcAnimHeapRefPool10getHeapRefEj(void *, s32);
 s32 _ZN15NpcBodyAnimPool8getLayerEjj(void *, s32, u32);
-void NpcResPools_ClearAll();
 }
 
 

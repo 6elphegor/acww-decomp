@@ -6,6 +6,32 @@
 #include "actor/Actor.h"
 #include "save/TownExchangeRecord.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_ConstellationRecord_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ConstellationStore_ClearUsed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ConstellationStore_IsUsed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ConstellationStore_SetUsed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_AddReceived  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_CopyName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_CountFreeSlots  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_Erase  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_FindFreeSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_GetName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_GetNewStatus  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_GetRecord  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_GetRecordAlt  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_ImportExchanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_PrepareExchange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Constellation_Store  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StarSky_IsConstellationFree  // declared below: the shared prototype conflicts with the calls here
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b0774.h"
 
 // TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
 
@@ -37,29 +63,18 @@ extern uptr sStarTwinklePalettePaths[];  // (path pointers)
 extern u8 data_021e7f8c[];
 
 // external
-u64 OS_GetTick(void);
-BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len);
-void Mem_Clear(void *dst, u32 size);
-s32 Mem_Copy(const void *src, void *dst, u32 size);
 Entry *_ZN18TownExchangeRecord16getConstellationEv(void *p);
 void ConstellationRecord_Clear(void *e);
 BOOL ConstellationStore_IsUsed(Base *b, s32 i);
 void ConstellationStore_ClearUsed(Base *b, s32 i);
 void ConstellationStore_SetUsed(Base *b, s32 i);
-void ConstellationRecord_Copy(void *dst, void *src);
 s32 Sky_GetStarViewingTime(void *a, s32 x, s32 y);
 s32 Sky_GetStarScrollX(void);
 s32 Sky_GetStarScrollY(void);
 void EncodedString_SetRaw(void *buf, const void *src, s32 len);
 void _ZN28ConstellationEncodedString16C2Ev(void *buf);
 void Clock_GetDateTime(void *p);
-s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
-void File_LoadToBuffer(u32 a, void *b, u32 c);
 void *func_020b87d0(void *p);
-u32 Random_GlobalBelow(u32 n);
-void OverlayMgr_Release(u32 a);
-void OverlayMgr_Acquire(u32 a);
-void *PlayerData_GetCurrent(void);
 u8 *_ZN10PlayerData11getPlayerIdEv(void *p);
 // ov127 (StarSky), loaded by Constellation_AcquireSkyOverlay; 0x02291f60 is shared by every
 // overlay of the slot (relocs.txt: module:overlays(113,123,127,...)).
@@ -69,25 +84,11 @@ u64 func_02132ef8(u64 a, u64 b);
 
 // this file
 void Constellation_Store(Entry *e, s32 idx, s32 flag);
-BOOL Constellation_IsLineTile(s32 n);
-s32 Constellation_CellToScreenIndex(s32 x, s32 y);
-void Constellation_SetLinePalette(u16 *p, u32 slot, s32 r);
-void Constellation_SetLinesPalette(u16 *p, Entry *e, s32 r);
-void Constellation_HighlightAll(u16 *p);
-BOOL Constellation_IsNameTaken(const u8 *name, s32 skip);
 BOOL Constellation_AddReceived(Entry *e);
-void Constellation_ReleaseSkyOverlay(void);
-void Constellation_AcquireSkyOverlay(void);
 Base *Constellation_GetData(void);
 Entry *Constellation_GetRecordAlt(s32 i);
 Entry *Constellation_GetRecord(s32 i);
 s32 Constellation_FindFreeSlot(void);
-void Constellation_CalcCentre(u16 *p, s32 *a, s32 *b);
-BOOL Constellation_IsInView(s32 x, s32 y, s32 px, s32 py);
-BOOL Constellation_TestColumn(s32 n);
-void Constellation_MarkColumn(s32 n);
-void Constellation_ClearColumns(void);
-u8 *Constellation_GetLineCells(s32 n);
 
 inline void setv(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;

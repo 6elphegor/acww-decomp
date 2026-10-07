@@ -6,6 +6,22 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/DateTimePicker.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DateTimePicker_RedrawList  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DateTimePicker_SetDropButtonPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DateTimePicker_SetFieldPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov134/unk_ov134_02291f60.h"
 
 
 
@@ -16,49 +32,9 @@
 typedef DateTimePicker S;
 
 extern "C" {
-void DateTimePicker_AnimCloseWindow(DateTimePicker *self);
-void DateTimePicker_AnimOpenWindow(DateTimePicker *self);
 void DateTimePicker_RedrawList(DateTimePicker *self);
-void DateTimePicker_ApplyListScroll(DateTimePicker *self);
-void DateTimePicker_SetListScroll(DateTimePicker *self, s32 a);
-s32 DateTimePicker_HitTestList(DateTimePicker *self, s32 x, s32 y);
-s32 DateTimePicker_UpdateListClose(DateTimePicker *self);
-void DateTimePicker_CancelList(DateTimePicker *self);
-void DateTimePicker_DecideList(DateTimePicker *self);
-s32 DateTimePicker_HitTestRow(DateTimePicker *self, s32 x, s32 y);
-s32 DateTimePicker_UpdateListOpen(DateTimePicker *self);
-void DateTimePicker_OpenList(DateTimePicker *self, s32 idx);
-void DateTimePicker_AdvanceCursorField(DateTimePicker *self);
-void DateTimePicker_SetCursorField(DateTimePicker *self, u8 v);
-u8 DateTimePicker_GetCursorField(DateTimePicker *self);
-void DateTimePicker_TickFieldFlash(DateTimePicker *self);
-void DateTimePicker_ResetFieldPalettes(DateTimePicker *self);
 void DateTimePicker_SetDropButtonPalette(DateTimePicker *self, s32 a, s32 b);
 void DateTimePicker_SetFieldPalette(DateTimePicker *self, s32 idx, s32 x);
-s32 DateTimePicker_GetFieldBottom(DateTimePicker *self, s32 i);
-s32 DateTimePicker_GetFieldRight(DateTimePicker *self, s32 i);
-s32 DateTimePicker_GetFieldWidth(DateTimePicker *self, s32 i);
-s32 DateTimePicker_GetFieldTop(DateTimePicker *self, s32 i);
-s32 DateTimePicker_GetFieldLeft(DateTimePicker *self, s32 i);
-s32 DateTimePicker_HitTestTimeField(DateTimePicker *self, s32 x, s32 y);
-s32 DateTimePicker_HitTestMonthDayField(DateTimePicker *self, s32 x, s32 y);
-s32 DateTimePicker_HitTestDateField(DateTimePicker *self, s32 x, s32 y);
-s32 DateTimePicker_HitTestField(DateTimePicker *self, s32 x, s32 y);
-BOOL DateTimePicker_StepHandAnim(DateTimePicker *self);
-BOOL DateTimePicker_Approach(void *self, s32 *p, s32 target, s32 maxstep, s32 minstep);
-void DateTimePicker_AddMinutes(DateTimePicker *self, s32 delta);
-BOOL DateTimePicker_IsInClockFace(void *self, s32 x, s32 y, s32 r);
-s32 DateTimePicker_AngleDiff(void *self, s32 a, s32 b);
-s32 DateTimePicker_AngleDeltaAt(DateTimePicker *self, s32 x, s32 y, s32 t);
-s32 DateTimePicker_AngleAt(void *self, s32 x, s32 y);
-void DateTimePicker_SetHandsFromMinutes(DateTimePicker *self);
-void DateTimePicker_SyncHands(DateTimePicker *self);
-void DateTimePicker_SetHands(DateTimePicker *self, u8 a, u8 b);
-void DateTimePicker_DragHourHand(DateTimePicker *self, s32 x, s32 y);
-void DateTimePicker_DragMinuteHand(DateTimePicker *self, s32 x, s32 y);
-BOOL DateTimePicker_UpdateHandAnim(DateTimePicker *self);
-BOOL DateTimePicker_EndHandDrag(DateTimePicker *self);
-void DateTimePicker_UpdateHandDrag(DateTimePicker *self, s32 x, s32 y);
 s32 DateTimePicker_GrabHand(S *s, u32 a, u32 b);
 void DateTimePicker_Draw(S *s, u8 *a, u8 *b);
 void DateTimePicker_AddListNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g);
@@ -100,22 +76,10 @@ void DateTimePicker_Init(S *s, u32 a, u32 b, u32 c, u8 d);
 
 extern u16 gPad;
 extern s32 gCurrentHeap;
-void Gfx2d_SetWindowRect(u32 a, u32 b, u32 c, u32 d, u32 e);
-void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
 void BgScreen_SetRectPalette(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
-void Snd_PlaySe(s32 a);
-void Gfx2d_EnableSubWindows(u32 a);
-void Gfx2d_DisableSubWindows(u32 a);
-void Gfx2d_HideLayer(u32 a);
-void Gfx2d_ShowLayer(u32 a);
-void Snd_PlaySeOnHandle(s32 a);
-void Snd_StopSe(s32 a, s32 b);
-void Gfx2d_SetSubWin0Planes(u32 a, u32 b);
-u32 Gfx2d_GetLayerPlaneMask(u32 a);
-void Gfx2d_SetSubWinOutPlanes(u32 a);
 s32 Date_GetDaysInMonth(u32 a, u32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void Math_StepS32(void *p, s32 a, s32 b);
@@ -129,26 +93,10 @@ s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffMinutes(void *a, void *b);
 void Clock_GetDateTime(void *p);
 s32 Math_Atan2(s32 a, s32 b);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 void Menu_PlayScrollGrabSe(void *p);
 void Menu_PlayScrollTickSe(void *p);
-void Oam_DrawObj(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g);
 void Oam_DrawObjRotated(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g, u32 h, s32 i);
 void Oam_DrawCell(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
-void String_LoadByIndex(void *a, const void *c, u32 v);
-void String_Load2dMenu(void *a, u32 v);
-void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadCharFile(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadScreenFile(const void *name, s32 h, s32 a);
-void Gfx2d_LoadPaletteFileSlot(const void *name, s32 h, s32 a, s32 b, s32 c);
-void Gfx2d_LoadPaletteFile(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
-void File_LoadToBuffer(const void *src, void *dst, s32 n);
-void *File_LoadAlloc(const void *a, s32 h, s32 b, u32 *out);
-void Heap_Free(s32 h, void *p);
 extern "C" const u8 sFieldNameTextIds[6];
 extern "C" const u8 sFieldValueCounts[6];
 extern "C" const u8 sWeekdayTextIds[7];

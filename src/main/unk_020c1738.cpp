@@ -25,22 +25,24 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "game/Unk_0201acf8.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020c1738.h"
 
 extern "C" {
 s32 Scene_GetCurrent(void);
 void Npc_RotateOffsetXZ(void *out, void *pos, void *a, s32 b);
-s32 Npc_IsPosBlocked(void *v);
 s32 Math_AngleXZ(void *pos, void *v);
-s32 NpcActor_IsFrontAngle(s16 a);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Math_CountDownU8(void *p);
 u32 Random_Next(void *p);
-u32 Random_GlobalBelow(u32 n);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
-void *PlayerData_GetCurrent(void);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
@@ -148,9 +150,6 @@ extern char sSpNpcKaitlinKey[16];
 extern char sSpNpcKaitlinModelPath[23];
 extern char sSpNpcKaitlinTexPath[27];
 extern const char *sSpNpcKaitlinMsgKey;
-extern "C" SpNpcKaitlin *SpNpcKaitlin_Create();
-void SpNpcKaitlin_ChangeAct06();
-void SpNpcKaitlin_ChangeAct04();
 
 extern "C" SpNpcKaitlin *SpNpcKaitlin_Create() {
     return new SpNpcKaitlin();

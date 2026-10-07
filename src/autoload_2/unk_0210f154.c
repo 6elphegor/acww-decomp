@@ -4,6 +4,8 @@
 // 6 clearImage, 7 bgExtPltt, 8 objExtPltt, 9 subBg, 10 subObj, 11 subBgExtPltt, 12 subObjExtPltt); the game and
 // the delinked callers also refer to its members by their own symbols (data_021fcbda ... data_021fcbf0).
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/main/unk_0206d49c.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -28,7 +30,6 @@ extern u16 data_021fcbee;
 extern u16 data_021fcbf0;
 
 extern u32 OS_GetLockID(void);
-extern void Fatal_Trap(void);
 extern void MI_DmaFill32(u32 dmaNo, void *dest, u32 data, u32 size);
 extern void MIi_CpuClear32(u32 data, void *dest, u32 size);
 extern void OSi_UnlockVram(u16 a, u16 b);
@@ -63,12 +64,8 @@ u32 GX_DisableBankForSubOBJExtPltt(void);
 u32 GX_GetBankForTex(void);
 u32 getBankSize_(u32 mask);
 u32 GX_GetSizeOfTexPltt(void);
-void GX_InitGXState(void);
-void GX_Init(void);
 BOOL GX_HBlankIntr(BOOL enable);
 BOOL GX_VBlankIntr(BOOL enable);
-void GX_DispOff(void);
-void GX_DispOn(void);
 
 // GX_SetBankForSubOBJ
 void GX_SetBankForSubOBJ(u32 bank) {

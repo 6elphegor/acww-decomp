@@ -7,13 +7,21 @@
 #include "game/CollisionCylinder.h"
 #include "game/CollisionEdge.h"
 #include "game/CollisionSegment.h"
+#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_CrossCopy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_SafeNormalize  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/main/unk_0202e9d4.h"
 
 
 extern "C" {
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(...);
-s32 Ground_GetUnitAttr(s32 x, s32 y);
 s32 VEC_DotProduct(void *a, void *b);
 void VEC_Add(void *o, void *a, void *b);
 void Vec_Add(void *o, void *a, void *b);
@@ -22,8 +30,6 @@ void Vec_Sub(void *o, void *a, void *b);
 void Vec_CrossCopy(void *o, void *a, void *b, void *c);
 s32 Vec_SafeNormalize(void *v);
 void Vec_Scale(void *v, s32 s);
-s32 Vec_Distance(void *a, void *b);
-s32 Vec_DistXZ(void *a, void *b);
 }
 
 static inline s32 Unk_0202f2ac_Abs(s32 v) { return v < 0 ? -v : v; }

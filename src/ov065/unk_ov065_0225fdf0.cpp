@@ -9,6 +9,12 @@
 #include "net/SockAddrIn.h"
 #include "net/SockStartupConfig.h"
 #include "net/SockCoreConfig.h"
+#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/ov065/unk_ov065_0225f1a0.h"
+#include "proto/ov065/unk_ov065_0225fdf0.h"
 
 namespace Unk_ov065_02260de4_Ns {
 
@@ -28,7 +34,6 @@ s32 OS_RestoreInterrupts(s32);
 s32 OS_Sleep(s32);
 s32 MI_CpuCopy8(s32, void *, s32);
 s32 OS_SNPrintf(char *, u32, const char *, ...);
-s32 STD_CopyLString(char *, s32, s32);
 s64 func_02133100(s64, s64);
 
 // same overlay, out of range
@@ -38,7 +43,6 @@ u32 SockCore_GetHostIp();
 s32 SockCore_SetDnsServers(u32, u32);
 u32 SockCore_ParseDottedAddr(u32);
 u32 SockCore_ResolveHost(s32);
-s32 SockCore_Startup(void *);
 s32 SockCore_Accept(s32, u16 *, u32 *);
 s32 SockCore_Listen(s32);
 s32 SockCore_Connect(s32, u32, u32);
@@ -505,18 +509,14 @@ void OS_RestoreInterrupts(u32);
 s32 OS_GetProcMode();
 void MI_CpuCopy8(void *, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
-void OS_SleepThread(void *);
 void OS_JoinThread(void *);
 void OS_DisableScheduler();
 void OS_EnableScheduler();
-void OSi_RescheduleThread();
 s32 OS_ReceiveMessage(void *, void *, s32);
 void OS_SendMessage(void *, s32, s32);
 void OS_WakeupThread(void *);
 void OS_Sleep(s32);
 s32 OS_TryLockMutex(void *);
-void OS_LockMutex(void *);
-void OS_UnlockMutex(void *);
 
 void SockCore_CmdSend();
 Node *SockCore_AllocMsg(void *, SockCoreSocket *, s32);
@@ -1107,11 +1107,8 @@ u32 OS_DisableInterrupts(...);
 void OS_RestoreInterrupts(u32 v);
 s32 OS_GetProcMode();
 void OS_Sleep(s32 v);
-void OS_SleepThread(void *q);
 void OS_WakeupThread(void *q);
 s32 OS_TryLockMutex(void *m);
-void OS_UnlockMutex(void *m);
-void OS_LockMutex(void *m);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 s32 SockCore_ExecOnRecvSide(Sess *s, void *m);

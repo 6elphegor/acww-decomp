@@ -32,6 +32,21 @@
 #include "net/CommManager.h"
 #include "npc/NpcLookAt.h"
 #include "talk/MsgString.h"
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a8c9c.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov046/unk_ov046_02258de0.h"
 
 
 class ActorTalkRequest;
@@ -52,33 +67,13 @@ extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern VecFx32 gVec3Zero;
 
-s32 Random_GlobalBelow(u32 v);
-s32 Constellation_CountFreeSlots(void);
-s32 Constellation_FindFreeSlot(void);
-s32 Constellation_GetNewStatus(s32 *out);
-void Constellation_ClearNewFlags(void);
-void Constellation_Erase(s32 idx);
-void Constellation_GetViewingTime(void *a, s32 idx);
-s32 Constellation_GetName(void *self, s32 idx);
-void String_Load2d(void *o, u8 *p, u32 x);
-BOOL GameStart_IsActive(void);
-void *PlayerData_GetCurrent(void);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-BOOL MenuCtrl_IsFinished(void);
-BOOL MenuCtrl_IsResultOk(void);
-const void *Choice_GetBmgName(u32 i);
-Actor *PlayerActor_GetActor(s32 n);
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void *Scene_GetTouchPicker();
 s32 TouchPickResult_GetTarget(void *a, void *b, void *c, s32 d);
-void Camera_LockFocusYaw();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_SetTargetDone(void *self);
 s32 Clock_GetTimeOfDay();
 s32 Math_CountDownU16(void *p);
-void Effect_End(s32 h);
-s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 h, void *b, void *c, void *d);
 
 }
@@ -201,7 +196,6 @@ struct SpNpcCelesteActEntry {
 };
 
 
-extern "C" void *SpNpcCeleste_Create();
 extern "C" DebugColor data_ov046_0225ae04;
 extern "C" DebugColor data_ov046_0225ae08;
 extern "C" DebugColor data_ov046_0225ae20;

@@ -9,6 +9,15 @@
 #include "nitro/io_access.h"
 #include "snd/BgmSceneFade.h"
 #include "talk/MsgRequest.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
 
 
 class EventAnnouncer : public GameProc {
@@ -49,47 +58,27 @@ static inline BOOL Unk_02040ad8_IsTwo(u8 v)
 }
 
 extern "C" {
-s32 Random_GlobalBelow(s32);
 void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 EventSchedule_CollectAtNoon(void *, s32, void *);
 void Clock_GetDate(void *);
 s32 Date_DaysBetween(void *, void *);
-void EventAnnounce_Restart(void);
-void EventWeekSlots_InitNew(u8 *);
-void EventAnnounce_SetState(s32);
 void EventWeekSlots_UpdateWeek(void *, s32);
 void Event_RefreshToday(s32);
 void EventWeekSlots_ClearWeek(void *);
 s32 Scene_GetCurrent(void);
-void *TownSessionState_Get(void);
-void *TownSessionState_GetResettiFlag(void *p);
 s32 _ZN16ResettiVisitFlag5isSetEv(void *self);
 void Clock_GetDateTime(void *);
-void *TalkWindow_Get(s32);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32, s32);
 s32 TalkRequestFlags_IsEventWarpStarted(void);
-BOOL EventAnnounce_RequestWarp(void);
-void EventAnnounce_RunIdle(s32);
-void EventAnnounce_RunWaitChimeStart(s32);
-void EventAnnounce_RunWaitChimeEnd(s32);
-void EventAnnounce_RunWarp(s32);
-void EventAnnounce_RunShowMessage(EventAnnouncer *);
-void EventAnnounce_RunWaitMessageEnd(s32);
-void EventAnnounce_Update(void);
-void EventAnnounce_Reset(void);
-BOOL EventAnnounce_CanCheck(void);
-void EventAnnounce_CheckEvents(void);
 s32 TalkRequest_AddEventWarp(void);
 s32 TalkRequestFlags_IsEventWarpReady(void);
-s32 Melody_IsBusy(void);
 s32 TownBlockMap_Get(void);
 s32 Town_FindGulliverShip(s32, void *);
 s32 Town_FindTownHall(s32, void *, s32, s32);
 void Scene_SavePlayerPos(s32, s32);
 void SceneWarp_RequestAt(s32, s32, void *, s32, ...);
-s32 NetArea_IsUnsharedScene(s32);
 s32 Event_GetStateAt(s32, void *, s32);
 s32 Event_GetState(s32, void *, s32);
 s32 TalkRequestFlags_IsSceneHold(void);
@@ -98,22 +87,11 @@ s32 TalkRequestFlags_SetSceneHold(void);
 s32 Scene_InTownUnk31(void);
 void Town_RefreshEventsOffline(void);
 void Town_UpdateDay(s32);
-s32 HouseVisitor_ClearPresent(void);
 void MIi_CpuClear16(u32 v, u32 dst, u32 size);
-u32 G2_GetBG2ScrPtr();
-u32 G2_GetBG2CharPtr();
-u32 G2S_GetBG2ScrPtr();
-u32 G2S_GetBG2CharPtr();
-void Gfx2d_ShowMainPlanes(u32);
-void Gfx2d_ShowSubPlanes(u32);
-void ScreenTransition_ShowCover();
-BOOL EventAnnounce_IsBlockedScene(void);
-void EventAnnounce_Request(s32 a, s32 b, s32 c);
 }
 
 extern CommManager *gCommManager;
 extern u8 gScreenTransition;
-extern "C" EventAnnouncer *EventAnnouncer_Create();
 extern ProcBase *gActorDefaultParent;
 extern u8 data_021ed170[];
 extern u8 gSaveData[];

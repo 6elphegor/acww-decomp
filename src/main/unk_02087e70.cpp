@@ -4,6 +4,17 @@
 #include "game/TouchPickSphere.h"
 #include "game/BugNetTarget.h"
 #include "nitro/gxoam.h"
+#define PROTO_LOCAL_BugNet_HitTest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_AllocAffine  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02087e70.h"
 
 
 
@@ -14,14 +25,10 @@ extern s32 sOamObjWidths[];
 extern s16 data_02135f44[];
 extern BugNetTarget *data_021ce63c;
 
-BOOL Oam_UseBufferA(u32 mode);
 s32 Oam_AllocAffine(void *base, s32 *cnt, s32 *m);
 s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Oam_GetObjHeight(u32 *p);
-s32 Oam_GetObjWidth(u32 *p);
 s32 WorldCurve_Apply(VecFx32 *out, void *in);
-void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s64 Vec_DistSq(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);
 void MIi_CpuCopyFast(void *a, void *b, u32 c);

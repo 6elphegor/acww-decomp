@@ -17,6 +17,12 @@
 #include "talk/TalkMsgRequest.h"
 #include "room/MuseumExhibitInfo.h"
 #include "game/TouchPickSphere.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/ov004/unk_ov004_02213b90.h"
 
 
 
@@ -82,15 +88,9 @@ void ChoiceList_setEntry(void *self, s32 a, const u8 *b, s32 c, const char *d, s
 void ChoiceList_reset(void *self, s32 a, s32 b);
 s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void ProcBase_RequestDelete(void *self);
-void *Mem_Alloc(u32 size);
-void Mem_Free(void *p);
-s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
-Actor *PlayerActor_GetCharacter(u32);
-void Vec_Add(void *, void *, void *);
 }
 
 
@@ -109,8 +109,6 @@ extern u8 *sMuseumExhibitSpawnList;
 extern u32 sMuseumExhibitSpawnCount;
 extern u32 sMuseumExhibitSpawnFacingArc;
 extern MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
-MuseumExhibitInfo *MuseumExhibitInfo_Create(void);
-void MuseumExhibitInfo_ClearRegistry(void);
 }
 
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).

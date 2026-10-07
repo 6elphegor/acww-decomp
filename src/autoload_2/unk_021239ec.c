@@ -1,4 +1,7 @@
 #include "nitro/fs.h"
+#include "proto/autoload_2/unk_02119020.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02125c94.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MB (mb_fileinfo.c), autoload_2 0x021239ec-0x02123e58: MB_ReadSegment. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -7,11 +10,9 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 
-extern void FS_InitFile(FSFile *file);
 extern s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 extern BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
 extern void FS_CloseFile(FSFile *file);
-extern void *FS_FindArchive(const char *name, int len);
 extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int id);
 extern void DC_FlushRange(void *addr, u32 len);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
@@ -76,7 +77,6 @@ typedef struct MBSegmentHeaderInfo {
     u32 len;
 } MBSegmentHeaderInfo;
 
-extern void MBi_InitCache(MBiCacheList *list);
 extern void MBi_AttachCacheBuffer(MBiCacheList *list, u32 src, u32 len, void *ptr, u32 state);
 extern void MBi_ReadSegmentHeader(MBSegmentHeaderInfo *info, u32 start, u32 end, BOOL clear);
 

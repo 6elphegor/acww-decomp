@@ -11,6 +11,13 @@
 #include "net/gpi.h"
 #include "net/gpiPeer.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227f2a4.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU45: GP gpiInfo.c (0x0227f2a4..0x02280740)
 
@@ -37,10 +44,7 @@ s32 gpiReset(GPConnection *);
 void gpiSetErrorString(GPConnection *, const char *);
 void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
-void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
-void *GsUtil_Alloc(s32);
-void GsUtil_Free(void *);
 char *goastrdup(const char *);
 s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
 void gpiFailedOpCallback(GPConnection *, GPIOperation *);
@@ -64,11 +68,6 @@ s32 gpiSendLocalInfo(GPConnection *, const char *, const char *);
 s32 gpiSendUserInfo(GPConnection *, const char *, const char *);
 s32 gpiSetInfoi(GPConnection *, s32, s32);
 
-void *memset(void *, s32, u32);
-u32 rand(void);
-s32 atol(const char *);
-s32 STD_GetStringLength(const char *);
-char *STD_CopyString(char *, const char *);
 
 s32 gpiSendGetInfo(GPConnection *, s32, s32);
 s32 gpiStartConnect(GPConnection *, GPIOperation *);
@@ -113,10 +112,7 @@ namespace Nb {
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-s32 atol(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 char *goastrdup(const char *);
 s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
@@ -169,21 +165,15 @@ namespace Nc {
 
 
 extern "C" {
-void strzcpy(void *, const void *, s32);
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
 s32 gpiProcessConnect(void *, void *, char *);
 s32 gpiProcessNewProfile(void *, void *, char *);
 s32 gpiProcessGetInfo(void *, void *, char *);
 s32 gpiProcessRegisterUniqueNick(void *, void *, char *);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(u32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
-s32 memset(void *, s32, u32);
-s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiSendOrBufferString(void *, void *, const char *);
 s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);

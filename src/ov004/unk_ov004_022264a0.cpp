@@ -18,6 +18,16 @@
 #include "room/RoomObjActor.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
+#define PROTO_LOCAL_CafeCoffeeSet_UpdateMatrices  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/ov004/unk_ov004_0221c01c.h"
+#include "proto/ov004/unk_ov004_022264a0.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -198,21 +208,9 @@ extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
-s32 Camera_RestorePrevMode(void);
-s32 Camera_MuteSe(void);
-s32 Camera_SetMode4(void);
-s32 Effect_End(void *);
-s32 Effect_CreateById(u32 a, void *b, void *c, u32 d);
-u32 SpNpcBrewster_GetAnimFrame(void);
-u32 SpNpcBrewster_GetAnimState(void);
-void *SpNpcBrewster_GetJointMtxB(void);
-void *SpNpcBrewster_GetJointMtxE(void);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-void *Bgm_GetCurrent(void);
 s32 Math_IsInRange(void *p, u32 a, u32 b);
-BgmBeatPhase *Snd_GetBeatState(void);
 s32 Effect_SetPosition(s32 a, void *b, u32 c, u32 d);
-void *Heap_Alloc(void *heap, u32 size);
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 void RoomObjTex_Construct(void *);
@@ -221,27 +219,12 @@ void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
 void *_ZN10RoomObjResC1Ev(void *, s32);
 void *_ZN10RoomObjResD1Ev(void *, s32);
-extern "C" CafeCoffeeSet *CafeCoffeeSet_Create();
 void CafeCoffeeSet_UpdateMatrices(void *ov);
-BOOL CafeCoffeeSet_ChangeState(void *ov, s32 n);
-void CafeCoffeeSet_UpdateState(ObjB *o);
-BOOL CafeCoffeeSet_EnterState00(ObjB *o);
-void CafeCoffeeSet_UpdateState00(ObjB *o);
-BOOL CafeCoffeeSet_EnterState01(ObjB *o);
-void CafeCoffeeSet_UpdateState01(ObjB *o);
-BOOL CafeCoffeeSet_EnterState02(ObjB *o);
-void CafeCoffeeSet_UpdateState02(ObjB *o);
-BOOL CafeCoffeeSet_EnterState03(ObjB *o);
 void CafeCoffeeSet_UpdateState03(ObjA *o);
-BOOL CafeCoffeeSet_EnterState04(ObjA *o);
 void CafeCoffeeSet_UpdateState04(ObjA *o);
-BOOL CafeCoffeeSet_EnterState05(void);
 void CafeCoffeeSet_UpdateState05(ObjA *o);
-BOOL CafeCoffeeSet_EnterState06(void);
 void CafeCoffeeSet_UpdateState06(ObjA *o);
-BOOL CafeCoffeeSet_EnterState08(ObjA *o);
 void CafeCoffeeSet_UpdateState08(ObjA *o);
-BOOL CafeCoffeeSet_EnterState09(void);
 #define M0 (&o->partModels[0])
 #define M1 (&o->partModels[1])
 #define M2 (&o->partModels[2])
@@ -251,26 +234,6 @@ BOOL CafeCoffeeSet_EnterState09(void);
 #define UP(id, m, r, a5, a7) CafeCoffeeSet_SwitchAnim(o, id, m, r, a5, 0x1000, a7, 0)
 
 void CafeCoffeeSet_UpdateState09(ObjA *o);
-void CafeCoffeeSet_SyncToBrewster(void);
-void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x);
-void CafeCoffeeSet_ReleasePart(void *ov, u32 idx);
-void CafeCoffeeSet_InitPartAnim(void *ov, u32 idx);
-s32 CafeCoffeeSet_SetState00(void);
-s32 CafeCoffeeSet_SetState01(void);
-s32 CafeCoffeeSet_SetState02(void);
-s32 CafeCoffeeSet_SetState03(void);
-s32 CafeCoffeeSet_SetState04(void);
-s32 CafeCoffeeSet_SetState05(void);
-s32 CafeCoffeeSet_SetState06(void);
-s32 CafeCoffeeSet_SetState07(void);
-s32 CafeCoffeeSet_SetState08(void);
-s32 CafeCoffeeSet_SetState09(void);
-s32 CafeCoffeeSet_GetState(void);
-BOOL CafeCoffeeSet_IsAnim0BAtFrame9(void);
-BOOL CafeCoffeeSet_IsAnim0CDone(void);
-void CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8);
-void CafeCoffeeSet_StartEffectB(void);
-void CafeCoffeeSet_SetFlagEF8(void);
 }
 
 #define CDA (*(ObjA * volatile *)&sCafeCoffeeSet)

@@ -33,6 +33,14 @@
 #include "npc/NpcLookAt.h"
 #include "player/PlayerData.h"
 #include "player/PlayerSpNpcRecord.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov004/unk_ov004_0221b498.h"
+#include "proto/ov004/unk_ov004_02228700.h"
 
 
 class ActorTalkRequest;
@@ -127,24 +135,11 @@ void *PlayerData_getSpNpcRecord(void *p);
 void ActorTalkRequest_setPartnerActor(void *self, void *p);
 void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
 u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
-void *PlayerData_GetCurrent();
-s32 Random_GlobalBelow(s32);
-BOOL NetArea_IsLocalOwner();
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
 void Talk_AdvanceDrama(void *self, void *p);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
-s32 GameStart_IsActive();
 s32 Clock_GetWeekday();
-void *NpcRegistry_FindSpNpc(s32 n);
 void TalkRequest_SetTargetDone(void *self);
-void SewingMachine_Stop();
-s32 SewingMachine_IsStopped();
-void SewingMachine_Start();
-void SewingMachine_SetFrame(u32 v);
-s32 SewingMachine_GetFrame();
-u32 SpNpcSable_GetTalkCount(void *self);
-void SpNpcSable_SetTalkCount(void *self, u32 v);
 }
 
 class SpNpcSable;

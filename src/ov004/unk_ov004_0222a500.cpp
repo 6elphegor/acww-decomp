@@ -26,6 +26,19 @@
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
 #include "snd/SndEnvChannel.h"
+#define PROTO_LOCAL_FtrMgr_GetCycleCounter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Wallpaper_GetTex  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034048.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/main/unk_020abea8.h"
+#include "proto/main/unk_020b8d98.h"
+#include "proto/ov004/unk_ov004_022136d0.h"
+#include "proto/ov004/unk_ov004_0222a500.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -70,8 +83,6 @@
 
 
 extern "C" {
-void CarpetTex_Init(void *o);
-void WallpaperTexBuf_Init(void *o);
 }
 
 struct CarpetTexBuf {
@@ -237,7 +248,6 @@ s32 Scene_InHouseRoom(void);
 s32 Scene_InUnk6To8(void);
 s32 Scene_InNookShop(void);
 u32 Scene_GetHouseRoom(void);
-void Snd_PlaySe(s32 a);
 void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
 u32 Scene_GetTouchPicker(void);
@@ -247,12 +257,7 @@ BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
-u32 PatternTexCache_Get(void);
 u8 *PatternTexCache_getPlayerTexKey(u32 a, u32 b, u32 c);
-void RoomWallFloor_SetSceneCarpet(u32 a, u16 *p);
-void RoomWallFloor_SetSceneWallpaper(u32 a, u16 *p);
-BOOL CarpetTex_Load(void *o, u16 *p);
-void *CarpetTex_GetTex(void *o);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
 void *Wallpaper_GetTex(void *o);
 void *HouseData_getRoom(void *self, u32 idx);
@@ -284,8 +289,6 @@ u16 *HouseRoom_getCarpet(void *self, s32 *i);
 void *SaveVillagers_Get(void *self, s32 i);
 u32 Villager_GetWallpaper(void *self);
 u32 Villager_GetCarpet(void *self);
-u16 *RoomWallFloor_GetSceneWallpaper(s32 r);
-u16 *RoomWallFloor_GetSceneCarpet(s32 r);
 void *GroundInfo_initAtUnit(void *self, s32 a, s32 b, s32 c, s32 d);
 s32 GroundInfoBase_getHeight(void *self, s32 a);
 void GroundInfo_Destruct(void *self);
@@ -298,14 +301,11 @@ s32 SceneId_GetNookShop(s32 r);
 void Model_clearResource(void *self);
 void SndEnvChannel_callRelease(void *self);
 void AnimModel_drawAnimated(void *self, s32 a);
-void ObjShadow_Update();
-void CharaShadow_UpdateColor();
 void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
 s32 BlendAnimModel_getAnmObj(void *self);
 void AnimModel_stepAnim(void *self);
 void AnimFrameCtrl_step(void *self);
 s32 FtrMgr_GetCycleCounter(s32 a);
-void RoomBoardSign_Spawn(void *v, s32 a, s32 b, u32 c);
 void SndEnvChannel_callRequestSustained(void *self, u32 a);
 void SndEnvChannel_callUpdateRelative(void *self, VecFx32 *v);
 void Model_setInitCallback(void *self, void *fn, void *obj);
@@ -323,23 +323,13 @@ extern u32 gBgHeap;
 extern u32 data_021ce63c;
 
 // own functions (plain symbols), declared before their first use
-void RoomShell_InitRenderObj(void *self);
-void RoomShell_NodeDescCallback(void *self);
-void RoomShell_MatCallback(void *self);
-s16 RoomShell_CalcWdColor(void *self);
-void RoomShell_SpawnBoardSigns(void *self);
-BOOL RoomEntranceColliders_InHouseScene();
-void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b);
-void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, s32 *d);
 }
 
-extern "C" u32 RoomShellMatAnim_GetAnmObj(ModelAnim *o);
 
 // ---------------------------------------------------------------- data
 extern "C" RoomShell *sRoomShell;
 extern "C" char sRoomWallpaperMatNameStr[];
 extern "C" char sRoomCarpetMatNameStr[];
-extern "C" RoomShell *RoomShell_Create();
 
 extern "C" const char *sRoomCarpetMatName;
 extern "C" const char *sRoomWallpaperMatName;

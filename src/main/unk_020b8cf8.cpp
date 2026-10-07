@@ -1,8 +1,9 @@
 #include "types.h"
 #include "item/ItemId.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020b8cf8.h"
 
-extern "C" void Str_SPrintf(void *dst, const void *fmt, ...);
-extern "C" BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 
 
 extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {

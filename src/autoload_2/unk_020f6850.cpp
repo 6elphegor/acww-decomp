@@ -8,6 +8,8 @@
 // function, vtable and report / update are in RC_020f5b9c). The class DECLARATION order (below) sets the vtable order: keep it.
 #include "types.h"
 #include "snd/TvSound.h"
+#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0210c084.h"
 
 
 // 0x14 bytes
@@ -71,7 +73,6 @@ public:
 extern "C" {
 extern u8 gSndMgr[];
 u32 SndMgr_Rand(void *g, u32 n);
-void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void NNS_SndPlayerWriteVariable(void *p, u32 a, u32 b);
 void Snd_StopHandle(void *p, u32 v);
 void Snd_StartSeqArc(u32 code, u32 a, void *p);

@@ -1,0 +1,30 @@
+#ifndef PROTO_PROTO_MAIN_UNK_0209C390_H
+#define PROTO_PROTO_MAIN_UNK_0209C390_H
+
+// Prototypes of the functions defined in src/main/unk_0209c390.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "game/NibblePair.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SoftReset_Update
+void SoftReset_Update();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_RoomObjSync_OnRecv
+BOOL RoomObjSync_OnRecv(NibblePair *p);
+#endif
+}
+#endif
+
+#endif

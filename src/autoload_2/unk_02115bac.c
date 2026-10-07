@@ -1,6 +1,8 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma.c, mi_dma_gxcommand.c): autoload_2 0x02115bac-0x02115e30.
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02115bac.h"
+#include "proto/main/unk_0206d49c.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -9,7 +11,6 @@ typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 typedef void (*MIDmaCallback)(void *arg);
 
-extern void Fatal_Trap(void); // OS_Terminate
 extern u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 extern void OS_RestoreInterrupts(u32 mode); // OS_RestoreInterrupts
 extern void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress
@@ -32,7 +33,6 @@ typedef struct {
 extern MIiGxDmaState data_027e0414;
 
 void MIi_CheckAnotherAutoDMA(u32 dmaNo, u32 mode);
-void MIi_DMAFastCallback(void);
 
 // MIi_GXDmaSend / MI_SendGXCommandAsync
 void MI_SendGXCommandAsyncFast(u32 dmaNo, u32 src, u32 size, MIDmaCallback callback, void *arg) {

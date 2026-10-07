@@ -21,6 +21,17 @@
 #include "actor/CharaClothTexRef.h"
 #include "gfx/AnimModel.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_FishBobber_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205c91c.h"
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02082d74.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -87,8 +98,6 @@ extern void *gHeldItemAnimHeap;
 extern void *gHeldItemModelHeap;
 extern CommManager *gCommManager;
 
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 File_LoadToBuffer(void *path, void *dst, u32 size);
 void *NNS_G3dGetTex(void *p);
 void *func_02106654(void *p);
 void *func_02106670(void *p, s32 a);
@@ -98,75 +107,23 @@ void *func_021065f8(void *p, s32 a);
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
-void *FrameHeap_Create(u32 size, void *heap);
-void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void *Scene_GetCurrent(void);
 u32 Scene_GetMaxPlayers(void *p);
 u32 Scene_GetMaxCharacters(void *p);
-s32 NpcSpawn_GetSpNpcSlotCount(void);
-u32 ItemInfo_GetHoldableIndex(u16 *p);
-u32 ItemInfo_GetHoldableCount(void);
-void HeldItemAnimHeap_Destroy(void);
-s32 HeldItemModelHeap_Destroy(void);
-void HeldItemModelHeap_Create(void *parent);
-void HeldItemAnimHeap_Create(u32 x);
 
 void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs);
-void HeldItemModel_Update(HeldItemModel *o);
 void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
 
 void Model_GetJointWorldMtx(void *slot, Mtx43 *out, u32 a);
 void FishBobber_Draw(void *sub, Mtx43 *o, VecFx32 *v);
 void WorldCurve_FromCurved(VecFx32 *o, VecFx32 *v);
 u32 CharaClothTexPool_GetOwnRef(void);
-u32 CharaClothTexRef_GetBuffer(u32 a);
-void HeldItemModel_GetJointMtx(Mtx43 *out, HeldItemModel *o, u32 a);
-void G3dRes_CopyTexByName(u32 a, u32 b, char *c, char *d);
-void G3dRes_CopyPlttByName(u32 a, u32 b, char *c, char *d);
 void _ZN9AnimModel11allocAnmObjEPv(void *slot, u32 a);
 void _ZN11CachedModel16allocJointRecordEPv(void *slot, u32 a);
 #define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
 u32 Heap_getFreeSize(u32 a);
 void _ZN9ModelAnim14addToRenderObjEj(u32 *p, u32 a);
 
-u32 HeldItem_GetPlttVramSize(void);
-u32 HeldItem_GetTex4x4VramSize(void);
-u32 HeldItem_GetTexVramSize(void);
-u32 HeldItem_GetAnimHeapSize(void);
-u32 HeldItem_GetModelBufferSize(void);
-char *HeldItem_GetTexAnimPath(u32 x);
-char *HeldItem_GetAnimPath(u32 x);
-char *HeldItem_GetModelPath(u32 x);
-s32 HeldItem_GetAnimId(u16 *p);
-u16 HeldItem_GetHandPose(u16 *p);
-s32 HeldItem_GetModelId(u16 *p);
-void *HeldItemModels_GetModelBuffer(HeldItemModelBank *self, u32 idx);
-void *HeldItemModels_GetTexAnimBuffer(HeldItemModelBank *self, u32 idx);
-void *HeldItemModels_GetAnimBuffer(HeldItemModelBank *self, u32 idx);
-void *HeldItemModels_GetAnimHeap(HeldItemModelBank *self, u32 idx);
-u32 HeldItemModels_GetTexAnimBufferSize(HeldItemModelBank *self, u32 idx);
-u32 HeldItemModels_GetAnimBufferSize(HeldItemModelBank *self, u32 idx);
-void HeldItemModels_SetMatAnmHeap(HeldItemModelBank *self, u32 idx, u32 v);
-u32 HeldItemModels_GetMatAnmHeap(HeldItemModelBank *self, u32 idx);
-void HeldItemModels_SetTexAnimBuffer(HeldItemModelBank *self, u32 idx, void *v, u16 w);
-void HeldItemModels_SetAnimBuffer(HeldItemModelBank *self, u32 idx, void *v, u16 w);
-u16 *HeldItemModels_GetItem(HeldItemModelBank *self, u32 idx);
-ModelAnim *HeldItemModels_GetTexAnim(HeldItemModelBank *self, u32 idx);
-void HeldItemModels_SetTexAnim(HeldItemModelBank *self, u32 idx, ModelAnim *v);
-BlendAnimModel *HeldItemModels_GetModel(HeldItemModelBank *self, u32 idx);
-TexVramTask *HeldItemModels_GetTexTask(HeldItemModelBank *self, u32 idx);
-TexVramSlot *HeldItemModels_GetVramSlot(HeldItemModelBank *self, u32 idx);
-void HeldItemModels_RelocateTexture(HeldItemModelBank *self, u32 idx);
-void HeldItemModels_LoadModel(HeldItemModelBank *self, u32 idx, u32 x);
-void HeldItemModels_CancelTexUpload(HeldItemModelBank *self, u32 idx);
-s32 HeldItemModels_PollTexUpload(HeldItemModelBank *self, u32 idx);
-void HeldItemModels_PlayTexAnim(HeldItemModelBank *self, u32 idx, u32 x, u32 y);
-void HeldItemModels_PlayAnim(HeldItemModelBank *self, u32 idx, u32 x, u32 y, u8 z);
-s32 HeldItemModels_LoadTexAnim(HeldItemModelBank *self, u32 idx, u32 x);
-s32 HeldItemModels_LoadAnim(HeldItemModelBank *self, u32 idx, u32 x);
-void HeldItemModels_ReleaseAll(HeldItemModelBank *self);
-void HeldItemModels_CreateAnimHeaps(HeldItemModelBank *self);
-void HeldItemModels_AllocVram(HeldItemModelBank *self);
 }
 
 const u8 sHeldItemModelIds[0x40] = {

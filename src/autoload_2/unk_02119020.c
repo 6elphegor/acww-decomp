@@ -1,4 +1,10 @@
 #include "nitro/fs.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_0211802c.h"
+#include "proto/autoload_2/unk_021182b8.h"
+#include "proto/autoload_2/unk_02118894.h"
+#include "proto/autoload_2/unk_02119020.h"
+#include "proto/autoload_2/unk_02119434.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file.c / fs_archive.c / fs_command.c region), autoload_2 0x0211802c-0x02119434. ARM code.
 typedef unsigned char u8;
@@ -9,18 +15,12 @@ typedef int BOOL;
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void OS_SleepThread(OSThreadQueue *);
-extern void OS_WakeupThread(OSThreadQueue *);
 extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
-extern void FS_InitFile(FSFile *);
 extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
 extern s32 FS_ReadFile(FSFile *, void *, s32);
 extern void FS_CloseFile(FSFile *);
 extern u32 FSi_GetPackedName(const char *, int);
-extern FSFile *FSi_NextCommand(FSArc *);
-extern void FSi_ExecuteAsyncCommand(FSFile *);
-extern int FSi_ExecuteSyncCommand(FSFile *);
 extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
 extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
 extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
@@ -75,16 +75,6 @@ static inline u32 FSi_NameLen2(u32 name) {
 
 int FSi_TranslateCommand(FSFile *file, u32 cmd);
 void FSi_ReleaseCommand(FSFile *file, u32 result);
-int FSi_CloseFileCommand(void);
-int FSi_OpenFileDirectCommand(FSFile *file);
-int FSi_OpenFileFastCommand(FSFile *file);
-int FSi_GetPathCommand(FSFile *file);
-int FSi_FindPathCommand(FSFile *file);
-int FSi_ReadDirCommand(FSFile *file);
-int FSi_SeekDirCommand(FSFile *file);
-int FSi_WriteFileCommand(FSFile *file);
-int FSi_WriteFileCommand(FSFile *file);
-int FSi_ReadFileCommand(FSFile *file);
 int FSi_SeekDirDirect(FSFile *file, u32 id);
 void FSi_ReadTable(FSStream *s, void *dst, u32 len);
 int FSi_StrNICmp(const char *a, const char *b, u32 n);
@@ -92,14 +82,10 @@ void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
 BOOL FS_ResumeArchive(FSArc *arc);
 BOOL FS_SuspendArchive();
-void *FS_UnloadArchiveTables(FSArc *arc);
 u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
 BOOL FS_UnloadArchive(FSArc *arc);
 BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
-void FS_ReleaseArchiveName(FSArc *arc);
 BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
-FSArc *FS_FindArchive(const char *name, int len);
-void FS_InitArchive(FSArc *arc);
 BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
 // FSi_SendCommand

@@ -10,6 +10,18 @@
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
 #include "talk/ChoiceList.h"
+#include "proto/main/unk_02000b7c.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_0203eb78.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209e394.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
 
 
 
@@ -61,7 +73,6 @@ struct SaveMenuStateEntry {
     Unk_020e23fc_Fn update;
 };
 
-extern "C" SaveMenu *SaveMenu_Create();
 
 ProcProfile sSaveMenuProfile = {(void *(*)())SaveMenu_Create, 0xd5, 0xd0};
 
@@ -86,7 +97,6 @@ extern u8 sAxBbsReceived;
 extern u8 sAxBbsBuf[];
 
 extern "C" {
-TalkWindowState *TalkWindow_Get(s32 v);
 }
 
 extern "C" {
@@ -102,31 +112,24 @@ extern "C" {
 }
 
 extern "C" {
-s32 Comm_GetSyncState();
 }
 
 extern "C" {
-void NetSession_SetMemberSyncReply(s32 a, s32 b);
 }
 
 extern "C" {
-s32 NetSession_GetSyncKind();
 }
 
 extern "C" {
-void NetSession_SetActiveSyncKind(s32 a);
 }
 
 extern "C" {
-void SaveManager_SetEndSessionSave(s32 v);
 }
 
 extern "C" {
-s32 Comm_ClearSyncState();
 }
 
 extern "C" {
-s32 Comm_RequestSync(s32 v);
 }
 
 extern "C" {
@@ -145,11 +148,9 @@ void Scene_SavePlayerPos(s32 a, s32 b);
 }
 
 extern "C" {
-void SaveManager_RequestAct1A();
 }
 
 extern "C" {
-s32 SaveManager_RequestAct01();
 }
 
 extern "C" {
@@ -161,11 +162,9 @@ s32 TalkRequest_IsSaveMenuRunning();
 }
 
 extern "C" {
-s32 GameStart_IsNewTown();
 }
 
 extern "C" {
-s32 GameStart_IsNewResident();
 }
 
 extern "C" {
@@ -191,7 +190,6 @@ extern "C" {
 }
 
 extern "C" {
-void ChatQuickMsg_PostWantToSave();
 }
 
 extern "C" {
@@ -199,11 +197,9 @@ s32 TalkRequest_AddSaveMenu();
 }
 
 extern "C" {
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 }
 
 extern "C" {
-s32 PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -211,15 +207,12 @@ s32 _ZN10PlayerData14getBankAccountEv(s32 pd);
 }
 
 extern "C" {
-void PlayerBank_SetBalance(s32 a, s32 b);
 }
 
 extern "C" {
-s32 Donation_GetTotal();
 }
 
 extern "C" {
-void Donation_SetTotal(s32 v);
 }
 
 extern "C" {
@@ -230,7 +223,6 @@ extern "C" {
 }
 
 extern "C" {
-void PlayerInventory_SetWallet(s32 a, s32 b, s32 c);
 }
 
 extern "C" {
@@ -254,15 +246,12 @@ void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
-u32 Random_GlobalBelow(s32 n);
 }
 
 extern "C" {
-void AxBbsNotice_Construct(void *p);
 }
 
 extern "C" {
-void *AxBbsNotice_GetDigest(void *p);
 }
 
 extern "C" {
@@ -274,19 +263,15 @@ void MI_CpuFill8(void *p, s32 v, s32 n);
 }
 
 extern "C" {
-s32 AxMail_GetDigestKey();
 }
 
 extern "C" {
-s32 Mem_Differs(void *a, void *b, s32 n);
 }
 
 extern "C" {
-void AxBbsNotice_Post(void *p);
 }
 
 extern "C" {
-void AxBbsNotice_Destruct(void *p);
 }
 
 static inline BOOL Unk_0209e7b4_Is2(u8 v) {

@@ -1,0 +1,29 @@
+#ifndef PROTO_PROTO_OV104_UNK_OV104_02294C40_H
+#define PROTO_PROTO_OV104_UNK_OV104_02294C40_H
+
+// Prototypes of the functions defined in src/ov104/unk_ov104_02294c40.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class PostOfficeMenu;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_PostOfficeMenu_SetupBgLayers
+void PostOfficeMenu_SetupBgLayers();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PostOfficeMenu_Create
+PostOfficeMenu *PostOfficeMenu_Create();
+#endif
+}
+#endif
+
+#endif

@@ -4,6 +4,13 @@
 #include "net/Unk_ov001_02221734_D.h"
 #include "nitro/os_rtc.h"
 #include "net/WfcMoveMbWork.h"
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcMoveMb_RegisterFile  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02122e24.h"
+#include "proto/autoload_2/unk_02124c40.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02220ad8.h"
 
 #pragma thumb off
 
@@ -18,8 +25,6 @@ s32 MB_CommResponseRequest(s32, s32);
 s32 MB_CommIsBootable(s32);
 s32 MB_CommGetChildUser(s32);
 void MB_DisconnectChild(s32);
-void MB_End();
-void Fatal_Trap();
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, s32);
 s32 MB_GetSegmentLength(void *);
@@ -27,30 +32,11 @@ s32 MB_ReadSegment(void *, void *, u32);
 s32 MB_RegisterFile(void *, void *);
 void FS_CloseFile(void *);
 s32 MB_StartParentFromIdle(s32);
-void OS_GetOwnerInfo(void *);
 s32 MB_Init(void *, void *, s32, s32, s32);
 void MB_SetParentCommParam(u32, u32);
-void MB_CommSetParentStateCallback(void *);
 void WfcMoveWh_SetWork(void *);
 
-u32 WfcMoveMb_FindAidByMac(u8 *mac);
-u8 *WfcMoveMb_GetChildInfo(u32 id);
-u32 WfcMoveMb_GetChildState(u32 id);
-u32 WfcMoveMb_GetChildMask(u32 i);
-u32 WfcMoveMb_GetState();
-void WfcMoveMb_SetState(u32 v);
-void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data);
-void WfcMoveMb_Cancel();
-void WfcMoveMb_StartRebootAll();
-u32 WfcMoveMb_IsAllBootable();
-void WfcMoveMb_StartDownloadAll();
-void WfcMoveMb_StartDownload(u32 id);
-void WfcMoveMb_KickChild(u32 n);
-void WfcMoveMb_AcceptChild(u32 n);
 s32 WfcMoveMb_RegisterFile(s32 *p);
-void WfcMoveMb_StartParent(s32 *a, s32 b);
-void WfcMoveMb_Init(s32 a, s32 b);
-void WfcMoveMb_SetWork(void *p);
 }
 
 void WfcMoveMb_SetWork(void *p) {

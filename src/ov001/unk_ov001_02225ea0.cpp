@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02225ea0.h"
 
 #pragma thumb off
 
@@ -8,7 +9,6 @@ typedef volatile u16 vu16;
 extern "C" {
 s32 PM_SetLCDPower(u32 a);
 
-void WfcUtil_UpdateLidPower();
 
 u8 sWfcLcdOff;
 }

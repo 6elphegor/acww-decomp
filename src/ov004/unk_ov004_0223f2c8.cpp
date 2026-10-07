@@ -3,6 +3,9 @@
 #include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/ov004/unk_ov004_0223f2c8.h"
 
 // Static warp entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
 
@@ -30,10 +33,6 @@ void _ZN9StaffRollC1Ev(void *self);
 #define func_ov093_0229212c _ZN9StaffRoll4initEv
 #define func_ov093_02292174 _ZN9StaffRollD1Ev
 #define func_ov093_022921b8 _ZN9StaffRollC1Ev
-void Heap_Free(void *heap, void *p);
-void *Heap_Alloc(void *heap, u32 size);
-void OverlayMgr_Release(u32 id);
-void OverlayMgr_Acquire(u32 id);
 }
 
 extern "C" {

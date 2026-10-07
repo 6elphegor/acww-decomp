@@ -15,6 +15,18 @@
 #include "game/CollisionTriangle.h"
 #include "game/GroundInfo.h"
 #include "game/GroundInfoBase.h"
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetRotX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_Translate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_GetRadius  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020b60b0.h"
+#include "proto/main/unk_020b705c.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 
 
@@ -40,24 +52,17 @@ struct TouchPickerView : TouchPickResult {
 };
 
 extern "C" {
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 s32 func_01ffcb0c(s32 a, s32 b);
 extern s16 data_02135f44[];
 extern s16 data_02136f44[];
 extern s16 data_02138f44[];
-void Vec_RotateX(VecFx32 *v, s32 angle);
 extern s32 gCamera;
 extern s32 data_020c8cb8;
 extern Mtx43 gViewMtx;
 s32 func_0203bc3c(s32 a);
 s32 FX_Div(s32 a, s32 b);
-void Vec_SafeNormalize(VecFx32 *v);
-void Vec_Scale(VecFx32 *v, s32 s);
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
-void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-void Vec_RotateY(VecFx32 *v, s32 angle);
 void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 s32 Collision_CalcTriangleNormal(Plane *p, VecFx32 *a, VecFx32 *b, VecFx32 *c);
 BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, VecFx32 *a, VecFx32 *b, VecFx32 *c, Plane *p);
@@ -262,8 +267,6 @@ BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(void *t, VecFx32 *a,
 void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
 void TouchPick_CalcRay(Basis *out, s32 a, s32 b);
 BOOL TouchPick_HitCylinder(VecFx32 *out, VecFx32 *in, void *node, s32 a, s32 b);
-BOOL TouchPick_HitWorldDrum(VecFx32 *out, VecFx32 *a, VecFx32 *b, s32 c, s32 d);
-BOOL TouchPickKind_HasTarget(u8 v);
 BOOL TouchPick_GetGroundPos(void *obj, VecFx32 *out);
 void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 WorldCurve_GetRadius(void);
@@ -274,8 +277,6 @@ void Mtx43_RotateX(Mtx43 *m, s32 a);
 void Collision_CalcTriangleNormal(VecFx32 *out, VecFx32 *a, VecFx32 *b, VecFx32 *c);
 BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *v);
-s32 BuildingList_FindByGrid(s32 a, s32 b);
-s32 BuildingList_IndexOf(s32 a);
 
 extern s32 gGfxMainOnTop;
 extern SceneInfo *gCurSceneInfo;

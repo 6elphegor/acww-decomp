@@ -33,6 +33,16 @@ struct NNSG3dResJntAnm {
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/ThreeLayerAnimModel.h"
 #include "gfx/Model.h"
+#define PROTO_LOCAL_func_01ffcc10  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/main/unk_020536dc.h"
+#include "proto/main/unk_02053848.h"
+#include "proto/main/unk_02055bcc.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206fc44.h"
+#include "proto/main/unk_0206fde4.h"
+#include "proto/main/unk_02070560.h"
 
 
 
@@ -47,22 +57,11 @@ s32 func_01ffcc10(void *a, void *o);
 void NNS_G3dAnmObjInit(void *a, s32 b, void *c, s32 d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
-void *Gfx3d_AllocAnmObj(void *a, void *b, void *c);
 extern u8 sJointAnmHeader2[];
-void CpuMtx_RestoreFromStack(u32 v);
-void CpuMtx_StoreToStack(u32 v);
-void CpuMtx_MultRotScaledTrans(void *a, void *b, void *c);
-void CpuMtx_MultTrans(void *a);
-void CpuMtx_MultRot(void *a);
-void CpuMtx_MultRotTrans(void *a, void *b);
-s32 strcmp(void *a, void *b);
-void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 extern void *gCurrentHeap;
 extern void *gModelCacheHeap;
 void *NNS_G3dGetMdlSet(void *p);
 void *NNS_G3dGetTex(void *p);
-void *Heap_Alloc(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 void Gfx3d_LoadTexAndPltt(void *a, void *b);
 void *Gfx3d_CopyTex(void *a, void *heap);
@@ -73,9 +72,7 @@ void NNS_G3dForceBindMdlTex(void *a, void *b, s32 c, s32 d);
 void NNS_G3dForceBindMdlPltt(void *a, void *b, s32 c, void *d);
 void *ResCache_GetModel(void *a, u32 tag);
 void *ResCache_FindModel(void *a);
-void *PatternTexCache_Get(void);
 void *_ZN15PatternTexCache15getPlayerTexKeyEii(void *a, void *b, void *c);
-void ThreeLayerAnimModel_ClearLayer3Mask(void *p);
 void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
 void AnimModel_SwitchAnmObj(void *p, void *q);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);

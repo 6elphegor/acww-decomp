@@ -16,6 +16,24 @@
 #include "talk/TalkMsgRequest.h"
 #include "sys/ProcProfile.h"
 #include "player/PlayerOptions.h"
+#define PROTO_LOCAL_Gfx2d_LoadCharRange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020a8c9c.h"
+#include "proto/ov147/unk_ov147_022918e0.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -37,30 +55,13 @@ class TalkMsgRequest;
 
 
 extern "C" {
-TalkWindowState *TalkWindow_Get(s32 a);
-void Gfx2d_HideLayer(s32 a);
 void ScreenLayers_ReleaseStub(s32 a);
 void ScreenLayers_AcquireStub(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_LoadPaletteFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
-void File_LoadToBuffer(void *a, void *b, u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void MI_CpuFill8(void *a, s32 b, u32 n);
-void Snd_PlaySe(s32 a);
 u32 Clock_GetTimeOfDay();
-void *TownExchange_GetLetter(void *p);
-BOOL PlayerDataArray_IsUsed(void *t, s32 i);
-s32 PlayerDataArray_CountUsed(void *t);
-void *PlayerData_GetResident(void *t, s32 i);
-void SaveManager_SetEraseResidentSlot(s32 i);
-void GameStart_SetNewTown();
-void GameStart_SetNewResident();
-void GameStart_SetMode3();
-const void *Choice_GetBmgName(u32 i);
 
 extern u8 data_021e7f8c[];
 extern u8 gSavePlayers[];
@@ -123,29 +124,14 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 extern u8 *data_021c1b3c;
 
-void Scene_Request(s32 a, s32 b, s32 c, s32 d);
 void *Scene_GetWarpRequest();
 void SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
-void SaveManager_RequestAct1C();
-void SaveManager_RequestAct05();
-void SaveManager_RequestAct06();
 void TalkRequestFlags_SetTitleTimeout();
-void InputMode_SetButtons();
-void InputMode_SetTouch();
 BOOL Math_CountDownU16(void *p);
-void Bgm_Release(s32 a);
-void Bgm_ReleasePriority(s32 a);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void TalkRequestFlags_ClearSceneHold();
-void GameStart_SetupSave();
-void *PlayerOptions_Get();
 void TalkRequestFlags_SetSceneHold();
-s32 Main_TakeDwcInitResult();
-s32 Save_CheckBackupError();
 s32 TalkRequestFlags_IsTitleTimeout();
 void TalkRequestFlags_ClearTitleTimeout();
-TitleScreen *TitleScreen_Create();
 
 }
 

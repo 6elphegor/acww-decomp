@@ -27,6 +27,18 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209b598.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov051/unk_ov051_02258de0.h"
+#include "proto/ov068/unk_ov068_0226b9a8.h"
 
 
 class SpNpcKappn;
@@ -50,16 +62,7 @@ struct Unk_ov051_02258e68_Rec {
 extern "C" {
 u32 _ZN8PlayerId9getGenderEv(void *self);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
-void *PlayerData_GetCurrent();
-TalkWindowState *TalkWindow_Get(s32 a);
-BOOL GameStart_IsNewTown();
-BOOL GameStart_IsMode4();
-BOOL GameStart_IsMode3();
-BOOL GameStart_IsNewResident();
-BOOL MenuCtrl_IsResultDuplicateName();
 void Clock_GetDateTime(void *p);
-void Town_SetGenGateMode(u32 a);
-void MenuCtrl_SetDateTime(void *p);
 void SaveData_Setup(void *p, s32 a);
 void SaveData_Apply(void *p);
 s32 TownBlockMap_Get();
@@ -70,14 +73,6 @@ s32 Math_CountDownU16(void *p);
 s32 Math_CountDownU8(void *p);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
-s32 Random_GlobalBelow(s32 a);
-void Camera_SetSwayPattern3();
-void ScreenTransition_StartFadeOut(s32 a, s32 b);
-void Snd_FadeOutScene();
-void ScreenTransition_StartFadeIn(s32 a, s32 b, s32 c);
-void Taxi_SetArriving();
-s32 TaxiInterior_StopRain();
-void TaxiInterior_StartDriverAnim();
 extern u16 data_020c6cc8;
 extern u8 gScreenTransition;
 extern u8 gSaveData[];
@@ -192,7 +187,6 @@ extern SpNpcKappnActEntry sSpNpcKappnActTable[];
 extern SpNpcKappn *sSpNpcKappnInstance;
 }
 
-extern "C" SpNpcKappn *SpNpcKappn_Create();
 
 
 extern "C" void _ZN14SpNpcKappnTalk13onMoneyChoiceEj();

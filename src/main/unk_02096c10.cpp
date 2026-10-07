@@ -8,6 +8,10 @@
 #include "item/LetterOutbox.h"
 #include "item/FutureLetter.h"
 #include "item/BottleLetterRecord.h"
+#define PROTO_LOCAL_LetterDelivery_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02096c10.h"
 
 
 
@@ -36,7 +40,6 @@ public:
 extern "C" {
 void LetterDelivery_Update(void *);
 s32 Scene_AllowsLetterDelivery(void);
-s32 Random_GlobalBelow(s32);
 void Letter_Clear(void *);
 }
 

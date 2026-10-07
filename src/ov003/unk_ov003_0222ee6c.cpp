@@ -4,6 +4,10 @@
 #include "sys/ProcProfile.h"
 #include "gfx/DebugColor.h"
 #include "gfx/Camera.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/ov003/unk_ov003_0222ee6c.h"
 
 // TU28 of ov003: scene 0x02234f10 (+ the camera update 0x0222ef10) and the six colour constants of its header
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -22,14 +26,8 @@ public:
 #define Camera_lerpPoses _ZN6Camera9lerpPosesEiii
 
 extern "C" {
-void *PlayerActor_GetBodyPos(u32);
-s32 Camera_CalcTriangleSpan(void *a, void *b, void *c, void *d, s32 *e);
-s32 Camera_CalcPointSpan(void *a, void *b, void *c, s32 *d);
 s32 FX_Div(s32 a, s32 b);
 s32 Camera_lerpPoses(void *self, s32 a, s32 b, s32 c);
-void SnowballSpawner_SpawnSnowmen(void *self);
-void SnowballSpawner_SpawnLooseBalls(void *self);
-SnowballSpawner *SnowballSpawner_Create();
 }
 
 

@@ -10,22 +10,9 @@
 #include "talk/EncodedString.h"
 
 extern "C" {
-s32 Text_GetLength(void *p, s32 n);
-s32 Text_FitToWidth(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
-BOOL Gfx2d_IsMainScreenLayer(u32 x);
-s32 Gfx2d_GetLayerBgIndex(u32 n);
 s32 EncodedString_SetRaw(void *buf, const void *src, s32 len);
-void Gfx2d_HideLayer(void *p);
-void Gfx2d_SetLayerPriority(void *p, s32 v);
-void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
-void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
-void *Letter_GetPaper(void *p);
-void Menu_LoadPaperBg(void *a, void *b);
-void Mem_Clear(void *p, s32 n);
-void Letter_GetRecipientNameBytes(void *dst, void *src);
-s32 Text_MeasureWidth(void *p, s32 n);
 }
 
 
@@ -39,13 +26,18 @@ class MsgString;
 #include "ui/LetterTextLine.h"
 #include "ui/LetterLayout.h"
 #include "ui/LetterRenderer.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206cbdc.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 
 
 
 
 
 
-extern "C" s32 LetterLayout_SplitBody(void *unused, u8 *a, s32 *b, s32 *c);
 
 // ---- LetterRenderer
 void LetterRenderer::setLayer(s32 v) {
@@ -203,7 +195,6 @@ extern "C" void LetterLayout_HighlightSignature(u8 *self, u32 a, u32 b, u32 c) {
     ((LetterTextLine *)(self + 0x4c))->setHighlight(a, b, c);
 }
 
-extern "C" s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
 
 extern "C" s32 LetterLayout_SplitBody(void *unused, u8 *a, s32 *b, s32 *c) {
     return Text_SplitLines(a, b, c, 0x80, 0x28, 0x96, 4);

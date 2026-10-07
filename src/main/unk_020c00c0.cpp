@@ -13,6 +13,19 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
 #include "npc/SpNpcKatie.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020c00c0.h"
+#include "proto/main/unk_020c1738.h"
 
 
 static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
@@ -40,7 +53,6 @@ extern "C" {
 }
 
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {
@@ -48,7 +60,6 @@ Mtx43 *Camera_GetViewMatrix(void);
 }
 
 extern "C" {
-void WorldCurve_Apply(void *out, void *in);
 }
 
 extern "C" {
@@ -64,7 +75,6 @@ s32 FX_Div(s32 a, s32 b);
 }
 
 extern "C" {
-void Vec_Scale(void *a, s32 b);
 }
 
 extern "C" {
@@ -108,11 +118,9 @@ s32 Scene_GetCurrent(void);
 }
 
 extern "C" {
-BOOL GameStart_IsActive(void);
 }
 
 extern "C" {
-s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
@@ -148,11 +156,9 @@ void func_02067a84(void *a, void *b, u32 c);
 }
 
 extern "C" {
-void TownSessionState_Get(void);
 }
 
 extern "C" {
-void TownSessionState_GetKatieState(void);
 }
 
 extern "C" {
@@ -208,19 +214,15 @@ void func_020c11b8(void *p, s32 n);
 }
 
 extern "C" {
-s32 Net_GetJoiningAid(void);
 }
 
 extern "C" {
-s32 PlayerData_GetBySessionSlot(s32 a);
 }
 
 extern "C" {
-BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
 }
 
 extern "C" {
-void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 }
 
 extern "C" {
@@ -228,7 +230,6 @@ void func_020196b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32
 }
 
 extern "C" {
-BOOL PlayerActor_IsScriptedWalking(s32 a);
 }
 
 extern "C" {
@@ -248,15 +249,12 @@ void func_02067a78(void *p);
 }
 
 extern "C" {
-void SpNpcKaitlin_ChangeAct04(void);
 }
 
 extern "C" {
-void Camera_SetMode19(void);
 }
 
 extern "C" {
-s32 NpcRegistry_FindSpNpc(s32 a);
 }
 
 extern "C" {
@@ -272,23 +270,18 @@ s32 func_02014220(void *p);
 }
 
 extern "C" {
-s32 Math_AngleXZ(void *a, void *b);
 }
 
 extern "C" {
-void PlayerActor_RequestTurnTo(s32 a, s32 b);
 }
 
 extern "C" {
-void SpNpcKaitlin_ChangeAct06(void);
 }
 
 extern "C" {
-BOOL SaveManager_IsSessionJoined(void);
 }
 
 extern "C" {
-void FieldInfoBalloon_ShowPleaseWait(void);
 }
 
 extern "C" {
@@ -438,14 +431,8 @@ static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
 
 
 // prototypes
-extern "C" void Weather_Construct();
-extern "C" void Weather_Destruct();
 extern "C" void Weather_InitNew(WeatherRecord *self);
-extern "C" void Weather_SetDateToday(void *p);
 extern "C" void Weather_Apply(WeatherRecord *self);
-extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg);
-extern "C" u8 Weather_PickPattern(void *self, void *p);
-extern "C" u8 Weather_GetPrevDayRain();
 
 
 extern "C" void Weather_Construct() {}

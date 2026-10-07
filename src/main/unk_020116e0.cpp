@@ -1,5 +1,9 @@
 #include "types.h"
 #include "gfx/HudObjGfx.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/main/unk_020116e0.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_0208eeac.h"
 
 // TU014-TU017 (one original file): 0x020116e0-0x020119cc. The file owns the global HudObjGfx object
 // (.bss, autoload_3 0x021bdb74-0x021bddd8: registration record + object), which __sinit constructs, and a
@@ -9,13 +13,8 @@
 // Methods of the same object under the class name of an earlier unit (0x0201106c-0x020116e0); called by
 // their symbols.txt names.
 extern "C" {
-void FS_InitFile(void *p);
-s32 InputMode_IsTouch(void);
 s32 Scene_GetCurrent(void);
-s32 ChatBalloon_RefreshLabelsUnk(void);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
-s32 Hud_GetSceneHudKind(void);
-void HudObjGfx_InitFile(void *p);
 
 extern const u8 sSceneHudKinds[0x34];
 }

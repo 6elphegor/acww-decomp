@@ -1,6 +1,8 @@
 #include "types.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020815f8.h"
 
 
 
@@ -9,10 +11,6 @@ s32 SaveVillagers_IsValidIndex(s32);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 FieldPos_ToUnit(s32 *, s32 *, u32 *);
-s32 Random_GlobalBelow(s32);
-s32 NpcRegistry_GetSlotCount();
-s32 NpcRegistry_FindSpNpcByHandle(void *a);
-s32 NpcRegistry_FindVillagerByHandle(void *a);
 }
 
 struct NpcRegistrySpNpcSlot {
@@ -58,8 +56,6 @@ struct NpcActorRegistry {
 
 NpcActorRegistry gNpcActorRegistry;
 
-extern "C" s32 NpcRegistry_FindVillager(void *a);
-extern "C" s32 NpcRegistry_FindSpNpc(void *a);
 
 NpcRegistryVillagerSlot::NpcRegistryVillagerSlot() { npcHandle = 0xfff1; }
 

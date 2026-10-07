@@ -31,6 +31,15 @@
 #include "npc/NpcMoveCtrl.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov075/unk_ov075_022713c0.h"
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -75,11 +84,9 @@ struct SpNpcPeteSidestepPos {
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 s32 ChoiceList_getResult(ChoiceList *p);
 s32 PlayerData_testFlag(void *p, s32 a);
 s32 PlayerData_setFlag(void *p, s32 a);
-s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void ActorTalkRequest_requestCloseWindow(void *self, s32 a);
 s32 ActorTalkRequest_requestReopenWindow(void *self);
@@ -114,12 +121,9 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 void NpcFootstepFx_enableFootsteps(void *p);
-void *TownSessionState_Get();
-void *TownSessionState_GetPeteFall(void *p);
 s32 PeteFallState_hasFallPos(void *p);
 void PeteFallState_getPos(void *p, void *q);
 void PeteFallState_clear(void *p);
-s32 EventAnnounce_IsBusy();
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern s32 data_020c6cf0;
@@ -129,8 +133,6 @@ extern void *gCamera;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 
-void SpNpcPete_ChangeAct(void *self, s32 state);
-s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b);
 }
 
 
@@ -214,7 +216,6 @@ struct SpNpcPeteTalkScript {
 
 
 extern "C" {
-SpNpcPete *SpNpcPete_Create();
 void _ZN13SpNpcPeteTalk12scriptWakeUpEv();
 extern void *data_ov075_02272280[2];
 void _ZN9SpNpcPete10setupAct00Ev();

@@ -1,6 +1,18 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_0209c9f8.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
 
 extern u32 *gCurrentHeap;
 
@@ -10,35 +22,14 @@ const u16 sGameRootChildProfiles[8] = { 0xd7, 0xce, 0xcf, 0xcb, 8, 0xa, 0xcc, 0 
 u32 gGameRoot;
 
 extern "C" {
-void Scene_CreateRequested();
-void StrBSize_Unload();
 void AcreAttr_Unload();
-void FtrInfo_Exit();
-void ItemInfo_Exit();
-void *PatternPresetInfo_Get();
-s32 PatternPresetInfo_Close(void *p);
 void FgData_Unload(u32);
 void TownBlockMap_Destroy(u32);
 void HouseRoomMaps_Destroy(u32);
-void Comm_DestroyHeap();
-void NetSession_Exit();
-void StrBSize_Load();
 void AcreAttr_Load();
-void FtrInfo_Init();
-void ItemInfo_Init();
-void PatternPresetInfo_Open(void *p);
 void FgData_Load(u32);
 void TownBlockMap_Create(u32);
 void HouseRoomMaps_Create(u32);
-void Comm_CreateHeap(u32);
-void NetSession_Init();
-void NpcSpawn_ResetAll();
-void ChatBalloon_ClearAll();
-void Bgm_ResetAll();
-void Text_ResetLabels();
-void Scene_RequestBoot();
-s32 GameProc_CreateRoot(s32, s32, s32);
-void GameProc_CreateChild(u32, s32, s32, s32);
 }
 
 class GameRoot : public GameProc {

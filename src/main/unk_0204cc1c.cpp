@@ -21,6 +21,27 @@
 #include "net/CommManager.h"
 #include "npc/VillagerDataItemView.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_BgModelCache_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_BgModel_LoadBcl  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_AllocTail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownBclHeap_Destroy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0211a6c0.h"
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_0204cc1c.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0204f134.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02060034.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_0209b598.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 
 
@@ -201,7 +222,6 @@ void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, s32 size);
 SceneMapInfo *Scene_GetMapInfo();
 s32 Scene_InUnk6To8();
-u32 House_GetLevelAcreId(void *p);
 u32 _ZN9HouseData19buildRoomBlockEntryEiPv(void *p, u32 a, void *heap);
 s32 Scene_GetCurrent();
 s32 Scene_InHouseRoom();
@@ -215,14 +235,11 @@ extern u32 gSaveVillagers;
 extern u32 gRoomBclHeap;
 extern u32 data_020c8cbc;
 extern u32 data_020c8cb8;
-void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void *Heap_AllocTail(void *heap, s32 size);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(u32 v);
 u32 SaveVillagers_Get(u32 *a, s32 b);
 void Villager_ResolveRoomLayout(u32 h, void *p);
-void File_ReadRangeByPath(u32 a, void *dst, s32 size, s32 off);
-void *File_LoadAlloc(u32 a, void *heap, s32 b, s32 *sizeOut);
 u32 MapBlock_NewArray(s32 a, void *heap, s32 b);
 void CollisionMap_Release(u32 h);
 void CollisionMap_Bind(u32 w, u32 h, u32 c, u32 d);
@@ -234,21 +251,15 @@ u32 BgModel_LoadBcl(u32 a, u32 b);
 s32 _ZN8MapBlock6bindBgEP11BgAcreModeljj(u32 h, s32 a, u32 b, u32 c);
 u32 _ZN9HouseData13getRoomAcreIdEi(u32 *a, s32 x);
 void _ZN12MapBlockAcre9setAcreIdEj(u32 h, s32 i);
-void RoomBclHeap_Destroy();
-void RoomBclHeap_Create(s32 x);
 u32 SceneId_GetHouseRoom(u32 v);
-s32 HouseData_IsValidRoomIndex(s32 i);
 u16 *_ZN7TownMap12getAcreItemsEP4Vec2(void *t, s32 *idx);
-void Town_GenerateAcres(void *t);
 extern void *gTownBclHeap;
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void *StrBSize_Get(u16 *t);
 s32 FX_Div(s32 a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
 void MapBlock_Init(void *a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 *i, s32 j);
 s32 TownBclHeap_Destroy();
-void TownBclHeap_Create(s32 x);
 void func_02004b60();
 void func_0203442c();
 void CollisionMap_Select(s32 v);
@@ -265,26 +276,14 @@ u32 GroundSeason_CalcPhase();
 void _ZN14SnowmanRecords11updateDailyEv(const char *s);
 void BuriedMask_Reset(void *p);
 BOOL Item_IsNormalItem(u16 *p);
-void LostAndFound_Add(u16 v);
-s32 FieldStructureMgr_Get();
-BOOL FieldStructureMgr_SpawnBuilding(s32 a, void *b, s32 x, s32 y, s32 f);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
 s32 Item_GetStumpSize(u16 *p);
 void _ZN14SnowmanRecords6removeEj(void *obj, s32 v);
 extern char data_021ed2e6[];
 extern void *gCommManager;
-BOOL FishTable_IsLateMonth(u8 v);
-void Fatal_Trap();
 void OverlayMgr_UnloadSlot(OverlaySlot *e);
-void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
-void OverlayMgr_UnloadOverlay(u32 id);
-void OverlayMgr_LoadOverlay(u32 id);
-void OverlayMgr_GetInfo(void *p, u32 id);
-void File_UnloadOverlay(u32 id);
-void File_LoadOverlay(u32 id);
 void *FS_LoadOverlayInfo(void *p, s32 v, u32 n);
-void FS_GetOverlayFileID(void *a, void *b);
 s32 MapBlock_ClearBuried(TownBlockCell *c, s32 a, s32 b);
 s32 MapBlock_SetBuried(TownBlockCell *c, s32 a, s32 b);
 s32 MapBlock_HasAnyAttr(TownBlockCell *c, s32 a);
@@ -295,9 +294,6 @@ s32 MapBlock_GetItemPtr(TownBlockCell *c, s32 a, s32 b, u8 d);
 void *MapBlock_SetItem(TownBlockCell *c, s32 a, s32 b, s32 d, u8 e);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
-u8 FishTable_GetPeriod(u8 r);
-u32 FishTable_GetHourSlot(u32 r);
-void FishTable_Pick(void *a, void *b, s32 c, u32 d, u32 e);
 }
 
 // own functions

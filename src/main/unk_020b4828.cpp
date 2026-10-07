@@ -13,6 +13,52 @@
 #include "nitro/io_access.h"
 #include "gfx/BgModelCache.h"
 #include "player/PlayerData.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_02110c98.h"
+#include "proto/itcm/unk_01ff8ad4.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034010.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02036c58.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_0203e438.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_020536dc.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205c66c.h"
+#include "proto/main/unk_0205c91c.h"
+#include "proto/main/unk_0205ce0c.h"
+#include "proto/main/unk_0205d1f8.h"
+#include "proto/main/unk_0205d340.h"
+#include "proto/main/unk_0205d480.h"
+#include "proto/main/unk_0205d7d8.h"
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_0205edfc.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_0205f284.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02081cc0.h"
+#include "proto/main/unk_02088b98.h"
+#include "proto/main/unk_0208e6d8.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c08c.h"
+#include "proto/main/unk_0209c4a8.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/main/unk_020abea8.h"
+#include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_020b7f7c.h"
+#include "proto/main/unk_020b8340.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -126,9 +172,6 @@ extern u8 data_ov054_0225b7a8[];
 extern u8 data_ov005_0225b79c[];
 
 // ---- functions of other units ----
-u32 NetArea_GetSlotScene(u32 i);
-void Scene_Request(s32 a, s32 b, s32 c, s32 d);
-s32 Scene_SaveFadeIn(s32 a);
 u32 PlayerActor_GetResumeTransform(VecFx32* a, s16* b);
 void FieldPos_ToUnit(s32* a, s32* b, VecFx32* c);
 void FieldPos_SnapToUnitCenter(VecFx32* out, VecFx32* in);
@@ -136,105 +179,22 @@ void* TownBlockMap_Get();
 BOOL Town_FindPlayerHouse(void* o, VecFx32* v, s32* a, s32* b);
 BOOL Town_FindGateHouse(void* o, VecFx32* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
-void OverlayMgr_Release(u32 v);
-void OverlayMgr_Acquire(u32 v);
 void TouchPick_Cast(s32, u32, u32, u32);
-void PlayerSession_SetDataIndex(s32, s32);
-void PlayerSession_ClearDataIndex(s32);
-void PlayerSession_SetGfxSlot(s32, s32);
-s32 PlayerSession_GetDataIndex(s32);
-s32 NetSession_GetLastSyncSlot();
-void NetSession_SetLastSyncSlot(s32);
-BOOL PlayerData_Get(s32);
-s32 BgModelCache_Get();
 void _ZN15BgModelCacheObj5setupEj(s32, s32);
-void FtrInfo_LoadIndoor(s32);
-void ItemInfo_LoadIndoor(s32);
 void _ZN15TouchPickerView5resetEv(void *self);
-void CommCaution_Release();
 s32 ResCache_Destroy();
 void ResCache_Init();
-void CommCaution_Init();
-void Gfx_ResetScene();
-void VramQueue2d_Init();
-void VramQueueTex_Init();
-void Gfx_DisableAllBanks();
-void GX_SetBankForTex(u32);
-void GX_SetBankForTexPltt(u32);
-void GX_SetBankForBG(u32);
-void GX_SetBankForOBJ(u32);
 void GX_SetBankForSubBG(u32);
 void GX_SetBankForSubOBJ(u32);
-void Gfx2d_SetMainBgMode(u32);
-void Gfx2d_SetSubBgMode(u32);
-void TexVram_InitManagers();
-void Gfx2d_ShowMainPlanes(u32);
-void Gfx2d_ShowSubPlanes(u32);
 void G3X_SetFog(u32, u32, u32, u32);
-void G3X_SetFogTable(const void *);
-void NNS_G3dGeFlushBuffer();
-void FieldScene_DebugDraw();
-void ActorCollider_ResolveAll();
 void Collision_UpdateDigHoles();
-void ActorCollider_ClearList();
-u64 OS_GetTick();
-void Comm_ProcessReceived(s32);
-void NetSession_Update();
 void Field_UpdateActions();
-u8 NetSession_GetActiveSyncKind();
-void NetSession_SetActiveSyncKind(s32);
-void ScreenTransition_ShowCover();
-void Character_ResetList();
 void TalkRequestQueue_StartInitial();
-void ChatBalloon_DismissAll();
-void Bgm_StartSceneBgm();
-void Effect_ResetAll();
-void ActorCollider_InitList();
-void Bgm_EndSceneBgm();
-void PlayerActorHeap_Destroy();
-void NpcResPools_ClearOnSceneDelete();
 void NpcHeapPools_DestroyAll();
-void NpcRegistry_Clear();
-void FishBobberPool_Destroy();
-void HeldItemModels_Destroy();
-void PlayerPalettePool_Destroy();
-void PlayerGlassesModelPool_Destroy();
-void PlayerHeadBank_Destroy();
-void PlayerBodyModelPool_Destroy();
-void PlayerBodyWorkPool_Destroy();
-void CharaFaceAnimWorkPool_Destroy();
-void CharaFaceAnimPool_Destroy();
-void PlayerFaceTexPool_Destroy();
-void CharaClothTexPool_Destroy();
-void CharaAnimCache_Destroy();
-void *PatternTexCache_Get();
 void _ZN15PatternTexCache6unloadEv(void *self);
-void FtrInfo_FreeIndoor();
-void ItemInfo_FreeIndoor();
-void CharaShadow_Unload();
-void ObjShadow_Exit();
 void _ZN15PatternTexCache4loadEv(void *self);
-void CharaAnimCache_Create(u32);
-void CharaClothTexPool_Create(u32);
-void PlayerFaceTexPool_Create(u32);
-void CharaFaceAnimPool_Create(u32);
-void CharaFaceAnimWorkPool_Create(u32);
-void PlayerBodyWorkPool_Create(u32);
-void PlayerBodyModelPool_Create(u32);
-void PlayerHeadBank_Init(u32);
-void PlayerPalettePool_Create(u32);
-void PlayerGlassesModelPool_Create(u32);
-void HeldItemModels_Init(u32);
-void FishBobberPool_Create(u32);
-void ObjShadow_Init(s32);
-void CharaShadow_Load();
 void NpcHeapPools_CreateAll();
-void NpcResPools_ClearOnSceneCreate();
-void PlayerActorHeap_Create(u32);
-void RoomEntry_OnSceneLoad();
 void NookShop_OnSceneLoad();
-void TransitionCommIcon_ResumeWinOut();
-void Snd_CreateScene();
 }
 
 // ---- data of this unit ----

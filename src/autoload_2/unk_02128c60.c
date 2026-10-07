@@ -14,6 +14,13 @@ typedef char *va_list;
 #define va_end(ap)
 
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
+#define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_mbtowc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_raise  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a454.h"
+#include "proto/autoload_2/unk_0212b770.h"
 
 typedef struct scan_format {
     u8 suppress_assignment;
@@ -36,17 +43,12 @@ extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread 
 extern u32 data_02200650[];               // signal handler table
 
 int OS_TryLockMutex(OSMutex *);
-void OS_LockMutex(OSMutex *);
-void OS_UnlockMutex(OSMutex *);
 void exit(int);
 const char *parse_format(const char *format_string, scan_format *format);
 u32 __strtoul(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
-u64 __strtoull(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
-double __strtold(int max_width, ReadProc read, void *arg, int *num_chars, int *overflow);                       // __strtod
 float _d2f(double);
 int mbtowc(u16 *, const char *, u32);
 int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap);
-int __StringRead(void *ctx, int ch, int action);
 int vsscanf(const char *s, const char *fmt, va_list ap);
 
 static inline int isspace_(int c) {

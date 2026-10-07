@@ -29,14 +29,9 @@ void _ZN8ItemNameC1EPt(void *p, u16 *v);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN8SaveData9clearFlagEj(void *, u32);
 s32 _ZN8SaveData8testFlagEj(void *, s32);
-void String_FormatFixedPoint(void *a, s32 b, s32 c);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-void Bbs_PostMsgToday(u32 a, u32 b);
-void MailText_SetSlot(s32 i, void *x);
-void MailText_SetSlotMonth(s32 i, s32 x);
-void MailText_SetSlotDayOrdinal(s32 i, s32 x);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
@@ -48,7 +43,6 @@ void DateTime_SubDays(void *p, s32 v);
 s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
 s32 Event_GetDaysSinceStart(s32 a);
-void *PlayerData_GetResident(void *, s32);
 s32 _ZN10PlayerData6isUsedEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
@@ -58,10 +52,8 @@ s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
 void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
 void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
 void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
-s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 void _ZN6LetterC1Ev(void *p);
 void _ZN6LetterD1Ev(void *p);
-s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
@@ -70,15 +62,11 @@ void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-s32 MenuCtrl_IsClockMovedForward();
-s32 MenuCtrl_IsClockMovedBack();
-s32 Random_GlobalBelow2(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
-void TownId_Assign(void *dst, void *src);
 s32 TownId_Clear(void *p);
 s32 TownId_Destruct(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
@@ -91,7 +79,6 @@ void *_ZN7Pattern7getInfoEv(void *p);
 void *_ZN7PatternD1Ev(void *p);
 void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData18getLostChildRecordEv(void *p);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
@@ -109,11 +96,6 @@ BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-s32 LetterPaper_PickRandom(s32, s32);
-s32 Oam_GetObjX(void *);
-s32 Oam_GetObjWidth(void *);
-s32 Oam_GetObjY(void *);
-s32 Oam_GetObjHeight(void *);
 extern void *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
@@ -132,6 +114,29 @@ extern s32 gGfxMainOnTop;
 #include "save/MuseumData.h"
 #include "save/Pattern.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_Field_PickRandomInLine  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostChildRecord_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostChildRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerSpNpcRecord_SendMissingLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020030d8.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
 
 
 
@@ -189,7 +194,6 @@ struct GulliverQuest {
     s32 getPartCount();
 };
 
-extern "C" void GulliverQuest_Clear(void *p);
 
 // ---- 0x18-byte record ----
 struct ReddSaleName {
@@ -395,11 +399,8 @@ public:
 };
 
 
-extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 
-extern "C" u8 *DramaRecord_GetDate(u8 *p);
 
-extern "C" void DramaRecord_GetLastPart(void *a, void *b);
 
 enum Unk_020874e8_K { UNK_020874E8_K = 0x15db4 };
 
@@ -411,7 +412,6 @@ struct MissingLetterLocals {
     u8 pad;
 };
 
-extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 
 // extern declarations
 extern "C" {
@@ -421,11 +421,8 @@ extern char data_020e0c70[];
 extern char data_020e0c7c[];
 extern char data_020e0c88[];
 extern char data_020e0c98[];
-s32 VillagerId_Clear(VillagerId *p);
 void _ZN8PlayerId5clearEv(void *p);
 void Clock_GetDate(u8 *p);
-void VillagerId_Destruct(VillagerId *p);
-void VillagerId_Construct(VillagerId *p);
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
 void _ZN11MsgString9BC1Ev(void *p);
@@ -436,14 +433,9 @@ void _ZN8ItemNameC1EPt(void *p, u16 *v);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN8SaveData9clearFlagEj(void *, u32);
 s32 _ZN8SaveData8testFlagEj(void *, s32);
-void String_FormatFixedPoint(void *a, s32 b, s32 c);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-void Bbs_PostMsgToday(u32 a, u32 b);
-void MailText_SetSlot(s32 i, void *x);
-void MailText_SetSlotMonth(s32 i, s32 x);
-void MailText_SetSlotDayOrdinal(s32 i, s32 x);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
@@ -455,7 +447,6 @@ void DateTime_SubDays(void *p, s32 v);
 s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
 s32 Event_GetDaysSinceStart(s32 a);
-void *PlayerData_GetResident(void *, s32);
 s32 _ZN10PlayerData6isUsedEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
@@ -465,10 +456,8 @@ s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
 void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
 void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
 void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
-s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 void _ZN6LetterC1Ev(void *p);
 void _ZN6LetterD1Ev(void *p);
-s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
@@ -477,16 +466,12 @@ void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-s32 MenuCtrl_IsClockMovedForward();
-s32 MenuCtrl_IsClockMovedBack();
-s32 Random_GlobalBelow2(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
-void TownId_Assign(void *dst, void *src);
 s32 TownId_Clear(void *p);
 s32 TownId_Destruct(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
@@ -499,7 +484,6 @@ void *_ZN7Pattern7getInfoEv(void *p);
 void *_ZN7PatternD1Ev(void *p);
 void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData18getLostChildRecordEv(void *p);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
@@ -517,11 +501,6 @@ BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-s32 LetterPaper_PickRandom(s32, s32);
-s32 Oam_GetObjX(void *);
-s32 Oam_GetObjWidth(void *);
-s32 Oam_GetObjY(void *);
-s32 Oam_GetObjHeight(void *);
 extern void *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
@@ -534,50 +513,11 @@ extern s32 gGfxMainOnTop;
 
 // own functions
 extern "C" {
-void RoostGuestRoll_Init(void *p);
-void RoostGuestRoll_Destruct();
-void RoostGuestRoll_Construct();
-void GulliverQuest_Destruct();
-void GulliverQuest_Construct();
-void *ReddLastSale_GetBuyer(void *p);
-void TurnipMarket_Destruct();
-void TurnipMarket_Construct();
-void VisitorPos_Destruct();
-void VisitorPos_Construct();
-void GulliverQuest_Init(void *p);
-void GulliverQuest_Clear(void *p);
-void VisitorPos_Clear(void *p);
 void ReddLastSale_Clear(ReddLastSale *p);
 s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
-BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map);
-BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map);
-BOOL Field_IsClearSpot(s32 x, s32 y, void *map);
-void LostChild_LoadFromTown();
-void LostChild_SaveToTown();
-BOOL LostChild_IsKaitlinDue();
-BOOL LostChild_IsKatieDue();
-void LostChild_AdvanceDays(s32 n);
 void *LostChildRecord_Destruct(void *p);
 void *LostChildRecord_Construct(void *p);
-BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
-BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
-void DramaRecord_SetLastPart(s32 a, void *b);
-void DramaRecord_Clear(void *a);
-void DramaRecord_Destruct();
-void DramaRecord_Construct();
-void PlayerDailyTalkFlags_Destruct();
-void PlayerDailyTalkFlags_Construct();
 void PlayerSpNpcRecord_SendMissingLetter();
-void *PlayerSpNpcRecord_GetInsuranceDate(void *p);
-void PlayerSpNpcRecord_InitNop();
-void PlayerSpNpcRecord_Destruct();
-void PlayerSpNpcRecord_Construct();
-BOOL Oam_UseBufferA(s32 t);
-s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
-s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
-BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
-u8 *DramaRecord_GetDate(u8 *p);
-void DramaRecord_GetLastPart(void *a, void *b);
 }
 
 namespace Ns_02086204 {

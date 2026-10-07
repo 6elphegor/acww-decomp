@@ -3,6 +3,11 @@
 #include "actor/CharaClothTexRef.h"
 #include "item/ItemId.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205c91c.h"
+#include "proto/main/unk_02082d74.h"
 
 
 
@@ -14,12 +19,6 @@ extern u8 *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-BOOL ClothTex_LoadItemThunk(u32 a, u16 *b, s32 c);
-BOOL ClothTex_LoadPatternThunk(void *, void *);
-u32 ClothTex_GetBufferSize();
-void CharaClothTexHeap_Destroy();
-void CharaClothTexHeap_Create(void *parent);
-void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
@@ -27,7 +26,6 @@ void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
-u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 }
 
@@ -48,8 +46,6 @@ struct CharaClothTexPool {
 
 extern "C" {
 extern CharaClothTexPool sCharaClothTexPool;
-void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx);
-void CharaClothTexRef_CopyFromSlot(void *p, s32 x);
 }
 
 extern "C" void CharaClothTexPool_Create(void *parent) {

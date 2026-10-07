@@ -5,10 +5,11 @@
 // but the function. Needed only because RC_020ed4bc (the task manager) ends at 0x020ed7e4 and replaces unk_020ed64c.cpp.
 #include "types.h"
 #include "sys/CmdSeq.h"
+#include "proto/autoload_2/unk_020ed7e4.h"
+#include "proto/autoload_2/unk_020ed81c.h"
 
 
 extern "C" {
-s16 CmdSeq_Run(CmdSeq *o, s32 loop);
 }
 
 extern "C" BOOL CmdSeq_Poll(CmdSeq *o) {

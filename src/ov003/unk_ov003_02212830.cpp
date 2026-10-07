@@ -20,6 +20,28 @@
 #include "field/Snowball.h"
 #include "gfx/Model.h"
 #include "snd/SndSeEmitter.h"
+#define PROTO_LOCAL_LooseSnowballs_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Quat_Mul  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Quat_Normalize  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Quat_ToMtx43  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_MagXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/ov003/unk_ov003_02212830.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
 
 
 
@@ -84,7 +106,6 @@ extern const s16 sSnowmanNeighbourOffsets[16];
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 VEC_Mag(void *v);
-void Vec_Add(void *out, void *a, void *b);
 void MTX_Concat43(void *a, void *b, void *out);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
@@ -93,7 +114,6 @@ s32 Vec_Sub(void *out, void *a, void *b);
 s32 Math_ApproachS32Max(void *p, s32 a, s32 b, s32 c);
 s32 Vec_MagXZ(void *v);
 s32 Math_ApproachS16Div(s16 *p, s32 a, s32 b, s32 c);
-void Vec_Scale(void *v, s32 ang);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
 s32 WorldCurve_ToCurved(void *out, void *in);
@@ -101,21 +121,15 @@ void Quat_Mul(void *a, void *b, void *out);
 void Quat_ToMtx43(void *a, void *out);
 void Quat_Normalize(void *a);
 void Collision_Move(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
-void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
-s32 Snd_SeEmitterPlayHeld(void *p, u32 a, u32 b, u32 c);
-void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
-void *PlayerActor_GetActor(u32 a);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
-void LostAndFound_Add(u16 v);
 void FieldPos_ToUnit(s32 *out1, s32 *out2, void *p);
 BOOL BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
 u16 *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 u16 Item_MakeSnowman(void *p);
 s32 Item_IsSnowman(u16 *c);
-s32 Random_GlobalBelow(s32 a);
 s32 Collision_GetUnitShape(s32 x, s32 y, s32 *a, s32 *b, s32 *c);
 s32 Ground_CanPlaceItem(s32 x, s32 y);
 s32 Ground_GetDigKind(s32 x, s32 y);
@@ -125,9 +139,6 @@ Rec *LooseSnowballs_Get();
 void String_Load(void *a, void *b, const char *c);
 BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void *Heap_Alloc(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
-void *memset(void *p, s32 v, u32 n);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
 void SndSeEmitter_dtor(void *p);
 #define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
@@ -145,10 +156,6 @@ BOOL Snowball_IsSnowmanHead(Obj *o);
 BOOL Snowball_IsSnowmanBody(Obj *o);
 BOOL Snowball_CanBuildSnowmanAt(Pos *p);
 BOOL Snowball_PlaceSnowmanAt(void *a, Pos *p, u16 *out);
-BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out);
-BOOL Snowball_DropDisplacedItem(u16 *q);
-BOOL Snowball_Unregister(Obj *o);
-s32 Snowball_Register(Obj *o);
 BOOL Snowball_IsInBallState(Obj *o);
 void Snowball_InitState(Obj *o);
 void Snowball_RunState(Obj *o);

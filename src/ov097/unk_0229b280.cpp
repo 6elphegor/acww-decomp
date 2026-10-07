@@ -4,18 +4,23 @@
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
 #include "menu/PocketMenu.h"
+#define PROTO_LOCAL_RoomWallFloor_SetCarpet  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomWallFloor_SetWallpaper  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN10PocketMenu15actionUseCarpetEv  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN10PocketMenu18actionUseWallpaperEv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov096/unk_02294c40.h"
+#include "proto/ov097/unk_0229b280.h"
 
 extern "C" {
-s32 Snd_PlaySe(s32 a);
-void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 s32 Item_IsFurniture(u16 *p);
 s32 FieldAction_RequestDrop(s32 a, s32 b);
 u16 *RoomWallFloor_SetWallpaper(void *a, s32 b, s32 c, s32 d);
 u16 *RoomWallFloor_SetCarpet(void *a, s32 b, s32 c, s32 d);
-u32 Room_CountOccupants();
-s32 FtrMgr_FindPlacementForPlayer(void *out, void *in, s32 n);
-s32 FtrMgr_SpawnFromArg(s32 p);
-BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
 extern "C" CommManager *gCommManager;
@@ -25,14 +30,8 @@ extern "C" CommManager *gCommManager;
 
 
 extern "C" {
-void PocketMenu_ReturnToIdle(class PocketMenu *self);
-void PocketMenu_ShowMessage(class PocketMenu *self, s32 a, s32 b, s32 c);
-u16 PocketMenu_GetItem(class PocketMenu *self, u32 a);
-void PocketMenu_SetSlotItem(class PocketMenu *self, u32 k, u32 x, u32 y);
-void PocketMenu_ClearSlotItem(class PocketMenu *self, u32 a);
 }
 
-extern "C" BOOL PocketMenu_CanEditRoom();
 
 static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;

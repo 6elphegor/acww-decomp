@@ -1,0 +1,44 @@
+#ifndef PROTO_PROTO_OV004_UNK_OV004_0223F2C8_H
+#define PROTO_PROTO_OV004_UNK_OV004_0223F2C8_H
+
+// Prototypes of the functions defined in src/ov004/unk_ov004_0223f2c8.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_KkShowFx_Start
+void KkShowFx_Start(void);
+#endif
+#ifndef PROTO_LOCAL_KkShowFx_Update
+void KkShowFx_Update(void);
+#endif
+#ifndef PROTO_LOCAL_KkShowFx_CallUnk1f70
+void KkShowFx_CallUnk1f70(void);
+#endif
+#ifndef PROTO_LOCAL_KkShowFx_Stop
+void KkShowFx_Stop();
+#endif
+#ifndef PROTO_LOCAL_KkShowFx_CallUnk1de4
+void KkShowFx_CallUnk1de4();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_KkShowFx_SetParam
+void KkShowFx_SetParam(s32 a);
+#endif
+#ifndef PROTO_LOCAL_KkShowFx_GetState
+s32 KkShowFx_GetState();
+#endif
+}
+#endif
+
+#endif

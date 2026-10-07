@@ -3,6 +3,12 @@
 #include "net/gpi.h"
 #include "net/gpiProfile.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227c6f0.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 extern "C" {
@@ -28,8 +34,6 @@ s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *
 s32 gpiRecvToBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32 *, const char *);
 void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
-void gpiDebug(GPConnection *, const char *, ...);
-void *GsUtil_Realloc(void *, s32);
 s32 gpiCheckForError(GPConnection *, char *, s32);
 s32 gpiProcessRecvBuddyMessage(GPConnection *, char *);
 s32 gpiOperationsAreBlocking(GPConnection *);
@@ -42,17 +46,9 @@ s32 gpiCanFreeProfile(GPIProfile *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiInitProfiles(GPConnection *);
 void SocketStartUp();
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 void TableFree(void *);
 
-char *strstr(const char *, const char *);
-void memcpy(void *, const void *, s32);
-void memmove(void *, void *, u32);
-s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
-void memset(void *, s32, u32);
-void srand(u32 seed);
 
 s32 gpiReset(GPConnection *h);
 s32 gpiDestroy(GPConnection *h);

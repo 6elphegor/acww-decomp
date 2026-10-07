@@ -32,6 +32,19 @@
 #include "player/PlayerData.h"
 #include "room/FtrActor.h"
 #include "talk/TalkWindowState.h"
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/ov004/unk_ov004_0221789c.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 class FleaMarketSellerVillager;
 
@@ -97,8 +110,6 @@ s32 NpcActor_getPlayerActor(void *, u32);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 void BlockMap_getWalkLinksAtPos(void *, void *);
-s32 Vec_Equal(void *, void *);
-s32 Vec_NotEqual(void *, void *);
 s32 Math_CountDownU8(void *);
 s32 Math_AngleDiffAbs(s32, s32);
 s32 NpcActionCtrl_getAction(void *);
@@ -113,13 +124,9 @@ s32 TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, u32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 NpcActor_getAngleTo(void *, void *);
-void NpcActor_ChargePlayer(void *, s32);
-void Pocket_AddItem(void *, s32);
-s32 FtrMgr_RemoveActorByIndex(s32 idx);
 void Villager_RemoveFurnitureAt(void *, void *, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
-void FtrMgr_SetSaleMode(void);
 void NpcFootstepFx_enableFootsteps(void *);
 u8 Scene_GetPrevious(void);
 s32 SceneId_IsTownUnk31(u32 a);
@@ -128,34 +135,25 @@ s32 NpcActor_getNpcIndex(void *);
 s32 FgData_GetVillagerLayout(void *, s32, s32);
 void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
-void Mem_Free(s32);
-s32 FtrInfo_GetUnk05(void);
 void *VillagerDataProfileView_getShirt(void *o);
 void *Villager_GetState(void *o);
 void *VillagerData_getVillagerId(void *o);
-void *PlayerActor_GetActor(u32 a);
 s32 Ground_IsOnLockedExit(void *p);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *v);
-void *FtrActorGrid_GetInstance();
 s32 FtrActorGrid_getIndex(void *g, s32 x, s32 y, u32 z);
 void *FtrActorGrid_getActor(void *g, s32 x, s32 y, u32 z);
 u16 Item_MakeFurniture(void *p, u32 a);
 void FtrActor_findOwnTile(void *o, s32 *x, s32 *y, u32 a, u32 b);
 void *Scene_GetTouchPicker();
 void TouchPick_GetGroundPos(void *a, void *b);
-void *TouchPick_GetTargetObject(void *a, u32 b, u32 c);
 s32 Villager_HasShownFurnitureAt(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
 u32 VillagerId_makeFileName(void *a, void *b, u32 c, const void *d);
 void *FtrActor_GetFtrIndex(void *self);
-s32 Pocket_FindEmpty();
 void TalkWindowState_setNextMessage(void *a, u8 *b, void *c);
-void Hud_Hide();
-u32 Random_GlobalBelow(u32 a);
-void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *o);
 void *Villager_FindOrCreateMemory(void *o, void *a);
 void *Villager_FindMemory(void *o, void *a);
@@ -165,7 +163,6 @@ void func_ov004_022180e0(void *o);
 s32 Item_GetPrice(void *o);
 void ActorTalkRequest_setNumberSlot(void *o, s32 a, u32 b, u32 c, u32 d, u32 e);
 s32 Villager_CountFurnitureLike(void *o, u16 *p);
-s32 NpcActor_CanPlayerPay(void *o, s32 a);
 void ActorTalkRequest_setItemNameSlot(void *o, void *a, u32 b, u32 c);
 void *ActorTalkRequest_getChoiceList(void *o);
 }
@@ -246,7 +243,6 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" FleaMarketSellerVillager *FleaMarketSellerVillager_Create();
 extern "C" ActorProfile sFleaMarketSellerVillagerProfile = {(void *(*)())FleaMarketSellerVillager_Create, 0x86, 0x8a, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_022506c8[0x28];

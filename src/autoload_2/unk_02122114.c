@@ -1,3 +1,7 @@
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02119020.h"
+#include "proto/autoload_2/unk_02122114.h"
+#include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // Wireless peer/transfer management module (WM-based), autoload_2 0x02122114-0x02122944. ARM code, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
@@ -19,13 +23,11 @@ extern void OS_RestoreInterrupts(u32);
 extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 func_0213335c(u32, u32);
-extern void Fatal_Trap(void);
 extern void *MBi_MakeParentSendBuffer(void *, void *);
 extern u32 IsChildAidValid(u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern u8 *WM_ReadMPData(void *, u32);
 extern void FS_InitFile(void *);
-extern void *FS_FindArchive(void *, u32);
 extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
 extern u32 FS_ReadFile(void *, u32, u32);
 extern void FS_CloseFile(void *);
@@ -87,7 +89,6 @@ typedef struct {
     WPeer peer[16];            // 0x1788
 } WWork;
 #define WK2 ((WWork *)data_0220001c)
-void MBi_CommParentRecvData(void *arg);
 static inline void wsave(u32 idx, u8 *buf, u32 aid) {
     WK2->f14a8[idx] = *(u32 *)(buf + 20);
     WK2->f148a[idx] = *(u16 *)(buf + 46);

@@ -13,6 +13,20 @@
 #include "gfx/CachedModel.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
+#define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_RotateZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0204f2a4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020742f4.h"
 
 extern "C" const u8 data_020ca314[4];
 
@@ -45,15 +59,10 @@ class FishDisplay;
 extern "C" {
 s32 func_02072e44(void *);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
-s32 FishDisplay_FindFreeEntry(void);
-u32 FishDisplay_GetRequestKind(u32 i);
-void FishDisplayEntry_SetScale(FishDisplayEntry *, VecFx32 *);
-void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 gFieldSceneKind;
 void *_ZN9ModelSlot7getHeapEv(void *);
-void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_021065dc(void *p);
 s32 func_021065f8(s32, s32);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
@@ -63,10 +72,7 @@ void Mtx43_RotateX(void *, s32);
 void Mtx43_RotateXYZ(void *, s32, s32, s32);
 void Mtx43_RotateY(void *, s32);
 void Mtx43_RotateZ(void *, s32);
-s32 Str_SPrintf(char *, const char *, ...);
 extern u8 data_021f47e0[];
-void FishDisplayHeap_Create(void);
-void FishDisplayHeap_Destroy(void);
 void ModelSlotHandle_Destroy(void *p);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
 void SndSeEmitter_dtor(void *p);
@@ -74,15 +80,12 @@ void SndSeEmitter_dtor(void *p);
 void SndSeEmitter_ctor(void *p);
 void ModelSlotHandle_Init(void *p);
 void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
-void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
-void NetBuf_UnpackPair20(void *buf, s32 *a, s32 *b);
 }
 
 extern "C" {
 FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *p);
 FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *p);
-FishDisplay *FishDisplay_Create(void);
 }
 
 class FishDisplay : public GameProc {
@@ -110,7 +113,6 @@ public:
 extern "C" {
 FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *p);
 FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *p);
-FishDisplay *FishDisplay_Create(void);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)

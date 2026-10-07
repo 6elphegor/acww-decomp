@@ -2,6 +2,13 @@
 #include "types.h"
 #include "net/WfcRect.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_WfcDialog_Open  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcText_CreateObjCanvas  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -51,9 +58,7 @@ void *WfcObj_GetOam(void *, s32);
 void WfcText_DestroyObjCanvas(void *);
 void WfcUtil_SetRect(s32, s32, s32, s32, void *);
 void WfcGx_SetWindowRect(s32, s32, const void *);
-void WfcTask_RequestDelete(s32, s32);
 void WfcTask_SetFunc(s32, void *);
-void *WfcTask_Add(s32, void *, s32, s32);
 void WfcUtil_RectFromPosSize(const void *, const void *, void *);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyPressed(s32);
@@ -63,28 +68,10 @@ void *WfcHeap_AllocClear(s32, s32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcText_CreateObjCanvas(s32, s32, s32, s32, void *, s32);
 void *WfcObj_Alloc(s32, s32, s32);
-void *WfcUtil_GetTextFlags();
-void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, void *, s32);
-void WfcText_ArrangeObj(void *, u32, u32, void *, s32);
 void WfcGx_SetWindowPlanes(s32, s32, s32, s32);
-void *WfcMsg_GetStringWithDigit(void *, s32, s32, s32);
 void G2x_ChangeBlendBrightness_(u32, s32);
 void G2x_SetBlendBrightness_(u32, s32, s32);
 
-void WfcDialog_DestroyTask(s32 a);
-void WfcDialog_UndimTask(s32 a);
-void WfcDialog_SlideOutTask(s32 a);
-void WfcDialog_CloseDelayTask(s32 a);
-void WfcDialog_PressButton(s32 i);
-void WfcDialog_ClipObj(void *a, s32 b);
-void WfcDialog_SetY(s32 r);
-void WfcDialog_AutoCloseTask(s32 r);
-void WfcDialog_InputTask(s32 r);
-void WfcDialog_SlideInTask(s32 r);
-void WfcDialog_DimTask(s32 r);
-BOOL WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-void WfcDialog_Close();
 void WfcDialog_Open(s32 a, s32 b, s32 c, s32 d, s32 e);
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 sWfcDialogButtonCells[6][2];

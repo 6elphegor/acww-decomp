@@ -8,6 +8,9 @@
 #include "gfx/DebugColor.h"
 #include "gfx/BgModelCache.h"
 #include "gfx/Camera.h"
+#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02036c58.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
@@ -35,7 +38,6 @@ extern VecFx32 gCameraLookAt;
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
 s32 Camera_getEyeCurveAngle(void *self);
-void *BgModelCache_Get();
 void *BgModelCache_getAcre(void *self, s32 i);
 s32 BgModelCache_getGroundTex(void *self);
 }

@@ -17,6 +17,9 @@
 #include "gfx/G3dResAccess.h"
 #include "gfx/Model.h"
 #include "save/MuseumData.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/ov004/unk_ov004_02227b44.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -104,13 +107,7 @@ extern "C" {
 extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 RoomObjRes_GetBca(void *, u32);
-void *Heap_Alloc(void *heap, u32 size);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-void MuseumDisplay_InitRenderObj(void *p);
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);
-const MuseumDisplayKind *MuseumDisplay_GetKindInfo(u32 i);
-u16 MuseumDisplay_GetPaintingItem(u32 i);
-MuseumDisplay *MuseumDisplay_Create();
 void Item_MakeInsect();
 }
 

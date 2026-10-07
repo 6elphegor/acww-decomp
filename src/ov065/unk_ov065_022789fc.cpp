@@ -6,6 +6,11 @@
 #include "net/gsPlatformUtil.h"
 
 #include "types64.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
 
 // ov065 TU36: GameSpy common (nonport: PRNG/base64/socket wrappers, ghttpBuffer) 0x022789fc..0x0227931c
 
@@ -32,7 +37,6 @@ extern s32 GSINitroErrno;
 s32 Sock_InetAtoN(s32, u32 *);
 s32 Sock_GetSockName(s32, void *);
 s32 CheckRcode(s32, s32);
-u64 OS_GetTick(void);
 s32 longrand(void);
 u32 nextlongrand(u32);
 void TripToQuart(char *, char *, s32);
@@ -76,15 +80,7 @@ u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GOAGetLastError(s32 s);
 s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
-u32 STD_GetStringLength(const char *s);
-char *STD_CopyString(char *d, const char *s);
-void *GsUtil_Alloc(u32 n);
-void *GsUtil_Realloc(void *p, s32 n);
-void GsUtil_Free(void *p);
 void OS_Sleep(s32 ms);
-u64 OS_GetTick();
-void memcpy(void *d, const void *s, u32 n);
-void memset(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 CheckRcode(s32 a, s32 b);

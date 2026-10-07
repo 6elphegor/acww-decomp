@@ -3,15 +3,14 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "sys/SceneBase.h"
+#include "proto/main/unk_020029e8.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0208e6d8.h"
+#include "proto/main/unk_0209c08c.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b45e0.h"
 
 extern "C" {
-void AbAllObjGfx_Upload(void);
-void Snd_CreateScene(void);
-void TransitionCommIcon_Resume(void);
-u32 Scene_GetSavedFadeIn(void);
-void Scene_Request(u32 a, u32 b, u32 c, u32 d);
-u32 NetArea_GetMoveState(void);
-void NetArea_SetMoveState(u32 x);
 void Scene_ShutdownGraphics(void);
 void Scene_SetupGraphics(void);
 extern u32 gGfxFrameHooks;

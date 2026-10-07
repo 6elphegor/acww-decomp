@@ -5,6 +5,16 @@
 #include "player/PlayerActor.h"
 #include "player/PlayerData.h"
 #include "player/PlayerFaceTexRef.h"
+#define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 
 
@@ -30,18 +40,15 @@ extern void *gSceneBlockMap;
 }
 
 extern "C" {
-PlayerActor *PlayerActor_Get(u32 idx);
-}
-
-extern "C" {
-void *PlayerData_GetBySessionSlot(u32 idx);
 }
 
 extern "C" {
 }
 
 extern "C" {
-void PlayerData_SetStungFace(void *p, s32 v);
+}
+
+extern "C" {
 }
 
 extern "C" {
@@ -76,7 +83,6 @@ s32 Scene_InHouseRoom();
 }
 
 extern "C" {
-s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, s32 c, s32 d);
 }
 
 extern "C" {
@@ -94,19 +100,15 @@ extern "C" {
 }
 
 extern "C" {
-s32 ItemInfo_GetHoldableCount();
 }
 
 extern "C" {
-void ItemInfo_GetNthHoldable(u16 *out, u32 v);
 }
 
 extern "C" {
-void HeldItemModel_SetItem(HeldItemModel *p, u16 *v, void *z);
 }
 
 extern "C" {
-void HeldItemModel_Update(HeldItemModel *p);
 }
 
 extern "C" {
@@ -126,7 +128,6 @@ s32 Item_GetFurnitureIndex(void *p);
 }
 
 extern "C" {
-s32 Math_AngleToDir4(s32 v);
 }
 
 extern "C" {
@@ -146,7 +147,6 @@ s32 PlayerActor_RequestFishReelIn(PlayerActor *o, u32 a, u32 b, s32 c);
 }
 
 extern "C" {
-s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
 }
 
 // members of PlayerActor whose symbols.txt names do not fit the method declarations (taken `this` first)

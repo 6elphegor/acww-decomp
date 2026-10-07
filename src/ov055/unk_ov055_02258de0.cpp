@@ -26,6 +26,20 @@
 #include "actor/ActorProfile.h"
 #include "npc/NpcActionCtrl.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_NetOverlay_AssertOv067  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WlxIsExchangeDone  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WlxIsReady  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WlxStartExchange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_WlxStopExchange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/ov004/unk_ov004_0223f43c.h"
+#include "proto/ov055/unk_ov055_02258de0.h"
 
 
 
@@ -64,25 +78,16 @@ extern SpNpcRover *sSpNpcRoverInstance;
 
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
-TownExchangeRecord *TownExchange_GetForAid(s32 i);
-void TownExchange_Clear(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
-s32 Constellation_PrepareExchange();
-s32 Save_WriteVillagerTransfer();
 s32 Net_WlxIsExchangeDone(void *p);
 s32 Net_WlxIsReady(void *p);
 void Net_WlxStopExchange(void *p);
 void Net_WlxStartExchange(void *p);
-void Net_StartOv067(void *a, void *b, u32 n);
-void Snd_PlaySe(s32 v);
-void Comm_EndOv067Mode();
-void Comm_StartOv067Mode();
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
-void Camera_SetMode20At(void *p);
 }
 void *NetOverlay_AssertOv067();
 class SpNpcRoverTalk;
@@ -176,7 +181,6 @@ public:
 
 
 extern "C" {
-SpNpcRover *SpNpcRover_Create();
 extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
 #define data_ov055_02259a4c ((SpNpcRoverActEntry *)((u8 *)sSpNpcRoverActTable + 8))
 extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];

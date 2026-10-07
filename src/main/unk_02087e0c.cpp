@@ -1,12 +1,12 @@
 #include "types.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02087e60.h"
 
 // TU138: 0x02087e0c-0x02087e60. Sprite attribute helpers and the width table (.rodata 0x020cf558-0x020cf588).
 
 extern "C" {
 extern const s32 sOamObjHeights[12];
 
-s32 Oam_GetHeight(s32 a, s32 b);
-s32 Oam_GetWidth(s32 a, s32 b);
 }
 
 extern "C" const s32 sOamObjHeights[12] = {8, 0x10, 0x20, 0x40, 8, 8, 0x10, 0x20, 0x10, 0x20, 0x20, 0x40};

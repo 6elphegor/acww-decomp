@@ -46,11 +46,9 @@ struct SimpleStartExchangeKey { u8 v[8]; };
 extern "C" {
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 v);
-u64 OS_GetTick();
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MIi_CpuCopy32(void *dst, void *src, u32 n);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
-void memcpy(void *dst, const void *src, u32 n);
 void OS_Sleep(s32 n);
 s32 OS_IsThreadTerminated(void *a);
 void OS_WakeupThreadDirect(void *a);
@@ -63,8 +61,6 @@ void OS_CancelAlarm(void *p);
 void OS_CreateAlarm(void *p);
 void OS_SetAlarm(void *p, s32 a, s32 b, void *cb, s32 prio);
 void OS_GetMacAddress(void *macAddr);
-s32 memcmp(const void *a, const void *b, u32 n);
-void memset(void *d, s32 v, u32 n);
 void strcpy(void *d, void *s);
 u32 strlen(const void *s);
 
@@ -88,72 +84,12 @@ s32 Sock_Bind(s32, void *);
 s32 Sock_Close(s32);
 s32 Sock_RecvFrom(s32, void *, s32, s32, void *);
 
-void SimpleStart_NotifyStatus(void);
-s32 SimpleStart_GetResult(void *dst);
-s32 SimpleStart_GetStatus(s32 *out);
-s32 SimpleStart_Stop(void);
-s32 SimpleStart_Start(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
-s32 SimpleStart_FormatMac(char *dst, s8 *src);
-s32 SimpleStart_FormatHexByte(char *buf, u32 v);
-void SimpleStart_Free(void *p);
-void *SimpleStart_Calloc(u32 n, u32 m);
-u32 SimpleStart_GetMilliseconds();
-void SimpleStart_Md5(void *out, void *p, u32 n);
-void SimpleStart_Md5Memset(void *p, s32 c, u32 n);
-void SimpleStart_Md5Memcpy(u8 *dst, u8 *src, u32 n);
-void SimpleStart_Md5Decode(u32 *dst, u8 *src, u32 n);
-void SimpleStart_Md5Encode(u8 *dst, u32 *src, u32 n);
-void SimpleStart_Md5Transform(u32 *state, u8 *block);
-void SimpleStart_Md5Final(u8 *out, SimpleStartMd5Ctx *ctx);
-void SimpleStart_Md5Update(SimpleStartMd5Ctx *ctx, const u8 *data, u32 len);
 void SimpleStart_Md5Init(SimpleStartMd5Ctx *ctx);
-void SimpleStart_AesDecryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt);
-void SimpleStart_AesEncryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt);
-s32 SimpleStart_AesKeySetupDec(u32 *rk, const u8 *key, s32 bits);
-s32 SimpleStart_AesKeySetupEnc(u32 *rk, const u8 *cipherKey, s32 keyBits);
-void SimpleStart_Xor8(const u8 *a, const u8 *b, u8 *c);
-void SimpleStart_ThreadMain();
-s32 SimpleStart_AesKeyUnwrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 keylen);
-s32 SimpleStart_AesKeyWrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 keylen);
-s32 SimpleStart_RunProtocol();
 s32 SimpleStart_BuildResult();
-s32 SimpleStart_ParseHex(u8 *dst, s8 *src, s32 n);
-s32 SimpleStart_ParseConfigTlvs(u8 *p);
-s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused);
-BOOL SimpleStart_GetOwnMac(void *mac);
-u32 SimpleStart_BuildHelloPacket(u8 *pkt);
-s32 SimpleStart_RecvPacket(u8 *pkt, s32 type, u8 *dst, u8 *extra);
-BOOL SimpleStart_ParseHelloReply(u8 *pkt, s32 *out);
-s32 SimpleStart_BuildTlvBlock(u8 *p, u32 id, u8 *data, u32 len);
-u8 *SimpleStart_PutTlv(u8 *out, u32 id0, u8 *data, u32 len);
-s32 SimpleStart_BuildPacket(u8 *pkt, u32 type, u8 *hdr, u32 len, u8 *extra);
-u8 *SimpleStart_FirstTlv(u8 *pkt, s32 *a, s32 *b);
-u8 *SimpleStart_NextTlv(u8 **cur, u8 *end, s32 *type, s32 *len);
-u8 *SimpleStart_CheckPacket(u8 *pkt, s32 *type, s32 *len);
-s32 SimpleStart_SendPacket(u8 *a, u8 *b, u8 *c, u32 d);
-s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c);
-s32 SimpleStart_SendTo(u8 *a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e);
-BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out);
 s32 SimpleStart_SearchAp();
-void SimpleStart_Disconnect(void);
 s32 SimpleStart_ConnectAp(void);
-s32 SimpleStart_WlanShutdown(void);
-s32 SimpleStart_WlanStartup(s32 n);
-void SimpleStart_AlarmCallback(u32 a);
-void SimpleStart_PushMsg(u32 v, u32 w);
-s32 SimpleStart_PopMsg(void);
-void SimpleStart_ClearMsgQueue(void);
 void SimpleStart_SocFree(s32 a, void *p, s32 n);
 void *SimpleStart_SocAlloc(s32 a, s32 n);
-s32 SimpleStart_WcmGetState(void);
-s32 SimpleStart_WcmInit(void *cb, void *buf, s32 size);
-s32 SimpleStart_WcmConnect(void *p, void *x, s32 y);
-s32 SimpleStart_WcmCleanup(void);
-s32 SimpleStart_WcmDisconnect(void);
-s32 SimpleStart_WcmStartSearch(u8 *a, u8 *b, s32 c, s32 d);
-s32 SimpleStart_WcmReadApList(u8 *buf, s32 n);
-s32 SimpleStart_WcmToIdle(void);
-void SimpleStart_WcmCallback(void *pp);
 
 extern const u32 sSimpleStartAesRcon[10];
 extern u8 gWifiLinkAnyBssid[];
@@ -765,6 +701,20 @@ extern "C" u8 sSimpleStartPacketBuf[0x800] = {0};
 // mwcc-flags: -O4,p
 #pragma opt_dead_assignments off
 #include "types.h"
+#define PROTO_LOCAL_OS_CancelAlarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_CreateAlarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SimpleStart_BuildResult  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SimpleStart_ConnectAp  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SimpleStart_SearchAp  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SimpleStart_SocAlloc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SimpleStart_SocFree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_strcpy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov001/unk_ov001_02203b1c.h"
 
 struct SimpleStartKeyWrapBlock { u8 b[8]; };
 

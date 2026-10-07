@@ -19,6 +19,13 @@
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/ItemPickSpec.h"
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_02228700.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -131,7 +138,6 @@ void RoomObjRes_Free(void *);
 void RoomObjTex_Reset(void *);
 s32 RoomObjRes_GetBca(void *, u32);
 s32 RoomObjRes_GetBta(void *, u32);
-void RoomObj_PlaySeHeld(void *, u32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
@@ -139,12 +145,7 @@ void _ZN22DateSeededRandomSourceC2Ev(void *);
 void _ZN22DateSeededRandomSourceD2Ev(void *);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *out, void *p, u32 a, void *q, u32 b, u32 c, u32 d);
-s32 ClothTex_LoadItem(void *p, void *q, u32 a);
-void *ClothTex_GetTex(void *p);
-s32 Math_EaseRampProgress(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Math_IsInRange(s32 a, s32 b, s32 c);
-BOOL MenuCtrl_IsMenuOpen();
-SewingMachine *SewingMachine_Create();
 }
 
 typedef void (SewingMachine::*Unk_ov004_022288c0_Fn)();

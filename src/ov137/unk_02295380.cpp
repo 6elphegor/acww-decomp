@@ -8,6 +8,14 @@
 #include "menu/MenuLauncher.h"
 #include "player/PlayerData.h"
 #include "ui/HandCursor.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov134/unk_ov134_02291f60.h"
+#include "proto/ov137/unk_02295380.h"
 
 extern "C" {
 extern const u8 sBirthdayCursorRightTable[4];
@@ -22,32 +30,10 @@ extern u8 gTouchChanged;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-void *PlayerData_GetCurrent();
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
 
 void MenuButtons_LoadTextColors(void *self);
 
 // ov134 library object (class DateTimePicker): plain functions take the object first
-BOOL DateTimePicker_HitTestList(void *self, s32 x, s32 y);
-s32 DateTimePicker_UpdateListClose(void *self);
-void DateTimePicker_CancelList(void *self);
-void DateTimePicker_DecideList(void *self);
-s32 DateTimePicker_UpdateListOpen(void *self);
-void DateTimePicker_OpenList(void *self, s32 a);
-u8 DateTimePicker_GetCursorField(void *self);
-s32 DateTimePicker_HitTestMonthDayField(void *self, u8 a, u8 b);
 void DateTimePicker_Draw(void *self, s32 a, s32 b);
 void DateTimePicker_LoadObjGraphics(void *self);
 void DateTimePicker_DrawTitleAndFields(void *self, u32 a);

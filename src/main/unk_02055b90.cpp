@@ -1,10 +1,10 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
+#include "proto/main/unk_02055bcc.h"
 
 
 
-extern "C" void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c);
 
 char sJointAnmHeader[4] = {'J', 0, 'A', 'C'};
 

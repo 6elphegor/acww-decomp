@@ -2,16 +2,16 @@
 #include "gfx/VecFx32.h"
 #include "game/Unk_02037674_V3.h"
 #include "gfx/BgModelCache.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02037260.h"
+#include "proto/main/unk_02037358.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0209bca8.h"
 
 
 extern "C" {
-void *File_LoadAlloc(const char *, void *, s32, void *);
-void Mem_Free(void *);
-void *Heap_AllocAligned(void *, s32, s32);
 void MI_CpuFill8(void *, s32, s32);
-s32 Acre_HasPond(s32);
 s32 CollisionMap_SetBlock(s32, s32, s32, s32);
-u32 Acre_GetAttr(u32 x);
 extern void *gCurrentHeap;
 }
 

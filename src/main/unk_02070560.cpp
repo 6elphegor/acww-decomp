@@ -18,6 +18,38 @@
 #include "save/SaveData.h"
 #include "town/TownBlockMap.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_ClothTex_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PatternPresetInfo_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PatternTexCache_ClearDirty  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PatternTexCache_ResetKeys  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownFlagPatternDefault_Extract  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownFlagPattern_GetPattern  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Assign  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_SetId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_SetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02214dfc.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -139,31 +171,22 @@ extern "C" {
 extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
-void *Mem_Alloc(u32 n);
 }
 extern "C" {
-void Mem_Free(void *p);
 }
 extern "C" {
-void AblePatternDefaults_Ctor(void *p);
 }
 extern "C" {
-void PlayerPatternDefaults_Ctor(void *p);
 }
 extern "C" {
-BOOL AblePatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-BOOL PlayerPatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-void AblePatternDefaults_Load(void *t);
 }
 extern "C" {
-void PlayerPatternDefaults_Load(void *t);
 }
 extern "C" {
-void *PatternPresetInfo_Get(void);
 }
 extern "C" {
 void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
@@ -181,31 +204,25 @@ extern "C" {
 void _ZN6TownId7setTownEPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
-s32 memcmp(void *a, void *b, u32 n);
 }
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
-s32 Comm_AidToPeerIndex(s32 i);
 }
 extern "C" {
-s32 Comm_IsWifi();
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void *PatternTexCache_Get();
 }
 extern "C" {
 u8 *_ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
 }
 extern "C" {
-s32 Fatal_Trap();
 }
 extern "C" {
 void _ZN13EncodedString13fromMsgStringEP9MsgString(EncodedString16Buf *o, void *x);
@@ -521,19 +538,14 @@ namespace n4 {
 // ======== unk_0207116c.cpp ========
 namespace n3 {
 extern "C" {
-void Gfx2d_TilesToLinear4bpp(void *src, void *dst, s32 w, s32 h);
 }
 extern "C" {
-void Gfx2d_TilesInRow32ToLinear(void *src, void *dst, s32 x, s32 w, s32 h);
 }
 extern "C" {
-void File_LoadToBuffer(char *name, void *p, u32 size);
 }
 extern "C" {
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
 }
 extern "C" {
-void *File_Load(void *p);
 }
 extern "C" {
 void *_ZN10RecordFile9getRecordEj(void *, s32);
@@ -551,16 +563,13 @@ extern "C" {
 void _ZN10RecordFileC1Ev(void *);
 }
 extern "C" {
-s32 PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
 s32 _ZN10PlayerData8getIndexEv(s32 p);
 }
 extern "C" {
-void PatternTex_UploadPlayer(u32 a, s32 b);
 }
 extern "C" {
-void PatternTex_UploadAble(s32 a);
 }
 extern "C" {
 s32 Scene_GetCurrent(void);
@@ -569,31 +578,23 @@ extern "C" {
 s32 Scene_InTown(void);
 }
 extern "C" {
-void *BuildingList_FindByItem(u32 a);
 }
 extern "C" {
-void GateHouse_ApplyTownFlag(void *self);
 }
 extern "C" {
-void Mem_Free(void *p);
 }
 extern "C" {
-void *Mem_Alloc(u32 size);
 }
 extern "C" {
-void Heap_Free(void *heap, void *p);
 }
 extern "C" {
-void *Heap_Alloc(void *heap, u32 size);
 }
 extern "C" {
 void ClothTex_Construct(void *p);
 }
 extern "C" {
-void ClothTex_LoadItem(void *self, u16 *p, void *q);
 }
 extern "C" {
-void *PlayerData_GetResident(void *tbl, s32 i);
 }
 extern "C" {
 void *_ZN10PlayerData11getPatternsEv(void *p);
@@ -602,13 +603,11 @@ extern "C" {
 void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 i);
 }
 extern "C" {
-void *ClothTex_GetTexData(void *unused);
 }
 extern "C" {
 void *_ZN7Pattern9getPixelsEv(void *p);
 }
 extern "C" {
-void *ClothTex_GetPlttData(void *unused);
 }
 extern "C" {
 void *_ZN7Pattern7getInfoEv(void *p);
@@ -617,7 +616,6 @@ extern "C" {
 void *_ZN11PatternInfo14getPaletteDataEv(void *p);
 }
 extern "C" {
-void *ClothTex_GetTex(void *);
 }
 extern "C" {
 s32 Gfx3d_LoadTexAndPltt(void *a, u32 b);
@@ -626,7 +624,6 @@ extern "C" {
 void *ResCache_GetTex(void *a, u32 key);
 }
 extern "C" {
-s32 ClothTex_LoadPattern(void *a, void *b);
 }
 extern "C" {
 void *_ZN19AbleSistersPatterns10getPatternEh(void *tbl, u32 i);
@@ -773,16 +770,13 @@ extern "C" {
 extern u16 data_020d03d0;
 }
 extern "C" {
-void PatternTexKeys_Clear(void *p);
 }
 extern "C" {
 void PatternTexCache_ResetKeys(void *p);
 }
 extern "C" {
-void *PatternTexCache_Get(void);
 }
 extern "C" {
-void *PatternPresetInfo_Get(void);
 }
 static inline BOOL Unk_0207116c_Eq1(u8 *p) { return *p == 1 ? TRUE : FALSE; }
 static inline BOOL Unk_0207116c_Eq0(u8 *p) { return *p == 0 ? TRUE : FALSE; }
@@ -799,31 +793,10 @@ extern "C" SaveData gSaveData;
 extern "C" void TownFlagPattern_InitDefault(void *self);
 extern "C" void *TownFlagPattern_GetPattern(void *p);
 extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src);
-extern "C" void *PresetPatternBuffer_Get(void);
 extern "C" void PatternTexCache_ClearDirty(void *p);
-extern "C" void *PatternTexCache_Get(void);
-extern "C" u8 *PatternPaletteFile_GetPalette(u8 **self, s32 i);
-extern "C" void PatternTexKeys_Clear(void *p);
 extern "C" void PatternTexCache_ResetKeys(void *p);
-extern "C" u32 PatternTexKeys_GetPlayer(void *self, s32 a, s32 b);
-extern "C" u32 PatternTexKeys_GetAble(void *self, s32 i);
-extern "C" void PatternPresetInfo_Open(void *p);
-extern "C" s32 PatternPresetInfo_Close(void *p);
 extern "C" BOOL PatternPresetInfo_Apply(void *tbl, void *dst, s32 idx);
-extern "C" void *PatternPresetInfo_Get(void);
-extern "C" void PlayerPatternDefaults_Ctor(void *p);
-extern "C" void PlayerPatternDefaults_Load(void *p);
-extern "C" BOOL PlayerPatternDefaults_Extract(void *a, void *b, s32 x);
-extern "C" void AblePatternDefaults_Ctor(void *p);
-extern "C" void AblePatternDefaults_Load(void *p);
-extern "C" BOOL AblePatternDefaults_Extract(void *a, void *b, s32 x);
-extern "C" void TownFlagPatternDefault_Ctor(void *p);
-extern "C" void TownFlagPatternDefault_Load(void *p);
 extern "C" BOOL TownFlagPatternDefault_Extract(void *a, void *b);
-extern "C" void PresetPatternFile_Ctor(void *p);
-extern "C" void PresetPatternFile_Load(void *dst, s32 n);
-extern "C" BOOL PresetPatternFile_Extract(void *a, void *b);
-extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x);
 
 extern "C" void TownFlagPattern_InitDefault(void *self) {
     void *buf = Mem_Alloc(0x200);
@@ -1238,7 +1211,6 @@ extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 }
 extern "C" {
-void *PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
 void *_ZN10PlayerData11getPatternsEv(void *p);
@@ -1262,10 +1234,8 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void *PatternSrc_Get(s32 t, s32 i);
 }
 extern "C" {
-void PatternSrc_OnChanged(s32 t, s32 i);
 }
 extern "C" {
 void _ZN11CommManager11beginRecordEv(void *g);
@@ -1292,19 +1262,16 @@ extern "C" {
 s32 Villager_GetPlan(void *p);
 }
 extern "C" {
-s32 VillagerPlanBlock_GetPlan(s32 p);
 }
 extern "C" {
 s32 _ZN12VillagerPlan8getStateEv(s32 p);
 }
 extern "C" {
-s32 Random_GlobalBelow(s32 n);
 }
 extern "C" {
 void AbleShop_GetItem(void *tbl, s32 i, u16 *out);
 }
 extern "C" {
-void Item_FromPlacedForm(u16 *dst, u16 *src);
 }
 extern "C" {
 s32 _ZN19AbleSistersPatterns10getPatternEh(void *p, s32 i);
@@ -1316,22 +1283,16 @@ extern "C" {
 s32 _ZN11PatternInfo8getTasteEv(s32 p);
 }
 extern "C" {
-s32 PatternSrc_ResolveKind(s32 t);
 }
 extern "C" {
-s32 PatternSrc_GetSessionPlayer(s32 a, s32 b);
 }
 extern "C" {
-BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
-BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
-BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b);
 }
 extern "C" {
-void Pattern_RemovePlayerItems(s32 p);
 }
 extern "C" {
 static inline s32 Unk_020707ec_K(u16 v, u32 lo, u32 hi) {
@@ -1371,16 +1332,6 @@ static inline BOOL Unk_020707ec_In(u16 v, u32 lo, u32 hi) {
 }
 }
 
-extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b);
-extern "C" BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
-extern "C" s32 PatternSrc_ResolveKind(s32 t);
-extern "C" BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
-extern "C" void Pattern_RemovePlayerItems(s32 p);
-extern "C" s32 PatternSrc_GetSessionPlayer(s32 a, s32 b);
-extern "C" s32 PatternSrc_GetSessionPlayer0(s32 x);
-extern "C" s32 PatternSrc_GetSessionPlayer1(s32 x);
-extern "C" s32 PatternSrc_GetSessionPlayer2(s32 x);
-extern "C" s32 PatternSrc_GetSessionPlayer3(s32 x);
 
 extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
     void *p = SaveVillagers_Get(gSaveVillagers, a);
@@ -1763,7 +1714,6 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void *PlayerData_GetResident(void *a, s32 i);
 }
 extern "C" {
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
@@ -1772,10 +1722,8 @@ extern "C" {
 void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, s32 b);
 }
 extern "C" {
-s32 PlayerData_GetCurrentIndex();
 }
 extern "C" {
-s32 PlayerData_IsResidentIndex(s32 t);
 }
 extern "C" {
 void Clock_GetDateTime(void *p);
@@ -1790,34 +1738,26 @@ extern "C" {
 s32 _ZN10PlayerData6isUsedEv(void *p);
 }
 extern "C" {
-s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 }
 extern "C" {
-void TownId_GetNameString(void *a, void *b);
 }
 extern "C" {
-void MailText_SetSlot(s32 i, void *p);
 }
 extern "C" {
 void _ZN10LetterView10setPresentEtj(void *p, u32 a, s32 b);
 }
 extern "C" {
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
 }
 extern "C" {
-void PatternSrc_Swap(u32 a, u8 b, u32 c, u8 d, s32 e);
 }
 extern "C" {
-void PatternSrc_Copy(u32 a, u8 b, u32 c, u8 d, s32 e);
 }
 extern "C" {
 s32 _ZN19AbleSistersPatterns10getPatternEh(void *p, s32 i);
 }
 extern "C" {
-void ClothTex_LoadPattern(void *p, s32 v);
 }
 extern "C" {
-s32 ClothTex_GetTex(void *p);
 }
 extern "C" {
 void _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
@@ -1829,13 +1769,11 @@ extern "C" {
 void *_ZN14PlayerPatterns10getPatternEh(void *p, s32 i);
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 extern "C" {
 s32 _ZN16BlancaFaceRecord10getPatternEv(void *p);
 }
 extern "C" {
-s32 PresetPatternBuffer_Get();
 }
 extern "C" {
 s32 _ZN15PatternTexCache17loadPresetPatternEi(s32 t, s32 x);
@@ -1853,7 +1791,6 @@ extern "C" {
 s32 _ZN19TownStyleRecordView11getTownFlagEv(void *p);
 }
 extern "C" {
-void TownFlag_GetPattern(s32 p);
 }
 static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -1863,15 +1800,6 @@ static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" s32 PatternSrc_GetAble(s32 x);
-extern "C" void PatternSrc_GetTownFlag();
-extern "C" s32 PatternSrc_GetVillager(s32 x);
-extern "C" s32 PatternSrc_GetPreset(s32 x);
-extern "C" s32 PatternSrc_GetBlancaFace();
-extern "C" void *PatternSrc_GetCurrentPlayer(s32 i);
-extern "C" s32 PatternSrc_Get(s32 i, s32 a);
-extern "C" BOOL PatternTex_UploadPlayer(u32 a, u32 b);
-extern "C" BOOL PatternTex_UploadAble(u32 x);
 extern "C" void PatternSrc_ApplyNetMove(Unk_0206fe80_Bits *p);
 
 extern "C" s32 PatternSrc_GetAble(s32 x) {
@@ -1945,16 +1873,6 @@ extern "C" void PatternSrc_ApplyNetMove(Unk_0206fe80_Bits *p) {
 PatternTexCache sPatternTexCache;
 namespace U125_def {
 extern "C" {
-s32 PatternSrc_GetSessionPlayer0(s32);
-s32 PatternSrc_GetSessionPlayer1(s32);
-s32 PatternSrc_GetSessionPlayer2(s32);
-s32 PatternSrc_GetSessionPlayer3(s32);
-s32 PatternSrc_GetAble(s32);
-s32 PatternSrc_GetTownFlag(s32);
-s32 PatternSrc_GetVillager(s32);
-s32 PatternSrc_GetPreset(s32);
-s32 PatternSrc_GetBlancaFace(s32);
-s32 PatternSrc_GetCurrentPlayer(s32);
 
 u8 *sPlayerPatternTexWork;
 u8 *sPlayerPatternVramTasks;

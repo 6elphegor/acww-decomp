@@ -18,6 +18,8 @@
 #include "sys/TaskList.h"
 #include "sys/ProcBase.h"
 #include "sys/ListNode.h"
+#include "proto/autoload_2/unk_020ed4bc.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 
 typedef void (ProcBase::*TaskFn)();
 
@@ -31,7 +33,6 @@ struct PrioNodeB { void *a, *b, *c; u16 priority; };
 
 
 extern "C" {
-void *TreeNode_GetNextPreOrder(void *);
 BOOL List_PushBack(List *list, ListNode *node);
 BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
 void Task_RunDrawPhase(void);

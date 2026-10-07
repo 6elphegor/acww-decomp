@@ -16,6 +16,20 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02060034.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov109/unk_ov109_02294c40.h"
 
 class SongPickMenu;
 typedef SongPickMenu S;
@@ -29,26 +43,7 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-void Gfx2d_ShowLayer(u32 x);
-void Gfx2d_ResetLayer(u32 x);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void Snd_PlaySe(s32 v);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void MenuCtrl_TickForceClose();
-BOOL MenuCtrl_IsForceCloseDue();
-void MenuCtrl_SetResult(u32 v);
-void MenuCtrl_SetIndex(u32 v);
-BOOL SongSet_HasSong(s32 v);
-void SongSet_AddSong(s32 v);
 
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 void ChoiceIdList_Clear(void *p, u32 v);
 void PopupChoice_Close(void *p, u32 v);
@@ -62,34 +57,7 @@ void PopupChoice_ForceClose(void *p);
 void PopupChoice_Draw(void *p);
 void MenuButtons_LoadTextColors(void *p);
 
-void InventoryItemGrid_DrawHeldItem(void *p, u32 a, u32 b);
-void InventoryItemGrid_ShowSlotName(void *p, void *q, s32 r);
-s32 InventoryItemGrid_SetCursorSlot(void *p, s32 v);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-s32 InventoryItemGrid_GetSlotFlags(void *p, s32 v);
-s32 InventoryItemGrid_GetSlotItem(void *p, s32 v);
-BOOL InventoryItemGrid_IsSlotEmpty(void *p, u32 v);
-BOOL InventoryItemGrid_IsSlotDisabled(void *p, u32 v);
-void InventoryItemGrid_DisableSlot(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
-s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
-void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
-void InventoryItemGrid_RefreshSlot(void *p, u32 a);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
-void Inventory_PlayTouchSe();
-void InventoryItemGrid_LoadPockets(void *p);
-void InventoryItemGrid_Exit(void *p);
-void InventoryItemGrid_PreUpdate(void *p);
-void InventoryItemGrid_Init(void *p, s32 a);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void LetterGrid_LoadPocketLetters(void *p);
-void InventoryBg_Exit(void *p);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_Load(void *p, s32 a);
-void InventoryBg_Init(void *p, s32 a);
-void InventoryBg_DrawSprite(void *p, s32 a);
 }
 
 // ---- out-of-overlay classes, named as in their symbols.txt ----
@@ -248,7 +216,6 @@ s32 SongPickMenu_GetSlotY(S *s, u32 a);
 s32 SongPickMenu_GetSlotX(S *s, u32 a);
 void SongPickMenu_SetSlotItem(S *s, u32 a, u32 b, u32 c);
 u32 SongPickMenu_HitTestSlot(S *s, u32 a, u32 b, s32 c);
-SongPickMenu *SongPickMenu_Create();
 }
 
 

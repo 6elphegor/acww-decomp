@@ -8,6 +8,8 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02106f90.h"
+#include "proto/itcm/unk_01ffa4a0.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;  // (long is 64 bits on 64-bit hosts)
@@ -239,7 +241,6 @@ extern void getScaleDataEx_(ScaleTmp *dst, fx32 frame, const u32 *pData, const R
 extern void getScaleData_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getMdlTrans_(JntAnm *pResult);
 extern void getMdlRot_(JntAnm *pResult);
-extern void getMdlScale_(JntAnm *pResult);
 extern void getRotData_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult);
 

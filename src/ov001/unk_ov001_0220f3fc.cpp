@@ -1,75 +1,45 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#define PROTO_LOCAL_WfcTransferDone_Enter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransferDone_FadeIn  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransferDone_StartExit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransferSend_Enter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransferSend_FadeIn  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransferSend_FadeOut  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcTransferSend_OnResult  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcUtil_SetScene  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208a24.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220cd24.h"
+#include "proto/ov001/unk_ov001_0220eb90.h"
+#include "proto/ov001/unk_ov001_0220f3fc.h"
+#include "proto/ov001/unk_ov001_0220f9e4.h"
+#include "proto/ov001/unk_ov001_02210110.h"
+#include "proto/ov001/unk_ov001_02210390.h"
+#include "proto/ov001/unk_ov001_02210cc0.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 extern "C" {
 extern u8 GX_LoadBG2Scr[];
 s32 OS_SpinWait(u32 a);
 s32 PM_ForceToPowerOff();
-s32 WfcBusyIcon_Delete();
-s32 WfcBusyIcon_Create(u32 a);
-s32 WfcButtonBar_DisableInput();
-s32 WfcButtonBar_EnableInput();
-s32 WfcButtonBar_IsClosed();
-s32 WfcButtonBar_SetResult(u32 a);
-s32 WfcButtonBar_GetResult();
-s32 WfcButtonBar_Close();
-s32 WfcUtil_HideTopMessage();
-s32 WfcUtil_ShowBottomMessage(u32 a);
-s32 WfcUtil_OpenButtonBar(u32 a);
 void WfcUtil_LoadFileTo(void *a, void *b);
-s32 WfcLinkIcon_Delete();
-s32 WfcLinkIcon_Create(u32 a);
-s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
 s32 WfcUtil_SetScene(void *p);
 s32 WfcTransfer_SetCallback(void *a);
-s32 WfcTransfer_IsFinished();
-s32 WfcTransfer_RequestEnd();
-s32 WfcOptions_Enter();
 s32 WfcTransferSend_OnResult(s32 a);
-void WfcTransferSend_Exit();
 s32 WfcTransferSend_FadeOut();
-void WfcTransferSend_Nop2();
-void WfcTransferSend_Nop1();
-void WfcTransferSend_Update();
-void WfcTransferSend_WaitFadeIn();
 s32 WfcTransferSend_FadeIn();
-void WfcTransferSend_LoadBg();
 s32 WfcTransferSend_Enter();
-void WfcTransferDone_PowerOff();
-void WfcTransferDone_FadeOut();
 s32 WfcTransferDone_StartExit();
-void WfcTransferDone_HandleResult();
-void WfcTransferDone_Idle();
-void WfcTransferDone_HandleInput();
-void WfcTransferDone_Update();
-void WfcTransferDone_WaitButtonBar();
-void WfcTransferDone_WaitFadeIn();
 s32 WfcTransferDone_FadeIn();
-void WfcTransferDone_SetupBg();
 s32 WfcTransferDone_Enter();
-void WfcTransferNotice_Exit();
-void WfcTransferNotice_FadeOut();
-s32 WfcTransferNotice_StartExit();
-void WfcTransferNotice_HandleResult();
-void WfcTransferNotice_Idle();
-void WfcTransferNotice_HandleInput();
-void WfcTransferNotice_Update();
-void WfcTransferNotice_WaitButtonBar();
-void WfcTransferNotice_WaitFadeIn();
-s32 WfcTransferNotice_FadeIn();
-void WfcTransferNotice_SetupBg();
-s32 WfcTransferNotice_Enter();
-void WfcTransferIntro_Exit();
-s32 WfcTransferCancelled_Enter();
-s32 WfcTransferFailed_Enter();
-s32 WfcTransferWait_Enter();
-s32 WfcConfig_EraseAll();
-s32 WfcSound_Stop();
-s32 WfcSound_Play(u32 a);
-s32 WfcFade_StartWait(u32 a);
-s32 WfcFade_Start(u32 a, u32 b, u32 c, u32 d);
-s32 WfcFade_IsBusy(u32 a);
-s32 WfcText_DestroyBgCanvas(u32 a);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 s32 WfcInput_IsKeyPressed(u32 a);

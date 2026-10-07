@@ -16,6 +16,30 @@
 #include "menu/MenuLauncher.h"
 #include "ui/HandCursor.h"
 #include "ui/LabelBalloon.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FishCatch_GetReelTarget  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FishCatch_StartRelease  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_LocalReleaseCatch  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov107/unk_ov107_02294c40.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -103,11 +127,6 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 
-s32 ProcBase_GetParent(...);
-void ProcBase_RequestDelete(void *p);
-void Gfx2d_ShowLayer(u32 x);
-s32 MenuCtrl_GetMode();
-void MenuCtrl_GetPocketSelectLabel();
 s32 PendingUnit_ClearActiveOfAid(u32 aid);
 BOOL CommManager_isOnline(void *p);
 BOOL CommManager_isSlotActive(void *p, s32 v);
@@ -123,38 +142,15 @@ s32 FieldAction_RequestPlaceAtPending(s32 a, s32 b);
 s32 FieldAction_RequestDropOrPlace(s32 a, s32 b);
 s32 FieldAction_RequestToolAtPending(s32 a, s32 b, s32 c, s32 d);
 u16 *PendingUnit_GetActivePosOfAid(s32 a);
-void NetBuf_PackPair20(void *dst, s32 a, s32 b);
-u8 *PlayerActor_GetActor(s32 a);
 s32 Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-u32 Random_GlobalBelow(s32 a);
-u16 MenuCtrl_GetPocketsFullItem();
-void Item_FromPlacedForm(void *a, void *b);
-u32 Item_PickRandomPresent();
-void *PlayerData_GetCurrent();
 s32 PlayerData_getCatalog(void *self);
-void Catalog_SetItem(s32 a, void *b, s32 c, s32 d);
-void MenuCtrl_SetPocketsFullItem(u32 v);
-void MenuCtrl_SetIndex(u32 a);
-void MenuCtrl_SetResult(s32 a);
-void Snd_PlaySe(u32 a);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-BOOL PlayerActor_IsInWaitMenu();
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
 void HandCursor_setAnimAtEnd(void *a, s32 b);
 void HandCursor_disableObjWindow(void *a);
 void LabelBalloon_setPos(void *a, s32 b, s32 c);
 s32 HandCursor_getAnim(void *p);
 s32 HandCursor_isAnimDone(void *p);
 s32 HandCursor_enableObjWindow(void *p);
-s32 MenuCtrl_GetPtrArg0();
 
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 void ChoiceIdList_Clear(void *p, u32 v);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 u32 PopupChoice_DecideCancel(void *a, s32 b);
@@ -169,44 +165,12 @@ void PopupChoice_Open(void *a, s32 b);
 void MenuButtons_LoadTextColors(void *p);
 
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
-void HeldInsect_Remove(s32 a, s32 b);
 void FishCatch_EndForShadow(s32 a);
 BOOL FishCatch_StartRelease(s32 a, s32 b, void *c);
 BOOL FishCatch_GetReelTarget(void *a, s32 b);
-s32 HeldInsect_GetStage(...);
-void HeldInsect_Start(s32 a, s32 b);
-void HeldInsect_Release(s32 a, s32 b);
 void PlayerActor_LocalReleaseCatch(s32 a, s32 b, s32 c, s32 d);
 
-void Inventory_PlayTouchSe();
-BOOL InvItem_IsNotFishInsectOrFlower(s32 a);
-void InventoryBg_DrawSprite(void *p, s32 a);
-void InventoryBg_Exit(void *p);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_Load(void *p, s32 a);
-void InventoryBg_Init(void *p, s32 a);
-BOOL InventoryItemGrid_IsSlotEmpty(void *a, s32 b);
-void InventoryItemGrid_DrawHeldItem(void *a, s32 b, s32 c);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void InventoryItemGrid_DisableSlot(void *a, s32 b);
-BOOL InventoryItemGrid_IsSlotDisabled(void *a, s32 b);
-void InventoryItemGrid_RefreshSlot(void *a, s32 b);
-void InventoryItemGrid_SetSlotItem(void *a, s32 b, s32 c, s32 d);
-u32 InventoryItemGrid_GetSlotFlags(void *a, s32 b);
-u32 InventoryItemGrid_GetSlotItem(void *a, s32 b);
-void InventoryItemGrid_SetCursorSlot(void *a, s32 b);
-void InventoryItemGrid_ClearCursorSlot(void *a);
-s32 InventoryItemGrid_GetSlotY(void *a, s32 b);
-s32 InventoryItemGrid_GetSlotX(void *a, s32 b);
-void InventoryItemGrid_ShowSlotName(void *a, void *b, s32 c);
-void InventoryItemGrid_LoadPockets(void *p);
-u32 InventoryItemGrid_FindPocketSlotAt(void *a, s32 x, s32 y);
-void InventoryItemGrid_Exit(void *p);
-void InventoryItemGrid_PreUpdate(void *p);
-void InventoryItemGrid_Init(void *p, s32 a);
-void LetterGrid_LoadPocketLetters(void *p);
 
 // Macro'd (mangled) declarations: the object is the first argument.
 void TouchPromptBalloon_setAutoCloseTimer(void *p, s32 a);
@@ -422,7 +386,6 @@ static inline BOOL Unk_ov107_InRange(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" PocketsFullMenu *PocketsFullMenu_Create();
 
 extern "C" PocketsFullMenu *PocketsFullMenu_Create() { return new PocketsFullMenu(); }
 

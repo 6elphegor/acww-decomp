@@ -2,6 +2,13 @@
 #include "game/Random.h"
 #include "gfx/DebugColor.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_Main_RunWifiUtility  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0206d4a4.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -18,24 +25,14 @@ void OS_ResetRequestIrqMask(s32 v);
 void OverlayHandle_Load(void *p, s32 v);
 void OverlayHandle_Unload(void *p);
 void DwcNet_SetAllocator(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
-void OverlayMgr_Acquire(u32 id);
-void OverlayMgr_Release(u32 id);
-void *Mem_AllocAligned(u32 size, u32 align);
-void Mem_Free(void *p);
-void WfcUtil_Run(void *p, s32 a, s32 b);
 s32 PXI_SendWordByFifo(s32 a, s32 b, s32 c);
 void WaitByLoop(s32 n);
-void Fatal_ExceptionCallback(void *arg, void *p);
 void Random_SetSeed(void *st, u32 v);
 }
 
 // 4-byte colour constants (constructed by __sinit)
 
-extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n);
-extern "C" void Main_DwcFree(u32 a, void *p);
 extern "C" void Main_RunWifiUtility(void);
-extern "C" void Main_PxiSendWordRetry(s32 a, s32 b);
-extern "C" void Fatal_Handler(void *arg);
 
 extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n) {
     return Mem_AllocAligned((u32)p, n);

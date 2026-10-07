@@ -1,5 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_0221cfc0.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -27,11 +30,6 @@ void WfcInput_GetTouchPos(void *);
 s32 WfcInput_IsTouchHeldIn(void *);
 s32 WfcInput_IsTouchRepeatIn(void *);
 s32 WfcInput_IsTouchPressedIn(void *);
-void WfcSound_Stop();
-void WfcSound_Play(s32);
-void WfcSound_SetVolume(s32);
-void WfcSound_SetTrackPitch(s32, s32);
-void WfcTask_Delete(s32, s32);
 void WfcObj_Free(s32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
@@ -39,25 +37,8 @@ void WfcUtil_SetPoint(s32, s32, void *);
 s32 WfcObj_Create(s32, s32, s32);
 void WfcObj_SetPos(s32, s32, u32, u32);
 void WfcObj_SetPriority(s32, s32, s32);
-s32 WfcTask_Add(s32, void *, s32, s32);
 s32 FX_DivS32(s32, s32);
 
-void WfcScrollBar_SetThumbPos(u32 a);
-void WfcScrollBar_GetPartRect(s32 a, u16 *out);
-s32 WfcScrollBar_HitTestArrowHeld(s32 unused);
-s32 WfcScrollBar_HitTest();
-void WfcScrollBar_JumpToTouch();
-void WfcScrollBar_StartArrow(s32 a);
-void WfcScrollBar_UpdateDragSound(s32 a);
-void WfcScrollBar_UpdateDrag();
-void WfcScrollBar_Task();
-void WfcScrollBar_Disable();
-void WfcScrollBar_Enable();
-void WfcScrollBar_SetPos(s32 a);
-u32 WfcScrollBar_GetEvent();
-u32 WfcScrollBar_GetPos();
-void WfcScrollBar_Destroy();
-void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e);
 }
 
 extern "C" const u8 sWfcScrollBarThumbSizes[4] = { 0x55, 0x36, 0x1e, 0x00 };

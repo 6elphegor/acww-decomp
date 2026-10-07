@@ -1,5 +1,9 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0204f134.h"
+#include "proto/main/unk_02063904.h"
 
 struct FishSpawnEntry {
     u8 fishIndex, habitat, weight;
@@ -11,15 +15,11 @@ struct FishSpawnRow {
 };
 
 extern "C" {
-u32 Random_GlobalBelow(u32);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
-u8 FishTable_GetPeriod(u8 r);
-u32 FishTable_GetHourSlot(u32 r);
 extern void *gCommManager;
 }
 
-extern "C" void VillagerRoute_PickOwnHouseBlock(void);
 extern void *sFishTableNov[3];
 extern void *sFishTableAugEarly[3];
 extern void *sFishTableMar[3];

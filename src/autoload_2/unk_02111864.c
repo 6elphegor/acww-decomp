@@ -1,3 +1,4 @@
+#include "proto/autoload_2/unk_021104ac.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -9,15 +10,6 @@ void MI_DmaCopy32(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCo
 void MIi_CpuCopy32(const void *src, void *dest, u32 size);            // MI_CpuCopy32
 void MI_DmaCopy16(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy16
 void MIi_CpuCopy16(const void *src, void *dest, u32 size);            // MI_CpuCopy16
-void *G2S_GetBG0CharPtr(void);
-void *G2_GetBG0CharPtr(void);
-void *G2S_GetBG3ScrPtr(void);
-void *G2_GetBG3ScrPtr(void);
-void *G2S_GetBG2ScrPtr(void);
-void *G2_GetBG2ScrPtr(void);
-void *G2S_GetBG1ScrPtr(void);
-void *G2_GetBG1ScrPtr(void);
-void *G2S_GetBG0ScrPtr(void);
 
 static inline void copy32(s32 dmaNo, const void *src, void *dest, u32 size) {
     if (dmaNo != -1 && size > 48) {

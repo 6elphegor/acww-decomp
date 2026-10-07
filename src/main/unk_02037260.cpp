@@ -1,4 +1,5 @@
 #include "types.h"
+#include "proto/main/unk_02037260.h"
 
 extern "C" u32 AcreAttr_GetType(u32 i);
 
@@ -23,8 +24,6 @@ extern "C" u32 AcreType_FindByAttr(u32 v) {
     return 0x36;
 }
 
-extern "C" u32 Acre_GetAttr(u32 x);
-extern "C" u32 AcreType_GetAttr(s32 i);
 
 extern "C" u32 Acre_GetAttr(u32 x) {
     return AcreType_GetAttr(AcreAttr_GetType(x));

@@ -29,6 +29,15 @@
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
 #include "town/VisitorPos.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov073/unk_ov073_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -49,26 +58,12 @@ extern u8 gSaveData[];
 extern s16 data_02135f44[];
 extern u32 __ptmf_null[];
 
-s32 Pocket_FindEmpty(void);
-void Hud_Hide(void);
-void Hud_Show(void);
-s32 NpcActor_CanPlayerPay(s32 a, s32 b);
-void NpcActor_ChargePlayer(s32 a, s32 b);
-s32 Pocket_AddItem(u16 *p, s32 a);
 void Pocket_CountMatching(void *buf, s32 (*cb)(u16 *));
-s32 MenuCtrl_IsResultOk(void);
-s32 MenuCtrl_GetAmount(void);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 Math_AngleXZ(void *a, void *b);
-s32 NpcActor_IsFrontAngle(s16 a);
-u32 Random_GlobalBelow(u32 n);
 void Math_CountDownU8(void *p);
 s32 Random_Next(void *p);
-void *TownSessionState_Get();
-void *TownSessionState_GetVisitorPos(void *p);
-void Npc_RotateOffsetXZ(void *out, void *pos, void *tbl, s32 ang);
-s32 Npc_IsPosBlocked(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *p, s32 v);
@@ -161,8 +156,6 @@ extern char sSpNpcJoanKey[12];
 extern u8 sSpNpcJoanModelPath[23];
 extern u8 sSpNpcJoanTexturePath[27];
 extern const TalkStartMsg sSpNpcJoanTopicMsgs[3];
-s32 SpNpcJoan_IsEmptyItem(u16 *p);
-SpNpcJoan *SpNpcJoan_Create();
 }
 typedef BOOL (SpNpcJoan::*SpNpcJoanActFn)();
 extern SpNpcJoanActEntry sSpNpcJoanActTable[5];

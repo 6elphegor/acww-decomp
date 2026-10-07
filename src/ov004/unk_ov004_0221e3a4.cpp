@@ -28,6 +28,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "npc/NpcMoveAnimSet.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/ov004/unk_ov004_0221e3a4.h"
 
 
 class ActorTalkRequest;
@@ -84,7 +86,6 @@ s32 NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 s32 Math_CountDownU8(void *self);
-s32 SaveManager_IsIdle();
 }
 
 class SpNpcTortimer2 : public SpNpcActor {

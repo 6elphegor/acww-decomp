@@ -22,6 +22,17 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/LetterView.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_Building_RequestState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Mtx43_Translate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetMailbox  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_02216824.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 
 
@@ -49,11 +60,7 @@ extern void *gCommManager;
 extern u8 data_021f47e0[];
 
 BOOL Building_RequestState(void *o, s32 v);
-BOOL BuildingState_Set(u32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
-BOOL MenuCtrl_IsFinished();
-BOOL PlayerActor_LocalRequestMailboxWaitOrClose(s32 a);
-BOOL MenuCtrl_OpenLauncher(u32 a);
 s32 Ground_GetDefaultY(s32 a);
 BOOL PlayerActor_LocalRequestMailboxOpen(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
@@ -63,10 +70,7 @@ PlayerMailbox *PlayerData_GetMailbox(void *p);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 void *Scene_GetTouchPicker();
-u32 BuildingList_IndexOf(void *p);
 BOOL Scene_InTown();
-u32 BuildingState_Get(u32 a);
-void *Mailbox_Create();
 }
 
 // ============================================================ class Mailbox

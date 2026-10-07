@@ -5,28 +5,15 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02063f3c.h"
 
 
 
 
 
 extern "C" {
-void Gfx2d_HideLayer(s32 a);
-s32 Gfx2d_GetMainPlanes();
-void Gfx2d_EnableMainWindows(s32 a);
-void Gfx2d_SetMainWin0Planes(s32 a);
-void Gfx2d_SetMainWinOutPlanes(s32 a);
-void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetMainAlphaBlend(s32 a, s32 b, s32 c);
-void Gfx2d_ResetMainBlend();
-void Gfx2d_DisableMainWindows(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
-void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void File_LoadToBuffer(const char *a, void *b, s32 c);
 void String_Load(void *a, u8 *b, const char *c);
 s8 *Msg_SkipLines(void *a, s32 b);
 void MIi_CpuCopy16(void *a, void *b, s32 c);

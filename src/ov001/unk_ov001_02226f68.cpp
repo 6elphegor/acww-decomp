@@ -1,5 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 struct WfcTask {
     void *prev;
@@ -36,24 +39,11 @@ void WfcList_Remove(void *);
 void WfcPool_Put(void *, void *);
 void *WfcPool_Get(void *);
 void WfcList_InsertBefore(void *, void *);
-void WfcList_Destroy(void *);
-void WfcPool_Destroy(void *);
 void *WfcHeap_Alloc(s32, s32);
-void *WfcPool_CreateFrom(s32, void *, s32);
-void *WfcPool_Create(s32);
 void *WfcList_Create();
 void WfcList_PushFront(void *, void *);
 void WfcList_PushBack(void *, void *);
-void WfcTask_SetListActive(u32 i, u32 v);
-void WfcTask_Release(u32 i, void *p);
-void WfcTask_Delete(u32 i, void *p);
-void WfcTask_RequestDelete(u32 i, void *p);
 void WfcTask_SetFunc(WfcTask *n, void *v);
-void *WfcTask_AddEx(u32 i, void *a, void *b, u32 c, u8 d);
-void *WfcTask_Add(u32 i, void *a, void *b, u32 c);
-void WfcTask_RunList(u32 i);
-void WfcTask_Shutdown();
-void WfcTask_Init();
 }
 
 extern "C" const u8 sWfcTaskListSizes[2] = {0x80, 0x20};

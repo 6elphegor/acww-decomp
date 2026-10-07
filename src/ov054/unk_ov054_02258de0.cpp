@@ -33,6 +33,34 @@
 #include "talk/ChoiceList.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString9C.h"
+#define PROTO_LOCAL_Comm_SendEmpty  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Donation_GetTotal  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetOverlay_AssertAny  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NetOverlay_AssertWireless  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_CountHostCandidates  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_GetScanResults  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_PollConnected  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020720f8.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov004/unk_ov004_0221e3a4.h"
+#include "proto/ov054/unk_ov054_02258de0.h"
 
 
 class ActorTalkRequest;
@@ -287,14 +315,11 @@ extern u8 gSavePlayers[];
 
 s32 CommManager_isOnline(void *g);
 s32 CommManager_isSlotActive(void *g, s32 v);
-BOOL SpNpcTortimer2_IsIdle();
 BOOL Talk_IsInOwnTown(...);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *PlayerData_GetCurrent();
 void *PlayerData_getBankAccount(void *g);
 s32 Donation_GetTotal(void *h);
-s32 PlayerBank_GetDonationLevel(void *h);
-void PlayerBank_SetDonationLevel(void *h, u8 i);
 void PlayerData_setFlag(void *g, s32 v);
 s32 PlayerData_testFlag(void *g, s32 v);
 s32 TalkWindowState_setNextMessage(void *m, void *buf, u32 cb);
@@ -306,40 +331,20 @@ void ActorTalkRequest_setPocketFilter(void *self, void *cb, s32 a, s32 b);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);
 s32 ActorTalkRequest_getChoiceList(void *self);
 s32 ChoiceList_getResult(s32 v);
-void PlayerOptions_SetHiragana(s32 v);
-s32 PlayerOptions_Commit();
 s32 Talk_IsDramaPending(void *o, void *b, s32 c);
 void Talk_AdvanceDrama(void *o, void *b);
 void TalkWindowState_openChoices(void *o, s32 v);
-void MenuCtrl_ReturnFutureLetter();
-void MenuCtrl_StoreFutureLetter();
-s32 NetArea_IsLocalOwner();
 void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 s32 NpcTalkCtrl_isBusy(void *self);
 s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 
 s32 strlen(const char *s);
 s32 strncmp(const void *a, const char *b, s32 n);
-BOOL GameStart_IsActive();
-BOOL GameStart_IsNewTown();
-BOOL SaveManager_HasAct1FFailed();
-BOOL SaveManager_IsIdleAfterAct1F();
-void SaveManager_RequestAct1F();
-u32 PlayerDataArray_CountUsed(void *g);
-u32 PlayerData_GetFutureLetter(void *h);
 u8 *FutureLetter_getDeliveryDate(u32 h);
-u32 PlayerDataArray_IsUsed(void *g, u32 i);
-u32 PlayerData_GetCurrentIndex();
-u32 PlayerData_GetResident(void *g, u32 i);
 u32 PlayerData_getPlayerId(u32 h);
-s32 PlayerBank_GetBalance(void *p);
-u32 Pocket_AddItem(u16 *p, s32 a);
 BOOL TownState_IsPerfectStreak15();
 s32 Town_GetEnvironmentRank();
 u8 *TownEval_GetAdvice();
-BOOL MenuCtrl_PostOfficeHadNoLetter();
-void NetOverlay_LoadWireless();
-void Comm_Start(s32 a, s32 b, s32 c);
 void TalkWindowState_lockAdvance(void *ctx);
 void TalkWindowState_hideBusyIcon(void *ctx);
 void TalkWindowState_unlockAdvance(void *ctx);
@@ -350,9 +355,6 @@ BOOL Net_PollConnected(s32 a);
 u32 Comm_SendEmpty();
 s32 Net_CountHostCandidates(u32 a);
 void *Net_GetScanResults(s32 a);
-s32 Net_GetBeaconGameInfoSize(void *p);
-void *Net_GetBeaconGameInfo(void *p);
-BOOL Net_ConnectToParent(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void func_02063888(void *p);
 void func_02063830(void *p);
@@ -367,41 +369,16 @@ void ActorTalkRequest_setPlayerNameSlot(void *self, u32 a, s32 b);
 
 void ActorTalkRequest_requestReopenWindow(void *self);
 void ActorTalkRequest_requestTakeItem(void *self, u16 *p, s32 a, s32 b, s32 c);
-BOOL SaveManager_HasAct12Failed();
-BOOL SaveManager_IsIdle();
-void SaveManager_RequestAct12();
-BOOL MenuCtrl_IsResultOk();
 void *PlayerData_getErrands(void *p);
 void *SickVillagerRecord_getParcelErrand(void *p);
-s32 MenuCtrl_GetIndex();
-u32 Pocket_GetItem(s32 a);
-void Pocket_RemoveItem(s32 a);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-BOOL ParcelErrand_IsFor(void *a, void *b);
-void *ParcelErrand_GetRecord(void *p);
 void ErrandRecord_setStep(void *p, s32 a);
 s32 func_02133150(s32 a, s32 b);
-void *TownSessionState_Get();
-void TownSessionState_SetFlag(void *p, s32 a);
 void SaveData_clearFlag(void *p, s32 a);
-void MenuCtrl_GetDateTime(void *p);
-s32 MenuCtrl_GetAmount();
-void Donation_SetTotal(s32 a);
-s32 MenuCtrl_GetPostOfficeOutcome();
-BOOL LetterDelivery_HasFutureLetter(s32 a);
-BOOL MenuCtrl_PostOfficeLettersSent();
-s32 MenuCtrl_GetPostOfficeFullMailboxes();
-BOOL MenuCtrl_PostOfficeHadBadAddress();
-BOOL MenuCtrl_PostOfficeWasRejected();
-BOOL GameStart_IsNewResident();
-BOOL Comm_End();
-s32 NetOverlay_Restore();
 
-s32 Random_GlobalBelow(s32 a);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_SetTargetDone(void *self);
-s32 PlayerActor_IsScriptedWalking(s32 a);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 NpcActionCtrl_getAction(void *self);
@@ -411,19 +388,13 @@ void NpcActionCtrl_requestAction(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, 
 void NpcMoveCtrl_setTurnMode(void *self, s32 a);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcTalkCtrl_requestTalk(void *self, s32 a, s32 b);
-void Bgm_Release(s32 a);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void Clock_GetMinuteHour(void *p);
 void Actor_spawn(s32 a, u32 b, void *v, void *p, void *owner);
 void *TownBlockMap_Get();
-void Taxi_SetLeaving();
 BOOL Town_FindTownHall(void *r, s32 *a, s32 *b, s32 *c);
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestAt(void *r, s32 a, void *v, s32 b, s32 c, s32 d, s32 e);
-TalkWindowState *TalkWindow_Get(s32 a);
 
-BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k);
-SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create();
 }
 
 // The overlay's own data (defined below, before the functions).

@@ -5,6 +5,11 @@
 #include "field/Snowball.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "actor/Actor.h"
+#define PROTO_LOCAL_LooseSnowballs_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SnowballSpawner_SpawnLooseBalls  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
 struct UnitMaskChunk {
@@ -44,7 +49,6 @@ extern CommManager *gCommManager;
 extern u8 data_021ed2e6[];
 
 BOOL CommManager_isSlotActive(void *, u32);
-s32 CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
@@ -52,7 +56,6 @@ void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
 BOOL Ground_IsFreeGrass(s32 a, s32 b);
-s32 Random_GlobalBelow(s32 n);
 void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
 void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
 BOOL Item_IsSnowman(u16 *p);
@@ -69,16 +72,8 @@ void DateTime_SubDays(void *, s32);
 BOOL Snowball_IsInBallState(void *p);
 BOOL Snowball_TryPush(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 
-void UnitMaskPool_Mark(UnitMaskPool *pool, s32 x, s32 y);
-s32 UnitMaskPool_CountFreeChunks(UnitMaskPool *pool);
 void UnitMaskPool_Clear(UnitMaskPool *pool);
-BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy);
-void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y);
-BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y);
-BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy);
 void UnitMaskChunk_Clear(UnitMaskChunk *c);
-Snowball *Snowball_FindByParam(u32 id);
-BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d);
 }
 
 // the eight actor slots

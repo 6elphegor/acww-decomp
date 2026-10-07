@@ -12,6 +12,33 @@
 #include "talk/MsgString9B.h"
 #include "ui/LabelBalloon.h"
 #include "ui/LabelString.h"
+#define PROTO_LOCAL_InventoryItemGrid_DrawExtraMarks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawFocus  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawHeldItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawMark  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_DrawUnderlay  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_GetSlotX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_GetSlotY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryItemGrid_SetBalloonItemName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrBuf_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
 
 
 
@@ -72,13 +99,6 @@ void operator delete(void *p);
 void operator delete(void *p);
 
 extern "C" {
-void Snd_PlaySe(s32 a);
-void Snd_StopSe(s32 a, s32 b);
-void Snd_PlaySeOnHandle(s32 a);
-void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
-void Gfx2d_LoadScreen(void *a, u32 b, u32 c, s32 d);
-void Gfx2d_LoadCharFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadPaletteFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_GetInfoUnk02(void *p);
 void StrBuf_Copy(void *a, void *b);
 void ItemName_setFromItem(void *a, void *b);
@@ -86,21 +106,8 @@ void func_0206260c(void *p);
 void func_0206267c(void *p);
 void func_02063870(void *p);
 void func_02063888(void *p);
-void TownId_GetNameString(s32 a, void *p);
-s32 Str_SPrintf(char *buf, const void *fmt, ...);
-void File_LoadToBuffer(const void *src, void *dst, s32 n);
 s32 LetterView_getState(void *o);
 s32 LetterView_getPresent(s32 a);
-s32 Letter_IsBottle(void *o);
-void Letter_GetRecipientName(void *o, void *buf);
-void Letter_GetSenderName(void *o, void *buf);
-s32 Letter_GetKind(void *o);
-void Letter_Clear(void *o);
-void Letter_Copy(void *o, s32 x);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 Menu_GetIconCharIndex(s32 a);
-BOOL MenuCtrl_IsTouch();
-void String_Load2dMenu(void *p, s32 a);
 void LabelString_redrawAligned(void *p, s32 a, s32 b);
 void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void LabelString_destroyLabel(void *p);
@@ -114,10 +121,8 @@ void func_02089f30(void *p);
 void func_02089f44(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
-s32 PlayerId_GetTownId(s32 a);
 void PlayerId_getNameString(s32 a, void *p);
 s32 PlayerId_getGender();
-s32 PlayerData_GetCurrent();
 s32 PlayerInventory_getTotalBells(s32 a, s32 b);
 void *PlayerInventory_getLetter(s32 a, s32 b);
 u32 PlayerInventory_getPocketFlags(s32 a, s32 b);
@@ -125,8 +130,6 @@ u16 *PlayerInventory_getPocket(s32 a, s32 b);
 u16 *PlayerData_getHeldItem(s32 a);
 s32 PlayerData_getInventory(s32 a);
 s32 PlayerData_getPlayerId(...);
-void Player_GetDeliveryRecipientName(void *a, void *b);
-void Pocket_SetItem(u16 *a, s32 b, s32 c);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
 void BgVramTaskPair_requestCharPair(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
@@ -161,124 +164,19 @@ extern u16 sLetterIconChars[];
 }
 
 extern "C" {
-void InventoryBg_LoadBg(InventoryBg *s, s32 flag);
-void InventoryBg_Load(InventoryBg *s, s32 flag);
-void InventoryBg_Init(InventoryBg *s, u32 v);
-InventoryBg *_ZN11InventoryBgD1Ev(InventoryBg *s);
-InventoryBg *_ZN11InventoryBgC1Ev(InventoryBg *s);
-BOOL InventoryItemGrid_TestBit(u32 *bits, s32 i);
-void InventoryItemGrid_ClearBit(u32 *bits, s32 i);
-void InventoryItemGrid_SetBit(u32 *bits, s32 i);
-void InventoryItemGrid_ClearBits(u32 *bits);
-s32 InventoryItemGrid_GetPresentAnimScale(InventoryItemGrid *s);
-BOOL InventoryItemGrid_UpdatePresentAnim(InventoryItemGrid *s);
-void InventoryItemGrid_EndPresentAnim(InventoryItemGrid *s);
-void InventoryItemGrid_StartPresentAnim(InventoryItemGrid *s, u32 v, s32 m);
-u32 InventoryItemGrid_AllocUpload(InventoryItemGrid *s);
-void InventoryItemGrid_CancelUploads(InventoryItemGrid *s);
-u32 InventoryItemGrid_GetScale(u32 i);
 Ent8 *InventoryItemGrid_GetSlotSprite(InventoryItemGrid *s, s32 i);
 void InventoryItemGrid_DrawSlot(InventoryItemGrid *s, Ent8 *e, s32 idx, s32 x, s32 y);
 void InventoryItemGrid_DrawFocus(InventoryItemGrid *s, s32 a, s32 b);
 void InventoryItemGrid_DrawUnderlay(InventoryItemGrid *s, s32 a, s32 b, s32 c);
 void InventoryItemGrid_DrawMark(InventoryItemGrid *s, s32 a, s32 b);
-BOOL InventoryItemGrid_IsSlotEmpty(InventoryItemGrid *s, s32 i);
 void InventoryItemGrid_DrawHeldItem(InventoryItemGrid *s, s32 x, s32 y);
 void InventoryItemGrid_DrawExtraMarks(InventoryItemGrid *s, s32 x, s32 y);
-void InventoryItemGrid_DrawBox(InventoryItemGrid *s, s32 x, s32 y);
-void InventoryItemGrid_DrawPocketsClipped(InventoryItemGrid *s, s32 x, s32 y, s32 w);
-void InventoryItemGrid_DrawPockets(InventoryItemGrid *s, s32 x, s32 y);
-void InventoryItemGrid_DisableSlot(InventoryItemGrid *s, s32 i);
-void InventoryItemGrid_DisableSlotRange(InventoryItemGrid *s, u8 i, u8 e);
-BOOL InventoryItemGrid_IsSlotDisabled(InventoryItemGrid *s, s32 i);
 void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c);
 void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m);
 void InventoryItemGrid_SetHeldItem(InventoryItemGrid *s, Rec *r, s32 m);
-void InventoryItemGrid_RefreshSlot(InventoryItemGrid *s, s32 i);
-void InventoryItemGrid_SetSlotItem(InventoryItemGrid *s, s32 i, u32 v, s32 x);
-void InventoryItemGrid_ClearSlot(InventoryItemGrid *s, s32 i);
-u32 InventoryItemGrid_GetSlotFlags(InventoryItemGrid *s, s32 i);
-u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i);
-void InventoryItemGrid_MarkSlot(InventoryItemGrid *s, s32 i);
-void InventoryItemGrid_ClearMarks(InventoryItemGrid *s);
-void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v);
-void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o);
-s32 InventoryItemGrid_GetCursorLift(InventoryItemGrid *o);
-BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v);
 s32 InventoryItemGrid_GetSlotY(void *o, s32 i);
 s32 InventoryItemGrid_GetSlotX(void *o, s32 i);
-void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b);
 void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode);
-s32 InventoryItemGrid_GetIconIndex(void *o, u16 *p, s32 mode);
-void InventoryItemGrid_LoadBox(InventoryItemGrid *o, u16 *arr);
-void InventoryItemGrid_LoadPockets(InventoryItemGrid *o);
-void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a);
-s32 InventoryItemGrid_HitTestSlot(void *o, s32 a, s32 b, s32 c);
-u32 InventoryItemGrid_FindSlotInRange(void *o, s32 a, s32 b, s32 c, s32 d, u8 s, u8 e);
-s32 InventoryItemGrid_HitTestSlot21(void *o, s32 a, s32 b);
-u32 InventoryItemGrid_FindBoxSlotAt(void *o, s32 a, s32 b);
-u32 InventoryItemGrid_FindPocketSlotAt(void *o, s32 a, s32 b);
-void InventoryItemGrid_Exit(void *o);
-void InventoryItemGrid_PreUpdate(InventoryItemGrid *o);
-void InventoryItemGrid_Init(InventoryItemGrid *o, u32 a);
-u8 InventoryItemGrid_GetIconPalette(void *o, s32 i);
-BOOL LetterGrid_TestBit(u32 *bits, s32 i);
-void LetterGrid_ClearBit(u32 *bits, s32 i);
-void LetterGrid_SetBit(u32 *bits, s32 i);
-void LetterGrid_ClearBits(u32 *bits);
-u8 LetterGrid_GetPopScale(LetterGrid *o);
-BOOL LetterGrid_UpdatePopAnim(LetterGrid *o);
-void LetterGrid_ResetScale(LetterGrid *o);
-void LetterGrid_StartPopAnim(LetterGrid *o);
-s32 LetterGrid_GetIconIndex(void *o, s32 h);
-void LetterGrid_SetLetterArray(LetterGrid *o, u8 *p, s32 m, s32 n);
-void LetterGrid_SetLetters23(void *o, u8 *p);
-void LetterGrid_SetLetters0A(void *o, u8 *p);
-void LetterGrid_SetLetters2D(void *o, u8 *p);
-void LetterGrid_LoadPocketLetters(LetterGrid *o);
-BOOL LetterGrid_IsSlotEmpty(LetterGrid *o, s32 i);
-s32 LetterGrid_GetSlotY(void *o, s32 i);
-s32 LetterGrid_GetSlotX(void *o, s32 i);
-void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0);
-void InventoryBg_ClearDirty(void *o, u32 m);
-void InventoryBg_SetDirty(void *o, u32 m);
-s32 InventoryBg_IsDirty(void *o, u32 m);
-void Inventory_PlayPickUpSe();
-void Inventory_PlayTouchSe();
-void Inventory_PlayPutDownSe();
-BOOL InvItem_IsNotFishInsectOrFlower(u32 v);
-BOOL InvItem_IsNonTransferable(u32 v);
-BOOL InvItem_IsDeliveryParcel(u32 v);
-BOOL InvItem_IsDeliveryItem(u32 v);
-void InventoryBg_ResetHighlight(void *o);
-void InventoryBg_SetHighlight(void *o, u32 v);
-void InventoryBg_UpdateHighlight(void *o);
-BOOL InvItem_IsTurnipFishOrInsect(u32 v);
-void InventoryBg_UpdateBells(void *o);
-void InventoryBg_ResetBells(void *o);
-s32 InventoryBg_GetTotalBells();
-void InventoryBg_SetBellsPanelMode(void *o, u32 n);
-void InventoryBg_StartBellRoll(void *o, u32 v);
-void InventoryBg_StopBlink(void *o);
-BOOL InventoryBg_UpdateBlink(void *o);
-void InventoryBg_StartBlink(void *o, u32 v);
-void InventoryBg_DrawSprite(s32 a, void *o);
-void InventoryBg_UploadPalette(void *o);
-void InventoryBg_UploadPicture(void *o);
-void InventoryBg_LoadPicture(void *o, s32 a, s32 b);
-void InventoryBg_LoadPictureForHeldItem(void *o);
-void InventoryBg_PaintHighlight1(void *o);
-void InventoryBg_PaintHighlight0(void *o);
-void InventoryBg_PaintNormal(void *o);
-void InventoryBg_UploadScreen(void *o);
-void InventoryBg_ClearTextWindows(void *o);
-void InventoryBg_CancelUploads(void *o);
-void InventoryBg_Exit(void *o);
-void InventoryBg_Update(void *o);
-void InventoryBg_PreUpdate(void *o);
-void InventoryBg_LoadObjGraphics();
-void InventoryBg_SetupTextWindows(void *o);
-void InventoryBg_LoadGraphics(void *o);
 }
 
 

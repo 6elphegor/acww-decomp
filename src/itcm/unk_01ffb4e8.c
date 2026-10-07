@@ -7,6 +7,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
+#include "proto/itcm/unk_01ffb4e8.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;  // (long is 64 bits on 64-bit hosts)
@@ -125,7 +126,6 @@ static inline u32 CP_GetSqrtResult32(void) {
 
 /* PROTOS */
 void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z);
-void MTX_Concat33(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab);
 void MTX_MultVec33(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst);
 
 /* END PROTOS */

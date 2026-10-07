@@ -13,6 +13,10 @@
 #include "npc/VillagerId.h"
 #include "player/PlayerData.h"
 #include "save/BlancaFaceRecord.h"
+#include "proto/main/unk_0203f104.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
@@ -82,8 +86,6 @@ extern u32 gCommManager;
 extern "C" {
 s32 Backup_GetStatus(void *p);
 s32 EventWeekSlots_UpdateToday(s32 v);
-s32 GameStart_IsActive(void);
-s32 PlayerData_GetCurrent();
 s32 EventWeekSlots_IsSeenToday(u32 id);
 s32 DateTime_DiffMinutes(void *a, void *b);
 s32 DateTime_DiffDays(void *a, void *b);
@@ -93,12 +95,9 @@ void DateTime_SubDays(void *, s32);
 s32 Date_GetWeekday(u32, u32, u32);
 s32 Date_GetDaysInMonth(u32, u32);
 s32 Clock_GetWeekday(void);
-s32 PlayerData_GetCurrentIndex(void);
 s32 EventWeekSlots_FindId(EventWeekSlots *, u32);
 s32 EventWeek_IsInLyleWeek(EventDate);
 s32 EventWeek_IsInUnkWeek(EventDate);
-s32 LostChild_IsKatieDue();
-s32 LostChild_IsKaitlinDue();
 s32 Villager_GetResidentStatus(void *);
 s32 Villager_GetIndex(void *);
 void *SaveVillagers_Get(void *, s32);

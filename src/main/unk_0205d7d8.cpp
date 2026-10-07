@@ -8,25 +8,23 @@
 #include "actor/CharaClothTexRef.h"
 #include "player/FishBobber.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205c91c.h"
+#include "proto/main/unk_0205d7d8.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 extern "C" {
-void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 #define Heap_adjust _ZN4Heap6adjustEv
 void *Heap_adjust(u32 self);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
-s32 PlayerHeadModelHeap_Destroy(void);
-void PlayerHeadModelHeap_Create(void *parent);
-s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
-void G3dRes_CopyPlttByName(void *, void *, void *, void *);
-void G3dRes_CopyTexByName(void *, void *, void *, void *);
 void *CharaClothTexPool_GetOwnRef();
-s32 CharaClothTexRef_GetBuffer(void *);
 s32 NNS_G3dTexGetRequiredSize(void *p);
 s32 NNS_G3dTex4x4GetRequiredSize(void *p);
 s32 NNS_G3dPlttGetRequiredSize(void *p);
@@ -97,37 +95,8 @@ extern const u8 sFullHeadwearModelIds[0x20];
 extern const u8 sHatModelIds[0x48];
 extern char sPlayerHeadPathBuf[0x14];
 
-BOOL HeldItemModel_IsBobberLanded(u8 *p);
-void PlayerHeadBank_Init(void *parent);
-void PlayerHeadBank_Destroy(void);
-char *PlayerHead_GetModelPath(u32 a);
-u32 PlayerHead_GetHairModelId(u32 i);
-u32 PlayerHead_GetHatHairModelId(u32 i);
-u32 PlayerHead_GetHatModelId(u32 i);
-u32 PlayerHead_GetFullHeadwearModelId(u32 i);
-u32 PlayerHead_GetFlowerModelId(u32 i);
-void PlayerHead_GetModelIds(s32 flag, u32 a, u16 *p, u32 *o1, u32 *o2);
-s32 PlayerHead_GetBufferSize(void);
-s32 PlayerHead_GetTexVramSize(void);
-s32 PlayerHead_GetTex4x4VramSize(void);
-s32 PlayerHead_GetPlttVramSize(void);
 #define PlayerHead_ctor _ZN10PlayerHeadC1Ev
-void PlayerHead_ctor(u8 *p);
 #define PlayerHead_dtor _ZN10PlayerHeadD1Ev
-void PlayerHead_dtor();
-void PlayerHead_SetSlot(u8 *p, u8 v);
-void PlayerHead_Release(u8 *p);
-void PlayerHead_CancelTexUpload(u8 *p);
-s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d);
-void PlayerHead_RelocateTextures(u8 *p);
-BOOL PlayerHead_PollTexUpload(u8 *p);
-void *PlayerHead_GetBuffer(u8 *p);
-void *PlayerHead_GetModelFile(u8 *p, s32 j);
-void PlayerHead_SetModelFile(u8 *p, s32 j, void *v);
-TexVramSlot *PlayerHead_GetVramSlot(u8 *p, s32 j);
-TexVramTask *PlayerHead_GetTexTask(u8 *p, s32 j);
-s32 PlayerHead_GetModelId(u8 *p, s32 j);
-void PlayerHead_SetModelId(u8 *p, s32 j, u32 v);
 }
 
 const u8 sPlayerHatHairModelIds[0x10] = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f};

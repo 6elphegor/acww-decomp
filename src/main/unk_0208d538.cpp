@@ -3,9 +3,9 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/HandCursor.h"
+#include "proto/main/unk_020039ec.h"
 
 extern "C" {
-void Snd_SetPanIfChanged(u8 v);
 }
 
 extern u8 data_020d5b0c[];

@@ -10,6 +10,12 @@
 #include "gfx/WorldCurve.h"
 #include "game/EventCalendarModule.h"
 #include "gfx/Camera.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
 
 
 
@@ -96,23 +102,18 @@ void func_02065cc8(void *p);
 }
 
 extern "C" {
-void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
-void Letter_SetRecipientResident(void *p, s32 q);
 }
 
 extern "C" {
-void Letter_MarkReceived(void *p);
 }
 
 extern "C" {
-s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
-s32 PlayerData_GetLastWifiMailId(s32 p);
 }
 
 extern "C" {
@@ -120,11 +121,9 @@ s32 func_02098878(s32 p);
 }
 
 extern "C" {
-s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-s32 PlayerData_SetLastWifiMailId(s32 p, s32 v);
 }
 
 extern "C" {
@@ -136,7 +135,6 @@ s32 func_020771d8(void *p, s32 v);
 }
 
 extern "C" {
-s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
@@ -159,7 +157,6 @@ s32 Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
-u32 WorldCurve_AngleToDistance(u32 x);
 }
 
 extern "C" {
@@ -167,19 +164,15 @@ u8 *_ZN10PlayerData11getEmotionsEv(s32 p);
 }
 
 extern "C" {
-s32 Emotion_FindSlot(u32 id);
 }
 
 extern "C" {
-s32 EmotionSlots_Get(u8 *p, s32 i);
 }
 
 extern "C" {
-void EmotionSlots_Set(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {
-s32 GameStart_IsActive(void);
 }
 
 extern "C" {
@@ -266,22 +259,6 @@ static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 // prototypes (test harness)
-extern "C" s32 EmotionSlots_Get(u8 *p, s32 i);
-extern "C" void EmotionSlots_Set(u8 *p, s32 i, u32 v);
-extern "C" void EmotionSlots_Clear(u8 *p);
-extern "C" s32 Emotion_CountLearned(void);
-extern "C" s32 Emotion_FindFreeSlot(void);
-extern "C" void Emotion_SetSlot(s32 i, s32 v);
-extern "C" s32 Emotion_GetSlot(s32 i);
-extern "C" s32 Emotion_FindSlot(u32 id);
-extern "C" u32 WorldCurve_AngleToDistance(u32 x);
-extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in);
-extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in);
-extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in);
-extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o);
-extern "C" s32 WorldCurve_GetAngleScale(void);
-extern "C" s32 WorldCurve_GetRadius(void);
-extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
 
 extern "C" s32 EmotionSlots_Get(u8 *p, s32 i) { return p[i]; }
 

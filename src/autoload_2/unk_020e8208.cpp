@@ -6,6 +6,11 @@
 #include "gfx/VecFx32.h"
 #include "sys/ListNode.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_020e8208.h"
+#include "proto/autoload_2/unk_020e82bc.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/autoload_2/unk_0211bcdc.h"
+#include "proto/main/unk_0206d49c.h"
 
 struct Tree {
     TreeNode *root;
@@ -38,19 +43,14 @@ void MTX_RotY43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotY43_ (Thumb)
 void MTX_RotX43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotX43_ (Thumb)
 void MTX_Scale43_(MtxFx43 *m, s32 x, s32 y, s32 z); // MTX_Scale43_ (Thumb)
 void MTX_Concat43(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab); // MTX_Concat43
-void Vec_Sub(VecFx32 *out, const VecFx32 *a, const VecFx32 *b); // out = a - b
-s32 Vec_MagXZ(const VecFx32 *v); // length in the XZ plane
-void Vec_Scale(VecFx32 *v, s32 s); // scale
 u16 TP_GetLatestIndexInAuto(void); // TP_GetLatestIndexInAuto
 void TP_GetCalibratedPoint(TPData *dst, const TPData *src); // TP_GetCalibratedPoint
-void TP_Init(void); // TP_Init
 BOOL TP_GetUserInfo(TPCalibrateParam *p); // TP_GetUserInfo
 void TP_SetCalibrateParam(const TPCalibrateParam *p); // TP_SetCalibrateParam
 void TP_RequestSetStabilityAsync(u32, u32);
 void TP_WaitBusy(u32); // TP_WaitBusy
 u32 TP_CheckError(u32); // TP_CheckError
 void TP_RequestAutoSamplingStartAsync(u32, u32, TPData *, u32); // TP_RequestAutoSamplingStartAsync
-void Fatal_Trap(void); // Thumb, in main: fatal stop
 
 extern u16 data_0213a748[]; // atan table (.data of autoload_2)
 extern const s16 kPadDirAngleTable[]; // direction (angle) by D-pad bits, const s16[16] at the start of .rodata
@@ -70,10 +70,6 @@ extern PadState gPad;
 BOOL List_PushFront(List *list, ListNode *node);
 void TreeNode_Init(TreeNode *n);
 u32 Random_Next(u32 *seed);
-void Mtx43_SetRotZ(MtxFx43 *m, s32 angle);
-void Mtx43_SetRotY(MtxFx43 *m, s32 angle);
-void Mtx43_SetRotX(MtxFx43 *m, s32 angle);
-void Mtx43_SetTranslate(MtxFx43 *m, s32 x, s32 y, s32 z);
 }
 
 // FX_Mul of the SDK

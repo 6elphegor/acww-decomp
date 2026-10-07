@@ -2,6 +2,9 @@
 #include "types.h"
 #include "net/WfcObjGroup.h"
 #include "net/WfcPool.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -27,25 +30,12 @@ s32 FX_ModS32(s32, s32);
 s32 FX_DivS32(s32, s32);
 void G2x_ChangeBlendBrightness_(u32, s32);
 s32 G2x_SetBlendBrightness_(void *, s32, s32);
-void Fatal_Trap();
 void *WfcHeap_AllocClear(u32, u32);
 void *WfcHeap_Alloc(u32, u32);
 void WfcHeap_FreeAndClear(void *);
-s32 WfcTask_RequestDelete(s32, s32);
-s32 WfcTask_Add(s32, void *, void *, s32);
 
 WfcObjGroup *WfcPool_Get(WfcPool *r);
 void WfcPool_Put(WfcPool *r, void *v);
-void WfcPool_Destroy(void *a, ...);
-WfcPool *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride);
-WfcPool *WfcPool_Create(s32 count);
-void WfcFade_WaitTask(s32 a, WfcFadeState *st);
-s32 WfcFade_StartWait(u32 v);
-void WfcFade_Task(s32 a, WfcFadeState *st);
-u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h);
-u8 WfcFade_IsBusy(u32 mode);
-void WfcFade_Shutdown();
-void WfcFade_Init();
 
 WfcFadeState *sWfcFade;
 }

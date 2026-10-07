@@ -1,6 +1,21 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS init / arena (os_init.c, os_arena.c): autoload_2 0x02114624-0x02114724. ARM code, mwcc 1.2/base.
 #include "uptr.h"
+#include "proto/autoload_2/unk_021122b0.h"
+#include "proto/autoload_2/unk_02112360.h"
+#include "proto/autoload_2/unk_02112458.h"
+#include "proto/autoload_2/unk_02113b6c.h"
+#include "proto/autoload_2/unk_02114624.h"
+#include "proto/autoload_2/unk_02114940.h"
+#include "proto/autoload_2/unk_02114cd8.h"
+#include "proto/autoload_2/unk_021153f8.h"
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_021157c0.h"
+#include "proto/autoload_2/unk_021163b0.h"
+#include "proto/autoload_2/unk_02117984.h"
+#include "proto/autoload_2/unk_0211c8e8.h"
+#include "proto/autoload_2/unk_0211dc4c.h"
+#include "proto/autoload_2/unk_0212703c.h"
 typedef unsigned int u32;
 typedef int s32;
 
@@ -11,19 +26,6 @@ u32 OS_GetConsoleType(void); // OS_GetConsoleType
 void OS_SetProtectionRegion1(u32 v);
 void OS_SetProtectionRegion2(u32 v);
 
-void PXI_Init(void);
-void OS_InitLock(void);
-void OS_InitIrqTable(void);
-void OS_SetIrqStackChecker(void);
-void OS_InitException(void);
-void MI_Init(void);
-void OS_InitVAlarm(void);
-void OSi_InitVramExclusive(void);
-void OS_InitThread(void);
-void OS_InitReset(void);
-void CTRDG_Init(void);
-void CARD_Init(void);
-void PM_Init(void);
 
 void OS_SetArenaLo(s32 id, void *lo);
 void OS_SetArenaHi(s32 id, void *hi);
@@ -31,8 +33,6 @@ void *OS_GetInitArenaLo(s32 id);
 void *OS_GetInitArenaHi(s32 id);
 void *OS_GetArenaLo(s32 id);
 void *OS_GetArenaHi(s32 id);
-void OS_InitArena(void);
-void OS_InitArenaEx(void);
 
 // OS_GetArenaLo / OS_GetArenaHi / OS_SetArenaLo / OS_SetArenaHi
 // the arena bounds in the system area (OSSystemWork): 32-bit addresses

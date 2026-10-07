@@ -7,6 +7,11 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
+#include "proto/itcm/unk_01ff8000.h"
+#include "proto/itcm/unk_01ff8228.h"
+#include "proto/itcm/unk_01ff8ad4.h"
+#include "proto/itcm/unk_01ff9e10.h"
+#include "proto/main/unk_0206d49c.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;  // (long is 64 bits on 64-bit hosts)
@@ -364,26 +369,14 @@ extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreI
 extern void (*OS_GetIrqFunction(u32 intrBit))(void);           // OS_GetIrqFunction
 extern void OS_SetIrqFunction(u32 intrBit, void (*function)(void)); // OS_SetIrqFunction
 extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg); // OSi_EnterDmaCallback
-extern void Fatal_Trap(void);                           // OS_Terminate (Thumb, main)
 
 /* PROTOS */
 void CPi_RestoreContext(const CPContext *context);
 void CP_SaveContext(CPContext *context);
 u32 OS_DisableIrqMask(u32 intr);
 u32 OS_EnableIrqMask(u32 intr);
-void OS_IrqDummy(void);
 u32 OS_ResetRequestIrqMask(u32 intr);
 u32 OS_SetIrqMask(u32 intr);
-void OSi_IrqCallback(int index);
-void OSi_IrqDma0(void);
-void OSi_IrqDma1(void);
-void OSi_IrqDma2(void);
-void OSi_IrqDma3(void);
-void OSi_IrqTimer0(void);
-void OSi_IrqTimer1(void);
-void OSi_IrqTimer2(void);
-void OSi_IrqTimer3(void);
-void simpleUnlock_(void *arg);
 void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagR_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagS_(MtxFx44 *m, const MatAnm *a);
@@ -397,9 +390,7 @@ void G3dDrawInternal_(RS *rs, RenderObj *obj);
 void G3dDrawInternal_Loop_(RS *rs);
 void NNS_G3dDraw(RenderObj *obj);
 void NNS_G3dGeBufferOP_N(u32 op, const u32 *args, u32 num);
-void NNS_G3dGeFlushBuffer(void);
 void NNS_G3dGeSendDL(const void *src, u32 szByte);
-void NNS_G3dGeWaitSendDL(void);
 void NNSi_G3dFuncSbc_MAT(RS *rs, u32 opt);
 void NNSi_G3dFuncSbc_MAT_InternalDefault(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
 void NNSi_G3dFuncSbc_MTX(RS *rs, u32 opt);
@@ -413,13 +404,10 @@ void NNSi_G3dFuncSbc_SHP_InternalDefault(RS *rs, u32 opt, const ResShpData *shp,
 void NNSi_G3dGetJointScaleMaya(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
 void NNSi_G3dSendJointSRTMaya(JntAnm *pResult);
 void NNSi_G3dSendTexSRTMaya(MatAnm *pResult);
-void AlarmCallback__stream(void *p);
 void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
 void MI_WaitDma(u32 dmaNo);
 void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
-void MIi_DMACallback(void *arg);
 void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
-void MIi_FIFOCallback(void);
 
 // OS_ResetRequestIrqMask
 u32 OS_ResetRequestIrqMask(u32 intr) {

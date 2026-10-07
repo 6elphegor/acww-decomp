@@ -1,69 +1,33 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcApScanEntry.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_02211b2c.h"
+#include "proto/ov001/unk_ov001_0221962c.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221d744.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
 extern "C" {
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_IsClosed();
-void WfcBusyIcon_Delete();
-void WfcText_DestroyBgCanvas(s32);
-void WfcUtil_HideTopMessage();
 void WfcGx_HidePlanes(s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
-void WfcUtil_SetScreenFlags(s32, s32);
-void WfcUtil_SetScene(void *);
-void WfcButtonBar_Close();
-void WfcFade_Start(s32, s32, s32, s32);
-void WfcButtonBar_DisableInput();
-void WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
-void WfcSound_Stop();
-void WfcSound_Play(s32);
 s32 WfcInput_IsKeyPressed(s32);
-void WfcButtonBar_SetResult(s32);
-void WfcButtonBar_EnableInput();
-void WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
-void WfcHighlight_SetConnection();
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowStepIndicator(s32);
-void WfcUtil_ShowBottomMessage(s32);
-void WfcBusyIcon_Create(s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-void WfcDialog_Close();
-s32 WfcApScan_Stop();
-void WfcApScan_Free();
-u8 *WfcConfig_GetEdit();
-void WfcConfig_BeginEdit(s32);
-void WfcUtil_SetEditParams(s32, s32);
-s32 WfcApScan_GetResults(void *);
-void WfcDialog_Open(s32, s32, s32, s32, s32);
-void WfcSetupMethod_Enter();
-void WfcApList_Enter();
-void WfcApScan_Alloc();
-void WfcApScan_Start();
 
-void WfcApSearch_WaitFadeIn();
-void WfcApSearch_FadeIn();
-void WfcApSearch_LoadBg();
-void WfcApSearch_Enter();
-void WfcApSearch_WaitDialogClosed();
-void WfcApSearch_ResultDialog();
-void WfcApSearch_Exit();
-void WfcApSearch_FadeOut();
-void WfcApSearch_StartExit();
-void WfcApSearch_HandleResult();
-void WfcApSearch_Idle();
-void WfcApSearch_HandleInput();
-void WfcApSearch_CheckResults();
-void WfcApSearch_Update();
-void WfcApSearch_WaitButtonBar();
 }
 
 extern "C" u8 sWfcApSearchResult = 0;

@@ -11,6 +11,12 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov003/unk_ov003_022165d0.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -62,22 +68,12 @@ extern HouseData gSaveHouse;
 extern const s8 sHexDigits[];
 extern char data_ov003_02235358[];
 
-s32 PlayerData_GetCurrentIndex();
-s32 PlayerData_IsResidentIndex(s32 idx);
-void *File_LoadAlloc(char *a, u32 b, s32 c, s32 *out);
 void *NNS_G3dGetTex(void *p);
 BOOL Gfx3d_LoadTex(void *p, u32 a);
 void *Gfx3d_CopyTex(void *p, void *a);
-void Mem_Free(void *p);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
 
-BuildingActor *BuildingList_FindByItem(u32 a);
-u32 Field_GetStructureTexSuffix();
-void *PlayerHouse_Create();
-u8 PlayerHouse_GetTexIndex();
-char *PlayerHouse_GetTexPath();
 }
 
 class PlayerHouse : public BuildingActor {

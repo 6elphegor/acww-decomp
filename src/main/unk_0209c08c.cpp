@@ -14,15 +14,15 @@
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
 #include "gfx/PooledModel.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0209c08c.h"
 
 
 
 extern "C" {
-void Mem_Free(void *p);
 }
 
 extern "C" {
-void *Mem_Alloc(u32 n);
 }
 
 extern "C" {
@@ -31,7 +31,6 @@ void Heap_freeAll(void *p);
 }
 
 extern "C" {
-void *FrameHeap_Create(u32 a, u32 b);
 }
 
 extern "C" {
@@ -91,10 +90,6 @@ public:
 
 SavedFadeIn sSavedFadeIn;
 
-extern "C" void ModelSlotHandle_Init(u16 *p);
-extern "C" void ModelSlotHandle_Destroy(u16 *p);
-extern "C" void Scene_SaveFadeIn(u32 v);
-extern "C" u32 Scene_GetSavedFadeIn();
 
 extern "C" void ModelSlotHandle_Init(u16 *p) {
     *p = 0xffff;

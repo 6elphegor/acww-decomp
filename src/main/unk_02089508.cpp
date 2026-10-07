@@ -6,11 +6,10 @@
 #include "ui/UiWidget.h"
 #include "talk/LabelBalloonText.h"
 #include "ui/LabelBalloon.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02087e70.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
-void StrBuf_Clear(StrBuf *buf);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 }

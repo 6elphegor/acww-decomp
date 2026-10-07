@@ -1,5 +1,13 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#define PROTO_LOCAL_WfcMoveMb_StartParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcMove_StepMb  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02124c40.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02220ad8.h"
+#include "proto/ov001/unk_ov001_022218a4.h"
+#include "proto/ov001/unk_ov001_02222e84.h"
 
 #pragma thumb off
 
@@ -48,60 +56,20 @@ struct WfcMoveWork {
 extern "C" {
 void MI_CpuFill8(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, s32);
-void MB_End();
 s32 MB_CommGetChildUser(s32);
-void Fatal_Trap();
-u64 OS_GetTick();
 u32 WM_GetNextTgid();
 void DWCi_BACKUPlRead(void *);
 
-s32 WfcMoveMb_FindAidByMac(s32);
-s32 WfcMoveMb_GetChildInfo(u32 id);
-s32 WfcMoveMb_GetState();
-s32 WfcMoveMb_GetChildMask(s32);
-s32 WfcMoveMb_IsAllBootable();
-s32 WfcMoveMb_StartRebootAll();
-s32 WfcMoveMb_Cancel();
-void WfcMoveMb_StartDownloadAll();
 s32 WfcMoveMb_StartParent(void *, u16);
-s32 WfcMoveMb_Init(void *, u16);
-s32 WfcMoveWh_End();
-s32 DWCi_MOV_WH_Finalize();
-s32 WfcMoveWh_Reset();
-s32 DWCi_MOV_WH_StepDataSharing(void *);
-void *WfcMoveWh_GetSharedData(u32);
-void WfcMoveWh_SetJudgeCallback(void *);
-s32 WfcMoveWh_ParentConnect(s32, u16, u16);
-void WfcMoveWh_Initialize();
-void WfcMoveMb_SetWork(void *);
-s32 WfcMoveWh_DecideChannel();
-s32 WfcMoveWh_StartMeasureChannel();
-s32 WfcMoveWh_GetSysState();
-s32 WfcMoveWh_GetConnectedBitmap();
-void WfcMoveWh_SetGgid(u32);
 u8 *WfcConfig_Get();
 
-s32 WfcMove_GetChildReply();
-void WfcMove_ProcessRecv();
-void WfcMove_SendBlock(u32 a, u32 b, void *src);
-void WfcMove_ClearBuffers();
-s32 WfcMove_JudgeChild(s32 a);
-s32 WfcMove_TryEnd();
-void WfcMove_SetDone();
-void WfcMove_StepDataShare();
-void WfcMove_StepStartDataShare();
 void WfcMove_StepMb();
-void WfcMove_StepInitMb();
-void WfcMove_StepMeasureChannel();
-void WfcMove_ResetSession();
-BOOL WfcMove_Start();
 }
 
 extern "C" WfcMoveWork *sWfcMove = 0;
 
 #define H (sWfcMove)
 
-void WfcMove_ResetSession();
 
 extern "C" void WfcMove_Init(WfcMoveWork *self, u32 *a) {
     sWfcMove = self;

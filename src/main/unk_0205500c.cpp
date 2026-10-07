@@ -5,9 +5,10 @@
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02063f3c.h"
 
 extern "C" {
-void *File_LoadAlloc(void *a, void *heap, s32 b, s32 c);
 }
 
 extern "C" {
@@ -19,7 +20,6 @@ void *NNS_G3dGetTex(void *h);
 }
 
 extern "C" {
-void Heap_Free(void *heap, void *p);
 }
 
 extern "C" {

@@ -3,6 +3,30 @@
 #include "net/WfcConfigSlot.h"
 #include "nitro/gxoam.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_0220864c.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_02213424.h"
+#include "proto/ov001/unk_ov001_022140bc.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_02218054.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221b44c.h"
+#include "proto/ov001/unk_ov001_0221cd74.h"
+#include "proto/ov001/unk_ov001_0221cfc0.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
+#include "proto/ov001/unk_ov001_02226c24.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
@@ -79,101 +103,10 @@ void GX_LoadBG3Scr();
 s32 GX_LoadOBJPltt();
 void GX_LoadBGPltt();
 void * MI_CpuFill8(void *, s32, u32);
-s32 memset(void *, s32, s32);
 void swprintf(void *, s32, void *, ...);
-s32 WfcUtil_HideTopMessage();
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowStepIndicator(s32);
 void WfcUtil_LoadFileTo(void *, void *);
-u8 * WfcUtil_LocalizePath(void *);
-s32 WfcCursor_Clear();
-void WfcCursor_ShowPair(s32, u32, u32, u32);
-void WfcHighlight_SetListEntry();
-s32 WfcUtil_GetLanguage();
-void WfcUtil_GetEditParams(s32, void *);
-s32 WfcUtil_SetEditParams(s32, s32);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetScene(void *);
-void WfcTextEdit_Enter();
-void WfcAddrEdit_Enter();
-void WfcManualSetup_SetMode(u32 v);
-void WfcManualSetup_WaitDialogClosed();
-void WfcManualSetup_InvalidDialog();
-BOOL WfcManualSetup_ValidateSettings();
-void WfcManualSetup_FlashToggle();
-void WfcManualSetup_ToggleFlashTask();
-void WfcManualSetup_HighlightButton();
-void WfcManualSetup_MoveCursor(s32 a);
-void WfcManualSetup_SetCursor(u32 a);
-void WfcManualSetup_UpdateCursorItem();
-void WfcManualSetup_DrawCursor();
-void WfcManualSetup_ScrollBgTask();
-void WfcManualSetup_ScrollDownTask(s32 a);
-void WfcManualSetup_ScrollUpTask(s32 a);
-s32 WfcManualSetup_GetListRow(s32 a);
-s32 WfcManualSetup_GetScreenRow(s32 a);
-s32 WfcManualSetup_HitTest();
-void WfcManualSetup_PlaceObjs();
-void WfcManualSetup_DrawAddress(u8 *a, s32 b);
-void WfcManualSetup_DrawString(u8 *a, s32 b);
-void WfcManualSetup_SetRowButton(s32 a, s32 b, s32 c);
-s32 WfcManualSetup_IsItemEnabled(s32 idx);
-void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg);
-void WfcManualSetup_DrawRowValue(s32 idx, s32 arg);
-void WfcManualSetup_Redraw();
-void WfcManualSetup_Exit();
-void WfcManualSetup_FadeOut();
-void WfcManualSetup_StartExit();
-void WfcManualSetup_HandleScrollBar();
-void WfcManualSetup_SetAutoDns(u32 a);
-void WfcManualSetup_SetAutoIp(u32 a);
-void WfcManualSetup_SelectItem(u32 a);
-BOOL WfcManualSetup_HandleTouch();
-void WfcManualSetup_HandleKeys();
-void WfcManualSetup_Update();
-void WfcManualSetup_WaitFadeIn();
-void WfcManualSetup_FadeIn();
-void WfcManualSetup_ResetCursor();
-void WfcManualSetup_LoadBg();
-void WfcManualSetup_Enter();
-void WfcSaveSettings_Enter();
-void WfcConnSelect_Enter();
-s32 WfcSetupMethod_Enter();
-void WfcConnTest_Enter();
-void WfcUtil_RequestBgPalette(void *);
-void WfcUtil_RequestPaletteLine(void *, u32, u32);
-s32 WfcBgMap_Blit(void *, s32, s32, s32);
-s32 WfcBgMap_RequestTransfer();
-s32 WfcBgMap_Destroy();
-void WfcBgMap_Create(void *);
-s32 WfcScrollBar_Disable();
-s32 WfcScrollBar_Enable();
-s32 WfcScrollBar_SetPos(s32);
-s32 WfcScrollBar_GetEvent();
-s32 WfcScrollBar_GetPos();
-s32 WfcScrollBar_Destroy();
-void WfcScrollBar_Create(s32, s32, s32, s32, s32);
-s32 WfcConfig_BeginEdit(s32);
-void WfcConfig_SetEditAutoDns(u32);
-void WfcConfig_SetEditAutoIp(u32);
-u8 * WfcConfig_GetEdit();
-s32 WfcSound_Play(s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcFs_FreeFile(void *);
-void * WfcFs_LoadFile(void *, s32, s32);
 GXOamAttr * WfcObj_CreateSingle(s32, s32);
 void WfcCell_Copy(s32, u32, void *);
-s32 WfcFade_StartWait(s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcText_RequestTransfer(void *);
-s32 WfcText_Clear(void *, s32);
-void WfcText_DrawMonospace(void *a, u32 b, u32 c, u32 d, u32 e, void *f, u32 g);
-s32 WfcText_DestroyBgCanvas(s32);
-void * WfcText_CreateBgCanvas(s32, s32);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcHeap_FreeAndClear(void *);
@@ -183,11 +116,6 @@ s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyReleased(s32);
 s32 WfcInput_IsKeyRepeat(s32);
 s32 WfcInput_IsKeyPressed(s32);
-s32 WfcOam_FreeEntry(void *);
-s32 WfcUtil_StrNLen(void *, u32);
-s32 WfcTask_Delete(s32, void *);
-void WfcTask_RequestDelete(s32, s32);
-void * WfcTask_Add(s32, void *, s32, s32);
 }
 
 // NitroSDK-style OAM position accessors (attr01: y in bits 0-7, x in bits 16-24)

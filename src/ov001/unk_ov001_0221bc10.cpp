@@ -1,39 +1,25 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0221b44c.h"
+#include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221d744.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 #pragma thumb off
 
 extern "C" {
 s32 GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcUtil_GetEditParams(s32, s32 *);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcHighlight_SetConnection();
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcFade_IsBusy(s32);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcApScan_Free();
-s32 WfcConfig_CommitEdit();
-s32 WfcSound_Play(s32);
 
-void WfcTestConfirm_Exit();
-void WfcTestConfirm_FadeOut();
-void func_ov001_0221bca8();
-void func_ov001_0221bcac();
-void WfcTestConfirm_WaitDialog();
-void WfcTestConfirm_ShowDialog();
-void WfcTestConfirm_FadeIn();
-void WfcTestConfirm_LoadBg();
-void WfcTestConfirm_Enter();
-void WfcConnTest_Enter();
 }
 
 struct WfcTestConfirmMessagesCopy { s32 v[3]; };

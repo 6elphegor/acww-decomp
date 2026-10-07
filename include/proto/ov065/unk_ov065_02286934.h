@@ -1,0 +1,76 @@
+#ifndef PROTO_PROTO_OV065_UNK_OV065_02286934_H
+#define PROTO_PROTO_OV065_UNK_OV065_02286934_H
+
+// Prototypes of the functions defined in src/ov065/unk_ov065_02286934.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#include "net/SockAddrIn.h"
+#include "net/natneg.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_AddNegotiator
+void *AddNegotiator(void);
+#endif
+#ifndef PROTO_LOCAL_RemoveNegotiator
+void RemoveNegotiator(void *key);
+#endif
+#ifndef PROTO_LOCAL_NNFreeNegotiateList
+void NNFreeNegotiateList(void);
+#endif
+#ifndef PROTO_LOCAL_NNThink
+void NNThink();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_CheckMagic
+BOOL CheckMagic(void *p);
+#endif
+#ifndef PROTO_LOCAL_SendPacket__natneg
+s32 SendPacket__natneg(s32 sock, u32 ip, s32 port, void *buf, s32 len);
+#endif
+#ifndef PROTO_LOCAL_GetLocalIP
+u32 GetLocalIP();
+#endif
+#ifndef PROTO_LOCAL_GetLocalPort
+u32 GetLocalPort(s32 fd);
+#endif
+#ifndef PROTO_LOCAL_NameToIp
+u32 NameToIp(const char *name);
+#endif
+#ifndef PROTO_LOCAL_ResolveServer
+u32 ResolveServer(const char *name, const char *s);
+#endif
+#ifndef PROTO_LOCAL_ResolveServers
+s32 ResolveServers();
+#endif
+#ifndef PROTO_LOCAL_NNBeginNegotiationWithSocket
+s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e, void *f);
+#endif
+#ifndef PROTO_LOCAL_NNCancel
+void NNCancel(u32 cookie);
+#endif
+#ifndef PROTO_LOCAL_ProcessConnectPacket
+void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+#endif
+#ifndef PROTO_LOCAL_ProcessPingPacket
+void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+#endif
+#ifndef PROTO_LOCAL_ProcessInitPacket
+void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+#endif
+#ifndef PROTO_LOCAL_NNProcessData
+void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
+#endif
+}
+#endif
+
+#endif

@@ -5,6 +5,13 @@
 #include "net/SockHostEnt.h"
 #include "net/gpersist.h"
 #include "net/gpiOperation.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02283304.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU50: GP gpiTransfer/gpiUnique/gpiUtility (0x02283304..0x02283720)
 
@@ -36,13 +43,9 @@ extern char enc3[];
 extern void *serverreqs;
 
 extern "C" {
-void xcode_buf(char *, s32);
-s32 ProcessStatement(char *, s32);
-s32 FindFinal(char *, s32);
 void _strlwr(char *);
 s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
 s32 gpiProcess(void *, s32);
-void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 SockHostEnt *Sock_GetHostByName(const char *);
@@ -60,25 +63,17 @@ void ArrayFree(void *);
 void *ArrayNth(void *, s32);
 void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
-char *strstr(const char *, const char *);
-s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
-s32 sscanf(const char *, const char *, ...);
-s32 atol(const char *);
-s32 memset(void *, s32, u32);
 
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
-void strzcpy(char *, const char *, s32);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
 s32 gpiStartSearch(void *, void *, s32, s32, s32);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
-void CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {

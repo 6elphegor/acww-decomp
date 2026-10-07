@@ -19,6 +19,9 @@
 #include "types.h"
 #include "sys/Heap.h"
 #include "sys/OSThread.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/main/unk_0206d49c.h"
 
 // The NitroSystem heap headers in front of a heap's memory (its HeapHead + ExpHead + a block header, HeapHead +
 // FrmHead; src/autoload_2/unk_02100234.c): they hold pointers, so on a 64-bit host they're larger - these are
@@ -86,7 +89,6 @@ extern "C" {
 u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 u32 OS_RestoreInterrupts(u32); // OS_RestoreInterrupts
 u32 OS_GetProcMode(void); // OS_GetProcMode
-void Fatal_Trap(void); // Thumb, in main: fatal stop
 void *NNS_FndAdjustFrmHeap(void *heap);
 u32 NNS_FndGetGroupIDForExpHeap(void *heap);
 u32 NNS_FndSetGroupIDForExpHeap(void *heap, u16 id);
@@ -106,9 +108,6 @@ void NNS_FndDestroyExpHeap(void *heap);
 void *NNS_FndCreateFrmHeapEx(void *p, u32 size, u32 opt);
 void *NNS_FndCreateExpHeapEx(void *p, u32 size, u32 opt);
 BOOL OS_TryLockMutex(void *p);
-void OS_UnlockMutex(void *p);
-void OS_LockMutex(void *p);
-void OS_InitMutex(void *p);
 u32 OS_GetArenaLo(u32); // OS_GetArenaLo(id)
 u32 OS_GetArenaHi(u32);
 void *OS_AllocFromArenaLo(u32, u32, u32);
@@ -118,8 +117,6 @@ void *OS_GetThreadParameter(void *thread);
 
 extern OSThreadInfo data_021fcc2c; // OSi_ThreadInfo
 
-void ExpHeap_FreeBlockVisitor(void *block, void *heap, u32 param);
-void Heap_OnThreadSwitch(void *a, void *b);
 }
 
 // ---- file-scope objects. Their DEFINITION order sets the .data/.bss layout (mwcc heapsorts all objects of the file by size;
@@ -145,7 +142,6 @@ extern "C" void Heap_OnThreadSwitch(void *a, void *b) {
     if (sPrevThreadSwitchCallback != NULL) sPrevThreadSwitchCallback(a, b);
 }
 
-extern "C" Heap *Heap_SetCurrent(Heap *heap);
 
 extern "C" void Heap_SetThreadHeap(void *thread, Heap *heap) {
     if (thread == data_021fcc2c.current) {
@@ -161,7 +157,6 @@ extern "C" void Heap_InstallThreadSwitchCallback(void) {
     OS_RestoreInterrupts(e);
 }
 
-extern "C" ExpHeap *ExpHeap_CreateInPlace(void *p, u32 n);
 
 extern "C" ExpHeap *Heap_CreateRootHeap(void *p, u32 n) {
     ExpHeap *h = ExpHeap_CreateInPlace(p, n);
@@ -579,7 +574,6 @@ extern "C" Heap *Heap_SetCurrent(Heap *heap) {
     return old;
 }
 
-extern "C" void Heap_SaveCurrent(void);
 
 extern "C" Heap *FrameHeap_CreateAsCurrent(u32 size, Heap *parent) {
     Heap *heap = FrameHeap_Create(size, parent);

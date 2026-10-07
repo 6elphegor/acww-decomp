@@ -12,6 +12,27 @@
 #include "menu/CreatureBookPanel.h"
 #include "player/PlayerData.h"
 #include "ui/ScrollKnob.h"
+#define PROTO_LOCAL_CreatureBook_ActivateFocus  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CreatureBook_DrawRows  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CreatureBook_UpdateScrollHold  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CreatureBook_UpdateScrollTouch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov114/unk_ov114_02294c40.h"
 
 // Icon row object of the creature book list: OAM cell entry (charName = icon tiles, palette per icon) + cached icon id.
 struct CreatureBookIconObj {
@@ -37,92 +58,30 @@ extern char sCreaturePicPath[];
 extern u32 *gCurrentHeap;
 extern u16 gPad;
 
-void *PlayerData_GetCurrent();
-BOOL Catalog_HasItem(void *p, u16 *v);
-void Snd_PlaySe(s32 v);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 void Menu_PlayScrollGrabSe(void *p);
-s32 MenuTabBar_GetTabX(s32 v);
 s32 _s32_div_f(s32 a, s32 b);
-void Gfx2d_ShowLayer(u32 v);
-void Gfx2d_SetSubAlphaBlend(void *a, void *b, u32 c);
-void Gfx2d_ResetSubBlend();
-void Gfx2d_HideLayer(u32 v);
-s32 Str_SPrintf(char *buf, const char *fmt, ...);
-void Gfx2d_LoadCharFile(const char *buf, u32 *font, u32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadPaletteFileSlot(const char *buf, u32 *font, u32 a, u8 b, s32 c);
 s32 Item_GetInfoUnk02(u32 v);
-void *Oam_GetObjY(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
-s32 InventoryItemGrid_GetIconPalette(CreatureBookPanel *s, s32 v);
 
 void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Msg_SkipLines(void *p, s32 i);
 void _ZN10BgVramTask6cancelEv(void *p);
-void String_Load(void *p, u8 *q, const char *name);
 void Menu_PlayScrollTickSe(void *p);
 void Math_StepS32(void *p, s32 a, s32 b);
 
-s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void Gfx2d_LoadPaletteFile(const char *name, s32 h, s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadScreenFile(const char *name, s32 h, s32 a);
-s32 Gfx2d_GetLayerBlendMask(u32 v);
 s32 _ZN10BgVramTask14requestPaletteEjhj(void *a, void *b, s32 c, s32 d);
 void func_020b8800(void *p);
 void func_020b85f8(void *p);
-void File_LoadToBuffer(const void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *, void *, u32);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void func_02135714(void *, s32, s32, void (*)(void *), void (*)(void *));
 void func_021355f0(void *, s32, s32, void (*)(void *));
 
-void CreatureBook_ClearFlags(CreatureBookPanel *s, u32 m);
-void CreatureBook_SetFlags(CreatureBookPanel *s, u32 m);
-BOOL CreatureBook_HasFlags(CreatureBookPanel *s, u32 m);
-BOOL CreatureBook_IsCaught(CreatureBookPanel *s, s32 i);
-void CreatureBook_BuildCaughtMask(CreatureBookPanel *s);
 BOOL CreatureBook_ActivateFocus(CreatureBookPanel *s);
-u8 CreatureBook_GetRowFocusAtCursor(CreatureBookPanel *s);
-void CreatureBook_ClampFocusToView(CreatureBookPanel *s);
-BOOL CreatureBook_MoveFocus(CreatureBookPanel *s, void *pad);
-BOOL CreatureBook_IsFocusOnPageArrow(CreatureBookPanel *s);
-s32 CreatureBook_GetFocusedTab(CreatureBookPanel *s);
-s32 CreatureBook_GetFocusY(CreatureBookPanel *s);
-s32 CreatureBook_GetFocusX(CreatureBookPanel *s);
-void CreatureBook_SelectEntry(CreatureBookPanel *s, u8 v);
-void CreatureBook_UpdatePictureFade(CreatureBookPanel *s);
-void CreatureBook_LoadPicture(CreatureBookPanel *s);
-void CreatureBook_ShowSelected(CreatureBookPanel *s);
-void CreatureBook_StopPictureFade(CreatureBookPanel *s);
-void CreatureBook_InitPictureView(CreatureBookPanel *s);
-void CreatureBook_SetRowIcon(CreatureBookPanel *s, u32 a, s32 idx);
-void CreatureBook_InitRows(CreatureBookPanel *s);
-BOOL CreatureBook_TouchRow(CreatureBookPanel *s, s32 x, s32 y);
-void CreatureBook_RefreshRowIcons(CreatureBookPanel *s);
-BOOL CreatureBook_SetScroll(CreatureBookPanel *s, s32 v);
 void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a);
-void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a);
-void *CreatureBook_AllocLabel(CreatureBookPanel *s);
-void CreatureBook_ClearLabels(CreatureBookPanel *s);
-u32 CreatureBook_AllocIconTask(CreatureBookPanel *s);
-void CreatureBook_CancelIconTasks(CreatureBookPanel *s);
-void CreatureBook_SetBgFadeColor(CreatureBookPanel *s, s32 a, s32 b);
-BOOL CreatureBook_PrevDescPage(CreatureBookPanel *s);
-BOOL CreatureBook_NextDescPage(CreatureBookPanel *s);
-void CreatureBook_ShowDescPage(CreatureBookPanel *s);
-u8 CreatureBook_CountDescPages(CreatureBookPanel *s);
-void CreatureBook_LoadDescription(CreatureBookPanel *s);
-void CreatureBook_ApplyScrollInertia(CreatureBookPanel *s);
-BOOL CreatureBook_FinishScrollHold(CreatureBookPanel *s);
-void CreatureBook_ReleaseKnob(CreatureBookPanel *s);
 void CreatureBook_UpdateScrollHold(CreatureBookPanel *s);
-s32 CreatureBook_WaitScrollHoldStart(CreatureBookPanel *s);
-void CreatureBook_EndScrollTouch(CreatureBookPanel *s);
 void CreatureBook_UpdateScrollTouch(CreatureBookPanel *s, s32 a);
 }
 

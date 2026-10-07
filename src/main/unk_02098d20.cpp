@@ -1,18 +1,26 @@
 #include "types.h"
 #include "item/ItemPickSpec.h"
 #include "npc/VillagerId.h"
+#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_IsValid  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02098d20.h"
 
 extern "C" void VillagerId_Clear(void *);
 extern "C" void VillagerId_Destruct(void *);
 extern "C" void VillagerId_Construct(void *);
 extern "C" void VillagerId_Copy(void *, void *);
-extern "C" void TownId_Assign(void *, void *);
 extern "C" BOOL TownId_IsValid(void *);
 extern "C" void TownId_Clear(void *);
 extern "C" void TownId_Destruct(void *);
 extern "C" void TownId_Construct(void *);
-extern "C" s32 Random_GlobalBelow(s32);
-extern "C" void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 
 extern const u32 sForeignLetterPresentKinds[];
 const u32 sForeignLetterPresentKinds[] = {0, 4, 3};

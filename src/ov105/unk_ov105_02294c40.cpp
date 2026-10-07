@@ -31,6 +31,33 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterGrid_SetLetters0A  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f4f0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov094/unk_ov094_02292da8.h"
+#include "proto/ov094/unk_ov094_02293b90.h"
+#include "proto/ov105/unk_ov105_02294c40.h"
 
 class LetterStorageMenu;
 class MenuLauncher;
@@ -42,76 +69,12 @@ extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *se
 extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 
 extern "C" {
-void Snd_PlaySe(s32 a);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void *Heap_AllocTail(void *heap, u32 n);
-void Heap_Free(void *heap, void *p);
-void CommSub_SetPostReply(s32 a);
-s32 CommSub_GetPostReply();
 void Letter_Clear(void *p);
 void Letter_Copy(void *dst, void *src);
-void Letter_MarkRead(u32 a);
-void MenuCtrl_SetFutureLetter(void *p);
-void MenuCtrl_SetPostOfficeResult(u32 a);
-s32 MenuCtrl_PostOfficeLettersSent();
-s32 MenuCtrl_GetPostOfficeOutcome();
-void MenuCtrl_SetResult(s32 a);
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-s32 LetterList_Compact(void *p, s32 n);
-s32 LetterList_CountUsed(void *p, s32 n);
-s32 LetterDelivery_FindAddresseeVillager(void *p);
-void LetterDelivery_SendToVillager(void *p);
-s32 LetterDelivery_HasKnownAddressee(void *p);
-s32 LetterDelivery_FindAddresseePlayer(void *p);
-s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
-s32 LetterDelivery_QueueOutgoing(void *p, s32 a);
-void LetterDelivery_PostOfficeClosedNop();
-void LetterDelivery_DeliverOutgoing();
-s32 PlayerData_GetCurrent();
-s32 PlayerData_GetResident(void *p, s32 a);
-void Arbeit_NotifyLetterWritten();
-s32 Inventory_FindEmptyLetter();
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_LoadCharFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void Gfx2d_LoadScreenFile(const char *a, u32 b, s32 c);
-void Gfx2d_LoadPaletteFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 
-void Inventory_PlayPickUpSe();
-void Inventory_PlayTouchSe();
-void Inventory_PlayPutDownSe();
-void InventoryBg_Exit(void *p);
-void InventoryBg_Update(void *p);
-void InventoryBg_PreUpdate(void *p);
 void InventoryBg_LoadObjGraphics(void *p);
-void InventoryBg_Load(void *p, s32 a);
-void InventoryBg_Init(void *p, s32 a);
-void InventoryItemGrid_DisableSlotRange(void *p, s32 a, s32 b);
-void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
-void InventoryBg_DrawSprite(void *p, s32 a);
-void InventoryItemGrid_ClearMarks(void *p);
-void InventoryItemGrid_ClearCursorSlot(void *p);
-void InventoryItemGrid_LoadPockets(void *p);
-void InventoryItemGrid_Exit(void *p);
-void InventoryItemGrid_PreUpdate(void *p);
-void InventoryItemGrid_Init(void *p, s32 a);
-s32 LetterGrid_UpdatePopAnim(void *p);
-void LetterGrid_StartPopAnim(void *p);
-void LetterGrid_SetLetters2D(void *p, void *q);
-void LetterGrid_LoadPocketLetters(void *p);
-BOOL LetterGrid_IsSlotEmpty(void *p, u32 a);
-s32 LetterGrid_GetSlotY(void *p, u32 a);
-s32 LetterGrid_GetSlotX(void *p, u32 a);
 
-BOOL MenuKeys_HasRight(void *p);
-BOOL MenuKeys_HasLeft(void *p);
-BOOL MenuKeys_HasDown(void *p);
-BOOL MenuKeys_HasUp(void *p);
 void ChoiceIdList_Clear(void *p, s32 a);
 void ChoiceIdList_Add(void *p, s32 a, s32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, u32 b);
@@ -142,7 +105,6 @@ extern void *gMenuHeap;
 
 extern "C" CommManager *gCommManager;
 
-extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 
 struct LetterView;
@@ -168,14 +130,9 @@ struct PopupChoiceIdList;
 
 
 extern "C" {
-void Gfx2d_SetSubBrightness(s32 a);
-void Gfx2d_EndSubObjWinBrightness();
-void Gfx2d_BeginSubObjWinBrightness();
-BOOL Cell_HitTest(void *r, s32 x, s32 y, s32 w, s32 h);
 s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);
 void Oam_DrawObj(s32 a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
-void * PlayerData_GetLetterStorage(void *p);
 void LetterGrid_SetLetters0A(void *p, void *q);
 }
 
@@ -190,7 +147,6 @@ extern "C" char data_ov105_02298504[];
 extern "C" char data_ov105_02298524[];
 extern "C" const char *sLetterStoragePageChars[3];
 
-extern "C" void InventoryItemGrid_DrawPocketsClipped(void *p, s32 a, s32 b, u32 c);
 
 typedef void (LetterStorageMenu::*Unk_ov105_02298594_Fn)();
 
@@ -412,8 +368,6 @@ public:
 
 
 extern "C" {
-void LetterStorageMenu_SetupBgLayers();
-LetterStorageMenu *LetterStorageMenu_Create();
 }
 
 extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);

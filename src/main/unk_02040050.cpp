@@ -8,6 +8,9 @@
 #include "game/ReddPassword.h"
 #include "game/ReddShop.h"
 #include "game/EventCalendarModule.h"
+#include "proto/main/unk_02040050.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
 
 
 
@@ -72,7 +75,6 @@ void DateTime_GetWeekStart(ClockDateTime*, long long*);
 }
 
 extern "C" {
-s32 PlayerData_GetCurrentIndex(void);
 }
 
 extern "C" {
@@ -100,7 +102,6 @@ s32 ReddShop_SendPasswordLetters(void);
 }
 
 extern "C" {
-s32 Random_GlobalBelow(s32);
 }
 
 extern "C" {

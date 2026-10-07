@@ -1,0 +1,29 @@
+#ifndef PROTO_PROTO_OV004_UNK_OV004_0222A374_H
+#define PROTO_PROTO_OV004_UNK_OV004_0222A374_H
+
+// Prototypes of the functions defined in src/ov004/unk_ov004_0222a374.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+class PlayerBedSetter;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Room_PlacePlayerBeds
+void Room_PlacePlayerBeds();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerBedSetter_Create
+PlayerBedSetter *PlayerBedSetter_Create();
+#endif
+}
+#endif
+
+#endif

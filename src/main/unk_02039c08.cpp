@@ -1,6 +1,11 @@
 #include "types.h"
 #include "gfx/ViewFrustum.h"
 #include "item/ItemPickSpec.h"
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostAndFound_AddDailyItems  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostAndFound_InitRandom  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_02063904.h"
 
 struct ItemPickSpecPod {
     u32 listIndex;
@@ -8,7 +13,6 @@ struct ItemPickSpecPod {
 };
 
 extern "C" {
-s32 Random_GlobalBelow(s32 n);
 void ItemPickSpec_Destruct(ItemPickSpecPod *o);
 void ItemPick_One(u16 *a, ItemPickSpecPod *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL Item_GetIfNotCreature(u16 *a, u16 *b);
@@ -23,8 +27,6 @@ extern u16 gSaveLostAndFound[15];
 extern u16 gSaveRecycleBin[15];
 extern s16 data_02135f44[];
 
-extern "C" BOOL RecycleBin_Set(u32 i, u16 v);
-extern "C" u16 RecycleBin_Get(u32 i);
 
 
 void ViewFrustum::calcPlanes() {

@@ -1,0 +1,154 @@
+#ifndef PROTO_PROTO_OV003_UNK_OV003_022187FC_H
+#define PROTO_PROTO_OV003_UNK_OV003_022187FC_H
+
+// Prototypes of the functions defined in src/ov003/unk_ov003_022187fc.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+class HouseLightUpDeco;
+class VillagerHouseTex;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_Create
+void *FieldStructureMgr_Create();
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_GetPlayerHouseTex
+void *FieldStructureMgr_GetPlayerHouseTex();
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_GetVillagerHouseTex
+void *FieldStructureMgr_GetVillagerHouseTex();
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_GetLightUpDeco
+void *FieldStructureMgr_GetLightUpDeco();
+#endif
+#ifndef PROTO_LOCAL_BuildingList_Init
+void BuildingList_Init();
+#endif
+#ifndef PROTO_LOCAL_BuildingList_Clear
+void BuildingList_Clear();
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_Release
+void HouseLightUpDeco_Release(void *p);
+#endif
+#ifndef PROTO_LOCAL_PlayerHouseTex_Release
+void PlayerHouseTex_Release(void *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_func_ov003_02219164
+void func_ov003_02219164(s32 a);
+#endif
+#ifndef PROTO_LOCAL_func_ov003_02219160
+void func_ov003_02219160(s32 a);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_SpawnAll
+s32 FieldStructureMgr_SpawnAll(void *self);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_SpawnBuilding
+s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_ApplyFootprint
+s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_CreateHeap
+void FieldStructureMgr_CreateHeap(s32 a);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_DestroyHeap
+void FieldStructureMgr_DestroyHeap(s32 a);
+#endif
+#ifndef PROTO_LOCAL_Field_GetStructureTexSuffix
+s32 Field_GetStructureTexSuffix();
+#endif
+#ifndef PROTO_LOCAL_Field_GetSpawnedKind1Count
+u32 Field_GetSpawnedKind1Count();
+#endif
+#ifndef PROTO_LOCAL_Field_GetDoorExitMode
+u32 Field_GetDoorExitMode();
+#endif
+#ifndef PROTO_LOCAL_Field_SetDoorExitMode
+void Field_SetDoorExitMode(u32 v);
+#endif
+#ifndef PROTO_LOCAL_Building_OpenDoorForEntryAt
+s32 Building_OpenDoorForEntryAt(s32 a);
+#endif
+#ifndef PROTO_LOCAL_Building_OpenDoorForExitAt
+s32 Building_OpenDoorForExitAt(s32 a);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouse_TryOpenDoorForEntry
+s32 VillagerHouse_TryOpenDoorForEntry(s32 a);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouse_TryOpenDoorForExit
+s32 VillagerHouse_TryOpenDoorForExit(s32 a);
+#endif
+#ifndef PROTO_LOCAL_Building_FindNearPos
+void *Building_FindNearPos(s32 a);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_Add
+s32 BuildingList_Add(void *p);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_Remove
+s32 BuildingList_Remove(void *p);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_FindByGrid
+void *BuildingList_FindByGrid(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_GetAt
+void *BuildingList_GetAt(s32 i);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_FindByItem
+void *BuildingList_FindByItem(u32 id);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_IndexOf
+s32 BuildingList_IndexOf(void *p);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouseTex_Load
+s32 VillagerHouseTex_Load(VillagerHouseTex *self);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouseTex_Clear
+void VillagerHouseTex_Clear(VillagerHouseTex *o);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouseTex_GetHouseTex
+s32 VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouseTex_GetLightTex
+s32 VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouseTex_GetDoorInAnim
+s32 VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o);
+#endif
+#ifndef PROTO_LOCAL_VillagerHouseTex_GetDoorOutAnim
+s32 VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o);
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_Clear
+void HouseLightUpDeco_Clear(HouseLightUpDeco *o);
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_Load
+s32 HouseLightUpDeco_Load(HouseLightUpDeco *r);
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_GetTex
+s32 HouseLightUpDeco_GetTex(s32 *p);
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_GetModel
+s32 HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx);
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_GetTexPattern
+s32 HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r);
+#endif
+#ifndef PROTO_LOCAL_HouseLightUpDeco_IsLoaded
+u8 HouseLightUpDeco_IsLoaded(HouseLightUpDeco *r);
+#endif
+#ifndef PROTO_LOCAL_PlayerHouseTex_Load
+s32 PlayerHouseTex_Load(void **out);
+#endif
+}
+#endif
+
+#endif

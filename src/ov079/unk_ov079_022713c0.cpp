@@ -36,6 +36,23 @@
 #include "save/Pattern.h"
 #include "save/PatternOrder.h"
 #include "town/VisitorPos.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov079/unk_ov079_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -56,35 +73,19 @@ void _ZN10VillagerId7getNameEj(void *p, void *q);
 void *_ZN13ContestRecord15getHolderPlayerEv(void *p);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
 s32 _ZN13ContestRecord7getSizeEv(void *p);
-void ContestRecord_GetItem(u16 *out, void *p);
-void ContestRecord_SetItem(void *p, u16 *q);
 void _ZN13ContestRecord7setSizeEi(void *p, s32 v);
 void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
 void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
-void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
-void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
-void PlayerActor_GetSlotHeldItem(u16 *out, void *p);
-void *PlayerActor_GetLocalSessionSlot();
 void Clock_GetDateTime(void *p);
-s32 Pocket_FindItem(u16 *p);
-s32 Pocket_FindEmpty();
-void Pocket_RemoveItem(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetIndex();
-s32 Contest_GetCatchSize(u16 *p);
-s32 memcmp(void *a, void *b, u32 n);
-u32 Random_GlobalBelow(u32 n);
-void ContestRecord_BeginContestDay(void *g, u32 a);
-u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
@@ -184,18 +185,10 @@ extern SpNpcWendellActEntry sSpNpcWendellActTable[5];
 extern u8 sSpNpcWendellModelPath[];
 extern u8 sSpNpcWendellTexturePath[];
 extern ActorProfile sSpNpcWendellProfile;
-SpNpcWendell *SpNpcWendell_Create();
-BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x);
 }
 
 extern "C" {
 void EventWeekSlots_MarkPlayer(u32 a);
-u32 Pocket_GetItem(s32 v);
-BOOL Pocket_AddItem(u16 *p, u32 a);
-void PlayerActor_RequestWearShirtAlt(u16 *p);
-void PlayerActor_RequestWearHatAlt(u16 *p);
-void PlayerActor_RequestChangeHeldItem(u16 *p);
-void PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFishWaterClass(u16 *p);
@@ -204,13 +197,8 @@ s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 BOOL NpcActor_IsFrontAngle(s16 a);
 s32 Math_AngleXZ(void *a, void *b);
-void Npc_RotateOffsetXZ(void *out, void *base, void *off, s32 ang);
-BOOL Npc_IsPosBlocked(void *pos);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
-BOOL EventAnnounce_IsBusy();
-void *TownSessionState_Get();
-void *TownSessionState_GetVisitorPos(void *p);
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
 extern u8 gRandom[];

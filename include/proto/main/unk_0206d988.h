@@ -1,0 +1,71 @@
+#ifndef PROTO_PROTO_MAIN_UNK_0206D988_H
+#define PROTO_PROTO_MAIN_UNK_0206D988_H
+
+// Prototypes of the functions defined in src/main/unk_0206d988.cpp (generated: tools/host_protos.py)
+
+#include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Melody_ResetToDefault
+void Melody_ResetToDefault();
+#endif
+#ifndef PROTO_LOCAL_Melody_ApplyEditPattern
+void Melody_ApplyEditPattern();
+#endif
+#ifndef PROTO_LOCAL_Melody_SaveRandomPattern
+void Melody_SaveRandomPattern();
+#endif
+#ifndef PROTO_LOCAL_Melody_SaveDefaultPattern
+void Melody_SaveDefaultPattern();
+#endif
+#ifndef PROTO_LOCAL_Melody_Init
+void Melody_Init(void);
+#endif
+#ifndef PROTO_LOCAL_Melody_Update
+void Melody_Update(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Melody_Pack
+void Melody_Pack(u32 *dst, u8 *src);
+#endif
+#ifndef PROTO_LOCAL_Melody_Unpack
+void Melody_Unpack(u32 *src, u8 *dst);
+#endif
+#ifndef PROTO_LOCAL_Melody_SetPacked
+void Melody_SetPacked(u32 *a);
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayEditPattern
+void Melody_PlayEditPattern(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_Play
+void Melody_Play(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayAt
+void Melody_PlayAt(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_Melody_StartTrackA
+void Melody_StartTrackA(s32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayNote
+void Melody_PlayNote(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_IsBusy
+BOOL Melody_IsBusy();
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayRandom
+void Melody_PlayRandom(u32 a);
+#endif
+}
+#endif
+
+#endif

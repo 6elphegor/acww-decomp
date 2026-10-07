@@ -3,6 +3,8 @@
 #include "net/WfcRect.h"
 #include "sys/StackPad.h"
 #include "nitro/io_access.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -19,7 +21,6 @@ void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, u32 b);
 void NNS_FndDestroyExpHeap(void *heap);
 void *NNS_FndCreateExpHeapEx(void *buf, u32 size, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 size);
-void Fatal_Trap();
 
 void WfcUtil_RectFromPosSize(WfcPoint *a, WfcPoint *b, WfcRect *out);
 void WfcUtil_SetRect(u32 a, u32 b, u32 c, u32 d, WfcRect *out);

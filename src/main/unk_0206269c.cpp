@@ -3,12 +3,16 @@
 #include "item/RandomSource.h"
 #include "item/DateSeededRandomSource.h"
 #include "player/PlayerData.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
 
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
 void Random_SetSeed(void *st, u32 v);
 void Clock_GetDateTime(void *p);
-BOOL Catalog_HasItem(void *base, u16 *p);
 BOOL Item_TestInfoFlag4(u16 *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -17,16 +21,12 @@ s32 Item_MakeFurniture(s32 a, s32 b);
 s32 FengShui_GetEastTotal(void);
 s32 FengShui_GetSouthTotal(void);
 s32 FX_Div(s32 a, s32 b);
-s32 Random_GlobalBelow(s32 a);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
 void _ZN6ItemIdC1Ev(void *);
 void _ZN6ItemIdD1Ev(void *);
 BOOL Item_IsNormalItem(u16 *p);
 s32 Item_GetShirtUnkGroup(u16 *p);
-s32 ItemInfo_GetClass(u16 *p);
-s32 ItemInfo_GetSeason(u16 *p);
-s32 Ftr_GetClass(u16 *p);
 s32 ItemList_IsFurniture(u16 *p);
 s32 ItemList_IsPaper(u16 *p);
 s32 Item_MakeShirt(u16 *p);
@@ -88,25 +88,6 @@ extern const ItemPickList sItemPickLists[];
 extern u8 gSaveData[];
 
 extern "C" {
-BOOL Item_IsClass4Furniture(u16 *p);
-s32 ItemList_GetTownClassRank(u16 *p, s32 mode);
-s32 ItemList_Find(u16 *p);
-void ItemPick_OneSimple(u16 *out, ItemPickSpec *o);
-void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 listLen, void *a5, s32 a6, s32 a7, RandomSource *rng, s32 a9);
-BOOL ItemPick_FillFromRange(u16 *arr, u32 n, s32 base, u32 cnt, void *a4, s32 a5, s32 a6, RandomSource *a7, s32 a8);
-void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng);
-void ItemPick_OneEx(u16 *out, s32 one, ItemPickSpec *o, u8 *a, RandomSource *b, u8 c, u32 d, s32 *e);
-void ItemPick_One(u16 *out, ItemPickSpec *o, u8 *a, RandomSource *b, u8 c, u32 d, s32 *e);
-u32 ItemPick_FromLists(u16 *out, u32 n, ItemPickSpec *tbl, u32 x3, u8 *a4, RandomSource *rng, u32 a6, u32 a7, s32 *outp);
-BOOL ItemPick_IsCatalogued(void *p, u16 *q);
-s32 ItemPick_GetSeason(s32 a, u32 b);
-BOOL ItemPick_SeasonMatches(s32 a, s32 b);
-s32 Item_FindInArray(u16 *c, u16 *arr, u32 n);
-s32 ItemList_GetNoSeason(void);
-u16 ItemList_MakePaper(u32 a);
-s32 ItemList_MakeFurniture(s32 a);
-u32 ItemPick_CalcDateSeed(u32 a, u32 b, u32 c);
-u8 ItemPick_GetClassWeight(u32 idx);
 }
 
 extern const u32 sItemClassRanks[3] = {1, 2, 3};

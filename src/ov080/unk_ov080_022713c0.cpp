@@ -24,6 +24,11 @@
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov080/unk_ov080_022713c0.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
@@ -40,12 +45,8 @@ class SpNpcTortimer;
 class SpNpcTortimerTalk;
 
 extern "C" {
-void *PlayerData_GetCurrent();
-u32 Random_GlobalBelow(u32 n);
 BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequestFlags_SetEventWarpBlock();
-BOOL Catalog_HasAllFish();
-BOOL Catalog_HasAllInsects();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 void NpcAnimCtrl_playAnim(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
@@ -55,11 +56,6 @@ void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 
 s32 ChoiceList_getResult(void *self);
 s32 PlayerData_testFlag(void *p, u32 a);
 void PlayerData_setFlag(void *p, u32 a);
-BOOL Pocket_AddItem(u16 *p, u32 a);
-void Pocket_RemoveItem(s32 a);
-s32 Pocket_FindItem(u16 *p);
-s32 Pocket_FindEmpty();
-void *PlayerData_GetResident(void *tbl, s32 i);
 BOOL PlayerData_isUsed(void *p);
 extern u16 data_020c6cc8;
 extern u8 gSavePlayers[];
@@ -132,7 +128,6 @@ SpNpcTortimerActEntry sSpNpcTortimerActTable[3] = {
 };
 
 
-extern "C" SpNpcTortimer *SpNpcTortimer_Create();
 
 extern "C" {
 u8 sSpNpcTortimerTexturePath[27] = "npc_sp/model/ttl_tex.nsbtx";

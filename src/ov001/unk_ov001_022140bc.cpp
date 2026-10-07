@@ -1,6 +1,21 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220aba4.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_022140bc.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
 
 struct WfcAddrEdit {
     u32 textCanvas;
@@ -25,83 +40,19 @@ struct WfcAddrEditTitleMsgIds { u8 v[5]; };
 extern "C" {
 extern u8 GX_LoadOBJPltt[];
 
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcDialog_Open(u32 a, u32 b, u32 c, s32 d, u32 e);
-s32 WfcUtil_SetScene(void *p);
-s32 WfcUtil_GetEditParams(void *p, void *q);
-s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
-s32 WfcUtil_SetEditParams(u32 a, u32 b);
-s32 WfcSound_Play(u32 a);
-s32 WfcUtil_ParseIpDigits(void *a, void *b);
-s32 WfcText_Clear(u32 a, u32 b);
-s32 WfcText_DrawTextRect(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
-s32 WfcText_RequestTransfer(u32 a);
-s32 WfcUtil_HideTopMessage();
-s32 WfcOam_FreeEntry(void *a);
-s32 WfcText_DestroyBgCanvas(u32 a);
 void WfcUtil_LoadFileTo(const char *a, void *b);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcHeap_FreeAndClear(void *a);
-s32 WfcNumPad_Exists();
-s32 WfcFade_IsBusy(u32 a);
-s32 WfcNumPad_Close();
-s32 WfcFade_StartWait(u32 a);
-s32 WfcNumPad_GetKey();
-s32 WfcNumPad_SetDeleteEnabled(u32 a);
-s32 WfcNumPad_SetInsertEnabled(u32 a);
-s32 WfcNumPad_SetDotEnabled(u32 a);
-s32 WfcNumPad_Create();
-s32 WfcFade_Start(s32, s32, s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcHeap_AllocClear(s32, s32);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcUtil_ShowStepIndicator(s32);
-s32 WfcText_CreateBgCanvas(s32, s32);
 s32 WfcObj_CreateSingle(s32, s32);
 s32 DWC_BACKUPlCheckAddress(void *a);
 s32 MI_CpuCopy8(void *a, void *b, u32 c);
 s32 MI_CpuFill8(void *a, u32 b, u32 c);
-s32 atol(void *a);
-s32 memcmp(void *, const char *, s32);
 s32 GX_LoadBG2Char(void);
 s32 GX_LoadBGPltt(void);
 s32 GX_LoadBG2Scr(void);
 
-void WfcManualSetup_Enter();
-void WfcConfig_FormatEditDns2();
-void WfcConfig_FormatEditDns1();
-void WfcConfig_FormatEditGateway();
-void WfcConfig_FormatEditSubnetMask();
-void WfcConfig_FormatEditIp();
-void WfcConfig_SetEditDns2();
-void WfcConfig_SetEditDns1();
-void WfcConfig_SetEditGateway();
-void WfcConfig_SetEditSubnetMask();
-void WfcConfig_SetEditIp();
-void WfcAddrEdit_Update();
-void WfcAddrEdit_WaitKeypad();
-void WfcAddrEdit_OpenKeypad();
-void WfcAddrEdit_FadeIn();
-void WfcAddrEdit_LoadBg();
-void WfcAddrEdit_Enter();
-void WfcAddrEdit_ReturnToInput();
-void WfcAddrEdit_WaitErrorDialog();
-s32 WfcAddrEdit_ValidateAddress();
-void WfcAddrEdit_NormalizeOctets();
-void WfcAddrEdit_ApplyAndExit();
-void WfcAddrEdit_WaitConfirmDialog();
-void WfcAddrEdit_UpdateCaret();
-void WfcAddrEdit_DrawText();
-void WfcAddrEdit_Exit();
-void WfcAddrEdit_WaitKeypadClosed();
-void WfcAddrEdit_CloseKeypad();
-void WfcAddrEdit_StartExit();
-void WfcAddrEdit_Idle();
-s32 WfcAddrEdit_IsOctetFull(s32 a);
-void WfcAddrEdit_HandleKey();
 
 const u16 data_ov001_0222a070[2] = {0x0b, 0x10};
 const u8 data_ov001_0222a074[12] = {0x31, 0x3d, 0x49, 0x5a, 0x66, 0x72, 0x83, 0x8f, 0x9b, 0xac, 0xb8, 0xc4};

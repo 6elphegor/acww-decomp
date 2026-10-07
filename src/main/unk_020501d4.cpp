@@ -2,6 +2,11 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "sys/Heap.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206c768.h"
 
 // TU068: 0x020501d4-0x02051218, the text system (fonts, text objects drawn into a tile buffer, string buffers and
 // the scene object that loads the fonts). One original file: __sinit constructs the five fonts and fills the
@@ -10,21 +15,15 @@
 typedef void (*GxLoadCharFunc)(void *src, u32 offset, u32 size);
 
 extern "C" {
-void *func_02133ef8(void *ptr, u32 size);
 void *NNS_FndGetNextListObject(void *list, void *prev);
 void NNS_FndRemoveListObject(void *list, void *obj);
 void NNS_FndInitList(void *list, u32 offset);
-void Mem_Free(void *ptr);
-void Heap_Free(void *heap, void *ptr);
 #define Heap_destroy2 _ZN4Heap8destroy2Ev
 void Heap_destroy2(void *heap);
-void *ExpHeap_Create(u32 size, void *parent);
 void DC_FlushRange(void *ptr, u32 size);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void *File_LoadF(const char *fmt, ...);
 char *strncpy(char *dst, const char *src, u32 n);
-void MailCheck_LoadWordList(void);
 
 // autoload_2: copies of the tile buffer to VRAM, one per target
 void GX_LoadBG0Char(void *src, u32 offset, u32 size);
@@ -40,22 +39,6 @@ void GXS_LoadOBJ(void *src, u32 offset, u32 size);
 
 extern void *gCurrentHeap;
 
-s32 GameFont_FindGlyph(GameFontDesc *font, s32 c);
-u32 GameFont_GetGlyphWidth(GameFontDesc *font, u32 c);
-const u8 *GameFont_GetGlyphBitmap(GameFontDesc *font, u32 c);
-void GameFont_Free(GameFontDesc *font);
-void GameFont_Load(GameFontDesc *font, const char *name, void *arg2, GameFontDesc *ext, u8 arg4);
-BOOL StrBuf_SetCString(StrBuf *buf, const char *src);
-BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
-BOOL Text_GameCharToAscii(char *out, u32 index);
-void TextLabel_DestroyAll(void);
-void TextLabel_FlushGroup0(void);
-void TextLabel_FlushGroup(s32 arg0);
-void Text_ResetLabels(void);
-void TextLabel_FlushGroup1(void);
-void Text_ShutdownSystem(void);
-void Text_InitSystem(void);
-BOOL Text_AsciiToGameChar(u8 *out, u32 c);
 }
 
 // A font with its constructor and destructor (symbols.txt has them as plain functions)
@@ -76,7 +59,6 @@ public:
 
 
 extern "C" {
-TextSystemModule *TextSystemModule_Create(void);
 
 extern const u16 sSpecialCharStr6;
 extern const u16 sSpecialCharStr2;
@@ -1030,7 +1012,6 @@ BOOL Text_GameCharToAscii(char *out, u32 index) {
     return TRUE;
 }
 
-BOOL Text_AsciiToGameChar(u8 *out, u32 c);
 
 BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c) {
     return Text_AsciiToGameChar(out, *c);

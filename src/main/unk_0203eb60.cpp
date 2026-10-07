@@ -1,14 +1,12 @@
 #include "types.h"
+#include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_0203eb60.h"
 
 // TU048: 0x0203eb60-0x0203eb78. Dispatch through a table of six handlers (.data 0x020d96d4-0x020d96ec).
 
 typedef s32 (*CharInteractSyncRecvFn)(u8 *, s32);
 
 extern "C" {
-s32 CharInteractSync_OnCharMsg(u8 *p, s32 x);
-s32 CharInteractSync_OnRelease(u8 *p, s32 x);
-s32 CharInteractSync_OnReply(u8 *p, s32 x);
-s32 CharInteractSync_OnLockRequest(u8 *p, s32 x);
 }
 
 extern "C" CharInteractSyncRecvFn sCharInteractSyncRecvFns[6] = {

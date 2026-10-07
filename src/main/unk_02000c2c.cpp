@@ -5,6 +5,26 @@
 #include "sys/OSThread.h"
 #include "nitro/io_access.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_CrashScreen_DrawMain  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CrashScreen_DrawStack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CrashScreen_DumpWords  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DebugText_Print  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_DebugText_Printf  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/autoload_2/unk_021127c0.h"
+#include "proto/autoload_2/unk_02113b6c.h"
+#include "proto/autoload_2/unk_02114cd8.h"
+#include "proto/autoload_2/unk_02114d84.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_0206d4a4.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/main/unk_020b0a80.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -51,42 +71,20 @@ u32 sCrashPrevKeys;
 u32 sCrashScreenMain;
 u32 sCrashScreenSub;
 
-void OS_InitTick(void);
-void OS_InitAlarm(void);
-void OS_InitThread(void);
-void OS_SetUserExceptionHandler(void (*fn)(void), void *p);
-void Fatal_ExceptionCallback(void);
 void OS_EnableInterrupts(void);
-void Main_InitDwc(void);
-void Main_RunWifiUtility(void);
 void OS_ResetSystem(u32 a);
-void Main_Init(void);
-s32 Main_Loop(void);
 
-void CrashScreen_Frame(void);
-void CrashScreen_Fill(u32 a, u32 b, u32 c);
-void CrashScreen_WaitVBlank(void);
-void CrashScreen_InitDisplay(void);
-void CrashScreen_Clear(void);
 void CrashScreen_DrawMain(void);
 void CrashScreen_DrawStack(void);
-BOOL CrashScreen_IsValidAddress(u32 addr, u32 len);
 void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size);
-void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
 
-u64 OS_GetTick(void);
 u32 OS_GetProcMode(void);
 void OS_DisableInterrupts(void);
-void Gfx_ResetDisplayRegs(void);
-void GX_SetBankForBG(u32 a);
 void GX_SetBankForSubBG(u32 a);
 void GX_LoadBG1Char(void *a, u32 b, u32 c);
 void GXS_LoadBG1Char(void *a, u32 b, u32 c);
 void GX_LoadBGPltt(void *a, u32 b, u32 c);
 void GXS_LoadBGPltt(void *a, u32 b, u32 c);
-u32 G2_GetBG1ScrPtr(void);
-u32 G2S_GetBG1ScrPtr(void);
-void GX_DispOn(void);
 void MIi_CpuClearFast(u32 a);
 void DebugText_Printf(DebugText *c, u8 *dst, const char *fmt, ...);
 void DebugText_Print(DebugText *c, u8 *dst, const char *fmt);
@@ -97,8 +95,6 @@ u32 OS_GetStackStatus(OSThread *a);
 void Heap_dump(u32 a);
 void BlockMap_DebugStub(void);
 u8 *OS_GetDTCMAddress(void);
-void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
-s32 Fatal_Trap(void);
 
 void Fatal_PanicV(const char *a, u32 b, const char *c, void *d) {
     {

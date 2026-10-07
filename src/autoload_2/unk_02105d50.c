@@ -14,13 +14,13 @@ typedef int BOOL;
 
 
 #include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_021040ac.h"
+#include "proto/autoload_2/unk_02105d50.h"
+#include "proto/autoload_2/unk_02110c98.h"
+#include "proto/itcm/unk_01ff8ad4.h"
 typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
-extern void NNS_G3dGetCurrentMtx(void *, void *);
 extern const s8 data_02135d5c[256];
-extern void G3X_Init(void);
-extern void NNS_G3dGlbInit(void);
-extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
 extern void MTX_Copy44To43_(void *, void *);

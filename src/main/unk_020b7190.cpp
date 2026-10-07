@@ -8,6 +8,17 @@
 #include "talk/MsgString33.h"
 #include "gfx/Camera.h"
 #include "item/ItemName.h"
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02037734.h"
+#include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7190.h"
 
 struct Vec {
     s32 x, y, z;
@@ -33,28 +44,16 @@ extern u32 gCamera;
 extern u8 gFieldSceneKind;
 extern Mat data_021f47e0;
 
-void String_Load2d(MsgString33 *buf, u8 *str, s32 n);
 Mat *Camera_GetViewMatrix(void);
 Vec *PlayerActor_GetBodyPos(s32 a);
 void WorldCurve_Apply(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
 s32 FX_Div(s32 a, s32 b);
 void Vec_Scale(void *a, s32 b);
-s32 PlayerActor_IsInAction(s32 a, s32 b);
-u16 *PlayerActor_GetItemInFront(void);
 u32 Scene_GetCurrent(void);
 BOOL TalkRequest_IsTalking(void);
 BOOL TalkRequest_IsSaveMenuRunning(void);
 BOOL TalkRequest_IsPlayerMessage(void);
-void *TalkWindow_Get(s32 a);
-BOOL MenuCtrl_IsMenuOpen(void);
-BOOL MenuCtrl_IsSyncMsgMenu(void);
-BOOL MenuCtrl_IsScreenChanging(void);
-BOOL MenuCtrl_IsTransitionActive(void);
-s32 MenuCtrl_GetTransitionProgress(void);
-void Snd_PlaySe(s32 a);
-void Comm_SetShutdownErrorFlag(void);
-BOOL FieldInfoBalloon_IsMenuTransition(void);
 }
 
 class FieldInfoBalloon {

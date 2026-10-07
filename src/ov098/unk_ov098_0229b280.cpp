@@ -7,13 +7,26 @@
 #include "player/PlayerData.h"
 #include "menu/MenuErrorMessage.h"
 #include "menu/PocketMenu.h"
+#define PROTO_LOCAL_BottleThrow_IsActive  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FishCatch_StartRelease  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PocketMenu_GetPlayerSlot  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_0208f0b0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov096/unk_02294c40.h"
+#include "proto/ov098/unk_ov098_0229b280.h"
 
 extern "C" {
-s32 Snd_PlaySe(s32 a);
-s32 PlayerActor_IsInAction(s32 a, s32 b);
-u8 *PlayerActor_GetActor(s32 a);
-void *PlayerData_GetCurrent();
-s32 MenuCtrl_IsForceCloseDue();
 s32 FieldAction_RequestTool(s32 a, void *b, s32 c, s32 d, s32 e);
 s32 FieldAction_RequestAtFreeUnit(s32 a, s32 b, s32 c);
 s32 FieldAction_PollResult(s32 a);
@@ -24,13 +37,7 @@ void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u32 BlockMap_GetBlockAttr(void *grid, s32 x, s32 z);
 BOOL Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void NetBuf_PackPair20(void *out, s32 a, s32 b);
-u32 Random_GlobalBelow(u32 a);
-void *Heap_AllocTail(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
-void *TownExchange_GetLetter(void *p);
-void Letter_Copy(void *a, void *b);
 
 extern void *gMenuHeap;
 extern void *gSceneBlockMap;
@@ -41,19 +48,10 @@ extern u16 gPad[];
 extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
 
 // other overlays
-BOOL PlayerActor_ConfirmReleaseCreature();
-BOOL PlayerActor_IsLocalReleaseWaiting();
-BOOL PlayerActor_LocalRequestReleaseCreature(u32 a);
 BOOL BottleThrow_IsActive(void *p);
 void BottleThrow_SetTarget(void *p, void *q);
-void PlayerActor_LocalRequestThrowBottle();
-BOOL HeldInsect_GetStage(void *p);
-void HeldInsect_Start(u32 a, void *p);
-void HeldInsect_Release(void *p, s32 a);
-void PlayerActor_LocalReleaseCatch(u8 a);
 BOOL FishCatch_StartRelease(void *p, s32 a, void *q);
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
-BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
 extern "C" CommManager *gCommManager;
@@ -61,13 +59,6 @@ extern "C" CommManager *gCommManager;
 class PocketMenu;
 extern "C" {
 void *PocketMenu_GetPlayerSlot(PocketMenu *self);
-s32 PocketMenu_GetLetter(PocketMenu *self, u32 a);
-s32 PocketMenu_GetItem(PocketMenu *self, u32 a);
-s32 PocketMenu_ClearLetter(PocketMenu *self, u32 a);
-s32 PocketMenu_ClearSlotItem(PocketMenu *self, u32 a);
-s32 PocketMenu_StartRemoveBlink(PocketMenu *self);
-s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
-s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
 
 
@@ -99,8 +90,6 @@ struct Unk_ov098_0229b790_Pt {
 };
 
 extern "C" {
-void *PlayerData_GetCurrent();
-s32 InvItem_IsNotFishInsectOrFlower(u32);
 }
 
 extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {

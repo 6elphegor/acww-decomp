@@ -6,6 +6,14 @@
 #include "net/gpiPeer.h"
 #include "net/gp.h"
 #include "net/gsPlatformUtil.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227cd34.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
@@ -32,8 +40,6 @@ s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *
 s32 gpiRecvToBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32 *, const char *);
 void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
-void gpiDebug(GPConnection *, const char *, ...);
-void *GsUtil_Realloc(void *, s32);
 s32 gpiCheckForError(GPConnection *, char *, s32);
 s32 gpiProcessRecvBuddyMessage(GPConnection *, char *);
 s32 gpiOperationsAreBlocking(GPConnection *);
@@ -46,17 +52,9 @@ s32 gpiCanFreeProfile(GPIProfile *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiInitProfiles(GPConnection *);
 void SocketStartUp();
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 void TableFree(void *);
 
-char *strstr(const char *, const char *);
-void memcpy(void *, const void *, s32);
-void memmove(void *, void *, u32);
-s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
-void memset(void *, s32, u32);
-void srand();
 
 s32 gpiReset(GPConnection *h);
 s32 gpiDestroy(GPConnection *h);
@@ -74,7 +72,6 @@ extern "C" {
 s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiSendAuthBuddyRequest(GPConnection *, GPIProfile *);
-void GsUtil_Free(void *);
 s32 gpiCanFreeProfile(GPIProfile *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiGetPeerByProfile(GPConnection *, s32);
@@ -82,21 +79,15 @@ s32 gpiAddPeer(GPConnection *, s32, s32);
 s32 gpiPeerGetSig(GPConnection *, s32);
 s32 gpiPeerStartConnect(GPConnection *, s32);
 s32 gpiPeerAddMessage(GPConnection *, s32, s32, s32);
-void strzcpy(char *, const char *, s32);
 void gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
 void gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
-void *GsUtil_Alloc(s32);
 char *goastrdup(const char *);
 s32 gpiAddCallback(GPConnection *, GPICallback, void *, s32, s32);
 GPIProfile *gpiProfileListAdd(GPConnection *, s32);
 
-s32 atol(const char *);
-s32 STD_GetStringLength(const char *);
-char *STD_CopyString(char *, const char *);
-char *strstr(const char *, const char *);
 
 s32 gpiSendServerBuddyMessage(GPConnection *h, s32 a, s32 b, const char *s);
 s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t);
@@ -120,20 +111,11 @@ namespace Nf {
 
 
 extern "C" {
-char *strchr(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
-s32 atol(const char *);
-u32 STD_GetStringLength(const char *);
-void memmove(void *, void *, s32);
-void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
-void *GsUtil_Realloc(void *, s32);
-void *GsUtil_Alloc(s32);
-s32 GsUtil_Free(void *);
 s32 recv(s32, void *, s32, s32);
 s32 send(s32, void *, s32, s32);
 s32 GOAGetLastError(s32);

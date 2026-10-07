@@ -6,6 +6,35 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "ui/LabelString.h"
+#define PROTO_LOCAL_Keyboard_CalcChatKeyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_DrawCopyPasteKeys  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_DrawCopyPasteKeysChat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_DrawEmotionKeys  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_DrawLengthGauge  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_DrawPageKeys  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_GetEmotionKeyX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_GetPageCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Keyboard_GetTabKeyX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206cbdc.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov090/unk_ov090_022918e0.h"
+#include "proto/ov095/unk_02292360.h"
 
 
 struct KeyboardTabCells {
@@ -30,183 +59,26 @@ extern volatile u16 sCharSortKeyZero;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
-extern s32 MenuTabBar_TabFromX(s32 a);
-BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
-BOOL MenuKeys_HasRight(void *p);
-BOOL MenuKeys_HasLeft(void *p);
-BOOL MenuKeys_HasDown(void *p);
-BOOL MenuKeys_HasUp(void *p);
-s32 Gfx2d_LoadCharRange(void *, u32, u32, u32, u32);
-s32 Gfx2d_LoadCharFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Emotion_GetSlot(s32 i);
-s32 Emotion_CountLearned(void);
-s32 Text_GetCharSortKey(s32 a);
-s32 Mem_Copy(void *src, void *dst, s32 n);
-s32 Text_FitToWidth(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
-s32 Text_GetLength(u8 *s, s32 n);
-s32 Text_MeasureWidth(u8 *s, s32 n);
-s32 Text_GetCharWidth(u32 c);
-s32 File_LoadToBuffer(void *name, void *buf, s32 size);
-s32 File_LoadAlloc(s32 a, s32 b, s32 c, s32 d);
-s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
-s32 MenuCtrl_GetKeyboardPageMode(s32 a);
-s32 MenuCtrl_GetKeyboardPage(void);
-s32 String_Load2dMenu(void *a, s32 b);
-s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
 s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);
 s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 s32 Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 PlayerData_GetCurrent(void);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *a, void *b, s32 c, s32 d, s32 e);
-s32 Heap_Free(u32 heap, void *p);
 s32 _s32_div_f(s32 a, s32 b);
-s32 MenuTabBar_TabFromX(s32 a);
-s32 MenuTabBar_GetTabX(s32 a);
-void *Heap_AllocTail(u32 heap, s32 size);
-void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
-void Snd_PlayKeySe(u32 a);
-void Snd_SetKeySeMode(s32 a);
-void Snd_PlaySe(s32 a);
-void MenuCtrl_SetKeyboardPageMode(s32 a, s32 b);
-void MenuCtrl_SetKeyboardPage(s32 a);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10BgVramTask6cancelEv(void *a);
 void MI_CpuCopy8(void *a, void *b, s32 c);
 
-void Keyboard_PlayCharSe(Keyboard *s, s32 a);
-void Keyboard_PlayPasteSe();
-void Keyboard_PlayCopySe();
-s32 Keyboard_PressCursorKey(Keyboard *s);
-s32 Keyboard_MoveCursor(Keyboard *s, void *p);
-void Keyboard_ResetCursor(Keyboard *s);
-void Keyboard_SetTextFieldPos(Keyboard *s, s32 a, s32 b);
-s32 Keyboard_GetCursorY(Keyboard *s);
-s32 Keyboard_GetCursorX(Keyboard *s);
-BOOL Keyboard_MoveOnExtraKeys(Keyboard *s, void *p);
-BOOL Keyboard_MoveOnNameEntryButtons(Keyboard *s, void *p);
-BOOL Keyboard_MoveOnWriteButtons(Keyboard *s, void *p);
-BOOL Keyboard_MoveOnChatKeys(Keyboard *s, void *p);
-BOOL Keyboard_MoveOnTabRow(Keyboard *s, void *p);
-void Keyboard_EnterTabRowAtX(Keyboard *s, s32 a);
-void Keyboard_SelectSendKey(Keyboard *s);
-void Keyboard_SelectMenuTabKey(Keyboard *s, s32 a);
-void Keyboard_EnterTabRowAtX2(Keyboard *s, s32 a);
-void Keyboard_EnterKeysAtX(Keyboard *s, s32 a);
-void Keyboard_GoToTabRow(Keyboard *s);
-void Keyboard_SelectTabRowNearX(Keyboard *s, s32 a);
-void Keyboard_MoveAboveTabRow(Keyboard *s);
-void Keyboard_MoveOnPage3(Keyboard *s, void *p);
-void Keyboard_ClearFlags(Keyboard *s, u32 m);
-void Keyboard_SetFlags(Keyboard *s, u32 m);
-BOOL Keyboard_TestFlags(Keyboard *s, u32 m);
-void Keyboard_MoveOnPage2(Keyboard *s, void *p);
-void Keyboard_MoveOnPage1(Keyboard *s, void *p);
-void Keyboard_MoveDownToButtons(Keyboard *s);
-void Keyboard_MoveDownToMainButton(Keyboard *s);
-void Keyboard_UpdateCursorPos(Keyboard *s);
-void Keyboard_CalcCursorPosPage3(Keyboard *s);
-void Keyboard_CalcCursorPosPage2(Keyboard *s);
-void Keyboard_CalcCursorPosPage1(Keyboard *s);
-void Keyboard_CalcCursorPosPage0(Keyboard *s);
-s32 Keyboard_CalcExtraKeyPos(Keyboard *s);
-s32 Keyboard_CalcNameEntryButtonPos(Keyboard *s);
-s32 Keyboard_CalcWriteButtonPos(Keyboard *s);
 s32 Keyboard_CalcChatKeyPos(Keyboard *s);
 s32 Keyboard_GetEmotionKeyX(Keyboard *s, s32 a);
-s32 Keyboard_CalcTabRowKeyPos(Keyboard *s);
 s32 Keyboard_GetTabKeyX(Keyboard *s, s32 a);
-s32 Keyboard_DrawLengthGaugeAt(void *s, s32 x, s32 y, s32 idx);
 s32 Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx);
 void Keyboard_DrawCopyPasteKeys(Keyboard *s, s32 x, s32 y);
 void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y);
-void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z);
-s32 Keyboard_GetSelectedEmotion(Keyboard *s);
-void Keyboard_SelectEmotionByCode(Keyboard *s, s32 v);
-void Keyboard_ClearSelectedEmotion(Keyboard *s);
-BOOL Keyboard_TouchEmotionKey(Keyboard *s);
-BOOL Keyboard_TouchPageTab(Keyboard *s);
-BOOL Keyboard_TouchSendKey();
-void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w);
 void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y);
 s32 Keyboard_DrawPageKeys(Keyboard *s, s32 x, s32 y);
 s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z);
-void Keyboard_LoadEmotionIcons(Keyboard *s);
-void Keyboard_LoadObjGfx(Keyboard *s);
-void Keyboard_EndPaste(Keyboard *s);
-void Keyboard_BeginPaste(Keyboard *s);
-u8 Keyboard_GetTypedRunLength(Keyboard *s);
-s32 Keyboard_HandleModeKey(Keyboard *s, s32 a, s32 b);
-u8 Keyboard_HitTestText(void *s, u8 *str, s32 a, s32 b, u8 limit0, u8 *out);
-s32 Keyboard_ModifyCharKey105(Keyboard *s, s32 a);
-s32 Keyboard_ModifyCharKey104(Keyboard *s, s32 a);
-s32 Keyboard_ModifyCharKey103(Keyboard *s, s32 a);
-BOOL Keyboard_ReplaceCharBeforeCursor(Keyboard *s, u8 *buf, s32 c, s32 n);
-s32 Keyboard_DeleteRange(void *s, u8 *buf, s32 a, s32 b, s32 n);
-BOOL Keyboard_InsertCharMultiline(Keyboard *s, void *p1, s32 p2, u8 *p3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9);
-void Keyboard_ShrinkTypedRun(Keyboard *s);
-void Keyboard_ResetTypedRun(Keyboard *s);
 void *Keyboard_GetPageCells(Keyboard *s);
-BOOL Keyboard_InsertChar(Keyboard *s, u8 *a, s32 b, u8 *p, s32 c, s32 d, s32 e, s32 f);
-BOOL Keyboard_InsertAt(Keyboard *s, u8 *a, s32 b, s32 c, s32 d, s32 e);
-BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, void *b, s32 c, s32 d, s32 e);
-BOOL Keyboard_IsControlCode(Keyboard *s, s32 a);
-void Keyboard_UpdateModifierKeys(Keyboard *s, s32 a);
-void Keyboard_DisableModifierKeys(Keyboard *s);
-BOOL Keyboard_TickKeyRepeat(Keyboard *s);
-void Keyboard_StartKeyRepeat(Keyboard *s);
-s32 Keyboard_UpdatePressedKey(Keyboard *s);
-void Keyboard_EndFrame(Keyboard *s, s32 a);
-void Keyboard_LoadScreenNow(Keyboard *s, s32 a);
-void Keyboard_LoadScreenFile(Keyboard *s, s32 a);
-void Keyboard_LoadLetterChars(Keyboard *s, s32 a);
-void Keyboard_Shutdown(Keyboard *s);
-void Keyboard_Init(Keyboard *s, s32 a);
-void Keyboard_EndOneShotShift(Keyboard *s, s32 a);
-void Keyboard_ToggleOneShotShift(Keyboard *s, s32 a);
-void Keyboard_ToggleCapsLock(Keyboard *s, s32 a);
-void Keyboard_SelectPageByCode(Keyboard *s, s32 a, s32 b);
-void Keyboard_Reload(Keyboard *s, s32 a);
-void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c);
-void Keyboard_RestoreLastPage(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCode(Keyboard *s, s32 a, u32 b);
-s32 Keyboard_GetKeyCodePage0B(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage0A(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage3(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage2(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage1Alt(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage1Upper(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage1Lower(Keyboard *s, s32 a);
-s32 Keyboard_GetKeyCodePage0Special(Keyboard *s, s32 a);
-void Keyboard_MarkScreenDirty(Keyboard *s);
-void Keyboard_SetAltWriteLayout(Keyboard *s);
-s32 Keyboard_GetSpecialKeyCode(Keyboard *s, s32 a);
-s32 Keyboard_GetPressedKey(Keyboard *s);
-s32 Keyboard_TouchKey(Keyboard *s, s32 a, u32 b);
-s32 Keyboard_TouchCopyPasteKey(Keyboard *s, u32 a, u32 b);
-s32 Keyboard_TouchPage3Key(Keyboard *s, u32 a, u32 b);
-s32 Keyboard_TouchPage2Key(Keyboard *s, u32 a, u32 b);
-s32 Keyboard_TouchPage1Key(Keyboard *s, u32 a, u32 b);
-void Keyboard_HighlightKey(Keyboard *s, s32 a);
-void Keyboard_SetKeyPalette(Keyboard *s, s32 a, s32 b);
-void Keyboard_SetPage3KeyPalette(Keyboard *s, s32 a, s32 b);
-void Keyboard_SetPage2KeyPalette(Keyboard *s, s32 a, s32 b);
-void Keyboard_SetPage1KeyPalette(Keyboard *s, s32 a, s32 b);
-void Keyboard_SetPage0KeyPalette(Keyboard *s, s32 a, s32 b);
-void Keyboard_UpdateShiftKey(Keyboard *s);
-void Keyboard_ClearHighlight(Keyboard *s);
-void Keyboard_ResetKeyPalettes(Keyboard *s);
-BOOL Keyboard_IsTooWide(Keyboard *s);
-BOOL Keyboard_IsFull(Keyboard *s);
-BOOL Keyboard_IsOnButtonKey(Keyboard *s, s32 a);
-BOOL Keyboard_IsOnMenuTabKey(Keyboard *s, s32 a);
-BOOL Keyboard_IsMenuTabKey(Keyboard *s, s32 a);
-BOOL Keyboard_IsKeyDisabled(Keyboard *s, s32 a);
-s32 Keyboard_SetCopyPastePalette(Keyboard *s, s32 a, s32 b);
-void Keyboard_EnableKey(Keyboard *s, s32 i);
-void Keyboard_DisableKey(Keyboard *s, s32 i);
-BOOL Keyboard_IsSlotDisabled(Keyboard *s, s32 i);
 }
 
 extern "C" u32 data_ov095_022965bc[];

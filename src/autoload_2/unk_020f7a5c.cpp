@@ -18,6 +18,8 @@
 #include "snd/BgmBeatPhase.h"
 #include "snd/SndBgmViews.h"
 #include "snd/SndBgmHd.h"
+#include "proto/autoload_2/unk_020f7a5c.h"
+#include "proto/autoload_2/unk_0210c084.h"
 
 
 // gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with NNS_SndPlayerReadVariable(&handle, selector, &out)
@@ -85,7 +87,6 @@ extern Hr gSndBgmHandle;
 s32 FX_Div(s32 a, s32 b);
 void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
 void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
-void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void Snd_StopHandle(void *p, u32 v);
 void Snd_InitHandle(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
@@ -106,8 +107,6 @@ void BgmSyncSnd_ReadHeader(Rb *r);
 void BgmSyncSnd_ReadVars(Rb *r);
 void BgmSyncSnd_SelectStep(Rb *r);
 void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
-s32 BgmSyncSnd_CalcPhase(Rb *r);
-void BgmSyncSnd_SetState(Rb *r, u32 mode);
 }
 
 // beat counters (bss)

@@ -1,5 +1,9 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#define PROTO_LOCAL_WfcMsg_InitPool  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcPool_CreateFrom  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_02223fc4.h"
 
 struct WfcMsgBank {
     u32 *offsets;
@@ -15,10 +19,8 @@ struct WfcMsgPool {
 extern "C" {
 WfcMsgPool *sWfcMsgPool;
 
-extern void WfcFs_FreeFile(void *);
 extern void *WfcPool_Get(void *);
 extern void WfcPool_Put(void *, void *);
-extern void *WfcFs_LoadFile(void *, void *, u32);
 extern void *WfcPool_CreateFrom(s32, void *, s32);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);

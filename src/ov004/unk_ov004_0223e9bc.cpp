@@ -4,6 +4,9 @@
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
 #include "sys/ProcProfile.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov004/unk_ov004_0223e9bc.h"
 
 class ShopStockPlacer;
 
@@ -27,7 +30,6 @@ u32 Scene_GetCurrent();
 BOOL Scene_InNookShop();
 BOOL SceneId_IsNookShop(u32 id);
 s32 Scene_GetNookShop();
-void Item_FromPlacedForm(u16 *out, u16 *in);
 u16 *AbleShop_GetItem(void *tbl, s32 idx, u16 *out);
 u16 *NookShop_GetItem(void *tbl, s32 idx, u16 *out);
 s32 NookShop_FindItem(void *tbl, u16 *p);
@@ -35,14 +37,10 @@ s32 AbleShop_FindItem(void *tbl, u16 *p);
 s32 ReddShop_FindItem(void *tbl, u16 *p);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 BlockMap_SetItemAtUnit(void *g, u16 *v, s32 x, s32 y, u32 z);
-void *FtrActorGrid_GetInstance();
 void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 x, s32 y, s32 z);
 #define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 s32 FtrActor_GetFtrIndex(void *o);
 
-u8 *ShopStock_GetLayout();
-s32 ShopStock_GetItemCode(u16 *p);
-u16 *ShopStock_GetItemAt(s32 x, s32 y);
 u16 *ReddShop_GetItem(void *p, u32 a, void *b);
 void _ZN15ShopStockPlacer11setupNoShopEv();
 void _ZN15ShopStockPlacer16setupScene15ShopEv();
@@ -52,7 +50,6 @@ extern void *data_ov004_0224f254[2];
 extern void *data_ov004_0224f25c[2];
 extern void *data_ov004_0224f264[2];
 extern void *data_ov004_0224f274[2];
-BOOL ShopStock_IsForSale(u16 *p);
 }
 
 class ShopStockPlacer : public GameProc {

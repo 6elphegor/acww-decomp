@@ -1,8 +1,9 @@
 #include "types.h"
 #include "snd/TvSound.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02003850.h"
 
 extern "C" {
-void *Heap_Alloc(u32 heap, u32 size);
 }
 
 

@@ -7,6 +7,15 @@
 #include "net/SockHostEnt.h"
 #include "net/gpi.h"
 #include "net/gpiPeer.h"
+#define PROTO_LOCAL_strzcpy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_0227e160.h"
+#include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU44: GP gpiConnect.c (0x0227e160..0x0227f2a4)
 
@@ -50,20 +59,11 @@ extern char data_ov065_0228d170[];
 extern char data_ov065_0228d194[];
 
 extern "C" {
-char *strchr(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
-s32 atol(const char *);
-u32 STD_GetStringLength(const char *);
-void memmove(void *, void *, s32);
-void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
 void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
-void gpiDebug(void *, const char *, ...);
-void *GsUtil_Realloc(void *, s32);
-void *GsUtil_Alloc(s32);
-s32 GsUtil_Free(void *);
 s32 recv(s32, void *, s32, s32);
 s32 send(s32, void *, s32, s32);
 s32 GOAGetLastError(s32);
@@ -115,14 +115,7 @@ extern "C" char __GSIACGamename[];
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-char *strstr(const char *, const char *);
-s32 atol(const char *);
-s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 memcmp(const void *, const void *, s32);
-void *memset(void *, s32, s32);
-void GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 void Util_RandSeed(u32);
 s32 Util_RandInt(s32, s32);
 void MD5Digest(char *, s32, char *);
@@ -200,8 +193,6 @@ void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
 void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
-void *GsUtil_Alloc(s32);
-void GsUtil_Free(void *);
 char *goastrdup(const char *);
 s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
 void gpiFailedOpCallback(GPConnection *, GPIOperation *);
@@ -225,11 +216,6 @@ s32 gpiSendLocalInfo(GPConnection *, const char *, const char *);
 s32 gpiSendUserInfo(GPConnection *, const char *, const char *);
 s32 gpiSetInfoi(GPConnection *, s32, s32);
 
-void *memset(void *, s32, u32);
-u32 rand(void);
-s32 atol(const char *);
-s32 STD_GetStringLength(const char *);
-char *STD_CopyString(char *, const char *);
 
 s32 gpiSendGetInfo(GPConnection *, s32, s32);
 s32 gpiStartConnect(GPConnection *, GPIOperation *);

@@ -6,6 +6,13 @@
 #include "room/FtrSwitch.h"
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
+#define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02060034.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/ov004/unk_ov004_02204f24.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 extern "C" {
 void *__cxa_vec_ctor(void *p, u32 n, u32 sz, void *ctor, void *dtor);
@@ -79,26 +86,18 @@ inline BOOL Range(u16 *p, u32 lo, u32 hi) {
 
 extern "C" {
 s32 FtrActor_GetLayer(s32 a);
-void *FtrActorGrid_GetInstance();
 FtrActor *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void FtrActor_GetFtrIndex(void *p);
-s32 FtrActor_PredIsStereo(void *p);
-s32 FtrMgr_CountSwitchedOn(void (*f)());
 void _ZN8FtrActor8isGyroidEv();
-void *FtrMgr_SwitchOffRandom(void (*f)(), s32 a);
 
 u32 Scene_GetCurrent();
-s32 NetArea_IsLocalOwner();
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *BlockMap_GetForArea(s32 a);
 s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *p);
-s32 FtrInfo_GetUnk05(s32 a);
 s32 _ZN9HouseData7getRoomEi(void *p, s32 a);
-void HouseRoom_ClearSongForScene(s32 a);
-void HouseRoom_SetSongForScene(s32 a, u16 *p);
 s32 SceneId_IsHouseRoom(u32 id);
 s32 SceneId_GetHouseRoom(u32 id);
 s32 SceneId_IsVillagerHouse(u32 id);
@@ -106,32 +105,7 @@ s32 SceneId_GetVillagerHouse(u32 id);
 s32 SceneId_IsNookShop(u32 id);
 s32 SceneId_GetNookShop(u32 id);
 
-u32 SpotSync_GetReserveResult();
-void SpotSync_RequestReserve(s32 *p);
-void SpotSync_Release(void *p);
-void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d);
-void FtrSync_SendRoomLight(s32 a, s32 b, s32 c);
-void FtrSync_ApplyRoomLight(s32 a, s32 b);
-void FtrSync_SetTopItem(s32 a, s32 b, s32 c, u16 *d, u8 f);
-void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i);
-void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h);
-s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
-s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
-s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g);
-s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
-void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e);
-s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, u8 i);
-Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u32 idx);
-s32 FtrFootprint_GetTileCount(Unk_0205242c_Self *p);
 void FtrFootprint_Destruct(Unk_0205242c_Self *p);
-Unk_0205242c_Self *FtrFootprint_Init(Unk_0205242c_Self *p, u16 *q);
-s32 RoomFtrState_RemoveGyroidBeat(s32 a, s32 b, u32 c);
-s32 RoomFtrState_SetGyroidBeat(s32 a, s32 b, s32 c, u32 d);
-void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e);
-RoomFtrState *RoomFtrState_GetForScene(u32 id);
-BOOL RoomFtrState_ResetScene(u32 v);
-BOOL RoomFtrState_ResetVillagerHouse(u32 idx);
-void RoomFtrState_ResetAll();
 }
 
 extern "C" {

@@ -1,5 +1,19 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_02218300.h"
+#include "proto/ov001/unk_ov001_02218844.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -12,51 +26,7 @@ u8 sWfcSimpleStartWaitNext;
 extern "C" {
 s32 GX_LoadBG2Scr(void *, s32, u32);
 s32 OS_Sleep(s32);
-s32 WfcBusyIcon_Delete();
-s32 WfcBusyIcon_Create(s32);
-s32 WfcButtonBar_DisableInput();
-s32 WfcButtonBar_EnableInput();
-s32 WfcButtonBar_IsClosed();
-s32 WfcButtonBar_SetResult(s32);
-s32 WfcButtonBar_GetResult();
-s32 WfcButtonBar_Close();
-s32 WfcUtil_HideTopMessage();
-s32 WfcUtil_ShowBottomMessage(s32);
-s32 WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcHighlight_SetConnection();
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcSimpleStart_GetState();
-s32 WfcSimpleStart_End();
-void WfcSimpleStartWait_WaitDialogClosed();
-void WfcSimpleStartWait_FailDialog();
-void WfcSimpleStartWait_CheckStatus();
-void WfcSimpleStartWait_Exit();
-void WfcSimpleStartWait_FadeOut();
-void WfcSimpleStartWait_StartExit();
-void WfcSimpleStartWait_HandleResult();
-void WfcSimpleStartWait_Idle();
-void WfcSimpleStartWait_HandleInput();
-void WfcSimpleStartWait_Update();
-void WfcSimpleStartWait_WaitButtonBar();
-void WfcSimpleStartWait_WaitFadeIn();
-void WfcSimpleStartWait_FadeIn();
-void WfcSimpleStartWait_LoadBg();
-void WfcSimpleStartWait_Enter();
-BOOL WfcSimpleStartWait_IsLidClosed();
-void WfcSimpleStartRecv_Enter();
-s32 WfcSetupMethod_Enter();
-s32 WfcSound_Stop();
-s32 WfcSound_Play(s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcFade_StartWait(s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcText_DestroyBgCanvas(s32);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcInput_IsKeyPressed(s32);

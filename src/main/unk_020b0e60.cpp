@@ -15,6 +15,18 @@
 #include "net/CommManager.h"
 #include "save/Pattern.h"
 #include "town/BuildingActor.h"
+#define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
 
 
 extern "C" {
@@ -248,7 +260,6 @@ public:
     MODERN_EMIT virtual ~FieldObjectShapeQuery() {}
 };
 
-s32 Math_LerpFx(s32 t, s32 lo, s32 hi);
 
 extern "C" {
 void MTX_RotZ33_(void *m, s32 sn, s32 cs);
@@ -276,17 +287,10 @@ Map *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
-void Str_SPrintf(char *buf, const char *fmt, ...);
-u32 Random_GlobalBelow(...);
-void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
-void Melody_PlayAt(void *p, s32 a);
 void Pattern_CopyFields(void *dst, void *src);
-void *TownFlagPattern_GetPattern(void *p);
 void *TownFlagPattern_InitDefault(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
 u32 Villager_GetWhereabouts(void *a);
-void Town_RemoveShipParts(void);
-void GulliverQuest_Init(void *a);
 void Clock_GetMinuteHour(u8 *out);
 void _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
 void Scene_GetWarpRequest(void);
@@ -297,16 +301,12 @@ BOOL Scene_InTown(void);
 BOOL SceneId_IsVillagerHouse(u32 a);
 BOOL SceneId_IsHouseRoom(u32 a);
 void Math_StepS32(void *p, s32 a, s32 b);
-void Mem_Free(void *p);
-void *NNS_FndGetArchiveFileByName(char *name);
 void NNS_FndUnmountArchive(void *file);
 BOOL NNS_FndMountArchive(void *file, const void *mode, void *arc);
 void NNS_G3dMdlSetMdlAlpha(Ctx *c, s32 i, u8 v);
 void NNS_G3dMdlSetMdlEmi(Pal *p, s32 i, u16 c);
 void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
 void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
-Obj *BuildingList_FindByItem(u32 a);
-Obj *Building_FindNearPos(u32 a);
 BOOL _ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
 }
 
@@ -331,83 +331,8 @@ extern u32 sStrBSizeTable[0x22];
 
 // own prototypes
 extern "C" {
-u32 Math_CountBits4(s32 v);
-s32 Item_GetBuildingIndex(u32 arg);
-void StrBSize_Load(void);
-void StrBSize_Unload(void);
-u32 StrBSize_Get(u16 *p);
-BOOL FieldStructureMgr_Register(u32 v);
-BOOL FieldStructureMgr_Unregister(void);
-u32 FieldStructureMgr_Get(void);
-void TownStyleRecord_DestructStub(void *p);
-void TownStyleRecord_ConstructStub(void *p);
-void TownStyle_RollVillagerHouseStyles(u8 *out);
-u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx);
-void TownFlag_SetPattern(void *p, void *src);
-void *TownFlag_GetPattern(void *p);
-void TownStyleRecord_InitNew(u8 *self);
-u16 Light_GetBaseEmission(void);
-void BuildingStates_Reset(void);
-u8 BuildingState_Get(u32 id);
-BOOL BuildingState_Set(u32 id, u8 val);
-u16 *Town_GetEventPlotItem(s32 *outX, s32 *outY);
-void TownStructure_PlaceAtEventPlot(u16 id);
-BOOL TownStructure_RemoveFromEventPlot(u16 id);
-void Town_PlaceReddTent(void);
-BOOL Town_RemoveReddTent(void);
-void Town_PlaceKatrinaTent(void);
-BOOL Town_RemoveKatrinaTent(void);
-void Town_PlaceGracieCar(void);
-BOOL Town_RemoveGracieCar(void);
-void Town_PlaceCountdownSign(void);
-BOOL Town_RemoveCountdownSign(void);
-u32 MapBlock_CountSigns(u8 *cell);
-u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v);
-BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v);
-BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag);
-BOOL Town_RemoveGulliverShip(void);
 void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
 void BuildingInfo_Destroy(BuildingInfo *i);
-u16 BuildingInfo_GetProfile(BuildingInfo *i);
-u8 BuildingInfo_GetEntranceType(BuildingInfo *i);
-u8 BuildingInfo_GetKind(BuildingInfo *i);
-s8 BuildingInfo_GetInteriorScene(BuildingInfo *i);
-u8 BuildingInfo_GetFlickeringLights(BuildingInfo *i);
-u8 BuildingInfo_GetViewRangeX(BuildingInfo *i);
-u8 BuildingInfo_GetViewRangeFront(BuildingInfo *i);
-u8 BuildingInfo_GetViewRangeBack(BuildingInfo *i);
-u8 BuildingInfo_GetCapacity(BuildingInfo *i);
-u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c);
-u32 BuildingKey_Make(u32 a, u32 b, u32 c);
-u32 Building_GetDoorAnimParamAt(u32 a);
-BOOL Field_HasExitedBuildingKey(void);
-void Field_CacheExitedBuildingKey(void);
-u32 Field_GetExitedBuildingKey(void);
-BOOL Building_RequestState(Obj *o, s32 v);
-u32 SaveVillager_IsAsleepAt(s32 v);
-u32 Building_IsOwnerAsleep(u32 v);
-BOOL Building_ApplyStateRecord(u16 *p);
-void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit);
-void BuildingOccupancy_OnLeaveRecord(u8 *p, s32 bit);
-void BuildingOccupancy_Reset(void);
-void BuildingOccupancy_RequestEnter(u32 arg);
-u8 BuildingOccupancy_GetAnswer(u32 a);
-void BuildingOccupancy_Leave(u32 a, u32 b);
-u8 HouseVisitor_IsPresent(void);
-void HouseVisitor_SetPresent(void);
-void HouseVisitor_ClearPresent(void);
-u32 BuildingOccupancy_GetPlayersForScene(u32 a);
-u32 BuildingOccupancy_CountForScene(u32 a);
-u32 Room_CountOccupants(void);
-void Taxi_SetLeaving(void);
-void Taxi_ClearLeaving(void);
-u8 Taxi_IsLeaving(void);
-void Taxi_SetArriving(void);
-void Taxi_ClearArriving(void);
-u8 Taxi_IsArriving(void);
-void Building_SetLastEntranceType(u32 a);
-u32 Building_GetLastEntranceType(void);
-void Building_PlayDoorChime(void);
 }
 
 

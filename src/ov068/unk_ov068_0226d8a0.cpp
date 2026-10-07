@@ -13,6 +13,9 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "room/RoomObjTexAuto.h"
+#define PROTO_LOCAL_RoomObj_LoadResourcesByName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomObj_ReleaseResources  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov068/unk_ov068_0226d8a0.h"
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
@@ -116,7 +119,6 @@ extern "C" DebugColor data_ov068_02271254(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" DebugColor data_ov068_0227126c(0x14, 0x1f, 0x14, 0x1f);
 extern "C" DebugColor data_ov068_02271258(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" DebugColor data_ov068_0227125c(0x14, 0x18, 0x18, 0x1f);
-extern "C" RoostCafeSet *RoostCafeSet_Create();
 extern "C" ActorProfile sRoostCafeSetProfile = {(void *(*)())RoostCafeSet_Create, 0x10, 0x12, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 RoostCafeSet *sRoostCafeSet;

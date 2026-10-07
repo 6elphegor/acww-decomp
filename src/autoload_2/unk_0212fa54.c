@@ -5,6 +5,8 @@ typedef unsigned int u32;
 typedef int s32;
 typedef unsigned char u8;
 #include "types64.h"
+#include "proto/autoload_2/unk_0212ef04.h"
+#include "proto/autoload_2/unk_0212fa54.h"
 typedef struct {
     u8 sign;
     char unused;
@@ -21,9 +23,6 @@ typedef struct {
 } decform;
 
 extern u8 data_0213a410[];
-extern double frexp(double, int *);
-extern double ldexp(double, int);
-extern int stricmp(const char *, const char *);
 extern int __must_round(const decimal *, int);
 extern void __dorounddecup(decimal *, int);
 extern void __rounddec(decimal *, int);

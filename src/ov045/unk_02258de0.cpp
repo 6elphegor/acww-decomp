@@ -27,6 +27,17 @@
 #include "npc/VillagerId.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov004/unk_ov004_02228dcc.h"
+#include "proto/ov045/unk_02258de0.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -49,22 +60,13 @@ class SpNpcKatrina;
 class SpNpcKatrinaTalk;
 
 extern "C" {
-void *PlayerData_GetCurrent();
-u32 Random_GlobalBelow(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
-void *PlayerActor_GetBodyPos(s32);
 s32 Clock_GetDateTime(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
-s32 MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetText();
 void EncodedString_SetRaw(void *, s32, s32);
 s32 ChoiceList_getResult(void *list);
-s32 NpcActor_CanPlayerPay(void *, s32);
-void NpcActor_ChargePlayer(void *, s32);
 s32 Talk_CheckAndSetPlayerFlag(...);
-void Bgm_RequestSilence(u32, s32, s32);
-void Bgm_ReleasePriority(u32);
 void *PlayerData_getPlayerId(void *self);
 void PlayerData_setFortune(void *self, s32 kind);
 void SaveVillagers_ApplyGoodFortune(void *, void *);
@@ -82,14 +84,9 @@ void VillagerState_SetMoodTimer(void *, s32);
 void VillagerState_SetMood(void *, s32);
 void VillagerMemory_addFriendship(void *self, s32 v);
 void *VillagerMemory_getFriendship(void *self);
-void VillagerSync_Friendship(void *, void *, void *);
 s32 NpcActionCtrl_getEmotionId(void *self);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
-void TarotProps_StartAct01();
-void TarotProps_StartAct02();
-void TarotProps_StartAct03();
-s32 TarotProps_Draw();
 void unk_618_func_02014198(void *self, u8 a, u8 b);
 BOOL unk_618_func_02014220(void *self);
 void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -98,8 +95,6 @@ void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 Math_CountDownU8(void *p);
-s32 Effect_Create(u32 kind, void *a, s32 b, s32 c);
-void Effect_End(s32 id);
 void Effect_SetPosition(s32 id, void *pos, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gSaveData[];
@@ -254,9 +249,6 @@ extern u8 sSpNpcKatrinaTexturePath[];
 extern SpNpcKatrina *sSpNpcKatrinaInstance;
 extern SpNpcKatrinaTalkScript sSpNpcKatrinaTalkScripts[2];
 extern SpNpcKatrinaActEntry sSpNpcKatrinaActTable[4];
-extern SpNpcKatrina *SpNpcKatrina_Create();
-u32 SpNpcKatrina_GetAnimFrame();
-u8 *SpNpcKatrina_GetJointMtx();
 }
 
 

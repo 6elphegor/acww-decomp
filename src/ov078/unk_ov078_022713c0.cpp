@@ -35,6 +35,17 @@
 #include "game/Unk_0201acf8.h"
 #include "item/ItemPickSpec.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/ov078/unk_ov078_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -48,27 +59,17 @@ class ActorTalkRequest;
 
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
-void *ParcelErrand_GetRecord(void *p);
-void ParcelErrand_Start(void *p);
 u16 *_ZN12ErrandRecord7getItemEv(void *p);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord7getStepEv(void *p);
-s32 ParcelErrand_NextRecipient(void *p);
-s32 ParcelErrand_GetRecipientName(void *p, void *q);
 void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
-s32 Pocket_FindEmpty();
-s32 Pocket_FindItem(u16 *p);
-void Pocket_AddItem(u16 *p, s32 v);
-void Pocket_RemoveItem(s32 v);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void EventWeekSlots_MarkPlayer(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 void Math_CountDownU8(void *p);
@@ -192,7 +193,6 @@ extern FxVec3 sSpNpcSaharahSideStepOffsets[2];
 extern u8 sSpNpcSaharahModelPath[];
 extern u8 sSpNpcSaharahTexturePath[];
 extern ActorProfile sSpNpcSaharahProfile;
-SpNpcSaharah *SpNpcSaharah_Create();
 }
 
 DebugColor data_ov078_022725c4(0x1f, 0x14, 0x14, 0x1f);

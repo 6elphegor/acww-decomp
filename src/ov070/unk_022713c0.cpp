@@ -32,6 +32,20 @@
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
 #include "item/LetterView.h"
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/ov070/unk_022713c0.h"
 
 
 class ActorTalkRequest;
@@ -134,36 +148,15 @@ extern u16 data_020c6cc8;
 PlayerData *PlayerData_GetCurrent();
 void *MI_CpuFill8(void *, s32, u32);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 Inventory_FindEmptyLetter();
-void *Inventory_GetEmptyLetter();
 void func_020b4154(void *p);
 s32 _s32_div_f(s32, s32);
-s32 String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void MailText_SetSlot(s32 i, void *x);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, void *f);
 u16 Item_MakePaper(u32 a, s32 b);
-void Catalog_AddItem(void *a, u16 *p, s32 c);
-s32 ItemList_GetTownClassRank(u16 *p, s32 mode);
-u32 Random_GlobalBelow(u32 a);
-void Hud_Hide();
-void Hud_Show();
 void EventWeekSlots_MarkPlayer(u32 id);
-void PlayerActor_RequestWearHatAlt(u16 *p);
-void PlayerActor_RequestWearFaceItemAlt(u16 *p);
-void PlayerActor_RequestWearShirtAlt(u16 *p);
-void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Pocket_AddItem(u16 *, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 Item_GetPrice(u16 *);
-s32 Pocket_CountMatching(PocketMatches *out, s32 (*fn)(u16 *));
-void *TownSessionState_Get();
-BOOL TownSessionState_TestFlag(void *p, s32 v);
-void TownSessionState_SetFlag(void *p, s32 v);
-BOOL MenuCtrl_IsResultOk();
-s32 MenuCtrl_GetAmount();
 BOOL TalkRequest_SetTargetDone(void *p);
-void NpcActor_ChargePlayer(void *p, s32 v);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -182,7 +175,6 @@ extern "C" DebugColor data_ov070_022728d8;
 extern "C" u8 sSpNpcGracieKey[];
 extern "C" const TalkStartMsg sSpNpcGracieTopicMsgs[7];
 extern "C" DebugColor data_ov070_022728cc;
-extern "C" SpNpcGracie *SpNpcGracie_Create();
 
 static inline BOOL Unk_ov070_IsNone(u16 *p) {
     BOOL ok;
@@ -218,7 +210,6 @@ static inline BOOL Unk_ov070_IsNone2(u16 *p) {
     return ok;
 }
 
-extern "C" s32 SpNpcGracie_CountUnaskedQuestions(void *unused, u8 *p, s32 n);
 
 extern "C" SpNpcGracie *SpNpcGracie_Create() {
     return new SpNpcGracie();

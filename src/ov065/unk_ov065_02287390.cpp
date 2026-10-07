@@ -8,6 +8,12 @@
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockHostEnt.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02287390.h"
 
 extern "C" {
 extern qr2_implementation_s static_qr2_rec;
@@ -44,8 +50,6 @@ extern char *qr2_registered_key_list[];
 extern s32 num_local_ips;
 extern u32 local_ip_list[];
 
-s32 memcmp(const void *, const void *, s32);
-void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 sendto(s32, void *, s32, s32, void *, s32);
 s32 closesocket(s32);
@@ -90,17 +94,8 @@ extern char qr2_hostname[];
 extern u8 data_ov065_022917a0[];
 
 s32 func_02133150(s32, s32);
-u32 STD_GetStringLength(const char *);
-void STD_CopyString(char *, const char *);
-s32 sscanf(const char *, const char *, ...);
-void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 strcmp(const char *, const char *);
-void srand(u32);
-s32 rand();
 
-void *GsUtil_Alloc(s32);
-void GsUtil_Free(void *);
 SockHostEnt *getlocalhost();
 s32 inet_addr(const char *);
 s32 recvfrom(s32, void *, s32, s32, SockAddrIn *, s32 *);

@@ -6,6 +6,13 @@
 #include "field/BottleThrow.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02224e68.h"
+#include "proto/ov003/unk_ov003_02225108.h"
+#include "proto/ov003/unk_ov003_02225238.h"
+#include "proto/ov003/unk_ov003_02225800.h"
 
 typedef VecFx32 V3;
 
@@ -25,7 +32,6 @@ extern BottleThrow sBottleThrows[4];
 extern V3 data_ov003_02257d50;
 extern CommManager *gCommManager;
 
-Character *PlayerActor_GetCharacter(s32 n);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
@@ -40,35 +46,23 @@ s32 Ground_GetWaterKind(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 extern u16 sInsectSpawnMaskLand[];
 extern u16 sInsectSpawnMaskDry[];
-void InsectSpawn_BuildMasks();
-BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode);
 u32 MapBlock_GetAttr();
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
 s32 Ground_IsGrassUnit(s32 x, s32 y);
 s32 Ground_IsPond(s32 x, s32 y);
 s32 Ground_GetDigKind(s32 x, s32 y);
-s32 Insect_LikesFlower(s32 kind, u16 *c);
-u32 Random_GlobalBelow(u32 n);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b);
 extern u8 sFishCatches[];
 extern u8 sFishShadows[];
 
 V3 *BottleThrow_GetPos(s32 i);
-s32 BottleThrow_Start(s32 i);
-BOOL BottleThrow_IsActive(s32 i);
 void BottleThrow_SetTarget(V3 *v, s32 i);
 void *func_ov003_02224d80(void *p);
 void func_ov003_02224dc4();
 void func_ov003_02224dc8();
-void *FieldFishManager_Create();
 void func_ov003_02224e04();
 void func_ov003_02224e24();
 void func_ov003_02224e44();
-void SpawnMask_PickFreeUnit(u32 n0, u16 *tbl, s32 *px, s32 *py);
-BOOL Field_IsGrownPalmTreeItem(u16 *p);
-BOOL Field_IsGrownSpecialTreeItem(u16 *p);
-BOOL Field_IsGrownTreeItem(u16 *p);
 BottleThrow *func_ov003_02224d90(BottleThrow *p);
 }
 

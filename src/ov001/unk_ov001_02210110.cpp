@@ -1,62 +1,24 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220cd24.h"
+#include "proto/ov001/unk_ov001_0220eb90.h"
+#include "proto/ov001/unk_ov001_0220f9e4.h"
+#include "proto/ov001/unk_ov001_02210110.h"
+#include "proto/ov001/unk_ov001_02210390.h"
+#include "proto/ov001/unk_ov001_02210cc0.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 extern "C" {
 extern u8 GX_LoadBG2Scr[];
-s32 WfcButtonBar_DisableInput();
-s32 WfcButtonBar_EnableInput();
-s32 WfcButtonBar_IsClosed();
-s32 WfcButtonBar_SetResult(u32 a);
-s32 WfcButtonBar_GetResult();
-s32 WfcButtonBar_Close();
-s32 WfcUtil_HideTopMessage();
-s32 WfcUtil_ShowTopMessage(u32 a, s32 b, u32 c);
-s32 WfcUtil_ShowBottomMessage(u32 a);
-s32 WfcUtil_OpenButtonBar(u32 a);
 void WfcUtil_LoadFileTo(void *a, void *b);
-void WfcHighlight_Set(u32 a);
-s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
-s32 WfcUtil_SetScene(void *p);
-s32 WfcTransfer_IsFinished();
-s32 WfcOptions_Enter();
-void WfcTransferIntro_Exit();
-void WfcTransferIntro_FadeOut();
-void WfcTransferIntro_StartExit();
-void WfcTransferIntro_HandleResult();
-void WfcTransferIntro_Idle();
-void WfcTransferIntro_HandleInput();
-void WfcTransferIntro_Update();
-void WfcTransferIntro_WaitButtonBar();
-void WfcTransferIntro_WaitFadeIn();
-void WfcTransferIntro_FadeIn();
-void WfcTransferIntro_LoadBg();
-void WfcTransferIntro_Enter();
-void WfcTransferCancelled_WaitTimer();
-void WfcTransferCancelled_Exit();
-void WfcTransferCancelled_FadeOut();
-void WfcTransferCancelled_Idle();
-void WfcTransferCancelled_Update();
-void WfcTransferCancelled_WaitFadeIn();
-void WfcTransferCancelled_FadeIn();
-void WfcTransferCancelled_LoadBg();
-void WfcTransferCancelled_Enter();
-void WfcTransferFailed_Exit();
-void WfcTransferFailed_FadeOut();
-void WfcTransferFailed_StartExit();
-void WfcTransferFailed_HandleResult();
-void WfcTransferFailed_Idle();
-void WfcTransferFailed_HandleInput();
-void WfcTransferFailed_Update();
-void WfcTransferFailed_WaitButtonBar();
-void WfcTransferFailed_WaitFadeIn();
-void WfcTransferFailed_FadeIn();
-s32 WfcTransferWait_Enter();
-s32 WfcSound_Play(u32 a);
-s32 WfcFade_StartWait(u32 a);
-s32 WfcFade_Start(u32 a, u32 b, u32 c, u32 d);
-s32 WfcFade_IsBusy(u32 a);
-s32 WfcText_DestroyBgCanvas(u32 a);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 s32 WfcInput_IsKeyPressed(u32 a);

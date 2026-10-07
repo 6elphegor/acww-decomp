@@ -6,6 +6,12 @@
 #include "player/PlayerInventory.h"
 #include "item/PlayerMailbox.h"
 #include "player/PlayerId.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
 
 
 
@@ -23,33 +29,11 @@ extern u8 data_021e935c[];
 extern u8 gSaveDressers[];
 extern CommManager *gCommManager;
 
-s32 PlayerData_IsResidentIndex(u32 idx);
-s32 PlayerDataArray_IsUsed(u8 *base, s32 idx);
-u8 *PlayerData_GetResident(u8 *base, s32 idx);
-u8 *PlayerDataArray_GetById(u8 *base, u16 *p);
-s32 PlayerData_IsGuestIndex(s32 idx);
-s32 PlayerData_GetGuestSlot(s32 idx);
-u8 *GuestPlayers_Get();
 void *_ZN10PlayerDataD1Ev(void *p, s32 f);
 void *_ZN10PlayerDataC1Ev(void *p, s32 f);
-u32 PlayerSession_GetDataIndex(u32 a);
-u32 PlayerData_Get(s32 a);
-u32 PlayerData_GetBySessionSlot(u32 a);
-void GuestPlayers_Reset(void *p);
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *, s32));
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *, s32), void *(*)(void *, s32));
-u32 PlayerId_GenerateUniqueId(u16 *p, u32 n);
-s32 memcmp(void *, void *, u32);
 void *MI_CpuFill8(void *, s32, u32);
-s32 PlayerDataArray_FindById(u8 *base, u16 *p);
-u32 PlayerDataArray_CountUsed(u8 *base);
-u32 Random_GlobalBelow(u32 n);
-u8 *SaveManager_GetLetterStorage();
-s32 PlayerInventory_PayWithBags(u8 *, s32);
-s32 PlayerInventory_StoreExcessInBags(u8 *, s32);
-s32 PlayerInventory_FindBagSlot(u8 *);
-s32 PlayerInventory_FindSmallestBag(u8 *, s32);
-s32 PlayerInventory_GetBellsRoom(u8 *, s32, s32);
 s32 Item_GetPrice(u16 *);
 }
 

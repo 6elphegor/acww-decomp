@@ -10,6 +10,29 @@
 #include "player/PlayerInventory.h"
 #include "room/HouseData.h"
 #include "ui/HandCursor.h"
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuCtrl_SetAmount  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_ClearValue  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_Draw  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_GetBottomAmount  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_GetCursorX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_GetCursorY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_GetTopAmount  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_GetValue  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_HitTestKey  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_IsCursorOnButton  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_IsCursorOnOk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_MoveCursor  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_PressCursorKey  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_SetAmounts  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NumberPad_TickKeyRepeat  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02097110.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov131/unk_022936c0.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -19,24 +42,7 @@ extern u8 gTouchChanged[];
 extern u8 gTouchCurX[];
 extern u8 gTouchCurY[];
 
-void Snd_PlaySe(u32 id);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void *PlayerData_GetCurrent();
-s32 MenuCtrl_GetMode();
-void MenuCtrl_SetResult(s32 a);
-s32 MenuCtrl_IsTouch();
-s32 MenuCtrl_IsButtons();
 void MenuCtrl_SetAmount(u32 v);
-void PlayerBank_SetBalance(void *p, s32 v);
-s32 PlayerBank_GetBalance(void *p);
-void PlayerInventory_AddBells(void *p, s32 v, s32 w);
-s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
 
 void MenuButtons_LoadTextColors(void *self);
 

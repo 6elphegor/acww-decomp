@@ -16,6 +16,10 @@
 #include "gfx/Model.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/TwoLayerAnimModel.h"
+#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SpNpcKatrina_GetJointMtx  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov004/unk_ov004_02228dcc.h"
+#include "proto/ov045/unk_02258de0.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -132,13 +136,11 @@ void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, void *);
-s32 SpNpcKatrina_GetAnimFrame(void);
 Mtx43 *SpNpcKatrina_GetJointMtx(void);
 void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
 void *_ZN10RoomObjResC1Ev(void *, s32);
 void *_ZN10RoomObjResD1Ev(void *, s32);
-TarotProps *TarotProps_Create();
 }
 
 #define F(T, off) (*(T *)((u8 *)this + off))

@@ -1,6 +1,26 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_02208a24.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_0220d760.h"
+#include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_0221b44c.h"
+#include "proto/ov001/unk_ov001_0221b8f4.h"
+#include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221bee0.h"
+#include "proto/ov001/unk_ov001_0221d744.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221eb38.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -16,64 +36,10 @@ s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
 s32 GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcUtil_GetEditParams(s32, s32 *);
-s32 WfcUtil_GetStartMode();
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcUtil_ShowStepIndicator(s32);
-s32 WfcHighlight_SetConnection();
-s32 WfcUtil_ShowBottomMessage(s32);
-s32 WfcBusyIcon_Create(s32);
-void WfcConnTest_Start();
-s32 WfcLinkIcon_Create(s32);
-s32 WfcSound_Play(s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetEditParams(s32, s32);
-void WfcConnTest_FadeIn();
-s32 WfcUtil_QuitFadeOut();
-s32 WfcManualSetup_Enter();
-s32 WfcTopMenu_Enter();
-s32 WfcHeader_StartSlideOut();
-s32 WfcFade_IsBusy(s32);
-s32 WfcHeader_IsSlideOutDone();
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcUtil_HideTopMessage();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-s32 WfcDialog_Close();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcApScan_Free();
-s32 WfcConfig_CommitEdit();
 
-void WfcConnTest_Enter();
-void WfcTestSuccess_CountDown();
-void WfcTestSuccess_Exit();
-void WfcTestSuccess_FadeOut();
-void WfcTestSuccess_Idle();
-void WfcTestSuccess_Update();
-void WfcTestSuccess_WaitFadeIn();
-void WfcTestSuccess_FadeIn();
-void WfcTestSuccess_LoadBg();
-void WfcTestConfirm_Exit();
-void WfcTestConfirm_FadeOut();
-void func_ov001_0221bca8();
-void func_ov001_0221bcac();
-void WfcTestConfirm_WaitDialog();
-void WfcTestConfirm_ShowDialog();
-void WfcTestConfirm_FadeIn();
-void WfcTestConfirm_LoadBg();
-void WfcTestConfirm_Enter();
-void WfcUsbDone_CountDown();
-void WfcUsbDone_Exit();
-void WfcUsbDone_FadeOut();
-void WfcUsbDone_Idle();
-void WfcUsbDone_Update();
-void WfcUsbDone_WaitFadeIn();
 
-void WfcTestSuccess_Enter();
 
 void WfcTestSuccess_Enter() {
     sWfcTestSuccessTimer = 0;

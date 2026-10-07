@@ -6,6 +6,30 @@
 #include "field/Snowball.h"
 #include "game/GroundInfo.h"
 #include "game/GroundInfoBase.h"
+#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_MagXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_SafeNormalize  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Scale  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/ov003/unk_ov003_02212830.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/ov068/unk_ov068_02267584.h"
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
@@ -16,7 +40,6 @@ struct Unk_ov068_022678c4_Ent {
 };
 
 extern "C" {
-void *PlayerData_GetCurrent();
 void TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 u32 func_0201bc4c(void *p, s32 n);
@@ -25,22 +48,9 @@ void func_0201bc28(void *p, void *q);
 void func_0201bda8(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
 u32 Math_CountDownU8(void *p);
-void ProcBase_RequestDelete(void *p);
-void Bgm_ReleasePriority(u32 a);
-void Bgm_Release(u32 a);
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Camera_SetModeDefault();
-BOOL PlayerActor_IsScriptedWalking(s32 a);
-void *PlayerActor_GetBodyPos(s32 a);
-void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
-void PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
-void GameStart_Clear();
-BOOL GameStart_IsNewResident();
-BOOL GameStart_IsNewTown();
 void func_02097ff4(void *p, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void Snowball_ClearItemAt(void *p);
 s32 Snowball_ChangeState(void *o, s32 st);
 extern u16 data_020c6cc8;
 extern u32 data_021ed104;
@@ -49,15 +59,11 @@ extern const char *sNookModelPaths[];
 extern const char *sNookTexPaths[];
 extern u8 *gSceneBlockMap;
 extern s16 data_02135f44[];
-void *Snowball_FindOtherInBallState(void *self);
-u8 *LooseSnowballs_Get();
 void FieldPos_SnapToUnitCenter(void *, void *);
-void Snd_SeEmitterPlayOneShot(void *, s32, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u16 Item_MakeSnowman(u32);
 void BlockMap_SetItemAtUnit(void *m, u16 *v, s32 x, s32 y, s32 z);
-void Snowball_DropDisplacedItem(void *);
 s32 Snowball_Break(void *o, s32 a);
 void GroundInfo_initAtPos(void *, void *, s32, s32);
 s32 GroundInfo_Destruct(void *o);
@@ -67,21 +73,13 @@ void Vec_Scale(void *, s32);
 s32 Vec_DistXZ(void *, void *);
 void Math_ApproachS32Max(void *, s32, s32, s32);
 s32 Vec_MagXZ(void *);
-Actor *PlayerActor_GetActor(s32);
 extern s32 data_020c7c1c;
-void Vec_Add(VecFx32 *out, void *a, void *b);
-void Effect_Create(s32 a, void *v, s32 b, void *h);
-void FieldFish_ScareAround(void *a, s32 b);
 void *func_0209c0ac(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
-s32 Math_AngleXZ(void *, void *);
-s32 Random_GlobalBelow(s32);
 s32 func_02133150(s32 a, s32 b);
 void Insect_GetDirVec(void *v, s32 a);
 s32 Field_IsRafflesiaNear(void *a, void *b);
 s32 Field_FindFlowerNear(void *a, void *b, s32 c);
-s32 Insect_GetFlowerSpeciesMask(s32 a);
-s32 Insect_LikesFlower(s32 a, void *b);
 s32 Flower_GetSpecies(void *cell);
 s32 Vec_Distance(void *a, void *b);
 s32 Math_Atan2(s32 x, s32 z);
@@ -89,11 +87,9 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);
 s32 SnowmanRecords_add(void *tbl, s32 a, s32 b, s32 c);
-void Snowman_SendPrizeLetter();
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
-s32 Snowball_GetSizeRatioRank(s32 v);
 }
 
 

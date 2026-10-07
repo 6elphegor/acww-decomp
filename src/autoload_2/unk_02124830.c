@@ -1,3 +1,8 @@
+#include "proto/autoload_2/unk_02122e24.h"
+#include "proto/autoload_2/unk_02124480.h"
+#include "proto/autoload_2/unk_02124c40.h"
+#include "proto/autoload_2/unk_02125c94.h"
+#include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // Wireless helper library built on WM (WC/WH style), autoload_2 0x02124830-0x02124a94. ARM code, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
@@ -127,7 +132,6 @@ extern u16 *data_0213c21c;
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void Fatal_Trap(void);
 extern void DC_InvalidateRange(void *, u32);
 extern void OS_GetMacAddress(u8 *);
 extern void MI_DmaCopy16(u32, void *, void *, u32);
@@ -149,15 +153,11 @@ extern u32 WM_Initialize(void *, WCb, u32);
 extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_StartMPEx(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
-extern void MB_CommSetParentStateCallback(void *);
-extern void MB_InitSendGameInfoStatus(void);
 extern u32 MBi_IsSendEnabled(void);
 extern u32 changeScanChannel(void *);
-extern u32 MBi_OnInitializeDone(void);
 extern void MBi_EndTaskThread(void *);
 extern u32 MBi_IsTaskAvailable(void);
 extern void MBi_ClearParentPieceBuffer(u32);
-extern void MBi_SetParentPieceBuffer(void *);
 extern void MBi_SetChildMPMaxSize(u32);
 extern void MBi_ParentCallback(void *);
 extern void MBi_CommParentCallback(u32, void *);
@@ -173,7 +173,6 @@ u32 MBi_StartParentCore(u32 a);
 u32 MBi_StartCommon(void);
 BOOL MBi_IsCommSizeValid(u32 a, u32 c, u32 d);
 u32 MBi_GetBeaconPeriodDispersion(void);
-void MBi_ChildCallback(void *arg);
 
 // set WMScanParam.maxChannelTime of data_02200020
 void MBi_SetMaxScanTime(u32 t) {

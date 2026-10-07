@@ -1,12 +1,11 @@
 #include "types.h"
 #include "gfx/HudObjGfx.h"
+#include "proto/autoload_2/unk_020e8558.h"
 
 extern "C" {
 void DC_FlushRange(void *p, u32 size);
 void GX_LoadOBJ(void *p, u32 src, u32 size);
 void GXS_LoadOBJ(void *p, u32 src, u32 size);
-void *Mem_AllocTail(u32 size);
-void Mem_Free(void *p);
 BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 FS_ReadFile(void *self, void *dst, u32 size);

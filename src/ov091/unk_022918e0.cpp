@@ -9,19 +9,13 @@
 #include "menu/MenuLabelButton.h"
 #include "menu/MenuCursor.h"
 #include "sys/ProcProfile.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/ov091/unk_022918e0.h"
 
 extern "C" {
-void Snd_PlaySe(s32 a);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ShowLayer(s32 a);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_SetMainBgModeState(u32 a);
-void *MenuCtrl_GetArg();
-BOOL MenuCtrl_IsButtons();
-BOOL MenuCtrl_IsTouch();
-void Snd_EndMenuDuck();
-void Snd_BeginMenuDuck();
-void ProcBase_RequestDelete(void *p);
 extern u8 *data_021c1b3c;
 extern u16 gPad[];
 }

@@ -4,6 +4,10 @@
 #include "gfx/Mtx43.h"
 #include "player/PlayerActor.h"
 #include "player/Unk_02007694.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02094810.h"
 
 typedef VecFx32Ctor Unk_02006d14_V3;
 
@@ -48,7 +52,6 @@ extern CommManager *gCommManager;
 extern PlayerSessionTable gPlayerSessionTable;
 
 extern "C" {
-PlayerActor *PlayerActor_Get(s32 id);
 
 s32 _ZN11PlayerActor12requestAct79Ejj(PlayerActor *o, Unk_02094a08_Limit a, s32 b);
 s32 _ZN11PlayerActor12requestAct30EPtjjjjjs(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
@@ -60,7 +63,6 @@ s32 TalkRequest_IsSaveMenuRunning();
 void PlayerActor_GetHeldItem(void *out, PlayerActor *o);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-s32 Math_AngleToDir4(s32 v);
 void *Scene_GetWarpRequest();
 void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
 s32 PlayerActor_RequestStowItem(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
@@ -74,45 +76,10 @@ void PlayerActor_EndBedRoll(PlayerActor *o, s32 a);
 void PlayerActor_OffsetByAngle(Unk_02006d14_V3 *out, PlayerActor *o, Unk_02006d14_V3 *in, u16 *ang, s32 *p);
 void __cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, s32 n, s32 size, void *dtor);
-void _ZN6FxVec3D1Ev(void *p);
-void FxVec3_Construct(void *p);
-u16 NetBuf_ReadU16(u8 *p);
-void NetBuf_WriteU16(u8 *p, u16 h);
-void NetBuf_WriteS16(u8 *p, s32 v);
-void CommRecord_PackSource(void *p, s32 a, s32 b);
-s32 CommSyncVar_GetVarSize(s32 v);
-u16 NetBuf_ReadS16B(void *p);
 s32 Scene_GetCurrent();
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 u32 _ZN11CommManager10getSyncVarEj(CommManager *g, u32 v);
-void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
-void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
-u32 PlayerActor_GetNetStateVar(s32 v);
-u32 PlayerActor_GetNetAngleVar(s32 v);
-u32 PlayerActor_GetNetPosVar(s32 v);
-BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx);
 
-BOOL PlayerActor_SetSlotFlag(s32 a, s32 b);
-BOOL PlayerActor_ClearSlotFlag(s32 a, s32 b);
-BOOL PlayerActor_IsInAction(s32 v, s32 id);
-BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-u8 PlayerSessionTable_GetGfxSlot(PlayerSessionTable *p, s32 i);
-void PlayerSessionTable_ClearGfxSlot(PlayerSessionTable *p, s32 i);
-void PlayerSessionTable_SetGfxSlot(PlayerSessionTable *p, s32 i, s32 v);
-u8 PlayerSessionTable_GetDataIndex(PlayerSessionTable *p, s32 i);
-void PlayerSessionTable_ClearDataIndex(PlayerSessionTable *p, s32 i);
-void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v);
-u32 PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i);
-void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i);
-void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, u32 v);
-u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p);
-u16 *PlayerSession_GetLastAngle(s32 i);
-Unk_02095338_E *PlayerSession_GetLastPos(s32 i);
-u8 *PlayerSession_GetLastScene(s32 i);
-u32 *PlayerSession_GetLastAction(s32 i);
-s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
-void PlayerActor_GetCharacterNop();
-void PlayerActor_GetActorNop();
 }
 
 extern "C" PlayerActor *PlayerActor_Get(s32 idx) {

@@ -1,5 +1,13 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_02218054.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 #pragma thumb off
 
@@ -9,26 +17,7 @@ extern "C" {
 void GX_LoadBG2Char();
 s32 GX_LoadBG2Scr(void *, s32, u32);
 void GX_LoadBGPltt();
-s32 WfcUtil_HideTopMessage();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcHighlight_SetConnection();
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcUtil_SetScene(void *);
-void WfcSaveSettings_Exit();
-void WfcSaveSettings_FadeOut();
-void func_ov001_02218114();
-void func_ov001_02218118();
-void WfcSaveSettings_WaitDialog();
-void WfcSaveSettings_ShowDialog();
-void WfcSaveSettings_FadeIn();
-void WfcSaveSettings_LoadBg();
-void WfcSaveSettings_Enter();
-void WfcConnSelect_Enter();
-void WfcConfig_CommitEdit();
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_Open(s32, s32, s32, s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_IsBusy(s32);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 }

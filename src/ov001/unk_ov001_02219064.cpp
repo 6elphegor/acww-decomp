@@ -1,65 +1,32 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
+#include "proto/ov001/unk_ov001_02218300.h"
+#include "proto/ov001/unk_ov001_02219064.h"
+#include "proto/ov001/unk_ov001_0221ab50.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_0221feac.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
 extern "C" {
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_IsClosed();
-void WfcBusyIcon_Delete();
-void WfcText_DestroyBgCanvas(s32);
-void WfcUtil_HideTopMessage();
 void WfcGx_HidePlanes(s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
-void WfcSimpleStart_End();
-void WfcSimpleStart_Begin();
-s32 WfcSimpleStart_GetState();
-void WfcUtil_SetScreenFlags(s32, s32);
-void WfcUtil_SetScene(void *);
-void WfcButtonBar_Close();
-void WfcFade_Start(s32, s32, s32, s32);
-void WfcButtonBar_DisableInput();
-void WfcFade_StartWait(s32);
-s32 WfcButtonBar_GetResult();
-void WfcSound_Stop();
-void WfcSound_Play(s32);
 s32 WfcInput_IsKeyPressed(s32);
-void WfcButtonBar_SetResult(s32);
 void OS_Sleep(s32);
-void WfcButtonBar_EnableInput();
-void WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
-void WfcHighlight_SetConnection();
-void WfcUtil_ShowTopMessage(s32, s32, s32);
-void WfcUtil_ShowStepIndicator(s32);
-void WfcUtil_ShowBottomMessage(s32);
-void WfcBusyIcon_Create(s32);
-s32 WfcDialog_IsOpen();
-s32 WfcDialog_GetResult();
-void WfcDialog_Close();
-void WfcDialog_Open(s32, s32, s32, s32, s32);
-void WfcSetupMethod_Enter();
-void WfcSimpleStartWait_Enter();
 
-void WfcSimpleStartInit_WaitDialogClosed();
-void WfcSimpleStartInit_FailDialog();
-void WfcSimpleStartInit_CheckStatus();
-void WfcSimpleStartInit_Exit();
-void WfcSimpleStartInit_FadeOut();
-void WfcSimpleStartInit_StartExit();
-void WfcSimpleStartInit_HandleResult();
-void WfcSimpleStartInit_Idle();
-void WfcSimpleStartInit_HandleInput();
-void WfcSimpleStartInit_Update();
-void WfcSimpleStartInit_WaitButtonBar();
-void WfcSimpleStartInit_WaitFadeIn();
-void WfcSimpleStartInit_FadeIn();
-void WfcSimpleStartInit_LoadBg();
-void WfcSimpleStartInit_Enter();
-s32 WfcSimpleStartInit_IsLidClosed();
 }
 
 extern "C" u8 sWfcSimpleStartInitReady = 0;

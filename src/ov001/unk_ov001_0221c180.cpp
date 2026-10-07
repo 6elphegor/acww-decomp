@@ -1,6 +1,17 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#include "proto/ov001/unk_ov001_02207b3c.h"
+#include "proto/ov001/unk_ov001_02208244.h"
+#include "proto/ov001/unk_ov001_02208388.h"
+#include "proto/ov001/unk_ov001_02208890.h"
+#include "proto/ov001/unk_ov001_0220c594.h"
+#include "proto/ov001/unk_ov001_02219c3c.h"
+#include "proto/ov001/unk_ov001_0221c180.h"
+#include "proto/ov001/unk_ov001_0221c5fc.h"
+#include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_0222516c.h"
 
 #pragma thumb off
 
@@ -9,43 +20,10 @@ s32 GX_LoadBG2Scr();
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
 void WfcUtil_LoadFileTo(void *, void *);
-void WfcHighlight_Set(s32);
-s32 WfcUtil_ShowBottomMessage(s32);
-s32 WfcUtil_ShowTopMessage(s32, s32, s32);
-s32 WfcUtil_ShowStepIndicator(s32);
-s32 WfcSound_Play(s32);
-s32 WfcUtil_SetScene(void *);
-s32 WfcUtil_SetScreenFlags(s32, s32);
-s32 WfcFade_IsBusy(s32);
-s32 WfcButtonBar_IsClosed();
-s32 WfcText_DestroyBgCanvas(s32);
-s32 WfcUtil_HideTopMessage();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcFade_StartWait(s32);
-s32 WfcButtonBar_Close();
-s32 WfcButtonBar_DisableInput();
-s32 WfcButtonBar_GetResult();
-s32 WfcButtonBar_EnableInput();
 s32 WfcInput_IsKeyPressed(s32);
-s32 WfcButtonBar_SetResult(s32);
-s32 WfcUtil_OpenButtonBar(s32);
 
-void WfcUsbIntro_Exit();
-void WfcUsbIntro_FadeOut();
-void WfcUsbIntro_StartExit();
-void WfcUsbIntro_HandleResult();
-void WfcUsbIntro_Idle();
-void WfcUsbIntro_HandleInput();
-void WfcUsbIntro_Update();
-void WfcUsbIntro_WaitButtonBar();
-void WfcUsbIntro_WaitFadeIn();
-void WfcUsbIntro_FadeIn();
-void WfcUsbIntro_LoadBg();
-void WfcUsbIntro_Enter();
-void WfcConnSelect_Enter();
-void WfcUsbWait_Enter();
 }
 
 extern "C" u8 sWfcUsbIntroOk = 0;

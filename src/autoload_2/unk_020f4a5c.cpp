@@ -11,6 +11,12 @@
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
 #include "types.h"
 #include "gfx/VecFx32.h"
+#define PROTO_LOCAL_MelodyBeat_PlayStep  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MelodyPlayer_PlayRandom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNS_SndArcPlayerStartSeqArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020f4a5c.h"
+#include "proto/autoload_2/unk_0210c084.h"
 
 struct Obj {
     /* 0x00 */ u32 *vptr;
@@ -97,32 +103,17 @@ void Snd_InitHandle(void *p);
 void Snd_StartSeqArc(u16 a, u16 b, void *out);
 void *Snd_GetHeap(void);
 void NNS_SndHeapLoadState(void *a, u32 b);
-void NNS_SndArcLoadSeqArc(u32 id, void *h);
-void NNS_SndArcLoadBank(u32 id, void *h);
 BOOL NNS_SndArcPlayerStartSeqArc(void *a, u32 b, u32 c);
 s32 FX_Div(s32 a, s32 b);
 
 s32 Snd_DistanceToVolume(s32 x);
 s32 Snd_CalcPan(VecFx32 *p, s32 m);
 s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
-void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos);
-BOOL MelodyBeat_EndStep(Seq1 *self);
 void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos);
 void MelodyBeat_ReadParams(Seq1 *self);
-u8 *MelodyPlayer_GetPattern(Ctl2 *c);
-void MelodyPlayer_LoadBank(void *c, u32 id);
-void MelodyPlayer_LoadSeqArc(void *c, u32 id);
-void MelodyTrack_SetInstrument(Seq2 *s, u16 v);
-void MelodyTrack_PlayNote(Seq2 *s, u32 idx);
-void MelodyTrack_StartPattern(Seq2 *s, u8 *pat);
-void MelodyTrack_Start(Seq2 *s, u16 id, u8 *pat);
 void MelodyTrack_Init(Seq2 *s);
-void MelodyTrack_Stop(void *p);
 void MelodyTrack_Reset(Seq2 *s);
-s32 MelodyTrack_Update(Seq2 *s);
-BOOL MelodyTrack_CheckEnd(Seq2 *s);
 void MelodyTrack_PlayStep(Seq2 *s);
-u8 MelodyTrack_GetStepNote(Seq2 *s, u8 idx);
 void MelodyTrack_ReadParams(Seq2 *s);
 }
 

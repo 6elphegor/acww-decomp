@@ -11,6 +11,19 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuTownListPanel.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov140/unk_02292900.h"
 
 class DistantTownsMenu;
 
@@ -21,33 +34,9 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u16 gPad[];
 
-void Mem_Clear(void *p, u32 n);
-void Mem_Copy(const void *src, void *dst, u32 n);
-void String_FromEncodedBytes(void *win, u8 *src, u32 n);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-void MenuCtrl_SetResult(u32 v);
-void MenuCtrl_SetIndex(u32 v);
-void MenuCtrl_ClearPtrArgs();
-void Snd_PlaySe(u32 v);
-void Gfx2d_SetSubBgModeState(u32 a);
-void Gfx2d_SetLayerPriority(u32 a, u32 b);
-void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void Gfx2d_ShowLayer(u32 a);
-void Gfx2d_ResetLayer(u32 a);
-void File_LoadToBuffer(void *src, void *dst, u32 n);
 void Oam_DrawCell(s32 a, void *src, s32 n, void *dst, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void *Net_GetWifiFriendList();
-void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete(void *p);
-BOOL MenuKeys_HasRight(u32 v);
-BOOL MenuKeys_HasLeft(u32 v);
-BOOL MenuKeys_HasDown(u32 v);
-BOOL MenuKeys_HasUp(u32 v);
 void MenuButtons_LoadTextColors(void *p);
-DistantTownsMenu *DistantTownsMenu_Create();
-void DistantTownsMenu_SetupBgLayers();
 }
 
 

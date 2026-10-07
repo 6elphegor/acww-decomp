@@ -6,6 +6,8 @@
 #include "gfx/Camera.h"
 #include "gfx/HBlankTask.h"
 #include "nitro/io_access.h"
+#include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 
 struct Chunk {
     /* 0x00 */ u8 *attrs;
@@ -38,9 +40,6 @@ struct Obj {
 extern "C" {
 extern Grid *gCurCollisionMap;
 extern HBlankTask *sHBlankListHead;
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-Chunk *CollisionMap_GetBlockRef(s32 x, s32 z);
-void Camera_GetLookAtOffset(VecFx32 *out, Camera *c);
 }
 
 static inline Chunk *At(s32 x, s32 z) {

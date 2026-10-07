@@ -12,6 +12,11 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "types64.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_02000b44.h"
+#include "proto/main/unk_0206d49c.h"
 
 typedef struct { u32 w0, w1, w2; } FD;               // 12-byte friend/id record
 typedef struct {
@@ -30,13 +35,7 @@ typedef struct { u32 year, month, day; s32 week; } Date;
 typedef struct { u32 hour, minute, second; } Time;
 
 extern void MI_CpuFill8(void *dst, u32 val, u32 len);
-extern u32 MATHi_CRC32InitTableRev(void *table, u32 poly);
-extern u32 MATH_CalcCRC32(void *table, void *data, u32 len);
-extern u64 OS_GetTick(void);
 extern u64 func_02133100(u64 a, u64 b);
-extern void MATHi_CRC8InitTable(void *table, u32 poly);
-extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
-extern void OSi_ReferSymbol(void *p);
 extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern const u32 data_0213bba8[];
@@ -50,17 +49,13 @@ extern volatile u16 data_021f5c50;
 extern volatile u32 data_021f5c54;
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[];
-extern s32 memcmp(const void *a, const void *b, u32 n);
 extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern void DC_StoreRange(void *p, u32 n);
 extern void DC_InvalidateRange(void *p, u32 n);
 extern void MIi_CpuClear16(u16 v, void *dst, u32 n);
-extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
-extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
-extern void Fatal_Trap(void);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];

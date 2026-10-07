@@ -11,6 +11,28 @@
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_FtrFootprint_GetTileCount  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrFootprint_GetTileOffset  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrFootprint_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_OneSimple  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_PutInAddresseeMailbox  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_ComposeVillagerMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_LoadResolveAltText  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/main/unk_02003008.h"
+#include "proto/main/unk_02034010.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_020594dc.h"
+#include "proto/main/unk_02061478.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c37c.h"
 
 
 struct ItemPickResult {
@@ -203,59 +225,31 @@ static inline void Unk_0205a930_Clear(void *dst, u32 n)
 extern "C" {
 void *SaveVillagers_Find(void *tbl, s32 id);
 void *Villager_GetBirthday(void *p);
-void MailText_SetSlotMonth(s32 slot, s32 v);
-void MailText_SetSlotDayOrdinal(s32 slot, s32 v);
 s32 Random_GlobalBelow(s32 n);
 void _ZN10VillagerId12makeFileNameEPvjj(s32 a, void *b, s32 c, s32 d);
-u32 VillagerId_GetPersonality(s32 a);
-s32 LetterPaper_PickForPersonality(u32 i);
 void Letter_ComposeVillagerMail(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
-void *PlayerData_GetCurrent();
 void Letter_ComposeFromMail(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
 s32 _ZN8BlockMap12canPlaceItemEii(void *grid, s32 x, s32 y);
-void *PlayerData_GetResident(void *tbl, s32 i);
-s32 LetterDelivery_IsMailboxFull(s32 i);
 void _ZN11MsgString25C1Ev(void *o);
 void _ZN11MsgString25D1Ev(void *o);
 s32 String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void MailText_SetSlot(s32 slot, void *o);
 void String_LoadResolveAltText(void *o, u8 *b, const void *fmt);
-s16 *DebugVar_GetPtr(s32 a, s32 b);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-BOOL FtrInfo_IsLucky(s32 v);
-BOOL FtrInfo_TestAlwaysFlag4(s32 v);
 s32 Item_GetFurnitureDirection(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
-s32 Ftr_GetCollectionGroup(u16 *p);
-s32 Ftr_GetFlagPairA(u16 *p);
-s32 Ftr_GetFlagPairB(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 FX_Div(s32 a, s32 b);
-void Debug_SetHappyRoomScore(s32 v);
-void Debug_SetHappyRoomBonusFlags(u32 v);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
-s32 FtrInfo_GetClass(s32 v);
-s32 FtrClass_GetBasePoints(s32 v);
-s32 FtrInfo_GetUnk06(s32 v);
-s32 FtrInfo_GetSeries(s32 v);
-s32 FtrInfo_GetColor1(s32 v);
-s32 FtrInfo_GetColor2(s32 v);
-s32 Ftr_GetSeries(u16 *p);
-u32 Ftr_GetIndexInSeries(u16 *p);
-u32 FtrInfo_CountInSeries(u32 v);
-s32 Series_GetType(s32 v);
-s32 ItemInfo_GetSeries(u16 *p);
 void *VillagerRoomMap_Create(s32 a, void *heap);
 void VillagerRoomMap_Destroy(void *heap);
 void *HouseRoomMaps_Get(s32 i);
 void *SaveVillagers_Get(void *p, s32 k);
 u32 Villager_GetCarpet(void *a);
 u32 Villager_GetWallpaper(void *a);
-u32 MATH_CountPopulation(u32 v);
 void FtrFootprint_Init(FtrFootprintBuf *b, void *cell);
 u32 FtrFootprint_GetTileCount(FtrFootprintBuf *b);
 s16 *FtrFootprint_GetTileOffset(FtrFootprintBuf *b, u32 i);
@@ -267,7 +261,6 @@ void DateTime_AddDays(Unk_0205b524_T *t, s32 v);
 s32 DateTime_Compare(Unk_0205b524_T *a, Unk_0205b524_T *b, s32 n);
 ItemPickResult ItemPick_One(ItemPickSpec o, s32 a, s32 b, s32 c, s32 d, s32 e);
 ItemPickResult ItemPick_OneSimple(ItemPickSpec o);
-s32 PlayerDataArray_GetById(void *p, s32 q);
 }
 
 // ---- own functions ----

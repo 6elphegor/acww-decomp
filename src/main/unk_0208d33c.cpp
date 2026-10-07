@@ -4,9 +4,10 @@
 #include "ui/HandCursor.h"
 #include "talk/ChatBalloonText.h"
 #include "ui/NameLabelBalloon.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02087e70.h"
 
 extern "C" {
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 extern "C" {
@@ -14,7 +15,6 @@ void GX_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void Snd_SetPanIfChanged(u8 v);
 }
 
 extern u8 sNameLabelBalloonKind4Color[];

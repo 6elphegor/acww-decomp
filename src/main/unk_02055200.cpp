@@ -6,6 +6,11 @@
 #include "gfx/Model.h"
 #include "gfx/NNSG3dResTex.h"
 #include "gfx/G3dResAccess.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_021040ac.h"
+#include "proto/main/unk_02055200.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0206d49c.h"
 
 struct NNSG3dResMdl {
     u32 size;
@@ -51,7 +56,6 @@ extern u8 data_027e0184[];
 extern u32 data_027e0148[];
 void NNS_G3dGlbSetBaseTrans(void *p);
 void NNS_G3dGlbSetBaseScale(void *p);
-void NNS_G3dGlbFlushP(void);
 s32 func_01ffcb0c(s32 a, s32 b);
 void NNS_G3dDraw1Mat1Shp(void *p, s32 a, s32 b, s32 c);
 s32 NNS_G3dGetSbcCmdLen(void *p);
@@ -73,12 +77,8 @@ void NNS_G3dRenderObjRemoveAnmObj(s32 a, u32 b);
 void NNS_G3dRenderObjAddAnmObj(s32 a, u32 b);
 void NNS_G3dAnmObjInit(void *p, void *q, u32 r, u32 s);
 u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
-void *Heap_Alloc(void *h, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void Fatal_Trap(void);
 s32 func_02057110(u32 p);
-void ModelCacheHeap_Destroy(void);
-void ModelCacheHeap_Create(u32 a, u32 b);
 void func_02056714(void *p);
 s32 NNS_G3dGetResultMtx(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);

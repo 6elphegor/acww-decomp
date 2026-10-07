@@ -2,6 +2,12 @@
 #include "types.h"
 #include "net/WfcMoveMbWork.h"
 #include "nitro/wm.h"
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02122e24.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02220ad8.h"
+#include "proto/ov001/unk_ov001_022218a4.h"
 
 #pragma thumb off
 
@@ -60,21 +66,15 @@ s32 MB_CommResponseRequest(s32, s32);
 s32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(s32);
 void MB_DisconnectChild(s32);
-void FS_InitFile(void *);
 s32 FS_OpenFile(void *, s32);
 s32 MB_GetSegmentLength(void *);
 s32 MB_ReadSegment(void *, void *, u32);
 s32 MB_RegisterFile(void *, void *);
 void FS_CloseFile(void *);
-void WfcMoveMb_SetState(u32);
 s32 MB_StartParentFromIdle(s32);
-void Fatal_Trap();
-void OS_GetOwnerInfo(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 MB_Init(void *, void *, s32, s32, s32);
 void MB_SetParentCommParam(u32, u32);
-void MB_CommSetParentStateCallback(void *);
-void WfcMoveMb_ParentStateCallback();
 s32 WM_End(void *);
 s32 WM_StepDataSharing(void *, s32, void *);
 void *WM_GetSharedDataAddress(void *, void *, s32);
@@ -96,46 +96,7 @@ s32 WM_StartParent(void *);
 s32 WM_SetWEPKey(void *, s32, void *);
 s32 WM_SetParentParameter(void *, void *);
 
-s32 WfcMoveWh_End();
-void DWCi_MOV_WH_Finalize();
-void WfcMoveWh_Reset();
-s32 DWCi_MOV_WH_StepDataSharing(s32 a);
-void *WfcMoveWh_GetSharedData(s32 a);
-void WfcMoveWh_SetJudgeCallback(s32 a);
-s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c);
-void WfcMoveWh_StateOutInitialize(u16 *);
-void WfcMoveWh_IndicationCallback(WMMsg *);
-void WfcMoveWh_StateOutMeasureChannel(WMMeasureChannelCallback *);
-void WfcMoveWh_StateOutReset(WMMsg *);
-void WfcMoveWh_StateOutEndChild(WMMsg *);
-void WfcMoveWh_StateOutEndChildMp(WMMsg *);
-void WfcMoveWh_StateOutEndParent(WMMsg *);
-void WfcMoveWh_StateOutEndParentMp(WMMsg *);
-u16 WfcMoveWh_MeasureNextChannel(u16);
-void WfcMoveWh_StateOutEnd(WMMsg *);
-s32 WfcMoveWh_StateInEndChildKeyShare();
-s32 WfcMoveWh_StateInEndChildMp();
-s32 WfcMoveWh_EndKeySharing();
-s32 WfcMoveWh_StateInEndParentMp();
-s32 WfcMoveWh_StateInReset();
-s32 WfcMoveWh_StateInSetParentParam();
-void WfcMoveWh_SetError(u32);
-void WfcMoveWh_ChangeSysState(s32);
 void WfcMoveWh_SetWork(WfcMoveWhWork *);
-s32 DWCi_MOV_WH_StateInStartParentKeyShare();
-s32 WfcMoveWh_StateInStartParentMp();
-s32 WfcMoveWh_StateInStartParent();
-s32 WfcMoveWh_StateInSetWepKey();
-void WfcMoveWh_StateOutStartParentMp(u16 *);
-void WfcMoveWh_StateOutStartParent(u16 *);
-void WfcMoveWh_StateOutSetWepKey(u16 *);
-void WfcMoveWh_StateOutSetParentParam(u16 *);
-s32 WfcMoveWh_GetSysState();
-s32 DWCi_MOV_WH_StateInEndParent();
-s32 WfcMoveWh_StateInEndChild();
-s32 WfcMoveWh_StateInMeasureChannel(void *cb, s32 x);
-s16 WfcMoveWh_PickRandomChannel(u16 mask);
-s32 WfcMoveWh_StateInInitialize();
 
 }
 // Declarations for data defined further down (definition order sets the data layout)

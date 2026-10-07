@@ -33,6 +33,22 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "player/PlayerSpNpcRecord.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_02225290.h"
+#include "proto/ov004/unk_ov004_0223f43c.h"
+#include "proto/ov053/unk_ov053_02258de0.h"
 
 
 
@@ -160,7 +176,6 @@ extern u8 sSpNpcHarrietTexturePath[];
 extern ActorProfile sSpNpcHarrietProfile;
 extern SpNpcHarrietActEntry sSpNpcHarrietActTable[11];
 #define data_ov053_0225a62c ((SpNpcHarrietActEntry *)((u8 *)sSpNpcHarrietActTable + 8))
-SpNpcHarriet *SpNpcHarriet_Create();
 
 extern volatile u16 data_020c6cc8;
 extern s32 data_020c6d1c;
@@ -171,43 +186,19 @@ extern u8 gTalkMsgIndexEnd[];
 s32 Math_AngleXZ(void *a, void *b);
 NpcActor *func_02015aac(void *self);
 s32 Math_CountDownU8(void *);
-void Bgm_ReleasePriority(u32);
-void Hud_Show();
-BOOL PlayerActor_IsInAction(s32 a, s32 b);
-BOOL PlayerActor_LocalRequestStandUp(s32 a);
-BOOL Camera_SetMode16At(VecFx32 *v);
 void TalkRequest_SetTargetDone(void *self);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestExit(void *, s32);
-void Camera_SetModeDefault();
 void Ground_LockExit(s32 a);
 s32 Scene_GetPrevious();
-void *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 BOOL TalkRequest_IsTalking(void);
 s32 TalkRequest_AddPlayerTalk7(void *p, s32 a);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-void *PlayerData_GetCurrent();
-void *TownSessionState_Get();
-s32 TownSessionState_TestFlag(void *p, s32 a);
 s32 func_020aa514(void *p);
-s32 Hud_Hide();
-s32 NpcActor_CanPlayerPay(void *o, s32 a);
-void NpcActor_ChargePlayer(void *o, s32 v);
-void TownSessionState_SetFlag(void *p, s32 v);
-void TownSessionState_ClearFlag(void *p, s32 v);
-void PlayerActor_LocalSetHeadwearHidden(s32 v);
-void Snd_PlaySe(s32 v);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
-s32 Random_GlobalBelow(s32 n);
-void PlayerActor_LocalRequestSit();
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
-s32 PlayerActor_IsScriptedWalking(s32 a);
-void PlayerActor_LocalRequestHaircutStart(u8 *a, u8 *b);
-void BarberMachine_Start();
-void Snd_SeEmitterPlayOneShotAlt(void *a, u32 b, u32 c, u32 d);
 }
 
 // Constants and tables (definition order sets the data layout)

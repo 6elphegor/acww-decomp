@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/gxoam.h"
+#define PROTO_LOCAL_WfcBusyIcon_Delete  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov001/unk_ov001_02207904.h"
+#include "proto/ov001/unk_ov001_02226f68.h"
 
 struct WfcBusyIcon {
     u32 task;
@@ -21,12 +25,8 @@ s32 FX_DivS32(s32, s32);
 void *WfcHeap_AllocClear(u32, u32);
 void WfcCell_Copy(u32, u32, void *);
 void *WfcObj_CreateSingle(u32, u32);
-void WfcTask_Delete(u32, u32);
-u32 WfcTask_Add(u32, WfcTaskFunc, u32, u32);
 void WfcOam_FreeEntry(void *);
 void WfcHeap_FreeAndClear(void *);
-void WfcBusyIcon_Task(u32 task);
-void WfcBusyIcon_Task(u32 task);
 }
 
 #pragma thumb off

@@ -10,6 +10,9 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "player/PlayerData.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/ov003/unk_ov003_02217510.h"
 
 
 
@@ -27,10 +30,8 @@ extern "C" {
 extern u8 data_021ed104[];
 
 s32 Item_GetNookShopLevel(void *p);
-void *PlayerData_GetCurrent();
 void Clock_GetDateTime(void *p);
 void Clock_GetMinuteHour(void *p);
-BOOL GameStart_IsActive();
 #define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 BOOL PlayerData_testFlag(void *p, s32 a);
 BOOL NookShop_IsClosedOn(void *p, void *q);

@@ -13,6 +13,21 @@
 #include "save/BlancaFaceRecord.h"
 #include "save/Pattern.h"
 #include "save/PatternOrder.h"
+#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Gfx2d_LinearToTiles4bpp  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov123/unk_ov123_02291f60.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -23,58 +38,10 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 extern void *gCurrentHeap;
 
-s32 Snd_PlaySe(s32 a);
-s32 Gfx2d_EndSubObjWinBrightness();
-s32 Gfx2d_BeginSubObjWinBrightness();
-s32 Gfx2d_SetSubBrightness(s32 a);
-s32 Gfx2d_DisableSubWindows(s32 a);
-s32 Gfx2d_EnableSubWindows(s32 a);
-s32 Gfx2d_SetSubWin1Planes(s32 a, s32 b);
-s32 Gfx2d_SetSubWin1Rect(s32 a, s32 b, s32 c, s32 d);
-s32 Snd_SetSeHandleVolumes(s32 a);
-s32 Snd_StopSe(s32 a, s32 b);
-s32 Gfx2d_HideLayer(s32 a);
-s32 Gfx2d_ShowLayer(s32 a);
-s32 Gfx2d_SetSubAlphaBlend(s32 a, s32 b, s32 c);
-s32 Snd_SetPanIfChanged(s32 a);
 s32 MIi_CpuCopy32(void *a, void *b, u32 n);
-BOOL MenuKeys_HasRight(void *pad);
-BOOL MenuKeys_HasLeft(void *pad);
-BOOL MenuKeys_HasDown(void *pad);
-BOOL MenuKeys_HasUp(void *pad);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void String_FromEncodedBytes(void *p, void *s, s32 n);
-void MenuCtrl_SetResult(u32 v);
-s32 MenuCtrl_GetMode();
-void Gfx2d_LoadCharRange(void *p, s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
-void *PatternTexCache_Get();
-void *PlayerData_GetCurrent();
-void *MenuCtrl_GetIndex();
-void Snd_PlaySeOnHandle(s32 a);
-BOOL MenuCtrl_IsTouch();
-BOOL MenuCtrl_IsButtons();
-s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
-s32 Gfx2d_LoadCharFile(void *, void *, u32, u32, u32, u32);
-BOOL File_LoadToBuffer(void *a, void *b, s32 c);
-BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
-void Gfx2d_LoadScreenFile(void *a, void *b, s32 c);
-void Gfx2d_SetSubBgModeState(s32 a);
-void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
-void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-void Gfx2d_ResetLayer(s32 a);
-void Gfx2d_ResetSubBlend();
-void Snd_SetSceneBankVariant(s32 a);
-void PlayerActor_RequestAct10();
-void PlayerActor_RequestAct05();
-s32 PlayerActor_IsChangingClothes();
-BOOL PlayerActor_RequestWearShirtAlt(u16 *p);
-BOOL PlayerActor_RequestWearHatAlt(u16 *p);
-void ProcBase_RequestDelete(void *p);
-void *ProcBase_GetParent(void *self);
 
 // methods of other modules' classes, called with the object first (mangled-name trick)
 void *_ZN15PatternTexCache10getPaletteEi(void *self, s32 a);
@@ -111,7 +78,6 @@ struct Unk_ov123_02293010_Q {
 
 class PatternEditorMenu;
 typedef void (PatternEditorMenu::*Unk_ov123_022959c4_Fn)();
-extern "C" PatternEditorMenu *PatternEditorMenu_Create();
 
 extern "C" {
 extern const u8 sPatternEditorButtonTileX0[13];

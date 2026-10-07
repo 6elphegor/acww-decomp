@@ -14,6 +14,7 @@ typedef int BOOL;
 
 
 #include "nnsys/g3d_rt.h"
+#include "proto/itcm/unk_01ff8ad4.h"
 typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 
@@ -33,7 +34,6 @@ typedef union Glb {
 } Glb;
 extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
-extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
 typedef struct Cb {  // NNSG3dAnmObj (all its fields: the pointers are larger on 64-bit hosts)
     s32 frame;          // 0x00

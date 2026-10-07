@@ -15,8 +15,12 @@
 #include "town/ReddTent.h"
 #include "gfx/DebugColor.h"
 #include "game/ReddShop.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_02214494.h"
 
-extern "C" void *ReddTent_Create();
 extern "C" DebugColor data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov003_02235160(0x14, 0x14, 0x1f, 0x1f);
 extern "C" DebugColor data_ov003_0223514c(0x1f, 0x1f, 0x14, 0x1f);
@@ -39,27 +43,17 @@ extern "C" ActorProfile sReddTentProfile = {(void *(*)())ReddTent_Create, 0x1b, 
 
 
 extern "C" {
-BOOL MenuCtrl_IsFinished();
 BOOL TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
-BOOL PlayerActor_IsStowFinished();
-BOOL PlayerActor_IsEnteringDoor();
-void PlayerActor_RequestStowThenAct10(u32 a);
 void *Scene_GetWarpRequest();
 BOOL SceneWarp_RequestExit(void *o, s32 a);
 s32 Scene_GetCurrent();
 void Scene_SetTownReturnPos(void *o, s32 a, VecFx32 *v, u32 b, s32 c, u32 d, u32 e);
 s32 Ground_GetDefaultY(u32 a);
-BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
-BOOL MenuCtrl_IsResultOk();
 s32 ReddPassword_LearnCurrentPlayer();
-void BuildingOccupancy_Leave(u32 a, u32 b);
 extern u8 data_021ed2c0[];
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
-void MenuCtrl_OpenLauncherWithIndex(u32 a, s32 b);
 s32 ReddPassword_CurrentPlayerKnows();
-u32 BuildingOccupancy_GetAnswer(u32 a);
-void BuildingOccupancy_RequestEnter(u32 a);
 }
 
 extern "C" {
