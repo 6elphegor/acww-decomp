@@ -17,3 +17,12 @@ src/main/unk_020119cc.cpp NpcAnimCtrl::stopTalkGesture scene NpcActor
 src/main/unk_020119cc.cpp NpcAnimCtrl::syncMouthType scene NpcActor
 src/main/unk_020119cc.cpp NpcAnimCtrl::update scene NpcActor
 src/main/unk_020119cc.cpp NpcAnimCtrl::updateAnimSpeed scene NpcActor
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_ChangeState b FishShadow
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_ExecSpawn a FieldFishManager
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_ExecSpawn b FishShadow
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_ExecWaitInView b FishShadow
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_SetAnimSpeed self FishShadow
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_LoadModel self FishShadow
+src/ov003/unk_ov003_0221ffb8.cpp FishFinModel_Load self FishFinModel
+src/ov003/unk_ov003_0221ffb8.cpp FishFinModel_Attach a FieldFishManager
+src/ov003/unk_ov003_0221ffb8.cpp FishFinModel_Release a FieldFishManager
