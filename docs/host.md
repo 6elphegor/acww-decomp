@@ -22,6 +22,16 @@ the dumps, ignoring the bytes that differ at an early frame (code addresses in s
 address that differs. Code that reads memory nothing wrote (a lost argument, an uninitialized buffer) shows up as a
 difference that depends only on code shape.
 
+Shared declarations: every source file has a generated header, `include/proto/<dir>/<file>.h`, with the
+declarations of the functions and global variables it defines, exactly as the definitions write them
+(`tools/host_protos.py`; regenerate after changing a definition's signature). Units include these headers instead of
+declaring what they use themselves. A unit that still declares something itself defines `PROTO_LOCAL_<name>`
+before the includes (the header then leaves that declaration out): its uses don't match the real type yet - each
+one is a call or an access to fix (a blob passed for a typed object, a pointer kept in an integer, an argument
+count that differs, an array declared for a scalar). `grep -rn 'define PROTO_LOCAL_' src` lists them; the goal is
+none. Definitions whose types are local to one source file are not in the headers yet (include/proto/.excluded and
+the functions using file-local typedefs): moving those types to headers comes with the rewrite of their files.
+
 Declarations: `tools/host_decls.py` (libclang; `pip install --user clang==21.*`) compares every declaration written
 in a source file with the function's definition; `tools/host_method_calls.py` rewrote the calls of methods through
 their mangled names into member calls (non-virtual where the method is virtual, as the direct call was; pointers
