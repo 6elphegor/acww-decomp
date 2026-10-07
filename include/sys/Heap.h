@@ -59,4 +59,12 @@ public:
 #define FRAMEHEAP_OVERHEAD_ROUNDED 0x4b
 #endif
 
+// a model slot's frame heap and its management, rounded up (ModelSlotPool::init: the pool's block holds n of them);
+// larger on hosts like the overheads above
+#ifdef HOST
+#define MODELSLOT_HEAP_OVERHEAD (0x5b * 2)
+#else
+#define MODELSLOT_HEAP_OVERHEAD 0x5b
+#endif
+
 #endif

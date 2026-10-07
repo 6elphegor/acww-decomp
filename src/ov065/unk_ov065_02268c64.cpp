@@ -1160,7 +1160,7 @@ void WifiLink_SetupScanParams(u8 *a, u8 *b, u32 c) {
     u32 t;
     WifiLink_UpdateOptions(c);
     g = sWifiLinkWork;
-    g->scanParam.scanBuf = (WMBssDesc *)((u8 *)g + 0x1500);
+    g->scanParam.scanBuf = (WMBssDesc *)(HOST_AT(g, 0x1500, wmBuf[0], 0));
     sWifiLinkWork->scanParam.scanBufSize = 0x400;
     sWifiLinkWork->scanParam.channelList = (1 << WifiLink_NextAllowedChannel(0)) >> 1;
     t = sWifiLinkWork->scanPeriod;

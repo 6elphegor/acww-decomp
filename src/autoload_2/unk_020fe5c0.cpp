@@ -1,3 +1,4 @@
+#include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 // G015b: autoload_2 0x020fe5c0-0x020fe848 (1 function). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ name, nothing defined but the function.
 // WVR_StartUpAsync: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (WvrReceiveCallback is the PXI receive callback).
@@ -21,11 +22,20 @@ struct P;
 
 
 struct Res {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    Hdr * hdr;  // DS +0x0
+    u8 p4[0x8];  // DS +0x4 [0x4]
+    Tex * p8;  // DS +0x8
+    u8 pc[0x8];  // DS +0xc [0x4]
+    Tab * p10;  // DS +0x10
+#else
     Hdr *hdr;
     u8 p4[4];
     Tex *p8;
     u8 pc[4];
     Tab *p10;
+#endif
 };
 
 

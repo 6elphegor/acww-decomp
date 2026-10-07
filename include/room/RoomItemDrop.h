@@ -1,5 +1,7 @@
 #ifndef ROOM_ROOMITEMDROP_H
 #define ROOM_ROOMITEMDROP_H
+#include "snd/SndSeEmitter.h"
+#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -26,7 +28,7 @@ public:
     /* 0x3c */ VecFx32 scale;
     /* 0x48 */ s16 unk_48;
     /* 0x4a */ s16 unk_4a;
-    /* 0x4c */ u8 seEmitter[0x40];
+    /* 0x4c */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
     /* 0x8c */ s8 bounceCount;
     /* 0x8d */ u8 frameCount;
     /* 0x8e */ u8 unk_8e;

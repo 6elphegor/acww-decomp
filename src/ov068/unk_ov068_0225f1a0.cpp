@@ -1,3 +1,4 @@
+#include "gfx/Model.h"
 #include "uptr.h"
 // mwcc-version: 1.2/base
 // ov068 TU01 (.text 0x0225f1a0-0x0226647c): owner actor FieldVillager (vtable 0x0226fb78) and its state classes, 214 functions of 12 old files.
@@ -2927,7 +2928,7 @@ BOOL FieldVillager::onCreate() {
 
 BOOL FieldVillager::drawDefault() {
     using namespace ns_02265d34;
-    data_021cb69c = *(Mtx43 *)((u8 *)&model + 0x150 - 0xec);
+    data_021cb69c = MODEL_AT_MTX(&model);
     if (func_0201b138(this) == 0) {
         return FALSE;
     }

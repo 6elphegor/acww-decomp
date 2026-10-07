@@ -1,0 +1,14 @@
+# gap data labels the C code declares as pointers: their own 8-byte storage on x86-64 (tools/host_gaps.py --own-slots)
+data_021c1b3c
+data_021fff88
+data_02200014
+data_02200018
+data_0220001c
+data_02200060
+data_02200140
+data_02200144
+gProfileTable
+gSceneBlockMap
+sProcCreateHook
+sProcDeleteHook
+data_01ff8ab4 8

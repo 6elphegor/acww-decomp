@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "talk/MsgStringBase.h"
@@ -30,11 +31,11 @@ extern VecFx32 gVec3Zero;
 }
 
 extern "C" {
-extern u32 sEffectDefaultTrackedCbs[];
+extern uptr sEffectDefaultTrackedCbs[];
 }
 
 extern "C" {
-extern u32 sEffectDefaultOneShotCbs[];
+extern uptr sEffectDefaultOneShotCbs[];
 }
 
 extern "C" {

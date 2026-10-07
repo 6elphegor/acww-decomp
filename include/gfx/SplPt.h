@@ -8,6 +8,30 @@
 // and unk_020fa39c.cpp (singly linked through next). Formerly named Pt; renamed to keep the generic name
 // free (ov001 has its own WfcPoint in net/WfcRect.h).
 struct SplPt {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealParticle)
+    SplPt * next;  // DS +0x0
+    u8 p4[0x8];  // DS +0x4 [0x4]
+    s32 w8;  // DS +0x8
+    s32 w12;  // DS +0xc
+    s32 w16;  // DS +0x10
+    s32 w20;  // DS +0x14
+    s32 w24;  // DS +0x18
+    s32 w28;  // DS +0x1c
+    u16 h32;  // DS +0x20
+    s16 s34;  // DS +0x22
+    u16 h36;  // DS +0x24
+    u16 h38;  // DS +0x26
+    u16 h40;  // DS +0x28
+    u16 h42;  // DS +0x2a
+    u8 p44;  // DS +0x2c
+    u8 c45;  // DS +0x2d
+    u16 pad46 : 10;
+    u16 id46 : 6;
+    u8 p48[0x8];  // DS +0x30 [0x8]
+    A3 v56;  // DS +0x38
+    u8 hpad_0[0x4];
+#else
     /* 0x00 */ SplPt *next;
     /* 0x04 */ u8 p4[4];
     /* 0x08 */ s32 w8;
@@ -28,6 +52,7 @@ struct SplPt {
     /* 0x2e */ u16 id46 : 6;
     /* 0x30 */ u8 p48[8];
     /* 0x38 */ A3 v56;
+#endif
 };
 
 #endif

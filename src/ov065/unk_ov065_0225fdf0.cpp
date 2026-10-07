@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/SockUdpDropCounters.h"
@@ -1211,7 +1212,7 @@ s32 SockCore_CmdSend(WJob *j)
         r = -0x4c;
     }
     rx->ringRead = j->ringEnd;
-    OS_WakeupThread((u8 *)rx + 0x104);
+    OS_WakeupThread(HOST_AT(rx, 0x104, spaceWaitQueue.head, 0));
     return r;
 }
 

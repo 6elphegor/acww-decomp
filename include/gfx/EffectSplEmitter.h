@@ -45,6 +45,38 @@ public:
     s32 Effect_SpawnParticleLandings(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
     void initKind02();
 
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealEmitter)
+    u8 pad_00[0x10];  // DS +0x0 [0x8]
+    P * particles;  // DS +0x8
+    s32 particleCount;  // DS +0xc
+    u8 hpad_0[0x4];
+    u8 pad_10[0x10];  // DS +0x10 [0x8]
+    SPLResource * resource;  // DS +0x18
+    u32 stateFlags;  // DS +0x1c
+    s32 posX;  // DS +0x20
+    s32 posY;  // DS +0x24
+    s32 posZ;  // DS +0x28
+    u8 pad_2c[0x10];  // DS +0x2c [0x10]
+    Unk_020932bc_V16 axis;  // DS +0x3c
+    u8 pad_42[0x2];  // DS +0x42 [0x2]
+    s32 radius;  // DS +0x44
+    s32 length;  // DS +0x48
+    s32 initVelMagPos;  // DS +0x4c
+    s32 initVelMagAxis;  // DS +0x50
+    s32 baseScale;  // DS +0x54
+    u16 particleLife;  // DS +0x58
+    u16 color;  // DS +0x5a
+    s32 simpleCollisionY;  // DS +0x5c
+    u8 pad_60[0x8];  // DS +0x60 [0x8]
+    u8 genInterval;  // DS +0x68
+    u8 baseAlpha;  // DS +0x69
+    u8 pad_6a[0x12];  // DS +0x6a [0xe]
+    EffectSplEmitterCallback callback;  // DS +0x78
+    u8 pad_7c[0x8];  // DS +0x7c [0x4]
+    u8 tintVariant;  // DS +0x80
+    u8 hpad_1[0x7];
+#else
     /* 0x00 */ u8 pad_00[8];
     /* 0x08 */ P *particles;
     /* 0x0c */ s32 particleCount;
@@ -70,6 +102,7 @@ public:
     /* 0x78 */ EffectSplEmitterCallback callback;
     /* 0x7c */ u8 pad_7c[4];
     /* 0x80 */ u8 tintVariant;
+#endif
 };
 
 class EffectEmitterEntry {

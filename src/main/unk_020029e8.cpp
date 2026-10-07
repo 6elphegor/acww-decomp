@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/ToonTable.h"
@@ -38,7 +39,7 @@ extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {
-extern u32 sPersonalityPrefixes[];
+extern uptr sPersonalityPrefixes[];
 }
 
 extern "C" {

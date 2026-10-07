@@ -24,11 +24,19 @@ typedef struct Fader {
     s32 frames;     // 0x0c
 } Fader;
 
+#ifdef HOST
+#define HDR(c) ((u8 *)(c)->pad_a8)  // (the header buffer: pad_a8 .. the u8 / u16 fields after it, by the member)
+#else
 #define HDR(c) ((u8 *)(c) + 0xa8)
+#endif
 
 // stream context (NNSSndArcStrm), 0x160 bytes, 4 of them (data_021fc650)
 typedef struct Ctx {
+#ifdef HOST64
+    u8 strm[136] __attribute__((aligned(8)));  // NNSSndStrm (Strm in unk_0210a478.c: its 64-bit size, checked there)
+#else
     u8 strm[0x5c];          // 0x00 NNSSndStrm
+#endif
     FSFile file;            // 0x5c
     u32 a4;                 // 0xa4
     u8 pad_a8[0x18];        // 0xa8 .. 0xe8: 64-byte stream header buffer (type etc. are bytes of it)
@@ -83,12 +91,28 @@ typedef struct Job {
     u32 size;               // 0x2c
 } Job;
 
+#ifdef HOST64
+#include "sys/OSThread.h"
+// (by the types: the thread queue and the mutex are larger on 64-bit hosts; the stack after the thread isn't used
+// on hosts, whose threads run on their own stacks)
+typedef struct ThreadInfo {
+    u8 thread[sizeof(OSThread) > 0x4c0 ? sizeof(OSThread) : 0x4c0] __attribute__((aligned(8)));
+    OSThreadQueue queue;
+    OSMutex mutex;
+    NNSFndList list;
+} ThreadInfo;
+// StrmThreadProc (unk_0210c084.c) reaches them through these
+void *SndStrmThread_Queue(ThreadInfo *t) { return &t->queue; }
+void *SndStrmThread_Mutex(ThreadInfo *t) { return &t->mutex; }
+void *SndStrmThread_List(ThreadInfo *t) { return &t->list; }
+#else
 typedef struct ThreadInfo {
     u8 thread[0x4c0];
     u32 queue[3];           // 0x4c0
     u8 mutex[0x18];         // 0x4cc
     NNSFndList list;        // 0x4e4
 } ThreadInfo;
+#endif
 
 typedef struct SInfo {
     void *file;             // 0
@@ -611,11 +635,19 @@ void FreeChannel(Ctx *c)
 // NNS_SndArcStrmThread create-like (OS_CreateThread + job list, mutex, queue)
 void CreateStrmThread(ThreadInfo *t, u32 prio)
 {
-    OS_CreateThread(t, StrmThreadProc, t, HOST_AT(t, 0x4c0, queue[0], 0), 0x400, prio);
+#ifdef HOST64
+    OS_CreateThread(t, StrmThreadProc, t, &t->queue, 0x400, prio);
+    NNS_FndInitList(&t->list, 0);
+    OS_InitMutex(&t->mutex);
+    t->queue.head = 0;
+    t->queue.tail = 0;
+#else
+    OS_CreateThread(t, StrmThreadProc, t, (u8 *)t + 0x4c0, 0x400, prio);
     NNS_FndInitList(&t->list, 0);
     OS_InitMutex(&t->mutex);
     t->queue[1] = 0;
     t->queue[0] = t->queue[1];
+#endif
     OS_WakeupThreadDirect(t);
 }
 

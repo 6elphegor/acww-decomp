@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 // TU02 of ov003 (player free functions, 0x02204ce8-0x02212830): 25 unit files merged. Every original file is a namespace
@@ -3823,7 +3824,11 @@ namespace ns_02211818 {
 extern "C" s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 6, b, c);
+#ifdef HOST
+    *(u16 *)((u8 *)&m.unk_0c) = a;
+#else
     *(u16 *)((u8 *)&m + 0xc) = a;
+#endif
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
@@ -4262,7 +4267,7 @@ extern "C" s32 PlayerActor_RequestPluck(Obj *o, s32 *p, s32 a, s32 b) {
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_SetupPluck(Obj *o, Msg *m) {
-    u8 *p = (u8 *)m + 0xc;
+    u8 *p = HOST_AT(m, 0xc, unk_0c_d5b4.firstAction, 0);
     V3 v;
     FieldPos_FromUnitCenter(&v, p[0], p[1]);
     V3 *pv = (V3 *)&o->actionWork;
@@ -4451,7 +4456,7 @@ extern "C" void PlayerActor_DoorApproachGetNetData(u8 *p, s32 *a, s32 *b, s16 *c
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_SetupDoorApproach(Obj *o, Msg *m) {
-    u8 *p = (u8 *)m + 0xc;
+    u8 *p = HOST_AT(m, 0xc, unk_0c_d5b4.firstAction, 0);
     Unk_020102ec_startAnimOnce(o, 0x37, 3, 0);
     s32 a = *(s32 *)p;
     s32 b = *(s32 *)(p + 4);
@@ -4556,7 +4561,7 @@ extern "C" void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u1
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     Unk_02006d14_setActionFlag(o, 4);
-    u8 *p = (u8 *)m + 0xc;
+    u8 *p = HOST_AT(m, 0xc, unk_0c_d5b4.firstAction, 0);
     Rec *r = (Rec *)&o->actionWork;
     s32 z = 0;
     s32 k = z;
@@ -4740,7 +4745,7 @@ extern "C" void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b) {
 namespace ns_022105bc {
 extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     Unk_02006d14_clearActionFlag(o, 0);
-    u8 *p = (u8 *)m + 0xc;
+    u8 *p = HOST_AT(m, 0xc, unk_0c_d5b4.firstAction, 0);
     Rec2 *rec = (Rec2 *)&o->actionWorkRaw[0];
     s32 t = 0;
     void *g = gCommManager;
@@ -7213,7 +7218,11 @@ namespace ns_0220cd4c {
 extern "C" s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x55, b, c);
+#ifdef HOST
+    *(u8 *)((u8 *)&m.unk_0c) = a;
+#else
     *(u8 *)((u8 *)&m + 0xc) = a;
+#endif
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
@@ -10646,7 +10655,7 @@ extern "C" s32 PlayerActor_RequestAct67(Obj *o, V3 *v, s32 a, s16 b) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67SetWork(RecC *r, s32 a, V3 v) {
     *(u16 *)r = a;
-    *(V3 *)((u8 *)r + 4) = v;
+    *(V3 *)(HOST_AT(r, 4, unk_04, 0)) = v;
 }
 }
 
@@ -10719,7 +10728,7 @@ extern "C" void PlayerActor_MainAct67(Obj *o) {
     V3 v;
     v.x = r->unk_04;
     v.y = r->unk_08;
-    v.z = *(s32 *)((u8 *)r + 0xc);
+    v.z = *(s32 *)(HOST_AT(r, 0xc, unk_0c, 0));
     if (Unk_02006d14_netSyncNearPoint(o, &v)) {
         PlayerActor_Act67Turn(o);
     }
@@ -10936,9 +10945,9 @@ extern "C" void PlayerActor_SetupTreeShakeRelease(Obj *o, Msg *m) {
     VecFx32CtorDtor d;
     V3 t;
     V3 *r0 = (VecFx32 *)m->unk_0c_b;
-    u8 r4 = *((u8 *)r0 + 8);
-    u8 r6 = *((u8 *)r0 + 9);
-    s32 r2 = *(s32 *)((u8 *)r0 + 4);
+    u8 r4 = *(HOST_AT(r0, 8, z, 0));
+    u8 r6 = *(HOST_AT(r0, 9, z, 1));
+    s32 r2 = *(s32 *)(HOST_AT(r0, 4, y, 0));
     s32 y = o->position.y;
     t.x = (*(VecFx32 *)m->unk_0c_b).x;
     t.y = y;

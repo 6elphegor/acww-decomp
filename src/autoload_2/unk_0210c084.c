@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -140,7 +141,11 @@ typedef struct AdpcmState {
 } AdpcmState;
 
 typedef struct NNSSndStrmPlayer {
+#ifdef HOST64
+    u8 stream[136] __attribute__((aligned(8)));  // NNSSndStrm (Strm in unk_0210a478.c: its 64-bit size, checked there)
+#else
     u8 stream[0x5c];
+#endif
     FSFile file;
     u32 fileOffset;
     NNSSndStrmData info;
@@ -514,10 +519,19 @@ void MakeWaveData(LoadCommand *command)
 void StrmThreadProc(u8 *obj)
 {
     u8 *queue;
+#ifdef HOST64
+    // (the thread record's members by its type: unk_0210da28.c)
+    extern void *SndStrmThread_Queue(void *), *SndStrmThread_Mutex(void *), *SndStrmThread_List(void *);
+    u8 *mutex = SndStrmThread_Mutex(obj);
+    u8 *list = SndStrmThread_List(obj);
+    u32 item;
+    queue = SndStrmThread_Queue(obj);
+#else
     u8 *mutex = obj + 0x4cc;
     u8 *list = obj + 0x4e4;
     u32 item;
     queue = obj + 0x4c0;
+#endif
     for (;;) {
         OS_SleepThread(queue);
         for (;;) {

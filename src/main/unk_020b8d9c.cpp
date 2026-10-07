@@ -1,3 +1,4 @@
+#include "gfx/HBlankTask.h"
 #include "uptr.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
@@ -928,7 +929,7 @@ extern u32 sSkyLineScrollY[2];
 extern u32 sSkyLineScrollX[2];
 extern u32 sSkyLight[3];
 extern u32 sMoonColors[3];
-extern u32 sSkyHBlankTask[7];
+extern u32 sSkyHBlankTask[];
 extern SkyGradient sSkyGradient;
 extern StarTwinkle data_021efc18;
 extern WeatherManager gWeatherManager;
@@ -5524,7 +5525,7 @@ u32 data_020e4884[2] = {0x81f000f0, 0xffff2098};
 void *data_020e47bc[2] = {(void *)_ZN15SkyShotSequence13actShotFlightEv, 0};
 void *data_020e4a44[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0BEv, 0};
 void *data_020e46c4[2] = {(void *)_ZN15SkyShotSequence14actBalloonDropEv, 0};
-u32 sSkyHBlankTask[7];
+u32 sSkyHBlankTask[HOST_SIZED(0x1c, HBlankTask) / 4] HOST_ALIGN8;  // HBlankTask
 void *data_020e468c[2] = {(void *)_ZN9SkySprite11initRainbowEv, 0};
 void *data_020e473c[2] = {(void *)_ZN9SkySprite8initBirdEj, 0};
 u32 data_020e4c14[4] = {0x41fc80e0, 0x9c, 0x41fc8000, 0xffff011c};
@@ -7163,10 +7164,10 @@ extern "C" {
 extern WeatherManager gWeatherManager;
 }
 extern "C" {
-extern u32 *sCloudScreenFiles[];
+extern uptr *sCloudScreenFiles[];  // (tables of path pointers)
 }
 extern "C" {
-extern u32 sCloudCharFiles[];
+extern uptr sCloudCharFiles[];  // (path pointers)
 }
 extern "C" {
 extern s8 sWeatherHourTable[];
@@ -7574,7 +7575,7 @@ BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     using namespace n03;
     BOOL ok = FALSE;
     s32 i;
-    u32 res;
+    uptr res;
     if (mode == 0) {
         s32 t = idx * 2;
         i = t + cloudVariant;

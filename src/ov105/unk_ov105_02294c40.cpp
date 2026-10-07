@@ -1197,7 +1197,7 @@ void LetterStorageMenu::mainAct0C() {
     S *s = this;
     if (s->cursor.isAnimDone()) {
         s32 r;
-        s->popupChoice = ((u8 *)s + 0x2781)[s->popupRow];
+        s->popupChoice = (HOST_AT(s, 0x2781, choiceList.values[0], 0))[s->popupRow];
         r = 1;
         if (s->popupChoice == 2) {
             r = 0;

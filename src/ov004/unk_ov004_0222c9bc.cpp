@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
@@ -2674,7 +2675,7 @@ extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o) {
         AquariumCrawfish_SlowDown(o);
         break;
     case 6:
-        if (o->stateTimer >= *(u16 *)((u8 *)o + 0x212)) {
+        if (o->stateTimer >= *(u16 *)(HOST_AT(o, 0x212, unk_210, 2))) {
             o->stateTimer = 0;
             o->walkState = 2;
         }
@@ -2686,7 +2687,7 @@ extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o) {
 extern "C" void AquariumCrawfish_StartWalk(E84c *o) {
     o->unk_1c0 += Aquarium_RandAngle(0x5a, 0);
     *(u8 *)&o->unk_210 = Aquarium_RandRange(0x14, 0x78);
-    *(u16 *)((u8 *)o + 0x212) = Aquarium_RandRange(0x3c, 0xf0);
+    *(u16 *)(HOST_AT(o, 0x212, unk_210, 2)) = Aquarium_RandRange(0x3c, 0xf0);
     o->walkSpeed = Aquarium_RandFx(2, 4) / 100;
     o->stateTimer = 0;
     o->pos.y = 0x700;
@@ -2735,7 +2736,7 @@ extern "C" void _ZN13AquariumSquid5setupEv(E81c *o) {
     o->avoidedFish = o->fishIndex;
     o->tankArea = 1;
     AquariumFish_LoadParams(o);
-    Model_setInitCallback((u8 *)o + 0x64, (void *)AquariumFish_InstallJointCallbacks, o);
+    Model_setInitCallback(HOST_AT(o, 0x64, model[0], 0), (void *)AquariumFish_InstallJointCallbacks, o);
 }
 
 extern "C" void _ZN13AquariumSquid6updateEv(E81c *o) {
@@ -2871,7 +2872,7 @@ extern "C" void AquariumSwimFish_SetupSea(E864 *e) {
     e->avoidedFish = *p;
     AquariumFish_LoadParams(e);
     if (e->hasTurnAnims) {
-        Model_setInitCallback((u8 *)e + 0x64, (void *)AquariumFish_InstallJointCallbacks, e);
+        Model_setInitCallback(HOST_AT(e, 0x64, model[0], 0), (void *)AquariumFish_InstallJointCallbacks, e);
     }
 }
 
@@ -2915,7 +2916,7 @@ extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e) {
     e->contactFish = e->fishIndex;
     AquariumFish_LoadParams(e);
     if (e->hasTurnAnims) {
-        Model_setInitCallback((u8 *)e + 0x64, (void *)AquariumFish_InstallJointCallbacks, e);
+        Model_setInitCallback(HOST_AT(e, 0x64, model[0], 0), (void *)AquariumFish_InstallJointCallbacks, e);
     }
 }
 
@@ -3566,7 +3567,7 @@ extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i)
     if (*p == NULL) return FALSE;
     (*p)->fishIndex = i;
     (*p)->loadState = 1;
-    ModelSlotPool_acquire((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
+    ModelSlotPool_acquire(HOST_AT(self, 0x7f8, modelPool[0], 0), (u8 *)*p + 0x166);
     PooledModel_reset((u8 *)*p + 0x168);
     return TRUE;
 }
@@ -3587,7 +3588,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
         AnimModel_detachJointAnim((u8 *)*p + 0x64);
         CachedModel_release((u8 *)*p + 0x64);
         PooledModel_unload((u8 *)*p + 0x168);
-        ModelSlotPool_release((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
+        ModelSlotPool_release(HOST_AT(self, 0x7f8, modelPool[0], 0), (u8 *)*p + 0x166);
         switch ((*p)->fishIndex) {
         case 0xb:
             if (sAquariumFrog) {
@@ -3608,7 +3609,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
 
 extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
 {
-    ModelSlotPool_init((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
+    ModelSlotPool_init(HOST_AT(self, 0x7f8, modelPool[0], 0), 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
     sAquariumRoom = (s32)self->param;
     if (sAquariumRoom == 0) {
         self->obstacles[0].box[0] = 0xc000;
@@ -3638,8 +3639,8 @@ extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
         self->obstacles[4].box[4] = 0x700;
         sAquariumObstacleCount = 5;
         MuseumAquarium_CreateFreshwaterFish(self);
-        TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
-        TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x550, &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
+        TouchPicker_addBox(Scene_GetTouchPicker(), HOST_AT(self, 0x2a8, touchBoxes[0], 0), &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
+        TouchPicker_addBox(Scene_GetTouchPicker(), HOST_AT(self, 0x550, touchBoxes[170], 0), &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
     } else {
         self->obstacles[0].box[0] = 0x8b00;
         self->obstacles[0].box[1] = 0xfffff300;
@@ -3668,7 +3669,7 @@ extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
         self->extraBox[3] = 0xc00;
         self->extraBox[4] = 0x2000;
         MuseumAquarium_CreateSeaFish(self);
-        TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
+        TouchPicker_addBox(Scene_GetTouchPicker(), HOST_AT(self, 0x2a8, touchBoxes[0], 0), &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
     Snd_PlaySeOnHandle(0x4da);
     return TRUE;
@@ -3908,10 +3909,10 @@ extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o) {
     s32 i;
     R **p;
     if (sAquariumRoom == 0) {
-        TouchPicker_pushBox(Scene_GetTouchPicker(), (u8 *)o + 0x2a8);
-        TouchPicker_pushBox(Scene_GetTouchPicker(), (u8 *)o + 0x550);
+        TouchPicker_pushBox(Scene_GetTouchPicker(), HOST_AT(o, 0x2a8, touchBoxes[0], 0));
+        TouchPicker_pushBox(Scene_GetTouchPicker(), HOST_AT(o, 0x550, touchBoxes[170], 0));
     } else if (sAquariumRoom == 1) {
-        TouchPicker_pushBox(Scene_GetTouchPicker(), (u8 *)o + 0x2a8);
+        TouchPicker_pushBox(Scene_GetTouchPicker(), HOST_AT(o, 0x2a8, touchBoxes[0], 0));
     }
     i = sAquariumEndFish - 1;
     p = &sAquariumFish[i];
@@ -3930,20 +3931,20 @@ extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n) {
     for (i = 0; i < n; i++) {
         s32 off = i * 0x64;
         u8 *s = (u8 *)o + off;
-        void *obj = (u8 *)o + 0x50 + off;
-        StaticCollider_setupAtPos(obj, (u8 *)o + 0xa0 + off, *(s32 *)(s + 0xac), *(s32 *)(s + 0xb0), 0x102, 0x140, z, 0xff, 0x1000);
+        void *obj = HOST_AT(o, 0x50, obstacles[0].hitBox, 0) + off;
+        StaticCollider_setupAtPos(obj, HOST_AT(o, 0xa0, obstacles[0].box[0], 0) + off, *(s32 *)(s + 0xac), *(s32 *)(s + 0xb0), 0x102, 0x140, z, 0xff, 0x1000);
         ActorCollider_submit(obj);
     }
     if (sAquariumRoom == 1) {
-        StaticCollider_setupAtPos((u8 *)o + 0x244, (u8 *)o + 0x294, *(s32 *)((u8 *)o + 0x2a0), *(s32 *)((u8 *)o + 0x2a4), 0x202, 0x140, 0, 0xff, 0x1000);
-        ActorCollider_submit((u8 *)o + 0x244);
+        StaticCollider_setupAtPos(HOST_AT(o, 0x244, extraHitBox, 0), HOST_AT(o, 0x294, extraBox[0], 0), *(s32 *)(HOST_AT(o, 0x2a0, extraBox[3], 0)), *(s32 *)(HOST_AT(o, 0x2a4, extraBox[4], 0)), 0x202, 0x140, 0, 0xff, 0x1000);
+        ActorCollider_submit(HOST_AT(o, 0x244, extraHitBox, 0));
     }
 }
 
 extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     s32 res = 0;
     s32 n = (*p)->fishIndex;
-    s32 a = ModelSlotPool_acquire((u8 *)o + 0x7f8, (*p)->modelSlot);
+    s32 a = ModelSlotPool_acquire(HOST_AT(o, 0x7f8, modelPool[0], 0), (*p)->modelSlot);
     void *b = (*p)->pooledModel;
     char buf[0x18];
     s32 k = n / 10 + 10;
@@ -4038,7 +4039,7 @@ extern "C" s32 _ZN14MuseumAquarium8onDeleteEv(Mgr *o) {
             *p = 0;
         }
     }
-    ModelSlotPool_destroy((u8 *)o + 0x7f8);
+    ModelSlotPool_destroy(HOST_AT(o, 0x7f8, modelPool[0], 0));
     Snd_StopSe(0x4da, 1);
     return TRUE;
 }

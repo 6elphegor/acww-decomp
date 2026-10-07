@@ -515,7 +515,7 @@ BOOL FieldGroundPiece::setup(VecFx32 *pos, s32 idx) {
     curveAngle = WorldCurve_ToCurved((VecFx32Ctor *)&tmp, (VecFx32Ctor *)&position);
     Mtx43_SetTranslate(data_021f47e0, position.x, 0, 0);
     Mtx43_RotateX(data_021f47e0, curveAngle);
-    *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;
+    MODEL_AT_MTX(&model) = *(Mtx43 *)data_021f47e0;
     blockX = pos->x >> 17;
     blockZ = pos->z >> 17;
     return TRUE;
@@ -579,7 +579,7 @@ BOOL FieldGroundBlock::init(TownBlockCell *o, s32 a, s32 b) {
     Mtx43_SetTranslate(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
     Mtx43_RotateX(data_021f47e0, ang);
-    *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;
+    MODEL_AT_MTX(&model) = *(Mtx43 *)data_021f47e0;
     if (Acre_GetAttr(acreId) & 8) {
         beachMatIdx = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
         if (beachMatIdx != -1) {

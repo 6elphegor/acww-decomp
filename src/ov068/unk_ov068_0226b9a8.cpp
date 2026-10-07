@@ -1,3 +1,4 @@
+#include "gfx/Model.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/CharacterListNode.h"
@@ -205,9 +206,9 @@ BOOL TaxiInterior::onCreate() {
     sTaxiInterior = this;
     loadModels();
     Model_setInitCallback(&model, TaxiInterior_InitModelCallback, this);
-    rainAMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_rainA");
-    rainBMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_rainB");
-    splashMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_splash");
+    rainAMatIdx = G3dResAccess_findMatIdx(MODEL_AT_RESMDL(&model), "m_rainA");
+    rainBMatIdx = G3dResAccess_findMatIdx(MODEL_AT_RESMDL(&model), "m_rainB");
+    splashMatIdx = G3dResAccess_findMatIdx(MODEL_AT_RESMDL(&model), "m_splash");
     setRainState(0);
     Snd_PlaySeOnHandle(0x884);
     Snd_PlaySeOnHandle(0x885);
@@ -249,9 +250,9 @@ BOOL TaxiInterior::onExecute() {
     }
     TaxiInterior_SetPartAnim(this, k, &wheelModel, &wheelRes, 0, 0x1000, 0, 0);
     AnimModel_stepAnim(&wheelModel);
-    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&model + 0x5c)), rainAMatIdx, rainAlpha);
-    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&model + 0x5c)), rainBMatIdx, rainAlpha);
-    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&model + 0x5c)), splashMatIdx, rainAlpha);
+    NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), rainAMatIdx, rainAlpha);
+    NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), rainBMatIdx, rainAlpha);
+    NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), splashMatIdx, rainAlpha);
     return TRUE;
 }
 
@@ -281,13 +282,13 @@ void TaxiInterior::loadModels() {
         }
     }
     if (RoomObjRes_GetBta(&res, 0)) {
-        if (ModelAnim_allocMatAnm(&bodyTexAnim, (*(u32 *)((u8 *)&model + 0x5c)), gBgHeap)) {
+        if (ModelAnim_allocMatAnm(&bodyTexAnim, MODEL_AT_RESMDL(&model), gBgHeap)) {
             ModelAnim_init(&bodyTexAnim, RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
             ModelAnim_addToRenderObj(&bodyTexAnim, Model_getRenderObj(&model));
         }
     }
     if (RoomObjRes_GetBma(&res, 0)) {
-        if (ModelAnim_allocMatAnm(&bodyMatAnim, (*(u32 *)((u8 *)&model + 0x5c)), gBgHeap)) {
+        if (ModelAnim_allocMatAnm(&bodyMatAnim, MODEL_AT_RESMDL(&model), gBgHeap)) {
             ModelAnim_init(&bodyMatAnim, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
             ModelAnim_addToRenderObj(&bodyMatAnim, Model_getRenderObj(&model));
         }

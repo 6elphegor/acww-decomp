@@ -1,3 +1,4 @@
+#include "sys/Heap.h"
 #include "types.h"
 #include "net/CommManager.h"
 #include "sys/PrioListNode.h"
@@ -199,7 +200,7 @@ BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc a
     void *mem;
     allocFunc = alloc;
     freeFunc = free;
-    u32 total = n * ((size + 0x5b) & ~3);
+    u32 total = n * ((size + MODELSLOT_HEAP_OVERHEAD) & ~3);
     numSlots = n;
     mem = 0;
     numInUse = 0;

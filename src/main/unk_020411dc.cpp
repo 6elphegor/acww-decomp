@@ -1,3 +1,5 @@
+#include "uptr.h"
+#include "gfx/HBlankTask.h"
 #include "types.h"
 #include "snd/BgmSceneFade.h"
 #include "nitro/io_access.h"
@@ -44,7 +46,7 @@ u8 sIrisWipeFlags;
 u8 data_021c3cb8;
 u16 *sIrisWipeActiveTable;
 ScreenTransition gScreenTransition;
-u8 sIrisWipeHBlankTask[0x1c];
+u8 sIrisWipeHBlankTask[HOST_SIZED(0x1c, HBlankTask)] HOST_ALIGN8;  // HBlankTask
 u16 sIrisWipeTableA[0x60];
 u16 sIrisWipeTableB[0x60];
 

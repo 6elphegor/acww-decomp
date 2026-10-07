@@ -79,7 +79,11 @@ BOOL FieldGroundBackdrop::followCamera() {
         v.z = gCameraLookAt.z;
         Mtx43_SetTranslate(data_021f47e0, v.x - data_020c8cb4, 0, 0);
         Mtx43_RotateX(data_021f47e0, Camera_getEyeCurveAngle(cam));
+#ifdef HOST
+        ((Model *)&model)->mtx = *(Mtx43 *)data_021f47e0;  // (Model::mtx by name: it moves on 64-bit hosts)
+#else
         *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;
+#endif
         return TRUE;
     }
     return FALSE;

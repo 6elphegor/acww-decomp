@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -3581,7 +3582,7 @@ extern "C" void Hopper_Update(Rec *o) {
     case 0x13:
         Cricket_Chirp(o);
         if ((((u32)o->model.curFrame << 4) >> 16) != 0) {
-            AnimModel_setFrame((u8 *)o + 0x50, 0);
+            AnimModel_setFrame(HOST_AT(o, 0x50, model, 0), 0);
         }
         if (Hopper_CheckObstacle(o, p) == 0) {
             Hopper_Rest(o, p);
@@ -3712,7 +3713,7 @@ extern "C" void Hopper_Jump(Rec *o) {
         dst->z = src->z;
     }
     if (o->unk_24c) {
-        if (!Math_ApproachS32((u8 *)src + 4, 0x1400, q, 0x1000, 0xcd)) {
+        if (!Math_ApproachS32(HOST_AT(src, 4, y, 0), 0x1400, q, 0x1000, 0xcd)) {
             o->unk_24c = 0;
         }
     } else {
@@ -3735,10 +3736,10 @@ extern "C" void Hopper_Jump(Rec *o) {
                 v += Ground_GetDefaultY(0);
             }
         }
-        if (!Math_ApproachS32((u8 *)src + 4, v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
+        if (!Math_ApproachS32(HOST_AT(src, 4, y, 0), v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
             o->auxTimer = (Random_GlobalBelow(9) + 2) * 0x14;
             o->state = 0x13;
-            AnimModel_setFrame((u8 *)o + 0x50, 0);
+            AnimModel_setFrame(HOST_AT(o, 0x50, model, 0), 0);
             if (v < 0) {
                 Insect_SplashIfWater(o);
                 o->stateTimer = 0;
@@ -3838,7 +3839,7 @@ extern "C" void Cricket_Chirp(Rec *o) {
     case 0x1b:
     case 0x1c:
     case 0x1d:
-        if (*(u8 *)((u8 *)o + 0x254) < 5) {
+        if (*(u8 *)(HOST_AT(o, 0x254, alarm, 0)) < 5) {
             Insect_PlaySe(o, 0, 1);
         }
         break;
@@ -6122,9 +6123,9 @@ extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
         Insect_EscapeRun(self, pp);
         u32 m = (((u32)self->model.curFrame << 4) >> 16);
         if (m == 0) {
-            AnimModel_setFrame((u8 *)self + 0x50, 1);
+            AnimModel_setFrame(HOST_AT(self, 0x50, model, 0), 1);
         } else if (m == 1) {
-            AnimModel_setFrame((u8 *)self + 0x50, 2);
+            AnimModel_setFrame(HOST_AT(self, 0x50, model, 0), 2);
         }
     }
 }
@@ -9841,7 +9842,7 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
         pos.x = m.m[9];
         pos.y = m.m[10];
         pos.z = m.m[11];
-        pb = (u8 *)o + 0x22c;
+        pb = HOST_AT(o, 0x22c, effectHandle, 0);
         s32 *h = (s32 *)pb;
         m.m[11] = 0;
         m.m[10] = 0;

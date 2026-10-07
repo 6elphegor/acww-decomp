@@ -1,3 +1,5 @@
+#include "snd/SndSeEmitter.h"
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -26,7 +28,7 @@ struct HandOverItemAct {
 class SndSeEmitterView {
 public:
     ~SndSeEmitterView();
-    u8 unk_00[0x40];
+    u8 unk_00[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // (the emitter's real size on 64-bit hosts)
 };
 
 extern "C" {

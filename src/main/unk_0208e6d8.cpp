@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -421,3 +422,7 @@ BOOL TransitionCommIconProc::onDraw() {
 
 TransitionCommIcon sTransitionCommIcon;
 ProcProfile sTransitionCommIconProfile = {(void *(*)())TransitionCommIconProc_Create, 0xcc, 0xc8};
+
+#ifdef HOST64
+static_assert(sizeof(TalkBusyIcon) == 40, "TalkFrame::busyIcon in src/main/unk_02065e88.cpp");
+#endif

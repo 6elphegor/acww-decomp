@@ -382,8 +382,8 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
     Mtx43_RotateX(&m, ang);
     Quat_ToMtx43(&o->rotationQuat, &m2);
     MTX_Concat43(&m2, &m, &m);
-    *(Blk *)((u8 *)o + 0x194) = m;
-    *(Blk *)((u8 *)o + 0x230) = m;
+    *(Blk *)(HOST_AT(o, 0x194, ballModel.mtx.m[0], 0)) = m;
+    *(Blk *)(HOST_AT(o, 0x230, faceModel.mtx.m[0], 0)) = m;
 }
 
 extern "C" void Snowball_UpdateCarry(Obj *o)

@@ -204,6 +204,37 @@ public:
     void createMinutesLabel();
     void createLabels();
 
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in HudCountdown)
+    uptr unk_00[0x6];  // DS +0x0 [0x24] (pointers)
+    TextLabel * minutesLabel;  // DS +0x24
+    TextLabel * secondsLabel;  // DS +0x28
+    TextLabel * countALabel;  // DS +0x2c
+    TextLabel * countBLabel;  // DS +0x30
+    uptr minutesText[0x5];  // DS +0x34 [0x18] (pointers)
+    uptr secondsText[0x5];  // DS +0x4c [0x18] (pointers)
+    uptr countAText[0x5];  // DS +0x64 [0x18] (pointers)
+    uptr countBText[0x5];  // DS +0x7c [0x18] (pointers)
+    u8 minutesDirty;  // DS +0x94
+    u8 secondsDirty;  // DS +0x95
+    u8 countADirty;  // DS +0x96
+    u8 countBDirty;  // DS +0x97
+    u8 showRequested;  // DS +0x98
+    u8 altLayout;  // DS +0x99
+    u8 unk_9a[0x2];  // DS +0x9a [0x2]
+    s32 countA;  // DS +0x9c
+    s32 countB;  // DS +0xa0
+    s32 durationKind;  // DS +0xa4
+    u8 endTime[0x8];  // DS +0xa8 [0x8]
+    u8 remaining[0x8];  // DS +0xb0 [0x8]
+    s32 finishTimer;  // DS +0xb8
+    s32 slideY;  // DS +0xbc
+    s32 slideTarget;  // DS +0xc0
+    s32 slideSpeed;  // DS +0xc4
+    s32 slideDelay;  // DS +0xc8
+    u32 lastTickTime;  // DS +0xcc
+    u32 lastTickTimeHi;  // DS +0xd0
+#else
     /* 0x00 */ u32 unk_00[9];
     /* 0x24 */ TextLabel *minutesLabel;
     /* 0x28 */ TextLabel *secondsLabel;
@@ -232,12 +263,25 @@ public:
     /* 0xc8 */ s32 slideDelay;
     /* 0xcc */ u32 lastTickTime;
     /* 0xd0 */ u32 lastTickTimeHi;
+#endif
 };
 
 
 // Methods that symbols.txt files under HudCameraGridStates (same object layout as HudCameraGrid)
 class HudCameraGridStates {
 public:
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in HudCameraGrid)
+    uptr unk_00[0x2];  // DS +0x0 [0xc] (pointers)
+    SpriteAnim cellAnims[0x9];  // DS +0xc
+    s32 state;  // DS +0xc0
+    s32 cell;  // DS +0xc4
+    s32 cellX;  // DS +0xc8
+    s32 cellY;  // DS +0xcc
+    s32 activeCell;  // DS +0xd0
+    u8 visible;  // DS +0xd4
+    u8 hpad_0[0x3];
+#else
     u32 unk_00[3];
     SpriteAnim cellAnims[9];
     s32 state;
@@ -246,6 +290,7 @@ public:
     s32 cellY;
     s32 activeCell;
     u8 visible;
+#endif
 
     void updateClosing();
     void enterClosing();
@@ -279,6 +324,39 @@ public:
     void refreshMonth();
     void refreshLabels();
 
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in HudClock)
+    u8 unk_00[0x30];  // DS +0x0 [0x28]
+    TextLabel * monthLabel;  // DS +0x28
+    TextLabel * dayLabel;  // DS +0x2c
+    TextLabel * weekdayLabel;  // DS +0x30
+    TextLabel * amPmLabel;  // DS +0x34
+    TextLabel * hourLabel;  // DS +0x38
+    TextLabel * minuteLabel;  // DS +0x3c
+    TextLabel * colonLabel;  // DS +0x40
+    s32 colonTimer;  // DS +0x44
+    u8 monthDirty;  // DS +0x48
+    u8 dayDirty;  // DS +0x49
+    u8 weekdayDirty;  // DS +0x4a
+    u8 amPmDirty;  // DS +0x4b
+    u8 hourDirty;  // DS +0x4c
+    u8 minuteDirty;  // DS +0x4d
+    u8 hpad_0[0x2];
+    s32 slideY;  // DS +0x50
+    s32 slideTarget;  // DS +0x54
+    s32 slideSpeed;  // DS +0x58
+    s32 slideDelay;  // DS +0x5c
+    u8 day;  // DS +0x60
+    u8 month;  // DS +0x61
+    u8 minute;  // DS +0x62
+    u8 hour;  // DS +0x63
+    s32 weekday;  // DS +0x64
+    u8 hpad_1[0x4];
+    MsgString3 monthText;  // DS +0x68
+    MsgString3 dayText;  // DS +0x80
+    MsgString3 hourText;  // DS +0x98
+    MsgString3 minuteText;  // DS +0xb0
+#else
     /* 0x00 */ u8 unk_00[0x28];
     /* 0x28 */ TextLabel *monthLabel;
     /* 0x2c */ TextLabel *dayLabel;
@@ -307,6 +385,7 @@ public:
     /* 0x80 */ MsgString3 dayText;
     /* 0x98 */ MsgString3 hourText;
     /* 0xb0 */ MsgString3 minuteText;
+#endif
 };
 
 
@@ -2396,3 +2475,76 @@ const s32 kNameLabelBalloonKindAnims[5] = {10, 11, 12, 13, 0x28};
 ProcProfile sHudProcProfile = {(void *(*)())HudProc_Create, 0xca, 0x8e};
 
 HudController gHud;
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(HudClockLabels, unk_00) == 0x0, "HudClockLabels.unk_00");
+static_assert(__builtin_offsetof(HudClockLabels, monthLabel) == 0x30, "HudClockLabels.monthLabel");
+static_assert(__builtin_offsetof(HudClockLabels, dayLabel) == 0x38, "HudClockLabels.dayLabel");
+static_assert(__builtin_offsetof(HudClockLabels, weekdayLabel) == 0x40, "HudClockLabels.weekdayLabel");
+static_assert(__builtin_offsetof(HudClockLabels, amPmLabel) == 0x48, "HudClockLabels.amPmLabel");
+static_assert(__builtin_offsetof(HudClockLabels, hourLabel) == 0x50, "HudClockLabels.hourLabel");
+static_assert(__builtin_offsetof(HudClockLabels, minuteLabel) == 0x58, "HudClockLabels.minuteLabel");
+static_assert(__builtin_offsetof(HudClockLabels, colonLabel) == 0x60, "HudClockLabels.colonLabel");
+static_assert(__builtin_offsetof(HudClockLabels, colonTimer) == 0x68, "HudClockLabels.colonTimer");
+static_assert(__builtin_offsetof(HudClockLabels, monthDirty) == 0x6c, "HudClockLabels.monthDirty");
+static_assert(__builtin_offsetof(HudClockLabels, dayDirty) == 0x6d, "HudClockLabels.dayDirty");
+static_assert(__builtin_offsetof(HudClockLabels, weekdayDirty) == 0x6e, "HudClockLabels.weekdayDirty");
+static_assert(__builtin_offsetof(HudClockLabels, amPmDirty) == 0x6f, "HudClockLabels.amPmDirty");
+static_assert(__builtin_offsetof(HudClockLabels, hourDirty) == 0x70, "HudClockLabels.hourDirty");
+static_assert(__builtin_offsetof(HudClockLabels, minuteDirty) == 0x71, "HudClockLabels.minuteDirty");
+static_assert(__builtin_offsetof(HudClockLabels, slideY) == 0x74, "HudClockLabels.slideY");
+static_assert(__builtin_offsetof(HudClockLabels, slideTarget) == 0x78, "HudClockLabels.slideTarget");
+static_assert(__builtin_offsetof(HudClockLabels, slideSpeed) == 0x7c, "HudClockLabels.slideSpeed");
+static_assert(__builtin_offsetof(HudClockLabels, slideDelay) == 0x80, "HudClockLabels.slideDelay");
+static_assert(__builtin_offsetof(HudClockLabels, day) == 0x84, "HudClockLabels.day");
+static_assert(__builtin_offsetof(HudClockLabels, month) == 0x85, "HudClockLabels.month");
+static_assert(__builtin_offsetof(HudClockLabels, minute) == 0x86, "HudClockLabels.minute");
+static_assert(__builtin_offsetof(HudClockLabels, hour) == 0x87, "HudClockLabels.hour");
+static_assert(__builtin_offsetof(HudClockLabels, weekday) == 0x88, "HudClockLabels.weekday");
+static_assert(__builtin_offsetof(HudClockLabels, monthText) == 0x90, "HudClockLabels.monthText");
+static_assert(__builtin_offsetof(HudClockLabels, dayText) == 0xb8, "HudClockLabels.dayText");
+static_assert(__builtin_offsetof(HudClockLabels, hourText) == 0xe0, "HudClockLabels.hourText");
+static_assert(__builtin_offsetof(HudClockLabels, minuteText) == 0x108, "HudClockLabels.minuteText");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(HudCameraGridStates, unk_00) == 0x0, "HudCameraGridStates.unk_00");
+static_assert(__builtin_offsetof(HudCameraGridStates, cellAnims) == 0x10, "HudCameraGridStates.cellAnims");
+static_assert(__builtin_offsetof(HudCameraGridStates, state) == 0xe8, "HudCameraGridStates.state");
+static_assert(__builtin_offsetof(HudCameraGridStates, cell) == 0xec, "HudCameraGridStates.cell");
+static_assert(__builtin_offsetof(HudCameraGridStates, cellX) == 0xf0, "HudCameraGridStates.cellX");
+static_assert(__builtin_offsetof(HudCameraGridStates, cellY) == 0xf4, "HudCameraGridStates.cellY");
+static_assert(__builtin_offsetof(HudCameraGridStates, activeCell) == 0xf8, "HudCameraGridStates.activeCell");
+static_assert(__builtin_offsetof(HudCameraGridStates, visible) == 0xfc, "HudCameraGridStates.visible");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(HudCountdownLabels, unk_00) == 0x0, "HudCountdownLabels.unk_00");
+static_assert(__builtin_offsetof(HudCountdownLabels, minutesLabel) == 0x30, "HudCountdownLabels.minutesLabel");
+static_assert(__builtin_offsetof(HudCountdownLabels, secondsLabel) == 0x38, "HudCountdownLabels.secondsLabel");
+static_assert(__builtin_offsetof(HudCountdownLabels, countALabel) == 0x40, "HudCountdownLabels.countALabel");
+static_assert(__builtin_offsetof(HudCountdownLabels, countBLabel) == 0x48, "HudCountdownLabels.countBLabel");
+static_assert(__builtin_offsetof(HudCountdownLabels, minutesText) == 0x50, "HudCountdownLabels.minutesText");
+static_assert(__builtin_offsetof(HudCountdownLabels, secondsText) == 0x78, "HudCountdownLabels.secondsText");
+static_assert(__builtin_offsetof(HudCountdownLabels, countAText) == 0xa0, "HudCountdownLabels.countAText");
+static_assert(__builtin_offsetof(HudCountdownLabels, countBText) == 0xc8, "HudCountdownLabels.countBText");
+static_assert(__builtin_offsetof(HudCountdownLabels, minutesDirty) == 0xf0, "HudCountdownLabels.minutesDirty");
+static_assert(__builtin_offsetof(HudCountdownLabels, secondsDirty) == 0xf1, "HudCountdownLabels.secondsDirty");
+static_assert(__builtin_offsetof(HudCountdownLabels, countADirty) == 0xf2, "HudCountdownLabels.countADirty");
+static_assert(__builtin_offsetof(HudCountdownLabels, countBDirty) == 0xf3, "HudCountdownLabels.countBDirty");
+static_assert(__builtin_offsetof(HudCountdownLabels, showRequested) == 0xf4, "HudCountdownLabels.showRequested");
+static_assert(__builtin_offsetof(HudCountdownLabels, altLayout) == 0xf5, "HudCountdownLabels.altLayout");
+static_assert(__builtin_offsetof(HudCountdownLabels, unk_9a) == 0xf6, "HudCountdownLabels.unk_9a");
+static_assert(__builtin_offsetof(HudCountdownLabels, countA) == 0xf8, "HudCountdownLabels.countA");
+static_assert(__builtin_offsetof(HudCountdownLabels, countB) == 0xfc, "HudCountdownLabels.countB");
+static_assert(__builtin_offsetof(HudCountdownLabels, durationKind) == 0x100, "HudCountdownLabels.durationKind");
+static_assert(__builtin_offsetof(HudCountdownLabels, endTime) == 0x104, "HudCountdownLabels.endTime");
+static_assert(__builtin_offsetof(HudCountdownLabels, remaining) == 0x10c, "HudCountdownLabels.remaining");
+static_assert(__builtin_offsetof(HudCountdownLabels, finishTimer) == 0x114, "HudCountdownLabels.finishTimer");
+static_assert(__builtin_offsetof(HudCountdownLabels, slideY) == 0x118, "HudCountdownLabels.slideY");
+static_assert(__builtin_offsetof(HudCountdownLabels, slideTarget) == 0x11c, "HudCountdownLabels.slideTarget");
+static_assert(__builtin_offsetof(HudCountdownLabels, slideSpeed) == 0x120, "HudCountdownLabels.slideSpeed");
+static_assert(__builtin_offsetof(HudCountdownLabels, slideDelay) == 0x124, "HudCountdownLabels.slideDelay");
+static_assert(__builtin_offsetof(HudCountdownLabels, lastTickTime) == 0x128, "HudCountdownLabels.lastTickTime");
+static_assert(__builtin_offsetof(HudCountdownLabels, lastTickTimeHi) == 0x12c, "HudCountdownLabels.lastTickTimeHi");
+#endif

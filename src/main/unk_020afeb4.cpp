@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "talk/ConstellationEncodedString16.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -29,7 +30,7 @@ extern Base data_021ec31c;
 u32 sConstellationColumns[2];  // .bss, autoload_3 0x021ee27c
 extern u8 sConstellationLineCells[];
 extern u32 OVERLAY_127_ID[];
-extern u32 sStarTwinklePalettePaths[];
+extern uptr sStarTwinklePalettePaths[];  // (path pointers)
 extern u8 data_021e7f8c[];
 
 // external

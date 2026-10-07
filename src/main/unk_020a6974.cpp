@@ -1961,7 +1961,11 @@ extern "C" u32 Msg_FindTag(u32 a, s32 b, s32 c) {
     gMsgQuery.findId = c;
     gMsgQuery.begin((u8 *)a);
     gMsgQuery.run(FALSE);
+#ifdef HOST
+    if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
+#else
     if (((Flag18 *)((u8 *)&gMsgQuery + 0x40))->flag) {
+#endif
         return (u32)gMsgQuery.tag.raw;
     }
     return 0;
@@ -1973,7 +1977,11 @@ extern "C" u32 Msg_GetCharAt(u32 a, u32 b) {
     gMsgQuery.targetIndex = b;
     gMsgQuery.begin((u8 *)a);
     gMsgQuery.run(FALSE);
+#ifdef HOST
+    if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
+#else
     if (((Flag18 *)((u8 *)&gMsgQuery + 0x40))->flag) {
+#endif
         return gMsgQuery.curChar;
     }
     return 0;
@@ -1993,7 +2001,11 @@ extern "C" u32 Msg_CountChars(u32 a) {
     gMsgQuery.mode = 3;
     gMsgQuery.begin((u8 *)a);
     gMsgQuery.run(FALSE);
+#ifdef HOST
+    if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
+#else
     if (((Flag18 *)((u8 *)&gMsgQuery + 0x40))->flag) {
+#endif
         return gMsgQuery.charCount;
     }
     return 0;
@@ -2005,7 +2017,11 @@ extern "C" u32 Msg_SkipLines(u32 a, u32 b) {
     gMsgQuery.targetLines = b;
     gMsgQuery.begin((u8 *)a);
     gMsgQuery.run(FALSE);
+#ifdef HOST
+    if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
+#else
     if (((Flag18 *)((u8 *)&gMsgQuery + 0x40))->flag) {
+#endif
         return (u32)gMsgQuery.cursor;
     }
     return 0;

@@ -17,15 +17,47 @@ struct ItemU;
 // manager, view used by the drawers (texture table at +0x20)
 struct Pm {
     /* 0x00 */ void *(*alloc)(u32);
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealManager)
+    u8 p4[0x38];  // DS +0x4 [0x1c]
+    TexEnt * tex;  // DS +0x20
+    u16 h24;  // DS +0x24
+    u16 h26;  // DS +0x26
+#else
     /* 0x04 */ u8 p4[0x1c];
     /* 0x20 */ TexEnt *tex;
     /* 0x24 */ u16 h24;
     /* 0x26 */ u16 h26;
+#endif
 };
 
 // manager, view used by the manager constructor
 struct PmNew {
     /* 0x00 */ void *(*alloc)(u32);
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealManager)
+    uptr w4;  // DS +0x4
+    u32 w8;  // DS +0x8
+    u8 hpad_0[0x4];
+    uptr w12;  // DS +0xc
+    u32 w16;  // DS +0x10
+    u8 hpad_1[0x4];
+    uptr w20;  // DS +0x14
+    u32 w24;  // DS +0x18
+    u8 hpad_2[0x4];
+    uptr w28;  // DS +0x1c
+    uptr w32;  // DS +0x20
+    u16 h36;  // DS +0x24
+    u16 h38;  // DS +0x26
+    u16 h40;  // DS +0x28
+    u16 h42;  // DS +0x2a
+    u32 b0 : 6;
+    u32 b6 : 6;
+    u32 b12 : 6;
+    u32 b18 : 6;
+    u32 pad24 : 8;
+    u32 w48;  // DS +0x30
+#else
     /* 0x04 */ u32 w4;
     /* 0x08 */ u32 w8;
     /* 0x0c */ u32 w12;
@@ -44,10 +76,23 @@ struct PmNew {
     u32 b18 : 6;
     u32 pad24 : 8;
     /* 0x30 */ u32 w48;
+#endif
 };
 
 // resolved resource unit: pointers to the header and the optional animation blocks
 struct RU {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    HdrP * p0;  // DS +0x0
+    B4 * p4;  // DS +0x4
+    B8 * p8;  // DS +0x8
+    B12 * pc;  // DS +0xc
+    B10 * p10;  // DS +0x10
+    B14 * p14;  // DS +0x14
+    ItemU * p18;  // DS +0x18
+    u16 h1c;  // DS +0x1c
+    u8 hpad_0[0x6];
+#else
     /* 0x00 */ HdrP *p0;
     /* 0x04 */ B4 *p4;
     /* 0x08 */ B8 *p8;
@@ -56,6 +101,7 @@ struct RU {
     /* 0x14 */ B14 *p14;
     /* 0x18 */ ItemU *p18;
     /* 0x1c */ u16 h1c;
+#endif
 };
 
 #endif // GFX_SPLMANAGER_H

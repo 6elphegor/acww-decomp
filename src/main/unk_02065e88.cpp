@@ -496,8 +496,14 @@ public:
     /* 0x00 */ u16 *screenData;
     /* 0x04 */ void *paletteData;
     /* 0x08 */ void *charData;
+#ifdef HOST64
+    // (the objects' 64-bit sizes: TalkArrow, TalkBusyIcon - src/main/unk_0208e6d8.cpp checks the latter)
+    u8 arrow[sizeof(TalkArrow)] __attribute__((aligned(8)));
+    u8 busyIcon[40] __attribute__((aligned(8)));
+#else
     /* 0x0c */ u8 arrow[0x44];
     /* 0x50 */ u8 busyIcon[0x24];
+#endif
     /* 0x74 */ u32 scrollX;
     /* 0x78 */ u32 scrollY;
     /* 0x7c */ u32 busyIconTimer;
@@ -596,80 +602,6 @@ struct TalkWindow {
 
     TalkWindow();
 };
-#ifdef HOST64
-// TalkWindowState (include/talk/TalkWindowState.h) is TalkWindow
-static_assert(sizeof(TalkWindowState) == sizeof(TalkWindow), "");
-static_assert(__builtin_offsetof(TalkWindowState, index) == 0x0, "");
-static_assert(__builtin_offsetof(TalkWindowState, state) == 0x4, "");
-static_assert(__builtin_offsetof(TalkWindowState, nextState) == 0x8, "");
-static_assert(__builtin_offsetof(TalkWindowState, stateStep) == 0xc, "");
-static_assert(__builtin_offsetof(TalkWindowState, unk_10) == 0x10, "");
-static_assert(__builtin_offsetof(TalkWindowState, openMode) == 0x14, "");
-static_assert(__builtin_offsetof(TalkWindowState, choicePending) == 0x18, "");
-static_assert(__builtin_offsetof(TalkWindowState, pad_19) == 0x19, "");
-static_assert(__builtin_offsetof(TalkWindowState, frame) == 0x20, "");
-static_assert(__builtin_offsetof(TalkWindowState, scrollY) == 0xb0, "");
-static_assert(__builtin_offsetof(TalkWindowState, shakeAngle) == 0xb4, "");
-static_assert(__builtin_offsetof(TalkWindowState, pad_a2) == 0xb6, "");
-static_assert(__builtin_offsetof(TalkWindowState, shakeAmplitude) == 0xb8, "");
-static_assert(__builtin_offsetof(TalkWindowState, shakeDecay) == 0xbc, "");
-static_assert(__builtin_offsetof(TalkWindowState, shakeScaleX) == 0xc0, "");
-static_assert(__builtin_offsetof(TalkWindowState, shakeScaleY) == 0xc4, "");
-static_assert(__builtin_offsetof(TalkWindowState, choiceMenu) == 0xc8, "");
-static_assert(__builtin_offsetof(TalkWindowState, choiceList) == 0x3f8, "");
-static_assert(__builtin_offsetof(TalkWindowState, textBox) == 0x6f8, "");
-static_assert(__builtin_offsetof(TalkWindowState, msgBuffer) == 0xbd8, "");
-static_assert(__builtin_offsetof(TalkWindowState, parser) == 0x1480, "");
-static_assert(__builtin_offsetof(TalkWindowState, parserPrintStatus) == 0x14c4, "");
-static_assert(__builtin_offsetof(TalkWindowState, pad_12f4) == 0x14c8, "");
-static_assert(__builtin_offsetof(TalkWindowState, parserChoiceDeferred) == 0x15a8, "");
-static_assert(__builtin_offsetof(TalkWindowState, pad_1399) == 0x15a9, "");
-static_assert(__builtin_offsetof(TalkWindowState, runner) == 0x15c0, "");
-static_assert(__builtin_offsetof(TalkWindowState, request) == 0x15d8, "");
-static_assert(__builtin_offsetof(TalkWindowState, msgAttr) == 0x15e0, "");
-static_assert(__builtin_offsetof(TalkWindowState, slots) == 0x15f0, "");
-static_assert(__builtin_offsetof(TalkWindowState, namedSlots) == 0x18b0, "");
-static_assert(__builtin_offsetof(TalkWindowState, namedSlotColors) == 0x19b0, "");
-static_assert(__builtin_offsetof(TalkWindowState, voice) == 0x19d0, "");
-static_assert(__builtin_offsetof(TalkWindowState, year) == 0x1a08, "");
-static_assert(__builtin_offsetof(TalkWindowState, day) == 0x1a0c, "");
-static_assert(__builtin_offsetof(TalkWindowState, month) == 0x1a0d, "");
-static_assert(__builtin_offsetof(TalkWindowState, minute) == 0x1a0e, "");
-static_assert(__builtin_offsetof(TalkWindowState, hour) == 0x1a0f, "");
-static_assert(__builtin_offsetof(TalkWindowState, weekday) == 0x1a10, "");
-static_assert(__builtin_offsetof(TalkWindowState, second) == 0x1a14, "");
-static_assert(__builtin_offsetof(TalkWindowState, timeOfDay) == 0x1a18, "");
-static_assert(__builtin_offsetof(TalkWindowState, yearText) == 0x1a20, "");
-static_assert(__builtin_offsetof(TalkWindowState, monthText) == 0x1a58, "");
-static_assert(__builtin_offsetof(TalkWindowState, dayText) == 0x1a98, "");
-static_assert(__builtin_offsetof(TalkWindowState, weekdayText) == 0x1ad0, "");
-static_assert(__builtin_offsetof(TalkWindowState, hourText) == 0x1b10, "");
-static_assert(__builtin_offsetof(TalkWindowState, minuteText) == 0x1b48, "");
-static_assert(__builtin_offsetof(TalkWindowState, secondText) == 0x1b80, "");
-static_assert(__builtin_offsetof(TalkWindowState, catchphrase) == 0x1bb8, "");
-static_assert(__builtin_offsetof(TalkWindowState, townName) == 0x1be8, "");
-static_assert(__builtin_offsetof(TalkWindowState, playerName) == 0x1c10, "");
-static_assert(__builtin_offsetof(TalkWindowState, friendName) == 0x1c38, "");
-static_assert(__builtin_offsetof(TalkWindowState, enemyName) == 0x1c60, "");
-static_assert(__builtin_offsetof(TalkWindowState, randomVillagerName) == 0x1c88, "");
-static_assert(__builtin_offsetof(TalkWindowState, otherResidentName) == 0x1cb0, "");
-static_assert(__builtin_offsetof(TalkWindowState, trend) == 0x1cd8, "");
-static_assert(__builtin_offsetof(TalkWindowState, impression) == 0x1d18, "");
-static_assert(__builtin_offsetof(TalkWindowState, nickname) == 0x1d58, "");
-static_assert(__builtin_offsetof(TalkWindowState, compliment) == 0x1d80, "");
-static_assert(__builtin_offsetof(TalkWindowState, greeting) == 0x1db0, "");
-static_assert(__builtin_offsetof(TalkWindowState, nextMsgIndex) == 0x1de3, "");
-static_assert(__builtin_offsetof(TalkWindowState, nextFileName) == 0x1de4, "");
-static_assert(__builtin_offsetof(TalkWindowState, advancePending) == 0x1dfe, "");
-static_assert(__builtin_offsetof(TalkWindowState, advanceLocked) == 0x1dff, "");
-static_assert(__builtin_offsetof(TalkWindowState, pad_1a14) == 0x1e00, "");
-static_assert(__builtin_offsetof(TalkWindowState, choiceNotifyPending) == 0x1e02, "");
-static_assert(__builtin_offsetof(TalkWindowState, voicePlaying) == 0x1e03, "");
-static_assert(__builtin_offsetof(TalkWindowState, inputDisabled) == 0x1e04, "");
-static_assert(__builtin_offsetof(TalkWindowState, noOpenSe) == 0x1e05, "");
-static_assert(__builtin_offsetof(TalkWindowState, silent) == 0x1e06, "");
-static_assert(__builtin_offsetof(TalkWindowState, pad_1a1b) == 0x1e07, "");
-#endif
 
 
 
@@ -700,10 +632,21 @@ public:
 
 class TalkFrameView {
 public:
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in TalkFrame)
+    u8 pad_00[0x18];  // DS +0x0 [0xc]
+    TalkArrow arrow;  // DS +0xc
+    u8 pad_50[0x28];  // DS +0x50 [0x24]
+    s32 scrollX;  // DS +0x74
+    s32 scrollY;  // DS +0x78
+    s32 busyIconTimer;  // DS +0x7c
+    u8 hpad_0[0x4];
+#else
     u8 pad_00[0x0c];
     TalkArrow arrow;
     u8 pad_50[0x74 - 0x50];
     s32 scrollX, scrollY, busyIconTimer;
+#endif
     void drawBusyIcon();
     void updateBusyIcon();
     void hideBusyIcon();
@@ -5019,3 +4962,86 @@ void TalkMsgRequest::detachWindow() {
     using namespace n1; window = 0; }
 #undef unk_04
 #undef data_020ddd68
+
+#ifdef HOST64
+// TalkWindowState (include/talk/TalkWindowState.h) views TalkWindow
+static_assert(__builtin_offsetof(TalkWindowState, index) == 0x0, "TalkWindowState.index");
+static_assert(__builtin_offsetof(TalkWindowState, state) == 0x4, "TalkWindowState.state");
+static_assert(__builtin_offsetof(TalkWindowState, nextState) == 0x8, "TalkWindowState.nextState");
+static_assert(__builtin_offsetof(TalkWindowState, stateStep) == 0xc, "TalkWindowState.stateStep");
+static_assert(__builtin_offsetof(TalkWindowState, unk_10) == 0x10, "TalkWindowState.unk_10");
+static_assert(__builtin_offsetof(TalkWindowState, openMode) == 0x14, "TalkWindowState.openMode");
+static_assert(__builtin_offsetof(TalkWindowState, choicePending) == 0x18, "TalkWindowState.choicePending");
+static_assert(__builtin_offsetof(TalkWindowState, pad_19) == 0x19, "TalkWindowState.pad_19");
+static_assert(__builtin_offsetof(TalkWindowState, frame) == 0x20, "TalkWindowState.frame");
+static_assert(__builtin_offsetof(TalkWindowState, scrollY) == 0xc0, "TalkWindowState.scrollY");
+static_assert(__builtin_offsetof(TalkWindowState, shakeAngle) == 0xc4, "TalkWindowState.shakeAngle");
+static_assert(__builtin_offsetof(TalkWindowState, pad_a2) == 0xc6, "TalkWindowState.pad_a2");
+static_assert(__builtin_offsetof(TalkWindowState, shakeAmplitude) == 0xc8, "TalkWindowState.shakeAmplitude");
+static_assert(__builtin_offsetof(TalkWindowState, shakeDecay) == 0xcc, "TalkWindowState.shakeDecay");
+static_assert(__builtin_offsetof(TalkWindowState, shakeScaleX) == 0xd0, "TalkWindowState.shakeScaleX");
+static_assert(__builtin_offsetof(TalkWindowState, shakeScaleY) == 0xd4, "TalkWindowState.shakeScaleY");
+static_assert(__builtin_offsetof(TalkWindowState, choiceMenu) == 0xd8, "TalkWindowState.choiceMenu");
+static_assert(__builtin_offsetof(TalkWindowState, choiceList) == 0x408, "TalkWindowState.choiceList");
+static_assert(__builtin_offsetof(TalkWindowState, textBox) == 0x708, "TalkWindowState.textBox");
+static_assert(__builtin_offsetof(TalkWindowState, msgBuffer) == 0xbe8, "TalkWindowState.msgBuffer");
+static_assert(__builtin_offsetof(TalkWindowState, parser) == 0x1490, "TalkWindowState.parser");
+static_assert(__builtin_offsetof(TalkWindowState, parserPrintStatus) == 0x14d4, "TalkWindowState.parserPrintStatus");
+static_assert(__builtin_offsetof(TalkWindowState, pad_12f4) == 0x14d8, "TalkWindowState.pad_12f4");
+static_assert(__builtin_offsetof(TalkWindowState, parserChoiceDeferred) == 0x15b8, "TalkWindowState.parserChoiceDeferred");
+static_assert(__builtin_offsetof(TalkWindowState, pad_1399) == 0x15b9, "TalkWindowState.pad_1399");
+static_assert(__builtin_offsetof(TalkWindowState, runner) == 0x15d0, "TalkWindowState.runner");
+static_assert(__builtin_offsetof(TalkWindowState, request) == 0x15e8, "TalkWindowState.request");
+static_assert(__builtin_offsetof(TalkWindowState, msgAttr) == 0x15f0, "TalkWindowState.msgAttr");
+static_assert(__builtin_offsetof(TalkWindowState, slots) == 0x1600, "TalkWindowState.slots");
+static_assert(__builtin_offsetof(TalkWindowState, namedSlots) == 0x18c0, "TalkWindowState.namedSlots");
+static_assert(__builtin_offsetof(TalkWindowState, namedSlotColors) == 0x19c0, "TalkWindowState.namedSlotColors");
+static_assert(__builtin_offsetof(TalkWindowState, voice) == 0x19e0, "TalkWindowState.voice");
+static_assert(__builtin_offsetof(TalkWindowState, year) == 0x1a18, "TalkWindowState.year");
+static_assert(__builtin_offsetof(TalkWindowState, day) == 0x1a1c, "TalkWindowState.day");
+static_assert(__builtin_offsetof(TalkWindowState, month) == 0x1a1d, "TalkWindowState.month");
+static_assert(__builtin_offsetof(TalkWindowState, minute) == 0x1a1e, "TalkWindowState.minute");
+static_assert(__builtin_offsetof(TalkWindowState, hour) == 0x1a1f, "TalkWindowState.hour");
+static_assert(__builtin_offsetof(TalkWindowState, weekday) == 0x1a20, "TalkWindowState.weekday");
+static_assert(__builtin_offsetof(TalkWindowState, second) == 0x1a24, "TalkWindowState.second");
+static_assert(__builtin_offsetof(TalkWindowState, timeOfDay) == 0x1a28, "TalkWindowState.timeOfDay");
+static_assert(__builtin_offsetof(TalkWindowState, yearText) == 0x1a30, "TalkWindowState.yearText");
+static_assert(__builtin_offsetof(TalkWindowState, monthText) == 0x1a68, "TalkWindowState.monthText");
+static_assert(__builtin_offsetof(TalkWindowState, dayText) == 0x1aa8, "TalkWindowState.dayText");
+static_assert(__builtin_offsetof(TalkWindowState, weekdayText) == 0x1ae0, "TalkWindowState.weekdayText");
+static_assert(__builtin_offsetof(TalkWindowState, hourText) == 0x1b20, "TalkWindowState.hourText");
+static_assert(__builtin_offsetof(TalkWindowState, minuteText) == 0x1b58, "TalkWindowState.minuteText");
+static_assert(__builtin_offsetof(TalkWindowState, secondText) == 0x1b90, "TalkWindowState.secondText");
+static_assert(__builtin_offsetof(TalkWindowState, catchphrase) == 0x1bc8, "TalkWindowState.catchphrase");
+static_assert(__builtin_offsetof(TalkWindowState, townName) == 0x1bf8, "TalkWindowState.townName");
+static_assert(__builtin_offsetof(TalkWindowState, playerName) == 0x1c20, "TalkWindowState.playerName");
+static_assert(__builtin_offsetof(TalkWindowState, friendName) == 0x1c48, "TalkWindowState.friendName");
+static_assert(__builtin_offsetof(TalkWindowState, enemyName) == 0x1c70, "TalkWindowState.enemyName");
+static_assert(__builtin_offsetof(TalkWindowState, randomVillagerName) == 0x1c98, "TalkWindowState.randomVillagerName");
+static_assert(__builtin_offsetof(TalkWindowState, otherResidentName) == 0x1cc0, "TalkWindowState.otherResidentName");
+static_assert(__builtin_offsetof(TalkWindowState, trend) == 0x1ce8, "TalkWindowState.trend");
+static_assert(__builtin_offsetof(TalkWindowState, impression) == 0x1d28, "TalkWindowState.impression");
+static_assert(__builtin_offsetof(TalkWindowState, nickname) == 0x1d68, "TalkWindowState.nickname");
+static_assert(__builtin_offsetof(TalkWindowState, compliment) == 0x1d90, "TalkWindowState.compliment");
+static_assert(__builtin_offsetof(TalkWindowState, greeting) == 0x1dc0, "TalkWindowState.greeting");
+static_assert(__builtin_offsetof(TalkWindowState, nextMsgIndex) == 0x1df3, "TalkWindowState.nextMsgIndex");
+static_assert(__builtin_offsetof(TalkWindowState, nextFileName) == 0x1df4, "TalkWindowState.nextFileName");
+static_assert(__builtin_offsetof(TalkWindowState, advancePending) == 0x1e0e, "TalkWindowState.advancePending");
+static_assert(__builtin_offsetof(TalkWindowState, advanceLocked) == 0x1e0f, "TalkWindowState.advanceLocked");
+static_assert(__builtin_offsetof(TalkWindowState, pad_1a14) == 0x1e10, "TalkWindowState.pad_1a14");
+static_assert(__builtin_offsetof(TalkWindowState, choiceNotifyPending) == 0x1e12, "TalkWindowState.choiceNotifyPending");
+static_assert(__builtin_offsetof(TalkWindowState, voicePlaying) == 0x1e13, "TalkWindowState.voicePlaying");
+static_assert(__builtin_offsetof(TalkWindowState, inputDisabled) == 0x1e14, "TalkWindowState.inputDisabled");
+static_assert(__builtin_offsetof(TalkWindowState, noOpenSe) == 0x1e15, "TalkWindowState.noOpenSe");
+static_assert(__builtin_offsetof(TalkWindowState, silent) == 0x1e16, "TalkWindowState.silent");
+static_assert(__builtin_offsetof(TalkWindowState, pad_1a1b) == 0x1e17, "TalkWindowState.pad_1a1b");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(TalkFrameView, pad_00) == 0x0, "TalkFrameView.pad_00");
+static_assert(__builtin_offsetof(TalkFrameView, arrow) == 0x18, "TalkFrameView.arrow");
+static_assert(__builtin_offsetof(TalkFrameView, pad_50) == 0x68, "TalkFrameView.pad_50");
+static_assert(__builtin_offsetof(TalkFrameView, scrollX) == 0x90, "TalkFrameView.scrollX");
+static_assert(__builtin_offsetof(TalkFrameView, scrollY) == 0x94, "TalkFrameView.scrollY");
+static_assert(__builtin_offsetof(TalkFrameView, busyIconTimer) == 0x98, "TalkFrameView.busyIconTimer");
+#endif

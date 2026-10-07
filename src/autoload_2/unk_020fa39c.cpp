@@ -1,3 +1,4 @@
+#include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
 #include "gfx/SplManager.h"
@@ -17,9 +18,16 @@
 
 
 struct Res {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    HdrW * p0;  // DS +0x0
+    u8 p4[0x20];  // DS +0x4 [0x10]
+    Blk14 * p14;  // DS +0x14
+#else
     HdrW *p0;
     u8 p4[0x10];
     Blk14 *p14;
+#endif
 };
 
 

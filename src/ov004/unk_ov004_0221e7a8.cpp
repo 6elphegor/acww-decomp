@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "game/CollisionState.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
@@ -1666,7 +1667,7 @@ extern "C" void PlayerActor_SetupGetIntoBed(Obj *o, Msg *m) {
     t = Math_AngleToDir4(o->rotY);
     t = (t << 30) >> 16;
     x = pl->c;
-    z = *(s32 *)((u8 *)pl + 8);
+    z = *(s32 *)(HOST_AT(pl, 8, d, 0));
     if (k == 0) {
         h = (s16)(t + 0x4000);
     } else {
@@ -2285,7 +2286,7 @@ extern "C" void PlayerActor_SetupFtrGrabApproach(Obj *o, Obj *arg) {
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     s32 x = p->x;
     s32 z = p->y;
-    s16 h = *(s16 *)((u8 *)p + 8);
+    s16 h = *(s16 *)(HOST_AT(p, 8, z, 0));
     PlayerActor_FtrGrabApproachSetWork((Rec *)&o->actionWork, x, z, h);
     PlayerActor_FtrGrabApproachSetNetData(o->netData.bytes, x, z, h);
 }
@@ -3223,7 +3224,7 @@ extern "C" void PlayerActor_SetupSitDownFront(Obj *o, Obj *arg) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x21, 3, 0);
     _ZN11PlayerActor6playSeEj(o, 0x4c5);
     V3 *p = (V3 *)((u8 *)arg + 0xc);
-    h = *(s16 *)((u8 *)p + 8);
+    h = *(s16 *)(HOST_AT(p, 8, z, 0));
     s32 z = p->y;
     s32 y = *(volatile s32 *)&o->position.y;
     s32 x = *(s32 *)((u8 *)arg + 0xc);
@@ -3322,7 +3323,7 @@ extern "C" void PlayerActor_SetupSitDownSide2(Obj *o, Obj *arg) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x22, 0, 0);
     _ZN11PlayerActor6playSeEj(o, 0x4c5);
     V3 *p = (V3 *)((u8 *)arg + 0xc);
-    h = *(s16 *)((u8 *)p + 8);
+    h = *(s16 *)(HOST_AT(p, 8, z, 0));
     s32 z = p->y;
     s32 y = *(volatile s32 *)&o->position.y;
     s32 x = *(s32 *)((u8 *)arg + 0xc);
@@ -3421,7 +3422,7 @@ extern "C" void PlayerActor_SetupSitDownSide1(Obj *o, Obj *arg) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x23, 0, 0);
     _ZN11PlayerActor6playSeEj(o, 0x4c5);
     V3 *p = (V3 *)((u8 *)arg + 0xc);
-    h = *(s16 *)((u8 *)p + 8);
+    h = *(s16 *)(HOST_AT(p, 8, z, 0));
     s32 z = p->y;
     s32 y = *(volatile s32 *)&o->position.y;
     s32 x = *(s32 *)((u8 *)arg + 0xc);

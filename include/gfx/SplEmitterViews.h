@@ -120,12 +120,22 @@ struct H2 {
 };
 
 struct Em {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealEmitter)
+    u8 p0[0x10];  // DS +0x0 [0x8]
+    Node * l8;  // DS +0x8
+    u8 pc[0x8];  // DS +0xc [0x4]
+    Node * l16;  // DS +0x10
+    u8 p14[0x8];  // DS +0x14 [0x4]
+    Res * res;  // DS +0x18
+#else
     /* 0x00 */ u8 p0[8];
     /* 0x08 */ Node *l8;
     /* 0x0c */ u8 pc[4];
     /* 0x10 */ Node *l16;
     /* 0x14 */ u8 p14[4];
     /* 0x18 */ Res *res;
+#endif
 };
 
 // three u16 copied as one block
@@ -134,6 +144,50 @@ struct U16x3 {
 };
 
 struct EmI {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealEmitter)
+    sptr w0;  // DS +0x0
+    sptr w4;  // DS +0x4
+    sptr w8;  // DS +0x8
+    s32 w12;  // DS +0xc
+    u8 hpad_0[0x4];
+    sptr w16;  // DS +0x10
+    s32 w20;  // DS +0x14
+    u8 hpad_1[0x4];
+    ResB * res;  // DS +0x18
+    s32 w28;  // DS +0x1c
+    s32 w32;  // DS +0x20
+    s32 w36;  // DS +0x24
+    s32 w40;  // DS +0x28
+    s32 w44;  // DS +0x2c
+    s32 w48;  // DS +0x30
+    s32 w52;  // DS +0x34
+    u16 h56;  // DS +0x38
+    u16 h58;  // DS +0x3a
+    U16x3 h60;  // DS +0x3c
+    u16 h66;  // DS +0x42
+    u32 w68;  // DS +0x44
+    u32 w72;  // DS +0x48
+    u32 w76;  // DS +0x4c
+    u32 w80;  // DS +0x50
+    u32 w84;  // DS +0x54
+    u16 h88;  // DS +0x58
+    u16 h90;  // DS +0x5a
+    u32 w92;  // DS +0x5c
+    s16 s96;  // DS +0x60
+    s16 s98;  // DS +0x62
+    s16 s100;  // DS +0x64
+    s16 s102;  // DS +0x66
+    u32 c104 : 8;
+    u32 c105 : 8;
+    u32 f16 : 3;
+    u32 pad104 : 13;
+    u8 p108[0x10];  // DS +0x6c [0xc]
+    uptr w120;  // DS +0x78
+    uptr w124;  // DS +0x7c
+    u32 w128;  // DS +0x80
+    u8 hpad_2[0x4];
+#else
     /* 0x00 */ s32 w0;
     /* 0x04 */ s32 w4;
     /* 0x08 */ s32 w8;
@@ -172,6 +226,7 @@ struct EmI {
     /* 0x78 */ u32 w120;
     /* 0x7c */ u32 w124;
     /* 0x80 */ u32 w128;
+#endif
 };
 
 struct HdrU {
@@ -210,6 +265,25 @@ struct EFlags {
 
 // emitter (update view), A3 above
 struct EU {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealEmitter)
+    u8 p0[0x10];  // DS +0x0 [0x8]
+    SplPt * l8;  // DS +0x8
+    u8 pc[0x8];  // DS +0xc [0x4]
+    SplPt * l16;  // DS +0x10
+    u8 p14[0x8];  // DS +0x14 [0x4]
+    RU * res;  // DS +0x18
+    EFlags fl;  // DS +0x1c
+    A3 v32;  // DS +0x20
+    s32 w44;  // DS +0x2c
+    s32 w48;  // DS +0x30
+    s32 w52;  // DS +0x34
+    u16 h56;  // DS +0x38
+    u8 p3a[0x2e];  // DS +0x3a [0x2e]
+    u8 c104;  // DS +0x68
+    u8 p69[0x13];  // DS +0x69 [0xf]
+    void (*cb)(EU *, u32);  // DS +0x78
+#else
     /* 0x00 */ u8 p0[8];
     /* 0x08 */ SplPt *l8;
     /* 0x0c */ u8 pc[4];
@@ -226,6 +300,7 @@ struct EU {
     /* 0x68 */ u8 c104;
     /* 0x69 */ u8 p69[0x0f];
     /* 0x78 */ void (*cb)(EU *, u32);
+#endif
 };
 
 typedef void (*FldFn)(SplPt *, RU *, u32);

@@ -1,3 +1,4 @@
+#include "snd/SndSeEmitter.h"
 #include "sys/ProcProfile.h"
 #include "uptr.h"
 #ifdef HOST64
@@ -258,7 +259,12 @@ struct FieldItemFx {
     u32 unitX;
     u32 unitZ;
     u8 pad_18[0x48];
+#ifdef HOST
+    u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (larger on 64-bit hosts), then the
+    u8 seTail[4];                                              // flags at 0xa0 (the other views of the entry)
+#else
     u8 seEmitter[0x44];
+#endif
     FieldItemFx();
     ~FieldItemFx();
 };
@@ -363,7 +369,7 @@ struct Unk_ov003_022359a4_Ent {
     /* 0x50 */ u8 pad_50[2];
     /* 0x52 */ s16 alpha;
     /* 0x54 */ u8 pad_54[0xc];
-    /* 0x60 */ u8 seEmitter[0x40];
+    /* 0x60 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
     /* 0xa0 */ u8 pendingApply;
 };
 typedef Unk_ov003_022359a4_Ent Ent;
@@ -514,7 +520,7 @@ struct Unk_ov003_0221a4a0 {
     /* 0x50 */ s16 timer;
     /* 0x52 */ s16 alpha;
     /* 0x54 */ VecFx32 origin;
-    /* 0x60 */ u8 seEmitter[0x40];
+    /* 0x60 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
     /* 0xa0 */ u8 pendingApply;
     /* 0xa1 */ u8 pad_a1[3];
 };
@@ -650,7 +656,7 @@ struct Unk_ov003_0221aed4_Fx {
     /* 0x54 */ s32 originX;
     /* 0x58 */ s32 originY;
     /* 0x5c */ s32 originZ;
-    /* 0x60 */ u8 seEmitter[0x40];
+    /* 0x60 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
     /* 0xa0 */ u8 pendingApply;
     /* 0xa1 */ u8 pendingCommit;
 };
@@ -3464,7 +3470,7 @@ BOOL FieldObj_LoadTreeSaplingModels(FieldObjectManager *self, u32 *a, u32 *b, u3
     for (i = 0; i < 3; i++) {
         s32 t = FieldObj_GetSeasonSet(self, i);
         void *n = FieldObj_GetTreeModelPath(self, i, 0);
-        if (!CachedModel_loadWithTex(HOST_AT(self, 0x174, treeModels[0], 0) + i * 0x3a8, n, sFieldObjectModelHeap, (void *)a[t * 6], b[i], c, ok)) {
+        if (!CachedModel_loadWithTex(HOST_AT(self, 0x174, treeModels[0], 0) + i * HOST_SIZED(0x3a8, CachedModel[6]), n, sFieldObjectModelHeap, (void *)a[t * 6], b[i], c, ok)) {
             ok = FALSE;
             break;
         }
@@ -4447,7 +4453,7 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
             l.t1.z = v.z;
             FieldObj_DrawTreeFruit(o, t, &l.t1);
         }
-        q = (M *)((u8 *)o + 0x8c4) + n;
+        q = (M *)(HOST_AT(o, 0x8c4, treeModels[12], 0)) + n;
     } else if (id >= 0x57 && id <= 0x5b) {
         a = (a ^ b) & 1;
         if (Item_IsTreeGrown(t)) {
@@ -4456,8 +4462,8 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
             l.t2.z = v.z;
             FieldObj_DrawTreeFruit(o, t, &l.t2);
         }
-        u8 *base = (u8 *)o + 0x174;
-        a = a * 0x3a8;
+        u8 *base = HOST_AT(o, 0x174, treeModels[0], 0);
+        a = a * HOST_SIZED(0x3a8, CachedModel[6]);
         q = (M *)(base + a) + n;
     } else if (id == 0x69) {
         s32 i, z;
@@ -4476,17 +4482,17 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
             FieldObj_DrawItemIcon(o, 0x1542, (V3 *)&l.b1, 0x1f, (V3 *)&l.sc, z, z, z);
             i++;
         } while (i < 3);
-        q = (M *)((u8 *)o + 0x8c4) + n;
+        q = (M *)(HOST_AT(o, 0x8c4, treeModels[12], 0)) + n;
     } else if (id >= 0x6a && id <= 0x6c) {
-        q = (M *)((u8 *)o + 0xc6c) + n;
+        q = (M *)(HOST_AT(o, 0xc6c, cedarModels[0], 0)) + n;
     } else if (id == 0x6d) {
         l.t3.x = v.x;
         l.t3.y = v.y;
         l.t3.z = v.z;
         FieldObj_DrawCedarLights(o, &l.t3, a, b);
-        q = (M *)((u8 *)o + 0xc6c) + n;
+        q = (M *)(HOST_AT(o, 0xc6c, cedarModels[0], 0)) + n;
     } else if (id >= 0x5d && id <= 0x61) {
-        q = (M *)((u8 *)o + 0xc6c) + n;
+        q = (M *)(HOST_AT(o, 0xc6c, cedarModels[0], 0)) + n;
     } else if (id >= 0xc8 && id <= 0xcf) {
         if (Item_IsTreeGrown(t)) {
             s32 i, z;
@@ -4506,9 +4512,9 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
                 i++;
             } while (i < 2);
         }
-        q = (M *)((u8 *)o + 0x11e8) + n;
+        q = (M *)(HOST_AT(o, 0x11e8, palmModels[0], 0)) + n;
     } else {
-        q = (M *)((u8 *)o + 0x174 + ((a ^ b) & 1) * 0x3a8) + n;
+        q = (M *)(HOST_AT(o, 0x174, treeModels[0], 0) + ((a ^ b) & 1) * HOST_SIZED(0x3a8, CachedModel[6])) + n;
     }
     FieldObj_DrawModel(o, q, m);
     return q;
@@ -4528,11 +4534,11 @@ extern "C" M *FieldObj_DrawSapling(O *o, u16 *t, s32 a, s32 b, Blk m)
 {
     M *q;
     if (*t == 0x25) {
-        q = (M *)((u8 *)o + 0x480 + ((a ^ b) & 1) * 0x3a8);
+        q = (M *)(HOST_AT(o, 0x480, treeModels[5], 0) + ((a ^ b) & 1) * HOST_SIZED(0x3a8, CachedModel[6]));
     } else if (*t == 0xc7) {
-        q = (M *)((u8 *)o + 0x14f4);
+        q = (M *)(HOST_AT(o, 0x14f4, palmModels[5], 0));
     } else {
-        q = (M *)((u8 *)o + 0xf78);
+        q = (M *)(HOST_AT(o, 0xf78, cedarModels[5], 0));
     }
     FieldObj_DrawModel(o, q, m);
     return q;
@@ -5659,13 +5665,13 @@ u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
     BOOL f = FALSE;
     u32 t = *p;
     if (t >= 0x2f && t <= 0x56) f = TRUE;
-    if (f) return (u8 *)self + 0xa60 + a * 0x14c;
+    if (f) return HOST_AT(self, 0xa60, treeAnims[8].active, 0) + a * 0x14c;
     if (t >= 0x57 && t <= 0x5b) return (u8 *)self + b * 0x530 + a * 0x14c;
-    if (t == 0x69) return (u8 *)self + 0xa60 + a * 0x14c;
-    if (t >= 0x6a && t <= 0x6c) return (u8 *)self + 0xf90 + a * 0x14c;
-    if (t == 0x6d) return (u8 *)self + 0xf90 + a * 0x14c;
-    if (t >= 0x5d && t <= 0x61) return (u8 *)self + 0xf90 + a * 0x14c;
-    if (t >= 0xc8 && t <= 0xcf) return (u8 *)self + 0x18a4 + a * 0x14c;
+    if (t == 0x69) return HOST_AT(self, 0xa60, treeAnims[8].active, 0) + a * 0x14c;
+    if (t >= 0x6a && t <= 0x6c) return HOST_AT(self, 0xf90, cedarAnims[0].active, 0) + a * 0x14c;
+    if (t == 0x6d) return HOST_AT(self, 0xf90, cedarAnims[0].active, 0) + a * 0x14c;
+    if (t >= 0x5d && t <= 0x61) return HOST_AT(self, 0xf90, cedarAnims[0].active, 0) + a * 0x14c;
+    if (t >= 0xc8 && t <= 0xcf) return HOST_AT(self, 0x18a4, palmAnims[0].active, 0) + a * 0x14c;
     return (u8 *)self + b * 0x530 + a * 0x14c;
 }
 #endif

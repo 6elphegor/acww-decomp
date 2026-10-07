@@ -35,12 +35,22 @@ struct Tab {
 
 // texture table entry (20 bytes)
 struct TexEnt {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealTex)
+    void * e;  // DS +0x0
+    u32 w4;  // DS +0x4
+    u32 w8;  // DS +0x8
+    u32 w12;  // DS +0xc
+    u16 h16;  // DS +0x10
+    u16 h18;  // DS +0x12
+#else
     /* 0x00 */ void *e;
     /* 0x04 */ u32 w4;
     /* 0x08 */ u32 w8;
     /* 0x0c */ u32 w12;
     /* 0x10 */ u16 h16;
     /* 0x12 */ u16 h18;
+#endif
 };
 
 struct TexBits {

@@ -1,0 +1,2 @@
+# u8 * parameters that point at a known type (tools/host_this_offsets.py --assume): file function variable type
+src/ov003/unk_ov003_0221ffb8.cpp FishShadow_Run b FishShadow

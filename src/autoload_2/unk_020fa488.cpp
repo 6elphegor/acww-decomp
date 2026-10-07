@@ -1,3 +1,4 @@
+#include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 // G013c: autoload_2 0x020fa488-0x020fac28 (2 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ names, nothing defined but the functions.
 // Particle drawing: the two billboard particle drawers of the SPL-style manager. They write the 3D geometry engine registers (POLYGON_ATTR 0x040004a4,
@@ -19,9 +20,16 @@
 
 
 struct Res {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    HdrW * p0;  // DS +0x0
+    u8 p4[0x20];  // DS +0x4 [0x10]
+    Blk14 * p14;  // DS +0x14
+#else
     HdrW *p0;
     u8 p4[0x10];
     Blk14 *p14;
+#endif
 };
 
 

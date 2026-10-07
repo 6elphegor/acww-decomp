@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/sb_crypt.h"
@@ -24,7 +25,7 @@ namespace F022884fc {
 
 
 extern "C" {
-extern u32 qr2_registered_key_list[];
+extern uptr qr2_registered_key_list[];
 extern u8 data_ov065_0228e8fc[];
 extern GsSrvQueryBasicInfoStr data_ov065_0228e904;
 extern GsSrvQueryStatusStr data_ov065_0228e914;

@@ -3478,19 +3478,19 @@ BOOL FieldFishManager::onCreate() {
 //@ 0x2221498
 extern "C" void FishShadow_Run(void *a, u8 *b, void *c) {
     VecFx32 v1;
-    VecFx32 *pv = (VecFx32 *)(b + 0x120);
+    VecFx32 *pv = (VecFx32 *)(HOST_AT_A(b, FishShadow, 0x120, position.x, 0));
     v1.x = pv->x;
     v1.y = pv->y;
     v1.z = pv->z;
     ((void (*)(void *, VecFx32 *))SndSeEmitter_callUpdateRelative)(b, &v1);
     VecFx32 v2;
-    pv = (VecFx32 *)(b + 0x120);
+    pv = (VecFx32 *)(HOST_AT_A(b, FishShadow, 0x120, position.x, 0));
     v2.x = pv->x;
     v2.y = pv->y;
     v2.z = pv->z;
-    SndEnvChannel_callUpdateRelative(b + 0x40, &v2);
-    if (sFishShadowStates[*(s32 *)(b + 0x80)].exec) {
-        (((FieldFishManager *)a)->*(sFishShadowStates[*(s32 *)(b + 0x80)].exec))(b, c);
+    SndEnvChannel_callUpdateRelative(HOST_AT_A(b, FishShadow, 0x40, envChannel[0], 0), &v2);
+    if (sFishShadowStates[*(s32 *)(HOST_AT_A(b, FishShadow, 0x80, state, 0))].exec) {
+        (((FieldFishManager *)a)->*(sFishShadowStates[*(s32 *)(HOST_AT_A(b, FishShadow, 0x80, state, 0))].exec))(b, c);
     }
     ((void (*)(void *))FishShadow_TickRespawnTimer)(b);
 }
@@ -3568,7 +3568,7 @@ extern "C" void FishShadow_ExecAppear(O_f3 *o, E_f3 *e) {
     V3_f3 *pv;
     if (e->hasFin != 0) {
         u8 *p = ((u8 *)((u8 *)&sFishFinModel));
-        if (((s32 (*)(void *, void *))FishFinModel_Load)(p, (u8 *)o + 0x68) != 0) {
+        if (((s32 (*)(void *, void *))FishFinModel_Load)(p, HOST_AT(o, 0x68, finModelPool.lastFreed, 0)) != 0) {
             ((s32 (*)(E_f3 *))FishShadow_RunAppearAi)(e);
             e->state = 3;
             e->alpha = 0x1f;
@@ -3634,7 +3634,7 @@ extern "C" void FishShadow_ExecSwim(O_f3 *o, E_f3 *e, s32 x) {
     V3_f3 *pb = &e->prevPosition;
     V3_f3 *pa = &e->position;
     s32 t = func_02133150(((u8 *)((u8 *)&sFishSizeClassParams[0].c0))[e->sizeClass * 0x14] << 12, 10);
-    Collision_Move((u8 *)e + 0x4c, pa, pb, e->rotY, t, 0, 0xb);
+    Collision_Move(HOST_AT(e, 0x4c, collisionState[0], 0), pa, pb, e->rotY, t, 0, 0xb);
     pb->x = e->position.x;
     pb->y = pa->y;
     pb->z = pa->z;
@@ -3692,7 +3692,7 @@ BOOL FieldFishManager::onExecute() {
     O_f3 *o = (O_f3 *)this;
     E_f3 *e = ((E_f3 *)(sFishShadows));
     s32 i;
-    for (i = 0; i < 6; e = (E_f3 *)((u8 *)e + 0x24c), i++) {
+    for (i = 0; i < 6; e = (E_f3 *)((u8 *)e + HOST_SIZED(0x24c, FishShadow)), i++) {
         ((s32 (*)(O_f3 *, E_f3 *, s32))FishShadow_Run)(o, e, i);
     }
     o->spawnAttempted = 0;
@@ -3747,7 +3747,7 @@ BOOL FieldFishManager::onDraw() {
                 AnimModel_drawAnimated(((u8 *)((u8 *)&sFishFinModel.model)), &v2);
             }
         }
-        e = (E_f3 *)((u8 *)e + 0x24c);
+        e = (E_f3 *)((u8 *)e + HOST_SIZED(0x24c, FishShadow));
     }
     return TRUE;
 }
@@ -3773,17 +3773,17 @@ extern "C" void FieldFishManager_FreeShadows(O_f3 *o) {
             f = TRUE;
         }
         ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, i);
-        ((s32 (*)(void *, void *))ModelSlotPool_release)((u8 *)o + 0x50, (u8 *)e + 0x7c);
+        ((s32 (*)(void *, void *))ModelSlotPool_release)(HOST_AT(o, 0x50, shadowModelPool.lastFreed, 0), HOST_AT(e, 0x7c, modelSlot[0], 0));
         SndSeEmitter_callStop(e);
-        SndEnvChannel_callRelease((u8 *)e + 0x40);
-        e = (E_f3 *)((u8 *)e + 0x24c);
+        SndEnvChannel_callRelease(HOST_AT(e, 0x40, envChannel[0], 0));
+        e = (E_f3 *)((u8 *)e + HOST_SIZED(0x24c, FishShadow));
     }
     Mem_Free(o->shadowAnimFile);
-    ModelSlotPool_destroy((u8 *)o + 0x50);
+    ModelSlotPool_destroy(HOST_AT(o, 0x50, shadowModelPool.lastFreed, 0));
     if (f != FALSE) {
         ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
     }
-    ModelSlotPool_destroy((u8 *)o + 0x68);
+    ModelSlotPool_destroy(HOST_AT(o, 0x68, finModelPool.lastFreed, 0));
 }
 
 
@@ -3831,7 +3831,7 @@ extern "C" BOOL FieldFish_ScareAround(s32 a, s32 b) {
                 r = TRUE;
             }
         }
-        e = (E_f3 *)((u8 *)e + 0x24c);
+        e = (E_f3 *)((u8 *)e + HOST_SIZED(0x24c, FishShadow));
     }
     return r;
 }
@@ -4529,7 +4529,7 @@ extern "C" u8 *FishShadow_GetActive(s32 i)
     if (i < 0 || i >= 6) {
         return NULL;
     }
-    u8 *p = ((u8 *)(sFishShadows)) + i * 0x24c;
+    u8 *p = ((u8 *)(sFishShadows)) + i * HOST_SIZED(0x24c, FishShadow);
     if ((u32)(*(s32 *)(p + 0x80) - 3) > 1) {
         p = NULL;
     }

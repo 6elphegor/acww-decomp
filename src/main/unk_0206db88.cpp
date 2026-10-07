@@ -1,3 +1,5 @@
+#include "uptr.h"
+#include "gfx/HBlankTask.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/BgVramTask.h"
@@ -121,7 +123,7 @@ SlotS16 sMenuWipePos;
 Slot16 sMenuScreenScroll;
 Slot8 sMenuScreenWipeFlags;
 Slot8 sMenuScreenBgKind;
-u32 sMenuWipeHBlankTask[7];
+u32 sMenuWipeHBlankTask[HOST_SIZED(0x1c, HBlankTask) / 4] HOST_ALIGN8;  // HBlankTask
 
 BOOL (*sMenuScreenSteps[])() = {
     MenuScreen_StepAct00, MenuScreen_StepAct01, MenuScreen_StepAct02, MenuScreen_StepAct03, MenuScreen_StepAct04,

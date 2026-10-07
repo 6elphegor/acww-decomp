@@ -2,6 +2,9 @@
 #define NPC_VILLAGERCLOTHMODEL_H
 
 #include "types.h"
+#include "uptr.h"
+#include "gfx/MatTexVramTask.h"
+#include "npc/NpcResHandleView.h"
 
 class VillagerActor;
 
@@ -21,10 +24,10 @@ public:
     VillagerClothModel *destruct();
     VillagerClothModel *construct();
 
-    /* 0x00 */ u32 matTexTask[0x28 / 4]; // MatTexVramTask (constructed explicitly in construct())
+    /* 0x00 */ u32 matTexTask[HOST_SIZED(0x28, MatTexVramTask) / 4] HOST_ALIGN8; // MatTexVramTask (constructed explicitly in construct())
     /* 0x28 */ u16 clothItem;
     /* 0x2a */ u8 pad_2a[2];
-    /* 0x2c */ u8 texPatBuf[8];
+    /* 0x2c */ u8 texPatBuf[HOST_SIZED(8, NpcClothTexHandle)] HOST_ALIGN8;  // NpcClothTexHandle
 };
 
 #endif

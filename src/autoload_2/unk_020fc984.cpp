@@ -1,3 +1,4 @@
+#include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 // G015a: autoload_2 0x020fc984-0x020fe4b4 (22 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ names, nothing defined but the functions.
 // Particle manager ("SPL" style): spl_gen_ptcl emits particles of an emitter (10 emitter shapes), 020fd6c0/020fd820 emitter axes, 020fdaa8..020fdc8c per-particle
@@ -23,11 +24,20 @@ struct P;
 
 
 struct Res {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    Hdr * hdr;  // DS +0x0
+    u8 p4[0x8];  // DS +0x4 [0x4]
+    Tex * p8;  // DS +0x8
+    u8 pc[0x8];  // DS +0xc [0x4]
+    Tab * p10;  // DS +0x10
+#else
     Hdr *hdr;
     u8 p4[4];
     Tex *p8;
     u8 pc[4];
     Tab *p10;
+#endif
 };
 
 
@@ -615,3 +625,60 @@ extern "C" void spl_gen_ptcl(E *e, PList *freeList) {
 
 // ---- file-scope objects (autoload_3 .bss 0x021f5c3c-0x021f5c40)
 u32 data_021f5c3c;
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Res, hdr) == 0x0, "Res.hdr");
+static_assert(__builtin_offsetof(Res, p4) == 0x8, "Res.p4");
+static_assert(__builtin_offsetof(Res, p8) == 0x10, "Res.p8");
+static_assert(__builtin_offsetof(Res, pc) == 0x18, "Res.pc");
+static_assert(__builtin_offsetof(Res, p10) == 0x20, "Res.p10");
+#endif
+
+#ifdef HOST64
+// P (include/gfx/P.h) views SplRealParticle
+static_assert(__builtin_offsetof(P, next) == 0x0, "P.next");
+static_assert(__builtin_offsetof(P, prev) == 0x8, "P.prev");
+static_assert(__builtin_offsetof(P, pos) == 0x10, "P.pos");
+static_assert(__builtin_offsetof(P, vel) == 0x1c, "P.vel");
+static_assert(__builtin_offsetof(P, rot0) == 0x28, "P.rot0");
+static_assert(__builtin_offsetof(P, rot1) == 0x2a, "P.rot1");
+static_assert(__builtin_offsetof(P, life) == 0x2c, "P.life");
+static_assert(__builtin_offsetof(P, age) == 0x2e, "P.age");
+static_assert(__builtin_offsetof(P, h28) == 0x30, "P.h28");
+static_assert(__builtin_offsetof(P, h2a) == 0x32, "P.h2a");
+static_assert(__builtin_offsetof(P, b2c) == 0x34, "P.b2c");
+static_assert(__builtin_offsetof(P, b2d) == 0x35, "P.b2d");
+static_assert(__builtin_offsetof(P, fl) == 0x36, "P.fl");
+static_assert(__builtin_offsetof(P, w30) == 0x38, "P.w30");
+static_assert(__builtin_offsetof(P, s34) == 0x3c, "P.s34");
+static_assert(__builtin_offsetof(P, col) == 0x3e, "P.col");
+static_assert(__builtin_offsetof(P, epos) == 0x40, "P.epos");
+#endif
+
+#ifdef HOST64
+// E (include/gfx/SplEmitterE.h) views SplRealEmitter
+static_assert(__builtin_offsetof(E, p0) == 0x0, "E.p0");
+static_assert(__builtin_offsetof(E, list) == 0x10, "E.list");
+static_assert(__builtin_offsetof(E, p10) == 0x20, "E.p10");
+static_assert(__builtin_offsetof(E, res) == 0x30, "E.res");
+static_assert(__builtin_offsetof(E, p1c) == 0x38, "E.p1c");
+static_assert(__builtin_offsetof(E, pos) == 0x3c, "E.pos");
+static_assert(__builtin_offsetof(E, p2c) == 0x48, "E.p2c");
+static_assert(__builtin_offsetof(E, phase) == 0x56, "E.phase");
+static_assert(__builtin_offsetof(E, dir) == 0x58, "E.dir");
+static_assert(__builtin_offsetof(E, p42) == 0x5e, "E.p42");
+static_assert(__builtin_offsetof(E, radius) == 0x60, "E.radius");
+static_assert(__builtin_offsetof(E, len) == 0x64, "E.len");
+static_assert(__builtin_offsetof(E, w4c) == 0x68, "E.w4c");
+static_assert(__builtin_offsetof(E, w50) == 0x6c, "E.w50");
+static_assert(__builtin_offsetof(E, w54) == 0x70, "E.w54");
+static_assert(__builtin_offsetof(E, h58) == 0x74, "E.h58");
+static_assert(__builtin_offsetof(E, p5a) == 0x76, "E.p5a");
+static_assert(__builtin_offsetof(E, w5c) == 0x78, "E.w5c");
+static_assert(__builtin_offsetof(E, p60) == 0x7c, "E.p60");
+static_assert(__builtin_offsetof(E, b68) == 0x84, "E.b68");
+static_assert(__builtin_offsetof(E, b69) == 0x85, "E.b69");
+static_assert(__builtin_offsetof(E, p6a) == 0x86, "E.p6a");
+static_assert(__builtin_offsetof(E, ax1) == 0x88, "E.ax1");
+static_assert(__builtin_offsetof(E, ax2) == 0x8e, "E.ax2");
+#endif

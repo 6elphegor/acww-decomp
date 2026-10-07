@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library tail: sound-archive stream player (NNS_SndArcStrm*: thread, job queue,
@@ -23,11 +24,19 @@ typedef struct Fader {
     s32 frames;     // 0x0c
 } Fader;
 
+#ifdef HOST
+#define HDR(c) ((u8 *)(c)->pad_a8)  // (the header buffer: pad_a8 .. the u8 / u16 fields after it, by the member)
+#else
 #define HDR(c) ((u8 *)(c) + 0xa8)
+#endif
 
 // stream context (NNSSndArcStrm), 0x160 bytes, 4 of them (data_021fc650)
 typedef struct Ctx {
+#ifdef HOST64
+    u8 strm[136] __attribute__((aligned(8)));  // NNSSndStrm (Strm in unk_0210a478.c: its 64-bit size, checked there)
+#else
     u8 strm[0x5c];          // 0x00 NNSSndStrm
+#endif
     FSFile file;            // 0x5c
     u32 a4;                 // 0xa4
     u8 pad_a8[0x18];        // 0xa8 .. 0xe8: 64-byte stream header buffer (type etc. are bytes of it)

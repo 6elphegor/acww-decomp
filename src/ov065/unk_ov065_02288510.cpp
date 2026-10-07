@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/sb_crypt.h"
@@ -17,7 +18,7 @@ struct SBQueryEngine;
 
 
 extern "C" {
-extern u32 qr2_registered_key_list[];
+extern uptr qr2_registered_key_list[];
 extern s32 __GSIACResult;
 extern u8 data_0213a410[];
 

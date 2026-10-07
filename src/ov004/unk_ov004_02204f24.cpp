@@ -1436,7 +1436,7 @@ extern "C" BOOL FtrActor_StepAnims(Self *self) {
 
 // @02208968
 extern "C" u32 FtrActor_GetHeap(Self *self) {
-    return (u32)ModelSlotPool_acquire(sFtrMgrPool, (u8 *)self + 0x12e);
+    return (u32)ModelSlotPool_acquire(sFtrMgrPool, HOST_AT(self, 0x12e, modelSlot, 0));
 }
 
 // @02208938
@@ -1572,7 +1572,7 @@ extern "C" void FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b) {
         if (a != 0 || b != 0) {
             FtrActor_CalcWorldMtx(q, a, b);
         } else {
-            data_021f47e0 = *(Mtx43 *)((u8 *)q + 0x250);
+            data_021f47e0 = *(Mtx43 *)(HOST_AT(q, 0x250, moveFlag[4], 0));
         }
         r6 = ((FtrStackLink *)(PT(0x178)))->getRelPos()->z;
         r4 = ((FtrStackLink *)(PT(0x178)))->getRelPos()->y;
@@ -1749,7 +1749,7 @@ extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
                 if (Item_IsNormalItem(c)) {
                     FieldPos_FromUnitCenter(&v, x, y);
                     v.y = FtrMgr_GetSurfaceHeight(x, y);
-                    TouchPicker_addCylinder(Scene_GetTouchPicker(), (u8 *)self + 0x1cc + i * 0x20, &v, 0xccd, 0x100, 10, 0xff);
+                    TouchPicker_addCylinder(Scene_GetTouchPicker(), HOST_AT(self, 0x1cc, topItemCylinders[0], 0) + i * 0x20, &v, 0xccd, 0x100, 10, 0xff);
                 }
             }
         }

@@ -24,7 +24,31 @@ from host_relayout import members, offset_of, path_at, size_of, strip  # noqa: E
 CU = None  # --cu <source>: the compile unit to take the types from
 
 
+CUTYPES = {}  # path -> {(compile unit name, type name): DIE} (built once)
+
+
+def index_types(path):
+    if path in CUTYPES:
+        return CUTYPES[path]
+    idx = {}
+    elf = ELFFile(open(path, "rb"))
+    for cu in elf.get_dwarf_info().iter_CUs():
+        cu_name = cu.get_top_DIE().attributes["DW_AT_name"].value.decode()
+        for die in cu.iter_DIEs():
+            if die.tag in ("DW_TAG_structure_type", "DW_TAG_class_type") and "DW_AT_name" in die.attributes \
+                    and "DW_AT_declaration" not in die.attributes:
+                idx.setdefault((cu_name, die.attributes["DW_AT_name"].value.decode()), die)
+                DEFS.setdefault((path, die.attributes["DW_AT_name"].value.decode()), die)
+    CUTYPES[path] = idx
+    return idx
+
+
 def find_type(path, name):
+    if path in CUTYPES:
+        for (c, n), d in CUTYPES[path].items():
+            if n == name and (not CU or c.endswith(CU)):
+                return d, None
+        raise SystemExit(f"{name}: not in {path}")
     f = open(path, "rb")
     elf = ELFFile(f)
     for cu in elf.get_dwarf_info().iter_CUs():
@@ -161,20 +185,74 @@ def leaf_at(die, off):
         return die
 
 
+def view_members(die):
+    """the view's members in order: ("m", name, offset, type) or ("bf", [names], unit offset, type, unit size)"""
+    out = []
+    for c in die.iter_children():
+        if c.tag not in ("DW_TAG_member", "DW_TAG_inheritance"):
+            continue
+        t = c.get_DIE_from_attribute("DW_AT_type")
+        name = c.attributes["DW_AT_name"].value.decode() if "DW_AT_name" in c.attributes else "?"
+        if "DW_AT_bit_size" in c.attributes:
+            us = size_of(t) or 4
+            if "DW_AT_data_bit_offset" in c.attributes:
+                bit = c.attributes["DW_AT_data_bit_offset"].value
+            else:
+                bit = c.attributes.get("DW_AT_data_member_location").value * 8
+            unit = (bit // (us * 8)) * us
+            if out and out[-1][0] == "bf" and out[-1][2] == unit:
+                out[-1][1].append(name)
+            else:
+                out.append(("bf", [name], unit, t, us))
+            continue
+        loc = c.attributes["DW_AT_data_member_location"].value if "DW_AT_data_member_location" in c.attributes else 0
+        out.append(("m", name, loc, t))
+    return out
+
+
 def main():
     global CU
     args = sys.argv[1:]
+    if args and args[0] == "--jobs":
+        # batch: <32-bit o> <64-bit o> lines "view real source cu1[,cu2...]" from the file; the debug information read once
+        jobsfile, o32, o64 = args[1], args[2], args[3]
+        index_types(o32)
+        index_types(o64)
+        for line in open(jobsfile):
+            if not line.strip() or line.startswith("#"):
+                continue
+            v, r, s, cus = line.split()
+            done = False
+            for cu in cus.split(","):
+                if (not any(c.endswith(cu) and n == v for (c, n) in CUTYPES[o32])):
+                    continue
+                sys.argv = ["x", o32, o64, v, r, s, "--cu", cu, "--apply"]
+                try:
+                    main()
+                    print(f"OK   {v} {s} ({cu})")
+                except SystemExit as e:
+                    print(f"FAIL {v} {s} ({cu}): {e}")
+                done = True
+                break
+            if not done:
+                print(f"NONE {v} {s}")
+        return
+    apply = "--apply" in args
+    if apply:
+        args.remove("--apply")
     if "--cu" in args:
         i = args.index("--cu")
         CU = args[i + 1]
         del args[i:i + 2]
     o32, o64, view, real, src = args[:5]
-    load_defs(o32)
-    load_defs(o64)
+    if o32 not in CUTYPES:
+        load_defs(o32)
+        load_defs(o64)
     v32, _f1 = find_type(o32, view)
     r32, _f2 = find_type(o32, real)
     r64, _f3 = find_type(o64, real)
     size32, size64 = tsize(r32, o32), tsize(r64, o64)
+    vsize32 = tsize(v32, o32)
 
     def map64(x):
         if x >= size32:
@@ -187,22 +265,83 @@ def main():
             raise SystemExit(f"{real}+{x:#x}: no counterpart for {p}")
         return o + rem
 
-    # the view's member declarations in the source: name -> declared type text
-    text = open(src).read()
-    # (the DS declarations: without a 64-bit branch generated before)
-    text = re.sub(r"#ifdef HOST64\n.*?#else\n", "", text, flags=re.S)
+    def host_size(t):
+        st = complete(t, o32)
+        if st is None:
+            return 0
+        if st.tag in ("DW_TAG_pointer_type", "DW_TAG_ptr_to_member_type", "DW_TAG_reference_type"):
+            return 8
+        if st.tag in ("DW_TAG_structure_type", "DW_TAG_class_type", "DW_TAG_union_type") and "DW_AT_name" in st.attributes:
+            d64 = DEFS.get((o64, st.attributes["DW_AT_name"].value.decode()))
+            return tsize(d64, o64) if d64 is not None else tsize(st, o32)
+        if st.tag == "DW_TAG_array_type":
+            el = st.get_DIE_from_attribute("DW_AT_type")
+            n = tsize(st, o32) // max(tsize(el, o32), 1)
+            return n * host_size(el)
+        return tsize(st, o32)
+
+    def scalar(t):
+        st = complete(t, o32)
+        return st is not None and st.tag in ("DW_TAG_base_type", "DW_TAG_enumeration_type")
+
+    # the view's declarations in the source (the DS branch)
+    text_full = open(src).read()
+    text = re.sub(r"#ifdef HOST64\n.*?#else\n", "", text_full, flags=re.S)
     m = re.search(r"(?:class|struct) %s\b[^;{]*\{" % re.escape(view), text)
     body = text[m.end():]
+    depth, k = 1, 0
+    while depth and k < len(body):
+        depth += {"{": 1, "}": -1}.get(body[k], 0)
+        k += 1
+    body = body[:k]
     decl_type = {}
-    for dm in re.finditer(r"^\s*(?:/\*[^*]*\*/\s*)?([A-Za-z_][\w\s\*]*?)\s*\b(\w+)\s*(\[[^\]]*\])?\s*;", body, re.M):
-        decl_type.setdefault(dm.group(2), (dm.group(1).strip(), dm.group(3)))
-        if body[:dm.start()].count("{") < body[:dm.start()].count("}"):
-            break
+    fnptr = {}  # name -> its declaration (a pointer to a function: emitted as written)
+    # (statements of the body: comments out, then split at ';')
+    clean = re.sub(r"//[^\n]*|/\*.*?\*/", "", body, flags=re.S)
+    for stmt in clean.split(";"):
+        stmt = stmt.strip().split("{")[-1].split("}")[-1].strip()
+        if not stmt or stmt.startswith(("public", "private", "protected")) or ":" in stmt and "::" not in stmt:
+            stmt = re.sub(r"^(public|private|protected)\s*:", "", stmt).strip()
+            if not stmt or re.search(r":\s*\d+\s*$", stmt):
+                continue
+        fm = re.search(r"\(\s*\*\s*(\w+)\s*\)\s*\(", stmt)
+        if fm:
+            fnptr.setdefault(fm.group(1), stmt + ";")
+            continue
+        if "(" in stmt:
+            continue  # a method
+        pieces = [p.strip() for p in stmt.split(",")]
+        fm = re.match(r"^(.*?)([\s\*]*)\b(\w+)\s*(\[[^\]]*\])?$", pieces[0])
+        if not fm:
+            continue
+        base = fm.group(1).strip()
+        decl_type.setdefault(fm.group(3), ((base + " " + fm.group(2).strip()).strip(), fm.group(4)))
+        for p in pieces[1:]:
+            pm = re.match(r"^([\s\*]*)(\w+)\s*(\[[^\]]*\])?$", p)
+            if pm:
+                decl_type.setdefault(pm.group(2), ((base + " " + pm.group(1).strip()).strip(), pm.group(3)))
+
+    def bf_line(name):
+        bm = re.search(r"^[ \t]*(?:/\*[^*]*\*/\s*)?[A-Za-z_][\w ]*?\b" + re.escape(name) + r"\s*:\s*\d+\s*;", body, re.M)
+        if not bm:
+            raise SystemExit(f"{view}.{name}: bitfield declaration not found")
+        return "    " + re.sub(r"/\*[^*]*\*/\s*", "", bm.group(0).strip())
 
     out, cur, npad = [], 0, 0
     asserts = []
-    for name, loc, t in members(v32):
-        s = size_of(t)
+    for ent in view_members(v32):
+        if ent[0] == "bf":
+            _, names, unit, t, us = ent
+            o = map64(unit)
+            if o > cur:
+                out.append(f"    u8 hpad_{npad}[{o - cur:#x}];")
+                npad += 1
+            for nm in names:
+                out.append(bf_line(nm))
+            cur = o + us
+            continue
+        _, name, loc, t = ent
+        s = tsize(t, o32)
         o = map64(loc)
         e = map64(loc + s) if loc + s < size32 else size64
         if o > cur:
@@ -210,40 +349,79 @@ def main():
             npad += 1
         elif o < cur:
             raise SystemExit(f"{view}.{name}: maps to {o:#x}, before {cur:#x}")
+        if name in fnptr:
+            out.append(f"    {fnptr[name]}  // DS +{loc:#x}")
+            cur = o + 8
+            asserts.append((name, o))
+            continue
         ty, arr = decl_type.get(name, (None, None))
-        st = strip(t)
+        if ty is None:
+            raise SystemExit(f"{view}.{name}: declaration not found")
+        st = complete(t, o32)
         if st.tag == "DW_TAG_array_type":
-            el = size_of(st.get_DIE_from_attribute("DW_AT_type"))
-            leaf = leaf_at(r64, o) if el == 4 else None
-            if leaf is not None and size_of(leaf) == 8 and ty in ("u32", "s32", "int", "unsigned"):
-                out.append(f"    uptr {name}[{(e - o) // 8:#x}];  // DS +{loc:#x} [{s:#x}] (pointers)")
-                asserts.append(name)
-                cur = e
-                continue
-            n = (e - o) // el
-            if (e - o) % el:
-                raise SystemExit(f"{view}.{name}: {e - o:#x} bytes, not whole elements of {el}")
-            out.append(f"    {ty} {name}[{n:#x}];  // DS +{loc:#x} [{s:#x}]")
-            asserts.append(name)
-            cur = o + n * el
+            elt = st.get_DIE_from_attribute("DW_AT_type")
+            el = tsize(elt, o32)
+            if scalar(elt):
+                leaf = leaf_at(r64, o) if el == 4 else None
+                if leaf is not None and size_of(leaf) == 8 and ty in ("u32", "s32", "int", "unsigned"):
+                    out.append(f"    uptr {name}[{(e - o) // 8:#x}];  // DS +{loc:#x} [{s:#x}] (pointers)")
+                    cur = e
+                else:
+                    n = (e - o) // el
+                    if (e - o) % el:
+                        raise SystemExit(f"{view}.{name}: {e - o:#x} bytes, not whole elements of {el}")
+                    out.append(f"    {ty} {name}[{n:#x}];  // DS +{loc:#x} [{s:#x}]")
+                    cur = o + n * el
+            else:
+                n = s // el
+                out.append(f"    {ty} {name}[{n:#x}];  // DS +{loc:#x}")
+                cur = o + n * host_size(elt)
+            asserts.append((name, o))
         else:
-            leaf = leaf_at(r64, o) if s == 4 else None
+            leaf = leaf_at(r64, o) if s == 4 and scalar(t) else None
             if leaf is not None and size_of(leaf) == 8 and ty in ("u32", "s32", "int", "unsigned"):
                 ty = "uptr" if ty != "s32" else "sptr"
-            out.append(f"    {ty} {name};  // DS +{loc:#x}")
-            asserts.append(name)
-            cur = o + (8 if ty in ("uptr", "sptr") or st.tag in ("DW_TAG_pointer_type", "DW_TAG_ptr_to_member_type") else s)
-    if size64 > cur:
-        out.append(f"    u8 hpad_{npad}[{size64 - cur:#x}];")
-    print("\n".join(out))
-    # checks for the unit that has both (the mapped offsets, the size)
-    exp = {}
-    for name, loc, tt in members(v32):
-        exp[name] = map64(loc)
-    print(f"\n// checks: static_assert(sizeof({view}) == sizeof({real}), \"\");")
-    for n in asserts:
-        print(f"//   static_assert(__builtin_offsetof({view}, {n}) == {exp[n]:#x}, \"\");")
-    print(f"// {view}: {size_of(v32):#x} on the DS, {size64:#x} here ({real})", file=sys.stderr)
+                out.append(f"    {ty} {name};  // DS +{loc:#x}")
+                cur = o + 8
+            else:
+                out.append(f"    {ty} {name};  // DS +{loc:#x}")
+                cur = o + host_size(t)
+            asserts.append((name, o))
+    end = map64(vsize32) if vsize32 < size32 else size64
+    if end > cur:
+        out.append(f"    u8 hpad_{npad}[{end - cur:#x}];")
+    gen = "\n".join(out)
+    checks = [f"static_assert(__builtin_offsetof({view}, {n}) == {o:#x}, \"{view}.{n}\");" for n, o in asserts]
+    print(f"// {view}: {vsize32:#x} on the DS, {end:#x} here ({real})", file=sys.stderr)
+    if not apply:
+        print(gen)
+        print("\n".join("// " + c for c in checks))
+        return
+    # splice: the data member lines of the view's definition -> #ifdef HOST64 (generated) #else (as written) #endif
+    ms = re.search(r"(?:class|struct) %s\b[^;{]*\{" % re.escape(view), text_full)
+    b0 = ms.end()
+    depth, k = 1, b0
+    while depth:
+        depth += {"{": 1, "}": -1}.get(text_full[k], 0)
+        k += 1
+    body_full = text_full[b0:k - 1]
+    if "#ifdef HOST64" in body_full:
+        raise SystemExit(f"{view}: already has a 64-bit branch")
+    names = [e[1] if e[0] == "m" else e[1][0] for e in view_members(v32)] + [e[1][-1] for e in view_members(v32) if e[0] == "bf"]
+    lines = body_full.split("\n")
+    idx = [n for n, l in enumerate(lines) if re.search(r"\b(" + "|".join(map(re.escape, names)) + r")\b\s*(\[[^\]]*\])?\s*(:\s*\d+\s*)?;", l) and "(" not in l
+           or re.search(r"\(\s*\*\s*(" + "|".join(map(re.escape, names)) + r")\s*\)", l)]  # (pointers to functions)
+    a, b = idx[0], idx[-1]
+    new_lines = lines[:a] + ["#ifdef HOST64", "    // the 64-bit layout (tools/host_view_layout.py: the members at their places in " + real + ")", gen,
+                             "#else"] + lines[a:b + 1] + ["#endif"] + lines[b + 1:]
+    text_full = text_full[:b0] + "\n".join(new_lines) + text_full[k - 1:]
+    open(src, "w").write(text_full)
+    if CU and CU != src:
+        cu_t = open(CU).read()
+        cu_t += "\n#ifdef HOST64\n// " + view + " (" + src + ") views " + real + "\n" + "\n".join(checks) + "\n#endif\n"
+        open(CU, "w").write(cu_t)
+    elif checks:
+        open(src, "a").write("\n#ifdef HOST64\n" + "\n".join(checks) + "\n#endif\n")
 
 
 if __name__ == "__main__":

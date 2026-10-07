@@ -100,4 +100,14 @@ public:
     /* 0x94 */ u32 texVramSlot;
 };
 
+// Model members reached by their DS offsets from a Model's storage (code that keeps the model as raw storage): the
+// DS expression there, the member on hosts
+#ifdef HOST
+#define MODEL_AT_MTX(p) (((Model *)(p))->mtx)
+#define MODEL_AT_RESMDL(p) ((u32)(uptr)((Model *)(p))->resMdl)
+#else
+#define MODEL_AT_MTX(p) (*(Mtx43 *)((u8 *)(p) + 0x64))
+#define MODEL_AT_RESMDL(p) (*(u32 *)((u8 *)(p) + 0x5c))
+#endif
+
 #endif

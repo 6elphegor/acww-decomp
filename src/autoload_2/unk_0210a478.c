@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library, stream player (NNSSndStrm), first part: autoload_2 0x0210a478-0x0210a9c4,
 // autoload_3 .bss 0x021fb6a4-0x021fb774. ARM, mwcc 1.2/base, -O4,p.
@@ -377,3 +378,7 @@ StrmEnt data_021fb6f4[16];
 u32 data_021fb6b4[16];
 NNSFndList data_021fb6a8;
 s32 data_021fb6a4;
+
+#ifdef HOST64
+_Static_assert(sizeof(Strm) == 136, "Ctx::strm in unk_0210da28.c");
+#endif

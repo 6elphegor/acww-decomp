@@ -53,10 +53,60 @@ def enclosing_class(text, pos, var):
     return None if ty in ("u8", "s8", "char", "void", "u16", "s16", "u32", "s32", "int", "const") else ty
 
 
+def assumed_pass(t, f, assumes, dies, cu, obj):
+    """`u8 *b` parameters known to point at a T (--assume file function var T): b + N and b[N] in the function"""
+    n = 0
+    for func, var, cls in assumes:
+        m = re.search(r"\b" + re.escape(func) + r"\s*\([^)]*\bu8\s*\*\s*" + re.escape(var) + r"\b[^)]*\)\s*\{", t)
+        if not m:
+            print(f"{f}: {func}({var}): not found")
+            continue
+        start = m.end()
+        end = t.find("\n}", start)
+        die = dies.get((cu[0] if cu else "", cls)) or next((d for (c, nm), d in dies.items() if nm == cls), None)
+        if die is None:
+            print(f"{f}: {cls}: no type information")
+            continue
+        seg = t[start:end]
+        pieces, plast = [], 0
+        for um in re.finditer(r"(?<![\w.>])" + re.escape(var) + r"(?: \+ (0x[0-9a-fA-F]+|\d+)\b|\[(0x[0-9a-fA-F]+|\d+)\])", seg):
+            num = um.group(1) or um.group(2)
+            off = int(num, 0)
+            path, rem = hv.path_at_c(die, off, obj)
+            while path and rem == 0 and path[-1][0] == "m" and path[-1][1].startswith(("_vptr", "<base:")):
+                path = path[:-1]
+            mem = ""
+            for k, v in path:
+                if k == "m" and (v == "?" or v.startswith("<base:")):
+                    continue
+                if k == "m" and v.startswith("_vptr"):
+                    mem = ""
+                    break
+                mem += f"[{v}]" if k == "i" else (("." if mem else "") + v)
+            if not mem:
+                print(f"{f}: {func}: {var}+{off:#x}: {path}, skipped")
+                continue
+            e = f"HOST_AT_A({var}, {cls}, {num}, {mem}, {rem})"
+            pieces.append(seg[plast:um.start()] + (e if um.group(1) else f"(*{e})"))
+            plast = um.end()
+            n += 1
+        t = t[:start] + "".join(pieces) + seg[plast:] + t[end:]
+    return t, n
+
+
 def main():
     obj = sys.argv[1]
     check = "--check" in sys.argv
-    files = [a for a in sys.argv[2:] if a != "--check"]
+    args = [a for a in sys.argv[2:] if a != "--check"]
+    assume = {}
+    if "--assume" in args:
+        i = args.index("--assume")
+        for line in open(args[i + 1]):
+            if line.strip() and not line.startswith("#"):
+                af, fn, var, cls = line.split()
+                assume.setdefault(af, []).append((fn, var, cls))
+        del args[i:i + 2]
+    files = args
     hv.load_defs(obj)
     dies = class_dies(obj)
     total = skipped = 0
@@ -67,6 +117,9 @@ def main():
         for m in EXPR.finditer(t):
             var, off = m.group(1), int(m.group(2), 0)
             cls = enclosing_class(t, m.start(), var)
+            td = re.search(r"\btypedef\s+(?:class\s+|struct\s+)?(\w+)\s+" + re.escape(cls) + r"\s*;", t) if cls else None
+            if td:
+                cls = td.group(1)  # (a typedef of the class)
             die = dies.get((cu[0] if cu else "", cls)) if cls else None
             if die is None:
                 die = next((d for (c, name), d in dies.items() if name == cls and c.endswith(f)), None)
@@ -142,6 +195,9 @@ def main():
             if pieces:
                 t = t[:am.end()] + "".join(pieces) + seg[plast:] + t[end:]
         n += alias_n
+        if f in assume:
+            t, k = assumed_pass(t, f, assume[f], dies, cu, obj)
+            n += k
         out, last = [t], len(t)
         if n and not check:
             t2 = "".join(out) + t[last:]

@@ -1,3 +1,5 @@
+#include "uptr.h"
+#include "gfx/SplReal.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -431,15 +433,15 @@ namespace R5 {
 extern "C" {
 extern VecFx32 data_021d0830;
 
-extern u32 data_020e14dc[], data_020e14e4[], data_020e154c[], data_020e15ac[], data_020e153c[], data_020e1534[];
+extern uptr data_020e14dc[], data_020e14e4[], data_020e154c[], data_020e15ac[], data_020e153c[], data_020e1534[];
 
-extern u32 data_020e15f4[], data_020e1494[], data_020e1524[], data_020e14bc[], data_020e1574[], data_020e147c[];
+extern uptr data_020e15f4[], data_020e1494[], data_020e1524[], data_020e14bc[], data_020e1574[], data_020e147c[];
 
-extern u32 data_020e1620[], data_020e151c[], data_020e1614[], data_020e15b4[], data_020e15a4[], data_020e157c[];
+extern uptr data_020e1620[], data_020e151c[], data_020e1614[], data_020e15b4[], data_020e15a4[], data_020e157c[];
 
-extern u32 data_020e16d4[], data_020e1584[], data_020e16a4[], data_020e1504[], data_020e15dc[], data_020e14fc[];
+extern uptr data_020e16d4[], data_020e1584[], data_020e16a4[], data_020e1504[], data_020e15dc[], data_020e14fc[];
 
-extern u32 data_020e15ec[];
+extern uptr data_020e15ec[];
 
 extern EffectSlot gEffectManager[];
 
@@ -580,9 +582,9 @@ extern EffectScratchSlot data_021d0830;
 
 extern VecFx32 gVec3Zero;
 
-extern u32 sEffectDefaultTrackedCbs[];
+extern uptr sEffectDefaultTrackedCbs[];
 
-extern u32 sEffectDefaultOneShotCbs[];
+extern uptr sEffectDefaultOneShotCbs[];
 
 extern s16 data_02135f44[];
 

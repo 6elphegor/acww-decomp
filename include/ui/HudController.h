@@ -2,6 +2,7 @@
 #define UI_HUDCONTROLLER_H
 
 #include "types.h"
+#include "uptr.h"
 #include "ui/UiWidget.h"
 #include "gfx/SpriteAnim.h"
 #include "talk/MsgString3.h"
@@ -46,10 +47,10 @@ public:
 
     /* 0x0c */ SpriteAnim anim;
     /* 0x20 */ s32 state;
-    /* 0x24 */ s32 minutesLabel;
-    /* 0x28 */ s32 secondsLabel;
-    /* 0x2c */ s32 countALabel;
-    /* 0x30 */ s32 countBLabel;
+    /* 0x24 */ sptr minutesLabel;  // (a TextLabel pointer)
+    /* 0x28 */ sptr secondsLabel;  // (a TextLabel pointer)
+    /* 0x2c */ sptr countALabel;  // (a TextLabel pointer)
+    /* 0x30 */ sptr countBLabel;  // (a TextLabel pointer)
     /* 0x34 */ MsgString3 minutesText;
     /* 0x4c */ MsgString3 secondsText;
     /* 0x64 */ MsgString3 countAText;

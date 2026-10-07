@@ -475,7 +475,7 @@ extern "C" void DateTimePicker_DrawDay(S *s) {
 }
 
 extern "C" void DateTimePicker_DrawHour(S *s) {
-    u32 r4 = *((u8 *)s + 0xba);
+    u32 r4 = *(HOST_AT(s, 0xba, dateTime.b[2], 0));
     u32 r1 = 0x37;
     if ((s32)r4 >= 0xc) {
         r1 = 0x38;
@@ -491,7 +491,7 @@ extern "C" void DateTimePicker_DrawHour(S *s) {
 }
 
 extern "C" void DateTimePicker_DrawMinute(S *s) {
-    DateTimePicker_AddPaddedNumberText(s, s->fieldLayer, 0x1c2, 6, *((u8 *)s + 0xb9), 0, 0xf, 0);
+    DateTimePicker_AddPaddedNumberText(s, s->fieldLayer, 0x1c2, 6, *(HOST_AT(s, 0xb9, dateTime.b[1], 0)), 0, 0xf, 0);
 }
 
 extern "C" void DateTimePicker_DrawPickedValue(S *s) {
@@ -531,16 +531,16 @@ extern "C" void DateTimePicker_ReleaseLabels(S *s) {
     s32 i;
     s->labelCount = 0;
     for (i = 0; i < 0x11; i++) {
-        ((LabelString *)((u8 *)s + 0xd8))[i].destroyLabel();
+        ((LabelString *)(HOST_AT(s, 0xd8, labels[0], 0)))[i].destroyLabel();
     }
 }
 
 extern "C" void *DateTimePicker_AllocLabel(S *s) {
     if (*(volatile u8 *)&s->labelCount >= 0x11) {
-        return (u8 *)s + 0x4d8;
+        return HOST_AT(s, 0x4d8, labels[16], 0);
     }
     s->labelCount = s->labelCount + 1;
-    return (u8 *)s + 0xd8 + (s->labelCount - 1) * 0x40;
+    return HOST_AT(s, 0xd8, labels[0], 0) + (s->labelCount - 1) * 0x40;
 }
 
 extern "C" void DateTimePicker_AddMenuText(S *s, u32 a, u32 b, u32 c, u8 d, s32 e, u8 f, u8 g) {
@@ -717,7 +717,7 @@ extern "C" s32 DateTimePicker_GrabHand(S *s, u32 a, u32 b) {
     }
     if (r4) {
         DateTimePicker_SetCursorField(s, 6);
-        MI_CpuCopy8(s->dateTime.b, (u8 *)s + 0xc0, 8);
+        MI_CpuCopy8(s->dateTime.b, HOST_AT(s, 0xc0, dragDateTime.b[0], 0), 8);
         s->clearFlags(0x30);
         return TRUE;
     }

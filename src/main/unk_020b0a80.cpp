@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "nitro/io_access.h"
 inline void *operator new(size_t, void *p) { return p; }
@@ -578,7 +579,11 @@ extern "C" void Main_Init(void) {
     OverlayHandle_Unload(gOverlayHandle);
     Touch_Init();
     Main_InitTick();
+#ifdef HOST64
+    Heap_CreateProcHeap(0x13fc8 * 2, 0);  // (the process objects are larger on 64-bit hosts)
+#else
     Heap_CreateProcHeap(0x13fc8, 0);
+#endif
     Gfx_Init();
     Snd_Init();
     Main_ResetFrameCounter();

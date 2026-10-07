@@ -87,7 +87,7 @@ public:
     s32 openMode;  // DS +0x14
     u8 choicePending;  // DS +0x18
     u8 pad_19[0x7];  // DS +0x19 [0x3]
-    u8 frame[0x90];  // DS +0x1c [0x80]
+    u8 frame[0xa0];  // DS +0x1c [0x80]
     s32 scrollY;  // DS +0x9c
     s16 shakeAngle;  // DS +0xa0
     u8 pad_a2[0x2];  // DS +0xa2 [0x2]

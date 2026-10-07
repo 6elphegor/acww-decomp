@@ -1,3 +1,4 @@
+#include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
 #include "gfx/SplRes.h"
@@ -40,6 +41,26 @@ struct Bits46 {
 };
 
 struct Part {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealParticle)
+    u8 p0[0x10];  // DS +0x0 [0x8]
+    V3Arr pos;  // DS +0x8
+    V3Arr vel;  // DS +0x14
+    u16 h32;  // DS +0x20
+    s16 h34;  // DS +0x22
+    u16 h36;  // DS +0x24
+    u16 h38;  // DS +0x26
+    u16 h40;  // DS +0x28
+    u16 h42;  // DS +0x2a
+    u8 c44;  // DS +0x2c
+    u8 c45;  // DS +0x2d
+    Bits46 b46;  // DS +0x2e
+    s32 w48;  // DS +0x30
+    s16 h52;  // DS +0x34
+    u16 h54;  // DS +0x36
+    V3Arr v56;  // DS +0x38
+    u8 hpad_0[0x4];
+#else
     u8 p0[8];
     V3Arr pos;
     V3Arr vel;
@@ -56,16 +77,37 @@ struct Part {
     s16 h52;
     u16 h54;
     V3Arr v56;
+#endif
 };
 
 
 struct Res {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    Rh * p0;  // DS +0x0
+    u8 p4[0x20];  // DS +0x4 [0x10]
+    ChildRes * child;  // DS +0x14
+#else
     Rh *p0;
     u8 p4[16];
     ChildRes *child;
+#endif
 };
 
 struct Emit {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealEmitter)
+    u8 p0[0x20];  // DS +0x0 [0x10]
+    u8 list[0x10];  // DS +0x10 [0x8]
+    Res * res;  // DS +0x18
+    u8 p28[0x3e];  // DS +0x1c [0x3e]
+    u16 h90;  // DS +0x5a
+    u8 p92[0x4];  // DS +0x5c [0x4]
+    s16 h96;  // DS +0x60
+    s16 h98;  // DS +0x62
+    s16 h100;  // DS +0x64
+    s16 h102;  // DS +0x66
+#else
     u8 p0[16];
     u8 list[8];
     Res *res;
@@ -76,13 +118,22 @@ struct Emit {
     s16 h98;
     s16 h100;
     s16 h102;
+#endif
 };
 
 struct Mg {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealManager)
+    u8 p0[0x54];  // DS +0x0 [0x30]
+    u32 w48;  // DS +0x30
+    Emit * cur;  // DS +0x34
+    s32 * mtx;  // DS +0x38
+#else
     u8 p0[48];
     u32 w48;
     Emit *cur;
     s32 *mtx;
+#endif
 };
 
 typedef u32 (*DrawCb)(V3Arr *, V3Arr);
@@ -654,3 +705,48 @@ extern "C" void spl_draw_chld_dbb(Mg *self, Part *p, DrawCb fp) {
     drawXYPlane(self->cur->h100, self->cur->h102, 0, 0);
 }
 
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Part, p0) == 0x0, "Part.p0");
+static_assert(__builtin_offsetof(Part, pos) == 0x10, "Part.pos");
+static_assert(__builtin_offsetof(Part, vel) == 0x1c, "Part.vel");
+static_assert(__builtin_offsetof(Part, h32) == 0x28, "Part.h32");
+static_assert(__builtin_offsetof(Part, h34) == 0x2a, "Part.h34");
+static_assert(__builtin_offsetof(Part, h36) == 0x2c, "Part.h36");
+static_assert(__builtin_offsetof(Part, h38) == 0x2e, "Part.h38");
+static_assert(__builtin_offsetof(Part, h40) == 0x30, "Part.h40");
+static_assert(__builtin_offsetof(Part, h42) == 0x32, "Part.h42");
+static_assert(__builtin_offsetof(Part, c44) == 0x34, "Part.c44");
+static_assert(__builtin_offsetof(Part, c45) == 0x35, "Part.c45");
+static_assert(__builtin_offsetof(Part, b46) == 0x36, "Part.b46");
+static_assert(__builtin_offsetof(Part, w48) == 0x38, "Part.w48");
+static_assert(__builtin_offsetof(Part, h52) == 0x3c, "Part.h52");
+static_assert(__builtin_offsetof(Part, h54) == 0x3e, "Part.h54");
+static_assert(__builtin_offsetof(Part, v56) == 0x40, "Part.v56");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Res, p0) == 0x0, "Res.p0");
+static_assert(__builtin_offsetof(Res, p4) == 0x8, "Res.p4");
+static_assert(__builtin_offsetof(Res, child) == 0x28, "Res.child");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Emit, p0) == 0x0, "Emit.p0");
+static_assert(__builtin_offsetof(Emit, list) == 0x20, "Emit.list");
+static_assert(__builtin_offsetof(Emit, res) == 0x30, "Emit.res");
+static_assert(__builtin_offsetof(Emit, p28) == 0x38, "Emit.p28");
+static_assert(__builtin_offsetof(Emit, h90) == 0x76, "Emit.h90");
+static_assert(__builtin_offsetof(Emit, p92) == 0x78, "Emit.p92");
+static_assert(__builtin_offsetof(Emit, h96) == 0x7c, "Emit.h96");
+static_assert(__builtin_offsetof(Emit, h98) == 0x7e, "Emit.h98");
+static_assert(__builtin_offsetof(Emit, h100) == 0x80, "Emit.h100");
+static_assert(__builtin_offsetof(Emit, h102) == 0x82, "Emit.h102");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Mg, p0) == 0x0, "Mg.p0");
+static_assert(__builtin_offsetof(Mg, w48) == 0x54, "Mg.w48");
+static_assert(__builtin_offsetof(Mg, cur) == 0x58, "Mg.cur");
+static_assert(__builtin_offsetof(Mg, mtx) == 0x60, "Mg.mtx");
+#endif

@@ -1,3 +1,4 @@
+#include "gfx/SplReal.h"
 #include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // RC_020f8b44 (companion of RC_020f7a5c): G011b without its first ten functions (the Rb state machine 0x020f86c0-0x020f8b44, now in the BGM file RC_020f7a5c).
@@ -59,7 +60,12 @@ struct ResInfo {
 };
 
 struct Res {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    ResInfo * p0;  // DS +0x0
+#else
     ResInfo *p0;
+#endif
 };
 
 struct Fl {
@@ -78,6 +84,27 @@ struct Fx3 {
 };
 
 struct Entry {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealEmitter)
+    Entry * next;  // DS +0x0
+    u8 p4[0x10];  // DS +0x4 [0x8]
+    u32 w12;  // DS +0xc
+    u8 hpad_0[0x4];
+    uptr w16;  // DS +0x10
+    u32 w20;  // DS +0x14
+    u8 hpad_1[0x4];
+    Res * res;  // DS +0x18
+    Fl fl;  // DS +0x1c
+    s32 px;  // DS +0x20
+    s32 py;  // DS +0x24
+    s32 pz;  // DS +0x28
+    u8 p2c[0xc];  // DS +0x2c [0xc]
+    u16 h38;  // DS +0x38
+    u8 p3a[0x2e];  // DS +0x3a [0x2e]
+    u32 pad68a : 16;
+    u32 f16 : 3;
+    u32 pad68b : 13;
+#else
     Entry *next;
     u8 p4[8];
     u32 w12;
@@ -94,9 +121,23 @@ struct Entry {
     u32 pad68a : 16;
     u32 f16 : 3;
     u32 pad68b : 13;
+#endif
 };
 
 struct Mgr {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealManager)
+    uptr w0;  // DS +0x0
+    Entry * act;  // DS +0x4
+    u32 w8;  // DS +0x8
+    u8 hpad_0[0x4];
+    Entry * fr;  // DS +0xc
+    u8 p10[0x18];  // DS +0x10 [0xc]
+    u8 * tab;  // DS +0x1c
+    u8 p20[0x18];  // DS +0x20 [0x14]
+    Entry * cur;  // DS +0x34
+    uptr w38;  // DS +0x38
+#else
     u32 w0;
     Entry *act;
     u32 w8;
@@ -106,6 +147,7 @@ struct Mgr {
     u8 p20[0x14];
     Entry *cur;
     u32 w38;
+#endif
 };
 
 // resource-table entries (texture / palette loader, callbacks supplied by the caller)
@@ -126,31 +168,69 @@ struct SEnt {
 };
 
 struct Slot {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealTex)
+    SEnt * e;  // DS +0x0
+    u32 w4;  // DS +0x4
+    u32 w8;  // DS +0x8
+    u32 w12;  // DS +0xc
+    u32 w16;  // DS +0x10
+#else
     SEnt *e;
     u32 w4;
     u32 w8;
     u32 w12;
     u32 w16;
+#endif
 };
 
 typedef u32 (*Cb)(u32, u32);
 
 struct Fp {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealManager)
+    void *(*alloc)(u32);  // DS +0x0
+    u8 p4[0x30];  // DS +0x4 [0x18]
+    u8 * p1c;  // DS +0x1c
+    Slot * tab;  // DS +0x20
+    u16 h24;  // DS +0x24
+    u16 h26;  // DS +0x26
+#else
     void *(*alloc)(u32);
     u8 p4[0x18];
     u8 *p1c;
     Slot *tab;
     u16 h24;
     u16 h26;
+#endif
 };
 
 
 struct Item8 {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealField)
+    void * fn;  // DS +0x0
+    u8 * p4;  // DS +0x4
+#else
     void *fn;
     u8 *p4;
+#endif
 };
 
 struct Pool32 {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealRes)
+    u8 * p0;  // DS +0x0
+    u8 * p4;  // DS +0x4
+    u8 * p8;  // DS +0x8
+    u8 * pc;  // DS +0xc
+    u8 * p10;  // DS +0x10
+    u8 * p14;  // DS +0x14
+    Item8 * p18;  // DS +0x18
+    u16 h1c;  // DS +0x1c
+    u16 pad1e;  // DS +0x1e
+    u8 hpad_0[0x4];
+#else
     u8 *p0;
     u8 *p4;
     u8 *p8;
@@ -160,6 +240,7 @@ struct Pool32 {
     Item8 *p18;
     u16 h1c;
     u16 pad1e;
+#endif
 };
 
 extern "C" {
@@ -211,10 +292,22 @@ static inline BOOL nz(u32 v) { return v != 0; }
 extern "C" void SPL_Load(Fp *self, u8 *base) {
     s32 i;
     u32 off = 0;
+#ifdef HOST
+    self->p1c = (u8 *)self->alloc(self->h24 * SPL_RES_SIZE);
+#else
     self->p1c = (u8 *)self->alloc(self->h24 << 5);
+#endif
+#ifdef HOST
+    MI_CpuFill8(self->p1c, 0, self->h24 * SPL_RES_SIZE);
+#else
     MI_CpuFill8(self->p1c, 0, self->h24 << 5);
+#endif
     for (i = 0; i < self->h24; i++) {
+#ifdef HOST
+        Pool32 *p = (Pool32 *)(self->p1c + i * SPL_RES_SIZE);
+#else
         Pool32 *p = (Pool32 *)(self->p1c + i * 32);
+#endif
         HdrBits h;
         p->p0 = base + off;
         off += 0x54;
@@ -251,7 +344,11 @@ extern "C" void SPL_Load(Fp *self, u8 *base) {
         }
         p->h1c = h.b24 + h.b25 + h.b26 + h.b27 + h.b28 + h.b29;
         if (p->h1c != 0) {
+#ifdef HOST
+            Item8 *it = (Item8 *)self->alloc(p->h1c * SPL_FIELD_SIZE);
+#else
             Item8 *it = (Item8 *)self->alloc(p->h1c << 3);
+#endif
             p->p18 = it;
             it = p->p18;
             if (h.b24) {
@@ -384,7 +481,11 @@ extern "C" Entry *SPL_Create(Mgr *m, s32 idx, void *p) {
     Entry *e = 0;
     if (m->fr != 0) {
         e = spl_pop_front(&m->fr);
+#ifdef HOST
+        spl_init(e, m->tab + idx * SPL_RES_SIZE, p);
+#else
         spl_init(e, m->tab + idx * 32, p);
+#endif
         spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
     }
@@ -396,7 +497,11 @@ extern "C" Entry *SPL_CreateWithInitialize(Mgr *m, u32 idx, void (*cb)(Entry *))
     if (m->fr != 0) {
         Fx3 z = {0, 0, 0};
         e = spl_pop_front(&m->fr);
+#ifdef HOST
+        spl_init(e, m->tab + idx * SPL_RES_SIZE, &z);
+#else
         spl_init(e, m->tab + idx * 32, &z);
+#endif
         if (cb != 0) cb(e);
         spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
@@ -413,3 +518,69 @@ extern "C" void func_020f8b44(Mgr *m, Entry *e, Fx3 *v) {
 
 // ---- file-scope objects (autoload_3 .bss 0x021f5c38-0x021f5c3c)
 u16 data_021f5c38;
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Entry, next) == 0x0, "Entry.next");
+static_assert(__builtin_offsetof(Entry, p4) == 0x8, "Entry.p4");
+static_assert(__builtin_offsetof(Entry, w12) == 0x18, "Entry.w12");
+static_assert(__builtin_offsetof(Entry, w16) == 0x20, "Entry.w16");
+static_assert(__builtin_offsetof(Entry, w20) == 0x28, "Entry.w20");
+static_assert(__builtin_offsetof(Entry, res) == 0x30, "Entry.res");
+static_assert(__builtin_offsetof(Entry, fl) == 0x38, "Entry.fl");
+static_assert(__builtin_offsetof(Entry, px) == 0x3c, "Entry.px");
+static_assert(__builtin_offsetof(Entry, py) == 0x40, "Entry.py");
+static_assert(__builtin_offsetof(Entry, pz) == 0x44, "Entry.pz");
+static_assert(__builtin_offsetof(Entry, p2c) == 0x48, "Entry.p2c");
+static_assert(__builtin_offsetof(Entry, h38) == 0x54, "Entry.h38");
+static_assert(__builtin_offsetof(Entry, p3a) == 0x56, "Entry.p3a");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Mgr, w0) == 0x0, "Mgr.w0");
+static_assert(__builtin_offsetof(Mgr, act) == 0x8, "Mgr.act");
+static_assert(__builtin_offsetof(Mgr, w8) == 0x10, "Mgr.w8");
+static_assert(__builtin_offsetof(Mgr, fr) == 0x18, "Mgr.fr");
+static_assert(__builtin_offsetof(Mgr, p10) == 0x20, "Mgr.p10");
+static_assert(__builtin_offsetof(Mgr, tab) == 0x38, "Mgr.tab");
+static_assert(__builtin_offsetof(Mgr, p20) == 0x40, "Mgr.p20");
+static_assert(__builtin_offsetof(Mgr, cur) == 0x58, "Mgr.cur");
+static_assert(__builtin_offsetof(Mgr, w38) == 0x60, "Mgr.w38");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Slot, e) == 0x0, "Slot.e");
+static_assert(__builtin_offsetof(Slot, w4) == 0x8, "Slot.w4");
+static_assert(__builtin_offsetof(Slot, w8) == 0xc, "Slot.w8");
+static_assert(__builtin_offsetof(Slot, w12) == 0x10, "Slot.w12");
+static_assert(__builtin_offsetof(Slot, w16) == 0x14, "Slot.w16");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Item8, fn) == 0x0, "Item8.fn");
+static_assert(__builtin_offsetof(Item8, p4) == 0x8, "Item8.p4");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Pool32, p0) == 0x0, "Pool32.p0");
+static_assert(__builtin_offsetof(Pool32, p4) == 0x8, "Pool32.p4");
+static_assert(__builtin_offsetof(Pool32, p8) == 0x10, "Pool32.p8");
+static_assert(__builtin_offsetof(Pool32, pc) == 0x18, "Pool32.pc");
+static_assert(__builtin_offsetof(Pool32, p10) == 0x20, "Pool32.p10");
+static_assert(__builtin_offsetof(Pool32, p14) == 0x28, "Pool32.p14");
+static_assert(__builtin_offsetof(Pool32, p18) == 0x30, "Pool32.p18");
+static_assert(__builtin_offsetof(Pool32, h1c) == 0x38, "Pool32.h1c");
+static_assert(__builtin_offsetof(Pool32, pad1e) == 0x3a, "Pool32.pad1e");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Res, p0) == 0x0, "Res.p0");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Fp, alloc) == 0x0, "Fp.alloc");
+static_assert(__builtin_offsetof(Fp, p4) == 0x8, "Fp.p4");
+static_assert(__builtin_offsetof(Fp, p1c) == 0x38, "Fp.p1c");
+static_assert(__builtin_offsetof(Fp, tab) == 0x40, "Fp.tab");
+static_assert(__builtin_offsetof(Fp, h24) == 0x48, "Fp.h24");
+static_assert(__builtin_offsetof(Fp, h26) == 0x4a, "Fp.h26");
+#endif

@@ -1,4 +1,12 @@
 #include "uptr.h"
+// the particle runtime's heap (0xc000 on the DS; its objects are larger on 64-bit hosts)
+#ifdef HOST64
+#define EFFECT_SPL_HEAP_SIZE 0x18000
+#else
+#define EFFECT_SPL_HEAP_SIZE 0xc000
+#endif
+#include "gfx/SplReal.h"
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -141,8 +149,14 @@ union EffectTintColor {
 };
 
 struct Unk_0209002c_Handle {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in SplRealManager)
+    u8 unk_00[0x54];  // DS +0x0 [0x30]
+    u32 unk_30;  // DS +0x30
+#else
     u8 unk_00[0x30];
     u32 unk_30;
+#endif
 };
 
 struct EffectSplArchive {
@@ -248,7 +262,7 @@ extern s16 sEffectSeasonTint1[24];
 extern s16 sEffectSeasonTint2[24];
 extern s16 sEffectSeasonTint3[24];
 extern s16 sEffectSeasonTint[24];
-extern u32 sEffectModelAnimFiles[4][3];
+extern uptr sEffectModelAnimFiles[4][3];  // (path pointers)
 extern void (*gEffectSplDefaultInitCbs[10])(EffectSplEmitter *);
 extern const u32 sEffectRes06EmitterIds[8];
 extern const u32 sEffectRes7FEmitterIds[7];
@@ -577,7 +591,7 @@ s16 sEffectSeasonTint1[24] = {0x55f9, 0x61f1, 0x3330, 0x33eb, 0x33eb, 0x66ff, 0x
 s16 sEffectSeasonTint2[24] = {0x55f9, 0x61f1, 0x3330, 0x33eb, 0x33eb, 0x5be7, 0x5be7, 0x73a4, 0x17af, 0x17af, 0x1ff5, 0x275f, 0x275f, 0x165f, 0x9ff, 0x5bf, 0xd5f, 0x11f, 0x289f, 0x3ddf, 0x4e5e, 0x4e5e, 0x55f9, 0x0};
 s16 sEffectSeasonTint3[24] = {0x7f72, 0x7f2c, 0x4ff8, 0x53ea, 0x53ea, 0x67ea, 0x67ea, 0x7f85, 0x4fee, 0x238f, 0x238f, 0x27b5, 0x27b5, 0x27b5, 0x27b5, 0x27b5, 0x3f4c, 0x5b0d, 0x5b0d, 0x5b0d, 0x6f0e, 0x7f72, 0x7f72, 0x0};
 s16 sEffectSeasonTint[24] = {0x4a97, 0x4a97, 0x4a97, 0x4bc6, 0x53a3, 0x53a3, 0x53a3, 0x52e0, 0x3344, 0xb71, 0xb71, 0xb71, 0xb56, 0xb56, 0xb56, 0x39a, 0x39a, 0x39a, 0x22fb, 0x22fb, 0x329c, 0x329c, 0x4a97, 0x0};
-u32 sEffectModelAnimFiles[4][3] = {{(u32)sPathMpSiturenNsbca, (u32)sPathMpSiturenNsbma, (u32)sPathMpSiturenNsbva}, {(u32)sPathMpLoveNsbca, (u32)sPathMpLoveNsbma, 0}, {(u32)sPathEfWaterColNsbca, (u32)sPathEfWaterColNsbma, 0}, {(u32)sPathCraRibbon1Nsbca, (u32)sPathCraRibbon1Nsbma, 0}};
+uptr sEffectModelAnimFiles[4][3] = {{(uptr)sPathMpSiturenNsbca, (uptr)sPathMpSiturenNsbma, (uptr)sPathMpSiturenNsbva}, {(uptr)sPathMpLoveNsbca, (uptr)sPathMpLoveNsbma, 0}, {(uptr)sPathEfWaterColNsbca, (uptr)sPathEfWaterColNsbma, 0}, {(uptr)sPathCraRibbon1Nsbca, (uptr)sPathCraRibbon1Nsbma, 0}};
 void (*gEffectSplDefaultInitCbs[10])(EffectSplEmitter *) = {EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos};
 const u32 sEffectRes06EmitterIds[8] = {4, 5, 6, 7, 8, 9, 0xa, 0xb};
 const u32 sEffectRes7FEmitterIds[7] = {0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca};
@@ -822,9 +836,9 @@ BOOL EffectSplProc::onCreate()
     sEffectSplFrmHeap = NULL;
     groupCounter = 0;
     sEffectSplEmitPos = NULL;
-    sEffectSplHeapMem = Mem_Alloc(0xc000);
+    sEffectSplHeapMem = Mem_Alloc(EFFECT_SPL_HEAP_SIZE);
     if (sEffectSplHeapMem != NULL) {
-        sEffectSplFrmHeap = NNS_FndCreateFrmHeapEx(sEffectSplHeapMem, (void *)0xc000, NULL);
+        sEffectSplFrmHeap = NNS_FndCreateFrmHeapEx(sEffectSplHeapMem, (void *)EFFECT_SPL_HEAP_SIZE, NULL);
         splManager = SPL_Init((void *)EffectSpl_Alloc, 0x20, 0x64, 0x14, 0x15, 0x32);
         splManager->unk_30 = 0x8800;
         if (splManager != NULL) {
@@ -1520,3 +1534,39 @@ EffectModel::~EffectModel() {
 EffectModelGroup::~EffectModelGroup() {
 }
 
+
+#ifdef HOST64
+// EffectSplEmitter (include/gfx/EffectSplEmitter.h) views SplRealEmitter
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_00) == 0x0, "EffectSplEmitter.pad_00");
+static_assert(__builtin_offsetof(EffectSplEmitter, particles) == 0x10, "EffectSplEmitter.particles");
+static_assert(__builtin_offsetof(EffectSplEmitter, particleCount) == 0x18, "EffectSplEmitter.particleCount");
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_10) == 0x20, "EffectSplEmitter.pad_10");
+static_assert(__builtin_offsetof(EffectSplEmitter, resource) == 0x30, "EffectSplEmitter.resource");
+static_assert(__builtin_offsetof(EffectSplEmitter, stateFlags) == 0x38, "EffectSplEmitter.stateFlags");
+static_assert(__builtin_offsetof(EffectSplEmitter, posX) == 0x3c, "EffectSplEmitter.posX");
+static_assert(__builtin_offsetof(EffectSplEmitter, posY) == 0x40, "EffectSplEmitter.posY");
+static_assert(__builtin_offsetof(EffectSplEmitter, posZ) == 0x44, "EffectSplEmitter.posZ");
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_2c) == 0x48, "EffectSplEmitter.pad_2c");
+static_assert(__builtin_offsetof(EffectSplEmitter, axis) == 0x58, "EffectSplEmitter.axis");
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_42) == 0x5e, "EffectSplEmitter.pad_42");
+static_assert(__builtin_offsetof(EffectSplEmitter, radius) == 0x60, "EffectSplEmitter.radius");
+static_assert(__builtin_offsetof(EffectSplEmitter, length) == 0x64, "EffectSplEmitter.length");
+static_assert(__builtin_offsetof(EffectSplEmitter, initVelMagPos) == 0x68, "EffectSplEmitter.initVelMagPos");
+static_assert(__builtin_offsetof(EffectSplEmitter, initVelMagAxis) == 0x6c, "EffectSplEmitter.initVelMagAxis");
+static_assert(__builtin_offsetof(EffectSplEmitter, baseScale) == 0x70, "EffectSplEmitter.baseScale");
+static_assert(__builtin_offsetof(EffectSplEmitter, particleLife) == 0x74, "EffectSplEmitter.particleLife");
+static_assert(__builtin_offsetof(EffectSplEmitter, color) == 0x76, "EffectSplEmitter.color");
+static_assert(__builtin_offsetof(EffectSplEmitter, simpleCollisionY) == 0x78, "EffectSplEmitter.simpleCollisionY");
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_60) == 0x7c, "EffectSplEmitter.pad_60");
+static_assert(__builtin_offsetof(EffectSplEmitter, genInterval) == 0x84, "EffectSplEmitter.genInterval");
+static_assert(__builtin_offsetof(EffectSplEmitter, baseAlpha) == 0x85, "EffectSplEmitter.baseAlpha");
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_6a) == 0x86, "EffectSplEmitter.pad_6a");
+static_assert(__builtin_offsetof(EffectSplEmitter, callback) == 0x98, "EffectSplEmitter.callback");
+static_assert(__builtin_offsetof(EffectSplEmitter, pad_7c) == 0xa0, "EffectSplEmitter.pad_7c");
+static_assert(__builtin_offsetof(EffectSplEmitter, tintVariant) == 0xa8, "EffectSplEmitter.tintVariant");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Unk_0209002c_Handle, unk_00) == 0x0, "Unk_0209002c_Handle.unk_00");
+static_assert(__builtin_offsetof(Unk_0209002c_Handle, unk_30) == 0x54, "Unk_0209002c_Handle.unk_30");
+#endif
