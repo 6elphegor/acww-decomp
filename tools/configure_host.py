@@ -32,6 +32,8 @@ parser.add_argument("--extra-cflags", default="",
                          "use with --suffix)")
 parser.add_argument("--suffix", default="",
                     help="a separate build: build_host64<suffix>.ninja, build/host64<suffix>_<v>")
+parser.add_argument("--regen-gen", action="store_true",
+                    help="regenerate modern/gen/ from the DS builds' outputs (build/usa/delinks, build/modern_usa/arm9.ld)")
 parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
@@ -138,18 +140,24 @@ def main():
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             n.build(o, rule, str(s))
             objs.append(o)
+        # The data between the decomp's units (gap objects of the DS build's delinking) and the linker labels inside
+        # variables (the GCC DS build's script): generated once from those builds, which this branch no longer runs,
+        # and kept in modern/gen/. --regen-gen rebuilds them from build/usa/delinks and build/modern_usa/arm9.ld.
         n.rule("gaps", f"python3 tools/host_gaps.py {'--x86-64 --own-slots tools/host_gap_pointers.txt ' if X64 else ''}$in $out",
                description="GAPS $out")
-        gaps_c = str(build / "gaps.c")
-        n.build(gaps_c, "gaps", "tools/host_objects_aliases.txt", implicit=["tools/host_gaps.py", "tools/host_gap_pointers.txt"])
+        gen_gaps = f"modern/gen/gaps_{'x86_64' if X64 else 'i386'}.c"
+        if args.regen_gen:
+            n.build(gen_gaps, "gaps", "tools/host_objects_aliases.txt", implicit=["tools/host_gaps.py", "tools/host_gap_pointers.txt"])
+        gaps_c = gen_gaps
         n.build(str(build / "gaps.o"), "hostcc", gaps_c)
         objs.append(str(build / "gaps.o"))
         for s in sources(Path("modern/ds"), (".c",)):
             o = str(build / s.with_suffix(".o"))
             n.build(o, "cc", str(s))
             objs.append(o)
-        provides = str(build / "provides.ld")
-        n.build(provides, "provides", "build/modern_usa/arm9.ld", implicit=["tools/host_provides.py"])
+        provides = "modern/gen/provides.ld"
+        if args.regen_gen:
+            n.build(provides, "provides", "build/modern_usa/arm9.ld", implicit=["tools/host_provides.py"])
         # the game (and its own C library) in one object with the C library names made local (host_localize.py)
         game_objs = [o for o in objs if "/modern/host/" not in o and not o.endswith("/gaps.o")]
         # DTCM's variables at their DS address (0x027e0000): the SDK computes DTCM addresses from its first one
