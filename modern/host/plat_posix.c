@@ -6,7 +6,13 @@
 #include <pthread.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <time.h>
+#include <unistd.h>
+#if defined(__GLIBC__) || defined(__APPLE__)
+#include <execinfo.h>
+#define HAVE_EXECINFO 1
+#endif
 
 #include "plat.h"
 
@@ -35,6 +41,11 @@ void host_plat_sleep_until_ns(uint64_t t) {
 
 void host_plat_sleep_ms(unsigned ms) { host_plat_sleep_until_ns(host_plat_time_ns() + (uint64_t)ms * 1000000u); }
 
+int host_plat_localtime(struct tm *out) {
+    time_t now = time(0);
+    return localtime_r(&now, out) != 0;
+}
+
 struct Start { void (*fn)(void *); void *arg; };
 static void *thread_main(void *p) {
     struct Start s = *(struct Start *)p;
@@ -58,6 +69,47 @@ int host_plat_thread_start(void (*fn)(void *), void *arg) {
     if (err) { free(s); return 0; }
     pthread_detach(t);
     return 1;
+}
+
+static size_t page_size(void) {
+    static size_t page;
+    if (!page) page = (size_t)sysconf(_SC_PAGESIZE);
+    return page;
+}
+
+// the stack's pages with one more below them that faults (an overflow is a crash, not a corruption)
+void *host_plat_stack_alloc(size_t n, int flags) {
+    size_t page = page_size();
+    n = (n + page - 1) & ~(page - 1);
+    (void)flags;
+    unsigned char *p = mmap(0, n + page, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (p == MAP_FAILED) return 0;
+    mprotect(p, page, PROT_NONE);
+    return p + page;
+}
+
+void host_plat_stack_free(void *stack, size_t n) {
+    if (!stack) return;
+    size_t page = page_size();
+    n = (n + page - 1) & ~(page - 1);
+    munmap((unsigned char *)stack - page, n + page);
+}
+
+int host_plat_backtrace(void **pcs, int n) {
+#if HAVE_EXECINFO
+    return backtrace(pcs, n);
+#else
+    (void)pcs; (void)n;
+    return 0;
+#endif
+}
+
+void host_plat_print_backtrace(void) {
+#if HAVE_EXECINFO
+    void *bt[32];
+    int n = backtrace(bt, 32);
+    backtrace_symbols_fd(bt, n, 2);
+#endif
 }
 
 #endif

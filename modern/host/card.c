@@ -5,26 +5,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "host.h"
+#include "plat.h"
 
 #define ROMCTRL 0x040001a4u
 static const u8 *sRom;
 static u32 sRomSize;
 static u32 sAddr, sLeft, sIsData;
 
+// the whole image in memory (read once; the DS's cards hold at most 512 MB, ACWW's is 16 MB)
 void card_init(const char *path) {
-    int fd = open(path, O_RDONLY);
-    struct stat st;
-    if (fd < 0 || fstat(fd, &st) < 0) { perror(path); exit(1); }
-    sRomSize = (u32)st.st_size;
-    sRom = mmap(0, sRomSize, PROT_READ, MAP_PRIVATE, fd, 0);
-    if (sRom == MAP_FAILED) host_fatal("can't map the ROM");
-    close(fd);
+    size_t n;
+    sRom = host_plat_read_file(path, &n);
+    if (!sRom) { perror(path); exit(1); }
+    if (n > 0xffffffffu) host_fatal("the ROM file is larger than 4 GB");
+    sRomSize = (u32)n;
 }
 
 const u8 *host_rom(u32 *size) { *size = sRomSize; return sRom; }

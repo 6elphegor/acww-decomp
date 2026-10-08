@@ -7,7 +7,34 @@
 
 void host_coro_boot(void);
 
+// x86-64 Windows: the 256-byte frame of coro_switch.S (32 words: xmm6-15, StackLimit, StackBase, DeallocationStack,
+// r15 r14 r13 r12 rdi rsi rbx rbp, return address), with the stack's own bounds for the TIB.
+// (HOST_CORO_WIN64_TEST: the same for the Linux test of that code, modern/host/tests/coro_win64_test.c.)
+#if defined(__x86_64__) && (defined(_WIN32) || defined(HOST_CORO_WIN64_TEST))
+static void *prepare_win64(void *stack, size_t size, void (*fn)(void *), void *arg, void (*boot)(void)) {
+    uintptr_t top = ((uintptr_t)stack + size) & ~(uintptr_t)15;
+    uint64_t *sp = (uint64_t *)top - 32;   // sp = top after the frame is popped
+    memset(sp, 0, 32 * sizeof *sp);
+    sp[20] = (uint64_t)(uintptr_t)stack;   // StackLimit: the lowest usable address (all of the stack is committed)
+    sp[21] = (uint64_t)top;                // StackBase
+    sp[22] = (uint64_t)(uintptr_t)stack;   // DeallocationStack
+    sp[25] = (uint64_t)(uintptr_t)arg;     // r13
+    sp[26] = (uint64_t)(uintptr_t)fn;      // r12
+    sp[31] = (uint64_t)(uintptr_t)boot;
+    return sp;
+}
+#endif
+#if defined(__x86_64__) && defined(HOST_CORO_WIN64_TEST)
+void host_coro_boot_w64(void);
+void *host_coro_prepare_w64(void *stack, size_t size, void (*fn)(void *), void *arg) {
+    return prepare_win64(stack, size, fn, arg, host_coro_boot_w64);
+}
+#endif
+
 void *host_coro_prepare(void *stack, size_t size, void (*fn)(void *), void *arg) {
+#if defined(__x86_64__) && defined(_WIN32)
+    return prepare_win64(stack, size, fn, arg, host_coro_boot);
+#else
     uintptr_t top = ((uintptr_t)stack + size) & ~(uintptr_t)15;
 #if defined(__i386__)
     // edi esi ebx ebp ret, then host_coro_boot runs with esp = top (16-aligned)
@@ -35,5 +62,6 @@ void *host_coro_prepare(void *stack, size_t size, void (*fn)(void *), void *arg)
     return sp;
 #else
 #error "coro.c: no stack switch for this CPU yet"
+#endif
 #endif
 }

@@ -108,7 +108,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 | SIGVTALRM hang guard every 2 ms of CPU time (`setitimer(ITIMER_VIRTUAL)`) | hw.c:759-782, :919-928; `EINTR` loop at hw.c:115 | Never fired in 25001 play frames | No Windows equivalent; reads ucontext | A report-only watchdog (thread or per-frame counter); explicit `host_poll()` at any spin site it reports |
 | SIGPROF sampler (`ACWW_PROFILE`), SIGINT dump, `ACWW_WATCH` (mprotect + trap flag), `ACWW_NOEMULATE` | hw.c:710-728, :784-808, :491-501, :647-655 | Debugging only | Linux/x86 only | Keep behind `#if HOST_DEBUG_POSIX`; elsewhere use the platform debugger |
 | Fault reporting with frame-pointer walk and `execinfo` `backtrace` | hw.c:480-489, :643-666, :842-852 | Crash reporting | glibc | Optional per-platform crash handler |
-| Stack switching for game threads | coro_switch.S (i386, x86-64 System V, arm64 incl. Apple `_` prefix), coro.c | Yes | **Windows x64 missing** (`#error` at coro_switch.S:108: needs rdi, rsi, xmm6-15 and the TIB stack bounds) | Windows: a variant that also saves rdi, rsi, xmm6-15 and the TIB stack fields, or Fibers (`CreateFiber`/`SwitchToFiber`). The arm64 code exists but has never run |
+| Stack switching for game threads | coro_switch.S (i386, x86-64 System V, x86-64 Windows, arm64 incl. Apple `_` prefix), coro.c | Yes | ~~Windows x64 missing~~ **written (4.3)**: saves rdi, rsi, xmm6-15 too and switches the TIB's stack bounds; tested on Linux through `ms_abi` (`coro-win64-test`), not yet on Windows | The arm64 code exists but has never run (4.4) |
 | `ucontext` | hw.c:21, :31-43, :541-553 | Only in the handlers above | glibc register names | Goes away with the handlers |
 | ~~`-fno-pie`/`-no-pie`, `-Ttext-segment`, `--section-start`~~ | – | – | – | **Done (3.3)** on x86-64: `-fPIE -pie`; i386 keeps `-fno-pie`/`-no-pie` (default fixed address, no options) |
 
@@ -149,7 +149,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 - **Not emulated today:** HBlank per-line effects (`Sky_HBlankMain`/`Sub` are stubs, gaps_code.c:8-9); display capture works only as far as melonDS does it.
 - **melonDS build.** Patched by tools/host/melonds.patch (192 lines: GPU3D `HostDrain`, `HostMarkPaletteOAMDirty`, CPU halt hooks). i386 links a 32-bit core (`build-core32`), x86-64 links `build-core` with JIT and GDB stub compiled in but unused (configure_host.py:73-75). melonDS itself builds on macOS arm64 and Windows, so it can stay as the temporary renderer on those hosts. Its only blocker there is the GPL licence.
 - **Frontend.**
-  - frontend.c (`shm_open`, `fork`, `execl` of the 64-bit SDL2 viewer: frontend.c:22-48) exists only because the i386 game process can't load the 64-bit system SDL.
+  - ~~frontend.c (`shm_open`, `fork`, `execl` of the 64-bit SDL2 viewer) exists only because the i386 game process can't load the 64-bit system SDL.~~ **4.1:** the 64-bit builds have SDL2 in their own process (frontend_sdl.c); the viewer link (frontend_viewer.c) is built for i386 only.
   - The `AcwwShm` struct (frontend.h) carries keys, touch, 2 screens and a 16384-frame stereo audio ring at 32728 Hz.
   - The viewer uses 17 SDL2 calls (window, renderer, streaming texture, events, audio device).
 - **Sound** is already native: snd7 (driver, sequencer, SPU mixer) writes to the ring and to WAV (snd7/output.c).
@@ -178,7 +178,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 | Mangled C++ names declared as C | **0 (2.5)** (was 47 in 17 files + 24 in proto headers) | – | – | Done: member functions, C functions in the defining unit |
 | Endianness | Little-endian everywhere | – | – | Nothing |
 | Platform macros in game code | `__x86_64__`/`__i386__`/`__linux__`: 0 in src/include (only `__LP64__` ×8) | – | – | Clean |
-| GNU extensions in the runtime | `typeof` (pxi7.c:27, :385), `localtime_r` (pxi7.c:165), `clock_nanosleep TIMER_ABSTIME` (hw.c:115; **absent on macOS**), `memfd_create`, `MAP_FIXED_NOREPLACE`, `MAP_32BIT` (Linux only), `shm_open`/`fork` (frontend.c), `mmap` of the ROM (card.c:25), `execinfo` | – | – | Platform layer (`modern/host/plat_posix.c`, `plat_win32.c`) or SDL |
+| GNU extensions in the runtime | ~~`typeof`, `localtime_r`, `clock_nanosleep`, `shm_open`/`fork` in the 64-bit builds, `mmap` of the ROM, `execinfo`~~ (4.2: plat.h); ~~`memfd_create`, `MAP_32BIT`~~ (gone, 3.3); left: `MAP_FIXED_NOREPLACE` (Linux only: the `ACWW_HIGHMEM` harness) | – | – | Platform layer (`modern/host/plat_posix.c`, `plat_win32.c`, `plat_common.c`) or SDL |
 
 ---
 
@@ -652,6 +652,55 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
 24. **4.1** In-process SDL frontend (window, input, audio callback on the ring) for 64-bit builds; drop `shm_open`/`fork`/`execl`. The viewer stays only for i386, if i386 is kept at all.
 25. **4.2** `modern/host/plat.h` with POSIX and Win32 implementations: monotonic time, sleep-until, read the ROM file into memory (instead of `mmap`), local time, stack allocation, optional backtrace. `typeof` → C23 `__typeof__` or an explicit type.
 26. **4.3** Coroutines on Windows x64 (an asm variant or Fibers). The arm64 path of coro_switch.S has never run.
+
+**Steps 4.1-4.3 done (2026-10-08).** What was done and measured:
+- **4.1** `modern/host/frontend_sdl.c` (`HOST_FRONTEND_SDL`, the x86-64 build; `configure_host.py` links the system's
+  `libSDL2-2.0.so.0`, headers from `--sdl2`): window with both screens (letterboxed, F11 1x/2x/3x, Alt+Enter full
+  screen), keyboard (scancodes), game controllers (positional face buttons, D-pad / left stick, shoulders and
+  triggers), mouse and finger on the bottom screen as the touch panel, sound by an SDL audio callback that reads the
+  AcwwShm ring (the viewer's rate control, with acquire/release on the ring's indices). The SDL calls run on an 8 MB
+  stack of their own (a coroutine the VBlank switches to and back), not on the game thread that happens to take the
+  VBlank. `frontend.c` keeps the common part (the frame published, ACWW_KEYS, the keys and touch read back);
+  `frontend_viewer.c` (shm_open / fork / execl) is compiled only without `HOST_FRONTEND_SDL`, i.e. for i386, which
+  also is the only build that makes `acww-viewer`. `ACWW_HEADLESS` opens no backend at all, as before. Checked with
+  `SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy` (and `disk`): `ACWW_WINSHOT` (the window's drawable read back before the
+  present) at frames 2500 and 3000 is the `ACWW_SHOT` screenshot scaled 2x pixel for pixel (512x768, 0 differing
+  pixels); with `ACWW_RTC` pinned to the headless default, a window run's screenshots and WAV are identical to a
+  headless run's (window runs otherwise use the host's clock, so they differ from headless ones by design).
+  The same with `SDL_VIDEODRIVER=offscreen`. Sound: a paced window run to frame 1800 with `SDL_AUDIODRIVER=disk`: the
+  device's output has the WAV's loudness envelope (logo jingle, then the title music), about 1 s later (the device
+  plays from start-up on), and 0.1 s windows of it correlate with the WAV at 0.98-0.998 where the music doesn't
+  repeat. Not checked here (no display, no controller): real keyboard, mouse, finger and controller input, F11 /
+  Alt+Enter, a GL renderer.
+  One window run (host clock, the first of 31) crashed at frame 1434 in `FieldVillagerAi_ChangeState` (ov068, a
+  villager's state change in the attract demo, null address); 30 more host-clock runs (12 headless with the pre-change
+  build, 18 in a window) and every run with a pinned clock went through. It looks like a clock-dependent 64-bit
+  game bug, not the frontend's; not reproduced, so not explained.
+- **4.2** `plat.h` grew: `host_plat_localtime`, `host_plat_stack_alloc` / `_free` (guard page below the stack;
+  `HOST_PLAT_LOW4G` = MAP_32BIT on x86-64 Linux, gone with 3.3), `host_plat_read_file` (plat_common.c, stdio: the ROM is read into
+  memory instead of `mmap`), `host_plat_backtrace` / `host_plat_print_backtrace` (execinfo on glibc/macOS,
+  `CaptureStackBackTrace` on Windows). POSIX and Win32 implementations (plat_win32.c still uncompiled: no Windows
+  toolchain here). Users switched: card.c (no mmap/open/fstat), pxi7.c (`localtime_r` → `host_plat_localtime`,
+  `_exit` → C99 `_Exit`, `typeof` → named structs), os.c (stacks), debug_posix.c (backtrace), hw.c (`_Exit`).
+  Counts: `typeof` in modern/host 2 → **0**; files in modern/host including POSIX headers (`unistd.h`, `sys/mman.h`,
+  `fcntl.h`, `execinfo.h`, `pthread.h`...) 9 → 6, and those 6 are the expected ones: plat_posix.c, debug_posix.c and
+  guards.c (POSIX-only debugging aids), frontend_viewer.c (i386 only), hw.c and main.c (the memory setup: memfd and
+  fixed mappings, which 3.3 removes).
+- **4.3** coro_switch.S has an x86-64 Windows variant: rbx rbp rdi rsi r12-r15 and xmm6-15 saved, and the TIB's
+  StackBase / StackLimit / DeallocationStack (gs:0x08, 0x10, 0x1478) saved and switched with the stack (the system
+  checks the stack pointer against them in exception dispatch, unwinding and `__chkstk`); a new stack's first entry
+  leaves the 32-byte shadow space and the 16-byte alignment the convention wants. coro.c builds its 256-byte frame.
+  Chosen over Fibers because it keeps one mechanism (and `host_dump_threads`' frame walk) on every host and needs no
+  fiber per DS thread. Test: `modern/host/tests/coro_win64_test.c` (`ninja -f build_host64.ninja coro-win64-test`)
+  assembles the same code on Linux with `HOST_CORO_WIN64_TEST` (the TIB through a pointer instead of gs) and calls it
+  with GCC's `ms_abi`: every callee-saved register of the Microsoft convention survives a switch while the other side
+  overwrites them all, the coroutines get their argument, an aligned stack and their shadow space inside their stack,
+  the TIB fields follow the running stack and come back for the thread's own, 2001 switches with doubles live. Each of
+  five deliberate breakages (no xmm15 restore, no StackBase restore, 16 instead of 32 bytes of shadow space, rdi or
+  rsi not saved) makes it fail. Not checked: the real gs-relative TIB access and Windows' own use of the fields.
+- Checks: i386 oracle quick (pictures and sound) and play identical to the captures; x86-64 quick-raw and play-raw
+  identical to the pre-change build's run (every screenshot and the WAV byte for byte); `host_strict_errors.sh` 0;
+  `coro-win64-test` passes.
 27. **4.4** Cross builds checked on this machine before any hardware:
     - **aarch64-linux** with a cross gcc/clang plus `qemu-aarch64` user mode (downloadable without sudo). This exercises arm64 division, PMF encoding, the coroutine switch, memory above 4 GB and unsigned-char defaults, and runs the oracle.
     - **x86_64-w64-mingw32** with llvm-mingw plus Wine (portable tarball). This exercises LLP64, MS bitfields (with `-mno-ms-bitfields`), the Win32 platform layer and the coroutine switch.

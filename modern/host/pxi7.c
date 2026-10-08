@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 #include "host.h"
 #include "host_mem.h"
+#include "plat.h"
 #include "sys/CardCmd.h"
 
 #define FIFOCNT 0x04000184u
@@ -23,10 +23,11 @@ static u32 sArm7Sync;
 
 // replies that take time on the DS (the card's SPI transfers): sent when virtual time reaches `due`. The SDK's
 // asynchronous calls rely on not completing before the caller looks at their status.
-static struct { u64 due; u32 word; } sLater[64];
+struct PxiLater { u64 due; u32 word; };
+static struct PxiLater sLater[64];
 static int sLaterCount;
 void pxi7_send_after(u32 word, u32 cycles) {
-    if (sLaterCount < 64) sLater[sLaterCount++] = (typeof(sLater[0])){host_cycles() + cycles, word};
+    if (sLaterCount < 64) sLater[sLaterCount++] = (struct PxiLater){host_cycles() + cycles, word};
 }
 u64 pxi7_next_due(void) {
     u64 d = ~0ull;
@@ -164,8 +165,7 @@ static void rtc_command(u32 data) {
     if (sRtcFixed < 0) rtc_setup();
     if (sRtcFixed) t = sRtcTime;
     else {
-        time_t now = time(0);
-        localtime_r(&now, &t);
+        if (!host_plat_localtime(&t)) memset(&t, 0, sizeof t);  // (unknown: 2000-01-01 below)
         if (t.tm_year < 100) t = (struct tm){.tm_year = 100, .tm_mday = 1, .tm_wday = 6};  // before 2000: 2000-01-01
         if (t.tm_year > 199)  // after 2099: 2099-12-31 23:59:59
             t = (struct tm){.tm_year = 199, .tm_mon = 11, .tm_mday = 31, .tm_hour = 23, .tm_min = 59, .tm_sec = 59, .tm_wday = 4};
@@ -264,7 +264,8 @@ static void card_request(u32 data) {
 // ADC values, from screen coordinates through the firmware's calibration points. During auto sampling one sample
 // (type 16) is sent per frame. Touches come from ACWW_TOUCH="frame:frames:x,y;..." for now.
 static int sTpAuto;
-static struct { u32 frame, len, x, y; } sTouch[64];
+struct TouchScript { u32 frame, len, x, y; };
+static struct TouchScript sTouch[64];
 static int sTouchCount;
 
 int frontend_touch(int *x, int *y);
@@ -334,7 +335,7 @@ static u32 pm_utility(u32 n) {
         fprintf(stderr, "host: power off requested by the game (frame %llu)\n", (unsigned long long)host_frame());
         snd7_output_close();
         frontend_shutdown();
-        _exit(0);
+        _Exit(0);
     }
     default: break;
     }
@@ -388,7 +389,7 @@ void pxi7_init(void) {
     const char *t = getenv("ACWW_TOUCH");
     while (t && *t && sTouchCount < 64) {
         unsigned fr, n, x, y;
-        if (sscanf(t, "%u:%u:%u,%u", &fr, &n, &x, &y) == 4) sTouch[sTouchCount++] = (typeof(sTouch[0])){fr, n, x, y};
+        if (sscanf(t, "%u:%u:%u,%u", &fr, &n, &x, &y) == 4) sTouch[sTouchCount++] = (struct TouchScript){fr, n, x, y};
         t = strchr(t, ';');
         if (t) t++;
     }

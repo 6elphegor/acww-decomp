@@ -250,9 +250,9 @@ static void run_events_body(void) {
                 snd7_output_close();
                 extern void frontend_shutdown(void);
                 frontend_shutdown();
-                host_exit_dumps();  // (_exit runs no atexit handlers)
+                host_exit_dumps();  // (_Exit runs no atexit handlers)
                 fprintf(stderr, "host: exit at frame %llu (ACWW_EXIT_FRAME)\n", (unsigned long long)host_frame());
-                _exit(0);
+                _Exit(0);
             }
         }
         {   // ACWW_RAMHASH=<file>: "frame hash" of main RAM (host_ram_image: the game's data and heaps on 32-bit
@@ -564,7 +564,7 @@ void host_io_ring_dump(void) {
         fprintf(stderr, "  %s %08x from %08lx\n", l->write ? "write" : "read ", l->addr, (unsigned long)l->pc);
     }
 }
-// the reports written at exit: atexit, ACWW_EXIT_FRAME (_exit), SIGINT (debug_posix.c)
+// the reports written at exit: atexit, ACWW_EXIT_FRAME (_Exit), SIGINT (debug_posix.c)
 void host_exit_dumps(void) {
     io_hist_dump();
     host_guards_exit();

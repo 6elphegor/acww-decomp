@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
+#include "plat.h"
 #include "coro.h"
 #include "host.h"
 #include "host_mem.h"
@@ -82,15 +82,9 @@ typedef struct { void *key; void *sp; u8 *stack; uptr pc; int fresh; u32 irq; } 
 static HostCtx sCtx[MAX_CTX];
 static void *sSaving;  // the thread whose OS_SaveContext is pending
 
-// A stack for the game's code (64-bit Linux: an anonymous mapping, anywhere; zero-filled, as the 32-bit build's
-// fresh heap memory)
+// A stack for the game's code (anywhere; host_plat_stack_alloc: with a guard page below it)
 void *host_stack_alloc(size_t n) {
-#if defined(__x86_64__) && defined(__linux__)
-    void *p = mmap(0, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    return p == MAP_FAILED ? 0 : p;
-#else
-    return malloc(n);
-#endif
+    return host_plat_stack_alloc(n, 0);
 }
 
 static HostCtx *ctx_of(void *key) {

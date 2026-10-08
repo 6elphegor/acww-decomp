@@ -1,5 +1,5 @@
 // Host build: stack switching for the game's threads (os.c), portable: a context is the stack pointer of a
-// suspended stack, with the callee-saved registers pushed on it (coro_switch.S: i386, x86-64 System V, arm64
+// suspended stack, with the callee-saved registers pushed on it (coro_switch.S: i386, x86-64 System V and Windows, arm64
 // incl. Apple). Everything else a C function may rely on across a call is the caller's to save.
 #ifndef HOST_CORO_H
 #define HOST_CORO_H

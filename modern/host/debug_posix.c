@@ -8,14 +8,13 @@
 // - ACWW_WATCH=addr:len (x86 Linux): write-protects the page and logs the writes in the range (single-stepping the
 //   writing instruction with the trap flag).
 // The interrupted context's registers are read from the ucontext only where its layout is known (x86 Linux);
-// elsewhere the report uses backtrace().
+// elsewhere the report uses host_plat_print_backtrace() (plat.h).
 
 #define _GNU_SOURCE
 #include "host.h"
 
 #if HOST_DEBUG_POSIX
 
-#include <execinfo.h>
 #include <link.h>
 #include <signal.h>
 #include <stdio.h>
@@ -25,6 +24,8 @@
 #include <sys/time.h>
 #include <ucontext.h>
 #include <unistd.h>
+
+#include "plat.h"
 
 #if defined(__linux__) && defined(__x86_64__)
 #define HAVE_UC_REGS 1
@@ -74,9 +75,7 @@ static void context_report(void *ctx) {
 #else
     (void)ctx;
 #endif
-    void *bt[32];
-    int n = backtrace(bt, 32);
-    backtrace_symbols_fd(bt, n, 2);
+    host_plat_print_backtrace();
 }
 
 static uintptr_t context_pc(void *ctx) {
