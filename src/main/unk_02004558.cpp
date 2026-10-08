@@ -1117,7 +1117,7 @@ BOOL Item_IsFlowerAltItem(u16 *);
 s32 Item_GetFlowerAltOrdinal(u16 *);
 BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
-BOOL Character_FindInteractionTarget(void *);
+void *Character_FindInteractionTarget(void *);
 s32 func_01ffcb0c(s32, s32);
 void *func_021065dc(void *a);
 void *func_021065f8(void *, u32);

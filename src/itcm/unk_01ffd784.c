@@ -1,11 +1,14 @@
 // mwcc-flags: -nothumb -O4,p
 // I004e: itcm 0x01ffd784-0x01ffdae0, NitroSDK OS reset / card ROM read + MI DMA parameter setters (6 functions). ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
+#include "nitro/dma_host.h"
+#include "uptr.h"
 #include "proto/itcm/unk_01ffd784.h"
 typedef signed char s8;
 typedef signed short s16;
@@ -28,9 +31,10 @@ extern vu16 data_021fcf50;
 void OSi_ReadCardRom32(u32 src, void *dst, s32 len);
 
 // MIi_DmaSetParams_wait
-void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
+void MIi_DmaSetParams_wait(u32 dmaNo, uptr src, uptr dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
-    vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
+    vu32 *p = (vu32 *)(uptr)(0x040000b0 + dmaNo * 12);
+    HostDma_Addresses(dmaNo, src, dest);
     IO_W(p, src);
     IO_W((p + 1), dest);
     IO_W((p + 2), ctrl);
@@ -45,16 +49,18 @@ void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
 }
 
 // MIi_DmaSetParams_noInt
-void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
-    vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
+void MIi_DmaSetParams_noInt(u32 dmaNo, uptr src, uptr dest, u32 ctrl) {
+    vu32 *p = (vu32 *)(uptr)(0x040000b0 + dmaNo * 12);
+    HostDma_Addresses(dmaNo, src, dest);
     IO_W(p, src);
     IO_W((p + 1), dest);
     IO_W((p + 2), ctrl);
 }
 
 // MIi_DmaSetParams_wait_noInt
-void MIi_DmaSetParams_wait_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
-    vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
+void MIi_DmaSetParams_wait_noInt(u32 dmaNo, uptr src, uptr dest, u32 ctrl) {
+    vu32 *p = (vu32 *)(uptr)(0x040000b0 + dmaNo * 12);
+    HostDma_Addresses(dmaNo, src, dest);
     IO_W(p, src);
     IO_W((p + 1), dest);
     IO_W((p + 2), ctrl);
@@ -106,8 +112,8 @@ void OSi_ReloadRomData(void) {
         c -= diff;
         a = 0x8000;
     }
-    OSi_ReadCardRom32(a, (void *)b, c);
-    OSi_ReadCardRom32(d, (void *)e, f);
+    OSi_ReadCardRom32(a, (void *)(uptr)b, c);  // (the ROM header's load addresses: DS addresses)
+    OSi_ReadCardRom32(d, (void *)(uptr)e, f);
 }
 
 // OSi_ReadCardRom32
@@ -137,7 +143,7 @@ void OSi_ReadCardRom32(u32 src, void *dst, s32 len) {
             if (w & 0x00800000) {
                 u32 d = IO_R((vu32 *)0x04100010);
                 if (i >= 0 && i < len) {
-                    *(u32 *)((u32)dst + i) = d;
+                    *(u32 *)((u8 *)dst + i) = d;
                 }
                 i += 4;
             }

@@ -16,7 +16,7 @@
 SpuChannelRegs spu_ch[16];
 u16 spu_soundcnt;
 u8 spu_capcnt[2];
-u32 spu_capdad[2];
+uintptr_t spu_capdad[2];
 u16 spu_caplen[2];
 
 typedef struct {
@@ -45,10 +45,14 @@ static const u16 kAdpcmStep[89] = {
     9493,  10442, 11487, 12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767};
 static const u8 kVolShift[4] = {4, 3, 2, 0};  // the divider: /1, /2, /4, /16 of a sample shifted up by 4
 
-// sample data is in DS main RAM (or its mirrors); anything else reads as silence
-static inline int readable(u32 a, u32 n) { return a >= 0x02000000 && a + n <= 0x03000000; }
-static inline s8 rd8(u32 a) { return readable(a, 1) ? *(const s8 *)(uintptr_t)a : 0; }
-static inline s16 rd16(u32 a) { return readable(a, 2) ? *(const s16 *)(uintptr_t)a : 0; }
+// sample data: the channel's buffer, from SOUNDxSAD to the end of its loop ((SOUNDxPNT + SOUNDxLEN) words; the
+// IMA-ADPCM header at least); anything else (no buffer, past the end) reads as silence
+static inline int readable(const SpuChannelRegs *r, u32 off, u32 n) {
+    u32 extent = (u32)r->pnt * 4 + r->len * 4;
+    return r->sad && off + n <= (extent < 4 ? 4 : extent);
+}
+static inline s8 rd8(const SpuChannelRegs *r, u32 off) { return readable(r, off, 1) ? *(const s8 *)(r->sad + off) : 0; }
+static inline s16 rd16(const SpuChannelRegs *r, u32 off) { return readable(r, off, 2) ? *(const s16 *)(r->sad + off) : 0; }
 
 static inline u32 format_of(int ch) { return spu_ch[ch].cnt >> 29 & 3; }
 static inline u32 repeat_of(int ch) { return spu_ch[ch].cnt >> 27 & 3; }
@@ -90,20 +94,20 @@ static void next_sample(int ch) {
             if (!at_end(ch)) return;
             s->pos = (s32)loop_bytes;
         }
-        s->cur = rd8(r->sad + (u32)s->pos) << 8;
+        s->cur = rd8(r, (u32)s->pos) << 8;
         break;
     case 1:  // PCM16
         if ((u32)s->pos * 2 >= total_bytes) {
             if (!at_end(ch)) return;
             s->pos = (s32)(loop_bytes / 2);
         }
-        s->cur = rd16(r->sad + (u32)s->pos * 2);
+        s->cur = rd16(r, (u32)s->pos * 2);
         break;
     case 2: {  // IMA-ADPCM: a 4-byte header (first value, step index), then 4-bit codes, low nibble first
         if (s->pos < 8) {
             if (s->pos == 0) {
-                s->adpcm = rd16(r->sad);
-                s->adpcm_idx = (u8)rd8(r->sad + 2) & 0x7f;
+                s->adpcm = rd16(r, 0);
+                s->adpcm_idx = (u8)rd8(r, 2) & 0x7f;
                 if (s->adpcm_idx > 88) s->adpcm_idx = 88;
                 s->loop_adpcm = s->adpcm;
                 s->loop_adpcm_idx = s->adpcm_idx;
@@ -119,7 +123,7 @@ static void next_sample(int ch) {
             s->loop_adpcm = s->adpcm;
             s->loop_adpcm_idx = s->adpcm_idx;
         }
-        u32 code = (u8)rd8(r->sad + ((u32)s->pos >> 1));
+        u32 code = (u8)rd8(r, (u32)s->pos >> 1);
         if (s->pos & 1) code >>= 4;
         u32 step = kAdpcmStep[s->adpcm_idx];
         s32 diff = (s32)(step >> 3);
@@ -187,12 +191,13 @@ static void capture(int idx, s32 v) {
     u32 len = (u32)(spu_caplen[idx] ? spu_caplen[idx] : 1) * 4;
     while (sCap[idx].timer >= 0x10000) {
         sCap[idx].timer = spu_ch[idx * 2 + 1].tmr + (sCap[idx].timer - 0x10000);
-        u32 a = spu_capdad[idx] + sCap[idx].pos;
+        // (the capture buffer: SNDCAPxDAD, SNDCAPxLEN words)
+        uintptr_t a = spu_capdad[idx] + sCap[idx].pos;
         if (spu_capcnt[idx] & 8) {  // PCM8
-            if (readable(a, 1)) *(s8 *)(uintptr_t)a = (s8)(v >> 8);
+            if (spu_capdad[idx] && sCap[idx].pos + 1 <= len) *(s8 *)a = (s8)(v >> 8);
             sCap[idx].pos += 1;
         } else {
-            if (readable(a, 2)) *(s16 *)(uintptr_t)a = (s16)v;
+            if (spu_capdad[idx] && sCap[idx].pos + 2 <= len) *(s16 *)a = (s16)v;
             sCap[idx].pos += 2;
         }
         if (sCap[idx].pos >= len) {

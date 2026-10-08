@@ -16,13 +16,13 @@ typedef int s32;
 typedef int BOOL;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
-typedef void (*CapCb)(void *, void *, u32, s32, s32);
+typedef void (*CapCb)(void *, void *, u32, s32, void *);
 typedef struct Cap {
     s32 active;             // 0x00
     s32 mode;               // 0x04
     s32 fmt;                // 0x08
-    u32 bufL;               // 0x0c
-    u32 bufR;               // 0x10
+    u8 *bufL;               // 0x0c
+    u8 *bufR;               // 0x10
     u32 size;               // 0x14
     u32 blkSize;            // 0x18
     s32 blkIdx;             // 0x1c
@@ -32,7 +32,7 @@ typedef struct Cap {
     s32 alarm;              // 0x2c
     s32 nBlocks;            // 0x30
     CapCb cb;               // 0x34
-    s32 cbArg;              // 0x38
+    void *cbArg;            // 0x38
     u32 fader[4];           // 0x3c
     s32 faderOn;            // 0x4c
     s32 vol;                // 0x50
@@ -83,7 +83,7 @@ extern s32 data_027e0390;
 static u64 sCaptureThreadStack[128]; // the capture thread's stack (0x021fb968-0x021fbd68)
 extern u32 data_021fb774[]; // OSMessageQueue
 extern void SND_SetChannelVolume(u32, u32, u32);
-extern u32 data_021fb794[8]; // OSMessage[8]
+extern void *data_021fb794[8]; // OSMessage[8]
 extern u32 data_021fb8a8[]; // OSThread
 extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
@@ -91,7 +91,7 @@ extern s32 NNSi_SndFaderGet(void *);
 extern void OS_InitMessageQueue(void *, void *, s32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
-extern BOOL NNSi_SndCaptureStart(s32 mode, u32 bufL, u32 bufR, u32 len, s32 fmt, u32 a5, u32 a6, s32 loop, s32 rate, s32 vol, u32 pan1, u32 pan2, s32 nBlocks, CapCb cb, s32 cbArg);
+extern BOOL NNSi_SndCaptureStart(s32 mode, void *bufL, void *bufR, u32 len, s32 fmt, s32 a5, s32 a6, BOOL loop, int rate, int vol, int pan1, int pan2, int nBlocks, CapCb cb, void *cbArg);
 extern Arc *data_021fbd68;
 extern BOOL FS_SeekFile(void *, u32, u32);
 extern s32 FS_ReadFile(void *, void *, u32);
@@ -105,7 +105,7 @@ extern void NNS_FndAppendListObject(NNSFndList *, void *);
 extern void InitHeapSection(NNSFndList *);
 extern BOOL NNS_SndArcSetup(Arc *, void *, BOOL);
 extern void *NNS_SndArcGetSeqArcInfo(s32);
-extern u32 NNS_SndArcGetFileAddress(u32);
+extern void *NNS_SndArcGetFileAddress(u32);
 extern void SymbolDisposeCallback(void *, u32, void *, u32);
 extern void FatDisposeCallback(void *, u32, void *, u32);
 extern void InfoDisposeCallback(void *, u32, void *, u32);
@@ -116,7 +116,7 @@ extern BOOL NNS_FndFreeByStateToFrmHeap(void *, u32);
 extern BOOL NNS_FndRecordStateForFrmHeap(void *, u32);
 extern void NNS_FndFreeToFrmHeap(void *, u32);
 extern void NNS_FndDestroyFrmHeap(void *);
-extern void *NNS_FndCreateFrmHeapEx(u32, u32, u16);
+extern void *NNS_FndCreateFrmHeapEx(void *, u32, u16);
 extern void NNS_SndHeapClear(SndHeap *);
 extern BOOL NewSection(SndHeap *);
 extern BOOL InitHeap(SndHeap *, void *);void InfoDisposeCallback(void *mem, u32 size, void *arg0, u32 arg1)
@@ -135,7 +135,7 @@ void SymbolDisposeCallback(void *mem, u32 size, void *arg0, u32 arg1)
 }
 
 // NNS_SndCaptureStartReverb
-BOOL NNS_SndCaptureStartEffect(void *buf, u32 size, s32 fmt, s32 rate, s32 nBlocks, CapCb cb, s32 cbArg)
+BOOL NNS_SndCaptureStartEffect(void *buf, u32 size, s32 fmt, s32 rate, s32 nBlocks, CapCb cb, void *cbArg)
 {
     volatile u32 zero;
     NNS_SndCaptureStopEffect();
@@ -145,7 +145,7 @@ BOOL NNS_SndCaptureStartEffect(void *buf, u32 size, s32 fmt, s32 rate, s32 nBloc
     zero = 0;
     MIi_CpuClear32(zero, buf, size);
     DC_FlushRange(buf, size);
-    return NNSi_SndCaptureStart(1, (u32)buf, (u32)buf + (size >> 1), size >> 1, fmt, 0, 0, 1, rate, 127, 0, 127,
+    return NNSi_SndCaptureStart(1, buf, (u8 *)buf + (size >> 1), size >> 1, fmt, 0, 0, 1, rate, 127, 0, 127,
                          nBlocks, cb, cbArg);
 }
 
@@ -210,8 +210,9 @@ void NNSi_SndCaptureMain(void)
 // ---- file-scope objects (autoload_3 .bss 0x021fb774-0x021fbd68; this definition order gives the original order after
 // mwcc's size sort)
 u32 data_021fb774[(2 * sizeof(OSThreadQueue) + sizeof(void *) + 3 * 4 + 7) / 4] __attribute__((aligned(8)));  // OSMessageQueue
-u32 data_021fb794[8]; // OSMessage[8]
+void *data_021fb794[8]; // OSMessage[8]
 Cap data_021fb7b4;
-u32 data_021fb808[40]; // CapMsg[8] (used by unk_0210a9c4.c)
+// CapMsg[8] (used by unk_0210a9c4.c: { Cap *cap; u32 size, off; u8 *l, *r; }, 20 bytes on the DS)
+struct CapMsgStorage { void *cap; u32 size; u32 off; void *l; void *r; } data_021fb808[8];
 u32 data_021fb8a8[sizeof(OSThread) / 4] __attribute__((aligned(8)));  // OSThread
 static u64 sCaptureThreadStack[128];

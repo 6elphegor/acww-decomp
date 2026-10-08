@@ -633,7 +633,7 @@ extern "C" {
 int StockList_IsSold(int, int, u8*);
 }
 extern "C" {
-int NookShop_Clear(int);
+void NookShop_Clear(void *);
 }
 extern "C" {
 void StockList_Clear(u16*, u8*, int);
@@ -847,8 +847,8 @@ extern "C" int NookShop_GetEarnedLevel(Obj* self) {
     }
     return NookShop_GetLevel(self);
 }
-extern "C" int NookShop_InitNew(int a) {
-    return NookShop_Clear(a);
+extern "C" void NookShop_InitNew(void *a) {
+    NookShop_Clear(a);
 }
 extern "C" void NookShop_ClearStock(Obj* self) {
     StockList_Clear(self->items, self->mask, 0x25);

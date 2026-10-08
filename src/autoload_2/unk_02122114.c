@@ -8,6 +8,8 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
+#include "host_ptr32.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -52,7 +54,7 @@ void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid);
 typedef struct { u8 id; u16 aid; u16 pad; } WMsg;
 typedef struct { u32 f0, f4, f8, fc; } WJob;
 typedef struct { u8 pad[0x10]; char name[4]; u32 f14; } WObj; // name: the archive's name (f14 characters)
-typedef struct { u8 pad[0x10]; WJob *job; WObj *obj; } WArg;
+typedef struct { u8 pad[0x10]; u32 job; u32 obj; } WArg;  // job: WJob *, obj: WObj * (ptr32: include/host_ptr32.h)
 typedef struct { u8 f0 : 4; u8 aid : 4; } WEnt;
 void MBi_CommChangeParentState(u32 a, u32 b, void *c);
 typedef struct { u8 f0 : 4; u8 aid : 4; u8 pad[21]; } WEnt22;
@@ -128,7 +130,7 @@ void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid) {
             u8 *e;
             WObj2 *o;
             if (x >= 16 || W8((e = PEER(x)) + 0x1000, 0xd52) == 0 ||
-                WK2->f14a8[i] != (o = (WObj2 *)W32(e + 0x1000, 0xd40))->f14) {
+                WK2->f14a8[i] != (o = (WObj2 *)(uptr)W32(e + 0x1000, 0xd40))->f14) {
                 WK2->st16[i] = 4;
             } else {
                 u16 mask = W16(e + 0x1d00, 0x4e);
@@ -273,13 +275,13 @@ void MBi_ReloadCache(WArg *arg) {
     WObj *obj;
     u32 base;
     FSArc *rp;
-    obj = arg->obj;
-    job = arg->job;
+    obj = HostPtr32_Get(arg->obj);
+    job = HostPtr32_Get(arg->job);
     FS_InitFile(&file);
     base = job->f0;
     rp = FS_FindArchive(obj->name, obj->f14);
     if (FS_OpenFileDirect(&file, rp, base, base + job->f4, -1) != 0) {
-        if (job->f4 == FS_ReadFile(&file, (void *)job->f8, job->f4)) job->fc = 2;
+        if (job->f4 == FS_ReadFile(&file, (void *)(uptr)job->f8, job->f4)) job->fc = 2;  // (a DS-layout cache slot)
         FS_CloseFile(&file);
     }
     if (job->fc == 2) return;

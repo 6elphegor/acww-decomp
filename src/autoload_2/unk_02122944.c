@@ -9,6 +9,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -189,7 +190,7 @@ void MBi_CommParentCallback(int code, u8 *msg) {
     }
     if (code != 17) return;
     {
-        void (*cb)() = (void (*)())W32(data_0220001c + 0x1000, 0x4e4);
+        void (*cb)() = (void (*)())HostPtr32_Get(W32(data_0220001c + 0x1000, 0x4e4));
         volatile u32 zero = 0;
         MIi_CpuClearFast(zero, data_0220001c, 32000);
         data_0220001c = 0;

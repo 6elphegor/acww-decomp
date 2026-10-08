@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 #include "host.h"
+#include "sys/CardCmd.h"
 
 #define FIFOCNT 0x04000184u
 #define RECV 0x04100000u
@@ -67,11 +68,14 @@ void pxi7_sync_written(u32 value) {
     sArm7Sync = ((value >> 8) + 1) & 0xf;
 }
 
-// A pointer sent in a 26-bit message: DS main RAM (0x02000000-0x023fffff) fits; the host's own data (the program
-// image at 0x08000000, well under 32 MB) loses its top bits and gets them back here.
-static void *ptr26(u32 d) {
-    if (d >= 0x2000000 && d < 0x2400000) return (void *)(uintptr_t)d;
-    return (void *)(uintptr_t)(d | 0x08000000);
+// Messages that carry an address: the ARM9 side hands the pointer over first (include/nitro/pxi_ptr.h,
+// PXI_PointerWord); the message's data bits are the DS's (a truncated address) and aren't used for it.
+static const void *sPointer[32];
+void HostPxi_PutPointer(unsigned int tag, const void *p) { sPointer[tag & 31] = p; }
+static void *take_pointer(u32 tag) {
+    void *p = (void *)sPointer[tag];
+    sPointer[tag] = 0;
+    return p;
 }
 
 // ---- NVRAM (tag 4): the firmware flash. Messages: bit 25 start, bit 24 end, bits 16-23 index, bits 0-15 payload;
@@ -86,23 +90,21 @@ static void nvram_command(void) {
     u32 cmd = sNvWords[0] >> 8 & 0xff;
     u32 addr = (sNvWords[0] & 0xff) << 16 | (sNvWords[1] & 0xffff);
     u32 size = (sNvWords[2] & 0xffff) << 16 | (sNvWords[3] & 0xffff);
-    u8 *ptr = (u8 *)(uintptr_t)((sNvWords[4] & 0xffff) << 16 | (sNvWords[5] & 0xffff));
+    u8 *ptr = take_pointer(4);  // the buffer (READ: in words 4-5 on the DS, PW: 3-4, RDSR: 0-2)
     switch (cmd) {
     case 0x23: case 0x24:  // READ, FAST_READ
         for (u32 i = 0; i < size; i++) ptr[i] = sNvramSize ? sNvram[(addr + i) % sNvramSize] : 0xff;
         break;
-    case 0x22: {           // RDSR: one byte at the pointer in words 0-2
-        u8 *p = (u8 *)(uintptr_t)((sNvWords[0] & 0xff) << 24 | (sNvWords[1] & 0xffff) << 8 | (sNvWords[2] >> 8 & 0xff));
-        *p = sNvStatus;
+    case 0x22:             // RDSR: one byte
+        *ptr = sNvStatus;
         break;
-    }
     case 0x20: sNvStatus |= 2; break;   // WREN
     case 0x21: sNvStatus &= ~2; break;  // WRDI
     case 0x0a: case 0x25: {  // PW (page write; 16-bit size, pointer in words 3-4): kept in memory only
         u32 n = sNvWords[2] & 0xffff;
-        const u8 *src = (const u8 *)(uintptr_t)((sNvWords[3] & 0xffff) << 16 | (sNvWords[4] & 0xffff));
+        const u8 *src = ptr;
         for (u32 i = 0; i < n && sNvramSize; i++) sNvram[(addr + i) % sNvramSize] = src[i];
-        size = n; ptr = (u8 *)src;
+        size = n;
         sNvStatus &= ~2;
         break;
     }
@@ -182,7 +184,7 @@ static void rtc_command(u32 data) {
 // command), each followed by a verify. The save memory is kept in the host; with ACWW_SAVE=<file> it is loaded
 // from that file at the first access (a missing file is a blank memory, all 0xff) and every change is written
 // through to it. Without ACWW_SAVE every run starts with a blank save memory and nothing is written to disk.
-static u32 *sCardBlock;
+static CARDCmd *sCardBlock;
 static int sCardWantBlock;
 static u8 *sSave;
 static u32 sSaveSize;
@@ -220,27 +222,29 @@ static void save_store(u32 at, u32 len) {
 }
 
 static void card_request(u32 data) {
-    if (sCardWantBlock) { sCardBlock = ptr26(data); sCardWantBlock = 0; pxi7_send_after(11 | 1u << 5, 20000); return; }
-    u32 *b = sCardBlock;
+    if (sCardWantBlock) { sCardBlock = take_pointer(11); sCardWantBlock = 0; pxi7_send_after(11 | 1u << 5, 20000); return; }
+    CARDCmd *b = sCardBlock;
     if (data == 0) { sCardWantBlock = 1; return; }
     if (!b) { pxi7_send_after(11 | 1u << 5, 20000); return; }
     u32 result = 0;
-    if (b[6]) save_load(b[6]);
-    u32 src = b[3], dst = b[4], len = b[5];
+    if (b->f18) save_load(b->f18);
+    // the block's source and destination: a card address and ARM9 memory (include/sys/CardCmd.h)
+    uintptr_t src = b->srcBuf, dst = b->dstBuf;
+    u32 len = b->len;
     switch (data) {
     case 6:  // read: card address src to memory dst
-        for (u32 i = 0; i < len; i++) ((u8 *)(uintptr_t)dst)[i] = src + i < sSaveSize ? sSave[src + i] : 0xff;
+        for (u32 i = 0; i < len; i++) ((u8 *)dst)[i] = src + i < sSaveSize ? sSave[src + i] : 0xff;
         break;
     case 7: case 8:  // write, program: memory src to card address dst
-        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = ((u8 *)(uintptr_t)src)[i];
-        save_store(dst, len);
+        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = ((const u8 *)src)[i];
+        save_store((u32)dst, len);
         break;
     case 9:  // verify
-        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) if (sSave[dst + i] != ((u8 *)(uintptr_t)src)[i]) result = 5;
+        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) if (sSave[dst + i] != ((const u8 *)src)[i]) result = 5;
         break;
     case 10: case 11:  // erase page/sector
         for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = 0xff;
-        save_store(dst, len);
+        save_store((u32)dst, len);
         break;
     case 12:  // erase chip
         if (sSave) memset(sSave, 0xff, sSaveSize);
@@ -248,8 +252,8 @@ static void card_request(u32 data) {
         break;
     default: break;  // identify, read id, status ...
     }
-    b[0] = result;
-    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %x dst %x len %x -> %u (frame %llu)\n", data, src, dst, len, result,
+    b->result = result;
+    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %lx dst %lx len %x -> %u (frame %llu)\n", data, (unsigned long)src, (unsigned long)dst, len, result,
                               (unsigned long long)host_frame());
     pxi7_send_after(11 | 1u << 5, 20000);
 }
@@ -355,8 +359,9 @@ static void pm_word(u32 data) {
     if (data & 0x01000000) pm_command();
 }
 
-// ---- sound (tag 7): the native sound driver (snd7/): a command list's address, or 0 = process now
-void snd7_receive(u32 data);
+// ---- sound (tag 7): the native sound driver (snd7/): a command list (its pointer handed over), or 0 = process now
+struct SNDCommand;
+void snd7_receive(struct SNDCommand *list);
 
 // ---- services
 static void service(u32 tag, u32 data, u32 err) {
@@ -364,7 +369,7 @@ static void service(u32 tag, u32 data, u32 err) {
     case 4: nvram_word(data); break;
     case 5: rtc_command(data); break;
     case 6: tp_command(data); break;
-    case 7: snd7_receive(data ? (u32)(uintptr_t)ptr26(data) : 0); break;
+    case 7: snd7_receive(data ? take_pointer(7) : 0); break;
     case 8: pm_word(data); break;
     case 11: card_request(data); break;
     case 15:  // WVR: VRAM C/D for the wireless reboot driver; the ARM7 acknowledges at once

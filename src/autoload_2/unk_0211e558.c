@@ -1,3 +1,4 @@
+#include "nitro/pxi_ptr.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 #include "nitro/io_access.h"
@@ -52,7 +53,7 @@ extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
 extern u32 OS_GetDTCMAddress(void);
 extern void MI_StopDma(u32);
-extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
+extern void MIi_CardDmaCopy32(u32, uptr, uptr, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern int PXI_IsCallbackReady(u32, u32);
@@ -148,7 +149,7 @@ BOOL CARDi_Request(CardCommon *c, u32 arg, int retry) {
         c->flag |= 0x20;
         while (PXI_SendWordByFifo(11, arg, 1) < 0) {}
         if (arg == 0) {
-            u32 r = (u32)c->result;
+            u32 r = PXI_PointerWord(11, c->result);
             while (PXI_SendWordByFifo(11, r, 1) < 0) {}
         }
         irq = OS_DisableInterrupts();
@@ -204,7 +205,7 @@ void CARDi_SetRomOp(u32 hi, u32 lo) {
 void CARDi_SetCardDma(void) {
     CardCommon *const c = &data_021fec00;
     u32 dma = c->dma;
-    u32 dst = c->dst;
+    uptr dst = c->dst;
     MIi_CardDmaCopy32(dma, 0x04100010, dst, 512);
     CARDi_SetRomOp(0xb7000000 | (c->src >> 8), c->src << 24);
     IO_W((volatile u32 *)0x040001a4, data_021ff240[1]);

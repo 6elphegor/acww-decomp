@@ -15,13 +15,13 @@ typedef int s32;
 typedef int BOOL;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
-typedef void (*CapCb)(void *, void *, u32, s32, s32);
+typedef void (*CapCb)(void *, void *, u32, s32, void *);
 typedef struct Cap {
     s32 active;             // 0x00
     s32 mode;               // 0x04
     s32 fmt;                // 0x08
-    u32 bufL;               // 0x0c
-    u32 bufR;               // 0x10
+    u8 *bufL;               // 0x0c
+    u8 *bufR;               // 0x10
     u32 size;               // 0x14
     u32 blkSize;            // 0x18
     s32 blkIdx;             // 0x1c
@@ -31,13 +31,21 @@ typedef struct Cap {
     s32 alarm;              // 0x2c
     s32 nBlocks;            // 0x30
     CapCb cb;               // 0x34
-    s32 cbArg;              // 0x38
+    void *cbArg;            // 0x38
     u32 fader[4];           // 0x3c
     s32 faderOn;            // 0x4c
     s32 vol;                // 0x50
 } Cap;
 typedef struct FatEnt { u32 off; u32 size; u32 ptr; u32 fc; } FatEnt;
 typedef struct Fat { u32 w0; u32 w4; u32 count; FatEnt e[1]; } Fat;
+// a file's address in memory: the entry's `ptr` slot, with the reserved word after it 8 bytes on 64-bit hosts
+// (the FAT is the archive's data, in the file's layout)
+static inline void *FatEnt_Ptr(const FatEnt *e) {
+    void *p;
+    __builtin_memcpy(&p, &e->ptr, sizeof p);
+    return p;
+}
+static inline void FatEnt_SetPtr(FatEnt *e, void *p) { __builtin_memcpy(&e->ptr, &p, sizeof p); }
 typedef struct Arc {
     u8 sig[4];              // 0x00 'SDAT'
     u32 magic;              // 0x04
@@ -85,7 +93,6 @@ extern u32 data_027e038c;
 extern s32 data_027e0390;
 extern u32 data_021fb774;
 extern void SND_SetChannelVolume(u32, u32, u32);
-extern u32 data_021fb794;
 extern u32 data_021fb8a8;
 extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
@@ -93,7 +100,7 @@ extern s32 NNSi_SndFaderGet(void *);
 extern void OS_InitMessageQueue(void *, void *, s32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
-extern BOOL NNSi_SndCaptureStart(s32 mode, u32 bufL, u32 bufR, u32 len, s32 fmt, u32 a5, u32 a6, s32 loop, s32 rate, s32 vol, u32 pan1, u32 pan2, s32 nBlocks, CapCb cb, s32 cbArg);
+extern BOOL NNSi_SndCaptureStart(s32 mode, void *bufL, void *bufR, u32 len, s32 fmt, s32 a5, s32 a6, BOOL loop, int rate, int vol, int pan1, int pan2, int nBlocks, CapCb cb, void *cbArg);
 extern Arc *data_021fbd68;
 extern BOOL FS_SeekFile(void *, u32, u32);
 extern s32 FS_ReadFile(void *, void *, u32);
@@ -107,7 +114,7 @@ extern void NNS_FndAppendListObject(NNSFndList *, void *);
 extern void InitHeapSection(NNSFndList *);
 extern BOOL NNS_SndArcSetup(Arc *, void *, BOOL);
 extern void *NNS_SndArcGetSeqArcInfo(s32);
-extern u32 NNS_SndArcGetFileAddress(u32);
+extern void *NNS_SndArcGetFileAddress(u32);
 extern void SymbolDisposeCallback(void *, u32, void *, u32);
 extern void FatDisposeCallback(void *, u32, void *, u32);
 extern void InfoDisposeCallback(void *, u32, void *, u32);
@@ -118,24 +125,24 @@ extern BOOL NNS_FndFreeByStateToFrmHeap(void *, u32);
 extern BOOL NNS_FndRecordStateForFrmHeap(void *, u32);
 extern void NNS_FndFreeToFrmHeap(void *, u32);
 extern void NNS_FndDestroyFrmHeap(void *);
-extern void *NNS_FndCreateFrmHeapEx(u32, u32, u16);
+extern void *NNS_FndCreateFrmHeapEx(void *, u32, u16);
 extern void NNS_SndHeapClear(SndHeap *);
 extern BOOL NewSection(SndHeap *);
 extern BOOL InitHeap(SndHeap *, void *);// NNS_SndHeapCreate
-SndHeap *NNS_SndHeapCreate(u32 start, u32 size)
+SndHeap *NNS_SndHeapCreate(void *start, u32 size)
 {
-    u32 end = start + size;
-    SndHeap *h = (SndHeap *)((start + 3) & ~3);
+    uptr end = (uptr)start + size;
+    SndHeap *h = (SndHeap *)(((uptr)start + 3) & ~(uptr)3);
     void *heap;
     u32 avail;
-    if ((u32)h > end) {
+    if ((uptr)h > end) {
         return 0;
     }
-    avail = end - (u32)h;
+    avail = (u32)(end - (uptr)h);
     if (avail < SNDHEAP_HDR) {
         return 0;
     }
-    heap = NNS_FndCreateFrmHeapEx((u32)h + SNDHEAP_HDR, avail - SNDHEAP_HDR, 0);
+    heap = NNS_FndCreateFrmHeapEx((u8 *)h + SNDHEAP_HDR, avail - SNDHEAP_HDR, 0);
     if (heap == 0) {
         return 0;
     }
@@ -362,7 +369,7 @@ void NNS_SndArcInitOnMemory(Arc *arc, u8 *base)
     arc->symb = (arc->symbOff == 0) ? 0 : base + arc->symbOff;
     for (i = 0; i < arc->fat->count; i++) {
         e = &arc->fat->e[i];
-        e->ptr = (e->off == 0) ? 0 : (u32)base + e->off;
+        FatEnt_SetPtr(e, (e->off == 0) ? 0 : base + e->off);
     }
     arc->fromFile = 0;
     data_021fbd68 = arc;
@@ -670,19 +677,19 @@ void func_0210b48c(FSFileID *out)
 }
 
 // NNS_SndArcGetFilePtr
-u32 NNS_SndArcGetFileAddress(u32 idx)
+void *NNS_SndArcGetFileAddress(u32 idx)
 {
     Fat *fat = data_021fbd68->fat;
     if (idx >= fat->count) {
         return 0;
     }
-    return fat->e[idx].ptr;
+    return FatEnt_Ptr(&fat->e[idx]);
 }
 
 // NNS_SndArcSetFilePtr
-void NNS_SndArcSetFileAddress(u32 idx, u32 v)
+void NNS_SndArcSetFileAddress(u32 idx, void *v)
 {
-    data_021fbd68->fat->e[idx].ptr = v;
+    FatEnt_SetPtr(&data_021fbd68->fat->e[idx], v);
 }
 
 // ---- file-scope objects (autoload_3 .bss 0x021fbd68-0x021fbd6c)

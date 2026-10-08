@@ -6,6 +6,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef signed char s8;
 typedef int s32;
 typedef int BOOL;
@@ -65,35 +66,37 @@ s32 NNSi_G2dGetUnpackedFont(BinHdr *h, FInfo **out)
     return kind + 1;
 }
 
-// font resource (NFTR) pointer fix-up (block offsets -> pointers)
+// font resource (NFTR) pointer fix-up (block offsets -> pointers): the file's 32-bit slots get the pointers as
+// ptr32 (include/host_ptr32.h: the address itself when it fits, as on the DS), the readers resolve them
+static inline void Relocate(u32 *slot, u8 *base) { *slot = HostPtr32_Of(base + *slot); }
 void NNSi_G2dUnpackNFT(BinHdr *h)
 {
-    u32 base = (u32)h;
+    u8 *base = (u8 *)h;
     BlockHdr *blk = (BlockHdr *)(base + h->hdrSize);
     s32 i;
     for (i = 0; i < h->nBlocks; i++) {
         switch (blk->kind) {
         case 0x46494e46: {  // 'FINF'
             u32 *p = (u32 *)(blk + 1);
-            p[2] += base;
-            if (p[3] != 0) p[3] += base;
-            if (p[4] != 0) p[4] += base;
+            Relocate(&p[2], base);
+            if (p[3] != 0) Relocate(&p[3], base);
+            if (p[4] != 0) Relocate(&p[4], base);
             break;
         }
         case 0x43574448: {  // 'CWDH'
             u32 *p = (u32 *)(blk + 1);
-            if (p[1] != 0) p[1] += base;
+            if (p[1] != 0) Relocate(&p[1], base);
             break;
         }
         case 0x434d4150: {  // 'CMAP'
             u32 *p = (u32 *)(blk + 1);
-            if (p[2] != 0) p[2] += base;
+            if (p[2] != 0) Relocate(&p[2], base);
             break;
         }
         case 0x43474c50:    // 'CGLP'
             break;
         }
-        blk = (BlockHdr *)((u32)blk + blk->size);
+        blk = (BlockHdr *)((u8 *)blk + blk->size);
     }
 }
 

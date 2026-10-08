@@ -4,6 +4,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef signed short s16;
 typedef signed int s32;
 typedef int BOOL;
@@ -82,21 +83,21 @@ void G2x_ChangeBlendBrightness_(u16 *p, s32 v) {
 void *G2_GetBG0ScrPtr(void) {
     u32 scr = (IO_R(&R16(0x04000008)) & 0x1f00) >> 8;
     u32 base = ((IO_R(&R32(0x04000000)) & 0x38000000) >> 27) << 16;
-    return (void *)(0x06000000 + base + (scr << 11));
+    return (void *)(uptr)(0x06000000 + base + (scr << 11));
 }
 // G2S_GetBG0ScrPtr
 void *G2S_GetBG0ScrPtr(void) {
-    return (void *)(0x06200000 + (((IO_R(&R16(0x04001008)) & 0x1f00) >> 8) << 11));
+    return (void *)(uptr)(0x06200000 + (((IO_R(&R16(0x04001008)) & 0x1f00) >> 8) << 11));
 }
 // G2_GetBG1ScrPtr
 void *G2_GetBG1ScrPtr(void) {
     u32 scr = (IO_R(&R16(0x0400000a)) & 0x1f00) >> 8;
     u32 base = ((IO_R(&R32(0x04000000)) & 0x38000000) >> 27) << 16;
-    return (void *)(0x06000000 + base + (scr << 11));
+    return (void *)(uptr)(0x06000000 + base + (scr << 11));
 }
 // G2S_GetBG1ScrPtr
 void *G2S_GetBG1ScrPtr(void) {
-    return (void *)(0x06200000 + (((IO_R(&R16(0x0400100a)) & 0x1f00) >> 8) << 11));
+    return (void *)(uptr)(0x06200000 + (((IO_R(&R16(0x0400100a)) & 0x1f00) >> 8) << 11));
 }
 // G2_GetBG2ScrPtr
 void *G2_GetBG2ScrPtr(void) {
@@ -106,10 +107,10 @@ void *G2_GetBG2ScrPtr(void) {
     u32 scr = (cnt & 0x1f00) >> 8;
     switch (mode) {
     case 0: case 1: case 2: case 3: case 4:
-        return (void *)(0x06000000 + base + (scr << 11));
+        return (void *)(uptr)(0x06000000 + base + (scr << 11));
     case 5:
-        if (cnt & 0x80) return (void *)(0x06000000 + (scr << 14));
-        return (void *)(0x06000000 + base + (scr << 11));
+        if (cnt & 0x80) return (void *)(uptr)(0x06000000 + (scr << 14));
+        return (void *)(uptr)(0x06000000 + base + (scr << 11));
     case 6:
         return (void *)0x06000000;
     default:
@@ -123,10 +124,10 @@ void *G2S_GetBG2ScrPtr(void) {
     u32 scr = (cnt & 0x1f00) >> 8;
     switch (mode) {
     case 0: case 1: case 2: case 3: case 4:
-        return (void *)(0x06200000 + (scr << 11));
+        return (void *)(uptr)(0x06200000 + (scr << 11));
     case 5:
-        if (cnt & 0x80) return (void *)(0x06200000 + (scr << 14));
-        return (void *)(0x06200000 + (scr << 11));
+        if (cnt & 0x80) return (void *)(uptr)(0x06200000 + (scr << 14));
+        return (void *)(uptr)(0x06200000 + (scr << 11));
     case 6:
         return 0;
     default:
@@ -141,10 +142,10 @@ void *G2_GetBG3ScrPtr(void) {
     u32 scr = (cnt & 0x1f00) >> 8;
     switch (mode) {
     case 0: case 1: case 2:
-        return (void *)(0x06000000 + base + (scr << 11));
+        return (void *)(uptr)(0x06000000 + base + (scr << 11));
     case 3: case 4: case 5:
-        if (cnt & 0x80) return (void *)(0x06000000 + (scr << 14));
-        return (void *)(0x06000000 + base + (scr << 11));
+        if (cnt & 0x80) return (void *)(uptr)(0x06000000 + (scr << 14));
+        return (void *)(uptr)(0x06000000 + base + (scr << 11));
     case 6:
         return 0;
     default:
@@ -158,10 +159,10 @@ void *G2S_GetBG3ScrPtr(void) {
     u32 scr = (cnt & 0x1f00) >> 8;
     switch (mode) {
     case 0: case 1: case 2:
-        return (void *)(0x06200000 + (scr << 11));
+        return (void *)(uptr)(0x06200000 + (scr << 11));
     case 3: case 4: case 5:
-        if (cnt & 0x80) return (void *)(0x06200000 + (scr << 14));
-        return (void *)(0x06200000 + (scr << 11));
+        if (cnt & 0x80) return (void *)(uptr)(0x06200000 + (scr << 14));
+        return (void *)(uptr)(0x06200000 + (scr << 11));
     case 6:
         return 0;
     default:
@@ -172,21 +173,21 @@ void *G2S_GetBG3ScrPtr(void) {
 void *G2_GetBG0CharPtr(void) {
     u32 cnt = (IO_R(&R16(0x04000008)) & 0x3c) >> 2;
     u32 base = ((IO_R(&R32(0x04000000)) & 0x07000000) >> 24) << 16;
-    return (void *)(0x06000000 + base + (cnt << 14));
+    return (void *)(uptr)(0x06000000 + base + (cnt << 14));
 }
 // G2S_GetBG0CharPtr
 void *G2S_GetBG0CharPtr(void) {
-    return (void *)(0x06200000 + (((IO_R(&R16(0x04001008)) & 0x3c) >> 2) << 14));
+    return (void *)(uptr)(0x06200000 + (((IO_R(&R16(0x04001008)) & 0x3c) >> 2) << 14));
 }
 // G2_GetBG1CharPtr
 void *G2_GetBG1CharPtr(void) {
     u32 cnt = (IO_R(&R16(0x0400000a)) & 0x3c) >> 2;
     u32 base = ((IO_R(&R32(0x04000000)) & 0x07000000) >> 24) << 16;
-    return (void *)(0x06000000 + base + (cnt << 14));
+    return (void *)(uptr)(0x06000000 + base + (cnt << 14));
 }
 // G2S_GetBG1CharPtr
 void *G2S_GetBG1CharPtr(void) {
-    return (void *)(0x06200000 + (((IO_R(&R16(0x0400100a)) & 0x3c) >> 2) << 14));
+    return (void *)(uptr)(0x06200000 + (((IO_R(&R16(0x0400100a)) & 0x3c) >> 2) << 14));
 }
 // G2_GetBG2CharPtr
 void *G2_GetBG2CharPtr(void) {
@@ -194,7 +195,7 @@ void *G2_GetBG2CharPtr(void) {
     u32 cnt = IO_R(&R16(0x0400000c));
     if (mode < 5 || !(cnt & 0x80)) {
         u32 base = ((IO_R(&R32(0x04000000)) & 0x07000000) >> 24) << 16;
-        return (void *)(0x06000000 + base + (((cnt & 0x3c) >> 2) << 14));
+        return (void *)(uptr)(0x06000000 + base + (((cnt & 0x3c) >> 2) << 14));
     }
     return 0;
 }
@@ -202,7 +203,7 @@ void *G2_GetBG2CharPtr(void) {
 void *G2S_GetBG2CharPtr(void) {
     s32 mode = IO_R(&R32(0x04001000)) & 7;
     u32 cnt = IO_R(&R16(0x0400100c));
-    if (mode < 5 || !(cnt & 0x80)) return (void *)(0x06200000 + (((cnt & 0x3c) >> 2) << 14));
+    if (mode < 5 || !(cnt & 0x80)) return (void *)(uptr)(0x06200000 + (((cnt & 0x3c) >> 2) << 14));
     return 0;
 }
 // G2_GetBG3CharPtr
@@ -211,7 +212,7 @@ void *G2_GetBG3CharPtr(void) {
     u32 cnt = IO_R(&R16(0x0400000e));
     if (mode < 3 || (mode < 6 && !(cnt & 0x80))) {
         u32 base = ((IO_R(&R32(0x04000000)) & 0x07000000) >> 24) << 16;
-        return (void *)(0x06000000 + base + (((cnt & 0x3c) >> 2) << 14));
+        return (void *)(uptr)(0x06000000 + base + (((cnt & 0x3c) >> 2) << 14));
     }
     return 0;
 }
@@ -219,7 +220,7 @@ void *G2_GetBG3CharPtr(void) {
 void *G2S_GetBG3CharPtr(void) {
     s32 mode = IO_R(&R32(0x04001000)) & 7;
     u32 cnt = IO_R(&R16(0x0400100e));
-    if (mode < 3 || (mode < 6 && !(cnt & 0x80))) return (void *)(0x06200000 + (((cnt & 0x3c) >> 2) << 14));
+    if (mode < 3 || (mode < 6 && !(cnt & 0x80))) return (void *)(uptr)(0x06200000 + (((cnt & 0x3c) >> 2) << 14));
     return 0;
 }
 // GX_ResetBank-style (writes the VRAMCNT enable bit 0x80 for each bank bit in the mask; exact SDK name unverified)

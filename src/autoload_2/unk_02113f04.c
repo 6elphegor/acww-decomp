@@ -9,7 +9,7 @@ typedef int BOOL;
 u32 OS_DisableInterrupts(void);          // OS_DisableInterrupts
 void OS_RestoreInterrupts(u32 e);        // OS_RestoreInterrupts
 u32 OS_GetLockID(void);          // OS_GetLockID
-u32 OS_ReadOwnerOfLockWord(u32 addr);      // OS_ReadOwnerOfLockWord
+u16 OS_ReadOwnerOfLockWord(void *p);      // OS_ReadOwnerOfLockWord
 u32 OS_TryLockCartridge(u32 id);        // OS_TryLockCartridge
 void OS_UnlockCartridge(u32 id);       // OS_UnlockCartridge
 
@@ -27,7 +27,7 @@ u32 OSi_DetectDeviceType(void) {
     while (!done) {
         lockResult = -1;
         e = OS_DisableInterrupts();
-        if ((OS_ReadOwnerOfLockWord(0x027fffe8) & 0x40) != 0 || (lockResult = OS_TryLockCartridge(id)) == 0) {
+        if ((OS_ReadOwnerOfLockWord((void *)0x027fffe8) & 0x40) != 0 || (lockResult = OS_TryLockCartridge(id)) == 0) {
             if (*(u32 *)0x08000000 == 0x544e494e && *(u32 *)0x08000004 == 0x4f444e45) {
                 result = 0x01000000;
             } else {

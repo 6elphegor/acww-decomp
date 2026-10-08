@@ -119,12 +119,12 @@ BOOL snd7_read_inst_data(const struct SNDBankData *bank, s32 program, s32 midiKe
 static const struct SNDWaveData *wave_data_address(const struct SNDWaveArc *arc, s32 wave) {
     u32 p = arc->waveOffsets[wave];
     if (p == 0) return NULL;
-    if (p < 0x02000000) p += (u32)(uintptr_t)arc;  // an offset in the archive (not yet relocated by the ARM9)
-    return (const struct SNDWaveData *)(uintptr_t)p;
+    if (p < 0x02000000) return (const struct SNDWaveData *)((const u8 *)arc + p);  // an offset in the archive
+    return HostPtr32_Get(p);  // a wave loaded on its own (SND_SetWaveDataAddress)
 }
 
 static const struct SNDWaveData *wave_data(const struct SNDBankData *bank, s32 waveArc, s32 wave) {
-    const struct SNDWaveArc *arc = dsptr_get(bank->waveArcLinks[waveArc].waveArc);
+    const struct SNDWaveArc *arc = HostPtr32_Get(bank->waveArcLinks[waveArc].waveArc);
     if (arc == NULL || (u32)wave >= arc->waveCount) return NULL;
     return wave_data_address(arc, wave);
 }
@@ -255,31 +255,31 @@ static void stop_timer(u32 channelMask, u32 captureMask, u32 alarmMask, s32 hold
 // channels, a channel's next) are relative to workPtr, a stand-in DS address (the ARM9 only subtracts it); the
 // others (wave data, banks, sequence positions) are the ARM9's own addresses.
 #define DS_WORK 0x03800000u
-static dsptr ds_channel(const struct SNDExChannel *c) { return c ? DS_WORK + (u32)(c - snd7_work.channels) * 0x54 : 0; }
+static u32 ds_channel(const struct SNDExChannel *c) { return c ? DS_WORK + (u32)(c - snd7_work.channels) * 0x54 : 0; }
 static void put32(u8 *p, u32 v) { memcpy(p, &v, 4); }
 static void write_ds_work(u8 *w) {
     for (int i = 0; i < SND_CHANNEL_COUNT; i++) {
         const struct SNDExChannel *c = &snd7_work.channels[i];
         u8 *d = w + i * 0x54;
         memcpy(d, c, 0x44);  // up to the wave pointer: the same layout
-        put32(d + 0x44, c->type == SND_CHN_TYPE_PCM ? dsptr_of(c->waveDataPtr) : (u32)c->dutyCycle);
-        put32(d + 0x48, dsptr_of((const void *)(uintptr_t)c->callback));
-        put32(d + 0x4c, dsptr_of(c->callbackUserData));
+        put32(d + 0x44, c->type == SND_CHN_TYPE_PCM ? HostPtr32_Of(c->waveDataPtr) : (u32)c->dutyCycle);
+        put32(d + 0x48, HostPtr32_Of((const void *)(uintptr_t)c->callback));
+        put32(d + 0x4c, HostPtr32_Of(c->callbackUserData));
         put32(d + 0x50, ds_channel(c->channelLLNext));
     }
     for (int i = 0; i < SND_PLAYER_COUNT; i++) {
         const struct SNDPlayer *p = &snd7_work.players[i];
         u8 *d = w + 0x540 + i * 0x24;
         memcpy(d, p, 0x20);
-        put32(d + 0x20, dsptr_of(p->bank));
+        put32(d + 0x20, HostPtr32_Of(p->bank));
     }
     for (int i = 0; i < SND_TRACK_COUNT; i++) {
         const struct SNDTrack *t = &snd7_work.tracks[i];
         u8 *d = w + 0x780 + i * 0x40;
         memcpy(d, t, 0x24);  // up to the sequence pointers
-        put32(d + 0x24, dsptr_of(t->base));
-        put32(d + 0x28, dsptr_of(t->cur));
-        for (int k = 0; k < SND_TRACK_MAX_CALL; k++) put32(d + 0x2c + 4 * k, dsptr_of(t->posCallStack[k]));
+        put32(d + 0x24, HostPtr32_Of(t->base));
+        put32(d + 0x28, HostPtr32_Of(t->cur));
+        for (int k = 0; k < SND_TRACK_MAX_CALL; k++) put32(d + 0x2c + 4 * k, HostPtr32_Of(t->posCallStack[k]));
         memcpy(d + 0x38, t->loopCount, SND_TRACK_MAX_CALL);
         d[0x3b] = t->callStackDepth;
         put32(d + 0x3c, ds_channel(t->channelLLHead));
@@ -308,10 +308,10 @@ static void command_proc(void) {
     for (int m = 0; m < sMsgCount; m++) {
         for (struct SNDCommand *p = sMsg[m]; p;) {
             struct SNDCommand c = *p;
-            const u32 *a = c.arg;
+            const uintptr_t *a = c.arg;
             if (sTrace)
-                fprintf(stderr, "snd7: frame %llu cmd %d %08x %08x %08x %08x\n", (unsigned long long)host_frame(), c.id,
-                        a[0], a[1], a[2], a[3]);
+                fprintf(stderr, "snd7: frame %llu cmd %d %08lx %08lx %08lx %08lx\n", (unsigned long long)host_frame(), c.id,
+                        (unsigned long)a[0], (unsigned long)a[1], (unsigned long)a[2], (unsigned long)a[3]);
             switch (c.id) {
             case 0x00: snd7_start_seq((int)a[0], (const void *)(uintptr_t)a[1], a[2], (struct SNDBankData *)(uintptr_t)a[3]); break;
             case 0x01: snd7_stop_seq((int)a[0]); break;
@@ -328,7 +328,7 @@ static void command_proc(void) {
             case 0x0c: start_timer(a[0], a[1], a[2]); break;
             case 0x0d: stop_timer(a[0], a[1], a[2], (s32)a[3]); break;
             case 0x0e:
-                snd7_setup_channel_pcm((int)(a[0] & 0xffff), (const void *)(uintptr_t)(a[1] & 0x7ffffff), (int)(a[3] >> 24) & 3,
+                snd7_setup_channel_pcm((int)(a[0] & 0xffff), (const void *)a[1], (int)(a[3] >> 24) & 3,
                                        (int)(a[3] >> 26) & 3, (int)(a[3] & 0xffff), (int)(a[2] & 0x3fffff),
                                        (int)(a[2] >> 24) & 0x7f, (int)(a[2] >> 22) & 3, (int)(a[0] >> 16) & 0xffff,
                                        (int)(a[3] >> 16) & 0x7f);
@@ -408,11 +408,11 @@ static void snd7_init(void) {
     spu_soundcnt = 0x8000 | 0x7f;  // SND_Enable, SND_SetOutputSelector(0, 0, 0, 0), SND_SetMasterVolume(0x7f)
 }
 
-// PXI tag 7 from the ARM9: a command list (an address in main RAM), or 0 = process now
-void snd7_receive(u32 data) {
+// PXI tag 7 from the ARM9: a command list, or NULL = process now
+void snd7_receive(struct SNDCommand *list) {
     if (!sInit) snd7_init();
-    if (data >= 0x02000000) {
-        if (sMsgCount < 64) sMsg[sMsgCount++] = (struct SNDCommand *)(uintptr_t)data;
+    if (list) {
+        if (sMsgCount < 64) sMsg[sMsgCount++] = list;
         else fprintf(stderr, "snd7: command queue full\n");
     }
     // the driver thread runs right away (the DS: at its next wakeup, within 5.2 ms)
@@ -451,7 +451,7 @@ static void dump_state(void) {
         if (!c->flags.active && !(spu_ch[i].cnt >> 31)) continue;
         fprintf(stderr, "  ch %d active %d env %d att %d vol %04x timer %04x pan %d prio %d | cnt %08x sad %08x tmr %04x pnt %04x len %06x\n",
                 i, c->flags.active, c->envStatus, c->envAttenuation, c->volume, c->timer, c->pan, c->priority, spu_ch[i].cnt,
-                spu_ch[i].sad, spu_ch[i].tmr, spu_ch[i].pnt, spu_ch[i].len);
+                (u32)spu_ch[i].sad, spu_ch[i].tmr, spu_ch[i].pnt, spu_ch[i].len);
     }
 }
 

@@ -15,9 +15,11 @@ typedef struct OSThreadQueue {
     OSThread *tail;
 } OSThreadQueue;
 
+// (a thread's saved registers: on the host only what OS_InitContext sets - the entry point, its argument in r0, the
+// exit function in lr - pointer-sized there)
 typedef struct OSContext {
     u32 cpsr;
-    u32 r[15];
+    uptr r[15];
     u32 pc_plus4;
     u32 sp_svc;
     u32 cp_context[7];
@@ -43,7 +45,7 @@ struct OSThread {
     void *specific[3];      // 0xa4 (ov065 IP stack: specific[0] = the thread's IpSocket)
     void *alarm;            // 0xb0
     void (*destructor)(void *); // 0xb4
-    u32 parameter;          // 0xb8
+    void *parameter;        // 0xb8
     u32 systemErrno;        // 0xbc
 };
 

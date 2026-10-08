@@ -557,8 +557,7 @@ BOOL BlockMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile
         tile = *p;
         if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) LostAndFound_Add(tile);
     }
-    // (StrBSize_Get returns the structure's size record as an integer)
-    if (Unk_0204e51c_InRange(b, 0x5000, 0x5021)) h = (StrBSizeData *)(uptr)StrBSize_Get(b);
+    if (Unk_0204e51c_InRange(b, 0x5000, 0x5021)) h = StrBSize_Get(b);
     if (h) {
         cnt = h->getFootprintUnitCount();
         i = 0;
@@ -1160,7 +1159,7 @@ extern "C" void BlockMap_FindStructure(u16 *ret, BlockMap *m, VecFx32 *pos, s32 
     StrBSizeData *h; u32 n; s32 sx, sz, ax; u16 t[2]; s32 a, b; VecFx32 v; u32 i; s32 d, az, zz;
     BlockMap_FindItem(t, m, &v, &a, &b, a6, a7, a8);
     if (!Unk_0204d560_Chk(t)) {
-        h = (StrBSizeData *)(uptr)StrBSize_Get(t);
+        h = StrBSize_Get(t);
         if (h) {
             n = h->getTriangleCount();
             sx = 0; sz = 0; i = 0;

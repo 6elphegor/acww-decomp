@@ -40,7 +40,7 @@ static inline s32 GX_GetVCount(void) {
 // OS_GetLowEntropyData
 void OS_GetLowEntropyData(u32 *buffer) {
     const OSSystemWork *work = (const OSSystemWork *)0x027ffc00;
-    const u8 *macAddress = (u8 *)((u32)(work->nvramUserInfo) + 0x74);
+    const u8 *macAddress = (const u8 *)work->nvramUserInfo + 0x74;
 
     buffer[0] = (u32)((GX_GetVCount() << 16) | OS_GetTickLo());
     buffer[1] = (u32)(*(u16 *)(macAddress + 4) << 16) ^ (u32)(data_021fcf24);

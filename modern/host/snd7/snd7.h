@@ -5,10 +5,11 @@
 // mixes the channels in software. See docs/host.md.
 //
 // What the ARM9 sees keeps the DS layout: SNDSharedWork (in ARM9 memory, written here), the sound files it links
-// (banks, wave archives: their pointer slots are 32 bits, `dsptr`), the copy of the driver's state that
+// (banks, wave archives: their pointer slots are 32 bits, `ptr32`: include/host_ptr32.h), the copy of the driver's state that
 // READ_DRIVER_INFO writes (serialized field by field, driver.c) and the player / track fields the ARM9 sets by
 // offset (SNDi_SetPlayerParam, SNDi_SetTrackParam: all before the first pointer). The driver's own structures use
-// host pointers. The ARM9's pointers (commands, sequence data, banks, waves) are DS addresses = host addresses.
+// host pointers. The ARM9's pointers (commands, sequence data, banks, waves) are host pointers (the commands' arguments
+// are pointer-sized; the command list's pointer comes with its PXI message, pxi7.c).
 #ifndef HOST_SND7_H
 #define HOST_SND7_H
 
@@ -21,11 +22,10 @@ typedef int16_t s16;
 typedef signed long long s64;
 typedef int BOOL;
 
-// a pointer in a 32-bit field (the DS's files and messages); valid while the game's memory is below 4 GB (it is on
-// the Linux hosts: docs/host.md, 64-bit)
-typedef u32 dsptr;
-static inline void *dsptr_get(dsptr v) { return (void *)(uintptr_t)v; }
-static inline dsptr dsptr_of(const void *p) { return (dsptr)(uintptr_t)p; }
+// a pointer in a 32-bit slot of the DS's files (the bank's wave archive links) and of the driver state READ_DRIVER_INFO
+// copies: the pointer itself when it fits, else a handle (include/host_ptr32.h)
+#include "host_ptr32.h"
+typedef u32 ptr32;
 #define TRUE 1
 #define FALSE 0
 
@@ -232,7 +232,7 @@ struct SNDSharedWork {
 struct SNDDriverInfo {
     u8 work[0x1180];                          // 0x0000 SNDWork, DS layout (driver.c)
     u32 channelControls[SND_CHANNEL_COUNT];   // 0x1180
-    dsptr workPtr;                            // 0x11C0 the address the pointers in `work` are relative to
+    u32 workPtr;                              // 0x11C0 the stand-in address the pointers in `work` are relative to
     u32 lockedChannels;                       // 0x11C4
     u8 unk_XXX[24];                           // 0x11C8
 };
@@ -240,7 +240,7 @@ struct SNDDriverInfo {
 struct SNDCommand {
     struct SNDCommand *llNext;  // 0x0
     s32 id;                     // 0x4
-    u32 arg[4];                 // 0x8
+    uintptr_t arg[4];           // 0x8 (pointer-sized: addresses among them; src/autoload_2/unk_021163b0.c)
 };
 
 struct SNDBinaryFileHeader {
@@ -286,8 +286,8 @@ struct SNDDrumSet {
 
 struct SNDWaveArc;
 struct SNDWaveArcLink {
-    dsptr waveArc;        // 0x0 struct SNDWaveArc *
-    dsptr waveArcLLnext;  // 0x4 struct SNDWaveArcLink *
+    ptr32 waveArc;        // 0x0 struct SNDWaveArc *
+    ptr32 waveArcLLnext;  // 0x4 struct SNDWaveArcLink *
 };
 
 struct SNDBankData {
@@ -301,7 +301,7 @@ struct SNDBankData {
 struct SNDWaveArc {
     struct SNDBinaryFileHeader fileHeader;    // 0x00
     struct SNDBinaryBlockHeader blockHeader;  // 0x10
-    dsptr waveArcLLHead;                      // 0x18 struct SNDWaveArcLink *
+    ptr32 waveArcLLHead;                      // 0x18 struct SNDWaveArcLink *
     u8 unk_1C[28];                            // 0x1C
     u32 waveCount;                            // 0x38
     u32 waveOffsets[];                        // 0x3C
@@ -405,7 +405,7 @@ void snd7_set_track_param(int player, u32 trackMask, u32 offset, u32 data, int s
 typedef struct {
     u32 cnt;   // SOUNDxCNT: volume 0-6, divider 8-9, hold 15, pan 16-22, duty 24-26, repeat 27-28, format 29-30,
                // start 31
-    u32 sad;   // SOUNDxSAD: source address
+    uintptr_t sad;  // SOUNDxSAD: source address (the ARM9's buffer, a host pointer)
     u16 tmr;   // SOUNDxTMR: timer reload (the sample period is 0x10000 - tmr cycles of 16.76 MHz)
     u16 pnt;   // SOUNDxPNT: loop start, words
     u32 len;   // SOUNDxLEN: length after the loop start, words
@@ -414,7 +414,7 @@ extern SpuChannelRegs spu_ch[16];
 extern u16 spu_soundcnt;       // SOUNDCNT: master volume 0-6, output selectors 8-11, ch1/ch3 not mixed 12-13,
                                // enable 15
 extern u8 spu_capcnt[2];       // SNDCAPxCNT: add 0, source 1, one-shot 2, PCM8 3, start 7
-extern u32 spu_capdad[2];
+extern uintptr_t spu_capdad[2];  // SNDCAPxDAD: destination (the ARM9's buffer, a host pointer)
 extern u16 spu_caplen[2];      // words
 void spu_cnt_written(int ch, u32 old);  // after spu_ch[ch].cnt changes: starts the channel on bit 31 0 -> 1
 void spu_capcnt_written(int idx, u8 old);

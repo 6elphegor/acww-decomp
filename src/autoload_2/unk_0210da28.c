@@ -32,7 +32,7 @@ typedef struct NNSSndStrm NNSSndStrm;
 static inline NNSSndStrm *PlayerStrm(NNSSndStrmPlayer *c) { return (NNSSndStrm *)c->stream; }
 typedef void (*NNSSndStrmBlockCallback)(s32 status, s32 numChannels, NNSSndStrmBufAddr *buffer, u32 len, s32 format,
                                         void *arg);
-extern BOOL NNS_SndStrmSetup(NNSSndStrm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval,
+extern BOOL NNS_SndStrmSetup(NNSSndStrm *st, s32 fmt, uptr buf, u32 size, s32 timer, s32 interval,
                              NNSSndStrmBlockCallback cb, void *arg);
 extern void NNS_SndStrmStart(NNSSndStrm *st);
 extern void NNS_SndStrmStop(NNSSndStrm *st);

@@ -37,20 +37,20 @@ extern BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
 extern s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 // the sound driver's interface (unk_021163b0.c, unk_02117984.c): its commands and the bank / wave archive links (32-bit
 // slots in the files' data) take the addresses as the ARM7 sees them
-extern void SND_InvalidateWaveData(u32 start, u32 end);
-extern void SND_InvalidateBankData(u32 start, u32 end);
-extern void SND_InvalidateSeqData(u32 start, u32 end);
+extern void SND_InvalidateWaveData(uptr start, uptr end);
+extern void SND_InvalidateBankData(uptr start, uptr end);
+extern void SND_InvalidateSeqData(uptr start, uptr end);
 extern void SND_GetFirstInstDataPos(Pair *pos);
 extern u32 SND_GetNextInstData(void *bank, InstOut *out, u32 *pos);
 extern void *SND_GetWaveDataAddress(u8 *waveArc, s32 idx);
-extern void SND_SetWaveDataAddress(u8 *waveArc, s32 idx, u32 addr);
+extern void SND_SetWaveDataAddress(u8 *waveArc, s32 idx, const void *addr);
 extern u32 SND_GetWaveDataCount(void *waveArc);
 extern void SND_DestroyWaveArc(void *waveArc);
 extern void SND_DestroyBank(void *bank);
 extern void SND_AssignWaveArc(void *bank, s32 idx, void *waveArc);
 // the sound archive (unk_0210b448.c)
-extern u32 NNS_SndArcGetFileAddress(u32 idx);
-extern void NNS_SndArcSetFileAddress(u32 idx, u32 addr);
+extern void *NNS_SndArcGetFileAddress(u32 idx);
+extern void NNS_SndArcSetFileAddress(u32 idx, void *addr);
 extern s32 NNS_SndArcReadFile(u32 idx, void *buf, u32 len, u32 offset);
 extern u32 NNS_SndArcGetFileSize(u32 idx);
 extern void *NNS_SndArcGetGroupInfo(s32 idx);
@@ -81,10 +81,10 @@ extern u8 *data_021fbdb0;     // sDecodeBuffer
 extern OSMutex data_021fbdc0; // sDecodeBufferMutex
 extern u8 data_021fbd6c[0x3c]; // a wave archive's header (LoadWaveArcTable)
 
-// a file's address in the archive's FAT (a 32-bit slot of the archive's data: NNS_SndArcGetFileAddress)
-static inline void *GetFileAddress(u32 file) { return (void *)(uptr)NNS_SndArcGetFileAddress(file); }
-static inline void SetFileAddress(u32 file, const void *p) { NNS_SndArcSetFileAddress(file, (u32)(uptr)p); }
-static inline u32 SndAddr(const void *p) { return NNSi_SndArm7Addr(p); }
+// a file's address in the archive's FAT (NNS_SndArcGetFileAddress)
+static inline void *GetFileAddress(u32 file) { return NNS_SndArcGetFileAddress(file); }
+static inline void SetFileAddress(u32 file, const void *p) { NNS_SndArcSetFileAddress(file, (void *)p); }
+static inline uptr SndAddr(const void *p) { return NNSi_SndArm7Addr(p); }
 
 #define cAdpcmIndexTable data_02135e80
 #define cAdpcmStepSizeTable data_02135e90
@@ -959,7 +959,7 @@ u32 LoadSingleWave(u8 *wa, u32 idx, u32 file, void *heap)
         return 0;
     }
     DC_StoreRange(mem, size);
-    SND_SetWaveDataAddress(wa, idx, SndAddr(mem));
+    SND_SetWaveDataAddress(wa, idx, mem);
     return 1;
 }
 

@@ -1,3 +1,5 @@
+#include "nitro/pxi_ptr.h"
+#include "uptr.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02116c0c.h"
 #include "proto/autoload_2/unk_02116d24.h"
@@ -19,7 +21,7 @@ typedef signed int s32;
 typedef struct Cmd {
     struct Cmd *next;
     u32 id;
-    u32 arg[4];
+    uptr arg[4];  // (addresses among them: pointer-sized)
 } Cmd;
 
 typedef struct SndWork {
@@ -102,9 +104,9 @@ typedef struct ChRec {
     u8 pad26[10];
 } ChRec;
 
-typedef struct SlotEnt {
-    u32 a;
-    u32 b;
+typedef struct SlotEnt {  // AlarmCallbackInfo (src/dtcm/unk_027e032c.c): callback, argument, id
+    uptr a;
+    uptr b;
     u8 cnt;
 } SlotEnt;
 
@@ -134,7 +136,7 @@ extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void SNDi_SetPlayerParam(u32, u32, u32, u32);
-extern void PushCommand_impl(u32, u32, u32, u32, u32);
+extern void PushCommand_impl(u32, uptr, uptr, uptr, uptr);
 
 typedef union PxiMsg {
     u32 raw;
@@ -191,7 +193,7 @@ void SND_CommandInit(void) {
             return;
         }
         c->id = 29;
-        c->arg[0] = (u32)data_021fea60;
+        c->arg[0] = (uptr)data_021fea60;
         SND_PushCommand(c);
         SND_FlushCommand(1);
     }
@@ -301,12 +303,12 @@ u32 SND_FlushCommand(u32 flags) {
         } while (data_021fcfa4 >= 8);
     }
     DC_FlushRange(data_021fd260, 0x1800);
-    if (PXI_SendWordByFifo(7, (u32)data_021fcf90, 0) < 0) {
+    if (PXI_SendWordByFifo(7, PXI_PointerWord(7, data_021fcf90), 0) < 0) {
         if (!(flags & 1)) {
             OS_RestoreInterrupts(e);
             return 0;
         }
-        while (PXI_SendWordByFifo(7, (u32)data_021fcf90, 0) < 0) {
+        while (PXI_SendWordByFifo(7, PXI_PointerWord(7, data_021fcf90), 0) < 0) {
             OS_RestoreInterrupts(e);
             OS_SpinWait(100);
             e = OS_DisableInterrupts();

@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/autoload_2/unk_02116c0c.c (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "uptr.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,7 +22,7 @@ void SNDi_UnlockMutex(void);
 void SND_StopSeq(u32 a);
 #endif
 #ifndef PROTO_LOCAL_SND_PrepareSeq
-void SND_PrepareSeq(u32 a, u32 b, u32 c, u32 d);
+void SND_PrepareSeq(u32 a, uptr b, u32 c, uptr d);
 #endif
 #ifndef PROTO_LOCAL_SND_StartPreparedSeq
 void SND_StartPreparedSeq(u32 a);

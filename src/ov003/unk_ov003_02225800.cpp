@@ -1099,7 +1099,7 @@ void Insect_Despawn(Rec *e);
 void TreeBug_FlyOff(Rec *o, s16 *p);
 s32 Insect_FadeOut(Rec *o, s32 a);
 s32 Insect_TurnToTarget(Rec *o, s32 a);
-s32 Insect_ReflectAngle(s32 a, void *b);
+s32 Insect_ReflectAngle(s32 a, s32 mode);
 s32 Insect_FlyAwayArc(Rec *o, s32 v);
 s32 Insect_FlapWings(Rec *o);
 s32 Insect_CheckAlarm(Rec *o);
@@ -1110,7 +1110,7 @@ void Insect_PlaySe(Rec *o, s32 a, s32 b);
 void Insect_SplashIfWater(Rec *o);
 void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
 void Insect_CheckTurnCount(Rec *o, s32 a);
-void *Insect_CheckObstacle(Rec *o, s32 a, s32 b);
+s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 void Bee_StingAndLeave(Rec *o);
 void Bee_StretchSwarm(V3 *p, s32 a);
 void Pondskater_CheckObstacle(Rec *o, s16 *p);
@@ -1131,7 +1131,7 @@ extern "C" void Mosquito_Update(Rec *o);
 extern "C" void Pondskater_Update(Rec *o);
 extern "C" void Cricket_Chirp(Rec *o);
 extern "C" void Locust_PlaySe(Rec *o);
-extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p);
+extern "C" s32 Hopper_CheckObstacle(Rec *o, s16 *p);
 extern "C" void Hopper_Jump(Rec *o);
 extern "C" s16 Insect_RandomTurn(s32 a, s32 b);
 extern "C" void Hopper_Rest(Rec *o, s16 *p);
@@ -1305,7 +1305,7 @@ s32 CommSyncVar_GetVarSize(s32 a);
 void MI_CpuCopy8(void *, void *, s32);
 void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
 s32 Insect_GetSeId(s32 a, s32 b);
-s32 PlayerActor_GetDigCountdownAt(s32 a, s32 b);
+s32 PlayerActor_GetDigCountdownAt(void *a, s32 b);
 void Insect_CheckAlarm(Rec *o);
 s32 Insect_TickTimer(Rec *o);
 void Crawler_Wander(Rec *o);
@@ -1315,7 +1315,7 @@ void Insect_SetFlutterTurnDelay(Rec *o);
 
 // prototypes of this segment's own functions
 extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b);
-extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a);
+extern "C" BOOL Insect_CheckDigHit(Rec *o, void *a);
 extern "C" BOOL Insect_SplashIfWater(Rec *o);
 extern "C" BOOL Insect_LikesFlower(s32 a, u16 *b);
 extern "C" void Insect_UpdateRest(Rec *o);
@@ -1673,7 +1673,7 @@ extern "C" BOOL Insect_SplashIfWater(Rec *o) {
 #define func_02133150 _s32_div_f
 namespace s14 {
 // 0x222dd90
-extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
+extern "C" BOOL Insect_CheckDigHit(Rec *o, void *a) {
     s8 i;
     s8 *p = &o->hitCountdown;
     if (*p <= 0) {
@@ -2881,9 +2881,9 @@ extern "C" void Hopper_Jump(Rec *o) {
 #define func_02133150 _s32_div_f
 namespace s11 {
 // 0x222c3c4
-extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p) {
+extern "C" s32 Hopper_CheckObstacle(Rec *o, s16 *p) {
     if (!gCommManager->isSlotActive(gCommManager->myAid) || NetArea_IsLocalOwner()) {
-        void *r = Insect_CheckObstacle(o, 0x50, 0xe38);
+        s32 r = Insect_CheckObstacle(o, 0x50, 0xe38);
         if (r) {
             *p = 0;
             o->state = 0xf;
@@ -7232,11 +7232,13 @@ namespace s01 {
 // 0x2226180
 extern "C" BOOL Insect_NetClaim(s32 x) {
     u8 idx = x & 0xf;
-    Rec *r = (Rec *)x;
+    Rec *r;
     if ((x >> 4) & 1) {
         r = sFieldInsects + idx;
     } else if ((x >> 5) & 1) {
         r = sSpecialInsects + idx;
+    } else {
+        return TRUE;  // (no insect: the DS read the record at the address x - low memory - here)
     }
     u32 t = r->state;
     if (t != 0xa && t != 0xb && t != 9 && t != 0x10 && r->lifeState == 3) {

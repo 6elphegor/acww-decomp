@@ -816,7 +816,7 @@ extern FieldVillagerAiState sFieldVillagerAiTable[];
 extern u8 sSimCatchClassWeights[];
 extern u8 sSimCatchClassWeightsPlanned[];
 extern ContestRecord gContestRecord;
-extern u32 gSceneBlockMap;
+extern void *gSceneBlockMap;
 VillagerState *Villager_GetState(void *);
 void Clock_GetDateTime(void *);
 s32 Personality_IsAsleep(s32, void *);
@@ -831,7 +831,7 @@ void *Villager_GetPlan(void *);
 s32 Talk_PickWeightedIndex(void *, s32);
 s32 FishPick_PickForDate(void *, s32, s32, s32, s32, s32, s32);
 s32 InsectPick_PickForMonth(void *, s32, s32, s32, s32, s32);
-s32 BlockMap_BlockHasAllAttr(u32, s32, s32, s32);
+s32 BlockMap_BlockHasAllAttr(void *, s32, s32, s32);
 s32 Weather_GetFallingPrecip();
 void *VillagerState_GetHeldItem(void *);
 void VillagerState_SetHeldItem(void *, void *);
@@ -2050,7 +2050,7 @@ s32 FieldVillager_CanSimulateCatch(FieldVillager *o) {
     s32 t = ((VillagerTalk *)(o))->getEventKind();
     if ((u8)(t + 0xfd) <= 1) {
         u8 *p = (u8 *)PlayerActor_GetCharacter(4);
-        u32 g = gSceneBlockMap;
+        void *g = gSceneBlockMap;
         if (p != 0 && g != 0) {
             VecFx32CtorDtor v;
             VecFx32 *pv = (VecFx32 *)(p + 0x5c);

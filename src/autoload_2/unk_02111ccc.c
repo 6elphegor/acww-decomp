@@ -4,6 +4,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
@@ -56,7 +57,7 @@ void GX_BeginLoadTexPltt(void) {
 
 // GX_LoadBGExtPltt
 void GX_LoadTexPltt(const void *src, u32 offset, u32 size) {
-    u8 *dest = (u8 *)data_021fcbf8 + offset;
+    u8 *dest = (u8 *)(uptr)data_021fcbf8 + offset;  // (a VRAM address: LCDC)
     if (data_0213bfec != -1) {
         MI_DmaCopy32Async(data_0213bfec, src, dest, size, 0, 0);
     } else {

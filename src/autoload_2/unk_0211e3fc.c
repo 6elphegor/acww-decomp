@@ -51,7 +51,7 @@ extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
 extern u32 OS_GetDTCMAddress(void);
 extern void MI_StopDma(u32);
-extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
+extern void MIi_CardDmaCopy32(u32, uptr, uptr, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern int PXI_IsCallbackReady(u32, u32);
@@ -96,14 +96,14 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);
 
 // NOT in S013's range (starts at 0x0211e3fc < 0x0211e400); handed to the unit below.
 
-static inline BOOL CARDi_IsInTcm(u32 buf, u32 len) {
-const u32 i = 0x01ff8000;
-    const u32 d = OS_GetDTCMAddress();
+static inline BOOL CARDi_IsInTcm(uptr buf, u32 len) {
+const uptr i = 0x01ff8000;
+    const uptr d = OS_GetDTCMAddress();
 return ((i < buf + len) && (i + 0x8000 > buf)) || ((d < buf + len) && (d + 0x4000 > buf));
 }
 BOOL CARDi_TryReadCardDma(CardCommon *req) {
     CardCommon *const c = &data_021fec00;
-    u32 dst = c->dst;
+    uptr dst = c->dst;
     u32 len = c->len;
     BOOL use = 0;
     BOOL aligned = 0;

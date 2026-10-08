@@ -33,16 +33,16 @@ void FishDisplay_OnNetPacket(u8 *p, u32 v);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_Backup_Write
-s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c);
+s32 Backup_Write(Backup *g, u32 a, const void *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_Backup_WriteAsync
-s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c);
+s32 Backup_WriteAsync(Backup *g, u32 a, const void *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_Backup_Read
-s32 Backup_Read(Backup *g, u32 a, u32 b, u32 c);
+s32 Backup_Read(Backup *g, void *a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_Backup_ReadAsync
-s32 Backup_ReadAsync(Backup *g, u32 a, u32 b, u32 c);
+s32 Backup_ReadAsync(Backup *g, void *a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_Backup_GetStatus
 s32 Backup_GetStatus(Backup *g);

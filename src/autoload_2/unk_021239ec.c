@@ -8,6 +8,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -193,7 +194,7 @@ BOOL MB_ReadSegment(FSFile *file, void *buf, u32 len) {
                 const MBRegion *r = data_0213c204;
                 info.romOffset = rom->arm9RomOffset;
                 info.ramDiff = rom->arm9RamAddr - rom->arm9RomOffset;
-                info.bufDiff = (u32)cache->list[1].ptr - rom->arm9RomOffset;
+                info.bufDiff = (u32)(uptr)cache->list[1].ptr - rom->arm9RomOffset;  // (DS-layout segment info)
                 info.len = len;
                 MBi_ReadSegmentHeader(&info, 0x4000, 0x8000, TRUE);
                 for (; r->len != 0; r++) {
@@ -202,7 +203,7 @@ BOOL MB_ReadSegment(FSFile *file, void *buf, u32 len) {
                 {
                     // patch the child's AutoloadCallback (_start_AutoloadDoneCallback) in the loaded image to `bx lr`
                     u8 *dst = (u8 *)cache->list[1].ptr;
-                    dst += ((u32)&AutoloadCallback - rom->arm9RamAddr);
+                    dst += ((u32)(uptr)&AutoloadCallback - rom->arm9RamAddr);  // (the child's DS address)
                     *(u32 *)dst = 0xe12fff1e;
                 }
             }

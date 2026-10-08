@@ -32,13 +32,13 @@ typedef struct Strm {
     s32 chCount;            // 0x48
     u8 chIdx[16];           // 0x4c
 } Strm;
-typedef void (*CapCb)(void *, void *, u32, s32, s32);
+typedef void (*CapCb)(void *, void *, u32, s32, void *);
 typedef struct Cap {
     s32 active;             // 0x00
     s32 mode;               // 0x04
     s32 fmt;                // 0x08
-    u32 bufL;               // 0x0c
-    u32 bufR;               // 0x10
+    u8 *bufL;               // 0x0c
+    u8 *bufR;               // 0x10
     u32 size;               // 0x14
     u32 blkSize;            // 0x18
     s32 blkIdx;             // 0x1c
@@ -48,12 +48,12 @@ typedef struct Cap {
     s32 alarm;              // 0x2c
     s32 nBlocks;            // 0x30
     CapCb cb;               // 0x34
-    s32 cbArg;              // 0x38
+    void *cbArg;            // 0x38
     u32 fader[4];           // 0x3c
     s32 faderOn;            // 0x4c
     s32 vol;                // 0x50
 } Cap;
-typedef struct CapMsg { Cap *cap; u32 size; u32 off; u32 l; u32 r; } CapMsg;
+typedef struct CapMsg { Cap *cap; u32 size; u32 off; u8 *l; u8 *r; } CapMsg;
 
 extern s32 data_021fb6a4;
 extern NNSFndList data_021fb6a8;
@@ -92,7 +92,7 @@ extern void NNSi_SndFaderSet(void *, s32, s32);
 
 // NNSi_SndCaptureStart, in the shape of NitroSystem capture.c (SonicRushAdventure-Decomp's matched version)
 BOOL NNSi_SndCaptureStart(s32 type, void *buffer0, void *buffer1, u32 bufLen, s32 format, s32 input, s32 output, BOOL loopFlag,
-                          int sampleRate, int volume, int pan0, int pan1, int interval, CapCb callback, s32 arg)
+                          int sampleRate, int volume, int pan0, int pan1, int interval, CapCb callback, void *arg)
 {
     SNDWaveFormat wave_format;
     s32 capture_format;
@@ -186,8 +186,8 @@ BOOL NNSi_SndCaptureStart(s32 type, void *buffer0, void *buffer1, u32 bufLen, s3
     cap->capMask    = capBitMask;
     cap->alarm       = alarmNo;
     cap->fmt    = format;
-    cap->bufL   = (u32)buffer0;
-    cap->bufR   = (u32)buffer1;
+    cap->bufL   = buffer0;
+    cap->bufR   = buffer1;
     cap->size    = bufLen;
     cap->blkSize = DS_UDIV(bufLen, interval);
     cap->blkIdx = 0;
@@ -261,19 +261,19 @@ void NNSi_SndCaptureEndSleep(void)
     }
     c->blkIdx = 0;
     zero1 = 0;
-    MIi_CpuClear32(zero1, (void *)c->bufL, c->size);
+    MIi_CpuClear32(zero1, c->bufL, c->size);
     zero2 = 0;
-    MIi_CpuClear32(zero2, (void *)c->bufR, c->size);
-    DC_FlushRange((void *)c->bufL, c->size);
-    DC_FlushRange((void *)c->bufR, c->size);
+    MIi_CpuClear32(zero2, c->bufR, c->size);
+    DC_FlushRange(c->bufL, c->size);
+    DC_FlushRange(c->bufR, c->size);
     SND_StartTimer(c->startCh, c->capMask, (c->alarm >= 0) ? 1 << c->alarm : 0, 0);
 }
 
 // capture alarm callback
 void AlarmCallback(Cap *cap)
 {
-    u32 l;
-    u32 r;
+    u8 *l;
+    u8 *r;
     u32 size;
     u32 off;
     size = cap->blkSize;
@@ -293,9 +293,9 @@ void AlarmCallback(Cap *cap)
             data_027e0390 = 0;
         }
     } else {
-        DC_InvalidateRange((void *)l, size);
-        DC_InvalidateRange((void *)r, size);
-        cap->cb((void *)l, (void *)r, size, cap->fmt, cap->cbArg);
+        DC_InvalidateRange(l, size);
+        DC_InvalidateRange(r, size);
+        cap->cb(l, r, size, cap->fmt, cap->cbArg);
     }
     cap->blkIdx++;
     if (cap->blkIdx >= cap->nBlocks) {
@@ -311,9 +311,9 @@ void CaptureThread(void *arg)
     for (;;) {
         OS_ReceiveMessage(&data_021fb774, &m, 1);
         msg = (CapMsg *)m;
-        DC_InvalidateRange((void *)msg->l, msg->size);
-        DC_InvalidateRange((void *)msg->r, msg->size);
-        msg->cap->cb((void *)msg->l, (void *)msg->r, msg->size, msg->cap->fmt, msg->cap->cbArg);
+        DC_InvalidateRange(msg->l, msg->size);
+        DC_InvalidateRange(msg->r, msg->size);
+        msg->cap->cb(msg->l, msg->r, msg->size, msg->cap->fmt, msg->cap->cbArg);
     }
 }
 

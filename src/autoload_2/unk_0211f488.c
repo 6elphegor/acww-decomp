@@ -51,7 +51,7 @@ extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
 extern u32 OS_GetDTCMAddress(void);
 extern void MI_StopDma(u32);
-extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
+extern void MIi_CardDmaCopy32(u32, uptr, uptr, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern int PXI_IsCallbackReady(u32, u32);

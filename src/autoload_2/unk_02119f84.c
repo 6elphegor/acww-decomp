@@ -13,6 +13,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -34,7 +35,7 @@ extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
 extern void FSi_ReleaseCommand(FSFile *file, u32 result);
 extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern void FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
 extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
@@ -138,8 +139,8 @@ void FS_EndOverlay(FSOverlayInfo *p) {
     for (;;) {
         DtorEntry *found = 0;
         DtorEntry *found_tail = 0;
-        u32 start = p->header.ram_address;
-        u32 end = start + (p->header.ram_size + p->header.bss_size);
+        uptr start = p->header.ram_address;
+        uptr end = start + (p->header.ram_size + p->header.bss_size);
         DtorEntry *prev;
         DtorEntry *head;
         DtorEntry *cur;
@@ -149,8 +150,8 @@ void FS_EndOverlay(FSOverlayInfo *p) {
         cur = head;
         while (cur) {
             DtorEntry *next = cur->next;
-            u32 obj = (u32)cur->obj;
-            u32 dtor = (u32)cur->dtor;
+            uptr obj = (uptr)cur->obj;
+            uptr dtor = (uptr)cur->dtor;
             if ((obj == 0 && dtor >= start && dtor < end) || (obj >= start && obj < end)) {
                 if (found_tail) found_tail->next = cur;
                 else found = cur;

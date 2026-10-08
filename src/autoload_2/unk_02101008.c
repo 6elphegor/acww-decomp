@@ -15,7 +15,7 @@ typedef int BOOL;
 
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
-typedef struct Region { u32 start; u32 end; } Region;
+typedef struct Region { uptr start; uptr end; } Region;
 
 typedef struct MBlock {
     u16 sig;
@@ -28,11 +28,11 @@ typedef struct MBlock {
     struct MBlock *next;
 } MBlock;
 
-typedef struct FrmState { u32 tag; u32 head; u32 tail; struct FrmState *prev; } FrmState;
+typedef struct FrmState { u32 tag; uptr head; uptr tail; struct FrmState *prev; } FrmState;
 
 typedef struct FrmHead {
-    u32 head;               // 0x24
-    u32 tail;               // 0x28
+    uptr head;              // 0x24
+    uptr tail;              // 0x28
     FrmState *state;        // 0x2c
 } FrmHead;
 
@@ -40,8 +40,8 @@ typedef struct HeapHead {
     u32 sig;                // 0x00
     NNSFndLink link;        // 0x04
     NNSFndList childList;   // 0x0c
-    u32 start;              // 0x18
-    u32 end;                // 0x1c
+    uptr start;             // 0x18
+    uptr end;               // 0x1c
     union {                 // 0x20
         u32 raw;
         struct { u32 optFlag : 8; u32 pad : 24; } f;
@@ -59,15 +59,15 @@ typedef struct HeapHead {
 
 extern s32 abs(s32 x); // src/autoload_2/unk_0212703c.c
 
-static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
+static inline uptr RoundUp(uptr v, uptr a) { return (v + (a - 1)) & ~(a - 1); }
 
-// (the frame heap keeps its head and tail as addresses: u32 in every copy of HeapHead, these units' shared layout)
+// (the frame heap keeps its head and tail as addresses: uptr in every copy of HeapHead, these units' shared layout)
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(HeapHead *heap, s32 alignment) {
     alignment = abs(alignment);
     {
         const FrmHead *f = &heap->u.frm;
-        u32 block = RoundUp(f->head, alignment);
+        uptr block = RoundUp(f->head, alignment);
         if (block > f->tail) return 0;
-        return f->tail - block;
+        return (u32)(f->tail - block);
     }
 }

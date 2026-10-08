@@ -111,7 +111,6 @@ PlayerActor_GetHairColor
 PlayerActor_GetHairStyle
 PlayerActor_GetHat
 PlayerActor_GetHeldItem
-PlayerActor_GetPlayerData
 PlayerActor_GetTan
 PlayerActor_IsWaitingForSlots
 PlayerActor_JointCbPre

@@ -96,7 +96,7 @@ u32 NNS_FndGetSizeForMBlockExpHeap(void *p);
 u32 NNS_FndFreeToFrmHeap(void *heap, s32);
 void NNS_FndVisitAllocatedForExpHeap(void *heap, void (*visitor)(void *block, void *heap, u32 param), u32 param);
 void NNS_FndFreeToExpHeap(void *heap, void *p); // NNS_FndFreeToExpHeap
-u32 NNS_FndResizeForMBlockFrmHeap(void *heap, u32 mem, u32 size);
+u32 NNS_FndResizeForMBlockFrmHeap(void *heap, void *mem, u32 size);
 s32 NNS_FndResizeForMBlockExpHeap(void *heap, void *p, u32 size); // NNS_FndResizeForMBlockExpHeap
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(void *heap, s32 align); // NNS_FndGetAllocatableSizeForFrmHeapEx
 u32 NNS_FndGetTotalFreeSizeForExpHeap(void *heap); // NNS_FndGetTotalFreeSizeForExpHeap
@@ -471,7 +471,7 @@ s32 ExpHeap::doResize(void *p, u32 size) {
 }
 
 s32 FrameHeap::doResize(void *p, u32 size) {
-    return (s32)NNS_FndResizeForMBlockFrmHeap(heapHandle, (uptr)p, size);  // (the block as u32: unk_02100d44.c)
+    return (s32)NNS_FndResizeForMBlockFrmHeap(heapHandle, p, size);
 }
 
 void Heap::free(void *p) {

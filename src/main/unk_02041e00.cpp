@@ -202,7 +202,6 @@ namespace nA {
 extern "C" {
 
 extern TownUpdater gTownUpdater;
-extern u32 data_021fcc2c[];
 s32 TownUpdateThread_Destroy();
 s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
 void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);

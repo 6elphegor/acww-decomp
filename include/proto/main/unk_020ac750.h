@@ -70,7 +70,7 @@ void NookShop_PostReopenNotice();
 BOOL Shop_IsPurchaseSynced();
 #endif
 #ifndef PROTO_LOCAL_NookShop_InitNew
-int NookShop_InitNew(int a);
+void NookShop_InitNew(void *a);
 #endif
 #ifndef PROTO_LOCAL_NookShop_HasVisitorBought
 int NookShop_HasVisitorBought(void*);

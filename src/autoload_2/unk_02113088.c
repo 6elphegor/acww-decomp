@@ -52,7 +52,7 @@ u32 OS_GetProcMode(void);
 void OS_LoadContext(OSThread *t);
 BOOL OS_SaveContext(OSThread *t);
 u32 OS_GetLockID(void);
-u32 OS_ReadOwnerOfLockWord(u32 addr);
+u16 OS_ReadOwnerOfLockWord(void *p);
 u32 OS_TryLockCartridge(u32 id);
 void OS_UnlockCartridge(u32 id);
 void MIi_CpuClear32(u32 data, void *dest, u32 size);
@@ -66,7 +66,7 @@ void OSi_RemoveThreadFromList(OSThread *t);
 void OSi_InsertThreadToList(OSThread *t);
 OSThread *OSi_RemoveLinkFromQueue(OSThreadQueue *q);
 void OSi_InsertLinkToQueue(OSThreadQueue *q, OSThread *t);
-void OS_InitContext(OSContext *c, u32 pc, u32 sp);
+void OS_InitContext(OSContext *c, uptr pc, uptr sp);
 void OSi_ExitThread_ArgSpecified(OSThread *t, void *arg);
 void OSi_CancelThreadAlarmForSleep(OSThread *t);
 void OS_SetThreadDestructor(OSThread *t, void (*d)(void *));
@@ -103,9 +103,9 @@ void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *st
     *(u32 *)thread->stackTop = 0x7bf9dd5b;
     thread->joinQueue.tail = 0;
     thread->joinQueue.head = thread->joinQueue.tail;
-    OS_InitContext(&thread->context, (u32)func, (u32)stack - 4);
-    thread->context.r[0] = (u32)arg;
-    thread->context.r[14] = (u32)OS_ExitThread;
+    OS_InitContext(&thread->context, (uptr)func, (uptr)stack - 4);
+    thread->context.r[0] = (uptr)arg;
+    thread->context.r[14] = (uptr)OS_ExitThread;
     zero = 0;
     MIi_CpuClear32(zero, stackTop + 4, stackSize - 8);
     OS_SetThreadDestructor(thread, 0);
@@ -125,8 +125,8 @@ void OS_ExitThread(void) {
 // OSi_ExitThread_ARM
 void OSi_ExitThread_ArgSpecified(OSThread *t, void *arg) {
     if (data_021fcc14 != 0) {
-        OS_InitContext(&t->context, (u32)OSi_ExitThread, data_021fcc14);
-        t->context.r[0] = (u32)arg;
+        OS_InitContext(&t->context, (uptr)OSi_ExitThread, data_021fcc14);
+        t->context.r[0] = (uptr)arg;
         t->context.cpsr |= 0x80;
         t->state = 1;
         OS_LoadContext(t);
@@ -183,13 +183,13 @@ void OS_KillThread(OSThread *t, void *arg) {
 // OSi_KillThreadWithPriority
 void OS_KillThreadWithPriority(OSThread *t, void *arg, u32 prio) {
     u32 e = OS_DisableInterrupts();
-    u32 sp;
+    uptr sp;
     if (t == data_021fcc2c.current) OSi_ExitThread_ArgSpecified(t, arg);
     OSi_CancelThreadAlarmForSleep(t);
     sp = data_021fcc14;
-    if (sp == 0) sp = (u32)(t->stackBottom - 4);
-    OS_InitContext(&t->context, (u32)OSi_ExitThread, sp);
-    t->context.r[0] = (u32)arg;
+    if (sp == 0) sp = (uptr)(t->stackBottom - 4);
+    OS_InitContext(&t->context, (uptr)OSi_ExitThread, sp);
+    t->context.r[0] = (uptr)arg;
     t->context.cpsr |= 0x80;
     t->state = 1;
     OS_DisableScheduler();
@@ -413,12 +413,12 @@ void OS_SetThreadDestructor(OSThread *t, void (*d)(void *)) {
 }
 
 // OS_SetThreadParameter (thread+0xb8)
-void OS_SetThreadParameter(OSThread *t, u32 v) {
+void OS_SetThreadParameter(OSThread *t, void *v) {
     t->parameter = v;
 }
 
 // OS_GetThreadParameter (thread+0xb8)
-u32 OS_GetThreadParameter(OSThread *t) {
+void *OS_GetThreadParameter(OSThread *t) {
     return t->parameter;
 }
 

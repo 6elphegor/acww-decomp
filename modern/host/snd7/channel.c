@@ -37,7 +37,7 @@ void snd7_setup_channel_pcm(int ch, const void *data, int format, int loop, int 
     spu_ch[ch].tmr = (u16)(0x10000 - timer);
     spu_ch[ch].pnt = (u16)loopStart;
     spu_ch[ch].len = (u32)loopLength & 0x3fffff;
-    spu_ch[ch].sad = (u32)(uintptr_t)data & 0x7fffffc;
+    spu_ch[ch].sad = (uintptr_t)data & ~(uintptr_t)3;
 }
 
 void snd7_setup_channel_psg(int ch, int duty, int volume, int volumeDiv, int timer, int pan) {
@@ -98,7 +98,7 @@ void snd7_setup_capture(int idx, int format, void *data, int size, BOOL loop, in
     u8 old = spu_capcnt[idx];
     spu_capcnt[idx] = (u8)(format << 3 | (loop ? 0 : 1) << 2 | capCtrlSrc << 1 | capCtrlDst);
     spu_capcnt_written(idx, old);
-    spu_capdad[idx] = (u32)(uintptr_t)data & 0x7fffffc;
+    spu_capdad[idx] = (uintptr_t)data & ~(uintptr_t)3;
     spu_caplen[idx] = (u16)size;
 }
 

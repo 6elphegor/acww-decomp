@@ -84,7 +84,7 @@ BOOL FS_ResumeArchive(FSArc *arc);
 BOOL FS_SuspendArchive();
 u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
 BOOL FS_UnloadArchive(FSArc *arc);
-BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+BOOL FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
 BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
@@ -92,7 +92,8 @@ BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max) {
     u32 need = ((u32)(s32)(arc->fat_size + arc->fnt_size + 32) + 31) & ~31;
     if (need <= mem_max) {
-        u8 *tbl = (u8 *)(((u32)mem + 31) & ~31);
+        // the tables at their offsets in mem (FSi_ReadMemoryCore reads them from there)
+        u8 *tbl = (u8 *)(((uptr)mem + 31) & ~(uptr)31);
         FSFile file;
         FS_InitFile(&file);
         if (FS_OpenFileDirect(&file, arc, arc->fat, arc->fat + arc->fat_size, -1)) {
@@ -101,7 +102,7 @@ u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max) {
             }
             FS_CloseFile(&file);
         }
-        arc->fat = (u32)tbl;
+        arc->fat = (u32)(tbl - (u8 *)mem);
         tbl += arc->fat_size;
         if (FS_OpenFileDirect(&file, arc, arc->fnt, arc->fnt + arc->fnt_size, -1)) {
             if (FS_ReadFile(&file, tbl, arc->fnt_size) < 0) {
@@ -109,7 +110,7 @@ u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max) {
             }
             FS_CloseFile(&file);
         }
-        arc->fnt = (u32)tbl;
+        arc->fnt = (u32)(tbl - (u8 *)mem);
         arc->load_mem = mem;
         arc->read = FSi_ReadMemoryCore;
         arc->flag |= 4;

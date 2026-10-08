@@ -12,6 +12,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -50,7 +51,7 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
+extern void *WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
@@ -168,8 +169,8 @@ u32 MBi_CommParentSendBlock(void) {
                 buf->f0 = 0;
                 best->state = 1;
                 best->f0 = addr & ~31;
-                ((u32 *)job)[4] = (u32)best;
-                ((u32 *)job)[5] = (u32)buf;
+                ((u32 *)job)[4] = HostPtr32_Of(best);  // (the task's arguments: 32-bit slots, MBi_ReloadCache)
+                ((u32 *)job)[5] = HostPtr32_Of(buf);
                 MBi_SetTask(job, MBi_ReloadCache, 0, 4);
             }
             return 21;

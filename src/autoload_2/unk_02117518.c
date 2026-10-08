@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02116c0c.h"
 #include "proto/autoload_2/unk_02116d24.h"
@@ -19,7 +20,7 @@ typedef signed int s32;
 typedef struct Cmd {
     struct Cmd *next;
     u32 id;
-    u32 arg[4];
+    uptr arg[4];  // (addresses among them: pointer-sized)
 } Cmd;
 
 typedef struct SndWork {
@@ -102,9 +103,9 @@ typedef struct ChRec {
     u8 pad26[10];
 } ChRec;
 
-typedef struct SlotEnt {
-    u32 a;
-    u32 b;
+typedef struct SlotEnt {  // AlarmCallbackInfo (src/dtcm/unk_027e032c.c): callback, argument, id
+    uptr a;
+    uptr b;
     u8 cnt;
 } SlotEnt;
 
@@ -134,7 +135,7 @@ extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void SNDi_SetPlayerParam(u32, u32, u32, u32);
-extern void PushCommand_impl(u32, u32, u32, u32, u32);
+extern void PushCommand_impl(u32, uptr, uptr, uptr, uptr);
 
 typedef union PxiMsg {
     u32 raw;
@@ -177,7 +178,7 @@ void SNDi_IncAlarmId(s32 idx) {
     e->cnt++;
 }
 
-u32 SNDi_SetAlarmHandler(s32 idx, u32 a, u32 b) {
+u32 SNDi_SetAlarmHandler(s32 idx, uptr a, uptr b) {
     SlotEnt *e = &data_027e032c[idx];
     e->a = a;
     e->b = b;

@@ -57,7 +57,11 @@ void NitroStartUp(void);
 // before the game's static constructors (which may touch DS memory): map it first
 void host_vram_init(void);
 void melon_init(void);
-__attribute__((constructor(101))) static void early_init(void) { host_map_memory(); host_vram_init(); }
+__attribute__((constructor(101))) static void early_init(void) {
+    host_map_memory();
+    host_vram_init();
+    host_highmem_init();  // ACWW_HIGHMEM: the unused low 4 GB reserved from here on
+}
 
 static void game_main(void *arg) {
     (void)arg;
@@ -80,6 +84,7 @@ int main(int argc, char **argv) {
     *(volatile u16 *)0x027ffc40 = 1;                     // boot type: ROM
     pxi7_init();
     melon_init();
+    host_debug_crash_handlers();  // (melonDS's JIT replaced the SIGSEGV handler)
     extern void frontend_init(const char *argv0);
     extern void frontend_shutdown(void);
     frontend_init(argv[0]);
@@ -137,6 +142,15 @@ int host_is_game_heap(const void *p) {
 
 void *host_root_heap_region(unsigned int *size) {
     const unsigned int kSize = 8u << 20;
+    if (host_highmem()) {  // above 4 GB, the low word of its addresses (0xa0000000...) in poisoned space
+        uintptr_t hint = 0x5a0000000ull;
+        void *p = host_highmem_alloc(&hint, kSize);
+        if (!p) return 0;
+        *size = kSize;
+        sRootHeapLo = (uintptr_t)p;
+        sRootHeapHi = (uintptr_t)p + kSize;
+        return p;
+    }
     void *want = (void *)(uintptr_t)0x50000000;
     void *p = mmap(want, kSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (p == MAP_FAILED) return 0;

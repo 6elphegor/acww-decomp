@@ -636,7 +636,7 @@ extern "C" void MenuCtrl_StoreFutureLetter(void) {
 }
 
 extern "C" void MenuCtrl_ReturnFutureLetter(void) {
-    LetterView *p = (LetterView *)(sptr)Inventory_GetEmptyLetter();  // (returns the letter's address as an s32)
+    LetterView *p = (LetterView *)Inventory_GetEmptyLetter();
     if (p) {
         Letter_Copy(p, (LetterView *)&sFutureLetter);
     }

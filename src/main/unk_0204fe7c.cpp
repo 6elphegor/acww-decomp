@@ -13,16 +13,17 @@ extern "C" void CARD_UnlockBackup(u16 v);
 extern "C" void OS_ReleaseLockID(u16 v);
 extern "C" s32 OS_GetLockID(void);
 extern "C" void CARD_LockBackup(u16 v);
-extern "C" s32 CARDi_RequestStreamCommand(u32 a, u32 b, u32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
+// (src, dst: card addresses or ARM9 memory)
+extern "C" s32 CARDi_RequestStreamCommand(uptr a, uptr b, u32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
 
 extern "C" void FishDisplay_RecvAct02(u8 *p, u32 v);
 extern "C" void FishDisplay_RecvAct01(u8 *p, u32 v);
 extern "C" void FishDisplay_RecvAct00(u8 *p, u32 v);
 
-extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c);
-extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c);
-extern "C" s32 Backup_Read(Backup *g, u32 a, u32 b, u32 c);
-extern "C" s32 Backup_ReadAsync(Backup *g, u32 a, u32 b, u32 c);
+extern "C" s32 Backup_Write(Backup *g, u32 a, const void *b, u32 c);
+extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, const void *b, u32 c);
+extern "C" s32 Backup_Read(Backup *g, void *a, u32 b, u32 c);
+extern "C" s32 Backup_ReadAsync(Backup *g, void *a, u32 b, u32 c);
 extern "C" s32 Backup_GetStatus(Backup *g);
 extern "C" void Backup_EndAccess(Backup *g);
 extern "C" u16 Save_Sum16(u16 *p, u32 n);
@@ -33,7 +34,7 @@ extern "C" void FishDisplay_OnNetPacket(u8 *p, u32 v);
 extern "C" void (*sFishDisplayNetHandlers[3])(u8 *, u32);
 extern "C" void (*sFishDisplayNetHandlers[3])(u8 *, u32) = {FishDisplay_RecvAct00, FishDisplay_RecvAct01, FishDisplay_RecvAct02};
 
-extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c) {
+extern "C" s32 Backup_Write(Backup *g, u32 a, const void *b, u32 c) {
     s32 r = 1;
     if (a + c > g->totalSize) {
         return r;
@@ -43,7 +44,7 @@ extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c) {
         return r;
     }
     CARD_LockBackup((u16)g->lockId);
-    if (CARDi_RequestStreamCommand(b, a, c, 0, 0, 0, 7, 10, 2) != 0) {
+    if (CARDi_RequestStreamCommand((uptr)b, a, c, 0, 0, 0, 7, 10, 2) != 0) {
         r = 0;
     }
     CARD_UnlockBackup((u16)g->lockId);
@@ -52,7 +53,7 @@ extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c) {
     return r;
 }
 
-extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c) {
+extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, const void *b, u32 c) {
     s32 r = 1;
     if (a + c > g->totalSize) {
         return r;
@@ -62,7 +63,7 @@ extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c) {
         return r;
     }
     CARD_LockBackup((u16)g->lockId);
-    CARDi_RequestStreamCommand(b, a, c, 0, 0, r, 7, 10, 2);
+    CARDi_RequestStreamCommand((uptr)b, a, c, 0, 0, r, 7, 10, 2);
     if (Backup_GetStatus(g) == 3) {
         r = 3;
     } else {
@@ -71,13 +72,13 @@ extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c) {
     return r;
 }
 
-extern "C" s32 Backup_Read(Backup *g, u32 a, u32 b, u32 c) {
+extern "C" s32 Backup_Read(Backup *g, void *a, u32 b, u32 c) {
     s32 r = 1;
     if (c + b <= g->totalSize) {
         g->lockId = OS_GetLockID();
         if (g->lockId != -3) {
             CARD_LockBackup((u16)g->lockId);
-            if (CARDi_RequestStreamCommand(c, a, b, 0, 0, 0, 6, r, 0) != 0) {
+            if (CARDi_RequestStreamCommand(c, (uptr)a, b, 0, 0, 0, 6, r, 0) != 0) {
                 r = 0;
             }
             CARD_UnlockBackup((u16)g->lockId);
@@ -88,13 +89,13 @@ extern "C" s32 Backup_Read(Backup *g, u32 a, u32 b, u32 c) {
     return r;
 }
 
-extern "C" s32 Backup_ReadAsync(Backup *g, u32 a, u32 b, u32 c) {
+extern "C" s32 Backup_ReadAsync(Backup *g, void *a, u32 b, u32 c) {
     s32 r = 1;
     if (c + b <= g->totalSize) {
         g->lockId = OS_GetLockID();
         if (g->lockId != -3) {
             CARD_LockBackup((u16)g->lockId);
-            CARDi_RequestStreamCommand(c, a, b, 0, 0, r, 6, r, 0);
+            CARDi_RequestStreamCommand(c, (uptr)a, b, 0, 0, r, 6, r, 0);
             if (Backup_GetStatus(g) == 3) {
                 r = 3;
             } else {

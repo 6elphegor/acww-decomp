@@ -70,8 +70,8 @@ struct Seq {
     u8 pad42[2];
 };
 
-typedef struct StrmEnt { u32 buf; u32 pos; } StrmEnt;
-typedef void (*StrmCb)(s32, s32, u32 *, u32, s32, void *);
+typedef struct StrmEnt { uptr buf; u32 pos; } StrmEnt;  // buf: a channel buffer's address
+typedef void (*StrmCb)(s32, s32, uptr *, u32, s32, void *);
 
 typedef struct Strm {
     NNSFndLink link;        // 0x00
@@ -109,7 +109,7 @@ extern NNSFndList data_021fadd8;
 extern Seq data_021fade4[];
 extern Player data_021fb224[];
 extern NNSFndList data_021fb6a8;
-extern u32 data_021fb6b4[];
+extern uptr data_021fb6b4[];
 extern StrmEnt data_021fb6f4[];
 extern s16 data_02139fb4[];
 
@@ -160,7 +160,7 @@ extern u32 SND_IsFinishedCommandTag(u32);
 extern u32 SND_GetCurrentCommandTag(void);
 extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
-extern u32 SND_RecvCommandReply(u32);
+extern void *SND_RecvCommandReply(u32);
 extern u32 SND_ReadTrackInfo();
 extern u32 SND_ReadPlayerInfo();
 extern s32 SND_GetPlayerGlobalVariable(s32);
@@ -191,8 +191,8 @@ void NNSi_SndPlayerStopSeq(Seq *, s32);
 void InitPlayer(Seq *);
 void PlayerHeapDisposeCallback(HeapBlk *);
 u32 BeginSleep(void);
-u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
-u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
+u32 NNSi_SndReadDriverPlayerInfo(u32, void *);
+u32 NNSi_SndReadDriverTrackInfo(u32, u32, void *);
 
 typedef struct TexSrt {
     u8 pad[0x18];
@@ -207,7 +207,7 @@ typedef struct TexSrt {
 } TexSrt;
 #define FXM(a, b) ((s32)(((s64)(a) * (b)) >> 12))
 // NNS_SndStrmSetup
-BOOL NNS_SndStrmSetup(Strm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval, StrmCb cb, void *arg)
+BOOL NNS_SndStrmSetup(Strm *st, s32 fmt, uptr buf, u32 size, s32 timer, s32 interval, StrmCb cb, void *arg)
 {
     s32 i;
     u32 q;
@@ -331,7 +331,7 @@ void StrmCallback(Strm *st, s32 flag)
     u32 off = q * st->blk;
     s32 i;
     for (i = 0; i < st->chCount; i++) {
-        u32 b = data_021fb6f4[st->chIdx[i]].buf;
+        uptr b = data_021fb6f4[st->chIdx[i]].buf;
         data_021fb6b4[i] = b + off;
     }
     st->cb(flag, st->chCount, data_021fb6b4, q, st->fmt, st->arg);
@@ -372,7 +372,7 @@ void EndSleep__stream(Strm *st)
 // ---- file-scope objects (autoload_3 .bss 0x021fb6a4-0x021fb774; this definition order gives the original order after
 // mwcc's size sort)
 StrmEnt data_021fb6f4[16];
-u32 data_021fb6b4[16];
+uptr data_021fb6b4[16];
 NNSFndList data_021fb6a8;
 s32 data_021fb6a4;
 

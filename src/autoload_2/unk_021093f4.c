@@ -5,6 +5,7 @@
 // size on its own): snd main (0x021093f4), resource manager (0x021096d4), player (0x02109830), stream (0x0210a478,
 // continued in unk_0210a9c4.c); its first part, the end of the XSI texture-SRT file, is in unk_02108d44.c. Every
 // part keeps the common declarations.
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -68,8 +69,8 @@ struct Seq {
     u8 pad42[2];
 };
 
-typedef struct StrmEnt { u32 buf; u32 pos; } StrmEnt;
-typedef void (*StrmCb)(s32, s32, u32 *, u32, s32, void *);
+typedef struct StrmEnt { uptr buf; u32 pos; } StrmEnt;  // buf: a channel buffer's address
+typedef void (*StrmCb)(s32, s32, uptr *, u32, s32, void *);
 
 typedef struct Strm {
     NNSFndLink link;        // 0x00
@@ -107,7 +108,7 @@ extern NNSFndList data_021fadd8;
 extern Seq data_021fade4[];
 extern Player data_021fb224[];
 extern NNSFndList data_021fb6a8;
-extern u32 data_021fb6b4[];
+extern uptr data_021fb6b4[];
 extern StrmEnt data_021fb6f4[];
 extern s16 data_02139fb4[];
 
@@ -158,7 +159,7 @@ extern u32 SND_IsFinishedCommandTag(u32);
 extern u32 SND_GetCurrentCommandTag(void);
 extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
-extern u32 SND_RecvCommandReply(u32);
+extern void *SND_RecvCommandReply(u32);
 extern u32 SND_ReadTrackInfo();
 extern u32 SND_ReadPlayerInfo();
 extern s32 SND_GetPlayerGlobalVariable(s32);
@@ -189,8 +190,8 @@ void NNSi_SndPlayerStopSeq(Seq *, s32);
 void InitPlayer(Seq *);
 void PlayerHeapDisposeCallback(HeapBlk *);
 u32 BeginSleep(void);
-u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
-u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
+u32 NNSi_SndReadDriverPlayerInfo(u32, void *);
+u32 NNSi_SndReadDriverTrackInfo(u32, u32, void *);
 
 typedef struct TexSrt {
     u8 pad[0x18];
@@ -273,7 +274,7 @@ BOOL NNS_SndUpdateDriverInfo(void)
 }
 
 // read player info (SND_ReadPlayerInfo) from the current driver info buffer
-u32 NNSi_SndReadDriverPlayerInfo(u32 a, u32 b)
+u32 NNSi_SndReadDriverPlayerInfo(u32 a, void *b)
 {
     SndBuf *p;
     if (data_021f89d0 < 0) {
@@ -288,7 +289,7 @@ u32 NNSi_SndReadDriverPlayerInfo(u32 a, u32 b)
 }
 
 // read track/player info from the current driver info buffer
-u32 NNSi_SndReadDriverTrackInfo(u32 a, u32 b, u32 c)
+u32 NNSi_SndReadDriverTrackInfo(u32 a, u32 b, void *c)
 {
     SndBuf *p;
     if (data_021f89d0 < 0) {

@@ -36,7 +36,7 @@ extern u32 gTaskPhase;
 extern QNode *gTaskCurrentNode;
 extern u16 gProcCreateProfile;
 extern u8 gProcCreateStep;
-extern OSThread *data_021fcc2c[3];
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 extern u32 data_021fce88;
 extern char data_02135f44[];
 extern u8 data_021fccfc[];
@@ -200,14 +200,14 @@ void CrashScreen_DrawMain(void) {
         DebugText_Print(&col, buf + 0x260, sPanicMessage);
     }
     r = OS_GetProcMode();
-    thr = data_021fcc2c[1];
+    thr = data_021fcc2c.current;
     DebugText_Printf(&col, buf + 0x40, "ID:%u mode:%02x", thr->id, r);
     DebugText_Printf(&col, buf + 0x60, "S:%08x-%08x", thr->stackTop, thr->stackBottom);
     r = OS_GetIrqStackStatus();
     if (r != 0) {
         DebugText_Printf(&col, buf + 0x80, "IrqStkErr%u", r);
     } else {
-        node = data_021fcc2c[2];
+        node = data_021fcc2c.list;
         r = 0;
         while (node != NULL) {
             r = OS_GetStackStatus(node);

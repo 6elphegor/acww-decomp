@@ -13,6 +13,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -34,7 +35,7 @@ extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
 extern void FSi_ReleaseCommand(FSFile *file, u32 result);
 extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern void FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
 extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
@@ -152,10 +153,10 @@ void FS_StartOverlay(FSOverlayInfoHeader *h) {
         BOOL ok = 0;
         if (h->flag & 2) {
             s32 n = data_020e74ec_end - data_020e74ec;
-            if (h->id < n) ok = FSi_CompareDigest(data_020e74ec[h->id].b, (void *)h->ram_address, size);
+            if (h->id < n) ok = FSi_CompareDigest(data_020e74ec[h->id].b, (void *)(uptr)h->ram_address, size);  // (DS addresses)
         }
         if (!ok) {
-            MI_CpuFill8((void *)h->ram_address, 0, size);
+            MI_CpuFill8((void *)(uptr)h->ram_address, 0, size);
             Fatal_Trap();
             return;
         }

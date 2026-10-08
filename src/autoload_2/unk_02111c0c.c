@@ -3,6 +3,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
@@ -29,12 +30,12 @@ static inline void *G2S_GetOBJCharPtr(void) {
 
 // GX_LoadOBJ
 void GX_LoadOBJ(const void *src, u32 offset, u32 size) {
-    u32 base = (u32)G2_GetOBJCharPtr();
-    copy32(data_0213bfec, src, (void *)(base + offset), size);
+    u8 *base = (u8 *)G2_GetOBJCharPtr();
+    copy32(data_0213bfec, src, base + offset, size);
 }
 
 // GXS_LoadOBJ
 void GXS_LoadOBJ(const void *src, u32 offset, u32 size) {
-    u32 base = (u32)G2S_GetOBJCharPtr();
-    copy32(data_0213bfec, src, (void *)(base + offset), size);
+    u8 *base = (u8 *)G2S_GetOBJCharPtr();
+    copy32(data_0213bfec, src, base + offset, size);
 }

@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK mi_dma.c: MI_DmaFill32Async, autoload_2 0x02115ad4-0x02115bac. ARM code, mwcc 1.2/base.
+#include "uptr.h"
 #include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -11,7 +12,7 @@ extern u32 OS_DisableInterrupts(void);                                         /
 extern void OS_RestoreInterrupts(u32 mode);                                    // OS_RestoreInterrupts
 extern void MI_WaitDma(u32 dmaNo);                                   // MI_WaitDma
 extern void OSi_EnterDmaCallback(u32 dmaNo, MIDmaCallback cb, void *arg);      // OSi_EnterDmaCallback
-extern void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl);      // MIi_DmaSetParams_noInt
+extern void MIi_DmaSetParams_noInt(u32 dmaNo, uptr src, uptr dest, u32 ctrl);      // MIi_DmaSetParams_noInt
 
 #define MIi_DMA_CLEAR_DATA(dmaNo) (((vu32 *)0x040000e0)[dmaNo])
 
@@ -21,11 +22,11 @@ static inline void MIi_CallCallback(MIDmaCallback callback, void *arg) {
     }
 }
 
-static inline void MIi_DmaSetParams_src32(u32 dmaNo, u32 data, u32 dest, u32 ctrl) {
+static inline void MIi_DmaSetParams_src32(u32 dmaNo, u32 data, uptr dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
     vu32 *p = &MIi_DMA_CLEAR_DATA(dmaNo);
     IO_W(p, data);
-    MIi_DmaSetParams_noInt(dmaNo, (u32)p, dest, ctrl);
+    MIi_DmaSetParams_noInt(dmaNo, (uptr)p, dest, ctrl);
     OS_RestoreInterrupts(enabled);
 }
 
@@ -37,9 +38,9 @@ void MI_DmaFill32Async(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback 
         MI_WaitDma(dmaNo);
         if (callback) {
             OSi_EnterDmaCallback(dmaNo, callback, arg);
-            MIi_DmaSetParams_src32(dmaNo, data, (u32)dest, (size >> 2) | 0xc5000000);
+            MIi_DmaSetParams_src32(dmaNo, data, (uptr)dest, (size >> 2) | 0xc5000000);
         } else {
-            MIi_DmaSetParams_src32(dmaNo, data, (u32)dest, (size >> 2) | 0x85000000);
+            MIi_DmaSetParams_src32(dmaNo, data, (uptr)dest, (size >> 2) | 0x85000000);
         }
     }
 }

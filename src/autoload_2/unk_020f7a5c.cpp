@@ -54,7 +54,7 @@ void NNS_SndPlayerWriteGlobalVariable(u32 a, s32 b);
 s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
 s32 Snd_DistanceToVolume(s32 d);
 s32 Snd_CalcPan(VecFx32 *p, s32 m);
-u32 SND_RecvCommandReply(u32 a);
+void *SND_RecvCommandReply(u32 a);
 void NNS_SndUpdateDriverInfo(void);
 void SND_FlushCommand(u32 a);
 s32 NNS_SndPlayerReadDriverPlayerInfo(void *p, void *out);

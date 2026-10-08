@@ -18,7 +18,7 @@ extern u32 sWfcParams;
 extern u8 sWfcExitRequested;
 #endif
 #ifndef PROTO_LOCAL_sWfcWorkArea
-extern u32 sWfcWorkArea;
+extern void *sWfcWorkArea;
 #endif
 #ifndef PROTO_LOCAL_sWfcSceneFunc
 extern void (*sWfcSceneFunc) ();
@@ -27,7 +27,7 @@ extern void (*sWfcSceneFunc) ();
 extern u32 sWfcScreenFlags[4];
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_Run
-s32 WfcUtil_Run(u32 a, s32 b, u32 c);
+s32 WfcUtil_Run(void *a, s32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_CheckParams
 s32 WfcUtil_CheckParams(s32 a, u32 b);

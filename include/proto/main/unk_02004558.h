@@ -34,6 +34,9 @@ s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 #ifndef PROTO_LOCAL_PlayerActor_Decelerate
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_GetPlayerData
+void *PlayerActor_GetPlayerData(void *p);
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_GetShirt
 void PlayerActor_GetShirt(u16 *out, void *p);
 #endif
