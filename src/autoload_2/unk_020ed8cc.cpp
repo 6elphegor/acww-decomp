@@ -5,6 +5,7 @@
 // sound-system wrappers around gSndHeap (sound archive/system object: thin assert-and-forward helpers, system
 // start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = Fatal_Trap (assert failure).
 #include "types.h"
+#include "nnsys/snd_arc.h"
 #include "sys/CmdSeq.h"
 #include "sys/FndList.h"
 #include "snd/Player.h"
@@ -26,8 +27,8 @@ s32 NNS_SndHeapGetCurrentLevel(void *heap);
 s32 NNS_SndHeapSaveState(void *heap);
 void *NNS_SndHeapAlloc(void *heap, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b);
 void *NNS_SndHeapCreate(u32 start, u32 size);
-void NNS_SndArcInit(void *arc, const char *path, void *heap, BOOL loadSymb);
-void NNS_SndArcInitOnMemory(void *arc, void *base);
+void NNS_SndArcInit(NNSSndArc *arc, const char *path, void *heap, BOOL loadSymb);
+void NNS_SndArcInitOnMemory(NNSSndArc *arc, void *base);
 void NNS_SndCaptureStartOutputEffect(void *buf, u32 size, s32 effect);
 
 // this file's (and unk_020ede18.cpp's) functions that the generated headers leave out (Player, Group: names that
@@ -36,8 +37,8 @@ void SndSeGroupList_StopAll(FndList *o);
 void SndSeSystem_UnloadGroup(Player *o);
 void SndSeGroup_Shutdown(Group *g);
 // the two sound archives (defined at the end of the file)
-extern u8 data_021f5a1c[];
-extern u8 data_021f5aac[];
+extern NNSSndArc data_021f5a1c;
+extern NNSSndArc data_021f5aac;
 }
 
 extern "C" void SndSeSystem_Shutdown(Player *o, s32 flag) {
@@ -75,10 +76,10 @@ extern "C" void Snd_InitSystem(void *heapStart, u32 heapSize, const char *arcPat
     if (gSndHeap == NULL) Fatal_Trap();
     Snd_AllocCaptureBuffer();
     if (arcPath != NULL) {
-        NNS_SndArcInit(data_021f5aac, arcPath, gSndHeap, 0);
+        NNS_SndArcInit(&data_021f5aac, arcPath, gSndHeap, 0);
     } else {
         if (arcMem == NULL) Fatal_Trap();
-        NNS_SndArcInitOnMemory(data_021f5a1c, arcMem);
+        NNS_SndArcInitOnMemory(&data_021f5a1c, arcMem);
     }
     if (NNS_SndArcPlayerSetup(gSndHeap) == 0) Fatal_Trap();
     NNS_SndHandleInit(&gSndDefaultHandle);
@@ -165,7 +166,6 @@ void *gSndHeap;
 SndSeqHandle gSndDefaultHandle;
 void *gSndCaptureBuffer;
 Player gSndSeSystem;
-u8 data_021f5a1c[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;  // a sound archive too
-// the sound archive (Arc in unk_0210b448.c: a 0x34-byte header, an FSFile, its file id and three pointers): the
-// real size on 64-bit hosts
-u8 data_021f5aac[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;
+// the two sound archives (NNSSndArc: one in memory, one read from a file)
+NNSSndArc data_021f5a1c;
+NNSSndArc data_021f5aac;

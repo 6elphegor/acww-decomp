@@ -1,4 +1,5 @@
 #include "nitro/fs.h"
+#include "nnsys/snd_arc.h"
 #include "proto/autoload_2/unk_0210a9c4.h"
 #include "proto/autoload_2/unk_0210b1b0.h"
 #include "proto/autoload_2/unk_0210b448.h"
@@ -38,27 +39,7 @@ typedef struct Cap {
 } Cap;
 typedef struct FatEnt { u32 off; u32 size; u32 ptr; u32 fc; } FatEnt;
 typedef struct Fat { u32 w0; u32 w4; u32 count; FatEnt e[1]; } Fat;
-typedef struct Arc {
-    u8 sig[4];              // 0x00 'SDAT'
-    u32 magic;              // 0x04
-    u32 fileSize;           // 0x08
-    u16 hdrSize;            // 0x0c
-    u16 nBlocks;            // 0x0e
-    u32 symbOff;            // 0x10
-    u32 symbSize;           // 0x14
-    u32 infoOff;            // 0x18
-    u32 infoSize;           // 0x1c
-    u32 fatOff;             // 0x20
-    u32 fatSize;            // 0x24
-    u32 fileOff;            // 0x28
-    u32 fileBlkSize;        // 0x2c
-    s32 fromFile;           // 0x30
-    FSFile file;            // 0x34
-    FSFileID id;            // 0x7c
-    Fat *fat;               // 0x84
-    u8 *symb;               // 0x88
-    u8 *info;               // 0x8c
-} Arc;
+typedef NNSSndArc Arc;  // (include/nnsys/snd_arc.h)
 typedef struct InfoTbl { u32 count; u32 ent[1]; } InfoTbl;
 typedef struct SndHeap { void *heap; NNSFndList list; } SndHeap;
 typedef struct SndHeapBlk {
