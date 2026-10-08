@@ -398,7 +398,7 @@ static inline BOOL Birthday_IsSet(u8 *bd) {
 
 // The shop's closing time in the town session state
 static inline ShopClosingTime *ShopClosingTime_Get() {
-    return (ShopClosingTime *)TownSessionState_GetClosingTime((u8 *)TownSessionState_Get());
+    return (ShopClosingTime *)TownSessionState_GetClosingTime(TownSessionState_Get());
 }
 
 static inline BOOL Unk_ov050_02258ea0_Eq(u16 v, u16 k) {
@@ -898,7 +898,7 @@ BOOL SpNpcNookShop::mainAct04() {
     if (purchasePending && NookShop_IsPurchaseSynced() == 0) {
         return TRUE;
     }
-    if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 5)) {
+    if (TownSessionState_TestFlag(TownSessionState_Get(), 5)) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
     } else {
         TalkRequest_SetTargetDone(this);
@@ -1684,7 +1684,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
         PlayerData *g = PlayerData_GetCurrent();
         PlayerErrandSlot *a = PlayerErrands_GetSlot((PlayerErrands *)g->getErrands(), 0);
         void *b = PlayerErrandSlot_GetRecord(a);
-        u8 *c = PlayerErrandSlot_GetVillager(a, 1);
+        VillagerId *c = PlayerErrandSlot_GetVillager(a, 1);
         MsgString9B o;
         if (((ErrandRecord *)b)->getStep() == 2) {
             out->msgIndex = 0x28;
@@ -1694,7 +1694,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
             u8 s = ownerNpc->arbeitPrompted;
             if (s == 0 || s == 2) {
                 if (c) {
-                    ((VillagerId *)(c))->getName(&o);
+                    c->getName(&o);
                     window->setSlot(0, &o);
                 }
                 out->msgIndex = 0x21;
