@@ -301,7 +301,7 @@ s32 PlayerActor_RequestPhoneHangUp(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestPhonePickUp(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestHaircutStart(Obj *o, u32 a, u32 b, u32 c, s32 e);
 s32 PlayerActor_RequestAct37(Obj *o, s32 a, s32 b);
-s32 PlayerActor_RequestAct36(Obj *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
+s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, Character *e, s32 f, s16 g);
 s32 PlayerActor_RequestDoorWalkOut(Obj *o, V3 *v, u32 a, u32 b);
 s32 PlayerActor_RequestLeaveRoom(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestStorageClose(Obj *o, u32 a, s32 b, s32 c);
@@ -620,7 +620,7 @@ extern "C" s32 PlayerActor_LocalRequestLeaveRoom(void) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_LocalRequestAct36(u32 a, u32 *b, u8 *c, u32 *d, u32 e) {
+extern "C" s32 PlayerActor_LocalRequestAct36(u16 *a, u32 *b, u8 *c, u32 *d, Character *e) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         return PlayerActor_RequestAct36(o, a, *b, *c, *d, e, 6, -1);
@@ -3832,12 +3832,7 @@ struct PlayerLeaveRoomArgs {
     s16 angle;
 };
 
-struct PlayerAct36Args {
-    s32 kind;
-    u8 nextMode;
-    s32 variant;
-    s32 partner;
-};
+typedef PlayerAct30Args PlayerAct36Args;  // (the same arguments)
 
 struct Unk_ov004_02220314_Bits {
     u32 lo : 12;
@@ -3894,7 +3889,7 @@ void PlayerActor_Act36CheckEnd(Obj *o);
 void PlayerActor_Act36UpdateAnim(Obj *o);
 void PlayerActor_NetAct36(Obj *o);
 void PlayerActor_SetupAct36(Obj *o, PlayerActionRequest *m);
-s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s16 g);
+s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, Character *e, s32 f, s16 g);
 void PlayerActor_MainStorageClose(Obj *o);
 void PlayerActor_StorageCloseCheckEnd(Obj *o);
 void PlayerActor_NetStorageClose(Obj *o, s32 a);
@@ -3946,27 +3941,27 @@ extern "C" void PlayerActor_MainStorageClose(Obj *o) {
     PlayerActor_StorageCloseCheckEnd(o);
 }
 
-extern "C" void PlayerActor_Act36SetArgs(void *p, s32 a, u32 b, s32 c, s32 d) {
-    *(s32 *)p = a;
-    *((u8 *)p + 4) = b;
-    *(s32 *)((u8 *)p + 8) = c;
-    *(s32 *)((u8 *)p + 0xc) = d;
+extern "C" void PlayerActor_Act36SetArgs(PlayerAct36Args *p, s32 a, u32 b, s32 c, Character *d) {
+    p->kind = a;
+    p->nextMode = b;
+    p->variant = c;
+    p->partner = d;
 }
 
-extern "C" s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s16 g) {
+extern "C" s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, Character *e, s32 f, s16 g) {
     Msg m;
     ((PlayerActionRequest *)(&m))->assign(0x36, f, g);
     u16 *p = &o->shownItem;
     *p = *a;
     o->actionItem = *p;
-    PlayerActor_Act36SetArgs((VecFx32 *)m.unk_0c_b, b, c, d, e);
+    PlayerActor_Act36SetArgs(&m.act30, b, c, d, e);
     s32 r = (o)->pushRequest(&m);
     return r;
 }
 
 extern "C" void PlayerActor_SetupAct36(Obj *o, PlayerActionRequest *m) {
     PlayerAct36Args *p = (PlayerAct36Args *)m->unk_0c_b;
-    HandOverItem_Begin(&o->actionItem, ((PlayerAct36Args *)m->unk_0c_b)->kind, p->nextMode, p->variant, o, (Character *)p->partner);
+    HandOverItem_Begin(&o->actionItem, ((PlayerAct36Args *)m->unk_0c_b)->kind, p->nextMode, p->variant, o, p->partner);
     (o)->startAnimOnce(0x2e, 3, 0);
     HandOverItem_RequestMode(1, o);
     if (Scene_GetCurrent() == 9) {

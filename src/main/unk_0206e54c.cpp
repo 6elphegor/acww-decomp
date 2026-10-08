@@ -544,8 +544,8 @@ extern "C" void MenuCtrl_SetChosenItems(u16 *src) {
 
 extern "C" u16 *MenuCtrl_GetChosenItems(void) { return sMenuChosenItems; }
 
-extern "C" void MenuCtrl_ReturnChosenItems(void *p) {
-    if (p) {
+extern "C" void MenuCtrl_ReturnChosenItems(BOOL returnItems) {
+    if (returnItems) {
         s32 i;
         for (i = 0; i < 15; i++) {
             u32 c = sMenuChosenItems[i];

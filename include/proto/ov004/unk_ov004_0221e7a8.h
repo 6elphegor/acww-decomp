@@ -5,53 +5,20 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d4a4
+extern u32 data_ov004_0224d4a4;
 #endif
 #ifndef PROTO_LOCAL_sRoomPlayerMsgFile
 extern char sRoomPlayerMsgFile[16];
-#endif
-#ifndef PROTO_LOCAL_sRoomErrorMsgFile
-extern char sRoomErrorMsgFile[16];
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetGetOutOfBedCheck
-void PlayerActor_NetGetOutOfBedCheck(void);
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetAct12
-void PlayerActor_NetAct12(void);
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetPickUpItem
-void PlayerActor_NetPickUpItem(void);
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetFtrRotate
-void PlayerActor_NetFtrRotate(void);
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetFtrPushMove
-void PlayerActor_NetFtrPushMove(void);
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetFtrPullMove
-void PlayerActor_NetFtrPullMove(void);
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetStandUpCheck
-void PlayerActor_NetStandUpCheck();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetDrinkCoffee
-void PlayerActor_NetDrinkCoffee();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_data_ov004_0224d4a4
-extern u32 data_ov004_0224d4a4;
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d4a8
 extern u32 data_ov004_0224d4a8;
@@ -68,17 +35,11 @@ extern u32 data_ov004_0224d4b0;
 #ifndef PROTO_LOCAL_sRoomInteractDist
 extern s32 sRoomInteractDist;
 #endif
+#ifndef PROTO_LOCAL_sRoomErrorMsgFile
+extern char sRoomErrorMsgFile[16];
+#endif
 #ifndef PROTO_LOCAL_data_ov004_0224d4b4
 extern u32 data_ov004_0224d4b4;
-#endif
-#ifndef PROTO_LOCAL_RoomObj_LoadResources
-void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTexHandle *bb);
-#endif
-#ifndef PROTO_LOCAL_RoomObj_LoadResourcesByName
-void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTexHandle *b);
-#endif
-#ifndef PROTO_LOCAL_RoomObj_ReleaseResources
-void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTexHandle *b);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_PlaySeHeld
 void RoomObj_PlaySeHeld(void *a, s32 b);
@@ -113,9 +74,6 @@ s32 PlayerActor_LocalRequestStorageClose(const s32 *p);
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestLeaveRoom
 s32 PlayerActor_LocalRequestLeaveRoom(void);
 #endif
-#ifndef PROTO_LOCAL_PlayerActor_LocalRequestAct36
-s32 PlayerActor_LocalRequestAct36(u32 a, u32 *b, u8 *c, u32 *d, u32 e);
-#endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalRequestAct37
 s32 PlayerActor_LocalRequestAct37(void);
 #endif
@@ -148,6 +106,9 @@ void PlayerActor_LieInBedSetWork(u8 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetOutOfBedCheckSetArgs
 void PlayerActor_GetOutOfBedCheckSetArgs(u8 *p, u32 v);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetGetOutOfBedCheck
+void PlayerActor_NetGetOutOfBedCheck(void);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetOutOfBedSetArgs
 void PlayerActor_GetOutOfBedSetArgs(u8 *p, u32 a, u32 b);
@@ -206,8 +167,14 @@ void PlayerActor_GetIntoBedSetNetData(u8 *dst, u32 k, s32 a, s32 b);
 #ifndef PROTO_LOCAL_PlayerActor_GetIntoBedGetNetData
 void PlayerActor_GetIntoBedGetNetData(u8 *src, u8 *out, s32 *x, s32 *z);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_NetAct12
+void PlayerActor_NetAct12(void);
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_PickUpItemSetArgs
 void PlayerActor_PickUpItemSetArgs(void *out, s32 *in, s32 c);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetPickUpItem
+void PlayerActor_NetPickUpItem(void);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FtrGrabApproachSetNetData
 void PlayerActor_FtrGrabApproachSetNetData(u8 *p, s32 x, s32 z, s16 h);
@@ -232,6 +199,15 @@ void PlayerActor_FtrRotateSetArgs(u8 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FtrRotateSetStickFlag
 void PlayerActor_FtrRotateSetStickFlag(u8 *p, u32 v);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetFtrRotate
+void PlayerActor_NetFtrRotate(void);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetFtrPushMove
+void PlayerActor_NetFtrPushMove(void);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetFtrPullMove
+void PlayerActor_NetFtrPullMove(void);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SeatApproachSetNetData
 void PlayerActor_SeatApproachSetNetData(u8 *self, s32 x, s32 z, s16 h, u8 d);
@@ -259,6 +235,9 @@ void PlayerActor_SitDownSide1GetNetData(u8 *p, s32 *x, s32 *z, s16 *h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StandUpCheckSetArgs
 void PlayerActor_StandUpCheckSetArgs(u8 *p, u32 v);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetStandUpCheck
+void PlayerActor_NetStandUpCheck();
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StorageOpenSetArgs
 void PlayerActor_StorageOpenSetArgs(void *r, u8 d, u32 a, u32 b, s16 c);
@@ -293,11 +272,11 @@ void PlayerActor_StorageCloseSetNetData(u8 *a, u32 v);
 #ifndef PROTO_LOCAL_PlayerActor_StorageCloseGetNetData
 void PlayerActor_StorageCloseGetNetData(u8 *a, u8 *b);
 #endif
-#ifndef PROTO_LOCAL_PlayerActor_Act36SetArgs
-void PlayerActor_Act36SetArgs(void *p, s32 a, u32 b, s32 c, s32 d);
-#endif
 #ifndef PROTO_LOCAL_PlayerActor_LeaveRoomSetArgs
 void PlayerActor_LeaveRoomSetArgs(void *p, s32 a, s16 b);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetDrinkCoffee
+void PlayerActor_NetDrinkCoffee();
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorWalkInSetNetData
 void PlayerActor_DoorWalkInSetNetData(u8 *a, s32 b, s32 c);
@@ -325,6 +304,24 @@ void PlayerActor_ExitWalkInGetNetData(u8 *a, s32 *b, s32 *c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_NetSendHair
 void PlayerActor_NetSendHair(void *unused, s32 a, s32 b);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_RoomObj_LoadResources
+void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTexHandle *bb);
+#endif
+#ifndef PROTO_LOCAL_RoomObj_LoadResourcesByName
+void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTexHandle *b);
+#endif
+#ifndef PROTO_LOCAL_RoomObj_ReleaseResources
+void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTexHandle *b);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_LocalRequestAct36
+s32 PlayerActor_LocalRequestAct36(u16 *a, u32 *b, u8 *c, u32 *d, Character *e);
 #endif
 }
 #endif

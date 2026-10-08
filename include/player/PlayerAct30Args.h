@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+class Character;
+
 // Player action request arguments (kind, next mode, variant, partner)
 // (src/main/unk_02004558.cpp; also used by src/main/unk_02004558_extra.cpp).
 
@@ -10,7 +12,7 @@ struct PlayerAct30Args {
     /* 0x0 */ u32 kind;
     /* 0x4 */ u8 nextMode;
     /* 0x8 */ u32 variant;
-    /* 0xc */ u32 partner;
+    /* 0xc */ Character *partner;  // the NPC handing the item over
 };
 
 #endif

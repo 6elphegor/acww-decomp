@@ -823,7 +823,7 @@ extern "C" s32 PlayerActor_RequestTurnTo(s32 a, u32 idx) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_RequestAct30(u16 *a, u32 *b, u8 *c, u32 *d, u32 e) {
+extern "C" s32 PlayerActor_RequestAct30(u16 *a, u32 *b, u8 *c, u32 *d, Character *e) {
     PlayerActor *o = PlayerActor_Get(4);
     if (o) {
         return o->requestAct30(a, *b, *c, *d, e, 6, -1);

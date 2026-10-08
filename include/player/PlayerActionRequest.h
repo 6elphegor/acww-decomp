@@ -43,6 +43,8 @@ public:
     };
 };
 
+#ifndef HOST64
 static_assert(sizeof(PlayerActionRequest) == 0x1c, "PlayerActionRequest");
+#endif
 
 #endif // PLAYER_PLAYERACTIONREQUEST_H

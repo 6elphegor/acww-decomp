@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/Character.h"
 #include "gfx/VecFx32.h"
 #include "player/PlayerActor.h"
 class PlayerSessionTable;
@@ -214,9 +215,6 @@ s32 PlayerActor_RequestHoldUpItem(u16 *p);
 #ifndef PROTO_LOCAL_PlayerActor_RequestTurnTo
 s32 PlayerActor_RequestTurnTo(s32 a, u32 idx);
 #endif
-#ifndef PROTO_LOCAL_PlayerActor_RequestAct30
-s32 PlayerActor_RequestAct30(u16 *a, u32 *b, u8 *c, u32 *d, u32 e);
-#endif
 #ifndef PROTO_LOCAL_PlayerActor_RequestAct32
 s32 PlayerActor_RequestAct32();
 #endif
@@ -285,6 +283,9 @@ VecFx32 *PlayerSession_GetLastPos(s32 i);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_RequestWalkTo
 s32 PlayerActor_RequestWalkTo(VecFx32Ctor *v, u32 b, u32 idx);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_RequestAct30
+s32 PlayerActor_RequestAct30(u16 *a, u32 *b, u8 *c, u32 *d, Character *e);
 #endif
 }
 #ifndef PROTO_LOCAL_gPlayerSessionTable

@@ -5,82 +5,10 @@
 
 #include "types.h"
 #include "nitro/wm.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndParentMp
-void WfcMoveWh_StateOutEndParentMp(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndParent
-void WfcMoveWh_StateOutEndParent(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndChildMp
-void WfcMoveWh_StateOutEndChildMp(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndChild
-void WfcMoveWh_StateOutEndChild(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutReset
-void WfcMoveWh_StateOutReset(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEnd
-void WfcMoveWh_StateOutEnd(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_StateOutMeasureChannel
-void WfcMoveWh_StateOutMeasureChannel(WMMeasureChannelCallback *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_IndicationCallback
-void WfcMoveWh_IndicationCallback(WMMsg *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMoveWh_Reset
-void WfcMoveWh_Reset();
-#endif
-#ifndef PROTO_LOCAL_DWCi_MOV_WH_Finalize
-void DWCi_MOV_WH_Finalize();
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b4ec
-extern char data_ov001_0222b4ec[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b508
-extern char data_ov001_0222b508[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b524
-extern char data_ov001_0222b524[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b540
-extern char data_ov001_0222b540[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b55c
-extern char data_ov001_0222b55c[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b57c
-extern char data_ov001_0222b57c[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b59c
-extern char data_ov001_0222b59c[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b5bc
-extern char data_ov001_0222b5bc[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b5e0
-extern char data_ov001_0222b5e0[];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b604
-extern char data_ov001_0222b604[];
-#endif
-#ifndef PROTO_LOCAL_sWfcMoveWhSysStateNames
-extern char *sWfcMoveWhSysStateNames[10];
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcMoveWh_ChangeSysState
 void WfcMoveWh_ChangeSysState(s32 n);
 #endif
@@ -120,8 +48,14 @@ s32 WfcMoveWh_EndKeySharing();
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInEndParentMp
 s32 WfcMoveWh_StateInEndParentMp();
 #endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndParentMp
+void WfcMoveWh_StateOutEndParentMp(WMMsg *a);
+#endif
 #ifndef PROTO_LOCAL_DWCi_MOV_WH_StateInEndParent
 s32 DWCi_MOV_WH_StateInEndParent();
+#endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndParent
+void WfcMoveWh_StateOutEndParent(WMMsg *a);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInEndChildKeyShare
 s32 WfcMoveWh_StateInEndChildKeyShare();
@@ -129,11 +63,23 @@ s32 WfcMoveWh_StateInEndChildKeyShare();
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInEndChildMp
 s32 WfcMoveWh_StateInEndChildMp();
 #endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndChildMp
+void WfcMoveWh_StateOutEndChildMp(WMMsg *a);
+#endif
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInEndChild
 s32 WfcMoveWh_StateInEndChild();
 #endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEndChild
+void WfcMoveWh_StateOutEndChild(WMMsg *a);
+#endif
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInReset
 s32 WfcMoveWh_StateInReset();
+#endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutReset
+void WfcMoveWh_StateOutReset(WMMsg *a);
+#endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutEnd
+void WfcMoveWh_StateOutEnd(WMMsg *a);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveWh_SetGgid
 void WfcMoveWh_SetGgid(s32 x);
@@ -150,6 +96,9 @@ s32 WfcMoveWh_StartMeasureChannel();
 #ifndef PROTO_LOCAL_WfcMoveWh_MeasureNextChannel
 u16 WfcMoveWh_MeasureNextChannel(u16 x);
 #endif
+#ifndef PROTO_LOCAL_WfcMoveWh_StateOutMeasureChannel
+void WfcMoveWh_StateOutMeasureChannel(WMMeasureChannelCallback *a);
+#endif
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInMeasureChannel
 s32 WfcMoveWh_StateInMeasureChannel(void *cb, s32 x);
 #endif
@@ -162,6 +111,9 @@ s16 WfcMoveWh_PickRandomChannel(u16 mask);
 #ifndef PROTO_LOCAL_WfcMoveWh_Initialize
 BOOL WfcMoveWh_Initialize();
 #endif
+#ifndef PROTO_LOCAL_WfcMoveWh_IndicationCallback
+void WfcMoveWh_IndicationCallback(WMMsg *a);
+#endif
 #ifndef PROTO_LOCAL_WfcMoveWh_StateInInitialize
 s32 WfcMoveWh_StateInInitialize();
 #endif
@@ -172,17 +124,57 @@ void WfcMoveWh_StateOutInitialize(u16 *p);
 s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveWh_SetJudgeCallback
-void WfcMoveWh_SetJudgeCallback(s32 a);
+void WfcMoveWh_SetJudgeCallback(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveWh_GetSharedData
 void *WfcMoveWh_GetSharedData(s32 a);
 #endif
 #ifndef PROTO_LOCAL_DWCi_MOV_WH_StepDataSharing
-s32 DWCi_MOV_WH_StepDataSharing(s32 a);
+s32 DWCi_MOV_WH_StepDataSharing(void *a);
+#endif
+#ifndef PROTO_LOCAL_WfcMoveWh_Reset
+void WfcMoveWh_Reset();
+#endif
+#ifndef PROTO_LOCAL_DWCi_MOV_WH_Finalize
+void DWCi_MOV_WH_Finalize();
 #endif
 #ifndef PROTO_LOCAL_WfcMoveWh_End
 s32 WfcMoveWh_End();
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222b4ec
+extern char data_ov001_0222b4ec[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b508
+extern char data_ov001_0222b508[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b524
+extern char data_ov001_0222b524[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b540
+extern char data_ov001_0222b540[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b55c
+extern char data_ov001_0222b55c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b57c
+extern char data_ov001_0222b57c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b59c
+extern char data_ov001_0222b59c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b5bc
+extern char data_ov001_0222b5bc[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b5e0
+extern char data_ov001_0222b5e0[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b604
+extern char data_ov001_0222b604[];
+#endif
+#ifndef PROTO_LOCAL_sWfcMoveWhSysStateNames
+extern char *sWfcMoveWhSysStateNames[10];
+#endif
+#ifdef __cplusplus
 }
 #endif
 
