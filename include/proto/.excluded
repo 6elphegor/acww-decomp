@@ -879,7 +879,6 @@ sJointAnmHeader2
 sLitCedars
 sNpcActionTable
 sNpcAvoidOffsets
-sNpcObstacleProbeOffsets
 sNpcTalkCtrlStates
 sPendingUnits
 sPlayerActorErrorMsgFile
@@ -897,7 +896,6 @@ sRequestTopicsA
 sRequestTopicsB
 sRoomHasuPos
 sRoomWallFloorNoItem
-sRouteDirs
 sSceneCarpets
 sSceneWallpapers
 sSmallTalkTopicTable

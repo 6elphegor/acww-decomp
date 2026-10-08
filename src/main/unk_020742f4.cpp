@@ -215,7 +215,7 @@ extern "C" {
 BOOL TownMap_IsUnitWalkable(s32, s32, void *);
 }
 extern "C" {
-BOOL Item_IsFurniture(void *);
+BOOL Item_IsFurniture(u16 *);
 }
 extern "C" {
 BOOL Item_IsTreeStage0(void *);
@@ -251,7 +251,7 @@ extern "C" {
 s32 Villager_PickShownFurniture(void *);
 }
 extern "C" {
-void *Villager_GetMemory(void *, s32);
+VillagerMemory *Villager_GetMemory(VillagerMemory *, u32);
 }
 extern "C" {
 BOOL VillagerMemory_IsUsed(void *);
@@ -1412,22 +1412,22 @@ extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
-extern void (*sCommBlockWriters[])(u32);
+extern void (*const sCommBlockWriters[])(u32);
 }
 extern "C" {
-extern void (*sCommBlockReaders[])(u8 *, u32);
+extern void (*const sCommBlockReaders[])(u8 *, u32);
 }
 extern "C" {
-extern u8 sCommSyncVarVarSizes[];
+extern const u8 sCommSyncVarVarSizes[];
 }
 extern "C" {
-extern u16 sCommSyncVarVarOffsets[];
+extern const u16 sCommSyncVarVarOffsets[];
 }
 extern "C" {
-extern void (*sCommSyncVarInitHandlers[])(void *);
+extern void (*const sCommSyncVarInitHandlers[])(void *);
 }
 extern "C" {
-extern void (*sCommSyncVarPackHandlers[])(void *, void *, u32);
+extern void (*const sCommSyncVarPackHandlers[])(void *, void *, u32);
 }
 extern "C" {
 }
@@ -1446,12 +1446,6 @@ extern "C" {
 void Shop_OnPurchaseRecord(void *p, u32 a);
 }
 extern "C" {
-void FtrSync_OnToggleRecord(void *p);
-}
-extern "C" {
-void FtrSync_OnRoomLightRecord(void *p);
-}
-extern "C" {
 void PatternSrc_ApplyNetMove(void *p);
 }
 extern "C" {
@@ -1463,7 +1457,7 @@ extern "C" {
 void MI_CpuFill8(void *p, u32 a, u32 b);
 }
 extern "C" {
-void MI_CpuCopy8(void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 extern "C" {
 }
@@ -1671,7 +1665,7 @@ extern "C" void CommRecv_FurnitureState(u32 a) {
 extern "C" void CommRecv_HouseRoomFlag(u32 a) {
     u8 buf[4];
     gCommManager->readRecord(buf, a);
-    FtrSync_OnRoomLightRecord(buf);
+    FtrSync_OnRoomLightRecord((Unk_0205218c_B *)buf);  // (the received record)
 }
 extern "C" void CommRecv_RoomItemSet(u32 a, u32 b, u32 c) {
     u8 buf[8];
@@ -1691,7 +1685,7 @@ extern "C" void CommRecv_FurniturePlace(u32 a, u32 b, u32 c) {
 extern "C" void CommRecv_FurnitureUseRequest(u32 a) {
     u8 buf[4];
     gCommManager->readRecord(buf, a);
-    FtrSync_OnToggleRecord(buf);
+    FtrSync_OnToggleRecord((Unk_02051fcc_W *)buf);  // (the received record)
 }
 extern "C" void CommRecv_SpotReserveRequest(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
@@ -1788,7 +1782,7 @@ s32 Scene_GetCurrent();
 extern "C" {
 }
 extern "C" {
-void *SaveVillagers_Get(void *, u32);
+VillagerData *SaveVillagers_Get(void *, s32);
 }
 extern "C" {
 void *Villager_GetReceivedItem(void *, s32);
@@ -1816,7 +1810,7 @@ extern "C" {
 s32 PlanErrand_AdvanceStep(void *);
 }
 extern "C" {
-void *Villager_GetMemory(void *, u32);
+VillagerMemory *Villager_GetMemory(VillagerMemory *, u32);
 }
 extern "C" {
 s32 VillagerMemory_IsUsed(void *);
@@ -1840,7 +1834,7 @@ extern "C" {
 s32 FishDisplay_OnNetPacket(void *, s32);
 }
 extern "C" {
-s32 Item_IsFurniture(u16 *);
+BOOL Item_IsFurniture(u16 *);
 }
 extern "C" {
 s32 Item_GetFurnitureIndex(void *);
@@ -2046,9 +2040,9 @@ extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, u32 d) {
     s32 id, x;
     gCommManager->readRecord(buf, n);
     CommVillager_UnpackHeader(&id, &x, buf);
-    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
+    VillagerData *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        void *r5 = Villager_GetMemory(r0, x);
+        VillagerMemory *r5 = Villager_GetMemory(r0->memories, x);
         if (r5 != NULL) {
             void *r1 = PlayerData_GetBySessionSlot(d)->getPlayerId();
             VillagerMemory_InitForPlayer(r5, r1, gSaveTownId, 0);
@@ -2061,9 +2055,9 @@ extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, u32 d) {
     s32 id, x;
     gCommManager->readRecord(buf, n);
     CommVillager_UnpackHeader(&id, &x, buf);
-    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
+    VillagerData *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        void *r5 = Villager_GetMemory(r0, x);
+        VillagerMemory *r5 = Villager_GetMemory(r0->memories, x);
         if (r5 != NULL) {
             void *r1 = PlayerData_GetBySessionSlot(d)->getPlayerId();
             VillagerMemory_RecordTalk(r5, r1, gSaveTownId, 0);
@@ -2077,12 +2071,12 @@ extern "C" void CommRecv_VillagerImpression() {
     CommManager *r5 = gCommManager;
     r5->readRecord((u8 *)(b), 1);
     CommVillager_UnpackHeader(&id, &x, b);
-    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
+    VillagerData *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        void *r4 = Villager_GetMemory(r0, x);
+        VillagerMemory *r4 = Villager_GetMemory(r0->memories, x);
         if (r4 != NULL) {
             r5->readRecord((u8 *)(b + 1), 1);
-            ((VillagerMemory *)r4)->setImpression(b[1]);
+            r4->setImpression(b[1]);
         }
     }
 }
@@ -2093,12 +2087,12 @@ extern "C" void CommRecv_VillagerFriendship() {
     CommManager *r5 = gCommManager;
     r5->readRecord((u8 *)(b), 1);
     CommVillager_UnpackHeader(&id, &x, (u8 *)b);
-    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
+    VillagerData *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        void *r4 = Villager_GetMemory(r0, x);
+        VillagerMemory *r4 = Villager_GetMemory(r0->memories, x);
         if (r4 != NULL) {
             r5->readRecord((u8 *)(b + 1), 1);
-            ((VillagerMemory *)r4)->setFriendship(b[1]);
+            r4->setFriendship(b[1]);
         }
     }
 }
@@ -2110,12 +2104,12 @@ extern "C" void CommRecv_VillagerReceivedItem() {
     l.x = 0xfff1;
     gCommManager->readRecord((u8 *)(l.y), 3);
     CommVillager_UnpackReceivedItem(&id, &k, &l.x, l.y);
-    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
+    VillagerData *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        void *r4 = Villager_GetMemory(r0, k);
+        VillagerMemory *r4 = Villager_GetMemory(r0->memories, k);
         if (r4 != NULL) {
             if (VillagerMemory_IsUsed(r4) != 0) {
-                ((VillagerMemory *)r4)->setReceivedItem(&l.x);
+                r4->setReceivedItem(&l.x);
             }
         }
     }
@@ -2297,7 +2291,7 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern void (*sCommRecvHandlers[])(u32, u32, u32, u32);
+extern void (*const sCommRecvHandlers[])(u32, u32, u32, u32);
 }
 extern "C" {
 }
@@ -2312,7 +2306,7 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void MI_CpuCopy8(void *, void *, u32);
+void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
 }
@@ -2621,7 +2615,7 @@ extern "C" BOOL CommSend_JoinReady() {
 // ======== unk_020742f4.cpp ========
 namespace n1 {
 extern "C" {
-extern void (*sCommCtrlHandlers[])(void *, s32, s32);
+extern void (*const sCommCtrlHandlers[])(void *, s32, s32);
 }
 extern "C" {
 extern CommManager *gCommManager;
@@ -2630,7 +2624,7 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-void MI_CpuCopy8(void *, void *, u32);
+void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
 }

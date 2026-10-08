@@ -4,6 +4,7 @@
 #include "talk/MsgString33.h"
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "room/RoomScoreEvaluator.h"
 #include "sys/ClockDateTime.h"
 #include "town/BlockMap.h"
 #include "save/SaveData.h"
@@ -62,26 +63,6 @@ public:
     u8 countInStrip(BlockMap *m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind);
 };
 
-class RoomScoreEvaluator {
-public:
-    u32 minX;
-    u32 minZ;
-    u32 maxX;
-    u32 maxZ;
-    u16 wallpaper;
-    u16 carpet;
-    void collectLuckyItems(BlockMap *grid);
-    s32 calcPenalty(BlockMap *grid, u8 *f1, u8 *f2);
-    s32 scoreCollection(BlockMap *grid, s32 *out);
-    s32 scoreFlagPairThemes(BlockMap *grid, s32 *out1, s32 *out2);
-    s32 scoreColorTheme(BlockMap *grid);
-    s32 scoreFengShui(RoomFengShui *o);
-    s32 scoreBasePoints(BlockMap *grid);
-    void collectUnk06Kinds(BlockMap *grid);
-    s32 scoreSets(BlockMap *grid);
-    s32 scoreThemes(BlockMap *grid);
-    s32 scoreSeries(BlockMap *grid, u32 *out);
-};
 
 // call-site view of the callback tables (struct-returning virtuals)
 class RoomScoreSourceCallView {
