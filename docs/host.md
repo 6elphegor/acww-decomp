@@ -238,7 +238,8 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   34786-34907 and the title screen is back at ~36500. A second run with that save file (`ACWW_SAVE`, the touch at
   2200 and A every 60 frames from 2400) takes the title's continue path: a greeting ("Hello! You came"), the player wakes up in
   the house ("Please wake up your player"), the game saves its start-of-session state (`card 7` at 0x2200 and
-  0x15e00) and the player stands in front of the house in town at ~frame 6000. `ACWW_POSLOG` and the town map
+  0x15e00) and the player stands in front of the house in town at ~frame 6000. With `ACWW_RTC="2026-10-08 18:30:00"` the same
+  continue shows 10/8 (Thursday) 6:30 PM, the evening sky and the weeds of the days that passed. `ACWW_POSLOG` and the town map
   (X, the pocket's map tab) were how the walk was found. The
   x86-64 build plays the same way: the name entries, the town (frame ~12430), Kapp'n's warp to the town hall, the
   tutorial, then out of the town hall and around town (checked to frame 44000, no stop). Its virtual timing drifts
