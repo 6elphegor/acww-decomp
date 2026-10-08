@@ -41,20 +41,10 @@ typedef GTI2IncomingBufferMessage It;
 
 extern "C" {
 extern u8 data_ov065_0228e150[];
-char *gti2GetChallenge(void *);
-s32 gti2BufferShorten(void *, s32, s32);
-s32 gti2BufferWriteData(void *, void *, s32);
-s32 gti2GetBufferFreeSpace(void *);
 s32 gti2PingCallback(Cn *, s32);
 s32 gti2ConnectedCallback(Cn *, s32, u8 *, s32);
-s32 gti2ConnectAttemptCallback(void *, Cn *, s32, s32, s32, void *, s32);
 void gti2ConnectionClosed(Cn *, ...); // (defined variadic in src/ov065/unk_ov065_02283f34.cpp)
-s32 gti2ResendMessage(Cn *, void *);
 s32 gti2SendClosed(Cn *);
-s32 gti2SendPong(Cn *, void *, s32);
-s32 gti2SendNack(Cn *, u16, u16);
-s32 gti2SendClientResponse(Cn *, void *, void *, s32);
-s32 gti2SendServerChallenge(Cn *, void *, void *);
 s32 gti2ConnectionMemoryError(Cn *);
 s32 gti2ConnectionCommunicationError(Cn *);
 s32 gti2ConnectionError(Cn *, s32, s32);
@@ -121,7 +111,6 @@ s32 closesocket(s32 fd);
 s32 CanSendOnSocket(s32 fd);
 void SocketShutDown();
 void SocketStartUp();
-s32 gti2BufferShorten(void *p, s32 a, s32 b);
 s32 gti2ClosedCallback(Conn062 *p, s32 a);
 s32 gti2ConnectedCallback(Conn062 *p, s32 a, u8 *b, s32 c);
 s32 gti2SocketErrorCallback(Sock062 *c);
@@ -130,7 +119,6 @@ void gti2ConnectionClosed(Conn062 *p, ...);
 s32 gti2ConnectionThink(Conn062 *p, u32 now);
 s32 gti2SendClosed(Conn062 *p);
 void gt2CloseAllConnectionsHard(Sock062 *c);
-s32 gti2HandleConnectionReset(Sock062 *c, u32 ip, u32 port);
 s32 gti2ConnectionCommunicationError(Conn062 *p);
 s32 gti2ConnectionError(Conn062 *p, s32 a, s32 b);
 void gti2SocketError(Sock062 *c);
@@ -1092,6 +1080,5 @@ BOOL gti2HandleNack(Cn *c, u8 *p, s32 n)
 namespace N02285630 { extern "C" {
 s32 gti2HandlePing(Cn *c, u8 *p, s32 n)
 {
-    return gti2SendPong(c, p, n);
 }
 } }

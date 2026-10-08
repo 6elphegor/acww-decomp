@@ -4,8 +4,8 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02288c78.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "types64.h"
 #ifdef __cplusplus
+#include "net/hashtable.h"
 #include "net/sb_internal.h"
 #endif
 
@@ -15,17 +15,8 @@ extern "C" {
 #ifndef PROTO_LOCAL_data_ov065_0228e928
 extern char *data_ov065_0228e928[2];
 #endif
-#ifndef PROTO_LOCAL_g_SBRefStrList
-extern void *g_SBRefStrList;
-#endif
 #ifndef PROTO_LOCAL_thestr
 extern char *thestr;
-#endif
-#ifndef PROTO_LOCAL_ServerBrowserBeginUpdate2
-s32 ServerBrowserBeginUpdate2(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-#endif
-#ifndef PROTO_LOCAL_ServerBrowserLimitUpdateA
-s32 ServerBrowserLimitUpdateA(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g);
 #endif
 #ifndef PROTO_LOCAL_ServerBrowserThink
 s32 ServerBrowserThink(void *o);
@@ -42,29 +33,14 @@ s32 RefStringCompare(char **a, char **b);
 #ifndef PROTO_LOCAL_RefStringFree
 void RefStringFree(void **p);
 #endif
-#ifndef PROTO_LOCAL_SBRefStrHash
-void *SBRefStrHash();
-#endif
 #ifndef PROTO_LOCAL_SBRefStrHashCleanup
 void SBRefStrHashCleanup();
-#endif
-#ifndef PROTO_LOCAL_SBServerAddIntKeyValue
-void SBServerAddIntKeyValue(void *a, char *b);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetStringValueA
 char *SBServerGetStringValueA(void *a, char *k, char *d);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetIntValueA
 s32 SBServerGetIntValueA(_SBServer *a, char *b, s32 c);
-#endif
-#ifndef PROTO_LOCAL_SBServerGetFloatValueA
-u64 SBServerGetFloatValueA(void *a, char *b, u64 v);
-#endif
-#ifndef PROTO_LOCAL_SBServerGetPublicInetAddress
-s32 SBServerGetPublicInetAddress(s32 *o);
-#endif
-#ifndef PROTO_LOCAL_SBServerGetPrivateInetAddress
-s32 SBServerGetPrivateInetAddress(s32 *o);
 #endif
 #ifndef PROTO_LOCAL_CheckValidKey
 s32 CheckValidKey(char *s);
@@ -81,8 +57,17 @@ u32 StringHash(const char *s, u32 n);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_g_SBRefStrList
+extern HashImplementation *g_SBRefStrList;
+#endif
+#ifndef PROTO_LOCAL_ServerBrowserBeginUpdate2
+s32 ServerBrowserBeginUpdate2(_ServerBrowser *o, s32 a, s32 b, u8 *data, s32 n, const char *c, s32 d, s32 e);
+#endif
+#ifndef PROTO_LOCAL_ServerBrowserLimitUpdateA
+s32 ServerBrowserLimitUpdateA(_ServerBrowser *o, s32 a, s32 b, u8 *c, s32 e, const char *f, s32 g);
+#endif
 #ifndef PROTO_LOCAL_ServerBrowserSendMessageToServerA
-s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, const char *a, u16 b, void *c, s32 e);
+s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, const char *a, u16 b, u8 *c, s32 e);
 #endif
 #ifndef PROTO_LOCAL_ServerBrowserSendNatNegotiateCookieToServerA
 s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, const char *a, u16 b, s32 c);
@@ -105,11 +90,23 @@ void ServerBrowserSortA(_ServerBrowser *o, s32 a, char *b, u32 mode);
 #ifndef PROTO_LOCAL_ServerBrowserGetMyPublicIPAddr
 s32 ServerBrowserGetMyPublicIPAddr(_ServerBrowser *o);
 #endif
+#ifndef PROTO_LOCAL_SBRefStrHash
+HashImplementation *SBRefStrHash();
+#endif
 #ifndef PROTO_LOCAL_SBServerFree
 void SBServerFree(_SBServer **pp);
 #endif
 #ifndef PROTO_LOCAL_SBServerAddKeyValue
 s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
+#endif
+#ifndef PROTO_LOCAL_SBServerAddIntKeyValue
+void SBServerAddIntKeyValue(_SBServer *a, char *b, s32 v);
+#endif
+#ifndef PROTO_LOCAL_SBServerGetFloatValueA
+double SBServerGetFloatValueA(_SBServer *a, char *b, double v);
+#endif
+#ifndef PROTO_LOCAL_SBServerGetPublicInetAddress
+u32 SBServerGetPublicInetAddress(_SBServer *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPublicQueryPort
 u16 SBServerGetPublicQueryPort(_SBServer *o);
@@ -119,6 +116,9 @@ u16 SBServerGetPublicQueryPortNBO(_SBServer *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerHasPrivateAddress
 BOOL SBServerHasPrivateAddress(_SBServer *o);
+#endif
+#ifndef PROTO_LOCAL_SBServerGetPrivateInetAddress
+u32 SBServerGetPrivateInetAddress(_SBServer *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPrivateQueryPort
 u16 SBServerGetPrivateQueryPort(_SBServer *o);

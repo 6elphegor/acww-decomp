@@ -81,7 +81,7 @@ s32 WifiAp_StepRecoverLink(void);
 s32 WifiAp_BuildSearchList(s32 mode);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_IsFreespot
-s32 WifiAp_IsFreespot(u8 *rec);
+s32 WifiAp_IsFreespot(WMBssDesc *rec);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_BuildSearchWithFreespot
 s32 WifiAp_BuildSearchWithFreespot(WifiApContext *ctx);
@@ -106,9 +106,6 @@ s32 WifiAp_MapStartupError(u32 r);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_GetWirelessOffError
 s32 WifiAp_GetWirelessOffError(void);
-#endif
-#ifndef PROTO_LOCAL_WifiAp_GetNoApErrorCode
-s32 WifiAp_GetNoApErrorCode(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_CleanupStep
 s32 WifiAp_CleanupStep(u8 *p);
@@ -167,6 +164,9 @@ void WifiAp_SortFoundAp(u32 n, WifiApContext *ctx);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_WifiAp_GetNoApErrorCode
+s32 WifiAp_GetNoApErrorCode(WifiApControl *p);
+#endif
 #ifndef PROTO_LOCAL_WifiAp_GetErrorCodeForState
 s32 WifiAp_GetErrorCodeForState(WifiApControl *o);
 #endif

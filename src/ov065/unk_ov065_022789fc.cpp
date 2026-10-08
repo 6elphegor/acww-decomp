@@ -2,9 +2,9 @@
 #include "types.h"
 #include "net/GsSocket.h"
 #include "net/SockHostEnt.h"
-#include "net/SockAddrIn.h"
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
+#include "net/SockAddrIn.h"
 
 #include "types64.h"
 #include "proto/autoload_2/unk_0212703c.h"
@@ -35,13 +35,13 @@ extern const char urlSafeEncodeing[];
 extern const char defaultEncoding[];
 extern s32 randomnum;
 extern s32 GSINitroErrno;
-s32 Sock_InetAtoN(const char *, u32 *);
+s32 Sock_InetAtoN(const char *a, u32 *out);
 s32 Sock_GetSockName(s32, void *);
 s32 CheckRcode(s32, s32);
 s32 longrand(void);
 u32 nextlongrand(u32);
 void TripToQuart(char *, char *, s32);
-s32 inet_addr(const char *cp);
+s32 inet_addr(const char *a);
 }
 }
 
@@ -64,9 +64,9 @@ extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 Sock_SendTo(s32 a, const void *b, s32 c, u32 d, void *sa);
-s32 Sock_Send(s32 a, const void *b, s32 c, u32 d);
-s32 Sock_RecvFrom(s32 a, void *b, s32 c, u32 d, u8 *sa);
-s32 Sock_Recv(s32 a, void *b, s32 c, u32 d);
+s32 Sock_Send(sptr a, const void *b, s32 c, u32 d);
+s32 Sock_RecvFrom(sptr a, void *b, s32 c, u32 d, SockAddrIn *sa);
+s32 Sock_Recv(sptr a, void *b, s32 c, u32 d);
 s32 Sock_Accept(s32 a, u8 *sa);
 s32 Sock_Listen(s32 a);
 s32 Sock_Connect(s32 a, void *sa);
@@ -464,7 +464,7 @@ s32 CheckRcode(s32 a, s32 b) {
 
 namespace FB {
 extern "C" {
-s32 socket(s32 a, s32 b, s32 protocol) {
+s32 socket(s32 a, s32 b, s32 protocol) { // protocol: unused by SockCore_Create
     return CheckRcode(Sock_Create(a, b), -1);
 }
 }
@@ -541,11 +541,11 @@ s32 recv(s32 a, void *b, s32 c, u32 d) {
 
 namespace FB {
 extern "C" {
-s32 recvfrom(s32 a, void *b, s32 c, u32 d, u8 *sa, s32 *len) {
+s32 recvfrom(s32 a, void *b, s32 c, u32 d, SockAddrIn *sa, s32 *len) {
     s32 r;
-    *sa = *len;
+    sa->len = *len;
     r = Sock_RecvFrom(a, b, c, d, sa);
-    *len = *sa;
+    *len = sa->len;
     return CheckRcode(r, -1);
 }
 }

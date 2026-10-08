@@ -27,9 +27,34 @@
 #include "proto/ov065/unk_ov065_02285778.h"
 #include "proto/ov065/unk_ov065_02286934.h"
 #include "proto/ov065/unk_ov065_022884fc.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_0226fc18.h"
+#include "proto/ov065/unk_ov065_02287390.h"
+#include "proto/ov065/unk_ov065_02288c78.h"
+#include "proto/ov065/unk_ov065_02289444.h"
+
+// DwcMatch_SetOption(1): the server lock
+struct DwcMatchServerLock {
+    u8 lockEnabled;
+    u8 isLocked;
+    u16 unk_02;
+};
 
 extern "C" {
-u8 sDwcMatchServerLock[4];
+// the SDK routines (the host's: modern/host/sdk.c)
+void MI_CpuFill8(void *dst, u32 v, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
+void MIi_CpuCopy32(const void *src, void *dst, u32 n);
+}
+
+// defined in other units without a shared prototype
+extern "C" {
+BOOL DWCi_Acc_IsValidFriendData(const DwcFriendData *p);  // src/autoload_2/unk_020fedcc.c (its FD)
+signed int OS_SNPrintf(char *dst, unsigned int len, const char *fmt, ...);  // src/autoload_2/unk_02113088.c
+}
+
+extern "C" {
+DwcMatchServerLock sDwcMatchServerLock;
 void *sDwcMatchUserFilter;
 DwcMatchSyncOption *sDwcMatchSyncOption;
 DwcMatchControl *sDwcMatch;
@@ -55,40 +80,19 @@ extern "C" {
 
 extern "C" {
 
-extern DwcFriendControl *sDwcFriendControl;
 extern DwcMatchControl *sDwcMatch;
 
 u32 DWC_GetGsProfileId(void *userData, void *fd);
-s32 DWCi_Acc_IsValidFriendData(void *);
-s32 strtoul(const char *, char **, s32);
-void MI_CpuFill8(void *, s32, u32);
-void MI_CpuCopy8(const void *, void *, u32);
 s32 strncmp(const void *, const void *, u32);
-void OS_SNPrintf(char *, s32, const char *, u32);
 
-s32 DwcCore_SetError(s32, s32);
 s32 DwcCore_HasError();
 s32 DwcLogin_IsLoggedIn();
-s32 DwcCore_GetState();
 void *DwcLogin_GetUserData();
 void DwcFriend_FinishUpdate();
-void DwcFriend_SyncList(void *, s32);
-u32 DwcFriend_GetControlField20(void);
-void DwcFriend_OnAuthorizedInfo();
-void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
-void DwcFriend_Tick();
-s32 DwcFriend_HandleGpResult();
-s32 DwcFriend_GetBuddyStatus(void *, GPBuddyStatus *);
 s32 DwcMatch_HandleGt2Result(s32 a);
-s32 DwcMatch_HandleNnResult(s32, s32);
 s32 DwcMatch_HandleNnStartResult(s32 a);
-s32 DwcMatch_SendNnRequest(void *);
-s32 DwcMatch_Fail(s32, s32);
 s32 gt2Connect(void *socket, void **connection, char *remoteAddress, char *message, s32 len, s32 timeout, void *callbacks, s32 blocking);
-s32 DwcMatch_CancelNewClient(u32);
-s32 DwcMatch_RestartAfterNnFailure(u32);
-s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
 s32 gpSetStatusA(GPConnection *, s32, char *, char *);
 s32 gpDeleteBuddy(void *, s32);
 s32 gpIsBuddy(void *connection, s32 profile);
@@ -124,64 +128,27 @@ extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern DwcMatchUserKey sDwcMatchUserKeys[];
 
 // callees outside this group
-s32 DwcMatch_StartNatNegotiation(s32 a, u32 b, void *c);
-void qr2_keybuffer_add(u32 a, u32 b);
-void qr2_buffer_add_int(u32 a, s32 b);
-void qr2_buffer_addA(u32 a, s32 *b);
-s32 ServerBrowserCount(void *sb);
-void *ServerBrowserGetServer(void *sb, s32 i);
-u32 SBServerGetIntValueA(void *e, void *a, u32 b);
-void ServerBrowserRemoveServer(void *sb, void *server);
-void SBServerAddIntKeyValue(void *e, void *a, u32 b);
-void ServerBrowserSortA(void *sb, u32 ascending, void *key, u32 type);
-u32 DwcMatch_GetServerProfileId(void *server);
-s32 DwcMatch_StartServerQuery(u32 a);
-s32 DwcMatch_SendReservation(u32 a, u32 b);
+u32 DwcMatch_GetServerProfileId(_SBServer *server);
 s32 DwcMatch_HandleResult(s32 a);
-u32 SBServerGetPublicInetAddress(void *e);
-u32 SBServerGetPublicQueryPort(void *e);
-s32 DwcMatch_SendCloseOrder(u32 a);
-s32 DwcMatch_SendReservationCancel(u32 a);
-s32 DwcMatch_TryNextFriend(u32 a, u32 b);
-s32 DwcCore_GetState(void);
 void DwcLogin_Fail(s32 a, s32 b);
 void DwcFriend_Fail(s32 a, s32 b);
-void DwcCore_SetError(s32 a, s32 b);
-void DwcMatch_Fail(s32 a, s32 b);
-s32 DwcMatch_GetClientAidMask(u32 a);
-s32 DwcMatch_AdvanceConnect(u32 a);
 void DwcMatch_ResetSyncTimer(u32 a);
-void DwcMatch_CloseAllConnections(void);
-s32 DwcMatch_Restart(u32 a);
-s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 
 // in this group
 s32 DwcMatch_HandleNnStartResult(s32 a);
 s32 DwcMatch_HandleQr2Result(s32 a);
-s32 DwcMatch_HandleSbResult(s32 a);
 BOOL DwcMatch_EvaluateServers(u32 a);
 void DwcMatch_Nop(void *a);
 
 enum Unk_ov065_02272734_Z { Unk_ov065_02272734_Z_0 = 0 };
 
 void DwcMatch_OnQr2NnRequest(u32 a, void *ud);
-void DwcMatch_OnQr2PublicAddress(u32 a, u32 b);
-s32 DwcMatch_OnQr2Error(s32 a);
-s32 DwcMatch_OnQr2Count(void);
-void DwcMatch_OnQr2KeyList(s32 a, u32 b);
-void DwcMatch_OnQr2TeamKey(void);
-void DwcMatch_OnQr2PlayerKey(void);
-void DwcMatch_OnQr2ServerKey(s32 a, u32 b);
 BOOL DwcMatch_EvaluateServers(u32 a);
 void DwcMatch_Nop(void *a);
-void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c);
 s32 DwcMatch_HandleGt2Result(s32 a);
-s32 DwcMatch_HandleNnResult(s32 a);
 s32 DwcMatch_HandleNnStartResult(s32 a);
 s32 DwcMatch_HandleQr2Result(s32 a);
-s32 DwcMatch_HandleSbResult(s32 a);
 s32 DwcMatch_HandleGpResult(s32 a);
-void DwcMatch_ProcessServerSync(void);
 }
 
 }
@@ -198,45 +165,20 @@ extern DwcMatchControl *sDwcMatch;
 extern DwcMatchUserKey sDwcMatchUserKeys[];
 
 extern "C" {
-s32 SBServerGetIntValueA(...);
 void MIi_CpuClear32(u32, void *, u32);
-s32 DwcCore_GetState(u32);
-s32 DwcMatch_Restart(u32);
-s32 DwcMatch_AdvanceConnect(u32);
-s32 DwcMatch_SendCommand(u32, u32, u32, u32, void *, u32);
 s32 DwcMatch_HandleResult(s32);
-s32 DwcMatch_CancelNewClient(u32);
 s32 DwcConn_CloseConnection(u32);
 void gt2CloseAllConnectionsHard(void *socket);
 void gt2CloseConnectionHard(void *connection);
-void **DwcConn_FindSlotByProfileId(u32, u32);
-s32 DwcMatch_RemoveProfile(u32, u32);
-u32 DwcMatch_StartServerQuery(u32);
-s32 DwcMatch_HandleSbResult(u32);
-u32 DwcMatch_SendReservation(u32, u32);
 
-u32 DwcMatch_SendCancelSyncCommand(u32 a, u32 b);
 u32 DwcMatch_DropUnresponsiveClients(u32 mask);
-void DwcMatch_SendSyncPacket(u32 a, u32 b);
-void DwcMatch_CloseAllConnections(void);
-s32 DwcMatch_CloseProfileConnection(u32 a);
 
 
 void DwcMatch_ResetSyncTimer(u32 a);
-u32 DwcMatch_GetClientAidMask(u32 a);
 u32 DwcMatch_GetAidByProfileId(u32 v, s32 k);
-u32 DwcMatch_GetServerProfileId(void *server);
+u32 DwcMatch_GetServerProfileId(_SBServer *server);
 u32 DwcMatch_AllocAid(void);
-void DwcMatch_ClearUserKeys(void);
-u32 DwcMatch_ProcessCancelSync(void);
-u32 DwcMatch_OnCancelSyncCommand(u32 a, u32 b, u32 c);
-u32 DwcMatch_SendCancelSyncCommand(u32 a, u32 b);
-u32 DwcMatch_ProcessCloseSync(void);
-void DwcMatch_SendSyncPacket(u32 a, u32 b);
 u32 DwcMatch_DropUnresponsiveClients(u32 mask);
-void DwcMatch_CloseAllConnections(void);
-s32 DwcMatch_CloseProfileConnection(u32 a);
-u32 DwcMatch_RestartAfterCancel(void);
 }
 #undef G
 }
@@ -250,60 +192,26 @@ extern "C" {
 
 
 extern DwcMatchControl *sDwcMatch;
-extern u8 sDwcMatchServerLock[];
 
 
 extern "C" {
-s32 DwcMatch_CloseAllConnections(void);
-s32 DwcMatch_CloseProfileConnection(s32);
-s32 DwcMatch_SendCancelSyncCommand(s32, s32);
-s32 DwcMatch_SendSyncPacket(s32, s32);
 void DwcMatch_ResetState(u32 a);
 s32 DwcFriend_FindIndexByProfileId(s32);
-s32 DwcMatch_StartServerQuery(s32);
-s32 DwcMatch_HandleSbResult(s32 a);
 s32 DwcMatch_HandleGpResult(s32 a);
-s32 DwcMatch_Cleanup(void);
 s32 DwcMatch_UpdateServerStatus(void);
 s32 gpIsBuddy(void *connection, s32 profile);
-s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, s32);
 s32 DwcMatch_HandleResult(s32 a);
-s32 DwcMatch_Fail(s32, s32);
-s32 qr2_send_statechanged(void *qrec);
-s32 ServerBrowserFree(void *sb);
-s32 ServerBrowserClear(void *sb);
 void gt2CloseAllConnectionsHard(void *socket);
 void *DwcLogin_GetUserData(void);
 s32 gpGetBuddyIndex(void *connection, s32 profile, void *index);
 s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
-s32 DwcMatch_SendReservation(s32, s32);
 u32 DWC_GetGsProfileId(void *userData, void *fd);
-s32 DWCi_Acc_IsValidFriendData(u8 *);
-s32 strtoul(void *, s32, s32);
 
-void DwcMatch_AbortAndRestart(void);
-void DwcMatch_Restart(s32 a);
 void DwcMatch_FinishCancelled(void);
-s32 DwcMatch_AreAllBuddies(u32 *a, u32 n);
-void DwcMatch_AdvanceConnect(s32 a);
-s32 DwcMatch_SendCloseOrder(void);
-s32 DwcMatch_RestartAfterNnFailure(void);
-s32 DwcMatch_CancelNewClient(s32 a);
-s32 DwcMatch_SendReservationCancel(s32 a);
 s32 DwcMatch_BeginSearch(void);
-s32 DwcMatch_TryNextFriend(s32 a, s32 b);
 
-void DwcMatch_AbortAndRestart(void);
-void DwcMatch_Restart(s32 a);
 void DwcMatch_FinishCancelled(void);
-s32 DwcMatch_AreAllBuddies(u32 *a, u32 n);
-void DwcMatch_AdvanceConnect(s32 a);
-s32 DwcMatch_SendCloseOrder(void);
-s32 DwcMatch_RestartAfterNnFailure(void);
-s32 DwcMatch_CancelNewClient(s32 a);
-s32 DwcMatch_SendReservationCancel(s32 a);
 s32 DwcMatch_BeginSearch(void);
-s32 DwcMatch_TryNextFriend(s32 a, s32 b);
 }
 #undef g
 }
@@ -317,51 +225,25 @@ extern "C" {
 
 extern DwcMatchControl *sDwcMatch;
 extern DwcMatchSyncOption *sDwcMatchSyncOption;
-extern u8 sDwcMatchServerLock[];
 
 extern "C" {
-void MIi_CpuCopy32(void *, void *, u32);
-void *ServerBrowserGetServer(void *sb, s32 i);
-s32 SBServerGetIntValueA(...);
-u32 SBServerGetPublicInetAddress(void *);
-u32 SBServerGetPublicQueryPort(void *);
-s32 DwcMatch_SendCommand(u32, s32, u32, u32, void *, u32);
-s32 DwcMatch_HandleSbResult(s32);
 s32 DwcMatch_HandleGpResult(s32);
-void qr2_send_statechanged(void *qrec);
 u32 DwcMatch_AllocAid(void);
 void DwcMatch_ResetSyncTimer(u32);
 s32 gpIsBuddy(void *connection, s32 profile);
-s32 DwcMatch_SendReservationCancel(u32);
 s32 DwcFriend_FindIndexByProfileId(s32);
-s32 DwcMatch_TryNextFriend(...);
-s32 DwcMatch_AreAllBuddies(void *, u32);
-s32 DwcMatch_StartNatNegotiation(s32, u32, void *);
 s32 DwcMatch_HandleNnStartResult(s32 a);
-s32 DwcMatch_StartServerQuery(u32);
 s32 DwcMatch_BeginSearch(void);
 void gt2CloseAllConnectionsHard(void *socket);
-s32 DwcMatch_CancelNewClient(u32);
 s32 gt2GetRemoteIP(void *connection);
 void DwcMatch_OnNnComplete(s32, s32, void *, void *);
-s32 DwcMatch_AdvanceConnect(u32);
-s32 DwcMatch_RestartAfterCancel(void);
-s32 DwcMatch_RestartAfterNnFailure(u32);
-s32 DwcMatch_CloseAllConnections(void);
-s32 DwcMatch_CloseProfileConnection(u32);
-s32 DwcMatch_Restart(u32);
-s32 DwcMatch_OnCancelSyncCommand(u32, u32, u32);
 u32 DwcMatch_GetAidByProfileId(u32, s32);
 s32 DwcConn_CloseConnection(u32);
-s32 DwcMatch_Fail(u32, s32);
-s32 DwcMatch_SendCloseOrder(void);
 s32 DwcMatch_HandleResult(s32);
 u32 DwcMatch_CheckReservation(s32, u32, u32, u32, u32);
 void DwcMatch_StoreMemberList(u32, u32 *);
 s32 DwcMatch_AcceptNewClient(u32, u32, u16);
 
-s32 DwcMatch_SendReservation(u32 a, s32 b);
-s32 DwcMatch_HandleCommand(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n);
 u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e);
 s32 DwcMatch_AcceptNewClient(u32 a, u32 b, u16 c);
 void DwcMatch_StoreMemberList(u32 a, u32 *p);
@@ -398,43 +280,21 @@ extern DwcMatchUserKey sDwcMatchUserKeys[];
 
 extern "C" {
 
-void MI_CpuCopy8(const void *, void *, u32);
-void MIi_CpuCopy32(const void *, void *, u32);
 void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuClear16(u32, void *, u32);
-void MI_CpuFill8(void *, s32, u32);
-s32 OS_SNPrintf(char *, s32, const char *, ...);
 
 s32 gpSendBuddyMessageA(GPConnection *, s32, const char *);
-s32 ServerBrowserSendMessageToServerA(void *sb, char *addr, u32 port, void *data, s32 len);
-s32 ServerBrowserSendNatNegotiateCookieToServerA(void *sb, char *addr, u32 port, u32 cookie);
-s32 DwcMatch_HandleSbResult(s32 a);
 s32 gt2GetRemoteIP(void *connection);
 u32 gt2GetLocalPort(void *socket);
 void DwcMatch_OnNnComplete(s32, s32, void *, void *);
 void DwcMatch_OnNnProgress(s32 state, void *user);
-s32 SBServerHasPrivateAddress(void *);
-u32 SBServerGetPublicInetAddress(void *);
-u32 SBServerGetPublicQueryPort(void *);
-u32 SBServerGetPrivateInetAddress(void *);
-u32 SBServerGetPrivateQueryPort(void *);
-s32 ServerBrowserGetMyPublicIPAddr(void *sb);
 s32 Sock_GetHostId(void);
-s32 ServerBrowserClear(void *sb);
-s32 ServerBrowserLimitUpdateA(void *sb, u32 a, u32 b, void *c, u32 d, void *e, u32 f);
-s32 ServerBrowserFree(void *sb);
-void DwcMatch_ClearUserKeys(void);
 
 
 s32 DwcMatch_GetArgField(char *out, const char *s, s32 n);
 s32 DwcMatch_SendGpCommand(void *a, u32 b, u32 c, char *d);
 s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e);
-s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
-s32 DwcMatch_SendNnRequest(DwcNnRequest *p);
-s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, void *c);
 void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
-s32 DwcMatch_StartServerQuery(u32 a);
-void DwcMatch_Cleanup(void);
 void DwcMatch_Init(u32 type, u32 maxPlayers, DwcMatchedScCallback cb, void *param);
 void DwcMatch_ResetState(u32 a);
 
@@ -451,12 +311,7 @@ static inline void Unk_ov065_02275984_Clear16(void *d, u32 n) {
 s32 DwcMatch_GetArgField(char *out, const char *s, s32 n);
 s32 DwcMatch_SendGpCommand(void *a, u32 b, u32 c, char *d);
 s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e);
-s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
-s32 DwcMatch_SendNnRequest(DwcNnRequest *p);
-s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, void *c);
 void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
-s32 DwcMatch_StartServerQuery(u32 a);
-void DwcMatch_Cleanup(void);
 void DwcMatch_Init(u32 type, u32 maxPlayers, DwcMatchedScCallback cb, void *param);
 void DwcMatch_ResetState(u32 a);
 }
@@ -474,46 +329,25 @@ extern "C" {
 
 
 extern DwcMatchControl *sDwcMatch;
-extern u8 sDwcMatchServerLock[];
 extern void *sDwcMatchUserFilter;
 extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern u8 sDwcMatchValidAids[];
 
 
 extern "C" {
-void OS_SNPrintf(char *, s32, const char *, ...);
-void MI_CpuFill8(void *, s32, s32);
-u32 strtoul(const char *, char **, s32);
 
-void DwcMatch_ClearUserKeys(void);
 s32 DwcFriend_FindIndexByProfileId(s32);
-s32 DwcMatch_CancelNewClient(...);
-s32 DwcCore_GetState(void);
 void gt2CloseAllConnectionsHard(void *socket);
-s32 DwcMatch_RestartAfterCancel(void);
-s32 DwcMatch_Restart(u32);
-s32 DwcMatch_SendSyncPacket(u32, s32);
-s32 DwcMatch_GetClientAidMask(u32);
-s32 DwcMatch_AdvanceConnect(u32);
-s32 qr2_send_statechanged(void *qrec);
-s32 DwcMatch_CloseAllConnections(void);
-s32 DwcCore_SetError(s32, s32);
-s32 DwcMatch_Cleanup(void);
 s32 DwcMatch_GetArgField(char *, const char *, s32);
-s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
 s32 gt2Connect(void *socket, void **connection, char *remoteAddress, char *message, s32 len, s32 timeout, void *callbacks, s32 blocking);
 s32 DwcMatch_HandleGt2Result(s32 a);
 s32 DwcConn_FindFreeSlot(void);
-void **DwcConn_GetSlot(s32);
-DwcConnInfo *DwcConn_GetConnInfo(s32);
 void gt2SetConnectionData(void *connection, void *data);
 void gt2Reject(void *connection, const char *message, s32 len);
 s32 gt2Accept(void *connection, void *callbacks);
 
 void DwcMatch_UpdateValidAidCount(void);
 u32 DwcMatch_RemoveMemberAt(s32, s32);
-void DwcMatch_Fail(s32, s32);
-void DwcMatch_ClearPendingCommand(void);
 
 BOOL DwcMatch_IsInactive(void);
 void DwcMatch_Shutdown(void);
@@ -524,13 +358,9 @@ void DwcMatch_UpdateValidAidCount(void);
 u32 DwcMatch_GetValidAidCount(void);
 u32 DwcMatch_GetClientCount(void);
 u32 DwcMatch_RemoveMemberAt(s32 idx, s32 n);
-BOOL DwcMatch_RemoveProfile(u32 v, s32 n);
 void DwcMatch_OnClientDisconnected(u32 a);
 BOOL DwcMatch_OnConnectionClosed(s32 a, u32 b);
-void DwcMatch_OnSyncPacket(u32 a, s32 b, u8 *c);
 void DwcMatch_ResetPlayerCounts(void);
-void DwcMatch_Fail(s32 a, s32 b);
-void DwcMatch_ClearPendingCommand(void);
 void DwcMatch_OnGpMatchCommand(u32 a, u32 b, const char *s);
 void DwcMatch_OnGt2Connected(void *a, u32 b);
 void DwcMatch_OnGt2ConnectAttempt(void *a0, void *b, u32 c, u32 d, s32 s0, u8 *e);
@@ -552,63 +382,28 @@ struct Unk_ov065_02276f4c_Pad {
     ~Unk_ov065_02276f4c_Pad() {}
 };
 
-struct DwcMatchServerLock {
-    u8 lockEnabled;
-    u8 isLocked;
-    u16 unk_02;
-};
-
 extern DwcMatchControl *sDwcMatch;
-extern DwcMatchServerLock sDwcMatchServerLock;
 
 
 extern "C" {
 u64 func_02132ef8(u64 a, u64 b);
 void MIi_CpuClear32(u32 v, void *dst, u32 n);
-void MI_CpuFill8(void *dst, s32 v, u32 n);
 
 s32 qr2_parse_queryA(void *, char *, s32, void *);
 s32 DwcCore_HasError(void);
-s32 qr2_think(void *);
 void gt2Think(void *socket);
 s32 DwcMatch_BeginSearch(void);
-s32 DwcMatch_SendReservation(u32, u32);
 s32 DwcMatch_HandleResult(s32 a);
-s32 DwcMatch_Fail(s32, s32);
-s32 DwcMatch_StartServerQuery(u32);
-s32 DwcMatch_HandleSbResult(s32 a);
-s32 DwcMatch_RestartAfterNnFailure(u32);
-s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, u32);
-s32 DwcMatch_ClearPendingCommand(void);
-s32 DwcMatch_CancelNewClient(u32);
-s32 DwcMatch_AbortAndRestart(void);
 void DwcMatch_OnNnComplete(s32, s32, void *, void *);
 s32 ServerBrowserThink(void *sb);
-s32 qr2_send_statechanged(void *qrec);
-s32 DwcMatch_RestartAfterCancel(void);
-s32 DwcMatch_ProcessCloseSync(void);
-s32 DwcMatch_ProcessCancelSync(void);
-s32 DwcMatch_ProcessServerSync(void);
 void DwcMatch_Init(u32 type, u32 maxPlayers, DwcMatchedScCallback cb, void *param);
-void *ServerBrowserNewA(char *queryForGamename, char *queryFromGamename, char *queryFromKey, u32 a, u32 b, u32 c, u32 d, void *callback, void *instance);
 s32 DwcMatch_HandleGpResult(s32 a);
 s32 DwcMatch_UpdateServerStatus(void);
-s32 DwcMatch_OnServerBrowserEvent(void);
 s32 gt2GetRemoteIP(void *connection);
 u32 gt2GetLocalPort(void *socket);
-s32 qr2_init_socketA(void *qrec, s32 s, s32 port, char *gamename, char *secretKey, u32 ispublic, u32 natnegotiate, void *serverKey, void *playerKey, void *teamKey, void *keyList, void *count, void *addError, u32 userdata);
 s32 DwcMatch_HandleQr2Result(s32);
-s32 qr2_register_publicaddress_callback(void *, void *);
 void qr2_register_natneg_callback(qr2_implementation_s *, qr2_natnegcallback_t);
 void qr2_register_clientmessage_callback(qr2_implementation_s *, qr2_clientmessagecallback_t);
-s32 DwcMatch_OnQr2ServerKey(void);
-s32 DwcMatch_OnQr2PlayerKey(void);
-s32 DwcMatch_OnQr2TeamKey(void);
-s32 DwcMatch_OnQr2KeyList(void);
-s32 DwcMatch_OnQr2Count(void);
-s32 DwcMatch_OnQr2Error(void);
-s32 DwcMatch_OnQr2PublicAddress(void);
-s32 DwcMatch_ClearUserKeys(void);
 void DwcMatch_ResetState(u32);
 s32 DwcMatch_StartQr2(u32 a);
 
@@ -617,7 +412,7 @@ void DwcMatch_Process(u32 a);
 s32 DwcMatch_StartClient(u32 a0, DwcMatchedScCallback a1, void *a2, DwcNewClientCallback a3, void *a4);
 void DwcMatch_StartGameServer(u32 a0, DwcMatchedScCallback a1, void *a2, DwcNewClientCallback a3, void *a4);
 s32 DwcMatch_StartQr2(u32 a);
-void DwcMatch_InitControl(DwcMatchControl *a0, void *a1, Unk_ov065_02290814_Sub *a2, void *a3, char *a4, char *a5, u8 *a6, u32 a7);
+void DwcMatch_InitControl(DwcMatchControl *a0, void *a1, Unk_ov065_02290814_Sub *a2, void *a3, char *a4, char *a5, DwcFriendData *a6, u32 a7);
 }
 #undef g
 }
@@ -634,26 +429,18 @@ extern "C" {
 
 
 extern "C" {
-extern u8 sDwcMatchServerLock[];
 extern DwcMatchControl *sDwcMatch;
 extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern DwcNetChannelTable *sDwcNetChannels;
 
 u32 DwcConn_GetAid(void *connection);
 void *DwcConn_FindConnectionByAid(u32 aid);
-void DwcCore_SetError(s32, s32);
 s32 DwcCore_HasError(void);
 s32 DwcConn_GetAidList(u8 **);
-s32 DwcConn_GetMyAid(void);
-s32 DwcConn_IsAidValid(s32);
-s32 DwcConn_IsAidConnected(s32);
 s32 gt2GetOutgoingBufferFreeSpace(void *connection);
 s32 gt2GetConnectionState(void *connection);
 s32 gt2Ping(void *connection);
 void gt2Send(void *connection, void *message, s32 len, s32 reliable);
-void DwcMatch_OnSyncPacket(s32, s32, s32);
-void MI_CpuCopy8(void *, void *, s32);
-void MI_CpuFill8(void *, s32, s32);
 void strncpy(void *, void *, s32);
 void OS_GetMacAddress(void *);
 u64 func_02132ef8(u64, u64);
@@ -715,11 +502,11 @@ s32 DwcMatch_SetOption(s32 m, u8 *p) {
     }
     case 1:
         if (*(u32 *)p != 0) {
-            sDwcMatchServerLock[0] = 1;
+            sDwcMatchServerLock.lockEnabled = 1;
         } else {
-            sDwcMatchServerLock[0] = 0;
+            sDwcMatchServerLock.lockEnabled = 0;
         }
-        sDwcMatchServerLock[1] = 0;
+        sDwcMatchServerLock.isLocked = 0;
         return 0;
     }
     return 2;
@@ -733,7 +520,7 @@ extern "C" {
 
 
 BOOL DwcMatch_IsServerLocked(void) {
-    if (sDwcMatchServerLock[0] == 0 || sDwcMatchServerLock[1] == 0) {
+    if (sDwcMatchServerLock.lockEnabled == 0 || sDwcMatchServerLock.isLocked == 0) {
         return FALSE;
     }
     return TRUE;
@@ -747,7 +534,7 @@ extern "C" {
 
 
 void DwcMatch_ClearServerLock(void) {
-    sDwcMatchServerLock[1] = 0;
+    sDwcMatchServerLock.isLocked = 0;
 }
 
 }
@@ -757,7 +544,7 @@ namespace F02276698 {
 extern "C" {
 #define g sDwcMatch
 
-void DwcMatch_InitControl(DwcMatchControl *a0, void *a1, Unk_ov065_02290814_Sub *a2, void *a3, char *a4, char *a5, u8 *a6, u32 a7) {
+void DwcMatch_InitControl(DwcMatchControl *a0, void *a1, Unk_ov065_02290814_Sub *a2, void *a3, char *a4, char *a5, DwcFriendData *a6, u32 a7) {
     g = a0;
     a0->gpConnection = a1;
     g->transportSocketPtr = a2;
@@ -810,7 +597,7 @@ s32 DwcMatch_StartQr2(u32 a) {
         c = g;
         s32 h = gt2GetRemoteIP(c->transportSocketPtr->transportSocket);
         s32 h2 = gt2GetLocalPort(c->transportSocketPtr->transportSocket);
-        r = qr2_init_socketA(&g->qr2Object, h, h2, c->gameName, c->secretKey, 1, 1, (void *)DwcMatch_OnQr2ServerKey, (void *)DwcMatch_OnQr2PlayerKey, (void *)DwcMatch_OnQr2TeamKey, (void *)DwcMatch_OnQr2KeyList, (void *)DwcMatch_OnQr2Count, (void *)DwcMatch_OnQr2Error, z);
+        r = qr2_init_socketA(&g->qr2Object, h, h2, c->gameName, c->secretKey, 1, 1, DwcMatch_OnQr2ServerKey, DwcMatch_OnQr2PlayerKey, DwcMatch_OnQr2TeamKey, DwcMatch_OnQr2KeyList, DwcMatch_OnQr2Count, DwcMatch_OnQr2Error, NULL);
         if (r == 0) {
             break;
         }
@@ -821,10 +608,10 @@ s32 DwcMatch_StartQr2(u32 a) {
     }
     g->publicIp = 0;
     g->publicPort = 0;
-    qr2_register_publicaddress_callback((void *)g->qr2Object, (void *)DwcMatch_OnQr2PublicAddress);
+    qr2_register_publicaddress_callback(g->qr2Object, DwcMatch_OnQr2PublicAddress);
     qr2_register_natneg_callback(g->qr2Object, DwcMatch_OnQr2NnRequest);
     qr2_register_clientmessage_callback(g->qr2Object, DwcMatch_OnQr2ClientMessage);
-    qr2_send_statechanged((void *)g->qr2Object);
+    qr2_send_statechanged(g->qr2Object);
     return r;
 }
 #undef g
@@ -908,7 +695,7 @@ void DwcMatch_Process(u32 a) {
         if (DwcCore_HasError() == 0) {
             if (a == 0) {
                 if (g->qr2Object) {
-                    qr2_think((void *)g->qr2Object);
+                    qr2_think(g->qr2Object);
                 }
                 if (g->transportSocketPtr != 0) {
                     gt2Think(g->transportSocketPtr->transportSocket);
@@ -983,7 +770,7 @@ void DwcMatch_Process(u32 a) {
                     if (d > 0x61a8) {
                         c = g;
                         *(u64 *)&c->connectWaitTime = 0;
-                        if (DwcMatch_RestartAfterNnFailure(c->memberProfileIds[0]) != 0) {
+                        if (DwcMatch_RestartAfterNnFailure() != 0) {
                             break;
                         }
                         return;
@@ -996,7 +783,7 @@ void DwcMatch_Process(u32 a) {
                         c = g;
                         if (c->cmdRetryCount > 5) {
                             DwcMatch_ClearPendingCommand();
-                            if (DwcMatch_RestartAfterNnFailure(g->memberProfileIds[0]) == 0) {
+                            if (DwcMatch_RestartAfterNnFailure() == 0) {
                                 return;
                             }
                         } else {
@@ -1079,7 +866,7 @@ void DwcMatch_Process(u32 a) {
                 ServerBrowserThink(g->serverBrowser);
             }
             if (g->qr2Object) {
-                qr2_think((void *)g->qr2Object);
+                qr2_think(g->qr2Object);
                 c = g;
                 qr2_implementation_s *o = (qr2_implementation_s *)c->qr2Object;
                 if (o->userstatechangerequested == 0 && (c->matchType == 0 || c->matchType == 1)) {
@@ -1669,8 +1456,8 @@ void DwcMatch_Shutdown(void) {
         DwcNet_Free(4, sDwcMatchSyncOption, 0);
         sDwcMatchSyncOption = 0;
     }
-    sDwcMatchServerLock[0] = 0;
-    sDwcMatchServerLock[1] = 0;
+    sDwcMatchServerLock.lockEnabled = 0;
+    sDwcMatchServerLock.isLocked = 0;
 }
 #undef g
 }
@@ -1911,7 +1698,7 @@ namespace F022751b0 {
 extern "C" {
 #define G sDwcMatch
 enum Unk_ov065_022754f0_Z { Unk_ov065_022754f0_Z_0 = 0 };
-s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, void *c) {
+s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, _SBServer *c) {
     s32 flag;
     u8 idx = G->numPlayers;
     s32 ret = 0;
@@ -2088,7 +1875,7 @@ s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e) {
     h.senderProfileId = G->profileId;
     i = 0;
     do {
-        r = ServerBrowserSendMessageToServerA(G->serverBrowser, gt2AddressToString(b, 0, 0), c, &h, h.argsSize + 0x14);
+        r = ServerBrowserSendMessageToServerA(G->serverBrowser, gt2AddressToString(b, 0, 0), c, (u8 *)&h, h.argsSize + 0x14);
         if (r == 0) break;
         if (r != 2) break;
         i++;
@@ -2455,7 +2242,7 @@ s32 DwcMatch_HandleCommand(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             break;
         }
         if (g->matchType == 0 || ((volatile DwcMatchControl *)g)->matchType == 1) {
-            if (DwcMatch_RestartAfterNnFailure(h) == 0) {
+            if (DwcMatch_RestartAfterNnFailure() == 0) {
                 return 0;
             }
             break;
@@ -2555,8 +2342,8 @@ u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e) {
             (g->hasReservation != 0 && g->reservation == g->profileId)) {
             r = 3;
             if (g->matchType == 0) {
-                void *obj = g->qr2Object;
-                if (*(u32 *)(obj + 0xb4) == 0) {
+                qr2_implementation_s *obj = g->qr2Object;
+                if (obj->userstatechangerequested == 0) {
                     if (g->hasReservation != 0) {
                         if (sDwcMatch->reservation == sDwcMatch->profileId) {
                             qr2_send_statechanged(obj);
@@ -2630,7 +2417,7 @@ u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e) {
             r = 3;
             goto end;
         }
-        if (sDwcMatchServerLock[0] == 1 && sDwcMatchServerLock[1] == 1) {
+        if (sDwcMatchServerLock.lockEnabled == 1 && sDwcMatchServerLock.isLocked == 1) {
             r = 0x13;
             goto end;
         }
@@ -2742,7 +2529,7 @@ s32 DwcMatch_SendReservation(u32 a, s32 b) {
         return 0;
     }
     if (sDwcMatch->matchType == 0) {
-        void *l = ServerBrowserGetServer(sDwcMatch->serverBrowser, 0);
+        _SBServer *l = ServerBrowserGetServer(sDwcMatch->serverBrowser, 0);
         sDwcMatch->memberProfileIds[0] = SBServerGetIntValueA(l, (char *)"dwc_pid", 0);
         sDwcMatch->memberIps[0] = SBServerGetPublicInetAddress(l);
         sDwcMatch->memberPorts[0] = SBServerGetPublicQueryPort(l);
@@ -2820,10 +2607,10 @@ s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
         }
         started = 1;
         c = *gp;
-        x = DWC_GetGsProfileId(DwcLogin_GetUserData(), c->friendList + c->friendIndices[c->friendCursor] * 12);
+        x = DWC_GetGsProfileId(DwcLogin_GetUserData(), &c->friendList[c->friendIndices[c->friendCursor]]);
         if (x == 0) continue;
         if (x == -1) continue;
-        if (DWCi_Acc_IsValidFriendData((*gp)->friendList + (*gp)->friendIndices[(*gp)->friendCursor] * 12) == 0) continue;
+        if (DWCi_Acc_IsValidFriendData(&(*gp)->friendList[(*gp)->friendIndices[(*gp)->friendCursor]]) == 0) continue;
         i = 1;
         c = *gp;
         n = c->numClients;
@@ -3103,7 +2890,7 @@ void DwcMatch_AdvanceConnect(s32 a) {
             NNFreeNegotiateList();
             if (g->matchType == 2) {
                 if (DwcMatch_HandleGpResult(DwcMatch_UpdateServerStatus()) != 0) return;
-                if (sDwcMatchServerLock[0] == 1) sDwcMatchServerLock[1] = 1;
+                if (sDwcMatchServerLock.lockEnabled == 1) sDwcMatchServerLock.isLocked = 1;
                 g->matchState = 10;
             } else {
                 g->matchState = 1;
@@ -3435,7 +3222,7 @@ extern "C" {
 #define G sDwcMatch
 
 u32 DwcMatch_OnCancelSyncCommand(u32 a, u32 b, u32 c) {
-    if (DwcCore_GetState(a) != 6) return 1;
+    if (DwcCore_GetState() != 6) return 1;
     switch (b) {
     case 0xd:
         if (G->matchState != 8) {
@@ -3588,7 +3375,7 @@ namespace F02273230 {
 extern "C" {
 #define G sDwcMatch
 
-u32 DwcMatch_GetServerProfileId(void *s) {
+u32 DwcMatch_GetServerProfileId(_SBServer *s) {
     if (SBServerGetIntValueA(s, (char *)"numplayers", -1) == -1) return 0;
     if (SBServerGetIntValueA(s, (char *)"maxplayers", -1) == -1) return 0;
     if (SBServerGetIntValueA(s, (char *)"dwc_mtype", -1) == -1) return 0;
@@ -4025,7 +3812,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c)
+void DwcMatch_OnServerBrowserEvent(_ServerBrowser *list, s32 mode, _SBServer *c)
 {
     switch (mode) {
     case 0:
@@ -4035,7 +3822,7 @@ void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c)
         s32 i = 0;
         if (ServerBrowserCount(list) > 0) {
             do {
-                void *e = ServerBrowserGetServer(list, i);
+                _SBServer *e = ServerBrowserGetServer(list, i);
                 if (DwcMatch_GetServerProfileId(e) == 0) {
                     ServerBrowserRemoveServer(list, e);
                     i--;
@@ -4048,7 +3835,7 @@ void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c)
             i = 0;
             if (ServerBrowserCount(list) > 0) {
                 do {
-                    void *e = ServerBrowserGetServer(list, i);
+                    _SBServer *e = ServerBrowserGetServer(list, i);
                     DwcMatchControl *cx = sDwcMatch;
                     if (cx->publicIp != 0) {
                         if (cx->publicIp == SBServerGetPublicInetAddress(e)) {
@@ -4099,7 +3886,7 @@ void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c)
         case 5: {
             if (ServerBrowserCount(list) != 0) {
                 do {
-                    void *e = ServerBrowserGetServer(list, 0);
+                    _SBServer *e = ServerBrowserGetServer(list, 0);
                     if (sDwcMatch->targetServerIp == SBServerGetPublicInetAddress(e)) {
                         if (sDwcMatch->targetServerPort == SBServerGetPublicQueryPort(e)) {
                             break;
@@ -4109,13 +3896,13 @@ void DwcMatch_OnServerBrowserEvent(void *list, s32 mode, void *c)
                 } while (ServerBrowserCount(list) != 0);
             }
             if (ServerBrowserCount(list) != 0) {
-                void *e = ServerBrowserGetServer(list, 0);
+                _SBServer *e = ServerBrowserGetServer(list, 0);
                 u32 h = SBServerGetIntValueA(e, (char *)"dwc_pid", 0);
                 DwcMatchControl *cx = sDwcMatch;
                 if (cx->matchType == 1 && h == cx->memberProfileIds[0]) {
                     if (DwcMatch_EvaluateServers(0) != 0) {
                         if (sDwcMatch->numClients != 0) {
-                            if (DwcMatch_HandleResult(DwcMatch_SendCloseOrder(sDwcMatch->numClients)) != 0) {
+                            if (DwcMatch_HandleResult(DwcMatch_SendCloseOrder()) != 0) {
                                 return;
                             }
                         }
@@ -4177,7 +3964,7 @@ BOOL DwcMatch_EvaluateServers(u32 a)
     s32 i = 0;
     if (ServerBrowserCount(sDwcMatch->serverBrowser) > 0) {
         do {
-            void *e = ServerBrowserGetServer(sDwcMatch->serverBrowser, i);
+            _SBServer *e = ServerBrowserGetServer(sDwcMatch->serverBrowser, i);
             BOOL found;
             if (sDwcMatch->matchType == 0) {
                 u32 h = SBServerGetIntValueA(e, (char *)"dwc_pid", 0);
@@ -4234,7 +4021,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnQr2ServerKey(s32 a, u32 b)
+void DwcMatch_OnQr2ServerKey(u32 a, qr2_buffer_s *b, void *userData)
 {
     switch (a) {
     case 8:
@@ -4262,9 +4049,9 @@ void DwcMatch_OnQr2ServerKey(s32 a, u32 b)
         s32 i = a - 0x64;
         if (sDwcMatchUserKeys[i].keyId != 0) {
             if (sDwcMatchUserKeys[i].isString != 0) {
-                qr2_buffer_addA(b, sDwcMatchUserKeys[i].value);
+                qr2_buffer_addA(b, (const char *)sDwcMatchUserKeys[i].value);
             } else {
-                qr2_buffer_add_int(b, *sDwcMatchUserKeys[i].value);
+                qr2_buffer_add_int(b, *(const s32 *)sDwcMatchUserKeys[i].value);
             }
         }
         break;
@@ -4279,7 +4066,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnQr2PlayerKey(void)
+void DwcMatch_OnQr2PlayerKey(u32 key, s32 index, qr2_buffer_s *b, void *userData)
 {
 }
 
@@ -4290,7 +4077,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnQr2TeamKey(void)
+void DwcMatch_OnQr2TeamKey(u32 key, s32 index, qr2_buffer_s *b, void *userData)
 {
 }
 
@@ -4301,7 +4088,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnQr2KeyList(s32 a, u32 b)
+void DwcMatch_OnQr2KeyList(s32 a, qr2_keybuffer_s *b, void *userData)
 {
     switch (a) {
     case 0: {
@@ -4335,7 +4122,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 DwcMatch_OnQr2Count(void)
+s32 DwcMatch_OnQr2Count(s32 type, void *userData)
 {
     return 0;
 }
@@ -4347,9 +4134,9 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 DwcMatch_OnQr2Error(s32 a)
+void DwcMatch_OnQr2Error(s32 a, const char *message, void *userData)
 {
-    return DwcMatch_HandleQr2Result(a);
+    DwcMatch_HandleQr2Result(a);
 }
 
 }
@@ -4359,7 +4146,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnQr2PublicAddress(u32 a, u32 b)
+void DwcMatch_OnQr2PublicAddress(u32 a, u32 b, void *userData)
 {
     sDwcMatch->publicIp = a;
     sDwcMatch->publicPort = b;
@@ -4406,7 +4193,7 @@ extern "C" {
 void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n, void *ud) {
     u32 off = 0;
     DwcMatchCommandHeader hdr;
-    u8 body[0x80];
+    u32 body[0x80 / 4]; // the command arguments (words)
     if (DwcCore_GetState() == 5 ||
         (DwcCore_GetState() == 6 &&
          (sDwcMatch->matchType == 2 || sDwcMatch->matchType == 3))) {
@@ -4505,7 +4292,7 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, void *remoteAddr, void *user) {
         return;
     }
     {
-        s32 r4 = DwcMatch_HandleNnResult(a, d->cookie);
+        s32 r4 = DwcMatch_HandleNnResult(a);
         if (r4 != 2 && r4 != 1) {
             return;
         }
@@ -4515,7 +4302,7 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, void *remoteAddr, void *user) {
                 if (DwcMatch_CountNnRetry(0) == 0) {
                     return;
                 }
-                if (DwcMatch_RestartAfterNnFailure(sDwcMatch->memberProfileIds[sDwcMatch->numClients]) != 0) {
+                if (DwcMatch_RestartAfterNnFailure() != 0) {
                     return;
                 }
                 return;

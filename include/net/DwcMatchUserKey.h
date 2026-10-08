@@ -11,7 +11,7 @@ struct DwcMatchUserKey {
     /* 0x01 */ u8 isString;
     /* 0x02 */ u8 unk_02[2];
     /* 0x04 */ char *keyName;
-    /* 0x08 */ s32 *value;
+    /* 0x08 */ const void *value; // an s32 or a string (isString)
 };
 
 #endif

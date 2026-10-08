@@ -12,6 +12,8 @@
 
 struct GTI2Socket;
 struct GTI2Connection;
+struct DArrayImplementation;
+struct HashImplementation;
 
 // Growable byte buffer (gti2AllocateBuffer, gti2BufferWrite*): the connections' incoming and outgoing buffers.
 struct GTI2Buffer {
@@ -88,7 +90,7 @@ typedef s32 (*GsTransportFilterCallback)(GTI2Connection *, s32, u8 *, u32, u32);
 
 // 32-character challenge made by gti2GetChallenge (StartConnect's local).
 struct GsTransportChallengeBuf {
-    /* 0x00 */ u32 v[9];
+    /* 0x00 */ u8 bytes[0x24];
 };
 
 struct GTI2Connection {
@@ -107,7 +109,7 @@ struct GTI2Connection {
     /* 0x2c */ gt2ReceivedCallback receivedCallback;
     /* 0x30 */ gt2ClosedCallback closedCallback;
     /* 0x34 */ gt2PingCallback pingCallback;
-    /* 0x38 */ void *initialMessage;
+    /* 0x38 */ u8 *initialMessage;
     /* 0x3c */ s32 initialMessageLen;
     /* 0x40 */ void *data; // the user's (gt2SetConnectionData)
     /* 0x44 */ GTI2Buffer incomingBuffer;
