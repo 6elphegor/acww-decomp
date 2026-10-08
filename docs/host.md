@@ -92,15 +92,19 @@ so sound was done natively right away). It holds 60 fps paced (160-200 fps unpac
 Register accesses are explicit: the game's sources access hardware registers only through `IO_R` / `IO_W` /
 `IO_OR` ... (`include/nitro/io_access.h`; rewritten by `tools/host_io_rewrite.py`), which are the plain volatile
 accesses on the DS (the matching build is unchanged) and calls to `HostIo_Read` / `HostIo_Write` (hw.c) on the
-host. Nothing traps in normal play any more (`ACWW_IOHIST` lists any access that still does); the fault handler
-stays as a safety net on Linux. This is the first step toward macOS / 64-bit hosts (plan: register calls,
-portable threads, 64-bit-clean game code, own renderer).
+host. The I/O registers are plain host arrays; nothing is mapped at the DS's I/O addresses (the SIGSEGV trap
+and the instruction decoding that used to catch missed accesses are gone since 2026-10-08: they had caught none
+in the play and save/continue scripts).
 
 Threads switch stacks with `coro_switch.S` (i386, x86-64, arm64; `coro.h`), not `ucontext`. Interrupts are
-delivered at register accesses, when the game enables interrupts, halts or waits - no signal is needed for that.
-Two signal-based pieces remain, Linux-only safety nets: the fault handler (a register access the rewrite missed)
-and the hang guard (SIGALRM: the game spinning on memory for 100 ms without virtual time moving; it reports the
-site, and hasn't fired in testing). With them idle, runs are exactly repeatable (same screenshots and sound).
+delivered only at safe points: register accesses, and when the game enables interrupts, halts or waits. No signal
+is involved in running the game (docs/portability.md phase 1): the integer divisions with a variable divisor go
+through `DS_DIV` / `DS_MOD` (`include/ds_div.h`, the DS's results for a zero divisor; `tools/host_div_rewrite.py`),
+so a hardware divide error is a crash. A watchdog thread reports (only reports) when virtual time stands still
+for 2 s of real time - the game spinning on memory without a register access or a wait, which would want an
+explicit wait at that site; none is known (`ACWW_WATCHDOG=<ms>`, 0 = off). Runs are exactly repeatable (same
+screenshots and sound). The debugging aids that use POSIX signals (crash report, the SIGINT dump, `ACWW_PROFILE`,
+`ACWW_WATCH`) are in `debug_posix.c` behind `HOST_DEBUG_POSIX` (on by default except on Windows).
 
 Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
 viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
@@ -118,19 +122,20 @@ that scripted runs stay reproducible; `ACWW_RTC=host` gives them the local time)
 `ACWW_FAST=1` (not paced to 60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
 `ACWW_WAV=file.wav` (the sound, also headless; ACWW_KEYS masks are hex KEYINPUT bits: 1 A, 2 B, 8 Start, 10 Right,
 20 Left, 40 Up, 80 Down, 400 X, 800 Y), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
-`ACWW_IOHIST` (register accesses by address and code, to `acww_iohist.txt`), `ACWW_POSLOG=<n>` (the local player's
-position every n frames: for writing input scripts that walk somewhere), `ACWW_NOEMULATE` (single-step every
-access), `ACWW_WATCH=addr:len`, `ACWW_PROFILE`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
+`ACWW_IOHIST` (register accesses by address and calling code, to `acww_iohist.txt`; written at exit, on SIGINT and
+at `ACWW_EXIT_FRAME`), `ACWW_POSLOG=<n>` (the local player's
+position every n frames: for writing input scripts that walk somewhere), `ACWW_WATCH=addr:len` (x86 Linux),
+`ACWW_PROFILE` (to `acww_profile.txt`, at the same points as `ACWW_IOHIST`), `ACWW_WATCHDOG`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
 `ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the viewer's audio
 device, underruns).
 
 The runtime (`modern/host/`):
 
-- `hw.c`: the memory map; the I/O pages trapped: the handler decodes the faulting instruction and carries out the
-  plain moves itself (nearly all accesses), anything else is single-stepped with the trap flag (the register
-  prepared before, the written value handled after); virtual time (scanlines, timers, VBlank), DMA, the
-  divider and square root; interrupts injected into the interrupted game code (`irq_entry.S`) like an IRQ
-  exception, after I/O accesses and when the game spins on memory; 60 Hz pacing.
+- `hw.c`: the memory map; the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
+  virtual time (scanlines, timers, VBlank), DMA, the divider and square root; interrupts taken after register
+  accesses; 60 Hz pacing; the watchdog.
+- `plat.h`, `plat_posix.c`, `plat_win32.c`: monotonic time, sleeping until a deadline, a background thread.
+- `debug_posix.c`: the signal-based debugging aids (`HOST_DEBUG_POSIX`).
 - `vram.c`: VRAM banking with mmap (each VRAMCNT change remaps the banks into the CPU's windows).
 - `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
 - `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
@@ -280,8 +285,7 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   three-byte locals (on x86-64 the fourth hit a saved register).
 - ARM idioms that don't carry over: an empty function's "result" is its first argument (still in r0 on the DS).
 
-Debugging: gdb works directly (`handle SIGALRM nostop noprint pass`, and `handle SIGFPE nostop noprint pass`: the
-division by zero emulation); SIGINT prints every game thread's backtrace. Most crashes so far were heap blocks
+Debugging: gdb works directly (no signals to pass through any more); SIGINT prints every game thread's backtrace. Most crashes so far were heap blocks
 overwritten past their end: walk the heap's free list at the crash, then watch the damaged block header from
 `Main_Init` on to find the writer. Comparing with the i386 build: `ACWW_STATS=<frames>` (display registers, VRAM bank
 contents, 3D command and register access counts per interval), `ACWW_VRAMDUMP=<frame>:<file>` (VRAM banks, palettes,

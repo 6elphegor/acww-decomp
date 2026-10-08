@@ -17,9 +17,28 @@ void host_unimplemented(const char *what);
 extern int gHostVerbose;
 extern const char *gHostRomPath;
 
+// HOST_DEBUG_POSIX: the debugging aids built on POSIX signals (debug_posix.c: crash report, SIGINT dump,
+// ACWW_PROFILE, ACWW_WATCH). On by default on POSIX systems; nothing else depends on them.
+#ifndef HOST_DEBUG_POSIX
+#if defined(_WIN32)
+#define HOST_DEBUG_POSIX 0
+#else
+#define HOST_DEBUG_POSIX 1
+#endif
+#endif
+
 // hw.c: memory map, I/O registers, time, DMA
 void host_map_memory(void);
-u8 *host_io(u32 addr);                 // the host's writable view of an I/O register
+u8 *host_io(u32 addr);                 // an I/O register (the register model's storage)
+// the game's register accesses (include/nitro/io_access.h): the register's address as a pointer-sized number
+unsigned long long HostIo_Read(uintptr_t addr, unsigned int size);
+unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long long value);
+void host_io_ring_dump(void);          // the last register accesses (stderr)
+void host_exit_dumps(void);            // the reports written at exit (ACWW_IOHIST, ACWW_PROFILE)
+
+// debug_posix.c (empty without HOST_DEBUG_POSIX)
+void host_debug_init(void);
+void host_debug_exit_dumps(void);
 u32 host_irq_pending(void);            // IE & IF when IME is set
 void host_irq_ack(u32 mask);
 void host_irq_raise(u32 mask);

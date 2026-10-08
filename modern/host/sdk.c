@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "ds_div.h"
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -30,13 +32,14 @@ u32 OS_GetDTCMAddress(void) { return 0x027e0000; }
 
 // ---- MI: fills and copies (sizes in bytes; the 16/32-bit versions move whole units). A register on either side
 // (the 3D command FIFO, the matrix results, a DMA's registers) goes through the register model, unit by unit.
-unsigned long long HostIo_Read(unsigned int addr, unsigned int size);
-unsigned long long HostIo_Write(unsigned int addr, unsigned int size, unsigned long long value);
-static int is_reg(const volatile void *p) { u32 a = (u32)(uintptr_t)p; return a >= 0x04000000 && a < 0x05000000; }
+unsigned long long HostIo_Read(uintptr_t addr, unsigned int size);
+unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long long value);
+// (the whole pointer: a host pointer above 4 GB whose low word falls in the register range isn't a register)
+static int is_reg(const volatile void *p) { uintptr_t a = (uintptr_t)p; return a >= 0x04000000 && a < 0x05000000; }
 static void units(const volatile void *src, volatile void *dst, u32 n, u32 size, int fill, u32 v, int fixed_dst) {
-    u32 s = (u32)(uintptr_t)src, d = (u32)(uintptr_t)dst;
+    uintptr_t s = (uintptr_t)src, d = (uintptr_t)dst;
     for (n /= size; n--; d += fixed_dst ? 0 : size) {
-        u32 x = fill ? v : is_reg(src) ? (u32)HostIo_Read(s, size) : size == 2 ? *(const volatile u16 *)(uintptr_t)s : *(const volatile u32 *)(uintptr_t)s;
+        u32 x = fill ? v : is_reg(src) ? (u32)HostIo_Read(s, size) : size == 2 ? *(const volatile u16 *)s : *(const volatile u32 *)s;
         if (!fill) s += size;
         if (is_reg(dst)) HostIo_Write(d, size, x);
         else if (size == 2) *(volatile u16 *)(uintptr_t)d = (u16)x;
@@ -196,8 +199,9 @@ u32 _fflt(s32 a) { return u_of((float)a); }
 double _f2d(u32 a) { return (double)f_of(a); }
 double _dsqrt(double x) { return __builtin_sqrt(x); }
 s64 _ll_mul(s64 a, s64 b) { return a * b; }
-s32 _s32_div_f(s32 a, s32 b) { return b ? a / b : 0; }
-u32 _u32_div_f(u32 a, u32 b) { return b ? a / b : 0; }
+// (the quotient only: the callers by name use r0; a / 0 = a as on the DS)
+s32 _s32_div_f(s32 a, s32 b) { return DS_DIV(a, b); }
+u32 _u32_div_f(u32 a, u32 b) { return DS_UDIV(a, b); }
 
 // ---- waits
 void OS_SpinWait(u32 n) { (void)n; }

@@ -32,6 +32,10 @@ parser.add_argument("--extra-cflags", default="",
                          "use with --suffix)")
 parser.add_argument("--suffix", default="",
                     help="a separate build: build_host64<suffix>.ninja, build/host64<suffix>_<v>")
+parser.add_argument("--strict-c", action="store_true",
+                    help="the game's C units with -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast (and without "
+                         "-w, which would hide them): every pointer kept in an integer is an error (docs/portability.md "
+                         "0.3; meant for the x86-64 build, with --suffix)")
 parser.add_argument("--regen-gen", action="store_true",
                     help="regenerate modern/gen/ from the DS builds' outputs (build/usa/delinks, build/modern_usa/arm9.ld)")
 parser.add_argument("version", nargs="?", default="usa")
@@ -54,15 +58,12 @@ GAME_FLAGS = " ".join([
 C_FLAGS = "-std=gnu11"
 CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit "
              "-fno-sized-deallocation")
-if X64:
-    # no red zone: hw.c's interrupt injection pushes a return address just below the game's stack pointer
-    GAME_FLAGS += " -mno-red-zone"
 # every unit with the full class definitions, in both builds: the layout tools (tools/host_view_layout.py) read the
 # types from the 32-bit and the 64-bit debug information (debug information only: the code is the same)
 CXX_FLAGS += " -femit-class-debug-always"
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
-SECTIONS = ("-Wl,--allow-multiple-definition -Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
+SECTIONS = ("-Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
             "-Wl,--section-start=gbss=0x02040000")
 M = args.melonds
 if X64:
@@ -111,7 +112,10 @@ def main():
     os.chdir(root)
     with open(NINJA_FILE, "w") as file:
         n = ninja_syntax.Writer(file)
-        n.rule("cc", f"{args.cc} {GAME_FLAGS} {C_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
+        cc_flags = f"{GAME_FLAGS} {C_FLAGS}"
+        if args.strict_c:
+            cc_flags = cc_flags.replace(" -w ", " ") + " -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast"
+        n.rule("cc", f"{args.cc} {cc_flags} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CC $in")
         n.rule("cxx", f"{args.cc} -x c++ {GAME_FLAGS} {CXX_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CXX $in")
@@ -165,19 +169,10 @@ def main():
         n.rule("dtcmld", f"ld -m {LD_EMU} -r -T $script -o $out $in", description="LD -r $out")
         n.build(str(build / "dtcm.o"), "dtcmld", dtcm_objs, implicit=[str(dtcm_ld)], variables={"script": str(dtcm_ld)})
         game_objs.append(str(build / "dtcm.o"))
-        host_objs = [o for o in objs if o not in game_objs]
+        # (the DTCM units are in dtcm.o: not linked a second time)
+        host_objs = [o for o in objs if o not in game_objs and o not in dtcm_objs]
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
-        # labels around the game's code (hw.c injects interrupts only there): the partial link concatenates .text
-        # in input order
-        for edge in ("start", "end"):
-            asm = build / f"game_text_{edge}.s"
-            asm.write_text(f".text\n.globl host_game_text_{edge}\nhost_game_text_{edge}:\n"
-                           '.section .note.GNU-stack,"",@progbits\n')
-        n.rule("markeras", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
-        n.build(str(build / "game_text_start.o"), "markeras", str(build / "game_text_start.s"))
-        n.build(str(build / "game_text_end.o"), "markeras", str(build / "game_text_end.s"))
-        game_objs = [str(build / "game_text_start.o")] + game_objs + [str(build / "game_text_end.o")]
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
         # thunks for calls to addresses several overlays share (tools/modern_shared.py; ld --wrap in the partial
         # link, where the references are still undefined)
