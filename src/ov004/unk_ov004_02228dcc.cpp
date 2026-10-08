@@ -45,7 +45,7 @@ public:
 
     /* 0x290 */ AnimModel partModels[3];
     /* 0x4b8 */ RoomObjRes partRes[3];
-    /* 0x6a4 */ void *partTex[3]; // the parts' textures: the RoomObjTex_* functions use only RoomObjTex's first member
+    /* 0x6a4 */ RoomObjTexHandle partTex[3]; // the parts' textures (RoomObjTex without its sync byte)
     /* 0x6b0 */ u8 partVisible[3];
     /* 0x6b3 */ u8 pad_6b3;
     /* 0x6b4 */ ModelAnim part1MatAnim;
@@ -61,7 +61,6 @@ extern "C" {
 extern Mtx43 data_021f47e0;
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
-void *RoomObjRes_GetBta(void *, u32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 Mtx43 *SpNpcKatrina_GetJointMtx();  // ov045 (its shared prototype is not generated yet)
 s32 NNS_G3dBindMdlTex(void *, void *);
@@ -270,7 +269,7 @@ extern "C" void TarotProps_Draw() {
 void TarotProps::loadPart(s32 i, void *a, void *b) {
     RoomObjRes *t1 = &partRes[i];
     RoomObjRes_Load(t1, (const char *)a);
-    void **t2 = &partTex[i];
+    RoomObjTexHandle *t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);
     partModels[i].setResource((NNSG3dResMdl *)RoomObjRes_GetModel(t1), 0);
     {
