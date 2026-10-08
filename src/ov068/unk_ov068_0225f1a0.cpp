@@ -86,7 +86,7 @@
 #define HeldToolModel_getModel _ZN13HeldToolModel8getModelEv
 #define HeldToolModel_setAnimSpeed _ZN13HeldToolModel12setAnimSpeedEj
 #define HeldToolModel_getAnimSpeed _ZN13HeldToolModel12getAnimSpeedEv
-#define HeldToolModel_draw _ZN13HeldToolModel4drawEP12Unk_02006d14
+#define HeldToolModel_draw _ZN13HeldToolModel4drawEP8NpcActor
 #define HeldToolModel_release _ZN13HeldToolModel7releaseEv
 #define HeldToolModel_playPitfallClimbOutAnim _ZN13HeldToolModel23playPitfallClimbOutAnimEjj
 #define HeldToolModel_playPitfallStuckAnim _ZN13HeldToolModel20playPitfallStuckAnimEjj
@@ -115,7 +115,7 @@
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
 #define NpcAnimCtrl_setAnimSpeedFixed _ZN11NpcAnimCtrl17setAnimSpeedFixedEh
-#define NpcAnimCtrl_playHoldItemPose _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtPvt
+#define NpcAnimCtrl_playHoldItemPose _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtjt
 #define NpcActionCtrl_requestAct14 _ZN13NpcActionCtrl12requestAct14EiPt
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
@@ -2431,7 +2431,7 @@ BOOL FieldVillager::drawDefault() {
     if (((NpcActor *)(this))->NpcActor::onDraw() == 0) {
         return FALSE;
     }
-    ((HeldToolModel *)((&heldTool)))->draw((Unk_02006d14 *)(this));
+    ((HeldToolModel *)((&heldTool)))->draw(this);
     return TRUE;
 }
 
@@ -5585,7 +5585,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep0(FieldVillager *o) {
         } else if (((*(u32 *)(HOST_AT(o, 0x190, model.curFrame, 0)) << 4) >> 16) < 8) {
             s32 v = ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->getAnimSpeed();
             if (((*(u32 *)(HOST_AT(o, 0x190, model.curFrame, 0)) << 4) >> 16) == 7) {
-                ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), (void *)(0), 7);
+                ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), 0, 7);
             }
             if (v != 0x1000) {
                 v += 0x249;
@@ -5602,7 +5602,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep1(FieldVillager *o) {
     using namespace ns_02260f90;
     if (((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->getAnimId(0) == 0xcd) {
         if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->isActionDone() != 0) {
-            ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), (void *)(0), 7);
+            ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), 0, 7);
             step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
@@ -5822,7 +5822,7 @@ void FieldVillagerAiStates::pitfallStep1(FieldVillager *o) {
             }
             Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x7e8, 0x7f, 0);
             ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->playPitfallHoleAnim(t, 1);
-            ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), (void *)(0x128), 3);
+            ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), 0x128, 3);
             step = 2;
             GroundInfo_Destruct(obj);
         }
@@ -5918,7 +5918,7 @@ void FieldVillagerAiStates::pitfallStep4(FieldVillager *o) {
         if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->isActionDone() != 0) {
             *(u32 *)(HOST_AT(o, 0x4e8, collider.groups, 0)) &= ~2;
             step = 5;
-            ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), (void *)(0), 3);
+            ((NpcAnimCtrl *)(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0)))->playHoldItemPose((NpcActor *)(o), (u16 *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)), 0, 3);
             FieldVillagerAi_ChangeState(this, o, 0);
         }
     }

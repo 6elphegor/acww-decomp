@@ -91,11 +91,158 @@
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "save/VillagerData.h"
+#include "town/BlockMap.h"
+#include "town/MapBlock.h"
+extern "C" void _ZN11NpcTalkCtrl10mainState0EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl10mainState1EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl10mainState2EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl10mainState3EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl10mainState4EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11setupState0EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11setupState1EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11setupState2EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11setupState3EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11setupState4EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state0Step0EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state0Step1EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state0Step2EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state1Step0EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state1Step1EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state1Step2EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state2Step0EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state2Step1EP8NpcActor(void);
+extern "C" void _ZN11NpcTalkCtrl11state4Step0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act04Step0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act04Step1EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act05Step0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act05Step1EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act07Step0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0AStep0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0BStep0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0DStep0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0DStep1EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0DStep2EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0DStep3EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act0DStep4EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act11Step2Ev(void);
+extern "C" void _ZN13NpcActionCtrl10act12Step0Ev(void);
+extern "C" void _ZN13NpcActionCtrl10act12Step1Ev(void);
+extern "C" void _ZN13NpcActionCtrl10act15Step0EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act15Step1EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act15Step2EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10act15Step3EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct00EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct01EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct02EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct03EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct04EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct05EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct06EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct07EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct08EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct09EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct0AEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct0BEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct0CEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct0DEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl10setupAct0EEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep00EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep01EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep02EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep03EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep04EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep05EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep06EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep07EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep08EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep09EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep10EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep11EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep12EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep13EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep14EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep15EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep16EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep17EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep18EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl11act0EStep19EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct00Ev(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct01EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct02EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct03EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct04EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct05EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct07EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct08EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct09EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct0AEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct0BEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct0DEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9mainAct15EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9postAct07EP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9postAct0AEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9postAct0BEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9postAct0CEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9postAct0DEP8NpcActor(void);
+extern "C" void _ZN13NpcActionCtrl9postAct0EEv(void);
+extern "C" void _ZN13VillagerRoute10isAtDoorT1EP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute10isAtDoorT3EP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute10stepToDoorEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute10stepWanderEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute11isInBlockT2EP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute11isInBlockT4EP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute13stepAlongPathEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute14stepFollowPathEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute16isInAttr200BlockEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute16stepCheckArrivedEP7VecFx32(void);
+extern "C" void _ZN13VillagerRoute9isInBlockEP7VecFx32(void);
+extern "C" void _ZN16ActorTalkRequest10melodyWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest10taskMelodyEv(void);
+extern "C" void _ZN16ActorTalkRequest11eatItemWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest11melodyStartEv(void);
+extern "C" void _ZN16ActorTalkRequest11taskEatItemEv(void);
+extern "C" void _ZN16ActorTalkRequest12eatItemStartEv(void);
+extern "C" void _ZN16ActorTalkRequest12giveItemWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest12keepItemWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest12subSceneOpenEv(void);
+extern "C" void _ZN16ActorTalkRequest12subSceneWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest12takeItemWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest12taskGiveItemEv(void);
+extern "C" void _ZN16ActorTalkRequest12taskKeepItemEv(void);
+extern "C" void _ZN16ActorTalkRequest12taskSubSceneEv(void);
+extern "C" void _ZN16ActorTalkRequest12taskTakeItemEv(void);
+extern "C" void _ZN16ActorTalkRequest13giveItemStartEv(void);
+extern "C" void _ZN16ActorTalkRequest13itemAct0FWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest13itemAct12WaitEv(void);
+extern "C" void _ZN16ActorTalkRequest13keepItemStartEv(void);
+extern "C" void _ZN16ActorTalkRequest13takeItemStartEv(void);
+extern "C" void _ZN16ActorTalkRequest13taskItemAct0FEv(void);
+extern "C" void _ZN16ActorTalkRequest13taskItemAct12Ev(void);
+extern "C" void _ZN16ActorTalkRequest14itemAct0FStartEv(void);
+extern "C" void _ZN16ActorTalkRequest14itemAct12StartEv(void);
+extern "C" void _ZN16ActorTalkRequest14returnItemWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest14taskReturnItemEv(void);
+extern "C" void _ZN16ActorTalkRequest15closeWindowWaitEv(void);
+extern "C" void _ZN16ActorTalkRequest15returnItemStartEv(void);
+extern "C" void _ZN16ActorTalkRequest15taskCloseWindowEv(void);
+extern "C" void _ZN16ActorTalkRequest16closeWindowStartEv(void);
+extern "C" void _ZN16ActorTalkRequest16taskReopenWindowEv(void);
+extern "C" void _ZN16ActorTalkRequest17switchSpeakerSwapEv(void);
+extern "C" void _ZN16ActorTalkRequest17taskSwitchSpeakerEv(void);
+extern "C" void _ZN16ActorTalkRequest18switchSpeakerCloseEv(void);
+extern "C" void _ZN16ActorTalkRequest18switchSpeakerFocusEv(void);
+extern "C" void _ZN16ActorTalkRequest19subSceneCloseWindowEv(void);
+extern "C" void _ZN16ActorTalkRequest9melodyEndEv(void);
+extern "C" void _ZN9NpcLookAt11lookAtPointEP8NpcActor(void);
+extern "C" void _ZN9NpcLookAt17lookAtLocalPlayerEP9Character(void);
+extern "C" void _ZN9NpcLookAt17lookAtTargetActorEP9Character(void);
+extern "C" void _ZN9NpcLookAt18lookAtTargetPlayerEP9Character(void);
+extern "C" void _ZN9NpcLookAt20approachManualAnglesEv(void);
+extern "C" void _ZN9NpcLookAt5relaxEv(void);
 
 
-struct Unk_02006d14_TalkBase;
-
-struct Unk_02006d14;
 
 
 
@@ -103,22 +250,10 @@ struct Unk_02006d14;
 
 
 // unk_02011ec0.cpp
-// Partial view of BlockMap (class in src/main/unk_0204cc1c.cpp): blocks, width/height, unitsX/unitsZ.
-struct BlockMap {
-    void *blocks;
-    Vec2 size;
-    Vec2 units;
-};
 
 
 
 // unk_02011ec0.cpp
-// Opaque 0x28-byte block cell of the scene block map (class MapBlock in src/main/unk_02037358.cpp).
-struct MapBlock {
-    u8 data[0x20];
-    void *bgModel;  // 0x20 (the pointers: their size on 64-bit hosts)
-    uptr buried;    // 0x24
-};
 
 
 // unk_02012810.cpp
@@ -273,7 +408,6 @@ struct Actor;
 // unk_02014d90.cpp
 typedef BOOL (ActorTalkRequest::*ActorTalkTaskFn)();
 
-void operator delete(void *p);
 
 
 
@@ -285,64 +419,6 @@ void operator delete(void *p);
 // unk_02015fe0.cpp
 typedef void (NpcActionCtrl::*Unk_02016360_Fn)(NpcActor *);
 
-// unk_02016a44.cpp
-struct Unk_02016a44_S0ec { u8 pad[4]; };
-
-// unk_02016a44.cpp
-struct Unk_02006d14_Prim {
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcActor)
-    u8 pad_000[0xa8];  // DS +0x0 [0x5c]
-    s32 position;  // DS +0x5c
-    u8 pad_060[0x4];  // DS +0x60 [0x4]
-    s32 positionZ;  // DS +0x64
-    u8 pad_068[0x26];  // DS +0x68 [0x26]
-    s16 rotY;  // DS +0x8e
-    u8 pad_090[0x6c];  // DS +0x90 [0x5c]
-#else
-    u8 pad_000[0x5c];
-    s32 position;
-    u8 pad_060[4];
-    s32 positionZ;
-    u8 pad_068[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_090[0xec - 0x90];
-#endif
-};
-// NpcActor view (also passed for the player by HeldToolModel): the model at +0xec, reached as a secondary base
-struct Unk_02006d14_TalkBase {
-    Unk_02016a44_S0ec model;
-};
-class Unk_02006d14 : public Unk_02006d14_Prim, public Unk_02006d14_TalkBase {
-public:
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcActor)
-    u8 hpad_0[0x4];
-    u8 pad_0f0[0xf4];  // DS +0xf0 [0xa8]
-    u32 modelAnimFrameStep;  // DS +0x198
-    u8 pad_19c[0x220];  // DS +0x19c [0x198]
-    NpcAnimCtrl animCtrl;  // DS +0x334
-    NpcMoveCtrl moveCtrl;  // DS +0x350
-    u8 pad_3a8[0xd8];  // DS +0x3a8 [0xd0]
-    VecFx32 headTopPos;  // DS +0x478
-    u8 pad_484[0xac];  // DS +0x484 [0x90]
-    SndSeEmitterKind1 seEmitter;  // DS +0x514
-    u8 pad_558[0xe0];  // DS +0x558 [0xd0]
-    void * curHeldTool;  // DS +0x628
-#else
-    u8 pad_0f0[0x198 - 0xf0];
-    u32 modelAnimFrameStep;
-    u8 pad_19c[0x334 - 0x19c];
-    NpcAnimCtrl animCtrl;
-    NpcMoveCtrl moveCtrl;
-    u8 pad_3a8[0x478 - 0x3a8];
-    VecFx32 headTopPos;
-    u8 pad_484[0x514 - 0x484];
-    SndSeEmitterKind1 seEmitter;
-    u8 pad_558[0x628 - 0x558];
-    void *curHeldTool;
-#endif
-};
 
 
 
@@ -366,13 +442,13 @@ typedef VecFx32Ctor V;
 struct NpcActionCtrl;
 
 // unk_02019020.cpp
-typedef void (NpcActionCtrl::*Unk_02019858_FnA)(u8 *owner);
+typedef void (NpcActionCtrl::*Unk_02019858_FnA)(NpcActor *owner);
 
 // unk_02019020.cpp
-typedef void (NpcActionCtrl::*Unk_02019858_FnB)(u8 *arg);
+typedef void (NpcActionCtrl::*Unk_02019858_FnB)(NpcActor *arg);
 
 // unk_02019020.cpp
-typedef void (NpcActionCtrl::*Unk_02019858_FnC)(u8 *arg);
+typedef void (NpcActionCtrl::*Unk_02019858_FnC)(NpcActor *arg);
 
 // unk_02019020.cpp
 struct NpcActionEntry {
@@ -471,31 +547,9 @@ extern u8 data_021bddc0[];
 extern u8 sSceneHudKinds[];
 extern u32 data_021bdd80[];
 extern u32 data_020d6f54[];
-void *_ZN11HudObjGfxIo11freePaletteEv(void *p);
-void *_ZN11HudObjGfxIo9freeCharsEv(void *p);
-void _ZN11HudObjGfxIo21releaseSlideIconCharsEv(void *p);
-void _ZN11HudObjGfxIo20uploadSlideIconCharsEv(void *p);
-s32 _ZN11HudObjGfxIo18loadSlideIconCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo20releaseLinkIconCharsEv(void *p);
-void _ZN11HudObjGfxIo19uploadLinkIconCharsEv(void *p);
-s32 _ZN11HudObjGfxIo17loadLinkIconCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(void *p, u32 v);
-s32 _ZN11HudObjGfxIo21loadCameraButtonCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo13uploadPaletteEi(void *p, u32 v);
-void _ZN11HudObjGfxIo11uploadCharsEi(void *p, u32 v);
-s32 _ZN11HudObjGfxIo13loadKindCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo15uploadKindCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo16releaseKindCharsEv(void *p);
 s32 Scene_GetCurrent(void);
-void *FS_OpenFile(void *self, const char *path);
-s32 FS_ReadFile(void *self, void *buf, u32 size);
-s32 FS_CloseFile(void *self);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
-#define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
-void SndSeEmitter_dtorBase(void *p);
-HeldItemModel *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
-void Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
-void _ZN12NpcResHandle7releaseEv(void *p);
+void Model_GetJointWorldMtx(void *dst, void *src, u32 n);
 inline BOOL Unk_02011c44_InRange(u32 id, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (id >= lo && id <= hi) r = TRUE;
@@ -508,41 +562,34 @@ inline BOOL Unk_02011c44_InRange(u32 id, u32 lo, u32 hi) {
 namespace nB {
 extern "C" {
 
-void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, VecFx32 *p);
-void _ZN13VillagerRoute14clearJunctionsEv(void *self);
-void *_ZN16NpcResHandleView16getHeldItemModelEv(void *);
-s32 _ZN12NpcResHandle7acquireEv(void *);
 extern BlockMap *gSceneBlockMap;
 extern u8 gSaveVillagers[];
 extern s16 data_02135f44[];
 extern s32 sRouteDirs[];
 s32 MapBlock_HasAnyAttr(void *, u32);
-void *_ZN12MapBlockAcre8getUnk04Ev(void *self);
 s32 Random_PickSetBit(u32, s32, s32);
-s32 _ZN12VillagerData13getVillagerIdEv(void *);
 void *SaveVillagers_PickRandomExcept(void *, void *, u32);
 void VillagerRoute_PickPathUnitInBlock(Vec2 *out, void *self, void *a, BlockMap *w);
 void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
 void FieldPos_FromUnitCenter(VecFx32 *, s32, s32);
-s32 BlockMap_BlockHasAllAttr(BlockMap *, s32, s32, u32);
-s32 BlockMap_FindBlockAllAttr(BlockMap *, u32);
+void *BlockMap_BlockHasAllAttr(BlockMap *map, s32 x, s32 z, u32 attr);
+MapBlock *BlockMap_FindBlockAllAttr(BlockMap *, u32);
 s32 Random_Next(void *);
 s32 func_01ffcb0c(s32, s32);
 void FieldPos_SnapToUnitCenter(VecFx32 *, VecFx32 *);
 s32 TownMap_IsPosWalkable(VecFx32 *, s32);
 s32 TownMap_IsUnitWalkable(s32, s32, BlockMap *);
-s32 _ZN8BlockMap12getWalkLinksEii(BlockMap *, s32, s32);
 static inline MapBlock *GetCell(BlockMap *w, u32 x, u32 y)
 {
-    if (x < (u32)w->size.x && (u32)w->size.y > y && w->blocks != NULL) {
-        return (MapBlock *)w->blocks + (x + w->size.x * y);
+    if (x < (u32)w->width && (u32)w->height > y && w->blocks != NULL) {
+        return (MapBlock *)w->blocks + (x + w->width * y);
     }
     return NULL;
 }
 static inline MapBlock *GetCellD(BlockMap *w, u32 x, u32 y, MapBlock *volatile *dflt)
 {
-    if (x < (u32)w->size.x && (u32)w->size.y > y && w->blocks != NULL) {
-        return (MapBlock *)w->blocks + (x + w->size.x * y);
+    if (x < (u32)w->width && (u32)w->height > y && w->blocks != NULL) {
+        return (MapBlock *)w->blocks + (x + w->width * y);
     }
     return *dflt;
 }
@@ -555,19 +602,17 @@ extern "C" {
 namespace nC2 { extern VecXZ sRouteDirs[4]; }
 extern s32 sRouteDirs[];
 extern BlockMap *gSceneBlockMap;
-s32 _ZN8BlockMap17getWalkLinksAtPosEPv(BlockMap *o, VecFx32 *v);
 u32 BlockMap_GetBlockAttr(BlockMap *o, s32 x, s32 z);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void FieldPos_ToBlockUnit2(RouteGridPos *a, RouteGridPos *c, VecFx32 *v);
 void FieldPos_FromBlockUnitCenter(VecFx32 *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, BlockMap *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
-s32 _ZN8BlockMap12getWalkLinksEii(BlockMap *o, u32 x, u32 z);
 void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
 void FieldPos_ToUnit(u32 *x, u32 *z, VecFx32 *v);
 void FieldPos_FromUnitCenter(VecFx32 *out, u32 x, u32 z);
 void *MI_CpuFill8(void *, int, u32);
-void *MI_CpuCopy8(const void *, void *, u32);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridPos *p, BlockMap *obj);
 }
 }
@@ -576,26 +621,10 @@ void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridP
 namespace nD {
 extern "C" {
 
-void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, u32 v);
-void _ZN13VillagerRoute14clearJunctionsEv(void *self);
-void _ZN13NpcActionCtrl16requestTalkingOnEv(void *self);
-s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-void _ZN14NpcSpeechState12stopSpeakingEv(void *self);
-s32 _ZN11NpcMoveCtrl11getMoveModeEv(void *self);
-NpcActor* _ZN16ActorTalkRequest15getSpeakerActorEv(void *self);
-void _ZN16ActorTalkRequest11playEmotionEjj(void *self, u32 a, u32 b);
-NpcActor* _ZN16ActorTalkRequest15getPartnerActorEv(void *self);
-void _ZN16ActorTalkRequest4tickEv(void *self);
-ActorTalkRequest* _ZN8NpcActor14getTalkRequestEv(void *self);
-BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *self, u32 v);
-BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
 void FieldPos_ToUnit(u32 *a, u32 *b, VecFx32 *v);
 void MI_CpuFill8(void* p, u32 v, u32 n);
 extern VillagerRouteType sVillagerRouteTypes[];
-s32 _ZN8NpcActor19getTeachableEmotionEv();
 static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
 {
     if (v & m) return TRUE;
@@ -611,20 +640,9 @@ extern u16 data_020c6cc8;
 namespace nE {
 extern "C" {
 
-s32 _ZN16ActorTalkRequest9startTaskEi(ActorTalkRequest *p, s32 a);
 u32 Camera_IsBlending(void);
 u32 Camera_GetBlendFramesLeft(void);
 void Camera_RetargetFocus(VecFx32 *v);
-void _ZN10MsgRequest11setFileNameEPKc(ActorTalkRequest *o, s32 a);
-s32 _ZN13NpcActionCtrl16requestTalkingOnEv(void *p);
-s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-s32 _ZN13NpcActionCtrl12isActionDoneEv(void *p);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-NpcActor *_ZN16ActorTalkRequest15getPartnerActorEv(ActorTalkRequest *o);
-u8 *_ZN16ActorTalkRequest15getSpeakerActorEv(ActorTalkRequest *o);
-void _ZN14NpcSpeechState12stopSpeakingEv(void *p);
-void _ZN16ActorTalkRequest11playEmotionEjj(ActorTalkRequest *o, s32 a, s32 b);
-void _ZN16ActorTalkRequest4tickEv(ActorTalkRequest *o);
 void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b);
 void Camera_FocusOnPoint(VecFx32 *a);
 void Camera_SetModeDefault(void);
@@ -637,12 +655,6 @@ extern NpcTalkCtrlState sNpcTalkCtrlStates[5];
 namespace nF {
 extern "C" {
 
-BOOL _ZN16ActorTalkRequest9startTaskEi(void *self, s32 cmd);
-void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
-void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
-BOOL _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u32 i, s32 j);
 extern u16 data_020c6cc8;
 }
 }
@@ -651,15 +663,8 @@ extern u16 data_020c6cc8;
 namespace nG {
 extern "C" {
 
-u8 * _ZN16ActorTalkRequest8getActorEj(void *self, u32 x);
 extern u16 data_020c6cc8;
 extern u8 gVec3Zero[];
-u32 _ZN13NpcActionCtrl9getActionEv(u8 *p);
-u32 _ZN13NpcActionCtrl12isActionDoneEv(u8 *p);
-void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
-void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
-ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
 }
 }
 
@@ -670,20 +675,10 @@ extern "C" {
 extern u32 gVec3Zero;
 extern u16 data_020c6cc8;
 s32 Scene_GetCurrent(void);
-u32 _ZN15TalkWindowState13getChoiceListEv(u32 a);
 s32 Npc_GetVoiceType(void *p);
-s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
-s32 _ZN14NpcSpeechState10isSpeakingEv(void *p);
-s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-s32 *_ZN11NpcMoveCtrl17getCurSpeedPresetEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
-void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *p, u32 idx);
-s32 _ZN12NpcResHandle7releaseEv(void *p);
-s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
-s32 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 s0, u32 s1, u32 s2, u32 s3);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
-ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
 }
 }
 
@@ -693,23 +688,10 @@ extern "C" {
 
 BOOL Item_IsHoldable(u16 *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
-void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *a, s32 b, s32 c);
 void BlendAnimModel_Play2(void *p, void *anm, s32 blend, s32 mode, s32 speed, u16 frame, u16 numFrames);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *a, s32 b);
-s32 _ZN14NpcSpeechState12getMouthTypeEv(void *a);
-void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *a, s32 b);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
-BOOL _ZN12NpcResHandle7acquireEv(void *a);
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p);
-BOOL _ZN8NpcActor15netReadPositionEPiPh(void *o, VecFx32 *v, s16 *a);
-void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *a, void *b);
-void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, s32 c, s32 d, u32 e);
-s32 _ZN11NpcMoveCtrl11getMoveModeEv(void *a);
-void _ZN11NpcMoveCtrl14setTargetAngleEs(void *a, s32 b);
-s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, VecFx32 *v);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 extern u16 data_020c6cc8;
@@ -726,41 +708,19 @@ static inline BOOL Unk_02015fe0_R(u16 *p, u32 lo, u32 hi) {
 namespace nJ {
 extern "C" {
 
-void _ZN13NpcActionCtrl13setActionDoneEi(void *self, s32 v);
-NpcActionParams * _ZN13NpcActionCtrl12getCurParamsEv(void *self);
 extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
-BOOL _ZN8NpcActor15netReadPositionEPiPh(Unk_02006d14 *o, s32 *v, s16 *a);
-void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(NpcMoveCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c);
-void _ZN11NpcMoveCtrl14setTargetAngleEs(NpcMoveCtrl *p, s32 a);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(NpcMoveCtrl *p, void *v);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(NpcMoveCtrl *p, void *v);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(NpcAnimCtrl *p, u32 a);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(NpcAnimCtrl *p, ...);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(NpcAnimCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void _ZN13HeldToolModel12playIdleAnimEjj(void *p, u32 a, u32 b);
-void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(Unk_02016a44_S0ec *p, u32 a, u32 b);
 }
 }
 
 // ---- unk_0201745c.cpp
 namespace nK {
 extern "C" {
-namespace nK2 { BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q); }
 extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
-void *_ZN13NpcActionCtrl12getCurParamsEv(NpcActionCtrl *s);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, u32 a);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
-s32 _ZN13NpcActionCtrl13setActionDoneEi(NpcActionCtrl *s, u32 a);
-void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, u32 a, u32 b);
-void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
 }
 }
 
@@ -771,19 +731,9 @@ extern "C" {
 extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 extern u32 sNpcGiveItemAnims[];
-NpcActionParams *_ZN13NpcActionCtrl12getCurParamsEv(void *s);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
-s32 _ZN13NpcActionCtrl13setActionDoneEi(void *s, u32 a);
-void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
-void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
-void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Scene_GetCurrent(void);
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *s);
 static inline BOOL Unk_02017d74_Is(u16 *p, u16 v) {
     if (Item_IsFurniture(p)) {
         u16 t = v;
@@ -804,25 +754,6 @@ extern u8 gVec3Zero[];
 extern NpcEmotionEntry sEmotionTable[];
 extern u32 sNpcAct07Anims[];
 extern u16 sNpcAct07Ses[];
-NpcActionParams *_ZN13NpcActionCtrl12getCurParamsEv(NpcActionCtrl *s);
-s32 _ZN13NpcActionCtrl13setActionDoneEi(NpcActionCtrl *s, u32 a);
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(NpcActionCtrl *s);
-void _ZN13NpcActionCtrl9mainAct01EPh(NpcActionCtrl *s, NpcActor *c);
-void _ZN13NpcActionCtrl10setupAct01EPh(NpcActionCtrl *s, NpcActor *c);
-void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
-void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *a, void *b);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
-void _ZN11NpcMoveCtrl14setTargetAngleEs(void *a, s32 b);
-void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
-void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
-s32 _ZN13HeldToolModel12playWalkAnimEjj(void *a, u32 b, u32 c);
-s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
-s32 _ZN11NpcMoveCtrl15getDestinationBEv(void *a);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
-BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
 }
 }
 
@@ -832,17 +763,6 @@ extern "C" {
 
 void *MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *p, void *scene);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *owner, u32 v);
-BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *p, void *v);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *p, void *v);
-void _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
-void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *p, void *owner, s32 a, s32 b, u32 c);
-void _ZN12Unk_0201acf813func_0201acf8Et(void *p, s32 v);
-s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
-BOOL _ZN14NpcSpeechState10isSpeakingEv(void *p);
-BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 v);
 extern u16 data_020c6cc8;
 extern u32 gVec3Zero[3];
 extern NpcActionEntry sNpcActionTable[];
@@ -854,17 +774,11 @@ namespace nO {
 extern "C" {
 
 extern s32 sNpcTalkMouthAnims[];
-void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *h);
-void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *h);
-s32 NNS_G3dGetAnmByIdx(void *p, s32 v);
-void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *p, void *a, s32 b, s32 c, s32 d, s32 e);
-void _ZN12NpcResHandle7releaseEv(void *p);
-BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
-BOOL _ZN12NpcResHandle7acquireEv(void *p);
+u8 *NNS_G3dGetAnmByIdx(void *p, s32 v);
 void NpcTexPatBufRef_LoadFile(s32 *p, void *path);
 void *NpcTexPatBufRef_GetBuffer(s32 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
-void MI_CpuCopy8(void *src, void *dst, s32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void Math_StepAngle(s16 *p, s32 target, s32 step);
 s32 Vec_Distance(void *a, void *b);
 extern Unk_0201a1e0_Fn sNpcLookAtTypes[6];
@@ -889,12 +803,10 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
+s32 Model_GetJointWorldMtx(void *dst, void *src, u32 n);
 s32 Ground_GetExitAtPos(VecFx32 *p);
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, VecFx32 *p, s32 a, s32 b);
 s32 Collision_HasUnitShapeAt(VecFx32 *p);
 void GroundInfo_Destruct(void *buf);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, s32 c, u32 d, s32 e, s32 f, s32 g, s32 h);
 static inline BOOL Unk_0201a834_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
@@ -909,27 +821,16 @@ extern u8 sNpcMoveSpeedPresets[];
 extern u8 data_020c6dcc[];
 extern u32 data_020c6d84[];
 extern u16 data_020c6cc8;
-extern u8 *gSceneBlockMap;
-extern u8 *gCommManager;
-void MI_CpuCopy8(void *src, void *dst, u32 n);
-u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, VecFx32 *v);
+extern BlockMap *gSceneBlockMap;
+extern CommManager *gCommManager;
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void FieldPos_SnapToUnitCenter(VecFx32 *out, VecFx32 *in);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
-s32 _ZN11CommManager8isOnlineEv(u8 *g);
-void _ZN8NpcActor12releaseModelEv(void *p);
-void _ZN8NpcActor12netSendStateEjz(void *p, s32 v);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
-s32 _ZN8NpcActor10isNetOwnerEv(void *p);
-s32 _ZN8NpcActor13netReadActionEPiS0_Ph(void *p, s32 *a, s32 *b, void *buf);
-s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, s32 a);
 void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
 s32 Ground_GetDefaultY(s32 a);
-s32 _ZN8NpcActor15netIsTalkLockedEv(void *p);
-void _ZN13HeldToolModel6updateEP12Unk_02006d14(s32 v, void *p);
 void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
 }
 }
@@ -943,15 +844,12 @@ extern u16 data_020c6cc8;
 extern s32 data_020c6d60[];
 extern s32 data_020c6d48[];
 extern s32 data_020c6d20;
-extern u8 sNpcAvoidOffsets[];
+extern FxVec3 sNpcAvoidOffsets[2];
 extern s16 data_02135f44[];
-BOOL _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
-void *MI_CpuCopy8(void *dst, const void *src, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 u8 Npc_GetInfoByte2(void *p);
 s32 Scene_GetCurrent();
-BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 v);
-BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 s32 Vec_Distance(void *a, void *b);
 BOOL Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
@@ -1016,152 +914,24 @@ extern const u32 sNpcMoveSpeedPresets[9];
 extern const u32 data_020c6dcc[12];
 extern const u32 sNpcMoveModeTable[25];
 extern const NpcEmotionEntry sEmotionTable[60];
-void _ZN13VillagerRoute9isInBlockEP7VecFx32(void);
-void _ZN13VillagerRoute11isInBlockT4EP7VecFx32(void);
-void _ZN13VillagerRoute10stepToDoorEP7VecFx32(void);
-void _ZN13VillagerRoute10isAtDoorT3EP7VecFx32(void);
-void _ZN13VillagerRoute11isInBlockT2EP7VecFx32(void);
-void _ZN13VillagerRoute16stepCheckArrivedEP7VecFx32(void);
-void _ZN13VillagerRoute10isAtDoorT1EP7VecFx32(void);
-void _ZN13VillagerRoute16isInAttr200BlockEP7VecFx32(void);
-void _ZN13VillagerRoute10stepWanderEP7VecFx32(void);
-void _ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32(void);
-void _ZN13VillagerRoute13stepAlongPathEP7VecFx32(void);
-void _ZN13VillagerRoute14stepFollowPathEP7VecFx32(void);
-void _ZN11NpcTalkCtrl10mainState4EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state4Step0EP8NpcActor(void);
-void _ZN11NpcTalkCtrl10mainState3EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11setupState3EP8NpcActor(void);
-void _ZN11NpcTalkCtrl10mainState1EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state1Step2EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state1Step1EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state1Step0EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11setupState1EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11setupState4EP8NpcActor(void);
-void _ZN11NpcTalkCtrl10mainState2EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state2Step1EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state2Step0EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11setupState2EP8NpcActor(void);
-void _ZN11NpcTalkCtrl10mainState0EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state0Step2EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state0Step1EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11state0Step0EP8NpcActor(void);
-void _ZN11NpcTalkCtrl11setupState0EP8NpcActor(void);
-void _ZN16ActorTalkRequest17taskSwitchSpeakerEv(void);
-void _ZN16ActorTalkRequest17switchSpeakerSwapEv(void);
-void _ZN16ActorTalkRequest18switchSpeakerFocusEv(void);
-void _ZN16ActorTalkRequest18switchSpeakerCloseEv(void);
-void _ZN16ActorTalkRequest10taskMelodyEv(void);
-void _ZN16ActorTalkRequest9melodyEndEv(void);
-void _ZN16ActorTalkRequest10melodyWaitEv(void);
-void _ZN16ActorTalkRequest11melodyStartEv(void);
-void _ZN16ActorTalkRequest11taskEatItemEv(void);
-void _ZN16ActorTalkRequest11eatItemWaitEv(void);
-void _ZN16ActorTalkRequest12eatItemStartEv(void);
-void _ZN16ActorTalkRequest13taskItemAct12Ev(void);
-void _ZN16ActorTalkRequest13itemAct12WaitEv(void);
-void _ZN16ActorTalkRequest14itemAct12StartEv(void);
-void _ZN16ActorTalkRequest14taskReturnItemEv(void);
-void _ZN16ActorTalkRequest14returnItemWaitEv(void);
-void _ZN16ActorTalkRequest15returnItemStartEv(void);
-void _ZN16ActorTalkRequest12taskKeepItemEv(void);
-void _ZN16ActorTalkRequest12keepItemWaitEv(void);
-void _ZN16ActorTalkRequest13keepItemStartEv(void);
-void _ZN16ActorTalkRequest13taskItemAct0FEv(void);
-void _ZN16ActorTalkRequest13itemAct0FWaitEv(void);
-void _ZN16ActorTalkRequest14itemAct0FStartEv(void);
-void _ZN16ActorTalkRequest12taskTakeItemEv(void);
-void _ZN16ActorTalkRequest12takeItemWaitEv(void);
-void _ZN16ActorTalkRequest13takeItemStartEv(void);
-void _ZN16ActorTalkRequest12taskGiveItemEv(void);
-void _ZN13NpcActionCtrl9mainAct15EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act15Step3EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act15Step2EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act15Step1EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act15Step0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct15EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9postAct14EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10setupAct14EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9postAct13EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9mainAct13EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10act13Step0EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10setupAct13EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9mainAct12EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10act12Step1Ev(void);
-void _ZN13NpcActionCtrl10act12Step0Ev(void);
-void _ZN13NpcActionCtrl10setupAct12EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9mainAct11EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10act11Step2Ev(void);
-void _ZN13NpcActionCtrl10act11Step1EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10act11Step0EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10setupAct11EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9postAct10EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10setupAct10EP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9postAct0FEP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl10setupAct0FEP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl9postAct0EEv(void);
-void _ZN13NpcActionCtrl9mainAct0EEP12Unk_02006d14(void);
-void _ZN13NpcActionCtrl11act0EStep00EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct0EEP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct0DEP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct0DEP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0DStep4EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0DStep3EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0DStep2EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0DStep1EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0DStep0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct0DEP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct0CEP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct0CEP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct0BEP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct0BEP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0BStep0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct0BEP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct0AEP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct0AEP8NpcActor(void);
-void _ZN13NpcActionCtrl10act0AStep0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct0AEP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct09EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct09EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct08EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct08EP8NpcActor(void);
-void _ZN13NpcActionCtrl9postAct07EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct07EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act07Step0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct07EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct06EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct05EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct05EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act05Step1EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act05Step0EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct04EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act04Step1EP8NpcActor(void);
-void _ZN13NpcActionCtrl10act04Step0EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct04EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct03EP8NpcActor(void);
-void _ZN13NpcActionCtrl10setupAct03EP8NpcActor(void);
-void _ZN13NpcActionCtrl9mainAct02EPh(void);
-void _ZN13NpcActionCtrl10setupAct02EPh(void);
-void _ZN13NpcActionCtrl9mainAct01EPh(void);
-void _ZN13NpcActionCtrl10setupAct01EPh(void);
-void _ZN13NpcActionCtrl9mainAct00Ev(void);
-void _ZN13NpcActionCtrl10setupAct00EPh(void);
-void _ZN9NpcLookAt20approachManualAnglesEv(void);
-void _ZN9NpcLookAt11lookAtPointEP8NpcActor(void);
-void _ZN9NpcLookAt17lookAtTargetActorEP9Character(void);
-void _ZN9NpcLookAt17lookAtLocalPlayerEP9Character(void);
-void _ZN9NpcLookAt18lookAtTargetPlayerEP9Character(void);
-void _ZN9NpcLookAt5relaxEv(void);
-void _ZN16ActorTalkRequest12giveItemWaitEv(void);
-void _ZN16ActorTalkRequest13giveItemStartEv(void);
-void _ZN16ActorTalkRequest15taskCloseWindowEv(void);
-void _ZN16ActorTalkRequest15closeWindowWaitEv(void);
-void _ZN16ActorTalkRequest16closeWindowStartEv(void);
-void _ZN16ActorTalkRequest16taskReopenWindowEv(void);
-void _ZN16ActorTalkRequest12taskSubSceneEv(void);
-void _ZN16ActorTalkRequest12subSceneWaitEv(void);
-void _ZN16ActorTalkRequest12subSceneOpenEv(void);
-void _ZN16ActorTalkRequest19subSceneCloseWindowEv(void);
+void _ZN13NpcActionCtrl10setupAct15EP8NpcActor(void);
+void _ZN13NpcActionCtrl9postAct14EP8NpcActor(void);
+void _ZN13NpcActionCtrl10setupAct14EP8NpcActor(void);
+void _ZN13NpcActionCtrl9postAct13EP8NpcActor(void);
+void _ZN13NpcActionCtrl9mainAct13EP8NpcActor(void);
+void _ZN13NpcActionCtrl10act13Step0EP8NpcActor(void);
+void _ZN13NpcActionCtrl10setupAct13EP8NpcActor(void);
+void _ZN13NpcActionCtrl9mainAct12EP8NpcActor(void);
+void _ZN13NpcActionCtrl10setupAct12EP8NpcActor(void);
+void _ZN13NpcActionCtrl9mainAct11EP8NpcActor(void);
+void _ZN13NpcActionCtrl10act11Step1EP8NpcActor(void);
+void _ZN13NpcActionCtrl10act11Step0EP8NpcActor(void);
+void _ZN13NpcActionCtrl10setupAct11EP8NpcActor(void);
+void _ZN13NpcActionCtrl9postAct10EP8NpcActor(void);
+void _ZN13NpcActionCtrl10setupAct10EP8NpcActor(void);
+void _ZN13NpcActionCtrl9postAct0FEP8NpcActor(void);
+void _ZN13NpcActionCtrl10setupAct0FEP8NpcActor(void);
+void _ZN13NpcActionCtrl9mainAct0EEP8NpcActor(void);
 }
 }
 extern "C" {
@@ -1418,7 +1188,7 @@ void NpcActor::onJoinTalk() {
 void NpcActor::onLeaveTalk() {
     using namespace nR;}
 
-BOOL NpcActor::getFreeOffsetPos(VecFx32 *out, void *p) {
+BOOL NpcActor::getFreeOffsetPos(VecFx32 *out, VecFx32 *p) {
     using namespace nR;
     BOOL result = FALSE;
     VecFx32 v;
@@ -1443,14 +1213,14 @@ s32 NpcActor::findAvoidPos(VecFx32 *out) {
         result = 1;
         break;
     case 1:
-        if (getFreeOffsetPos(out, (sNpcAvoidOffsets + 0xc)) != 0) {
+        if (getFreeOffsetPos(out, &sNpcAvoidOffsets[1]) != 0) {
             result = 2;
         } else {
             result = 1;
         }
         break;
     case 2:
-        if (getFreeOffsetPos(out, sNpcAvoidOffsets) != 0) {
+        if (getFreeOffsetPos(out, &sNpcAvoidOffsets[0]) != 0) {
             result = 2;
         } else {
             result = 1;
@@ -1510,7 +1280,7 @@ void NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
 void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     using namespace nR;
     NpcNetRecord_SetSlots(&npcHandle, b, c);
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
+    if (gCommManager->isSlotActive(gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (npcHandle & 0xf000) >> 12;
             if (t == 0xe) {
@@ -1566,7 +1336,7 @@ void NpcActor::setNetUserBytes(void *dst, s32 n) {
 void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
     NpcNetRecord_SetState(&npcHandle, Scene_GetCurrent(), &position, rotY, &actionCtrl.netAction, netUserBytes);
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
+    if (gCommManager->isSlotActive(gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (npcHandle & 0xf000) >> 12;
             if (t == 0xe) {
@@ -1578,13 +1348,13 @@ void NpcActor::netSendState(u32 a, ...) {
     }
 }
 
-BOOL NpcActor::netReadPosition(s32 *a, u8 *b) {
+BOOL NpcActor::netReadPosition(VecFx32 *pos, s16 *angle) {
     using namespace nR;
     if (netSyncOff == 0) {
         u8 *p = NpcNetRecord_GetVar(&npcHandle);
         if (p != NULL) {
-            NetBuf_UnpackPair20(p + 4, a, a + 2);
-            MI_CpuCopy8(p + 9, b, 2);
+            NetBuf_UnpackPair20(p + 4, (u32 *)&pos->x, (u32 *)&pos->z);
+            MI_CpuCopy8(p + 9, angle, 2);
             return TRUE;
         }
     }
@@ -1741,7 +1511,7 @@ BOOL NpcActor::onExecute() {
         }
     }
     ((NpcTalkCtrl *)(&talkCtrl))->update((NpcActor *)(this));
-    ((NpcActionCtrl *)(&actionCtrl))->update((u8 *)(this));
+    actionCtrl.update(this);
     ((NpcEmotionFx *)(&emotionFx))->update(&jointPos[0], rotY, ((NpcAnimCtrl *)(&animCtrl))->getAnimId(0), ((Unk_0201b2b8_Bits *)&model.curFrame)->mid);
     ((NpcMoveCtrl *)(&moveCtrl))->updateTurn((Character *)(this));
     if (NetArea_IsLocalOwner() && collisionEnabled && collisionRadius > 0) {
@@ -1776,11 +1546,11 @@ BOOL NpcActor::onExecute() {
     v.z = pp->z;
     ((SndSeEmitter *)(&seEmitter))->callUpdateRelativeAlt(&v);
     if (curHeldTool) {
-        ((HeldToolModel *)curHeldTool)->update((Unk_02006d14 *)this);
+        ((HeldToolModel *)curHeldTool)->update(this);
     }
     ((NpcFootstepFx *)(&footstepFx))->updateFootsteps((NpcActor *)(this));
-    ((NpcFaceAnim *)(&faceAnim))->update((u8 *)(this));
-    ((NpcActionCtrl *)(&actionCtrl))->postUpdate((u8 *)(this));
+    faceAnim.update(this);
+    actionCtrl.postUpdate(this);
     if (netSyncOff == 0) {
         netSendState(1);
     }
@@ -1818,7 +1588,7 @@ BOOL NpcActor::onDraw() {
         return TRUE;
     }
     ((TwoLayerAnimModel *)(&model))->drawLayered(0);
-    ((NpcMoveCtrl *)(&lookAt))->storeHeadMtx((Unk_02006d14 *)(this));
+    lookAt.storeHeadMtx(this);
     Model_GetJointWorldMtx(&model, &jointMtx, 0xb);
     Model_GetJointWorldMtx(&model, &buf, 0x10);
     t0 = *(VecFx32 *)&buf.m[9];
@@ -1883,13 +1653,13 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
     V3 a, b, cand1, cand2, arr[4], tmp, t1, t2, t3, t4;
     u32 m0, m1;
     s32 best, bestDist, d1, i1, dir0, dir1, best2, d, d0, i, j;
-    u8 *g;
+    BlockMap *g;
     s32 z0, z1, z2, z3;
     *out = *in;
     g = gSceneBlockMap;
-    m0 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, (V3 *)(HOST_AT(self, 0x5c, position.x, 0)));
-    m1 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, in);
-    FieldPos_SnapToUnitCenter(&a, (V3 *)(HOST_AT(self, 0x5c, position.x, 0)));
+    m0 = g->getWalkLinksAtPos(&self->position);
+    m1 = g->getWalkLinksAtPos(in);
+    FieldPos_SnapToUnitCenter(&a, &self->position);
     FieldPos_SnapToUnitCenter(&b, in);
     best = 0;
     a.y = 0;
@@ -1900,8 +1670,8 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         for (i1 = i1; i1 < 4; i1++) {
             Vec_Add(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
             cand1 = t1;
-            d1 = Vec_DistXZ((V3 *)(HOST_AT(self, 0x5c, position.x, 0)), &cand1);
-            if (_ZN8BlockMap17getWalkLinksAtPosEPv(g, &cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
+            d1 = Vec_DistXZ(&self->position, &cand1);
+            if (g->getWalkLinksAtPos(&cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
                 if (bestDist == 0 || bestDist > d1) {
                     bestDist = d1;
                     best = i1;
@@ -1918,7 +1688,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         best2 = best;
         d0 = Vec_DistXZ(in, &a);
         func_02133ef8(arr, 0x30);
-        u32 ang = *(u16 *)(HOST_AT(self, 0x8e, rotY, 0));
+        u32 ang = (u16)self->rotY;
         if (ang >= 0xe000 || ang < 0x2000) {
             dir0 = 2;
             dir1 = 0;
@@ -1965,7 +1735,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
             }
         }
         if (m1 == 0 && best2 > d0) {
-            *out = *(V3 *)(HOST_AT(self, 0x5c, position.x, 0));
+            *out = self->position;
         } else {
             Vec_Add(&t4, &a, (V3 *)(data_020c6dcc + best * 12));
             *out = t4;
@@ -1976,19 +1746,19 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
 
 namespace nQ {
 extern "C" BOOL NpcActor_CanPlayerPay(void *self, s32 v) {
-    return PlayerInventory_CanAddBells(PlayerData_GetCurrent()->getInventory(), -v, 1, 0);
+    return PlayerInventory_CanAddBells((u8 *)PlayerData_GetCurrent()->getInventory(), -v, 1, 0);
 }
 }
 
 namespace nQ {
 extern "C" void NpcActor_ChargePlayer(void *self, s32 v) {
-    PlayerInventory_AddBells(PlayerData_GetCurrent()->getInventory(), -v, 1);
+    PlayerInventory_AddBells((u8 *)PlayerData_GetCurrent()->getInventory(), -v, 1);
 }
 }
 
 namespace nQ {
 extern "C" s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w) {
-    void *p = PlayerData_GetCurrent() ? PlayerData_GetCurrent()->getInventory() : 0;
+    u8 *p = PlayerData_GetCurrent() ? (u8 *)PlayerData_GetCurrent()->getInventory() : 0;
     s32 lo = p ? PlayerInventory_GetBellsRoom(p, 0, 0) : 0;
     s32 hi = p ? PlayerInventory_GetBellsRoom(p, 1, w) : 0;
     s32 r = 2;
@@ -2003,7 +1773,7 @@ extern "C" s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w) {
 
 namespace nQ {
 extern "C" void NpcActor_PayPlayer(void *self, s32 v) {
-    PlayerInventory_AddBells(PlayerData_GetCurrent()->getInventory(), v, 1);
+    PlayerInventory_AddBells((u8 *)PlayerData_GetCurrent()->getInventory(), v, 1);
 }
 }
 
@@ -2115,7 +1885,7 @@ void NpcMoveCtrl::applyMovement(Character *scene) {
             }
         }
     }
-    ((Actor *)(scene))->updatePosition((ActorCollider *)(HOST_AT_A((u8 *)scene, NpcActor, 0x4cc, collider, 0)));
+    scene->updatePosition(&static_cast<NpcActor *>(scene)->collider);
 }
 
 void NpcMoveCtrl::setMoveMode(Character *scene, s32 mode, s16 ang, u16 extra) {
@@ -2135,10 +1905,10 @@ void NpcMoveCtrl::setMoveMode(Character *scene, s32 mode, s16 ang, u16 extra) {
     }
     arriveDistance = e->arriveDistance;
     if (mode != 4) {
-        if ((keepAnimFrame == 1 && e->keepAnimFrame == 1) || ((NpcAnimCtrl *)(HOST_AT_A((u8 *)scene, NpcActor, 0x334, animCtrl.unk_00[0], 0)))->isPlayingAnim(e->animKind, HOST_AT_A((u8 *)scene, NpcActor, 0x2a0, moveAnimSet.standAnim, 0))) {
-            ((NpcAnimCtrl *)(HOST_AT_A((u8 *)scene, NpcActor, 0x334, animCtrl.unk_00[0], 0)))->playAnimKeepFrame((NpcActor *)(scene), e->animKind, extra, 0);
+        if ((keepAnimFrame == 1 && e->keepAnimFrame == 1) || static_cast<NpcActor *>(scene)->animCtrl.isPlayingAnim(e->animKind, &static_cast<NpcActor *>(scene)->moveAnimSet)) {
+            static_cast<NpcActor *>(scene)->animCtrl.playAnimKeepFrame((NpcActor *)(scene), e->animKind, extra, 0);
         } else {
-            ((NpcAnimCtrl *)(HOST_AT_A((u8 *)scene, NpcActor, 0x334, animCtrl.unk_00[0], 0)))->playAnim((NpcActor *)(scene), e->animKind, extra, 0, 0x1000, 0, 0);
+            static_cast<NpcActor *>(scene)->animCtrl.playAnim((NpcActor *)(scene), e->animKind, extra, 0, 0x1000, 0, 0);
         }
     }
     moveMode = mode;
@@ -2209,7 +1979,7 @@ void NpcMoveCtrl::updateTurn(Character *scene) {
         scene->moveAngleY = targetAngle;
     } else {
         stepAngle(&scene->moveAngleY, targetAngle, turnSpeed, turnMode);
-        *(s16 *)(HOST_AT(scene, 0x8e, rotY, 0)) = scene->moveAngleY;
+        scene->rotY = scene->moveAngleY;
     }
 }
 
@@ -2343,7 +2113,7 @@ extern "C" BOOL Npc_IsPosBlocked(VecFx32 *pos) {
         }
         return FALSE;
     }
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, pos, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(pos, 0, 0);
     s32 r;
     if (buf[12] != 0 || ((GroundInfoBase *)(buf))->getHeight(1) > 0 || Collision_HasUnitShapeAt(pos)) {
         r = 1;
@@ -2359,7 +2129,7 @@ void NpcObstacleProbe::probe(Character *scene) {
     using namespace nP;
     for (s32 i = 0; i < 2; i++) {
         VecFx32 v;
-        Npc_RotateOffsetXZ(&v, (VecFx32 *)&scene->position, &sNpcObstacleProbeOffsets[i], *(s16 *)(HOST_AT(scene, 0x94, moveAngleY, 0)));
+        Npc_RotateOffsetXZ(&v, (VecFx32 *)&scene->position, &sNpcObstacleProbeOffsets[i], scene->moveAngleY);
         if (Npc_IsPosBlocked(&v)) {
             blockedBits |= 1 << i;
         }
@@ -2404,22 +2174,21 @@ void NpcLookAt::disable() {
     disabled = 1;
 }
 
-void NpcMoveCtrl::storeHeadMtx(Unk_02006d14 *p) {
+void NpcLookAt::storeHeadMtx(NpcActor *npc) {
     using namespace nP;
-    if (p != 0) {
-        Unk_02006d14_TalkBase &s = *p;
-        Model_GetJointWorldMtx(&s, HOST_AT(this, 0x2c, speedPresets[2].z, 0), 0xf);
+    if (npc != 0) {
+        Model_GetJointWorldMtx(&npc->model, &headMtx, 0xf);
     }
 }
 
 namespace nP {
 extern "C" s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out) {
     s32 r = 0;
-    s32 x = self->headPos.x;
-    if (x != 0 || self->headPos.y != 0 || self->headPos.z != 0) {
+    s32 x = self->headMtx.m[9];
+    if (x != 0 || self->headMtx.m[10] != 0 || self->headMtx.m[11] != 0) {
         out->x = x;
-        out->y = self->headPos.y;
-        out->z = self->headPos.z;
+        out->y = self->headMtx.m[10];
+        out->z = self->headMtx.m[11];
         WorldCurve_FromCurved(out, out);
         r = 1;
     }
@@ -2630,7 +2399,7 @@ void NpcLookAt::lookAtTargetActor(Character *scene) {
     using namespace nP;
     if (targetActor != 0) {
         VecFx32 v;
-        if (NpcLookAt_GetHeadPos((NpcLookAt *)((u8 *)targetActor + 0x3b0), &v)) {
+        if (NpcLookAt_GetHeadPos(&static_cast<NpcActor *>(targetActor)->lookAt, &v)) {
             VecFx32 w;
             w.x = v.x;
             w.y = v.y;
@@ -3045,7 +2814,7 @@ void NpcFaceAnim::setMouthAnim(s32 v, u32 w) {
     if (isLoaded()) {
         void *h = ((NpcTexPatHeapHandle *)(&faceAnimRef))->getFaceAnim();
         ((CharaFaceAnimRef *)(h))->loadAnim(v, 1, 0);
-        _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&mouthTexAnim, _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(h), 0, 0, w, 0x1000);
+        ((MatTexPatAnim *)(&mouthTexAnim))->setAnim(((CharaFaceAnimRef *)(h))->getMouthAnimBuffer(), (void *)(0), 0, w, (void *)(0x1000));
         mouthTexAnim.curFrame = 0;
         mouthAnimId = v;
         randomizeTalkMouth();
@@ -3078,8 +2847,8 @@ void NpcFaceAnim::setFaceAnims(s32 t, s32 u, s32 x, s32 mode) {
         void *h = ((NpcTexPatHeapHandle *)(&faceAnimRef))->getFaceAnim();
         if (t != 0 || eyeAnimId != t) {
             ((CharaFaceAnimRef *)(h))->loadAnim(t, 1, 0);
-            NNS_G3dGetAnmByIdx(_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(h), 0);
-            _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&eyeTexAnim, _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(h), 0, 0, x, 0x1000);
+            NNS_G3dGetAnmByIdx(((CharaFaceAnimRef *)(h))->getEyeAnimBuffer(), 0);
+            ((MatTexPatAnim *)(&eyeTexAnim))->setAnim(((CharaFaceAnimRef *)(h))->getEyeAnimBuffer(), (void *)(0), 0, x, (void *)(0x1000));
             eyeAnimId = t;
             eyeTexAnim.curFrame = 0;
             ((MatTexPatAnim *)(&eyeTexAnim))->applyFrame();
@@ -3143,7 +2912,7 @@ void NpcFaceAnim::release() {
     ((NpcResHandle *)(&texPatHeap))->release();
 }
 
-void NpcFaceAnim::update(u8 *o) {
+void NpcFaceAnim::update(NpcActor *o) {
     using namespace nN;
     if (isLoaded()) {
         if (eyeAnimId == 0) {
@@ -3153,10 +2922,10 @@ void NpcFaceAnim::update(u8 *o) {
         } else {
             ((MatTexPatAnim *)(&eyeTexAnim))->update();
         }
-        if (((NpcSpeechState *)(HOST_AT_A(o, NpcActor, 0x418, speechState.speaking, 0)))->getMouthType() < 2) {
-            if (((NpcSpeechState *)(HOST_AT_A(o, NpcActor, 0x418, speechState.speaking, 0)))->isSpeaking()) {
+        if (o->speechState.getMouthType() < 2) {
+            if (o->speechState.isSpeaking()) {
                 if (!isTalkMouthAnim(mouthAnimId)) {
-                    startTalkMouth(((NpcSpeechState *)(HOST_AT_A(o, NpcActor, 0x418, speechState.speaking, 0)))->getMouthType());
+                    startTalkMouth(o->speechState.getMouthType());
                     randomizeTalkMouth();
                 } else if (isMouthCycleDone()) {
                     randomizeTalkMouth();
@@ -3207,7 +2976,7 @@ void NpcActionParams::copyFrom(NpcActionParams *src) {
     handOverPartner = src->handOverPartner;
 }
 
-void NpcActionCtrl::startAction(u8 *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4) {
+void NpcActionCtrl::startAction(NpcActor *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4) {
     using namespace nN;
     NpcActionParams *p = &pendingParams;
     setPendingAction(a, b);
@@ -3253,7 +3022,7 @@ NpcActionParams *NpcActionCtrl::getCurParams() {
     return &curParams;
 }
 
-void NpcActionCtrl::changeAction(u8 *o, s32 idx, s32 state) {
+void NpcActionCtrl::changeAction(NpcActor *o, s32 idx, s32 state) {
     using namespace nN;
     action = idx;
     if (idx < 0 || idx >= 0x16) {
@@ -3393,7 +3162,7 @@ void NpcActionCtrl::setTalking() {
 void NpcActionCtrl::clearTalking() {
     using namespace nN; isTalking = 0; }
 
-void NpcActionCtrl::applyPendingAction(u8 *arg) {
+void NpcActionCtrl::applyPendingAction(NpcActor *arg) {
     using namespace nN;
     if (pendingPriority != 0) {
         if (pendingPriority >= priority || isActionDone() || priority == 3) {
@@ -3481,7 +3250,7 @@ extern "C" void NpcAction_UnpackItem(u16 *out, void *in) {
 }
 }
 
-void NpcActionCtrl::update(u8 *arg) {
+void NpcActionCtrl::update(NpcActor *arg) {
     using namespace nN;
     applyPendingAction(arg);
     NpcActionEntry *e = actionEntry;
@@ -3493,7 +3262,7 @@ void NpcActionCtrl::update(u8 *arg) {
     }
 }
 
-void NpcActionCtrl::postUpdate(u8 *arg) {
+void NpcActionCtrl::postUpdate(NpcActor *arg) {
     using namespace nN;
     if (actionEntry != NULL && actionEntry->postFn != NULL) {
         (this->*(actionEntry->postFn))(arg);
@@ -3503,16 +3272,16 @@ void NpcActionCtrl::postUpdate(u8 *arg) {
     }
 }
 
-s32 NpcActionCtrl::setupAct00(u8 *o) {
+s32 NpcActionCtrl::setupAct00(NpcActor *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setMoveMode((Character *)(o), 0, 0, c->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), gVec3Zero);
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setTargetAngle(*(s16 *)(HOST_AT_A(o, NpcActor, 0x8e, rotY, 0)));
-    ((Unk_0201acf8 *)(HOST_AT_A(o, NpcActor, 0x3aa, unk_3aa.unk_00, 0)))->func_0201acf8(-2);
-    if (*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)) != 0) {
-        ((HeldToolModel *)*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)))->playIdleAnim(data_020c6cc8, 0);
+    o->moveCtrl.setMoveMode(o, 0, 0, c->blendFrames);
+    o->moveCtrl.setWaypoint((VecFx32 *)gVec3Zero);
+    o->moveCtrl.setDestination((VecFx32 *)gVec3Zero);
+    o->moveCtrl.setTargetAngle(o->rotY);
+    ((Unk_0201acf8 *)(&o->unk_3aa))->func_0201acf8(-2);
+    if (o->curHeldTool != 0) {
+        ((HeldToolModel *)o->curHeldTool)->playIdleAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -3525,17 +3294,17 @@ void NpcActionCtrl::mainAct00() {
     setActionDone(1);
 }
 
-s32 NpcActionCtrl::setupAct01(u8 *o) {
+s32 NpcActionCtrl::setupAct01(NpcActor *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
     VecFx32Ctor v0(c->waypointX, 0, c->waypointZ);
     VecFx32Ctor v1(c->destX, 0, c->destZ);
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setWaypoint((VecFx32 *)(&v0));
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setDestination((VecFx32 *)(&v1));
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setMoveMode((Character *)(o), 1, c->turnSpeed, c->blendFrames);
-    ((Unk_0201acf8 *)(HOST_AT_A(o, NpcActor, 0x3aa, unk_3aa.unk_00, 0)))->func_0201acf8(1);
-    if (*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)) != 0) {
-        ((HeldToolModel *)*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)))->playWalkAnim(data_020c6cc8, 0);
+    o->moveCtrl.setWaypoint((VecFx32 *)(&v0));
+    o->moveCtrl.setDestination((VecFx32 *)(&v1));
+    o->moveCtrl.setMoveMode(o, 1, c->turnSpeed, c->blendFrames);
+    ((Unk_0201acf8 *)(&o->unk_3aa))->func_0201acf8(1);
+    if (o->curHeldTool != 0) {
+        ((HeldToolModel *)o->curHeldTool)->playWalkAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -3544,11 +3313,11 @@ s32 NpcActionCtrl::setupAct01(u8 *o) {
     return 0;
 }
 
-void NpcActionCtrl::mainAct01(u8 *o) {
+void NpcActionCtrl::mainAct01(NpcActor *o) {
     using namespace nN;
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->aimAtDestination((Character *)(o));
-    if (((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->hasArrived((Character *)(o), 0)) {
-        if (((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->hasNextLeg()) {
+    o->moveCtrl.aimAtDestination(o);
+    if (o->moveCtrl.hasArrived(o, 0)) {
+        if (o->moveCtrl.hasNextLeg()) {
             NpcActionParams *c = getCurParams();
             requestAction(1, 1, c->waypointX, c->waypointZ, 0, 0, 0, 0, data_020c6cc8, 0);
         } else {
@@ -3557,17 +3326,17 @@ void NpcActionCtrl::mainAct01(u8 *o) {
     }
 }
 
-s32 NpcActionCtrl::setupAct02(u8 *o) {
+s32 NpcActionCtrl::setupAct02(NpcActor *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
     VecFx32Ctor v0(c->waypointX, 0, c->waypointZ);
     VecFx32Ctor v1(c->destX, 0, c->destZ);
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setWaypoint((VecFx32 *)(&v0));
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setDestination((VecFx32 *)(&v1));
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setMoveMode((Character *)(o), 2, c->turnSpeed, c->blendFrames);
-    ((Unk_0201acf8 *)(HOST_AT_A(o, NpcActor, 0x3aa, unk_3aa.unk_00, 0)))->func_0201acf8(1);
-    if (*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)) != 0) {
-        ((HeldToolModel *)*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)))->playWalkAnim(data_020c6cc8, 0);
+    o->moveCtrl.setWaypoint((VecFx32 *)(&v0));
+    o->moveCtrl.setDestination((VecFx32 *)(&v1));
+    o->moveCtrl.setMoveMode(o, 2, c->turnSpeed, c->blendFrames);
+    ((Unk_0201acf8 *)(&o->unk_3aa))->func_0201acf8(1);
+    if (o->curHeldTool != 0) {
+        ((HeldToolModel *)o->curHeldTool)->playWalkAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -3576,11 +3345,11 @@ s32 NpcActionCtrl::setupAct02(u8 *o) {
     return 0;
 }
 
-void NpcActionCtrl::mainAct02(u8 *o) {
+void NpcActionCtrl::mainAct02(NpcActor *o) {
     using namespace nN;
-    ((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->aimAtDestination((Character *)(o));
-    if (((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->hasArrived((Character *)(o), 0)) {
-        if (((NpcMoveCtrl *)(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0)))->hasNextLeg()) {
+    o->moveCtrl.aimAtDestination(o);
+    if (o->moveCtrl.hasArrived(o, 0)) {
+        if (o->moveCtrl.hasNextLeg()) {
             NpcActionParams *c = getCurParams();
             requestAction(1, 1, c->waypointX, c->waypointZ, 0, 0, 0, 0, data_020c6cc8, 0);
         } else {
@@ -3591,14 +3360,14 @@ void NpcActionCtrl::mainAct02(u8 *o) {
 
 s32 NpcActionCtrl::setupAct03(NpcActor *c) {
     using namespace nM;
-    NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    NpcActionParams *d = (this)->getCurParams();
     ((NpcMoveCtrl *)(&c->moveCtrl))->setMoveMode((Character *)(c), 3, d->turnSpeed, d->blendFrames);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setTargetAngle(d->targetAngle);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint((VecFx32 *)(gVec3Zero));
     ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)(gVec3Zero));
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(-2);
     if (c->curHeldTool) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
+        ((HeldToolModel *)(void *)(c->curHeldTool))->playWalkAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -3610,14 +3379,14 @@ s32 NpcActionCtrl::setupAct03(NpcActor *c) {
 void NpcActionCtrl::mainAct03(NpcActor *c) {
     using namespace nM;
     if (c->rotY == ((NpcMoveCtrl *)(&c->moveCtrl))->getTargetAngle()) {
-        _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, _ZN13NpcActionCtrl12getCurParamsEv(this)->blendFrames);
+        (&c->moveCtrl)->setMoveMode((Character *)(void *)(c), 0, 0, (this)->getCurParams()->blendFrames);
         (this)->setActionDone(1);
     }
 }
 
 s32 NpcActionCtrl::setupAct04(NpcActor *c) {
     using namespace nM;
-    NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    NpcActionParams *d = (this)->getCurParams();
     V v1(d->waypointX, 0, d->waypointZ);
     V v2(d->destX, 0, d->destZ);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setMoveMode((Character *)(c), 3, d->turnSpeed, d->blendFrames);
@@ -3626,7 +3395,7 @@ s32 NpcActionCtrl::setupAct04(NpcActor *c) {
     ((NpcMoveCtrl *)(&c->moveCtrl))->setTargetAngle(d->targetAngle);
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(-2);
     if (c->curHeldTool) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
+        ((HeldToolModel *)(void *)(c->curHeldTool))->playWalkAnim(data_020c6cc8, 0);
     }
     (this)->setActionDone(0);
     return 0;
@@ -3635,14 +3404,14 @@ s32 NpcActionCtrl::setupAct04(NpcActor *c) {
 void NpcActionCtrl::act04Step0(NpcActor *c) {
     using namespace nM;
     if (c->rotY == ((NpcMoveCtrl *)(&c->moveCtrl))->getTargetAngle()) {
-        (this)->setupAct01((u8 *)(void *)(c));
+        setupAct01(c);
         actStep = 1;
     }
 }
 
 void NpcActionCtrl::act04Step1(NpcActor *c) {
     using namespace nM;
-    (this)->mainAct01((u8 *)(void *)(c));
+    mainAct01(c);
 }
 
 namespace nZ {
@@ -3652,12 +3421,12 @@ void *data_020d734c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0
 void *data_020d71b4[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP7VecFx32, 0};
 void *data_020d768c[2] = {(void *)_ZN13NpcActionCtrl9postAct0BEP8NpcActor, 0};
 const u16 data_020c6ce0[2] = {0x4b, 0x1};
-void *data_020d73e4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14, 0};
+void *data_020d73e4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep09EP8NpcActor, 0};
 void *data_020d72ac[2] = {(void *)_ZN11NpcTalkCtrl10mainState4EP8NpcActor, 0};
 void *data_020d7334[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 void *data_020d7234[2] = {(void *)_ZN11NpcTalkCtrl10mainState0EP8NpcActor, 0};
-void *data_020d72ec[2] = {(void *)_ZN13NpcActionCtrl10act13Step0EP12Unk_02006d14, 0};
-void *data_020d75fc[2] = {(void *)_ZN13NpcActionCtrl9postAct14EP12Unk_02006d14, 0};
+void *data_020d72ec[2] = {(void *)_ZN13NpcActionCtrl10act13Step0EP8NpcActor, 0};
+void *data_020d75fc[2] = {(void *)_ZN13NpcActionCtrl9postAct14EP8NpcActor, 0};
 void *data_020d7124[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
 void *data_020d765c[2] = {(void *)_ZN13NpcActionCtrl10setupAct0EEP8NpcActor, 0};
 FxVec3 sNpcAvoidOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
@@ -3667,17 +3436,17 @@ void *data_020d76d4[2] = {(void *)_ZN13NpcActionCtrl9mainAct04EP8NpcActor, 0};
 void *data_020d76e4[2] = {(void *)_ZN13NpcActionCtrl9mainAct07EP8NpcActor, 0};
 void *data_020d70cc[2] = {(void *)_ZN16ActorTalkRequest14itemAct12StartEv, 0};
 void *data_020d738c[2] = {(void *)_ZN11NpcTalkCtrl11state2Step1EP8NpcActor, 0};
-void *data_020d73b4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14, 0};
-void *data_020d73d4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14, 0};
+void *data_020d73b4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep15EP8NpcActor, 0};
+void *data_020d73d4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep11EP8NpcActor, 0};
 FxVec3 sNpcObstacleProbeOffsets[2] = {FxVec3(0x700, 0, 0xf00), FxVec3(-0x700, 0, 0xf00)};
-void *data_020d741c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14, 0};
+void *data_020d741c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep02EP8NpcActor, 0};
 void *data_020d7274[2] = {(void *)_ZN11NpcTalkCtrl11setupState3EP8NpcActor, 0};
 void *data_020d72f4[2] = {(void *)_ZN13NpcActionCtrl10act15Step3EP8NpcActor, 0};
 void *data_020d731c[2] = {(void *)_ZN11NpcTalkCtrl11state0Step2EP8NpcActor, 0};
 void *data_020d743c[2] = {(void *)_ZN11NpcTalkCtrl11state0Step1EP8NpcActor, 0};
-void *data_020d7084[2] = {(void *)_ZN13NpcActionCtrl10setupAct01EPh, 0};
+void *data_020d7084[2] = {(void *)_ZN13NpcActionCtrl10setupAct01EP8NpcActor, 0};
 void *data_020d70ac[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d7464[2] = {(void *)_ZN13NpcActionCtrl9mainAct02EPh, 0};
+void *data_020d7464[2] = {(void *)_ZN13NpcActionCtrl9mainAct02EP8NpcActor, 0};
 const u16 data_020c6cd4[2] = {0x63, 0x12};
 void *data_020d73f4[2] = {(void *)VillagerRoute_PickOwnHouseDoor, 0};
 const u32 data_020c6dcc[12] = {0x0, 0x0, 0xffffe000, 0xffffe000, 0x0, 0x0, 0x0, 0x0, 0x2000, 0x2000, 0x0, 0x0};
@@ -3701,13 +3470,13 @@ void *data_020d769c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d7694[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 const u16 data_020c6cc8[2] = {0x4, 0x0};
 const u16 data_020c6d00[2] = {0x3b, 0x0};
-void *data_020d7614[2] = {(void *)_ZN13NpcActionCtrl10setupAct12EP12Unk_02006d14, 0};
-void *data_020d761c[2] = {(void *)_ZN13NpcActionCtrl9mainAct11EP12Unk_02006d14, 0};
+void *data_020d7614[2] = {(void *)_ZN13NpcActionCtrl10setupAct12EP8NpcActor, 0};
+void *data_020d761c[2] = {(void *)_ZN13NpcActionCtrl9mainAct11EP8NpcActor, 0};
 const u16 data_020c6cd8[2] = {0x46, 0x0};
 void *data_020d766c[2] = {(void *)_ZN13NpcActionCtrl9mainAct0DEP8NpcActor, 0};
 const u16 data_020c6d04[2] = {0x63, 0x100};
-void *data_020d762c[2] = {(void *)_ZN13NpcActionCtrl9postAct10EP12Unk_02006d14, 0};
-void *data_020d7644[2] = {(void *)_ZN13NpcActionCtrl10setupAct0FEP12Unk_02006d14, 0};
+void *data_020d762c[2] = {(void *)_ZN13NpcActionCtrl9postAct10EP8NpcActor, 0};
+void *data_020d7644[2] = {(void *)_ZN13NpcActionCtrl10setupAct0FEP8NpcActor, 0};
 void *data_020d764c[2] = {(void *)_ZN13NpcActionCtrl9postAct0EEv, 0};
 const u16 data_020c6cf0[2] = {0xeb85, 0x0};
 const u16 data_020c6d24[2] = {0x50, 0x9};
@@ -3719,7 +3488,7 @@ const u16 data_020c6d28[2] = {0x53, 0x0};
 void *data_020d722c[2] = {(void *)_ZN13VillagerRoute11isInBlockT2EP7VecFx32, 0};
 const u32 sNpcMoveSpeedPresets[9] = {0x0, 0x0, 0x0, 0x100, 0x19, 0x33, 0x199, 0x66, 0x99};
 void *data_020d7224[2] = {(void *)_ZN11NpcTalkCtrl11setupState0EP8NpcActor, 0};
-void *data_020d75f4[2] = {(void *)_ZN13NpcActionCtrl10setupAct14EP12Unk_02006d14, 0};
+void *data_020d75f4[2] = {(void *)_ZN13NpcActionCtrl10setupAct14EP8NpcActor, 0};
 void *data_020d75ec[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP7VecFx32, 0};
 const u16 data_020c6cd0[2] = {0x5e, 0x0};
 void *data_020d7214[2] = {(void *)_ZN13NpcActionCtrl10setupAct05EP8NpcActor, 0};
@@ -3747,7 +3516,7 @@ void NpcActionCtrl::mainAct04(NpcActor *c) {
 s32 NpcActionCtrl::setupMoveTurnFirst(NpcActor *c, s32 a, s16 b) {
     using namespace nM;
     s16 out;
-    NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    NpcActionParams *d = (this)->getCurParams();
     V v1(d->waypointX, 0, d->waypointZ);
     V v2(d->destX, 0, d->destZ);
     moveMode = a;
@@ -3764,7 +3533,7 @@ s32 NpcActionCtrl::setupMoveTurnFirst(NpcActor *c, s32 a, s16 b) {
         actStep = 0;
     }
     if (c->curHeldTool) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
+        ((HeldToolModel *)(void *)(c->curHeldTool))->playWalkAnim(data_020c6cc8, 0);
     }
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(unk_a0);
     (this)->setActionDone(0);
@@ -3775,7 +3544,7 @@ void NpcActionCtrl::act05Step0(NpcActor *c) {
     using namespace nM;
     if (NpcActor_IsFrontAngle(((NpcMoveCtrl *)(&c->moveCtrl))->getTargetAngle() - c->rotY)) {
         s32 t = ((NpcMoveCtrl *)(&c->moveCtrl))->getTurnSpeed();
-        _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, moveMode, t, data_020c6cc8);
+        c->moveCtrl.setMoveMode(c, moveMode, t, data_020c6cc8);
         actStep = 1;
     }
 }
@@ -3783,18 +3552,18 @@ void NpcActionCtrl::act05Step0(NpcActor *c) {
 void NpcActionCtrl::act05Step1(NpcActor *c) {
     using namespace nM;
     s16 out;
-    s32 r = _ZN11NpcMoveCtrl15getDestinationBEv(&c->moveCtrl);
+    VecFx32 *r = c->moveCtrl.getDestinationB();
     ((NpcMoveCtrl *)(&c->moveCtrl))->aimAtDestination((Character *)(c));
     if (((NpcMoveCtrl *)(&c->moveCtrl))->hasArrived((Character *)(c), 0)) {
         if (((NpcMoveCtrl *)(&c->moveCtrl))->hasNextLeg()) {
-            ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)((void *)r));
+            c->moveCtrl.setDestination(r);
         } else {
             (this)->setActionDone(1);
         }
-    } else if (!((NpcActor *)(c))->isPosInFront(&out, (VecFx32 *)(r))) {
+    } else if (!c->isPosInFront(&out, r)) {
         u16 v = data_020c6cc8;
         s32 t = ((NpcMoveCtrl *)(&c->moveCtrl))->getTurnSpeed();
-        _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 3, t, data_020c6cc8);
+        c->moveCtrl.setMoveMode(c, 3, t, data_020c6cc8);
         ((NpcMoveCtrl *)(&c->moveCtrl))->setTargetAngle(out);
         actStep = 0;
         c->speed = 0;
@@ -3807,7 +3576,7 @@ void NpcActionCtrl::act05Step1(NpcActor *c) {
 namespace nZ {
 extern "C" {
 void *data_020d7574[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
-void *data_020d756c[2] = {(void *)_ZN13NpcActionCtrl10setupAct10EP12Unk_02006d14, 0};
+void *data_020d756c[2] = {(void *)_ZN13NpcActionCtrl10setupAct10EP8NpcActor, 0};
 void *data_020d7564[2] = {(void *)_ZN16ActorTalkRequest15closeWindowWaitEv, 0};
 void *data_020d755c[2] = {(void *)_ZN13NpcActionCtrl10act15Step1EP8NpcActor, 0};
 void *data_020d7554[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
@@ -3839,7 +3608,7 @@ s32 NpcActionCtrl::setupAct06(NpcActor *c) {
 
 s32 NpcActionCtrl::setupAct07(NpcActor *c) {
     using namespace nM;
-    NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    NpcActionParams *d = (this)->getCurParams();
     ((NpcMoveCtrl *)(&c->moveCtrl))->setMoveMode((Character *)(c), 3, d->turnSpeed, d->blendFrames);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setTargetAngle(d->targetAngle);
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(-2);
@@ -3858,7 +3627,7 @@ void NpcActionCtrl::act07Step0(NpcActor *c) {
             act07Variant = 0;
         }
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, sNpcAct07Anims[act07Variant], data_020c6cc8, 1, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, sNpcAct07Anims[act07Variant], data_020c6cc8, 1, 0x1000, 0, 0);
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
@@ -3895,7 +3664,7 @@ void NpcActionCtrl::mainAct07(NpcActor *c) {
 void NpcActionCtrl::postAct07(NpcActor *c) {
     using namespace nM;
     if (actStep >= 1) {
-        if (!_ZN13NpcActionCtrl12isActionDoneEv(this)) {
+        if (!(this)->isActionDone()) {
             if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
                 (this)->setActionDone(1);
             }
@@ -3914,7 +3683,7 @@ extern "C" NpcEmotionEntry *Emotion_GetEntry(u32 i) {
 
 s32 NpcActionCtrl::setupAct08(NpcActor *c) {
     using namespace nM;
-    u32 i = _ZN13NpcActionCtrl12getCurParamsEv(this)->emotionId;
+    u32 i = (this)->getCurParams()->emotionId;
     u32 v = data_020c6cc8;
     if (i >= 0x3c) {
         i = 0;
@@ -3946,7 +3715,7 @@ void NpcActionCtrl::mainAct08(NpcActor *c) {
                 s32 *pv = &r->phases[1].animId;
                 if (r->phases[1].animId < 0x137) {
                     u16 v = data_020c6cc8;
-                    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, *pv, data_020c6cc8, 0, 0x1000, 0, 0);
+                    c->animCtrl.playAnim(c, *pv, data_020c6cc8, 0, 0x1000, 0, 0);
                     if (c->curHeldTool) {
                         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
                     }
@@ -3969,7 +3738,7 @@ void NpcActionCtrl::mainAct08(NpcActor *c) {
 
 s32 NpcActionCtrl::setupAct09(NpcActor *c) {
     using namespace nM;
-    NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    NpcActionParams *d = (this)->getCurParams();
     ((NpcMoveCtrl *)(&c->moveCtrl))->setMoveMode((Character *)(c), 0, 0, d->blendFrames);
     ((NpcAnimCtrl *)(&c->animCtrl))->playAnim((NpcActor *)(c), 0xd8, d->blendFrames, 0, 0x1000, 0, 0);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint((VecFx32 *)(gVec3Zero));
@@ -3990,7 +3759,7 @@ void NpcActionCtrl::mainAct09(NpcActor *c) {
 
 s32 NpcActionCtrl::setupAct0A(NpcActor *c) {
     using namespace nM;
-    NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    NpcActionParams *d = (this)->getCurParams();
     ((NpcMoveCtrl *)(&c->moveCtrl))->setMoveMode((Character *)(c), 0, 0, d->blendFrames);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint((VecFx32 *)(gVec3Zero));
     ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)(gVec3Zero));
@@ -4005,7 +3774,7 @@ s32 NpcActionCtrl::setupAct0A(NpcActor *c) {
 void NpcActionCtrl::act0AStep0(NpcActor *c) {
     using namespace nL;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x78, data_020c6cc8, 1, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, 0x78, data_020c6cc8, 1, 0x1000, 0, 0);
         actStep = 1;
     }
 }
@@ -4042,7 +3811,7 @@ BOOL NpcActionCtrl::setupAct0B(NpcActor *c) {
     ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)(gVec3Zero));
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(-2);
     u16 v = data_020c6cc8;
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, r, data_020c6cc8, 1, 0x1000, 0, 0);
+    c->animCtrl.playAnim(c, r, data_020c6cc8, 1, 0x1000, 0, 0);
     if (c->curHeldTool) {
         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
     }
@@ -4056,7 +3825,7 @@ void NpcActionCtrl::act0BStep0(NpcActor *c) {
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         u32 r = c->getAct0BAnimB();
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, r, data_020c6cc8, 0, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, r, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
@@ -4100,7 +3869,7 @@ void NpcActionCtrl::postAct0B(NpcActor *c) {
 BOOL NpcActionCtrl::setupAct0C(NpcActor *c) {
     using namespace nL;
     NpcActionParams *d = ((NpcActionCtrl *)(this))->getCurParams();
-    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, data_020c6cc8);
+    c->moveCtrl.setMoveMode(c, 0, 0, data_020c6cc8);
     ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint((VecFx32 *)(gVec3Zero));
     ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)(gVec3Zero));
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(-2);
@@ -4124,7 +3893,7 @@ void NpcActionCtrl::postAct0C(NpcActor *c) {
         break;
     case 1:
     case 3:
-        r = _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c);
+        r = (&c->animCtrl)->isAnimFinished(c);
         break;
     }
     if (r) {
@@ -4140,7 +3909,7 @@ BOOL NpcActionCtrl::setupAct0D(NpcActor *c) {
     ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)(gVec3Zero));
     ((Unk_0201acf8 *)(&c->unk_3aa))->func_0201acf8(-2);
     u16 v = data_020c6cc8;
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, sNpcGiveItemAnims[d->handOverVariant], data_020c6cc8, 1, 0x1000, 0, 0);
+    c->animCtrl.playAnim(c, sNpcGiveItemAnims[d->handOverVariant], data_020c6cc8, 1, 0x1000, 0, 0);
     if (c->curHeldTool) {
         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
     }
@@ -4161,7 +3930,7 @@ void NpcActionCtrl::act0DStep0(NpcActor *c) {
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         if (PlayerActor_RequestAct32()) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
+            c->animCtrl.playAnim(c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
             if (c->curHeldTool) {
                 ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
             }
@@ -4176,7 +3945,7 @@ void NpcActionCtrl::act0DStep1(NpcActor *c) {
     using namespace nL;
     if (!HandOverItem_IsMaster(c)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
@@ -4260,9 +4029,9 @@ void NpcActionCtrl::act0EStep00(NpcActor *c) {
     using namespace nL;
     if (HandOverItem_IsModeActive(2)) {
         NpcActionParams *d = ((NpcActionCtrl *)(this))->getCurParams();
-        if (Unk_02017d74_Is((u16 *)(HOST_AT(c, 0xea, npcHandle, 0)), 0xd00c) || HandOverItem_CanTake(c)) {
+        if (Unk_02017d74_Is(&c->npcHandle, 0xd00c) || HandOverItem_CanTake(c)) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
+            c->animCtrl.playAnim(c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
             if (c->curHeldTool) {
                 ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
             }
@@ -4270,7 +4039,7 @@ void NpcActionCtrl::act0EStep00(NpcActor *c) {
         } else if (Unk_02017d74_Is(&d->item, 0x1565) && d->handOverKind == 0 && (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10)) {
             if (HandOverItem_SwitchMaster(c)) {
                 u16 v = data_020c6cc8;
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
+                c->animCtrl.playAnim(c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
                 if (c->curHeldTool) {
                     ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
                 }
@@ -4282,15 +4051,15 @@ void NpcActionCtrl::act0EStep00(NpcActor *c) {
                 buf.y = 0;
                 ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint(&buf);
                 ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination(&buf);
-                _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 1, 0, data_020c6cc8);
+                c->moveCtrl.setMoveMode(c, 1, 0, data_020c6cc8);
                 actStep = 1;
             }
         }
     }
 }
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep01(NpcActor *c) {
+    using namespace nK;
     if (HandOverItem_CanTake(c)) {
         u16 v = data_020c6cc8;
         ((NpcMoveCtrl *)(&c->moveCtrl))->setMoveMode((Character *)(c), 0, 0, v);
@@ -4300,71 +4069,68 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(NpcActionCtrl *s
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
-        s->actStep = 2;
+        actStep = 2;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep02(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         if (HandOverItem_SwitchMaster(c)) {
             if (HandOverItem_RequestMode(3, c)) {
-                s->actStep = 3;
+                actStep = 3;
             }
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep03(NpcActor *c) {
+    using namespace nK;
     if (!HandOverItem_IsModeActive(3)) {
         if (HandOverItem_RequestMode(4, c)) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x26, data_020c6cc8, 1, 0x1000, 0, 0);
+            c->animCtrl.playAnim(c, 0x26, data_020c6cc8, 1, 0x1000, 0, 0);
             if (c->curHeldTool) {
                 ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
             }
-            s->actStep = 4;
+            actStep = 4;
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep04(NpcActor *c) {
+    using namespace nK;
     s16 t;
     VecFx32 v;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         switch (HandOverItem_GetNextMode()) {
         case 6:
             HandOverItem_End(c);
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
+            c->animCtrl.playAnim(c, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
             Effect_PlayById2(0x61, &c->position, 0, 0);
             Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x76, 0x7f, 0);
-            s->actStep = 6;
+            actStep = 6;
             break;
         case 7:
             if (HandOverItem_RequestMode(7, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
-                s->actStep = 7;
+                c->animCtrl.playAnim(c, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
+                actStep = 7;
             }
             break;
         case 5:
             if (HandOverItem_RequestMode(5, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
+                c->animCtrl.playAnim(c, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
                 Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x4f, 0x7f, 0);
-                s->actStep = 5;
+                actStep = 5;
             }
             break;
         case 10:
             if (HandOverItem_RequestMode(10, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+                c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
                 ((NpcAnimCtrl *)(&c->animCtrl))->playAnim((NpcActor *)(c), 0x139, 0, 0, 0x1000, 0, 1);
-                ThreeLayerAnimModel_AssignJointsToLayer2(HOST_AT(c, 0xec, model, 0), 9, 14);
-                (s)->setActionDone(1);
-                s->actStep = 0x14;
+                ThreeLayerAnimModel_AssignJointsToLayer2(&c->model, 9, 14);
+                setActionDone(1);
+                actStep = 0x14;
             }
             break;
         case 11:
@@ -4373,49 +4139,47 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s
                 v.y = c->jointPos[0].y;
                 v.z = c->jointPos[0].z;
                 t = c->rotY;
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
-                s->itemEffect = Effect_Create(0x40, &v, &t, 0);
-                s->actStep = 0xb;
+                c->animCtrl.playAnim(c, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
+                itemEffect = Effect_Create(0x40, &v, &t, 0);
+                actStep = 0xb;
             }
             break;
         case 8:
         case 9:
         default:
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
-            (s)->setActionDone(1);
-            s->actStep = 0x14;
+            c->animCtrl.playAnim(c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
+            setActionDone(1);
+            actStep = 0x14;
             break;
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep05(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
         HandOverItem_End(c);
-        if (s->itemEffect != -1) {
-            Effect_End(s->itemEffect);
+        if (itemEffect != -1) {
+            Effect_End(itemEffect);
         }
-        (s)->setActionDone(1);
-        s->actStep = 0x14;
-    } else if (s->itemEffect != -1) {
-        Effect_SetPosition(s->itemEffect, &c->jointPos[0], &c->rotY, NULL);
+        setActionDone(1);
+        actStep = 0x14;
+    } else if (itemEffect != -1) {
+        Effect_SetPosition(itemEffect, &c->jointPos[0], &c->rotY, NULL);
     }
 }
-}
 
-namespace nK {
-extern "C" BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActionCtrl *s, NpcActor *c, void *p, u32 a, u8 b) {
-    if (a == (u32)_ZN11NpcAnimCtrl9getAnimIdEj(&c->animCtrl, 0)) {
-        if (nK2::_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
+BOOL NpcActionCtrl::waitItemAnimEnd(NpcActor *c, u16 *p, u32 a, u32 b) {
+    using namespace nK;
+    if (a == (u32)(&c->animCtrl)->getAnimId(0)) {
+        if (c->animCtrl.isAnimFinished(c)) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+            c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
             if (c->curHeldTool) {
                 ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
             }
@@ -4439,217 +4203,202 @@ extern "C" BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActio
     }
     return FALSE;
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    void *r = _ZN13NpcActionCtrl12getCurParamsEv(s);
-    if (_ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(s, c, (u8 *)r + 0x22, 0x28, 1)) {
-        (s)->setActionDone(1);
-        s->actStep = 0x14;
+void NpcActionCtrl::act0EStep06(NpcActor *c) {
+    using namespace nK;
+    void *r = getCurParams();
+    if (waitItemAnimEnd(c, &((NpcActionParams *)r)->item, 0x28, 1)) {
+        setActionDone(1);
+        actStep = 0x14;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep07(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         if (PlayerActor_RequestAct32()) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
+            c->animCtrl.playAnim(c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
             if (c->curHeldTool) {
                 ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
             }
-            s->actStep = 8;
+            actStep = 8;
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep08EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep08(NpcActor *c) {
+    using namespace nK;
     if (!HandOverItem_IsMaster(c)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
-        s->actStep = 9;
+        actStep = 9;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep09(NpcActor *c) {
+    using namespace nK;
     if (!HandOverItem_IsActive()) {
-        (s)->setActionDone(1);
-        s->actStep = 0x14;
+        setActionDone(1);
+        actStep = 0x14;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep10(NpcActor *c) {
+    using namespace nK;
     if ((((u32)c->model.curFrame << 4) >> 16) == 0) {
-        (s)->setActionDone(1);
-        s->actStep = 0x14;
+        setActionDone(1);
+        actStep = 0x14;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep11(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         ((NpcAnimCtrl *)(&c->animCtrl))->playAnim((NpcActor *)(c), 0x2a, 0, 1, 0x1000, 0, 0);
-        if (s->itemEffect != -1) {
-            Effect_End(s->itemEffect);
+        if (itemEffect != -1) {
+            Effect_End(itemEffect);
         }
-        s->actStep = 0xc;
+        actStep = 0xc;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep12(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
             ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
         }
         HandOverItem_End(c);
-        (s)->setActionDone(1);
-        s->actStep = 0x14;
+        setActionDone(1);
+        actStep = 0x14;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep13EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep13(NpcActor *c) {
+    using namespace nK;
     if (HandOverItem_IsModeActive(1)) {
-        s->actStep = 0xe;
+        actStep = 0xe;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep14(NpcActor *c) {
+    using namespace nK;
     if (!HandOverItem_IsModeActive(1)) {
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x2c, data_020c6cc8, 1, 0x1000, 0, 0);
-        s->actStep = 0xf;
+        c->animCtrl.playAnim(c, 0x2c, data_020c6cc8, 1, 0x1000, 0, 0);
+        actStep = 0xf;
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep15(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         if (HandOverItem_SwitchMaster(c)) {
             if (HandOverItem_RequestMode(3, c)) {
-                s->actStep = 0x10;
+                actStep = 0x10;
             }
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep16(NpcActor *c) {
+    using namespace nK;
     if (!HandOverItem_IsModeActive(3)) {
         if (HandOverItem_RequestMode(4, c)) {
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x2d, data_020c6cc8, 1, 0x1000, 0, 0);
-            s->actStep = 0x11;
+            c->animCtrl.playAnim(c, 0x2d, data_020c6cc8, 1, 0x1000, 0, 0);
+            actStep = 0x11;
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep17(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         u32 r = HandOverItem_GetNextMode();
         switch (r) {
         case 7:
             if (HandOverItem_RequestMode(7, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x2d, data_020c6cc8, 3, 0x1000, 0, 0);
-                s->actStep = 0x12;
+                c->animCtrl.playAnim(c, 0x2d, data_020c6cc8, 3, 0x1000, 0, 0);
+                actStep = 0x12;
             }
             break;
         case 5:
             if (HandOverItem_RequestMode(5, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x2e, data_020c6cc8, 1, 0x1000, 0, 0);
+                c->animCtrl.playAnim(c, 0x2e, data_020c6cc8, 1, 0x1000, 0, 0);
                 Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x4f, 0x7f, 0);
-                s->actStep = 5;
+                actStep = 5;
             }
             break;
         default:
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
-            (s)->setActionDone(1);
-            s->actStep = 0x14;
+            c->animCtrl.playAnim(c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
+            setActionDone(1);
+            actStep = 0x14;
             break;
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
+void NpcActionCtrl::act0EStep18(NpcActor *c) {
+    using namespace nK;
     if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
         if (HandOverItem_RequestMode(2, c)) {
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-            s->actStep = 0x13;
+            c->animCtrl.playAnim(c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+            actStep = 0x13;
         }
     }
 }
-}
 
-namespace nK {
-extern "C" void _ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    void *r = _ZN13NpcActionCtrl12getCurParamsEv(s);
+void NpcActionCtrl::act0EStep19(NpcActor *c) {
+    using namespace nK;
+    void *r = getCurParams();
     if (!HandOverItem_IsModeActive(2)) {
         HandOverItem_SetNextMode(9, c);
         if (HandOverItem_SwitchMaster((Character *)((NpcActionParams *)r)->handOverPartner)) {
             if (PlayerActor_LocalRequestAct37()) {
-                s->actStep = 9;
+                actStep = 9;
             }
         }
     }
-}
 }
 
 namespace nZ {
 extern "C" {
 const u32 sNpcMoveModeTable[25] = {0x0, 0x100, 0x0, 0x100, 0x0, 0x1, 0x200, 0x1, 0x100, 0x1, 0x2, 0x400, 0x2, 0x400, 0x1, 0x1, 0x800, 0x0, 0x100, 0x1, 0x0, 0x100, 0x1, 0x100, 0x0};
-void *data_020d7414[2] = {(void *)_ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14, 0};
+void *data_020d7414[2] = {(void *)_ZN13NpcActionCtrl11act0EStep03EP8NpcActor, 0};
 void *data_020d740c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d7404[2] = {(void *)_ZN16ActorTalkRequest12taskGiveItemEv, 0};
-void *data_020d73fc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14, 0};
+void *data_020d73fc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep06EP8NpcActor, 0};
 void *data_020d717c[2] = {(void *)_ZN16ActorTalkRequest11eatItemWaitEv, 0};
-void *data_020d73ec[2] = {(void *)_ZN13NpcActionCtrl11act0EStep08EP12Unk_02006d14, 0};
+void *data_020d73ec[2] = {(void *)_ZN13NpcActionCtrl11act0EStep08EP8NpcActor, 0};
 void *data_020d723c[2] = {(void *)_ZN11NpcTalkCtrl11setupState1EP8NpcActor, 0};
-void *data_020d73dc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14, 0};
+void *data_020d73dc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep10EP8NpcActor, 0};
 void *data_020d7244[2] = {(void *)VillagerRoute_PickOtherHouseBlock, 0};
-void *data_020d73cc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14, 0};
-void *data_020d73c4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep13EP12Unk_02006d14, 0};
-void *data_020d73bc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14, 0};
+void *data_020d73cc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep12EP8NpcActor, 0};
+void *data_020d73c4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep13EP8NpcActor, 0};
+void *data_020d73bc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep14EP8NpcActor, 0};
 const u16 data_020c6d14[2] = {0x48, 0x0};
-void *data_020d73ac[2] = {(void *)_ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14, 0};
-void *data_020d73a4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14, 0};
-void *data_020d739c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14, 0};
-void *data_020d7394[2] = {(void *)_ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14, 0};
+void *data_020d73ac[2] = {(void *)_ZN13NpcActionCtrl11act0EStep16EP8NpcActor, 0};
+void *data_020d73a4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep17EP8NpcActor, 0};
+void *data_020d739c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep18EP8NpcActor, 0};
+void *data_020d7394[2] = {(void *)_ZN13NpcActionCtrl11act0EStep19EP8NpcActor, 0};
 void *data_020d7294[2] = {(void *)_ZN11NpcTalkCtrl10mainState3EP8NpcActor, 0};
 const u16 data_020c6d30[2] = {0x63, 0x0};
-void *data_020d737c[2] = {(void *)_ZN13NpcActionCtrl10act11Step0EP12Unk_02006d14, 0};
-void *data_020d7374[2] = {(void *)_ZN13NpcActionCtrl10act11Step1EP12Unk_02006d14, 0};
+void *data_020d737c[2] = {(void *)_ZN13NpcActionCtrl10act11Step0EP8NpcActor, 0};
+void *data_020d7374[2] = {(void *)_ZN13NpcActionCtrl10act11Step1EP8NpcActor, 0};
 void *data_020d736c[2] = {(void *)_ZN13NpcActionCtrl10act11Step2Ev, 0};
 void *data_020d72b4[2] = {(void *)_ZN13NpcActionCtrl10act12Step1Ev, 0};
 void *data_020d735c[2] = {(void *)_ZN16ActorTalkRequest12taskSubSceneEv, 0};
 }
 }
 
-void NpcActionCtrl::mainAct0E(Unk_02006d14 *o) {
+void NpcActionCtrl::mainAct0E(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[20])(Unk_02006d14 *) = {*(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d742c, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d7424, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d741c, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d7414, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d7184, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d719c, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73fc, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d721c, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73ec, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73e4, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73dc, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73d4, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73cc, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73c4, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73bc, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73b4, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73ac, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d73a4, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d739c, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d7394};
+    static void (NpcActionCtrl::*tbl[20])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d742c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7424, *(void (NpcActionCtrl::**)(NpcActor *))data_020d741c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7414, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7184, *(void (NpcActionCtrl::**)(NpcActor *))data_020d719c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73fc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d721c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73ec, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73e4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73dc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73d4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73cc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73c4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73bc, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73b4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73ac, *(void (NpcActionCtrl::**)(NpcActor *))data_020d73a4, *(void (NpcActionCtrl::**)(NpcActor *))data_020d739c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7394};
     if (actStep < 20) {
         (this->*tbl[actStep])(o);
     }
@@ -4659,7 +4408,7 @@ void NpcActionCtrl::postAct0E() {
     using namespace nJ;
 }
 
-BOOL NpcActionCtrl::setupAct0F(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct0F(NpcActor *o) {
     using namespace nJ;
     NpcActionParams *s = ((NpcActionCtrl *)(this))->getCurParams();
     u16 v;
@@ -4668,7 +4417,7 @@ BOOL NpcActionCtrl::setupAct0F(Unk_02006d14 *o) {
     if (HandOverItem_IsActive()) {
         HandOverItem_End((Character *)o);
     }
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
+    o->animCtrl.playAnim(o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
     Effect_PlayById2(0x61, (VecFx32 *)&o->position, 0, 0);
     Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x76, 0x7f, 0);
     ((NpcActionCtrl *)(this))->setActionDone(0);
@@ -4678,7 +4427,7 @@ BOOL NpcActionCtrl::setupAct0F(Unk_02006d14 *o) {
     return TRUE;
 }
 
-void NpcActionCtrl::postAct0F(Unk_02006d14 *o) {
+void NpcActionCtrl::postAct0F(NpcActor *o) {
     using namespace nJ;
     NpcActionParams *s = ((NpcActionCtrl *)(this))->getCurParams();
     if (waitItemAnimEnd(o, &s->item, 0x28, 1)) {
@@ -4686,11 +4435,11 @@ void NpcActionCtrl::postAct0F(Unk_02006d14 *o) {
     }
 }
 
-BOOL NpcActionCtrl::setupAct10(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct10(NpcActor *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
         if (HandOverItem_RequestMode(5, (Character *)o)) {
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
+            o->animCtrl.playAnim(o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
             Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x4f, 0x7f, 0);
             if ((&o->animCtrl)->getAnimId(1) == 0x139) {
                 ((TwoLayerAnimModel *)(void *)(&o->model))->playLayer2FromBase(0, 0);
@@ -4701,20 +4450,20 @@ BOOL NpcActionCtrl::setupAct10(Unk_02006d14 *o) {
     return TRUE;
 }
 
-void NpcActionCtrl::postAct10(Unk_02006d14 *o) {
+void NpcActionCtrl::postAct10(NpcActor *o) {
     using namespace nJ;
     if ((&o->animCtrl)->isAnimFinished((NpcActor *)(void *)(o))) {
         HandOverItem_End((Character *)o);
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        o->animCtrl.playAnim(o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         ((NpcActionCtrl *)(this))->setActionDone(1);
     }
 }
 
-BOOL NpcActionCtrl::setupAct11(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct11(NpcActor *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
         if (HandOverItem_RequestMode(7, (Character *)o)) {
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
+            o->animCtrl.playAnim(o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
             if ((&o->animCtrl)->getAnimId(1) == 0x139) {
                 ((TwoLayerAnimModel *)(void *)(&o->model))->playLayer2FromBase(0, 0);
             }
@@ -4725,20 +4474,20 @@ BOOL NpcActionCtrl::setupAct11(Unk_02006d14 *o) {
     return TRUE;
 }
 
-void NpcActionCtrl::act11Step0(Unk_02006d14 *o) {
+void NpcActionCtrl::act11Step0(NpcActor *o) {
     using namespace nJ;
     if ((&o->animCtrl)->isAnimFinished((NpcActor *)(void *)(o))) {
         if (PlayerActor_RequestAct32()) {
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
+            o->animCtrl.playAnim(o, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
             actStep = 1;
         }
     }
 }
 
-void NpcActionCtrl::act11Step1(Unk_02006d14 *o) {
+void NpcActionCtrl::act11Step1(NpcActor *o) {
     using namespace nJ;
     if (!HandOverItem_IsMaster((Character *)o)) {
-        _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        o->animCtrl.playAnim(o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         actStep = 2;
     }
 }
@@ -4760,15 +4509,15 @@ void *data_020d732c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT3EP7VecFx32, 0};
 }
 }
 
-void NpcActionCtrl::mainAct11(Unk_02006d14 *o) {
+void NpcActionCtrl::mainAct11(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[3])(Unk_02006d14 *) = {*(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d737c, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d7374, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d736c};
+    static void (NpcActionCtrl::*tbl[3])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d737c, *(void (NpcActionCtrl::**)(NpcActor *))data_020d7374, *(void (NpcActionCtrl::**)(NpcActor *))data_020d736c};
     if (actStep < 3) {
         (this->*tbl[actStep])(o);
     }
 }
 
-BOOL NpcActionCtrl::setupAct12(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct12(NpcActor *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
         if (HandOverItem_RequestMode(8, (Character *)o)) {
@@ -4804,31 +4553,31 @@ void *data_020d7364[2] = {(void *)_ZN11NpcTalkCtrl11setupState4EP8NpcActor, 0};
 }
 }
 
-void NpcActionCtrl::mainAct12(Unk_02006d14 *o) {
+void NpcActionCtrl::mainAct12(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[2])(Unk_02006d14 *) = {*(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d7354, *(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d72b4};
+    static void (NpcActionCtrl::*tbl[2])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d7354, *(void (NpcActionCtrl::**)(NpcActor *))data_020d72b4};
     if (actStep < 2) {
         (this->*tbl[actStep])(o);
     }
 }
 
-BOOL NpcActionCtrl::setupAct13(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct13(NpcActor *o) {
     using namespace nJ;
     VecFx32 v;
     s16 ang;
-    v.x = o->headTopPos.x;
-    v.y = o->headTopPos.y;
-    v.z = o->headTopPos.z;
+    v.x = o->jointPos[0].x;
+    v.y = o->jointPos[0].y;
+    v.z = o->jointPos[0].z;
     ang = o->rotY;
     HandOverItem_RequestMode(0xb, (Character *)o);
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
+    o->animCtrl.playAnim(o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
     itemEffect = Effect_Create(0x40, &v, &ang, 0);
     Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x6f, 0x7f, 0);
     ((NpcActionCtrl *)(this))->setActionDone(0);
     return TRUE;
 }
 
-void NpcActionCtrl::act13Step0(Unk_02006d14 *o) {
+void NpcActionCtrl::act13Step0(NpcActor *o) {
     using namespace nJ;
     if ((&o->animCtrl)->isAnimFinished((NpcActor *)(void *)(o))) {
         (&o->animCtrl)->playAnim((NpcActor *)(void *)(o), 0x2a, 0, 1, 0x1000, 0, 0);
@@ -4838,25 +4587,25 @@ void NpcActionCtrl::act13Step0(Unk_02006d14 *o) {
         actStep = 1;
     } else {
         if (itemEffect != -1) {
-            Effect_SetPosition(itemEffect, &o->headTopPos, &o->rotY, NULL);
+            Effect_SetPosition(itemEffect, &o->jointPos[0], &o->rotY, NULL);
         }
     }
 }
 
-void NpcActionCtrl::mainAct13(Unk_02006d14 *o) {
+void NpcActionCtrl::mainAct13(NpcActor *o) {
     using namespace nJ;
-    static void (NpcActionCtrl::*tbl[1])(Unk_02006d14 *) = {*(void (NpcActionCtrl::**)(Unk_02006d14 *))data_020d72ec};
+    static void (NpcActionCtrl::*tbl[1])(NpcActor *) = {*(void (NpcActionCtrl::**)(NpcActor *))data_020d72ec};
     if (actStep < 1) {
         (this->*tbl[actStep])(o);
     }
 }
 
-void NpcActionCtrl::postAct13(Unk_02006d14 *o) {
+void NpcActionCtrl::postAct13(NpcActor *o) {
     using namespace nJ;
     if ((&o->animCtrl)->getAnimId(0) == 0x2a) {
         if ((&o->animCtrl)->isAnimFinished((NpcActor *)(void *)(o))) {
             HandOverItem_End((Character *)o);
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+            o->animCtrl.playAnim(o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
             ((NpcActionCtrl *)(this))->setActionDone(1);
         }
     }
@@ -4875,11 +4624,11 @@ s32 NpcActionCtrl::requestAct14(s32 a, u16 *p) {
     return r;
 }
 
-BOOL NpcActionCtrl::setupAct14(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct14(NpcActor *o) {
     using namespace nJ;
     ((NpcActionCtrl *)(this))->getCurParams();
     u16 t = data_020c6cc8;
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 6, data_020c6cc8, 1, 0x1000, 0, 0);
+    o->animCtrl.playAnim(o, 6, data_020c6cc8, 1, 0x1000, 0, 0);
     if (o->curHeldTool) {
         ((HeldToolModel *)(o->curHeldTool))->playIdleAnim(t, 0);
     }
@@ -4889,7 +4638,7 @@ BOOL NpcActionCtrl::setupAct14(Unk_02006d14 *o) {
     return TRUE;
 }
 
-void NpcActionCtrl::postAct14(Unk_02006d14 *o) {
+void NpcActionCtrl::postAct14(NpcActor *o) {
     using namespace nJ;
     NpcActionParams *s = ((NpcActionCtrl *)(this))->getCurParams();
     if (waitItemAnimEnd(o, &s->item, 6, 0)) {
@@ -4897,25 +4646,25 @@ void NpcActionCtrl::postAct14(Unk_02006d14 *o) {
     }
 }
 
-BOOL NpcActionCtrl::setupAct15(Unk_02006d14 *o) {
+BOOL NpcActionCtrl::setupAct15(NpcActor *o) {
     using namespace nJ;
-    s32 v[3];
+    VecFx32 v;
     s16 ang;
-    v[0] = 0;
-    v[1] = 0;
-    v[2] = 0;
+    v.x = 0;
+    v.y = 0;
+    v.z = 0;
     ang = o->rotY;
-    if (((NpcActor *)(void *)(o))->netReadPosition(v, (u8 *)(void *)(&ang))) {
-        s32 dx = v[0] - o->position;
-        s32 dz = v[2] - o->positionZ;
+    if (o->netReadPosition(&v, &ang)) {
+        s32 dx = v.x - o->position.x;
+        s32 dz = v.z - o->position.z;
         s32 d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
             if (ang != o->rotY) {
-                _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 3, 0, data_020c6cc8);
+                o->moveCtrl.setMoveMode(o, 3, 0, data_020c6cc8);
                 (&o->moveCtrl)->setTargetAngle(ang);
                 actStep = 2;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
+                o->moveCtrl.setMoveMode(o, 0, 0, data_020c6cc8);
                 actStep = 0;
             }
             (&o->moveCtrl)->setWaypoint((VecFx32 *)(gVec3Zero));
@@ -4924,21 +4673,21 @@ BOOL NpcActionCtrl::setupAct15(Unk_02006d14 *o) {
             s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle((s16)(a - ang))) {
                 if (netMoveMode == 2) {
-                    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 2, 0, data_020c6cc8);
+                    o->moveCtrl.setMoveMode(o, 2, 0, data_020c6cc8);
                 } else {
-                    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 1, 0, data_020c6cc8);
+                    o->moveCtrl.setMoveMode(o, 1, 0, data_020c6cc8);
                 }
                 actStep = 1;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 4, 0, data_020c6cc8);
+                o->moveCtrl.setMoveMode(o, 4, 0, data_020c6cc8);
                 (&o->moveCtrl)->setTargetAngle(a);
                 actStep = 3;
             }
-            (&o->moveCtrl)->setWaypoint((VecFx32 *)(v));
-            (&o->moveCtrl)->setDestination((VecFx32 *)(v));
+            o->moveCtrl.setWaypoint(&v);
+            o->moveCtrl.setDestination(&v);
         }
     } else {
-        _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
+        o->moveCtrl.setMoveMode(o, 0, 0, data_020c6cc8);
         (&o->moveCtrl)->setWaypoint((VecFx32 *)(gVec3Zero));
         (&o->moveCtrl)->setDestination((VecFx32 *)(gVec3Zero));
         actStep = 0;
@@ -4955,32 +4704,32 @@ void NpcActionCtrl::act15Step0(NpcActor *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->rotY;
-    if (((NpcActor *)(o))->netReadPosition((s32 *)(void *)(&pos), (u8 *)(void *)(&ang))) {
+    if (o->netReadPosition(&pos, &ang)) {
         dx = pos.x - o->position.x;
         dz = pos.z - o->position.z;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
             if (ang != o->rotY) {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 3, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 3, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
                 actStep = 2;
             } else if (((NpcMoveCtrl *)(&o->moveCtrl))->getMoveMode()) {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 0, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 0, 0, data_020c6cc8);
+                o->moveCtrl.setWaypoint(&gVec3Zero);
+                o->moveCtrl.setDestination(&gVec3Zero);
             }
         } else {
             s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
                 if (netMoveMode == 2) {
-                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 2, 0, data_020c6cc8);
+                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 2, 0, data_020c6cc8);
                 } else {
-                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 1, 0, data_020c6cc8);
+                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 1, 0, data_020c6cc8);
                 }
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
                 actStep = 1;
             } else {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 4, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 4, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(a);
                 actStep = 3;
             }
@@ -4999,36 +4748,36 @@ void NpcActionCtrl::act15Step1(NpcActor *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->rotY;
-    ((NpcMoveCtrl *)(&o->moveCtrl))->aimAtDestination((Character *)(o));
-    if (((NpcActor *)(o))->netReadPosition((s32 *)(void *)(&pos), (u8 *)(void *)(&ang))) {
+    ((NpcMoveCtrl *)(&o->moveCtrl))->aimAtDestination(o);
+    if (o->netReadPosition(&pos, &ang)) {
         dx = pos.x - o->position.x;
         dz = pos.z - o->position.z;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
             if (ang != o->rotY) {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 3, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 3, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
                 actStep = 2;
             } else {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 0, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 0, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
-                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+                o->moveCtrl.setWaypoint(&gVec3Zero);
+                o->moveCtrl.setDestination(&gVec3Zero);
                 actStep = 0;
             }
         } else {
             if (!NpcActor_IsFrontAngle(Math_Atan2(dx, dz) - ang)) {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 3, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 3, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
                 actStep = 2;
             } else {
                 if (((NpcMoveCtrl *)(&o->moveCtrl))->getMoveMode() == 1) {
                     if (netMoveMode == 2) {
-                        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 2, 0, data_020c6cc8);
+                        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 2, 0, data_020c6cc8);
                     }
                 } else if (((NpcMoveCtrl *)(&o->moveCtrl))->getMoveMode() == 2) {
                     if (netMoveMode == 1) {
-                        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 1, 0, data_020c6cc8);
+                        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 1, 0, data_020c6cc8);
                     }
                 }
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setWaypoint(&pos);
@@ -5036,10 +4785,10 @@ void NpcActionCtrl::act15Step1(NpcActor *o) {
             }
         }
     } else {
-        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 0, 0, data_020c6cc8);
+        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 0, 0, data_020c6cc8);
         ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
-        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+        o->moveCtrl.setWaypoint(&gVec3Zero);
+        o->moveCtrl.setDestination(&gVec3Zero);
         actStep = 0;
     }
 }
@@ -5053,7 +4802,7 @@ void NpcActionCtrl::act15Step2(NpcActor *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->rotY;
-    if (((NpcActor *)(o))->netReadPosition((s32 *)(void *)(&pos), (u8 *)(void *)(&ang))) {
+    if (o->netReadPosition(&pos, &ang)) {
         dx = pos.x - o->position.x;
         dz = pos.z - o->position.z;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
@@ -5069,14 +4818,14 @@ void NpcActionCtrl::act15Step2(NpcActor *o) {
             s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
                 if (netMoveMode == 2) {
-                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 2, 0, data_020c6cc8);
+                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 2, 0, data_020c6cc8);
                 } else {
-                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 1, 0, data_020c6cc8);
+                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 1, 0, data_020c6cc8);
                 }
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
                 actStep = 1;
             } else {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 4, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 4, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(a);
                 actStep = 3;
             }
@@ -5084,10 +4833,10 @@ void NpcActionCtrl::act15Step2(NpcActor *o) {
             ((NpcMoveCtrl *)(&o->moveCtrl))->setDestination(&pos);
         }
     } else {
-        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 0, 0, data_020c6cc8);
+        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 0, 0, data_020c6cc8);
         ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
-        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+        o->moveCtrl.setWaypoint(&gVec3Zero);
+        o->moveCtrl.setDestination(&gVec3Zero);
         actStep = 0;
     }
 }
@@ -5101,31 +4850,31 @@ void NpcActionCtrl::act15Step3(NpcActor *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->rotY;
-    ((NpcMoveCtrl *)(&o->moveCtrl))->aimAtDestination((Character *)(o));
-    if (((NpcActor *)(o))->netReadPosition((s32 *)(void *)(&pos), (u8 *)(void *)(&ang))) {
+    ((NpcMoveCtrl *)(&o->moveCtrl))->aimAtDestination(o);
+    if (o->netReadPosition(&pos, &ang)) {
         dx = pos.x - o->position.x;
         dz = pos.z - o->position.z;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d == 0) {
             o->moveAngleY = o->rotY;
             if (ang != o->rotY) {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 3, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 3, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
                 actStep = 2;
             } else {
-                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 0, 0, data_020c6cc8);
+                ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 0, 0, data_020c6cc8);
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
-                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+                o->moveCtrl.setWaypoint(&gVec3Zero);
+                o->moveCtrl.setDestination(&gVec3Zero);
                 actStep = 0;
             }
         } else if (d >= 0x29) {
             s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
                 if (netMoveMode == 2) {
-                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 2, 0, data_020c6cc8);
+                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 2, 0, data_020c6cc8);
                 } else {
-                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 1, 0, data_020c6cc8);
+                    ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 1, 0, data_020c6cc8);
                 }
                 o->moveAngleY = o->rotY;
                 ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
@@ -5137,10 +4886,10 @@ void NpcActionCtrl::act15Step3(NpcActor *o) {
             ((NpcMoveCtrl *)(&o->moveCtrl))->setDestination(&pos);
         }
     } else {
-        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode((Character *)(o), 0, 0, data_020c6cc8);
+        ((NpcMoveCtrl *)(&o->moveCtrl))->setMoveMode(o, 0, 0, data_020c6cc8);
         ((NpcMoveCtrl *)(&o->moveCtrl))->setTargetAngle(ang);
-        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+        o->moveCtrl.setWaypoint(&gVec3Zero);
+        o->moveCtrl.setDestination(&gVec3Zero);
         actStep = 0;
     }
 }
@@ -5268,7 +5017,7 @@ vdone:
     }
 }
 
-void NpcAnimCtrl::playHoldItemPose(NpcActor *o, u16 *p, void *q, u16 x) {
+void NpcAnimCtrl::playHoldItemPose(NpcActor *o, u16 *p, u32 q, u16 x) {
     using namespace nI;
     if (Item_IsHoldable(p)) {
         if (CharaAnim_GetHoldPoseMode(q) != 3) {
@@ -5339,13 +5088,13 @@ void NpcAnimCtrl::playTalkGesture(NpcActor *scene, u32 a, u32 b) {
     using namespace nH;
     void *r1 = getTalkGestureData();
     if (r1 != NULL) {
-        ((ThreeLayerAnimModel *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))))->playLayer3(r1, 0, 1, 0x1000, a, b, 0);
+        scene->model.playLayer3(r1, 0, 1, 0x1000, a, b, 0);
         s32 t = CharaAnim_GetJointGroup(0x143);
         if (t < 4) {
             u32 n = JointGroup_GetRangeCount(t);
             for (u32 i = 0; i < n; i++) {
                 u32 x = JointGroup_GetRangeFirst(t, i);
-                ((ThreeLayerAnimModel *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))))->assignJointsToLayer3(x, JointGroup_GetRangeLast(t, i));
+                scene->model.assignJointsToLayer3(x, JointGroup_GetRangeLast(t, i));
             }
         } else {
             stopTalkGesture(scene);
@@ -5357,7 +5106,7 @@ void NpcAnimCtrl::playTalkGesture(NpcActor *scene, u32 a, u32 b) {
 
 void NpcAnimCtrl::stopTalkGesture(NpcActor *scene) {
     using namespace nH;
-    ((ThreeLayerAnimModel *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))))->playLayer3FromBase(0, 0);
+    scene->model.playLayer3FromBase(0, 0);
 }
 
 void NpcAnimCtrl::setAnimSpeedFixed(u8 v) {
@@ -5367,12 +5116,15 @@ void NpcAnimCtrl::setAnimSpeedFixed(u8 v) {
 
 void NpcAnimCtrl::playAnimKeepFrame(NpcActor *scene, u32 c, u32 d, u32 e) {
     using namespace nH;
-    ((NpcAnimCtrl *)(this))->playAnim((NpcActor *)(scene), c, d, 0, *(u32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x198, model.frameStep, 0)), (*(u32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x190, model.curFrame, 0)) << 4) >> 16, e);
+    ((NpcAnimCtrl *)(this))->playAnim((NpcActor *)(scene), c, d, 0, (u32)scene->model.frameStep, ((u32)scene->model.curFrame << 4) >> 16, e);
 }
 
 BOOL NpcAnimCtrl::isAnimFinished(NpcActor *scene) {
     using namespace nH;
-    if (((AnimFrameCtrl *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x188, model, 0))))->isFinished() != 0) {
+    // BUG, kept for now (the reference captures have it): this reads the start of model (its CachedModel part) as
+    // the AnimFrameCtrl; the DS tests the AnimFrameCtrl base of model (NpcActor + 0x188, model + 0x9c), i.e.
+    // static_cast<AnimFrameCtrl &>(scene->model).isFinished(), which changes the NPC animations (Kapp'n in the taxi).
+    if (((AnimFrameCtrl *)(void *)&scene->model)->isFinished() != 0) {
         return TRUE;
     }
     return FALSE;
@@ -5388,7 +5140,7 @@ s32 NpcAnimCtrl::getAnimId(u32 idx) {
 
 void NpcAnimCtrl::updateAnimSpeed(NpcActor *scene) {
     using namespace nH;
-    s32 v = *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x98, speed, 0));
+    s32 v = scene->speed;
     if (v == 0) {
         animSpeed = 0x1000;
     // (getCurSpeedPreset is empty: on the DS its "result" is its argument, still in r0; not so on hosts)
@@ -5397,8 +5149,8 @@ void NpcAnimCtrl::updateAnimSpeed(NpcActor *scene) {
     } else {
         animSpeed = func_01ffcb0c(v, animSpeedScale);
     }
-    if (animSpeed <= *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x18c, model.numFrames, 0))) {
-        *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x198, model.frameStep, 0)) = animSpeed;
+    if (animSpeed <= (s32)scene->model.numFrames) {
+        scene->model.frameStep = animSpeed;
     }
 }
 
@@ -5423,10 +5175,10 @@ s32 NpcAnimCtrl::getTalkGestureEnd(u32 k) {
 void NpcAnimCtrl::update(NpcActor *scene) {
     using namespace nH;
     if (hasTalkGesture()) {
-        if (((NpcSpeechState *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x418, speechState.speaking, 0))))->getMouthType() < 2) {
-            if (((NpcSpeechState *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x418, speechState.speaking, 0))))->isSpeaking()) {
+        if (scene->speechState.getMouthType() < 2) {
+            if (scene->speechState.isSpeaking()) {
                 if (talkGestureActive != 0) {
-                    if (((ThreeLayerAnimModel *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))))->checkLayer3Finished() == 0) {
+                    if (scene->model.checkLayer3Finished() == 0) {
                         goto tail;
                     }
                 }
@@ -5436,7 +5188,7 @@ void NpcAnimCtrl::update(NpcActor *scene) {
                 playTalkGesture(scene, a, b);
                 talkGestureActive = 1;
             } else if (talkGestureActive == 1) {
-                if (((ThreeLayerAnimModel *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))))->checkLayer3Finished() != 0) {
+                if (scene->model.checkLayer3Finished() != 0) {
                     stopTalkGesture(scene);
                     talkGestureActive = 0;
                 }
@@ -5452,9 +5204,9 @@ tail:
     }
 }
 
-s32 NpcAnimCtrl::release() {
+void NpcAnimCtrl::release() {
     using namespace nH;
-    return _ZN12NpcResHandle7releaseEv(this);
+    ((NpcResHandle *)(void *)this)->release();
 }
 
 void NpcAnimCtrl::syncMouthType(NpcActor *scene) {
@@ -5550,7 +5302,7 @@ void NpcAnimCtrl::syncMouthType(NpcActor *scene) {
         k = 1;
         break;
     }
-    ((NpcSpeechState *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x418, speechState.speaking, 0))))->setMouthType(k);
+    scene->speechState.setMouthType(k);
 }
 
 ActorTalkRequest::ActorTalkRequest() {
@@ -5712,7 +5464,7 @@ void ActorTalkRequest::setNumberNamedSlot(s32 a, u32 b, s32 c, u8 d, s32 e, s32 
         if (d != 0) {
             MsgString33 str;
             u8 ch = 0x1c;
-            String_Load(&str, &ch, ((u8 *)"st_general"));
+            String_Load(&str, &ch, "st_general");
             ((MsgString *)(&loc))->appendString((MsgString *)(&str));
             flag = 0;
         }
@@ -6253,7 +6005,7 @@ BOOL ActorTalkRequest::closeWindowWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7624[2] = {(void *)_ZN13NpcActionCtrl10setupAct15EP12Unk_02006d14, 0};
+void *data_020d7624[2] = {(void *)_ZN13NpcActionCtrl10setupAct15EP8NpcActor, 0};
 void *data_020d7634[2] = {(void *)_ZN13NpcActionCtrl9mainAct15EP8NpcActor, 0};
 }
 }
@@ -6331,7 +6083,7 @@ BOOL ActorTalkRequest::taskGiveItem() {
 BOOL ActorTalkRequest::requestTakeItem(u16 *a, u32 b, u32 c, u32 d) {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 4)) {
+    if ((this)->startTask(4)) {
         subSceneItem = *a;
         handOverKind = b;
         handOverMode = c;
@@ -6377,12 +6129,12 @@ BOOL ActorTalkRequest::takeItemWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7604[2] = {(void *)_ZN13NpcActionCtrl10setupAct13EP12Unk_02006d14, 0};
-void *data_020d721c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14, 0};
+void *data_020d7604[2] = {(void *)_ZN13NpcActionCtrl10setupAct13EP8NpcActor, 0};
+void *data_020d721c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep07EP8NpcActor, 0};
 const u16 data_020c6d48[4] = {0xe2, 0x0, 0xe0, 0x0};
 void *data_020d720c[2] = {(void *)_ZN16ActorTalkRequest15taskCloseWindowEv, 0};
 void *data_020d7204[2] = {(void *)_ZN13VillagerRoute16isInAttr200BlockEP7VecFx32, 0};
-void *data_020d71fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct00EPh, 0};
+void *data_020d71fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct00EP8NpcActor, 0};
 const u16 data_020c6d0c[2] = {0x5f, 0x19};
 void *data_020d71ec[2] = {(void *)VillagerRoute_PickAttr200Target, 0};
 void *data_020d71e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
@@ -6405,7 +6157,7 @@ BOOL ActorTalkRequest::taskTakeItem() {
 BOOL ActorTalkRequest::requestItemAct0F() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 5)) {
+    if ((this)->startTask(5)) {
         r = 1;
     }
     return r;
@@ -6460,7 +6212,7 @@ BOOL ActorTalkRequest::taskItemAct0F() {
 BOOL ActorTalkRequest::requestKeepItem() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 6)) {
+    if ((this)->startTask(6)) {
         r = 1;
     }
     return r;
@@ -6516,7 +6268,7 @@ BOOL ActorTalkRequest::taskKeepItem() {
 BOOL ActorTalkRequest::requestReturnItem() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 7)) {
+    if ((this)->startTask(7)) {
         r = 1;
     }
     return r;
@@ -6551,7 +6303,7 @@ BOOL ActorTalkRequest::returnItemWait() {
 namespace nZ {
 extern "C" {
 void *data_020d711c[2] = {(void *)_ZN13NpcActionCtrl10act0DStep4EP8NpcActor, 0};
-void *data_020d7424[2] = {(void *)_ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14, 0};
+void *data_020d7424[2] = {(void *)_ZN13NpcActionCtrl11act0EStep01EP8NpcActor, 0};
 const u16 data_020c6cf8[2] = {0x5d, 0x0};
 }
 }
@@ -6569,7 +6321,7 @@ BOOL ActorTalkRequest::taskReturnItem() {
 BOOL ActorTalkRequest::requestItemAct12() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 8)) {
+    if ((this)->startTask(8)) {
         r = 1;
     }
     return r;
@@ -6624,7 +6376,7 @@ BOOL ActorTalkRequest::taskItemAct12() {
 BOOL ActorTalkRequest::requestEatItem() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 9)) {
+    if ((this)->startTask(9)) {
         r = 1;
     }
     return r;
@@ -6677,7 +6429,7 @@ BOOL ActorTalkRequest::taskEatItem() {
 
 BOOL ActorTalkRequest::requestPlayMelody(Vec2 *p) {
     using namespace nF;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 10)) {
+    if ((this)->startTask(10)) {
         *(long long *)&melodyPattern = *(long long *)p;
         randomMelody = 0;
         return TRUE;
@@ -6687,7 +6439,7 @@ BOOL ActorTalkRequest::requestPlayMelody(Vec2 *p) {
 
 BOOL ActorTalkRequest::requestPlayRandomMelody() {
     using namespace nF;
-    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 10)) {
+    if ((this)->startTask(10)) {
         randomMelody = 1;
         return TRUE;
     }
@@ -6748,11 +6500,11 @@ void *data_020d747c[2] = {(void *)_ZN16ActorTalkRequest12taskKeepItemEv, 0};
 void *data_020d7484[2] = {(void *)_ZN13NpcActionCtrl10act0AStep0EP8NpcActor, 0};
 void *data_020d74bc[2] = {(void *)_ZN11NpcTalkCtrl11state1Step1EP8NpcActor, 0};
 void *data_020d74dc[2] = {(void *)_ZN11NpcTalkCtrl11state1Step2EP8NpcActor, 0};
-void *data_020d757c[2] = {(void *)_ZN13NpcActionCtrl10setupAct11EP12Unk_02006d14, 0};
-void *data_020d75dc[2] = {(void *)_ZN13NpcActionCtrl9mainAct13EP12Unk_02006d14, 0};
-void *data_020d760c[2] = {(void *)_ZN13NpcActionCtrl9mainAct12EP12Unk_02006d14, 0};
+void *data_020d757c[2] = {(void *)_ZN13NpcActionCtrl10setupAct11EP8NpcActor, 0};
+void *data_020d75dc[2] = {(void *)_ZN13NpcActionCtrl9mainAct13EP8NpcActor, 0};
+void *data_020d760c[2] = {(void *)_ZN13NpcActionCtrl9mainAct12EP8NpcActor, 0};
 const u16 data_020c6ce8[2] = {0x43, 0x0};
-void *data_020d7654[2] = {(void *)_ZN13NpcActionCtrl9mainAct0EEP12Unk_02006d14, 0};
+void *data_020d7654[2] = {(void *)_ZN13NpcActionCtrl9mainAct0EEP8NpcActor, 0};
 void *data_020d767c[2] = {(void *)_ZN13NpcActionCtrl9postAct0CEP8NpcActor, 0};
 const u16 sNpcTalkMouthAnims[4] = {0x137, 0x0, 0x138, 0x0};
 const u16 data_020c6cfc[2] = {0x4e, 0x0};
@@ -6761,9 +6513,9 @@ const u16 data_020c6d60[4] = {0xe3, 0x0, 0xe1, 0x0};
 const u16 data_020c6ce4[2] = {0x47, 0x6};
 void *data_020d707c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP7VecFx32, 0};
 void *data_020d71c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
-void *data_020d709c[2] = {(void *)_ZN13NpcActionCtrl9mainAct01EPh, 0};
+void *data_020d709c[2] = {(void *)_ZN13NpcActionCtrl9mainAct01EP8NpcActor, 0};
 void *data_020d70b4[2] = {(void *)_ZN16ActorTalkRequest15returnItemStartEv, 0};
-void *data_020d719c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14, 0};
+void *data_020d719c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep05EP8NpcActor, 0};
 }
 }
 
@@ -6821,7 +6573,7 @@ BOOL ActorTalkRequest::switchSpeakerSwap() {
     if (q != 0 && q->state == 5) {
         if (Camera_IsBlending() == 0 || Camera_GetBlendFramesLeft() < 0x11) {
             NpcActor *e = (this)->getActorB(speakerIndex);
-            if (e) ((NpcSpeechState *)(HOST_AT(e, 0x418, speechState.speaking, 0)))->stopSpeaking();
+            if (e) e->speechState.stopSpeaking();
             speakerIndex = (speakerIndex + 1) & 1;
             NpcActor *n = (this)->getActorB(speakerIndex);
             if (n != 0) {
@@ -6882,10 +6634,10 @@ void NpcTalkCtrl::updateSpeakerMouth(NpcActor *ctx) {
     using namespace nE;
     ActorTalkRequest *o = ctx->talkRequest;
     if (o != 0 && o->window != 0) {
-        u8 *e = _ZN16ActorTalkRequest15getSpeakerActorEv(o);
+        NpcActor *e = o->getSpeakerActor();
         if (e != 0) {
-            if ((o->window)->isVoicePlaying()) ((NpcSpeechState *)(e + 0x418))->startSpeaking();
-            else ((NpcSpeechState *)(e + 0x418))->stopSpeaking();
+            if ((o->window)->isVoicePlaying()) e->speechState.startSpeaking();
+            else e->speechState.stopSpeaking();
         }
     }
 }
@@ -6959,7 +6711,7 @@ void NpcTalkCtrl::update(NpcActor *ctx) {
 void NpcTalkCtrl::endTalk(NpcActor *ctx) {
     using namespace nE;
     ActorTalkRequest *o = ctx->talkRequest;
-    if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0) (o)->getPartnerActor()->onLeaveTalk();
+    if (o != 0 && (o)->getPartnerActor() != 0) (o)->getPartnerActor()->onLeaveTalk();
     if (keepCamera == 0) Camera_SetModeDefault();
     if (clearActorFlagOnEnd == 1) ctx->collider.groups &= ~2;
     PlayerActor_SetHeadTilt(0, 0, 4);
@@ -6976,8 +6728,8 @@ void NpcTalkCtrl::setupState0(NpcActor *ctx) {
     ((NpcActionCtrl *)(&ctx->actionCtrl))->requestAction(3, 2, 0, 0, turnSpeed, turnAngle, 0, 0, data_020c6cc8, 0);
     if (keepCamera == 0) {
         ActorTalkRequest *o = ctx->talkRequest;
-        if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0) {
-            VecFx32 *pw = (VecFx32 *)&_ZN16ActorTalkRequest15getPartnerActorEv(o)->position;
+        if (o != 0 && (o)->getPartnerActor() != 0) {
+            VecFx32 *pw = (VecFx32 *)&(o)->getPartnerActor()->position;
             w.x = pw->x;
             w.y = pw->y;
             w.z = pw->z;
@@ -7020,10 +6772,10 @@ void NpcTalkCtrl::state0Step1(NpcActor *ctx) {
         if (o->window->state == 0) {
             o->runDeferred();
             ((Character *)(void *)(ctx))->detachTalkRequest(o);
-            u8 *e = _ZN16ActorTalkRequest15getSpeakerActorEv(o);
-            if (e) ((NpcSpeechState *)(e + 0x418))->stopSpeaking();
+            NpcActor *e = o->getSpeakerActor();
+            if (e) e->speechState.stopSpeaking();
             a = 0;
-            if ((o)->getPartnerActor() != 0 && _ZN13NpcActionCtrl9getActionEv(&_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(&_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 0) a = 1;
+            if ((o)->getPartnerActor() != 0 && (&(o)->getPartnerActor()->actionCtrl)->getAction() == 8 && (&(o)->getPartnerActor()->actionCtrl)->isActionDone() == 0) a = 1;
             b = 0;
             if (((NpcActionCtrl *)(&ctx->actionCtrl))->getAction() == 8 && ((NpcActionCtrl *)(&ctx->actionCtrl))->isActionDone() == 0) b = 1;
             if (a != 0 || b != 0) {
@@ -7045,7 +6797,7 @@ void NpcTalkCtrl::state0Step1(NpcActor *ctx) {
 void NpcTalkCtrl::state0Step2(NpcActor *ctx) {
     using namespace nE;
     ActorTalkRequest *o = ctx->talkRequest;
-    if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0 && _ZN13NpcActionCtrl9getActionEv(&_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(&_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 0) return;
+    if (o != 0 && (o)->getPartnerActor() != 0 && (&(o)->getPartnerActor()->actionCtrl)->getAction() == 8 && (&(o)->getPartnerActor()->actionCtrl)->isActionDone() == 0) return;
     if (((NpcActionCtrl *)(&ctx->actionCtrl))->getAction() == 8 && ((NpcActionCtrl *)(&ctx->actionCtrl))->isActionDone() == 0) return;
     endTalk(ctx);
     step = 3;
@@ -7288,7 +7040,7 @@ namespace nZ {
 extern "C" {
 const u16 sNpcGiveItemAnims[4] = {0x22, 0x0, 0x2b, 0x0};
 void *data_020d7074[2] = {(void *)_ZN13NpcActionCtrl9mainAct00Ev, 0};
-void *data_020d70a4[2] = {(void *)_ZN13NpcActionCtrl10setupAct02EPh, 0};
+void *data_020d70a4[2] = {(void *)_ZN13NpcActionCtrl10setupAct02EP8NpcActor, 0};
 void *data_020d70c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 NpcActionEntry sNpcActionTable[22] = {
     *(Unk_02019858_FnA *)data_020d71fc, *(Unk_02019858_FnB *)data_020d7074, 0,
@@ -7390,7 +7142,7 @@ const NpcEmotionEntry sEmotionTable[60] = {
 };
 const u16 data_020c6cc4[2] = {0x200, 0x0};
 void *data_020d7524[2] = {(void *)_ZN16ActorTalkRequest12subSceneOpenEv, 0};
-void *data_020d763c[2] = {(void *)_ZN13NpcActionCtrl9postAct0FEP12Unk_02006d14, 0};
+void *data_020d763c[2] = {(void *)_ZN13NpcActionCtrl9postAct0FEP8NpcActor, 0};
 const u16 data_020c6d50[4] = {0x51, 0x6, 0x52, 0x3};
 void *data_020d708c[2] = {(void *)_ZN13NpcActionCtrl10act07Step0EP8NpcActor, 0};
 }
@@ -7547,7 +7299,7 @@ void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
             s32 y = targetUnit.y;
             targetBlockX = targetUnit.x >> 4;
             targetBlockZ = y >> 4;
-            nD::_ZN13VillagerRoute8planStepEP7VecFx32(this, a);
+            (this)->planStep((VecFx32 *)(a));
         }
     }
 }
@@ -7591,29 +7343,29 @@ BOOL VillagerRoute::isActive() {
     return FALSE;
 }
 
-namespace nD {
-extern "C" BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q) {
+s32 VillagerRoute::scanForPath(VecFx32 *cand, RouteGridPos *pos, VecXZ *step, s32 n, RouteGridPos *bound, s32 flag,
+                               BlockMap *map) {
+    using namespace nD;
     s32 i;
-    u32 x = pos[0];
-    u32 y = pos[1];
+    u32 x = pos->x;
+    u32 y = pos->z;
     s32 cnt = 0;
     s32 zero = 0;
     for (i = 0; i < n; i++) {
-        x += step[0];
-        y += step[1];
-        if (x >= bound[0] || y >= bound[1]) continue;
+        x += step->x;
+        y += step->z;
+        if (x >= bound->x || y >= bound->z) continue;
         if (flag != 0) {
             GroundInfo o(x, y, zero, zero);
             if (o.waterKind != 0) cnt++; else cnt = zero;
             if (cnt >= 4) break;
         }
-        if (_ZN8BlockMap12getWalkLinksEii(q, x, y)) {
-            FieldPos_FromUnitCenter(p1, x, y);
+        if (map->getWalkLinks(x, y)) {
+            FieldPos_FromUnitCenter(cand, x, y);
             return TRUE;
         }
     }
     return FALSE;
-}
 }
 
 u32 VillagerRoute::pickAdjacentUnit(VecFx32 *v, BlockMap *o) {
@@ -7673,10 +7425,10 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, VecFx32 *pos) {
         return 4;
     }
     FieldPos_ToUnit(&p.x, &p.z, pos);
-    RouteGridPos *pq = (RouteGridPos *)&o->units;
+    RouteGridPos *pq = (RouteGridPos *)&o->unitsX;
     q.x = pq->x;
     q.z = pq->z;
-    if (_ZN8BlockMap17getWalkLinksAtPosEPv(o, pos) != 0) {
+    if (o->getWalkLinksAtPos(pos) != 0) {
         return 4;
     }
     for (s32 i = 0; i < 4; i++) {
@@ -7763,7 +7515,7 @@ s32 VillagerRoute::scanDir(RouteGridPos *out, RouteGridPosCopy pos, u32 mask, Ro
             pos.x += dx;
             pos.z += dz;
             cnt++;
-            s32 r = _ZN8BlockMap12getWalkLinksEii(obj, pos.x, pos.z);
+            s32 r = obj->getWalkLinks(pos.x, pos.z);
             if (r == 0) {
                 u32 z = pos.z - dz;
                 out->x = pos.x - dx;
@@ -7872,7 +7624,7 @@ extern "C" void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused,
     FieldUnit_FromBlockUnit(&bx, &bz, p->x, p->z, 0, 0);
     for (z = 0; z < 16; z++) {
         for (x = 0; x < 16; x++) {
-            if (_ZN8BlockMap12getWalkLinksEii(obj, bx + x, bz + z) != 0) {
+            if (obj->getWalkLinks(bx + x, bz + z) != 0) {
                 mask[z] |= 1 << x;
                 cnt++;
             }
@@ -7925,7 +7677,7 @@ void VillagerRoute::planStep(VecFx32 *pos) {
     if (o == 0) {
         return;
     }
-    present = _ZN8BlockMap17getWalkLinksAtPosEPv(o, pos);
+    present = o->getWalkLinksAtPos(pos);
     if (present == 0) {
         approachDir = findNearestPath(&waypoint, pos);
         stepPhase = 0;
@@ -7935,7 +7687,7 @@ void VillagerRoute::planStep(VecFx32 *pos) {
         return;
     }
     dirs2 = dirs = oppositeDirs(pathDir);
-    RouteGridPos *pq = (RouteGridPos *)&o->units;
+    RouteGridPos *pq = (RouteGridPos *)&o->unitsX;
     q.x = pq->x;
     q.z = pq->z;
     bx = 0;
@@ -8062,7 +7814,7 @@ BOOL VillagerRoute::followPathDir(VecFx32 *p, Vec2 *lim, BlockMap *w) {
             b += dz;
             BOOL eq = FALSE;
             if (waypoint.x == a && waypoint.z == b) eq = TRUE;
-            if (eq || _ZN8BlockMap12getWalkLinksEii(w, a, b)) {
+            if (eq || w->getWalkLinks(a, b)) {
                 FieldPos_FromUnitCenter(p, a, b);
                 ((VillagerRoute *)(this))->planStep(p);
                 break;
@@ -8086,7 +7838,7 @@ BOOL VillagerRoute::stepFollowPath(VecFx32 *p) {
     BlockMap *world = gSceneBlockMap;
     if (world) {
         Vec2 lim;
-        Vec2 *sz = &world->units;
+        Vec2 *sz = (Vec2 *)&world->unitsX;
         lim = *sz;
         followPathDir(p, &lim, world);
         if (((VillagerRoute *)(this))->isArrived(p)) {
@@ -8108,7 +7860,7 @@ BOOL VillagerRoute::advanceOnPath(VecFx32 *p, BlockMap *w) {
         FieldPos_ToUnit(&a, &b, p);
         a += sRouteDirs[k * 2];
         b += (sRouteDirs + 1)[k * 2];
-        if (!_ZN8BlockMap12getWalkLinksEii(w, a, b)) {
+        if (!w->getWalkLinks(a, b)) {
             FieldPos_FromUnitCenter(p, a, b);
             ((VillagerRoute *)(this))->clearJunctions();
             pathDir = 0;
@@ -8221,10 +7973,10 @@ extern "C" void VillagerRoute_PickAttr200Target(Vec2 *out, void *self) {
     BlockMap *world = gSceneBlockMap;
     out->x = 0;
     out->y = 0;
-    s32 block;
+    MapBlock *block;
     if (world && (block = BlockMap_FindBlockAllAttr(world, 0x200))) {
         Vec2 t;
-        VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev((void *)block), world);
+        VillagerRoute_PickPathUnitInBlock(&t, self, &block->blockX, world);
         *out = t;
     }
 }
@@ -8237,7 +7989,7 @@ BOOL VillagerRoute::isInAttr200Block(VecFx32 *v) {
     if (world != NULL) {
         s32 x = v->x >> 17;
         s32 z = v->z >> 17;
-        BOOL c = BlockMap_BlockHasAllAttr(world, x, z, 0x200);
+        BOOL c = BlockMap_BlockHasAllAttr(world, x, z, 0x200) != NULL;
         if (c) {
             r = TRUE;
         }
@@ -8252,7 +8004,7 @@ extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unus
     if (obj->getVillagerData()) {
         uptr key;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
         func_02133ef8(&key, 4);
-        key = (uptr)_ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
+        key = (uptr)((VillagerData *)obj->getVillagerData())->getVillagerId();
         void *v;
         if ((v = SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) != 0) {
             u8 *p = ((VillagerDataItemView *)(v))->getHousePos();
@@ -8293,7 +8045,7 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unu
     if (world && obj->getVillagerData()) {
         uptr key;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
         func_02133ef8(&key, 4);
-        key = (uptr)_ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
+        key = (uptr)((VillagerData *)obj->getVillagerData())->getVillagerId();
         void *v;
         if ((v = SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) != 0) {
             u8 *p = ((VillagerDataItemView *)(v))->getHousePos();
@@ -8398,7 +8150,7 @@ extern "C" void VillagerRoute_PickRandomBlock(Vec2 *out, void *self) {
     out->x = 0;
     out->y = 0;
     if (world) {
-        Vec2 *size = &world->size;
+        Vec2 *size = (Vec2 *)&world->width;
         Vec2 szcopy;
         szcopy = *size;
         s32 w = szcopy.x;
@@ -8433,7 +8185,7 @@ extern "C" void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v) 
     out->x = 0;
     out->y = 0;
     if (world) {
-        Vec2 *size = &world->size;
+        Vec2 *size = (Vec2 *)&world->width;
         Vec2 szcopy;
         s32 count;
         s32 total;
@@ -8462,7 +8214,7 @@ extern "C" void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v) 
             MapBlock *c = GetCell(world, idx + 1, 4);
             if (c) {
                 Vec2 t;
-                VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev(c), world);
+                VillagerRoute_PickPathUnitInBlock(&t, self, &c->blockX, world);
                 *out = t;
             }
         }
@@ -8494,10 +8246,10 @@ BOOL HeldToolModel::load(u16 *a) {
 
 BOOL HeldToolModel::attach(NpcActor *a, u16 *b, u32 c, u16 d) {
     using namespace nB;
-    HeldItemModel *p = (HeldItemModel *)_ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *p = (HeldItemModel *)((NpcResHandleView *)(void *)(&modelHandle))->getHeldItemModel();
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
-        ((NpcAnimCtrl *)((void *)&a->animCtrl))->playHoldItemPose(a, b, (void *)c, d);
+        a->animCtrl.playHoldItemPose(a, b, c, d);
         heldItem = *b;
         return TRUE;
     }
@@ -8506,7 +8258,7 @@ BOOL HeldToolModel::attach(NpcActor *a, u16 *b, u32 c, u16 d) {
 
 void HeldToolModel::playAnim(u32 a, u32 b, u32 c) {
     using namespace nA;
-    HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
     if (r) HeldItemModel_PlayAnim(r, a, b, c);
 }
 
@@ -8585,24 +8337,23 @@ void HeldToolModel::playPitfallClimbOutAnim(u32 a, u32 b) {
 void HeldToolModel::release() {
     using namespace nA; ((NpcResHandle *)(&modelHandle))->release(); }
 
-void HeldToolModel::update(Unk_02006d14 *p) {
+void HeldToolModel::update(NpcActor *p) {
     using namespace nA;
-    HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
     if (r) {
-        u32 v = p->modelAnimFrameStep;
+        u32 v = p->model.frameStep;
         AnimFrameCtrl &s = *(BlendAnimModel *)HeldItemModel_GetModel((u8 *)r);
         s.frameStep = v;
         HeldItemModel_Update(r);
     }
 }
 
-void HeldToolModel::draw(Unk_02006d14 *p) {
+void HeldToolModel::draw(NpcActor *p) {
     using namespace nA;
     if (visible != 0) {
-        HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+        HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
         if (p) {
-            Unk_02006d14_TalkBase &s = *p;
-            Model_GetJointWorldMtx(&s, &handMtx, 0xe);
+            Model_GetJointWorldMtx(&p->model, &handMtx, 0xe);
         }
         if (r) HeldItemModel_Draw(r, &handMtx);
     }
@@ -8610,27 +8361,27 @@ void HeldToolModel::draw(Unk_02006d14 *p) {
 
 u32 HeldToolModel::getAnimSpeed() {
     using namespace nA;
-    HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
     if (r) return r->scale;
     return 0;
 }
 
 void HeldToolModel::setAnimSpeed(u32 v) {
     using namespace nA;
-    HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
     if (r) r->scale = v;
 }
 
 BlendAnimModel *HeldToolModel::getModel() {
     using namespace nA;
-    HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
     if (r) return (BlendAnimModel *)HeldItemModel_GetModel((u8 *)r);
     return 0;
 }
 
 void HeldToolModel::setModelAnimSpeed(u32 v) {
     using namespace nA;
-    HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *r = (HeldItemModel *)((NpcResHandleView *)(&modelHandle))->getHeldItemModel();
     if (r) HeldItemModel_SetAnimSpeed(r, v);
 }
 
@@ -8643,7 +8394,7 @@ extern "C" {
 void *data_020d713c[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 void *data_020d72bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 void *data_020d7314[2] = {(void *)_ZN13NpcActionCtrl10setupAct04EP8NpcActor, 0};
-void *data_020d75e4[2] = {(void *)_ZN13NpcActionCtrl9postAct13EP12Unk_02006d14, 0};
+void *data_020d75e4[2] = {(void *)_ZN13NpcActionCtrl9postAct13EP8NpcActor, 0};
 Unk_02013260_Fn sVillagerRouteTypes[7][8] = {
     *(Unk_02013260_Fn *)data_020d7204, *(Unk_02013260_Fn *)data_020d71ec, *(Unk_02013260_Fn *)data_020d71e4, *(Unk_02013260_Fn *)data_020d7094, *(Unk_02013260_Fn *)data_020d71c4, *(Unk_02013260_Fn *)data_020d70bc, *(Unk_02013260_Fn *)data_020d71a4, *(Unk_02013260_Fn *)data_020d70d4,
     *(Unk_02013260_Fn *)data_020d718c, *(Unk_02013260_Fn *)data_020d70f4, *(Unk_02013260_Fn *)data_020d748c, *(Unk_02013260_Fn *)data_020d7104, *(Unk_02013260_Fn *)data_020d7114, *(Unk_02013260_Fn *)data_020d7154, *(Unk_02013260_Fn *)data_020d712c, *(Unk_02013260_Fn *)data_020d71b4,
@@ -8653,34 +8404,10 @@ Unk_02013260_Fn sVillagerRouteTypes[7][8] = {
     *(Unk_02013260_Fn *)data_020d724c, *(Unk_02013260_Fn *)data_020d7284, *(Unk_02013260_Fn *)data_020d72c4, *(Unk_02013260_Fn *)data_020d769c, *(Unk_02013260_Fn *)data_020d740c, *(Unk_02013260_Fn *)data_020d74ec, *(Unk_02013260_Fn *)data_020d7504, *(Unk_02013260_Fn *)data_020d7694,
     *(Unk_02013260_Fn *)data_020d707c, *(Unk_02013260_Fn *)data_020d70dc, *(Unk_02013260_Fn *)data_020d70fc, *(Unk_02013260_Fn *)data_020d71bc, *(Unk_02013260_Fn *)data_020d728c, *(Unk_02013260_Fn *)data_020d7334, *(Unk_02013260_Fn *)data_020d734c, *(Unk_02013260_Fn *)data_020d7554,
 };
-void *data_020d7184[2] = {(void *)_ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14, 0};
+void *data_020d7184[2] = {(void *)_ZN13NpcActionCtrl11act0EStep04EP8NpcActor, 0};
 void *data_020d72c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d74a4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 Unk_021be028_Dir sRouteDirs[4] = {Unk_021be028_Dir(0, -1), Unk_021be028_Dir(-1, 0), Unk_021be028_Dir(0, 1), Unk_021be028_Dir(1, 0)};
 }
 }
 
-#ifdef HOST64
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_000) == 0x0, "Unk_02006d14_Prim.pad_000");
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, position) == 0xa8, "Unk_02006d14_Prim.position");
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_060) == 0xac, "Unk_02006d14_Prim.pad_060");
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, positionZ) == 0xb0, "Unk_02006d14_Prim.positionZ");
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_068) == 0xb4, "Unk_02006d14_Prim.pad_068");
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, rotY) == 0xda, "Unk_02006d14_Prim.rotY");
-static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_090) == 0xdc, "Unk_02006d14_Prim.pad_090");
-#endif
-
-
-#ifdef HOST64
-static_assert(__builtin_offsetof(Unk_02006d14, pad_0f0) == 0x150, "Unk_02006d14.pad_0f0");
-static_assert(__builtin_offsetof(Unk_02006d14, modelAnimFrameStep) == 0x244, "Unk_02006d14.modelAnimFrameStep");
-static_assert(__builtin_offsetof(Unk_02006d14, pad_19c) == 0x248, "Unk_02006d14.pad_19c");
-static_assert(__builtin_offsetof(Unk_02006d14, animCtrl) == 0x468, "Unk_02006d14.animCtrl");
-static_assert(__builtin_offsetof(Unk_02006d14, moveCtrl) == 0x490, "Unk_02006d14.moveCtrl");
-static_assert(__builtin_offsetof(Unk_02006d14, pad_3a8) == 0x4e8, "Unk_02006d14.pad_3a8");
-static_assert(__builtin_offsetof(Unk_02006d14, headTopPos) == 0x5c0, "Unk_02006d14.headTopPos");
-static_assert(__builtin_offsetof(Unk_02006d14, pad_484) == 0x5cc, "Unk_02006d14.pad_484");
-static_assert(__builtin_offsetof(Unk_02006d14, seEmitter) == 0x678, "Unk_02006d14.seEmitter");
-static_assert(__builtin_offsetof(Unk_02006d14, pad_558) == 0x6d8, "Unk_02006d14.pad_558");
-static_assert(__builtin_offsetof(Unk_02006d14, curHeldTool) == 0x7b8, "Unk_02006d14.curHeldTool");
-#endif

@@ -22,7 +22,7 @@ public:
 
     NpcAnimCtrl();
     ~NpcAnimCtrl();
-    void playHoldItemPose(NpcActor *o, u16 *p, void *q, u16 x);
+    void playHoldItemPose(NpcActor *o, u16 *p, u32 q, u16 x);
     void playAnim(NpcActor *o, s32 kind, s32 a3, s32 a4, s32 a5, u16 a6, s32 mode);
     BOOL isPlayingAnim(s32 mode, void *p);
     s32 resolveAnimId(s32 mode, void *p);
@@ -43,7 +43,7 @@ public:
     void *getTalkGestureData();
     void loadTalkGesture();
     BOOL hasTalkGesture();
-    s32 release();
+    void release();
 };
 
 #endif
