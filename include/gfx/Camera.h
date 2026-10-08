@@ -91,12 +91,13 @@ public:
     /* 0x14c */ s32 currentDistance, currentOffset, currentOffsetY, currentOffsetZ, currentFocus, currentFocusY, currentFocusZ;
     /* 0x168 */ s32 eye, eyeY, eyeZ;
     /* 0x174 */ s16 roll; // set by the ov068 sway mode (Camera_UpdateSway)
-    /* 0x176 */ u8 pad_176[0x188 - 0x176];
+    /* 0x176 */ s16 pad_176;
+    /* 0x178 */ s32 roomMinX, roomMaxX, roomMinZ, roomMaxZ;  // the room floor bounds (calcRoomBounds)
     /* 0x188 */ s32 lookTarget, lookTargetY, lookTargetZ, lookEye, lookEyeY, lookEyeZ, lookUp, lookUpY, lookUpZ;
     /* 0x1ac */ s16 eyeCurveAngle;
     /* 0x1ae */ s16 pad_1ae;
     /* 0x1b0 */ s32 aspect, nearClip, farClip;
-    /* 0x1bc */ u8 pad_1bc[0x1c8 - 0x1bc];
+    /* 0x1bc */ s32 fovSin, fovCos, fovTan;  // of fovy (setFovy)
     /* 0x1c8 */ s16 fovy;
     /* 0x1ca */ u8 focusIsPair;
     /* 0x1cb */ u8 pad_1cb;

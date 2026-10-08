@@ -367,6 +367,16 @@ extern "C" s32 Camera_UpdateSway(Camera *c) {
 }
 
 
+// The mode table entries (src/main/unk_0203a0cc.cpp): this class is a view of the Camera.
+extern "C" BOOL CameraEventModes_InitMode13(Camera *c) { return ((CameraEventModes *)c)->initMode13(); }
+extern "C" BOOL CameraEventModes_InitModeFollowTarget(Camera *c) { return ((CameraEventModes *)c)->initModeFollowTarget(); }
+extern "C" BOOL CameraEventModes_InitModeSway(Camera *c) { return ((CameraEventModes *)c)->initModeSway(); }
+extern "C" BOOL CameraEventModes_InitModeTownTour(Camera *c) { return ((CameraEventModes *)c)->initModeTownTour(); }
+extern "C" void CameraEventModes_UpdateMode13(Camera *c) { ((CameraEventModes *)c)->updateMode13(); }
+extern "C" void CameraEventModes_UpdateModeFollowTarget(Camera *c) { ((CameraEventModes *)c)->updateModeFollowTarget(); }
+extern "C" void CameraEventModes_UpdateModeSway(Camera *c) { ((CameraEventModes *)c)->updateModeSway(); }
+extern "C" void CameraEventModes_UpdateModeTownTour(Camera *c) { ((CameraEventModes *)c)->updateModeTownTour(); }
+
 #ifdef HOST64
 static_assert(__builtin_offsetof(CameraEventModes, pad_00) == 0x0, "CameraEventModes.pad_00");
 static_assert(__builtin_offsetof(CameraEventModes, targetFocus) == 0x150, "CameraEventModes.targetFocus");
