@@ -6,8 +6,18 @@
 #include "types.h"
 struct SndEnt;
 #ifdef __cplusplus
+#include "snd/BgmBeatPhase.h"
 #include "snd/SndMgr.h"
-#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SndVoice_GetSyllable
+s32 SndVoice_GetSyllable(s32 a, s32 b);
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -28,7 +38,7 @@ void SndMgr_SetVoiceType(SndMgr *self, u32 v);
 void SndMgr_PlayVoice(SndMgr *self, s32 a, u8 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_SndMgr_LoadBank
-void SndMgr_LoadBank(SndMgr *self, void *a);
+void SndMgr_LoadBank(SndMgr *self, u32 bankNo);
 #endif
 #ifndef PROTO_LOCAL_SndMgr_Rand
 u16 SndMgr_Rand(SndMgr *self, u32 n);
@@ -88,7 +98,7 @@ void SndMgr_RestoreSubPlayers(SndMgr *self);
 void SndMgr_StartVolumeFadeIn(SndMgr *self);
 #endif
 #ifndef PROTO_LOCAL_SndMgr_GetBeatState
-void *SndMgr_GetBeatState(SndMgr *self);
+BgmBeatPhase *SndMgr_GetBeatState(SndMgr *self);
 #endif
 #ifndef PROTO_LOCAL_SndMgr_UpdateVolumeCurve
 void SndMgr_UpdateVolumeCurve(SndMgr *self, u32 a);
@@ -143,9 +153,6 @@ void SndMgr_UpdateVoice(SndMgr *self);
 #endif
 #ifndef PROTO_LOCAL_SndMgr_GetVoiceSeqIndex
 u16 SndMgr_GetVoiceSeqIndex(SndMgr *self, u16 id);
-#endif
-#ifndef PROTO_LOCAL_SndVoice_GetSyllable
-s32 SndVoice_GetSyllable(s32 a, s32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_gSndPanTrackMask

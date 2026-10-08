@@ -7,12 +7,8 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_data_0213bd28  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd34  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd40  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd60  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bd70  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213be50  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_021053f4.h"
+#include "proto/autoload_2/unk_0213bd28.h"
 #include "proto/itcm/unk_01ff8000.h"
 #include "proto/itcm/unk_01ff8228.h"
 #include "proto/itcm/unk_01ff8ad4.h"
@@ -439,7 +435,7 @@ void MIi_FIFOCallback(void) {
 // MIi_DmaSetParams
 void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
-    vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
+    vu32 *p = (vu32 *)0x040000b0 + dmaNo * 3;  // DMAn: SAD, DAD, CNT
     IO_W(p, src);
     IO_W((p + 1), dest);
     IO_W((p + 2), ctrl);
@@ -485,7 +481,7 @@ void MI_WaitDma(u32 dmaNo) {
     while (IO_R(dmaCntp) & 0x80000000) {
     }
     if (dmaNo == 0) {
-        vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
+        vu32 *p = (vu32 *)0x040000b0 + dmaNo * 3;  // DMAn: SAD, DAD, CNT
         IO_W(p, 0);
         IO_W((p + 1), 0);
         IO_W((p + 2), 0x81400001);
@@ -507,11 +503,11 @@ void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (
     }
     data_027e0414.isBusy = TRUE;
     data_027e0414.dmaNo = dmaNo;
-    data_027e0414.src = (u32)src;
+    data_027e0414.src = (u32)(uptr)src;  // a DMA source address (the bus is 32 bits: the DS memory is mapped below 4 GB)
     data_027e0414.length = commandLength;
     data_027e0414.callback = callback;
     data_027e0414.arg = arg;
-    MIi_CheckDma0SourceAddress(dmaNo, (u32)src, commandLength, 0);
+    MIi_CheckDma0SourceAddress(dmaNo, data_027e0414.src, commandLength, 0);
     MI_WaitDma(dmaNo);
     {
         u32 enabled = OS_DisableInterrupts();

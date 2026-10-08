@@ -2,6 +2,7 @@
 #include "game/Random.h"
 #include "gfx/DebugColor.h"
 #include "nitro/io_access.h"
+#include "sys/OSThread.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -89,11 +90,11 @@ u8 sFatalEntered;
 DebugColor data_021cb3e0(20, 20, 31, 31);
 s32 sVBlankCount;
 DebugColor data_021cb3c8(31, 31, 20, 31);
-u32 gFrameWaitQueue[2];
+OSThreadQueue gFrameWaitQueue;
 DebugColor data_021cb3c4(20, 31, 20, 31);
 DebugColor data_021cb3cc(20, 31, 31, 31);
 DebugColor data_021cb3d0(20, 24, 24, 31);
-u32 gVBlankQueue[2];
+OSThreadQueue gVBlankQueue;
 Random data_021cb3d4;
 u8 sVBlankReady;
 u16 gMainWaitingFrame;

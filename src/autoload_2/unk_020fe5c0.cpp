@@ -12,8 +12,6 @@
 #include "nitro/mtx.h"
 #include "gfx/SplEmitterE.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_data_021f5c40  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_021f5c44  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020fe4b4.h"
 #include "proto/autoload_2/unk_020fe5c0.h"
 #include "proto/autoload_2/unk_02117984.h"
@@ -55,8 +53,6 @@ extern "C" {
 extern u32 data_021f5c3c;
 extern const s16 data_02135f44[];
 extern VecFx16 data_0213bba4;
-extern u16 data_021f5c40;
-extern u16 data_021f5c44;
 
 void VEC_Fx16CrossProduct(const VecFx16 *a, const VecFx16 *b, VecFx16 *out);
 s32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b);

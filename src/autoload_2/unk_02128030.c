@@ -10,13 +10,12 @@ typedef signed int s32;
 #include "types64.h"
 
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
-#define PROTO_LOCAL___flush_all  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128a20.h"
 #include "proto/autoload_2/unk_0212ef04.h"
 
-// MSL FILE (offsets as used by the code: handle 0, mode 4, state 8, eof 12, error 13, ..., idle_proc 72)
+// MSL FILE (offsets as used by the code: handle 0, mode 4, state 8, eof 12, error 13, ..., ref_con 72)
 typedef struct FILE {
     u32 handle;
     struct {
@@ -32,7 +31,9 @@ typedef struct FILE {
     } state;
     u8 eof;
     u8 error;
-    u8 pad_e[10];
+    u8 pad0e[4];
+    u8 ungetc_buffer[2];
+    u16 ungetc_wide_buffer[2];
     u32 position;
     u8 *buffer;
     u32 buffer_size;
@@ -41,14 +42,14 @@ typedef struct FILE {
     u32 buffer_alignment;
     u32 saved_buffer_len;
     u32 buffer_pos;
-    int (*position_proc)(u32, u32 *, int, u32);
-    int (*read_proc)(u32, u8 *, u32 *, u32);
-    int (*write_proc)(u32, u8 *, u32 *, u32);
+    int (*position_proc)(u32, u32 *, int, void *);
+    int (*read_proc)(u32, u8 *, u32 *, void *);
+    int (*write_proc)(u32, u8 *, u32 *, void *);
     int (*close_proc)(u32);
-    u32 idle_proc;
+    void *ref_con;           // passed to the procs
 } FILE;
 
-extern FILE data_0213c238, data_0213c284, data_0213c2d0; // stdout/stdin/stderr style FILE objects (locks 2..4)
+extern FILE data_0213c238[3]; // the three standard FILE objects (locks 2..4; defined in unk_0212703c.c)
 extern OSMutex data_02200298[9]; // the critical-region mutexes (autoload_3 bss, defined below)
 extern u32 data_02200250[9];     // mutex owner thread ids
 extern s32 data_02200274[9];     // mutex lock counts
@@ -194,9 +195,9 @@ int ftell(FILE *file) {
     OSMutex *m;
     int r;
     OSThread *t;
-    if (file == &data_0213c238) idx = 2;
-    else if (file == &data_0213c284) idx = 3;
-    else if (file == &data_0213c2d0) idx = 4;
+    if (file == &data_0213c238[0]) idx = 2;
+    else if (file == &data_0213c238[1]) idx = 3;
+    else if (file == &data_0213c238[2]) idx = 4;
     else idx = 5;
     m = &data_02200298[idx];
     if (OS_TryLockMutex(m) == 0) {
@@ -243,7 +244,7 @@ int _fseek(FILE *file, u32 offset, int whence) {
         file->state.io_state = 0;
     }
     if (file->state.io_state == 0) {
-        if (file->position_proc != 0 && file->position_proc(file->handle, &offset, whence, file->idle_proc) != 0) {
+        if (file->position_proc != 0 && file->position_proc(file->handle, &offset, whence, file->ref_con) != 0) {
             file->error = 1;
             file->buffer_len = 0;
             data_0220064c = 40;
@@ -262,9 +263,9 @@ int fseek(FILE *file, int offset, int whence) {
     OSMutex *m;
     int r;
     OSThread *t;
-    if (file == &data_0213c238) idx = 2;
-    else if (file == &data_0213c284) idx = 3;
-    else if (file == &data_0213c2d0) idx = 4;
+    if (file == &data_0213c238[0]) idx = 2;
+    else if (file == &data_0213c238[1]) idx = 3;
+    else if (file == &data_0213c238[2]) idx = 4;
     else idx = 5;
     m = &data_02200298[idx];
     if (OS_TryLockMutex(m) == 0) {
@@ -330,7 +331,7 @@ u32 fread(const void *ptr, u32 size, u32 n, FILE *file) {
     OSMutex *m;
     u32 r;
     OSThread *t;
-    idx = (file == &data_0213c238) ? 2 : 5;
+    idx = (file == &data_0213c238[0]) ? 2 : 5;
     m = &data_02200298[idx];
     if (OS_TryLockMutex(m) == 0) {
         data_02200250[idx] = data_021fcc2c.list->id;

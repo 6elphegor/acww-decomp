@@ -484,10 +484,10 @@ BOOL DwcFriendData_IsValid(void *p);
 BOOL DwcFriendData_IsFriendKey(void *p);
 #endif
 #ifndef PROTO_LOCAL_DwcFriendData_FromCodeDigits
-BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx);
+BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *userData);
 #endif
 #ifndef PROTO_LOCAL_DwcFriendData_ToCodeDigits
-BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf);
+BOOL DwcFriendData_ToCodeDigits(void *friendData, u8 *buf);
 #endif
 #ifndef PROTO_LOCAL_DwcFriendData_IsNotFriendKey
 BOOL DwcFriendData_IsNotFriendKey(void *p);

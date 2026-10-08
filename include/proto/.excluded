@@ -156,11 +156,6 @@ Backup_WriteAsync
 BgTransfer_GetPaletteCost
 BgTransfer_GetPaletteRangeCost
 BgTransfer_GetScreenCost
-BgmSyncSnd_ReadHeader
-BgmSyncSnd_ReadVars
-BgmSyncSnd_Release
-BgmSyncSnd_SelectStep
-BgmSyncSnd_UpdatePosition
 Bits16_Clear
 Bits16_Set
 BlendAnimModel_Play
@@ -1488,16 +1483,6 @@ Math_StepS16
 Math_StepS32
 Math_StepS32Alt
 Math_StepU8
-MelodyBeat_Init
-MelodyBeat_ReadParams
-MelodyBeat_Stop
-MelodyPlayer_Init
-MelodyPlayer_StartTrackA
-MelodyPlayer_StopTrackB
-MelodyTrack_Init
-MelodyTrack_PlayStep
-MelodyTrack_ReadParams
-MelodyTrack_Reset
 Mem_Equal
 ModelSet_Find
 ModelSet_Load
@@ -1530,6 +1515,8 @@ Msg_SkipLines
 MuseumAquarium_Create
 MuseumAquarium_FishStateNone
 MuseumDisplay_NodeCallback
+NNS_FndMountArchive
+NNS_FndUnmountArchive
 NTSLengthSB
 NasAuth_Abort
 NasAuth_BuildRequest

@@ -10,72 +10,35 @@
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
 #include "snd/Player.h"
-
-
-struct Group;
-typedef void (*GroupFn)(Group *g, s32 i, s32 v);
-
+#include "proto/autoload_2/unk_020ede18.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/main/unk_0206d49c.h"
 
 extern "C" {
-void Fatal_Trap(void);
-void NNS_SndHandleInit(void *p);
-void NNS_SndPlayerStopSeq(void *p, u32 x);
-void NNS_SndArcPlayerStartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void NNS_SndHandleReleaseSeq(void *p);
-BOOL SndSeVoice_IsHeld(Ent *e);
-void SndSeVoice_Stop(Ent *e, s32 a);
-BOOL SndSeVoice_IsPlayingId(Ent *e, u32 a, u32 b);
-void SndSeVoice_SetFlag(Ent *e, s32 bit, s32 on);
-void SndSeVoice_SetParams(Ent *e, s32 c, s32 d);
-s32 SndSeGroup_FindFreeVoice(Group *g);
-void SndSeVoice_StartHeld(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void SndSeVoice_Start(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void SndSeGroup_SetFlag(Group *g, s32 bit, s32 on);
-void SndSeVoice_Init(Ent *e);
-void SndSeGroup_EvalListener(PlayCtx *c);
-InfoB *NNS_SndArcGetSeqArcSeqParam(u32 a, u32 b);
-void NNS_SndPlayerSetVolume(void *p, s32 v);
-void NNS_SndPlayerSetPlayerPriority(void *p, s32 v);
-void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
-void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
-void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
-extern Player gSndSeSystem;
+// the NNS sound / foundation libraries (their definitions use file-local types: unk_02109830.c Handle, unk_0210b448.c,
+// unk_02100234.c NNSFndList): a voice (Ent) starts with its sound handle
+void NNS_SndHandleInit(void *h);
+void NNS_SndPlayerStopSeq(void *h, s32 frames);
+void NNS_SndHandleReleaseSeq(void *h);
+InfoB *NNS_SndArcGetSeqArcSeqParam(u32 seqArc, u32 idx);
+void NNS_SndPlayerSetVolume(void *h, u8 v);
+void NNS_SndPlayerSetPlayerPriority(void *h, u8 prio);
+void NNS_SndPlayerSetTrackPan(void *h, u32 mask, u32 pan);
+void NNS_SndPlayerSetTrackVolume(void *h, u32 mask, s32 v);
+void NNS_SndPlayerSetTrackPitch(void *h, u32 mask, u32 pitch);
 void *NNS_FndGetPrevListObject(void *list, void *obj);
 void *NNS_FndGetNextListObject(void *list, void *obj);
 void NNS_FndRemoveListObject(void *list, void *obj);
 void NNS_FndAppendListObject(void *list, void *obj);
 
-extern s32 (*gSndListenerDistanceCallback)(PlayCtx *);
-extern s32 (*gSndListenerVolumeCallback)(PlayCtx *);
-extern s32 (*gSndListenerPanCallback)(PlayCtx *);
-extern u16 gSndPanTrackMask;
-void SndSeGroup_StartVoice(Group *g, s32 i, s32 v);
-void SndSeGroup_ApplyVoiceParams(Group *g, s32 i);
-}
-extern "C" {
-s32 Snd_LoadGroup(u32 a);
-}
-
-// PROTOS-BEGIN
-extern "C" {
+// this file's functions that the generated header leaves out (Group, Player: names several source files define)
 void SndSeGroup_StopHeld(Group *g, s32 a);
 void SndSeGroup_StopAll(Group *g, s32 a);
 void SndSeGroup_StopVoice(Group *g, s32 i, s32 a);
 void SndSeGroup_ReleaseAll(Group *g);
 void SndSeGroup_Shutdown(Group *g);
-s32 SndSeGroup_FindFreeVoice(Group *g);
-void SndSeGroup_SetFlag(Group *g, s32 bit, s32 on);
-BOOL SndSeVoice_IsHeld(Ent *e);
-void SndSeVoice_SetFlag(Ent *e, s32 bit, s32 on);
-void SndSeVoice_Stop(Ent *e, s32 x);
-BOOL SndSeVoice_IsPlayingId(Ent *e, u32 a, u32 b);
-void SndSeVoice_StartHeld(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void SndSeVoice_Start(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void SndSeVoice_SetParams(Ent *e, s32 c, s32 d);
-void SndSeVoice_Init(Ent *e);
-void SndSeGroup_EvalListener(PlayCtx *p);
-void SndSeGroup_ApplyVoiceParams(Group *g, s32 i);
-void SndSeGroup_StartVoice(Group *g, s32 i, s32 v);
 }
 
 extern "C" void SndList_InitLink(void **p) {
@@ -228,10 +191,6 @@ extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
 }
 #ifdef HOST64
 #include "snd/SndSeEmitter.h"
-#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNS_SndArcPlayerStartSeqArcEx  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndPanTrackMask  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020ede18.h"
 static_assert(sizeof(SndHandle) == sizeof(Group), "SndHandle views Group");
 static_assert(__builtin_offsetof(SndHandle, volCb) == __builtin_offsetof(Group, applyParamsFn), "SndHandle::volCb");
 #endif
@@ -447,8 +406,6 @@ extern "C" void SndSeGroup_StopHeld(Group *g, s32 a) {
         e++;
     } while (i < g->numVoices);
 }
-
-// PROTOS-END
 
 extern "C" BOOL SndSeSystem_LoadGroup(Player *o) {
     u32 id;

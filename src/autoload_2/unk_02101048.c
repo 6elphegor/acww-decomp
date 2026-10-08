@@ -62,7 +62,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
+#define HH(e) ((HeapHead *)((u8 *)(e) - __builtin_offsetof(HeapHead, u)))  // from its ExpHead / FrmHead part
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -83,8 +83,6 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
-static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
         volatile u32 zero = 0;
@@ -122,14 +120,6 @@ HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
 
 #define FRM(h) (&(h)->u.frm)
 
-extern BOOL FS_OpenFile(void *file, const char *path); // FS_OpenFile
-extern void FS_CloseFile(void *file);                   // FS_CloseFile
-extern BOOL FS_UnloadArchive(void *arc);
-extern void FS_ReleaseArchiveName(void *arc);                    // FS_ReleaseArchiveName
-extern void FS_InitArchive(void *arc);                    // FS_InitArchive
-extern u32 strlen(const char *s);                 // strlen
-extern BOOL FS_RegisterArchiveName(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
-extern BOOL FS_LoadArchive(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
 
 BOOL func_0210149c(u32 *narc);
 
@@ -150,7 +140,6 @@ extern u16 data_021f5cb0;
 
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
-s32 NNS_GfdFreeFrmTexVram();
 
 // prototypes
 void *NNS_FndGetPrevListObject(NNSFndList *list, void *obj);
@@ -199,28 +188,23 @@ void FreeHead(HeapHead *heap);
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-BOOL NNS_FndUnmountArchive(void *arc);
-BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
 BOOL func_0210149c(u32 *narc);
-s32 FreeTexVram_();
-s32 AllocTexVram_();
-s32 FreePlttVram_();
-s32 AllocPlttVram_();
-s32 NNS_GfdFreeFrmTexVram();
+s32 NNS_GfdFreeFrmTexVram(u32 texKey);
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
-s32 NNS_GfdFreeFrmTexVram() { return 0; }
+s32 NNS_GfdFreeFrmTexVram(u32 texKey) { return 0; }
 
-s32 AllocPlttVram_() { return 0; }
+// NNS_Gfd dummy functions: the default VRAM managers until one is set up (NNSGfdFuncAllocTexVram / FreeTexVram /
+// AllocPlttVram / FreePlttVram)
+static u32 AllocPlttVram_(u32 szByte, BOOL is4pltt, u32 opt) { return 0; }
 
-s32 FreePlttVram_() { return -1; }
+static s32 FreePlttVram_(u32 plttKey) { return -1; }
 
-s32 AllocTexVram_() { return 0; }
+static u32 AllocTexVram_(u32 szByte, BOOL is4x4comp, u32 opt) { return 0; }
 
-// NNS_Gfd dummy functions
-s32 FreeTexVram_() { return -1; }
+static s32 FreeTexVram_(u32 texKey) { return -1; }
 
 // NNS: check NARC header ("NARC", byte order 0xfffe, version 0x0100)
 BOOL func_0210149c(u32 *narc) {
@@ -231,14 +215,22 @@ BOOL func_0210149c(u32 *narc) {
 
 #include "sys/NNSFndArchive.h"
 #include "uptr.h"
-#define PROTO_LOCAL_FS_InitArchive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_ReleaseArchiveName  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_0210169c.h"
+#include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_0212703c.h"
+extern BOOL FS_OpenFile(FSFile *file, const char *path);   // src/autoload_2/unk_02119434.c
+extern BOOL FS_CloseFile(FSFile *file);                    // src/autoload_2/unk_02119434.c
+extern BOOL FS_UnloadArchive(FSArc *arc);                  // src/autoload_2/unk_02118f58.c
+extern u32 strlen(const char *s);                          // src/autoload_2/unk_0212a120.c
+extern BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);   // src/autoload_2/unk_02119020.c
+extern BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd,
+                           FSIoFunc wr);                   // src/autoload_2/unk_02119020.c
 // NNS_FndMountArchive
-BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
+// (the FS archive takes the image's address as a u32: its read functions address the archive by u32 offsets from it,
+// below 4 GB)
+BOOL NNS_FndMountArchive(struct NNSFndArchive *arc, const char *name, u32 *narc) {
     u8 *fat;
     u8 *fnt;
     u8 *img;
@@ -247,7 +239,7 @@ BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
     u32 base;
     int count;
     img = fnt = fat = 0;
-    if (func_0210149c(narc) == 0) return (BOOL)(u32)fat;
+    if (func_0210149c(narc) == 0) return 0;
     chunk = (u32 *)((u8 *)narc + *(u16 *)((u8 *)narc + 12));
     count = *(u16 *)((u8 *)narc + 14);
     for (i = 0; i < count; i++) {
@@ -258,22 +250,22 @@ BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
         }
         chunk = (u32 *)((u8 *)chunk + chunk[1]);
     }
-    FS_InitArchive(arc);
-    // (by the type: the members move on 64-bit hosts)
-    ((struct NNSFndArchive *)arc)->arcBinary = narc;
-    ((struct NNSFndArchive *)arc)->fatData = fat;
+    FS_InitArchive(&arc->arc);
+    arc->arcBinary = narc;
+    arc->fatData = fat;
     base = (u32)(uptr)img + 8;
-    ((struct NNSFndArchive *)arc)->fileImage = img + 8;
-    if (FS_RegisterArchiveName(arc, name, strlen(name)) == 0) return 0;
-    if (FS_LoadArchive(arc, base, (u32)fat + 12 - base, ((u32 *)fat)[1] - 12, (u32)fnt + 8 - base, ((u32 *)fnt)[1] - 8, 0, 0) != 0) return 1;
-    FS_ReleaseArchiveName(arc);
+    arc->fileImage = img + 8;
+    if (FS_RegisterArchiveName(&arc->arc, name, strlen(name)) == 0) return 0;
+    if (FS_LoadArchive(&arc->arc, base, (u32)(fat + 12 - (img + 8)), ((u32 *)fat)[1] - 12, (u32)(fnt + 8 - (img + 8)),
+                       ((u32 *)fnt)[1] - 8, 0, 0) != 0) return 1;
+    FS_ReleaseArchiveName(&arc->arc);
     return 0;
 }
 
 // NNS_FndUnmountArchive
-BOOL NNS_FndUnmountArchive(void *arc) {
-    if (FS_UnloadArchive(arc) == 0) return 0;
-    FS_ReleaseArchiveName(arc);
+BOOL NNS_FndUnmountArchive(struct NNSFndArchive *arc) {
+    if (FS_UnloadArchive(&arc->arc) == 0) return 0;
+    FS_ReleaseArchiveName(&arc->arc);
     return 1;
 }
 
@@ -376,7 +368,7 @@ void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode) {
 // ---- file-scope objects (.data 0x0213bc10-0x0213bc20): the default texture / palette VRAM manager functions
 // (NNS_GfdDefaultFuncAllocTexVram, ...FreeTexVram, ...AllocPlttVram, ...FreePlttVram), set to the dummies above. This
 // definition order gives the original order after mwcc's size sort.
-s32 (*data_0213bc18)() = AllocPlttVram_;
-s32 (*data_0213bc14)() = FreeTexVram_;
-s32 (*data_0213bc10)() = AllocTexVram_;
-s32 (*data_0213bc1c)() = FreePlttVram_;
+u32 (*data_0213bc18)(u32 szByte, BOOL is4pltt, u32 opt) = AllocPlttVram_;  // NNS_GfdDefaultFuncAllocPlttVram
+s32 (*data_0213bc14)(u32 texKey) = FreeTexVram_;                            // NNS_GfdDefaultFuncFreeTexVram
+u32 (*data_0213bc10)(u32 szByte, BOOL is4x4comp, u32 opt) = AllocTexVram_;  // NNS_GfdDefaultFuncAllocTexVram
+s32 (*data_0213bc1c)(u32 plttKey) = FreePlttVram_;                          // NNS_GfdDefaultFuncFreePlttVram

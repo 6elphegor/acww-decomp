@@ -10,13 +10,13 @@
 typedef struct ExceptionTableIndex {
     char *function;
     u32 size;
-    char *data;
+    u8 *data;
 } ExceptionTableIndex;
 
 typedef struct ExceptionInfo {
     char *current_function;      // 0x00
-    char *exception_record;      // 0x04
-    char *action_pointer;        // 0x08
+    u8 *exception_record;        // 0x04
+    u8 *action_pointer;          // 0x08
     char *exception_table_start; // 0x0c
     char *exception_table_end;   // 0x10
     u32 unk14;                   // 0x14
@@ -67,7 +67,7 @@ extern "C" u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info) {
 
 // Decode the function header of the current exception record into the context.
 extern "C" void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info) {
-    char *p = info->exception_record;
+    u8 *p = info->exception_record;
     u8 flags = p[0];
     u32 has_fp = flags & 0x40;
     u32 fp_is_r7;
@@ -76,7 +76,7 @@ extern "C" void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info) {
     context->state.has_fp_area = (flags & 0x20) ? 1 : 0;
     fp_is_r7 = flags & 0x80;
     context->state.fp_is_r7 = fp_is_r7 ? 1 : 0;
-    context->state.regmask = (u8)p[1] << 4;
+    context->state.regmask = p[1] << 4;
     context->state.regmask |= 0x4000;
     p = __DecodeUnsignedNumber(p + 2, &context->state.frame_size);
     if (has_fp) {
@@ -102,7 +102,7 @@ extern "C" int __FindExceptionTable(ExceptionInfo *info, char *retaddr) {
 
 // Skip a function header (flags byte, register byte, frame size, frame adjust if flag 0x40): returns the action
 // table.
-extern "C" char *__SkipUnwindInfo(char *p) {
+extern "C" u8 *__SkipUnwindInfo(u8 *p) {
     u8 flags = *p;
     u32 value;
 

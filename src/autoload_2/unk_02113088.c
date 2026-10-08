@@ -8,8 +8,6 @@ typedef signed int s32;
 typedef int BOOL;
 
 #include "ds_stdarg.h"
-#define PROTO_LOCAL_OS_CreateAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_021127c0.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02114ef4.h"
@@ -57,8 +55,6 @@ u32 OS_GetLockID(void);
 u32 OS_ReadOwnerOfLockWord(u32 addr);
 u32 OS_TryLockCartridge(u32 id);
 void OS_UnlockCartridge(u32 id);
-void OS_CreateAlarm(void *alarm);
-void OS_SetAlarm(void *alarm, u32 tick, u32 period, void (*cb)(void *), void *arg);
 void MIi_CpuClear32(u32 data, void *dest, u32 size);
 
 void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
@@ -82,7 +78,7 @@ OSMutex *OSi_RemoveMutexLinkFromQueue(OSMutex **q);
 u32 OSi_DetectDeviceType(void);
 BOOL func_02113ed0(void);
 u32 OSi_GetUnusedThreadId(void);
-void OSi_SleepAlarmCallback(OSThread **p);
+void OSi_SleepAlarmCallback(void *arg);
 void OS_WakeupThreadDirect(OSThread *t);
 void OS_KillThreadWithPriority(OSThread *t, void *arg, u32 prio);
 u32 OS_GetThreadPriority(OSThread *t);
@@ -92,15 +88,15 @@ void OS_CreateThread(OSThread *t, void (*f)(void *), void *arg, void *stack, u32
 void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio) {
     u32 e = OS_DisableInterrupts();
     volatile u32 zero;
-    u32 stackTop;
+    u8 *stackTop;
     u32 id = OSi_GetUnusedThreadId();
     thread->priority = prio;
     thread->id = id;
     thread->state = 0;
     thread->profiler = 0;
     OSi_InsertThreadToList(thread);
-    thread->stackBottom = (u32)stack;
-    stackTop = (u32)stack - stackSize;
+    thread->stackBottom = stack;
+    stackTop = (u8 *)stack - stackSize;
     thread->stackTop = stackTop;
     thread->stackWarningOffset = 0;
     ((u32 *)thread->stackBottom)[-1] = 0xfddb597d;
@@ -111,7 +107,7 @@ void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *st
     thread->context.r[0] = (u32)arg;
     thread->context.r[14] = (u32)OS_ExitThread;
     zero = 0;
-    MIi_CpuClear32(zero, (void *)(stackTop + 4), stackSize - 8);
+    MIi_CpuClear32(zero, stackTop + 4, stackSize - 8);
     OS_SetThreadDestructor(thread, 0);
     thread->queue = 0;
     thread->linkNext = 0;
@@ -191,7 +187,7 @@ void OS_KillThreadWithPriority(OSThread *t, void *arg, u32 prio) {
     if (t == data_021fcc2c.current) OSi_ExitThread_ArgSpecified(t, arg);
     OSi_CancelThreadAlarmForSleep(t);
     sp = data_021fcc14;
-    if (sp == 0) sp = t->stackBottom - 4;
+    if (sp == 0) sp = (u32)(t->stackBottom - 4);
     OS_InitContext(&t->context, (u32)OSi_ExitThread, sp);
     t->context.r[0] = (u32)arg;
     t->context.cpsr |= 0x80;
@@ -355,20 +351,21 @@ u32 OS_GetThreadPriority(OSThread *t) {
 
 // OS_Sleep
 void OS_Sleep(u32 msec) {
-    u32 alarm[11];
+    OSAlarm alarm;
     OSThread *thread;
     u32 e;
-    OS_CreateAlarm(alarm);
+    OS_CreateAlarm(&alarm);
     thread = *data_021fcc24;
     e = OS_DisableInterrupts();
-    thread->alarm = alarm;
-    OS_SetAlarm(alarm, (msec * 0x82ea) >> 6, 0, (void (*)(void *))OSi_SleepAlarmCallback, &thread);
+    thread->alarm = &alarm;
+    OS_SetAlarm(&alarm, (msec * 0x82ea) >> 6, OSi_SleepAlarmCallback, &thread);
     while (thread != 0) OS_SleepThread(0);
     OS_RestoreInterrupts(e);
 }
 
 // OSi_SleepAlarmCallback
-void OSi_SleepAlarmCallback(OSThread **p) {
+void OSi_SleepAlarmCallback(void *arg) {
+    OSThread **p = arg;
     OSThread *t = *p;
     *p = 0;
     t->alarm = 0;

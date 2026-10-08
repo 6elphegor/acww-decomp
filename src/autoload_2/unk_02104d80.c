@@ -14,85 +14,37 @@ typedef int BOOL;
 #define NULL 0
 
 #include "nnsys/g3d_rt.h"
-#define PROTO_LOCAL_data_0213bd40  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_021040ac.h"
 #include "proto/autoload_2/unk_02104d80.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/autoload_2/unk_02110c98.h"
 #include "proto/itcm/unk_01ff8ad4.h"
-typedef G3dRS RS;  // NNSG3dRS
-extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
-extern void NNS_G3dGeSendDL(void *, u32);
 
-typedef struct V3 { s32 x, y, z; } V3;
-typedef union Glb {
-    u32 w[0x99 + 1];
-    struct {
-    u32 w0, w4;
-    u8 pad8[0x90];
-    u32 ctl98;
-    u8 pad9c[0x44];
-    V3 e0;
-    V3 scale;
-    u32 pad_f8;
-    u32 flag;
-    } n;
-} Glb;
-extern Glb data_027e00c8;
-extern u8 data_027e0114[], data_027e0184[];
-extern u32 data_0213bd58[2];
-extern u32 data_0213bd5c;
-extern s8 data_02135d5c[];
+// NNSG3dEvpCache: a matrix's blended position and normal matrices (the NODEMIX cache, 100 bytes)
+typedef struct EvpCache {
+    s32 pos[16]; // 0x00 MtxFx44
+    s32 nrm[9];  // 0x40 MtxFx33
+} EvpCache;
+extern EvpCache data_021f70c4[64];
+
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
-extern void MTX_Copy44To43_(void *, void *);
-extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
-typedef struct Cb {
-    u8 pad0[0x10];
-    struct Cb *next;    // 0x10
-    u8 pad14[5];
-    u8 n;               // 0x19
-    u16 tbl[1];         // 0x1a
-} Cb;
-extern void (*data_0213bd40[])(void *);
-extern u8 *NNS_G3dGlbGetWV(void);
-extern u8 *NNS_G3dGlbGetInvWV(void);
-extern u8 *NNS_G3dGlbGetInvV(void);
-extern void MTX_Copy43To44_(void *, void *);
-extern void MTX_Concat44(void *, void *, void *);
-extern s32 VEC_Mag(void *);
-extern void VEC_Normalize(void *, void *);
-extern void MIi_CpuSend32(void *, void *, u32);
-extern s32 data_0213be38[3];
-extern s32 data_0213be44[3];
-extern s32 data_0213be14[9];
-extern u8 data_0213be0c[], data_0213be08[];
-extern s32 data_0213bdf0[3], data_0213bdfc[3];
-extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
-typedef struct MtxEnt { s32 m[25]; } MtxEnt;
-extern u32 data_021f70c4[0x1900 / 4];
-extern u8 data_021f7104[];
 extern void MIi_CpuClearFast(u32, void *, u32);
-typedef struct RSBits { u8 pad[0xcc]; u32 bits[8]; } RSBits;
 static inline BOOL BitVecCheck(const u32 *vec, u32 idx) { return (BOOL)(vec[idx >> 5] & (1 << (idx & 31))); }
 static inline void BitVecSet(u32 *vec, u32 idx) { vec[idx >> 5] |= 1 << (idx & 31); }
 // NNS_G3dFuncSbc_NODEMIX
 #define ACC(d, w, v) d += ((s64)(w) * (v)) >> 12
-void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
+void NNSi_G3dFuncSbc_NODEMIX(G3dRS *rs)
 {
     u32 had;
     s64 pw;
     u8 *e;
     u32 i;
-    MtxEnt *cur;
-    MtxEnt *prev;
+    s32 *cur;
+    s32 *prev;
     u32 idx;
     s32 w;
-    u32 off;
     u8 *mdl = (u8 *)rs->pRenderObj->resMdl;
     u8 *c = rs->c;
     u8 *inv = mdl + *(u32 *)(mdl + 0x10);
@@ -112,25 +64,24 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     IO_W((volatile u32 *)0x04000440, 2);
     for (i = 0; i < n; i++) {
         idx = e[1];
-        off = idx * 100;
-        had = BitVecCheck(((RSBits *)rs)->bits, idx);
-        cur = (MtxEnt *)((u8 *)data_021f70c4 + off);
+        had = BitVecCheck(rs->isEnvCached, idx);
+        cur = data_021f70c4[idx].pos;
         if (had == 0) {
-            BitVecSet(((RSBits *)rs)->bits, idx);
+            BitVecSet(rs->isEnvCached, idx);
             IO_W((volatile u32 *)0x04000450, e[0]);
             IO_W((volatile u32 *)0x04000440, 1);
             G3_MultMtx43(inv + idx * 0x54);
         }
         if (i != 0) {
-            ACC(nrm[0], pw, prev->m[0]);
-            ACC(nrm[1], pw, prev->m[1]);
-            ACC(nrm[2], pw, prev->m[2]);
-            ACC(nrm[3], pw, prev->m[3]);
-            ACC(nrm[4], pw, prev->m[4]);
-            ACC(nrm[5], pw, prev->m[5]);
-            ACC(nrm[6], pw, prev->m[6]);
-            ACC(nrm[7], pw, prev->m[7]);
-            ACC(nrm[8], pw, prev->m[8]);
+            ACC(nrm[0], pw, prev[0]);
+            ACC(nrm[1], pw, prev[1]);
+            ACC(nrm[2], pw, prev[2]);
+            ACC(nrm[3], pw, prev[3]);
+            ACC(nrm[4], pw, prev[4]);
+            ACC(nrm[5], pw, prev[5]);
+            ACC(nrm[6], pw, prev[6]);
+            ACC(nrm[7], pw, prev[7]);
+            ACC(nrm[8], pw, prev[8]);
         }
         if (had == 0) {
             while (G3X_GetClipMtx(cur) != 0) {
@@ -138,20 +89,20 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
             IO_W((volatile u32 *)0x04000440, 2);
             G3_MultMtx33(inv + idx * 0x54 + 0x30);
         }
-        prev = (MtxEnt *)((u8 *)data_021f7104 + off);
+        prev = data_021f70c4[idx].nrm;
         w = e[2] << 4;
-        ACC(pos[0], w, cur->m[0]);
-        ACC(pos[1], w, cur->m[1]);
-        ACC(pos[2], w, cur->m[2]);
-        ACC(pos[3], w, cur->m[4]);
-        ACC(pos[4], w, cur->m[5]);
-        ACC(pos[5], w, cur->m[6]);
-        ACC(pos[6], w, cur->m[8]);
-        ACC(pos[7], w, cur->m[9]);
-        ACC(pos[8], w, cur->m[10]);
-        ACC(pos[9], w, cur->m[12]);
-        ACC(pos[10], w, cur->m[13]);
-        ACC(pos[11], w, cur->m[14]);
+        ACC(pos[0], w, cur[0]);
+        ACC(pos[1], w, cur[1]);
+        ACC(pos[2], w, cur[2]);
+        ACC(pos[3], w, cur[4]);
+        ACC(pos[4], w, cur[5]);
+        ACC(pos[5], w, cur[6]);
+        ACC(pos[6], w, cur[8]);
+        ACC(pos[7], w, cur[9]);
+        ACC(pos[8], w, cur[10]);
+        ACC(pos[9], w, cur[12]);
+        ACC(pos[10], w, cur[13]);
+        ACC(pos[11], w, cur[14]);
         pw = w;
         e += 3;
         if (had == 0) {
@@ -159,15 +110,15 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
             }
         }
     }
-    ACC(nrm[0], pw, prev->m[0]);
-    ACC(nrm[1], pw, prev->m[1]);
-    ACC(nrm[2], pw, prev->m[2]);
-    ACC(nrm[3], pw, prev->m[3]);
-    ACC(nrm[4], pw, prev->m[4]);
-    ACC(nrm[5], pw, prev->m[5]);
-    ACC(nrm[6], pw, prev->m[6]);
-    ACC(nrm[7], pw, prev->m[7]);
-    ACC(nrm[8], pw, prev->m[8]);
+    ACC(nrm[0], pw, prev[0]);
+    ACC(nrm[1], pw, prev[1]);
+    ACC(nrm[2], pw, prev[2]);
+    ACC(nrm[3], pw, prev[3]);
+    ACC(nrm[4], pw, prev[4]);
+    ACC(nrm[5], pw, prev[5]);
+    ACC(nrm[6], pw, prev[6]);
+    ACC(nrm[7], pw, prev[7]);
+    ACC(nrm[8], pw, prev[8]);
     G3_LoadMtx43(nrm);
     IO_W((volatile u32 *)0x04000440, 1);
     G3_LoadMtx43(pos);
@@ -178,8 +129,6 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     rs->c += (rs->c[2] + 1) * 3;
 }
 
-// ---- file-scope objects (autoload_3 .bss 0x021f70c4-0x021f89c4): the NODEMIX work areas (per-matrix flags and the
-// blended matrix cache), addressed by byte offset as MtxEnt records
-// one array in the original (64 matrix records of 100 bytes); data_021f7104 is its offset 0x40, which the linker
-// script defines from symbols.txt
-u32 data_021f70c4[0x1900 / 4];
+// ---- file-scope objects (autoload_3 .bss 0x021f70c4-0x021f89c4): the NODEMIX matrix cache, 64 records of 100 bytes
+// (data_021f7104, an interior label of symbols.txt, is the first record's normal matrix)
+EvpCache data_021f70c4[64];

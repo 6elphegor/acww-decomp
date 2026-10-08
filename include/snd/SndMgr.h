@@ -3,8 +3,11 @@
 
 #include "types.h"
 
-class SndObj;
-struct SndHandle;
+#include "snd/SndSeqHandle.h"
+
+class SndSceneBase;
+class BgmBeatSync;
+struct MelodyPlayer;
 
 // Volume ramp of the sound manager (SndRamp_Start / SndRamp_Step / SndRamp_Set in src/autoload_2/unk_020ef150.cpp).
 struct SndRamp {
@@ -19,7 +22,7 @@ struct SndRamp {
 class SndMgr {
 public:
     SndMgr();
-    void init(u32 a, u32 b, u32 c);
+    void init(void *heap, u32 size, const char *arcPath);
     void update();
     void volumeOff();
     void volumeOn();
@@ -27,19 +30,19 @@ public:
     void startOutputEffect();
     void stopAll();
 
-    /* 0x00 */ u32 beatSync;
+    /* 0x00 */ BgmBeatSync *beatSync;  // the live BGM-synchronised animation object (BgmBeatSync::setEnable)
     /* 0x04 */ SndRamp fadeRamp;
     /* 0x10 */ SndRamp mainRamp;
     /* 0x1c */ SndRamp subRamp;
     /* 0x28 */ void *subHeap;
-    /* 0x2c */ SndObj *scene;
-    /* 0x30 */ u32 melody;
-    /* 0x34 */ SndHandle *strmHandle;
-    /* 0x38 */ SndHandle *seHandle;
-    /* 0x3c */ SndHandle *bgmHandle;
-    /* 0x40 */ SndHandle *auxSeHandle;
+    /* 0x2c */ SndSceneBase *scene;  // the scene's sound setup (SndScene01..99)
+    /* 0x30 */ MelodyPlayer *melody;  // the town-tune player (MelodyPlayer_Init)
+    /* 0x34 */ SndSeqHandle strmHandle;  // the stream (BGM streams 0 and 1)
+    /* 0x38 */ SndSeqHandle seHandle;
+    /* 0x3c */ SndSeqHandle bgmHandle;  // = gSndBgmHandle
+    /* 0x40 */ SndSeqHandle auxSeHandle;
     /* 0x44 */ u32 voiceType;
-    /* 0x48 */ SndHandle *voiceHandle;
+    /* 0x48 */ SndSeqHandle voiceHandle;
     /* 0x4c */ u8 unk_4c;
     /* 0x4d */ u8 seDisabled;
     /* 0x4e */ u8 unk_4e[2];

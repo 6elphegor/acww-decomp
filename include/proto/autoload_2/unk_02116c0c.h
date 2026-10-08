@@ -17,6 +17,18 @@ void SNDi_LockMutex(void);
 #ifndef PROTO_LOCAL_SNDi_UnlockMutex
 void SNDi_UnlockMutex(void);
 #endif
+#ifndef PROTO_LOCAL_SND_StopSeq
+void SND_StopSeq(u32 a);
+#endif
+#ifndef PROTO_LOCAL_SND_PrepareSeq
+void SND_PrepareSeq(u32 a, u32 b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_SND_StartPreparedSeq
+void SND_StartPreparedSeq(u32 a);
+#endif
+#ifndef PROTO_LOCAL_SND_SetPlayerTempoRatio
+void SND_SetPlayerTempoRatio(u32 a, u32 b);
+#endif
 #ifdef __cplusplus
 }
 #endif

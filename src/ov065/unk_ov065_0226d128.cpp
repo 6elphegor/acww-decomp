@@ -66,9 +66,9 @@ extern void DWCi_BM_GetWiFiInfo(void *p);
 extern void OS_LockMutex(void *m);
 extern void OS_UnlockMutex(void *m);
 extern s32 OS_InitMutex(void *m);
-extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
+extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u8 *buf);
 extern void DWCi_AUTH_RemakeWiFiID(void *p);
-extern void DWCi_AUTH_MakeWiFiID(u32 v);
+extern void DWCi_AUTH_MakeWiFiID(u8 *buf);
 extern void OS_JoinThread(void *p);
 extern s32 OS_IsThreadTerminated(void *t);
 extern s32 OS_WakeupThreadDirect(void *t);
@@ -357,7 +357,7 @@ s32 NasAuth_HandleResponse(void) {
                 sNasAuth->resultCode = 0x4e84;
                 return 2;
             }
-            if (DWCi_AUTH_UpDateWiFiID(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
+            if (DWCi_AUTH_UpDateWiFiID(&sNasUserId, (u8 *)(((uptr)r + 0x1f) & ~(uptr)0x1f)) != 1) {
                 sNasAuth->config.freeFunc(m, r, 0);
                 sNasAuth->resultCode = 0x4e84;
                 return 0xe;
@@ -378,7 +378,7 @@ s32 NasAuth_HandleResponse(void) {
             sNasAuth->resultCode = 0x4e8c;
             return 0x10;
         }
-        DWCi_AUTH_MakeWiFiID(((u32)r + 0x1f) & ~0x1f);
+        DWCi_AUTH_MakeWiFiID((u8 *)(((uptr)r + 0x1f) & ~(uptr)0x1f));
         sNasAuth->config.freeFunc(m, r, 0);
         sNasAuth->resultCode = 0x4e8c;
         return 0x10;

@@ -18,74 +18,22 @@
 // The class DECLARATION order sets the vtable order: keep it.
 #include "types.h"
 #include "snd/TvSound.h"
-#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "snd/SndMgr.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
 #include "proto/autoload_2/unk_020f5b9c.h"
 #include "proto/autoload_2/unk_0210c084.h"
 #include "proto/main/unk_0206d49c.h"
 
-
-class TvSoundProgram0 : public TvSound {
-public:
-    virtual void startSounds();
-};
-
-class TvSoundProgram1 : public TvSound {
-public:
-    virtual void startSounds();
-};
-
-class TvSoundProgram2 : public TvSound {
-public:
-    virtual void reset();
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0d */ s8 d13;
-};
-
-class TvSoundProgram3 : public TvSound {
-public:
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0d */ s8 d13;
-};
-
-class TvSoundProgram5 : public TvSound {
-public:
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0d */ s8 d13;
-};
-
-class TvSoundProgram9 : public TvSound {
-public:
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-};
-
-class TvSoundWeather : public TvSound {
-public:
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    void pickNextLoop();
-
-    /* 0x0d */ u8 c13;
-    /* 0x0e */ u8 c14;
-    /* 0x0f */ u8 c15;
-};
+// (the classes: snd/TvSound.h)
 
 extern "C" {
-extern u8 gSndMgr[];
-u32 SndMgr_Rand(void *g, u32 n);
+// (not in the shared headers: not decompiled yet)
 void NNS_SndPlayerWriteVariable(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndHandleInit(void *p);
-void Snd_StopHandle(void *p, u32 v);
 void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
 void NNS_SndPlayerMoveVolume(void *p, u32 a, u32 b);
@@ -94,8 +42,6 @@ s32 Snd_CalcListenerDistance(void *a, u32 b);
 u32 Snd_DistanceToVolume(s32 x);
 u32 Snd_CalcPan(void *a, u32 b);
 }
-
-static inline BOOL nz(u32 v) { return v != 0; }
 
 void TvSound::reset() {
     NNS_SndHandleInit(&a);
@@ -114,7 +60,7 @@ void TvSound::release() {
 }
 
 void TvSound::vfunc_08(s32 id, void *arg) {
-    return updatePosition(arg);
+    updatePosition(arg);
 }
 
 void TvSound::turnOn(s32 v) {
@@ -144,17 +90,17 @@ void TvSound::updatePosition(void *x) {
     NNS_SndPlayerSetTrackPan(&b, 15, r4);
 }
 
-void TvSound::startSe(s32 code, u32 *slot) {
+void TvSound::startSe(s32 code, void *slot) {
     if (slot == 0) Fatal_Trap();
     NNS_SndArcPlayerStartSeqArc(slot, 1, code % 1000);
 }
 
 void TvSoundProgram0::startSounds() {
-    return startSe(0x4f0, &a);
+    startSe(0x4f0, &a);
 }
 
 void TvSoundProgram1::startSounds() {
-    return startSe(0x4f1, &a);
+    startSe(0x4f1, &a);
 }
 
 void TvSoundProgram2::reset() {
@@ -163,13 +109,13 @@ void TvSoundProgram2::reset() {
 }
 
 void TvSoundProgram2::startSounds() {
-    return startSe(0x4f2, &b);
+    startSe(0x4f2, &b);
 }
 
 void TvSoundProgram2::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (!nz(b)) startSe(0x4f2, &b);
+        if (b == NULL) startSe(0x4f2, &b);
         d13++;
         if (d13 == 3) d13 = 0;
         switch (d13) {
@@ -263,7 +209,7 @@ void TvSoundProgram5::vfunc_08(s32 id, void *arg) {
     case 1:
         if (d13 == 0) startSe(0x4fc, &a);
         else startSe(0x4fd, &a);
-        if (!nz(b)) startSe(0x500, &b);
+        if (b == NULL) startSe(0x500, &b);
         break;
     case 70:
         NNS_SndPlayerWriteVariable(&b, 1, 1);
@@ -323,8 +269,8 @@ void TvSoundProgram9::vfunc_08(s32 id, void *arg) {
     case 2:
     case 3:
     case 4:
-        if (!nz(a)) startSe(0x501, &a);
-        if (!nz(b)) startSe(0x502, &b);
+        if (a == NULL) startSe(0x501, &a);
+        if (b == NULL) startSe(0x502, &b);
         NNS_SndPlayerWriteVariable(&a, 0, 1);
         NNS_SndPlayerWriteVariable(&b, 0, 1);
         break;
@@ -350,7 +296,7 @@ void TvSoundProgram9::vfunc_08(s32 id, void *arg) {
 
 void TvSoundWeather::startSounds() {
     c13 = 0;
-    c14 = SndMgr_Rand(gSndMgr, 3);
+    c14 = SndMgr_Rand(&gSndMgr, 3);
     c15 = 0;
     NNS_SndArcPlayerStartSeq(&a, (u16)(c14 + 0xad));
 }
@@ -358,7 +304,7 @@ void TvSoundWeather::startSounds() {
 void TvSoundWeather::pickNextLoop() {
     u8 v;
     do {
-        v = SndMgr_Rand(gSndMgr, 3);
+        v = SndMgr_Rand(&gSndMgr, 3);
     } while (v == c14);
     c14 = v;
     NNS_SndArcPlayerStartSeq(&a, (u16)(c14 + 0xad));

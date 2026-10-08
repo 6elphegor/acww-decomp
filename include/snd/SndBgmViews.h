@@ -1,19 +1,14 @@
 #ifndef SND_SNDBGMVIEWS_H
 #define SND_SNDBGMVIEWS_H
 
-// Views used by the BGM state machine / particle manager pair (src/autoload_2/unk_020f7a5c.cpp and its companion
-// unk_020f8b44.cpp): Q = the record behind gSndMgr+0x2c, Rb = base object (vtable 0x0213bb90), view A.
 #include "types.h"
 
-struct Q {
-    /* 0x00 */ u8 pad[0x16];
-    /* 0x16 */ s16 s16v;
-    /* 0x18 */ u8 p18[2];
-    /* 0x1a */ s16 s1a;
-};
+typedef struct Rb Rb;
 
+// A sound played in step with the BGM (the BgmSyncSnd_* functions, unk_020f7a5c.cpp; main's Snd_BgmSync* wrappers;
+// a member of ov004's furniture objects). 0x14 bytes on the DS.
 struct Rb {
-    /* 0x00 */ u32 w0;
+    /* 0x00 */ void *handle;  // NNSSndHandle: the sequence playing on it
     /* 0x04 */ u16 h4;
     /* 0x06 */ u16 h6;
     /* 0x08 */ u8 c8;

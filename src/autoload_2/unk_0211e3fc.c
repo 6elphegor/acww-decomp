@@ -85,7 +85,7 @@ u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
 void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err);
-u32 WMi_GetStatusAddress(void);
+WMStatus *WMi_GetStatusAddress(void);
 void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
 void CARDi_SendtoPxi(u32 data, u32 n);
 void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);

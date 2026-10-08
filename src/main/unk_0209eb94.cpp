@@ -4004,9 +4004,9 @@ extern "C" BOOL GameStats_Upload(void) {
     if (p->getState() == 3) {
         s32 v = p->getChecksum();
         p->setChecksum(Save_CalcChecksum(p, 0x22c, v));
-        u32 t = (u32)(uptr)sNetRegion;
+        const char *t = sNetRegion;
         NetOverlay_AssertWifi();
-        Net_GameStatsUpload((char *)"http://gamestats.gs.nintendowifi.net/acrossingds/upload.asp", p, 0x22c, t);
+        Net_GameStatsUpload("http://gamestats.gs.nintendowifi.net/acrossingds/upload.asp", p, 0x22c, t);
         return TRUE;
     }
     return FALSE;
@@ -4014,9 +4014,9 @@ extern "C" BOOL GameStats_Upload(void) {
 
 extern "C" BOOL GameStats_Download(void) {
     if (gSaveBlancaFace.getState() == 0) {
-        u32 t = (u32)(uptr)sNetRegion;
+        const char *t = sNetRegion;
         NetOverlay_AssertWifi();
-        if (Net_GameStatsDownload((u32)(uptr)"http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", &sGameStatsBuf, 0x22c, t) != 0) {
+        if (Net_GameStatsDownload("http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", &sGameStatsBuf, 0x22c, t) != 0) {
             return TRUE;
         }
         return FALSE;
@@ -4035,7 +4035,7 @@ extern "C" BOOL AxMail_DownloadMail(void) {
     Net_GetBrid((u8 *)a);
     strcat(buf, "?brid=");
     strcat(buf, a);
-    u32 t = (u32)(uptr)sNetRegion;
+    const char *t = sNetRegion;
     NetOverlay_AssertWifi();
     if (Net_HttpDownload(buf, &sAxMailBuf, 0x108, t) != 0) {
         return TRUE;
@@ -4054,7 +4054,7 @@ extern "C" BOOL AxMail_DownloadBbs(void) {
     Net_GetBrid((u8 *)a);
     strcat(buf, "?brid=");
     strcat(buf, a);
-    u32 t = (u32)(uptr)sNetRegion;
+    const char *t = sNetRegion;
     NetOverlay_AssertWifi();
     if (Net_HttpDownload(buf, &sAxBbsBuf, 0xd2, t) != 0) {
         return TRUE;

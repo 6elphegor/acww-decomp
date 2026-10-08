@@ -9,7 +9,7 @@
 class SndPosList;
 
 // Positional sound source, linked into a SndPosList (the furniture sounds: FtrSoundEmitter). Methods in
-// src/autoload_2/unk_020f30fc.cpp (which still declares these classes itself: switch it to this header); main's
+// src/autoload_2/unk_020f30fc.cpp; main's
 // wrappers (Snd_PosNode*, src/main/unk_020039ec.cpp) call them.
 class SndPosNode {
 public:

@@ -6,58 +6,38 @@
 // start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = Fatal_Trap (assert failure).
 #include "types.h"
 #include "sys/CmdSeq.h"
-#include "snd/SndSeBytes4.h"
-#include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
 #include "snd/Player.h"
-
-
-
-struct Group;
-typedef void (*GroupFn)(Group *g, s32 i, s32 v);
-
+#include "snd/SndSeqHandle.h"
+#include "snd/SndSeGroup.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020ede18.h"
+#include "proto/autoload_2/unk_021093f4.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/main/unk_0206d49c.h"
 
 extern "C" {
-void Fatal_Trap(void);
-extern void *gSndHeap;
-extern void *gSndCaptureBuffer;
-extern u8 gSndDefaultHandle[];
-extern u8 data_021f5aac[];
-extern u8 data_021f5a1c[];
-void NNS_SndHandleInit(void *p);
-void NNS_SndPlayerStopSeq(void *p, u32 x);
-void NNS_SndArcPlayerStartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void NNS_SndArcPlayerStartSeqArc(void *a, u32 b, void *c);
-void NNS_SndHeapLoadState(void *a, u32 b);
-void *NNS_SndHeapGetCurrentLevel(void *a);
-s32 NNS_SndArcLoadGroup(u32 a, void *b);
-s32 NNS_SndHeapSaveState(void *a);
-void *NNS_SndHeapAlloc(void *a, u32 b, void (*c)(void), u32 d, u32 e);
-void *NNS_SndHeapCreate(u32 a, u32 b);
-void NNS_SndArcInit(void *a, u32 b, void *c, u32 d);
-void NNS_SndArcInitOnMemory(void *a, u32 b);
-s32 NNS_SndArcPlayerSetup(void *a);
-void NNS_SndInit(void);
-void NNS_SndCaptureStartOutputEffect(u32 a, u32 b, u32 c);
-s32 NNS_SndMain(void);
+// the NNS sound library (their definitions use file-local types: unk_0210b448.c SndHeap / Arc, unk_02109830.c Handle,
+// unk_0210ec0c.c): the sound heap is an opaque pointer, a handle a SndSeqHandle
+void NNS_SndHandleInit(SndSeqHandle *h);
+void NNS_SndPlayerStopSeq(SndSeqHandle *h, s32 frames);
+void NNS_SndHeapLoadState(void *heap, s32 level);
+s32 NNS_SndHeapGetCurrentLevel(void *heap);
+s32 NNS_SndHeapSaveState(void *heap);
+void *NNS_SndHeapAlloc(void *heap, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b);
+void *NNS_SndHeapCreate(u32 start, u32 size);
+void NNS_SndArcInit(void *arc, const char *path, void *heap, BOOL loadSymb);
+void NNS_SndArcInitOnMemory(void *arc, void *base);
+void NNS_SndCaptureStartOutputEffect(void *buf, u32 size, s32 effect);
 
-}
-extern "C" {
-void SndSeGroup_Shutdown(Group *g);
-void *SndList_GetFirst(void **p);
-void *SndList_GetNext(void *list, void *obj);
-}
-
-// PROTOS-BEGIN
-extern "C" {
-void *Snd_GetHeapLevel(void);
-void *Snd_RestoreHeapLevel(u32 a);
-void Snd_StartSeqArc(s32 a, void *b, void *c);
-void Snd_AllocCaptureBuffer(void);
-void Snd_CaptureBufferDisposeCallback(void);
-void *Snd_GetHeap(void);
+// this file's (and unk_020ede18.cpp's) functions that the generated headers leave out (Player, Group: names that
+// several source files define)
 void SndSeGroupList_StopAll(FndList *o);
 void SndSeSystem_UnloadGroup(Player *o);
+void SndSeGroup_Shutdown(Group *g);
+// the two sound archives (defined at the end of the file)
+extern u8 data_021f5a1c[];
+extern u8 data_021f5aac[];
 }
 
 extern "C" void SndSeSystem_Shutdown(Player *o, s32 flag) {
@@ -87,28 +67,29 @@ extern "C" void *Snd_GetHeap(void) {
     return gSndHeap;
 }
 
-extern "C" void Snd_InitSystem(u32 a, u32 b, u32 c, u32 d) {
+// the sound heap at heapStart, the sound archive read from the file arcPath or (no path) the one in memory at arcMem
+extern "C" void Snd_InitSystem(void *heapStart, u32 heapSize, const char *arcPath, void *arcMem) {
     NNS_SndInit();
     if (gSndHeap != NULL) Fatal_Trap();
-    gSndHeap = NNS_SndHeapCreate(a, b);
+    gSndHeap = NNS_SndHeapCreate((uptr)heapStart, heapSize);  // (NNS_SndHeapCreate still takes the address as u32)
     if (gSndHeap == NULL) Fatal_Trap();
     Snd_AllocCaptureBuffer();
-    if (c != 0) {
-        NNS_SndArcInit(data_021f5aac, c, gSndHeap, 0);
+    if (arcPath != NULL) {
+        NNS_SndArcInit(data_021f5aac, arcPath, gSndHeap, 0);
     } else {
-        if (d == 0) Fatal_Trap();
-        NNS_SndArcInitOnMemory(data_021f5a1c, d);
+        if (arcMem == NULL) Fatal_Trap();
+        NNS_SndArcInitOnMemory(data_021f5a1c, arcMem);
     }
     if (NNS_SndArcPlayerSetup(gSndHeap) == 0) Fatal_Trap();
-    NNS_SndHandleInit(gSndDefaultHandle);
+    NNS_SndHandleInit(&gSndDefaultHandle);
 }
 
-extern "C" void Snd_CaptureBufferDisposeCallback(void) {
+extern "C" void Snd_CaptureBufferDisposeCallback(void *mem, u32 size, void *a, u32 b) {
 }
 
-extern "C" void Snd_StartOutputEffect(u32 a) {
+extern "C" void Snd_StartOutputEffect(s32 a) {
     if (gSndCaptureBuffer == NULL) Fatal_Trap();
-    NNS_SndCaptureStartOutputEffect(((u32)gSndCaptureBuffer + 31) & ~31, 0x1000, a);
+    NNS_SndCaptureStartOutputEffect((void *)(((uptr)gSndCaptureBuffer + 31) & ~(uptr)31), 0x1000, a);
 }
 
 extern "C" void Snd_AllocCaptureBuffer(void) {
@@ -120,38 +101,40 @@ extern "C" void Snd_Main(void) {
     NNS_SndMain();
 }
 
-extern "C" void Snd_StartSeqArcDefault(s32 a, void *b) {
-    Snd_StartSeqArc(a, b, &gSndDefaultHandle);
+// sequence idx of the sequence archive arcNo, with the default handle
+extern "C" void Snd_StartSeqArcDefault(u32 idx, u32 arcNo) {
+    Snd_StartSeqArc(idx, arcNo, &gSndDefaultHandle);
 }
 
-extern "C" void Snd_StartSeqArc(s32 a, void *b, void *c) {
-    if (c == NULL) Fatal_Trap();
-    NNS_SndArcPlayerStartSeqArc(c, (u32)b, (void *)a);
+extern "C" void Snd_StartSeqArc(u32 idx, u32 arcNo, void *handle) {
+    if (handle == NULL) Fatal_Trap();
+    NNS_SndArcPlayerStartSeqArc(handle, arcNo, idx);
 }
 
-extern "C" void Snd_StartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f) {
-    if (a == NULL) Fatal_Trap();
-    NNS_SndArcPlayerStartSeqArcEx(a, b, c, d, e, f);
+extern "C" void Snd_StartSeqArcEx(void *handle, s32 player, s32 bank, s32 prio, u32 arcNo, u32 idx) {
+    if (handle == NULL) Fatal_Trap();
+    NNS_SndArcPlayerStartSeqArcEx(handle, player, bank, prio, arcNo, idx);
 }
 
 extern "C" void Snd_InitHandle(void *a) {
     if (a == NULL) Fatal_Trap();
-    NNS_SndHandleInit(a);
+    NNS_SndHandleInit((SndSeqHandle *)a);
 }
 
-extern "C" void Snd_StopHandle(void *a, u32 b) {
+extern "C" void Snd_StopHandle(void *a, s32 frames) {
     if (a == NULL) Fatal_Trap();
-    NNS_SndPlayerStopSeq(a, b);
+    NNS_SndPlayerStopSeq((SndSeqHandle *)a, frames);
 }
 
+// returns the heap level before the group was loaded (-1: not loaded)
 extern "C" s32 Snd_LoadGroup(u32 a) {
-    s32 r = (s32)Snd_GetHeapLevel();
+    s32 r = Snd_GetHeapLevel();
     if (NNS_SndArcLoadGroup(a, gSndHeap) == 0) return -1;
     if (NNS_SndHeapSaveState(gSndHeap) == -1) Fatal_Trap();
     return r;
 }
 
-extern "C" void *Snd_RestoreHeapLevel(u32 a) {
+extern "C" s32 Snd_RestoreHeapLevel(u32 a) {
     if (a == 255) Fatal_Trap();
     if (a == 0) Fatal_Trap();
     NNS_SndHeapLoadState(gSndHeap, a);
@@ -159,11 +142,9 @@ extern "C" void *Snd_RestoreHeapLevel(u32 a) {
     return Snd_GetHeapLevel();
 }
 
-extern "C" void *Snd_GetHeapLevel(void) {
+extern "C" s32 Snd_GetHeapLevel(void) {
     return NNS_SndHeapGetCurrentLevel(gSndHeap);
 }
-
-// PROTOS-END
 
 extern "C" void CmdSeq_Undo(CmdSeq *o) {
     s16 *pi;
@@ -181,7 +162,7 @@ extern "C" void CmdSeq_Undo(CmdSeq *o) {
 // gSndSeSystem sits between this file's 4-byte and 0x90-byte objects, so it is this file's object although only other
 // units use it.
 void *gSndHeap;
-u8 gSndDefaultHandle[sizeof(void *)] __attribute__((aligned(8)));  // NNSSndHandle: a pointer
+SndSeqHandle gSndDefaultHandle;
 void *gSndCaptureBuffer;
 Player gSndSeSystem;
 u8 data_021f5a1c[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;  // a sound archive too

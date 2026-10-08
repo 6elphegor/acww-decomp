@@ -1061,7 +1061,7 @@ extern "C" BOOL DwcFriendData_IsFriendKey(void *p) {
     return FALSE;
 }
 
-extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
+extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *userData) {
     u8 tmp[12];
     u64 acc = 0;
     u64 i = 0;
@@ -1070,20 +1070,20 @@ extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
         acc = m + (u32)data[i];
         i++;
     } while (i < 12);
-    if (!Net_FriendKeyToFriendData(ctx, tmp, acc)) {
+    if (!Net_FriendKeyToFriendData(userData, tmp, acc)) {
         return FALSE;
     }
     MI_CpuCopy8(tmp, out, 12);
     return TRUE;
 }
 
-extern "C" BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf) {
+extern "C" BOOL DwcFriendData_ToCodeDigits(void *friendData, u8 *buf) {
     u64 v;
     s32 i;
-    if (Net_GetFriendDataType((void *)a) != 2) {
+    if (Net_GetFriendDataType(friendData) != 2) {
         return FALSE;
     }
-    v = Net_GetFriendKey(a);
+    v = Net_GetFriendKey(friendData);
     for (i = 11; i >= 0; i--) {
         buf[i] = (u8)(v % 10);
         v = v / 10;

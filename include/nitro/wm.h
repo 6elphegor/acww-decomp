@@ -238,7 +238,45 @@ typedef struct WMArm9Buf {
     /* 0x18 */ WMCallback cb18[42];  // per-command callbacks (WMi_SetCallbackTable)
     /* 0xc0 */ WMCallback cbC0;
     /* 0xc4 */ WMCallback portCb[16]; // WM_SetPortCallback
-    /* 0x104 */ u32 portArg[16];
+    /* 0x104 */ void *portArg[16]; // WM_SetPortCallback's arguments
 } WMArm9Buf;
+
+// Requests written to WMArm9Buf.req for the ARM7 (WMi_SendCommand): the ARM7's layout, its addresses are 32-bit
+// (the data they point to stays below 4 GB on the host).
+static inline u32 WMi_Arm7Addr(const void *p) { return (u32)(__UINTPTR_TYPE__)p; }
+#define WM_ARM7_ADDR(p) WMi_Arm7Addr(p)
+// an address in a reply of the ARM7 (WMMsg.f08: the receive buffer)
+static inline void *WMi_Arm7Ptr(u32 a) { return (void *)(__UINTPTR_TYPE__)a; }
+
+typedef struct WMScanReq { // WM_StartScan (apiid 10)
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 channel;
+    /* 0x04 */ u32 scanBuf; // WMBssDesc *
+    /* 0x08 */ u16 maxChannelTime;
+    /* 0x0a */ u8 bssid[6];
+} WMScanReq;
+
+typedef struct WMScanExReq { // WM_StartScanEx (apiid 38)
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 channelList;
+    /* 0x04 */ u32 scanBuf; // WMBssDesc *
+    /* 0x08 */ u16 scanBufSize;
+    /* 0x0a */ u16 maxChannelTime;
+    /* 0x0c */ u8 bssid[6];
+    /* 0x12 */ u16 scanType;
+    /* 0x14 */ u16 ssidLength;
+    /* 0x16 */ u8 ssid[32];
+    /* 0x36 */ u16 ssidMatchLength;
+} WMScanExReq;
+
+typedef struct WMConnectReq { // WM_StartConnectEx (apiid 12)
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 reserved;
+    /* 0x04 */ u32 pInfo; // WMBssDesc *
+    /* 0x08 */ u8 ssid[24];
+    /* 0x20 */ u32 powerSave;
+    /* 0x24 */ u16 reserved2;
+    /* 0x26 */ u16 authMode;
+} WMConnectReq;
 
 #endif

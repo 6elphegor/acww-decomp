@@ -8,64 +8,31 @@ typedef int s32;
 typedef int BOOL;
 #define NULL 0
 
-// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h; next and priority move on 64-bit hosts)
+// NNSG3dRenderObj / NNSG3dAnmObj by their members
 #include "nnsys/g3d_rt.h"
-#define PROTO_LOCAL_data_0213bccc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bcd0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bcd4  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02103e40.h"
-#include "proto/autoload_2/unk_02111ccc.h"
-#include "proto/autoload_2/unk_0211220c.h"
-typedef struct Node { int frame, ratio; void *resAnm; void *funcAnm; struct Node *next; void *resTex; u8 prio; } Node;
+#include "proto/autoload_2/unk_02103edc.h"
+
 #define NODE_RES_KIND(n) (*(u8 *)(n)->resAnm)
-#define RO(o) ((G3dRenderObj *)(o))
 
-typedef struct TexData {
-    u32 sig;            // 0x00
-    u32 pad4;
-    u32 pltt08;         // 0x08
-    u16 plttSize;       // 0x0c
-    u16 pad0e;
-    u16 plttFlag;       // 0x10
-    u16 pad12;
-    u32 plttOfs;        // 0x14
-    u32 pltt18;         // 0x18
-    u16 pltt4Size;      // 0x1c
-    u16 pad1e;
-    u16 pltt4Flag;      // 0x20
-    u16 pad22;
-    u32 pltt4Ofs;       // 0x24
-    u32 pltt4Ofs2;      // 0x28
-    u32 tex2c;          // 0x2c
-    u16 texSize;        // 0x30
-    u16 texFlag;        // 0x32
-    u8 pad34[4];
-    u32 texOfs;         // 0x38
-} TexData;
-
-extern u32 data_0213bcd4, data_0213bcd0, data_0213bccc;
-extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32
-extern void updateHintVec___kernel(void *, Node *);
-extern void GX_LoadTexPltt(void *, u32, u32);    // GX_LoadTex
-extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
-void addLink_(Node **head, Node *n);
-BOOL removeLink_(Node **head, Node *n);
+extern void updateHintVec___kernel(u32 *vec, const G3dAnmObj *anm); // src/itcm/unk_01ff8228.c
+void addLink_(G3dAnmObj **head, G3dAnmObj *n);
 
 // add a node to the list chosen by its kind ('M', 'J', 'V')
-void NNS_G3dRenderObjAddAnmObj(u8 *o, Node *n)
+void NNS_G3dRenderObjAddAnmObj(G3dRenderObj *o, G3dAnmObj *n)
 {
     switch (NODE_RES_KIND(n)) {
     case 'M':
-        updateHintVec___kernel(RO(o)->hintMatAnmExist, n);
-        addLink_((Node **)&RO(o)->anmMat, n);
+        updateHintVec___kernel(o->hintMatAnmExist, n);
+        addLink_(&o->anmMat, n);
         break;
     case 'J':
-        updateHintVec___kernel(RO(o)->hintJntAnmExist, n);
-        addLink_((Node **)&RO(o)->anmJnt, n);
+        updateHintVec___kernel(o->hintJntAnmExist, n);
+        addLink_(&o->anmJnt, n);
         break;
     case 'V':
-        updateHintVec___kernel(RO(o)->hintVisAnmExist, n);
-        addLink_((Node **)&RO(o)->anmVis, n);
+        updateHintVec___kernel(o->hintVisAnmExist, n);
+        addLink_(&o->anmVis, n);
         break;
     }
 }
