@@ -532,7 +532,7 @@ extern "C" void StrBSize_Load(void) {
         if (NNS_FndMountArchive(file, "STR", p)) {
             for (i = 0; i < 0x22; i++) {
                 Str_SPrintf(name, "STR:a/%d.bsize", i);
-                sStrBSizeTable[i] = (u32)NNS_FndGetArchiveFileByName(name);
+                sStrBSizeTable[i] = (StrBSizeData *)NNS_FndGetArchiveFileByName(name);
             }
             NNS_FndUnmountArchive(file);
         }
@@ -553,7 +553,7 @@ extern "C" void StrBSize_Unload(void) {
     }
 }
 
-extern "C" u32 StrBSize_Get(u16 *p) {
+extern "C" StrBSizeData *StrBSize_Get(u16 *p) {
     if (sStrBSizeArchive != NULL) {
         s32 idx;
         BOOL in = FALSE;
@@ -1693,6 +1693,6 @@ u8 sBuildingStates[0x22];
 u32 sFieldStructureMgr;
 u8 sHouseVisitorPresent;
 s32 sHourHandCos = 0x1000;
-u32 sStrBSizeTable[0x22];
+StrBSizeData *sStrBSizeTable[0x22];
 u8 sTaxiArriving;
 s32 sHourHandSin;

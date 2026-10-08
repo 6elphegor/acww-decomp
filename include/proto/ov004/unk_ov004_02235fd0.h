@@ -20,9 +20,6 @@ void HouseRoach_FindVillager(void *);
 #ifndef PROTO_LOCAL_sHouseRoachModelPath
 extern char sHouseRoachModelPath[0x18];
 #endif
-#ifndef PROTO_LOCAL_sHouseRoachManager
-extern void *sHouseRoachManager;
-#endif
 #ifdef __cplusplus
 }
 #endif
@@ -36,19 +33,22 @@ HouseRoachManager *HouseRoachManager_Create();
 HouseRoach *HouseRoach_Create();
 #endif
 #ifndef PROTO_LOCAL_HouseRoach_SpawnFromFurniture
-BOOL HouseRoach_SpawnFromFurniture(u32 a, u32 b);
+BOOL HouseRoach_SpawnFromFurniture(void *pos, u16 *angle);
 #endif
 #ifndef PROTO_LOCAL_HouseRoach_SpawnInitial
-BOOL HouseRoach_SpawnInitial(void *owner);
+BOOL HouseRoach_SpawnInitial(HouseRoachManager *owner);
 #endif
 #ifndef PROTO_LOCAL_HouseRoach_LoadCount
-BOOL HouseRoach_LoadCount(void *self);
+BOOL HouseRoach_LoadCount(HouseRoachManager *self);
 #endif
 #ifndef PROTO_LOCAL_sHouseRoachTurnCounter
 extern s8 sHouseRoachTurnCounter;
 #endif
 #ifndef PROTO_LOCAL_sHouseRoachActiveCount
 extern volatile u8 sHouseRoachActiveCount;
+#endif
+#ifndef PROTO_LOCAL_sHouseRoachManager
+extern HouseRoachManager *sHouseRoachManager;
 #endif
 #ifndef PROTO_LOCAL_sHouseRoachVillager
 extern Actor *sHouseRoachVillager;

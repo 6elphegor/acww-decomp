@@ -22,42 +22,12 @@
 #include "proto/main/unk_0209c3e0.h"
 #include "proto/ov004/unk_ov004_02225290.h"
 
-
-
-
-
-
-// ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-
-
-
-
-// ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-
-
-
-// ---- second base at +0x290 (see src/main/unk_02065f14.cpp)
-
-
-
 class BarberMachine;
 
 extern "C" {
-
-void func_02002dd0(void *o, u32 v);
-void func_020555ec(void *m, void *r, u32 z);
-void NNS_G3dBindMdlTex(void *a, u32 b);
-void NNS_G3dBindMdlPltt(void *a, u32 b);
-s32 BoxCollider_Unregister(void *p);
-void BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
-void func_020566bc(void *p);
-void Math_ApproachS32Max(void *a, s32 b, s32 c, s32 d);
-void _ZN11BoxColliderC1Ev(void *self);
-void _ZN11BoxColliderD2Ev(void *self);
-void *RoomObjRes_GetBca(void *o, u32 i);
-void RoomObj_PlaySe(void *o, s32 v);
+BOOL BoxCollider_Unregister(BoxCollider *p);
+BOOL BoxCollider_Register(BoxCollider *p, s32 a, s32 b, s32 c, VecFx32 *pos, s16 angle, VecFx32 *scale);
 }
-
 
 class BarberMachine : public RoomObjActor, public TalkMsgRequest {
 public:
@@ -82,7 +52,7 @@ public:
     BOOL enterState01();
     BOOL enterState00();
 
-    /* 0x2d4 */ u32 collider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8; // a BoxCollider (ctor/dtor called by hand: the original destroys it with D2)
+    /* 0x2d4 */ BoxCollider collider;
     /* 0x370 */ u8 isStartedLocally;
 };
 
@@ -107,12 +77,10 @@ extern "C" BarberMachine *BarberMachine_Create() {
 
 // @2225754
 BarberMachine::BarberMachine() {
-    _ZN11BoxColliderC1Ev(collider);
 }
 
 // @22256d4
 BarberMachine::~BarberMachine() {
-    _ZN11BoxColliderD2Ev(collider);
 }
 
 // @222564c
@@ -260,7 +228,7 @@ void BarberMachine::updateState03() {
 
 // @22252cc
 void BarberMachine::initCollision() {
-    BoxCollider_Register(&collider, 0x2000, 0x4000, 0x2000, &position, 0, 0);
+    BoxCollider_Register(&collider, 0x2000, 0x4000, 0x2000, &position, 0, NULL);
 }
 
 // @22252bc

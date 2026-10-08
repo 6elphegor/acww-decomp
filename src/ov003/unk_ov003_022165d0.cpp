@@ -105,11 +105,11 @@ void PlayerHouse::loadHouseTex() {
 
 void PlayerHouse::bindHouseTex() {
     if (roofTex) {
-        NNS_G3dBindMdlTex(modelRes, roofTex);
+        NNS_G3dBindMdlTex(model.resMdl, roofTex);
     }
     if (extraTex) {
-        NNS_G3dBindMdlTex(modelRes, extraTex);
-        NNS_G3dBindMdlPltt(modelRes, extraTex);
+        NNS_G3dBindMdlTex(model.resMdl, extraTex);
+        NNS_G3dBindMdlPltt(model.resMdl, extraTex);
     }
 }
 

@@ -19,21 +19,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov004/unk_ov004_022048c0.h"
-
-
-// ---------------------------------------------------------------- library base chain (as in link_ov009)
-
-
-
-
-
-
-// ---------------------------------------------------------------- secondary base at +0xec (vtable 0x020ddcf0 in main)
-
-
-
-
-
+#include "proto/autoload_2/unk_020e92f4.h"
 
 
 extern "C" {
@@ -42,13 +28,8 @@ s32 NookPoints_GetRank(u32 x);
 s32 NookPoints_GetToNextRank(u16 *p);
 TouchPicker *Scene_GetTouchPicker();
 BOOL TalkRequest_SetTargetDone(void *p);
-s32 Vec_DistXZ(s32 *a, s32 *b);
-BOOL BoxCollider_Unregister(void *self);
-void BoxCollider_Register(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
-void _ZN11BoxColliderC1Ev(void *self);
-void _ZN11BoxColliderD2Ev(void *self);
-void _ZN12TouchPickBoxC2Ev(void *self);
-void _ZN12TouchPickBoxD2Ev(void *self);
+BOOL BoxCollider_Unregister(BoxCollider *self);
+BOOL BoxCollider_Register(BoxCollider *self, s32 a, s32 b, s32 c, VecFx32 *pos, s16 angle, VecFx32 *scale);
 }
 
 
@@ -80,8 +61,8 @@ public:
     void initCollision();
 
     /* 0x130 */ s32 talkAct;
-    /* 0x134 */ u8 collider[HOST_SIZED(0x9c, BoxCollider) / 1] HOST_ALIGN8; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
-    /* 0x1d0 */ u32 touchBox[0x2a8 / 4]; // a TouchPickBox (ctor C2 / dtor D2 called by hand)
+    /* 0x134 */ BoxCollider collider;
+    /* 0x1d0 */ TouchPickBox touchBox;
 };
 
 typedef void (Atm::*Unk_02204a88_Fn)();
@@ -106,14 +87,10 @@ extern "C" Atm *Atm_GetInstance() {
 // ---------------------------------------------------------------- data
 
 Atm::Atm() {
-    _ZN11BoxColliderC1Ev(collider);
-    _ZN12TouchPickBoxC2Ev(touchBox);
     sAtmInstance = 0;
 }
 
 Atm::~Atm() {
-    _ZN12TouchPickBoxD2Ev(touchBox);
-    _ZN11BoxColliderD2Ev(collider);
 }
 
 BOOL Atm::onCreate() {
@@ -126,7 +103,7 @@ BOOL Atm::onCreate() {
 
 BOOL Atm::onExecute() {
     execTalkAct();
-    Scene_GetTouchPicker()->pushBox((TouchPickBox *)touchBox);
+    Scene_GetTouchPicker()->pushBox(&touchBox);
     return TRUE;
 }
 
@@ -140,12 +117,12 @@ BOOL Atm::onDelete() {
 }
 
 void Atm::initCollision() {
-    BoxCollider_Register(collider, 0x2000, 0x2000, 0x2000, &position.x, 0, 0);
-    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (VecFx32 *)&position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    BoxCollider_Register(&collider, 0x2000, 0x2000, 0x2000, &position, 0, NULL);
+    Scene_GetTouchPicker()->addBox(&touchBox, &position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {
-    return BoxCollider_Unregister(collider);
+    return BoxCollider_Unregister(&collider);
 }
 
 void Atm::setPointTexts() {
@@ -169,7 +146,7 @@ void Atm::setPointTexts() {
 BOOL Atm::acceptsInteraction(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (Vec_DistXZ(&o->position.x, &position.x) < 0x2333) {
+        if (Vec_DistXZ(&o->position, &position) < 0x2333) {
             u32 d = (u16)(o->rotY - (rotY + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;

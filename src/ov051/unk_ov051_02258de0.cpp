@@ -27,7 +27,8 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/ScreenTransition.h"
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02063904.h"
@@ -42,44 +43,38 @@
 
 
 class SpNpcKappn;
+class TownBlockMap;
 class SpNpcKappnTalk;
 class ActorTalkRequest;
 
-struct Unk_ov051_02258e50_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct Unk_ov051_02258e68_Rec {
-    u8 a;
-    u8 b;
-    u16 c;
+// A new player's face style (table data_020d0544: per face, one record per gender)
+struct KappnFaceStyle {
+    u8 hairStyle;
+    u8 hairColor;
+    u16 shirt;
 };
 
 
 
 extern "C" {
-u32 _ZN8PlayerId9getGenderEv(void *self);
-void *_ZN10PlayerData11getPlayerIdEv(void *self);
-void Clock_GetDateTime(void *p);
-void SaveData_Setup(void *p, s32 a);
-void SaveData_Apply(void *p);
-s32 TownBlockMap_Get();
-void Town_FindTownHallFront(s32 a, void *p, s32 b, s32 c);
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestAt(s32 a, s32 b, void *p, u32 c, u32 d, u32 e, u32 f);
-s32 Math_CountDownU16(void *p);
-s32 Math_CountDownU8(void *p);
-void TalkRequestFlags_ClearSceneHold();
-void TalkRequestFlags_SetSceneHold();
-void Camera_SetSwayPattern3();
+// (definitions in files whose types are local: include/proto/.excluded)
+void Clock_GetDateTime(ClockDateTime *p);
+void SaveData_Setup(SaveData *p, u32 idx);
+void SaveData_Apply(SaveData *p);  // (defined with u8 *)
+TownBlockMap *TownBlockMap_Get(void);
+BOOL Town_FindTownHallFront(void *map, s32 *pos, s32 *p3, s32 *p4);
+u8 *Scene_GetWarpRequest(void);
+BOOL SceneWarp_RequestAt(u8 *request, u8 id, VecFx32 *v, u32 w, s16 s, u8 p, u8 q);  // (the request is a SceneWarp)
+void TalkRequestFlags_ClearSceneHold(void);
+void TalkRequestFlags_SetSceneHold(void);
+void Camera_SetSwayPattern3(void);
+// (src/autoload_2/unk_020e7500.cpp; its header's List_Remove conflicts with the one actor/Actor.h declares)
+u16 Math_CountDownU16(u16 *p);
+u8 Math_CountDownU8(u8 *p);
 extern u16 data_020c6cc8;
-extern u8 gScreenTransition;
-extern u8 gSaveData[];
-extern u8 data_020d0544[];
+extern SaveData gSaveData;
+extern const KappnFaceStyle data_020d0544[8][2];
 extern u8 gTalkMsgIndexEnd[];
-extern u32 __ptmf_null[];
 }
 
 
@@ -185,97 +180,6 @@ extern const u32 sSpNpcKappnFaceTable[];
 
 
 
-extern "C" void _ZN14SpNpcKappnTalk13onMoneyChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk15onPurposeChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk12onRainChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk17onVisitPlanChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk18onTownReasonChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk16onGirlNameChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk15onBoyNameChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk23onTownNameConfirmChoiceEj();
-extern "C" void _ZN14SpNpcKappnTalk20applyFaceFromAnswersEv();
-extern "C" void _ZN14SpNpcKappnTalk15announceArrivalEv();
-extern "C" void _ZN14SpNpcKappnTalk16askMoneyOrArriveEv();
-extern "C" void _ZN14SpNpcKappnTalk22askAfterGirlCorrectionEv();
-extern "C" void _ZN14SpNpcKappnTalk21askAfterBoyCorrectionEv();
-extern "C" void _ZN14SpNpcKappnTalk14askDestinationEv();
-extern "C" void _ZN14SpNpcKappnTalk16askReasonOrMoneyEv();
-extern "C" void _ZN14SpNpcKappnTalk12askVisitPlanEv();
-extern "C" void _ZN14SpNpcKappnTalk17openTownNameEntryEv();
-extern "C" void _ZN14SpNpcKappnTalk19openPlayerNameEntryEv();
-extern "C" void _ZN14SpNpcKappnTalk16openClockSettingEv();
-extern "C" void _ZN14SpNpcKappnTalk10onClockSetEv();
-extern "C" void _ZN14SpNpcKappnTalk19onPlayerNameEnteredEv();
-extern "C" void _ZN14SpNpcKappnTalk17onTownNameEnteredEv();
-extern "C" void _ZN10SpNpcKappn9mainAct04Ev();
-extern "C" void _ZN10SpNpcKappn10setupAct04Ev();
-extern "C" void _ZN10SpNpcKappn9mainAct03Ev();
-extern "C" void _ZN10SpNpcKappn10setupAct03Ev();
-extern "C" void _ZN10SpNpcKappn9mainAct02Ev();
-extern "C" void _ZN10SpNpcKappn10setupAct02Ev();
-extern "C" void _ZN10SpNpcKappn9mainAct01Ev();
-extern "C" void _ZN10SpNpcKappn10setupAct01Ev();
-extern "C" void _ZN10SpNpcKappn9mainAct00Ev();
-extern "C" void _ZN10SpNpcKappn10setupAct00Ev();
-extern "C" void *data_ov051_02259f64[2];
-extern "C" void *data_ov051_02259f6c[2];
-extern "C" void *data_ov051_02259f74[2];
-extern "C" void *data_ov051_02259f7c[2];
-extern "C" void *data_ov051_02259f84[2];
-extern "C" void *data_ov051_02259f8c[2];
-extern "C" void *data_ov051_02259f94[2];
-extern "C" void *data_ov051_02259f9c[2];
-extern "C" void *data_ov051_02259fa4[2];
-extern "C" void *data_ov051_02259fac[2];
-extern "C" void *data_ov051_02259fb4[2];
-extern "C" void *data_ov051_02259fbc[2];
-extern "C" void *data_ov051_02259fc4[2];
-extern "C" void *data_ov051_02259fcc[2];
-extern "C" void *data_ov051_02259fd4[2];
-extern "C" void *data_ov051_02259fdc[2];
-extern "C" void *data_ov051_02259fe4[2];
-extern "C" void *data_ov051_02259fec[2];
-extern "C" void *data_ov051_02259ff4[2];
-extern "C" void *data_ov051_02259ffc[2];
-extern "C" void *data_ov051_0225a004[2];
-extern "C" void *data_ov051_0225a00c[2];
-extern "C" void *data_ov051_0225a014[2];
-extern "C" void *data_ov051_0225a01c[2];
-extern "C" void *data_ov051_0225a024[2];
-extern "C" void *data_ov051_0225a02c[2];
-extern "C" void *data_ov051_0225a034[2];
-extern "C" void *data_ov051_0225a03c[2];
-extern "C" void *data_ov051_0225a044[2];
-extern "C" void *data_ov051_0225a04c[2];
-extern "C" void *data_ov051_0225a054[2];
-extern "C" void *data_ov051_0225a05c[2];
-extern "C" void *data_ov051_0225a064[2];
-extern "C" void *data_ov051_0225a06c[2];
-extern "C" void *data_ov051_0225a074[2];
-extern "C" void *data_ov051_0225a07c[2];
-extern "C" void *data_ov051_0225a084[2];
-extern "C" void *data_ov051_0225a08c[2];
-extern "C" void *data_ov051_0225a094[2];
-extern "C" void *data_ov051_0225a09c[2];
-extern "C" void *data_ov051_0225a0a4[2];
-extern "C" void *data_ov051_0225a0ac[2];
-extern "C" void *data_ov051_0225a0b4[2];
-extern "C" void *data_ov051_0225a0bc[2];
-extern "C" void *data_ov051_0225a0c4[2];
-extern "C" void *data_ov051_0225a0cc[2];
-extern "C" void *data_ov051_0225a0d4[2];
-extern "C" void *data_ov051_0225a0dc[2];
-extern "C" void *data_ov051_0225a0e4[2];
-extern "C" void *data_ov051_0225a0ec[2];
-extern "C" void *data_ov051_0225a0f4[2];
-extern "C" void *data_ov051_0225a0fc[2];
-extern "C" void *data_ov051_0225a104[2];
-extern "C" void *data_ov051_0225a10c[2];
-extern "C" void *data_ov051_0225a114[2];
-extern "C" void *data_ov051_0225a11c[2];
-extern "C" void *data_ov051_0225a124[2];
-extern "C" void *data_ov051_0225a12c[2];
-extern "C" void *data_ov051_0225a134[2];
 extern "C" u8 sSpNpcKappnKey[];
 static inline BOOL Unk_ov051_02259a8c_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 static inline BOOL Unk_ov051_02259b98_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
@@ -298,7 +202,7 @@ BOOL SpNpcKappn::preCreate() {
     }
     setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
-    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xfb);
+    moveAnimSet.setStandAnim(0xfb);
     return TRUE;
 }
 
@@ -332,7 +236,7 @@ BOOL SpNpcKappn::updateAct() {
         r = (this->*sSpNpcKappnActTable[act].exit)();
     }
     if (Math_CountDownU8(&animTimer) == 1) {
-        ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x8f, 1, data_020c6cc8, 0);
+        actionCtrl.requestPlayAnim(1, 0x8f, 1, data_020c6cc8, 0);
     }
     return r;
 }
@@ -354,7 +258,7 @@ u16 SpNpcKappn::getEmotion0BlendFrames() { return 10; }
 BOOL SpNpcKappn::setupAct00() { return TRUE; }
 
 BOOL SpNpcKappn::mainAct00() {
-    if (Unk_ov051_02259b98_IsTwo(gScreenTransition)) {
+    if (Unk_ov051_02259b98_IsTwo(gScreenTransition.state)) {
         if (Math_CountDownU16(&startDelay) == 0) {
             changeAct(1);
         }
@@ -363,7 +267,7 @@ BOOL SpNpcKappn::mainAct00() {
 }
 
 BOOL SpNpcKappn::setupAct01() {
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(1, 0);
+    talkCtrl.requestTalk(1, 0);
     return TRUE;
 }
 
@@ -376,32 +280,29 @@ BOOL SpNpcKappn::mainAct02() { return TRUE; }
 BOOL SpNpcKappn::setupAct03() { return TRUE; }
 
 BOOL SpNpcKappn::mainAct03() {
-    struct {
-        u32 w[2];
-        u32 v[3];
-    } l;
-    if (Unk_ov051_02259a8c_IsZero(gScreenTransition)) {
+    ClockDateTime now;
+    VecFx32 pos;
+    if (Unk_ov051_02259a8c_IsZero(gScreenTransition.state)) {
         ScreenTransition_StartFadeIn(3, 0, 1);
         Taxi_SetArriving();
         if (GameStart_IsMode3() || GameStart_IsNewTown()) {
-            l.w[0] = 0;
-            l.w[1] = 0;
-            Clock_GetDateTime(&l.w);
-            MenuCtrl_SetDateTime(&l.w);
+            now = ClockDateTime();
+            Clock_GetDateTime(&now);
+            MenuCtrl_SetDateTime(&now);
         }
         if (GameStart_IsNewTown()) {
-            SaveData_Setup(gSaveData, 0);
-            SaveData_Apply(gSaveData);
+            SaveData_Setup(&gSaveData, 0);
+            SaveData_Apply(&gSaveData);
         } else if (GameStart_IsMode3()) {
-            SaveData_Setup(gSaveData, 6);
-            SaveData_Apply(gSaveData);
+            SaveData_Setup(&gSaveData, 6);
+            SaveData_Apply(&gSaveData);
         } else if (GameStart_IsNewResident()) {
-            SaveData_Setup(gSaveData, 1);
-            SaveData_Apply(gSaveData);
+            SaveData_Setup(&gSaveData, 1);
+            SaveData_Apply(&gSaveData);
         }
-        ((SaveData *)(gSaveData))->clearFlag(0x12);
-        Town_FindTownHallFront(TownBlockMap_Get(), &l.v, 0, 0);
-        SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &l.v, 0x400000, 0xffff8000, 3, 2);
+        gSaveData.clearFlag(0x12);
+        Town_FindTownHallFront(TownBlockMap_Get(), &pos.x, NULL, NULL);
+        SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &pos, 0x400000, -0x8000, 3, 2);
         changeAct(2);
     }
     return TRUE;
@@ -452,7 +353,7 @@ void SpNpcKappnTalk::start(TalkStartMsg *out) {
 void SpNpcKappnTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
-        resultHandler = *(Fn *)__ptmf_null;
+        resultHandler = NULL;
     }
 }
 
@@ -460,9 +361,9 @@ void SpNpcKappnTalk::onTaskDone(u32) {
 
 void SpNpcKappnTalk::setResultHandler(s32 idx) {
     static Fn tbl[3] = {
-        *(Fn *)data_ov051_0225a0fc,
-        *(Fn *)data_ov051_0225a0f4,
-        *(Fn *)data_ov051_0225a0ec,
+        &SpNpcKappnTalk::onTownNameEntered,
+        &SpNpcKappnTalk::onPlayerNameEntered,
+        &SpNpcKappnTalk::onClockSet,
     };
     resultHandler = tbl[idx];
 }
@@ -491,48 +392,44 @@ void SpNpcKappnTalk::onClockSet() {
 }
 
 void SpNpcKappnTalk::onMessageStart(u32) {
-    struct {
-        u8 msg;
-        u8 pad[3];
-        u32 w[2];
-    } l;
+    u8 msg;
+    ClockDateTime now;
     if (msgIndex == 0 || msgIndex == 2) {
-        void *h = TalkWindow_Get(0);
+        TalkWindowState *h = TalkWindow_Get(0);
         s32 r4 = 0x19;
-        l.w[0] = 0;
-        l.w[1] = 0;
-        Clock_GetDateTime(&l.w);
-        if (((u8 *)l.w)[2] >= 0xc) {
+        now = ClockDateTime();
+        Clock_GetDateTime(&now);
+        if (now.hour >= 0xc) {
             r4 = 0x1a;
         }
-        l.msg = r4;
-        ((TalkWindowState *)(h))->setSlotFromString(0, &l.msg, "st_general");
-        u32 t = ((u8 *)l.w)[2];
+        msg = r4;
+        h->setSlotFromString(0, &msg, "st_general");
+        u32 t = now.hour;
         if (t >= 0xc) {
             t -= 0xc;
         }
         if (t == 0) {
             t = 0xc;
         }
-        ((ActorTalkRequest *)(this))->setNumberSlot(t, 1, 2, 0, 0);
+        setNumberSlot(t, 1, 2, 0, 0);
     }
 }
 
 void SpNpcKappnTalk::openClockSetting() {
-    ((ActorTalkRequest *)(this))->setSubSceneKind(0x30, 0);
-    ((ActorTalkRequest *)(this))->openSubScene(2);
+    setSubSceneKind(0x30, 0);
+    openSubScene(2);
     setResultHandler(2);
 }
 
 void SpNpcKappnTalk::openPlayerNameEntry() {
-    ((ActorTalkRequest *)(this))->setSubSceneKind(0xf, 0);
-    ((ActorTalkRequest *)(this))->openSubScene(2);
+    setSubSceneKind(0xf, 0);
+    openSubScene(2);
     setResultHandler(1);
 }
 
 void SpNpcKappnTalk::openTownNameEntry() {
-    ((ActorTalkRequest *)(this))->setSubSceneKind(0x10, 0);
-    ((ActorTalkRequest *)(this))->openSubScene(2);
+    setSubSceneKind(0x10, 0);
+    openSubScene(2);
     setResultHandler(0);
 }
 
@@ -603,80 +500,63 @@ void SpNpcKappnTalk::announceArrival() {
 
 void SpNpcKappnTalk::applyFaceFromAnswers() {
     if (GameStart_IsNewResident() || GameStart_IsNewTown()) {
-        void *h = PlayerData_GetCurrent();
-        u32 res = ((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getGender();
-        u32 off4;
-        u32 v;
+        PlayerData *h = PlayerData_GetCurrent();
+        u32 res = h->getPlayerId()->getGender();
+        // the face for the answers (two per answer set: one per gender); girls' faces follow the boys' 8
+        u32 v = sSpNpcKappnFaceTable[ownerNpc->talk.answerBits * 2 + res];
         u32 r1;
         if (res == 0) {
-            off4 = res << 2;
-            v = *(u32 *)(off4 + ((u32)sSpNpcKappnFaceTable + (u32)(ownerNpc->talk.answerBits << 3)));
             r1 = (u8)v;
         } else {
-            off4 = res << 2;
-            v = *(u32 *)(off4 + ((u32)sSpNpcKappnFaceTable + (u32)(ownerNpc->talk.answerBits << 3)));
             r1 = (u8)(v + 8);
         }
-        u8 *base = data_020d0544 + (v << 3);
-        Unk_ov051_02258e68_Rec *e = (Unk_ov051_02258e68_Rec *)(base + off4);
+        const KappnFaceStyle *e = &data_020d0544[v][res];
         u16 c;
-        ((PlayerData *)(h))->setFaceType(r1);
-        ((PlayerData *)(h))->setHairColor(e->b);
-        ((PlayerData *)(h))->setHairStyle(base[off4]);
-        c = e->c;
-        ((PlayerData *)(h))->setShirt(&c);
+        h->setFaceType(r1);
+        h->setHairColor(e->hairColor);
+        h->setHairStyle(e->hairStyle);
+        c = e->shirt;
+        h->setShirt(&c);
     }
     window->setNextMessage(gTalkMsgIndexEnd, 0);
     ownerNpc->changeAct(4);
 }
 
-extern "C" void *data_ov051_0225a014[2] = {(void *)_ZN10SpNpcKappn10setupAct00Ev, 0};
-extern "C" void *data_ov051_02259f7c[2] = {(void *)_ZN14SpNpcKappnTalk15onBoyNameChoiceEj, 0};
-extern "C" void *data_ov051_0225a034[2] = {(void *)_ZN10SpNpcKappn10setupAct01Ev, 0};
-extern "C" void *data_ov051_02259f64[2] = {(void *)_ZN10SpNpcKappn10setupAct02Ev, 0};
-extern "C" void *data_ov051_0225a114[2] = {(void *)_ZN10SpNpcKappn10setupAct03Ev, 0};
-extern "C" void *data_ov051_0225a12c[2] = {(void *)_ZN10SpNpcKappn10setupAct04Ev, 0};
-extern "C" void *data_ov051_02259f8c[2] = {(void *)_ZN14SpNpcKappnTalk23onTownNameConfirmChoiceEj, 0};
-extern "C" void *data_ov051_02259f94[2] = {(void *)_ZN10SpNpcKappn9mainAct02Ev, 0};
-extern "C" void *data_ov051_0225a134[2] = {(void *)_ZN10SpNpcKappn9mainAct03Ev, 0};
-extern "C" void *data_ov051_0225a07c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainChoiceEj, 0};
-extern "C" void *data_ov051_0225a124[2] = {(void *)_ZN10SpNpcKappn9mainAct04Ev, 0};
-extern "C" void *data_ov051_0225a11c[2] = {(void *)_ZN14SpNpcKappnTalk16askMoneyOrArriveEv, 0};
 
 void SpNpcKappnTalk::onMessageEnd(u32) {
     static SpNpcKappnMessageEndHandler tbl[32] = {
-        {0x01, *(Fn *)data_ov051_02259fec},
-        {0x04, *(Fn *)data_ov051_0225a0c4},
-        {0x08, *(Fn *)data_ov051_0225a0bc},
-        {0x0a, *(Fn *)data_ov051_0225a0b4},
-        {0x29, *(Fn *)data_ov051_0225a0ac},
-        {0x0f, *(Fn *)data_ov051_0225a0a4},
-        {0x10, *(Fn *)data_ov051_0225a09c},
-        {0x13, *(Fn *)data_ov051_0225a094},
-        {0x14, *(Fn *)data_ov051_02259fcc},
-        {0x25, *(Fn *)data_ov051_0225a084},
-        {0x26, *(Fn *)data_ov051_02259fc4},
-        {0x06, *(Fn *)data_ov051_0225a074},
-        {0x07, *(Fn *)data_ov051_02259fbc},
-        {0x1b, *(Fn *)data_ov051_0225a064},
-        {0x1c, *(Fn *)data_ov051_02259fa4},
-        {0x1d, *(Fn *)data_ov051_0225a054},
-        {0x1e, *(Fn *)data_ov051_02259fac},
-        {0x2b, *(Fn *)data_ov051_0225a0dc},
-        {0x2c, *(Fn *)data_ov051_0225a03c},
-        {0x2d, *(Fn *)data_ov051_0225a01c},
-        {0x2e, *(Fn *)data_ov051_0225a024},
-        {0x0d, *(Fn *)data_ov051_0225a04c},
-        {0x0e, *(Fn *)data_ov051_0225a05c},
-        {0x17, *(Fn *)data_ov051_0225a11c},
-        {0x18, *(Fn *)data_ov051_0225a08c},
-        {0x21, *(Fn *)data_ov051_0225a104},
-        {0x22, *(Fn *)data_ov051_02259ffc},
-        {0x23, *(Fn *)data_ov051_0225a0e4},
-        {0x24, *(Fn *)data_ov051_0225a0d4},
-        {0x2f, *(Fn *)data_ov051_02259fe4},
-        {0x31, *(Fn *)data_ov051_02259fdc},
-        {0x32, *(Fn *)data_ov051_02259fd4},
+        {0x01, &SpNpcKappnTalk::openClockSetting},
+        {0x04, &SpNpcKappnTalk::openClockSetting},
+        {0x08, &SpNpcKappnTalk::openPlayerNameEntry},
+        {0x0a, &SpNpcKappnTalk::openPlayerNameEntry},
+        {0x29, &SpNpcKappnTalk::openPlayerNameEntry},
+        {0x0f, &SpNpcKappnTalk::openTownNameEntry},
+        {0x10, &SpNpcKappnTalk::openTownNameEntry},
+        {0x13, &SpNpcKappnTalk::openTownNameEntry},
+        {0x14, &SpNpcKappnTalk::openTownNameEntry},
+        {0x25, &SpNpcKappnTalk::applyFaceFromAnswers},
+        {0x26, &SpNpcKappnTalk::applyFaceFromAnswers},
+        {0x06, &SpNpcKappnTalk::askVisitPlan},
+        {0x07, &SpNpcKappnTalk::askVisitPlan},
+        {0x1b, &SpNpcKappnTalk::askReasonOrMoney},
+        {0x1c, &SpNpcKappnTalk::askReasonOrMoney},
+        {0x1d, &SpNpcKappnTalk::askReasonOrMoney},
+        {0x1e, &SpNpcKappnTalk::askReasonOrMoney},
+        {0x2b, &SpNpcKappnTalk::askDestination},
+        {0x2c, &SpNpcKappnTalk::askDestination},
+        {0x2d, &SpNpcKappnTalk::askDestination},
+        {0x2e, &SpNpcKappnTalk::askDestination},
+        {0x0d, &SpNpcKappnTalk::askAfterBoyCorrection},
+        {0x0e, &SpNpcKappnTalk::askAfterGirlCorrection},
+        {0x17, &SpNpcKappnTalk::askMoneyOrArrive},
+        {0x18, &SpNpcKappnTalk::askMoneyOrArrive},
+        {0x21, &SpNpcKappnTalk::announceArrival},
+        {0x22, &SpNpcKappnTalk::announceArrival},
+        {0x23, &SpNpcKappnTalk::announceArrival},
+        {0x24, &SpNpcKappnTalk::announceArrival},
+        {0x2f, &SpNpcKappnTalk::announceArrival},
+        {0x31, &SpNpcKappnTalk::announceArrival},
+        {0x32, &SpNpcKappnTalk::announceArrival},
     };
     for (u32 i = 0; i < 0x20; i++) {
         if (tbl[i].id == msgIndex) {
@@ -708,7 +588,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(0);
+        PlayerData_GetCurrent()->getPlayerId()->setGender(0);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -718,7 +598,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
         }
         break;
     case 1:
-        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(1);
+        PlayerData_GetCurrent()->getPlayerId()->setGender(1);
         msg[2] = 0xe;
         window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -729,7 +609,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(1);
+        PlayerData_GetCurrent()->getPlayerId()->setGender(1);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -739,7 +619,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
         }
         break;
     case 1:
-        ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->setGender(0);
+        PlayerData_GetCurrent()->getPlayerId()->setGender(0);
         msg[2] = 0xd;
         window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -771,7 +651,7 @@ void SpNpcKappnTalk::onRainChoice(u32 sel) {
     u8 msg;
     u32 v;
     if (GameStart_IsMode3()) {
-        v = *(u8 *)(_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) + ((u32)sSpNpcKappnRainReplyMsgsMode3 + sel * 2));
+        v = sSpNpcKappnRainReplyMsgsMode3[sel * 2 + PlayerData_GetCurrent()->getPlayerId()->getGender()];
     } else {
         v = sSpNpcKappnRainReplyMsgs[sel];
     }
@@ -797,7 +677,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
     if (GameStart_IsNewTown()) {
         v = genderMsg(sSpNpcKappnMoneyReplyMsgs[sel]);
     } else if (sel == 0) {
-        if (((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender() == 0) {
+        if (PlayerData_GetCurrent()->getPlayerId()->getGender() == 0) {
             v = 0x21;
         } else {
             v = 0x2f;
@@ -813,88 +693,44 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
 }
 
 u8 SpNpcKappnTalk::genderMsg(u32 v) {
-    u8 r = (u8)((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender();
+    u8 r = (u8)PlayerData_GetCurrent()->getPlayerId()->getGender();
     return (u8)(v + r);
 }
 
-extern "C" void *data_ov051_0225a104[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
-extern "C" void *data_ov051_0225a0fc[2] = {(void *)_ZN14SpNpcKappnTalk17onTownNameEnteredEv, 0};
 extern "C" u8 sSpNpcKappnTexturePath[] = "npc_sp/model/wip_tex.nsbtx";
-extern "C" void *data_ov051_0225a0ec[2] = {(void *)_ZN14SpNpcKappnTalk10onClockSetEv, 0};
-extern "C" void *data_ov051_0225a0e4[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
 SpNpcKappnActEntry sSpNpcKappnActTable[5] = {
-    {*(BOOL (SpNpcKappn::**)())data_ov051_0225a014, *(BOOL (SpNpcKappn::**)())data_ov051_02259f84},
-    {*(BOOL (SpNpcKappn::**)())data_ov051_0225a034, *(BOOL (SpNpcKappn::**)())data_ov051_0225a10c},
-    {*(BOOL (SpNpcKappn::**)())data_ov051_02259f64, *(BOOL (SpNpcKappn::**)())data_ov051_02259f94},
-    {*(BOOL (SpNpcKappn::**)())data_ov051_0225a114, *(BOOL (SpNpcKappn::**)())data_ov051_0225a134},
-    {*(BOOL (SpNpcKappn::**)())data_ov051_0225a12c, *(BOOL (SpNpcKappn::**)())data_ov051_0225a124},
+    {&SpNpcKappn::setupAct00, &SpNpcKappn::mainAct00},
+    {&SpNpcKappn::setupAct01, &SpNpcKappn::mainAct01},
+    {&SpNpcKappn::setupAct02, &SpNpcKappn::mainAct02},
+    {&SpNpcKappn::setupAct03, &SpNpcKappn::mainAct03},
+    {&SpNpcKappn::setupAct04, &SpNpcKappn::mainAct04},
 };
 extern "C" u8 sSpNpcKappnModelPath[] = "npc_sp/model/wip.nsbmd";
 extern "C" const u8 sSpNpcKappnRainReplyMsgs[4] = {6, 7, 0, 0};
-extern "C" void *data_ov051_0225a0c4[2] = {(void *)_ZN14SpNpcKappnTalk16openClockSettingEv, 0};
 extern "C" const u8 sSpNpcKappnRainReplyMsgsMode3[4] = {0x2b, 0x2c, 0x2d, 0x2e};
-extern "C" void *data_ov051_0225a0b4[2] = {(void *)_ZN14SpNpcKappnTalk19openPlayerNameEntryEv, 0};
-extern "C" void *data_ov051_0225a0ac[2] = {(void *)_ZN14SpNpcKappnTalk19openPlayerNameEntryEv, 0};
-extern "C" void *data_ov051_0225a0a4[2] = {(void *)_ZN14SpNpcKappnTalk17openTownNameEntryEv, 0};
-extern "C" void *data_ov051_0225a09c[2] = {(void *)_ZN14SpNpcKappnTalk17openTownNameEntryEv, 0};
 extern "C" u8 sSpNpcKappnKey[] = "sp_etc_sequence3";
-extern "C" void *data_ov051_0225a08c[2] = {(void *)_ZN14SpNpcKappnTalk16askMoneyOrArriveEv, 0};
-extern "C" void *data_ov051_0225a084[2] = {(void *)_ZN14SpNpcKappnTalk20applyFaceFromAnswersEv, 0};
-extern "C" void *data_ov051_02259fc4[2] = {(void *)_ZN14SpNpcKappnTalk20applyFaceFromAnswersEv, 0};
-extern "C" void *data_ov051_0225a074[2] = {(void *)_ZN14SpNpcKappnTalk12askVisitPlanEv, 0};
-extern "C" void *data_ov051_0225a06c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainChoiceEj, 0};
-extern "C" void *data_ov051_0225a064[2] = {(void *)_ZN14SpNpcKappnTalk16askReasonOrMoneyEv, 0};
 SpNpcKappn *sSpNpcKappnInstance;
-extern "C" void *data_ov051_0225a054[2] = {(void *)_ZN14SpNpcKappnTalk16askReasonOrMoneyEv, 0};
-extern "C" void *data_ov051_0225a04c[2] = {(void *)_ZN14SpNpcKappnTalk21askAfterBoyCorrectionEv, 0};
-extern "C" void *data_ov051_0225a10c[2] = {(void *)_ZN10SpNpcKappn9mainAct01Ev, 0};
-extern "C" void *data_ov051_0225a03c[2] = {(void *)_ZN14SpNpcKappnTalk14askDestinationEv, 0};
-extern "C" void *data_ov051_0225a01c[2] = {(void *)_ZN14SpNpcKappnTalk14askDestinationEv, 0};
 extern "C" ActorProfile sSpNpcKappnProfile = {(void *(*)())SpNpcKappn_Create, 0x7b, 0x7f, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov051_0225a05c[2] = {(void *)_ZN14SpNpcKappnTalk22askAfterGirlCorrectionEv, 0};
-extern "C" void *data_ov051_0225a0bc[2] = {(void *)_ZN14SpNpcKappnTalk19openPlayerNameEntryEv, 0};
-extern "C" void *data_ov051_0225a0cc[2] = {(void *)_ZN14SpNpcKappnTalk13onMoneyChoiceEj, 0};
-extern "C" void *data_ov051_0225a0d4[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
-extern "C" void *data_ov051_0225a004[2] = {(void *)_ZN14SpNpcKappnTalk16onGirlNameChoiceEj, 0};
-extern "C" void *data_ov051_0225a0f4[2] = {(void *)_ZN14SpNpcKappnTalk19onPlayerNameEnteredEv, 0};
-extern "C" void *data_ov051_02259ff4[2] = {(void *)_ZN14SpNpcKappnTalk23onTownNameConfirmChoiceEj, 0};
-extern "C" void *data_ov051_02259fec[2] = {(void *)_ZN14SpNpcKappnTalk16openClockSettingEv, 0};
-extern "C" void *data_ov051_02259fe4[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
-extern "C" void *data_ov051_02259fdc[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
-extern "C" void *data_ov051_02259fd4[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
-extern "C" void *data_ov051_0225a094[2] = {(void *)_ZN14SpNpcKappnTalk17openTownNameEntryEv, 0};
 extern "C" const u8 sSpNpcKappnPurposeReplyMsgs[4] = {0x1d, 0x1b, 0, 0};
-extern "C" void *data_ov051_02259fbc[2] = {(void *)_ZN14SpNpcKappnTalk12askVisitPlanEv, 0};
-extern "C" void *data_ov051_02259fa4[2] = {(void *)_ZN14SpNpcKappnTalk16askReasonOrMoneyEv, 0};
-extern "C" void *data_ov051_02259fac[2] = {(void *)_ZN14SpNpcKappnTalk16askReasonOrMoneyEv, 0};
-extern "C" void *data_ov051_0225a044[2] = {(void *)_ZN14SpNpcKappnTalk13onMoneyChoiceEj, 0};
-extern "C" void *data_ov051_0225a024[2] = {(void *)_ZN14SpNpcKappnTalk14askDestinationEv, 0};
 extern "C" char *sSpNpcKappnMsgKey = (char *)sSpNpcKappnKey;
-extern "C" void *data_ov051_0225a0dc[2] = {(void *)_ZN14SpNpcKappnTalk14askDestinationEv, 0};
-extern "C" void *data_ov051_02259ffc[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
 extern "C" const u8 sSpNpcKappnMoneyReplyMsgs[4] = {0x21, 0x23, 0, 0};
-extern "C" void *data_ov051_02259f6c[2] = {(void *)_ZN14SpNpcKappnTalk18onTownReasonChoiceEj, 0};
-extern "C" void *data_ov051_02259fcc[2] = {(void *)_ZN14SpNpcKappnTalk17openTownNameEntryEv, 0};
-extern "C" void *data_ov051_02259f9c[2] = {(void *)_ZN14SpNpcKappnTalk15onPurposeChoiceEj, 0};
-extern "C" void *data_ov051_02259fb4[2] = {(void *)_ZN14SpNpcKappnTalk15onPurposeChoiceEj, 0};
-extern "C" void *data_ov051_0225a02c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainChoiceEj, 0};
 
 void SpNpcKappnTalk::onChoice(u32) {
     static SpNpcKappnChoiceHandler tbl[14] = {
-        {0x05, *(FnU *)data_ov051_0225a02c},
-        {0x03, *(FnU *)data_ov051_0225a06c},
-        {0x28, *(FnU *)data_ov051_0225a07c},
-        {0x0b, *(FnU *)data_ov051_0225a004},
-        {0x0c, *(FnU *)data_ov051_02259f7c},
-        {0x15, *(FnU *)data_ov051_02259f6c},
-        {0x16, *(FnU *)data_ov051_02259f74},
-        {0x19, *(FnU *)data_ov051_02259f9c},
-        {0x1a, *(FnU *)data_ov051_02259fb4},
-        {0x1f, *(FnU *)data_ov051_0225a044},
-        {0x20, *(FnU *)data_ov051_0225a0cc},
-        {0x11, *(FnU *)data_ov051_02259ff4},
-        {0x12, *(FnU *)data_ov051_02259f8c},
-        {0x30, *(FnU *)data_ov051_0225a00c},
+        {0x05, &SpNpcKappnTalk::onRainChoice},
+        {0x03, &SpNpcKappnTalk::onRainChoice},
+        {0x28, &SpNpcKappnTalk::onRainChoice},
+        {0x0b, &SpNpcKappnTalk::onGirlNameChoice},
+        {0x0c, &SpNpcKappnTalk::onBoyNameChoice},
+        {0x15, &SpNpcKappnTalk::onTownReasonChoice},
+        {0x16, &SpNpcKappnTalk::onTownReasonChoice},
+        {0x19, &SpNpcKappnTalk::onPurposeChoice},
+        {0x1a, &SpNpcKappnTalk::onPurposeChoice},
+        {0x1f, &SpNpcKappnTalk::onMoneyChoice},
+        {0x20, &SpNpcKappnTalk::onMoneyChoice},
+        {0x11, &SpNpcKappnTalk::onTownNameConfirmChoice},
+        {0x12, &SpNpcKappnTalk::onTownNameConfirmChoice},
+        {0x30, &SpNpcKappnTalk::onVisitPlanChoice},
     };
     for (u32 i = 0; i < 0xe; i++) {
         if (tbl[i].id == msgIndex) {
@@ -905,17 +741,14 @@ void SpNpcKappnTalk::onChoice(u32) {
 }
 
 extern "C" u32 SpNpcKappn_GetAnimFrame() {
-    return ((Unk_ov051_02258e50_Bits *)&sSpNpcKappnInstance->model.curFrame)->mid;
+    return (u16)(sSpNpcKappnInstance->model.curFrame >> 12);  // the frame number
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 extern "C" s32 SpNpcKappn_GetAnimState() {
-    return ((NpcAnimCtrl *)(&sSpNpcKappnInstance->animCtrl))->getAnimId(0);
+    return sSpNpcKappnInstance->animCtrl.getAnimId(0);
 }
 
-extern "C" void *data_ov051_02259f74[2] = {(void *)_ZN14SpNpcKappnTalk18onTownReasonChoiceEj, 0};
-extern "C" void *data_ov051_0225a00c[2] = {(void *)_ZN14SpNpcKappnTalk17onVisitPlanChoiceEj, 0};
 extern "C" const u32 sSpNpcKappnFaceTable[16] = {4, 6, 5, 5, 1, 0, 0, 1, 6, 4, 3, 2, 2, 7, 7, 3};
-extern "C" void *data_ov051_02259f84[2] = {(void *)_ZN10SpNpcKappn9mainAct00Ev, 0};
 

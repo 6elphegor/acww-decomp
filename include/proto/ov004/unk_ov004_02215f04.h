@@ -6,24 +6,17 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
+#include "npc/BirthdayGuestVillager.h"
 #include "types.h"
-class BirthdayGuestVillager;
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224c158
-extern void *data_ov004_0224c158[2];
-#endif
-#ifdef __cplusplus
-}
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_sBirthdayGuestVillager
 extern BirthdayGuestVillager *sBirthdayGuestVillager;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224c158
+extern Unk_ov004_0224c228_BFn data_ov004_0224c158;
 #endif
 #ifndef PROTO_LOCAL_sBirthdayGuestMsgFile
 extern u8 sBirthdayGuestMsgFile[0x28];

@@ -5,6 +5,8 @@
 // 0x0206fe80..0x02070550 (src/main/unk_0206fe80.cpp, src/main/unk_02070560.cpp).
 #include "types.h"
 
+class MsgString;
+
 class MuseumData {
 public:
     s32 getDonationPercent();
@@ -13,7 +15,7 @@ public:
     BOOL isFossilsComplete();
     BOOL isInsectsComplete();
     BOOL isComplete();
-    BOOL getDonorName(s32 x, u16 *id);
+    BOOL getDonorName(MsgString *x, u16 *id);
     void releasePlayerDonations(u32 v);
     void donate(u16 *id);
     BOOL sendCompletionLetters();

@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -35,63 +34,24 @@
 #include "npc/VillagerId.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
+#include "npc/SickVillagerRecord.h"
+#include "save/VillagerData.h"
+#include "town/BlockMap.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/ov004/unk_ov004_02215f04.h"
 #include "proto/ov004/unk_ov004_0221a564.h"
 
 class SickVillager;
 
-#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
-#define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
-#define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
-#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define func_0201b138 _ZN8NpcActor6onDrawEv
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define VillagerMood_playMood3Effect _ZN12VillagerMood15playMood3EffectEP12VillagerTalk
-#define VillagerMood_updateSoundPos _ZN12VillagerMood14updateSoundPosEP12VillagerTalk
-#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
-#define func_0202d928 _ZN13VillagerActor9preDeleteEv
-#define func_0202d948 _ZN13VillagerActor8onCreateEv
-#define func_0202dab0 _ZN13VillagerActor9preCreateEv
-#define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
-#define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
-#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define SickVillagerRecord_setTodaysVisitor _ZN18SickVillagerRecord16setTodaysVisitorEP8PlayerId
-#define SickVillagerRecord_hasTodaysVisitor _ZN18SickVillagerRecord16hasTodaysVisitorEv
-#define SickVillagerRecord_getTodaysVisitor _ZN18SickVillagerRecord16getTodaysVisitorEv
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv
-#define ChoiceList_setEntry _ZN10ChoiceList8setEntryEiPKhiS1_PKci
-#define ChoiceList_reset _ZN10ChoiceList5resetEii
 class SickVillagerTalk;
 
 typedef BOOL (SickVillager::*Unk_ov004_0224cb98_BFn)();
 typedef void (SickVillager::*Unk_ov004_0224cb98_VFn)();
-
-struct Unk_ov004_0221b1e8_Map {
-    u8 *blocks;
-    u8 *width;
-    u8 *height;
-};
 
 extern SickVillager *sSickVillager;
 extern "C" {
@@ -101,76 +61,22 @@ extern u8 gSaveVillagers[];
 extern u8 gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s32 data_020c6d1c;
-extern Unk_ov004_0221b1e8_Map *gSceneBlockMap;
-extern void *data_ov004_0224ca60[2];
-extern void *data_ov004_0224ca68[2];
-extern void *data_ov004_0224ca70[2];
-extern void *data_ov004_0224ca78[2];
-extern void *data_ov004_0224ca80[2];
-extern void *data_ov004_0224ca88[2];
-extern void *data_ov004_0224ca90[2];
-extern void *data_ov004_0224ca98[2];
-extern void *data_ov004_0224caa0[2];
-extern void *data_ov004_0224caa8[2];
-extern void *data_ov004_0224cab0[2];
-extern void *data_ov004_0224cab8[2];
-extern void *data_ov004_0224cac0[2];
-extern void *data_ov004_0224cac8[2];
-extern void *data_ov004_0224cad0[2];
-extern void *data_ov004_0224cad8[2];
-extern void *data_ov004_0224cae0[2];
+extern BlockMap *gSceneBlockMap;
 extern u8 data_ov004_0225095c[0x28];
 extern u8 data_ov004_02250984[0x28];
 
-void *TalkWindowState_getChoiceList(void *);
-s32 ChoiceList_getResult(void *);
-void ChoiceList_reset(void *, s32, s32);
-void ChoiceList_setEntry(void *, s32, void *, s32, const void *, s32, s32);
-void ChoiceList_loadTexts(void *);
-void TalkWindowState_openChoices(void *, s32);
-s32 TalkWindowState_setNextMessage(void *, void *, const void *);
-void *VillagerData_getVillagerId(void *);
 s32 TalkRequest_SetTargetDone(void *);
-s32 NpcActor_getAngleTo(void *, void *);
-void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
-s32 NpcActionCtrl_requestEmotion(void *, u32, u32, u32);
-s32 NpcActionCtrl_requestStand(void *, u32, u32);
-s32 NpcActionCtrl_getAction(void *);
-s32 NpcActionCtrl_isActionDone(void *);
-s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-void VillagerMood_playMood3Effect(void *, void *);
-s32 NpcActor_findAvoidPos(void *, void *);
-void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 Vec_NotEqual(void *, void *);
 s32 Vec_DistXZ(void *, void *);
-u16 Room_PickRandomWalkTarget(void *, void *, s32);
-void *SaveVillagers_GetUnk3830(void *);
-void *SickVillagerRecord_getTodaysVisitor(void *);
+SickVillagerRecord *SaveVillagers_GetUnk3830(void *p);
 BOOL SickVillager_IsMedicine(u16 *p, s32 x);
 BOOL SickVillager_HasCurrentVisitor(void *o);
 void SickVillager_SetCurrentVisitor();
-void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
-void *PlayerData_getPlayerId(void *);
-void SickVillagerRecord_setTodaysVisitor(void *, void *);
-s32 SickVillagerRecord_hasTodaysVisitor(void *);
-void VillagerTalk_begin(void *, void *, u32);
-void ActorTalkRequest_setTalkPlayer(void *, s32);
-s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
 u16 *MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031(u16 *p);
 void Ground_UnlinkUnit(s32, s32);
-void VillagerMood_updateSoundPos(void *, void *);
-s32 func_0202d928(void *self);
-s32 func_0202d948(void *);
-s32 func_0202dab0(void *);
-void NpcFootstepFx_enableFootsteps(void *);
-s32 func_0201b138(void *);
-void NpcActor_setTalkRequest(void *, void *);
-s32 NpcMoveAnimSet_setWalkAnim(void *, s32);
-s32 NpcMoveAnimSet_setStandAnim(void *, s32);
-void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 }
@@ -257,48 +163,16 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" SickVillager *SickVillager_Create();
-extern "C" {
-void _ZN12SickVillager9mainAct05Ev();
-void _ZN12SickVillager9drawModelEv();
-void _ZN12SickVillager9mainAct00Ev();
-void _ZN12SickVillager9mainAct06Ev();
-void _ZN12SickVillager10setupAct07Ev();
-void _ZN12SickVillager9mainAct07Ev();
-void _ZN12SickVillager10setupAct02Ev();
-void _ZN12SickVillager9mainAct02Ev();
-void _ZN12SickVillager10setupAct03Ev();
-void _ZN12SickVillager10setupAct04Ev();
-void _ZN12SickVillager10setupAct01Ev();
-void _ZN12SickVillager10setupAct00Ev();
-void _ZN12SickVillager9mainAct01Ev();
-void _ZN12SickVillager9mainAct03Ev();
-void _ZN12SickVillager10setupAct05Ev();
-void _ZN12SickVillager10setupAct06Ev();
-void _ZN12SickVillager9mainAct04Ev();
-}
-#define PMV(x) (*(Unk_ov004_0224cb98_VFn *)(x))
-#define PMB(x) (*(Unk_ov004_0224cb98_BFn *)(x))
-// Definition order (colours, ptmf constants, buffers, entry) reproduces the original object order; see notes.txt.
+// Definition order (colours, buffers, entry) follows the original object order; see notes.txt.
 DebugColor data_ov004_02250938(31, 20, 20, 31);
 DebugColor data_ov004_02250940(20, 20, 31, 31);
 extern "C" {
 u8 data_ov004_0225095c[0x28];
 }
 DebugColor data_ov004_02250948(31, 31, 20, 31);
-extern "C" void *data_ov004_0224ca60[2] = {(void *)_ZN12SickVillager9mainAct05Ev, 0};
 DebugColor data_ov004_02250944(20, 31, 20, 31);
-extern "C" void *data_ov004_0224cae0[2] = {(void *)_ZN12SickVillager9mainAct04Ev, 0};
-extern "C" void *data_ov004_0224cad8[2] = {(void *)_ZN12SickVillager10setupAct06Ev, 0};
-extern "C" void *data_ov004_0224ca70[2] = {(void *)_ZN12SickVillager9mainAct00Ev, 0};
-extern "C" void *data_ov004_0224ca78[2] = {(void *)_ZN12SickVillager9mainAct06Ev, 0};
-extern "C" void *data_ov004_0224cac0[2] = {(void *)_ZN12SickVillager9mainAct01Ev, 0};
 DebugColor data_ov004_02250954(20, 31, 31, 31);
-extern "C" void *data_ov004_0224cab0[2] = {(void *)_ZN12SickVillager10setupAct01Ev, 0};
-extern "C" void *data_ov004_0224ca90[2] = {(void *)_ZN12SickVillager10setupAct02Ev, 0};
 DebugColor data_ov004_02250958(20, 24, 24, 31);
-extern "C" void *data_ov004_0224caa0[2] = {(void *)_ZN12SickVillager10setupAct03Ev, 0};
-extern "C" void *data_ov004_0224cab8[2] = {(void *)_ZN12SickVillager10setupAct00Ev, 0};
-extern "C" void *data_ov004_0224cac8[2] = {(void *)_ZN12SickVillager9mainAct03Ev, 0};
 
 static inline BOOL Unk_ov004_0221b3f8_Chk(u16 *p) {
     u16 v;
@@ -340,8 +214,8 @@ BOOL SickVillager::preCreate() {
     sSickVillager = this;
     ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
-    u8 *p = (u8 *)SaveVillagers_GetUnk3830(gSaveVillagers);
-    *(HOST_AT(this, 0xa3c, talk.sickStage, 0)) = p[0x8e];
+    SickVillagerRecord *p = SaveVillagers_GetUnk3830(gSaveVillagers);
+    talk.sickStage = p->sickDay;
     if (talk.getSickStage() > 1) {
         ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xea);
         ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xe9);
@@ -360,7 +234,7 @@ BOOL SickVillager::onCreate() {
     if (((VillagerActor *)(this))->VillagerActor::onCreate() == 0) {
         return FALSE;
     }
-    drawFn = PMB(data_ov004_0224ca68);
+    drawFn = &SickVillager::drawModel;
     blockFurnitureCells();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     return TRUE;
@@ -395,9 +269,9 @@ BOOL SickVillager::updateAct() {
 }
 
 void SickVillager::blockFurnitureCells() {
-    Unk_ov004_0221b1e8_Map *m = gSceneBlockMap;
+    BlockMap *m = gSceneBlockMap;
     void *p;
-    if (m->width > (u8 *)0 && m->height > (u8 *)0 && (p = m->blocks) != 0) {
+    if (m->width > 0 && m->height > 0 && (p = m->blocks) != 0) {
     } else {
         p = 0;
     }
@@ -465,15 +339,15 @@ void SickVillager::onInteractionEvent(u32 idx, u8 v) {
 u8 SickVillagerTalk::getSickStage() { return sickStage; }
 
 extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
-    if (SickVillagerRecord_hasTodaysVisitor(SaveVillagers_GetUnk3830(gSaveVillagers))) {
+    if (SaveVillagers_GetUnk3830(gSaveVillagers)->hasTodaysVisitor()) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" void SickVillager_SetCurrentVisitor() {
-    void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
-    SickVillagerRecord_setTodaysVisitor(p, PlayerData_GetCurrent()->getPlayerId());
+    SickVillagerRecord *p = SaveVillagers_GetUnk3830(gSaveVillagers);
+    p->setTodaysVisitor(PlayerData_GetCurrent()->getPlayerId());
 }
 
 void SickVillagerTalk::attachOwner(SickVillager *owner) {
@@ -511,13 +385,13 @@ void SickVillagerTalk::update() {
 }
 
 void SickVillagerTalk::start(TalkStartMsg *out_) {
-    TalkTopicMsg *out = (TalkTopicMsg *)out_;
-    out->fileName = (u32)data_ov004_0225095c;
+    TalkStartMsg *out = out_;
+    out->msgKey = (const char *)data_ov004_0225095c;
     getSickStage();
     if (villager->mood.severeSickness == 0) {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_0225095c), 0x28, "q12_ask1_2");
+        ((VillagerData *)(villager->villagerData))->getVillagerId()->makeFileName((data_ov004_0225095c), 0x28, "q12_ask1_2");
     } else {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_0225095c), 0x28, "q12_ask3_5");
+        ((VillagerData *)(villager->villagerData))->getVillagerId()->makeFileName((data_ov004_0225095c), 0x28, "q12_ask3_5");
     }
     villager->isAnswered = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
@@ -530,10 +404,10 @@ void SickVillagerTalk::start(TalkStartMsg *out_) {
 }
 
 void SickVillagerTalk::onMessageStart(u32) {
-    void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
+    SickVillagerRecord *p = SaveVillagers_GetUnk3830(gSaveVillagers);
     if (p != 0) {
-        if (SickVillagerRecord_getTodaysVisitor(p) != 0) {
-            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)SickVillagerRecord_getTodaysVisitor(p), 0);
+        if (p->getTodaysVisitor() != 0) {
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot(p->getTodaysVisitor(), 0);
         }
     }
 }
@@ -601,10 +475,10 @@ void SickVillagerTalk::onChoice(u32) {
     u8 buf[6];
     s32 t = ((ChoiceList *)(((TalkWindowState *)(villager->talk.window))->getChoiceList()))->getResult();
     if (villager->mood.severeSickness == 0) {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_02250984), 0x28, "q12_sick1_2");
+        ((VillagerData *)(villager->villagerData))->getVillagerId()->makeFileName((data_ov004_02250984), 0x28, "q12_sick1_2");
         villager->isAnswered = 1;
     } else {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_02250984), 0x28, "q12_sick3_5");
+        ((VillagerData *)(villager->villagerData))->getVillagerId()->makeFileName((data_ov004_02250984), 0x28, "q12_sick3_5");
         villager->isAnswered = 1;
     }
     if (villager->hasVisitor == 0) {
@@ -640,10 +514,10 @@ void SickVillagerTalk::onChoice(u32) {
 
 BOOL SickVillager::changeAct(s32 s) {
     static Unk_ov004_0224cb98_BFn tbl[8] = {
-        PMB(data_ov004_0224cab8), PMB(data_ov004_0224cab0),
-        PMB(data_ov004_0224ca90), PMB(data_ov004_0224caa0),
-        PMB(data_ov004_0224caa8), PMB(data_ov004_0224cad0),
-        PMB(data_ov004_0224cad8), PMB(data_ov004_0224ca80),
+        &SickVillager::setupAct00, &SickVillager::setupAct01,
+        &SickVillager::setupAct02, &SickVillager::setupAct03,
+        &SickVillager::setupAct04, &SickVillager::setupAct05,
+        &SickVillager::setupAct06, &SickVillager::setupAct07,
     };
     if (s < 8) {
         if ((this->*tbl[s])()) {
@@ -654,24 +528,18 @@ BOOL SickVillager::changeAct(s32 s) {
     return FALSE;
 }
 
-extern "C" void *data_ov004_0224ca68[2] = {(void *)_ZN12SickVillager9drawModelEv, 0};
-extern "C" void *data_ov004_0224ca80[2] = {(void *)_ZN12SickVillager10setupAct07Ev, 0};
 extern "C" ActorProfile sSickVillagerProfile = {(void *(*)())SickVillager_Create, 0x83, 0x87, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov004_0224ca98[2] = {(void *)_ZN12SickVillager9mainAct02Ev, 0};
-extern "C" void *data_ov004_0224caa8[2] = {(void *)_ZN12SickVillager10setupAct04Ev, 0};
-extern "C" void *data_ov004_0224cad0[2] = {(void *)_ZN12SickVillager10setupAct05Ev, 0};
 SickVillager *sSickVillager;
 extern "C" {
 u8 data_ov004_02250984[0x28];
 }
-extern "C" void *data_ov004_0224ca88[2] = {(void *)_ZN12SickVillager9mainAct07Ev, 0};
 
 void SickVillager::execAct() {
     static Unk_ov004_0224cb98_VFn tbl[8] = {
-        PMV(data_ov004_0224ca70), PMV(data_ov004_0224cac0),
-        PMV(data_ov004_0224ca98), PMV(data_ov004_0224cac8),
-        PMV(data_ov004_0224cae0), PMV(data_ov004_0224ca60),
-        PMV(data_ov004_0224ca78), PMV(data_ov004_0224ca88),
+        &SickVillager::mainAct00, &SickVillager::mainAct01,
+        &SickVillager::mainAct02, &SickVillager::mainAct03,
+        &SickVillager::mainAct04, &SickVillager::mainAct05,
+        &SickVillager::mainAct06, &SickVillager::mainAct07,
     };
     s32 s = act;
     if (s < 8) {
@@ -704,7 +572,7 @@ void SickVillager::mainAct00() {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(&walkTarget, HOST_AT(this, 0x5c, position.x, 0), rotY);
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
@@ -750,7 +618,7 @@ void SickVillager::mainAct00() {
                 if (Vec_NotEqual(&waypoint, &walkTarget) != 0) {
                     waypoint = walkTarget;
                     ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint((VecFx32 *)(&walkTarget));
-                } else if (Vec_DistXZ(&walkTarget, HOST_AT(this, 0x5c, position.x, 0)) < 0x200) {
+                } else if (Vec_DistXZ(&walkTarget, &position) < 0x200) {
                     changeAct(1);
                 }
                 break;

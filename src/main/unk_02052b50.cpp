@@ -305,10 +305,10 @@ s32 FtrInfo_GetUnk05(s32 n)
     return 0;
 }
 
-s32 Ftr_GetUnk05(s32 n)
+s32 Ftr_GetUnk05(u16 *n)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetUnk05(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(n)) {
+        return FtrInfo_GetUnk05(Item_GetFurnitureIndex(n));
     }
     return 0;
 }

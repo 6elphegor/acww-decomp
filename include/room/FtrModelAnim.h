@@ -10,7 +10,7 @@ class FtrModelAnim : public ModelAnim {
 public:
     FtrModelAnim();
     virtual ~FtrModelAnim();
-    u32 getAnmObj();
+    NNSG3dAnmObj *getAnmObj();
 };
 
 #endif // ROOM_FTRMODELANIM_H

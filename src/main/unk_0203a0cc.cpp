@@ -155,7 +155,7 @@ void Vec_RotateY(void *v, s32 a);
 s32 Scene_InHouseRoom();
 s32 Scene_InVillagerHouse();
 s32 Scene_InMuseumRoom();
-void Camera_UpdateRoomFocus(void *self, s32 a);
+void Camera_UpdateRoomFocus(Camera *self);
 BOOL Vec_SafeNormalize(void *v);
 void Vec_RotateZ(void *v, s32 a);
 s32 FX_Inv(s32);
@@ -900,7 +900,7 @@ BOOL Camera::initModeFocus() {
     if (gCurSceneInfo->isOutdoor == 0) {
         loadPose(0xb, 0);
         roomFocusSide = 3;
-        Camera_UpdateRoomFocus(this, 0);
+        Camera_UpdateRoomFocus(this);
     } else {
         loadPose(0xa, 0);
         FieldCamera_UpdateFocusZoom(this);
@@ -917,7 +917,7 @@ BOOL Camera::initModeFocus() {
 
 void Camera::updateModeFocus() {
     if (gCurSceneInfo->isOutdoor == 0) {
-        Camera_UpdateRoomFocus(this, 0);
+        Camera_UpdateRoomFocus(this);
     } else {
         FieldCamera_UpdateFocusZoom(this);
     }

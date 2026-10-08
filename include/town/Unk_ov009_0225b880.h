@@ -29,8 +29,4 @@ struct BuildingShadowEntry {
     /* 0x18 */ s32 texRight;
 };
 
-struct Unk_ov009_0225d2a4_Obj {
-    /* 0x00 */ u32 pad[HOST_SIZED(0x6c, NNSFndArchive) / 4] HOST_ALIGN8;  // an NNSFndArchive
-};
-
 #endif
