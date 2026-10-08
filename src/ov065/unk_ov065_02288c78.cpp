@@ -4,6 +4,7 @@
 #include "net/sb_crypt.h"
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
+#include "net/hashtable.h"
 #include "net/gsPlatformUtil.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128c60.h"
@@ -15,7 +16,7 @@
 
 extern "C" {
 char *data_ov065_0228e928[2] = {"queryid", "final"};
-void *g_SBRefStrList;
+HashImplementation *g_SBRefStrList;
 char *thestr;
 }
 
@@ -45,7 +46,7 @@ s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
 s32 sendto(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
 s32 closesocket(s32 s);
 s32 socket(s32 a, s32 b, s32 c);
-void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
+HashImplementation *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
 s32 NTSLengthSB(u8 *buf, s32 n);
 void SBReleaseStr(SBServerList *a, const char *p);
 void SBServerAddKeyValue(void *e, u32 v, u8 *buf);
@@ -105,7 +106,7 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 
 extern "C" {
 extern char *thestr;
-extern void *g_SBRefStrList;
+extern HashImplementation *g_SBRefStrList;
 extern char *data_ov065_0228e928[2];
 extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
@@ -118,7 +119,7 @@ void *TableLookup(void *, void *);
 s32 TableEnter(void *, void *);
 s32 TableCount(void *);
 s32 TableFree(void *);
-void *TableNew2(s32, s32, s32, void *, void *, void *);
+HashImplementation *TableNew2(s32, s32, s32, void *, void *, void *);
 s32 inet_addr(s32);
 s32 recvfrom(s32, void *, s32, s32, void *, void *);
 s32 closesocket(s32);
@@ -334,7 +335,7 @@ void RefStringFree(void **p) {
 
 namespace F02288e2c {
 extern "C" {
-void *SBRefStrHash() {
+HashImplementation *SBRefStrHash() {
     if (g_SBRefStrList == NULL) {
         g_SBRefStrList = TableNew2(sizeof(SBRefString), 100, 2, (void *)RefStringHash, (void *)RefStringCompare, (void *)RefStringFree);
     }
@@ -444,8 +445,8 @@ u64 SBServerGetFloatValueA(void *a, char *b, u64 v) {
 
 namespace F02288e2c {
 extern "C" {
-s32 SBServerGetPublicInetAddress(s32 *o) {
-    return o[0];
+u32 SBServerGetPublicInetAddress(_SBServer *o) {
+    return o->publicip;
 }
 }
 }

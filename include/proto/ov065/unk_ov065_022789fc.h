@@ -73,7 +73,7 @@ s32 IsPrivateIP(u32 *p);
 s32 CheckRcode(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_socket
-s32 socket(s32 a, s32 b);
+s32 socket(s32 a, s32 b, s32 protocol);
 #endif
 #ifndef PROTO_LOCAL_closesocket
 s32 closesocket(s32 a);
@@ -106,7 +106,7 @@ s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 s32 getsockname(s32 a, u8 *p1, u32 *p2);
 #endif
 #ifndef PROTO_LOCAL_inet_addr
-s32 inet_addr(s32 a);
+s32 inet_addr(const char *a);
 #endif
 #ifndef PROTO_LOCAL_GOAGetLastError
 u32 GOAGetLastError(void);

@@ -6,6 +6,7 @@
 #include "types.h"
 #include "types64.h"
 #ifdef __cplusplus
+#include "net/hashtable.h"
 #include "net/sb_internal.h"
 #endif
 
@@ -14,9 +15,6 @@ extern "C" {
 #endif
 #ifndef PROTO_LOCAL_data_ov065_0228e928
 extern char *data_ov065_0228e928[2];
-#endif
-#ifndef PROTO_LOCAL_g_SBRefStrList
-extern void *g_SBRefStrList;
 #endif
 #ifndef PROTO_LOCAL_thestr
 extern char *thestr;
@@ -42,9 +40,6 @@ s32 RefStringCompare(char **a, char **b);
 #ifndef PROTO_LOCAL_RefStringFree
 void RefStringFree(void **p);
 #endif
-#ifndef PROTO_LOCAL_SBRefStrHash
-void *SBRefStrHash();
-#endif
 #ifndef PROTO_LOCAL_SBRefStrHashCleanup
 void SBRefStrHashCleanup();
 #endif
@@ -59,9 +54,6 @@ s32 SBServerGetIntValueA(void *a, char *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetFloatValueA
 u64 SBServerGetFloatValueA(void *a, char *b, u64 v);
-#endif
-#ifndef PROTO_LOCAL_SBServerGetPublicInetAddress
-s32 SBServerGetPublicInetAddress(s32 *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPrivateInetAddress
 s32 SBServerGetPrivateInetAddress(s32 *o);
@@ -81,6 +73,9 @@ u32 StringHash(u8 *s, u32 n);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_g_SBRefStrList
+extern HashImplementation *g_SBRefStrList;
+#endif
 #ifndef PROTO_LOCAL_ServerBrowserSendMessageToServerA
 s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s32 e);
 #endif
@@ -105,11 +100,17 @@ void ServerBrowserSortA(_ServerBrowser *o, s32 a, char *b, u32 mode);
 #ifndef PROTO_LOCAL_ServerBrowserGetMyPublicIPAddr
 s32 ServerBrowserGetMyPublicIPAddr(_ServerBrowser *o);
 #endif
+#ifndef PROTO_LOCAL_SBRefStrHash
+HashImplementation *SBRefStrHash();
+#endif
 #ifndef PROTO_LOCAL_SBServerFree
 void SBServerFree(_SBServer **pp);
 #endif
 #ifndef PROTO_LOCAL_SBServerAddKeyValue
 s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
+#endif
+#ifndef PROTO_LOCAL_SBServerGetPublicInetAddress
+u32 SBServerGetPublicInetAddress(_SBServer *o);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPublicQueryPort
 u16 SBServerGetPublicQueryPort(_SBServer *o);

@@ -35,13 +35,13 @@ extern const char urlSafeEncodeing[];
 extern const char defaultEncoding[];
 extern s32 randomnum;
 extern s32 GSINitroErrno;
-s32 Sock_InetAtoN(s32, u32 *);
+s32 Sock_InetAtoN(const char *a, u32 *out);
 s32 Sock_GetSockName(s32, void *);
 s32 CheckRcode(s32, s32);
 s32 longrand(void);
 u32 nextlongrand(u32);
 void TripToQuart(char *, char *, s32);
-s32 inet_addr(s32);
+s32 inet_addr(const char *a);
 s32 OS_SPrintf(char *, char *, s32);
 }
 }
@@ -465,7 +465,7 @@ s32 CheckRcode(s32 a, s32 b) {
 
 namespace FB {
 extern "C" {
-s32 socket(s32 a, s32 b) {
+s32 socket(s32 a, s32 b, s32 protocol) { // protocol: unused by SockCore_Create
     return CheckRcode(Sock_Create(a, b), -1);
 }
 }
@@ -601,7 +601,7 @@ s32 getsockname(s32 a, u8 *p1, u32 *p2) {
 
 namespace FA {
 extern "C" {
-s32 inet_addr(s32 a) {
+s32 inet_addr(const char *a) {
     u32 v;
     if (Sock_InetAtoN(a, &v) == 0) {
         return -1;
