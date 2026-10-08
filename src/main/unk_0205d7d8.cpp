@@ -216,7 +216,7 @@ void PlayerHeadBank::setup(void) {
     u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
-        vramSlots[i][0].alloc((void *)PlayerHead_GetTexVramSize(), (void *)PlayerHead_GetTex4x4VramSize(), (void *)PlayerHead_GetPlttVramSize());
+        vramSlots[i][0].alloc(PlayerHead_GetTexVramSize(), PlayerHead_GetTex4x4VramSize(), PlayerHead_GetPlttVramSize());
     }
     void *heap = (void *)gPlayerHeadModelHeap;
     for (i = 0; i < n; i++) {

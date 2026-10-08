@@ -5,21 +5,12 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "gfx/VecFx32.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_PlayerId_GetTownId
-void *PlayerId_GetTownId(void *p);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_PlayerSession_RemovePitfallOnClimbOut
 void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f);
 #endif
@@ -32,9 +23,6 @@ s32 PlayerActor_GetObjectSize();
 #ifndef PROTO_LOCAL_PlayerActor_GetObjectAlign
 s32 PlayerActor_GetObjectAlign();
 #endif
-#ifndef PROTO_LOCAL_PlayerActor_Spawn
-s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d);
-#endif
 #ifndef PROTO_LOCAL_PlayerId_ListContainsId
 BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
 #endif
@@ -44,8 +32,20 @@ u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n);
 #ifndef PROTO_LOCAL_PlayerId_GenerateRandomId
 u16 PlayerId_GenerateRandomId();
 #endif
+#ifndef PROTO_LOCAL_PlayerId_GetTownId
+void *PlayerId_GetTownId(void *p);
+#endif
 #ifndef PROTO_LOCAL_PlayerId_FindResidentIndex
 s32 PlayerId_FindResidentIndex(void *x);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerActor_Spawn
+void *PlayerActor_Spawn(u32 slot, VecFx32 *pos, void *rot, u32 param);
 #endif
 }
 #endif

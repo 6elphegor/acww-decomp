@@ -1,5 +1,6 @@
-#include "uptr.h"
 #include "types.h"
+#include "player/PlayerActor.h"
+#include "actor/Actor.h"
 #include "gfx/VecFx32.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -13,15 +14,6 @@
 #include "talk/EncodedString.h"
 #include "talk/MsgString9B.h"
 #include "talk/EncodedString8.h"
-#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_IsValid  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gEffectManager  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sEffectDefaultOneShotCbs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sEffectDefaultTrackedCbs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0208f268.h"
@@ -31,171 +23,32 @@
 #include "proto/main/unk_02097444.h"
 
 
-
-
-
-
-
-
-
-
-
-
-extern "C" {
-extern EffectSlot gEffectManager[];
-}
-
-extern "C" {
-extern EffectScratchSlot data_021d0830;
-}
-
-extern "C" {
-extern VecFx32 gVec3Zero;
-}
-
-extern "C" {
-extern uptr sEffectDefaultTrackedCbs[];
-}
-
-extern "C" {
-extern uptr sEffectDefaultOneShotCbs[];
-}
-
-extern "C" {
-extern s16 data_02135f44[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_02090424(void *, s32, s32);
-}
-
-extern "C" {
-s32 func_020904f0(void *, s32, s32, s32, s32, s32, s32);
-}
-
-extern "C" {
-s32 func_02090538(void *);
-}
-
-extern "C" {
-void Vec_RotateY(void *, s32);
-}
-
-extern "C" {
-s32 Vec_SafeNormalize(void *);
-}
-
-extern "C" {
-void VEC_Add(void *, void *, void *);
-}
-
 extern "C" {
 s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
-}
-
-extern "C" {
 s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 }
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
- // extern "C"
+// extern "C"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffers (see unk_0206c714.cpp for the bases)
 
 
-
-
 class MsgString;
 
 
-
 extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
-
 
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
 
-
 extern "C" {
 extern TownId gSaveTownId;
-s32 TownId_IsValid(TownId *self);
-void TownId_CopyTo(TownId *self, TownId *o);
-void TownId_CopyFrom(TownId *self, TownId *o);
-void TownId_Clear(TownId *self);
-void TownId_Destruct(TownId *self);
-void TownId_Construct(TownId *self, void *o);
-}
-
-extern "C" {
 extern u8 gSavePlayers[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
-}
-
-extern "C" {
-}
-
-extern "C" {
 s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 s32 FieldPos_ToUnit(s32 *, s32 *, void *);
-}
-
-extern "C" {
 s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
 
@@ -221,23 +74,25 @@ extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32
 
 extern "C" s32 PlayerActor_GetLocalSessionSlot()
 {
-    return *(s32 *)((u8 *)PlayerActor_Get(4) + 0x7fc);
+    return PlayerActor_Get(4)->sessionSlot;
 }
 
-extern "C" s32 PlayerActor_GetObjectSize() { return 0xc9c; }
+extern "C" s32 PlayerActor_GetObjectSize() { return sizeof(PlayerActor); }  // (0xc9c on the DS)
 
 extern "C" s32 PlayerActor_GetObjectAlign() { return 4; }
 
-extern "C" s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d)
+// Creates player slot's actor (profile 9) at the position and rotation (three s16 angles); the process parameter
+// carries the slot (bits 30-31) and the starting action (PlayerActor_ParamGetAction).
+extern "C" void *PlayerActor_Spawn(u32 slot, VecFx32 *pos, void *rot, u32 param)
 {
-    return _ZN5Actor5spawnEPvS0_S0_S0_S0_(9, ((a << 30) & 0xc0000000) | (d & 0x3fffffff), b, c, 0);
+    return Actor::spawn((void *)9, (void *)(uptr)(((slot << 30) & 0xc0000000) | (param & 0x3fffffff)), pos, rot, NULL);
 }
 
-PlayerId::PlayerId(void *o) { TownId_Construct(this, o); }
+PlayerId::PlayerId(void *o) { TownId_Construct(); }
 
-PlayerId::PlayerId(const PlayerId &o) { TownId_Construct(this, (void *)&o); copyFrom((PlayerId *)&o); }
+PlayerId::PlayerId(const PlayerId &o) { TownId_Construct(); copyFrom((PlayerId *)&o); }
 
-PlayerId::PlayerId() { TownId_Destruct(this); }
+PlayerId::PlayerId() { TownId_Destruct(); }
 
 void PlayerId::setRaw(void *src) { MI_CpuCopy8(src, this, 0x16); }
 
@@ -246,7 +101,7 @@ void PlayerId::clear()
     MI_CpuFill8(playerName, 0, 8);
     playerId = 0;
     gender = 2;
-    TownId_Clear(this);
+    TownId_Clear(&townId);
 }
 
 void PlayerId::copyFrom(PlayerId *o)
@@ -254,7 +109,7 @@ void PlayerId::copyFrom(PlayerId *o)
     MI_CpuCopy8(o->playerName, playerName, 8);
     playerId = o->playerId;
     gender = o->gender;
-    TownId_CopyFrom(this, o);
+    TownId_CopyFrom(&townId, &o->townId);
 }
 
 void PlayerId::copyTo(PlayerId *o)
@@ -262,12 +117,12 @@ void PlayerId::copyTo(PlayerId *o)
     MI_CpuCopy8(playerName, o->playerName, 8);
     o->playerId = playerId;
     o->gender = gender;
-    TownId_CopyTo(this, o);
+    TownId_CopyTo(&townId, &o->townId);
 }
 
 BOOL PlayerId::isValid()
 {
-    if (TownId_IsValid(this) == 1 && playerId != 0) return TRUE;
+    if (TownId_IsValid(&townId) == 1 && playerId != 0) return TRUE;
     return FALSE;
 }
 
@@ -349,7 +204,7 @@ void TownId::setTown(TownId *o) { TownId_Assign(this, o); }
 s32 TownId::getTownRelation()
 {
     s32 r = 2;
-    if (TownId_IsValid(this) != 0) {
+    if (TownId_IsValid(&townId) != 0) {
         TownId *p = &gSaveTownId;
         if (townId == p->townId && memcmp(townName, p->townName, 8) == 0) {
             r = 0;
@@ -362,7 +217,7 @@ s32 TownId::getTownRelation()
 
 extern "C" s32 PlayerId_FindResidentIndex(void *x)
 {
-    return PlayerDataArray_FindById(gSavePlayers, x);
+    return PlayerDataArray_FindById(gSavePlayers, (u16 *)x);
 }
 
 MsgString9B::MsgString9B() {}

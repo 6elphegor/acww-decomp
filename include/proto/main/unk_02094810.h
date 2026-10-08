@@ -4,31 +4,14 @@
 // Prototypes of the functions defined in src/main/unk_02094810.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct PlayerSessionTable;
-struct Unk_02095338_E;
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "player/PlayerActor.h"
-#include "types.h"
+class PlayerSessionTable;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_GetActorNop
-void PlayerActor_GetActorNop();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_GetCharacterNop
-void PlayerActor_GetCharacterNop();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_PlayerActor_Get
-PlayerActor *PlayerActor_Get(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetNetPosVar
 u8 *PlayerActor_GetNetPosVar(s32 idx);
@@ -63,39 +46,6 @@ void PlayerActor_PackHair(u8 *p, u32 a, u32 b);
 #ifndef PROTO_LOCAL_PlayerActor_UnpackHair
 void PlayerActor_UnpackHair(u8 *src, u8 *a, u8 *b);
 #endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_SetActor
-void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, PlayerActor *v);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_ClearActor
-void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_GetActor
-PlayerActor *PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_SetDataIndex
-void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_ClearDataIndex
-void PlayerSessionTable_ClearDataIndex(PlayerSessionTable *p, s32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_GetDataIndex
-u8 PlayerSessionTable_GetDataIndex(PlayerSessionTable *p, s32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_SetGfxSlot
-void PlayerSessionTable_SetGfxSlot(PlayerSessionTable *p, s32 i, s32 v);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_ClearGfxSlot
-void PlayerSessionTable_ClearGfxSlot(PlayerSessionTable *p, s32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_GetGfxSlot
-u8 PlayerSessionTable_GetGfxSlot(PlayerSessionTable *p, s32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerSessionTable_FindFreeGfxSlot
-u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p);
-#endif
-#ifndef PROTO_LOCAL_PlayerSession_SetActor
-void PlayerSession_SetActor(s32 i, PlayerActor *v);
-#endif
 #ifndef PROTO_LOCAL_PlayerSession_ClearActor
 void PlayerSession_ClearActor(s32 i);
 #endif
@@ -115,16 +65,13 @@ u16 *PlayerSession_GetTanTimer();
 u8 *PlayerSession_GetSessionFlags();
 #endif
 #ifndef PROTO_LOCAL_PlayerSession_GetLastAction
-u32 *PlayerSession_GetLastAction(s32 i);
+s32 *PlayerSession_GetLastAction(s32 i);
 #endif
 #ifndef PROTO_LOCAL_PlayerSession_GetLastScene
 u8 *PlayerSession_GetLastScene(s32 i);
 #endif
-#ifndef PROTO_LOCAL_PlayerSession_GetLastPos
-Unk_02095338_E *PlayerSession_GetLastPos(s32 i);
-#endif
 #ifndef PROTO_LOCAL_PlayerSession_GetLastAngle
-u16 *PlayerSession_GetLastAngle(s32 i);
+s16 *PlayerSession_GetLastAngle(s32 i);
 #endif
 #ifndef PROTO_LOCAL_PlayerSession_ResetLastState
 void PlayerSession_ResetLastState(s32 i);
@@ -141,8 +88,14 @@ u8 PlayerSession_GetGfxSlot(s32 i);
 #ifndef PROTO_LOCAL_PlayerSession_FindFreeGfxSlot
 u32 PlayerSession_FindFreeGfxSlot();
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_GetActorNop
+void PlayerActor_GetActorNop();
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_GetActor
 void *PlayerActor_GetActor(s32 id);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_GetCharacterNop
+void PlayerActor_GetCharacterNop();
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetCharacter
 void *PlayerActor_GetCharacter(s32 id);
@@ -258,9 +211,6 @@ s32 PlayerActor_RequestChangeHeldItem(u16 *p);
 #ifndef PROTO_LOCAL_PlayerActor_RequestHoldUpItem
 s32 PlayerActor_RequestHoldUpItem(u16 *p);
 #endif
-#ifndef PROTO_LOCAL_PlayerActor_RequestWalkTo
-s32 PlayerActor_RequestWalkTo(VecFx32Ctor *v, u32 b, u32 idx);
-#endif
 #ifndef PROTO_LOCAL_PlayerActor_RequestTurnTo
 s32 PlayerActor_RequestTurnTo(s32 a, u32 idx);
 #endif
@@ -287,6 +237,54 @@ s32 PlayerActor_RequestAct13();
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_RequestEmotion
 s32 PlayerActor_RequestEmotion(u8 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerActor_Get
+PlayerActor *PlayerActor_Get(s32 idx);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_SetActor
+void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, PlayerActor *v);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_ClearActor
+void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_GetActor
+PlayerActor *PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_SetDataIndex
+void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_ClearDataIndex
+void PlayerSessionTable_ClearDataIndex(PlayerSessionTable *p, s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_GetDataIndex
+u8 PlayerSessionTable_GetDataIndex(PlayerSessionTable *p, s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_SetGfxSlot
+void PlayerSessionTable_SetGfxSlot(PlayerSessionTable *p, s32 i, s32 v);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_ClearGfxSlot
+void PlayerSessionTable_ClearGfxSlot(PlayerSessionTable *p, s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_GetGfxSlot
+u8 PlayerSessionTable_GetGfxSlot(PlayerSessionTable *p, s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerSessionTable_FindFreeGfxSlot
+u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p);
+#endif
+#ifndef PROTO_LOCAL_PlayerSession_SetActor
+void PlayerSession_SetActor(s32 i, PlayerActor *v);
+#endif
+#ifndef PROTO_LOCAL_PlayerSession_GetLastPos
+VecFx32 *PlayerSession_GetLastPos(s32 i);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_RequestWalkTo
+s32 PlayerActor_RequestWalkTo(VecFx32Ctor *v, u32 b, u32 idx);
 #endif
 }
 #ifndef PROTO_LOCAL_gPlayerSessionTable

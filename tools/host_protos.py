@@ -29,7 +29,7 @@ CXX = ['gcc', '-x', 'c++', '-fsyntax-only', '-fno-short-enums', '-fsigned-char',
        '-fno-exceptions', '-fno-rtti', '-fpermissive', '-w']
 CC = ['gcc', '-x', 'c', '-fsyntax-only', '-fno-short-enums', '-fsigned-char', '-fshort-wchar', '-ffreestanding',
       '-nostdinc', '-fno-builtin', '-DMODERN', '-DHOST', '-DGAME_VERSION_USA', '-Iinclude', '-std=gnu11', '-w']
-CPP_ONLY = re.compile(r'\bclass\b|\bnamespace\b|\btemplate\s*<|::|\bpublic\s*:|\bprivate\s*:|\bvirtual\b|&')
+CPP_ONLY = re.compile(r'\bbool\b|\bclass\b|\bnamespace\b|\btemplate\s*<|::|\bpublic\s*:|\bprivate\s*:|\bvirtual\b|&')
 DEFS = {}
 HEADER_OF = {}       # function name -> header (relative to include/)
 

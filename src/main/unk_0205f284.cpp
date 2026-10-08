@@ -221,12 +221,12 @@ void FishBobberPool::allocBuffers()
     for (i = 0; i < n; i++) {
         u32 x = FishBobber_GetTexVramSize();
         u32 y = FishBobber_GetTex4x4VramSize();
-        texSlots[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
+        texSlots[i].alloc(x, y, FishBobber_GetPlttVramSize());
     }
     for (i = 4; i < m + 4; i++) {
         u32 x = FishBobber_GetTexVramSize();
         u32 y = FishBobber_GetTex4x4VramSize();
-        texSlots[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
+        texSlots[i].alloc(x, y, FishBobber_GetPlttVramSize());
     }
     u32 heap = gFishBobberHeap;
     for (i = 0; i < n; i++) {

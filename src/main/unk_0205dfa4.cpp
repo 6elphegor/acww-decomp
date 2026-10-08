@@ -221,10 +221,10 @@ extern "C" void HeldItemModels_AllocVram(HeldItemModelBank *self) {
     m = n ? n : 1;
     end = Scene_GetMaxCharacters(Scene_GetCurrent()) + NpcSpawn_GetSpNpcSlotCount() - m;
     for (i = 0; i < n; i++) {
-        self->vramSlots[i].alloc((void *)HeldItem_GetTexVramSize(), (void *)HeldItem_GetTex4x4VramSize(), (void *)HeldItem_GetPlttVramSize());
+        self->vramSlots[i].alloc(HeldItem_GetTexVramSize(), HeldItem_GetTex4x4VramSize(), HeldItem_GetPlttVramSize());
     }
     for (i = 4; i < end + 4; i++) {
-        self->vramSlots[i].alloc((void *)HeldItem_GetTexVramSize(), (void *)HeldItem_GetTex4x4VramSize(), (void *)HeldItem_GetPlttVramSize());
+        self->vramSlots[i].alloc(HeldItem_GetTexVramSize(), HeldItem_GetTex4x4VramSize(), HeldItem_GetPlttVramSize());
     }
     heap = gHeldItemModelHeap;
     for (i = 0; i < n; i++) {

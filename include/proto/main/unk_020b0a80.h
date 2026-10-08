@@ -6,11 +6,19 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Footstep_AttrToSe
+u32 Footstep_AttrToSe(u32 a);
+#endif
+#ifndef PROTO_LOCAL_GroundAttr_ResolveCarpet
+u32 GroundAttr_ResolveCarpet(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Footstep_GetSeForAttr
+u32 Footstep_GetSeForAttr(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Main_InitVBlank
 void Main_InitVBlank(void);
@@ -20,6 +28,9 @@ void Main_InitStub(void);
 #endif
 #ifndef PROTO_LOCAL_Main_Init
 void Main_Init(void);
+#endif
+#ifndef PROTO_LOCAL_Startup_OnWvrStartUp
+void Startup_OnWvrStartUp(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_Startup_SetupMainArena
 void Startup_SetupMainArena(void);
@@ -36,23 +47,11 @@ void NitroStartUp(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_Footstep_AttrToSe
-u32 Footstep_AttrToSe(u32 a);
-#endif
-#ifndef PROTO_LOCAL_GroundAttr_ResolveCarpet
-u32 GroundAttr_ResolveCarpet(u32 a);
-#endif
 #ifndef PROTO_LOCAL_GroundAttr_GetAtPos
 u32 GroundAttr_GetAtPos(VecFx32 *a);
 #endif
-#ifndef PROTO_LOCAL_Footstep_GetSeForAttr
-u32 Footstep_GetSeForAttr(u32 a);
-#endif
 #ifndef PROTO_LOCAL_Footstep_GetSeAtPos
 u32 Footstep_GetSeAtPos(VecFx32 *a);
-#endif
-#ifndef PROTO_LOCAL_Startup_OnWvrStartUp
-void Startup_OnWvrStartUp(u32 a, u32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_sWvrStartUpDone

@@ -6,26 +6,19 @@
 #include "room/FtrSwitch.h"
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
-#define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
+#include "room/FtrActorGrid.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_02060034.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 
-extern "C" {
-void *__cxa_vec_ctor(void *p, u32 n, u32 sz, void *ctor, void *dtor);
-void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
-}
-
-
-
-
 
 class SpotReservation {
 public:
     u8 active;
-    s32 posX, posY, posZ;
+    VecFx32 pos;
     u8 sceneId;
     SpotReservation();
     ~SpotReservation();
@@ -45,19 +38,20 @@ public:
 };
 
 
-struct Unk_02052134_W { u32 a:1, b:4, c:4, d:1, e:1, f:16; };
-struct Unk_020520a8_W { u32 a:4, b:4, c:16; };
-struct Unk_0205218c_B { u8 a:6, b:1, c:1; };
-struct Unk_02051fcc_W { u16 a:6, b:1, c:4, d:4; };
-struct FtrStateRecord { u32 a:6, b:1, c:1, d:4, e:4, f:5, g:8, n:1, o:1, p:1; };
+class Unk_02052134_W { public: u32 a:1, b:4, c:4, d:1, e:1, f:16; };
+class Unk_020520a8_W { public: u32 a:4, b:4, c:16; };
+class Unk_0205218c_B { public: u8 a:6, b:1, c:1; };
+class Unk_02051fcc_W { public: u16 a:6, b:1, c:4, d:4; };
+class FtrStateRecord { public: u32 a:6, b:1, c:1, d:4, e:4, f:5, g:8, n:1, o:1, p:1; };
 struct Unk_0205242c_Item {
     s16 a, b;
     Unk_0205242c_Item() { a = 0; b = 0; }
     Unk_0205242c_Item(s16 x, s16 y) { a = x; b = y; }
 };
 struct FtrFootprintShape { Unk_0205242c_Item *rows[4]; u8 count; };
-struct Unk_0205242c_Self { s32 a; s32 b; };
-struct FtrPlaceRecord {
+class Unk_0205242c_Self { public: s32 a; s32 b; };
+class FtrPlaceRecord {
+public:
     u32 x : 4;
     u32 y : 4;
     u32 beat : 4;
@@ -69,7 +63,7 @@ struct FtrPlaceRecord {
 };
 
 extern u8 gFieldSceneKind;
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern void *gSceneBlockMap;
 extern u8 gSaveHouse[];
 extern const FtrFootprintShape sFtrFootprint1x1;
@@ -84,11 +78,8 @@ inline BOOL Range(u16 *p, u32 lo, u32 hi) {
 }
 
 extern "C" {
-s32 FtrActor_GetLayer(s32 a);
-FtrActor *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
-void FtrActor_GetFtrIndex(void *p);
+u8 FtrActor_GetLayer(FtrActor *a);
 s32 FtrActor_PredIsStereo(void *p);
-void _ZN8FtrActor8isGyroidEv();
 
 u32 Scene_GetCurrent();
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -97,7 +88,6 @@ s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *p);
-s32 _ZN9HouseData7getRoomEi(void *p, s32 a);
 s32 SceneId_IsHouseRoom(u32 id);
 s32 SceneId_GetHouseRoom(u32 id);
 s32 SceneId_IsVillagerHouse(u32 id);
@@ -120,9 +110,6 @@ SpotReservationTable sSpotReservations;
 
 extern const FtrFootprintShape *sFtrFootprintTables[3];
 
-extern "C" {
-long long Vec_DistSq(void *a, void *b);
-}
 
 SpotReservation::SpotReservation() { clear(); }
 
@@ -132,17 +119,17 @@ SpotReservationTable::~SpotReservationTable() {}
 
 void SpotReservation::clear() {
     active = 0;
-    posX = 0;
-    posY = 0;
-    posZ = 0;
+    pos.x = 0;
+    pos.y = 0;
+    pos.z = 0;
     sceneId = 0;
 }
 
 BOOL SpotReservation::set(u32 tag, VecFx32 *p) {
     active = 1;
-    posX = p->x;
-    posY = p->y;
-    posZ = p->z;
+    pos.x = p->x;
+    pos.y = p->y;
+    pos.z = p->z;
     sceneId = tag;
     return TRUE;
 }
@@ -167,7 +154,7 @@ BOOL SpotReservationTable::isFree(s32 idx, u32 tag, VecFx32 *p) {
         for (u32 i = 0; i < 4; i++) {
             SpotReservation *e = &slots[i];
             if ((s32)i != idx && e->active != 0 && tag == e->sceneId) {
-                if (Vec_DistSq(&e->posX, p) < 0x2400) return FALSE;
+                if (Vec_DistSq(&e->pos, p) < 0x2400) return FALSE;
             }
         }
         return TRUE;
@@ -310,9 +297,9 @@ BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return gyroidBeats.remove(a,
 
 extern "C" RoomFtrState *RoomFtrState_GetForScene(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
-        s32 room = _ZN9HouseData7getRoomEi(gSaveHouse, SceneId_GetHouseRoom(id));
+        HouseRoom *room = ((HouseData *)gSaveHouse)->getRoom(SceneId_GetHouseRoom(id));
         if (room) {
-            return ((HouseRoom *)(room))->getFtrState();
+            return room->getFtrState();
         }
     } else if (SceneId_IsVillagerHouse(id)) {
         return &sVillagerHouseFtrStates[SceneId_GetVillagerHouse(id)];
@@ -397,7 +384,7 @@ Unk_0205242c_Item data_021c4e8c[4] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Ite
 
 extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i) {
     if (IsOne(gFieldSceneKind) && a == Scene_GetCurrent()) {
-        FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
+        FtrActor *o = FtrActorGrid_GetInstance()->getActor(b, c, d);
         if (o) {
             return o->changeAct(e, i);
         }
@@ -434,10 +421,10 @@ extern "C" void FtrSync_OnStateRecord(u32 *pp) {
         FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
         u32 w = *pp;
         w &= 0xdfffffff;
-        void *g = gCommManager;
-        ((CommManager *)(g))->beginRecord();
-        ((CommManager *)(g))->writeRecord((u8 *)(&w), 4);
-        ((CommManager *)(g))->endRecord(0x18, 4);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord((u8 *)(&w), 4);
+        g->endRecord(0x18, 4);
     } else {
         FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
     }
@@ -451,10 +438,10 @@ extern "C" void FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
         Unk_0205218c_B t;
         t = *p;
         t.c = 0;
-        void *g = gCommManager;
-        ((CommManager *)(g))->beginRecord();
-        ((CommManager *)(g))->writeRecord((u8 *)(&t), 1);
-        ((CommManager *)(g))->endRecord(0x19, 4);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord((u8 *)(&t), 1);
+        g->endRecord(0x19, 4);
     } else {
         ((HouseData *)(gSaveHouse))->setRoomFlag(a, b);
     }
@@ -479,16 +466,18 @@ extern "C" void FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w) {
     FtrSync_SetTopItem(a, w->a, w->b, &t, 0);
 }
 
+static BOOL FtrActor_IsGyroidPred(FtrActor *o) { return o->isGyroid(); }
+
 extern "C" void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e) {
     if (a == Scene_GetCurrent() && IsOne(gFieldSceneKind)) {
         {
-            FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
+            FtrActor *o = FtrActorGrid_GetInstance()->getActor(b, c, d);
             if (o) {
-                if (((FtrSwitch *)((u8 *)o + 0x73c))->isOn() == 0) {
-                    if ((u32)FtrMgr_CountSwitchedOn(_ZN8FtrActor8isGyroidEv) >= 4) {
-                        void *r = FtrMgr_SwitchOffRandom(_ZN8FtrActor8isGyroidEv, 0);
+                if (((FtrSwitch *)o->switchState)->isOn() == 0) {
+                    if ((u32)FtrMgr_CountSwitchedOn(FtrActor_IsGyroidPred) >= 4) {
+                        FtrActor *r = FtrMgr_SwitchOffRandom(FtrActor_IsGyroidPred, 0);
                         if (r) {
-                            FtrSync_ChangeAct((s32)r, 0, 0xff, e);
+                            FtrSync_ChangeAct(r, 0, 0xff, e);
                         }
                     }
                     FtrSync_ChangeActAt(b, c, d, 1, 0xff, e, 1);
@@ -512,13 +501,13 @@ extern "C" void SpotSync_OnReserveRequest(u8 *p, s32 q) {
     v.x = p[0] << 9;
     v.z = p[1] << 9;
     if (sSpotReservations.tryReserve(q, p[2], (VecFx32 *)&v)) {
-        void *g = gCommManager;
-        ((CommManager *)(g))->beginRecord();
-        ((CommManager *)(g))->endRecord(0x1f, q);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->endRecord(0x1f, q);
     } else {
-        void *g = gCommManager;
-        ((CommManager *)(g))->beginRecord();
-        ((CommManager *)(g))->endRecord(0x20, q);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->endRecord(0x20, q);
     }
 }
 
@@ -534,9 +523,9 @@ extern "C" s32 SpotSync_OnRelease(s32 x) {
 extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     u32 w;
     u32 r5 = (g != 4) ? 1 : 0;
-    FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
+    FtrActor *o = FtrActorGrid_GetInstance()->getActor(a, b, c);
     if (!o) return 0;
-    if (((CommManager *)(gCommManager))->isOnline() && o && !((FtrActor *)(o))->isPreview()) {
+    if (gCommManager->isOnline() && o && !((FtrActor *)(o))->isPreview()) {
         u32 t = o->getActSwitchState(d);
         w = (w & ~0x3f) | (Scene_GetCurrent() & 0x3f);
         c = c & 1;
@@ -554,18 +543,18 @@ extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) 
         r5 = r5 & 1;
         w = (w & 0xdfffffff) | (r5 << 29);
         w = (w & 0xbfffffff) | ((FtrActor_PredIsStereo(o) & 1) << 30);
-        void *g2 = gCommManager;
-        ((CommManager *)(g2))->beginRecord();
-        ((CommManager *)(g2))->writeRecord((u8 *)(&w), 4);
-        ((CommManager *)(g2))->endRecord(0x18, g);
+        CommManager *g2 = gCommManager;
+        g2->beginRecord();
+        g2->writeRecord((u8 *)(&w), 4);
+        g2->endRecord(0x18, g);
     }
     return 1;
 }
 
-extern "C" s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d) {
+extern "C" s32 FtrSync_ChangeAct(FtrActor *a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(gFieldSceneKind)) {
-        if (((FtrActor *)(a))->findOwnTile(&x, &y, 0, 0)) {
+        if (a->findOwnTile(&x, &y, 0, 0)) {
             return FtrSync_ChangeActAt(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
@@ -574,7 +563,7 @@ extern "C" s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d) {
 
 extern "C" s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     if (!IsOne(gFieldSceneKind)) return 0;
-    FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
+    FtrActor *o = FtrActorGrid_GetInstance()->getActor(a, b, c);
     if (!o) return 0;
     o->changeAct(d, e);
     if (g) {
@@ -583,10 +572,10 @@ extern "C" s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g)
     return 1;
 }
 
-extern "C" s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d) {
+extern "C" s32 FtrSync_RequestAct(FtrActor *a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(gFieldSceneKind)) {
-        if (((FtrActor *)(a))->findOwnTile(&x, &y, 0, 0)) {
+        if (a->findOwnTile(&x, &y, 0, 0)) {
             return FtrSync_RequestActAt(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
@@ -594,21 +583,21 @@ extern "C" s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d) {
 }
 
 extern "C" s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
-    void *s = gCommManager;
-    u8 *p;
-    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0) {
+    CommManager *s = gCommManager;
+    FtrActor *p;
+    if (s->isOnline() == 0 || s->isMyAid(0) != 0) {
         return FtrSync_ChangeActAt(a, b, c, d, e, f, g);
     }
     if (!(gFieldSceneKind == 1 ? TRUE : FALSE)) {
         return 0;
     }
-    p = (u8 *)_ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
+    p = FtrActorGrid_GetInstance()->getActor(a, b, c);
     if (p == NULL) {
         return 0;
     }
     if (g != 0) {
         if (FtrSync_SendState(a, b, c, d, e, f, 0) != 0) {
-            p[0x779] = 1;
+            p->netRequestPending = 1;
             return 1;
         }
         return 0;
@@ -655,8 +644,8 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
             RoomFtrState_SetGyroidBeat(x, y, g, a);
         }
     }
-    if (((CommManager *)(gCommManager))->isOnline() != 0 && i != 0) {
-        void *t;
+    if (gCommManager->isOnline() != 0 && i != 0) {
+        CommManager *t;
         bits.x = b;
         bits.y = c;
         bits.beat = g & 0xf;
@@ -665,9 +654,9 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
         bits.isGyroid = f;
         bits.item = loc[0];
         t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->writeRecord((u8 *)(&bits), 4);
-        ((CommManager *)(t))->endRecord(0x1c, 4);
+        t->beginRecord();
+        t->writeRecord((u8 *)(&bits), 4);
+        t->endRecord(0x1c, 4);
     }
     FtrFootprint_Destruct(&pk);
 }
@@ -717,8 +706,8 @@ extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *
             RoomFtrState_RemoveGyroidBeat(x, y, a);
         }
     }
-    if (((CommManager *)(gCommManager))->isOnline() != 0 && h != 0) {
-        void *t;
+    if (gCommManager->isOnline() != 0 && h != 0) {
+        CommManager *t;
         bits = (bits & ~1) | (d & 1);
         bits = (bits & ~0x1e) | ((b & 0xf) << 1);
         bits = (bits & 0xfffffe1f) | ((c & 0xf) << 5);
@@ -726,9 +715,9 @@ extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *
         bits = (bits & 0xfffffbff) | ((e & 1) << 10);
         bits = (bits & 0xf80007ff) | ((loc[0] & 0xffff) << 11);
         t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->writeRecord((u8 *)(&bits), 4);
-        ((CommManager *)(t))->endRecord(0x1b, 4);
+        t->beginRecord();
+        t->writeRecord((u8 *)(&bits), 4);
+        t->endRecord(0x1b, 4);
     }
     FtrFootprint_Destruct(&pk);
 }
@@ -740,24 +729,24 @@ extern "C" void FtrSync_SetTopItem(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     } else {
         o = BlockMap_GetForArea(a);
     }
-    if (o != NULL && BlockMap_SetItemAtUnit(o, d, b, c, 1) != 0 && f != 0 && ((CommManager *)(gCommManager))->isOnline() != 0) {
+    if (o != NULL && BlockMap_SetItemAtUnit(o, d, b, c, 1) != 0 && f != 0 && gCommManager->isOnline() != 0) {
         u32 bits;
-        void *t;
+        CommManager *t;
         bits = (bits & ~0xf) | (b & 0xf);
         bits = (bits & ~0xf0) | ((c & 0xf) << 4);
         bits = (bits & 0xff0000ff) | ((*d & 0xffff) << 8);
         t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->writeRecord((u8 *)(&bits), 4);
-        ((CommManager *)(t))->endRecord(0x1a, 4);
+        t->beginRecord();
+        t->writeRecord((u8 *)(&bits), 4);
+        t->endRecord(0x1a, 4);
     }
 }
 
 extern "C" void FtrSync_SendRoomLight(s32 a, s32 b, s32 c) {
-    if (((CommManager *)(gCommManager))->isOnline() != 0) {
+    if (gCommManager->isOnline() != 0) {
         volatile u8 bits;
         BOOL f;
-        void *t;
+        CommManager *t;
         bits = (bits & ~0x3f) | (a & 0x3f);
         bits = (bits & ~0x40) | ((b & 1) << 6);
         f = TRUE;
@@ -766,9 +755,9 @@ extern "C" void FtrSync_SendRoomLight(s32 a, s32 b, s32 c) {
         }
         bits = (bits & ~0x80) | ((f & 1) << 7);
         t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->writeRecord((u8 *)((void *)&bits), 1);
-        ((CommManager *)(t))->endRecord(0x19, c);
+        t->beginRecord();
+        t->writeRecord((u8 *)((void *)&bits), 1);
+        t->endRecord(0x19, c);
     }
 }
 
@@ -778,8 +767,8 @@ extern "C" void FtrSync_ApplyRoomLight(s32 a, s32 b) {
 }
 
 extern "C" void FtrSync_SetRoomLight(s32 a, s32 b) {
-    void *s = gCommManager;
-    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0) {
+    CommManager *s = gCommManager;
+    if (s->isOnline() == 0 || s->isMyAid(0) != 0) {
         FtrSync_ApplyRoomLight(a, b);
     } else {
         FtrSync_SendRoomLight(a, b, 0);
@@ -787,12 +776,12 @@ extern "C" void FtrSync_SetRoomLight(s32 a, s32 b) {
 }
 
 extern "C" void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d) {
-    if (((CommManager *)(gCommManager))->isOnline() == 0 || NetArea_IsLocalOwner() != 0) {
+    if (gCommManager->isOnline() == 0 || NetArea_IsLocalOwner() != 0) {
         ((void (*)(s32, s32, s32, s32, s32))FtrSync_ToggleGyroidAt)(a, b, c, d, 1);
     } else {
         volatile u16 bits;
-        void *t;
-        u8 *q = (u8 *)_ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
+        CommManager *t;
+        u8 *q = (u8 *)FtrActorGrid_GetInstance()->getActor(b, c, d);
         if (q != NULL) {
             q[0x779] = 1;
         }
@@ -801,9 +790,9 @@ extern "C" void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d) {
         bits = (bits & ~0x780) | (((u16)b & 0xf) << 7);
         bits = (bits & ~0x7800) | (((u16)c & 0xf) << 11);
         t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->writeRecord((u8 *)((void *)&bits), 2);
-        ((CommManager *)(t))->endRecord(0x1d, 6);
+        t->beginRecord();
+        t->writeRecord((u8 *)((void *)&bits), 2);
+        t->endRecord(0x1d, 6);
     }
 }
 
@@ -814,25 +803,25 @@ extern "C" void FtrSync_RequestToggleGyroid(s32 a, s32 b, s32 c) {
 }
 
 extern "C" void SpotSync_RequestReserve(s32 *p) {
-    void *s;
+    CommManager *s;
     u8 buf[3];
     sSpotReserveResult = 0;
     s = gCommManager;
-    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0) {
+    if (s->isOnline() == 0 || s->isMyAid(0) != 0) {
         if (sSpotReservations.tryReserve(0, Scene_GetCurrent(), (VecFx32 *)p) != 0) {
             sSpotReserveResult = 1;
         } else {
             sSpotReserveResult = 2;
         }
     } else {
-        void *t;
+        CommManager *t;
         buf[0] = p[0] >> 9;
         buf[1] = p[2] >> 9;
         buf[2] = Scene_GetCurrent();
         t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->writeRecord((u8 *)(buf), 3);
-        ((CommManager *)(t))->endRecord(0x1e, 0);
+        t->beginRecord();
+        t->writeRecord((u8 *)(buf), 3);
+        t->endRecord(0x1e, 0);
     }
 }
 
@@ -844,16 +833,16 @@ extern "C" void SpotSync_RequestStandUpSpot(s32 *p) { SpotSync_RequestReserve(p)
 
 extern "C" u32 SpotSync_GetStandUpSpotResult() { return SpotSync_GetReserveResult(); }
 
-extern "C" void SpotSync_Release(void *arg) {
-    void *s;
+extern "C" void SpotSync_Release(s32 aid) {
+    CommManager *s;
     sSpotReserveResult = 0;
     s = gCommManager;
-    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0 || ((CommManager *)(s))->isMyAid(4) != 0) {
-        sSpotReservations.release((s32)arg);
+    if (s->isOnline() == 0 || s->isMyAid(0) != 0 || s->isMyAid(4) != 0) {
+        sSpotReservations.release(aid);
     } else {
-        void *t = gCommManager;
-        ((CommManager *)(t))->beginRecord();
-        ((CommManager *)(t))->endRecord(0x21, 0);
+        CommManager *t = gCommManager;
+        t->beginRecord();
+        t->endRecord(0x21, 0);
     }
 }
 

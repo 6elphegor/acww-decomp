@@ -16,10 +16,10 @@ typedef VecFx32Ctor Unk_02006d14_V3;
 enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 enum Unk_02094d60_Limit { Unk_02094d60_LIMIT_5 = 5, Unk_02094d60_LIMIT_6 = 6 };
 
-struct Unk_02095338_E { u32 a, b, c; };
 struct Unk_02095338_D { u16 a : 7; u16 b : 4; u16 c : 5; };
 
-struct PlayerSessionTable {
+class PlayerSessionTable {  // (a class: the generated prototype headers declare it for C++ only)
+public:
     PlayerActor *actors[4];
     u8 dataIndices[4];
     u8 gfxSlots[4];
@@ -27,10 +27,10 @@ struct PlayerSessionTable {
     u16 tanTimer;
     u8 sessionFlags;
     u8 pad_1d[3];
-    u32 lastActions[4];
+    s32 lastActions[4];
     u8 lastScenes[4];
-    Unk_02095338_E lastPositions[4];
-    u16 lastAngles[4];
+    VecFx32 lastPositions[4];  // (FxVec3s: an empty constructor and destructor)
+    s16 lastAngles[4];
     PlayerSessionTable();
     ~PlayerSessionTable();
 };
@@ -295,9 +295,9 @@ PlayerSessionTable::PlayerSessionTable()
         PlayerSessionTable_ClearGfxSlot(&gPlayerSessionTable, i);
         lastActions[i] = 0x93;
         lastScenes[i] = 0x33;
-        lastPositions[i].a = 0;
-        lastPositions[i].b = 0;
-        lastPositions[i].c = 0;
+        lastPositions[i].x = 0;
+        lastPositions[i].y = 0;
+        lastPositions[i].z = 0;
         lastAngles[i] = 0;
     }
     lastPlayDate.a = 0;
@@ -352,7 +352,7 @@ extern "C" u8 *PlayerSession_GetSessionFlags()
     return &gPlayerSessionTable.sessionFlags;
 }
 
-extern "C" u32 *PlayerSession_GetLastAction(s32 i)
+extern "C" s32 *PlayerSession_GetLastAction(s32 i)
 {
     return &gPlayerSessionTable.lastActions[i];
 }
@@ -362,12 +362,12 @@ extern "C" u8 *PlayerSession_GetLastScene(s32 i)
     return &gPlayerSessionTable.lastScenes[i];
 }
 
-extern "C" Unk_02095338_E *PlayerSession_GetLastPos(s32 i)
+extern "C" VecFx32 *PlayerSession_GetLastPos(s32 i)
 {
     return &gPlayerSessionTable.lastPositions[i];
 }
 
-extern "C" u16 *PlayerSession_GetLastAngle(s32 i)
+extern "C" s16 *PlayerSession_GetLastAngle(s32 i)
 {
     return &gPlayerSessionTable.lastAngles[i];
 }
@@ -376,10 +376,10 @@ extern "C" void PlayerSession_ResetLastState(s32 i)
 {
     *PlayerSession_GetLastAction(i) = 0x93;
     *PlayerSession_GetLastScene(i) = 0x33;
-    Unk_02095338_E *e = PlayerSession_GetLastPos(i);
-    e->a = 0;
-    e->b = 0;
-    e->c = 0;
+    VecFx32 *e = PlayerSession_GetLastPos(i);
+    e->x = 0;
+    e->y = 0;
+    e->z = 0;
     *PlayerSession_GetLastAngle(i) = 0;
 }
 

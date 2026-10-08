@@ -3229,7 +3229,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL && FtrActor_PredIsStereo(e) && ((FtrSwitch *)e->switchState)->isOn()) {
-            FtrSync_ChangeAct((s32)(sptr)e, z, 0xff, 1);
+            FtrSync_ChangeAct(e, z, 0xff, 1);
         }
     }
     return TRUE;
