@@ -220,9 +220,9 @@ typedef struct PRegion { void *start; void *end; } PRegion;
 static inline void *AddU32ToPtr(void *p, u32 v) { return (void *)((uptr)p + v); }
 static inline void *SubU32ToPtr(void *p, u32 v) { return (void *)((uptr)p - v); }
 static inline u32 GetOffsetFromPtr(const void *start, const void *end) { return (u32)((uptr)end - (uptr)start); }
-static inline void *GetMemPtr(MBlock *b) { return AddU32ToPtr(b, 16); }
+static inline void *GetMemPtr(MBlock *b) { return AddU32ToPtr(b, sizeof(MBlock)); }  // (16 bytes on the DS, 24 on 64-bit hosts)
 static inline void *GetEndAddr(MBlock *b) { return AddU32ToPtr(GetMemPtr(b), b->size); }
-static inline MBlock *GetMBlockHeadPtr(void *mem) { return (MBlock *)SubU32ToPtr(mem, 16); }
+static inline MBlock *GetMBlockHeadPtr(void *mem) { return (MBlock *)SubU32ToPtr(mem, sizeof(MBlock)); }
 static inline ExpHead *GetExpHead(HeapHead *h) { return (ExpHead *)AddU32ToPtr(h, (u32)__builtin_offsetof(HeapHead, u)); }  // (0x24 on the DS)
 static inline void FillAlloc(HeapHead *h, void *dst, u32 size) {
     if (GetOptFlag(h) & 1) {
