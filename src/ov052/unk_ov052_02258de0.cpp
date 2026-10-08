@@ -29,8 +29,9 @@
 #include "npc/NpcActionCtrl.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
-#define PROTO_LOCAL_gTouchPrevChanged  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchPrevHeld  // declared below: the shared prototype conflicts with the calls here
+#include "room/FtrActorGrid.h"
+#include "save/ReddLastSale.h"
+#include "town/BlockMap.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
@@ -40,6 +41,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 #include "proto/ov052/unk_ov052_02258de0.h"
@@ -62,14 +64,12 @@ void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void Clock_GetDateTime(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-void _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, void *v);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_UnlockExit();
 void Ground_LockExit(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void *Scene_GetTouchPicker();
 void TouchPick_GetGroundPos(void *a, void *b);
 s32 Item_IsFurniture(u16 *p);
@@ -81,9 +81,6 @@ BOOL Scene_GetPrevious();
 void ReddShop_BuyAt(s32 a, s32 b, s32 c);
 BOOL ReddShop_IsPurchaseSynced();
 u16 *ReddShop_GetItem(void *tbl, s32 a, s32 b);
-void _ZN12ReddLastSale8setBuyerEPKS_(void *a, void *b);
-void _ZN12ReddLastSale7setItemEPKS_(void *a, void *b);
-void _ZN12ReddLastSale12copyItemFromEPKS_(void *dst, void *src);
 void NpcActor_FindFreeUnitNear(void *out, void *self, void *v);
 s32 Math_CountDownU8(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -91,13 +88,11 @@ s32 Vec_NotEqual(void *a, void *b);
 s32 Vec_Equal(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
-extern u8 data_021ed284[];
+extern ReddLastSale data_021ed284;  // Redd's last sale (save data)
 extern u8 data_021ed2c0[];
-extern u8 gTouchPrevHeld[];
-extern u8 gTouchPrevChanged[];
 extern u16 gPad[];
 extern s16 data_02135f44[];
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern void *gCommManager;
 }
 
@@ -117,7 +112,7 @@ public:
 
     s32 getTopic();
     void setTopic(s32 v);
-    void attachOwner(s32 v);
+    void attachOwner(SpNpcRedd *v);
     void completePurchase();
 
     s32 topic;
@@ -232,7 +227,7 @@ static inline BOOL Unk_ov052_022595dc_EqK(u16 *p, u16 *k) {
 }
 
 static inline BOOL Unk_ov052_02258f34_Flags() {
-    if (gTouchPrevHeld[0] && gTouchPrevChanged[0]) {
+    if (gTouchPrevHeld && gTouchPrevChanged) {
         return TRUE;
     }
     return FALSE;
@@ -260,7 +255,7 @@ BOOL SpNpcRedd::preCreate() {
         return FALSE;
     }
     setTalkRequest((ActorTalkRequest *)&talk);
-    talk.attachOwner((s32)this);
+    talk.attachOwner(this);
     standBlend = data_020c6cc8;
     MI_CpuFill8(usedPitchMsgs, 0, 5);
     MI_CpuFill8(usedThanksMsgs, 0, 5);
@@ -535,7 +530,7 @@ BOOL SpNpcRedd::mainAct09() {
     VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    _ZN8BlockMap17getWalkLinksAtPosEPv(gSceneBlockMap, &position);
+    gSceneBlockMap->getWalkLinksAtPos(&position);
     if (t > 0x4000) {
         if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
             ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
@@ -604,9 +599,9 @@ SpNpcReddTalk::~SpNpcReddTalk() {}
 
 void SpNpcReddTalk::resetMsg() { ActorTalkRequest::resetMsg(); }
 
-void SpNpcReddTalk::attachOwner(s32 v) {
+void SpNpcReddTalk::attachOwner(SpNpcRedd *v) {
     resetMsg();
-    owner = (SpNpcRedd *)v;
+    owner = v;
     redVaseSlot = -1;
     feeQuoted = 0;
 }
@@ -656,14 +651,14 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
                 } else if (Talk_CheckAndSetPlayerFlag(1, 1) == 0) {
                     topic = 7;
                 } else {
-                    if (((PlayerId *)(ReddLastSale_GetBuyer(data_021ed284)))->isValid() != 0 &&
-                        (_ZN12ReddLastSale12copyItemFromEPKS_(&b, data_021ed284), !Unk_ov052_022595dc_Eq(&b, &k2))) {
-                        _ZN12ReddLastSale12copyItemFromEPKS_(&c, data_021ed284);
+                    if (((PlayerId *)(ReddLastSale_GetBuyer(&data_021ed284)))->isValid() != 0 &&
+                        (b = data_021ed284.item, !Unk_ov052_022595dc_Eq(&b, &k2))) {
+                        c = data_021ed284.item;
                         ((ActorTalkRequest *)(this))->setItemNameSlot(&c, 0, 7);
                         u16 *r6 = (u16 *)PlayerData_GetCurrent()->getPlayerId();
-                        u16 *r7 = (u16 *)ReddLastSale_GetBuyer(data_021ed284);
+                        u16 *r7 = (u16 *)ReddLastSale_GetBuyer(&data_021ed284);
                         if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && ((PlayerId *)(r7))->equals((PlayerId *)(r6)) != 0)) {
-                            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)ReddLastSale_GetBuyer(data_021ed284), 1);
+                            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)ReddLastSale_GetBuyer(&data_021ed284), 1);
                             topic = 8;
                         } else {
                             ((ActorTalkRequest *)(this))->setPlayerNameSlot(((PlayerData *)(h))->getPlayerId(), 1);
@@ -710,12 +705,12 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
                 s32 idx = SpNpcRedd_PickUnusedFlag(owner, owner->usedPitchMsgs, 5);
                 if (owner->usedPitchMsgs[idx] == 0) {
                     owner->usedPitchMsgs[idx] = 1;
-                    *(u16 *)((u8 *)owner + 0x71c + hit * 2) = owner->selectedItem;
+                    owner->pitchedItems[hit].id = owner->selectedItem;
                 }
                 if (SpNpcRedd_CountUnusedFlags(owner, owner->usedPitchMsgs, 5) == 0) {
                     MI_CpuFill8(owner->usedPitchMsgs, 0, 5);
                     owner->usedPitchMsgs[idx] = 1;
-                    *(u16 *)((u8 *)owner + 0x71c + hit * 2) = owner->selectedItem;
+                    owner->pitchedItems[hit].id = owner->selectedItem;
                 }
                 out->msgIndex = idx + 0x1e;
             }
@@ -843,9 +838,9 @@ void SpNpcReddTalk::completePurchase() {
     NpcActor_ChargePlayer(owner, price);
     Pocket_AddItem(&owner->selectedItem, 0);
     ReddShop_BuyAt(owner->selectedItemX, owner->selectedItemZ, 0xf);
-    u8 *const g = data_021ed284;
-    _ZN12ReddLastSale8setBuyerEPKS_(g, PlayerData_GetCurrent()->getPlayerId());
-    _ZN12ReddLastSale7setItemEPKS_(g, &owner->selectedItem);
+    ReddLastSale *const g = &data_021ed284;
+    g->setBuyer(reinterpret_cast<const ReddLastSale *>(PlayerData_GetCurrent()->getPlayerId()));
+    g->item = owner->selectedItem;
     ((ActorTalkRequest *)(this))->setNumberSlot(price, 2, 10, 1, 0);
     owner->selectedItem = 0xfff1;
     owner->boughtSomething = 1;
@@ -934,7 +929,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
     v.z += func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
     FieldPos_ToUnit(&bx, &by, &v);
     if (f) {
-        void *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), bx, by, 0);
+        void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
             if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
@@ -1015,61 +1010,16 @@ extern "C" const TalkStartMsg sSpNpcReddTopicMsgs[13] = {
     {sSpNpcReddKey, 0x33},
 };
 
-extern "C" void _ZN9SpNpcRedd9mainAct0AEv();
-extern "C" void _ZN9SpNpcRedd10setupAct0AEv();
-extern "C" void _ZN9SpNpcRedd9mainAct09Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct09Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct08Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct08Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct07Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct07Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct06Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct06Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct05Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct05Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct04Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct04Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct03Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct03Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct02Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct02Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct01Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct01Ev();
-extern "C" void _ZN9SpNpcRedd9mainAct00Ev();
-extern "C" void _ZN9SpNpcRedd10setupAct00Ev();
-extern "C" void *data_ov052_0225a788[2] = {(void *)_ZN9SpNpcRedd10setupAct06Ev, 0};
-extern "C" void *data_ov052_0225a768[2] = {(void *)_ZN9SpNpcRedd9mainAct00Ev, 0};
-extern "C" void *data_ov052_0225a808[2] = {(void *)_ZN9SpNpcRedd10setupAct02Ev, 0};
-extern "C" void *data_ov052_0225a800[2] = {(void *)_ZN9SpNpcRedd9mainAct01Ev, 0};
-extern "C" void *data_ov052_0225a7f8[2] = {(void *)_ZN9SpNpcRedd10setupAct03Ev, 0};
-extern "C" void *data_ov052_0225a7f0[2] = {(void *)_ZN9SpNpcRedd9mainAct03Ev, 0};
-extern "C" void *data_ov052_0225a7e8[2] = {(void *)_ZN9SpNpcRedd10setupAct04Ev, 0};
-extern "C" void *data_ov052_0225a7e0[2] = {(void *)_ZN9SpNpcRedd9mainAct04Ev, 0};
-extern "C" void *data_ov052_0225a7d8[2] = {(void *)_ZN9SpNpcRedd10setupAct05Ev, 0};
-extern "C" void *data_ov052_0225a7d0[2] = {(void *)_ZN9SpNpcRedd9mainAct05Ev, 0};
-extern "C" void *data_ov052_0225a7b8[2] = {(void *)_ZN9SpNpcRedd10setupAct07Ev, 0};
-extern "C" void *data_ov052_0225a7c0[2] = {(void *)_ZN9SpNpcRedd9mainAct0AEv, 0};
-extern "C" void *data_ov052_0225a7c8[2] = {(void *)_ZN9SpNpcRedd10setupAct01Ev, 0};
-extern "C" void *data_ov052_0225a7b0[2] = {(void *)_ZN9SpNpcRedd9mainAct07Ev, 0};
-extern "C" void *data_ov052_0225a7a8[2] = {(void *)_ZN9SpNpcRedd10setupAct08Ev, 0};
-extern "C" void *data_ov052_0225a7a0[2] = {(void *)_ZN9SpNpcRedd9mainAct02Ev, 0};
-extern "C" void *data_ov052_0225a798[2] = {(void *)_ZN9SpNpcRedd10setupAct09Ev, 0};
-extern "C" void *data_ov052_0225a790[2] = {(void *)_ZN9SpNpcRedd9mainAct09Ev, 0};
-extern "C" void *data_ov052_0225a760[2] = {(void *)_ZN9SpNpcRedd10setupAct00Ev, 0};
-extern "C" void *data_ov052_0225a780[2] = {(void *)_ZN9SpNpcRedd10setupAct0AEv, 0};
-extern "C" void *data_ov052_0225a778[2] = {(void *)_ZN9SpNpcRedd9mainAct06Ev, 0};
-extern "C" void *data_ov052_0225a770[2] = {(void *)_ZN9SpNpcRedd9mainAct08Ev, 0};
-typedef BOOL (SpNpcRedd::*SpNpcReddActFn)();
 extern "C" SpNpcReddActEntry sSpNpcReddActTable[11] = {
-    {*(SpNpcReddActFn *)data_ov052_0225a760, *(SpNpcReddActFn *)data_ov052_0225a768},
-    {*(SpNpcReddActFn *)data_ov052_0225a7c8, *(SpNpcReddActFn *)data_ov052_0225a800},
-    {*(SpNpcReddActFn *)data_ov052_0225a808, *(SpNpcReddActFn *)data_ov052_0225a7a0},
-    {*(SpNpcReddActFn *)data_ov052_0225a7f8, *(SpNpcReddActFn *)data_ov052_0225a7f0},
-    {*(SpNpcReddActFn *)data_ov052_0225a7e8, *(SpNpcReddActFn *)data_ov052_0225a7e0},
-    {*(SpNpcReddActFn *)data_ov052_0225a7d8, *(SpNpcReddActFn *)data_ov052_0225a7d0},
-    {*(SpNpcReddActFn *)data_ov052_0225a788, *(SpNpcReddActFn *)data_ov052_0225a778},
-    {*(SpNpcReddActFn *)data_ov052_0225a7b8, *(SpNpcReddActFn *)data_ov052_0225a7b0},
-    {*(SpNpcReddActFn *)data_ov052_0225a7a8, *(SpNpcReddActFn *)data_ov052_0225a770},
-    {*(SpNpcReddActFn *)data_ov052_0225a798, *(SpNpcReddActFn *)data_ov052_0225a790},
-    {*(SpNpcReddActFn *)data_ov052_0225a780, *(SpNpcReddActFn *)data_ov052_0225a7c0},
+    {&SpNpcRedd::setupAct00, &SpNpcRedd::mainAct00},
+    {&SpNpcRedd::setupAct01, &SpNpcRedd::mainAct01},
+    {&SpNpcRedd::setupAct02, &SpNpcRedd::mainAct02},
+    {&SpNpcRedd::setupAct03, &SpNpcRedd::mainAct03},
+    {&SpNpcRedd::setupAct04, &SpNpcRedd::mainAct04},
+    {&SpNpcRedd::setupAct05, &SpNpcRedd::mainAct05},
+    {&SpNpcRedd::setupAct06, &SpNpcRedd::mainAct06},
+    {&SpNpcRedd::setupAct07, &SpNpcRedd::mainAct07},
+    {&SpNpcRedd::setupAct08, &SpNpcRedd::mainAct08},
+    {&SpNpcRedd::setupAct09, &SpNpcRedd::mainAct09},
+    {&SpNpcRedd::setupAct0A, &SpNpcRedd::mainAct0A},
 };

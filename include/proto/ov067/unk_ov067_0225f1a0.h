@@ -293,7 +293,7 @@ s32 WlxWm_CheckApiCall(WlxWmWork *s, u32 id, u32 arg);
 s32 WlxWm_CheckCallback(WlxWmWork *s, void *m);
 #endif
 #ifndef PROTO_LOCAL_WlxWm_SetState
-void WlxWm_SetState(WlxWmWork *s, s32 st, u32 arg);
+void WlxWm_SetState(WlxWmWork *s, s32 st, void *arg);
 #endif
 #ifndef PROTO_LOCAL_WlxWm_RequestState
 void WlxWm_RequestState(WlxWmWork *x, u32 v);

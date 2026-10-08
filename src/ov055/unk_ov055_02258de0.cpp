@@ -1,4 +1,5 @@
 #include "types.h"
+#include "uptr.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
 #include "save/TownExchangeRecord.h"
@@ -26,14 +27,8 @@
 #include "actor/ActorProfile.h"
 #include "npc/NpcActionCtrl.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_NetOverlay_AssertOv067  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_WlxIsExchangeDone  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_WlxIsReady  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_WlxStartExchange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_WlxStopExchange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/ScreenTransition.h"
+#include "sys/OverlayHandle.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/main/unk_020039ec.h"
@@ -41,6 +36,8 @@
 #include "proto/main/unk_0208f0b0.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_020742f4.h"
 #include "proto/ov055/unk_ov055_02258de0.h"
 
 
@@ -64,30 +61,22 @@ class SpNpcRover;
 
 
 extern "C" {
-extern u8 gOverlayHandle[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_67_ID[];
 extern u8 data_021ecfa8[];
 extern u16 data_020c6cc8;
 extern u16 gPad[];
-extern u8 gScreenTransition;
 extern const void *sSpNpcRoverMsgKey;
 
 void OverlayHandle_Unload(void *p);
-void OverlayHandle_Load(void *p, u32 v);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
-s32 Net_WlxIsExchangeDone(void *p);
-s32 Net_WlxIsReady(void *p);
-void Net_WlxStopExchange(void *p);
-void Net_WlxStartExchange(void *p);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void Camera_SetMode20At(void *p);
 }
-void *NetOverlay_AssertOv067();
 class SpNpcRoverTalk;
 typedef void (SpNpcRoverTalk::*SpNpcRoverTalkScriptFn)();
 
@@ -117,14 +106,8 @@ struct SpNpcRoverTalkScript {
     u8 pad[3];
 };
 
-struct Unk_ov055_02259234_Flag {
-    u8 flag;
-    u8 pad[11];
-};
 
 
-extern "C" void _ZN18TownExchangeRecordC1Ev(void *self);
-extern "C" void _ZN19ReceivedLetterBlockC1Ev(void *self);
 
 // sent / received town-exchange data: the record and the letters that travel with it (0x948 bytes)
 struct SpNpcRoverTransfer {
@@ -180,9 +163,7 @@ public:
 
 extern "C" {
 extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
-#define data_ov055_02259a4c ((SpNpcRoverActEntry *)((u8 *)sSpNpcRoverActTable + 8))
 extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];
-#define data_ov055_022598d4 (sSpNpcRoverTalkScripts) // (the flag column: the entries' flag member on hosts)
 extern ActorProfile sSpNpcRoverProfile;
 void _ZN14SpNpcRoverTalk15waitTagModeStopEv();
 void _ZN14SpNpcRoverTalk11waitLidOpenEv();
@@ -195,15 +176,6 @@ void _ZN10SpNpcRover9mainAct00Ev();
 void _ZN10SpNpcRover9mainAct01Ev();
 }
 
-extern "C" void *data_ov055_0225984c[2] = {(void *)_ZN10SpNpcRover10setupAct02Ev, 0};
-extern "C" void *data_ov055_02259844[2] = {(void *)_ZN14SpNpcRoverTalk10runTagModeEv, 0};
-extern "C" void *data_ov055_02259854[2] = {(void *)_ZN14SpNpcRoverTalk11waitLidOpenEv, 0};
-extern "C" void *data_ov055_02259834[2] = {(void *)_ZN10SpNpcRover10setupAct00Ev, 0};
-extern "C" void *data_ov055_02259824[2] = {(void *)_ZN14SpNpcRoverTalk15waitTagModeStopEv, 0};
-extern "C" void *data_ov055_0225983c[2] = {(void *)_ZN10SpNpcRover9mainAct02Ev, 0};
-extern "C" void *data_ov055_0225985c[2] = {(void *)_ZN10SpNpcRover9mainAct00Ev, 0};
-extern "C" void *data_ov055_02259864[2] = {(void *)_ZN10SpNpcRover9mainAct01Ev, 0};
-extern "C" void *data_ov055_0225982c[2] = {(void *)_ZN10SpNpcRover10setupAct01Ev, 0};
 extern "C" char sSpNpcRoverKey[] = "sp_etc_sequence1";
 extern "C" const void *sSpNpcRoverMsgKey = sSpNpcRoverKey;
 extern "C" u8 sSpNpcRoverModelPath[] = "npc_sp/model/xct.nsbmd";
@@ -211,14 +183,14 @@ extern "C" u8 sSpNpcRoverTexturePath[] = "npc_sp/model/xct_tex.nsbtx";
 extern "C" ActorProfile sSpNpcRoverProfile = {(void *(*)())SpNpcRover_Create, 0x5e, 0x65, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4] = {
     {0, 0},
-    {*(SpNpcRoverTalkScriptFn *)data_ov055_02259844, 1},
-    {*(SpNpcRoverTalkScriptFn *)data_ov055_02259854, 1},
-    {*(SpNpcRoverTalkScriptFn *)data_ov055_02259824, 1},
+    {&SpNpcRoverTalk::runTagMode, 1},
+    {&SpNpcRoverTalk::waitLidOpen, 1},
+    {&SpNpcRoverTalk::waitTagModeStop, 1},
 };
 extern "C" SpNpcRoverActEntry sSpNpcRoverActTable[3] = {
-    {*(SpNpcRoverActFn *)data_ov055_02259834, *(SpNpcRoverActFn *)data_ov055_0225985c},
-    {*(SpNpcRoverActFn *)data_ov055_0225982c, *(SpNpcRoverActFn *)data_ov055_02259864},
-    {*(SpNpcRoverActFn *)data_ov055_0225984c, *(SpNpcRoverActFn *)data_ov055_0225983c},
+    {&SpNpcRover::setupAct00, &SpNpcRover::mainAct00},
+    {&SpNpcRover::setupAct01, &SpNpcRover::mainAct01},
+    {&SpNpcRover::setupAct02, &SpNpcRover::mainAct02},
 };
 extern "C" SpNpcRover *sSpNpcRoverInstance = 0;
 
@@ -269,7 +241,7 @@ u8 *SpNpcRover::getModelPath() { return sSpNpcRoverModelPath; }
 
 BOOL SpNpcRover::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcRoverActTable[act].exit) { // (the DS label is the table + one member: the exit member)
+    if (sSpNpcRoverActTable[act].exit) {
         r = (this->*sSpNpcRoverActTable[act].exit)();
     }
     return r;
@@ -291,7 +263,7 @@ BOOL SpNpcRover::setupAct00() {
 }
 
 BOOL SpNpcRover::mainAct00() {
-    if (Unk_ov055_02259484_IsTwo(gScreenTransition)) {
+    if (Unk_ov055_02259484_IsTwo(gScreenTransition.state)) {
         changeAct(1);
     }
     return TRUE;
@@ -330,24 +302,24 @@ void SpNpcRoverTalk::start(TalkStartMsg *out) {
 
 void SpNpcRoverTalk::onMessageEnd(u32) {
     u8 m[4];
-    void *r6 = window;
+    TalkWindowState *r6 = window;
     switch (msgIndex) {
     case 0x39:
-        if (Net_WlxIsReady(NetOverlay_AssertOv067()) == 0) {
+        if ((NetOverlay_AssertOv067(), Net_WlxIsReady(NULL)) == 0) {
             if (ownerNpc->saveFailed != 0) {
                 m[0] = 0x36;
-                ((TalkWindowState *)(r6))->setNextMessage((u8 *)(&m[0]), (void *)(void *)(sSpNpcRoverMsgKey));
+                r6->setNextMessage((u8 *)(&m[0]), (void *)sSpNpcRoverMsgKey);
                 break;
             }
             Comm_StartOv067Mode();
-            MI_CpuFill8(&ownerNpc->recv.record, 0, 0x948);
+            MI_CpuFill8(&ownerNpc->recv, 0, sizeof(SpNpcRoverTransfer));
             SpNpcRover *r4 = ownerNpc;
             NetOverlay_AssertOv067();
-            Net_StartOv067(&r4->send.record, &r4->recv.record, 0x948);
-            Net_WlxStartExchange(NetOverlay_AssertOv067());
+            Net_StartOv067(&r4->send, &r4->recv, sizeof(SpNpcRoverTransfer));
+            (NetOverlay_AssertOv067(), Net_WlxStartExchange(NULL));
         }
-        Net_WlxStartExchange(NetOverlay_AssertOv067());
-        ((TalkWindowState *)(r6))->lockAdvance();
+        (NetOverlay_AssertOv067(), Net_WlxStartExchange(NULL));
+        r6->lockAdvance();
         setScript(1);
         break;
     case 0x3c:
@@ -360,7 +332,7 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
 }
 
 void SpNpcRoverTalk::onChoice(u32) {
-    s32 t = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
+    s32 t = ((ChoiceList *)(window->getChoiceList()))->getResult();
     if (msgIndex == 0x3a && t == 1) {
         Comm_EndOv067Mode();
     }
@@ -368,7 +340,7 @@ void SpNpcRoverTalk::onChoice(u32) {
 
 void SpNpcRoverTalk::update() {
     u32 i = script;
-    if (data_ov055_022598d4[i].flag != 0) {
+    if (sSpNpcRoverTalkScripts[i].flag != 0) {
         if (sSpNpcRoverTalkScripts[i].fn) {
             (this->*sSpNpcRoverTalkScripts[i].fn)();
         }
@@ -377,7 +349,7 @@ void SpNpcRoverTalk::update() {
 
 void SpNpcRoverTalk::onTaskDone(u32) {
     u32 i = script;
-    if (data_ov055_022598d4[i].flag == 0) {
+    if (sSpNpcRoverTalkScripts[i].flag == 0) {
         if (sSpNpcRoverTalkScripts[i].fn) {
             (this->*sSpNpcRoverTalkScripts[i].fn)();
             setScript(0);
@@ -401,18 +373,18 @@ void SpNpcRoverTalk::runTagMode() {
         r5 = TRUE;
     }
     own->lidClosed = k;
-    if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
+    if ((NetOverlay_AssertOv067(), Net_WlxIsExchangeDone(NULL))) {
         Comm_EndOv067Mode();
         m[0] = 0x3c;
-        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[0]), (void *)(void *)(sSpNpcRoverMsgKey));
+        window->setNextMessage((u8 *)(&m[0]), (void *)sSpNpcRoverMsgKey);
         setScript(2);
     } else {
         if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
             return;
         }
-        Net_WlxStopExchange(NetOverlay_AssertOv067());
+        (NetOverlay_AssertOv067(), Net_WlxStopExchange(NULL));
         m[1] = 0x3a;
-        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), (void *)(void *)(sSpNpcRoverMsgKey));
+        window->setNextMessage((u8 *)(&m[1]), (void *)sSpNpcRoverMsgKey);
         setScript(3);
     }
 }
@@ -420,7 +392,7 @@ void SpNpcRoverTalk::runTagMode() {
 void SpNpcRoverTalk::waitLidOpen() {
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         Snd_PlaySe(0x69);
-        ((TalkWindowState *)(window))->unlockAdvance();
+        window->unlockAdvance();
         setScript(0);
     }
 }
@@ -429,20 +401,20 @@ void SpNpcRoverTalk::waitLidOpen() {
 // SpNpcRoverTalk
 
 void SpNpcRoverTalk::waitTagModeStop() {
-    void *r4 = window;
+    TalkWindowState *r4 = window;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
-        if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
+        if ((NetOverlay_AssertOv067(), Net_WlxIsExchangeDone(NULL))) {
             Snd_PlaySe(0x69);
             Comm_EndOv067Mode();
             u8 m = 0x3c;
-            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)(void *)(sSpNpcRoverMsgKey));
+            window->setNextMessage((u8 *)(&m), (void *)sSpNpcRoverMsgKey);
         } else {
-            if (Net_WlxIsReady(NetOverlay_AssertOv067()) != 1) {
-                Net_WlxStopExchange(NetOverlay_AssertOv067());
+            if ((NetOverlay_AssertOv067(), Net_WlxIsReady(NULL)) != 1) {
+                (NetOverlay_AssertOv067(), Net_WlxStopExchange(NULL));
                 return;
             }
         }
-        ((TalkWindowState *)(r4))->unlockAdvance();
+        r4->unlockAdvance();
         setScript(0);
     }
 }
@@ -454,14 +426,14 @@ void SpNpcRover::applyReceivedData() {
         MI_CpuCopy8(&recv.letters, data_021ecfa8, 0xf8);
         restoreOwnTransfer();
     } else if (st == 1) {
-        MI_CpuCopy8(&recv.record, r4, 0x84c);
+        MI_CpuCopy8(&recv.record, r4, sizeof(TownExchangeRecord));
         r4->incrementCounter();
         r4->setUnkFlag(1);
     }
 }
 
 void SpNpcRover::restoreOwnTransfer() {
-    MI_CpuCopy8(&send.record, TownExchange_GetForAid(4), 0x84c);
+    MI_CpuCopy8(&send.record, TownExchange_GetForAid(4), sizeof(TownExchangeRecord));
 }
 
 BOOL SpNpcRover::acceptsInteraction(void *) {
@@ -499,7 +471,7 @@ void SpNpcRover::onInteractionEvent(u32 a, u8) {
 void SpNpcRover::prepareTagData() {
     Constellation_PrepareExchange();
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
-    MI_CpuCopy8(r4, &send.record, 0x84c);
+    MI_CpuCopy8(r4, &send.record, sizeof(TownExchangeRecord));
     send.letters.exchangeKind = 1;
     TownExchange_Clear(r4);
     if (saveFailed == 0) {
@@ -521,13 +493,13 @@ void SpNpcRover::saveTagData() {
 }
 
 void SpNpcRover::loadTagModeOverlay() {
-    OverlayHandle_Unload(gOverlayHandle);
-    OverlayHandle_Load(gOverlayHandle, (u32)OVERLAY_67_ID);
+    OverlayHandle_Unload(&gOverlayHandle);
+    OverlayHandle_Load(reinterpret_cast<OverlayHandleView *>(&gOverlayHandle), (s32)(uptr)OVERLAY_67_ID);
 }
 
 void SpNpcRover::restoreOv068() {
-    OverlayHandle_Unload(gOverlayHandle);
-    OverlayHandle_Load(gOverlayHandle, (u32)OVERLAY_68_ID);
+    OverlayHandle_Unload(&gOverlayHandle);
+    OverlayHandle_Load(reinterpret_cast<OverlayHandleView *>(&gOverlayHandle), (s32)(uptr)OVERLAY_68_ID);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
