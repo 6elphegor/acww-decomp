@@ -8,7 +8,6 @@ unsigned long long HostIo_Write(unsigned int addr, unsigned int size, unsigned l
 void __sinit_020c5fa0(void) {}  // a static initialiser in main's .ctor (its body is ARM code in a gap)
 void Sky_HBlankMain(void) {}    // HBlank effects: per-line scroll/colour of the sky (not emulated per line)
 void Sky_HBlankSub(void) {}
-s32 Snd_CalcListenerDistance(void) { host_unimplemented("Snd_CalcListenerDistance"); return 0; }
 // NitroSDK GX_SetBankForARM7: VRAM C and/or D for the ARM7 (state slot 3)
 extern u16 data_021fcbd8[];
 void GX_VRAMCNT_SetLCDC_(u32 banks);

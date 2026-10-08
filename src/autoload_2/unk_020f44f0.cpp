@@ -3,8 +3,8 @@
 // (src/autoload_2/unk_020f3e50.cpp) minus the channel-object classes 0x020f3e50-0x020f44f0, which RC_020f3e50 now builds as real
 // classes. This is the sound-position pan / volume curve file (listener callbacks). It owns its bss (autoload_3
 // 0x021f5bfc-0x021f5c28) and its __sinit (main .init 0x020c6094-0x020c6108, .ctor 0x020d1f54), see the end of the file.
-// The file ends with Snd_CalcListenerDistance (0x020f4904-0x020f4a5c), which is not built yet; the .data byte data_0213b9d8 and the
-// bss from 0x021f5c28 on belong to the next file (unk_020f4a5c.cpp).
+// The file ends with Snd_CalcListenerDistance (0x020f4904-0x020f4a5c), a gap in the DS builds' delinks (written here for the
+// port from the ROM's code); the .data byte data_0213b9d8 and the bss from 0x021f5c28 on belong to the next file (unk_020f4a5c.cpp).
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "snd/PlayCtx.h"
@@ -26,6 +26,7 @@ extern s32 data_021f5c08;
 extern u8 data_021f5bfc;
 
 s32 FX_Div(s32 a, s32 b);
+s32 FX_Sqrt(s32 x);
 s32 Snd_ListenerDistanceCallback(PlayCtx *p);
 s32 Snd_ListenerVolumeCallback(PlayCtx *p);
 s32 Snd_ListenerPanCallback(PlayCtx *p);
@@ -158,6 +159,29 @@ extern "C" s32 SndVolumeCurve_Eval(Ramp *r, s32 x) {
     if (v > 127) return 127;
     if (v < 0) return 0;
     return v;
+}
+
+// distance (whole units) of a sound's position (relative to the camera) from the listener: mode 0 in 3D (the
+// listener at z = -12.0), mode 1 in the y-z plane only, mode 2 on the screen
+// (x, y in pixels from the centre (128, 80), x scaled by 1/8 and y by 1/4). The ROM's function returns its first
+// argument for any other mode (a register left over); no caller passes one.
+extern "C" s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m) {
+    s32 dx, dy, dz;
+    if (p == 0) return 0;
+    switch (m) {
+    case 0:
+        dz = p->z + 0xc000;
+        return FX_Sqrt(FX_Mul(p->x, p->x) + FX_Mul(p->y, p->y) + FX_Mul(dz, dz)) >> 12;
+    case 1:
+        dz = p->z + 0xc000;
+        return FX_Sqrt(FX_Mul(p->y, p->y) + FX_Mul(dz, dz)) >> 12;
+    case 2:
+        dx = (p->x - 0x80000) >> 3;
+        dy = (p->y - 0x50000) >> 2;
+        return FX_Sqrt(FX_Mul(dx, dx) + FX_Mul(dy, dy)) >> 12;
+    default:
+        return 0;
+    }
 }
 
 // address of the pan curve gSndVolumeCurve (Ramp)
