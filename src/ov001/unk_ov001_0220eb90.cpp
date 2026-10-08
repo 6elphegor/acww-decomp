@@ -1,10 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "nitro/io_access.h"
+#include "net/DwcWiFiInfo.h"
+#include "net/WfcLoadFunc.h"
 #include "net/WfcRect.h"
-#define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcOptions_Exit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcOptionsSprite  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"
@@ -20,20 +20,22 @@
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221ea94.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224b14.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02225924.h"
+#include "proto/ov001/unk_ov001_02225f40.h"
+#include "proto/ov001/unk_ov001_022266b0.h"
 
 #pragma thumb off
 
-struct WfcOptionsPalettePath { u8 v[0x16]; };
-struct WfcOptionsPalette1Path { u8 v[0x17]; };
-struct WfcOptionsLoadBgLocals { u8 a[0x16]; u8 b[0x17]; u64 t; u32 pad[4]; };
-extern "C" const u16 data_ov001_02229fc4[2];
+extern "C" const WfcPoint data_ov001_02229fc4;
 extern "C" const WfcRect data_ov001_02229fc8[3];
-extern "C" const u8 data_ov001_02229fe0[24];
+extern "C" const WfcRect data_ov001_02229fe0[3];
 extern "C" const u8 data_ov001_02229fc0[3];
-#define data_ov001_02229fe2 (data_ov001_02229fe0 + 2)
-#define data_ov001_02229fe4 (data_ov001_02229fe0 + 4)
-#define data_ov001_02229fe6 (data_ov001_02229fe0 + 6)
+
+// the cursor around the selected button
+#define WfcOptions_ShowCursor(i) \
+    { const WfcRect *r = &data_ov001_02229fe0[i]; WfcCursor_ShowCorners(r->left, r->right, r->top, r->bottom); }
 
 extern "C" {
 u8 sWfcOptionsChosen;
@@ -42,25 +44,13 @@ u8 sWfcOptionsSel;
 GXOamAttr *sWfcOptionsSprite;
 }
 
-#define BGCNT(a) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | 3)
+// a BG control register's priority: 3
+#define BGCNT(a) IO_W((volatile u16 *)(a), (IO_R((volatile u16 *)(a)) & ~3) | 3)
 
 extern "C" {
-void GX_LoadBG2Scr(void);
-void GX_LoadBG2Char(void);
-void WfcUtil_LoadFileTo(void *, void *);
-s32 FX_ModS32(s32, s32);
-void WfcOam_FreeEntry(void *);
-void WfcGx_HidePlanes(s32, s32);
-void WfcGx_ShowPlanes(s32, s32);
-void DWCi_BM_GetWiFiInfo(void *);
-s32 WfcInput_IsTouchPressedIn(void *);
-s32 WfcInput_IsKeyPressed(s32);
-s32 WfcInput_IsKeyRepeat(s32);
-void MI_CpuCopy8(void *, void *, s32);
-void DC_FlushRange(void *, s32);
-void GX_LoadBGPltt(void *, s32, s32);
-GXOamAttr *WfcObj_CreateSingle(s32, s32);
-void WfcOptions_Exit();
+s32 FX_ModS32(s32 numer, s32 denom);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void DC_FlushRange(const void *p, u32 size);
 }
 
 extern "C" void WfcOptions_Enter() {
@@ -70,27 +60,26 @@ extern "C" void WfcOptions_Enter() {
     WfcTop_LoadScreen(3);
     WfcUtil_ShowTopMessage(0x88, -1, 0);
     sWfcOptionsSprite = WfcObj_CreateSingle(0, 0x5b);
-    sWfcOptionsSprite->attr01 = (sWfcOptionsSprite->attr01 & 0xfe00ff00) | (data_ov001_02229fc4[1] & 0xff) | ((data_ov001_02229fc4[0] & 0x1ff) << 16);
+    sWfcOptionsSprite->attr01 = (sWfcOptionsSprite->attr01 & 0xfe00ff00) | (data_ov001_02229fc4.y & 0xff) | ((data_ov001_02229fc4.x & 0x1ff) << 16);
     sWfcOptionsSprite->attr2 = (sWfcOptionsSprite->attr2 & ~0xc00) | 0xc00;
-    WfcCursor_ShowCorners(*(const u16 *)(data_ov001_02229fe0 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe4 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe2 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe6 + (sWfcOptionsSel << 3)));
-    WfcUtil_SetScene((void *)WfcOptions_FadeIn);
+    WfcOptions_ShowCursor(sWfcOptionsSel)
+    WfcUtil_SetScene(WfcOptions_FadeIn);
 }
 
 extern "C" void WfcOptions_LoadBg() {
-    WfcOptionsLoadBgLocals buf;
+    u8 palettePath[0x16] = "char/ybBgOption.ncl.l";
+    u8 palette1Path[0x17] = "char/ybBgOption1.ncl.l";
+    DwcWiFiInfo info;
     u8 *d, *s;
     s32 i;
     u8 *e;
-    u8 *src;
-    src = (u8 *)"char/ybBgOption.ncl.l";
-    *(WfcOptionsPalettePath *)buf.a = *(WfcOptionsPalettePath *)src;
-    *(WfcOptionsPalette1Path *)buf.b = *(WfcOptionsPalette1Path *)"char/ybBgOption1.ncl.l";
-    WfcUtil_LoadFileTo((void *)"char/jbBgOption.ncg.l", (void *)GX_LoadBG2Char);
-    WfcUtil_LoadFileTo((void *)"char/jb5OptMenu.nsc.l", (void *)GX_LoadBG2Scr);
-    sWfcOptionsPalette = WfcFs_LoadFile(WfcUtil_LocalizePath(buf.b), 0, 4);
-    e = (u8 *)WfcFs_LoadFile(WfcUtil_LocalizePath(buf.a), 0, 4);
-    DWCi_BM_GetWiFiInfo(&buf.t);
-    if (buf.t == 0) {
+    WfcUtil_LoadFileTo((void *)"char/jbBgOption.ncg.l", GX_LoadBG2Char);
+    WfcUtil_LoadFileTo((void *)"char/jb5OptMenu.nsc.l", GX_LoadBG2Scr);
+    sWfcOptionsPalette = WfcFs_LoadFile(WfcUtil_LocalizePath(palette1Path), 0, 4);
+    e = (u8 *)WfcFs_LoadFile(WfcUtil_LocalizePath(palettePath), 0, 4);
+    DWCi_BM_GetWiFiInfo(&info);
+    // no Wi-Fi id yet: palette lines 6-7 get those of 2-3
+    if (info.userId == 0) {
         d = e + 0xc0;
         s = e + 0x40;
         for (i = 0; i < 2; i++) {
@@ -113,20 +102,20 @@ extern "C" void WfcOptions_FadeIn() {
     WfcFade_Start(2, 0, 0x14, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x14);
-    WfcUtil_SetScene((void *)WfcOptions_WaitFadeIn);
+    WfcUtil_SetScene(WfcOptions_WaitFadeIn);
 }
 
 extern "C" void WfcOptions_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(0);
-    WfcUtil_SetScene((void *)WfcOptions_WaitButtonBar);
+    WfcUtil_SetScene(WfcOptions_WaitButtonBar);
 }
 
 extern "C" void WfcOptions_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcOptions_Update);
+    WfcUtil_SetScene(WfcOptions_Update);
 }
 
 extern "C" void WfcOptions_Update() {
@@ -139,10 +128,10 @@ extern "C" void WfcOptions_HandleInput() {
     u32 i;
     const WfcRect *q = data_ov001_02229fc8;
     for (i = 0; i < 3; i++, q++) {
-        if (WfcInput_IsTouchPressedIn((void *)q) != 0) {
+        if (WfcInput_IsTouchPressedIn((WfcRect *)q) != 0) {
             WfcButtonBar_SetResult(1);
             sWfcOptionsSel = i;
-            WfcCursor_ShowCorners(*(const u16 *)(data_ov001_02229fe0 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe4 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe2 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe6 + (sWfcOptionsSel << 3)));
+            WfcOptions_ShowCursor(sWfcOptionsSel)
             return;
         }
     }
@@ -160,14 +149,14 @@ extern "C" void WfcOptions_HandleInput() {
 extern "C" void WfcOptions_Idle() {}
 
 extern "C" void WfcOptions_HandleResult() {
-    u64 t[2];
+    DwcWiFiInfo info;
     switch (WfcButtonBar_GetResult()) {
     case 0:
         WfcSound_Play(7);
         break;
     case 1:
-        DWCi_BM_GetWiFiInfo(&t[0]);
-        if (sWfcOptionsSel != 0 && t[0] == 0) {
+        DWCi_BM_GetWiFiInfo(&info);
+        if (sWfcOptionsSel != 0 && info.userId == 0) {
             WfcSound_Play(9);
             WfcButtonBar_ForceResult(-1);
             return;
@@ -179,13 +168,13 @@ extern "C" void WfcOptions_HandleResult() {
     default:
         return;
     }
-    WfcUtil_SetScene((void *)WfcOptions_StartExit);
+    WfcUtil_SetScene(WfcOptions_StartExit);
 }
 
 extern "C" void WfcOptions_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcOptions_FadeOut);
+    WfcUtil_SetScene(WfcOptions_FadeOut);
 }
 
 extern "C" void WfcOptions_FadeOut() {
@@ -195,14 +184,14 @@ extern "C" void WfcOptions_FadeOut() {
     }
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x14, 8);
-    WfcUtil_SetScene((void *)WfcOptions_Exit);
+    WfcUtil_SetScene(WfcOptions_Exit);
 }// Declarations for data defined further down (definition order sets the data layout)
 
-extern "C" const u16 data_ov001_02229fc4[2] = {0x00e0, 0x0084};
+extern "C" const WfcPoint data_ov001_02229fc4 = {0x00e0, 0x0084};
 
 extern "C" const WfcRect data_ov001_02229fc8[3] = {{0x0008, 0x0024, 0x00f8, 0x0044}, {0x0008, 0x0050, 0x00f8, 0x0070}, {0x0008, 0x007c, 0x00f8, 0x009c}};
 
-extern "C" const u8 data_ov001_02229fe0[24] = {0x06, 0x00, 0x22, 0x00, 0xea, 0x00, 0x36, 0x00, 0x06, 0x00, 0x4e, 0x00, 0xea, 0x00, 0x62, 0x00, 0x06, 0x00, 0x7a, 0x00, 0xea, 0x00, 0x8e, 0x00};
+extern "C" const WfcRect data_ov001_02229fe0[3] = {{0x06, 0x22, 0xea, 0x36}, {0x06, 0x4e, 0xea, 0x62}, {0x06, 0x7a, 0xea, 0x8e}};
 
 extern "C" void WfcOptions_Exit() {
     if (WfcFade_IsBusy(1) != 0) return;
@@ -216,21 +205,21 @@ extern "C" void WfcOptions_Exit() {
     WfcGx_HidePlanes(0, 0x14);
     if (sWfcOptionsChosen == 0) {
         WfcUtil_SetScreenFlags(0, 0);
-        WfcUtil_SetScene((void *)WfcTopMenu_Enter);
+        WfcUtil_SetScene(WfcTopMenu_Enter);
         return;
     }
     switch (sWfcOptionsSel) {
     case 0:
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcSysInfo_Enter);
+        WfcUtil_SetScene(WfcSysInfo_Enter);
         return;
     case 1:
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcErase_Enter);
+        WfcUtil_SetScene(WfcErase_Enter);
         return;
     case 2:
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcTransferIntro_Enter);
+        WfcUtil_SetScene(WfcTransferIntro_Enter);
         return;
     }
 }
@@ -242,7 +231,7 @@ extern "C" void WfcOptions_MoveCursor(s32 a) {
         sWfcOptionsSel = FX_ModS32(sWfcOptionsSel + 1, 3);
     }
     WfcSound_Play(8);
-    WfcCursor_ShowCorners(*(const u16 *)(data_ov001_02229fe0 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe4 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe2 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe6 + (sWfcOptionsSel << 3)));
+    WfcOptions_ShowCursor(sWfcOptionsSel)
 }
 
 extern "C" void WfcOptions_HighlightSelection() {

@@ -8,10 +8,6 @@
 extern CommManager *gCommManager;
 
 
-
-
-
-
 extern NetSlotStatus gNetSessionState[];
 extern NetMoveRequest data_021edaa0[];
 extern u8 data_021edac0[];  // gNetSessionState + 0x2c (NetMoveReady[4] member of U195's singleton)

@@ -26,7 +26,7 @@ void PlayerActor_OnChatCloseNop();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_PlayerActor_GetBodyPos
-u8 *PlayerActor_GetBodyPos(u32 idx);
+VecFx32 *PlayerActor_GetBodyPos(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetSlotHeldItem
 void PlayerActor_GetSlotHeldItem(u16 *out, u32 idx);
@@ -66,7 +66,7 @@ void PlayerActor_PlayLocalSe(u32 x);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerFrontItemDist
-extern u32 sPlayerFrontItemDist;
+extern s32 sPlayerFrontItemDist;
 #endif
 #endif
 

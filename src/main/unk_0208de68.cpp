@@ -10,44 +10,6 @@
 #include "proto/main/unk_0208dff4.h"
 #include "proto/main/unk_02094810.h"
 
-extern "C" {
-}
-
-extern "C" {
-s32 TalkRequest_IsActive();
-}
-
-extern "C" {
-s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
-void DC_FlushRange(void *p, u32 size);
-}
-
-extern "C" {
-void GX_LoadOBJPltt(void *p, u32 src, u32 size);
-}
-
-extern "C" {
-void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
-}
-
-extern "C" {
-TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
-}
-
-extern "C" {
-void MsgTextLabel_Destroy(TextLabel *obj);
-}
-
-extern "C" {
-void func_020a7bd8(void *p);
-}
-
 extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
@@ -57,10 +19,6 @@ extern u32 sLabelButtonKindLabelVram[];
 extern u8 sLabelButtonKindSeqOffsets[];
 extern s32 sLabelButtonStateSeqIds[];
 extern s32 sLabelButtonStatePlayOnce[];
-
-
-
-
 
 HudUnkIcon sHudUnkIcon;
 
@@ -75,7 +33,7 @@ HudUnkIcon::~HudUnkIcon() {
 
 void HudUnkIcon::draw() {
     if (state != 0) {
-        void *h = anim.getCell();
+        GXOamAttr *h = static_cast<GXOamAttr *>(anim.getCell()); // (the frame cell: its OAM entries)
         s32 x = getOriginX() + anim.getFrameX(-1);
         s32 y = getOriginY() + anim.getFrameY(-1);
         Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);

@@ -6,6 +6,13 @@
 #include "game/SceneInfo.h"
 #include "net/CommManager.h"
 #include "field/LooseSnowballs.h"
+#include "field/SnowmanRecords.h"
+#include "game/SceneWarp.h"
+#include "save/SaveData.h"
+#include "player/PlayerData.h"
+#include "sys/ClockDateTime.h"
+#include "town/TownBlockMap.h"
+#include "town/TownMap.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202e840.h"
@@ -16,100 +23,36 @@
 #include "proto/main/unk_020af514.h"
 #include "proto/main/unk_020afeb4.h"
 
+// (defined in C units / units whose declarations aren't shared yet: as they are defined)
 extern "C" {
-u32 GroundSeason_IsSnowPhase(u32);
-void Clock_GetDateTime(void *);
-void DateTime_SubDays(void *, u32);
-s32 Date_DaysBetween(void *, void *);
+BOOL GroundSeason_IsSnowPhase(s32 season);
+void Clock_GetDateTime(ClockDateTime *p);
+void DateTime_SubDays(ClockDateTime *p, s32 n);
+s32 Date_DaysBetween(u8 *a, u8 *b);
 s32 FX_Div(s32, s32);
-s32 func_01ffcb0c(s32, s32);
-void *TownBlockMap_Get();
-void BlockMap_SetItemAtUnit(void *, void *, u32, u32, u32);
-void *MapBlock_GetItemPtr(void *, u32, u32, u32);
-BOOL Item_IsSnowman(void *);
-u32 Item_GetSnowmanIndex(void *);
-void FieldUnit_FromBlockUnit(u32 *, u32 *, u32, u32, u32, u32);
+s32 func_01ffcb0c(s32, s32);  // FX_Mul
+TownBlockMap *TownBlockMap_Get();
+// (src/main/unk_0204cc1c.cpp takes the item as an s32 and the map as its Unk_0204e858_Grid view: the item is an
+// item id pointer passed on to MapBlock_SetItem)
+void *BlockMap_SetItemAtUnit(TownBlockMap *map, u16 *item, s32 x, s32 z, u8 layer);
+u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+BOOL Item_IsSnowman(u16 *p);
+s32 Item_GetSnowmanIndex(u16 *p);
+void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 }
 
-struct Bits;
-struct DateTmp {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
-union DateTmpU {
-    DateTmp t;
-    u32 w[2];
-};
-
-class SnowmanRecord {
-public:
-    SnowmanRecord();
-    ~SnowmanRecord();
-    s32 getDaysSinceBuilt();
-    u32 getRank();
-    s32 getBodySize();
-    s32 getHeadSize();
-    void build(u32 a, u32 b, u32 c);
-    BOOL isUsed();
-    void clear();
-
-    u16 a0 : 7;
-    u16 a1 : 4;
-    u16 a2 : 5;
-    u16 b0 : 7;
-    u16 b1 : 7;
-    u16 b2 : 2;
-    u8 c4;
-    u8 c5;
-};
-
-extern "C" {
-struct Data021e5890 {
-    u8 pad[0x14];
-    u8 pad14 : 2;
-    u8 f14 : 6;
-};
-extern Data021e5890 data_021e5890;
-}
-
-class SnowmanRecords {
-public:
-    SnowmanRecords();
-    ~SnowmanRecords();
-    void markUnplaced(u32 idx);
-    BOOL isFull();
-    BOOL getInfo(u32 idx, u32 *a, u32 *b, u32 *c, u8 *d, u8 *e, u8 *f);
-    s32 add(u32 a, u32 b, u32 c);
-    BOOL remove(u32 idx);
-    void clearAll();
-    void updateDaily();
-
-    SnowmanRecord e[3];
-};
+extern SaveData gSaveData;
 
 
-struct Grid {
-    TownBlockCell *cells;
-    u32 w;
-    u32 h;
-};
-
-extern "C" {
-}
-
-class SceneSpawnGroup;
-
-typedef BOOL (*EntryFn)(SceneSpawnGroup *, u8 *, u32, u32);
+// a spawn group's handler: the group, its progress index (NULL: run it all at once) and the tick it started at
+typedef BOOL (*EntryFn)(SceneSpawnGroup *, u8 *, u64);
 extern "C" EntryFn sSceneSpawnGroupHandlers[];
-extern "C" BOOL _ZN15SceneSpawnGroup21spawnPlayersAndCameraEPhjj(SceneSpawnGroup *, u8 *, u32, u32);
-extern "C" BOOL _ZN15SceneSpawnGroup11createProcsEPhy(SceneSpawnGroup *, u8 *, u32, u32);
 
 
 struct EntryPair {
     u16 a;
     u16 b;
 };
-
-
 
 
 struct Vec3s {
@@ -122,22 +65,21 @@ inline void SetVec(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->z = z;
 }
 
-class Unk_020b4948;
-extern "C" BOOL SceneWarp_HasNoPos(Unk_020b4948 *);
-extern "C" u32 SceneWarp_GetSpawnParam(Unk_020b4948 *);
-extern "C" s32 SceneWarp_GetAngle(Unk_020b4948 *);
-extern "C" VecFx32 *SceneWarp_GetPos(Unk_020b4948 *);
-
 extern "C" {
-Unk_020b4948 *Scene_GetWarpRequest();
+BOOL SceneWarp_HasNoPos(SceneWarp *e);
+u32 SceneWarp_GetSpawnParam(SceneWarp *e);
+s32 SceneWarp_GetAngle(SceneWarp *e);
+VecFx32 *SceneWarp_GetPos(SceneWarp *e);
+u8 *Scene_GetWarpRequest(void);  // the requested warp (a SceneWarp)
 u32 Scene_GetCurrent();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InTown();
 void Vec_RotateY(VecFx32 *, s32);
 
-extern CommManager *gCommManager;
-extern u8 gSavePlayers[];
+extern CommManager *gCommManager;  // (gap data: the constant pointer to gCommManagerInstance)
 }
+
+static inline SceneWarp *WarpRequest() { return (SceneWarp *)Scene_GetWarpRequest(); }
 
 class ScenePlayerSpawn {
 public:
@@ -164,48 +106,48 @@ public:
 BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32 *out) {
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
-        if (idx < 4 && PlayerDataArray_IsUsed(gSavePlayers, PlayerSession_GetDataIndex(i))) {
-            if (!gCommManager->isLocalSlot(i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
+        if (idx < 4 && PlayerDataArray_IsUsed(gSaveData.players, PlayerSession_GetDataIndex(i))) {
+            if (!gCommManager->isLocalSlot(i) || SceneWarp_HasNoPos(WarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
-                VecFx32 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
+                VecFx32 *v = SceneWarp_GetPos(WarpRequest());
                 pos->x = v->x;
                 pos->y = v->y;
                 pos->z = v->z;
-                s32 t = SceneWarp_GetAngle(Scene_GetWarpRequest());
+                s32 t = SceneWarp_GetAngle(WarpRequest());
                 rot_->x = 0;
                 rot_->y = t;
                 rot_->z = 0;
-                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
+                *out = SceneWarp_GetSpawnParam(WarpRequest());
             }
             return TRUE;
         }
     } else {
         if (gCommManager->isLocalSlot(i)) {
-            if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
+            if (SceneWarp_HasNoPos(WarpRequest())) {
                 get(pos, rot_, out);
             } else {
                 VecFx32 v;
                 v.x = 0;
                 v.y = 0;
                 v.z = 0;
-                if (!Scene_InTown() && SceneWarp_GetSpawnParam(Scene_GetWarpRequest()) == 0x800000) {
+                if (!Scene_InTown() && SceneWarp_GetSpawnParam(WarpRequest()) == 0x800000) {
                     i &= 3;
                     v.x = (i << 10) - 0x800;
                     v.y = 0;
                     v.z = 0;
-                    Vec_RotateY(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
+                    Vec_RotateY(&v, SceneWarp_GetAngle(WarpRequest()));
                 }
                 VecFx32 t;
-                Vec_Add(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
+                Vec_Add(&t, SceneWarp_GetPos(WarpRequest()), &v);
                 pos->x = t.x;
                 pos->y = t.y;
                 pos->z = t.z;
-                s32 u = SceneWarp_GetAngle(Scene_GetWarpRequest());
+                s32 u = SceneWarp_GetAngle(WarpRequest());
                 rot_->x = 0;
                 rot_->y = u;
                 rot_->z = 0;
-                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
+                *out = SceneWarp_GetSpawnParam(WarpRequest());
             }
             return TRUE;
         }
@@ -213,7 +155,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
     return FALSE;
 }
 
-BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
+BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u64 start) {
     ScenePlayerSpawn *items = (ScenePlayerSpawn *)list;
     if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
         if (Scene_InUnk6Or7()) {
@@ -278,7 +220,7 @@ BOOL SceneSpawnList::run(u8 *entryIdx, u8 *subIdx, u64 start) {
         BOOL r = result;
         EntryFn f = sSceneSpawnGroupHandlers[e->kind];
         if (f != NULL) {
-            r = f(e, subIdx, (u32)start, (u32)(start >> 32));
+            r = f(e, subIdx, start);
         }
         if (r) {
             e++;
@@ -359,16 +301,16 @@ void SnowmanRecord::build(u32 x, u32 y, u32 z) {
     b1 = y >> 7;
     b2 = z;
     c4 = 0;
-    DateTmp d;
-    ((u32 *)&d)[0] = 0;
-    ((u32 *)&d)[1] = 0;
-    Clock_GetDateTime(&d);
-    if (d.b2 < 6) {
-        DateTime_SubDays(&d, 1);
+    ClockDateTimeWords d;
+    d.words[0] = 0;
+    d.words[1] = 0;
+    Clock_GetDateTime(&d.dt);
+    if (d.dt.hour < 6) {  // before 6 am: the previous day's
+        DateTime_SubDays(&d.dt, 1);
     }
-    a0 = d.b5;
-    a1 = d.b4;
-    a2 = d.b3;
+    a0 = d.dt.year;
+    a1 = d.dt.month;
+    a2 = d.dt.day;
     c5 = 1;
 }
 
@@ -411,18 +353,18 @@ u32 SnowmanRecord::getRank() {
 }
 
 s32 SnowmanRecord::getDaysSinceBuilt() {
-    DateTmp d;
-    ((u32 *)&d)[0] = 0;
-    ((u32 *)&d)[1] = 0;
+    ClockDateTimeWords d;
+    d.words[0] = 0;
+    d.words[1] = 0;
     u8 e[4];
     u8 f[4];
-    Clock_GetDateTime(&d);
-    if (d.b2 < 6) {
-        DateTime_SubDays(&d, 1);
+    Clock_GetDateTime(&d.dt);
+    if (d.dt.hour < 6) {
+        DateTime_SubDays(&d.dt, 1);
     }
-    e[2] = d.b5;
-    e[1] = d.b4;
-    e[0] = d.b3;
+    e[2] = d.dt.year;
+    e[1] = d.dt.month;
+    e[0] = d.dt.day;
     f[2] = a0;
     f[1] = a1;
     f[0] = a2;
@@ -433,21 +375,21 @@ SnowmanRecords::SnowmanRecords() {}
 
 SnowmanRecords::~SnowmanRecords() {}
 
-extern "C" BOOL Snowman_FindInTown(u32 *a, u32 *b, u32 idx) {
+extern "C" BOOL Snowman_FindInTown(s32 *a, s32 *b, u32 idx) {
     TownBlockCell *cell;
-    Grid *g = (Grid *)TownBlockMap_Get();
+    TownBlockMap *g = TownBlockMap_Get();
     for (s32 y = 1; y <= 4; y++) {
         for (s32 x = 1; x <= 4; x++) {
-            if ((u32)x < g->w && (u32)y < g->h && g->cells != NULL) {
-                cell = &g->cells[y * g->w + x];
+            if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks != NULL) {
+                cell = &((TownBlockCell *)g->blocks)[y * g->width + x];
             } else {
                 cell = NULL;
             }
             if (cell != NULL) {
                 for (s32 j = 0; j < 16; j++) {
                     for (s32 i = 0; i < 16; i++) {
-                        void *o = MapBlock_GetItemPtr(cell, i, j, 0);
-                        if (o != NULL && Item_IsSnowman(o) && idx == Item_GetSnowmanIndex(o)) {
+                        u16 *o = MapBlock_GetItemPtr(cell, i, j, 0);
+                        if (o != NULL && Item_IsSnowman(o) && idx == (u32)Item_GetSnowmanIndex(o)) {
                             FieldUnit_FromBlockUnit(a, b, x, y, i, j);
                             return TRUE;
                         }
@@ -460,9 +402,9 @@ extern "C" BOOL Snowman_FindInTown(u32 *a, u32 *b, u32 idx) {
 }
 
 extern "C" BOOL Snowman_RemoveFromTown(u32 idx) {
-    u32 a, b;
+    s32 a, b;
     if (Snowman_FindInTown(&a, &b, idx)) {
-        void *p = TownBlockMap_Get();
+        TownBlockMap *p = TownBlockMap_Get();
         u16 h = 0xfff1;
         BlockMap_SetItemAtUnit(p, &h, a, b, 0);
         return TRUE;
@@ -473,7 +415,7 @@ extern "C" BOOL Snowman_RemoveFromTown(u32 idx) {
 
 void SnowmanRecords::updateDaily() {
     BOOL flag = FALSE;
-    u32 v = GroundSeason_IsSnowPhase(data_021e5890.f14);
+    u32 v = GroundSeason_IsSnowPhase(((TownMap *)gSaveData.townMap)->groundSeason);
     for (u32 i = 0; i < 3; i++) {
         if (v == 0) {
             if (Snowman_RemoveFromTown(i)) {
@@ -584,6 +526,9 @@ void LooseSnowballs::reset() {
     }
 }
 
-EntryFn sSceneSpawnGroupHandlers[3] = {SceneSpawnGroup_SpawnActors, _ZN15SceneSpawnGroup21spawnPlayersAndCameraEPhjj, _ZN15SceneSpawnGroup11createProcsEPhy};
+static BOOL SceneSpawnGroup_SpawnPlayers(SceneSpawnGroup *g, u8 *idx, u64 start) { return g->spawnPlayersAndCamera(idx, start); }
+static BOOL SceneSpawnGroup_CreateProcs(SceneSpawnGroup *g, u8 *idx, u64 start) { return g->createProcs(idx, start); }
+
+EntryFn sSceneSpawnGroupHandlers[3] = {SceneSpawnGroup_SpawnActors, SceneSpawnGroup_SpawnPlayers, SceneSpawnGroup_CreateProcs};
 
 LooseSnowballs gLooseSnowballs;

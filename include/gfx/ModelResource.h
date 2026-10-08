@@ -7,11 +7,12 @@
 // Loaded model / texture file pair with its VRAM upload task. Defined in src/main/unk_0205500c.cpp
 // (0x0205500c..0x02055200); held by value in PooledModel (main) and the ov004 model loaders.
 class TexVramSlot;
+class Heap;
 
 class ModelResource {
 public:
     void *fileData;
-    void *fileHeap;
+    Heap *fileHeap;
     void *model;
     void *texture;
     TexVramTask texVramTask;

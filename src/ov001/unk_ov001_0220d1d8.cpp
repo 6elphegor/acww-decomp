@@ -16,10 +16,6 @@
 #include "proto/ov001/unk_ov001_02226f68.h"
 #include "proto/ov001/unk_ov001_02225924.h"
 
-struct SimpleStartStatus {
-    s32 v[3];
-};
-
 struct WfcSimpleStartResultBuf {
     u8 unk_00[0x20];
     s32 securityType;
@@ -145,7 +141,7 @@ void WfcUtil_Quit() {
 
 void WfcSimpleStart_Begin() {
     sWfcSimpleStartStatus = (SimpleStartStatus *)WfcHeap_AllocClear(sizeof(SimpleStartStatus), -4);
-    if (SimpleStart_Start(0xf, 0x40, (void *)WfcSimpleStart_StatusCallback, (void *)WfcSimpleStart_Alloc, (void *)WfcSimpleStart_Free, 0x800) != 1) Fatal_Trap();
+    if (SimpleStart_Start(0xf, 0x40, WfcSimpleStart_StatusCallback, WfcSimpleStart_Alloc, WfcSimpleStart_Free, 0x800) != 1) Fatal_Trap();
     OS_Sleep(10);
 }
 
@@ -157,7 +153,7 @@ void WfcSimpleStart_End() {
 s32 WfcSimpleStart_GetState() {
     WfcSimpleStartResultBuf buf;
     s32 r;
-    switch (sWfcSimpleStartStatus->v[0]) {
+    switch (sWfcSimpleStartStatus->state) {
     case 0:
     case 1:
     case 3:
@@ -190,7 +186,7 @@ void WfcSimpleStart_StatusCallback(SimpleStartStatus *p) {
     *sWfcSimpleStartStatus = *p;
 }
 
-void *WfcSimpleStart_Alloc(s32 a) {
+void *WfcSimpleStart_Alloc(u32 a) {
     return WfcHeap_Alloc(a, 0x20);
 }
 

@@ -5,11 +5,14 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "sys/ProcBase.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_LowBattery_Poll
+BOOL LowBattery_Poll();
 #endif
 #ifndef PROTO_LOCAL_LowBattery_SetWarned
 void LowBattery_SetWarned();
@@ -23,14 +26,11 @@ void LowBattery_Reset();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_LowBattery_Poll
-BOOL LowBattery_Poll();
-#endif
 #ifndef PROTO_LOCAL_GameProc_CreateChild
-s32 GameProc_CreateChild(u32 a, void *b, u32 c, u32 d);
+ProcBase *GameProc_CreateChild(u32 a, void *parent, u32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_GameProc_CreateRoot
-void *GameProc_CreateRoot(u32 a, u32 b, u32 c);
+ProcBase *GameProc_CreateRoot(u32 a, u32 b, u32 c);
 #endif
 }
 #ifndef PROTO_LOCAL_sLowBatteryWarned

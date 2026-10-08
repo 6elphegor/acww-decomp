@@ -5,49 +5,19 @@
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0205500c.h"
 #include "proto/main/unk_02063f3c.h"
 
-extern "C" {
-}
 
 extern "C" {
 void *NNS_G3dGetMdlSet(void *h);
-}
-
-extern "C" {
 void *NNS_G3dGetTex(void *h);
-}
-
-extern "C" {
-}
-
-extern "C" {
 void NNS_G3dBindMdlTex(void *a, void *b);
-}
-
-extern "C" {
 void NNS_G3dBindMdlPltt(void *a, void *b);
-}
-
-extern "C" {
 void *Gfx3d_CopyModel(void *a, void *b);
-}
-
-extern "C" {
 void *Gfx3d_CopyTex(void *a, void *b);
 }
-
-extern "C" {
-extern void *gCurrentHeap;
-}
-
-
-
-
-
 
 
 static inline u8 *Unk_02054b70_Off(u8 *p) {
@@ -93,12 +63,13 @@ u32 ModelResource::loadModel(void *res, TexVramSlot *b, void *tex, void *heap) {
     if (st == 3) {
         return st;
     }
-    if (heap == NULL) {
-        heap = gCurrentHeap;
+    Heap *h = static_cast<Heap *>(heap);
+    if (h == NULL) {
+        h = gCurrentHeap;
     }
     if (st == 0) {
-        fileData = File_LoadAlloc((const char *)res, heap, -4, 0);
-        fileHeap = heap;
+        fileData = File_LoadAlloc((const char *)res, h, -4, 0);
+        fileHeap = h;
         void *q = NNS_G3dGetTex(fileData);
         b->relocateTexture(q);
         texVramTask.requestTexResource((u32 *)q, 1);

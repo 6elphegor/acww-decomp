@@ -3,6 +3,8 @@
 #include "net/WfcConfigSlot.h"
 #include "nitro/gxoam.h"
 #include "nitro/io_access.h"
+#include "net/WfcLoadFunc.h"
+#include "net/WfcRect.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"
@@ -18,11 +20,15 @@
 #include "proto/ov001/unk_ov001_0221b44c.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
 #include "proto/ov001/unk_ov001_0221cfc0.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224b14.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
+#include "proto/ov001/unk_ov001_02225f40.h"
 #include "proto/ov001/unk_ov001_022266b0.h"
 #include "proto/ov001/unk_ov001_02226c24.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
@@ -34,9 +40,9 @@ struct WfcManualSetupWork {
     u8 toggleFlashTimers[4];
     void *bgMapFile;
     void *paletteFiles[2];
-    void *textCanvas;
-    u32 *rowButtons[7];
-    u32 *statusIcon;
+    WfcTextCanvas *textCanvas;
+    GXOamAttr *rowButtons[7];
+    GXOamAttr *statusIcon;
     void *scrollTask;
     void *bgScrollTask;
     u8 selectedItem;
@@ -49,32 +55,29 @@ struct WfcManualSetupWork {
     u8 errorSoundPlayed;
 };
 
-struct WfcManualSetupToggleItemsCopy { u8 b[4]; };
-struct WfcManualSetupCursorBox { u16 left, top, right, bottom; };
-struct WfcManualSetupCursorBoxIdsCopy { u8 b[14]; };
 struct WfcManualSetupListMapPathCopy { u8 b[23]; };
 struct WfcManualSetupPalettePathCopy { u8 b[21]; };
 struct WfcManualSetupPalette2PathCopy { u8 b[22]; };
 
-#define E34 ((GXOamAttr *)sWfcManualSetup->statusIcon)
-#define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
-#define REGSET(a, v) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= (v); *(volatile u16 *)(a) = t; } while (0)
+// a BG control register's priority
+#define REGSET(a, v) do { u32 t = IO_R((volatile u16 *)(a)); t &= ~3; t |= (v); IO_W((volatile u16 *)(a), t); } while (0)
 
 extern "C" {
-extern const u8 gWfcScreenRect[];
+extern const WfcRect gWfcScreenRect;  // (src/ov001/unk_ov001_0222516c.cpp)
 
 extern const u8 sWfcManualSetupButtonPalettes[3] = {6, 8, 7};
 extern const s8 data_ov001_0222a0ac[6] = {-1, 0x23, 0x27, -1, 0x23, 0x2f};
-extern const u16 data_ov001_0222a0b4[4] = {0xcc, 0x34, 0x1c, 0x18};
-extern const u16 data_ov001_0222a0bc[4] = {0x8f, 0x34, 0x2c, 0x18};
-extern const u16 data_ov001_0222a0c4[4] = {0xc0, 0x34, 0x2c, 0x18};
+// touch boxes: a row's button, the toggles' "off" and "on" buttons (position, size)
+extern const WfcPosSize data_ov001_0222a0b4 = {{0xcc, 0x34}, {0x1c, 0x18}};
+extern const WfcPosSize data_ov001_0222a0bc = {{0x8f, 0x34}, {0x2c, 0x18}};
+extern const WfcPosSize data_ov001_0222a0c4 = {{0xc0, 0x34}, {0x2c, 0x18}};
 extern const u8 sWfcManualSetupRowItems[9] = {0, 1, 0xe, 4, 5, 6, 0xe, 9, 0xa};
 extern const u8 data_ov001_0222a0d8[9] = {0, 5, 2, 7, 4, 1, 6, 3, 0};
 extern const u8 sWfcManualSetupItemRows[11] = {0, 1, 2, 2, 3, 4, 5, 6, 6, 7, 8};
 extern const u8 sWfcManualSetupRowButtonCells[15] = {0, 0x29, 0x2c, 0x52, 0x53, 0x30, 0, 0x2a, 0x30, 0x54, 0x55, 0, 0, 0x2b, 0};
 extern const u16 sWfcManualSetupBgRowOffsets[10] = {0, 0x60, 0xe0, 0x140, 0x1c0, 0x240, 0x2a0, 0x320, 0x3a0, 0};
-extern const u16 sWfcManualSetupButtonRects[3][4] = {{0x84, 0x1b, 0xfc, 0x2c}, {0x84, 0xac, 0xfc, 0xbd}, {0x04, 0xac, 0x7c, 0xbd}};
-extern const WfcManualSetupCursorBox sWfcManualSetupCursorPos[6] = {{0xc8, 0x31, 0xe0, 0x4d}, {0xbc, 0x31, 0xe0, 0x4d}, {0x8b, 0x31, 0xaf, 0x4d}, {0x82, 0x18, 0xee, 0x2c}, {0x82, 0xa9, 0xee, 0xbd}, {0x02, 0xa9, 0x6e, 0xbd}};
+extern const WfcRect sWfcManualSetupButtonRects[3] = {{0x84, 0x1b, 0xfc, 0x2c}, {0x84, 0xac, 0xfc, 0xbd}, {0x04, 0xac, 0x7c, 0xbd}};
+extern const WfcRect sWfcManualSetupCursorPos[6] = {{0xc8, 0x31, 0xe0, 0x4d}, {0xbc, 0x31, 0xe0, 0x4d}, {0x8b, 0x31, 0xaf, 0x4d}, {0x82, 0x18, 0xee, 0x2c}, {0x82, 0xa9, 0xee, 0xbd}, {0x02, 0xa9, 0x6e, 0xbd}};
 
 u8 sWfcManualSetupToggleItems[4] = {2, 3, 7, 8};
 u8 data_ov001_0222b050[14] = {0, 0, 1, 2, 0, 0, 0, 1, 2, 0, 0, 3, 4, 5};
@@ -93,60 +96,39 @@ WfcManualSetupWork *sWfcManualSetup;
 extern "C" {
 s32 FX_ModS32(u32, s32);
 s32 FX_DivS32(u32, s32);
-s32 DWC_BACKUPlCheckAddress(void *);
-s32 DWC_BACKUPlCheckIp(void *, void *);
-s32 DWCi_BACKUPlConvMaskCidr(void *);
-void GX_LoadBG3Char();
-void GX_LoadBG2Char();
-void GX_LoadBG3Scr();
-s32 GX_LoadOBJPltt();
-void GX_LoadBGPltt();
-void * MI_CpuFill8(void *, s32, u32);
-void swprintf(void *, s32, void *, ...);
-void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcConfig_BeginEdit(s32);
-void WfcConfig_SetEditAutoDns(u32);
-void WfcConfig_SetEditAutoIp(u32);
-u8 * WfcConfig_GetEdit();
-GXOamAttr * WfcObj_CreateSingle(s32, s32);
-void WfcCell_Copy(s32, u32, void *);
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcHeap_FreeAndClear(void *);
-void * WfcHeap_AllocClear(s32, s32);
-s32 WfcInput_IsTouchPressedInBox(void *);
-s32 WfcInput_IsTouchPressedIn(void *);
-s32 WfcInput_IsKeyReleased(s32);
-s32 WfcInput_IsKeyRepeat(s32);
-s32 WfcInput_IsKeyPressed(s32);
+s32 DWC_BACKUPlCheckAddress(u8 *addr);
+s32 DWC_BACKUPlCheckIp(u8 *ip, u8 *mask);
+s32 DWCi_BACKUPlConvMaskCidr(u8 *mask);
+void MI_CpuFill8(void *dst, u8 v, u32 size);
+void swprintf(u16 *dst, s32 n, const u16 *fmt, ...);
 }
 
 // NitroSDK-style OAM position accessors (attr01: y in bits 0-7, x in bits 16-24)
-static inline void Unk_ov001_02216474_GetPos(const u32 *p, u32 *x, u32 *y) {
-    *x = (*p & 0x1ff0000) >> 16;
-    *y = (*p & 0xff) >> 0;
+static inline void Unk_ov001_02216474_GetPos(const GXOamAttr *p, u32 *x, u32 *y) {
+    *x = (p->attr01 & 0x1ff0000) >> 16;
+    *y = (p->attr01 & 0xff) >> 0;
 }
 
-static inline void Unk_ov001_02216474_SetPos(u32 *p, s32 x, s32 y) {
-    *p = (*p & 0xfe00ff00) | (y & 0xff) | ((x & 0x1ff) << 16);
+static inline void Unk_ov001_02216474_SetPos(GXOamAttr *p, s32 x, s32 y) {
+    p->attr01 = (p->attr01 & 0xfe00ff00) | (y & 0xff) | ((x & 0x1ff) << 16);
 }
 
-static inline void Unk_ov001_02216474_Hide(u32 *p) {
-    *p = (*p & 0xfe00ff00) | 0x1000000;
+static inline void Unk_ov001_02216474_Hide(GXOamAttr *p) {
+    p->attr01 = (p->attr01 & 0xfe00ff00) | 0x1000000;
 }
 
 extern "C" void WfcManualSetup_Enter() {
-    u8 *p = WfcConfig_GetEdit();
+    WfcConfigSlot *p = WfcConfig_GetEdit();
     s32 i;
     BOOL z = FALSE;
     u32 b;
-    sWfcManualSetup = (WfcManualSetupWork *)WfcHeap_AllocClear(HOST_SIZED(0x48, WfcManualSetupWork), 4);
-    sWfcManualSetup->savedAutoDns = p[0xf6];
+    sWfcManualSetup = (WfcManualSetupWork *)WfcHeap_AllocClear(sizeof(WfcManualSetupWork), 4);
+    sWfcManualSetup->savedAutoDns = p->editAutoDns;
     sWfcManualSetup->lastBottomItem = 0xc;
     WfcManualSetup_ResetCursor();
     WfcManualSetup_LoadBg();
     if (sWfcManualSetupMode == 0) {
-        WfcUtil_ShowTopMessage(0x7c, data_ov001_0222a0ac[WfcUtil_GetLanguage()], p[0xf4] + 1);
+        WfcUtil_ShowTopMessage(0x7c, data_ov001_0222a0ac[WfcUtil_GetLanguage()], p->editSlotIndex + 1);
     } else {
         WfcUtil_ShowTopMessage(0x97, -1, 0);
     }
@@ -158,23 +140,23 @@ extern "C" void WfcManualSetup_Enter() {
     b = sWfcManualSetupRowButtonCells[1];
     z = i;
     for (; i < 7; i++) {
-        sWfcManualSetup->rowButtons[i] = (u32 *)WfcObj_CreateSingle(z, b);
+        sWfcManualSetup->rowButtons[i] = WfcObj_CreateSingle(z, b);
     }
-    switch (p[0xe7]) {
+    switch (p->status) {
     case 1:
-        sWfcManualSetup->statusIcon = (u32 *)WfcObj_CreateSingle(0, 0x50);
-        E34->attr2 = (E34->attr2 & ~0xc00) | 0xc00;
+        sWfcManualSetup->statusIcon = WfcObj_CreateSingle(0, 0x50);
+        sWfcManualSetup->statusIcon->attr2 = (sWfcManualSetup->statusIcon->attr2 & ~0xc00) | 0xc00;
         break;
     case 2:
-        sWfcManualSetup->statusIcon = (u32 *)WfcObj_CreateSingle(0, 0x51);
-        E34->attr2 = (E34->attr2 & ~0xc00) | 0xc00;
+        sWfcManualSetup->statusIcon = WfcObj_CreateSingle(0, 0x51);
+        sWfcManualSetup->statusIcon->attr2 = (sWfcManualSetup->statusIcon->attr2 & ~0xc00) | 0xc00;
         break;
     }
     sWfcManualSetup->bgScrollTask = WfcTask_Add(1, (void *)WfcManualSetup_ScrollBgTask, 0, 0x6e);
     sWfcManualSetup->flashTask = WfcTask_Add(0, (void *)WfcManualSetup_ToggleFlashTask, 0, 0x78);
     WfcManualSetup_Redraw();
     WfcManualSetup_DrawCursor();
-    WfcUtil_SetScene((void *)WfcManualSetup_FadeIn);
+    WfcUtil_SetScene(WfcManualSetup_FadeIn);
 }
 
 extern "C" void WfcManualSetup_LoadBg() {
@@ -190,11 +172,11 @@ extern "C" void WfcManualSetup_LoadBg() {
         t |= 0xe18;
         IO_W((volatile u16 *)0x400000c, t);
     }
-    WfcUtil_LoadFileTo((void *)"char/ybObjKb.ncl.l", (void *)GX_LoadOBJPltt);
-    WfcUtil_LoadFileTo((void *)"char/jbBgStep2.ncg.l", (void *)GX_LoadBG3Char);
-    WfcUtil_LoadFileTo((void *)"char/jbBgStep21.ncg.l", (void *)GX_LoadBG2Char);
-    WfcUtil_LoadFileTo(lc.b, (void *)GX_LoadBGPltt);
-    WfcUtil_LoadFileTo((void *)"char/jb3List.nsc.l", (void *)GX_LoadBG3Scr);
+    WfcUtil_LoadFileTo((void *)"char/ybObjKb.ncl.l", GX_LoadOBJPltt);
+    WfcUtil_LoadFileTo((void *)"char/jbBgStep2.ncg.l", GX_LoadBG3Char);
+    WfcUtil_LoadFileTo((void *)"char/jbBgStep21.ncg.l", GX_LoadBG2Char);
+    WfcUtil_LoadFileTo(lc.b, GX_LoadBGPltt);
+    WfcUtil_LoadFileTo((void *)"char/jb3List.nsc.l", GX_LoadBG3Scr);
     sWfcManualSetup->bgMapFile = WfcFs_LoadFile(WfcUtil_LocalizePath(lb.b), 0, 4);
     WfcBgMap_Create(sWfcManualSetup->bgMapFile);
     WfcBgMap_RequestTransfer();
@@ -223,13 +205,13 @@ extern "C" void WfcManualSetup_FadeIn() {
     WfcFade_Start(2, 0, 0x1d, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x1d);
-    WfcUtil_SetScene((void *)WfcManualSetup_WaitFadeIn);
+    WfcUtil_SetScene(WfcManualSetup_WaitFadeIn);
 }
 
 extern "C" void WfcManualSetup_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcManualSetup_Update);
+    WfcUtil_SetScene(WfcManualSetup_Update);
 }
 
 extern "C" void WfcManualSetup_Update() {
@@ -248,7 +230,7 @@ extern "C" void WfcManualSetup_HandleKeys() {
     if (WfcInput_IsKeyPressed(2) != 0) {
         WfcSound_Play(7);
         sWfcManualSetup->selectedItem = 13;
-        WfcUtil_SetScene((void *)WfcManualSetup_StartExit);
+        WfcUtil_SetScene(WfcManualSetup_StartExit);
         return;
     }
     if (WfcInput_IsKeyRepeat(0x200) != 0) {
@@ -346,7 +328,7 @@ extern "C" void WfcManualSetup_SelectItem(u32 a) {
         if (WfcManualSetup_ValidateSettings() == 0) {
             WfcSound_Play(9);
             WfcDialog_Open(0x2f, 1, 1, -1, 0);
-            WfcUtil_SetScene((void *)WfcManualSetup_InvalidDialog);
+            WfcUtil_SetScene(WfcManualSetup_InvalidDialog);
             return;
         }
         if (a == 11) {
@@ -363,19 +345,19 @@ extern "C" void WfcManualSetup_SelectItem(u32 a) {
         WfcManualSetup_PlaceObjs();
     }
     WfcScrollBar_Disable();
-    WfcUtil_SetScene((void *)WfcManualSetup_StartExit);
+    WfcUtil_SetScene(WfcManualSetup_StartExit);
 }
 
 extern "C" void WfcManualSetup_SetAutoIp(u32 a) {
     u32 r;
-    u8 *o = WfcConfig_GetEdit();
-    u32 c = o[0xf5];
+    WfcConfigSlot *o = WfcConfig_GetEdit();
+    u32 c = o->editAutoIp;
     if (c == a) return;
     if (a != 0) {
         r = sWfcManualSetup->savedAutoDns != 0;
     } else {
         r = 0;
-        sWfcManualSetup->savedAutoDns = o[0xf6];
+        sWfcManualSetup->savedAutoDns = o->editAutoDns;
     }
     WfcConfig_SetEditAutoIp(a);
     WfcConfig_SetEditAutoDns(r);
@@ -383,7 +365,7 @@ extern "C" void WfcManualSetup_SetAutoIp(u32 a) {
 }
 
 extern "C" void WfcManualSetup_SetAutoDns(u32 a) {
-    u32 c = WfcConfig_GetEdit()[0xf6];
+    u32 c = WfcConfig_GetEdit()->editAutoDns;
     if (c == a) return;
     sWfcManualSetup->savedAutoDns = a;
     WfcConfig_SetEditAutoDns(a);
@@ -416,8 +398,8 @@ extern "C" void WfcManualSetup_HandleScrollBar() {
             WfcManualSetup_UpdateCursorItem();
             return;
         }
-        if (r < 0x10) sWfcManualSetup->scrollTask = (void *)WfcTask_Add(0, (void *)WfcManualSetup_ScrollUpTask, 0, 0x78);
-        else sWfcManualSetup->scrollTask = (void *)WfcTask_Add(0, (void *)WfcManualSetup_ScrollDownTask, 0, 0x78);
+        if (r < 0x10) sWfcManualSetup->scrollTask = WfcTask_Add(0, (void *)WfcManualSetup_ScrollUpTask, 0, 0x78);
+        else sWfcManualSetup->scrollTask = WfcTask_Add(0, (void *)WfcManualSetup_ScrollDownTask, 0, 0x78);
         break;
     }
     case 4:
@@ -427,7 +409,7 @@ extern "C" void WfcManualSetup_HandleScrollBar() {
             sWfcManualSetup->scrollEndSoundPlayed = 1;
         } else {
             WfcSound_Play(0x13);
-            sWfcManualSetup->scrollTask = (void *)WfcTask_Add(0, (void *)WfcManualSetup_ScrollUpTask, 0, 0x78);
+            sWfcManualSetup->scrollTask = WfcTask_Add(0, (void *)WfcManualSetup_ScrollUpTask, 0, 0x78);
         }
         break;
     case 6:
@@ -437,7 +419,7 @@ extern "C" void WfcManualSetup_HandleScrollBar() {
             sWfcManualSetup->scrollEndSoundPlayed = 1;
         } else {
             WfcSound_Play(0x13);
-            sWfcManualSetup->scrollTask = (void *)WfcTask_Add(0, (void *)WfcManualSetup_ScrollDownTask, 0, 0x78);
+            sWfcManualSetup->scrollTask = WfcTask_Add(0, (void *)WfcManualSetup_ScrollDownTask, 0, 0x78);
         }
         break;
     case 5:
@@ -450,14 +432,14 @@ extern "C" void WfcManualSetup_HandleScrollBar() {
 extern "C" void WfcManualSetup_StartExit() {
     WfcScrollBar_Disable();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcManualSetup_FadeOut);
+    WfcUtil_SetScene(WfcManualSetup_FadeOut);
 }
 
 extern "C" void WfcManualSetup_FadeOut() {
     if (WfcFade_IsBusy(1) != 0) return;
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x1d, 8);
-    WfcUtil_SetScene((void *)WfcManualSetup_Exit);
+    WfcUtil_SetScene(WfcManualSetup_Exit);
 }
 
 extern "C" void WfcManualSetup_Exit() {
@@ -475,7 +457,7 @@ extern "C" void WfcManualSetup_Exit() {
     WfcBgMap_Destroy();
     WfcFs_FreeFile(sWfcManualSetup->bgMapFile);
     for (i = 0; i < 2; i++) WfcFs_FreeFile(sWfcManualSetup->paletteFiles[i]);
-    WfcUtil_LoadFileTo((void *)"char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
+    WfcUtil_LoadFileTo((void *)"char/ybObjMain.ncl.l", GX_LoadOBJPltt);
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x1d);
     IO_W((volatile u32 *)0x4000010, 0);
@@ -487,7 +469,7 @@ extern "C" void WfcManualSetup_Exit() {
     case 1:
         WfcUtil_SetEditParams(t, 0);
         WfcUtil_SetScreenFlags(2, 0);
-        WfcUtil_SetScene((void *)WfcTextEdit_Enter);
+        WfcUtil_SetScene(WfcTextEdit_Enter);
         break;
     case 4:
     case 5:
@@ -498,40 +480,40 @@ extern "C" void WfcManualSetup_Exit() {
         if (t >= 9) r -= 2;
         WfcUtil_SetScreenFlags(2, 0);
         WfcUtil_SetEditParams(r, 0);
-        WfcUtil_SetScene((void *)WfcAddrEdit_Enter);
+        WfcUtil_SetScene(WfcAddrEdit_Enter);
         break;
     }
     case 11: {
-        u8 *p = WfcConfig_GetEdit();
-        p[0xd0] = DWCi_BACKUPlConvMaskCidr(p + 0xf0);
-        if (p[0xf5] != 0) {
-            MI_CpuFill8(p + 0xc0, 0, 4);
-            MI_CpuFill8(p + 0xc4, 0, 4);
-            MI_CpuFill8(p + 0xf0, 0, 4);
-            p[0xd0] = 0;
+        WfcConfigSlot *p = WfcConfig_GetEdit();
+        p->subnetPrefixLen = DWCi_BACKUPlConvMaskCidr(p->editSubnetMask);
+        if (p->editAutoIp != 0) {
+            MI_CpuFill8(p->ipAddress, 0, 4);
+            MI_CpuFill8(p->gateway, 0, 4);
+            MI_CpuFill8(p->editSubnetMask, 0, 4);
+            p->subnetPrefixLen = 0;
         }
-        if (p[0xf6] != 0) MI_CpuFill8(p + 0xc8, 0, 8);
+        if (p->editAutoDns != 0) MI_CpuFill8(p->dnsServers, 0, 8);
         WfcUtil_SetScreenFlags(2, 0);
         WfcUtil_SetEditParams(0, 0);
-        WfcUtil_SetScene((void *)WfcConnTest_Enter);
+        WfcUtil_SetScene(WfcConnTest_Enter);
         break;
     }
     case 12:
         WfcUtil_SetScreenFlags(0, 0);
-        WfcUtil_SetScene((void *)WfcSaveSettings_Enter);
+        WfcUtil_SetScene(WfcSaveSettings_Enter);
         break;
     case 13:
         if (sWfcManualSetupMode == 0) {
             WfcUtil_SetScreenFlags(2, 1);
-            WfcUtil_SetScene((void *)WfcConnSelect_Enter);
+            WfcUtil_SetScene(WfcConnSelect_Enter);
         } else {
-            WfcConfig_BeginEdit(WfcConfig_GetEdit()[0xf4]);
+            WfcConfig_BeginEdit(WfcConfig_GetEdit()->editSlotIndex);
             WfcUtil_SetScreenFlags(0, 1);
-            WfcUtil_SetScene((void *)WfcSetupMethod_Enter);
+            WfcUtil_SetScene(WfcSetupMethod_Enter);
         }
         break;
     }
-    WfcHeap_FreeAndClear(&sWfcManualSetup);
+    WfcHeap_FreeAndClear((void **)&sWfcManualSetup);
 }
 
 extern "C" void WfcManualSetup_Redraw() {
@@ -548,14 +530,14 @@ extern "C" void WfcManualSetup_Redraw() {
 
 extern "C" void WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
     u8 buf[0x28];
-    u8 *p = WfcConfig_GetEdit();
+    WfcConfigSlot *p = WfcConfig_GetEdit();
     s32 n;
     switch (idx) {
     case 0:
-        WfcManualSetup_DrawString(p + 0x40, arg);
+        WfcManualSetup_DrawString(p->ssid, arg);
         return;
     case 1: {
-        WfcConfigSlot *slot = (WfcConfigSlot *)p;
+        WfcConfigSlot *slot = p;
         switch (slot->wepMode.wepKeySize) {
         case 0:
             return;
@@ -576,30 +558,30 @@ extern "C" void WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
         return;
     }
     case 3:
-        if (p[0xf5] != 0) return;
-        WfcManualSetup_DrawAddress(p + 0xc0, arg);
+        if (p->editAutoIp != 0) return;
+        WfcManualSetup_DrawAddress(p->ipAddress, arg);
         return;
     case 4:
-        if (p[0xf5] != 0) return;
-        WfcManualSetup_DrawAddress(p + 0xf0, arg);
+        if (p->editAutoIp != 0) return;
+        WfcManualSetup_DrawAddress(p->editSubnetMask, arg);
         return;
     case 5:
-        if (p[0xf5] != 0) return;
-        WfcManualSetup_DrawAddress(p + 0xc4, arg);
+        if (p->editAutoIp != 0) return;
+        WfcManualSetup_DrawAddress(p->gateway, arg);
         return;
     case 7:
-        if (p[0xf6] != 0) return;
-        WfcManualSetup_DrawAddress(p + 0xc8, arg);
+        if (p->editAutoDns != 0) return;
+        WfcManualSetup_DrawAddress(p->dnsServers, arg);
         return;
     case 8:
-        if (p[0xf6] != 0) return;
-        WfcManualSetup_DrawAddress(p + 0xcc, arg);
+        if (p->editAutoDns != 0) return;
+        WfcManualSetup_DrawAddress(&p->dnsServers[4], arg);
         break;
     }
 }
 
 extern "C" void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
-    u8 *p = WfcConfig_GetEdit();
+    WfcConfigSlot *p = WfcConfig_GetEdit();
     s32 a, b, c, k;
     switch (idx) {
     case 0:
@@ -610,7 +592,7 @@ extern "C" void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
         break;
     case 2:
         b = c = 0;
-        if (p[0xf5] != 0) { a = 1; k = 4; }
+        if (p->editAutoIp != 0) { a = 1; k = 4; }
         else { a = 2; k = 3; }
         if (sWfcManualSetup->toggleFlashTimers[0] != 0) b = 1;
         if (sWfcManualSetup->toggleFlashTimers[1] != 0) c = 1;
@@ -620,15 +602,15 @@ extern "C" void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
     case 4:
     case 5:
         a = 0;
-        if (p[0xf5] != 0) b = 2;
+        if (p->editAutoIp != 0) b = 2;
         else b = a;
         break;
     case 6:
         c = 0;
         b = c;
-        if (p[0xf6] != 0) { a = 1; k = 4; }
+        if (p->editAutoDns != 0) { a = 1; k = 4; }
         else {
-            if (p[0xf5] == 0) b = 2;
+            if (p->editAutoIp == 0) b = 2;
             a = 2;
             k = 3;
         }
@@ -639,7 +621,7 @@ extern "C" void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
     case 7:
     case 8:
         a = 0;
-        if (p[0xf6] != 0) b = 2;
+        if (p->editAutoDns != 0) b = 2;
         else b = a;
         break;
     default:
@@ -651,20 +633,20 @@ extern "C" void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
 }
 
 extern "C" s32 WfcManualSetup_IsItemEnabled(s32 idx) {
-    u8 *p = WfcConfig_GetEdit();
+    WfcConfigSlot *p = WfcConfig_GetEdit();
     s32 r = 1;
     switch (idx) {
     case 7:
-        if (p[0xf5] == 0) r = 0;
+        if (p->editAutoIp == 0) r = 0;
         break;
     case 0:
     case 1:
-        if ((u8)(p[0xe7] + 0xff) <= 1) r = 0;
+        if ((u8)(p->status + 0xff) <= 1) r = 0;
         break;
     case 4:
     case 5:
     case 6:
-        if (p[0xf5] != 0) r = 0;
+        if (p->editAutoIp != 0) r = 0;
         break;
     case 2:
     case 3:
@@ -672,7 +654,7 @@ extern "C" s32 WfcManualSetup_IsItemEnabled(s32 idx) {
         break;
     case 9:
     case 10:
-        if (p[0xf6] != 0) r = 0;
+        if (p->editAutoDns != 0) r = 0;
         break;
     }
     return r;
@@ -680,26 +662,26 @@ extern "C" s32 WfcManualSetup_IsItemEnabled(s32 idx) {
 
 extern "C" void WfcManualSetup_SetRowButton(s32 a, s32 b, s32 c) {
     u16 v[5];
-    u32 **q;
-    v[0] = data_ov001_0222a0b4[0];
-    v[1] = data_ov001_0222a0c4[0];
-    v[2] = data_ov001_0222a0c4[0];
-    v[3] = data_ov001_0222a0bc[0];
-    v[4] = data_ov001_0222a0bc[0];
-    q = (u32 **)&sWfcManualSetup->rowButtons[c];
+    GXOamAttr **q;
+    v[0] = data_ov001_0222a0b4.pos.x;
+    v[1] = data_ov001_0222a0c4.pos.x;
+    v[2] = data_ov001_0222a0c4.pos.x;
+    v[3] = data_ov001_0222a0bc.pos.x;
+    v[4] = data_ov001_0222a0bc.pos.x;
+    q = &sWfcManualSetup->rowButtons[c];
     if ((u32)(a - 1) <= 1) {
-        if (WfcManualSetup_GetListRow(c) == 2) q = (u32 **)&sWfcManualSetup->rowButtons[5];
-        else q = (u32 **)&sWfcManualSetup->rowButtons[6];
+        if (WfcManualSetup_GetListRow(c) == 2) q = &sWfcManualSetup->rowButtons[5];
+        else q = &sWfcManualSetup->rowButtons[6];
     }
     const u8 *row = sWfcManualSetupRowButtonCells + a * 3;
     u8 f = row[b];
     if (f != 0) {
         WfcCell_Copy(0, f, *q);
-        u32 *p = *q;
+        GXOamAttr *p = *q;
         u32 t = (v[a] & 0x1ff) << 16;
-        *p = t | (*p & 0xfe00ff00);
-        u16 *h = (u16 *)*q;
-        h[2] = (h[2] & ~0xc00) | 0xc00;
+        p->attr01 = t | (p->attr01 & 0xfe00ff00);
+        GXOamAttr *h = *q;
+        h->attr2 = (h->attr2 & ~0xc00) | 0xc00;
     } else {
         Unk_ov001_02216474_Hide(*q);
     }
@@ -775,41 +757,30 @@ extern "C" void WfcManualSetup_PlaceObjs() {
 }
 
 extern "C" s32 WfcManualSetup_HitTest() {
-    u16 v[4];
+    WfcPosSize v;
     s32 i;
     s32 n;
     s32 r;
-    u16 *vp;
-    const u8 *p;
-    if (WfcInput_IsTouchPressedIn((void *)gWfcScreenRect) == 0) return 0xe;
+    const WfcRect *p;
+    if (WfcInput_IsTouchPressedIn((WfcRect *)&gWfcScreenRect) == 0) return 0xe;
     r = FX_DivS32(sWfcManualSetupScroll, 0x1d);
-    vp = v;
-    v[0] = data_ov001_0222a0b4[0];
-    v[1] = data_ov001_0222a0b4[1];
-    v[2] = data_ov001_0222a0b4[2];
-    v[3] = data_ov001_0222a0b4[3];
+    v = data_ov001_0222a0b4;
     for (i = 0; i < 4; i++, r++) {
         if (r != 2 && r != 6) {
-            if (WfcInput_IsTouchPressedInBox(vp) != 0) return sWfcManualSetupRowItems[r];
+            if (WfcInput_IsTouchPressedInBox(&v) != 0) return sWfcManualSetupRowItems[r];
         }
-        v[1] = v[1] + 0x1d;
+        v.pos.y = v.pos.y + 0x1d;
     }
     n = FX_DivS32(sWfcManualSetupScroll, 0x1d);
     for (i = 0; i < 4; i++, n++) {
         if (n == 2) {
             s32 off = i * 0x1d;
-            v[1] = data_ov001_0222a0c4[1];
-            v[0] = data_ov001_0222a0c4[0];
-            v[2] = data_ov001_0222a0c4[2];
-            v[3] = data_ov001_0222a0c4[3];
-            v[1] = v[1] + off;
-            if (WfcInput_IsTouchPressedInBox(v) != 0) return 2;
-            v[1] = data_ov001_0222a0bc[1];
-            v[0] = data_ov001_0222a0bc[0];
-            v[2] = data_ov001_0222a0bc[2];
-            v[3] = data_ov001_0222a0bc[3];
-            v[1] = v[1] + off;
-            if (WfcInput_IsTouchPressedInBox(v) != 0) return 3;
+            v = data_ov001_0222a0c4;
+            v.pos.y = v.pos.y + off;
+            if (WfcInput_IsTouchPressedInBox(&v) != 0) return 2;
+            v = data_ov001_0222a0bc;
+            v.pos.y = v.pos.y + off;
+            if (WfcInput_IsTouchPressedInBox(&v) != 0) return 3;
             break;
         }
     }
@@ -817,24 +788,18 @@ extern "C" s32 WfcManualSetup_HitTest() {
     for (i = 0; i < 4; i++, n++) {
         if (n == 6) {
             s32 off = i * 0x1d;
-            v[1] = data_ov001_0222a0c4[1];
-            v[0] = data_ov001_0222a0c4[0];
-            v[2] = data_ov001_0222a0c4[2];
-            v[3] = data_ov001_0222a0c4[3];
-            v[1] = v[1] + off;
-            if (WfcInput_IsTouchPressedInBox(v) != 0) return 7;
-            v[1] = data_ov001_0222a0bc[1];
-            v[0] = data_ov001_0222a0bc[0];
-            v[2] = data_ov001_0222a0bc[2];
-            v[3] = data_ov001_0222a0bc[3];
-            v[1] = v[1] + off;
-            if (WfcInput_IsTouchPressedInBox(v) != 0) return 8;
+            v = data_ov001_0222a0c4;
+            v.pos.y = v.pos.y + off;
+            if (WfcInput_IsTouchPressedInBox(&v) != 0) return 7;
+            v = data_ov001_0222a0bc;
+            v.pos.y = v.pos.y + off;
+            if (WfcInput_IsTouchPressedInBox(&v) != 0) return 8;
             break;
         }
     }
-    p = (const u8 *)sWfcManualSetupButtonRects;
-    for (i = 0; i < 3; i++, p += 8) {
-        if (WfcInput_IsTouchPressedIn((void *)p) != 0) return i + 0xb;
+    p = sWfcManualSetupButtonRects;
+    for (i = 0; i < 3; i++, p++) {
+        if (WfcInput_IsTouchPressedIn((WfcRect *)p) != 0) return i + 0xb;
     }
     return 0xe;
 }
@@ -854,7 +819,7 @@ extern "C" s32 WfcManualSetup_GetListRow(s32 a) {
     return r;
 }
 
-extern "C" void WfcManualSetup_ScrollUpTask(s32 a) {
+extern "C" void WfcManualSetup_ScrollUpTask(void *task) {
     WfcScrollBar_Disable();
     WfcCursor_Clear();
     if (sWfcManualSetupScroll > 6) sWfcManualSetupScroll = sWfcManualSetupScroll - 6;
@@ -874,10 +839,10 @@ extern "C" void WfcManualSetup_ScrollUpTask(s32 a) {
     WfcScrollBar_Enable();
     WfcManualSetup_UpdateCursorItem();
     sWfcManualSetup->scrollTask = 0;
-    WfcTask_RequestDelete(0, a);
+    WfcTask_RequestDelete(0, task);
 }
 
-extern "C" void WfcManualSetup_ScrollDownTask(s32 a) {
+extern "C" void WfcManualSetup_ScrollDownTask(void *task) {
     WfcScrollBar_Disable();
     WfcCursor_Clear();
     sWfcManualSetupScroll += 6;
@@ -892,7 +857,7 @@ extern "C" void WfcManualSetup_ScrollDownTask(s32 a) {
     WfcScrollBar_Enable();
     WfcManualSetup_UpdateCursorItem();
     sWfcManualSetup->scrollTask = 0;
-    WfcTask_RequestDelete(0, a);
+    WfcTask_RequestDelete(0, task);
 }
 
 extern "C" void WfcManualSetup_ScrollBgTask() {
@@ -909,24 +874,21 @@ extern "C" void WfcManualSetup_ScrollBgTask() {
 }
 
 extern "C" void WfcManualSetup_DrawCursor() {
-    WfcManualSetupCursorBoxIdsCopy l;
-    u8 *src = data_ov001_0222b050;
     s32 v;
-    l = *(WfcManualSetupCursorBoxIdsCopy *)src;
-    v = l.b[sWfcManualSetupCursorItem];
+    v = data_ov001_0222b050[sWfcManualSetupCursorItem];
     if (v >= 3) {
         WfcCursor_ShowPair(3, sWfcManualSetupCursorPos[v].left, sWfcManualSetupCursorPos[v].right, sWfcManualSetupCursorPos[v].top);
         return;
     }
     {
-        WfcManualSetupCursorBox e = sWfcManualSetupCursorPos[v];
+        WfcRect e = sWfcManualSetupCursorPos[v];
         e.top += sWfcManualSetupCursorRow * 0x1d;
         WfcCursor_ShowPair(1, e.left, e.right, e.top);
     }
 }
 
 extern "C" void WfcManualSetup_UpdateCursorItem() {
-    u8 *o;
+    WfcConfigSlot *o;
     s32 q;
     s32 r;
     if ((u8)(sWfcManualSetupCursorItem + 0xf5) <= 2) {
@@ -938,14 +900,14 @@ extern "C" void WfcManualSetup_UpdateCursorItem() {
     r = sWfcManualSetupCursorRow + q;
     switch (r) {
     case 2:
-        if (o[0xf5] != 0) {
+        if (o->editAutoIp != 0) {
             sWfcManualSetupCursorItem = 2;
         } else {
             sWfcManualSetupCursorItem = 3;
         }
         break;
     case 6:
-        if (o[0xf6] != 0) {
+        if (o->editAutoDns != 0) {
             sWfcManualSetupCursorItem = 7;
         } else {
             sWfcManualSetupCursorItem = 8;
@@ -965,13 +927,13 @@ extern "C" void WfcManualSetup_SetCursor(u32 a) {
 }
 
 extern "C" void WfcManualSetup_MoveCursor(s32 a) {
-    u8 *o;
+    WfcConfigSlot *o;
     s32 r4;
     s32 s;
     o = WfcConfig_GetEdit();
     r4 = 0;
     s = sWfcManualSetupCursorItem;
-    if (s == 8 && o[0xf5] == 0) {
+    if (s == 8 && o->editAutoIp == 0) {
         if (a == 0) return;
         if (a == 2) return;
     }
@@ -1084,10 +1046,10 @@ extern "C" void WfcManualSetup_HighlightButton() {
 extern "C" void WfcManualSetup_ToggleFlashTask() {
     s32 i;
     for (i = 0; i < 4; i++) {
-        u8 *p = (u8 *)sWfcManualSetup + i;
-        if (p[4] != 0) {
-            p[4] = p[4] - 1;
-            if (((u8 *)sWfcManualSetup + i)[4] == 0) {
+        u8 *p = &sWfcManualSetup->toggleFlashTimers[i];
+        if (*p != 0) {
+            *p = *p - 1;
+            if (sWfcManualSetup->toggleFlashTimers[i] == 0) {
                 WfcManualSetup_Redraw();
             }
         }
@@ -1095,17 +1057,11 @@ extern "C" void WfcManualSetup_ToggleFlashTask() {
 }
 
 extern "C" void WfcManualSetup_FlashToggle() {
-    WfcManualSetupToggleItemsCopy l;
-    u8 *q;
+    const u8 *q;
     s32 i;
     u8 s;
-    u8 *src = sWfcManualSetupToggleItems;
-    l.b[0] = src[0];
-    l.b[1] = src[1];
-    l.b[2] = src[2];
-    l.b[3] = src[3];
     s = sWfcManualSetupCursorItem;
-    for (i = 0, q = l.b; i < 4; i++, q++) {
+    for (i = 0, q = sWfcManualSetupToggleItems; i < 4; i++, q++) {
         if (s == *q) {
             WfcManualSetupWork *g = sWfcManualSetup;
             g->toggleFlashTimers[i] = 0x14;
@@ -1120,13 +1076,13 @@ extern "C" void WfcManualSetup_FlashToggle() {
 }
 
 extern "C" BOOL WfcManualSetup_ValidateSettings() {
-    u8 *o = WfcConfig_GetEdit();
-    if (o[0x40] == 0) return FALSE;
-    if (o[0xf6] == 0 && DWC_BACKUPlCheckAddress(o + 0xc8) == 0 && DWC_BACKUPlCheckAddress(o + 0xcc) == 0) return FALSE;
-    if (o[0xf5] == 0) {
-        if (DWC_BACKUPlCheckAddress(o + 0xc0) == 0) return FALSE;
-        if (DWC_BACKUPlCheckAddress(o + 0xc4) == 0) return FALSE;
-        if (DWC_BACKUPlCheckIp(o + 0xc0, o + 0xf0) == 0) return FALSE;
+    WfcConfigSlot *o = WfcConfig_GetEdit();
+    if (o->ssid[0] == 0) return FALSE;
+    if (o->editAutoDns == 0 && DWC_BACKUPlCheckAddress(o->dnsServers) == 0 && DWC_BACKUPlCheckAddress(&o->dnsServers[4]) == 0) return FALSE;
+    if (o->editAutoIp == 0) {
+        if (DWC_BACKUPlCheckAddress(o->ipAddress) == 0) return FALSE;
+        if (DWC_BACKUPlCheckAddress(o->gateway) == 0) return FALSE;
+        if (DWC_BACKUPlCheckIp(o->ipAddress, o->editSubnetMask) == 0) return FALSE;
     }
     return TRUE;
 }
@@ -1136,12 +1092,12 @@ extern "C" void WfcManualSetup_InvalidDialog() {
     WfcSound_Play(6);
     WfcDialog_Close();
     WfcUtil_RequestBgPalette(sWfcManualSetup->paletteFiles[0]);
-    WfcUtil_SetScene((void *)WfcManualSetup_WaitDialogClosed);
+    WfcUtil_SetScene(WfcManualSetup_WaitDialogClosed);
 }
 
 extern "C" void WfcManualSetup_WaitDialogClosed() {
     if (WfcDialog_IsOpen() != 0) return;
-    WfcUtil_SetScene((void *)WfcManualSetup_Update);
+    WfcUtil_SetScene(WfcManualSetup_Update);
 }
 
 extern "C" void WfcManualSetup_SetMode(u32 v) {

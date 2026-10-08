@@ -465,7 +465,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        (Scene_GetTouchPicker())->addSphere(&touchSphere, &position, (VecFx32 *)(0xc00), 0xe, index);
+        (Scene_GetTouchPicker())->addSphere(&touchSphere, &position, 0xc00, 0xe, index);
     }
     return TRUE;
 }

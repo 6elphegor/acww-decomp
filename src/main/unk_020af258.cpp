@@ -7,9 +7,6 @@
 #include "game/Elem2a.h"
 #include "game/Loc488.h"
 #include "game/NookShop.h"
-#define PROTO_LOCAL_data_020e2eb8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e2ebc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gLooseSnowballs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -27,313 +24,25 @@
 #include "proto/ov004/unk_ov004_02233074.h"
 
 
-struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
-
-struct Str { Str(const u16 *s); ~Str(); u8 d[0x24]; };
-struct Obj30 { Obj30(); ~Obj30(); u8 d[0x30]; };
-struct Obj12 { Obj12(u32 a, u32 b); ~Obj12(); u32 d[3]; };
-struct Big { Big(); ~Big(); u8 d[0xf4]; };
-
-
-extern "C" {
-void *func_021355f0(void *p, s32 n, s32 size, void *ctor);
-}
-
-extern "C" {
-void NookShop_ClearStock(void *p);
-}
-
-extern "C" {
-u8 *NookShop_GetRenovation(void *p);
-}
-
-extern "C" {
-u8 *NookShop_GetLevel(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL func_02072e44(void *p);
-}
-
-extern "C" {
-u32 Scene_GetCurrent();
-}
-
-extern "C" {
-void *MapBlock_GetItemPtr(void *a, s32 b, s32 c, s32 d);
-}
-
-extern "C" {
-BOOL Item_IsFurniture(void *p);
-}
-
-extern "C" {
-u32 Item_GetFurnitureIndex(void *p);
-}
-
-extern "C" {
-void *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-}
-
-extern "C" {
-BOOL Item_IsFurnitureOrF031();
-}
-
-extern "C" {
-BOOL Item_IsNormalItem(void *p);
-}
-
-extern "C" {
-void BlockMap_SetItemAtUnit(void *a, void *b, s32 c, s32 d, s32 e);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *func_0223xxxx();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 PM_GetLCDPower();
-}
-
-extern "C" {
-s32 PM_SetLCDPower(s32 a);
-}
-
-extern "C" {
-void PM_SetBackLight(s32 a, s32 b);
-}
-
-extern "C" {
-void PM_GetBackLight(void *a, void *b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *func_020986c8(void *a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *func_ov004_022355d8(void *a, s32 b, s32 c, s32 d);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_ov004_02235740(void *a, void *b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b);
-}
-
-extern "C" {
-u32 func_0209888c(void *a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_02065588(void *a, u32 b, s32 c);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_02065cd4(void *a);
-}
-
-extern "C" {
-void func_02065cc8(void *a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL StockList_IsSold(u32 i, u32 n, u8 *bits);
-}
-
-extern "C" {
-u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void ShopAckCounter_Clear(Counter *p);
-}
-
-extern "C" {
-BOOL ShopAckCounter_IsDone(Counter *p);
-}
-
-extern "C" {
-extern u8 data_021ed104[];
-}
-
-extern "C" {
-extern u8 data_020e2e9c[];
-}
-
-extern "C" {
-extern u8 data_020e2ea8[];
-}
-
-extern "C" {
-extern u8 gCommManager[];
-}
-
-extern "C" {
-extern u8 sShopAckCounter[];
-}
-
-extern "C" {
-extern u16 sStockNoItem;
-}
-
-extern "C" {
-extern u16 sStockSoldOutItem;
-}
-
-extern "C" {
-extern u8 sShopRandom[];
-}
-
-extern "C" {
-u8 sLidSleepFlags;
-}
-
-extern "C" {
-u8 sLidSleepState;
-}
-
-extern "C" {
-u32 sLidSleepBacklightBottom;
-}
-
-extern "C" {
-u32 sLidSleepBacklightTop;
-}
-
-extern "C" {
-extern u8 gLooseSnowballs[];
-}
-
-extern "C" {
+// NitroSDK power management (src/autoload_2/unk_0211bcdc.c)
+extern "C" {
+u32 PM_GetBackLight(u32 *top, u32 *bottom);
+u32 PM_SetBackLight(u32 target, u32 on);
+u32 PM_SetLCDPower(u32 on);
+BOOL PM_GetLCDPower(void);
 extern u8 gFieldSceneKind;
 }
 
-extern "C" {
-extern Unk_021c47c4 *gSceneBlockMap;
-}
+u8 sLidSleepFlags;
+u8 sLidSleepState;
+u32 sLidSleepBacklightBottom;
+u32 sLidSleepBacklightTop;
 
-extern "C" {
-extern u16 sSnowmanPrizeItems[];
-}
-
-extern "C" {
-extern u8 data_020e2ebc[], data_020e2ec0[], data_020e2eb8[];
-}
-
-extern "C" {
-void func_02004b60(void *p);
-}
-
-extern "C" {
-static inline BOOL R1(u16 *p, u32 lo, u32 hi) { BOOL r = FALSE; if (*p >= lo && *p <= hi) r = TRUE; return r; }
-}
-
-extern "C" {
-static inline BOOL R2(u16 *p, u32 lo, u32 hi) { if (*p >= lo && *p <= hi) return TRUE; return FALSE; }
-}
-
-extern "C" {
-static inline BOOL InRange(u32 c, u32 lo, u32 hi) { BOOL r = FALSE; if (c >= lo && c <= hi) r = TRUE; return r; }
-}
-
-extern "C" {
-static inline BOOL IsEq(u32 c, u32 v) { if (c >= v && c <= v) return TRUE; return FALSE; }
-}
-
-extern "C" {
-static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
-}
-// prototypes
-
-
-extern "C" s32 Field_TryPushSnowball(VecFx32 *a, s16 *b, s32 *c, s32 d, s16 e) {
-    BOOL z = gFieldSceneKind == 0;
-    if (z && d > 0) return Snowball_TryPushAny(a, b, c, d, e);
-    return 0;
+// the player walking into a snowball (outdoors): the position, angle and push value it moves the player by
+extern "C" BOOL Field_TryPushSnowball(VecFx32 *outPos, s16 *outAng, s32 *outVal, s32 speed, s16 ang) {
+    BOOL outdoors = gFieldSceneKind == 0;
+    if (outdoors && speed > 0) return Snowball_TryPushAny(outPos, outAng, outVal, speed, ang);
+    return FALSE;
 }
 
 extern "C" void LidSleep_Init() {
@@ -397,7 +106,4 @@ extern "C" BOOL LidSleep_TestFlag(s32 m) {
 extern "C" void LidSleep_SetFlag(s32 m) { sLidSleepFlags |= m; }
 
 extern "C" void LidSleep_ClearFlag(s32 m) { sLidSleepFlags &= ~m; }
-
-extern "C" {
-}
 

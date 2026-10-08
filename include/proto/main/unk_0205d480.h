@@ -7,7 +7,6 @@
 #ifdef __cplusplus
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
-#include "types.h"
 class PlayerGlassesModelPool;
 #endif
 
@@ -20,15 +19,6 @@ void PlayerGlassesModelPool_Create(void *parent);
 #ifndef PROTO_LOCAL_PlayerGlassesModelPool_Destroy
 void PlayerGlassesModelPool_Destroy();
 #endif
-#ifndef PROTO_LOCAL_PlayerGlassesModelRef_Destruct
-void PlayerGlassesModelRef_Destruct();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_PlayerGlassesModel_GetPath
 char *PlayerGlassesModel_GetPath(s32 x);
 #endif
@@ -53,6 +43,9 @@ s32 PlayerGlassesModel_GetPlttVramSize();
 #ifndef PROTO_LOCAL_PlayerGlassesModelRef_Init
 void PlayerGlassesModelRef_Init(u8 *p);
 #endif
+#ifndef PROTO_LOCAL_PlayerGlassesModelRef_Destruct
+void PlayerGlassesModelRef_Destruct();
+#endif
 #ifndef PROTO_LOCAL_PlayerGlassesModelRef_SetSlot
 void PlayerGlassesModelRef_SetSlot(u8 *p, u8 v);
 #endif
@@ -74,17 +67,23 @@ BOOL PlayerGlassesModelRef_PollTexUpload(u8 *p);
 #ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetBuffer
 void *PlayerGlassesModelRef_GetBuffer(u8 *p);
 #endif
-#ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetVramSlot
-TexVramSlot *PlayerGlassesModelRef_GetVramSlot(u8 *p);
-#endif
-#ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetTexTask
-TexVramTask *PlayerGlassesModelRef_GetTexTask(u8 *p);
-#endif
 #ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetModelId
 u8 PlayerGlassesModelRef_GetModelId(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerGlassesModelRef_SetModelId
 void PlayerGlassesModelRef_SetModelId(u8 *p, s32 v);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetVramSlot
+TexVramSlot *PlayerGlassesModelRef_GetVramSlot(u8 *p);
+#endif
+#ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetTexTask
+TexVramTask *PlayerGlassesModelRef_GetTexTask(u8 *p);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerGlassesModelPathBuf

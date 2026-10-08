@@ -8,6 +8,7 @@ typedef struct SockAddrIn SockAddrIn;
 // Socket address {length 8, family 2, port, IPv4 address} (BSD sockaddr_in shape) passed to the ov065 socket layer
 // (Sock_Bind, Sock_SendTo, Sock_RecvFrom): the ov001 AOSS and Simple Start clients, DWC matching (NAT negotiation
 // result) and the GameSpy code (gt2, natneg, qr2, serverbrowsing, GP, ghttp).
+typedef struct SockAddrIn SockAddrIn;
 struct SockAddrIn {
     /* 0x0 */ u8 len;
     /* 0x1 */ u8 family;

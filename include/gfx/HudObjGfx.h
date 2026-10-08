@@ -3,8 +3,10 @@
 
 // HUD object graphics (sHudObjGfx): character/palette file buffers for the slide, link, camera-button and kind icons.
 // HudObjGfxIo is the file/VRAM half (methods 0x0201106c.., src/main/unk_0201106c.cpp), HudObjGfx the full object
-// (methods 0x02011580.., src/main/unk_02011410.cpp / unk_020116e0.cpp / unk_020119cc.cpp).
+// (methods 0x02011580.., src/main/unk_02011410.cpp / unk_020116e0.cpp / unk_020119cc.cpp). The object starts with
+// the file it reads through (the methods pass `this` to FS_OpenFile ...).
 #include "types.h"
+#include "nitro/fs.h"
 
 class HudObjGfxIo {
 public:
@@ -24,17 +26,13 @@ public:
     void freeChars();
     void freePalette();
 
-    /* 0x00 */ u8 unk_00[0x48];
+    /* 0x00 */ FSFile file;
     /* 0x48 */ u8 *paletteBuf;
     /* 0x4c */ u8 *charBuf;
     /* 0x50 */ u8 cameraButtonChars[0x200];
 };
 
-struct HudObjGfx {
-    /* 0x000 */ u8 unk_00[0x48];
-    /* 0x048 */ s32 paletteBuf;
-    /* 0x04c */ s32 charBuf;
-    /* 0x050 */ u8 cameraButtonChars[0x200];
+struct HudObjGfx : public HudObjGfxIo {
     /* 0x250 */ s32 pendingCameraButtonScreens;
     /* 0x254 */ u8 msgUiActive;
     /* 0x255 */ u8 countdownVariant;

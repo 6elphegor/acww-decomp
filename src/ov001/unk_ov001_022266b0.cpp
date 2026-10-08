@@ -2,6 +2,7 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "net/WfcListNode.h"
+#include "nitro/gxoam.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_022266b0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"

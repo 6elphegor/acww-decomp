@@ -5,7 +5,8 @@
 #include "player/FishBobberStates.h"
 #include "net/CommManager.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_sFishBobberPool  // declared below: the shared prototype conflicts with the calls here
+#include "player/PlayerPaletteRef.h"
+#include "proto/autoload_2/unk_020e7500.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
@@ -18,18 +19,10 @@
 #include "proto/ov003/unk_ov003_0221ffb8.h"
 
 
-
-
 extern "C" {
 extern CommManager *gCommManager;
-extern s16 data_02135f44[];
-extern u8 sFishBobberPool[];
 
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
-BOOL func_020729cc(void *p, s32 h);
+// defined with file-local types (include/proto/.excluded)
 BOOL SceneId_IsTown(u32 v);
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(u32 v);
@@ -37,24 +30,10 @@ void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
 void BlockMap_SetBuriedAtUnit(void *o, s32 a, s32 b);
 void BlockMap_ClearBuriedAtUnit(void *o, s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
-s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
-s32 func_01ffcb0c(s32 a, s32 b);
-s32 Math_Atan2(s32 a, s32 b);
-void Vec_ShiftRightTo(VecFx32 *out, VecFx32 *in, s32 n);
-void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
-void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
-s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-void Vec_ShiftRight(VecFx32 *v, s32 n);
-void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
-void *func_0205fd94(u8 *tbl, u32 idx);
-s32 func_0205fbb8(void *p);
-void func_0205553c(void *e, s32 a);
-void GroundInfo_Destruct(void *p);
 }
 
-
 struct PlayerPalettePool {
-    u32 buffers[4];
+    u8 *buffers[4];
     PlayerPalettePool();
     ~PlayerPalettePool();
 };
@@ -125,11 +104,11 @@ extern "C" BOOL ItemSync_Apply(u8 *p)
 extern "C" void ItemSync_ApplyAndBroadcast(u8 *p)
 {
     if (ItemSync_Apply(p)) {
-        if (((CommManager *)((void *)gCommManager))->isOnline()) {
-            void *q = (void *)gCommManager;
-            ((CommManager *)(q))->beginRecord();
-            ((CommManager *)(q))->writeRecord((u8 *)(p), 5);
-            ((CommManager *)(q))->endRecord(0x12, 4);
+        if (gCommManager->isOnline()) {
+            CommManager *q = gCommManager;
+            q->beginRecord();
+            q->writeRecord(p, 5);
+            q->endRecord(0x12, 4);
         }
     }
 }
@@ -144,10 +123,10 @@ extern "C" void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e)
     if (NetArea_IsLocalOwner()) {
         ItemSync_ApplyAndBroadcast(buf);
     } else {
-        void *q = (void *)gCommManager;
-        ((CommManager *)(q))->beginRecord();
-        ((CommManager *)(q))->writeRecord((u8 *)(buf), 5);
-        ((CommManager *)(q))->endRecord(0x13, 6);
+        CommManager *q = gCommManager;
+        q->beginRecord();
+        q->writeRecord(buf, 5);
+        q->endRecord(0x13, 6);
     }
 }
 
@@ -156,7 +135,7 @@ extern "C" void PlayerPalettePool_Create(void *parent)
     PlayerPaletteHeap_Create(parent);
     PlayerPalettePool_AllocBuffers(sPlayerPalettePool.buffers);
     if (gPlayerPaletteHeap) {
-        ((Heap *)(gPlayerPaletteHeap))->adjust();
+        static_cast<Heap *>(gPlayerPaletteHeap)->adjust();
     }
 }
 
@@ -192,39 +171,38 @@ PlayerPalettePool::PlayerPalettePool() {}
 
 PlayerPalettePool::~PlayerPalettePool() {}
 
-extern "C" void PlayerPalettePool_AllocBuffers(u32 *out)
+extern "C" void PlayerPalettePool_AllocBuffers(u8 **out)
 {
-    void *h = gPlayerPaletteHeap;
+    Heap *h = static_cast<Heap *>(gPlayerPaletteHeap);
     u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
-        out[i] = (u32)Heap_AllocAligned(h, PlayerPalette_GetSlotSize(), 4);
+        out[i] = static_cast<u8 *>(Heap_AllocAligned(h, PlayerPalette_GetSlotSize(), 4));
     }
 }
 
-extern "C" void PlayerPalettePool_FreeBuffers(u32 *a)
+extern "C" void PlayerPalettePool_FreeBuffers(u8 **a)
 {
     s32 i;
-    s32 z = 0;
     for (i = 0; i < 4; i++) {
-        a[i] = z;
+        a[i] = NULL;
     }
     if (gPlayerPaletteHeap) {
-        ((Heap *)(gPlayerPaletteHeap))->freeAll();
+        static_cast<Heap *>(gPlayerPaletteHeap)->freeAll();
     }
 }
 
-extern "C" s32 PlayerPalettePool_GetBuffer(u32 *a, u32 i)
+extern "C" u8 *PlayerPalettePool_GetBuffer(u8 **a, u32 i)
 {
     return a[i];
 }
 
-extern "C" void PlayerPaletteRef_Init(u8 *p)
+PlayerPaletteRef::PlayerPaletteRef()
 {
-    *p = 4;
+    slot = 4;
 }
 
-extern "C" void PlayerPaletteRef_Destruct()
+PlayerPaletteRef::~PlayerPaletteRef()
 {
 }
 
@@ -238,26 +216,26 @@ extern "C" void PlayerPaletteRef_SetSlot(u8 *p, u8 v)
     *p = v;
 }
 
-extern "C" s32 PlayerPaletteRef_GetSkin(u8 *p)
+extern "C" u8 *PlayerPaletteRef_GetSkin(u8 *p)
 {
     return PlayerPalettePool_GetBuffer(sPlayerPalettePool.buffers, *p);
 }
 
-extern "C" s32 PlayerPaletteRef_GetHair(u8 *p)
+extern "C" u8 *PlayerPaletteRef_GetHair(u8 *p)
 {
-    s32 a = PlayerPaletteRef_GetSkin(p);
+    u8 *a = PlayerPaletteRef_GetSkin(p);
     return a + PlayerPalette_GetSkinSize();
 }
 
-extern "C" void PlayerPaletteRef_LoadSkin(u32 x, u32 y) {
-    u32 dst = PlayerPaletteRef_GetSkin((u8 *)x);
-    void *path = (void *)PlayerPalette_GetPath(y);
-    File_LoadToBuffer(path, (void *)dst, PlayerPalette_GetSkinSize());
+extern "C" void PlayerPaletteRef_LoadSkin(u8 *x, u32 y) {
+    u8 *dst = PlayerPaletteRef_GetSkin(x);
+    const char *path = PlayerPalette_GetPath(y);
+    File_LoadToBuffer(path, dst, PlayerPalette_GetSkinSize());
 }
 
-extern "C" void PlayerPaletteRef_LoadHair(u32 x, u32 y) {
-    u32 dst = PlayerPaletteRef_GetHair((u8 *)x);
-    void *path = (void *)PlayerPalette_GetPath(y);
-    File_LoadToBuffer(path, (void *)dst, PlayerPalette_GetHairSize());
+extern "C" void PlayerPaletteRef_LoadHair(u8 *x, u32 y) {
+    u8 *dst = PlayerPaletteRef_GetHair(x);
+    const char *path = PlayerPalette_GetPath(y);
+    File_LoadToBuffer(path, dst, PlayerPalette_GetHairSize());
 }
 

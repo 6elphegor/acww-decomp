@@ -16,18 +16,18 @@
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
+#include "proto/ov001/unk_ov001_02225f40.h"
 
 #pragma thumb off
 
+// a loader for WfcUtil_LoadFileTo (src/ov001/unk_ov001_02208388.cpp): the GX_Load* functions
+typedef void (*WfcLoadFunc)(void *, s32, u32);
+
 extern "C" {
-
-s32 OS_Sleep(s32);
-s32 GX_LoadBG2Scr();
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcInput_IsKeyPressed(s32);
-void WfcUtil_LoadFileTo(void *, void *);
-
+void OS_Sleep(u32 msec);
+void GX_LoadBG2Scr(const void *src, u32 offset, u32 size);
+void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);  // unk_ov001_02208388.cpp
 }
 
 extern "C" u8 sWfcSimpleStartRecvDone = 0;
@@ -44,11 +44,11 @@ extern "C" void WfcSimpleStartRecv_Enter() {
     WfcHighlight_SetConnection();
     WfcUtil_ShowBottomMessage(0x71);
     WfcBusyIcon_Create(2);
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_FadeIn);
+    WfcUtil_SetScene(WfcSimpleStartRecv_FadeIn);
 }
 
 extern "C" void WfcSimpleStartRecv_LoadBg() {
-    WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
+    WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", (WfcLoadFunc)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -64,19 +64,19 @@ extern "C" void WfcSimpleStartRecv_LoadBg() {
 extern "C" void WfcSimpleStartRecv_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_WaitFadeIn);
+    WfcUtil_SetScene(WfcSimpleStartRecv_WaitFadeIn);
 }
 
 extern "C" void WfcSimpleStartRecv_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(1);
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_WaitButtonBar);
+    WfcUtil_SetScene(WfcSimpleStartRecv_WaitButtonBar);
 }
 
 extern "C" void WfcSimpleStartRecv_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_Update);
+    WfcUtil_SetScene(WfcSimpleStartRecv_Update);
 }
 
 extern "C" void WfcSimpleStartRecv_Update() {
@@ -103,13 +103,13 @@ extern "C" void WfcSimpleStartRecv_HandleResult() {
     if (WfcButtonBar_GetResult() != 0) return;
     WfcSound_Stop();
     WfcSound_Play(7);
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_StartExit);
+    WfcUtil_SetScene(WfcSimpleStartRecv_StartExit);
 }
 
 extern "C" void WfcSimpleStartRecv_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_FadeOut);
+    WfcUtil_SetScene(WfcSimpleStartRecv_FadeOut);
 }
 
 extern "C" void WfcSimpleStartRecv_FadeOut() {
@@ -119,7 +119,7 @@ extern "C" void WfcSimpleStartRecv_FadeOut() {
         WfcFade_Start(3, 1, 1, 8);
     }
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_Exit);
+    WfcUtil_SetScene(WfcSimpleStartRecv_Exit);
 }
 
 extern "C" void WfcSimpleStartRecv_Exit() {
@@ -137,10 +137,10 @@ extern "C" void WfcSimpleStartRecv_Exit() {
     WfcSimpleStart_End();
     if (sWfcSimpleStartRecvDone == 0) {
         WfcUtil_SetScreenFlags(2, 1);
-        WfcUtil_SetScene((void *)WfcSetupMethod_Enter);
+        WfcUtil_SetScene(WfcSetupMethod_Enter);
     } else {
         WfcUtil_SetScreenFlags(0, 0);
-        WfcUtil_SetScene((void *)WfcSimpleStartDone_Enter);
+        WfcUtil_SetScene(WfcSimpleStartDone_Enter);
     }
 }
 
@@ -150,7 +150,7 @@ extern "C" void WfcSimpleStartRecv_CheckStatus() {
         sWfcSimpleStartRecvDone = 1;
         WfcSound_Stop();
         WfcSimpleStart_ApplyResult();
-        WfcUtil_SetScene((void *)WfcSimpleStartRecv_StartExit);
+        WfcUtil_SetScene(WfcSimpleStartRecv_StartExit);
         break;
     case 4:
         sWfcSimpleStartRecvDone = 0;
@@ -158,7 +158,7 @@ extern "C" void WfcSimpleStartRecv_CheckStatus() {
         WfcSound_Play(9);
         WfcDialog_Open(0x41, 1, 1, -1, 0);
         WfcButtonBar_DisableInput();
-        WfcUtil_SetScene((void *)WfcSimpleStartRecv_FailDialog);
+        WfcUtil_SetScene(WfcSimpleStartRecv_FailDialog);
         break;
     case 5:
         sWfcSimpleStartRecvDone = 0;
@@ -166,7 +166,7 @@ extern "C" void WfcSimpleStartRecv_CheckStatus() {
         WfcSound_Play(0x12);
         WfcDialog_Open(0x42, 1, 1, -1, 0);
         WfcButtonBar_DisableInput();
-        WfcUtil_SetScene((void *)WfcSimpleStartRecv_FailDialog);
+        WfcUtil_SetScene(WfcSimpleStartRecv_FailDialog);
         break;
     }
 }
@@ -175,11 +175,11 @@ extern "C" void WfcSimpleStartRecv_FailDialog() {
     if (WfcDialog_GetResult() != 0) return;
     WfcSound_Play(6);
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_WaitDialogClosed);
+    WfcUtil_SetScene(WfcSimpleStartRecv_WaitDialogClosed);
 }
 
 extern "C" void WfcSimpleStartRecv_WaitDialogClosed() {
     if (WfcDialog_IsOpen() != 0) return;
-    WfcUtil_SetScene((void *)WfcSimpleStartRecv_StartExit);
+    WfcUtil_SetScene(WfcSimpleStartRecv_StartExit);
 }
 

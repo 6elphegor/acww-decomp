@@ -10,7 +10,7 @@
 struct NpcBodyAnimSlot : NpcResSlot {
     NpcBodyAnimSlot();
     ~NpcBodyAnimSlot();
-    /* 0x04 */ AnimSlotRef layers[3];
+    /* 0x01 */ AnimSlotRef layers[3];
     void assignLayer(s32 a, s32 i);
 };
 

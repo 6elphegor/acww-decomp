@@ -1,17 +1,16 @@
 #include "types.h"
 #include "snd/Melody.h"
-#define PROTO_LOCAL_Melody_SaveDefaultPattern  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206d988.h"
 
+extern SaveData gSaveData;
+
 extern "C" {
-extern u8 gSaveTownTune[];
 // The melody state word (.data 0x020ddf8c): -1 at start, Melody_Init sets it back to -1; ov143 reads it.
 s32 data_020ddf8c = -1;
 
-s64 func_02133540(u32, u32, u32);
-void Melody_SaveDefaultPattern();
+s64 func_02133540(u32, u32, u32); // (the 64-bit shift right of the C library: lo, hi, count)
 }
 
 // gMelodyPlayer (snd/Melody.h); its destructor is func_0206db70 (renamed in renames.txt)
@@ -21,6 +20,8 @@ MelodyPlayer::~MelodyPlayer()
 
 extern "C" {
 
+// A melody: 16 notes of 4 bits packed into 64 bits, kept as two words {low, high} (SaveData::townTune,
+// ActorTalkRequest::melodyPattern)
 void Melody_Pack(u32 *dst, u8 *src) {
     s32 i;
     dst[0] = 0;
@@ -40,8 +41,6 @@ void Melody_Unpack(u32 *src, u8 *dst) {
 
 }
 
-extern MelodyPlayer gMelodyPlayer;
-
 extern "C" {
 
 void Melody_ResetToDefault() { Melody_SaveDefaultPattern(); }
@@ -57,7 +56,7 @@ void Melody_PlayEditPattern(u32 a) { Snd_MelodyPlayPattern(&gMelodyPlayer, a, gM
 
 void Melody_Play(u32 a) { Snd_MelodyPlay(&gMelodyPlayer, a); }
 
-void Melody_PlayAt(VecFx32 *a, u32 b) { Snd_MelodyPlayAt(&gMelodyPlayer, a, b); }
+void Melody_PlayAt(VecFx32 *pos, u32 b) { Snd_MelodyPlayAt(&gMelodyPlayer, pos, b); }
 
 void Melody_StartTrackA(s32 a) {
     Snd_MelodyStartTrackA(&gMelodyPlayer);
@@ -82,14 +81,14 @@ void Melody_PlayRandom(u32 a) { Snd_MelodyPlayRandom(&gMelodyPlayer, a); }
 void Melody_SaveRandomPattern() {
     u8 *p = Snd_MelodyApplyRandomPattern(&gMelodyPlayer);
     if (p) {
-        Melody_Pack((u32 *)gSaveTownTune, p);
+        Melody_Pack((u32 *)&gSaveData.townTune, p);
     }
 }
 
 void Melody_SaveDefaultPattern() {
     u8 *p = Snd_MelodyGetDefaultPattern();
     if (p) {
-        Melody_Pack((u32 *)gSaveTownTune, p);
+        Melody_Pack((u32 *)&gSaveData.townTune, p);
     }
 }
 

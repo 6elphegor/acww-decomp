@@ -55,8 +55,8 @@ static_assert(__builtin_offsetof(WfcMoveWork, registry) == 0xab4 && __builtin_of
 
 extern "C" {
 void MI_CpuFill8(void *, s32, s32);
-void MI_CpuCopy8(const void *, void *, s32);
-s32 MB_CommGetChildUser(s32);
+void MI_CpuCopy8(void *, void *, s32);
+u8 *MB_CommGetChildUser(u32 n);
 u32 WM_GetNextTgid();
 void DWCi_BACKUPlRead(void *);
 
@@ -282,7 +282,7 @@ extern "C" void WfcMove_GetState(u8 *a, u8 *b) {
     sWfcMove->prevState = sWfcMove->state;
 }
 
-extern "C" s32 WfcMove_GetChildUser() {
+extern "C" u8 *WfcMove_GetChildUser() {
     return MB_CommGetChildUser(1);
 }
 

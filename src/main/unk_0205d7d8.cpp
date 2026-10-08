@@ -8,8 +8,9 @@
 #include "gfx/TexVramTask.h"
 #include "actor/CharaClothTexRef.h"
 #include "player/FishBobber.h"
+#include "player/HeldItemModel.h"
+#include "player/PlayerHead.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_gPlayerHeadModelHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205c91c.h"
@@ -18,26 +19,16 @@
 #include "proto/main/unk_02063f3c.h"
 
 extern "C" {
-#define Heap_adjust _ZN4Heap6adjustEv
-void *Heap_adjust(u32 self);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
-void *CharaClothTexPool_GetOwnRef();
+CharaClothTexRef *CharaClothTexPool_GetOwnRef();
 s32 NNS_G3dTexGetRequiredSize(void *p);
 s32 NNS_G3dTex4x4GetRequiredSize(void *p);
 s32 NNS_G3dPlttGetRequiredSize(void *p);
 extern CommManager *gCommManager;
-extern u32 gPlayerHeadModelHeap;
 }
-
-
-
-
-
 
 static inline BOOL Unk_0205d4e4_IsTwo(u8 v) {
     return v == 2 ? TRUE : FALSE;
@@ -95,9 +86,6 @@ extern const u8 sPlayerHatHairModelIds[0x10];
 extern const u8 sFlowerHeadModelIds[0x18];
 extern const u8 sFullHeadwearModelIds[0x20];
 extern const u8 sHatModelIds[0x48];
-
-#define PlayerHead_ctor _ZN10PlayerHeadC1Ev
-#define PlayerHead_dtor _ZN10PlayerHeadD1Ev
 }
 
 const u8 sPlayerHatHairModelIds[0x10] = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f};
@@ -117,15 +105,15 @@ PlayerHeadBank sPlayerHeadBank;
 
 #define MGR (&sPlayerHeadBank)
 
-extern "C" BOOL HeldItemModel_IsBobberLanded(u8 *p) {
-    return ((FishBobber *)(p + 0x28))->isInWater();
+extern "C" BOOL HeldItemModel_IsBobberLanded(HeldItemModel *p) {
+    return p->bobber.isInWater();
 }
 
 extern "C" void PlayerHeadBank_Init(void *parent) {
     PlayerHeadModelHeap_Create(parent);
     MGR->setup();
-    if (gPlayerHeadModelHeap != 0)
-        ((Heap *)(gPlayerHeadModelHeap))->adjust();
+    if (gPlayerHeadModelHeap != NULL)
+        static_cast<Heap *>(gPlayerHeadModelHeap)->adjust();
 }
 
 extern "C" void PlayerHeadBank_Destroy(void) {
@@ -218,7 +206,7 @@ void PlayerHeadBank::setup(void) {
     for (i = 0; i < n; i++) {
         vramSlots[i][0].alloc(PlayerHead_GetTexVramSize(), PlayerHead_GetTex4x4VramSize(), PlayerHead_GetPlttVramSize());
     }
-    void *heap = (void *)gPlayerHeadModelHeap;
+    Heap *heap = static_cast<Heap *>(gPlayerHeadModelHeap);
     for (i = 0; i < n; i++) {
         buffers[i] = Heap_AllocAligned(heap, PlayerHead_GetBufferSize(), 4);
     }
@@ -236,7 +224,7 @@ void PlayerHeadBank::releaseAll(void) {
         modelFiles[i][1] = NULL;
     }
     if (gPlayerHeadModelHeap) {
-        ((Heap *)((void *)gPlayerHeadModelHeap))->freeAll();
+        static_cast<Heap *>(gPlayerHeadModelHeap)->freeAll();
     }
     for (i = 0; i < 4; i++) {
         modelIds[i][0] = 0x9e;
@@ -252,10 +240,10 @@ TexVramTask *PlayerHeadBank::getTexTask(u32 i, u32 j) { return &texTasks[i][j]; 
 s32 PlayerHeadBank::getModelId(u32 i, u32 j) { return modelIds[i][j]; }
 void PlayerHeadBank::setModelId(u32 i, u32 j, u32 v) { modelIds[i][j] = v; }
 
-extern "C" void PlayerHead_ctor(u8 *p) {
-    *p = 4;
+PlayerHead::PlayerHead() {
+    slot = 4;
 }
-extern "C" void PlayerHead_dtor() {}
+PlayerHead::~PlayerHead() {}
 extern "C" void PlayerHead_SetSlot(u8 *p, u8 v) {
     *p = v;
 }
@@ -298,9 +286,9 @@ extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, void *d) {
             if (res != 0) {
                 PlayerHead_SetModelFile(p, 1, buf);
                 if (Unk_0205da08_InRange(c)) {
-                    void *x = CharaClothTexPool_GetOwnRef();
-                    ((CharaClothTexRef *)(x))->loadItem((u16 *)(c), d, 0, 0);
-                    void *m = NNS_G3dGetTex(CharaClothTexRef_GetBuffer((u8 *)x));
+                    CharaClothTexRef *x = CharaClothTexPool_GetOwnRef();
+                    x->loadItem(c, d, 0, 0);
+                    void *m = NNS_G3dGetTex(CharaClothTexRef_GetBuffer(&x->v));
                     void *n = NNS_G3dGetTex(buf);
                     G3dRes_CopyTexByName(m, n, "cloth", "myD");
                     G3dRes_CopyPlttByName(m, n, "cloth", "myD");

@@ -16,7 +16,7 @@ struct NpcResHandleView {
     virtual ~NpcResHandleView();
     virtual NpcResPool *getPool() = 0;
     void *getHeldItemModel();
-    void *loadHeldItem(u16 *item);
+    BOOL loadHeldItem(u16 *item);
 };
 
 struct NpcTexPatBufRefHandle : NpcResHandleView {

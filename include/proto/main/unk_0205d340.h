@@ -6,7 +6,6 @@
 #include "types.h"
 struct PlayerFaceTexPool;
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -18,22 +17,20 @@ void PlayerFaceTexPool_Create(void *parent);
 #ifndef PROTO_LOCAL_PlayerFaceTexPool_Destroy
 void PlayerFaceTexPool_Destroy();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_PlayerFaceTex_GetPath
-void *PlayerFaceTex_GetPath(u32 x);
+char *PlayerFaceTex_GetPath(u32 x);
 #endif
 #ifndef PROTO_LOCAL_PlayerFaceTex_GetBufferSize
 s32 PlayerFaceTex_GetBufferSize();
 #endif
 #ifndef PROTO_LOCAL_PlayerFaceTexPool_AllocBuffers
-void PlayerFaceTexPool_AllocBuffers(u32 *arr);
+void PlayerFaceTexPool_AllocBuffers(void **arr);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sPlayerFaceTexPathBuf
 extern char sPlayerFaceTexPathBuf[0x14];
 #endif

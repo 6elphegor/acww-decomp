@@ -777,7 +777,7 @@ void BuildingActor::createShadows(Mtx43 *m) {
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
                 Building_LocalToWorld(&out, &v, m);
-                p->build(&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
+                p->build(&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (Heap *)heap);
             }
         }
     }

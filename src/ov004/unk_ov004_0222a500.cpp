@@ -796,7 +796,7 @@ void RoomScene22Shape::init() {
         v.x = 0x108f6;
         v.y = 0;
         v.z = 0x1351e;
-        Scene_GetTouchPicker()->addCylinder(this, &v, (VecFx32 *)(0xf33), (VecFx32 *)(0x6000), 0x16, 0xff);
+        Scene_GetTouchPicker()->addCylinder(this, &v, 0xf33, 0x6000, 0x16, 0xff);
     }
 }
 

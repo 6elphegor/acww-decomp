@@ -13,20 +13,6 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "proto/main/unk_02094810.h"
 
 extern "C" {
-}
-
-extern "C" {
-s32 TalkRequest_IsActive();
-}
-
-extern "C" {
-s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
 void DC_FlushRange(void *p, u32 size);
 }
 
@@ -48,20 +34,11 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
 
-extern s32 gGfxMainOnTop;
-extern u8 data_020d4694[];
-extern u8 data_020d468c[];
-extern SpriteAnimSeq data_020d5b0c[];
 extern const u8 sLabelButtonKindTextColors[4];
 extern const u32 sLabelButtonKindLabelVram[2];
 extern const u8 sLabelButtonKindSeqOffsets[4];
 extern const s32 sLabelButtonStateSeqIds[4];
 extern const s32 sLabelButtonStatePlayOnce[4];
-
-
-
-
-
 
 
 void LabelButton::enableObjWindow() { objWindow = 1; }

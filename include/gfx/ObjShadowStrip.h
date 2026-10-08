@@ -5,14 +5,15 @@
 #include "gfx/VecFx32.h"
 
 struct ObjShadowTexture;
+class Heap;
 
 // 0x34-byte textured ground shadow strip of field objects (rock, sign, tree shadows).
 // Defined in src/main/unk_020abea8.cpp; func_020ac1e0 (0x020ac1e0) is a second constructor returning this.
 class ObjShadowStrip {
 public:
-    void release(s32 heap);
+    void release(Heap *heap);
     void draw(VecFx32 *pos);
-    BOOL build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
+    BOOL build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, Heap *heap);
     ObjShadowStrip();
     ~ObjShadowStrip();
     ObjShadowStrip *func_020ac1e0();

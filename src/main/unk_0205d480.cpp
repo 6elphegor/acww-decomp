@@ -13,18 +13,9 @@
 #include "proto/main/unk_02063f3c.h"
 
 extern "C" {
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
 extern CommManager *gCommManager;
 }
-
-
-
-
-
 
 static inline BOOL Unk_0205d4e4_IsTwo(u8 v) {
     return v == 2 ? TRUE : FALSE;
@@ -72,7 +63,7 @@ extern "C" void PlayerGlassesModelPool_Create(void *parent) {
     PlayerGlassesModelHeap_Create(parent);
     sPlayerGlassesModelPool.allocBuffers();
     if (gPlayerGlassesModelHeap) {
-        ((Heap *)(gPlayerGlassesModelHeap))->adjust();
+        static_cast<Heap *>(gPlayerGlassesModelHeap)->adjust();
     }
 }
 
@@ -116,7 +107,7 @@ void PlayerGlassesModelPool::allocBuffers(void) {
     for (i = 0; i < n; i++) {
         vramSlots[i].alloc(PlayerGlassesModel_GetTexVramSize(), PlayerGlassesModel_GetTex4x4VramSize(), PlayerGlassesModel_GetPlttVramSize());
     }
-    void *heap = gPlayerGlassesModelHeap;
+    Heap *heap = static_cast<Heap *>(gPlayerGlassesModelHeap);
     for (i = 0; i < n; i++) {
         buffers[i] = Heap_AllocAligned(heap, PlayerGlassesModel_GetBufferSize(), 4);
     }
@@ -131,7 +122,7 @@ void PlayerGlassesModelPool::freeBuffers(void) {
         buffers[i] = NULL;
     }
     if (gPlayerGlassesModelHeap) {
-        ((Heap *)(gPlayerGlassesModelHeap))->freeAll();
+        static_cast<Heap *>(gPlayerGlassesModelHeap)->freeAll();
     }
     for (i = 0; i < 4; i++) {
         modelIds[i] = 0x4b;

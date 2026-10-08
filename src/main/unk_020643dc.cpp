@@ -1,10 +1,10 @@
-#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "game/LightLevel.h"
 #include "gfx/Camera.h"
 #include "gfx/Mtx43.h"
+#include "nitro/mtx.h"
 #include "sys/ListNode.h"
 #include "sys/PrioListNode.h"
 #include "sys/ProcProfile.h"
@@ -59,7 +59,7 @@ struct FlashLight {
     void startLightning();
     void updateLightning();
     void shutdown();
-    void apply(void *m);
+    void apply(MtxFx33 *m);
     void update();
     void reset();
 
@@ -75,7 +75,7 @@ struct FlashLight {
 
 struct SceneLight {
     ~SceneLight();
-    void apply(void *m);
+    void apply(MtxFx33 *m);
     void update();
     void updateColorAndDir();
     void calcWarmColor();
@@ -120,7 +120,7 @@ struct SceneLightColorSet {
 };
 
 struct IdListNode {
-    /* 0x00 */ s32 prev;
+    /* 0x00 */ IdListNode *prev;
     /* 0x04 */ IdListNode *next;
     /* 0x08 */ s32 id;
 };
@@ -192,7 +192,7 @@ void List_PushBack(List *list, ListNode *node);
 void List_InsertAfter(void *list, void *node, void *prev);
 
 void Light_ClampDir(VecFx32 *in, VecFx32 *out);
-void Light_GetViewRotation(void *a, void *b);
+void Light_GetViewRotation(Mtx43 *a, MtxFx33 *b);
 void SceneLight_InitStub(void *p);
 void LightSwitch_SetOff(s32 i, u32 v);
 void LightSwitch_SetOn(s32 i, u32 a, u32 b);
@@ -350,14 +350,14 @@ BOOL SceneLights::onExecute() {
 }
 
 BOOL SceneLights::onDraw() {
-    u8 l[0x24];
+    MtxFx33 l;
     s32 i;
     SceneLight *p;
-    Light_GetViewRotation(&gViewMtx, l);
+    Light_GetViewRotation(&gViewMtx, &l);
     for (p = lights, i = 0; i < numLights; p++, i++) {
-        p->apply(l);
+        p->apply(&l);
     }
-    flashLight.apply(l);
+    flashLight.apply(&l);
     return TRUE;
 }
 
@@ -367,10 +367,11 @@ BOOL SceneLights::onDelete() {
     return TRUE;
 }
 
-extern "C" void Light_GetViewRotation(void *a, void *b) {
-    VEC_Normalize(a, b);
-    VEC_Normalize((u8 *)a + 0xc, (u8 *)b + 0xc);
-    VEC_Normalize((u8 *)a + 0x18, (u8 *)b + 0x18);
+// the view matrix's rotation rows, normalized
+extern "C" void Light_GetViewRotation(Mtx43 *a, MtxFx33 *b) {
+    VEC_Normalize(&a->m[0], b->m[0]);
+    VEC_Normalize(&a->m[3], b->m[1]);
+    VEC_Normalize(&a->m[6], b->m[2]);
 }
 
 extern "C" s32 SceneLights_GetMatLightMask(void) {
@@ -399,8 +400,8 @@ extern "C" s16 SceneLights_GetFlashColor(void) {
     volatile s16 v = 0;
     SceneLights *o = gSceneLights;
     if (o != NULL) {
-        if (*(s32 *)(HOST_AT(o, 0x124, flashLight.flashKind, 0)) != 9) {
-            v = *(u16 *)(HOST_AT(o, 0x128, flashLight.color, 0));
+        if (o->flashLight.flashKind != 9) {
+            v = o->flashLight.color;
         }
     }
     return v;
@@ -585,7 +586,7 @@ void FlashLight::update()
     thunderSes[0].tickAll();
 }
 
-void FlashLight::apply(void *m)
+void FlashLight::apply(MtxFx33 *m)
 {
     if (flashKind != 9) {
         IO_W((volatile s32 *)0x4000440, 2);
@@ -699,9 +700,8 @@ extern "C" void SceneLights_StartFlash(u32 v)
 {
     SceneLights *g = gSceneLights;
     if (g != 0) {
-        u32 *p = (u32 *)(HOST_AT(g, 0x124, flashLight.flashKind, 0));
-        p[0] = v;
-        p[5] = 1;
+        g->flashLight.flashKind = v;
+        g->flashLight.flashPhase = 1;
     }
 }
 
@@ -919,7 +919,7 @@ void SceneLight::update()
     updateColorAndDir();
 }
 
-void SceneLight::apply(void *m)
+void SceneLight::apply(MtxFx33 *m)
 {
     s32 id = lightId;
     IO_W((volatile s32 *)0x4000440, 2);

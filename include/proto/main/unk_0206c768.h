@@ -5,8 +5,8 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "item/LetterView.h"
 #include "talk/MsgString.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -14,6 +14,15 @@ extern "C" {
 #endif
 #ifndef PROTO_LOCAL_MailCheck_LoadWordList
 void MailCheck_LoadWordList();
+#endif
+#ifndef PROTO_LOCAL_MailCheck_IsSeparator
+BOOL MailCheck_IsSeparator(u32 c);
+#endif
+#ifndef PROTO_LOCAL_MailCheck_MatchWord
+BOOL MailCheck_MatchWord(u8 *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_MailCheck_MatchWordAt
+BOOL MailCheck_MatchWordAt(u8 *p, s32 n, s32 off);
 #endif
 #ifdef __cplusplus
 }
@@ -25,19 +34,10 @@ extern "C" {
 BOOL String_LoadByIndexB(MsgString *buf, const char *name, u32 key);
 #endif
 #ifndef PROTO_LOCAL_MailCheck_GradeLetter
-s32 MailCheck_GradeLetter(u8 *self);
+s32 MailCheck_GradeLetter(LetterView *self);
 #endif
 #ifndef PROTO_LOCAL_Letter_GetBodyLength
-s32 Letter_GetBodyLength(u8 *self);
-#endif
-#ifndef PROTO_LOCAL_MailCheck_IsSeparator
-BOOL MailCheck_IsSeparator(u32 c);
-#endif
-#ifndef PROTO_LOCAL_MailCheck_MatchWord
-BOOL MailCheck_MatchWord(u8 *p, s32 n);
-#endif
-#ifndef PROTO_LOCAL_MailCheck_MatchWordAt
-BOOL MailCheck_MatchWordAt(u8 *p, s32 n, s32 off);
+s32 Letter_GetBodyLength(LetterView *self);
 #endif
 }
 #ifndef PROTO_LOCAL_sMailCheckWords

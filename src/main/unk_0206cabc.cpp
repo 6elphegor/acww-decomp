@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -23,69 +22,6 @@
 #include "proto/main/unk_0206cabc.h"
 #include "proto/main/unk_020b2c50.h"
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u8 sMailCheckSeparators[];
-}
-
-extern "C" {
-extern char sMailCheckBankName[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
-}
-
-extern "C" {
-void MsgTextLabel_Destroy(TextLabel *obj);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-
-
-
-class MsgString;
-
-
-
-
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
 
 MsgString129::MsgString129() { clear(); }
 
@@ -93,7 +29,7 @@ MsgString129::~MsgString129() {}
 
 u32 MsgString129::capacity() { return 0x81; }
 
-u8 *MsgString129::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *MsgString129::data() { return text; }
 
 MsgString33B::MsgString33B() { clear(); }
 
@@ -101,5 +37,5 @@ MsgString33B::~MsgString33B() {}
 
 u32 MsgString33B::capacity() { return 0x21; }
 
-u8 *MsgString33B::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *MsgString33B::data() { return text; }
 

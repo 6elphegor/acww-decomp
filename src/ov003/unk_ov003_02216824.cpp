@@ -150,7 +150,7 @@ BOOL Mailbox::initBuilding() {
     v.y = position.y;
     v.z = position.z;
     v.y = v.y + 0x1000;
-    TouchPicker_Get()->addSphere(&touchSphere, &v, (VecFx32 *)0x1000, 7, b);  // (the radius in the pointer argument)
+    TouchPicker_Get()->addSphere(&touchSphere, &v, 0x1000, 7, b);
     canUse = 1;
     if (!Scene_InTown()) {
         canUse = 0;

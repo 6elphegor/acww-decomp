@@ -7,29 +7,10 @@
 struct PlayerPalettePool;
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_PlayerPalettePool_Create
-void PlayerPalettePool_Create(void *parent);
-#endif
-#ifndef PROTO_LOCAL_PlayerPalettePool_Destroy
-void PlayerPalettePool_Destroy();
-#endif
-#ifndef PROTO_LOCAL_PlayerPaletteRef_Destruct
-void PlayerPaletteRef_Destruct();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_Fishing_StepArc
-BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag);
 #endif
 #ifndef PROTO_LOCAL_ItemSync_Apply
 BOOL ItemSync_Apply(u8 *p);
@@ -39,6 +20,12 @@ void ItemSync_ApplyAndBroadcast(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_ItemSync_SetAtUnit
 void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
+#endif
+#ifndef PROTO_LOCAL_PlayerPalettePool_Create
+void PlayerPalettePool_Create(void *parent);
+#endif
+#ifndef PROTO_LOCAL_PlayerPalettePool_Destroy
+void PlayerPalettePool_Destroy();
 #endif
 #ifndef PROTO_LOCAL_PlayerPalette_GetPath
 char *PlayerPalette_GetPath(u32 x);
@@ -53,16 +40,13 @@ s32 PlayerPalette_GetHairSize();
 s32 PlayerPalette_GetSlotSize();
 #endif
 #ifndef PROTO_LOCAL_PlayerPalettePool_AllocBuffers
-void PlayerPalettePool_AllocBuffers(u32 *out);
+void PlayerPalettePool_AllocBuffers(u8 **out);
 #endif
 #ifndef PROTO_LOCAL_PlayerPalettePool_FreeBuffers
-void PlayerPalettePool_FreeBuffers(u32 *a);
+void PlayerPalettePool_FreeBuffers(u8 **a);
 #endif
 #ifndef PROTO_LOCAL_PlayerPalettePool_GetBuffer
-s32 PlayerPalettePool_GetBuffer(u32 *a, u32 i);
-#endif
-#ifndef PROTO_LOCAL_PlayerPaletteRef_Init
-void PlayerPaletteRef_Init(u8 *p);
+u8 *PlayerPalettePool_GetBuffer(u8 **a, u32 i);
 #endif
 #ifndef PROTO_LOCAL_PlayerPaletteRef_Assign
 void PlayerPaletteRef_Assign(u8 *p, u8 v);
@@ -71,16 +55,25 @@ void PlayerPaletteRef_Assign(u8 *p, u8 v);
 void PlayerPaletteRef_SetSlot(u8 *p, u8 v);
 #endif
 #ifndef PROTO_LOCAL_PlayerPaletteRef_GetSkin
-s32 PlayerPaletteRef_GetSkin(u8 *p);
+u8 *PlayerPaletteRef_GetSkin(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerPaletteRef_GetHair
-s32 PlayerPaletteRef_GetHair(u8 *p);
+u8 *PlayerPaletteRef_GetHair(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerPaletteRef_LoadSkin
-void PlayerPaletteRef_LoadSkin(u32 x, u32 y);
+void PlayerPaletteRef_LoadSkin(u8 *x, u32 y);
 #endif
 #ifndef PROTO_LOCAL_PlayerPaletteRef_LoadHair
-void PlayerPaletteRef_LoadHair(u32 x, u32 y);
+void PlayerPaletteRef_LoadHair(u8 *x, u32 y);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Fishing_StepArc
+BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerPalettePool

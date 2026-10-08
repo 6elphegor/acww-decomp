@@ -12,7 +12,7 @@
 
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
-void Random_SetSeed(void *st, u32 v);
+void Random_SetSeed(u32 *seed, u32 v);
 void Clock_GetDateTime(void *p);
 BOOL Item_TestInfoFlag4(u16 *p);
 BOOL Item_IsFurniture(u16 *p);

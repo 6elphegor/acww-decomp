@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022156e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupToggleItems
+extern u8 sWfcManualSetupToggleItems[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b050
+extern u8 data_ov001_0222b050[14];
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222b060
 extern char data_ov001_0222b060[];
@@ -19,6 +22,21 @@ extern char data_ov001_0222b078[];
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222b090
 extern char data_ov001_0222b090[];
+#endif
+#ifndef PROTO_LOCAL_sWfcAddressFormat
+extern u16 sWfcAddressFormat[16];
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupCursorItem
+extern u8 sWfcManualSetupCursorItem;
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupMode
+extern u8 sWfcManualSetupMode;
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupCursorRow
+extern u8 sWfcManualSetupCursorRow;
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupScroll
+extern u16 sWfcManualSetupScroll;
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_Enter
 void WfcManualSetup_Enter();
@@ -41,6 +59,18 @@ void WfcManualSetup_Update();
 #ifndef PROTO_LOCAL_WfcManualSetup_HandleKeys
 void WfcManualSetup_HandleKeys();
 #endif
+#ifndef PROTO_LOCAL_WfcManualSetup_HandleTouch
+BOOL WfcManualSetup_HandleTouch();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_SelectItem
+void WfcManualSetup_SelectItem(u32 a);
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_SetAutoIp
+void WfcManualSetup_SetAutoIp(u32 a);
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_SetAutoDns
+void WfcManualSetup_SetAutoDns(u32 a);
+#endif
 #ifndef PROTO_LOCAL_WfcManualSetup_HandleScrollBar
 void WfcManualSetup_HandleScrollBar();
 #endif
@@ -55,72 +85,6 @@ void WfcManualSetup_Exit();
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_Redraw
 void WfcManualSetup_Redraw();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_PlaceObjs
-void WfcManualSetup_PlaceObjs();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_ScrollBgTask
-void WfcManualSetup_ScrollBgTask();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_DrawCursor
-void WfcManualSetup_DrawCursor();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_UpdateCursorItem
-void WfcManualSetup_UpdateCursorItem();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_HighlightButton
-void WfcManualSetup_HighlightButton();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_ToggleFlashTask
-void WfcManualSetup_ToggleFlashTask();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_FlashToggle
-void WfcManualSetup_FlashToggle();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_InvalidDialog
-void WfcManualSetup_InvalidDialog();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_WaitDialogClosed
-void WfcManualSetup_WaitDialogClosed();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcManualSetupToggleItems
-extern u8 sWfcManualSetupToggleItems[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b050
-extern u8 data_ov001_0222b050[14];
-#endif
-#ifndef PROTO_LOCAL_sWfcAddressFormat
-extern u16 sWfcAddressFormat[16];
-#endif
-#ifndef PROTO_LOCAL_sWfcManualSetupCursorItem
-extern u8 sWfcManualSetupCursorItem;
-#endif
-#ifndef PROTO_LOCAL_sWfcManualSetupMode
-extern u8 sWfcManualSetupMode;
-#endif
-#ifndef PROTO_LOCAL_sWfcManualSetupCursorRow
-extern u8 sWfcManualSetupCursorRow;
-#endif
-#ifndef PROTO_LOCAL_sWfcManualSetupScroll
-extern u16 sWfcManualSetupScroll;
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_HandleTouch
-BOOL WfcManualSetup_HandleTouch();
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_SelectItem
-void WfcManualSetup_SelectItem(u32 a);
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_SetAutoIp
-void WfcManualSetup_SetAutoIp(u32 a);
-#endif
-#ifndef PROTO_LOCAL_WfcManualSetup_SetAutoDns
-void WfcManualSetup_SetAutoDns(u32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_DrawRowValue
 void WfcManualSetup_DrawRowValue(s32 idx, s32 arg);
@@ -140,6 +104,9 @@ void WfcManualSetup_DrawString(u8 *a, s32 b);
 #ifndef PROTO_LOCAL_WfcManualSetup_DrawAddress
 void WfcManualSetup_DrawAddress(u8 *a, s32 b);
 #endif
+#ifndef PROTO_LOCAL_WfcManualSetup_PlaceObjs
+void WfcManualSetup_PlaceObjs();
+#endif
 #ifndef PROTO_LOCAL_WfcManualSetup_HitTest
 s32 WfcManualSetup_HitTest();
 #endif
@@ -150,10 +117,19 @@ s32 WfcManualSetup_GetScreenRow(s32 a);
 s32 WfcManualSetup_GetListRow(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_ScrollUpTask
-void WfcManualSetup_ScrollUpTask(s32 a);
+void WfcManualSetup_ScrollUpTask(void *task);
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_ScrollDownTask
-void WfcManualSetup_ScrollDownTask(s32 a);
+void WfcManualSetup_ScrollDownTask(void *task);
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_ScrollBgTask
+void WfcManualSetup_ScrollBgTask();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_DrawCursor
+void WfcManualSetup_DrawCursor();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_UpdateCursorItem
+void WfcManualSetup_UpdateCursorItem();
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_SetCursor
 void WfcManualSetup_SetCursor(u32 a);
@@ -161,12 +137,28 @@ void WfcManualSetup_SetCursor(u32 a);
 #ifndef PROTO_LOCAL_WfcManualSetup_MoveCursor
 void WfcManualSetup_MoveCursor(s32 a);
 #endif
+#ifndef PROTO_LOCAL_WfcManualSetup_HighlightButton
+void WfcManualSetup_HighlightButton();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_ToggleFlashTask
+void WfcManualSetup_ToggleFlashTask();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_FlashToggle
+void WfcManualSetup_FlashToggle();
+#endif
 #ifndef PROTO_LOCAL_WfcManualSetup_ValidateSettings
 BOOL WfcManualSetup_ValidateSettings();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_InvalidDialog
+void WfcManualSetup_InvalidDialog();
+#endif
+#ifndef PROTO_LOCAL_WfcManualSetup_WaitDialogClosed
+void WfcManualSetup_WaitDialogClosed();
 #endif
 #ifndef PROTO_LOCAL_WfcManualSetup_SetMode
 void WfcManualSetup_SetMode(u32 v);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

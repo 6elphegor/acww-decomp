@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221c5fc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcUsbWaitResult
+extern u8 sWfcUsbWaitResult;
+#endif
+#ifndef PROTO_LOCAL_WfcUsbWait_IsLidClosed
+s32 WfcUsbWait_IsLidClosed();
 #endif
 #ifndef PROTO_LOCAL_WfcUsbWait_Enter
 void WfcUsbWait_Enter();
@@ -47,6 +50,9 @@ void WfcUsbWait_FadeOut();
 #ifndef PROTO_LOCAL_WfcUsbWait_Exit
 void WfcUsbWait_Exit();
 #endif
+#ifndef PROTO_LOCAL_WfcUsbWait_OnScanResult
+void WfcUsbWait_OnScanResult(s32 a);
+#endif
 #ifndef PROTO_LOCAL_WfcUsbWait_NotFoundDialog
 void WfcUsbWait_NotFoundDialog();
 #endif
@@ -60,20 +66,6 @@ void WfcUsbWait_GrantedDialog();
 void WfcUsbWait_WaitGrantedClosed();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcUsbWaitResult
-extern u8 sWfcUsbWaitResult;
-#endif
-#ifndef PROTO_LOCAL_WfcUsbWait_IsLidClosed
-s32 WfcUsbWait_IsLidClosed();
-#endif
-#ifndef PROTO_LOCAL_WfcUsbWait_OnScanResult
-void WfcUsbWait_OnScanResult(u32 a);
-#endif
 }
 #endif
 

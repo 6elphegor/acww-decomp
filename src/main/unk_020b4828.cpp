@@ -182,7 +182,6 @@ void Clock_GetDayMonth(u8 *out);
 void TouchPick_Cast(s32, u32, u32, u32);
 void _ZN15BgModelCacheObj5setupEj(s32, s32);
 void ItemInfo_LoadIndoor(s32);
-void _ZN15TouchPickerView5resetEv(void *self);
 s32 ResCache_Destroy();
 void ResCache_Init();
 void VramQueue2d_Init();
@@ -649,7 +648,7 @@ BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
     sCurSceneId = SceneWarp_GetScene((u8*)&sSceneWarpRequest);
     FieldScene_AcquireOv002();
     gGfxFrameHooks = (u32)&sFieldGfxFrameHooks;
-    _ZN15TouchPickerView5resetEv(Scene_GetTouchPicker());
+    ((TouchPicker *)(Scene_GetTouchPicker()))->reset();
     data_021ef2d4 = 0;
     sOverlaySceneId = sCurSceneId;
     FieldScene_AcquireOverlays();

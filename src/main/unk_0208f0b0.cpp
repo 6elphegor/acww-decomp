@@ -51,7 +51,7 @@ extern "C" void TownExchange_Clear(void *p) {
     TownExchangeRecord *r = (TownExchangeRecord *)p;
     MI_CpuFill8(r, 0, sizeof(TownExchangeRecord));
     Letter_Clear((LetterView *)r);
-    ConstellationRecord_Clear(&r->unk_0f4);
+    ConstellationRecord_Clear((ConstellationRecord *)&r->unk_0f4);  // (the save record keeps its bytes)
 }
 
 void TownExchangeRecord::setChecksum(u32 v) { checksum = v; }

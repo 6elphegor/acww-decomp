@@ -66,6 +66,7 @@ public:
 
 extern "C" {
 char *Msg_SkipLines(char *p, u32 n);
+void OS_ResetSystem(u32 parameter);  // src/autoload_2/unk_02115468.c
 u32 TextLabel_MeasureMsgWidth(MsgString *obj);
 MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
 void MsgTextLabel_Destroy(MsgTextLabel *obj);
@@ -664,6 +665,20 @@ void CommCautionWindow::execEnded() {
         if (a != 0 || b != 0) {
             enterReset();
         }
+    }
+}
+
+// The reset state (the DS has these two in unk_020376c0, there for a DS-offset view of this class)
+void CommCautionWindow::enterReset() {
+    state = 7;
+    timer = 1;
+    modelVisible = 1;
+}
+
+void CommCautionWindow::execReset() {
+    timer = timer - 1;
+    if (timer <= 0) {
+        OS_ResetSystem(0);
     }
 }
 

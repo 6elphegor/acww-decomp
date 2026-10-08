@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "talk/MsgStringAttr.h"
 #include "item/ItemId.h"
@@ -7,22 +6,10 @@
 #include "talk/EncodedString.h"
 #include "talk/EncodedString16Buf.h"
 #include "game/InfoTableSet.h"
+#include "item/ItemInfoTables.h"
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_02061478.h"
-
-
-
-class ItemInfoTables {
-public:
-    ItemInfoTables();
-    ~ItemInfoTables();
-    RecordFile always;
-    RecordFile indoor;
-    RecordFile dma;
-    RecordFile series;
-};
-
 
 
 
@@ -33,7 +20,7 @@ s32 ItemInfo_GetNameForm(u16 *);
 u16 *ItemInfo_GetName(u16 *p);
 void ItemInfo_FreeIndoor();
 void ItemInfo_LoadIndoor(s32 a);
-s32 ItemInfo_Exit();
+void ItemInfo_Exit();
 s32 ItemInfo_Init();
 BOOL ItemInfo_IsReady();
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -42,7 +29,7 @@ BOOL Item_IsNormalItem(u16 *p);
 BOOL Item_IsFlowerAltItem(u16 *p);
 BOOL Item_IsFlowerItem(u16 *p);
 void Item_FromPlacedForm(u16 *out, u16 *in);
-u32 Series_GetName(s32);
+u8 *Series_GetName(s32);
 BOOL ItemInfo_IsHoldable(u16 *p);
 s32 ItemInfo_GetSeason(u16 *p);
 s32 ItemInfo_GetUnk07(u16 *p);
@@ -55,13 +42,10 @@ s32 ItemInfo_GetUnk02(u16 *p);
 void ItemInfo_CountClass1dHeadwear();
 void ItemInfo_CountFlowerItems();
 void ItemInfo_CountHoldable();
-void ItemInfoTables_FreeIndoor(void *);
-void ItemInfoTables_LoadIndoor(void *, s32);
-s32 ItemInfoTables_Close(void *);
-s32 ItemInfoTables_Open(void *);
-s32 _ZN10RecordFile5closeEv(void *);
-void func_0206d964(void *);
-void func_0206d974(void *);
+void ItemInfoTables_FreeIndoor(ItemInfoTables *);
+void ItemInfoTables_LoadIndoor(ItemInfoTables *, s32);
+void ItemInfoTables_Close(ItemInfoTables *);
+s32 ItemInfoTables_Open(ItemInfoTables *);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
@@ -312,7 +296,7 @@ static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
 static inline u8 *Unk_02061e0c_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
+    return gItemInfo.getAlways()->getRecord(i);
 }
 
 static inline BOOL Unk_02061e0c_InRange(u16 *p) {
@@ -335,7 +319,7 @@ static inline u16 Unk_02061e0c_Conv(u16 *p) {
 static inline u8 *Unk_02062024_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getDma()))->getRecord(i);
+    return gItemInfo.getDma()->getRecord(i);
 }
 
 extern "C" u16 *ItemInfo_GetName(u16 *p);
@@ -343,7 +327,7 @@ extern "C" u16 *ItemInfo_GetName(u16 *p);
 static inline BOOL Unk_0206198c_Tail(u32 v, u32 sh) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = ((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
+    u8 *r = gItemInfo.getAlways()->getRecord(i);
     if (r) return (r[9] >> sh) & 1 ? TRUE : FALSE;
     return FALSE;
 }
@@ -358,36 +342,37 @@ BOOL EncodedString16Buf::copyTo(u8 *out, s32 n) {
 
 ItemInfoTables::ItemInfoTables() {}
 
+// (~InfoTableSet closes the three tables once more: RecordFile::close is idempotent)
 ItemInfoTables::~ItemInfoTables() {
-    ((InfoTableSet *)(this))->close();
-    ((RecordFile *)(&series))->close();
+    close();
+    series.close();
 }
 
-s32 ItemInfoTables_Open(void *o) {
+s32 ItemInfoTables_Open(ItemInfoTables *o) {
     BOOL ok;
     sHoldableItemCount = 0;
     ok = TRUE;
-    ok = (ok | ((InfoTableSet *)(o))->open((void *)(void *)("/item_info/always.bin"), 0xc, (void *)(void *)("/item_info/indoor.bin"), 4, (void *)(void *)("/item_info/dma.bin"), 0x14, 0x600)) ? TRUE : FALSE;
+    ok = (ok | o->open((void *)"/item_info/always.bin", 0xc, (void *)"/item_info/indoor.bin", 4, (void *)"/item_info/dma.bin", 0x14, 0x600)) ? TRUE : FALSE;
     if (ok) {
         ItemInfo_CountHoldable();
         ItemInfo_CountFlowerItems();
         ItemInfo_CountClass1dHeadwear();
     }
-    ok = (ok | ((RecordFile *)(&((ItemInfoTables *)o)->series))->open((void *)(void *)("/item_info/series.bin"), 0x14, 0x80)) ? TRUE : FALSE;
+    ok = (ok | o->series.open((void *)"/item_info/series.bin", 0x14, 0x80)) ? TRUE : FALSE;
     if (ok) {
-        ((RecordFile *)(&((ItemInfoTables *)o)->series))->loadAll();
+        o->series.loadAll();
     }
     return ok;
 }
 
-s32 ItemInfoTables_Close(void *o) {
-    ((InfoTableSet *)(o))->close();
-    return _ZN10RecordFile5closeEv(&((ItemInfoTables *)o)->series);
+void ItemInfoTables_Close(ItemInfoTables *o) {
+    o->close();
+    o->series.close();
 }
 
-void ItemInfoTables_LoadIndoor(void *p, s32 x) { ((InfoTableSet *)(p))->loadIndoor(x); }
+void ItemInfoTables_LoadIndoor(ItemInfoTables *p, s32 x) { p->loadIndoor(x); }
 
-void ItemInfoTables_FreeIndoor(void *p) { ((InfoTableSet *)(p))->freeIndoor(); }
+void ItemInfoTables_FreeIndoor(ItemInfoTables *p) { p->freeIndoor(); }
 
 void ItemInfo_CountHoldable() {
     u16 i;
@@ -434,14 +419,14 @@ void ItemInfo_CountClass1dHeadwear() {
 
 BOOL ItemInfo_IsReady() { return TRUE; }
 
-s32 ItemInfo_Init() { return ItemInfoTables_Open((&gItemInfo)); }
+s32 ItemInfo_Init() { return ItemInfoTables_Open(&gItemInfo); }
 
-s32 ItemInfo_Exit() { return ItemInfoTables_Close((&gItemInfo)); }
+void ItemInfo_Exit() { ItemInfoTables_Close(&gItemInfo); }
 
-void ItemInfo_LoadIndoor(s32 a) { ItemInfoTables_LoadIndoor((&gItemInfo), a); }
+void ItemInfo_LoadIndoor(s32 a) { ItemInfoTables_LoadIndoor(&gItemInfo, a); }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void ItemInfo_FreeIndoor() { ItemInfoTables_FreeIndoor((&gItemInfo)); }
+void ItemInfo_FreeIndoor() { ItemInfoTables_FreeIndoor(&gItemInfo); }
 
 u16 *ItemInfo_GetName(u16 *p) {
     if (Unk_02061e0c_InRange(p)) {
@@ -525,7 +510,7 @@ s32 ItemInfo_GetClass(u16 *p) {
 s32 ItemInfo_GetUnk07(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
+    u8 *r = gItemInfo.getAlways()->getRecord(i);
     if (r) return r[7];
     return 0;
 }
@@ -534,7 +519,7 @@ s32 ItemInfo_GetSeason(u16 *p) {
     if (ItemInfo_GetKind(p) == 5) {
         u32 i = *p & 0xfff;
         if (i >= 0x56e) i = 0x56d;
-        u8 *r = (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
+        u8 *r = gItemInfo.getAlways()->getRecord(i);
         if (r) return r[8];
         return 0;
     }
@@ -624,7 +609,7 @@ extern "C" BOOL ItemInfo_TestFlag4(u16 *p) {
 extern "C" u32 ItemInfo_GetIndoorUnk1(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = ((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getIndoor()))->getRecord(i);
+    u8 *r = gItemInfo.getIndoor()->getRecord(i);
     if (r) return r[1];
     return 0;
 }
@@ -632,25 +617,25 @@ extern "C" u32 ItemInfo_GetIndoorUnk1(u16 *p) {
 extern "C" u32 ItemInfo_GetIndoorUnk0(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = ((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getIndoor()))->getRecord(i);
+    u8 *r = gItemInfo.getIndoor()->getRecord(i);
     if (r) return r[0];
     return 0;
 }
 
 extern "C" u32 Series_GetType(s32 i) {
     if (i < 0x4a) {
-        u8 *r = ((RecordFile *)((&gItemInfo.series)))->getRecord(i);
+        u8 *r = gItemInfo.series.getRecord(i);
         if (r) return *r;
     }
     return 3;
 }
 
-extern "C" u32 Series_GetName(s32 i) {
+extern "C" u8 *Series_GetName(s32 i) {
     if (i < 0x4a) {
-        u8 *r = ((RecordFile *)((&gItemInfo.series)))->getRecord(i);
-        if (r) return (u32)r + 1;
+        u8 *r = gItemInfo.series.getRecord(i);
+        if (r) return r + 1;
     }
-    return 0;
+    return NULL;
 }
 
 extern "C" u32 FtrClass_GetBasePoints(s32 i) {
@@ -658,10 +643,10 @@ extern "C" u32 FtrClass_GetBasePoints(s32 i) {
     return 0;
 }
 
-extern "C" u32 Item_GetIconModelName(s32 a, s32 b) {
+extern "C" const char *Item_GetIconModelName(s32 a, s32 b) {
     if (a < 0x49) {
         u32 c = b == 0 ? 1 : 0;
-        return (u32)(uptr)sItemIconModelNames[a * 2 + (u8)c];  // (pairs of pointers: 16 bytes on 64-bit hosts)
+        return sItemIconModelNames[a * 2 + (u8)c];
     }
     return Item_GetIconModelName(0, b);
 }

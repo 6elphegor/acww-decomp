@@ -3,14 +3,14 @@
 
 #include "ds_stdarg.h"
 #include "gfx/G3dResAccess.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
+#include "game/Random.h"
+#include "proto/autoload_2/unk_020e7500.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021127c0.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_02055c38.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 
@@ -35,39 +35,6 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 
@@ -75,49 +42,11 @@ extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 
-extern "C" {
-u32 Random_NextBelow(void *state, u32 n);
-}
-
-extern "C" {
-u32 Random_Next(void *state);
-}
 
 extern "C" {
 s32 FS_UnloadOverlay(s32 a, s32 b);
 }
 
-extern "C" {
-}
-
-extern "C" {
-extern u8 gRandom[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern void *gCurrentHeap;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 BOOL FS_OpenFileFast(void *f, FSFileID id);
@@ -143,65 +72,6 @@ extern "C" {
 u32 _u32_div_f(u32 a, u32 b);
 }
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-#define Heap_setFlags _ZN4Heap8setFlagsEj
-u32 Heap_setFlags(void *h, u32 flags);
-}
-
-extern "C" {
-}
-
-extern "C" {
-#define Heap_getMaxFreeBlockSize _ZN4Heap19getMaxFreeBlockSizeEv
-u32 Heap_getMaxFreeBlockSize(void *h);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void DC_StoreAll();
-}
-
-extern "C" {
-void DC_FlushAll();
-}
-
-extern "C" {
-void MI_InitUncompContextLZ(void *st, void *dst, void *src);
-}
-
-extern "C" {
-s32 MI_ReadUncompLZ8(void *st, void *p, s32 n);
-}
-
-extern "C" {
-extern void *gRootHeap;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 struct FileBlockCache {
     u16 tbl[0x100];
@@ -213,8 +83,6 @@ struct FileBlockCache {
 extern "C" {
 enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_TF0 = 0xf0 };
 }
-
-
 
 
 extern "C" BOOL File_Exists(const char *a) {
@@ -305,7 +173,7 @@ extern "C" void BlinkTimer_Construct() {}
 extern "C" void BlinkTimer_Destruct() {}
 
 extern "C" void BlinkTimer_StartBlink(u8 *p) {
-    p[1] = (Random_Next(gRandom) >> 31) + 1;
+    p[1] = (Random_Next(&gRandom.seed) >> 31) + 1;
 }
 
 extern "C" BOOL BlinkTimer_Update(u8 *p) {
@@ -314,7 +182,7 @@ extern "C" BOOL BlinkTimer_Update(u8 *p) {
         t = p[1];
         if (t == 0) {
             BlinkTimer_StartBlink(p);
-            p[0] = Random_NextBelow(gRandom, 0x5a) + 0x1e;
+            p[0] = Random_NextBelow(&gRandom.seed, 0x5a) + 0x1e;
         } else {
             p[1] = t - 1;
             return TRUE;
@@ -362,9 +230,9 @@ extern "C" s32 Math_AngleToDir8(s32 x) {
 }
 
 #pragma thumb off
-extern "C" u32 Random_GlobalBelow(u32 n) { return Random_NextBelow(gRandom, n); }
+extern "C" u32 Random_GlobalBelow(u32 n) { return Random_NextBelow(&gRandom.seed, n); }
 
-extern "C" u32 Random_GlobalBelow2(u32 n) { return Random_NextBelow(gRandom, n); }
+extern "C" u32 Random_GlobalBelow2(u32 n) { return Random_NextBelow(&gRandom.seed, n); }
 #pragma thumb reset
 
 extern "C" s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b) {

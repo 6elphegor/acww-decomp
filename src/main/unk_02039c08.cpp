@@ -1,20 +1,12 @@
 #include "types.h"
 #include "gfx/ViewFrustum.h"
 #include "item/ItemPickSpec.h"
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostAndFound_AddDailyItems  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostAndFound_InitRandom  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
 #include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 
-struct ItemPickSpecPod {
-    u32 listIndex;
-    u32 itemClass;
-};
-
 extern "C" {
-void ItemPickSpec_Destruct(ItemPickSpecPod *o);
-void ItemPick_One(u16 *a, ItemPickSpecPod *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL Item_GetIfNotCreature(u16 *a, u16 *b);
 s32 MTX_MultVec43(void *v, void *m, void *out);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -23,9 +15,12 @@ void VEC_CrossProduct(void *dst, void *a, void *b);
 void VEC_Normalize(void *dst, void *src);
 }
 
-extern u16 gSaveLostAndFound[15];
-extern u16 gSaveRecycleBin[15];
 extern s16 data_02135f44[];
+extern SaveData gSaveData;
+
+// The lost-and-found and the recycle bin of the save data: 15 item ids each
+static inline u16 *LostAndFound_Items() { return (u16 *)gSaveData.lostAndFound; }
+static inline u16 *RecycleBin_Items() { return (u16 *)gSaveData.recycleBin; }
 
 
 
@@ -102,7 +97,7 @@ s32 ViewFrustum::testSphere(void *m, void *v, s32 r, s32 *out) {
 }
 
 extern "C" void LostAndFound_Add(u16 v) {
-    u16 *p = gSaveLostAndFound;
+    u16 *p = LostAndFound_Items();
     s32 idx = 15;
     for (s32 i = 0; i < 15; i++) {
         if (p[i] == 0xfff1) {
@@ -121,7 +116,7 @@ extern "C" void LostAndFound_Add(u16 v) {
 
 extern "C" BOOL LostAndFound_HasAny() {
     s32 i;
-    u16 *p = gSaveLostAndFound;
+    u16 *p = LostAndFound_Items();
     for (i = 0; i < 15; i++) {
         if (p[i] != 0xfff1) {
             return TRUE;
@@ -132,7 +127,7 @@ extern "C" BOOL LostAndFound_HasAny() {
 
 extern "C" s32 LostAndFound_Count() {
     s32 n = 0;
-    u16 *p = gSaveLostAndFound;
+    u16 *p = LostAndFound_Items();
     for (s32 i = 0; i < 15; i++) {
         if (p[i] != 0xfff1) {
             n++;
@@ -152,7 +147,7 @@ extern "C" BOOL RecycleBin_Add(u16 v) {
 
 extern "C" u16 RecycleBin_Get(u32 i) {
     if (i < 15) {
-        return gSaveRecycleBin[i];
+        return RecycleBin_Items()[i];
     }
     return 0xfff1;
 }
@@ -163,7 +158,7 @@ extern "C" BOOL RecycleBin_Set(u32 i, u16 v) {
         t[0] = v;
         t[1] = 0xfff1;
         if (Item_GetIfNotCreature(&t[0], &t[1])) {
-            gSaveRecycleBin[i] = t[1];
+            RecycleBin_Items()[i] = t[1];
         }
         return TRUE;
     }
@@ -196,18 +191,18 @@ extern "C" void LostAndFound_InitRandom(u16 *p) {
     for (s32 i = 0; i < 3; i++) {
         s32 tbl[3] = {1, 0, 2};
         u16 out[2];
-        ItemPickSpecPod o1;
-        ((ItemPickSpec *)(void *)(&o1))->set(tbl[Random_GlobalBelow(3)], 0);
-        ItemPick_One(out, &o1, 0, 0, 1, 1, 0);
-        ItemPickSpec_Destruct(&o1);
+        {
+            ItemPickSpec o1;
+            o1.set(tbl[Random_GlobalBelow(3)], 0);
+            ItemPick_One(out, &o1, NULL, NULL, 1, 1, NULL);
+        }
         p[i] = out[0];
     }
 }
 
 extern "C" void LostAndFound_AddDailyItems(u16 *arr, s32 n) {
     s32 tbl[3] = {1, 0, 2};
-    u32 out;
-    ItemPickSpecPod o1;
+    u16 out[2];
     s32 cnt = 0;
     s32 i;
     for (i = 0; i < 15; i++) {
@@ -236,10 +231,12 @@ extern "C" void LostAndFound_AddDailyItems(u16 *arr, s32 n) {
                     idx = 2;
                 }
                 if (idx != 0xff) {
-                    ((ItemPickSpec *)(void *)(&o1))->set(tbl[idx], 0);
-                    ItemPick_One((u16 *)&out, &o1, 0, 0, 1, 1, 0);
-                    ItemPickSpec_Destruct(&o1);
-                    *e = *(u16 *)&out;
+                    {
+                        ItemPickSpec o1;
+                        o1.set(tbl[idx], 0);
+                        ItemPick_One(out, &o1, NULL, NULL, 1, 1, NULL);
+                    }
+                    *e = out[0];
                     cnt++;
                 }
                 break;

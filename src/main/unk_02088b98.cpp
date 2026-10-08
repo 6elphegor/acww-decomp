@@ -22,8 +22,6 @@
 BugNetTarget *data_021ce63c;  // the bug-net targets of the frame (BugNetTarget::submit)
 
 
-
-
 extern "C" {
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -67,7 +65,7 @@ u32 StaticCollider::getOwnerId() { return FALSE; }
 
 VecFx32 *StaticCollider::getPos() { return &position; }
 
-u32 ActorPlacedCollider::getOwnerId() { return ((ActorFollowCollider *)(this))->ActorFollowCollider::getOwnerId(); }
+u32 ActorPlacedCollider::getOwnerId() { return ActorFollowCollider::getOwnerId(); }
 
 VecFx32 *ActorPlacedCollider::getPos() { return &position; }
 
@@ -276,12 +274,12 @@ ActorFollowCollider::ActorFollowCollider() {
 ActorFollowCollider::~ActorFollowCollider() {
 }
 
-VecFx32 *ActorFollowCollider::getPos() { return (VecFx32 *)(ownerActor + 0x5c); }
+VecFx32 *ActorFollowCollider::getPos() { return &ownerActor->position; }
 
-u32 ActorFollowCollider::getOwnerId() { return *(u32 *)(ownerActor + 4); }
+u32 ActorFollowCollider::getOwnerId() { return ownerActor->id; }
 
 void ActorFollowCollider::setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
-    ownerActor = (u8 *)p;
+    ownerActor = static_cast<Actor *>(p);
     setup(a, b, c, d, e, f, g);
 }
 

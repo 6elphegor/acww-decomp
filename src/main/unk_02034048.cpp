@@ -1,35 +1,30 @@
 #include "types.h"
+#include "item/ItemId.h"
 #include "game/Unk_02034250_Id.h"
 #include "net/CommManager.h"
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
+#include "player/PlayerData.h"
+#include "save/SaveData.h"
 #include "proto/main/unk_02034048.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/ov004/unk_ov004_0222a500.h"
 
-// 2-byte element (0xfff1 = none), constructed by __sinit; destructor is in another unit (0x02004b60)
-class ItemId {
-public:
-    u16 id;
-
-    MODERN_EMIT ItemId() { id = 0xfff1; }
-    ~ItemId();
-};
+// ItemId's default constructor (0xfff1 = none) is defined here; the destructor is in another unit (0x02004b60)
+ItemId::ItemId() { id = 0xfff1; }
 
 
 extern "C" {
 extern u8 gFieldSceneKind;
-extern void *gCommManager;
-extern u8 gSavePlayers[];
-extern u8 gSaveHouse[];
+extern CommManager *gCommManager;
 
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
-u32 _ZN10PlayerData11getPlayerIdEv(void *);
 s32 Scene_GetCurrent();
 BOOL SceneId_IsHouseRoom(s32 a);
 
 }
 
+extern SaveData gSaveData;
 extern ItemId sRoomWallFloorNoItem;
 extern ItemId sSceneWallpapers[0x33];
 extern ItemId sSceneCarpets[0x33];
@@ -48,25 +43,25 @@ struct RoomWallFloorPacket {
 extern "C" void RoomWallFloor_MakeDesignItem(u16 *out, s32 a) {
     u32 x = a & 7;
     u32 y = 0;
-    void *p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (p) {
-        y = PlayerDataArray_FindById(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(p)) & 3;
+        y = PlayerDataArray_FindById(gSaveData.players, (u16 *)p->getPlayerId()) & 3;
     }
     Item_SetDesign(out, y, x);
 }
 
 extern "C" void RoomWallFloor_Send(u16 *id, s32 a, s32 b, s32 c) {
-    if (((CommManager *)(gCommManager))->isOnline()) {
+    if (gCommManager->isOnline()) {
         Unk_02034320_Pkt pkt;
         pkt.a = *id;
         pkt.b = (pkt.b & ~0x3f) | (Scene_GetCurrent() & 0x3f);
         pkt.b = (pkt.b & ~0x40) | ((b & 1) << 6);
         pkt.b = (pkt.b & ~0x80) | (((u16)a & 1) << 7);
         pkt.b = (pkt.b & ~0x100) | ((c & 1) << 8);
-        void *obj = gCommManager;
-        ((CommManager *)(obj))->beginRecord();
-        ((CommManager *)(obj))->writeRecord((u8 *)(&pkt), 4);
-        ((CommManager *)(obj))->endRecord(0x14, 4);
+        CommManager *obj = gCommManager;
+        obj->beginRecord();
+        obj->writeRecord((u8 *)(&pkt), 4);
+        obj->endRecord(0x14, 4);
     }
 }
 
@@ -110,7 +105,7 @@ extern "C" void *RoomWallFloor_SetCarpetDesign(s32 a, s32 b, s32 c, s32 d) {
 
 extern "C" BOOL RoomWallFloor_RestoreWallpaper(s32 a) {
     if (Unk_020341c0_IsOne(gFieldSceneKind)) {
-        RoomWallFloor_SetWallpaper((u16 *)RoomShell_GetPrevWallpaper(), 0, 0, a);
+        RoomWallFloor_SetWallpaper(RoomShell_GetPrevWallpaper(), 0, 0, a);
         return TRUE;
     }
     return FALSE;
@@ -196,13 +191,13 @@ extern "C" void RoomWallFloor_ApplyRecv(RoomWallFloorPacket *p)
     if (p->id == Scene_GetCurrent()) {
         RoomWallFloor_Set(&tmp, f7, f6, f8, 0);
     } else if (SceneId_IsHouseRoom(id)) {
-        void *r = ((HouseData *)(gSaveHouse))->getRoomForScene(id);
+        HouseRoom *r = ((HouseData *)gSaveData.house)->getRoomForScene(id);
         if (r != NULL) {
             if (f6) {
-                ((HouseRoom *)(r))->setWallpaper((u16 *)(&tmp), f7);
+                r->setWallpaper(&tmp, f7);
                 RoomWallFloor_SetSceneWallpaper(id, &tmp);
             } else {
-                ((HouseRoom *)(r))->setCarpet((u16 *)(&tmp), f7);
+                r->setCarpet(&tmp, f7);
                 RoomWallFloor_SetSceneCarpet(id, &tmp);
             }
         }

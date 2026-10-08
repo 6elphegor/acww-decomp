@@ -6,23 +6,25 @@
 #include "types.h"
 #include "gfx/TexVramSlot.h"
 
-// One slot: a frame heap for the model's data and a texture VRAM slot.
+class Heap;
+
+// a pool entry (0x1c bytes on the DS): a frame heap carved from the pool's heap and a texture VRAM slot
 class ModelSlot {
 public:
     ModelSlot();
     BOOL clear();
-    BOOL init(void *a, void *b, u32 size, void *extra);
+    BOOL init(void *texSize, void *plttSize, u32 heapSize, Heap *parent);
     TexVramSlot *getVramSlot();
-    void *getHeap();
+    Heap *getHeap();
 
-    u8 inUse;
-    void *heap;
-    TexVramSlot vramSlot;
+    /* 0x00 */ u8 inUse;
+    /* 0x04 */ Heap *heap;
+    /* 0x08 */ TexVramSlot vramSlot;
 };
 
 typedef void (*ModelSlotFreeFunc)();
-class Heap;
-// the slots' heap: created with a size under a parent heap (the *Heap_Create functions of src/main/unk_0205b7b0.cpp)
+// creates the heap the slots' frame heaps are carved from and returns it (the *Heap_Create functions of
+// src/main/unk_0205b7b0.cpp)
 typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
 
 class ModelSlotHandle {

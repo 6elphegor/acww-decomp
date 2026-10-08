@@ -2,6 +2,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "game/ConstellationRecord.h"
+#include "game/ConstellationStore.h"
 #include "gfx/StarTwinkle.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
@@ -18,28 +19,6 @@
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void _ZN10BgVramTaskC1Ev(void *p);
-u32 _ZN8PlayerId5clearEv(void *p);
-}
-
-
-
-
-
-
-
-
-
-class ConstellationStore {
-public:
-    ConstellationStore();
-    ~ConstellationStore();
-    ConstellationRecord records[16];
-};
-
-
-extern "C" {
-void *_ZN10BgVramTask6cancelEv(void *p);
 }
 
 ConstellationRecord::ConstellationRecord() {
@@ -51,16 +30,16 @@ ConstellationRecord::~ConstellationRecord() {
 }
 
 extern "C" {
-u32 ConstellationRecord_Clear(u8 *p) {
+void ConstellationRecord_Clear(ConstellationRecord *p) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        ((u16 *)(p + 0x26))[i] = 0xffff;
+        p->lines[i] = 0xffff;
     }
-    Mem_Clear(p + 0x16, 16);
-    return _ZN8PlayerId5clearEv(p);
+    Mem_Clear(p->name, sizeof(p->name));
+    ((PlayerId *)p->unk_00)->clear();
 }
 void *ConstellationRecord_Copy(void *p, const void *src) {
-    MI_CpuCopy8(src, p, 0x46);
+    MI_CpuCopy8(src, p, sizeof(ConstellationRecord));
     return p;
 }
 }
@@ -70,20 +49,20 @@ ConstellationStore::ConstellationStore() {}
 ConstellationStore::~ConstellationStore() {}
 
 extern "C" {
-void ConstellationStore_Clear(u8 *p) {
-    *(u16 *)(p + 0x460) = 0;
-    *(u16 *)(p + 0x462) = 0;
+void ConstellationStore_Clear(ConstellationStore *p) {
+    p->usedMask = 0;
+    p->newMask = 0;
 }
-void ConstellationStore_SetUsed(u8 *p, u32 bit) {
-    *(u16 *)(p + 0x460) |= (1 << bit);
-}
-
-void ConstellationStore_ClearUsed(u8 *p, u32 bit) {
-    *(u16 *)(p + 0x460) &= ~(1 << bit);
+void ConstellationStore_SetUsed(ConstellationStore *p, u32 bit) {
+    p->usedMask |= (1 << bit);
 }
 
-BOOL ConstellationStore_IsUsed(u8 *p, u32 bit) {
-    return (*(u16 *)(p + 0x460) & (1 << bit)) != 0;
+void ConstellationStore_ClearUsed(ConstellationStore *p, u32 bit) {
+    p->usedMask &= ~(1 << bit);
+}
+
+BOOL ConstellationStore_IsUsed(ConstellationStore *p, u32 bit) {
+    return (p->usedMask & (1 << bit)) != 0;
 }
 
 }
@@ -106,60 +85,60 @@ u32 ConstellationEncodedString16::capacity() { return 0x10; }
 
 u8 *ConstellationEncodedString16::data() { return text; }
 
-StarTwinkle::StarTwinkle() {
-    _ZN10BgVramTaskC1Ev(this);
-}
+StarTwinkle::StarTwinkle() {}
 
 StarTwinkle::~StarTwinkle() {}
 
 extern "C" {
-void StarTwinkle_Update(u8 *p) {
+// each of the four twinkling colour rows switches between its five states' rows
+void StarTwinkle_Update(StarTwinkle *p) {
     s32 i;
     BOOL changed;
-    _ZN10BgVramTask6cancelEv(p);
+    p->task.cancel();
     changed = FALSE;
     for (i = 0; i < 4; i++) {
-        u8 *e = p + i;
-        if (e[0x324] != 0) {
-            e[0x324]--;
+        if (p->timer[i] != 0) {
+            p->timer[i]--;
         } else {
-            if (e[0x328] == 0) {
-                e[0x328] = Random_GlobalBelow(4) + 1;
-                e[0x324] = Random_GlobalBelow(15) + 5;
+            if (p->state[i] == 0) {
+                p->state[i] = Random_GlobalBelow(4) + 1;
+                p->timer[i] = Random_GlobalBelow(15) + 5;
             } else {
-                e[0x328] = 0;
-                e[0x324] = Random_GlobalBelow(30) + 10;
+                p->state[i] = 0;
+                p->timer[i] = Random_GlobalBelow(30) + 10;
             }
             changed = TRUE;
-            MI_CpuCopy8(p + 0xa4 + e[0x328] * 128 + i * 32, p + 0x24 + i * 32, 0x20);
+            MI_CpuCopy8(p->palettes[p->state[i]] + i * 32, p->palette + i * 32, 0x20);
         }
     }
     if (changed) {
-        ((BgVramTask *)(p))->requestPaletteRange(p + 0x24, p[0x32c], 4, 7);
+        p->task.requestPaletteRange(p->palette, p->bgPalette, 4, 7);
     }
 }
-void StarTwinkle_Init(u8 *self, s32 arg) {
+void StarTwinkle_Init(StarTwinkle *self, s32 arg) {
     s32 i, j;
-    _ZN10BgVramTask6cancelEv(self);
-    for (i = 0; i < 5; i++) {
-        u8 *p = self + i;
-        p[0x324] = Random_GlobalBelow(0x5a) + 10;
-        p[0x328] = 0;
+    self->task.cancel();
+    for (i = 0; i < 4; i++) {
+        self->timer[i] = Random_GlobalBelow(0x5a) + 10;
+        self->state[i] = 0;
     }
-    self[0x32c] = arg;
+    // (the DS loop runs a fifth time, past the four rows: its timer is state[0], its state bgPalette, set below)
+    self->state[0] = Random_GlobalBelow(0x5a) + 10;
+    self->bgPalette = arg;
     for (j = 0; j < 5; j++) {
-        File_LoadToBuffer((u32)sStarTwinklePalettePaths[j], self + 0xa4 + j * 0x80, 0x80);
+        File_LoadToBuffer(sStarTwinklePalettePaths[j], self->palettes[j], 0x80);
     }
-    MI_CpuCopy8(self + 0xa4, self + 0x24, 0x80);
-    Gfx2d_LoadPaletteRange(self + 0x24, arg, 4, 4, 7);
+    MI_CpuCopy8(self->palettes[0], self->palette, 0x80);
+    Gfx2d_LoadPaletteRange(self->palette, arg, 4, 4, 7);
 }
 
-void *StarTwinkle_Stop(void *p) {
-    return _ZN10BgVramTask6cancelEv(p);
+void StarTwinkle_Stop(void *p) {
+    ((StarTwinkle *)p)->task.cancel();
 }
 
+// constellation n's line cells: four u16 each
 u8 *Constellation_GetLineCells(s32 n) {
-    return (u8 *)sConstellationLineCells + n * 8;
+    return (u8 *)&sConstellationLineCells[n * 4];
 }
 }
 

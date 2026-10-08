@@ -70,7 +70,7 @@ void BugNetTarget::submit(VecFx32 *a, s32 b, VecFx32 *c, u8 d) {
     }
     isHit = 0;
     hitRadius = b;
-    Scene_GetTouchPicker()->addSphere(this, a, c, 4, d);
+    Scene_GetTouchPicker()->addSphere(this, a, (s32)(sptr)c, 4, d);  // (c: the radius)
 }
 
 extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
@@ -94,7 +94,7 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
         p->isHit = 0;
         s32 len = func_01ffcb0c(rad + p->hitRadius, rad + p->hitRadius);
         for (i = 0; i < 6; i++) {
-            if ((s64)len >= Vec_DistSq(&pts[i], (VecFx32 *)&p->centerX)) {
+            if ((s64)len >= Vec_DistSq(&pts[i], &p->center)) {
                 p->isHit = 1;
                 result = TRUE;
                 if (out) {

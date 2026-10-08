@@ -23,14 +23,12 @@ void GX_LoadTex(void *a, u32 b, u32 c);
 }
 
 
-
 extern "C" {
 u8 BgTransfer_GetPaletteRangeCost(BgTransfer *p);
 u8 BgTransfer_GetPaletteCost(BgTransfer *p);
 u8 BgTransfer_GetScreenCost(BgTransfer *p);
 u8 TexTransfer_GetPlttCost(TexTransfer *p);
 }
-
 
 
 extern "C" {
