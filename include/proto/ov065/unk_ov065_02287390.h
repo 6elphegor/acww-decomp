@@ -6,6 +6,7 @@
 #include "types.h"
 #include "net/SockAddrIn.h"
 #include "net/SockHostEnt.h"
+#include "net/GsInAddr.h"
 #ifdef __cplusplus
 #include "net/qr2.h"
 #endif
@@ -20,13 +21,13 @@ extern u8 data_ov065_0228e1b8[8];
 extern s32 num_local_ips;
 #endif
 #ifndef PROTO_LOCAL_local_ip_list
-extern u32 local_ip_list[5];
+extern GsInAddr local_ip_list[5];
 #endif
 #ifndef PROTO_LOCAL_qr2_hostname
 extern char qr2_hostname[0x40];
 #endif
 #ifndef PROTO_LOCAL_data_ov065_022917a0
-extern u8 data_ov065_022917a0[0x100];
+extern char data_ov065_022917a0[0x100];
 #endif
 #ifndef PROTO_LOCAL_enum_local_ips
 void enum_local_ips();

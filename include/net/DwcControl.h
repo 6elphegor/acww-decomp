@@ -23,7 +23,7 @@ typedef void (*DwcDoneCallback)(s32, s32, s32);                       // login /
 typedef void (*DwcMatchedCallback)(s32, s32, s32);                    // peer match done
 typedef void (*DwcConnectionClosedCallback)(s32, s32, s32, s32, s32, s32);
 typedef void (*DwcLoginResultCallback)(s32, s32, u32);                // DwcLoginControl result (DwcLogin_OnLoginDone)
-typedef void (*DwcNasLoginCallback)(void *, void *, u32);             // after NAS login (token, challenge, arg)
+typedef void (*DwcNasLoginCallback)(const char *, const char *, u32);             // after NAS login (token, challenge, arg)
 
 // sDwcLoginControl = &DwcControl::loginControl (0x264 bytes, cleared by DwcLogin_InitControl).
 struct DwcLoginControl {

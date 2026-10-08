@@ -62,16 +62,16 @@ GPIPeer *gpiAddPeer(GPConnection *h, s32 a, s32 b);
 s32 gpiPeerGetSig(GPConnection *h, GPIPeer *n);
 #endif
 #ifndef PROTO_LOCAL_gpiPeerStartConnect
-s32 gpiPeerStartConnect(void *h, GPIPeer *n);
+s32 gpiPeerStartConnect(GPConnection *h, GPIPeer *n);
 #endif
 #ifndef PROTO_LOCAL_gpiPeerAddMessage
-s32 gpiPeerAddMessage(void *h, GPIPeer *n, s32 a, const char *b);
+s32 gpiPeerAddMessage(GPConnection *h, GPIPeer *n, s32 a, const char *b);
 #endif
 #ifndef PROTO_LOCAL_gpiPeerStartTransferMessage
-s32 gpiPeerStartTransferMessage(void *h, GPIPeer *n, s32 a, GPITransferID *s);
+s32 gpiPeerStartTransferMessage(GPConnection *h, GPIPeer *n, s32 a, GPITransferID *s);
 #endif
 #ifndef PROTO_LOCAL_gpiPeerFinishTransferMessage
-s32 gpiPeerFinishTransferMessage(void *h, GPIPeer *n, char *str, s32 len);
+s32 gpiPeerFinishTransferMessage(GPConnection *h, GPIPeer *n, char *str, s32 len);
 #endif
 }
 #endif

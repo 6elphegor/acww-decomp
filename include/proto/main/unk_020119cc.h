@@ -5,13 +5,16 @@
 
 #include "types.h"
 struct NpcEmotionEntry;
+struct Unk_021be028_Dir;
 struct VillagerRouteType;
 #ifndef __cplusplus
 typedef struct NpcEmotionEntry NpcEmotionEntry;
+typedef struct Unk_021be028_Dir Unk_021be028_Dir;
 typedef struct VillagerRouteType VillagerRouteType;
 #endif
 #ifdef __cplusplus
 #include "actor/NpcActor.h"
+#include "game/FxVec3.h"
 #include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
 #include "npc/NpcLookAt.h"
@@ -100,11 +103,14 @@ BOOL Npc_IsPosBlocked(VecFx32 *pos);
 #ifndef PROTO_LOCAL_NpcLookAt_GetHeadPos
 s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 #endif
+#ifndef PROTO_LOCAL_sNpcObstacleProbeOffsets
+extern FxVec3 sNpcObstacleProbeOffsets[2];
+#endif
 #ifndef PROTO_LOCAL_Emotion_GetEntry
-NpcEmotionEntry *Emotion_GetEntry(u32 i);
+const NpcEmotionEntry *Emotion_GetEntry(u32 i);
 #endif
 #ifndef PROTO_LOCAL_VillagerRoute_PickPathUnitInBlock
-void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridPos *p, BlockMap *obj);
+void VillagerRoute_PickPathUnitInBlock(Vec2 *out, VillagerRoute *unused, Vec2 *p, BlockMap *obj);
 #endif
 #ifndef PROTO_LOCAL_VillagerRoute_PickAttr200Target
 void VillagerRoute_PickAttr200Target(Vec2 *out, VillagerRoute *self, VecFx32 *v, NpcActor *obj);
@@ -129,6 +135,9 @@ void VillagerRoute_PickCoastBlock(Vec2 *out, VillagerRoute *self, VecFx32 *v, Np
 #endif
 #ifndef PROTO_LOCAL_sVillagerRouteTypes
 extern VillagerRouteType sVillagerRouteTypes[7];
+#endif
+#ifndef PROTO_LOCAL_sRouteDirs
+extern Unk_021be028_Dir sRouteDirs[4];
 #endif
 }
 #endif

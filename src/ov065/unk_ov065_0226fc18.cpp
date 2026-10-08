@@ -24,13 +24,18 @@
 #include "proto/ov065/unk_ov065_02283720.h"
 #include "proto/ov065/unk_ov065_02285778.h"
 #include "proto/ov065/unk_ov065_02286934.h"
+extern "C" {
+void MI_CpuFill8(void *dst, u32 data, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+}
 
 extern "C" {
-void *sDwcControl;
+DwcControl *sDwcControl;
 u32 data_ov065_02290674;
 void *sDwcConnTable[32]; // the GT2 connection of each slot
-u8 sDwcConnInfo[0x100];
+DwcConnInfo sDwcConnInfo[32];
 }
+static_assert(sizeof(sDwcConnInfo) == 0x100, "sDwcConnInfo: 0x100 bytes on the DS");
 
 namespace F0226f7c8 {
 
@@ -63,11 +68,9 @@ void DwcMatch_UpdateServerStatus();
 void DwcMatch_UpdateValidAidCount();
 void DwcMatch_OnClientDisconnected(u32);
 s32 DwcMatch_OnConnectionClosed(s32, s32, u32);
-void DwcMatch_RemoveMemberAt(s32, s32);
+u32 DwcMatch_RemoveMemberAt(s32 idx, s32 n); // src/ov065/unk_ov065_022723b8.cpp
 void qr2_send_statechanged(void *qrec);
-u32 DwcFriend_FindIndexByProfileId(u32);
 void DwcMatch_ResetPlayerCounts();
-s32 DwcCore_SetState(s32);
 void DwcMatch_OnGpMatchCommand(void *, u32, void *);
 s32 DwcCore_HandleGpResult(s32);
 u32 DwcConn_AidListToBitmap(u8 *, s32);
@@ -75,19 +78,11 @@ void OS_JoinThread(void *);
 s32 OS_IsThreadTerminated(void *);
 void OS_CreateThread(void *, void (*)(), void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
-void MI_CpuFill8(void *, u32, u32);
-void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
 u32 func_0213335c(u32, u32);
 void strncpy(void *, void *, u32);
 s32 strtoul(void *, u32, u32);
 void DwcConn_OnGt2SocketError(void *socket);
-void DwcConn_OnGt2Ping(void *a, s32 b);
-void DwcConn_OnGt2Closed(void *a0, s32 a1);
-void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d);
-void DwcMatch_OnGpBuddyMessage(void *a, GPRecvBuddyMessageArg *b, void *c);
-void DwcCore_OnGpError(s32 a, GPErrorArg *b);
-void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4);
 }
 }
 
@@ -100,11 +95,6 @@ extern DwcControl *sDwcControl;
 extern void *sDwcConnTable[32];
 extern DwcConnInfo sDwcConnInfo[32];
 void DwcConn_OnGt2SocketError(void *socket);
-void DwcMatch_OnMatchDone();
-void DwcCore_OnGpError();
-void DwcMatch_OnGpBuddyMessage();
-void DwcFriend_OnBuddyRequest();
-void DwcFriend_OnBuddyStatus();
 void DwcMatch_OnGt2ConnectAttempt();
 void DwcMatch_OnUnrecognizedPacket();
 void DwcFriend_OnUpdateDone(s32 a, s32 b);
@@ -114,7 +104,6 @@ void DwcFriend_ResetTimer();
 void gt2CloseAllConnectionsHard(void *socket);
 void DwcFriend_Fail(s32 a, s32 b);
 void DwcMatch_Fail(s32 a, s32 b);
-u32 DwcFriend_GetProfileId(s32 a);
 s32 gpIsBuddy(void *connection, s32 profile);
 s32 gpGetBuddyIndex(void *connection, s32 profile, void *index);
 s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
@@ -134,7 +123,7 @@ void gt2Listen(void *socket, void *callback);
 void gt2SetUnrecognizedMessageCallback(void *socket, void *callback);
 s32 DwcMatch_GetAidList(u8 **out);
 s32 DwcMatch_GetValidAidList(u8 **out);
-s32 DwcMatch_RemoveMemberAt(s32 a, s32 b);
+u32 DwcMatch_RemoveMemberAt(s32 idx, s32 n);
 s32 DwcMatch_GetValidAidCount();
 s32 DwcMatch_GetClientCount();
 s32 DwcCore_HasError();
@@ -142,8 +131,6 @@ void DwcCore_SetError(s32 a, s32 b);
 s32 DwcCore_CheckFatalError();
 void DwcCore_Nop();
 void MIi_CpuClear32(u32 v, void *dst, u32 size);
-void MI_CpuCopy8(char *src, void *dst, s32 n);
-void DwcCore_SetState(s32 s);
 s32 DwcConn_HandleGt2Result(s32 x);
 s32 DwcCore_HandleGpResult(s32 x);
 u32 DwcConn_AidListToBitmap(u8 *p, s32 n);
@@ -153,7 +140,6 @@ void *DwcConn_FindConnectionByAid(u32 v);
 void **DwcConn_GetSlot(u32 idx);
 s32 DwcConn_GetAidList(u8 **out);
 void DwcConn_ClearTables();
-void DwcLogin_OnLoginDone(s32 a, s32 b);
 u32 DwcConn_RemoveAid(u32 c);
 DwcConnInfo *DwcConn_GetConnInfo(u32 idx);
 void **DwcConn_FindSlotByProfileId(u32 key, s32 n);
@@ -206,15 +192,10 @@ void DwcFriend_ClearControl(void);
 void DwcMatch_Shutdown(void);
 void gt2CloseSocket(void *);
 void DwcMatch_OnGt2Connected(void);
-void DwcConn_OnGt2Receive(void);
-void DwcConn_OnGt2Closed(void);
-void DwcConn_OnGt2Ping(void);
 void DwcConn_ClearTables(void);
 void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
-void DwcLogin_OnLoginDone(void);
 void DwcFriend_InitControl(DwcFriendControl *a, GPConnection *b, char *c, DwcFriendData *d, s32 e);
 void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, u32);
-void MI_CpuCopy8(const void *, void *, u32);
 void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
 s32 gpGetInfo(void *, u32, s32, s32, GPCallback, void *);
@@ -226,7 +207,6 @@ void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
 s32 NasAuth_Start(NasAuthParams *, DwcHttp *);
-void MI_CpuFill8(void *, s32, u32);
 u64 func_02132ef8(u64, u32);
 u64 func_02133100(u64, u32, u32);
 s32 DWCi_Acc_IsAuthentic(void *);
@@ -245,12 +225,12 @@ BOOL DwcCore_HasError(void);
 void DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(s32 *out);
 BOOL DwcLogin_IsLoggedIn(void);
-void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x);
+void DwcLogin_OnGpProfileInfo(GPConnection *a0, GPGetInfoResponseArg *x);
 void DwcLogin_PollNasAuth(void);
 void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg);
 void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d);
-void DwcLogin_OnNasAuthDone(const char *a, const char *b);
-void DwcLogin_OnGpConnected(void *a0, GPConnectResponseArg *x);
+void DwcLogin_OnNasAuthDone(const char *a, const char *b, u32 arg);
+void DwcLogin_OnGpConnected(GPConnection *a0, GPConnectResponseArg *x);
 void DwcLogin_ResetState(void);
 void DwcLogin_Shutdown(void);
 void DwcLogin_Fail(s32 a, s32 b);
@@ -1051,7 +1031,7 @@ void DwcCore_OnGpError(s32 a, GPErrorArg *b) {
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcMatch_OnGpBuddyMessage(void *a, GPRecvBuddyMessageArg *b, void *c) {
+void DwcMatch_OnGpBuddyMessage(GPConnection *a, GPRecvBuddyMessageArg *b, void *c) {
     u8 buf[12] = {0};
     char *s;
     char *e;

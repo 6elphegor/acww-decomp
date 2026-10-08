@@ -10,23 +10,27 @@
 #include "snd/SndSeEmitter.h"
 
 
+class RoomObjRes;
+struct RoomObjTexHandle;
+class RoomObjSe;
+
 extern "C" {
-void *RoomObjRes_GetBca(void *self, u32 i);
-void *RoomObjRes_GetBma(void *self, u32 i);
-void *RoomObjRes_GetBta(void *self, u32 i);
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void *RoomObjTex_Get(void *self);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
+void *RoomObjRes_GetBca(RoomObjRes *self, u32 i);
+void *RoomObjRes_GetBma(RoomObjRes *self, u32 i);
+void *RoomObjRes_GetBta(RoomObjRes *self, u32 i);
+void RoomObjRes_Free(RoomObjRes *self);
+s32 RoomObjRes_Load(RoomObjRes *self, const char *s);
+void *RoomObjRes_GetModel(RoomObjRes *self);
+void RoomObjTex_Construct(RoomObjTexHandle *self);
+void RoomObjTex_Destruct(RoomObjTexHandle *self);
+void RoomObjTex_Reset(RoomObjTexHandle *self);
+s32 RoomObjTex_Load(RoomObjTexHandle *self, const char *s);
+void *RoomObjTex_Get(RoomObjTexHandle *self);
+RoomObjSe *RoomObj_ConstructSe(RoomObjSe *self);
+RoomObjSe *RoomObj_DestructSe(RoomObjSe *self);
 void RoomObj_PlaySe(void *self, s32 v);
 void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
+void RoomObj_SetSePos(RoomObjSe *self, VecFx32 *v);
 void RoomObj_ActivateSe(void *self);
 }
 

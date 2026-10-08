@@ -7,6 +7,7 @@
 #include "net/gpiPeer.h"
 #include "net/gpiCallback.h"
 #include "net/gp.h"
+#include "net/hashtable.h"
 
 // GameSpy Presence connection (cf. GameSpy GP SDK gpi.h GPIConnection, older TCP-peer version: peerSocket instead of
 // the UDP header, no partnerID, no new-style status block; GPIProfileList kept flattened as profileTable / numProfiles
@@ -45,7 +46,7 @@ struct GPIConnection {
     /* 0x41c */ s32 fatalError;
     /* 0x420 */ s32 diskCache;
     /* 0x424 */ GPIOperation *operationList;
-    /* 0x428 */ void *profileTable;
+    /* 0x428 */ HashImplementation *profileTable;
     /* 0x42c */ s32 numProfiles;
     /* 0x430 */ s32 numBuddies;
     /* 0x434 */ GPIPeer *peerList;

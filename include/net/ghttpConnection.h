@@ -25,7 +25,7 @@ typedef void (*ghttpProgressCallback)(u32, u32, char *, u32, u32, u32, void *);
 // (request, result, buffer, bufferLen, param)
 typedef s32 (*ghttpCompletedCallback)(u32, u32, char *, u32, void *);
 typedef s32 (*GsHttpEncryptStartFn)(GHIConnection *, void *);
-typedef s32 (*GsHttpEncryptFn)(GHIConnection *, void *, char *, s32 *, char *, s32 *);
+typedef s32 (*GsHttpEncryptFn)(GHIConnection *, void *, const char *, s32 *, char *, s32 *);
 typedef s32 (*GsHttpDecryptFn)(GHIConnection *, void *, u8 *, s32 *, u8 *, s32 *);
 typedef void (*GsHttpEncryptCleanupFn)(GHIConnection *, void *);
 
