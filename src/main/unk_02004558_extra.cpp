@@ -238,7 +238,6 @@ union PM_02005294 {
 namespace nC {
 extern "C" {
 
-s32 FieldActionFx_Take(void *out, s32 v);
 void PlayerActor_RequestTreeShake(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void PlayerActor_RequestPluck(void *p, void *v, s32 a, s32 b);
 void PlayerActor_RequestAxeBreak(void *p, s32 a, void *v, s32 b, s32 c);

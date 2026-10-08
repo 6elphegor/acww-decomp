@@ -879,18 +879,11 @@ s32 DateTime_Compare(void *a, void *b, s32 n);
 s32 ItemInfo_GetHoldableIndex(Unk_0200f660_S *s);
 void PlayerActor_RequestPickUpItem(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
 void PlayerActor_RequestPluckReach(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b);
-// (src/main/unk_02041e00.cpp: its position type is local to that file; same layout)
-s32 FieldAction_RequestToolForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a, s32 b, u16 c);
-s32 FieldAction_RequestPickUpForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a);
-s32 FieldAction_RequestFillHoleForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a);
 static inline void Unk_0200f070_Set(VecFx32 *r, s32 x, s32 y, s32 z)
 {
     r->x = x;
     r->y = y;
     r->z = z;
-}
-namespace Unk_0200f7a0_NS {
-extern "C" s32 FieldAction_RequestToolForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a, s32 b, u16 c);
 }
 }
 }
@@ -2605,7 +2598,7 @@ u32 PlayerActor::getFieldAnswerKind() {
 BOOL PlayerActor::startFieldQuery(VecFx32 *a, s32 mode, s32 idx) {
     using namespace nQ;
     if (((PlayerActor *)this)->fieldQuery == -1 && gSceneBlockMap != NULL) {
-        Unk_0200f6d4_V2 v;
+        Vec2 v;
         v.x = 0;
         v.y = 0;
         FieldPos_ToUnit(&v.x, &v.y, a);
@@ -2657,7 +2650,7 @@ s32 PlayerActor::startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b) {
     using namespace nQ;
     struct {
         s32 pad;
-        Unk_0200f6d4_V2 v;
+        Vec2 v;
     } l;
     s32 result;
     if (((PlayerActor *)this)->fieldQuery == -1) {
@@ -2671,7 +2664,7 @@ s32 PlayerActor::startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b) {
             ((PlayerActor *)this)->actionItem = ((PlayerActor *)this)->shownItem = *(u16 *)r;
             l.v.x = p->x;
             l.v.y = p->y;
-            ((PlayerActor *)this)->fieldQuery = Unk_0200f7a0_NS::FieldAction_RequestToolForAid(((PlayerActor *)this)->sessionSlot, &l.v, a, b, 0xfff1);
+            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestToolForAid(((PlayerActor *)this)->sessionSlot, &l.v, a, b, 0xfff1);
             if (((PlayerActor *)this)->fieldQuery == -1) {
                 result = 0;
             } else {

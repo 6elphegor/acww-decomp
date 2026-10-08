@@ -16,7 +16,7 @@ struct TownEval;
 struct TownEvalAcre;
 struct TownEvalAcrePos;
 struct TownEvalAdvice;
-struct Unk_02042104_Ent;
+struct FieldActionFxEvent;
 struct Unk_02048cc4_Pos;
 #ifndef __cplusplus
 typedef struct FieldActionRequest FieldActionRequest;
@@ -27,7 +27,7 @@ typedef struct TownEval TownEval;
 typedef struct TownEvalAcre TownEvalAcre;
 typedef struct TownEvalAcrePos TownEvalAcrePos;
 typedef struct TownEvalAdvice TownEvalAdvice;
-typedef struct Unk_02042104_Ent Unk_02042104_Ent;
+typedef struct FieldActionFxEvent FieldActionFxEvent;
 typedef struct Unk_02048cc4_Pos Unk_02048cc4_Pos;
 #endif
 #ifdef __cplusplus
@@ -260,7 +260,7 @@ extern PendingUnitList sPendingUnits;
 extern TownUpdater gTownUpdater;
 #endif
 #ifndef PROTO_LOCAL_sFieldActionFxSlots
-extern Unk_02042104_Ent sFieldActionFxSlots[5];
+extern FieldActionFxEvent sFieldActionFxSlots[5];
 #endif
 #ifndef PROTO_LOCAL_gTownEval
 extern TownEval gTownEval;
@@ -788,13 +788,13 @@ s32 ChopCount_Get(FieldActionState *m, Vec2 *p);
 void ChopCount_Set(FieldActionState *m, Vec2 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_FieldActionFx_ClearAll
-void FieldActionFx_ClearAll(Unk_02042104_Ent *p);
+void FieldActionFx_ClearAll(FieldActionFxEvent *p);
 #endif
 #ifndef PROTO_LOCAL_FieldActionFx_Start
 void FieldActionFx_Start(FieldActionResultMsg *p);
 #endif
 #ifndef PROTO_LOCAL_FieldActionFx_Take
-s32 FieldActionFx_Take(Unk_02042104_Ent *out, u32 v);
+s32 FieldActionFx_Take(FieldActionFxEvent *out, u32 v);
 #endif
 #ifndef PROTO_LOCAL_TownBbs_PostRandomUnused
 void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p, s32 len, Unk_02042104_Date *d);

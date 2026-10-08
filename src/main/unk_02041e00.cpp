@@ -30,6 +30,7 @@ extern "C" u16 *PendingUnit_GetActivePosOfAid(u32 a);
 #include "talk/MsgString9BStorage.h"
 #include "town/TownEventRecord.h"
 #include "field/FieldAction.h"
+#include "player/FieldActionFxEvent.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "game/Unk_0204da0c_Map.h"
 #include "item/ItemPickSpec.h"
@@ -203,11 +204,6 @@ struct FlowerHybridList {
     s32 numEntries;
     const FlowerHybridEntry *entries;
 };
-struct Unk_02042104_Ent {
-    u8 a;
-    u8 b;
-    u16 c;
-};
 struct Unk_02042588_Pos {
     s32 x, y;
     Unk_02042588_Pos(s32 a, s32 b) : x(a), y(b) {}
@@ -251,7 +247,7 @@ void DateTime_SubHours(ClockDateTime *p, s32 n);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 s32 Event_GetState(s32 a, void *b, s32 c);
 u8 FengShui_GetWestTotal();
-void FieldActionFx_ClearAll(Unk_02042104_Ent *p);
+void FieldActionFx_ClearAll(FieldActionFxEvent *p);
 s32 FieldAction_Add(FieldActionRequest *e, u32 a1, s32 type, Vec2 *pos, u16 a5, u16 a6, u8 a7, u8 a8, s32 a9, s8 a10);
 void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32 t);
 s32 FieldAction_RequestChop(s32 a, u16 *id, Vec2 *pos, s32 mode);
@@ -355,7 +351,7 @@ extern TownUpdater gTownUpdater;
 extern const u32 sBbsEventMsgs[30];
 extern const u8 sDropUnitOffsets[12];
 extern const u32 sDropUnitOrder[8][9];
-extern Unk_02042104_Ent sFieldActionFxSlots[5];
+extern FieldActionFxEvent sFieldActionFxSlots[5];
 extern FieldActionState sFieldActions;
 extern const FlowerHybridList *sFlowerHybridTable[4][10];
 extern const u32 sFlowerParchChance[27];
@@ -414,7 +410,7 @@ void TownBbs_PostSlogan(void *o, SaveData *save, Unk_02042104_Date *d);
 void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p, s32 len, Unk_02042104_Date *d);
 void TownBbs_PackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
 s32 TownBbs_UnpackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
-s32 FieldActionFx_Take(Unk_02042104_Ent *out, u32 v);
+s32 FieldActionFx_Take(FieldActionFxEvent *out, u32 v);
 struct Unk_02042104_Pair {
     s32 hi, lo;
 };
@@ -1506,7 +1502,7 @@ extern const FlowerHybridList data_020c9880[9] = {
     {2, data_020c9678}, {2, data_020c94b8}, {2, data_020c92e8},
     {2, data_020c92d8}, {0, NULL}, {0, NULL},
 };
-Unk_02042104_Ent sFieldActionFxSlots[5];
+FieldActionFxEvent sFieldActionFxSlots[5];
 extern const u16 data_020c9238[8] = {0x1e12, 0x6bff, 0x10bf, 0x133f, 0x4d3f, 0x19f, 0x1c2d, 0x0};
 extern const u8 sTreeDropOffsets[12] = {
     0x88, 0x78, 0x98, 0x89, 0x79, 0x99, 0x87, 0x77, 0x97, 0x00, 0x00, 0x00,
@@ -7909,11 +7905,11 @@ extern "C" void ChopCount_ClearAll(void) {
 }
 
 namespace nA {
-extern "C" void FieldActionFx_ClearAll(Unk_02042104_Ent *p) {
+extern "C" void FieldActionFx_ClearAll(FieldActionFxEvent *p) {
     s32 i;
     for (i = 0; i < 5; i++) {
-        p->a = 0;
-        p->c = 0xffff;
+        p->type = 0;
+        p->pos = 0xffff;
         p++;
     }
 }
@@ -7929,9 +7925,9 @@ extern "C" void FieldActionFx_Start(FieldActionResultMsg *p) {
         Vec2 p[6];
         VecFx32 v[3];
     } m;
-    Unk_02042104_Ent *e = &sFieldActionFxSlots[p->aid];
-    if (e->a != 0) {
-        W.v[5] = e->c;
+    FieldActionFxEvent *e = &sFieldActionFxSlots[p->aid];
+    if (e->type != 0) {
+        W.v[5] = e->pos;
         u16 t = W.v[5];
         W.v[1] = t;
         W.v[0] = t;
@@ -7952,11 +7948,11 @@ extern "C" void FieldActionFx_Start(FieldActionResultMsg *p) {
             }
         }
     }
-    e->a = p->kind;
+    e->type = p->kind;
     W.v[4] = p->unit;
     u16 t2 = W.v[4];
-    e->c = t2;
-    e->b = p->mode;
+    e->pos = t2;
+    e->sub = p->mode;
     W.v[6] = p->unit;
     u16 t3 = W.v[6];
     W.v[3] = t3;
@@ -8008,16 +8004,16 @@ extern "C" void FieldActionFx_Start(FieldActionResultMsg *p) {
 }
 
 namespace nA {
-extern "C" s32 FieldActionFx_Take(Unk_02042104_Ent *out, u32 v) {
+extern "C" s32 FieldActionFx_Take(FieldActionFxEvent *out, u32 v) {
     s32 r = 0;
     s32 idx = Field_AidOrZero(v);
-    Unk_02042104_Ent *e = &sFieldActionFxSlots[idx];
-    if (e->a != 0) {
-        out->a = e->a;
-        volatile u16 t = e->c;
-        out->c = t;
-        out->b = e->b;
-        e->a = r;
+    FieldActionFxEvent *e = &sFieldActionFxSlots[idx];
+    if (e->type != 0) {
+        out->type = e->type;
+        volatile u16 t = e->pos;
+        out->pos = t;
+        out->sub = e->sub;
+        e->type = r;
         r = 1;
     }
     return r;
