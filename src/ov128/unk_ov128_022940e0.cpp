@@ -331,7 +331,7 @@ void StargazingMenu::postInputUpdate() {
 
 void StargazingMenu::preStateUpdate() {
     nameLabel.destroyLabel();
-    StarTwinkle_Update((u8 *)&twinkle);
+    StarTwinkle_Update(&twinkle);
     closeButton.freeText();
 }
 
@@ -351,7 +351,7 @@ extern "C" void StargazingMenu_SetupBgLayers() {
 void StargazingMenu::setupSkyView() {
     StarSky_LoadSkyBg(&skyView, 3);
     StarSky_LoadScopeBg(&skyView, 6);
-    StarTwinkle_Init((u8 *)&twinkle, 3);
+    StarTwinkle_Init(&twinkle, 3);
     StarSky_LoadObjGraphics();
     closeButton.setup(data_ov128_02295458, 6, 2);
     closeButton.setLabelWithShadow(0x69);

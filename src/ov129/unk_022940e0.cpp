@@ -508,7 +508,7 @@ void ConstellationEditorMenu::postInputUpdate() {
 }
 
 void ConstellationEditorMenu::preStateUpdate() {
-    StarTwinkle_Update((u8 *)&twinkle);
+    StarTwinkle_Update(&twinkle);
     bottomButtons.freeTexts();
     clearFlags(0x40);
 }
@@ -537,7 +537,7 @@ void ConstellationEditorMenu::setupBgLayers() {
 void ConstellationEditorMenu::setupSkyView() {
     StarSky_LoadSkyBg(&skyView, 3);
     StarSky_LoadScopeBg(&skyView, 6);
-    StarTwinkle_Init((u8 *)&twinkle, 3);
+    StarTwinkle_Init(&twinkle, 3);
     StarSky_LoadObjGraphics();
     MenuButtons_LoadTextColors();
     bottomButtons.setLayoutConfirmQuit04();
@@ -929,7 +929,7 @@ void ConstellationEditorMenu::acceptConfirmation() {
         MenuCtrl_SetResult(1);
         s32 n = MenuCtrl_GetIndex();
         static ConstellationRecord obj;
-        ConstellationRecord_Clear((u8 *)&obj);
+        ConstellationRecord_Clear(&obj);
         Constellation_SetCreator((u8 *)&obj);
         s32 i;
         for (i = 0; i < 16; i++) {
