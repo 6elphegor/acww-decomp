@@ -709,7 +709,7 @@ s32 Villager_IsJustMovedIn(void *);
 s32 Villager_IsMovingIn(void *);
 s32 Villager_GetResidentStatus(void *);
 u8 * Villager_GetPlan(void *);
-void * Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 s32 Villager_GetIndex(void *);
 s32 Villager_CountFurnitureLike(void *, void *);
 void * Villager_SetNicknameFor(void *, void *, s32, void *);
@@ -9514,7 +9514,7 @@ BOOL VillagerTalkRumorTopics::selectTsuHappyroom() {
     VillagerState *p;
     void *ctx = actor->villagerData;
     if (ctx != NULL) {
-        p = ((VillagerState *)Villager_GetState(ctx));
+        p = Villager_GetState(ctx);
     } else {
         p = NULL;
     }

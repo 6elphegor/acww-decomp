@@ -193,9 +193,9 @@ public:
     s32 requestPickUpWithItem(Vec2* pos, u16 a, u8 b, s32 c, s16 d);
     s32 requestPickUpAt(Vec2* pos, s32 a, u8 b, s32 c, s16 d);
     void pickUpUpdateAnim(PlayerActionRequest* item, u32 old);
-    void endPickUp(PlayerActionRequest* item, u32 old);
+    void endPickUp();
     void netPickUp(s16 old);
-    void mainPickUpReach(PlayerActionRequest* item, u32 old);
+    void mainPickUpReach();
     void pickUpReachUpdate();
     void pickUpUpdateItem();
     void setupPickUp(PlayerActionRequest* item, u32 old);

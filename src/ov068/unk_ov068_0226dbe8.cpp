@@ -181,7 +181,7 @@ u8 Scene_GetPrevious();
 BOOL SceneId_IsTown(u32 a);
 void Scene_SavePlayerPos(s32 unused, s32 add);
 BOOL SceneWarp_RequestExit(s32 unused, s32 id);
-s32 Villager_GetState(VillagerData *a);  // (a VillagerState pointer)
+VillagerState *Villager_GetState(VillagerData *a);
 void VillagerState_ResetRole(VillagerState *e);
 void VillagerState_SetRole(VillagerState *e, s32 role);
 BOOL TalkRequest_SetTargetDone(Character *x);
@@ -664,7 +664,7 @@ BOOL HouseVisitVillager::enterVisitCall() {
     roomRateFlags = HappyRoom_RateMainRoom(eval, (s32 *)&roomStars);
     HouseVisitor_SetPresent();
     if (getVillagerData()) {
-        VillagerState_SetRole((VillagerState *)Villager_GetState((VillagerData *)getVillagerData()), 2);
+        VillagerState_SetRole(Villager_GetState((VillagerData *)getVillagerData()), 2);
     }
     callTimer = 30;
     Snd_SeEmitterPlayOneShot(&seEmitter, 0x4ca, 0x7f, 0);
@@ -926,7 +926,7 @@ void HouseVisitVillager::execVisitLeave() {
         if (talk.window->state == 0) {
             HouseVisitor_ClearPresent();
             if (getVillagerData() != NULL) {
-                VillagerState_ResetRole((VillagerState *)Villager_GetState((VillagerData *)getVillagerData()));
+                VillagerState_ResetRole(Villager_GetState((VillagerData *)getVillagerData()));
             }
             HouseVisit_SetFinished(this);
             if (wantsToLeave != 0) {

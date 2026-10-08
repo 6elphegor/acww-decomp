@@ -6,7 +6,6 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
