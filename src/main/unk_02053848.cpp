@@ -10,7 +10,7 @@
 struct NNSG3dAnmObj {
     u32 frame;
     u32 ratio;
-    u32 resAnm;
+    void *resAnm;
     void *funcAnm;
     NNSG3dAnmObj *next;
 };
@@ -55,15 +55,15 @@ struct NNSG3dResJntAnm {
 extern "C" {
 void MTX_Identity33_(void *p);
 s32 func_01ffcc10(void *a, void *o);
-void NNS_G3dAnmObjInit(void *a, s32 b, void *c, s32 d);
+void NNS_G3dAnmObjInit(void *a, void *b, void *c, void *d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
-extern u8 sJointAnmHeader2[];
+extern char sJointAnmHeader2[];
 extern void *gCurrentHeap;
 void *NNS_G3dGetMdlSet(void *p);
 void *NNS_G3dGetTex(void *p);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-void Gfx3d_LoadTexAndPltt(void *a, void *b);
+BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, TexVramSlot *b);
 void *Gfx3d_CopyTex(void *a, void *heap);
 void *Gfx3d_CopyModel(void *a, void *heap);
 void NNS_G3dBindMdlTex(void *a, void *b);
@@ -73,14 +73,12 @@ void NNS_G3dForceBindMdlPltt(void *a, void *b, s32 c, void *d);
 void *ResCache_GetModel(void *a, u32 tag);
 void *ResCache_FindModel(void *a);
 void *_ZN15PatternTexCache15getPlayerTexKeyEii(void *a, void *b, void *c);
-void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
 void AnimModel_SwitchAnmObj(void *p, void *q);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);
-void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
 u16 Anim_GetFrameCountForMode(u32 kind, NNSG3dResJntAnm *p);
 }
 
-u8 sJointAnmHeader2[4] = {0x4a, 0x00, 0x41, 0x43};
+char sJointAnmHeader2[4] = {0x4a, 0x00, 0x41, 0x43};
 
 static inline u8 *Unk_02054b70_Off(u8 *p) {
     return p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
@@ -92,7 +90,7 @@ CachedModel::~CachedModel() {}
 
 BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
     void *heap = gCurrentHeap;
-    void *h = File_LoadAlloc(res, heap, -4, 0);
+    void *h = File_LoadAlloc((const char *)res, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
     }
@@ -104,7 +102,7 @@ BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
         resMdl = (NNSG3dResMdl *)ResCache_GetModel(p, tag);
     }
     if (q != NULL) {
-        Gfx3d_LoadTexAndPltt(q, (void *)texVramSlot);
+        Gfx3d_LoadTexAndPltt((NNSG3dResTex *)q, texVramSlot);
         NNS_G3dBindMdlTex(resMdl, q);
         NNS_G3dBindMdlPltt(resMdl, q);
     }
@@ -115,7 +113,7 @@ BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
 
 BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag) {
     void *heap = gCurrentHeap;
-    void *h = File_LoadAlloc(res, heap, -4, 0);
+    void *h = File_LoadAlloc((const char *)res, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
     }
@@ -130,7 +128,7 @@ BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u3
     } else {
         void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
-            Gfx3d_LoadTexAndPltt(q, (void *)texVramSlot);
+            Gfx3d_LoadTexAndPltt((NNSG3dResTex *)q, texVramSlot);
             NNS_G3dBindMdlTex(resMdl, q);
         }
     }
@@ -165,7 +163,7 @@ BOOL CachedModel::loadCached(void *a, void *b) {
 
 BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
     void *heap = gCurrentHeap;
-    void *h = File_LoadAlloc(a, heap, -4, 0);
+    void *h = File_LoadAlloc((const char *)a, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
     }
@@ -224,7 +222,7 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         heap = gModelCacheHeap;
     }
     fileHeap = gCurrentHeap;
-    res = File_LoadAlloc(file, fileHeap, -4, 0);
+    res = File_LoadAlloc((const char *)file, fileHeap, -4, 0);
     if (res == 0) {
         return FALSE;
     }
@@ -242,7 +240,7 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         new (&t->models[i]) CachedModel();
     }
     hdr = NNS_G3dGetTex(res);
-    Gfx3d_LoadTexAndPltt(hdr, 0);
+    Gfx3d_LoadTexAndPltt((NNSG3dResTex *)hdr, NULL);
     hdr = Gfx3d_CopyTex(hdr, heap);
     for (i = 0; i < t->numModels; i++) {
         u8 *h = (u8 *)NNS_G3dGetMdlSet(res);
@@ -251,7 +249,7 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         u32 st = *(u16 *)(p + off);
         u8 *q = h + *(s32 *)(p + off + st * i + 4);
         void *r = Gfx3d_CopyModel(q, heap);
-        ((Model *)(&t->models[i]))->setResourceAndBind((NNSG3dResMdl *)(r), (u32)(hdr));
+        ((Model *)(&t->models[i]))->setResourceAndBind((NNSG3dResMdl *)(r), (NNSG3dResTex *)hdr);
     }
     Heap_Free(fileHeap, res);
     return TRUE;
@@ -340,14 +338,14 @@ extern "C" u16 Anim_GetFrameCountForMode(u32 kind, NNSG3dResJntAnm *p)
     return r;
 }
 
-void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
+void BlendAnimModel::initAnim(void *a, s32 b, s32 c, u16 d, u16 e)
 {
     if (e == 0) {
         e = Anim_GetFrameCountForMode(b, (NNSG3dResJntAnm *)a);
     }
     AnimFrameCtrl &r = *this;
     ((AnimFrameCtrl *)(&r))->setup(e, b, c, d);
-    NNS_G3dAnmObjInit(anmObj, a, resMdl, 0);
+    NNS_G3dAnmObjInit(anmObj, a, resMdl, NULL);
     anmObj->frame = curFrame;
 }
 
@@ -442,7 +440,7 @@ extern "C" void JointCb_CalcCpuMatrix(void *unused, NNSG3dRS *o, void *p)
     }
 }
 
-u32 BlendAnimModel::getAnmRes()
+void *BlendAnimModel::getAnmRes()
 {
     return anmObj->resAnm;
 }
@@ -504,7 +502,7 @@ void BlendAnimModel::stepBlend()
     stepAnim();
 }
 
-void BlendAnimModel::playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f)
+void BlendAnimModel::playBlend(void *a, s32 b, s32 c, s32 d, u16 e, u16 f)
 {
     JointBlend &r = *this;
     ((JointBlend *)(&r))->start(b);
@@ -602,11 +600,11 @@ void TwoLayerAnimModel::onJointCalcPostLayer2(NNSG3dRS *m) {
     }
 }
 
-BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
-    if (!allocAnmObj((void *)a)) {
+BOOL TwoLayerAnimModel::allocLayerAnims(void *a) {
+    if (!allocAnmObj(a)) {
         return FALSE;
     }
-    layer2AnmObj = Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, (void *)a);
+    layer2AnmObj = Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, a);
     if (layer2AnmObj != NULL) {
         return TRUE;
     }
@@ -630,17 +628,17 @@ void TwoLayerAnimModel::drawLayered(u32 a) {
     AnimModel_SwitchAnmObj(this, anmObj);
 }
 
-extern "C" void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) {
+extern "C" void BlendAnimModel_Play(void *p, void *a, s32 b, s32 c, s32 d, u16 e, u16 f) {
     ((BlendAnimModel *)p)->playBlend(a, b, c, d, e, f);
 }
 
-void TwoLayerAnimModel::playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
+void TwoLayerAnimModel::playLayer2(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
     ((JointBlend *)(&layer2Blend))->start(b);
     if (*(u16 *)&f == 0) {
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (NNSG3dResJntAnm *)a);
     }
     ((AnimFrameCtrl *)(&layer2Frame))->setup(*(u16 *)&f, c, d, *(u16 *)&e);
-    NNS_G3dAnmObjInit(layer2AnmObj, a, resMdl, 0);
+    NNS_G3dAnmObjInit(layer2AnmObj, a, resMdl, NULL);
     if (g != 0) {
         modelFlags = modelFlags | 0x4000;
     } else {
@@ -782,11 +780,11 @@ void ThreeLayerAnimModel::onJointCalcPostLayer3(NNSG3dRS *m) {
     }
 }
 
-BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
+BOOL ThreeLayerAnimModel::allocLayer3Anims(void *a) {
     if (!allocLayerAnims(a)) {
         return FALSE;
     }
-    layer3AnmObj = Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, (void *)a);
+    layer3AnmObj = Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, a);
     if (layer3AnmObj != NULL) {
         return TRUE;
     }
@@ -805,15 +803,15 @@ void ThreeLayerAnimModel::updateLayers3() {
     }
 }
 
-extern "C" void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) { BlendAnimModel_Play(p, a, b, c, d, e, f); }
+extern "C" void BlendAnimModel_Play2(void *p, void *a, s32 b, s32 c, s32 d, u16 e, u16 f) { BlendAnimModel_Play(p, a, b, c, d, e, f); }
 
-void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
+void ThreeLayerAnimModel::playLayer3(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
     ((JointBlend *)(&layer3Blend))->start(b);
     if (*(u16 *)&f == 0) {
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (NNSG3dResJntAnm *)a);
     }
     ((AnimFrameCtrl *)(&layer3Frame))->setup(*(u16 *)&f, c, d, *(u16 *)&e);
-    NNS_G3dAnmObjInit(layer3AnmObj, a, resMdl, 0);
+    NNS_G3dAnmObjInit(layer3AnmObj, a, resMdl, NULL);
     if (g != 0) {
         modelFlags = modelFlags | 0x8000;
     } else {

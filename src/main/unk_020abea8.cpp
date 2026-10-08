@@ -93,7 +93,7 @@ extern "C" void ObjShadow_Init(void *arg) {
     if (arg != 0) {
         sObjShadowSkew = 0;
         ObjShadowTexture *e = sObjShadowTextures;
-        void *file = File_Load((void *)"/shadow/tex_shadow.nsbtx");
+        void *file = File_Load("/shadow/tex_shadow.nsbtx");
         u8 *res = NNS_G3dGetTex(file);
         Gfx3d_LoadTexAndPltt(res, 0);
         res = Gfx3d_CopyTex(res, heap);
@@ -108,8 +108,8 @@ extern "C" void ObjShadow_Init(void *arg) {
             e->plttBase = 0;
             e->texRes = res;
             e->polygonId = sObjShadowTexDefs[i].polygonId;
-            u32 idx1 = ((G3dResAccess *)(e->texRes))->findTexIdx((s32)(name));
-            u32 idx2 = ((G3dResAccess *)(e->texRes))->findPlttIdx((s32)(buf));
+            u32 idx1 = ((G3dResAccess *)(e->texRes))->findTexIdx(name);
+            u32 idx2 = ((G3dResAccess *)(e->texRes))->findPlttIdx(buf);
             NNSG3dResTex *tex = (NNSG3dResTex *)e->texRes;
             texData = Unk_020ac500_TexData(tex, idx1);
             u32 plttOfs = Unk_020ac500_PlttData(tex, idx2)->offset;

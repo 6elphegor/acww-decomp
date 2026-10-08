@@ -60,7 +60,7 @@
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -68,7 +68,7 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
+void *RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -134,8 +134,8 @@ void RoomObjTex_Construct(void *);
 void RoomObjTex_Destruct(void *);
 void RoomObjRes_Free(void *);
 void RoomObjTex_Reset(void *);
-s32 RoomObjRes_GetBca(void *, u32);
-s32 RoomObjRes_GetBta(void *, u32);
+void *RoomObjRes_GetBca(void *, u32);
+void *RoomObjRes_GetBta(void *, u32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
@@ -194,7 +194,7 @@ BOOL SewingMachine::onCreate() {
     }
     if (((ModelAnim *)(matAnim))->allocMatAnm(F(u32, 0x148), gBgHeap)) {
         ((ModelAnim *)(matAnim))->init(RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
-        ((ModelAnim *)(matAnim))->addToRenderObj((u32)(((Model *)(&model))->getRenderObj()));
+        ((ModelAnim *)(matAnim))->addToRenderObj(((Model *)(&model))->getRenderObj());
         F(u32, 0x428) = 0;
     }
     if (RoomObjRes_GetBca(partRes, 0) && ((AnimModel *)(partModel))->allocAnmObj(gBgHeap)) {

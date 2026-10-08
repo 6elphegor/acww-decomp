@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "uptr.h"
-#include "gfx/Mtx33.h"
+#include "nitro/mtx.h"
 #include "gfx/VecFx32.h"
 
 // NitroSystem G3D render object and joint animation result (NNSG3dRenderObj / NNSG3dJntAnmResult, partial, layouts
@@ -13,7 +13,7 @@
 struct NNSG3dJntAnmResult {
     /* 0x00 */ u32 flag; // bit 1: rotation is identity, bit 2: translation is zero
     /* 0x04 */ s32 scale[9]; // scale, scaleEx0, scaleEx1
-    /* 0x28 */ Mtx33 rot;
+    /* 0x28 */ MtxFx33 rot;
     /* 0x4c */ VecFx32 trans;
 };
 

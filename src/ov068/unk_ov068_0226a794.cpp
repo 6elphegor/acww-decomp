@@ -111,7 +111,7 @@ public:
     void startEffect41();
     s32 getAngleToPlayer();
     VecFx32Copy getDoorPoint();
-    s32 callGetBca2Anim();
+    void *callGetBca2Anim();
 
     /* 0x2b0 */ s32 taxiState;
     /* 0x2b4 */ s32 townHallGridX;
@@ -295,7 +295,7 @@ VecFx32Ctor KappnTaxi::getSoundPos() {
     return r;
 }
 
-s32 KappnTaxi::callGetBca2Anim() {
+void *KappnTaxi::callGetBca2Anim() {
     return getBca2Anim();
 }
 
@@ -541,7 +541,7 @@ void KappnTaxi::execTaxiTalkWait() {
 }
 
 BOOL KappnTaxi::enterTaxiDepart() {
-    s32 r1 = callGetBca2Anim();
+    void *r1 = callGetBca2Anim();
     ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)(seEmitter))->playSe(0x88b);
     departFrameCount = 0;
@@ -683,7 +683,7 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDoorOpen() {
-    s32 r1 = getDoorInAnim();
+    void *r1 = getDoorInAnim();
     ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
     return TRUE;
 }
@@ -705,7 +705,7 @@ void KappnTaxi::execTaxiLeaveDoorOpen() {
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDoorAnim() {
-    s32 r1 = getDoorOutAnim();
+    void *r1 = getDoorOutAnim();
     ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)(seEmitter))->playSe(0x88a);
     return TRUE;
@@ -738,7 +738,7 @@ void KappnTaxi::execTaxiPlayerGetIn() {
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDrive() {
-    s32 r1 = callGetBca2Anim();
+    void *r1 = callGetBca2Anim();
     ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)(seEmitter))->playSe(0x88b);
     return TRUE;

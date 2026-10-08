@@ -12,16 +12,14 @@
 
 extern "C" {
 // Other files
-u32 _ZN12G3dResAccess10getTexDataEi(void *p, u32 x);
-u32 _ZN12G3dResAccess11getPlttDataEi(void *p, u32 x);
 u32 _ZN10G3dMatData10getTexSizeEv(void *p);
 u32 _ZN10G3dMatData10getTexAddrEv(void *p);
 u32 _ZN10G3dMatData11getPlttAddrEv(void *p);
 void DC_FlushRange(void *p, u32 x);
 void NNS_G3dTexLoad(void *p, u32 x);
 void NNS_G3dPlttLoad(void *p, u32 x);
-void GX_LoadTexPltt(u32 a, u32 b, u32 c);
-void GX_LoadTex(u32 a, u32 b, u32 c);
+void GX_LoadTexPltt(void *a, u32 b, u32 c);
+void GX_LoadTex(void *a, u32 b, u32 c);
 }
 
 
@@ -47,12 +45,12 @@ public:
 
     TexVramTask();
     virtual BOOL execute();
-    BOOL requestMatTex(void *a, u32 b, u32 c);
+    BOOL requestMatTex(void *a, u32 b, void *c);
     void cancel(void);
     void prepare(void);
     BOOL requestTexResource(u32 *a, u8 b);
-    BOOL requestPltt(u32 a, u32 b, u32 c, u8 d);
-    BOOL requestTex(u32 a, u32 b, u32 c, u8 d);
+    BOOL requestPltt(void *src, u32 dst, u32 size, u8 prio);
+    BOOL requestTex(void *src, u32 dst, u32 size, u8 prio);
     void clear(void);
 };
 
@@ -63,10 +61,10 @@ public:
     BgVramTask();
     virtual BOOL execute();
     virtual void clear();
-    BOOL requestPaletteRange(u32 a, u8 b, u32 c, u8 d);
-    BOOL requestPalette(u32 a, u8 b, u32 c);
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
+    BOOL requestPaletteRange(void *a, u8 b, u32 c, u8 d);
+    BOOL requestPalette(void *a, u8 b, u32 c);
+    BOOL requestScreen(void *a, u8 b, u32 c, u32 d);
+    BOOL requestChars(void *a, u8 b, u32 c, u32 d, u32 e);
     void prepare(void);
     void cancel(void);
 };
@@ -78,8 +76,8 @@ public:
     BgVramTaskPair();
     virtual BOOL execute();
     virtual void clear();
-    BOOL requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
-    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
+    BOOL requestCharsAndPalette(void *a, u8 b, u32 c, u32 d, u32 e, void *f, u8 g);
+    BOOL requestCharPair(void *a, void *b, u8 c, u32 d, u32 e, u32 f, u32 g);
 };
 
 void VramTask::resetState(void) {
@@ -94,21 +92,21 @@ void TexTransfer::clear(void) {
     size = 0;
 }
 
-void TexTransfer::set(u32 a, u32 b, u32 c) {
+void TexTransfer::set(u32 a, void *b, u32 c) {
     dstAddr = a;
     src = b;
     size = c;
 }
 
 void TexTransfer::loadTex(void) {
-    DC_FlushRange((void *)src, size);
+    DC_FlushRange(src, size);
     GX_BeginLoadTex();
     GX_LoadTex(src, dstAddr, size);
     GX_EndLoadTex();
 }
 
 void TexTransfer::loadTexPltt(void) {
-    DC_FlushRange((void *)src, size);
+    DC_FlushRange(src, size);
     GX_BeginLoadTexPltt();
     GX_LoadTexPltt(src, dstAddr, size);
     GX_EndLoadTexPltt();
@@ -144,7 +142,7 @@ void BgTransfer::clear(void) {
     loadArg2 = 0;
 }
 
-void BgTransfer::setChars(u32 a, u8 b, u32 c, u32 d, u32 e) {
+void BgTransfer::setChars(void *a, u8 b, u32 c, u32 d, u32 e) {
     buf = a;
     layer = b;
     loadArg0 = c;
@@ -153,14 +151,14 @@ void BgTransfer::setChars(u32 a, u8 b, u32 c, u32 d, u32 e) {
 }
 
 void BgTransfer::loadChars(void) {
-    Gfx2d_LoadCharRange(buf, layer, loadArg0, loadArg1, loadArg2);
+    Gfx2d_LoadCharRange((u8 *)buf, layer, loadArg0, loadArg1, loadArg2);
 }
 
 u8 BgTransfer::getCharCost(void) {
     return ((loadArg2 - loadArg1) + 0x3f) >> 6;
 }
 
-void BgTransfer::setScreen(u32 a, u8 b, u32 c, u32 d) {
+void BgTransfer::setScreen(void *a, u8 b, u32 c, u32 d) {
     buf = a;
     layer = b;
     loadArg0 = c;
@@ -168,14 +166,14 @@ void BgTransfer::setScreen(u32 a, u8 b, u32 c, u32 d) {
 }
 
 void BgTransfer::loadScreen(void) {
-    Gfx2d_LoadScreen(buf, layer, loadArg0, loadArg1);
+    Gfx2d_LoadScreen((u8 *)buf, layer, loadArg0, loadArg1);
 }
 
 extern "C" u8 BgTransfer_GetScreenCost(BgTransfer *p) {
     return 1;
 }
 
-void BgTransfer::setPalette(u32 a, u8 b, u32 c) {
+void BgTransfer::setPalette(void *a, u8 b, u32 c) {
     buf = a;
     layer = b;
     loadArg0 = c;
@@ -183,14 +181,14 @@ void BgTransfer::setPalette(u32 a, u8 b, u32 c) {
 
 void BgTransfer::loadPalette(void) {
     u32 t = (u8)loadArg0;
-    Gfx2d_LoadPaletteRange(buf, layer, t, t, t);
+    Gfx2d_LoadPaletteRange((u8 *)buf, layer, t, t, t);
 }
 
 extern "C" u8 BgTransfer_GetPaletteCost(BgTransfer *p) {
     return 1;
 }
 
-void BgTransfer::setPaletteRange(u32 a, u8 b, u32 c, u8 d) {
+void BgTransfer::setPaletteRange(void *a, u8 b, u32 c, u8 d) {
     buf = a;
     layer = b;
     loadArg0 = c;
@@ -199,7 +197,7 @@ void BgTransfer::setPaletteRange(u32 a, u8 b, u32 c, u8 d) {
 
 // ---- BgTransfer ----
 void BgTransfer::loadPaletteRange(void) {
-    Gfx2d_LoadPaletteRange(buf, layer, (u8)loadArg0, (u8)loadArg0, (u8)loadArg1);
+    Gfx2d_LoadPaletteRange((u8 *)buf, layer, (u8)loadArg0, (u8)loadArg0, (u8)loadArg1);
 }
 
 extern "C" u8 BgTransfer_GetPaletteRangeCost(BgTransfer *p) {
@@ -230,7 +228,7 @@ BOOL TexVramTask::execute() {
     return TRUE;
 }
 
-BOOL TexVramTask::requestTex(u32 a, u32 b, u32 c, u8 d) {
+BOOL TexVramTask::requestTex(void *a, u32 b, u32 c, u8 d) {
     prepare();
     kind = 1;
     xfer.set(b, a, c);
@@ -243,7 +241,7 @@ BOOL TexVramTask::requestTex(u32 a, u32 b, u32 c, u8 d) {
     return FALSE;
 }
 
-BOOL TexVramTask::requestPltt(u32 a, u32 b, u32 c, u8 d) {
+BOOL TexVramTask::requestPltt(void *a, u32 b, u32 c, u8 d) {
     prepare();
     kind = 2;
     xfer.set(b, a, c);
@@ -259,7 +257,7 @@ BOOL TexVramTask::requestPltt(u32 a, u32 b, u32 c, u8 d) {
 BOOL TexVramTask::requestTexResource(u32 *a, u8 b) {
     prepare();
     kind = 0;
-    xfer.set(0, (u32)a, a[1]);
+    xfer.set(0, a, a[1]);
     cost = xfer.getResCost();
     priority = b;
     if (enqueueTex()) {
@@ -280,7 +278,7 @@ void TexVramTask::cancel(void) {
 }
 
 // ---- TexVramTask ----
-BOOL TexVramTask::requestMatTex(void *a, u32 b, u32 c) {
+BOOL TexVramTask::requestMatTex(void *a, u32 b, void *c) {
     u8 *base = (u8 *)a + *(u32 *)((u8 *)a + 8);
     u8 *tbl = base + 4;
     u16 off = *(u16 *)(base + 0xa);
@@ -321,7 +319,7 @@ void MatTexVramTask::prepare(void) {
 }
 
 // ---- MatTexVramTask ----
-BOOL MatTexVramTask::request(void *a, u32 b, void *c, u32 d, u32 e) {
+BOOL MatTexVramTask::request(void *a, const char *b, void *c, u32 d, u32 e) {
     prepare();
     u8 *base = (u8 *)a + *(u32 *)((u8 *)a + 8);
     u32 idx = ((G3dResAccess *)(a))->findMatIdx(b);
@@ -330,8 +328,8 @@ BOOL MatTexVramTask::request(void *a, u32 b, void *c, u32 d, u32 e) {
     u8 *ent = tbl + off;
     ent += *(u16 *)ent * idx;
     u8 *rec = base + *(u32 *)(ent + 4);
-    u32 v1 = _ZN12G3dResAccess10getTexDataEi(c, d);
-    u32 v2 = _ZN12G3dResAccess11getPlttDataEi(c, e);
+    void *v1 = ((G3dResAccess *)c)->getTexData(d);
+    void *v2 = ((G3dResAccess *)c)->getPlttData(e);
     u32 v3 = _ZN10G3dMatData10getTexSizeEv(rec);
     u32 v4 = ((G3dResAccess *)(c))->getPlttSize(e);
     kind = 3;
@@ -385,7 +383,7 @@ void BgVramTask::prepare(void) {
     state = 1;
 }
 
-BOOL BgVramTask::requestChars(u32 a, u8 b, u32 c, u32 d, u32 e) {
+BOOL BgVramTask::requestChars(void *a, u8 b, u32 c, u32 d, u32 e) {
     prepare();
     kind = 4;
     xfer.setChars(a, b, c, d, e);
@@ -398,7 +396,7 @@ BOOL BgVramTask::requestChars(u32 a, u8 b, u32 c, u32 d, u32 e) {
     return FALSE;
 }
 
-BOOL BgVramTask::requestScreen(u32 a, u8 b, u32 c, u32 d) {
+BOOL BgVramTask::requestScreen(void *a, u8 b, u32 c, u32 d) {
     prepare();
     kind = 5;
     xfer.setScreen(a, b, c, d);
@@ -411,7 +409,7 @@ BOOL BgVramTask::requestScreen(u32 a, u8 b, u32 c, u32 d) {
     return FALSE;
 }
 
-BOOL BgVramTask::requestPalette(u32 a, u8 b, u32 c) {
+BOOL BgVramTask::requestPalette(void *a, u8 b, u32 c) {
     prepare();
     kind = 6;
     xfer.setPalette(a, b, c);
@@ -425,7 +423,7 @@ BOOL BgVramTask::requestPalette(u32 a, u8 b, u32 c) {
 }
 
 // ---- BgVramTask ----
-BOOL BgVramTask::requestPaletteRange(u32 a, u8 b, u32 c, u8 d) {
+BOOL BgVramTask::requestPaletteRange(void *a, u8 b, u32 c, u8 d) {
     prepare();
     kind = 7;
     xfer.setPaletteRange(a, b, c, d);

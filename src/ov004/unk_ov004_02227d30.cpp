@@ -49,7 +49,7 @@
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -57,7 +57,7 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
+void *RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -85,7 +85,7 @@ public:
 
 extern "C" {
 extern u32 gBgHeap;
-s32 RoomObjRes_GetBca(void *, u32);
+void *RoomObjRes_GetBca(void *, u32);
 }
 
 extern "C" ActorProfile sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, 0, 0xc8000, 0x12c000, 0x258000};

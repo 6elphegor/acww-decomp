@@ -1378,7 +1378,7 @@ void CatalogMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(0x10)) {
-        if (vramTasks[1].requestScreen((u32)frameScreen, 6, 0x800, 0)) {
+        if (vramTasks[1].requestScreen(frameScreen, 6, 0x800, 0)) {
             clearFlags(0x10);
         }
     }
@@ -1442,7 +1442,7 @@ void CatalogMenu::uploadListScreen() {
             BgScreen_SetRectPalette(listScreen, 0, m, 0x1f, m + 1, 4);
         }
     }
-    if (vramTasks[0].requestScreen((u32)listScreen, 4, 0x800, 0)) {
+    if (vramTasks[0].requestScreen(listScreen, 4, 0x800, 0)) {
         clearFlags(2);
     }
 }
@@ -1979,8 +1979,8 @@ void CatalogMenu::setTabFadeLevel(u32 t) {
     MIi_CpuCopy16(basePalette4, workPalette4, 0x20);
     workPalette3[15] = blendColor(basePalette3[15], basePalette3[8], t);
     workPalette4[15] = blendColor(basePalette4[15], basePalette4[8], t);
-    vramTasks[2].requestPalette((u32)workPalette3, 4, 3);
-    vramTasks[3].requestPalette((u32)workPalette4, 4, 4);
+    vramTasks[2].requestPalette(workPalette3, 4, 3);
+    vramTasks[3].requestPalette(workPalette4, 4, 4);
 }
 
 void CatalogMenu::updateTabSwitch() {

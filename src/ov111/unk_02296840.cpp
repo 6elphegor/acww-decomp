@@ -418,12 +418,12 @@ void ChatMenu_SetupBgLayer() {
 }
 
 void ChatMenu_LoadBg(S *s) {
-    u32 r4 = gCurrentHeap;
-    Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", r4, 6, 1, 1, 9);
+    void *r4 = gCurrentHeap;
+    Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", r4, 6, 1, 1, 9);
     Keyboard_LoadScreenFile(&s->keyboard, data_ov111_022989c8);
     s->refreshKeys();
     Keyboard_LoadScreenNow(&s->keyboard, 6);
-    Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht.bch", r4, 6, 0x13d, 0x13d, 0x1e9);
+    Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", r4, 6, 0x13d, 0x13d, 0x1e9);
 }
 
 void ChatMenu::transitionAct00() {

@@ -24,8 +24,6 @@ struct NNSG3dResMdl;
 // 4-byte colour constructors (unreferenced except by __sinit)
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
-#define BgModelCache_getAcre _ZN12BgModelCache7getAcreEi
 #define Camera_getEyeCurveAngle _ZN6Camera16getEyeCurveAngleEv
 
 extern "C" {
@@ -38,7 +36,6 @@ void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
 s32 Camera_getEyeCurveAngle(void *self);
 void *BgModelCache_getAcre(void *self, s32 i);
-s32 BgModelCache_getGroundTex(void *self);
 }
 
 extern "C" {
@@ -66,9 +63,9 @@ void FieldGroundBackdrop::clear() {
 
 BOOL FieldGroundBackdrop::init() {
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)((BgModelCache *)(BgModelCache_Get()))->getAcre(0x83);
-    s32 t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    void *t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     modelRes = e->modelRes;
-    ((Model *)&model)->setResourceAndBind(modelRes, t);
+    ((Model *)&model)->setResourceAndBind(modelRes, (NNSG3dResTex *)t);
     followCamera();
     return TRUE;
 }

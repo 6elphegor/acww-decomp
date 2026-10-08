@@ -425,7 +425,7 @@ void PocketLettersMenu::transitionAct04() {
 void PocketLettersMenu::transitionAct05() {
     s32 t = getSlotLetter(selectedSlot);
     Letter_MarkRead((LetterView *)t);
-    letterView.show((LetterView *)t, (void *)3, (void *)4, 1);
+    letterView.show((LetterView *)t, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);

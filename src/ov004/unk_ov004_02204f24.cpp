@@ -219,24 +219,13 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define func_02054514 _ZN14BlendAnimModelC1Ev   // main
 #define BlendAnimModel_getAnmObj _ZN14BlendAnimModel9getAnmObjEv   // main
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv   // main
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt   // main
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv   // main
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv   // main
 #define Model_setPolygonId _ZN5Model12setPolygonIdEj   // main
-#define Model_setInitCallback _ZN5Model15setInitCallbackEii   // main
 #define Model_getRenderObj _ZN5Model12getRenderObjEv   // main
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj   // main
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj   // main
-#define ModelAnim_replaceWithTex _ZN9ModelAnim14replaceWithTexEiiihit   // main
-#define ModelAnim_initWithTex _ZN9ModelAnim11initWithTexEiiiit   // main
-#define ModelAnim_replace _ZN9ModelAnim7replaceEiiiit   // main
-#define ModelAnim_init _ZN9ModelAnim4initEiiit   // main
-#define ModelAnim_allocJointAnm _ZN9ModelAnim13allocJointAnmEjPv   // main
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv   // main
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi   // main
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv   // main
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv   // main
-#define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi   // main
 #define TownId_getTownRelation _ZN6TownId15getTownRelationEv   // main
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv   // main
 #define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt   // main
@@ -316,7 +305,6 @@ s32 Vec_Sub(void *out, void *a, void *b);
 s32 Math_StepAngle(s16 *v, s32 target, s32 step);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Vec_RotateY(VecFx32 *v, s16 a);
-s32 G3dResAccess_findNodeIdx(void *p, u32 id);
 u16 Item_MakeFurniture(s32 a, s32 b);
 s32 LightLevel_update(void *p);
 s32 LightLevel_getLevel(void *p);
@@ -386,7 +374,6 @@ void FtrActorGrid_setCell(void *a, void *self, s32 x, s32 y, u32 layer);
 void FtrActorGrid_clearCell(void *a, void *self, s32 x, s32 y, u32 layer);
 s32 FtrActorGrid_getIndex(void *a, s32 x, s32 y, s32 one);
 void Model_setPolygonId(void *self, u32 v);
-void Model_setInitCallback(void *self, s32 fn, void *arg);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
 void FieldPos_FromBlockUnitCenter(void *p, s32 a, s32 b, u32 c, u32 d);
@@ -406,10 +393,7 @@ s32 BlendAnimModel_getAnmObj(void *o);
 void BlendAnimModel_stepBlend(void *o);
 s32 AnimFrameCtrl_isFinished(void *o);
 void AnimFrameCtrl_step(void *o);
-u32 Model_getRenderObj(void *o);
-void ModelAnim_replace(void *o, u32 a, void *b, s32 c, s32 d, u32 e);
-void ModelAnim_replaceWithTex(void *o, u32 a, void *b, void *c, s32 d, s32 e, u32 f);
-void BlendAnimModel_initAnim(void *o, void *a, s32 b, s32 c, u32 d, s32 e);
+void *Model_getRenderObj(void *o);
 extern u8 data_027e00c8[];
 extern s16 data_02135f44[];
 void FtrSoundEmitter_play(void *, u32, void *);
@@ -417,11 +401,6 @@ void FtrSoundEmitter_playOnce(void *, u32, void *);
 void FtrSoundEmitter_release(void *);
 void FtrSoundEmitter_attach(void *);
 void FtrActorTable_remove(void *, void *);
-BOOL ModelAnim_allocJointAnm(void *, u32, u32);
-BOOL ModelAnim_allocMatAnm(void *, u32, u32);
-void ModelAnim_init(void *, void *, s32, s32, s32);
-void ModelAnim_addToRenderObj(void *, u32);
-void ModelAnim_initWithTex(void *, void *, void *, s32, s32, s32);
 BOOL AnimModel_allocAnmObj(void *, u32);
 void AnimModel_attachAnim(void *);
 void AnimModel_drawAnimated(void *, void *);
@@ -456,7 +435,6 @@ void FtrSoundEmitter_resetAttached(void *);
 void FtrActorTable_add(void *, void *);
 BOOL Character_getCharId(void *);
 void Character_setCharId(void *, u32);
-void Model_setResource(void *, void *, void *);
 void Character_postCreate(void *, s32);
 extern const u8 data_ov004_0224004c[];
 extern const char data_ov004_0224bb44[];
@@ -916,7 +894,7 @@ BOOL FtrActor::onCreate() {
     if (spawnMode == 0) {
         ((FtrModelRes *)(modelRes))->loadSync(r, ftrIndex, needsTexCopy());
         void *p = ((FtrModelRes *)(modelRes))->getModel();
-        ((Model *)(model))->setResource((NNSG3dResMdl *)(p), (u32)(((FtrModelRes *)(modelRes))->getTexture()));
+        ((Model *)(model))->setResource((NNSG3dResMdl *)(p), (NNSG3dResTex *)(((FtrModelRes *)(modelRes))->getTexture()));
         isInitializing = 1;
         setupModel();
         if (initModel()) {
@@ -927,7 +905,7 @@ BOOL FtrActor::onCreate() {
     } else {
         if (((FtrModelRes *)(modelRes))->loadAsync(r, ftrIndex, needsTexCopy()) != 0) {
             void *p = ((FtrModelRes *)(modelRes))->getModel();
-            ((Model *)(model))->setResource((NNSG3dResMdl *)(p), (u32)(((FtrModelRes *)(modelRes))->getTexture()));
+            ((Model *)(model))->setResource((NNSG3dResMdl *)(p), (NNSG3dResTex *)(((FtrModelRes *)(modelRes))->getTexture()));
             isInitializing = 1;
             setupModel();
             if (initModel()) {
@@ -1211,37 +1189,37 @@ void FtrActor::initAnims(s32 a, s32 b, s32 c, s32 d) {
     ModelSlot *m = FtrActor_GetHeap((Self *)this);
     u32 i = a & 1;
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i)) {
-        u32 t = modelResMdl;
-        if (((ModelAnim *)(&anims[3]))->allocJointAnm(t, ModelSlot_getHeap(m))) {
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[3]))->allocJointAnm((NNSG3dResMdl *)t, ModelSlot_getHeap(m))) {
             ((ModelAnim *)(&anims[3]))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i)), b, c, d);
-            ModelAnim_addToRenderObj(&anims[3], Model_getRenderObj(model));
+            ((ModelAnim *)(&anims[3]))->addToRenderObj(Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i)) {
-        u32 t = modelResMdl;
-        if (((ModelAnim *)(anims))->allocMatAnm(t, ModelSlot_getHeap(m))) {
+        void *t = modelResMdl;
+        if (((ModelAnim *)(anims))->allocMatAnm((NNSG3dResMdl *)t, ModelSlot_getHeap(m))) {
             ((ModelAnim *)(anims))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i)), b, c, d);
-            ModelAnim_addToRenderObj(anims, Model_getRenderObj(model));
+            ((ModelAnim *)(anims))->addToRenderObj(Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i)) {
-        u32 t = modelResMdl;
-        if (((ModelAnim *)(&anims[1]))->allocMatAnm(t, ModelSlot_getHeap(m))) {
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[1]))->allocMatAnm((NNSG3dResMdl *)t, ModelSlot_getHeap(m))) {
             ((ModelAnim *)(&anims[1]))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i)), b, c, d);
-            ModelAnim_addToRenderObj(&anims[1], Model_getRenderObj(model));
+            ((ModelAnim *)(&anims[1]))->addToRenderObj(Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i)) {
-        u32 t = modelResMdl;
-        if (((ModelAnim *)(&anims[2]))->allocMatAnm(t, ModelSlot_getHeap(m))) {
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[2]))->allocMatAnm((NNSG3dResMdl *)t, ModelSlot_getHeap(m))) {
             NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
-            ((ModelAnim *)(&anims[2]))->initWithTex((s32)(rec), (s32)(((FtrModelRes *)(modelRes))->getTexture()), b, c, d);
-            ModelAnim_addToRenderObj(&anims[2], Model_getRenderObj(model));
+            ((ModelAnim *)(&anims[2]))->initWithTex(rec, ((FtrModelRes *)(modelRes))->getTexture(), b, c, d);
+            ((ModelAnim *)(&anims[2]))->addToRenderObj(Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)) {
         if (((AnimModel *)(model))->allocAnmObj(ModelSlot_getHeap(m))) {
-            ((BlendAnimModel *)(model))->initAnim((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)), b, c, d, 0);
+            ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i), b, c, d, 0);
             ((AnimModel *)(model))->attachAnim();
         }
     }
@@ -1259,7 +1237,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             u32 n = rec->numFrame;
             v = (u16)(d >= n ? n - 1 : d);
         }
-        ModelAnim_replace(&anims[3], Model_getRenderObj(model), rec, b, c, v);
+        ((ModelAnim *)(&anims[3]))->replace(Model_getRenderObj(model), rec, b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i)) {
         NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i);
@@ -1270,7 +1248,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             u32 n = rec->numFrame;
             v = (u16)(d >= n ? n - 1 : d);
         }
-        ModelAnim_replace(anims, Model_getRenderObj(model), rec, b, c, v);
+        ((ModelAnim *)(anims))->replace(Model_getRenderObj(model), rec, b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i)) {
         NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i);
@@ -1281,7 +1259,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             u32 n = rec->numFrame;
             v = (u16)(d >= n ? n - 1 : d);
         }
-        ModelAnim_replace(&anims[1], Model_getRenderObj(model), rec, b, c, v);
+        ((ModelAnim *)(&anims[1]))->replace(Model_getRenderObj(model), rec, b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i)) {
         NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
@@ -1292,8 +1270,8 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             u32 n = rec->numFrame;
             v = (u16)(d >= n ? n - 1 : d);
         }
-        u32 p = Model_getRenderObj(model);
-        ((ModelAnim *)(&anims[2]))->replaceWithTex(p, (s32)(rec), (s32)(((FtrModelRes *)(modelRes))->getTexture()), b, c, v);
+        void *p = Model_getRenderObj(model);
+        ((ModelAnim *)(&anims[2]))->replaceWithTex(p, rec, ((FtrModelRes *)(modelRes))->getTexture(), b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)) {
         NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i);
@@ -1307,7 +1285,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             }
             v = (u16)d;
         }
-        ((BlendAnimModel *)(model))->initAnim((s32)(rec), b, c, v, 0);
+        ((BlendAnimModel *)(model))->initAnim(rec, b, c, v, 0);
     }
 }
 
@@ -1317,25 +1295,25 @@ extern "C" void FtrActor_PlayAnimsFromLastFrame(Self *self, u32 a, s32 b, s32 c)
     NNSG3dResAnmCommon *q;
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBva(k)) {
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBva(k);
-        ModelAnim_replace(PT(0x820), Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
+        ((ModelAnim *)(PT(0x820)))->replace(Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBma(k)) {
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBma(k);
-        ModelAnim_replace(PT(0x7c0), Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
+        ((ModelAnim *)(PT(0x7c0)))->replace(Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBta(k)) {
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBta(k);
-        ModelAnim_replace(PT(0x7e0), Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
+        ((ModelAnim *)(PT(0x7e0)))->replace(Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBtp(k)) {
-        u32 obj;
+        void *obj;
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBtp(k);
         obj = Model_getRenderObj(PT(0x534));
-        ((ModelAnim *)(PT(0x800)))->replaceWithTex(obj, (s32)(q), (s32)(((FtrModelRes *)(PT(0x6c8)))->getTexture()), b, c, (u16)(q->numFrame - 1));
+        ((ModelAnim *)(PT(0x800)))->replaceWithTex(obj, q, ((FtrModelRes *)(PT(0x6c8)))->getTexture(), b, c, (u16)(q->numFrame - 1));
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBca(k)) {
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBca(k);
-        ((BlendAnimModel *)(PT(0x534)))->initAnim((s32)(q), b, c, (u16)(q->numFrame - 1), 0);
+        ((BlendAnimModel *)(PT(0x534)))->initAnim(q, b, c, (u16)(q->numFrame - 1), 0);
     }
 }
 
@@ -1779,12 +1757,12 @@ void FtrActor::setupFromSpawnArg() {
 
 // @02207e48
 void FtrActor::setupModel() {
-    void *p = (void *)modelResMdl;
-    s32 a = G3dResAccess_findNodeIdx(p, (s32)"kh_j");
-    s32 b = G3dResAccess_findNodeIdx(p, (s32)"km_j");
+    void *p = modelResMdl;
+    s32 a = ((G3dResAccess *)(p))->findNodeIdx((const char *)("kh_j"));
+    s32 b = ((G3dResAccess *)(p))->findNodeIdx((const char *)("km_j"));
     ((FtrClockHands *)&clockHands)->set((s8)a, (s8)b);
-    Model_setInitCallback(model, (s32)FtrActor_SetModelCallbacks, this);
-    ((FtrVisNodes *)(visNodes))->init((void *)modelResMdl, 1);
+    ((Model *)(model))->setInitCallback((void (*)(NNSG3dRS *))(FtrActor_SetModelCallbacks), this);
+    ((FtrVisNodes *)(visNodes))->init(modelResMdl, 1);
     void *t = ((FtrModelRes *)(modelRes))->getModel();
     NNS_G3dBindMdlTex(t, ((FtrModelRes *)(modelRes))->getTexture());
     t = ((FtrModelRes *)(modelRes))->getModel();
@@ -2009,9 +1987,9 @@ extern "C" s32 FtrActor_TestCurSceneUnk() {
 // @022077a4
 void FtrActor::initLamp() {
     if (FtrActor_PredIsLightSource(this)) {
-        void *v = (void *)modelResMdl;
+        void *v = modelResMdl;
         u32 t = ((FtrSwitch *)(switchState))->isOn();
-        ((FtrGlowMat *)(lampMat))->bindMaterial((G3dResAccess *)v, (s32)"lp_m", t);
+        ((FtrGlowMat *)(lampMat))->bindMaterial((G3dResAccess *)v, "lp_m", t);
         if (FtrActor_TestCurSceneUnk()) {
             s32 r = FtrMgr_CountSwitchedOn(FtrActor_IsLightSource);
             if (((FtrSwitch *)(switchState))->isOn() != 0 && r == 1) {
@@ -3321,7 +3299,7 @@ FtrGlowMat::~FtrGlowMat() {
 }
 
 // @02205be4
-BOOL FtrGlowMat::bindMaterial(G3dResAccess *res, s32 idx, BOOL on) {
+BOOL FtrGlowMat::bindMaterial(G3dResAccess *res, const char *idx, BOOL on) {
     if (res != NULL) {
         matIdx = res->findMatIdx(idx);
         if (matIdx != -1) {
@@ -3373,13 +3351,13 @@ FtrGlowMatSet::FtrGlowMatSet() {
 FtrGlowMatSet::~FtrGlowMatSet() {}
 
 // @02205a64
-u32 FtrGlowMatSet::init(u32 a, u32 b) {
+u32 FtrGlowMatSet::init(void *a, u32 b) {
     u32 i = 0;
     anyBound = 0;
     u8 *pf = &anyBound;
     u32 z = 0;
     for (i = 0; i < 3; i++) {
-        u32 r = mats[i].bindMaterial((G3dResAccess *)a, (s32)sFtrGlowMatNames[i], b);
+        u32 r = mats[i].bindMaterial((G3dResAccess *)a, sFtrGlowMatNames[i], b);
         u32 t = *pf | r;
         if (t != 0) t = 1; else t = z;
         *pf = t;
@@ -3419,7 +3397,7 @@ extern "C" void FtrVisNodes_Destruct(void *) {}
 void FtrVisNodes::init(void *p, u32 v) {
     if (p) {
         for (u32 i = 0; i < 4; i++) {
-            nodeIds[i] = G3dResAccess_findNodeIdx(p, (u32)sFtrVisNodeNames[i]);
+            nodeIds[i] = ((G3dResAccess *)(p))->findNodeIdx((const char *)(sFtrVisNodeNames[i]));
         }
         setVisible(v);
     }

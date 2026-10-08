@@ -10,7 +10,10 @@
 // key, a 4x3 base matrix at 0x64 and the texture VRAM slot. Defined in src/main/unk_02055200.cpp (ctor 0x02055704);
 // base of CachedModel.
 struct NNSG3dResMdl;
+struct NNSG3dResTex;
 struct NNSG3dAnmObj;
+struct NNSG3dRS;
+class TexVramSlot;
 
 // Declaration-only twin of Model's real base ModelBase (vtable 0x020dbe0c, defined in src/main/unk_02055200.cpp
 // after Model): the original vtable order there is the heapsort of the declaration order twin, Model, ModelBase.
@@ -27,8 +30,9 @@ public:
     virtual ~Model();
     void setAlpha(u32 v);
     void setPolygonId(u32 v);
-    void setInitCallback(s32 a, s32 b);
-    void setCallback(s32 a, s32 b, s32 c, s32 d, s32 e);
+    void setInitCallback(void (*fn)(NNSG3dRS *), void *user);
+    // fn runs at SBC command cmd (timing: before / during / after it), addr: the SBC address it applies at (NULL: all)
+    void setCallback(void (*fn)(NNSG3dRS *), s32 cmd, s32 timing, void *user, u8 *addr);
     void *getRenderObj();
     void draw();
     void applyTransform(s32 *p);
@@ -36,8 +40,8 @@ public:
     void drawScaled(s32 *p);
     void drawShapesDirect(s32 *p);
     BOOL clearResource();
-    BOOL setResource(NNSG3dResMdl *a, u32 b);
-    BOOL setResourceAndBind(NNSG3dResMdl *a, u32 b);
+    BOOL setResource(NNSG3dResMdl *a, NNSG3dResTex *b);
+    BOOL setResourceAndBind(NNSG3dResMdl *a, NNSG3dResTex *b);
     void initRenderObj();
     void reset();
 
@@ -57,13 +61,13 @@ public:
             void *pad_24[2];            // funcBlendVis, cbFunc
             u8 pad_24b[4];              // cbCmd, cbTiming
             void *pad_28;               // cbInitFunc
-            sptr renderUserPtr;         // ptrUser
+            void *renderUserPtr;        // ptrUser
             u8 *pad_30;                 // ptrUserSbc
             void *renderJntRecord;      // recJntAnm
         };
     };
     /* 0x5c */ NNSG3dResMdl *resMdl;
-    /* 0x60 */ u32 resTex;
+    /* 0x60 */ NNSG3dResTex *resTex;
     union {
         /* 0x64 */ Mtx43 mtx;
         struct {
@@ -71,7 +75,7 @@ public:
             /* 0x88 */ u8 baseTrans[0xc];
         };
     };
-    /* 0x94 */ u32 texVramSlot;
+    /* 0x94 */ TexVramSlot *texVramSlot;
 };
 
 // Model members reached by their DS offsets from a Model's storage (code that keeps the model as raw storage): the

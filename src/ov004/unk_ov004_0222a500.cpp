@@ -50,24 +50,16 @@
 #define GroundInfo_initAtUnit _ZN10GroundInfo10initAtUnitEiiii
 #define BlendAnimModel_getAnmObj _ZN14BlendAnimModel9getAnmObjEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_clearResource _ZN5Model13clearResourceEv
-#define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define MatTexBinder_getMaterial _ZN12MatTexBinder11getMaterialEv
 #define MatTexBinder_bindByIdx _ZN12MatTexBinder9bindByIdxEPhii
 #define MatTexBinder_bindByName _ZN12MatTexBinder10bindByNameEPhPKcS2_
 #define MatTexBinder_setMaterialByName _ZN12MatTexBinder17setMaterialByNameEPhPKc
-#define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi
-#define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define HouseData_getRoom _ZN9HouseData7getRoomEi
 #define HouseRoom_setCarpet _ZN9HouseRoom9setCarpetEPtj
 #define HouseRoom_setWallpaper _ZN9HouseRoom12setWallpaperEPtj
@@ -76,7 +68,6 @@
 #define PatternTexCache_getPlayerTexKey _ZN15PatternTexCache15getPlayerTexKeyEii
 #define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP7VecFx32S3_S3_ih
 #define TouchPicker_pushCylinder _ZN11TouchPicker12pushCylinderEP17TouchPickCylinder
-#define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
 #define MatTexVramTask_cancel _ZN14MatTexVramTask6cancelEv
 
 // ---------------------------------------------------------------- library-side classes (real symbols)
@@ -267,24 +258,16 @@ s32 HouseRoom_setWallpaper(void *self, u16 *a, u32 b);
 BOOL BoxCollider_Unregister(void *self);
 BOOL BoxCollider_Register(void *self, s32 a, s32 b, s32 c, void *p, s32 s, void *q);
 void MatTexVramTask_cancel(void *self);
-BOOL MatTexVramTask_request(void *self, void *a, u32 b, void *c, u32 d, u32 e);
 void MatTexBinder_bindByIdx(void *self, u8 *a, s32 b, s32 c);
 void MatTexBinder_bindByName(void *self, u8 *a, const char *b, const char *c);
 void MatTexBinder_setMaterialByName(void *self, u8 *a, const char *b);
 s32 MatTexBinder_getMaterial(void *self);
-s32 G3dResAccess_findNodeIdx(void *self, const char *s);
-s32 G3dResAccess_findMatIdx(void *self, const char *s);
 s32 FX_Div(s32 a, s32 b);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 u32 SceneLights_GetMatLightMask2();
-s32 Model_setResourceAndBind(void *self, u32 a, u32 b);
 s32 AnimModel_allocAnmObj(void *self, u32 a);
-s32 BlendAnimModel_initAnim(void *self, u32 a, s32 b, s32 c, s32 d, s32 e);
 void AnimModel_attachAnim(void *self);
-s32 ModelAnim_allocMatAnm(void *self, void *a, u32 b);
-s32 ModelAnim_init(void *self, u32 a, s32 b, s32 c, s32 d);
-u32 Model_getRenderObj(void *self);
-s32 ModelAnim_addToRenderObj(void *self, u32 a);
+void *Model_getRenderObj(void *self);
 u16 *HouseRoom_getWallpaper(void *self, s32 *i);
 u16 *HouseRoom_getCarpet(void *self, s32 *i);
 void *SaveVillagers_Get(void *self, s32 i);
@@ -309,7 +292,6 @@ void AnimFrameCtrl_step(void *self);
 s32 FtrMgr_GetCycleCounter(s32 a);
 void SndEnvChannel_callRequestSustained(void *self, u32 a);
 void SndEnvChannel_callUpdateRelative(void *self, VecFx32 *v);
-void Model_setInitCallback(void *self, void *fn, void *obj);
 void SndEnvChannel_callReset(void *self);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);
@@ -369,11 +351,11 @@ BOOL RoomShell::onCreate() {
     setMatLightFlags((u8 *)model.resMdl);
     storeBaseMtx();
     initWallAndFloor();
-    hourHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx((s32)("kh_j"));
-    minuteHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx((s32)("km_j"));
-    hasuNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx((s32)("hasu1"));
-    wdMatIdx = ((G3dResAccess *)((u8 *)model.resMdl))->findMatIdx((s32)("wd"));
-    ((Model *)(&model))->setInitCallback((s32)((void *)RoomShell_InitRenderObj), (s32)(this));
+    hourHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx("kh_j");
+    minuteHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx("km_j");
+    hasuNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx("hasu1");
+    wdMatIdx = ((G3dResAccess *)((u8 *)model.resMdl))->findMatIdx("wd");
+    ((Model *)(&model))->setInitCallback((void (*)(NNSG3dRS *))RoomShell_InitRenderObj, this);
     RoomShell_SpawnBoardSigns(this);
     ((SndEnvChannel *)(&clockSe))->callReset();
     return TRUE;
@@ -545,17 +527,17 @@ void RoomShell::initAnims() {
         c = NULL;
     }
     BgAcreModel *r = c->bgModel;
-    Model_setResourceAndBind(&model, (u32)r->mdl, (u32)r->tex);
+    ((Model *)(&model))->setResourceAndBind((NNSG3dResMdl *)(r->mdl), (NNSG3dResTex *)(r->tex));
     if (r->jntAnm != 0) {
         if (((AnimModel *)(&model))->allocAnmObj((void *)(gBgHeap))) {
-            BlendAnimModel_initAnim(&model, (u32)r->jntAnm, 0, 0x1000, 0, 0);
+            ((BlendAnimModel *)(&model))->initAnim(r->jntAnm, 0, 0x1000, 0, 0);
             ((AnimModel *)(&model))->attachAnim();
         }
     }
     if (r->texSrtAnm != 0) {
-        if (((ModelAnim *)(matAnim))->allocMatAnm((u32)((u8 *)model.resMdl), (void *)(gBgHeap))) {
-            ModelAnim_init(matAnim, (u32)r->texSrtAnm, 0, 0x1000, 0);
-            ModelAnim_addToRenderObj(matAnim, Model_getRenderObj(&model));
+        if (((ModelAnim *)(matAnim))->allocMatAnm((NNSG3dResMdl *)((u8 *)model.resMdl), (void *)(gBgHeap))) {
+            ((ModelAnim *)(matAnim))->init(r->texSrtAnm, 0, 0x1000, 0);
+            ((ModelAnim *)(matAnim))->addToRenderObj(Model_getRenderObj(&model));
         }
     }
 }
@@ -630,7 +612,7 @@ extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
 
 BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (((G3dResAccess *)(a))->findMatIdx((s32)(sRoomWallpaperMatName)) == -1) return FALSE;
+    if (((G3dResAccess *)(a))->findMatIdx(sRoomWallpaperMatName) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
         u32 x = Item_GetFurnitureIndex(&item);
         u32 y = Item_GetFurnitureIndex(q);
@@ -653,7 +635,7 @@ BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
                 ((MatTexBinder *)(&matBinder))->bindByName(texRes, "dummy_wall", "dummy_wall_pl");
             }
             void *r = Wallpaper_GetTex(&texBuf);
-            if (MatTexVramTask_request(&texTask, a, (u32)sRoomWallpaperMatName, r, 0, 0) == 0) goto fail;
+            if (((MatTexVramTask *)(&texTask))->request(a, (const char *)(sRoomWallpaperMatName), r, 0, 0) == 0) goto fail;
             prevItem = item;
             item = *q;
             RoomWallpaper_SaveToHouseRoom(this, &item, key);
@@ -736,7 +718,7 @@ void RoomCarpet::saveToHouseRoom(u16 *q, u32 key) {
 
 BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (((G3dResAccess *)(a))->findMatIdx((s32)(sRoomCarpetMatName)) == -1) return FALSE;
+    if (((G3dResAccess *)(a))->findMatIdx(sRoomCarpetMatName) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
         u32 x = Item_GetFurnitureIndex(&item);
         u32 y = Item_GetFurnitureIndex(q);
@@ -759,7 +741,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
                 ((MatTexBinder *)(&matBinder))->bindByName(texRes, "dummy_floor", "dummy_floor_pl");
             }
             void *r = CarpetTex_GetTex(&texBuf);
-            if (MatTexVramTask_request(&texTask, a, (u32)sRoomCarpetMatName, r, 0, 0) == 0) goto fail;
+            if (((MatTexVramTask *)(&texTask))->request(a, (const char *)(sRoomCarpetMatName), r, 0, 0) == 0) goto fail;
             prevItem = item;
             item = *q;
             saveToHouseRoom(&item, key);

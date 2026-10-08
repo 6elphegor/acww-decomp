@@ -34,12 +34,9 @@ extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
 extern "C" s32 NNS_G3dGetResDictIdxByName(void *a, void *b);
 extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
 extern "C" void *NNS_G3dGetTex(void *p);
-extern "C" BOOL _ZN11TexVramTask13requestMatTexEPvjj(void *a, void *b, u32 c, void *d);
 extern "C" void _ZN11TexVramTask6cancelEv(void *a);
 extern "C" void _ZN11TexVramTask5clearEv(void *a);
 extern "C" void _ZN11TexVramTaskC2Ev(void *a);
-extern "C" s32 _ZN11TexVramTask10requestTexEjjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
-extern "C" s32 _ZN11TexVramTask11requestPlttEjjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
 extern "C" void MTX_Identity33_(void *m);
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" void MI_CpuFill8(void *dst, u32 v, u32 n);
@@ -106,13 +103,13 @@ public:
     /* 0x1c */ u16 texPlttBase;
 };
 
-s32 G3dRes_FindDictIdx(void *p, s32 a) {
+s32 G3dRes_FindDictIdx(void *p, const char *a) {
     u32 buf[4];
     buf[0] = 0;
     buf[1] = 0;
     buf[2] = 0;
     buf[3] = 0;
-    strcpy((char *)buf, (const char *)a);
+    strcpy((char *)buf, a);
     return NNS_G3dGetResDictIdxByName(p, buf);
 }
 
@@ -131,7 +128,7 @@ u32 G3dMatData::getPlttAddr(void) {
     return texPlttBase << 4;
 }
 
-s32 G3dResAccess::findMatIdx(s32 a) {
+s32 G3dResAccess::findMatIdx(const char *a) {
     return G3dRes_FindDictIdx((u8 *)this + unk_08 + 4, a);
 }
 
@@ -139,17 +136,17 @@ u32 G3dResAccess::getTexImageOffset(void) {
     return texDataOffset;
 }
 
-s32 G3dResAccess::findTexIdx(s32 a) {
+s32 G3dResAccess::findTexIdx(const char *a) {
     return G3dRes_FindDictIdx(HOST_AT(this, 0x3c, unk_3c[0], 0), a);
 }
 
 // findTexData and findPlttData take the name to look up (r1, passed through to findTexIdx/findPlttIdx), although
-// their symbols say (void): defined under the mangled names with the parameter spelled out.
-extern "C" void *_ZN12G3dResAccess11findTexDataEv(G3dResAccess *self, s32 name) {
-    s32 idx = self->findTexIdx(name);
+// their DS symbols say (void).
+void *G3dResAccess::findTexData(const char *name) {
+    s32 idx = findTexIdx(name);
     void *r = 0;
     if (idx != -1) {
-        r = self->getTexData(idx);
+        r = getTexData(idx);
     }
     return r;
 }
@@ -176,7 +173,7 @@ u32 G3dResAccess::getTexSize(s32 idx) {
     return G3dTex_GetImageSize(*(u32 *)(ent + 4));
 }
 
-s32 G3dResAccess::findPlttIdx(s32 a) {
+s32 G3dResAccess::findPlttIdx(const char *a) {
     return G3dRes_FindDictIdx((u8 *)this + plttDictOffset, a);
 }
 
@@ -193,8 +190,8 @@ void *G3dResAccess::getPlttData(s32 idx) {
     return data + (*(u16 *)(ent + 4) << 3);
 }
 
-extern "C" void *_ZN12G3dResAccess12findPlttDataEv(G3dResAccess *self, s32 name) {
-    return self->getPlttData(self->findPlttIdx(name));
+void *G3dResAccess::findPlttData(const char *name) {
+    return getPlttData(findPlttIdx(name));
 }
 
 u32 G3dResAccess::getPlttSize(s32 idx) {
@@ -229,7 +226,7 @@ u32 G3dResAccess::getPlttSize(s32 idx) {
     }
 }
 
-u32 G3dResAccess::findNodeIdx(s32 a) {
+u32 G3dResAccess::findNodeIdx(const char *a) {
     return G3dRes_FindDictIdx(HOST_AT(this, 0x40, unk_3c[4], 0), a);
 }
 
@@ -270,7 +267,7 @@ BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s3
         if (r7 != NULL) {
             u8 *t = (u8 *)((G3dResAccess *)(x))->getTexData(a);
             s32 r3 = G3dTex_GetImageSize(*(u32 *)r7);
-            if (!_ZN11TexVramTask10requestTexEjjjh(this, t, (r6 & 0xffff) << 3, r3, 2)) {
+            if (!((TexVramTask *)(void *)this)->requestTex(t, (r6 & 0xffff) << 3, r3, 2)) {
                 return FALSE;
             }
         }
@@ -278,7 +275,7 @@ BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s3
             s32 bb = b;
             u8 *t = _ZN12G3dResAccess11getPlttDataEi(x, bb);
             s32 r3 = ((G3dResAccess *)(x))->getPlttSize(bb);
-            if (!_ZN11TexVramTask11requestPlttEjjjh(TEXPAT_TASK1(tasks), t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
+            if (!((TexVramTask *)TEXPAT_TASK1(tasks))->requestPltt(t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
                 _ZN11TexVramTask6cancelEv(this);
                 return FALSE;
             }
@@ -291,12 +288,12 @@ BOOL TexPatVramUploader::uploadByName(u8 *hdr, const char *n1, const char *n2, u
     s32 i1;
     s32 i2;
     if (n1 != NULL) {
-        i1 = ((G3dResAccess *)(hdr))->findTexIdx((s32)(n1));
+        i1 = ((G3dResAccess *)(hdr))->findTexIdx(n1);
     } else {
         i1 = -1;
     }
     if (n2 != NULL) {
-        i2 = ((G3dResAccess *)(hdr))->findPlttIdx((s32)(n2));
+        i2 = ((G3dResAccess *)(hdr))->findPlttIdx(n2);
     } else {
         i2 = -1;
     }
@@ -416,7 +413,7 @@ BOOL MatTexBinder::hasMaterial() {
 
 BOOL MatTexBinder::setMaterialByName(u8 *hdr, const char *name) {
     if (!hasMaterial()) {
-        s32 idx = (s8)((G3dResAccess *)(hdr))->findMatIdx((s32)(name));
+        s32 idx = (s8)((G3dResAccess *)(hdr))->findMatIdx(name);
         if (idx != -1) {
             return setMaterial(hdr, idx);
         }
@@ -459,7 +456,7 @@ BOOL MatTexBinder::bindByIdx(u8 *hdr2, s32 a, s32 idx) {
 
 BOOL MatTexBinder::bindTexByName(u8 *hdr2, const char *name) {
     if (name != NULL) {
-        return bindTex(hdr2, ((G3dResAccess *)(hdr2))->findTexIdx((s32)(name)));
+        return bindTex(hdr2, ((G3dResAccess *)(hdr2))->findTexIdx(name));
     }
     return TRUE;
 }
@@ -552,7 +549,7 @@ BOOL MatTexBinder::bindTex(u8 *hdr2, s32 idx2) {
 
 BOOL MatTexBinder::bindPlttByName(u8 *hdr2, const char *name) {
     if (name != NULL) {
-        return bindPltt(hdr2, ((G3dResAccess *)(hdr2))->findPlttIdx((s32)(name)));
+        return bindPltt(hdr2, ((G3dResAccess *)(hdr2))->findPlttIdx(name));
     }
     return TRUE;
 }
@@ -632,20 +629,20 @@ s8 MatTexBinder::getMaterial() {
     return matIdx;
 }
 
-extern "C" s32 Model_BindMatTexByName(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
+extern "C" s32 Model_BindMatTexByName(void *hdr, const char *name, void *tex, const char *texName, const char *plttName) {
     MatTexBinder l;
-    if (l.setMaterialByName(hdr, name)) {
-        s32 res = l.bindByName((u8 *)p, (const char *)q, (const char *)r);
+    if (l.setMaterialByName((u8 *)hdr, name)) {
+        s32 res = l.bindByName((u8 *)tex, texName, plttName);
         l.clear();
         return res;
     }
     return 0;
 }
 
-extern "C" s32 Model_BindMatTexByIdx(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
+extern "C" s32 Model_BindMatTexByIdx(void *hdr, const char *name, void *tex, s32 texIdx, s32 plttIdx) {
     MatTexBinder l;
-    if (l.setMaterialByName(hdr, name)) {
-        s32 res = l.bindByIdx((u8 *)p, q, r);
+    if (l.setMaterialByName((u8 *)hdr, name)) {
+        s32 res = l.bindByIdx((u8 *)tex, texIdx, plttIdx);
         l.clear();
         return res;
     }
@@ -797,18 +794,18 @@ extern "C" void Anim_NormalizeVec(VecFx32 *v) {
     }
 }
 
-extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t) {
+extern "C" void Anim_LerpRotMtx(MtxFx33 *a, MtxFx33 *b, MtxFx33 *out, s32 t) {
     s32 k = 0x1000 - t;
-    out->m[0] = (s32)(((s64)t * a->m[0] + (s64)k * b->m[0]) >> 12);
-    out->m[1] = (s32)(((s64)t * a->m[1] + (s64)k * b->m[1]) >> 12);
-    out->m[2] = (s32)(((s64)t * a->m[2] + (s64)k * b->m[2]) >> 12);
-    out->m[3] = (s32)(((s64)t * a->m[3] + (s64)k * b->m[3]) >> 12);
-    out->m[4] = (s32)(((s64)t * a->m[4] + (s64)k * b->m[4]) >> 12);
-    out->m[5] = (s32)(((s64)t * a->m[5] + (s64)k * b->m[5]) >> 12);
-    Anim_NormalizeVec((VecFx32 *)&out->m[0]);
-    Anim_NormalizeVec((VecFx32 *)&out->m[3]);
-    VEC_CrossProduct(&out->m[0], &out->m[3], &out->m[6]);
-    VEC_CrossProduct(&out->m[6], &out->m[0], &out->m[3]);
+    out->a[0] = (s32)(((s64)t * a->a[0] + (s64)k * b->a[0]) >> 12);
+    out->a[1] = (s32)(((s64)t * a->a[1] + (s64)k * b->a[1]) >> 12);
+    out->a[2] = (s32)(((s64)t * a->a[2] + (s64)k * b->a[2]) >> 12);
+    out->a[3] = (s32)(((s64)t * a->a[3] + (s64)k * b->a[3]) >> 12);
+    out->a[4] = (s32)(((s64)t * a->a[4] + (s64)k * b->a[4]) >> 12);
+    out->a[5] = (s32)(((s64)t * a->a[5] + (s64)k * b->a[5]) >> 12);
+    Anim_NormalizeVec((VecFx32 *)&out->a[0]);
+    Anim_NormalizeVec((VecFx32 *)&out->a[3]);
+    VEC_CrossProduct(&out->a[0], &out->a[3], &out->a[6]);
+    VEC_CrossProduct(&out->a[6], &out->a[0], &out->a[3]);
 }
 
 extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t) {
@@ -821,7 +818,7 @@ extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t) {
 
 void JointBlend::blendPose(NNSG3dRS *x) {
     VecFx32 v;
-    Mtx33 m;
+    MtxFx33 m;
     u32 idx = x->c[1];
     if ((x->pJntAnmResult->flag & 4) == 0 && idx <= 1) {
         Anim_LerpVec(&x->pJntAnmResult->trans, &poseTrans, &v, blendRatio);
@@ -841,8 +838,8 @@ void JointBlend::blendPose(NNSG3dRS *x) {
 
 void JointBlend::capturePose(NNSG3dRS *x) {
     NNSG3dJntAnmResult *r = &x->pRenderObj->recJntAnm[x->c[1]];
-    if (r->rot.m[0] == 0 && r->rot.m[1] == 0 && r->rot.m[2] == 0 && r->rot.m[3] == 0 && r->rot.m[4] == 0 &&
-        r->rot.m[5] == 0 && r->rot.m[6] == 0 && r->rot.m[7] == 0 && r->rot.m[8] == 0) {
+    if (r->rot.a[0] == 0 && r->rot.a[1] == 0 && r->rot.a[2] == 0 && r->rot.a[3] == 0 && r->rot.a[4] == 0 &&
+        r->rot.a[5] == 0 && r->rot.a[6] == 0 && r->rot.a[7] == 0 && r->rot.a[8] == 0) {
         MTX_Identity33_(&poseRot);
     } else {
         poseRot = r->rot;
@@ -905,7 +902,7 @@ void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
 }
 
 void MatTexPatTrack::upload(void *a, void *b) {
-    if (!_ZN11TexVramTask13requestMatTexEPvjj(vramTask, a, matIdx, ((G3dResAccess *)(b))->getTexData(texIdx))) {
+    if (!((TexVramTask *)vramTask)->requestMatTex(a, matIdx, ((G3dResAccess *)(b))->getTexData(texIdx))) {
         keyIdx = 0xff;
         texIdx = 0xff;
         lastFrame = 0xffff;
@@ -997,7 +994,7 @@ void MatTexPatAnim::applyFrame() {
 
 BOOL MatTexPatAnim::setMaterialTex(const char *matName, const char *texName) {
     BOOL z = FALSE;
-    s32 id = ((G3dResAccess *)(resMdl))->findMatIdx((s32)matName);
+    s32 id = ((G3dResAccess *)(resMdl))->findMatIdx(matName);
     
     if (id == -1) return z;
     u8 v = ((G3dResAccess *)(resTex))->findTexIdx((s32)texName);
@@ -1021,7 +1018,7 @@ BOOL MatTexPatAnim::setMaterialTex(const char *matName, const char *texName) {
 
 // Defined under its mangled name so it can take the material name its callers pass (the mangled name has no parameter)
 extern "C" void _ZN13MatTexPatAnim13pauseMaterialEv(MatTexPatAnim *self, const char *matName) {
-    s32 id = ((G3dResAccess *)(self->resMdl))->findMatIdx((s32)(matName));
+    s32 id = ((G3dResAccess *)(self->resMdl))->findMatIdx(matName);
     s32 i;
     if (id != -1) {
         for (i = 0; i < self->numTracks; i++) {
@@ -1035,7 +1032,7 @@ extern "C" void _ZN13MatTexPatAnim13pauseMaterialEv(MatTexPatAnim *self, const c
 
 extern "C" void MatTexPatAnim_ResumeMaterial(MatTexPatAnim *p, void *q) {
     s32 i, r;
-    r = ((G3dResAccess *)((void *)p->resMdl))->findMatIdx((s32)((const char *)q));
+    r = ((G3dResAccess *)((void *)p->resMdl))->findMatIdx((const char *)q);
     i = 0;
     if (r != -1) {
         u32 n = p->numTracks;

@@ -103,15 +103,12 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define func_020548a0 _ZN9AnimModelD1Ev
 #define func_020548d0 _ZN9AnimModelC1Ev
-#define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_clearResource _ZN5Model13clearResourceEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define TalkAutoAdvance_start _ZN15TalkAutoAdvance5startEi
@@ -183,7 +180,6 @@ BOOL Item_IsNookShop(u16 *);
 void AnimModel_stepAnim(void *);
 BOOL AnimFrameCtrl_isFinished(void *);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
-void BlendAnimModel_initAnim(void *, void *, s32, s32, s32, s32);
 BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
@@ -204,11 +200,9 @@ BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
 void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
-BOOL Model_setResource(void *, void *, s32);
 void AnimModel_allocAnmObj(void *, void *);
 void AnimModel_attachAnim(void *);
 void Model_clearResource(void *);
-void Model_setInitCallback(void *, void *, void *);
 void func_020548a0(void *);
 void Clock_GetMinuteHour(void *);
 void BuildingLights_setLit(void *, s32, s32, s32);

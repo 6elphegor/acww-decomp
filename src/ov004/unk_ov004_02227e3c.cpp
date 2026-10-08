@@ -59,7 +59,7 @@
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -67,7 +67,7 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
+void *RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -158,7 +158,7 @@ TouchPicker *Scene_GetTouchPicker(void);
 s32 TalkRequest_SetTargetDone(void *);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 RoomObjRes_GetBca(void *, u32);
+void *RoomObjRes_GetBca(void *, u32);
 void RoomObj_PlaySe(void *, s32);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);

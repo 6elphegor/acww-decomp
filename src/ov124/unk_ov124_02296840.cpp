@@ -148,7 +148,7 @@ void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
 
 void GeneralMenuHeader::loadObjGfx(s32 v) {
     s32 st = pictureIndex;
-    s32 loc;
+    u32 loc;
     void *heap = gCurrentHeap;
     char *buf = (char *)File_LoadAlloc(sGeneralHeaderObjChars[st / 5], heap, -4, &loc);
     char *p = buf + (st % 5) * 0xc0;
@@ -204,7 +204,7 @@ extern "C" void *sGeneralHeaderScreens[6] = {(void *)data_ov124_02296eac, (void 
 extern "C" char data_ov124_02296ec0[20] = "menu/han/e_bg.bsc";
 extern "C" char data_ov124_02296e70[20] = "menu/han/obj2.bch";
 extern "C" char data_ov124_02296f24[20] = "menu/han/obj3.bch";
-extern "C" void *sGeneralHeaderObjChars[4] = {(void *)data_ov124_02296e98, (void *)data_ov124_02296ed4, (void *)data_ov124_02296e70, (void *)data_ov124_02296f24};
+extern "C" char *sGeneralHeaderObjChars[4] = {data_ov124_02296e98, data_ov124_02296ed4, data_ov124_02296e70, data_ov124_02296f24};
 extern "C" u8 data_ov124_02296f90[64] = {0xb0, 0x40, 0xdb, 0x81, 0x4c, 0xc1, 0x0, 0x0, 0xb0, 0x40, 0xfb, 0x81, 0x50, 0xc1, 0x0, 0x0, 0xb0, 0x40, 0x1b, 0x80, 0x54, 0xc1, 0x0, 0x0, 0xb0, 0x0, 0x3b, 0x40, 0x58, 0xc1, 0x0, 0x0, 0xb0, 0x40, 0x13, 0x80, 0xd0, 0xb0, 0x0, 0x0, 0xb0, 0x40, 0xf3, 0x81, 0xd0, 0xb0, 0x0, 0x0, 0xb0, 0x40, 0x33, 0x90, 0xcf, 0xb0, 0x0, 0x0, 0xb0, 0x40, 0xd3, 0x81, 0xcf, 0xb0, 0xff, 0xff};
 extern "C" char data_ov124_02296ee8[20] = "menu/han/f_bg.bsc";
 extern "C" char data_ov124_02296e84[20] = "menu/han/g_bg.bsc";

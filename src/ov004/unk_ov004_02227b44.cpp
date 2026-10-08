@@ -55,7 +55,7 @@
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -63,7 +63,7 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
+void *RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -106,7 +106,7 @@ public:
 
 extern "C" {
 extern u8 data_021ed0a0[];
-s32 RoomObjRes_GetBca(void *, u32);
+void *RoomObjRes_GetBca(void *, u32);
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);
 void Item_MakeInsect();
 }
@@ -192,7 +192,7 @@ MuseumDisplay::~MuseumDisplay() {}
 BOOL MuseumDisplay::onCreate() {
     const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     loadResources((char *)r->arcPath, (char *)r->texPath);
-    ((Model *)(HOST_AT(this, 0xec, model, 0)))->setInitCallback((s32)((void *)MuseumDisplay_InitRenderObj), (s32)(this));
+    ((Model *)(HOST_AT(this, 0xec, model, 0)))->setInitCallback((void (*)(NNSG3dRS *))MuseumDisplay_InitRenderObj, this);
     selectNodes();
     return TRUE;
 }
@@ -227,7 +227,7 @@ void MuseumDisplay::selectNodes() {
             f = 1;
         }
         Str_SPrintf(sMuseumDisplayNodeName, "p%d_%d", i, f);
-        shownNodes[i] = ((G3dResAccess *)(F(void *, 0x148)))->findNodeIdx((s32)(sMuseumDisplayNodeName));
+        shownNodes[i] = ((G3dResAccess *)(F(void *, 0x148)))->findNodeIdx(sMuseumDisplayNodeName);
     }
 }
 

@@ -710,7 +710,7 @@ extern "C" void BbsWriteMenu_SetupBgLayers(S *s) {
 }
 
 extern "C" void BbsWriteMenu_LoadBg(S *s) {
-    u32 g = gCurrentHeap;
+    void *g = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/chat2/b_bbs.bpl", g, 4, 8, 8, 0xe);
     File_LoadToBuffer("menu/chat2/b_bbs_us.bsc", s->bgScreenBuf, 0x800);
     BgScreen_SetRectPalette(s->bgScreenBuf, 6, 5, 0x19, 6, 0xa);
@@ -1656,7 +1656,7 @@ extern "C" void BbsWriteMenu_Nop(S *s) {
 }
 
 extern "C" void BbsWriteMenu_UploadTextChars(S *s) {
-    ((BgVramTask *)(s->textCharTask))->requestChars((u32)s->lineCharBufs, 4, 0x11, 0x11, 0x100);
+    ((BgVramTask *)(s->textCharTask))->requestChars(s->lineCharBufs, 4, 0x11, 0x11, 0x100);
 }
 
 extern "C" void BbsWriteMenu_SetScroll(S *s, u32 v) {

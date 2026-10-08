@@ -94,8 +94,6 @@
 #define HeldToolModel_playPitfallFallAnim _ZN13HeldToolModel19playPitfallFallAnimEjj
 #define HeldToolModel_playIdleAnim _ZN13HeldToolModel12playIdleAnimEjj
 #define HeldToolModel_playAnim _ZN13HeldToolModel8playAnimEjjj
-#define HeldToolModel_attach _ZN13HeldToolModel6attachEjPtjt
-#define HeldToolModel_load _ZN13HeldToolModel4loadEj
 #define HeldToolModel_init _ZN13HeldToolModel4initEv
 #define VillagerRoute_runStep _ZN13VillagerRoute7runStepEP7VecFx32
 #define VillagerRoute_getStage _ZN13VillagerRoute8getStageEv
@@ -714,7 +712,6 @@ void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32)
 s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_getAction(void *);
-void HeldToolModel_attach(void *, void *, void *, s32, s32);
 s32 HeldToolModel_getAnimSpeed(void *);
 void HeldToolModel_setAnimSpeed(void *, s32);
 void HeldToolModel_playAnim(void *, s32, s32, s32);
@@ -1283,7 +1280,6 @@ void *PlayerData_getPlayerId(void *);
 BOOL PlayerId_isValid(void *);
 BOOL Villager_FindMemory(void *, void *);
 void Npc_GetStateHeldItem(void *, void *);
-void HeldToolModel_attach(void *, void *, void *, s32, s32);
 void HeldToolModel_playIdleAnim(void *, u32, s32);
 void HeldToolModel_setAnimSpeed(void *, s32);
 void Villager_HalveTalkUrge(void *);
@@ -1299,7 +1295,6 @@ s32 VillagerStates_GetBirthdayHost();
 u32 Villager_GetWhereabouts(void *);
 s32 func_0202dab0(void *);
 void NpcActor_setTalkRequest(void *, void *);
-s32 HeldToolModel_load(void *, void *);
 s32 VillagerState_GetRole(void *);
 void HeldToolModel_init(void *);
 s32 Math_CountDownU16(void *);
@@ -2374,7 +2369,7 @@ BOOL FieldVillager::preCreate() {
     talkType = 0;
     talkReason = 3;
     u16 buf = 0xfff1;
-    if (Unk_ov068_02266320_IsZero(((HeldToolModel *)((&heldTool)))->load((u32)(&buf)))) {
+    if (Unk_ov068_02266320_IsZero(((HeldToolModel *)((&heldTool)))->load(&buf))) {
         return FALSE;
     }
     curHeldTool = (&heldTool);
@@ -2513,7 +2508,7 @@ void FieldVillager::attachHeldItemModel() {
     Npc_GetStateHeldItem(&a, this);
     if (a != 0xfff1) {
         Npc_GetStateHeldItem(&b, this);
-        ((HeldToolModel *)((&heldTool)))->attach((u32)(this), (u16 *)(&b), 0, 0);
+        ((HeldToolModel *)((&heldTool)))->attach((NpcActor *)this, (u16 *)(&b), 0, 0);
         ((HeldToolModel *)((&heldTool)))->playIdleAnim(data_020c6cc8, 0);
         ((HeldToolModel *)((&heldTool)))->setAnimSpeed(0x1000);
         heldTool.visible = 1;
@@ -5560,7 +5555,7 @@ BOOL FieldVillagerAiTakeOut::enterTakeOutItem(FieldVillager *o) {
     if (Unk_ov068_02261118_InRange(&pos[0])) {
         u16 w = data_020c6cc8;
         ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(1, 0xcd, 1, w, 0);
-        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((u32)(o), (u16 *)(pos), 0xcd, w);
+        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((NpcActor *)o, (u16 *)(pos), 0xcd, w);
         ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->playAnim(0x26, w, 1);
         ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->setAnimSpeed(0x1000);
         *(HOST_AT(o, 0x9ec, heldTool.visible, 0)) = 0;
@@ -5568,7 +5563,7 @@ BOOL FieldVillagerAiTakeOut::enterTakeOutItem(FieldVillager *o) {
     } else {
         u16 w = data_020c6cc8;
         ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(1, 0xd6, 3, w, 0);
-        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((u32)(o), (u16 *)(pos), 0xd6, w);
+        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((NpcActor *)o, (u16 *)(pos), 0xd6, w);
         ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->setAnimSpeed(0);
         *(HOST_AT(o, 0x9ec, heldTool.visible, 0)) = 1;
         step = 0;
@@ -5642,7 +5637,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
     if (Unk_ov068_02261118_InRange(&pos[0])) {
         u16 w = data_020c6cc8;
         ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(1, 0xcd, 3, w, 0);
-        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((u32)(o), (u16 *)(pos), 0xcd, w);
+        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((NpcActor *)o, (u16 *)(pos), 0xcd, w);
         ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->playAnim(0x26, 1, 3);
         void *p = ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->getModel();
         if (p != 0) {
@@ -5655,7 +5650,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
     } else {
         u16 w = data_020c6cc8;
         ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(1, 0xd6, 1, w, 0);
-        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((u32)(o), (u16 *)(pos), 0xd6, w);
+        ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((NpcActor *)o, (u16 *)(pos), 0xd6, w);
         ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->setAnimSpeed(0x1000);
         *(HOST_AT(o, 0x9ec, heldTool.visible, 0)) = 1;
         step = 0;
@@ -5674,7 +5669,7 @@ void FieldVillagerAiPutAway::putAwayItemStep0(FieldVillager *o) {
         if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->isActionDone() != 0) {
             u16 t[1];
             t[0] = 0xfff1;
-            ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((u32)(o), (u16 *)(t), 0, 3);
+            ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((NpcActor *)o, (u16 *)(t), 0, 3);
             step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
@@ -5703,7 +5698,7 @@ void FieldVillagerAiPutAway::putAwayItemStep1(FieldVillager *o) {
         } else if (((*(u32 *)(HOST_AT(o, 0x190, model.curFrame, 0)) << 4) >> 16) == 5) {
             u16 t[1];
             t[0] = 0xfff1;
-            ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((u32)(o), (u16 *)(t), 0, 3);
+            ((HeldToolModel *)(HOST_AT(o, 0x9b0, heldTool.heldItem, 0)))->attach((NpcActor *)o, (u16 *)(t), 0, 3);
             *(HOST_AT(o, 0x9ec, heldTool.visible, 0)) = 0;
         }
     }

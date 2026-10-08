@@ -14,10 +14,10 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020b0774.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void _ZN10BgVramTask19requestPaletteRangeEjhjh(void *p, void *q, u32 a, u32 b, u32 c);
 void _ZN10BgVramTaskC1Ev(void *p);
 u32 _ZN8PlayerId5clearEv(void *p);
 }
@@ -135,7 +135,7 @@ void StarTwinkle_Update(u8 *p) {
         }
     }
     if (changed) {
-        _ZN10BgVramTask19requestPaletteRangeEjhjh(p, p + 0x24, p[0x32c], 4, 7);
+        ((BgVramTask *)(p))->requestPaletteRange(p + 0x24, p[0x32c], 4, 7);
     }
 }
 void StarTwinkle_Init(u8 *self, s32 arg) {

@@ -111,15 +111,12 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define func_020548a0 _ZN9AnimModelD1Ev
 #define func_020548d0 _ZN9AnimModelC1Ev
-#define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_clearResource _ZN5Model13clearResourceEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define TalkAutoAdvance_start _ZN15TalkAutoAdvance5startEi
@@ -192,7 +189,6 @@ BOOL Item_IsNookShop(u16 *);
 void AnimModel_stepAnim(void *);
 BOOL AnimFrameCtrl_isFinished(void *);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
-void BlendAnimModel_initAnim(void *, void *, s32, s32, s32, s32);
 BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
@@ -213,11 +209,9 @@ BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
 void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
-BOOL Model_setResource(void *, void *, s32);
 void AnimModel_allocAnmObj(void *, void *);
 void AnimModel_attachAnim(void *);
 void Model_clearResource(void *);
-void Model_setInitCallback(void *, void *, void *);
 void func_020548a0(void *);
 void ModelSlotHandle_Destroy(void *);
 void Clock_GetMinuteHour(void *);
@@ -232,8 +226,8 @@ BOOL func_0203e638(void *);
 BOOL func_0203e650(void *);
 void Character_setCharId(void *, u32);
 BOOL Camera_IsBlockingFocusView(void *, s32, s32);
-void NNS_G3dBindMdlPltt(void *, s32);
-void NNS_G3dBindMdlTex(void *, s32);
+void NNS_G3dBindMdlPltt(void *, void *);
+void NNS_G3dBindMdlTex(void *, void *);
 
 void func_020548d0(void *);
 void func_020b2034(void *);
@@ -414,7 +408,7 @@ BOOL BuildingActor::onCreate() {
     initEntryArea();
     setupAnims();
     updateBaseMatrix(&b1);
-    ((Model *)(model))->setInitCallback((s32)((void *)Building_InitModelCallback), (s32)(this));
+    ((Model *)(model))->setInitCallback(Building_InitModelCallback, this);
     b2 = b1;
     createShadows(&b2);
     s32 ang = WorldCurve_Apply(&v, &position);
@@ -422,7 +416,7 @@ BOOL BuildingActor::onCreate() {
     Mtx43_RotateX(&m, ang);
     createColliders((Mtx43 *)&m);
     BuildingResources *r = getResources();
-    BuildingLights_bind(lights, (void *)(r ? r->bmd0 : 0), 1);
+    BuildingLights_bind(lights, r ? r->bmd0 : NULL, 1);
     setInteractionRange(0);
     if (getDoorPos(&entryPos, (s16 *)0)) {
         entryPos.z -= 0x4000;
@@ -526,7 +520,7 @@ void BuildingActor::initEntryArea() {
 void BuildingActor::setupAnims() {
     if (getDoorInAnim() != 0 || getDoorOutAnim() != 0) {
         ((AnimModel *)(model))->allocAnmObj(gFieldStructureHeap);
-        ((BlendAnimModel *)(model))->initAnim((s32)((void *)getDoorInAnim()), 0, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim(getDoorInAnim(), 0, 0x1000, 0, 0);
         ((AnimModel *)(model))->attachAnim();
     }
     if (getEntranceType() != 0) {
@@ -596,7 +590,7 @@ s32 BuildingActor::getViewRangeFront() {
     return r;
 }
 
-s32 BuildingActor::getDoorInAnim() {
+void *BuildingActor::getDoorInAnim() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca0;
@@ -604,7 +598,7 @@ s32 BuildingActor::getDoorInAnim() {
     return 0;
 }
 
-s32 BuildingActor::getDoorOutAnim() {
+void *BuildingActor::getDoorOutAnim() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca1;
@@ -612,7 +606,7 @@ s32 BuildingActor::getDoorOutAnim() {
     return 0;
 }
 
-s32 BuildingActor::getBca2Anim() {
+void *BuildingActor::getBca2Anim() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca2;
@@ -624,7 +618,7 @@ void *BuildingActor::getBtaAnim(u32 idx) {
     if (idx < 4) {
         BuildingResources *r = getResources();
         if (r != NULL) {
-            return (void *)r->btaAnims[idx];
+            return r->btaAnims[idx];
         }
     }
     return 0;
@@ -703,15 +697,15 @@ BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     loadResources(a, b, c);
     BuildingResources *r = getResources();
     if (r != NULL && r->bmd0 != 0) {
-        if (((Model *)(model))->setResource((NNSG3dResMdl *)((void *)r->bmd0), 0)) {
+        if (((Model *)(model))->setResource((NNSG3dResMdl *)r->bmd0, NULL)) {
             s32 x = PlayerHouseTex_Get(FieldStructureMgr_GetPlayerHouseTex());
-            NNS_G3dBindMdlPltt((void *)r->bmd0, x);
+            NNS_G3dBindMdlPltt(r->bmd0, x);
             if (r->tex) {
-                NNS_G3dBindMdlTex((void *)r->bmd0, r->tex);
+                NNS_G3dBindMdlTex(r->bmd0, r->tex);
             }
             if (r->lightTex) {
-                NNS_G3dBindMdlTex((void *)r->bmd0, r->lightTex);
-                NNS_G3dBindMdlPltt((void *)r->bmd0, r->lightTex);
+                NNS_G3dBindMdlTex(r->bmd0, r->lightTex);
+                NNS_G3dBindMdlPltt(r->bmd0, r->lightTex);
             }
             return TRUE;
         }
@@ -742,15 +736,15 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 void *t;
                 t = NNS_FndGetArchiveFileByName(data_ov009_0225e3ec);
                 if (t) {
-                    e->bca0 = (s32)Building_GetFirstAnm(t);
+                    e->bca0 = Building_GetFirstAnm(t);
                 }
                 t = NNS_FndGetArchiveFileByName(data_ov009_0225e3fc);
                 if (t) {
-                    e->bca1 = (s32)Building_GetFirstAnm(t);
+                    e->bca1 = Building_GetFirstAnm(t);
                 }
                 t = NNS_FndGetArchiveFileByName(data_ov009_0225e40c);
                 if (t) {
-                    e->bca2 = (s32)Building_GetFirstAnm(t);
+                    e->bca2 = Building_GetFirstAnm(t);
                 }
                 i = 0;
                 z1 = i;
@@ -758,7 +752,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                     Str_SPrintf(b1, data_ov009_0225e41c, i);
                     t = NNS_FndGetArchiveFileByName(b1);
                     if (t) {
-                        e->btaAnims[i] = (s32)func_02106670(func_02106654(t), z1);
+                        e->btaAnims[i] = func_02106670(func_02106654(t), z1);
                     }
                 }
                 i = 0;
@@ -767,13 +761,13 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                     Str_SPrintf(b2, data_ov009_0225e42c, i);
                     t = NNS_FndGetArchiveFileByName(b2);
                     if (t) {
-                        e->btpAnims[i] = (s32)func_021066ac(func_02106690(t), z2);
+                        e->btpAnims[i] = func_021066ac(func_02106690(t), z2);
                     }
                 }
-                e->bmd0 = (s32)Building_GetFirstMdl(NNS_FndGetArchiveFileByName(data_ov009_0225e43c));
+                e->bmd0 = Building_GetFirstMdl(NNS_FndGetArchiveFileByName(data_ov009_0225e43c));
                 t = NNS_FndGetArchiveFileByName(data_ov009_0225e44c);
                 if (t) {
-                    e->bmd1 = (s32)Building_GetFirstMdl(t);
+                    e->bmd1 = Building_GetFirstMdl(t);
                 }
                 e->shadowTable = (BuildingShadowTable *)NNS_FndGetArchiveFileByName(data_ov009_0225e45c);
                 NNS_FndUnmountArchive(&obj);
@@ -785,9 +779,9 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
         if (File_Exists(b)) {
             void *r5 = File_LoadAlloc(b, gCurrentHeap, -4, 0);
             if (r5 != NULL) {
-                e->tex = (s32)NNS_G3dGetTex(r5);
-                if (Gfx3d_LoadTex((void *)e->tex, 0)) {
-                    e->tex = (s32)Gfx3d_CopyTex((void *)e->tex, gFieldStructureHeap);
+                e->tex = NNS_G3dGetTex(r5);
+                if (Gfx3d_LoadTex(e->tex, 0)) {
+                    e->tex = Gfx3d_CopyTex(e->tex, gFieldStructureHeap);
                 }
                 Mem_Free(r5);
             }
@@ -797,9 +791,9 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
         if (File_Exists(c)) {
             void *r5 = File_LoadAlloc(c, gCurrentHeap, -4, 0);
             if (r5 != NULL) {
-                e->lightTex = (s32)NNS_G3dGetTex(r5);
-                if (Gfx3d_LoadTexAndPltt((void *)e->lightTex, 0)) {
-                    e->lightTex = (s32)Gfx3d_CopyTex((void *)e->lightTex, gFieldStructureHeap);
+                e->lightTex = NNS_G3dGetTex(r5);
+                if (Gfx3d_LoadTexAndPltt(e->lightTex, 0)) {
+                    e->lightTex = Gfx3d_CopyTex(e->lightTex, gFieldStructureHeap);
                 }
                 Mem_Free(r5);
             }
@@ -1099,7 +1093,7 @@ BOOL BuildingActor::enterDoorIdle() {
         if (r == 0) {
             return FALSE;
         }
-        ((BlendAnimModel *)(model))->initAnim((s32)(r), 0, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim(r, 0, 0x1000, 0, 0);
         break;
     }
     }
@@ -1143,7 +1137,7 @@ void BuildingActor::execDoorIdle() {
 BOOL BuildingActor::enterDoorOpenIn() {
     void *r = (void *)getDoorInAnim();
     if (r != 0) {
-        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d1);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d2);
         if (playsDoorMelody()) {
@@ -1225,7 +1219,7 @@ void BuildingActor::execDoorOpenIn() {
 BOOL BuildingActor::enterDoorOpenOut() {
     void *r = (void *)getDoorOutAnim();
     if (r != 0) {
-        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d1);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d2);
         if (playsDoorMelody()) {
@@ -1307,7 +1301,7 @@ void BuildingActor::execDoorOpenOut() {
 BOOL BuildingActor::enterDoorSlideOpen() {
     void *r = (void *)getDoorInAnim();
     if (r) {
-        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
         if (Item_IsNookShop(&itemId)) {
             ((BuildingSeEmitter *)seEmitter)->playSe(0x806);
         } else {
@@ -1329,7 +1323,7 @@ BOOL BuildingActor::enterDoorSlideClose() {
     doorCloseSeDelay = 0x1a;
     void *r = (void *)getDoorOutAnim();
     if (r) {
-        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
         return TRUE;
     }
     return FALSE;

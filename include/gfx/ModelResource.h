@@ -10,7 +10,7 @@ class TexVramSlot;
 
 class ModelResource {
 public:
-    u32 fileData;
+    void *fileData;
     void *fileHeap;
     void *model;
     void *texture;

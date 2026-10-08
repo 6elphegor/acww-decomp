@@ -73,7 +73,6 @@
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
 #define PlayerData_getIndex _ZN10PlayerData8getIndexEv
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define TouchPromptBalloon_setAutoCloseTimer _ZN18TouchPromptBalloon17setAutoCloseTimerEh
 #define TouchPromptBalloon_cancelQueuedOpen _ZN18TouchPromptBalloon16cancelQueuedOpenEv
@@ -143,7 +142,6 @@ void PlayerData_setShirt(void *p, u16 *v);
 u16 *PlayerData_getShirt(void *p);
 u16 *PlayerData_getHeldItem(void *p);
 s32 PlayerData_getIndex(void *p);
-BOOL BgVramTask_requestScreen(void *p, void *a, u32 b, u32 c, u32 d);
 void BgVramTask_cancel(void *p);
 
 s32 StrBuf_GameToAscii(void *p, void *q);
@@ -705,7 +703,7 @@ void DesignTab::preStateUpdate() {}
 void DesignTab::postStateUpdate() {
     updateTargetBlink();
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(&bgTasks[0], &mainScreen[0], 6, 0x800, 0)) {
+        if (((BgVramTask *)(&bgTasks[0]))->requestScreen(&mainScreen[0], 6, 0x800, 0)) {
             clearFlags(2);
         }
     }

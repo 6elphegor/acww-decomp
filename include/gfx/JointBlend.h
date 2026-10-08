@@ -2,7 +2,7 @@
 #define GFX_JOINTBLEND_H
 
 #include "types.h"
-#include "gfx/Mtx33.h"
+#include "nitro/mtx.h"
 #include "gfx/VecFx32.h"
 
 struct NNSG3dRS;
@@ -12,7 +12,7 @@ struct NNSG3dRS;
 // Defined in src/main/unk_02055c38.cpp.
 class JointBlend {
 public:
-    /* 0x04 */ Mtx33 poseRot;
+    /* 0x04 */ MtxFx33 poseRot;
     /* 0x28 */ VecFx32 poseTrans;
     /* 0x34 */ s32 blendRatio;
     /* 0x38 */ s32 blendStep;

@@ -52,9 +52,9 @@ class HouseLightUpDeco {
 public:
     HouseLightUpDeco();
     ~HouseLightUpDeco();
-    /* 0x00 */ u32 tex;
-    /* 0x04 */ u32 models[5];
-    /* 0x18 */ u32 texPattern;
+    /* 0x00 */ void *tex;
+    /* 0x04 */ void *models[5];
+    /* 0x18 */ void *texPattern;
     /* 0x1c */ u8 isLoaded;
 };
 
@@ -63,10 +63,10 @@ class VillagerHouseTex {
 public:
     VillagerHouseTex();
     ~VillagerHouseTex();
-    /* 0x00 */ u32 houseTextures[4];
-    /* 0x10 */ u32 lightTextures[4];
-    /* 0x20 */ u32 doorInAnim;
-    /* 0x24 */ u32 doorOutAnim;
+    /* 0x00 */ void *houseTextures[4];
+    /* 0x10 */ void *lightTextures[4];
+    /* 0x20 */ void *doorInAnim;
+    /* 0x24 */ void *doorOutAnim;
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
@@ -398,9 +398,9 @@ u32 Field_GetSpawnedKind1Count() { return sSpawnedBuildingCount1; }
 
 void *FieldStructureMgr_GetPlayerHouseTex() { return &sPlayerHouseTex; }
 
-void *FieldStructureMgr_GetVillagerHouseTex() { return &sVillagerHouseTex; }
+VillagerHouseTex *FieldStructureMgr_GetVillagerHouseTex() { return &sVillagerHouseTex; }
 
-void *FieldStructureMgr_GetLightUpDeco() { return &sHouseLightUpDeco; }
+HouseLightUpDeco *FieldStructureMgr_GetLightUpDeco() { return &sHouseLightUpDeco; }
 
 u32 Field_GetDoorExitMode() { return sDoorExitMode; }
 
@@ -583,30 +583,30 @@ s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
         s32 a = Field_GetStructureTexSuffix();
         str = File_LoadAllocF(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
         u32 off = i << 2;
-        u32 *e = &self->houseTextures[i];
-        self->houseTextures[i] = (u32)NNS_G3dGetTex(str);
-        if (Gfx3d_LoadTex((void *)self->houseTextures[i], za)) {
-            *e = (u32)Gfx3d_CopyTex((void *)*e, gFieldStructureHeap);
+        void **e = &self->houseTextures[i];
+        self->houseTextures[i] = NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTex(self->houseTextures[i], za)) {
+            *e = Gfx3d_CopyTex(*e, gFieldStructureHeap);
         }
         Mem_Free(str);
         str = File_LoadAllocF(gCurrentHeap, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
-        e[4] = (u32)NNS_G3dGetTex(str);
-        if (Gfx3d_LoadTexAndPltt((void *)e[4], zb)) {
-            e[4] = (u32)Gfx3d_CopyTex((void *)e[4], heap);
+        e[4] = NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTexAndPltt(e[4], zb)) {
+            e[4] = Gfx3d_CopyTex(e[4], heap);
         }
         Mem_Free(str);
         i = i + 1;
     } while (i < 4);
-    self->doorInAnim = (u32)func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0)), 0);
-    self->doorOutAnim = (u32)func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0)), 0);
+    self->doorInAnim = func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0)), 0);
+    self->doorOutAnim = func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0)), 0);
     return 1;
 }
 
 void VillagerHouseTex_Clear(VillagerHouseTex *o) {
     u32 i;
-    s32 z = 0;
+    void *z = NULL;
     for (i = 0; i < 4; i++) {
-        u32 *e = &o->houseTextures[i];
+        void **e = &o->houseTextures[i];
         o->houseTextures[i] = z;
         e[4] = z;
     }
@@ -614,13 +614,13 @@ void VillagerHouseTex_Clear(VillagerHouseTex *o) {
     o->doorInAnim = o->doorOutAnim;
 }
 
-s32 VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i) { return o->houseTextures[i & 3]; }
+void *VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i) { return o->houseTextures[i & 3]; }
 
-s32 VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i) { return o->lightTextures[i & 3]; }
+void *VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i) { return o->lightTextures[i & 3]; }
 
-s32 VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o) { return o->doorInAnim; }
+void *VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o) { return o->doorInAnim; }
 
-s32 VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o) { return o->doorOutAnim; }
+void *VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o) { return o->doorOutAnim; }
 
 }
 
@@ -634,13 +634,13 @@ extern "C" {
 
 void HouseLightUpDeco_Clear(HouseLightUpDeco *o) {
     u32 i;
-    s32 z = 0;
+    void *z = NULL;
     for (i = 0; i < 5; i++) {
         o->models[i] = z;
     }
     o->tex = z;
     o->texPattern = z;
-    o->isLoaded = z;
+    o->isLoaded = 0;
 }
 
 s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
@@ -653,16 +653,16 @@ s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
     if (c == ~z) {
         return z;
     }
-    void *t = File_LoadAlloc("/str/npcHsX.arc", gFieldStructureHeap, 4, z);
+    void *t = File_LoadAlloc("/str/npcHsX.arc", gFieldStructureHeap, 4, NULL);
     if (NNS_FndMountArchive((char *)buf, "STR", t) != 0) {
         for (i = 0; i < 5; i++) {
             Str_SPrintf(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
             u8 *p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(data_ov003_02235888));
-            r->models[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
+            r->models[i] = p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);
         }
-        r->tex = (s32)NNS_G3dGetTex(NNS_FndGetArchiveFileByName("STR:a/obj_x_house0.nsbtx"));
-        Gfx3d_LoadTexAndPltt((void *)r->tex, 0);
-        r->texPattern = (s32)func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("STR:a/obj_x_deco.nsbtp")), 0);
+        r->tex = NNS_G3dGetTex(NNS_FndGetArchiveFileByName("STR:a/obj_x_house0.nsbtx"));
+        Gfx3d_LoadTexAndPltt(r->tex, 0);
+        r->texPattern = func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("STR:a/obj_x_deco.nsbtp")), 0);
         r->isLoaded = 1;
         NNS_FndUnmountArchive((char *)buf);
     }
@@ -673,18 +673,18 @@ void HouseLightUpDeco_Release(void *p) {
     HouseLightUpDeco_Clear((HouseLightUpDeco *)p);
 }
 
-s32 HouseLightUpDeco_GetTex(s32 *p) {
-    return *p;
+void *HouseLightUpDeco_GetTex(HouseLightUpDeco *p) {
+    return p->tex;
 }
 
-s32 HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx) {
+void *HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx) {
     if (idx < 5) {
         return r->models[idx];
     }
     return 0;
 }
 
-s32 HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r) {
+void *HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r) {
     return r->texPattern;
 }
 

@@ -13,6 +13,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sObjVariantFiles
+extern char *sObjVariantFiles[1];
+#endif
 #ifndef PROTO_LOCAL_data_ov134_02294e3c
 extern char data_ov134_02294e3c[22];
 #endif
@@ -27,6 +30,9 @@ extern char data_ov134_02294e24[22];
 #endif
 #ifndef PROTO_LOCAL_data_ov134_02294e54
 extern char data_ov134_02294e54[22];
+#endif
+#ifndef PROTO_LOCAL_sBgPaletteFiles
+extern char *sBgPaletteFiles[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov134_02294dd4
 extern char data_ov134_02294dd4[19];
@@ -181,9 +187,6 @@ extern u32 data_ov134_02294dc4[4];
 #ifndef PROTO_LOCAL_data_ov134_02294fb4
 extern u32 data_ov134_02294fb4[8];
 #endif
-#ifndef PROTO_LOCAL_sObjVariantFiles
-extern uptr sObjVariantFiles[1];
-#endif
 #ifndef PROTO_LOCAL_data_ov134_02294d44
 extern u32 data_ov134_02294d44[2];
 #endif
@@ -249,9 +252,6 @@ extern u32 data_ov134_02295014[8];
 #endif
 #ifndef PROTO_LOCAL_data_ov134_02295134
 extern u32 data_ov134_02295134[12];
-#endif
-#ifndef PROTO_LOCAL_sBgPaletteFiles
-extern uptr sBgPaletteFiles[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov134_02295164
 extern u32 data_ov134_02295164[12];

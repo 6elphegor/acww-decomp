@@ -10,7 +10,7 @@
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -18,7 +18,7 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
+void *RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -32,16 +32,16 @@ public:
     RoomObjRes();
     ~RoomObjRes();
     void clear();
-    inline s32 RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
+    inline void *RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
     inline void RoomObjRes_Free() { ::RoomObjRes_Free(this); }
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    /* 0x00 */ u32 archive;
-    /* 0x04 */ u32 model;
-    /* 0x08 */ u32 bcas[13];
-    /* 0x3c */ u32 bmas[13];
-    /* 0x70 */ u32 btas[13];
+    /* 0x00 */ void *archive;
+    /* 0x04 */ void *model;
+    /* 0x08 */ void *bcas[13];  // joint / material / texture-SRT animations of the archive
+    /* 0x3c */ void *bmas[13];
+    /* 0x70 */ void *btas[13];
 };
 
 class RoomObjSe {

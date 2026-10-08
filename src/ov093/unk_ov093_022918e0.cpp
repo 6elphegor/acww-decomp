@@ -175,12 +175,12 @@ void StaffRoll::update()
 void StaffRoll::uploadScreens()
 {
     if (layer4.testFlags(2)) {
-        if (screenTasks[0].requestScreen((u32)layer4.screen, 4, 0x800, 0)) {
+        if (screenTasks[0].requestScreen(layer4.screen, 4, 0x800, 0)) {
             layer4.clearFlags(2);
         }
     }
     if (layer0.testFlags(2)) {
-        if (screenTasks[1].requestScreen((u32)layer0.screen, 0, 0x800, 0)) {
+        if (screenTasks[1].requestScreen(layer0.screen, 0, 0x800, 0)) {
             layer0.clearFlags(2);
         }
     }

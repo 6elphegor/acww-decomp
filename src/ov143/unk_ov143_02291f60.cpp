@@ -410,9 +410,9 @@ void MelodyMenu::setupBgLayers() {
 
 void MelodyMenu::loadBgGfx() {
     void *h = gCurrentHeap;
-    Gfx2d_LoadCharFile((void *)"menu/melody/bg0.bch", h, 6, 0x11, 0x11, 0x9c);
-    Gfx2d_LoadPaletteFile((void *)"menu/melody/bg.bpl", h, 6, 1, 1, 6);
-    Gfx2d_LoadScreenFile((void *)"menu/melody/a_bg.bsc", h, 6);
+    Gfx2d_LoadCharFile("menu/melody/bg0.bch", h, 6, 0x11, 0x11, 0x9c);
+    Gfx2d_LoadPaletteFile("menu/melody/bg.bpl", h, 6, 1, 1, 6);
+    Gfx2d_LoadScreenFile("menu/melody/a_bg.bsc", h, 6);
     File_LoadToBuffer((void *)"menu/melody/b_bg.bsc", bgScreen, 0x800);
     Gfx2d_LoadScreen(bgScreen, 4, 0x800, 0);
 }
@@ -420,9 +420,9 @@ void MelodyMenu::loadBgGfx() {
 void MelodyMenu::loadObjGfx() {
     MenuButtons_LoadTextColors(&bottomButtons);
     void *h = gCurrentHeap;
-    Gfx2d_LoadCharFile((void *)"menu/melody/obj.bch", h, 8, 0xc0, 0xc0, 0xff);
-    Gfx2d_LoadCharFile((void *)"menu/melody/obj2.bch", h, 8, 0x140, 0x140, 0x1bf);
-    Gfx2d_LoadPaletteFile((void *)"menu/melody/obj.bpl", h, 8, 4, 4, 0xd);
+    Gfx2d_LoadCharFile("menu/melody/obj.bch", h, 8, 0xc0, 0xc0, 0xff);
+    Gfx2d_LoadCharFile("menu/melody/obj2.bch", h, 8, 0x140, 0x140, 0x1bf);
+    Gfx2d_LoadPaletteFile("menu/melody/obj.bpl", h, 8, 4, 4, 0xd);
 }
 
 void MelodyMenu::updateTouch() {
@@ -923,7 +923,7 @@ BOOL MelodyMenu::moveCursorByPad(void *pad) {
 
 void MelodyMenu::flushBgScreen() {
     if (testFlags(4)) {
-        if (screenTasks[0].requestScreen((u32)bgScreen, 4, 0x800, 0)) {
+        if (screenTasks[0].requestScreen(bgScreen, 4, 0x800, 0)) {
             clearFlags(4);
         }
     }

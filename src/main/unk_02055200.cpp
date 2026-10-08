@@ -6,6 +6,8 @@
 #include "gfx/Model.h"
 #include "gfx/NNSG3dResTex.h"
 #include "gfx/G3dResAccess.h"
+#include "gfx/NNSG3dResAnmCommon.h"
+#include "gfx/NNSG3dRS.h"
 #define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
@@ -51,8 +53,8 @@ ResCacheEntry sResCacheTexs[0x3c];
 ResCacheEntry sResCacheModels[0x96];
 
 extern "C" {
-void NNS_G3dRenderObjSetInitFunc(void *p, s32 a);
-void NNS_G3dRenderObjSetCallBack(void *p, s32 a, s32 b, s32 c, s32 d);
+void NNS_G3dRenderObjSetInitFunc(void *p, void (*fn)(NNSG3dRS *));
+void NNS_G3dRenderObjSetCallBack(void *p, void (*fn)(NNSG3dRS *), u8 *addr, s32 cmd, s32 timing);
 s32 NNS_G3dDraw(void *p);
 void MI_Copy36B(void *p, void *q);
 extern u8 data_027e0184[];
@@ -62,8 +64,8 @@ void NNS_G3dGlbSetBaseScale(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void NNS_G3dDraw1Mat1Shp(void *p, s32 a, s32 b, s32 c);
 s32 NNS_G3dGetSbcCmdLen(void *p);
-void NNS_G3dBindMdlTex(void *p, u32 n);
-void NNS_G3dBindMdlPltt(void *p, u32 q);
+void NNS_G3dBindMdlTex(void *p, void *tex);
+void NNS_G3dBindMdlPltt(void *p, void *tex);
 void NNS_G3dRenderObjInit(void *p, void *q);
 u32 SceneLights_GetMatLightMask(void);
 void NNSi_G3dModifyMatFlag(void *p, s32 a, s32 b);
@@ -76,9 +78,9 @@ u32 NNS_G3dTexGetRequiredSize(void *p);
 u32 NNS_G3dTex4x4GetRequiredSize(void *p);
 void NNS_G3dTexSetTexKey(void *p, u32 y, u32 z);
 void NNS_G3dTexLoad(void *p, s32 a);
-void NNS_G3dRenderObjRemoveAnmObj(s32 a, u32 b);
-void NNS_G3dRenderObjAddAnmObj(s32 a, u32 b);
-void NNS_G3dAnmObjInit(void *p, void *q, u32 r, u32 s);
+void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
+void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
+void NNS_G3dAnmObjInit(void *p, void *q, void *r, void *s);
 u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 func_02057110(u32 p);
@@ -93,10 +95,10 @@ extern u32 (*data_0213bc10)(u32, u32, u32);
 }
 
 extern "C" {
-BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, u32 b);
-BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, u32 b);
+BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, TexVramSlot *b);
+BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, TexVramSlot *b);
 BOOL Gfx3d_LoadPlttWithKey(NNSG3dResTex *a, u32 x);
-BOOL Gfx3d_LoadTex(NNSG3dResTex *a, u32 b);
+BOOL Gfx3d_LoadTex(NNSG3dResTex *a, TexVramSlot *b);
 BOOL Gfx3d_LoadTexWithKeys(NNSG3dResTex *a, u32 y, u32 z);
 u32 ResCache_FindTex(u32 key);
 u32 ResCache_FindModel(u32 key);
@@ -104,37 +106,37 @@ void *Gfx3d_CopyTex(void *a, void *heap);
 void *Gfx3d_CopyModel(u32 *a, void *heap);
 }
 
-void ModelAnim::initFromResource(NNSG3dResMdl *a, void *b, u32 c, u32 d, u16 e) {
-    ((AnimFrameCtrl *)(this))->setup(*(u16 *)(HOST_AT(a, 4, ofsSbc, 0)), c, d, e);
-    NNS_G3dAnmObjInit((void *)anmObj, a, resMdl, (u32)b);
+void ModelAnim::initFromResource(void *a, void *b, u32 c, u32 d, u16 e) {
+    ((AnimFrameCtrl *)(this))->setup(((NNSG3dResAnmCommon *)a)->numFrame, c, d, e);
+    NNS_G3dAnmObjInit(anmObj, a, resMdl, b);
     *(u32 *)anmObj = e << 12;
 }
 
-void ModelAnim::init(s32 a, s32 b, s32 c, u16 e) {
-    initFromResource((NNSG3dResMdl *)a, NULL, b, c, e);
+void ModelAnim::init(void *a, s32 b, s32 c, u16 e) {
+    initFromResource(a, NULL, b, c, e);
 }
 
-void ModelAnim::replace(s32 a, s32 b, s32 c, s32 e, u16 f) {
+void ModelAnim::replace(void *a, void *b, s32 c, s32 e, u16 f) {
     removeFromRenderObj(a);
-    initFromResource((NNSG3dResMdl *)b, NULL, c, e, f);
+    initFromResource(b, NULL, c, e, f);
     addToRenderObj(a);
 }
 
-void ModelAnim::initWithTex(s32 a, s32 b, s32 c, s32 e, u16 f) {
-    initFromResource((NNSG3dResMdl *)a, (void *)b, c, e, f);
+void ModelAnim::initWithTex(void *a, void *b, s32 c, s32 e, u16 f) {
+    initFromResource(a, b, c, e, f);
 }
 
-void ModelAnim::replaceWithTex(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f) {
+void ModelAnim::replaceWithTex(void *a, void *b, void *c, u8 d, s32 e, u16 f) {
     removeFromRenderObj(a);
-    initFromResource((NNSG3dResMdl *)b, (void *)c, d, e, f);
+    initFromResource(b, c, d, e, f);
     addToRenderObj(a);
 }
 
-void ModelAnim::addToRenderObj(u32 a) {
+void ModelAnim::addToRenderObj(void *a) {
     NNS_G3dRenderObjAddAnmObj(a, anmObj);
 }
 
-void ModelAnim::removeFromRenderObj(u32 a) {
+void ModelAnim::removeFromRenderObj(void *a) {
     NNS_G3dRenderObjRemoveAnmObj(a, anmObj);
 }
 
@@ -255,12 +257,12 @@ extern "C" BOOL Gfx3d_LoadTexWithKeys(NNSG3dResTex *a, u32 y, u32 z) {
     return TRUE;
 }
 
-extern "C" BOOL Gfx3d_LoadTex(NNSG3dResTex *a, u32 b) {
+extern "C" BOOL Gfx3d_LoadTex(NNSG3dResTex *a, TexVramSlot *b) {
     u32 y = NNS_G3dTexGetRequiredSize(a);
     u32 z = NNS_G3dTex4x4GetRequiredSize(a);
-    if (b != 0) {
-        y = ((TexVramSlot *)b)->makeTexKey(y);
-        z = ((TexVramSlot *)b)->makeTex4x4Key(z);
+    if (b != NULL) {
+        y = b->makeTexKey(y);
+        z = b->makeTex4x4Key(z);
     } else {
         y = data_0213bc10(y, 0, 0);
         z = data_0213bc10(z, 1, 0);
@@ -275,17 +277,17 @@ extern "C" BOOL Gfx3d_LoadPlttWithKey(NNSG3dResTex *a, u32 x) {
     return TRUE;
 }
 
-extern "C" BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, u32 b) {
+extern "C" BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, TexVramSlot *b) {
     u32 x = NNS_G3dPlttGetRequiredSize(a);
-    if (b != 0) {
-        x = ((TexVramSlot *)b)->makePlttKey(x);
+    if (b != NULL) {
+        x = b->makePlttKey(x);
     } else {
         x = data_0213bc18(x, 0, 0);
     }
     return Gfx3d_LoadPlttWithKey(a, x);
 }
 
-extern "C" BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, u32 b) {
+extern "C" BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, TexVramSlot *b) {
     BOOL r = Gfx3d_LoadTex(a, b);
     return r | Gfx3d_LoadPltt(a, b);
 }
@@ -300,10 +302,10 @@ Model::~Model() {
 void Model::reset() {
     NNS_G3dRenderObjInit(unk_08, NULL);
     resMdl = NULL;
-    resTex = 0;
+    resTex = NULL;
     MTX_Identity43_(unk_64);
     modelFlags = 0;
-    texVramSlot = 0;
+    texVramSlot = NULL;
 }
 
 void Model::initRenderObj() {
@@ -323,10 +325,10 @@ void Model::initRenderObj() {
     NNSi_G3dModifyMatFlag(resMdl, 0, 0x400);
 }
 
-BOOL Model::setResourceAndBind(NNSG3dResMdl *a, u32 b) {
+BOOL Model::setResourceAndBind(NNSG3dResMdl *a, NNSG3dResTex *b) {
     resMdl = a;
     resTex = b;
-    if (resTex != 0) {
+    if (resTex != NULL) {
         NNS_G3dBindMdlTex(resMdl, resTex);
         NNS_G3dBindMdlPltt(resMdl, resTex);
     }
@@ -334,7 +336,7 @@ BOOL Model::setResourceAndBind(NNSG3dResMdl *a, u32 b) {
     return TRUE;
 }
 
-BOOL Model::setResource(NNSG3dResMdl *a, u32 b) {
+BOOL Model::setResource(NNSG3dResMdl *a, NNSG3dResTex *b) {
     resMdl = a;
     resTex = b;
     initRenderObj();
@@ -411,12 +413,12 @@ void *Model::getRenderObj() {
     return unk_08;
 }
 
-void Model::setCallback(s32 a, s32 b, s32 c, s32 d, s32 e) {
+void Model::setCallback(void (*a)(NNSG3dRS *), s32 b, s32 c, void *d, u8 *e) {
     NNS_G3dRenderObjSetCallBack(unk_08, a, e, b, c);
     renderUserPtr = d;
 }
 
-void Model::setInitCallback(s32 a, s32 b) {
+void Model::setInitCallback(void (*a)(NNSG3dRS *), void *b) {
     NNS_G3dRenderObjSetInitFunc(unk_08, a);
     renderUserPtr = b;
 }

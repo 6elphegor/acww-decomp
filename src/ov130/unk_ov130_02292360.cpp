@@ -54,7 +54,7 @@ extern "C" const u32 sKeyX1Table[11];
 extern "C" const u32 sKeyRowTable[11];
 extern "C" const u32 sNumberPadCursorYTable[13];
 extern "C" const u32 sNumberPadCursorXTable[13];
-extern "C" uptr sTitleObjCharFiles[2];
+extern "C" char *sTitleObjCharFiles[2];
 extern "C" char data_ov130_02293368[20];
 extern "C" char data_ov130_0229337c[20];
 extern "C" u16 sNumberPadKeySeIds[10];
@@ -119,7 +119,7 @@ extern "C" const u8 sNumberPadTouchKeyMap[12] = {0x07, 0x08, 0x09, 0x04, 0x05, 0
 extern "C" const u8 sValueLabelTextIds[8] = {0x55, 0x58, 0x61, 0x5a, 0x5b, 0x5d, 0x52, 0x00};
 extern "C" const u8 sBalanceLabelTextIds[8] = {0x56, 0x59, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00};
 extern "C" const u8 sTitleTextIds[8] = {0x57, 0x57, 0x57, 0x5e, 0x5b, 0x5c, 0x62, 0x00};
-extern "C" uptr sTitleObjCharFiles[2] = {(uptr)data_ov130_022934a0, (uptr)data_ov130_022934bc};
+extern "C" char *sTitleObjCharFiles[2] = {data_ov130_022934a0, data_ov130_022934bc};
 
 struct Ov130S {
     u16 flags;
@@ -297,7 +297,7 @@ void NumberPad_LoadObjGraphics(s32 n) {
     Gfx2d_LoadPaletteFile("menu/bank/obj.bpl", h, 8, 4, 4, 0xe);
     Gfx2d_LoadCharFile("menu/bank/obj0.bch", h, 8, 0xc0, 0xc0, 0x15f);
     Gfx2d_LoadCharFile("menu/bank/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
-    u8 *res = File_LoadAlloc(sTitleObjCharFiles[n / 5], h, -4, &local);
+    u8 *res = (u8 *)File_LoadAlloc(sTitleObjCharFiles[n / 5], h, -4, &local);
     u8 *p = res + (n % 5) * 0xc0;
     s32 c = 0x15a;
     s32 i;
@@ -342,12 +342,12 @@ void NumberPad::update() {
 
 void NumberPad::flushScreens() {
     if (NumberPad_TestFlags((Ov130S *)this, 1)) {
-        if (screenTasks[0].requestScreen((u32)mainScreen, mainLayer, 0x800, 0)) {
+        if (screenTasks[0].requestScreen(mainScreen, mainLayer, 0x800, 0)) {
             NumberPad_ClearFlags((Ov130S *)this, 1);
         }
     }
     if (NumberPad_TestFlags((Ov130S *)this, 2)) {
-        if (screenTasks[1].requestScreen((u32)keyScreen, keyLayer, 0x800, 0)) {
+        if (screenTasks[1].requestScreen(keyScreen, keyLayer, 0x800, 0)) {
             NumberPad_ClearFlags((Ov130S *)this, 2);
         }
     }

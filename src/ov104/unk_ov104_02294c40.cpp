@@ -584,7 +584,7 @@ void PostOfficeMenu::transitionAct06() {
 void PostOfficeMenu::transitionAct07() {
     void *t = getSlotLetter(selectedSlot);
     Letter_MarkRead((u32)t);
-    letterView.show((LetterView *)t, (void *)3, (void *)4, 1);
+    letterView.show((LetterView *)t, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -704,7 +704,7 @@ void PostOfficeMenu_LoadInventoryBg(S *s) {
 }
 
 void PostOfficeMenu_LoadBoxBg(S *s) {
-    u32 t = gCurrentHeap;
+    void *t = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/inventory/b_itm_post.bpl", t, 4, 4, 4, 4);
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_ltr2.bsc", t, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_post.bch", t, 4, 0x1e2, 0x1e2, 0x227);

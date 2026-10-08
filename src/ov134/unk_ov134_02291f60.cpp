@@ -120,11 +120,11 @@ extern "C" const u32 sFieldLeftDefault[6];
 extern "C" const u32 sFieldLeftTime[6];
 extern "C" const u32 sFieldTopBirthday[6];
 extern "C" const u32 sFieldTopTime[6];
-extern "C" uptr sObjVariantFiles[1];
+extern "C" char *sObjVariantFiles[1];
 extern "C" u32 data_ov134_02294d44[2];
 extern "C" u32 data_ov134_02294d4c[2];
 extern "C" u32 data_ov134_02294d54[4];
-extern "C" uptr sBgPaletteFiles[4];
+extern "C" char *sBgPaletteFiles[4];
 extern "C" u32 data_ov134_02294d74[4];
 extern "C" u32 data_ov134_02294d84[4];
 extern "C" uptr sFieldScreenFiles[4];
@@ -262,12 +262,12 @@ extern "C" void DateTimePicker_EndFrame(S *s) {
     s->stepListScroll();
     s->knob.updateRelease();
     if (s->testFlags(2)) {
-        if (s->fieldScreenTask.requestScreen((u32)s->fieldScreen, s->fieldLayer, 0x800, 0)) {
+        if (s->fieldScreenTask.requestScreen(s->fieldScreen, s->fieldLayer, 0x800, 0)) {
             s->clearFlags(2);
         }
     }
     if (s->testFlags(1)) {
-        if (s->listScreenTask.requestScreen((u32)s->listScreen, s->listLayer, 0x800, 0)) {
+        if (s->listScreenTask.requestScreen(s->listScreen, s->listLayer, 0x800, 0)) {
             s->clearFlags(1);
         }
     }
@@ -295,10 +295,10 @@ extern "C" BOOL DateTimePicker_IsBeforeStart(S *s) {
 }
 
 extern "C" void DateTimePicker_LoadBgGraphics(S *s) {
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/clock/b_tim_bg.bch", h, s->mainLayer, 0x10, 0x10, 0x80);
     Gfx2d_LoadPaletteFile("menu/clock/b_tim_bg.bpl", h, s->mainLayer, 1, 1, 10);
-    Gfx2d_LoadPaletteFile((const void *)sBgPaletteFiles[s->mode], h, s->mainLayer, 1, 1, 2);
+    Gfx2d_LoadPaletteFile(sBgPaletteFiles[s->mode], h, s->mainLayer, 1, 1, 2);
     Gfx2d_LoadScreenFile("menu/clock/bga.bsc", h, s->mainLayer);
     File_LoadToBuffer((const void *)sFieldScreenFiles[s->mode], s->fieldScreen, 0x800);
     DateTimePicker_ResetFieldPalettes(s);
@@ -312,12 +312,12 @@ extern "C" void DateTimePicker_DrawTitleAndFields(S *s, u8 a) {
 }
 
 extern "C" void DateTimePicker_LoadObjGraphics(S *s) {
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/clock/b_tim_obj.bpl", h, 8, 4, 4, 10);
     Gfx2d_LoadCharFile("menu/clock/b_tim_obj.bch", h, 8, 0xc0, 0xc0, 0x1df);
     u32 v = s->objVariant;
     u32 out;
-    u8 *buf = (u8 *)File_LoadAlloc((const void *)sObjVariantFiles[v >> 2], h, -4, &out);
+    u8 *buf = (u8 *)File_LoadAlloc(sObjVariantFiles[v >> 2], h, -4, &out);
     u8 *p = buf + ((s32)v % 4) * 0x100;
     s32 x = 0xc0;
     s32 i = 0;
@@ -1898,7 +1898,7 @@ void DateTimePicker::blendListPalette(s32 t) {
     g = ((u8)((c2 & 0x3e0) >> 5) * t + g * w) / 3;
     b = ((u8)((c2 & 0x7c00) >> 10) * t + b * w) / 3;
     *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25c2, listPaletteWork[30], 0)) = r | (g << 5) | (b << 10);
-    ((BgVramTask *)(HOST_AT_A(p, DateTimePicker, 0x560, listPaletteTask, 0)))->requestPalette((u32)(HOST_AT_A(p, DateTimePicker, 0x25a4, listPaletteWork[0], 0)), listLayer, 9);
+    ((BgVramTask *)(HOST_AT_A(p, DateTimePicker, 0x560, listPaletteTask, 0)))->requestPalette(HOST_AT_A(p, DateTimePicker, 0x25a4, listPaletteWork[0], 0), listLayer, 9);
 }
 
 BOOL DateTimePicker::testFlags(u32 m) {
@@ -1918,7 +1918,7 @@ void DateTimePicker::clearFlags(u32 m) {
 
 extern "C" u32 data_ov134_02294dc4[4] = {0x80004000, 0x50cb, 0x208000, 0xffff50cf};
 extern "C" u32 data_ov134_02294fb4[8] = {0x81e84004, 0x6554, 0x41e84014, 0x6594, 0x81c84004, 0x6554, 0x41c84014, 0xffff6594};
-extern "C" uptr sObjVariantFiles[1] = {(uptr)data_ov134_02294f74};
+extern "C" char *sObjVariantFiles[1] = {data_ov134_02294f74};
 extern "C" char data_ov134_02294e3c[22] = "menu/clock/bgb_us.bsc";
 extern "C" u32 data_ov134_02294d44[2] = {0xc19800b3, 0xffff44c0};
 extern "C" u32 data_ov134_02294d4c[2] = {0x80004000, 0xffff50cb};
@@ -1952,7 +1952,7 @@ extern "C" char data_ov134_02294e54[22] = "menu/clock/bgc_us.bsc";
 extern "C" u32 data_ov134_02295014[8] = {0x9024401c, 0x6552, 0x5024402c, 0x6592, 0x800c401c, 0x6552, 0x400c402c, 0xffff6592};
 extern "C" const u8 sFieldNameTextIds[6] = {0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xaa};
 extern "C" u32 data_ov134_02295134[12] = {0x800040e8, 0x6108, 0x801840e8, 0x610c, 0x403800e8, 0x6110, 0x400040f8, 0x6148, 0x401840f8, 0x614c, 0x3840f8, 0xffff6150};
-extern "C" uptr sBgPaletteFiles[4] = {(uptr)data_ov134_02294dd4, (uptr)data_ov134_02294de8, (uptr)data_ov134_02294dfc, (uptr)data_ov134_02294e10};
+extern "C" char *sBgPaletteFiles[4] = {data_ov134_02294dd4, data_ov134_02294de8, data_ov134_02294dfc, data_ov134_02294e10};
 extern "C" u32 data_ov134_02295164[12] = {0x800040e8, 0x6108, 0x801040e8, 0x610c, 0x403000e8, 0x6110, 0x400040f8, 0x6148, 0x401040f8, 0x614c, 0x3040f8, 0xffff6150};
 extern "C" uptr data_ov134_02294e9c[6] = {(uptr)data_ov134_02295074, (uptr)data_ov134_02294fb4, (uptr)data_ov134_02294fd4, (uptr)data_ov134_022950a4, (uptr)data_ov134_02294ff4, (uptr)data_ov134_02294f94};
 extern "C" const u32 sFieldLeftBirthday[6] = {0x0, 0x8, 0x12, 0x0, 0x0, 0x0};

@@ -38,7 +38,7 @@
 
 extern "C" {
 extern u16 gPad[];
-extern s32 gCurrentHeap;
+extern void *gCurrentHeap;
 extern u8 *data_021c1b3c;
 
 void *Constellation_GetRecord(s32 i);
@@ -588,7 +588,7 @@ void ConstellationEditorMenu::releaseResources() {
     bottomButtons.freeTexts();
     PlayerActor_RequestAct10();
     BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
-    Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
+    Gfx2d_LoadCharFile("menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 
 void ConstellationEditorMenu::preInputUpdate() {

@@ -13,12 +13,12 @@ public:
 
     TexVramTask();
     virtual BOOL execute();
-    BOOL requestMatTex(void *a, u32 b, u32 c);
+    BOOL requestMatTex(void *a, u32 b, void *c);
     void cancel(void);
     void prepare(void);
     BOOL requestTexResource(u32 *a, u8 b);
-    BOOL requestPltt(u32 a, u32 b, u32 c, u8 d);
-    BOOL requestTex(u32 a, u32 b, u32 c, u8 d);
+    BOOL requestPltt(void *src, u32 dst, u32 size, u8 prio);
+    BOOL requestTex(void *src, u32 dst, u32 size, u8 prio);
     void clear(void);
 };
 

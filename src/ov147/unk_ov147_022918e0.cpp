@@ -804,7 +804,7 @@ void TitleScreen::loadLogo() {
     ScreenLayers_AcquireStub(1);
     Gfx2d_SetLayerControl(5, 0, 0, 0);
     Gfx2d_SetLayerPriority(5, 1);
-    Gfx2d_LoadPaletteFile((void *)"menu/title/bg_us.bpl", (s32)gCurrentHeap, 5, 8, 8, 0xf);
+    Gfx2d_LoadPaletteFile("menu/title/bg_us.bpl", gCurrentHeap, 5, 8, 8, 0xf);
     File_LoadToBuffer((void *)"menu/title/bg_us.bsc", sTitleLogoScreen, 0x800);
     Gfx2d_LoadScreen(sTitleLogoScreen, 5, 0x800, 0);
     File_LoadToBuffer((void *)"menu/title/bg_us.bch", sTitleLogoChars, 0x3800);
@@ -905,12 +905,12 @@ BOOL TitleScreen::stepLogoReveal() {
                 }
             }
         }
-        vramTask.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+        vramTask.requestChars(sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
         logoStep = logoStep + 1;
         goto ret0;
     }
     MI_CpuCopy8(sTitleLogoChars, sTitleLogoCharsWork, 0x3800);
-    vramTask.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+    vramTask.requestChars(sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
     return TRUE;
 ret0:
     return FALSE;
@@ -933,7 +933,7 @@ BOOL TitleScreen::stepLogoHide() {
     for (i = 0; i < 0x1c0; i++) {
         maskLogoChar(p, i);
     }
-    vramTask.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+    vramTask.requestChars(sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
     return FALSE;
 }
 

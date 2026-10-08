@@ -545,7 +545,6 @@ u32 _ZN12VillagerTalk9getUnk150Ev(void *);
 void * _ZN19SpNpcAnimHeapHandle22getVillagerAnimHeapRefEv(void *);
 void _ZN18ReddPasswordStringC1Ev(void *);
 void _ZN18ReddPasswordStringD1Ev(void *);
-s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *, void *, u32, void *, u32, u32);
 void NpcActor_OnJointCalc();
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *);
 void * VillagerMood_Destruct(void *);
@@ -2555,7 +2554,7 @@ void *VillagerClothModel::buildTexture(VillagerActor *parent, u16 *id) {
         } else {
             ((CharaClothTexRef *)(r4))->loadItem((u16 *)(id), 0, 1, 1);
         }
-        s32 buf = CharaClothTexRef_GetBuffer(r4);
+        void *buf = CharaClothTexRef_GetBuffer(r4);
         if (buf) {
             r6 = ClothTex_GetTexThunk(buf);
         }
@@ -2584,7 +2583,7 @@ BOOL VillagerClothModel::change(VillagerActor *parent, u16 *id) {
     if (!same || (Unk_0202d664_Range(id, 0x12a8, 0x12af) && Unk_0202d664_Range(&clothItem, 0x12a8, 0x12af))) {
         p = buildTexture(parent, id);
         if (p) {
-            result = _ZN14MatTexVramTask7requestEPvjS0_jj(this, parent->model.resMdl, sVillagerClothMaterialNames, p, 0, 0);
+            result = ((MatTexVramTask *)(this))->request(parent->model.resMdl, (const char *)(sVillagerClothMaterialNames), p, 0, 0);
             clothItem = *id;
         }
     }

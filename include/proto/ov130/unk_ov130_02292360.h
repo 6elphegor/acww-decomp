@@ -55,6 +55,9 @@ extern char data_ov130_0229337c[];
 #ifndef PROTO_LOCAL_data_ov130_022933a4
 extern char data_ov130_022933a4[];
 #endif
+#ifndef PROTO_LOCAL_sTitleObjCharFiles
+extern char *sTitleObjCharFiles[2];
+#endif
 #ifndef PROTO_LOCAL_NumberPad_PlayCancelSe
 void NumberPad_PlayCancelSe();
 #endif
@@ -93,9 +96,6 @@ extern uptr sMainScreenFiles[6];
 #endif
 #ifndef PROTO_LOCAL_sNumberPadKeySeIds
 extern u16 sNumberPadKeySeIds[10];
-#endif
-#ifndef PROTO_LOCAL_sTitleObjCharFiles
-extern uptr sTitleObjCharFiles[2];
 #endif
 #ifndef PROTO_LOCAL_NumberPad_LoadBgGraphics
 void NumberPad_LoadBgGraphics(s32 x);

@@ -78,7 +78,7 @@ ModelResource::~ModelResource() {}
 
 void ModelResource::release(void) {
     if (fileData != 0) {
-        Heap_Free(fileHeap, (void *)fileData);
+        Heap_Free(fileHeap, fileData);
     }
     fileData = 0;
     fileHeap = NULL;
@@ -97,9 +97,9 @@ u32 ModelResource::loadModel(void *res, TexVramSlot *b, void *tex, void *heap) {
         heap = gCurrentHeap;
     }
     if (st == 0) {
-        fileData = (u32)File_LoadAlloc(res, heap, -4, 0);
+        fileData = File_LoadAlloc((const char *)res, heap, -4, 0);
         fileHeap = heap;
-        void *q = NNS_G3dGetTex((void *)fileData);
+        void *q = NNS_G3dGetTex(fileData);
         b->relocateTexture(q);
         texVramTask.requestTexResource((u32 *)q, 1);
         loadState = 1;
@@ -112,12 +112,12 @@ u32 ModelResource::loadModel(void *res, TexVramSlot *b, void *tex, void *heap) {
         loadState = 2;
     }
     if (loadState == 2) {
-        u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet((void *)fileData));
+        u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(fileData));
         model = Gfx3d_CopyModel(p, tex);
-        void *q = NNS_G3dGetTex((void *)fileData);
+        void *q = NNS_G3dGetTex(fileData);
         NNS_G3dBindMdlTex(model, q);
         NNS_G3dBindMdlPltt(model, q);
-        Heap_Free(fileHeap, (void *)fileData);
+        Heap_Free(fileHeap, fileData);
         fileHeap = NULL;
         fileData = 0;
         loadState = 3;

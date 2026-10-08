@@ -2,7 +2,7 @@
 #include "sys/NNSFndArchive.h"
 #include "types.h"
 #include "town/BuildingInfo.h"
-#include "gfx/Mtx33.h"
+#include "nitro/mtx.h"
 #include "gfx/NNSG3dRS.h"
 #include "item/ItemId.h"
 #include "game/StrBSizeData.h"
@@ -15,9 +15,7 @@
 #include "net/CommManager.h"
 #include "save/Pattern.h"
 #include "town/BuildingActor.h"
-#define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_02063904.h"
@@ -26,6 +24,7 @@
 #include "proto/main/unk_02070560.h"
 #include "proto/main/unk_02082d74.h"
 #include "proto/main/unk_02085940.h"
+#include "proto/itcm/unk_01ffb4e8.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 
@@ -42,7 +41,6 @@ extern u8 gSaveVillagers;
 extern u8 data_021e58a6;
 extern u8 data_021ed2e6[];
 extern u8 gTownReturnPos;
-extern u32 gCurrentHeap;
 extern s32 gFrameCounter;
 extern u32 data_027e0148[];
 }
@@ -264,7 +262,6 @@ public:
 
 extern "C" {
 void MTX_RotZ33_(void *m, s32 sn, s32 cs);
-void MTX_Concat33(void *a, void *b, void *out);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 MapBlock_HasAnyAttr(u8 *cell, u32 mask);
@@ -844,7 +841,7 @@ DoorLight::DoorLight() { matIdx = -1; }
 
 DoorLight::~DoorLight() {}
 
-void DoorLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx((s32)("m_door")); }
+void DoorLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx("m_door"); }
 
 void DoorLight::apply(Ctx *c, s32 t)
 {
@@ -857,7 +854,7 @@ WindowLight::WindowLight() { matIdx = -1; }
 
 WindowLight::~WindowLight() { matIdx = -1; }
 
-void WindowLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx((s32)("m_window")); }
+void WindowLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx("m_window"); }
 
 void WindowLight::apply(Ctx *c, s32 t)
 {
@@ -879,7 +876,7 @@ void LampLights::bindMaterials(Ctx *c)
 {
     for (u32 i = 0; i < 3; i++) {
         if (getMaterialName(i)) {
-            s32 r = ((G3dResAccess *)(void *)(c))->findMatIdx((s32)(getMaterialName(i)));
+            s32 r = ((G3dResAccess *)(void *)(c))->findMatIdx(getMaterialName(i));
             if (r != -1) {
                 matIndices[i] = r;
             } else {
@@ -958,9 +955,9 @@ BOOL BuildingLights::isLit() { return getLevel() ? TRUE : FALSE; }
 
 extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs)
 {
-    Mtx33 tmp;
+    MtxFx33 tmp;
     u8 t[2];
-    Mtx33 *m = &rs->pJntAnmResult->rot;
+    MtxFx33 *m = &rs->pJntAnmResult->rot;
     Clock_GetMinuteHour(t);
     if (sHourHandFrame != gFrameCounter) {
         s32 rem = t[1] % 0xc;
@@ -982,9 +979,9 @@ extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs)
 
 extern "C" void JointCb_RotateClockMinuteHand(NNSG3dRS *rs)
 {
-    Mtx33 tmp;
+    MtxFx33 tmp;
     u8 t[2];
-    Mtx33 *m = &rs->pJntAnmResult->rot;
+    MtxFx33 *m = &rs->pJntAnmResult->rot;
     Clock_GetMinuteHour(t);
     s32 rem = t[0] % 0x3c;
     s32 a = -(FX_Div(rem << 12, 0x3c000) * 0xffff >> 12);

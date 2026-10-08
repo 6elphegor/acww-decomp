@@ -89,7 +89,6 @@ u32 data_ov004_0224d4b4 = 0x400;
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -97,7 +96,6 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -113,8 +111,8 @@ void RoomObj_ActivateSe(void *self);
 extern "C" {
 
 BOOL _ZN5Actor11postExecuteEv(void *o, u32 v);
-void NNS_G3dBindMdlTex(void *a, u32 b);
-void NNS_G3dBindMdlPltt(void *a, u32 b);
+void NNS_G3dBindMdlTex(void *a, void *b);
+void NNS_G3dBindMdlPltt(void *a, void *b);
 }
 
 
@@ -314,16 +312,16 @@ void SndSeEmitter_dtor(void *p);
 void SndSeEmitter_ctor(void *p);
 u8 *NNS_G3dGetTex(u8 *p);
 void Gfx3d_LoadTexAndPltt(void *p, u32 a);
-u32 Gfx3d_CopyTex(void *p, void *g);
-s32 NNS_FndMountArchive(void *buf, char *name, u32 data);
+void *Gfx3d_CopyTex(void *p, void *g);
+s32 NNS_FndMountArchive(void *buf, const char *name, void *data);
 void NNS_FndUnmountArchive(void *buf);
 void *NNS_G3dGetMdlSet(void *p);
 void *func_021065dc(void *p);
-u32 func_021065f8(void *p, u32 a);
+void *func_021065f8(void *p, u32 a);
 void *func_02106618(void *p);
-u32 func_02106634(void *p, u32 a);
+void *func_02106634(void *p, u32 a);
 void *func_02106654(void *p);
-u32 func_02106670(void *p, u32 a);
+void *func_02106670(void *p, u32 a);
 
 s32 PlayerActor_RequestBedRollCheck(Obj *o, u32 a, u32 b, u32 c);
 s32 PlayerActor_RequestDrinkCoffee(Obj *o, u32 a, u32 b);
@@ -358,7 +356,7 @@ s32 PlayerActor_GetPosIfInAction(V3 *out, u32 idx, s32 st);
 
 enum Unk_ov004_02224a80_Limit { Unk_ov004_02224a80_LIMIT_6 = 6 };
 
-extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
+extern "C" s32 RoomObjRes_Load(Res *self, const char *id) {
     if (self->archive == 0) {
         char buf[0x24];
         u8 res[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8;  // an NNSFndArchive
@@ -369,7 +367,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                 void *h = NNS_FndGetArchiveFileByName("RMO:a/bmd/bmd0");
                 if (h) {
                     u8 *r = (u8 *)NNS_G3dGetMdlSet(h);
-                    self->model = (u32)(r + *(u32 *)(r + *(u16 *)(r + 0xe) + 0xc));
+                    self->model = r + *(u32 *)(r + *(u16 *)(r + 0xe) + 0xc);
                 }
                 for (i = 0, z = i; i < 13;) {
                     Str_SPrintf(buf, "RMO:a/bca/bca%d", i);
@@ -416,28 +414,28 @@ extern "C" void RoomObjRes_Free(Res *p) {
     }
 }
 
-extern "C" u32 RoomObjRes_GetBca(Res *p, u32 i) {
+extern "C" void *RoomObjRes_GetBca(Res *p, u32 i) {
     if (i < 13) {
         return p->bcas[i];
     }
     return 0;
 }
 
-extern "C" u32 RoomObjRes_GetBma(Res *p, u32 i) {
+extern "C" void *RoomObjRes_GetBma(Res *p, u32 i) {
     if (i < 13) {
         return p->bmas[i];
     }
     return 0;
 }
 
-extern "C" u32 RoomObjRes_GetBta(Res *p, u32 i) {
+extern "C" void *RoomObjRes_GetBta(Res *p, u32 i) {
     if (i < 13) {
         return p->btas[i];
     }
     return 0;
 }
 
-extern "C" u32 RoomObjRes_GetModel(Res *p) {
+extern "C" void *RoomObjRes_GetModel(Res *p) {
     return p->model;
 }
 
@@ -448,7 +446,7 @@ extern "C" void RoomObjTex_Construct(Res *p) {
 extern "C" void RoomObjTex_Destruct(void) {
 }
 
-extern "C" s32 RoomObjTex_Load(Res *self, u32 id) {
+extern "C" s32 RoomObjTex_Load(Res *self, const char *id) {
     void *r4 = File_LoadAlloc(id, gCurrentHeap, -4, 0);
     if (r4) {
         void *r6 = NNS_G3dGetTex((u8 *)r4);
@@ -464,7 +462,7 @@ extern "C" void RoomObjTex_Reset(Res *p) {
     p->archive = 0;
 }
 
-extern "C" u32 RoomObjTex_Get(Res *p) {
+extern "C" void *RoomObjTex_Get(Res *p) {
     return p->archive;
 }
 

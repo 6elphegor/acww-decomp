@@ -34,7 +34,7 @@ extern void *_ZTV10MenuCursor[7];
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_Menu_LoadPaperBg
-void Menu_LoadPaperBg(s32 a, void *b);
+void Menu_LoadPaperBg(s32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL__ZN10MenuCursorC1Ei
 void *_ZN10MenuCursorC1Ei(MenuCursor *self, BOOL flag);

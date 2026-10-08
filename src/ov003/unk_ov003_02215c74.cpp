@@ -89,11 +89,11 @@ s32 Villager_GetWhereabouts(void *p);
 s32 SceneId_GetVillagerHouse(u32 a);
 
 void Vec_Add(VecFx32 *out, void *a, void *b);
-void NNS_G3dBindMdlTex(void *a, s32 b);
+void NNS_G3dBindMdlTex(void *a, void *b);
 void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
 void *_ZN12VillagerData13getVillagerIdEv(void *self);
 void *_ZN5Model12getRenderObjEv(void *self);
-void NNS_G3dBindMdlPltt(void *a, s32 b);
+void NNS_G3dBindMdlPltt(void *a, void *b);
 
 }
 
@@ -124,8 +124,8 @@ public:
     virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual s32 getDoorInAnim();
-    virtual s32 getDoorOutAnim();
+    virtual void *getDoorInAnim();
+    virtual void *getDoorOutAnim();
     virtual BOOL initBuilding();
     virtual void setupTalkMsg();
     virtual BOOL isOpen();
@@ -180,8 +180,8 @@ BOOL VillagerHouse::initBuilding() {
     Actor::spawn((void *)(0x18), (void *)(idx), &tmp, (void *)(0), this);
     sVillagerHouses[idx] = (u32)this;
     s32 k = getHouseVariant();
-    s32 r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
-    s32 r4 = VillagerHouseTex_GetLightTex(FieldStructureMgr_GetVillagerHouseTex(), k);
+    void *r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
+    void *r4 = VillagerHouseTex_GetLightTex(FieldStructureMgr_GetVillagerHouseTex(), k);
     void *g = modelRes;
     if (r7) {
         NNS_G3dBindMdlTex(g, r7);
@@ -197,11 +197,11 @@ BOOL VillagerHouse::initBuilding() {
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlPltt(b, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
-            if (lightUpAnim.allocMatAnm((u32)lightUpModel.resMdl, gFieldStructureHeap)) {
-                s32 c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
-                s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
+            if (lightUpAnim.allocMatAnm((NNSG3dResMdl *)(lightUpModel.resMdl), gFieldStructureHeap)) {
+                void *c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
+                void *d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
-                lightUpAnim.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&lightUpModel));
+                lightUpAnim.addToRenderObj(_ZN5Model12getRenderObjEv(&lightUpModel));
                 lightUpModel.mtx = baseMatrix;  // (the members by name: they move on 64-bit hosts)
             }
         }
@@ -273,11 +273,11 @@ char *VillagerHouse::getLightTexPath() {
     return 0;
 }
 
-s32 VillagerHouse::getDoorInAnim() {
+void *VillagerHouse::getDoorInAnim() {
     return VillagerHouseTex_GetDoorInAnim(FieldStructureMgr_GetVillagerHouseTex());
 }
 
-s32 VillagerHouse::getDoorOutAnim() {
+void *VillagerHouse::getDoorOutAnim() {
     return VillagerHouseTex_GetDoorOutAnim(FieldStructureMgr_GetVillagerHouseTex());
 }
 

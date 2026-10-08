@@ -15,7 +15,6 @@
 #include "save/PatternOrder.h"
 #define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Gfx2d_LinearToTiles4bpp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -39,14 +38,10 @@ extern void *gCurrentHeap;
 
 s32 MIi_CpuCopy32(void *a, void *b, u32 n);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
 
 // methods of other modules' classes, called with the object first (mangled-name trick)
 void *_ZN15PatternTexCache10getPaletteEi(void *self, s32 a);
-void _ZN10BgVramTask14requestPaletteEjhj(void *self, void *q, s32 a, s32 b);
-void _ZN10BgVramTask12requestCharsEjhjjj(void *self, void *q, s32 a, s32 b, s32 c, s32 d);
-BOOL _ZN10BgVramTask13requestScreenEjhjj(void *self, void *a, u32 b, u32 c, u32 d);
 void _ZN10BgVramTask6cancelEv(void *self);
 }
 
@@ -788,20 +783,20 @@ void PatternEditorMenu::setupBgLayers() {
 
 void PatternEditorMenu::loadBgGfx() {
     void *p = gCurrentHeap;
-    Gfx2d_LoadPaletteFile((void *)"menu/edit/bg.bpl", p, 6, 4, 4, 0xe);
+    Gfx2d_LoadPaletteFile("menu/edit/bg.bpl", p, 6, 4, 4, 0xe);
     File_LoadToBuffer((void *)"menu/edit/a.bsc", HOST_AT(this, 0x204, buttonScreen[0], 0), 0x800);
     Gfx2d_LoadScreen(HOST_AT(this, 0x204, buttonScreen[0], 0), 6, 0x800, 0);
-    Gfx2d_LoadScreenFile((void *)"menu/edit/b.bsc", p, 4);
-    Gfx2d_LoadScreenFile((void *)"menu/edit/c.bsc", p, 3);
-    Gfx2d_LoadCharFile((void *)"menu/edit/bg1.bch", p, 6, 0x120, 0x120, 0x1ff);
-    Gfx2d_LoadCharFile((void *)"menu/edit/bg0.bch", p, 6, 0x10, 0x10, 0x1f);
+    Gfx2d_LoadScreenFile("menu/edit/b.bsc", p, 4);
+    Gfx2d_LoadScreenFile("menu/edit/c.bsc", p, 3);
+    Gfx2d_LoadCharFile("menu/edit/bg1.bch", p, 6, 0x120, 0x120, 0x1ff);
+    Gfx2d_LoadCharFile("menu/edit/bg0.bch", p, 6, 0x10, 0x10, 0x1f);
 }
 
 void PatternEditorMenu::loadObjGfx() {
     void *p = gCurrentHeap;
-    Gfx2d_LoadPaletteFile((void *)"menu/edit/obj.bpl", p, 8, 4, 4, 0xc);
-    Gfx2d_LoadCharFile((void *)"menu/edit/obj0.bch", p, 8, 0xc0, 0xc0, 0x12f);
-    Gfx2d_LoadCharFile((void *)"menu/edit/obj1.bch", p, 8, 0x130, 0x130, 0x19f);
+    Gfx2d_LoadPaletteFile("menu/edit/obj.bpl", p, 8, 4, 4, 0xc);
+    Gfx2d_LoadCharFile("menu/edit/obj0.bch", p, 8, 0xc0, 0xc0, 0x12f);
+    Gfx2d_LoadCharFile("menu/edit/obj1.bch", p, 8, 0x130, 0x130, 0x19f);
 }
 
 void PatternEditorMenu::updateTouch() {
@@ -1225,7 +1220,7 @@ void PatternEditorMenu::loadPreviewChars()
 
 void PatternEditorMenu::requestPreviewUpload()
 {
-    _ZN10BgVramTask12requestCharsEjhjjj(bgTasks, previewChars, 6, 0x120, 0x120, 0x12f);
+    ((BgVramTask *)(bgTasks))->requestChars(previewChars, 6, 0x120, 0x120, 0x12f);
 }
 
 void PatternEditorMenu::buildCanvasChars()
@@ -1271,7 +1266,7 @@ void PatternEditorMenu::loadCanvasChars()
 
 void PatternEditorMenu::requestCanvasUpload()
 {
-    _ZN10BgVramTask12requestCharsEjhjjj(HOST_AT(this, 0x130, bgTasks[1], 0), canvasChars, 6, 0x20, 0x20, 0x11f);
+    ((BgVramTask *)(HOST_AT(this, 0x130, bgTasks[1], 0)))->requestChars(canvasChars, 6, 0x20, 0x20, 0x11f);
 }
 
 void PatternEditorMenu::flushCanvasGfx()
@@ -1289,7 +1284,7 @@ void PatternEditorMenu::requestPaletteUpload()
 {
     void *a = PatternTexCache_Get();
     void *b = _ZN15PatternTexCache10getPaletteEi(a, paletteIndex);
-    _ZN10BgVramTask14requestPaletteEjhj(bgTasks, b, 6, 0xe);
+    ((BgVramTask *)(bgTasks))->requestPalette(b, 6, 0xe);
 }
 
 void PatternEditorMenu::setColor(u8 v)
@@ -1953,7 +1948,7 @@ void PatternEditorMenu::setButtonPalette(u32 a, u32 b) {
 
 void PatternEditorMenu::flushButtonScreen() {
     if (testFlags(0x10)) {
-        if (_ZN10BgVramTask13requestScreenEjhjj(&bgTasks[2], &buttonScreen, 6, 0x800, 0)) {
+        if (((BgVramTask *)(&bgTasks[2]))->requestScreen(&buttonScreen, 6, 0x800, 0)) {
             clearFlags(0x10);
         }
     }

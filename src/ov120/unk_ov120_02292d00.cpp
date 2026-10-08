@@ -49,7 +49,6 @@
 #define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_clear _ZN9MsgString5clearEv
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
 #define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
@@ -79,7 +78,6 @@ extern s32 *PlayerActor_GetBodyPos(s32 v);
 extern void Scene_GetWarpRequest();
 extern s32 *ScenePos_GetPos(void *p);
 void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
-s32 BgVramTask_requestScreen(void *a, void *b, u32 c, u32 d, u32 e);
 void BgVramTask_cancel(void *p);
 void func_02063888(void *p);
 void TownId_GetNameString(void *a, void *b);
@@ -631,12 +629,12 @@ void MapViewerMenu::postStateUpdate() {
         clearFlags(0x80);
     }
     if (testFlags(0x20)) {
-        if (BgVramTask_requestScreen((screenTasks + 1), frameScreen, 4, 0x800, 0)) {
+        if (((BgVramTask *)(screenTasks + 1))->requestScreen(frameScreen, 4, 0x800, 0)) {
             clearFlags(0x20);
         }
     }
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(screenTasks, listScreen, 6, 0x800, 0)) {
+        if (((BgVramTask *)(screenTasks))->requestScreen(listScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -660,7 +658,7 @@ void MapViewerMenu::setupBgLayers() {
 }
 
 void MapViewerMenu::loadBgGfx() {
-    u32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", h, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", h, 4, 0x11, 0x11, 0x5f);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", h, 4, 0x230, 0x230, 0x25f);
@@ -684,7 +682,7 @@ void MapViewerMenu::loadMapImage() {
 }
 
 void MapViewerMenu::loadObjGfx() {
-    u32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_obj.bpl", h, 8, 6, 6, 0xe);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_0.bch", h, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);

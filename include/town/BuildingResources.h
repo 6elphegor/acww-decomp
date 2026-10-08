@@ -11,16 +11,16 @@ struct BuildingResources {
     BuildingResources();
     ~BuildingResources();
 
-    /* 0x00 */ s32 bmd0;
-    /* 0x04 */ s32 bmd1;
-    /* 0x08 */ s32 bca0;
-    /* 0x0c */ s32 bca1;
-    /* 0x10 */ s32 bca2;
-    /* 0x14 */ s32 tex;
-    /* 0x18 */ s32 lightTex;
+    /* 0x00 */ void *bmd0;
+    /* 0x04 */ void *bmd1;
+    /* 0x08 */ void *bca0;
+    /* 0x0c */ void *bca1;
+    /* 0x10 */ void *bca2;
+    /* 0x14 */ void *tex;
+    /* 0x18 */ void *lightTex;
     /* 0x1c */ BuildingShadowTable *shadowTable;
-    /* 0x20 */ s32 btaAnims[4];
-    /* 0x30 */ s32 btpAnims[4];
+    /* 0x20 */ void *btaAnims[4];
+    /* 0x30 */ void *btpAnims[4];
     /* 0x40 */ s32 solidCenterX;
     /* 0x44 */ s32 solidCenterZ;
     /* 0x48 */ s32 solidSizeX;

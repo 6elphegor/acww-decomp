@@ -531,9 +531,9 @@ extern "C" void ShopSellMenu_LoadInventoryBg(S *s) {
 }
 
 extern "C" void ShopSellMenu_LoadTopBg(S *s) {
-    s32 h = gCurrentHeap;
-    Gfx2d_LoadScreenFile((void *)"menu/inventory/b_itm_bg_tra1.bsc", h, 4);
-    Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
+    void *h = gCurrentHeap;
+    Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_tra1.bsc", h, 4);
+    Gfx2d_LoadCharFile("menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
     s32 v = MenuCtrl_GetMode();
     u8 *a = NULL;
     u8 *b = NULL;

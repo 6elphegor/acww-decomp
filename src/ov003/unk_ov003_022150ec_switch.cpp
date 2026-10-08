@@ -6,6 +6,7 @@
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/Model.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/MsgRequest.h"
@@ -14,7 +15,6 @@
 #include "town/KatrinaTent.h"
 #include "town/CountdownDigit.h"
 #include "town/CountdownSign.h"
-#define PROTO_LOCAL_gFieldStructureHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"
@@ -46,17 +46,11 @@ extern u32 sCountdownMinutes;
 extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
-extern u32 gFieldStructureHeap;
+extern void *gFieldStructureHeap;
 
-void CountdownSign_ModelCallback(void *p);
-s32 _ZN5Model12getRenderObjEv(void *p);
-void _ZN9ModelAnim7replaceEiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
-BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *m, s32 a, s32 b);
-void _ZN9ModelAnim14addToRenderObjEj(void *m, s32 a);
+void CountdownSign_ModelCallback(NNSG3dRS *p);
 void Clock_GetDateTime(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
-void _ZN5Model15setInitCallbackEii(void *m, void (*fn)(void *), void *self);
-s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
 void _ZN13AnimFrameCtrl4stepEv(void *m);
 void _ZN13BuildingActor12updateMatrixEv(void *p);
 void func_02094030(void *p);
@@ -87,10 +81,10 @@ BOOL CountdownDigit::initBuilding() {
     digitIndex = sCountdownSpawnIndex;
     digit = 0;
     setCharId(digitIndex);
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
+    if (((ModelAnim *)(&matAnim))->allocMatAnm((NNSG3dResMdl *)(modelRes), gFieldStructureHeap)) {
         s32 r1 = (s32)getBtaAnim(0);
         ((ModelAnim *)(&matAnim))->init(r1, 1, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(model));
+        ((ModelAnim *)(&matAnim))->addToRenderObj(((Model *)model)->getRenderObj());
     }
     isCounting = 1;
     prevDigit = 0xff;

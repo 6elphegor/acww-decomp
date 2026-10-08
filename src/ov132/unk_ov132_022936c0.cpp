@@ -37,7 +37,6 @@ extern u8 gTouchCurY[];
 
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
 s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN10BgVramTask13requestScreenEjhjj(void *self, void *buf, s32 a, s32 b, s32 c);
 
 void _ZN9HouseData7setDebtEi(void *self, s32 v);
 s32 _ZN9HouseData7getDebtEv(void *self);
@@ -461,8 +460,8 @@ void BankMenu::quit() {
 void BankMenu::startSelect() {
     setTransitionState(2);
     selectTimer = 10;
-    _ZN10BgVramTask13requestScreenEjhjj(&screenTasks[0], layer6Screen, 6, 0x800, 0);
-    _ZN10BgVramTask13requestScreenEjhjj(&screenTasks[1], layer4Screen, 4, 0x800, 0);
+    ((BgVramTask *)(&screenTasks[0]))->requestScreen(layer6Screen, 6, 0x800, 0);
+    ((BgVramTask *)(&screenTasks[1]))->requestScreen(layer4Screen, 4, 0x800, 0);
     setMainState(6);
     Snd_PlaySe(0x29);
 }

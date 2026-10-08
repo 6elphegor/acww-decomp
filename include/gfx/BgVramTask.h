@@ -14,10 +14,10 @@ public:
     BgVramTask();
     virtual BOOL execute();
     virtual void clear();
-    BOOL requestPaletteRange(u32 a, u8 b, u32 c, u8 d);
-    BOOL requestPalette(u32 a, u8 b, u32 c);
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
+    BOOL requestPaletteRange(void *a, u8 b, u32 c, u8 d);
+    BOOL requestPalette(void *a, u8 b, u32 c);
+    BOOL requestScreen(void *a, u8 b, u32 c, u32 d);
+    BOOL requestChars(void *a, u8 b, u32 c, u32 d, u32 e);
     void prepare(void);
     void cancel(void);
 };
@@ -29,8 +29,8 @@ public:
     BgVramTaskPair();
     virtual BOOL execute();
     virtual void clear();
-    BOOL requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
-    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
+    BOOL requestCharsAndPalette(void *a, u8 b, u32 c, u32 d, u32 e, void *f, u8 g);
+    BOOL requestCharPair(void *a, void *b, u8 c, u32 d, u32 e, u32 f, u32 g);
 };
 
 #endif

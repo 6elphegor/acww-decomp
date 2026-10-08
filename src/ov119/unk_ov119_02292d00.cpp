@@ -709,7 +709,7 @@ extern "C" void FriendRosterTab_SetupLayers() {
 }
 
 void FriendRosterTab::loadBgGfx() {
-    u32 r4 = gCurrentHeap;
+    void *r4 = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/friend/bg0.bpl", r4, 6, 1, 1, 5);
     File_LoadToBuffer("menu/friend/bg2.bpl", bgPalette, 0x20);
     Gfx2d_LoadCharFile("menu/friend/bg0.bch", r4, 6, 0x11, 0x11, 0x89);
@@ -719,7 +719,7 @@ void FriendRosterTab::loadBgGfx() {
 }
 
 void FriendRosterTab::loadObjGfx() {
-    u32 r4 = gCurrentHeap;
+    void *r4 = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/friend/obj0.bch", r4, 8, 0xc0, 0xc0, 0x15d);
     Gfx2d_LoadCharFile("menu/friend/obj1.bch", r4, 8, 0x1a0, 0x1a0, 0x1df);
     Gfx2d_LoadPaletteFile("menu/friend/obj.bpl", r4, 8, 4, 4, 10);
@@ -1421,13 +1421,13 @@ void FriendRosterTab::uploadScreen()
         setFlags(2);
     }
     if (testFlags(2)) {
-        if (vramTasks[0].requestScreen((u32)shownScreen, 4, 0x800, 0)) {
+        if (vramTasks[0].requestScreen(shownScreen, 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(0x20)) {
-        vramTasks[1].requestPalette((u32)bgPaletteWork, 6, 3);
-        vramTasks[2].requestPalette((u32)objPaletteWork, 8, 10);
+        vramTasks[1].requestPalette(bgPaletteWork, 6, 3);
+        vramTasks[2].requestPalette(objPaletteWork, 8, 10);
     }
 }
 

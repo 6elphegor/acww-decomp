@@ -63,7 +63,6 @@ typedef u32 FileBufSlot;
 #define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
 #define PlayerData_setFlag _ZN10PlayerData7setFlagEj
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define CachedModel_release _ZN11CachedModel7releaseEv
@@ -72,7 +71,6 @@ typedef u32 FileBufSlot;
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define Model_setCallback _ZN5Model11setCallbackEiiiii
 #define func_020548a0 _ZN9AnimModelD1Ev
 #define func_020548d0 _ZN9AnimModelC1Ev
 #define func_02135714 __cxa_vec_ctor
@@ -82,12 +80,8 @@ typedef u32 FileBufSlot;
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 #define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
 #define PooledModel_getModel _ZN11PooledModel8getModelEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 
 
 // ================================================================ shared (global) classes
@@ -678,7 +672,6 @@ void *TownBlockMap_Get();
 s32 PendingUnit_ApplyAtIfAid(const P2 &p, s32 a, s32 b);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
-void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
 void AnimModel_attachAnim(void *self);
 s32 Item_IsTreeGrown(void *c);
 s32 Town_CanReleaseBees();
@@ -774,9 +767,8 @@ s32 Item_GetTreeStage(u16 *p);
 void *TreeLeafFx_SpawnLeaves(void *d, s32 mode, s32 n, u16 *cell, VecXZ *p, s32 c);
 void *TreeLeafFx_SpawnSeasonal(void *d, s32 mode, s32 n, u16 *cell, VecXZ *p, s32 c);
 void SndSeEmitter_callUpdateRelative(void *p, VecFx32 *v);
-void Model_setCallback(void *p, void *fn, s32 a, s32 b, void *o, s32 c);
 void SndSeEmitter_callInit(void *p);
-void TreeAnim_ModelCallback(void);
+void TreeAnim_ModelCallback(NNSG3dRS *rs);
 TreeAnim *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
 s32 Item_IsTreeGrown(u16 *p);
 s32 Town_CanReleaseBees(void);
@@ -1401,19 +1393,14 @@ void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *ModelSlotPool_acquire(void *a, void *b);
 BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
 void *PooledModel_getModel(void *a);
-void Model_setResource(void *a, void *b, s32 c);
 void *ModelSlot_getHeap(void *a);
 s32 func_021065dc();
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
 BOOL AnimModel_allocAnmObj(void *a, void *b);
-void BlendAnimModel_initAnim(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void AnimModel_attachAnim(void *a);
-BOOL ModelAnim_allocMatAnm(void *a, void *b, void *c);
-void ModelAnim_init(void *a, s32 b, s32 c, s32 d, s32 e);
 void *Model_getRenderObj(void *a);
-void ModelAnim_addToRenderObj(void *a, void *b);
 void SndSeEmitter_dtor(void *p);
 void SndSeEmitter_ctor(void *p);
 
@@ -5654,7 +5641,7 @@ void TreeAnim_Init(TreeAnim *o) {
     ((CachedModel *)o->animModel)->allocJointRecord(sFieldObjectAnimHeap);
     ((AnimModel *)o->animModel)->allocAnmObj(sFieldObjectAnimHeap);
     o->animKind = 8;
-    ((Model *)(o->animModel))->setCallback((s32)((void *)TreeAnim_ModelCallback), 2, 2, (s32)(o), 0);
+    ((Model *)(o->animModel))->setCallback(TreeAnim_ModelCallback, 2, 2, o, 0);
     ((SndSeEmitter *)(o->seEmitter))->callInit();
     TreeAnim_Reset(o);
 }

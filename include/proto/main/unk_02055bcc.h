@@ -5,13 +5,13 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "gfx/ModelAnim.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_Gfx3d_AllocAnmObj
-void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c);
+void *Gfx3d_AllocAnmObj(NNSG3dResMdl *a, const char *b, void *c);
 #endif
 }
 #ifndef PROTO_LOCAL_sMatAnmHeader

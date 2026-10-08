@@ -194,7 +194,7 @@ extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img
             Gfx_LightenPalette16((u16 *)ClothTex_GetPlttData(o), pal);
             Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(o), img, 4, 4);
             Heap_Free(heap, o);
-            if (x->requestCharsAndPalette((u32)img, 5, 0, 0, 0xf, (u32)pal, 0) != 0) {
+            if (x->requestCharsAndPalette(img, 5, 0, 0, 0xf, pal, 0) != 0) {
                 r->setInventoryBackground(p);
             }
         }

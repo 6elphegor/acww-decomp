@@ -18,7 +18,6 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_sTabSwitchCooldown  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
@@ -56,7 +55,6 @@ typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 // ---------------------------------------------------------------- ov090 declarations
 extern "C" {
 
-extern u32 gCurrentHeap;
 extern u8 gFieldSceneKind;
 }
 
@@ -325,7 +323,7 @@ void MenuTabBar::updateOpenTabMenu() {
 void MenuTabBar::updateSaving() { errorMessage.update(0); }
 
 void MenuTabBar::stateLoad() {
-    Gfx2d_LoadPaletteFile((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
+    Gfx2d_LoadPaletteFile("menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
     File_LoadToBuffer("menu/tag/obj1.bch", commonObjChars, 0x800);
     File_LoadToBuffer("menu/tag/obj2.bch", tabObjChars, 0x800);
     showTab(MenuCtrl_GetMode());
@@ -430,13 +428,13 @@ void MenuTabBar::showTab(u32 idx) {
     if (idx <= 7) {
         if (idx != loadedTab) {
             char buf[0x24];
-            vramTasks[0].requestChars((u32)commonObjChars, 8, 0x80, 0x80, 0xbf);
-            u32 a = (u32)tabObjChars + idx * 0x60;
+            vramTasks[0].requestChars(commonObjChars, 8, 0x80, 0x80, 0xbf);
+            void *a = tabObjChars + idx * 0x60;
             u32 t = idx * 3 + 0x80;
             vramTasks[1].requestCharPair(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
             Str_SPrintf(buf, "menu/tag/obj%d.bpl", idx);
             File_LoadToBuffer(buf, tabPalette, 0x20);
-            vramTasks[2].requestPalette((u32)tabPalette, 8, 0xf);
+            vramTasks[2].requestPalette(tabPalette, 8, 0xf);
             loadedTab = idx;
         }
     }

@@ -25,6 +25,7 @@
 #include "proto/main/unk_02085940.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/ov127/unk_ov127_02291f60.h"
+#include "gfx/BgVramTask.h"
 
 // File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
 #pragma opt_loop_invariants off
@@ -54,7 +55,6 @@ ConstellationRecord *Constellation_GetRecordAlt(s32 i);
 ConstellationRecord *Constellation_GetRecord(s32 i);
 void Constellation_SetLinePalette(void *p, u32 slot, s32 r);
 void _ZN10BgVramTask6cancelEv(void *self);
-s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 Vec_MagXZ(VecFx32 *v);
@@ -161,7 +161,7 @@ extern "C" void StarSky_Update(StarSkyView *s)
                 }
             }
         }
-        _ZN10BgVramTask13requestScreenEjhjj(s, s->skyScreenWork, s->skyLayer, 0x1000, 0);
+        ((BgVramTask *)(s))->requestScreen(s->skyScreenWork, s->skyLayer, 0x1000, 0);
         StarSky_ClearFlags(s, 2);
     }
 }

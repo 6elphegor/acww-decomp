@@ -690,12 +690,12 @@ void MapTab::postStateUpdate() {
         clearFlags(0x80);
     }
     if (testFlags(0x20)) {
-        if (screenTasks[1].requestScreen((u32)frameScreen, 4, 0x800, 0)) {
+        if (screenTasks[1].requestScreen(frameScreen, 4, 0x800, 0)) {
             clearFlags(0x20);
         }
     }
     if (testFlags(2)) {
-        if (screenTasks[0].requestScreen((u32)listScreen, 6, 0x800, 0)) {
+        if (screenTasks[0].requestScreen(listScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -719,7 +719,7 @@ void MapTab::setupBgLayers() {
 }
 
 void MapTab::loadBgGfx() {
-    u32 p = gCurrentHeap;
+    void *p = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", p, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", p, 4, 0x11, 0x11, 0x5f);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", p, 4, 0x230, 0x230, 0x25f);
@@ -753,7 +753,7 @@ void MapTab::loadMapImage() {
 }
 
 void MapTab::loadObjGfx() {
-    u32 p = gCurrentHeap;
+    void *p = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_obj.bpl", p, 8, 6, 6, 0xe);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_0.bch", p, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_1.bch", p, 8, 0x180, 0x180, 0x1ff);

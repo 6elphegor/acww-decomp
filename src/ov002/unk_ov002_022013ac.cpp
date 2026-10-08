@@ -279,7 +279,7 @@ void PopupChoiceMenu::init(s32 a, s32 b, const char *path) {
         screenFile = path;
     }
     void *heap = gCurrentHeap;
-    u8 *buf = File_LoadAlloc(screenFile, heap, -4, 0);
+    u8 *buf = (u8 *)File_LoadAlloc(screenFile, heap, -4, 0);
     rowCharBase = *(u16 *)(buf + 0x44) & 0x3ff;
     Heap_Free(heap, buf);
     u16 v = rowCharBase;
@@ -437,7 +437,7 @@ void PopupChoice_BuildScreen(Self *self) {
     Gfx2d_SetLayerPriority(self->layer, self->bgPriority);
     Gfx2d_SetLayerControl(self->layer, 0, 0, 0);
     void *heap = gCurrentHeap;
-    u8 *buf = File_LoadAlloc(self->screenFile, heap, -4, 0);
+    u8 *buf = (u8 *)File_LoadAlloc(self->screenFile, heap, -4, 0);
     u32 n = self->numRows;
     if (n != 5) {
         u16 v = *(u16 *)(buf + 0x22);

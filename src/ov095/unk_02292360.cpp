@@ -24,13 +24,12 @@
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov095/unk_02292360.h"
+#include "gfx/BgVramTask.h"
 
 
 extern "C" {
 extern volatile u16 sCharSortKeyZero;
-s32 _ZN10BgVramTask13requestScreenEjhjj(void *a, void *b, s32 c, s32 d, s32 e);
 s32 _s32_div_f(s32 a, s32 b);
-void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10BgVramTask6cancelEv(void *a);
 void MI_CpuCopy8(void *a, void *b, s32 c);
 
@@ -895,7 +894,7 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     MI_CpuCopy8(h + 0x240, &s->screenBuf[576], 0x380);
     Keyboard_MarkScreenDirty(s);
     Heap_Free(g, h);
-    _ZN10BgVramTask12requestCharsEjhjjj(HOST_AT(s, 0x22f4, bgTasks[0], 0), HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
+    ((BgVramTask *)(HOST_AT(s, 0x22f4, bgTasks[0], 0)))->requestChars(HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
     s->mode = mode;
     switch (s->mode) {
     case 0:
@@ -1060,7 +1059,7 @@ void Keyboard_LoadScreenNow(Keyboard *s, s32 a)
 void Keyboard_EndFrame(Keyboard *s, s32 a)
 {
     if (Keyboard_TestFlags(s, 1) != 0) {
-        if (_ZN10BgVramTask13requestScreenEjhjj(HOST_AT(s, 0x2318, bgTasks[1], 0), HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0) != 0) {
+        if (((BgVramTask *)(HOST_AT(s, 0x2318, bgTasks[1], 0)))->requestScreen(HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0) != 0) {
             Keyboard_ClearFlags(s, 1);
         }
     }

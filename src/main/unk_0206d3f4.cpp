@@ -7,7 +7,6 @@
 #include "talk/EncodedString40.h"
 #include "ui/LetterRenderer.h"
 #include "ui/LetterTextLine.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_sCrashContext  // declared below: the shared prototype conflicts with the calls here
@@ -57,7 +56,6 @@ extern u32 OVERLAY_65_ID[];
 
 
 extern "C" {
-extern u32 gCurrentHeap;
 extern u8 sFatalEntered;
 extern u8 data_021fccfc[];
 extern u8 gOverlayHandle[];

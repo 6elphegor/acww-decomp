@@ -7,7 +7,6 @@
 #define PROTO_LOCAL_BugNet_HitTest  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_AllocAffine  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
@@ -138,7 +137,9 @@ extern "C" void Oam_ResetBuffers() {
     sOamAffineCountB = 0;
 }
 
-extern "C" s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
+// obj: the object's OAM attributes (a GXOamAttr: attr0 / attr1, then attr2), drawn at x / y
+extern "C" s32 Oam_DrawObj(s32 mode, const void *obj, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
+    u32 *info = (u32 *)obj;
     GXOamAttr *ent;
     s32 *cntp;
     s32 *othp;

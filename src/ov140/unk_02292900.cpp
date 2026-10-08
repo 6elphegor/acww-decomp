@@ -735,7 +735,7 @@ BOOL DistantTownsMenu::moveCursorByPad(u32 pad) {
 
 void DistantTownsMenu::flushBgScreen() {
     if (testFlags(4)) {
-        if (screenTask.requestScreen((u32)bgScreen, 6, 0x800, 0)) {
+        if (screenTask.requestScreen(bgScreen, 6, 0x800, 0)) {
             clearFlags(4);
         }
     }

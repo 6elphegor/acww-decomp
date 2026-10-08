@@ -17,13 +17,13 @@
 #include "town/CountdownSign.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/Model.h"
-#define PROTO_LOCAL_gFieldStructureHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022150ec.h"
 #include "proto/ov003/unk_ov003_022150ec_switch.h"
+#include "gfx/G3dResAccess.h"
 
 
 
@@ -59,14 +59,10 @@ extern u32 sCountdownMinutes;
 extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
-extern u32 gFieldStructureHeap;
+extern void *gFieldStructureHeap;
 
-void CountdownSign_ModelCallback(void *p);
-s32 _ZN5Model12getRenderObjEv(void *p);
-BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *m, s32 a, s32 b);
-void _ZN9ModelAnim14addToRenderObjEj(void *m, s32 a);
+void CountdownSign_ModelCallback(NNSG3dRS *p);
 void Clock_GetDateTime(void *p);
-s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
@@ -87,8 +83,8 @@ typedef BOOL (CountdownSign::*Unk_02215680_Fn)();
 // ================================================================
 BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
-    s32 r4 = _ZN5Model12getRenderObjEv(model);
-    s32 r2 = (s32)getBtaAnim(0);
+    void *r4 = ((Model *)model)->getRenderObj();
+    void *r2 = getBtaAnim(0);
     ((ModelAnim *)(&matAnim))->replace(r4, r2, 1, 0x1000, digit);
     return TRUE;
 }
@@ -218,12 +214,12 @@ BOOL CountdownSign::initBuilding() {
         digits[i] = (CountdownDigit *)Actor::spawn((void *)(0x26), (void *)(0x501f), v, (void *)(z), (void *)(z));
         i++;
     } while (i < 6);
-    ((Model *)(model))->setInitCallback((s32)(CountdownSign_ModelCallback), (s32)(this));
-    alphaMatIdx = _ZN12G3dResAccess10findMatIdxEi((s32)modelRes, "m_cbs_Adt");
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
+    ((Model *)(model))->setInitCallback(CountdownSign_ModelCallback, this);
+    alphaMatIdx = ((G3dResAccess *)(modelRes))->findMatIdx((const char *)("m_cbs_Adt"));
+    if (((ModelAnim *)(&matAnim))->allocMatAnm((NNSG3dResMdl *)(modelRes), gFieldStructureHeap)) {
         s32 r1 = (s32)getBtaAnim(0);
         ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(model));
+        ((ModelAnim *)(&matAnim))->addToRenderObj(((Model *)model)->getRenderObj());
     }
     u32 tm[2];
     tm[0] = 0;
@@ -247,8 +243,7 @@ extern "C" {
 void CountdownSign_MaterialCallback(NNSG3dRS *o);
 void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, NNSG3dRS *o);
 
-void CountdownSign_ModelCallback(void *p) {
-    NNSG3dRS *o = (NNSG3dRS *)p;
+void CountdownSign_ModelCallback(NNSG3dRS *o) {
     o->cbVecFunc[4] = (void *)CountdownSign_MaterialCallback;
     o->cbVecTiming[4] = 2;
 }

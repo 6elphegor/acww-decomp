@@ -56,7 +56,7 @@ extern "C" void SndSeEmitter_dtorBase(void *p);
 
 extern "C" {
 BOOL Vec_NotEqual(void *a, void *b);
-s32 SpNpcAnimHeapRef_GetHeap(void *p);
+void *SpNpcAnimHeapRef_GetHeap(void *p);
 }
 
 static inline BOOL Unk_0202e318_IsOne(u8 v) {
@@ -71,7 +71,7 @@ SpNpcActor::~SpNpcActor() {}
 
 BOOL SpNpcActor::loadAnimSet() {
     void *p = ((NpcClothTexHandle *)(&animHeapHandle))->getSpNpcAnimHeapRef();
-    if (!((CachedModel *)(&model))->allocJointRecord((void *)(SpNpcAnimHeapRef_GetHeap(p)))) {
+    if (!((CachedModel *)(&model))->allocJointRecord(SpNpcAnimHeapRef_GetHeap(p))) {
         return FALSE;
     }
     if (((ThreeLayerAnimModel *)(&model))->allocLayer3Anims(SpNpcAnimHeapRef_GetHeap(p))) {

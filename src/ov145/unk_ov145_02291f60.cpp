@@ -46,8 +46,6 @@ typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
 #define func_02133150 _s32_div_f
 #define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
-#define BgVramTask_requestPalette _ZN10BgVramTask14requestPaletteEjhj
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
 #define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
 #define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
@@ -110,8 +108,6 @@ void Math_StepS32(void *p, s32 a, s32 b);
 void MenuButtons_LoadTextColors(void *p);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
-s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
-void BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL MuseumData_getDonorName(void *a, void *b, void *c);
 void BgVramTask_cancel(void *p);
@@ -936,7 +932,7 @@ void DonationMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(&vramTasks[1], frameScreen, 6, 0x800, 0)) {
+        if (((BgVramTask *)(&vramTasks[1]))->requestScreen(frameScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -978,7 +974,7 @@ void DonationMenu::uploadListScreen() {
     if (n < 9) {
         BgScreen_SetRectPalette(listScreen, 0, n * 2, 0x1f, 0x12, 4);
     }
-    if (BgVramTask_requestScreen(vramTasks, listScreen, 4, 0x800, 0)) {
+    if (((BgVramTask *)(vramTasks))->requestScreen(listScreen, 4, 0x800, 0)) {
         clearFlags(8);
     }
 }
@@ -1126,7 +1122,7 @@ void DonationMenu::setTabFadeLevel(u32 t) {
     g = ((u8)((x & 0x3e0) >> 5) * (s32)t + g * n) / 3;
     b = ((u8)((x & 0x7c00) >> 10) * (s32)t + b * n) / 3;
     workPalette[15] = r | (g << 5) | (b << 10);
-    BgVramTask_requestPalette(&vramTasks[2], workPalette, 4, 3);
+    ((BgVramTask *)(&vramTasks[2]))->requestPalette(workPalette, 4, 3);
 }
 
 void DonationMenu::updateTabSwitch() {

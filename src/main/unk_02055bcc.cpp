@@ -8,14 +8,14 @@
 
 
 extern "C" {
-u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
+u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, NNSG3dResMdl *b);
 extern void *gCurrentHeap;
 }
 
 char sMatAnmHeader[4] = {'M', 0, 'A', 'T'};
 
-extern "C" void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c) {
-    if (a == 0) {
+extern "C" void *Gfx3d_AllocAnmObj(NNSG3dResMdl *a, const char *b, void *c) {
+    if (a == NULL) {
         return NULL;
     }
     u32 n = NNS_G3dAnmObjCalcSizeRequired(b, a);
@@ -25,13 +25,13 @@ extern "C" void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c) {
     return Heap_Alloc(c, n);
 }
 
-BOOL ModelAnim::allocMatAnm(u32 a, void *c) {
-    if (anmObj != 0 || resMdl != 0) {
+BOOL ModelAnim::allocMatAnm(NNSG3dResMdl *a, void *c) {
+    if (anmObj != NULL || resMdl != NULL) {
         return FALSE;
     }
-    anmObj = (u32)Gfx3d_AllocAnmObj(a, sMatAnmHeader, c);
+    anmObj = (NNSG3dAnmObj *)Gfx3d_AllocAnmObj(a, sMatAnmHeader, c);
     resMdl = a;
-    if (anmObj != 0) {
+    if (anmObj != NULL) {
         return TRUE;
     }
     return FALSE;

@@ -97,10 +97,10 @@ void HeldItemModels_SetTexAnimBuffer(HeldItemModelBank *self, u32 idx, void *v, 
 u32 HeldItemModels_GetTexAnimBufferSize(HeldItemModelBank *self, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModels_GetMatAnmHeap
-u32 HeldItemModels_GetMatAnmHeap(HeldItemModelBank *self, u32 idx);
+void *HeldItemModels_GetMatAnmHeap(HeldItemModelBank *self, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModels_SetMatAnmHeap
-void HeldItemModels_SetMatAnmHeap(HeldItemModelBank *self, u32 idx, u32 v);
+void HeldItemModels_SetMatAnmHeap(HeldItemModelBank *self, u32 idx, void *v);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModels_LoadAnim
 s32 HeldItemModels_LoadAnim(HeldItemModelBank *self, u32 idx, u32 x);

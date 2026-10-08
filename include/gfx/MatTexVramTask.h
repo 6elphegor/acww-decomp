@@ -14,7 +14,8 @@ public:
 
     MatTexVramTask();
     virtual BOOL execute();
-    BOOL request(void *a, u32 b, void *c, u32 d, u32 e);
+    // mdl: the model resource, matName: its material; tex: the texture resource, texIdx / plttIdx: its image and palette
+    BOOL request(void *mdl, const char *matName, void *tex, u32 texIdx, u32 plttIdx);
     void prepare(void);
     void cancel(void);
     void clear(void);

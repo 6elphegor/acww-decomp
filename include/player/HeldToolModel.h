@@ -7,6 +7,7 @@
 #include "gfx/Mtx43.h"
 
 class BlendAnimModel;
+class NpcActor;
 struct Unk_02006d14;
 
 // 0x40-byte model of the tool held in the player's hand (item, model handle, hand matrix). Defined in main,
@@ -40,8 +41,8 @@ struct HeldToolModel {
     void playIdleAnim(u32 a, u32 b);
     void playIdleAnimFor(HeldToolModel *p, u32 a, u32 b);
     void playAnim(u32 a, u32 b, u32 c);
-    BOOL attach(u32 a, u16 *b, u32 c, u16 d);
-    BOOL load(u32 a);
+    BOOL attach(NpcActor *a, u16 *b, u32 c, u16 d);
+    BOOL load(u16 *item);
     HeldToolModel *destroy();
     HeldToolModel *init();
 };

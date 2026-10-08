@@ -155,7 +155,7 @@ public:
     /* 0x288 */ u8 touchBox[HOST_SIZED(0x2a8, TouchPickBox)] HOST_ALIGN8;  // TouchPickBox
     /* 0x530 */ s32 baseAct;
     /* 0x534 */ u8 model[0x590 - 0x534]; // BlendAnimModel
-    /* 0x590 */ u32 modelResMdl;
+    /* 0x590 */ void *modelResMdl;
     /* 0x594 */ u8 pad_594[4];
     /* 0x598 */ Mtx43 modelMtx;
     /* 0x5c8 */ u8 pad_5c8[0x5d0 - 0x5c8];

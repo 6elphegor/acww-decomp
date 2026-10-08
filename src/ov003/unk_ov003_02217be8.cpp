@@ -122,16 +122,7 @@ public:
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
-#define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
-#define BgModelCache_getRiverPatTex _ZN12BgModelCache14getRiverPatTexEv
-#define BgModelCache_getRiverPatAnm _ZN12BgModelCache14getRiverPatAnmEv
-#define BgModelCache_getBeBPatTex _ZN12BgModelCache12getBeBPatTexEv
-#define BgModelCache_getBeBPatAnm _ZN12BgModelCache12getBeBPatAnmEv
-#define BgModelCache_getAcre _ZN12BgModelCache7getAcreEi
-#define BgModelCache_getGroundMatAnm _ZN12BgModelCache15getGroundMatAnmEv
-#define BgModelCache_getGroundTexSrtAnm _ZN12BgModelCache18getGroundTexSrtAnmEv
 #define Camera_getEyeCurveAngle _ZN6Camera16getEyeCurveAngleEv
 #define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
 
@@ -143,14 +134,6 @@ extern s32 data_021ce63c;
 extern s32 data_020c8cbc;
 extern u8 data_021f47e0[];
 
-s32 G3dResAccess_findMatIdx(void *self, s32 a);
-s32 BgModelCache_getGroundTex(void *self);
-s32 BgModelCache_getRiverPatTex(void *self);
-s32 BgModelCache_getRiverPatAnm(void *self);
-s32 BgModelCache_getGroundMatAnm(void *self);
-s32 BgModelCache_getGroundTexSrtAnm(void *self);
-s32 BgModelCache_getBeBPatTex(void *self);
-s32 BgModelCache_getBeBPatAnm(void *self);
 void *BgModelCache_getAcre(void *self, s32 i);
 s32 MapBlockAcre_getAcreId(void *self);
 s32 Camera_getEyeCurveAngle(void *self);
@@ -194,7 +177,7 @@ u8 data_ov003_02235490;
 s32 data_ov003_02235494;
 char data_ov003_022323f4[0xc] = "m_grd_riv";
 char data_ov003_02232400[0x10] = "m_grd_sea085";
-uptr sWaterMatNames[2] = {(uptr)data_ov003_022323f4, (uptr)data_ov003_02232400};
+char *sWaterMatNames[2] = {data_ov003_022323f4, data_ov003_02232400};
 ProcProfile sFieldGroundProfile = {(void *(*)())FieldGround_Create, 0xd, 0x9};
 }
 
@@ -234,14 +217,14 @@ FieldGround::~FieldGround() {
 BOOL FieldGround::onCreate() {
     backdrop.clear();
     backdrop.init();
-    s32 r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
-    s32 r4 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatTex();
-    s32 r0 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatAnm();
-    ((TexPatVramAnim *)(&riverPatAnim))->init((u8 *)((void *)r6), "grd_riv.0", "grd_riv_pl", (u8 *)(r4), (u8 *)(r0), 0);
+    void *r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    void *r4 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatTex();
+    void *r0 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatAnm();
+    ((TexPatVramAnim *)(&riverPatAnim))->init((u8 *)r6, "grd_riv.0", "grd_riv_pl", (u8 *)r4, (u8 *)r0, 0);
     r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     r4 = ((BgModelCache *)(BgModelCache_Get()))->getBeBPatTex();
     r0 = ((BgModelCache *)(BgModelCache_Get()))->getBeBPatAnm();
-    ((TexPatVramAnim *)(&beachPatAnim))->init((u8 *)((void *)r6), "grd_beB", "grd_beB_pl", (u8 *)(r4), (u8 *)(r0), 1);
+    ((TexPatVramAnim *)(&beachPatAnim))->init((u8 *)r6, "grd_beB", "grd_beB_pl", (u8 *)r4, (u8 *)r0, 1);
     Unk_0204e858_Grid *g = gSceneBlockMap;
     numBlocksX = g->width;
     numBlocksZ = g->height;
@@ -512,16 +495,16 @@ BOOL FieldGroundPiece::setup(VecFx32 *pos, s32 idx) {
     position.y = pos->y;
     position.z = pos->z;
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)((BgModelCache *)(BgModelCache_Get()))->getAcre(sFieldGroundPieceAcres[idx]);
-    s32 t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    void *t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     NNSG3dResMdl *res = e->modelRes;
-    ((Model *)&model)->setResourceAndBind(res, t);
-    if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
+    ((Model *)&model)->setResourceAndBind(res, (NNSG3dResTex *)t);
+    if (matAnims[0].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
         matAnims[0].init(((BgModelCache *)(BgModelCache_Get()))->getGroundMatAnm(), 0, 0x1000, 0);
-        matAnims[0].addToRenderObj((u32)((Model *)&model)->getRenderObj());
+        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
     }
-    if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
+    if (matAnims[1].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
         matAnims[1].init(((BgModelCache *)(BgModelCache_Get()))->getGroundTexSrtAnm(), 0, 0x1000, 0);
-        matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
+        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
     }
     VecFx32 tmp;
     curveAngle = WorldCurve_ToCurved(&tmp, &position);
@@ -574,28 +557,28 @@ BOOL FieldGroundBlock::init(TownBlockCell *o, s32 a, s32 b) {
     blockX = a;
     blockZ = b;
     acreId = MapBlockAcre_getAcreId(o);
-    u32 t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    void *t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     BgAcreModel *p = o->bgModel;
-    u32 q = (u32)p->tex;
+    void *q = p->tex;
     if (q != 0) t = q;
     NNSG3dResMdl *res = (NNSG3dResMdl *)p->mdl;
-    ((Model *)&model)->setResourceAndBind(res, t);
-    if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
+    ((Model *)&model)->setResourceAndBind(res, (NNSG3dResTex *)t);
+    if (matAnims[0].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
         matAnims[0].init(((BgModelCache *)(BgModelCache_Get()))->getGroundMatAnm(), 0, 0x1000, 0);
-        matAnims[0].addToRenderObj((u32)((Model *)&model)->getRenderObj());
+        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
     }
-    if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
+    if (matAnims[1].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
         matAnims[1].init(((BgModelCache *)(BgModelCache_Get()))->getGroundTexSrtAnm(), 0, 0x1000, 0);
-        matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
+        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
     }
     Mtx43_SetTranslate(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
     Mtx43_RotateX(data_021f47e0, ang);
     MODEL_AT_MTX(&model) = *(Mtx43 *)data_021f47e0;
     if (Acre_GetAttr(acreId) & 8) {
-        beachMatIdx = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
+        beachMatIdx = ((G3dResAccess *)(res))->findMatIdx((const char *)("m_grd_beA"));
         if (beachMatIdx != -1) {
-            ((Model *)&model)->setInitCallback((s32)FieldGround_OnModelInit, (s32)this);
+            ((Model *)&model)->setInitCallback(FieldGround_OnModelInit, this);
         }
     }
     FieldGround_SetWaterMatFlags(&model, 1);

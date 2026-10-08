@@ -50,7 +50,6 @@
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
-#define BlendAnimModel_playBlend _ZN14BlendAnimModel9playBlendEiiiitt
 #define BlendAnimModel_stepBlend _ZN14BlendAnimModel9stepBlendEv
 #define BlendAnimModel_onJointCalcPost _ZN14BlendAnimModel15onJointCalcPostEPS_
 #define BlendAnimModel_onJointCalcPre _ZN14BlendAnimModel14onJointCalcPreEPS_
@@ -58,13 +57,10 @@
 #define func_02054514 _ZN14BlendAnimModelC1Ev
 #define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define CachedModel_release _ZN11CachedModel7releaseEv
 #define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
-#define Model_setInitCallback _ZN5Model15setInitCallbackEii
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP7VecFx32iijjjhi
@@ -591,7 +587,6 @@ BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 void GroundInfo_Destruct(void *o);
 void *GroundInfo_initAtPos(void *o, void *v, s32 a, s32 b);
-void BlendAnimModel_playBlend(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 BlendAnimModel_stepBlend(void *);
 s32 BlendAnimModel_onJointCalcPost(void *, void *);
 s32 BlendAnimModel_onJointCalcPre(void *, void *);
@@ -599,13 +594,10 @@ void func_020544d8(void *);
 void func_02054514(void *);
 void AnimModel_detachJointAnim(void *p);
 void AnimModel_attachAnim(void *);
-s32 BlendAnimModel_initAnim(void *, s32, s32, s32, s32, s32);
 void AnimModel_drawAnimated(void *, V3 *);
 s32 AnimModel_allocAnmObj(void *, s32);
 void CachedModel_release(void *p);
 s32 CachedModel_allocJointRecord(void *, s32);
-void Model_setInitCallback(void *self, void *fn, void *arg);
-s32 Model_setResource(void *, s32, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
 s32 MuseumData_isDonated(void *, u16 *);
 void StaticCollider_setupAtPos(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
@@ -1743,7 +1735,7 @@ extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
 extern "C" void _ZN16AquariumFastFish5setupEv(E744 *o) {
     o->hitBoxOwner = o;
     o->tankArea = 2;
-    ((Model *)(&o->model))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(o));
+    ((Model *)(&o->model))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
     s32 *t = &o->fishIndex;
     o->contactFish = *t;
     o->avoidedFish = *t;
@@ -1797,7 +1789,7 @@ extern "C" void _ZN15AquariumBigFish5setupEv(E72c *o) {
     o->contactFish = *t;
     o->hasCollision = 0;
     if ((u32)(*t - 0x35) <= 1) {
-        ((Model *)(&o->model))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(o));
+        ((Model *)(&o->model))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
     }
     s32 r;
     if (Aquarium_RandRange(0, 2) > 0) {
@@ -2127,7 +2119,7 @@ extern "C" void _ZN18AquariumPufferFish5setupEv(E78c *e) {
     e->avoidedFish = e->fishIndex;
     e->tankArea = 1;
     AquariumFish_LoadParams(e);
-    ((Model *)(&e->model))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(e));
+    ((Model *)(&e->model))->setInitCallback(AquariumFish_InstallJointCallbacks, e);
 }
 
 extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
@@ -2358,7 +2350,7 @@ extern "C" void AquariumPiranha_BiteRecoil(E75c *o) {
 
 extern "C" void _ZN21AquariumSurfacingFish5setupEv(E714 *o) {
     o->contactFish = o->fishIndex;
-    ((Model *)(&o->model))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(o));
+    ((Model *)(&o->model))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
     AquariumFish_LoadParams(o);
 }
 
@@ -2746,7 +2738,7 @@ extern "C" void _ZN13AquariumSquid5setupEv(E81c *o) {
     o->avoidedFish = o->fishIndex;
     o->tankArea = 1;
     AquariumFish_LoadParams(o);
-    ((Model *)(HOST_AT(o, 0x64, model[0], 0)))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(o));
+    ((Model *)(HOST_AT(o, 0x64, model[0], 0)))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
 }
 
 extern "C" void _ZN13AquariumSquid6updateEv(E81c *o) {
@@ -2882,7 +2874,7 @@ extern "C" void AquariumSwimFish_SetupSea(E864 *e) {
     e->avoidedFish = *p;
     AquariumFish_LoadParams(e);
     if (e->hasTurnAnims) {
-        ((Model *)(HOST_AT(e, 0x64, model[0], 0)))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(e));
+        ((Model *)(HOST_AT(e, 0x64, model[0], 0)))->setInitCallback(AquariumFish_InstallJointCallbacks, e);
     }
 }
 
@@ -2926,7 +2918,7 @@ extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e) {
     e->contactFish = e->fishIndex;
     AquariumFish_LoadParams(e);
     if (e->hasTurnAnims) {
-        ((Model *)(HOST_AT(e, 0x64, model[0], 0)))->setInitCallback((s32)((void *)AquariumFish_InstallJointCallbacks), (s32)(e));
+        ((Model *)(HOST_AT(e, 0x64, model[0], 0)))->setInitCallback(AquariumFish_InstallJointCallbacks, e);
     }
 }
 
@@ -3863,7 +3855,7 @@ extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n) {
         } else {
             Str_SPrintf(buf, "/fish/%d/m_fish%d%d.nsbca", k, idx, i);
         }
-        (*p)->animFiles[i] = File_LoadAlloc(buf, (s32)gCurrentHeap, 4, z);
+        (*p)->animFiles[i] = File_LoadAlloc(buf, gCurrentHeap, 4, z);
         if ((*p)->animFiles[i] == 0) {
             return 0;
         }

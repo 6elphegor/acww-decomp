@@ -31,7 +31,7 @@ void MI_CpuCopy8(void *dst, void *src, u32 n);
 
 
 struct CharaClothTexPool {
-    u32 ptr[10];
+    void *ptr[10];
     ItemId id[10];
     CharaClothTexRef sub;
     CharaClothTexPool();
@@ -39,7 +39,7 @@ struct CharaClothTexPool {
     s32 findItem(u16 *s);
     void setItem(u32 idx, u16 *s);
     CharaClothTexRef *getOwnRef();
-    u32 getBuffer(u32 idx);
+    void *getBuffer(u32 idx);
     void freeBuffers();
     void allocBuffers();
 };
@@ -67,20 +67,20 @@ CharaClothTexPool::CharaClothTexPool() {
 CharaClothTexPool::~CharaClothTexPool() {}
 
 void CharaClothTexPool::allocBuffers() {
-    void *heap = gCharaClothTexHeap;
+    Heap *heap = (Heap *)gCharaClothTexHeap;
     u32 n = gCommManager->memberCount;
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 i;
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
-        ptr[i] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
+        ptr[i] = Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     }
-    ptr[4] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
+    ptr[4] = Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     if (m == 0) m = 1;
     u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
     m = (q + NpcSpawn_GetSpNpcSlotCount()) - m;
     for (i = 5; i < m + 5; i++) {
-        ptr[i] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
+        ptr[i] = Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     }
     sub.assign(4);
 }
@@ -95,7 +95,7 @@ void CharaClothTexPool::freeBuffers() {
     if (gCharaClothTexHeap) ((Heap *)(gCharaClothTexHeap))->freeAll();
 }
 
-u32 CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }
+void *CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }
 
 CharaClothTexRef *CharaClothTexPool::getOwnRef() { return &sub; }
 
@@ -176,7 +176,7 @@ void CharaClothTexRef::loadItem(u16 *s, s32 a, s32 b, s32 c) {
 
 extern "C" void CharaClothTexRef_LoadPattern(u8 *p, void *q) {
     u32 cur = *p;
-    if (ClothTex_LoadPatternThunk((void *)sCharaClothTexPool.getBuffer(cur), q)) {
+    if (ClothTex_LoadPatternThunk(sCharaClothTexPool.getBuffer(cur), q)) {
         static ItemId dflt(0xffff);
         sCharaClothTexPool.setItem(cur, &dflt.id);
     }
@@ -214,8 +214,8 @@ extern "C" void CharaClothTexRef_CopyFromSlot(void *pp, s32 x) {
             if (eq) return;
         }
     copy:
-        void *pa = (void *)sCharaClothTexPool.getBuffer(x);
-        void *pb = (void *)sCharaClothTexPool.getBuffer(cur);
+        void *pa = sCharaClothTexPool.getBuffer(x);
+        void *pb = sCharaClothTexPool.getBuffer(cur);
         if (pa != 0 && pb != 0) {
             MI_CpuCopy8(pa, pb, ClothTex_GetBufferSize());
             sCharaClothTexPool.setItem(cur, v);
@@ -223,6 +223,6 @@ extern "C" void CharaClothTexRef_CopyFromSlot(void *pp, s32 x) {
     }
 }
 
-extern "C" u32 CharaClothTexRef_GetBuffer(u8 *p) { return sCharaClothTexPool.getBuffer(*p); }
+extern "C" void *CharaClothTexRef_GetBuffer(u8 *p) { return sCharaClothTexPool.getBuffer(*p); }
 
 CharaClothTexPool sCharaClothTexPool;

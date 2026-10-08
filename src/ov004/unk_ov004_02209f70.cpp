@@ -48,7 +48,7 @@
 #include "room/FtrKind25.h"
 #include "room/FtrCarpetSample.h"
 #include "net/CommManager.h"
-#include "gfx/Mtx33.h"
+#include "nitro/mtx.h"
 #include "gfx/NNSG3dRS.h"
 #include "game/GroundInfo.h"
 #include "game/GroundInfoBase.h"
@@ -68,13 +68,11 @@
 #define PROTO_LOCAL_FtrSync_RequestToggleGyroid  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Ftr_GetUnk05  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Ftr_GetUnk06  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FurnitureManager_GetTvTex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Model_BindMatTexByIdx  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Model_BindMatTexByName  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov004/unk_ov004_02209f70.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+// (not in the generated header: it names the file-local struct without the C struct keyword)
+extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -96,6 +94,8 @@
 #include "proto/main/unk_020b8cd0.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0203c638.h"
+#include "proto/itcm/unk_01ffb4e8.h"
+#include "proto/main/unk_02055c38.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -485,7 +485,6 @@ s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
 s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 Item_MakeFurniture(s32 a, s32 b);
 s32 CarpetTex_GetTex(s32 a);
-BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
 s32 _ZN8FtrActor9initAnimsEiiii(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -500,7 +499,6 @@ s32 _ZN9FtrSwitch10isChangingEv(void *p);
 void _ZN9FtrSwitch3setEji(void *p, s32 a, s32 b);
 void _ZN13FtrGlowMatSet6updateEv(void *p);
 s32 _ZN9FtrSwitch4isOnEv(void *p);
-void _ZN13FtrGlowMatSet4initEjj(void *p, s32 a, s32 b);
 void _ZN11FtrVisNodes10setVisibleEj(void *p, s32 a);
 s32 _ZN12FtrPreviewer14getSampleIndexEv(s32 a);
 }
@@ -609,7 +607,7 @@ BOOL FtrComputer::updateActive() {
 
 BOOL FtrComputer::initModel() {
     ((FtrActor *)(this))->initAnims(0, 1, 0x1000, 0);
-    s32 t = modelResMdl;
+    void *t = modelResMdl;
     s32 r = p11::_ZN9FtrSwitch4isOnEv(switchState);
     ((FtrGlowMatSet *)(&glowMats))->init(t, r);
     if (spawnMode == 1) {
@@ -781,7 +779,7 @@ BOOL FtrCarpetSample::initModel() {
     }
     u16 v = w;
     CarpetTex_Load(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer(), &v);
-    s32 h = modelResMdl;
+    void *h = modelResMdl;
     s32 r = p11::CarpetTex_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer());
     if (((MatTexVramTask *)(&texTask))->request((void *)(h), (u32)(p11::data_ov004_0224bb50), (void *)(r), 0, 0)) {
         return TRUE;
@@ -826,7 +824,6 @@ void _ZN15FtrSoundEmitter8setPitchEj(void *p, s32 a);
 void *_ZN12FtrPreviewer14getSampleIndexEv(void *o);
 u8 *_ZN12FtrPreviewer13getWallBufferEv(void *o);
 void Wallpaper_LoadTexture(void *o, u16 *p);
-BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *o, void *a, u32 b, void *c, u32 d, u32 e);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, u32 a);
 s32 FtrSync_RequestAct(void *o, s32 a, u8 c, u8 d);
 }
@@ -891,7 +888,7 @@ BOOL FtrWallpaperSample::initModel() {
     p12::Wallpaper_LoadTexture(p12::_ZN12FtrPreviewer13getWallBufferEv(FtrPreviewer_GetInstance()), &tmp);
     s = BASE_S32(0x590);
     t = Wallpaper_GetTex(p12::_ZN12FtrPreviewer13getWallBufferEv(FtrPreviewer_GetInstance()));
-    if (p12::_ZN14MatTexVramTask7requestEPvjS0_jj(&texTask, (void *)s, (u32)p12::data_ov004_0224bb60, (void *)t, 0, 0) != 0) return TRUE;
+    if (((MatTexVramTask *)(&texTask))->request((void *)s, (const char *)(p12::data_ov004_0224bb60), (void *)t, 0, 0) != 0) return TRUE;
     return FALSE;
 }
 
@@ -1197,12 +1194,9 @@ s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_RotY33_(void *out, s32 a, s32 b);
-void MTX_Concat33(void *a, void *b, void *c);
 s32 Math_StepS32(s32 *p, s32 target, s32 step);
-s32 _ZN12G3dResAccess11findNodeIdxEi(u32 a, const char *s);
 u32 _ZN15PatternTexCache13getAbleTexKeyEi(void *a, u32 b);
 s32 _ZN15PatternTexCache21testAndClearAbleDirtyEi(void *a, u32 b);
-void Model_BindMatTexByIdx(u32 a, const char *s, u32 c, s32 d, s32 e);
 }
 }
 
@@ -1475,7 +1469,7 @@ public:
 void FtrCompass::onJointCalcPost(s32 a, void *b) {
     NNSG3dRS *p = (NNSG3dRS *)b;
     if (compassNode == a) {
-        s32 *dst = p->pJntAnmResult->rot.m;
+        MtxFx33 *dst = &p->pJntAnmResult->rot;
         s32 t = p13::func_01ffcb0c(p13::FX_Div(needleAngle, 0x168000), 0x10000000);
         s32 r = (t << 4) >> 16;
         s32 ang;
@@ -1487,12 +1481,12 @@ void FtrCompass::onJointCalcPost(s32 a, void *b) {
             ang = (s16)(r - *(s16 *)(HOST_AT(this, 0x8e, rotY, 0)));
         }
         s32 idx = ((u16)ang >> 4) * 2;
-        Mtx33 mtx;
+        MtxFx33 mtx;
         p13::MTX_RotY33_(&mtx, p13::data_02135f44[idx], p13::data_02135f44[idx + 1]);
         if (p->pJntAnmResult->flag & 2) {
-            *(Mtx33 *)dst = mtx;
+            *dst = mtx;
         } else {
-            p13::MTX_Concat33(dst, &mtx, dst);
+            MTX_Concat33(dst, &mtx, dst);
         }
         p->pJntAnmResult->flag &= ~2;
     }
@@ -1531,7 +1525,7 @@ BOOL FtrCompass::updateActive() {
 }
 
 BOOL FtrCompass::initModel() {
-    compassNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx((s32)(p13::data_ov004_0224bb80));
+    compassNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx(p13::data_ov004_0224bb80);
     return TRUE;
 }
 
@@ -1595,7 +1589,7 @@ BOOL FtrDesignDisplay::initModel() {
         void *o = PatternTexCache_Get();
         u32 q = p13::_ZN15PatternTexCache13getAbleTexKeyEi(o, (u8)designSlot);
         if (q != 0) {
-            p13::Model_BindMatTexByIdx(modelResMdl, p13::data_ov004_0224bb88, q, 0, 0);
+            Model_BindMatTexByIdx(modelResMdl, p13::data_ov004_0224bb88, q, 0, 0);
             if (seEmitterReady == 0) {
                 ((SndSeEmitter *)(&seEmitter))->callInit();
                 seEmitterReady = 1;
@@ -1716,12 +1710,9 @@ void SndSeEmitter_ctor(void *);
 void _ZN14MatTexVramTaskC1Ev(void *);
 s32 _ZN8FtrActornwEm(u32);
 u16 Item_MakeFurniture(u32, s32);
-u32 _ZN12G3dResAccess11findNodeIdxEi(u32, void *);
 s32 _ZN15PatternTexCache15getPlayerTexKeyEii(void *, u8, u8);
-s32 Model_BindMatTexByIdx(u32, void *, s32, s32, s32);
 BOOL _ZN9FtrSwitch3setEji(void *, s32, s32);
 void *_ZN11FtrModelRes10getAnimSetEv(void *);
-s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, void *, s32, s32);
 s32 FtrSync_RequestAct(void *, s32, s32, s32);
 s32 FtrSync_ChangeAct(void *, s32, s32, s32);
 void Item_FromPlacedForm(u16 *, u16 *);
@@ -1816,13 +1807,13 @@ BOOL FtrMyDesign::initModel() {
     PlayerData *pd = PlayerData_Get(hi);
     if (pd) {
         if (pd->getPlayerId()->getGender() == 0) {
-            hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(modelResMdl, p14::data_ov004_0224bb8c);
+            hiddenNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx((const char *)(p14::data_ov004_0224bb8c));
         } else {
-            hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(modelResMdl, p14::data_ov004_0224bb90);
+            hiddenNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx((const char *)(p14::data_ov004_0224bb90));
         }
     }
-    u32 o = modelResMdl;
-    p14::Model_BindMatTexByIdx(o, p14::data_ov004_0224bb88, p14::_ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), hi, lo), 0, 0);
+    void *o = modelResMdl;
+    Model_BindMatTexByIdx(o, p14::data_ov004_0224bb88, p14::_ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), hi, lo), 0, 0);
     return TRUE;
 }
 
@@ -1843,14 +1834,14 @@ BOOL FtrShirt::execFtrAct01() {
 
 BOOL FtrShirt::enterFtrAct01() {
     s32 a, b;
-    u32 c;
-    s32 d;
+    void *c;
+    void *d;
     p14::_ZN9FtrSwitch3setEji(switchState, 0, 0);
-    a = ((G3dResAccess *)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy()))->findTexIdx((s32)(p14::data_ov004_0224bb94));
-    b = ((G3dResAccess *)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy()))->findPlttIdx((s32)(p14::data_ov004_0224bb94));
+    a = ((G3dResAccess *)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy()))->findTexIdx((const char *)p14::data_ov004_0224bb94);
+    b = ((G3dResAccess *)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy()))->findPlttIdx((const char *)p14::data_ov004_0224bb94);
     c = modelResMdl;
     d = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy();
-    if (p14::_ZN14MatTexVramTask7requestEPvjS0_jj(f_844, c, p14::data_ov004_0224bb88, d, a, b)) {
+    if (((MatTexVramTask *)(f_844))->request(c, (const char *)(p14::data_ov004_0224bb88), d, a, b)) {
         unk_86c = 0;
     }
     return TRUE;
@@ -1862,8 +1853,8 @@ BOOL FtrShirt::execFtrAct00() {
 
 BOOL FtrShirt::enterFtrAct00() {
     p14::_ZN9FtrSwitch3setEji(switchState, 1, 0);
-    u32 o = modelResMdl;
-    p14::_ZN14MatTexVramTask7requestEPvjS0_jj(f_844, o, p14::data_ov004_0224bb88, ClothTex_GetTex(clothTex), 0, 0);
+    void *o = modelResMdl;
+    ((MatTexVramTask *)(f_844))->request(o, (const char *)(p14::data_ov004_0224bb88), ClothTex_GetTex(clothTex), 0, 0);
     return TRUE;
 }
 
@@ -2082,16 +2073,12 @@ NNSG3dResAnmCommon *_ZN10FtrAnimSet6getBvaEj(void *, u32);
 NNSG3dResAnmCommon *_ZN10FtrAnimSet6getBcaEj(void *, u32);
 void *_ZN11FtrModelRes10getTextureEv(void *);
 
-void _ZN9ModelAnim4initEiiit(void *, void *, s32, s32, s32);
-BOOL _ZN9ModelAnim13allocJointAnmEjPv(void *, u32, u32);
-BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 void FtrSync_RequestAct(void *, s32, s32, s32);
 void _ZN14BlendAnimModel9stepBlendEv(void *);
-void _ZN14BlendAnimModel8initAnimEiiitt(void *, void *, s32, s32, s32, s32);
 void _ZN9AnimModel10attachAnimEv(void *);
 BOOL _ZN9AnimModel11allocAnmObjEPv(void *, u32);
-u32 _ZN9ModelSlot7getHeapEv(u32);
+void *_ZN9ModelSlot7getHeapEv(u32);
 u32 Scene_GetCurrent(void);
 void FtrSync_RequestToggleGyroid(u32, void *, u32);
 }
@@ -2131,7 +2118,7 @@ BOOL FtrKind19::enterFtrAct03() {
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
         NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
         if (((FtrModelAnim *)(&anims[0]))->getAnmObj()) {
-            ((ModelAnim *)(&anims[0]))->replace((s32)(((Model *)(model))->getRenderObj()), (s32)(r), 3, 0x1000, (u16)(r->numFrame - 1));
+            ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 3, 0x1000, (u16)(r->numFrame - 1));
         }
     }
     playSound2();
@@ -2150,7 +2137,7 @@ BOOL FtrKind19::enterFtrAct02() {
     p15::_ZN9FtrSwitch3setEji(switchState, 1, 0);
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
         NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
-        ((ModelAnim *)(&anims[0]))->replace((s32)(((Model *)(model))->getRenderObj()), (s32)(r), 1, 0x1000, (u16)(r->numFrame - 1));
+        ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 1, 0x1000, (u16)(r->numFrame - 1));
     }
     return TRUE;
 }
@@ -2174,7 +2161,7 @@ BOOL FtrKind19::enterFtrAct01() {
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
         NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
         if (((FtrModelAnim *)(&anims[0]))->getAnmObj()) {
-            ((ModelAnim *)(&anims[0]))->replace((s32)(((Model *)(model))->getRenderObj()), (s32)(r), 1, 0x1000, 0);
+            ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 1, 0x1000, 0);
         }
     }
     playSound1();
@@ -2191,7 +2178,7 @@ BOOL FtrKind19::enterFtrAct00() {
     p15::_ZN9FtrSwitch3setEji(switchState, 0, 0);
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
         NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
-        ((ModelAnim *)(&anims[0]))->replace((s32)(((Model *)(model))->getRenderObj()), (s32)(r), 3, 0x1000, 0);
+        ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 3, 0x1000, 0);
     }
     return TRUE;
 }
@@ -2262,38 +2249,38 @@ BOOL FtrKind19::updateActive() {
 BOOL FtrKind19::initModel() {
     u32 r4 = p15::FtrActor_GetHeap(this);
     if (p15::_ZN10FtrAnimSet6getBvaEj(((FtrModelRes *)(modelRes))->getAnimSet(), 0) != NULL) {
-        u32 t = modelResMdl;
-        if (p15::_ZN9ModelAnim13allocJointAnmEjPv(&anims[3], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            p15::_ZN9ModelAnim4initEiiit(&anims[3], p15::_ZN10FtrAnimSet6getBvaEj(((FtrModelRes *)(modelRes))->getAnimSet(), 0), 0, 0x1000, 0);
-            ((ModelAnim *)(&anims[3]))->addToRenderObj((u32)(((Model *)(model))->getRenderObj()));
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[3]))->allocJointAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            ((ModelAnim *)(&anims[3]))->init(p15::_ZN10FtrAnimSet6getBvaEj(((FtrModelRes *)(modelRes))->getAnimSet(), 0), 0, 0x1000, 0);
+            ((ModelAnim *)(&anims[3]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0) != NULL) {
-        u32 t = modelResMdl;
-        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&anims[1], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((ModelAnim *)(&anims[1]))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0)), 0, 0x1000, 0);
-            ((ModelAnim *)(&anims[1]))->addToRenderObj((u32)(((Model *)(model))->getRenderObj()));
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[1]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            ((ModelAnim *)(&anims[1]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0), 0, 0x1000, 0);
+            ((ModelAnim *)(&anims[1]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0) != NULL) {
         if (p15::_ZN9AnimModel11allocAnmObjEPv(model, p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((BlendAnimModel *)(model))->initAnim((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0)), 0, 0x1000, 0, 0);
+            ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
             ((AnimModel *)(model))->attachAnim();
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(0) != NULL) {
-        u32 t = modelResMdl;
-        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&anims[2], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[2]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
             NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(0);
-            ((ModelAnim *)(&anims[2]))->initWithTex((s32)(r), (s32)(((FtrModelRes *)(modelRes))->getTexture()), 0, 0x1000, 0);
-            ((ModelAnim *)(&anims[2]))->addToRenderObj((u32)(((Model *)(model))->getRenderObj()));
+            ((ModelAnim *)(&anims[2]))->initWithTex(r, ((FtrModelRes *)(modelRes))->getTexture(), 0, 0x1000, 0);
+            ((ModelAnim *)(&anims[2]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
-        u32 t = modelResMdl;
-        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&anims[0], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((ModelAnim *)(&anims[0]))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0)), 3, 0x1000, 0);
-            ((ModelAnim *)(&anims[0]))->addToRenderObj((u32)(((Model *)(model))->getRenderObj()));
+        void *t = modelResMdl;
+        if (((ModelAnim *)(&anims[0]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            ((ModelAnim *)(&anims[0]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0), 3, 0x1000, 0);
+            ((ModelAnim *)(&anims[0]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
     }
     if (p15::_ZN9FtrSwitch4isOnEv(switchState) != 0 && FtrMgr_IsShopScene() == 0) {
@@ -2342,9 +2329,7 @@ s32 _ZN10FtrContact7getSideEv(void *);
 
 s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
-s32 _ZN14BlendAnimModel9playBlendEiiiitt(void *, s32, u16, s32, s32, s32, s32);
 s32 _ZN14BlendAnimModel9stepBlendEv(void *);
-s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 s32 _ZN11CachedModel16allocJointRecordEPv(void *, s32);
 s32 _ZN11CommManager8isOnlineEv(void *);
 s32 _ZN9ModelSlot7getHeapEv(s32);
@@ -2397,7 +2382,7 @@ BOOL FtrGyroid::enterFtrAct02() {
     p16::_ZN9FtrSwitch3setEji(switchState, 1, 0);
     p16::_ZN8FtrActor8playAnimEiiij(this, 0, 0, 0x1000, 0);
     u16 *r = p16::_ZN10FtrAnimSet6getBcaEj(p16::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0);
-    p16::_ZN14BlendAnimModel8initAnimEiiitt(model, (s32)r, 0, 0, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim(r, 0, 0, 0, 0);
     return TRUE;
 }
 
@@ -2414,7 +2399,7 @@ void FtrGyroid::execFtrAct01() {
         if (r >= 0) {
             syncStartFrames = r;
             u16 *q = p16::_ZN10FtrAnimSet6getBcaEj(p16::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0);
-            p16::_ZN14BlendAnimModel9playBlendEiiiitt(model, (s32)q, (u16)r, 0, 0, 0, 0);
+            ((BlendAnimModel *)(model))->playBlend(q, (u16)r, 0, 0, 0, 0);
         }
     }
     if (((FtrSwitch *)(switchState))->isChanging()) {
@@ -2437,7 +2422,7 @@ BOOL FtrGyroid::enterFtrAct01() {
             RoomFtrState_SetGyroidBeat(a, b, (u8)r5, p16::Scene_GetCurrent());
             actAid = r5;
             u16 *q = p16::_ZN10FtrAnimSet6getBcaEj(p16::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0);
-            p16::_ZN14BlendAnimModel8initAnimEiiitt(model, (s32)q, 0, 0, 0, 0);
+            ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
             p16::_ZN14BlendAnimModel9stepBlendEv(model);
             syncStartFrames = 0;
         } else {
@@ -2445,8 +2430,8 @@ BOOL FtrGyroid::enterFtrAct01() {
             u32 r5 = RoomFtrState_GetGyroidBeat(a, b, p16::Scene_GetCurrent()) & 0xf;
             setSyncStartBeat((u8)r5);
             actAid = r5;
-            s32 q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
-            p16::_ZN14BlendAnimModel8initAnimEiiitt(model, q, 0, 0, 0, 0);
+            void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
+            ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
             p16::_ZN14BlendAnimModel9stepBlendEv(model);
         }
     } else if (p16::_ZN11CommManager8isOnlineEv(p16::gCommManager) != 0 && getActAid() != 0xff) {
@@ -2454,16 +2439,16 @@ BOOL FtrGyroid::enterFtrAct01() {
         u32 r5 = getActAid();
         u32 t = r5 & 0xf;
         RoomFtrState_SetGyroidBeat(a, b, (u8)t, p16::Scene_GetCurrent());
-        s32 q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
-        p16::_ZN14BlendAnimModel8initAnimEiiitt(model, q, 0, 0, 0, 0);
+        void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
+        ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
         p16::_ZN14BlendAnimModel9stepBlendEv(model);
     } else {
         setSyncState(1);
         u32 r5 = readSyncBeat() & 0xf;
         RoomFtrState_SetGyroidBeat(a, b, (u8)r5, p16::Scene_GetCurrent());
         actAid = r5;
-        s32 q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
-        p16::_ZN14BlendAnimModel8initAnimEiiitt(model, q, 0, 0, 0, 0);
+        void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
+        ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
         p16::_ZN14BlendAnimModel9stepBlendEv(model);
     }
     return TRUE;
@@ -2488,9 +2473,9 @@ BOOL FtrGyroid::enterFtrAct00() {
     p16::_ZN8FtrActor10playSound2Ev(this);
     p16::_ZN9FtrSwitch3setEji(switchState, 0, 0);
     if (FurnitureManager_GetMoveAnim() != 0) {
-        s32 q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
+        void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
         if (isInitializing != 0) {
-            p16::_ZN14BlendAnimModel8initAnimEiiitt(model, q, 0, 0, 0, 0);
+            ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
         } else {
             ((BlendAnimModel *)(model))->playBlend(q, 0x20, 0, 0, 0, 0);
         }
@@ -2674,11 +2659,8 @@ extern u8 data_ov004_0224003c[];
 extern u8 data_ov004_0224bb98[];
 extern u8 data_ov004_0224bba0[];
 extern u8 data_ov004_0224bba8[];
-void *FurnitureManager_GetTvTex();
 void *_ZN11FtrModelRes10getTextureEv(void *);
 void _ZN15FtrSoundEmitter6setPanEj(void *, void *);
-void Model_BindMatTexByIdx(void *, void *, void *, s32, s32);
-void Model_BindMatTexByName(void *, void *, void *, void *, void *);
 void FtrSync_RequestAct(void *, s32, s32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 }
@@ -2879,9 +2861,9 @@ BOOL FtrTvVcr::updateActive() {
 
 BOOL FtrTvVcr::initModel() {
     initAnims(0, 1, 0x1000, 0);
-    void *res = (void *)modelResMdl;
+    void *res = modelResMdl;
     u8 t = ((FtrSwitch *)switchState)->isOn();
-    screenMat.bindMaterial((G3dResAccess *)res, (s32)p17::data_ov004_0224bb98, t);
+    screenMat.bindMaterial((G3dResAccess *)res, (const char *)p17::data_ov004_0224bb98, t);
     if (((FtrSwitch *)switchState)->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(2, 0xff);
     } else {
@@ -2978,9 +2960,9 @@ BOOL FtrTv::updateActive() {
 }
 
 BOOL FtrTv::initModel() {
-    void *res = (void *)modelResMdl;
+    void *res = modelResMdl;
     u8 t = ((FtrSwitch *)switchState)->isOn();
-    screenMat.bindMaterial((G3dResAccess *)res, (s32)p17::data_ov004_0224bb98, t);
+    screenMat.bindMaterial((G3dResAccess *)res, (const char *)p17::data_ov004_0224bb98, t);
     if (((FtrSwitch *)switchState)->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(1, 0xff);
     } else {
@@ -3004,13 +2986,13 @@ extern "C" FtrActor *FtrTv_Create() {
 // ================================================================ FtrActor
 BOOL FtrActor::bindTvScreenTex(BOOL a) {
     if (a != 0) {
-        void *r = (void *)modelResMdl;
-        void *t = p17::FurnitureManager_GetTvTex();
-        p17::Model_BindMatTexByIdx(r, p17::data_ov004_0224bb98, t, 0, 0);
+        void *r = modelResMdl;
+        void *t = FurnitureManager_GetTvTex();
+        Model_BindMatTexByIdx(r, p17::data_ov004_0224bb98, t, 0, 0);
     } else {
-        void *r = (void *)modelResMdl;
+        void *r = modelResMdl;
         void *t = ((FtrModelRes *)(modelRes))->getTexture();
-        p17::Model_BindMatTexByName(r, p17::data_ov004_0224bb98, t, p17::data_ov004_0224bba0, p17::data_ov004_0224bba8);
+        Model_BindMatTexByName(r, p17::data_ov004_0224bb98, t, p17::data_ov004_0224bba0, p17::data_ov004_0224bba8);
     }
     return TRUE;
 }
@@ -3390,7 +3372,7 @@ BOOL FtrStereo::initModel() {
     if (kind == 0x29 || kind == 0x13) {
         initAnims(0, 0, 0x1000, 0);
     }
-    u32 r4 = modelResMdl;
+    void *r4 = modelResMdl;
     u32 c = ((FtrSwitch *)(switchState))->isOn();
     glowMats.init(r4, c);
     if (spawnMode == 1) {
@@ -3501,7 +3483,6 @@ extern u8 data_ov004_0224bbc0[];
 
 void Clock_GetMinuteHour(void *);
 void _ZN14BlendAnimModel9stepBlendEv(void *);
-void _ZN14BlendAnimModel8initAnimEiiitt(void *, void *, s32, s32, s32, s32);
 void _ZN9AnimModel10attachAnimEv(void *);
 BOOL _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
@@ -3547,7 +3528,7 @@ BOOL FtrClock::updateActive() {
                 if (!isPreview()) {
                     p19::_ZN15FtrSoundEmitter8playOnceEjj(soundEmitter, 0x42d, centerPos);
                 }
-                p19::_ZN14BlendAnimModel8initAnimEiiitt(model, p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 1, 0x1000, 0, 0);
+                ((BlendAnimModel *)(model))->initAnim(p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 1, 0x1000, 0, 0);
             }
         } else if (chimesLeft > 0) {
             if (!isPreview()) {
@@ -3555,7 +3536,7 @@ BOOL FtrClock::updateActive() {
             }
             ((BlendAnimModel *)(model))->stepBlend();
             if (((AnimFrameCtrl *)(animFrameCtrl))->isFinished()) {
-                p19::_ZN14BlendAnimModel8initAnimEiiitt(model, p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 1, 0x1000, 0, 0);
+                ((BlendAnimModel *)(model))->initAnim(p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 1, 0x1000, 0, 0);
                 if (!isPreview()) {
                     chimesLeft = chimesLeft - 1;
                 }
@@ -3590,12 +3571,12 @@ BOOL FtrClock::initModel() {
     chimesLeft = -1;
     if (kind == 0x10) {
         if (p19::_ZN9AnimModel11allocAnmObjEPv(model, p19::_ZN9ModelSlot7getHeapEv(r4))) {
-            p19::_ZN14BlendAnimModel8initAnimEiiitt(model, p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 1, 0x1000, 0, 0);
+            ((BlendAnimModel *)(model))->initAnim(p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 1, 0x1000, 0, 0);
             ((AnimModel *)(model))->attachAnim();
         }
     } else if (kind == 0x11) {
         if (p19::_ZN9AnimModel11allocAnmObjEPv(model, p19::_ZN9ModelSlot7getHeapEv(r4))) {
-            p19::_ZN14BlendAnimModel8initAnimEiiitt(model, p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 0, 0x1000, 0, 0);
+            ((BlendAnimModel *)(model))->initAnim(p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 0, 0x1000, 0, 0);
             ((AnimModel *)(model))->attachAnim();
         }
     } else if (kind == 0x2b) {
@@ -4561,7 +4542,6 @@ extern void *gCommManager;
 void FtrActor_LocalToWorld(FtrActor *self, void *out, void *src);
 void _ZN11FtrVisNodes10setVisibleEj(void *p, s32 v);
 void _ZN13FtrGlowMatSet6updateEv(void *p);
-void _ZN13FtrGlowMatSet4initEjj(void *p, u32 a, s32 b);
 void _ZN9FtrSwitch3setEji(void *p, s32 a, s32 b);
 BOOL _ZN9FtrSwitch10isChangingEv(void *p);
 BOOL _ZN9FtrSwitch4isOnEv(void *p);
@@ -4711,7 +4691,7 @@ BOOL FtrBed::initModel() {
     ((FtrVisNodes *)(visNodes))->setVisible(0);
     if (kind == 0x2a) {
         p22::_ZN8FtrActor9initAnimsEiiii(this, 0, 0, 0x1000, 0);
-        p22::_ZN13FtrGlowMatSet4initEjj(&glowMats, modelResMdl, 1);
+        glowMats.init(modelResMdl, 1);
     }
     if (p22::Scene_InUnk6To8()) {
         changeAct(1, 0xff);
@@ -5507,9 +5487,9 @@ BOOL FtrKind04::updateActive() {
 
 BOOL FtrKind04::initModel() {
     initAnims(0, 0, 0x1000, 0);
-    void *res = (void *)modelResMdl;
+    void *res = modelResMdl;
     u8 t = ((FtrSwitch *)switchState)->isOn();
-    glowMats.init((u32)res, t);
+    glowMats.init(res, t);
     if (((FtrSwitch *)switchState)->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(1, 0xff);
     } else {
@@ -5603,9 +5583,9 @@ BOOL FtrKind03::updateActive() {
 
 BOOL FtrKind03::initModel() {
     initAnims(0, 0, 0x1000, 0);
-    void *res = (void *)modelResMdl;
+    void *res = modelResMdl;
     u8 t = ((FtrSwitch *)switchState)->isOn();
-    glowMats.init((u32)res, t);
+    glowMats.init(res, t);
     if (((FtrSwitch *)switchState)->isOn() == 0 || FtrMgr_IsShopScene() != 0) {
         changeAct(0, 0xff);
     } else {
@@ -5905,7 +5885,7 @@ void FtrGyroid::execFtrAct02() {
     s32 v = updateSync((VecFx32 *)&position.x);
     if (v >= 0) {
         s32 i = v >> 12;
-        ((BlendAnimModel *)(model))->initAnim((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0)), 0, v - (i << 12), (u16)i, 0);
+        ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, v - (i << 12), (u16)i, 0);
         ((BlendAnimModel *)(model))->stepBlend();
     }
     if (((FtrSwitch *)(switchState))->isChanging()) {

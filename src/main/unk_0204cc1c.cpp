@@ -69,8 +69,8 @@ struct FgLayoutEntry {
 };
 
 struct Unk_020ca2f4_Ent {
-    u32 a;
-    u32 b;
+    const char *indexPath;
+    const char *dataPath;
 };
 
 struct Unk_0204d0f4_Info {
@@ -1816,12 +1816,12 @@ extern "C" void FgData_Unload(void *heap) {
 extern "C" BOOL FgData_LoadIndices(FgDataIndex *t, void *heap) {
     const Unk_020ca2f4_Ent *e = sFgDataFiles;
     s32 i = 0;
-    s32 size = 0;
+    u32 size = 0;
     BOOL r = TRUE;
     for (; i < 4; t++, e++, i++) {
-        t->data = (u16 *)File_LoadAlloc(e->a, heap, 4, &size);
+        t->data = (u16 *)File_LoadAlloc(e->indexPath, heap, 4, &size);
         if (t->data) {
-            t->count = (u32)size >> 1;
+            t->count = size >> 1;
         } else {
             r = FALSE;
             t->count = 0;
@@ -1897,7 +1897,7 @@ extern "C" u16 *ItemGrid_Alloc(void *heap, s32 align) {
 extern "C" BOOL FgData_ReadLayout(FgDataIndex *t, void *dst, s32 i, s32 j, s32 n) {
     s32 off = FgData_GetLayoutOffset(t, i, j);
     const Unk_020ca2f4_Ent *e = &sFgDataFiles[i];
-    File_ReadRangeByPath(e->b, dst, n, off);
+    File_ReadRangeByPath(e->dataPath, dst, n, off);
     return TRUE;
 }
 
@@ -1981,8 +1981,8 @@ char sFgDataNfIndexPath[] = "fg_data/nf_h.bin";
 RoomBlockMap *gHouseRoomMaps[5];
 
 const Unk_020ca2f4_Ent sFgDataFiles[4] = {
-    {(u32)sFgDataFoIndexPath, (u32)sFgDataFoPath},
-    {(u32)sFgDataFiIndexPath, (u32)sFgDataFiPath},
-    {(u32)sFgDataNrIndexPath, (u32)sFgDataNrPath},
-    {(u32)sFgDataNfIndexPath, (u32)sFgDataNfPath},
+    {sFgDataFoIndexPath, sFgDataFoPath},
+    {sFgDataFiIndexPath, sFgDataFiPath},
+    {sFgDataNrIndexPath, sFgDataNrPath},
+    {sFgDataNfIndexPath, sFgDataNfPath},
 };

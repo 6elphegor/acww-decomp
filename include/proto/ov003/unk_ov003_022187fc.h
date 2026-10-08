@@ -25,12 +25,6 @@ void *FieldStructureMgr_Create();
 #ifndef PROTO_LOCAL_FieldStructureMgr_GetPlayerHouseTex
 void *FieldStructureMgr_GetPlayerHouseTex();
 #endif
-#ifndef PROTO_LOCAL_FieldStructureMgr_GetVillagerHouseTex
-void *FieldStructureMgr_GetVillagerHouseTex();
-#endif
-#ifndef PROTO_LOCAL_FieldStructureMgr_GetLightUpDeco
-void *FieldStructureMgr_GetLightUpDeco();
-#endif
 #ifndef PROTO_LOCAL_BuildingList_Init
 void BuildingList_Init();
 #endif
@@ -94,6 +88,12 @@ s32 Field_GetStructureTexSuffix();
 #ifndef PROTO_LOCAL_Field_GetSpawnedKind1Count
 u32 Field_GetSpawnedKind1Count();
 #endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_GetVillagerHouseTex
+VillagerHouseTex *FieldStructureMgr_GetVillagerHouseTex();
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_GetLightUpDeco
+HouseLightUpDeco *FieldStructureMgr_GetLightUpDeco();
+#endif
 #ifndef PROTO_LOCAL_Field_GetDoorExitMode
 u32 Field_GetDoorExitMode();
 #endif
@@ -140,16 +140,16 @@ s32 VillagerHouseTex_Load(VillagerHouseTex *self);
 void VillagerHouseTex_Clear(VillagerHouseTex *o);
 #endif
 #ifndef PROTO_LOCAL_VillagerHouseTex_GetHouseTex
-s32 VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i);
+void *VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i);
 #endif
 #ifndef PROTO_LOCAL_VillagerHouseTex_GetLightTex
-s32 VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i);
+void *VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i);
 #endif
 #ifndef PROTO_LOCAL_VillagerHouseTex_GetDoorInAnim
-s32 VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o);
+void *VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o);
 #endif
 #ifndef PROTO_LOCAL_VillagerHouseTex_GetDoorOutAnim
-s32 VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o);
+void *VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o);
 #endif
 #ifndef PROTO_LOCAL_HouseLightUpDeco_Clear
 void HouseLightUpDeco_Clear(HouseLightUpDeco *o);
@@ -158,13 +158,13 @@ void HouseLightUpDeco_Clear(HouseLightUpDeco *o);
 s32 HouseLightUpDeco_Load(HouseLightUpDeco *r);
 #endif
 #ifndef PROTO_LOCAL_HouseLightUpDeco_GetTex
-s32 HouseLightUpDeco_GetTex(s32 *p);
+void *HouseLightUpDeco_GetTex(HouseLightUpDeco *p);
 #endif
 #ifndef PROTO_LOCAL_HouseLightUpDeco_GetModel
-s32 HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx);
+void *HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_HouseLightUpDeco_GetTexPattern
-s32 HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r);
+void *HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r);
 #endif
 #ifndef PROTO_LOCAL_HouseLightUpDeco_IsLoaded
 u8 HouseLightUpDeco_IsLoaded(HouseLightUpDeco *r);
