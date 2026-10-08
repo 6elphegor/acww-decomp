@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02222e84.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/WfcMoveParams.h"
+#include "nitro/wm.h"
 struct WfcMoveWork;
 #ifdef __cplusplus
 #endif
@@ -54,7 +56,7 @@ void WfcMove_SetDone();
 s32 WfcMove_TryEnd();
 #endif
 #ifndef PROTO_LOCAL_WfcMove_JudgeChild
-s32 WfcMove_JudgeChild(s32 a);
+s32 WfcMove_JudgeChild(WMStartParentCallback *a);
 #endif
 #ifndef PROTO_LOCAL_WfcMove_ClearBuffers
 void WfcMove_ClearBuffers();
@@ -75,7 +77,7 @@ s32 WfcMove_GetChildReply();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_WfcMove_Init
-void WfcMove_Init(WfcMoveWork *self, u32 *a);
+void WfcMove_Init(WfcMoveWork *self, const WfcMoveParams *a);
 #endif
 }
 #endif

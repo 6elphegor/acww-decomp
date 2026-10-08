@@ -5,4 +5,17 @@
 
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SceneLights_GetFlashColor
+s16 SceneLights_GetFlashColor(void);
+#endif
+#ifndef PROTO_LOCAL_SceneLights_GetRoomColor
+s16 SceneLights_GetRoomColor(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
 #endif

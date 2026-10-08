@@ -1,56 +1,51 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/fs.h"
-#define PROTO_LOCAL_FS_InitArchive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_ReleaseArchiveName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_UnloadArchiveTables  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcFs_MountArchive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcFs_UnmountArchive  // declared below: the shared prototype conflicts with the calls here
+#include "net/WfcPool.h"
+#include "uptr.h"
+#include "proto/autoload_2/unk_02118894.h"
+#include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
 struct WfcFsWork {
     void *archiveTables;
-    u8 fileSlotStorage[0x80];
-    void *fileSlotPool;
-    u8 archive[0x5c];
+    u32 fileSlotStorage[0x20];  // (the pool counts the files loaded: its entries are not used)
+    WfcPool *fileSlotPool;
+    FSArc archive;
     u16 lockId;
 };
+#if !HOST64
+static_assert(sizeof(WfcFsWork) == 0xe8, "DS layout");
+#endif
 
 extern "C" {
-void WfcHeap_FreeAndClear(void *);
-void WfcPool_Put(void *, void *);
-void WfcPool_Get(void *);
-void *WfcHeap_Alloc(s32, s32);
-void *WfcHeap_AllocClear(s32, s32);
-
-s32 strlen(void *);
-s32 FS_OpenFile(void *, void *);
-void FS_ReadFile(void *, void *, s32);
-void FS_CloseFile(void *);
-void MI_UncompressLZ8(void *, void *);
-s32 FS_NotifyArchiveAsyncEnd(void *, s32);
-void CARDi_ReadRom(s32, void *, s32, s32, void *, void *, s32);
-void CARD_LockRom(u32);
-void CARD_UnlockRom(u32);
-void FS_ChangeDir(void *);
-void FS_UnloadArchiveTables(void *);
-void FS_UnloadArchive(void *);
-void FS_ReleaseArchiveName(void *);
-void OS_ReleaseLockID(u32);
+void WfcPool_Put(WfcPool *, void *);
+void *WfcPool_Get(WfcPool *);
+u32 strlen(const char *);
+BOOL FS_OpenFile(FSFile *file, const char *path);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+BOOL FS_CloseFile(FSFile *file);
+void MI_UncompressLZ8(const void *src, void *dst);
+void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
+void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void *arg, BOOL async);
+void CARD_LockRom(u32 id);
+void CARD_UnlockRom(u32 id);
+BOOL FS_ChangeDir(const char *path);
+BOOL FS_UnloadArchive(FSArc *arc);
+void OS_ReleaseLockID(u16 id);
 u32 OS_GetLockID();
-void FS_InitArchive(void *);
-s32 FS_RegisterArchiveName(void *, void *, s32);
-void FS_SetArchiveProc(void *, void *, s32);
-s32 FS_LoadArchive(void *, u32, u32, u32, u32, u32, void *, void *);
-void *FS_LoadArchiveTables(void *, void *, void *);
-void OS_SPrintf(void *, void *, void *);
-
+BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
+void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
+BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
+s32 OS_SPrintf(char *dst, const char *fmt, ...);
 }
 
 extern "C" const char sWfcArchiveName[4];
@@ -63,9 +58,9 @@ extern "C" void WfcFs_MountArchive() {
     FSFile o;
     char path[0x80];
     u32 r4;
-    sWfcFs = (WfcFsWork *)WfcHeap_AllocClear(HOST_SIZED(0xe8, WfcFsWork), 4);
+    sWfcFs = (WfcFsWork *)WfcHeap_AllocClear(sizeof(WfcFsWork), 4);
     FS_InitFile(&o);
-    if (FS_OpenFile(&o, (void *)"rom:/dwc/utility.bin") == 0) {
+    if (FS_OpenFile(&o, "rom:/dwc/utility.bin") == 0) {
         Fatal_Trap();
     }
     sWfcFs->lockId = OS_GetLockID();
@@ -73,36 +68,36 @@ extern "C" void WfcFs_MountArchive() {
     FS_ReadFile(&o, a, 8);
     FS_ReadFile(&o, b, 8);
     FS_CloseFile(&o);
-    FS_InitArchive(sWfcFs->archive);
-    if (FS_RegisterArchiveName(sWfcFs->archive, (void *)sWfcArchiveName, 3) == 0) {
+    FS_InitArchive(&sWfcFs->archive);
+    if (FS_RegisterArchiveName(&sWfcFs->archive, sWfcArchiveName, 3) == 0) {
         Fatal_Trap();
     }
-    FS_SetArchiveProc(sWfcFs->archive, (void *)WfcFs_ArchiveProc, 0x602);
-    if (FS_LoadArchive(sWfcFs->archive, r4, b[0], b[1], a[0], a[1], (void *)WfcFs_ReadCallback, (void *)WfcFs_WriteCallback) == 0) {
+    FS_SetArchiveProc(&sWfcFs->archive, WfcFs_ArchiveProc, 0x602);
+    if (FS_LoadArchive(&sWfcFs->archive, r4, b[0], b[1], a[0], a[1], WfcFs_ReadCallback, WfcFs_WriteCallback) == 0) {
         Fatal_Trap();
     }
-    void *r4b = FS_LoadArchiveTables(sWfcFs->archive, 0, 0);
-    sWfcFs->archiveTables = WfcHeap_Alloc((s32)r4b, 4);
-    FS_LoadArchiveTables(sWfcFs->archive, sWfcFs->archiveTables, r4b);
+    u32 tablesSize = FS_LoadArchiveTables(&sWfcFs->archive, 0, 0);
+    sWfcFs->archiveTables = WfcHeap_Alloc(tablesSize, 4);
+    FS_LoadArchiveTables(&sWfcFs->archive, sWfcFs->archiveTables, tablesSize);
     sWfcFs->fileSlotPool = WfcPool_CreateFrom(0x20, sWfcFs->fileSlotStorage, 4);
-    OS_SPrintf(path, (void *)"%s:/", (void *)sWfcArchiveName);
+    OS_SPrintf(path, "%s:/", sWfcArchiveName);
     FS_ChangeDir(path);
 }
 
 extern "C" void WfcFs_UnmountArchive() {
-    FS_ChangeDir((void *)"rom:/");
-    FS_UnloadArchiveTables(sWfcFs->archive);
-    FS_UnloadArchive(sWfcFs->archive);
-    FS_ReleaseArchiveName(sWfcFs->archive);
+    FS_ChangeDir("rom:/");
+    FS_UnloadArchiveTables(&sWfcFs->archive);
+    FS_UnloadArchive(&sWfcFs->archive);
+    FS_ReleaseArchiveName(&sWfcFs->archive);
     OS_ReleaseLockID(sWfcFs->lockId);
     sWfcFs->lockId = 0;
-    WfcHeap_FreeAndClear(sWfcFs);
+    WfcHeap_FreeAndClear(&sWfcFs->archiveTables);
     sWfcFs->archiveTables = 0;
-    WfcHeap_FreeAndClear(&sWfcFs);
+    WfcHeap_FreeAndClear((void **)&sWfcFs);
 }
 
-extern "C" s32 WfcFs_ArchiveProc(void *self, s32 code) {
-    switch (code) {
+extern "C" int WfcFs_ArchiveProc(FSFile *file, u32 cmd) {
+    switch (cmd) {
     case 9:
         CARD_LockRom(sWfcFs->lockId);
         return 0;
@@ -116,16 +111,17 @@ extern "C" s32 WfcFs_ArchiveProc(void *self, s32 code) {
     }
 }
 
-extern "C" s32 WfcFs_ReadCallback(u8 *self, s32 x, s32 y, s32 z) {
-    CARDi_ReadRom(-1, (void *)(y + *(s32 *)(self + 0x28)), x, z, (void *)WfcFs_OnReadDone, self, 1);
+// (CARDi_ReadRom takes the destination as an address)
+extern "C" int WfcFs_ReadCallback(FSArc *arc, void *dst, u32 pos, u32 size) {
+    CARDi_ReadRom(-1, pos + arc->base, (uptr)dst, size, WfcFs_OnReadDone, arc, 1);
     return 6;
 }
 
-extern "C" s32 WfcFs_OnReadDone(void *a) {
-    return FS_NotifyArchiveAsyncEnd(a, 0);
+extern "C" void WfcFs_OnReadDone(void *arc) {
+    FS_NotifyArchiveAsyncEnd((FSArc *)arc, 0);
 }
 
-extern "C" BOOL WfcFs_WriteCallback() {
+extern "C" int WfcFs_WriteCallback(FSArc *arc, void *src, u32 pos, u32 size) {
     return TRUE;
 }
 
@@ -136,14 +132,14 @@ extern "C" void *WfcFs_LoadFile(void *name, u32 *outSize, s32 c) {
     u32 n;
     WfcPool_Get(sWfcFs->fileSlotPool);
     FS_InitFile(&o);
-    if (FS_OpenFile(&o, name) == 0) {
+    if (FS_OpenFile(&o, (const char *)name) == 0) {
         Fatal_Trap();
     }
     n = o.prop.file.end - o.prop.file.start;
     if (outSize != 0) {
         *outSize = n;
     }
-    if (WfcUtil_StrEndsWith(name, (void *)".l", 2) != 0) {
+    if (WfcUtil_StrEndsWith(name, ".l", 2) != 0) {
         r6 = -4;
     } else {
         r6 = c;
@@ -169,12 +165,12 @@ extern "C" void WfcFs_FreeFile(void *p, ...) {
     WfcPool_Put(sWfcFs->fileSlotPool, p);
 }
 
-extern "C" BOOL WfcUtil_StrEndsWith(void *a, void *b, s32 n) {
-    s32 la = strlen(a);
-    s32 lb = strlen(b);
+extern "C" BOOL WfcUtil_StrEndsWith(const void *a, const void *b, s32 n) {
+    s32 la = strlen((const char *)a);
+    s32 lb = strlen((const char *)b);
     if (la < n || lb < n) {
         return FALSE;
     }
-    return memcmp((u8 *)a + (la - n), (u8 *)b + (lb - n), n) == 0;
+    return memcmp((const u8 *)a + (la - n), (const u8 *)b + (lb - n), n) == 0;
 }
 

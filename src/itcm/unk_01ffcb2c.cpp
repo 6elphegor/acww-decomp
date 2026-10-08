@@ -55,9 +55,8 @@ extern "C" void HBlank_Handler(void) {
         HBlankTask *n = sHBlankListHead;
         if (n != 0) {
             do {
-                // HBlankTask::param holds the H-blank callback (HBlank_Add / HBlank_Replace pass it as an s32)
                 if (n->param != 0) {
-                    ((void (*)(void))n->param)();
+                    n->param();
                 }
                 n = n->next;
             } while (n != 0);

@@ -3,21 +3,18 @@
 
 #include "types.h"
 #include "npc/ErrandRecord.h"
+#include "npc/VillagerId.h"
 
 // A player's errands (PlayerData::errands, 0xac bytes): two villager errand slots, the job villagers, the parcel
-// errand and the house visit invitation. Defined in src/main/unk_02098e90.cpp (which still keeps its own copy of
-// these classes: switch it to this header).
+// errand and the house visit invitation. Defined in src/main/unk_02098e90.cpp.
 
-class VillagerIdCtorDtor {
+// A VillagerId with the constructors / destructor of its helpers (VillagerId_Construct, _ConstructCopy, _Destruct).
+extern "C" VillagerId *VillagerId_ConstructCopy(VillagerId *p, VillagerId *other);
+class VillagerIdCtorDtor : public VillagerId {
 public:
     VillagerIdCtorDtor();
-    VillagerIdCtorDtor(s32 v);
+    explicit VillagerIdCtorDtor(VillagerId *src) { VillagerId_ConstructCopy(this, src); }
     ~VillagerIdCtorDtor();
-
-    /* 0x00 */ u16 townId;
-    /* 0x02 */ u8 townName[8];
-    /* 0x0a */ u8 personality;
-    /* 0x0b */ u8 species;
 };
 
 class PlayerErrandSlot : public ErrandRecord {
@@ -43,13 +40,14 @@ public:
     /* 0x0c */ ErrandRecord errand;
     /* 0x18 */ u32 visitTime;
     /* 0x1c */ u32 visitTimeHi;
-    /* 0x20 */ u8 unk_20[4];  // (only the first byte is used; the copy in unk_02098e90.cpp has 8: 4 past the DS size)
+    /* 0x20 */ u8 unk_20[4];  // (only the first byte is used)
 };
 
 class PlayerErrands {
 public:
     PlayerErrands();
     ~PlayerErrands();
+    ParcelErrand *getParcelErrand();
 
     /* 0x00 */ PlayerErrandSlot slots[2];
     /* 0x50 */ VillagerIdCtorDtor jobVillagers[3];

@@ -10,15 +10,14 @@
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
 extern "C" {
-s32 GX_LoadBG2Scr();
+void GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcConfig_CommitEdit();
+void WfcConfig_CommitEdit();
 
 }
 
@@ -27,14 +26,14 @@ struct WfcTestConfirmMessagesCopy { s32 v[3]; };
 extern "C" s32 sWfcTestConfirmMessages[3] = {0x75, 0x75, 0x9d};
 
 extern "C" void WfcTestConfirm_Enter() {
-    s32 x;
+    u32 x;
     WfcApScan_Free();
     WfcUtil_GetEditParams(0, &x);
     WfcTestConfirm_LoadBg();
     WfcUtil_ShowTopMessage(0x7d, -1, 0);
     if (x != 2) WfcHighlight_SetConnection();
     if (x == 1) WfcConfig_CommitEdit();
-    WfcUtil_SetScene((void *)WfcTestConfirm_FadeIn);
+    WfcUtil_SetScene(WfcTestConfirm_FadeIn);
 }
 
 extern "C" void WfcTestConfirm_LoadBg() {
@@ -54,17 +53,17 @@ extern "C" void WfcTestConfirm_FadeIn() {
     WfcFade_Start(2, 0, 0x14, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x14);
-    WfcUtil_SetScene((void *)WfcTestConfirm_ShowDialog);
+    WfcUtil_SetScene(WfcTestConfirm_ShowDialog);
 }
 
 extern "C" void WfcTestConfirm_ShowDialog() {
-    s32 x;
+    u32 x;
     WfcTestConfirmMessagesCopy a = *(WfcTestConfirmMessagesCopy *)sWfcTestConfirmMessages;
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_GetEditParams(0, &x);
     WfcDialog_Open(a.v[x], 1, 1, -1, 0);
-    WfcUtil_SetScene((void *)WfcTestConfirm_WaitDialog);
+    WfcUtil_SetScene(WfcTestConfirm_WaitDialog);
 }
 
 extern "C" void WfcTestConfirm_WaitDialog() {
@@ -74,7 +73,7 @@ extern "C" void WfcTestConfirm_WaitDialog() {
     WfcSound_Play(6);
     WfcDialog_Close();
     WfcSound_Play(6);
-    WfcUtil_SetScene((void *)WfcTestConfirm_FadeOut);
+    WfcUtil_SetScene(WfcTestConfirm_FadeOut);
 }
 
 extern "C" void func_ov001_0221bcac() {
@@ -86,12 +85,12 @@ extern "C" void func_ov001_0221bca8() {
 extern "C" void WfcTestConfirm_FadeOut() {
     if (WfcDialog_IsOpen() != 0) return;
     WfcFade_Start(3, 0, 0x14, 8);
-    WfcUtil_SetScene((void *)WfcTestConfirm_Exit);
+    WfcUtil_SetScene(WfcTestConfirm_Exit);
 }
 
 extern "C" void WfcTestConfirm_Exit() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcGx_HidePlanes(0, 0x14);
     WfcUtil_SetScreenFlags(0, 1);
-    WfcUtil_SetScene((void *)WfcConnTest_Enter);
+    WfcUtil_SetScene(WfcConnTest_Enter);
 }

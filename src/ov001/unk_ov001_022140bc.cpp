@@ -12,6 +12,7 @@
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_022140bc.h"
 #include "proto/ov001/unk_ov001_022156e0.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224b14.h"
@@ -30,7 +31,8 @@ struct WfcAddrEdit {
 };
 
 // formats the edited field into the 12 digits / stores them back (WfcConfig_*, src/ov001/unk_ov001_0221dcec.cpp)
-typedef void (*WfcAddrEditFieldFunc)(void *digits);
+typedef void (*WfcAddrEditLoadFunc)(void *digits);
+typedef void (*WfcAddrEditStoreFunc)(u8 *digits);
 
 #pragma thumb off
 extern "C" {
@@ -38,18 +40,6 @@ void MI_CpuFill8(void *dst, u8 v, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 s32 DWC_BACKUPlCheckAddress(u8 *addr);
 
-// (src/ov001/unk_ov001_0221dcec.cpp: its generated header leaves these out)
-void WfcUtil_ParseIpDigits(u8 *s, u8 *out);
-void WfcConfig_FormatEditDns2(void *p);
-void WfcConfig_FormatEditDns1(void *p);
-void WfcConfig_FormatEditGateway(void *p);
-void WfcConfig_FormatEditSubnetMask(void *p);
-void WfcConfig_FormatEditIp(void *p);
-void WfcConfig_SetEditDns2(void *a);
-void WfcConfig_SetEditDns1(void *a);
-void WfcConfig_SetEditGateway(void *a);
-void WfcConfig_SetEditSubnetMask(void *a);
-void WfcConfig_SetEditIp(void *a);
 
 const u16 data_ov001_0222a070[2] = {0x0b, 0x10};
 // the digits' x positions
@@ -58,8 +48,8 @@ const u8 data_ov001_0222a074[12] = {0x31, 0x3d, 0x49, 0x5a, 0x66, 0x72, 0x83, 0x
 u8 data_ov001_0222af7c[4] = {0x32, 0x35, 0x35, 0};
 u8 sWfcAddrEditTitleMsgs[8] = {0x91, 0x92, 0x93, 0x94, 0x95, 0, 0, 0};
 u16 data_ov001_0222af88[4] = {0, 0x29, 0, 0};
-WfcAddrEditFieldFunc sWfcAddrEditLoadFuncs[5] = {WfcConfig_FormatEditIp, WfcConfig_FormatEditSubnetMask, WfcConfig_FormatEditGateway, WfcConfig_FormatEditDns1, WfcConfig_FormatEditDns2};
-WfcAddrEditFieldFunc sWfcAddrEditStoreFuncs[5] = {WfcConfig_SetEditIp, WfcConfig_SetEditSubnetMask, WfcConfig_SetEditGateway, WfcConfig_SetEditDns1, WfcConfig_SetEditDns2};
+WfcAddrEditLoadFunc sWfcAddrEditLoadFuncs[5] = {WfcConfig_FormatEditIp, WfcConfig_FormatEditSubnetMask, WfcConfig_FormatEditGateway, WfcConfig_FormatEditDns1, WfcConfig_FormatEditDns2};
+WfcAddrEditStoreFunc sWfcAddrEditStoreFuncs[5] = {WfcConfig_SetEditIp, WfcConfig_SetEditSubnetMask, WfcConfig_SetEditGateway, WfcConfig_SetEditDns1, WfcConfig_SetEditDns2};
 WfcAddrEdit *sWfcAddrEdit;
 
 void WfcAddrEdit_Enter() {

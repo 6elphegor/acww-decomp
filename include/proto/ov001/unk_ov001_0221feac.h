@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221feac.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/WfcObjGroup.h"
 struct WfcTask;
 #ifdef __cplusplus
 #endif
@@ -25,6 +26,9 @@ BOOL WfcDialog_IsOpen();
 #endif
 #ifndef PROTO_LOCAL_WfcDialog_SetY
 void WfcDialog_SetY(s32 r);
+#endif
+#ifndef PROTO_LOCAL_WfcDialog_ClipObj
+void WfcDialog_ClipObj(WfcObjGroup *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_WfcDialog_PressButton
 void WfcDialog_PressButton(s32 i);

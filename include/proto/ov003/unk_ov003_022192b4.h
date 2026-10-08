@@ -11,9 +11,8 @@ struct TreeLeafFx;
 #ifdef __cplusplus
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/VecFx32.h"
-#include "proto/main/unk_0208f268.h"
 #include "sys/Heap.h"
-#include "types.h"
+class EffectModel;
 class FieldObjectManager;
 class TreeAnimSet;
 #endif
@@ -372,6 +371,9 @@ extern char * *data_ov003_022328bc[3];
 #ifndef PROTO_LOCAL_data_ov003_0223418c
 extern char data_ov003_0223418c[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_022335c0
+extern u32 data_ov003_022335c0[8];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022341f8
 extern char data_ov003_022341f8[0x24];
 #endif
@@ -383,6 +385,9 @@ extern char data_ov003_0223421c[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02232788
 extern char *data_ov003_02232788[2];
+#endif
+#ifndef PROTO_LOCAL_sFieldObjectLoaders
+extern BOOL (*sFieldObjectLoaders[9]) ();
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02234288
 extern char data_ov003_02234288[0x28];
@@ -816,21 +821,6 @@ extern char data_ov003_022333e0[0x20];
 #ifndef PROTO_LOCAL_FieldObjectManager_Create
 void *FieldObjectManager_Create();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_data_ov003_022335c0
-extern u32 data_ov003_022335c0[8];
-#endif
-#ifndef PROTO_LOCAL_sFieldObjectLoaders
-extern BOOL (*sFieldObjectLoaders[9]) ();
-#endif
-#ifndef PROTO_LOCAL_data_ov003_0223291c
-extern VecFx32 *data_ov003_0223291c[3];
-#endif
 #ifndef PROTO_LOCAL_FieldObj_GetShapeRecord
 const u8 *FieldObj_GetShapeRecord(u16 *p);
 #endif
@@ -840,17 +830,8 @@ BOOL FieldObj_LoadTextureFiles(void *self, void **a, void **b, char **names, s32
 #ifndef PROTO_LOCAL_FieldObj_LoadPaletteFiles
 BOOL FieldObj_LoadPaletteFiles(void *self, void **a, void **b, char **names, s32 n);
 #endif
-#ifndef PROTO_LOCAL_FieldObj_LoadIconModels
-BOOL FieldObj_LoadIconModels(FieldObjectManager *self);
-#endif
-#ifndef PROTO_LOCAL_FieldObj_LoadStoneModels
-BOOL FieldObj_LoadStoneModels(FieldObjectManager *self);
-#endif
 #ifndef PROTO_LOCAL_FieldObj_LoadStones
 BOOL FieldObj_LoadStones();
-#endif
-#ifndef PROTO_LOCAL_FieldObj_LoadStumpModels
-BOOL FieldObj_LoadStumpModels(FieldObjectManager *self);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadStumps
 BOOL FieldObj_LoadStumps();
@@ -863,15 +844,6 @@ void *FieldObj_GetTreeModelPath(void *self, s32 a, s32 i);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_GetTreeAnimModelPath
 void *FieldObj_GetTreeAnimModelPath(void *self, s32 a, s32 i);
-#endif
-#ifndef PROTO_LOCAL_FieldObj_GetCedarModelPath
-void *FieldObj_GetCedarModelPath(FieldObjectManager *self, s32 i);
-#endif
-#ifndef PROTO_LOCAL_FieldObj_GetCedarAnimModelPath
-void *FieldObj_GetCedarAnimModelPath(FieldObjectManager *self, s32 i);
-#endif
-#ifndef PROTO_LOCAL_FieldObj_GetPalmModelPath
-void *FieldObj_GetPalmModelPath(FieldObjectManager *self, s32 i);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_GetPalmAnimModelPath
 void *FieldObj_GetPalmAnimModelPath(void *self, s32 i);
@@ -900,15 +872,6 @@ BOOL FieldObj_LoadCedarPalettes(void *a, void **b, void **c, void **d, void **e)
 #ifndef PROTO_LOCAL_FieldObj_LoadLitCedarPalette
 BOOL FieldObj_LoadLitCedarPalette(void *a, void **b, void **c);
 #endif
-#ifndef PROTO_LOCAL_FieldObj_LoadTreeSaplingModels
-BOOL FieldObj_LoadTreeSaplingModels(FieldObjectManager *self, void **a, void **b, u32 *c);
-#endif
-#ifndef PROTO_LOCAL_FieldObj_LoadCedarSaplingModel
-BOOL FieldObj_LoadCedarSaplingModel(FieldObjectManager *self, void **a, void **b, u32 *c);
-#endif
-#ifndef PROTO_LOCAL_FieldObj_LoadPalmSaplingModel
-BOOL FieldObj_LoadPalmSaplingModel(FieldObjectManager *self, void **a, void **b, u32 *c);
-#endif
 #ifndef PROTO_LOCAL_FieldObj_LoadTrees
 BOOL FieldObj_LoadTrees();
 #endif
@@ -933,11 +896,59 @@ BOOL FieldObj_LoadTurnips();
 #ifndef PROTO_LOCAL_FieldObj_LoadDesigns
 BOOL FieldObj_LoadDesigns();
 #endif
-#ifndef PROTO_LOCAL__ZN18FieldObjectManager6onDrawEv
-s32 _ZN18FieldObjectManager6onDrawEv(u8 *self);
-#endif
 #ifndef PROTO_LOCAL_Field_SetUnitItem
 void Field_SetUnitItem(s32 x, s32 y, u32 tile, s32 flag);
+#endif
+#ifndef PROTO_LOCAL_Tree_KeepShaking
+void Tree_KeepShaking(s32 id, s32 *pos);
+#endif
+#ifndef PROTO_LOCAL_Tree_DropFruit
+void Tree_DropFruit(u16 *cell, s32 id, s32 *pos);
+#endif
+#ifndef PROTO_LOCAL_Tree_DropBeeHive
+void Tree_DropBeeHive(s32 aid, s32 *p);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_StartBalloonDrop
+s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_FindLandingUnit
+s32 FieldItemFx_FindLandingUnit(s32 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_data_ov003_0223291c
+extern VecFx32 *data_ov003_0223291c[3];
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadIconModels
+BOOL FieldObj_LoadIconModels(FieldObjectManager *self);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadStoneModels
+BOOL FieldObj_LoadStoneModels(FieldObjectManager *self);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadStumpModels
+BOOL FieldObj_LoadStumpModels(FieldObjectManager *self);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_GetCedarModelPath
+void *FieldObj_GetCedarModelPath(FieldObjectManager *self, s32 i);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_GetCedarAnimModelPath
+void *FieldObj_GetCedarAnimModelPath(FieldObjectManager *self, s32 i);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_GetPalmModelPath
+void *FieldObj_GetPalmModelPath(FieldObjectManager *self, s32 i);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadTreeSaplingModels
+BOOL FieldObj_LoadTreeSaplingModels(FieldObjectManager *self, void **a, void **b, u32 *c);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadCedarSaplingModel
+BOOL FieldObj_LoadCedarSaplingModel(FieldObjectManager *self, void **a, void **b, u32 *c);
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadPalmSaplingModel
+BOOL FieldObj_LoadPalmSaplingModel(FieldObjectManager *self, void **a, void **b, u32 *c);
 #endif
 #ifndef PROTO_LOCAL_TreeLeafFx_OnEffectInit
 void TreeLeafFx_OnEffectInit(EffectEmitterEntry *self);
@@ -951,20 +962,11 @@ s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self);
 #ifndef PROTO_LOCAL_TreeAnimSet_Request
 void TreeAnimSet_Request(TreeAnimSet *a, s32 id, s32 *pos, s32 c, s32 d);
 #endif
-#ifndef PROTO_LOCAL_Tree_KeepShaking
-void Tree_KeepShaking(s32 id, s32 *pos);
-#endif
 #ifndef PROTO_LOCAL_TreeAnim_Begin
 void TreeAnim_Begin(TreeAnim *o, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Tree_GetDropSide
 s32 Tree_GetDropSide(s32 aid, VecFx32 *p);
-#endif
-#ifndef PROTO_LOCAL_Tree_DropFruit
-void Tree_DropFruit(u16 *cell, s32 id, s32 *pos);
-#endif
-#ifndef PROTO_LOCAL_Tree_DropBeeHive
-void Tree_DropBeeHive(s32 aid, s32 *p);
 #endif
 #ifndef PROTO_LOCAL_TreeAnimSet_LoadAnims
 void TreeAnimSet_LoadAnims(TreeAnimSet *set);
@@ -995,12 +997,6 @@ s32 FieldItemFx_StartDigUpTree(s32 a, VecFx32 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartHoleShrink
 s32 FieldItemFx_StartHoleShrink(s32 a, VecFx32 *b);
-#endif
-#ifndef PROTO_LOCAL_FieldItemFx_StartBalloonDrop
-s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n);
-#endif
-#ifndef PROTO_LOCAL_FieldItemFx_FindLandingUnit
-s32 FieldItemFx_FindLandingUnit(s32 *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartPitfallClose
 s32 FieldItemFx_StartPitfallClose(s32 a, VecFx32 *b);

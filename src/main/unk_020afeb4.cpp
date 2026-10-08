@@ -6,21 +6,6 @@
 #include "actor/Actor.h"
 #include "save/TownExchangeRecord.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_ConstellationRecord_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ConstellationStore_ClearUsed  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ConstellationStore_IsUsed  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ConstellationStore_SetUsed  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_CopyName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_CountFreeSlots  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_Erase  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_FindFreeSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_GetName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_GetNewStatus  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_ImportExchanged  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_PrepareExchange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_IsConstellationFree  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sConstellationLineCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sStarTwinklePalettePaths  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0204eeb4.h"
@@ -30,53 +15,34 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/main/unk_020b0774.h"
+#include "proto/ov127/unk_ov127_02291f60.h"
+#include "game/ConstellationStore.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "sys/ClockDateTime.h"
 
 // TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
 
-struct Entry {
-    u16 unk_00;
-    u8 pad_02[0x14];
-    u8 name[0x10];
-    u16 slots[0x10];
-};
-
-struct Base {
-    Entry entries[16];
-    u16 pad_460;
-    u16 mask;
-};
-
-struct B8 {
-    u8 b[8];
-};
+// (the constellation records: ConstellationRecord, the store: ConstellationStore)
+typedef ConstellationRecord Entry;
+typedef ConstellationStore Base;
 
 
 
 extern "C" {
 extern Base data_021ec31c;
 u32 sConstellationColumns[2];  // .bss, autoload_3 0x021ee27c
-extern u8 sConstellationLineCells[];
 extern u32 OVERLAY_127_ID[];
-extern uptr sStarTwinklePalettePaths[];  // (path pointers)
-extern u8 data_021e7f8c[];
+extern TownExchangeRecord data_021e7f8c;
 
 // external
-Entry *_ZN18TownExchangeRecord16getConstellationEv(void *p);
-void ConstellationRecord_Clear(void *e);
-BOOL ConstellationStore_IsUsed(Base *b, s32 i);
-void ConstellationStore_ClearUsed(Base *b, s32 i);
-void ConstellationStore_SetUsed(Base *b, s32 i);
 s32 Sky_GetStarViewingTime(void *a, s32 x, s32 y);
 s32 Sky_GetStarScrollX(void);
 s32 Sky_GetStarScrollY(void);
 void EncodedString_SetRaw(void *buf, const void *src, s32 len);
-void _ZN28ConstellationEncodedString16C2Ev(void *buf);
-void Clock_GetDateTime(void *p);
+void Clock_GetDateTime(ClockDateTime *p);
 void *func_020b87d0(void *p);
-u8 *_ZN10PlayerData11getPlayerIdEv(void *p);
-// ov127 (StarSky), loaded by Constellation_AcquireSkyOverlay; 0x02291f60 is shared by every
-// overlay of the slot (relocs.txt: module:overlays(113,123,127,...)).
-BOOL StarSky_IsConstellationFree(void *p);
+// (StarSky_IsConstellationFree: ov127, loaded by Constellation_AcquireSkyOverlay)
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 u64 func_02132ef8(u64 a, u64 b);
 
@@ -87,7 +53,6 @@ BOOL Constellation_AddReceived(Entry *e);
 Base *Constellation_GetData(void);
 Entry *Constellation_GetRecordAlt(s32 i);
 Entry *Constellation_GetRecord(s32 i);
-s32 Constellation_FindFreeSlot(void);
 
 inline void setv(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
@@ -221,22 +186,22 @@ Entry *Constellation_GetRecord(s32 idx) {
     if (ConstellationStore_IsUsed(base, idx) == 0) {
         return NULL;
     }
-    return base->entries + idx;
+    return base->records + idx;
 }
 
 void Constellation_Store(Entry *e, s32 idx, s32 flag) {
     Base *base = Constellation_GetData();
     ConstellationStore_SetUsed(base, idx);
-    ConstellationRecord_Copy(&base->entries[idx], e);
+    ConstellationRecord_Copy(&base->records[idx], e);
     if (flag) {
-        base->mask |= 1 << idx;
+        base->newMask |= 1 << idx;
     }
 }
 
 void Constellation_Erase(s32 idx) {
     Base *base = Constellation_GetData();
     ConstellationStore_ClearUsed(base, idx);
-    base->mask &= ~(1 << idx);
+    base->newMask &= ~(1 << idx);
 }
 
 Entry *Constellation_GetRecordAlt(s32 idx) {
@@ -244,42 +209,42 @@ Entry *Constellation_GetRecordAlt(s32 idx) {
     if (ConstellationStore_IsUsed(base, idx) == 0) {
         return NULL;
     }
-    return base->entries + idx;
+    return base->records + idx;
 }
 
+// The creator: the current player's id (PlayerId, 0x16 bytes) at the start of the record.
 void Constellation_SetCreator(u8 *dst) {
-    u8 *src = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
-    *(u16 *)dst = *(u16 *)src;
-    *(B8 *)(dst + 2) = *(B8 *)(src + 2);
-    *(u16 *)(dst + 0xa) = *(u16 *)(src + 0xa);
-    *(B8 *)(dst + 0xc) = *(B8 *)(src + 0xc);
-    *(s8 *)(dst + 0x14) = *(s8 *)(src + 0x14);
-    dst[0x15] = src[0x15];
+    PlayerId *src = PlayerData_GetCurrent()->getPlayerId();
+    PlayerId *d = (PlayerId *)dst;
+    d->townId = src->townId;
+    Mem_Copy(src->townName, d->townName, 8);
+    d->playerId = src->playerId;
+    Mem_Copy(src->playerName, d->playerName, 8);
+    d->gender = src->gender;
+    dst[0x15] = ((u8 *)src)[0x15];
 }
 
 void Constellation_SetName(u8 *src, s32 idx) {
-    Mem_Copy(src, Constellation_GetData()->entries[idx].name, 16);
+    Mem_Copy(src, Constellation_GetData()->records[idx].name, 16);
 }
 
 void Constellation_CopyName(u8 *dst, s32 idx) {
     Base *base = Constellation_GetData();
     Mem_Clear(dst, 16);
     if (ConstellationStore_IsUsed(base, idx)) {
-        Mem_Copy(base->entries[idx].name, dst, 16);
+        Mem_Copy(base->records[idx].name, dst, 16);
     }
 }
 
 BOOL Constellation_GetName(void *self, s32 idx) {
-    u32 buf[HOST_SIZED(0x24, ConstellationEncodedString16) / 4] HOST_ALIGN8;
     Entry *e;
     if (!ConstellationStore_IsUsed(Constellation_GetData(), idx)) {
         return FALSE;
     }
     e = Constellation_GetRecord(idx);
-    _ZN28ConstellationEncodedString16C2Ev(buf);
-    EncodedString_SetRaw(buf, e->name, 16);
-    ((MsgString *)(self))->fromEncoded((EncodedString *)(buf), 0, 0);
-    ((ConstellationEncodedString16 *)(buf))->ConstellationEncodedString16::~ConstellationEncodedString16();
+    ConstellationEncodedString16 buf;
+    EncodedString_SetRaw(&buf, e->name, 16);
+    ((MsgString *)(self))->fromEncoded(&buf, 0, 0);
     return TRUE;
 }
 
@@ -290,7 +255,7 @@ s32 Constellation_GetNewStatus(s32 *out) {
     base = Constellation_GetData();
     for (i = 0; i < 16; i++) {
         u32 bit = 1 << i;
-        if (base->mask & bit) {
+        if (base->newMask & bit) {
             if (ConstellationStore_IsUsed(base, i)) {
                 if (*out == -1) {
                     *out = i;
@@ -298,7 +263,7 @@ s32 Constellation_GetNewStatus(s32 *out) {
                     return 2;
                 }
             } else {
-                base->mask &= ~bit;
+                base->newMask &= ~bit;
             }
         }
     }
@@ -309,13 +274,13 @@ s32 Constellation_GetNewStatus(s32 *out) {
 }
 
 void Constellation_ClearNewFlags(void) {
-    Constellation_GetData()->mask = 0;
+    Constellation_GetData()->newMask = 0;
 }
 
 void Constellation_GetViewingTime(void *a, s32 idx) {
     s32 x, y;
     Entry *e = Constellation_GetRecord(idx);
-    Constellation_CalcCentre(e->slots, &x, &y);
+    Constellation_CalcCentre(e->lines, &x, &y);
     x -= 0x80;
     y -= 0x60;
     Sky_GetStarViewingTime(a, x, y);
@@ -332,12 +297,12 @@ BOOL Constellation_IsInView(s32 x, s32 y, s32 px, s32 py) {
 }
 
 s32 Constellation_FindVisibleNow(void) {
-    u32 tm[2];
+    ClockDateTimeWords tm;
     s32 d, px, py, x, y, dx, i, bestd, dy, best;
-    tm[0] = 0;
-    tm[1] = 0;
-    Clock_GetDateTime(tm);
-    if (((u8 *)tm)[2] >= 6 && ((u8 *)tm)[2] < 0x12) {
+    tm.words[0] = 0;
+    tm.words[1] = 0;
+    Clock_GetDateTime(&tm.dt);
+    if (tm.dt.hour >= 6 && tm.dt.hour < 0x12) {
         return -1;
     }
     x = Sky_GetStarScrollX();
@@ -346,7 +311,7 @@ s32 Constellation_FindVisibleNow(void) {
     for (i = 0; i < 16; i++) {
         Entry *e = Constellation_GetRecord(i);
         if (e) {
-            Constellation_CalcCentre(e->slots, &px, &py);
+            Constellation_CalcCentre(e->lines, &px, &py);
             if (px < x) {
                 px += 0x200;
             }
@@ -365,11 +330,11 @@ s32 Constellation_FindVisibleNow(void) {
 }
 
 void Constellation_AcquireSkyOverlay(void) {
-    OverlayMgr_Acquire((u32)OVERLAY_127_ID);
+    OverlayMgr_Acquire((u32)(uptr)OVERLAY_127_ID); // (the overlay id: the address of the linker symbol)
 }
 
 void Constellation_ReleaseSkyOverlay(void) {
-    OverlayMgr_Release((u32)OVERLAY_127_ID);
+    OverlayMgr_Release((u32)(uptr)OVERLAY_127_ID);
 }
 
 BOOL Constellation_AddReceived(Entry *e) {
@@ -394,7 +359,7 @@ void Constellation_PrepareExchange(void) {
     Entry *e;
     Base *base;
     s32 n, i;
-    e = _ZN18TownExchangeRecord16getConstellationEv(data_021e7f8c);
+    e = (Entry *)data_021e7f8c.getConstellation();
     ConstellationRecord_Clear(e);
     n = 0;
     base = Constellation_GetData();
@@ -422,15 +387,15 @@ void Constellation_ImportExchanged(void) {
     Entry *e;
     s32 i, j;
     s32 count;
-    u8 *p = data_021e7f8c;
-    if (((TownExchangeRecord *)(p))->isValid()) {
-        e = _ZN18TownExchangeRecord16getConstellationEv(p);
+    TownExchangeRecord *p = &data_021e7f8c;
+    if (p->isValid()) {
+        e = (Entry *)p->getConstellation();
         count = 0;
         for (i = 0; i < 16; i++) {
-            if (e->slots[i] != 0xffff) {
+            if (e->lines[i] != 0xffff) {
                 count++;
                 for (j = 0; j < i; j++) {
-                    if (e->slots[i] == e->slots[j]) {
+                    if (e->lines[i] == e->lines[j]) {
                         ConstellationRecord_Clear(e);
                         return;
                     }
@@ -498,8 +463,8 @@ void Constellation_SetLinePalette(u16 *p, u32 slot, s32 r) {
 void Constellation_SetLinesPalette(u16 *p, Entry *e, s32 r) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        if (e->slots[i] != 0xffff) {
-            Constellation_SetLinePalette(p, e->slots[i], r);
+        if (e->lines[i] != 0xffff) {
+            Constellation_SetLinePalette(p, e->lines[i], r);
         }
     }
 }

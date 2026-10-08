@@ -3,7 +3,6 @@
 #include "types.h"
 #include "net/SockAddrIn.h"
 #include "net/AossParam.h"
-#define PROTO_LOCAL_Aoss_ConnectAp  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02200680.h"
 #include "proto/ov001/unk_ov001_02202c44.h"
 
@@ -79,7 +78,7 @@ extern "C" u8 sAossRc4Key[0x64];
 extern "C" u8 sAossNameBuf[0x280];
 extern "C" u8 sAossKeyBuf[0x6a0];
 extern "C" void *sAossScanList;
-extern "C" void *sAossConnectResult;
+extern "C" AossConnectResult *sAossConnectResult;
 
 #define FAIL(c) { o[0x116] = (c); Aoss_FreeScanBuffers(); return -1; }
 #define data_ov001_0222b90a (sAossRc4Key + 2)
@@ -107,9 +106,9 @@ s32 Aoss_SocketClose(s32 s);
 s32 Aoss_SocketBind(s32 a, u8 *b, s32 c);
 s32 Aoss_SocketCreate(s32 a, s32 b, s32 c);
 s32 Aoss_SetSockOpt(s32 s, s32 l, s32 o, void *v, s32 n);
-s32 Aoss_SendTo(s32 a, s32 b, s32 c, s32 d, u8 *p, u32 v);
+s32 Aoss_SendTo(s32 a, const void *b, s32 c, s32 d, SockAddrIn *p, u32 v);
 s32 Aoss_Select(s32 a, AossPollFd *p, s32 c, s32 d, s32 *q);
-s32 Aoss_RecvFrom(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q);
+s32 Aoss_RecvFrom(s32 a, void *b, s32 c, s32 d, SockAddrIn *p, s32 *q);
 void *Aoss_Memset(void *p, u32 v, u32 n);
 void Aoss_Memcpy(void *dst, void *src, u32 n);
 s32 Aoss_Memcmp(u8 *a, u8 *b, s32 n);
@@ -129,14 +128,14 @@ void Aoss_Rc4Crypt(AossRc4State *st, u8 *out, u8 *in, u32 n);
 void Aoss_Rc4Init(AossRc4State *st, u8 *key, u32 klen, u32 n);
 s32 Aoss_DecryptPayload(u8 *a, u8 *b, u32 n, u32 crc, u8 *x, u8 *y, s32 z);
 s32 Aoss_EncryptPayload(u8 *a, u8 *b, u32 n, u8 *out, u8 *x, u8 *y, s32 z);
-s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c);
+s32 Aoss_SendPacket(const void *a, s32 b, s32 n, s32 c);
 void Aoss_WriteHeader(u16 *out, u32 x, u32 y, u32 z, s8 a5, s8 a6, u8 *in);
 void Aoss_WriteBody(s32 mode, u8 *out, u8 *in, s16 *len, u16 *flag, u8 *crcout);
 s32 Aoss_BuildClientInfoTlv(u8 *out);
-s32 Aoss_SendFinishRequest(s32 a, u8 *b, s32 c);
-s32 Aoss_SendKeyRequest(s32 a, u8 *b, s32 c);
-s32 Aoss_SendStartRequest(s32 unused, u8 *src, s32 arg);
-s32 Aoss_SendForStage(s32 sel, s32 a, s32 b, s32 c);
+s32 Aoss_SendFinishRequest(void *a, u8 *b, s32 c);
+s32 Aoss_SendKeyRequest(void *a, u8 *b, s32 c);
+s32 Aoss_SendStartRequest(void *unused, u8 *src, s32 arg);
+s32 Aoss_SendForStage(s32 sel, void *a, u8 *b, s32 c);
 BOOL Aoss_IsFlag10Set(u32 x);
 s32 Aoss_ParseKeyBlock(s32 idx, u8 *p, s32 len, u8 *base, u8 *extra);
 s32 Aoss_ParseTlv70(u8 *p, void *dst);
@@ -153,7 +152,7 @@ s32 Aoss_HandleStartReply(s32 a, u8 *b, s32 *cnt, void *c);
 s32 Aoss_HandleRecvPacket(s32 a, u8 *b, s32 *cnt, void *c, s32 sock);
 s32 Aoss_SetProgress(s32 x);
 void Aoss_InitNonces(s32 n, u8 *p, void *x);
-s32 Aoss_BuildAossApConfig(u32 *p);
+s32 Aoss_BuildAossApConfig(AossApConfig *p);
 s32 Aoss_FindAossAp(AossScanList *p);
 s32 Aoss_IsPrintable(u8 *s, s32 n);
 s32 Aoss_StoreResult(u8 *o);
@@ -168,15 +167,14 @@ s32 RTC_GetTime(void *p);
 s32 Sock_Close(s32 a);
 s32 Sock_Bind(s32 a, void *sa);
 s32 Sock_Create(s32 a, s32 b);
-s32 Sock_SendTo(s32, s32, s32, s32, u8 *);
+s32 Sock_SendTo(sptr a, const void *b, s32 c, u32 d, SockAddrIn *sa);  // src/ov065/unk_ov065_0225fdf0.cpp
 s32 Sock_Poll(void *, s32, s64);
-s32 Sock_RecvFrom(s32, s32, s32, s32, u8 *);
+s32 Sock_RecvFrom(sptr a, void *b, s32 c, u32 d, SockAddrIn *sa);
 s32 Sock_Cleanup();
 s32 Sock_Startup(void *);
 void *MI_CpuFill8(void *, s32, u32);
 void *MI_CpuCopy8(void *, void *, u32);
 void OS_Sleep(s32);
-s32 Aoss_ConnectAp(void *cmd, void *p);
 }
 
 struct AossScanList {
@@ -264,20 +262,20 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     s32 ret;
     s32 sl;
     s32 z;
-    u32 a;
+    s32 *a;
 
     volatile AossRetryLimits v01 = *(AossRetryLimits *)sAossDefaultRetry;
     volatile AossRetryLimits v23 = { 0, 0 };
     state = 0;
     s32 opt = 1;
     s32 tries = state;
-    s32 sa40[2];
+    SockAddrIn sa40;
     s32 len48;
     s32 fdset[2];
     s32 tv[2];
     SockAddrIn sa5c;
     u8 st64[0x18];
-    u8 cmd7c[0x3c];
+    AossApConfig cmd7c;
     s32 pkt[5];
     ip = state;
     Aoss_Memset(st64, state, 0x18);
@@ -332,19 +330,19 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
         i = (s16)(i + 1);
     }
     Aoss_SetProgress(1);
-    Aoss_Memset(cmd7c, 0, 0x3c);
-    if (Aoss_BuildAossApConfig((u32 *)cmd7c) != 0) {
+    Aoss_Memset(&cmd7c, 0, sizeof(cmd7c));
+    if (Aoss_BuildAossApConfig(&cmd7c) != 0) {
         FAIL(0xf);
     }
-    sAossConnectResult = Aoss_Alloc(0x58);
+    sAossConnectResult = (AossConnectResult *)Aoss_Alloc(sizeof(AossConnectResult));
     if (sAossConnectResult == 0) {
         FAIL(0xf);
     }
-    Aoss_Memset(sAossConnectResult, 0, 0x58);
+    Aoss_Memset(sAossConnectResult, 0, sizeof(AossConnectResult));
     i = 0;
     if (v01.v[0] > 0) {
         do {
-            r = Aoss_ConnectAp(cmd7c, sAossConnectResult);
+            r = Aoss_ConnectAp(&cmd7c, sAossConnectResult);
             if (r == -1) {
                 FAIL(0xf);
             }
@@ -352,7 +350,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
                 if (r != 0) {
                     break;
                 }
-                if (*(s32 *)sAossConnectResult == 1) {
+                if (sAossConnectResult->connected == 1) {
                     break;
                 }
             }
@@ -384,12 +382,12 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     if (Aoss_SocketBind(sAossSocket, (u8 *)&sa5c, 8) < 0) {
         FAIL(0xf);
     }
-    a = (u32)pkt;
+    a = pkt;
     z = 0;
     m1 = -1;
 top:
     buf = (AossRecvBuffer *)sAossPacketBuf;
-    Aoss_Memset((void *)a, z, 0x14);
+    Aoss_Memset(a, z, 0x14);
     pkt[4] = 0xc0a80b65;
     pkt[0] = 0xc0a80b01;
     usec = t;
@@ -434,15 +432,15 @@ again:
         if (res2 == -1) {
             FAIL(0xf);
         }
-        sAossConnectResult = Aoss_Alloc(0x58);
+        sAossConnectResult = (AossConnectResult *)Aoss_Alloc(sizeof(AossConnectResult));
         if (sAossConnectResult == 0) {
             FAIL(0xf);
         }
-        Aoss_Memset(sAossConnectResult, z, 0x58);
+        Aoss_Memset(sAossConnectResult, z, sizeof(AossConnectResult));
         i = z;
         if (v01.v[0] > 0) {
             do {
-                r = Aoss_ConnectAp(cmd7c, sAossConnectResult);
+                r = Aoss_ConnectAp(&cmd7c, sAossConnectResult);
                 if (r == -1) {
                     FAIL(0xf);
                 }
@@ -450,7 +448,7 @@ again:
                     if (r != 0) {
                         break;
                     }
-                    if (*(s32 *)sAossConnectResult == 1) {
+                    if (sAossConnectResult->connected == 1) {
                         break;
                     }
                 }
@@ -484,7 +482,7 @@ again:
             FAIL(0xf);
         }
     }
-    r = Aoss_SendForStage(state, (s32)pkt, (s32)st64, sAossSocket);
+    r = Aoss_SendForStage(state, pkt, st64, sAossSocket);
     if (r == -1) {
         Aoss_SetError(state + 0x1000);
         FAIL(0xf);
@@ -511,7 +509,7 @@ again:
         goto again;
     }
     len48 = 8;
-    r = Aoss_RecvFrom(sAossSocket, (s32)(HOST_AT(buf, 0xc, unk_0c[0], 0)), 0x5dc, z, (u8 *)sa40, &len48);
+    r = Aoss_RecvFrom(sAossSocket, buf->unk_0c, 0x5dc, z, &sa40, &len48);
     buf->sock = sAossSocket;
     buf->recvLength = (u32)Aoss_Ntohs((u16)r);
     res = Aoss_HandleRecvPacket(state, (u8 *)buf, &tries, st64, sAossSocket);
@@ -555,15 +553,15 @@ again:
                 Aoss_Sleep(sl);
                 i = (s16)(i + 1);
             }
-            sAossConnectResult = Aoss_Alloc(0x58);
+            sAossConnectResult = (AossConnectResult *)Aoss_Alloc(sizeof(AossConnectResult));
             if (sAossConnectResult == 0) {
                 FAIL(0xf);
             }
-            Aoss_Memset(sAossConnectResult, z, 0x58);
+            Aoss_Memset(sAossConnectResult, z, sizeof(AossConnectResult));
             i = z;
             if (v01.v[0] > 0) {
                 do {
-                    r = Aoss_ConnectAp(cmd7c, sAossConnectResult);
+                    r = Aoss_ConnectAp(&cmd7c, sAossConnectResult);
                     if (r == -1) {
                         FAIL(0xf);
                     }
@@ -571,7 +569,7 @@ again:
                         if (r != 0) {
                             break;
                         }
-                        if (*(s32 *)sAossConnectResult == 1) {
+                        if (sAossConnectResult->connected == 1) {
                             break;
                         }
                     }
@@ -808,16 +806,16 @@ extern "C" s32 Aoss_FindAossAp(AossScanList *p)
     return r;
 }
 
-extern "C" s32 Aoss_BuildAossApConfig(u32 *p)
+extern "C" s32 Aoss_BuildAossApConfig(AossApConfig *p)
 {
-    p[0] = Aoss_Strlen((char *)sAossEssidStr);
-    Aoss_Memcpy(p + 1, sAossEssidStr, p[0]);
-    p[9] = 1;
-    p[10] = Aoss_Strlen((char *)sAossMelcoStr);
-    if (p[10] > 0xd) {
+    p->ssidLength = Aoss_Strlen((char *)sAossEssidStr);
+    Aoss_Memcpy(p->ssid, sAossEssidStr, p->ssidLength);
+    p->mode = 1;
+    p->wepKeyLength = Aoss_Strlen((char *)sAossMelcoStr);
+    if ((u32)p->wepKeyLength > 0xd) {
         return -1;
     }
-    Aoss_Memcpy(p + 11, sAossMelcoStr, p[10]);
+    Aoss_Memcpy(p->wepKey, sAossMelcoStr, p->wepKeyLength);
     return 0;
 }
 
@@ -1346,24 +1344,24 @@ extern "C" BOOL Aoss_IsFlag10Set(u32 x)
     return r;
 }
 
-extern "C" s32 Aoss_SendForStage(s32 sel, s32 a, s32 b, s32 c)
+extern "C" s32 Aoss_SendForStage(s32 sel, void *a, u8 *b, s32 c)
 {
     switch (sel) {
     case 0:
         Aoss_SetProgress(2);
-        return Aoss_SendStartRequest(a, (u8 *)b, c);
+        return Aoss_SendStartRequest(a, b, c);
     case 1:
         Aoss_SetProgress(3);
-        return Aoss_SendKeyRequest(a, (u8 *)b, c);
+        return Aoss_SendKeyRequest(a, b, c);
     case 2:
         Aoss_SetProgress(5);
-        return Aoss_SendFinishRequest(a, (u8 *)b, c);
+        return Aoss_SendFinishRequest(a, b, c);
     default:
         return -1;
     }
 }
 
-extern "C" s32 Aoss_SendStartRequest(s32 unused, u8 *src, s32 arg)
+extern "C" s32 Aoss_SendStartRequest(void *unused, u8 *src, s32 arg)
 {
     s8 a;
     s16 b;
@@ -1409,14 +1407,14 @@ extern "C" s32 Aoss_SendStartRequest(s32 unused, u8 *src, s32 arg)
     }
     Aoss_WriteHeader((u16 *)g, 0x1000, b, c, a, 0x11, buf);
     b = b + 0x18;
-    Aoss_SendPacket((s32)g, b, 0xff, arg);
+    Aoss_SendPacket(g, b, 0xff, arg);
     if (p != NULL) {
         Aoss_Free(p);
     }
     return 0;
 }
 
-extern "C" s32 Aoss_SendKeyRequest(s32 a, u8 *b, s32 c) {
+extern "C" s32 Aoss_SendKeyRequest(void *a, u8 *b, s32 c) {
     AossKeyRequestLocals l;
     u8 *r4;
     l.a = 0;
@@ -1439,18 +1437,18 @@ extern "C" s32 Aoss_SendKeyRequest(s32 a, u8 *b, s32 c) {
     }
     Aoss_WriteHeader((u16 *)r4, 0x2000, l.b, l.c, l.a, 0x11, l.dat);
     l.b = l.b + 0x18;
-    Aoss_SendPacket((s32)r4, l.b, 0, c);
+    Aoss_SendPacket(r4, l.b, 0, c);
     return 0;
 }
 
-extern "C" s32 Aoss_SendFinishRequest(s32 a, u8 *b, s32 c) {
+extern "C" s32 Aoss_SendFinishRequest(void *a, u8 *b, s32 c) {
     u8 *r4 = sAossPacketBuf;
     u8 buf[8];
     Aoss_Memset(r4, 0, 0x5dc);
     Aoss_Memcpy(buf, b + 0x10, 8);
     Aoss_Scramble(buf, 8, sAossMelcoStr, Aoss_Strlen((char *)sAossMelcoStr));
     Aoss_WriteHeader((u16 *)r4, 0x3000, 0, 0, 0, 0x11, buf);
-    Aoss_SendPacket((s32)r4, 0x18, 0, c);
+    Aoss_SendPacket(r4, 0x18, 0, c);
     return 0;
 }
 
@@ -1505,7 +1503,7 @@ extern "C" void Aoss_WriteHeader(u16 *out, u32 x, u32 y, u32 z, s8 a5, s8 a6, u8
     Aoss_Memcpy(o + 0x10, in, 8);
 }
 
-extern "C" s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c) {
+extern "C" s32 Aoss_SendPacket(const void *a, s32 b, s32 n, s32 c) {
     SockAddrIn sa;
     Aoss_Memset(&sa, 0, 8);
     sa.family = 2;
@@ -1514,7 +1512,7 @@ extern "C" s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c) {
     if (n == 0xff || sAossSession.useUnicast == 0) {
         sa.addr = -1;
     }
-    return Aoss_SendTo(c, a, b, 0, (u8 *)&sa, 8);
+    return Aoss_SendTo(c, a, b, 0, &sa, 8);
 }
 
 extern "C" s32 Aoss_EncryptPayload(u8 *a, u8 *b, u32 n, u8 *out, u8 *x, u8 *y, s32 z) {
@@ -1751,9 +1749,9 @@ extern "C" void *Aoss_Memset(void *p, u32 v, u32 n) {
     return MI_CpuFill8(p, (u8)v, n);
 }
 
-extern "C" s32 Aoss_RecvFrom(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q) {
+extern "C" s32 Aoss_RecvFrom(s32 a, void *b, s32 c, s32 d, SockAddrIn *p, s32 *q) {
     s32 v = *q;
-    *p = v;
+    p->len = v;
     return Sock_RecvFrom(a, b, c, d, p);
 }
 
@@ -1765,8 +1763,8 @@ extern "C" s32 Aoss_Select(s32 a, AossPollFd *p, s32 c, s32 d, s32 *q) {
     return Sock_Poll(&t, 1, sum);
 }
 
-extern "C" s32 Aoss_SendTo(s32 a, s32 b, s32 c, s32 d, u8 *p, u32 v) {
-    *p = v;
+extern "C" s32 Aoss_SendTo(s32 a, const void *b, s32 c, s32 d, SockAddrIn *p, u32 v) {
+    p->len = v;
     return Sock_SendTo(a, b, c, d, p);
 }
 
@@ -1846,7 +1844,7 @@ extern "C" s32 sAossError;
 extern "C" u8 sAossRc4Key[0x64];
 extern "C" u32 sAossRandSeeded;
 extern "C" u32 sAossCrcTable[0x100];
-extern "C" void *sAossConnectResult;
+extern "C" AossConnectResult *sAossConnectResult;
 extern "C" u8 sAossSessionId[8];
 extern "C" void *sAossScanList;
 extern "C" u8 *sAossPacketBuf;
@@ -1869,7 +1867,7 @@ extern "C" u32 sAossRandSeeded = 0;
 
 extern "C" u32 sAossCrcTable[0x100] = {0};
 
-extern "C" void *sAossConnectResult = 0;
+extern "C" AossConnectResult *sAossConnectResult = 0;
 
 extern "C" u8 sAossSessionId[8] = {0};
 

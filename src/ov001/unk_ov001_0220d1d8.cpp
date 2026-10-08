@@ -14,6 +14,7 @@
 #include "proto/ov001/unk_ov001_02219c3c.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 struct WfcSimpleStartResultBuf {
     u8 unk_00[0x20];
@@ -31,7 +32,7 @@ char data_ov001_0222aac0[16] = "msg/spa.bmg.l";
 char data_ov001_0222aad0[16] = "msg/jap.bmg.l";
 char data_ov001_0222ab00[16] = "msg/eng.bmg.l";
 void *sWfcMsgFileNames[6] = {data_ov001_0222aad0, data_ov001_0222ab00, data_ov001_0222aaf0, data_ov001_0222aae0, data_ov001_0222ab10, data_ov001_0222aac0};
-void *gWfcMsgBank;
+WfcMsgBank *gWfcMsgBank;
 SimpleStartStatus *sWfcSimpleStartStatus;
 //ENDDEFS
 
@@ -47,19 +48,13 @@ extern void GX_LoadOBJPltt();
 extern void GXS_LoadBG1Scr();
 
 extern void WfcConfig_StoreSimpleStart(void *);
-extern void WfcMsg_Unload(void *);
-extern void *WfcMsg_Load(void *);
+extern void WfcMsg_Unload(WfcMsgBank *e);
+extern WfcMsgBank *WfcMsg_Load(void *a);
 extern void WfcConfig_Shutdown();
 extern void WfcConfig_Init();
 extern void WfcUtil_LoadFileTo(void *, void *);
 extern void WfcCell_Unload(s32);
 extern void WfcCell_Load(s32, void *);
-extern void WfcGx_ShowPlanes(s32, s32);
-extern void WfcHeap_Free(void *p);
-extern void WfcHeap_FreeAndClear(void *);
-extern void *WfcHeap_AllocClear(s32, s32);
-extern void *WfcHeap_Alloc(s32, s32);
-
 #pragma thumb off
 void WfcSimpleStart_StatusCallback(SimpleStartStatus *);
 
@@ -99,13 +94,13 @@ void WfcBoot_Enter() {
     IO_W(r2, (IO_R(r2) & ~3) | 3);
     WfcGx_ShowPlanes(1, 2);
     WfcGx_ShowPlanes(0, 2);
-    WfcUtil_SetScene((void *)WfcBoot_FadeIn);
+    WfcUtil_SetScene(WfcBoot_FadeIn);
 }
 
 void WfcBoot_FadeIn() {
     WfcFade_Start(2, 1, 2, 0x14);
     WfcFade_Start(2, 0, 2, 0x14);
-    WfcUtil_SetScene((void *)WfcBoot_Dispatch);
+    WfcUtil_SetScene(WfcBoot_Dispatch);
 }
 
 void WfcBoot_Dispatch() {
@@ -114,11 +109,11 @@ void WfcBoot_Dispatch() {
     switch (WfcUtil_GetStartMode()) {
     case 0:
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcTopMenu_Enter);
+        WfcUtil_SetScene(WfcTopMenu_Enter);
         break;
     case 1:
         WfcUtil_SetScreenFlags(1, 1);
-        WfcUtil_SetScene((void *)WfcConnSelect_Enter);
+        WfcUtil_SetScene(WfcConnSelect_Enter);
         break;
     }
 }
@@ -126,7 +121,7 @@ void WfcBoot_Dispatch() {
 void WfcUtil_QuitFadeOut() {
     WfcFade_Start(3, 1, 0x3f, 0x14);
     WfcFade_Start(3, 0, 0x3f, 0x14);
-    WfcUtil_SetScene((void *)WfcUtil_Quit);
+    WfcUtil_SetScene(WfcUtil_Quit);
 }
 
 void WfcUtil_Quit() {
@@ -145,14 +140,14 @@ void WfcUtil_Quit() {
 }
 
 void WfcSimpleStart_Begin() {
-    sWfcSimpleStartStatus = (SimpleStartStatus *)WfcHeap_AllocClear(HOST_SIZED(0xc, SimpleStartStatus), -4);
+    sWfcSimpleStartStatus = (SimpleStartStatus *)WfcHeap_AllocClear(sizeof(SimpleStartStatus), -4);
     if (SimpleStart_Start(0xf, 0x40, WfcSimpleStart_StatusCallback, WfcSimpleStart_Alloc, WfcSimpleStart_Free, 0x800) != 1) Fatal_Trap();
     OS_Sleep(10);
 }
 
 void WfcSimpleStart_End() {
     if (SimpleStart_Stop() != 1) Fatal_Trap();
-    WfcHeap_FreeAndClear(&sWfcSimpleStartStatus);
+    WfcHeap_FreeAndClear((void **)&sWfcSimpleStartStatus);
 }
 
 s32 WfcSimpleStart_GetState() {

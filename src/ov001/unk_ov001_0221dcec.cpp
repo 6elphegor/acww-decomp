@@ -1,10 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/WfcConfigSlot.h"
-#define PROTO_LOCAL_MATH_CalcCRC16  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MATHi_CRC16InitTableRev  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_atol  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212b770.h"
 #include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_02226c24.h"
 
@@ -26,15 +25,12 @@ extern void *WfcHeap_Alloc(s32, s32);
 extern void MI_CpuFill8(void *, s32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
-extern s32 atol(void *);
-extern u32 MATH_CalcCRC16(void *, void *, u32);
 extern void DWCi_BACKUPlWritePage(void *, void *, void *);
 extern void DWCi_AUTH_GetNewWiFiInfo(void *);
 extern void *DWCi_BACKUPlConvWifiInfo(void *);
 extern u32 DWCi_BACKUPlConvMaskCidr(void *);
 extern void DWCi_BACKUPlConvMaskAddr(u32, void *);
 extern void OS_SPrintf(void *, const char *, u32, u32, u32, u32);
-extern void MATHi_CRC16InitTableRev(void *, u32);
 
 u32 WfcUtil_HexDigitValue(u32 c);
 void WfcUtil_ParseIpDigits(u8 *s, u8 *out);
@@ -53,13 +49,13 @@ void WfcConfig_FormatEditGateway(void *p);
 void WfcConfig_FormatEditSubnetMask(void *p);
 void WfcConfig_FormatEditIp(void *p);
 void WfcConfig_GetEditSsid(void *src);
-void WfcConfig_SetEditDns2(void *a);
-void WfcConfig_SetEditDns1(void *a);
-void WfcConfig_SetEditGateway(void *a);
-void WfcConfig_SetEditSubnetMask(void *a);
-void WfcConfig_SetEditIp(void *a);
-void WfcConfig_SetEditWepKey(void *key);
-void WfcConfig_SetEditSsid(void *a);
+void WfcConfig_SetEditDns2(u8 *s);
+void WfcConfig_SetEditDns1(u8 *s);
+void WfcConfig_SetEditGateway(u8 *s);
+void WfcConfig_SetEditSubnetMask(u8 *s);
+void WfcConfig_SetEditIp(u8 *s);
+void WfcConfig_SetEditWepKey(u8 *s);
+void WfcConfig_SetEditSsid(u8 *ssid);
 void WfcConfig_SetEditAutoDns(u32 v);
 void WfcConfig_SetEditAutoIp(u32 v);
 WfcConfigSlot *WfcConfig_GetEdit();
@@ -74,9 +70,9 @@ WfcConfigData *sWfcConfig;
 
 void WfcConfig_Init()
 {
-    u8 *g = (u8 *)WfcHeap_Alloc(0x6f8, 0x20);
-    sWfcConfig = (WfcConfigData *)g;
-    MATHi_CRC16InitTableRev(g + 0x4f8, 0xa001);
+    WfcConfigData *g = (WfcConfigData *)WfcHeap_Alloc(sizeof(WfcConfigData), 0x20);
+    sWfcConfig = g;
+    MATHi_CRC16InitTableRev(g->crcTable, 0xa001);
     DWCi_BACKUPlRead(sWfcConfig);
 }
 
@@ -84,89 +80,78 @@ void WfcConfig_Shutdown() { WfcHeap_FreeAndClear(&sWfcConfig); }
 
 WfcConfigSlot *WfcConfig_GetEdit() { return &sWfcConfig->editSlot; }
 
-void WfcConfig_SetEditAutoIp(u32 v) { ((u8 *)sWfcConfig)[0x4f5] = v; }
+void WfcConfig_SetEditAutoIp(u32 v) { sWfcConfig->editSlot.editAutoIp = v; }
 
-void WfcConfig_SetEditAutoDns(u32 v) { ((u8 *)sWfcConfig)[0x4f6] = v; }
+void WfcConfig_SetEditAutoDns(u32 v) { sWfcConfig->editSlot.editAutoDns = v; }
 
-void WfcConfig_SetEditSsid(void *a)
+void WfcConfig_SetEditSsid(u8 *ssid)
 {
-    MI_CpuCopy8(a, (u8 *)sWfcConfig + 0x440, 0x20);
-    ((u8 *)sWfcConfig)[0x4e7] = 0;
+    MI_CpuCopy8(ssid, sWfcConfig->editSlot.ssid, 0x20);
+    sWfcConfig->editSlot.status = 0;
 }
 
-void WfcConfig_SetEditWepKey(void *key)
+void WfcConfig_SetEditWepKey(u8 *s)
 {
-    u8 *s = (u8 *)key;
     s32 i;
     s32 n;
     u8 *d;
-    MI_CpuFill8((u8 *)sWfcConfig + 0x480, 0, 0x10);
+    MI_CpuFill8(sWfcConfig->editSlot.wepKeys, 0, 0x10);
     n = WfcUtil_StrNLen(s, 0x20);
     switch (n) {
     case 0:
     case 10:
     case 0x1a:
     case 0x20:
-        ((u8 *)sWfcConfig)[0x4e6] = ((u8 *)sWfcConfig)[0x4e6] & ~0xfc;
-        d = (u8 *)sWfcConfig + 0x480;
+        sWfcConfig->editSlot.wepMode.wepAscii = 0;
+        d = sWfcConfig->editSlot.wepKeys;
         for (i = 0; i < n; i += 2, d++) {
             s32 hi = WfcUtil_HexDigitValue(s[i]);
             *d = WfcUtil_HexDigitValue(s[i + 1]) + (hi << 4);
         }
         break;
     default: {
-        u8 *g = (u8 *)sWfcConfig;
-        g[0x4e6] = (g[0x4e6] & ~0xfc) | 4;
-        MI_CpuCopy8(s, (u8 *)sWfcConfig + 0x480, 0x10);
+        sWfcConfig->editSlot.wepMode.wepAscii = 1;
+        MI_CpuCopy8(s, sWfcConfig->editSlot.wepKeys, 0x10);
         break;
     }
     }
     switch (n) {
-    case 0: {
-        u8 *g = (u8 *)sWfcConfig;
-        g[0x4e6] = g[0x4e6] & ~3;
+    case 0:
+        sWfcConfig->editSlot.wepMode.wepKeySize = 0;
         return;
-    }
     case 5:
-    case 10: {
-        u8 *g = (u8 *)sWfcConfig;
-        g[0x4e6] = (g[0x4e6] & ~3) | 1;
+    case 10:
+        sWfcConfig->editSlot.wepMode.wepKeySize = 1;
         return;
-    }
     case 0xd:
-    case 0x1a: {
-        u8 *g = (u8 *)sWfcConfig;
-        g[0x4e6] = (g[0x4e6] & ~3) | 2;
+    case 0x1a:
+        sWfcConfig->editSlot.wepMode.wepKeySize = 2;
         return;
-    }
-    default: {
-        u8 *g = (u8 *)sWfcConfig;
-        g[0x4e6] = (g[0x4e6] & ~3) | 3;
+    default:
+        sWfcConfig->editSlot.wepMode.wepKeySize = 3;
         return;
-    }
     }
 }
 
-void WfcConfig_SetEditIp(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c0); }
+void WfcConfig_SetEditIp(u8 *s) { WfcUtil_ParseIpDigits(s, sWfcConfig->editSlot.ipAddress); }
 
-void WfcConfig_SetEditSubnetMask(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4f0); }
+void WfcConfig_SetEditSubnetMask(u8 *s) { WfcUtil_ParseIpDigits(s, sWfcConfig->editSlot.editSubnetMask); }
 
-void WfcConfig_SetEditGateway(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c4); }
+void WfcConfig_SetEditGateway(u8 *s) { WfcUtil_ParseIpDigits(s, sWfcConfig->editSlot.gateway); }
 
-void WfcConfig_SetEditDns1(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c8); }
+void WfcConfig_SetEditDns1(u8 *s) { WfcUtil_ParseIpDigits(s, &sWfcConfig->editSlot.dnsServers[0]); }
 
-void WfcConfig_SetEditDns2(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4cc); }
+void WfcConfig_SetEditDns2(u8 *s) { WfcUtil_ParseIpDigits(s, &sWfcConfig->editSlot.dnsServers[4]); }
 
 void WfcConfig_GetEditSsid(void *src)
 {
-    MI_CpuCopy8((u8 *)sWfcConfig + 0x440, src, 0x20);
+    MI_CpuCopy8(sWfcConfig->editSlot.ssid, src, 0x20);
 }
 
-void WfcConfig_FormatEditIp(void *a)
+void WfcConfig_FormatEditIp(void *out)
 {
-    u8 *g = (u8 *)sWfcConfig;
-    u8 *p = g + 0x4c0;
-    OS_SPrintf(a, "%3d%3d%3d%3d", p[0], p[1], p[2], p[3]);
+    u8 *p = sWfcConfig->editSlot.ipAddress;
+    OS_SPrintf(out, "%3d%3d%3d%3d", p[0], p[1], p[2], p[3]);
 }
 
 void WfcConfig_FormatEditSubnetMask(void *p) {
@@ -175,17 +160,17 @@ void WfcConfig_FormatEditSubnetMask(void *p) {
 }
 
 void WfcConfig_FormatEditGateway(void *p) {
-    u8 *ip = (u8 *)sWfcConfig + 0x4c4;
+    u8 *ip = sWfcConfig->editSlot.gateway;
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
 void WfcConfig_FormatEditDns1(void *p) {
-    u8 *ip = (u8 *)sWfcConfig + 0x4c8;
+    u8 *ip = &sWfcConfig->editSlot.dnsServers[0];
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
 void WfcConfig_FormatEditDns2(void *p) {
-    u8 *ip = (u8 *)sWfcConfig + 0x4cc;
+    u8 *ip = &sWfcConfig->editSlot.dnsServers[4];
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
@@ -310,17 +295,15 @@ void WfcConfig_EraseAll() {
     u32 rtc[5];
     void *r8;
     s32 i;
-    s32 off;
-    MIi_CpuClear16(z, sWfcConfig, 0x400);
+    MIi_CpuClear16(z, sWfcConfig->slots, sizeof(sWfcConfig->slots));
     for (i = 0; i < 3; i++) {
         sWfcConfig->slots[i].status = 0xff;
     }
     DWCi_AUTH_GetNewWiFiInfo(rtc);
     r8 = DWCi_BACKUPlConvWifiInfo(rtc);
-    i = 0;
-    off = i;
-    for (; i < 2; i++, off += 0x100) {
-        MI_CpuCopy8(r8, (u8 *)sWfcConfig + off + 0xf0, 0xe);
+    for (i = 0; i < 2; i++) {
+        // slots 0 and 1 keep the Wi-Fi user info (0xe bytes) where the edit slot has its edit state
+        MI_CpuCopy8(r8, sWfcConfig->slots[i].editSubnetMask, 0xe);
     }
     for (i = 0; i < 4; i++) {
         WfcConfig_WriteSlot(i);
@@ -333,7 +316,6 @@ void WfcConfig_WriteSlot(s32 idx) {
     u32 bit;
     BOOL on;
     s32 i;
-    s32 off;
     void *p;
     st = sWfcConfig->slots[idx].status;
     on = FALSE;
@@ -355,12 +337,10 @@ void WfcConfig_WriteSlot(s32 idx) {
             flags[0] = 1;
         }
     }
-    i = 0;
-    off = i;
-    for (; i < 4; i++, off += 0x100) {
+    for (i = 0; i < 4; i++) {
         if (flags[i] != 0) {
             WfcConfigData *d = sWfcConfig;
-            u32 r = MATH_CalcCRC16(&d->editSlot.unk_f8, (u8 *)d + off, 0xfe);
+            u32 r = MATH_CalcCRC16(d->crcTable, &d->slots[i], 0xfe);
             sWfcConfig->slots[i].crc16 = r;
         }
     }
@@ -370,24 +350,24 @@ void WfcConfig_WriteSlot(s32 idx) {
 }
 
 void WfcUtil_ParseIpDigits(u8 *s, u8 *out) {
-    u32 tmp;
+    char tmp[4];
     s32 i;
     s32 off;
-    MI_CpuFill8(&tmp, 0, 4);
+    MI_CpuFill8(tmp, 0, 4);
     i = 0;
     off = i;
     for (; i < 4; i++, off += 3) {
         s32 j;
         u8 *p;
-        MI_CpuCopy8(s + off, &tmp, 3);
+        MI_CpuCopy8(s + off, tmp, 3);
         j = 0;
-        p = (u8 *)&tmp;
+        p = (u8 *)tmp;
         do {
             if (*p != 0) break;
             j++;
             *p++ = 0x20;
         } while (j < 3);
-        out[i] = atol(&tmp);
+        out[i] = atol(tmp);
     }
 }
 

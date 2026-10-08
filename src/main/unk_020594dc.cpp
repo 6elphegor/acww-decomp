@@ -3,6 +3,9 @@
 #include "talk/MsgString33.h"
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "sys/ClockDateTime.h"
+#include "town/BlockMap.h"
+#include "save/SaveData.h"
 #include "gfx/HBlankTask.h"
 #include "item/ItemPickSpec.h"
 #include "item/ItemName.h"
@@ -11,19 +14,6 @@
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_FtrFootprint_GetTileCount  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrFootprint_GetTileOffset  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrFootprint_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_OneSimple  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_PutInAddresseeMailbox  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_ComposeVillagerMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_LoadResolveAltText  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -32,6 +22,13 @@
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209c37c.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_020514a4.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_020b2c50.h"
+
 
 
 struct ItemPickResult {
@@ -48,9 +45,6 @@ struct FtrFootprintBuf {
     u32 shapeIndex, direction, unk_08;
 };
 
-struct Unk_0205b524_T {
-    u32 w0, w1;
-};
 
 
 class RoomFengShui {
@@ -62,8 +56,8 @@ public:
     u8 getSouthCount();
     u8 getEastCount();
     void clear();
-    void evaluate(s32 m);
-    u8 countInStrip(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind);
+    void evaluate(BlockMap *m);
+    u8 countInStrip(BlockMap *m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind);
 };
 
 class RoomScoreEvaluator {
@@ -74,17 +68,17 @@ public:
     u32 maxZ;
     u16 wallpaper;
     u16 carpet;
-    void collectLuckyItems(void *grid);
-    s32 calcPenalty(void *grid, u8 *f1, u8 *f2);
-    s32 scoreCollection(void *grid, s32 *out);
-    s32 scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2);
-    s32 scoreColorTheme(void *grid);
+    void collectLuckyItems(BlockMap *grid);
+    s32 calcPenalty(BlockMap *grid, u8 *f1, u8 *f2);
+    s32 scoreCollection(BlockMap *grid, s32 *out);
+    s32 scoreFlagPairThemes(BlockMap *grid, s32 *out1, s32 *out2);
+    s32 scoreColorTheme(BlockMap *grid);
     s32 scoreFengShui(RoomFengShui *o);
-    s32 scoreBasePoints(void *grid);
-    void collectUnk06Kinds(void *grid);
-    s32 scoreSets(void *grid);
-    s32 scoreThemes(void *grid);
-    s32 scoreSeries(void *grid, u32 *out);
+    s32 scoreBasePoints(BlockMap *grid);
+    void collectUnk06Kinds(BlockMap *grid);
+    s32 scoreSets(BlockMap *grid);
+    s32 scoreThemes(BlockMap *grid);
+    s32 scoreSeries(BlockMap *grid, u32 *out);
 };
 
 // call-site view of the callback tables (struct-returning virtuals)
@@ -127,15 +121,15 @@ extern "C" {
 extern const u16 data_020cab80[];
 extern const u16 data_020cab84[];
 extern u8 gSaveVillagers[];
-extern u8 gSaveData[];
+}
+extern SaveData gSaveData;
+extern "C" {
 extern u8 gSavePlayers[];
 extern u8 gSaveHappyRoomDate[];
 extern u8 gSaveHouse[];
-extern void *gCurrentHeap;
 }
 
 // ---- own data ----
-extern const u32 sHouseVisitGiftKinds[3];
 const u32 sHouseVisitGiftKinds[3] = { 0, 4, 3 };
 
 u32 data_020dc07c[1] = { 0x1f };
@@ -146,7 +140,7 @@ u32 data_020dc08c[1] = { 0x1f };
 u32 data_020dc090[1] = { 0x1f };
 
 extern "C" {
-void MI_CpuFill8(void *p, s32 v, s32 n);
+void MI_CpuFill8(void *dst, u32 v, u32 size);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
 }
 
@@ -183,11 +177,22 @@ u8 sFengShuiEastTotal;
 u8 sFengShuiWestTotal;
 u8 sFengShuiSouthTotal;
 void *sHappyRoomVillagerMap;
-u8 sVillagerLetterWithPaperPath[0x28];
+char sVillagerLetterWithPaperPath[0x28];
 HappyRoomSeriesScores sHappyRoomSeriesScores;
 HappyRoomFtrBitset sHappyRoomLuckyFtr;
 HappyRoomUnk06Masks sHappyRoomUnk06Masks;
 
+
+// Defined below.
+extern "C" {
+u8 FengShui_GetEastTotal();
+u8 FengShui_GetSouthTotal();
+u8 FengShui_GetWestTotal();
+s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *source, s32 count, s32 base, u8 flag);
+void HappyRoom_SendPrizeLetter(void *self, s32 n);
+BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n);
+BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, BlockMap *grid);
+}
 
 static inline BOOL Unk_0205a6bc_Range(u16 *p, u32 lo, u32 hi)
 {
@@ -222,28 +227,16 @@ static inline void Unk_0205a930_Clear(void *dst, u32 n)
 
 // ---- callees ----
 extern "C" {
-void *SaveVillagers_Find(void *tbl, s32 id);
-void *Villager_GetBirthday(void *p);
-s32 Random_GlobalBelow(s32 n);
-void Letter_ComposeVillagerMail(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
-s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
-s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
-void Letter_ComposeFromMail(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
-s32 _ZN8BlockMap12canPlaceItemEii(void *grid, s32 x, s32 y);
-void _ZN11MsgString25C1Ev(void *o);
-void _ZN11MsgString25D1Ev(void *o);
-s32 String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void String_LoadResolveAltText(void *o, u8 *b, const void *fmt);
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+u8 *SaveVillagers_Find(u8 *base, u16 *x);
+u8 *Villager_GetBirthday(u32 a);
+u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFurnitureDirection(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
-void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 FX_Div(s32 a, s32 b);
 void Debug_SetHappyRoomScore(s32 v);
 void Debug_SetHappyRoomBonusFlags(u32 v);
-void MIi_CpuClearFast(u32 v, void *dst, u32 n);
 s32 FtrClass_GetBasePoints(s32 v);
 s32 Series_GetType(s32 v);
 s32 ItemInfo_GetSeries(u16 *p);
@@ -253,36 +246,19 @@ void *HouseRoomMaps_Get(s32 i);
 void *SaveVillagers_Get(void *p, s32 k);
 u32 Villager_GetCarpet(void *a);
 u32 Villager_GetWallpaper(void *a);
-void FtrFootprint_Init(FtrFootprintBuf *b, void *cell);
-u32 FtrFootprint_GetTileCount(FtrFootprintBuf *b);
-s16 *FtrFootprint_GetTileOffset(FtrFootprintBuf *b, u32 i);
 void FtrFootprint_Destruct(FtrFootprintBuf *b);
-void Clock_GetDateTime(Unk_0205b524_T *t);
-void DateTime_SubDays(Unk_0205b524_T *t, s32 v);
-s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-void DateTime_AddDays(Unk_0205b524_T *t, s32 v);
-s32 DateTime_Compare(Unk_0205b524_T *a, Unk_0205b524_T *b, s32 n);
-ItemPickResult ItemPick_One(ItemPickSpec o, s32 a, s32 b, s32 c, s32 d, s32 e);
-ItemPickResult ItemPick_OneSimple(ItemPickSpec o);
+void Clock_GetDateTime(ClockDateTime *p);
+void DateTime_SubDays(ClockDateTime *p, s32 n);
+s32 Date_GetWeekday(u32 a, u32 b, u32 c);
+void DateTime_AddDays(ClockDateTime *p, s32 n);
+s32 DateTime_Compare(ClockDateTime *a, ClockDateTime *b, u32 mask);
 }
 
 // ---- own functions ----
 extern "C" {
-BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v);
-BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *grid);
-BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n);
-void HappyRoom_SendPrizeLetter(void *self, s32 n);
-u32 HappyRoom_CalcLuckyBonus(u32 *p);
-s32 HappyRoomDate_IsNewWeek(u8 *out);
-void HappyRoomDate_SetEvalDay(u8 *out);
-s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *source, s32 count, s32 base, u8 flag);
-void HappyRoomDate_SetToday(u8 *out);
-u8 FengShui_GetEastTotal();
-u8 FengShui_GetSouthTotal();
-u8 FengShui_GetWestTotal();
 }
 
-extern "C" BOOL HBlank_Replace(HBlankTask *t, s32 a, void (*b)()) {
+extern "C" BOOL HBlank_Replace(HBlankTask *t, void (*a)(), void (*b)()) {
     t->unk_14 = b;
     t->nextParam = a;
     t->taskState = 2;
@@ -300,13 +276,13 @@ extern "C" void HappyRoomDate_Construct() {}
 extern "C" void HappyRoomDate_Destruct() {}
 
 extern "C" void HappyRoomDate_SetToday(u8 *out) {
-    Unk_0205b524_T t;
-    t.w0 = 0;
-    t.w1 = 0;
-    Clock_GetDateTime(&t);
-    out[0] = ((u8 *)&t)[3];
-    out[1] = ((u8 *)&t)[4];
-    out[2] = ((u8 *)&t)[5];
+    ClockDateTimeWords t;
+    t.words[0] = 0;
+    t.words[1] = 0;
+    Clock_GetDateTime(&t.dt);
+    out[0] = t.dt.day;
+    out[1] = t.dt.month;
+    out[2] = t.dt.year;
     out[3] = 0;
 }
 
@@ -314,65 +290,64 @@ extern "C" void HappyRoomDate_Reset(u8 *out) {
     HappyRoomDate_SetToday(out);
 }
 
+// out: the evaluation day (day, month, year)
 extern "C" s32 HappyRoomDate_IsNewWeek(u8 *out) {
     struct {
-        Unk_0205b524_T a, b, c;
+        ClockDateTimeWords a, b, c;  // now (the day starting at 6:00), the week's start, the evaluation day
     } l;
-#define LB(o) (((u8 *)&l)[o])
-    l.a.w0 = 0;
-    l.a.w1 = 0;
-    Clock_GetDateTime(&l.a);
-    if (LB(2) < 6) {
-        LB(2) = 7;
-        DateTime_SubDays(&l.a, 1);
+    l.a.words[0] = 0;
+    l.a.words[1] = 0;
+    Clock_GetDateTime(&l.a.dt);
+    if (l.a.dt.hour < 6) {
+        l.a.dt.hour = 7;
+        DateTime_SubDays(&l.a.dt, 1);
     }
-    l.b.w0 = 0;
-    l.b.w1 = 0;
-    Clock_GetDateTime(&l.b);
-    DateTime_SubDays(&l.b, Date_GetWeekday(LB(0xd), LB(0xc), LB(0xb)));
-    if (LB(0xd) > LB(5)) DateTime_AddDays(&l.b, 7);
-    l.c.w0 = 0;
-    l.c.w1 = 0;
-    LB(0x15) = out[2];
-    LB(0x14) = out[1];
-    LB(0x13) = out[0];
-    LB(0x12) = 7;
-    LB(0x11) = 0;
-    LB(0x10) = 0;
-    if (DateTime_Compare(&l.a, &l.c, 0x38) == -1) {
-        out[2] = LB(5);
-        out[1] = LB(4);
-        out[0] = LB(3);
-        LB(0x15) = out[2];
-        LB(0x14) = out[1];
-        LB(0x13) = out[0];
-        LB(0x12) = 7;
-        LB(0x11) = 0;
-        LB(0x10) = 0;
+    l.b.words[0] = 0;
+    l.b.words[1] = 0;
+    Clock_GetDateTime(&l.b.dt);
+    DateTime_SubDays(&l.b.dt, Date_GetWeekday(l.b.dt.year, l.b.dt.month, l.b.dt.day));
+    if (l.b.dt.year > l.a.dt.year) DateTime_AddDays(&l.b.dt, 7);
+    l.c.words[0] = 0;
+    l.c.words[1] = 0;
+    l.c.dt.year = out[2];
+    l.c.dt.month = out[1];
+    l.c.dt.day = out[0];
+    l.c.dt.hour = 7;
+    l.c.dt.minute = 0;
+    l.c.dt.second = 0;
+    if (DateTime_Compare(&l.a.dt, &l.c.dt, 0x38) == -1) {
+        out[2] = l.a.dt.year;
+        out[1] = l.a.dt.month;
+        out[0] = l.a.dt.day;
+        l.c.dt.year = out[2];
+        l.c.dt.month = out[1];
+        l.c.dt.day = out[0];
+        l.c.dt.hour = 7;
+        l.c.dt.minute = 0;
+        l.c.dt.second = 0;
         return FALSE;
     }
-    if (DateTime_Compare(&l.c, &l.b, 0x38) == -1) {
-        s32 t = DateTime_Compare(&l.b, &l.a, 0x38);
+    if (DateTime_Compare(&l.c.dt, &l.b.dt, 0x38) == -1) {
+        s32 t = DateTime_Compare(&l.b.dt, &l.a.dt, 0x38);
         if (t == -1) goto yes;
-        t = DateTime_Compare(&l.b, &l.a, 0x38);
+        t = DateTime_Compare(&l.b.dt, &l.a.dt, 0x38);
         if (t == 0) {
         yes:
             return TRUE;
         }
     }
     return FALSE;
-#undef LB
 }
 
 extern "C" void HappyRoomDate_SetEvalDay(u8 *out) {
-    Unk_0205b524_T t;
-    t.w0 = 0;
-    t.w1 = 0;
-    Clock_GetDateTime(&t);
-    if (((u8 *)&t)[2] < 6) DateTime_SubDays(&t, 1);
-    out[0] = ((u8 *)&t)[3];
-    out[1] = ((u8 *)&t)[4];
-    out[2] = ((u8 *)&t)[5];
+    ClockDateTimeWords t;
+    t.words[0] = 0;
+    t.words[1] = 0;
+    Clock_GetDateTime(&t.dt);
+    if (t.dt.hour < 6) DateTime_SubDays(&t.dt, 1);
+    out[0] = t.dt.day;
+    out[1] = t.dt.month;
+    out[2] = t.dt.year;
 }
 
 extern "C" u32 FengShui_GetTotal() {
@@ -395,9 +370,9 @@ extern "C" void FengShui_UpdateHouse() {
     sFengShuiWestTotal = 0;
     for (i = 0; i < 5; i++) {
         RoomFengShui s;
-        void *m = HouseRoomMaps_Get(i);
+        BlockMap *m = (BlockMap *)HouseRoomMaps_Get(i);
         if (m != NULL) {
-            s.evaluate((s32)m);
+            s.evaluate(m);
             sFengShuiWestTotal += s.getWestCount();
             sFengShuiSouthTotal += s.getSouthCount();
             sFengShuiEastTotal += s.getEastCount();
@@ -423,7 +398,7 @@ u8 RoomFengShui::getSouthCount() { return southCount; }
 
 u8 RoomFengShui::getEastCount() { return eastCount; }
 
-u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s32 y1, volatile s32 kind) {
+u8 RoomFengShui::countInStrip(BlockMap *m, s32 x0, s32 x1, volatile s32 y0, volatile s32 y1, volatile s32 kind) {
     u32 cnt = 0;
     u8 layer = 0;
     s32 f;
@@ -443,15 +418,15 @@ u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s
                 {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = (u16 *)BlockMap_GetItemPtr((void *)m, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                u16 *cell = (u16 *)BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (cell != NULL && Item_IsFurniture(cell)) {
                     f = Item_GetFurnitureIndex(cell);
-                    FtrFootprint_Init(&buf, cell);
-                    n = FtrFootprint_GetTileCount(&buf);
+                    FtrFootprint_Init((Unk_0205242c_Self *)&buf, cell); // (the footprint record: its type is local to unk_020514a4.cpp)
+                    n = FtrFootprint_GetTileCount((Unk_0205242c_Self *)&buf);
                     ok = TRUE;
                     for (i = 0; i < n; i++) {
-                        nx = x + FtrFootprint_GetTileOffset(&buf, i)[0];
-                        s32 ny = y + FtrFootprint_GetTileOffset(&buf, i)[1];
+                        nx = x + ((s16 *)FtrFootprint_GetTileOffset((Unk_0205242c_Self *)&buf, i))[0];
+                        s32 ny = y + ((s16 *)FtrFootprint_GetTileOffset((Unk_0205242c_Self *)&buf, i))[1];
                         if (nx < x0 || nx > x1 || ny < y0 || ny > y1) {
                             ok = FALSE;
                             break;
@@ -475,9 +450,9 @@ u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s
     return 0xff;
 }
 
-void RoomFengShui::evaluate(s32 m) {
+void RoomFengShui::evaluate(BlockMap *m) {
     s32 v0, v1, v2, v3;
-    RoomMap_GetFloorBounds(&v0, &v1, &v2, &v3, (void *)m);
+    RoomMap_GetFloorBounds(&v0, &v1, &v2, &v3, m);
     westCount = countInStrip(m, v0, v0 + 1, v2, v3, 1);
     southCount = countInStrip(m, v0, v1, v3 - 1, v3, 4);
     eastCount = countInStrip(m, v1 - 1, v1, v2, v3, 2);
@@ -558,7 +533,7 @@ extern "C" void RoomScoreEvaluator_Construct(RoomScoreEvaluator *p) {
 extern "C" void RoomScoreEvaluator_Destruct() {}
 
 extern "C" u32 HappyRoom_RateMainRoom(RoomScoreEvaluator *p, s32 *out) {
-    void *m = HouseRoomMaps_Get(0);
+    BlockMap *m = (BlockMap *)HouseRoomMaps_Get(0);
     s32 x = 3;
     u32 flags = 0;
     if (m != NULL) {
@@ -664,12 +639,12 @@ extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s3
 loop0:
     {
         idx = base + j;
-        void *m = source->getRoomMap(idx);
+        BlockMap *m = (BlockMap *)source->getRoomMap(idx);
         p->wallpaper = source->getWallpaper(idx).item;
         p->carpet = source->getCarpet(idx).item;
         RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->maxX, (s32 *)&p->minZ, (s32 *)&p->maxZ, m);
         RoomFengShui obj;
-        obj.evaluate((s32)m);
+        obj.evaluate(m);
         p->scoreSeries(m, 0);
         p->scoreThemes(m);
         p->scoreSets(m);
@@ -850,7 +825,7 @@ end:
     return total;
 }
 
-s32 RoomScoreEvaluator::scoreSeries(void *grid, u32 *out)
+s32 RoomScoreEvaluator::scoreSeries(BlockMap *grid, u32 *out)
 {
     u32 max;
     u16 acc[0x94 / 2];
@@ -927,7 +902,7 @@ s32 RoomScoreEvaluator::scoreSeries(void *grid, u32 *out)
     return 0x4a;
 }
 
-s32 RoomScoreEvaluator::scoreThemes(void *grid)
+s32 RoomScoreEvaluator::scoreThemes(BlockMap *grid)
 {
     u16 acc[0x94 / 2];
     u8 layer;
@@ -995,7 +970,7 @@ s32 RoomScoreEvaluator::scoreThemes(void *grid)
     return res;
 }
 
-s32 RoomScoreEvaluator::scoreSets(void *grid)
+s32 RoomScoreEvaluator::scoreSets(BlockMap *grid)
 {
     u16 acc[0x94 / 2];
     u8 layer;
@@ -1048,7 +1023,7 @@ s32 RoomScoreEvaluator::scoreSets(void *grid)
     return res;
 }
 
-void RoomScoreEvaluator::collectUnk06Kinds(void *grid)
+void RoomScoreEvaluator::collectUnk06Kinds(BlockMap *grid)
 {
     u8 layer;
     u32 y, x;
@@ -1083,7 +1058,7 @@ void RoomScoreEvaluator::collectUnk06Kinds(void *grid)
     }
 }
 
-s32 RoomScoreEvaluator::scoreBasePoints(void *grid)
+s32 RoomScoreEvaluator::scoreBasePoints(BlockMap *grid)
 {
     u8 layer;
     u32 y, x;
@@ -1118,7 +1093,7 @@ s32 RoomScoreEvaluator::scoreFengShui(RoomFengShui *o)
     return (a + (b + o->getSouthCount())) * 100;
 }
 
-s32 RoomScoreEvaluator::scoreColorTheme(void *grid)
+s32 RoomScoreEvaluator::scoreColorTheme(BlockMap *grid)
 {
     u32 n;
     u8 layer;
@@ -1182,7 +1157,7 @@ s32 RoomScoreEvaluator::scoreColorTheme(void *grid)
     return 0;
 }
 
-s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
+s32 RoomScoreEvaluator::scoreFlagPairThemes(BlockMap *grid, s32 *out1, s32 *out2)
 {
     u8 a_[3];
     u8 b_[3];
@@ -1290,7 +1265,7 @@ s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
     return total;
 }
 
-s32 RoomScoreEvaluator::scoreCollection(void *grid, s32 *out)
+s32 RoomScoreEvaluator::scoreCollection(BlockMap *grid, s32 *out)
 {
     u8 counts[5];
     u8 layer;
@@ -1332,7 +1307,7 @@ s32 RoomScoreEvaluator::scoreCollection(void *grid, s32 *out)
     return total;
 }
 
-s32 RoomScoreEvaluator::calcPenalty(void *grid, u8 *f1, u8 *f2)
+s32 RoomScoreEvaluator::calcPenalty(BlockMap *grid, u8 *f1, u8 *f2)
 {
     u8 layer;
     u32 y, x;
@@ -1371,7 +1346,7 @@ s32 RoomScoreEvaluator::calcPenalty(void *grid, u8 *f1, u8 *f2)
     return total;
 }
 
-void RoomScoreEvaluator::collectLuckyItems(void *grid)
+void RoomScoreEvaluator::collectLuckyItems(BlockMap *grid)
 {
     u8 layer;
     u32 y, x;
@@ -1402,42 +1377,33 @@ void RoomScoreEvaluator::collectLuckyItems(void *grid)
 
 extern "C" BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n)
 {
-    u32 objA[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
-    u32 objB[9];
-    u32 objC[HOST_SIZED(0x34, MsgString33) / 4] HOST_ALIGN8;
-    u32 objD[HOST_SIZED(0xf8, Letter) / 4] HOST_ALIGN8;
+    MsgString25 score;
     u8 by[2];
     s32 i;
     s32 z = 0;
-    _ZN11MsgString25C1Ev(objA);
-    if (String_FormatNumber(objA, b, 10, 1, 0, 0)) {
-        MailText_SetSlot(1, objA);
-        new (objB) ItemName(c);
-        MailText_SetSlot(2, objB);
+    if (String_FormatNumber(&score, b, 10, 1, 0, 0)) {
+        MailText_SetSlot(1, &score);
+        ItemName item(c); // (the DS's 0x24-byte buffer: the object is larger on 64-bit)
+        MailText_SetSlot(2, &item);
         if (n < 4) {
-            new (objC) MsgString33();
+            MsgString33 kind;
             by[1] = n;
-            String_LoadResolveAltText(objC, &by[1], "st_furniture_letter");
-            MailText_SetSlot(3, objC);
-            ((MsgString33 *)(objC))->MsgString33::~MsgString33();
+            String_LoadResolveAltText(&kind, &by[1], "st_furniture_letter");
+            MailText_SetSlot(3, &kind);
         }
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_GetResident(gSavePlayers, i);
-            if (p && ((PlayerData *)(p))->isUsed()) {
-                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || ((PlayerData *)(p))->testFlag(0xe)) {
-                    new (objD) Letter();
+            PlayerData *p = (PlayerData *)PlayerData_GetResident(gSavePlayers, i);
+            if (p && p->isUsed()) {
+                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || p->testFlag(0xe)) {
+                    Letter letter;
                     by[0] = a;
-                    Letter_ComposeFromMail(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, ((PlayerData *)(p))->getPlayerId());
-                    LetterDelivery_PutInAddresseeMailbox(objD);
-                    ((Letter *)(objD))->Letter::~Letter();
+                    Letter_ComposeFromMail((LetterView *)&letter, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, p->getPlayerId());
+                    LetterDelivery_PutInAddresseeMailbox(&letter);
                 }
             }
         }
-        ((ItemName *)(objB))->ItemName::~ItemName();
-        _ZN11MsgString25D1Ev(objA);
         return TRUE;
     }
-    _ZN11MsgString25D1Ev(objA);
     return FALSE;
 }
 
@@ -1449,42 +1415,38 @@ extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
     id = -1;
     t = 1;
     off = 0xfff1;
-    if (((SaveData *)(gSaveData))->testFlag(1) == 0) {
+    if (gSaveData.testFlag(1) == 0) {
         if (n >= 0x11170) { id = 0x18; t = 1; off = 0x3854; }
-    } else if (((SaveData *)(gSaveData))->testFlag(2) == 0) {
+    } else if (gSaveData.testFlag(2) == 0) {
         if (n >= 0x186a0) { id = 0x19; t = 2; off = 0x3858; }
-    } else if (((SaveData *)(gSaveData))->testFlag(0xb) == 0) {
+    } else if (gSaveData.testFlag(0xb) == 0) {
         if (n >= 0x249f0) { id = 0x1a; t = 0xb; off = 0x385c; }
     }
     if (id != -1) {
         s32 i;
         s32 zero = 0;
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_GetResident(gSavePlayers, i);
-            u32 obj[HOST_SIZED(0xf8, Letter) / 4] HOST_ALIGN8;
+            PlayerData *p = (PlayerData *)PlayerData_GetResident(gSavePlayers, i);
             u8 b;
-            if (p && ((PlayerData *)(p))->isUsed() && ((PlayerData *)(p))->testFlag(0xe) && !LetterDelivery_IsMailboxFull(i)) {
-                new (obj) Letter();
+            if (p && p->isUsed() && p->testFlag(0xe) && !LetterDelivery_IsMailboxFull(i)) {
+                Letter letter;
                 b = id;
-                Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, ((PlayerData *)(p))->getPlayerId());
-                ((LetterView *)(obj))->setPresent(off, 1);
-                if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-                    ((SaveData *)(gSaveData))->setFlag(t);
-                    ((Letter *)(obj))->Letter::~Letter();
+                Letter_ComposeFromMail((LetterView *)&letter, &b, "ev_happyroom", data_020dc084, data_020dc08c, p->getPlayerId());
+                ((LetterView *)&letter)->setPresent(off, 1);
+                if (LetterDelivery_PutInAddresseeMailbox(&letter)) {
+                    gSaveData.setFlag(t);
                     break;
                 }
-                if (LetterDelivery_QueueOutgoing(obj, zero)) {
-                    ((SaveData *)(gSaveData))->setFlag(t);
-                    ((Letter *)(obj))->Letter::~Letter();
+                if (LetterDelivery_QueueOutgoing(&letter, zero)) {
+                    gSaveData.setFlag(t);
                     break;
                 }
-                ((Letter *)(obj))->Letter::~Letter();
             }
         }
     }
 }
 
-extern "C" BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *grid)
+extern "C" BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, BlockMap *grid)
 {
     BOOL f0, f1, f2, f3;
     s32 y, x;
@@ -1495,7 +1457,7 @@ extern "C" BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *gri
     f0 = FALSE; f1 = FALSE; f2 = FALSE; f3 = FALSE;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (_ZN8BlockMap12canPlaceItemEii(grid, x, y)) {
+            if (grid->canPlaceItem(x, y)) {
                 if (x <= *a) { *a = x; f0 = TRUE; }
                 if (x >= *b) { *b = x; f1 = TRUE; }
                 if (y <= *c) { *c = y; f2 = TRUE; }
@@ -1512,60 +1474,56 @@ extern "C" BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *gri
 
 extern "C" BOOL HappyRoom_SendWelcomeLetter()
 {
-    u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     u8 b;
-    void *p = PlayerData_GetCurrent();
-    if (p && ((PlayerData *)(p))->testFlag(3) && !((PlayerData *)(p))->testFlag(0xe)) {
-        new (obj) Letter();
+    PlayerData *p = PlayerData_GetCurrent();
+    if (p && p->testFlag(3) && !p->testFlag(0xe)) {
+        Letter letter;
         b = 0x1b;
-        Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, ((PlayerData *)(p))->getPlayerId());
-        if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-            ((PlayerData *)(p))->setFlag(0xe);
-            ((Letter *)(obj))->Letter::~Letter();
+        Letter_ComposeFromMail((LetterView *)&letter, &b, "ev_happyroom", data_020dc080, data_020dc090, p->getPlayerId());
+        if (LetterDelivery_PutInAddresseeMailbox(&letter)) {
+            p->setFlag(0xe);
             return TRUE;
         }
-        ((Letter *)(obj))->Letter::~Letter();
     }
     return FALSE;
 }
 
-extern "C" BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v)
+// A villager's letter (message r1 of file r0) to the player, with a present; v: the paper (-1: the villager's).
+extern "C" BOOL Villager_SendLetterWithPaper(const char *r0, u8 r1, PlayerId *r2, VillagerId *r3, u16 *p, s32 v)
 {
-    if (SaveVillagers_Find(gSaveVillagers, r3)) {
+    if (SaveVillagers_Find(gSaveVillagers, (u16 *)r3)) {
         u8 buf[2];
-        u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
-        ((VillagerId *)r3)->makeFileName(sVillagerLetterWithPaperPath, 0x28, (const char *)r0);
+        r3->makeFileName(sVillagerLetterWithPaperPath, 0x28, r0);
         buf[0] = r1;
         buf[1] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(r3));
         if (v != -1) buf[1] = v;
-        new (obj) Letter();
-        Letter_ComposeVillagerMail(obj, buf, sVillagerLetterWithPaperPath, &buf[1], r3, r2, 1);
-        if (p) ((LetterView *)(obj))->setPresent(*p, 1);
-        if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-            ((Letter *)(obj))->Letter::~Letter();
+        Letter letter;
+        Letter_ComposeVillagerMail((LetterView *)&letter, buf, sVillagerLetterWithPaperPath, &buf[1], r3, r2, 1);
+        if (p) ((LetterView *)&letter)->setPresent(*p, 1);
+        if (LetterDelivery_PutInAddresseeMailbox(&letter)) {
             return TRUE;
         }
-        if (LetterDelivery_QueueOutgoing(obj, 0)) {
-            ((Letter *)(obj))->Letter::~Letter();
+        if (LetterDelivery_QueueOutgoing(&letter, 0)) {
             return TRUE;
         }
-        ((Letter *)(obj))->Letter::~Letter();
     }
     return FALSE;
 }
 
-extern "C" BOOL Villager_SendBirthdayNoticeLetter(s32 a, s32 b)
+extern "C" BOOL Villager_SendBirthdayNoticeLetter(PlayerId *a, VillagerId *b)
 {
-    void *r = SaveVillagers_Find(gSaveVillagers, b);
+    u8 *r = SaveVillagers_Find(gSaveVillagers, (u16 *)b);
     if (r) {
-        MailText_SetSlotMonth(2, *(u8 *)Villager_GetBirthday(r));
-        MailText_SetSlotDayOrdinal(3, ((u8 *)Villager_GetBirthday(r))[1]);
+        // (Villager_GetBirthday, src/main/unk_02077ac4.cpp, takes the villager data as an integer)
+        MailText_SetSlotMonth(2, *Villager_GetBirthday((u32)(uptr)r));
+        MailText_SetSlotDayOrdinal(3, Villager_GetBirthday((u32)(uptr)r)[1]);
         return Villager_SendLetterWithPaper("ev_nbirth", Random_GlobalBelow(3), a, b, 0, 0x1a);
     }
     return FALSE;
 }
 
-extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
+// A house visit's thank-you letter with a present of kind a (1..5).
+extern "C" s32 Villager_SendHouseVisitLetter(u32 a, PlayerId *b, VillagerId *c)
 {
     if (a < 1) {
         return 0;
@@ -1573,43 +1531,51 @@ extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
     if (a > 5) {
         return 0;
     }
-    ItemPickResult res(0xfff1);
+    // (ItemPick_One picks into its first argument: the decomp had it return a u16 record by value, which only i386
+    // passes through a hidden pointer; on x86-64 every argument was off by one)
+    u16 res = 0xfff1;
     Random_GlobalBelow(3);
     Random_GlobalBelow(3);
     switch (a) {
-    case 1:
-        res = ItemPick_One(ItemPickSpec(0, 0), 0, 0, 1, 1, 0);
+    case 1: {
+        ItemPickSpec o(0, 0);
+        ItemPick_One(&res, &o, NULL, NULL, 1, 1, NULL);
         break;
+    }
     case 2: {
         static ItemPickSpec t[3] = { ItemPickSpec(0, 1), ItemPickSpec(0, 2), ItemPickSpec(0, 3) };
-        res = ItemPick_One(t[Random_GlobalBelow(3)], 0, 0, 1, 1, 0);
+        ItemPickSpec o = t[Random_GlobalBelow(3)];
+        ItemPick_One(&res, &o, NULL, NULL, 1, 1, NULL);
         break;
     }
     case 3: {
         static ItemPickSpec t[3] = { ItemPickSpec(0, 0), ItemPickSpec(4, 0), ItemPickSpec(3, 0) };
-        res = ItemPick_One(t[Random_GlobalBelow(3)], 0, 0, 1, 1, 0);
+        ItemPickSpec o = t[Random_GlobalBelow(3)];
+        ItemPick_One(&res, &o, NULL, NULL, 1, 1, NULL);
         break;
     }
     case 4: {
         static ItemPickSpec t[9] = { ItemPickSpec(0, 1), ItemPickSpec(0, 2), ItemPickSpec(0, 3),
                                      ItemPickSpec(4, 1), ItemPickSpec(4, 2), ItemPickSpec(4, 3),
                                      ItemPickSpec(3, 1), ItemPickSpec(3, 2), ItemPickSpec(3, 3) };
-        res = ItemPick_One(t[Random_GlobalBelow(9)], 0, 0, 1, 1, 0);
+        ItemPickSpec o = t[Random_GlobalBelow(9)];
+        ItemPick_One(&res, &o, NULL, NULL, 1, 1, NULL);
         break;
     }
     case 0:
     default: {
-        s32 r6 = PlayerDataArray_GetById(gSavePlayers, b);
+        u8 *r6 = PlayerDataArray_GetById(gSavePlayers, (u16 *)b);
         u32 r4 = sHouseVisitGiftKinds[Random_GlobalBelow(3)];
         ItemPickSpec o(r4, 0);
         s32 x;
-        res = ItemPick_One(o, r6, 0, 1, 1, (s32)&x);
-        if (res.v == 0xfff1) {
-            res = ItemPick_OneSimple(ItemPickSpec(r4, x));
+        ItemPick_One(&res, &o, r6, NULL, 1, 1, &x);
+        if (res == 0xfff1) {
+            ItemPickSpec o2(r4, x);
+            ItemPick_OneSimple(&res, &o2);
         }
         break;
     }
     }
-    return Villager_SendLetterWithPaper("re_q10", Random_GlobalBelow(3), b, c, (u16 *)&res, -1);
+    return Villager_SendLetterWithPaper("re_q10", Random_GlobalBelow(3), b, c, &res, -1);
 }
 

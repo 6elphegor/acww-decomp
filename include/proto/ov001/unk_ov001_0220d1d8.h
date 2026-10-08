@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220d1d8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcMsgBank;
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,9 +31,6 @@ extern char data_ov001_0222ab00[16];
 #endif
 #ifndef PROTO_LOCAL_sWfcMsgFileNames
 extern void *sWfcMsgFileNames[6];
-#endif
-#ifndef PROTO_LOCAL_gWfcMsgBank
-extern void *gWfcMsgBank;
 #endif
 #ifndef PROTO_LOCAL_WfcBoot_Enter
 void WfcBoot_Enter();
@@ -66,6 +66,14 @@ void *WfcSimpleStart_Alloc(u32 a);
 void WfcSimpleStart_Free(void *p);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_gWfcMsgBank
+extern WfcMsgBank *gWfcMsgBank;
+#endif
 }
 #endif
 

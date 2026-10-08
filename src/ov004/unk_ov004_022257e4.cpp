@@ -170,7 +170,7 @@ CheckInGate::~CheckInGate() {
 // @2226158
 BOOL CheckInGate::onCreate() {
     s32 v;
-    TownTravelState *s = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+    TownTravelState *s = (TownTravelState *)TownSessionState_GetTravelState(TownSessionState_Get());
     RoomObjRes_Load(&res, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&tex, "/roomObj/obj_check_in.nsbtx");
     model.setResource((NNSG3dResMdl *)RoomObjRes_GetModel(&res), 0);

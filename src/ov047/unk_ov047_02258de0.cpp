@@ -794,7 +794,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
     }
     dramaTalk = 0;
     if (Talk_IsInOwnTown() == 0) {
-        if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 9) == 0) {
+        if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
             if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 4;
             } else {
@@ -808,7 +808,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
             }
         }
         TownSessionState_SetFlag(TownSessionState_Get(), 9);
-    } else if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 9) == 0) {
+    } else if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
         if (Museum()->isComplete()) {
             if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 0;

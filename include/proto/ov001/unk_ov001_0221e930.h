@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+struct WfcSound;
 #include "types.h"
 #endif
 
@@ -40,7 +41,7 @@ void WfcSound_SetTrackPitch(s32 a, s32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_sWfcSound
-extern u8 *sWfcSound;
+extern WfcSound *sWfcSound;
 #endif
 #endif
 

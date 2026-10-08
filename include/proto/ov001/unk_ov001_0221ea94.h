@@ -14,7 +14,7 @@ extern "C" {
 void WfcTop_LoadScreen(u32 i);
 #endif
 #ifndef PROTO_LOCAL_WfcTop_TransferTask
-void WfcTop_TransferTask(s32 a);
+void WfcTop_TransferTask(void *task);
 #endif
 }
 #ifndef PROTO_LOCAL_data_ov001_0222b46c

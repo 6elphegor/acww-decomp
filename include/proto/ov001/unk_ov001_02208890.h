@@ -96,7 +96,7 @@ extern "C" {
 void WfcHighlight_Set(s32 n);
 #endif
 #ifndef PROTO_LOCAL_WfcHighlight_TransferTask
-void WfcHighlight_TransferTask(s32 a);
+void WfcHighlight_TransferTask(void *task);
 #endif
 #ifndef PROTO_LOCAL_sWfcHighlightScreen
 extern u8 *sWfcHighlightScreen;

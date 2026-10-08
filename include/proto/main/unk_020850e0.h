@@ -7,21 +7,31 @@
 struct Unk_02085490_Pt;
 #ifdef __cplusplus
 #include "save/ContestRecord.h"
-#include "types.h"
-class TownSessionState;
+#include "save/VillagerData.h"
+#include "town/BlockMap.h"
+#include "town/KatieVisitState.h"
+#include "town/PeteFallState.h"
+#include "town/ResettiVisitFlag.h"
+#include "town/ShopClosingTime.h"
+#include "town/TownSessionState.h"
+#include "town/TownTravelState.h"
+#include "town/VisitorSpawnFlags.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_ContestRecord_JudgeGardens
-void ContestRecord_JudgeGardens(void *self);
+#ifndef PROTO_LOCAL_Contest_GetCatchSize
+s32 Contest_GetCatchSize(u16 *p);
 #endif
-#ifndef PROTO_LOCAL_TownSessionState_CheckTortimerReward
-void TownSessionState_CheckTortimerReward(void *self);
+#ifndef PROTO_LOCAL_Contest_GetFlowerKind
+s32 Contest_GetFlowerKind(u32 *out, u16 *p);
 #endif
-#ifndef PROTO_LOCAL_TownSessionState_Get
-void *TownSessionState_Get();
+#ifndef PROTO_LOCAL_CountSetBits
+s32 CountSetBits(u32 v);
+#endif
+#ifndef PROTO_LOCAL_Contest_IsNextToGroundAttr4
+s32 Contest_IsNextToGroundAttr4(s32 *pos);
 #endif
 #ifdef __cplusplus
 }
@@ -36,61 +46,58 @@ void ContestRecord_SetItem(ContestRecord *o, u16 *in);
 void ContestRecord_GetItem(u16 *out, ContestRecord *o);
 #endif
 #ifndef PROTO_LOCAL_ContestRecord_BeginContestDay
-void ContestRecord_BeginContestDay(u8 *self, u32 mode);
+void ContestRecord_BeginContestDay(ContestRecord *self, u32 mode);
 #endif
 #ifndef PROTO_LOCAL_ContestRecord_BeginFestival
-void ContestRecord_BeginFestival(u8 *self, u32 mode);
-#endif
-#ifndef PROTO_LOCAL_Contest_GetCatchSize
-s32 Contest_GetCatchSize(u16 *p);
-#endif
-#ifndef PROTO_LOCAL_Contest_GetFlowerKind
-s32 Contest_GetFlowerKind(u32 *out, u16 *p);
-#endif
-#ifndef PROTO_LOCAL_CountSetBits
-s32 CountSetBits(u32 v);
+void ContestRecord_BeginFestival(ContestRecord *self, u32 mode);
 #endif
 #ifndef PROTO_LOCAL_ContestRecord_ScoreVillagerGarden
-s32 ContestRecord_ScoreVillagerGarden(void *obj, void *grid);
-#endif
-#ifndef PROTO_LOCAL_Contest_IsNextToGroundAttr4
-s32 Contest_IsNextToGroundAttr4(s32 *pos);
+s32 ContestRecord_ScoreVillagerGarden(VillagerData *obj, BlockMap *grid);
 #endif
 #ifndef PROTO_LOCAL_ContestRecord_ScorePlayerGarden
-s32 ContestRecord_ScorePlayerGarden(void *self, void *grid);
+s32 ContestRecord_ScorePlayerGarden(ContestRecord *self, BlockMap *grid);
+#endif
+#ifndef PROTO_LOCAL_ContestRecord_JudgeGardens
+void ContestRecord_JudgeGardens(ContestRecord *self);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_Reset
-void TownSessionState_Reset(u8 *self);
+void TownSessionState_Reset(TownSessionState *self);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_TestFlag
-BOOL TownSessionState_TestFlag(u32 *w, u32 bit);
+BOOL TownSessionState_TestFlag(TownSessionState *self, u32 bit);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_SetFlag
-void TownSessionState_SetFlag(void *self, u32 bit);
+void TownSessionState_SetFlag(TownSessionState *self, u32 bit);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_ClearFlag
-void TownSessionState_ClearFlag(u32 *w, u32 bit);
+void TownSessionState_ClearFlag(TownSessionState *self, u32 bit);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetClosingTime
-void *TownSessionState_GetClosingTime(u8 *p);
+ShopClosingTime *TownSessionState_GetClosingTime(TownSessionState *p);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetTravelState
-void *TownSessionState_GetTravelState(u8 *p);
+TownTravelState *TownSessionState_GetTravelState(TownSessionState *p);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetResettiFlag
-void *TownSessionState_GetResettiFlag(u8 *p);
+ResettiVisitFlag *TownSessionState_GetResettiFlag(TownSessionState *p);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetKatieState
-void *TownSessionState_GetKatieState(u8 *p);
+KatieVisitState *TownSessionState_GetKatieState(TownSessionState *p);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetPeteFall
-void *TownSessionState_GetPeteFall(u8 *p);
+PeteFallState *TownSessionState_GetPeteFall(TownSessionState *p);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetVisitorFlags
-void *TownSessionState_GetVisitorFlags(u8 *p);
+VisitorSpawnFlags *TownSessionState_GetVisitorFlags(TownSessionState *p);
 #endif
 #ifndef PROTO_LOCAL_TownSessionState_GetVisitorPos
-void *TownSessionState_GetVisitorPos(u8 *p);
+u8 *TownSessionState_GetVisitorPos(TownSessionState *p);
+#endif
+#ifndef PROTO_LOCAL_TownSessionState_CheckTortimerReward
+void TownSessionState_CheckTortimerReward(TownSessionState *self);
+#endif
+#ifndef PROTO_LOCAL_TownSessionState_Get
+TownSessionState *TownSessionState_Get();
 #endif
 }
 #ifndef PROTO_LOCAL_sVillagerGardenOffsets

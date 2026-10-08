@@ -4,7 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_02097110.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct PlayerBank;
+#include "player/PlayerBank.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif

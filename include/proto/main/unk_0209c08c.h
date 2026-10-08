@@ -5,12 +5,12 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 class SavedFadeIn;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_ModelSlotHandle_Init
 void ModelSlotHandle_Init(u16 *p);
 #endif
@@ -23,7 +23,11 @@ void Scene_SaveFadeIn(u32 v);
 #ifndef PROTO_LOCAL_Scene_GetSavedFadeIn
 u32 Scene_GetSavedFadeIn();
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sSavedFadeIn
 extern SavedFadeIn sSavedFadeIn;
 #endif

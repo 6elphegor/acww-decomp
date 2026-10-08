@@ -2,11 +2,6 @@
 #include "types.h"
 #include "ui/WfcApList.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_sWfcAossDoneTimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcAossSetupSucceeded  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcAossSetupTimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcApList  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcTransferWaitResult  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
@@ -29,6 +24,7 @@
 #include "proto/ov001/unk_ov001_0222516c.h"
 #include "proto/ov001/unk_ov001_02226c24.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -41,20 +37,8 @@ namespace F0221197c {
 
 
 extern "C" {
-extern u8 data_ov001_0222ae94[];
-extern u8 GX_LoadBG2Scr[];
-extern u8 sWfcAossDoneTimer;
-extern WfcApList *sWfcApList;
-extern u16 data_ov001_0222a030[];
-extern u16 data_ov001_0222a032[];
-extern u16 data_ov001_0222a034[];
-
-s32 WfcGx_ShowPlanes(u32 a, u32 b);
+void GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *a, void *b);
-s32 FX_ModS32(s32, s32);
-s32 FX_DivS32(s32, s32);
-void *MI_CpuFill8(void *, s32, u32);
-
 }
 
 extern "C" {
@@ -65,11 +49,11 @@ void WfcAossDone_Enter() {
     WfcHighlight_SetConnection();
     WfcUtil_ShowBottomMessage(0x68);
     WfcSound_Play(0x10);
-    WfcUtil_SetScene((void *)WfcAossDone_FadeIn);
+    WfcUtil_SetScene(WfcAossDone_FadeIn);
 }
 
 void WfcAossDone_LoadBg() {
-    WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", GX_LoadBG2Scr);
+    WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
     IO_W((volatile u16 *)0x4001008, (IO_R((volatile u16 *)0x4001008) & ~3) | 3);
     IO_W((volatile u16 *)0x400100a, (IO_R((volatile u16 *)0x400100a) & ~3) | 3);
     IO_W((volatile u16 *)0x400000a, (IO_R((volatile u16 *)0x400000a) & ~3) | 3);
@@ -79,12 +63,12 @@ void WfcAossDone_LoadBg() {
 void WfcAossDone_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcAossDone_WaitFadeIn);
+    WfcUtil_SetScene(WfcAossDone_WaitFadeIn);
 }
 
 void WfcAossDone_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcAossDone_Update);
+    WfcUtil_SetScene(WfcAossDone_Update);
 }
 
 void WfcAossDone_Update() {
@@ -97,7 +81,7 @@ void WfcAossDone_Idle() {}
 void WfcAossDone_FadeOut() {
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcAossDone_Exit);
+    WfcUtil_SetScene(WfcAossDone_Exit);
 }
 
 }
@@ -107,24 +91,6 @@ namespace F02211030 {
 
 
 extern "C" {
-extern u8 data_ov001_0222ae3c[];
-extern u8 data_ov001_0222ae50[];
-extern u8 data_ov001_0222ae68[];
-extern u8 data_ov001_0222ae80[];
-extern volatile u8 sWfcTransferWaitResult;
-extern volatile u8 sWfcAossSetupSucceeded;
-extern volatile u16 sWfcAossSetupTimer;
-extern volatile u8 sWfcAossDoneTimer;
-
-s32 WfcGx_ShowPlanes(s32, s32);
-void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcTransfer_Start(void *);
-s32 WfcInput_Update();
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcInput_IsKeyHeld(s32);
-void GX_LoadBG2Char();
-void GX_LoadBGPltt();
-void GX_LoadBG2Scr();
 
 
 void WfcAossDone_Exit() {
@@ -136,13 +102,13 @@ void WfcAossDone_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     WfcUtil_SetScreenFlags(0, 0);
     WfcUtil_SetEditParams(0, 1);
-    WfcUtil_SetScene((void *)WfcTestConfirm_Enter);
+    WfcUtil_SetScene(WfcTestConfirm_Enter);
 }
 
 void WfcAossDone_WaitTimer() {
     sWfcAossDoneTimer = sWfcAossDoneTimer + 1;
     if (sWfcAossDoneTimer < 0x78) return;
-    WfcUtil_SetScene((void *)WfcAossDone_FadeOut);
+    WfcUtil_SetScene(WfcAossDone_FadeOut);
 }
 
 }

@@ -120,7 +120,7 @@ MapBlockEntry *HouseRoom::buildBlockEntry(void *heap) {
     }
     if (p) {
         for (s32 i = 0; i < 2; i++) {
-            p->layers[i] = (u32)layers[i].getGrid();
+            p->layers[i] = layers[i].getGrid()->items;
         }
         p->buried = 0;
     }

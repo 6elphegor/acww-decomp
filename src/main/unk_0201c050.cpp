@@ -3688,7 +3688,7 @@ void VillagerActor::updateFishCatchPlan(PlanErrand *s1, u8 *tbl, void *p2, u8 p3
             }
             u32 w0 = arr->words[0];
             u32 w1 = arr->words[1];
-            u32 *d = PlanErrand_GetTime(s1);
+            u32 *d = (u32 *)PlanErrand_GetTime(s1);
             d[0] = w0;
             d[1] = w1;
         }

@@ -111,6 +111,18 @@ typedef struct WMStartScanCallback {
     /* 0x12 */ u16 linkLevel;
 } WMStartScanCallback;
 
+// WM_StartParent callback (the fields after reason are not declared).
+typedef struct WMStartParentCallback {
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 errcode;
+    /* 0x04 */ u16 wlCmdID;
+    /* 0x06 */ u16 wlResult;
+    /* 0x08 */ u16 state;
+    /* 0x0a */ u8 macAddress[6];
+    /* 0x10 */ u16 aid;
+    /* 0x12 */ u16 reason;
+} WMStartParentCallback;
+
 // WM_MeasureChannel callback.
 typedef struct WMMeasureChannelCallback {
     /* 0x00 */ u16 apiid;

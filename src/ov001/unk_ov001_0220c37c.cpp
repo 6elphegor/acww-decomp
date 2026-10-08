@@ -29,7 +29,7 @@ extern void OS_GetMacAddress(void *);
 void WfcAoss_Begin() {
     volatile u16 z;
     AossClientInfo r;
-    sWfcAossConfig = (AossParam *)WfcHeap_AllocClear(HOST_SIZED(0x26c, AossParam), 4);
+    sWfcAossConfig = (AossParam *)WfcHeap_AllocClear(sizeof(AossParam), 4);
     sWfcAossSucceeded = 0;
     z = 0;
     MIi_CpuClear16(z, &r, 0x104);

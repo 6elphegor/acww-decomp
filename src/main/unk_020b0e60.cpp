@@ -15,6 +15,7 @@
 #include "net/CommManager.h"
 #include "save/Pattern.h"
 #include "town/BuildingActor.h"
+#include "field/FieldStructureMgr.h"
 #define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
@@ -573,7 +574,7 @@ extern "C" StrBSizeData *StrBSize_Get(u16 *p) {
     return 0;
 }
 
-extern "C" BOOL FieldStructureMgr_Register(u32 v) {
+extern "C" BOOL FieldStructureMgr_Register(FieldStructureMgr *v) {
     if (sFieldStructureMgr == 0) {
         sFieldStructureMgr = v;
         return TRUE;
@@ -589,7 +590,7 @@ extern "C" BOOL FieldStructureMgr_Unregister(void) {
     return FALSE;
 }
 
-extern "C" u32 FieldStructureMgr_Get(void) {
+extern "C" FieldStructureMgr *FieldStructureMgr_Get(void) {
     return sFieldStructureMgr;
 }
 
@@ -1690,7 +1691,7 @@ extern "C" void Building_PlayDoorChime(void) {
 
 
 u8 sBuildingStates[0x22];
-u32 sFieldStructureMgr;
+FieldStructureMgr *sFieldStructureMgr;
 u8 sHouseVisitorPresent;
 s32 sHourHandCos = 0x1000;
 StrBSizeData *sStrBSizeTable[0x22];

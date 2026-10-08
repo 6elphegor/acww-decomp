@@ -5,31 +5,19 @@
 
 #include "types.h"
 #include "net/AossParam.h"
+#include "net/SockAddrIn.h"
 struct AossPollFd;
+struct AossRandState;
 struct AossRc4State;
 struct AossScanList;
+struct AossSession;
+struct AossSocConfig;
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_Aoss_FreeScanBuffers
-void Aoss_FreeScanBuffers();
-#endif
-#ifndef PROTO_LOCAL_sAossConnectResult
-extern void *sAossConnectResult;
-#endif
-#ifndef PROTO_LOCAL_sAossScanList
-extern void *sAossScanList;
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_Aoss_Run
 s32 Aoss_Run(AossParam *a);
 #endif
@@ -38,6 +26,9 @@ s32 Aoss_RunProtocol(u8 *o);
 #endif
 #ifndef PROTO_LOCAL_Aoss_PickHostAddress
 u32 Aoss_PickHostAddress(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_Aoss_FreeScanBuffers
+void Aoss_FreeScanBuffers();
 #endif
 #ifndef PROTO_LOCAL_Aoss_InitSession
 void Aoss_InitSession(u8 *p);
@@ -54,11 +45,8 @@ s32 Aoss_StoreResult(u8 *o);
 #ifndef PROTO_LOCAL_Aoss_IsPrintable
 s32 Aoss_IsPrintable(u8 *s, s32 n);
 #endif
-#ifndef PROTO_LOCAL_Aoss_FindAossAp
-s32 Aoss_FindAossAp(AossScanList *p);
-#endif
 #ifndef PROTO_LOCAL_Aoss_BuildAossApConfig
-s32 Aoss_BuildAossApConfig(u32 *p);
+s32 Aoss_BuildAossApConfig(AossApConfig *p);
 #endif
 #ifndef PROTO_LOCAL_Aoss_InitNonces
 void Aoss_InitNonces(s32 n, u8 *p, void *x);
@@ -109,16 +97,16 @@ s32 Aoss_ParseKeyBlock(s32 idx, u8 *p, s32 len, u8 *base, u8 *extra);
 BOOL Aoss_IsFlag10Set(u32 x);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SendForStage
-s32 Aoss_SendForStage(s32 sel, s32 a, s32 b, s32 c);
+s32 Aoss_SendForStage(s32 sel, void *a, u8 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SendStartRequest
-s32 Aoss_SendStartRequest(s32 unused, u8 *src, s32 arg);
+s32 Aoss_SendStartRequest(void *unused, u8 *src, s32 arg);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SendKeyRequest
-s32 Aoss_SendKeyRequest(s32 a, u8 *b, s32 c);
+s32 Aoss_SendKeyRequest(void *a, u8 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SendFinishRequest
-s32 Aoss_SendFinishRequest(s32 a, u8 *b, s32 c);
+s32 Aoss_SendFinishRequest(void *a, u8 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Aoss_BuildClientInfoTlv
 s32 Aoss_BuildClientInfoTlv(u8 *out);
@@ -130,22 +118,13 @@ void Aoss_WriteBody(s32 mode, u8 *out, u8 *in, s16 *len, u16 *flag, u8 *crcout);
 void Aoss_WriteHeader(u16 *out, u32 x, u32 y, u32 z, s8 a5, s8 a6, u8 *in);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SendPacket
-s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c);
+s32 Aoss_SendPacket(const void *a, s32 b, s32 n, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Aoss_EncryptPayload
 s32 Aoss_EncryptPayload(u8 *a, u8 *b, u32 n, u8 *out, u8 *x, u8 *y, s32 z);
 #endif
 #ifndef PROTO_LOCAL_Aoss_DecryptPayload
 s32 Aoss_DecryptPayload(u8 *a, u8 *b, u32 n, u32 crc, u8 *x, u8 *y, s32 z);
-#endif
-#ifndef PROTO_LOCAL_Aoss_Rc4Init
-void Aoss_Rc4Init(AossRc4State *st, u8 *key, u32 klen, u32 n);
-#endif
-#ifndef PROTO_LOCAL_Aoss_Rc4Crypt
-void Aoss_Rc4Crypt(AossRc4State *st, u8 *out, u8 *in, u32 n);
-#endif
-#ifndef PROTO_LOCAL_Aoss_Rc4NextByte
-u32 Aoss_Rc4NextByte(AossRc4State *st);
 #endif
 #ifndef PROTO_LOCAL_Aoss_CalcCrc32Low8
 u8 Aoss_CalcCrc32Low8(u8 *data, s32 len);
@@ -190,13 +169,10 @@ void Aoss_Memcpy(void *dst, void *src, u32 n);
 void *Aoss_Memset(void *p, u32 v, u32 n);
 #endif
 #ifndef PROTO_LOCAL_Aoss_RecvFrom
-s32 Aoss_RecvFrom(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q);
-#endif
-#ifndef PROTO_LOCAL_Aoss_Select
-s32 Aoss_Select(s32 a, AossPollFd *p, s32 c, s32 d, s32 *q);
+s32 Aoss_RecvFrom(s32 a, void *b, s32 c, s32 d, SockAddrIn *p, s32 *q);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SendTo
-s32 Aoss_SendTo(s32 a, s32 b, s32 c, s32 d, u8 *p, u32 v);
+s32 Aoss_SendTo(s32 a, const void *b, s32 c, s32 d, SockAddrIn *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SetSockOpt
 s32 Aoss_SetSockOpt(s32 s, s32 l, s32 o, void *v, s32 n);
@@ -228,9 +204,6 @@ s32 Aoss_Strlen(char *s);
 #ifndef PROTO_LOCAL_Aoss_Rand16
 u16 Aoss_Rand16(void);
 #endif
-#ifndef PROTO_LOCAL_Aoss_FdSet
-void Aoss_FdSet(u32 v, AossPollFd *s);
-#endif
 #ifndef PROTO_LOCAL_sAossError
 extern s32 sAossError;
 #endif
@@ -243,8 +216,14 @@ extern u32 sAossRandSeeded;
 #ifndef PROTO_LOCAL_sAossCrcTable
 extern u32 sAossCrcTable[0x100];
 #endif
+#ifndef PROTO_LOCAL_sAossConnectResult
+extern AossConnectResult *sAossConnectResult;
+#endif
 #ifndef PROTO_LOCAL_sAossSessionId
 extern u8 sAossSessionId[8];
+#endif
+#ifndef PROTO_LOCAL_sAossScanList
+extern void *sAossScanList;
 #endif
 #ifndef PROTO_LOCAL_sAossPacketBuf
 extern u8 *sAossPacketBuf;
@@ -269,6 +248,42 @@ extern s32 sAossSocket;
 #endif
 #ifndef PROTO_LOCAL_sAossNameBuf
 extern u8 sAossNameBuf[0x280];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Aoss_FindAossAp
+s32 Aoss_FindAossAp(AossScanList *p);
+#endif
+#ifndef PROTO_LOCAL_Aoss_Rc4Init
+void Aoss_Rc4Init(AossRc4State *st, u8 *key, u32 klen, u32 n);
+#endif
+#ifndef PROTO_LOCAL_Aoss_Rc4Crypt
+void Aoss_Rc4Crypt(AossRc4State *st, u8 *out, u8 *in, u32 n);
+#endif
+#ifndef PROTO_LOCAL_Aoss_Rc4NextByte
+u32 Aoss_Rc4NextByte(AossRc4State *st);
+#endif
+#ifndef PROTO_LOCAL_Aoss_Select
+s32 Aoss_Select(s32 a, AossPollFd *p, s32 c, s32 d, s32 *q);
+#endif
+#ifndef PROTO_LOCAL_Aoss_FdZero
+void Aoss_FdZero(AossPollFd *s);
+#endif
+#ifndef PROTO_LOCAL_Aoss_FdSet
+void Aoss_FdSet(u32 v, AossPollFd *s);
+#endif
+#ifndef PROTO_LOCAL_sAossSocConfig
+extern AossSocConfig sAossSocConfig;
+#endif
+#ifndef PROTO_LOCAL_sAossRand
+extern AossRandState sAossRand;
+#endif
+#ifndef PROTO_LOCAL_sAossSession
+extern AossSession sAossSession;
 #endif
 }
 #endif

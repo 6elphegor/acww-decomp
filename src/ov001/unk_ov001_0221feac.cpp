@@ -36,7 +36,6 @@ struct WfcDialogWork {
 extern "C" {
 // not in the shared headers yet (their units' file-local types)
 void WfcObj_Free(WfcObjGroup *p);                          // unk_ov001_0222449c.cpp
-void WfcText_DestroyObjCanvas(WfcBgTextCanvas *o);         // unk_ov001_0222516c.cpp
 void WfcTask_SetFunc(WfcTask *n, void *v);                 // unk_ov001_02226f68.cpp
 void WfcUtil_RectFromPosSize(WfcPoint *a, WfcPoint *b, WfcRect *out);  // unk_ov001_02225924.cpp
 // src/autoload_2/unk_021104ac.c
@@ -317,8 +316,7 @@ void WfcDialog_DestroyTask(WfcTask *task)
             WfcObj_Free(sWfcDialog->buttons[i]);
         }
     }
-    // (the object canvas, which WfcText_DestroyObjCanvas declares with the BG canvas type)
-    WfcText_DestroyObjCanvas((WfcBgTextCanvas *)sWfcDialog->textCanvas);
+    WfcText_DestroyObjCanvas(sWfcDialog->textCanvas);
     WfcTask_RequestDelete(1, task);
     WfcHeap_FreeAndClear((void **)&sWfcDialog);
 }

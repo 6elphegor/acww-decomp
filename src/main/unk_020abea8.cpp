@@ -7,7 +7,6 @@
 #include "gfx/ObjShadowTexDef.h"
 #include "gfx/NNSG3dResMatData.h"
 #include "gfx/ObjShadowBits.h"
-#include "gfx/SceneLightsCol.h"
 #include "item/ShopPurchaseBits.h"
 #include "gfx/Vec3Z.h"
 #include "gfx/Mtx43.h"
@@ -24,6 +23,7 @@
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020643dc.h"
 #include "proto/main/unk_020abea8.h"
 
 
@@ -37,8 +37,6 @@ void Mtx43_Scale(Mtx43 *m, s32 x, s32 y, s32 z);
 void MTX_Concat43(const Mtx43 *a, const Mtx43 *b, Mtx43 *ab);
 void VEC_Normalize(const VecFx32 *src, VecFx32 *dst);
 s32 Ground_GetDefaultY(void);
-s16 SceneLights_GetRoomColor(void);   // an RGB555 colour
-s16 SceneLights_GetFlashColor(void);  // an RGB555 colour
 u8 SceneLights_GetLightParam(u32 x);
 void Clock_GetMinuteHour(u8 *out);
 NNSG3dResTex *NNS_G3dGetTex(void *file);

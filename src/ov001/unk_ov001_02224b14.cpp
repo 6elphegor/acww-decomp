@@ -27,12 +27,12 @@ WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag);
 GXOamAttr *WfcObj_CreateSingle(s32 which, s32 idx);
 void WfcCell_Copy(s32 which, s32 idx, void *dst);
 void WfcCell_Unload(s32 which);
-void WfcCell_Load(s32 which, u32 path);
+void WfcCell_Load(s32 which, void *path);
 
 WfcCellEntry *sWfcCellData[2];
 }
 
-void WfcCell_Load(s32 which, u32 path) {
+void WfcCell_Load(s32 which, void *path) {
     u32 buf[2];
     sWfcCellData[which] = (WfcCellEntry *)WfcFs_LoadFile(path, buf, 4);
 }
@@ -60,10 +60,9 @@ void WfcCell_Copy(s32 which, s32 idx, void *dst) {
     }
 }
 
-// one OBJ entry (from the OAM buffer's entry pool) with the cell's attributes
 GXOamAttr *WfcObj_CreateSingle(s32 which, s32 idx) {
     u32 buf[2];
-    GXOamAttr *r = (GXOamAttr *)WfcOam_AllocEntry(which, buf);
+    GXOamAttr *r = WfcOam_AllocEntry(which, buf);
     WfcCell_Copy(which, idx, r);
     return r;
 }

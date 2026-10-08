@@ -167,7 +167,9 @@ def make_headers(defs, only=None):
                     fwd_cpp.add(f'{tag} {name};')
                     cpp = True
                     continue
-                if f.startswith('include/'):
+                if f.startswith('include/proto/') and kind in ('STRUCT_DECL', 'CLASS_DECL', 'UNION_DECL'):
+                    f = None  # only declared ahead in a generated header: declared ahead here too (below)
+                if f is not None and f.startswith('include/'):
                     hh = f[len('include/'):]
                     includes.add(hh)
                     if header_is_cpp(hh):
@@ -183,7 +185,8 @@ def make_headers(defs, only=None):
                         cpp = True
                     else:
                         fwd_c.add(decl)
-                        cpp = True  # (C would need the struct keyword in the prototype)
+                        if not src.endswith('.c'):
+                            cpp = True  # (a C++ unit names the struct without the tag: not C)
             text = strip_defaults(' '.join(r['proto'].split())) if not r.get('var') else pretty(r['proto'])
             if r.get('var'):  # a variable built by a constructor call: its declaration leaves the arguments out
                 text = re.sub(r'(\b%s)\s*\(.*\)$' % re.escape(r['name']), r'\1', text)

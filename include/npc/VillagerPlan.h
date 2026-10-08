@@ -2,11 +2,15 @@
 #define NPC_VILLAGERPLAN_H
 
 #include "types.h"
+#include "sys/ClockDateTime.h"
+#include "npc/ErrandRecord.h"
+
+class MsgString;
 
 // A villager's plan: its state (moving in / out, trends) with times, and the trend scores. Methods in
-// src/main/unk_02098e90.cpp (which still has its own copies of these definitions: it should include this header
-// instead).
-struct TrendScores {
+// src/main/unk_02098e90.cpp.
+class TrendScores {
+public:
     u8 values[8];
 
     TrendScores();
@@ -24,11 +28,10 @@ struct TrendScores {
 
 struct VillagerPlanFlags { u8 state2Flag : 1; u8 x : 7; };
 
-struct VillagerPlan {
-    u32 planTime;
-    u32 planTimeHi;
-    u32 stateTime;
-    u32 stateTimeHi;
+class VillagerPlan {
+public:
+    ClockDateTimeWords planTime;  // when the current trend / state was set
+    ClockDateTimeWords stateTime;
     u8 planState;
     TrendScores scores;
     TrendScores pendingScores;
@@ -41,13 +44,13 @@ struct VillagerPlan {
     void addPendingScore(u8 idx, s32 delta);
     BOOL addRandomScores(s16 *p);
     void applyPendingScores(s16 *p);
-    s32 getTrendName(s32 x);
-    s32 finishMovingIn(void *x);
+    static s32 getTrendName(MsgString *out, s32 x); // the trend's name into out
+    s32 finishMovingIn(ClockDateTime *now);
     s32 leaveState0B(VillagerPlan *o);
     s32 finishTrendChange();
     s32 updateTopTrend();
-    BOOL isTrendOlderThanWeek(void *o);
-    BOOL isTrendOlderThan(void *o, u32 c);
+    BOOL isTrendOlderThanWeek(ClockDateTime *now);
+    BOOL isTrendOlderThan(ClockDateTime *now, u32 days);
     void enterState0B();
     void startTrendChange();
     BOOL hasState2Flag();
@@ -60,6 +63,13 @@ struct VillagerPlan {
     void clear();
     void resetAndHalveScores(u8 i);
     u32 pickTopScore();
+};
+
+// A villager's plan block (VillagerData::planBlock, Villager_GetPlan): the plan and its errand for a player.
+class VillagerPlanBlock {
+public:
+    /* 0x00 */ VillagerPlan plan;
+    /* 0x24 */ PlanErrand errand;
 };
 
 #endif

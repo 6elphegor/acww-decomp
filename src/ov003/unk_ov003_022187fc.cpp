@@ -1,29 +1,28 @@
-#include "town/TownBlockCell.h"
-#include "sys/NNSFndArchive.h"
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "town/BlockMap.h"
 #include "gfx/VecFx32.h"
-#include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
+#include "sys/NNSFndArchive.h"
 #include "town/BuildingActor.h"
+#include "town/BuildingInfo.h"
+#include "town/BlockMap.h"
+#include "town/MapBlock.h"
+#include "town/TownMap.h"
+#include "town/TownBlockMap.h"
+#include "town/Unk_0204e858_Grid.h"
+#include "save/TownStyleRecordView.h"
 #include "actor/Actor.h"
 #include "game/StrBSizeData.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_BuildingInfo_GetKind  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BuildingInfo_GetProfile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldStructureHeap_Destroy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldStructureMgr_DestroyHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldStructureMgr_SpawnAll  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldStructureMgr_SpawnBuilding  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldStructureMgr_Unregister  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "field/FieldStructureMgr.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 
@@ -32,131 +31,48 @@
 // (Building_FindNearPos needs it; all other functions of the TU still match with it)
 #pragma opt_loop_invariants off
 
-struct Unk_ov003_02218c60_Grid {
-    /* 0x00 */ u8 *cells;
-    /* 0x04 */ u32 w;
-    /* 0x08 */ u32 h;
-};
-
-// ---- the three statically constructed objects (constructors/destructors are this TU's own) ----
-// 4-byte object at 0x02235818 (a pointer: PlayerHouseTex_Load stores the texture in it)
-class PlayerHouseTex {
-public:
-    PlayerHouseTex();
-    ~PlayerHouseTex();
-    void *tex;
-};
-
-// 0x20-byte object at 0x02235840
-class HouseLightUpDeco {
-public:
-    HouseLightUpDeco();
-    ~HouseLightUpDeco();
-    /* 0x00 */ void *tex;
-    /* 0x04 */ void *models[5];
-    /* 0x18 */ void *texPattern;
-    /* 0x1c */ u8 isLoaded;
-};
-
-// 0x28-byte object at 0x02235860
-class VillagerHouseTex {
-public:
-    VillagerHouseTex();
-    ~VillagerHouseTex();
-    /* 0x00 */ void *houseTextures[4];
-    /* 0x10 */ void *lightTextures[4];
-    /* 0x20 */ void *doorInAnim;
-    /* 0x24 */ void *doorOutAnim;
-};
-
-// other modules' methods are reached through their real mangled symbols (object first)
-#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
-#define TownMap_placeStructure _ZN7TownMap14placeStructureEPtiih
-#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define TownStyleRecordView_getHouseStyles _ZN19TownStyleRecordView14getHouseStylesEv
-#define StrBSizeData_getSolidUnit _ZN12StrBSizeData12getSolidUnitEPiS0_S0_j
-#define StrBSizeData_getSolidUnitCount _ZN12StrBSizeData17getSolidUnitCountEv
-#define BuildingActor_getItemId _ZN13BuildingActor9getItemIdEv
-#define BuildingActor_tryOpenDoorForExit _ZN13BuildingActor18tryOpenDoorForExitEv
-#define BuildingActor_openDoorForExit _ZN13BuildingActor15openDoorForExitEv
-#define BuildingActor_tryOpenDoorForEntry _ZN13BuildingActor19tryOpenDoorForEntryEv
-#define BuildingActor_openDoorForEntry _ZN13BuildingActor16openDoorForEntryEv
+struct NNSG3dResTex;
+struct TexVramSlot;
 
 extern "C" {
-extern u8 gSaveTownFlag[];
-extern void *gCurrentHeap;
-extern Unk_ov003_02218c60_Grid *gSceneBlockMap;
-extern u8 data_020d0a7c[];
-extern u32 *gActorDefaultParent;
-extern u32 *gCommManager;
+extern TownStyleRecordView gSaveTownFlag;
+extern BlockMap *gSceneBlockMap;
+extern BuildingInfo data_020d0a7c[];  // the building info table (0x22 records, by building item id & 0xfff)
+extern CommManager *gCommManager;
+extern u8 gSaveTownState[];
 }
 
-class FieldStructureMgr : public GameProc {
-public:
-    FieldStructureMgr();
-    virtual BOOL onCreate();
-    virtual BOOL onDelete();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual ~FieldStructureMgr();
-};
-
 extern "C" {
-s32 MapBlockAcre_getAcreId(void *c);
-void MapBlock_SetItem(void *c, u16 *p, s32 a, s32 b, s32 d);
-void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
-void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 x, s32 y, u32 i, u32 j);
+// (declarations of functions the shared headers leave out: include/proto/.excluded)
+BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
+u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 s32 Scene_InTown();
-s32 CommManager_isSlotActive(void *self, u32 v);
-s32 TownBlockMap_Get();
-s32 Town_FindTownHallFront(s32 k, s32 *a, s32 *b, s32 *c);
-void *TownStyleRecordView_getHouseStyles(void *p);
-void *NNS_G3dGetTex(void *p);
-s32 Gfx3d_LoadTex(void *p, s32 a);
-void *Gfx3d_CopyTex(void *p, void *heap);
-s32 Gfx3d_LoadTexAndPltt(void *p, s32 a);
-void *func_021065dc(void *p);
-void *func_021065f8(void *p, s32 a);
-u16 *BuildingActor_getItemId(void *p);
+TownBlockMap *TownBlockMap_Get();
+BOOL Town_FindTownHallFront(void *a, s32 *pos, s32 *p3, s32 *p4);
+u8 *NNS_G3dGetTex(u8 *p);
+u8 *NNS_G3dGetMdlSet(u8 *p);
+BOOL Gfx3d_LoadTex(NNSG3dResTex *a, TexVramSlot *b);
+BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, TexVramSlot *b);
+BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, TexVramSlot *b);
+void *Gfx3d_CopyTex(void *a, void *heap);
+u8 *func_021065dc(u8 *p);
+u8 *func_021065f8(u8 *p, u32 a);
+u8 *func_02106690(u8 *p);
+u8 *func_021066ac(u8 *p, u32 a);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 GroundSeason_IsSnow();
-s32 BuildingActor_tryOpenDoorForExit(void *p);
-s32 BuildingActor_tryOpenDoorForEntry(void *p);
-s32 BuildingActor_openDoorForExit(void *p);
-s32 BuildingActor_openDoorForEntry(void *p);
 void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-void FieldStructureHeap_Destroy(s32 a);
-s32 StrBSizeData_getSolidUnitCount(void *self);
-s32 StrBSizeData_getSolidUnit(void *self, s32 *a, s32 *b, s32 *c, u32 i);
-void Ground_SetQuadrantsBlocked(s32 x, s32 y, u32 v);
 void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 y);
-void BuildingInfo_Copy(void *o, void *p);
-s32 BuildingInfo_GetKind(void *o);
-s32 BuildingInfo_GetProfile(void *o);
-void BuildingInfo_Destroy(void *o);
-s32 Actor_spawn(s32 self, void *b, void *c, void *d, void *e);
-void TownMap_placeStructure(void *self, u16 *p, s32 x, s32 y, u8 z);
-void FieldStructureMgr_Unregister(s32 a);
-void Gfx3d_LoadPltt(void *, s32);
-extern u32 gSaveTownState[];
-s32 TownState_FindEvent(void *, s32);
-s32 NNS_FndMountArchive(char *, const char *, void *);
-void *NNS_G3dGetMdlSet(void *);
-void *func_02106690(void *);
-void *func_021066ac(void *, s32);
-void NNS_FndUnmountArchive(char *);
+u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+BOOL Ground_SetQuadrantsBlocked(s32 x, s32 z, s32 mask);
+s32 TownState_FindEvent(s32 x, u32 id);
+BOOL NNS_FndMountArchive(NNSFndArchive *arc, const char *name, u32 *binary);
+BOOL NNS_FndUnmountArchive(NNSFndArchive *arc);
+void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
+void BuildingInfo_Destroy(BuildingInfo *i);
 }
-
-extern "C" {
-void FieldStructureMgr_DestroyHeap(s32 a);
-s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag);
-s32 FieldStructureMgr_SpawnAll(void *self);
-}
-
-
 
 // the TU's bss objects; the three static objects have constructors and destructors (see __sinit)
 extern "C" {
@@ -186,13 +102,13 @@ FieldStructureMgr::~FieldStructureMgr() {}
 BOOL FieldStructureMgr::onCreate() {
     BuildingList_Init();
     Field_CacheExitedBuildingKey();
-    FieldStructureMgr_Register((s32)this);
-    FieldStructureMgr_CreateHeap((s32)this);
-    PlayerHouseTex_Load((void **)&sPlayerHouseTex);
+    FieldStructureMgr_Register(this);
+    FieldStructureMgr_CreateHeap(this);
+    PlayerHouseTex_Load(&sPlayerHouseTex);
     VillagerHouseTex_Load(&sVillagerHouseTex);
     HouseLightUpDeco_Load(&sHouseLightUpDeco);
-    func_ov003_02219164((s32)this);
-    func_ov003_02219160((s32)this);
+    func_ov003_02219164(this);
+    func_ov003_02219160(this);
     FieldStructureMgr_SpawnAll(this);
     GameProc_CreateChild(0xf, gActorDefaultParent, 0, 0);
     return TRUE;
@@ -204,40 +120,40 @@ BOOL FieldStructureMgr::onDraw() { return TRUE; }
 
 BOOL FieldStructureMgr::onDelete() {
     BuildingList_Clear();
-    FieldStructureMgr_Unregister((s32)this);
+    FieldStructureMgr_Unregister();
     VillagerHouseTex_Clear(&sVillagerHouseTex);
     HouseLightUpDeco_Release(&sHouseLightUpDeco);
     PlayerHouseTex_Release(&sPlayerHouseTex);
-    FieldStructureMgr_DestroyHeap((s32)this);
+    FieldStructureMgr_DestroyHeap(this);
     return TRUE;
 }
 
 extern "C" {
 
-void func_ov003_02219164(s32 a) {}
+void func_ov003_02219164(FieldStructureMgr *self) {}
 
-void func_ov003_02219160(s32 a) {}
+void func_ov003_02219160(FieldStructureMgr *self) {}
 
-s32 FieldStructureMgr_SpawnAll(void *self) {
+s32 FieldStructureMgr_SpawnAll(FieldStructureMgr *self) {
     BOOL go;
     u32 gw, gh;
     u32 ii, jj;
     s32 count;
     s32 r24;
-    u8 *cell;
+    MapBlock *cell;
     BOOL a;
     u16 buf[3];
-    u32 obj[3];
+    BuildingInfo obj;
     s32 ax, ay;
     s32 bx, by;
-    struct { s32 cx; u32 pad[3]; } tl;
+    VecFx32 tl;
     u32 x, y;
     u16 *p;
-    Unk_ov003_02218c60_Grid *g;
+    BlockMap *g;
     sSpawnedBuildingCount1 = 0;
     g = gSceneBlockMap;
-    gw = g->w;
-    gh = g->h;
+    gw = g->width;
+    gh = g->height;
     a = TRUE;
     if (Taxi_IsArriving() == 0) {
         if (Taxi_IsLeaving() == 0) {
@@ -247,12 +163,13 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
     count = 0;
     for (y = 0; y < gh; y++) {
         for (x = 0; x < gw; x++) {
-            if (x < g->w && y < g->h && g->cells != 0) {
-                cell = g->cells + (x + y * g->w) * MAPBLOCK_SIZE;
+            if (x < g->width && y < g->height && g->blocks != 0) {
+                cell = (MapBlock *)g->blocks + (x + y * g->width);
             } else {
                 cell = 0;
             }
-            s32 t = MapBlockAcre_getAcreId(cell);
+            // (the acre id at the start of the block, seen as a MapBlockAcre)
+            s32 t = reinterpret_cast<MapBlockAcre *>(cell)->getAcreId();
             switch (t) {
             case 0x1a:
             case 0x1b:
@@ -262,7 +179,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
             }
             for (jj = 0; jj < 0x10; jj++) {
                 for (ii = 0; ii < 0x10; ii++) {
-                    p = (u16 *)MapBlock_GetItemPtr(cell, ii, jj, 0);
+                    p = MapBlock_GetItemPtr(cell, ii, jj, 0);
                     if (p != 0) {
                         BOOL f = FALSE;
                         if (*p >= 0x5000 && *p <= 0x5021) {
@@ -281,14 +198,14 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
                             } else {
                                 idx = -1;
                             }
-                            u8 *q;
+                            BuildingInfo *q;
                             if (idx < 0x22) {
-                                q = data_020d0a7c + idx * 10;
+                                q = &data_020d0a7c[idx];
                             } else {
                                 q = data_020d0a7c;
                             }
-                            BuildingInfo_Copy(obj, q);
-                            r24 = BuildingInfo_GetKind(obj);
+                            BuildingInfo_Copy(&obj, q);
+                            r24 = BuildingInfo_GetKind(&obj);
                             if (a == 0 || r24 != 2) {
                                 go = 1;
                             } else {
@@ -315,7 +232,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
                                     count++;
                                 }
                             }
-                            BuildingInfo_Destroy(obj);
+                            BuildingInfo_Destroy(&obj);
                         }
                     }
                 }
@@ -323,10 +240,10 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
         }
     }
     if (Scene_InTown()) {
-        if (!((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid)) {
-            s32 k = TownBlockMap_Get();
+        if (!gCommManager->isSlotActive(gCommManager->myAid)) {
+            TownBlockMap *k = TownBlockMap_Get();
             if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
-                if (Town_FindTownHallFront(k, &tl.cx, &bx, &by)) {
+                if (Town_FindTownHallFront(k, &tl.x, &bx, &by)) {
                     buf[0] = 0x501b;
                     FieldStructureMgr_SpawnBuilding(self, &buf[0], bx, by + 1, 0);
                 }
@@ -336,9 +253,9 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
     return count;
 }
 
-s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
+s32 FieldStructureMgr_SpawnBuilding(FieldStructureMgr *self, u16 *pv, s32 x, s32 y, u8 flag) {
     VecFx32 vec;
-    u32 obj[3];
+    BuildingInfo obj;
     u32 idx;
     vec.x = 0;
     vec.y = 0;
@@ -354,33 +271,34 @@ s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag) 
     } else {
         idx = -1;
     }
-    u8 *q;
+    BuildingInfo *q;
     if (idx < 0x22) {
-        q = data_020d0a7c + idx * 10;
+        q = &data_020d0a7c[idx];
     } else {
         q = data_020d0a7c;
     }
-    BuildingInfo_Copy(obj, q);
-    if (Actor::spawn((void *)(BuildingInfo_GetProfile(obj)), (void *)*pv, &vec, 0, 0) != 0) {
+    BuildingInfo_Copy(&obj, q);
+    // (Actor::spawn takes the profile and the spawn parameter as pointer-sized values)
+    if (Actor::spawn((void *)(uptr)BuildingInfo_GetProfile(&obj), (void *)(uptr)*pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
-            TownMap_placeStructure(gSceneBlockMap, pv, x, y, 0);
-            FieldStructureMgr_ApplyFootprint((s32)self, pv, x, y);
+            ((BlockMap *)gSceneBlockMap)->placeStructure(pv, x, y, 0);
+            FieldStructureMgr_ApplyFootprint(self, pv, x, y);
         }
-        BuildingInfo_Destroy(obj);
+        BuildingInfo_Destroy(&obj);
         return 1;
     }
-    BuildingInfo_Destroy(obj);
+    BuildingInfo_Destroy(&obj);
     return 0;
 }
 
-s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y) {
+s32 FieldStructureMgr_ApplyFootprint(FieldStructureMgr *self, u16 *b, s32 x, s32 y) {
     s32 va, vb, vc;
-    void *p = StrBSize_Get((s32)b);
+    StrBSizeData *p = StrBSize_Get(b);
     if (p != 0) {
-        u32 n = ((StrBSizeData *)(p))->getSolidUnitCount();
+        u32 n = p->getSolidUnitCount();
         u32 i;
         for (i = 0; i < n; i++) {
-            if (((StrBSizeData *)(p))->getSolidUnit(&vc, &va, &vb, i)) {
+            if (p->getSolidUnit(&vc, &va, &vb, i)) {
                 Ground_SetQuadrantsBlocked(x + va, y + vb, (u8)vc);
             }
         }
@@ -388,15 +306,15 @@ s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y) {
     return 1;
 }
 
-void FieldStructureMgr_CreateHeap(s32 a) { FieldStructureHeap_Create(0x1f000, 0); }
+void FieldStructureMgr_CreateHeap(FieldStructureMgr *self) { FieldStructureHeap_Create(0x1f000, 0); }
 
-void FieldStructureMgr_DestroyHeap(s32 a) { FieldStructureHeap_Destroy(a); }
+void FieldStructureMgr_DestroyHeap(FieldStructureMgr *self) { FieldStructureHeap_Destroy(); }
 
 s32 Field_GetStructureTexSuffix() { return ((s8 *)sStructureTexSuffixes)[GroundSeason_IsSnow()]; }
 
 u32 Field_GetSpawnedKind1Count() { return sSpawnedBuildingCount1; }
 
-void *FieldStructureMgr_GetPlayerHouseTex() { return &sPlayerHouseTex; }
+PlayerHouseTex *FieldStructureMgr_GetPlayerHouseTex() { return &sPlayerHouseTex; }
 
 VillagerHouseTex *FieldStructureMgr_GetVillagerHouseTex() { return &sVillagerHouseTex; }
 
@@ -409,7 +327,7 @@ void Field_SetDoorExitMode(u32 v) { sDoorExitMode = v; }
 s32 Building_OpenDoorForEntryAt(VecFx32 *a) {
     void *r = Building_FindNearPos(a);
     if (r != 0) {
-        return ((BuildingActor *)(r))->openDoorForEntry();
+        return ((BuildingActor *)r)->openDoorForEntry();
     }
     return 0;
 }
@@ -417,7 +335,7 @@ s32 Building_OpenDoorForEntryAt(VecFx32 *a) {
 s32 Building_OpenDoorForExitAt(VecFx32 *a) {
     void *r = Building_FindNearPos(a);
     if (r != 0) {
-        return ((BuildingActor *)(r))->openDoorForExit();
+        return ((BuildingActor *)r)->openDoorForExit();
     }
     return 0;
 }
@@ -425,7 +343,7 @@ s32 Building_OpenDoorForExitAt(VecFx32 *a) {
 s32 VillagerHouse_TryOpenDoorForEntry(s32 a) {
     void *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return ((BuildingActor *)(r))->tryOpenDoorForEntry();
+        return ((BuildingActor *)r)->tryOpenDoorForEntry();
     }
     return 0;
 }
@@ -433,13 +351,13 @@ s32 VillagerHouse_TryOpenDoorForEntry(s32 a) {
 s32 VillagerHouse_TryOpenDoorForExit(s32 a) {
     void *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return ((BuildingActor *)(r))->tryOpenDoorForExit();
+        return ((BuildingActor *)r)->tryOpenDoorForExit();
     }
     return 0;
 }
 
 void *Building_FindNearPos(VecFx32 *a) {
-    Unk_ov003_02218c60_Grid *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     s32 xy[2];
     if (g != 0) {
         FieldPos_ToUnit(&xy[0], &xy[1], a);
@@ -447,7 +365,7 @@ void *Building_FindNearPos(VecFx32 *a) {
             for (s32 x = xy[0] - 3; x <= xy[0] + 3; x++) {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                u16 *cell = BlockMap_GetItemPtr(reinterpret_cast<Unk_0204e858_Grid *>(g), hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != 0) {
                     BOOL f = FALSE;
                     u16 v = *cell;
@@ -483,7 +401,7 @@ s32 BuildingList_Remove(void *p) {
     s32 i = BuildingList_IndexOf(p);
     s32 m = -1;
     if (i != m) {
-        *(u32 *)&sBuildingList[i] = 0;
+        sBuildingList[i] = 0;
         return 1;
     }
     return 0;
@@ -514,7 +432,7 @@ void *BuildingList_FindByItem(u32 id) {
     for (i = 0; (u32)i < 0x20; i++) {
         BuildingActor *e = sBuildingList[i];
         if (e != 0) {
-            u16 *r = ((BuildingActor *)(e))->getItemId();
+            u16 *r = e->getItemId();
             BOOL ok;
             if (Item_IsFurniture(r) != 0) {
                 u16 tmp;
@@ -544,17 +462,15 @@ s32 BuildingList_IndexOf(void *p) {
 
 void BuildingList_Init() {
     u32 i;
-    s32 z = 0;
     for (i = 0; i < 0x20; i++) {
-        *(u32 *)&sBuildingList[i] = z;
+        sBuildingList[i] = 0;
     }
 }
 
 void BuildingList_Clear() {
     u32 i;
-    s32 z = 0;
     for (i = 0; i < 0x20; i++) {
-        *(u32 *)&sBuildingList[i] = z;
+        sBuildingList[i] = 0;
     }
 }
 
@@ -569,48 +485,42 @@ VillagerHouseTex::~VillagerHouseTex() {}
 extern "C" {
 
 s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
-    void *str;
+    u8 *str;
     void *heap = gFieldStructureHeap;
     u8 i = 0;
     s32 m3 = -4;
-    s32 zb = 0;
-    s32 za = 0;
     do {
-        s32 v = TownStyle_GetVillagerHouseStyle(TownStyleRecordView_getHouseStyles(gSaveTownFlag), i);
+        s32 v = TownStyle_GetVillagerHouseStyle((u8 *)gSaveTownFlag.getHouseStyles(), i);
         s32 c = (s8)(v / 5 + 0x41);
         s32 rem = v % 5;
-                void *h2 = gCurrentHeap;
+        Heap *h2 = gCurrentHeap;
         s32 a = Field_GetStructureTexSuffix();
-        str = File_LoadAllocF(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
-        u32 off = i << 2;
-        void **e = &self->houseTextures[i];
-        self->houseTextures[i] = NNS_G3dGetTex(str);
-        if (Gfx3d_LoadTex(self->houseTextures[i], za)) {
-            *e = Gfx3d_CopyTex(*e, gFieldStructureHeap);
+        str = (u8 *)File_LoadAllocF(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
+        self->houseTextures[i] = (NNSG3dResTex *)NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTex(self->houseTextures[i], NULL)) {
+            self->houseTextures[i] = (NNSG3dResTex *)Gfx3d_CopyTex(self->houseTextures[i], gFieldStructureHeap);
         }
         Mem_Free(str);
-        str = File_LoadAllocF(gCurrentHeap, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
-        e[4] = NNS_G3dGetTex(str);
-        if (Gfx3d_LoadTexAndPltt(e[4], zb)) {
-            e[4] = Gfx3d_CopyTex(e[4], heap);
+        str = (u8 *)File_LoadAllocF(gCurrentHeap, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
+        self->lightTextures[i] = (NNSG3dResTex *)NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTexAndPltt(self->lightTextures[i], NULL)) {
+            self->lightTextures[i] = (NNSG3dResTex *)Gfx3d_CopyTex(self->lightTextures[i], heap);
         }
         Mem_Free(str);
         i = i + 1;
     } while (i < 4);
-    self->doorInAnim = func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0)), 0);
-    self->doorOutAnim = func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0)), 0);
+    self->doorInAnim = func_021065f8(func_021065dc((u8 *)File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0)), 0);
+    self->doorOutAnim = func_021065f8(func_021065dc((u8 *)File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0)), 0);
     return 1;
 }
 
 void VillagerHouseTex_Clear(VillagerHouseTex *o) {
     u32 i;
-    void *z = NULL;
     for (i = 0; i < 4; i++) {
-        void **e = &o->houseTextures[i];
-        o->houseTextures[i] = z;
-        e[4] = z;
+        o->houseTextures[i] = NULL;
+        o->lightTextures[i] = NULL;
     }
-    o->doorOutAnim = z;
+    o->doorOutAnim = NULL;
     o->doorInAnim = o->doorOutAnim;
 }
 
@@ -634,43 +544,42 @@ extern "C" {
 
 void HouseLightUpDeco_Clear(HouseLightUpDeco *o) {
     u32 i;
-    void *z = NULL;
     for (i = 0; i < 5; i++) {
-        o->models[i] = z;
+        o->models[i] = NULL;
     }
-    o->tex = z;
-    o->texPattern = z;
+    o->tex = NULL;
+    o->texPattern = NULL;
     o->isLoaded = 0;
 }
 
 s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
-    u32 buf[HOST_SIZED(0x6c, NNSFndArchive) / 4] HOST_ALIGN8;
+    NNSFndArchive arc;
     u32 i;
     BOOL z;
     HouseLightUpDeco_Clear(r);
-    s32 c = TownState_FindEvent(gSaveTownState, 0x11);
+    s32 c = TownState_FindEvent(0, 0x11);  // (its first argument, the town state, is not used)
     z = FALSE;
     if (c == ~z) {
         return z;
     }
     void *t = File_LoadAlloc("/str/npcHsX.arc", gFieldStructureHeap, 4, NULL);
-    if (NNS_FndMountArchive((char *)buf, "STR", t) != 0) {
+    if (NNS_FndMountArchive(&arc, "STR", (u32 *)t) != 0) {
         for (i = 0; i < 5; i++) {
             Str_SPrintf(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
-            u8 *p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(data_ov003_02235888));
-            r->models[i] = p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);
+            u8 *p = NNS_G3dGetMdlSet((u8 *)NNS_FndGetArchiveFileByName(data_ov003_02235888));
+            r->models[i] = p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);  // the set's first model (its dictionary entry)
         }
-        r->tex = NNS_G3dGetTex(NNS_FndGetArchiveFileByName("STR:a/obj_x_house0.nsbtx"));
-        Gfx3d_LoadTexAndPltt(r->tex, 0);
-        r->texPattern = func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("STR:a/obj_x_deco.nsbtp")), 0);
+        r->tex = (NNSG3dResTex *)NNS_G3dGetTex((u8 *)NNS_FndGetArchiveFileByName("STR:a/obj_x_house0.nsbtx"));
+        Gfx3d_LoadTexAndPltt(r->tex, NULL);
+        r->texPattern = func_021066ac(func_02106690((u8 *)NNS_FndGetArchiveFileByName("STR:a/obj_x_deco.nsbtp")), 0);
         r->isLoaded = 1;
-        NNS_FndUnmountArchive((char *)buf);
+        NNS_FndUnmountArchive(&arc);
     }
     return 1;
 }
 
-void HouseLightUpDeco_Release(void *p) {
-    HouseLightUpDeco_Clear((HouseLightUpDeco *)p);
+void HouseLightUpDeco_Release(HouseLightUpDeco *p) {
+    HouseLightUpDeco_Clear(p);
 }
 
 void *HouseLightUpDeco_GetTex(HouseLightUpDeco *p) {
@@ -695,28 +604,28 @@ u8 HouseLightUpDeco_IsLoaded(HouseLightUpDeco *r) {
 }
 
 PlayerHouseTex::PlayerHouseTex() {
-    tex = 0;
+    tex = NULL;
 }
 
 PlayerHouseTex::~PlayerHouseTex() {}
 
 extern "C" {
 
-s32 PlayerHouseTex_Load(void **out) {
-    void *r4 = gCurrentHeap;
+s32 PlayerHouseTex_Load(PlayerHouseTex *self) {
+    Heap *r4 = gCurrentHeap;
     s32 r3 = Field_GetStructureTexSuffix();
     void *t = File_LoadAllocF(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
     if (t != 0) {
-        *out = NNS_G3dGetTex(t);
-        Gfx3d_LoadPltt(*out, 0);
-        *out = Gfx3d_CopyTex(*out, gFieldStructureHeap);
+        self->tex = (NNSG3dResTex *)NNS_G3dGetTex((u8 *)t);
+        Gfx3d_LoadPltt(self->tex, NULL);
+        self->tex = (NNSG3dResTex *)Gfx3d_CopyTex(self->tex, gFieldStructureHeap);
         Mem_Free(t);
         return 1;
     }
     return 0;
 }
 
-void PlayerHouseTex_Release(void *p) {
+void PlayerHouseTex_Release(PlayerHouseTex *p) {
 }
 
 }

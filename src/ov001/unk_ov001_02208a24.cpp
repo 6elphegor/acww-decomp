@@ -3,17 +3,15 @@
 #include "ui/WfcLinkIcon.h"
 #include "nitro/io_access.h"
 #include "proto/ov001/unk_ov001_02208a24.h"
+#include "proto/ov001/unk_ov001_02224b14.h"
 #include "proto/ov001/unk_ov001_022266b0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
 extern "C" {
-extern void WfcCell_Copy(s32, u32, u32);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);
-extern GXOamAttr *WfcObj_CreateSingle(s32, s32);
 extern u32 WM_GetAllowedChannel();
 extern u32 WM_GetLinkLevel();
-extern WfcLinkIcon *sWfcLinkIcon;
 }
 
 extern "C" const u16 data_ov001_02229bcc[2] = {0xe5, 0x26};
@@ -28,7 +26,7 @@ extern "C" void WfcLinkIcon_Create(s32 a) {
     if (sWfcLinkIcon != NULL) {
         return;
     }
-    sWfcLinkIcon = (WfcLinkIcon *)WfcHeap_Alloc(HOST_SIZED(0xc, WfcLinkIcon), 4);
+    sWfcLinkIcon = (WfcLinkIcon *)WfcHeap_Alloc(sizeof(WfcLinkIcon), 4);
     sWfcLinkIcon->iconSet = a;
     sWfcLinkIcon->oam = WfcObj_CreateSingle(0, data_ov001_02229bd0[a][0]);
     sWfcLinkIcon->oam->attr01 = (sWfcLinkIcon->oam->attr01 & 0xfe00ff00) | (data_ov001_02229bcc[1] & 0xff) | ((data_ov001_02229bcc[0] & 0x1ff) << 16);
@@ -39,7 +37,7 @@ extern "C" void WfcLinkIcon_Create(s32 a) {
 extern "C" void WfcLinkIcon_Delete() {
     if (sWfcLinkIcon == 0) return;
     WfcTask_Delete(0, sWfcLinkIcon->task);
-    WfcOam_FreeEntry((u32)sWfcLinkIcon->oam);
+    WfcOam_FreeEntry(sWfcLinkIcon->oam);
     WfcHeap_FreeAndClear(&sWfcLinkIcon);
 }
 
@@ -51,8 +49,8 @@ extern "C" void WfcLinkIcon_Task() {
     if (WM_GetAllowedChannel() != 0x8000) x = WM_GetLinkLevel();
     IO_R(ime);
     IO_W(ime, saved);
-    const u8 *q = (const u8 *)data_ov001_02229bd0 + sWfcLinkIcon->iconSet * 4;
-    WfcCell_Copy(0, q[x], (u32)sWfcLinkIcon->oam);
+    const u8 *q = data_ov001_02229bd0[sWfcLinkIcon->iconSet];
+    WfcCell_Copy(0, q[x], sWfcLinkIcon->oam);
     const u16 *p = data_ov001_02229bcc;
     GXOamAttr *r = sWfcLinkIcon->oam;
     r->attr01 = (r->attr01 & 0xfe00ff00) | (p[1] & 0xff) | ((p[0] & 0x1ff) << 16);

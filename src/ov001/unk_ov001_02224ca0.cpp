@@ -10,13 +10,13 @@
 
 
 
+// One per screen: [0] the sub screen (mode 1), [1] the main screen.
 struct WfcFadeState {
-    s32 task;
+    void *task;
     s16 frame;
     u16 duration;
     u8 fadeType;
     u8 isBusy;
-    u8 pad_0a[2];
 };
 
 struct WfcFadeLevelTable {
@@ -34,7 +34,7 @@ void *WfcHeap_AllocClear(u32, u32);
 void *WfcHeap_Alloc(u32, u32);
 void WfcHeap_FreeAndClear(void *);
 
-WfcObjGroup *WfcPool_Get(WfcPool *r);
+void *WfcPool_Get(WfcPool *r);
 void WfcPool_Put(WfcPool *r, void *v);
 
 WfcFadeState *sWfcFade;
@@ -45,7 +45,7 @@ extern "C" u8 sWfcFadeEndValues[4] = {0x00, 0xf0, 0x00, 0x10};
 extern "C" WfcFadeLevelTable sWfcFadeStartValues = {{0xf0, 0x00, 0x10, 0x00}};
 
 void WfcFade_Init() {
-    sWfcFade = (WfcFadeState *)WfcHeap_AllocClear(HOST_SIZED(0x18, WfcFadeState[2]), 4);
+    sWfcFade = (WfcFadeState *)WfcHeap_AllocClear(sizeof(WfcFadeState[2]), 4);
     G2x_SetBlendBrightness_((void *)0x4000050, 0x3f, 0x10);
     G2x_SetBlendBrightness_((void *)0x4001050, 0x3f, 0x10);
 }
@@ -59,14 +59,14 @@ u8 WfcFade_IsBusy(u32 mode) {
     if (mode == 1) {
         p = sWfcFade;
     } else {
-        p = (WfcFadeState *)((u8 *)sWfcFade + 0xc);
+        p = &sWfcFade[1];
     }
     return p->isBusy;
 }
 
 u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h) {
     WfcFadeLevelTable arr = sWfcFadeStartValues;
-    WfcFadeState *p = mode == 1 ? sWfcFade : (WfcFadeState *)((u8 *)sWfcFade + 0xc);
+    WfcFadeState *p = mode == 1 ? sWfcFade : &sWfcFade[1];
     if (p->isBusy != 0) {
         return 0;
     }
@@ -83,7 +83,7 @@ u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h) {
     return 1;
 }
 
-void WfcFade_Task(s32 a, WfcFadeState *st) {
+void WfcFade_Task(void *task, WfcFadeState *st) {
     s8 lo[4];
     s8 hi[4];
     lo[0] = sWfcFadeFlags[0];
@@ -105,7 +105,7 @@ void WfcFade_Task(s32 a, WfcFadeState *st) {
     if (st == sWfcFade) G2x_ChangeBlendBrightness_(0x4001050, hi[st->fadeType]);
     else G2x_ChangeBlendBrightness_(0x4000050, hi[st->fadeType]);
     st->isBusy = 0;
-    WfcTask_RequestDelete(1, a);
+    WfcTask_RequestDelete(1, task);
 }
 
 s32 WfcFade_StartWait(u32 v) {
@@ -118,23 +118,24 @@ s32 WfcFade_StartWait(u32 v) {
     return 1;
 }
 
-void WfcFade_WaitTask(s32 a, WfcFadeState *st) {
+void WfcFade_WaitTask(void *task, WfcFadeState *st) {
     st->frame = st->frame + 1;
     if (st->frame < st->duration) return;
     st->isBusy = 0;
-    WfcTask_RequestDelete(1, a);
+    WfcTask_RequestDelete(1, task);
 }
 
 WfcPool *WfcPool_Create(s32 count) {
-    WfcPool *r = (WfcPool *)WfcHeap_Alloc((count + 1) * 4 + 8, 4);
+    WfcPool *r = (WfcPool *)WfcHeap_Alloc(__builtin_offsetof(WfcPool, entries) + (count + 1) * sizeof(void *) + 4, 4);
     r->capacity = count + 1;
     r->head = 0;
     r->top = 0;
     return r;
 }
 
-WfcPool *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride) {
+WfcPool *WfcPool_CreateFrom(s32 count, void *items, u32 stride) {
     WfcPool *r = WfcPool_Create(count);
+    u8 *base = (u8 *)items;
     s32 i;
     for (i = 0; i < count; i++) {
         r->entries[i] = base;
@@ -157,14 +158,14 @@ void WfcPool_Put(WfcPool *r, void *v) {
     OS_EnableIrqMask(irq);
 }
 
-WfcObjGroup *WfcPool_Get(WfcPool *r) {
-    WfcObjGroup *res = 0;
+void *WfcPool_Get(WfcPool *r) {
+    void *res = 0;
     s32 irq = OS_DisableIrqMask(1);
     u32 t = r->top;
     u32 h = r->head;
     if (h != t) {
         r->top = FX_ModS32(t + r->capacity - 1, r->capacity);
-        res = (WfcObjGroup *)r->entries[r->top];
+        res = r->entries[r->top];
     }
     OS_EnableIrqMask(irq);
     return res;

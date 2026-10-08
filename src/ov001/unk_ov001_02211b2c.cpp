@@ -21,6 +21,7 @@
 #include "proto/ov001/unk_ov001_0221cd74.h"
 #include "proto/ov001/unk_ov001_0221cfc0.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
@@ -60,11 +61,8 @@ extern "C" {
 s32 FX_DivS32(s32 numer, s32 denom);
 s32 FX_ModS32(s32 numer, s32 denom);
 void MI_CpuFill8(void *dst, u8 v, u32 size);
-// (definitions with types local to their files: src/ov001/unk_ov001_0222516c.cpp, unk_ov001_0221dcec.cpp)
+// (a definition with types local to its file: src/ov001/unk_ov001_0222516c.cpp)
 void WfcText_ReleaseBgCanvas(WfcTextCanvas *o);
-u8 *WfcConfig_GetEdit();
-void WfcConfig_BeginEdit(s32 idx);
-void WfcConfig_SetEditSsid(void *a);
 extern const WfcRect gWfcScreenRect;
 
 void WfcApList_Enter() {
@@ -399,7 +397,7 @@ void WfcApList_Exit() {
     IO_W((volatile u32 *)0x4000018, 0);
     if (sWfcApList->isConfirmed == 0) {
         WfcApScan_Free();
-        WfcConfig_BeginEdit(WfcConfig_GetEdit()[0xf4]);
+        WfcConfig_BeginEdit(WfcConfig_GetEdit()->editSlotIndex);
         WfcUtil_SetScreenFlags(2, 0);
         WfcUtil_SetScene(WfcSetupMethod_Enter);
     } else if (sWfcApListCursor == 4) {
@@ -407,7 +405,7 @@ void WfcApList_Exit() {
         WfcUtil_SetScreenFlags(0, 1);
         WfcUtil_SetScene(WfcApSearch_Enter);
     } else {
-        WfcConfig_SetEditSsid(&sWfcApList->apEntries[sWfcApList->selectedAp]);
+        WfcConfig_SetEditSsid(sWfcApList->apEntries[sWfcApList->selectedAp].ssid);
         WfcUtil_SetScreenFlags(0, 0);
         if (sWfcApList->apEntries[sWfcApList->selectedAp].security != 0) {
             WfcUtil_SetScreenFlags(0, 1);

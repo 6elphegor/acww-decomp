@@ -19,6 +19,7 @@
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
 #include "proto/ov001/unk_ov001_022266b0.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -38,17 +39,14 @@ struct WfcSysInfoStackPad {
 
 extern "C" {
 s32 WfcInput_IsKeyPressed(s32);
-void WfcGx_ShowPlanes(s32, s32);
 void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Scr();
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
 void WfcConfig_EraseAll();
-void WfcGx_HidePlanes(s32, s32);
 void OS_GetMacAddress(void *);
 void swprintf(void *, s32, void *, ...);
 void DWCi_BM_GetWiFiInfo(void *);
-void GX_LoadBG2Char(void);
 s32 FX_ModS32(s32, s32);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyRepeat(s32);
@@ -62,7 +60,7 @@ extern "C" void WfcSysInfo_Enter() {
     WfcHighlight_Set(0x11);
     WfcUtil_ShowTopMessage(0x89, -1, 0);
     WfcSysInfo_DrawInfo();
-    WfcUtil_SetScene((void *)WfcSysInfo_FadeIn);
+    WfcUtil_SetScene(WfcSysInfo_FadeIn);
 }
 
 extern "C" void WfcSysInfo_LoadBg() {
@@ -75,12 +73,12 @@ extern "C" void WfcSysInfo_LoadBg() {
 }
 
 extern "C" void WfcSysInfo_DrawInfo() {
-    void *obj = WfcText_CreateBgCanvas(0, 0);
+    WfcTextCanvas *obj = WfcText_CreateBgCanvas(0, 0);
     u8 dt[8];
     u64 tick;
     WfcSysInfoStackPad pad;
     u32 d[4];
-    char buf[0x2c];
+    u16 buf[0x16];
     OS_GetMacAddress(dt);
     swprintf(buf, 0x14, data_ov001_0222acd8, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5]);
     WfcText_DrawTextRect(obj, data_ov001_02229fb0[0], data_ov001_02229fb0[1], data_ov001_02229fb0[2], data_ov001_02229fb0[3], 2, 0x480, buf);
@@ -107,20 +105,20 @@ extern "C" void WfcSysInfo_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcSysInfo_WaitFadeIn);
+    WfcUtil_SetScene(WfcSysInfo_WaitFadeIn);
 }
 
 extern "C" void WfcSysInfo_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(2);
-    WfcUtil_SetScene((void *)WfcSysInfo_WaitButtonBar);
+    WfcUtil_SetScene(WfcSysInfo_WaitButtonBar);
 }
 
 extern "C" void WfcSysInfo_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcSysInfo_Update);
+    WfcUtil_SetScene(WfcSysInfo_Update);
 }
 
 extern "C" void WfcSysInfo_Update() {
@@ -140,13 +138,13 @@ extern "C" void WfcSysInfo_Idle() {}
 extern "C" void WfcSysInfo_HandleResult() {
     if (WfcButtonBar_GetResult() != 0) return;
     WfcSound_Play(7);
-    WfcUtil_SetScene((void *)WfcSysInfo_StartExit);
+    WfcUtil_SetScene(WfcSysInfo_StartExit);
 }
 
 extern "C" void WfcSysInfo_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcSysInfo_FadeOut);
+    WfcUtil_SetScene(WfcSysInfo_FadeOut);
 }
 
 extern "C" void WfcSysInfo_FadeOut() {
@@ -154,7 +152,7 @@ extern "C" void WfcSysInfo_FadeOut() {
     WfcButtonBar_Close();
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcSysInfo_Exit);
+    WfcUtil_SetScene(WfcSysInfo_Exit);
 }
 
 extern "C" void WfcSysInfo_Exit() {
@@ -166,6 +164,6 @@ extern "C" void WfcSysInfo_Exit() {
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x15);
     WfcUtil_SetScreenFlags(0, 1);
-    WfcUtil_SetScene((void *)WfcOptions_Enter);
+    WfcUtil_SetScene(WfcOptions_Enter);
 }
 

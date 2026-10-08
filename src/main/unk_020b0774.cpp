@@ -51,7 +51,7 @@ ConstellationStore::~ConstellationStore() {}
 extern "C" {
 void ConstellationStore_Clear(ConstellationStore *p) {
     p->usedMask = 0;
-    p->unk_462 = 0;
+    p->newMask = 0;
 }
 void ConstellationStore_SetUsed(ConstellationStore *p, u32 bit) {
     p->usedMask |= (1 << bit);

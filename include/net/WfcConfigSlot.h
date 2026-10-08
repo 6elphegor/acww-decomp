@@ -41,7 +41,13 @@ struct WfcConfigSlot {
 
 struct WfcConfigData {
     /* 0x000 */ WfcConfigSlot slots[4];
-    /* 0x400 */ WfcConfigSlot editSlot;
+    union {
+        /* 0x400 */ WfcConfigSlot editSlot;
+        struct {
+            /* 0x400 */ u8 editSlotHead[0xf8];
+            /* 0x4f8 */ u16 crcTable[0x100];  // MATH_CalcCRC16's table (over the edit slot's last 8 bytes)
+        };
+    };
 };
 
 #endif

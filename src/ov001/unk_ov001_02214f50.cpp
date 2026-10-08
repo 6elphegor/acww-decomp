@@ -94,7 +94,7 @@ void WfcError_DrawMessage() {
     else if (v >= -53299) r4 = 0x15;
     else r4 = 0;
     WfcTextCanvas *canvas = WfcText_CreateBgCanvas(0, sWfcErrorCodeFont[WfcUtil_GetLanguage()]);
-    u8 *text = WfcMsg_GetString((WfcMsgBank *)gWfcMsgBank, r4);
+    const u16 *text = (const u16 *)WfcMsg_GetString((WfcMsgBank *)gWfcMsgBank, r4);  // (the bank's strings are UTF-16)
     swprintf(buf, 8, sWfcErrorCodeFormat, -sWfcErrorCode);
     u32 a = sWfcErrorCodePos[WfcUtil_GetLanguage()][1];
     u32 b = sWfcErrorCodePos[WfcUtil_GetLanguage()][0];

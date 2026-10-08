@@ -25,7 +25,7 @@ public:
 typedef void (*ModelSlotFreeFunc)();
 // creates the heap the slots' frame heaps are carved from and returns it (the *Heap_Create functions of
 // src/main/unk_0205b7b0.cpp)
-typedef void *(*ModelSlotAllocFunc)(u32 size, void *parent);
+typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
 
 class ModelSlotHandle {
 public:

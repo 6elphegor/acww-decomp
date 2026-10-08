@@ -16,14 +16,14 @@
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 extern "C" {
 extern u8 GX_LoadBG2Scr[];
 void MIi_CpuClear16(u32 a, void *b, u32 c);
 void MIi_CpuCopy16(void *a, void *b, u32 c);
 void WfcUtil_LoadFileTo(void *a, void *b);
-s32 WfcGx_HidePlanes(u32 a, u32 b);
-s32 WfcGx_ShowPlanes(u32 a, u32 b);
+void WfcTransfer_SetCallback(void (*f)(u32));  // src/ov001/unk_ov001_0220cd24.cpp (WfcTransferCallback)
 s32 WfcInput_IsKeyPressed(u32 a);
 
 u8 sWfcTransferConfirmAccepted;
@@ -36,7 +36,7 @@ const u16 data_ov001_02229ff8[4] = {0x8, 0x35, 0xf8, 0x51};
 
 void WfcTransferConfirm_Enter() {
     u8 *p = (u8 *)WfcTransfer_GetChildUser();
-    void *w = WfcText_CreateBgCanvas(0, 0);
+    WfcTextCanvas *w = WfcText_CreateBgCanvas(0, 0);
     sWfcTransferConfirmAccepted = 0;
     sWfcTransferConfirmError = 0;
     WfcTransferConfirm_LoadBg();
@@ -47,8 +47,8 @@ void WfcTransferConfirm_Enter() {
     const u16 *h = data_ov001_02229ff8;
     WfcText_DrawTextRect(w, h[0], h[1], h[2] - h[0], h[3] - h[1], 2, 0x480, buf);
     WfcText_RequestTransfer(w);
-    WfcTransfer_SetCallback((WfcTransferCallback)WfcTransferConfirm_OnTransferError);
-    WfcUtil_SetScene((void *)WfcTransferConfirm_FadeIn);
+    WfcTransfer_SetCallback(WfcTransferConfirm_OnTransferError);
+    WfcUtil_SetScene(WfcTransferConfirm_FadeIn);
 }
 
 void WfcTransferConfirm_LoadBg() {
@@ -68,18 +68,18 @@ void WfcTransferConfirm_LoadBg() {
 void WfcTransferConfirm_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcTransferConfirm_OpenDialog);
+    WfcUtil_SetScene(WfcTransferConfirm_OpenDialog);
 }
 
 void WfcTransferConfirm_OpenDialog() {
     if (WfcFade_IsBusy(0)) return;
     WfcDialog_Open(0x5f, 4, 0, -1, 0);
-    WfcUtil_SetScene((void *)WfcTransferConfirm_WaitDialogOpen);
+    WfcUtil_SetScene(WfcTransferConfirm_WaitDialogOpen);
 }
 
 void WfcTransferConfirm_WaitDialogOpen() {
     if (WfcDialog_GetResult() == -2) return;
-    WfcUtil_SetScene((void *)WfcTransferConfirm_HandleResult);
+    WfcUtil_SetScene(WfcTransferConfirm_HandleResult);
 }
 
 void WfcTransferConfirm_HandleResult() {
@@ -99,7 +99,7 @@ void WfcTransferConfirm_HandleResult() {
     }
     WfcTransfer_SetCallback(0);
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcTransferConfirm_WaitDialogClosed);
+    WfcUtil_SetScene(WfcTransferConfirm_WaitDialogClosed);
 }
 
 void WfcTransferConfirm_Nop1() {
@@ -114,7 +114,7 @@ void WfcTransferConfirm_WaitDialogClosed() {
         WfcFade_Start(3, 1, 1, 8);
     }
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcTransferConfirm_StartSendOrEnd);
+    WfcUtil_SetScene(WfcTransferConfirm_StartSendOrEnd);
 }
 
 void WfcTransferConfirm_StartSendOrEnd() {
@@ -125,7 +125,7 @@ void WfcTransferConfirm_StartSendOrEnd() {
     } else {
         WfcTransfer_RequestEnd();
     }
-    WfcUtil_SetScene((void *)WfcTransferConfirm_Exit);
+    WfcUtil_SetScene(WfcTransferConfirm_Exit);
 }
 
 void WfcTransferConfirm_Exit() {
@@ -140,16 +140,16 @@ void WfcTransferConfirm_Exit() {
     }
     WfcUtil_SetScreenFlags(0, 1);
     if (sWfcTransferConfirmError != 0) {
-        WfcUtil_SetScene((void *)WfcTransferFailed_Enter);
+        WfcUtil_SetScene(WfcTransferFailed_Enter);
     } else if (sWfcTransferConfirmAccepted == 0) {
         WfcGx_HidePlanes(1, 1);
-        WfcUtil_SetScene((void *)WfcOptions_Enter);
+        WfcUtil_SetScene(WfcOptions_Enter);
     } else {
-        WfcUtil_SetScene((void *)WfcTransferSend_Enter);
+        WfcUtil_SetScene(WfcTransferSend_Enter);
     }
 }
 
-void WfcTransferConfirm_OnTransferError() {
+void WfcTransferConfirm_OnTransferError(u32 event) {
     sWfcTransferConfirmError = 1;
 }
 }

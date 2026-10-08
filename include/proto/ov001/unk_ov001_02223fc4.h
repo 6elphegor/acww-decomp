@@ -4,9 +4,7 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02223fc4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
+#include "nitro/fs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,33 +15,28 @@ void WfcFs_MountArchive();
 #ifndef PROTO_LOCAL_WfcFs_UnmountArchive
 void WfcFs_UnmountArchive();
 #endif
-#ifndef PROTO_LOCAL_WfcFs_FreeFile
-void WfcFs_FreeFile(void *p, ...);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcFs_ArchiveProc
-s32 WfcFs_ArchiveProc(void *self, s32 code);
+int WfcFs_ArchiveProc(FSFile *file, u32 cmd);
 #endif
 #ifndef PROTO_LOCAL_WfcFs_ReadCallback
-s32 WfcFs_ReadCallback(u8 *self, s32 x, s32 y, s32 z);
+int WfcFs_ReadCallback(FSArc *arc, void *dst, u32 pos, u32 size);
 #endif
 #ifndef PROTO_LOCAL_WfcFs_OnReadDone
-s32 WfcFs_OnReadDone(void *a);
+void WfcFs_OnReadDone(void *arc);
 #endif
 #ifndef PROTO_LOCAL_WfcFs_WriteCallback
-BOOL WfcFs_WriteCallback();
+int WfcFs_WriteCallback(FSArc *arc, void *src, u32 pos, u32 size);
 #endif
 #ifndef PROTO_LOCAL_WfcFs_LoadFile
 void *WfcFs_LoadFile(void *name, u32 *outSize, s32 c);
 #endif
-#ifndef PROTO_LOCAL_WfcUtil_StrEndsWith
-BOOL WfcUtil_StrEndsWith(void *a, void *b, s32 n);
+#ifndef PROTO_LOCAL_WfcFs_FreeFile
+void WfcFs_FreeFile(void *p, ...);
 #endif
+#ifndef PROTO_LOCAL_WfcUtil_StrEndsWith
+BOOL WfcUtil_StrEndsWith(const void *a, const void *b, s32 n);
+#endif
+#ifdef __cplusplus
 }
 #endif
 

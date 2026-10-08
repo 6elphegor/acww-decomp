@@ -2,12 +2,12 @@
 #include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/NNSG3dResMatData.h"
-#include "gfx/SceneLightsCol.h"
 #include "gfx/Mtx43.h"
 #include "gfx/Model.h"
 #include "gfx/CachedModel.h"
 #include "game/GroundInfo.h"
 #include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020643dc.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"
 
@@ -22,7 +22,6 @@ void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Mtx43 *m, s32 angle);
 s32 Ground_GetDefaultY(void);
 BOOL Scene_InMuseumRoom(void);
-s16 SceneLights_GetRoomColor(void);
 extern u8 gFieldSceneKind;
 }
 extern Mtx43 data_021f47e0;  // the model code's work matrix (src/autoload_2/unk_020e82bc.cpp: the same 12 words)

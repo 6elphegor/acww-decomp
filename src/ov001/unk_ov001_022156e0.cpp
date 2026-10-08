@@ -448,8 +448,8 @@ extern "C" void WfcManualSetup_Exit() {
     WfcTask_Delete(0, sWfcManualSetup->flashTask);
     WfcTask_Delete(1, sWfcManualSetup->bgScrollTask);
     s32 i;
-    for (i = 0; i < 7; i++) WfcOam_FreeEntry(sWfcManualSetup->rowButtons[i]);
-    if (sWfcManualSetup->statusIcon != 0) WfcOam_FreeEntry(sWfcManualSetup->statusIcon);
+    for (i = 0; i < 7; i++) WfcOam_FreeEntry((GXOamAttr *)sWfcManualSetup->rowButtons[i]);
+    if (sWfcManualSetup->statusIcon != 0) WfcOam_FreeEntry((GXOamAttr *)sWfcManualSetup->statusIcon);
     WfcScrollBar_Destroy();
     WfcText_DestroyBgCanvas(0);
     WfcCursor_Clear();

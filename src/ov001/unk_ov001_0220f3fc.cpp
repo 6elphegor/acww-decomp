@@ -1,13 +1,5 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#define PROTO_LOCAL_WfcTransferDone_Enter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransferDone_FadeIn  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransferDone_StartExit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransferSend_Enter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransferSend_FadeIn  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransferSend_FadeOut  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransferSend_OnResult  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcUtil_SetScene  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
@@ -24,30 +16,21 @@
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 extern "C" {
 extern u8 GX_LoadBG2Scr[];
-s32 OS_SpinWait(u32 a);
-s32 PM_ForceToPowerOff();
+void OS_SpinWait(u32 a);
+u32 PM_ForceToPowerOff();
 void WfcUtil_LoadFileTo(void *a, void *b);
-s32 WfcUtil_SetScene(void *p);
-s32 WfcTransferSend_OnResult(s32 a);
-s32 WfcTransferSend_FadeOut();
-s32 WfcTransferSend_FadeIn();
-s32 WfcTransferSend_Enter();
-s32 WfcTransferDone_StartExit();
-s32 WfcTransferDone_FadeIn();
-s32 WfcTransferDone_Enter();
-s32 WfcConfig_EraseAll();
-s32 WfcGx_HidePlanes(u32 a, u32 b);
-s32 WfcGx_ShowPlanes(u32 a, u32 b);
+void WfcTransfer_SetCallback(void (*f)(u32));  // src/ov001/unk_ov001_0220cd24.cpp (WfcTransferCallback)
+void WfcConfig_EraseAll();
 s32 WfcInput_IsKeyPressed(u32 a);
 
 u8 sWfcTransferSendResult;
 
 #pragma thumb off
 
-#define C668(f) WfcUtil_SetScene((void *)f)
 #define BGCNT_SET(a) *(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | 3
 
 static inline void Unk_ov001_0220f62c_Bg() {
@@ -58,10 +41,10 @@ static inline void Unk_ov001_0220f62c_Bg() {
     BGCNT_SET(0x400000c);
 }
 
-s32 WfcTransferDone_Enter() {
+void WfcTransferDone_Enter() {
     WfcTransferDone_SetupBg();
     WfcUtil_ShowBottomMessage(0x61);
-    return C668(WfcTransferDone_FadeIn);
+    WfcUtil_SetScene(WfcTransferDone_FadeIn);
 }
 
 void WfcTransferDone_SetupBg() {
@@ -72,22 +55,22 @@ void WfcTransferDone_SetupBg() {
     BGCNT_SET(0x400000c);
 }
 
-s32 WfcTransferDone_FadeIn() {
+void WfcTransferDone_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    return C668(WfcTransferDone_WaitFadeIn);
+    WfcUtil_SetScene(WfcTransferDone_WaitFadeIn);
 }
 
 void WfcTransferDone_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(5);
-    C668(WfcTransferDone_WaitButtonBar);
+    WfcUtil_SetScene(WfcTransferDone_WaitButtonBar);
 }
 
 void WfcTransferDone_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    C668(WfcTransferDone_Update);
+    WfcUtil_SetScene(WfcTransferDone_Update);
 }
 
 void WfcTransferDone_Update() {
@@ -106,20 +89,20 @@ void WfcTransferDone_Idle() {}
 void WfcTransferDone_HandleResult() {
     if (WfcButtonBar_GetResult() != 0) return;
     WfcSound_Play(6);
-    C668(WfcTransferDone_StartExit);
+    WfcUtil_SetScene(WfcTransferDone_StartExit);
 }
 
-s32 WfcTransferDone_StartExit() {
+void WfcTransferDone_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    return C668(WfcTransferDone_FadeOut);
+    WfcUtil_SetScene(WfcTransferDone_FadeOut);
 }
 
 void WfcTransferDone_FadeOut() {
     if (WfcFade_IsBusy(1) != 0) return;
     WfcFade_Start(3, 1, 0x3f, 0x40);
     WfcFade_Start(3, 0, 0x3f, 0x40);
-    C668(WfcTransferDone_PowerOff);
+    WfcUtil_SetScene(WfcTransferDone_PowerOff);
 }
 
 void WfcTransferDone_PowerOff() {
@@ -129,13 +112,13 @@ void WfcTransferDone_PowerOff() {
     PM_ForceToPowerOff();
 }
 
-s32 WfcTransferSend_Enter() {
+void WfcTransferSend_Enter() {
     WfcTransferSend_LoadBg();
     WfcUtil_ShowBottomMessage(0x60);
     WfcBusyIcon_Create(0);
     WfcLinkIcon_Create(1);
     WfcSound_Play(0xb);
-    return C668(WfcTransferSend_FadeIn);
+    WfcUtil_SetScene(WfcTransferSend_FadeIn);
 }
 
 void WfcTransferSend_LoadBg() {
@@ -143,16 +126,16 @@ void WfcTransferSend_LoadBg() {
     Unk_ov001_0220f62c_Bg();
 }
 
-s32 WfcTransferSend_FadeIn() {
+void WfcTransferSend_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    return C668(WfcTransferSend_WaitFadeIn);
+    WfcUtil_SetScene(WfcTransferSend_WaitFadeIn);
 }
 
 void WfcTransferSend_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcTransfer_SetCallback((WfcTransferCallback)WfcTransferSend_OnResult);
-    C668(WfcTransferSend_Update);
+    WfcTransfer_SetCallback(WfcTransferSend_OnResult);
+    WfcUtil_SetScene(WfcTransferSend_Update);
 }
 
 void WfcTransferSend_Update() {
@@ -164,9 +147,9 @@ void WfcTransferSend_Nop1() {}
 
 void WfcTransferSend_Nop2() {}
 
-s32 WfcTransferSend_FadeOut() {
+void WfcTransferSend_FadeOut() {
     WfcFade_Start(3, 0, 0x15, 8);
-    return C668(WfcTransferSend_Exit);
+    WfcUtil_SetScene(WfcTransferSend_Exit);
 }
 
 void WfcTransferSend_Exit() {
@@ -178,15 +161,15 @@ void WfcTransferSend_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     WfcUtil_SetScreenFlags(0, 1);
     if (sWfcTransferSendResult == 0) {
-        C668(WfcTransferFailed_Enter);
+        WfcUtil_SetScene(WfcTransferFailed_Enter);
     } else if (sWfcTransferSendResult == 2) {
-        C668(WfcTransferCancelled_Enter);
+        WfcUtil_SetScene(WfcTransferCancelled_Enter);
     } else {
-        C668(WfcTransferDone_Enter);
+        WfcUtil_SetScene(WfcTransferDone_Enter);
     }
 }
 
-s32 WfcTransferSend_OnResult(s32 a) {
+void WfcTransferSend_OnResult(u32 a) {
     if (a == 2) {
         WfcConfig_EraseAll();
         sWfcTransferSendResult = 1;
@@ -203,6 +186,6 @@ s32 WfcTransferSend_OnResult(s32 a) {
     }
     WfcTransfer_SetCallback(0);
     WfcTransfer_RequestEnd();
-    return C668(WfcTransferSend_FadeOut);
+    WfcUtil_SetScene(WfcTransferSend_FadeOut);
 }
 }

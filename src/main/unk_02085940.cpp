@@ -401,7 +401,7 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
         l.a = Random_GlobalBelow(3);
         Clock_GetDate(l.c);
         l.b = LetterPaper_PickRandom(3, l.c[1]);
-        Letter_ComposeFromMail((LetterView *)&big, &l, (void *)"sp_npc_missing", data_020e0c44, &l.b, r4->getPlayerId());
+        Letter_ComposeFromMail((LetterView *)&big, &l.a, "sp_npc_missing", data_020e0c44, &l.b, r4->getPlayerId());
         {
             ItemPickSpec obj;
             obj.set(0, 0x1b);
@@ -1802,7 +1802,7 @@ void ContestRecord::sendResultLetters() {
             MailText_SetSlot(4, &rec);
         }
         PlayerId *w = ((PlayerData *)r4)->getPlayerId();
-        Letter_ComposeFromMail((LetterView *)&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
+        Letter_ComposeFromMail((LetterView *)&buf, &l.letterVariant, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
         PlayerId *x = ((PlayerData *)r4)->getPlayerId();
         if ((holderPlayer.townId == x->townId && memcmp(holderPlayer.townName, x->townName, 8) == 0 && ((PlayerId *)(this))->equals(x) != 0) || kind == 3) {
             l.trophy = 0x3878;

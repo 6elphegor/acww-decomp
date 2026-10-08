@@ -4,12 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221b44c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcConnTestSucceeded
+extern u8 sWfcConnTestSucceeded;
 #endif
 #ifndef PROTO_LOCAL_WfcConnTest_Enter
 void WfcConnTest_Enter();
@@ -47,24 +47,16 @@ void WfcConnTest_WaitFadeOut();
 #ifndef PROTO_LOCAL_WfcConnTest_Exit
 void WfcConnTest_Exit();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcConnTestSucceeded
-extern u8 sWfcConnTestSucceeded;
-#endif
 #ifndef PROTO_LOCAL_WfcConnTest_PollTask
-void WfcConnTest_PollTask(s32 a);
+void WfcConnTest_PollTask(void *task, void *work);
 #endif
 #ifndef PROTO_LOCAL_WfcConnTest_Alloc
-void WfcConnTest_Alloc(s32 a, s32 b);
+void *WfcConnTest_Alloc(u32 name, u32 size);
 #endif
 #ifndef PROTO_LOCAL_WfcConnTest_Free
-void WfcConnTest_Free(s32 a, s32 b);
+void WfcConnTest_Free(u32 name, void *p, u32 size);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

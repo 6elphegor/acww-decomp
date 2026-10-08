@@ -13,6 +13,7 @@
 #include "proto/ov001/unk_ov001_02213424.h"
 #include "proto/ov001/unk_ov001_022156e0.h"
 #include "proto/ov001/unk_ov001_0221bc10.h"
+#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224b14.h"
@@ -23,14 +24,10 @@
 #include "proto/ov001/unk_ov001_02226c24.h"
 
 // stores the edited text (WfcConfig_*, src/ov001/unk_ov001_0221dcec.cpp)
-typedef void (*WfcTextEditStoreFunc)(void *text);
+typedef void (*WfcTextEditStoreFunc)(u8 *text);
 
 #pragma thumb off
 extern "C" {
-// (src/ov001/unk_ov001_0221dcec.cpp: its generated header leaves these out)
-void WfcConfig_GetEditSsid(void *dst);
-void WfcConfig_SetEditWepKey(void *key);
-void WfcConfig_SetEditSsid(void *a);
 
 const u8 data_ov001_0222a058[4] = {0x20, 0x31, 0, 0};
 const u16 data_ov001_0222a05c[2] = {0x0e, 0x10};

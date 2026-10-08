@@ -25,31 +25,31 @@ void WfcConfig_SetEditAutoIp(u32 v);
 void WfcConfig_SetEditAutoDns(u32 v);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditSsid
-void WfcConfig_SetEditSsid(void *a);
+void WfcConfig_SetEditSsid(u8 *ssid);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditWepKey
-void WfcConfig_SetEditWepKey(void *key);
+void WfcConfig_SetEditWepKey(u8 *s);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditIp
-void WfcConfig_SetEditIp(void *a);
+void WfcConfig_SetEditIp(u8 *s);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditSubnetMask
-void WfcConfig_SetEditSubnetMask(void *a);
+void WfcConfig_SetEditSubnetMask(u8 *s);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditGateway
-void WfcConfig_SetEditGateway(void *a);
+void WfcConfig_SetEditGateway(u8 *s);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditDns1
-void WfcConfig_SetEditDns1(void *a);
+void WfcConfig_SetEditDns1(u8 *s);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_SetEditDns2
-void WfcConfig_SetEditDns2(void *a);
+void WfcConfig_SetEditDns2(u8 *s);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_GetEditSsid
 void WfcConfig_GetEditSsid(void *src);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_FormatEditIp
-void WfcConfig_FormatEditIp(void *a);
+void WfcConfig_FormatEditIp(void *out);
 #endif
 #ifndef PROTO_LOCAL_WfcConfig_FormatEditSubnetMask
 void WfcConfig_FormatEditSubnetMask(void *p);

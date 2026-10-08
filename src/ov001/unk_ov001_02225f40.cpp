@@ -84,7 +84,7 @@ static inline BOOL Unk_ov001_02226214_Flag0() {
 void WfcInput_Init()
 {
     u32 buf[3];
-    sWfcInput = (WfcInputState *)WfcHeap_AllocClear(HOST_SIZED(0x3a, WfcInputState), 4);
+    sWfcInput = (WfcInputState *)WfcHeap_AllocClear(sizeof(WfcInputState), 4);
     if (TP_GetUserInfo(buf) == 0) Fatal_Trap();
     TP_SetCalibrateParam(buf);
     TP_RequestAutoSamplingStartAsync(0, 4, sWfcInput, 5);

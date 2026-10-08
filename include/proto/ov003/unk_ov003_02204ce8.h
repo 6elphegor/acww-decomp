@@ -6,45 +6,11 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "player/PlayerActor.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_PlayerActor_LocalPlayAnim99
-void PlayerActor_LocalPlayAnim99();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetPluck
-void PlayerActor_NetPluck();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_MainDoorEntered
-void PlayerActor_MainDoorEntered();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_MainAct3C
-void PlayerActor_MainAct3C();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetBuryItem
-void PlayerActor_NetBuryItem();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetFillHole
-void PlayerActor_NetFillHole();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetSlingshotWatch
-void PlayerActor_NetSlingshotWatch();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetTreeShakeRelease
-void PlayerActor_NetTreeShakeRelease();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_NetBeeSting
-void PlayerActor_NetBeeSting();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_PlayerActor_TestSlotFlag9
 BOOL PlayerActor_TestSlotFlag9(s32 a);
 #endif
@@ -96,6 +62,9 @@ BOOL PlayerActor_ConfirmReleaseCreature();
 #ifndef PROTO_LOCAL_PlayerActor_GetTrackTarget
 void *PlayerActor_GetTrackTarget(u32 a);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_LocalPlayAnim99
+void PlayerActor_LocalPlayAnim99();
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalHoldsNet
 BOOL PlayerActor_LocalHoldsNet();
 #endif
@@ -114,6 +83,9 @@ u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p);
 #ifndef PROTO_LOCAL_PlayerActor_Act11SetArgs
 void PlayerActor_Act11SetArgs(u8 *p, u32 v);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_NetPluck
+void PlayerActor_NetPluck();
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorApproachSetNetData
 void PlayerActor_DoorApproachSetNetData(u8 *p, s32 a, s32 b, s16 c);
 #endif
@@ -126,11 +98,17 @@ void PlayerActor_DoorEnterSetNetData(u8 *p, u32 a, s32 b, s32 c, s16 e);
 #ifndef PROTO_LOCAL_PlayerActor_DoorEnterGetNetData
 void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_MainDoorEntered
+void PlayerActor_MainDoorEntered();
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorExitSetNetData
 void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorExitGetNetData
 void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_MainAct3C
+void PlayerActor_MainAct3C();
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StowItemSetNetData
 void PlayerActor_StowItemSetNetData(u8 *p, u32 a, u32 b, u32 c, s16 d);
@@ -154,7 +132,7 @@ void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
 void PlayerActor_AxeSwingSetNetData(u8 *p, s32 a, s32 b, u8 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_AxeSwingGetNetData
-void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
+void PlayerActor_AxeSwingGetNetData(u8 *p, s32 *a, s32 *b, u8 *c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_AxeStrikeSetArgs
 void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s);
@@ -267,11 +245,20 @@ void PlayerActor_DugItemStoreGetNetData(u8 *s, u8 *a, u8 *b, u8 *c);
 #ifndef PROTO_LOCAL_PlayerActor_BuryItemSetNetData
 void PlayerActor_BuryItemSetNetData(u8 *s, u32 v, u8 a, u8 b, u8 c);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_NetBuryItem
+void PlayerActor_NetBuryItem();
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetFillHole
+void PlayerActor_NetFillHole();
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_WateringCanSetNetData
 void PlayerActor_WateringCanSetNetData(u8 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_WateringCanGetNetData
 void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetSlingshotWatch
+void PlayerActor_NetSlingshotWatch();
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_TreeShakeSetArgs
 void PlayerActor_TreeShakeSetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
@@ -288,11 +275,17 @@ void PlayerActor_TreeShakeReleaseSetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
 #ifndef PROTO_LOCAL_PlayerActor_TreeShakeReleaseSetWork
 void PlayerActor_TreeShakeReleaseSetWork(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
 #endif
+#ifndef PROTO_LOCAL_PlayerActor_NetTreeShakeRelease
+void PlayerActor_NetTreeShakeRelease();
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_PitfallFallSetNetData
 void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_PitfallFallGetNetData
 void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b);
+#endif
+#ifndef PROTO_LOCAL_PlayerActor_NetBeeSting
+void PlayerActor_NetBeeSting();
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02230af0
 extern s32 data_ov003_02230af0;
@@ -339,6 +332,12 @@ void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b);
 #ifndef PROTO_LOCAL_PlayerActor_FishReleaseGetNetData
 void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b);
 #endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_PlayerActor_FieldUseTool
 BOOL PlayerActor_FieldUseTool(PlayerActor *self);
 #endif

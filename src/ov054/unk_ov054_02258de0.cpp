@@ -731,7 +731,7 @@ void SpNpcPellyPhyllisTalk::endComm() {
 void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
     void *g0 = PlayerData_GetCurrent();
     s32 r4 = 0;
-    ParcelErrand *g1 = reinterpret_cast<ParcelErrand *>(static_cast<SickVillagerRecord *>(((PlayerData *)(g0))->getErrands())->getParcelErrand());
+    ParcelErrand *g1 = static_cast<PlayerErrands *>(((PlayerData *)(g0))->getErrands())->getParcelErrand();
     BOOL r7 = r4;
     u16 v[3];
     if (owner->isOnline()) {
@@ -1045,7 +1045,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     s32 r4 = 0x51;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        p = reinterpret_cast<ParcelErrand *>(static_cast<SickVillagerRecord *>(PlayerData_GetCurrent()->getErrands())->getParcelErrand());
+        p = static_cast<PlayerErrands *>(PlayerData_GetCurrent()->getErrands())->getParcelErrand();
         if (Talk_IsInOwnTown(p)) {
             BOOL same;
             s32 r5 = MenuCtrl_GetIndex();

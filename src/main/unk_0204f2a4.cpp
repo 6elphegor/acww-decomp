@@ -13,8 +13,6 @@
 #include "gfx/CachedModel.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0204f2a4.h"
@@ -22,24 +20,29 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_0209c08c.h"
 
-extern "C" const u8 data_020ca314[4];
+#include "item/FishInfo.h"
 
+// One displayed fish (0x16c bytes on the DS): its sound emitter, model slot, pooled resource and animated model.
 struct FishDisplayEntry {
-    u8 pad_00[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (Snd_SeEmitterPlayOneShot)
-    s32 fishId;
-    s32 entryState;
-    u8 modelSlot[4];
-    u8 pooledModel[HOST_SIZED(0x40, PooledModel)] HOST_ALIGN8;
-    VecFx32 pos;
-    u8 model[HOST_SIZED(0xb8, AnimModel)] HOST_ALIGN8;
-    VecFx32 scale;
-    s16 rotX, rotY, rotZ;
-    u8 pad_162[2];
-    u32 alpha;
-    u8 animate;
-    u8 playSound;
-    u8 pad_16a[2];
+    FishDisplayEntry();
+
+    /* 0x000 */ SndSeEmitter emitter;
+    /* 0x040 */ s32 fishId;
+    /* 0x044 */ s32 entryState;
+    /* 0x048 */ ModelSlotHandle modelSlot;
+    /* 0x04a */ u8 pad_4a[2];
+    /* 0x04c */ PooledModel pooledModel;
+    /* 0x08c */ VecFx32 pos;
+    /* 0x098 */ AnimModel model;
+    /* 0x150 */ VecFx32 scale;
+    /* 0x15c */ s16 rotX, rotY, rotZ;
+    /* 0x162 */ u8 pad_162[2];
+    /* 0x164 */ u32 alpha;
+    /* 0x168 */ u8 animate;
+    /* 0x169 */ u8 playSound;
+    /* 0x16a */ u8 pad_16a[2];
 };
 
 struct FishDisplayRequest {
@@ -52,8 +55,6 @@ struct FishDisplayRequest {
 class FishDisplay;
 
 extern "C" {
-s32 func_02072e44(void *);
-void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 s32 FishDisplay_FindFreeEntry(void);
 u32 FishDisplay_GetRequestKind(u32 i);
 void FishDisplayEntry_SetScale(FishDisplayEntry *, VecFx32 *);
@@ -61,23 +62,16 @@ void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 gFieldSceneKind;
-void *func_021065dc(void *p);
-void *func_021065f8(void *p, u32 i);
-void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
-void Mtx43_SetTranslate(void *, s32, s32, s32);
-void Mtx43_RotateX(void *, s32);
-void Mtx43_RotateXYZ(void *, s32, s32, s32);
-void Mtx43_RotateY(void *, s32);
-void Mtx43_RotateZ(void *, s32);
-extern u8 data_021f47e0[];
-void ModelSlotHandle_Destroy(void *p);
-#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
-void SndSeEmitter_dtor(void *p);
-#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
-void SndSeEmitter_ctor(void *p);
-void ModelSlotHandle_Init(void *p);
-void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
-s32 MI_CpuCopy8(void *src, void *dst, s32 n);
+u8 *func_021065dc(u8 *p);              // the animation file's first animation (NNS G3D resource helpers)
+u8 *func_021065f8(u8 *p, u32 i);
+void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Mtx43 *m, s32 angle);
+void Mtx43_RotateXYZ(Mtx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateY(Mtx43 *m, s32 angle);
+void Mtx43_RotateZ(Mtx43 *m, s32 angle);
+extern Mtx43 data_021f47e0;            // the scratch matrix
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
@@ -93,19 +87,16 @@ public:
     virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    ~FishDisplay() {
-        ((ModelSlotPool *)(modelPool))->~ModelSlotPool();
-        __cxa_vec_cleanup(entries, 4, sizeof(FishDisplayEntry), (void *)FishDisplayEntry_Destruct);
-    }
+    ~FishDisplay() {}
     void releaseEntry(s32);
     BOOL beginLoad(s32);
     void updateTransform(FishDisplayEntry *);
-    BOOL loadShadowModel(void *, FishDisplayEntry *);
-    BOOL loadStaticModel(void *, FishDisplayEntry *);
-    BOOL loadFishModel(void *, FishDisplayEntry *);
+    BOOL loadShadowModel(ModelSlotPool *, FishDisplayEntry *);
+    BOOL loadStaticModel(ModelSlotPool *, FishDisplayEntry *);
+    BOOL loadFishModel(ModelSlotPool *, FishDisplayEntry *);
 
     FishDisplayEntry entries[4];
-    u8 modelPool[HOST_SIZED(0x18, ModelSlotPool) / 1] HOST_ALIGN8;
+    ModelSlotPool modelPool;
 };
 
 extern "C" {
@@ -125,22 +116,16 @@ extern char sFishShadowAnmFile[];
 extern ProcProfile sFishDisplayProfile;
 extern char *sFishStaticMdlPaths[3];
 extern FishDisplayRequest sFishDisplayRequests[4];
-extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 
-inline FishDisplay::FishDisplay() {
-    __cxa_vec_ctor(entries, 4, sizeof(FishDisplayEntry), (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
-    new (modelPool) ModelSlotPool();
-}
-
-extern const u8 sFishBaseSizes[];
+inline FishDisplay::FishDisplay() {}
 
 static inline BOOL Unk_0204f4f8_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
 
 extern "C" void FishDisplay_RecvAct00(s8 *p, u32 v) {
-    s32 a, b;
+    u32 a, b;
     u8 buf[8];
     s32 c = p[1];
     MI_CpuCopy8(p + 2, buf, 5);
@@ -160,32 +145,29 @@ extern "C" FishDisplay *FishDisplay_Create(void) {
     return new FishDisplay();
 }
 
+FishDisplayEntry::FishDisplayEntry() {
+    fishId = -1;
+    entryState = 0;
+    pooledModel.reset();
+    pos.x = 0x1000;
+    pos.y = 0x1000;
+    pos.z = 0x1000;
+    scale.x = 0x1000;
+    scale.y = 0x1000;
+    scale.z = 0x1000;
+    rotX = 0;
+    rotY = 0;
+    rotZ = 0;
+    alpha = 0x1f;
+}
+
 extern "C" FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *e) {
-    new (e) SndSeEmitter();
-    ModelSlotHandle_Init(e->modelSlot);
-    new (e->pooledModel) PooledModel();
-    new (e->model) AnimModel();
-    e->fishId = -1;
-    e->entryState = 0;
-    ((PooledModel *)(e->pooledModel))->reset();
-    e->pos.x = 0x1000;
-    e->pos.y = 0x1000;
-    e->pos.z = 0x1000;
-    e->scale.x = 0x1000;
-    e->scale.y = 0x1000;
-    e->scale.z = 0x1000;
-    e->rotX = 0;
-    e->rotY = 0;
-    e->rotZ = 0;
-    e->alpha = 0x1f;
+    new (e) FishDisplayEntry();
     return e;
 }
 
 extern "C" FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *e) {
-    ((AnimModel *)(e->model))->AnimModel::~AnimModel();
-    ((PooledModel *)(e->pooledModel))->~PooledModel();
-    ModelSlotHandle_Destroy(e->modelSlot);
-    ((SndSeEmitter *)(e))->SndSeEmitter::~SndSeEmitter();
+    e->~FishDisplayEntry();
     return e;
 }
 
@@ -213,9 +195,9 @@ BOOL FishDisplay::beginLoad(s32 idx) {
     if (idx != -1) {
         FishDisplayEntry *e = &gFishDisplay->entries[idx];
         e->entryState = 2;
-        ((ModelSlotPool *)(modelPool))->acquire((u16 *)(e->modelSlot));
-        ((PooledModel *)(e->pooledModel))->reset();
-        ((SndSeEmitter *)(e))->callInit();
+        modelPool.acquire(&e->modelSlot.index);
+        e->pooledModel.reset();
+        e->emitter.callInit();
         r = TRUE;
     }
     return r;
@@ -225,14 +207,14 @@ void FishDisplay::releaseEntry(s32 idx) {
     if (idx >= 0 && idx < sFishDisplayEntryCount && gFishDisplay != NULL) {
         FishDisplayEntry *e = &gFishDisplay->entries[idx];
         if (e->entryState != 0 && e->entryState != 1) {
-            ((SndSeEmitter *)(e))->callStop();
+            e->emitter.callStop();
         }
         e->fishId = -1;
         e->entryState = 0;
-        ((AnimModel *)(e->model))->detachJointAnim();
-        ((PooledModel *)(e->pooledModel))->unload();
-        ((CachedModel *)(e->model))->release();
-        ((ModelSlotPool *)(modelPool))->release((u16 *)(e->modelSlot));
+        e->model.detachJointAnim();
+        e->pooledModel.unload();
+        e->model.CachedModel::release();
+        modelPool.release(&e->modelSlot.index);
     }
 }
 
@@ -242,7 +224,7 @@ BOOL FishDisplay::onCreate() {
     } else if ((s32)param == 1) {
         sFishDisplayEntryCount = 1;
     }
-    ((ModelSlotPool *)(modelPool))->init(sFishDisplayEntryCount, (void *)(0x800), (void *)(0x80), 0x134c, (ModelSlotAllocFunc)((void *)FishDisplayHeap_Create), (ModelSlotFreeFunc)((void *)FishDisplayHeap_Destroy));
+    modelPool.init(sFishDisplayEntryCount, (void *)(0x800), (void *)(0x80), 0x134c, FishDisplayHeap_Create, FishDisplayHeap_Destroy);
     gFishDisplay = this;
     return TRUE;
 }
@@ -265,30 +247,30 @@ BOOL FishDisplay::onExecute() {
         case 2: {
             s32 t = e->fishId;
             if ((u32)(t - 0x38) <= 2) {
-                loadStaticModel(modelPool, e);
+                loadStaticModel(&modelPool, e);
             } else if (t == 0x3b) {
-                loadShadowModel(modelPool, e);
+                loadShadowModel(&modelPool, e);
             } else {
-                loadFishModel(modelPool, e);
+                loadFishModel(&modelPool, e);
             }
             break;
         }
         case 3:
             if (e->fishId == 0x3b) {
-                ((AnimModel *)(HOST_AT(e, 0x98, model[0], 0)))->stepAnim();
-                NNS_G3dMdlSetMdlAlpha(((PooledModel *)(HOST_AT(e, 0x4c, pooledModel[0], 0)))->getModel(), v0, *(u32 *)(HOST_AT(e, 0x164, alpha, 0)));
+                e->model.stepAnim();
+                NNS_G3dMdlSetMdlAlpha((u8 *)e->pooledModel.getModel(), v0, e->alpha);
             } else if (e->fishId == 0x38 || e->fishId == 0x39 || e->fishId == 0x3a) {
             } else {
-                ((AnimModel *)(HOST_AT(e, 0x98, model[0], 0)))->stepAnim();
+                e->model.stepAnim();
                 if (e->playSound != 0) {
                     VecFx32 *p = &e->pos;
                     VecFx32 t;
                     t.x = p->x;
                     t.y = p->y;
                     t.z = p->z;
-                    ((SndSeEmitter *)(e))->callUpdateRelative((VecFx32 *)(&t));
-                    if (((AnimFrameCtrl *)(HOST_AT(e, 0x134, model[156], 0)))->hasPassedFrame(1)) {
-                        Snd_SeEmitterPlayOneShot((SndSeEmitter *)e->pad_00, 0x84d, 0x7f, v4);
+                    e->emitter.callUpdateRelative(&t);
+                    if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(1)) {
+                        Snd_SeEmitterPlayOneShot(&e->emitter, 0x84d, 0x7f, v4);
                     }
                 }
             }
@@ -303,61 +285,61 @@ BOOL FishDisplay::onExecute() {
 }
 
 void FishDisplay::updateTransform(FishDisplayEntry *e) {
-    u8 *m = HOST_AT(e, 0x98, model[0], 0);
+    AnimModel *m = &e->model;
     s32 id = e->fishId;
     VecFx32 v;
     VecFx32 o;
     s32 ang;
     VecFx32 *pv = &e->pos;
     v.x = pv->x; v.y = pv->y; v.z = pv->z;
-    s32 mode = *(s32 *)((u8 *)this + 8);
+    s32 mode = param;
     if (mode == 0) {
         ang = WorldCurve_ToCurved(&o, &v);
     } else if (mode == 1) {
         ang = 0;
         o = v;
     }
-    Mtx43_SetTranslate(data_021f47e0, o.x, o.y, o.z);
-    Mtx43_RotateX(data_021f47e0, ang);
+    Mtx43_SetTranslate(&data_021f47e0, o.x, o.y, o.z);
+    Mtx43_RotateX(&data_021f47e0, ang);
     if (id != 0xf) {
-        Mtx43_RotateXYZ(data_021f47e0, e->rotX, e->rotY, e->rotZ);
+        Mtx43_RotateXYZ(&data_021f47e0, e->rotX, e->rotY, e->rotZ);
     } else {
-        Mtx43_RotateY(data_021f47e0, e->rotY);
-        Mtx43_RotateZ(data_021f47e0, e->rotZ);
-        Mtx43_RotateX(data_021f47e0, e->rotX);
+        Mtx43_RotateY(&data_021f47e0, e->rotY);
+        Mtx43_RotateZ(&data_021f47e0, e->rotZ);
+        Mtx43_RotateX(&data_021f47e0, e->rotX);
     }
-    *(Mtx43 *)(m + 0x64) = *(Mtx43 *)data_021f47e0;
+    m->mtx = data_021f47e0;
 }
 
-BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
+BOOL FishDisplay::loadFishModel(ModelSlotPool *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     char buf[0x18];
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->fishId;
-    void *x = ((ModelSlotPool *)(p))->acquire((u16 *)(HOST_AT(e, 0x48, modelSlot[0], 0)));
+    ModelSlot *x = p->acquire(&e->modelSlot.index);
     void *t;
-    void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
+    PooledModel *y = &e->pooledModel;
     s32 q = id / 16;
     if (id < 10) {
         Str_SPrintf(buf, "/fish/0%d/fish0%d.nsbmd", q, id);
     } else {
         Str_SPrintf(buf, "/fish/0%d/fish%d.nsbmd", q, id);
     }
-    if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), buf)) {
-        u8 *m = HOST_AT(e, 0x98, model[0], 0);
-        ((Model *)(m))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), 0);
-        t = ((ModelSlot *)(x))->getHeap();
+    if (y->loadFromSlot(x, buf)) {
+        AnimModel *m = &e->model;
+        m->setResource((NNSG3dResMdl *)y->getModel(), 0);
+        t = x->getHeap();
         if (id < 10) {
             Str_SPrintf(buf, "/fish/0%d/fish0%d.nsbca", q, id);
         } else {
             Str_SPrintf(buf, "/fish/0%d/fish%d.nsbca", q, id);
         }
-        void *u = func_021065f8(func_021065dc(File_LoadAlloc(buf, t, 4, 0)), 0);
+        void *u = func_021065f8(func_021065dc((u8 *)File_LoadAlloc(buf, t, 4, 0)), 0);
         s32 flag = 0x1000;
         if (e->animate == 0) flag = 0;
-        if (((AnimModel *)(m))->allocAnmObj(t)) {
-            ((BlendAnimModel *)(m))->initAnim(u, 0, flag, 1, 0);
-            ((AnimModel *)(m))->attachAnim();
+        if (m->allocAnmObj(t)) {
+            static_cast<BlendAnimModel *>(m)->initAnim(u, 0, flag, 1, 0); // (initAnim uses the AnimModel part)
+            m->attachAnim();
             e->entryState = 3;
             updateTransform(e);
             r = TRUE;
@@ -366,14 +348,14 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     return r;
 }
 
-BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
+BOOL FishDisplay::loadStaticModel(ModelSlotPool *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->fishId;
-    void *x = ((ModelSlotPool *)(p))->acquire((u16 *)(HOST_AT(e, 0x48, modelSlot[0], 0)));
-    void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
-    if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), sFishStaticMdlPaths[id - 0x38])) {
-        ((Model *)(HOST_AT(e, 0x98, model[0], 0)))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), NULL);
+    ModelSlot *x = p->acquire(&e->modelSlot.index);
+    PooledModel *y = &e->pooledModel;
+    if (y->loadFromSlot(x, sFishStaticMdlPaths[id - 0x38])) {
+        e->model.setResource((NNSG3dResMdl *)y->getModel(), NULL);
         e->entryState = 3;
         updateTransform(e);
         r = TRUE;
@@ -381,24 +363,24 @@ BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
     return r;
 }
 
-BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
+BOOL FishDisplay::loadShadowModel(ModelSlotPool *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->fishId;
-    void *x = ((ModelSlotPool *)(p))->acquire((u16 *)(HOST_AT(e, 0x48, modelSlot[0], 0)));
-    void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
-    if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), sFishShadowMdlPath)) {
-        u8 *m = HOST_AT(e, 0x98, model[0], 0);
-        ((Model *)(m))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), NULL);
-        void *t = ((ModelSlot *)(x))->getHeap();
-        void *u = func_021065f8(func_021065dc(File_LoadAlloc(sFishShadowAnmPath, t, 4, NULL)), 0);
-        if (((AnimModel *)(m))->allocAnmObj(t)) {
-            ((BlendAnimModel *)(m))->initAnim(u, 0, 0x1000, 1, 0);
-            ((AnimModel *)(m))->attachAnim();
+    ModelSlot *x = p->acquire(&e->modelSlot.index);
+    PooledModel *y = &e->pooledModel;
+    if (y->loadFromSlot(x, sFishShadowMdlPath)) {
+        AnimModel *m = &e->model;
+        m->setResource((NNSG3dResMdl *)y->getModel(), NULL);
+        void *t = x->getHeap();
+        void *u = func_021065f8(func_021065dc((u8 *)File_LoadAlloc(sFishShadowAnmPath, t, 4, NULL)), 0);
+        if (m->allocAnmObj(t)) {
+            static_cast<BlendAnimModel *>(m)->initAnim(u, 0, 0x1000, 1, 0); // (initAnim uses the AnimModel part)
+            m->attachAnim();
             e->entryState = 3;
             updateTransform(e);
             if (id == 0x3b) {
-                NNS_G3dMdlSetMdlAlpha(((PooledModel *)(y))->getModel(), r, e->alpha);
+                NNS_G3dMdlSetMdlAlpha((u8 *)y->getModel(), r, e->alpha);
             }
             r = TRUE;
         }
@@ -416,7 +398,7 @@ BOOL FishDisplay::onDraw() {
             v.x = e->scale.x;
             v.y = e->scale.y;
             v.z = e->scale.z;
-            ((AnimModel *)(HOST_AT(e, 0x98, model[0], 0)))->drawAnimated(&v);
+            e->model.drawAnimated(&v);
         }
     }
     return TRUE;
@@ -426,7 +408,7 @@ BOOL FishDisplay::onDelete() {
     for (s32 i = 0; i < sFishDisplayEntryCount; i++) {
         releaseEntry(i);
     }
-    ((ModelSlotPool *)(modelPool))->destroy();
+    modelPool.destroy();
     gFishDisplay = NULL;
     return TRUE;
 }
@@ -559,20 +541,20 @@ extern "C" BOOL FishDisplay_HasPassedFrame(s32 idx, s32 unused) {
         FishDisplayEntry *e = &gFishDisplay->entries[idx];
         s32 t = e->fishId;
         if (t < 0 || t >= 0x38) return FALSE;
-        if (((AnimFrameCtrl *)(HOST_AT(e, 0x134, model[156], 0)))->hasPassedFrame(unused)) r = TRUE;
+        if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(unused)) r = TRUE;
     }
     return r;
 }
 
 extern "C" u32 Fish_GetBaseSize(u32 x) {
     if (x >= 0x38) return 10;
-    return *(u16 *)(sFishBaseSizes + x * 6);
+    return gFishInfo[x].baseSize;
 }
 
 // ---------------------------------------------------------------- functions
 extern "C" u32 Fish_GetSizeClass(u32 x) {
     if (x >= 0x3b) return 3;
-    return data_020ca314[x * 6];
+    return gFishInfo[x].sizeClass;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -587,10 +569,8 @@ extern s32 sFishDisplayEntryCount;
 extern ProcProfile sFishDisplayProfile;
 extern char *sFishStaticMdlPaths[3];
 extern FishDisplayRequest sFishDisplayRequests[4];
-extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 extern FishDisplay *gFishDisplay;
-extern const u8 data_020ca314[4];
 
 const char *sFishShadowAnmPath = sFishShadowAnmFile;
 
@@ -620,36 +600,27 @@ FishDisplayRequest sFishDisplayRequests[4] = {
     {8, 0xff, 0, 0},
 };
 
-const u8 sFishBaseSizes[0x160] = {
-    0x0a, 0x00, 0x00, 0x03, 0x03, 0x00, 0x0f, 0x00, 0x01, 0x03, 0x04, 0x00, 0x1e, 0x00, 0x01, 0x03,
-    0x03, 0x00, 0x23, 0x00, 0x02, 0x02, 0x03, 0x00, 0x32, 0x00, 0x03, 0x02, 0x03, 0x00, 0x4b, 0x00,
-    0x03, 0x02, 0x03, 0x00, 0x4b, 0x00, 0x00, 0x02, 0x03, 0x00, 0x0f, 0x00, 0x00, 0x02, 0x03, 0x00,
-    0x0f, 0x00, 0x00, 0x02, 0x02, 0x00, 0x04, 0x00, 0x00, 0x04, 0x04, 0x00, 0x0c, 0x00, 0x00, 0x04,
-    0x03, 0x00, 0x0c, 0x00, 0x00, 0x02, 0x04, 0x00, 0x0f, 0x00, 0x00, 0x03, 0x03, 0x00, 0x14, 0x00,
-    0x02, 0x02, 0x04, 0x00, 0x3c, 0x00, 0x07, 0x01, 0x01, 0x00, 0x64, 0x00, 0x03, 0x02, 0x01, 0x00,
-    0x50, 0x00, 0x01, 0x04, 0x04, 0x00, 0x19, 0x00, 0x01, 0x01, 0x01, 0x00, 0x23, 0x00, 0x02, 0x02,
-    0x02, 0x00, 0x32, 0x00, 0x00, 0x03, 0x03, 0x00, 0x0f, 0x00, 0x01, 0x02, 0x01, 0x00, 0x19, 0x00,
-    0x01, 0x01, 0x01, 0x00, 0x23, 0x00, 0x02, 0x01, 0x01, 0x00, 0x32, 0x00, 0x03, 0x02, 0x02, 0x00,
-    0x46, 0x00, 0x04, 0x00, 0x01, 0x00, 0x96, 0x00, 0x04, 0x02, 0x01, 0x00, 0x5a, 0x00, 0x05, 0x02,
-    0x01, 0x00, 0xa0, 0x00, 0x00, 0x02, 0x03, 0x00, 0x04, 0x00, 0x00, 0x02, 0x02, 0x00, 0x0c, 0x00,
-    0x01, 0x04, 0x03, 0x00, 0x1e, 0x00, 0x03, 0x03, 0x02, 0x00, 0x46, 0x00, 0x04, 0x01, 0x00, 0x00,
-    0x64, 0x00, 0x05, 0x03, 0x01, 0x00, 0xbe, 0x00, 0x05, 0x01, 0x01, 0x00, 0x2c, 0x01, 0x00, 0x00,
-    0x02, 0x00, 0x03, 0x00, 0x01, 0x02, 0x04, 0x00, 0x19, 0x00, 0x00, 0x01, 0x01, 0x00, 0x08, 0x00,
-    0x00, 0x02, 0x01, 0x00, 0x0f, 0x00, 0x01, 0x03, 0x03, 0x00, 0x1e, 0x00, 0x01, 0x02, 0x02, 0x00,
-    0x23, 0x00, 0x01, 0x03, 0x03, 0x00, 0x28, 0x00, 0x02, 0x02, 0x00, 0x00, 0x3c, 0x00, 0x04, 0x03,
-    0x02, 0x00, 0x64, 0x00, 0x03, 0x02, 0x01, 0x00, 0x5a, 0x00, 0x02, 0x02, 0x02, 0x00, 0x32, 0x00,
-    0x03, 0x01, 0x01, 0x00, 0x50, 0x00, 0x01, 0x03, 0x02, 0x00, 0x23, 0x00, 0x02, 0x03, 0x02, 0x00,
-    0x3c, 0x00, 0x02, 0x03, 0x03, 0x00, 0x3c, 0x00, 0x05, 0x01, 0x00, 0x00, 0xe6, 0x00, 0x05, 0x01,
-    0x00, 0x00, 0xdc, 0x00, 0x06, 0x00, 0x01, 0x00, 0x2c, 0x01, 0x06, 0x01, 0x01, 0x00, 0xfa, 0x00,
-    0x06, 0x01, 0x00, 0x00, 0x1c, 0x02, 0x04, 0x00, 0x00, 0x00, 0x96, 0x00, 0x01, 0x03, 0x03, 0x00,
-    0x00, 0x00, 0x02, 0x02, 0x03, 0x00, 0x00, 0x00, 0x03, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
 
 Backup gBackup;
 
 FishDisplay *gFishDisplay;
 
-// A byte table shared with other files (loaded through its address; defined after the code here, where a visible const would be folded). Other code uses the addresses of its bytes 1 and 2 (lcf_symbols.txt).
-// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
-// size order (linkprep check); the original file is this one or another file between those neighbours.
-const u8 data_020ca314[4] = {0, 2, 1, 0};
+// The per-fish constants (item/FishInfo.h; data_020ca314 on the DS, 6-byte records).
+// sizeClass, rodClass, timingClass, baseSize
+const FishInfo gFishInfo[FISH_INFO_COUNT] = {
+    {0, 2, 1, 10}, {0, 3, 3, 15}, {1, 3, 4, 30}, {1, 3, 3, 35},
+    {2, 2, 3, 50}, {3, 2, 3, 75}, {3, 2, 3, 75}, {0, 2, 3, 15},
+    {0, 2, 3, 15}, {0, 2, 2, 4}, {0, 4, 4, 12}, {0, 4, 3, 12},
+    {0, 2, 4, 15}, {0, 3, 3, 20}, {2, 2, 4, 60}, {7, 1, 1, 100},
+    {3, 2, 1, 80}, {1, 4, 4, 25}, {1, 1, 1, 35}, {2, 2, 2, 50},
+    {0, 3, 3, 15}, {1, 2, 1, 25}, {1, 1, 1, 35}, {2, 1, 1, 50},
+    {3, 2, 2, 70}, {4, 0, 1, 150}, {4, 2, 1, 90}, {5, 2, 1, 160},
+    {0, 2, 3, 4}, {0, 2, 2, 12}, {1, 4, 3, 30}, {3, 3, 2, 70},
+    {4, 1, 0, 100}, {5, 3, 1, 190}, {5, 1, 1, 300}, {0, 0, 2, 3},
+    {1, 2, 4, 25}, {0, 1, 1, 8}, {0, 2, 1, 15}, {1, 3, 3, 30},
+    {1, 2, 2, 35}, {1, 3, 3, 40}, {2, 2, 0, 60}, {4, 3, 2, 100},
+    {3, 2, 1, 90}, {2, 2, 2, 50}, {3, 1, 1, 80}, {1, 3, 2, 35},
+    {2, 3, 2, 60}, {2, 3, 3, 60}, {5, 1, 0, 230}, {5, 1, 0, 220},
+    {6, 0, 1, 300}, {6, 1, 1, 250}, {6, 1, 0, 540}, {4, 0, 0, 150},
+    {1, 3, 3, 0}, {2, 2, 3, 0}, {3, 2, 3, 0},
+};

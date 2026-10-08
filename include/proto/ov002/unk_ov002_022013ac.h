@@ -5,28 +5,16 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerId.h"
+#include "talk/MsgString.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_sPopupChoicePopOffsets
 extern s32 sPopupChoicePopOffsets[3];
-#endif
-#ifndef PROTO_LOCAL_PopupChoice_CopyPlayerIdName
-void PopupChoice_CopyPlayerIdName(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_PopupChoice_CopyResidentName
-void PopupChoice_CopyResidentName(s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_PopupChoice_CopyVillagerIdName
-void PopupChoice_CopyVillagerIdName(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_PopupChoice_CopyVillagerName
-void PopupChoice_CopyVillagerName(s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_PopupChoice_SetAddresseeName
-void PopupChoice_SetAddresseeName(s32 unused, s32 x, u32 id);
 #endif
 #ifndef PROTO_LOCAL_ChoiceIdList_Add
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
@@ -37,7 +25,23 @@ void ChoiceIdList_Clear(u8 *p, u8 v);
 #ifndef PROTO_LOCAL_ChoiceIdList_Count
 s32 ChoiceIdList_Count(u8 *p);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_PopupChoice_CopyPlayerIdName
+void PopupChoice_CopyPlayerIdName(MsgString *a, PlayerId *b);
+#endif
+#ifndef PROTO_LOCAL_PopupChoice_CopyResidentName
+void PopupChoice_CopyResidentName(MsgString *x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_PopupChoice_CopyVillagerIdName
+void PopupChoice_CopyVillagerIdName(MsgString *a, VillagerId *b);
+#endif
+#ifndef PROTO_LOCAL_PopupChoice_CopyVillagerName
+void PopupChoice_CopyVillagerName(MsgString *x, s32 y);
+#endif
 #endif
 
 #endif

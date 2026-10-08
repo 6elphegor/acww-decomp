@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0222516c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/WfcObjGroup.h"
 struct WfcTextCanvas;
 #ifdef __cplusplus
 #endif
@@ -32,9 +33,6 @@ void WfcText_BgTransferTask(u32 task, u8 *flag);
 #ifndef PROTO_LOCAL_WfcText_DestroyBgCanvas
 void WfcText_DestroyBgCanvas(u32 idx);
 #endif
-#ifndef PROTO_LOCAL_WfcText_RequestTransfer
-void WfcText_RequestTransfer(void *o);
-#endif
 #ifdef __cplusplus
 }
 #endif
@@ -44,26 +42,32 @@ extern "C" {
 #ifndef PROTO_LOCAL_WfcText_CreateObjCanvas
 WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot);
 #endif
+#ifndef PROTO_LOCAL_WfcText_DestroyObjCanvas
+void WfcText_DestroyObjCanvas(WfcTextCanvas *o);
+#endif
 #ifndef PROTO_LOCAL_WfcText_CreateBgCanvas
 WfcTextCanvas *WfcText_CreateBgCanvas(u32 idx, u32 slot);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawText
-void WfcText_DrawText(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+void WfcText_DrawText(WfcTextCanvas *o, s32 x, s32 y, s32 color, u32 flags, const u16 *text);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawChar
-void WfcText_DrawChar(WfcTextCanvas *a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx);
+void WfcText_DrawChar(WfcTextCanvas *o, s32 x, s32 y, s32 color, u16 c, s32 font);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawMonospace
-void WfcText_DrawMonospace(WfcTextCanvas *a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx);
+void WfcText_DrawMonospace(WfcTextCanvas *o, s32 x, s32 y, s32 color, s32 w, u16 *p, s32 font);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawTextRect
-void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, const void *text);
+void WfcText_DrawTextRect(WfcTextCanvas *o, s32 x, s32 y, s32 w, s32 h, s32 color, u32 flags, const u16 *text);
 #endif
 #ifndef PROTO_LOCAL_WfcText_Clear
 void WfcText_Clear(WfcTextCanvas *o, s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcText_ArrangeObj
-void WfcText_ArrangeObj(WfcTextCanvas *o, s32 a1, s32 a2, void *h, s32 a4);
+void WfcText_ArrangeObj(WfcTextCanvas *o, s32 x, s32 y, WfcObjGroup *h, s32 priority);
+#endif
+#ifndef PROTO_LOCAL_WfcText_RequestTransfer
+void WfcText_RequestTransfer(WfcTextCanvas *o);
 #endif
 }
 #endif

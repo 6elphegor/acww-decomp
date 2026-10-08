@@ -18,7 +18,6 @@
 #include "game/ShopAckCounter.h"
 #include "item/Letter.h"
 #include "gfx/ObjShadowBits.h"
-#include "gfx/SceneLightsCol.h"
 #include "item/ShopPurchaseBits.h"
 #include "item/ShopAckCounter.h"
 #include "item/DateSeededRandomSource.h"
@@ -2199,12 +2198,6 @@ void func_0205553c(void *a, VecFx32 *scale);
 }
 extern "C" {
 void func_02054b14(void *a);
-}
-extern "C" {
-Col SceneLights_GetRoomColor(void);
-}
-extern "C" {
-RGB SceneLights_GetFlashColor(void);
 }
 extern "C" {
 s32 SceneLights_GetLightParam(s32 a);

@@ -403,7 +403,7 @@ BOOL SpNpcCopper::onCreate() {
         }
         return TRUE;
     }
-    TownTravelState *p = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+    TownTravelState *p = (TownTravelState *)TownSessionState_GetTravelState(TownSessionState_Get());
     if (p->getMode() == 1 || p->getMode() == 2) {
         if (p->getMode() == 1) {
             talk.setTopic(6);
@@ -1037,7 +1037,7 @@ BOOL SpNpcCopper::mainAct0C() {
         s32 s;
         VecFx32 v;
         Actor *e;
-        h = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+        h = (TownTravelState *)TownSessionState_GetTravelState(TownSessionState_Get());
         e = (Actor *)PlayerActor_GetActor(4);
         VecFx32 *pv = &e->position;
         v.x = pv->x;
@@ -1068,7 +1068,7 @@ BOOL SpNpcCopper::mainAct0D() {
         s32 s;
         VecFx32 v;
         Actor *e;
-        h = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+        h = (TownTravelState *)TownSessionState_GetTravelState(TownSessionState_Get());
         e = (Actor *)PlayerActor_GetActor(4);
         VecFx32 *pv = &e->position;
         v.x = pv->x;
@@ -2250,7 +2250,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     }
     if (checkNetError(b)) {
         Comm_ClearSyncState();
-        if (((KatieVisitState *)TownSessionState_GetKatieState((u8 *)TownSessionState_Get()))->isFollowing()) {
+        if (((KatieVisitState *)TownSessionState_GetKatieState(TownSessionState_Get()))->isFollowing()) {
             if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting()) {
                 ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->clearEscorting();
             }
@@ -2258,7 +2258,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     } else {
         s32 t = Comm_GetSyncState();
         if (t == 5) {
-            if (((KatieVisitState *)TownSessionState_GetKatieState((u8 *)TownSessionState_Get()))->isFollowing()) {
+            if (((KatieVisitState *)TownSessionState_GetKatieState(TownSessionState_Get()))->isFollowing()) {
                 if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting() == 0) {
                     ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->setEscorting();
                 }

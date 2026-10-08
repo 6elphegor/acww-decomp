@@ -5,7 +5,7 @@
 
 #pragma thumb off
 
-struct WfcBgMap { s32 task; u8 screen[0x600]; u8 isTransferPending; };
+struct WfcBgMap { void *task; u8 screen[0x600]; u8 isTransferPending; };
 struct WfcPaletteCopy { void *src; void *dst; };
 
 extern "C" {
@@ -22,7 +22,7 @@ extern "C" WfcBgMap *sWfcBgMap = 0;
 extern "C" WfcPaletteCopy sWfcPaletteCopy = {0, 0};
 
 extern "C" void WfcBgMap_Create(void *a) {
-    WfcBgMap *p = (WfcBgMap *)WfcHeap_AllocClear(HOST_SIZED(0x608, WfcBgMap), 4);
+    WfcBgMap *p = (WfcBgMap *)WfcHeap_AllocClear(sizeof(WfcBgMap), 4);
     sWfcBgMap = p;
     MIi_CpuCopyFast(a, p->screen, 0x600);
     sWfcBgMap->task = WfcTask_Add(1, (void *)WfcBgMap_TransferTask, 0, 0x78);
@@ -52,15 +52,16 @@ extern "C" void WfcBgMap_TransferTask() {
     sWfcBgMap->isTransferPending = 0;
 }
 
+// a: a palette file (16-colour lines of 0x20 bytes); line b of it is copied to BG palette line c
 extern "C" void WfcUtil_RequestPaletteLine(void *a, s32 b, s32 c) {
     sWfcPaletteCopy.src = (u8 *)a + (b << 5);
     sWfcPaletteCopy.dst = (void *)((c << 5) + 0x5000000);
     WfcTask_Add(1, (void *)WfcUtil_PaletteLineTask, 0, 0x78);
 }
 
-extern "C" void WfcUtil_PaletteLineTask(s32 a) {
+extern "C" void WfcUtil_PaletteLineTask(void *task) {
     MIi_CpuCopy16(sWfcPaletteCopy.src, sWfcPaletteCopy.dst, 0x20);
-    WfcTask_RequestDelete(1, a);
+    WfcTask_RequestDelete(1, task);
 }
 
 extern "C" void WfcUtil_RequestBgPalette(void *a) {
@@ -68,7 +69,7 @@ extern "C" void WfcUtil_RequestBgPalette(void *a) {
     WfcTask_Add(1, (void *)WfcUtil_BgPaletteTask, 0, 0x78);
 }
 
-extern "C" void WfcUtil_BgPaletteTask(s32 a) {
+extern "C" void WfcUtil_BgPaletteTask(void *task) {
     MIi_CpuCopy16(sWfcPaletteCopy.src, (void *)0x5000000, 0x200);
-    WfcTask_RequestDelete(1, a);
+    WfcTask_RequestDelete(1, task);
 }
