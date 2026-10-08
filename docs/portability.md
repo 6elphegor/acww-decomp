@@ -463,10 +463,18 @@ final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
       `u32[8]`) into the capture state. The FS memory archive read from `base + (u32)offset` with negative offsets
       (the NNS file system's mount of a NARC). NNS fonts on 64-bit read their glyph/width/map links as 8-byte
       pointers from 4-byte file slots (only the Wi-Fi menus use them). `Insect_NetClaim` read through the packed id
-      as an address when neither flag was set (the DS read low memory there; now "no insect").
+      as an address when neither flag was set (the DS read low memory there; now "no insect"). The room score
+      sources (`VillagerRoomScoreSource` / `HouseRoomScoreSource`, src/main/unk_020594dc.cpp: the happy-room
+      evaluation when a new town is set up and when the game saves) had their struct-returning virtuals written in
+      ARM's shape (the result slot as `this`; i386 with `-fpcc-struct-return` shares it): on x86-64 they wrote the
+      item into the caller's object - its vtable pointer. Whether the next virtual call then crashed depended on
+      the vtable's address: after the merge of steps 2.9-2.11 it did, at frame 12228 of the town script and 4344
+      of the continue run, in both 64-bit builds of refs/heads/modern d0eb4763 (with and without the harness). Now
+      real `RoomSurfaceItem` results; the i386 save/continue run is unchanged (pictures and save file).
     - Check: the i386 oracle (quick: pictures and sound; play) identical after every step; the 64-bit build's quick,
-      play and town runs identical to the same tree without these changes (refs/heads/modern), except the quick
-      sound from 24.34 s (the alarm fix above); `--strict-c`, `host_strict_errors.sh`, `host_portcheck.py` 0.
+      play and town runs identical to the same tree without these changes (refs/heads/modern 1700271b), except the
+      quick sound from 24.34 s - and that is the alarm fix alone: with only `SlotEnt` put back, quick (pictures and
+      sound) is identical to modern's; `--strict-c`, `host_strict_errors.sh`, `host_portcheck.py` 0.
 21. **3.2** System work area, DTCM, palette, OAM, VRAM and arenas become host objects:
     - a rewrite tool turns the 160 system-work/DTCM casts into `HW_SYSWORK(...)` over a `HostSysWork` block, and the 18 + 5 palette/OAM casts into `HW_PLTT`/`HW_OAM`;
     - VRAM: 32 casts plus 2 tables through `HostVram_CpuPtr(dsaddr)`. This replaces vram.c's mmap aliasing: each bank appears in at most one CPU window at a time, so a lookup suffices. Assert that no pointer is kept across a VRAMCNT change;
