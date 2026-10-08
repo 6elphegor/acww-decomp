@@ -94,7 +94,7 @@ void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_GetEnemyName(void *a, MsgString *b);
 void Villager_GetRandomOtherName(void *a, MsgString *b);
 void Villager_GetImpressionText(void *self, void *out, s32 p);
-s32 Villager_GetState(VillagerData *a);
+VillagerState *Villager_GetState(VillagerData *a);
 u32 VillagerState_GetMood(VillagerState *e);
 s32 SaveVillagers_Count(u8 *base);
 s32 _ZN14VillagerMemory13getFriendshipEv(VillagerMemory *self);
@@ -2123,7 +2123,7 @@ u8 TalkVoice::getSpeakerMoodIndex()
     u32 i = 0;
     void *p = window->request->getSpeakerData();
     if (p) {
-        VillagerState *st = (VillagerState *)(uptr)Villager_GetState((VillagerData *)p);  // (returns the address)
+        VillagerState *st = Villager_GetState((VillagerData *)p);  // (returns the address)
         if (st) i = VillagerState_GetMood(st);
     }
     return data_020cba14[i];

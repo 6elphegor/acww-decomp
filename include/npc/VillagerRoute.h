@@ -5,6 +5,7 @@
 #include "gfx/VecFx32.h"
 
 class BlockMap;
+class NpcActor;
 struct VillagerRouteType;
 struct RouteGridPosCopy;
 struct RouteJunction;
@@ -14,8 +15,7 @@ struct RouteGridPos {
 };
 
 // Villager route planner (0x9c bytes on the DS; FieldVillagerAi::route in ov068): unit-grid path search over
-// gSceneBlockMap. Methods defined in src/main/unk_020119cc.cpp (which still has its own copy of this struct: to be
-// replaced by this header).
+// gSceneBlockMap. Methods defined in src/main/unk_020119cc.cpp.
 struct VillagerRoute {
     /* 0x00 */ u32 stepMode;
     /* 0x04 */ u32 stepPhase;
@@ -72,7 +72,7 @@ struct VillagerRoute {
     void checkUnitChanged(VecFx32 *v);
     void markUnitUnset();
     void rememberUnit(VecFx32 *v);
-    void start(u32 a, u32 idx, u32 b, u32 c);
+    void start(VecFx32 *pos, u32 idx, u32 b, NpcActor *owner);
     void reset();
     VillagerRoute* resetTarget();
 };
