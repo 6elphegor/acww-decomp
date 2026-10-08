@@ -89,7 +89,7 @@ void SslMd5_Transform(SslMd5Context *ctx, const u8 *block)
 
 void SslMd5_Init(SslMd5Context *ctx)
 {
-    MI_CpuFill8(ctx, 0, 0x58);
+    MI_CpuFill8(ctx, 0, sizeof(*ctx));
     ctx->st[0] = 0x67452301;
     ctx->st[1] = 0xefcdab89;
     ctx->st[2] = 0x98badcfe;

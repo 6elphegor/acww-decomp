@@ -462,12 +462,12 @@ void DwcCore_Process() {
         break;
     }
     }
-    if (*((u8 *)G + 0x354) == 1) {
-        if (*(u32 *)((u8 *)G + 0x34c) != 0) {
-            qr2_shutdown((void *)*(u32 *)((u8 *)G + 0x34c));
-            *(u32 *)((u8 *)G + 0x34c) = 0;
+    if (G->matchControl.qr2ShutdownPending == 1) {
+        if (G->matchControl.qr2Object != NULL) {
+            qr2_shutdown(G->matchControl.qr2Object);
+            G->matchControl.qr2Object = NULL;
         }
-        *((u8 *)G + 0x354) = 0;
+        G->matchControl.qr2ShutdownPending = 0;
     }
 }
 }
@@ -617,7 +617,7 @@ s32 DwcConn_GetConnectionCount() {
     if (G == 0) {
         return 0;
     }
-    if (*(volatile u8 *)((u8 *)G + 0x351) == 2 || *(volatile u8 *)((u8 *)G + 0x351) == 3) {
+    if (G->matchControl.matchType == 2 || G->matchControl.matchType == 3) {
         return DwcMatch_GetValidAidCount() + 1;
     }
     return DwcMatch_GetClientCount() + 1;
@@ -642,8 +642,8 @@ s32 DwcConn_GetAidList(u8 **out) {
     if (G == 0) {
         return 0;
     }
-    *out = (u8 *)G + 0x5f4;
-    if (*(volatile u8 *)((u8 *)G + 0x351) == 2 || *(volatile u8 *)((u8 *)G + 0x351) == 3) {
+    *out = G->matchControl.aids;
+    if (G->matchControl.matchType == 2 || G->matchControl.matchType == 3) {
         return DwcMatch_GetValidAidList(out);
     }
     return DwcMatch_GetAidList(out);
@@ -670,7 +670,7 @@ u32 DwcConn_IsAidValid(u32 bit) {
     if (G == 0) {
         return 0;
     }
-    if (*(u32 *)((u8 *)G + 0x614) & (1 << bit)) {
+    if (G->matchControl.validAidMask & (1 << bit)) {
         return DwcConn_IsAidConnected(bit);
     }
     return 0;
