@@ -6,7 +6,6 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "gfx/AnimModel.h"
-#include "room/RoomObjActor.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "types.h"
@@ -71,9 +70,6 @@ extern s32 sRoomInteractDist;
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d4b4
 extern u32 data_ov004_0224d4b4;
-#endif
-#ifndef PROTO_LOCAL__ZN12RoomObjActorC2Ev
-RoomObjActor *_ZN12RoomObjActorC2Ev(RoomObjActor *self);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_LoadResources
 void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb);

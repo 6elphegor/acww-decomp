@@ -27,15 +27,10 @@
 #include "gfx/TexPatVramAnim.h"
 #include "room/FtrHeadwear.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_FtrFootprint_GetTileCount  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrFootprint_GetTileOffset  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrFootprint_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrMgr_FindPlacement  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrMgr_TryPlaceAt  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sHouseRoachVillager  // declared below: the shared prototype conflicts with the calls here
+#include "player/PlayerData.h"
+#include "room/FtrManager.h"
+#include "sys/ClockDateTime.h"
+#include "sys/new.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_02101048.h"
@@ -57,50 +52,13 @@
 #include "proto/ov004/unk_ov004_02235fd0.h"
 
 // other modules' symbols by their real names
-#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define TvSound_callRelease _ZN7TvSound11callReleaseEv
-#define TvSound_callReset _ZN7TvSound9callResetEv
-#define func_02004b60 _ZN6ItemIdD1Ev
-#define func_0203442c _ZN6ItemIdC1Ev
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define func_020548a0 _ZN9AnimModelD1Ev
-#define func_020548d0 _ZN9AnimModelC1Ev
-#define Model_drawNoGeCmd _ZN5Model11drawNoGeCmdEv
-#define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
-#define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define TexPatVramAnim_update _ZN14TexPatVramAnim6updateEv
-#define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
-#define func_02056d54 _ZN14TexPatVramAnimD1Ev
-#define func_02056d8c _ZN14TexPatVramAnimC1Ev
-#define ActorPlacedCollider_setupForActorAt _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi
-#define ActorCollider_submit _ZN13ActorCollider6submitEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
-#define func_02133150 _s32_div_f
-#define FtrActor_startPull _ZN8FtrActor9startPullEs
-#define FtrActor_startPush _ZN8FtrActor9startPushEs
-#define FtrActor_startRotate _ZN8FtrActor11startRotateEi
-#define FtrActor_canMoveBy _ZN8FtrActor9canMoveByEi
-#define FtrActor_canRotateBy _ZN8FtrActor11canRotateByEi
-#define FtrActor_playSound2 _ZN8FtrActor10playSound2Ev
-#define FtrActor_playSound1 _ZN8FtrActor10playSound1Ev
-#define FtrActor_playSound0 _ZN8FtrActor10playSound0Ev
-#define FtrActor_isSoundingClock _ZN8FtrActor15isSoundingClockEv
-#define FtrActor_isCabinClock _ZN8FtrActor12isCabinClockEv
 #define FtrActor_isGyroid _ZN8FtrActor8isGyroidEv
-#define FtrActor_isTvOn _ZN8FtrActor6isTvOnEv
-#define func_ov004_0220af14 _ZN11FtrHeadwear8syncAct1Ev
-#define func_ov004_0220af28 _ZN11FtrHeadwear8syncAct0Ev
 #define FtrShirt_syncAct0 _ZN8FtrShirt8syncAct0Ev
 #define FtrShirt_syncAct1 _ZN8FtrShirt8syncAct1Ev
 #define FtrTv_markNearestTv _ZN5FtrTv13markNearestTvEv
 #define FtrClock_markNearestCabinClock _ZN8FtrClock21markNearestCabinClockEv
 #define FtrClock_markNearestSoundingClock _ZN8FtrClock24markNearestSoundingClockEv
 #define FtrBed_checkStepTile _ZN6FtrBed13checkStepTileEP7VecFx32iS1_
-#define func_ov004_022326fc _ZN14MuseumAquariumC1Ev
 
 
 
@@ -142,31 +100,30 @@ struct TvWeatherSrcView {
     WeatherRecord weather;
 };
 
-struct TvClockDateBuf {
-    u32 dateTimeLo;
-    u32 dateTimeHi;
-    ClockDate date;
-};
-
-// P: 0xa8-byte TV/ftr resource slot (member sub-object TexPatVramAnim at +0x10)
+// 0xa8-byte TV program slot: the program's (or weather forecast's) texture animated on the TV screen
 struct TvProgSlot {
-    void *heap;
-    void *screenTex;
-    void *progTex;
-    void *progTexPat;
-    u32 texPatAnim[0x90 / 4];
-    s32 program;
-    s16 weather;
-    u16 loopCount;
+    TvProgSlot();
+    ~TvProgSlot();
+
+    /* 0x00 */ FrameHeap *heap;
+    /* 0x04 */ void *screenTex;
+    /* 0x08 */ void *progTex;
+    /* 0x0c */ void *progTexPat;
+    /* 0x10 */ TexPatVramAnim texPatAnim;
+    /* 0xa0 */ s32 program;
+    /* 0xa4 */ s16 weather;
+    /* 0xa6 */ u16 loopCount;
 };
 
-// Q: holder of two P slots
+// the TV screens' texture: two program slots (the one shown and the one loaded next)
 struct TvScreen {
+    TvScreen();
+
     s16 curSlot;
     TvProgSlot slots[2];
     void *screenTex;
-    void *soundHeap;
-    void *tvSound;
+    FrameHeap *soundHeap;
+    TvSound *tvSound;
 };
 // (not in the generated header: it spells the file's struct without the C struct keyword)
 extern "C" void *TvScreen_GetTex(TvScreen *o);
@@ -174,22 +131,25 @@ extern "C" void *FtrMoveAnim_GetPushAnim(FtrMoveAnim *r);
 extern "C" void *FtrMoveAnim_GetPullAnim(FtrMoveAnim *r);
 extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 
-// R: furniture model wrapper (AnimModel at +0x2c)
+// the furniture moving animation (the push / pull model, AnimModel at +0x2c)
 struct FtrMoveAnim {
+    FtrMoveAnim();
+    ~FtrMoveAnim();
+
     u8 isPlaying;
     s32 posX;
     s32 posY;
     s32 posZ;
-    void *heap;
+    FrameHeap *heap;
     void *anmArc;
     void *pushAnim;
     void *pullAnim;
     void *haniwaAnim;
     void *modelArc;
     void *resMdl;
-    // the BlendAnimModel (constructed in place by FtrMoveAnim_Construct); its matrix and frame control are the
-    // modelMtx / animFrameCtrl of the DS layout below (the host types are larger: storage of the real size)
-    alignas(8) u8 model[sizeof(BlendAnimModel)];
+    // an AnimModel used through BlendAnimModel's methods, in the space of a BlendAnimModel
+    alignas(8) AnimModel model;
+    u8 blendSpace[sizeof(BlendAnimModel) - sizeof(AnimModel)];
 };
 
 struct FtrModelPath {
@@ -202,9 +162,18 @@ struct Unk_ov004_02233f3c_P {
     Unk_ov004_02233f3c_P(s16 a, s16 b) : x(a), y(b) {}
 };
 
+struct Unk_0205242c_Self;
+struct Unk_0205242c_Item;
+
+// a furniture's footprint (its tiles; FtrFootprint_Init, main)
 struct FtrFootprint {
     u32 shapeIndex, direction;
 };
+
+// the tile offsets of a footprint: {x, y} pairs
+static inline s16 *FtrFootprint_Tile(FtrFootprint *b, u32 i) {
+    return (s16 *)FtrFootprint_GetTileOffset((Unk_0205242c_Self *)b, i);
+}
 
 
 
@@ -215,125 +184,6 @@ struct FtrFootprint {
 // main's 0x18-byte pool object
 typedef void *(*ModelSlotAllocFunc)(u32, u32);
 typedef void (*ModelSlotFreeFunc)();
-
-// ---- classes of unk_022350c8 (symbols name their methods)
-
-class FtrActorTable;
-class FtrActorGrid;
-class FtrContactSet;
-class FtrActorHeap;
-
-
-// slot (0x40)
-class FtrContact {
-public:
-    s32 actorIndex;
-    VecFx32 prevPlayerPos;
-    VecFx32 playerPos;
-    s32 depth;
-    VecFx32 contactPoint;
-    VecFx32 clampedContactPoint;
-    s16 pushAngle;
-    s32 side;
-    FtrContact();
-    ~FtrContact();
-    s32 getStepDistance();
-    void set(s32 id, VecFx32 *a, VecFx32 *b, s32 c,
-                              VecFx32 *d, VecFx32 *e, s16 f, s32 g);
-    void clear();
-    s32 getActorIndex();
-    s16 getPushAngle();
-    s32 getSide();
-    VecFx32 *getClampedContactPoint();
-    VecFx32 *getContactPoint();
-    s32 getDepth();
-    VecFx32 *getPlayerPos();
-    VecFx32 *getPrevPlayerPos();
-};
-
-class FtrContactSet {
-public:
-    FtrContact contacts[2];
-    FtrContactSet();
-    ~FtrContactSet();
-    BOOL setContact(s32 id, VecFx32 *a, VecFx32 *b, s32 c,
-                              VecFx32 *d, VecFx32 *e, s16 f, s32 g);
-    void clear();
-    void *startPull();
-    void *canPull();
-    void *startPush();
-    void *canPush();
-    VecFx32 *makeStepVec(s16 v);
-    void *canMoveAt(s32 v);
-    void *startRotatePlus90();
-    void *canRotatePlus90();
-    void *startRotateMinus90();
-    void *canRotateMinus90();
-    void *startRotateBy(s32 v);
-    void *canRotateBy(s32 v);
-    void requestToggle();
-    void *getActor(u32 idx);
-    FtrContact *findContact(void *v);
-    FtrContact *getContact(u32 idx);
-};
-
-// 16x16 x 2 cell grid
-class FtrActorGrid {
-public:
-    u8 cells[2][16][16];
-    FtrActorGrid();
-    ~FtrActorGrid();
-    FtrActor *getActorAtPos(void *p, s32 layer);
-    FtrActor *getActor(s32 x, s32 y, s32 layer);
-    s32 getIndex(s32 x, s32 y, s32 layer);
-    BOOL clearCell(s32 id, s32 x, s32 y, u8 layer);
-    BOOL setCell(s32 id, s32 x, s32 y, u8 layer);
-    void clear();
-};
-
-// heap wrapper
-class FtrActorHeap {
-public:
-    u32 heap;
-    FtrActorHeap();
-    ~FtrActorHeap();
-    void free(void *p);
-    void *alloc();
-    void destroy();
-    BOOL create(s32 n);
-    void reset();
-};
-
-// sound handle wrapper
-class FtrSoundEmitter {
-public:
-    u8 posNode[0x1c];
-    u8 isAttached;
-    void setPitch(u32 a);
-    void setPan(u32 a);
-    void playOnce(u32 a, u32 b);
-    void play(u32 a, u32 b);
-    void release();
-    void attach();
-    void resetAttached();
-};
-
-// small helper at +0x50 of the main object, flag at +0x10
-class FtrSoundList {
-public:
-    // a SndPosList (src/autoload_2/unk_020f30fc.cpp: {FndList list; SndSeqHandle h;}), larger on 64-bit hosts
-    struct PosListLayout { FndList list; SndSeqHandle h; };
-    u8 posList[HOST_SIZED(0x10, PosListLayout)] HOST_ALIGN8;
-    /* 0x10 */ u8 initialized;
-
-    void update();
-    void tryInit();
-    void *destroy();
-    void reset();
-    u8 *getList();
-    u32 checkInitialized();
-    u32 isInitialized();
-};
 
 // main object, vtable 0x0224e9d8
 class FurnitureManager : public GameProc {
@@ -364,8 +214,7 @@ extern Unk_0204e858_Grid *gSceneBlockMap;
 extern u8 gBackup[];
 extern u8 gSavePlayers[];
 extern TvWeatherSrcView data_021ed2b0;
-extern s32 data_021f47e0[];
-extern void *gCurrentHeap;
+extern Mtx43 data_021f47e0;
 extern VecFx32 gVec3Zero;
 extern const u8 sFtrPlaceDirOrder[4];
 extern const s8 sFtrProbeDirOffsets[4];
@@ -383,17 +232,11 @@ extern const u16 sFtrKindProfiles[0x30];
 extern const FtrSoundRecord sFtrSoundTable[0x6e9];
 extern const char *sFtrMoveAnimModelNamePtr;
 extern const char *sTvWeatherNames[11];
-extern u8 *sHouseRoachVillager;
 void MTX_MultVec43(void *v, void *m, void *out);
 void VEC_Add(void *, void *, void *);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Actor_spawn(u32, void *, s32, s32, u32);
-void TvSound_callRelease(void *);
-void TvSound_callReset(void *);
-void func_02004b60();
 s32 Ground_GetExitAtPos(void *);
 s32 Ground_CanPlaceItem(s32 x, s32 y);
-void func_0203442c();
 void *MapBlock_GetItemPtr(void *, u32, u32, u8);
 s32 Item_MakeFurniture(s32 a, s32 b);
 s32 Item_GetFurnitureIndex(void *p);
@@ -406,33 +249,13 @@ u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *w, s32 hx, s32 hy, s32 lx, s32 ly, u
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 s32 Backup_GetStatus(void *p);
-s16 *FtrFootprint_GetTileOffset(FtrFootprint *b, u32 i);
-u32 FtrFootprint_GetTileCount(FtrFootprint *b);
 void FtrFootprint_Destruct(FtrFootprint *b);
-void FtrFootprint_Init(FtrFootprint *b, void *cell);
-void AnimModel_attachAnim(void *self);
-void AnimModel_setFrame(void *p);
-void AnimModel_stepAnim(void *p);
-BOOL AnimModel_allocAnmObj(void *self, void *x);
-void func_020548a0(void *self);
-void func_020548d0(void *self);
-void Model_drawNoGeCmd(void *self);
 void Gfx3d_LoadTexAndPltt(void *a, void *b);
 void *Gfx3d_CopyTex(void *a, void *heap);
-BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
-BOOL AnimFrameCtrl_isFinished(void *self);
-BOOL TexPatVramAnim_update(void *p);
-BOOL TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, void *x, void *y, u32 flag);
-void func_02056d54(void *p);
-void func_02056d8c(void *p);
-s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 ActorCollider_submit(void *a);
-s32 PlayerData_getPlayerId(...);
-void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 s32 Date_GetWeatherPeriod(void *);
 s32 Clock_GetWeekday();
 void Clock_GetMinuteHour(void *);
-void Clock_GetDateTime(void *);
+void Clock_GetDateTime(ClockDateTime *p);
 s32 Scene_GetMaxFurniture(s32);
 s32 Scene_GetCurrent();
 BOOL Scene_InVillagerHouse();
@@ -443,20 +266,12 @@ BOOL Scene_InUnk6To8();
 BOOL Scene_InHouseRoom();
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
-void Mtx43_SetTranslate(s32 *m, s32 x, s32 y, s32 z);
-void Mtx43_RotateY(s32 *m, s32 a);
-void Heap_Free(void *heap, void *p);
-void *Heap_Alloc(void *heap, s32 size);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-#define Heap_destroy2 _ZN4Heap8destroy2Ev
-void Heap_destroy2(void *p);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateY(Mtx43 *m, s32 a);
 s32 Vec_RotateY(VecFx32 *, s32);
 s32 Vec_DistXZ(void *a, void *b);
 void Vec_DivScalar(void *, s32);
 void Vec_Sub(void *out, void *a, void *b);
-#define SndPosList_release _ZN10SndPosList7releaseEv
-void SndPosList_release(void *);
 void NNS_FndUnmountArchive(void *buf);
 BOOL NNS_FndMountArchive(void *buf, const char *name, void *data);
 void *NNS_G3dGetTex(void *p);
@@ -465,72 +280,44 @@ void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 void *func_02106690(void *p);
 void *func_021066ac(void *p, s32 a);
-s32 func_02133150(s32 a, s32 b);
-s32 FtrActor_startPull(void *, s32);
-s32 FtrActor_startPush(void *, s32);
-s32 FtrActor_startRotate(void *, s32);
 void FtrActor_GetItemId(u16 *out, FtrActor *o);
 s32 FtrActor_PredIsSeatOrBed(void *);
 BOOL FtrActor_PredIsStereo(FtrActor *);
-s32 FtrActor_canMoveBy(void *, void *);
-s32 FtrActor_canRotateBy(void *, s32);
 s32 FtrActor_AngleToDir(s32 a);
 u32 FtrActor_GetLayer(void *);
 s32 FtrActor_RequestToggle(void *);
 u32 FtrActor_GetFtrIndex(void *o);
 BOOL FtrActor_IsPosClearOfCharacters(VecFx32 *, s32, s32, s32, s32);
-void FtrActor_playSound2(void *);
-void FtrActor_playSound1(void *);
-void FtrActor_playSound0(void *);
-BOOL FtrActor_isSoundingClock(FtrActor *);
-BOOL FtrActor_isCabinClock(FtrActor *);
 BOOL FtrActor_isGyroid(FtrActor *);
-BOOL FtrActor_isTvOn(FtrActor *);
-s32 FtrActor_GetArgMode(FtrActor *);
-s32 FtrActor_GetArgFtrIndex(FtrActor *);
-FtrActor *FtrActor_MakeSpawnArg(s32 a, s32 b, s32 c, s32 d, u32 e, s32 f);
-s32 func_ov004_0220af14(void *p);
-s32 func_ov004_0220af28(void *p);
+u32 FtrActor_GetArgMode(u32 arg);
+u32 FtrActor_GetArgFtrIndex(u32 arg);
+u32 FtrActor_MakeSpawnArg(u32 a, u32 b, u32 c, u32 d, u8 f, u32 e);
 s32 FtrShirt_syncAct0(void *p);
 s32 FtrShirt_syncAct1(void *p);
 void FtrTv_markNearestTv(FtrActor *);
 void FtrClock_markNearestCabinClock(FtrActor *);
 void FtrClock_markNearestSoundingClock(FtrActor *);
 BOOL FtrBed_checkStepTile(FtrActor *, VecFx32 *, s32, VecFx32 *);
-void func_ov004_022326fc(void *);
 void func_ov004_02235180();
 void func_ov004_022356cc();
-u32 _ZN12FtrSoundList7getListEv(FtrSoundList *);
 }
 
 
-extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
-extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode);
-extern "C" s32 FtrMgr_FindPlacementMyDesignA(void *a, u32 b, u32 c);
-extern "C" s32 FtrMgr_FindPlacementMyDesignB(void *a, u32 b, u32 c);
-extern "C" s32 FtrMgr_FindPlacementMyDesignD(void *a, u32 b, u32 c);
-extern "C" s32 FtrMgr_FindPlacementMyDesignC(void *a, u32 b, u32 c);
 extern "C" void FtrMoveAnim_NodeCallback(NNSG3dRS *o);
 extern "C" void FtrMoveAnim_InstallCallback(NNSG3dRS *o);
-extern "C" void *FtrMoveAnim_Construct(FtrMoveAnim *r);
-extern "C" void *FtrMoveAnim_Destruct(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Load(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Unload(FtrMoveAnim *r);
 extern "C" void *FtrMoveAnim_GetMtx(FtrMoveAnim *r);
-extern "C" void *TvProgSlot_Construct(TvProgSlot *p);
-extern "C" void *TvProgSlot_Destruct(TvProgSlot *p);
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p);
 extern "C" void TvProgSlot_Update(TvProgSlot *p);
 extern "C" void TvProgSlot_Release(TvProgSlot *p);
-extern "C" void *TvScreen_Construct(TvScreen *q);
-extern "C" void *TvScreen_Destruct(TvScreen *q);
 extern "C" void TvScreen_Load(TvScreen *q);
 extern "C" void TvScreen_UpdateSchedule(TvScreen *o);
 extern "C" void TvScreen_Update(TvScreen *o);
 extern "C" void TvScreen_Release(TvScreen *o);
 
 #define TILE_ENTRY(name, base)                                              \
-    extern "C" s32 name(void *a, u32 b, u32 c) {                            \
+    extern "C" s32 name(u32 *a, u32 b, u32 c) {                            \
         s32 idx = FtrMgr_GetCurPlayerIndex();                                    \
         s32 r;                                                              \
         if (idx != -1) {                                                    \
@@ -579,12 +366,9 @@ extern "C" u8 sFtrMgrTvSoundEnabled;
 extern "C" u16 sFtrMgrCycleCounter;
 extern "C" FurnitureManager *sFurnitureManager;
 
-namespace Unk_ov004_02233f3c_Ns {
-extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u8 layer, s32 cx, s32 cy);
-}
 
 static inline BOOL Unk_ov004_02234f30_Is37(FtrActor *m) {
-    if (*(u16 *)((u8 *)m + 0xc) == 0x37) {
+    if (m->kind == 0x37) {
         return TRUE;
     }
     return FALSE;
@@ -599,14 +383,10 @@ extern "C" FurnitureManager *FurnitureManager_Create() {
 // @0x2235f78 unk_02235984.cpp
 FurnitureManager::FurnitureManager() {
     soundList.reset();
-    TvScreen_Construct(&tvScreen);
-    FtrMoveAnim_Construct(&moveAnim);
 }
 
 // @0x2235ef4 unk_02235984.cpp
 FurnitureManager::~FurnitureManager() {
-    FtrMoveAnim_Destruct(&moveAnim);
-    TvScreen_Destruct(&tvScreen);
     soundList.destroy();
 }
 
@@ -628,8 +408,8 @@ BOOL FurnitureManager::onCreate() {
     if (Scene_InMuseumRoom()) {
         flags = 0x1c00;
     }
-    ((ModelSlotPool *)(&sFtrMgrPool))->init(FtrMgr_GetMaxFurniture(), (void *)(0x2000), (void *)(0x80), flags, (ModelSlotAllocFunc)((void *)FurnitureHeap_Create),
-                  (ModelSlotFreeFunc)((void *)FurnitureHeap_Destroy));
+    sFtrMgrPool.init(FtrMgr_GetMaxFurniture(), (void *)0x2000, (void *)0x80, flags, (ModelSlotAllocFunc)(void *)FurnitureHeap_Create,
+                     (ModelSlotFreeFunc)FurnitureHeap_Destroy);
     FtrMgr_CreateHook(this);
     if (FtrMgr_GetMaxFurniture() > 1) {
         TvScreen_Load(&tvScreen);
@@ -694,30 +474,24 @@ extern "C" void FtrMgr_SetSaleMode() {
 
 // @0x2235cc0 unk_02235984.cpp
 FtrPreviewer::FtrPreviewer() {
-    __cxa_vec_ctor(shownItems, 2, 2, (void *(*)(void *))func_0203442c, (void *(*)(void *, s32))func_02004b60);
     reset();
-    u32 i = 0;
-    u32 z = i;
-    for (; i < 2; i++) {
-        wallTexBuffers[i] = z;
-        floorTexBuffers[i] = z;
+    for (u32 i = 0; i < 2; i++) {
+        wallTexBuffers[i] = 0;
+        floorTexBuffers[i] = 0;
     }
 }
 
 // @0x2235c9c unk_02235984.cpp
 FtrPreviewer::~FtrPreviewer() {
     reset();
-    __cxa_vec_cleanup(shownItems, 2, 2, (void *(*)(void *, s32))func_02004b60);
 }
 
 // @0x2235c78 unk_02235984.cpp
 void FtrPreviewer::reset() {
-    u32 i = 0;
-    u32 z = i;
-    for (; i < 2; i++) {
-        actors[i] = z;
-        shownItems[i] = 0xfff1;
-        curSlot = z;
+    for (u32 i = 0; i < 2; i++) {
+        actors[i] = 0;
+        shownItems[i].id = 0xfff1;
+        curSlot = 0;
     }
 }
 
@@ -728,42 +502,38 @@ s32 FtrPreviewer::getSampleIndex() {
 
 // @0x2235c10 unk_02235984.cpp
 void FtrPreviewer::allocBuffers() {
-    u32 *g = (u32 *)gCurrentHeap;
+    Heap *g = gCurrentHeap;
     for (u32 i = 0; i < 2; i++) {
-        u32 *p = (u32 *)((u8 *)this + i * 4);
-        if (p[5] == 0) {
-            p[5] = (u32)Heap_Alloc(g, 0x10c4);
-            u32 t5 = *(volatile u32 *)&p[5];
+        if (wallTexBuffers[i] == 0) {
+            wallTexBuffers[i] = Heap_Alloc(g, 0x10c4);
+            void *t5 = wallTexBuffers[i];
             if (t5) {
-                t5 = (u32)WallpaperTexBuf_Init((void *)t5);
+                t5 = WallpaperTexBuf_Init(t5);
             }
-            p[5] = t5;
+            wallTexBuffers[i] = t5;
         }
-        if (p[7] == 0) {
-            p[7] = (u32)Heap_Alloc(g, 0x20c4);
-            u32 t7 = *(volatile u32 *)&p[7];
+        if (floorTexBuffers[i] == 0) {
+            floorTexBuffers[i] = Heap_Alloc(g, 0x20c4);
+            void *t7 = floorTexBuffers[i];
             if (t7) {
-                t7 = (u32)CarpetTex_Init((void *)t7);
+                t7 = CarpetTex_Init(t7);
             }
-            p[7] = t7;
+            floorTexBuffers[i] = t7;
         }
     }
 }
 
 // @0x2235bc8 unk_02235984.cpp
 void FtrPreviewer::freeBuffers() {
-    u32 *g = (u32 *)gCurrentHeap;
-    volatile s32 z0 = 0;
-    volatile s32 z1 = 0;
+    Heap *g = gCurrentHeap;
     for (u32 i = 0; i < 2; i++) {
-        u32 *p = (u32 *)((u8 *)this + i * 4);
-        if (p[5]) {
-            Heap_Free(g, (void *)p[5]);
-            p[5] = z0;
+        if (wallTexBuffers[i]) {
+            Heap_Free(g, wallTexBuffers[i]);
+            wallTexBuffers[i] = 0;
         }
-        if (p[7]) {
-            Heap_Free(g, (void *)p[7]);
-            p[7] = z1;
+        if (floorTexBuffers[i]) {
+            Heap_Free(g, floorTexBuffers[i]);
+            floorTexBuffers[i] = 0;
         }
     }
 }
@@ -771,7 +541,7 @@ void FtrPreviewer::freeBuffers() {
 // @0x2235a54 unk_02235984.cpp
 BOOL FtrPreviewer::showItem(u16 *p) {
     u16 v;
-    s32 out;
+    u32 out;
     Item_ToPlacedForm(&v, p, 1);
     BOOL r = FALSE;
     volatile u16 *pv0 = &v;
@@ -810,7 +580,7 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         }
         v = t;
     }
-    u16 *pv = &shownItems[curSlot & 1];
+    u16 *pv = &shownItems[curSlot & 1].id;
     BOOL same;
     if (Item_IsFurniture(p)) {
         s32 a = Item_GetFurnitureIndex(p);
@@ -828,17 +598,17 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         }
     }
     if (!same) {
-        u32 *slot = &actors[curSlot & 1];
+        ProcBase **slot = &actors[curSlot & 1];
         if (*slot) {
-            ProcBase_RequestDelete((void *)*slot);
+            ProcBase_RequestDelete(*slot);
             actors[curSlot & 1] = 0;
         }
         u8 n = (u8)((curSlot + 1) & 1);
-        u32 *slot2 = &actors[n];
+        ProcBase **slot2 = &actors[n];
         if (*slot2 == 0) {
             if (FtrMgr_FindPlacementForPlayer(&out, &v, 2) == 3) {
-                *slot2 = FtrMgr_SpawnFromArg((FtrActor *)out);
-                shownItems[n] = *p;
+                *slot2 = (ProcBase *)FtrMgr_SpawnFromArg(out);
+                shownItems[n].id = *p;
                 curSlot = n;
                 return TRUE;
             }
@@ -851,19 +621,19 @@ BOOL FtrPreviewer::showItem(u16 *p) {
 void FtrPreviewer::clear() {
     for (u32 i = 0; i < 2; i++) {
         if (actors[i]) {
-            ProcBase_RequestDelete((void *)actors[i]);
+            ProcBase_RequestDelete(actors[i]);
         }
     }
     reset();
 }
 
 // @0x2235a1c unk_02235984.cpp
-u32 FtrPreviewer::getWallBuffer() {
+void *FtrPreviewer::getWallBuffer() {
     return wallTexBuffers[curSlot & 1];
 }
 
 // @0x2235a0c unk_02235984.cpp
-u32 FtrPreviewer::getFloorBuffer() {
+void *FtrPreviewer::getFloorBuffer() {
     return floorTexBuffers[curSlot & 1];
 }
 
@@ -887,8 +657,8 @@ void FtrSoundList::reset() {
 }
 
 // @0x22359d8 unk_02235984.cpp
-void *FtrSoundList::destroy() {
-    SndPosList_release(this);
+FtrSoundList *FtrSoundList::destroy() {
+    posList.release();
     return this;
 }
 
@@ -896,7 +666,7 @@ void *FtrSoundList::destroy() {
 void FtrSoundList::tryInit() {
     if (isInitialized() == 0) {
         if (Snd_PosListCanInit()) {
-            Snd_PosListInit(this);
+            Snd_PosListInit(&posList);
             initialized = 1;
         }
     }
@@ -905,7 +675,7 @@ void FtrSoundList::tryInit() {
 // @0x223599c unk_02235984.cpp
 void FtrSoundList::update() {
     if (isInitialized()) {
-        Snd_PosListUpdate(this);
+        Snd_PosListUpdate(&posList);
     }
 }
 
@@ -915,8 +685,8 @@ u32 FtrSoundList::checkInitialized() {
 }
 
 // @0x2235990 unk_02235984.cpp
-u8 *FtrSoundList::getList() {
-    return posList;
+SndPosList *FtrSoundList::getList() {
+    return &posList;
 }
 
 // @0x223598c unk_02235984.cpp
@@ -939,7 +709,7 @@ void FtrSoundEmitter::attach() {
         FtrSoundList *h = FurnitureManager_GetSoundList();
         if (h != 0) {
             if (h->isInitialized()) {
-                Snd_PosNodeInit(this, _ZN12FtrSoundList7getListEv(h));
+                Snd_PosNodeInit(&posNode, h->getList());
                 isAttached = 1;
             }
         }
@@ -949,7 +719,7 @@ void FtrSoundEmitter::attach() {
 // @0x2235930 unk_022350c8.cpp
 void FtrSoundEmitter::release() {
     if (isAttached) {
-        Snd_PosNodeRelease(this);
+        Snd_PosNodeRelease(&posNode);
         isAttached = 0;
     }
 }
@@ -957,28 +727,28 @@ void FtrSoundEmitter::release() {
 // @0x223591c unk_022350c8.cpp
 void FtrSoundEmitter::play(u32 a, u32 b) {
     if (isAttached) {
-        Snd_PosNodePlay(this, a, b);
+        Snd_PosNodePlay(&posNode, a, (VecFx32 *)(uptr)b);
     }
 }
 
 // @0x2235908 unk_022350c8.cpp
 void FtrSoundEmitter::playOnce(u32 a, u32 b) {
     if (isAttached) {
-        Snd_PosNodePlayOnce(this, a, b);
+        Snd_PosNodePlayOnce(&posNode, a, (VecFx32 *)(uptr)b);
     }
 }
 
 // @0x22358f4 unk_022350c8.cpp
 void FtrSoundEmitter::setPan(u32 a) {
     if (isAttached) {
-        Snd_SetBgmPan(this, a);
+        Snd_SetBgmPan(&posNode, (VecFx32 *)(uptr)a);
     }
 }
 
 // @0x22358e0 unk_022350c8.cpp
 void FtrSoundEmitter::setPitch(u32 a) {
     if (isAttached) {
-        Snd_PosNodeSetPitch(this, a);
+        Snd_PosNodeSetPitch(&posNode, a);
     }
 }
 
@@ -1004,7 +774,7 @@ void FtrActorHeap::reset() {
 // @0x223588c unk_022350c8.cpp
 BOOL FtrActorHeap::create(s32 n) {
     if (heap == 0) {
-        heap = ExpHeap_Create(n * 0x93a, (u32)gCurrentHeap);
+        heap = ExpHeap_Create(n * 0x93a, gCurrentHeap);
         return TRUE;
     }
     return FALSE;
@@ -1013,19 +783,26 @@ BOOL FtrActorHeap::create(s32 n) {
 // @0x2235870 unk_022350c8.cpp
 void FtrActorHeap::destroy() {
     if (heap != 0) {
-        ((Heap *)((void *)heap))->destroy2();
+        ((Heap *)heap)->destroy2();
     }
     reset();
 }
 
 // @0x2235860 unk_022350c8.cpp
+// a block of the largest furniture actor's size (0x8d6 bytes on the DS; the actors are larger on 64-bit hosts, whose
+// heaps are twice the size)
+#ifdef HOST64
+#define FTR_ACTOR_BLOCK_SIZE (0x8d6 * 2)
+#else
+#define FTR_ACTOR_BLOCK_SIZE 0x8d6
+#endif
 void *FtrActorHeap::alloc() {
-    return Heap_Alloc((void *)heap, 0x8d6);
+    return Heap_Alloc((Heap *)heap, FTR_ACTOR_BLOCK_SIZE);
 }
 
 // @0x2235854 unk_022350c8.cpp
 void FtrActorHeap::free(void *p) {
-    Heap_Free((void *)heap, p);
+    Heap_Free((Heap *)heap, p);
 }
 
 // @0x223584c unk_022350c8.cpp
@@ -1139,7 +916,7 @@ void FtrActorGrid::clear() {
 // @0x223568c unk_022350c8.cpp
 BOOL FtrActorGrid::setCell(s32 id, s32 x, s32 y, u8 layer) {
     u8 *p = &cells[layer & 1][y & 15][x & 15];
-    s32 i = FtrActorTable_GetInstance()->indexOf((void *)id);
+    s32 i = FtrActorTable_GetInstance()->indexOf((void *)(sptr)id);
     if (i != -1) {
         *p = i;
         return TRUE;
@@ -1150,7 +927,7 @@ BOOL FtrActorGrid::setCell(s32 id, s32 x, s32 y, u8 layer) {
 // @0x2235648 unk_022350c8.cpp
 BOOL FtrActorGrid::clearCell(s32 id, s32 x, s32 y, u8 layer) {
     u8 *p = &cells[layer & 1][y & 15][x & 15];
-    if (FtrActorTable_GetInstance()->indexOf((void *)id) != -1) {
+    if (FtrActorTable_GetInstance()->indexOf((void *)(sptr)id) != -1) {
         *p = 0xff;
         return TRUE;
     }
@@ -1314,7 +1091,7 @@ FtrContact *FtrContactSet::findContact(void *v) {
 }
 
 // @0x2235434 unk_022350c8.cpp
-void *FtrContactSet::getActor(u32 idx) {
+FtrActor *FtrContactSet::getActor(u32 idx) {
     FtrContact *s = getContact(idx);
     if (s != 0) {
         FtrActorTable *t = FtrActorTable_GetInstance();
@@ -1325,7 +1102,7 @@ void *FtrContactSet::getActor(u32 idx) {
 
 // @0x223539c unk_022350c8.cpp
 void FtrContactSet::requestToggle() {
-    void *o1 = getActor(1);
+    FtrActor *o1 = getActor(1);
     FtrContact *s1 = getContact(1);
     if (o1 != 0 && s1 != 0) {
         BOOL k1 = TRUE;
@@ -1340,7 +1117,7 @@ void FtrContactSet::requestToggle() {
             }
         }
     }
-    void *o2 = getActor(0);
+    FtrActor *o2 = getActor(0);
     FtrContact *s2 = getContact(0);
     if (o2 != 0 && s2 != 0) {
         BOOL k2 = TRUE;
@@ -1358,49 +1135,49 @@ void FtrContactSet::requestToggle() {
 }
 
 // @0x223537c unk_022350c8.cpp
-void *FtrContactSet::canRotateBy(s32 v) {
-    void *o = getActor(0);
+BOOL FtrContactSet::canRotateBy(s32 v) {
+    FtrActor *o = getActor(0);
     if (o != 0) {
-        return (void *)((FtrActor *)(o))->canRotateBy(v);
+        return o->canRotateBy(v);
     }
     return 0;
 }
 
 // @0x223535c unk_022350c8.cpp
-void *FtrContactSet::startRotateBy(s32 v) {
-    void *o = getActor(0);
+BOOL FtrContactSet::startRotateBy(s32 v) {
+    FtrActor *o = getActor(0);
     if (o != 0) {
-        return (void *)((FtrActor *)(o))->startRotate(v);
+        return o->startRotate(v);
     }
     return 0;
 }
 
 // @0x223534c unk_022350c8.cpp
-void *FtrContactSet::canRotateMinus90() {
+BOOL FtrContactSet::canRotateMinus90() {
     return canRotateBy(-0x4000);
 }
 
 // @0x223533c unk_022350c8.cpp
-void *FtrContactSet::startRotateMinus90() {
+BOOL FtrContactSet::startRotateMinus90() {
     return startRotateBy(-0x4000);
 }
 
 // @0x223532c unk_022350c8.cpp
-void *FtrContactSet::canRotatePlus90() {
+BOOL FtrContactSet::canRotatePlus90() {
     return canRotateBy(0x4000);
 }
 
 // @0x223531c unk_022350c8.cpp
-void *FtrContactSet::startRotatePlus90() {
+BOOL FtrContactSet::startRotatePlus90() {
     return startRotateBy(0x4000);
 }
 
 // @0x22352d0 unk_022350c8.cpp
-void *FtrContactSet::canMoveAt(s32 v) {
+BOOL FtrContactSet::canMoveAt(s32 v) {
     FtrContact *s = getContact(0);
-    void *o = getActor(0);
+    FtrActor *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)((FtrActor *)(o))->canMoveBy((s32)(makeStepVec((s16)(v + s->getPushAngle()))));
+        return o->canMoveBy(makeStepVec((s16)(v + s->getPushAngle())));
     }
     return 0;
 }
@@ -1443,31 +1220,31 @@ VecFx32 *FtrContactSet::makeStepVec(s16 v) {
 }
 
 // @0x2235270 unk_022350c8.cpp
-void *FtrContactSet::canPush() {
+BOOL FtrContactSet::canPush() {
     return canMoveAt(0);
 }
 
 // @0x2235234 unk_022350c8.cpp
-void *FtrContactSet::startPush() {
+BOOL FtrContactSet::startPush() {
     FtrContact *s = getContact(0);
-    void *o = getActor(0);
+    FtrActor *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)((FtrActor *)(o))->startPush(s->getPushAngle());
+        return o->startPush(s->getPushAngle());
     }
     return 0;
 }
 
 // @0x2235224 unk_022350c8.cpp
-void *FtrContactSet::canPull() {
+BOOL FtrContactSet::canPull() {
     return canMoveAt(-0x8000);
 }
 
 // @0x22351e8 unk_022350c8.cpp
-void *FtrContactSet::startPull() {
+BOOL FtrContactSet::startPull() {
     FtrContact *s = getContact(0);
-    void *o = getActor(0);
+    FtrActor *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)((FtrActor *)(o))->startPull(s->getPushAngle());
+        return o->startPull(s->getPushAngle());
     }
     return 0;
 }
@@ -1495,7 +1272,7 @@ BOOL FtrContactSet::setContact(s32 id, VecFx32 *a, VecFx32 *b, s32 c,
         return FALSE;
     }
     {
-        void *o = FtrActorTable_GetInstance()->get(id);
+        FtrActor *o = FtrActorTable_GetInstance()->get(id);
         if (o != 0) {
             u32 k = FtrActor_GetLayer(o);
             contacts[k & 1].set(id, a, b, c, d, e, f, g);
@@ -1531,7 +1308,7 @@ extern "C" s32 FtrMgr_IsFurnitureUsable() {
 }
 
 // @0x2235028 unk_02234774.cpp
-extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
+extern "C" Actor *FtrMgr_SpawnFromArg(u32 self) {
     if (FtrActorTable_GetInstance()->countFree()) {
         s32 a = FtrInfo_GetDmaUnk02(FtrActor_GetArgFtrIndex(self));
         s32 b = FtrActor_GetArgMode(self);
@@ -1546,17 +1323,17 @@ extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
                     ((FtrSwitch *)e->switchState)->set(1, 0);
-                    FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (u8 *)e + 0x5c, 0);
+                    FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (s32)(sptr)&e->position, 0);
                 }
             }
         }
-        return Actor_spawn(v, self, 0, 0, (u32)sFurnitureManager);
+        return (Actor *)Actor::spawn((void *)(uptr)v, (void *)(uptr)self, 0, 0, sFurnitureManager);
     }
     return 0;
 }
 
 // @0x2234ff4 unk_02234774.cpp
-extern "C" s32 FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d) {
+extern "C" Actor *FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d) {
     FtrInfo_GetDmaUnk02(a);
     return FtrMgr_SpawnFromArg(FtrActor_MakeSpawnArg(x, y, a, b, c, d));
 }
@@ -3452,7 +3229,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL && FtrActor_PredIsStereo(e) && ((FtrSwitch *)e->switchState)->isOn()) {
-            FtrSync_ChangeAct(e, z, 0xff, 1);
+            FtrSync_ChangeAct((s32)(sptr)e, z, 0xff, 1);
         }
     }
     return TRUE;
@@ -3592,10 +3369,10 @@ extern "C" void FtrMgr_SpawnAllFromMap(void *) {
 
 // @0x22349a8 unk_02234774.cpp
 extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
-    u8 *p = (u8 *)PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p != NULL) {
         VecFx32 v0;
-        VecFx32 *pv = (VecFx32 *)(p + 0x5c);
+        VecFx32 *pv = &p->position;
         v0.x = pv->x;
         v0.y = pv->y;
         v0.z = pv->z;
@@ -3629,10 +3406,10 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
 
 // @0x2234908 unk_02234774.cpp
 extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
-    u8 *p = (u8 *)PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p != NULL) {
         VecFx32 v0;
-        VecFx32 *pv = (VecFx32 *)(p + 0x5c);
+        VecFx32 *pv = &p->position;
         v0.x = pv->x;
         v0.y = pv->y;
         v0.z = pv->z;
@@ -3672,10 +3449,10 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
         v8.x = gVec3Zero.x;
         v8.y = gVec3Zero.y;
         v8.z = gVec3Zero.z;
-        u8 *p = (u8 *)PlayerActor_GetActor(4);
+        Actor *p = (Actor *)PlayerActor_GetActor(4);
         if (p != NULL) {
             VecFx32 v14;
-            VecFx32 *pv = (VecFx32 *)(p + 0x5c);
+            VecFx32 *pv = &p->position;
             v14.x = pv->x;
             v14.y = pv->y;
             v14.z = pv->z;
@@ -3812,9 +3589,9 @@ extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, VecFx32 *pos, s32 an
 
 // @0x2234588 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d) {
-    FtrActor *o = PlayerActor_GetActor(4);
+    Actor *o = (Actor *)PlayerActor_GetActor(4);
     if (o != 0) {
-        return FtrMgr_FindFacingFurniture(a, b, (VecFx32 *)&o->position, o->rotY, c, d);
+        return FtrMgr_FindFacingFurniture(a, b, &o->position, o->rotY, c, d);
     }
     return -1;
 }
@@ -3924,7 +3701,7 @@ extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, s32 
 }
 
 // @0x22341c0 unk_02233dc0.cpp
-extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy) {
+extern "C" s32 FtrMgr_TryPlaceAt(u32 *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy) {
     s32 l18 = FtrInfo_TestIndoorFlag2(pl);
     s32 l1c = FtrInfo_GetUnk05(pl);
     s32 l20 = FtrInfo_GetDmaUnk04(pl);
@@ -3933,15 +3710,15 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
     u16 s34;
     FtrFootprint b;
     s34 = Item_MakeFurniture(pl, dir);
-    FtrFootprint_Init(&b, &s34);
+    FtrFootprint_Init((Unk_0205242c_Self *)&b, &s34);
     Unk_0204e858_Grid *w = gSceneBlockMap;
     BOOL ok = TRUE;
     u32 i = 0;
     z2 = i;
     z = i;
-    for (; i < FtrFootprint_GetTileCount(&b); i++) {
-        px = x + *(s16 *)((u8 *)FtrFootprint_GetTileOffset(&b, i) + z);
-        py = y + FtrFootprint_GetTileOffset(&b, i)[1];
+    for (; (s32)i < FtrFootprint_GetTileCount((Unk_0205242c_Self *)&b); i++) {
+        px = x + FtrFootprint_Tile(&b, i)[z];
+        py = y + FtrFootprint_Tile(&b, i)[1];
         s32 hx = px >> 4;
         s32 hy = py >> 4;
         u16 *cell = BlockMap_GetItemPtr(w, hx, hy, px - (hx << 4), py - (hy << 4), layer);
@@ -3978,7 +3755,7 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
         }
     }
     if (ok) {
-        *(u32 *)out = (u32)FtrActor_MakeSpawnArg(x, y, pl, dir, layer, 1);
+        *out = FtrActor_MakeSpawnArg(x, y, pl, dir, layer, 1);
         FtrFootprint_Destruct(&b);
         return 3;
     }
@@ -3995,7 +3772,7 @@ FtrActorGrid sFtrActorGrid;
 FtrContactSet sFtrContactSet;
 
 // @0x2233f3c unk_02233dc0.cpp
-extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode) {
+extern "C" s32 FtrMgr_FindPlacement(u32 *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode) {
     s32 pl, kind, base;
     s32 bx, by;
     s32 layer, n;
@@ -4014,7 +3791,7 @@ extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, VecFx32 *pos, s32 ang,
         return 1;
     }
     if (mode == 2) {
-        *(u32 *)out = (u32)FtrActor_MakeSpawnArg(0, 0, Item_GetFurnitureIndex(tile), 0, 0, 2);
+        *out = FtrActor_MakeSpawnArg(0, 0, Item_GetFurnitureIndex(tile), 0, 0, 2);
         return 3;
     }
     if (Scene_InHouseRoom() == 0) {
@@ -4050,29 +3827,29 @@ loopD:
 loopE:
     px = c54 + dirs[e].x;
     py = c58 + dirs[e].y;
-    if (Unk_ov004_02233f3c_Ns::FtrMgr_TryPlaceAt(out, px, py, r7, pl, layer, bx, by) == 3) {
+    if (FtrMgr_TryPlaceAt(out, px, py, r7, pl, (u8)layer, bx, by) == 3) {
         if (kind == 1) {
             s48 = Item_MakeFurniture(pl, r7);
             dr = (s32)(r7 << 30) >> 16;
-            FtrFootprint_Init(&buf, &s48);
+            FtrFootprint_Init((Unk_0205242c_Self *)&buf, &s48);
             v70.x = 0;
             v70.y = 0;
             v70.z = 0;
-            m = FtrFootprint_GetTileCount(&buf);
+            m = FtrFootprint_GetTileCount((Unk_0205242c_Self *)&buf);
             i = 0;
             z = i;
             for (; i < m; i++) {
-                q3c = px + *(s16 *)((u8 *)FtrFootprint_GetTileOffset(&buf, i) + z);
-                y3c = py + FtrFootprint_GetTileOffset(&buf, i)[1];
+                q3c = px + FtrFootprint_Tile(&buf, i)[z];
+                y3c = py + FtrFootprint_Tile(&buf, i)[1];
                 FieldPos_FromUnitCenter((VecFx32 *)&v7c, q3c, y3c);
                 VEC_Add(&v70, &v7c, &v70);
             }
             Vec_DivScalar(&v70, m << 12);
             Vec_Sub(&v88, pos, &v70);
             if (Math_AngleDiffAbs(dr, Math_Atan2(v88.x, v88.z)) > 0x4000) {
-                s16 *p1 = FtrFootprint_GetTileOffset(&buf, 1);
-                s16 *p2 = FtrFootprint_GetTileOffset(&buf, 1);
-                if (Unk_ov004_02233f3c_Ns::FtrMgr_TryPlaceAt(out, px + p1[0], py + p2[1], (r7 + 2) & 3, pl, layer, bx, by) == 3) {
+                s16 *p1 = FtrFootprint_Tile(&buf, 1);
+                s16 *p2 = FtrFootprint_Tile(&buf, 1);
+                if (FtrMgr_TryPlaceAt(out, px + p1[0], py + p2[1], (r7 + 2) & 3, pl, (u8)layer, bx, by) == 3) {
                     FtrFootprint_Destruct(&buf);
                     return 3;
                 }
@@ -4098,10 +3875,10 @@ testL:
 }
 
 // @0x2233f08 unk_02233dc0.cpp
-extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
-    FtrActor *o = PlayerActor_GetActor(4);
+extern "C" s32 FtrMgr_FindPlacementForPlayer(u32 *a, u16 *b, u32 c) {
+    Actor *o = (Actor *)PlayerActor_GetActor(4);
     if (o != 0) {
-        return FtrMgr_FindPlacement(a, b, (VecFx32 *)&o->position, o->rotY, c);
+        return FtrMgr_FindPlacement(a, b, &o->position, o->rotY, c);
     }
     return 0;
 }
@@ -4110,7 +3887,7 @@ extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
 extern "C" s32 FtrMgr_GetCurPlayerIndex() {
     PlayerData *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        return PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId(p));
+        return PlayerDataArray_FindById(gSavePlayers, (u16 *)p->getPlayerId());
     }
     return -1;
 }
@@ -4214,7 +3991,7 @@ extern "C" s32 FurnitureManager_GetTvProgram(void) {
 extern "C" TvSound *FurnitureManager_GetTvSound(void) {
     FurnitureManager *s = sFurnitureManager;
     if (s) {
-        return (TvSound *)TvScreen_GetSound(&s->tvScreen);
+        return TvScreen_GetSound(&s->tvScreen);
     }
     return 0;
 }
@@ -4285,8 +4062,8 @@ extern "C" void FtrMoveAnim_NodeCallback(NNSG3dRS *o) {
         v.z = pv->z;
         r = (FtrMoveAnim *)o->pRenderObj->ptrUser;
         if (r != 0) {
-            *(Mtx43 *)data_021f47e0 = *(Mtx43 *)FtrMoveAnim_GetMtx(r);
-            MTX_MultVec43(&v, data_021f47e0, &out);
+            data_021f47e0 = *(Mtx43 *)FtrMoveAnim_GetMtx(r);
+            MTX_MultVec43(&v, &data_021f47e0, &out);
             FtrMoveAnim_SetPos(r, &out);
         }
     }
@@ -4299,27 +4076,23 @@ extern "C" void FtrMoveAnim_InstallCallback(NNSG3dRS *o) {
 }
 
 // @0x2233b54 unk_0223349c.cpp
-extern "C" void *FtrMoveAnim_Construct(FtrMoveAnim *r) {
-    new (r->model) AnimModel();
-    r->heap = 0;
-    r->modelArc = 0;
-    r->resMdl = 0;
-    r->pushAnim = 0;
-    r->pullAnim = 0;
-    r->haniwaAnim = 0;
-    r->anmArc = 0;
-    r->isPlaying = 0;
-    r->posX = 0;
-    r->posY = 0;
-    r->posZ = 0;
-    return r;
+FtrMoveAnim::FtrMoveAnim() {
+    heap = 0;
+    modelArc = 0;
+    resMdl = 0;
+    pushAnim = 0;
+    pullAnim = 0;
+    haniwaAnim = 0;
+    anmArc = 0;
+    isPlaying = 0;
+    posX = 0;
+    posY = 0;
+    posZ = 0;
 }
 
 // @0x2233b3c unk_0223349c.cpp
-extern "C" void *FtrMoveAnim_Destruct(FtrMoveAnim *r) {
-    r->isPlaying = 0;
-    ((AnimModel *)(r->model))->AnimModel::~AnimModel();
-    return r;
+FtrMoveAnim::~FtrMoveAnim() {
+    isPlaying = 0;
 }
 
 // @0x2233b20 unk_0223349c.cpp
@@ -4338,7 +4111,7 @@ extern "C" void FtrMoveAnim_Unload(FtrMoveAnim *r) {
 
 // @0x2233b00 unk_0223349c.cpp
 extern "C" void *FtrMoveAnim_GetMtx(FtrMoveAnim *r) {
-    return &MODEL_AT_MTX(r->model);
+    return &r->model.mtx;
 }
 
 // @0x2233af0 unk_0223349c.cpp
@@ -4351,15 +4124,15 @@ extern "C" void FtrMoveAnim_SetPos(FtrMoveAnim *r, VecFx32 *v) {
 // @0x2233a70 unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, void *x, volatile u8 *flag, VecFx32 *pos, s32 e) {
     if (*flag == 0 && r->isPlaying == 0 && x != 0) {
-        ((BlendAnimModel *)(r->model))->initAnim(x, 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)&r->model)->initAnim(x, 1, 0x1000, 0, 0);
         r->isPlaying = 1;
         *flag = r->isPlaying;
         r->posX = pos->x;
         r->posY = pos->y;
         r->posZ = pos->z;
-        Mtx43_SetTranslate(data_021f47e0, pos->x, pos->y, pos->z);
-        Mtx43_RotateY(data_021f47e0, *(s16 *)&e);
-        MODEL_AT_MTX(r->model) = *(Mtx43 *)data_021f47e0;
+        Mtx43_SetTranslate(&data_021f47e0, pos->x, pos->y, pos->z);
+        Mtx43_RotateY(&data_021f47e0, (s16)e);
+        r->model.mtx = data_021f47e0;
         return TRUE;
     }
     return FALSE;
@@ -4378,12 +4151,12 @@ extern "C" BOOL FtrMoveAnim_StartPull(FtrMoveAnim *r, volatile u8 *a, VecFx32 *b
 // @0x22339cc unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_Step(FtrMoveAnim *r, volatile u8 *a, VecFx32 *out) {
     if (r->isPlaying != 0 && *a != 0) {
-        ((AnimModel *)(r->model))->stepAnim();
-        ((Model *)(r->model))->drawNoGeCmd();
+        r->model.stepAnim();
+        r->model.drawNoGeCmd();
         out->x = r->posX;
         out->y = r->posY;
         out->z = r->posZ;
-        if (((AnimFrameCtrl *)(static_cast<AnimFrameCtrl *>((BlendAnimModel *)r->model)))->isFinished()) {
+        if (static_cast<AnimFrameCtrl *>(&r->model)->isFinished()) {
             *a = 0;
             r->isPlaying = *a;
             return TRUE;
@@ -4407,7 +4180,7 @@ extern "C" BOOL FtrMoveAnim_CreateHeap(FtrMoveAnim *r) {
 // @0x223397c unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_DestroyHeap(FtrMoveAnim *r) {
     if (r->heap) {
-        ((Heap *)(r->heap))->destroy2();
+        ((Heap *)r->heap)->destroy2();
         r->heap = 0;
         return TRUE;
     }
@@ -4474,11 +4247,11 @@ extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
             u8 *p;
             p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(sFtrMoveAnimModelNamePtr));
             r->resMdl = p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
-            if (((Model *)(r->model))->setResourceAndBind((NNSG3dResMdl *)r->resMdl, NULL)) {
-                if (((AnimModel *)(r->model))->allocAnmObj(r->heap)) {
-                    ((BlendAnimModel *)(r->model))->initAnim(FtrMoveAnim_GetPushAnim(r), 1, 0x1000, ok, ok);
-                    ((AnimModel *)(r->model))->attachAnim();
-                    ((Model *)(r->model))->setInitCallback(FtrMoveAnim_InstallCallback, r);
+            if (r->model.setResourceAndBind((NNSG3dResMdl *)r->resMdl, NULL)) {
+                if (r->model.allocAnmObj(r->heap)) {
+                    ((BlendAnimModel *)&r->model)->initAnim(FtrMoveAnim_GetPushAnim(r), 1, 0x1000, ok, ok);
+                    r->model.attachAnim();
+                    r->model.setInitCallback(FtrMoveAnim_InstallCallback, r);
                     ok = TRUE;
                 }
             }
@@ -4512,19 +4285,15 @@ extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r) {
 }
 
 // @0x2233790 unk_0223349c.cpp
-extern "C" void *TvProgSlot_Construct(TvProgSlot *p) {
-    new (&p->texPatAnim) TexPatVramAnim();
-    p->program = -1;
-    p->weather = -1;
-    p->heap = 0;
-    p->loopCount = 0;
-    return p;
+TvProgSlot::TvProgSlot() {
+    program = -1;
+    weather = -1;
+    heap = 0;
+    loopCount = 0;
 }
 
 // @0x223377c unk_0223349c.cpp
-extern "C" void *TvProgSlot_Destruct(TvProgSlot *p) {
-    ((TexPatVramAnim *)(&p->texPatAnim))->TexPatVramAnim::~TexPatVramAnim();
-    return p;
+TvProgSlot::~TvProgSlot() {
 }
 
 // @0x2233744 unk_0223349c.cpp
@@ -4536,11 +4305,11 @@ extern "C" void TvProgSlot_Init(TvProgSlot *p, void *a) {
 }
 
 // @0x223372c unk_0223349c.cpp
-extern "C" s32 TvWeather_GetName(u32 i) {
+extern "C" const char *TvWeather_GetName(u32 i) {
     if (i < 0xb) {
-        return (s32)sTvWeatherNames[i];
+        return sTvWeatherNames[i];
     }
-    return (s32)sTvWeatherNames[0];
+    return sTvWeatherNames[0];
 }
 
 // @0x2233660 unk_0223349c.cpp
@@ -4554,14 +4323,14 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
         Str_SPrintf(buf1, "/ftr/tv/prog/tv_program%d.nsbtx", id);
         Str_SPrintf(buf2, "/ftr/tv/prog/tv_program%d.nsbtp", id);
     } else {
-        r6 = TvWeather_GetName(x);
-        Str_SPrintf(buf1, "/ftr/tv/weather/%s.nsbtx", r6);
-        Str_SPrintf(buf2, "/ftr/tv/weather/%s.nsbtp", r6);
+        const char *name = TvWeather_GetName(x);
+        Str_SPrintf(buf1, "/ftr/tv/weather/%s.nsbtx", name);
+        Str_SPrintf(buf2, "/ftr/tv/weather/%s.nsbtp", name);
         r6 = x;
     }
     p->progTex = NNS_G3dGetTex(File_LoadAlloc(buf1, p->heap, 4, 0));
     p->progTexPat = func_021066ac(func_02106690(File_LoadAlloc(buf2, p->heap, 4, 0)), 0);
-    if (((TexPatVramAnim *)(&p->texPatAnim))->init((u8 *)p->screenTex, "tv.0", "tv_pl", (u8 *)p->progTex, (u8 *)p->progTexPat, 0)) {
+    if (p->texPatAnim.init((u8 *)p->screenTex, "tv.0", "tv_pl", (u8 *)p->progTex, (u8 *)p->progTexPat, 0)) {
         p->program = id;
         p->weather = r6;
         p->loopCount = 0;
@@ -4573,7 +4342,7 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
 // @0x2233644 unk_0223349c.cpp
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p) {
     if (p->heap) {
-        ((Heap *)(p->heap))->freeAll();
+        ((Heap *)p->heap)->freeAll();
     }
     p->progTex = 0;
     p->progTexPat = 0;
@@ -4582,8 +4351,8 @@ extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p) {
 // @0x22335fc unk_0223349c.cpp
 extern "C" void TvProgSlot_Update(TvProgSlot *p) {
     if (p->progTex && p->progTexPat) {
-        ((TexPatVramAnim *)(&p->texPatAnim))->update();
-        if (((AnimFrameCtrl *)(&p->texPatAnim))->hasPassedFrame(0)) {
+        p->texPatAnim.update();
+        if (p->texPatAnim.hasPassedFrame(0)) {
             s32 t = p->loopCount + 1;
             if (t > 0xffff) {
                 p->loopCount = 0xffff;
@@ -4597,7 +4366,7 @@ extern "C" void TvProgSlot_Update(TvProgSlot *p) {
 // @0x22335dc unk_0223349c.cpp
 extern "C" void TvProgSlot_Release(TvProgSlot *p) {
     if (p->heap) {
-        ((Heap *)(p->heap))->destroy2();
+        ((Heap *)p->heap)->destroy2();
         p->heap = 0;
     }
     p->progTexPat = 0;
@@ -4625,23 +4394,15 @@ extern "C" u16 TvProgSlot_GetLoopCount(TvProgSlot *p) {
 
 // @0x22335a8 unk_0223349c.cpp
 extern "C" u32 TvProgSlot_GetFrame(TvProgSlot *p) {
-    return (u32)(p->texPatAnim[2] << 4) >> 16;
+    return ((u32)p->texPatAnim.curFrame << 4) >> 16;
 }
 
 // @0x2233560 unk_0223349c.cpp
-extern "C" void *TvScreen_Construct(TvScreen *q) {
-    __cxa_vec_ctor(&q->slots, 2, sizeof(TvProgSlot), (void *(*)(void *))TvProgSlot_Construct, (void *(*)(void *, s32))TvProgSlot_Destruct);
-    q->curSlot = -1;
-    q->screenTex = 0;
-    q->soundHeap = 0;
-    q->tvSound = 0;
-    return q;
-}
-
-// @0x2233544 unk_0223349c.cpp
-extern "C" void *TvScreen_Destruct(TvScreen *q) {
-    __cxa_vec_cleanup(&q->slots, 2, sizeof(TvProgSlot), (void *(*)(void *, s32))TvProgSlot_Destruct);
-    return q;
+TvScreen::TvScreen() {
+    curSlot = -1;
+    screenTex = 0;
+    soundHeap = 0;
+    tvSound = 0;
 }
 
 // @0x223349c unk_0223349c.cpp
@@ -4676,12 +4437,12 @@ extern "C" BOOL TvScreen_SetProgram(TvScreen *o, s32 a, s32 b) {
         if (sFtrMgrTvSoundEnabled) {
             if (o->soundHeap) {
                 if (o->tvSound) {
-                    ((TvSound *)(o->tvSound))->callRelease();
+                    o->tvSound->callRelease();
                     o->tvSound = 0;
                 }
-                ((Heap *)(o->soundHeap))->freeAll();
-                o->tvSound = TvSound_Create(o->soundHeap, a);
-                if (o->tvSound) ((TvSound *)(o->tvSound))->callReset();
+                ((Heap *)o->soundHeap)->freeAll();
+                o->tvSound = TvSound_Create((u32)(uptr)o->soundHeap, a);
+                if (o->tvSound) o->tvSound->callReset();
             }
         }
         return TRUE;
@@ -4731,19 +4492,20 @@ extern "C" u8 TvSchedule_GetCurrentProgram(void *) {
 
 // @0x22332b8 unk_02232b1c.cpp
 extern "C" s32 TvWeather_IsUnkPeriod() {
-    TvClockDateBuf l;
+    ClockDateTimeWords l;
+    ClockDate date;
     s32 r;
-    l.dateTimeLo = 0;
-    l.dateTimeHi = 0;
-    Clock_GetDateTime(&l);
-    l.date.day = 1;
-    l.date.month = 1;
-    l.date.year = 0;
-    l.date.pad_03 = 0;
-    l.date.year = ((u8 *)&l)[5];
-    l.date.month = ((u8 *)&l)[4];
-    l.date.day = ((u8 *)&l)[3];
-    r = Date_GetWeatherPeriod(&l.date);
+    l.words[0] = 0;
+    l.words[1] = 0;
+    Clock_GetDateTime(&l.dt);
+    date.day = 1;
+    date.month = 1;
+    date.year = 0;
+    date.pad_03 = 0;
+    date.year = l.dt.year;
+    date.month = l.dt.month;
+    date.day = l.dt.day;
+    r = Date_GetWeatherPeriod(&date);
     switch (r) {
     case 0:
     case 1:
@@ -4785,10 +4547,10 @@ extern "C" void TvScreen_Release(TvScreen *o) {
     if (sFtrMgrTvSoundEnabled) {
         if (o->soundHeap) {
             if (o->tvSound) {
-                ((TvSound *)(o->tvSound))->callRelease();
+                o->tvSound->callRelease();
                 o->tvSound = 0;
             }
-            ((Heap *)(o->soundHeap))->destroy2();
+            ((Heap *)o->soundHeap)->destroy2();
             o->soundHeap = 0;
         }
     }
@@ -4819,8 +4581,8 @@ extern "C" void *TvScreen_GetTex(TvScreen *o) {
 }
 
 // @0x2233188 unk_02232b1c.cpp
-extern "C" s32 TvScreen_GetSound(TvScreen *o) {
-    return (s32)o->tvSound;
+extern "C" TvSound *TvScreen_GetSound(TvScreen *o) {
+    return o->tvSound;
 }
 
 // @0x2233170 unk_02232b1c.cpp
@@ -4860,24 +4622,24 @@ extern "C" u16 FtrSound_GetSe3(s32 idx) {
 }
 
 // @0x22330cc unk_02232b1c.cpp
-extern "C" void FtrMgr_PlaySeatSound1At(s32 a) {
-    void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
+extern "C" void FtrMgr_PlaySeatSound1At(VecFx32 *a) {
+    void *p = FtrActorGrid_GetInstance()->getActorAtPos(a, 0);
     if (p) {
         if (FtrActor_PredIsSeatOrBed(p)) ((FtrActor *)(p))->playSound1();
     }
 }
 
 // @0x22330a0 unk_02232b1c.cpp
-extern "C" void FtrMgr_PlaySeatSound0At(s32 a) {
-    void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
+extern "C" void FtrMgr_PlaySeatSound0At(VecFx32 *a) {
+    void *p = FtrActorGrid_GetInstance()->getActorAtPos(a, 0);
     if (p) {
         if (FtrActor_PredIsSeatOrBed(p)) ((FtrActor *)(p))->playSound0();
     }
 }
 
 // @0x2233074 unk_02232b1c.cpp
-extern "C" void FtrMgr_PlaySeatSound2At(s32 a) {
-    void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
+extern "C" void FtrMgr_PlaySeatSound2At(VecFx32 *a) {
+    void *p = FtrActorGrid_GetInstance()->getActorAtPos(a, 0);
     if (p) {
         if (FtrActor_PredIsSeatOrBed(p)) ((FtrActor *)(p))->playSound2();
     }

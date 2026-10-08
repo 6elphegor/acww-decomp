@@ -10,7 +10,7 @@
 struct RoomObjTexAuto {
     inline RoomObjTexAuto() { RoomObjTex_Construct(this); }
     inline ~RoomObjTexAuto() { RoomObjTex_Destruct(this); }
-    /* 0x0 */ u32 texture;
+    /* 0x0 */ void *texture;
 };
 
 #endif

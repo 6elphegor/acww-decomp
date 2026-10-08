@@ -21,7 +21,7 @@ void *GracieCar_Create();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_sGracieCarVisitorProfile
-extern u32 sGracieCarVisitorProfile;
+extern u16 sGracieCarVisitorProfile;
 #endif
 }
 #endif

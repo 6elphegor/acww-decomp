@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
@@ -12,56 +11,12 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "gfx/AnimModel.h"
-#define PROTO_LOCAL_ClothTex_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ClothTex_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "town/TownFlag.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02214dfc.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
-
-// shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
-// Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
-// (do NOT include GameProc.h: the chain below is an own copy whose slot names are the real symbol names).
-//
-// Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
-//   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
-//   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Character::preCreate   08 Character::postCreate(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Actor::postDelete   18 Base::vfunc_18
-//     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
-//     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
-//     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
-//     54/58/5c Character   60 ov009::vfunc_60(u32,void*)   64/68 ov009   6c ov009::vfunc_6c(s32)   70 ov009::vfunc_70
-//     74 BuildingActor::updateDoorState   78..b0 ov009::vfunc_78..b0   b4 / b8 ov009::vfunc_b4/b8 (symbols: BuildingActor::getSoundPos /
-//     BuildingActor::calcCustomBaseMatrix, ALIAS)
-// Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
-//   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
-//   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
-//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
-//   ov009  BuildingActor::getSoundPos                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
-//   ov009  BuildingActor::calcCustomBaseMatrix                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
-//   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
-//          primary-chain class of the family declares a method of these names.
-//   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
-//          vtable.  Every unit of the family names that slot onMessageEnd, so each emits the thunk as a link-once function and
-//          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
-// Notes:
-//  * The ctor of a derived class calls BuildingActor::BuildingActor() (ov009 symbol C2 0x0225deec).
-//  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct GateHouseFlagTexture {
     GateHouseFlagTexture();
@@ -69,21 +24,15 @@ struct GateHouseFlagTexture {
     BOOL apply(void *res, void *b);
     void cancelUpload();
 
-    MatTexVramTask vramTask;
-    u8 clothTex[4];
+    /* 0x00 */ MatTexVramTask vramTask;
+    /* 0x28 */ u32 clothTex[0x2c4 / 4];  // the flag's cloth texture file (.nsbtx; ClothTex_GetBufferSize bytes)
 };
 
 extern "C" {
-extern u8 gSaveTownFlag[];
-void ClothTex_Destruct(void *);
-void ClothTex_Construct(void *);
-void *_ZN19TownStyleRecordView11getTownFlagEv(void *);
-s32 _ZN8TownFlag13getGateDesignEv(void *);
+extern TownStyleRecordView gSaveTownFlag;
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 }
-#define TownStyleRecordView_getTownFlag _ZN19TownStyleRecordView11getTownFlagEv
-#define TownFlag_getGateDesign _ZN8TownFlag13getGateDesignEv
 
 class GateHouse : public BuildingActor {
 public:
@@ -99,7 +48,6 @@ public:
     virtual char *getLightTexPath();
 
     /* 0x2b0 */ GateHouseFlagTexture flagTexture;
-    /* 0x2dc */ u8 pad_2dc[0x59c - 0x2dc];
 };
 
 
@@ -112,7 +60,7 @@ char data_ov003_02235204[0x24];
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" ActorProfile sGateHouseProfile;
 extern "C" char data_ov003_022312a4[12];
-extern "C" uptr sGateHouseModelNames[3];
+extern "C" char *sGateHouseModelNames[3];
 extern "C" char data_ov003_022312b0[12];
 extern "C" char data_ov003_022312bc[12];
 
@@ -128,7 +76,7 @@ GateHouse::~GateHouse() {
 
 BOOL GateHouse::initBuilding() {
     void *t = modelRes;
-    flagTexture.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
+    flagTexture.apply(t, TownFlag_GetPattern(gSaveTownFlag.getTownFlag()));
     s32 x;
     s32 y;
     FieldPos_ToUnit(&x, &y, &position.x);
@@ -140,7 +88,7 @@ BOOL GateHouse::initBuilding() {
 }
 
 BOOL GateHouse::onExecute() {
-    ((AnimModel *)(model))->stepAnim();
+    ((AnimModel *)model)->stepAnim();
     return TRUE;
 }
 
@@ -154,31 +102,31 @@ BOOL GateHouse::onDelete() {
 }
 
 extern "C" s32 GateHouse_GetDesign() {
-    return TownFlag_getGateDesign(TownStyleRecordView_getTownFlag(gSaveTownFlag));
+    return ((TownFlag *)gSaveTownFlag.getTownFlag())->getGateDesign();
 }
 
-extern "C" u32 GateHouse_GetModelName() {
+extern "C" char *GateHouse_GetModelName() {
     return sGateHouseModelNames[GateHouse_GetDesign()];
 }
 
 extern "C" ActorProfile sGateHouseProfile = { (void *(*)())GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
 
 char *GateHouse::getArcPath() {
-    u32 x = GateHouse_GetModelName();
+    char *x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
     Str_SPrintf(data_ov003_02235228, "/str/chkp/%s%c.arc", x, y);
     return data_ov003_02235228;
 }
 
 char *GateHouse::getTexPath() {
-    u32 x = GateHouse_GetModelName();
+    char *x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
     Str_SPrintf(data_ov003_02235204, "/str/chkp/%s%c.nsbtx", x, y);
     return data_ov003_02235204;
 }
 
 char *GateHouse::getLightTexPath() {
-    u32 x = GateHouse_GetModelName();
+    char *x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
     Str_SPrintf(data_ov003_0223524c, "/str/chkp/%s%c_lt.nsbtx", x, y);
     return data_ov003_0223524c;
@@ -190,22 +138,22 @@ BOOL GateHouse::alignsPlayerToDoor() {
 
 extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
     void *t = self->modelRes;
-    self->flagTexture.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
+    self->flagTexture.apply(t, TownFlag_GetPattern(gSaveTownFlag.getTownFlag()));
     return TRUE;
 }
 
 GateHouseFlagTexture::GateHouseFlagTexture() {
-    ClothTex_Construct(clothTex);
+    ClothTex_Construct();
 }
 
 GateHouseFlagTexture::~GateHouseFlagTexture() {
-    ClothTex_Destruct(clothTex);
+    ClothTex_Destruct();
 }
 
 BOOL GateHouseFlagTexture::apply(void *res, void *b) {
     if (ClothTex_LoadPattern(clothTex, b)) {
-        if (vramTask.request(res, (u32) "w", ClothTex_GetTex(clothTex), 0, 0)) {
-            TownFlag_SetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag), b);
+        if (vramTask.request(res, "w", ClothTex_GetTex(clothTex), 0, 0)) {
+            TownFlag_SetPattern(gSaveTownFlag.getTownFlag(), b);
             return TRUE;
         }
     }
@@ -216,7 +164,7 @@ void GateHouseFlagTexture::cancelUpload() {
     vramTask.cancel();
 }
 
-extern "C" uptr sGateHouseModelNames[3] = { (uptr)data_ov003_022312bc, (uptr)data_ov003_022312b0, (uptr)data_ov003_022312a4 };
+extern "C" char *sGateHouseModelNames[3] = { data_ov003_022312bc, data_ov003_022312b0, data_ov003_022312a4 };
 extern "C" char data_ov003_022312a4[12] = "obj_check2";
 extern "C" char data_ov003_022312b0[12] = "obj_check1";
 extern "C" char data_ov003_022312bc[12] = "obj_check0";

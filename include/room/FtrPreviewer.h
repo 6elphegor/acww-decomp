@@ -4,18 +4,21 @@
 // Furniture/wallpaper/carpet preview loader (sFtrPreviewer, FtrPreviewer_GetInstance). Methods at 0x02235a0c..
 // (src/ov004/unk_ov004_02233074.cpp).
 #include "types.h"
+#include "item/ItemId.h"
+
+class ProcBase;
 
 class FtrPreviewer {
 public:
-    /* 0x00 */ u32 actors[2];
-    /* 0x08 */ u16 shownItems[2];
+    /* 0x00 */ ProcBase *actors[2];  // the furniture shown
+    /* 0x08 */ ItemId shownItems[2];
     /* 0x0c */ u8 curSlot;
     /* 0x10 */ s32 sampleIndex;
-    /* 0x14 */ u32 wallTexBuffers[2];
-    /* 0x1c */ u32 floorTexBuffers[2];
+    /* 0x14 */ void *wallTexBuffers[2];
+    /* 0x1c */ void *floorTexBuffers[2];
 
-    u32 getFloorBuffer();
-    u32 getWallBuffer();
+    void *getFloorBuffer();
+    void *getWallBuffer();
     void clear();
     BOOL showItem(u16 *p);
     void freeBuffers();

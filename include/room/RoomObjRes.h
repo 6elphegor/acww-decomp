@@ -7,6 +7,7 @@
 // RoomObjTex (+0x248) is in room/RoomObjTex.h.
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "snd/SndSeEmitter.h"
 
 
 extern "C" {
@@ -46,13 +47,12 @@ public:
 
 class RoomObjSe {
 public:
-    inline RoomObjSe() { RoomObj_ConstructSe(this); }
     inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
     inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
     inline void RoomObj_SetSePos(VecFx32 *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    /* 0x00 */ u32 emitter[0x10];
+    /* 0x00 */ SndSeEmitter emitter;
 };
 
 #endif

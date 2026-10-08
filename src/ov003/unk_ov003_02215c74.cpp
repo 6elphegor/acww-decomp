@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/sp2
 // ov003 TU10 (actor 022318e8): .text 0x02215c74-0x02216430
 #include "types.h"
@@ -19,7 +18,8 @@
 #include "gfx/Model.h"
 #include "net/CommManager.h"
 #include "npc/VillagerId.h"
-#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#include "npc/VillagerData.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
@@ -27,74 +27,25 @@
 #include "proto/ov003/unk_ov003_02215c74.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 
-// shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
-// Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
-// (do NOT include GameProc.h: the chain below is an own copy whose slot names are the real symbol names).
-//
-// Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
-//   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
-//   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Character::preCreate   08 Character::postCreate(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Actor::postDelete   18 Base::vfunc_18
-//     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
-//     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
-//     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
-//     54/58/5c Character   60 ov009::vfunc_60(u32,void*)   64/68 ov009   6c ov009::vfunc_6c(s32)   70 ov009::vfunc_70
-//     74 BuildingActor::updateDoorState   78..b0 ov009::vfunc_78..b0   b4 / b8 ov009::vfunc_b4/b8 (symbols: BuildingActor::getSoundPos /
-//     BuildingActor::calcCustomBaseMatrix, ALIAS)
-// Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
-//   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
-//   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
-//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
-//   ov009  BuildingActor::getSoundPos                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
-//   ov009  BuildingActor::calcCustomBaseMatrix                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
-//   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
-//          primary-chain class of the family declares a method of these names.
-//   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
-//          vtable.  Every unit of the family names that slot onMessageEnd, so each emits the thunk as a link-once function and
-//          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
-// Notes:
-//  * The ctor of a derived class calls BuildingActor::BuildingActor() (ov009 symbol C2 0x0225deec).
-//  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ---- main-module helper classes ----
-
-
-
-
-#define VillagerDataProfileView_getInfo28 _ZN23VillagerDataProfileView9getInfo28Ev
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 extern "C" {
-extern u8 gSaveVillagers[];
-extern void *gCommManager;
+extern SaveVillagers gSaveVillagers;
+extern CommManager *gCommManager;
 extern const u8 sVillagerHouseClosedMsgs[];
 extern const u8 sVillagerHouseClosedMsgsAlt[];
 
-BOOL Building_IsNight(void *p);
-void *SaveVillagers_Get(void *p, s32 i);
-s32 Villager_IsHouseAvailable(void *p);
-s32 Villager_GetWhereabouts(void *p);
+BOOL Building_IsNight();
+u8 *SaveVillagers_Get(u8 *base, s32 idx);
+BOOL Villager_IsHouseAvailable();
+s32 Villager_GetWhereabouts(VillagerData *a);
 s32 SceneId_GetVillagerHouse(u32 a);
 
-void Vec_Add(VecFx32 *out, void *a, void *b);
 void NNS_G3dBindMdlTex(void *a, void *b);
-void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
-void *_ZN12VillagerData13getVillagerIdEv(void *self);
-void *_ZN5Model12getRenderObjEv(void *self);
 void NNS_G3dBindMdlPltt(void *a, void *b);
+}
 
+// villager idx's save record (NULL for an invalid index)
+static inline VillagerData *SaveVillager(s32 idx) {
+    return (VillagerData *)SaveVillagers_Get((u8 *)&gSaveVillagers, idx);
 }
 
 static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {
@@ -146,7 +97,7 @@ public:
 
 extern "C" {
 char data_ov003_022352d4[0x14];
-u32 sVillagerHouses[8];
+BuildingActor *sVillagerHouses[8];
 char data_ov003_02235308[0x28];
 char data_ov003_02235330[0x28];
 }
@@ -178,7 +129,7 @@ BOOL VillagerHouse::initBuilding() {
     VecFx32 tmp;
     Vec_Add(&tmp, &position, &v);
     Actor::spawn((void *)(0x18), (void *)(idx), &tmp, (void *)(0), this);
-    sVillagerHouses[idx] = (u32)this;
+    sVillagerHouses[idx] = this;
     s32 k = getHouseVariant();
     void *r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
     void *r4 = VillagerHouseTex_GetLightTex(FieldStructureMgr_GetVillagerHouseTex(), k);
@@ -192,17 +143,17 @@ BOOL VillagerHouse::initBuilding() {
     }
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         s32 q = getHouseStyle() >> 2;
-        if (((Model *)(&lightUpModel))->setResource((NNSG3dResMdl *)(HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q)), 0)) {
+        if (lightUpModel.setResource((NNSG3dResMdl *)HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
             void *a = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlPltt(b, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
-            if (lightUpAnim.allocMatAnm((NNSG3dResMdl *)(lightUpModel.resMdl), gFieldStructureHeap)) {
+            if (lightUpAnim.allocMatAnm(lightUpModel.resMdl, gFieldStructureHeap)) {
                 void *c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
                 void *d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
-                lightUpAnim.addToRenderObj(_ZN5Model12getRenderObjEv(&lightUpModel));
-                lightUpModel.mtx = baseMatrix;  // (the members by name: they move on 64-bit hosts)
+                lightUpAnim.addToRenderObj(lightUpModel.getRenderObj());
+                lightUpModel.mtx = baseMatrix;
             }
         }
     }
@@ -211,10 +162,10 @@ BOOL VillagerHouse::initBuilding() {
 
 BOOL VillagerHouse::onExecute() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
-        *(Mtx43 *)(HOST_AT(this, 0x314, lightUpModel.mtx.m[0], 0)) = baseMatrix;
+        lightUpModel.mtx = baseMatrix;
         if ((colliderFlags & 1) == 0) {
             lightUpAnim.step();
-            *(u32 *)(uptr)lightUpAnim.anmObj = lightUpAnim.curFrame;  // (the frame of the anm object)
+            *(u32 *)lightUpAnim.anmObj = lightUpAnim.curFrame;  // (the frame of the anm object)
         }
     }
     return TRUE;
@@ -234,16 +185,14 @@ BOOL VillagerHouse::onDelete() {
 }
 
 s32 VillagerHouse::getHouseStyle() {
-    u8 *g = gSaveVillagers;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
+    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)((VillagerDataProfileView *)SaveVillager(idx))->getInfo28();
     return r->f;
 }
 
 u8 VillagerHouse::getHouseVariant() {
-    u8 *g = gSaveVillagers;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
+    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)((VillagerDataProfileView *)SaveVillager(idx))->getInfo28();
     return r->f & 3;
 }
 
@@ -283,32 +232,30 @@ void *VillagerHouse::getDoorOutAnim() {
 
 void VillagerHouse::setupTalkMsg() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    void *p = SaveVillagers_Get(gSaveVillagers, idx);
+    VillagerData *p = SaveVillager(idx);
     setFileName("obj_etc_closed");
-    if (Villager_IsHouseAvailable(p) == 0) {
+    if (Villager_IsHouseAvailable() == 0) {
         msgIndex = 6;
     } else if (entryFlags.f1) {
         setFileName("obj_etc_error");
         msgIndex = 0;
-    } else if (void *q = VillagerData_getVillagerId(p)) {
+    } else if (VillagerId *q = (VillagerId *)p->getVillagerId()) {
         if (visitRefused == 0) {
             msgIndex = sVillagerHouseClosedMsgs[VillagerId_GetPersonality(q)];
         } else {
             msgIndex = sVillagerHouseClosedMsgsAlt[VillagerId_GetPersonality(q)];
         }
     }
-    u32 l[9];
-    new (&l[1]) MsgString9B();
-    ((VillagerId *)(VillagerData_getVillagerId(p)))->getName((MsgString *)&l[1]);
-    ((TalkWindowState *)(window))->setSlot(0, &l[1]);
-    ((MsgString9B *)(&l[1]))->MsgString9B::~MsgString9B();
+    MsgString9B name;
+    ((VillagerId *)p->getVillagerId())->getName(&name);
+    window->setSlot(0, &name);
 }
 
 BOOL VillagerHouse::isOpen() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    void *p = SaveVillagers_Get(gSaveVillagers, idx);
+    VillagerData *p = SaveVillager(idx);
     if (p) {
-        if (Villager_IsHouseAvailable(p) == 0) {
+        if (Villager_IsHouseAvailable() == 0) {
             return FALSE;
         }
         if (Villager_GetWhereabouts(p) == 0 || Villager_GetWhereabouts(p) == 3 || Villager_GetWhereabouts(p) == 4 || Villager_GetWhereabouts(p) == 5 ||
@@ -322,10 +269,10 @@ BOOL VillagerHouse::isOpen() {
 
 BOOL VillagerHouse::areLightsOn() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    if (Building_IsNight(this)) {
-        void *p = SaveVillagers_Get(gSaveVillagers, idx);
+    if (Building_IsNight()) {
+        VillagerData *p = SaveVillager(idx);
         if (p) {
-            if (Villager_IsHouseAvailable(p) == 0) {
+            if (Villager_IsHouseAvailable() == 0) {
                 return FALSE;
             }
             if (Villager_GetWhereabouts(p) == 0 || Villager_GetWhereabouts(p) == 3 || Villager_GetWhereabouts(p) == 4 || Villager_GetWhereabouts(p) == 5 ||
@@ -335,9 +282,9 @@ BOOL VillagerHouse::areLightsOn() {
             if (Villager_GetWhereabouts(p) == 2) {
                 u8 a, b, c;
                 u32 i = 0;
-                void *g = gCommManager;
+                CommManager *g = gCommManager;
                 for (; i < 4; i++) {
-                    if (((CommManager *)(g))->isSlotActive(i)) {
+                    if (g->isSlotActive(i)) {
                         NetArea_GetSlotStatus(i, &a, &b, &c);
                         if (idx == SceneId_GetVillagerHouse(a)) {
                             return TRUE;

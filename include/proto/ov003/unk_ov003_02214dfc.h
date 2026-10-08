@@ -6,7 +6,6 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
-#include "uptr.h"
 class GateHouse;
 #endif
 
@@ -24,6 +23,12 @@ extern char data_ov003_02235204[0x24];
 #endif
 #ifndef PROTO_LOCAL_GateHouse_Create
 void *GateHouse_Create();
+#endif
+#ifndef PROTO_LOCAL_GateHouse_GetModelName
+char *GateHouse_GetModelName();
+#endif
+#ifndef PROTO_LOCAL_sGateHouseModelNames
+extern char *sGateHouseModelNames[3];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022312a4
 extern char data_ov003_022312a4[12];
@@ -43,14 +48,8 @@ extern "C" {
 #ifndef PROTO_LOCAL_GateHouse_GetDesign
 s32 GateHouse_GetDesign();
 #endif
-#ifndef PROTO_LOCAL_GateHouse_GetModelName
-u32 GateHouse_GetModelName();
-#endif
 #ifndef PROTO_LOCAL_GateHouse_ApplyTownFlag
 BOOL GateHouse_ApplyTownFlag(GateHouse *self);
-#endif
-#ifndef PROTO_LOCAL_sGateHouseModelNames
-extern uptr sGateHouseModelNames[3];
 #endif
 }
 #endif

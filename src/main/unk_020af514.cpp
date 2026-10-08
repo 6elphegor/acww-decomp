@@ -5,6 +5,7 @@
 #include "town/SceneMapInfo.h"
 #include "game/SceneInfo.h"
 #include "net/CommManager.h"
+#include "field/LooseSnowballs.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202e840.h"
@@ -109,25 +110,6 @@ struct EntryPair {
 };
 
 
-// one of the 2 rollable loose snowballs of gLooseSnowballs
-class LooseSnowball {
-public:
-    LooseSnowball();
-    ~LooseSnowball();
-
-    void *posX;
-    void *posY;
-    void *posZ;
-    u32 radius;
-};
-
-class LooseSnowballs {
-public:
-    ~LooseSnowballs();
-    void reset();
-
-    LooseSnowball items[2];
-};
 
 
 struct Vec3s {
@@ -341,9 +323,9 @@ BOOL SceneInfo::runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start) {
 }
 
 LooseSnowball::LooseSnowball() {
-    posX = NULL;
-    posY = NULL;
-    posZ = NULL;
+    posX = 0;
+    posY = 0;
+    posZ = 0;
     radius = 0x800;
 }
 
@@ -595,9 +577,9 @@ void SnowmanRecords::markUnplaced(u32 idx) {
 
 void LooseSnowballs::reset() {
     for (u32 i = 0; i < 2; i++) {
-        items[i].posX = NULL;
-        items[i].posY = NULL;
-        items[i].posZ = NULL;
+        items[i].posX = 0;
+        items[i].posY = 0;
+        items[i].posZ = 0;
         items[i].radius = 0x800;
     }
 }

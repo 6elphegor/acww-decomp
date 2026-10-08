@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "snd/SndEnvChannel.h"
+#include "snd/SndPosNode.h"
 #include "snd/SndSeEmitter.h"
 #include "snd/SndSceneBase.h"
 #include "snd/BgmSceneFade.h"
@@ -90,29 +91,11 @@ extern "C" {
 extern "C" {
 }
 
+
 extern "C" {
-#define SndPosNode_setBgmPan _ZN10SndPosNode9setBgmPanEP7VecFx32
-void SndPosNode_setBgmPan(u32, void *);
 }
 
 extern "C" {
-#define SndPosNode_playOnce _ZN10SndPosNode8playOnceEjP7VecFx32
-void SndPosNode_playOnce(u32, u32, void *);
-}
-
-extern "C" {
-#define SndPosNode_play _ZN10SndPosNode4playEiP7VecFx32
-void SndPosNode_play(u32, u32, void *);
-}
-
-extern "C" {
-#define SndSeEmitter_playOneShot _ZN12SndSeEmitter11playOneShotEiis
-void SndSeEmitter_playOneShot(u32, u32, u32, u32);
-}
-
-extern "C" {
-#define SndSeEmitter_playHeld _ZN12SndSeEmitter8playHeldEiis
-void SndSeEmitter_playHeld(u32, u32, u32, u32);
 }
 
 extern "C" {
@@ -306,33 +289,12 @@ void *SndScene01_ctor(void *);
 }
 
 extern "C" {
-#define SndPosList_update _ZN10SndPosList6updateEv
-void SndPosList_update(void *self);
 }
 
 extern "C" {
-#define SndPosList_init _ZN10SndPosList4initEv
-void SndPosList_init(void *self);
 }
 
 extern "C" {
-#define SndPosNode_release _ZN10SndPosNode7releaseEv
-void SndPosNode_release(void *self);
-}
-
-extern "C" {
-#define SndPosNode_setPitch _ZN10SndPosNode8setPitchEi
-void SndPosNode_setPitch(void *self, s32 v);
-}
-
-extern "C" {
-#define SndPosNode_init _ZN10SndPosNode4initEP10SndPosList
-void SndPosNode_init(void *self, void *list);
-}
-
-extern "C" {
-#define SndSeEmitter_playAlternate _ZN12SndSeEmitter13playAlternateEt
-void SndSeEmitter_playAlternate(void *self, u16 s);
 }
 
 extern "C" {
@@ -433,13 +395,9 @@ void SndMgr_BeginMenuDuck(void *);
 }
 
 extern "C" {
-#define SndMgr_volumeOn _ZN6SndMgr8volumeOnEv
-void SndMgr_volumeOn(void *);
 }
 
 extern "C" {
-#define SndMgr_volumeOff _ZN6SndMgr9volumeOffEv
-void SndMgr_volumeOff(void *);
 }
 
 extern "C" {
@@ -503,8 +461,6 @@ void SndMgr_PlaySe(void *, u32);
 }
 
 extern "C" {
-#define SndMgr_setOutputMode _ZN6SndMgr13setOutputModeEj
-void SndMgr_setOutputMode(void *, u32);
 }
 
 extern "C" {
@@ -541,10 +497,6 @@ static inline BOOL Unk_020040cc_isB() { return gFieldSceneKind == 1; }
 
 extern "C" {
 extern s32 gCameraDistance;
-#define SndMgr_update _ZN6SndMgr6updateEv
-void SndMgr_update(void *a);
-#define SndMgr_init _ZN6SndMgr4initEjjj
-void SndMgr_init(void *a, void *b, u32 c, const char *d, s32 e);
 }
 
 extern "C" void Snd_Init() {
@@ -799,45 +751,45 @@ extern "C" void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d
 
 void SndSeEmitter::callStopAlt() { stop(); }
 
-extern "C" void Snd_PosListInit(void *l) { SndPosList_init(l); }
+extern "C" void Snd_PosListInit(SndPosList *l) { l->init(); }
 
-extern "C" void Snd_PosListUpdate(void *l) { SndPosList_update(l); }
+extern "C" void Snd_PosListUpdate(SndPosList *l) { l->update(); }
 
-extern "C" void Snd_PosNodeInit(void *n, void *l) { SndPosNode_init(n, l); }
+extern "C" void Snd_PosNodeInit(SndPosNode *n, SndPosList *l) { n->init(l); }
 
-extern "C" void Snd_PosNodePlay(u32 a, u32 b, VecFx32 *v) {
+extern "C" void Snd_PosNodePlay(SndPosNode *a, u32 b, VecFx32 *v) {
     VecFx32 t;
     if (v != NULL && gCamera != 0) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
         t.z = v->z - gCameraEye.z;
-        SndPosNode_play(a, b, &t);
+        a->play(b, &t);
     }
 }
 
-extern "C" void Snd_PosNodePlayOnce(u32 a, u32 b, VecFx32 *v) {
+extern "C" void Snd_PosNodePlayOnce(SndPosNode *a, u32 b, VecFx32 *v) {
     VecFx32 t;
     if (v != NULL && gCamera != 0) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
         t.z = v->z - gCameraEye.z;
-        SndPosNode_playOnce(a, b, &t);
+        a->playOnce(b, &t);
     }
 }
 
-extern "C" void Snd_SetBgmPan(u32 a, VecFx32 *v) {
+extern "C" void Snd_SetBgmPan(SndPosNode *a, VecFx32 *v) {
     if (v != NULL && gCamera != 0) {
         VecFx32 t = *v;
         t.x -= gCameraEye.x;
         t.y -= gCameraEye.y;
         t.z -= gCameraEye.z;
-        SndPosNode_setBgmPan(a, &t);
+        a->setBgmPan(&t);
     }
 }
 
-extern "C" void Snd_PosNodeRelease(void *n) { SndPosNode_release(n); }
+extern "C" void Snd_PosNodeRelease(SndPosNode *n) { n->release(); }
 
-extern "C" void Snd_PosNodeSetPitch(void *n, s32 v) { SndPosNode_setPitch(n, v); }
+extern "C" void Snd_PosNodeSetPitch(SndPosNode *n, s32 v) { n->setPitch(v); }
 
 extern "C" s32 Snd_PosListCanInit() { return 1; }
 
@@ -861,7 +813,7 @@ void SndEnvChannel::callUpdate(void *a) { update((VecFx32 *)a); }
 
 void SndEnvChannel::callRequestSustained(void *a) { requestSustained((u32)a); }
 
-void SndEnvChannel::callRequest(void *a) { request((u32)a); }
+void SndEnvChannel::callRequest(u32 a) { request(a); }
 
 void SndEnvChannel::callRelease() { vfunc_04(); }
 

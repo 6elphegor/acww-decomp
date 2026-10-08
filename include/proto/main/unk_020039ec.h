@@ -8,6 +8,7 @@
 #include "snd/SndBgmViews.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
+#include "snd/SndPosNode.h"
 #include "snd/SndSceneBase.h"
 #include "snd/SndSeEmitter.h"
 #include "types.h"
@@ -54,18 +55,6 @@ void Snd_StartBellRollSe();
 #endif
 #ifndef PROTO_LOCAL_Snd_StopBellRollSe
 void Snd_StopBellRollSe();
-#endif
-#ifndef PROTO_LOCAL_Snd_PosListInit
-void Snd_PosListInit(void *l);
-#endif
-#ifndef PROTO_LOCAL_Snd_PosListUpdate
-void Snd_PosListUpdate(void *l);
-#endif
-#ifndef PROTO_LOCAL_Snd_PosNodeInit
-void Snd_PosNodeInit(void *n, void *l);
-#endif
-#ifndef PROTO_LOCAL_Snd_PosNodeRelease
-void Snd_PosNodeRelease(void *n);
 #endif
 #ifndef PROTO_LOCAL_Snd_GetBeatState
 void *Snd_GetBeatState();
@@ -157,17 +146,29 @@ void Snd_SeEmitterPlayAlternate(void *e, u16 s);
 #ifndef PROTO_LOCAL_Snd_SeEmitterPlayOneShotAlt
 void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d);
 #endif
+#ifndef PROTO_LOCAL_Snd_PosListInit
+void Snd_PosListInit(SndPosList *l);
+#endif
+#ifndef PROTO_LOCAL_Snd_PosListUpdate
+void Snd_PosListUpdate(SndPosList *l);
+#endif
+#ifndef PROTO_LOCAL_Snd_PosNodeInit
+void Snd_PosNodeInit(SndPosNode *n, SndPosList *l);
+#endif
 #ifndef PROTO_LOCAL_Snd_PosNodePlay
-void Snd_PosNodePlay(u32 a, u32 b, VecFx32 *v);
+void Snd_PosNodePlay(SndPosNode *a, u32 b, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodePlayOnce
-void Snd_PosNodePlayOnce(u32 a, u32 b, VecFx32 *v);
+void Snd_PosNodePlayOnce(SndPosNode *a, u32 b, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Snd_SetBgmPan
-void Snd_SetBgmPan(u32 a, VecFx32 *v);
+void Snd_SetBgmPan(SndPosNode *a, VecFx32 *v);
+#endif
+#ifndef PROTO_LOCAL_Snd_PosNodeRelease
+void Snd_PosNodeRelease(SndPosNode *n);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodeSetPitch
-void Snd_PosNodeSetPitch(void *n, s32 v);
+void Snd_PosNodeSetPitch(SndPosNode *n, s32 v);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosListCanInit
 s32 Snd_PosListCanInit();

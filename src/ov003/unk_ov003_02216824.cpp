@@ -22,7 +22,7 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/LetterView.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_PlayerData_GetMailbox  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0206e54c.h"
@@ -44,29 +44,21 @@
 
 
 
-// ---- main-module helper classes ----
-
-
-
-
-
-
-
 extern "C" {
-extern void *gCommManager;
-extern u8 data_021f47e0[];
+extern CommManager *gCommManager;
+extern Mtx43 data_021f47e0;
 
 BOOL Building_RequestState(void *o, s32 v);
 BOOL TalkRequest_SetTargetDone(void *p);
-s32 Ground_GetDefaultY(s32 a);
-BOOL PlayerActor_LocalRequestMailboxOpen(void *p);
-void Mtx43_Translate(void *m, s32 a, s32 b, s32 c);
-PlayerMailbox *PlayerData_GetMailbox(void *p);
-s32 Vec_DistXZ(void *a, void *b);
+s32 Ground_GetDefaultY();
+BOOL PlayerActor_LocalRequestMailboxOpen(VecFx32 *p);
+void Mtx43_Translate(Mtx43 *m, s32 a, s32 b, s32 c);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-void *Scene_GetTouchPicker();
+u8 *Scene_GetTouchPicker();
 BOOL Scene_InTown();
 }
+
+static inline TouchPicker *TouchPicker_Get() { return (TouchPicker *)Scene_GetTouchPicker(); }
 
 // ============================================================ class Mailbox
 class Mailbox : public BuildingActor {
@@ -117,7 +109,7 @@ public:
 
     /* 0x2b0 */ s32 useState;
     /* 0x2b4 */ ModelAnim matAnim;
-    /* 0x2d4 */ u32 touchSphere[0x1c / 4]; // a TouchPickSphere, built and destroyed by explicit C1/D1 calls
+    /* 0x2d4 */ TouchPickSphere touchSphere;
     /* 0x2f0 */ u8 canUse;
     /* 0x2f1 */ u8 pad_2f1[3];
 };
@@ -140,36 +132,32 @@ extern "C" void *Mailbox_Create() {
 }
 
 Mailbox::Mailbox() {
-    new ((TouchPickSphere *)touchSphere) TouchPickSphere();
 }
 
 Mailbox::~Mailbox() {
-    ((TouchPickSphere *)((void *)((TouchPickSphere *)touchSphere)))->~TouchPickSphere();
 }
 
 BOOL Mailbox::initBuilding() {
     if (getBtaAnim(0)) {
-        if (matAnim.allocMatAnm((NNSG3dResMdl *)(modelRes), gFieldStructureHeap)) {
-            matAnim.init((s32)getBtaAnim(0), 1, 0x1000, 0);
+        if (matAnim.allocMatAnm((NNSG3dResMdl *)modelRes, gFieldStructureHeap)) {
+            matAnim.init(getBtaAnim(0), 1, 0x1000, 0);
             matAnim.addToRenderObj(((Model *)model)->getRenderObj());
         }
     }
     u8 b = (u8)BuildingList_IndexOf(this);
-    struct {
-        s32 x, y, z;
-    } v;
+    VecFx32 v;
     v.x = position.x;
     v.y = position.y;
     v.z = position.z;
     v.y = v.y + 0x1000;
-    ((TouchPicker *)(Scene_GetTouchPicker()))->addSphere((TouchPickSphere *)((TouchPickSphere *)touchSphere), (VecFx32 *)(&v), (VecFx32 *)(0x1000), 7, b);
+    TouchPicker_Get()->addSphere(&touchSphere, &v, (VecFx32 *)0x1000, 7, b);  // (the radius in the pointer argument)
     canUse = 1;
     if (!Scene_InTown()) {
         canUse = 0;
     } else {
-        void *g = gCommManager;
-        if (((CommManager *)(g))->isOnline()) {
-            if (!((CommManager *)(g))->isMyAid(0)) {
+        CommManager *g = gCommManager;
+        if (g->isOnline()) {
+            if (!g->isMyAid(0)) {
                 canUse = 0;
             }
         }
@@ -185,7 +173,7 @@ BOOL Mailbox::initBuilding() {
 
 BOOL Mailbox::onExecute() {
     updateUseState();
-    ((TouchPicker *)(Scene_GetTouchPicker()))->pushSphere((TouchPickSphere *)((TouchPickSphere *)touchSphere));
+    TouchPicker_Get()->pushSphere(&touchSphere);
     return TRUE;
 }
 
@@ -194,7 +182,7 @@ BOOL Mailbox::needsMatrixUpdate() {
 }
 
 BOOL Mailbox::acceptsInteraction(void *a) {
-    ((Character *)(this))->clearTalkStartMode();
+    clearTalkStartMode();
     if (!isUsable()) {
         return FALSE;
     }
@@ -222,7 +210,7 @@ void Mailbox::onInteractionEvent(u32 a, u8 b) {
 
 s32 Mailbox::countLetters() {
     if (isUsable()) {
-        PlayerMailbox *p = PlayerData_GetMailbox(PlayerData_GetCurrent());
+        PlayerMailbox *p = (PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent());
         if (p) {
             s32 n = 0;
             u32 i;
@@ -251,10 +239,10 @@ BOOL Mailbox::calcCustomBaseMatrix(Mtx43 *a) {
     v.y = 0;
     v.z = z;
     drawTilt = WorldCurve_ToCurved(&drawPos, &v);
-    makeCurvedMatrix((Mtx43 *)a);
-    *(Mtx43 *)data_021f47e0 = *(Mtx43 *)a;
-    Mtx43_Translate(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
-    *(Mtx43 *)a = *(Mtx43 *)data_021f47e0;
+    makeCurvedMatrix(a);
+    data_021f47e0 = *a;
+    Mtx43_Translate(&data_021f47e0, -0x2000, 0, 0x1000);
+    *a = data_021f47e0;
     return TRUE;
 }
 
@@ -297,12 +285,10 @@ s32 Mailbox::execUseIdle() {
 }
 
 s32 Mailbox::enterUseOpen() {
-    struct {
-        s32 a, b, c;
-    } v;
-    v.a = position.x;
-    v.b = Ground_GetDefaultY(0);
-    v.c = position.z + 0x2000;
+    VecFx32 v;
+    v.x = position.x;
+    v.y = Ground_GetDefaultY();
+    v.z = position.z + 0x2000;
     if (PlayerActor_LocalRequestMailboxOpen(&v)) {
         Building_RequestState(this, 3);
     }
@@ -388,7 +374,7 @@ BOOL Mailbox::enterNoMail() {
     ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    ((ModelAnim *)(&matAnim))->replace((s32)(r4), (s32)(r2), 1, 0x1000, 0);
+    matAnim.replace(r4, r2, 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -418,7 +404,7 @@ BOOL Mailbox::enterHasMail() {
     ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, a->numFrame - 1, 0);
     void *r5 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    ((ModelAnim *)(&matAnim))->replace((s32)(r5), (s32)(r2), 0, 0x1000, 0);
+    matAnim.replace(r5, r2, 0, 0x1000, 0);
     return TRUE;
 }
 

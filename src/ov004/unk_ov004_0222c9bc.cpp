@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
@@ -25,11 +24,7 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "save/MuseumData.h"
 #include "snd/SndSeEmitter.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "game/TouchPickTriangle.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02000c2c.h"
 #include "proto/main/unk_020039ec.h"
@@ -37,6 +32,11 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_02094810.h"
+#define PROTO_LOCAL_Math_AngleXZ  // declared below: the calls pass V3 / VecFx32 / s32 positions alike
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02060b7c.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_020b5e5c.h"
 #include "proto/main/unk_0209c08c.h"
 #include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0222c9bc.h"
@@ -44,57 +44,15 @@
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
 #define func_02000c8c _ZN6FxVec3D1Ev
-#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
-#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
-#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
-#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
-#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
-#define BlendAnimModel_stepBlend _ZN14BlendAnimModel9stepBlendEv
-#define BlendAnimModel_onJointCalcPost _ZN14BlendAnimModel15onJointCalcPostEPS_
-#define BlendAnimModel_onJointCalcPre _ZN14BlendAnimModel14onJointCalcPreEPS_
-#define func_020544d8 _ZN14BlendAnimModelD1Ev
-#define func_02054514 _ZN14BlendAnimModelC1Ev
-#define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define CachedModel_release _ZN11CachedModel7releaseEv
-#define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
-#define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
-#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
-#define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP7VecFx32iijjjhi
-#define ActorCollider_submit _ZN13ActorCollider6submitEv
-#define PooledModel_getModel _ZN11PooledModel8getModelEv
-#define PooledModel_unload _ZN11PooledModel6unloadEv
-#define PooledModel_reset _ZN11PooledModel5resetEv
-#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
-#define func_0209c128 _ZN11PooledModelD1Ev
-#define func_0209c140 _ZN11PooledModelC1Ev
-#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
-#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
-#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
-#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
-#define func_0209c2d8 _ZN13ModelSlotPoolD1Ev
-#define func_0209c2dc _ZN13ModelSlotPoolC1Ev
 #define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
-#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP7VecFx32iiisih
-#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12TouchPickBox
-#define func_020b6df4 _ZN12TouchPickBoxD2Ev
-#define func_020b6e10 _ZN12TouchPickBoxC2Ev
 #define func_02133150 _s32_div_f
 
 // ---------------------------------------------------------------------------------------------------------------
 
-struct Mtx {
-    s64 v[6];
-};
-
-struct Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
+// the whole frame number (bits 12..27) of an fx32 frame counter
+static inline u32 FrameInt(u32 v) {
+    return (v >> 12) & 0xffff;
+}
 
 // one 0x11-byte record of the actor table (sAquariumFishParams[56])
 struct AquariumFishParams {
@@ -126,6 +84,15 @@ struct AquariumFishParams {
 
 class AquariumFish;
 
+// vtable 0x0224e6e8: 0x50-byte collision sub-object of every actor
+class AquariumFishHitBox : public StaticCollider {
+public:
+    AquariumFishHitBox();
+    ~AquariumFishHitBox();
+    virtual void onCollide(u32 a, u32 b, u32 c);
+    /* 0x4c */ AquariumFish *owner;
+};
+
 // ---------------------------------------------------------------------------------------------------------------
 // The "Ent" family: state actors. Root = vtable 0x0224e774 (0x1fc bytes of common state).
 class AquariumFish {
@@ -135,32 +102,16 @@ public:
     virtual void update();
     virtual ~AquariumFish();
 
-    /* 0x004 */ u8 hitBox[0x13 - 4];
-    /* 0x013 */ u8 hitOtherId;
-    /* 0x014 */ s32 hitPushX;
-    /* 0x018 */ u8 pad_18[4];
-    /* 0x01c */ s32 hitPushZ;
-    /* 0x020 */ u8 pad_20[0x40 - 0x20];
-    /* 0x040 */ u8 isHit;
-    /* 0x041 */ u8 pad_41[0x50 - 0x41];
-    /* 0x050 */ AquariumFish *hitBoxOwner;
-    /* 0x054 */ u32 animFiles[4];
-    /* 0x064 */ u8 model[0xc8 - 0x64];
-    /* 0x0c8 */ Mtx modelMtx;
-    /* 0x0f8 */ u8 pad_f8[0x100 - 0xf8];
-    /* 0x100 */ u32 animFrameCtrl;
-    /* 0x104 */ Bits animNumFrames;
-    /* 0x108 */ s32 animFrame;
-    /* 0x10c */ u8 pad_10c[4];
-    /* 0x110 */ s32 animFrameStep;
-    /* 0x114 */ u8 pad_114[0x158 - 0x114];
+    /* 0x004 */ AquariumFishHitBox hitBox;
+    /* 0x054 */ void *animFiles[4];
+    /* 0x064 */ BlendAnimModel model;
     /* 0x158 */ s32 stateTimer;
     /* 0x15c */ s32 fishIndex;
     /* 0x160 */ s32 loadState;
     /* 0x164 */ u8 rank;
     /* 0x165 */ u8 pad_165;
-    /* 0x166 */ u8 modelSlot[2];
-    /* 0x168 */ u8 pooledModel[0x1a8 - 0x168];
+    /* 0x166 */ u16 modelSlot;
+    /* 0x168 */ PooledModel pooledModel;
     /* 0x1a8 */ V3 pos;
     /* 0x1b4 */ V3 prevPos;
     union {
@@ -263,10 +214,9 @@ public:
     /* 0x208 */ s16 wobbleAngle;
     /* 0x20a */ u8 pad_20a[2];
     /* 0x20c */ s32 walkSpeed;
-    union {
-        /* 0x210 */ s32 unk_210;
-        u8 unk_210b;
-    };
+    /* 0x210 */ u8 walkTime;     // (frames of the walk)
+    /* 0x211 */ u8 pad_211;
+    /* 0x212 */ u16 restTime;    // (frames of the rest)
     /* 0x214 */ u8 pad_214[4];
     /* 0x218 */ s32 walkAnimSpeed;
     /* 0x21c */ u8 walkState;
@@ -286,14 +236,6 @@ public:
     /* 0x274 */ s32 swayCounter;
 };
 
-// vtable 0x0224e6e8: 0x50-byte collision sub-object of every actor
-class AquariumFishHitBox : public StaticCollider {
-public:
-    AquariumFishHitBox();
-    ~AquariumFishHitBox();
-    virtual void onCollide(u32 a, u32 b, u32 c);
-    /* 0x4c */ AquariumFish *owner;
-};
 
 // vtables 0x0224e714 / 0x0224e75c: 0x25c bytes
 class AquariumSurfacingFish : public AquariumSwimFish {
@@ -388,8 +330,8 @@ public:
     /* 0x050 */ AquariumObstacle obstacles[5];
     /* 0x244 */ AquariumFishHitBox extraHitBox;
     /* 0x294 */ u32 extraBox[5];
-    /* 0x2a8 */ u32 touchBoxes[0x550 / 4];
-    /* 0x7f8 */ u32 modelPool[6];
+    /* 0x2a8 */ TouchPickBox touchBoxes[2];
+    /* 0x7f8 */ ModelSlotPool modelPool;
 
     typedef void (MuseumAquarium::*Fn)(AquariumFish **, s32);
 };
@@ -482,6 +424,24 @@ public:
 
 
 typedef AquariumFish R;
+#ifndef HOST64
+// (the DS sizes the original allocates the fish with)
+static_assert(sizeof(AquariumBigFish) == 0x258, "AquariumBigFish");
+static_assert(sizeof(AquariumCrawfish) == 0x220, "AquariumCrawfish");
+static_assert(sizeof(AquariumEel) == 0x210, "AquariumEel");
+static_assert(sizeof(AquariumFastFish) == 0x258, "AquariumFastFish");
+static_assert(sizeof(AquariumFrog) == 0x214, "AquariumFrog");
+static_assert(sizeof(AquariumHidingFish) == 0x27c, "AquariumHidingFish");
+static_assert(sizeof(AquariumJellyfish) == 0x28c, "AquariumJellyfish");
+static_assert(sizeof(AquariumOctopus) == 0x1fc, "AquariumOctopus");
+static_assert(sizeof(AquariumPiranha) == 0x25c, "AquariumPiranha");
+static_assert(sizeof(AquariumPufferFish) == 0x25c, "AquariumPufferFish");
+static_assert(sizeof(AquariumSeaButterfly) == 0x278, "AquariumSeaButterfly");
+static_assert(sizeof(AquariumSeahorse) == 0x26c, "AquariumSeahorse");
+static_assert(sizeof(AquariumSquid) == 0x258, "AquariumSquid");
+static_assert(sizeof(AquariumSurfacingFish) == 0x25c, "AquariumSurfacingFish");
+static_assert(sizeof(AquariumSwimFish) == 0x258, "AquariumSwimFish");
+#endif
 typedef AquariumSwimFish E864;
 typedef MuseumAquarium Mgr;
 typedef AquariumHidingFish E6fc;
@@ -503,14 +463,6 @@ typedef void (E804::*Fn804)();
 typedef void (Mgr::*MgrFn)(R **, s32);
 
 
-struct Unk_ov004_022303b4_P {
-    u8 pad_00[0x5c];
-    V3 position;
-    u8 pad_68[0x98 - 0x68];
-    s32 speed;
-};
-
-typedef Unk_ov004_022303b4_P P;
 
 struct PairFn {
     Fn a;
@@ -521,47 +473,9 @@ struct PairFn {
 
 // ---------------------------------------------------------------------------------------------------------------
 // constructors of the state actors (called by the allocation switches)
-#define func_02232864 _ZN18AquariumHidingFishC1Ev
-#define func_022328b4 _ZN21AquariumSurfacingFishC1Ev
-#define func_02232930 _ZN15AquariumPiranhaC1Ev
-#define func_02232a08 _ZN16AquariumCrawfishC1Ev
-#define func_02232b54 _ZN11AquariumEelC1Ev
-#define func_02232bb0 _ZN12AquariumFrogC1Ev
-#define func_02232d8c _ZN16AquariumSwimFishC1Ev
-#define func_ov004_02232ce4 _ZN17AquariumJellyfishC1Ev
-#define func_ov004_02232c88 _ZN16AquariumFastFishC1Ev
-#define func_ov004_02232c24 _ZN15AquariumBigFishC1Ev
-#define func_ov004_02232adc _ZN20AquariumSeaButterflyC1Ev
-#define func_ov004_02232a64 _ZN16AquariumSeahorseC1Ev
-#define func_ov004_0223299c _ZN18AquariumPufferFishC1Ev
-#define func_ov004_02232864 _ZN18AquariumHidingFishC1Ev
-#define func_ov004_02232808 _ZN13AquariumSquidC1Ev
-#define func_ov004_022327b8 _ZN15AquariumOctopusC1Ev
-#define func_ov004_02232d8c _ZN16AquariumSwimFishC1Ev
 
-#define func_ov004_02232608 _ZN18AquariumFishHitBoxC1Ev
-#define func_ov004_022325f0 _ZN18AquariumFishHitBoxD1Ev
 
 extern "C" {
-void func_ov004_02232608(void *);
-void func_ov004_022325f0(void *);
-void func_02232864(void *);
-void func_022328b4(void *);
-void func_02232930(void *);
-void func_02232a08(void *);
-void func_02232b54(void *);
-void func_02232bb0(void *);
-void func_02232d8c(void *);
-void func_ov004_02232ce4(void *);
-void func_ov004_02232c88(void *);
-void func_ov004_02232c24(void *);
-void func_ov004_02232adc(void *);
-void func_ov004_02232a64(void *);
-void func_ov004_0223299c(void *);
-void func_ov004_02232864(void *);
-void func_ov004_02232808(void *);
-void func_ov004_022327b8(void *);
-void func_ov004_02232d8c(void *);
 }
 
 extern "C" {
@@ -569,74 +483,29 @@ void *__cxa_vec_ctor(void *, s32, s32, void *, void *);
 void *__cxa_vec_cleanup(void *, s32, s32, void *);
 
 extern s16 data_02135f44[];
-extern u8 gRandom[];
 extern u8 data_021ed0a0[];
-extern Mtx data_021f47e0;
-extern void *gCurrentHeap;
+extern Mtx43 data_021f47e0;
 extern V3 sRoomHasuPos;
 
 void MTX_MultVec43(V3 *, void *, V3 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-s32 Math_AngleXZ(void *, void *);
-void SndEnvChannel_callRelease(void *);
-void SndEnvChannel_callRequestSustained(void *, s32);
-void SndEnvChannel_callUpdateRelative(void *, V3 *);
-void SndEnvChannel_callReset(void *);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
-s32 GroundInfoBase_getHeight(void *o, s32 f);
 void GroundInfo_Destruct(void *o);
-void *GroundInfo_initAtPos(void *o, void *v, s32 a, s32 b);
-s32 BlendAnimModel_stepBlend(void *);
-s32 BlendAnimModel_onJointCalcPost(void *, void *);
-s32 BlendAnimModel_onJointCalcPre(void *, void *);
-void func_020544d8(void *);
-void func_02054514(void *);
-void AnimModel_detachJointAnim(void *p);
-void AnimModel_attachAnim(void *);
-void AnimModel_drawAnimated(void *, V3 *);
-s32 AnimModel_allocAnmObj(void *, s32);
-void CachedModel_release(void *p);
-s32 CachedModel_allocJointRecord(void *, s32);
-BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
-s32 MuseumData_isDonated(void *, u16 *);
-void StaticCollider_setupAtPos(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
-void ActorCollider_submit(void *a);
-P *PlayerActor_GetBodyPos(s32 n);
-s32 PooledModel_getModel(void *);
-void PooledModel_unload(void *p);
-void PooledModel_reset(void *p);
-s32 PooledModel_loadFromSlot(void *, s32, char *);
-void func_0209c128(void *);
-void func_0209c140(void *);
-s32 ModelSlotPool_destroy(void *);
-void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-void ModelSlotPool_release(void *p, void *q);
-s32 ModelSlotPool_acquire(void *, void *);
-void func_0209c2d8(void *p);
-void func_0209c2dc(void *p);
-s32 ModelSlot_getHeap(s32);
+void *ModelSlot_getHeap(ModelSlot *slot);
+s32 Math_AngleXZ(void *, void *);
 void *Scene_GetTouchPicker(void);
-s32 TouchPickResult_GetTarget(void *, void *, void *, void *);
-void TouchPicker_addBox(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
-s32 TouchPicker_pushBox(void *, void *);
-void func_020b6df4(void *p);
-void func_020b6e10(void *p);
 s32 Math_StepS32Alt(void *p, s32 a, s32 b);
 s32 Math_StepS16(void *p, s32 a, s32 b);
 s32 Math_ApproachS16Div(void *p, s32 a, s32 b, s32 c);
-s32 Random_Next(void *p);
+s32 Random_Next(Random *p);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateY(void *, s32);
 void Mtx43_RotateX(void *, s32);
 s64 Vec_DistSqXZ(void *, void *);
 s32 Vec_Distance(void *a, void *b);
-#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
-void SndSeEmitter_dtor(void *p);
-#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
-void SndSeEmitter_ctor(void *p);
-s32 func_021065dc(u32 a);
-s32 func_021065f8(s32 a, s32 b);
+u8 *func_021065dc(u8 *p);
+u8 *func_021065f8(u8 *p, u32 i);
 s32 func_02133150(s32 a, s32 b);
 }
 
@@ -687,8 +556,6 @@ extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max);
 extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v);
 extern "C" BOOL Aquarium_TestHeight800At(V3 *pos);
 extern "C" BOOL AquariumFish_IsNearWall(E864 *o);
-extern "C" void _ZN17AquariumJellyfish5setupEv(E7d4 *o);
-extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o);
 extern "C" void Aquarium_Oscillate(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul);
 extern "C" void AquariumJellyfish_UpdateDrift(E7d4 *o);
 extern "C" void AquariumJellyfish_StartDrift(E7d4 *o);
@@ -699,31 +566,15 @@ extern "C" void AquariumJellyfish_BeginPulse(E7d4 *o);
 extern "C" void AquariumJellyfish_PulseGrow(E7d4 *o);
 extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o);
 extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out);
-extern "C" void _ZN16AquariumFastFish5setupEv(E744 *o);
-extern "C" void _ZN16AquariumFastFish6updateEv(E744 *o);
 extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b);
-extern "C" void _ZN15AquariumBigFish5setupEv(E72c *o);
-extern "C" void _ZN15AquariumBigFish6updateEv(E72c *o);
 extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b);
-extern "C" void _ZN12AquariumFrog5setupEv(E834 *o);
-extern "C" void _ZN12AquariumFrog6updateEv(E834 *o);
 extern "C" void AquariumFrog_StartCroak(E834 *o);
 extern "C" void AquariumFrog_Croak(E834 *o);
-extern "C" void _ZN11AquariumEel5setupEv(E804 *e);
-extern "C" void _ZN11AquariumEel6updateEv(E804 *e);
 extern "C" void AquariumEel_StateStart(E804 *e);
 extern "C" void AquariumEel_StateSpeedUp(E804 *e);
 extern "C" void AquariumEel_StateHold(E804 *e);
 extern "C" void AquariumEel_StateSlowDown(E804 *e);
 extern "C" void AquariumEel_StateWait(E804 *e);
-extern "C" void _ZN20AquariumSeaButterfly5setupEv(E7bc *e);
-extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e);
-extern "C" void _ZN16AquariumSeahorse5setupEv(E7a4 *e);
-extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e);
-extern "C" void _ZN18AquariumPufferFish5setupEv(E78c *e);
-extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e);
-extern "C" void _ZN15AquariumPiranha5setupEv(E75c *e);
-extern "C" void _ZN15AquariumPiranha6updateEv(E75c *o);
 extern "C" void AquariumPiranha_StateSwim(E75c *o);
 extern "C" void AquariumPiranha_StateApproach(E75c *o);
 extern "C" void AquariumPiranha_StateBite(E75c *o);
@@ -731,28 +582,19 @@ extern "C" void AquariumPiranha_BobDepth(E75c *o);
 extern "C" void AquariumPiranha_BiteIdle(E75c *o);
 extern "C" void AquariumPiranha_BiteLunge(E75c *o);
 extern "C" void AquariumPiranha_BiteRecoil(E75c *o);
-extern "C" void _ZN21AquariumSurfacingFish5setupEv(E714 *o);
-extern "C" void _ZN21AquariumSurfacingFish6updateEv(E714 *o);
 extern "C" void AquariumSurfacingFish_StateSwim(E714 *o);
 extern "C" void AquariumSurfacingFish_StateSurface(E714 *o);
 extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o);
-extern "C" void _ZN18AquariumHidingFish5setupEv(E6fc *o);
-extern "C" void _ZN18AquariumHidingFish6updateEv(E6fc *o);
 extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o);
 extern "C" void AquariumHidingFish_UpdateGoby(E6fc *o);
 extern "C" void AquariumHidingFish_CheckTouch(E6fc *o);
 extern "C" void AquariumHidingFish_UpdateHide(E6fc *o);
 extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f);
 extern "C" void AquariumHidingFish_StayHidden(E6fc *o);
-extern "C" void _ZN16AquariumCrawfish5setupEv(E84c *o);
-extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o);
 extern "C" void AquariumCrawfish_StartWalk(E84c *o);
 extern "C" void AquariumCrawfish_Walk(E84c *o);
 extern "C" void AquariumCrawfish_SlowDown(E84c *o);
-extern "C" void _ZN13AquariumSquid5setupEv(E81c *o);
-extern "C" void _ZN13AquariumSquid6updateEv(E81c *o);
 extern "C" void AquariumSquid_TurnAtTankEnd(E864 *e);
-extern "C" void _ZN15AquariumOctopus5setupEv(E7ec *e);
 extern "C" void AquariumSwimFish_SetupSea(E864 *e);
 extern "C" void AquariumSwimFish_UpdateSea(E864 *e);
 extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e);
@@ -763,8 +605,6 @@ extern "C" void AquariumFish_InstallJointCallbacks(NNSG3dRS *c);
 extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out);
 extern "C" BOOL AquariumFish_CheckTouched(E864 *e);
 extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p);
-extern "C" void _ZN16AquariumSwimFish5setupEv(E864 *e);
-extern "C" void _ZN16AquariumSwimFish6updateEv(E864 *e);
 extern "C" void AquariumFish_StateStart(E864 *e);
 extern "C" void AquariumFish_StateAccelerate(E864 *e);
 extern "C" void AquariumFish_StateCruise(E864 *e);
@@ -790,7 +630,6 @@ extern "C" void AquariumFish_SteerFromWall(E864 *self);
 extern "C" void AquariumFish_LoadParams(E864 *self);
 extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i);
 extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i);
-extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self);
 extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self);
 extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o);
 extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n);
@@ -798,12 +637,9 @@ extern "C" void MuseumAquarium_UpdateFish(Mgr *o, R **p, s32 i);
 extern "C" void MuseumAquarium_FishStateNone();
 extern "C" s32 MuseumAquarium_FishStateLoad(Mgr *o, R **p, s32 i);
 extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x);
-extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o);
 extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n);
 extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx);
 extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p);
-extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o);
-extern "C" s32 _ZN14MuseumAquarium8onDeleteEv(Mgr *o);
 extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o);
 extern "C" void MuseumAquarium_PlaceSeaFish(Mgr *self);
 extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type);
@@ -935,14 +771,11 @@ extern "C" void *MuseumAquarium_Create() {
 }
 
 AquariumFish::AquariumFish() {
-    new (hitBox) AquariumFishHitBox();
-    new (model) BlendAnimModel();
-    ModelSlotHandle_Init((u16 *)modelSlot);
-    new (pooledModel) PooledModel();
+    ModelSlotHandle_Init(&modelSlot);
     __cxa_vec_ctor(bodyEnds, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
     fishIndex = -1;
     loadState = 0;
-    ((PooledModel *)(pooledModel))->reset();
+    pooledModel.reset();
     hasTurnAnims = 0;
     hasCollision = 1;
     contactCount = 0;
@@ -952,10 +785,7 @@ AquariumFish::AquariumFish() {
 
 AquariumFish::~AquariumFish() {
     __cxa_vec_cleanup(bodyEnds, 2, 0xc, (void *)func_02000c8c);
-    ((PooledModel *)(pooledModel))->~PooledModel();
-    ModelSlotHandle_Destroy((u16 *)modelSlot);
-    ((BlendAnimModel *)(model))->BlendAnimModel::~BlendAnimModel();
-    ((AquariumFishHitBox *)(hitBox))->~AquariumFishHitBox();
+    ModelSlotHandle_Destroy(&modelSlot);
 }
 
 AquariumSwimFish::AquariumSwimFish() {
@@ -1088,13 +918,11 @@ extern "C" AquariumOctopus::~AquariumOctopus() {
 }
 
 extern "C" MuseumAquarium::MuseumAquarium() {
-    __cxa_vec_ctor(touchBoxes, 2, 0x2a8, (void *)func_020b6e10, (void *)func_020b6df4);
-    new (modelPool) ModelSlotPool();
+
 }
 
 extern "C" MuseumAquarium::~MuseumAquarium() {
-    ((ModelSlotPool *)(modelPool))->~ModelSlotPool();
-    __cxa_vec_cleanup(touchBoxes, 2, 0x2a8, (void *)func_020b6df4);
+
 }
 
 extern "C" AquariumFishHitBox::AquariumFishHitBox() {
@@ -1213,11 +1041,11 @@ extern "C" void AquariumFish_PickTurn(E864 *o, s32 f, u32 a, u32 b) {
 extern "C" void AquariumFish_PlayTurnAnim(E864 *o, u32 a) {
     if (o->hasTurnAnims != 0) {
         if (o->isTurnAnimPlaying != 0) {
-            if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame(a)) {
-                o->animFrame = (u32)((a - 1) << 16) >> 4;
+            if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame(a)) {
+                o->model.curFrame = (u32)((a - 1) << 16) >> 4;
             }
         } else {
-            if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame((u16)(o->animNumFrames.mid - 1))) {
+            if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame((u16)(FrameInt(o->model.numFrames) - 1))) {
                 if (a == 10) {
                     AquariumFish_PlayAnim(o, 2);
                 } else {
@@ -1227,8 +1055,8 @@ extern "C" void AquariumFish_PlayTurnAnim(E864 *o, u32 a) {
             }
         }
     } else {
-        if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame(a)) {
-            o->animFrame = (u32)((a - 1) << 16) >> 4;
+        if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame(a)) {
+            o->model.curFrame = (u32)((a - 1) << 16) >> 4;
         }
     }
 }
@@ -1237,7 +1065,7 @@ extern "C" s32 AquariumFish_EndTurnAnim(E864 *o) {
     BOOL r = FALSE;
     if (o->hasTurnAnims != 0) {
         if (o->isTurnAnimPlaying != 0) {
-            if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame(o->animNumFrames.mid)) {
+            if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame(FrameInt(o->model.numFrames))) {
                 AquariumFish_PlaySwimAnim(o);
                 r = TRUE;
             }
@@ -1247,9 +1075,9 @@ extern "C" s32 AquariumFish_EndTurnAnim(E864 *o) {
 }
 
 extern "C" void AquariumFish_PlayAnim(E864 *o, s32 i) {
-    s32 t = func_021065dc(o->animFiles[i]);
-    s32 r = func_021065f8(t, 0);
-    ((BlendAnimModel *)(o->model))->playBlend(r, 2, 0, 0x1000, 0, 0);
+    u8 *t = func_021065dc((u8 *)o->animFiles[i]);
+    u8 *r = func_021065f8(t, 0);
+    (&o->model)->playBlend(r, 2, 0, 0x1000, 0, 0);
 }
 
 extern "C" void AquariumFish_PlaySwimAnim(E864 *o)
@@ -1399,7 +1227,7 @@ extern "C" s16 Aquarium_RandAngle(s32 a, s32 b)
 {
     s32 sign;
     s32 r;
-    if (Random_Next(gRandom) > 0) {
+    if (Random_Next(&gRandom) > 0) {
         sign = 1;
     } else {
         sign = -1;
@@ -1501,10 +1329,10 @@ extern "C" BOOL AquariumFish_IsNearWall(E864 *o)
     return r;
 }
 
-extern "C" void _ZN17AquariumJellyfish5setupEv(E7d4 *o)
-{
+void AquariumJellyfish::setup() {
+    E7d4 *o = this;
     s32 *p = &o->fishIndex;
-    o->hitBoxOwner = o;
+    o->hitBox.owner = o;
     o->contactFish = *p;
     o->avoidedFish = *p;
     o->tankArea = 0;
@@ -1519,8 +1347,8 @@ extern "C" void _ZN17AquariumJellyfish5setupEv(E7d4 *o)
     sAquariumJellyfish = o;
 }
 
-extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o)
-{
+void AquariumJellyfish::update() {
+    E7d4 *o = this;
     u8 a = o->contactFish;
     u8 *p = &o->lastContactFish;
     if (*p != a && a != o->fishIndex) {
@@ -1540,7 +1368,7 @@ extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o)
         s32 r = Aquarium_RandRange(0, 250);
         s32 v;
         if (r <= 1 || (v = o->pos.y) >= 0x2b33) {
-            if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame(1) != 0) {
+            if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame(1) != 0) {
                 o->bobTimer = 0;
                 o->subState = 2;
             }
@@ -1550,7 +1378,7 @@ extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o)
                 o->subState = 0;
             }
         }
-        o->animFrameStep = 0x666;
+        o->model.frameStep = 0x666;
         break;
     }
     case 0:
@@ -1558,7 +1386,7 @@ extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o)
             o->bobTimer = 0;
             o->subState = 1;
         }
-        o->animFrameStep = 0x800;
+        o->model.frameStep = 0x800;
         break;
     case 2: {
         s32 r = Aquarium_RandRange(0, 250);
@@ -1566,7 +1394,7 @@ extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o)
             o->bobTimer = 0;
             o->subState = 1;
         }
-        o->animFrameStep = 0x4cd;
+        o->model.frameStep = 0x4cd;
         break;
     }
     }
@@ -1719,7 +1547,7 @@ extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
     l[1].x = 0;
     l[1].y = 0;
     l[1].z = k2;
-    data_021f47e0 = o->modelMtx;
+    data_021f47e0 = o->model.mtx;
     MTX_MultVec43(&l[0], &data_021f47e0, &l[2]);
     MTX_MultVec43(&l[1], &data_021f47e0, &l[3]);
     V3 *p = &o->pos;
@@ -1732,17 +1560,19 @@ extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
     }
 }
 
-extern "C" void _ZN16AquariumFastFish5setupEv(E744 *o) {
-    o->hitBoxOwner = o;
+void AquariumFastFish::setup() {
+    E744 *o = this;
+    o->hitBox.owner = o;
     o->tankArea = 2;
-    ((Model *)(&o->model))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
+    (&o->model)->setInitCallback(AquariumFish_InstallJointCallbacks, o);
     s32 *t = &o->fishIndex;
     o->contactFish = *t;
     o->avoidedFish = *t;
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN16AquariumFastFish6updateEv(E744 *o) {
+void AquariumFastFish::update() {
+    E744 *o = this;
     AquariumFastFish_UpdateLap(o, -2, 0x24);
     if (o->state != 2 && o->state != 6) {
         AquariumFish_UpdateDepthCapped(o);
@@ -1760,7 +1590,7 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
         }
         o->pos.y = ((sAquariumFishParams[o->fishIndex].baseY << 12) >> 6);
         Aquarium_StepXZ(&o->pos, 0x19a, o->unk_1c0);
-        o->animFrameStep = 0x1000;
+        o->model.frameStep = 0x1000;
         AquariumFish_PlayTurnAnim(o, 3);
         return;
     }
@@ -1771,7 +1601,7 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
         }
         o->pos.y = ((sAquariumFishParams[o->fishIndex].baseY << 12) >> 6);
         Aquarium_StepXZ(&o->pos, 0x19a, o->unk_1c0);
-        o->animFrameStep = 0x1000;
+        o->model.frameStep = 0x1000;
         AquariumFish_PlayTurnAnim(o, 10);
         return;
     }
@@ -1784,12 +1614,13 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
     AquariumFish_UpdateAnimSpeed(o, 0x333);
 }
 
-extern "C" void _ZN15AquariumBigFish5setupEv(E72c *o) {
+void AquariumBigFish::setup() {
+    E72c *o = this;
     s32 *t = &o->fishIndex;
     o->contactFish = *t;
     o->hasCollision = 0;
     if ((u32)(*t - 0x35) <= 1) {
-        ((Model *)(&o->model))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
+        (&o->model)->setInitCallback(AquariumFish_InstallJointCallbacks, o);
     }
     s32 r;
     if (Aquarium_RandRange(0, 2) > 0) {
@@ -1801,7 +1632,8 @@ extern "C" void _ZN15AquariumBigFish5setupEv(E72c *o) {
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN15AquariumBigFish6updateEv(E72c *o) {
+void AquariumBigFish::update() {
+    E72c *o = this;
     s32 t = o->fishIndex;
     if ((u32)(t - 0x35) <= 1) {
         AquariumBigFish_UpdatePatrol(o, 2, 0x20);
@@ -1826,7 +1658,7 @@ extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
             o->pos.x += 0x133;
         }
         Aquarium_StepXZ(&o->pos, 0x133, o->unk_1c0);
-        o->animFrameStep = 0x1000;
+        o->model.frameStep = 0x1000;
         o->turnDir = 3;
         AquariumFish_PlayTurnAnim(o, (u16)o->turnDir);
         return;
@@ -1836,7 +1668,7 @@ extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
             o->pos.x -= 0x133;
         }
         Aquarium_StepXZ(&o->pos, 0x133, o->unk_1c0);
-        o->animFrameStep = 0x1000;
+        o->model.frameStep = 0x1000;
         o->turnDir = 10;
         AquariumFish_PlayTurnAnim(o, (u16)o->turnDir);
         return;
@@ -1856,7 +1688,8 @@ extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
     AquariumFish_UpdateAnimSpeed(o, 0x333);
 }
 
-extern "C" void _ZN12AquariumFrog5setupEv(E834 *o) {
+void AquariumFrog::setup() {
+    E834 *o = this;
     o->hasCollision = 0;
     o->pos.x = 0x14500;
     o->pos.y = 0x3700;
@@ -1866,7 +1699,8 @@ extern "C" void _ZN12AquariumFrog5setupEv(E834 *o) {
     ((SndEnvChannel *)(&o->croakSound))->callReset();
 }
 
-extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
+void AquariumFrog::update() {
+    E834 *o = this;
     V3 l[2];
     l[0] = sRoomHasuPos;
     o->pos = l[0];
@@ -1892,7 +1726,7 @@ extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
 extern "C" void AquariumFrog_StartCroak(E834 *o) {
     o->croakInterval = Aquarium_RandRange(0x28, 0xc8);
     o->croakAnimSpeed = (Aquarium_RandRange(0x32, 0x4b) << 12) / 100;
-    o->animFrameStep = o->croakAnimSpeed;
+    o->model.frameStep = o->croakAnimSpeed;
     o->croakRepeatCount = Aquarium_RandRange(1, 7);
     o->croakCount = 0;
     o->stateTimer = 0;
@@ -1900,21 +1734,22 @@ extern "C" void AquariumFrog_StartCroak(E834 *o) {
 }
 
 extern "C" void AquariumFrog_Croak(E834 *o) {
-    if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame(1)) {
+    if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame(1)) {
         ((SndEnvChannel *)(&o->croakSound))->callRequestSustained((void *)(0x832));
         o->croakCount++;
     }
     if (o->croakCount >= o->croakRepeatCount) {
-        if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame((u16)(o->animNumFrames.mid - 1))) {
+        if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame((u16)(FrameInt(o->model.numFrames) - 1))) {
             o->croakState = 6;
             o->stateTimer = 0;
-            o->animFrame = 0;
-            o->animFrameStep = 0;
+            o->model.curFrame = 0;
+            o->model.frameStep = 0;
         }
     }
 }
 
-extern "C" void _ZN11AquariumEel5setupEv(E804 *e) {
+void AquariumEel::setup() {
+    E804 *e = this;
     e->hasCollision = 0;
     e->pos.x = 0;
     e->pos.y = 0;
@@ -1922,7 +1757,8 @@ extern "C" void _ZN11AquariumEel5setupEv(E804 *e) {
     e->unk_1c0 = 0;
 }
 
-extern "C" void _ZN11AquariumEel6updateEv(E804 *e) {
+void AquariumEel::update() {
+    E804 *e = this;
     (e->*sAquariumEelStates[e->eelState])();
     e->stateTimer++;
 }
@@ -1934,7 +1770,7 @@ extern "C" void AquariumEel_StateStart(E804 *e) {
     e->holdTime = Aquarium_RandRange(1, 0x96);
     e->waitTime = Aquarium_RandRange(0xa, 0x78);
     e->stateTimer = 0;
-    e->animFrameStep = 0;
+    e->model.frameStep = 0;
     e->eelState = 1;
 }
 
@@ -1946,7 +1782,7 @@ extern "C" void AquariumEel_StateSpeedUp(E804 *e) {
         e->eelState = 2;
         e->stateTimer = 0;
     }
-    e->animFrameStep = t;
+    e->model.frameStep = t;
 }
 
 extern "C" void AquariumEel_StateHold(E804 *e) {
@@ -1954,7 +1790,7 @@ extern "C" void AquariumEel_StateHold(E804 *e) {
         e->eelState = 3;
         e->stateTimer = 0;
     }
-    e->animFrameStep = e->maxSpeed;
+    e->model.frameStep = e->maxSpeed;
 }
 
 extern "C" void AquariumEel_StateSlowDown(E804 *e) {
@@ -1964,18 +1800,19 @@ extern "C" void AquariumEel_StateSlowDown(E804 *e) {
         e->eelState = 4;
         e->stateTimer = 0;
     }
-    e->animFrameStep = t;
+    e->model.frameStep = t;
 }
 
 extern "C" void AquariumEel_StateWait(E804 *e) {
-    e->animFrameStep = 0;
+    e->model.frameStep = 0;
     if (e->stateTimer >= e->waitTime) {
         e->eelState = 0;
         e->stateTimer = 0;
     }
 }
 
-extern "C" void _ZN20AquariumSeaButterfly5setupEv(E7bc *e) {
+void AquariumSeaButterfly::setup() {
+    E7bc *e = this;
     s32 *p = &e->fishIndex;
     e->contactFish = *p;
     e->avoidedFish = *p;
@@ -1994,7 +1831,8 @@ extern "C" void _ZN20AquariumSeaButterfly5setupEv(E7bc *e) {
     sAquariumSeaButterfly = e;
 }
 
-extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
+void AquariumSeaButterfly::update() {
+    E7bc *e = this;
     if ((u8)(e->state + 0xfd) <= 1) {
         Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, &e->homePos, 0x1000);
     }
@@ -2004,7 +1842,7 @@ extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
     case 1: {
         s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 1 || e->pos.y >= 0x2b33) {
-            if (((AnimFrameCtrl *)(&e->animFrameCtrl))->hasPassedFrame(1)) {
+            if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(1)) {
                 e->bobTimer = 0;
                 e->subState = 2;
             }
@@ -2018,7 +1856,7 @@ extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
                 e->subState = 0;
             }
         }
-        e->animFrameStep = 0xe66;
+        e->model.frameStep = 0xe66;
         break;
     }
     case 0: {
@@ -2027,7 +1865,7 @@ extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
             e->bobTimer = 0;
             e->subState = 1;
         }
-        e->animFrameStep = 0x1000;
+        e->model.frameStep = 0x1000;
         break;
     }
     case 2: {
@@ -2036,7 +1874,7 @@ extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
             e->bobTimer = 0;
             e->subState = 1;
         }
-        e->animFrameStep = 0x666;
+        e->model.frameStep = 0x666;
         break;
     }
     }
@@ -2050,7 +1888,8 @@ extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
     AquariumFish_CalcHitCenter(e, &e->hitCenter);
 }
 
-extern "C" void _ZN16AquariumSeahorse5setupEv(E7a4 *e) {
+void AquariumSeahorse::setup() {
+    E7a4 *e = this;
     s32 *p = &e->fishIndex;
     e->contactFish = *p;
     e->avoidedFish = *p;
@@ -2068,7 +1907,8 @@ extern "C" void _ZN16AquariumSeahorse5setupEv(E7a4 *e) {
     e->restTimeMin = sAquariumFishParams[*p].restTimeMin;
 }
 
-extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
+void AquariumSeahorse::update() {
+    E7a4 *e = this;
     Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, &e->homePos, 0x1000);
     switch (e->subState) {
     case 1: {
@@ -2080,7 +1920,7 @@ extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
             e->bobTimer = 0;
             e->subState = 0;
         }
-        e->animFrameStep = 0xb33;
+        e->model.frameStep = 0xb33;
         break;
     }
     case 0: {
@@ -2089,7 +1929,7 @@ extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
             e->bobTimer = 0;
             e->subState = 1;
         }
-        e->animFrameStep = 0x1000;
+        e->model.frameStep = 0x1000;
         break;
     }
     case 2: {
@@ -2098,7 +1938,7 @@ extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
             e->bobTimer = 0;
             e->subState = 1;
         }
-        e->animFrameStep = 0x666;
+        e->model.frameStep = 0x666;
         break;
     }
     }
@@ -2113,31 +1953,33 @@ extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
     AquariumFish_CheckTouched(e);
 }
 
-extern "C" void _ZN18AquariumPufferFish5setupEv(E78c *e) {
-    e->hitBoxOwner = e;
+void AquariumPufferFish::setup() {
+    E78c *e = this;
+    e->hitBox.owner = e;
     e->contactFish = e->fishIndex;
     e->avoidedFish = e->fishIndex;
     e->tankArea = 1;
     AquariumFish_LoadParams(e);
-    ((Model *)(&e->model))->setInitCallback(AquariumFish_InstallJointCallbacks, e);
+    (&e->model)->setInitCallback(AquariumFish_InstallJointCallbacks, e);
 }
 
-extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
+void AquariumPufferFish::update() {
+    E78c *e = this;
     u32 v;
     s32 t;
     AquariumFish_SteerFromWall(e);
     (e->*sAquariumSwimStates[e->state])();
-    v = (u16)(e->animNumFrames.mid - 1);
-    if (e->animFrameStep > 0x1000) {
-        v = (u16)(e->animNumFrames.mid - 2);
+    v = (u16)(FrameInt(e->model.numFrames) - 1);
+    if (e->model.frameStep > 0x1000) {
+        v = (u16)(FrameInt(e->model.numFrames) - 2);
     }
     switch (e->unk_256) {
     case 0:
-        if (e->isHit != 0) {
+        if (e->hitBox.isHit != 0) {
             e->subState = 1;
         }
         if (e->subState != 0) {
-            if (((AnimFrameCtrl *)(&e->animFrameCtrl))->hasPassedFrame(v)) {
+            if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(v)) {
                 e->unk_256 = 1;
                 t = e->maxSpeed;
                 e->maxSpeed = t << 1;
@@ -2147,7 +1989,7 @@ extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
         }
         break;
     case 1:
-        if (((AnimFrameCtrl *)(&e->animFrameCtrl))->hasPassedFrame(v)) {
+        if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(v)) {
             e->auxState = Aquarium_RandRange(0x3c, 0x50);
             e->puffTimer = 0;
             e->unk_256 = 2;
@@ -2157,7 +1999,7 @@ extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
     case 2: {
         u32 b = e->puffTimer;
         if (b > e->auxState) {
-            if (((AnimFrameCtrl *)(&e->animFrameCtrl))->hasPassedFrame(v)) {
+            if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(v)) {
                 e->unk_256 = 3;
                 e->maxSpeed = e->maxSpeed >> 1;
                 AquariumFish_PlayAnim(e, 3);
@@ -2168,7 +2010,7 @@ extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
         break;
     }
     case 3:
-        if (((AnimFrameCtrl *)(&e->animFrameCtrl))->hasPassedFrame(v)) {
+        if (static_cast<AnimFrameCtrl *>(&e->model)->hasPassedFrame(v)) {
             e->unk_256 = 0;
             AquariumFish_PlayAnim(e, 0);
         }
@@ -2193,19 +2035,21 @@ extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
     }
 }
 
-extern "C" void _ZN15AquariumPiranha5setupEv(E75c *e) {
+void AquariumPiranha::setup() {
+    E75c *e = this;
     e->contactFish = e->fishIndex;
     e->hasCollision = 0;
     AquariumFish_LoadParams(e);
 }
 
-extern "C" void _ZN15AquariumPiranha6updateEv(E75c *o) {
+void AquariumPiranha::update() {
+    E75c *o = this;
     (o->*sAquariumPiranhaStates[o->subState])();
     s32 t = (sAquariumFishParams[30].hitRadius << 12) >> 7;
     o->unk_256 = Collision_ClampToRect(&o->pos, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
     s32 g = func_02133150(o->rank << 12, 10);
-    ((StaticCollider *)(o->hitBox))->setupAtPos((VecFx32 *)(&o->pos), t, (sAquariumFishParams[30].hitHeight << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
-    ((ActorCollider *)(o->hitBox))->submit();
+    ((StaticCollider *)(&o->hitBox))->setupAtPos((VecFx32 *)(&o->pos), t, (sAquariumFishParams[30].hitHeight << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
+    ((ActorCollider *)(&o->hitBox))->submit();
     o->prevPos.x = o->pos.x;
     o->prevPos.y = o->pos.y;
     o->prevPos.z = o->pos.z;
@@ -2221,10 +2065,10 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
         AquariumFish_TurnToTarget(o);
     }
     AquariumFish_UpdateAnimSpeed(o, 0x666);
-    P *p = PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p != 0) {
         V3 v;
-        V3 *pv = &p->position;
+        VecFx32 *pv = &p->position;
         v.x = p->position.x;
         v.y = pv->y;
         v.z = pv->z;
@@ -2245,12 +2089,12 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
 
 extern "C" void AquariumPiranha_StateApproach(E75c *o) {
     V3 v;
-    P *p = PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p == 0) {
         o->subState = 0;
         return;
     }
-    V3 *pv = &p->position;
+    VecFx32 *pv = &p->position;
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -2281,11 +2125,11 @@ extern "C" void AquariumPiranha_StateApproach(E75c *o) {
         o->subState = 0;
         o->stateTimer = 0;
     }
-    o->animFrameStep = 0x1000;
+    o->model.frameStep = 0x1000;
 }
 
 extern "C" void AquariumPiranha_StateBite(E75c *o) {
-    P *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (p == 0) {
         o->subState = 0;
         return;
@@ -2312,7 +2156,7 @@ extern "C" void AquariumPiranha_StateBite(E75c *o) {
         o->subState = 1;
         o->stateTimer = 0;
     }
-    o->animFrameStep = 0x1000;
+    o->model.frameStep = 0x1000;
 }
 
 extern "C" void AquariumPiranha_BobDepth(E75c *o) {
@@ -2348,13 +2192,15 @@ extern "C" void AquariumPiranha_BiteRecoil(E75c *o) {
     if (o->stateTimer >= o->biteTime) o->auxState = 0;
 }
 
-extern "C" void _ZN21AquariumSurfacingFish5setupEv(E714 *o) {
+void AquariumSurfacingFish::setup() {
+    E714 *o = this;
     o->contactFish = o->fishIndex;
-    ((Model *)(&o->model))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
+    (&o->model)->setInitCallback(AquariumFish_InstallJointCallbacks, o);
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN21AquariumSurfacingFish6updateEv(E714 *o) {
+void AquariumSurfacingFish::update() {
+    E714 *o = this;
     switch (o->subState) {
     case 0:
         AquariumSurfacingFish_StateSwim(o);
@@ -2476,8 +2322,9 @@ extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o) {
     }
 }
 
-extern "C" void _ZN18AquariumHidingFish5setupEv(E6fc *o) {
-    o->hitBoxOwner = o;
+void AquariumHidingFish::setup() {
+    E6fc *o = this;
+    o->hitBox.owner = o;
     s32 *p = &o->fishIndex;
     o->contactFish = *p;
     o->avoidedFish = *p;
@@ -2496,7 +2343,8 @@ extern "C" void _ZN18AquariumHidingFish5setupEv(E6fc *o) {
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN18AquariumHidingFish6updateEv(E6fc *o) {
+void AquariumHidingFish::update() {
+    E6fc *o = this;
     if (o->fishIndex == 0x26) {
         AquariumHidingFish_UpdateClownfish(o);
     } else if (o->fishIndex == 0xc) {
@@ -2659,13 +2507,15 @@ extern "C" void AquariumHidingFish_StayHidden(E6fc *o) {
     }
 }
 
-extern "C" void _ZN16AquariumCrawfish5setupEv(E84c *o) {
+void AquariumCrawfish::setup() {
+    E84c *o = this;
     o->homeX = 0xc800;
     o->homeY = 0;
     o->homeZ = 0x14a00;
 }
 
-extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o) {
+void AquariumCrawfish::update() {
+    E84c *o = this;
     switch (o->walkState) {
     case 2:
         AquariumCrawfish_StartWalk(o);
@@ -2677,7 +2527,7 @@ extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o) {
         AquariumCrawfish_SlowDown(o);
         break;
     case 6:
-        if (o->stateTimer >= *(u16 *)(HOST_AT(o, 0x212, unk_210, 2))) {
+        if (o->stateTimer >= o->restTime) {
             o->stateTimer = 0;
             o->walkState = 2;
         }
@@ -2688,12 +2538,12 @@ extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o) {
 
 extern "C" void AquariumCrawfish_StartWalk(E84c *o) {
     o->unk_1c0 += Aquarium_RandAngle(0x5a, 0);
-    *(u8 *)&o->unk_210 = Aquarium_RandRange(0x14, 0x78);
-    *(u16 *)(HOST_AT(o, 0x212, unk_210, 2)) = Aquarium_RandRange(0x3c, 0xf0);
+    o->walkTime = Aquarium_RandRange(0x14, 0x78);
+    o->restTime = Aquarium_RandRange(0x3c, 0xf0);
     o->walkSpeed = Aquarium_RandFx(2, 4) / 100;
     o->stateTimer = 0;
     o->pos.y = 0x700;
-    o->animFrameStep = o->walkAnimSpeed = 0x1000;
+    o->model.frameStep = o->walkAnimSpeed = 0x1000;
     o->walkState = 4;
 }
 
@@ -2707,11 +2557,11 @@ extern "C" void AquariumCrawfish_Walk(E84c *o) {
     r = r * 7 / 10;
     o->pos.x += func_01ffcb0c(r, data_02135f44[((u16)o->wobbleAngle >> 4) * 2]);
     o->pos.z += func_01ffcb0c(r, data_02135f44[((u16)o->wobbleAngle >> 4) * 2]);
-    if (o->stateTimer >= *(u8 *)&o->unk_210) {
+    if (o->stateTimer >= o->walkTime) {
         o->stateTimer = 0;
         o->walkState = 5;
         o->walkAnimSpeed >>= 1;
-        o->animFrameStep = o->walkAnimSpeed;
+        o->model.frameStep = o->walkAnimSpeed;
     }
 }
 
@@ -2721,7 +2571,7 @@ extern "C" void AquariumCrawfish_SlowDown(E84c *o) {
     if (r < 0) {
         r = 0;
         o->stateTimer = r;
-        o->animFrameStep = r;
+        o->model.frameStep = r;
         o->walkState = 6;
     }
     o->pos.x += func_01ffcb0c(r, data_02135f44[((u16)o->unk_1c0 >> 4) * 2]);
@@ -2732,25 +2582,27 @@ extern "C" void AquariumCrawfish_SlowDown(E84c *o) {
     o->pos.z += func_01ffcb0c(r, data_02135f44[((u16)o->wobbleAngle >> 4) * 2]);
 }
 
-extern "C" void _ZN13AquariumSquid5setupEv(E81c *o) {
-    o->hitBoxOwner = o;
+void AquariumSquid::setup() {
+    E81c *o = this;
+    o->hitBox.owner = o;
     o->contactFish = o->fishIndex;
     o->avoidedFish = o->fishIndex;
     o->tankArea = 1;
     AquariumFish_LoadParams(o);
-    ((Model *)(HOST_AT(o, 0x64, model[0], 0)))->setInitCallback(AquariumFish_InstallJointCallbacks, o);
+    (&o->model)->setInitCallback(AquariumFish_InstallJointCallbacks, o);
 }
 
-extern "C" void _ZN13AquariumSquid6updateEv(E81c *o) {
+void AquariumSquid::update() {
+    E81c *o = this;
     if (o->unk_256 == 0) {
-        if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame((u16)(o->animNumFrames.mid - 1))) {
+        if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame((u16)(FrameInt(o->model.numFrames) - 1))) {
             o->unk_256 = 1;
             AquariumFish_PlayAnim(o, 1);
         }
     }
     if (o->state == 2) {
         o->subState = 0;
-        if (((AnimFrameCtrl *)(&o->animFrameCtrl))->hasPassedFrame((u16)(o->animNumFrames.mid - 1))) {
+        if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame((u16)(FrameInt(o->model.numFrames) - 1))) {
             o->unk_256 = 0;
             AquariumFish_PlayAnim(o, 0);
             o->subState = 1;
@@ -2851,7 +2703,8 @@ fail2:
 end:;
 }
 
-extern "C" void _ZN15AquariumOctopus5setupEv(E7ec *e) {
+void AquariumOctopus::setup() {
+    E7ec *e = this;
     e->hasCollision = 0;
     e->pos.x = 0x16f00;
     e->pos.y = 0xfffff400;
@@ -2860,7 +2713,7 @@ extern "C" void _ZN15AquariumOctopus5setupEv(E7ec *e) {
 }
 
 extern "C" void AquariumSwimFish_SetupSea(E864 *e) {
-    e->hitBoxOwner = e;
+    e->hitBox.owner = e;
     s32 s = e->fishIndex;
     if ((u32)(s - 0x2d) <= 1) {
         e->tankArea = 0;
@@ -2874,7 +2727,7 @@ extern "C" void AquariumSwimFish_SetupSea(E864 *e) {
     e->avoidedFish = *p;
     AquariumFish_LoadParams(e);
     if (e->hasTurnAnims) {
-        ((Model *)(HOST_AT(e, 0x64, model[0], 0)))->setInitCallback(AquariumFish_InstallJointCallbacks, e);
+        (&e->model)->setInitCallback(AquariumFish_InstallJointCallbacks, e);
     }
 }
 
@@ -2913,12 +2766,12 @@ extern "C" void AquariumSwimFish_UpdateSea(E864 *e) {
 
 extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e) {
     if (sAquariumFishParams[e->fishIndex].rank == 0) {
-        e->hitBoxOwner = e;
+        e->hitBox.owner = e;
     }
     e->contactFish = e->fishIndex;
     AquariumFish_LoadParams(e);
     if (e->hasTurnAnims) {
-        ((Model *)(HOST_AT(e, 0x64, model[0], 0)))->setInitCallback(AquariumFish_InstallJointCallbacks, e);
+        (&e->model)->setInitCallback(AquariumFish_InstallJointCallbacks, e);
     }
 }
 
@@ -2930,7 +2783,7 @@ extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e) {
         if (e->lastContactFish != b && b != e->fishIndex) {
             e->lastContactFish = b;
             if (e->state != 1) {
-                AquariumFish_StartFlee(e, (V3 *)((u8 *)sAquariumFish[*p1] + 0x1a8));
+                AquariumFish_StartFlee(e, &sAquariumFish[*p1]->pos);
             }
         }
     }
@@ -2964,16 +2817,16 @@ skip:
 }
 
 extern "C" void AquariumFish_JointCalcPre(NNSG3dRS *c) {
-    void *m = (void *)c->pRenderObj->ptrUser;
+    AquariumFish *m = (AquariumFish *)c->pRenderObj->ptrUser;
     if (m) {
-        ((BlendAnimModel *)((u8 *)m + 0x64))->onJointCalcPre((BlendAnimModel *)(c));
+        m->model.onJointCalcPre((BlendAnimModel *)c);
     }
 }
 
 extern "C" void AquariumFish_JointCalcPost(NNSG3dRS *c) {
-    void *m = (void *)c->pRenderObj->ptrUser;
+    AquariumFish *m = (AquariumFish *)c->pRenderObj->ptrUser;
     if (m) {
-        ((BlendAnimModel *)((u8 *)m + 0x64))->onJointCalcPost((BlendAnimModel *)(c));
+        m->model.onJointCalcPost((BlendAnimModel *)c);
     }
 }
 
@@ -2988,8 +2841,8 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
     BOOL r = FALSE;
     u8 b;
     s32 t;
-    V3 v;
-    if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &v, &t, &b)) {
+    VecFx32 v;
+    if (TouchPickResult_GetTarget((u8 *)Scene_GetTouchPicker(), &v, &t, &b)) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {
@@ -3060,11 +2913,13 @@ extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p) {
     }
 }
 
-extern "C" void _ZN16AquariumSwimFish5setupEv(E864 *e) {
+void AquariumSwimFish::setup() {
+    E864 *e = this;
     (e->*sAquariumSwimFishRoomFns[sAquariumRoom].a)();
 }
 
-extern "C" void _ZN16AquariumSwimFish6updateEv(E864 *e) {
+void AquariumSwimFish::update() {
+    E864 *e = this;
     (e->*sAquariumSwimFishRoomFns[sAquariumRoom].b)();
 }
 
@@ -3228,7 +3083,7 @@ extern "C" void AquariumFish_TurnAtTankEnds(R *e) {
 
 extern "C" void AquariumFish_UpdateAvoid(E864 *e) {
     if (e->state != 1) {
-        if (e->isHit != 0) {
+        if (e->hitBox.isHit != 0) {
             if (e->contactCount == 0) {
                 AquariumFish_ClearContact(e);
                 e->verticalDir = 1;
@@ -3430,7 +3285,7 @@ extern "C" void AquariumFish_UpdateAnimSpeed(E864 *e, s32 lo) {
             v = 0x1800;
         }
     }
-    e->animFrameStep = v;
+    e->model.frameStep = v;
 }
 
 void AquariumFish::setup() {
@@ -3523,7 +3378,7 @@ extern "C" void AquariumFish_ResetContacts(R *self)
 
 extern "C" void AquariumFish_SteerFromWall(E864 *self)
 {
-    if (self->isHit == 0 && self->isTurningToTarget == 0 && self->hitTankWall != 0) {
+    if (self->hitBox.isHit == 0 && self->isTurningToTarget == 0 && self->hitTankWall != 0) {
         s32 v = self->unk_1c0;
         if (v >= 0) {
             s32 a = v;
@@ -3569,8 +3424,8 @@ extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i)
     if (*p == NULL) return FALSE;
     (*p)->fishIndex = i;
     (*p)->loadState = 1;
-    ((ModelSlotPool *)(HOST_AT(self, 0x7f8, modelPool[0], 0)))->acquire((u16 *)((u8 *)*p + 0x166));
-    ((PooledModel *)((u8 *)*p + 0x168))->reset();
+    self->modelPool.acquire(&(*p)->modelSlot);
+    (*p)->pooledModel.reset();
     return TRUE;
 }
 
@@ -3583,18 +3438,18 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
         for (j = z; j < 4; j++) {
             if ((*p)->animFiles[j]) {
                 Mem_Free((void *)(*p)->animFiles[j]);
-                (*p)->animFiles[j] = z;
+                (*p)->animFiles[j] = 0;
             }
         }
         (*p)->loadState = 0;
-        ((AnimModel *)((u8 *)*p + 0x64))->detachJointAnim();
-        ((CachedModel *)((u8 *)*p + 0x64))->release();
-        ((PooledModel *)((u8 *)*p + 0x168))->unload();
-        ((ModelSlotPool *)(HOST_AT(self, 0x7f8, modelPool[0], 0)))->release((u16 *)((u8 *)*p + 0x166));
+        (*p)->model.detachJointAnim();
+        (*p)->model.release();
+        (*p)->pooledModel.unload();
+        self->modelPool.release(&(*p)->modelSlot);
         switch ((*p)->fishIndex) {
         case 0xb:
             if (sAquariumFrog) {
-                ((SndEnvChannel *)((u8 *)sAquariumFrog + 0x1fc))->callRelease();
+                sAquariumFrog->croakSound.callRelease();
                 sAquariumFrog = 0;
             }
             break;
@@ -3609,9 +3464,9 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
     }
 }
 
-extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
-{
-    ((ModelSlotPool *)(HOST_AT(self, 0x7f8, modelPool[0], 0)))->init(0x38, (void *)(0x800), (void *)(0x80), 0xc00, (ModelSlotAllocFunc)((void *)MuseumAquariumHeap_Create), (ModelSlotFreeFunc)((void *)MuseumAquariumHeap_Destroy));
+BOOL MuseumAquarium::onCreate() {
+    Mgr *self = this;
+    self->modelPool.init(0x38, (void *)(0x800), (void *)(0x80), 0xc00, (ModelSlotAllocFunc)((void *)MuseumAquariumHeap_Create), (ModelSlotFreeFunc)((void *)MuseumAquariumHeap_Destroy));
     sAquariumRoom = (s32)self->param;
     if (sAquariumRoom == 0) {
         self->obstacles[0].box[0] = 0xc000;
@@ -3634,15 +3489,15 @@ extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
         self->obstacles[3].box[2] = 0x13900;
         self->obstacles[3].box[3] = 0x1000;
         self->obstacles[3].box[4] = 0x800;
-        *(u32 *)&self->obstacles[4].box[0] = 0x14c00;
+        self->obstacles[4].box[0] = 0x14c00;
         self->obstacles[4].box[1] = 0x700;
         self->obstacles[4].box[2] = 0x14a00;
         self->obstacles[4].box[3] = 0x700;
         self->obstacles[4].box[4] = 0x700;
         sAquariumObstacleCount = 5;
         MuseumAquarium_CreateFreshwaterFish(self);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox((TouchPickBox *)(HOST_AT(self, 0x2a8, touchBoxes[0], 0)), (VecFx32 *)(&sAquariumTankCenterA), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox((TouchPickBox *)(HOST_AT(self, 0x550, touchBoxes[170], 0)), (VecFx32 *)(&sAquariumTankCenterB), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox(&self->touchBoxes[0], (VecFx32 *)(&sAquariumTankCenterA), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox(&self->touchBoxes[1], (VecFx32 *)(&sAquariumTankCenterB), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
     } else {
         self->obstacles[0].box[0] = 0x8b00;
         self->obstacles[0].box[1] = 0xfffff300;
@@ -3671,7 +3526,7 @@ extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
         self->extraBox[3] = 0xc00;
         self->extraBox[4] = 0x2000;
         MuseumAquarium_CreateSeaFish(self);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox((TouchPickBox *)(HOST_AT(self, 0x2a8, touchBoxes[0], 0)), (VecFx32 *)(&sAquariumTankCenterA), 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox(&self->touchBoxes[0], (VecFx32 *)(&sAquariumTankCenterA), 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
     Snd_PlaySeOnHandle(0x4da);
     return TRUE;
@@ -3685,45 +3540,45 @@ extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self)
     sAquariumTankCenterA.x = 0x11000;
     sAquariumTankCenterA.y = 0;
     sAquariumTankCenterA.z = 0x15000;
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     R **tbl = sAquariumFish;
     for (; i < sAquariumEndFish; i++) {
         R **p;
         switch (i) {
         case 11:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x214);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumFrog));
             if (tbl[i]) new (tbl[i]) AquariumFrog();
             break;
         case 15:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x210);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumEel));
             if (tbl[i]) new (tbl[i]) AquariumEel();
             break;
         case 12:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x27c);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumHidingFish));
             if (tbl[i]) new (tbl[i]) AquariumHidingFish();
             break;
         case 10:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x220);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumCrawfish));
             if (tbl[i]) new (tbl[i]) AquariumCrawfish();
             break;
         case 0x1e:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x25c);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumPiranha));
             if (tbl[i]) new (tbl[i]) AquariumPiranha();
             break;
         case 5:
         case 6:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x25c);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumSurfacingFish));
             if (tbl[i]) new (tbl[i]) AquariumSurfacingFish();
             break;
         default:
             p = &tbl[i];
-            tbl[i] = (R *)Heap_Alloc(heap, 0x258);
+            tbl[i] = (R *)Heap_Alloc(heap, sizeof(AquariumSwimFish));
             if (tbl[i]) new (tbl[i]) AquariumSwimFish();
             break;
         }
@@ -3744,7 +3599,7 @@ extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self)
 extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o) {
     s32 i = 0x23;
     R **p;
-    void *heap;
+    Heap *heap;
     sAquariumFirstFish = 0x23;
     sAquariumEndFish = 0x38;
     sAquariumTankCenterA.x = 0x11000;
@@ -3754,77 +3609,67 @@ extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o) {
     for (; i < sAquariumEndFish; i++) {
         switch (i - 0x23) {
         case 1: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x28c);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumJellyfish();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumJellyfish));
+            if (*p) new (*p) AquariumJellyfish();
             break;
         }
         case 15:
         case 16: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumFastFish();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumFastFish));
+            if (*p) new (*p) AquariumFastFish();
             break;
         }
         case 17:
         case 18:
         case 19: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumBigFish();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumBigFish));
+            if (*p) new (*p) AquariumBigFish();
             break;
         }
         case 0: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x278);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumSeaButterfly();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumSeaButterfly));
+            if (*p) new (*p) AquariumSeaButterfly();
             break;
         }
         case 2: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x26c);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumSeahorse();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumSeahorse));
+            if (*p) new (*p) AquariumSeahorse();
             break;
         }
         case 5: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x25c);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumPufferFish();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumPufferFish));
+            if (*p) new (*p) AquariumPufferFish();
             break;
         }
         case 3: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x27c);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumHidingFish();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumHidingFish));
+            if (*p) new (*p) AquariumHidingFish();
             break;
         }
         case 12: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumSquid();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumSquid));
+            if (*p) new (*p) AquariumSquid();
             break;
         }
         case 13: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, HOST_SIZED(0x1fc, R));
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumOctopus();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumOctopus));
+            if (*p) new (*p) AquariumOctopus();
             break;
         }
         case 4: case 6: case 7: case 8: case 9: case 10: case 11: case 14:
         default: {
-            u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)sAquariumFish + off)) new (*(R **)((u8 *)sAquariumFish + off)) AquariumSwimFish();
+            *p = (R *)Heap_Alloc(heap, sizeof(AquariumSwimFish));
+            if (*p) new (*p) AquariumSwimFish();
             break;
         }
         }
@@ -3855,7 +3700,7 @@ extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n) {
         } else {
             Str_SPrintf(buf, "/fish/%d/m_fish%d%d.nsbca", k, idx, i);
         }
-        (*p)->animFiles[i] = File_LoadAlloc(buf, gCurrentHeap, 4, z);
+        (*p)->animFiles[i] = File_LoadAlloc(buf, gCurrentHeap, 4, 0);
         if ((*p)->animFiles[i] == 0) {
             return 0;
         }
@@ -3881,10 +3726,10 @@ extern "C" s32 MuseumAquarium_FishStateLoad(Mgr *o, R **p, s32 i) {
 extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x) {
     V3 *v = &(*p)->pos;
     if (sAquariumRoom == 0) {
-        s32 a = func_01ffcb0c((*p)->hitPushX, 0x99a);
-        s32 b = func_01ffcb0c((*p)->hitPushZ, 0x99a);
-        if ((*p)->isHit != 0) {
-            s32 lv = (*p)->hitOtherId;
+        s32 a = func_01ffcb0c((*p)->hitBox.pushX, 0x99a);
+        s32 b = func_01ffcb0c((*p)->hitBox.pushZ, 0x99a);
+        if ((*p)->hitBox.isHit != 0) {
+            s32 lv = (*p)->hitBox.hitTargetIndex;
             if (lv >= 0x38) {
                 a = Unk_ov004_0222d460_Clamp(a);
                 b = Unk_ov004_0222d460_Clamp(b);
@@ -3893,9 +3738,9 @@ extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x) {
             v->z = v->z + b;
         }
     } else if (sAquariumRoom == 1) {
-        s32 a = func_01ffcb0c((*p)->hitPushX, 0x866);
-        s32 b = func_01ffcb0c((*p)->hitPushZ, 0x866);
-        if ((*p)->isHit != 0) {
+        s32 a = func_01ffcb0c((*p)->hitBox.pushX, 0x866);
+        s32 b = func_01ffcb0c((*p)->hitBox.pushZ, 0x866);
+        if ((*p)->hitBox.isHit != 0) {
             v->x = v->x + a;
             v->z = v->z + b;
         }
@@ -3907,14 +3752,15 @@ extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x) {
     ((BlendAnimModel *)((u8 *)(*p) + 0x64))->stepBlend();
 }
 
-extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o) {
+s32 MuseumAquarium::onExecute() {
+    Mgr *o = this;
     s32 i;
     R **p;
     if (sAquariumRoom == 0) {
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox((TouchPickBox *)(HOST_AT(o, 0x2a8, touchBoxes[0], 0)));
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox((TouchPickBox *)(HOST_AT(o, 0x550, touchBoxes[170], 0)));
+        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox(&o->touchBoxes[0]);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox(&o->touchBoxes[1]);
     } else if (sAquariumRoom == 1) {
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox((TouchPickBox *)(HOST_AT(o, 0x2a8, touchBoxes[0], 0)));
+        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox(&o->touchBoxes[0]);
     }
     i = sAquariumEndFish - 1;
     p = &sAquariumFish[i];
@@ -3931,23 +3777,22 @@ extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n) {
     s32 i;
     u32 z = 0;
     for (i = 0; i < n; i++) {
-        s32 off = i * 0x64;
-        u8 *s = (u8 *)o + off;
-        void *obj = HOST_AT(o, 0x50, obstacles[0].hitBox, 0) + off;
-        ((StaticCollider *)(obj))->setupAtPos((VecFx32 *)(HOST_AT(o, 0xa0, obstacles[0].box[0], 0) + off), *(s32 *)(s + 0xac), *(s32 *)(s + 0xb0), 0x102, 0x140, z, 0xff, 0x1000);
-        ((ActorCollider *)(obj))->submit();
+        AquariumObstacle *ob = &o->obstacles[i];
+        // (box: the position, then the width and height)
+        ob->hitBox.setupAtPos((VecFx32 *)&ob->box[0], ob->box[3], ob->box[4], 0x102, 0x140, z, 0xff, 0x1000);
+        ob->hitBox.submit();
     }
     if (sAquariumRoom == 1) {
-        ((StaticCollider *)(HOST_AT(o, 0x244, extraHitBox, 0)))->setupAtPos((VecFx32 *)(HOST_AT(o, 0x294, extraBox[0], 0)), *(s32 *)(HOST_AT(o, 0x2a0, extraBox[3], 0)), *(s32 *)(HOST_AT(o, 0x2a4, extraBox[4], 0)), 0x202, 0x140, 0, 0xff, 0x1000);
-        ((ActorCollider *)(HOST_AT(o, 0x244, extraHitBox, 0)))->submit();
+        o->extraHitBox.setupAtPos((VecFx32 *)&o->extraBox[0], o->extraBox[3], o->extraBox[4], 0x202, 0x140, 0, 0xff, 0x1000);
+        o->extraHitBox.submit();
     }
 }
 
 extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     s32 res = 0;
     s32 n = (*p)->fishIndex;
-    s32 a = ModelSlotPool_acquire(HOST_AT(o, 0x7f8, modelPool[0], 0), (*p)->modelSlot);
-    void *b = (*p)->pooledModel;
+    ModelSlot *a = o->modelPool.acquire(&(*p)->modelSlot);
+    void *b = &(*p)->pooledModel;
     char buf[0x18];
     s32 k = n / 10 + 10;
     if (n < 10) {
@@ -3955,24 +3800,25 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     } else {
         Str_SPrintf(buf, "/fish/%d/m_fish%d.nsbmd", k, n);
     }
-    if (((PooledModel *)(b))->loadFromSlot((ModelSlot *)(a), (const char *)(buf))) {
-        void *q;
-        s32 c, d;
+    if (((PooledModel *)(b))->loadFromSlot(a, buf)) {
+        BlendAnimModel *q;
+        void *c;
+        u8 *d;
         (*p)->unk_1c0 = Aquarium_RandAngle(0x168, 0);
         (*p)->targetAngle = (*p)->unk_1c0;
         (*p)->setup();
-        q = (u8 *)(*p) + 0x64;
-        ((Model *)(q))->setResource((NNSG3dResMdl *)(((PooledModel *)(b))->getModel()), 0);
+        q = &(*p)->model;
+        q->setResource((NNSG3dResMdl *)(((PooledModel *)(b))->getModel()), 0);
         c = ModelSlot_getHeap(a);
         if ((*p)->animFiles[0] == 0) {
             MuseumAquarium_ReleaseFish(o, idx);
             return 0;
         }
-        d = func_021065f8(func_021065dc((*p)->animFiles[0]), 0);
-        if (((AnimModel *)(q))->allocAnmObj((void *)(c))) {
-            ((BlendAnimModel *)(q))->initAnim(d, 0, 0x1000, 1, 0);
-            ((AnimModel *)(q))->attachAnim();
-            ((CachedModel *)(q))->allocJointRecord((void *)(ModelSlot_getHeap(a)));
+        d = func_021065f8(func_021065dc((u8 *)(*p)->animFiles[0]), 0);
+        if (q->allocAnmObj(c)) {
+            q->initAnim(d, 0, 0x1000, 1, 0);
+            q->attachAnim();
+            q->allocJointRecord(ModelSlot_getHeap(a));
             (*p)->loadState = 2;
             (*p)->contactFish = (*p)->fishIndex;
             MuseumAquarium_CalcFishMtx(o, p);
@@ -3988,10 +3834,11 @@ extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p) {
     Mtx43_SetTranslate(&data_021f47e0, v->x, v->y, v->z);
     Mtx43_RotateY(&data_021f47e0, (*p)->unk_1c0);
     Mtx43_RotateX(&data_021f47e0, (*p)->pitch);
-    e->modelMtx = data_021f47e0;
+    e->model.mtx = data_021f47e0;
 }
 
-extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o) {
+s32 MuseumAquarium::onDraw() {
+    Mgr *o = this;
     s32 i = sAquariumFirstFish;
     R **p = &sAquariumFish[i];
     for (; i < sAquariumEndFish; p++, i++) {
@@ -4030,7 +3877,8 @@ extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o) {
     return TRUE;
 }
 
-extern "C" s32 _ZN14MuseumAquarium8onDeleteEv(Mgr *o) {
+s32 MuseumAquarium::onDelete() {
+    Mgr *o = this;
     s32 i = sAquariumFirstFish;
     R **p;
     for (; i < sAquariumEndFish; i++) {
@@ -4041,7 +3889,7 @@ extern "C" s32 _ZN14MuseumAquarium8onDeleteEv(Mgr *o) {
             *p = 0;
         }
     }
-    ((ModelSlotPool *)(HOST_AT(o, 0x7f8, modelPool[0], 0)))->destroy();
+    o->modelPool.destroy();
     Snd_StopSe(0x4da, 1);
     return TRUE;
 }

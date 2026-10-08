@@ -5,10 +5,13 @@
 #include "field/Snowball.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "actor/Actor.h"
-#define PROTO_LOCAL_LooseSnowballs_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SnowballSpawner_SpawnLooseBalls  // declared below: the shared prototype conflicts with the calls here
+#include "field/LooseSnowballs.h"
+#include "field/SnowmanRecords.h"
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020af3f4.h"
+#include "proto/ov003/unk_ov003_02212830.h"
 #include "proto/ov003/unk_ov003_0222e734.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
@@ -23,35 +26,15 @@ struct UnitMaskPool {
     UnitMaskChunk c[4][4];
 };
 
-struct LooseSnowballsView {
-    VecFx32 a;
-    u32 pad_0c;
-    VecFx32 b;
-};
-
-struct SnowballSpawnLocals {
-    u8 snowmanDate[3];
-    u8 pad;
-    u32 dateTime[2];
-};
-
 // ---- externs ----
-// other modules' methods are reached through their real mangled symbols (object first)
-#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define LooseSnowballs_reset _ZN14LooseSnowballs5resetEv
-#define SnowmanRecords_isFull _ZN14SnowmanRecords6isFullEv
-#define SnowmanRecords_getInfo _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_
-
 extern "C" {
 extern Unk_0204e858_Grid *gSceneBlockMap;
 extern CommManager *gCommManager;
-extern u8 data_021ed2e6[];
+extern SnowmanRecords data_021ed2e6;
 
-BOOL CommManager_isSlotActive(void *, u32);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
@@ -60,17 +43,10 @@ void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
 void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
-s32 SnowmanRecords_getInfo(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
-s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
-LooseSnowballsView *LooseSnowballs_Get();
-void LooseSnowballs_reset(LooseSnowballsView *self);
 s32 GroundSeason_IsSnow();
 s32 Scene_InTown();
-BOOL SnowmanRecords_isFull(void *o);
-void Clock_GetDateTime(void *);
-void DateTime_SubDays(void *, s32);
-BOOL Snowball_IsInBallState(void *p);
-BOOL Snowball_TryPush(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void Clock_GetDateTime(ClockDateTime *p);
+void DateTime_SubDays(ClockDateTime *p, s32 n);
 
 void UnitMaskPool_Clear(UnitMaskPool *pool);
 void UnitMaskChunk_Clear(UnitMaskChunk *c);
@@ -84,60 +60,58 @@ Snowball *sSnowballs[8];
 // ---- functions ----
 
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
-    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
-        LooseSnowballs_reset(LooseSnowballs_Get());
+    if (gCommManager->isSlotActive(gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
+        LooseSnowballs_Get()->reset();
         return;
     }
-    struct {
-        SnowballSpawnLocals l;
-        s32 p[3];
-        VecFx32 A, B;
-    } f;
+    u8 year, month, day;  // the day a snowman was built
+    u32 headSize, bodySize, rank;
+    VecFx32 A, B;
     u32 i;
     for (i = 0; i < 3; i++) {
-        f.l.dateTime[0] = 0;
-        f.l.dateTime[1] = 0;
-        Clock_GetDateTime(f.l.dateTime);
-        if (((u8 *)&f.l)[6] < 6) {
-            DateTime_SubDays(f.l.dateTime, 1);
+        ClockDateTimeWords now;
+        now.words[0] = 0;
+        now.words[1] = 0;
+        Clock_GetDateTime(&now.dt);
+        if (now.dt.hour < 6) {
+            DateTime_SubDays(&now.dt, 1);
         }
-        if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.snowmanDate[0], &f.l.snowmanDate[1], &f.l.snowmanDate[2]) != 0) {
-            if (f.l.snowmanDate[0] == ((u8 *)&f.l)[9] && f.l.snowmanDate[1] == ((u8 *)&f.l)[8] && f.l.snowmanDate[2] == ((u8 *)&f.l)[7]) {
-                LooseSnowballs_reset(LooseSnowballs_Get());
+        if (data_021ed2e6.getInfo(i, &headSize, &bodySize, &rank, &year, &month, &day) != 0) {
+            if (year == now.dt.year && month == now.dt.month && day == now.dt.day) {
+                LooseSnowballs_Get()->reset();
                 return;
             }
         }
     }
     if (Scene_InTown() != 0) {
-        if (SnowmanRecords_isFull(data_021ed2e6) == 0) {
-            if (LooseSnowballs_Get()->a.x != 0) {
-                LooseSnowballsView *s = LooseSnowballs_Get();
-                f.A.x = s->a.x;
-                f.A.y = s->a.y;
-                f.A.z = s->a.z;
+        if (data_021ed2e6.isFull() == 0) {
+            if (LooseSnowballs_Get()->items[0].posX != 0) {
+                LooseSnowball *s = &LooseSnowballs_Get()->items[0];
+                A.x = s->posX;
+                A.y = s->posY;
+                A.z = s->posZ;
             } else {
-                Snowball_FindSpawnPos(self, &f.A, 0, 1);
+                Snowball_FindSpawnPos(self, &A, 0, 1);
             }
-            if (LooseSnowballs_Get()->b.x != 0) {
-                LooseSnowballsView *s = LooseSnowballs_Get();
-                VecFx32 *pv = &s->b;
-                f.B.x = pv->x;
-                f.B.y = pv->y;
-                f.B.z = pv->z;
+            if (LooseSnowballs_Get()->items[1].posX != 0) {
+                LooseSnowball *s = &LooseSnowballs_Get()->items[1];
+                B.x = s->posX;
+                B.y = s->posY;
+                B.z = s->posZ;
             } else {
-                Snowball_FindSpawnPos(self, &f.B, (s32)&f.A, 1);
+                Snowball_FindSpawnPos(self, &B, &A, 1);
             }
-            if (Actor::spawn((void *)(0xbd), (void *)(0), &f.A, (void *)(0), self)) {
-                LooseSnowballsView *s = LooseSnowballs_Get();
-                s->a.x = f.A.x;
-                s->a.y = f.A.y;
-                s->a.z = f.A.z;
+            if (Actor::spawn((void *)0xbd, (void *)0, &A, (void *)0, self)) {
+                LooseSnowball *s = &LooseSnowballs_Get()->items[0];
+                s->posX = A.x;
+                s->posY = A.y;
+                s->posZ = A.z;
             }
-            if (Actor::spawn((void *)(0xbd), (void *)(1), &f.B, (void *)(0), self)) {
-                LooseSnowballsView *s = LooseSnowballs_Get();
-                s->b.x = f.B.x;
-                s->b.y = f.B.y;
-                s->b.z = f.B.z;
+            if (Actor::spawn((void *)0xbd, (void *)1, &B, (void *)0, self)) {
+                LooseSnowball *s = &LooseSnowballs_Get()->items[1];
+                s->posX = B.x;
+                s->posY = B.y;
+                s->posZ = B.z;
             }
         }
     }
@@ -163,7 +137,7 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
                         if (t != 0) {
                             if (Item_IsSnowman(t)) {
                                 s32 v = Item_GetSnowmanIndex(t);
-                                if (SnowmanRecords_getInfo(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
+                                if (data_021ed2e6.getInfo(v, 0, 0, 0, 0, 0, 0) == 0) {
                                     u16 tmp[1];
                                     tmp[0] = 0xfff1;
                                     MapBlock_SetItem(cell, tmp, lx, ly, 0);
@@ -171,8 +145,8 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
                                     n = v * 2 + 2;
                                     VecFx32 loc;
                                     FieldPos_FromBlockUnitCenter(&loc, bx, by, lx, ly);
-                                    Actor::spawn((void *)(0xbd), (void *)(n), &loc, (void *)(0), self);
-                                    Actor::spawn((void *)(0xbd), (void *)(n + 1), &loc, (void *)(0), self);
+                                    Actor::spawn((void *)0xbd, (void *)(uptr)n, &loc, (void *)0, self);
+                                    Actor::spawn((void *)0xbd, (void *)(uptr)(n + 1), &loc, (void *)0, self);
                                 }
                             }
                         }
@@ -212,11 +186,11 @@ extern "C" Snowball *Snowball_FindByParam(u32 id) {
     return 0;
 }
 
-extern "C" BOOL Snowball_TryPushAny(void *self, s32 a, s32 b, s32 c, s32 d) {
+extern "C" BOOL Snowball_TryPushAny(VecFx32 *outPos, s16 *outAng, s32 *outVal, s32 speed, s32 ang) {
     u32 i;
     for (i = 0; i < 8; i++) {
         if (sSnowballs[i] != 0) {
-            if (Snowball_TryPush(sSnowballs[i], (s32)self, a, b, c, d)) {
+            if (Snowball_TryPush(sSnowballs[i], outPos, outAng, outVal, speed, ang)) {
                 return TRUE;
             }
         }
@@ -224,7 +198,7 @@ extern "C" BOOL Snowball_TryPushAny(void *self, s32 a, s32 b, s32 c, s32 d) {
     return FALSE;
 }
 
-extern "C" void *Snowball_GetLooseBall(u32 id) {
+extern "C" Snowball *Snowball_GetLooseBall(u32 id) {
     Snowball *o = Snowball_FindByParam(id & 1);
     if (o != 0) {
         if (o->talkAct == 0) {
@@ -246,7 +220,7 @@ extern "C" void *Snowball_GetLooseBall(u32 id) {
     return 0;
 }
 
-extern "C" void *Snowball_FindOtherInBallState(void *self) {
+extern "C" Snowball *Snowball_FindOtherInBallState(Snowball *self) {
     u32 i;
     for (i = 0; i < 8; i++) {
         Snowball *p = sSnowballs[i];
@@ -356,7 +330,8 @@ extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
     return FALSE;
 }
 
-extern "C" BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d) {
+// a position for a loose snowball in b, away from c (when not NULL); d: also away from the items on the ground
+extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     static UnitMaskPool pool;
     UnitMaskPool_Clear(&pool);
@@ -385,7 +360,7 @@ extern "C" BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d) {
     }
     if (c != 0) {
         s32 px, py;
-        FieldPos_ToUnit(&px, &py, (void *)c);
+        FieldPos_ToUnit(&px, &py, c);
         s32 yy, xx;
         for (yy = py - 7; yy <= py + 7; yy++) {
             for (xx = px - 7; xx <= px + 7; xx++) {

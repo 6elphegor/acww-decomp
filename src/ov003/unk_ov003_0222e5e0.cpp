@@ -1,15 +1,17 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "net/CommManager.h"
+#include "field/InsectNetSync.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov003/unk_ov003_0222e5e0.h"
 
-// TU26 of ov003: the 0x80-byte table of eight 0x10-byte records (bss 0x0225b468)
+// TU26 of ov003: the 0x80-byte table of eight 0x10-byte records (bss 0x0225b468): per insect slot, the kind,
+// position and alarm last sent by the area's owner
 struct InsectNetSyncRec {
-    u32 a, b, c;
-    s8 d;
-    u8 e;
+    s32 x, y, z;
+    s8 kind;
+    u8 alarm;
     u8 pad[2];
     InsectNetSyncRec() {}
     ~InsectNetSyncRec() {}
@@ -24,25 +26,20 @@ void MI_CpuCopy8(void *, void *, s32);
 
 InsectNetSyncRec sInsectNetSync[8];
 
-extern "C" void _ZN13InsectNetSyncC2Ev() {}
+InsectNetSync::InsectNetSync() {}
 
-extern "C" void _ZN13InsectNetSyncD2Ev() {}
+InsectNetSync::~InsectNetSync() {}
 
-extern "C" BOOL InsectNetSync_Set(s32 unused, s32 idx, s32 v, s32 *p, u8 e, s32 f) {
+extern "C" BOOL InsectNetSync_Set(void *unused, s32 idx, s32 v, s32 *p, u8 e, s32 f) {
     if (NetArea_IsLocalOwner()) {
-        if (((CommManager *)(gCommManager))->isOnline()) {
-            CommSyncVar_SetVar(idx + 0x18, (s32)&f, 0, 0);
-            s32 off = idx << 4;
-            s8 *pd = &sInsectNetSync[0].d;
-            u32 *pa = &sInsectNetSync[0].a;
-            u32 *pb = &sInsectNetSync[0].b;
-            u32 *pc = &sInsectNetSync[0].c;
-            u8 *pe = &sInsectNetSync[0].e;
-            pd[off] = v;
-            *(u32 *)((u8 *)pa + off) = p[0];
-            *(u32 *)((u8 *)pb + off) = p[1];
-            *(u32 *)((u8 *)pc + off) = p[2];
-            pe[off] = e;
+        if (gCommManager->isOnline()) {
+            CommSyncVar_SetVar(idx + 0x18, &f, 0, 0);
+            InsectNetSyncRec *r = &sInsectNetSync[idx];
+            r->kind = v;
+            r->x = p[0];
+            r->y = p[1];
+            r->z = p[2];
+            r->alarm = e;
             return TRUE;
         }
     }
@@ -50,28 +47,24 @@ extern "C" BOOL InsectNetSync_Set(s32 unused, s32 idx, s32 v, s32 *p, u8 e, s32 
 }
 
 extern "C" void InsectNetSync_PackVar(void *dst, s32 idx) {
-    u32 off = (idx - 0x18) << 4;
+    InsectNetSyncRec *r = &sInsectNetSync[idx - 0x18];
     u8 rec[8];
-    u32 *pa = &sInsectNetSync[0].a;
-    u32 *pc = &sInsectNetSync[0].c;
-    s8 *pd = &sInsectNetSync[0].d;
-    u8 *pe = &sInsectNetSync[0].e;
-    NetBuf_PackPair20(rec, *(s32 *)((u8 *)pa + off), *(s32 *)((u8 *)pc + off));
-    rec[5] = pd[off];
-    rec[6] = pe[off];
+    NetBuf_PackPair20(rec, r->x, r->z);
+    rec[5] = r->kind;
+    rec[6] = r->alarm;
     MI_CpuCopy8(rec, dst, CommSyncVar_GetVarSize(idx));
 }
 
-extern "C" BOOL InsectNetSync_Get(s32 a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f) {
+extern "C" BOOL InsectNetSync_Get(void *a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f) {
     if (!NetArea_IsLocalOwner()) {
         CommManager *g = gCommManager;
-        if (((CommManager *)(g))->isOnline()) {
-            s8 *r = (s8 *)((CommManager *)(g))->getSyncVar(b + 0x18);
+        if (g->isOnline()) {
+            u8 *r = g->getSyncVar(b + 0x18);
             if (r != 0) {
-                NetBuf_UnpackPair20(r, d, e);
+                NetBuf_UnpackPair20(r, (u32 *)d, (u32 *)e);
                 if (*e > 0) {
-                    *c = r[5];
-                    *f = ((u8 *)r)[6];
+                    *c = (s8)r[5];
+                    *f = r[6];
                     return TRUE;
                 }
             }
