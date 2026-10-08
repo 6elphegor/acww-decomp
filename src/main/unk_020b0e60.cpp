@@ -15,7 +15,10 @@
 #include "net/CommManager.h"
 #include "save/Pattern.h"
 #include "town/BuildingActor.h"
-#define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
+#include "save/TownStyleRecordView.h"
+#include "town/TownStyleRecord.h"
+#include "field/SnowmanRecords.h"
+#include "proto/main/unk_02070560.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_02063904.h"
@@ -222,31 +225,8 @@ public:
 static_assert(sizeof(BuildingLights) <= 0x40, "BuildingActor::lights (include/town/BuildingActor.h)");
 #endif
 
-class TownStyleRecordView {
-public:
-    u8 *getTownFlag();
-    void *getHouseStyles();
-};
 
-class TownFlag {
-public:
-    TownFlag();
-    ~TownFlag();
-    s32 getGateDesign();
-    TownFlag *initDefault();
 
-    /* 0x000 */ u8 pattern[0x228];
-    /* 0x228 */ u8 gateDesign;
-};
-
-class TownStyleRecord {
-public:
-    TownStyleRecord();
-    ~TownStyleRecord();
-
-    /* 0x00 */ u32 houseStyles;
-    /* 0x04 */ TownFlag townFlag;
-};
 
 
 
@@ -286,11 +266,9 @@ u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 void Pattern_CopyFields(void *dst, void *src);
-void *TownFlagPattern_InitDefault(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
 u32 Villager_GetWhereabouts(void *a);
 void Clock_GetMinuteHour(u8 *out);
-void _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
 void Scene_GetWarpRequest(void);
 s32 ScenePos_GetUnitZ(void *a);
 s32 ScenePos_GetUnitX(void *a);
@@ -305,7 +283,6 @@ void NNS_G3dMdlSetMdlAlpha(Ctx *c, s32 i, u8 v);
 void NNS_G3dMdlSetMdlEmi(Pal *p, s32 i, u16 c);
 void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
 void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
-BOOL _ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
 }
 
 
@@ -523,29 +500,29 @@ void StrBSizeData::getSolidBounds(s32 *outX, s32 *outY, s32 *outW, s32 *outH) {
 
 extern "C" void StrBSize_Load(void) {
     char name[0x20];
-    u8 file[HOST_SIZED(0x6c, NNSFndArchive)] HOST_ALIGN8;
+    NNSFndArchive file;
     u32 i;
     void *p;
     p = File_LoadAlloc("/str/bsize.arc", gCurrentHeap, 4, 0);
     sStrBSizeArchive = p;
     if (p != NULL) {
-        if (NNS_FndMountArchive(file, "STR", p)) {
+        if (NNS_FndMountArchive(&file, "STR", p)) {
             for (i = 0; i < 0x22; i++) {
                 Str_SPrintf(name, "STR:a/%d.bsize", i);
-                sStrBSizeTable[i] = (u32)NNS_FndGetArchiveFileByName(name);
+                sStrBSizeTable[i] = NNS_FndGetArchiveFileByName(name);
             }
-            NNS_FndUnmountArchive(file);
+            NNS_FndUnmountArchive(&file);
         }
     } else {
         for (i = 0; i < 0x22; i++) {
-            sStrBSizeTable[i] = 0;
+            sStrBSizeTable[i] = NULL;
         }
     }
 }
 
 extern "C" void StrBSize_Unload(void) {
     for (u32 i = 0; i < 0x22; i++) {
-        sStrBSizeTable[i] = 0;
+        sStrBSizeTable[i] = NULL;
     }
     if (sStrBSizeArchive != NULL) {
         Mem_Free(sStrBSizeArchive);
@@ -553,7 +530,7 @@ extern "C" void StrBSize_Unload(void) {
     }
 }
 
-extern "C" u32 StrBSize_Get(u16 *p) {
+extern "C" void *StrBSize_Get(u16 *p) {
     if (sStrBSizeArchive != NULL) {
         s32 idx;
         BOOL in = FALSE;
@@ -599,7 +576,7 @@ TownUnitShapeQuery::~TownUnitShapeQuery() {}
 
 BOOL TownUnitShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
     if (func_020b2768_is_flag()) {
-        if (!_ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(&sFieldObjectShapeQuery, a, b, c, x, y)) {
+        if (!sFieldObjectShapeQuery.FieldObjectShapeQuery::getUnitShape(a, b, c, x, y)) {
             void *m = gSceneBlockMap;
             if (m != NULL) {
                 s32 lx = x;
@@ -616,7 +593,7 @@ BOOL TownUnitShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, vo
                     } else if (Item_IsSnowman(p)) {
                         s32 t = Item_GetSnowmanIndex(p);
                         s32 u, w;
-                        _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(data_021ed2e6, t, &u, &w, 0, 0, 0, 0);
+                        ((SnowmanRecords *)data_021ed2e6)->getInfo(t, (u32 *)&u, (u32 *)&w, NULL, NULL, NULL, NULL);
                         *a = 0x1000;
                         *b = 0x2000;
                         *c = 0;
@@ -710,7 +687,8 @@ TownFlag::TownFlag() {
 
 TownFlag *TownFlag::initDefault() {
     gateDesign = Random_GlobalBelow(3);
-    return (TownFlag *)TownFlagPattern_InitDefault(this);
+    TownFlagPattern_InitDefault(this);
+    return this;  // (the DS returned what the call left in r0: no caller uses it)
 }
 
 s32 TownFlag::getGateDesign() {
@@ -736,7 +714,7 @@ TownStyleRecord::TownStyleRecord() {
 extern "C" void TownStyleRecord_InitNew(u8 *self)
 {
     TownStyle_RollVillagerHouseStyles(self);
-    ((TownFlag *)(self + 4))->initDefault();
+    ((TownStyleRecord *)self)->townFlag.initDefault();
     s32 j;
     s32 i;
     u8 *cell;
@@ -768,7 +746,7 @@ extern "C" void TownStyleRecord_InitNew(u8 *self)
 
 void *TownStyleRecordView::getHouseStyles() { return this; }
 
-u8 *TownStyleRecordView::getTownFlag() { return (u8 *)this + 4; }
+u8 *TownStyleRecordView::getTownFlag() { return (u8 *)&((TownStyleRecord *)this)->townFlag; }
 
 LightLevel::LightLevel()
 {
@@ -1693,6 +1671,6 @@ u8 sBuildingStates[0x22];
 u32 sFieldStructureMgr;
 u8 sHouseVisitorPresent;
 s32 sHourHandCos = 0x1000;
-u32 sStrBSizeTable[0x22];
+void *sStrBSizeTable[0x22];  // the size tables of the .bsize files (in sStrBSizeArchive)
 u8 sTaxiArriving;
 s32 sHourHandSin;

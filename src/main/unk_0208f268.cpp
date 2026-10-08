@@ -22,8 +22,6 @@
 #include "sys/Heap.h"
 #define PROTO_LOCAL_EffectSpl_ToCurvedPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SPL_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SPL_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020f8b44.h"
@@ -56,7 +54,6 @@ void func_020f8b44(void *, void *, VecFx32 *);
 void SPL_Draw(void *, void *, void *);
 void SPL_Calc(void *);
 void func_020f92d4(void *, void *);
-void SPL_Load(void *, s32);
 void NNS_FndDestroyFrmHeap(void *);
 void *NNS_FndCreateFrmHeapEx(void *, void *, void *);
 void MIi_CpuClear32(s32, void *, s32);
@@ -65,7 +62,7 @@ void MI_CpuCopy8(void *dst, void *src, u32 size);
 u16 SceneLights_GetBaseColor();
 u16 GroundSeason_GetColor();
 s32 TownState_GetSeasonPeriod();
-void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
+void *NNS_FndAllocFromFrmHeapEx(void *heap, u32 size, s32 align);
 }
 
 
@@ -158,6 +155,24 @@ struct EffectSplArchive {
 };
 
 
+// Ten key/value pairs: the emitters of the reused effects by resource id
+struct EffectSplEmitterMapPair {
+    void release();
+    void clear();
+
+    /* 0x00 */ s32 resId;
+    /* 0x04 */ EffectSplEmitter *emitter;
+};
+
+struct EffectSplEmitterMap {
+    BOOL add(s32 key, EffectSplEmitter *val);
+    EffectSplEmitter *find(s32 key);
+    void releaseAll();
+    void clearAll();
+
+    /* 0x00 */ EffectSplEmitterMapPair pairs[10];
+};
+
 class EffectSplProc : public GameProc {
 public:
     virtual BOOL onCreate();
@@ -170,25 +185,7 @@ public:
     /* 0x54 */ s32 groupCounter;
     /* 0x58 */ EffectSplPool pool;
     /* 0x35c */ EffectModelGroup modelGroups[4];
-    /* 0x181c */ u32 emitterMap[20];
-};
-
-// Ten key/value pairs
-struct EffectSplEmitterMapPair {
-    void release();
-    void clear();
-
-    /* 0x00 */ s32 resId;
-    /* 0x04 */ s32 emitter;
-};
-
-struct EffectSplEmitterMap {
-    BOOL add(s32 key, s32 val);
-    s32 find(s32 key);
-    void releaseAll();
-    void clearAll();
-
-    /* 0x00 */ EffectSplEmitterMapPair pairs[10];
+    /* 0x181c */ EffectSplEmitterMap emitterMap;
 };
 
 // Three-slot resource pointer set (EffectModelGroup::unk_524)
@@ -200,7 +197,6 @@ struct EffectModelAnimFiles {
 };
 
 extern "C" {
-extern s32 gCurrentHeap;
 extern u32 gViewMtx[];
 extern u8 data_021f47e0[];
 
@@ -587,7 +583,7 @@ const u32 sEffectRes22EmitterIds[2] = {0x4f, 0x50};
 s32 *sEffectSplEmitPos;
 void *sEffectSplHeapMem;
 void *sEffectSplFrmHeap;
-void *sEffectModelHeap;
+Heap *sEffectModelHeap;  // (an ExpHeap)
 EffectSplProc *sEffectSplProc;
 const u32 sEffectRes39EmitterIds[1] = {0x7e};
 const u32 sEffectRes3AEmitterIds[1] = {0x7d};
@@ -732,7 +728,7 @@ extern "C" EffectSplProc *EffectSplProc_Create() {
 
 
 extern "C" void *EffectSpl_Alloc(u32 size) {
-    return NNS_FndAllocFromFrmHeapEx((u32)sEffectSplFrmHeap, size, 4);
+    return NNS_FndAllocFromFrmHeapEx(sEffectSplFrmHeap, size, 4);
 }
 
 extern "C" void *EffectSpl_LoadArchive(void *unused) {
@@ -740,8 +736,8 @@ extern "C" void *EffectSpl_LoadArchive(void *unused) {
 }
 
 extern "C" BOOL EffectSpl_LoadTextures(EffectSplProc *p) {
-    if (SPL_LoadTexByVRAMManager((u32)p->splManager)) {
-        if (SPL_LoadTexPlttByVRAMManager((u32)p->splManager)) {
+    if (SPL_LoadTexByVRAMManager((Fp *)p->splManager)) {  // (Unk_0209002c_Handle: a view of the SPL manager)
+        if (SPL_LoadTexPlttByVRAMManager((Fp *)p->splManager)) {
             return TRUE;
         }
     }
@@ -761,7 +757,6 @@ BOOL EffectSplProc::onCreate()
 {
     BOOL result = FALSE;
     void *h;
-    s32 r;
 
     sEffectSplProc = this;
     splManager = NULL;
@@ -778,9 +773,9 @@ BOOL EffectSplProc::onCreate()
             if (h != NULL) {
                 func_020f92d4(splManager, h);
                 if (EffectSpl_LoadTextures(this) != 0) {
-                    r = (s32)EffectSpl_CopyResourceData(this, (EffectSplArchive *)h);
-                    if (r != 0) {
-                        SPL_Load(splManager, r);
+                    u8 *r = (u8 *)EffectSpl_CopyResourceData(this, (EffectSplArchive *)h);
+                    if (r != NULL) {
+                        SPL_Load((Fp *)splManager, r);
                         result = TRUE;
                     }
                 }
@@ -801,7 +796,7 @@ BOOL EffectSplProc::onCreate()
     } else {
         MI_CpuFill8(modelGroups, 0, 0x14c0);
         EffectModels_LoadAll(modelGroups);
-        ((EffectSplEmitterMap *)(emitterMap))->clearAll();
+        emitterMap.clearAll();
     }
     return result;
 }
@@ -839,7 +834,7 @@ BOOL EffectSplProc::onDelete()
         sEffectSplHeapMem = NULL;
     }
     EffectModels_UnloadAll(modelGroups);
-    ((EffectSplEmitterMap *)(emitterMap))->releaseAll();
+    emitterMap.releaseAll();
     sEffectSplProc = NULL;
     return TRUE;
 }
@@ -915,7 +910,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, VecFx32 *p1, s16 *p2, void (*con
     s32 count;
     u32 *ids;
     s32 i;
-    void *ctx;
+    EffectSplEmitterMap *ctx;
     P *sub;
     s32 zero14;
     s32 zero18;
@@ -944,11 +939,11 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, VecFx32 *p1, s16 *p2, void (*con
         zero18 = 0;
         zero14 = 0;
         for (; i < count; i++) {
-            o = (EffectSplEmitter *)((EffectSplEmitterMap *)(ctx))->find(*ids);
+            o = ctx->find(*ids);
             if (o == NULL) {
                 h = (EffectSplEmitter *)SPL_CreateWithInitialize(sEffectSplProc->splManager, *ids, *p3);
                 if (h != NULL) {
-                    if (((EffectSplEmitterMap *)(ctx))->add(*ids, (s32)(h)) != 0) {
+                    if (ctx->add(*ids, h) != 0) {
                         h->stateFlags |= 2;
                         func_020f8b44(sEffectSplProc->splManager, h, p1);
                         sub = (P *)h->particles;
@@ -996,8 +991,7 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, VecFx32 *p1, s16 *p2, EffectEmit
     if (p1 == 0) {
         return 0;
     }
-    pool = (EffectSplPool *)sEffectSplProc;
-    pool = (EffectSplPool *)(HOST_AT(pool, 0x58, entries[3].emitter, 0));
+    pool = &sEffectSplProc->pool;
     row = &sEffectResTable[idx];
     count = row->emitterCount;
     ids = row->emitterIds;
@@ -1197,7 +1191,7 @@ extern "C" void EffectModels_LoadAll(EffectModelGroup *b)
 {
     s32 i;
     if (sEffectModelHeap == NULL) {
-        sEffectModelHeap = ExpHeap_Create(0x2800, gCurrentHeap);
+        sEffectModelHeap = (Heap *)ExpHeap_Create(0x2800, gCurrentHeap);
     }
     for (i = 0; i < 4; i++) {
         EffectModelGroup_Load(&b[i], i);
@@ -1411,7 +1405,7 @@ void EffectModel::start(EffectModelGroup *src, void (*cb)(EffectModel *)) {
 
 void EffectSplEmitterMapPair::clear() {
     resId = -1;
-    emitter = 0;
+    emitter = NULL;
 }
 
 void EffectSplEmitterMapPair::release() {}
@@ -1432,11 +1426,11 @@ void EffectSplEmitterMap::releaseAll() {
     }
 }
 
-s32 EffectSplEmitterMap::find(s32 key) {
+EffectSplEmitter *EffectSplEmitterMap::find(s32 key) {
     EffectSplEmitterMapPair *p = pairs;
     s32 i;
-    s32 r = 0;
-    for (i = r; i < 10; p++, i++) {
+    EffectSplEmitter *r = NULL;
+    for (i = 0; i < 10; p++, i++) {
         if (key == p->resId) {
             r = p->emitter;
             break;
@@ -1445,7 +1439,7 @@ s32 EffectSplEmitterMap::find(s32 key) {
     return r;
 }
 
-BOOL EffectSplEmitterMap::add(s32 key, s32 val) {
+BOOL EffectSplEmitterMap::add(s32 key, EffectSplEmitter *val) {
     EffectSplEmitterMapPair *p = pairs;
     s32 i;
     BOOL r = FALSE;

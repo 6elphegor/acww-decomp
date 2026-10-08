@@ -16,10 +16,9 @@
 #include "talk/ChoiceList.h"
 #include "talk/ChoiceMenu.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_DebugVar_GetStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/main/unk_0209c37c.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063904.h"
@@ -113,7 +112,6 @@ extern "C" {
 }
 
 extern "C" {
-s32 DebugVar_GetStub(s32 a, s32 b);
 }
 
 extern "C" {
@@ -255,7 +253,6 @@ s32 FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {
-void FS_InitFile(void *file);
 }
 
 extern "C" {
@@ -297,7 +294,10 @@ extern const u16 kChoiceBlinkColors[6];
 }
 
 extern "C" {
-extern u32 *data_020d467c;
+
+// A debug variable (id, index) tunes the window's motion: the release game's stub (DebugVar_GetStub) gives 0
+static inline s32 DebugVar(s32 id, s32 idx) { return (s32)DebugVar_GetStub(); }
+extern SpriteAnimSeq data_020d467c[];  // (sprite sequence records)
 }
 
 extern "C" {
@@ -312,7 +312,6 @@ extern u16 gPad[2];
 }
 
 extern "C" {
-extern void *gCurrentHeap;
 }
 
 // ---- data ----
@@ -336,7 +335,7 @@ ChoiceSlider::~ChoiceSlider() {}
 void ChoiceSlider::draw() {
     if (knob.getState()) {
         knob.draw();
-        u32 r = *data_020d467c;
+        GXOamAttr *r = (GXOamAttr *)data_020d467c[0].frames[0].cell;  // (the DS read the first record's first word)
         s32 a = getOriginY();
         s32 b = getOriginX();
         Oam_DrawCell(0, r, b, a, -1, 0, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -414,9 +413,9 @@ BOOL ChoiceWindow::loadBgFile(void *file) {
 
 BOOL ChoiceWindow::loadBg() {
     BOOL r = FALSE;
-    u8 file[HOST_SIZED(0x4c, FSFile)];
-    FS_InitFile(file);
-    if (loadBgFile(file)) {
+    FSFile file;
+    FS_InitFile(&file);
+    if (loadBgFile(&file)) {
         r = TRUE;
     }
     return r;
@@ -515,8 +514,8 @@ void ChoiceWindow::fitWidth(u32 start, u32 end) {
         u32 row;
         for (row = start; row <= end; row++) {
             s32 i;
-            *(u16 *)(row * 0x40 + (off1 + (u32)bgScreen)) = *(u16 *)((bgScreen ? bgScreen : bgScreen) + row * 0x40 + 0x3c);
-            *(u16 *)(row * 0x40 + (off2 + (u32)bgScreen)) = *(u16 *)(bgScreen + row * 0x40 + 0x3e);
+            *(u16 *)(bgScreen + row * 0x40 + off1) = *(u16 *)(bgScreen + row * 0x40 + 0x3c);
+            *(u16 *)(bgScreen + row * 0x40 + off2) = *(u16 *)(bgScreen + row * 0x40 + 0x3e);
             for (i = n - 1; i >= 0; i--) {
                 ChoiceWindow_BlankTiles(bgScreen + row * 0x40 + (31 - i) * 2, 2);
             }
@@ -561,8 +560,8 @@ void ChoiceWindow::hideLayer() {
 }
 
 void ChoiceWindow::setScroll(s32 a, s32 b) {
-    s32 x = DebugVar_GetStub(0x66, 2);
-    s32 y = DebugVar_GetStub(0x66, 3) - 8;
+    s32 x = DebugVar(0x66, 2);
+    s32 y = DebugVar(0x66, 3) - 8;
     s32 n = 13 - width;
     if (n < 0) {
         n = 0;
@@ -934,7 +933,7 @@ ChoiceString::~ChoiceString() {}
 
 u32 ChoiceString::capacity() { return 0x21; }
 
-u8 *ChoiceString::data() { return HOST_AT(this, 0x12, unk_14[0], 0); }
+u8 *ChoiceString::data() { return unk_14; }
 
 BOOL ChoiceString::loadFromBmg(const char *path, void *entry, BmgMsgAttr *out) {
     u8 *d = data();
@@ -1862,21 +1861,21 @@ void ChoiceListDialog::enterOpening() {
     window.uploadBg();
     window.showLayer();
     window.freeBg();
-    slideTimer = DebugVar_GetStub(100, 2) + 3;
-    scrollX = DebugVar_GetStub(100, 4) + 5;
-    scrollY = DebugVar_GetStub(100, 5) - 5;
+    slideTimer = DebugVar(100, 2) + 3;
+    scrollX = DebugVar(100, 4) + 5;
+    scrollY = DebugVar(100, 5) - 5;
     window.setScroll(scrollX, scrollY);
     window.setAllRowColors();
 }
 
 void ChoiceListDialog::updateOpening() {
     BOOL done;
-    if (slideTimer > DebugVar_GetStub(0x64, 3) + 2) {
-        scrollX += DebugVar_GetStub(0x64, 6) - 6;
-        scrollY += DebugVar_GetStub(0x64, 7) + 6;
+    if (slideTimer > DebugVar(0x64, 3) + 2) {
+        scrollX += DebugVar(0x64, 6) - 6;
+        scrollY += DebugVar(0x64, 7) + 6;
     } else {
-        scrollX += DebugVar_GetStub(0x64, 8) + 1;
-        scrollY += DebugVar_GetStub(0x64, 9) - 1;
+        scrollX += DebugVar(0x64, 8) + 1;
+        scrollY += DebugVar(0x64, 9) - 1;
     }
     done = --slideTimer <= 0;
     if (done) {
@@ -1919,14 +1918,14 @@ void ChoiceListDialog::updateSelecting() {
 void ChoiceListDialog::enterClosing() {
     state = 3;
     decided = 1;
-    slideTimer = DebugVar_GetStub(0x65, 2) + 2;
+    slideTimer = DebugVar(0x65, 2) + 2;
     Snd_PlaySe(0x14);
 }
 
 void ChoiceListDialog::updateClosing() {
     BOOL done;
-    scrollX += DebugVar_GetStub(0x65, 3) + 0x11;
-    scrollY += DebugVar_GetStub(0x65, 4) - 0x11;
+    scrollX += DebugVar(0x65, 3) + 0x11;
+    scrollY += DebugVar(0x65, 4) - 0x11;
     done = --slideTimer <= 0;
     window.setScroll(scrollX, scrollY);
     decided = 0;
@@ -2011,9 +2010,9 @@ void ChoiceSliderDialog::enterOpening() {
     window.uploadBg();
     window.showLayer();
     window.freeBg();
-    slideTimer = DebugVar_GetStub(0x64, 2) + 3;
-    scrollX = DebugVar_GetStub(0x64, 4) + 5;
-    scrollY = DebugVar_GetStub(0x64, 5) - 5;
+    slideTimer = DebugVar(0x64, 2) + 3;
+    scrollX = DebugVar(0x64, 4) + 5;
+    scrollY = DebugVar(0x64, 5) - 5;
     window.setScroll(scrollX, scrollY + 4);
     window.setAllRowColors();
     Snd_PlaySe(0x13);
@@ -2021,12 +2020,12 @@ void ChoiceSliderDialog::enterOpening() {
 
 void ChoiceSliderDialog::updateOpening() {
     BOOL done;
-    if (slideTimer > DebugVar_GetStub(0x64, 3) + 2) {
-        scrollX += DebugVar_GetStub(0x64, 6) - 6;
-        scrollY += DebugVar_GetStub(0x64, 7) + 6;
+    if (slideTimer > DebugVar(0x64, 3) + 2) {
+        scrollX += DebugVar(0x64, 6) - 6;
+        scrollY += DebugVar(0x64, 7) + 6;
     } else {
-        scrollX += DebugVar_GetStub(0x64, 8) + 2;
-        scrollY += DebugVar_GetStub(0x64, 9) - 2;
+        scrollX += DebugVar(0x64, 8) + 2;
+        scrollY += DebugVar(0x64, 9) - 2;
     }
     done = --slideTimer <= 0;
     if (done) {
@@ -2080,15 +2079,15 @@ void ChoiceSliderDialog::updateSelecting() {
 void ChoiceSliderDialog::enterClosing() {
     state = 3;
     decided = 1;
-    slideTimer = DebugVar_GetStub(0x65, 2) + 2;
+    slideTimer = DebugVar(0x65, 2) + 2;
     Snd_PlaySe(0x14);
 }
 
 void ChoiceSliderDialog::updateClosing() {
     BOOL done;
     decided = 0;
-    scrollX += DebugVar_GetStub(0x65, 3) + 0xb;
-    scrollY += DebugVar_GetStub(0x65, 4) - 0xb;
+    scrollX += DebugVar(0x65, 3) + 0xb;
+    scrollY += DebugVar(0x65, 4) - 0xb;
     done = --slideTimer <= 0;
     window.setScroll(scrollX, scrollY);
     if (done) {
