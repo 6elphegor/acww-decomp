@@ -54,7 +54,7 @@ void Net_OnLocalPeerEvent(void *ev);
 void Net_OnLocalRecv(u32 aid, u8 *data, u32 size);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiClientMatched
-void Net_OnWifiClientMatched(s32 result, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Net_OnWifiClientMatched(s32 result, s32 b, s32 c, s32 d, s32 e, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiClosedNop
 void Net_OnWifiClosedNop(void);
@@ -66,7 +66,7 @@ void Net_OnWifiSendDone(u32 size, u32 aid);
 void Net_OnWifiRecv(u32 aid, u8 *data, u32 size);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiHostMatched
-void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_WifiCallbackNop
 void Net_WifiCallbackNop(void);

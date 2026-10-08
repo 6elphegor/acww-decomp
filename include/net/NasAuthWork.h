@@ -4,17 +4,20 @@
 #include "types.h"
 #include "net/DwcHttp.h"
 #include "net/NasAuthParams.h"
+#include "sys/OSThread.h"
 
 // NAS (nas.nintendowifi.net/ac) login work sNasAuth ("DWCAuth", 0x13e0 bytes incl. the 0x1000 thread stack) and the
 // user-id record sNasUserId, both defined in src/ov065/unk_ov065_0226d128.cpp; also declared by
 // src/ov065/unk_ov065_0226cb18.cpp (namespace N_d080).
 
+typedef struct NasUserIdInfo NasUserIdInfo;
 struct NasUserIdInfo {
     /* 0x00 */ u64 userId;
     /* 0x08 */ u64 tempUserId;
     /* 0x10 */ u16 password;
 };
 
+typedef struct NasAuthWork NasAuthWork;
 struct NasAuthWork {
     /* 0x000 */ u32 unk_00;
     /* 0x004 */ s32 state;
@@ -29,12 +32,11 @@ struct NasAuthWork {
     /* 0x1cc */ NasAuthParams config;
     /* 0x1f8 */ DwcHttpField httpFields[0x20];
     /* 0x2f8 */ DwcHttp *http;
-    /* 0x2fc */ u8 thread[0x368 - 0x2fc];
-    /* 0x368 */ s32 threadId;
-    /* 0x36c */ u8 pad_36c[0x3bc - 0x36c];
-    /* 0x3bc */ u8 mutex[0x18];
+    /* 0x2fc */ OSThread thread;
+    /* 0x3bc */ OSMutex mutex;
     /* 0x3d4 */ s32 isAborting;
-    /* 0x3d8 */ u8 unk_3d8[0x13e0 - 0x3d8];
+    /* 0x3d8 */ u8 unk_3d8[8];
+    /* 0x3e0 */ u8 stack[0x1000]; // the thread's
 };
 
 #endif

@@ -5,6 +5,7 @@
 #include "net/SslConnection.h"
 #include "net/SslSession.h"
 #include "net/SslSha1Context.h"
+#include "net/SslMd5Context.h"
 #include "nitro/os_rtc.h"
 #include "proto/autoload_2/unk_0211d20c.h"
 #include "proto/autoload_2/unk_02128030.h"
@@ -13,12 +14,6 @@
 #include "proto/ov065/unk_ov065_022671a0.h"
 #include "proto/ov065/unk_ov065_0226795c.h"
 
-struct SslMd5Context {
-    u32 st[4];
-    u32 lo;
-    u32 hi;
-    u8 buf[64];
-};
 
 
 extern OSThreadInfo data_021fcc2c;
@@ -206,28 +201,28 @@ u32 Ssl_GetUnixTime(void)
     return RTC_ConvertDateTimeToSecond(&a, &b) + 0x386d4380;
 }
 
-void Ssl_SetRootCaList(void *a, s32 b)
+void Ssl_SetRootCaList(SslRootCa **a, s32 b)
 {
     IpSocket *q = (IpSocket *)data_021fcc2c.current->specific[0];
     if (q != 0) {
         SslConnection *t = q->sslCtx;
         if (t != 0) {
-            t->rootCaList = (void **)a;
+            t->rootCaList = a;
             t->numRootCas = b;
         }
     }
 }
 
-void *SslCert_FindRootCa(SslConnection *o, const void *name)
+SslRootCa *SslCert_FindRootCa(SslConnection *o, const char *name)
 {
     s32 i = 0;
     s32 n = o->numRootCas;
-    void **p;
-    void **arr;
+    SslRootCa **p;
+    SslRootCa **arr;
     if (n > 0) {
         p = arr = o->rootCaList;
         do {
-            if (strcmp(**(void ***)p, name) == 0) {
+            if (strcmp((*p)->name, name) == 0) {
                 return arr[i];
             }
             p++;

@@ -91,4 +91,8 @@ struct SockCoreSocket : IpSocket {
     // 0x80: the pipes and buffers SockCore_InitLayout carves
 };
 
+// The send-only socket whose send pipe the sockets without one share (src/ov065/unk_ov065_0225f1a0.cpp; its generated
+// header leaves it out: the type does not compile in C).
+extern "C" SockCoreSocket *sSockDefaultSocket;
+
 #endif

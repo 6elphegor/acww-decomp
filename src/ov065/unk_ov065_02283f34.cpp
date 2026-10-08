@@ -7,9 +7,6 @@
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockAddrIn.h"
-#define PROTO_LOCAL_gti2GetResponse  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gti2MessageCheck  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_serverreqs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
@@ -97,41 +94,39 @@ extern s32 ArrayLength(void *);
 extern void ArrayFree(void *);
 extern s32 TableRemove(void *, void *);
 extern s32 ArrayAppend(void *, void *);
-extern s32 TableMapSafe(s32, void *, s32);
+extern void TableMapSafe(void *, void *, void *);
 extern void msleep(s32);
 
 extern s32 gti2CloseSocket(void *);
-extern s32 gti2SocketSend(void *, s32, u32, u32, u32);
+extern s32 gti2SocketSend(void *, u32, u16, u8 *, s32);
 extern s32 gti2FreeSocketConnection(void *);
 extern s32 gti2NewSocketConnection(void *, void *, u32, u32);
-extern void gti2MessageCheck(void *, void *);
 
 extern void gti2GetChallenge(void *);
-extern void gti2GetResponse(void *, void *);
 extern void gti2SendClientChallenge(void *, void *);
 extern s32 gt2Think(void *);
-extern s32 gti2Send(void *, s32, s32, s32);
+extern void gti2Send(void *, u8 *, s32, s32);
 extern s32 gti2ResendMessage(void *, void *);
 extern void gti2SendClosed(void *);
 extern s32 gti2SendPing(GTI2Connection *);
 extern s32 gti2SendAck(void *);
 extern s32 gti2SendKeepAlive(void *);
 extern void gti2SendClose(void *);
-extern void gti2SendReject(void *, s32, s32);
+extern void gti2SendReject(void *, u8 *, s32);
 extern void gti2SendAccept(void *);
 
-s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 rel);
-s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 rel);
+s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u8 *msg, u32 len, u32 rel);
+s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u8 *msg, u32 len, u32 rel);
 s32 gti2ClosedCallback(GTI2Connection *c, s32 a);
-s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, s32 b, s32 d);
+s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, u8 *b, s32 d);
 void gti2ConnectionClosed(GTI2Connection *c, ...);
 void gti2CloseConnection(GTI2Connection *c, s32 x);
 s32 gti2CheckKeepAlive(GTI2Connection *c, u32 t);
 s32 gti2CheckPendingAck(GTI2Connection *c, u32 t);
 s32 gti2SendRetries(GTI2Connection *c, u32 t);
 s32 gti2CheckTimeout(GTI2Connection *c, u32 t);
-s32 gti2ConnectionSendData(GTI2Connection *c, u32 a, u32 b);
-s32 gti2StartConnectionAttempt(GTI2Connection *c, s32 msg, s32 len, GsTransportConnCallbacks *x);
+s32 gti2ConnectionSendData(GTI2Connection *c, u8 *a, s32 b);
+s32 gti2StartConnectionAttempt(GTI2Connection *c, u8 *msg, s32 len, GsTransportConnCallbacks *x);
 s32 gti2NewOutgoingConnection(GTI2Socket *s, GTI2Connection **pc, u32 ip, u32 port);
 void gti2CloseAllConnectionsHardMap(GTI2Connection **p);
 void gt2CloseConnectionHard(GTI2Connection *c);
@@ -191,17 +186,17 @@ extern u8 data_ov065_0228e14c[];
 
 
 
-s32 gti2RejectConnection(Conn *, s32, s32);
+void gti2RejectConnection(Conn *, u8 *, s32);
 s32 gti2AcceptConnection(Conn *, void *);
-s32 gti2Listen(void *, s32 callback);
+void gti2Listen(Sock *, gt2ConnectAttemptCallback callback);
 s32 gti2SocketConnectionsThink(Sock *);
 s32 gti2FreeClosedConnections(Sock *);
 s32 gti2SocketError(Sock *);
-s32 gt2CloseAllConnectionsHard(Conn *);
-s32 gti2CloseSocket(Conn *);
-s32 gti2CreateSocket(s32, s32, s32, s32, s32);
+void gt2CloseAllConnectionsHard(Sock *);
+void gti2CloseSocket(Sock *);
+s32 gti2CreateSocket(Sock **, char *, u32, u32, gt2SocketErrorCallback);
 s32 gti2ConnectionSendData(Conn *, u8 *, s32);
-s32 gti2SocketSend(Sock *, s32, s32, u8 *, s32);
+s32 gti2SocketSend(Sock *, u32, u16, u8 *, s32);
 s32 gti2BufferWriteData(Buf *, const u8 *, s32);
 s32 gti2BufferWriteUShort(Buf *, s32);
 s32 gti2BufferWriteByte(Buf *, s32);
@@ -215,7 +210,7 @@ s32 CanReceiveOnSocket(s32);
 s32 recvfrom(s32, u8 *, s32, s32, void *, s32 *);
 s32 GOAGetLastError(s32);
 Conn *gti2SocketFindConnection(Sock *, s32, s32);
-s32 gti2DumpCallback(Sock *, Conn *, s32, s32, s32, s32, s32, s32);
+s32 gti2DumpCallback(Sock *, Conn *, s32, s32, s32, u8 *, s32, s32);
 s32 gti2UnrecognizedMessageCallback(Sock *, s32, s32, u8 *, s32, s32 *);
 s32 gti2NewIncomingConnection(Sock *, Conn **, s32, s32);
 s32 gti2ConnectionError(Conn *, s32, s32);
@@ -294,7 +289,6 @@ s32 ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 gti2GetResponse(void *, void *);
 s32 gti2GetChallenge(void *);
 s32 gti2BufferShorten(void *, s32, s32);
 s32 gti2BufferWriteData(void *, void *, s32);
@@ -314,24 +308,24 @@ s32 gti2ConnectionCommunicationError(Cn *);
 s32 gti2ConnectionError(Cn *, s32, s32);
 s32 gti2HandleESN(Cn *, s32);
 
-s32 gti2HandleAck(Cn *c, void *p, s32 n);
-s32 gti2HandleNack(Cn *c, void *p, s32 n);
-s32 gti2HandlePing(Cn *c, void *p, s32 n);
-s32 gti2HandlePong(Cn *c, void *p, s32 n);
+s32 gti2HandleAck(Cn *c, u8 *p, s32 n);
+s32 gti2HandleNack(Cn *c, u8 *p, s32 n);
+s32 gti2HandlePing(Cn *c, u8 *p, s32 n);
+s32 gti2HandlePong(Cn *c, u8 *p, s32 n);
 s32 gti2HandleClosed(Cn *c);
 void gti2SetPendingAck(Cn *c);
 s32 gti2DeliverHoldMessages(Cn *c);
 void gti2RemoveHoldMessage(Cn *c, It *e, s32 i);
-s32 gti2BufferIncomingMessage(Cn *c, s32 a, u32 seq, void *p, s32 n, s32 *out);
+s32 gti2BufferIncomingMessage(Cn *c, s32 a, u32 seq, u8 *p, s32 n, s32 *out);
 s32 gti2IncomingBufferMessageCompare(It *a, It *b);
-s32 gti2DeliverReliableMessage(Cn *c, s32 mode, void *p, s32 n);
+s32 gti2DeliverReliableMessage(Cn *c, s32 mode, u8 *p, s32 n);
 s32 gti2HandleClose(Cn *c);
-s32 gti2HandleReject(Cn *c, void *p, s32 n);
+s32 gti2HandleReject(Cn *c, u8 *p, s32 n);
 s32 gti2HandleAccept(Cn *c);
-s32 gti2HandleClientResponse(Cn *c, void *p, s32 n);
-s32 gti2HandleServerChallenge(Cn *c, void *p, s32 n);
-s32 gti2HandleClientChallenge(Cn *c, void *p, s32 n);
-s32 gti2HandleAppReliable(Cn *c, void *p, s32 n);
+s32 gti2HandleClientResponse(Cn *c, u8 *p, s32 n);
+s32 gti2HandleServerChallenge(Cn *c, u8 *p, s32 n);
+s32 gti2HandleClientChallenge(Cn *c, u8 *p, s32 n);
+s32 gti2HandleAppReliable(Cn *c, u8 *p, s32 n);
 
 
 
@@ -357,20 +351,20 @@ s32 gti2HandleAppReliable(Cn *c, void *p, s32 n);
 }
 
 namespace N02285630 { extern "C" {
-BOOL gti2HandlePong(Cn *c, void *p, s32 n)
+BOOL gti2HandlePong(Cn *c, u8 *p, s32 n)
 {
     GsBytes4 t;
     s32 now;
     if (c->pingCallback == 0) return TRUE;
     if (n != 8) return TRUE;
     if (memcmp(p, (u8 *)"time", 4) != 0) return TRUE;
-    u32 a = (u32)&t;
-    GsBytes4 *q = (GsBytes4 *)((u8 *)p + 4);
-    ((GsBytes4 *)a)->b[0] = q->b[0];
-    ((GsBytes4 *)a)->b[1] = q->b[1];
-    ((GsBytes4 *)a)->b[2] = q->b[2];
-    ((GsBytes4 *)a)->b[3] = q->b[3];
-    now = ((s32 (*)(void *))current_time)((void *)a);
+    GsBytes4 *a = &t;
+    GsBytes4 *q = (GsBytes4 *)(p + 4);
+    a->b[0] = q->b[0];
+    a->b[1] = q->b[1];
+    a->b[2] = q->b[2];
+    a->b[3] = q->b[3];
+    now = ((s32 (*)(void *))current_time)(a);
     if (gti2PingCallback(c, now - *(s32 *)&t) != 0) return TRUE;
     return FALSE;
 }
@@ -388,18 +382,18 @@ BOOL gti2HandleClosed(Cn *c)
 } }
 
 namespace N02285630 { extern "C" {
-BOOL gti2HandleUnreliableMessage(Cn *c, s32 t, s32 a, s32 b)
+BOOL gti2HandleUnreliableMessage(Cn *c, s32 t, u8 *a, s32 b)
 {
-    s32 x = a + 3;
+    u8 *x = a + 3;
     s32 y = b - 3;
     if (t == 100) {
-        if (gti2HandleAck(c, (void *)x, y) == 0) return FALSE;
+        if (gti2HandleAck(c, x, y) == 0) return FALSE;
     } else if (t == 101) {
-        if (gti2HandleNack(c, (void *)x, y) == 0) return FALSE;
+        if (gti2HandleNack(c, x, y) == 0) return FALSE;
     } else if (t == 102) {
-        if (gti2HandlePing(c, (void *)a, b) == 0) return FALSE;
+        if (gti2HandlePing(c, a, b) == 0) return FALSE;
     } else if (t == 103) {
-        if (gti2HandlePong(c, (void *)x, y) == 0) return FALSE;
+        if (gti2HandlePong(c, x, y) == 0) return FALSE;
     } else if (t == 104) {
         if (gti2HandleClosed(c) == 0) return FALSE;
     }
@@ -413,7 +407,7 @@ s32 gti2HandleMessage(Sock *s, u8 *data, s32 n, s32 addr, s32 port) {
     s32 flag;
     s32 out;
     if (s->receiveDumpCallback != 0) {
-        if (gti2DumpCallback(s, c, addr, port, 0, (s32)data, n, 0) == 0) {
+        if (gti2DumpCallback(s, c, addr, port, 0, data, n, 0) == 0) {
             return 0;
         }
     }
@@ -742,7 +736,7 @@ s32 gti2SendKeepAlive(Conn *o) {
 
 namespace N02284b8c { extern "C" {
 s32 gti2SendAppUnreliable(Conn *o, u8 *data, s32 n) {
-    s32 t;
+    u8 *t;
     s32 total;
     if (n < 2 || memcmp(data, data_ov065_0228e14c, 2) != 0) {
         if (gti2ConnectionSendData(o, data, n) == 0) {
@@ -754,10 +748,10 @@ s32 gti2SendAppUnreliable(Conn *o, u8 *data, s32 n) {
     if (gti2GetBufferFreeSpace(&o->outgoingBuffer) < total) {
         return 1;
     }
-    t = (s32)o->outgoingBuffer.buffer + o->outgoingBuffer.len;
+    t = o->outgoingBuffer.buffer + o->outgoingBuffer.len;
     gti2BufferWriteData(&o->outgoingBuffer, data_ov065_0228e14c, 2);
     gti2BufferWriteData(&o->outgoingBuffer, data, n);
-    if (gti2ConnectionSendData(o, (u8 *)t, total) == 0) {
+    if (gti2ConnectionSendData(o, t, total) == 0) {
         return 0;
     }
     gti2BufferShorten(&o->outgoingBuffer, -1, total);
@@ -886,13 +880,13 @@ void gti2Send(Conn *o, u8 *a, s32 b, s32 mode) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gt2CreateSocket(s32 a, s32 b, s32 c, s32 d, s32 e) {
+s32 gt2CreateSocket(Sock **a, char *b, s32 c, s32 d, gt2SocketErrorCallback e) {
     return gti2CreateSocket(a, b, c, d, e);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-void gt2CloseSocket(Conn *o) {
+void gt2CloseSocket(Sock *o) {
     gt2CloseAllConnectionsHard(o);
     gti2CloseSocket(o);
 }
@@ -909,8 +903,8 @@ void gt2Think(Sock *s) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gt2Listen(void *p, s32 callback) {
-    return gti2Listen(p, callback);
+void gt2Listen(Sock *p, gt2ConnectAttemptCallback callback) {
+    gti2Listen(p, callback);
 }
 } }
 
@@ -921,13 +915,13 @@ s32 gt2Accept(Conn *o, void *x) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gt2Reject(Conn *o, s32 a, s32 b) {
+void gt2Reject(Conn *o, u8 *a, s32 b) {
     return gti2RejectConnection(o, a, b);
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 gt2Connect(GTI2Socket *s, GTI2Connection **out, u32 host, s32 p3, s32 p4, s32 p5, s32 p6, s32 p7)
+s32 gt2Connect(GTI2Socket *s, GTI2Connection **out, char *host, u8 *p3, s32 p4, s32 p5, GsTransportConnCallbacks *p6, s32 p7)
 {
     u32 port;
     u16 port16;
@@ -947,7 +941,7 @@ s32 gt2Connect(GTI2Socket *s, GTI2Connection **out, u32 host, s32 p3, s32 p4, s3
         return r;
     }
     conn->timeout = p5;
-    r = gti2StartConnectionAttempt(conn, p3, p4, (GsTransportConnCallbacks *)p6);
+    r = gti2StartConnectionAttempt(conn, p3, p4, p6);
     if (r != 0) {
         gti2FreeSocketConnection(conn);
         return r;
@@ -981,7 +975,7 @@ s32 gt2Connect(GTI2Socket *s, GTI2Connection **out, u32 host, s32 p3, s32 p4, s3
 } }
 
 namespace N02284240 { extern "C" {
-void gt2Send(GTI2Connection *c, s32 msg, s32 len, s32 p3)
+void gt2Send(GTI2Connection *c, u8 *msg, s32 len, s32 p3)
 {
     if (c->state == 5) {
         gti2MessageCheck(&msg, &len);
@@ -1016,9 +1010,9 @@ void gti2CloseAllConnectionsHardMap(GTI2Connection **p)
 } }
 
 namespace N02284240 { extern "C" {
-s32 gt2CloseAllConnectionsHard(GTI2Socket *s)
+void gt2CloseAllConnectionsHard(GTI2Socket *s)
 {
-    return TableMapSafe((s32)s->connections, (void *)gti2CloseAllConnectionsHardMap, 0);
+    TableMapSafe(s->connections, (void *)gti2CloseAllConnectionsHardMap, NULL);
 }
 } }
 
@@ -1061,21 +1055,21 @@ s32 gt2GetRemoteIP(GTI2Connection *c)
 } }
 
 namespace N02284240 { extern "C" {
-void gt2SetUnrecognizedMessageCallback(GTI2Socket *c, s32 v)
+void gt2SetUnrecognizedMessageCallback(GTI2Socket *c, gt2UnrecognizedMessageCallback v)
 {
-    *(s32 *)&c->unrecognizedMessageCallback = v;
+    c->unrecognizedMessageCallback = v;
 }
 } }
 
 namespace N02284240 { extern "C" {
-void gt2SetConnectionData(GTI2Connection *c, s32 v)
+void gt2SetConnectionData(GTI2Connection *c, void *v)
 {
     c->data = v;
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 gt2GetConnectionData(GTI2Connection *c)
+void *gt2GetConnectionData(GTI2Connection *c)
 {
     return c->data;
 }
@@ -1108,7 +1102,7 @@ s32 gti2NewIncomingConnection(GTI2Socket *s, GTI2Connection **pc, u32 ip, u32 po
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2StartConnectionAttempt(GTI2Connection *c, s32 msg, s32 len, GsTransportConnCallbacks *x)
+s32 gti2StartConnectionAttempt(GTI2Connection *c, u8 *msg, s32 len, GsTransportConnCallbacks *x)
 {
     GsTransportChallengeBuf buf;
     gti2MessageCheck(&msg, &len);
@@ -1117,14 +1111,17 @@ s32 gti2StartConnectionAttempt(GTI2Connection *c, s32 msg, s32 len, GsTransportC
         if (c->initialMessage == NULL) {
             return TRUE;
         }
-        memcpy(c->initialMessage, (void *)msg, len);
+        memcpy(c->initialMessage, msg, len);
         c->initialMessageLen = len;
     }
     if (x != NULL) {
-        *(GsTransportConnCallbacks *)&c->connectedCallback = *x;
+        c->connectedCallback = x->connected;
+        c->receivedCallback = x->received;
+        c->closedCallback = x->closed;
+        c->pingCallback = x->ping;
     }
     gti2GetChallenge(&buf);
-    gti2GetResponse(HOST_AT(c, 0x68, response[0], 0), &buf);
+    gti2GetResponse(c->response, (u8 *)&buf);
     gti2SendClientChallenge(c, &buf);
     c->state = 0;
     return FALSE;
@@ -1153,7 +1150,7 @@ s32 gti2AcceptConnection(GTI2Connection *c, GsTransportConnCallbacks *x)
 } }
 
 namespace N02284240 { extern "C" {
-void gti2RejectConnection(GTI2Connection *c, s32 msg, s32 len)
+void gti2RejectConnection(GTI2Connection *c, u8 *msg, s32 len)
 {
     c->freeAtAcceptReject = 0;
     if (c->state == 4) {
@@ -1165,7 +1162,7 @@ void gti2RejectConnection(GTI2Connection *c, s32 msg, s32 len)
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2ConnectionSendData(GTI2Connection *c, u32 a, u32 b)
+s32 gti2ConnectionSendData(GTI2Connection *c, u8 *a, s32 b)
 {
     if (gti2SocketSend(c->socket, c->ip, c->port, a, b) == 0) {
         return FALSE;
@@ -1347,7 +1344,7 @@ s32 gti2SocketErrorCallback(GTI2Socket *s)
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2ConnectAttemptCallback(GTI2Socket *s, GTI2Connection *c, s32 a, s32 b, s32 p4, s32 p5, s32 p6)
+s32 gti2ConnectAttemptCallback(GTI2Socket *s, GTI2Connection *c, s32 a, s32 b, s32 p4, u8 *p5, s32 p6)
 {
     if (s == NULL || c == NULL) {
         return TRUE;
@@ -1373,7 +1370,7 @@ s32 gti2ConnectAttemptCallback(GTI2Socket *s, GTI2Connection *c, s32 a, s32 b, s
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, s32 b, s32 d)
+s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, u8 *b, s32 d)
 {
     if (c == NULL) {
         return TRUE;
@@ -1384,7 +1381,7 @@ s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, s32 b, s32 d)
     }
     if (d == 0 || b == 0) {
         b = 0;
-        d = b;
+        d = 0;
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
@@ -1400,7 +1397,7 @@ s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, s32 b, s32 d)
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2ReceivedCallback(GTI2Connection *c, s32 a, s32 b, s32 d)
+s32 gti2ReceivedCallback(GTI2Connection *c, u8 *a, s32 b, s32 d)
 {
     if (c == NULL) {
         return TRUE;
@@ -1410,7 +1407,7 @@ s32 gti2ReceivedCallback(GTI2Connection *c, s32 a, s32 b, s32 d)
     }
     if (b == 0 || a == 0) {
         a = 0;
-        b = a;
+        b = 0;
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
@@ -1470,7 +1467,7 @@ s32 gti2PingCallback(GTI2Connection *c, s32 a)
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 rel)
+s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u8 *msg, u32 len, u32 rel)
 {
     GsTransportFilterCallback *f;
     if (c == NULL) {
@@ -1482,7 +1479,7 @@ s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 rel)
     }
     if (len == 0 || msg == 0) {
         msg = 0;
-        len = msg;
+        len = 0;
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
@@ -1498,7 +1495,7 @@ s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 rel)
 } }
 
 namespace N02284240 { extern "C" {
-s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 rel)
+s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u8 *msg, u32 len, u32 rel)
 {
     GsTransportFilterCallback *f;
     if (c == NULL) {
@@ -1510,7 +1507,7 @@ s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 re
     }
     if (len == 0 || msg == 0) {
         msg = 0;
-        len = msg;
+        len = 0;
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
@@ -1526,7 +1523,7 @@ s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u32 msg, u32 len, u32 re
 } }
 
 namespace N022838c4 { extern "C" {
-s32 gti2DumpCallback(GTI2Socket *o, GTI2Connection *x, s32 u2, s32 u3, s32 s4, s32 s5, s32 s6, s32 s7) {
+s32 gti2DumpCallback(GTI2Socket *o, GTI2Connection *x, s32 u2, s32 u3, s32 s4, u8 *s5, s32 s6, s32 s7) {
     gt2DumpCallback f;
     if (o == 0) {
         return 1;
@@ -1561,7 +1558,7 @@ s32 gti2DumpCallback(GTI2Socket *o, GTI2Connection *x, s32 u2, s32 u3, s32 s4, s
 } }
 
 namespace N022838c4 { extern "C" {
-s32 gti2UnrecognizedMessageCallback(GTI2Socket *o, s32 a1, s32 a2, s32 a3, s32 a4, s32 *out) {
+s32 gti2UnrecognizedMessageCallback(GTI2Socket *o, s32 a1, s32 a2, u8 *a3, s32 a4, s32 *out) {
     *out = 0;
     if (o == 0) {
         return 1;

@@ -27,13 +27,13 @@ extern "C" {
 extern s32 data_ov065_02291504;
 #endif
 #ifndef PROTO_LOCAL_gt2AddressToString
-char *gt2AddressToString(u32 ip, const char *port, char *buf);
+char *gt2AddressToString(u32 ip, u16 port, char *buf);
 #endif
 #ifndef PROTO_LOCAL_gt2StringToAddress
 BOOL gt2StringToAddress(char *s, u32 *pip, u16 *pport);
 #endif
 #ifndef PROTO_LOCAL_gti2MessageCheck
-void gti2MessageCheck(char **s, s32 *len);
+void gti2MessageCheck(u8 **s, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_gti2UShortFromBuffer
 u32 gti2UShortFromBuffer(u8 *buf, s32 off);

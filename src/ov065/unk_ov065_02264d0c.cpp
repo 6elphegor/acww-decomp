@@ -9,9 +9,6 @@
 #include "net/IpSocket.h"
 #include "net/SslSha1Context.h"
 #include "nitro/os_rtc.h"
-#define PROTO_LOCAL_SslBigNum_ToBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SslMd5_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SslSha1_Update  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffa4a0.h"
@@ -48,16 +45,8 @@ u32 OS_GetThreadPriority(OSThread *);
 void OS_SetThreadPriority(OSThread *, u32);
 
 // same overlay, out of range
-void SslSha1_Init(void *);
-void SslSha1_Update(void *, const void *, u32);
-void SslSha1_Final(void *, void *);
-void SslMd5_Init(void *);
-void SslMd5_Update(void *, const void *, u32);
-void SslMd5_Final(void *, void *);
 SslSession *SslSession_FindById(u8 *);
 SslSession *SslSession_Add(u8 *);
-Key *SslCert_FindRootCa(Ctx *, u8 *);
-void SslBigNum_ToBytes(u8 *, u16 *, s32, s32);
 
 // in range
 void Ssl_DeriveMasterSecret(Ctx *);
@@ -198,13 +187,13 @@ s32 SslCert_ParseAsn1(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     case 22:
         if (mode != 2) {
             if (c->inSubject != 0) {
-                SslCert_AppendName(c->subjectName, p, len);
+                SslCert_AppendName(c->subjectName, (const char *)p, len);
                 if (c->pendingAttrOid == 5 && len <= 0x4f) {
                     MI_CpuCopy8(p, c->commonName, len);
                     (c->commonName)[len] = 0;
                 }
             } else {
-                SslCert_AppendName(c->issuerName, p, len);
+                SslCert_AppendName(c->issuerName, (const char *)p, len);
             }
         }
         c->pendingAttrOid = 0;
@@ -293,7 +282,7 @@ s32 SslCert_VerifySignature(Ctx *c, Key *k) {
     } else {
         SslBigNum_ModExp(buf, b1, b2, n, b3);
     }
-    SslBigNum_ToBytes((u8 *)b1, buf, k->modulusLen, n);
+    SslBigNum_ToBytes((u8 *)b1, buf, k->modulusLen);
     s32 r = 0;
     u8 *q = (u8 *)b1;
     if (q[0] != 0 || q[1] != 1) {
@@ -332,20 +321,20 @@ u32 SslCert_Verify(Ctx *c) {
     }
     switch (c->certSigAlgorithm) {
     case 3: {
-        u8 *h = c->md5Work;
-        SslMd5_Init(h);
+        SslMd5Context *md5 = &c->md5Work;
+        SslMd5_Init(md5);
         u8 *s = c->tbsStart;
-        SslMd5_Update(h, s, c->tbsEnd - s);
-        SslMd5_Final(h, c->tbsDigest);
+        SslMd5_Update(md5, s, c->tbsEnd - s);
+        SslMd5_Final(md5, c->tbsDigest);
         c->tbsDigestLen = 0x10;
         break;
     }
     case 4: {
-        u8 *h = c->sha1Work;
-        SslSha1_Init(h);
+        SslSha1Context *sha1 = &c->sha1Work;
+        SslSha1_Init(sha1);
         u8 *s = c->tbsStart;
-        SslSha1_Update(h, s, c->tbsEnd - s);
-        SslSha1_Final(h, c->tbsDigest);
+        SslSha1_Update(sha1, s, c->tbsEnd - s);
+        SslSha1_Final(sha1, c->tbsDigest);
         c->tbsDigestLen = 0x14;
         break;
     }
@@ -425,7 +414,7 @@ void Ssl_HandleCertificate(Ctx *c, u8 *p) {
             return;
         }
         r4 = SslCert_Verify(c);
-        if (i == 0 && c->hostName != 0 && SslCert_MatchHostName(c->hostName, (char *)c->commonName) != 0) {
+        if (i == 0 && c->hostName != 0 && SslCert_MatchHostName(c->hostName, c->commonName) != 0) {
             r4 |= 0x4000;
         }
         ty = r4 & 0xff;
@@ -586,7 +575,7 @@ void SslRsa_PrivateDecrypt(u8 *out, u8 *in, Rsa *k) {
             } else {
                 SslBigNum_DivMod(0, b2, b1, b6, n, b7);
             }
-            SslBigNum_ToBytes(out, b6, 0x30, n);
+            SslBigNum_ToBytes(out, b6, 0x30);
             sIpFree(b0);
         }
     }
@@ -594,18 +583,18 @@ void SslRsa_PrivateDecrypt(u8 *out, u8 *in, Rsa *k) {
 
 void Ssl_DeriveSecretPart(u8 *out, char *label, Ctx *c) {
     u8 tmp[0x14];
-    u8 *h = c->sha1Work;
-    SslSha1_Init(h);
-    SslSha1_Update(h, label, strlen(label));
-    SslSha1_Update(h, c->session->masterSecret, 0x30);
-    SslSha1_Update(h, c->clientRandom, 0x20);
-    SslSha1_Update(h, c->serverRandom, 0x20);
-    SslSha1_Final(h, tmp);
-    h = c->md5Work;
-    SslMd5_Init(h);
-    SslMd5_Update(h, c->session->masterSecret, 0x30);
-    SslMd5_Update(h, tmp, 0x14);
-    SslMd5_Final(h, out);
+    SslSha1Context *sha1 = &c->sha1Work;
+    SslSha1_Init(sha1);
+    SslSha1_Update(sha1, (const u8 *)label, strlen(label));
+    SslSha1_Update(sha1, c->session->masterSecret, 0x30);
+    SslSha1_Update(sha1, c->clientRandom, 0x20);
+    SslSha1_Update(sha1, c->serverRandom, 0x20);
+    SslSha1_Final(sha1, tmp);
+    SslMd5Context *md5 = &c->md5Work;
+    SslMd5_Init(md5);
+    SslMd5_Update(md5, c->session->masterSecret, 0x30);
+    SslMd5_Update(md5, tmp, 0x14);
+    SslMd5_Final(md5, out);
 }
 
 void Ssl_DeriveMasterSecret(Ctx *c) {
@@ -639,12 +628,6 @@ void *MI_CpuCopy8(const void *, void *, u32);
 u8 *Tcp_Read(u32 *, Sess *);
 void Tcp_Consume(u32, Sess *);
 void Ssl_HandleClientHelloV2(St *, u8 *);
-void SslSha1_Update(void *, const void *, u32);
-void SslSha1_Final(void *, void *);
-void SslSha1_Init(void *);
-void SslMd5_Update(void *, const void *, u32);
-void SslMd5_Final(void *, void *);
-void SslMd5_Init(void *);
 void Ssl_HandleClientHello(St *, u8 *);
 void Ssl_HandleServerHello(St *, u8 *);
 void Ssl_HandleCertificate(St *, u8 *);
@@ -690,23 +673,23 @@ void Ssl_DeriveKeyBlock(St *st) {
         s32 off = 0;
         do {
             s32 j;
-            void *ctx = st->sha1Work;
-            SslSha1_Init(ctx);
+            SslSha1Context *sha1 = &st->sha1Work;
+            SslSha1_Init(sha1);
             tmp[0] = 0x41 + i;
             j = 0;
             while (j < i + 1) {
-                SslSha1_Update(ctx, tmp, 1);
+                SslSha1_Update(sha1, tmp, 1);
                 j++;
             }
-            SslSha1_Update(ctx, st->session->masterSecret, 0x30);
-            SslSha1_Update(ctx, st->serverRandom, 0x20);
-            SslSha1_Update(ctx, st->clientRandom, 0x20);
-            SslSha1_Final(ctx, tmp + 1);
-            ctx = st->md5Work;
-            SslMd5_Init(ctx);
-            SslMd5_Update(ctx, st->session->masterSecret, 0x30);
-            SslMd5_Update(ctx, tmp + 1, 0x14);
-            SslMd5_Final(ctx, st->keyBlock + off);
+            SslSha1_Update(sha1, st->session->masterSecret, 0x30);
+            SslSha1_Update(sha1, st->serverRandom, 0x20);
+            SslSha1_Update(sha1, st->clientRandom, 0x20);
+            SslSha1_Final(sha1, tmp + 1);
+            SslMd5Context *md5 = &st->md5Work;
+            SslMd5_Init(md5);
+            SslMd5_Update(md5, st->session->masterSecret, 0x30);
+            SslMd5_Update(md5, tmp + 1, 0x14);
+            SslMd5_Final(md5, st->keyBlock + off);
             off += 0x10;
             i++;
         } while (off < total);
@@ -739,59 +722,59 @@ void Ssl_HandleClientKeyExchange(St *st, u8 *p) {
 
 void Ssl_CalcFinishedMd5(St *st, u8 *out, u32 who) {
     u8 pad[0x30];
-    u8 *ctx = st->handshakeMd5;
+    SslMd5Context *md5 = &st->handshakeMd5;
 
     if ((st->isServer ^ who) != 0) {
-        SslMd5_Update(ctx, "SRVR", 4);
+        SslMd5_Update(md5, (const u8 *)"SRVR", 4);
     } else {
-        SslMd5_Update(ctx, "CLNT", 4);
+        SslMd5_Update(md5, (const u8 *)"CLNT", 4);
     }
-    SslMd5_Update(ctx, st->session->masterSecret, 0x30);
+    SslMd5_Update(md5, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x36, 0x30);
-    SslMd5_Update(ctx, pad, 0x30);
-    SslMd5_Final(ctx, out);
-    SslMd5_Init(ctx);
-    SslMd5_Update(ctx, st->session->masterSecret, 0x30);
+    SslMd5_Update(md5, pad, 0x30);
+    SslMd5_Final(md5, out);
+    SslMd5_Init(md5);
+    SslMd5_Update(md5, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x5c, 0x30);
-    SslMd5_Update(ctx, pad, 0x30);
-    SslMd5_Update(ctx, out, 0x10);
-    SslMd5_Final(ctx, out);
+    SslMd5_Update(md5, pad, 0x30);
+    SslMd5_Update(md5, out, 0x10);
+    SslMd5_Final(md5, out);
 }
 
 void Ssl_CalcFinishedSha1(St *st, u8 *out, u32 who) {
     u8 pad[0x28];
-    u8 *ctx = st->handshakeSha1;
+    SslSha1Context *sha1 = &st->handshakeSha1;
 
     if ((st->isServer ^ who) != 0) {
-        SslSha1_Update(ctx, "SRVR", 4);
+        SslSha1_Update(sha1, (const u8 *)"SRVR", 4);
     } else {
-        SslSha1_Update(ctx, "CLNT", 4);
+        SslSha1_Update(sha1, (const u8 *)"CLNT", 4);
     }
-    SslSha1_Update(ctx, st->session->masterSecret, 0x30);
+    SslSha1_Update(sha1, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x36, 0x28);
-    SslSha1_Update(ctx, pad, 0x28);
-    SslSha1_Final(ctx, out);
-    SslSha1_Init(ctx);
-    SslSha1_Update(ctx, st->session->masterSecret, 0x30);
+    SslSha1_Update(sha1, pad, 0x28);
+    SslSha1_Final(sha1, out);
+    SslSha1_Init(sha1);
+    SslSha1_Update(sha1, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x5c, 0x28);
-    SslSha1_Update(ctx, pad, 0x28);
-    SslSha1_Update(ctx, out, 0x14);
-    SslSha1_Final(ctx, out);
+    SslSha1_Update(sha1, pad, 0x28);
+    SslSha1_Update(sha1, out, 0x14);
+    SslSha1_Final(sha1, out);
 }
 
 void Ssl_HandleFinished(St *st, u8 *in) {
     u8 out[0x14];
 
-    MI_CpuCopy8(st->handshakeMd5, st->md5Work, 0x58);
+    MI_CpuCopy8(&st->handshakeMd5, &st->md5Work, sizeof(SslMd5Context));
     Ssl_CalcFinishedMd5(st, out, 1);
-    MI_CpuCopy8(st->md5Work, st->handshakeMd5, 0x58);
+    MI_CpuCopy8(&st->md5Work, &st->handshakeMd5, sizeof(SslMd5Context));
     if (memcmp(in, out, 0x10) != 0) {
         st->handshakeState = 9;
         return;
     }
-    MI_CpuCopy8(st->handshakeSha1, st->sha1Work, 0x5c);
+    MI_CpuCopy8(&st->handshakeSha1, &st->sha1Work, sizeof(SslSha1Context));
     Ssl_CalcFinishedSha1(st, out, 1);
-    MI_CpuCopy8(st->sha1Work, st->handshakeSha1, 0x5c);
+    MI_CpuCopy8(&st->sha1Work, &st->handshakeSha1, sizeof(SslSha1Context));
     if (memcmp(in + 0x10, out, 0x14) != 0) {
         st->handshakeState = 9;
         return;
@@ -823,7 +806,8 @@ s32 Ssl_DecryptRecord(St *st, u8 *buf) {
     u8 pad[0x30];
     s32 len;
     s32 n;
-    void *ctx;
+    SslMd5Context *md5;
+    SslSha1Context *sha1;
 
     len = Ssl_DecryptInPlace(st, buf + 5, (buf[3] << 8) + buf[4]);
     switch (st->cipherSuite) {
@@ -831,44 +815,44 @@ s32 Ssl_DecryptRecord(St *st, u8 *buf) {
         len -= 0x10;
         buf[3] = len >> 8;
         buf[4] = len;
-        ctx = st->md5Work;
-        SslMd5_Init(ctx);
-        SslMd5_Update(ctx, st->readMacSecret, 0x10);
+        md5 = &st->md5Work;
+        SslMd5_Init(md5);
+        SslMd5_Update(md5, st->readMacSecret, 0x10);
         MI_CpuFill8(pad, 0x36, 0x30);
-        SslMd5_Update(ctx, pad, 0x30);
-        SslMd5_Update(ctx, st->readSeqNum, 8);
-        SslMd5_Update(ctx, buf, 1);
-        SslMd5_Update(ctx, buf + 3, 2);
-        SslMd5_Update(ctx, buf + 5, len);
-        SslMd5_Final(ctx, digest);
-        SslMd5_Init(ctx);
-        SslMd5_Update(ctx, st->readMacSecret, 0x10);
+        SslMd5_Update(md5, pad, 0x30);
+        SslMd5_Update(md5, st->readSeqNum, 8);
+        SslMd5_Update(md5, buf, 1);
+        SslMd5_Update(md5, buf + 3, 2);
+        SslMd5_Update(md5, buf + 5, len);
+        SslMd5_Final(md5, digest);
+        SslMd5_Init(md5);
+        SslMd5_Update(md5, st->readMacSecret, 0x10);
         MI_CpuFill8(pad, 0x5c, 0x30);
-        SslMd5_Update(ctx, pad, 0x30);
-        SslMd5_Update(ctx, digest, 0x10);
-        SslMd5_Final(ctx, digest);
+        SslMd5_Update(md5, pad, 0x30);
+        SslMd5_Update(md5, digest, 0x10);
+        SslMd5_Final(md5, digest);
         n = 0x10;
         break;
     case 5:
         len -= 0x14;
         buf[3] = len >> 8;
         buf[4] = len;
-        ctx = st->sha1Work;
-        SslSha1_Init(ctx);
-        SslSha1_Update(ctx, st->readMacSecret, 0x14);
+        sha1 = &st->sha1Work;
+        SslSha1_Init(sha1);
+        SslSha1_Update(sha1, st->readMacSecret, 0x14);
         MI_CpuFill8(pad, 0x36, 0x28);
-        SslSha1_Update(ctx, pad, 0x28);
-        SslSha1_Update(ctx, st->readSeqNum, 8);
-        SslSha1_Update(ctx, buf, 1);
-        SslSha1_Update(ctx, buf + 3, 2);
-        SslSha1_Update(ctx, buf + 5, len);
-        SslSha1_Final(ctx, digest);
-        SslSha1_Init(ctx);
-        SslSha1_Update(ctx, st->readMacSecret, 0x14);
+        SslSha1_Update(sha1, pad, 0x28);
+        SslSha1_Update(sha1, st->readSeqNum, 8);
+        SslSha1_Update(sha1, buf, 1);
+        SslSha1_Update(sha1, buf + 3, 2);
+        SslSha1_Update(sha1, buf + 5, len);
+        SslSha1_Final(sha1, digest);
+        SslSha1_Init(sha1);
+        SslSha1_Update(sha1, st->readMacSecret, 0x14);
         MI_CpuFill8(pad, 0x5c, 0x28);
-        SslSha1_Update(ctx, pad, 0x28);
-        SslSha1_Update(ctx, digest, 0x14);
-        SslSha1_Final(ctx, digest);
+        SslSha1_Update(sha1, pad, 0x28);
+        SslSha1_Update(sha1, digest, 0x14);
+        SslSha1_Final(sha1, digest);
         n = 0x14;
         break;
     }
@@ -883,47 +867,48 @@ s32 Ssl_EncryptRecord(St *st, u8 *buf) {
     u8 *mac = 0;
     u8 pad[0x30];
     s32 len;
-    void *ctx;
+    SslMd5Context *md5;
+    SslSha1Context *sha1;
 
     len = (buf[3] << 8) + buf[4];
     mac = buf + 5 + len;
     switch (st->cipherSuite) {
     case 4:
-        ctx = st->md5Work;
-        SslMd5_Init(ctx);
-        SslMd5_Update(ctx, st->writeMacSecret, 0x10);
+        md5 = &st->md5Work;
+        SslMd5_Init(md5);
+        SslMd5_Update(md5, st->writeMacSecret, 0x10);
         MI_CpuFill8(pad, 0x36, 0x30);
-        SslMd5_Update(ctx, pad, 0x30);
-        SslMd5_Update(ctx, st->writeSeqNum, 8);
-        SslMd5_Update(ctx, buf, 1);
-        SslMd5_Update(ctx, buf + 3, 2);
-        SslMd5_Update(ctx, buf + 5, len);
-        SslMd5_Final(ctx, mac);
-        SslMd5_Init(ctx);
-        SslMd5_Update(ctx, st->writeMacSecret, 0x10);
+        SslMd5_Update(md5, pad, 0x30);
+        SslMd5_Update(md5, st->writeSeqNum, 8);
+        SslMd5_Update(md5, buf, 1);
+        SslMd5_Update(md5, buf + 3, 2);
+        SslMd5_Update(md5, buf + 5, len);
+        SslMd5_Final(md5, mac);
+        SslMd5_Init(md5);
+        SslMd5_Update(md5, st->writeMacSecret, 0x10);
         MI_CpuFill8(pad, 0x5c, 0x30);
-        SslMd5_Update(ctx, pad, 0x30);
-        SslMd5_Update(ctx, mac, 0x10);
-        SslMd5_Final(ctx, mac);
+        SslMd5_Update(md5, pad, 0x30);
+        SslMd5_Update(md5, mac, 0x10);
+        SslMd5_Final(md5, mac);
         len += 0x10;
         break;
     case 5:
-        ctx = st->sha1Work;
-        SslSha1_Init(ctx);
-        SslSha1_Update(ctx, st->writeMacSecret, 0x14);
+        sha1 = &st->sha1Work;
+        SslSha1_Init(sha1);
+        SslSha1_Update(sha1, st->writeMacSecret, 0x14);
         MI_CpuFill8(pad, 0x36, 0x28);
-        SslSha1_Update(ctx, pad, 0x28);
-        SslSha1_Update(ctx, st->writeSeqNum, 8);
-        SslSha1_Update(ctx, buf, 1);
-        SslSha1_Update(ctx, buf + 3, 2);
-        SslSha1_Update(ctx, buf + 5, len);
-        SslSha1_Final(ctx, mac);
-        SslSha1_Init(ctx);
-        SslSha1_Update(ctx, st->writeMacSecret, 0x14);
+        SslSha1_Update(sha1, pad, 0x28);
+        SslSha1_Update(sha1, st->writeSeqNum, 8);
+        SslSha1_Update(sha1, buf, 1);
+        SslSha1_Update(sha1, buf + 3, 2);
+        SslSha1_Update(sha1, buf + 5, len);
+        SslSha1_Final(sha1, mac);
+        SslSha1_Init(sha1);
+        SslSha1_Update(sha1, st->writeMacSecret, 0x14);
         MI_CpuFill8(pad, 0x5c, 0x28);
-        SslSha1_Update(ctx, pad, 0x28);
-        SslSha1_Update(ctx, mac, 0x14);
-        SslSha1_Final(ctx, mac);
+        SslSha1_Update(sha1, pad, 0x28);
+        SslSha1_Update(sha1, mac, 0x14);
+        SslSha1_Final(sha1, mac);
         len += 0x14;
         break;
     }
@@ -1025,8 +1010,8 @@ void Ssl_ProcessRecord(St *st, u8 *buf) {
             st->handshakeState = 9;
         join:
             n4 = n + 4;
-            SslSha1_Update(st->handshakeSha1, p - 4, n4);
-            SslMd5_Update(st->handshakeMd5, p - 4, n4);
+            SslSha1_Update(&st->handshakeSha1, p - 4, n4);
+            SslMd5_Update(&st->handshakeMd5, p - 4, n4);
             p += n;
             len -= n + 4;
             if (len == 0) {
@@ -1075,8 +1060,8 @@ u8 Ssl_ReadRecord(Sess *s) {
             } else {
                 st->handshakeState = 9;
             }
-            SslSha1_Update(st->handshakeSha1, buf, len);
-            SslMd5_Update(st->handshakeMd5, buf, len);
+            SslSha1_Update(&st->handshakeSha1, buf, len);
+            SslMd5_Update(&st->handshakeMd5, buf, len);
             sIpFree(buf);
         } else {
             st->handshakeState = 9;
@@ -1139,12 +1124,6 @@ s32 Tcp_Connect(Sess *);
 void Tcp_Listen(Sess *);
 void Tcp_Shutdown(Sess *);
 u32 Tcp_Write(u8 *, u32, u8 *, u32, Sess *);
-void SslSha1_Init(void *);
-void SslMd5_Init(void *);
-void SslMd5_Update(void *, u8 *, u32);
-void SslSha1_Update(void *, u8 *, u32);
-void SslSha1_Final(void *, void *);
-void SslSha1_FinalRaw(void *, void *);
 SslSession *SslSession_Add(u8 *);
 void Ssl_DeriveKeyBlock(Ctx *);
 void Ssl_DeriveMasterSecret(Ctx *);
@@ -1308,8 +1287,8 @@ s32 Ssl_SendServerHello(Sess *s) {
     buf[2] = 0;
     buf[3] = len >> 8;
     buf[4] = len;
-    SslSha1_Update(ctx->handshakeSha1, buf + 5, len);
-    SslMd5_Update(ctx->handshakeMd5, buf + 5, len);
+    SslSha1_Update(&ctx->handshakeSha1, buf + 5, len);
+    SslMd5_Update(&ctx->handshakeMd5, buf + 5, len);
     Tcp_Write(buf, len + 5, 0, 0, s);
     sIpFree(buf);
     return ctx->resumed;
@@ -1339,14 +1318,14 @@ void Ssl_SendFinished(Sess *s) {
     b[12] = 0;
     b[13] = 0;
     b[14] = 0x24;
-    MI_CpuCopy8(ctx->handshakeMd5, ctx->md5Work, 0x58);
+    MI_CpuCopy8(&ctx->handshakeMd5, &ctx->md5Work, sizeof(SslMd5Context));
     Ssl_CalcFinishedMd5(ctx, b + 0xf, 0);
-    MI_CpuCopy8(ctx->md5Work, ctx->handshakeMd5, 0x58);
-    MI_CpuCopy8(ctx->handshakeSha1, ctx->sha1Work, 0x5c);
+    MI_CpuCopy8(&ctx->md5Work, &ctx->handshakeMd5, sizeof(SslMd5Context));
+    MI_CpuCopy8(&ctx->handshakeSha1, &ctx->sha1Work, sizeof(SslSha1Context));
     Ssl_CalcFinishedSha1(ctx, b + 0x1f, 0);
-    MI_CpuCopy8(ctx->sha1Work, ctx->handshakeSha1, 0x5c);
-    SslSha1_Update(ctx->handshakeSha1, b + 0xb, 0x28);
-    SslMd5_Update(ctx->handshakeMd5, b + 0xb, 0x28);
+    MI_CpuCopy8(&ctx->sha1Work, &ctx->handshakeSha1, sizeof(SslSha1Context));
+    SslSha1_Update(&ctx->handshakeSha1, b + 0xb, 0x28);
+    SslMd5_Update(&ctx->handshakeMd5, b + 0xb, 0x28);
     Tcp_Write(b, Ssl_EncryptRecord(ctx, b + 6) + 6, 0, 0, s);
     sIpFree(b);
 }
@@ -1406,8 +1385,8 @@ void Ssl_SendClientHello(Sess *s) {
     buf[7] = (len - 4) >> 8;
     buf[8] = len - 4;
     Tcp_Write(buf, len + 5, 0, 0, s);
-    SslMd5_Update(ctx->handshakeMd5, buf + 5, len);
-    SslSha1_Update(ctx->handshakeSha1, buf + 5, len);
+    SslMd5_Update(&ctx->handshakeMd5, buf + 5, len);
+    SslSha1_Update(&ctx->handshakeSha1, buf + 5, len);
     sIpFree(buf);
 }
 
@@ -1494,8 +1473,8 @@ void Ssl_SendClientKeyExchange(Sess *s) {
         }
     }
     Tcp_Write(buf2, n + 9, 0, 0, s);
-    SslMd5_Update(ctx->handshakeMd5, buf2 + 5, (u32)n + 4);
-    SslSha1_Update(ctx->handshakeSha1, buf2 + 5, n + 4);
+    SslMd5_Update(&ctx->handshakeMd5, buf2 + 5, (u32)n + 4);
+    SslSha1_Update(&ctx->handshakeSha1, buf2 + 5, n + 4);
     sIpFree(buf2);
     sIpFree(p0);
     sIpFree(buf1);
@@ -1539,8 +1518,8 @@ void Ssl_Accept(Sess *s) {
         Tcp_Listen(s);
         ctx->handshakeState = 0;
         ctx->isServer = 1;
-        SslSha1_Init(ctx->handshakeSha1);
-        SslMd5_Init(ctx->handshakeMd5);
+        SslSha1_Init(&ctx->handshakeSha1);
+        SslMd5_Init(&ctx->handshakeMd5);
         if (Ssl_ServerHandshake(s) == 0) {
             ctx->handshakeState = 8;
             return;
@@ -1591,8 +1570,8 @@ s32 Ssl_Connect(Sess *s) {
     }
     ctx->handshakeState = 0;
     ctx->isServer = 0;
-    SslSha1_Init(ctx->handshakeSha1);
-    SslMd5_Init(ctx->handshakeMd5);
+    SslSha1_Init(&ctx->handshakeSha1);
+    SslMd5_Init(&ctx->handshakeMd5);
     return Ssl_ClientHandshake(s);
 }
 }
@@ -1859,7 +1838,7 @@ void Ssl_Shutdown(IpSocket *o) {
 }
 
 void Ssl_EnableOnCurrentSocket(u32 v) {
-    OSi_ReferSymbol(0x2000c14);
+    OSi_ReferSymbol((void *)0x2000c14);
     IpSocket *s = (IpSocket *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         s->useSsl = v;

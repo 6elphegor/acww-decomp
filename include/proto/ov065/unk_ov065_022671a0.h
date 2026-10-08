@@ -4,10 +4,28 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_022671a0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/SslConnection.h"
+#include "net/SslMd5Context.h"
+#include "net/SslRootCa.h"
 #include "net/SslSession.h"
-struct SslMd5Context;
 #ifdef __cplusplus
 #include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SslMd5_Init
+void SslMd5_Init(SslMd5Context *ctx);
+#endif
+#ifndef PROTO_LOCAL_SslMd5_Final
+void SslMd5_Final(SslMd5Context *ctx, void *out);
+#endif
+#ifndef PROTO_LOCAL_SslCert_FindRootCa
+SslRootCa *SslCert_FindRootCa(SslConnection *o, const char *name);
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -34,7 +52,7 @@ SslSession *SslSession_FindByPeer(u32 a, u32 b);
 u32 Ssl_GetUnixTime(void);
 #endif
 #ifndef PROTO_LOCAL_Ssl_SetRootCaList
-void Ssl_SetRootCaList(void *a, s32 b);
+void Ssl_SetRootCaList(SslRootCa **a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_SslCert_ReadDerLength
 s32 SslCert_ReadDerLength(u8 **pp);

@@ -11,9 +11,12 @@
 struct DArrayImplementation;
 struct GHIConnection;
 
-typedef void (*ghttpPostCallback)(u32, u32, u32, u32, u32, u32);
-typedef void (*ghttpProgressCallback)(u32, u32, u32, u32, u32, u32, u32);
-typedef s32 (*ghttpCompletedCallback)(u32, u32, u32, u32, u32);
+// (request, bytesPosted, totalBytes, objectsPosted, totalObjects, param)
+typedef void (*ghttpPostCallback)(u32, u32, u32, u32, u32, void *);
+// (request, state, buffer, bufferLen, bytesReceived, totalSize, param)
+typedef void (*ghttpProgressCallback)(u32, u32, char *, u32, u32, u32, void *);
+// (request, result, buffer, bufferLen, param)
+typedef s32 (*ghttpCompletedCallback)(u32, u32, char *, u32, void *);
 typedef s32 (*GsHttpEncryptStartFn)(GHIConnection *, void *);
 typedef s32 (*GsHttpEncryptFn)(GHIConnection *, void *, char *, s32 *, char *, s32 *);
 typedef s32 (*GsHttpDecryptFn)(GHIConnection *, void *, u8 *, s32 *, u8 *, s32 *);
@@ -48,7 +51,7 @@ struct GHIPostData {
 struct GHIPost {
     /* 0x00 */ DArrayImplementation *data;
     /* 0x04 */ ghttpPostCallback callback;
-    /* 0x08 */ u32 param;
+    /* 0x08 */ void *param;
     /* 0x0c */ s32 hasFiles;
     /* 0x10 */ s32 autoFree;
 };
@@ -68,7 +71,7 @@ struct GHIPostingState {
     /* 0x08 */ s32 bytesPosted;
     /* 0x0c */ s32 totalBytes;
     /* 0x10 */ ghttpPostCallback callback;
-    /* 0x14 */ u32 param;
+    /* 0x14 */ void *param;
 };
 
 struct GHIConnection {
@@ -89,7 +92,7 @@ struct GHIConnection {
     /* 0x038 */ s32 result;
     /* 0x03c */ ghttpProgressCallback progressCallback;
     /* 0x040 */ ghttpCompletedCallback completedCallback;
-    /* 0x044 */ u32 callbackParam;
+    /* 0x044 */ void *callbackParam;
     /* 0x048 */ s32 socket;
     /* 0x04c */ s32 socketError;
     /* 0x050 */ GHIBuffer sendBuffer;

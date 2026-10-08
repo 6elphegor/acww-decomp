@@ -233,7 +233,7 @@ extern "C" void Net_OnLocalRecv(u32 aid, u8 *data, u32 size) {
     sRecvCallback(aid, data, size);
 }
 
-extern "C" void Net_OnWifiClientMatched(s32 result, s32 b, s32 c, s32 d, s32 e, s32 f) {
+extern "C" void Net_OnWifiClientMatched(s32 result, s32 b, s32 c, s32 d, s32 e, void *param) {
     if (result == 0) data_0213b06c = 0;
 }
 
@@ -250,7 +250,7 @@ extern "C" void Net_OnWifiRecv(u32 aid, u8 *data, u32 size) {
     sRecvCallback(aid, data, size);
 }
 
-extern "C" void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
+extern "C" void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, void *param) {
     if (a != 0) return;
     if (b != 0) return;
     data_021f48cc = (u32)((OS_GetTick() << 6) / 33514);
@@ -909,7 +909,7 @@ extern "C" void **Net_GetScanResults(void) {
     if (LocalWl_GetState() == 7) {
         n = i = 0;
         for (; i < 8; i++) {
-            void *r = NetPtr(LocalWl_GetBeacon(0, i & 0xff));  // (ov066: the beacon as an integer)
+            void *r = LocalWl_GetBeacon(0, i & 0xff);
             if (LocalWl_IsBeaconValid((WMMsg *)r) != 0) data_021f4910[n++] = r;
         }
     }
@@ -1171,7 +1171,7 @@ extern "C" void Net_StartOv067(void *send, void *recv, u32 n) {
     data_021f48c0 = Net_Alloc(0xa000, 32);
     Wlx_Init(NetWord(data_021f48c0), NetWord((void *)Net_OnWlxStopped), 2);  // (ov067: as integers)
     Wlx_SetPacketSizes(60, 60, 1);
-    Wlx_RegisterData(data_021f48b8, NetWord((void *)Net_OnWlxExchangeDone), NetWord(send), n, NetWord(recv), n);
+    Wlx_RegisterData(data_021f48b8, (void (*)(u32, void *))Net_OnWlxExchangeDone, (u8 *)send, n, (u8 *)recv, n);
 }
 
 // (Wlx_StartExchange / Wlx_StopExchange have no result; the callers don't use one)

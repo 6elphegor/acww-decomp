@@ -59,7 +59,7 @@ void gpiCallErrorCallback(GPConnection *, s32, s32);
 extern "C" {
 s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, GPICallbackData *m, GPIOperation *g, s32 k) {
     GPIConnection *ctx = *h;
-    GPICallbackData *node = (GPICallbackData *)GsUtil_Alloc(HOST_SIZED(0x18, GPICallbackData));
+    GPICallbackData *node = (GPICallbackData *)GsUtil_Alloc(sizeof(GPICallbackData));
     if (node == NULL) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;
