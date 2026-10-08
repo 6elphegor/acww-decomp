@@ -690,7 +690,7 @@ BOOL DWCi_AUTH_GetNewWiFiInfo(S *p) {
         return 0;
     }
     if (OS_IsTickAvailable()) {
-        seed += (u32)(uptr)OS_GetTick; // original bug: the address of OS_GetTick, not its result
+        seed += 0x01ffa6b4; // original bug: the address of OS_GetTick (its DS address: the host's varies by build)
     }
     OS_GetMacAddress(mac);
     x0 = (u8)(((mac[0] << 16) | (mac[1] << 8) | mac[2]) != 0x9bf);
@@ -765,7 +765,7 @@ BOOL DWCi_AUTH_RemakeWiFiID(S *p) {
         return 0;
     }
     if (OS_IsTickAvailable()) {
-        seed += (u32)(uptr)OS_GetTick; // original bug: the address of OS_GetTick, not its result
+        seed += 0x01ffa6b4; // original bug: the address of OS_GetTick (its DS address: the host's varies by build)
     }
     OS_GetMacAddress(mac);
     x0 = (u8)(((mac[0] << 16) | (mac[1] << 8) | mac[2]) != 0x9bf);
