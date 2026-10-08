@@ -6,11 +6,13 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "field/LooseSnowballs.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Snowman_SendLetter
+void Snowman_SendLetter(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_Snowman_SendPrizeLetter
 void Snowman_SendPrizeLetter();
@@ -21,9 +23,6 @@ void Snowman_SendPrizeLetter();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_Snowman_SendLetter
-void Snowman_SendLetter(u32 idx);
-#endif
 #ifndef PROTO_LOCAL_LooseSnowballs_Get
 LooseSnowballs *LooseSnowballs_Get();
 #endif

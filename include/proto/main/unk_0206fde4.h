@@ -7,19 +7,25 @@
 #include "gfx/Mtx43.h"
 #ifdef __cplusplus
 #include "save/MuseumData.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_Museum_CountDonatedFossilsInGroup
-s32 Museum_CountDonatedFossilsInGroup(MuseumData *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_CpuMtx_StoreToStack
 void CpuMtx_StoreToStack(u32 i);
 #endif
 #ifndef PROTO_LOCAL_CpuMtx_RestoreFromStack
 void CpuMtx_RestoreFromStack(u32 i);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Museum_CountDonatedFossilsInGroup
+s32 Museum_CountDonatedFossilsInGroup(MuseumData *a, s32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_sCpuMtxStack

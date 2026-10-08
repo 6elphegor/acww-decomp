@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class BarberMachine;
 #endif
 
@@ -22,6 +23,9 @@ void BarberMachine_Start();
 extern "C" {
 #ifndef PROTO_LOCAL_BarberMachine_Create
 BarberMachine *BarberMachine_Create();
+#endif
+#ifndef PROTO_LOCAL_sBarberMachineProfile
+extern ActorProfile sBarberMachineProfile;
 #endif
 #ifndef PROTO_LOCAL_sBarberMachine
 extern BarberMachine *volatile sBarberMachine;

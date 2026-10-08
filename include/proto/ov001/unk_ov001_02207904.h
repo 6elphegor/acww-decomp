@@ -4,15 +4,24 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02207904.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcBusyIcon;
+#ifndef __cplusplus
+typedef struct WfcBusyIcon WfcBusyIcon;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_WfcBusyIcon_Create
+void WfcBusyIcon_Create(u32 idx);
+#endif
 #ifndef PROTO_LOCAL_WfcBusyIcon_Delete
 void WfcBusyIcon_Delete();
+#endif
+#ifndef PROTO_LOCAL_WfcBusyIcon_Task
+void WfcBusyIcon_Task(void *task);
 #endif
 #ifdef __cplusplus
 }
@@ -20,11 +29,8 @@ void WfcBusyIcon_Delete();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_WfcBusyIcon_Create
-void WfcBusyIcon_Create(u32 idx);
-#endif
-#ifndef PROTO_LOCAL_WfcBusyIcon_Task
-void WfcBusyIcon_Task(void *task);
+#ifndef PROTO_LOCAL_sWfcBusyIcon
+extern WfcBusyIcon *sWfcBusyIcon;
 #endif
 }
 #endif

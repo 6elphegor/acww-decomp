@@ -11,12 +11,12 @@ struct Flags1;
 typedef struct Flags1 Flags1;
 #endif
 #ifdef __cplusplus
+#include "field/FieldObjectShapeQuery.h"
 #include "game/StrBSizeData.h"
 #include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
 #include "town/BuildingActor.h"
 #include "town/MapBlock.h"
-class FieldObjectShapeQuery;
 class FieldStructureMgr;
 #endif
 

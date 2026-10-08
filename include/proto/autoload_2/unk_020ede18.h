@@ -4,11 +4,10 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020ede18.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
 #include "snd/PlayCtx.h"
 #include "snd/Player.h"
 #include "snd/SndSeGroup.h"
-#ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -56,6 +55,12 @@ void Snd_SetListenerDistanceCallback(s32 (*f)(PlayCtx *));
 #ifndef PROTO_LOCAL_Snd_SetListenerVolumeCallback
 void Snd_SetListenerVolumeCallback(s32 (*f)(PlayCtx *));
 #endif
+#ifndef PROTO_LOCAL_SndSeGroup_EvalListener
+void SndSeGroup_EvalListener(PlayCtx *p);
+#endif
+#ifndef PROTO_LOCAL_SndSeVoice_Init
+void SndSeVoice_Init(Ent *e);
+#endif
 #ifndef PROTO_LOCAL_SndSeVoice_SetParams
 void SndSeVoice_SetParams(Ent *e, s32 c, s32 d);
 #endif
@@ -86,11 +91,26 @@ void SndSeGroup_SetEnabled(Group *g, s32 x);
 #ifndef PROTO_LOCAL_SndSeGroup_FindFreeVoice
 s32 SndSeGroup_FindFreeVoice(Group *g);
 #endif
+#ifndef PROTO_LOCAL_SndSeGroup_Init
+void SndSeGroup_Init(Group *g);
+#endif
+#ifndef PROTO_LOCAL_SndSeGroup_Finish
+void SndSeGroup_Finish(Group *g);
+#endif
+#ifndef PROTO_LOCAL_SndSeGroup_Update
+void SndSeGroup_Update(Group *g, void *src);
+#endif
 #ifndef PROTO_LOCAL_SndSeGroup_Play
 s32 SndSeGroup_Play(Group *g, u32 a, u32 b, s32 c, s16 d);
 #endif
 #ifndef PROTO_LOCAL_SndSeGroup_PlayHeld
 s32 SndSeGroup_PlayHeld(Group *g, u32 a, u32 b, s32 c, s16 d);
+#endif
+#ifndef PROTO_LOCAL_SndSeGroup_Shutdown
+void SndSeGroup_Shutdown(Group *g);
+#endif
+#ifndef PROTO_LOCAL_SndSeGroup_ReleaseAll
+void SndSeGroup_ReleaseAll(Group *g);
 #endif
 #ifndef PROTO_LOCAL_SndSeGroup_StopVoice
 void SndSeGroup_StopVoice(Group *g, s32 i, s32 a);

@@ -4,5 +4,20 @@
 // Prototypes of the functions defined in src/main/unk_0202e9d4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "game/CollisionVec2.h"
+#include "game/Unk_0202f2ac_V3.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Collision_CalcTriangleNormal
+s32 Collision_CalcTriangleNormal(Unk_0202f2ac_V3 *n, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b);
+#endif
+}
+#ifndef PROTO_LOCAL_gCollisionVec2Zero
+extern CollisionVec2 gCollisionVec2Zero;
+#endif
+#endif
 
 #endif

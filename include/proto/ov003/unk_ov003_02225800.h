@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "gfx/Mtx43.h"
+#include "sys/ProcProfile.h"
 struct InsectBehavior;
 struct InsectModelParams;
 #ifndef __cplusplus
@@ -203,6 +204,9 @@ extern Insect sHeldInsects[4];
 #endif
 #ifndef PROTO_LOCAL_sInsectModelParams
 extern InsectModelParams sInsectModelParams[60];
+#endif
+#ifndef PROTO_LOCAL_sInsectManagerProfile
+extern ProcProfile sInsectManagerProfile;
 #endif
 #ifndef PROTO_LOCAL_sInsectBehaviors
 extern InsectBehavior sInsectBehaviors[60];

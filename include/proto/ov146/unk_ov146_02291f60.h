@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class WfcFriendListMenu;
 #endif
@@ -65,6 +66,9 @@ extern GXOamAttr sWfcQuitButtonCells[4];
 extern "C" {
 #ifndef PROTO_LOCAL_WfcFriendListMenu_Create
 WfcFriendListMenu *WfcFriendListMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sWfcFriendListMenuProfile
+extern ProcProfile sWfcFriendListMenuProfile;
 #endif
 }
 #endif

@@ -4,8 +4,14 @@
 // Prototypes of the functions defined in src/ov055/unk_ov055_02258de0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcRoverActEntry;
+struct SpNpcRoverTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcRoverActEntry SpNpcRoverActEntry;
+typedef struct SpNpcRoverTalkScript SpNpcRoverTalkScript;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcRover;
 #endif
 
@@ -15,17 +21,26 @@ extern "C" {
 #ifndef PROTO_LOCAL_sSpNpcRoverKey
 extern char sSpNpcRoverKey[];
 #endif
+#ifndef PROTO_LOCAL_sSpNpcRoverModelPath
+extern u8 sSpNpcRoverModelPath[];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcRoverTexturePath
+extern u8 sSpNpcRoverTexturePath[];
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sSpNpcRoverModelPath
-extern u8 sSpNpcRoverModelPath[];
+#ifndef PROTO_LOCAL_sSpNpcRoverProfile
+extern ActorProfile sSpNpcRoverProfile;
 #endif
-#ifndef PROTO_LOCAL_sSpNpcRoverTexturePath
-extern u8 sSpNpcRoverTexturePath[];
+#ifndef PROTO_LOCAL_sSpNpcRoverTalkScripts
+extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcRoverActTable
+extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcRoverInstance
 extern SpNpcRover *sSpNpcRoverInstance;

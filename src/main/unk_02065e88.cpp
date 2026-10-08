@@ -37,7 +37,7 @@
 #include "snd/BgmManager.h"
 #include "save/SaveData.h"
 #include "npc/VillagerDataItemView.h"
-#include "npc/VillagerDataProfileView.h"
+#include "save/VillagerData.h"
 #include "save/VillagerData.h"
 #include "talk/TalkFrame.h"
 #include "talk/TalkTextBox.h"
@@ -83,7 +83,7 @@ void BmgMsgAttr_GetByte08(u8 *out, BmgMsgAttr *s);
 u32 BmgMsgAttr_LookupUnkA(BmgMsgAttr *s);
 u32 BmgMsgAttr_LookupUnkB(BmgMsgAttr *s);
 u32 BmgMsgAttr_LookupUnkC(BmgMsgAttr *s);
-// src/main/unk_02077ac4.cpp (the villager data: VillagerDataProfileView, VillagerMemory are declared there only)
+// src/main/unk_02077ac4.cpp (the villager data: VillagerData, VillagerMemory are declared there only)
 u32 Villager_GetAnimalKind(VillagerData *a);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 Villager_FindMemoryIndex(VillagerMemory *t, void *id);
@@ -2528,7 +2528,7 @@ BOOL TalkWindowState::buildCatchphrase() {
     BOOL r4 = FALSE;
     catchphrase.clear();
     if (r6 != 0) {
-        static_cast<VillagerDataProfileView *>(r6)->getCatchphrase(&catchphrase, (void *)1);
+        static_cast<VillagerData *>(r6)->getCatchphrase(&catchphrase, (void *)1);
         r4 = TRUE;
     }
     return r4;

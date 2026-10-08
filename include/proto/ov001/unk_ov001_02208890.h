@@ -4,9 +4,6 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02208890.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,11 +14,17 @@ void WfcHighlight_Init();
 #ifndef PROTO_LOCAL_WfcHighlight_Free
 void WfcHighlight_Free();
 #endif
+#ifndef PROTO_LOCAL_WfcHighlight_Set
+void WfcHighlight_Set(s32 n);
+#endif
 #ifndef PROTO_LOCAL_WfcHighlight_SetConnection
 void WfcHighlight_SetConnection();
 #endif
 #ifndef PROTO_LOCAL_WfcHighlight_SetListEntry
 void WfcHighlight_SetListEntry();
+#endif
+#ifndef PROTO_LOCAL_WfcHighlight_TransferTask
+void WfcHighlight_TransferTask(void *task);
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222a638
 extern char data_ov001_0222a638[];
@@ -56,6 +59,9 @@ extern char data_ov001_0222a64c[];
 #ifndef PROTO_LOCAL_data_ov001_0222a678
 extern char data_ov001_0222a678[];
 #endif
+#ifndef PROTO_LOCAL_sWfcHighlightScreen
+extern u8 *sWfcHighlightScreen;
+#endif
 #ifndef PROTO_LOCAL_data_ov001_0222a750
 extern char data_ov001_0222a750[];
 #endif
@@ -87,20 +93,6 @@ extern char data_ov001_0222a624[];
 extern char data_ov001_0222a7b0[];
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_WfcHighlight_Set
-void WfcHighlight_Set(s32 n);
-#endif
-#ifndef PROTO_LOCAL_WfcHighlight_TransferTask
-void WfcHighlight_TransferTask(void *task);
-#endif
-#ifndef PROTO_LOCAL_sWfcHighlightScreen
-extern u8 *sWfcHighlightScreen;
-#endif
 }
 #endif
 

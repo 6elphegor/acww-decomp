@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -14,15 +13,6 @@ extern "C" {
 #ifndef PROTO_LOCAL_CharInteractSync_Reset
 void CharInteractSync_Reset(void);
 #endif
-#ifndef PROTO_LOCAL_CharInteractSync_ReleaseLock
-void CharInteractSync_ReleaseLock(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_CharInteractSync_SendReply
 void CharInteractSync_SendReply(u8 a, u32 aid, ...);
 #endif
@@ -37,6 +27,9 @@ s32 CharInteractSync_Check(u32 id);
 #endif
 #ifndef PROTO_LOCAL_CharInteractSync_RequestLock
 void CharInteractSync_RequestLock(u32 id);
+#endif
+#ifndef PROTO_LOCAL_CharInteractSync_ReleaseLock
+void CharInteractSync_ReleaseLock(void);
 #endif
 #ifndef PROTO_LOCAL_CharInteractSync_CheckArea
 s32 CharInteractSync_CheckArea(void);
@@ -62,7 +55,11 @@ void CharInteractSync_OnRelease(void *msg, u32 aid);
 #ifndef PROTO_LOCAL_CharInteractSync_OnCharMsg
 void CharInteractSync_OnCharMsg(u8 *msg, u32 aid);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sCharInteractSyncResult
 extern u8 sCharInteractSyncResult;
 #endif

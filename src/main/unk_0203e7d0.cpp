@@ -124,7 +124,6 @@ void PrioList_PushBack(void *, void *);
 }
 
 extern "C" {
-void _ZN5Actor10postCreateEv(void *, s32);
 }
 
 extern "C" {

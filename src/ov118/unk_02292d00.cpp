@@ -41,7 +41,6 @@
 extern "C" {
 extern u16 gPad[];
 extern u8 gFieldSceneKind;
-extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
@@ -51,7 +50,6 @@ BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void Math_StepS32(void *p, s32 a, s32 b);
-void *ScenePos_GetPos(void *p);
 }
 
 
@@ -538,7 +536,7 @@ void MapTab::initMapTab() {
         v.z = p->z;
     } else {
         Scene_GetWarpRequest();
-        p = (VecFx32 *)ScenePos_GetPos(gTownReturnPos);
+        p = ScenePos_GetPos(&gTownReturnPos);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;

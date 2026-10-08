@@ -29,7 +29,6 @@ extern "C" {
 }
 
 extern "C" void func_02056714(void *p);
-extern "C" s32 _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, void *c, void *d);
 extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
 extern "C" s32 NNS_G3dGetResDictIdxByName(void *a, void *b);
 extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
@@ -933,11 +932,11 @@ void MatTexPatAnim::release() {
     clear();
 }
 
-void MatTexPatAnim::setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
-    patAnm = NNS_G3dGetAnmByIdx(r1, 0);
+void MatTexPatAnim::setAnim(void *anm, u16 lastFrame, u32 numFrames, u8 mode, s32 speed) {
+    patAnm = NNS_G3dGetAnmByIdx(anm, 0);
     patNumFrames = *(u16 *)((u8 *)patAnm + 4);
-    if (r3 == 0) {
-        r3 = patNumFrames;
+    if (numFrames == 0) {
+        numFrames = patNumFrames;
     }
     u8 *hdr = (u8 *)resMdl;
     u8 *base = hdr + *(u32 *)(hdr + 8);
@@ -952,7 +951,7 @@ void MatTexPatAnim::setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
         tracks[i].texIdx = 0xff;
         tracks[i].lastFrame = 0xffff;
     }
-    ::_ZN13AnimFrameCtrl5setupEihit(this, r3, p5, p6, r2);
+    setup(numFrames, mode, speed, lastFrame);
 }
 
 void MatTexPatAnim::update() {

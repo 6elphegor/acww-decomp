@@ -48,8 +48,6 @@ void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 Scene_GetCurrent();
-void Clock_GetDayMonth(void *p);
-void Clock_GetMinuteHour(void *p);
 s32 Clock_GetWeekday();
 
 // functions of the unit that other classes of the unit call (symbols.txt names)

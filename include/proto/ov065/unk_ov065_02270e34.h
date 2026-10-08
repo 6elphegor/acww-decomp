@@ -8,6 +8,9 @@
 #include "net/DwcFriendControl.h"
 #include "net/DwcUserData.h"
 #include "net/gp.h"
+#include "net/gpiInfo.h"
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -178,6 +181,20 @@ BOOL DwcCore_HasError(void);
 void DwcCore_SetError(s32 a, s32 b);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_DwcFriend_OnBuddyRequestInfo
+void DwcFriend_OnBuddyRequestInfo(void *x, GPGetInfoResponseArg *p);
+#endif
+#ifndef PROTO_LOCAL_DwcFriend_OnAuthorizedInfo
+void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p);
+#endif
+#ifndef PROTO_LOCAL_DwcLogin_OnGpProfileInfo
+void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x);
+#endif
 }
 #endif
 

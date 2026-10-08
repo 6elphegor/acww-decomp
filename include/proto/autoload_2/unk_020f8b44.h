@@ -6,8 +6,11 @@
 #include "types.h"
 struct Fp;
 struct Mgr;
+#ifndef __cplusplus
+typedef struct Fp Fp;
+typedef struct Mgr Mgr;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus

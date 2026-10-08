@@ -4,6 +4,10 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_02216430.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "actor/ActorProfile.h"
+#include "gfx/NNSG3dRS.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,6 +16,17 @@ extern "C" {
 void *TownHall_Create();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sTownHallProfile
+extern ActorProfile sTownHallProfile;
+#endif
+#ifndef PROTO_LOCAL_TownHall_NodeCallback
+void TownHall_NodeCallback(NNSG3dRS *a);
+#endif
 }
 #endif
 

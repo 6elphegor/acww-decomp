@@ -6,11 +6,28 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "player/PlayerOptions.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_PlayerOptions_IsHiragana
+BOOL PlayerOptions_IsHiragana();
+#endif
+#ifndef PROTO_LOCAL_PlayerOptions_SetHiragana
+void PlayerOptions_SetHiragana(s32 x);
+#endif
+#ifndef PROTO_LOCAL_PlayerOptions_IsStereo
+BOOL PlayerOptions_IsStereo();
+#endif
+#ifndef PROTO_LOCAL_PlayerOptions_SetStereo
+void PlayerOptions_SetStereo(s32 x);
+#endif
+#ifndef PROTO_LOCAL_PlayerOptions_GetTalkVoice
+u32 PlayerOptions_GetTalkVoice();
+#endif
+#ifndef PROTO_LOCAL_PlayerOptions_SetTalkVoice
+void PlayerOptions_SetTalkVoice(u32 v);
 #endif
 #ifndef PROTO_LOCAL_PlayerOptions_Commit
 void PlayerOptions_Commit();
@@ -41,24 +58,6 @@ void PlayerOptions_CopyIn(void *dst, void *src);
 extern "C" {
 #ifndef PROTO_LOCAL_PlayerOptions_Get
 PlayerOptions *PlayerOptions_Get();
-#endif
-#ifndef PROTO_LOCAL_PlayerOptions_IsHiragana
-BOOL PlayerOptions_IsHiragana();
-#endif
-#ifndef PROTO_LOCAL_PlayerOptions_SetHiragana
-void PlayerOptions_SetHiragana(s32 x);
-#endif
-#ifndef PROTO_LOCAL_PlayerOptions_IsStereo
-BOOL PlayerOptions_IsStereo();
-#endif
-#ifndef PROTO_LOCAL_PlayerOptions_SetStereo
-void PlayerOptions_SetStereo(s32 x);
-#endif
-#ifndef PROTO_LOCAL_PlayerOptions_GetTalkVoice
-u32 PlayerOptions_GetTalkVoice();
-#endif
-#ifndef PROTO_LOCAL_PlayerOptions_SetTalkVoice
-void PlayerOptions_SetTalkVoice(u32 v);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerOptions

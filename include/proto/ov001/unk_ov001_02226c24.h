@@ -4,8 +4,11 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02226c24.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcVramBankState;
+#ifndef __cplusplus
+typedef struct WfcVramBankState WfcVramBankState;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -26,14 +29,17 @@ void WfcUtil_UpdateLed();
 #ifndef PROTO_LOCAL_WfcUtil_RestoreLed
 void WfcUtil_RestoreLed();
 #endif
+#ifndef PROTO_LOCAL_WfcUtil_StrNLen
+s32 WfcUtil_StrNLen(u8 *s, s32 n);
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_WfcUtil_StrNLen
-s32 WfcUtil_StrNLen(u8 *s, s32 n);
+#ifndef PROTO_LOCAL_sWfcSavedVramBanks
+extern WfcVramBankState sWfcSavedVramBanks;
 #endif
 }
 #endif

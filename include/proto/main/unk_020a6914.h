@@ -4,9 +4,6 @@
 // Prototypes of the functions defined in src/main/unk_020a6914.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,27 +14,22 @@ void NetSceneMsg_Init(void);
 #ifndef PROTO_LOCAL_NetSceneMsg_Fini
 void NetSceneMsg_Fini(void);
 #endif
-#ifndef PROTO_LOCAL_NetStatusMsgBase_Init
-void NetStatusMsgBase_Init(void);
-#endif
-#ifndef PROTO_LOCAL_NetStatusMsgBase_Fini
-void NetStatusMsgBase_Fini(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_NetSceneMsg_Set
 void NetSceneMsg_Set(u8 *a, u8 b);
 #endif
 #ifndef PROTO_LOCAL_NetSceneMsg_Get
 void NetSceneMsg_Get(u8 *a, u8 *b);
 #endif
+#ifndef PROTO_LOCAL_NetStatusMsgBase_Init
+void NetStatusMsgBase_Init(void);
+#endif
+#ifndef PROTO_LOCAL_NetStatusMsgBase_Fini
+void NetStatusMsgBase_Fini(void);
+#endif
 #ifndef PROTO_LOCAL_NetStatusMsgBase_Pack
 void NetStatusMsgBase_Pack(u8 *p, int a, int b, int c, u8 d, int e);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

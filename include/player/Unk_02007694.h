@@ -5,13 +5,15 @@
 #include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
 #include "player/PlayerChangeClothesArgs.h"
+#include "player/PlayerActor.h"
 
 // PlayerActor view of the action handlers (walk, skid turn, change clothes, act05/91/92, wait menu, held-up item).
 // The 53 methods of the first group are defined in src/main/unk_02004558.cpp; the rest are declared by the
-// per-section views (formerly nE / nL) and have no symbols. Layout merged from the nE and nL views.
+// per-section views (formerly nE / nL) and have no symbols. No members of its own: it was a view of PlayerActor
+// with the members at their DS offsets (merged from the nE and nL views), wrong on 64-bit hosts.
 class PlayerActionRequest;
 
-class Unk_02007694 {
+class Unk_02007694 : public PlayerActor {
 public:
     void resetRotXForAction(u32 a);
     void stopMovementForAction(u32 a);
@@ -151,55 +153,6 @@ public:
     s32 func_0200d640();
     u16 func_0200d5fc();
     void func_0200ff08();
-
-    /* 0x000 */ u8 unk_00[0x5c];
-    /* 0x05c */ u8 position[0x8e - 0x5c];
-    /* 0x08e */ s16 rotY;
-    /* 0x090 */ u8 unk_90[4];
-    /* 0x094 */ s16 moveAngleY;
-    /* 0x096 */ u8 unk_96[2];
-    /* 0x098 */ s32 speed;
-    /* 0x09c */ u8 unk_9c[8];
-    /* 0x0a4 */ u32 velocity;
-    /* 0x0a8 */ u32 velocityY;
-    /* 0x0ac */ u32 velocityZ;
-    /* 0x0b0 */ u8 actorFlags[0xc4 - 0xb0];
-    /* 0x0c4 */ u8 drawPos[0xd0 - 0xc4];
-    /* 0x0d0 */ u16 drawTilt;
-    /* 0x0d2 */ u8 unk_d2[0x294 - 0xd2];
-    /* 0x294 */ Mtx43 bodyBaseMtx;
-    /* 0x2c4 */ u8 unk_2c4[0x2cc - 0x2c4];
-    /* 0x2cc */ u8 bodyAnimCtrl[8];
-    /* 0x2d4 */ u32 bodyAnimFrame;
-    /* 0x2d8 */ u8 unk_2d8[0x2e0 - 0x2d8];
-    /* 0x2e0 */ u8 bodyAnimPlayMode;
-    /* 0x2e1 */ u8 unk_2e1[0x694 - 0x2e1];
-    /* 0x694 */ Mtx43 itemHandMtx;
-    /* 0x6c4 */ VecFx32 footPosA;
-    /* 0x6d0 */ VecFx32 footPosB;
-    /* 0x6dc */ u8 headTopPos[0x700 - 0x6dc];
-    /* 0x700 */ s32 animId;
-    /* 0x704 */ u8 handPose[5];
-    /* 0x709 */ u8 faceTex[0x7a0 - 0x709];
-    /* 0x7a0 */ u8 bgCheckWork[0x30];
-    /* 0x7d0 */ PlayerChangeClothesWork actionWork;
-    /* 0x7ec */ u32 action;
-    /* 0x7f0 */ u8 prevAction[8];
-    /* 0x7f8 */ u32 actionPriority;
-    /* 0x7fc */ u32 sessionSlot;
-    /* 0x800 */ u8 exitIndex[0x820 - 0x800];
-    /* 0x820 */ s32 shownItemPosX;
-    /* 0x824 */ s32 shownItemPosY;
-    /* 0x828 */ s32 shownItemPosZ;
-    /* 0x82c */ s32 shownItemScaleX;
-    /* 0x830 */ s32 shownItemScaleY;
-    /* 0x834 */ s32 shownItemScaleZ;
-    /* 0x838 */ u8 seEmitterLocal[0x8e4 - 0x838];
-    /* 0x8e4 */ u8 tripCooldown;
-    /* 0x8e5 */ u8 alpha[0x8ec - 0x8e5];
-    /* 0x8ec */ PlayerNetChangeClothesArgs netData;
-    /* 0x8f0 */ u8 unk_8f0[0xc80 - 0x8f0];
-    /* 0xc80 */ u16 netSeq;
 };
 
 #endif

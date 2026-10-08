@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "item/ItemId.h"
 #include "item/ItemInfoTables.h"
 #endif
 
@@ -368,6 +369,9 @@ extern char sIconModelStrWatering[];
 #endif
 #ifndef PROTO_LOCAL_sIconModelStrGaxe
 extern char sIconModelStrGaxe[];
+#endif
+#ifndef PROTO_LOCAL_sFirstHoldableItem
+extern ItemId sFirstHoldableItem;
 #endif
 #ifndef PROTO_LOCAL_sIconModelStrPaint04
 extern char sIconModelStrPaint04[];

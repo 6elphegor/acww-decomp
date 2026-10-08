@@ -11,6 +11,12 @@ extern "C" {
 #ifndef PROTO_LOCAL_OS_IrqDummy
 void OS_IrqDummy(void);
 #endif
+#ifndef PROTO_LOCAL_OS_EnableIrqMask
+u32 OS_EnableIrqMask(u32 intr);
+#endif
+#ifndef PROTO_LOCAL_OS_DisableIrqMask
+u32 OS_DisableIrqMask(u32 intr);
+#endif
 #ifdef __cplusplus
 }
 #endif

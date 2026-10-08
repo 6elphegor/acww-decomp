@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov132/unk_ov132_022936c0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class BankMenu;
 #endif
@@ -12,6 +13,9 @@ class BankMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_BankMenu_Create
 BankMenu *BankMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sBankMenuProfile
+extern ProcProfile sBankMenuProfile;
 #endif
 }
 #endif

@@ -4,7 +4,9 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020e9a08.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/HexTable.h"
 #include "net/Net.h"
+#include "net/WifiPingState.h"
 #include "sys/OSMessageQueue.h"
 #include "types64.h"
 struct NetSlot;
@@ -445,6 +447,15 @@ extern u8 data_0213b058;
 extern "C" {
 #ifndef PROTO_LOCAL_sSendSlots
 extern NetSlot sSendSlots[16];
+#endif
+#ifndef PROTO_LOCAL_sWifiPingState
+extern Ent sWifiPingState[20];
+#endif
+#ifndef PROTO_LOCAL_data_0213b070
+extern HexTable data_0213b070;
+#endif
+#ifndef PROTO_LOCAL_data_0213b084
+extern HexTable data_0213b084;
 #endif
 }
 #endif

@@ -5,7 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class GateHouse;
 #endif
 
@@ -23,6 +23,9 @@ extern char data_ov003_02235204[0x24];
 #endif
 #ifndef PROTO_LOCAL_GateHouse_Create
 void *GateHouse_Create();
+#endif
+#ifndef PROTO_LOCAL_GateHouse_GetDesign
+s32 GateHouse_GetDesign();
 #endif
 #ifndef PROTO_LOCAL_GateHouse_GetModelName
 char *GateHouse_GetModelName();
@@ -45,8 +48,8 @@ extern char data_ov003_022312bc[12];
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_GateHouse_GetDesign
-s32 GateHouse_GetDesign();
+#ifndef PROTO_LOCAL_sGateHouseProfile
+extern ActorProfile sGateHouseProfile;
 #endif
 #ifndef PROTO_LOCAL_GateHouse_ApplyTownFlag
 BOOL GateHouse_ApplyTownFlag(GateHouse *self);

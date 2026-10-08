@@ -6,9 +6,15 @@
 #include "types.h"
 #include "net/WifiApConfig.h"
 #include "net/WifiApContext.h"
+#include "net/WifiApControl.h"
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWifiApAllocator
+extern WifiApAllocator *sWifiApAllocator;
 #endif
 #ifndef PROTO_LOCAL_sWifiApSocketConfig
 extern void *sWifiApSocketConfig;
@@ -89,6 +95,14 @@ BOOL WifiAp_MacEquals(u8 *a, u8 *b);
 s32 WifiAp_GetLinkLevel();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWifiApControl
+extern WifiApControl *sWifiApControl;
+#endif
 }
 #endif
 

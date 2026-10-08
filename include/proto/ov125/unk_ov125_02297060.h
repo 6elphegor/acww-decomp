@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov125/unk_ov125_02297060.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class PatternSelectMenu;
 #endif
@@ -26,6 +27,9 @@ void PatternSelect_LoadPatternIcons();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPatternSelectMenuProfile
+extern ProcProfile sPatternSelectMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_PatternSelectMenu_Create
 PatternSelectMenu *PatternSelectMenu_Create();
 #endif

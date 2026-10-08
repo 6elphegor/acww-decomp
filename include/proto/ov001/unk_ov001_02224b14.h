@@ -5,12 +5,17 @@
 
 #include "types.h"
 #include "net/WfcObjGroup.h"
+#include "nitro/gxoam.h"
+struct WfcCellEntry;
+#ifndef __cplusplus
+typedef struct WfcCellEntry WfcCellEntry;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_WfcCell_Load
 void WfcCell_Load(s32 which, void *path);
 #endif
@@ -25,6 +30,15 @@ GXOamAttr *WfcObj_CreateSingle(s32 which, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_WfcObj_Create
 WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcCellData
+extern WfcCellEntry *sWfcCellData[2];
 #endif
 }
 #endif

@@ -6,6 +6,9 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct EventAnnounceState;
+#ifndef __cplusplus
+typedef struct EventAnnounceState EventAnnounceState;
+#endif
 #ifdef __cplusplus
 class EventAnnouncer;
 #endif

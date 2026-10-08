@@ -4,13 +4,22 @@
 // Prototypes of the functions defined in src/ov048/unk_ov048_02258de0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcCopperTalkScript;
+struct Unk_ov048_State_Ent;
+#ifndef __cplusplus
+typedef struct SpNpcCopperTalkScript SpNpcCopperTalkScript;
+typedef struct Unk_ov048_State_Ent Unk_ov048_State_Ent;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcCopper;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SpNpcCopper_CheckKatieEscort
+BOOL SpNpcCopper_CheckKatieEscort();
 #endif
 #ifndef PROTO_LOCAL_sSpNpcCopperSequence4Key
 extern char sSpNpcCopperSequence4Key[];
@@ -45,8 +54,14 @@ SpNpcCopper *SpNpcCopper_Create();
 #ifndef PROTO_LOCAL_SpNpcCopper_ChangeAct
 void SpNpcCopper_ChangeAct(SpNpcCopper *self, s32 s);
 #endif
-#ifndef PROTO_LOCAL_SpNpcCopper_CheckKatieEscort
-BOOL SpNpcCopper_CheckKatieEscort();
+#ifndef PROTO_LOCAL_sSpNpcCopperTalkScripts
+extern SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcCopperActTable
+extern Unk_ov048_State_Ent sSpNpcCopperActTable[18];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcCopperProfile
+extern ActorProfile sSpNpcCopperProfile;
 #endif
 }
 #endif

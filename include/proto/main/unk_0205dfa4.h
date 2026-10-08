@@ -7,6 +7,7 @@
 #include "gfx/Mtx43.h"
 #ifdef __cplusplus
 #include "gfx/ModelAnim.h"
+#include "gfx/NNSG3dRS.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/TwoLayerAnimModel.h"
@@ -147,6 +148,12 @@ void HeldItemModels_RelocateTexture(HeldItemModelBank *self, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModels_PollTexUpload
 s32 HeldItemModels_PollTexUpload(HeldItemModelBank *self, u32 idx);
+#endif
+#ifndef PROTO_LOCAL_HeldItemModels_OnJointCalcPre
+void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
+#endif
+#ifndef PROTO_LOCAL_HeldItemModels_OnJointCalcPost
+void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModel_Setup
 void HeldItemModel_Setup(HeldItemModel *o, u32 id, Character *x, u16 *code, void *a5, s32 flag);

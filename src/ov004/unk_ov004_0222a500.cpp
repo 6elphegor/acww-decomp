@@ -1,5 +1,6 @@
 #include "game/BoxCollider.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0202fa70.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -212,7 +213,6 @@ u32 Scene_GetCurrent(void);
 s32 Scene_InHouseRoom(void);
 s32 Scene_InUnk6To8(void);
 s32 Scene_InNookShop(void);
-u32 Scene_GetHouseRoom(void);
 void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
 BOOL Item_IsFurniture(u16 *p);
@@ -220,20 +220,12 @@ u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
-BOOL BoxCollider_Unregister(BoxCollider *self);
-BOOL BoxCollider_Register(BoxCollider *self, s32 a, s32 b, s32 c, VecFx32 *p, s16 s, VecFx32 *q);
 s32 FX_Div(s32 a, s32 b);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 u32 SceneLights_GetMatLightMask2();
 void *SaveVillagers_Get(void *self, s32 i);
 u32 Villager_GetWallpaper(void *self);
 u32 Villager_GetCarpet(void *self);
-s32 SceneId_IsHouseRoom(s32 r);
-s32 SceneId_GetHouseRoom(s32 r);
-s32 SceneId_IsVillagerHouse(s32 r);
-s32 SceneId_GetVillagerHouse(s32 r);
-s32 SceneId_IsNookShop(s32 r);
-s32 SceneId_GetNookShop(s32 r);
 void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);

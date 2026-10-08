@@ -212,6 +212,12 @@ ClockDateTime *VillagerPlan_GetStateDate(VillagerPlan *p);
 #ifndef PROTO_LOCAL_ErrandRecord_GetTime
 ClockDateTime *ErrandRecord_GetTime(ErrandRecord *p);
 #endif
+#ifndef PROTO_LOCAL_PlanErrand_Construct
+void *PlanErrand_Construct(PlanErrand *self);
+#endif
+#ifndef PROTO_LOCAL_PlanErrand_Destruct
+void *PlanErrand_Destruct(PlanErrand *self);
+#endif
 #ifndef PROTO_LOCAL_PlanErrand_Clear
 void PlanErrand_Clear(PlanErrand *self);
 #endif
@@ -259,6 +265,9 @@ void PlanErrand_SetFlag(PlanErrand *p, s32 i);
 #endif
 #ifndef PROTO_LOCAL_PlanErrand_TestFlag
 BOOL PlanErrand_TestFlag(PlanErrand *p, u32 i);
+#endif
+#ifndef PROTO_LOCAL_PlanErrand_ClearFlags
+void PlanErrand_ClearFlags(PlanErrand *p);
 #endif
 #ifndef PROTO_LOCAL_PlanErrand_GetCount
 u8 PlanErrand_GetCount(PlanErrand *p);

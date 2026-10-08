@@ -4,12 +4,16 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0222bcfc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class NewYearCountdown;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sNewYearCountdownProfile
+extern ProcProfile sNewYearCountdownProfile;
+#endif
 #ifndef PROTO_LOCAL_NewYearCountdown_Create
 NewYearCountdown *NewYearCountdown_Create();
 #endif

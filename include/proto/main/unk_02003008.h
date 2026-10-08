@@ -6,13 +6,10 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "npc/VillagerId.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_VillagerId_GetPersonality
-u32 VillagerId_GetPersonality(VillagerId *o);
 #endif
 #ifndef PROTO_LOCAL_Villager_PersonalityToGender
 u32 Villager_PersonalityToGender(u32 t);
@@ -22,6 +19,15 @@ void Villager_MakePersonalityFileName(void *buf, u32 size, const char *key, u32 
 #endif
 #ifndef PROTO_LOCAL_Villager_PersonalityToVoiceType
 u32 Villager_PersonalityToVoiceType(u32 t);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_VillagerId_GetPersonality
+u32 VillagerId_GetPersonality(VillagerId *o);
 #endif
 }
 #ifndef PROTO_LOCAL_sPersonalityPrefixSnooty

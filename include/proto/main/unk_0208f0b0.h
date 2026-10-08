@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 class TownExchangeRemoteRecords;
 #endif
 
@@ -21,19 +20,17 @@ void TownExchange_Clear(void *p);
 #ifndef PROTO_LOCAL_TownExchange_GetLetter
 void *TownExchange_GetLetter(void *p);
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_TownExchange_GetRemote
 void *TownExchange_GetRemote(s32 i);
 #endif
 #ifndef PROTO_LOCAL_TownExchange_GetForAid
 void *TownExchange_GetForAid(s32 i);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sTownExchangeRemoteRecords
 extern TownExchangeRemoteRecords sTownExchangeRemoteRecords;
 #endif

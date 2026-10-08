@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus

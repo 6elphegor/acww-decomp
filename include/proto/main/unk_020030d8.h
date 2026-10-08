@@ -5,6 +5,9 @@
 
 #include "types.h"
 struct HudLinkIcon;
+#ifndef __cplusplus
+typedef struct HudLinkIcon HudLinkIcon;
+#endif
 #ifdef __cplusplus
 #include "npc/VillagerId.h"
 class HudUnkSlideIcon;

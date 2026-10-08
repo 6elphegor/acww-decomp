@@ -103,6 +103,7 @@ __asm__(".section .rodata.data_0213b134,\"a\"\n.balign 8\n.globl data_0213b134\n
 __asm__(".section .rodata.data_0213b13c,\"a\"\n.balign 8\n.globl data_0213b13c\ndata_0213b13c:\n.quad 0x1, 0x0\n.size data_0213b13c, 16\n.text");
 __asm__(".section .rodata.data_0213b144,\"a\"\n.balign 8\n.globl data_0213b144\ndata_0213b144:\n.quad 0x21, 0x0\n.size data_0213b144, 16\n.text");
 __asm__(".section .rodata.data_0213b14c,\"a\"\n.balign 8\n.globl data_0213b14c\ndata_0213b14c:\n.quad 0x29, 0x0\n.size data_0213b14c, 16\n.text");
+__asm__(".section .data.data_021feb6c,\"aw\"\n.balign 8\n.globl data_021feb6c\ndata_021feb6c:\n.quad 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0\n.size data_021feb6c, 64\n.text");
 __asm__(".section .data.data_01ff8ab4,\"aw\"\n.balign 8\n.globl data_01ff8ab4\ndata_01ff8ab4:\n.quad texmtxCalc_flag_ + 0x0, texmtxCalc_flagS_ + 0x0, texmtxCalc_flagR_ + 0x0, texmtxCalc_flagRS_ + 0x0, texmtxCalc_flagT_ + 0x0, texmtxCalc_flagTS_ + 0x0, texmtxCalc_flagTR_ + 0x0, texmtxCalc_flagTRS_ + 0x0\n.size data_01ff8ab4, 64\n.text");
 __asm__(".section .data.data_021c1b3c,\"aw\"\n.balign 8\n.globl data_021c1b3c\ndata_021c1b3c:\n.quad 0x0\n.size data_021c1b3c, 8\n.text");
 __asm__(".section .data.gSceneBlockMap,\"aw\"\n.balign 8\n.globl gSceneBlockMap\ngSceneBlockMap:\n.quad 0x0\n.size gSceneBlockMap, 8\n.text");
@@ -152,7 +153,6 @@ __asm__(".globl data_021f5c62\n.set data_021f5c62, host_gap21_1 + 18");
 __asm__(".globl data_021f5c66\n.set data_021f5c66, host_gap21_1 + 22");
 __asm__(".globl data_021f5c68\n.set data_021f5c68, host_gap21_1 + 24");
 __asm__(".globl data_021f5c80\n.set data_021f5c80, host_gap21_1 + 48");
-__asm__(".globl data_021feb6c\n.set data_021feb6c, host_gap22_1 + 0");
 __asm__(".globl data_021feb70\n.set data_021feb70, host_gap22_1 + 4");
 __asm__(".globl data_021ff4b8\n.set data_021ff4b8, host_gap23_1 + 0");
 __asm__(".globl data_021fff80\n.set data_021fff80, host_gap24_1 + 0");

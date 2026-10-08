@@ -6,6 +6,9 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct ResidentSelectStateEntry;
+#ifndef __cplusplus
+typedef struct ResidentSelectStateEntry ResidentSelectStateEntry;
+#endif
 #ifdef __cplusplus
 class ResidentSelect;
 #endif

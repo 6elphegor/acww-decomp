@@ -4,6 +4,10 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_02214494.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,6 +16,32 @@ extern "C" {
 void *ReddTent_Create();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_data_ov003_02235144
+extern DebugColor data_ov003_02235144;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235160
+extern DebugColor data_ov003_02235160;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_0223514c
+extern DebugColor data_ov003_0223514c;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235158
+extern DebugColor data_ov003_02235158;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_0223515c
+extern DebugColor data_ov003_0223515c;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235148
+extern DebugColor data_ov003_02235148;
+#endif
+#ifndef PROTO_LOCAL_sReddTentProfile
+extern ActorProfile sReddTentProfile;
+#endif
 }
 #endif
 

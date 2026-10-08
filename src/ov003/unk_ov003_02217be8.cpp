@@ -121,7 +121,7 @@ void Ground_SetWaveLevel(s32 v);
 s32 FX_Div(s32 a, s32 b);
 }
 
-static inline BgModelCache *BgCache() { return (BgModelCache *)BgModelCache_Get(); }
+static inline BgModelCache *BgCache() { return BgModelCache_Get(); }
 
 
 

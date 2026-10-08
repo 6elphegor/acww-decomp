@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov131/unk_022936c0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class AmountEntryMenu;
 #endif
@@ -12,6 +13,9 @@ class AmountEntryMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_AmountEntryMenu_Create
 AmountEntryMenu *AmountEntryMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sAmountEntryMenuProfile
+extern ProcProfile sAmountEntryMenuProfile;
 #endif
 }
 #endif

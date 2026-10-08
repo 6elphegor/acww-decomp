@@ -69,7 +69,6 @@ s32 Scene_GetCurrent();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
-BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 extern BgmManager *data_021c1b3c;

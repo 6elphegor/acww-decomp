@@ -7,6 +7,12 @@
 #include "net/AossParam.h"
 #include "nitro/wm.h"
 #include "sys/OSMessageQueue.h"
+struct AossRateEntry;
+#ifndef __cplusplus
+typedef struct AossRateEntry AossRateEntry;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,6 +34,9 @@ extern u8 sAossBssDesc[0xc0];
 #endif
 #ifndef PROTO_LOCAL_sAossWepDesc
 extern u8 sAossWepDesc[0x74];
+#endif
+#ifndef PROTO_LOCAL_Aoss_ConvertBssDesc
+void Aoss_ConvertBssDesc(WMBssDesc *a, AossApInfo *b);
 #endif
 #ifndef PROTO_LOCAL_Aoss_SetBssDescSsid
 void Aoss_SetBssDescSsid(void *a, void *b);
@@ -66,6 +75,14 @@ void *Aoss_Alloc(u32 a);
 void Aoss_Free(void *a);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sAossRateTable
+extern AossRateEntry sAossRateTable[12];
+#endif
 }
 #endif
 

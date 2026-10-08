@@ -5,7 +5,12 @@
 
 #include "types.h"
 #include "net/WfcObjGroup.h"
+struct WfcDialogWork;
 struct WfcTask;
+#ifndef __cplusplus
+typedef struct WfcDialogWork WfcDialogWork;
+typedef struct WfcTask WfcTask;
+#endif
 #ifdef __cplusplus
 #endif
 
@@ -62,6 +67,9 @@ void WfcDialog_UndimTask(WfcTask *task);
 #endif
 #ifndef PROTO_LOCAL_WfcDialog_DestroyTask
 void WfcDialog_DestroyTask(WfcTask *task);
+#endif
+#ifndef PROTO_LOCAL_sWfcDialog
+extern WfcDialogWork *sWfcDialog;
 #endif
 }
 #endif

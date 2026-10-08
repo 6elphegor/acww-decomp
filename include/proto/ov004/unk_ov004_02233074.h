@@ -4,20 +4,28 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_02233074.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 struct FtrMoveAnim;
 struct FtrSoundRecord;
 struct TvProgSlot;
 struct TvScreen;
+#ifndef __cplusplus
+typedef struct FtrMoveAnim FtrMoveAnim;
+typedef struct FtrSoundRecord FtrSoundRecord;
+typedef struct TvProgSlot TvProgSlot;
+typedef struct TvScreen TvScreen;
+#endif
 #ifdef __cplusplus
 #include "actor/Actor.h"
 #include "gfx/ModelSlotPool.h"
+#include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
-#include "room/FtrActor.h"
 #include "room/FtrActorGrid.h"
 #include "room/FtrActorTable.h"
 #include "room/FtrManager.h"
 #include "room/FtrPreviewer.h"
 #include "snd/TvSound.h"
+class FtrActor;
 class FurnitureManager;
 #endif
 
@@ -249,6 +257,9 @@ s32 FtrMgr_GetSurfaceHeightAtPos(VecFx32 *p);
 #ifndef PROTO_LOCAL_FtrMgr_CheckBedStep
 s32 FtrMgr_CheckBedStep(VecFx32 *pos, s32 ang, VecFx32 *out);
 #endif
+#ifndef PROTO_LOCAL_sFurnitureManagerProfile
+extern ProcProfile sFurnitureManagerProfile;
+#endif
 #ifndef PROTO_LOCAL_FtrMgr_CheckBedStepFront
 s32 FtrMgr_CheckBedStepFront(VecFx32 *pos, s32 ang);
 #endif
@@ -300,6 +311,21 @@ s32 FtrMgr_FindPlacement(u32 *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode);
 #ifndef PROTO_LOCAL_FurnitureManager_GetTvSound
 TvSound *FurnitureManager_GetTvSound(void);
 #endif
+#ifndef PROTO_LOCAL_FtrMoveAnim_NodeCallback
+void FtrMoveAnim_NodeCallback(NNSG3dRS *o);
+#endif
+#ifndef PROTO_LOCAL_FtrMoveAnim_InstallCallback
+void FtrMoveAnim_InstallCallback(NNSG3dRS *o);
+#endif
+#ifndef PROTO_LOCAL_FtrMoveAnim_Load
+void FtrMoveAnim_Load(FtrMoveAnim *r);
+#endif
+#ifndef PROTO_LOCAL_FtrMoveAnim_Unload
+void FtrMoveAnim_Unload(FtrMoveAnim *r);
+#endif
+#ifndef PROTO_LOCAL_FtrMoveAnim_GetMtx
+void *FtrMoveAnim_GetMtx(FtrMoveAnim *r);
+#endif
 #ifndef PROTO_LOCAL_FtrMoveAnim_SetPos
 void FtrMoveAnim_SetPos(FtrMoveAnim *r, VecFx32 *v);
 #endif
@@ -348,6 +374,15 @@ void TvProgSlot_Init(TvProgSlot *p, void *a);
 #ifndef PROTO_LOCAL_TvProgSlot_Load
 BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x);
 #endif
+#ifndef PROTO_LOCAL_TvProgSlot_FreeFiles
+void TvProgSlot_FreeFiles(TvProgSlot *p);
+#endif
+#ifndef PROTO_LOCAL_TvProgSlot_Update
+void TvProgSlot_Update(TvProgSlot *p);
+#endif
+#ifndef PROTO_LOCAL_TvProgSlot_Release
+void TvProgSlot_Release(TvProgSlot *p);
+#endif
 #ifndef PROTO_LOCAL_TvProgSlot_GetProgram
 s32 TvProgSlot_GetProgram(TvProgSlot *p);
 #endif
@@ -360,8 +395,20 @@ u16 TvProgSlot_GetLoopCount(TvProgSlot *p);
 #ifndef PROTO_LOCAL_TvProgSlot_GetFrame
 u32 TvProgSlot_GetFrame(TvProgSlot *p);
 #endif
+#ifndef PROTO_LOCAL_TvScreen_Load
+void TvScreen_Load(TvScreen *q);
+#endif
 #ifndef PROTO_LOCAL_TvScreen_SetProgram
 BOOL TvScreen_SetProgram(TvScreen *o, s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_TvScreen_UpdateSchedule
+void TvScreen_UpdateSchedule(TvScreen *o);
+#endif
+#ifndef PROTO_LOCAL_TvScreen_Update
+void TvScreen_Update(TvScreen *o);
+#endif
+#ifndef PROTO_LOCAL_TvScreen_Release
+void TvScreen_Release(TvScreen *o);
 #endif
 #ifndef PROTO_LOCAL_TvScreen_IsLoaded
 BOOL TvScreen_IsLoaded(TvScreen *o);

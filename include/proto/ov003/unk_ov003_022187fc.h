@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_022187fc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "field/FieldStructureMgr.h"
 #include "gfx/VecFx32.h"
@@ -77,6 +78,9 @@ extern VillagerHouseTex sVillagerHouseTex;
 #endif
 #ifndef PROTO_LOCAL_sHouseLightUpDeco
 extern HouseLightUpDeco sHouseLightUpDeco;
+#endif
+#ifndef PROTO_LOCAL_sFieldStructureMgrProfile
+extern ProcProfile sFieldStructureMgrProfile;
 #endif
 #ifndef PROTO_LOCAL_sBuildingList
 extern BuildingActor *sBuildingList[0x20];

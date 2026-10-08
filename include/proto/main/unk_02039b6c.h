@@ -4,9 +4,6 @@
 // Prototypes of the functions defined in src/main/unk_02039b6c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,18 +14,13 @@ void RecycleBin_Construct();
 #ifndef PROTO_LOCAL_RecycleBin_Destruct
 void RecycleBin_Destruct();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_RecycleBin_Clear
 void RecycleBin_Clear(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_RecycleBin_AdvanceDays
 void RecycleBin_AdvanceDays(u16 *arr, void *src, s32 n);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

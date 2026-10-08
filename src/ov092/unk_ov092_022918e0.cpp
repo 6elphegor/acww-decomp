@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "snd/BgmVolumeMixer.h"
+#include "snd/BgmManager.h"
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuLauncher.h"
@@ -13,7 +14,7 @@
 #include "proto/ov092/unk_ov092_022918e0.h"
 
 extern "C" {
-extern u8 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;  // (the BGM manager)
 }
 
 
@@ -88,7 +89,7 @@ void MenuLauncher::setNextRequest(s32 a, s32 b) {
         if (b != 0) {
             Snd_PlaySe(2);
         }
-        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->endMenuDuck();
+        data_021c1b3c->mixer.endMenuDuck();
     }
 }
 
@@ -244,13 +245,13 @@ void MenuLauncher::initLauncher() {
     switch (requestedMode) {
     case 0x2d:
     case 0x2e:
-        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(1);
+        data_021c1b3c->mixer.setMenuDuck(1);
         break;
     case 0x3f:
-        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(2);
+        data_021c1b3c->mixer.setMenuDuck(2);
         break;
     default:
-        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
+        data_021c1b3c->mixer.setMenuDuck(0);
         break;
     }
 }

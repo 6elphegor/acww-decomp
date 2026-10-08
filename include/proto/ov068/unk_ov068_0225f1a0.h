@@ -4,11 +4,14 @@
 // Prototypes of the functions defined in src/ov068/unk_ov068_0225f1a0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct FieldVillagerAiState;
 struct FieldVillagerFocusRange;
 #ifndef __cplusplus
+typedef struct FieldVillagerAiState FieldVillagerAiState;
 typedef struct FieldVillagerFocusRange FieldVillagerFocusRange;
 #endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 #include "gfx/VecFx32.h"
 #include "save/Pattern.h"
 class FieldVillager;
@@ -130,6 +133,18 @@ void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sFieldVillagerAiTable
+extern FieldVillagerAiState sFieldVillagerAiTable[8];
+#endif
+#ifndef PROTO_LOCAL_sFieldVillagerAiTable2
+extern FieldVillagerAiState sFieldVillagerAiTable2[8];
+#endif
+#ifndef PROTO_LOCAL_sFieldVillagerAiTable3
+extern FieldVillagerAiState sFieldVillagerAiTable3[8];
+#endif
+#ifndef PROTO_LOCAL_sFieldVillagerProfile
+extern ActorProfile sFieldVillagerProfile;
+#endif
 #ifndef PROTO_LOCAL_FieldVillager_Create
 FieldVillager *FieldVillager_Create();
 #endif

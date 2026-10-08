@@ -1,5 +1,6 @@
 #include "types.h"
 #include "item/ItemClassOrders.h"
+#include "item/ItemId.h"
 #include "item/ItemPickSpec.h"
 #include "item/RandomSource.h"
 #include "item/DateSeededRandomSource.h"
@@ -18,10 +19,6 @@ void Clock_GetDateTime(void *p);
 s32 FengShui_GetEastTotal(void);
 s32 FengShui_GetSouthTotal(void);
 s32 FX_Div(s32 a, s32 b);
-void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
-void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
-void _ZN6ItemIdC1Ev(void *);
-void _ZN6ItemIdD1Ev(void *);
 s32 ItemInfo_GetClass(u16 *p);
 s32 ItemInfo_GetSeason(u16 *p);
 }
@@ -581,61 +578,60 @@ extern "C" void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng
     if (rng != 0) obj = rng;
     else obj = &dflt;
     u8 mask[3] = {1, 1, 1};
-    u16 h[9];
-    __cxa_vec_ctor(h, 9, 2, _ZN6ItemIdC1Ev, _ZN6ItemIdD1Ev);
+    ItemId h[9];
     {
         ItemPickSpec o;
         o.set(0, 1);
         ItemPick_One(&t0, &o, a, rng, 1, 1, 0);
-        h[0] = t0;
+        h[0].id = t0;
     }
     {
         ItemPickSpec o;
         o.set(4, 1);
         ItemPick_One(&t1, &o, a, rng, 1, 1, 0);
-        h[1] = t1;
+        h[1].id = t1;
     }
     {
         ItemPickSpec o;
         o.set(3, 1);
         ItemPick_One(&t2, &o, a, rng, 1, 1, 0);
-        h[2] = t2;
+        h[2].id = t2;
     }
     {
         ItemPickSpec o;
         o.set(0, 2);
         ItemPick_One(&t3, &o, a, rng, 1, 1, 0);
-        h[3] = t3;
+        h[3].id = t3;
     }
     {
         ItemPickSpec o;
         o.set(4, 2);
         ItemPick_One(&t4, &o, a, rng, 1, 1, 0);
-        h[4] = t4;
+        h[4].id = t4;
     }
     {
         ItemPickSpec o;
         o.set(3, 2);
         ItemPick_One(&t5, &o, a, rng, 1, 1, 0);
-        h[5] = t5;
+        h[5].id = t5;
     }
     {
         ItemPickSpec o;
         o.set(0, 3);
         ItemPick_One(&t6, &o, a, rng, 1, 1, 0);
-        h[6] = t6;
+        h[6].id = t6;
     }
     {
         ItemPickSpec o;
         o.set(4, 3);
         ItemPick_One(&t7, &o, a, rng, 1, 1, 0);
-        h[7] = t7;
+        h[7].id = t7;
     }
     {
         ItemPickSpec o;
         o.set(3, 3);
         ItemPick_One(&t8, &o, a, rng, 1, 1, 0);
-        h[8] = t8;
+        h[8].id = t8;
     }
     u32 idx;
     u32 count;
@@ -660,7 +656,7 @@ extern "C" void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng
                     cnt = 0;
                     j = 0;
                     for (; j < 3; j++) {
-                        if (!Unk_0206277c_Bad1((u16 *)((u8 *)h + k * 6 + j * 2), &e1)) cnt++;
+                        if (!Unk_0206277c_Bad1(&h[k * 3 + j].id, &e1)) cnt++;
                     }
                     if (cnt == 0) {
                         mask[k] = 0;
@@ -669,11 +665,10 @@ extern "C" void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng
                     pick2 = obj->random(cnt);
                     idx = 0;
                     for (j = 0; j < 3; j++) {
-                        u16 *p = (u16 *)((u8 *)h + k * 6 + j * 2);
+                        u16 *p = &h[k * 3 + j].id;
                         if (!Unk_0206277c_Bad2(p, &e2)) {
                             if (idx == pick2) {
                                 *out = *p;
-                                __cxa_vec_cleanup(h, 9, 2, _ZN6ItemIdD1Ev);
                                 return;
                             }
                             idx++;
@@ -685,7 +680,6 @@ extern "C" void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng
     next:;
     }
     *out = 0xfff1;
-    __cxa_vec_cleanup(h, 9, 2, _ZN6ItemIdD1Ev);
 }
 
 extern "C" s32 ItemList_Find(u16 *p) {

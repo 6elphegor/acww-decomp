@@ -26,7 +26,6 @@ void VillagerStates_Init(void);
 void VillagerStates_Destroy(void);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
-void FieldScene_Request(u32 a, u32 b);
 void VramQueue2d_Init(void);
 void VramQueueTex_Init(void);
 void GX_SetBankForSubBG(u32 x);

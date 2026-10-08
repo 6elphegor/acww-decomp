@@ -78,8 +78,14 @@ u64 DwcNet_GetTimeMs();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sDwcInet
+extern DwcInetControl *sDwcInet;
+#endif
 #ifndef PROTO_LOCAL_DwcInet_InitEx
 void DwcInet_InitEx(DwcInetControl *p, s32 x, s32 y, u32 z);
+#endif
+#ifndef PROTO_LOCAL_DwcInet_Init
+void DwcInet_Init(DwcInetControl *p);
 #endif
 }
 #ifndef PROTO_LOCAL_DwcNet_Realloc

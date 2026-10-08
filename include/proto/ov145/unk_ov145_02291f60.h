@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class DonationMenu;
 #endif
@@ -21,6 +22,9 @@ extern GXOamAttr data_ov145_02293820[16];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sDonationMenuProfile
+extern ProcProfile sDonationMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_DonationMenu_Create
 DonationMenu *DonationMenu_Create();
 #endif

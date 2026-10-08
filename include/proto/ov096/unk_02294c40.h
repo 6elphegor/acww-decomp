@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov096/unk_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "item/LetterView.h"
 #include "menu/PocketMenu.h"
@@ -21,6 +22,9 @@ u32 PocketMenu_GetPlayerSlot();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPocketMenuProfile
+extern ProcProfile sPocketMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_PocketMenu_Create
 PocketMenu *PocketMenu_Create();
 #endif

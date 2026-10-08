@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 class CautionMsgString256;
 class CautionMsgString64;
 class CommCautionWindow;
@@ -23,11 +22,23 @@ void CommCaution_SaveErrorCode();
 #ifndef PROTO_LOCAL_CommCaution_CopyString
 void CommCaution_CopyString(void *a, void *b);
 #endif
+#ifndef PROTO_LOCAL_CommCaution_FormatErrorCode
+u8 *CommCaution_FormatErrorCode();
+#endif
+#ifndef PROTO_LOCAL_CommCaution_ArePlanesHidden
+u8 CommCaution_ArePlanesHidden();
+#endif
+#ifndef PROTO_LOCAL_CommCaution_IsShutDown
+BOOL CommCaution_IsShutDown();
+#endif
 #ifndef PROTO_LOCAL_CommCaution_Init
 void CommCaution_Init();
 #endif
 #ifndef PROTO_LOCAL_CommCaution_Release
 void CommCaution_Release();
+#endif
+#ifndef PROTO_LOCAL_CommCaution_Update
+void CommCaution_Update(u8 a);
 #endif
 #ifndef PROTO_LOCAL_CommCaution_Draw
 void CommCaution_Draw();
@@ -43,20 +54,6 @@ void CommCaution_LoadMessages();
 #endif
 
 #ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_CommCaution_FormatErrorCode
-u8 *CommCaution_FormatErrorCode();
-#endif
-#ifndef PROTO_LOCAL_CommCaution_ArePlanesHidden
-u8 CommCaution_ArePlanesHidden();
-#endif
-#ifndef PROTO_LOCAL_CommCaution_IsShutDown
-BOOL CommCaution_IsShutDown();
-#endif
-#ifndef PROTO_LOCAL_CommCaution_Update
-void CommCaution_Update(u8 a);
-#endif
-}
 #ifndef PROTO_LOCAL_sCommCautionErrorCode
 extern u32 sCommCautionErrorCode;
 #endif

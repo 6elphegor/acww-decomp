@@ -2,6 +2,7 @@
 #define TALK_MSGPARSER_H
 
 #include "types.h"
+#include "talk/MsgCallStack.h"
 
 // Message script interpreter root (text cursor plus a call stack for nested texts). Defined in unk_020a6974.cpp.
 class MsgParser {
@@ -24,7 +25,7 @@ public:
     void reset();
 
     /* 0x04 */ u8 *cursor;
-    /* 0x08 */ u8 callStack[0x1c];
+    /* 0x08 */ MsgCallStack callStack;
 };
 
 #endif

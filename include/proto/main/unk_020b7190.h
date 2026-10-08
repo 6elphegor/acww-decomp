@@ -5,12 +5,20 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 class FieldInfoBalloon;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_FieldInfoBalloon_IsMenuTransition
+BOOL FieldInfoBalloon_IsMenuTransition();
+#endif
+#ifndef PROTO_LOCAL_FieldInfoBalloon_ShowSyncWaitMsg
+void FieldInfoBalloon_ShowSyncWaitMsg(s32 arg);
+#endif
+#ifndef PROTO_LOCAL_FieldInfoBalloon_ShowSyncKindMsg
+void FieldInfoBalloon_ShowSyncKindMsg(s32 i);
 #endif
 #ifndef PROTO_LOCAL_FieldInfoBalloon_ShowCancelled
 void FieldInfoBalloon_ShowCancelled();
@@ -20,6 +28,9 @@ void FieldInfoBalloon_ShowPleaseWait();
 #endif
 #ifndef PROTO_LOCAL_FieldInfoBalloon_ClearNetMsg
 void FieldInfoBalloon_ClearNetMsg();
+#endif
+#ifndef PROTO_LOCAL_FieldInfoBalloon_ShowTimerMsg
+void FieldInfoBalloon_ShowTimerMsg(u32 arg);
 #endif
 #ifndef PROTO_LOCAL_Comm_ReportShutdownError
 void Comm_ReportShutdownError();
@@ -41,20 +52,6 @@ void FieldInfoBalloon_Draw();
 #endif
 
 #ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_FieldInfoBalloon_IsMenuTransition
-BOOL FieldInfoBalloon_IsMenuTransition();
-#endif
-#ifndef PROTO_LOCAL_FieldInfoBalloon_ShowSyncWaitMsg
-void FieldInfoBalloon_ShowSyncWaitMsg(s32 arg);
-#endif
-#ifndef PROTO_LOCAL_FieldInfoBalloon_ShowSyncKindMsg
-void FieldInfoBalloon_ShowSyncKindMsg(s32 i);
-#endif
-#ifndef PROTO_LOCAL_FieldInfoBalloon_ShowTimerMsg
-void FieldInfoBalloon_ShowTimerMsg(u32 arg);
-#endif
-}
 #ifndef PROTO_LOCAL_sFieldInfoBalloon
 extern FieldInfoBalloon sFieldInfoBalloon;
 #endif

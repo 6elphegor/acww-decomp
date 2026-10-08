@@ -4,10 +4,9 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020fa0f4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
 #include "gfx/SplEmitterViews.h"
 #include "gfx/SplRes.h"
-#ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus

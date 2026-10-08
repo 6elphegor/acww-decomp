@@ -5,6 +5,12 @@
 
 #include "types.h"
 #include "nitro/wm.h"
+struct WfcMoveWhWork;
+#ifndef __cplusplus
+typedef struct WfcMoveWhWork WfcMoveWhWork;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -175,6 +181,17 @@ extern char data_ov001_0222b604[];
 extern char *sWfcMoveWhSysStateNames[10];
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_WfcMoveWh_SetWork
+void WfcMoveWh_SetWork(WfcMoveWhWork *p);
+#endif
+#ifndef PROTO_LOCAL_sWfcMoveWh
+extern WfcMoveWhWork *sWfcMoveWh;
+#endif
 }
 #endif
 

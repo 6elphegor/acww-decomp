@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class MelodyMenu;
 #endif
@@ -17,6 +18,12 @@ extern GXOamAttr data_ov143_02293980[2];
 #endif
 #ifndef PROTO_LOCAL_data_ov143_02293950
 extern GXOamAttr data_ov143_02293950[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov143_022939e8
+extern GXOamAttr data_ov143_022939e8[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov143_02293a00
+extern GXOamAttr data_ov143_02293a00[3];
 #endif
 #ifndef PROTO_LOCAL_data_ov143_02293af0
 extern GXOamAttr data_ov143_02293af0[3];
@@ -75,6 +82,9 @@ extern GXOamAttr *sMelodyNoteSprites[16];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sMelodyMenuProfile
+extern ProcProfile sMelodyMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_MelodyMenu_Create
 MelodyMenu *MelodyMenu_Create();
 #endif

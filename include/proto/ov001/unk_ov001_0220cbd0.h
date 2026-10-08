@@ -5,8 +5,10 @@
 
 #include "types.h"
 struct WfcMsgBank;
+#ifndef __cplusplus
+typedef struct WfcMsgBank WfcMsgBank;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -24,6 +26,12 @@ void WfcMsg_FreePool();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_WfcMsg_Load
+WfcMsgBank *WfcMsg_Load(void *a);
+#endif
+#ifndef PROTO_LOCAL_WfcMsg_Unload
+void WfcMsg_Unload(WfcMsgBank *e);
+#endif
 #ifndef PROTO_LOCAL_WfcMsg_GetString
 u8 *WfcMsg_GetString(WfcMsgBank *t, u32 i);
 #endif

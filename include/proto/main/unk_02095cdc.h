@@ -7,69 +7,26 @@
 #include "item/MotherLetterDate.h"
 #ifdef __cplusplus
 #include "item/Letter.h"
-#include "types.h"
 class PlayerData;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_LetterDelivery_PostOfficeClosedNop
-void LetterDelivery_PostOfficeClosedNop(void);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_Update
-void LetterDelivery_Update(void);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_DeliverReceivedLetter
-void LetterDelivery_DeliverReceivedLetter(void);
-#endif
-#ifndef PROTO_LOCAL_BottleLetter_WashUpThrownBottle
-void BottleLetter_WashUpThrownBottle();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_LetterDelivery_DeliverOutgoing
 s32 LetterDelivery_DeliverOutgoing(void);
 #endif
 #ifndef PROTO_LOCAL_LetterDelivery_IsMailboxFull
 BOOL LetterDelivery_IsMailboxFull(s32 idx);
 #endif
-#ifndef PROTO_LOCAL_LetterDelivery_PutInMailbox
-BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_PutInAddresseeMailbox
-BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_SendToVillager
-void LetterDelivery_SendToVillager(Letter *e);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_QueueOutgoing
-BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_HasKnownAddressee
-BOOL LetterDelivery_HasKnownAddressee(Letter *e);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_FindAddresseePlayer
-s32 LetterDelivery_FindAddresseePlayer(Letter *letter);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_FindAddresseeVillager
-s32 LetterDelivery_FindAddresseeVillager(Letter *letter);
-#endif
-#ifndef PROTO_LOCAL_LetterList_Compact
-s32 LetterList_Compact(Letter *base, s32 n);
-#endif
-#ifndef PROTO_LOCAL_LetterList_CountUsed
-s32 LetterList_CountUsed(Letter *base, s32 n);
-#endif
-#ifndef PROTO_LOCAL_LetterDelivery_HasFutureLetter
-s32 LetterDelivery_HasFutureLetter(PlayerData *p);
+#ifndef PROTO_LOCAL_LetterDelivery_PostOfficeClosedNop
+void LetterDelivery_PostOfficeClosedNop(void);
 #endif
 #ifndef PROTO_LOCAL_LetterDelivery_HasFreeOutgoingSlot
 s32 LetterDelivery_HasFreeOutgoingSlot(void);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_Update
+void LetterDelivery_Update(void);
 #endif
 #ifndef PROTO_LOCAL_LetterPaper_PickRandom
 u8 LetterPaper_PickRandom(u32 a, u32 b);
@@ -80,17 +37,8 @@ u8 LetterPaper_PickForPersonality(u32 i);
 #ifndef PROTO_LOCAL_LetterPaper_PickForMonth
 u8 LetterPaper_PickForMonth(u32 x);
 #endif
-#ifndef PROTO_LOCAL_MotherLetter_OnNewDay
-void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n);
-#endif
-#ifndef PROTO_LOCAL_MotherLetter_TrySendBirthday
-s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p);
-#endif
-#ifndef PROTO_LOCAL_MotherLetter_TrySendHoliday
-s32 MotherLetter_TrySendHoliday(Unk_02096354_Arg *p);
-#endif
-#ifndef PROTO_LOCAL_MotherLetter_TrySendRandom
-s32 MotherLetter_TrySendRandom(Unk_02096354_Arg *p);
+#ifndef PROTO_LOCAL_LetterDelivery_DeliverReceivedLetter
+void LetterDelivery_DeliverReceivedLetter(void);
 #endif
 #ifndef PROTO_LOCAL_MotherLetter_GetMonthFirst
 u32 MotherLetter_GetMonthFirst(u8 v);
@@ -139,6 +87,57 @@ s32 BottleLetter_IsBottleInTown();
 #endif
 #ifndef PROTO_LOCAL_BottleLetter_OnNewDay
 void BottleLetter_OnNewDay(s32 a);
+#endif
+#ifndef PROTO_LOCAL_BottleLetter_WashUpThrownBottle
+void BottleLetter_WashUpThrownBottle();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_LetterDelivery_PutInMailbox
+BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_PutInAddresseeMailbox
+BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_SendToVillager
+void LetterDelivery_SendToVillager(Letter *e);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_QueueOutgoing
+BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_HasKnownAddressee
+BOOL LetterDelivery_HasKnownAddressee(Letter *e);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_FindAddresseePlayer
+s32 LetterDelivery_FindAddresseePlayer(Letter *letter);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_FindAddresseeVillager
+s32 LetterDelivery_FindAddresseeVillager(Letter *letter);
+#endif
+#ifndef PROTO_LOCAL_LetterList_Compact
+s32 LetterList_Compact(Letter *base, s32 n);
+#endif
+#ifndef PROTO_LOCAL_LetterList_CountUsed
+s32 LetterList_CountUsed(Letter *base, s32 n);
+#endif
+#ifndef PROTO_LOCAL_LetterDelivery_HasFutureLetter
+s32 LetterDelivery_HasFutureLetter(PlayerData *p);
+#endif
+#ifndef PROTO_LOCAL_MotherLetter_OnNewDay
+void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_MotherLetter_TrySendBirthday
+s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p);
+#endif
+#ifndef PROTO_LOCAL_MotherLetter_TrySendHoliday
+s32 MotherLetter_TrySendHoliday(Unk_02096354_Arg *p);
+#endif
+#ifndef PROTO_LOCAL_MotherLetter_TrySendRandom
+s32 MotherLetter_TrySendRandom(Unk_02096354_Arg *p);
 #endif
 }
 #ifndef PROTO_LOCAL_sMotherMonthLetterCount

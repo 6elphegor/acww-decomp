@@ -4,7 +4,13 @@
 // Prototypes of the functions defined in src/ov068/unk_ov068_0226dbe8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct HouseVisitStarText;
+#ifndef __cplusplus
+typedef struct HouseVisitStarText HouseVisitStarText;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 class HouseVisitVillager;
 #endif
 
@@ -52,6 +58,30 @@ extern HouseVisitVillager *sHouseVisitVillager;
 #endif
 #ifndef PROTO_LOCAL_HouseVisitVillager_Create
 HouseVisitVillager *HouseVisitVillager_Create();
+#endif
+#ifndef PROTO_LOCAL_data_ov068_022712a8
+extern DebugColor data_ov068_022712a8;
+#endif
+#ifndef PROTO_LOCAL_sHouseVisitVillagerProfile
+extern ActorProfile sHouseVisitVillagerProfile;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02271298
+extern DebugColor data_ov068_02271298;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_022712b0
+extern DebugColor data_ov068_022712b0;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_022712a0
+extern DebugColor data_ov068_022712a0;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0227129c
+extern DebugColor data_ov068_0227129c;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02270a3c
+extern HouseVisitStarText data_ov068_02270a3c;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_022712a4
+extern DebugColor data_ov068_022712a4;
 #endif
 }
 #endif

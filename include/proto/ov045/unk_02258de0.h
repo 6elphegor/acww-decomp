@@ -4,11 +4,29 @@
 // Prototypes of the functions defined in src/ov045/unk_02258de0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/Mtx43.h"
 struct SpNpcKatrinaActEntry;
 struct SpNpcKatrinaTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcKatrinaActEntry SpNpcKatrinaActEntry;
+typedef struct SpNpcKatrinaTalkScript SpNpcKatrinaTalkScript;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcKatrina;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_SpNpcKatrina_GetJointMtx
+Mtx43 *SpNpcKatrina_GetJointMtx();
+#endif
+#ifndef PROTO_LOCAL_SpNpcKatrina_GetAnimFrame
+u32 SpNpcKatrina_GetAnimFrame();
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -16,8 +34,8 @@ extern "C" {
 #ifndef PROTO_LOCAL_SpNpcKatrina_Create
 SpNpcKatrina *SpNpcKatrina_Create();
 #endif
-#ifndef PROTO_LOCAL_SpNpcKatrina_GetAnimFrame
-u32 SpNpcKatrina_GetAnimFrame();
+#ifndef PROTO_LOCAL_sSpNpcKatrinaProfile
+extern ActorProfile sSpNpcKatrinaProfile;
 #endif
 }
 #ifndef PROTO_LOCAL_sSpNpcKatrinaModelPath

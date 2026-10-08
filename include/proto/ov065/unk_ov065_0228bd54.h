@@ -4,28 +4,24 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0228bd54.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
+#include "net/SslRootCa.h"
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov065_0228bd54
+extern u8 data_ov065_0228bd54[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov065_0228bd6c
 extern char data_ov065_0228bd6c[56];
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_data_ov065_0228bd54
-extern u8 data_ov065_0228bd54[4];
-#endif
 #ifndef PROTO_LOCAL_data_ov065_0228bda4
 extern u8 data_ov065_0228bda4[256];
 #endif
+#ifndef PROTO_LOCAL_sRootCaBaltimore
+extern SslRootCa sRootCaBaltimore;
+#endif
+#ifdef __cplusplus
 }
 #endif
 

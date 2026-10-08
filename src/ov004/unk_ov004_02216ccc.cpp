@@ -28,7 +28,7 @@
 #include "npc/VillagerId.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
-#include "npc/VillagerDataProfileView.h"
+#include "save/VillagerData.h"
 #include "save/VillagerData.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02082d74.h"
@@ -223,7 +223,7 @@ BOOL HouseOwnerVillager::updateAct() {
     if (gCommManager->isOnline()) {
         if (animCtrl.getAnimId(0) != 6) {
             if (getVillagerData()) {
-                u16 *p = ((VillagerDataProfileView *)getVillagerData())->getShirt();
+                u16 *p = ((VillagerData *)getVillagerData())->getShirt();
                 u16 *q = clothModel.getItem();
                 BOOL eq;
                 if (Item_IsFurniture(q)) {
@@ -232,14 +232,14 @@ BOOL HouseOwnerVillager::updateAct() {
                     eq = *q == *p ? TRUE : FALSE;
                 }
                 if (!eq) {
-                    u16 *w = ((VillagerDataProfileView *)getVillagerData())->getShirt();
+                    u16 *w = ((VillagerData *)getVillagerData())->getShirt();
                     BOOL in = FALSE;
                     u16 v = *w;
                     if (v >= 0x11a8 && v <= 0x12a7) {
                         in = TRUE;
                     }
                     if (in) {
-                        clothModel.change(this, ((VillagerDataProfileView *)getVillagerData())->getShirt());
+                        clothModel.change(this, ((VillagerData *)getVillagerData())->getShirt());
                     }
                 }
             }

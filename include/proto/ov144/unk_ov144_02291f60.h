@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class MusicMenu;
 #endif
@@ -21,6 +22,9 @@ extern GXOamAttr data_ov144_02293d70[8];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sMusicMenuProfile
+extern ProcProfile sMusicMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_MusicMenu_Create
 MusicMenu *MusicMenu_Create();
 #endif

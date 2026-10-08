@@ -5,8 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
-class SndPosList;
+#include "snd/SndPosNode.h"
 #endif
 
 #ifdef __cplusplus
@@ -18,16 +17,14 @@ void Snd_InstallListenerCallbacks(void);
 #ifndef PROTO_LOCAL_Snd_ClearListenerCallbacks
 void Snd_ClearListenerCallbacks(void);
 #endif
+#ifndef PROTO_LOCAL_Snd_CalcSeVolume
+s32 Snd_CalcSeVolume(s32 a, s32 b);
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_Snd_CalcSeVolume
-s32 Snd_CalcSeVolume(s32 a, s32 b);
-#endif
-}
 #ifndef PROTO_LOCAL_gSndPosList
 extern SndPosList *gSndPosList;
 #endif

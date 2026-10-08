@@ -7,7 +7,7 @@
 #include "net/DwcNetChannel.h"
 #include "nitro/math.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "net/DwcNetChannelTable.h"
 #endif
 
 #ifdef __cplusplus
@@ -16,30 +16,6 @@ extern "C" {
 #ifndef PROTO_LOCAL_sDwcNetRandState
 extern MATHRandContext32 sDwcNetRandState;
 #endif
-#ifndef PROTO_LOCAL_DwcNet_SetSendDoneCallback
-void DwcNet_SetSendDoneCallback(void *cb);
-#endif
-#ifndef PROTO_LOCAL_DwcNet_SetRecvCallback
-void DwcNet_SetRecvCallback(void *cb);
-#endif
-#ifndef PROTO_LOCAL_DwcNet_SetPingCallback
-void DwcNet_SetPingCallback(void *cb);
-#endif
-#ifndef PROTO_LOCAL_DwcNet_InitChannelTable
-void DwcNet_InitChannelTable(void *p);
-#endif
-#ifndef PROTO_LOCAL_DwcNet_ProcessSend
-void DwcNet_ProcessSend(void);
-#endif
-#ifndef PROTO_LOCAL_DwcNet_ClearChannelTable
-void DwcNet_ClearChannelTable(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_DwcNet_Rand32
 u32 DwcNet_Rand32(u32 n);
 #endif
@@ -61,6 +37,15 @@ BOOL DwcNet_SetRecvBuffer(s32 id, u8 *buf, s32 n);
 #ifndef PROTO_LOCAL_DwcNet_PingAid
 void DwcNet_PingAid(s32 id);
 #endif
+#ifndef PROTO_LOCAL_DwcNet_SetSendDoneCallback
+void DwcNet_SetSendDoneCallback(void *cb);
+#endif
+#ifndef PROTO_LOCAL_DwcNet_SetRecvCallback
+void DwcNet_SetRecvCallback(void *cb);
+#endif
+#ifndef PROTO_LOCAL_DwcNet_SetPingCallback
+void DwcNet_SetPingCallback(void *cb);
+#endif
 #ifndef PROTO_LOCAL_DwcNet_SetMaxChunkSize
 void DwcNet_SetMaxChunkSize(u32 v);
 #endif
@@ -73,17 +58,23 @@ u32 DwcNet_ParseHeader(void *src);
 #ifndef PROTO_LOCAL_DwcNet_GetHeaderSize
 s32 DwcNet_GetHeaderSize(s32 m);
 #endif
+#ifndef PROTO_LOCAL_DwcNet_InitChannelTable
+void DwcNet_InitChannelTable(void *p);
+#endif
 #ifndef PROTO_LOCAL_DwcNet_OnReceive
 void DwcNet_OnReceive(void *a, void *b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_OnPing
 void DwcNet_OnPing(void *a, s32 b);
 #endif
+#ifndef PROTO_LOCAL_DwcNet_ProcessSend
+void DwcNet_ProcessSend(void);
+#endif
 #ifndef PROTO_LOCAL_DwcNet_ResetChannel
 void DwcNet_ResetChannel(s32 id);
 #endif
-#ifndef PROTO_LOCAL_DwcNet_GetChannel
-DwcNetChannel *DwcNet_GetChannel(s32 id);
+#ifndef PROTO_LOCAL_DwcNet_ClearChannelTable
+void DwcNet_ClearChannelTable(void);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_IsSending
 u32 DwcNet_IsSending(s32 id);
@@ -111,6 +102,18 @@ void DwcNet_RecvControlBody(s32 a, void *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_GetSendSpace
 s32 DwcNet_GetSendSpace(s32 id);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sDwcNetChannels
+extern DwcNetChannelTable *sDwcNetChannels;
+#endif
+#ifndef PROTO_LOCAL_DwcNet_GetChannel
+DwcNetChannel *DwcNet_GetChannel(s32 id);
 #endif
 }
 #endif

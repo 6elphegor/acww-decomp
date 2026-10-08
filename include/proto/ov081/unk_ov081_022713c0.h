@@ -5,7 +5,11 @@
 
 #include "types.h"
 struct SpNpcTortimerFishingTourneyActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcTortimerFishingTourneyActEntry SpNpcTortimerFishingTourneyActEntry;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class SpNpcTortimerFishingTourney;
 #endif
 
@@ -29,6 +33,9 @@ BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x);
 extern "C" {
 #ifndef PROTO_LOCAL_SpNpcTortimerFishingTourney_Create
 SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create();
+#endif
+#ifndef PROTO_LOCAL_sSpNpcTortimerFishingTourneyProfile
+extern ActorProfile sSpNpcTortimerFishingTourneyProfile;
 #endif
 }
 #ifndef PROTO_LOCAL_sSpNpcTortimerFishingTourneyActTable

@@ -5,14 +5,29 @@
 
 #include "types.h"
 #include "net/GsSocket.h"
+#include "net/SockHostEnt.h"
+#ifdef __cplusplus
 #include "net/ghttpBuffer.h"
 #include "net/ghttpConnection.h"
-#ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_randomnum
+extern s32 randomnum;
+#endif
+#ifndef PROTO_LOCAL_GSINitroErrno
+extern s32 GSINitroErrno;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_0229107c
+extern u8 data_ov065_0229107c[4];
+#endif
+#ifndef PROTO_LOCAL_current_time
+u32 current_time();
+#endif
+#ifndef PROTO_LOCAL_msleep
+void msleep(s32 ms);
 #endif
 #ifndef PROTO_LOCAL_SocketStartUp
 void SocketStartUp();
@@ -25,42 +40,6 @@ char *goastrdup(const char *s);
 #endif
 #ifndef PROTO_LOCAL__strlwr
 char *_strlwr(char *s);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_randomnum
-extern s32 randomnum;
-#endif
-#ifndef PROTO_LOCAL_GSINitroErrno
-extern s32 GSINitroErrno;
-#endif
-#ifndef PROTO_LOCAL_data_ov065_0229107c
-extern u8 data_ov065_0229107c[4];
-#endif
-#ifndef PROTO_LOCAL_ghiAppendHeaderToBuffer
-s32 ghiAppendHeaderToBuffer(GHIBuffer *o, char *a, char *b);
-#endif
-#ifndef PROTO_LOCAL_ghiAppendCharToBuffer
-s32 ghiAppendCharToBuffer(GHIBuffer *o, u8 c);
-#endif
-#ifndef PROTO_LOCAL_ghiAppendIntToBuffer
-s32 ghiAppendIntToBuffer(GHIBuffer *o, s32 x);
-#endif
-#ifndef PROTO_LOCAL_ghiSendBufferedData
-s32 ghiSendBufferedData(GHIConnection *o);
-#endif
-#ifndef PROTO_LOCAL_ghiReadDataFromBuffer
-s32 ghiReadDataFromBuffer(GHIBuffer *o, char *dst, s32 *len);
-#endif
-#ifndef PROTO_LOCAL_current_time
-u32 current_time();
-#endif
-#ifndef PROTO_LOCAL_msleep
-void msleep(s32 ms);
 #endif
 #ifndef PROTO_LOCAL_SetSockBlocking
 s32 SetSockBlocking(s32 sock, s32 flag);
@@ -86,9 +65,6 @@ s32 CanReceiveOnSocket(s32 a);
 #ifndef PROTO_LOCAL_CanSendOnSocket
 s32 CanSendOnSocket(s32 a);
 #endif
-#ifndef PROTO_LOCAL_getlocalhost
-s32 getlocalhost();
-#endif
 #ifndef PROTO_LOCAL_IsPrivateIP
 s32 IsPrivateIP(u32 *p);
 #endif
@@ -103,12 +79,6 @@ s32 closesocket(s32 a);
 #endif
 #ifndef PROTO_LOCAL_shutdown
 s32 shutdown(s32 a, s32 how);
-#endif
-#ifndef PROTO_LOCAL_bind
-s32 bind(s32 a, GsSockAddr *src, u32 len);
-#endif
-#ifndef PROTO_LOCAL_connect
-s32 connect(s32 a, GsSockAddr *src, u32 len);
 #endif
 #ifndef PROTO_LOCAL_listen
 s32 listen(s32 a, s32 backlog);
@@ -125,14 +95,11 @@ s32 recvfrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len);
 #ifndef PROTO_LOCAL_send
 s32 send(s32 a, s32 b, s32 c, u32 d);
 #endif
-#ifndef PROTO_LOCAL_sendto
-s32 sendto(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len);
-#endif
 #ifndef PROTO_LOCAL_getsockopt
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_setsockopt
-s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 #endif
 #ifndef PROTO_LOCAL_getsockname
 s32 getsockname(s32 a, u8 *p1, u32 *p2);
@@ -163,6 +130,51 @@ void TripToQuart(char *in, char *out, s32 n);
 #endif
 #ifndef PROTO_LOCAL_B64Encode
 void B64Encode(char *in, char *out, s32 n, s32 mode);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_localhost
+extern SockHostEnt localhost;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_02291094
+extern GsHostAddr data_ov065_02291094;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_022910a8
+extern GsHostAddrList data_ov065_022910a8;
+#endif
+#ifndef PROTO_LOCAL_ghiAppendHeaderToBuffer
+s32 ghiAppendHeaderToBuffer(GHIBuffer *o, char *a, char *b);
+#endif
+#ifndef PROTO_LOCAL_ghiAppendCharToBuffer
+s32 ghiAppendCharToBuffer(GHIBuffer *o, u8 c);
+#endif
+#ifndef PROTO_LOCAL_ghiAppendIntToBuffer
+s32 ghiAppendIntToBuffer(GHIBuffer *o, s32 x);
+#endif
+#ifndef PROTO_LOCAL_ghiResetBuffer
+void ghiResetBuffer(GHIBuffer *o);
+#endif
+#ifndef PROTO_LOCAL_ghiSendBufferedData
+s32 ghiSendBufferedData(GHIConnection *o);
+#endif
+#ifndef PROTO_LOCAL_ghiReadDataFromBuffer
+s32 ghiReadDataFromBuffer(GHIBuffer *o, char *dst, s32 *len);
+#endif
+#ifndef PROTO_LOCAL_getlocalhost
+SockHostEnt *getlocalhost();
+#endif
+#ifndef PROTO_LOCAL_bind
+s32 bind(s32 a, GsSockAddr *src, u32 len);
+#endif
+#ifndef PROTO_LOCAL_connect
+s32 connect(s32 a, GsSockAddr *src, u32 len);
+#endif
+#ifndef PROTO_LOCAL_sendto
+s32 sendto(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len);
 #endif
 }
 #endif

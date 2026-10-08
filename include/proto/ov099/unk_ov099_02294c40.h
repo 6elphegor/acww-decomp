@@ -4,12 +4,16 @@
 // Prototypes of the functions defined in src/ov099/unk_ov099_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "menu/PocketMenuUnk.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPocketMenuUnkProfile
+extern ProcProfile sPocketMenuUnkProfile;
+#endif
 #ifndef PROTO_LOCAL_PocketMenuUnk_Create
 PocketMenuUnk *PocketMenuUnk_Create();
 #endif

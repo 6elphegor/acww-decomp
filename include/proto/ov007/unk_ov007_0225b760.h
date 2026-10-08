@@ -4,10 +4,9 @@
 // Prototypes of the functions defined in src/ov007/unk_ov007_0225b760.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "town/SceneMapInfo.h"
 #ifdef __cplusplus
 #include "game/SceneInfo.h"
-#include "types.h"
+#include "town/SceneMapInfo.h"
 #endif
 
 #ifdef __cplusplus

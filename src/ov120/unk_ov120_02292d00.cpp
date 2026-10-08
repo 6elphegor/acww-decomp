@@ -37,12 +37,10 @@
 #include "nitro/gxoam.h"
 
 extern "C" {
-VecFx32 *ScenePos_GetPos(void *p);  // ScenePos (src/main/unk_020b4828.cpp)
 BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
 void MIi_CpuCopy16(const void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 extern u8 gFieldSceneKind;
-extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
@@ -463,7 +461,7 @@ void MapViewerMenu::initMapViewer() {
         v.z = p->z;
     } else {
         Scene_GetWarpRequest();
-        VecFx32 *p = ScenePos_GetPos(gTownReturnPos);
+        VecFx32 *p = ScenePos_GetPos(&gTownReturnPos);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;

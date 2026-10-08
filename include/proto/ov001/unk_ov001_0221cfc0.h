@@ -5,15 +5,29 @@
 
 #include "types.h"
 struct WfcScrollBar;
+#ifndef __cplusplus
+typedef struct WfcScrollBar WfcScrollBar;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_WfcScrollBar_Create
+void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e);
+#endif
 #ifndef PROTO_LOCAL_WfcScrollBar_Destroy
 void WfcScrollBar_Destroy();
+#endif
+#ifndef PROTO_LOCAL_WfcScrollBar_GetPos
+u32 WfcScrollBar_GetPos();
+#endif
+#ifndef PROTO_LOCAL_WfcScrollBar_GetEvent
+u32 WfcScrollBar_GetEvent();
+#endif
+#ifndef PROTO_LOCAL_WfcScrollBar_SetPos
+void WfcScrollBar_SetPos(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcScrollBar_Enable
 void WfcScrollBar_Enable();
@@ -27,32 +41,14 @@ void WfcScrollBar_Task();
 #ifndef PROTO_LOCAL_WfcScrollBar_UpdateDrag
 void WfcScrollBar_UpdateDrag();
 #endif
-#ifndef PROTO_LOCAL_WfcScrollBar_JumpToTouch
-void WfcScrollBar_JumpToTouch();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_WfcScrollBar_Create
-void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e);
-#endif
-#ifndef PROTO_LOCAL_WfcScrollBar_GetPos
-u32 WfcScrollBar_GetPos();
-#endif
-#ifndef PROTO_LOCAL_WfcScrollBar_GetEvent
-u32 WfcScrollBar_GetEvent();
-#endif
-#ifndef PROTO_LOCAL_WfcScrollBar_SetPos
-void WfcScrollBar_SetPos(s32 a);
-#endif
 #ifndef PROTO_LOCAL_WfcScrollBar_UpdateDragSound
 void WfcScrollBar_UpdateDragSound(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcScrollBar_StartArrow
 void WfcScrollBar_StartArrow(s32 a);
+#endif
+#ifndef PROTO_LOCAL_WfcScrollBar_JumpToTouch
+void WfcScrollBar_JumpToTouch();
 #endif
 #ifndef PROTO_LOCAL_WfcScrollBar_HitTest
 s32 WfcScrollBar_HitTest();
@@ -66,7 +62,11 @@ void WfcScrollBar_GetPartRect(s32 a, u16 *out);
 #ifndef PROTO_LOCAL_WfcScrollBar_SetThumbPos
 void WfcScrollBar_SetThumbPos(u32 a);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sWfcScrollBar
 extern WfcScrollBar *sWfcScrollBar;
 #endif

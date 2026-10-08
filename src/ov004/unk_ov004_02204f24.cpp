@@ -173,7 +173,6 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 
 // ================================================================ externs (functions without a shared prototype: their
 // definitions use types local to their units)
-struct BoxColliderShape;
 struct WallEdge;
 class ModelSlot;
 class TexVramSlot;
@@ -263,14 +262,8 @@ extern VecFx32 gCameraEye;
 extern VecFx32 gCameraLookAt;
 }
 
-// a class of main without a header yet (its definition is local to
-// src/main/unk_0202fa70.cpp): called by its symbol
-extern "C" {
-BOOL _ZN16BoxColliderShape15updateTransformEP7VecFx32iS1_(BoxCollider *c, VecFx32 *pos, s32 angle, VecFx32 *scale);
-}
-// (the box shape of a BoxCollider: BoxColliderShape is main's view of BoxColliderX)
 static inline BOOL BoxCollider_UpdateShape(BoxCollider *c, VecFx32 *pos, s32 angle, VecFx32 *scale) {
-    return _ZN16BoxColliderShape15updateTransformEP7VecFx32iS1_(c, pos, angle, scale);
+    return static_cast<BoxColliderShape *>(c)->updateTransform(pos, angle, scale);
 }
 
 // plain functions defined in this unit

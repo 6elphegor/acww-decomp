@@ -2,39 +2,14 @@
 #define PLAYER_UNK_02005E7C_H
 
 #include "types.h"
-#include "player/PendingFieldActionFx.h"
+#include "player/PlayerActor.h"
 
-// PlayerActor view of the net-action handlers (PlayerActor_Net* / per-action net receivers, 0x02005e7c...); its
-// methods are defined in src/main/unk_02004558.cpp and unk_02004558_extra.cpp.
-class Unk_02005e7c {
+// The PlayerActor's net-action handlers (PlayerActor_Net* / per-action net receivers, 0x02005e7c...); its
+// methods are defined in src/main/unk_02004558.cpp and unk_02004558_extra.cpp. No members of its own: it was a
+// view of PlayerActor with the members at their DS offsets (on 64-bit hosts handleNetEvent read the pending field
+// event's unit position from the wrong place: a pick-up fanfare at unit (-1183, 968) crashed in town).
+class Unk_02005e7c : public PlayerActor {
 public:
-    /* 0x000 */ u8 pad_000[0x168];
-    /* 0x168 */ u8 toolHitKind;
-    /* 0x169 */ u8 pad_169[3];
-    /* 0x16c */ s32 inputMode;
-    /* 0x170 */ u8 pad_170[0x170];
-    /* 0x2e0 */ u8 bodyAnimPlayMode;
-    /* 0x2e1 */ u8 pad_2e1[0x40b];
-    /* 0x6ec */ s32 shadowSize;
-    /* 0x6f0 */ u8 pad_6f0[0xe0];
-    /* 0x7d0 */ u8 actionWork[0x1c];
-    /* 0x7ec */ s32 action;
-    /* 0x7f0 */ u8 pad_7f0[8];
-    /* 0x7f8 */ s32 actionPriority;
-    /* 0x7fc */ s32 sessionSlot;
-    /* 0x800 */ u8 pad_800[0xe8];
-    /* 0x8e8 */ u8 netPickUpDelay;
-    /* 0x8e9 */ u8 pad_8e9[3];
-    /* 0x8ec */ u8 netData[8];
-    /* 0x8f4 */ s32 lastNetAction;
-    /* 0x8f8 */ s32 pendingEventUnitX;
-    /* 0x8fc */ s32 pendingEventUnitZ;
-    /* 0x900 */ PendingFieldActionFx pendingEvent;
-    /* 0x901 */ u8 pad_901[0x37f];
-    /* 0xc80 */ s16 netSeq;
-    /* 0xc82 */ u8 pad_c82[2];
-    /* 0xc84 */ s32 netSeqAction;
-
     void setShadowForAction(u32 i);
     void syncInputMode(u32 i);
     void processRequests();

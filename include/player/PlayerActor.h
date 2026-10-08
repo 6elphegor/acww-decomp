@@ -33,6 +33,8 @@
 #include "player/AnimSlotRef.h"
 #include "player/PlayerPaletteRef.h"
 #include "player/PlayerNetActionArgs.h"
+#include "player/PlayerChangeClothesArgs.h"
+#include "player/PendingFieldActionFx.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "snd/SndSeEmitterKind99.h"
 
@@ -312,6 +314,21 @@ public:
     BOOL requestAct77(s16 v, u32 a, u32 b);
     void mainAct76();
     void act76Update();
+    // the taxi actions (0x87 get out, 0x88 get in; src/ov068/unk_ov068_0226a794.cpp)
+    void mainTaxiGetOut();
+    void mainTaxiGetOutFinish();
+    void mainTaxiGetOutAnim();
+    void endTaxiGetOut();
+    void netTaxiGetOut();
+    void setupTaxiGetOut();
+    s32 requestTaxiGetOut(s32 a, s32 b);
+    void mainTaxiGetIn();
+    void mainTaxiGetInFinish();
+    void mainTaxiGetInAnim();
+    void endTaxiGetIn();
+    void netTaxiGetIn();
+    void setupTaxiGetIn();
+    s32 requestTaxiGetIn(s32 a, s32 b);
 
     // 0x000-0x0ec Character, 0x0ec-0x130 TalkMsgRequest
     // animation / face / collider / movement methods (0x020102ec..0x020107c8 of src/main/unk_02004558.cpp; formerly
@@ -421,6 +438,7 @@ public:
     /* 0x7d0 */ union {                     // per-action work area, mostly read through per-action views
         s32 actionWork;
         u8 actionWorkRaw[0x1c];
+        PlayerChangeClothesWork clothesWork;  // change clothes / skid turn (Unk_02007694)
     };
     /* 0x7ec */ s32 action;
     /* 0x7f0 */ s32 prevAction;
@@ -461,7 +479,7 @@ public:
     /* 0x8f4 */ s32 lastNetAction;
     /* 0x8f8 */ s32 pendingEventUnitX;
     /* 0x8fc */ s32 pendingEventUnitZ;
-    /* 0x900 */ u8 pendingEvent;
+    /* 0x900 */ PendingFieldActionFx pendingEvent;  // a field event deferred by handleNetEvent
     /* 0x901 */ u8 pad_901[3];
     /* 0x904 */ Unk_0200b908_Obj *emotionEntry;
     /* 0x908 */ NpcEmotionFx emotionFx;

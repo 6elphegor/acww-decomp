@@ -15,14 +15,13 @@
 #include "game/CollisionEdge.h"
 #include "game/CollisionTriangle.h"
 #include "game/BoxCollider.h"
-#define PROTO_LOCAL_CollisionMap_GetBlockRef  // declared below: the shared prototype conflicts with the calls here
+#include "game/CollisionMap.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202fa70.h"
 
 struct CollisionVisitor;
 struct UnitShapeQueryX;
-struct BoxColliderX;
 class CollisionWorld;
 class WallEdgeList;
 class FloorTriangleList;
@@ -88,10 +87,6 @@ void GroundInfo_Destruct(void *obj);
 
 // ---- 2D vector; its functions and the empty destructor at 0x0202ea3c belong to the unit at 0x0202e9d4
 
-struct ZeroedCollisionVec2 : CollisionVec2 {
-    ZeroedCollisionVec2() { set(0, 0); }
-    ~ZeroedCollisionVec2();
-};
 
 // ---- 3D vector with the destructor at 0x02000c8c
 extern FxVec3 sCollisionUpVector;
@@ -106,10 +101,10 @@ public:
     CollisionTagX();
     ~CollisionTagX();
     void copyTag(const CollisionTagX &o);
-    void setTag(u32 a, BoxColliderX *owner);
+    void setTag(u32 a, BoxCollider *owner);
 
     u8 attr;
-    BoxColliderX *f_04;
+    BoxCollider *f_04;
 };
 
 // ---- the two list owners inside sCollisionWorld (empty classes)
@@ -132,8 +127,6 @@ extern "C" s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 struct FloorBoundsRange { s32 lo, hi; };
 struct FloorBoundsStackPad { s32 v[6]; FloorBoundsStackPad() {} ~FloorBoundsStackPad() {} };
 
-class CollisionBlockRef;
-extern "C" CollisionBlockRef *CollisionMap_GetBlockRef(s32 x, s32 z);
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
 extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 v);
 #define TB(i, f, d) ((i) < 0x7c ? sGroundAttrTable[i].f : (d))
@@ -190,34 +183,6 @@ extern "C" void MTX_MultVec43(VecFx32 *p, void *m, VecFx32 *out);
 static inline s32 Unk_02031618_Abs(s32 v) { if (v < 0) v = -v; return v; }
 extern "C" BOOL Collision_IsSegmentOutsideBox(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d);
 
-// a box collider (registered in the list sBoxColliderList; ov004's view of it: game/BoxCollider.h)
-struct BoxColliderX {
-    virtual void onEdgeContact(CollisionEdge *edge, Actor *actor, s32 r);
-    VecFx32 boxPos;
-    VecFx32 size;
-    VecFx32 scale;
-    s16 angle;
-    s16 numCorners;
-    BoxColliderX *next;
-    FxVec3 worldCorners[4];
-    ZeroedCollisionVec2 edgeNormals[4];
-    VecFx32 boundsCenter;
-    VecFx32 boundsHalfSize;
-    u8 isActive;
-
-    BoxColliderX();
-    ~BoxColliderX();
-    BOOL setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q);
-    void resetBox();
-};
-// (updateTransform's symbol is BoxColliderShape's: ov004 calls it by that name)
-struct BoxColliderShape : BoxColliderX {
-    BOOL updateTransform(VecFx32 *a, s32 ang, VecFx32 *b);
-};
-// ov004's view of the box collider (game/BoxCollider.h) must have the same layout
-static_assert(sizeof(BoxCollider) == sizeof(BoxColliderX), "BoxCollider size");
-static_assert(__builtin_offsetof(BoxCollider, next) == __builtin_offsetof(BoxColliderX, next), "BoxCollider.next");
-static_assert(__builtin_offsetof(BoxCollider, isActive) == __builtin_offsetof(BoxColliderX, isActive), "BoxCollider.isActive");
 extern "C" void Collision_CalcTriangleNormal(void* out, VecFx32* a, VecFx32* b, VecFx32* c);
 static inline BOOL Unk_02031f90_Ge0(s32 v) {
     if (v >= 0) {
@@ -295,7 +260,7 @@ struct WallEdgeStorage {
     u8 pad[0x30];
 };
 struct WallEdgeListWriter {
-    BOOL addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxColliderX *d3);
+    BOOL addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxCollider *d3);
     BOOL addEdgeCopy(WallEdgeStorage *e);
     
     void buildFromCells(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
@@ -330,13 +295,13 @@ class FloorTriangle : public CollisionTriangleX, public CollisionTagX {
 public:
     FloorTriangle();
     ~FloorTriangle();
-    BOOL setupFloor(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxColliderX *f);
+    BOOL setupFloor(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxCollider *f);
 };
 
 class WallEdge : public CollisionEdge, public CollisionTagX {
 public:
     WallEdge();
-    WallEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxColliderX *p7);
+    WallEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxCollider *p7);
     ~WallEdge();
     virtual BOOL hasRoundEnds()
     {
@@ -346,7 +311,7 @@ public:
         return TRUE;
     }
     s32 kind, topY;
-    BOOL setupEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxColliderX *p7);
+    BOOL setupEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxCollider *p7);
     BOOL copyEdge(WallEdge *o);
 };
 class WallEdgeList {
@@ -364,7 +329,7 @@ public:
     FloorTriangleList();
     ~FloorTriangleList();
     void buildFromCells(GroundCellGrid *grid, s32 x0, s32 x1, s32 y0, s32 y1);
-    BOOL addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxColliderX *f);
+    BOOL addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxCollider *f);
 };
 static inline void Unk_020331a8_SetU(u32 *v, s32 a, s32 b, s32 c) { v[0] = a; v[1] = b; v[2] = c; }
 static inline void Unk_02033438_Set(Unk_0202f2ac_V3 *p, s32 x, s32 y, s32 z) {
@@ -434,35 +399,6 @@ public:
     u8 ages[4];
     s8 unitXs[4];
     s8 unitZs[4];
-};
-class CollisionBlockRef {
-public:
-    CollisionBlockRef()
-    {
-        attrs = 0;
-        walkLinks = 0;
-    }
-    ~CollisionBlockRef() {}
-
-    u8 *attrs;
-    u8 *walkLinks;
-};
-// one map slot, size 0x138
-class CollisionMap {
-public:
-    CollisionMap() { reset(); }
-    ~CollisionMap() {}
-    void reset();
-
-    CollisionBlockRef blocks[6][6];
-    UnitShapeQueryX *shapeQuery;
-    u32 numBlocksX;
-    u32 numBlocksZ;
-    s32 lockedExit;
-    u8 allBlocksSet;
-    u8 pad_131;
-    s16 prevWaveLevel;
-    s16 waveLevel;
 };
 // the collision work area sCollisionWorld
 class CollisionWorld {
@@ -573,8 +509,8 @@ extern "C" void Vec3_MaxInPlace(s32 *a, s32 *b);
 extern "C" u32 CollisionMap_IsFullyBound(s32 i);
 extern "C" void BoxCollider_GatherAll(BoxColliderListOwner *unused, VecFx32 *pos, VecFx32 *size, WallEdgeListWriter *walls, FloorTriangleList *floors, u32 flags, s32 mode);
 extern "C" BOOL Collision_IsSegmentOutsideBox(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d);
-extern "C" BOOL BoxCollider_Unregister(BoxColliderX *n);
-extern "C" BOOL BoxCollider_Register(BoxColliderX *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 e, VecFx32 *v);
+extern "C" BOOL BoxCollider_Unregister(BoxCollider *n);
+extern "C" BOOL BoxCollider_Register(BoxCollider *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 e, VecFx32 *v);
 extern "C" void BoxCollider_ClearList(void *p);
 extern "C" void TriangleTrigger_CheckAll(VecFx32* a, s32 b, Actor *c);
 extern "C" s32 TriangleTrigger_Unregister(TriangleTrigger* node);
@@ -717,7 +653,7 @@ const GroundAttrEntry sGroundAttrTable[0x7c] = {
 };
 s32 data_021bf9a0 = func_01ffcb0c(0x20000, 0x800);
 FxVec3 sCollisionUpVector(0, 0x1000, 0);
-BoxColliderX *sBoxColliderList;
+BoxCollider *sBoxColliderList;
 FxVec3 sCollisionQueryMargin(0x1000, 0x1000, 0x1000);
 CollisionMap *gCurCollisionMap = &sCollisionWorld.maps[0];
 const GroundAttrGetter sGroundQuadAttr1Getters[4] = {GroundAttr_GetQuadAttr1Q0, GroundAttr_GetQuadAttr1Q1, GroundAttr_GetQuadAttr1Q2, GroundAttr_GetQuadAttr1Q3};
@@ -909,7 +845,7 @@ CollisionTagX::~CollisionTagX()
 {
 }
 
-void CollisionTagX::setTag(u32 a, BoxColliderX *owner)
+void CollisionTagX::setTag(u32 a, BoxCollider *owner)
 {
     attr = a;
     f_04 = owner;
@@ -1153,7 +1089,7 @@ FloorTriangle::FloorTriangle() {}
 
 FloorTriangle::~FloorTriangle() {}
 
-BOOL FloorTriangle::setupFloor(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxColliderX *f) {
+BOOL FloorTriangle::setupFloor(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxCollider *f) {
     setTag(e, f);
     set(a, b, c, d);
     return TRUE;
@@ -1209,7 +1145,7 @@ void FloorTriangleList::buildFromCells(GroundCellGrid *grid, s32 x0, s32 x1, s32
     }
 }
 
-BOOL FloorTriangleList::addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxColliderX *f) {
+BOOL FloorTriangleList::addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, BoxCollider *f) {
     if (numTriangles < 40) {
         u32 i = numTriangles;
         numTriangles = i + 1;
@@ -1222,7 +1158,7 @@ WallEdge::WallEdge() {}
 
 WallEdge::~WallEdge() {}
 
-WallEdge::WallEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxColliderX *p7) {
+WallEdge::WallEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxCollider *p7) {
     setupEdge(a, b, c, p4, p5, p6, p7);
 }
 
@@ -1238,7 +1174,7 @@ BOOL WallEdge::copyEdge(WallEdge *o) {
     return TRUE;
 }
 
-BOOL WallEdge::setupEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxColliderX *p7) {
+BOOL WallEdge::setupEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, BoxCollider *p7) {
     setTag(p6, p7);
     set(a, b, c);
     kind = p5;
@@ -1345,7 +1281,7 @@ BOOL WallEdgeListWriter::addEdgeCopy(WallEdgeStorage *e) {
     return FALSE;
 }
 
-BOOL WallEdgeListWriter::addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxColliderX *d3) {
+BOOL WallEdgeListWriter::addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxCollider *d3) {
     WallEdge t((CollisionVec2 *)a, (CollisionVec2 *)b, (CollisionVec2 *)c, d0, d1, d2, d3);
     BOOL r = addEdgeCopy((WallEdgeStorage *)&t);
     return r;
@@ -1927,8 +1863,8 @@ extern "C" void TriangleTrigger_CheckAll(VecFx32* a, s32 b, Actor *c) {
     }
 }
 
-void BoxColliderX::resetBox() {
-    FxVec3* a;
+void BoxCollider::resetBox() {
+    VecFx32* a;
     ZeroedCollisionVec2* b;
     s32 i;
     numCorners = 0;
@@ -1956,13 +1892,13 @@ void BoxColliderX::resetBox() {
     }
 }
 
-BoxColliderX::BoxColliderX() {
+BoxCollider::BoxCollider() {
     resetBox();
 }
 
-BoxColliderX::~BoxColliderX() {}
+BoxCollider::~BoxCollider() {}
 
-BOOL BoxColliderX::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) {
+BOOL BoxCollider::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) {
     size.x = a;
     size.y = b;
     size.z = c;
@@ -1978,7 +1914,7 @@ BOOL BoxColliderX::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) 
     return TRUE;
 }
 
-void BoxColliderX::onEdgeContact(CollisionEdge *edge, Actor *actor, s32 r) {}
+void BoxCollider::onEdgeContact(CollisionEdge *edge, Actor *actor, s32 r) {}
 
 BoxColliderListOwner::BoxColliderListOwner() {}
 
@@ -2091,7 +2027,7 @@ end:
     return result;
 }
 
-extern "C" BOOL BoxCollider_Register(BoxColliderX *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 e, VecFx32 *v)
+extern "C" BOOL BoxCollider_Register(BoxCollider *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 e, VecFx32 *v)
 {
     VecFx32 s;
     s.x = 0x1000;
@@ -2110,10 +2046,10 @@ extern "C" BOOL BoxCollider_Register(BoxColliderX *n, s32 a, s32 b, s32 c, VecFx
     return FALSE;
 }
 
-extern "C" BOOL BoxCollider_Unregister(BoxColliderX *n)
+extern "C" BOOL BoxCollider_Unregister(BoxCollider *n)
 {
-    BoxColliderX *cur = sBoxColliderList;
-    BoxColliderX *prev = 0;
+    BoxCollider *cur = sBoxColliderList;
+    BoxCollider *prev = 0;
     while (cur != 0) {
         if (cur == n) {
             if (prev != 0) {
@@ -2160,7 +2096,7 @@ extern "C" BOOL Collision_IsSegmentOutsideBox(VecFx32 *a, VecFx32 *b, VecFx32 *c
 extern "C" void BoxCollider_GatherAll(BoxColliderListOwner *unused, VecFx32 *pos, VecFx32 *size, WallEdgeListWriter *walls, FloorTriangleList *floors, u32 flags, s32 mode)
 {
     u8 *q;
-    BoxColliderX *n = sBoxColliderList;
+    BoxCollider *n = sBoxColliderList;
     u32 m2 = flags & 2;
     u32 m1 = flags & 1;
     for (; n != 0; n = n->next) {
@@ -2183,12 +2119,12 @@ extern "C" void BoxCollider_GatherAll(BoxColliderListOwner *unused, VecFx32 *pos
             u8 res[4];
             q = res;
             s32 base;
-            for (i = 0; i < ((volatile BoxColliderX *)n)->numCorners; i++) {
+            for (i = 0; i < ((volatile BoxCollider *)n)->numCorners; i++) {
                 *q = Collision_IsSegmentOutsideBox(pos, size, &n->worldCorners[i & (n->numCorners - 1)], &n->worldCorners[(i + 1) & (n->numCorners - 1)]);
                 q++;
             }
             base = n->boxPos.y + func_01ffcb0c(n->size.z, n->scale.y);
-            for (i = 0; i < ((volatile BoxColliderX *)n)->numCorners; i++) {
+            for (i = 0; i < ((volatile BoxCollider *)n)->numCorners; i++) {
                 if (res[i & 3] == 0) {
                     Unk_02031960_P8 e0, e1;
                     u8 obj[0x34];

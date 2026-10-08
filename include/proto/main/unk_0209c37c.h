@@ -4,12 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_0209c37c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_sDebugVarTable
 extern u16 sDebugVarTable[0x82];
 #endif
@@ -19,6 +17,7 @@ u32 DebugVar_GetStub();
 #ifndef PROTO_LOCAL_DebugVar_GetPtr
 u16 *DebugVar_GetPtr(u32 a, u32 b);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

@@ -80,7 +80,6 @@ void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
 void Field_UpdateActions(void);
-u32 Scene_GetRequestedScene(void);
 s32 Scene_GetCurrent(void);
 s32 OS_ResetSystem(s32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 size);

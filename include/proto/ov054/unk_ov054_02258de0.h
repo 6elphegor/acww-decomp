@@ -4,8 +4,14 @@
 // Prototypes of the functions defined in src/ov054/unk_ov054_02258de0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcPellyPhyllisActEntry;
+struct SpNpcPellyPhyllisTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcPellyPhyllisActEntry SpNpcPellyPhyllisActEntry;
+typedef struct SpNpcPellyPhyllisTalkScript SpNpcPellyPhyllisTalkScript;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcPellyPhyllis;
 #endif
 
@@ -21,11 +27,32 @@ extern char sSpNpcPellyDramaKey[];
 #ifndef PROTO_LOCAL_sSpNpcPellyPhyllisMenus
 extern void *sSpNpcPellyPhyllisMenus[5];
 #endif
+#ifndef PROTO_LOCAL_sSpNpcPellyTexturePath
+extern u8 sSpNpcPellyTexturePath[];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisTexturePaths
+extern u8 *sSpNpcPellyPhyllisTexturePaths[2];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcPhyllisTexturePath
+extern u8 sSpNpcPhyllisTexturePath[];
+#endif
+#ifndef PROTO_LOCAL_SpNpcPellyPhyllis_IsDeliveryItem
+BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k);
+#endif
+#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisModelPaths
+extern u8 *sSpNpcPellyPhyllisModelPaths[2];
+#endif
 #ifndef PROTO_LOCAL_sSpNpcPellyKey
 extern char sSpNpcPellyKey[];
 #endif
+#ifndef PROTO_LOCAL_sSpNpcPellyModelPath
+extern u8 sSpNpcPellyModelPath[];
+#endif
 #ifndef PROTO_LOCAL_sSpNpcPhyllisKey
 extern char sSpNpcPhyllisKey[];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcPhyllisModelPath
+extern u8 sSpNpcPhyllisModelPath[];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcPellyPhyllisSequence4Key
 extern char sSpNpcPellyPhyllisSequence4Key[];
@@ -39,29 +66,17 @@ extern char sSpNpcPhyllisDramaKey[];
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sSpNpcPellyTexturePath
-extern u8 sSpNpcPellyTexturePath[];
+#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisTalkScripts
+extern SpNpcPellyPhyllisTalkScript sSpNpcPellyPhyllisTalkScripts[16];
 #endif
-#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisTexturePaths
-extern u8 *sSpNpcPellyPhyllisTexturePaths[2];
-#endif
-#ifndef PROTO_LOCAL_sSpNpcPhyllisTexturePath
-extern u8 sSpNpcPhyllisTexturePath[];
+#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisActTable
+extern SpNpcPellyPhyllisActEntry sSpNpcPellyPhyllisActTable[12];
 #endif
 #ifndef PROTO_LOCAL_SpNpcPellyPhyllis_Create
 SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create();
 #endif
-#ifndef PROTO_LOCAL_SpNpcPellyPhyllis_IsDeliveryItem
-BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k);
-#endif
-#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisModelPaths
-extern u8 *sSpNpcPellyPhyllisModelPaths[2];
-#endif
-#ifndef PROTO_LOCAL_sSpNpcPellyModelPath
-extern u8 sSpNpcPellyModelPath[];
-#endif
-#ifndef PROTO_LOCAL_sSpNpcPhyllisModelPath
-extern u8 sSpNpcPhyllisModelPath[];
+#ifndef PROTO_LOCAL_sSpNpcPellyPhyllisProfile
+extern ActorProfile sSpNpcPellyPhyllisProfile;
 #endif
 }
 #endif

@@ -5,7 +5,11 @@
 
 #include "types.h"
 struct SpNpcCornimerActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcCornimerActEntry SpNpcCornimerActEntry;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class SpNpcCornimer;
 #endif
 
@@ -39,6 +43,9 @@ BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSpNpcCornimerProfile
+extern ActorProfile sSpNpcCornimerProfile;
+#endif
 #ifndef PROTO_LOCAL_SpNpcCornimer_Create
 SpNpcCornimer *SpNpcCornimer_Create();
 #endif

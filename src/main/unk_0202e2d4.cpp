@@ -2,7 +2,7 @@
 #include "gfx/VecFx32.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/NpcFootstepFx.h"
@@ -70,7 +70,7 @@ static inline BOOL Unk_0202e318_IsOne(u8 v) {
 SpNpcActor::~SpNpcActor() {}
 
 BOOL SpNpcActor::loadAnimSet() {
-    void *p = ((NpcClothTexHandle *)(&animHeapHandle))->getSpNpcAnimHeapRef();
+    void *p = animHeapHandle.getSpNpcAnimHeapRef();
     if (!((CachedModel *)(&model))->allocJointRecord(SpNpcAnimHeapRef_GetHeap(p))) {
         return FALSE;
     }
@@ -114,8 +114,8 @@ BOOL SpNpcActor::onCreate() {
             moveAngleY = s;
         }
     }
-    if (!((NpcClothTexHandle *)(&animHeapHandle))->getSpNpcAnimHeapRef()) {
-        if (!((NpcResHandle *)(&animHeapHandle))->acquire()) {
+    if (!animHeapHandle.getSpNpcAnimHeapRef()) {
+        if (!animHeapHandle.acquire()) {
             return FALSE;
         }
         if (!loadAnimSet()) {
@@ -149,7 +149,7 @@ BOOL SpNpcActor::onDelete() {
     if (!NpcActor::onDelete()) {
         return FALSE;
     }
-    ((NpcResHandle *)(&animHeapHandle))->release();
+    animHeapHandle.release();
     return TRUE;
 }
 

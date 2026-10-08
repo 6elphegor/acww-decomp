@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov138/unk_ov138_02295380.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class DateSelectMenu;
 #endif
@@ -12,6 +13,9 @@ class DateSelectMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_DateSelectMenu_Create
 DateSelectMenu *DateSelectMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sDateSelectMenuProfile
+extern ProcProfile sDateSelectMenuProfile;
 #endif
 }
 #endif

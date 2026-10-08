@@ -6,6 +6,7 @@
 #include "types.h"
 #include "gfx/ScreenTransition.h"
 #ifdef __cplusplus
+#include "gfx/HBlankTask.h"
 #endif
 
 #ifdef __cplusplus
@@ -93,6 +94,9 @@ extern u16 *sIrisWipeActiveTable;
 #endif
 #ifndef PROTO_LOCAL_gScreenTransition
 extern ScreenTransition gScreenTransition;
+#endif
+#ifndef PROTO_LOCAL_sIrisWipeHBlankTask
+extern HBlankTask sIrisWipeHBlankTask;
 #endif
 #ifndef PROTO_LOCAL_sIrisWipeTableA
 extern u16 sIrisWipeTableA[0x60];

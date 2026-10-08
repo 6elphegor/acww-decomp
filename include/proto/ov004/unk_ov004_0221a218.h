@@ -4,7 +4,12 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0221a218.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct CafeVillagerActEntry;
+#ifndef __cplusplus
+typedef struct CafeVillagerActEntry CafeVillagerActEntry;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class CafeVillager;
 #endif
 
@@ -20,6 +25,12 @@ extern char data_ov004_022508e0[0x28];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sCafeVillagerProfile
+extern ActorProfile sCafeVillagerProfile;
+#endif
+#ifndef PROTO_LOCAL_sCafeVillagerActTable
+extern CafeVillagerActEntry sCafeVillagerActTable[3];
+#endif
 #ifndef PROTO_LOCAL_CafeVillager_Create
 CafeVillager *CafeVillager_Create();
 #endif

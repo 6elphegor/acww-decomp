@@ -273,8 +273,8 @@ extern "C" void Net_OnWifiFriendDeleted(s32 deletedIndex, s32 srcIndex, s32 para
 extern "C" void Net_OnWifiLogin(s32 result, s32 b, s32 arg) {
     if (result != 0) return;
     DwcFriend_SetStatusData(sWifiUserData, 16);  // (the name and town)
-    DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, arg, Net_OnWifiFriendStatus, arg, Net_OnWifiFriendDeleted,
-                                 arg);
+    DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, arg, Net_OnWifiFriendStatus, arg,
+                                 Net_OnWifiFriendDeleted, arg);
 }
 
 extern "C" void Net_OnGameStatsUploadDone(char *data, s32 len, s32 result, void *ud) {
@@ -1117,8 +1117,8 @@ extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
     sWifiFriendList->status[a].status = 0;
     data_0213b06c = 1;
-    r = DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, 0, Net_OnWifiFriendStatus, 0, Net_OnWifiFriendDeleted,
-                                     0);
+    r = DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, 0, Net_OnWifiFriendStatus, 0,
+                                     Net_OnWifiFriendDeleted, 0);
     if (r == 0) data_0213b06c = 0;
     return r;
 }

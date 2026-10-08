@@ -4,8 +4,14 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0221c01c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcBrewsterActEntry;
+struct SpNpcBrewsterTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcBrewsterActEntry SpNpcBrewsterActEntry;
+typedef struct SpNpcBrewsterTalkScript SpNpcBrewsterTalkScript;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcBrewster;
 #endif
 
@@ -17,15 +23,6 @@ void *SpNpcBrewster_GetJointMtxE();
 #endif
 #ifndef PROTO_LOCAL_SpNpcBrewster_GetJointMtxB
 void *SpNpcBrewster_GetJointMtxB();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_SpNpcBrewster_Create
-SpNpcBrewster *SpNpcBrewster_Create();
 #endif
 #ifndef PROTO_LOCAL_SpNpcBrewster_GetAnimFrame
 u32 SpNpcBrewster_GetAnimFrame();
@@ -50,6 +47,24 @@ extern u8 sSpNpcBrewsterTexturePath[27];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcBrewsterMsgFiles
 extern u8 *sSpNpcBrewsterMsgFiles[2];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SpNpcBrewster_Create
+SpNpcBrewster *SpNpcBrewster_Create();
+#endif
+#ifndef PROTO_LOCAL_sSpNpcBrewsterProfile
+extern ActorProfile sSpNpcBrewsterProfile;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcBrewsterTalkScripts
+extern SpNpcBrewsterTalkScript sSpNpcBrewsterTalkScripts[4];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcBrewsterActTable
+extern SpNpcBrewsterActEntry sSpNpcBrewsterActTable[8];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcBrewster
 extern SpNpcBrewster *sSpNpcBrewster;

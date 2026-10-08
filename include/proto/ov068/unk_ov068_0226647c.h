@@ -5,8 +5,12 @@
 
 #include "types.h"
 struct TownTourBuildingRange;
+#ifndef __cplusplus
+typedef struct TownTourBuildingRange TownTourBuildingRange;
+#endif
 #ifdef __cplusplus
 #include "gfx/Camera.h"
+#include "gfx/DebugColor.h"
 #include "gfx/VecFx32.h"
 #endif
 
@@ -34,14 +38,29 @@ extern VecFx32 *sTownTourOffsets[7];
 #ifndef PROTO_LOCAL_sTownTourOffsetVillagerHouse
 extern VecFx32 sTownTourOffsetVillagerHouse;
 #endif
+#ifndef PROTO_LOCAL_data_ov068_02270fd4
+extern DebugColor data_ov068_02270fd4;
+#endif
 #ifndef PROTO_LOCAL_sTownTourOffsetsNookShop
 extern VecFx32 sTownTourOffsetsNookShop[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02270fd0
+extern DebugColor data_ov068_02270fd0;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02270fc4
+extern DebugColor data_ov068_02270fc4;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02270fc8
+extern DebugColor data_ov068_02270fc8;
 #endif
 #ifndef PROTO_LOCAL_sTownTourOffsetTownHall
 extern VecFx32 sTownTourOffsetTownHall;
 #endif
 #ifndef PROTO_LOCAL_sTownTourOffsetMuseum
 extern VecFx32 sTownTourOffsetMuseum;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02270fd8
+extern DebugColor data_ov068_02270fd8;
 #endif
 #ifndef PROTO_LOCAL_sTownTourOffsetAbleSisters
 extern VecFx32 sTownTourOffsetAbleSisters;
@@ -54,6 +73,9 @@ extern VecFx32 sTownTourOffsetGateHouse;
 #endif
 #ifndef PROTO_LOCAL_sTownTourBuildings
 extern TownTourBuildingRange sTownTourBuildings[7];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_02270fcc
+extern DebugColor data_ov068_02270fcc;
 #endif
 #ifndef PROTO_LOCAL_CameraEventModes_InitModeFollowTarget
 BOOL CameraEventModes_InitModeFollowTarget(Camera *c);

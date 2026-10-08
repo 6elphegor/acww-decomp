@@ -4,6 +4,11 @@
 // Prototypes of the functions defined in src/ov102/unk_ov102_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct Unk_ov102_02297580_Ent;
+#ifndef __cplusplus
+typedef struct Unk_ov102_02297580_Ent Unk_ov102_02297580_Ent;
+#endif
 #ifdef __cplusplus
 class ChestMenu;
 #endif
@@ -22,6 +27,12 @@ void ChestMenu_SetupBgLayers();
 extern "C" {
 #ifndef PROTO_LOCAL_ChestMenu_Create
 ChestMenu *ChestMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sChestMenuProfile
+extern ProcProfile sChestMenuProfile;
+#endif
+#ifndef PROTO_LOCAL_sChestPageTabSprites
+extern Unk_ov102_02297580_Ent sChestPageTabSprites[18];
 #endif
 }
 #endif
