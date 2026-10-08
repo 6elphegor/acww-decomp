@@ -19,6 +19,7 @@
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 extern "C" {
 extern u8 GX_LoadBG2Scr[];
@@ -26,8 +27,6 @@ void MIi_CpuClear16(u32 a, void *b, u32 c);
 void MIi_CpuCopy16(void *a, void *b, u32 c);
 void WfcUtil_LoadFileTo(void *a, void *b);
 s32 WfcTransfer_SetCallback(void *a);
-s32 WfcGx_HidePlanes(u32 a, u32 b);
-s32 WfcGx_ShowPlanes(u32 a, u32 b);
 s32 WfcInput_IsKeyPressed(u32 a);
 
 u8 sWfcTransferFailedTopShown;
@@ -40,7 +39,7 @@ void WfcTransferFailed_Enter() {
     WfcTransferFailed_LoadBg();
     WfcUtil_ShowBottomMessage(0x62);
     sWfcTransferFailedTopShown = WfcUtil_ShowTopMessage(0x8d, -1, 0);
-    WfcUtil_SetScene((void *)WfcTransferFailed_FadeIn);
+    WfcUtil_SetScene(WfcTransferFailed_FadeIn);
 }
 
 void WfcTransferFailed_LoadBg() {
@@ -64,21 +63,21 @@ void WfcTransferFailed_FadeIn() {
         WfcFade_Start(2, 1, 1, 8);
         WfcGx_ShowPlanes(1, 1);
     }
-    WfcUtil_SetScene((void *)WfcTransferFailed_WaitFadeIn);
+    WfcUtil_SetScene(WfcTransferFailed_WaitFadeIn);
 }
 
 void WfcTransferFailed_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(3);
-    WfcUtil_SetScene((void *)WfcTransferFailed_WaitButtonBar);
+    WfcUtil_SetScene(WfcTransferFailed_WaitButtonBar);
 }
 
 void WfcTransferFailed_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     if (WfcTransfer_IsFinished() == 0) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcTransferFailed_Update);
+    WfcUtil_SetScene(WfcTransferFailed_Update);
 }
 
 void WfcTransferFailed_Update() {
@@ -108,13 +107,13 @@ void WfcTransferFailed_HandleResult() {
         sWfcTransferFailedRetry = 0;
         WfcSound_Play(7);
     }
-    WfcUtil_SetScene((void *)WfcTransferFailed_StartExit);
+    WfcUtil_SetScene(WfcTransferFailed_StartExit);
 }
 
 void WfcTransferFailed_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcTransferFailed_FadeOut);
+    WfcUtil_SetScene(WfcTransferFailed_FadeOut);
 }
 
 void WfcTransferFailed_FadeOut() {
@@ -124,7 +123,7 @@ void WfcTransferFailed_FadeOut() {
         WfcFade_Start(3, 1, 1, 8);
     }
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcTransferFailed_Exit);
+    WfcUtil_SetScene(WfcTransferFailed_Exit);
 }
 
 void WfcTransferFailed_Exit() {
@@ -139,10 +138,10 @@ void WfcTransferFailed_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     if (sWfcTransferFailedRetry == 0) {
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcOptions_Enter);
+        WfcUtil_SetScene(WfcOptions_Enter);
     } else {
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcTransferWait_Enter);
+        WfcUtil_SetScene(WfcTransferWait_Enter);
     }
 }
 }

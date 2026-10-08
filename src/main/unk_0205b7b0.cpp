@@ -391,31 +391,31 @@ extern "C" void *AnimSlotRef_GetData(AnimSlotRef *p) { return sCharaAnimCache.ge
 
 extern "C" u32 AnimSlotRef_GetAnimId(AnimSlotRef *p) { return sCharaAnimCache.getAnimId(p->slot); }
 
-extern "C" void NetHeap_Create(u32 size, void *parent) { gNetHeap = ExpHeap_Create(size, parent); }
+extern "C" void *NetHeap_Create(u32 size, void *parent) { return gNetHeap = ExpHeap_Create(size, parent); }
 
 extern "C" void NetHeap_Destroy() { ((Heap *)(gNetHeap))->destroy2(); gNetHeap = 0; }
 
-extern "C" void ModelCacheHeap_Create(u32 size, void *parent) { gModelCacheHeap = ExpHeap_Create(size, parent); }
+extern "C" void *ModelCacheHeap_Create(u32 size, void *parent) { return gModelCacheHeap = ExpHeap_Create(size, parent); }
 
 extern "C" void ModelCacheHeap_Destroy() { ((Heap *)(gModelCacheHeap))->destroy2(); gModelCacheHeap = 0; }
 
-extern "C" void MenuHeap_Create(u32 size, void *parent) { gMenuHeap = ExpHeap_Create(size, parent); }
+extern "C" void *MenuHeap_Create(u32 size, void *parent) { return gMenuHeap = ExpHeap_Create(size, parent); }
 
 extern "C" void MenuHeap_Destroy() { ((Heap *)(gMenuHeap))->destroy2(); gMenuHeap = 0; }
 
-extern "C" void BgHeap_Create(u32 size, void *parent) { gBgHeap = ExpHeap_Create(size, parent); }
+extern "C" void *BgHeap_Create(u32 size, void *parent) { return gBgHeap = ExpHeap_Create(size, parent); }
 
 extern "C" void BgHeap_Destroy() { ((Heap *)(gBgHeap))->destroy2(); gBgHeap = 0; }
 
-extern "C" void FurnitureHeap_Create(u32 size, void *parent) { sFurnitureHeap = ExpHeap_Create(size, parent); }
+extern "C" void *FurnitureHeap_Create(u32 size, void *parent) { return sFurnitureHeap = ExpHeap_Create(size, parent); }
 
 extern "C" void FurnitureHeap_Destroy(void) {
     ((Heap *)(sFurnitureHeap))->destroy2();
     sFurnitureHeap = NULL;
 }
 
-extern "C" void FieldStructureHeap_Create(u32 size, void *parent) {
-    gFieldStructureHeap = FrameHeap_Create(size, parent);
+extern "C" void *FieldStructureHeap_Create(u32 size, void *parent) {
+    return gFieldStructureHeap = FrameHeap_Create(size, parent);
 }
 
 extern "C" void FieldStructureHeap_Destroy(void) {
@@ -423,8 +423,8 @@ extern "C" void FieldStructureHeap_Destroy(void) {
     gFieldStructureHeap = NULL;
 }
 
-extern "C" void SpecialInsectHeap_Create(u32 size, void *parent) {
-    sSpecialInsectHeap = ExpHeap_Create(size, parent);
+extern "C" void *SpecialInsectHeap_Create(u32 size, void *parent) {
+    return sSpecialInsectHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void SpecialInsectHeap_Destroy(void) {
@@ -432,8 +432,8 @@ extern "C" void SpecialInsectHeap_Destroy(void) {
     sSpecialInsectHeap = NULL;
 }
 
-extern "C" void HeldInsectHeap_Create(u32 size, void *parent) {
-    sHeldInsectHeap = ExpHeap_Create(size, parent);
+extern "C" void *HeldInsectHeap_Create(u32 size, void *parent) {
+    return sHeldInsectHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void HeldInsectHeap_Destroy(void) {
@@ -441,8 +441,8 @@ extern "C" void HeldInsectHeap_Destroy(void) {
     sHeldInsectHeap = NULL;
 }
 
-extern "C" void FieldInsectHeap_Create(u32 size, void *parent) {
-    sFieldInsectHeap = ExpHeap_Create(size, parent);
+extern "C" void *FieldInsectHeap_Create(u32 size, void *parent) {
+    return sFieldInsectHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void FieldInsectHeap_Destroy(void) {
@@ -450,8 +450,8 @@ extern "C" void FieldInsectHeap_Destroy(void) {
     sFieldInsectHeap = NULL;
 }
 
-extern "C" void MuseumInsectHeap_Create(u32 size, void *parent) {
-    sMuseumInsectHeap = ExpHeap_Create(size, parent);
+extern "C" void *MuseumInsectHeap_Create(u32 size, void *parent) {
+    return sMuseumInsectHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void MuseumInsectHeap_Destroy(void) {
@@ -459,8 +459,8 @@ extern "C" void MuseumInsectHeap_Destroy(void) {
     sMuseumInsectHeap = NULL;
 }
 
-extern "C" void FishShadowHeap_Create(u32 size, void *parent) {
-    sFishShadowHeap = ExpHeap_Create(size, parent);
+extern "C" void *FishShadowHeap_Create(u32 size, void *parent) {
+    return sFishShadowHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void FishShadowHeap_Destroy(void) {
@@ -468,8 +468,8 @@ extern "C" void FishShadowHeap_Destroy(void) {
     sFishShadowHeap = NULL;
 }
 
-extern "C" void FishFinHeap_Create(u32 size, void *parent) {
-    sFishFinHeap = ExpHeap_Create(size, parent);
+extern "C" void *FishFinHeap_Create(u32 size, void *parent) {
+    return sFishFinHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void FishFinHeap_Destroy(void) {
@@ -477,8 +477,8 @@ extern "C" void FishFinHeap_Destroy(void) {
     sFishFinHeap = NULL;
 }
 
-extern "C" void FishDisplayHeap_Create(u32 size, void *parent) {
-    sFishDisplayHeap = ExpHeap_Create(size, parent);
+extern "C" void *FishDisplayHeap_Create(u32 size, void *parent) {
+    return sFishDisplayHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void FishDisplayHeap_Destroy(void) {
@@ -486,8 +486,8 @@ extern "C" void FishDisplayHeap_Destroy(void) {
     sFishDisplayHeap = NULL;
 }
 
-extern "C" void MuseumAquariumHeap_Create(u32 size, void *parent) {
-    sMuseumAquariumHeap = ExpHeap_Create(size, parent);
+extern "C" void *MuseumAquariumHeap_Create(u32 size, void *parent) {
+    return sMuseumAquariumHeap = ExpHeap_Create(size, parent);
 }
 
 extern "C" void MuseumAquariumHeap_Destroy(void) {

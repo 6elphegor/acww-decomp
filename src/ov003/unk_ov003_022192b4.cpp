@@ -1,10 +1,9 @@
 #include "snd/SndSeEmitter.h"
 #include "sys/ProcProfile.h"
 #include "uptr.h"
-#ifdef HOST64
 #include "gfx/AnimModel.h"
-#include "snd/SndSeEmitter.h"
-#endif
+#include "town/BlockMap.h"
+#include "town/TownBlockMap.h"
 // the field objects' model heap (0x21400 bytes on the DS; the model objects are larger on 64-bit hosts)
 #ifdef HOST64
 #define FIELDOBJ_MODEL_HEAP_SIZE 0x30000
@@ -54,40 +53,18 @@ typedef u32 FileBufSlot;
 #include "proto/main/unk_020abea8.h"
 
 // ================================================================ other modules' real names
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define BlockMap_getDigKind _ZN8BlockMap10getDigKindEii
-#define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
 #define func_02133150 _s32_div_f
-#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
-#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32
-#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
-#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
-#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
-#define CachedModel_release _ZN11CachedModel7releaseEv
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define func_020548a0 _ZN9AnimModelD1Ev
-#define func_020548d0 _ZN9AnimModelC1Ev
 #define func_02135714 __cxa_vec_ctor
 #define func_021355f0 __cxa_vec_cleanup
-#define Model_drawShapesDirect _ZN5Model16drawShapesDirectEPi
-#define CachedModel_loadWithSharedTex _ZN11CachedModel17loadWithSharedTexEPvS0_S0_
-#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
-#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
-#define PooledModel_getModel _ZN11PooledModel8getModelEv
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
-#define Model_getRenderObj _ZN5Model12getRenderObjEv
 
 
 // ================================================================ shared (global) classes
 
 
 extern "C" {
+extern CommManager *gCommManager;
+TownBlockMap *TownBlockMap_Get();
+PendingUnit *PendingUnit_Get(u32 i);
 void TreeAnimSet_Construct(void *p);
 // (src/ov003/unk_ov003_02225800.cpp; its header brings game/FxVec3.h, whose out-of-line constructor this unit
 // does not use: see FxVec3 below)
@@ -147,17 +124,16 @@ struct Unk_ov003_0221b8bc_Bits {
 };
 
 // 0x14c-byte animated tree (shake / chop animation of one tree model, TreeAnim_*). The AnimModel and the
-// SndSeEmitter are built by TreeAnim_Construct and torn down by TreeAnim_Destruct (raw storage here; the AnimModel
-// members the TreeAnim code reads directly are named in the union, at their TreeAnim offsets).
+// SndSeEmitter are built by TreeAnim_Construct and torn down by TreeAnim_Destruct, as the vector constructor of the
+// TreeAnimSet calls them (raw storage here; the AnimModel members the TreeAnim code reads directly are named in the
+// union, at their places in the AnimModel: Model::resMdl / resTex / mtx, the AnimFrameCtrl base, its curFrame and
+// playMode).
 struct TreeAnim {
     /* 0x000 */ s32 active;
     /* 0x004 */ s32 sessionSlot;
-#ifdef HOST64
-    // the AnimModel by its real size; the names at its members (Model::resMdl / resTex / mtx, the AnimFrameCtrl base,
-    // its curFrame and playMode) on 64-bit hosts
 #define TA_AFC ((unsigned long)__builtin_offsetof(AnimModel, numFrames) - (unsigned long)__builtin_offsetof(AnimFrameCtrl, numFrames))
     union {
-        u8 animModel[sizeof(AnimModel)] HOST_ALIGN8;
+        alignas(AnimModel) u8 animModel[sizeof(AnimModel)];
         struct {
             u8 hm0[__builtin_offsetof(AnimModel, resMdl)];
             void *resMdl;
@@ -179,23 +155,6 @@ struct TreeAnim {
         };
     };
 #undef TA_AFC
-#else
-    union {
-        /* 0x008 */ u8 animModel[0xb8]; // AnimModel
-        struct {
-            /* 0x008 */ u8 pad_008[0x5c];
-            /* 0x064 */ void *resMdl;                      // animModel.resMdl
-            /* 0x068 */ u32 resTex;                        // animModel.resTex
-            /* 0x06c */ Mtx43 baseMatrix;                  // animModel.mtx
-            /* 0x09c */ u8 pad_09c[8];
-            /* 0x0a4 */ u8 frameCtrl[8];                   // animModel's AnimFrameCtrl base (vtable, numFrames)
-            /* 0x0ac */ Unk_ov003_0221b8bc_Bits animFrame; // animModel.curFrame
-            /* 0x0b0 */ u8 pad_0b0[8];
-            /* 0x0b8 */ u8 playMode;                       // animModel.playMode
-            /* 0x0b9 */ u8 pad_0b9[7];
-        };
-    };
-#endif
     /* 0x0c0 */ s32 posX;
     /* 0x0c4 */ s32 posY;
     /* 0x0c8 */ s32 posZ;
@@ -203,11 +162,7 @@ struct TreeAnim {
     /* 0x0d4 */ s32 animKind;
     /* 0x0d8 */ s32 alpha;
     /* 0x0dc */ s32 leafSpawnCount;
-#ifdef HOST64
-    u8 seEmitter[sizeof(SndSeEmitter)] HOST_ALIGN8;
-#else
-    /* 0x0e0 */ u8 seEmitter[0x40];
-#endif
+    /* 0x0e0 */ alignas(SndSeEmitter) u8 seEmitter[sizeof(SndSeEmitter)];
     /* 0x120 */ s32 unk_120[6];
     /* 0x138 */ s32 unk_138[3];
     /* 0x144 */ TreeLeafFxEntry *leafRecord;
@@ -273,13 +228,31 @@ public:
     /* 0x6a6c */ s32 frameCounter;
 };
 
+// 0xa4-byte field item effect (sFieldItemFxTable: an item tossed, dropped from a tree, popping out of the ground, a
+// hole opening or closing ... ; FieldItemFx_* / FieldItemFxTable_*), its sound emitter built by its constructor.
 struct FieldItemFx {
-    u8 pad_00[0x10];
-    u32 unitX;
-    u32 unitZ;
-    u8 pad_18[0x48];
-    u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (larger on 64-bit hosts), then the
-    u8 seTail[4];                                              // flags at 0xa0 (the other views of the entry)
+    /* 0x00 */ s32 sessionSlot;
+    /* 0x04 */ s32 active;
+    /* 0x08 */ u16 item;
+    /* 0x0a */ u16 pendingItem;
+    /* 0x0c */ s32 kind;
+    /* 0x10 */ VecXZ unit;
+    /* 0x18 */ VecFx32 pos;
+    /* 0x24 */ VecFx32 offset;
+    /* 0x30 */ s32 velocityX;
+    /* 0x34 */ s32 velocityY;
+    /* 0x38 */ s32 velocityZ;
+    /* 0x3c */ VecFx32 scale;
+    /* 0x48 */ s16 startArg;
+    /* 0x4a */ s16 unk_4a;
+    /* 0x4c */ s16 step;
+    /* 0x4e */ u16 frame;
+    /* 0x50 */ s16 timer;
+    /* 0x52 */ s16 alpha;
+    /* 0x54 */ VecFx32 origin;
+    /* 0x60 */ SndSeEmitter seEmitter;
+    /* 0xa0 */ u8 pendingApply;
+    /* 0xa1 */ u8 pendingCommit;
     FieldItemFx();
     ~FieldItemFx();
 };
@@ -296,10 +269,6 @@ struct FxVec3 : VecFx32Copy {
 };
 
 extern "C" {
-#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
-void SndSeEmitter_dtor(void *p);
-#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
-void SndSeEmitter_ctor(void *p);
 }
 
 // ================================================================ per-file declarations
@@ -314,18 +283,12 @@ typedef VecFx32Copy V3;
 extern "C" {
 
 extern u8 sLandingUnitOffsets[];
-extern CommManager *gCommManager;
-BOOL CommManager_isOnline(CommManager *g);
 
-void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
-BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 PendingUnit_Find(void *p, s32 a);
-BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-u8 *PendingUnit_Get(s32 i);
 
 s32 FieldItemFxTable_StartForPlayer(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
 s32 FieldItemFxTable_Start(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
@@ -357,53 +320,19 @@ struct Unk_ov003_022359a4_P2 {
 typedef Unk_ov003_022359a4_P2 P2;
 typedef VecFx32Copy V3;
 typedef Mtx43Align8 Blk;
-struct Unk_ov003_022359a4_Ent {
-    /* 0x00 */ u32 sessionSlot;
-    /* 0x04 */ u32 active;
-    /* 0x08 */ u16 item;
-    /* 0x0a */ u16 pendingItem;
-    /* 0x0c */ s32 kind;
-    /* 0x10 */ P2 unit;
-    /* 0x18 */ V3 pos;
-    /* 0x24 */ V3 offset;
-    /* 0x30 */ s32 velocityX;
-    /* 0x34 */ s32 velocityY;
-    /* 0x38 */ s32 velocityZ;
-    /* 0x3c */ V3 scale;
-    /* 0x48 */ u8 pad_48[6];
-    /* 0x4e */ u16 frame;
-    /* 0x50 */ u8 pad_50[2];
-    /* 0x52 */ s16 alpha;
-    /* 0x54 */ u8 pad_54[0xc];
-    /* 0x60 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
-    /* 0xa0 */ u8 pendingApply;
-};
-typedef Unk_ov003_022359a4_Ent Ent;
-struct Unk_ov003_022359a4 {
-    Ent e[20];
-};
-typedef Unk_ov003_022359a4 Tbl;
-// sFieldItemFxTable (defined as a FieldItemFxTable: its entries' constructor and destructor) with its entries' fields
-static_assert(sizeof(Tbl) == sizeof(FieldItemFxTable), "FieldItemFxTable");
-static inline Tbl *FxTable() { return (Tbl *)&sFieldItemFxTable; }
+typedef FieldItemFx Ent;
+typedef FieldItemFxTable Tbl;
+static inline Tbl *FxTable() { return &sFieldItemFxTable; }
 extern "C" {
 
-extern void *gCommManager;
 extern Blk data_021f47e0;
 
-void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
-s32 BlockMap_getDigKind(void *m, s32 x, s32 y);
-s32 CommManager_isOnline(void *g);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
-void SndSeEmitter_callStop(void *);
-void SndSeEmitter_callUpdateRelative(void *, void *);
-void SndSeEmitter_callInit(void *);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 void Mtx43_Scale(Blk *m, s32 x, s32 y, s32 z);
 s32 PendingUnit_Find(P2 p, s32 z);
-u8 *PendingUnit_Get(s32 i);
 
 s32 FieldItemFx_Finish(Ent *e);
 s32 FieldItemFx_Init(Ent *e, s32 g, P2 p, V3 v, s32 a, u32 b, void *map, s32 c, s32 d);
@@ -495,36 +424,6 @@ extern "C" { s32 FieldItemFx_StartDrop(s32 a, u32 b, P2 p, V3 v); }
 }
 
 namespace ns_0221a4a0 {
-struct Unk_ov003_0221a4a0 {
-    /* 0x00 */ u32 sessionSlot;
-    /* 0x04 */ s32 active;
-    /* 0x08 */ u16 item;
-    /* 0x0a */ u16 pendingItem;
-    /* 0x0c */ s32 kind;
-    /* 0x10 */ s32 unitX;
-    /* 0x14 */ s32 unitZ;
-    /* 0x18 */ s32 posX;
-    /* 0x1c */ s32 posY;
-    /* 0x20 */ s32 posZ;
-    /* 0x24 */ s32 offsetX;
-    /* 0x28 */ u8 pad_28[8];
-    /* 0x30 */ s32 velocityX;
-    /* 0x34 */ s32 velocityY;
-    /* 0x38 */ s32 velocityZ;
-    /* 0x3c */ s32 scaleX;
-    /* 0x40 */ s32 scaleY;
-    /* 0x44 */ s32 scaleZ;
-    /* 0x48 */ s16 startArg;
-    /* 0x4a */ u16 pad_4a;
-    /* 0x4c */ s16 step;
-    /* 0x4e */ u16 frame;
-    /* 0x50 */ s16 timer;
-    /* 0x52 */ s16 alpha;
-    /* 0x54 */ VecFx32 origin;
-    /* 0x60 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
-    /* 0xa0 */ u8 pendingApply;
-    /* 0xa1 */ u8 pad_a1[3];
-};
 extern "C" {
 
 extern VecFx32 sBalloonSplashPos;
@@ -532,18 +431,16 @@ extern s16 data_02135f44[];
 extern s32 sItemPopScaleXZ[];
 extern s32 sItemPopScaleY[];
 
-void GroundInfo_initAtPos(GroundInfoBase *b, void *pos, s32 a, s32 c);
 void GroundInfo_Destruct(GroundInfoBase *b);
 void VEC_Add(void *a, void *b, void *out);
 void Sky_PlayBalloonDropSe(s32 a);
 void Sky_EndBalloonDrop(void);
 void PlayerActor_LocalRequestAct77From(void *p);
-void FieldItemFx_Finish(Unk_ov003_0221a4a0 *p);
-s32 FieldItemFx_ReleasePending(Unk_ov003_0221a4a0 *p);
-s32 FieldItemFx_Clear(Unk_ov003_0221a4a0 *p);
+void FieldItemFx_Finish(FieldItemFx *p);
+s32 FieldItemFx_ReleasePending(FieldItemFx *p);
+s32 FieldItemFx_Clear(FieldItemFx *p);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
-void PlayerData_setFlag(void *p, s32 a);
 s32 FieldItemFx_StartPop(u32 a, u32 b, void *p);
 void Town_SetBeesReleased(void);
 }
@@ -587,25 +484,25 @@ static inline BOOL Unk_ov003_0221ad84_Chk(volatile u16 *p, u32 &vr)
     return f8;
 }
 // ---- prototypes of this file's functions
-extern "C" void FieldItemFx_UpdateHoleClose(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitPop(Unk_ov003_0221a4a0 *self, Vec2 *p);
-extern "C" void FieldItemFx_UpdatePop(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitTreeDrop(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32 *q, s32 skip);
-extern "C" void FieldItemFx_UpdateTreeDrop(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitTreeDropFloat(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32 *q);
-extern "C" void FieldItemFx_UpdateTreeDropFloat(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitBeeHiveDrop(Unk_ov003_0221a4a0 *self, s32 a, VecFx32 *p);
-extern "C" void FieldItemFx_UpdateBeeHiveDrop(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitDigUpTree(Unk_ov003_0221a4a0 *self, Vec2 *p, u32 ang);
-extern "C" void FieldItemFx_UpdateDigUpTree(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitPlant(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32 *q, u32 w);
-extern "C" void FieldItemFx_UpdatePlant(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitHoleShrink(Unk_ov003_0221a4a0 *self, Vec2 *p);
-extern "C" void FieldItemFx_UpdateHoleShrink(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitStrikeShake(Unk_ov003_0221a4a0 *self, Vec2 *p);
-extern "C" void FieldItemFx_UpdateStrikeShake(Unk_ov003_0221a4a0 *self);
-extern "C" void FieldItemFx_InitBalloonDrop(Unk_ov003_0221a4a0 *self, VecFx32 *p);
-extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self);
+extern "C" void FieldItemFx_UpdateHoleClose(FieldItemFx *self);
+extern "C" void FieldItemFx_InitPop(FieldItemFx *self, Vec2 *p);
+extern "C" void FieldItemFx_UpdatePop(FieldItemFx *self);
+extern "C" void FieldItemFx_InitTreeDrop(FieldItemFx *self, Vec2 *p, VecFx32 *q, s32 skip);
+extern "C" void FieldItemFx_UpdateTreeDrop(FieldItemFx *self);
+extern "C" void FieldItemFx_InitTreeDropFloat(FieldItemFx *self, Vec2 *p, VecFx32 *q);
+extern "C" void FieldItemFx_UpdateTreeDropFloat(FieldItemFx *self);
+extern "C" void FieldItemFx_InitBeeHiveDrop(FieldItemFx *self, s32 a, VecFx32 *p);
+extern "C" void FieldItemFx_UpdateBeeHiveDrop(FieldItemFx *self);
+extern "C" void FieldItemFx_InitDigUpTree(FieldItemFx *self, Vec2 *p, u32 ang);
+extern "C" void FieldItemFx_UpdateDigUpTree(FieldItemFx *self);
+extern "C" void FieldItemFx_InitPlant(FieldItemFx *self, Vec2 *p, VecFx32 *q, u32 w);
+extern "C" void FieldItemFx_UpdatePlant(FieldItemFx *self);
+extern "C" void FieldItemFx_InitHoleShrink(FieldItemFx *self, Vec2 *p);
+extern "C" void FieldItemFx_UpdateHoleShrink(FieldItemFx *self);
+extern "C" void FieldItemFx_InitStrikeShake(FieldItemFx *self, Vec2 *p);
+extern "C" void FieldItemFx_UpdateStrikeShake(FieldItemFx *self);
+extern "C" void FieldItemFx_InitBalloonDrop(FieldItemFx *self, VecFx32 *p);
+extern "C" void FieldItemFx_UpdateBalloonDrop(FieldItemFx *self);
 }
 
 namespace ns_0221aed4 {
@@ -617,44 +514,10 @@ struct Unk_ov003_0221aed4_P2 {
 };
 typedef Unk_ov003_0221aed4_P2 P2;
 typedef VecFx32Copy V3;
-struct Unk_ov003_0221aed4_Fx {
-    /* 0x00 */ s32 sessionSlot;
-    /* 0x04 */ s32 active;
-    /* 0x08 */ u16 item;
-    /* 0x0a */ u16 pendingItem;
-    /* 0x0c */ s32 kind;
-    /* 0x10 */ s32 unitX;
-    /* 0x14 */ s32 unitZ;
-    /* 0x18 */ s32 posX;
-    /* 0x1c */ s32 posY;
-    /* 0x20 */ s32 posZ;
-    /* 0x24 */ s32 offsetX;
-    /* 0x28 */ s32 offsetY;
-    /* 0x2c */ s32 offsetZ;
-    /* 0x30 */ s32 velocityX;
-    /* 0x34 */ s32 velocityY;
-    /* 0x38 */ s32 velocityZ;
-    /* 0x3c */ s32 scaleX;
-    /* 0x40 */ s32 scaleY;
-    /* 0x44 */ s32 scaleZ;
-    /* 0x48 */ s16 startArg;
-    /* 0x4a */ s16 unk_4a;
-    /* 0x4c */ s16 step;
-    /* 0x4e */ s16 frame;
-    /* 0x50 */ s16 timer;
-    /* 0x52 */ s16 alpha;
-    /* 0x54 */ s32 originX;
-    /* 0x58 */ s32 originY;
-    /* 0x5c */ s32 originZ;
-    /* 0x60 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
-    /* 0xa0 */ u8 pendingApply;
-    /* 0xa1 */ u8 pendingCommit;
-};
 extern "C" {
 
 
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 void VEC_Add(void *a, void *b, void *c);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 z);
@@ -664,37 +527,34 @@ s32 Weed_SpawnPullFx(void *c, void *p);
 s32 DeadTurnip_SpawnDigFx(void *p);
 s32 func_02133150(s32 a, s32 b);
 s32 PendingUnit_Find(void *p, s32 a);
-PendingUnit *PendingUnit_Get(s32 i);
 s32 PendingUnit_FindBySlot(u8 a, s32 b);
 s32 PendingUnit_ApplyAt(void *p, s32 z);
 s32 PendingUnit_CommitAt(void *p, s32 z);
-void *TownBlockMap_Get();
 s32 PendingUnit_ApplyAtIfAid(const P2 &p, s32 a, s32 b);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
-void AnimModel_attachAnim(void *self);
 s32 Item_IsTreeGrown(void *c);
 s32 Town_CanReleaseBees();
 s32 FieldItemFx_StartTreeDrop(s32 a, s32 v, P2 p, V3 q, s16 t, s32 x);
 s32 FieldItemFx_StartTreeDropFloat(s32 a, s32 v, P2 p, V3 q, s32 w);
 
-void FieldItemFx_InitPop(Unk_ov003_0221aed4_Fx *self, P2 p);
-void FieldItemFx_InitTreeDrop(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q, s32 a);
-void FieldItemFx_InitTreeDropFloat(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
-void FieldItemFx_InitBeeHiveDrop(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
-void FieldItemFx_InitDigUpTree(Unk_ov003_0221aed4_Fx *self, P2 p, s16 a);
-void FieldItemFx_InitPlant(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q, u32 w);
-void FieldItemFx_InitHoleShrink(Unk_ov003_0221aed4_Fx *self, P2 p);
-void FieldItemFx_InitStrikeShake(Unk_ov003_0221aed4_Fx *self, P2 p);
-void FieldItemFx_InitBalloonDrop(Unk_ov003_0221aed4_Fx *self, V3 q);
-void FieldItemFx_InitPitfallClose(Unk_ov003_0221aed4_Fx *self, P2 p, s32 a);
+void FieldItemFx_InitPop(FieldItemFx *self, P2 p);
+void FieldItemFx_InitTreeDrop(FieldItemFx *self, P2 p, V3 q, s32 a);
+void FieldItemFx_InitTreeDropFloat(FieldItemFx *self, P2 p, V3 q);
+void FieldItemFx_InitBeeHiveDrop(FieldItemFx *self, P2 p, V3 q);
+void FieldItemFx_InitDigUpTree(FieldItemFx *self, P2 p, s16 a);
+void FieldItemFx_InitPlant(FieldItemFx *self, P2 p, V3 q, u32 w);
+void FieldItemFx_InitHoleShrink(FieldItemFx *self, P2 p);
+void FieldItemFx_InitStrikeShake(FieldItemFx *self, P2 p);
+void FieldItemFx_InitBalloonDrop(FieldItemFx *self, V3 q);
+void FieldItemFx_InitPitfallClose(FieldItemFx *self, P2 p, s32 a);
 
-void FieldItemFx_InitToss(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
-void FieldItemFx_InitFillHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g);
-void FieldItemFx_InitPitfallHole(Unk_ov003_0221aed4_Fx *self, P2 p);
-void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, s32 flag);
-void FieldItemFx_Finish(Unk_ov003_0221aed4_Fx *self);
-void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self);
+void FieldItemFx_InitToss(FieldItemFx *self, P2 p, V3 q);
+void FieldItemFx_InitFillHole(FieldItemFx *self, P2 p, void *g);
+void FieldItemFx_InitPitfallHole(FieldItemFx *self, P2 p);
+void FieldItemFx_InitDigHole(FieldItemFx *self, P2 p, void *g, s32 flag);
+void FieldItemFx_Finish(FieldItemFx *self);
+void FieldItemFx_ReleasePending(FieldItemFx *self);
 void Tree_DropItems(u16 *cell, s32 a, P2 p);
 void Tree_DropSpecial(u16 *cell, s32 a, P2 p);
 }
@@ -706,16 +566,16 @@ extern "C" void TreeAnim_Start(TreeAnim *self, s32 a, P2 p, s32 kind, s32 idx, s
 extern "C" void TreeAnim_Reset(TreeAnim *self);
 extern "C" void TreeAnim_ModelCallback(NNSG3dRS *rs);
 extern "C" void TreeAnimRequest_Resolve(TreeAnimRequest *self);
-extern "C" void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self);
-extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 pos, s32 kind, u16 w, s32 x, s16 y, s32 z);
-extern "C" void FieldItemFx_Finish(Unk_ov003_0221aed4_Fx *self);
-extern "C" void FieldItemFx_Clear(Unk_ov003_0221aed4_Fx *self);
-extern "C" void FieldItemFx_InitToss(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
-extern "C" void FieldItemFx_UpdateToss(Unk_ov003_0221aed4_Fx *self);
-extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, s32 flag);
-extern "C" void FieldItemFx_UpdateHoleOpen(Unk_ov003_0221aed4_Fx *self);
-extern "C" void FieldItemFx_InitPitfallHole(Unk_ov003_0221aed4_Fx *self, P2 p);
-extern "C" void FieldItemFx_InitFillHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g);
+extern "C" void FieldItemFx_ReleasePending(FieldItemFx *self);
+extern "C" void FieldItemFx_Init(FieldItemFx *self, s32 a, P2 p, V3 pos, s32 kind, u16 w, s32 x, s16 y, s32 z);
+extern "C" void FieldItemFx_Finish(FieldItemFx *self);
+extern "C" void FieldItemFx_Clear(FieldItemFx *self);
+extern "C" void FieldItemFx_InitToss(FieldItemFx *self, P2 p, V3 q);
+extern "C" void FieldItemFx_UpdateToss(FieldItemFx *self);
+extern "C" void FieldItemFx_InitDigHole(FieldItemFx *self, P2 p, void *g, s32 flag);
+extern "C" void FieldItemFx_UpdateHoleOpen(FieldItemFx *self);
+extern "C" void FieldItemFx_InitPitfallHole(FieldItemFx *self, P2 p);
+extern "C" void FieldItemFx_InitFillHole(FieldItemFx *self, P2 p, void *g);
 }
 
 namespace ns_0221b8bc {
@@ -731,45 +591,33 @@ struct Unk_ov003_0221b8bc_Col2 {
 };
 extern "C" {
 
-extern void *gCommManager;
 extern u16 sTreeFruitItems[];
 extern Mtx43 data_021f47e0;
 
-s32 CommManager_isOnline(void *p);
-s32 PlayerData_testFlag(void *p, s32 a);
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldItemFx_StartBeeHiveDrop(s32 aid, s32 id, VecXZ *a, VecFx32 *b);
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
-void *PendingUnit_Get(s32 i);
 s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 void FieldItemFx_StartTreeDrop(s32 a, s32 id, VecXZ *p, VecFx32 *v, s32 f, s32 i);
 s32 Field_AidOrLocal(s32 aid);
-void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
 s32 PendingUnit_Find(VecXZ *p, s32 a);
 void TreeAnim_DropItems(TreeAnim *o, u16 *cell);
 void PendingUnit_ApplyAtIfAid(VecXZ *p, s32 id, s32 a);
 void TreeAnim_Reset(TreeAnim *o);
-void CachedModel_release(void *p);
-void SndSeEmitter_callStop(void *p);
 void Mtx43_SetTranslate(void *p, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *p, s32 a);
-void AnimModel_drawAnimated(void *p, s32 a);
 u16 SceneLights_GetRoomColor(void);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
-void AnimModel_stepAnim(void *p);
-s32 AnimFrameCtrl_isFinished(void *p);
 void NNS_G3dMdlSetMdlAlphaAll(void *p, s32 a);
 void NNS_G3dMdlSetMdlPolygonIDAll(void *p, s32 a);
 s32 Item_GetStumpSize(u16 *p);
 s32 Item_GetTreeStage(u16 *p);
 void *TreeLeafFx_SpawnLeaves(void *d, s32 mode, s32 n, u16 *cell, VecXZ *p, s32 c);
 void *TreeLeafFx_SpawnSeasonal(void *d, s32 mode, s32 n, u16 *cell, VecXZ *p, s32 c);
-void SndSeEmitter_callUpdateRelative(void *p, VecFx32 *v);
-void SndSeEmitter_callInit(void *p);
 void TreeAnim_ModelCallback(NNSG3dRS *rs);
-TreeAnim *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
+TreeAnim *TreeAnimSet_GetInstance(TreeAnimSet *a, u16 *cell, s32 n, s32 f);
 s32 Item_IsTreeGrown(u16 *p);
 s32 Town_CanReleaseBees(void);
 void PendingUnit_ApplyAt(VecXZ *p, s32 a);
@@ -778,7 +626,7 @@ void TreeAnim_Start(TreeAnim *a, s32 id, VecXZ *p, s32 c, s32 n, s32 d);
 
 }
 // ---- prototypes of this file's functions
-extern "C" { void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o); }
+extern "C" { void TreeAnimSet_ProcessRequest(TreeAnimSet *a, TreeAnimRequest *o); }
 extern "C" { void Tree_KeepShaking(s32 id, s32 *pos); }
 extern "C" { void TreeAnim_Init(TreeAnim *o); }
 extern "C" { void TreeAnim_Update(TreeAnim *o); }
@@ -801,11 +649,7 @@ void TreeAnim_Release(void *p);
 void TreeAnim_Draw(void *p);
 void TreeAnim_Update(void *p);
 void TreeAnim_Init(void *p);
-void TreeAnimSet_ProcessRequest(void *p, void *q);
-void SndSeEmitter_dtor(void *p);
-void SndSeEmitter_ctor(void *p);
-void func_020548a0(void *p);
-void func_020548d0(void *p);
+void TreeAnimSet_ProcessRequest(TreeAnimSet *p, TreeAnimRequest *q);
 void *func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void *func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02133150(s32 a, s32 b);
@@ -824,13 +668,12 @@ extern u8 data_ov003_0222f534[];
 extern s32 data_ov003_0222f298[];
 extern void *gSceneBlockMap;
 
-u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b);
+TreeAnim *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b);
 void TreeAnimSet_Release(Big *self);
 void TreeAnimSet_Draw(Big *self);
 void TreeAnimSet_Update(Big *self);
 void TreeAnimSet_Init(Big *self);
 Elem2 *TreeAnim_Destruct(Elem2 *self);
-Big *_ZN11TreeAnimSetD1Ev(Big *self);
 Big *TreeAnimSet_Construct(Big *self);
 Elem2 *TreeAnim_Construct(Elem2 *self);
 void TreeLeafFx_Init(Set *self);
@@ -861,13 +704,12 @@ extern "C" { Rec *TreeLeafFx_SpawnLeaves(Set *self, s32 p1, u32 p2, u16 *p3, Pos
 extern "C" { void TreeLeafFx_Init(Set *self); }
 extern "C" { Elem2 *TreeAnim_Construct(Elem2 *self); }
 extern "C" { Big *TreeAnimSet_Construct(Big *self); }
-extern "C" { Big *_ZN11TreeAnimSetD1Ev(Big *self); }
 extern "C" { Elem2 *TreeAnim_Destruct(Elem2 *self); }
 extern "C" { void TreeAnimSet_Init(Big *self); }
 extern "C" { void TreeAnimSet_Update(Big *self); }
 extern "C" { void TreeAnimSet_Draw(Big *self); }
 extern "C" { void TreeAnimSet_Release(Big *self); }
-extern "C" { u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b); }
+extern "C" { TreeAnim *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b); }
 }
 
 namespace ns_0221cb54 {
@@ -902,17 +744,14 @@ typedef Unk_ov003_0221cb54_Col Col;
 inline Unk_ov003_0221cb54_P2::Unk_ov003_0221cb54_P2(Unk_ov003_0221cb54_Col *c) { x = (s32)c->a >> 8; z = c->b & 0xff; }
 extern "C" {
 
-extern u8 *gCommManager;
 extern u8 sUnitSearchOffsets81[];
 extern u8 *gSceneBlockMap;
 extern u8 *gCamera;
 
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
-PendingUnit *PendingUnit_Get(u32 i);
 void FieldItemFx_StartStrikeShake(u32 a, u32 b, P2 p);
 void FieldItemFx_StartStrikeEject(u32 a, u32 b, P2 p, V3 v);
 void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 z);
-void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 PendingUnit_FindForAid(s32 aid, P2 p, s32 a);
 s32 Town_IsSaplingBlocker(u16 *c);
@@ -922,9 +761,9 @@ s32 Field_AidOrZero(s32 aid);
 s32 Item_IsTreeGrown(u16 *c);
 void PendingUnit_Apply(PendingUnit *e);
 void PendingUnit_ApplyAtIfAid(P2 p, s32 aid, s32 b);
-void FieldObj_DrawItemModel(void *g, void *o, V3 *a, V3 *b, s32 c, s16 d, s16 e);
-void FieldObj_DrawItemIcon(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
-void FieldObj_DrawIconModel(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
+void FieldObj_DrawItemModel(O *o, u32 t, VecFx32 *pos, VecFx32 *scale, s32 rx, s32 ry, s32 rz);
+CachedModel *FieldObj_DrawItemIcon(O *o, u32 t, VecFx32 *a, s32 b, VecFx32 *c, s32 d, s32 e, s32 f);
+CachedModel *FieldObj_DrawIconModel(O *o, u32 idx, VecFx32 *a, s32 b, VecFx32 *c, s32 d, s32 e, s32 f);
 s32 Town_GetRafflesiaPos(V3 *o, s32 z);
 void Vec_Sub(V3 *out, V3 *a, s32 b);
 void FieldPos_ToUnit(s32 *x, s32 *z, V3 *v);
@@ -935,8 +774,6 @@ void FieldItemFxTable_Release(void *p);
 void FieldItemFxTable_Draw(void *p);
 void TreeAnimSet_Draw(void *p);
 void PendingUnits_Flush();
-#define Heap_destroy _ZN4Heap7destroyEv
-void Heap_destroy(void *p);
 s32 func_02133150(s32 a, s32 b);
 void FieldObj_DrawUnits(O *o, void *g);
 extern V3 gCameraLookAt;
@@ -1051,12 +888,11 @@ static inline BOOL Chk_0221d37c(u16 *p) {
 }
 // ---- prototypes of this file's functions
 extern "C" { void FieldObj_DrawUnits(O *o, void *g); }
-extern "C" { s32 _ZN18FieldObjectManager6onDrawEv(u8 *self); }
 extern "C" { s32 Field_FindFlowerNear(V3 *out, V3 pos, s32 mask); }
 extern "C" { s32 Field_IsRafflesiaNear(V3 *out, s32 b); }
-extern "C" { void Field_DrawIconModel(void *o, V3 a, V3 b, s32 c, s16 d, s16 e); }
-extern "C" { void Field_DrawItemIcon(void *o, V3 a, V3 b, s32 c, s16 d, s16 e); }
-extern "C" { void Field_DrawItemModel(void *o, V3 a, V3 b, s32 c, s16 d, s16 e); }
+extern "C" { void Field_DrawIconModel(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e); }
+extern "C" { void Field_DrawItemIcon(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e); }
+extern "C" { void Field_DrawItemModel(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e); }
 extern "C" { s32 Tree_IsPendingStump(s32 o, P2 pos); }
 extern "C" { s32 Tree_BeginReaction(s32 o, P2 pos); }
 extern "C" { void Tree_RequestShake(s32 o, P2 pos, s32 mode); }
@@ -1067,51 +903,7 @@ extern "C" { void FieldItemFx_StartStrikeResult(P2 pos); }
 namespace ns_0221db54 {
 typedef VecFx32Copy V3;
 typedef Mtx43Align8 Blk;
-class TreeAnimSet {
-public:
-    TreeAnimSet();
-    ~TreeAnimSet();
-    u8 pad[sizeof(::TreeAnimSet)];
-};
-class FieldObjectManager : public GameProc {
-public:
-    FieldObjectManager();
-    virtual ~FieldObjectManager();
-
-    CachedModel *iconModels[0x49];
-    /* 0x174 */ CachedModel treeModels[0x12];
-    /* 0xc6c */ CachedModel cedarModels[6];
-    /* 0x1014 */ CachedModel litCedarModels[3];
-    /* 0x11e8 */ CachedModel palmModels[6];
-    /* 0x1590 */ CachedModel flowerModels[4][10];
-    /* 0x2df0 */ CachedModel specialFlowerModels[4];
-    /* 0x3060 */ CachedModel *dandelionModel;
-    /* 0x3064 */ CachedModel *dandelionPuffModel;
-    /* 0x3068 */ CachedModel designModels[0x20];
-    /* 0x43e8 */ CachedModel grassModels[5];
-    /* 0x46f4 */ CachedModel *stoneModels[5];
-    /* 0x4708 */ CachedModel holeModels[2];
-    /* 0x4840 */ CachedModel crackModels[2];
-    /* 0x4978 */ CachedModel *stumpModels[12];
-    /* 0x49a8 */ CachedModel turnipModels[2];
-    /* 0x4ae0 */ ModelSet iconModelSet;
-    /* 0x4af0 */ ModelSet dandelionModelSet;
-    /* 0x4b00 */ ModelSet stoneModelSet;
-    /* 0x4b10 */ ModelSet stumpModelSet;
-    /* 0x4b20 */ TreeAnimSet treeAnimSet;
-    /* 0x6a6c */ s32 frameCounter;
-};
-// the same object as ::FieldObjectManager (above)
-static_assert(__builtin_offsetof(FieldObjectManager, treeModels) == __builtin_offsetof(::FieldObjectManager, treeModels), "treeModels");
-static_assert(__builtin_offsetof(FieldObjectManager, designModels) == __builtin_offsetof(::FieldObjectManager, designModels), "designModels");
-static_assert(__builtin_offsetof(FieldObjectManager, stoneModels) == __builtin_offsetof(::FieldObjectManager, stoneModels), "stoneModels");
-static_assert(__builtin_offsetof(FieldObjectManager, stumpModels) == __builtin_offsetof(::FieldObjectManager, stumpModels), "stumpModels");
-static_assert(__builtin_offsetof(FieldObjectManager, turnipModels) == __builtin_offsetof(::FieldObjectManager, turnipModels), "turnipModels");
-static_assert(__builtin_offsetof(FieldObjectManager, iconModelSet) == __builtin_offsetof(::FieldObjectManager, iconModelSet), "iconModelSet");
-static_assert(__builtin_offsetof(FieldObjectManager, treeAnimSet) == __builtin_offsetof(::FieldObjectManager, treeAnimSet), "treeAnimSet");
-static_assert(__builtin_offsetof(FieldObjectManager, frameCounter) == __builtin_offsetof(::FieldObjectManager, frameCounter), "frameCounter");
-static_assert(sizeof(FieldObjectManager) == sizeof(::FieldObjectManager), "size");
-typedef FieldObjectManager O;
+typedef ::FieldObjectManager O;
 typedef CachedModel M;
 extern "C" {
 
@@ -1120,7 +912,6 @@ extern V3 data_ov003_0222f510[];
 extern V3 data_ov003_0222f4f8[];
 extern u16 sTreeFruitIcons[];
 
-void Model_drawShapesDirect(M *p, s32 a);
 u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmiAll(NNSG3dResMdl *mdl, u32 col);   // (src/autoload_2/unk_02105d50.c: u8 *, void *)
 s32 Flower_GetSpecies(u16 *p);
@@ -1174,7 +965,6 @@ extern "C" {
 
 extern Blk data_021f47e0;
 extern void *data_021f482c_v;
-extern u8 sFieldObjectModelHeapBuf[];
 
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
@@ -1184,7 +974,6 @@ void NNS_G3dMdlSetMdlAlphaAll(void *p, s32 a);
 s32 Item_GetInfoUnk07(volatile u16 *p);
 u32 TownState_GetSeasonPeriod();
 void Field_OnEnter();
-s32 CachedModel_loadWithSharedTex(void *p, void *t, u8 a, u8 b);
 
 s32 FieldObj_DrawModel(Obj *o, CachedModel *m, Blk b);
 s32 FieldObj_DrawDesign(Obj *o, volatile u16 *t, Blk m);
@@ -1308,8 +1097,6 @@ extern "C" { BOOL FieldObj_LoadTurnips(); }
 extern "C" { BOOL FieldObj_LoadDesignModels(Obj *o); }
 extern "C" { BOOL FieldObj_LoadDesigns(); }
 extern "C" { BOOL FieldObj_RunLoaders(Obj *o); }
-extern "C" { BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o); }
-extern "C" { BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o); }
 extern "C" { CachedModel *FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f); }
 extern "C" { CachedModel *FieldObj_DrawItemIcon(Obj *o, u32 t, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f); }
 extern "C" { void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s32 rz); }
@@ -1390,19 +1177,10 @@ u32 Item_GetIconModelName(s32 a, s32 b);
 s32 TownState_GetSeasonPeriod();
 void *NNS_G3dGetTex(void *file);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
-void *ModelSlotPool_acquire(void *a, void *b);
-BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
-void *PooledModel_getModel(void *a);
-void *ModelSlot_getHeap(void *a);
 s32 func_021065dc();
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
-BOOL AnimModel_allocAnmObj(void *a, void *b);
-void AnimModel_attachAnim(void *a);
-void *Model_getRenderObj(void *a);
-void SndSeEmitter_dtor(void *p);
-void SndSeEmitter_ctor(void *p);
 
 }
 // ---- prototypes of this file's functions
@@ -2901,15 +2679,11 @@ extern "C" char data_ov003_022333e0[0x20] = "/fg/flower/pansy/pansy.nsbmd";
 // ================================================================ functions (descending address)
 FieldItemFx::FieldItemFx()
 {
-    unitX = 0;
-    unitZ = 0;
-    new (seEmitter) SndSeEmitter();
+    unit.x = 0;
+    unit.z = 0;
 }
 
-FieldItemFx::~FieldItemFx()
-{
-    ((SndSeEmitter *)(seEmitter))->SndSeEmitter::~SndSeEmitter();
-}
+FieldItemFx::~FieldItemFx() {}
 
 FieldItemFxTable::~FieldItemFxTable() {}
 
@@ -4009,9 +3783,9 @@ BOOL FieldObj_RunLoaders(Obj *o) {
 }
 }
 
-namespace ns_0221e4d4 {
-extern "C" {
-BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o) {
+BOOL FieldObjectManager::onCreate() {
+    using namespace ns_0221e4d4;
+    FieldObjectManager *o = this;
     BOOL r = FALSE;
     if (sFieldObjectModelHeap == NULL) {
         sFieldObjectModelHeap = (Heap *)ExpHeap_CreateInPlace(sFieldObjectModelHeapBuf, FIELDOBJ_MODEL_HEAP_SIZE);
@@ -4034,17 +3808,12 @@ BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o) {
     }
     return r;
 }
-}
-}
 
-namespace ns_0221e4d4 {
-extern "C" {
-BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o) {
+BOOL FieldObjectManager::onExecute() {
+    using namespace ns_0221e4d4;
     FieldItemFxTable_Update(&sFieldItemFxTable);
-    TreeAnimSet_Update(&o->treeAnimSet);
+    TreeAnimSet_Update(&treeAnimSet);
     return TRUE;
-}
-}
 }
 
 namespace ns_0221e4d4 {
@@ -4260,7 +4029,7 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
             l.t1.z = v.z;
             FieldObj_DrawTreeFruit(o, t, &l.t1);
         }
-        q = (M *)(HOST_AT(o, 0x8c4, treeModels[12], 0)) + n;
+        q = &o->treeModels[2][0] + n;
     } else if (id >= 0x57 && id <= 0x5b) {
         a = (a ^ b) & 1;
         if (Item_IsTreeGrown(t)) {
@@ -4269,9 +4038,7 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
             l.t2.z = v.z;
             FieldObj_DrawTreeFruit(o, t, &l.t2);
         }
-        u8 *base = HOST_AT(o, 0x174, treeModels[0], 0);
-        a = a * HOST_SIZED(0x3a8, CachedModel[6]);
-        q = (M *)(base + a) + n;
+        q = &o->treeModels[a][0] + n;
     } else if (id == 0x69) {
         s32 i, z;
         i = 0;
@@ -4289,17 +4056,17 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
             FieldObj_DrawItemIcon(o, 0x1542, (V3 *)&l.b1, 0x1f, (V3 *)&l.sc, z, z, z);
             i++;
         } while (i < 3);
-        q = (M *)(HOST_AT(o, 0x8c4, treeModels[12], 0)) + n;
+        q = &o->treeModels[2][0] + n;
     } else if (id >= 0x6a && id <= 0x6c) {
-        q = (M *)(HOST_AT(o, 0xc6c, cedarModels[0], 0)) + n;
+        q = &o->cedarModels[0] + n;
     } else if (id == 0x6d) {
         l.t3.x = v.x;
         l.t3.y = v.y;
         l.t3.z = v.z;
         FieldObj_DrawCedarLights(o, &l.t3, a, b);
-        q = (M *)(HOST_AT(o, 0xc6c, cedarModels[0], 0)) + n;
+        q = &o->cedarModels[0] + n;
     } else if (id >= 0x5d && id <= 0x61) {
-        q = (M *)(HOST_AT(o, 0xc6c, cedarModels[0], 0)) + n;
+        q = &o->cedarModels[0] + n;
     } else if (id >= 0xc8 && id <= 0xcf) {
         if (Item_IsTreeGrown(t)) {
             s32 i, z;
@@ -4319,9 +4086,9 @@ extern "C" M *FieldObj_DrawTree(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
                 i++;
             } while (i < 2);
         }
-        q = (M *)(HOST_AT(o, 0x11e8, palmModels[0], 0)) + n;
+        q = &o->palmModels[0] + n;
     } else {
-        q = (M *)(HOST_AT(o, 0x174, treeModels[0], 0) + ((a ^ b) & 1) * HOST_SIZED(0x3a8, CachedModel[6])) + n;
+        q = &o->treeModels[(a ^ b) & 1][0] + n;
     }
     FieldObj_DrawModel(o, q, m);
     return q;
@@ -4341,11 +4108,11 @@ extern "C" M *FieldObj_DrawSapling(O *o, u16 *t, s32 a, s32 b, Blk m)
 {
     M *q;
     if (*t == 0x25) {
-        q = (M *)(HOST_AT(o, 0x480, treeModels[5], 0) + ((a ^ b) & 1) * HOST_SIZED(0x3a8, CachedModel[6]));
+        q = &o->treeModels[(a ^ b) & 1][5];
     } else if (*t == 0xc7) {
-        q = (M *)(HOST_AT(o, 0x14f4, palmModels[5], 0));
+        q = &o->palmModels[5];
     } else {
-        q = (M *)(HOST_AT(o, 0xf78, cedarModels[5], 0));
+        q = &o->cedarModels[5];
     }
     FieldObj_DrawModel(o, q, m);
     return q;
@@ -4402,25 +4169,25 @@ extern "C" M *FieldObj_DrawSpecialFlower(O *o, u16 *t, Blk m)
     M *q;
     switch (*t) {
     case 0x1a:
-        q = &o->specialFlowerModels[0];
+        q = &o->specialFlowerModels[0][0];
         break;
     case 0x1b:
-        q = &o->specialFlowerModels[2];
+        q = &o->specialFlowerModels[1][0];
         break;
     case 0x1c:
         break;
     case 0x1d:
-        q = o->dandelionModel;
+        q = o->dandelionModels[0];
         break;
     case 0x1e:
-        q = o->dandelionPuffModel;
+        q = o->dandelionModels[1];
         break;
     case 0x88:
     case 0xa4:
-        q = &o->specialFlowerModels[1];
+        q = &o->specialFlowerModels[0][1];
         break;
     case 0x89:
-        q = &o->specialFlowerModels[3];
+        q = &o->specialFlowerModels[1][1];
         break;
     }
     FieldObj_DrawModel(o, q, m);
@@ -4667,36 +4434,30 @@ end:;
 }
 }
 
-namespace ns_0221cb54 {
-extern "C" {
-s32 _ZN18FieldObjectManager6onDrawEv(u8 *self) {
+BOOL FieldObjectManager::onDraw() {
+    using namespace ns_0221cb54;
     u8 *a = gSceneBlockMap;
     u8 *b = gCamera;
     if (a != 0 && b != 0) {
-        s32 *cnt = (s32 *)(HOST_AT((FieldObjectManager *)(self), 0x6a6c, frameCounter, 0));
-        *cnt = (*cnt + 1) % 60;
-        FieldObj_DrawUnits((O *)self, a);
+        frameCounter = (frameCounter + 1) % 60;
+        FieldObj_DrawUnits(this, a);
         FieldItemFxTable_Draw(&sFieldItemFxTable);
-        TreeAnimSet_Draw(HOST_AT((FieldObjectManager *)(self), 0x4b20, treeAnimSet, 0));
+        TreeAnimSet_Draw(&treeAnimSet);
     }
     return 1;
-}
-}
 }
 
 BOOL FieldObjectManager::onDelete() {
     using ns_0221cb54::PendingUnits_Flush;
     using ns_0221cb54::ModelSet_Release;
-    using ns_0221cb54::Heap_destroy;
     using ns_0221cb54::FieldItemFxTable_Release;
     using ns_0221cb54::TreeAnimSet_Release;
-    u8 *self = (u8 *)this;
 
-    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4ae0, iconModelSet, 0));
-    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4af0, dandelionModelSet, 0));
-    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4b00, stoneModelSet, 0));
-    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4b10, stumpModelSet, 0));
-    TreeAnimSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4b20, treeAnimSet, 0));
+    ModelSet_Release(&iconModelSet);
+    ModelSet_Release(&dandelionModelSet);
+    ModelSet_Release(&stoneModelSet);
+    ModelSet_Release(&stumpModelSet);
+    TreeAnimSet_Release(&treeAnimSet);
     FieldItemFxTable_Release(&sFieldItemFxTable);
     PendingUnits_Flush();
     if (sFieldObjectModelHeap != 0) {
@@ -4704,7 +4465,7 @@ BOOL FieldObjectManager::onDelete() {
         sFieldObjectModelHeap = 0;
     }
     if (sFieldObjectAnimHeap != 0) {
-        Heap_destroy(sFieldObjectAnimHeap);
+        sFieldObjectAnimHeap->destroy();
         sFieldObjectAnimHeap = 0;
     }
     gFieldObjectManager = 0;
@@ -4782,11 +4543,11 @@ s32 Field_IsRafflesiaNear(V3 *out, s32 b) {
 
 namespace ns_0221cb54 {
 extern "C" {
-void Field_DrawIconModel(void *o, V3 a, V3 b, s32 c, s16 d, s16 e) {
+void Field_DrawIconModel(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e) {
     if (gFieldObjectManager != 0) {
         V3 la(a);
         V3 lb(b);
-        FieldObj_DrawIconModel(gFieldObjectManager, o, &la, 0x1f, &lb, c, d, e);
+        FieldObj_DrawIconModel(gFieldObjectManager, item, &la, 0x1f, &lb, c, d, e);
     }
 }
 }
@@ -4794,11 +4555,11 @@ void Field_DrawIconModel(void *o, V3 a, V3 b, s32 c, s16 d, s16 e) {
 
 namespace ns_0221cb54 {
 extern "C" {
-void Field_DrawItemIcon(void *o, V3 a, V3 b, s32 c, s16 d, s16 e) {
+void Field_DrawItemIcon(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e) {
     if (gFieldObjectManager != 0) {
         V3 la(a);
         V3 lb(b);
-        FieldObj_DrawItemIcon(gFieldObjectManager, o, &la, 0x1f, &lb, c, d, e);
+        FieldObj_DrawItemIcon(gFieldObjectManager, item, &la, 0x1f, &lb, c, d, e);
     }
 }
 }
@@ -4806,11 +4567,11 @@ void Field_DrawItemIcon(void *o, V3 a, V3 b, s32 c, s16 d, s16 e) {
 
 namespace ns_0221cb54 {
 extern "C" {
-void Field_DrawItemModel(void *o, V3 a, V3 b, s32 c, s16 d, s16 e) {
+void Field_DrawItemModel(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e) {
     if (gFieldObjectManager != 0) {
         V3 la(a);
         V3 lb(b);
-        FieldObj_DrawItemModel(gFieldObjectManager, o, &la, &lb, c, d, e);
+        FieldObj_DrawItemModel(gFieldObjectManager, item, &la, &lb, c, d, e);
     }
 }
 }
@@ -4823,7 +4584,7 @@ s32 Tree_IsPendingStump(s32 o, P2 pos) {
     s32 idx = PendingUnit_FindForAid(o, pos, 0);
     if (idx >= 0) {
         volatile u16 v = 0xfff1;
-        v = ((PendingUnit *(*)(s32))PendingUnit_Get)(idx)->item;
+        v = PendingUnit_Get(idx)->item;
         BOOL f1 = TRUE, f2 = TRUE, f3 = TRUE, f0 = FALSE;
         u32 t = v;
         if (v >= 0x2b && t <= 0x2e) f0 = TRUE;
@@ -4979,7 +4740,7 @@ void Tree_RequestChop(s32 o, P2 pos, s32 mode) {
 namespace ns_0221cb54 {
 extern "C" {
 void FieldItemFx_StartStrikeResult(P2 pos) {
-    u32 t = ((CommManager *)gCommManager)->myAid;
+    u32 t = gCommManager->myAid;
     s32 idx = PendingUnit_FindBySlot(t, 4);
     if (idx >= 0) {
         PendingUnit *r = PendingUnit_Get(idx);
@@ -5340,16 +5101,16 @@ Elem2 *TreeAnim_Construct(Elem2 *self) {
 namespace ns_0221c220 {
 extern "C" {
 Big *TreeAnimSet_Construct(Big *self) {
-    func_02135714(self, 12, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->cedarAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->litCedarAnims, 3, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->palmAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self, 12, sizeof(::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->cedarAnims, 4, sizeof(::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->litCedarAnims, 3, sizeof(::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->palmAnims, 4, sizeof(::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
     {
         TreeAnimRequest *s = self->requests;
         do {
             s->unit.x = 0;
             s->unit.z = 0;
-            s = (TreeAnimRequest *)((u8 *)s + 0x18);
+            s++;
         } while (s != &self->requests[5]);
     }
     return self;
@@ -5357,16 +5118,13 @@ Big *TreeAnimSet_Construct(Big *self) {
 }
 }
 
-namespace ns_0221c220 {
-extern "C" {
-Big *_ZN11TreeAnimSetD1Ev(Big *self) {
-    func_021355f0(self->palmAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
-    func_021355f0(self->litCedarAnims, 3, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
-    func_021355f0(self->cedarAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
-    func_021355f0(self, 12, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
-    return self;
-}
-}
+TreeAnimSet::~TreeAnimSet() {
+    using namespace ns_0221c220;
+    TreeAnimSet *self = this;
+    func_021355f0(self->palmAnims, 4, sizeof(::TreeAnim), (void *)TreeAnim_Destruct);
+    func_021355f0(self->litCedarAnims, 3, sizeof(::TreeAnim), (void *)TreeAnim_Destruct);
+    func_021355f0(self->cedarAnims, 4, sizeof(::TreeAnim), (void *)TreeAnim_Destruct);
+    func_021355f0(self, 12, sizeof(::TreeAnim), (void *)TreeAnim_Destruct);
 }
 
 namespace ns_0221c220 {
@@ -5447,27 +5205,26 @@ void TreeAnimSet_Release(Big *self) {
 
 namespace ns_0221c220 {
 extern "C" {
-// (by the members of TreeAnimSet: the animations are larger on 64-bit hosts)
-u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
-    ::TreeAnimSet *s = (::TreeAnimSet *)self;
+TreeAnim *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
+    TreeAnimSet *s = self;
     BOOL f = FALSE;
     u32 t = *p;
     if (t >= 0x2f && t <= 0x56) f = TRUE;
-    if (f) return (u8 *)(&s->treeAnims[2][0] + a);
-    if (t >= 0x57 && t <= 0x5b) return (u8 *)(&s->treeAnims[b][0] + a);
-    if (t == 0x69) return (u8 *)(&s->treeAnims[2][0] + a);
-    if (t >= 0x6a && t <= 0x6c) return (u8 *)(s->cedarAnims + a);
-    if (t == 0x6d) return (u8 *)(s->cedarAnims + a);
-    if (t >= 0x5d && t <= 0x61) return (u8 *)(s->cedarAnims + a);
-    if (t >= 0xc8 && t <= 0xcf) return (u8 *)(s->palmAnims + a);
-    return (u8 *)(&s->treeAnims[b][0] + a);
+    if (f) return &s->treeAnims[2][0] + a;
+    if (t >= 0x57 && t <= 0x5b) return &s->treeAnims[b][0] + a;
+    if (t == 0x69) return &s->treeAnims[2][0] + a;
+    if (t >= 0x6a && t <= 0x6c) return s->cedarAnims + a;
+    if (t == 0x6d) return s->cedarAnims + a;
+    if (t >= 0x5d && t <= 0x61) return s->cedarAnims + a;
+    if (t >= 0xc8 && t <= 0xcf) return s->palmAnims + a;
+    return &s->treeAnims[b][0] + a;
 }
 }
 }
 
 namespace ns_0221b8bc {
 extern "C" {
-void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o) {
+void TreeAnimSet_ProcessRequest(TreeAnimSet *a, TreeAnimRequest *o) {
     s32 w;
     u16 *cell;
     s32 x, z, n;
@@ -5540,7 +5297,7 @@ void TreeAnimSet_Request(TreeAnimSet *a, s32 id, s32 *pos, s32 c, s32 d) {
             s32 f1, f2;
             u32 v;
             VecXZ t;
-            if (CommManager_isOnline(gCommManager) == 0) {
+            if (gCommManager->isOnline() == 0) {
                 id = 0;
             }
             e = &a->requests[id];
@@ -5619,12 +5376,12 @@ void Tree_KeepShaking(s32 id, s32 *pos) {
         if (cell != 0) {
             s32 n;
             TreeAnim *e;
-            if (CommManager_isOnline(gCommManager) == 0) {
+            if (gCommManager->isOnline() == 0) {
                 id = 0;
             }
             n = Item_GetTreeStage(cell);
             if (n > 0 && n <= 4) {
-                e = TreeAnimSet_GetInstance(HOST_AT((FieldObjectManager *)(gFieldObjectManager), 0x4b20, treeAnimSet, 0), cell, n - 1, (pos[0] ^ pos[1]) & 1);
+                e = TreeAnimSet_GetInstance(&gFieldObjectManager->treeAnimSet, cell, n - 1, (pos[0] ^ pos[1]) & 1);
                 if (e != 0 && pos[0] == e->unit.x && pos[1] == e->unit.z && id == e->sessionSlot) {
                     e->playMode = 0;
                 }
@@ -5657,7 +5414,7 @@ void TreeAnim_Update(TreeAnim *o) {
             TreeAnim_Reset(o);
         } else {
             s32 r5 = 0;
-            s32 r6 = ((CommManager *)gCommManager)->localSlot;
+            s32 r6 = gCommManager->localSlot;
             switch (o->animKind) {
             case 4:
             case 5:
@@ -5931,7 +5688,7 @@ void Tree_DropFruit(u16 *cell, s32 id, s32 *pos) {
         cur.y = base.y + tbl->y;
         cur.z = base.z + tbl->z;
         if (r >= 0) {
-            u16 v = ((u16 *)PendingUnit_Get(r))[4];
+            u16 v = PendingUnit_Get(r)->unit.v;
             col.c = v;
             u16 t = col.c;
             col.b = t;
@@ -5961,7 +5718,7 @@ void Tree_DropBeeHive(s32 aid, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     VecFx32 e;
     VecFx32 d;
-    if (CommManager_isOnline(gCommManager) == 0 && PlayerData_GetCurrent()->testFlag(1) == 0) {
+    if (gCommManager->isOnline() == 0 && PlayerData_GetCurrent()->testFlag(1) == 0) {
         FieldPos_FromUnitCenter(&b, p[0], p[1]);
         VecFx32 *t = data_ov003_0223291c[0];
         t = t + Tree_GetDropSide(aid, &b);
@@ -6175,46 +5932,46 @@ extern "C" void TreeAnimRequest_Resolve(TreeAnimRequest *self)
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self)
+extern "C" void FieldItemFx_ReleasePending(FieldItemFx *self)
 {
     if (self->pendingApply != 0) {
         self->pendingApply = 0;
         VecXZ t;
-        t.x = self->unitX;
-        t.z = self->unitZ;
+        t.x = self->unit.x;
+        t.z = self->unit.z;
         PendingUnit_ApplyAt(&t, 0);
     } else if (self->pendingCommit != 0) {
         self->pendingCommit = 0;
         VecXZ t;
-        t.x = self->unitX;
-        t.z = self->unitZ;
+        t.x = self->unit.x;
+        t.z = self->unit.z;
         PendingUnit_CommitAt(&t, 0);
     }
 }
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 pos, s32 kind, u16 w, s32 x, s16 y, s32 z)
+extern "C" void FieldItemFx_Init(FieldItemFx *self, s32 a, P2 p, V3 pos, s32 kind, u16 w, s32 x, s16 y, s32 z)
 {
     self->sessionSlot = a;
     self->active = 1;
     self->kind = kind;
-    self->unitX = p.x;
-    self->unitZ = p.z;
+    self->unit.x = p.x;
+    self->unit.z = p.z;
     self->startArg = y;
     self->unk_4a = 0;
-    self->originX = pos.x;
-    self->originY = pos.y;
-    self->originZ = pos.z;
+    self->origin.x = pos.x;
+    self->origin.y = pos.y;
+    self->origin.z = pos.z;
     self->pendingApply = 1;
     self->pendingCommit = 0;
-    self->offsetX = 0;
-    self->offsetY = 0;
-    self->offsetZ = 0;
+    self->offset.x = 0;
+    self->offset.y = 0;
+    self->offset.z = 0;
     {
         VecXZ t;
-        t.x = self->unitX;
-        t.z = self->unitZ;
+        t.x = self->unit.x;
+        t.z = self->unit.z;
         s32 i = PendingUnit_Find(&t, 0);
         if (i >= 0) {
             self->pendingItem = PendingUnit_Get(i)->item;
@@ -6276,7 +6033,7 @@ extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 po
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_Finish(Unk_ov003_0221aed4_Fx *self)
+extern "C" void FieldItemFx_Finish(FieldItemFx *self)
 {
     FieldItemFx_ReleasePending(self);
     self->active = 0;
@@ -6287,7 +6044,7 @@ extern "C" void FieldItemFx_Finish(Unk_ov003_0221aed4_Fx *self)
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_Clear(Unk_ov003_0221aed4_Fx *self)
+extern "C" void FieldItemFx_Clear(FieldItemFx *self)
 {
     self->active = 0;
     self->kind = 0xf;
@@ -6297,7 +6054,7 @@ extern "C" void FieldItemFx_Clear(Unk_ov003_0221aed4_Fx *self)
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_InitToss(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
+extern "C" void FieldItemFx_InitToss(FieldItemFx *self, P2 p, V3 q)
 {
     VecFx32 t;
     FieldPos_FromUnitCenter(&t, p.x, p.z);
@@ -6305,13 +6062,13 @@ extern "C" void FieldItemFx_InitToss(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
     self->velocityX = func_02133150(t.x - q.x, 9);
     self->velocityY = 0x1000;
     self->velocityZ = a;
-    self->posX = q.x;
-    self->posY = q.y;
-    self->posZ = q.z;
+    self->pos.x = q.x;
+    self->pos.y = q.y;
+    self->pos.z = q.z;
     BOOL f = FALSE;
-    self->scaleX = 0;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0;
+    self->scale.x = 0;
+    self->scale.y = 0x1000;
+    self->scale.z = 0;
     volatile u16 w = 0xfff1;
     s32 k = -1;
     w = self->item;
@@ -6329,23 +6086,23 @@ extern "C" void FieldItemFx_InitToss(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
         k = 0x75;
     }
     if (k >= 0) {
-        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, k, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(&self->seEmitter, k, 0x7f, 0);
     }
 }
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_UpdateToss(Unk_ov003_0221aed4_Fx *self)
+extern "C" void FieldItemFx_UpdateToss(FieldItemFx *self)
 {
-    self->scaleX = self->scaleX + 0x19a;
-    if (self->scaleX >= 0x1000) {
-        self->scaleX = 0x1000;
+    self->scale.x = self->scale.x + 0x19a;
+    if (self->scale.x >= 0x1000) {
+        self->scale.x = 0x1000;
     }
-    self->scaleZ = self->scaleX;
+    self->scale.z = self->scale.x;
     self->velocityY = self->velocityY - 0x400;
-    VEC_Add(&self->posX, &self->velocityX, &self->posX);
-    if (self->posY < 0) {
-        self->posY = 0;
+    VEC_Add(&self->pos, &self->velocityX, &self->pos);
+    if (self->pos.y < 0) {
+        self->pos.y = 0;
         if (self->step == 0) {
             self->step = 1;
             self->velocityX = (self->velocityX * 0x4cd) >> 12;
@@ -6358,7 +6115,7 @@ extern "C" void FieldItemFx_UpdateToss(Unk_ov003_0221aed4_Fx *self)
             u32 b = t;
             if (b >= 0x1492 && a <= 0x14fd) f = TRUE;
             if (f) {
-                Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot(&self->seEmitter, 0x70, 0x7f, 0);
             }
         } else {
             self->step = 2;
@@ -6372,12 +6129,12 @@ extern "C" void FieldItemFx_UpdateToss(Unk_ov003_0221aed4_Fx *self)
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, s32 flag)
+extern "C" void FieldItemFx_InitDigHole(FieldItemFx *self, P2 p, void *g, s32 flag)
 {
-    FieldPos_FromUnitCenter(&self->posX, p.x, p.z);
-    self->scaleX = 0;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0;
+    FieldPos_FromUnitCenter(&self->pos, p.x, p.z);
+    self->scale.x = 0;
+    self->scale.y = 0x1000;
+    self->scale.z = 0;
     self->velocityX = 0;
     self->velocityY = 0;
     self->velocityZ = 0;
@@ -6422,24 +6179,24 @@ extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void 
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_UpdateHoleOpen(Unk_ov003_0221aed4_Fx *self)
+extern "C" void FieldItemFx_UpdateHoleOpen(FieldItemFx *self)
 {
-    self->scaleX = self->scaleX + 0x571;
-    if (self->scaleX >= 0x1000) {
-        self->scaleX = 0x1000;
+    self->scale.x = self->scale.x + 0x571;
+    if (self->scale.x >= 0x1000) {
+        self->scale.x = 0x1000;
         FieldItemFx_Finish(self);
     }
-    self->scaleZ = self->scaleX;
+    self->scale.z = self->scale.x;
 }
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_InitPitfallHole(Unk_ov003_0221aed4_Fx *self, P2 p)
+extern "C" void FieldItemFx_InitPitfallHole(FieldItemFx *self, P2 p)
 {
-    FieldPos_FromUnitCenter(&self->posX, p.x, p.z);
-    self->scaleX = 0;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0;
+    FieldPos_FromUnitCenter(&self->pos, p.x, p.z);
+    self->scale.x = 0;
+    self->scale.y = 0x1000;
+    self->scale.z = 0;
     self->velocityX = 0;
     self->velocityY = 0;
     self->velocityZ = 0;
@@ -6449,17 +6206,17 @@ extern "C" void FieldItemFx_InitPitfallHole(Unk_ov003_0221aed4_Fx *self, P2 p)
 }
 
 namespace ns_0221aed4 {
-extern "C" void FieldItemFx_InitFillHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g)
+extern "C" void FieldItemFx_InitFillHole(FieldItemFx *self, P2 p, void *g)
 {
-    FieldPos_FromUnitCenter(&self->posX, p.x, p.z);
-    if (BlockMap_getDigKind(g, p.x, p.z) == 0) {
+    FieldPos_FromUnitCenter(&self->pos, p.x, p.z);
+    if (((BlockMap *)g)->getDigKind(p.x, p.z) == 0) {
         self->item = 0xfc;
     } else {
         self->item = 0xfd;
     }
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
     self->velocityX = 0;
     self->velocityY = 0;
     self->velocityZ = 0;
@@ -6468,21 +6225,21 @@ extern "C" void FieldItemFx_InitFillHole(Unk_ov003_0221aed4_Fx *self, P2 p, void
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateHoleClose(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateHoleClose(FieldItemFx *self)
 {
-    self->scaleX = self->scaleX - 0x154;
-    if (self->scaleX < 0) {
+    self->scale.x = self->scale.x - 0x154;
+    if (self->scale.x < 0) {
         volatile u16 tmp;
         Vec2 pos;
         tmp = 0xfff1;
-        self->scaleX = 0;
+        self->scale.x = 0;
         tmp = self->pendingItem;
         u32 v;
         if (Unk_ov003_0221ad84_Chk(&tmp, v) || (v >= 0x26 && v <= 0x2a) || (v >= 0x5d && v <= 0x61) ||
             (v >= 0x2f && v <= 0x56) || (v >= 0x57 && v <= 0x5b) || (v >= 0x66 && v <= 0x68) || v == 0x69 ||
             (v >= 0x6a && v <= 0x6c) || v == 0x6d || (v >= 0xc8 && v <= 0xcf) || (v >= 0xd4 && v <= 0xda)) {
-            pos.x = self->unitX;
-            pos.y = self->unitZ;
+            pos.x = self->unit.x;
+            pos.y = self->unit.z;
             if (FieldItemFx_StartPop(self->sessionSlot, self->pendingItem, &pos)) {
                 self->pendingApply = 0;
                 FieldItemFx_Finish(self);
@@ -6491,20 +6248,20 @@ extern "C" void FieldItemFx_UpdateHoleClose(Unk_ov003_0221a4a0 *self)
             FieldItemFx_Finish(self);
         }
     }
-    self->scaleZ = self->scaleX;
+    self->scale.z = self->scale.x;
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitPop(Unk_ov003_0221a4a0 *self, Vec2 *p)
+extern "C" void FieldItemFx_InitPop(FieldItemFx *self, Vec2 *p)
 {
     struct Pad { s32 v[2]; Pad() {} ~Pad() {} } pad;
     volatile u16 tmp;
-    FieldPos_FromUnitCenter(&self->posX, p->x, p->y);
+    FieldPos_FromUnitCenter(&self->pos, p->x, p->y);
     s32 z = 0;
-    self->scaleX = z;
-    self->scaleY = z;
-    self->scaleZ = z;
+    self->scale.x = z;
+    self->scale.y = z;
+    self->scale.z = z;
     s32 id = 0x813;
     tmp = 0xfff1;
     tmp = self->item;
@@ -6516,37 +6273,37 @@ extern "C" void FieldItemFx_InitPop(Unk_ov003_0221a4a0 *self, Vec2 *p)
     if (z) {
         id = 0x7f0;
     }
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, id, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&self->seEmitter, id, 0x7f, 0);
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdatePop(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdatePop(FieldItemFx *self)
 {
     if ((u16)self->frame >= 0x10) {
         self->frame = 0x10;
         FieldItemFx_Finish(self);
     }
-    self->scaleX = sItemPopScaleXZ[(u16)self->frame];
-    self->scaleZ = self->scaleX;
-    self->scaleY = sItemPopScaleY[(u16)self->frame];
+    self->scale.x = sItemPopScaleXZ[(u16)self->frame];
+    self->scale.z = self->scale.x;
+    self->scale.y = sItemPopScaleY[(u16)self->frame];
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitTreeDrop(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32 *q, s32 skip)
+extern "C" void FieldItemFx_InitTreeDrop(FieldItemFx *self, Vec2 *p, VecFx32 *q, s32 skip)
 {
     volatile u16 tmp;
     s32 z = 0;
     self->velocityX = z;
     self->velocityY = 0x800;
     self->velocityZ = 0x300;
-    self->posX = q->x;
-    self->posY = q->y;
-    self->posZ = q->z;
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
+    self->pos.x = q->x;
+    self->pos.y = q->y;
+    self->pos.z = q->z;
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
     if (self->startArg != 0) {
         self->pendingApply = z;
     }
@@ -6559,23 +6316,23 @@ extern "C" void FieldItemFx_InitTreeDrop(Unk_ov003_0221a4a0 *self, Vec2 *p, VecF
         if (c >= 0x1492 && a <= 0x14fd) {
             r = TRUE;
         }
-        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, r ? 0x74 : 0x7d6, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(&self->seEmitter, r ? 0x74 : 0x7d6, 0x7f, 0);
     }
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateTreeDrop(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateTreeDrop(FieldItemFx *self)
 {
     VecFx32 v;
     volatile u16 tmp;
     self->velocityY = self->velocityY - 0x400;
-    VEC_Add(&self->posX, &self->velocityX, &self->posX);
-    if (self->posY < 0) {
+    VEC_Add(&self->pos, &self->velocityX, &self->pos);
+    if (self->pos.y < 0) {
         if (self->step == 0) {
-            FieldPos_FromUnitCenter(&v, self->unitX, self->unitZ);
-            s32 r5 = func_02133150(v.z - self->posZ, 8);
-            self->velocityX = func_02133150(v.x - self->posX, 8);
+            FieldPos_FromUnitCenter(&v, self->unit.x, self->unit.z);
+            s32 r5 = func_02133150(v.z - self->pos.z, 8);
+            self->velocityX = func_02133150(v.x - self->pos.x, 8);
             self->velocityY = 0x1000;
             self->velocityZ = r5;
             self->step = 1;
@@ -6588,7 +6345,7 @@ extern "C" void FieldItemFx_UpdateTreeDrop(Unk_ov003_0221a4a0 *self)
                 z = 1;
             }
             if (z) {
-                Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot(&self->seEmitter, 0x70, 0x7f, 0);
             }
         } else {
             self->velocityX = 0;
@@ -6596,13 +6353,13 @@ extern "C" void FieldItemFx_UpdateTreeDrop(Unk_ov003_0221a4a0 *self)
             self->velocityZ = 0;
             FieldItemFx_Finish(self);
         }
-        self->posY = 0;
+        self->pos.y = 0;
     }
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitTreeDropFloat(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32 *q)
+extern "C" void FieldItemFx_InitTreeDropFloat(FieldItemFx *self, Vec2 *p, VecFx32 *q)
 {
     VecFx32 v;
     FieldPos_FromUnitCenter(&v, p->x, p->y);
@@ -6611,27 +6368,27 @@ extern "C" void FieldItemFx_InitTreeDropFloat(Unk_ov003_0221a4a0 *self, Vec2 *p,
     self->velocityX = func_02133150(v.x - q->x, 0x1e);
     self->velocityY = r6;
     self->velocityZ = r7;
-    self->posX = q->x;
-    self->posY = q->y;
-    self->posZ = q->z;
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
+    self->pos.x = q->x;
+    self->pos.y = q->y;
+    self->pos.z = q->z;
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
     if (self->startArg != 0) {
         FieldItemFx_ReleasePending(self);
     }
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7eb, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&self->seEmitter, 0x7eb, 0x7f, 0);
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateTreeDropFloat(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateTreeDropFloat(FieldItemFx *self)
 {
-    VEC_Add(&self->posX, &self->velocityX, &self->posX);
+    VEC_Add(&self->pos, &self->velocityX, &self->pos);
     self->frame = self->frame + 0x888;
-    self->offsetX = data_02135f44[((u16)(s16)self->frame >> 4) * 2] >> 1;
-    if (self->posY < 0) {
-        self->posY = 0;
+    self->offset.x = data_02135f44[((u16)(s16)self->frame >> 4) * 2] >> 1;
+    if (self->pos.y < 0) {
+        self->pos.y = 0;
         self->velocityX = 0;
         self->velocityY = 0;
         self->velocityZ = 0;
@@ -6641,33 +6398,33 @@ extern "C" void FieldItemFx_UpdateTreeDropFloat(Unk_ov003_0221a4a0 *self)
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitBeeHiveDrop(Unk_ov003_0221a4a0 *self, s32 a, VecFx32 *p)
+extern "C" void FieldItemFx_InitBeeHiveDrop(FieldItemFx *self, s32 a, VecFx32 *p)
 {
     self->velocityX = 0;
     self->velocityY = 0x800;
     self->velocityZ = 0x300;
-    self->posX = p->x;
-    self->posY = p->y;
-    self->posZ = p->z;
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7d6, 0x7f, 0);
+    self->pos.x = p->x;
+    self->pos.y = p->y;
+    self->pos.z = p->z;
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
+    Snd_SeEmitterPlayOneShot(&self->seEmitter, 0x7d6, 0x7f, 0);
     FieldItemFx_ReleasePending(self);
     Town_SetBeesReleased();
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateBeeHiveDrop(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateBeeHiveDrop(FieldItemFx *self)
 {
     switch (self->step) {
     case 0:
         self->velocityY = self->velocityY - 0x400;
-        VEC_Add(&self->posX, &self->velocityX, &self->posX);
-        if (self->posY < 0) {
+        VEC_Add(&self->pos, &self->velocityX, &self->pos);
+        if (self->pos.y < 0) {
             s32 z = 0;
-            self->posY = z;
+            self->pos.y = z;
             self->velocityX = z;
             self->velocityY = 0x1000;
             self->velocityZ = z;
@@ -6676,9 +6433,9 @@ extern "C" void FieldItemFx_UpdateBeeHiveDrop(Unk_ov003_0221a4a0 *self)
         break;
     case 1:
         self->velocityY = self->velocityY - 0x400;
-        VEC_Add(&self->posX, &self->velocityX, &self->posX);
-        if (self->posY < 0) {
-            self->posY = 0;
+        VEC_Add(&self->pos, &self->velocityX, &self->pos);
+        if (self->pos.y < 0) {
+            self->pos.y = 0;
             self->velocityX = 0;
             self->velocityY = 0;
             self->velocityZ = 0;
@@ -6689,7 +6446,7 @@ extern "C" void FieldItemFx_UpdateBeeHiveDrop(Unk_ov003_0221a4a0 *self)
     case 2:
         self->timer = self->timer - 1;
         if (self->timer < 0) {
-            Insect_SpawnBeeSwarm((VecFx32Ctor *)&self->posX);
+            Insect_SpawnBeeSwarm((VecFx32Ctor *)&self->pos);
             self->timer = 30;
             self->step = 3;
         }
@@ -6711,28 +6468,28 @@ extern "C" void FieldItemFx_UpdateBeeHiveDrop(Unk_ov003_0221a4a0 *self)
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitDigUpTree(Unk_ov003_0221a4a0 *self, Vec2 *p, u32 ang)
+extern "C" void FieldItemFx_InitDigUpTree(FieldItemFx *self, Vec2 *p, u32 ang)
 {
-    FieldPos_FromUnitCenter(&self->posX, p->x, p->y);
+    FieldPos_FromUnitCenter(&self->pos, p->x, p->y);
     s32 i = ((u16)ang >> 4) * 2;
     self->velocityX = (data_02135f44[i] << 10) >> 12;
     self->velocityY = 0x1000;
     self->velocityZ = (data_02135f44[i + 1] << 10) >> 12;
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
     self->pendingApply = 0;
     Field_SetUnitItem(p->x, p->y, 0xfff1, 0);
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateDigUpTree(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateDigUpTree(FieldItemFx *self)
 {
     self->velocityY = self->velocityY - 0x400;
-    VEC_Add(&self->posX, &self->velocityX, &self->posX);
-    if (self->posY < 0) {
-        self->posY = 0;
+    VEC_Add(&self->pos, &self->velocityX, &self->pos);
+    if (self->pos.y < 0) {
+        self->pos.y = 0;
         self->velocityX = 0;
         self->velocityY = 0;
         self->velocityZ = 0;
@@ -6742,7 +6499,7 @@ extern "C" void FieldItemFx_UpdateDigUpTree(Unk_ov003_0221a4a0 *self)
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitPlant(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32 *q, u32 w)
+extern "C" void FieldItemFx_InitPlant(FieldItemFx *self, Vec2 *p, VecFx32 *q, u32 w)
 {
     VecFx32 v;
     volatile u16 tmp;
@@ -6751,13 +6508,13 @@ extern "C" void FieldItemFx_InitPlant(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32
     self->velocityX = func_02133150(v.x - q->x, 8);
     self->velocityY = 0x1000;
     self->velocityZ = r6;
-    self->posX = q->x;
-    self->posY = q->y;
-    self->posZ = q->z;
+    self->pos.x = q->x;
+    self->pos.y = q->y;
+    self->pos.z = q->z;
     s32 z = 0;
-    self->scaleX = z;
-    self->scaleY = 0x1000;
-    self->scaleZ = z;
+    self->scale.x = z;
+    self->scale.y = 0x1000;
+    self->scale.z = z;
     self->pendingApply = z;
     tmp = 0xfff1;
     tmp = w;
@@ -6766,23 +6523,23 @@ extern "C" void FieldItemFx_InitPlant(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32
     if (c >= 0x1492 && a <= 0x14fd) {
         z = 1;
     }
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, z ? 0x74 : 0x75, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&self->seEmitter, z ? 0x74 : 0x75, 0x7f, 0);
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdatePlant(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdatePlant(FieldItemFx *self)
 {
     volatile u16 tmp;
-    self->scaleX = self->scaleX + 0x19a;
-    if (self->scaleX >= 0x1000) {
-        self->scaleX = 0x1000;
+    self->scale.x = self->scale.x + 0x19a;
+    if (self->scale.x >= 0x1000) {
+        self->scale.x = 0x1000;
     }
-    self->scaleZ = self->scaleX;
+    self->scale.z = self->scale.x;
     self->velocityY = self->velocityY - 0x400;
-    VEC_Add(&self->posX, &self->velocityX, &self->posX);
-    if (self->posY < 0) {
-        self->posY = 0;
+    VEC_Add(&self->pos, &self->velocityX, &self->pos);
+    if (self->pos.y < 0) {
+        self->pos.y = 0;
         self->velocityX = 0;
         self->velocityY = 0;
         self->velocityZ = 0;
@@ -6796,7 +6553,7 @@ extern "C" void FieldItemFx_UpdatePlant(Unk_ov003_0221a4a0 *self)
                 r = TRUE;
             }
             if (r) {
-                Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot(&self->seEmitter, 0x70, 0x7f, 0);
             }
         }
         self->step = 1;
@@ -6806,12 +6563,12 @@ extern "C" void FieldItemFx_UpdatePlant(Unk_ov003_0221a4a0 *self)
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitHoleShrink(Unk_ov003_0221a4a0 *self, Vec2 *p)
+extern "C" void FieldItemFx_InitHoleShrink(FieldItemFx *self, Vec2 *p)
 {
-    FieldPos_FromUnitCenter(&self->posX, p->x, p->y);
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
+    FieldPos_FromUnitCenter(&self->pos, p->x, p->y);
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
     self->velocityX = 0;
     self->velocityY = 0;
     self->velocityZ = 0;
@@ -6820,32 +6577,32 @@ extern "C" void FieldItemFx_InitHoleShrink(Unk_ov003_0221a4a0 *self, Vec2 *p)
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateHoleShrink(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateHoleShrink(FieldItemFx *self)
 {
     u32 r = (u16)self->frame;
     if ((r >= 6 && r <= 10) || r >= 0x12) {
-        self->scaleX = self->scaleX - 0x19a;
+        self->scale.x = self->scale.x - 0x19a;
     }
-    if (self->scaleX <= 0) {
-        self->scaleX = 0;
+    if (self->scale.x <= 0) {
+        self->scale.x = 0;
         FieldItemFx_Finish(self);
     }
-    self->scaleZ = self->scaleX;
+    self->scale.z = self->scale.x;
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitStrikeShake(Unk_ov003_0221a4a0 *self, Vec2 *p)
+extern "C" void FieldItemFx_InitStrikeShake(FieldItemFx *self, Vec2 *p)
 {
-    self->scaleX = 0x1000;
-    self->scaleY = 0x1000;
-    self->scaleZ = 0x1000;
+    self->scale.x = 0x1000;
+    self->scale.y = 0x1000;
+    self->scale.z = 0x1000;
     Field_SetUnitItem(p->x, p->y, 0xfff1, 0);
 }
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateStrikeShake(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateStrikeShake(FieldItemFx *self)
 {
     VecFx32 v;
     VecFx32 out;
@@ -6855,9 +6612,9 @@ extern "C" void FieldItemFx_UpdateStrikeShake(Unk_ov003_0221a4a0 *self)
     v.y = 0;
     v.z = (h * data_02135f44[((u16)self->startArg >> 4) * 2 + 1]) >> 12;
     Vec_Add(&out, &self->origin, &v);
-    self->posX = out.x;
-    self->posY = out.y;
-    self->posZ = out.z;
+    self->pos.x = out.x;
+    self->pos.y = out.y;
+    self->pos.z = out.z;
     if (self->timer < 0) {
         FieldItemFx_Finish(self);
     }
@@ -6876,11 +6633,11 @@ extern "C" void FieldItemFx_SplashPosCallback(EffectModel *p)
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_InitBalloonDrop(Unk_ov003_0221a4a0 *self, VecFx32 *p)
+extern "C" void FieldItemFx_InitBalloonDrop(FieldItemFx *self, VecFx32 *p)
 {
-    self->posX = p->x;
-    self->posY = p->y;
-    self->posZ = p->z;
+    self->pos.x = p->x;
+    self->pos.y = p->y;
+    self->pos.z = p->z;
     self->velocityX = 0;
     self->velocityY = -0xc00;
     self->velocityZ = 0;
@@ -6888,47 +6645,47 @@ extern "C" void FieldItemFx_InitBalloonDrop(Unk_ov003_0221a4a0 *self, VecFx32 *p
 }
 
 namespace ns_0221a4a0 {
-extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
+extern "C" void FieldItemFx_UpdateBalloonDrop(FieldItemFx *self)
 {
     GroundInfoBase b;
     VecFx32 v;
-    ((GroundInfo *)(void *)(&b))->initAtPos((VecFx32 *)(&self->posX), 0, 0);
+    ((GroundInfo *)(void *)(&b))->initAtPos((VecFx32 *)(&self->pos), 0, 0);
     if (b.waterKind != 0) {
         if (self->step == 0) {
-            VEC_Add(&self->posX, &self->velocityX, &self->posX);
+            VEC_Add(&self->pos, &self->velocityX, &self->pos);
             s32 t = b.waterSurfaceY;
-            if (self->posY < t) {
+            if (self->pos.y < t) {
                 self->velocityY = 0;
-                sBalloonSplashPos.x = self->posX;
-                sBalloonSplashPos.y = self->posY;
-                sBalloonSplashPos.z = self->posZ;
+                sBalloonSplashPos.x = self->pos.x;
+                sBalloonSplashPos.y = self->pos.y;
+                sBalloonSplashPos.z = self->pos.z;
                 sBalloonSplashPos.y = t;
                 EffectSpl_CreateOneShot(0x45, &sBalloonSplashPos, 0, gEffectSplDefaultInitCbs);
                 EffectSpl_CreateOneShot(0x4a, &sBalloonSplashPos, 0, gEffectSplDefaultInitCbs);
                 EffectModel_Start(2, FieldItemFx_SplashPosCallback);
                 self->step = 1;
                 self->timer = 12;
-                self->posY = self->posY - 0x2000;
+                self->pos.y = self->pos.y - 0x2000;
                 Sky_PlayBalloonDropSe(1);
             }
         } else {
             self->timer = self->timer - 1;
             if (self->timer < 0) {
                 Sky_EndBalloonDrop();
-                PlayerActor_LocalRequestAct77From(&self->posX);
+                PlayerActor_LocalRequestAct77From(&self->pos);
                 self->pendingApply = 0;
                 FieldItemFx_Finish(self);
             }
         }
     } else {
         if (self->step == 0) {
-            VEC_Add(&self->posX, &self->velocityX, &self->posX);
-            if (self->posY < 0) {
-                self->posY = 0;
-                self->timer = FieldItemFx_FindLandingUnit(&self->unitX);
-                FieldPos_FromUnitCenter(&v, self->unitX, self->unitZ);
-                s32 r5 = func_02133150(v.z - self->posZ, 8);
-                self->velocityX = func_02133150(v.x - self->posX, 8);
+            VEC_Add(&self->pos, &self->velocityX, &self->pos);
+            if (self->pos.y < 0) {
+                self->pos.y = 0;
+                self->timer = FieldItemFx_FindLandingUnit(&self->unit.x);
+                FieldPos_FromUnitCenter(&v, self->unit.x, self->unit.z);
+                s32 r5 = func_02133150(v.z - self->pos.z, 8);
+                self->velocityX = func_02133150(v.x - self->pos.x, 8);
                 self->velocityY = 0x1000;
                 self->velocityZ = r5;
                 self->step = 1;
@@ -6936,9 +6693,9 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
             }
         } else {
             self->velocityY = self->velocityY - 0x400;
-            VEC_Add(&self->posX, &self->velocityX, &self->posX);
-            if (self->posY < 0) {
-                self->posY = 0;
+            VEC_Add(&self->pos, &self->velocityX, &self->pos);
+            if (self->pos.y < 0) {
+                self->pos.y = 0;
                 self->velocityX = 0;
                 self->velocityY = 0;
                 self->velocityZ = 0;
@@ -6947,7 +6704,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                     if (self->item == 0x137b) {
                         PlayerData_GetCurrent()->setFlag(0x30);
                     }
-                    Field_SetUnitItem(self->unitX, self->unitZ, self->item, 0);
+                    Field_SetUnitItem(self->unit.x, self->unit.z, self->item, 0);
                 }
                 self->pendingApply = 0;
                 FieldItemFx_Finish(self);
@@ -6962,7 +6719,7 @@ namespace ns_02219b84 {
 extern "C" {
 void FieldItemFx_InitPitfallClose(Ent *e, P2 *p, void *m) {
     FieldPos_FromUnitCenter(&e->pos, p->x, p->y);
-    if (BlockMap_getDigKind(m, p->x, p->y) == 0) {
+    if (((BlockMap *)m)->getDigKind(p->x, p->y) == 0) {
         e->item = 0xfc;
     } else {
         e->item = 0xfd;
@@ -6975,9 +6732,9 @@ void FieldItemFx_InitPitfallClose(Ent *e, P2 *p, void *m) {
     e->velocityY = z;
     e->velocityZ = z;
     Field_SetUnitItem(p->x, p->y, 0xfff1, z);
-    s32 i = PendingUnit_Find(P2(e->unit), 0);
+    s32 i = PendingUnit_Find(P2(e->unit.x, e->unit.z), 0);
     if (i >= 0) {
-        *(u16 *)(PendingUnit_Get(i) + 0xa) = 0xfff1;
+        PendingUnit_Get(i)->item = 0xfff1;
     }
 }
 }
@@ -6986,12 +6743,12 @@ void FieldItemFx_InitPitfallClose(Ent *e, P2 *p, void *m) {
 namespace ns_02219b84 {
 extern "C" {
 void FieldItemFxTable_Init(Tbl *t) {
-    Ent *e = t->e;
+    Ent *e = t->entries;
     s32 i;
     for (i = 0; i < 20; e++, i++) {
         e->active = 0;
         e->item = 0xfff1;
-        ((SndSeEmitter *)(e->seEmitter))->callInit();
+        e->seEmitter.callInit();
     }
 }
 }
@@ -7001,10 +6758,10 @@ namespace ns_02219b84 {
 extern "C" {
 void FieldItemFxTable_Update(Tbl *t) {
     volatile u16 v = 0xfff1;
-    Ent *e = t->e;
+    Ent *e = t->entries;
     V3 tmp;
     s32 i;
-    CommManager_isOnline(gCommManager);
+    gCommManager->isOnline();
     for (i = 0; i < 20; e++, i++) {
         if (e->active != 0) {
             e->frame++;
@@ -7053,7 +6810,7 @@ void FieldItemFxTable_Update(Tbl *t) {
             tmp.x = e->pos.x;
             tmp.y = e->pos.y;
             tmp.z = e->pos.z;
-            ((SndSeEmitter *)(e->seEmitter))->callUpdateRelative((VecFx32 *)(&tmp));
+            e->seEmitter.callUpdateRelative((VecFx32 *)(&tmp));
         }
     }
 }
@@ -7076,7 +6833,7 @@ void FieldItemFxTable_Draw(Ent *e) {
     } l;
     for (;;) {
         if (e->active != 0 && e->item != 0xfff1) {
-            Vec_Add((VecFx32 *)&l.v74, (VecFx32 *)&e->pos, (VecFx32 *)&e->offset);
+            Vec_Add((VecFx32 *)&l.v74, &e->pos, &e->offset);
             l.v5c.x = l.v74.x;
             l.v5c.y = l.v74.y;
             l.v5c.z = l.v74.z;
@@ -7096,7 +6853,7 @@ void FieldItemFxTable_Draw(Ent *e) {
                 break;
             }
             default: {
-                V3 *pv = &e->scale;
+                VecFx32 *pv = &e->scale;
                 l.v68.x = pv->x;
                 l.v68.y = pv->y;
                 l.v68.z = pv->z;
@@ -7147,11 +6904,11 @@ void FieldItemFxTable_Draw(Ent *e) {
                     l.v98.y = l.v5c.y;
                     l.v98.z = l.v5c.z;
                     s32 px = *(volatile s32 *)&e->unit.x;
-                    y4 = *(volatile s32 *)&e->unit.y;
+                    y4 = *(volatile s32 *)&e->unit.z;
                     FieldObj_DrawTree(gFieldObjectManager, &type, px, y4, &l.v98, data_021f47e0);
                 } else if (a == 0x25 || a == 0x5c || a == 0xc7) {
                     s32 px = *(volatile s32 *)&e->unit.x;
-                    y8 = *(volatile s32 *)&e->unit.y;
+                    y8 = *(volatile s32 *)&e->unit.z;
                     FieldObj_DrawSapling(gFieldObjectManager, &type, px, y8, data_021f47e0);
                 } else if ((a >= 0xe3 && a <= 0xe7) || (a >= 0xe8 && a <= 0xfb)) {
                     FieldObj_DrawRock(gFieldObjectManager, &type, data_021f47e0);
@@ -7177,13 +6934,13 @@ void FieldItemFxTable_Draw(Ent *e) {
 namespace ns_02219b84 {
 extern "C" {
 void FieldItemFxTable_Release(Tbl *t) {
-    Ent *e = t->e;
+    Ent *e = t->entries;
     s32 i;
     for (i = 0; i < 20; e++, i++) {
         if (e->active != 0) {
             FieldItemFx_Finish(e);
         }
-        ((SndSeEmitter *)(e->seEmitter))->callStop();
+        e->seEmitter.callStop();
     }
 }
 }
@@ -7194,7 +6951,7 @@ extern "C" {
 Ent *FieldItemFxTable_FindFree(Tbl *t, s32 g) {
     s32 i;
     Ent *r = 0;
-    Ent *e = &t->e[g * 4];
+    Ent *e = &t->entries[g * 4];
     for (i = 0; i < 4; e++, i++) {
         if (e->active == 0) {
             r = e;
@@ -7227,7 +6984,7 @@ s32 FieldItemFxTable_Start(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g, s32 h, s32 i
 namespace ns_02219b84 {
 extern "C" {
 s32 FieldItemFxTable_StartForPlayer(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g, s32 h, s32 i) {
-    if (CommManager_isOnline(gCommManager) == 0) {
+    if (gCommManager->isOnline() == 0) {
         a = 0;
     }
     return FieldItemFxTable_Start(t, a, p, v, f, *(u16 *)&g, *(s16 *)&h, i);
@@ -7240,10 +6997,10 @@ extern "C" {
 s32 FieldItemFx_CancelAt(s32 idx, P2 *q) {
     s32 r = 0;
     s32 i;
-    Ent *e = &FxTable()->e[idx * 4];
+    Ent *e = &FxTable()->entries[idx * 4];
     for (i = 0; i < 4; e++, i++) {
         if (e->active != 0) {
-            if (P2(e->unit) == *q) {
+            if (P2(e->unit.x, e->unit.z) == *q) {
                 if (e->pendingApply != 0) {
                     r = 1;
                 }
@@ -7276,7 +7033,7 @@ s32 FieldItemFx_StartDigHole(s32 type, VecFx32 *v, s32 w) {
     s32 oy = 0;
     FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
-    if (BlockMap_getDigKind(map, ox, oy) == 0) {
+    if (((BlockMap *)map)->getDigKind(ox, oy) == 0) {
         k = 0xfc;
     } else {
         k = 0xfd;
@@ -7297,7 +7054,7 @@ s32 FieldItemFx_StartPitfallHole(s32 type, VecFx32 *v) {
     s32 oy = 0;
     FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
-    if (BlockMap_getDigKind(map, ox, oy) == 0) {
+    if (((BlockMap *)map)->getDigKind(ox, oy) == 0) {
         k = 0xfc;
     } else {
         k = 0xfd;
@@ -7318,7 +7075,7 @@ s32 FieldItemFx_StartFillHole(s32 type, VecFx32 *v) {
     s32 oy = 0;
     FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
-    if (BlockMap_getDigKind(map, ox, oy) == 0) {
+    if (((BlockMap *)map)->getDigKind(ox, oy) == 0) {
         k = 0xfc;
     } else {
         k = 0xfd;
@@ -7340,9 +7097,9 @@ extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, VecFx32 *b)
     pos.z = p1;
     s32 k;
     if ((k = PendingUnit_Find(&pos, 0)) >= 0) {
-        u8 *c = PendingUnit_Get(k);
+        PendingUnit *c = PendingUnit_Get(k);
         if (c != NULL) {
-            r = *(u16 *)(c + 0xa);
+            r = c->item;
         }
     }
     return FieldItemFxTable_StartForPlayer(&sFieldItemFxTable, a, P2(p0, p1), V3(0, 0, 0), 3, r, 0, 0);
@@ -7452,7 +7209,7 @@ extern "C" s32 FieldItemFx_StartHoleShrink(s32 a, VecFx32 *b)
     s32 p1 = 0;
     FieldPos_ToUnit(&p0, &p1, b);
     s32 sel;
-    if (BlockMap_getDigKind(g, p0, p1) == 0) {
+    if (((BlockMap *)g)->getDigKind(p0, p1) == 0) {
         sel = 0xfc;
     } else {
         sel = 0xfd;
@@ -7467,9 +7224,9 @@ extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c)
     s32 r = 0;
     s32 tmp[3];
     FieldPos_FromUnitCenter(tmp, c.x, c.z);
-    u8 *obj = (u8 *)PlayerActor_GetActor(4);
+    Actor *obj = (Actor *)PlayerActor_GetActor(4);
     if (obj != NULL) {
-        r = (s32)(Math_AngleToDir8(*(s16 *)(obj + 0x8e)) << 29) >> 16;
+        r = (s32)(Math_AngleToDir8(obj->rotY) << 29) >> 16;
     }
     FieldItemFxTable_Start(&sFieldItemFxTable, a, c, V3(tmp[0], tmp[1], tmp[2]), 0xb, b, r, 0);
 }
@@ -7538,7 +7295,7 @@ extern "C" s32 FieldItemFx_FindLandingUnit(s32 *p)
             pos.x = x;
             pos.z = z;
             if (PendingUnit_Find(&pos, k14) < 0) {
-                if (BlockMap_canPlaceItem(g, x, z)) {
+                if (((BlockMap *)g)->canPlaceItem(x, z)) {
                     p[0] = x;
                     p[1] = z;
                     result = 0;
@@ -7569,7 +7326,7 @@ extern "C" s32 FieldItemFx_StartPitfallClose(s32 a, VecFx32 *b)
     s32 p1 = 0;
     FieldPos_ToUnit(&p0, &p1, b);
     s32 sel;
-    if (BlockMap_getDigKind(g, p0, p1) == 0) {
+    if (((BlockMap *)g)->getDigKind(p0, p1) == 0) {
         sel = 0xfc;
     } else {
         sel = 0xfd;

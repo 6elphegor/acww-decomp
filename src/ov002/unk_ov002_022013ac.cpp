@@ -37,8 +37,6 @@
 #include "npc/VillagerId.h"
 #include "player/PlayerId.h"
 #include "talk/MsgString9B.h"
-#define PROTO_LOCAL_String_FromEncodedBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -62,132 +60,25 @@
 #include "proto/ov002/unk_ov002_022025cc.h"
 #include "proto/ov002/unk_ov002_02202fac.h"
 #include "player/PlayerData.h"
+#include "save/VillagerData.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Real names of functions of other modules (plain names that are really methods / ctors / dtors)
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define func_02094018 _ZN11MsgString9BD1Ev
-#define func_02094030 _ZN11MsgString9BC1Ev
-#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_0206fcc8 _ZN11LabelStringC1Ev
-#define func_0206fca8 _ZN11LabelStringD1Ev
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define MsgString_append _ZN9MsgString6appendEPh
-#define MsgString_appendString _ZN9MsgString12appendStringEPS_
-#define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEP9MsgString
 
 extern "C" {
-void _ZN8GameProc10postCreateEv(void *self, s32 a);
-void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
-s32 VillagerData_getVillagerId(void *self);
-void func_02094018(void *p);
-void func_02094030(void *p);
-void PlayerId_getNameString(s32 a, void *buf);
-s32 PlayerData_getPlayerId(void *self);
-void func_0206fcc8(void *p);
-void func_0206fca8(void *p);
-void MsgString_copy(void *self, void *src);
-void MsgString_append(void *self, const void *s);
-void MsgString_appendString(void *self, void *src);
-void LabelButton_setLabelText(void *self, void *src);
+BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
+u8 *SaveVillagers_Get(u8 *base, s32 idx);
+VillagerMemory *Villager_FindMemory(void *a, void *b);
+void MIi_CpuCopy16(const void *src, void *dest, u32 size);
+void MIi_CpuClear16(u16 data, void *dest, u32 size);
 
-s32 func_01ffcb0c(s32 a, s32 b);
-void String_FromEncodedBytes(void *dst, const void *s, s32 len);
-s32 SaveVillagers_IsOccupied(void *a, s32 b);
-void *SaveVillagers_Get(void *a, s32 b);
-s32 Villager_FindMemory(void *a, s32 b);
-void MIi_CpuCopy16(void *dst, void *src, s32 n);
-void MIi_CpuClear16(s32 v, void *dst, s32 n);
-void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
-
-extern void *gCurrentHeap;
-extern volatile u16 gPad[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
-extern u8 gTalkMsgIndexEnd[];
 }
-
-void operator delete(void *p);
-
-// Constructors / destructors that the symbols name differently from what the compiler generates (base-object C2 without
-// the unused C1, ctor/dtor of the 0x0220464c family) are defined as extern "C" functions with their real mangled names.
-extern "C" {
-extern char _ZTV9MenuTween[];
-extern char _ZTV8MenuProc[];
-extern char _ZTV19MenuLabelButtonBase[];
-extern char _ZTV8GameProc[];
-void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
-void *_ZN10HandCursorC2Ei(void *self, s32 flag);
-void *_ZN10HandCursorD2Ev(void *self);
-void *_ZN9KeyRepeatC1Ev(void *self);
-void *_ZN9MenuSlideC1Ev(void *self);
-void *_ZN12CursorMotionC1Ev(void *self);
-void *_ZN12CursorMotionD1Ev(void *self);
-void _ZN10HandCursor4drawEv();
-void _ZN14MenuCursorBase6updateEv();
-void _ZN8UiWidget9setOriginEii();
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Classes of the main module
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Overlay 2 classes
 
-
-extern "C" {
-extern const u8 sTextButtonPressOffsets[];
-extern const u8 sMenuButtonTextColors[];
-extern const u8 sBottomButtonTargetX[];
-extern const u8 sBottomButtonTargetY[];
-extern const u8 sBottomButtonOfTarget[];
-}
-
-
-
-
-
-
-
-class MenuProc;
-typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 typedef PopupChoiceMenuBody Self;
-
 
 // Plain functions of the menu (they take the menu object first)
 extern "C" {
@@ -218,13 +109,6 @@ void PopupChoice_LoadChoiceBg(Self *self);
 void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);
 void PopupChoice_SetPos(Self *self, s32 x, s32 y);
 void PopupChoice_ApplyScroll(Self *self, s32 x, s32 y);
-}
-
-static inline BOOL Unk_ov002_022009d4_Both() {
-    if (gTouchHeld != 0 && gTouchChanged != 0) {
-        return TRUE;
-    }
-    return FALSE;
 }
 
 // ---- .data
@@ -278,7 +162,7 @@ void PopupChoiceMenu::init(s32 a, s32 b, const char *path) {
     } else {
         screenFile = path;
     }
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     u8 *buf = (u8 *)File_LoadAlloc(screenFile, heap, -4, 0);
     rowCharBase = *(u16 *)(buf + 0x44) & 0x3ff;
     Heap_Free(heap, buf);
@@ -382,13 +266,13 @@ void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y) {
 }
 
 void PopupChoice_LoadChoiceBg(Self *self) {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/inventory/b_itm.bpl", h, self->layer, 0, 3, 3);
     Gfx2d_LoadCharFile("menu/inventory/b_choice.bch", h, self->layer, 0x242, 0x242, 0x2d7);
 }
 
 void PopupChoice_LoadFriendBg(Self *self) {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/friend/bg1.bpl", h, self->layer, 0xe, 0xe, 0xe);
     Gfx2d_LoadCharFile("menu/friend/bg1.bch", h, self->layer, 0x26e, 0x26e, 0x27d);
 }
@@ -436,7 +320,7 @@ void PopupChoice_SetState(Self *self, u32 x) {
 void PopupChoice_BuildScreen(Self *self) {
     Gfx2d_SetLayerPriority(self->layer, self->bgPriority);
     Gfx2d_SetLayerControl(self->layer, 0, 0, 0);
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     u8 *buf = (u8 *)File_LoadAlloc(self->screenFile, heap, -4, 0);
     u32 n = self->numRows;
     if (n != 5) {
@@ -743,31 +627,27 @@ BOOL PopupChoice_MoveCursor(Self *self, s32 p, u8 *pos, u32 n) {
     return FALSE;
 }
 
-void PopupChoice_CopyPlayerIdName(s32 a, s32 b) {
-    u32 buf[7];
-    new (buf) MsgString9B();
-    ((PlayerId *)(b))->getNameString((MsgString *)(buf));
-    ((MsgString *)((void *)a))->copy((MsgString *)(buf));
-    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
+void PopupChoice_CopyPlayerIdName(MsgString *a, PlayerId *b) {
+    MsgString9B buf;
+    b->getNameString(&buf);
+    a->copy(&buf);
 }
 
-void PopupChoice_CopyResidentName(s32 x, s32 y) {
+void PopupChoice_CopyResidentName(MsgString *x, s32 y) {
     PopupChoice_CopyPlayerIdName(x, ((PlayerData *)(PlayerData_GetResident(gSavePlayers, y)))->getPlayerId());
 }
 
-void PopupChoice_CopyVillagerIdName(s32 a, s32 b) {
-    u32 buf[7];
-    new (buf) MsgString9B();
-    ((VillagerId *)(b))->getName((MsgString *)buf);
-    ((MsgString *)((void *)a))->copy((MsgString *)(buf));
-    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
+void PopupChoice_CopyVillagerIdName(MsgString *a, VillagerId *b) {
+    MsgString9B buf;
+    b->getName(&buf);
+    a->copy(&buf);
 }
 
-void PopupChoice_CopyVillagerName(s32 x, s32 y) {
-    PopupChoice_CopyVillagerIdName(x, VillagerData_getVillagerId(SaveVillagers_Get(gSaveVillagers, y)));
+void PopupChoice_CopyVillagerName(MsgString *x, s32 y) {
+    PopupChoice_CopyVillagerIdName(x, ((VillagerData *)SaveVillagers_Get(gSaveVillagers, y))->getVillagerId());
 }
 
-void PopupChoice_SetAddresseeName(s32 unused, s32 x, u32 id) {
+void PopupChoice_SetAddresseeName(Self *menu, MsgString *x, u32 id) {
     if (id >= 1 && id < 5) {
         PopupChoice_CopyResidentName(x, id - 1);
     } else if (id >= 5 && id < 0xd) {
@@ -775,13 +655,13 @@ void PopupChoice_SetAddresseeName(s32 unused, s32 x, u32 id) {
     } else {
         switch (id) {
         case 0xd:
-            ((Self *)unused)->load2dString((void *)x, 0x25);
+            menu->load2dString(x, 0x25);
             break;
         case 0xe:
-            ((Self *)unused)->load2dString((void *)x, 0x1e);
+            menu->load2dString(x, 0x1e);
             break;
         case 0xf:
-            ((Self *)unused)->load2dString((void *)x, 0x27);
+            menu->load2dString(x, 0x27);
             break;
         }
     }
@@ -791,13 +671,14 @@ void PopupChoiceMenuBody::buildAddresseeList()
 {
     s32 i, n;
     s32 k, j;
-    s32 g, t;
+    PlayerId *g;
+    s32 t;
     numPages = 0;
     for (i = 0; i < 0x19; i++) {
         addresseeIds[i] = 0;
     }
     g = PlayerData_GetCurrent()->getPlayerId();
-    t = PlayerDataArray_FindById(gSavePlayers, g);
+    t = PlayerDataArray_FindById(gSavePlayers, (u16 *)g);  // the id is read as halfwords there
     n = 0;
     k = 1;
     j = n;
@@ -974,7 +855,7 @@ void PopupChoiceMenuBody::loadAddresseePage(PopupChoiceIdList *r)
     for (i = 0; i < 5; i++, k++) {
         u32 v = addresseeIds[k];
         if (v != 0) {
-            PopupChoice_SetAddresseeName((s32)this, (s32)&rows[i], v);
+            PopupChoice_SetAddresseeName(this, &rows[i], v);
             numRows++;
         } else {
             i = 5;
@@ -986,20 +867,16 @@ void PopupChoiceMenuBody::loadAddresseePage(PopupChoiceIdList *r)
     buf[1] = 0;
     buf[2] = numPages + 0x35;
     buf[3] = 0;
-    u32 a[16];
-    u32 b[16];
-    new (a) LabelString();
-    new (b) LabelString();
-    String_FromEncodedBytes(b, buf, 2);
-    ((MsgString *)(a))->copy((MsgString *)(b));
-    ((MsgString *)(a))->append((u8 *)(void *)("/"));
-    String_FromEncodedBytes(b, buf + 2, 2);
-    ((MsgString *)(a))->appendString((MsgString *)(b));
-    ((LabelButton *)(&pageButton))->setLabelText((MsgString *)(a));
+    LabelString a;
+    LabelString b;
+    String_FromEncodedBytes(&b, buf, 2);
+    a.copy(&b);
+    a.append((u8 *)"/");
+    String_FromEncodedBytes(&b, buf + 2, 2);
+    a.appendString(&b);
+    pageButton.setLabelText(&a);
     pageButton.update();
     addresseePage = r->msgIds[0];
-    ((LabelString *)(b))->LabelString::~LabelString();
-    ((LabelString *)(a))->LabelString::~LabelString();
 }
 
 s32 PopupChoiceMenuBody::hitTestRowOr(s32 x, s32 y, s32 d)
@@ -1089,21 +966,22 @@ s32 PopupChoiceMenuBody::getAddresseeKind(u32 id)
 
 s32 PopupChoiceMenuBody::applyAddressee(void *p, u32 id)
 {
+    LetterView *letter = static_cast<LetterView *>(p);  // the callers hold the letter as the menu's opaque argument
     switch (id) {
     case 0xf:
         return 3;
     case 0xe:
         return 2;
     case 0xd:
-        Letter_SetRecipientFutureSelf(p);
+        Letter_SetRecipientFutureSelf(letter);
         return 1;
     }
     if (id >= 1 && id < 5) {
-        Letter_SetRecipientResident(p, id - 1);
+        Letter_SetRecipientResident(letter, id - 1);
         return 1;
     }
     if (id >= 5 && id < 0xd) {
-        Letter_SetRecipientVillager(p, id - 5);
+        Letter_SetRecipientVillager(letter, id - 5);
         return 1;
     }
     return 0;
@@ -1127,7 +1005,7 @@ void PopupChoiceMenuBody::clearFlags(u32 m)
     flags &= ~m;
 }
 
-void PopupChoiceMenuBody::load2dString(void *buf, u32 c)
+void PopupChoiceMenuBody::load2dString(MsgString *buf, u32 c)
 {
     u8 t = c;
     String_Load2d(buf, &t, 0);

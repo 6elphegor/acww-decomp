@@ -53,7 +53,7 @@ public:
 // Methods of the same object that the symbols list under another class name (no fields, no ctor, no vtable).
 class PopupChoiceMenuBody : public PopupChoiceMenu {
 public:
-    void load2dString(void *buf, u32 c);
+    void load2dString(MsgString *buf, u32 c);
     void clearFlags(u32 m);
     void setFlags(u32 m);
     BOOL testFlags(u32 m);

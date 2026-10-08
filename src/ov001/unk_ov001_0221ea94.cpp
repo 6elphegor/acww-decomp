@@ -23,16 +23,16 @@ u8 *sWfcTopScreenData;
 
 void WfcTop_LoadScreen(u32 i)
 {
-    void *p = WfcUtil_LocalizePath((u32)sWfcTopScreenPaths[i]);
+    void *p = WfcUtil_LocalizePath((u8 *)sWfcTopScreenPaths[i]);
     sWfcTopScreenData = (u8 *)WfcFs_LoadFile(p, 0, 4);
     WfcTask_Add(1, (void *)WfcTop_TransferTask, 0, 0x78);
 }
 
-void WfcTop_TransferTask(s32 a)
+void WfcTop_TransferTask(void *task)
 {
     DC_FlushRange(sWfcTopScreenData, 0x600);
     GXS_LoadBG1Scr(sWfcTopScreenData, 0, 0x600);
     WfcFs_FreeFile(sWfcTopScreenData);
-    WfcTask_RequestDelete(1, a);
+    WfcTask_RequestDelete(1, task);
 }
 

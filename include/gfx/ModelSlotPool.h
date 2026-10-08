@@ -4,8 +4,21 @@
 // Pool of model slots and the u16 handle into it. Defined in src/main/unk_0209c08c.cpp (pool methods 0x0209c15c..,
 // handle ctor/dtor = ModelSlotHandle_Init/_Destroy at 0x0209c364, which store 0xffff).
 #include "types.h"
+#include "gfx/TexVramSlot.h"
 
-class ModelSlot;
+// One slot: a frame heap for the model's data and a texture VRAM slot.
+class ModelSlot {
+public:
+    ModelSlot();
+    BOOL clear();
+    BOOL init(void *a, void *b, u32 size, void *extra);
+    TexVramSlot *getVramSlot();
+    void *getHeap();
+
+    u8 inUse;
+    void *heap;
+    TexVramSlot vramSlot;
+};
 
 typedef void (*ModelSlotFreeFunc)();
 typedef void *(*ModelSlotAllocFunc)(u32, u32);

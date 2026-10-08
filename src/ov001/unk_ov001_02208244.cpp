@@ -24,16 +24,17 @@ extern "C" void WfcUtil_ResetTopMessage() {
 }
 
 extern "C" s32 WfcUtil_ShowTopMessage(s32 a, s32 b, s32 c) {
-    void *r4, *r5;
+    WfcTextCanvas *canvas;
+    u16 *text;
     if (sWfcTopMessageShown != 0) return 0;
     WfcUtil_LoadFileTo((void *)"char/jtNull.nsc.l", GXS_LoadBG0Scr);
     IO_W((volatile u32 *)0x4001010, 0x1920000);
-    r4 = WfcText_CreateBgCanvas(1, 0);
-    r5 = WfcMsg_GetStringWithDigit(gWfcMsgBank, a, b, c);
+    canvas = WfcText_CreateBgCanvas(1, 0);
+    text = WfcMsg_GetStringWithDigit(gWfcMsgBank, a, b, c);
     u32 t = WfcUtil_GetTextFlags();
     const u16 *s = data_ov001_02229b74;
-    WfcText_DrawTextRect(r4, s[0], s[1], s[2], s[3], 2, t, r5);
-    WfcText_RequestTransfer(r4);
+    WfcText_DrawTextRect(canvas, s[0], s[1], s[2], s[3], 2, t, text);
+    WfcText_RequestTransfer(canvas);
     sWfcTopMessageShown = 1;
     return 1;
 }

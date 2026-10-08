@@ -44,7 +44,7 @@ extern "C" s32 WfcUsbWait_IsLidClosed() {
 
 extern "C" void WfcUsbWait_Enter() {
     volatile u16 z;
-    u8 b[0x16];
+    u16 b[0xb];
     OSOwnerInfo s;
     sWfcUsbWaitResult = 0;
     WfcUsbWait_LoadBg();

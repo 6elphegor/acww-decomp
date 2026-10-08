@@ -3,7 +3,6 @@
 #include "nitro/gxoam.h"
 #include "net/WfcObjGroup.h"
 #include "net/WfcPool.h"
-#define PROTO_LOCAL_WfcOam_GetEntry  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_0222449c.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
@@ -11,8 +10,10 @@
 
 #pragma thumb off
 
+// The object groups of one screen: a pool of nodes, the sentinels of the list kept in OAM order (headNode at entry
+// 0x40, tailNode past entry 0x7f).
 struct WfcObjList {
-    u8 pad_000[0x200];
+    WfcObjGroup nodes[0x20];
     WfcObjGroup headNode;
     WfcObjGroup tailNode;
     void *list;
@@ -27,7 +28,7 @@ extern "C" {
 s32 OS_DisableIrqMask(s32);
 void OS_EnableIrqMask(s32);
 void WfcPool_Put(WfcPool *, void *);
-WfcObjGroup *WfcPool_Get(WfcPool *);
+void *WfcPool_Get(WfcPool *);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(u32, u32);
 void WfcList_PushFront(void *, void *);
@@ -35,7 +36,6 @@ void WfcList_PushBack(void *, void *);
 void WfcList_InsertBefore(void *, void *);
 void WfcList_Remove(void *);
 void *WfcList_Create();
-GXOamAttr *WfcOam_GetEntry(s32, s32);
 void WfcObj_GetPos(WfcObjGroup *self, s32 idx, u32 *o1, u32 *o2);
 void WfcObj_SetPriority(WfcObjGroup *self, s32 idx, s32 v);
 void WfcObj_SetPos(WfcObjGroup *self, s32 idx, s32 x, s32 y);
@@ -60,26 +60,23 @@ static inline void Unk_ov001_02224558_SetPos(GXOamAttr *e, s32 x, s32 y) {
 }
 
 void WfcObj_Init() {
-    sWfcObj = (WfcObjList *)WfcHeap_AllocClear(HOST_SIZED(0x450, WfcObjList[2]), 4);
-    s32 i = 0;
-    s32 off = i;
-    for (; i < 2; off += 0x228, i++) {
-        ((WfcObjList *)((u8 *)sWfcObj + off))->nodePool = WfcPool_CreateFrom(0x20, (u8 *)sWfcObj + off, 0x10);
-        ((WfcObjList *)((u8 *)sWfcObj + off))->list = WfcList_Create();
-        ((WfcObjList *)((u8 *)sWfcObj + off))->headNode.oams = WfcOam_GetEntry(i, 0x40);
-        ((WfcObjList *)((u8 *)sWfcObj + off))->tailNode.oams = WfcOam_GetEntry(i, 0x7f) + 1;
-        WfcList_PushFront(((WfcObjList *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x200);
-        WfcList_PushBack(((WfcObjList *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x210);
+    sWfcObj = (WfcObjList *)WfcHeap_AllocClear(sizeof(WfcObjList[2]), 4);
+    s32 i;
+    for (i = 0; i < 2; i++) {
+        sWfcObj[i].nodePool = WfcPool_CreateFrom(0x20, sWfcObj[i].nodes, sizeof(WfcObjGroup));
+        sWfcObj[i].list = WfcList_Create();
+        sWfcObj[i].headNode.oams = WfcOam_GetEntry(i, 0x40);
+        sWfcObj[i].tailNode.oams = WfcOam_GetEntry(i, 0x7f) + 1;
+        WfcList_PushFront(sWfcObj[i].list, &sWfcObj[i].headNode);
+        WfcList_PushBack(sWfcObj[i].list, &sWfcObj[i].tailNode);
     }
 }
 
 void WfcObj_Shutdown() {
-    s32 i = 0;
-    s32 off = i;
-    for (; i < 2; i++) {
-        WfcList_Destroy(*(void **)((u8 *)sWfcObj + off + 0x220));
-        WfcPool_Destroy(*(void **)((u8 *)sWfcObj + off + 0x224));
-        off += 0x228;
+    s32 i;
+    for (i = 0; i < 2; i++) {
+        WfcList_Destroy(sWfcObj[i].list);
+        WfcPool_Destroy(sWfcObj[i].nodePool);
     }
     WfcHeap_FreeAndClear(&sWfcObj);
 }
@@ -88,7 +85,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
     WfcObjGroup *r;
     WfcObjGroup *node;
     s32 irq;
-    r = WfcPool_Get(sWfcObj[which].nodePool);
+    r = (WfcObjGroup *)WfcPool_Get(sWfcObj[which].nodePool);
     irq = OS_DisableIrqMask(1);
     if (flag != 0) {
         for (node = &sWfcObj[which].headNode; node != &sWfcObj[which].tailNode; node = node->next) {
@@ -127,7 +124,7 @@ void WfcObj_Free(WfcObjGroup *p) {
     }
     WfcList_Remove(p);
     WfcObjList *g = sWfcObj;
-    if ((u32)p >= (u32)g + 0x228) t = 1;
+    if (p >= g[1].nodes) t = 1;
     WfcPool_Put(g[t].nodePool, p);
 }
 

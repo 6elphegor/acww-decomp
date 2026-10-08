@@ -3,6 +3,10 @@
 
 #include "types.h"
 
+typedef struct WfcRect WfcRect;
+typedef struct WfcPoint WfcPoint;
+typedef struct WfcPosSize WfcPosSize;
+
 // ov001 Wi-Fi setup u16 rectangle (edges: right = left + width, see WfcUtil_RectFromPosSize) and point: WfcUtil_SetRect /
 // SetPoint (unk_ov001_02225924.cpp), touch input (unk_ov001_02225f40.cpp), header and dialog position tables
 // (unk_ov001_0221eb38.cpp, unk_ov001_0221feac.cpp) and the other ov001 screens' touch rectangles.

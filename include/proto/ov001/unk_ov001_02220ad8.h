@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+struct MBGameRegistry;
 #endif
 
 #ifdef __cplusplus
@@ -33,10 +34,10 @@ extern "C" {
 void WfcMoveMb_Init(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveMb_StartParent
-void WfcMoveMb_StartParent(s32 *a, s32 b);
+void WfcMoveMb_StartParent(MBGameRegistry *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveMb_RegisterFile
-s32 WfcMoveMb_RegisterFile(s32 *p);
+s32 WfcMoveMb_RegisterFile(MBGameRegistry *p);
 #endif
 #ifndef PROTO_LOCAL_WfcMoveMb_AcceptChild
 void WfcMoveMb_AcceptChild(u32 n);

@@ -24,7 +24,7 @@ extern "C" {
 void WfcBusyIcon_Create(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_WfcBusyIcon_Task
-void WfcBusyIcon_Task(u32 task);
+void WfcBusyIcon_Task(void *task);
 #endif
 }
 #endif

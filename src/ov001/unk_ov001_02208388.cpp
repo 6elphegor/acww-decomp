@@ -64,23 +64,24 @@ extern "C" void WfcUtil_OpenButtonBar(s32 a) {
 }
 
 extern "C" void WfcUtil_ShowBottomMessage(s32 a) {
-    void *r5 = WfcText_CreateBgCanvas(0, 0);
-    void *r4 = WfcMsg_GetString(gWfcMsgBank, a);
+    WfcTextCanvas *r5 = WfcText_CreateBgCanvas(0, 0);
+    const u16 *r4 = (const u16 *)WfcMsg_GetString(gWfcMsgBank, a);
     u32 t = WfcUtil_GetTextFlags();
     const u16 *s = data_ov001_02229b84;
     WfcText_DrawTextRect(r5, s[0], s[1], s[2], s[3], 2, t, r4);
     WfcText_RequestTransfer(r5);
 }
 
-extern "C" void WfcUtil_ShowBottomMessageNum(s32 a, s32 b) {
-    void *r4 = WfcText_CreateBgCanvas(0, 0);
-    void *r6 = WfcMsg_GetString(gWfcMsgBank, b);
+// the message, then a name (UTF-16) after it
+extern "C" void WfcUtil_ShowBottomMessageNum(const u16 *name, s32 b) {
+    WfcTextCanvas *r4 = WfcText_CreateBgCanvas(0, 0);
+    const u16 *r6 = (const u16 *)WfcMsg_GetString(gWfcMsgBank, b);
     u32 t = WfcUtil_GetTextFlags();
     const u16 *s = data_ov001_02229b8c;
     WfcText_DrawTextRect(r4, s[0], s[1], s[2], s[3], 2, t, r6);
     u32 i = WfcUtil_GetLanguage();
     u32 j = WfcUtil_GetLanguage();
-    WfcText_DrawText(r4, data_ov001_02229bac[i * 2], ((const u16 *)((const u8 *)data_ov001_02229bac + 2))[j * 2], 2, 0x209, a);
+    WfcText_DrawText(r4, data_ov001_02229bac[i * 2], data_ov001_02229bac[j * 2 + 1], 2, 0x209, name);
     WfcText_RequestTransfer(r4);
 }
 
