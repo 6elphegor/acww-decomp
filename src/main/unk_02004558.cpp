@@ -63,7 +63,6 @@
 #include "player/AnimSlotRef.h"
 #include "game/Unk_0203d820_Ptr.h"
 #include "gfx/Mtx43.h"
-#include "player/Unk_021c1b3c.h"
 #include "player/PlayerWalkWork.h"
 #include "player/PlayerHead.h"
 #include "player/PlayerChangeClothesArgs.h"
@@ -913,7 +912,7 @@ extern "C" {
 extern s16 data_02135f44[];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-extern u8 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;  // (the BGM manager)
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
@@ -1013,7 +1012,7 @@ void PlayerActor_GetShirt(u16 *out, void *obj);
 extern u8 data_020c6194[], data_020c6198[], data_020c619c[], data_020c61a0[], data_020c61a4[], data_020c61a8[], data_020c61ac[], data_020c61b0[], data_020c61b4[];
 extern u8 gFieldSceneKind;
 extern u8 sPlayerActionIsLocomotion[];
-extern Unk_021c1b3c *data_021c1b3c;
+extern BgmManager *data_021c1b3c;
 extern u8 gTalkMsgIndexEnd;
 extern char sPlayerClothTexName[], sPlayerSkinPalName[];
 BOOL PlayerActor_CalcNetFollowAngle(s32 unused, s32 a, s32 b, s32 c, s16 d, s16 *out);
@@ -3977,7 +3976,7 @@ void PlayerActor::startFirstAction(s32 *p) {
         break;
     case 0x3c:
         if (((CommManager *)(r7))->isLocalSlot(((PlayerActor *)this)->sessionSlot) && !Field_HasExitedBuildingKey()) {
-            ((FaintBgm *)(data_021c1b3c + 0x2e4))->startSilence();
+            data_021c1b3c->faintBgm.startSilence();
             PlayerActor_RequestFaint(((PlayerActor *)this), 0, 7, -1);
             r4 = 0x6d;
         } else {
@@ -3985,7 +3984,7 @@ void PlayerActor::startFirstAction(s32 *p) {
         }
         break;
     case 0x6d:
-        ((FaintBgm *)(data_021c1b3c + 0x2e4))->startSilence();
+        data_021c1b3c->faintBgm.startSilence();
         PlayerActor_RequestFaint(((PlayerActor *)this), 1, 7, -1);
         break;
     case 0x6e:
@@ -4399,7 +4398,7 @@ void Unk_02007694::walkCheckEnd(s16 *p) {
             }
         }
     }
-    if (*(s32 *)&((Unk_02007694 *)this)->actionWork <= 0) {
+    if (((Unk_02007694 *)this)->actionWork <= 0) {
         ((PlayerActor *)(this))->requestWait(3, 1, -1);
     }
     if (((Unk_02007694 *)this)->animId == 2 && ((PlayerActor *)(this))->getInputMagnitude() > 0) {
@@ -4462,7 +4461,7 @@ void Unk_02007694::setupSkidTurn(PlayerActionRequest *item) {
     using namespace nL;
     s16 v = *(s16 *)&item->unk_0c_c2fc;
     VecFx32 vec;
-    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->clothesWork;
     ((PlayerActor *)(this))->startAnim(4, 3, 0);
     p->initSkidTurn(v);
     s32 b, a;
@@ -4509,7 +4508,7 @@ void Unk_02007694::endSkidTurn(u32 a) {
 
 void Unk_02007694::skidDecelerate() {
     using namespace nL;
-    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->clothesWork;
     s32 t;
     PlayerActor_TurnAngle(&((Unk_02007694 *)this)->rotY, (s16)p->unk_00);
     s32 v = ((Unk_02007694 *)this)->speed;
@@ -4523,7 +4522,7 @@ void Unk_02007694::skidDecelerate() {
 void Unk_02007694::skidCheckEnd() {
     using namespace nL;
     s32 t = ((Unk_02007694 *)this)->speed;
-    if (((Unk_02007694 *)this)->rotY == (s16)((Unk_02007694 *)this)->actionWork.unk_00 && t <= 0) {
+    if (((Unk_02007694 *)this)->rotY == (s16)((Unk_02007694 *)this)->clothesWork.unk_00 && t <= 0) {
         ((Unk_02007694 *)this)->actionPriority = this->getActionDonePriority(((Unk_02007694 *)this)->action);
         ((PlayerActor *)(this))->requestWait(3, 1, -1);
     }
@@ -4624,8 +4623,8 @@ void Unk_02007694::setupChangeClothes(PlayerActionRequest *item) {
     } else {
         ((PlayerActor *)(this))->startAnimOnce(5, 3, 0);
     }
-    ((Unk_02007694 *)this)->actionWork.initChangeClothes(a, b, c, ((Unk_02007694 *)this)->rotY);
-    ((Unk_02007694 *)this)->netData.writeChangeClothesNet(a, b, c);
+    ((Unk_02007694 *)this)->clothesWork.initChangeClothes(a, b, c, ((Unk_02007694 *)this)->rotY);
+    ((PlayerNetChangeClothesArgs *)((Unk_02007694 *)this)->netData.bytes)->writeChangeClothesNet(a, b, c);
     if (b == 2 && a == 0x13c3) {
         ((PlayerActor *)(this))->playSe(0x77);
     } else {
@@ -4638,16 +4637,16 @@ void Unk_02007694::netChangeClothes(s16 a) {
     using namespace nL;
     u16 x;
     u8 y, z;
-    ((Unk_02007694 *)this)->netData.readChangeClothesNet(&x, &y, &z);
+    ((PlayerNetChangeClothesArgs *)((Unk_02007694 *)this)->netData.bytes)->readChangeClothesNet(&x, &y, &z);
     requestChangeClothes(x, y, z, 6, a);
 }
 
 void Unk_02007694::changeClothesEffects() {
     using namespace nL;
     ((PlayerActor *)(this))->advanceAnim();
-    if (((AnimFrameCtrl *)(&((Unk_02007694 *)this)->bodyAnimCtrl[0]))->hasPassedFrame(0xd)) {
+    if ((&static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel))->hasPassedFrame(0xd)) {
         Effect_Create(0x22, &((PlayerActor *)this)->position, 0, 0);
-    } else if (((AnimFrameCtrl *)(&((Unk_02007694 *)this)->bodyAnimCtrl[0]))->hasPassedFrame(3)) {
+    } else if ((&static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel))->hasPassedFrame(3)) {
         s16 x = ((Unk_02007694 *)this)->rotY;
         VecFx32 v;
         s16 h;
@@ -4664,7 +4663,7 @@ void Unk_02007694::changeClothesEffects() {
 
 void Unk_02007694::changeClothesShirt() {
     using namespace nL;
-    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->clothesWork;
     if (p->isApplied == 0) {
         u16 t = p->unk_00;
         ((PlayerActor *)(this))->setShirtTexture((void *)(void *)(&t));
@@ -4676,7 +4675,7 @@ void Unk_02007694::changeClothesShirt() {
 
 void Unk_02007694::changeClothesFaceItem() {
     using namespace nL;
-    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->clothesWork;
     if (p->isApplied == 0) {
         u16 t = p->unk_00;
         if (((PlayerActor *)(this))->requestFaceItemChange(&t)) {
@@ -4687,7 +4686,7 @@ void Unk_02007694::changeClothesFaceItem() {
 
 void Unk_02007694::changeClothesHat() {
     using namespace nL;
-    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->clothesWork;
     if (p->isApplied == 0) {
         u16 t = p->unk_00;
         u32 a = PlayerActor_GetHairStyle(this);
@@ -4700,7 +4699,7 @@ void Unk_02007694::changeClothesHat() {
 
 void Unk_02007694::changeClothesSpin() {
     using namespace nL;
-    s16 v = ((Unk_02007694 *)this)->rotY; s32 a; s16 t = ((Unk_02007694 *)this)->actionWork.spinStep;
+    s16 v = ((Unk_02007694 *)this)->rotY; s32 a; s16 t = ((Unk_02007694 *)this)->clothesWork.spinStep;
     if (v != 0) {
         a = v;
         if (a < 0) a = -a;
@@ -6927,7 +6926,7 @@ void Unk_02007694::holdUpItemUpdate() {
     using namespace nE;
     VecFx32 v;
     ((PlayerActor *)(this))->advanceAnim();
-    s32 n = ((u32)((Unk_02007694 *)this)->bodyAnimFrame << 4) >> 16;
+    s32 n = ((u32)static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel).curFrame << 4) >> 16;
     s32 t = 0x1000;
     if (((Unk_02007694 *)this)->animId == 0x7e) {
         if (n == 10) {
@@ -6986,7 +6985,7 @@ extern "C" void PlayerActor_CalcHeldUpItemPos(VecFx32 *out, Unk_02007694 *obj, s
 void Unk_02007694::holdUpItemCheckEnd() {
     using namespace nE;
     if (((PlayerActor *)(this))->turnToCamera(0x800)) {
-        if (((AnimFrameCtrl *)(((Unk_02007694 *)this)->bodyAnimCtrl))->isFinished()) {
+        if ((&static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel))->isFinished()) {
             if (((Unk_02007694 *)this)->animId == 0x7e) {
                 ((PlayerActor *)(this))->startAnimOnce(0x7f, 0, 0);
                 ((PlayerActor *)(this))->playSe(0x6e);
@@ -7030,7 +7029,7 @@ void Unk_02007694::netLowerHeldUpItem(u32 a) {
 
 void Unk_02007694::lowerHeldUpItemCheckEnd() {
     using namespace nE;
-    if (((AnimFrameCtrl *)(((Unk_02007694 *)this)->bodyAnimCtrl))->isFinished()) {
+    if ((&static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel))->isFinished()) {
         ((Unk_02007694 *)this)->actionPriority = getActionDonePriority(((Unk_02007694 *)this)->action);
         ((Unk_02007694 *)(this))->requestAct05(3, 5, -1);
     }
@@ -7107,7 +7106,7 @@ void Unk_02007694::calcModelMatrixCurved() {
     Mtx43 m;
     ((Actor *)this)->drawTilt = WorldCurve_ToCurved(&((Actor *)this)->drawPos, &((Actor *)this)->position);
     ((Actor *)(this))->calcModelMatrix((void *)(void *)(&m));
-    ((Unk_02007694 *)this)->bodyBaseMtx = m;
+    ((Unk_02007694 *)this)->bodyModel.mtx = m;
 }
 
 u8 Unk_02007694::keepsBgCheckWork(u32 a) {
@@ -7121,7 +7120,7 @@ void Unk_02007694::updateBgCheckWork(u32 a, u32 b) {
     if (r) {
         keepsBgCheckWork(b);
         if (!r) {
-            ((CollisionState *)(((Unk_02007694 *)this)->bgCheckWork))->beginStep();
+            (&((Unk_02007694 *)this)->bgCheckWork)->beginStep();
         }
     }
 }
@@ -7174,17 +7173,17 @@ void Unk_02007694::endAction(u32 a) {
 
 void Unk_02007694::clearActionWork() {
     using namespace nE;
-    MI_CpuFill8(&((Unk_02007694 *)this)->actionWork, 0, 0x1c);
+    MI_CpuFill8(((Unk_02007694 *)this)->actionWorkRaw, 0, 0x1c);
 }
 
 void Unk_02007694::stopMovementForAction(u32 a) {
     using namespace nE;
     if (sPlayerActionStopsMovement[a]) {
         ((Unk_02007694 *)this)->speed = 0;
-        u32 t = ((Unk_02007694 *)this)->velocityY;
-        ((Unk_02007694 *)this)->velocity = 0;
-        ((Unk_02007694 *)this)->velocityY = t;
-        ((Unk_02007694 *)this)->velocityZ = 0;
+        u32 t = ((Unk_02007694 *)this)->velocity.y;
+        ((Unk_02007694 *)this)->velocity.x = 0;
+        ((Unk_02007694 *)this)->velocity.y = t;
+        ((Unk_02007694 *)this)->velocity.z = 0;
     }
 }
 

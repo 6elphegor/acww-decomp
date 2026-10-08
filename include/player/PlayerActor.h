@@ -33,6 +33,7 @@
 #include "player/AnimSlotRef.h"
 #include "player/PlayerPaletteRef.h"
 #include "player/PlayerNetActionArgs.h"
+#include "player/PlayerChangeClothesArgs.h"
 #include "player/PendingFieldActionFx.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "snd/SndSeEmitterKind99.h"
@@ -422,6 +423,7 @@ public:
     /* 0x7d0 */ union {                     // per-action work area, mostly read through per-action views
         s32 actionWork;
         u8 actionWorkRaw[0x1c];
+        PlayerChangeClothesWork clothesWork;  // change clothes / skid turn (Unk_02007694)
     };
     /* 0x7ec */ s32 action;
     /* 0x7f0 */ s32 prevAction;
