@@ -13,18 +13,17 @@
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
 extern "C" {
 s32 WfcInput_IsKeyPressed(s32);
-void WfcGx_ShowPlanes(s32, s32);
 void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Scr();
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
 void WfcConfig_EraseAll();
-void WfcGx_HidePlanes(s32, s32);
 void OS_GetMacAddress(void *);
 void swprintf(void *, s32, void *, ...);
 void DWCi_BM_GetWiFiInfo(u64 *);
@@ -34,7 +33,7 @@ extern "C" void WfcErased_Enter() {
     WfcErased_LoadBg();
     WfcUtil_ShowBottomMessage(0x57);
     WfcConfig_EraseAll();
-    WfcUtil_SetScene((void *)WfcErased_FadeIn);
+    WfcUtil_SetScene(WfcErased_FadeIn);
 }
 
 extern "C" void WfcErased_LoadBg() {
@@ -54,19 +53,19 @@ extern "C" void WfcErased_LoadBg() {
 extern "C" void WfcErased_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcErased_WaitFadeIn);
+    WfcUtil_SetScene(WfcErased_WaitFadeIn);
 }
 
 extern "C" void WfcErased_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(5);
-    WfcUtil_SetScene((void *)WfcErased_WaitButtonBar);
+    WfcUtil_SetScene(WfcErased_WaitButtonBar);
 }
 
 extern "C" void WfcErased_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcErased_Update);
+    WfcUtil_SetScene(WfcErased_Update);
 }
 
 extern "C" void WfcErased_Update() {
@@ -86,20 +85,20 @@ extern "C" void WfcErased_Idle() {}
 extern "C" void WfcErased_HandleResult() {
     if (WfcButtonBar_GetResult() != 0) return;
     WfcSound_Play(6);
-    WfcUtil_SetScene((void *)WfcErased_StartExit);
+    WfcUtil_SetScene(WfcErased_StartExit);
 }
 
 extern "C" void WfcErased_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcErased_FadeOut);
+    WfcUtil_SetScene(WfcErased_FadeOut);
 }
 
 extern "C" void WfcErased_FadeOut() {
     if (WfcFade_IsBusy(1) != 0) return;
     WfcFade_Start(3, 1, 0x3f, 0x40);
     WfcFade_Start(3, 0, 0x3f, 0x40);
-    WfcUtil_SetScene((void *)WfcErased_PowerOff);
+    WfcUtil_SetScene(WfcErased_PowerOff);
 }
 
 extern "C" void WfcErased_PowerOff() {

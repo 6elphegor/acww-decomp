@@ -12,16 +12,15 @@
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
 extern "C" {
-s32 GX_LoadBG2Scr();
-s32 GX_LoadBG2Char();
-s32 GX_LoadBGPltt();
+void GX_LoadBG2Scr();
+void GX_LoadBG2Char();
+void GX_LoadBGPltt();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcInput_IsKeyPressed(s32);
 
 }
@@ -35,7 +34,7 @@ extern "C" void WfcUsbIntro_Enter() {
     WfcUtil_ShowTopMessage(0x85, -1, 0);
     WfcUtil_ShowStepIndicator(1);
     WfcUtil_ShowBottomMessage(0x6c);
-    WfcUtil_SetScene((void *)WfcUsbIntro_FadeIn);
+    WfcUtil_SetScene(WfcUsbIntro_FadeIn);
 }
 
 extern "C" void WfcUsbIntro_LoadBg() {
@@ -59,20 +58,20 @@ extern "C" void WfcUsbIntro_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcUsbIntro_WaitFadeIn);
+    WfcUtil_SetScene(WfcUsbIntro_WaitFadeIn);
 }
 
 extern "C" void WfcUsbIntro_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(6);
-    WfcUtil_SetScene((void *)WfcUsbIntro_WaitButtonBar);
+    WfcUtil_SetScene(WfcUsbIntro_WaitButtonBar);
 }
 
 extern "C" void WfcUsbIntro_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcUsbIntro_Update);
+    WfcUtil_SetScene(WfcUsbIntro_Update);
 }
 
 extern "C" void WfcUsbIntro_Update() {
@@ -105,13 +104,13 @@ extern "C" void WfcUsbIntro_HandleResult() {
     default:
         return;
     }
-    WfcUtil_SetScene((void *)WfcUsbIntro_StartExit);
+    WfcUtil_SetScene(WfcUsbIntro_StartExit);
 }
 
 extern "C" void WfcUsbIntro_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcUsbIntro_FadeOut);
+    WfcUtil_SetScene(WfcUsbIntro_FadeOut);
 }
 
 extern "C" void WfcUsbIntro_FadeOut() {
@@ -121,7 +120,7 @@ extern "C" void WfcUsbIntro_FadeOut() {
         WfcFade_Start(3, 1, 1, 8);
     }
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcUsbIntro_Exit);
+    WfcUtil_SetScene(WfcUsbIntro_Exit);
 }
 
 extern "C" void WfcUsbIntro_Exit() {
@@ -138,9 +137,9 @@ extern "C" void WfcUsbIntro_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     if (sWfcUsbIntroOk == 0) {
         WfcUtil_SetScreenFlags(2, 1);
-        WfcUtil_SetScene((void *)WfcConnSelect_Enter);
+        WfcUtil_SetScene(WfcConnSelect_Enter);
     } else {
         WfcUtil_SetScreenFlags(2, 1);
-        WfcUtil_SetScene((void *)WfcUsbWait_Enter);
+        WfcUtil_SetScene(WfcUsbWait_Enter);
     }
 }

@@ -581,7 +581,7 @@ BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     BuildingResources *r = getResources();
     if (r != NULL && r->bmd0 != 0) {
         if (model.setResource((NNSG3dResMdl *)r->bmd0, NULL)) {
-            void *x = PlayerHouseTex_Get((void **)FieldStructureMgr_GetPlayerHouseTex());
+            NNSG3dResTex *x = PlayerHouseTex_Get(FieldStructureMgr_GetPlayerHouseTex());
             NNS_G3dBindMdlPltt(r->bmd0, x);
             if (r->tex) {
                 NNS_G3dBindMdlTex(r->bmd0, r->tex);

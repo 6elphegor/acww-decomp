@@ -33,16 +33,16 @@ extern "C" {
 void WfcBgMap_Blit(u8 *a, s32 b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_RequestPaletteLine
-void WfcUtil_RequestPaletteLine(s32 a, s32 b, s32 c);
+void WfcUtil_RequestPaletteLine(void *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_PaletteLineTask
-void WfcUtil_PaletteLineTask(s32 a);
+void WfcUtil_PaletteLineTask(void *task);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_RequestBgPalette
-void WfcUtil_RequestBgPalette(s32 a);
+void WfcUtil_RequestBgPalette(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_BgPaletteTask
-void WfcUtil_BgPaletteTask(s32 a);
+void WfcUtil_BgPaletteTask(void *task);
 #endif
 }
 #endif

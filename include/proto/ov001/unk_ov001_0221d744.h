@@ -8,6 +8,7 @@
 #include "nitro/wm.h"
 #ifdef __cplusplus
 #include "types.h"
+struct WfcApScanWork;
 #endif
 
 #ifdef __cplusplus
@@ -41,11 +42,11 @@ BOOL WfcApScan_Stop();
 s32 WfcApScan_GetResults(WfcApScanEntry **out);
 #endif
 #ifndef PROTO_LOCAL_WfcApScan_WmCallback
-void WfcApScan_WmCallback(u16 *p);
+void WfcApScan_WmCallback(WMMsg *msg);
 #endif
 }
 #ifndef PROTO_LOCAL_sWfcApScan
-extern u8 *sWfcApScan;
+extern WfcApScanWork *sWfcApScan;
 #endif
 #endif
 

@@ -2,46 +2,53 @@
 #include "types.h"
 #include "net/WfcApScanEntry.h"
 #include "nitro/wm.h"
-#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WM_GetOtherElements  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcApScan_StoreResults  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcApScan_WmCallback  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0211f488.h"
+#include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
 
 #pragma thumb off
 
-// WMScanExParam (0x44) copied as 17 words: a WMScanExParam struct copy compiles differently
-struct WfcApScanParamCopy { u32 v[17]; };
+// The AP search's work (WfcApScan_Alloc, 0x1e60 bytes from the Wi-Fi heap, 32-byte aligned)
+struct WfcApScanWork {
+    u8 wmWork[0xf00];               // WM_Initialize's system work (WM_SYSTEM_BUF_SIZE)
+    u8 scanBuf[0x400];              // WM_StartScanEx's result buffer (WMBssDesc records)
+    WfcApScanEntry entries[20];     // 0x1300: the APs found
+    WMScanExParam scanParam;        // 0x1648
+    union {                         // 0x168c: WM_ReadStatus's copy (0x7bc bytes)
+        WMStatus status;
+        u8 statusBuf[0x7bc];
+    };
+    u8 isStopping;                  // 0x1e48
+    u8 unk_1e49[0x17];              // (the rest of the DS allocation)
+};
 
 extern "C" {
 s32 DC_InvalidateRange(void *, s32);
 s32 MI_CpuCopy8(void *, void *, s32);
-s32 WM_GetOtherElements(void *, void *);
-s32 Fatal_Trap(void *);
 s32 WM_ReadStatus(void *);
 s32 WM_Reset(void *);
 s32 WM_End(void *);
-s32 WM_StartScanEx(void *, void *);
+s32 WM_StartScanEx(void *, WMScanExParam *);
 s32 MIi_CpuClear16(s32, void *, s32);
 s32 WM_Initialize(void *, void *, s32);
 s32 WM_GetDispersionScanPeriod();
 u32 WM_GetAllowedChannel();
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
-
-void WfcApScan_StoreResults(WMStartScanExCallback *);
-void WfcApScan_WmCallback(u16 *);
 }
 
 extern "C" const u8 sWfcWpaOui[4] = { 0x00, 0x50, 0xf2, 0x01 };
 extern "C" const u8 sWfcApScanEmptyBssid[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-extern "C" const u32 sWfcApScanParam[17] = { 0, 0x3fff0400, 0xffff0000, 0xffffffff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-u8 *sWfcApScan;
+// all channels (0x3fff), any BSSID; scanBuf and maxChannelTime are set by WfcApScan_Start
+extern "C" const WMScanExParam sWfcApScanParam = {
+    0, 0x400, 0x3fff, 0, { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff }, 0, 0, { 0 }, 0, { 0 },
+};
+WfcApScanWork *sWfcApScan;
 
 void WfcApScan_Alloc() {
     if (sWfcApScan != 0) return;
-    sWfcApScan = (u8 *)WfcHeap_AllocClear(0x1e60, 0x20);
+    sWfcApScan = (WfcApScanWork *)WfcHeap_AllocClear(sizeof(WfcApScanWork), 0x20);
 }
 
 void WfcApScan_Free() {
@@ -53,33 +60,33 @@ void WfcApScan_Free() {
 
 BOOL WfcApScan_Start() {
     volatile u16 z = 0;
-    MIi_CpuClear16(z, sWfcApScan + 0x1300, 0x348);
-    if (WM_Initialize(sWfcApScan, (void *)WfcApScan_WmCallback, 3) != 2) return FALSE;
-    u8 *g;
+    MIi_CpuClear16(z, sWfcApScan->entries, sizeof(sWfcApScan->entries));
+    if (WM_Initialize(sWfcApScan->wmWork, (void *)WfcApScan_WmCallback, 3) != 2) return FALSE;
+    WfcApScanWork *g;
     do {
-        WM_ReadStatus(sWfcApScan + 0x168c);
+        WM_ReadStatus(sWfcApScan->statusBuf);
         g = sWfcApScan;
-    } while (*(u16 *)(g + 0x168c) != 2);
-    *(WfcApScanParamCopy *)(g + 0x1648) = *(const WfcApScanParamCopy *)sWfcApScanParam;
-    ((WMScanExParam *)(g + 0x1648))->scanBuf = (WMBssDesc *)(g + 0xf00);
-    *(u16 *)(sWfcApScan + 0x1650) = WM_GetDispersionScanPeriod();
+    } while (g->status.state != 2);
+    g->scanParam = sWfcApScanParam;
+    g->scanParam.scanBuf = (WMBssDesc *)g->scanBuf;
+    sWfcApScan->scanParam.maxChannelTime = WM_GetDispersionScanPeriod();
     if (WfcApScan_StartScan() != 0) return TRUE;
     return FALSE;
 }
 
 BOOL WfcApScan_StartScan() {
-    if (WM_StartScanEx((void *)WfcApScan_WmCallback, sWfcApScan + 0x1648) == 2) return TRUE;
+    if (WM_StartScanEx((void *)WfcApScan_WmCallback, &sWfcApScan->scanParam) == 2) return TRUE;
     return FALSE;
 }
 
 BOOL WfcApScan_Stop() {
-    sWfcApScan[0x1e48] = 1;
-    WM_ReadStatus(sWfcApScan + 0x168c);
-    if (*(u16 *)(sWfcApScan + 0x168c) != 2) {
+    sWfcApScan->isStopping = 1;
+    WM_ReadStatus(sWfcApScan->statusBuf);
+    if (sWfcApScan->status.state != 2) {
         if (WM_Reset((void *)WfcApScan_WmCallback) != 2) return FALSE;
         do {
-            WM_ReadStatus(sWfcApScan + 0x168c);
-        } while (*(u16 *)(sWfcApScan + 0x168c) != 2);
+            WM_ReadStatus(sWfcApScan->statusBuf);
+        } while (sWfcApScan->status.state != 2);
     }
     if (WM_End((void *)WfcApScan_WmCallback) != 2) return FALSE;
     return TRUE;
@@ -88,7 +95,7 @@ BOOL WfcApScan_Stop() {
 s32 WfcApScan_GetResults(WfcApScanEntry **out) {
     s32 cnt = 0;
     s32 i = 0;
-    *out = (WfcApScanEntry *)(sWfcApScan + 0x1300);
+    *out = sWfcApScan->entries;
     WfcApScanEntry *e = *out;
     for (; i < 20; i++, e++) {
         if (memcmp(e->bssid, sWfcApScanEmptyBssid, 6) != 0) cnt++;
@@ -96,20 +103,21 @@ s32 WfcApScan_GetResults(WfcApScanEntry **out) {
     return cnt;
 }
 
-void WfcApScan_WmCallback(u16 *p) {
-    if (p[1] != 0) return;
-    if (sWfcApScan[0x1e48] != 0) return;
-    if (p[0] != 0x26) return;
-    switch (p[4]) {
+void WfcApScan_WmCallback(WMMsg *msg) {
+    WMStartScanExCallback *p = (WMStartScanExCallback *)msg;
+    if (p->errcode != 0) return;
+    if (sWfcApScan->isStopping != 0) return;
+    if (p->apiid != 0x26) return;
+    switch (p->state) {
     case 5:
-        WfcApScan_StoreResults((WMStartScanExCallback *)p);
+        WfcApScan_StoreResults(p);
         WfcApScan_StartScan();
         break;
     case 4:
         WfcApScan_StartScan();
         break;
     default:
-        Fatal_Trap(p);
+        Fatal_Trap();
         break;
     }
 }
@@ -118,8 +126,8 @@ void WfcApScan_StoreResults(WMStartScanExCallback *p) {
     WfcApScanEntry *tbl;
     WMOtherElements buf;
     s32 i;
-    tbl = (WfcApScanEntry *)(sWfcApScan + 0x1300);
-    DC_InvalidateRange(sWfcApScan + 0xf00, 0x400);
+    tbl = sWfcApScan->entries;
+    DC_InvalidateRange(sWfcApScan->scanBuf, sizeof(sWfcApScan->scanBuf));
     for (i = 0; i < p->bssDescCount; i++) {
         WMBssDesc *n = p->bssDesc[i];
         if (n->ssid[0] != 0 && n->gameInfoLength == 0) {
@@ -148,7 +156,7 @@ void WfcApScan_StoreResults(WMStartScanExCallback *p) {
                 e->security = 0;
             } else {
                 e->security = 1;
-                WM_GetOtherElements(&buf, n);
+                buf = WM_GetOtherElements(n);
                 s32 k;
                 s32 cnt = buf.count;
                 for (k = 0; k < cnt; k++) {

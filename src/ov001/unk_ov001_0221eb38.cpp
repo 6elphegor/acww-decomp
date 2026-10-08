@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcRect.h"
+#include "net/WfcObjGroup.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221ea94.h"
 #include "proto/ov001/unk_ov001_0221eb38.h"
@@ -9,7 +10,7 @@
 #pragma thumb off
 
 struct WfcHeaderWork {
-    void *parts[5];
+    WfcObjGroup *parts[5];
     void *task;
     u8 isSlidingOut;
 };
@@ -21,24 +22,24 @@ extern "C" WfcHeaderWork *sWfcHeader;
 
 extern "C" {
 
-void WfcObj_GetPos(void *, s32, s32 *, s32 *);
-void WfcObj_SetPos(void *, s32, s32, s32);
-void WfcObj_SetPriority(void *, s32, s32);
-void WfcObj_SetModePalette(void *, s32, s32, s32);
-void WfcObj_Free(void *);
-void *WfcObj_GetOam(void *, s32);
+void WfcObj_GetPos(WfcObjGroup *, s32, s32 *, s32 *);
+void WfcObj_SetPos(WfcObjGroup *, s32, s32, s32);
+void WfcObj_SetPriority(WfcObjGroup *, s32, s32);
+void WfcObj_SetModePalette(WfcObjGroup *, s32, s32, s32);
+void WfcObj_Free(WfcObjGroup *);
+GXOamAttr *WfcObj_GetOam(WfcObjGroup *, s32);
 void WfcCell_Copy(s32, s32, void *);
-void *WfcObj_Create(s32, s32, s32);
+WfcObjGroup *WfcObj_Create(s32, s32, s32);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
-void WfcTask_SetFunc(s32, void *);
+void WfcTask_SetFunc(void *, void *);
 
 }
 
 void WfcHeader_Create(s32 n)
 {
     s32 i;
-    void *p = WfcHeap_AllocClear(0x1c, 4);
+    void *p = WfcHeap_AllocClear(sizeof(WfcHeaderWork), 4);
     sWfcHeader = (WfcHeaderWork *)p;
     const u8 *p9 = sWfcHeaderCells + n * 5;
     const u8 *p8 = sWfcHeaderPalettes + n * 5;
@@ -51,12 +52,12 @@ void WfcHeader_Create(s32 n)
         p9++;
         p8++;
     }
-    sWfcHeader->task = (void *)WfcTask_Add(0, (void *)WfcHeader_SlideInTask0, 0, 0x78);
+    sWfcHeader->task = WfcTask_Add(0, (void *)WfcHeader_SlideInTask0, 0, 0x78);
     WfcTop_LoadScreen(n);
     WfcSound_Play(0xd);
 }
 
-void WfcHeader_SlideInTask0(s32 r)
+void WfcHeader_SlideInTask0(void *r)
 {
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[0], 0, &a, &b);
@@ -72,7 +73,7 @@ void WfcHeader_SlideInTask0(s32 r)
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask1);
 }
 
-void WfcHeader_SlideInTask1(s32 r)
+void WfcHeader_SlideInTask1(void *r)
 {
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[1], 0, &a, &b);
@@ -88,7 +89,7 @@ void WfcHeader_SlideInTask1(s32 r)
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask2);
 }
 
-void WfcHeader_SlideInTask2(s32 r)
+void WfcHeader_SlideInTask2(void *r)
 {
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[2], 0, &a, &b);
@@ -104,7 +105,7 @@ void WfcHeader_SlideInTask2(s32 r)
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask3);
 }
 
-void WfcHeader_SlideInTask3(s32 r)
+void WfcHeader_SlideInTask3(void *r)
 {
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[3], 0, &a, &b);
@@ -120,7 +121,7 @@ void WfcHeader_SlideInTask3(s32 r)
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask4);
 }
 
-void WfcHeader_SlideInTask4(s32 r)
+void WfcHeader_SlideInTask4(void *r)
 {
     s32 a, b;
     WfcObj_GetPos(sWfcHeader->parts[4], 0, &a, &b);
@@ -134,7 +135,7 @@ void WfcHeader_SlideInTask4(s32 r)
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInDone);
 }
 
-void WfcHeader_SlideInDone(s32 r)
+void WfcHeader_SlideInDone(void *r)
 {
     WfcTask_RequestDelete(0, r);
     sWfcHeader->task = 0;
@@ -143,7 +144,7 @@ void WfcHeader_SlideInDone(s32 r)
 void WfcHeader_StartSlideOut()
 {
     sWfcHeader->isSlidingOut = 1;
-    sWfcHeader->task = (void *)WfcTask_Add(0, (void *)WfcHeader_SlideOutTask4, 0, 0x78);
+    sWfcHeader->task = WfcTask_Add(0, (void *)WfcHeader_SlideOutTask4, 0, 0x78);
 }
 
 void WfcHeader_SetStep(s32 n)
@@ -153,7 +154,7 @@ void WfcHeader_SetStep(s32 n)
     const u8 *p8 = sWfcHeaderPalettes + n * 5;
     s32 z = 0;
     for (i = 0; i < 5; i += 2) {
-        void *t = WfcObj_GetOam(sWfcHeader->parts[i], z);
+        GXOamAttr *t = WfcObj_GetOam(sWfcHeader->parts[i], z);
         WfcCell_Copy(1, *p9, t);
         WfcObj_SetPriority(sWfcHeader->parts[i], -1, z);
         WfcObj_SetPos(sWfcHeader->parts[i], -1, sWfcHeaderPartPos[i].x, sWfcHeaderPartPos[i].y);
@@ -170,7 +171,7 @@ s32 WfcHeader_IsAnimating()
     return FALSE;
 }
 
-void WfcHeader_SlideOutTask4(s32 r)
+void WfcHeader_SlideOutTask4(void *r)
 {
     s32 a, b;
     WfcObj_GetPos(sWfcHeader->parts[4], 0, &a, &b);
@@ -184,7 +185,7 @@ void WfcHeader_SlideOutTask4(s32 r)
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideOutTask3);
 }
 
-void WfcHeader_SlideOutTask3(s32 a)
+void WfcHeader_SlideOutTask3(void *a)
 {
     s32 xy[2];
     s32 i;
@@ -203,7 +204,7 @@ void WfcHeader_SlideOutTask3(s32 a)
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask2);
 }
 
-void WfcHeader_SlideOutTask2(s32 a)
+void WfcHeader_SlideOutTask2(void *a)
 {
     s32 xy[2];
     s32 i;
@@ -222,7 +223,7 @@ void WfcHeader_SlideOutTask2(s32 a)
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask1);
 }
 
-void WfcHeader_SlideOutTask1(s32 a)
+void WfcHeader_SlideOutTask1(void *a)
 {
     s32 xy[2];
     s32 i;
@@ -241,7 +242,7 @@ void WfcHeader_SlideOutTask1(s32 a)
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask0);
 }
 
-void WfcHeader_SlideOutTask0(s32 a)
+void WfcHeader_SlideOutTask0(void *a)
 {
     s32 xy[2];
     s32 i;

@@ -5,15 +5,19 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "field/FieldStructureMgr.h"
 #include "game/SceneInfo.h"
-#include "types.h"
+class PlayerHouseTex;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_PlayerHouseTex_Get
-void *PlayerHouseTex_Get(void **p);
+#ifndef PROTO_LOCAL_sFieldSceneProfiles
+extern u32 sFieldSceneProfiles[14];
+#endif
+#ifndef PROTO_LOCAL_sFieldSceneProfileCount
+extern u32 sFieldSceneProfileCount;
 #endif
 #ifdef __cplusplus
 }
@@ -21,14 +25,11 @@ void *PlayerHouseTex_Get(void **p);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sFieldSceneProfiles
-extern u32 sFieldSceneProfiles[14];
-#endif
-#ifndef PROTO_LOCAL_sFieldSceneProfileCount
-extern u32 sFieldSceneProfileCount;
-#endif
 #ifndef PROTO_LOCAL_sFieldSceneObjectList
 extern SceneWarpList sFieldSceneObjectList;
+#endif
+#ifndef PROTO_LOCAL_PlayerHouseTex_Get
+NNSG3dResTex *PlayerHouseTex_Get(PlayerHouseTex *p);
 #endif
 }
 #endif

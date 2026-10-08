@@ -151,7 +151,7 @@ struct GroundCellView {
 extern "C" s32 Ground_CanPlaceItem(s32 a, s32 b);
 extern "C" BOOL Ground_IsShore(s32 a, s32 b);
 extern "C" BOOL Ground_IsWaterAround(VecFx32 *pos, s32 r, s32 *out, s32 flags);
-extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
+extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 dir, u32 count, s32 r, s32 flags);
 extern "C" BOOL Ground_IsGrassSurface(s32 a, s32 b);
 static inline BOOL Unk_02030f10_Flat(GroundCellView *T)
 {
@@ -602,8 +602,8 @@ extern "C" s32 Ground_GetSpecialPieceKind(s32 x, s32 y);
 extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
 extern "C" u32 CollisionMap_IsBound(s32 a);
 extern "C" BOOL Ground_IsWaterAt(VecFx32 *pos);
-extern "C" BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 *dir, u32 dist, u32 s5, s32 s6);
-extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
+extern "C" BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 dir, u32 dist, u32 s5, s32 s6);
+extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 dir, u32 count, s32 r, s32 flags);
 extern "C" BOOL Ground_IsWaterAround(VecFx32 *pos, s32 r, s32 *out, s32 flags);
 extern "C" BOOL Ground_IsNeighbourReachable(s32 a, s32 b, s32 c, s32 d, u8 flag);
 extern "C" u16 GroundAttr_GetDragSe(s32 i);
@@ -2629,7 +2629,7 @@ extern "C" BOOL Ground_IsWaterAround(VecFx32 *pos, s32 r, s32 *out, s32 flags)
     return FALSE;
 }
 
-extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags)
+extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 dir, u32 count, s32 r, s32 flags)
 {
     if (count >= 1) {
         u32 step = dist / count;
@@ -2661,7 +2661,7 @@ extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s
     return FALSE;
 }
 
-extern "C" BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 *dir, u32 dist, u32 s5, s32 s6)
+extern "C" BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 dir, u32 dist, u32 s5, s32 s6)
 {
     return Ground_FindWaterAlongDir(out, pos, dist, dir, s6, s5, 2);
 }

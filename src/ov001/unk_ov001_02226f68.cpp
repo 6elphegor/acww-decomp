@@ -5,29 +5,23 @@
 #include "proto/ov001/unk_ov001_02226f68.h"
 
 struct WfcTask {
-    void *prev;
+    WfcTask *prev;
     WfcTask *next;
-    void (*unk_08)(WfcTask *, void *);
+    void (*func)(WfcTask *, void *);
     void *work;
     u8 priority;
     u8 ownsWork;
 };
 
+// Two task lists (0: main, 1: transfer); headNode / tailNode are sentinels of priority 0 / 0xff.
 struct WfcTaskList {
     void *nodePool;
     void *deleteQueue;
     void *list;
-    void *headNode;
-    WfcTask *firstTask;
-    u8 pad_14[8];
-    u8 headPriority;
-    u8 pad_1d[3];
-    u8 tailNode[0x10];
-    u8 tailPriority;
-    u8 pad_31[3];
+    WfcTask headNode;
+    WfcTask tailNode;
     s32 capacity;
     u8 isActive;
-    u8 pad_39[3];
     void *nodeBuffer;
 };
 
@@ -43,7 +37,7 @@ void *WfcHeap_Alloc(s32, s32);
 void *WfcList_Create();
 void WfcList_PushFront(void *, void *);
 void WfcList_PushBack(void *, void *);
-void WfcTask_SetFunc(WfcTask *n, void *v);
+void WfcTask_SetFunc(void *task, void *v);
 }
 
 extern "C" const u8 sWfcTaskListSizes[2] = {0x80, 0x20};
@@ -54,16 +48,16 @@ extern "C" WfcTaskList *sWfcTaskLists = 0;
 void WfcTask_Init() {
     s32 i;
     const u8 *pa;
-    sWfcTaskLists = (WfcTaskList *)WfcHeap_Alloc(HOST_SIZED(0x80, WfcTaskList[2]), 4);
+    sWfcTaskLists = (WfcTaskList *)WfcHeap_Alloc(sizeof(WfcTaskList[2]), 4);
     pa = sWfcTaskListSizes;
     for (i = 0; i < 2; i++) {
         sWfcTaskLists[i].capacity = *pa;
-        sWfcTaskLists[i].nodeBuffer = WfcHeap_Alloc(*pa * 0x14, 4);
-        sWfcTaskLists[i].nodePool = WfcPool_CreateFrom(*pa, sWfcTaskLists[i].nodeBuffer, 0x14);
+        sWfcTaskLists[i].nodeBuffer = WfcHeap_Alloc(*pa * sizeof(WfcTask), 4);
+        sWfcTaskLists[i].nodePool = WfcPool_CreateFrom(*pa, sWfcTaskLists[i].nodeBuffer, sizeof(WfcTask));
         sWfcTaskLists[i].deleteQueue = WfcPool_Create(*pa);
         sWfcTaskLists[i].list = WfcList_Create();
-        sWfcTaskLists[i].headPriority = 0;
-        sWfcTaskLists[i].tailPriority = 0xff;
+        sWfcTaskLists[i].headNode.priority = 0;
+        sWfcTaskLists[i].tailNode.priority = 0xff;
         WfcList_PushFront(sWfcTaskLists[i].list, &sWfcTaskLists[i].headNode);
         WfcList_PushBack(sWfcTaskLists[i].list, &sWfcTaskLists[i].tailNode);
         sWfcTaskLists[i].isActive = 1;
@@ -84,12 +78,12 @@ void WfcTask_Shutdown() {
 void WfcTask_RunList(u32 i) {
     WfcTaskList *s = &sWfcTaskLists[i];
     if (s->isActive == 0) return;
-    WfcTask *n = s->firstTask;
-    if (n != (WfcTask *)s->tailNode) {
+    WfcTask *n = s->headNode.next;
+    if (n != &s->tailNode) {
         do {
-            n->unk_08(n, n->work);
+            n->func(n, n->work);
             n = n->next;
-        } while (n != (WfcTask *)sWfcTaskLists[i].tailNode);
+        } while (n != &sWfcTaskLists[i].tailNode);
     }
     s32 k = 0;
     if (sWfcTaskLists[i].capacity > 0) {
@@ -108,12 +102,12 @@ void *WfcTask_Add(u32 i, void *a, void *b, u32 c) {
 
 void *WfcTask_AddEx(u32 i, void *a, void *b, u32 c, u8 d) {
     WfcTask *n = (WfcTask *)WfcPool_Get(sWfcTaskLists[i].nodePool);
-    n->unk_08 = (void (*)(WfcTask *, void *))a;
+    n->func = (void (*)(WfcTask *, void *))a;
     n->work = b;
     n->priority = c;
     n->ownsWork = d;
     s32 irq = OS_DisableIrqMask(1);
-    WfcTask *q = sWfcTaskLists[i].firstTask;
+    WfcTask *q = sWfcTaskLists[i].headNode.next;
 loop:
     if (c >= q->priority) goto next;
     WfcList_InsertBefore(q, n);
@@ -126,8 +120,9 @@ done:
     return n;
 }
 
-void WfcTask_SetFunc(WfcTask *n, void *v) {
-    n->unk_08 = (void (*)(WfcTask *, void *))v;
+void WfcTask_SetFunc(void *task, void *v) {
+    WfcTask *n = (WfcTask *)task;
+    n->func = (void (*)(WfcTask *, void *))v;
 }
 
 void WfcTask_RequestDelete(u32 i, void *p) {

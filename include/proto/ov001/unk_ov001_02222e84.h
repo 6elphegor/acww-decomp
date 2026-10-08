@@ -4,19 +4,35 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02222e84.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/WfcMoveParams.h"
+#include "nitro/wm.h"
 struct WfcMoveWork;
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_WfcMove_RequestCancel
+BOOL WfcMove_RequestCancel();
+#endif
 #ifndef PROTO_LOCAL_WfcMove_ResetSession
 void WfcMove_ResetSession();
 #endif
+#ifndef PROTO_LOCAL_WfcMove_Start
+BOOL WfcMove_Start();
+#endif
+#ifndef PROTO_LOCAL_WfcMove_StartDownload
+BOOL WfcMove_StartDownload();
+#endif
 #ifndef PROTO_LOCAL_WfcMove_Update
 void WfcMove_Update();
+#endif
+#ifndef PROTO_LOCAL_WfcMove_GetState
+void WfcMove_GetState(u8 *a, u8 *b);
+#endif
+#ifndef PROTO_LOCAL_WfcMove_GetChildUser
+s32 WfcMove_GetChildUser();
 #endif
 #ifndef PROTO_LOCAL_WfcMove_StepMeasureChannel
 void WfcMove_StepMeasureChannel();
@@ -36,11 +52,23 @@ void WfcMove_StepDataShare();
 #ifndef PROTO_LOCAL_WfcMove_SetDone
 void WfcMove_SetDone();
 #endif
+#ifndef PROTO_LOCAL_WfcMove_TryEnd
+s32 WfcMove_TryEnd();
+#endif
+#ifndef PROTO_LOCAL_WfcMove_JudgeChild
+s32 WfcMove_JudgeChild(WMStartParentCallback *a);
+#endif
 #ifndef PROTO_LOCAL_WfcMove_ClearBuffers
 void WfcMove_ClearBuffers();
 #endif
+#ifndef PROTO_LOCAL_WfcMove_SendBlock
+void WfcMove_SendBlock(u32 a, u32 b, void *src);
+#endif
 #ifndef PROTO_LOCAL_WfcMove_ProcessRecv
 void WfcMove_ProcessRecv();
+#endif
+#ifndef PROTO_LOCAL_WfcMove_GetChildReply
+s32 WfcMove_GetChildReply();
 #endif
 #ifdef __cplusplus
 }
@@ -49,34 +77,7 @@ void WfcMove_ProcessRecv();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_WfcMove_Init
-void WfcMove_Init(WfcMoveWork *self, u32 *a);
-#endif
-#ifndef PROTO_LOCAL_WfcMove_RequestCancel
-BOOL WfcMove_RequestCancel();
-#endif
-#ifndef PROTO_LOCAL_WfcMove_Start
-BOOL WfcMove_Start();
-#endif
-#ifndef PROTO_LOCAL_WfcMove_StartDownload
-BOOL WfcMove_StartDownload();
-#endif
-#ifndef PROTO_LOCAL_WfcMove_GetState
-void WfcMove_GetState(u8 *a, u8 *b);
-#endif
-#ifndef PROTO_LOCAL_WfcMove_GetChildUser
-s32 WfcMove_GetChildUser();
-#endif
-#ifndef PROTO_LOCAL_WfcMove_TryEnd
-s32 WfcMove_TryEnd();
-#endif
-#ifndef PROTO_LOCAL_WfcMove_JudgeChild
-s32 WfcMove_JudgeChild(s32 a);
-#endif
-#ifndef PROTO_LOCAL_WfcMove_SendBlock
-void WfcMove_SendBlock(u32 a, u32 b, void *src);
-#endif
-#ifndef PROTO_LOCAL_WfcMove_GetChildReply
-s32 WfcMove_GetChildReply();
+void WfcMove_Init(WfcMoveWork *self, const WfcMoveParams *a);
 #endif
 }
 #endif

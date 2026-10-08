@@ -6107,7 +6107,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
 
 BOOL FieldVillagerLook::getFishPosIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
-    if (FishShadow_GetPos((u32 *)v, i) && Vec_DistXZ(p, v) < lim) {
+    if (FishShadow_GetPos(v, i) && Vec_DistXZ(p, v) < lim) {
         return TRUE;
     }
     return FALSE;

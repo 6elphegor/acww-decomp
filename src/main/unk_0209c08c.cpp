@@ -65,18 +65,7 @@ extern "C" {
 
 
 // ---- pool entry (0x1c bytes)
-class ModelSlot {
-public:
-    ModelSlot();
-    BOOL clear();
-    BOOL init(void *a, void *b, u32 size, void *extra);
-    TexVramSlot *getVramSlot();
-    void *getHeap();
-
-    u8 inUse;
-    void *heap;
-    TexVramSlot vramSlot;
-};
+// (ModelSlot: gfx/ModelSlotPool.h)
 
 // ---- model resource holder (derived from ModelResource)
 

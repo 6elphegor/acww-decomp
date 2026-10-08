@@ -1,8 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WifiApConfig.h"
+#include "net/WfcConfigSlot.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_data_ov001_0222b2ec  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
@@ -27,14 +27,15 @@
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 #include "proto/ov065/unk_ov065_0226ad84.h"
 
 #pragma thumb off
 
-extern "C" const void *const sWfcConnTestParam[3];
-extern "C" const void *const sWfcConnTestParam[3] = {(void *)WfcConnTest_Alloc, (void *)WfcConnTest_Free, (void *)0x103};
+extern "C" const WifiApConfig sWfcConnTestParam;
+extern "C" const WifiApConfig sWfcConnTestParam = {WfcConnTest_Alloc, WfcConnTest_Free, 3, 1, 0, 0};
 extern "C" {
 u8 sWfcConnTestSucceeded;
 }
@@ -44,18 +45,15 @@ namespace F0221b794 {
 
 extern "C" {
 
-s32 GX_LoadBG2Char();
-s32 GX_LoadBGPltt();
-s32 GX_LoadBG2Scr();
+void GX_LoadBG2Char();
+void GX_LoadBGPltt();
+void GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcConfig_CommitEdit();
 
 
 
 void WfcConnTest_Enter() {
-    s32 x;
+    u32 x;
     sWfcConnTestSucceeded = 0;
     WfcConnTest_LoadBg();
     WfcUtil_GetEditParams(0, &x);
@@ -67,7 +65,7 @@ void WfcConnTest_Enter() {
     WfcConnTest_Start();
     WfcLinkIcon_Create(0);
     WfcSound_Play(0xc);
-    WfcUtil_SetScene((void *)WfcConnTest_FadeIn);
+    WfcUtil_SetScene(WfcConnTest_FadeIn);
 }
 
 void WfcConnTest_LoadBg() {
@@ -93,31 +91,10 @@ namespace F0221ae34 {
 
 
 extern "C" {
-extern u8 sWfcSetupMethodRects[];
-extern u16 sWfcSetupMethodCursorPos[][16];
-extern u16 data_ov001_0222a25a[][16];
-extern u16 data_ov001_0222a25c[][16];
-extern u16 data_ov001_0222a25e[][16];
-extern s8 data_ov001_0222a1f0[];
-extern u8 data_ov001_0222b2d4[];
-extern u8 data_ov001_0222b2ec[];
-
-extern s32 WfcInput_IsTouchPressedIn(void *);
-extern s32 WfcInput_IsKeyPressed(s32);
-extern s32 WfcInput_IsKeyRepeat(s32);
-extern void WfcGx_ShowPlanes(s32, s32);
-extern void WfcUtil_LoadFileTo(void *, void *);
-extern void GX_LoadBG2Char();
-extern void GX_LoadBGPltt();
-extern void GX_LoadBG2Scr();
 extern u8 *WfcConfig_GetEdit();
-extern u8 *WfcConfig_Get();
-extern void WfcHeap_Free(s32);
-extern void WfcHeap_Alloc(s32, s32);
+extern WfcConfigData *WfcConfig_Get();
 extern void *DWCi_BACKUPlGetWifi();
 extern void MI_CpuCopy8(void *, void *, s32);
-extern void WfcGx_HidePlanes(s32, s32);
-extern void MIi_CpuCopy32(void *, void *, s32);
 
 
 #define REGSET(a, v) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= (v); *(volatile u16 *)(a) = t; } while (0)
@@ -127,7 +104,7 @@ void WfcConnTest_Start() {
     u32 l;
     WifiApConfig m;
     u8 *o = WfcConfig_GetEdit();
-    MIi_CpuCopy32((void *)sWfcConnTestParam, &m, 12);
+    m = sWfcConnTestParam;
     WfcUtil_GetEditParams(0, &l);
     if (l == 2) m.apFilter = 4;
     else m.apFilter = o[0xf4] + 1;
@@ -145,13 +122,13 @@ void WfcConnTest_FadeIn() {
         WfcFade_Start(2, 1, 1, 8);
         WfcGx_ShowPlanes(1, 1);
     }
-    WfcUtil_SetScene((void *)WfcConnTest_WaitFadeIn);
+    WfcUtil_SetScene(WfcConnTest_WaitFadeIn);
 }
 
 void WfcConnTest_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcConnTest_Idle);
+    WfcUtil_SetScene(WfcConnTest_Idle);
 }
 
 void WfcConnTest_Idle() {
@@ -171,32 +148,32 @@ void func_ov001_0221b604() {
 
 void WfcConnTest_FadeOut() {
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcConnTest_WaitFadeOut);
+    WfcUtil_SetScene(WfcConnTest_WaitFadeOut);
 }
 
 void WfcConnTest_WaitFadeOut() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcConnTest_Exit);
+    WfcUtil_SetScene(WfcConnTest_Exit);
 }
 
 void WfcConnTest_Exit() {
-    u8 *o = WfcConfig_Get();
+    WfcConfigData *o = WfcConfig_Get();
     if (WifiAp_RequestCleanup() == 0) return;
-    MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o + 0xf0, 0xe);
-    MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o + 0x1f0, 0xe);
+    MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o->slots[0].editSubnetMask, 0xe);
+    MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o->slots[1].editSubnetMask, 0xe);
     WfcBusyIcon_Delete();
     WfcText_DestroyBgCanvas(0);
     WfcGx_HidePlanes(0, 0x15);
     if (sWfcConnTestSucceeded == 0) {
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcError_Enter);
+        WfcUtil_SetScene(WfcError_Enter);
     } else {
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcTestSuccess_Enter);
+        WfcUtil_SetScene(WfcTestSuccess_Enter);
     }
 }
 
-void WfcConnTest_PollTask(s32 a) {
+void WfcConnTest_PollTask(void *task, void *work) {
     s32 r = WifiAp_Process();
     if (r == 0) return;
     WfcLinkIcon_Delete();
@@ -208,16 +185,16 @@ void WfcConnTest_PollTask(s32 a) {
         WfcError_SetCode(WifiAp_GetStatus());
         WfcSound_Play(0x12);
     }
-    WfcUtil_SetScene((void *)WfcConnTest_FadeOut);
-    WfcTask_RequestDelete(0, a);
+    WfcUtil_SetScene(WfcConnTest_FadeOut);
+    WfcTask_RequestDelete(0, task);
 }
 
-void WfcConnTest_Alloc(s32 a, s32 b) {
-    WfcHeap_Alloc(b, 0x20);
+void *WfcConnTest_Alloc(u32 name, u32 size) {
+    return WfcHeap_Alloc(size, 0x20);
 }
 
-void WfcConnTest_Free(s32 a, s32 b) {
-    WfcHeap_Free(b);
+void WfcConnTest_Free(u32 name, void *p, u32 size) {
+    WfcHeap_Free(p);
 }
 
 }

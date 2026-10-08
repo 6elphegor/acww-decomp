@@ -56,7 +56,6 @@ void WfcObj_SetPriority(void *, s32, s32);
 void WfcObj_SetAffineMode(void *, s32, s32, s32);
 void WfcObj_Free(void *);
 void *WfcObj_GetOam(void *, s32);
-void WfcText_DestroyObjCanvas(void *);
 void WfcUtil_SetRect(s32, s32, s32, s32, void *);
 void WfcGx_SetWindowRect(s32, s32, const void *);
 void WfcTask_SetFunc(s32, void *);

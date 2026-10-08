@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcMoveParams.h"
 #define PROTO_LOCAL_WfcMove_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcMove_Update  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcTransfer_Task  // declared below: the shared prototype conflicts with the calls here
@@ -23,15 +24,12 @@ struct WfcTransferWork {
     u8 isCancelled;
 };
 
-struct WfcMoveParams {
-    s32 v[7];
-};
 
 //DEFS
 extern "C" char data_ov001_0222aa60[0x14] = "dwc:/move/child.srl";
 extern "C" char data_ov001_0222aa8c[0x18] = "dwc:/move/banner.char";
 extern "C" char data_ov001_0222aa74[0x18] = "dwc:/move/banner.plt";
-extern "C" WfcMoveParams data_ov001_0222aaa4 = {{(s32)data_ov001_0222aa60, 0, 0, (s32)data_ov001_0222aa8c, (s32)data_ov001_0222aa74, 0x159, 0}};
+extern "C" WfcMoveParams data_ov001_0222aaa4 = {data_ov001_0222aa60, 0, 0, data_ov001_0222aa8c, data_ov001_0222aa74, 0x159, 0};
 extern "C" WfcTransferWork *sWfcTransfer;
 WfcTransferWork *sWfcTransfer;
 //ENDDEFS
@@ -55,9 +53,9 @@ void WfcTransfer_Start(WfcTransferCallback a) {
     sWfcTransfer->hasPendingEvent = 0;
     sWfcTransfer->isCancelled = 0;
     WfcMoveParams s = data_ov001_0222aaa4;
-    s.v[1] = (s32)WfcMsg_GetString(gWfcMsgBank, 0xf);
-    s.v[2] = (s32)WfcMsg_GetString(gWfcMsgBank, 0x10);
-    *(u8 *)&s.v[6] = WfcUtil_GetLanguage() + 0x31;
+    s.gameName = (u16 *)WfcMsg_GetString(gWfcMsgBank, 0xf);
+    s.gameIntroduction = (u16 *)WfcMsg_GetString(gWfcMsgBank, 0x10);
+    s.languageCode = WfcUtil_GetLanguage() + 0x31;
     WfcMove_Init(sWfcTransfer, &s);
     if (WfcMove_Start() == 0) Fatal_Trap();
     sWfcTransfer->task = WfcTask_Add(0, (void *)WfcTransfer_Task, 0, 0x78);

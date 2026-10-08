@@ -21,6 +21,7 @@
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -29,14 +30,10 @@ volatile u8 sWfcEraseConfirmed;
 }
 
 extern "C" {
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
 void WfcUtil_LoadFileTo(void *, void *);
-void GX_LoadBG2Char();
-void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
@@ -52,7 +49,7 @@ extern "C" void WfcErase_Enter() {
     WfcHighlight_Set(0x12);
     WfcUtil_ShowTopMessage(0x8c, -1, 0);
     WfcUtil_ShowBottomMessage(0x55);
-    WfcUtil_SetScene((void *)WfcErase_FadeIn);
+    WfcUtil_SetScene(WfcErase_FadeIn);
 }
 
 extern "C" void WfcErase_LoadBg() {
@@ -74,20 +71,20 @@ extern "C" void WfcErase_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcErase_WaitFadeIn);
+    WfcUtil_SetScene(WfcErase_WaitFadeIn);
 }
 
 extern "C" void WfcErase_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(3);
-    WfcUtil_SetScene((void *)WfcErase_WaitButtonBar);
+    WfcUtil_SetScene(WfcErase_WaitButtonBar);
 }
 
 extern "C" void WfcErase_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcErase_Update);
+    WfcUtil_SetScene(WfcErase_Update);
 }
 
 extern "C" void WfcErase_Update() {
@@ -111,13 +108,13 @@ extern "C" void WfcErase_HandleResult() {
     switch (WfcButtonBar_GetResult()) {
     case 0:
         WfcSound_Play(7);
-        WfcUtil_SetScene((void *)WfcErase_StartExit);
+        WfcUtil_SetScene(WfcErase_StartExit);
         break;
     case 1:
         WfcSound_Play(6);
         WfcDialog_Open(0x56, 0, 1, -1, 0);
         WfcButtonBar_DisableInput();
-        WfcUtil_SetScene((void *)WfcErase_WaitConfirmDialog);
+        WfcUtil_SetScene(WfcErase_WaitConfirmDialog);
         break;
     }
 }
@@ -125,7 +122,7 @@ extern "C" void WfcErase_HandleResult() {
 extern "C" void WfcErase_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcErase_FadeOut);
+    WfcUtil_SetScene(WfcErase_FadeOut);
 }
 
 extern "C" void WfcErase_FadeOut() {
@@ -135,7 +132,7 @@ extern "C" void WfcErase_FadeOut() {
         WfcFade_Start(3, 1, 1, 8);
     }
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcErase_Exit);
+    WfcUtil_SetScene(WfcErase_Exit);
 }
 
 extern "C" void WfcErase_Exit() {
@@ -152,10 +149,10 @@ extern "C" void WfcErase_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     if (sWfcEraseConfirmed == 0) {
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcOptions_Enter);
+        WfcUtil_SetScene(WfcOptions_Enter);
     } else {
         WfcUtil_SetScreenFlags(0, 1);
-        WfcUtil_SetScene((void *)WfcErased_Enter);
+        WfcUtil_SetScene(WfcErased_Enter);
     }
 }
 
@@ -169,11 +166,11 @@ extern "C" void WfcErase_WaitConfirmDialog() {
         WfcSound_Play(7);
     }
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcErase_WaitDialogClosed);
+    WfcUtil_SetScene(WfcErase_WaitDialogClosed);
 }
 
 extern "C" void WfcErase_WaitDialogClosed() {
     if (WfcDialog_IsOpen() != 0) return;
-    WfcUtil_SetScene((void *)WfcErase_StartExit);
+    WfcUtil_SetScene(WfcErase_StartExit);
 }
 

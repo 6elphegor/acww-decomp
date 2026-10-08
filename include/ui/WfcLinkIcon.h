@@ -8,7 +8,7 @@
 // the update task and the icon set (data_ov001_02229bd0 row).
 struct WfcLinkIcon {
     /* 0x0 */ GXOamAttr *oam;
-    /* 0x4 */ u32 task;
+    /* 0x4 */ void *task;
     /* 0x8 */ s8 iconSet;
 };
 

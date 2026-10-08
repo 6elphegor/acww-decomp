@@ -4,22 +4,10 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022032f8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_Aoss_WcmCallback
-void Aoss_WcmCallback(void *arg);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_sAossWcmWork
 extern u8 *sAossWcmWork;
 #endif
@@ -50,6 +38,9 @@ extern u8 *sAossWcmSsidPtr;
 #ifndef PROTO_LOCAL_sAossWcmSearchOption
 extern s32 sAossWcmSearchOption;
 #endif
+#ifndef PROTO_LOCAL_Aoss_WcmCallback
+void Aoss_WcmCallback(void *arg);
+#endif
 #ifndef PROTO_LOCAL_Aoss_WcmToIdle
 s32 Aoss_WcmToIdle(void);
 #endif
@@ -74,6 +65,7 @@ s32 Aoss_WcmConnect(void *a, void *b, u32 c);
 #ifndef PROTO_LOCAL_Aoss_WcmInit
 s32 Aoss_WcmInit(void *fn, void *buf, u32 size);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

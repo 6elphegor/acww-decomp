@@ -24,22 +24,22 @@ extern "C" {
 void WfcHeader_Create(s32 n);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInTask0
-void WfcHeader_SlideInTask0(s32 r);
+void WfcHeader_SlideInTask0(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInTask1
-void WfcHeader_SlideInTask1(s32 r);
+void WfcHeader_SlideInTask1(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInTask2
-void WfcHeader_SlideInTask2(s32 r);
+void WfcHeader_SlideInTask2(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInTask3
-void WfcHeader_SlideInTask3(s32 r);
+void WfcHeader_SlideInTask3(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInTask4
-void WfcHeader_SlideInTask4(s32 r);
+void WfcHeader_SlideInTask4(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInDone
-void WfcHeader_SlideInDone(s32 r);
+void WfcHeader_SlideInDone(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SetStep
 void WfcHeader_SetStep(s32 n);
@@ -48,19 +48,19 @@ void WfcHeader_SetStep(s32 n);
 s32 WfcHeader_IsAnimating();
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideOutTask4
-void WfcHeader_SlideOutTask4(s32 r);
+void WfcHeader_SlideOutTask4(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideOutTask3
-void WfcHeader_SlideOutTask3(s32 a);
+void WfcHeader_SlideOutTask3(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideOutTask2
-void WfcHeader_SlideOutTask2(s32 a);
+void WfcHeader_SlideOutTask2(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideOutTask1
-void WfcHeader_SlideOutTask1(s32 a);
+void WfcHeader_SlideOutTask1(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideOutTask0
-void WfcHeader_SlideOutTask0(s32 a);
+void WfcHeader_SlideOutTask0(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_IsSlideOutDone
 BOOL WfcHeader_IsSlideOutDone();

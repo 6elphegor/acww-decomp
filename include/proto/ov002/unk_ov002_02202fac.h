@@ -5,10 +5,6 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
-#ifdef __cplusplus
-#include "menu/MenuLabelButton.h"
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,14 +34,6 @@ extern GXOamAttr sButtonCellsW4B[3];
 void MenuButtons_LoadTextColors();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL__ZN19MenuLabelButtonBaseC2Ehi
-void *_ZN19MenuLabelButtonBaseC2Ehi(MenuLabelButtonBase *self, u8 a, s32 b);
-#endif
 }
 #endif
 

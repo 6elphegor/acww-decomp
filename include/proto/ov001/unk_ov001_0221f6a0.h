@@ -4,28 +4,11 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221f6a0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
+#include "nitro/wm.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_WfcUsbScan_WmCallback
-void WfcUsbScan_WmCallback(void *arg0);
-#endif
-#ifndef PROTO_LOCAL_WfcUsbScan_CollectAps
-void WfcUsbScan_CollectAps(void *arg0);
-#endif
-#ifndef PROTO_LOCAL_WfcUsbScan_CheckGranted
-void WfcUsbScan_CheckGranted(void *arg0);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcUsbScan_Start
 s32 WfcUsbScan_Start(void (*cb)(s32));
 #endif
@@ -38,9 +21,19 @@ s32 WfcUsbScan_Stop();
 #ifndef PROTO_LOCAL_WfcUsbScan_SetCallback
 void WfcUsbScan_SetCallback(void (*cb)(s32));
 #endif
-#ifndef PROTO_LOCAL_WfcUsbScan_TimeoutTask
-void WfcUsbScan_TimeoutTask(s32 arg);
+#ifndef PROTO_LOCAL_WfcUsbScan_WmCallback
+void WfcUsbScan_WmCallback(WMMsg *msg);
 #endif
+#ifndef PROTO_LOCAL_WfcUsbScan_CollectAps
+void WfcUsbScan_CollectAps(WMStartScanExCallback *a);
+#endif
+#ifndef PROTO_LOCAL_WfcUsbScan_CheckGranted
+void WfcUsbScan_CheckGranted(WMStartScanExCallback *a);
+#endif
+#ifndef PROTO_LOCAL_WfcUsbScan_TimeoutTask
+void WfcUsbScan_TimeoutTask(void *task, void *work);
+#endif
+#ifdef __cplusplus
 }
 #endif
 

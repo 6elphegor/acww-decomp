@@ -7,6 +7,7 @@
 #include "proto/ov001/unk_ov001_02219c3c.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -18,15 +19,13 @@ s32 GX_LoadBG2Scr(void *, s32, u32);
 void GX_LoadBGPltt();
 void WfcUtil_LoadFileTo(void *, void *);
 void WfcConfig_CommitEdit();
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
 }
 
 extern "C" void WfcSaveSettings_Enter() {
     WfcSaveSettings_LoadBg();
     WfcHighlight_SetConnection();
     WfcConfig_CommitEdit();
-    WfcUtil_SetScene((void *)WfcSaveSettings_FadeIn);
+    WfcUtil_SetScene(WfcSaveSettings_FadeIn);
 }
 
 extern "C" void WfcSaveSettings_LoadBg() {
@@ -44,21 +43,21 @@ extern "C" void WfcSaveSettings_FadeIn() {
     WfcFade_Start(2, 0, 0x14, 8);
     WfcGx_ShowPlanes(1, 1);
     WfcGx_ShowPlanes(0, 0x14);
-    WfcUtil_SetScene((void *)WfcSaveSettings_ShowDialog);
+    WfcUtil_SetScene(WfcSaveSettings_ShowDialog);
 }
 
 extern "C" void WfcSaveSettings_ShowDialog() {
     if (WfcFade_IsBusy(1)) return;
     if (WfcFade_IsBusy(0)) return;
     WfcDialog_Open(0x96, 5, 1, -1, 0);
-    WfcUtil_SetScene((void *)WfcSaveSettings_WaitDialog);
+    WfcUtil_SetScene(WfcSaveSettings_WaitDialog);
 }
 
 extern "C" void WfcSaveSettings_WaitDialog() {
     func_ov001_02218118();
     func_ov001_02218114();
     if (WfcDialog_IsOpen()) return;
-    WfcUtil_SetScene((void *)WfcSaveSettings_FadeOut);
+    WfcUtil_SetScene(WfcSaveSettings_FadeOut);
 }
 
 extern "C" void func_ov001_02218118() {}
@@ -68,7 +67,7 @@ extern "C" void func_ov001_02218114() {}
 extern "C" void WfcSaveSettings_FadeOut() {
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x14, 8);
-    WfcUtil_SetScene((void *)WfcSaveSettings_Exit);
+    WfcUtil_SetScene(WfcSaveSettings_Exit);
 }
 
 extern "C" void WfcSaveSettings_Exit() {
@@ -78,5 +77,5 @@ extern "C" void WfcSaveSettings_Exit() {
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x14);
     WfcUtil_SetScreenFlags(2, 1);
-    WfcUtil_SetScene((void *)WfcConnSelect_Enter);
+    WfcUtil_SetScene(WfcConnSelect_Enter);
 }

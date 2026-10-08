@@ -74,10 +74,10 @@ extern "C" char data_ov001_0222a690[];
 extern "C" char data_ov001_0222a624[];
 extern "C" char data_ov001_0222a7b0[];
 
-extern "C" void WfcHighlight_TransferTask(s32 a) {
+extern "C" void WfcHighlight_TransferTask(void *task) {
     DC_FlushRange(sWfcHighlightScreen, 0xc0);
     GX_LoadBG1Scr(sWfcHighlightScreen, 0, 0xc0);
-    WfcTask_RequestDelete(1, a);
+    WfcTask_RequestDelete(1, task);
 }
 
 #pragma thumb reset

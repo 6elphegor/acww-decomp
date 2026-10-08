@@ -3,6 +3,12 @@
 
 #include "types.h"
 
+typedef union AossClientInfo AossClientInfo;
+typedef struct AossParam AossParam;
+typedef struct AossApInfo AossApInfo;
+typedef struct AossApConfig AossApConfig;
+typedef struct AossConnectResult AossConnectResult;
+
 // Buffalo AOSS client (ov001 units 02200680 / 02202c44, driven by WfcAoss_* in unk_ov001_0220c37c.cpp): the run
 // parameters/result block given to Aoss_Run, the client-info TLV inside it, and the scanned AP record.
 
@@ -44,6 +50,21 @@ struct AossApInfo {
     /* 0x3c */ u8 rates[0x10];
     /* 0x4c */ u32 beaconPeriod;
     /* 0x50 */ u32 bssType;
+};
+
+// The AP to connect to (Aoss_ConnectAp; built by Aoss_BuildAossApConfig: the AOSS setup ESSID and WEP key).
+struct AossApConfig {
+    /* 0x00 */ s32 ssidLength;
+    /* 0x04 */ u8 ssid[0x20];
+    /* 0x24 */ s32 mode;           // 0: 0x80000, 1: 0xc0000 connect option
+    /* 0x28 */ s32 wepKeyLength;
+    /* 0x2c */ u8 wepKey[0x10];
+};
+
+// Aoss_ConnectAp's result (sAossConnectResult): whether it connected, and to which AP.
+struct AossConnectResult {
+    /* 0x00 */ s32 connected;
+    /* 0x04 */ AossApInfo ap;
 };
 
 #endif

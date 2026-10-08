@@ -1,6 +1,5 @@
 #ifndef FIELD_BOTTLETHROW_H
 #define FIELD_BOTTLETHROW_H
-#include "uptr.h"
 #include "game/CollisionState.h"
 
 #include "types.h"
@@ -12,7 +11,7 @@
 struct BottleThrow {
     BottleThrow();
     ~BottleThrow();
-    /* 0x00 */ u32 collisionState[HOST_SIZED(0x30, CollisionState) / 4] HOST_ALIGN8;  // CollisionState
+    /* 0x00 */ CollisionState collisionState;
     /* 0x30 */ u8 state;
     /* 0x31 */ u8 pad_31[3];
     /* 0x34 */ VecFx32 position;
