@@ -14,17 +14,6 @@
 #include "sys/ProcProfile.h"
 #include "talk/MsgString.h"
 #include "ui/HandCursor.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sMapTabFrameCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sMapTabPlacesButtonCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sMapTabResidentsButtonCells  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -39,40 +28,30 @@
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov094/unk_ov094_02292360.h"
+#include "proto/ov117/unk_ov117_02292360.h"
 #include "proto/ov118/unk_02292d00.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 #include "player/PlayerData.h"
 
 extern "C" {
 extern u16 gPad[];
-extern u32 gCurrentHeap;
 extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 
-void _ZN11MsgString9CC2Ev(void *self);
-s32 _ZN10PlayerData11getPlayerIdEv(void *self);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 s32 _s32_div_f(s32 a, s32 b);
-void Menu_PlayScrollGrabSe(void *p);
-void Menu_PlayScrollTickSe(void *p);
-void TownMapMarkers_Clear(void *p);
-void TownMapImage_BuildMarkersGlobal(u32 v);
-void TownMapImage_DrawRowGlobal(u32 v);
-void TownMapImage_AllocGlobal();
-s16 *TownMapMarkers_Get(void *p, s32 i);
-u32 TownMapMarkers_GetKind(void *p, s32 i);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void Math_StepS32(void *p, s32 a, s32 b);
 s32 Scene_GetWarpRequest();
 void *ScenePos_GetPos(void *p);
-void TownId_GetNameString(void *a, void *b);
-void String_SetSlot(s32 a, void *p);
 }
 
 
@@ -122,7 +101,7 @@ public:
     BOOL testFlags(u32 m);
     void playSeAtMarker(s32 a);
     s32 onCursorDecide();
-    s32 moveCursorByPad(void *pad);
+    s32 moveCursorByPad(u32 pad);
     void refreshCursor();
     void releaseCursor();
     void pressCursor();
@@ -150,7 +129,7 @@ public:
     void selectEntry(u8 v);
     u8 findMarkerAt(s32 x, s32 y);
     BOOL touchMarker();
-    void setupMarkers(void *p);
+    void setupMarkers(TownMapMarkers *p);
     void drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal);
     BOOL touchListRow();
     s32 getListScrollMax();
@@ -237,7 +216,7 @@ public:
     /* 0x00fc */ LabelString textLabels[13];
     /* 0x043c */ MenuScrollKnob scrollKnob;
     /* 0x0484 */ MenuCursorBuf0 cursor;
-    /* 0x04e8 */ u8 frameScreen[0x800];
+    /* 0x04e8 */ u16 frameScreen[0x400];
     /* 0x0ce8 */ u16 listScreen[0x400];
     /* 0x14e8 */ u16 listScreenWork[0x400];
     /* 0x1ce8 */ u16 listScreenBase[0x400];
@@ -249,68 +228,18 @@ public:
     /* 0x4571 */ MapTabMarker buildingMarkers[14];
 };
 
-struct Unk_ov118_02295500 {
-    u16 attr0;
-    u16 a : 9;
-    u16 pal : 5;
-    u16 b : 2;
-    u16 tile : 10;
-    u16 c : 6;
-    u16 attr3;
-};
 
 
 
-extern "C" {
-void _ZN6MapTab11stateLoadBgEv();
-void _ZN6MapTab13stateLoadMap1Ev();
-void _ZN6MapTab13stateLoadMap2Ev();
-void _ZN6MapTab13stateLoadMap3Ev();
-void _ZN6MapTab14stateBuildListEv();
-void _ZN6MapTab9stateOpenEv();
-void _ZN6MapTab12stateOpeningEv();
-void _ZN6MapTab10stateCloseEv();
-void _ZN6MapTab12stateClosingEv();
-void _ZN6MapTab11updateTouchEv();
-void _ZN6MapTab14updateKnobDragEv();
-void _ZN6MapTab12updateBarTapEv();
-void _ZN6MapTab13updateButtonsEv();
-void _ZN6MapTab16updateCursorMoveEv();
-void _ZN6MapTab17updateCursorPressEv();
-void _ZN6MapTab19updateCursorReleaseEv();
-void _ZN6MapTab14updateKnobGrabEv();
-void _ZN6MapTab14updateKnobHoldEv();
-void _ZN6MapTab17updateKnobReleaseEv();
-void _ZN6MapTab15updateMapCursorEv();
-}
-extern "C" void *data_ov118_02295520[2];
-extern "C" void *data_ov118_02295518[2];
-extern "C" void *data_ov118_02295510[2];
-extern "C" void *data_ov118_02295508[2];
-extern "C" void *data_ov118_022954a0[2];
-extern "C" void *data_ov118_022954f8[2];
-extern "C" void *data_ov118_022954f0[2];
-extern "C" void *data_ov118_022954e8[2];
-extern "C" void *data_ov118_02295498[2];
-extern "C" void *data_ov118_022954d0[2];
-extern "C" void *data_ov118_022954d8[2];
-extern "C" void *data_ov118_022954b8[2];
-extern "C" void *data_ov118_02295528[2];
-extern "C" void *data_ov118_022954a8[2];
-extern "C" void *data_ov118_02295488[2];
-extern "C" void *data_ov118_02295490[2];
-extern "C" void *data_ov118_022954c0[2];
-extern "C" void *data_ov118_022954c8[2];
-extern "C" void *data_ov118_022954e0[2];
-extern "C" void *data_ov118_022954b0[2];
+
 extern "C" ProcProfile sMapTabProfile;
-extern "C" Unk_ov118_02295500 sMapTabIconCell;
+extern "C" GXOamAttr sMapTabIconCell;
 extern "C" const u8 sMapTabPlaceMarkers[5];
 extern "C" const u8 sMapTabMarkerPlaceRows[5];
 extern "C" const u8 sMapTabFacilityCells[5];
-extern "C" u32 sMapTabPlacesButtonCells[8];
-extern "C" u32 sMapTabResidentsButtonCells[8];
-extern "C" u32 sMapTabFrameCells[20];
+extern "C" GXOamAttr sMapTabPlacesButtonCells[4];
+extern "C" GXOamAttr sMapTabResidentsButtonCells[4];
+extern "C" GXOamAttr sMapTabFrameCells[10];
 
 
 
@@ -355,7 +284,7 @@ BOOL MapTab::onDraw() {
             }
             ((MenuCursorBase *)&cursor)->drawWrapped();
         }
-        Oam_DrawCell(1, sMapTabFrameCells, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, &sMapTabFrameCells[0], 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 x0, x1;
         if (testFlags(1)) {
             x1 = 0xc;
@@ -364,14 +293,14 @@ BOOL MapTab::onDraw() {
             x1 = 0xb;
             x0 = 0xe;
         }
-        Oam_DrawCell(1, sMapTabPlacesButtonCells, 0x80, base, x0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, sMapTabResidentsButtonCells, 0x80, base, x1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, &sMapTabPlacesButtonCells[0], 0x80, base, x0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, &sMapTabResidentsButtonCells[0], 0x80, base, x1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         if (MenuCtrl_IsButtons() && testFlags(0x800)) {
             u32 t = cursorMarker;
             if (t != 0xe) {
-                u8 *e = (u8 *)this + t * 3;
-                if (e[0x4573] != 0xc) {
-                    drawMapIcon(e[0x4571], slideY + e[0x4572], 0xb, 0, -1);
+                MapTabMarker *e = &buildingMarkers[t];
+                if (e->cell != 0xc) {
+                    drawMapIcon(e->x, slideY + e->y, 0xb, 0, -1);
                 }
             }
         }
@@ -380,15 +309,15 @@ BOOL MapTab::onDraw() {
             drawMapIcon(selfMarkerX, selfMarkerY + slideY, 0xa, 0, -1);
         }
         for (i = 0; i < 3; i++) {
-            u8 *e = (u8 *)this + i * 3;
-            u32 c = e[0x456a];
+            MapTabMarker *e = &terrainMarkers[i];
+            u32 c = e->cell;
             if (c != 0xc) {
-                drawMapIcon(e[0x4568], slideY + e[0x4569], (u8)(c & 0x7f), (c & 0x80) != 0 ? 1 : 0, -1);
+                drawMapIcon(e->x, slideY + e->y, (u8)(c & 0x7f), (c & 0x80) != 0 ? 1 : 0, -1);
             }
         }
         for (i = 0; i < 14; i++) {
-            u8 *e = (u8 *)this + i * 3;
-            u8 *q = e + 0x4573;
+            MapTabMarker *e = &buildingMarkers[i];
+            u8 *q = &e->cell;
             if (*q != 0xc) {
                 s32 f;
                 if (i == selectedMarker && !testFlags(0x100)) {
@@ -396,7 +325,7 @@ BOOL MapTab::onDraw() {
                 } else {
                     f = -1;
                 }
-                drawMapIcon(e[0x4571], slideY + e[0x4572], *q, 0, f);
+                drawMapIcon(e->x, slideY + e->y, *q, 0, f);
             }
         }
         if (testFlags(8)) {
@@ -406,77 +335,34 @@ BOOL MapTab::onDraw() {
     return TRUE;
 }
 
-extern "C" u32 sMapTabResidentsButtonCells[8] = {0x404d00d3, 0x0000c1a5, 0x005d80d3, 0x0000c1a7, 0x004d40e3, 0x0000c1e5, 0x005d00e3, 0xffffc1e7};
+extern "C" GXOamAttr sMapTabResidentsButtonCells[4] = {{0x404d00d3, 0x1a5, 0, 0xc, 0x0}, {0x5d80d3, 0x1a7, 0, 0xc, 0x0}, {0x4d40e3, 0x1e5, 0, 0xc, 0x0}, {0x5d00e3, 0x1e7, 0, 0xc, 0xffff}};
 
 extern "C" const u8 sMapTabMarkerPlaceRows[5] = {0x02, 0x03, 0x00, 0x01, 0x04};
 
-extern "C" void *data_ov118_022954f8[2] = {(void *)_ZN6MapTab9stateOpenEv, 0};
-
-extern "C" void *data_ov118_022954c0[2] = {(void *)_ZN6MapTab14updateKnobGrabEv, 0};
-
-extern "C" void *data_ov118_02295490[2] = {(void *)_ZN6MapTab19updateCursorReleaseEv, 0};
-
-extern "C" void *data_ov118_02295528[2] = {(void *)_ZN6MapTab13updateButtonsEv, 0};
-
-extern "C" void *data_ov118_02295520[2] = {(void *)_ZN6MapTab11stateLoadBgEv, 0};
-
-extern "C" void *data_ov118_02295518[2] = {(void *)_ZN6MapTab13stateLoadMap1Ev, 0};
-
-extern "C" void *data_ov118_02295510[2] = {(void *)_ZN6MapTab13stateLoadMap2Ev, 0};
-
-extern "C" void *data_ov118_02295508[2] = {(void *)_ZN6MapTab13stateLoadMap3Ev, 0};
-
-extern "C" Unk_ov118_02295500 sMapTabIconCell = {0xf8, 0x1f8, 0, 1, 0xc0, 0x1c, 0xffff};
-
-extern "C" void *data_ov118_02295498[2] = {(void *)_ZN6MapTab12stateClosingEv, 0};
+extern "C" GXOamAttr sMapTabIconCell = {0x41f800f8, 0xc0, 0, 0x7, 0xffff};
 
 extern "C" const u8 sMapTabPlaceMarkers[5] = {0x0b, 0x0c, 0x09, 0x0a, 0x0d};
 
-extern "C" void *data_ov118_022954a0[2] = {(void *)_ZN6MapTab14stateBuildListEv, 0};
-
-extern "C" void *data_ov118_022954d0[2] = {(void *)_ZN6MapTab11updateTouchEv, 0};
-
-extern "C" void *data_ov118_022954d8[2] = {(void *)_ZN6MapTab14updateKnobDragEv, 0};
-
-extern "C" void *data_ov118_022954e8[2] = {(void *)_ZN6MapTab10stateCloseEv, 0};
-
 BOOL MapTab::execTransition() {
-    static Unk_ov118_022955c8_Fn tbl[9] = {*(Unk_ov118_022955c8_Fn *)data_ov118_02295520, *(Unk_ov118_022955c8_Fn *)data_ov118_02295518, *(Unk_ov118_022955c8_Fn *)data_ov118_02295510, *(Unk_ov118_022955c8_Fn *)data_ov118_02295508, *(Unk_ov118_022955c8_Fn *)data_ov118_022954a0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954f8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954f0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954e8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295498};
+    static Unk_ov118_022955c8_Fn tbl[9] = {&MapTab::stateLoadBg, &MapTab::stateLoadMap1, &MapTab::stateLoadMap2, &MapTab::stateLoadMap3, &MapTab::stateBuildList, &MapTab::stateOpen, &MapTab::stateOpening, &MapTab::stateClose, &MapTab::stateClosing};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
 
-extern "C" void *data_ov118_022954b8[2] = {(void *)_ZN6MapTab12updateBarTapEv, 0};
-
-extern "C" u32 sMapTabPlacesButtonCells[8] = {0x402a00d3, 0x0000e1a2, 0x003a80d3, 0x0000e1a4, 0x002a40e3, 0x0000e1e2, 0x003a00e3, 0xffffe1e4};
-
-extern "C" void *data_ov118_022954a8[2] = {(void *)_ZN6MapTab16updateCursorMoveEv, 0};
+extern "C" GXOamAttr sMapTabPlacesButtonCells[4] = {{0x402a00d3, 0x1a2, 0, 0xe, 0x0}, {0x3a80d3, 0x1a4, 0, 0xe, 0x0}, {0x2a40e3, 0x1e2, 0, 0xe, 0x0}, {0x3a00e3, 0x1e4, 0, 0xe, 0xffff}};
 
 void MapTab::runMainState() {
-    static Unk_ov118_022955c8_Fn tbl[11] = {*(Unk_ov118_022955c8_Fn *)data_ov118_022954d0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954d8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954b8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295528, *(Unk_ov118_022955c8_Fn *)data_ov118_022954a8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295488, *(Unk_ov118_022955c8_Fn *)data_ov118_02295490, *(Unk_ov118_022955c8_Fn *)data_ov118_022954c0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954c8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954e0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954b0};
+    static Unk_ov118_022955c8_Fn tbl[11] = {&MapTab::updateTouch, &MapTab::updateKnobDrag, &MapTab::updateBarTap, &MapTab::updateButtons, &MapTab::updateCursorMove, &MapTab::updateCursorPress, &MapTab::updateCursorRelease, &MapTab::updateKnobGrab, &MapTab::updateKnobHold, &MapTab::updateKnobRelease, &MapTab::updateMapCursor};
     (this->*tbl[mainState])();
 }
 
-extern "C" void *data_ov118_022954e0[2] = {(void *)_ZN6MapTab17updateKnobReleaseEv, 0};
-
-extern "C" void *data_ov118_022954c8[2] = {(void *)_ZN6MapTab14updateKnobHoldEv, 0};
-
 extern "C" ProcProfile sMapTabProfile = {(void *(*)())MapTab_Create, 0xa1, 0xa5};
-
-extern "C" void *data_ov118_022954b0[2] = {(void *)_ZN6MapTab15updateMapCursorEv, 0};
 
 extern "C" const u8 sMapTabFacilityCells[5] = {0x02, 0x03, 0x04, 0x05, 0x06};
 
-extern "C" void *data_ov118_022954f0[2] = {(void *)_ZN6MapTab12stateOpeningEv, 0};
-
-extern "C" void *data_ov118_02295488[2] = {(void *)_ZN6MapTab17updateCursorPressEv, 0};
-
-extern "C" u32 sMapTabFrameCells[20] = {
-    0x819d40b8, 0x000061ab, 0x81bd40b8, 0x000061af, 0x81dd40b8, 0x000061b3, 0x81fd40b8, 0x000061b7,
-    0x401d00b8, 0x000061bb, 0x81f540b8, 0x000060d9, 0x81d540b8, 0x000060d9, 0x81b540b8, 0x000060d9,
-    0x901540b8, 0x000060d8, 0x819540b8, 0xffff60d8};
+extern "C" GXOamAttr sMapTabFrameCells[10] = {{0x819d40b8, 0x1ab, 0, 0x6, 0x0}, {0x81bd40b8, 0x1af, 0, 0x6, 0x0}, {0x81dd40b8, 0x1b3, 0, 0x6, 0x0}, {0x81fd40b8, 0x1b7, 0, 0x6, 0x0}, {0x401d00b8, 0x1bb, 0, 0x6, 0x0}, {0x81f540b8, 0xd9, 0, 0x6, 0x0}, {0x81d540b8, 0xd9, 0, 0x6, 0x0}, {0x81b540b8, 0xd9, 0, 0x6, 0x0}, {0x901540b8, 0xd8, 0, 0x6, 0x0}, {0x819540b8, 0xd8, 0, 0x6, 0xffff}};
 
 BOOL MapTab::execMain() {
     if (handleTabSwitch()) {
@@ -573,16 +459,16 @@ void MapTab::stateBuildList() {
 }
 
 void MapTab::stateOpen() {
-    u32 buf[HOST_SIZED(0x20, MsgString9C) / 4] HOST_ALIGN8;
     loadObjGfx();
-    _ZN11MsgString9CC2Ev(buf);
-    TownId_GetNameString(gSaveTownId, buf);
-    String_SetSlot(0, buf);
-    LabelString *o = allocTextLabel();
-    o->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
-    String_Load2dMenu(o, 0xa9);
-    o->redrawAligned(1, 0);
-    ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
+    {
+        MsgString9C name;
+        TownId_GetNameString(gSaveTownId, &name);
+        String_SetSlot(0, &name);
+        LabelString *o = allocTextLabel();
+        o->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
+        String_Load2dMenu(o, 0xa9);
+        o->redrawAligned(1, 0);
+    }
     beginSubSlideIn(0xa, 3, 0, 0x30);
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
@@ -724,7 +610,7 @@ void MapTab::loadBgGfx() {
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", p, 4, 0x11, 0x11, 0x5f);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", p, 4, 0x230, 0x230, 0x25f);
     File_LoadToBuffer("menu/map/b_map_a_bg.bsc", frameScreen, 0x800);
-    Gfx2d_LoadScreen(frameScreen, 4, 0x800, 0);
+    Gfx2d_LoadScreen((u8 *)frameScreen, 4, 0x800, 0);
     File_LoadToBuffer("menu/map/b_map_b_bg.bsc", listScreenBase, 0x800);
     BgScreen_SetRectPalette(listScreenBase, 0x13, 0, 0x1c, 1, 4);
 }
@@ -742,12 +628,13 @@ void MapTab::loadMapStep2() {
 }
 
 void MapTab::loadMapImage() {
-    u8 *a, *b;
+    u8 *a;
+    TownMapMarkers *b;
     TownMapImage_DrawRowGlobal(3);
     a = mapChars;
     TownMapMarkers_Clear(&townMarkers);
-    b = (u8 *)&townMarkers;
-    InventoryBg_ClearDirty(a, b);
+    b = &townMarkers;
+    TownMapImage_FinishGlobal(a, b); // ov117 (the decompiler named ov094's function at the same address)
     Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
     setupMarkers(b);
 }
@@ -801,7 +688,7 @@ void MapTab::updateButtons() {
         startTouchInput();
         return;
     }
-    switch (moveCursorByPad((void *)takeRepeatedKeys())) {
+    switch (moveCursorByPad(takeRepeatedKeys())) {
     case 1:
         if (testFlags(8)) {
             u8 t = cursorTarget;
@@ -1056,7 +943,7 @@ LabelString *MapTab::allocTextLabel() {
 void MapTab::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
-    m = PlayerDataArray_FindById(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+    m = PlayerDataArray_FindById(gSavePlayers, (u16 *)PlayerData_GetCurrent()->getPlayerId());
     if (m != -1) {
         residentEntries[0] = 1;
         n++;
@@ -1195,21 +1082,21 @@ BOOL MapTab::touchListRow() {
 
 void MapTab::drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
     u16 t;
-    sMapTabIconCell.tile = n * 2 + 0xc0;
+    sMapTabIconCell.charNo = n * 2 + 0xc0;
     if (flag != 0) {
-        t = sMapTabIconCell.pal | 8;
-        sMapTabIconCell.pal = t;
+        t = sMapTabIconCell.rsParam | 8;
+        sMapTabIconCell.rsParam = t;
     }
-    Oam_DrawObj(1, &sMapTabIconCell, x, y, pal, 1, 0);
+    Oam_DrawObj(1, &sMapTabIconCell, x, y, pal, 1, NULL);
     if (flag != 0) {
-        sMapTabIconCell.pal = t & 0x17;
+        sMapTabIconCell.rsParam = t & 0x17;
     }
 }
 
-void MapTab::setupMarkers(void *p) {
+void MapTab::setupMarkers(TownMapMarkers *p) {
     s32 k, i;
     u32 j;
-    s16 *rec;
+    TownMapMarker *rec;
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
@@ -1217,25 +1104,25 @@ void MapTab::setupMarkers(void *p) {
         if (rec != 0) {
             switch (TownMapMarkers_GetKind(p, i)) {
             case 0:
-                *((u8 *)this + k * 3 + 0x456a) = 8;
+                terrainMarkers[k].cell = 8;
                 break;
             case 1:
-                *((u8 *)this + k * 3 + 0x456a) = 7;
+                terrainMarkers[k].cell = 7;
                 break;
             case 2:
-                *((u8 *)this + k * 3 + 0x456a) = 9;
+                terrainMarkers[k].cell = 9;
                 break;
             case 3:
-                *((u8 *)this + k * 3 + 0x456a) = 0x89;
+                terrainMarkers[k].cell = 0x89;
                 break;
             default:
-                *((u8 *)this + k * 3 + 0x456a) = 0xc;
+                terrainMarkers[k].cell = 0xc;
                 break;
             }
-            *((u8 *)this + k * 3 + 0x4568) = rec[0] - 8;
-            *((u8 *)this + k * 3 + 0x4569) = rec[1] + 0x10;
+            terrainMarkers[k].x = rec->x - 8;
+            terrainMarkers[k].y = rec->y + 0x10;
         } else {
-            *((u8 *)this + k * 3 + 0x456a) = 0xc;
+            terrainMarkers[k].cell = 0xc;
         }
     }
     j = 3;
@@ -1244,16 +1131,16 @@ void MapTab::setupMarkers(void *p) {
         rec = TownMapMarkers_Get(p, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
-                *((u8 *)this + k * 3 + 0x4573) = 0;
+                buildingMarkers[k].cell = 0;
             } else if (j == 0xb) {
-                *((u8 *)this + k * 3 + 0x4573) = 1;
+                buildingMarkers[k].cell = 1;
             } else {
-                *((u8 *)this + k * 3 + 0x4573) = *(sMapTabFacilityCells + j - 0xc);
+                buildingMarkers[k].cell = *(sMapTabFacilityCells + j - 0xc);
             }
-            *((u8 *)this + k * 3 + 0x4571) = rec[0] - 8;
-            *((u8 *)this + k * 3 + 0x4572) = rec[1] + 0x10;
+            buildingMarkers[k].x = rec->x - 8;
+            buildingMarkers[k].y = rec->y + 0x10;
         } else {
-            *((u8 *)this + k * 3 + 0x4573) = 0xc;
+            buildingMarkers[k].cell = 0xc;
         }
     }
 }
@@ -1270,11 +1157,11 @@ BOOL MapTab::touchMarker() {
 u8 MapTab::findMarkerAt(s32 x, s32 y) {
     s32 i;
     for (i = 0; i < 0xe; i++) {
-        u8 *e = (u8 *)this + i * 3;
-        if (e[0x4573] != 0xc) {
-            s32 px = e[0x4571];
+        MapTabMarker *e = &buildingMarkers[i];
+        if (e->cell != 0xc) {
+            s32 px = e->x;
             if (px - 8 < x && px + 8 > x) {
-                s32 py = e[0x4572];
+                s32 py = e->y;
                 if (py - 8 < y && py + 8 > y) {
                     return (u8)i;
                 }
@@ -1482,7 +1369,7 @@ void MapTab::scrollListToKnob(s32 v) {
     }
     s32 d = t - knobLastTickPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
         knobLastTickPos = t;
     }
     s32 m = getListScrollMax();
@@ -1504,7 +1391,7 @@ void MapTab::scrollListByPad() {
         pos = m;
     }
     if (pos != listScrollTarget) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
     }
     setListScroll(pos);
 }
@@ -1663,7 +1550,7 @@ void MapTab::refreshCursor() {
     cursor.update();
 }
 
-s32 MapTab::moveCursorByPad(void *pad) {
+s32 MapTab::moveCursorByPad(u32 pad) {
     u32 old = cursorTarget;
     if (old <= 7) {
         if (MenuKeys_HasDown(pad)) {
@@ -1773,7 +1660,7 @@ s32 MapTab::onCursorDecide() {
         setMainState(7);
         scrollKnob.grab();
         setFlags(0x1000);
-        Menu_PlayScrollGrabSe(&scrollKnob);
+        Menu_PlayScrollGrabSe();
         return 1;
     } else if (s == 8) {
         if (testFlags(1)) {

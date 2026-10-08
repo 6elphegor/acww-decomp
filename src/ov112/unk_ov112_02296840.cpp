@@ -22,18 +22,6 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_Arbeit_OnBbsPosted  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FromEncodedBytesEx  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov112_02299ad8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -54,6 +42,9 @@
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov112/unk_ov112_02296840.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 
 // The extern "C" helpers reach the scene object as S.
 class BbsWriteMenu;
@@ -124,7 +115,7 @@ public:
     void showCursor();
     void openDialog(u8 v, u8 x);
     void refreshKeys();
-    BOOL navigateText(void *pad);
+    BOOL navigateText(u32 pad);
     s32 getLineOfIndex(s32 v);
     void updateCaretPos();
     u8 getCharBeforeCursor();
@@ -221,24 +212,13 @@ public:
 
 extern "C" {
 extern u16 gPad[];
-extern u32 gCurrentHeap;
 extern u8 gU8None;
 extern CommManager *gCommManager;
 }
 
-extern "C" u32 data_ov112_02299ac0[];
-extern "C" u32 data_ov112_02299ad8[];
 
 extern "C" {
 void Math_StepU8(void *p, u32 v, u32 n);
-void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
-s32 Arbeit_OnBbsPosted(void *m);
-void Menu_PlayScrollTickSe(void *p);
-void Keyboard_PlayPasteSe(void *p);
-void Keyboard_PlayCopySe(void *p);
-BOOL Keyboard_ReplaceCharBeforeCursor(void *p, void *q, s32 a, u32 b, s32 c, s32 d);
-void BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Menu_PlayScrollGrabSe(void *p);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void func_0206f874(void *p);
@@ -246,11 +226,9 @@ void func_0206f85c(void *p);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
-void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Clock_GetDate(void *p);
 void EncodedString_SetRaw(void *dst, void *src, s32 n);
-void StrBuf_GetBytes(void *p, void *buf, s32 n);
 s32 func_02133150(s32 a, s32 b);
 }
 
@@ -345,12 +323,12 @@ BOOL BbsWriteMenu::onDraw() {
         Gfx2d_SetLayerOffset(4, 0, scrollY + 8);
     }
     if (BbsWriteMenu_HasFlags((S *)this, 1)) {
-        u8 *p = (u8 *)(keyboardSlideY + 0x60);
-        Oam_DrawCell(1, data_ov112_02299ad8, 0x80, p - 8, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        s32 p = keyboardSlideY + 0x60;
+        Oam_DrawCell(1, &data_ov112_02299ad8[0], 0x80, p - 8, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         Keyboard_Draw(&keyboard, 0x80, p, 1);
         Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, p);
         if (MenuCtrl_IsButtons()) {
-            Oam_DrawObj(1, data_ov112_02299ac0, 0x80, p, -1, 1, 0);
+            Oam_DrawObj(1, &data_ov112_02299ac0[0], 0x80, p, -1, 1, NULL);
         }
         Keyboard_DrawLengthGaugeAt(&keyboard, 0x80, p, lengthGauge);
         ((ScrollKnob *)(&scrollKnob))->moveTo(0x5d, scrollKnobY + (u32)(keyboardSlideY - 0x50));
@@ -379,19 +357,16 @@ BOOL BbsWriteMenu::onDraw() {
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" ProcProfile data_ov112_022999b8;
-extern "C" u32 data_ov112_02299ad8[12];
-extern "C" u32 data_ov112_02299ac0[2];
+extern "C" GXOamAttr data_ov112_02299ad8[6];
+extern "C" GXOamAttr data_ov112_02299ac0[1];
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 
 extern "C" ProcProfile data_ov112_022999b8 = {(void *(*)())BbsWriteMenu_Create, 0xa6, 0xaa};
 
-extern "C" u32 data_ov112_02299ad8[12] = {
-    0x006180b4, 0x0000a0c0, 0x206180e4, 0x0000a0c0, 0x006100c4, 0x0000a0e0,
-    0x006100cc, 0x0000a0e0, 0x006100d4, 0x0000a0e0, 0x006100dc, 0xffffa0e0,
-};
+extern "C" GXOamAttr data_ov112_02299ad8[6] = {{0x6180b4, 0xc0, 0, 0xa, 0x0}, {0x206180e4, 0xc0, 0, 0xa, 0x0}, {0x6100c4, 0xe0, 0, 0xa, 0x0}, {0x6100cc, 0xe0, 0, 0xa, 0x0}, {0x6100d4, 0xe0, 0, 0xa, 0x0}, {0x6100dc, 0xe0, 0, 0xa, 0xffff}};
 
-extern "C" u32 data_ov112_02299ac0[2] = {0x802a40e6, 0xffffc0c1};
+extern "C" GXOamAttr data_ov112_02299ac0[1] = {{0x802a40e6, 0xc1, 0, 0xc, 0xffff}};
 
 BOOL BbsWriteMenu::execTransition() {
     static Unk_ov112_02299b10_Fn tbl[14] = {
@@ -713,7 +688,7 @@ extern "C" void BbsWriteMenu_LoadBg(S *s) {
     void *g = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/chat2/b_bbs.bpl", g, 4, 8, 8, 0xe);
     File_LoadToBuffer("menu/chat2/b_bbs_us.bsc", s->bgScreenBuf, 0x800);
-    BgScreen_SetRectPalette(s->bgScreenBuf, 6, 5, 0x19, 6, 0xa);
+    BgScreen_SetRectPalette((u16 *)s->bgScreenBuf, 6, 5, 0x19, 6, 0xa);
     Gfx2d_LoadScreen(s->bgScreenBuf, 4, 0x800, 0);
     Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", g, 4, 0x13d, 0x13d, 0x1e9);
     Gfx2d_LoadCharFile("menu/chat2/b_bbs.bch", g, 4, 0x10, 0x10, 0x13f);
@@ -883,7 +858,7 @@ void BbsWriteMenu::mainAct08() {
         if (v == 0x112) {
             ((MenuProc *)s)->setMainState(0x10);
             ((MenuScrollKnob *)(&s->scrollKnob))->grab();
-            Menu_PlayScrollGrabSe(&s->scrollKnob);
+            Menu_PlayScrollGrabSe();
             if (BbsWriteMenu_HasSelection(s)) {
                 BbsWriteMenu_RedrawText(s);
             }
@@ -945,7 +920,7 @@ void BbsWriteMenu::mainAct0C() {
     S *s = (S *)this;
     if (((MenuProc *)s)->checkSwitchToTouch()) {
         BbsWriteMenu_StartTouchInput(s);
-    } else if (((BbsWriteMenu *)s)->navigateText((void *)((MenuProc *)s)->takeRepeatedKeys())) {
+    } else if (((BbsWriteMenu *)s)->navigateText(((MenuProc *)s)->takeRepeatedKeys())) {
         if (Keyboard_GetTypedRunLength(&s->keyboard) || BbsWriteMenu_HasSelection(s)) {
             Keyboard_ResetTypedRun(&s->keyboard);
             BbsWriteMenu_ClearSelection(s);
@@ -987,7 +962,7 @@ void BbsWriteMenu::mainAct0D() {
             BbsWriteMenu_ClearFlags(s, 0x100);
         }
     } else {
-        if (((BbsWriteMenu *)s)->navigateText((void *)((MenuProc *)s)->takeRepeatedKeys())) {
+        if (((BbsWriteMenu *)s)->navigateText(((MenuProc *)s)->takeRepeatedKeys())) {
             s->selectionEnd = s->caretIndex;
             BbsWriteMenu_RedrawText(s);
             ((BbsWriteMenu *)s)->updateCaretPos();
@@ -1373,7 +1348,7 @@ extern "C" BOOL BbsWriteMenu_ApplyModifierKey(S *s, s32 key) {
     if (r == 0) {
         return FALSE;
     }
-    if (!Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text, r, s->caretIndex, 0xc0, 0x2710)) {
+    if (!Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text, r, s->caretIndex)) {
         return FALSE;
     }
     BbsWriteMenu_RedrawText(s);
@@ -1400,7 +1375,7 @@ extern "C" void BbsWriteMenu_Copy(S *s) {
         Mem_Clear(s->clipboard, 0xc0);
         Mem_Copy(s->text + x, s->clipboard, y);
         BbsWriteMenu_SetFlags(s, 0x200);
-        Keyboard_PlayCopySe(&s->keyboard);
+        Keyboard_PlayCopySe();
         ((BbsWriteMenu *)s)->refreshKeys();
     }
 }
@@ -1424,7 +1399,7 @@ extern "C" void BbsWriteMenu_Paste(S *s) {
                 i = n;
             }
         }
-        Keyboard_PlayPasteSe(&s->keyboard);
+        Keyboard_PlayPasteSe();
         BbsWriteMenu_RedrawText(s);
         ((BbsWriteMenu *)s)->updateCaretPos();
         Keyboard_EndPaste(&s->keyboard);
@@ -1458,7 +1433,7 @@ extern "C" void BbsWriteMenu_ConfirmYes(S *s) {
         Bbs_AddPost(s->text);
         Snd_PlaySe(0x27);
         ((BbsWriteMenu *)s)->sendPostToPeers();
-        Arbeit_OnBbsPosted(PlayerData_GetCurrent()->getErrands());
+        Arbeit_OnBbsPosted((PlayerErrands *)PlayerData_GetCurrent()->getErrands());
     }
 }
 
@@ -1562,11 +1537,10 @@ extern "C" void BbsWriteMenu_RedrawText(S *s) {
     z14 = 0;
     z18 = 0;
     for (; i < 6; i++) {
-        u8 *b = (u8 *)s + i * 4;
-        u32 *pp = (u32 *)(b + 0x6a60);
-        u32 d = *(u32 *)((u8 *)s + (i + 1) * 4 + 0x6a60) - *pp;
-        u8 *obj = (u8 *)s->lineLabels + i * 0x40;
-        ((MsgString *)(obj))->clear();
+        s32 *pp = &s->lineStarts[i];
+        u32 d = s->lineStarts[i + 1] - *pp;
+        LabelString *obj = &s->lineLabels[i];
+        obj->clear();
         if (d != 0) {
             u32 a3 = (i == 0) ? z14 : r6;
             u32 st = (i == s->lastLine) ? 1 : z18;
@@ -1578,7 +1552,7 @@ extern "C" void BbsWriteMenu_RedrawText(S *s) {
         }
     }
     for (i = 0; i < 6; i++) {
-        ((LabelString *)((u8 *)s->lineLabels + i * 0x40))->createBufferLabel((u32)(s->lineCharBufs + i * 0x500), 0x14, 0xe, 0xd);
+        s->lineLabels[i].createBufferLabel((u32)(s->lineCharBufs + i * 0x500), 0x14, 0xe, 0xd);
     }
     BbsWriteMenu_HighlightSelection(s);
     BbsWriteMenu_SetFlags(s, 4);
@@ -1625,7 +1599,7 @@ extern "C" void BbsWriteMenu_HighlightRange(S *s, u8 a, u8 b, u32 c, u32 n) {
             if (c < e) {
                 if (e > c + n) cnt = n;
                 else cnt = d - (c - off);
-                ((LabelString *)((u8 *)s->lineLabels + i * 0x40))->setHighlight(a, b, c - off, cnt);
+                s->lineLabels[i].setHighlight(a, b, c - off, cnt);
                 c = (u8)e;
                 n -= cnt;
                 if (n == 0) return;
@@ -1637,18 +1611,16 @@ extern "C" void BbsWriteMenu_HighlightRange(S *s, u8 a, u8 b, u32 c, u32 n) {
 
 extern "C" void BbsWriteMenu_DrawLineLabels(S *s) {
     s32 i = 0;
-    u8 *p = (u8 *)s->lineLabels;
     s32 z = 0;
     for (; i < 6; i++) {
-        ((LabelString *)(p + i * 0x40))->redrawAligned(z, z);
+        s->lineLabels[i].redrawAligned(z, z);
     }
 }
 
 extern "C" void BbsWriteMenu_UpdateLineLabels(S *s) {
     s32 i = 0;
-    u8 *p = (u8 *)s->lineLabels;
     for (; i < 6; i++) {
-        ((LabelString *)(p + i * 0x40))->destroyLabel();
+        s->lineLabels[i].destroyLabel();
     }
 }
 
@@ -1728,7 +1700,7 @@ extern "C" void BbsWriteMenu_SetScrollFromKnob(S *s, s32 v) {
     BbsWriteMenu_SetScroll(s, v);
     d = s->lastTickScrollY - v;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&s->scrollKnob);
+        Menu_PlayScrollTickSe();
         s->lastTickScrollY = v;
     }
 }
@@ -1758,7 +1730,7 @@ extern "C" void BbsWriteMenu_ScrollByPad(S *s) {
     }
     if (r < 0) r = 0;
     if (r > 0x3c) r = 0x3c;
-    if (v != r) Menu_PlayScrollTickSe(&s->scrollKnob);
+    if (v != r) Menu_PlayScrollTickSe();
     BbsWriteMenu_SetScroll(s, r);
 }
 
@@ -1893,18 +1865,18 @@ s32 BbsWriteMenu::getLineOfIndex(s32 v) {
     return n;
 }
 
-BOOL BbsWriteMenu::navigateText(void *pad) {
+BOOL BbsWriteMenu::navigateText(u32 pad) {
     if (pad == 0) {
         return FALSE;
     }
     u8 cur = caretIndex;
     s32 t = getLineOfIndex(cur);
     volatile s32 old = t;
-    if (MenuKeys_HasUp((s32)pad)) {
+    if (MenuKeys_HasUp(pad)) {
         if (t > 1) {
             t--;
         }
-    } else if (MenuKeys_HasDown((s32)pad)) {
+    } else if (MenuKeys_HasDown(pad)) {
         t++;
         if (t > lastLine || t >= 6) {
             t--;
@@ -1914,11 +1886,11 @@ BOOL BbsWriteMenu::navigateText(void *pad) {
     if (t != old) {
         cur = BbsWriteMenu_HitTestLine((S *)this, t, &v);
     }
-    if (MenuKeys_HasLeft((s32)pad)) {
+    if (MenuKeys_HasLeft(pad)) {
         if (cur > headerLength) {
             cur = cur - 1;
         }
-    } else if (MenuKeys_HasRight((s32)pad)) {
+    } else if (MenuKeys_HasRight(pad)) {
         s32 n = Text_GetLength(text, 0xc0);
         s32 nx = cur + 1;
         if (nx <= n) {
@@ -2031,7 +2003,7 @@ void BbsWriteMenu::censorText() {
     censorString.fromEncoded(&encodedText, 0, 0);
     if (String_CensorTaboo(&censorString)) {
         encodedText.fromMsgString(&censorString);
-        StrBuf_GetBytes(&encodedText, c3, 0xc0);
+        StrBuf_GetBytes(reinterpret_cast<StrBuf *>(static_cast<EncodedStringBase *>(&encodedText)), c3, 0xc0); // StrBuf's interface
     }
 }
 
@@ -2085,7 +2057,7 @@ void BbsWriteMenu::endDialogDim() {
 
 void BbsWriteMenu::sendPostToPeers() {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        void *heap = gMenuHeap;
+        Heap *heap = (Heap *)gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xc1);
         buf[0] = 0;
         MI_CpuCopy8(text, &buf[1], 0xc0);

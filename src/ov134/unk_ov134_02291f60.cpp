@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "ui/ScrollKnob.h"
@@ -6,26 +5,8 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/DateTimePicker.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DateTimePicker_RedrawList  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DateTimePicker_SetDropButtonPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DateTimePicker_SetFieldPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02294d44  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02294d54  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02294d74  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02294db4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02294e84  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02294f44  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02295014  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02295034  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_022950d4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02295104  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov134_02295204  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "nitro/gxoam.h"
+#include "sys/ClockDateTime.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -33,6 +14,9 @@
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
+#include "proto/autoload_2/unk_020e7500.h"
+#include "proto/main/unk_0206e54c.h"
 #include "proto/ov134/unk_ov134_02291f60.h"
 
 
@@ -41,131 +25,36 @@
 
 
 
-typedef DateTimePicker S;
-
 extern "C" {
-void DateTimePicker_RedrawList(DateTimePicker *self);
-void DateTimePicker_SetDropButtonPalette(DateTimePicker *self, s32 a, s32 b);
-void DateTimePicker_SetFieldPalette(DateTimePicker *self, s32 idx, s32 x);
-s32 DateTimePicker_GrabHand(S *s, u32 a, u32 b);
-void DateTimePicker_Draw(S *s, u8 *a, u8 *b);
-void DateTimePicker_AddListNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g);
-void DateTimePicker_AddNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f);
-void DateTimePicker_AddPaddedNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g);
-void DateTimePicker_AddListHourText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f);
-void DateTimePicker_AddListDayText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f);
-void DateTimePicker_AddMonthText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f);
-void DateTimePicker_AddNamedTextAt(S *s, u32 a, u32 b, u32 c, const void *d, u32 e, u8 f, u8 g, s32 h, s32 i);
-void DateTimePicker_AddNamedText(S *s, u32 a, u32 b, u32 c, const void *d, u32 e, u8 f, u8 g);
-void DateTimePicker_AddMenuTextAt(S *s, u32 a, u32 b, u32 c, u8 d, u32 e);
-void DateTimePicker_AddMenuText(S *s, u32 a, u32 b, u32 c, u8 d, s32 e, u8 f, u8 g);
-void DateTimePicker_ReleaseLabels(S *s);
-void DateTimePicker_DrawPickedValue(S *s);
-void DateTimePicker_DrawMinute(S *s);
-void DateTimePicker_DrawHour(S *s);
-void *DateTimePicker_AllocLabel(S *s);
-void DateTimePicker_DrawDay(S *s);
-u32 DateTimePicker_GetDayStringId(S *s, u32 a);
-void DateTimePicker_DrawMonth(S *s);
-u32 DateTimePicker_GetMonthStringId(S *s, u32 a);
-void DateTimePicker_DrawYear(S *s);
-void DateTimePicker_SetField(S *s, u32 idx, u32 v);
-u32 DateTimePicker_GetFieldOf(S *s, u32 idx, u8 *p);
-u32 DateTimePicker_GetField(S *s, u32 idx);
-void DateTimePicker_DrawField(S *s, u32 idx);
-void DateTimePicker_DrawFields(S *s);
-void DateTimePicker_DrawWeekday(S *s);
-void DateTimePicker_LoadObjGraphics(S *s);
-void DateTimePicker_DrawTitleAndFields(S *s, u8 a);
-void DateTimePicker_LoadBgGraphics(S *s);
-BOOL DateTimePicker_IsBeforeStart(S *s);
-void DateTimePicker_GetDateTime(S *s, void *src);
-void DateTimePicker_EndFrame(S *s);
-void DateTimePicker_BeginFrame(S *s);
-void DateTimePicker_Shutdown(S *s);
-void DateTimePicker_EnableMinLimit(S *s);
-void DateTimePicker_Init(S *s, u32 a, u32 b, u32 c, u8 d);
-
+// not in the shared headers (include/proto/.excluded / SDK assembly)
 extern u16 gPad;
-extern s32 gCurrentHeap;
-void MIi_CpuCopy16(void *dst, void *src, u32 n);
-void MI_CpuCopy8(void *dst, void *src, u32 n);
+void MIi_CpuCopy16(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
-void BgScreen_SetRectPalette(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 Date_GetDaysInMonth(u32 a, u32 b);
+s32 Date_GetDaysInMonth(u32 y, u32 m);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
-void Math_StepS32(void *p, s32 a, s32 b);
-void DateTime_SubDays(void *p, s32 a);
-void DateTime_AddDays(void *p, s32 a);
-void DateTime_AddMinutes(void *p, s32 a);
-void DateTime_SubMinutes(void *p, s32 a);
-void DateTime_SubHours(void *p, s32 a);
-void DateTime_AddHours(void *p, s32 a);
-s32 DateTime_Compare(void *a, void *b, s32 c);
-s32 DateTime_DiffMinutes(void *a, void *b);
-void Clock_GetDateTime(void *p);
-s32 Math_Atan2(s32 a, s32 b);
-void Menu_PlayScrollGrabSe(void *p);
-void Menu_PlayScrollTickSe(void *p);
-void Oam_DrawObjRotated(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g, u32 h, s32 i);
-void Oam_DrawCell(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-extern "C" const u8 sFieldNameTextIds[6];
-extern "C" const u8 sFieldValueCounts[6];
-extern "C" const u8 sWeekdayTextIds[7];
-extern "C" const u8 sMonthStringIds[12];
-extern "C" const u32 sFieldTopDefault[6];
-extern "C" const u32 sFieldWidths[6];
-extern "C" const u32 sFieldLeftBirthday[6];
-extern "C" const u32 sFieldLeftDefault[6];
-extern "C" const u32 sFieldLeftTime[6];
-extern "C" const u32 sFieldTopBirthday[6];
-extern "C" const u32 sFieldTopTime[6];
-extern "C" char *sObjVariantFiles[1];
-extern "C" u32 data_ov134_02294d44[2];
-extern "C" u32 data_ov134_02294d4c[2];
-extern "C" u32 data_ov134_02294d54[4];
-extern "C" char *sBgPaletteFiles[4];
-extern "C" u32 data_ov134_02294d74[4];
-extern "C" u32 data_ov134_02294d84[4];
-extern "C" uptr sFieldScreenFiles[4];
-extern "C" u32 data_ov134_02294da4[4];
-extern "C" u32 data_ov134_02294db4[4];
-extern "C" u32 data_ov134_02294dc4[4];
-extern "C" char data_ov134_02294dd4[19];
-extern "C" char data_ov134_02294de8[19];
-extern "C" char data_ov134_02294dfc[19];
-extern "C" char data_ov134_02294e10[19];
-extern "C" char data_ov134_02294e24[22];
-extern "C" char data_ov134_02294e3c[22];
-extern "C" char data_ov134_02294e54[22];
-extern "C" char data_ov134_02294e6c[22];
-extern "C" u32 data_ov134_02294e84[6];
-extern "C" uptr data_ov134_02294e9c[6];
-extern "C" u32 data_ov134_02294eb4[6];
-extern "C" u32 data_ov134_02294ecc[6];
-extern "C" u32 data_ov134_02294ee4[6];
-extern "C" u32 data_ov134_02294efc[6];
-extern "C" uptr data_ov134_02294f14[6];
-extern "C" uptr data_ov134_02294f2c[6];
-extern "C" u32 data_ov134_02294f44[6];
-extern "C" uptr data_ov134_02294f5c[6];
-extern "C" char data_ov134_02294f74[30];
-extern "C" u32 data_ov134_02294f94[8];
-extern "C" u32 data_ov134_02294fb4[8];
-extern "C" u32 data_ov134_02294fd4[8];
-extern "C" u32 data_ov134_02294ff4[8];
-extern "C" u32 data_ov134_02295014[8];
-extern "C" u32 data_ov134_02295034[8];
-extern "C" u32 data_ov134_02295054[8];
-extern "C" u32 data_ov134_02295074[12];
-extern "C" u32 data_ov134_022950a4[12];
-extern "C" u32 data_ov134_022950d4[12];
-extern "C" u32 data_ov134_02295104[12];
-extern "C" u32 data_ov134_02295134[12];
-extern "C" u32 data_ov134_02295164[12];
-extern "C" u32 data_ov134_02295194[12];
-extern "C" u32 data_ov134_022951c4[16];
-extern "C" u32 data_ov134_02295204[28];
+void DateTime_SubDays(ClockDateTime *p, s32 n);
+void DateTime_AddDays(ClockDateTime *p, s32 n);
+void DateTime_AddMinutes(ClockDateTime *p, s32 n);
+void DateTime_SubMinutes(ClockDateTime *p, s32 n);
+void DateTime_SubHours(ClockDateTime *p, s32 n);
+void DateTime_AddHours(ClockDateTime *p, s32 n);
+s32 DateTime_Compare(ClockDateTime *a, ClockDateTime *b, u32 mask);
+s32 DateTime_DiffMinutes(ClockDateTime *a, ClockDateTime *b);
+void Clock_GetDateTime(ClockDateTime *p);
+
+// defined at the end of this file
+extern const u8 sFieldNameTextIds[6];
+extern const u8 sFieldValueCounts[6];
+extern const u8 sWeekdayTextIds[7];
+extern const u8 sMonthStringIds[12];
+extern const u32 sFieldTopDefault[6];
+extern const u32 sFieldWidths[6];
+extern const u32 sFieldLeftBirthday[6];
+extern const u32 sFieldLeftDefault[6];
+extern const u32 sFieldLeftTime[6];
+extern const u32 sFieldTopBirthday[6];
+extern const u32 sFieldTopTime[6];
 }
 
 static inline s32 Unk_ov134_02293510_Hi(DateTimePicker *self, s32 i, s32 off) { return DateTimePicker_GetFieldRight(self, i) + off; }
@@ -176,7 +65,7 @@ DateTimePicker::DateTimePicker() {
 DateTimePicker::~DateTimePicker() {
 }
 
-extern "C" void DateTimePicker_Init(S *s, u32 a, u32 b, u32 c, u8 d) {
+extern "C" void DateTimePicker_Init(DateTimePicker *s, u32 a, u32 b, u32 c, u8 d) {
     s->flags = 0;
     s->listKeyHoldCount = 0;
     s->mode = a;
@@ -216,32 +105,32 @@ extern "C" void DateTimePicker_Init(S *s, u32 a, u32 b, u32 c, u8 d) {
         break;
     }
     if (s->mode == 2) {
-        *(u32 *)&s->dateTime.b[0] = 0;
-        *(u32 *)&s->dateTime.b[4] = 0;
-        s->dateTime.b[5] = 1;
-        s->dateTime.b[4] = 1;
-        s->dateTime.b[3] = 1;
+        s->dateTime.words[0] = 0;
+        s->dateTime.words[1] = 0;
+        s->dateTime.dt.year = 1;
+        s->dateTime.dt.month = 1;
+        s->dateTime.dt.day = 1;
     } else {
-        Clock_GetDateTime(s->dateTime.b);
-        s->dateTime.b[0] = 0;
+        Clock_GetDateTime(&s->dateTime.dt);
+        s->dateTime.dt.second = 0;
         if (s->mode == 3) {
-            DateTime_AddDays(s->dateTime.b, 1);
+            DateTime_AddDays(&s->dateTime.dt, 1);
         }
-        MI_CpuCopy8(s->dateTime.b, s->minDateTime.b, 8);
-        MI_CpuCopy8(s->dateTime.b, s->maxDateTime.b, 8);
-        DateTime_AddHours(s->maxDateTime.b, 0xc);
-        s->minHour = s->minDateTime.b[2];
-        s->maxHour = s->maxDateTime.b[2];
-        s->minMinute = s->minDateTime.b[1];
+        MI_CpuCopy8(&s->dateTime.dt, &s->minDateTime.dt, 8);
+        MI_CpuCopy8(&s->dateTime.dt, &s->maxDateTime.dt, 8);
+        DateTime_AddHours(&s->maxDateTime.dt, 0xc);
+        s->minHour = s->minDateTime.dt.hour;
+        s->maxHour = s->maxDateTime.dt.hour;
+        s->minMinute = s->minDateTime.dt.minute;
         DateTimePicker_SyncHands(s);
     }
 }
 
-extern "C" void DateTimePicker_EnableMinLimit(S *s) {
+extern "C" void DateTimePicker_EnableMinLimit(DateTimePicker *s) {
     s->setFlags(0x80);
 }
 
-extern "C" void DateTimePicker_Shutdown(S *s) {
+extern "C" void DateTimePicker_Shutdown(DateTimePicker *s) {
     DateTimePicker_ReleaseLabels(s);
     Gfx2d_HideLayer(s->listLayer);
     s->fieldScreenTask.cancel();
@@ -249,7 +138,7 @@ extern "C" void DateTimePicker_Shutdown(S *s) {
     s->listPaletteTask.cancel();
 }
 
-extern "C" void DateTimePicker_BeginFrame(S *s) {
+extern "C" void DateTimePicker_BeginFrame(DateTimePicker *s) {
     DateTimePicker_ReleaseLabels(s);
     s->fieldScreenTask.cancel();
     s->listScreenTask.cancel();
@@ -258,7 +147,7 @@ extern "C" void DateTimePicker_BeginFrame(S *s) {
     s->knob.update();
 }
 
-extern "C" void DateTimePicker_EndFrame(S *s) {
+extern "C" void DateTimePicker_EndFrame(DateTimePicker *s) {
     s->stepListScroll();
     s->knob.updateRelease();
     if (s->testFlags(2)) {
@@ -283,36 +172,36 @@ extern "C" void DateTimePicker_EndFrame(S *s) {
     }
 }
 
-extern "C" void DateTimePicker_GetDateTime(S *s, void *src) {
-    MI_CpuCopy8(s->dateTime.b, src, 8);
+extern "C" void DateTimePicker_GetDateTime(DateTimePicker *s, ClockDateTime *out) {
+    MI_CpuCopy8(&s->dateTime.dt, out, 8);
 }
 
-extern "C" BOOL DateTimePicker_IsBeforeStart(S *s) {
-    if (DateTime_Compare(s->minDateTime.b, s->dateTime.b, 0x3f) == 1) {
+extern "C" BOOL DateTimePicker_IsBeforeStart(DateTimePicker *s) {
+    if (DateTime_Compare(&s->minDateTime.dt, &s->dateTime.dt, 0x3f) == 1) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void DateTimePicker_LoadBgGraphics(S *s) {
-    void *h = gCurrentHeap;
+extern "C" void DateTimePicker_LoadBgGraphics(DateTimePicker *s) {
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/clock/b_tim_bg.bch", h, s->mainLayer, 0x10, 0x10, 0x80);
     Gfx2d_LoadPaletteFile("menu/clock/b_tim_bg.bpl", h, s->mainLayer, 1, 1, 10);
     Gfx2d_LoadPaletteFile(sBgPaletteFiles[s->mode], h, s->mainLayer, 1, 1, 2);
     Gfx2d_LoadScreenFile("menu/clock/bga.bsc", h, s->mainLayer);
-    File_LoadToBuffer((const void *)sFieldScreenFiles[s->mode], s->fieldScreen, 0x800);
+    File_LoadToBuffer(sFieldScreenFiles[s->mode], s->fieldScreen, 0x800);
     DateTimePicker_ResetFieldPalettes(s);
     File_LoadToBuffer("menu/clock/b_tim_b1_bg.bsc", s->listScreenBase, 0x800);
     File_LoadToBuffer("menu/clock/b_tim_bg_9.bpl", s->listPalette, 0x20);
 }
 
-extern "C" void DateTimePicker_DrawTitleAndFields(S *s, u8 a) {
+extern "C" void DateTimePicker_DrawTitleAndFields(DateTimePicker *s, u8 a) {
     DateTimePicker_DrawFields(s);
     DateTimePicker_AddMenuText(s, s->mainLayer, 0x54, 0x10, a, 1, 0xf, 0xe);
 }
 
-extern "C" void DateTimePicker_LoadObjGraphics(S *s) {
-    void *h = gCurrentHeap;
+extern "C" void DateTimePicker_LoadObjGraphics(DateTimePicker *s) {
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/clock/b_tim_obj.bpl", h, 8, 4, 4, 10);
     Gfx2d_LoadCharFile("menu/clock/b_tim_obj.bch", h, 8, 0xc0, 0xc0, 0x1df);
     u32 v = s->objVariant;
@@ -331,12 +220,12 @@ extern "C" void DateTimePicker_LoadObjGraphics(S *s) {
     Gfx2d_LoadPaletteFileSlot("menu/clock/b_tim_ten0_obj.bpl", h, 8, s->objVariant, 4);
 }
 
-extern "C" void DateTimePicker_DrawWeekday(S *s) {
-    s32 i = Date_GetWeekday(s->dateTime.b[5], s->dateTime.b[4], s->dateTime.b[3]);
+extern "C" void DateTimePicker_DrawWeekday(DateTimePicker *s) {
+    s32 i = Date_GetWeekday(s->dateTime.dt.year, s->dateTime.dt.month, s->dateTime.dt.day);
     DateTimePicker_AddMenuText(s, s->fieldLayer, 0x1a8, 7, sWeekdayTextIds[i], 1, 0xf, 0);
 }
 
-extern "C" void DateTimePicker_DrawFields(S *s) {
+extern "C" void DateTimePicker_DrawFields(DateTimePicker *s) {
     DateTimePicker_DrawYear(s);
     DateTimePicker_DrawMonth(s);
     DateTimePicker_DrawDay(s);
@@ -345,7 +234,7 @@ extern "C" void DateTimePicker_DrawFields(S *s) {
     DateTimePicker_DrawWeekday(s);
 }
 
-extern "C" void DateTimePicker_DrawField(S *s, u32 idx) {
+extern "C" void DateTimePicker_DrawField(DateTimePicker *s, u32 idx) {
     switch (idx) {
     case 0:
         DateTimePicker_DrawYear(s);
@@ -368,74 +257,74 @@ extern "C" void DateTimePicker_DrawField(S *s, u32 idx) {
     }
 }
 
-extern "C" u32 DateTimePicker_GetField(S *s, u32 idx) {
-    return DateTimePicker_GetFieldOf(s, idx, s->dateTime.b);
+extern "C" u32 DateTimePicker_GetField(DateTimePicker *s, u32 idx) {
+    return DateTimePicker_GetFieldOf(s, idx, &s->dateTime.dt);
 }
 
-extern "C" u32 DateTimePicker_GetFieldOf(S *s, u32 idx, u8 *p) {
+extern "C" u32 DateTimePicker_GetFieldOf(DateTimePicker *s, u32 idx, ClockDateTime *p) {
     switch (idx) {
     case 0:
-        return p[5];
+        return p->year;
     case 1:
-        return p[4];
+        return p->month;
     case 2:
-        return p[3];
+        return p->day;
     case 3:
-        return p[2];
+        return p->hour;
     case 4:
-        return p[1];
+        return p->minute;
     case 5:
         return 0;
     }
     return 0xff;
 }
 
-extern "C" void DateTimePicker_SetField(S *s, u32 idx, u32 v) {
+extern "C" void DateTimePicker_SetField(DateTimePicker *s, u32 idx, u32 v) {
     switch (idx) {
     case 0:
-        s->dateTime.b[5] = v;
+        s->dateTime.dt.year = v;
         break;
     case 1:
-        s->dateTime.b[4] = v + 1;
+        s->dateTime.dt.month = v + 1;
         break;
     case 2:
-        s->dateTime.b[3] = v + 1;
+        s->dateTime.dt.day = v + 1;
         break;
     case 3:
-        s->dateTime.b[2] = v;
+        s->dateTime.dt.hour = v;
         break;
     case 4:
-        s->dateTime.b[1] = v;
+        s->dateTime.dt.minute = v;
         break;
     case 5:
         break;
     }
 }
 
-extern "C" void DateTimePicker_DrawYear(S *s) {
-    DateTimePicker_AddNumberText(s, s->fieldLayer, 0x180, 4, 0x7d0 + s->dateTime.b[5], 0xf, 0);
+extern "C" void DateTimePicker_DrawYear(DateTimePicker *s) {
+    DateTimePicker_AddNumberText(s, s->fieldLayer, 0x180, 4, 0x7d0 + s->dateTime.dt.year, 0xf, 0);
 }
 
-extern "C" u32 DateTimePicker_GetMonthStringId(S *s, u32 a) {
+extern "C" u32 DateTimePicker_GetMonthStringId(DateTimePicker *s, u32 a) {
     return sMonthStringIds[a - 1];
 }
 
-extern "C" void DateTimePicker_DrawMonth(S *s) {
-    u32 r = DateTimePicker_GetMonthStringId(s, s->dateTime.b[4]);
+extern "C" void DateTimePicker_DrawMonth(DateTimePicker *s) {
+    u32 r = DateTimePicker_GetMonthStringId(s, s->dateTime.dt.month);
     DateTimePicker_AddNamedText(s, s->fieldLayer, 0x18e, 8, "st_day_month", r, 0xf, 0);
 }
 
-extern "C" u32 DateTimePicker_GetDayStringId(S *s, u32 a) {
+extern "C" u32 DateTimePicker_GetDayStringId(DateTimePicker *s, u32 a) {
     return (u8)(a + 0xc);
 }
 
-extern "C" void DateTimePicker_DrawDay(S *s) {
-    u32 r = DateTimePicker_GetDayStringId(s, s->dateTime.b[3]);
+extern "C" void DateTimePicker_DrawDay(DateTimePicker *s) {
+    u32 r = DateTimePicker_GetDayStringId(s, s->dateTime.dt.day);
     DateTimePicker_AddNamedText(s, s->fieldLayer, 0x19e, 5, "st_day_month", r, 0xf, 0);
 }
 
-extern "C" void DateTimePicker_DrawHour(S *s) {
-    u32 r4 = *(HOST_AT(s, 0xba, dateTime.b[2], 0));
+extern "C" void DateTimePicker_DrawHour(DateTimePicker *s) {
+    u32 r4 = s->dateTime.dt.hour;
     u32 r1 = 0x37;
     if ((s32)r4 >= 0xc) {
         r1 = 0x38;
@@ -450,11 +339,11 @@ extern "C" void DateTimePicker_DrawHour(S *s) {
     DateTimePicker_AddNumberText(s, s->fieldLayer, 0x1b6, 6, r4, 0xf, 0);
 }
 
-extern "C" void DateTimePicker_DrawMinute(S *s) {
-    DateTimePicker_AddPaddedNumberText(s, s->fieldLayer, 0x1c2, 6, *(HOST_AT(s, 0xb9, dateTime.b[1], 0)), 0, 0xf, 0);
+extern "C" void DateTimePicker_DrawMinute(DateTimePicker *s) {
+    DateTimePicker_AddPaddedNumberText(s, s->fieldLayer, 0x1c2, 6, s->dateTime.dt.minute, 0, 0xf, 0);
 }
 
-extern "C" void DateTimePicker_DrawPickedValue(S *s) {
+extern "C" void DateTimePicker_DrawPickedValue(DateTimePicker *s) {
     u32 r5 = DateTimePicker_GetFieldWidth(s, s->listField);
     u32 r1 = s->pickedRow;
     u32 r2 = s->listField;
@@ -487,70 +376,70 @@ extern "C" void DateTimePicker_DrawPickedValue(S *s) {
     }
 }
 
-extern "C" void DateTimePicker_ReleaseLabels(S *s) {
+extern "C" void DateTimePicker_ReleaseLabels(DateTimePicker *s) {
     s32 i;
     s->labelCount = 0;
     for (i = 0; i < 0x11; i++) {
-        ((LabelString *)(HOST_AT(s, 0xd8, labels[0], 0)))[i].destroyLabel();
+        s->labels[i].destroyLabel();
     }
 }
 
-extern "C" void *DateTimePicker_AllocLabel(S *s) {
-    if (*(volatile u8 *)&s->labelCount >= 0x11) {
-        return HOST_AT(s, 0x4d8, labels[16], 0);
+extern "C" LabelString *DateTimePicker_AllocLabel(DateTimePicker *s) {
+    if (s->labelCount >= 0x11) {
+        return &s->labels[16];
     }
     s->labelCount = s->labelCount + 1;
-    return HOST_AT(s, 0xd8, labels[0], 0) + (s->labelCount - 1) * 0x40;
+    return &s->labels[s->labelCount - 1];
 }
 
-extern "C" void DateTimePicker_AddMenuText(S *s, u32 a, u32 b, u32 c, u8 d, s32 e, u8 f, u8 g) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddMenuText(DateTimePicker *s, u32 a, u32 b, u32 c, u8 d, s32 e, u8 f, u8 g) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_Load2dMenu(p, d);
     p->createLabel(a, b, c, f, g, 0);
     p->redrawAligned(e, 0);
 }
 
-extern "C" void DateTimePicker_AddMenuTextAt(S *s, u32 a, u32 b, u32 c, u8 d, u32 e) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddMenuTextAt(DateTimePicker *s, u32 a, u32 b, u32 c, u8 d, u32 e) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_Load2dMenu(p, d);
     p->createLabel(a, b, c, 0xf, 0, 0);
     p->redrawOffset(1, -((c - e) * 4));
 }
 
-extern "C" void DateTimePicker_AddNamedText(S *s, u32 a, u32 b, u32 c, const void *d, u32 e, u8 f, u8 g) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddNamedText(DateTimePicker *s, u32 a, u32 b, u32 c, const char *d, u32 e, u8 f, u8 g) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_LoadByIndex(p, d, e);
     p->createLabel(a, b, c, f, g, 0);
     p->redrawAligned(1, 0);
 }
 
-extern "C" void DateTimePicker_AddNamedTextAt(S *s, u32 a, u32 b, u32 c, const void *d, u32 e, u8 f, u8 g, s32 h, s32 i) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddNamedTextAt(DateTimePicker *s, u32 a, u32 b, u32 c, const char *d, u32 e, u8 f, u8 g, s32 h, s32 i) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_LoadByIndex(p, d, e);
     p->createLabel(a, b, c, f, g, 0);
     p->redrawOffset(h, i);
 }
 
-extern "C" void DateTimePicker_AddMonthText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
+extern "C" void DateTimePicker_AddMonthText(DateTimePicker *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
     DateTimePicker_AddNamedText(s, a, b, c, "st_day_month", DateTimePicker_GetMonthStringId(s, d), e, f);
 }
 
-extern "C" void DateTimePicker_AddListDayText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddListDayText(DateTimePicker *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_LoadByIndex(p, "st_day_month", DateTimePicker_GetDayStringId(s, d));
     p->createLabel(a, b, c, e, f, 0);
     p->redrawOffset(1, (c - 5) * 4);
 }
 
-extern "C" void DateTimePicker_AddListHourText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddListHourText(DateTimePicker *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_LoadByIndex(p, "st_general", d + 0x1e);
     p->createLabel(a, b, c, e, f, 0);
     p->redrawOffset(0, (c - 6) * 8 + 6);
 }
 
-extern "C" void DateTimePicker_AddPaddedNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddPaddedNumberText(DateTimePicker *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_FormatNumberWrapper(p, d, 2, 6, 0, 0);
     p->createLabel(a, b, c, f, g, 0);
     if (e != 0) {
@@ -560,31 +449,31 @@ extern "C" void DateTimePicker_AddPaddedNumberText(S *s, u32 a, u32 b, u32 c, u3
     }
 }
 
-extern "C" void DateTimePicker_AddNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddNumberText(DateTimePicker *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_FormatNumberWrapper(p, d, 4, 0, 0, 0);
     p->createLabel(a, b, c, e, f, 0);
     p->redrawAligned(1, 0);
 }
 
-extern "C" void DateTimePicker_AddListNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g) {
-    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+extern "C" void DateTimePicker_AddListNumberText(DateTimePicker *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g) {
+    LabelString *p = DateTimePicker_AllocLabel(s);
     String_FormatNumberWrapper(p, d, 4, 0, 0, 0);
     p->createLabel(a, b, c, f, g, 0);
     p->redrawOffset(1, (c - e) * 4);
 }
 
-extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {
-    u8 *r6 = a + 0x80;
-    u8 *r7 = b + 0x60;
+extern "C" void DateTimePicker_Draw(DateTimePicker *s, s32 a, s32 b) {
+    s32 r6 = a + 0x80;
+    s32 r7 = b + 0x60;
     if (s->objVariant == 0) {
-        void *p = a + 0x38;
-        u8 *q = b + 0x34;
+        s32 p = a + 0x38;
+        s32 q = b + 0x34;
         Oam_DrawObj(1, data_ov134_02294e84, p, q, -1, 2, 0);
-        Oam_DrawObjRotated(1, data_ov134_02294e84 + 2, p, q, -1, 2, 0x1000, s->minuteHandAngle, 0);
-        Oam_DrawObjRotated(1, data_ov134_02294e84 + 4, p, q, -1, 2, 0x1000, s->hourHandAngle, 0);
+        Oam_DrawObjRotated(1, &data_ov134_02294e84[1], p, q, -1, 2, 0x1000, s->minuteHandAngle, 0);
+        Oam_DrawObjRotated(1, &data_ov134_02294e84[2], p, q, -1, 2, 0x1000, s->hourHandAngle, 0);
     }
-    Oam_DrawCell(1, data_ov134_02294d44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov134_02294d44, r6, r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     if (s->testFlags(4)) {
         s->knob.draw();
     }
@@ -593,25 +482,25 @@ extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {
         Oam_DrawCell(1, s->listTopCell, s->listX - 8, s->windowTop, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     if (s->listBottomCell != 0) {
-        Oam_DrawCell(1, (void *)s->listBottomCell, s->listX - 8, s->windowBottom, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, s->listBottomCell, s->listX - 8, s->windowBottom, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     if (s->pickedRowCell != 0) {
-        Oam_DrawCell(1, (void *)s->pickedRowCell, s->listX, s->pickedRowY, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, s->pickedRowCell, s->listX, s->pickedRowY, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     switch (s->mode) {
     case 0:
-        Oam_DrawCell(1, data_ov134_02294db4, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294db4, r6, r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     case 3: {
         s32 i;
-        Oam_DrawCell(1, data_ov134_02294f44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294f44, r6, r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         for (i = 0; i < 5; i++) {
             if (s->mode == 3) {
                 if (i == 3) continue;
                 if (i == 4) continue;
             }
-            Oam_DrawCell(1, (const void *)data_ov134_02294e9c[i], r6, (u32)r7, i == s->cursorField ? 7 : -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, data_ov134_02294e9c[i], r6, r7, i == s->cursorField ? 7 : -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
-        Oam_DrawCell(1, (const void *)data_ov134_02294e9c[5], r6, (u32)r7, s->testFlags(8) ? 10 : 9, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294e9c[5], r6, r7, s->testFlags(8) ? 10 : 9, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     }
     case 2: {
@@ -627,15 +516,15 @@ extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {
             v1 = 6;
             v2 = 6;
         }
-        Oam_DrawCell(1, data_ov134_02295104, r6, (u32)r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, data_ov134_02295034, r6, (u32)r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295104, r6, r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295034, r6, r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     }
     case 1: {
         s32 v1, v2;
         u32 b1;
-        Oam_DrawCell(1, data_ov134_02294d54, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, data_ov134_02295204, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294d54, r6, r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295204, r6, r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         b1 = s->cursorField;
         if (b1 == 3) {
             v1 = 7;
@@ -647,14 +536,14 @@ extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {
             v1 = 6;
             v2 = 6;
         }
-        Oam_DrawCell(1, data_ov134_022950d4, r6, (u32)r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, data_ov134_02295014, r6, (u32)r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_022950d4, r6, r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295014, r6, r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     }
     }
 }
 
-extern "C" s32 DateTimePicker_GrabHand(S *s, u32 a, u32 b) {
+extern "C" s32 DateTimePicker_GrabHand(DateTimePicker *s, u32 a, u32 b) {
     s32 r6, r0;
     s32 r4;
     if (!DateTimePicker_IsInClockFace(s, a, b, 0x28)) {
@@ -677,7 +566,7 @@ extern "C" s32 DateTimePicker_GrabHand(S *s, u32 a, u32 b) {
     }
     if (r4) {
         DateTimePicker_SetCursorField(s, 6);
-        MI_CpuCopy8(s->dateTime.b, HOST_AT(s, 0xc0, dragDateTime.b[0], 0), 8);
+        MI_CpuCopy8(&s->dateTime.dt, &s->dragDateTime.dt, 8);
         s->clearFlags(0x30);
         return TRUE;
     }
@@ -762,7 +651,7 @@ extern "C" void DateTimePicker_SetHands(DateTimePicker *self, u8 a, u8 b) {
 }
 
 extern "C" void DateTimePicker_SyncHands(DateTimePicker *self) {
-    DateTimePicker_SetHands(self, self->dateTime.b[2], self->dateTime.b[1]);
+    DateTimePicker_SetHands(self, self->dateTime.dt.hour, self->dateTime.dt.minute);
 }
 
 extern "C" void DateTimePicker_SetHandsFromMinutes(DateTimePicker *self) {
@@ -811,25 +700,25 @@ extern "C" void DateTimePicker_AddMinutes(DateTimePicker *self, s32 delta) {
     s32 i;
     BOOL r;
     s32 v;
-    u8 *pc;
+    ClockDateTime *pc;
     if (delta == 0) return;
     for (i = 0; i <= 4; i++) {
         buf[i] = DateTimePicker_GetField(self, i);
     }
     buf[5] = 0;
     if (delta > 0) {
-        DateTime_AddMinutes(self->dragDateTime.b, delta);
+        DateTime_AddMinutes(&self->dragDateTime.dt, delta);
     } else {
-        DateTime_SubMinutes(self->dragDateTime.b, -delta);
+        DateTime_SubMinutes(&self->dragDateTime.dt, -delta);
     }
     r = TRUE;
     if (self->testFlags(0x40)) {
-        if (DateTime_Compare(self->maxDateTime.b, self->dragDateTime.b, 0x3f) == -1) {
-            v = DateTime_DiffMinutes(self->maxDateTime.b, self->dragDateTime.b);
+        if (DateTime_Compare(&self->maxDateTime.dt, &self->dragDateTime.dt, 0x3f) == -1) {
+            v = DateTime_DiffMinutes(&self->maxDateTime.dt, &self->dragDateTime.dt);
             r = FALSE;
-            MI_CpuCopy8(self->maxDateTime.b, self->dateTime.b, 8);
+            MI_CpuCopy8(&self->maxDateTime.dt, &self->dateTime.dt, 8);
             self->setFlags(0x10);
-            pc = self->dragDateTime.b;
+            pc = &self->dragDateTime.dt;
             while (v >= 0x2d0) {
                 DateTime_SubHours(pc, 0xc);
                 v -= 0x2d0;
@@ -839,12 +728,12 @@ extern "C" void DateTimePicker_AddMinutes(DateTimePicker *self, s32 delta) {
         }
     }
     if (self->testFlags(0x80)) {
-        if (DateTime_Compare(self->minDateTime.b, self->dragDateTime.b, 0x3f) == 1) {
-            v = DateTime_DiffMinutes(self->dragDateTime.b, self->minDateTime.b);
+        if (DateTime_Compare(&self->minDateTime.dt, &self->dragDateTime.dt, 0x3f) == 1) {
+            v = DateTime_DiffMinutes(&self->dragDateTime.dt, &self->minDateTime.dt);
             r = FALSE;
-            MI_CpuCopy8(self->minDateTime.b, self->dateTime.b, 8);
+            MI_CpuCopy8(&self->minDateTime.dt, &self->dateTime.dt, 8);
             self->setFlags(0x20);
-            pc = self->dragDateTime.b;
+            pc = &self->dragDateTime.dt;
             while (v >= 0x2d0) {
                 DateTime_AddHours(pc, 0xc);
                 v -= 0x2d0;
@@ -854,10 +743,10 @@ extern "C" void DateTimePicker_AddMinutes(DateTimePicker *self, s32 delta) {
         }
     }
     if (r) {
-        MI_CpuCopy8(self->dragDateTime.b, self->dateTime.b, 8);
+        MI_CpuCopy8(&self->dragDateTime.dt, &self->dateTime.dt, 8);
         DateTimePicker_SyncHands(self);
     } else {
-        DateTimePicker_SetHands(self, self->dragDateTime.b[2], self->dragDateTime.b[1]);
+        DateTimePicker_SetHands(self, self->dragDateTime.dt.hour, self->dragDateTime.dt.minute);
     }
     for (i = 0; i <= 4; i++) {
         if (buf[i] != DateTimePicker_GetField(self, i)) {
@@ -1001,7 +890,7 @@ extern "C" void DateTimePicker_SetFieldPalette(DateTimePicker *self, s32 idx, s3
         if (idx != 1 && idx != 2) return;
     }
     if (idx == 5 && x == 3) {
-        if (Date_GetWeekday(self->dateTime.b[5], self->dateTime.b[4], self->dateTime.b[3]) == 0) {
+        if (Date_GetWeekday(self->dateTime.dt.year, self->dateTime.dt.month, self->dateTime.dt.day) == 0) {
             x = 8;
             self->setFlags(x);
         } else {
@@ -1104,21 +993,21 @@ extern "C" void DateTimePicker_OpenList(DateTimePicker *self, s32 idx) {
     MIi_CpuCopy16(self->listScreenBase, self->listScreenWork, 0x800);
     h = DateTimePicker_GetFieldWidth(self, idx);
     lim = 8 - h;
-    row = (u16 *)self->listScreenWork;
+    row = self->listScreenWork;
     i = 0;
-    off = ((lim - 1) & 0x1f) << 1;
+    off = (lim - 1) & 0x1f;
     z = 0;
     for (; i < 0x20; row += 0x20, i++) {
         for (j = z; j < lim; j++) {
             row[j] = 0x10;
         }
-        *(u16 *)(off + (u32)row) = 0x3079;
+        row[off] = 0x3079;
     }
     self->listOffsetX = (self->listFieldLeft - lim) << 3;
     self->listTop = 0x28;
     self->listCount = sFieldValueCounts[idx];
     if (idx == 2) {
-        self->listCount = Date_GetDaysInMonth(self->dateTime.b[5], self->dateTime.b[4]);
+        self->listCount = Date_GetDaysInMonth(self->dateTime.dt.year, self->dateTime.dt.month);
     }
     self->scrollMax = (self->listCount - 8) << 4;
     for (i = 0; i < 0x10; i++) {
@@ -1139,12 +1028,12 @@ extern "C" void DateTimePicker_OpenList(DateTimePicker *self, s32 idx) {
     }
     self->syncKnobToScroll();
     DateTimePicker_SetCursorField(self, (u8)idx);
-    self->listX = (u8 *)(DateTimePicker_GetFieldLeft(self, self->listField) << 3);
+    self->listX = DateTimePicker_GetFieldLeft(self, self->listField) << 3;
     self->listFieldBottomY = DateTimePicker_GetFieldBottom(self, idx) << 3;
     self->windowTop = self->listFieldBottomY - 8;
     self->windowBottom = self->listFieldBottomY + 8;
     DateTimePicker_AddMenuTextAt(self, 8, 0x1aa, 8, sFieldNameTextIds[idx], h + 1);
-    self->listTopCell = (void *)data_ov134_02294f14[idx];
+    self->listTopCell = data_ov134_02294f14[idx];
     self->listBottomCell = data_ov134_02294f2c[idx];
     self->listAnimTimer = 3;
     Gfx2d_DisableSubWindows(1);
@@ -1353,7 +1242,7 @@ extern "C" void DateTimePicker_RedrawList(DateTimePicker *self) {
     lim = 8 - DateTimePicker_GetFieldWidth(self, self->listField);
     if (dx > 0) {
         i = (16 - ((dx + 15) >> 4)) * 2;
-        row = (u16 *)(self->listScreen + (i << 6));
+        row = &self->listScreen[i << 5];
         for (; i < 0x20; row += 0x20, i++) {
             for (j = lim; j < 8; j++) {
                 row[j] = 0x3074;
@@ -1412,7 +1301,7 @@ extern "C" void DateTimePicker_RedrawList(DateTimePicker *self) {
         n = ((0xcf - t) >> 4) << 1;
         yb = (ac << 1) & 0x1f;
         for (ib = 0; ib < n; ib++) {
-            rowb = (u16 *)(self->listScreen + (yb << 6));
+            rowb = &self->listScreen[yb << 5];
             for (jb = lim; jb < 8; jb++) {
                 rowb[jb] = 0x3074;
             }
@@ -1426,7 +1315,7 @@ extern "C" void DateTimePicker_RedrawList(DateTimePicker *self) {
         s32 j2;
         y = ((self->listScroll - self->listTop + 0x20) & 0xff) >> 3;
         for (i2 = 0; i2 < 5; i2++) {
-            row2 = (u16 *)(self->listScreen + (y << 6));
+            row2 = &self->listScreen[y << 5];
             for (j2 = 0; j2 < 10; j2++) {
                 row2[j2] = 0x10;
             }
@@ -1441,7 +1330,7 @@ extern "C" void DateTimePicker_RedrawList(DateTimePicker *self) {
         s32 j2;
         y = ((self->listScroll - self->listTop + 0xb0) & 0xff) >> 3;
         for (i2 = 0; i2 < 3; i2++) {
-            row2 = (u16 *)(self->listScreen + (y << 6));
+            row2 = &self->listScreen[y << 5];
             for (j2 = 0; j2 < 10; j2++) {
                 row2[j2] = 0x10;
             }
@@ -1487,9 +1376,9 @@ BOOL DateTimePicker::applyPickedValue() {
     u32 cur = DateTimePicker_GetField(this, listField);
     DateTimePicker_SetField(this, listField, pickedRow);
     m |= 1 << listField;
-    s32 r = Date_GetDaysInMonth(dateTime.b[5], dateTime.b[4]);
-    if (r < dateTime.b[3]) {
-        dateTime.b[3] = r;
+    s32 r = Date_GetDaysInMonth(dateTime.dt.year, dateTime.dt.month);
+    if (r < dateTime.dt.day) {
+        dateTime.dt.day = r;
         m |= 4;
     }
     if (listField <= 2) {
@@ -1501,12 +1390,12 @@ BOOL DateTimePicker::applyPickedValue() {
         u8 lo = minHour;
         if (cur < lo) {
             if (pickedRow >= lo) {
-                DateTime_SubDays(dateTime.b, 1);
+                DateTime_SubDays(&dateTime.dt, 1);
                 dir = -1;
             }
         } else {
             if (pickedRow < lo) {
-                DateTime_AddDays(dateTime.b, 1);
+                DateTime_AddDays(&dateTime.dt, 1);
                 dir = 1;
             }
         }
@@ -1515,14 +1404,14 @@ BOOL DateTimePicker::applyPickedValue() {
         }
     }
     if (testFlags(0x80)) {
-        if (DateTime_Compare(minDateTime.b, dateTime.b, 0x3f) == 1) {
-            MI_CpuCopy8(minDateTime.b, dateTime.b, 8);
+        if (DateTime_Compare(&minDateTime.dt, &dateTime.dt, 0x3f) == 1) {
+            MI_CpuCopy8(&minDateTime.dt, &dateTime.dt, 8);
             m = 0xffff;
         }
     }
     if (testFlags(0x40)) {
-        if (DateTime_Compare(maxDateTime.b, dateTime.b, 0x3f) == -1) {
-            MI_CpuCopy8(maxDateTime.b, dateTime.b, 8);
+        if (DateTime_Compare(&maxDateTime.dt, &dateTime.dt, 0x3f) == -1) {
+            MI_CpuCopy8(&maxDateTime.dt, &dateTime.dt, 8);
             m = 0xffff;
         }
     }
@@ -1549,11 +1438,11 @@ BOOL DateTimePicker::isAboveMaximum(s32 v, u8 n) {
     u8 i;
     for (i = 0; i < n; i++) {
         u32 a = DateTimePicker_GetField(this, i);
-        if (a != DateTimePicker_GetFieldOf(this, i, maxDateTime.b)) {
+        if (a != DateTimePicker_GetFieldOf(this, i, &maxDateTime.dt)) {
             return FALSE;
         }
     }
-    if (v > (s32)DateTimePicker_GetFieldOf(this, n, maxDateTime.b)) {
+    if (v > (s32)DateTimePicker_GetFieldOf(this, n, &maxDateTime.dt)) {
         return TRUE;
     }
     return FALSE;
@@ -1563,11 +1452,11 @@ BOOL DateTimePicker::isBelowMinimum(s32 v, u8 n) {
     u8 i;
     for (i = 0; i < n; i++) {
         u32 a = DateTimePicker_GetField(this, i);
-        if (a != DateTimePicker_GetFieldOf(this, i, minDateTime.b)) {
+        if (a != DateTimePicker_GetFieldOf(this, i, &minDateTime.dt)) {
             return FALSE;
         }
     }
-    if (v < (s32)DateTimePicker_GetFieldOf(this, n, minDateTime.b)) {
+    if (v < (s32)DateTimePicker_GetFieldOf(this, n, &minDateTime.dt)) {
         return TRUE;
     }
     return FALSE;
@@ -1618,7 +1507,7 @@ BOOL DateTimePicker::grabKnobAt(s32 x, s32 y) {
 BOOL DateTimePicker::grabKnobByCursor() {
     if (listCursorRow == 0) {
         knob.grab();
-        Menu_PlayScrollGrabSe(&knob);
+        Menu_PlayScrollGrabSe();
         return TRUE;
     }
     return FALSE;
@@ -1629,7 +1518,7 @@ void DateTimePicker::onKnobMoved() {
     placeKnob();
     s32 t = knobLastTickY - knobY;
     if (t >= 4 || t <= -4) {
-        Menu_PlayScrollTickSe(&knob);
+        Menu_PlayScrollTickSe();
         knobLastTickY = knobY;
     }
 }
@@ -1674,7 +1563,7 @@ void DateTimePicker::moveKnobByPad() {
     if (old != knobY) {
         syncScrollToKnob();
         placeKnob();
-        Menu_PlayScrollTickSe(&knob);
+        Menu_PlayScrollTickSe();
     }
 }
 
@@ -1818,8 +1707,8 @@ BOOL DateTimePicker::pickListCursorRow() {
 }
 
 BOOL DateTimePicker::moveListCursorUp() {
-    if (*(volatile u8 *)&listCursorRow > 1) {
-        listCursorRow = *(volatile u8 *)&listCursorRow - 1;
+    if (listCursorRow > 1) {
+        listCursorRow = listCursorRow - 1;
         s32 t = getListCursorY();
         if (t < 0x30) {
             pendingScroll = pendingScroll - (0x30 - t);
@@ -1830,8 +1719,8 @@ BOOL DateTimePicker::moveListCursorUp() {
 }
 
 BOOL DateTimePicker::moveListCursorDown() {
-    if ((s32)*(volatile u8 *)&listCursorRow < (s32)*(volatile u8 *)&listCount) {
-        listCursorRow = *(volatile u8 *)&listCursorRow + 1;
+    if ((s32)listCursorRow < (s32)listCount) {
+        listCursorRow = listCursorRow + 1;
         s32 t = getListCursorY();
         if (t > 0xa0) {
             pendingScroll = pendingScroll + (t - 0xa0);
@@ -1886,19 +1775,18 @@ void DateTimePicker::stepListScroll() {
 }
 
 void DateTimePicker::blendListPalette(s32 t) {
-    u8 *p = (u8 *)this;
-    MIi_CpuCopy16(HOST_AT_A(p, DateTimePicker, 0x2584, listPalette[0], 0), HOST_AT_A(p, DateTimePicker, 0x25a4, listPaletteWork[0], 0), 0x20);
-    s32 c1 = *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25a0, listPalette[28], 0));
+    MIi_CpuCopy16(listPalette, listPaletteWork, 0x20);
+    s32 c1 = listPalette[14];
     u8 r = c1 & 0x1f;
     u8 g = (c1 & 0x3e0) >> 5;
     u8 b = (c1 & 0x7c00) >> 10;
     s32 w = 3 - t;
-    s32 c2 = *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25a2, listPalette[30], 0));
+    s32 c2 = listPalette[15];
     r = ((u8)(c2 & 0x1f) * t + r * w) / 3;
     g = ((u8)((c2 & 0x3e0) >> 5) * t + g * w) / 3;
     b = ((u8)((c2 & 0x7c00) >> 10) * t + b * w) / 3;
-    *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25c2, listPaletteWork[30], 0)) = r | (g << 5) | (b << 10);
-    ((BgVramTask *)(HOST_AT_A(p, DateTimePicker, 0x560, listPaletteTask, 0)))->requestPalette(HOST_AT_A(p, DateTimePicker, 0x25a4, listPaletteWork[0], 0), listLayer, 9);
+    listPaletteWork[15] = r | (g << 5) | (b << 10);
+    listPaletteTask.requestPalette(listPaletteWork, listLayer, 9);
 }
 
 BOOL DateTimePicker::testFlags(u32 m) {
@@ -1916,60 +1804,60 @@ void DateTimePicker::clearFlags(u32 m) {
     flags &= ~m;
 }
 
-extern "C" u32 data_ov134_02294dc4[4] = {0x80004000, 0x50cb, 0x208000, 0xffff50cf};
-extern "C" u32 data_ov134_02294fb4[8] = {0x81e84004, 0x6554, 0x41e84014, 0x6594, 0x81c84004, 0x6554, 0x41c84014, 0xffff6594};
+extern "C" GXOamAttr data_ov134_02294dc4[2] = {{0x80004000, 0xcb, 0, 0x5, 0x0}, {0x208000, 0xcf, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294fb4[4] = {{0x81e84004, 0x154, 1, 0x6, 0x0}, {0x41e84014, 0x194, 1, 0x6, 0x0}, {0x81c84004, 0x154, 1, 0x6, 0x0}, {0x41c84014, 0x194, 1, 0x6, 0xffff}};
 extern "C" char *sObjVariantFiles[1] = {data_ov134_02294f74};
 extern "C" char data_ov134_02294e3c[22] = "menu/clock/bgb_us.bsc";
-extern "C" u32 data_ov134_02294d44[2] = {0xc19800b3, 0xffff44c0};
-extern "C" u32 data_ov134_02294d4c[2] = {0x80004000, 0xffff50cb};
-extern "C" uptr data_ov134_02294f5c[6] = {(uptr)data_ov134_02294d4c, (uptr)data_ov134_02294d84, (uptr)data_ov134_02294dc4, (uptr)data_ov134_02294da4, (uptr)data_ov134_02294da4, (uptr)data_ov134_02294ee4};
-extern "C" u32 data_ov134_02294fd4[8] = {0x80004004, 0x6554, 0x40004014, 0x6594, 0x800f4004, 0x6554, 0x400f4014, 0xffff6594};
+extern "C" GXOamAttr data_ov134_02294d44[1] = {{0xc19800b3, 0xc0, 1, 0x4, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294d4c[1] = {{0x80004000, 0xcb, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr *data_ov134_02294f5c[6] = {data_ov134_02294d4c, data_ov134_02294d84, data_ov134_02294dc4, data_ov134_02294da4, data_ov134_02294da4, data_ov134_02294ee4};
+extern "C" GXOamAttr data_ov134_02294fd4[4] = {{0x80004004, 0x154, 1, 0x6, 0x0}, {0x40004014, 0x194, 1, 0x6, 0x0}, {0x800f4004, 0x154, 1, 0x6, 0x0}, {0x400f4014, 0x194, 1, 0x6, 0xffff}};
 extern "C" char data_ov134_02294e6c[22] = "menu/clock/bgd_us.bsc";
-extern "C" u32 data_ov134_02294ff4[8] = {0x90264024, 0x6552, 0x50264034, 0x6592, 0x80084024, 0x6552, 0x40084034, 0xffff6592};
-extern "C" u32 data_ov134_022950a4[12] = {0x1ff0030, 0x6559, 0x1ff0028, 0x6559, 0x91de4024, 0x6552, 0x51de4034, 0x6592, 0x81c04024, 0x6552, 0x41c04034, 0xffff6592};
-extern "C" u32 data_ov134_022950d4[12] = {0x40028, 0x6559, 0x40020, 0x6559, 0x91e4401c, 0x6552, 0x51e4402c, 0x6592, 0x81cc401c, 0x6552, 0x41cc402c, 0xffff6592};
+extern "C" GXOamAttr data_ov134_02294ff4[4] = {{0x90264024, 0x152, 1, 0x6, 0x0}, {0x50264034, 0x192, 1, 0x6, 0x0}, {0x80084024, 0x152, 1, 0x6, 0x0}, {0x40084034, 0x192, 1, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_022950a4[6] = {{0x1ff0030, 0x159, 1, 0x6, 0x0}, {0x1ff0028, 0x159, 1, 0x6, 0x0}, {0x91de4024, 0x152, 1, 0x6, 0x0}, {0x51de4034, 0x192, 1, 0x6, 0x0}, {0x81c04024, 0x152, 1, 0x6, 0x0}, {0x41c04034, 0x192, 1, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_022950d4[6] = {{0x40028, 0x159, 1, 0x6, 0x0}, {0x40020, 0x159, 1, 0x6, 0x0}, {0x91e4401c, 0x152, 1, 0x6, 0x0}, {0x51e4402c, 0x192, 1, 0x6, 0x0}, {0x81cc401c, 0x152, 1, 0x6, 0x0}, {0x41cc402c, 0x192, 1, 0x6, 0xffff}};
 extern "C" const u8 sWeekdayTextIds[7] = {0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0};
-extern "C" u32 data_ov134_02295104[12] = {0x81d0400c, 0x6555, 0x41d0401c, 0x6595, 0x91e8400c, 0x6552, 0x51e8401c, 0x6592, 0x81b8400c, 0x6552, 0x41b8401c, 0xffff6592};
-extern "C" u32 data_ov134_02294d54[4] = {0x80444023, 0x65b2, 0x40640023, 0xffff65b6};
-extern "C" u32 data_ov134_02294db4[4] = {0x8044402b, 0x65b2, 0x4064002b, 0xffff65b6};
-extern "C" u32 data_ov134_02295204[28] = {0x268000, 0x84ca, 0x1e88000, 0x84ca, 0x81c740fc, 0x8554, 0x41c7400c, 0x8594, 0x81e740fc, 0x8554, 0x41e7400c, 0x8594, 0x801740fc, 0x8554, 0x4017400c, 0x8594, 0x81f740fc, 0x8554, 0x41f7400c, 0x8594, 0x903740fc, 0x8552, 0x5037400c, 0x8592, 0x81a740fc, 0x8552, 0x41a7400c, 0xffff8592};
-extern "C" u32 data_ov134_02295194[12] = {0x800040e8, 0x6108, 0x800a40e8, 0x610c, 0x402800e8, 0x6110, 0x400040f8, 0x6148, 0x400a40f8, 0x614c, 0x2840f8, 0xffff6150};
-extern "C" uptr data_ov134_02294f2c[6] = {(uptr)data_ov134_02294efc, (uptr)data_ov134_02295054, (uptr)data_ov134_02294ecc, (uptr)data_ov134_02294eb4, (uptr)data_ov134_02294eb4, (uptr)data_ov134_02294eb4};
-extern "C" uptr data_ov134_02294f14[6] = {(uptr)data_ov134_02295194, (uptr)data_ov134_022951c4, (uptr)data_ov134_02295164, (uptr)data_ov134_02295134, (uptr)data_ov134_02295134, (uptr)data_ov134_02295134};
-extern "C" u32 data_ov134_02294efc[6] = {0x80004000, 0x6168, 0x800a4000, 0x616c, 0x40280000, 0xffff6170};
+extern "C" GXOamAttr data_ov134_02295104[6] = {{0x81d0400c, 0x155, 1, 0x6, 0x0}, {0x41d0401c, 0x195, 1, 0x6, 0x0}, {0x91e8400c, 0x152, 1, 0x6, 0x0}, {0x51e8401c, 0x192, 1, 0x6, 0x0}, {0x81b8400c, 0x152, 1, 0x6, 0x0}, {0x41b8401c, 0x192, 1, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294d54[2] = {{0x80444023, 0x1b2, 1, 0x6, 0x0}, {0x40640023, 0x1b6, 1, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294db4[2] = {{0x8044402b, 0x1b2, 1, 0x6, 0x0}, {0x4064002b, 0x1b6, 1, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_02295204[14] = {{0x268000, 0xca, 1, 0x8, 0x0}, {0x1e88000, 0xca, 1, 0x8, 0x0}, {0x81c740fc, 0x154, 1, 0x8, 0x0}, {0x41c7400c, 0x194, 1, 0x8, 0x0}, {0x81e740fc, 0x154, 1, 0x8, 0x0}, {0x41e7400c, 0x194, 1, 0x8, 0x0}, {0x801740fc, 0x154, 1, 0x8, 0x0}, {0x4017400c, 0x194, 1, 0x8, 0x0}, {0x81f740fc, 0x154, 1, 0x8, 0x0}, {0x41f7400c, 0x194, 1, 0x8, 0x0}, {0x903740fc, 0x152, 1, 0x8, 0x0}, {0x5037400c, 0x192, 1, 0x8, 0x0}, {0x81a740fc, 0x152, 1, 0x8, 0x0}, {0x41a7400c, 0x192, 1, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov134_02295194[6] = {{0x800040e8, 0x108, 0, 0x6, 0x0}, {0x800a40e8, 0x10c, 0, 0x6, 0x0}, {0x402800e8, 0x110, 0, 0x6, 0x0}, {0x400040f8, 0x148, 0, 0x6, 0x0}, {0x400a40f8, 0x14c, 0, 0x6, 0x0}, {0x2840f8, 0x150, 0, 0x6, 0xffff}};
+extern "C" GXOamAttr *data_ov134_02294f2c[6] = {data_ov134_02294efc, data_ov134_02295054, data_ov134_02294ecc, data_ov134_02294eb4, data_ov134_02294eb4, data_ov134_02294eb4};
+extern "C" GXOamAttr *data_ov134_02294f14[6] = {data_ov134_02295194, data_ov134_022951c4, data_ov134_02295164, data_ov134_02295134, data_ov134_02295134, data_ov134_02295134};
+extern "C" GXOamAttr data_ov134_02294efc[3] = {{0x80004000, 0x168, 0, 0x6, 0x0}, {0x800a4000, 0x16c, 0, 0x6, 0x0}, {0x40280000, 0x170, 0, 0x6, 0xffff}};
 extern "C" const u32 sFieldTopTime[6] = {0x0, 0xc, 0xc, 0x10, 0x10, 0xc};
-extern "C" u32 data_ov134_02294eb4[6] = {0x80004000, 0x6168, 0x80184000, 0x616c, 0x40380000, 0xffff6170};
+extern "C" GXOamAttr data_ov134_02294eb4[3] = {{0x80004000, 0x168, 0, 0x6, 0x0}, {0x80184000, 0x16c, 0, 0x6, 0x0}, {0x40380000, 0x170, 0, 0x6, 0xffff}};
 extern "C" char data_ov134_02294dfc[19] = "menu/clock/bg2.bpl";
-extern "C" u32 data_ov134_02294ecc[6] = {0x80004000, 0x6168, 0x80104000, 0x616c, 0x40300000, 0xffff6170};
+extern "C" GXOamAttr data_ov134_02294ecc[3] = {{0x80004000, 0x168, 0, 0x6, 0x0}, {0x80104000, 0x16c, 0, 0x6, 0x0}, {0x40300000, 0x170, 0, 0x6, 0xffff}};
 extern "C" const u32 sFieldLeftTime[6] = {0x0, 0x6, 0xe, 0xa, 0x12, 0x13};
 extern "C" char data_ov134_02294e24[22] = "menu/clock/bge_us.bsc";
-extern "C" u32 data_ov134_02294d84[4] = {0x80004000, 0x50cb, 0x80204000, 0xffff50cf};
-extern "C" u32 data_ov134_02295074[12] = {0x902e4004, 0x6554, 0x502e4014, 0x6594, 0x90344004, 0x6554, 0x50344014, 0x6594, 0x904f4004, 0x6552, 0x504f4014, 0xffff6592};
+extern "C" GXOamAttr data_ov134_02294d84[2] = {{0x80004000, 0xcb, 0, 0x5, 0x0}, {0x80204000, 0xcf, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr data_ov134_02295074[6] = {{0x902e4004, 0x154, 1, 0x6, 0x0}, {0x502e4014, 0x194, 1, 0x6, 0x0}, {0x90344004, 0x154, 1, 0x6, 0x0}, {0x50344014, 0x194, 1, 0x6, 0x0}, {0x904f4004, 0x152, 1, 0x6, 0x0}, {0x504f4014, 0x192, 1, 0x6, 0xffff}};
 extern "C" const u32 sFieldWidths[6] = {0x4, 0x8, 0x5, 0x6, 0x6, 0x7};
 extern "C" const u8 sMonthStringIds[12] = {0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb};
-extern "C" u32 data_ov134_02294da4[4] = {0x80004000, 0x50cb, 0x40200000, 0xffff50cf};
+extern "C" GXOamAttr data_ov134_02294da4[2] = {{0x80004000, 0xcb, 0, 0x5, 0x0}, {0x40200000, 0xcf, 0, 0x5, 0xffff}};
 extern "C" char data_ov134_02294e54[22] = "menu/clock/bgc_us.bsc";
-extern "C" u32 data_ov134_02295014[8] = {0x9024401c, 0x6552, 0x5024402c, 0x6592, 0x800c401c, 0x6552, 0x400c402c, 0xffff6592};
+extern "C" GXOamAttr data_ov134_02295014[4] = {{0x9024401c, 0x152, 1, 0x6, 0x0}, {0x5024402c, 0x192, 1, 0x6, 0x0}, {0x800c401c, 0x152, 1, 0x6, 0x0}, {0x400c402c, 0x192, 1, 0x6, 0xffff}};
 extern "C" const u8 sFieldNameTextIds[6] = {0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xaa};
-extern "C" u32 data_ov134_02295134[12] = {0x800040e8, 0x6108, 0x801840e8, 0x610c, 0x403800e8, 0x6110, 0x400040f8, 0x6148, 0x401840f8, 0x614c, 0x3840f8, 0xffff6150};
+extern "C" GXOamAttr data_ov134_02295134[6] = {{0x800040e8, 0x108, 0, 0x6, 0x0}, {0x801840e8, 0x10c, 0, 0x6, 0x0}, {0x403800e8, 0x110, 0, 0x6, 0x0}, {0x400040f8, 0x148, 0, 0x6, 0x0}, {0x401840f8, 0x14c, 0, 0x6, 0x0}, {0x3840f8, 0x150, 0, 0x6, 0xffff}};
 extern "C" char *sBgPaletteFiles[4] = {data_ov134_02294dd4, data_ov134_02294de8, data_ov134_02294dfc, data_ov134_02294e10};
-extern "C" u32 data_ov134_02295164[12] = {0x800040e8, 0x6108, 0x801040e8, 0x610c, 0x403000e8, 0x6110, 0x400040f8, 0x6148, 0x401040f8, 0x614c, 0x3040f8, 0xffff6150};
-extern "C" uptr data_ov134_02294e9c[6] = {(uptr)data_ov134_02295074, (uptr)data_ov134_02294fb4, (uptr)data_ov134_02294fd4, (uptr)data_ov134_022950a4, (uptr)data_ov134_02294ff4, (uptr)data_ov134_02294f94};
+extern "C" GXOamAttr data_ov134_02295164[6] = {{0x800040e8, 0x108, 0, 0x6, 0x0}, {0x801040e8, 0x10c, 0, 0x6, 0x0}, {0x403000e8, 0x110, 0, 0x6, 0x0}, {0x400040f8, 0x148, 0, 0x6, 0x0}, {0x401040f8, 0x14c, 0, 0x6, 0x0}, {0x3040f8, 0x150, 0, 0x6, 0xffff}};
+extern "C" GXOamAttr *data_ov134_02294e9c[6] = {data_ov134_02295074, data_ov134_02294fb4, data_ov134_02294fd4, data_ov134_022950a4, data_ov134_02294ff4, data_ov134_02294f94};
 extern "C" const u32 sFieldLeftBirthday[6] = {0x0, 0x8, 0x12, 0x0, 0x0, 0x0};
-extern "C" u32 data_ov134_02294d74[4] = {0x800a40ee, 0x61aa, 0x802a40ee, 0xffff61ae};
-extern "C" u32 data_ov134_02294ee4[6] = {0x80004000, 0x50cb, 0x40200000, 0x50cf, 0x308000, 0xffff50d1};
-extern "C" u32 data_ov134_02294f94[8] = {0x91a84004, 0x9554, 0x51a84014, 0x9594, 0x81884004, 0x9552, 0x41884014, 0xffff9592};
-extern "C" u32 data_ov134_022951c4[16] = {0x802840e8, 0x610c, 0x402840f8, 0x614c, 0x800040e8, 0x6108, 0x802040e8, 0x610c, 0x404800e8, 0x6110, 0x400040f8, 0x6148, 0x402040f8, 0x614c, 0x4840f8, 0xffff6150};
+extern "C" GXOamAttr data_ov134_02294d74[2] = {{0x800a40ee, 0x1aa, 0, 0x6, 0x0}, {0x802a40ee, 0x1ae, 0, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294ee4[3] = {{0x80004000, 0xcb, 0, 0x5, 0x0}, {0x40200000, 0xcf, 0, 0x5, 0x0}, {0x308000, 0xd1, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294f94[4] = {{0x91a84004, 0x154, 1, 0x9, 0x0}, {0x51a84014, 0x194, 1, 0x9, 0x0}, {0x81884004, 0x152, 1, 0x9, 0x0}, {0x41884014, 0x192, 1, 0x9, 0xffff}};
+extern "C" GXOamAttr data_ov134_022951c4[8] = {{0x802840e8, 0x10c, 0, 0x6, 0x0}, {0x402840f8, 0x14c, 0, 0x6, 0x0}, {0x800040e8, 0x108, 0, 0x6, 0x0}, {0x802040e8, 0x10c, 0, 0x6, 0x0}, {0x404800e8, 0x110, 0, 0x6, 0x0}, {0x400040f8, 0x148, 0, 0x6, 0x0}, {0x402040f8, 0x14c, 0, 0x6, 0x0}, {0x4840f8, 0x150, 0, 0x6, 0xffff}};
 extern "C" const u8 sFieldValueCounts[6] = {0x64, 0xc, 0x1f, 0x18, 0x3c, 0x7};
-extern "C" u32 data_ov134_02295034[8] = {0x9020400c, 0x6552, 0x5020401c, 0x6592, 0x8008400c, 0x6552, 0x4008401c, 0xffff6592};
-extern "C" u32 data_ov134_02294e84[6] = {0x1fc00fc, 0x54e8, 0x81f000e0, 0x54d8, 0x81f000e0, 0xffff54d4};
+extern "C" GXOamAttr data_ov134_02295034[4] = {{0x9020400c, 0x152, 1, 0x6, 0x0}, {0x5020401c, 0x192, 1, 0x6, 0x0}, {0x8008400c, 0x152, 1, 0x6, 0x0}, {0x4008401c, 0x192, 1, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov134_02294e84[3] = {{0x1fc00fc, 0xe8, 1, 0x5, 0x0}, {0x81f000e0, 0xd8, 1, 0x5, 0x0}, {0x81f000e0, 0xd4, 1, 0x5, 0xffff}};
 extern "C" char data_ov134_02294dd4[19] = "menu/clock/bg0.bpl";
 extern "C" const u32 sFieldLeftDefault[6] = {0x17, 0x9, 0x11, 0x9, 0x12, 0x2};
 extern "C" const u32 sFieldTopBirthday[6] = {0x0, 0xe, 0xe, 0x0, 0x0, 0x0};
 extern "C" char data_ov134_02294f74[30] = "menu/clock/b_tim_ten0_obj.bch";
-extern "C" u32 data_ov134_02295054[8] = {0x80284000, 0x616c, 0x80004000, 0x6168, 0x80204000, 0x616c, 0x40480000, 0xffff6170};
+extern "C" GXOamAttr data_ov134_02295054[4] = {{0x80284000, 0x16c, 0, 0x6, 0x0}, {0x80004000, 0x168, 0, 0x6, 0x0}, {0x80204000, 0x16c, 0, 0x6, 0x0}, {0x40480000, 0x170, 0, 0x6, 0xffff}};
 extern "C" char data_ov134_02294e10[19] = "menu/clock/bg3.bpl";
-extern "C" u32 data_ov134_02294f44[6] = {0x2e8008, 0x64ca, 0x78008, 0x64ca, 0x1c88008, 0xffff64ca};
+extern "C" GXOamAttr data_ov134_02294f44[3] = {{0x2e8008, 0xca, 1, 0x6, 0x0}, {0x78008, 0xca, 1, 0x6, 0x0}, {0x1c88008, 0xca, 1, 0x6, 0xffff}};
 extern "C" const u32 sFieldTopDefault[6] = {0xd, 0xd, 0xd, 0x11, 0x11, 0xd};
 extern "C" char data_ov134_02294de8[19] = "menu/clock/bg1.bpl";
-extern "C" uptr sFieldScreenFiles[4] = {(uptr)data_ov134_02294e3c, (uptr)data_ov134_02294e54, (uptr)data_ov134_02294e6c, (uptr)data_ov134_02294e24};
+extern "C" char *sFieldScreenFiles[4] = {data_ov134_02294e3c, data_ov134_02294e54, data_ov134_02294e6c, data_ov134_02294e24};

@@ -362,8 +362,8 @@ void *LetterGrid::getLetter(s32 i) {
     return 0;
 }
 
-void LetterGrid::setLetter(s32 i, s32 x) {
-    Letter_Copy(getLetter(i), x);
+void LetterGrid::setLetter(s32 i, const void *letter) {
+    Letter_Copy((LetterView *)getLetter(i), (const LetterView *)letter);
     LetterGrid_SetBit((u32 *)&occupiedBits, i);
 }
 

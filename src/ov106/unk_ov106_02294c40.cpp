@@ -23,15 +23,8 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterGrid_SetLetters23  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -43,6 +36,8 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
@@ -56,14 +51,9 @@ typedef void (MailboxMenu::*Unk_ov106_02298180_Fn)();
 
 extern "C" {
 extern u8 gU8None;
-extern s32 gCurrentHeap;
 extern u16 gPad[];
 
-u16 Item_MakePaper(void *p, s32 a);
-void Letter_Clear(void *a);
-void Letter_Copy(void *p, void *q);
-void ChoiceIdList_Clear(void *p, u32 v);
-void ChoiceIdList_Add(void *p, u32 a, u32 b);
+u16 Item_MakePaper(u32 a, s32 b);
 s32 PopupChoice_MoveCursor(void *a, s32 b, void *c, u32 d);
 s32 PopupChoice_TickDecideDelay(void *a);
 u32 PopupChoice_DecideCancel(void *p, s32 a);
@@ -72,9 +62,6 @@ void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
-void MenuButtons_LoadTextColors(void *a);
-void InventoryBg_LoadObjGraphics(void *a);
-void LetterGrid_SetLetters23(void *a, void *b);
 
 }
 
@@ -164,7 +151,7 @@ public:
     u32 findFreePocketSlot();
     u8 fromLetterGridIndex(u32 a);
     u8 toLetterGridIndex(u32 a);
-    void * getSlotLetter(u32 a);
+    Letter *getSlotLetter(u32 a);
     void cursorToPopupTop();
     void cancelPopup();
     void moveCursorToPopupRow();
@@ -186,8 +173,8 @@ public:
     void setFocusSlot(u32 a);
     void clearFocusSlot();
     void disableAllPockets();
-    void registerLetterPaper(void *p);
-    void putLetterInSlot(u32 a, void *p);
+    void registerLetterPaper(LetterView *p);
+    void putLetterInSlot(u32 a, Letter *p);
     void cancelBgTasks();
     void pressPromptTab4();
     void pressPromptTab3();
@@ -240,7 +227,7 @@ public:
     void mainAct05();
     void mainAct04();
     BOOL testFlags(u32 mask);
-    BOOL moveCursorByPad(void *pad, u32 x);
+    BOOL moveCursorByPad(u32 pad, u32 x);
     void clearFlags(u32 mask);
     void setFlags(u32 mask);
     void pressCloseTab();
@@ -249,9 +236,9 @@ public:
     void forceCloseFromLetterView();
     void closeLetterView();
     void startReadLetter();
-    void moveCursorOnButton(void *pad);
-    void moveCursorInMailbox(void *pad, u32 x);
-    void moveCursorInPocketLetters(void *pad, u32 x);
+    void moveCursorOnButton(u32 pad);
+    void moveCursorInMailbox(u32 pad, u32 x);
+    void moveCursorInPocketLetters(u32 pad, u32 x);
     void openDiscardConfirm();
     void selectLetter(u32 idx, u32 x);
     void cancelPopupForButtons();
@@ -489,12 +476,9 @@ BOOL MailboxMenu::execPhase4() {
 BOOL MailboxMenu::execClosed() {
     MenuCtrl_SetResult(1);
     LetterList_Compact(mailboxLetters, 10);
-    u8 *p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
-    s32 i = 0;
-    u8 *q = (u8 *)mailboxLetters;
-    for (; i < 10; i++) {
-        Letter_Copy(p, q + i * sizeof(Letter));
-        p += sizeof(Letter);
+    Letter *p = ((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
+    for (s32 i = 0; i < 10; i++) {
+        Letter_Copy((LetterView *)&p[i], (LetterView *)&mailboxLetters[i]);
     }
     ProcBase_RequestDelete(this);
     return TRUE;
@@ -510,7 +494,7 @@ void MailboxMenu::transitionAct01() {
     loadObjGraphics();
     InventoryItemGrid_LoadPockets(&pocketGrid);
     LetterGrid_LoadPocketLetters(&letterGrid);
-    LetterGrid_SetLetters23(&letterGrid, mailboxLetters);
+    LetterGrid_SetLetters23(&letterGrid, (u8 *)mailboxLetters);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -587,10 +571,10 @@ void MailboxMenu::transitionAct06() {
 }
 
 void MailboxMenu::transitionAct07() {
-    void *t = getSlotLetter(selectedSlot);
+    LetterView *t = (LetterView *)getSlotLetter(selectedSlot);
     registerLetterPaper(t);
     Letter_MarkRead(t);
-    ((LetterRenderer *)&letterView)->show((LetterView *)t, 3, 4, 1);
+    letterView.show(t, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -653,7 +637,7 @@ void MailboxMenu::scrollBoxBg() {
 
 void MailboxMenu::initParts() {
     s32 i;
-    u8 *p;
+    Letter *p;
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     ((LetterGrid *)&letterGrid)->init(1);
@@ -665,12 +649,11 @@ void MailboxMenu::initParts() {
     ((PopupChoiceMenu *)&popup)->init(3, 0, 0);
     ((LetterRenderer *)&letterView)->setLayer(3);
     for (i = 0; i < 10; i++) {
-        Letter_Clear((u8 *)mailboxLetters + i * sizeof(Letter));
+        Letter_Clear((LetterView *)&mailboxLetters[i]);
     }
-    p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
+    p = ((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
     for (i = 0; i < 10; i++) {
-        Letter_Copy((u8 *)mailboxLetters + i * sizeof(Letter), p);
-        p += sizeof(Letter);
+        Letter_Copy((LetterView *)&mailboxLetters[i], (LetterView *)&p[i]);
     }
     setFlags(0x4000);
     touchHoldDelay = 0;
@@ -729,8 +712,8 @@ void MailboxMenu::loadBoxBg() {
 }
 
 void MailboxMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
     ((MenuBottomButtons *)&bottomButtons)->setLayoutSingle05(0x88);
 }
 
@@ -861,7 +844,7 @@ void MailboxMenu::mainAct06() {
                 if (t >= 0) {
                     if (testFlags(0x10000) == 0 || t != 0) {
                         u32 r;
-                        popupChoice = (HOST_AT(this, 0x2595, choiceList.values[0], 0))[t];
+                        popupChoice = choiceList.values[t];
                         r = 1;
                         if (popupChoice == 2) {
                             r = 0;
@@ -882,7 +865,7 @@ void MailboxMenu::mainAct07() {
         ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     } else {
         s32 v = takeRepeatedKeys();
-        if (moveCursorByPad((void *)v, 0)) {
+        if (moveCursorByPad(v, 0)) {
             updateBalloonForCursor();
             moveCursorToTarget();
             ((TouchPromptBalloon *)&nameBalloon)->hide(0);
@@ -936,7 +919,7 @@ void MailboxMenu::mainAct08() {
         ((TouchPromptBalloon *)&nameBalloon)->hide(0);
     } else {
         s32 v = takeRepeatedKeys();
-        if (moveCursorByPad((void *)v, 1)) {
+        if (moveCursorByPad(v, 1)) {
             updateBalloonForCursor();
             moveCursorToTarget();
             ((TouchPromptBalloon *)&nameBalloon)->hide(0);
@@ -1019,7 +1002,7 @@ void MailboxMenu::mainAct0B() {
 void MailboxMenu::mainAct0C() {
     if (((HandCursor *)&cursor)->isAnimDone()) {
         u32 r;
-        popupChoice = (HOST_AT(this, 0x2595, choiceList.values[0], 0))[popupRow];
+        popupChoice = choiceList.values[popupRow];
         r = 1;
         if (popupChoice == 2) {
             r = 0;
@@ -1564,35 +1547,35 @@ u32 MailboxMenu::getSlotAt(u32 a, s32 b, s32 c) {
 
 BOOL MailboxMenu::dropHeldOnSlot(u32 a) {
     if (isSlotEmpty(a) == 0) {
-        Letter_Copy(&swapLetter, getSlotLetter(a));
+        Letter_Copy((LetterView *)&swapLetter, (LetterView *)getSlotLetter(a));
         putLetterInSlot(heldSlot, &swapLetter);
     }
     releaseHeldTo(a);
     return TRUE;
 }
 
-void MailboxMenu::putLetterInSlot(u32 a, void *p) {
+void MailboxMenu::putLetterInSlot(u32 a, Letter *p) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        ((LetterGrid *)&letterGrid)->setLetter(toLetterGridIndex(a), (s32)p);
+        letterGrid.setLetter(toLetterGridIndex(a), p);
         if (isLetterSlot(a)) {
-            registerLetterPaper(p);
+            registerLetterPaper((LetterView *)p);
         }
     }
 }
 
-void * MailboxMenu::getSlotLetter(u32 a) {
+Letter *MailboxMenu::getSlotLetter(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        return ((LetterGrid *)&letterGrid)->getLetter(toLetterGridIndex(a));
+        return (Letter *)letterGrid.getLetter(toLetterGridIndex(a));
     }
     return 0;
 }
 
-void MailboxMenu::registerLetterPaper(void *p) {
-    if (((LetterView *)p)->getState() == 2 || ((LetterView *)p)->getState() == 3) {
-        void *r4 = PlayerData_GetCurrent();
+void MailboxMenu::registerLetterPaper(LetterView *p) {
+    if (p->getState() == 2 || p->getState() == 3) {
+        PlayerData *r4 = PlayerData_GetCurrent();
         u16 v = 0xfff1;
         v = Item_MakePaper(Letter_GetPaper(p), 4);
-        Catalog_SetItem(((PlayerData *)r4)->getCatalog(), &v, 0, 1);
+        Catalog_SetItem((u8 *)r4->getCatalog(), &v, 0, 1);
     }
 }
 
@@ -1720,7 +1703,7 @@ void MailboxMenu::pickUpFrom(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
         u32 r4 = toLetterGridIndex(a);
         handKind = 1;
-        Letter_Copy(&heldLetter, ((LetterGrid *)&letterGrid)->getLetter(r4));
+        Letter_Copy((LetterView *)&heldLetter, (LetterView *)letterGrid.getLetter(r4));
         ((LetterGrid *)&letterGrid)->clearLetter(r4);
     }
 }
@@ -1734,7 +1717,7 @@ void MailboxMenu::releaseHeldTo(u32 a) {
 
 void MailboxMenu::exchangeHeldWith(u32 a) {
     if (handKind == 1) {
-        Letter_Copy(&swapLetter, &heldLetter);
+        Letter_Copy((LetterView *)&swapLetter, (LetterView *)&heldLetter);
         pickUpFrom(a);
         putLetterInSlot(a, &swapLetter);
     }
@@ -1906,25 +1889,25 @@ void MailboxMenu::cancelPopupForButtons() {
 void MailboxMenu::selectLetter(u32 idx, u32 x) {
     clearFlags(0x10000);
     selectedSlot = idx;
-    ChoiceIdList_Clear(&choiceList, 4);
+    ChoiceIdList_Clear((u8 *)&choiceList, 4);
     void *r7 = getSlotLetter(idx);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&choiceList, 0, 0);
+        ChoiceIdList_Add((u8 *)&choiceList, 0, 0);
     }
     s32 r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
-            ChoiceIdList_Add(&choiceList, 0x17, 1);
+            ChoiceIdList_Add((u8 *)&choiceList, 0x17, 1);
         } else {
-            ChoiceIdList_Add(&choiceList, 0x14, 1);
+            ChoiceIdList_Add((u8 *)&choiceList, 0x14, 1);
         }
     }
     if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
-            ChoiceIdList_Add(&choiceList, 0x15, 3);
+            ChoiceIdList_Add((u8 *)&choiceList, 0x15, 3);
         }
     }
-    ChoiceIdList_Add(&choiceList, 2, 4);
+    ChoiceIdList_Add((u8 *)&choiceList, 2, 4);
     hideCursor();
     if (x == 0) {
         ((TouchPromptBalloon *)&nameBalloon)->hide(1);
@@ -1934,17 +1917,17 @@ void MailboxMenu::selectLetter(u32 idx, u32 x) {
 
 void MailboxMenu::openDiscardConfirm() {
     setFlags(0x10000);
-    ChoiceIdList_Clear(&choiceList, 4);
-    ChoiceIdList_Add(&choiceList, 0x1a, 4);
-    ChoiceIdList_Add(&choiceList, 0x15, 2);
-    ChoiceIdList_Add(&choiceList, 0x19, 4);
+    ChoiceIdList_Clear((u8 *)&choiceList, 4);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x1a, 4);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x15, 2);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x19, 4);
     openPopup(0);
 }
 
-void MailboxMenu::moveCursorInPocketLetters(void *pad, u32 x) {
+void MailboxMenu::moveCursorInPocketLetters(u32 pad, u32 x) {
     s32 r6 = cursorSlot - 0xb;
     s32 r4 = r6 >> 1;
-    if (MenuKeys_HasLeft((u32)pad)) {
+    if (MenuKeys_HasLeft(pad)) {
         if ((r6 & 1) > 0) {
             cursorSlot = cursorSlot - 1;
         } else {
@@ -1953,7 +1936,7 @@ void MailboxMenu::moveCursorInPocketLetters(void *pad, u32 x) {
                 return;
             }
         }
-    } else if (MenuKeys_HasRight((u32)pad)) {
+    } else if (MenuKeys_HasRight(pad)) {
         if ((r6 & 1) < 1) {
             cursorSlot = cursorSlot + 1;
         } else {
@@ -1966,11 +1949,11 @@ void MailboxMenu::moveCursorInPocketLetters(void *pad, u32 x) {
     }
     if (isLetterSlot(cursorSlot)) {
         if (!testFlags(0x30)) {
-            if (MenuKeys_HasUp((u32)pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 if (r4 > 0) {
                     cursorSlot = cursorSlot - 2;
                 }
-            } else if (MenuKeys_HasDown((u32)pad)) {
+            } else if (MenuKeys_HasDown(pad)) {
                 if (r4 < 4) {
                     cursorSlot = cursorSlot + 2;
                 } else if (x == 0) {
@@ -1982,12 +1965,12 @@ void MailboxMenu::moveCursorInPocketLetters(void *pad, u32 x) {
     }
 }
 
-void MailboxMenu::moveCursorInMailbox(void *pad, u32 x) {
+void MailboxMenu::moveCursorInMailbox(u32 pad, u32 x) {
     s32 r6 = cursorSlot - 0x15;
     s32 r4 = 0;
     for (; r6 >= 2; r4++, r6 -= 2) {
     }
-    if (MenuKeys_HasLeft((u32)pad)) {
+    if (MenuKeys_HasLeft(pad)) {
         if (r6 > 0) {
             cursorSlot = cursorSlot - 1;
         } else {
@@ -1995,7 +1978,7 @@ void MailboxMenu::moveCursorInMailbox(void *pad, u32 x) {
             setFlags(0x10);
             return;
         }
-    } else if (MenuKeys_HasRight((u32)pad)) {
+    } else if (MenuKeys_HasRight(pad)) {
         if (r6 < 1) {
             cursorSlot = cursorSlot + 1;
         } else {
@@ -2005,11 +1988,11 @@ void MailboxMenu::moveCursorInMailbox(void *pad, u32 x) {
     }
     if (isMailboxSlot(cursorSlot)) {
         if (!testFlags(0x30)) {
-            if (MenuKeys_HasUp((u32)pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 if (r4 > 0) {
                     cursorSlot = cursorSlot - 2;
                 }
-            } else if (MenuKeys_HasDown((u32)pad)) {
+            } else if (MenuKeys_HasDown(pad)) {
                 if (r4 < 4) {
                     cursorSlot = cursorSlot + 2;
                 } else if (x == 0) {
@@ -2021,14 +2004,14 @@ void MailboxMenu::moveCursorInMailbox(void *pad, u32 x) {
     }
 }
 
-void MailboxMenu::moveCursorOnButton(void *pad) {
-    if (MenuKeys_HasUp((u32)pad)) {
+void MailboxMenu::moveCursorOnButton(u32 pad) {
+    if (MenuKeys_HasUp(pad)) {
         ((MenuCursor *)&cursor)->switchToAnim01();
         cursorSlot = 0x13;
     }
 }
 
-BOOL MailboxMenu::moveCursorByPad(void *pad, u32 x) {
+BOOL MailboxMenu::moveCursorByPad(u32 pad, u32 x) {
     u8 old = cursorSlot;
     clearFlags(0x30);
     if (pad == 0) {

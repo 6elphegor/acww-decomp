@@ -1,42 +1,20 @@
-#include "uptr.h"
 #include "types.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/NumberPad.h"
+#include "nitro/gxoam.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_FillLargeDigits  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_FillSmallDigits  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_PrintLargeNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_PrintSmallNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_SetKeyPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov130_02293518  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov130_02293568  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov130/unk_ov130_02292360.h"
-
-extern "C" {
-extern void *gCurrentHeap;
-
-void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-}
-
-
-
-extern "C" {
-}
-
 
 // Declarations (definition order below sets the data layout)
 extern "C" const u8 sTitleTextIds[8];
@@ -68,34 +46,34 @@ extern "C" char data_ov130_0229341c[20];
 extern "C" char data_ov130_02293430[20];
 extern "C" char data_ov130_02293444[20];
 extern "C" char data_ov130_02293458[23];
-extern "C" uptr sKeyScreenFiles[6];
-extern "C" uptr sMainScreenFiles[6];
+extern "C" const char *sKeyScreenFiles[6];
+extern "C" const char *sMainScreenFiles[6];
 extern "C" char data_ov130_022934a0[25];
 extern "C" char data_ov130_022934bc[25];
-extern "C" u32 data_ov130_022934d8[8];
-extern "C" u32 sSeparatorCells[8];
-extern "C" u32 data_ov130_02293518[8];
-extern "C" u32 sSeparatorCellsWide[12];
-extern "C" u32 data_ov130_02293568[16];
-extern "C" u32 data_ov130_022935a8[16];
-extern "C" u32 data_ov130_022935e8[16];
+extern "C" GXOamAttr data_ov130_022934d8[4];
+extern "C" GXOamAttr sSeparatorCells[4];
+extern "C" GXOamAttr data_ov130_02293518[4];
+extern "C" GXOamAttr sSeparatorCellsWide[6];
+extern "C" GXOamAttr data_ov130_02293568[8];
+extern "C" GXOamAttr data_ov130_022935a8[8];
+extern "C" GXOamAttr data_ov130_022935e8[8];
 
-extern "C" u32 data_ov130_02293568[16] = {0x81d840b0, 0xc14c, 0x81f840b0, 0xc150, 0x801840b0, 0xc154, 0x403800b0, 0xc158, 0x903040b0, 0xb0cf, 0x801040b0, 0xb0d0, 0x81f040b0, 0xb0d0, 0x81d040b0, 0xffffb0cf};
-extern "C" u32 data_ov130_022935a8[16] = {0x81d440b4, 0xc14c, 0x81f440b4, 0xc150, 0x801440b4, 0xc154, 0x403400b4, 0xc158, 0x902c40b4, 0xb0cf, 0x800c40b4, 0xb0d0, 0x81ec40b4, 0xb0d0, 0x81cc40b4, 0xffffb0cf};
-extern "C" u32 data_ov130_022935e8[16] = {0x81904022, 0xc14c, 0x81b04022, 0xc150, 0x81d04022, 0xc154, 0x41f00022, 0xc158, 0x91e84022, 0xb0cf, 0x81c84022, 0xb0d0, 0x81a84022, 0xb0d0, 0x81884022, 0xffffb0cf};
+extern "C" GXOamAttr data_ov130_02293568[8] = {{0x81d840b0, 0x14c, 0, 0xc, 0x0}, {0x81f840b0, 0x150, 0, 0xc, 0x0}, {0x801840b0, 0x154, 0, 0xc, 0x0}, {0x403800b0, 0x158, 0, 0xc, 0x0}, {0x903040b0, 0xcf, 0, 0xb, 0x0}, {0x801040b0, 0xd0, 0, 0xb, 0x0}, {0x81f040b0, 0xd0, 0, 0xb, 0x0}, {0x81d040b0, 0xcf, 0, 0xb, 0xffff}};
+extern "C" GXOamAttr data_ov130_022935a8[8] = {{0x81d440b4, 0x14c, 0, 0xc, 0x0}, {0x81f440b4, 0x150, 0, 0xc, 0x0}, {0x801440b4, 0x154, 0, 0xc, 0x0}, {0x403400b4, 0x158, 0, 0xc, 0x0}, {0x902c40b4, 0xcf, 0, 0xb, 0x0}, {0x800c40b4, 0xd0, 0, 0xb, 0x0}, {0x81ec40b4, 0xd0, 0, 0xb, 0x0}, {0x81cc40b4, 0xcf, 0, 0xb, 0xffff}};
+extern "C" GXOamAttr data_ov130_022935e8[8] = {{0x81904022, 0x14c, 0, 0xc, 0x0}, {0x81b04022, 0x150, 0, 0xc, 0x0}, {0x81d04022, 0x154, 0, 0xc, 0x0}, {0x41f00022, 0x158, 0, 0xc, 0x0}, {0x91e84022, 0xcf, 0, 0xb, 0x0}, {0x81c84022, 0xd0, 0, 0xb, 0x0}, {0x81a84022, 0xd0, 0, 0xb, 0x0}, {0x81884022, 0xcf, 0, 0xb, 0xffff}};
 extern "C" const u32 sNumberPadCursorYTable[13] = {0x98, 0x88, 0x88, 0x88, 0x78, 0x78, 0x78, 0x68, 0x68, 0x68, 0x98, 0xb6, 0xb6};
 extern "C" const u32 sNumberPadCursorXTable[13] = {0x70, 0x60, 0x80, 0xa0, 0x60, 0x80, 0xa0, 0x60, 0x80, 0xa0, 0xa0, 0xc4, 0x7c};
-extern "C" u32 sSeparatorCellsWide[12] = {0x2800d0, 0x5180, 0x1000d0, 0x5180, 0x2800b8, 0x5180, 0x1000b8, 0x5180, 0x2800e8, 0x5180, 0x1000e8, 0xffff5180};
+extern "C" GXOamAttr sSeparatorCellsWide[6] = {{0x2800d0, 0x180, 0, 0x5, 0x0}, {0x1000d0, 0x180, 0, 0x5, 0x0}, {0x2800b8, 0x180, 0, 0x5, 0x0}, {0x1000b8, 0x180, 0, 0x5, 0x0}, {0x2800e8, 0x180, 0, 0x5, 0x0}, {0x1000e8, 0x180, 0, 0x5, 0xffff}};
 extern "C" const u32 sKeyX0Table[11] = {0x9, 0x9, 0xe, 0x12, 0x9, 0xe, 0x12, 0x9, 0xe, 0x12, 0x12};
 extern "C" const u32 sKeyX1Table[11] = {0x11, 0xd, 0x11, 0x15, 0xd, 0x11, 0x15, 0xd, 0x11, 0x15, 0x15};
 extern "C" const u32 sKeyRowTable[11] = {0x12, 0x10, 0x10, 0x10, 0xe, 0xe, 0xe, 0xc, 0xc, 0xc, 0x12};
-extern "C" u32 data_ov130_022934d8[8] = {0x81aa00f2, 0x415a, 0x81ca80f2, 0x415e, 0x81aa4012, 0x41da, 0x41ca0012, 0xffff41de};
-extern "C" u32 sSeparatorCells[8] = {0x2800d8, 0x5180, 0x1000d8, 0x5180, 0x2800f0, 0x5180, 0x1000f0, 0xffff5180};
-extern "C" u32 data_ov130_02293518[8] = {0x819c009c, 0x415a, 0x81bc809c, 0x415e, 0x819c40bc, 0x41da, 0x41bc00bc, 0xffff41de};
+extern "C" GXOamAttr data_ov130_022934d8[4] = {{0x81aa00f2, 0x15a, 0, 0x4, 0x0}, {0x81ca80f2, 0x15e, 0, 0x4, 0x0}, {0x81aa4012, 0x1da, 0, 0x4, 0x0}, {0x41ca0012, 0x1de, 0, 0x4, 0xffff}};
+extern "C" GXOamAttr sSeparatorCells[4] = {{0x2800d8, 0x180, 0, 0x5, 0x0}, {0x1000d8, 0x180, 0, 0x5, 0x0}, {0x2800f0, 0x180, 0, 0x5, 0x0}, {0x1000f0, 0x180, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr data_ov130_02293518[4] = {{0x819c009c, 0x15a, 0, 0x4, 0x0}, {0x81bc809c, 0x15e, 0, 0x4, 0x0}, {0x819c40bc, 0x1da, 0, 0x4, 0x0}, {0x41bc00bc, 0x1de, 0, 0x4, 0xffff}};
 extern "C" char data_ov130_022934a0[] = "menu/bank/ten0_0_obj.bch";
 extern "C" char data_ov130_022934bc[] = "menu/bank/ten0_1_obj.bch";
-extern "C" uptr sKeyScreenFiles[6] = {(uptr)data_ov130_02293430, (uptr)data_ov130_02293444, (uptr)data_ov130_022933cc, (uptr)data_ov130_022933b8, (uptr)data_ov130_02293458, (uptr)data_ov130_022933a4};
-extern "C" uptr sMainScreenFiles[6] = {(uptr)data_ov130_022933e0, (uptr)data_ov130_02293368, (uptr)data_ov130_022933f4, (uptr)data_ov130_0229337c, (uptr)data_ov130_02293408, (uptr)data_ov130_0229341c};
+extern "C" const char *sKeyScreenFiles[6] = {data_ov130_02293430, data_ov130_02293444, data_ov130_022933cc, data_ov130_022933b8, data_ov130_02293458, data_ov130_022933a4};
+extern "C" const char *sMainScreenFiles[6] = {data_ov130_022933e0, data_ov130_02293368, data_ov130_022933f4, data_ov130_0229337c, data_ov130_02293408, data_ov130_0229341c};
 extern "C" const u32 sDigitColumnTable[6] = {0x16, 0x16, 0x17, 0x17, 0x14, 0x17};
 extern "C" const u32 sDigitRowTable[6] = {0x2, 0x6, 0x2, 0x6, 0x7, 0x8};
 extern "C" char data_ov130_02293458[] = "menu/bank/f1_bg_us.bsc";
@@ -120,54 +98,6 @@ extern "C" const u8 sValueLabelTextIds[8] = {0x55, 0x58, 0x61, 0x5a, 0x5b, 0x5d,
 extern "C" const u8 sBalanceLabelTextIds[8] = {0x56, 0x59, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00};
 extern "C" const u8 sTitleTextIds[8] = {0x57, 0x57, 0x57, 0x5e, 0x5b, 0x5c, 0x62, 0x00};
 extern "C" char *sTitleObjCharFiles[2] = {data_ov130_022934a0, data_ov130_022934bc};
-
-struct Ov130S {
-    u16 flags;
-    u8 repeatTimer;
-    u8 highlightTimer;
-    u8 pressedKey;
-    u8 cursorKey;
-    u8 labelCount;
-    u8 entryMode;
-    u8 layout;
-    u8 objVariant;
-    u8 pad_0a[2];
-    s32 value;
-    s32 maxValue;
-    s32 topAmount;
-    s32 bottomAmount;
-    s32 shownTopAmount;
-    s32 shownBottomAmount;
-    u8 pad_24[8];
-    u8 slots[5][0x40];
-    u8 pad_16c[0x1b4 - 0x16c];
-    u16 map[0x400];
-};
-
-extern "C" {
-s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-
-void *NumberPad_AllocLabel(Ov130S *s);
-void NumberPad_ReleaseLabels(Ov130S *s);
-void NumberPad_PrintSmallNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n);
-void NumberPad_FillSmallDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n);
-void NumberPad_PrintLargeNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n);
-void NumberPad_FillLargeDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n);
-void NumberPad_RedrawValues(Ov130S *s);
-void NumberPad_ApplyKey(Ov130S *s);
-void NumberPad_SetKeyPalette(Ov130S *s, u32 idx, s32 n);
-void NumberPad_ResetKeyPalettes(Ov130S *s);
-void NumberPad_PressKey(Ov130S *s);
-}
-namespace Unk_ov130_022925c8_Imp {
-extern "C" {
-s32 NumberPad_PrintSmallNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n);
-s32 NumberPad_FillSmallDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n);
-s32 NumberPad_PrintLargeNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n);
-s32 NumberPad_FillLargeDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n);
-}
-}
 
 NumberPad::NumberPad() {}
 
@@ -208,7 +138,7 @@ void NumberPad::init(u32 mode, u32 a, u32 b) {
     }
     mainLayer = a;
     keyLayer = b;
-    NumberPad_ReleaseLabels((Ov130S *)this);
+    NumberPad_ReleaseLabels(this);
     cursorKey = 0xa;
     pressedKey = 0xd;
     highlightTimer = 0;
@@ -228,7 +158,7 @@ void NumberPad::init(u32 mode, u32 a, u32 b) {
 }
 
 void NumberPad_LoadBgGraphics(s32 x) {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/bank/bg0.bch", h, x, 0x10, 0x10, 0xff);
     Gfx2d_LoadCharFile("menu/bank/bg1.bch", h, x, 0x100, 0x100, 0x1a9);
     Gfx2d_LoadPaletteFile("menu/bank/bg.bpl", h, x, 1, 1, 0xd);
@@ -246,10 +176,10 @@ void NumberPad::loadBg() {
         BgScreen_SetRectPalette(mainScreen, 2, 2, 0xd, 3, 0xa);
         break;
     }
-    Gfx2d_LoadScreen(mainScreen, mainLayer, 0x800, 0);
+    Gfx2d_LoadScreen((u8 *)mainScreen, mainLayer, 0x800, 0);
     File_LoadToBuffer(sKeyScreenFiles[layout], keyScreen, 0x800);
-    Gfx2d_LoadScreen(keyScreen, keyLayer, 0x800, 0);
-    LabelString *o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+    Gfx2d_LoadScreen((u8 *)keyScreen, keyLayer, 0x800, 0);
+    LabelString *o = NumberPad_AllocLabel(this);
     if (entryMode == 6) {
         String_Load2dMenu(o, 0x51);
     } else {
@@ -263,7 +193,7 @@ void NumberPad::loadBg() {
     }
     o->createLabel(keyLayer, a, b, 0xf, 0, 0);
     o->redrawAligned(1, 0);
-    o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+    o = NumberPad_AllocLabel(this);
     switch (entryMode) {
     case 2:
         String_Load2dMenu(o, 0x59);
@@ -277,22 +207,22 @@ void NumberPad::loadBg() {
     }
     o->createLabel(keyLayer, 0xb0, 0xa, 0xf, 0, 0);
     o->redrawAligned(1, 0);
-    o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+    o = NumberPad_AllocLabel(this);
     String_Load2dMenu(o, sValueLabelTextIds[entryMode]);
     o->createLabel(keyLayer, 0xc4, 0xa, 0xf, 0, 0);
     o->redrawAligned(1, 0);
     if (layout == 0 || layout == 2) {
-        o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+        o = NumberPad_AllocLabel(this);
         String_Load2dMenu(o, sBalanceLabelTextIds[entryMode]);
         o->createLabel(keyLayer, 0xd8, 0xa, 0xf, 0, 0);
         o->redrawAligned(1, 0);
     }
-    NumberPad_ResetKeyPalettes((Ov130S *)this);
-    NumberPad_RedrawValues((Ov130S *)this);
+    NumberPad_ResetKeyPalettes(this);
+    NumberPad_RedrawValues(this);
 }
 
 void NumberPad_LoadObjGraphics(s32 n) {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     u32 local;
     Gfx2d_LoadPaletteFile("menu/bank/obj.bpl", h, 8, 4, 4, 0xe);
     Gfx2d_LoadCharFile("menu/bank/obj0.bch", h, 8, 0xc0, 0xc0, 0x15f);
@@ -312,20 +242,20 @@ void NumberPad_LoadObjGraphics(s32 n) {
 
 void NumberPad::loadObj() {
     NumberPad_LoadObjGraphics(objVariant);
-    LabelString *o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+    LabelString *o = NumberPad_AllocLabel(this);
     String_Load2dMenu(o, sTitleTextIds[entryMode]);
     o->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
     o->redrawAligned(1, 0);
 }
 
 void NumberPad::shutdown() {
-    NumberPad_ReleaseLabels((Ov130S *)this);
+    NumberPad_ReleaseLabels(this);
     screenTasks[0].cancel();
     screenTasks[1].cancel();
 }
 
 void NumberPad::update() {
-    NumberPad_ReleaseLabels((Ov130S *)this);
+    NumberPad_ReleaseLabels(this);
     screenTasks[0].cancel();
     screenTasks[1].cancel();
     if (highlightTimer != 0) {
@@ -334,26 +264,26 @@ void NumberPad::update() {
             if (repeatTimer != 0) {
                 highlightTimer = 1;
             } else {
-                NumberPad_UnhighlightKey((Ov130S *)this, pressedKey);
+                NumberPad_UnhighlightKey(this, pressedKey);
             }
         }
     }
 }
 
 void NumberPad::flushScreens() {
-    if (NumberPad_TestFlags((Ov130S *)this, 1)) {
+    if (NumberPad_TestFlags(this, 1)) {
         if (screenTasks[0].requestScreen(mainScreen, mainLayer, 0x800, 0)) {
-            NumberPad_ClearFlags((Ov130S *)this, 1);
+            NumberPad_ClearFlags(this, 1);
         }
     }
-    if (NumberPad_TestFlags((Ov130S *)this, 2)) {
+    if (NumberPad_TestFlags(this, 2)) {
         if (screenTasks[1].requestScreen(keyScreen, keyLayer, 0x800, 0)) {
-            NumberPad_ClearFlags((Ov130S *)this, 2);
+            NumberPad_ClearFlags(this, 2);
         }
     }
 }
 
-extern "C" u32 NumberPad_HitTestKey(Ov130S *s, s32 x, s32 y) {
+extern "C" u32 NumberPad_HitTestKey(NumberPad *s, s32 x, s32 y) {
     s32 yy;
     x -= 0x50;
     yy = y - 0x60;
@@ -366,7 +296,7 @@ extern "C" u32 NumberPad_HitTestKey(Ov130S *s, s32 x, s32 y) {
     return 13;
 }
 
-extern "C" void NumberPad_PressKey(Ov130S *s) {
+extern "C" void NumberPad_PressKey(NumberPad *s) {
     NumberPad_ResetKeyPalettes(s);
     NumberPad_HighlightKey(s, s->pressedKey);
     s->repeatTimer = 0xd;
@@ -374,11 +304,11 @@ extern "C" void NumberPad_PressKey(Ov130S *s) {
     NumberPad_ApplyKey(s);
 }
 
-extern "C" void NumberPad_StopKeyRepeat(Ov130S *s) {
+extern "C" void NumberPad_StopKeyRepeat(NumberPad *s) {
     s->repeatTimer = 0;
 }
 
-extern "C" BOOL NumberPad_TickKeyRepeat(Ov130S *s) {
+extern "C" BOOL NumberPad_TickKeyRepeat(NumberPad *s) {
     if (s->repeatTimer != 0) {
         s->repeatTimer--;
         if (s->repeatTimer == 0) {
@@ -390,16 +320,16 @@ extern "C" BOOL NumberPad_TickKeyRepeat(Ov130S *s) {
     return FALSE;
 }
 
-extern "C" void NumberPad_ResetKeyPalettes(Ov130S *s) {
+extern "C" void NumberPad_ResetKeyPalettes(NumberPad *s) {
     s32 x;
     if (s->layout == 0 || s->layout == 2) x = 0x12;
     else x = 0xa;
-    BgScreen_SetRectPalette((u8 *)s + 0x9b4, x, 0xc, x + 0xc, 0x13, 2);
+    BgScreen_SetRectPalette(s->keyScreen, x, 0xc, x + 0xc, 0x13, 2);
     NumberPad_UnhighlightKey(s, 10);
     NumberPad_SetFlags(s, 2);
 }
 
-extern "C" void NumberPad_SetKeyPalette(Ov130S *s, u32 idx, s32 n) {
+extern "C" void NumberPad_SetKeyPalette(NumberPad *s, u32 idx, s32 n) {
     s32 a = sKeyX0Table[idx];
     s32 b = sKeyX1Table[idx];
     s32 c = sKeyRowTable[idx];
@@ -408,22 +338,22 @@ extern "C" void NumberPad_SetKeyPalette(Ov130S *s, u32 idx, s32 n) {
         a += 8;
         b += 8;
     }
-    BgScreen_SetRectPalette((u8 *)s + 0x9b4, a, c, b, d, n);
+    BgScreen_SetRectPalette(s->keyScreen, a, c, b, d, n);
     NumberPad_SetFlags(s, 2);
 }
 
-extern "C" void NumberPad_HighlightKey(Ov130S *s, u32 idx) {
+extern "C" void NumberPad_HighlightKey(NumberPad *s, u32 idx) {
     NumberPad_SetKeyPalette(s, idx, 3);
 }
 
-extern "C" void NumberPad_UnhighlightKey(Ov130S *s, u32 idx) {
+extern "C" void NumberPad_UnhighlightKey(NumberPad *s, u32 idx) {
     s32 n;
     if (idx == 10) n = 1;
     else n = 2;
     NumberPad_SetKeyPalette(s, idx, n);
 }
 
-extern "C" u32 NumberPad_GetCursorX(Ov130S *s) {
+extern "C" u32 NumberPad_GetCursorX(NumberPad *s) {
     u32 t = s->cursorKey;
     u32 v = sNumberPadCursorXTable[t];
     if (s->layout == 0 || s->layout == 2) {
@@ -432,18 +362,18 @@ extern "C" u32 NumberPad_GetCursorX(Ov130S *s) {
     return v;
 }
 
-extern "C" u32 NumberPad_GetCursorY(Ov130S *s) {
+extern "C" u32 NumberPad_GetCursorY(NumberPad *s) {
     return sNumberPadCursorYTable[s->cursorKey];
 }
 
-extern "C" BOOL NumberPad_IsCursorOnButton(Ov130S *s) {
+extern "C" BOOL NumberPad_IsCursorOnButton(NumberPad *s) {
     BOOL r = TRUE;
     u32 t = s->cursorKey;
     if (t != 0xb && t != 0xc) r = FALSE;
     return r;
 }
 
-extern "C" BOOL NumberPad_MoveCursor(Ov130S *s, u32 p) {
+extern "C" BOOL NumberPad_MoveCursor(NumberPad *s, u32 p) {
     u32 old;
     if (p == 0) return FALSE;
     old = s->cursorKey;
@@ -455,7 +385,7 @@ extern "C" BOOL NumberPad_MoveCursor(Ov130S *s, u32 p) {
     return FALSE;
 }
 
-extern "C" BOOL NumberPad_PressCursorKey(Ov130S *s) {
+extern "C" BOOL NumberPad_PressCursorKey(NumberPad *s) {
     u32 t = s->cursorKey;
     if ((u8)(t + 0xf5) <= 1) return FALSE;
     s->pressedKey = t;
@@ -463,22 +393,22 @@ extern "C" BOOL NumberPad_PressCursorKey(Ov130S *s) {
     return TRUE;
 }
 
-extern "C" BOOL NumberPad_IsCursorOnOk(Ov130S *s) {
+extern "C" BOOL NumberPad_IsCursorOnOk(NumberPad *s) {
     if (s->cursorKey == 0xb) return TRUE;
     return FALSE;
 }
 
-extern "C" void NumberPad_DrawKeypadFrame(Ov130S *s) {
-    s32 y = (s32)s + 0x60;
+extern "C" void NumberPad_DrawKeypadFrame(s32 y) {
+    y += 0x60;
     Oam_DrawCell(1, data_ov130_02293518, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     Oam_DrawCell(1, data_ov130_02293568, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-extern "C" void NumberPad_Draw(Ov130S *s, s32 y) {
+extern "C" void NumberPad_Draw(NumberPad *s, s32 y) {
     s32 r4 = y;
     s32 r6 = r4 + 0x60;
-    u32 *t1;
-    u32 *t2;
+    GXOamAttr *t1;
+    GXOamAttr *t2;
     if (s->layout == 0 || s->layout == 2) {
         t1 = data_ov130_022934d8;
         t2 = data_ov130_022935e8;
@@ -496,35 +426,35 @@ extern "C" void NumberPad_Draw(Ov130S *s, s32 y) {
     if (s->layout == 4) return;
     if (s->layout == 0 || s->layout == 2) {
         if (s->value >= 1000) Oam_DrawObj(1, sSeparatorCellsWide, 0x80, r4, -1, 2, 0);
-        if (s->value >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 2), 0x80, r4, -1, 2, 0);
-        if (s->shownTopAmount >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 4), 0x80, r4, -1, 2, 0);
-        if (s->shownTopAmount >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 6), 0x80, r4, -1, 2, 0);
-        if (s->shownBottomAmount >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 8), 0x80, r4, -1, 2, 0);
-        if (s->shownBottomAmount >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 10), 0x80, r4, -1, 2, 0);
+        if (s->value >= 1000000) Oam_DrawObj(1, &sSeparatorCellsWide[1], 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000) Oam_DrawObj(1, &sSeparatorCellsWide[2], 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000000) Oam_DrawObj(1, &sSeparatorCellsWide[3], 0x80, r4, -1, 2, 0);
+        if (s->shownBottomAmount >= 1000) Oam_DrawObj(1, &sSeparatorCellsWide[4], 0x80, r4, -1, 2, 0);
+        if (s->shownBottomAmount >= 1000000) Oam_DrawObj(1, &sSeparatorCellsWide[5], 0x80, r4, -1, 2, 0);
     } else {
         if (s->layout == 5) r4 -= 8;
-        if (s->value >= 1000) Oam_DrawObj(1, (sSeparatorCells + 4), 0x80, r4, -1, 2, 0);
-        if (s->value >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 6), 0x80, r4, -1, 2, 0);
+        if (s->value >= 1000) Oam_DrawObj(1, &sSeparatorCells[2], 0x80, r4, -1, 2, 0);
+        if (s->value >= 1000000) Oam_DrawObj(1, &sSeparatorCells[3], 0x80, r4, -1, 2, 0);
         if (s->shownTopAmount >= 1000) Oam_DrawObj(1, sSeparatorCells, 0x80, r4, -1, 2, 0);
-        if (s->shownTopAmount >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 2), 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000000) Oam_DrawObj(1, &sSeparatorCells[1], 0x80, r4, -1, 2, 0);
     }
 }
 
-extern "C" void NumberPad_SetAmounts(Ov130S *s, s32 a, s32 b, s32 c) {
+extern "C" void NumberPad_SetAmounts(NumberPad *s, s32 a, s32 b, s32 c) {
     s->maxValue = a;
     s->topAmount = b;
     s->bottomAmount = c;
 }
 
-extern "C" s32 NumberPad_GetValue(Ov130S *s) {
+extern "C" s32 NumberPad_GetValue(NumberPad *s) {
     return s->value;
 }
 
-extern "C" s32 NumberPad_GetTopAmount(Ov130S *s) {
+extern "C" s32 NumberPad_GetTopAmount(NumberPad *s) {
     return s->topAmount;
 }
 
-extern "C" s32 NumberPad_GetBottomAmount(Ov130S *s) {
+extern "C" s32 NumberPad_GetBottomAmount(NumberPad *s) {
     return s->bottomAmount;
 }
 
@@ -536,7 +466,7 @@ extern "C" void NumberPad_PlayCancelSe() {
     Snd_PlaySe(0x2a);
 }
 
-extern "C" BOOL NumberPad_ClearValue(Ov130S *s) {
+extern "C" BOOL NumberPad_ClearValue(NumberPad *s) {
     if (s->value == 0) return FALSE;
     s->value = 0;
     NumberPad_PlayCancelSe();
@@ -544,7 +474,7 @@ extern "C" BOOL NumberPad_ClearValue(Ov130S *s) {
     return TRUE;
 }
 
-extern "C" void NumberPad_ApplyKey(Ov130S *s) {
+extern "C" void NumberPad_ApplyKey(NumberPad *s) {
     s32 n;
     s32 v = s->value;
     u32 k = s->pressedKey;
@@ -563,45 +493,45 @@ extern "C" void NumberPad_ApplyKey(Ov130S *s) {
     }
 }
 
-extern "C" void NumberPad_RedrawValues(Ov130S *s) {
+extern "C" void NumberPad_RedrawValues(NumberPad *s) {
     u32 m = s->layout;
     u32 a = sDigitColumnTable[m];
     u32 b = sDigitRowTable[m];
     switch (m) {
     case 4:
-        if (s->value == 0) Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b, 2);
-        else Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->value, a, b, 2);
+        if (s->value == 0) NumberPad_FillSmallDigits(s, 10, a, b, 2);
+        else NumberPad_PrintSmallNumber(s, s->value, a, b, 2);
         break;
     case 5:
         if (s->value == 0) {
-            Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, 0, a, b, 9);
-            Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b, 7);
+            NumberPad_PrintSmallNumber(s, 0, a, b, 9);
+            NumberPad_FillSmallDigits(s, 10, a, b, 7);
         } else {
-            Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->value, a, b, 7);
+            NumberPad_PrintSmallNumber(s, s->value, a, b, 7);
         }
         break;
     default:
         s->shownTopAmount = s->topAmount;
-        if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->shownTopAmount, a, b, 9);
-        else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->shownTopAmount, a, b, 6);
+        if (s->layout >= 2) NumberPad_PrintSmallNumber(s, s->shownTopAmount, a, b, 9);
+        else NumberPad_PrintLargeNumber(s, s->shownTopAmount, a, b, 6);
         if (s->value == 0) {
-            if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b + 3, 9);
-            else Unk_ov130_022925c8_Imp::NumberPad_FillLargeDigits(s, 10, a, b + 3, 6);
+            if (s->layout >= 2) NumberPad_FillSmallDigits(s, 10, a, b + 3, 9);
+            else NumberPad_FillLargeDigits(s, 10, a, b + 3, 6);
         } else {
-            if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->value, a, b + 3, 9);
-            else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->value, a, b + 3, 6);
+            if (s->layout >= 2) NumberPad_PrintSmallNumber(s, s->value, a, b + 3, 9);
+            else NumberPad_PrintLargeNumber(s, s->value, a, b + 3, 6);
         }
         if (s->layout == 0 || s->layout == 2) {
             s32 t = s->bottomAmount;
             if (s->entryMode != 0) t += s->value;
             s->shownBottomAmount = t;
-            if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->shownBottomAmount, a, b + 6, 9);
-            else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->shownBottomAmount, a, b + 6, 6);
+            if (s->layout >= 2) NumberPad_PrintSmallNumber(s, s->shownBottomAmount, a, b + 6, 9);
+            else NumberPad_PrintLargeNumber(s, s->shownBottomAmount, a, b + 6, 6);
         }
     }
 }
 
-extern "C" void NumberPad_FillLargeDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n) {
+extern "C" void NumberPad_FillLargeDigits(NumberPad *s, s32 idx, s32 x, s32 y, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         NumberPad_PutLargeDigit(s, idx, x, y);
@@ -609,7 +539,7 @@ extern "C" void NumberPad_FillLargeDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 
     }
 }
 
-extern "C" void NumberPad_PrintLargeNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n) {
+extern "C" void NumberPad_PrintLargeNumber(NumberPad *s, s32 val, s32 x, s32 y, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         if (val == 0) {
@@ -622,22 +552,22 @@ extern "C" void NumberPad_PrintLargeNumber(Ov130S *s, s32 val, s32 x, s32 y, s32
     }
 }
 
-extern "C" void NumberPad_PutLargeDigit(Ov130S *s, s32 idx, s32 x, s32 y) {
+extern "C" void NumberPad_PutLargeDigit(NumberPad *s, s32 idx, s32 x, s32 y) {
     u16 b;
     s32 p;
     if (idx != 11) b = (u16)(idx * 4 + 0x84);
     else b = 0x176;
     p = x + y * 32;
-    s->map[p] = (s->map[p] & 0xfc00) | b;
-    s->map[p + 1] = (s->map[p + 1] & 0xfc00) | (u16)(b + 1);
+    s->mainScreen[p] = (s->mainScreen[p] & 0xfc00) | b;
+    s->mainScreen[p + 1] = (s->mainScreen[p + 1] & 0xfc00) | (u16)(b + 1);
     b += 2;
     if (idx == 11) b = 0x176;
-    s->map[p + 0x20] = (s->map[p + 0x20] & 0xfc00) | b;
-    s->map[p + 0x21] = (s->map[p + 0x21] & 0xfc00) | (u16)(b + 1);
+    s->mainScreen[p + 0x20] = (s->mainScreen[p + 0x20] & 0xfc00) | b;
+    s->mainScreen[p + 0x21] = (s->mainScreen[p + 0x21] & 0xfc00) | (u16)(b + 1);
     NumberPad_SetFlags(s, 1);
 }
 
-extern "C" void NumberPad_FillSmallDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 n) {
+extern "C" void NumberPad_FillSmallDigits(NumberPad *s, s32 idx, s32 x, s32 y, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         NumberPad_PutSmallDigit(s, idx, x, y);
@@ -645,7 +575,7 @@ extern "C" void NumberPad_FillSmallDigits(Ov130S *s, s32 idx, s32 x, s32 y, s32 
     }
 }
 
-extern "C" void NumberPad_PrintSmallNumber(Ov130S *s, s32 val, s32 x, s32 y, s32 n) {
+extern "C" void NumberPad_PrintSmallNumber(NumberPad *s, s32 val, s32 x, s32 y, s32 n) {
     s32 z = 0;
     s32 i;
     for (i = 0; i < n; i++) {
@@ -660,12 +590,12 @@ extern "C" void NumberPad_PrintSmallNumber(Ov130S *s, s32 val, s32 x, s32 y, s32
     }
 }
 
-extern "C" void NumberPad_PutSmallDigit(Ov130S *s, s32 idx, s32 x, s32 y) {
+extern "C" void NumberPad_PutSmallDigit(NumberPad *s, s32 idx, s32 x, s32 y) {
     s32 p;
     u16 *m;
     u16 t = (u16)(idx * 2 + 0x160);
     p = x + y * 32;
-    m = s->map;
+    m = s->mainScreen;
     m[p] = (m[p] & 0xfc00) | t;
     p += 0x20;
     t = (u16)(t + 1);
@@ -673,28 +603,28 @@ extern "C" void NumberPad_PutSmallDigit(Ov130S *s, s32 idx, s32 x, s32 y) {
     NumberPad_SetFlags(s, 1);
 }
 
-extern "C" void NumberPad_ReleaseLabels(Ov130S *s) {
+extern "C" void NumberPad_ReleaseLabels(NumberPad *s) {
     s32 i;
     s->labelCount = 0;
-    for (i = 0; i < 5; i++) ((LabelString *)(s->slots[i]))->destroyLabel();
+    for (i = 0; i < 5; i++) s->labels[i].destroyLabel();
 }
 
-extern "C" void *NumberPad_AllocLabel(Ov130S *s) {
-    if (s->labelCount >= 5) return HOST_AT(s, 0x12c, slots[256], 0);
+extern "C" LabelString *NumberPad_AllocLabel(NumberPad *s) {
+    if (s->labelCount >= 5) return &s->labels[4];
     s->labelCount++;
-    return s->slots[s->labelCount - 1];
+    return &s->labels[s->labelCount - 1];
 }
 
-extern "C" BOOL NumberPad_TestFlags(Ov130S *s, u32 m) {
+extern "C" BOOL NumberPad_TestFlags(NumberPad *s, u32 m) {
     if ((s->flags & m) != 0) return TRUE;
     return FALSE;
 }
 
-extern "C" void NumberPad_SetFlags(Ov130S *s, u32 m) {
+extern "C" void NumberPad_SetFlags(NumberPad *s, u32 m) {
     s->flags |= m;
 }
 
-extern "C" void NumberPad_ClearFlags(Ov130S *s, u32 m) {
+extern "C" void NumberPad_ClearFlags(NumberPad *s, u32 m) {
     s->flags &= ~m;
 }
 

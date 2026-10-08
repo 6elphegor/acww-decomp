@@ -11,9 +11,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL__ZN14LetterRenderer17highlightGreetingEjj
-void _ZN14LetterRenderer17highlightGreetingEjj(LetterRenderer *self, u32 a, u32 b, u32 c);
-#endif
 #ifndef PROTO_LOCAL_LetterLayout_HighlightSignature
 void LetterLayout_HighlightSignature(u8 *self, u32 a, u32 b, u32 c);
 #endif

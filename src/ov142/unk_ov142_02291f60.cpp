@@ -1,4 +1,3 @@
-#include "uptr.h"
 // ov142: scene overlay (class CatalogMenu, vtable 0x02294da8, 0x2e10 bytes): item catalog list.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -18,21 +17,12 @@
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov142_02294d38  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov142_02294d58  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov142_02294d78  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov142_02294e08  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206e54c.h"
@@ -40,14 +30,13 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov142/unk_ov142_02291f60.h"
 
 class CatalogMenu;
 
-// Other modules' methods called with the object first (the real symbol is the mangled name).
-#define PlayerData_getCatalog _ZN10PlayerData10getCatalogEv
-#define func_02133150 _s32_div_f
 
 // ---- main-module classes (copied from src/main) ----
 
@@ -63,24 +52,15 @@ class TextLabel;
 extern "C" {
 extern u8 gFieldSceneKind;
 extern u16 gPad[];
-extern void *gCurrentHeap;
 
 s32 Item_TestInfoFlag4(u16 *p);
 s32 Item_GetMemberPrice(u16 *p);
 s32 Item_TestInfoFlag3(u16 *p);
 void MIi_CpuClear16(u32 v, void *dst, s32 n);
 void MIi_CpuCopy16(void *dst, void *src, s32 n);
+// (proto/autoload_2/unk_020e7500.h conflicts with actor/Actor.h's List_Remove)
+BOOL Math_StepS32(s32 *p, s32 target, s32 step);
 s32 _s32_div_f(s32 a, s32 b);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void Math_StepS32(void *p, s32 a, s32 b);
-void Menu_PlayScrollGrabSe(void *p);
-void Menu_PlayScrollTickSe(void *p);
-void MenuButtons_LoadTextColors(void *p);
-void Oam_DrawCell(u32 a, const void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Oam_DrawObj(s32 mode, const void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
-
-// Mangled-name declaration (macro'd above): the object is the first argument.
-void *PlayerData_getCatalog(u32 p);
 }
 
 // ---- ov002 sub-objects ----
@@ -265,9 +245,9 @@ public:
     /* 0x1418 */ u16 gyroidItems[0xfe / 2];
     /* 0x1516 */ u16 fossilItems[0x68 / 2];
     /* 0x157e */ u16 shownRowItems[9];
-    /* 0x1590 */ u8 rowTemplateScreen[0x800];
-    /* 0x1d90 */ u8 listScreen[0x800];
-    /* 0x2590 */ u8 frameScreen[0x800];
+    /* 0x1590 */ u16 rowTemplateScreen[0x400];
+    /* 0x1d90 */ u16 listScreen[0x400];
+    /* 0x2590 */ u16 frameScreen[0x400];
     /* 0x2d90 */ u16 basePalette3[16];
     /* 0x2db0 */ u16 workPalette3[16];
     /* 0x2dd0 */ u16 basePalette4[16];
@@ -288,58 +268,7 @@ static inline BOOL Unk_ov142_02293b34_IsOne() {
 }
 
 
-extern "C" u32 data_ov142_02294d18[2];
-extern "C" u32 data_ov142_02294d20[2];
-extern "C" u32 data_ov142_02294d28[2];
-extern "C" u32 data_ov142_02294d30[2];
-extern "C" u32 data_ov142_02294d38[8];
-extern "C" u32 data_ov142_02294d58[8];
-extern "C" u32 data_ov142_02294d78[10];
-extern "C" u32 data_ov142_02294e08[36];
 
-extern "C" {
-void _ZN11CatalogMenu19updateBarTransitionEv();
-void _ZN11CatalogMenu20updateConfirmButtonsEv();
-void _ZN11CatalogMenu18updateConfirmTouchEv();
-void _ZN11CatalogMenu19updateCursorReleaseEv();
-void _ZN11CatalogMenu17updateCursorPressEv();
-void _ZN11CatalogMenu16updateCursorMoveEv();
-void _ZN11CatalogMenu15updateArrowKeysEv();
-void _ZN11CatalogMenu17updateKnobKeysEndEv();
-void _ZN11CatalogMenu14updateKnobKeysEv();
-void _ZN11CatalogMenu13updateButtonsEv();
-void _ZN11CatalogMenu16updateArrowTouchEv();
-void _ZN11CatalogMenu16updateTrackTouchEv();
-void _ZN11CatalogMenu15updateKnobTouchEv();
-void _ZN11CatalogMenu11updateTouchEv();
-void _ZN11CatalogMenu15stateDialogBackEv();
-void _ZN11CatalogMenu16stateDialogCloseEv();
-void _ZN11CatalogMenu11stateDialogEv();
-void _ZN11CatalogMenu15stateDialogOpenEv();
-void _ZN11CatalogMenu12stateClosingEv();
-void _ZN11CatalogMenu10stateCloseEv();
-void _ZN11CatalogMenu12stateOpeningEv();
-void _ZN11CatalogMenu9stateOpenEv();
-}
-extern "C" void *data_ov142_02294c60[2];
-extern "C" void *data_ov142_02294c68[2];
-extern "C" void *data_ov142_02294c70[2];
-extern "C" void *data_ov142_02294c78[2];
-extern "C" void *data_ov142_02294c80[2];
-extern "C" void *data_ov142_02294c90[2];
-extern "C" void *data_ov142_02294c98[2];
-extern "C" void *data_ov142_02294ca0[2];
-extern "C" void *data_ov142_02294ca8[2];
-extern "C" void *data_ov142_02294cb0[2];
-extern "C" void *data_ov142_02294cb8[2];
-extern "C" void *data_ov142_02294cc0[2];
-extern "C" void *data_ov142_02294cc8[2];
-extern "C" void *data_ov142_02294cd0[2];
-extern "C" void *data_ov142_02294cd8[2];
-extern "C" void *data_ov142_02294ce0[2];
-extern "C" void *data_ov142_02294ce8[2];
-extern "C" void *data_ov142_02294cf0[2];
-extern "C" void *data_ov142_02294cf8[2];
 extern "C" void *data_ov142_02294d00[2];
 extern "C" void *data_ov142_02294d08[2];
 extern "C" void *data_ov142_02294d10[2];
@@ -397,8 +326,8 @@ BOOL CatalogMenu::onDraw() {
         } else {
             pal = 7;
         }
-        Oam_DrawObj(1, (u8 *)data_ov142_02294e08 + x * 8, 0x80, y, pal, 1, 0);
-        Oam_DrawObj(1, (u8 *)data_ov142_02294e08 + (x + 1) * 8, 0x80, y, pal, 1, 0);
+        Oam_DrawObj(1, data_ov142_02294e08 + x, 0x80, y, pal, 1, 0);
+        Oam_DrawObj(1, data_ov142_02294e08 + (x + 1), 0x80, y, pal, 1, 0);
     }
     Oam_DrawCell(1, data_ov142_02294d38, 0x80, y, orderButtonPal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     x = y - (scrollY & 0xf);
@@ -421,70 +350,85 @@ BOOL CatalogMenu::onDraw() {
     return TRUE;
 }
 
-extern "C" void *data_ov142_02294d00[2] = {(void *)_ZN11CatalogMenu15stateDialogOpenEv, 0};
-extern "C" void *data_ov142_02294c70[2] = {(void *)_ZN11CatalogMenu13updateButtonsEv, 0};
-extern "C" void *data_ov142_02294ce0[2] = {(void *)_ZN11CatalogMenu17updateCursorPressEv, 0};
-extern "C" void *data_ov142_02294c98[2] = {(void *)_ZN11CatalogMenu15updateArrowKeysEv, 0};
-extern "C" void *data_ov142_02294c68[2] = {(void *)_ZN11CatalogMenu19updateBarTransitionEv, 0};
-extern "C" void *data_ov142_02294ce8[2] = {(void *)_ZN11CatalogMenu15stateDialogBackEv, 0};
-extern "C" u32 data_ov142_02294d58[8] = {0x401440cd, 0x00008908, 0x41f840cd, 0x00008908,
-                                         0x41d840cd, 0x00008908, 0x41b840cd, 0xffff8908};
-extern "C" u32 data_ov142_02294d30[2] = {0x403800bb, 0xffff110e};
-extern "C" u32 data_ov142_02294d28[2] = {0x403800b9, 0x0000910e};
-extern "C" u32 data_ov142_02294d78[10] = {0x41b800bc, 0x0000890c, 0x401440cd, 0x00008928, 0x41f840cd,
-                                          0x00008928, 0x41d840cd, 0x00008928, 0x41b840cd, 0xffff8928};
-extern "C" u32 data_ov142_02294d18[2] = {0x40380035, 0x00008110};
-extern "C" void *data_ov142_02294d10[2] = {(void *)_ZN11CatalogMenu10stateCloseEv, 0};
-extern "C" void *data_ov142_02294d08[2] = {(void *)_ZN11CatalogMenu12stateClosingEv, 0};
-extern "C" u32 data_ov142_02294e08[36] = {
-    0x41820038, 0x000074d5, 0x01928038, 0x000074d7, 0x41820028, 0x000074d2, 0x01928028, 0x000074d4, 0x41820018,
-    0x000074cf, 0x01928018, 0x000074d1, 0x41820008, 0x000074d8, 0x01928008, 0x000074da, 0x418200f8, 0x000074cc,
-    0x019280f8, 0x000074ce, 0x418200e8, 0x000074c9, 0x019280e8, 0x000074cb, 0x418200d8, 0x000074c6, 0x019280d8,
-    0x000074c8, 0x418200c8, 0x000074c3, 0x019280c8, 0x000074c5, 0x418200b8, 0x000064c0, 0x019280b8, 0xffff64c2};
-extern "C" void *data_ov142_02294cf8[2] = {(void *)_ZN11CatalogMenu11stateDialogEv, 0};
-extern "C" void *data_ov142_02294cf0[2] = {(void *)_ZN11CatalogMenu16stateDialogCloseEv, 0};
-extern "C" void *data_ov142_02294c90[2] = {(void *)_ZN11CatalogMenu16updateCursorMoveEv, 0};
+extern "C" GXOamAttr data_ov142_02294d58[4] = {
+    {0x401440cd, 0x108, 2, 0x8, 0x0},
+    {0x41f840cd, 0x108, 2, 0x8, 0x0},
+    {0x41d840cd, 0x108, 2, 0x8, 0x0},
+    {0x41b840cd, 0x108, 2, 0x8, 0xffff},
+};
+extern "C" GXOamAttr data_ov142_02294d30[1] = {
+    {0x403800bb, 0x10e, 0, 0x1, 0xffff},
+};
+extern "C" GXOamAttr data_ov142_02294d28[1] = {
+    {0x403800b9, 0x10e, 0, 0x9, 0x0},
+};
+extern "C" GXOamAttr data_ov142_02294d78[5] = {
+    {0x41b800bc, 0x10c, 2, 0x8, 0x0},
+    {0x401440cd, 0x128, 2, 0x8, 0x0},
+    {0x41f840cd, 0x128, 2, 0x8, 0x0},
+    {0x41d840cd, 0x128, 2, 0x8, 0x0},
+    {0x41b840cd, 0x128, 2, 0x8, 0xffff},
+};
+extern "C" GXOamAttr data_ov142_02294d18[1] = {
+    {0x40380035, 0x110, 0, 0x8, 0x0},
+};
+extern "C" GXOamAttr data_ov142_02294e08[18] = {
+    {0x41820038, 0xd5, 1, 0x7, 0x0},
+    {0x01928038, 0xd7, 1, 0x7, 0x0},
+    {0x41820028, 0xd2, 1, 0x7, 0x0},
+    {0x01928028, 0xd4, 1, 0x7, 0x0},
+    {0x41820018, 0xcf, 1, 0x7, 0x0},
+    {0x01928018, 0xd1, 1, 0x7, 0x0},
+    {0x41820008, 0xd8, 1, 0x7, 0x0},
+    {0x01928008, 0xda, 1, 0x7, 0x0},
+    {0x418200f8, 0xcc, 1, 0x7, 0x0},
+    {0x019280f8, 0xce, 1, 0x7, 0x0},
+    {0x418200e8, 0xc9, 1, 0x7, 0x0},
+    {0x019280e8, 0xcb, 1, 0x7, 0x0},
+    {0x418200d8, 0xc6, 1, 0x7, 0x0},
+    {0x019280d8, 0xc8, 1, 0x7, 0x0},
+    {0x418200c8, 0xc3, 1, 0x7, 0x0},
+    {0x019280c8, 0xc5, 1, 0x7, 0x0},
+    {0x418200b8, 0xc0, 1, 0x6, 0x0},
+    {0x019280b8, 0xc2, 1, 0x6, 0xffff},
+};
 
 BOOL CatalogMenu::execTransition() {
     static Unk_ov142_02294da8_Fn tbl[8] = {
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cd8,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c60,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294d10,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294d08,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294d00,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cf8,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cf0,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294ce8};
+        &CatalogMenu::stateOpen,
+        &CatalogMenu::stateOpening,
+        &CatalogMenu::stateClose,
+        &CatalogMenu::stateClosing,
+        &CatalogMenu::stateDialogOpen,
+        &CatalogMenu::stateDialog,
+        &CatalogMenu::stateDialogClose,
+        &CatalogMenu::stateDialogBack};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
 
-extern "C" void *data_ov142_02294cd0[2] = {(void *)_ZN11CatalogMenu11updateTouchEv, 0};
-extern "C" void *data_ov142_02294cc8[2] = {(void *)_ZN11CatalogMenu15updateKnobTouchEv, 0};
-extern "C" void *data_ov142_02294cb8[2] = {(void *)_ZN11CatalogMenu18updateConfirmTouchEv, 0};
-extern "C" void *data_ov142_02294c60[2] = {(void *)_ZN11CatalogMenu12stateOpeningEv, 0};
-extern "C" void *data_ov142_02294cb0[2] = {(void *)_ZN11CatalogMenu20updateConfirmButtonsEv, 0};
-extern "C" u32 data_ov142_02294d20[2] = {0x40380037, 0x00001110};
-extern "C" void *data_ov142_02294ca0[2] = {(void *)_ZN11CatalogMenu17updateKnobKeysEndEv, 0};
+extern "C" GXOamAttr data_ov142_02294d20[1] = {
+    {0x40380037, 0x110, 0, 0x1, 0x0},
+};
 
 void CatalogMenu::runMainState() {
     static Unk_ov142_02294da8_Fn tbl[14] = {
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cd0,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cc8,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c78,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cc0,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c70,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294ca8,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294ca0,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c98,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c90,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294ce0,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c80,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cb8,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294cb0,
-        *(Unk_ov142_02294da8_Fn *)data_ov142_02294c68};
+        &CatalogMenu::updateTouch,
+        &CatalogMenu::updateKnobTouch,
+        &CatalogMenu::updateTrackTouch,
+        &CatalogMenu::updateArrowTouch,
+        &CatalogMenu::updateButtons,
+        &CatalogMenu::updateKnobKeys,
+        &CatalogMenu::updateKnobKeysEnd,
+        &CatalogMenu::updateArrowKeys,
+        &CatalogMenu::updateCursorMove,
+        &CatalogMenu::updateCursorPress,
+        &CatalogMenu::updateCursorRelease,
+        &CatalogMenu::updateConfirmTouch,
+        &CatalogMenu::updateConfirmButtons,
+        &CatalogMenu::updateBarTransition};
     (this->*tbl[mainState])();
 }
 
@@ -672,7 +616,7 @@ void CatalogMenu::loadBgGfx() {
 }
 
 void CatalogMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
     void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/catalog/obj0.bch", h, 8, 0xc0, 0xc0, 0x11f);
     Gfx2d_LoadCharFile("menu/catalog/obj1.bch", h, 8, 0x120, 0x120, 0x17f);
@@ -1234,8 +1178,8 @@ void CatalogMenu::buildFurnitureList() {
         if (r) goto next;
         if (Item_TestInfoFlag3(&id)) {
             tabTotalCounts[0] = tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(h->getCatalog(), &id)) {
-                *(u16 *)((u8 *)this + n * 2 + 0x708) = cur;
+            if (Catalog_HasItem((u8 *)h->getCatalog(), &id)) {
+                furnitureItems[n] = cur;
                 n++;
             }
         }
@@ -1276,18 +1220,18 @@ void CatalogMenu::buildGyroidList() {
 }
 
 void CatalogMenu::buildFossilList() {
-    *(u16 *)(HOST_AT(this, 0xe6, tabTotalCounts[8], 0)) = 0;
+    tabTotalCounts[8] = 0;
     s32 n = collectCataloguedFurniture(fossilItems, 0x450c, 0x34, 8);
-    *(u16 *)(HOST_AT(this, 0xd4, tabOwnedCounts[8], 0)) = n;
+    tabOwnedCounts[8] = n;
 }
 
 void CatalogMenu::buildHeadwearList() {
-    *(u16 *)(HOST_AT(this, 0xe0, tabTotalCounts[5], 0)) = 0;
+    tabTotalCounts[5] = 0;
     s32 a = collectCataloguedFurniture(headwearItems, 0x3fa4, 0x40, 5);
     s32 b = collectCataloguedFurniture(headwearItems + a, 0x40a4, 0x20, 5);
     a += b;
     s32 c = collectCataloguedFurniture(headwearItems + a, 0x4124, 0x40, 5);
-    *(u16 *)(HOST_AT(this, 0xce, tabOwnedCounts[5], 0)) = a + c;
+    tabOwnedCounts[5] = a + c;
 }
 
 s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off) {
@@ -1295,12 +1239,11 @@ s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off)
     PlayerData *p = PlayerData_GetCurrent();
     u16 tmp = 0xfff1;
     s32 i = 0;
-    CatalogMenu *q = (CatalogMenu *)((u8 *)this + off * 2);
     for (; i < n; i++) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
-            q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(p->getCatalog(), &tmp)) {
+            tabTotalCounts[off] = tabTotalCounts[off] + 1;
+            if (Catalog_HasItem((u8 *)p->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }
@@ -1315,12 +1258,11 @@ s32 CatalogMenu::collectCatalogued(u16 *out, u16 start, s32 n, s32 off) {
     u16 tmp = 0xfff1;
     PlayerData *p = PlayerData_GetCurrent();
     s32 i = 0;
-    CatalogMenu *q = (CatalogMenu *)((u8 *)this + off * 2);
     for (; i < n; i++) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
-            q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(p->getCatalog(), &tmp)) {
+            tabTotalCounts[off] = tabTotalCounts[off] + 1;
+            if (Catalog_HasItem((u8 *)p->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }
@@ -1339,16 +1281,10 @@ s32 CatalogMenu::getTabOwnedCount() {
 }
 
 extern "C" ProcProfile sCatalogMenuProfile = {(void *(*)())CatalogMenu_Create, 0xb7, 0xbb};
-extern "C" void *data_ov142_02294c80[2] = {(void *)_ZN11CatalogMenu19updateCursorReleaseEv, 0};
-extern "C" void *data_ov142_02294cc0[2] = {(void *)_ZN11CatalogMenu16updateArrowTouchEv, 0};
-extern "C" void *data_ov142_02294ca8[2] = {(void *)_ZN11CatalogMenu14updateKnobKeysEv, 0};
 
 u16 *CatalogMenu::getTabItemPtr(s32 idx) {
-    static u16 *tbl[9] = {
-        (u16 *)(HOST_AT(this, 0x708, furnitureItems[0], 0)), (u16 *)(HOST_AT(this, 0xf08, wallpaperItems[0], 0)), (u16 *)(HOST_AT(this, 0xf90, carpetItems[0], 0)),
-        (u16 *)(HOST_AT(this, 0x1018, shirtItems[0], 0)), (u16 *)(HOST_AT(this, 0x1218, umbrellaItems[0], 0)), (u16 *)(HOST_AT(this, 0x1258, headwearItems[0], 0)),
-        (u16 *)(HOST_AT(this, 0x1398, paperItems[0], 0)), (u16 *)(HOST_AT(this, 0x1418, gyroidItems[0], 0)), (u16 *)(HOST_AT(this, 0x1516, fossilItems[0], 0))
-    };
+    u16 *tbl[9] = {furnitureItems, wallpaperItems, carpetItems, shirtItems, umbrellaItems,
+                   headwearItems, paperItems, gyroidItems, fossilItems};
     if (idx < 0) {
         idx = 0;
     }
@@ -1363,7 +1299,7 @@ void CatalogMenu::composeListScreen() {
     MIi_CpuClear16(fill, listScreen, 0x800);
     s32 z = 0;
     for (s32 n = 0; n < 9; n++) {
-        MIi_CpuCopy16(HOST_AT(this, 0x1590, rowTemplateScreen[0], 0) + i * 0x80, listScreen + j * 0x80, 0x80);
+        MIi_CpuCopy16(&rowTemplateScreen[i * 0x40], &listScreen[j * 0x40], 0x80);
         i++;
         if (i >= 9) {
             i = z;
@@ -1460,7 +1396,7 @@ BOOL CatalogMenu::activateTarget(u32 a) {
         return FALSE;
     case 0x14:
         scrollKnob.grab();
-        Menu_PlayScrollGrabSe(&scrollKnob);
+        Menu_PlayScrollGrabSe();
         setMainState(5);
         return TRUE;
     case 0x17:
@@ -1818,7 +1754,7 @@ void CatalogMenu::dragKnob(s32 v, BOOL c) {
     updateKnobPosition();
     s32 d = knobLastTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
         knobLastTickPos = knobPos;
     }
 }
@@ -1842,7 +1778,7 @@ void CatalogMenu::moveKnobByKey() {
     if (old != knobPos) {
         syncScrollToKnob();
         updateKnobPosition();
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
     }
 }
 
@@ -1861,7 +1797,7 @@ void CatalogMenu::updateKnobPosition() {
 void CatalogMenu::syncScrollToKnob() {
     s32 v;
     s32 n = scrollMax;
-    v = func_02133150(knobPos * n, 0x5a);
+    v = _s32_div_f(knobPos * n, 0x5a);
     if (v < 0) {
         v = 0;
     }
@@ -1874,7 +1810,7 @@ void CatalogMenu::syncScrollToKnob() {
 
 void CatalogMenu::syncKnobToScroll() {
     if (scrollMax > 0) {
-        knobPos = func_02133150(scrollY * 0x5a, scrollMax);
+        knobPos = _s32_div_f(scrollY * 0x5a, scrollMax);
         updateKnobPosition();
     }
 }
@@ -1959,7 +1895,7 @@ void CatalogMenu::scrollByArrow() {
         setScrollPos(scrollY);
         scrollTargetY = scrollY;
         syncKnobToScroll();
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
     }
 }
 
@@ -2018,7 +1954,9 @@ void CatalogMenu::setFlags(u32 m) { flags = flags | m; }
 
 void CatalogMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
-extern "C" void *data_ov142_02294cd8[2] = {(void *)_ZN11CatalogMenu9stateOpenEv, 0};
-extern "C" u32 data_ov142_02294d38[8] = {0x804b00eb, 0x000064db, 0x406b80eb, 0x000064df,
-                                         0x404b400b, 0x0000655b, 0x006b000b, 0xffff655f};
-extern "C" void *data_ov142_02294c78[2] = {(void *)_ZN11CatalogMenu16updateTrackTouchEv, 0};
+extern "C" GXOamAttr data_ov142_02294d38[4] = {
+    {0x804b00eb, 0xdb, 1, 0x6, 0x0},
+    {0x406b80eb, 0xdf, 1, 0x6, 0x0},
+    {0x404b400b, 0x15b, 1, 0x6, 0x0},
+    {0x006b000b, 0x15f, 1, 0x6, 0xffff},
+};

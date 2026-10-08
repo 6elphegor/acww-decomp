@@ -67,7 +67,7 @@ s32 InventoryItemGrid_GetIconIndex(void *o, u16 *p, s32 mode);
 void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode);
 #endif
 #ifndef PROTO_LOCAL_InventoryItemGrid_ShowSlotName
-void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b);
+void InventoryItemGrid_ShowSlotName(void *o, void *balloon, s32 b);
 #endif
 #ifndef PROTO_LOCAL_InventoryItemGrid_GetSlotX
 s32 InventoryItemGrid_GetSlotX(void *o, s32 i);

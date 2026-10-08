@@ -22,31 +22,25 @@
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
 #include "ui/LetterLayout.h"
-#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDefaults_Store  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterLayout_HighlightSignature  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_GetPaper  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_IsBottle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_LoadPaperBg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov122_0229a180  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "ui/AddresseePageArg.h"
+#include "item/LetterView.h"
+#include "nitro/gxoam.h"
+#include "text/Unk_02050288.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02051218.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/main/unk_0206cbdc.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov122/unk_ov122_02296840.h"
 #include "proto/main/unk_02097444.h"
@@ -78,40 +72,19 @@ typedef void (LetterWriteMenu::*Unk_ov122_0229a1b8_Fn)();
 
 extern "C" {
 extern u16 gPad[];
-void StrBuf_GetBytes(void *p, void *q, u32 n);
-void EncodedString_SetRaw(void *p, const void *src, s32 len);
-void LetterDefaults_Store(void *a, void *b);
-void PopupChoice_Close(void *p, u32 v);
-void PopupChoice_OpenAddresseePage(void *p, u32 a, u32 b);
-void Menu_PlayScrollTickSe(void *p);
 extern u8 gU8None;
-s32 _ZN21MenuBottomButtonsBody10getTargetYEi(void *p, s32 v);
-s32 Keyboard_PlayPasteSe(void *st);
-s32 Keyboard_PlayCopySe(void *st);
-BOOL Keyboard_ReplaceCharBeforeCursor(void *st, u8 *a, u8 *b, s32 c, s32 d, s32 e);
-void PopupChoice_DecideAddressee(void *p, s32 v);
-extern u32 gCurrentHeap;
-void *Letter_GetPaper(void *p);
-void Menu_LoadPaperBg(void *p, s32 a);
-s32 Letter_IsBottle(void *p);
-void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
-void PopupChoice_Draw(void *p);
-void func_0206fca8(void *p);
-void _ZN14LetterRenderer17loadRecipientNameEPv(void *p, u32 a);
-void func_ov002_02200a58(void *self, s32 s);
-void func_ov002_02200a60(void *self, s32 s);
-s32 func_ov002_022009d4(void *self);
-s32 func_ov002_022009c8(void *self);
-void Menu_PlayScrollGrabSe(void *p);
-s32 _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(void *p, u32 a, u32 b);
-BOOL PopupChoice_TickDecideDelay(void *p);
-BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
-void _ZN17MenuBottomButtons6drawAtEi(void *self, s32 a);
-void LetterLayout_HighlightSignature(void *self, s32 a, s32 b, s32 c);
-void PopupChoice_ForceClose(void *self);
-void PopupChoice_Update(void *self);
-void PopupChoice_LoadChoiceBg(void *self);
+BOOL EncodedString_SetRaw(StrBuf *buf, const void *src, s32 len);
+
+// the popup choice menu's functions (src/ov002/unk_ov002_022013ac.cpp; they take the menu first)
+void PopupChoice_Close(PopupChoiceMenu *p, s32 x);
+void PopupChoice_OpenAddresseePage(PopupChoiceMenu *p, AddresseePageArg a, s32 x);
+void PopupChoice_DecideAddressee(PopupChoiceMenu *p, u32 x);
+void PopupChoice_Draw(PopupChoiceMenu *p);
+BOOL PopupChoice_TickDecideDelay(PopupChoiceMenu *p);
+BOOL PopupChoice_MoveCursor(PopupChoiceMenu *p, s32 a, u8 *pos, u32 n);
+void PopupChoice_ForceClose(PopupChoiceMenu *p);
+void PopupChoice_Update(PopupChoiceMenu *p);
+void PopupChoice_LoadChoiceBg(PopupChoiceMenu *p);
 }
 
 // Vtable 0x0229a1b8, size 0x4664
@@ -162,7 +135,7 @@ public:
     u32 getFieldCapacity();
     u8 *getFieldBuffer();
     u8 *getPartText();
-    BOOL navigateText(void *pad, s32 flag);
+    BOOL navigateText(u32 pad, s32 flag);
     void deleteSelection();
     void clearSelection();
     BOOL hasSelection();
@@ -267,7 +240,7 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u8 *keyboardSlideY;
+    /* 0x94 */ s32 keyboardSlideY;
     /* 0x98 */ s32 buttonsSlideY;
     /* 0x9c */ s32 caretX;
     /* 0xa0 */ s32 caretY;
@@ -289,7 +262,7 @@ public:
     /* 0xb7 */ u8 addresseePage;
     /* 0xb8 */ u8 dialogId;
     /* 0xb9 */ u8 unk_b9[3];
-    /* 0xbc */ u8 *letter;
+    /* 0xbc */ LetterView *letter;
     /* 0xc0 */ Keyboard keyboard;
     /* 0x3c7c */ LetterRenderer renderer;
     /* 0x3e8c */ MenuScrollKnob scrollKnob;
@@ -313,136 +286,10 @@ extern "C" ProcProfile data_ov122_0229a130 = {(void *(*)())LetterWriteMenu_Creat
 
 extern "C" const u8 data_ov122_0229a008[8] = {0, 9, 9, 3, 4, 0, 0, 0};
 
-extern "C" void _ZN15LetterWriteMenu15transitionAct01Ev();
-extern "C" void *data_ov122_0229a178[2] = {(void *)_ZN15LetterWriteMenu15transitionAct01Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct00Ev();
-extern "C" void *data_ov122_0229a170[2] = {(void *)_ZN15LetterWriteMenu15transitionAct00Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct03Ev();
-extern "C" void *data_ov122_0229a168[2] = {(void *)_ZN15LetterWriteMenu15transitionAct03Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct04Ev();
-extern "C" void *data_ov122_0229a160[2] = {(void *)_ZN15LetterWriteMenu15transitionAct04Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct05Ev();
-extern "C" void *data_ov122_0229a158[2] = {(void *)_ZN15LetterWriteMenu15transitionAct05Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct06Ev();
-extern "C" void *data_ov122_0229a150[2] = {(void *)_ZN15LetterWriteMenu15transitionAct06Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct07Ev();
-extern "C" void *data_ov122_0229a148[2] = {(void *)_ZN15LetterWriteMenu15transitionAct07Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct08Ev();
-extern "C" void *data_ov122_0229a140[2] = {(void *)_ZN15LetterWriteMenu15transitionAct08Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct09Ev();
-extern "C" void *data_ov122_0229a138[2] = {(void *)_ZN15LetterWriteMenu15transitionAct09Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct0AEv();
-extern "C" void *data_ov122_0229a090[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0AEv, 0};
-
 extern "C" u32 data_ov122_0229a180[12] = {0x006880b4, 0x0000a0c0, 0x206880e4, 0x0000a0c0, 0x006800c4, 0x0000a0e0, 0x006800cc, 0x0000a0e0,
                                           0x006800d4, 0x0000a0e0, 0x006800dc, 0xffffa0e0};
 
-extern "C" void _ZN15LetterWriteMenu15transitionAct0CEv();
-extern "C" void *data_ov122_0229a120[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0CEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct0DEv();
-extern "C" void *data_ov122_0229a118[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0DEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct19Ev();
-extern "C" void *data_ov122_0229a080[2] = {(void *)_ZN15LetterWriteMenu9mainAct19Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct10Ev();
-extern "C" void *data_ov122_0229a108[2] = {(void *)_ZN15LetterWriteMenu9mainAct10Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct11Ev();
-extern "C" void *data_ov122_0229a100[2] = {(void *)_ZN15LetterWriteMenu9mainAct11Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct18Ev();
-extern "C" void *data_ov122_0229a078[2] = {(void *)_ZN15LetterWriteMenu9mainAct18Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct00Ev();
-extern "C" void *data_ov122_0229a0f0[2] = {(void *)_ZN15LetterWriteMenu9mainAct00Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct02Ev();
-extern "C" void *data_ov122_0229a0e8[2] = {(void *)_ZN15LetterWriteMenu9mainAct02Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct03Ev();
-extern "C" void *data_ov122_0229a0e0[2] = {(void *)_ZN15LetterWriteMenu9mainAct03Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct04Ev();
-extern "C" void *data_ov122_0229a0d8[2] = {(void *)_ZN15LetterWriteMenu9mainAct04Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct1AEv();
-extern "C" void *data_ov122_0229a0d0[2] = {(void *)_ZN15LetterWriteMenu9mainAct1AEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct06Ev();
-extern "C" void *data_ov122_0229a0c8[2] = {(void *)_ZN15LetterWriteMenu9mainAct06Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct15Ev();
-extern "C" void *data_ov122_0229a020[2] = {(void *)_ZN15LetterWriteMenu9mainAct15Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct08Ev();
-extern "C" void *data_ov122_0229a0b8[2] = {(void *)_ZN15LetterWriteMenu9mainAct08Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct02Ev();
-extern "C" void *data_ov122_0229a0b0[2] = {(void *)_ZN15LetterWriteMenu15transitionAct02Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct0AEv();
-extern "C" void *data_ov122_0229a0a8[2] = {(void *)_ZN15LetterWriteMenu9mainAct0AEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct0BEv();
-extern "C" void *data_ov122_0229a0a0[2] = {(void *)_ZN15LetterWriteMenu9mainAct0BEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct0CEv();
-extern "C" void *data_ov122_0229a098[2] = {(void *)_ZN15LetterWriteMenu9mainAct0CEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct17Ev();
-extern "C" void *data_ov122_0229a040[2] = {(void *)_ZN15LetterWriteMenu9mainAct17Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct0BEv();
-extern "C" void *data_ov122_0229a128[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0BEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct0DEv();
-extern "C" void *data_ov122_0229a038[2] = {(void *)_ZN15LetterWriteMenu9mainAct0DEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct0FEv();
-extern "C" void *data_ov122_0229a070[2] = {(void *)_ZN15LetterWriteMenu9mainAct0FEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct01Ev();
-extern "C" void *data_ov122_0229a0f8[2] = {(void *)_ZN15LetterWriteMenu9mainAct01Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct12Ev();
-extern "C" void *data_ov122_0229a068[2] = {(void *)_ZN15LetterWriteMenu9mainAct12Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct05Ev();
-extern "C" void *data_ov122_0229a060[2] = {(void *)_ZN15LetterWriteMenu9mainAct05Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct14Ev();
-extern "C" void *data_ov122_0229a0c0[2] = {(void *)_ZN15LetterWriteMenu9mainAct14Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct09Ev();
-extern "C" void *data_ov122_0229a050[2] = {(void *)_ZN15LetterWriteMenu9mainAct09Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct16Ev();
-extern "C" void *data_ov122_0229a048[2] = {(void *)_ZN15LetterWriteMenu9mainAct16Ev, 0};
-
 extern "C" u32 data_ov122_0229a030[2] = {0x802a40e6, 0xffffc0c1};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct0EEv();
-extern "C" void *data_ov122_0229a088[2] = {(void *)_ZN15LetterWriteMenu9mainAct0EEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu15transitionAct0EEv();
-extern "C" void *data_ov122_0229a110[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0EEv, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct13Ev();
-extern "C" void *data_ov122_0229a028[2] = {(void *)_ZN15LetterWriteMenu9mainAct13Ev, 0};
-
-extern "C" void _ZN15LetterWriteMenu9mainAct07Ev();
-extern "C" void *data_ov122_0229a058[2] = {(void *)_ZN15LetterWriteMenu9mainAct07Ev, 0};
 
 #define C LetterWriteMenu
 
@@ -463,9 +310,9 @@ BOOL LetterWriteMenu::onCreate() {
 }
 
 BOOL LetterWriteMenu::onDelete() {
-    u32 t = ProcBase_GetParent(this);
-    ((MenuTabBar *)(t))->onTabMenuClosed();
-    ((MenuTabBar *)(t))->showTabs();
+    MenuTabBar *t = (MenuTabBar *)ProcBase_GetParent(this);
+    t->onTabMenuClosed();
+    t->showTabs();
     releaseResources();
     return TRUE;
 }
@@ -473,8 +320,8 @@ BOOL LetterWriteMenu::onDelete() {
 BOOL LetterWriteMenu::onDraw() {
     PopupChoice_Draw(&addresseeMenu);
     if (testFlags(1)) {
-        u8 *p = keyboardSlideY + 0x60;
-        Oam_DrawCell(1, data_ov122_0229a180, 0x80, p - 0x10, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        s32 p = keyboardSlideY + 0x60;
+        Oam_DrawCell(1, (GXOamAttr *)data_ov122_0229a180, 0x80, p - 0x10, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         Keyboard_Draw(&keyboard, 0x80, p, 1);
         Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, p);
         if (MenuCtrl_IsButtons()) {
@@ -500,7 +347,7 @@ BOOL LetterWriteMenu::onDraw() {
         }
     }
     if (testFlags(1)) {
-        _ZN10ScrollKnob6moveToEii(&scrollKnob, 0x64, (u32)(keyboardSlideY - 0x58) + (scrollY >> 1));
+        scrollKnob.moveTo(0x64, keyboardSlideY - 0x58 + (scrollY >> 1));
         s32 t = ((MenuScrollKnob *)(&scrollKnob))->getGripX();
         Keyboard_SetTextFieldPos(&keyboard, t, ((MenuScrollKnob *)(&scrollKnob))->getGripY());
         scrollKnob.draw();
@@ -513,7 +360,7 @@ BOOL LetterWriteMenu::onDraw() {
         ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     if (testFlags(1)) {
-        _ZN17MenuBottomButtons6drawAtEi(&bottomButtons, (s32)keyboardSlideY);
+        bottomButtons.drawAt(keyboardSlideY);
     }
     if (testFlags(2)) {
         ((MenuBottomButtons *)(&bottomButtons))->drawAt(buttonsSlideY);
@@ -531,14 +378,14 @@ BOOL LetterWriteMenu::onDraw() {
 
 BOOL LetterWriteMenu::execTransition() {
     static Unk_ov122_0229a1b8_Fn tbl[15] = {
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a170, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a178,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0b0, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a168,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a160, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a158,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a150, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a148,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a140, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a138,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a090, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a128,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a120, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a118,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a110};
+        &LetterWriteMenu::transitionAct00, &LetterWriteMenu::transitionAct01,
+        &LetterWriteMenu::transitionAct02, &LetterWriteMenu::transitionAct03,
+        &LetterWriteMenu::transitionAct04, &LetterWriteMenu::transitionAct05,
+        &LetterWriteMenu::transitionAct06, &LetterWriteMenu::transitionAct07,
+        &LetterWriteMenu::transitionAct08, &LetterWriteMenu::transitionAct09,
+        &LetterWriteMenu::transitionAct0A, &LetterWriteMenu::transitionAct0B,
+        &LetterWriteMenu::transitionAct0C, &LetterWriteMenu::transitionAct0D,
+        &LetterWriteMenu::transitionAct0E};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
@@ -547,20 +394,20 @@ BOOL LetterWriteMenu::execTransition() {
 
 void LetterWriteMenu::runMainState() {
     static Unk_ov122_0229a1b8_Fn tbl[27] = {
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0f0, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0f8,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0e8, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0e0,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0d8, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a060,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0c8, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a058,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0b8, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a050,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0a8, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0a0,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a098, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a038,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a088, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a070,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a108, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a100,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a068, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a028,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0c0, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a020,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a048, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a040,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a078, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a080,
-        *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0d0};
+        &LetterWriteMenu::mainAct00, &LetterWriteMenu::mainAct01,
+        &LetterWriteMenu::mainAct02, &LetterWriteMenu::mainAct03,
+        &LetterWriteMenu::mainAct04, &LetterWriteMenu::mainAct05,
+        &LetterWriteMenu::mainAct06, &LetterWriteMenu::mainAct07,
+        &LetterWriteMenu::mainAct08, &LetterWriteMenu::mainAct09,
+        &LetterWriteMenu::mainAct0A, &LetterWriteMenu::mainAct0B,
+        &LetterWriteMenu::mainAct0C, &LetterWriteMenu::mainAct0D,
+        &LetterWriteMenu::mainAct0E, &LetterWriteMenu::mainAct0F,
+        &LetterWriteMenu::mainAct10, &LetterWriteMenu::mainAct11,
+        &LetterWriteMenu::mainAct12, &LetterWriteMenu::mainAct13,
+        &LetterWriteMenu::mainAct14, &LetterWriteMenu::mainAct15,
+        &LetterWriteMenu::mainAct16, &LetterWriteMenu::mainAct17,
+        &LetterWriteMenu::mainAct18, &LetterWriteMenu::mainAct19,
+        &LetterWriteMenu::mainAct1A};
     (this->*tbl[mainState])();
 }
 
@@ -617,10 +464,10 @@ BOOL LetterWriteMenu::checkForcedClose() {
 }
 
 BOOL LetterWriteMenu::requestTab(s32 a) {
-    u32 r6 = ProcBase_GetParent(this);
+    MenuTabBar *r6 = (MenuTabBar *)ProcBase_GetParent(this);
     if (a != -1 && a != 8) {
         u32 r7 = MenuCtrl_GetSavedSlot();
-        ((MenuTabBar *)(r6))->selectTab((u8)a);
+        r6->selectTab((u8)a);
         MenuCtrl_SetSavedSlot(r7);
         transitionState = 2;
         setPhase(1);
@@ -654,7 +501,7 @@ void LetterWriteMenu::transitionAct00() {
     loadKeyboardObjGfx();
     setupDialogButtons();
     setFlags(1);
-    keyboardSlideY = (u8 *)getSlideOffsetY();
+    keyboardSlideY = getSlideOffsetY();
     setTransitionState(1);
 }
 
@@ -667,7 +514,7 @@ void LetterWriteMenu::transitionAct01() {
     applySlideOffset(6, 0, 0);
     applySlideOffset(4, 0, -16);
     applySlideOffset(3, 0, -16);
-    keyboardSlideY = (u8 *)getSlideOffsetY();
+    keyboardSlideY = getSlideOffsetY();
 }
 
 void LetterWriteMenu::transitionAct02() {
@@ -709,7 +556,7 @@ void LetterWriteMenu::transitionAct05() {
         transitionState = nextTransitionState;
     } else {
         applySlideOffset(6, 0, 0);
-        keyboardSlideY = (u8 *)getSlideOffsetY();
+        keyboardSlideY = getSlideOffsetY();
     }
 }
 
@@ -758,7 +605,7 @@ void LetterWriteMenu::transitionAct0A() {
     applySlideOffset(6, 0, 0);
     setupDialogButtons();
     setFlags(1);
-    keyboardSlideY = (u8 *)getSlideOffsetY();
+    keyboardSlideY = getSlideOffsetY();
     transitionState = 0xb;
 }
 
@@ -769,7 +616,7 @@ void LetterWriteMenu::transitionAct0B() {
         resumeInput();
     }
     applySlideOffset(6, 0, 0);
-    keyboardSlideY = (u8 *)getSlideOffsetY();
+    keyboardSlideY = getSlideOffsetY();
 }
 
 void LetterWriteMenu::transitionAct0C() {
@@ -799,16 +646,16 @@ void LetterWriteMenu::transitionAct0E() {
         applySlideOffset(6, 0, 0);
         applySlideOffset(4, 0, 0);
         applySlideOffset(3, 0, 0);
-        keyboardSlideY = (u8 *)getSlideOffsetY();
-        buttonsSlideY = (s32)keyboardSlideY;
+        keyboardSlideY = getSlideOffsetY();
+        buttonsSlideY = keyboardSlideY;
     }
 }
 
 void LetterWriteMenu::init() {
-    letter = (u8 *)MenuCtrl_GetArg();
+    letter = (LetterView *)MenuCtrl_GetArg();
     Keyboard_Init(&keyboard, 1);
     ((LetterRenderer *)(&renderer))->setLayer(3);
-    _ZN14LetterRenderer17loadRecipientNameEPv(&renderer, (u32)letter);
+    renderer.loadRecipientName(letter);
     setScroll(0x10);
     setScrollTarget(0x10);
     flags = 0;
@@ -865,7 +712,7 @@ extern "C" void LetterWriteMenu_SetupBgLayers() {
 }
 
 void LetterWriteMenu::loadBg() {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", h, 6, 1, 1, 9);
     Keyboard_LoadScreenFile(&keyboard, "menu/chat2/b_key0.bsc");
     refreshKeys();
@@ -898,20 +745,20 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     u32 flag;
     setFlags(0x1000);
     if (a != 0) {
-        ((LetterRenderer *)(&renderer))->setGreeting((LetterView *)(letter), (u8 *)(greetingBuf));
-        ((LetterRenderer *)(&renderer))->setBody((u8 *)(letter + 0x4c), b);
-        ((LetterRenderer *)(&renderer))->setSignature((u8 *)(letter + 0xcc));
+        renderer.setGreeting(letter, greetingBuf);
+        renderer.setBody(letter->body, b);
+        renderer.setSignature(letter->signature);
     } else {
         switch (editPart) {
         case 0:
         case 1:
-            ((LetterRenderer *)(&renderer))->setGreeting((LetterView *)(letter), (u8 *)(greetingBuf));
+            renderer.setGreeting(letter, greetingBuf);
             break;
         case 2:
-            ((LetterRenderer *)(&renderer))->setBody((u8 *)(letter + 0x4c), b);
+            renderer.setBody(letter->body, b);
             break;
         case 3:
-            ((LetterRenderer *)(&renderer))->setSignature((u8 *)(letter + 0xcc));
+            renderer.setSignature(letter->signature);
             break;
         }
     }
@@ -936,17 +783,17 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     if (n != 0) {
         switch (editPart) {
         case 0:
-            _ZN14LetterRenderer17highlightGreetingEjj(&renderer, lo, n, flag);
+            renderer.highlightGreeting(lo, n, flag);
             break;
         case 1:
-            lo += letter[0xec] + ((LetterRenderer *)(&renderer))->getRecipientNameLength();
-            _ZN14LetterRenderer17highlightGreetingEjj(&renderer, lo, n, flag);
+            lo += letter->namePos + ((LetterRenderer *)(&renderer))->getRecipientNameLength();
+            renderer.highlightGreeting(lo, n, flag);
             break;
         case 2:
             ((LetterLayout *)(&renderer))->highlightBodyRange(lo, n, flag);
             break;
         case 3:
-            LetterLayout_HighlightSignature(&renderer, lo, n, flag);
+            LetterLayout_HighlightSignature((u8 *)(LetterLayout *)&renderer, lo, n, flag);
             break;
         }
     }
@@ -956,7 +803,7 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
 void LetterWriteMenu::refreshKeys() {
     if (editPart == 2) {
         u8 c = caretIndex;
-        if (Keyboard_InsertCharMultiline(&keyboard, letter + 0x4c, 0x86, &c, 0x80, 0x28, 4, 0x96, 1, 1)) {
+        if (Keyboard_InsertCharMultiline(&keyboard, letter->body, 0x86, &c, 0x80, 0x28, 4, 0x96, 1, 1)) {
             Keyboard_EnableKey(&keyboard, 0);
         } else {
             Keyboard_DisableKey(&keyboard, 0);
@@ -1139,7 +986,7 @@ BOOL C::backspace(BOOL flag) {
         } else {
             u8 *q = getPartText();
             u8 m = editPart;
-            if ((m == 0 && letter[0xec] == 0) || (m == 1 && letter[0xec] == 0x18) || q[0] == 0) {
+            if ((m == 0 && letter->namePos == 0) || (m == 1 && letter->namePos == 0x18) || q[0] == 0) {
                 if (flag) {
                     playErrorSe();
                 }
@@ -1157,7 +1004,7 @@ BOOL C::backspace(BOOL flag) {
 }
 
 BOOL C::applyModifierKey(u32 key) {
-    u8 *p = (u8 *)getCharBeforeCursor();
+    s32 p = getCharBeforeCursor();
     if (p == 0) {
         return FALSE;
     }
@@ -1178,7 +1025,7 @@ BOOL C::applyModifierKey(u32 key) {
     u8 v = getFieldCursor();
     u8 *q = getFieldBuffer();
     u32 sz = getFieldCapacity();
-    if (!Keyboard_ReplaceCharBeforeCursor(&keyboard, q, p, v, sz, 0x2710)) {
+    if (!Keyboard_ReplaceCharBeforeCursor(&keyboard, q, p, v)) {
         return FALSE;
     }
     redrawText(0, 1);
@@ -1208,11 +1055,11 @@ BOOL C::insertCharRaw(u32 a, u32 b) {
         switch (editPart) {
         case 0:
             if (old != v) {
-                letter[0xec] = letter[0xec] + v - old;
+                letter->namePos = letter->namePos + v - old;
             }
             break;
         case 1:
-            v = v - letter[0xec];
+            v = v - letter->namePos;
             break;
         }
         setCursorIndex(v);
@@ -1264,7 +1111,7 @@ void C::copy() {
         Mem_Clear(partTextBuf, 0x80);
         Mem_Copy(getPartText() + lo, partTextBuf, n);
         setFlags(0x400);
-        Keyboard_PlayCopySe(&keyboard);
+        Keyboard_PlayCopySe();
         refreshKeys();
     }
 }
@@ -1279,14 +1126,14 @@ void C::paste() {
         s32 n = Text_GetLength(partTextBuf, 0x80);
         s32 i;
         for (i = 0; i < n; i++) {
-            if (!insertCharRaw(*((u8 *)this + i + 0x4084), 0)) {
+            if (!insertCharRaw(partTextBuf[i], 0)) {
                 if (i == 0) {
                     playErrorSe();
                 }
                 i = n;
             }
         }
-        Keyboard_PlayPasteSe(&keyboard);
+        Keyboard_PlayPasteSe();
         redrawText(0, 1);
         updateCaretPos();
         Keyboard_EndPaste(&keyboard);
@@ -1410,7 +1257,7 @@ void LetterWriteMenu::mainAct08()
     if (t == 0x112) {
         setMainState(0x10);
         ((MenuScrollKnob *)(&scrollKnob))->grab();
-        Menu_PlayScrollGrabSe(&scrollKnob);
+        Menu_PlayScrollGrabSe();
         if (hasSelection()) {
             clearSelection();
             redrawText(1, 1);
@@ -1474,7 +1321,7 @@ void LetterWriteMenu::mainAct0C()
         startTouchInput();
         return;
     }
-    if (navigateText((void *)takeRepeatedKeys(), 1)) {
+    if (navigateText(takeRepeatedKeys(), 1)) {
         if (Keyboard_GetTypedRunLength(&keyboard) || hasSelection()) {
             Keyboard_ResetTypedRun(&keyboard);
             clearSelection();
@@ -1521,7 +1368,7 @@ void LetterWriteMenu::mainAct0D()
             clearFlags(8);
         }
     } else {
-        if (navigateText((void *)takeRepeatedKeys(), 0)) {
+        if (navigateText(takeRepeatedKeys(), 0)) {
             selectionEnd = caretIndex;
             redrawText(0, 1);
             updateCaretPos();
@@ -1598,11 +1445,11 @@ void LetterWriteMenu::mainAct13()
         return;
     }
     r6 = choiceIndex;
-    if (MenuKeys_HasLeft((void *)r4)) {
+    if (MenuKeys_HasLeft(r4)) {
         if (choiceIndex != 0) {
             choiceIndex = *(volatile u8 *)&choiceIndex - 1;
         }
-    } else if (MenuKeys_HasRight((void *)r4)) {
+    } else if (MenuKeys_HasRight(r4)) {
         if (choiceIndex < 1) {
             choiceIndex = *(volatile u8 *)&choiceIndex + 1;
         }
@@ -1610,7 +1457,7 @@ void LetterWriteMenu::mainAct13()
     r4 = choiceIndex;
     if (r6 != r4) {
         r6 = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(data_ov122_0229a004[r4]);
-        r5 = _ZN21MenuBottomButtonsBody10getTargetYEi(&bottomButtons, *(u8 *)((u32)data_ov122_0229a004 + r4));
+        r5 = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(data_ov122_0229a004[r4]);
         moveCursorTo(r6, r5);
     } else {
         f = gPad[1];
@@ -1683,10 +1530,10 @@ void LetterWriteMenu::mainAct18()
     if (!((PopupChoiceMenuBody *)(&addresseeMenu))->isClosed()) {
         return;
     }
-    r = _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(&addresseeMenu, (u32)letter, choiceIndex);
+    r = ((PopupChoiceMenuBody *)(&addresseeMenu))->applyAddressee(letter, choiceIndex);
     switch (r) {
     case 1:
-        _ZN14LetterRenderer17loadRecipientNameEPv(&renderer, (u32)letter);
+        renderer.loadRecipientName(letter);
         redrawText(1, 0);
         transitionState = 0xa;
         setPhase(1);
@@ -1869,7 +1716,7 @@ void C::showMessage(u8 a, s32 b) {
     volatile u8 buf[1];
     buf[0] = gU8None;
     buf[0] = a;
-    ((MenuErrorMessage *)(&errorMessage))->openHigh((u8 *)((void *)buf), b, 0);
+    ((MenuErrorMessage *)(&errorMessage))->openHigh((u8 *)buf, b, 0);
     setMainState(0x1a);
     hideCursor();
 }
@@ -1927,7 +1774,7 @@ void C::moveCaretToGreeting() {
 u8 C::hitTestGreeting(s32 a, u8 *p) {
     u8 out;
     Keyboard_HitTestText(&keyboard, greetingBuf, 0x28, 0xa0, (u8)(a - 0x30), &out);
-    s32 e = letter[0xec];
+    s32 e = letter->namePos;
     s32 s = e + ((LetterRenderer *)(&renderer))->getRecipientNameLength();
     s32 h = (e + s) >> 1;
     if (out < h) {
@@ -1962,7 +1809,7 @@ void C::moveCaretToBody(s32 flag) {
 u8 C::hitTestBodyLine(s32 idx, u32 *p) {
     s32 o = ((LetterLayout *)(&renderer))->getBodyLineStarts()[idx];
     u8 out;
-    s32 t = Keyboard_HitTestText(&keyboard, letter + 0x4c + o, 0x28, 0x96, (u8)(*p - 0x30), &out);
+    s32 t = Keyboard_HitTestText(&keyboard, letter->body + o, 0x28, 0x96, (u8)(*p - 0x30), &out);
     *p = t + 0x30;
     return (u8)(out + o);
 }
@@ -1977,13 +1824,13 @@ void C::moveCaretToSignature() {
 
 u8 C::hitTestSignature(u32 *p) {
     u8 v = (u8)(*p - 0x30);
-    s32 r4 = 0xa0 - Text_MeasureWidth(letter + 0xcc, 0x20);
+    s32 r4 = 0xa0 - Text_MeasureWidth(letter->signature, 0x20);
     u8 out;
     if (r4 > v) {
         out = 0;
         *p = r4 + 0x30;
     } else {
-        s32 t = Keyboard_HitTestText(&keyboard, letter + 0xcc, 0x20, 0xa0, (u8)(v - r4), &out);
+        s32 t = Keyboard_HitTestText(&keyboard, letter->signature, 0x20, 0xa0, (u8)(v - r4), &out);
         *p = r4 + (t + 0x30);
     }
     return out;
@@ -2023,7 +1870,7 @@ BOOL C::dragSelection() {
             editPart = m;
             setFlags(0x1000);
             if (m == 0) {
-                setCursorIndex(letter[0xec]);
+                setCursorIndex(letter->namePos);
             } else {
                 setCursorIndex(0);
             }
@@ -2066,7 +1913,7 @@ void C::updateCaretPosGreeting() {
     u32 v = caretIndex;
     if (editPart == 1) {
         s32 t = ((LetterRenderer *)(&renderer))->getRecipientNameLength();
-        v += letter[0xec] + t;
+        v += letter->namePos + t;
     }
     caretX = (u8)(Text_MeasureWidth(greetingBuf, v) + 0x30);
     caretY = 0x28;
@@ -2076,13 +1923,13 @@ void C::updateCaretPosBody() {
     s32 t = ((LetterLayout *)(&renderer))->getBodyLineOfPos(caretIndex);
     caretY = t * 16 + 0x40;
     s32 o = ((LetterLayout *)(&renderer))->getBodyLineStarts()[t];
-    caretX = (u8)(Text_MeasureWidth(letter + 0x4c + o, caretIndex - o) + 0x30);
+    caretX = (u8)(Text_MeasureWidth(letter->body + o, caretIndex - o) + 0x30);
 }
 
 void C::updateCaretPosSignature() {
-    u8 t = (u8)(Text_MeasureWidth(letter + 0xcc, caretIndex) + 0x30);
+    u8 t = (u8)(Text_MeasureWidth(letter->signature, caretIndex) + 0x30);
     caretX = t;
-    caretX = caretX + (0xa0 - Text_MeasureWidth(letter + 0xcc, 0x20));
+    caretX = caretX + (0xa0 - Text_MeasureWidth(letter->signature, 0x20));
     caretY = 0x88;
 }
 
@@ -2133,10 +1980,10 @@ void C::deleteSelection() {
     s32 q = getFieldCapacity();
     switch (editPart) {
     case 0:
-        letter[0xec] = letter[0xec] - (hi - lo);
+        letter->namePos = letter->namePos - (hi - lo);
         break;
     case 1: {
-        u32 o = letter[0xec];
+        u32 o = letter->namePos;
         lo += o;
         hi += o;
         break;
@@ -2144,13 +1991,13 @@ void C::deleteSelection() {
     }
     u8 r = (u8)Keyboard_DeleteRange(&keyboard, p, lo, hi, q);
     if (editPart == 1) {
-        r = (u8)(r - letter[0xec]);
+        r = (u8)(r - letter->namePos);
     }
     setCursorIndex(r);
     clearSelection();
 }
 
-BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
+BOOL LetterWriteMenu::navigateText(u32 pad, s32 flag) {
     if (pad == 0) {
         return FALSE;
     }
@@ -2215,22 +2062,22 @@ BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
         if (idx != 0) {
             idx = idx - 1;
         } else if (mode == 1) {
-            idx = letter[0xec];
+            idx = letter->namePos;
             mode = 0;
         }
     } else if (MenuKeys_HasRight(pad)) {
         switch (mode) {
         case 0:
-            n = letter[0xec];
+            n = letter->namePos;
             break;
         case 1:
-            n = Text_GetLength(letter + 0x34, 0x18) - letter[0xec];
+            n = Text_GetLength(letter->greeting, 0x18) - letter->namePos;
             break;
         case 2:
-            n = Text_GetLength(letter + 0x4c, 0x80);
+            n = Text_GetLength(letter->body, 0x80);
             break;
         case 3:
-            n = Text_GetLength(letter + 0xcc, 0x20);
+            n = Text_GetLength(letter->signature, 0x20);
             break;
         }
         if (idx + 1 <= n) {
@@ -2255,13 +2102,13 @@ BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
 u8 *LetterWriteMenu::getPartText() {
     switch (editPart) {
     case 0:
-        return letter + 0x34;
+        return letter->greeting;
     case 1:
-        return letter + 0x34 + letter[0xec];
+        return letter->greeting + letter->namePos;
     case 2:
-        return letter + 0x4c;
+        return letter->body;
     case 3:
-        return letter + 0xcc;
+        return letter->signature;
     default:
         return 0;
     }
@@ -2271,11 +2118,11 @@ u8 *LetterWriteMenu::getFieldBuffer() {
     switch (editPart) {
     case 0:
     case 1:
-        return letter + 0x34;
+        return letter->greeting;
     case 2:
-        return letter + 0x4c;
+        return letter->body;
     case 3:
-        return letter + 0xcc;
+        return letter->signature;
     default:
         return 0;
     }
@@ -2297,7 +2144,7 @@ u32 LetterWriteMenu::getFieldCapacity() {
 
 u8 LetterWriteMenu::getFieldCursor() {
     if (editPart == 1) {
-        return caretIndex + letter[0xec];
+        return caretIndex + letter->namePos;
     }
     return caretIndex;
 }
@@ -2328,7 +2175,7 @@ void LetterWriteMenu::dragScrollKnob() {
     setScroll(n);
     s32 d = lastTickScrollY - n;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
         lastTickScrollY = n;
     }
 }
@@ -2350,7 +2197,7 @@ void LetterWriteMenu::scrollByPad() {
         n = 0x58;
     }
     if (n != old) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
     }
     setScroll(n);
 }
@@ -2478,7 +2325,9 @@ void LetterWriteMenu::moveCursorToPopupRow() {
 }
 
 void LetterWriteMenu::openAddresseePage(u32 a) {
-    PopupChoice_OpenAddresseePage(&addresseeMenu, addresseePage, a);
+    AddresseePageArg page;
+    page.v = addresseePage;
+    PopupChoice_OpenAddresseePage(&addresseeMenu, page, a);
     setMainState(0x16);
 }
 
@@ -2491,22 +2340,22 @@ void LetterWriteMenu::closeAddresseeList() {
 }
 
 void LetterWriteMenu::storeLetterDefaults() {
-    LetterDefaults_Store(((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getUnk988(), letter);
+    LetterDefaults_Store((LetterDefaults *)((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getUnk988(), letter);
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {
-    EncodedString_SetRaw(&encodedText, src, n);
+    EncodedString_SetRaw((StrBuf *)&encodedText, src, n);
     ((MsgString *)(&censorString))->fromEncoded((EncodedString *)(&encodedText), 0, 0);
     if (String_CensorTaboo(&censorString)) {
         ((EncodedString *)(&encodedText))->fromMsgString((MsgString *)(&censorString));
-        StrBuf_GetBytes(&encodedText, src, n);
+        StrBuf_GetBytes((StrBuf *)&encodedText, src, n);
     }
 }
 
 void LetterWriteMenu::censorLetter() {
-    censorField(letter + 0x34, 0x18);
-    censorField(letter + 0xcc, 0x20);
-    censorField(letter + 0x4c, 0x80);
+    censorField(letter->greeting, 0x18);
+    censorField(letter->signature, 0x20);
+    censorField(letter->body, 0x80);
 }
 
 BOOL LetterWriteMenu::testFlags(u32 mask) {

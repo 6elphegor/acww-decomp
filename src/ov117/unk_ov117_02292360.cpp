@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "town/TownMapMarkers.h"
 #include "game/StrBSizeData.h"
@@ -12,17 +11,6 @@
 
 
 
-struct TownMapAcreImage {
-    u8 b[0x200];
-    TownMapAcreImage();
-    ~TownMapAcreImage();
-};
-
-struct TownMapImage {
-    TownMapAcreImage tile[16];
-    TownMapMarkers icons;
-    TownMapImage();
-};
 
 struct Unk_ov117_02292b54_Grid {
     TownBlockCell *cells;
@@ -56,32 +44,6 @@ void *SaveVillagers_Get(void *, s32);
 BOOL HousePos_IsValid(void *p);
 u16 Item_MakeNeighborHouse(u32 x);
 
-void TownMapImage_FinishGlobal(void *a, TownMapMarkers *b);
-void TownMapImage_BuildMarkersGlobal(u32 i);
-void TownMapImage_DrawRowGlobal(u32 i);
-void TownMapImage_AllocGlobal();
-void TownMapImage_Build(void *a, TownMapMarkers *b);
-TownMapMarkers *TownMapImage_GetMarkers(TownMapImage *o);
-void TownMapImage_CopyPixels(void *o, void *a);
-u8 *TownMapImage_GetAcre(u8 *o, u32 x, u32 y);
-void TownMapImage_BuildMarkers(TownMapImage *o, u32 sel);
-void TownMapImage_DrawAcreRow(TownMapImage *o, u32 i);
-void TownMapImage_DrawAcre(u8 *buf, s32 bx, s32 by);
-void TownMapMarkers_AddLandmarks(TownMapMarkers *s);
-void TownMapMarkers_AddHouses(TownMapMarkers *s);
-void TownMapMarkers_Copy(TownMapMarkers *s, TownMapMarkers *d);
-void TownMapMarkers_AddNookShop(TownMapMarkers *s);
-void TownMapMarkers_AddTownHall(TownMapMarkers *s);
-void TownMapMarkers_AddAbleSisters(TownMapMarkers *s);
-void TownMapMarkers_AddGateHouse(TownMapMarkers *s);
-void TownMapMarkers_AddMuseum(TownMapMarkers *s);
-void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s);
-void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s);
-void TownMapMarkers_AddTerrainMarkers(TownMapMarkers *s);
-u8 TownMapMarkers_GetKind(TownMapMarkers *s, u32 i);
-TownMapMarker *TownMapMarkers_Get(TownMapMarkers *s, u32 i);
-void TownMapMarkers_Set(TownMapMarkers *s, s32 i, s32 x, s32 y, u8 z);
-void TownMapMarkers_Clear(TownMapMarkers *self);
 
 }
 
@@ -119,8 +81,8 @@ extern "C" TownMapMarker *TownMapMarkers_Get(TownMapMarkers *s, u32 i) {
     if (i < 17) {
         s32 m = -1;
         if (s->e[i].x != m) {
-            s = (TownMapMarkers *)((u8 *)s + i * 6);
-            if (*(s16 *)(HOST_AT(s, 2, e[0].y, 0)) != m) return (TownMapMarker *)s;
+            TownMapMarker *e = &s->e[i];
+            if (e->y != m) return e;
         }
         return NULL;
     }
@@ -423,32 +385,32 @@ extern "C" void TownMapImage_DrawAcreRow(TownMapImage *o, u32 i) {
     u32 n = 0;
     u32 k = i & 3;
     for (; n < 4; n++) {
-        u8 *p = TownMapImage_GetAcre((u8 *)o, n, k);
+        u8 *p = TownMapImage_GetAcre(o, n, k);
         TownMapImage_DrawAcre(p, n, k);
     }
 }
 
 extern "C" void TownMapImage_BuildMarkers(TownMapImage *o, u32 sel) {
     if (sel == 0) {
-        TownMapMarkers_AddHouses((TownMapMarkers *)(HOST_AT(o, 0x2000, icons.e[0].x, 0)));
+        TownMapMarkers_AddHouses(&o->icons);
     } else {
-        TownMapMarkers_AddLandmarks((TownMapMarkers *)(HOST_AT(o, 0x2000, icons.e[0].x, 0)));
+        TownMapMarkers_AddLandmarks(&o->icons);
     }
 }
 
-extern "C" u8 *TownMapImage_GetAcre(u8 *o, u32 x, u32 y) {
+extern "C" u8 *TownMapImage_GetAcre(TownMapImage *o, u32 x, u32 y) {
     if (x < 4 && y < 4) {
-        o += (x + y * 4) << 9;
+        return o->tile[x + y * 4].b;
     }
-    return o;
+    return o->tile[0].b;
 }
 
-extern "C" void TownMapImage_CopyPixels(void *o, void *a) {
-    MI_CpuCopy8(o, a, 0x2000);
+extern "C" void TownMapImage_CopyPixels(TownMapImage *o, void *a) {
+    MI_CpuCopy8(o->tile, a, sizeof(o->tile));
 }
 
 extern "C" TownMapMarkers *TownMapImage_GetMarkers(TownMapImage *o) {
-    return (TownMapMarkers *)(HOST_AT(o, 0x2000, icons.e[0].x, 0));
+    return &o->icons;
 }
 
 extern "C" void TownMapImage_Build(void *a, TownMapMarkers *b) {
@@ -464,7 +426,7 @@ extern "C" void TownMapImage_Build(void *a, TownMapMarkers *b) {
 
 extern "C" void TownMapImage_AllocGlobal() {
     if (sTownMapImage == NULL) {
-        sTownMapImage = (TownMapImage *)Mem_Alloc(HOST_SIZED(0x2066, TownMapImage));
+        sTownMapImage = (TownMapImage *)Mem_Alloc(sizeof(TownMapImage));
         if (sTownMapImage != NULL) {
             new (sTownMapImage) TownMapImage();
         }

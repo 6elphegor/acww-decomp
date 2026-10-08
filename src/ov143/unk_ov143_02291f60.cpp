@@ -12,40 +12,22 @@
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
 #include "nitro/gxoam.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Melody_Pack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Melody_Unpack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov143_022938c8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0206d988.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov143/unk_ov143_02291f60.h"
-
-struct MelodyPlayingNoteCell {
-    u32 w0;
-    u32 w1;
-    u32 w2;
-    u32 w3;
-    u32 w4;
-    struct {
-        u16 lo : 10;
-        u16 hi : 6;
-    } w5;
-    u16 pad;
-};
 
 class MelodyMenu;
 
@@ -64,32 +46,22 @@ typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
 
 extern "C" {
-extern u32 data_ov143_022938c8[2];
-extern MelodyPlayingNoteCell data_ov143_02293a00;
-extern MelodyPlayingNoteCell data_ov143_022939e8;
 extern u16 gPad[];
 extern CommManager *gCommManager;
-extern u8 gSaveTownTune[];
-extern u8 gSaveVillagers[];
-extern void *gCurrentHeap;
 
-void Melody_Unpack(void *a, void *b);
-void Melody_Pack(void *a, void *b);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void SaveVillagers_ClearTuneRequester(void *a);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
-void Oam_DrawObjRotated(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4);
+void SaveVillagers_ClearTuneRequester(void *a);  // (its view type is local to src/main/unk_02077ac4.cpp)
 void MI_CpuCopy8(void *dst, void *src, s32 n);
-void MenuButtons_LoadTextColors(void *p);
 }
+extern SaveData gSaveData;
 
 
 extern "C" ProcProfile sMelodyMenuProfile = {(void *(*)())MelodyMenu_Create, 0xb8, 0xbc};
 extern "C" GXOamAttr data_ov143_02293980[2] = {{0x8188404a, 0xc0, 0, 0xc, 0x0}, {0x81a8404a, 0xc4, 0, 0xc, 0xffff}};
-extern "C" u32 data_ov143_02293950[2] = {0x1a000f0, 0xffffc0de};
-extern "C" MelodyPlayingNoteCell data_ov143_022939e8 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};
-extern "C" MelodyPlayingNoteCell data_ov143_02293a00 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};
+extern "C" GXOamAttr data_ov143_02293950[1] = {
+    {0x01a000f0, 0xde, 0, 0xc, 0xffff},
+};
+extern "C" GXOamAttr data_ov143_022939e8[3] = {{0x419800cf, 0xc9, 0, 0xc, 0x0}, {0x1a880cf, 0xcb, 0, 0xc, 0x0}, {0x819a00df, 0x144, 0, 0xb, 0xffff}};
+extern "C" GXOamAttr data_ov143_02293a00[3] = {{0x419800cf, 0xc9, 0, 0xc, 0x0}, {0x1a880cf, 0xcb, 0, 0xc, 0x0}, {0x819a00df, 0x144, 0, 0xb, 0xffff}};
 extern "C" GXOamAttr data_ov143_02293af0[3] = {{0x419800e1, 0xcc, 0, 0xc, 0x0}, {0x1a880e1, 0xce, 0, 0xc, 0x0}, {0x819a00df, 0x14c, 0, 0xa, 0xffff}};
 extern "C" GXOamAttr data_ov143_02293a18[3] = {{0x419800e1, 0xcf, 0, 0xc, 0x0}, {0x1a880e1, 0xd1, 0, 0xc, 0x0}, {0x819a00df, 0x150, 0, 0x9, 0xffff}};
 extern "C" GXOamAttr data_ov143_02293a30[3] = {{0x419800e1, 0xd2, 0, 0xc, 0x0}, {0x1a880e1, 0xd4, 0, 0xc, 0x0}, {0x819a00df, 0x150, 0, 0x8, 0xffff}};
@@ -105,7 +77,9 @@ extern "C" GXOamAttr data_ov143_02293b20[3] = {{0x419800e1, 0x10f, 0, 0xc, 0x0},
 extern "C" GXOamAttr data_ov143_022939a0[3] = {{0x419800e1, 0x112, 0, 0xc, 0x0}, {0x1a880e1, 0x114, 0, 0xc, 0x0}, {0x819a00df, 0x154, 0, 0x6, 0xffff}};
 extern "C" GXOamAttr data_ov143_022939b8[3] = {{0x419800e1, 0x115, 0, 0xc, 0x0}, {0x1a880e1, 0x117, 0, 0xc, 0x0}, {0x819a00df, 0x154, 0, 0x5, 0xffff}};
 extern "C" GXOamAttr data_ov143_022939d0[3] = {{0x419800e4, 0x118, 0, 0xc, 0x0}, {0x1a880e4, 0x11a, 0, 0xc, 0x0}, {0x819a00df, 0x158, 0, 0x4, 0xffff}};
-extern "C" u32 data_ov143_022938c8[2] = {0x81f000f0, 0xffffb140};
+extern "C" GXOamAttr data_ov143_022938c8[1] = {
+    {0x81f000f0, 0x140, 0, 0xb, 0xffff},
+};
 
 
 // Vtable 0x02293b80 (melody / tune editor menu)
@@ -146,7 +120,7 @@ public:
     void paintEraseAllButton(u32 v);
     void paintPlayButton(u32 v);
     void flushBgScreen();
-    BOOL moveCursorByPad(void *pad);
+    BOOL moveCursorByPad(u32 pad);
     BOOL activateTarget(u32 idx);
 
     u32 hitTestTarget(s32 x, s32 y);
@@ -218,7 +192,7 @@ public:
     /* 0xac */ MenuCursorBuf0 cursor;
     /* 0x110 */ MenuBottomButtons bottomButtons;
     /* 0x274 */ LabelString textLabels[16];
-    /* 0x674 */ u8 bgScreen[0x800];
+    /* 0x674 */ u16 bgScreen[0x400];
     /* 0xe74 */ BgVramTask screenTasks[1];
 };
 
@@ -373,8 +347,8 @@ void MelodyMenu::stateDialogBack() {
 void MelodyMenu::initMelody() {
     flags = 0;
     notes = gMelodyEditPattern;
-    Melody_Unpack(gSaveTownTune, notes);
-    data_ov143_02293a00.w5.lo = data_ov143_022939e8.w5.lo + 4;
+    Melody_Unpack((u32 *)&gSaveData.townTune, notes);
+    data_ov143_02293a00[2].charNo = data_ov143_022939e8[2].charNo + 4;
     activeNote = -1;
     cursorSlot = 0;
 }
@@ -413,12 +387,12 @@ void MelodyMenu::loadBgGfx() {
     Gfx2d_LoadCharFile("menu/melody/bg0.bch", h, 6, 0x11, 0x11, 0x9c);
     Gfx2d_LoadPaletteFile("menu/melody/bg.bpl", h, 6, 1, 1, 6);
     Gfx2d_LoadScreenFile("menu/melody/a_bg.bsc", h, 6);
-    File_LoadToBuffer((void *)"menu/melody/b_bg.bsc", bgScreen, 0x800);
-    Gfx2d_LoadScreen(bgScreen, 4, 0x800, 0);
+    File_LoadToBuffer("menu/melody/b_bg.bsc", bgScreen, 0x800);
+    Gfx2d_LoadScreen((u8 *)bgScreen, 4, 0x800, 0);
 }
 
 void MelodyMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
     void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/melody/obj.bch", h, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile("menu/melody/obj2.bch", h, 8, 0x140, 0x140, 0x1bf);
@@ -469,7 +443,7 @@ void MelodyMenu::updateButtons() {
         startTouchInput();
         return;
     }
-    if (moveCursorByPad((void *)takeRepeatedKeys()) != 0) {
+    if (moveCursorByPad(takeRepeatedKeys()) != 0) {
         moveCursorToTarget();
         return;
     }
@@ -667,9 +641,9 @@ void MelodyMenu::confirmTune() {
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(1);
     setTransitionState(2);
     setMainState(9);
-    Melody_Pack(gSaveTownTune, notes);
+    Melody_Pack((u32 *)&gSaveData.townTune, notes);
     Melody_ApplyEditPattern();
-    SaveVillagers_ClearTuneRequester(gSaveVillagers);
+    SaveVillagers_ClearTuneRequester(gSaveData.villagers);
     sendTune();
 }
 
@@ -853,19 +827,19 @@ BOOL MelodyMenu::activateTarget(u32 idx) {
     return FALSE;
 }
 
-BOOL MelodyMenu::moveCursorByPad(void *pad) {
+BOOL MelodyMenu::moveCursorByPad(u32 pad) {
     if (pad == NULL) return FALSE;
     u32 cur = cursorSlot;
     if (cur < 8) {
-        if (MenuKeys_HasDown((u32)pad)) {
+        if (MenuKeys_HasDown(pad)) {
             cursorSlot = cursorSlot + 8;
-        } else if (MenuKeys_HasLeft((u32)pad)) {
+        } else if (MenuKeys_HasLeft(pad)) {
             if (cursorSlot != 0) cursorSlot = cursorSlot - 1;
-        } else if (MenuKeys_HasRight((u32)pad)) {
+        } else if (MenuKeys_HasRight(pad)) {
             cursorSlot = cursorSlot + 1;
         }
     } else if (cur >= 8 && cur <= 0xf) {
-        if (MenuKeys_HasDown((u32)pad)) {
+        if (MenuKeys_HasDown(pad)) {
             s32 t = cursorSlot - 8;
             if (t < 2) {
                 cursorSlot = 0x10;
@@ -874,44 +848,44 @@ BOOL MelodyMenu::moveCursorByPad(void *pad) {
             } else {
                 cursorSlot = 0x12;
             }
-        } else if (MenuKeys_HasUp((u32)pad)) {
+        } else if (MenuKeys_HasUp(pad)) {
             cursorSlot = cursorSlot - 8;
-        } else if (MenuKeys_HasLeft((u32)pad)) {
+        } else if (MenuKeys_HasLeft(pad)) {
             cursorSlot = cursorSlot - 1;
-        } else if (MenuKeys_HasRight((u32)pad)) {
+        } else if (MenuKeys_HasRight(pad)) {
             if (cursorSlot < 0xf) cursorSlot = cursorSlot + 1;
         }
     } else {
         switch (cur) {
         case 0x10:
-            if (MenuKeys_HasUp((u32)pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 cursorSlot = 8;
-            } else if (MenuKeys_HasRight((u32)pad)) {
+            } else if (MenuKeys_HasRight(pad)) {
                 cursorSlot = 0x11;
             }
             break;
         case 0x11:
-            if (MenuKeys_HasUp((u32)pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 cursorSlot = 0xb;
-            } else if (MenuKeys_HasRight((u32)pad)) {
+            } else if (MenuKeys_HasRight(pad)) {
                 cursorSlot = 0x12;
-            } else if (MenuKeys_HasLeft((u32)pad)) {
+            } else if (MenuKeys_HasLeft(pad)) {
                 cursorSlot = 0x10;
             }
             break;
         case 0x12:
-            if (MenuKeys_HasUp((u32)pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 cursorSlot = 0xe;
-            } else if (MenuKeys_HasDown((u32)pad)) {
+            } else if (MenuKeys_HasDown(pad)) {
                 cursorSlot = 0x13;
-            } else if (MenuKeys_HasLeft((u32)pad)) {
+            } else if (MenuKeys_HasLeft(pad)) {
                 cursorSlot = 0x11;
             }
             break;
         case 0x13:
-            if (MenuKeys_HasUp((u32)pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 cursorSlot = 0x12;
-            } else if (MenuKeys_HasLeft((u32)pad)) {
+            } else if (MenuKeys_HasLeft(pad)) {
                 cursorSlot = 0x11;
             }
             break;
@@ -931,12 +905,12 @@ void MelodyMenu::flushBgScreen() {
 
 void MelodyMenu::paintPlayButton(u32 v) {
     setFlags(4);
-    BgScreen_SetRectPalette(&bgScreen, 0xc, 0x12, 0x15, 0x16, v);
+    BgScreen_SetRectPalette(bgScreen, 0xc, 0x12, 0x15, 0x16, v);
 }
 
 void MelodyMenu::paintEraseAllButton(u32 v) {
     setFlags(4);
-    BgScreen_SetRectPalette(&bgScreen, 0, 0x11, 9, 0x17, v);
+    BgScreen_SetRectPalette(bgScreen, 0, 0x11, 9, 0x17, v);
 }
 
 void MelodyMenu::startPlayback() {
@@ -997,24 +971,24 @@ void MelodyMenu::drawPlayingNote(u32 idx, s32 x, s32 y) {
         Oam_DrawObjRotated(1, data_ov143_022938c8, x - 0x5c, ym - 0x18, -1, 2, 0x1000, 0xeaab, 0);
     } else {
         u32 n = e[2].cParam;
-        void *p;
+        GXOamAttr *p;
         if (idx < 6 || idx == 0xe) {
-            p = &data_ov143_022939e8.w4;
+            p = &data_ov143_022939e8[2];
         } else {
-            p = &data_ov143_02293a00.w4;
+            p = &data_ov143_02293a00[2];
         }
         Oam_DrawCell(1, p, x, ym, n, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
 void MelodyMenu::drawSelectedNote(u32 idx, s32 x, s32 y) {
-    u8 *e = (u8 *)sMelodyNoteSprites[idx];
+    GXOamAttr *e = sMelodyNoteSprites[idx];
     s32 ty;
     u32 t = levelFromNote(idx);
     ty = y - t * 2;
     Oam_DrawObj(1, e, x, ty, 0xd, 2, 0);
-    Oam_DrawObj(1, e + 8, x, ty, 0xd, 2, 0);
-    Oam_DrawCell(1, e + 0x10, x, ty, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawObj(1, e + 1, x, ty, 0xd, 2, 0);
+    Oam_DrawCell(1, e + 2, x, ty, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void MelodyMenu::drawNote(u32 idx, s32 x, s32 y) {
@@ -1054,7 +1028,7 @@ void MelodyMenu::drawNotes(s32 x, s32 y) {
     }
 }
 
-extern "C" GXOamAttr *sMelodyNoteSprites[16] = {data_ov143_02293a18, data_ov143_02293a30, data_ov143_02293a48, data_ov143_02293a60, data_ov143_02293a78, data_ov143_02293a90, data_ov143_02293aa8, data_ov143_02293ac0, data_ov143_02293ad8, data_ov143_02293b08, data_ov143_02293b20, data_ov143_022939a0, data_ov143_022939b8, data_ov143_022939d0, data_ov143_02293af0, (GXOamAttr *)&data_ov143_022939e8};
+extern "C" GXOamAttr *sMelodyNoteSprites[16] = {data_ov143_02293a18, data_ov143_02293a30, data_ov143_02293a48, data_ov143_02293a60, data_ov143_02293a78, data_ov143_02293a90, data_ov143_02293aa8, data_ov143_02293ac0, data_ov143_02293ad8, data_ov143_02293b08, data_ov143_02293b20, data_ov143_022939a0, data_ov143_022939b8, data_ov143_022939d0, data_ov143_02293af0, data_ov143_022939e8};
 
 u32 MelodyMenu::levelFromNote(u32 idx) {
     u8 t[16] = {2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 1, 0};

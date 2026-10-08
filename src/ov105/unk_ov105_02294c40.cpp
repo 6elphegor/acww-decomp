@@ -1,4 +1,3 @@
-#include "uptr.h"
 // ov105: scene overlay (class LetterStorageMenu, vtable 0x02298594). Linked as one unit.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -31,20 +30,12 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterGrid_SetLetters0A  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/main/unk_02087e0c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02065330.h"
@@ -57,6 +48,8 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
@@ -68,18 +61,11 @@ class Letter;
 typedef LetterStorageMenu S;
 
 // Shared symbols whose real argument lists differ from their mangled names: called by name with the object first
-extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
-extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void Letter_Clear(void *p);
-void Letter_Copy(void *dst, void *src);
 
-void InventoryBg_LoadObjGraphics(void *p);
 
-void ChoiceIdList_Clear(void *p, s32 a);
-void ChoiceIdList_Add(void *p, s32 a, s32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, u32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 u32 PopupChoice_DecideCancel(void *p, s32 a);
@@ -88,7 +74,6 @@ void PopupChoice_ForceClose(void *p);
 void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *p, s32 a);
 void PopupChoice_Open(void *p, s32 a);
-void MenuButtons_LoadTextColors(void *p);
 
 extern u16 gPad[];
 extern u8 gSavePlayers[];
@@ -125,10 +110,6 @@ struct PopupChoiceIdList;
 
 
 extern "C" {
-s32 Oam_GetObjY(void *p);
-s32 Oam_GetObjX(void *p);
-void Oam_DrawObj(s32 a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
-void LetterGrid_SetLetters0A(void *p, void *q);
 }
 
 struct Unk_ov105_Ent {
@@ -179,11 +160,11 @@ public:
     void startDiscardLetter();
     void closeLetterView();
     void startReadLetter();
-    BOOL moveCursorByPad(void *, u32);
-    void moveCursorOnPageTabs(void *);
-    void moveCursorOnButton(void *);
-    void moveCursorInStorage(void *, u32);
-    void moveCursorInPocketLetters(void *, u32);
+    BOOL moveCursorByPad(u32, u32);
+    void moveCursorOnPageTabs(u32);
+    void moveCursorOnButton(u32);
+    void moveCursorInStorage(u32, u32);
+    void moveCursorInPocketLetters(u32, u32);
     void openDiscardConfirm();
     void selectLetter(u32 a, u32 b);
     void cancelPopupForButtons();
@@ -224,7 +205,7 @@ public:
     void disableAllPockets();
     s32 getSlotY(u32);
     s32 getSlotX(u32);
-    s32 getSlotLetter(u32);
+    void *getSlotLetter(u32);
     void putLetterInSlot(u32, void *);
     BOOL dropHeldOnSlot(u32);
     s32 getSlotAt(u32, u32, u32);
@@ -365,8 +346,6 @@ public:
 extern "C" {
 }
 
-extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
-extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
 
 static inline BOOL Unk_ov105_0229677c_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) return TRUE;
@@ -531,7 +510,7 @@ BOOL LetterStorageMenu::execClosed() {
             s32 i;
             Letter *p = (Letter *)((LetterStorage *)h)->getPage(0);
             for (i = 0; i < 0x4b; i++) {
-                Letter_Copy(p, &storageLetters[i]);
+                Letter_Copy((LetterView *)p, (const LetterView *)&storageLetters[i]);
                 p++;
             }
         }
@@ -630,7 +609,7 @@ void LetterStorageMenu::transitionAct06() {
 }
 
 void LetterStorageMenu::transitionAct07() {
-    void *p = (void *)getSlotLetter(selectedSlot);
+    void *p = getSlotLetter(selectedSlot);
     switch (((LetterView *)p)->getState()) {
     case 2:
     case 5:
@@ -638,7 +617,7 @@ void LetterStorageMenu::transitionAct07() {
         setFlags(0x1000);
         break;
     }
-    Letter_MarkRead((u32)p);
+    Letter_MarkRead((LetterView *)p);
     letterView.show((LetterView *)p, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -789,13 +768,13 @@ void LetterStorageMenu::initParts() {
     i = 0;
     currentPage = 0;
     for (; i < 0x4b; i++) {
-        Letter_Clear(&storageLetters[i]);
+        Letter_Clear((LetterView *)&storageLetters[i]);
     }
     void *q = PlayerData_GetLetterStorage((void *)PlayerData_GetCurrent());
     if (q) {
         u8 *p = (u8 *)((LetterStorage *)q)->getPage(0);
         for (i = 0; i < 0x4b; i++) {
-            Letter_Copy(&storageLetters[i], p);
+            Letter_Copy((LetterView *)&storageLetters[i], (const LetterView *)p);
             p += sizeof(Letter);
         }
     }
@@ -856,8 +835,8 @@ void LetterStorageMenu::loadBoxBg() {
 }
 
 void LetterStorageMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
     bottomButtons.setLayoutSingle05(0x21);
 }
 
@@ -974,7 +953,7 @@ void LetterStorageMenu::mainAct06() {
                 if (testFlags(0x800) && r == 0) {
                 } else {
                     s32 t;
-                    popupChoice = (HOST_AT(this, 0x2781, choiceList.values[0], 0))[r];
+                    popupChoice = choiceList.values[r];
                     t = 1;
                     if (popupChoice == 2) {
                         t = 0;
@@ -995,7 +974,7 @@ void LetterStorageMenu::mainAct07() {
         s->nameBalloon.hide(1);
     } else {
         s32 r = s->takeRepeatedKeys();
-        if (s->moveCursorByPad((void *)r, 0)) {
+        if (s->moveCursorByPad(r, 0)) {
             s->updateBalloonForCursor();
             s->moveCursorToTarget();
             s->nameBalloon.hide(0);
@@ -1047,7 +1026,7 @@ other:
 void LetterStorageMenu::mainAct08() {
     S *s = this;
     s32 r = s->takeRepeatedKeys();
-    if (s->moveCursorByPad((void *)r, 1)) {
+    if (s->moveCursorByPad(r, 1)) {
         s->updateBalloonForCursor();
         s->moveCursorToTarget();
         s->nameBalloon.hide(0);
@@ -1093,7 +1072,7 @@ void LetterStorageMenu::mainAct09() {
         s32 a = s->letterCloseButton.getAnchorX(1);
         s32 b = s->letterCloseButton.getAnchorY(1);
         s->cursor.warpTo(a, b);
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+        s->cursor.setAnimIfChanged(1);
     }
     if (s->checkSwitchToTouch()) {
         s->hideCursor();
@@ -1101,7 +1080,7 @@ void LetterStorageMenu::mainAct09() {
     } else {
         u32 k = gPad[1];
         if ((k & 1) || (k & 2)) {
-            ((MenuCursor *)&s->cursor)->setPosePress();
+            s->cursor.setPosePress();
             s->setMainState(0xa);
         }
     }
@@ -1126,7 +1105,7 @@ void LetterStorageMenu::mainAct0B() {
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                ((MenuCursor *)&s->cursor)->setPosePress();
+                s->cursor.setPosePress();
                 s->setMainState(0xc);
             } else if (k & 2) {
                 s->cancelPopup();
@@ -1139,7 +1118,7 @@ void LetterStorageMenu::mainAct0C() {
     S *s = this;
     if (s->cursor.isAnimDone()) {
         s32 r;
-        s->popupChoice = (HOST_AT(s, 0x2781, choiceList.values[0], 0))[s->popupRow];
+        s->popupChoice = s->choiceList.values[s->popupRow];
         r = 1;
         if (s->popupChoice == 2) {
             r = 0;
@@ -1367,7 +1346,7 @@ void LetterStorageMenu::mainAct1E() {
     } else {
         u16 f = gPad[1];
         if ((f & 1) != 0) {
-            ((MenuCursor *)&cursor)->setPosePress();
+            cursor.setPosePress();
             setMainState(0x1f);
         } else if ((f & 2) != 0) {
             hideCursor();
@@ -1378,11 +1357,11 @@ void LetterStorageMenu::mainAct1E() {
         } else {
             u32 old = promptChoice;
             s32 t = takeRepeatedKeys();
-            if (MenuKeys_HasLeft((void *)t)) {
+            if (MenuKeys_HasLeft(t)) {
                 if (promptChoice != 0) {
                     promptChoice--;
                 }
-            } else if (MenuKeys_HasRight((void *)t)) {
+            } else if (MenuKeys_HasRight(t)) {
                 if (promptChoice < 1) {
                     promptChoice++;
                 }
@@ -1443,7 +1422,7 @@ void LetterStorageMenu::startPromptTouchInput() {
 void LetterStorageMenu::startPromptButtonInput() {
     restartKeyRepeat();
     promptChoice = 1;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+    cursor.setAnimIfChanged(1);
     cursor.update();
     s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
     s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
@@ -1619,7 +1598,7 @@ u32 LetterStorageMenu::fromLetterGridIndex(u32 a) {
 }
 
 s32 LetterStorageMenu::getSlotAt(u32 a, u32 b, u32 c) {
-    s32 r = ((LetterGrid *)(&letterGrid))->findPocketLetterAt(a, b);
+    s32 r = letterGrid.findPocketLetterAt(a, b);
     if (r == 0x37) {
         r = letterGrid.findLetterAt0A(a, b);
     }
@@ -1634,7 +1613,7 @@ s32 LetterStorageMenu::getSlotAt(u32 a, u32 b, u32 c) {
 
 BOOL LetterStorageMenu::dropHeldOnSlot(u32 a) {
     if (!isSlotEmpty(a)) {
-        Letter_Copy(&swapLetter, (void *)getSlotLetter(a));
+        Letter_Copy((LetterView *)&swapLetter, (const LetterView *)getSlotLetter(a));
         putLetterInSlot(heldSlot, &swapLetter);
     }
     releaseHeldTo(a);
@@ -1643,17 +1622,17 @@ BOOL LetterStorageMenu::dropHeldOnSlot(u32 a) {
 
 void LetterStorageMenu::putLetterInSlot(u32 a, void *c) {
     if (isLetterSlot(a) || isStorageSlot(a)) {
-        letterGrid.setLetter(toLetterGridIndex(a), (s32)c);
+        letterGrid.setLetter(toLetterGridIndex(a), c);
     } else if (isPageTabSlot(a)) {
-        Letter_Copy(&storageLetters[(heldOriginSlot - 0x24) + heldOriginPage * 0x19], c);
+        Letter_Copy((LetterView *)&storageLetters[(heldOriginSlot - 0x24) + heldOriginPage * 0x19], (const LetterView *)c);
     }
 }
 
-s32 LetterStorageMenu::getSlotLetter(u32 a) {
+void *LetterStorageMenu::getSlotLetter(u32 a) {
     if (isLetterSlot(a) || isStorageSlot(a)) {
-        return (s32)letterGrid.getLetter(toLetterGridIndex(a));
+        return letterGrid.getLetter(toLetterGridIndex(a));
     }
-    return 0;
+    return NULL;
 }
 
 s32 LetterStorageMenu::getSlotX(u32 a) {
@@ -1664,7 +1643,7 @@ s32 LetterStorageMenu::getSlotX(u32 a) {
         return 0xbc;
     }
     if (isPageTabSlot(a)) {
-        return Oam_GetObjX(&data_ov105_02298544[(a - 0x3e) * 3]) + 0x80;
+        return Oam_GetObjX(&data_ov105_02298544[(a - 0x3e) * 3].a) + 0x80;
     }
     return 0;
 }
@@ -1677,7 +1656,7 @@ s32 LetterStorageMenu::getSlotY(u32 a) {
         return 0xb6;
     }
     if (isPageTabSlot(a)) {
-        return Oam_GetObjY(&data_ov105_02298544[(a - 0x3e) * 3]) + 0x58;
+        return Oam_GetObjY((s8 *)&data_ov105_02298544[(a - 0x3e) * 3]) + 0x58;
     }
     return 0;
 }
@@ -1803,7 +1782,7 @@ void LetterStorageMenu::pickUpFrom(u32 b) {
     if (s->isLetterSlot(b) || s->isStorageSlot(b)) {
         u32 r4 = s->toLetterGridIndex(b);
         s->handKind = 1;
-        Letter_Copy(&s->heldLetter, s->letterGrid.getLetter(r4));
+        Letter_Copy((LetterView *)&s->heldLetter, (const LetterView *)s->letterGrid.getLetter(r4));
         s->letterGrid.clearLetter(r4);
     }
 }
@@ -1819,7 +1798,7 @@ void LetterStorageMenu::releaseHeldTo(u32 b) {
 void LetterStorageMenu::exchangeHeldWith(u32 b) {
     S *s = this;
     if (s->handKind == 1) {
-        Letter_Copy(&s->swapLetter, &s->heldLetter);
+        Letter_Copy((LetterView *)&s->swapLetter, (const LetterView *)&s->heldLetter);
         s->pickUpFrom(b);
         s->putLetterInSlot(b, &s->swapLetter);
     }
@@ -1831,9 +1810,9 @@ void LetterStorageMenu::showCursor() {
     s32 r2 = s->getCursorTargetY();
     s->cursor.warpTo(r4, r2);
     if (s->isButtonSlot(s->cursorSlot)) {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+        s->cursor.setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+        s->cursor.setAnimIfChanged(1);
     }
     s->refreshCursor();
 }
@@ -1857,7 +1836,7 @@ s32 LetterStorageMenu::getCursorTargetY() {
 
 void LetterStorageMenu::hideCursor() {
     S *s = this;
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
+    s->cursor.setAnimIfChanged(0);
     s->cursor.update();
 }
 
@@ -1914,7 +1893,7 @@ void LetterStorageMenu::cursorToPopupTop() {
     s32 r4 = ((PopupChoiceMenuBody *)&s->popup)->getRowX();
     s32 r2 = ((PopupChoiceMenuBody *)&s->popup)->getRowY(s->popupRow);
     s->cursor.warpTo(r4, r2);
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+    s->cursor.setAnimIfChanged(7);
 }
 
 void LetterStorageMenu::showCursorAtSlot() {
@@ -1922,7 +1901,7 @@ void LetterStorageMenu::showCursorAtSlot() {
     s32 r4 = s->getCursorTargetX();
     s32 r2 = s->getCursorTargetY();
     s->cursor.warpTo(r4, r2);
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+    s->cursor.setAnimIfChanged(1);
 }
 
 void LetterStorageMenu::refreshCursor() {
@@ -1933,7 +1912,7 @@ void LetterStorageMenu::refreshCursor() {
 
 void LetterStorageMenu::pressCloseButton() {
     S *s = this;
-    ((MenuCursor *)&s->cursor)->setPosePress();
+    s->cursor.setPosePress();
     s->setMainState(0xe);
 }
 
@@ -1945,7 +1924,7 @@ void LetterStorageMenu::releaseCursor() {
 
 void LetterStorageMenu::beginMoveFromPopup() {
     S *s = this;
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(4);
+    s->cursor.setAnimIfChanged(4);
     s->setMainState(0x10);
     s->setFlags(0x1000);
 }
@@ -1954,7 +1933,7 @@ void LetterStorageMenu::beginPutDownAt(u32 b) {
     S *s = this;
     s->nameBalloon.hide(1);
     s->targetSlot = b;
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(5);
+    s->cursor.setAnimIfChanged(5);
     s->setMainState(0x12);
 }
 
@@ -1963,7 +1942,7 @@ void LetterStorageMenu::beginSwapAt(u32 b) {
     s->nameBalloon.hide(1);
     s->returnState = s->mainState;
     s->targetSlot = b;
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(6);
+    s->cursor.setAnimIfChanged(6);
     s->setMainState(0x13);
 }
 
@@ -1996,7 +1975,7 @@ void LetterStorageMenu::openPopup(u32 b) {
     s32 r6 = s->getSlotX(s->selectedSlot);
     s32 r2b = s->getSlotY(s->selectedSlot);
     if (b != 0) {
-        ((PopupChoiceMenu *)(&s->popup))->placeAboveBalloon((LabelBalloon *)(&s->nameBalloon));
+        s->popup.placeAboveBalloon((LabelBalloon *)(&s->nameBalloon));
     } else {
         s->popup.placeNearPoint(r6, r2b);
     }
@@ -2016,25 +1995,25 @@ void LetterStorageMenu::selectLetter(u32 a, u32 b) {
     S *s = this;
     s->clearFlags(0x800);
     s->selectedSlot = a;
-    ChoiceIdList_Clear(&s->choiceList, 4);
-    u32 r7 = s->getSlotLetter(a);
+    ChoiceIdList_Clear((u8 *)&s->choiceList, 4);
+    LetterView *r7 = (LetterView *)s->getSlotLetter(a);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&s->choiceList, 0, 0);
+        ChoiceIdList_Add((u8 *)&s->choiceList, 0, 0);
     }
-    u32 r5 = ((LetterView *)r7)->getState();
+    u32 r5 = r7->getState();
     if (r5 != 0) {
         if (r5 == 7) {
-            ChoiceIdList_Add(&s->choiceList, 0x17, 1);
+            ChoiceIdList_Add((u8 *)&s->choiceList, 0x17, 1);
         } else {
-            ChoiceIdList_Add(&s->choiceList, 0x14, 1);
+            ChoiceIdList_Add((u8 *)&s->choiceList, 0x14, 1);
         }
     }
-    if (((LetterView *)r7)->getPresent() == 0xfff1) {
+    if (r7->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
-            ChoiceIdList_Add(&s->choiceList, 0x15, 3);
+            ChoiceIdList_Add((u8 *)&s->choiceList, 0x15, 3);
         }
     }
-    ChoiceIdList_Add(&s->choiceList, 2, 4);
+    ChoiceIdList_Add((u8 *)&s->choiceList, 2, 4);
     s->hideCursor();
     if (b == 0) {
         s->nameBalloon.hide(1);
@@ -2044,14 +2023,14 @@ void LetterStorageMenu::selectLetter(u32 a, u32 b) {
 
 void LetterStorageMenu::openDiscardConfirm() {
     setFlags(0x800);
-    ChoiceIdList_Clear(&choiceList, 4);
-    ChoiceIdList_Add(&choiceList, 0x1a, 4);
-    ChoiceIdList_Add(&choiceList, 0x15, 2);
-    ChoiceIdList_Add(&choiceList, 0x19, 4);
+    ChoiceIdList_Clear((u8 *)&choiceList, 4);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x1a, 4);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x15, 2);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x19, 4);
     openPopup(0);
 }
 
-void LetterStorageMenu::moveCursorInPocketLetters(void *pad, u32 x) {
+void LetterStorageMenu::moveCursorInPocketLetters(u32 pad, u32 x) {
     s32 r6 = cursorSlot - 0x1a;
     s32 r4 = r6 >> 1;
     if (MenuKeys_HasLeft(pad)) {
@@ -2081,14 +2060,14 @@ void LetterStorageMenu::moveCursorInPocketLetters(void *pad, u32 x) {
                     cursorSlot = cursorSlot + 2;
                 } else if (x == 0) {
                     cursorSlot = 0x3d;
-                    ((MenuCursor *)&cursor)->switchToAnim07();
+                    cursor.switchToAnim07();
                 }
             }
         }
     }
 }
 
-void LetterStorageMenu::moveCursorInStorage(void *pad, u32 x) {
+void LetterStorageMenu::moveCursorInStorage(u32 pad, u32 x) {
     s32 r4 = cursorSlot - 0x24;
     s32 r6 = 0;
     while (r4 >= 5) {
@@ -2128,21 +2107,21 @@ void LetterStorageMenu::moveCursorInStorage(void *pad, u32 x) {
                     cursorSlot = cursorSlot + 5;
                 } else if (x == 0) {
                     cursorSlot = 0x3d;
-                    ((MenuCursor *)&cursor)->switchToAnim07();
+                    cursor.switchToAnim07();
                 }
             }
         }
     }
 }
 
-void LetterStorageMenu::moveCursorOnButton(void *pad) {
+void LetterStorageMenu::moveCursorOnButton(u32 pad) {
     if (MenuKeys_HasUp(pad)) {
-        ((MenuCursor *)&cursor)->switchToAnim01();
+        cursor.switchToAnim01();
         cursorSlot = 0x22;
     }
 }
 
-void LetterStorageMenu::moveCursorOnPageTabs(void *pad) {
+void LetterStorageMenu::moveCursorOnPageTabs(u32 pad) {
     if (MenuKeys_HasLeft(pad)) {
         if (cursorSlot > 0x3e) {
             cursorSlot = cursorSlot - 1;
@@ -2157,7 +2136,7 @@ void LetterStorageMenu::moveCursorOnPageTabs(void *pad) {
     }
 }
 
-BOOL LetterStorageMenu::moveCursorByPad(void *pad, u32 x) {
+BOOL LetterStorageMenu::moveCursorByPad(u32 pad, u32 x) {
     u8 old = cursorSlot;
     clearFlags(0x30);
     if (pad == 0) {
@@ -2169,7 +2148,7 @@ BOOL LetterStorageMenu::moveCursorByPad(void *pad, u32 x) {
         moveCursorInStorage(pad, x);
         if (isPageTabSlot(cursorSlot)) {
             if (x == 1) {
-                ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+                cursor.setAnimIfChanged(1);
             }
         }
     } else if (isButtonSlot(cursorSlot)) {
@@ -2242,8 +2221,7 @@ void LetterStorageMenu::pressTab4() {
 void LetterStorageMenu::drawPageTabs() {
     s32 i, j;
     s32 a, b;
-    s32 z0 = 0, z1 = 0, z2 = 0;
-    void *p = (void *)(boxSlideX + 0x80);
+    s32 p = boxSlideX + 0x80;
     for (i = 0, j = i; i < 3; i++, j += 3) {
         if (i == currentPage) {
             a = 0x52;
@@ -2252,14 +2230,14 @@ void LetterStorageMenu::drawPageTabs() {
             a = 0x50;
             b = 5;
         }
-        Oam_DrawObj(1, &data_ov105_02298544[j], p, a, -1, 1, z0);
-        Oam_DrawObj(1, &data_ov105_02298544[j + 1], p, a, b, 1, z1);
-        Oam_DrawObj(1, &data_ov105_02298544[j + 2], p, 0x50, -1, 1, z2);
+        Oam_DrawObj(1, &data_ov105_02298544[j], p, a, -1, 1, NULL);
+        Oam_DrawObj(1, &data_ov105_02298544[j + 1], p, a, b, 1, NULL);
+        Oam_DrawObj(1, &data_ov105_02298544[j + 2], p, 0x50, -1, 1, NULL);
     }
 }
 
 void LetterStorageMenu::loadPage() {
-    LetterGrid_SetLetters0A(&letterGrid, &storageLetters[currentPage * 0x19]);
+    LetterGrid_SetLetters0A(&letterGrid, (u8 *)&storageLetters[currentPage * 0x19]);
     Gfx2d_LoadCharFile(sLetterStoragePageChars[currentPage], gCurrentHeap, 4, 0x1e2, 0x1e2, 0x1ed);
     beginSubSlideIn(2, 0, 2, 0x30);
     setSlideExtent(0xc0);

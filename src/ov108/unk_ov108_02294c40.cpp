@@ -16,18 +16,16 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
@@ -36,9 +34,6 @@
 extern "C" {
 extern u16 gPad[];
 
-void Letter_Copy(void *a, void *b);
-void ChoiceIdList_Clear(void *p, u32 v);
-void ChoiceIdList_Add(void *p, u32 a, u32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
 BOOL PopupChoice_TickDecideDelay(void *p);
 u8 PopupChoice_DecideCancel(void *p, s32 x);
@@ -48,8 +43,6 @@ void PopupChoice_Draw(void *p);
 void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
-void MenuButtons_LoadTextColors(void *p);
-void InventoryBg_LoadObjGraphics(void *p);
 }
 
 // ---- external classes (method holders: the real symbols name the class that owns the method)
@@ -107,8 +100,8 @@ public:
     void clearFlags(u32 mask);
     void setFlags(u32 mask);
     BOOL testFlags(u32 mask);
-    BOOL moveCursorByPad(void *pad, u32 x);
-    void moveCursorInGrid(void *pad, u32 x);
+    BOOL moveCursorByPad(u32 keys, u32 x);
+    void moveCursorInGrid(u32 keys, u32 x);
     void openLetterChoice(u32 idx, u32 x);
     void cancelChoice();
     void openPopup(u32 x);
@@ -145,8 +138,8 @@ public:
     void setupLetterPanels();
     s32 getSlotY(u32 b);
     s32 getSlotX(u32 b);
-    void *getLetter(u32 b);
-    void setLetter(u32 b, void *c);
+    Letter *getLetter(u32 b);
+    void setLetter(u32 b, Letter *c);
     BOOL dropOnSlot(u32 b);
     u32 hitTestSlot(u32 a, u32 b, u32 c);
     u32 letterIndexToSlot(u32 b);
@@ -430,8 +423,8 @@ void LetterGiveMenu::resetPanelUnk() {
 }
 
 void LetterGiveMenu::startPanels() {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
 }
 
 void LetterGiveMenu::updateTouch() {
@@ -531,7 +524,7 @@ void LetterGiveMenu::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
         nameBalloon.hide(1);
-    } else if (moveCursorByPad((void *)takeRepeatedKeys(), 0)) {
+    } else if (moveCursorByPad(takeRepeatedKeys(), 0)) {
         updateNameLabel();
         moveCursorToTarget();
         nameBalloon.hide(0);
@@ -553,7 +546,7 @@ void LetterGiveMenu::updateButtons() {
 }
 
 void LetterGiveMenu::mainAct07() {
-    if (moveCursorByPad((void *)takeRepeatedKeys(), 1)) {
+    if (moveCursorByPad(takeRepeatedKeys(), 1)) {
         updateNameLabel();
         moveCursorToTarget();
         nameBalloon.hide(0);
@@ -851,22 +844,22 @@ u32 LetterGiveMenu::hitTestSlot(u32 a, u32 b, u32 c) {
 
 BOOL LetterGiveMenu::dropOnSlot(u32 b) {
     if (isSlotEmpty(b) == 0) {
-        Letter_Copy(&swapLetter, getLetter(b));
+        Letter_Copy((LetterView *)&swapLetter, (LetterView *)getLetter(b));
         setLetter(heldSlot, &swapLetter);
     }
     dropCarriedLetter(b);
     return TRUE;
 }
 
-void LetterGiveMenu::setLetter(u32 b, void *c) {
+void LetterGiveMenu::setLetter(u32 b, Letter *c) {
     if (isLetterSlot(b)) {
-        letterGrid.setLetter(slotToLetterIndex(b), (s32)c);
+        letterGrid.setLetter(slotToLetterIndex(b), c);
     }
 }
 
-void *LetterGiveMenu::getLetter(u32 b) {
+Letter *LetterGiveMenu::getLetter(u32 b) {
     if (isLetterSlot(b)) {
-        return letterGrid.getLetter(slotToLetterIndex(b));
+        return (Letter *)letterGrid.getLetter(slotToLetterIndex(b));
     }
     return 0;
 }
@@ -990,7 +983,7 @@ void LetterGiveMenu::pickUpLetter(u32 a) {
     if (isLetterSlot(a)) {
         s32 r4 = slotToLetterIndex(a);
         handKind = 1;
-        Letter_Copy(&heldLetter, letterGrid.getLetter(r4));
+        Letter_Copy((LetterView *)&heldLetter, (LetterView *)letterGrid.getLetter(r4));
         letterGrid.clearLetter(r4);
     }
 }
@@ -1004,7 +997,7 @@ void LetterGiveMenu::dropCarriedLetter(u32 a) {
 
 void LetterGiveMenu::swapCarriedLetter(u32 a) {
     if (handKind == 1) {
-        Letter_Copy(&swapLetter, &heldLetter);
+        Letter_Copy((LetterView *)&swapLetter, (LetterView *)&heldLetter);
         pickUpLetter(a);
         setLetter(a, &swapLetter);
     }
@@ -1144,10 +1137,10 @@ void LetterGiveMenu::cancelChoice() {
 
 void LetterGiveMenu::openLetterChoice(u32 idx, u32 x) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&choiceList, 1);
+    ChoiceIdList_Clear((u8 *)&choiceList, 1);
     getLetter(idx);
-    ChoiceIdList_Add(&choiceList, 0xd, 0);
-    ChoiceIdList_Add(&choiceList, 2, 1);
+    ChoiceIdList_Add((u8 *)&choiceList, 0xd, 0);
+    ChoiceIdList_Add((u8 *)&choiceList, 2, 1);
     hideCursor();
     if (x == 0) {
         nameBalloon.hide(1);
@@ -1155,7 +1148,7 @@ void LetterGiveMenu::openLetterChoice(u32 idx, u32 x) {
     openPopup(x);
 }
 
-void LetterGiveMenu::moveCursorInGrid(void *pad, u32 x) {
+void LetterGiveMenu::moveCursorInGrid(u32 pad, u32 x) {
     s32 r4 = cursorSlot - 0xb;
     s32 r6 = r4 >> 1;
     if (MenuKeys_HasLeft(pad)) {
@@ -1184,7 +1177,7 @@ void LetterGiveMenu::moveCursorInGrid(void *pad, u32 x) {
     }
 }
 
-BOOL LetterGiveMenu::moveCursorByPad(void *pad, u32 x) {
+BOOL LetterGiveMenu::moveCursorByPad(u32 pad, u32 x) {
     u8 old = cursorSlot;
     clearFlags(0x30);
     if (pad == 0) {

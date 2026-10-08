@@ -14,145 +14,50 @@
 #include "talk/MsgString.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov144_02293d70  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02060034.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov144/unk_ov144_02291f60.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
 
-#define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
-#define func_0206260c _ZN8ItemNameD1Ev
-#define func_0206267c _ZN8ItemNameC1Ev
-#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
-#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
-#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define HandCursor_getAnim _ZN10HandCursor7getAnimEv
-#define HandCursor_disableObjWindow _ZN10HandCursor16disableObjWindowEv
-#define HandCursor_enableObjWindow _ZN10HandCursor15enableObjWindowEv
-#define ScrollKnob_areAnimsDone _ZN10ScrollKnob12areAnimsDoneEv
-#define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define MsgString_clear _ZN9MsgString5clearEv
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define func_02133150 _s32_div_f
-#define MenuProc_restartKeyRepeat _ZN8MenuProc16restartKeyRepeatEv
-#define MenuCursorBase_getScreenY _ZN14MenuCursorBase10getScreenYEv
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
-#define MenuCursor_switchToAnim07 _ZN10MenuCursor14switchToAnim07Ev
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuScrollKnob_getGripY _ZN14MenuScrollKnob8getGripYEv
-#define MenuScrollKnob_getGripX _ZN14MenuScrollKnob8getGripXEv
-#define MenuScrollKnob_updateRelease _ZN14MenuScrollKnob13updateReleaseEv
-#define MenuScrollKnob_release _ZN14MenuScrollKnob7releaseEv
-#define MenuScrollKnob_grab _ZN14MenuScrollKnob4grabEv
-#define MenuScrollKnob_show _ZN14MenuScrollKnob4showEv
-#define MenuScrollKnob_hitTest _ZN14MenuScrollKnob7hitTestEii
-#define MenuBottomButtonsBody_getPressOffset _ZN21MenuBottomButtonsBody14getPressOffsetEv
-#define MenuBottomButtonsBody_stepPress _ZN21MenuBottomButtonsBody9stepPressEv
-#define MenuBottomButtonsBody_setSelected _ZN21MenuBottomButtonsBody11setSelectedEh
-#define MenuBottomButtonsBody_getTargetY _ZN21MenuBottomButtonsBody10getTargetYEi
-#define MenuBottomButtonsBody_getTargetX _ZN21MenuBottomButtonsBody10getTargetXEi
-#define MenuBottomButtonsBody_isTouched _ZN21MenuBottomButtonsBody9isTouchedEi
-#define MenuBottomButtons_setLayoutSingle05 _ZN17MenuBottomButtons17setLayoutSingle05Ei
-#define MenuBottomButtons_freeTexts _ZN17MenuBottomButtons9freeTextsEv
-#define MenuErrorMessage_update _ZN16MenuErrorMessage6updateEi
-#define MenuErrorMessage_open _ZN16MenuErrorMessage4openEPhij
-#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
-#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
-#define MenuBottomButtons_drawAt _ZN17MenuBottomButtons6drawAtEi
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 
 
 extern "C" {
 extern u16 gPad[];
 extern u8 gFieldSceneKind;
-extern u32 gCurrentHeap;
 
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 MenuCursorBase_getScreenY(void *p);
-BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
-void MenuScrollKnob_grab(void *p);
-void Menu_PlayScrollGrabSe(void *p);
-void func_0206267c(void *p);
-void ItemName_setFromItem(void *p, u16 *v);
-void func_0206260c(void *p);
-void MsgString_clear(void *p);
-void MsgString_copy(void *p, void *q);
-void LabelString_createLabel(void *obj, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void LabelString_redrawAligned(void *obj, s32 a, s32 b);
-void LabelString_destroyLabel(void *obj);
-void ScrollKnob_moveTo(void *p, s32 a, s32 b);
-s32 ScrollKnob_areAnimsDone(void *p);
-void HandCursor_disableObjWindow(void *p);
-void Math_StepS32(void *p, s32 v, s32 n);
-s32 func_02133150(s32 a, s32 b);
-s32 MenuCursorBase_setPoseRelease(void *p);
-void MenuCursor_setPosePress(void *p);
-void MenuCursorBase_setPoseIdle(void *p);
-void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, s32 c, s32 d);
-void MenuCursor_switchToAnim07(void *p);
-void MenuCursor_switchToAnim01(void *p);
-void MenuCursor_setAnimIfChanged(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetY(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetX(void *p, s32 a);
-s32 MenuBottomButtonsBody_setSelected(void *p, s32 a);
-s32 MenuScrollKnob_getGripY(void *p);
-s32 MenuScrollKnob_getGripX(void *p);
-void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
-void MenuScrollKnob_show(void *p);
-void Menu_PlayScrollTickSe(void *p);
-s32 MenuScrollKnob_release(void *p);
-s32 MenuScrollKnob_hitTest(void *p, s32 x, s32 y);
-void MenuErrorMessage_open(void *p, void *q, s32 a, s32 b);
-void MenuProc_restartKeyRepeat(void *p);
-void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void MenuLauncher_onChildClosed(s32 self);
-void HandCursor_enableObjWindow(void *p);
-BOOL HandCursor_getAnim(void *p);
-BOOL HandCursor_isAnimDone(void *p);
-BOOL MenuCursorBase_isMoving(void *p);
-BOOL MenuErrorMessage_update(void *p, s32 a);
-BOOL MenuBottomButtonsBody_stepPress(void *p);
-s32 MenuBottomButtonsBody_getPressOffset(void *p);
-void MenuScrollKnob_updateRelease(void *p);
-void MenuButtons_LoadTextColors(void *p);
-void MenuBottomButtons_freeTexts(void *p);
-void MenuBottomButtons_drawAt(void *p, s32 a);
-void MenuCursorBase_drawWrapped(void *p);
-void MenuBottomButtons_setLayoutSingle05(void *p, s32 a);
-void BgVramTask_cancel(void *p);
-void Oam_DrawCell(u32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
+s32 _s32_div_f(s32 a, s32 b);
+// (proto/autoload_2/unk_020e7500.h conflicts with actor/Actor.h's List_Remove)
+BOOL Math_StepS32(s32 *p, s32 target, s32 step);
 }
 
 extern "C" ProcProfile sMusicMenuProfile = {(void *(*)())MusicMenu_Create, 0xb9, 0xbd};
-extern "C" u32 data_ov144_02293d70[16] = {0x20508028, 0x50c0, 0x508018, 0x50e0, 0x508008, 0x50e0, 0x5080f8, 0x50e0,
-                                          0x5080e8, 0x50e0, 0x5080d8, 0x50e0, 0x5080c8, 0x50e0, 0x5080b8, 0xffff50c0};
+extern "C" GXOamAttr data_ov144_02293d70[8] = {
+    {0x20508028, 0xc0, 0, 0x5, 0x0},
+    {0x00508018, 0xe0, 0, 0x5, 0x0},
+    {0x00508008, 0xe0, 0, 0x5, 0x0},
+    {0x005080f8, 0xe0, 0, 0x5, 0x0},
+    {0x005080e8, 0xe0, 0, 0x5, 0x0},
+    {0x005080d8, 0xe0, 0, 0x5, 0x0},
+    {0x005080c8, 0xe0, 0, 0x5, 0x0},
+    {0x005080b8, 0xc0, 0, 0x5, 0xffff},
+};
 
 
 
@@ -202,7 +107,7 @@ public:
     void flushDirty();
     void drawSongNames();
     void resetTextLabels();
-    void *allocTextLabel();
+    LabelString *allocTextLabel();
     void releaseCursor();
     void pressCursor();
     void refreshCursor();
@@ -219,7 +124,7 @@ public:
     void updateKnobPosition();
     BOOL finishKnobRelease();
     void moveKnobByKey();
-    s32 releaseKnob();
+    void releaseKnob();
     void dragKnob(s32 x, s32 flag);
     BOOL tryGrabKnob(s32 a, s32 b);
     void showMessage(u8 v);
@@ -287,9 +192,9 @@ public:
     /* 0x55c */ MenuErrorMessage errorMessage;
     /* 0x664 */ u16 songs[0x46];
     /* 0x6f0 */ u16 shownRowItems[9];
-    /* 0x702 */ u8 rowTemplateScreen[0x800];
-    /* 0xf02 */ u8 listScreen[0x800];
-    /* 0x1702 */ u8 frameScreen[0x802];
+    /* 0x702 */ u16 rowTemplateScreen[0x400];
+    /* 0xf02 */ u16 listScreen[0x400];
+    /* 0x1702 */ u16 frameScreen[0x400];
 };
 
 static inline BOOL IsZero(u8 v) {
@@ -335,7 +240,7 @@ BOOL MusicMenu::onDraw() {
         return FALSE;
     }
     ((MenuBottomButtons *)(&bottomButtons))->drawAt(getSlideOffsetY());
-    u32 p = slideY + 0x60;
+    s32 p = slideY + 0x60;
     if (scrollMax > 0) {
         scrollKnob.draw();
         Oam_DrawCell(1, data_ov144_02293d70, 0x80, p, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -423,11 +328,11 @@ void C::stateOpening() {
 }
 
 void C::stateClose() {
-    s32 t = ProcBase_GetParent(this);
+    MenuLauncher *t = (MenuLauncher *)ProcBase_GetParent(this);
     if (testFlags(0x20)) {
-        ((MenuLauncher *)(t))->setNextRequest(0x23, 1);
+        t->setNextRequest(0x23, 1);
     } else {
-        ((MenuLauncher *)(t))->setNextRequest(0x44, 1);
+        t->setNextRequest(0x44, 1);
     }
     beginSubSlideOut(0xa, 0, 0, 0x18);
     updateLayerSlide();
@@ -465,8 +370,8 @@ void C::initMusic() {
 void C::releaseResources() {
     resetTextLabels();
     ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
-    BgVramTask_cancel(&screenTasks);
-    BgVramTask_cancel(&screenTasks[1]);
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
 }
 
 void C::preInputUpdate() {
@@ -481,8 +386,8 @@ void C::postInputUpdate() {
 void C::preStateUpdate() {
     resetTextLabels();
     ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
-    BgVramTask_cancel(&screenTasks);
-    BgVramTask_cancel(&screenTasks[1]);
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
     scrollKnob.update();
 }
 
@@ -513,7 +418,7 @@ void C::loadBgGfx() {
 }
 
 void C::loadObjGfx() {
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
     void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/music/obj.bch", h, 8, 0xc0, 0xc0, 0x120);
     Gfx2d_LoadPaletteFile("menu/music/obj.bpl", h, 8, 4, 4, 5);
@@ -818,13 +723,13 @@ void MusicMenu::dragKnob(s32 x, s32 flag) {
     updateKnobPosition();
     s32 d = knobLastTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
         knobLastTickPos = knobPos;
     }
 }
 
-s32 MusicMenu::releaseKnob() {
-    return MenuScrollKnob_release(&scrollKnob);
+void MusicMenu::releaseKnob() {
+    scrollKnob.release();
 }
 
 void MusicMenu::moveKnobByKey() {
@@ -845,7 +750,7 @@ void MusicMenu::moveKnobByKey() {
     if (old != A8) {
         syncScrollToKnob();
         updateKnobPosition();
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
     }
 #undef A8
 }
@@ -865,7 +770,7 @@ void MusicMenu::updateKnobPosition() {
 void MusicMenu::syncScrollToKnob() {
     s32 v;
     s32 n = scrollMax;
-    v = func_02133150(knobPos * n, 0x78);
+    v = _s32_div_f(knobPos * n, 0x78);
     if (v < 0) {
         v = 0;
     }
@@ -878,7 +783,7 @@ void MusicMenu::syncScrollToKnob() {
 
 void MusicMenu::syncKnobToScroll() {
     if (scrollMax > 0) {
-        knobPos = func_02133150(scrollY * 0x78, scrollMax);
+        knobPos = _s32_div_f(scrollY * 0x78, scrollMax);
         updateKnobPosition();
     }
 }
@@ -1016,7 +921,7 @@ void MusicMenu::releaseCursor() {
     setMainState(8);
 }
 
-void *MusicMenu::allocTextLabel() {
+LabelString *MusicMenu::allocTextLabel() {
     if (labelCount >= 9) {
         return &textLabels[8];
     }
@@ -1033,15 +938,14 @@ void MusicMenu::resetTextLabels() {
 }
 
 void MusicMenu::drawSongNames() {
-    u32 buf[10];
     u16 t;
     s32 i;
-    void *obj;
+    LabelString *obj;
     s32 cnt;
     s32 idx;
     u16 *p;
     s32 slot;
-    new (buf) ItemName();
+    ItemName name;
     idx = topRow;
     if (idx < 0) {
         p = songs;
@@ -1055,20 +959,20 @@ void MusicMenu::drawSongNames() {
         if (idx < 0 || idx >= cnt) {
             shownRowItems[slot] = 0xfff1;
             obj = allocTextLabel();
-            ((MsgString *)(obj))->clear();
+            obj->clear();
         } else {
             if (*p != shownRowItems[slot]) {
                 shownRowItems[slot] = *p;
                 obj = allocTextLabel();
                 t = *p;
-                ((ItemName *)(buf))->setFromItem(&t);
-                ((MsgString *)(obj))->copy((MsgString *)(buf));
+                name.setFromItem(&t);
+                obj->copy(&name);
             }
             p++;
         }
         if (obj) {
-            ((LabelString *)(obj))->createLabel(4, slot * 0x1a + 0x184, 0xd, 0xf, 7, 0);
-            ((LabelString *)(obj))->redrawAligned(0, 0);
+            obj->createLabel(4, slot * 0x1a + 0x184, 0xd, 0xf, 7, 0);
+            obj->redrawAligned(0, 0);
         }
         idx++;
         slot++;
@@ -1076,7 +980,6 @@ void MusicMenu::drawSongNames() {
             slot = 0;
         }
     }
-    ((ItemName *)(buf))->ItemName::~ItemName();
 }
 
 void MusicMenu::flushDirty() {
@@ -1084,7 +987,7 @@ void MusicMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(2)) {
-        if (((BgVramTask *)(&screenTasks[1]))->requestScreen(&frameScreen, 6, 0x800, 0)) {
+        if (((BgVramTask *)(&screenTasks[1]))->requestScreen(frameScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -1120,7 +1023,7 @@ void MusicMenu::composeListScreen() {
     s32 z = 0;
     k = z;
     do {
-        MIi_CpuCopy16(rowTemplateScreen + i * 0x80, listScreen + j * 0x80, 0x80);
+        MIi_CpuCopy16(&rowTemplateScreen[i * 0x40], &listScreen[j * 0x40], 0x80);
         i++;
         if (i >= 9) {
             i = z;
@@ -1182,7 +1085,7 @@ void MusicMenu::setPlayButtonTiles(u16 v) {
     for (k = 0x82, i = 4; i <= 7; k += 0x20, i++) {
         idx = k;
         for (j = 2; j <= 5; j++) {
-            *(u16 *)((u8 *)this + idx * 2 + 0x1702) = v;
+            frameScreen[idx] = v;
             idx++;
             v = v + 1;
         }
@@ -1259,7 +1162,7 @@ BOOL MusicMenu::activateTarget(u32 a) {
         return TRUE;
     case 1:
         ((MenuScrollKnob *)(&scrollKnob))->grab();
-        Menu_PlayScrollGrabSe(&scrollKnob);
+        Menu_PlayScrollGrabSe();
         setMainState(4);
         return TRUE;
     }

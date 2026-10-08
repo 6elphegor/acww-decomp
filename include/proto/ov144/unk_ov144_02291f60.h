@@ -4,16 +4,23 @@
 // Prototypes of the functions defined in src/ov144/unk_ov144_02291f60.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
-#include "types.h"
 class MusicMenu;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov144_02293d70
-extern u32 data_ov144_02293d70[16];
 #endif
+#ifndef PROTO_LOCAL_data_ov144_02293d70
+extern GXOamAttr data_ov144_02293d70[8];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_MusicMenu_Create
 MusicMenu *MusicMenu_Create();
 #endif

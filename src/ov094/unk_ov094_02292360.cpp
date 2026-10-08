@@ -13,7 +13,6 @@
 #include "talk/MsgString9C.h"
 #include "ui/LabelString.h"
 #define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_DrawSprite  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_InventoryBg_PaintHighlight0  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_InventoryBg_PaintHighlight1  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_InventoryBg_PaintNormal  // declared below: the shared prototype conflicts with the calls here
@@ -172,7 +171,6 @@ void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c
 void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m);
 void InventoryItemGrid_SetHeldItem(InventoryItemGrid *s, Rec *r, s32 m);
 void InventoryBg_SetBellsPanelMode(void *o, u32 n);
-void InventoryBg_DrawSprite(s32 a, void *o);
 void InventoryBg_PaintHighlight1(void *o);
 void InventoryBg_PaintHighlight0(void *o);
 void InventoryBg_PaintNormal(void *o);
@@ -410,9 +408,9 @@ void InventoryBg_UploadPalette(void *o)
     }
 }
 
-void InventoryBg_DrawSprite(s32 a, void *o)
+void InventoryBg_DrawSprite(InventoryBg *self, s32 y)
 {
-    Oam_DrawObj(1, sInventoryBgSprite, 0x80, (s32)((u8 *)o + 0x60), -1, 2, 0);
+    Oam_DrawObj(1, sInventoryBgSprite, 0x80, y + 0x60, -1, 2, 0);
 }
 
 void InventoryBg_StartBlink(void *o, u32 v)

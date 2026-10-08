@@ -10,10 +10,8 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuTownListPanel.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -24,17 +22,15 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov141/unk_ov141_02292900.h"
 
 class NearbyTownsMenu;
 
 extern "C" {
 extern u16 gPad[];
-extern void *gCurrentHeap;
 
 void MI_CpuCopy8(void *a, void *b, u32 n);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void MenuButtons_LoadTextColors(void *p);
 }
 
 
@@ -132,12 +128,12 @@ public:
     /* 0x8a4 */ u8 rowScanEntries[6][0xe0];
     /* 0xde4 */ u8 rowUserData[6][0x11];
     /* 0xe4a */ u8 unk_e4a[2];
-    /* 0xe4c */ u32 slideY;
+    /* 0xe4c */ s32 slideY;
     /* 0xe50 */ s32 buttonsSlideY;
     /* 0xe54 */ s32 selectedRow;
     /* 0xe58 */ s32 confirmButtonPal;
     /* 0xe5c */ s32 quitButtonPal;
-    /* 0xe60 */ u8 bgScreen[0x800];
+    /* 0xe60 */ u16 bgScreen[0x400];
     /* 0x1660 */ u16 flags;
     /* 0x1662 */ u8 returnState;
     /* 0x1663 */ u8 rowStates[6];
@@ -171,11 +167,11 @@ BOOL NearbyTownsMenu::onDraw() {
         return FALSE;
     }
     bottomButtons.drawAt(buttonsSlideY);
-    u32 base = slideY + 0x60;
-    s32 h0 = listPanel.getCellList(0);
-    s32 h1 = listPanel.getCellList(1);
-    s32 h2 = listPanel.getCellList(2);
-    s32 h3 = listPanel.getCellList(3);
+    s32 base = slideY + 0x60;
+    GXOamAttr *h0 = (GXOamAttr *)listPanel.getCellList(0);
+    GXOamAttr *h1 = (GXOamAttr *)listPanel.getCellList(1);
+    GXOamAttr *h2 = (GXOamAttr *)listPanel.getCellList(2);
+    GXOamAttr *h3 = (GXOamAttr *)listPanel.getCellList(3);
     s32 t = selectedRow;
     if (t != -1) {
         Oam_DrawCell(1, h1, 0x80, base + (t << 4), -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -339,7 +335,7 @@ void NearbyTownsMenu::setupBgLayers() {
 void NearbyTownsMenu::loadBgGfx() {
     listPanel.loadBgGfx();
     listPanel.clearAllRows();
-    File_LoadToBuffer((void *)"menu/res/b0_bg.bsc", bgScreen, 0x800);
+    File_LoadToBuffer("menu/res/b0_bg.bsc", bgScreen, 0x800);
     BgScreen_SetRectPalette(bgScreen, 7, 8, 0x10, 0x13, 7);
     BgScreen_SetRectPalette(bgScreen, 0x12, 8, 0x19, 0x13, 7);
     setFlags(4);
@@ -348,7 +344,7 @@ void NearbyTownsMenu::loadBgGfx() {
 
 void NearbyTownsMenu::loadObjGfx() {
     listPanel.loadObjGfx();
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void NearbyTownsMenu::updateTouch() {
@@ -630,7 +626,7 @@ void NearbyTownsMenu::scanTowns() {
                             u8 *dst = rowUserData[idx2];
                             MI_CpuCopy8(q, dst, n2);
                             listPanel.setRow(idx2, dst);
-                            *((u8 *)this + idx2 + 0x1669) = z[0];
+                            rowFadeLevels[idx2] = z[0];
                         }
                     } else {
                         storeTown(idx, e);
@@ -647,21 +643,19 @@ void NearbyTownsMenu::updateRowFades() {
     s32 none = -1;
     u32 zero = 0;
     for (i = 0; i < 6; i++) {
-        u8 *e = (u8 *)this + i;
-        u8 *st = e + 0x1663;
-        switch (e[0x1663]) {
+        switch (rowStates[i]) {
         case 1:
-            if (e[0x1669] < 5) {
-                e[0x1669] = e[0x1669] + 1;
-                listPanel.setRowFadeColor(i, e[0x1669], 5, 0xe);
+            if (rowFadeLevels[i] < 5) {
+                rowFadeLevels[i] = rowFadeLevels[i] + 1;
+                listPanel.setRowFadeColor(i, rowFadeLevels[i], 5, 0xe);
             }
             break;
         case 2:
-            if (e[0x1669] > 1) {
-                e[0x1669]--;
-                listPanel.setRowFadeColor(i, e[0x1669], 5, 0xe);
+            if (rowFadeLevels[i] > 1) {
+                rowFadeLevels[i]--;
+                listPanel.setRowFadeColor(i, rowFadeLevels[i], 5, 0xe);
             } else {
-                *st = zero;
+                rowStates[i] = zero;
                 listPanel.clearRow(i);
                 if (selectedRow == i) {
                     selectRow(none);

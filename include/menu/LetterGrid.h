@@ -25,7 +25,7 @@ public:
     BOOL isHighlighted(s32 i);
     void highlightLetterKinds(u32 flags);
     void clearLetter(s32 i);
-    void setLetter(s32 i, s32 x);
+    void setLetter(s32 i, const void *letter);
     void *getLetter(s32 i);
     void markSlot(s32 i);
     void clearMarks();

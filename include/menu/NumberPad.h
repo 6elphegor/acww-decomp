@@ -29,15 +29,17 @@ public:
     /* 0x09 */ u8 objVariant;
     /* 0x0a */ u8 mainLayer;
     /* 0x0b */ u8 keyLayer;
-    /* 0x0c */ u32 value;
-    /* 0x10 */ u32 maxValue;
-    /* 0x14 */ u32 topAmount;
-    /* 0x18 */ u32 bottomAmount;
-    /* 0x1c */ u8 unk_1c[0x2c - 0x1c];
+    /* 0x0c */ s32 value;
+    /* 0x10 */ s32 maxValue;
+    /* 0x14 */ s32 topAmount;
+    /* 0x18 */ s32 bottomAmount;
+    /* 0x1c */ s32 shownTopAmount;     // the amounts last drawn
+    /* 0x20 */ s32 shownBottomAmount;
+    /* 0x24 */ u8 unk_24[8];
     /* 0x2c */ LabelString labels[5];
     /* 0x16c */ BgVramTask screenTasks[2];
-    /* 0x1b4 */ u8 mainScreen[0x800];
-    /* 0x9b4 */ u8 keyScreen[0x800];
+    /* 0x1b4 */ u16 mainScreen[0x400];
+    /* 0x9b4 */ u16 keyScreen[0x400];
 };
 
 #endif // MENU_NUMBERPAD_H

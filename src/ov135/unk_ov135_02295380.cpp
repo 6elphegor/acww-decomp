@@ -7,13 +7,16 @@
 #include "menu/DateTimePicker.h"
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
+#include "sys/ClockDateTime.h"
+#include "sys/ClockOffset.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov134/unk_ov134_02291f60.h"
 #include "proto/ov135/unk_ov135_02295380.h"
 
@@ -25,28 +28,14 @@ extern const u8 sClockAdjustCursorUpTable[7];
 extern const s32 sClockAdjustCursorXTable[7];
 extern const s32 sClockAdjustCursorYTable[7];
 extern u16 gPad[];
-extern u8 gSaveData[];
 
-void MI_CpuCopy8(void *dst, void *src, u32 n);
-s32 ClockOffset_CalcMinutes(void *p, void *q);
-u16 ClockOffset_CalcSeconds(void *p, void *q);
+// not in the shared headers (include/proto/.excluded / SDK assembly)
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
+s32 ClockOffset_CalcMinutes(void *unused, u64 *b);
+s32 ClockOffset_CalcSeconds(void *unused, u8 *b);
 void Clock_Init();
-void MenuButtons_LoadTextColors(void *self);
-
-// ov134 library object (DateTimePicker) plain functions; first argument is the object
-BOOL DateTimePicker_GrabHand(void *self, u8 a, u8 b);
-void DateTimePicker_Draw(void *self, s32 a, s32 b);
-void DateTimePicker_LoadObjGraphics(void *self);
-void DateTimePicker_DrawTitleAndFields(void *self, s32 a);
-void DateTimePicker_LoadBgGraphics(void *self);
-BOOL DateTimePicker_IsBeforeStart(void *self);
-void DateTimePicker_GetDateTime(void *self, void *out);
-void DateTimePicker_EndFrame(void *self);
-void DateTimePicker_BeginFrame(void *self);
-void DateTimePicker_Shutdown(void *self);
-void DateTimePicker_EnableMinLimit(void *self);
-void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 }
+extern SaveData gSaveData;
 
 
 
@@ -319,7 +308,7 @@ void ClockAdjustMenu::loadBgGfx() {
 
 void ClockAdjustMenu::loadObjGfx() {
     DateTimePicker_LoadObjGraphics(&picker);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void ClockAdjustMenu::updateTouch() {
@@ -332,9 +321,9 @@ void ClockAdjustMenu::updateTouch() {
             } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
-                u8 a = gTouchCurX;
-                u8 b = gTouchCurY;
-                if (DateTimePicker_GrabHand(&picker, b ? a : a, b)) {
+                u32 a = gTouchCurX;
+                u32 b = gTouchCurY;
+                if (DateTimePicker_GrabHand(&picker, a, b)) {
                     MenuCtrl_SetClockEdited();
                     setMainState(1);
                 }
@@ -577,25 +566,25 @@ void ClockAdjustMenu::confirm() {
     setTransitionState(2);
     setMainState(0xd);
     MenuCtrl_SetResult(1);
-    u32 v[2];
-    v[0] = 0;
-    v[1] = 0;
-    DateTimePicker_GetDateTime(&picker, v);
-    MenuCtrl_SetDateTime(v);
-    u8 *g = gSaveData;
+    ClockDateTimeWords v;
+    v.words[0] = 0;
+    v.words[1] = 0;
+    DateTimePicker_GetDateTime(&picker, &v.dt);
+    MenuCtrl_SetDateTime(&v);
+    ClockOffset *offset = (ClockOffset *)gSaveData.clockOffset;
     if (DateTimePicker_IsBeforeStart(&picker)) {
         MenuCtrl_SetClockMovedBack();
     } else {
         MenuCtrl_SetClockMovedForward();
     }
-    u32 a[2];
-    MI_CpuCopy8(v, a, 8);
-    s32 r4 = ClockOffset_CalcMinutes(g + 0x15fb4, a);
-    u32 b[2];
-    MI_CpuCopy8(v, b, 8);
-    u16 r = ClockOffset_CalcSeconds(g + 0x15fb4, b);
-    *(s32 *)(g + 0x15fb4) = r4;
-    *(u16 *)(g + 0x15fb8) = r;
+    u64 a;
+    MI_CpuCopy8(&v, &a, 8);
+    s32 r4 = ClockOffset_CalcMinutes(offset, &a);
+    u8 b[8];
+    MI_CpuCopy8(&v, b, 8);
+    u16 r = ClockOffset_CalcSeconds(offset, b);
+    offset->minutes = r4;
+    offset->seconds = r;
     Clock_Init();
 }
 

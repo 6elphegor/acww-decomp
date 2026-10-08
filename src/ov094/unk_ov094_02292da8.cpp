@@ -442,13 +442,13 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
     ((LabelString *)(a))->LabelString::~LabelString();
 }
 
-void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b)
+void InventoryItemGrid_ShowSlotName(void *o, void *balloon, s32 b)
 {
     u32 r = InventoryItemGrid_GetSlotItem((InventoryItemGrid *)o, b);
     volatile u16 t = 0xfff1;
     t = r;
     if (t != 0xfff1) {
-        InventoryItemGrid_SetBalloonItemName(o, (void *)a, (u16 *)&t, InventoryItemGrid_GetSlotFlags((InventoryItemGrid *)o, b));
+        InventoryItemGrid_SetBalloonItemName(o, balloon, (u16 *)&t, InventoryItemGrid_GetSlotFlags((InventoryItemGrid *)o, b));
     }
 }
 

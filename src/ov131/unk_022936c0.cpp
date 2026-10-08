@@ -10,74 +10,25 @@
 #include "player/PlayerInventory.h"
 #include "room/HouseData.h"
 #include "ui/HandCursor.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_SetAmount  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_ClearValue  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_GetBottomAmount  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_GetCursorX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_GetCursorY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_GetTopAmount  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_GetValue  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_HitTestKey  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_IsCursorOnButton  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_IsCursorOnOk  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_MoveCursor  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_PressCursorKey  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_SetAmounts  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NumberPad_TickKeyRepeat  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchChanged  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchCurX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchCurY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchHeld  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02097110.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
+#include "proto/ov130/unk_ov130_02292360.h"
 #include "proto/ov131/unk_022936c0.h"
 
 extern "C" {
-extern u8 gSaveHouse[];
 extern u16 gPad[];
-extern u8 gTouchHeld[];
-extern u8 gTouchChanged[];
-extern u8 gTouchCurX[];
-extern u8 gTouchCurY[];
-
-void MenuCtrl_SetAmount(u32 v);
-
-void MenuButtons_LoadTextColors(void *self);
-
-// ov130 (library overlay) plain functions; first argument is the NumberPad object
-s32 NumberPad_GetValue(void *self);
-s32 NumberPad_GetTopAmount(void *self);
-s32 NumberPad_GetBottomAmount(void *self);
-void NumberPad_SetAmounts(void *self, s32 a, s32 b, s32 c);
-void NumberPad_Draw(void *self, s32 a);
-s32 NumberPad_IsCursorOnButton(void *self);
-s32 NumberPad_GetCursorY(void *self);
-s32 NumberPad_GetCursorX(void *self);
-void NumberPad_StopKeyRepeat(void *self);
-void NumberPad_TickKeyRepeat(void *self);
-s32 NumberPad_PressCursorKey(void *self);
-s32 NumberPad_IsCursorOnOk(void *self);
-s32 NumberPad_MoveCursor(void *self, s32 a);
-s32 NumberPad_ClearValue(void *self);
-s32 NumberPad_HitTestKey(void *self, u32 a, u32 b);
-void NumberPad_PressKey(void *self);
 }
-
-
-
-
-
-
-
+extern HouseData gSaveHouse;
 
 static inline BOOL func_ov131_Both() {
-    if (gTouchHeld[0] != 0 && gTouchChanged[0] != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
@@ -244,8 +195,7 @@ void AmountEntryMenu::stateOpening() {
 }
 
 void AmountEntryMenu::stateClose() {
-    void *r = ProcBase_GetParent(this);
-    ((MenuLauncher *)(r))->setNextRequest(0x44, 1);
+    ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -310,7 +260,7 @@ void AmountEntryMenu::loadBgGfx() { numberPad.loadBg(); }
 
 void AmountEntryMenu::loadObjGfx() {
     numberPad.loadObj();
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void AmountEntryMenu::updateTouch() {
@@ -323,7 +273,7 @@ void AmountEntryMenu::updateTouch() {
             } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
-                if (NumberPad_HitTestKey(&numberPad, gTouchCurX[0], gTouchCurY[0]) != 0xd) {
+                if (NumberPad_HitTestKey(&numberPad, gTouchCurX, gTouchCurY) != 0xd) {
                     NumberPad_PressKey(&numberPad);
                     setMainState(1);
                 }
@@ -333,7 +283,7 @@ void AmountEntryMenu::updateTouch() {
 }
 
 void AmountEntryMenu::stateTouchRepeat() {
-    if (gTouchHeld[0] == 0) {
+    if (gTouchHeld == 0) {
         NumberPad_StopKeyRepeat(&numberPad);
         setMainState(0);
     } else {
@@ -514,8 +464,8 @@ void AmountEntryMenu::setupAmounts() {
     s32 hi;
     s32 lo;
     s32 m = MenuCtrl_GetMode();
-    void *p = PlayerData_GetCurrent();
-    void *q = ((PlayerData *)(p))->getBankAccount();
+    PlayerData *p = PlayerData_GetCurrent();
+    PlayerBank *q = p->getBankAccount();
     switch (m) {
     case 0x38:
         hi = 0x98967f;
@@ -527,20 +477,19 @@ void AmountEntryMenu::setupAmounts() {
         hi = PlayerBank_GetBalance(q);
         break;
     default:
-        hi = ((PlayerInventory *)(((PlayerData *)(p))->getInventory()))->getTotalBells(1);
+        hi = ((PlayerInventory *)p->getInventory())->getTotalBells(1);
         break;
     }
     lo = 0;
-    void *g = gSaveHouse;
     switch (m) {
     case 0x34:
-        lo = ((HouseData *)(g))->getDebt();
+        lo = gSaveHouse.getDebt();
         break;
     case 0x35:
         lo = PlayerBank_GetBalance(q);
         break;
     case 0x36:
-        lo = ((PlayerInventory *)(((PlayerData *)(p))->getInventory()))->getTotalBells(1);
+        lo = ((PlayerInventory *)p->getInventory())->getTotalBells(1);
         break;
     }
     volatile s32 mx = hi;
@@ -558,7 +507,7 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     case 0x36: {
-        s32 t = PlayerInventory_GetBellsRoom(((PlayerData *)(p))->getInventory(), 1, 0);
+        s32 t = PlayerInventory_GetBellsRoom((u8 *)p->getInventory(), 1, 0);
         if (t < hi) {
             mx = t;
         }
@@ -572,8 +521,8 @@ void AmountEntryMenu::commitAmount() {
     s32 a = NumberPad_GetValue(&numberPad);
     s32 b = NumberPad_GetTopAmount(&numberPad);
     s32 c = NumberPad_GetBottomAmount(&numberPad);
-    void *p = PlayerData_GetCurrent();
-    void *q = ((PlayerData *)(p))->getBankAccount();
+    PlayerData *p = PlayerData_GetCurrent();
+    PlayerBank *q = p->getBankAccount();
     s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:
@@ -581,7 +530,7 @@ void AmountEntryMenu::commitAmount() {
         break;
     case 0x37:
     default:
-        PlayerInventory_AddBells(((PlayerData *)(p))->getInventory(), -a, 1);
+        PlayerInventory_AddBells((u8 *)p->getInventory(), -a, 1);
         break;
     case 0x38:
     case 0x39:
@@ -590,13 +539,13 @@ void AmountEntryMenu::commitAmount() {
     }
     switch (m) {
     case 0x34:
-        ((HouseData *)(gSaveHouse))->setDebt(c - a);
+        gSaveHouse.setDebt(c - a);
         break;
     case 0x35:
         PlayerBank_SetBalance(q, c + a);
         break;
     case 0x36:
-        PlayerInventory_AddBells(((PlayerData *)(p))->getInventory(), a, 1);
+        PlayerInventory_AddBells((u8 *)p->getInventory(), a, 1);
         break;
     }
 }

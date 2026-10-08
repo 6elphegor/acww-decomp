@@ -7,12 +7,18 @@
 #include "gfx/BgVramTask.h"
 #include "ui/LabelString.h"
 #include "menu/MenuScrollKnob.h"
+#include "nitro/gxoam.h"
+#include "sys/ClockDateTime.h"
 
+// A ClockDateTime cleared as two words on construction.
 struct PickerDateTime {
-    u8 b[8];
+    union {
+        ClockDateTime dt;
+        u32 words[2];
+    };
     PickerDateTime() {
-        *(u32 *)&b[0] = 0;
-        *(u32 *)&b[4] = 0;
+        words[0] = 0;
+        words[1] = 0;
     }
 };
 
@@ -57,10 +63,10 @@ public:
     /* 0x64 */ s32 knobY;
     /* 0x68 */ s32 knobGrabOffset;
     /* 0x6c */ s32 knobLastTickY;
-    /* 0x70 */ u32 pickedRowCell;
-    /* 0x74 */ void *listTopCell;
-    /* 0x78 */ u32 listBottomCell;
-    /* 0x7c */ u8 *listX;
+    /* 0x70 */ GXOamAttr *pickedRowCell;
+    /* 0x74 */ GXOamAttr *listTopCell;
+    /* 0x78 */ GXOamAttr *listBottomCell;
+    /* 0x7c */ s32 listX;
     /* 0x80 */ s32 pickedRowY;
     /* 0x84 */ s32 clockMinutes;
     /* 0x88 */ s32 targetMinutes;
@@ -104,12 +110,12 @@ public:
     /* 0x518 */ BgVramTask fieldScreenTask;
     /* 0x53c */ BgVramTask listScreenTask;
     /* 0x560 */ BgVramTask listPaletteTask;
-    /* 0x584 */ u8 fieldScreen[0x800];
-    /* 0xd84 */ u8 listScreenBase[0x800];
-    /* 0x1584 */ u8 listScreenWork[0x800];
-    /* 0x1d84 */ u8 listScreen[0x800];
-    /* 0x2584 */ u8 listPalette[0x20];
-    /* 0x25a4 */ u8 listPaletteWork[0x20];
+    /* 0x584 */ u16 fieldScreen[0x400];
+    /* 0xd84 */ u16 listScreenBase[0x400];
+    /* 0x1584 */ u16 listScreenWork[0x400];
+    /* 0x1d84 */ u16 listScreen[0x400];
+    /* 0x2584 */ u16 listPalette[0x10];
+    /* 0x25a4 */ u16 listPaletteWork[0x10];
 };
 
 #endif // MENU_DATETIMEPICKER_H

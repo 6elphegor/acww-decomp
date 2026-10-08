@@ -405,7 +405,7 @@ BOOL MenuCtrl_IsSyncMsgMenu(void);
 BOOL MenuCtrl_IsFriendPageFromIndex(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetChatDraft
-void MenuCtrl_SetChatDraft(u32 a);
+void MenuCtrl_SetChatDraft(const u8 *a);
 #endif
 }
 #ifndef PROTO_LOCAL_sMenuIndex

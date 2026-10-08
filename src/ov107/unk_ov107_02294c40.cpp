@@ -16,13 +16,6 @@
 #include "menu/MenuLauncher.h"
 #include "ui/HandCursor.h"
 #include "ui/LabelBalloon.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishCatch_GetReelTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishCatch_StartRelease  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_LocalReleaseCatch  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -36,12 +29,17 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
 #include "proto/ov107/unk_ov107_02294c40.h"
 #include "player/PlayerData.h"
+#include "actor/Actor.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -49,65 +47,6 @@ class PocketsFullMenu;
 typedef void (PocketsFullMenu::*Unk_ov107_02296e78_Fn)();
 
 
-// Other modules' methods, called with the object first (the real symbol is the mangled name).
-#define TouchPromptBalloon_setAutoCloseTimer _ZN18TouchPromptBalloon17setAutoCloseTimerEh
-#define TouchPromptBalloon_cancelQueuedOpen _ZN18TouchPromptBalloon16cancelQueuedOpenEv
-#define TouchPromptBalloon_queueOpen _ZN18TouchPromptBalloon9queueOpenEv
-#define TouchPromptBalloon_commitOpen _ZN18TouchPromptBalloon10commitOpenEv
-#define TouchPromptBalloon_hide _ZN18TouchPromptBalloon4hideEi
-#define TouchPromptBalloon_updatePrompt _ZN18TouchPromptBalloon12updatePromptEv
-#define TouchPromptBalloon_isOpenOrOpening _ZN18TouchPromptBalloon15isOpenOrOpeningEv
-#define PopupChoiceMenuBody_getRowY _ZN19PopupChoiceMenuBody7getRowYEi
-#define PopupChoiceMenuBody_getRowX _ZN19PopupChoiceMenuBody7getRowXEv
-#define PopupChoiceMenuBody_hitTestRowOrLast _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii
-#define PopupChoiceMenuBody_setRowsFromIds _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi
-#define PopupChoiceMenuBody_isClosed _ZN19PopupChoiceMenuBody8isClosedEv
-#define PopupChoiceMenuBody_isOpen _ZN19PopupChoiceMenuBody6isOpenEv
-#define PopupChoiceMenu_placeAboveBalloon _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon
-#define PopupChoiceMenu_placeNearPoint _ZN15PopupChoiceMenu14placeNearPointEii
-#define PopupChoiceMenu_init _ZN15PopupChoiceMenu4initEiiPKc
-#define CursorMotion_reset _ZN12CursorMotion5resetEv
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
-#define MenuCursorBase_moveToLinear _ZN14MenuCursorBase12moveToLinearEiii
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
-#define MenuCursor_switchToAnim07 _ZN10MenuCursor14switchToAnim07Ev
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuBottomButtonsBody_getPressOffset _ZN21MenuBottomButtonsBody14getPressOffsetEv
-#define MenuBottomButtonsBody_stepPress _ZN21MenuBottomButtonsBody9stepPressEv
-#define MenuBottomButtonsBody_setSelected _ZN21MenuBottomButtonsBody11setSelectedEh
-#define MenuBottomButtonsBody_getTargetY _ZN21MenuBottomButtonsBody10getTargetYEi
-#define MenuBottomButtonsBody_getTargetX _ZN21MenuBottomButtonsBody10getTargetXEi
-#define MenuBottomButtonsBody_isTouched _ZN21MenuBottomButtonsBody9isTouchedEi
-#define MenuBottomButtons_setLayoutSingle05 _ZN17MenuBottomButtons17setLayoutSingle05Ei
-#define MenuBottomButtons_drawAt _ZN17MenuBottomButtons6drawAtEi
-#define MenuBottomButtons_freeTexts _ZN17MenuBottomButtons9freeTextsEv
-#define MenuErrorMessage_update _ZN16MenuErrorMessage6updateEi
-#define MenuErrorMessage_open _ZN16MenuErrorMessage4openEPhij
-#define LetterGrid_drawPocketLetters _ZN10LetterGrid17drawPocketLettersEii
-#define LetterGrid_highlightLetterKinds _ZN10LetterGrid20highlightLetterKindsEj
-#define LetterGrid_clearCursorSlot _ZN10LetterGrid15clearCursorSlotEv
-#define LetterGrid_updateCursorLift _ZN10LetterGrid16updateCursorLiftEv
-#define LetterGrid_init _ZN10LetterGrid4initEi
-#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
-#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
-#define CommManager_endRecord _ZN11CommManager9endRecordEjj
-#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
-#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define HandCursor_getAnim _ZN10HandCursor7getAnimEv
-#define HandCursor_setAnimAtEnd _ZN10HandCursor12setAnimAtEndEi
-#define HandCursor_disableObjWindow _ZN10HandCursor16disableObjWindowEv
-#define HandCursor_enableObjWindow _ZN10HandCursor15enableObjWindowEv
-#define PlayerData_getCatalog _ZN10PlayerData10getCatalogEv
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 
 
 
@@ -126,13 +65,8 @@ extern u8 gU8None;
 extern u16 gPad[];
 
 s32 PendingUnit_ClearActiveOfAid(u32 aid);
-BOOL CommManager_isOnline(void *p);
-BOOL CommManager_isSlotActive(void *p, s32 v);
-void CommManager_beginRecord(void *p);
-void CommManager_writeRecord(void *p, void *buf, s32 n);
-void CommManager_endRecord(void *p, s32 a, s32 b);
 void MI_CpuCopy8(void *a, void *b, u32 n);
-void FieldPos_FromUnitCenter(void *out, s32 a, s32 b);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 FieldAction_PollResult(s32 v);
 s32 FieldAction_PollDrop(s32 v);
 void FieldAction_Release(s32 v);
@@ -140,18 +74,9 @@ s32 FieldAction_RequestPlaceAtPending(s32 a, s32 b);
 s32 FieldAction_RequestDropOrPlace(s32 a, s32 b);
 s32 FieldAction_RequestToolAtPending(s32 a, s32 b, s32 c, s32 d);
 u16 *PendingUnit_GetActivePosOfAid(s32 a);
-s32 Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 dir, u32 dist, u32 s5, s32 s6);
 void Item_FromPlacedForm(void *a, void *b);
-s32 PlayerData_getCatalog(void *self);
-void HandCursor_setAnimAtEnd(void *a, s32 b);
-void HandCursor_disableObjWindow(void *a);
-void LabelBalloon_setPos(void *a, s32 b, s32 c);
-s32 HandCursor_getAnim(void *p);
-s32 HandCursor_isAnimDone(void *p);
-s32 HandCursor_enableObjWindow(void *p);
 
-void ChoiceIdList_Clear(void *p, u32 v);
-void ChoiceIdList_Add(void *p, u32 a, u32 b);
 u32 PopupChoice_DecideCancel(void *a, s32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
@@ -161,63 +86,11 @@ void PopupChoice_Draw(void *p);
 void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *p, s32 x);
 void PopupChoice_Open(void *a, s32 b);
-void MenuButtons_LoadTextColors(void *p);
 
-BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
-void FishCatch_EndForShadow(s32 a);
-BOOL FishCatch_StartRelease(s32 a, s32 b, void *c);
-BOOL FishCatch_GetReelTarget(void *a, s32 b);
-void PlayerActor_LocalReleaseCatch(s32 a, s32 b, s32 c, s32 d);
+s32 PlayerActor_LocalRequestBuryItem(VecFx32 *p, u16 *b);
+BOOL FishCatch_EndForShadow(void *o);
 
-void InventoryBg_LoadObjGraphics(void *p);
 
-// Macro'd (mangled) declarations: the object is the first argument.
-void TouchPromptBalloon_setAutoCloseTimer(void *p, s32 a);
-void TouchPromptBalloon_cancelQueuedOpen(void *p);
-void TouchPromptBalloon_queueOpen(void *p);
-void TouchPromptBalloon_commitOpen(void *p);
-void TouchPromptBalloon_hide(void *p, s32 a);
-BOOL TouchPromptBalloon_updatePrompt(void *p);
-BOOL TouchPromptBalloon_isOpenOrOpening(void *p);
-s32 PopupChoiceMenuBody_getRowY(void *a, s32 b);
-s32 PopupChoiceMenuBody_getRowX(void *a);
-s32 PopupChoiceMenuBody_hitTestRowOrLast(void *p, s32 a, s32 b);
-void PopupChoiceMenuBody_setRowsFromIds(void *a, void *b, s32 c);
-BOOL PopupChoiceMenuBody_isClosed(void *p);
-BOOL PopupChoiceMenuBody_isOpen(void *p);
-void PopupChoiceMenu_placeAboveBalloon(void *a, void *b, s32 c);
-void PopupChoiceMenu_placeNearPoint(void *a, s32 b, s32 c);
-void PopupChoiceMenu_init(void *p, s32 a, s32 b, s32 c);
-void CursorMotion_reset(void *p);
-void MenuCursorBase_drawWrapped(void *p);
-BOOL MenuCursorBase_isMoving(void *p);
-void MenuCursorBase_moveToEase(void *a, s32 b, s32 c, s32 d, s32 e);
-void MenuCursorBase_moveToLinear(void *a, s32 b, s32 c, s32 d);
-void MenuCursorBase_warpTo(void *p, s32 x, s32 y);
-void MenuCursorBase_setPoseIdle(void *a);
-void MenuCursor_setPosePress(void *p);
-void MenuCursor_switchToAnim01(void *p);
-void MenuCursor_switchToAnim07(void *p);
-void MenuCursor_setAnimIfChanged(void *a, s32 b);
-s32 MenuBottomButtonsBody_getPressOffset(void *p);
-BOOL MenuBottomButtonsBody_stepPress(void *p);
-void MenuBottomButtonsBody_setSelected(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetY(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetX(void *p, s32 a);
-BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
-void MenuBottomButtons_setLayoutSingle05(void *p, s32 a);
-void MenuBottomButtons_drawAt(void *p, s32 a);
-void MenuBottomButtons_freeTexts(void *p);
-BOOL MenuErrorMessage_update(void *p, s32 a);
-void MenuErrorMessage_open(void *a, void *b, s32 c, s32 d);
-void LetterGrid_drawPocketLetters(void *p, s32 a, s32 b);
-void LetterGrid_highlightLetterKinds(void *p, s32 a);
-void LetterGrid_clearCursorSlot(void *p);
-void LetterGrid_updateCursorLift(void *p);
-void LetterGrid_init(void *p, s32 a);
-void MenuLauncher_onChildClosed(s32 self);
-void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void BgVramTask_cancel(void *p);
 }
 
 static inline BOOL Unk_ov107_02296270_Both() {
@@ -258,8 +131,8 @@ public:
     void onChoiceReleaseInsect();
     void mainAct15();
     void onChoiceDrop();
-    BOOL moveCursorByPad(void *pad);
-    void moveCursorInGrid(void *pad);
+    BOOL moveCursorByPad(u32 pad);
+    void moveCursorInGrid(u32 pad);
     void selectPocket(u32 idx, u32 flag);
     void setPopupChoices();
     void storeNewItem();
@@ -358,9 +231,7 @@ public:
     /* 0xbd */ u8 popupRow;
     /* 0xbe */ u8 waitTimer;
     /* 0xbf */ u8 touchHoldDelay;
-    /* 0xc0 */ u32 releasePosX;
-    /* 0xc4 */ u32 releasePosY;
-    /* 0xc8 */ u32 releasePosZ;
+    /* 0xc0 */ VecFx32 releasePos;
     /* 0xcc */ s32 buryUnitX;
     /* 0xd0 */ s32 buryUnitZ;
     /* 0xd4 */ BgVramTaskPair bgTasks[1];
@@ -605,8 +476,8 @@ void PocketsFullMenu::loadInventoryBg()
 
 void PocketsFullMenu::loadObjGraphics()
 {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
 }
 
 void PocketsFullMenu::mainAct00()
@@ -685,7 +556,7 @@ void PocketsFullMenu::mainAct05()
     if (checkSwitchToTouch()) {
         startTouchInput();
         ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
-    } else if (moveCursorByPad((void *)takeRepeatedKeys())) {
+    } else if (moveCursorByPad(takeRepeatedKeys())) {
         updateBalloonForCursor();
         moveCursorToTarget();
         ((TouchPromptBalloon *)(&nameBalloon))->hide(0);
@@ -899,7 +770,7 @@ void PocketsFullMenu::showMessage(s32 a, u32 b) {
 }
 
 void PocketsFullMenu::cancelBgTasks() {
-    BgVramTask_cancel(bgTasks);
+    bgTasks[0].cancel();
 }
 
 BOOL PocketsFullMenu::isPocketSlot(s32 a) {
@@ -1209,7 +1080,7 @@ void PocketsFullMenu::storeNewItem() {
         r6 = Item_PickRandomPresent();
         r4 = 1;
     }
-    Catalog_SetItem(PlayerData_GetCurrent()->getCatalog(), &b, 0, 1);
+    Catalog_SetItem((u8 *)PlayerData_GetCurrent()->getCatalog(), &b, 0, 1);
     MenuCtrl_SetPocketsFullItem(getSlotItem(selectedSlot));
     putItemInSlot(selectedSlot, r6, r4);
 }
@@ -1227,25 +1098,25 @@ void PocketsFullMenu::setPopupChoices() {
         ok = TRUE;
     }
     if (ok) {
-        ChoiceIdList_Add(&choiceList, 0x10, 0);
+        ChoiceIdList_Add((u8 *)&choiceList, 0x10, 0);
     } else if (a >= 0x12e8 && a <= 0x131f) {
-        ChoiceIdList_Add(&choiceList, 0x10, 2);
+        ChoiceIdList_Add((u8 *)&choiceList, 0x10, 2);
     } else if (t == 0x2a) {
-        ChoiceIdList_Add(&choiceList, 0x10, 3);
+        ChoiceIdList_Add((u8 *)&choiceList, 0x10, 3);
     }
     if (InvItem_IsNotFishInsectOrFlower(r6)) {
         if (t == 0x2a) {
-            ChoiceIdList_Add(&choiceList, 1, 1);
+            ChoiceIdList_Add((u8 *)&choiceList, 1, 1);
         } else {
-            ChoiceIdList_Add(&choiceList, 0x10, 1);
+            ChoiceIdList_Add((u8 *)&choiceList, 0x10, 1);
         }
     }
-    ChoiceIdList_Add(&choiceList, 2, 4);
+    ChoiceIdList_Add((u8 *)&choiceList, 2, 4);
 }
 
 void PocketsFullMenu::selectPocket(u32 idx, u32 flag) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&choiceList, 4);
+    ChoiceIdList_Clear((u8 *)&choiceList, 4);
     if (isPocketSlot(idx)) {
         setPopupChoices();
         hideCursor();
@@ -1256,7 +1127,7 @@ void PocketsFullMenu::selectPocket(u32 idx, u32 flag) {
     }
 }
 
-void PocketsFullMenu::moveCursorInGrid(void *pad) {
+void PocketsFullMenu::moveCursorInGrid(u32 pad) {
     s32 n = cursorSlot;
     s32 q = 0;
     while (n >= 5) {
@@ -1298,7 +1169,7 @@ void PocketsFullMenu::moveCursorInGrid(void *pad) {
     }
 }
 
-BOOL PocketsFullMenu::moveCursorByPad(void *pad) {
+BOOL PocketsFullMenu::moveCursorByPad(u32 pad) {
     u8 old = cursorSlot;
     clearFlags(0x18);
     if (pad == 0) {
@@ -1373,10 +1244,10 @@ void PocketsFullMenu::mainAct10() {
         s32 r5 = ok ? a - 0x12b0 : -1;
         u8 t = Random_GlobalBelow(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
-        x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
+        x += ((Actor *)PlayerActor_GetActor(4))->rotY;
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
-        PlayerActor_LocalReleaseCatch(0, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
+        PlayerActor_LocalReleaseCatch(0);
         sendInsectReleasePacket((u8)r5, t);
         setMainState(0x12);
         storeNewItem();
@@ -1385,14 +1256,14 @@ void PocketsFullMenu::mainAct10() {
 
 void PocketsFullMenu::sendInsectReleasePacket(u8 a, u8 b) {
     u8 buf[3];
-    if (((CommManager *)(gCommManager))->isOnline()) {
+    if (gCommManager->isOnline()) {
         buf[0] = 1;
         buf[1] = a;
         buf[2] = b;
-        void *g = gCommManager;
-        ((CommManager *)(g))->beginRecord();
-        ((CommManager *)(g))->writeRecord((u8 *)(buf), 3);
-        ((CommManager *)(g))->endRecord(0x16, 4);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(buf, 3);
+        g->endRecord(0x16, 4);
     }
 }
 
@@ -1400,14 +1271,14 @@ BOOL PocketsFullMenu::canReleaseFish() {
     s32 t = MenuCtrl_GetMode();
     u8 k = getLocalPlayerIndex();
     if (t == 0x2c) {
-        return FishCatch_GetReelTarget(&releasePosX, k);
+        return FishCatch_GetReelTarget(&releasePos, k);
     }
-    u8 *p = PlayerActor_GetActor(4);
-    void *q = p + 0x5c;
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
+    VecFx32 *q = &p->position;
     s32 i = 0;
-    s32 base = *(s16 *)(p + 0x8e);
+    s32 base = p->rotY;
     for (; i < 8; i++) {
-        if (Ground_FindWaterAhead(&releasePosX, q, (s16)(base + sFishReleaseProbeAngles[i]), 0x7800, 0xa00, 0xc)) {
+        if (Ground_FindWaterAhead(&releasePos, q, (s16)(base + sFishReleaseProbeAngles[i]), 0x7800, 0xa00, 0xc)) {
             return TRUE;
         }
     }
@@ -1427,7 +1298,7 @@ void PocketsFullMenu::mainAct11() {
     } else {
         u8 k = getLocalPlayerIndex();
         s32 t = getSlotItem(selectedSlot);
-        if (FishCatch_StartRelease(k, t, &releasePosX)) {
+        if (FishCatch_StartRelease(k, t, &releasePos)) {
             volatile u16 v = t;
             BOOL ok = FALSE;
             u32 a = v;
@@ -1453,15 +1324,15 @@ void PocketsFullMenu::mainAct11() {
 void PocketsFullMenu::sendFishReleasePacket(u8 v) {
     u8 buf[7];
     u8 tmp[5];
-    if (((CommManager *)(gCommManager))->isOnline()) {
+    if (gCommManager->isOnline()) {
         buf[0] = 2;
         buf[1] = v;
-        NetBuf_PackPair20(tmp, releasePosX, releasePosZ);
+        NetBuf_PackPair20(tmp, releasePos.x, releasePos.z);
         MI_CpuCopy8(tmp, &buf[2], 5);
-        void *g = gCommManager;
-        ((CommManager *)(g))->beginRecord();
-        ((CommManager *)(g))->writeRecord((u8 *)(buf), 7);
-        ((CommManager *)(g))->endRecord(0x16, 4);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(buf, 7);
+        g->endRecord(0x16, 4);
     }
 }
 
@@ -1500,10 +1371,10 @@ void PocketsFullMenu::mainAct16() {
 
 void PocketsFullMenu::mainAct17() {
     u16 v;
-    u32 buf[3];
-    FieldPos_FromUnitCenter(buf, buryUnitX, buryUnitZ);
+    VecFx32 buf;
+    FieldPos_FromUnitCenter(&buf, buryUnitX, buryUnitZ);
     v = getSlotItem(selectedSlot);
-    if (PlayerActor_LocalRequestBuryItem(buf, &v)) {
+    if (PlayerActor_LocalRequestBuryItem(&buf, &v)) {
         storeNewItem();
         setMainState(0x14);
     }
@@ -1512,7 +1383,7 @@ void PocketsFullMenu::mainAct17() {
 u8 PocketsFullMenu::getLocalPlayerIndex() {
     CommManager *g = gCommManager;
     u32 v = g->myAid;
-    if (((CommManager *)(g))->isSlotActive(v)) {
+    if (g->isSlotActive(v)) {
         return (u8)v;
     }
     return 0;
@@ -1529,13 +1400,13 @@ void PocketsFullMenu::endNewItemAction(BOOL flag) {
             break;
         }
         PendingUnit_ClearActiveOfAid(k);
-        if (((CommManager *)(gCommManager))->isOnline()) {
+        if (gCommManager->isOnline()) {
             buf[0] = 0x17;
             buf[1] = k;
-            void *g = gCommManager;
-            ((CommManager *)(g))->beginRecord();
-            ((CommManager *)(g))->writeRecord((u8 *)(buf), 2);
-            ((CommManager *)(g))->endRecord(0x16, 4);
+            CommManager *g = gCommManager;
+            g->beginRecord();
+            g->writeRecord(buf, 2);
+            g->endRecord(0x16, 4);
         }
         break;
     case 0x2b:

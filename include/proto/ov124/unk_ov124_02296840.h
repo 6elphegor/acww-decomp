@@ -4,15 +4,15 @@
 // Prototypes of the functions defined in src/ov124/unk_ov124_02296840.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_GeneralMenuHeader_GetStyle
+s32 GeneralMenuHeader_GetStyle();
+#endif
 #ifndef PROTO_LOCAL_sGeneralHeaderScreens
-extern void *sGeneralHeaderScreens[6];
+extern char *sGeneralHeaderScreens[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov124_02296ec0
 extern char data_ov124_02296ec0[20];
@@ -25,6 +25,9 @@ extern char data_ov124_02296f24[20];
 #endif
 #ifndef PROTO_LOCAL_sGeneralHeaderObjChars
 extern char *sGeneralHeaderObjChars[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov124_02296f90
+extern u8 data_ov124_02296f90[64];
 #endif
 #ifndef PROTO_LOCAL_data_ov124_02296ee8
 extern char data_ov124_02296ee8[20];
@@ -44,27 +47,16 @@ extern char data_ov124_02296efc[20];
 #ifndef PROTO_LOCAL_data_ov124_02296ed4
 extern char data_ov124_02296ed4[20];
 #endif
-#ifndef PROTO_LOCAL_data_ov124_02296e98
-extern char data_ov124_02296e98[20];
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_GeneralMenuHeader_GetStyle
-s32 GeneralMenuHeader_GetStyle();
-#endif
-#ifndef PROTO_LOCAL_data_ov124_02296f90
-extern u8 data_ov124_02296f90[64];
-#endif
 #ifndef PROTO_LOCAL_data_ov124_02296f50
 extern u8 data_ov124_02296f50[32];
+#endif
+#ifndef PROTO_LOCAL_data_ov124_02296e98
+extern char data_ov124_02296e98[20];
 #endif
 #ifndef PROTO_LOCAL_data_ov124_02296f70
 extern u8 data_ov124_02296f70[32];
 #endif
+#ifdef __cplusplus
 }
 #endif
 

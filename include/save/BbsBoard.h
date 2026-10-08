@@ -2,7 +2,6 @@
 #define SAVE_BBSBOARD_H
 
 // Town bulletin board: 15 posts, notice id, post count (0xb80 bytes). Defined in src/main/unk_020742f4.cpp.
-// ov113 (src/ov113/unk_02291f60.cpp) keeps its own declaration with a static getPost (it calls it without a board).
 #include "types.h"
 #include "save/BbsPost.h"
 

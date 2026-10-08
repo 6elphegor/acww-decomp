@@ -13,16 +13,6 @@
 #include "talk/MsgString9C.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
-#define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sMapViewFrameCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sMapViewPlacesButtonCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sMapViewResidentsButtonCells  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -31,79 +21,32 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov117/unk_ov117_02292360.h"
 #include "proto/ov120/unk_ov120_02292d00.h"
 #include "player/PlayerData.h"
 
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define func_02063870 _ZN11MsgString9CD1Ev
-#define func_02063888 _ZN11MsgString9CC2Ev
-#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
-#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
-#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define ScrollKnob_areAnimsDone _ZN10ScrollKnob12areAnimsDoneEv
-#define ScrollKnob_setState _ZN10ScrollKnob8setStateEi
-#define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define MsgString_clear _ZN9MsgString5clearEv
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuScrollKnob_getGripY _ZN14MenuScrollKnob8getGripYEv
-#define MenuScrollKnob_getGripX _ZN14MenuScrollKnob8getGripXEv
-#define MenuScrollKnob_hitTest _ZN14MenuScrollKnob7hitTestEii
-#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
-#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
+
+#include "nitro/gxoam.h"
 
 extern "C" {
-void func_020b8800(void *p);
-void func_0206fca8(void *p);
-void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void MenuLauncher_onChildClosed(s32 self);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void ScrollKnob_moveTo(void *p, s32 a, s32 b);
+u8 *Scene_GetWarpRequest();
+VecFx32 *ScenePos_GetPos(void *p);  // ScenePos (src/main/unk_020b4828.cpp)
+BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
+void MIi_CpuCopy16(const void *src, void *dst, u32 n);
+void MIi_CpuClear16(u32 v, void *dst, u32 n);
 extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];
-extern u32 gCurrentHeap;
-extern s32 *PlayerActor_GetBodyPos(s32 v);
-extern void Scene_GetWarpRequest();
-extern s32 *ScenePos_GetPos(void *p);
-void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
-void BgVramTask_cancel(void *p);
-void func_02063888(void *p);
-void TownId_GetNameString(void *a, void *b);
-void func_02063870(void *p);
-void String_SetSlot(u32 a, void *b);
-void LabelString_createLabel(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
-void LabelString_redrawAligned(void *a, u32 b, u32 c);
-void TownMapImage_Build(void *a, void *b);
-void TownMapMarkers_Clear(void *p);
-void MenuCursorBase_drawWrapped(void *p);
-void func_ov117_02292cac();
-void func_02135558(void *a, void *b, void *c);
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
 extern u16 gPad[];
-void ScrollKnob_setState(void *p, s32 v);
-s32 ScrollKnob_areAnimsDone(void *p);
-s32 HandCursor_isAnimDone(void *p);
-s32 MenuCursorBase_isMoving(void *p);
-void MenuCursorBase_setPoseIdle(void *p);
-void MenuCursorBase_setPoseRelease(void *p);
-void MenuCursor_setPosePress(void *p);
-void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
-void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, u32 c, u32 d);
-void MenuCursor_setAnimIfChanged(void *p, u32 v);
-s32 MenuScrollKnob_getGripY(void *p);
-s32 MenuScrollKnob_getGripX(void *p);
-BOOL MenuScrollKnob_hitTest(void *p, u32 a, u32 b);
 struct Unk_ov120_02293a2c_Oam {
     u16 attr0;
     u16 a : 9;
@@ -116,17 +59,6 @@ struct Unk_ov120_02293a2c_Oam {
 extern Unk_ov120_02293a2c_Oam sMapViewIconCell;
 extern const u8 sMapViewFacilityCells[5];
 extern const u8 sMapViewPlaceMarkers[5];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
-s16 *TownMapMarkers_Get(void *p, s32 i);
-u32 TownMapMarkers_GetKind(void *p, s32 i);
-void MsgString_clear(void *p);
-void LabelString_destroyLabel(void *p);
-s32 PlayerData_getPlayerId(...);
-BOOL SaveVillagers_IsOccupied(void *a, s32 b);
-s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void MIi_CpuCopy16(void *src, void *dst, u32 n);
-void MIi_CpuClear16(u32 v, void *dst, u32 n);
 }
 
 
@@ -168,7 +100,7 @@ public:
     BOOL testFlags(u32 mask);
     void moveMapCursorToRow();
     s32 onCursorDecide();
-    BOOL moveCursorByPad(void *pad);
+    BOOL moveCursorByPad(u32 pad);
     void refreshCursor();
     void releaseCursor();
     void pressCursor();
@@ -200,16 +132,16 @@ public:
     void jumpToSelection();
     u32 findMarkerAt(s32 x, s32 y);
     BOOL touchMarker();
-    void setupMarkers(void *src);
+    void setupMarkers(TownMapMarkers *src);
     void drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal);
     BOOL touchListRow();
     u8 *getListEntries();
     void rebuildList();
-    void setEntryName(void *p, u32 idx);
+    void setEntryName(MsgString *p, u32 idx);
     void buildEntryLabels(u8 *tbl);
     void layoutListLabels();
     void buildEntryLists();
-    void *allocTextLabel();
+    LabelString *allocTextLabel();
     void resetTextLabels();
     u32 getEntryIconRow(u32 a, s32 b);
     void buildListScreen();
@@ -294,42 +226,6 @@ static inline BOOL Unk_ov120_022942c0_Both() {
 }
 
 // Forward declarations (definition order sets the data layout)
-extern "C" void _ZN13MapViewerMenu11stateLoadBgEv();
-extern "C" void _ZN13MapViewerMenu12stateLoadMapEv();
-extern "C" void _ZN13MapViewerMenu14stateBuildListEv();
-extern "C" void _ZN13MapViewerMenu9stateOpenEv();
-extern "C" void _ZN13MapViewerMenu12stateOpeningEv();
-extern "C" void _ZN13MapViewerMenu10stateCloseEv();
-extern "C" void _ZN13MapViewerMenu12stateClosingEv();
-extern "C" void _ZN13MapViewerMenu11updateTouchEv();
-extern "C" void _ZN13MapViewerMenu14updateKnobDragEv();
-extern "C" void _ZN13MapViewerMenu13updateButtonsEv();
-extern "C" void _ZN13MapViewerMenu16updateCursorMoveEv();
-extern "C" void _ZN13MapViewerMenu17updateCursorPressEv();
-extern "C" void _ZN13MapViewerMenu19updateCursorReleaseEv();
-extern "C" void _ZN13MapViewerMenu14updateKnobGrabEv();
-extern "C" void _ZN13MapViewerMenu14updateKnobHoldEv();
-extern "C" void _ZN13MapViewerMenu17updateKnobReleaseEv();
-extern "C" void _ZN13MapViewerMenu15updateWaitCloseEv();
-extern "C" const u8 sMapViewFacilityCells[5];
-extern "C" const u8 sMapViewPlaceMarkers[5];
-extern "C" void *data_ov120_02294f68[2];
-extern "C" void *data_ov120_02294f70[2];
-extern "C" void *data_ov120_02294f08[2];
-extern "C" void *data_ov120_02294ee8[2];
-extern "C" void *data_ov120_02294f58[2];
-extern "C" void *data_ov120_02294f50[2];
-extern "C" void *data_ov120_02294f48[2];
-extern "C" void *data_ov120_02294f28[2];
-extern "C" void *data_ov120_02294f38[2];
-extern "C" void *data_ov120_02294f60[2];
-extern "C" void *data_ov120_02294f20[2];
-extern "C" void *data_ov120_02294ee0[2];
-extern "C" void *data_ov120_02294f10[2];
-extern "C" void *data_ov120_02294ef0[2];
-extern "C" void *data_ov120_02294ef8[2];
-extern "C" void *data_ov120_02294f00[2];
-extern "C" void *data_ov120_02294f30[2];
 extern "C" u8 sMapViewPlacesButtonCells[32];
 extern "C" u8 sMapViewResidentsButtonCells[32];
 extern "C" u8 sMapViewFrameCells[80];
@@ -357,7 +253,7 @@ BOOL MapViewerMenu::onDraw() {
             ((ScrollKnob *)(&scrollKnob))->moveTo(0x67, slideY - 0x12 + knobPos);
         }
         ((MenuCursorBase *)(&cursor))->drawWrapped();
-        Oam_DrawCell(1, sMapViewFrameCells, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (GXOamAttr *)sMapViewFrameCells, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 a, b;
         if (testFlags(1)) {
             b = 0xc;
@@ -366,13 +262,13 @@ BOOL MapViewerMenu::onDraw() {
             b = 0xb;
             a = 0xe;
         }
-        Oam_DrawCell(1, sMapViewPlacesButtonCells, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, sMapViewResidentsButtonCells, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (GXOamAttr *)sMapViewPlacesButtonCells, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (GXOamAttr *)sMapViewResidentsButtonCells, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         u32 t = cursorMarker;
         if (t != 0xe) {
-            u8 *e = (u8 *)this + t * 3;
-            if (e[0x2509] != 0xc) {
-                drawMapIcon(e[0x2507], slideY + e[0x2508], 0xb, 0, -1);
+            MapViewMarker *e = &buildingMarkers[t];
+            if (e->cell != 0xc) {
+                drawMapIcon(e->x, slideY + e->y, 0xb, 0, -1);
             }
         }
         selfBlinkCounter = (selfBlinkCounter + 1) & 0xf;
@@ -380,15 +276,15 @@ BOOL MapViewerMenu::onDraw() {
             drawMapIcon(selfMarkerX, selfMarkerY + slideY, 0xa, 0, -1);
         }
         for (s32 i = 0; i < 3; i++) {
-            u8 *e = (u8 *)this + i * 3;
-            u32 c = e[0x2500];
+            MapViewMarker *e = &terrainMarkers[i];
+            u32 c = e->cell;
             if (c != 0xc) {
-                drawMapIcon(e[0x24fe], slideY + e[0x24ff], (u8)(c & 0x7f), (c & 0x80) ? 1 : 0, -1);
+                drawMapIcon(e->x, slideY + e->y, (u8)(c & 0x7f), (c & 0x80) ? 1 : 0, -1);
             }
         }
         for (s32 i = 0; i < 14; i++) {
-            u8 *e = (u8 *)this + i * 3;
-            u8 *q = e + 0x2509;
+            MapViewMarker *e = &buildingMarkers[i];
+            u8 *q = &e->cell;
             if (*q != 0xc) {
                 s32 v;
                 if (i == selectedMarker && !testFlags(0x100)) {
@@ -396,7 +292,7 @@ BOOL MapViewerMenu::onDraw() {
                 } else {
                     v = -1;
                 }
-                drawMapIcon(e[0x2507], slideY + e[0x2508], *q, 0, v);
+                drawMapIcon(e->x, slideY + e->y, *q, 0, v);
             }
         }
         if (testFlags(8)) {
@@ -406,29 +302,15 @@ BOOL MapViewerMenu::onDraw() {
     return TRUE;
 }
 
-extern "C" void *data_ov120_02294f28[2] = {(void *)_ZN13MapViewerMenu11updateTouchEv, 0};
 extern "C" const u8 sMapViewFacilityCells[5] = {2, 3, 4, 5, 6};
 extern "C" u8 sMapViewPlacesButtonCells[32] = {0xd3, 0x00, 0x2a, 0x40, 0xa2, 0xe1, 0x00, 0x00, 0xd3, 0x80, 0x3a, 0x00, 0xa4, 0xe1, 0x00, 0x00, 0xe3, 0x40, 0x2a, 0x00, 0xe2, 0xe1, 0x00, 0x00, 0xe3, 0x00, 0x3a, 0x00, 0xe4, 0xe1, 0xff, 0xff};
-extern "C" void *data_ov120_02294f68[2] = {(void *)_ZN13MapViewerMenu11stateLoadBgEv, 0};
 extern "C" const u8 sMapViewPlaceMarkers[5] = {0xb, 0xc, 9, 0xa, 0xd};
-extern "C" void *data_ov120_02294ee0[2] = {(void *)_ZN13MapViewerMenu17updateCursorPressEv, 0};
-extern "C" void *data_ov120_02294ef0[2] = {(void *)_ZN13MapViewerMenu14updateKnobGrabEv, 0};
-extern "C" void *data_ov120_02294f70[2] = {(void *)_ZN13MapViewerMenu12stateLoadMapEv, 0};
-extern "C" void *data_ov120_02294f08[2] = {(void *)_ZN13MapViewerMenu14stateBuildListEv, 0};
-extern "C" void *data_ov120_02294f60[2] = {(void *)_ZN13MapViewerMenu13updateButtonsEv, 0};
-extern "C" void *data_ov120_02294f58[2] = {(void *)_ZN13MapViewerMenu12stateOpeningEv, 0};
-extern "C" void *data_ov120_02294f50[2] = {(void *)_ZN13MapViewerMenu10stateCloseEv, 0};
-extern "C" void *data_ov120_02294f48[2] = {(void *)_ZN13MapViewerMenu12stateClosingEv, 0};
 
 BOOL MapViewerMenu::execTransition() {
     static Unk_ov120_02295010_Fn tbl[7] = {
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f68,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f70,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f08,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294ee8,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f58,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f50,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f48};
+        &MapViewerMenu::stateLoadBg,  &MapViewerMenu::stateLoadMap, &MapViewerMenu::stateBuildList,
+        &MapViewerMenu::stateOpen,    &MapViewerMenu::stateOpening, &MapViewerMenu::stateClose,
+        &MapViewerMenu::stateClosing};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
@@ -438,29 +320,17 @@ BOOL MapViewerMenu::execTransition() {
 
 
 
-extern "C" void *data_ov120_02294f30[2] = {(void *)_ZN13MapViewerMenu15updateWaitCloseEv, 0};
-extern "C" void *data_ov120_02294f38[2] = {(void *)_ZN13MapViewerMenu14updateKnobDragEv, 0};
-extern "C" void *data_ov120_02294f20[2] = {(void *)_ZN13MapViewerMenu16updateCursorMoveEv, 0};
 extern "C" Unk_ov120_02293a2c_Oam sMapViewIconCell = {0xf8, 0x1f8, 0, 1, 0xc0, 0x1c, 0xffff};
-extern "C" void *data_ov120_02294f10[2] = {(void *)_ZN13MapViewerMenu19updateCursorReleaseEv, 0};
-extern "C" void *data_ov120_02294ee8[2] = {(void *)_ZN13MapViewerMenu9stateOpenEv, 0};
-extern "C" void *data_ov120_02294ef8[2] = {(void *)_ZN13MapViewerMenu14updateKnobHoldEv, 0};
 extern "C" u8 sMapViewFrameCells[80] = {0xb8, 0x40, 0x9d, 0x81, 0xab, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xbd, 0x81, 0xaf, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xdd, 0x81, 0xb3, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xfd, 0x81, 0xb7, 0x61, 0x00, 0x00, 0xb8, 0x00, 0x1d, 0x40, 0xbb, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xf5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0xd5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0xb5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0x15, 0x90, 0xd8, 0x60, 0x00, 0x00, 0xb8, 0x40, 0x95, 0x81, 0xd8, 0x60, 0xff, 0xff};
 extern "C" u8 sMapViewResidentsButtonCells[32] = {0xd3, 0x00, 0x4d, 0x40, 0xa5, 0xc1, 0x00, 0x00, 0xd3, 0x80, 0x5d, 0x00, 0xa7, 0xc1, 0x00, 0x00, 0xe3, 0x40, 0x4d, 0x00, 0xe5, 0xc1, 0x00, 0x00, 0xe3, 0x00, 0x5d, 0x00, 0xe7, 0xc1, 0xff, 0xff};
 extern "C" ProcProfile sMapViewerMenuProfile = {(void *(*)())MapViewerMenu_Create, 0xa3, 0xa7};
 
 void MapViewerMenu::runMainState() {
     static Unk_ov120_02295010_Fn tbl[10] = {
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f28,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f38,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f60,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f20,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294ee0,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f10,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294ef0,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294ef8,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f00,
-        *(Unk_ov120_02295010_Fn *)data_ov120_02294f30};
+        &MapViewerMenu::updateTouch,         &MapViewerMenu::updateKnobDrag,    &MapViewerMenu::updateButtons,
+        &MapViewerMenu::updateCursorMove,    &MapViewerMenu::updateCursorPress, &MapViewerMenu::updateCursorRelease,
+        &MapViewerMenu::updateKnobGrab,      &MapViewerMenu::updateKnobHold,    &MapViewerMenu::updateKnobRelease,
+        &MapViewerMenu::updateWaitClose};
     (this->*tbl[mainState])();
 }
 
@@ -505,16 +375,16 @@ void MapViewerMenu::stateBuildList() {
 }
 
 void MapViewerMenu::stateOpen() {
-    u32 buf[8];
     loadObjGfx();
-    func_02063888(buf);
-    TownId_GetNameString(gSaveTownId, buf);
-    String_SetSlot(0, buf);
-    void *q = allocTextLabel();
-    ((LabelString *)(q))->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
-    String_Load2dMenu(q, 0xa9);
-    ((LabelString *)(q))->redrawAligned(1, 0);
-    ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
+    {
+        MsgString9C townName;
+        TownId_GetNameString(gSaveTownId, &townName);
+        String_SetSlot(0, &townName);
+        LabelString *q = allocTextLabel();
+        q->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
+        String_Load2dMenu(q, 0xa9);
+        q->redrawAligned(1, 0);
+    }
     beginSubSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
@@ -587,16 +457,16 @@ void MapViewerMenu::initMapViewer() {
     selectEntry(0);
     buildEntryLists();
     if (IsZero(gFieldSceneKind)) {
-        s32 *p = PlayerActor_GetBodyPos(4);
-        v.x = p[0];
-        v.y = p[1];
-        v.z = p[2];
+        VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
+        v.x = p->x;
+        v.y = p->y;
+        v.z = p->z;
     } else {
         Scene_GetWarpRequest();
-        s32 *p = ScenePos_GetPos(gTownReturnPos);
-        v.x = p[0];
-        v.y = p[1];
-        v.z = p[2];
+        VecFx32 *p = ScenePos_GetPos(gTownReturnPos);
+        v.x = p->x;
+        v.y = p->y;
+        v.z = p->z;
     }
     s32 z = (v.z + 0x800) >> 12;
     s32 x = (v.x + 0x800) >> 12;
@@ -607,8 +477,8 @@ void MapViewerMenu::initMapViewer() {
 
 void MapViewerMenu::releaseResources() {
     resetTextLabels();
-    BgVramTask_cancel(screenTasks);
-    BgVramTask_cancel((screenTasks + 1));
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
 }
 
 void MapViewerMenu::preStateUpdate() {
@@ -658,31 +528,30 @@ void MapViewerMenu::setupBgLayers() {
 }
 
 void MapViewerMenu::loadBgGfx() {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", h, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", h, 4, 0x11, 0x11, 0x5f);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", h, 4, 0x230, 0x230, 0x25f);
     File_LoadToBuffer("menu/map/b_map_a_bg.bsc", frameScreen, 0x800);
-    Gfx2d_LoadScreen(frameScreen, 4, 0x800, 0);
+    Gfx2d_LoadScreen((u8 *)frameScreen, 4, 0x800, 0);
     File_LoadToBuffer("menu/map/b_map_b_bg.bsc", listScreenBase, 0x800);
     BgScreen_SetRectPalette(listScreenBase, 0x13, 0, 0x1c, 1, 4);
 }
 
-extern "C" void *data_ov120_02294f00[2] = {(void *)_ZN13MapViewerMenu17updateKnobReleaseEv, 0};
 
 void MapViewerMenu::loadMapImage() {
-    u32 h = gCurrentHeap;
-    void *p = Heap_AllocTail((void *)h, 0x2000);
+    Heap *h = gCurrentHeap;
+    u8 *p = (u8 *)Heap_AllocTail(h, 0x2000);
     static TownMapMarkers obj;
     TownMapMarkers_Clear(&obj);
     TownMapImage_Build(p, &obj);
     Gfx2d_LoadCharRange(p, 4, 0x60, 0x60, 0x15f);
     setupMarkers(&obj);
-    Heap_Free((void *)h, p);
+    Heap_Free(h, p);
 }
 
 void MapViewerMenu::loadObjGfx() {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_obj.bpl", h, 8, 6, 6, 0xe);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_0.bch", h, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
@@ -721,7 +590,7 @@ void MapViewerMenu::updateButtons() {
         startTouchInput();
         return;
     }
-    if (moveCursorByPad((void *)takeRepeatedKeys())) {
+    if (moveCursorByPad(takeRepeatedKeys())) {
         if (testFlags(8)) {
             if (cursorTarget >= 2 && cursorTarget <= 7) {
                 setListScrollTarget(listScroll & ~0xf);
@@ -894,7 +763,7 @@ void MapViewerMenu::resetTextLabels() {
     } while (i < 13);
 }
 
-void *MapViewerMenu::allocTextLabel() {
+LabelString *MapViewerMenu::allocTextLabel() {
     if (labelCount >= 13) {
         return &textLabels[12];
     }
@@ -905,7 +774,7 @@ void *MapViewerMenu::allocTextLabel() {
 void MapViewerMenu::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
-    m = PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+    m = PlayerDataArray_FindById(gSavePlayers, (u16 *)PlayerData_GetCurrent()->getPlayerId());
     if (m != -1) {
         residentEntries[0] = 1;
         n++;
@@ -952,16 +821,16 @@ void MapViewerMenu::layoutListLabels() {
 void MapViewerMenu::buildEntryLabels(u8 *tbl) {
     s32 i;
     for (i = 0; i < 0xd; i++) {
-        void *w = allocTextLabel();
-        ((LabelString *)(w))->createLabel(6, (i << 4) + 0x160, 8, 1, 0xf, 0);
+        LabelString *w = allocTextLabel();
+        w->createLabel(6, (i << 4) + 0x160, 8, 1, 0xf, 0);
         setEntryName(w, tbl[i]);
-        ((LabelString *)(w))->redrawAligned(0, 0);
+        w->redrawAligned(0, 0);
     }
 }
 
-void MapViewerMenu::setEntryName(void *p, u32 idx) {
+void MapViewerMenu::setEntryName(MsgString *p, u32 idx) {
     if (idx == 0) {
-        ((MsgString *)(p))->clear();
+        p->clear();
     } else if (idx == 1) {
         PopupChoice_CopyPlayerIdName(p, PlayerData_GetCurrent()->getPlayerId());
     } else if (idx >= 2 && idx < 6) {
@@ -971,7 +840,7 @@ void MapViewerMenu::setEntryName(void *p, u32 idx) {
     } else if (idx >= 0xe && idx < 0x13) {
         String_Load2dMenu(p, idx + 0x88);
     } else {
-        ((MsgString *)(p))->clear();
+        p->clear();
     }
 }
 
@@ -1049,10 +918,10 @@ void MapViewerMenu::drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
     }
 }
 
-void MapViewerMenu::setupMarkers(void *src) {
+void MapViewerMenu::setupMarkers(TownMapMarkers *src) {
     s32 k, i;
     u32 j;
-    s16 *rec;
+    TownMapMarker *rec;
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
@@ -1060,25 +929,25 @@ void MapViewerMenu::setupMarkers(void *src) {
         if (rec != 0) {
             switch (TownMapMarkers_GetKind(src, i)) {
             case 0:
-                *((u8 *)this + k * 3 + 0x2500) = 8;
+                terrainMarkers[k].cell = 8;
                 break;
             case 1:
-                *((u8 *)this + k * 3 + 0x2500) = 7;
+                terrainMarkers[k].cell = 7;
                 break;
             case 2:
-                *((u8 *)this + k * 3 + 0x2500) = 9;
+                terrainMarkers[k].cell = 9;
                 break;
             case 3:
-                *((u8 *)this + k * 3 + 0x2500) = 0x89;
+                terrainMarkers[k].cell = 0x89;
                 break;
             default:
-                *((u8 *)this + k * 3 + 0x2500) = 0xc;
+                terrainMarkers[k].cell = 0xc;
                 break;
             }
-            *((u8 *)this + k * 3 + 0x24fe) = rec[0] - 8;
-            *((u8 *)this + k * 3 + 0x24ff) = rec[1] + 0x10;
+            terrainMarkers[k].x = rec->x - 8;
+            terrainMarkers[k].y = rec->y + 0x10;
         } else {
-            *((u8 *)this + k * 3 + 0x2500) = 0xc;
+            terrainMarkers[k].cell = 0xc;
         }
     }
     j = 3;
@@ -1087,16 +956,16 @@ void MapViewerMenu::setupMarkers(void *src) {
         rec = TownMapMarkers_Get(src, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
-                *((u8 *)this + k * 3 + 0x2509) = 0;
+                buildingMarkers[k].cell = 0;
             } else if (j == 0xb) {
-                *((u8 *)this + k * 3 + 0x2509) = 1;
+                buildingMarkers[k].cell = 1;
             } else {
-                *((u8 *)this + k * 3 + 0x2509) = *(sMapViewFacilityCells + j - 0xc);
+                buildingMarkers[k].cell = *(sMapViewFacilityCells + j - 0xc);
             }
-            *((u8 *)this + k * 3 + 0x2507) = rec[0] - 8;
-            *((u8 *)this + k * 3 + 0x2508) = rec[1] + 0x10;
+            buildingMarkers[k].x = rec->x - 8;
+            buildingMarkers[k].y = rec->y + 0x10;
         } else {
-            *((u8 *)this + k * 3 + 0x2509) = 0xc;
+            buildingMarkers[k].cell = 0xc;
         }
     }
 }
@@ -1113,11 +982,11 @@ BOOL MapViewerMenu::touchMarker() {
 u32 MapViewerMenu::findMarkerAt(s32 x, s32 y) {
     s32 i;
     for (i = 0; i < 0xe; i++) {
-        u8 *e = (u8 *)this + i * 3;
-        if (e[0x2509] != 0xc) {
-            s32 px = e[0x2507];
+        MapViewMarker *e = &buildingMarkers[i];
+        if (e->cell != 0xc) {
+            s32 px = e->x;
             if (px - 8 < x && px + 8 > x) {
-                s32 py = e[0x2508];
+                s32 py = e->y;
                 if (py - 8 < y && py + 8 > y) {
                     return (u8)i;
                 }
@@ -1474,7 +1343,7 @@ void MapViewerMenu::refreshCursor() {
     cursor.update();
 }
 
-BOOL MapViewerMenu::moveCursorByPad(void *pad) {
+BOOL MapViewerMenu::moveCursorByPad(u32 pad) {
     u32 old = cursorTarget;
     if (old >= 2 && old <= 7) {
         if (testFlags(8) && MenuKeys_HasRight(pad)) {
@@ -1557,13 +1426,13 @@ s32 MapViewerMenu::onCursorDecide() {
 
 void MapViewerMenu::moveMapCursorToRow() {
     u32 idx = selectionToMarker(listTopRow + cursorTarget + 0xd);
-    u8 *e = (u8 *)this + idx * 3;
-    if (e[0x2509] == 0xc) {
+    MapViewMarker *e = &buildingMarkers[idx];
+    if (e->cell == 0xc) {
         mapCursorX = 0x58;
         mapCursorY = 0x70;
     } else {
-        mapCursorX = e[0x2507];
-        mapCursorY = e[0x2508];
+        mapCursorX = e->x;
+        mapCursorY = e->y;
     }
 }
 

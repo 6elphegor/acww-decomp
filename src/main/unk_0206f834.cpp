@@ -510,7 +510,7 @@ void String_Load2dMenu(void *a, u8 v) {
     String_Load2dMenuByRef(a, &t);
 }
 
-void String_LoadByIndex(void *a, void *c, u8 v) {
+void String_LoadByIndex(void *a, const char *c, u8 v) {
     u8 t = v;
     String_Load(a, &t, c);
 }

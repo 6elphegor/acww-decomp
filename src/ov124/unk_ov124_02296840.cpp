@@ -2,35 +2,16 @@
 #include "ui/LabelString.h"
 #include "menu/MenuTextButton.h"
 #include "menu/GeneralMenuHeader.h"
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FromEncodedBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov124_02296f50  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov124_02296f70  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/ov124/unk_ov124_02296840.h"
 
-extern "C" {
-void String_FromEncodedBytes(void *p, void *s, s32 n);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-
-extern void *gCurrentHeap;
-extern u8 data_ov124_02296f50[];
-extern u8 data_ov124_02296f70[];
-}
-
-
-struct GXOamAttr;
-
-
-
-extern "C" {
-}
+#include "nitro/gxoam.h"
 
 GeneralMenuHeader::GeneralMenuHeader() : titleLabel(), iconButton() {}
 
@@ -42,12 +23,12 @@ void GeneralMenuHeader::loadTitleBg(s32 a, s32 b) {
     switch (MenuCtrl_GetMode()) {
     case 4:
     case 7:
-    case 10: String_Load2dMenu(this, 0x3a); break;
-    case 5: String_Load2dMenu(this, 0x90); break;
+    case 10: String_Load2dMenu(&titleLabel[0], 0x3a); break;
+    case 5: String_Load2dMenu(&titleLabel[0], 0x90); break;
     case 8:
-    case 9: String_Load2dMenu(this, 0x92); break;
-    case 6: String_Load2dMenu(this, 0x49); break;
-    default: String_Load2dMenu(this, 0x3a); break;
+    case 9: String_Load2dMenu(&titleLabel[0], 0x92); break;
+    case 6: String_Load2dMenu(&titleLabel[0], 0x49); break;
+    default: String_Load2dMenu(&titleLabel[0], 0x3a); break;
     }
     titleLabel[0].createLabel(a, 0x11, 0xd, 4, 1, 0);
     titleLabel[0].redrawAligned(1, 0);
@@ -82,7 +63,7 @@ void GeneralMenuHeader::redrawTitle() {
 }
 
 void GeneralMenuHeader::setTitleText(void *s, s32 n) {
-    String_FromEncodedBytes(this, s, n);
+    String_FromEncodedBytes(&titleLabel[0], s, n);
 }
 
 void GeneralMenuHeader::setTitleHighlight(u8 a, u8 b, u32 c, u32 d) {
@@ -105,7 +86,7 @@ extern "C" s32 GeneralMenuHeader_GetStyle() {
 }
 
 void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     char buf[0x20];
     Gfx2d_LoadCharFile("menu/han/bg.bch", heap, a, 0x10, 0x10, 0x169);
     Gfx2d_LoadPaletteFile("menu/han/bg.bpl", heap, a, 1, 1, 6);
@@ -143,15 +124,15 @@ void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
     }
     Gfx2d_LoadCharFile(buf, heap, a, 0x113, 0x113, 0x126);
     Gfx2d_LoadPaletteFileSlot("menu/han/ten0_bg.bpl", heap, a, pictureIndex, 0xe);
-    Gfx2d_LoadScreenFile((const char *)sGeneralHeaderScreens[b], heap, a);
+    Gfx2d_LoadScreenFile(sGeneralHeaderScreens[b], heap, a);
 }
 
 void GeneralMenuHeader::loadObjGfx(s32 v) {
     s32 st = pictureIndex;
     u32 loc;
-    void *heap = gCurrentHeap;
-    char *buf = (char *)File_LoadAlloc(sGeneralHeaderObjChars[st / 5], heap, -4, &loc);
-    char *p = buf + (st % 5) * 0xc0;
+    Heap *heap = gCurrentHeap;
+    u8 *buf = (u8 *)File_LoadAlloc(sGeneralHeaderObjChars[st / 5], heap, -4, &loc);
+    u8 *p = buf + (st % 5) * 0xc0;
     s32 i;
     s32 k = 0x15a;
     i = 0;
@@ -187,12 +168,12 @@ void GeneralMenuHeader::loadObjGfx(s32 v) {
 }
 
 void GeneralMenuHeader::drawPlain(s32 x, s32 y) {
-    Oam_DrawCell(1, data_ov124_02296f50, x + 0x80, y + 0x60, objPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, (GXOamAttr *)data_ov124_02296f50, x + 0x80, y + 0x60, objPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void GeneralMenuHeader::drawWithIcon(s32 x, s32 y) {
     iconButton.drawAt(x, y, -1);
-    Oam_DrawCell(1, data_ov124_02296f70, x + 0x80, y + 0x60, objPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, (GXOamAttr *)data_ov124_02296f70, x + 0x80, y + 0x60, objPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void GeneralMenuHeader::resetFrame() {
@@ -200,7 +181,7 @@ void GeneralMenuHeader::resetFrame() {
     iconButton.freeText();
 }
 
-extern "C" void *sGeneralHeaderScreens[6] = {(void *)data_ov124_02296eac, (void *)data_ov124_02296f10, (void *)data_ov124_02296efc, (void *)data_ov124_02296ee8, (void *)data_ov124_02296e84, (void *)data_ov124_02296ec0};
+extern "C" char *sGeneralHeaderScreens[6] = {data_ov124_02296eac, data_ov124_02296f10, data_ov124_02296efc, data_ov124_02296ee8, data_ov124_02296e84, data_ov124_02296ec0};
 extern "C" char data_ov124_02296ec0[20] = "menu/han/e_bg.bsc";
 extern "C" char data_ov124_02296e70[20] = "menu/han/obj2.bch";
 extern "C" char data_ov124_02296f24[20] = "menu/han/obj3.bch";

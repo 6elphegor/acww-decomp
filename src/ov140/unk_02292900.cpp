@@ -11,12 +11,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuTownListPanel.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov140_02293da4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov140_02293dcc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov140_02293e64  // declared below: the shared prototype conflicts with the calls here
+#include "net/Net.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -26,18 +21,16 @@
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov140/unk_02292900.h"
 
 class DistantTownsMenu;
 
 extern "C" {
 extern u16 gPad[];
-
-void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void Oam_DrawCell(s32 a, void *src, s32 n, void *dst, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void MenuButtons_LoadTextColors(void *p);
 }
 
 
@@ -73,9 +66,9 @@ public:
     void drawTownCount();
     void resetTextLabels();
     LabelString *allocTextLabel();
-    void *getFriendList();
+    NetWifiFriends *getFriendList();
     void fadeRows(s32 t);
-    BOOL isListedFriend(u8 *p);
+    BOOL isListedFriend(NetWifiFriendStatus *p);
     void initList();
     s32 countListedFriends();
     void refreshPage();
@@ -125,13 +118,13 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ u8 *slideY;
+    /* 0x094 */ s32 slideY;
     /* 0x098 */ s32 buttonsSlideY;
     /* 0x09c */ s32 selectedRow;
     /* 0x0a0 */ s32 confirmButtonPal;
     /* 0x0a4 */ s32 quitButtonPal;
     /* 0x0a8 */ s32 moreButtonPal;
-    /* 0x0ac */ u8 bgScreen[0x800];
+    /* 0x0ac */ u16 bgScreen[0x400];
     /* 0x8ac */ u16 flags;
     /* 0x8ae */ u8 returnState;
     /* 0x8af */ u8 rowFilled[6];
@@ -153,11 +146,6 @@ public:
     /* 0x16a0 */ LabelString textLabels[3];
 };
 
-extern "C" {
-extern u32 data_ov140_02293da4[];
-extern u32 data_ov140_02293dcc[];
-extern u32 data_ov140_02293e64[];
-}
 
 static inline BOOL Unk_ov140_02293450_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -169,45 +157,78 @@ static inline BOOL Unk_ov140_02293450_Both() {
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 
-extern "C" u32 data_ov140_02293e64[84] = {
-    0x81a800a8, 0x0000b17b, 0x41c880a8, 0x0000b17f,
-    0x41a840c8, 0x0000b1fb, 0x01c800c8, 0x0000b1ff,
-    0x4028403e, 0x000048e6, 0x4008403e, 0x000048e6,
-    0x41e0403e, 0x000048e6, 0x41c0403e, 0x000048e6,
-    0x41a0403e, 0x000048e6, 0x4028402e, 0x000048e6,
-    0x4008402e, 0x000048e6, 0x41e0402e, 0x000048e6,
-    0x41c0402e, 0x000048e6, 0x41a0402e, 0x000048e6,
-    0x4028401e, 0x000048e6, 0x4008401e, 0x000048e6,
-    0x41e0401e, 0x000048e6, 0x41c0401e, 0x000048e6,
-    0x41a0401e, 0x000048e6, 0x4028400e, 0x000048e6,
-    0x4008400e, 0x000048e6, 0x41e0400e, 0x000048e6,
-    0x41c0400e, 0x000048e6, 0x41a0400e, 0x000048e6,
-    0x402840fe, 0x000048e6, 0x400840fe, 0x000048e6,
-    0x41e040fe, 0x000048e6, 0x41c040fe, 0x000048e6,
-    0x41a040fe, 0x000048e6, 0x402840ee, 0x000048e6,
-    0x400840ee, 0x000048e6, 0x41e040ee, 0x000048e6,
-    0x41c040ee, 0x000048e6, 0x41a040ee, 0x000048e6,
-    0x41b440d6, 0x000058cd, 0x01d440d6, 0x000058d1,
-    0x400c40d6, 0x000058ed, 0x002c40d6, 0x000058f1,
-    0x902040d5, 0x00005888, 0x800840d5, 0x00005888,
-    0x91c840d5, 0x00005888, 0x81b040d5, 0xffff5888,
+extern "C" GXOamAttr data_ov140_02293e64[42] = {
+    {0x81a800a8, 0x17b, 0, 0xb, 0x0},
+    {0x41c880a8, 0x17f, 0, 0xb, 0x0},
+    {0x41a840c8, 0x1fb, 0, 0xb, 0x0},
+    {0x01c800c8, 0x1ff, 0, 0xb, 0x0},
+    {0x4028403e, 0xe6, 2, 0x4, 0x0},
+    {0x4008403e, 0xe6, 2, 0x4, 0x0},
+    {0x41e0403e, 0xe6, 2, 0x4, 0x0},
+    {0x41c0403e, 0xe6, 2, 0x4, 0x0},
+    {0x41a0403e, 0xe6, 2, 0x4, 0x0},
+    {0x4028402e, 0xe6, 2, 0x4, 0x0},
+    {0x4008402e, 0xe6, 2, 0x4, 0x0},
+    {0x41e0402e, 0xe6, 2, 0x4, 0x0},
+    {0x41c0402e, 0xe6, 2, 0x4, 0x0},
+    {0x41a0402e, 0xe6, 2, 0x4, 0x0},
+    {0x4028401e, 0xe6, 2, 0x4, 0x0},
+    {0x4008401e, 0xe6, 2, 0x4, 0x0},
+    {0x41e0401e, 0xe6, 2, 0x4, 0x0},
+    {0x41c0401e, 0xe6, 2, 0x4, 0x0},
+    {0x41a0401e, 0xe6, 2, 0x4, 0x0},
+    {0x4028400e, 0xe6, 2, 0x4, 0x0},
+    {0x4008400e, 0xe6, 2, 0x4, 0x0},
+    {0x41e0400e, 0xe6, 2, 0x4, 0x0},
+    {0x41c0400e, 0xe6, 2, 0x4, 0x0},
+    {0x41a0400e, 0xe6, 2, 0x4, 0x0},
+    {0x402840fe, 0xe6, 2, 0x4, 0x0},
+    {0x400840fe, 0xe6, 2, 0x4, 0x0},
+    {0x41e040fe, 0xe6, 2, 0x4, 0x0},
+    {0x41c040fe, 0xe6, 2, 0x4, 0x0},
+    {0x41a040fe, 0xe6, 2, 0x4, 0x0},
+    {0x402840ee, 0xe6, 2, 0x4, 0x0},
+    {0x400840ee, 0xe6, 2, 0x4, 0x0},
+    {0x41e040ee, 0xe6, 2, 0x4, 0x0},
+    {0x41c040ee, 0xe6, 2, 0x4, 0x0},
+    {0x41a040ee, 0xe6, 2, 0x4, 0x0},
+    {0x41b440d6, 0xcd, 2, 0x5, 0x0},
+    {0x01d440d6, 0xd1, 2, 0x5, 0x0},
+    {0x400c40d6, 0xed, 2, 0x5, 0x0},
+    {0x002c40d6, 0xf1, 2, 0x5, 0x0},
+    {0x902040d5, 0x88, 2, 0x5, 0x0},
+    {0x800840d5, 0x88, 2, 0x5, 0x0},
+    {0x91c840d5, 0x88, 2, 0x5, 0x0},
+    {0x81b040d5, 0x88, 2, 0x5, 0xffff},
 };
 
 // Scene registration entry read by main (0x020e2100): factory, then two ids
 extern "C" ProcProfile sDistantTownsMenuProfile = {(void *(*)())DistantTownsMenu_Create, 0xb5, 0xb9};
 
-extern "C" u32 data_ov140_02293d80[2] = {0x804840e0, 0xffffc1c8};
+extern "C" GXOamAttr data_ov140_02293d80[1] = {
+    {0x804840e0, 0x1c8, 0, 0xc, 0xffff},
+};
 
-extern "C" u32 data_ov140_02293d40[2] = {0x804840e0, 0xffffc1c0};
+extern "C" GXOamAttr data_ov140_02293d40[1] = {
+    {0x804840e0, 0x1c0, 0, 0xc, 0xffff},
+};
 
 // Sprite descriptors for the per-row status icons (vfunc_24)
-extern "C" u32 data_ov140_02293d00[2] = {0x804840e0, 0xffffc1c4};
+extern "C" GXOamAttr data_ov140_02293d00[1] = {
+    {0x804840e0, 0x1c4, 0, 0xc, 0xffff},
+};
 
-extern "C" u32 data_ov140_02293d88[2] = {0x804840e0, 0xffffd1cc};
+extern "C" GXOamAttr data_ov140_02293d88[1] = {
+    {0x804840e0, 0x1cc, 0, 0xd, 0xffff},
+};
 
-extern "C" u32 data_ov140_02293dcc[12] = {
-    0x402840ee, 0x000058c6, 0x419c00df, 0x00005886, 0x400840ee, 0x000058c6,
-    0x41e040ee, 0x000058c6, 0x41c040ee, 0x000058c6, 0x41a040ee, 0xffff58c6,
+extern "C" GXOamAttr data_ov140_02293dcc[6] = {
+    {0x402840ee, 0xc6, 2, 0x5, 0x0},
+    {0x419c00df, 0x86, 2, 0x5, 0x0},
+    {0x400840ee, 0xc6, 2, 0x5, 0x0},
+    {0x41e040ee, 0xc6, 2, 0x5, 0x0},
+    {0x41c040ee, 0xc6, 2, 0x5, 0x0},
+    {0x41a040ee, 0xc6, 2, 0x5, 0xffff},
 };
 
 extern "C" DistantTownsMenu *DistantTownsMenu_Create() { return new DistantTownsMenu(); }
@@ -233,26 +254,26 @@ BOOL DistantTownsMenu::onDraw() {
         return FALSE;
     }
     bottomButtons.drawAt(buttonsSlideY);
-    u8 *base = slideY + 0x60;
+    s32 base = slideY + 0x60;
     Oam_DrawCell(1, data_ov140_02293da4, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    u32 a = listPanel.getCellList(5);
-    u32 b = listPanel.getCellList(6);
-    u32 c = listPanel.getCellList(7);
+    GXOamAttr *a = (GXOamAttr *)listPanel.getCellList(5);
+    GXOamAttr *b = (GXOamAttr *)listPanel.getCellList(6);
+    GXOamAttr *c = (GXOamAttr *)listPanel.getCellList(7);
     s32 v = selectedRow;
     if (v != -1) {
         Oam_DrawCell(1, data_ov140_02293dcc, 0x80, base + (v << 4), -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     Oam_DrawCell(1, data_ov140_02293e64, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, (void *)a, 0x80, base, moreButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, (void *)b, 0x80, base, quitButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, (void *)c, 0x80, base, confirmButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    listPanel.drawTitle(0, (s32)slideY);
+    Oam_DrawCell(1, a, 0x80, base, moreButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, b, 0x80, base, quitButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, c, 0x80, base, confirmButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    listPanel.drawTitle(0, slideY);
     if (testFlags(0x20) == 0) {
-        void *tbl[5] = {0, data_ov140_02293d40, data_ov140_02293d00, data_ov140_02293d80, data_ov140_02293d88};
+        GXOamAttr *tbl[5] = {0, data_ov140_02293d40, data_ov140_02293d00, data_ov140_02293d80, data_ov140_02293d88};
         s32 z = 0;
         s32 i;
         for (i = 0; i < 6; base += 0x10, i++) {
-            void *t = tbl[rowIcons[i]];
+            GXOamAttr *t = tbl[rowIcons[i]];
             if (t != 0) {
                 Oam_DrawCell(1, t, 0x80, base, -1, 2, 0x1000, 0x1000, z, -1, z, z);
             }
@@ -261,9 +282,12 @@ BOOL DistantTownsMenu::onDraw() {
     return TRUE;
 }
 
-extern "C" u32 data_ov140_02293da4[10] = {
-    0x005040d7, 0x000081f4, 0x004880d4, 0x0000c1d0, 0x01a600d7,
-    0x000081f3, 0x019a00d7, 0x000081f2, 0x01a000d7, 0xffff81f1,
+extern "C" GXOamAttr data_ov140_02293da4[5] = {
+    {0x005040d7, 0x1f4, 0, 0x8, 0x0},
+    {0x004880d4, 0x1d0, 0, 0xc, 0x0},
+    {0x01a600d7, 0x1f3, 0, 0x8, 0x0},
+    {0x019a00d7, 0x1f2, 0, 0x8, 0x0},
+    {0x01a000d7, 0x1f1, 0, 0x8, 0xffff},
 };
 
 BOOL DistantTownsMenu::execTransition() {
@@ -360,7 +384,7 @@ void DistantTownsMenu::stateClosing() {
 
 void DistantTownsMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
-    slideY = (u8 *)getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void DistantTownsMenu::initDistantTowns() {
@@ -421,13 +445,13 @@ extern "C" void DistantTownsMenu_SetupBgLayers() {
 void DistantTownsMenu::loadBgGfx() {
     listPanel.loadBgGfx();
     listPanel.clearAllRows();
-    File_LoadToBuffer((void *)"menu/res/d0_bg.bsc", bgScreen, 0x800);
+    File_LoadToBuffer("menu/res/d0_bg.bsc", bgScreen, 0x800);
     resetRowScreen();
 }
 
 void DistantTownsMenu::loadObjGfx() {
     listPanel.loadObjGfx();
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void DistantTownsMenu::refreshFriendStatus() {
@@ -451,8 +475,7 @@ void DistantTownsMenu::updateTouch() {
         s32 y = gTouchCurY - 0x10;
         if (x >= 0x28 && x < 0xd0 && y >= 0x30 && y < 0x90) {
             s32 i = (y - 0x30) >> 4;
-            u8 *e = (u8 *)this + i;
-            if (e[0x8af] != 0 && e[0x8e0] != 4) {
+            if (rowFilled[i] != 0 && rowIcons[i] != 4) {
                 selectRow(i);
                 Snd_PlaySe(0x29);
             }
@@ -515,9 +538,7 @@ void DistantTownsMenu::updateCursorPress() {
         } else if (c == 7) {
             startQuit();
         } else {
-            u8 *e;
-            e = (u8 *)this + c;
-            if (e[0x8af] == 0 || e[0x8e0] == 4) {
+            if (rowFilled[c] == 0 || rowIcons[c] == 4) {
                 goto tail;
             }
             selectRow(c);
@@ -759,17 +780,16 @@ void DistantTownsMenu::selectRow(s32 v) {
 BOOL DistantTownsMenu::refreshRowIcons() {
     s32 i, k;
     BOOL changed = FALSE;
-    u8 *tbl = (u8 *)getFriendList();
+    NetWifiFriends *tbl = getFriendList();
     k = page * 6;
     i = 0;
     s32 z = 0;
     do {
-        s32 off = k * 0x13;
         s32 v;
-        if (isListedFriend(tbl + 0x180 + off) == 0) {
+        if (isListedFriend(&tbl->status[k]) == 0) {
             v = z;
         } else {
-            v = (tbl + off)[0x192];
+            v = tbl->status[k].c;
         }
         if (v != rowIcons[i]) {
             changed = TRUE;
@@ -784,28 +804,27 @@ BOOL DistantTownsMenu::refreshRowIcons() {
 void DistantTownsMenu::refreshPage() {
     struct { u8 a[8]; u8 b[8]; u8 pad[8]; } l;
     u32 id;
-    u8 *rec;
-    u32 off;
+    NetWifiFriendStatus *rec;
     s32 z1 = 0, z2 = 0;
     resetRowScreen();
     Mem_Clear(l.a, 8);
     Mem_Clear(l.b, 8);
     s32 j = page * 6;
-    u8 *tbl = (u8 *)getFriendList();
+    NetWifiFriends *tbl = getFriendList();
     s32 i = 0;
     for (; i < 6; j++, i++) {
         if (j < 0x20) {
             id = listFriendIds[j];
-            if (id == 0xff || (off = id * 0x13, rec = tbl + 0x180 + off, !isListedFriend(rec))) {
+            if (id == 0xff || (rec = &tbl->status[id], !isListedFriend(rec))) {
                 rowFilled[i] = z1;
                 rowIcons[i] = z1;
                 listPanel.clearRow(i);
             } else {
                 rowFriendIds[i] = id;
                 rowFilled[i] = 1;
-                rowIcons[i] = (tbl + off)[0x192];
-                Mem_Copy(tbl + 0x188 + off, l.a, 8);
-                Mem_Copy(rec, l.b, 8);
+                rowIcons[i] = rec->c;
+                Mem_Copy(rec->statusString + 8, l.a, 8);
+                Mem_Copy(rec->statusString, l.b, 8);
                 listPanel.setRow(i, l.a);
             }
         } else {
@@ -818,11 +837,11 @@ void DistantTownsMenu::refreshPage() {
 
 s32 DistantTownsMenu::countListedFriends() {
     s32 i, cnt;
-    u8 *tbl = (u8 *)getFriendList();
+    NetWifiFriends *tbl = getFriendList();
     cnt = 0;
     i = 0;
     do {
-        if (isListedFriend(tbl + 0x180 + i * 0x13)) {
+        if (isListedFriend(&tbl->status[i])) {
             cnt++;
         }
         i++;
@@ -831,11 +850,11 @@ s32 DistantTownsMenu::countListedFriends() {
 }
 
 void DistantTownsMenu::initList() {
-    u8 *tbl = (u8 *)getFriendList();
+    NetWifiFriends *tbl = getFriendList();
     s32 cnt = 0;
     s32 i = 0;
     do {
-        if (isListedFriend(tbl + 0x180 + i * 0x13)) {
+        if (isListedFriend(&tbl->status[i])) {
             cnt++;
         }
         listFriendIds[i] = i;
@@ -852,8 +871,8 @@ void DistantTownsMenu::initList() {
     }
 }
 
-BOOL DistantTownsMenu::isListedFriend(u8 *p) {
-    if (p[0x10] == 6 && p[0] != 0) {
+BOOL DistantTownsMenu::isListedFriend(NetWifiFriendStatus *p) {
+    if (p->status == 6 && p->statusString[0] != 0) {
         return TRUE;
     }
     return FALSE;
@@ -872,7 +891,7 @@ void DistantTownsMenu::fadeRows(s32 t) {
     }
 }
 
-void *DistantTownsMenu::getFriendList() { return Net_GetWifiFriendList(); }
+NetWifiFriends *DistantTownsMenu::getFriendList() { return (NetWifiFriends *)Net_GetWifiFriendList(); }
 
 LabelString *DistantTownsMenu::allocTextLabel() {
     u32 c = labelCount;

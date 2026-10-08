@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "uptr.h"
 class ChatMenu;
 #endif
 
@@ -35,9 +34,6 @@ extern char data_ov111_02298a10[];
 extern "C" {
 #ifndef PROTO_LOCAL_ChatMenu_Create
 ChatMenu *ChatMenu_Create();
-#endif
-#ifndef PROTO_LOCAL_sChatSendAnimScreens
-extern uptr sChatSendAnimScreens[4];
 #endif
 }
 #endif

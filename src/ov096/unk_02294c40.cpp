@@ -311,7 +311,7 @@ BOOL PocketMenu::onDraw() {
         InventoryItemGrid_DrawPockets(unk_358, 0, slideY);
         InventoryItemGrid_DrawExtraMarks(unk_358, 0, slideY);
         ((LetterGrid *)(unk_db8))->drawPocketLetters(0, slideY);
-        InventoryBg_DrawSprite(unk_de0, slideY);
+        InventoryBg_DrawSprite(&m_de0, slideY);
     }
     if (testFlags(0x100)) {
         ((LabelButton *)(unk_2b14))->setPos(0, getSlideOffsetY());
@@ -1901,7 +1901,7 @@ extern "C" s32 PocketMenu_DropLetterAt(PocketMenu *s, u32 id)
 extern "C" void PocketMenu_SetLetter(PocketMenu *s, u32 id, void *p)
 {
     if (PocketMenu_IsLetterTarget(s, id)) {
-        ((LetterGrid *)(HOST_AT(s, 0xdb8, m_db8, 0)))->setLetter(PocketMenu_TargetToLetterIndex(s, id), (s32)(p));
+        ((LetterGrid *)(HOST_AT(s, 0xdb8, m_db8, 0)))->setLetter(PocketMenu_TargetToLetterIndex(s, id), p);
     }
 }
 

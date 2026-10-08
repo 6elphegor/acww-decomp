@@ -4,20 +4,19 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ClockDateTime.h"
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
 #include "ui/HandCursor.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov134/unk_ov134_02291f60.h"
 #include "proto/ov136/unk_ov136_02295380.h"
-
-class DateTimePicker;
 
 extern "C" {
 extern const u8 sTimeSelectCursorRightTable[3];
@@ -28,32 +27,10 @@ extern const s32 sTimeSelectCursorXTable[3];
 extern const s32 sTimeSelectCursorYTable[3];
 extern u16 gPad[];
 
-void MenuButtons_LoadTextColors(void *self);
-
-// ov134 library functions (plain symbols; first argument is the DateTimePicker object)
-BOOL DateTimePicker_GrabHand(DateTimePicker *p, u8 a, u8 b);
-void DateTimePicker_Draw(DateTimePicker *p, s32 a, s32 b);
-void DateTimePicker_LoadObjGraphics(DateTimePicker *p);
-void DateTimePicker_DrawTitleAndFields(DateTimePicker *p, s32 a);
-void DateTimePicker_LoadBgGraphics(DateTimePicker *p);
-void DateTimePicker_GetDateTime(DateTimePicker *p, void *out);
-void DateTimePicker_EndFrame(DateTimePicker *p);
-void DateTimePicker_BeginFrame(DateTimePicker *p);
-void DateTimePicker_Shutdown(DateTimePicker *p);
-void DateTimePicker_Init(DateTimePicker *p, s32 a, s32 b, s32 c, s32 d);
 }
-
-
-
-
-
-
-
 
 class TimeSelectMenu;
 typedef void (TimeSelectMenu::*Unk_ov136_022963b0_Fn)();
-
-
 
 // Vtable 0x022963b0
 class TimeSelectMenu : public MenuProc {
@@ -310,7 +287,7 @@ void TimeSelectMenu::loadBgGfx() {
 
 void TimeSelectMenu::loadObjGfx() {
     DateTimePicker_LoadObjGraphics(&picker);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void TimeSelectMenu::updateTouch() {
@@ -320,9 +297,9 @@ void TimeSelectMenu::updateTouch() {
         if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
             confirm();
         } else {
-            u8 a = gTouchCurX;
-            u8 b = gTouchCurY;
-            if (DateTimePicker_GrabHand(&picker, b ? a : a, b)) {
+            u32 a = gTouchCurX;
+            u32 b = gTouchCurY;
+            if (DateTimePicker_GrabHand(&picker, a, b)) {
                 setMainState(1);
             }
             s32 r = DateTimePicker_HitTestTimeField(&picker, a, b);
@@ -557,11 +534,11 @@ void TimeSelectMenu::confirm() {
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xd);
-    u32 v[2];
-    v[0] = 0;
-    v[1] = 0;
-    DateTimePicker_GetDateTime(&picker, v);
-    MenuCtrl_SetDateTime(v);
+    ClockDateTimeWords v;
+    v.words[0] = 0;
+    v.words[1] = 0;
+    DateTimePicker_GetDateTime(&picker, &v.dt);
+    MenuCtrl_SetDateTime(&v);
     MenuCtrl_SetResult(1);
 }
 

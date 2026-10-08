@@ -1,7 +1,7 @@
 #ifndef MENU_CREATUREBOOKPANEL_H
 #define MENU_CREATUREBOOKPANEL_H
 
-// Bug/fish encyclopedia panel (0x129c bytes) with its description string MsgString406 (0x20 bytes).
+// Bug/fish encyclopedia panel (0x129c bytes) with its description string MsgString406 (0x1a8 bytes).
 // Defined in src/ov114/unk_ov114_02294c40.cpp (methods plus the CreatureBook_* plain functions).
 #include "types.h"
 #include "item/ItemIconCache.h"
@@ -25,7 +25,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    u8 unk_14[0x20 - 0x14];
+    /* 0x12 */ u8 text[0x196];
 };
 
 class CreatureBookPanel {
@@ -49,7 +49,6 @@ public:
 
     /* 0x000 */ ItemIconCache iconCache;
     /* 0x808 */ MsgString406 descText;
-    /* 0x828 */ u8 unk_828[0x9b0 - 0x828];
     /* 0x9b0 */ BgVramTask paletteTask;
     /* 0x9d4 */ u16 paletteFile[0x10]; // [2] / [3]: background color of the shown / hidden picture
     /* 0x9f4 */ u16 paletteBuf[0x10];  // [2]: blend of the two (CreatureBook_BlendBgColor)

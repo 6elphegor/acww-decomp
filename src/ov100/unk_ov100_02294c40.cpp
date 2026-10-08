@@ -16,10 +16,8 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Inventory_PlayPutDownSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -37,7 +35,6 @@
 extern "C" {
 BOOL Clock_GetWeekday();
 void MI_CpuCopy8(void *a, void *b, u32 c);
-void Inventory_PlayPutDownSe(...);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 s32 PopupChoice_DecideCancel(void *p, s32 x);
@@ -45,13 +42,11 @@ void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
-void InventoryBg_LoadObjGraphics(void *a);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gSaveLostAndFound[];
 extern u8 gSaveRecycleBin[];
 extern u16 gPad[];
-extern s32 gCurrentHeap;
 }
 
 class ShopSellMenu;
@@ -101,12 +96,12 @@ public:
     void cancel();
     void setQuitLabel(s32);
     void setOkLabel(s32);
-    void * allocTextLabel();
+    LabelString *allocTextLabel();
     void resetTextLabels();
-    BOOL moveCursorByPad(void *, s32);
-    void moveCursorOnButtons(void *);
-    void moveCursorInBox(void *, s32);
-    void moveCursorInPockets(void *, s32);
+    BOOL moveCursorByPad(u32, s32);
+    void moveCursorOnButtons(u32);
+    void moveCursorInBox(u32, s32);
+    void moveCursorInPockets(u32, s32);
     void cancelChoiceList();
     void applyChoice();
     void startExchange(u8);
@@ -303,7 +298,7 @@ BOOL ShopSellMenu::onDraw() {
     }
     nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&cursor)->drawWrapped();
+        cursor.drawWrapped();
     }
     ShopSellMenu_DrawHeldItem(this);
     if (testFlags(0x80)) {
@@ -311,7 +306,7 @@ BOOL ShopSellMenu::onDraw() {
     }
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
-        ((LetterGrid *)&letterGrid)->drawPocketLetters(0, pocketsSlideY);
+        letterGrid.drawPocketLetters(0, pocketsSlideY);
         InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
@@ -377,7 +372,7 @@ void ShopSellMenu::transitionAct01() {
     InventoryItemGrid_LoadBox(&itemGrid, boxItems);
     ShopSellMenu_DisableRejectedItems(this);
     LetterGrid_LoadPocketLetters(&letterGrid);
-    ((LetterGrid *)&letterGrid)->highlightLetterKinds(0xf);
+    letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, 0);
@@ -416,7 +411,7 @@ void ShopSellMenu::transitionAct03() {
 void ShopSellMenu::transitionAct04() {
     S *const s = this;
     if (s->isResultSent()) {
-        ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
+        s->nameBalloon.hide(1);
         ShopSellMenu_HideCursor(s);
         ((MenuLauncher *)ProcBase_GetParent(s))->setNextRequest(0x44, 1);
         s->beginSubSlideOut(2, 4, 1, 0x30);
@@ -459,13 +454,13 @@ extern "C" void ShopSellMenu_Init(S *s) {
     s32 i;
     s->stateFlags = 0;
     InventoryItemGrid_Init(&s->itemGrid, 1);
-    ((LetterGrid *)&s->letterGrid)->init(2);
+    s->letterGrid.init(2);
     InventoryBg_Init(&s->inventoryBg, 6);
     s->balloonSlot = 0x20;
-    ((CursorMotion *)&s->flyMotion)->reset();
+    s->flyMotion.reset();
     s->heldKind = 0;
     s->cursorSlot = 0;
-    ((PopupChoiceMenu *)&s->choiceMenu)->init(3, 1, 0);
+    s->choiceMenu.init(3, 1, 0);
     s->numTextLabels = 0;
     switch (MenuCtrl_GetMode()) {
     case 0x1d:
@@ -507,14 +502,14 @@ extern "C" void ShopSellMenu_PreStateUpdate(S *s) {
     ShopSellMenu_CancelUploads(s);
     InventoryBg_PreUpdate(&s->inventoryBg);
     InventoryItemGrid_PreUpdate(&s->itemGrid);
-    ((LetterGrid *)&s->letterGrid)->updateCursorLift();
+    s->letterGrid.updateCursorLift();
     s->resetTextLabels();
 }
 
 extern "C" void ShopSellMenu_PostStateUpdate(S *s) {
     PopupChoice_Update(&s->choiceMenu);
     InventoryBg_Update(&s->inventoryBg);
-    if (((TouchPromptBalloon *)&s->nameBalloon)->updatePrompt()) {
+    if (s->nameBalloon.updatePrompt()) {
         ShopSellMenu_PlaceNameBalloon(s);
     }
 }
@@ -535,24 +530,24 @@ extern "C" void ShopSellMenu_LoadTopBg(S *s) {
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_tra1.bsc", h, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
     s32 v = MenuCtrl_GetMode();
-    u8 *a = NULL;
-    u8 *b = NULL;
+    const char *a = NULL;
+    const char *b = NULL;
     switch (v) {
     case 0x1d:
-        a = (u8 *)"menu/inventory/ten6.bpl";
-        b = (u8 *)"menu/inventory/tanu.bch";
+        a = "menu/inventory/ten6.bpl";
+        b = "menu/inventory/tanu.bch";
         break;
     case 0x1e:
-        a = (u8 *)"menu/inventory/ten7.bpl";
-        b = (u8 *)"menu/inventory/kinu.bch";
+        a = "menu/inventory/ten7.bpl";
+        b = "menu/inventory/kinu.bch";
         break;
     case 0x1f:
-        a = (u8 *)"menu/inventory/ten8.bpl";
-        b = (u8 *)"menu/inventory/lost.bch";
+        a = "menu/inventory/ten8.bpl";
+        b = "menu/inventory/lost.bch";
         break;
     case 0x20:
-        a = (u8 *)"menu/inventory/ten9.bpl";
-        b = (u8 *)"menu/inventory/garb.bch";
+        a = "menu/inventory/ten9.bpl";
+        b = "menu/inventory/garb.bch";
         break;
     }
     if (a != NULL) {
@@ -566,7 +561,7 @@ extern "C" void ShopSellMenu_LoadTopBg(S *s) {
 }
 
 extern "C" void ShopSellMenu_LoadObjGraphics(S *s) {
-    InventoryBg_LoadObjGraphics(&s->inventoryBg);
+    InventoryBg_LoadObjGraphics();
 }
 
 void ShopSellMenu::mainAct00() {
@@ -595,11 +590,11 @@ void ShopSellMenu::mainAct01() {
     S *const s = this;
     if (gTouchHeld == 0) {
         s->setMainState(0);
-        ((TouchPromptBalloon *)&s->nameBalloon)->setAutoCloseTimer(0x3c);
+        s->nameBalloon.setAutoCloseTimer(0x3c);
     } else if (s->testFlags(4) && ShopSellMenu_HasTouchMoved(s)) {
         ShopSellMenu_PickUpWithTouch(s, s->touchedSlot);
     } else {
-        ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
+        s->nameBalloon.commitOpen();
     }
 }
 
@@ -642,7 +637,7 @@ void ShopSellMenu::mainAct03() {
                 if (r == 0) {
                     ShopSellMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
                 } else {
-                    Inventory_PlayPutDownSe(r);
+                    Inventory_PlayPutDownSe();
                     ShopSellMenu_ResumeInput(s);
                 }
             }
@@ -658,13 +653,13 @@ void ShopSellMenu::mainAct04() {
     S *const s = this;
     if (s->checkSwitchToTouch()) {
         ShopSellMenu_StartTouchInput(s);
-        ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
+        s->nameBalloon.hide(1);
     } else {
         s32 v = s->takeRepeatedKeys();
-        if (s->moveCursorByPad((void *)v, 0)) {
+        if (s->moveCursorByPad(v, 0)) {
             ShopSellMenu_UpdateNameBalloon(s);
             ShopSellMenu_MoveCursorToTarget(s);
-            ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
+            s->nameBalloon.hide(0);
         } else {
             if (ShopSellMenu_IsSlotDisabled(s, s->cursorSlot)) goto tail;
             {
@@ -683,7 +678,7 @@ void ShopSellMenu::mainAct04() {
                             s32 r = ShopSellMenu_IsPocketSlot(s, s->cursorSlot) ? ShopSellMenu_FindFreeBoxSlot(s) : ShopSellMenu_FindFreePocket(s);
                             if (r != 0x20) {
                                 ShopSellMenu_QuickMove(s, s->cursorSlot, r);
-                                ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
+                                s->nameBalloon.hide(1);
                             }
                         }
                     }
@@ -698,13 +693,13 @@ tail:
                 if (k & 2) {
                     ShopSellMenu_HideCursor(s);
                     s->cancel();
-                    ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
+                    s->nameBalloon.hide(0);
                 } else if (k & 8) {
                     ShopSellMenu_HideCursor(s);
                     s->confirm();
-                    ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
+                    s->nameBalloon.hide(0);
                 } else {
-                    ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
+                    s->nameBalloon.commitOpen();
                 }
             }
         }
@@ -714,10 +709,10 @@ tail:
 void ShopSellMenu::mainAct05() {
     S *const s = this;
     s32 v = s->takeRepeatedKeys();
-    if (s->moveCursorByPad((void *)v, 1)) {
+    if (s->moveCursorByPad(v, 1)) {
         ShopSellMenu_UpdateNameBalloon(s);
         ShopSellMenu_MoveCursorToTarget(s);
-        ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
+        s->nameBalloon.hide(0);
     } else {
         u32 k = gPad[1];
         if (k & 1) {
@@ -734,7 +729,7 @@ void ShopSellMenu::mainAct05() {
             s->startPutDown(s->pickUpSlot);
         } else {
             ShopSellMenu_TrackCursor(s);
-            ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
+            s->nameBalloon.commitOpen();
         }
     }
 }
@@ -748,7 +743,7 @@ void ShopSellMenu::mainAct06() {
     } else {
         u32 k = gPad[1];
         if ((k & 1) != 0) {
-            ((MenuCursor *)&s->cursor)->setPosePress();
+            s->cursor.setPosePress();
             s->setMainState(7);
         } else if ((k & 2) != 0) {
             ShopSellMenu_PickCancelChoice(s);
@@ -758,7 +753,7 @@ void ShopSellMenu::mainAct06() {
 
 void ShopSellMenu::mainAct07() {
     S *const s = this;
-    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+    if (s->cursor.isAnimDone()) {
         PopupChoice_DecideRow(&s->choiceMenu, s->choiceRow, 1);
         s->chosenAction = s->choiceList.values[s->choiceRow];
         s->setMainState(0x12);
@@ -767,7 +762,7 @@ void ShopSellMenu::mainAct07() {
 
 void ShopSellMenu::updateCursorMove() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->cursor)->isMoving()) {
+    if (!s->cursor.isMoving()) {
         s->setMainState(s->returnState);
         if ((u8)(s->returnState + 0xfc) <= 1) {
             ShopSellMenu_SetCursorSlot(s, s->cursorSlot);
@@ -779,7 +774,7 @@ void ShopSellMenu::updateCursorMove() {
 
 void ShopSellMenu::updateCursorPress() {
     S *const s = this;
-    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+    if (s->cursor.isAnimDone()) {
         u32 t = s->cursorSlot;
         if (t == 0x1e) {
             s->confirm();
@@ -793,7 +788,7 @@ void ShopSellMenu::updateCursorPress() {
 
 void ShopSellMenu::updateCursorRelease() {
     S *const s = this;
-    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+    if (s->cursor.isAnimDone()) {
         s->refreshCursor();
         s->setMainState(4);
     }
@@ -801,7 +796,7 @@ void ShopSellMenu::updateCursorRelease() {
 
 void ShopSellMenu::mainAct0B() {
     S *const s = this;
-    if (((MenuCursorBase *)&s->cursor)->isGripping()) {
+    if (s->cursor.isGripping()) {
         ShopSellMenu_PickUpWithHand(s, s->cursorSlot);
         s->setMainState(0xc);
     }
@@ -809,7 +804,7 @@ void ShopSellMenu::mainAct0B() {
 
 void ShopSellMenu::mainAct0C() {
     S *const s = this;
-    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+    if (s->cursor.isAnimDone()) {
         s->setMainState(s->returnState);
     }
     ShopSellMenu_TrackCursor(s);
@@ -817,7 +812,7 @@ void ShopSellMenu::mainAct0C() {
 
 void ShopSellMenu::mainAct0D() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->cursor)->isGripping()) {
+    if (!s->cursor.isGripping()) {
         u32 a = s->actionSlot;
         if (s->cursorSlot == a) {
             ShopSellMenu_DropHeldItem(s, a);
@@ -834,7 +829,7 @@ void ShopSellMenu::mainAct0D() {
 
 void ShopSellMenu::mainAct0E() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->cursor)->func_ov002_022028fc()) {
+    if (!s->cursor.func_ov002_022028fc()) {
         ShopSellMenu_ExchangeHeldItem(s, s->actionSlot);
         s->setFlags(0x40);
         s->setMainState(0xf);
@@ -846,10 +841,10 @@ void ShopSellMenu::mainAct0E() {
 
 void ShopSellMenu::mainAct0F() {
     S *const s = this;
-    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+    if (s->cursor.isAnimDone()) {
         s->setMainState(s->returnState);
     }
-    if (((MenuCursorBase *)&s->cursor)->isGripping()) {
+    if (s->cursor.isGripping()) {
         if (s->testFlags(0x40)) {
             s->clearFlags(0x40);
             Inventory_PlayPickUpSe();
@@ -860,7 +855,7 @@ void ShopSellMenu::mainAct0F() {
 
 void ShopSellMenu::mainAct10() {
     S *const s = this;
-    if (((CursorMotion *)&s->flyMotion)->update()) {
+    if (s->flyMotion.update()) {
         ShopSellMenu_ReleaseHeldItem(s, s->pickUpSlot);
         ShopSellMenu_ResumeInput(s);
         Inventory_PlayPutDownSe();
@@ -885,7 +880,7 @@ void ShopSellMenu::mainAct12() {
     S *const s = this;
     if (PopupChoice_TickDecideDelay(&s->choiceMenu)) {
         PopupChoice_Close(&s->choiceMenu, 0);
-        if (((HandCursor *)&s->cursor)->getAnim()) {
+        if (s->cursor.getAnim()) {
             ShopSellMenu_PlaceCursorAtTarget(s);
         }
         s->setMainState(0x13);
@@ -901,9 +896,9 @@ void ShopSellMenu::mainAct13() {
 
 void ShopSellMenu::mainAct14() {
     S *const s = this;
-    if (((MenuErrorMessage *)&s->errorMessage)->update(0)) {
+    if (s->errorMessage.update(0)) {
         s->setMainState(s->returnState);
-        ((HandCursor *)&s->cursor)->enableObjWindow();
+        s->cursor.enableObjWindow();
     }
 }
 
@@ -914,7 +909,7 @@ void ShopSellMenu::mainAct15() {
     } else {
         s->transitionState = 4;
         s->setPhase(1);
-        ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
+        s->nameBalloon.hide(0);
         ShopSellMenu_HideCursor(s);
     }
 }
@@ -951,7 +946,7 @@ extern "C" void ShopSellMenu_TouchItem(S *s, u32 a) {
     s->grabOffsetX = ShopSellMenu_GetSlotX(s, s->touchedSlot) - r6;
     s->grabOffsetY = ShopSellMenu_GetSlotY(s, s->touchedSlot) - r7;
     s->balloonSlot = a;
-    ((TouchPromptBalloon *)&s->nameBalloon)->queueOpen();
+    s->nameBalloon.queueOpen();
     if (ShopSellMenu_IsSlotDisabled(s, a)) {
         s->clearFlags(4);
     } else {
@@ -962,7 +957,7 @@ extern "C" void ShopSellMenu_TouchItem(S *s, u32 a) {
 
 extern "C" void ShopSellMenu_PickUpWithTouch(S *s, u32 a) {
     s->pickUpSlot = a;
-    ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
+    s->nameBalloon.hide(1);
     ShopSellMenu_PickUpItem(s, a);
     if (s->heldKind == 1) {
         s->setMainState(3);
@@ -973,7 +968,7 @@ extern "C" void ShopSellMenu_PickUpWithTouch(S *s, u32 a) {
 
 extern "C" void ShopSellMenu_PickUpWithHand(S *s, u32 a) {
     s->pickUpSlot = a;
-    ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
+    s->nameBalloon.hide(1);
     ShopSellMenu_PickUpItem(s, a);
     if (s->heldKind == 1) {
         s->returnState = 5;
@@ -984,11 +979,11 @@ extern "C" void ShopSellMenu_PickUpWithHand(S *s, u32 a) {
 
 extern "C" void ShopSellMenu_StartFlyHeldItem(S *s, u32 a, u32 b) {
     s->pickUpSlot = a;
-    ((CursorMotion *)&s->flyMotion)->setPos(s->heldX, s->heldY);
+    s->flyMotion.setPos(s->heldX, s->heldY);
     u32 x = ShopSellMenu_GetSlotX(s, a);
     u32 y = ShopSellMenu_GetSlotY(s, a);
-    ((CursorMotion *)&s->flyMotion)->startLinear(x, y, b);
-    ((CursorMotion *)&s->flyMotion)->update();
+    s->flyMotion.startLinear(x, y, b);
+    s->flyMotion.update();
     ShopSellMenu_TrackFlyingItem(s);
     s->setMainState(0x10);
 }
@@ -1230,14 +1225,14 @@ extern "C" u32 ShopSellMenu_GetSlotFlags(S *s, u32 a)
 extern "C" void ShopSellMenu_ClearCursorSlots(S *s)
 {
     InventoryItemGrid_ClearCursorSlot(&s->itemGrid);
-    ((LetterGrid *)&s->letterGrid)->clearCursorSlot();
+    s->letterGrid.clearCursorSlot();
 }
 
 extern "C" void ShopSellMenu_SetCursorSlot(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
         InventoryItemGrid_SetCursorSlot(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
-        ((LetterGrid *)&s->letterGrid)->clearCursorSlot();
+        s->letterGrid.clearCursorSlot();
     } else if (ShopSellMenu_IsButtonSlot(s, a)) {
         ShopSellMenu_ClearCursorSlots(s);
     }
@@ -1246,7 +1241,7 @@ extern "C" void ShopSellMenu_SetCursorSlot(S *s, u32 a)
 extern "C" void ShopSellMenu_ClearMarks(S *s)
 {
     InventoryItemGrid_ClearMarks(&s->itemGrid);
-    ((LetterGrid *)&s->letterGrid)->clearMarks();
+    s->letterGrid.clearMarks();
 }
 
 extern "C" void ShopSellMenu_MarkSlot(S *s, u32 a)
@@ -1275,12 +1270,12 @@ extern "C" void ShopSellMenu_PlaceNameBalloon(S *s)
         b -= 8;
     }
     if (b < -0x5c) {
-        ((LabelBalloon *)&s->nameBalloon)->setPopDownward();
+        s->nameBalloon.setPopDownward();
         b = ShopSellMenu_GetSlotY(s, s->balloonSlot) - 0x50;
     } else {
-        ((LabelBalloon *)&s->nameBalloon)->setPopUpward();
+        s->nameBalloon.setPopUpward();
     }
-    ((LabelBalloon *)&s->nameBalloon)->setPos(a, b);
+    s->nameBalloon.setPos(a, b);
     if (ShopSellMenu_IsPocketSlot(s, s->balloonSlot) || ShopSellMenu_IsBoxSlot(s, s->balloonSlot)) {
         u32 t = ShopSellMenu_ToGridSlot(s, s->balloonSlot);
         InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
@@ -1291,13 +1286,13 @@ extern "C" void ShopSellMenu_UpdateNameBalloon(S *s)
 {
     if (ShopSellMenu_IsPocketSlot(s, s->cursorSlot) || ShopSellMenu_IsBoxSlot(s, s->cursorSlot)) {
         if (ShopSellMenu_IsSlotEmpty(s, s->cursorSlot)) {
-            ((TouchPromptBalloon *)&s->nameBalloon)->cancelQueuedOpen();
+            s->nameBalloon.cancelQueuedOpen();
         } else {
             s->balloonSlot = s->cursorSlot;
-            ((TouchPromptBalloon *)&s->nameBalloon)->queueOpen();
+            s->nameBalloon.queueOpen();
         }
     } else {
-        ((TouchPromptBalloon *)&s->nameBalloon)->cancelQueuedOpen();
+        s->nameBalloon.cancelQueuedOpen();
     }
 }
 
@@ -1321,14 +1316,14 @@ extern "C" void ShopSellMenu_TrackTouch(S *s)
 
 extern "C" void ShopSellMenu_TrackCursor(S *s)
 {
-    s->heldX = ((MenuCursorBase *)&s->cursor)->getFrameScreenX() - 2;
-    s->heldY = ((MenuCursorBase *)&s->cursor)->getFrameScreenY() - 4;
+    s->heldX = s->cursor.getFrameScreenX() - 2;
+    s->heldY = s->cursor.getFrameScreenY() - 4;
 }
 
 extern "C" void ShopSellMenu_TrackFlyingItem(S *s)
 {
-    s->heldX = ((CursorMotion *)&s->flyMotion)->getX();
-    s->heldY = ((CursorMotion *)&s->flyMotion)->getY();
+    s->heldX = s->flyMotion.getX();
+    s->heldY = s->flyMotion.getY();
 }
 
 extern "C" void ShopSellMenu_PickUpItem(S *s, u32 a)
@@ -1365,11 +1360,11 @@ extern "C" void ShopSellMenu_ShowCursor(S *s)
 {
     s32 a = ShopSellMenu_GetCursorTargetX(s);
     s32 b = ShopSellMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    s->cursor.warpTo(a, b);
     if (ShopSellMenu_IsButtonSlot(s, s->cursorSlot)) {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+        s->cursor.setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+        s->cursor.setAnimIfChanged(1);
     }
     s->refreshCursor();
 }
@@ -1393,19 +1388,19 @@ extern "C" s32 ShopSellMenu_GetCursorTargetY(S *s)
 
 extern "C" void ShopSellMenu_HideCursor(S *s)
 {
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
-    ((MenuCursorBuf0 *)&s->cursor)->update();
+    s->cursor.setAnimIfChanged(0);
+    s->cursor.update();
 }
 
 extern "C" void ShopSellMenu_MoveCursorToTarget(S *s)
 {
     s32 a = ShopSellMenu_GetCursorTargetX(s);
     s32 b = ShopSellMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->cursor)->moveToEase(a, b, 3, 1);
+    s->cursor.moveToEase(a, b, 3, 1);
     s->returnState = s->mainState;
     s->setMainState(8);
     if (s->testFlags(0x100)) {
-        ((MenuCursorBuf0 *)&s->cursor)->update();
+        s->cursor.update();
         s->clearFlags(0x100);
     }
 }
@@ -1414,7 +1409,7 @@ extern "C" void ShopSellMenu_MoveCursorToChoice(S *s)
 {
     s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
-    ((MenuCursorBase *)&s->cursor)->moveToLinear(a, b, 2);
+    s->cursor.moveToLinear(a, b, 2);
     s->returnState = s->mainState;
     s->setMainState(8);
 }
@@ -1425,8 +1420,8 @@ extern "C" void ShopSellMenu_PickCancelChoice(S *s)
     s->choiceRow = PopupChoice_DecideCancel(&s->choiceMenu, 1);
     s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
-    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
-    ((HandCursor *)&s->cursor)->setAnimAtEnd(8);
+    s->cursor.warpTo(a, b);
+    s->cursor.setAnimAtEnd(8);
     s->setMainState(0x12);
 }
 
@@ -1435,50 +1430,50 @@ extern "C" void ShopSellMenu_PlaceCursorOnFirstChoice(S *s)
     s->choiceRow = 0;
     s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
-    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+    s->cursor.warpTo(a, b);
+    s->cursor.setAnimIfChanged(7);
 }
 
 extern "C" void ShopSellMenu_PlaceCursorAtTarget(S *s)
 {
     s32 a = ShopSellMenu_GetCursorTargetX(s);
     s32 b = ShopSellMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+    s->cursor.warpTo(a, b);
+    s->cursor.setAnimIfChanged(1);
 }
 
 void ShopSellMenu::refreshCursor() {
-    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.setPoseIdle();
     cursor.update();
 }
 
 void ShopSellMenu::pressCursor() {
-    ((MenuCursor *)&cursor)->setPosePress();
+    cursor.setPosePress();
     setMainState(9);
 }
 
 void ShopSellMenu::releaseCursor() {
-    ((MenuCursorBase *)&cursor)->setPoseRelease();
+    cursor.setPoseRelease();
     setMainState(0xa);
 }
 
 void ShopSellMenu::startPickUp() {
-    ((MenuCursor *)&cursor)->setAnimIfChanged(4);
+    cursor.setAnimIfChanged(4);
     setMainState(0xb);
 }
 
 void ShopSellMenu::startPutDown(u8 v) {
-    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+    nameBalloon.hide(1);
     actionSlot = v;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
+    cursor.setAnimIfChanged(5);
     setMainState(0xd);
 }
 
 void ShopSellMenu::startExchange(u8 v) {
-    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+    nameBalloon.hide(1);
     returnState = mainState;
     actionSlot = v;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
+    cursor.setAnimIfChanged(6);
     setMainState(0xe);
 }
 
@@ -1501,7 +1496,7 @@ void ShopSellMenu::cancelChoiceList() {
     setMainState(0x13);
 }
 
-void ShopSellMenu::moveCursorInPockets(void *pad, s32 mode) {
+void ShopSellMenu::moveCursorInPockets(u32 pad, s32 mode) {
     s32 r = cursorSlot;
     s32 q = 0;
     while (r >= 5) {
@@ -1550,7 +1545,7 @@ void ShopSellMenu::moveCursorInPockets(void *pad, s32 mode) {
     }
 }
 
-void ShopSellMenu::moveCursorInBox(void *pad, s32 mode) {
+void ShopSellMenu::moveCursorInBox(u32 pad, s32 mode) {
     s32 r = cursorSlot - 0xf;
     s32 q = 0;
     while (r >= 5) {
@@ -1599,7 +1594,7 @@ void ShopSellMenu::moveCursorInBox(void *pad, s32 mode) {
     }
 }
 
-void ShopSellMenu::moveCursorOnButtons(void *pad) {
+void ShopSellMenu::moveCursorOnButtons(u32 pad) {
     if (MenuKeys_HasUp(pad)) {
         cursorSlot = 0x1e;
     } else if (MenuKeys_HasDown(pad)) {
@@ -1621,7 +1616,7 @@ void ShopSellMenu::moveCursorOnButtons(void *pad) {
     }
 }
 
-BOOL ShopSellMenu::moveCursorByPad(void *pad, s32 mode) {
+BOOL ShopSellMenu::moveCursorByPad(u32 pad, s32 mode) {
     u8 old = cursorSlot;
     clearFlags(0x30);
     clearFlags(0x100);
@@ -1638,9 +1633,9 @@ BOOL ShopSellMenu::moveCursorByPad(void *pad, s32 mode) {
     BOOL a = ShopSellMenu_IsButtonSlot(this, cursorSlot);
     if (a != ShopSellMenu_IsButtonSlot(this, old)) {
         if (ShopSellMenu_IsButtonSlot(this, cursorSlot)) {
-            ((MenuCursor *)&cursor)->switchToAnim07();
+            cursor.switchToAnim07();
         } else {
-            ((MenuCursor *)&cursor)->switchToAnim01();
+            cursor.switchToAnim01();
         }
         setFlags(0x100);
     }
@@ -1658,7 +1653,7 @@ void ShopSellMenu::resetTextLabels() {
     }
 }
 
-void *ShopSellMenu::allocTextLabel() {
+LabelString *ShopSellMenu::allocTextLabel() {
     if (numTextLabels >= 2) {
         return &textLabels[1];
     }
@@ -1671,10 +1666,10 @@ void ShopSellMenu::setOkLabel(s32 flag) {
     if (flag != 0) {
         v = 0xf;
     }
-    void *p = allocTextLabel();
-    ((LabelString *)p)->createLabel(4, 0x1ca, 6, v, 9, 0);
+    LabelString *p = allocTextLabel();
+    p->createLabel(4, 0x1ca, 6, v, 9, 0);
     String_Load2dMenu(p, 0x21);
-    ((LabelString *)p)->redrawAligned(1, 0);
+    p->redrawAligned(1, 0);
 }
 
 void ShopSellMenu::setQuitLabel(s32 flag) {
@@ -1682,10 +1677,10 @@ void ShopSellMenu::setQuitLabel(s32 flag) {
     if (flag != 0) {
         v = 0xf;
     }
-    void *p = allocTextLabel();
-    ((LabelString *)p)->createLabel(4, 0x1d6, 6, v, 9, 0);
+    LabelString *p = allocTextLabel();
+    p->createLabel(4, 0x1d6, 6, v, 9, 0);
     String_Load2dMenu(p, 0x65);
-    ((LabelString *)p)->redrawAligned(1, 0);
+    p->redrawAligned(1, 0);
 }
 
 void ShopSellMenu::cancel() {
@@ -1765,15 +1760,15 @@ s32 ShopSellMenu::packItemList(u16 *p) {
 
 void ShopSellMenu::sendItemsRecord(u8 v) {
     u8 buf[0x24];
-    if (((CommManager *)gCommManager)->isOnline()) {
+    if (gCommManager->isOnline()) {
         setFlags(8);
         buf[0] = v;
         MI_CpuCopy8(boxItems, &buf[1], 0x1e);
-        void *g = gCommManager;
-        ((CommManager *)g)->beginRecord();
-        ((CommManager *)g)->writeRecord(buf, 0x1f);
-        ((CommManager *)g)->endRecord(0x16, 4);
-        sendSeq = ((CommManager *)g)->getSendSeq();
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(buf, 0x1f);
+        g->endRecord(0x16, 4);
+        sendSeq = g->getSendSeq();
     }
 }
 
@@ -1784,7 +1779,7 @@ BOOL ShopSellMenu::isResultSent() {
     if (testFlags(8) == 0) {
         return TRUE;
     }
-    if (((CommManager *)gCommManager)->isOnline()) {
+    if (gCommManager->isOnline()) {
         if (Comm_IsSeqConfirmed(sendSeq) == 0) {
             return FALSE;
         }

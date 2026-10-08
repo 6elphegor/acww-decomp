@@ -16,23 +16,19 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChestStorage_GetItems  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Inventory_PlayPutDownSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetDresser  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02039c08.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
@@ -45,7 +41,6 @@
 extern "C" {
 BOOL Clock_GetWeekday();
 void MI_CpuCopy8(void *a, void *b, u32 c);
-void Inventory_PlayPutDownSe(...);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 s32 PopupChoice_DecideCancel(void *p);
@@ -53,19 +48,12 @@ void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
-void InventoryBg_LoadObjGraphics(void *a);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gSaveLostAndFound[];
 extern u8 gSaveRecycleBin[];
 extern u16 gPad[];
-extern s32 gCurrentHeap;
 // extra decls
-s32 Oam_GetObjY(void *p);
-s32 Oam_GetObjX(void *p);
-u8 *PlayerData_GetDresser(void *p);
-u16 *ChestStorage_GetItems(void *p);
-void Oam_DrawObj(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
 }
 
 class ChestMenu;
@@ -115,11 +103,11 @@ public:
     void setOkLabel(s32);
     LabelString * allocTextLabel();
     void resetTextLabels();
-    BOOL moveCursorByPad(void *, u32);
-    void moveCursorOnTabs(void *, u32);
-    void moveCursorOnButtons(void *);
-    void moveCursorInBox(void *, u32);
-    void moveCursorInPockets(void *, u32);
+    BOOL moveCursorByPad(u32, u32);
+    void moveCursorOnTabs(u32, u32);
+    void moveCursorOnButtons(u32);
+    void moveCursorInBox(u32, u32);
+    void moveCursorInPockets(u32, u32);
     void startExchange(u32);
     void startPutDown(u32);
     void startPickUp();
@@ -289,7 +277,7 @@ BOOL ChestMenu::onDraw() {
     }
     nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&cursor)->drawWrapped();
+        cursor.drawWrapped();
     }
     ChestMenu_DrawHeldItem(this);
     if (testFlags(0x80)) {
@@ -415,7 +403,7 @@ void ChestMenu::transitionAct03() {
         clearFlags(0x40);
         if (heldKind != 0 && MenuCtrl_IsButtons()) {
             if (cursorSlot < 0x1e || cursorSlot > 0x23) {
-                ((HandCursor *)&cursor)->setAnimAtEnd(4);
+                cursor.setAnimAtEnd(4);
             }
             cursor.update();
             ChestMenu_TrackCursor(this);
@@ -503,7 +491,7 @@ void ChestMenu::initMembers() {
     heldKind = 0;
     cursorSlot = 0;
     numTextLabels = 0;
-    MI_CpuCopy8((void *)ChestStorage_GetItems(PlayerData_GetDresser(PlayerData_GetCurrent())), storageItems, 0xb4);
+    MI_CpuCopy8((void *)ChestStorage_GetItems((u16 *)PlayerData_GetDresser(PlayerData_GetCurrent())), storageItems, 0xb4);
     MenuCtrl_BackupPockets();
     currentPage = 0;
 }
@@ -559,14 +547,14 @@ void ChestMenu::loadTopBg() {
 
 void ChestMenu::loadPage() {
     char buf[0x24];
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Str_SPrintf(buf, "menu/inventory/ten%d.bpl", currentPage);
     Gfx2d_LoadPaletteFile(buf, h, 4, 3, 3, 5);
     InventoryItemGrid_LoadBox(&itemGrid, ChestMenu_GetPageItems(this));
 }
 
 void ChestMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
+    InventoryBg_LoadObjGraphics();
 }
 
 void ChestMenu::mainAct00() {
@@ -620,7 +608,7 @@ void ChestMenu::mainAct02() {
                     if (q == 0) {
                         ChestMenu_FlyHeldToFreeSlot(this, pickUpSlot, a);
                     } else {
-                        Inventory_PlayPutDownSe(q);
+                        Inventory_PlayPutDownSe();
                         ChestMenu_ResumeInput(this);
                     }
                 }
@@ -639,7 +627,7 @@ void ChestMenu::mainAct03() {
         nameBalloon.hide(1);
     } else {
         u32 v = takeRepeatedKeys();
-        if (moveCursorByPad((void *)v, 0)) {
+        if (moveCursorByPad(v, 0)) {
             ChestMenu_UpdateNameBalloon(this);
             ChestMenu_MoveCursorToTarget(this);
             nameBalloon.hide(0);
@@ -695,7 +683,7 @@ void ChestMenu::mainAct04() {
         confirm(0);
     } else {
         u32 v = takeRepeatedKeys();
-        if (moveCursorByPad((void *)v, 1)) {
+        if (moveCursorByPad(v, 1)) {
             ChestMenu_UpdateNameBalloon(this);
             ChestMenu_MoveCursorToTarget(this);
             nameBalloon.hide(0);
@@ -717,7 +705,7 @@ void ChestMenu::mainAct04() {
                 u32 t;
                 if (ChestMenu_IsBoxSlot(this, pickUpSlot) && (t = pickUpPage, t != currentPage)) {
                     ChestMenu_StartFlyHeldItem(this, (u8)(t + 0x1e), 4);
-                } else if (((HandCursor *)&cursor)->getAnim() == 1) {
+                } else if (cursor.getAnim() == 1) {
                     ChestMenu_StartFlyHeldItem(this, pickUpSlot, 4);
                 } else {
                     startPutDown(pickUpSlot);
@@ -733,7 +721,7 @@ void ChestMenu::mainAct04() {
 }
 
 void ChestMenu::updateCursorMove() {
-    if (!((MenuCursorBase *)&cursor)->isMoving()) {
+    if (!cursor.isMoving()) {
         setMainState(returnState);
         if ((u8)(returnState + 0xfd) <= 1) {
             ChestMenu_SetCursorSlot(this, cursorSlot);
@@ -744,7 +732,7 @@ void ChestMenu::updateCursorMove() {
 }
 
 void ChestMenu::updateCursorPress() {
-    if (((HandCursor *)&cursor)->isAnimDone()) {
+    if (cursor.isAnimDone()) {
         if (ChestMenu_IsTabSlot(this, cursorSlot)) {
             u32 v = (u8)(cursorSlot - 0x1e);
             if (v == currentPage) {
@@ -762,7 +750,7 @@ void ChestMenu::updateCursorPress() {
 }
 
 void ChestMenu::updateCursorRelease() {
-    if (((HandCursor *)&cursor)->isAnimDone()) {
+    if (cursor.isAnimDone()) {
         ChestMenu_RefreshCursor(this);
         if (heldKind == 1) {
             setMainState(4);
@@ -773,21 +761,21 @@ void ChestMenu::updateCursorRelease() {
 }
 
 void ChestMenu::mainAct08() {
-    if (((MenuCursorBase *)&cursor)->isGripping()) {
+    if (cursor.isGripping()) {
         ChestMenu_PickUpWithHand(this, cursorSlot);
         setMainState(9);
     }
 }
 
 void ChestMenu::mainAct09() {
-    if (((HandCursor *)&cursor)->isAnimDone()) {
+    if (cursor.isAnimDone()) {
         setMainState(returnState);
     }
     ChestMenu_TrackCursor(this);
 }
 
 void ChestMenu::mainAct0A() {
-    if (!((MenuCursorBase *)&cursor)->isGripping()) {
+    if (!cursor.isGripping()) {
         u32 a = actionSlot;
         if (cursorSlot == a) {
             ChestMenu_DropHeldItem(this, a);
@@ -803,7 +791,7 @@ void ChestMenu::mainAct0A() {
 }
 
 void ChestMenu::mainAct0B() {
-    if (!((MenuCursorBase *)&cursor)->func_ov002_022028fc()) {
+    if (!cursor.func_ov002_022028fc()) {
         ChestMenu_ExchangeHeldItem(this, actionSlot);
         setFlags(0x40);
         setMainState(0xc);
@@ -814,10 +802,10 @@ void ChestMenu::mainAct0B() {
 }
 
 void ChestMenu::mainAct0C() {
-    if (((HandCursor *)&cursor)->isAnimDone()) {
+    if (cursor.isAnimDone()) {
         setMainState(returnState);
     }
-    if (((MenuCursorBase *)&cursor)->isGripping()) {
+    if (cursor.isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();
@@ -844,7 +832,7 @@ void ChestMenu::mainAct0D() {
 void ChestMenu::mainAct0E() {
     if (errorMessage.update(1)) {
         setMainState(returnState);
-        ((HandCursor *)&cursor)->enableObjWindow();
+        cursor.enableObjWindow();
     }
 }
 
@@ -1114,7 +1102,7 @@ s32 ChestMenu_GetSlotX(S *s, u32 a)
         return 0xc4;
     }
     if (ChestMenu_IsTabSlot(s, a)) {
-        return Oam_GetObjX(&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x80;
+        return Oam_GetObjX(&sChestPageTabSprites[(a - 0x1e) * 3].a) + 0x80;
     }
     return 0;
 }
@@ -1128,7 +1116,7 @@ s32 ChestMenu_GetSlotY(S *s, u32 a)
         return 0x70;
     }
     if (ChestMenu_IsTabSlot(s, a)) {
-        return Oam_GetObjY(&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x68;
+        return Oam_GetObjY((s8 *)&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x68;
     }
     return 0;
 }
@@ -1242,12 +1230,12 @@ void ChestMenu_PlaceNameBalloon(S *s)
         b -= 8;
     }
     if (b < -0x5c) {
-        ((LabelBalloon *)&s->nameBalloon)->setPopDownward();
+        s->nameBalloon.setPopDownward();
         b = ChestMenu_GetSlotY(s, s->balloonSlot) - 0x50;
     } else {
-        ((LabelBalloon *)&s->nameBalloon)->setPopUpward();
+        s->nameBalloon.setPopUpward();
     }
-    ((LabelBalloon *)&s->nameBalloon)->setPos(a, b);
+    s->nameBalloon.setPos(a, b);
     if (ChestMenu_IsPocketSlot(s, s->balloonSlot) || ChestMenu_IsBoxSlot(s, s->balloonSlot)) {
         u32 t = ChestMenu_ToGridSlot(s, s->balloonSlot);
         InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
@@ -1288,9 +1276,9 @@ void ChestMenu_TrackTouch(S *s)
 
 void ChestMenu_TrackCursor(S *s)
 {
-    s->heldX = ((MenuCursorBase *)&s->cursor)->getFrameScreenX() - 2;
-    s->heldY = ((MenuCursorBase *)&s->cursor)->getFrameScreenY() - 4;
-    if (((HandCursor *)&s->cursor)->getAnim() == 1) {
+    s->heldX = s->cursor.getFrameScreenX() - 2;
+    s->heldY = s->cursor.getFrameScreenY() - 4;
+    if (s->cursor.getAnim() == 1) {
         s->heldY -= 0x16;
     }
 }
@@ -1335,11 +1323,11 @@ void ChestMenu_ShowCursor(S *s)
 {
     s32 a = ChestMenu_GetCursorTargetX(s);
     s32 b = ChestMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    s->cursor.warpTo(a, b);
     if (ChestMenu_IsButtonSlot(s, s->cursorSlot)) {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+        s->cursor.setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+        s->cursor.setAnimIfChanged(1);
     }
     ChestMenu_RefreshCursor(s);
 }
@@ -1363,7 +1351,7 @@ s32 ChestMenu_GetCursorTargetY(S *s)
 
 void ChestMenu_HideCursor(S *s)
 {
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
+    s->cursor.setAnimIfChanged(0);
     s->cursor.update();
 }
 
@@ -1372,12 +1360,12 @@ void ChestMenu_MoveCursorToTarget(S *s)
     if (s->testFlags(8)) {
         s32 a = ChestMenu_GetCursorTargetX(s);
         s32 b = ChestMenu_GetCursorTargetY(s);
-        ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+        s->cursor.warpTo(a, b);
         s->clearFlags(8);
     } else {
         s32 a = ChestMenu_GetCursorTargetX(s);
         s32 b = ChestMenu_GetCursorTargetY(s);
-        ((MenuCursorBase *)&s->cursor)->moveToEase(a, b, 3, 1);
+        s->cursor.moveToEase(a, b, 3, 1);
         s->returnState = s->mainState;
         s->setMainState(5);
         if (s->testFlags(0x100)) {
@@ -1390,29 +1378,29 @@ void ChestMenu_MoveCursorToTarget(S *s)
 // ---- free functions (plain symbols)
 void ChestMenu_RefreshCursor(S *s)
 {
-    ((MenuCursorBase *)&s->cursor)->setPoseIdle();
+    s->cursor.setPoseIdle();
     s->cursor.update();
 }
 
 void ChestMenu::pressCursor() {
-    ((MenuCursor *)&cursor)->setPosePress();
+    cursor.setPosePress();
     setMainState(6);
 }
 
 void ChestMenu::releaseCursor() {
-    ((MenuCursorBase *)&cursor)->setPoseRelease();
+    cursor.setPoseRelease();
     setMainState(7);
 }
 
 void ChestMenu::startPickUp() {
-    ((MenuCursor *)&cursor)->setAnimIfChanged(4);
+    cursor.setAnimIfChanged(4);
     setMainState(8);
 }
 
 void ChestMenu::startPutDown(u32 v) {
     nameBalloon.hide(1);
     actionSlot = v;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
+    cursor.setAnimIfChanged(5);
     setMainState(0xa);
 }
 
@@ -1420,11 +1408,11 @@ void ChestMenu::startExchange(u32 v) {
     nameBalloon.hide(1);
     returnState = mainState;
     actionSlot = v;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
+    cursor.setAnimIfChanged(6);
     setMainState(0xb);
 }
 
-void ChestMenu::moveCursorInPockets(void *pad, u32 b) {
+void ChestMenu::moveCursorInPockets(u32 pad, u32 b) {
     s32 col = cursorSlot;
     s32 row = 0;
     while (col >= 5) {
@@ -1476,7 +1464,7 @@ next:
     }
 }
 
-void ChestMenu::moveCursorInBox(void *pad, u32 b) {
+void ChestMenu::moveCursorInBox(u32 pad, u32 b) {
     s32 col = cursorSlot - 0xf;
     s32 row = 0;
     while (col >= 5) {
@@ -1550,7 +1538,7 @@ next:
     }
 }
 
-void ChestMenu::moveCursorOnButtons(void *pad) {
+void ChestMenu::moveCursorOnButtons(u32 pad) {
     if (MenuKeys_HasUp(pad)) {
         cursorSlot = 0x21;
     }
@@ -1562,7 +1550,7 @@ void ChestMenu::moveCursorOnButtons(void *pad) {
     }
 }
 
-void ChestMenu::moveCursorOnTabs(void *pad, u32 b) {
+void ChestMenu::moveCursorOnTabs(u32 pad, u32 b) {
     s32 col = cursorSlot - 0x1e;
     s32 row = 0;
     while (col >= 3) {
@@ -1598,7 +1586,7 @@ void ChestMenu::moveCursorOnTabs(void *pad, u32 b) {
     }
 }
 
-BOOL ChestMenu::moveCursorByPad(void *pad, u32 b) {
+BOOL ChestMenu::moveCursorByPad(u32 pad, u32 b) {
     u8 old = cursorSlot;
     clearFlags(0x30);
     clearFlags(0x100);
@@ -1611,7 +1599,7 @@ BOOL ChestMenu::moveCursorByPad(void *pad, u32 b) {
         moveCursorInBox(pad, b);
         if (b == 1) {
             if (ChestMenu_IsTabSlot(this, cursorSlot)) {
-                ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+                cursor.setAnimIfChanged(1);
             }
         }
     } else if (ChestMenu_IsButtonSlot(this, cursorSlot)) {
@@ -1620,15 +1608,15 @@ BOOL ChestMenu::moveCursorByPad(void *pad, u32 b) {
         moveCursorOnTabs(pad, b);
         if (b == 1) {
             if (!ChestMenu_IsTabSlot(this, cursorSlot)) {
-                ((HandCursor *)&cursor)->setAnimAtEnd(4);
+                cursor.setAnimAtEnd(4);
             }
         }
     }
     if (ChestMenu_IsButtonSlot(this, cursorSlot) != ChestMenu_IsButtonSlot(this, old)) {
         if (ChestMenu_IsButtonSlot(this, cursorSlot)) {
-            ((MenuCursor *)&cursor)->switchToAnim07();
+            cursor.switchToAnim07();
         } else {
-            ((MenuCursor *)&cursor)->switchToAnim01();
+            cursor.switchToAnim01();
         }
         setFlags(0x100);
     }
@@ -1675,14 +1663,13 @@ void ChestMenu::confirm(s32 v) {
     setMainState(0xf);
     setOkLabel(1);
     MenuCtrl_SetResult(1);
-    MI_CpuCopy8(storageItems, (u8 *)ChestStorage_GetItems(PlayerData_GetDresser(PlayerData_GetCurrent())), 0xb4);
+    MI_CpuCopy8(storageItems, (u8 *)ChestStorage_GetItems((u16 *)PlayerData_GetDresser(PlayerData_GetCurrent())), 0xb4);
 }
 
 void ChestMenu::drawPageTabs() {
     u32 p0 = boxSlideY + 0x60;
     s32 i = 0, j = 0;
     s32 m = -1;
-    u32 z0 = 0, z1 = 0, z2 = 0;
     do {
         u32 p;
         u32 q;
@@ -1693,9 +1680,9 @@ void ChestMenu::drawPageTabs() {
             p = p0;
             q = 5;
         }
-        Oam_DrawObj(1, &sChestPageTabSprites[j], 0x80, p, m, 1, z0);
-        Oam_DrawObj(1, &sChestPageTabSprites[j + 1], 0x80, p, q, 1, z1);
-        Oam_DrawObj(1, &sChestPageTabSprites[j + 2], 0x80, p0, m, 1, z2);
+        Oam_DrawObj(1, &sChestPageTabSprites[j], 0x80, p, m, 1, NULL);
+        Oam_DrawObj(1, &sChestPageTabSprites[j + 1], 0x80, p, q, 1, NULL);
+        Oam_DrawObj(1, &sChestPageTabSprites[j + 2], 0x80, p0, m, 1, NULL);
         i++;
         j += 3;
     } while (i < 6);

@@ -19,23 +19,17 @@
 #include "save/PatternOrder.h"
 #include "talk/EncodedString16Buf.h"
 #include "talk/LabelBalloonText.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_AllocTail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuScreen_UploadClothPattern  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sDesignTabIconCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sDesignTabTargetFrameCells  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034048.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206db88.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
@@ -47,171 +41,39 @@
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov121/unk_ov121_02292360.h"
 
-#define func_020624c0 _ZN18EncodedString16BufD1Ev
-#define func_02062510 _ZN18EncodedString16BufC1Ev
-#define PatternOrder_getSlot _ZN12PatternOrder7getSlotEj
-#define PatternOrder_swap _ZN12PatternOrder4swapEjj
-#define PlayerPatterns_getPatternOrder _ZN14PlayerPatterns15getPatternOrderEv
-#define PlayerPatterns_getPatternByOrder _ZN14PlayerPatterns17getPatternByOrderEj
-#define Pattern_getInfo _ZN7Pattern7getInfoEv
-#define Pattern_getPixels _ZN7Pattern9getPixelsEv
-#define PatternInfo_getTitleEncoded _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf
-#define PatternInfo_getPaletteData _ZN11PatternInfo14getPaletteDataEv
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
-#define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
-#define func_02089f30 _ZN16LabelBalloonTextD1Ev
-#define func_02089f44 _ZN16LabelBalloonTextC1Ev
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define HandCursor_getAnim _ZN10HandCursor7getAnimEv
-#define HandCursor_setAnimAtEnd _ZN10HandCursor12setAnimAtEndEi
-#define PlayerData_getInventoryBackground _ZN10PlayerData22getInventoryBackgroundEv
-#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
-#define PlayerData_setHat _ZN10PlayerData6setHatEPt
-#define PlayerData_getHat _ZN10PlayerData6getHatEv
-#define PlayerData_setShirt _ZN10PlayerData8setShirtEPt
-#define PlayerData_getShirt _ZN10PlayerData8getShirtEv
-#define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
-#define PlayerData_getIndex _ZN10PlayerData8getIndexEv
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define TouchPromptBalloon_setAutoCloseTimer _ZN18TouchPromptBalloon17setAutoCloseTimerEh
-#define TouchPromptBalloon_cancelQueuedOpen _ZN18TouchPromptBalloon16cancelQueuedOpenEv
-#define TouchPromptBalloon_queueOpen _ZN18TouchPromptBalloon9queueOpenEv
-#define TouchPromptBalloon_commitOpen _ZN18TouchPromptBalloon10commitOpenEv
-#define TouchPromptBalloon_hide _ZN18TouchPromptBalloon4hideEi
-#define TouchPromptBalloon_updatePrompt _ZN18TouchPromptBalloon12updatePromptEv
-#define PopupChoiceMenuBody_getRowY _ZN19PopupChoiceMenuBody7getRowYEi
-#define PopupChoiceMenuBody_getRowX _ZN19PopupChoiceMenuBody7getRowXEv
-#define PopupChoiceMenuBody_hitTestRowOrLast _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii
-#define PopupChoiceMenuBody_setRowsFromIds _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi
-#define PopupChoiceMenuBody_isClosed _ZN19PopupChoiceMenuBody8isClosedEv
-#define PopupChoiceMenuBody_isOpen _ZN19PopupChoiceMenuBody6isOpenEv
-#define PopupChoiceMenu_placeAt _ZN15PopupChoiceMenu7placeAtEii
-#define PopupChoiceMenu_init _ZN15PopupChoiceMenu4initEiiPKc
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define MenuCursorBase_getScreenX _ZN14MenuCursorBase10getScreenXEv
-#define MenuCursorBase_getFrameScreenY _ZN14MenuCursorBase15getFrameScreenYEv
-#define MenuCursorBase_getFrameScreenX _ZN14MenuCursorBase15getFrameScreenXEv
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_isGripping _ZN14MenuCursorBase10isGrippingEv
-#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
-#define MenuCursorBase_moveToLinear _ZN14MenuCursorBase12moveToLinearEiii
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_switchToAnim0D _ZN10MenuCursor14switchToAnim0DEv
-#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuErrorMessage_update _ZN16MenuErrorMessage6updateEi
-#define MenuErrorMessage_open _ZN16MenuErrorMessage4openEPhij
-#define func_ov090_02291d2c _ZN14LetterViewMenu14execTransitionEv
-#define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
 
 extern "C" {
 extern CommManager *gCommManager;
 extern u8 gU8None;
 extern u8 gFieldSceneKind;
 extern u16 gPad[];
-extern u32 *gCurrentHeap;
 
-// main / runtime functions that are methods of other modules' classes, called with the object first
-void func_020624c0(void *p);
-void func_02062510(void *p);
-u32 PatternOrder_getSlot(void *p, u32 i);
-void PatternOrder_swap(void *p, u32 a, u32 b);
-void *PlayerPatterns_getPatternOrder(void *p);
-void *PlayerPatterns_getPatternByOrder(void *p, u32 i);
-void *Pattern_getInfo(void *p);
-s32 Pattern_getPixels(void *p);
-s32 PatternInfo_getPaletteData(void *p);
-void PatternInfo_getTitleEncoded(void *p, void *q);
-BOOL CommManager_isOnline(void *p);
-void LabelBalloon_setText(void *p, void *q);
-void LabelBalloon_setPos(void *p, s32 a, s32 b);
-void func_02089f30(void *p);
-void func_02089f44(void *p);
-BOOL HandCursor_isAnimDone(void *p);
-BOOL HandCursor_getAnim(void *p);
-void HandCursor_setAnimAtEnd(void *p, s32 v);
-void *PlayerData_getInventoryBackground(void *p);
-void *PlayerData_getPatterns(void *p);
-void PlayerData_setHat(void *p, u16 *v);
-u16 *PlayerData_getHat(void *p);
-void PlayerData_setShirt(void *p, u16 *v);
-u16 *PlayerData_getShirt(void *p);
-u16 *PlayerData_getHeldItem(void *p);
-s32 PlayerData_getIndex(void *p);
-void BgVramTask_cancel(void *p);
-
-s32 StrBuf_GameToAscii(void *p, void *q);
-s32 FieldAction_RequestDrop(u32 p, u32 a);
-s32 MenuScreen_UploadClothPattern(u16 *a, void *b, void *c, void *d);
+s32 FieldAction_RequestDrop(s32 a, u16 b);
+s32 FieldAction_PollDrop(s32 idx);
+void FieldAction_Release(s32 i);
 void MI_CpuCopy8(const void *a, void *b, u32 n);
-s32 Camera_IsViewPushed();
-s32 Camera_PopView();
-s32 Camera_PushView();
-s32 FieldAction_PollDrop(s32 h);
-void FieldAction_Release(s32 h);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void MIi_CpuCopy16(s32 a, void *b, s32 c);
+BOOL Camera_IsViewPushed();
+BOOL Camera_PopView();
+BOOL Camera_PushView();
+void MIi_CpuCopy16(const void *src, void *dst, u32 n);
 BOOL Scene_InHouseRoom();
-void *Heap_AllocTail(void *a, s32 b);
-void Heap_Free(void *a, void *b);
-
-// ov002 / ov004 / ov090 (methods reached as free functions, or plain functions)
-u8 PopupChoice_DecideCancel(void *p, s32 v);
-void PopupChoice_DecideRow(void *p, s32 a, s32 b);
-void PopupChoice_ForceClose(void *p);
-void PopupChoice_Draw(void *p);
-void PopupChoice_Update(void *p);
-void PopupChoice_LoadChoiceBg(void *p);
-void PopupChoice_Close(void *p, u32 a);
-void PopupChoice_Open(void *p, u32 a);
-BOOL PopupChoice_TickDecideDelay(void *p);
-BOOL PopupChoice_MoveCursor(void *p, s32 a, u8 *pos, u32 n);
-
-void TouchPromptBalloon_setAutoCloseTimer(void *p, u32 a);
-void TouchPromptBalloon_cancelQueuedOpen(void *p);
-void TouchPromptBalloon_queueOpen(void *p);
-void TouchPromptBalloon_commitOpen(void *p);
-void TouchPromptBalloon_hide(void *p, s32 a);
-BOOL TouchPromptBalloon_updatePrompt(void *p);
-s32 PopupChoiceMenuBody_getRowY(void *p, s32 a);
-s32 PopupChoiceMenuBody_getRowX(void *p);
-s32 PopupChoiceMenuBody_hitTestRowOrLast(void *p, s32 a, s32 b);
-void PopupChoiceMenuBody_setRowsFromIds(void *p, void *q, s32 a);
-BOOL PopupChoiceMenuBody_isClosed(void *p);
-BOOL PopupChoiceMenuBody_isOpen(void *p);
-void PopupChoiceMenu_placeAt(void *p, s32 a, s32 b);
-void PopupChoiceMenu_init(void *p, s32 a, s32 b, const char *c);
-void MenuCursorBase_drawWrapped(void *p);
-s32 MenuCursorBase_getScreenX(void *p);
-BOOL MenuCursorBase_isMoving(void *p);
-s32 MenuCursorBase_getFrameScreenY(void *p);
-s32 MenuCursorBase_getFrameScreenX(void *p);
-BOOL MenuCursorBase_isGripping(void *p);
-void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, s32 c, s32 d);
-void MenuCursorBase_moveToLinear(void *p, s32 a, s32 b, s32 c);
-void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
-void MenuCursorBase_setPoseIdle(void *p);
-void MenuCursorBase_setPoseRelease(void *p);
-void MenuCursor_setPosePress(void *p);
-void MenuCursor_switchToAnim0D(void *p);
-void MenuCursor_switchToAnim01(void *p);
-void MenuCursor_setAnimIfChanged(void *p, s32 v);
-BOOL MenuErrorMessage_update(void *p, s32 a);
-void MenuErrorMessage_open(void *p, u8 *q, u32 a, u32 b);
-
+// FtrMgr_FindPlacementMyDesign* (src/ov004/unk_ov004_02233074.cpp, defined by a macro)
 s32 FtrMgr_FindPlacementMyDesignA(u32 *out, u32 a, u32 b);
 s32 FtrMgr_FindPlacementMyDesignD(u32 *out, u32 a, u32 b);
 s32 FtrMgr_FindPlacementMyDesignC(u32 *out, u32 a, u32 b);
 s32 FtrMgr_FindPlacementMyDesignB(u32 *out, u32 a, u32 b);
 
-void func_ov090_02291d2c(void *p);
-void MenuTabBar_selectTab(void *p, u32 b);
+// the popup choice menu's functions (src/ov002/unk_ov002_022013ac.cpp; they take the menu first)
+u8 PopupChoice_DecideCancel(PopupChoiceMenu *p, s32 v);
+void PopupChoice_DecideRow(PopupChoiceMenu *p, s32 a, s32 b);
+void PopupChoice_ForceClose(PopupChoiceMenu *p);
+void PopupChoice_Draw(PopupChoiceMenu *p);
+void PopupChoice_Update(PopupChoiceMenu *p);
+void PopupChoice_LoadChoiceBg(PopupChoiceMenu *p);
+void PopupChoice_Close(PopupChoiceMenu *p, s32 a);
+void PopupChoice_Open(PopupChoiceMenu *p, s32 a);
+BOOL PopupChoice_TickDecideDelay(PopupChoiceMenu *p);
+BOOL PopupChoice_MoveCursor(PopupChoiceMenu *p, s32 a, u8 *pos, u32 n);
 
 extern const u8 sDesignTabTabDownSlot[];
 extern const u16 sDesignTabTargetTileX[];
@@ -219,8 +81,6 @@ extern const u16 sDesignTabTargetTileY[];
 extern const u8 sDesignTabSlotY[];
 extern const u8 sDesignTabSlotX[];
 extern const u8 sDesignTabPopupChoices[][0xb];
-extern GXOamAttr sDesignTabIconCell;
-extern u32 sDesignTabTargetFrameCells[];
 }
 
 // ---- external classes (real names from symbols.txt), sized for the sub-objects ----
@@ -261,11 +121,11 @@ public:
     u32 getWornItem(s32 k);
     void updateTargetBlink();
     void startTargetBlink(u32 v);
-    BOOL moveCursorByPad(void *pad, u32 f);
-    void moveCursorVertical(void *pad, u32 f);
+    BOOL moveCursorByPad(u32 pad, u32 f);
+    void moveCursorVertical(u32 pad, u32 f);
     void moveCursorFromTab(u32 idx);
     void moveCursorToTabs();
-    BOOL moveCursorHorizontal(void *pad, u32 f);
+    BOOL moveCursorHorizontal(u32 pad, u32 f);
     s32 getCursorTab();
     BOOL cursorRowDown(u32 lo, u32 hi, u32 v);
     BOOL cursorRowUp(u32 lo, u32 hi, u32 v);
@@ -360,7 +220,7 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u8 *slideY;
+    /* 0x94 */ s32 slideY;
     /* 0x98 */ s32 dropRequest;
     /* 0x9c */ u32 disabledTargets;
     /* 0xa0 */ u16 designItem;
@@ -381,7 +241,7 @@ public:
     /* 0xb5 */ u8 blinkTarget;
     /* 0xb6 */ u8 blinkTimer;
     /* 0xb7 */ u8 equipPart;
-    /* 0xb8 */ u8 clothPalette[0xd8 - 0xb8];
+    /* 0xb8 */ u16 clothPalette[0x10];
     /* 0xd8 */ u8 clothImage[0x2d8 - 0xd8];
     /* 0x2d8 */ TouchPromptBalloon nameBalloon;
     /* 0x398 */ MenuCursorBuf0 cursor;
@@ -390,7 +250,7 @@ public:
     /* 0x7f8 */ PopupChoiceIdList choiceList;
     /* 0x803 */ u8 pad_803[1];
     /* 0x804 */ BgVramTaskPair bgTasks[2];
-    /* 0x874 */ u8 mainScreen[0x1074 - 0x874];
+    /* 0x874 */ u16 mainScreen[0x400];
     /* 0x1074 */ u8 slotIcons[8];
 };
 
@@ -434,13 +294,13 @@ BOOL DesignTab::onCreate() {
 }
 
 BOOL DesignTab::onDelete() {
-    func_ov090_02291d2c(ProcBase_GetParent(this));
+    ((MenuTabBar *)ProcBase_GetParent(this))->onTabMenuClosed();
     releaseResources();
     return TRUE;
 }
 
 BOOL DesignTab::onDraw() {
-    u8 *p = slideY;
+    s32 p = slideY;
     u32 i;
     s32 j;
     s32 *zero = 0;
@@ -465,19 +325,19 @@ BOOL DesignTab::onDraw() {
     }
     if (testFlags(8)) {
         u8 k = targetSlot;
-        s32 y = (s32)(p + getSlotY(k));
+        s32 y = p + getSlotY(k);
         s32 x = getSlotX(k);
-        Oam_DrawCell(1, sDesignTabTargetFrameCells, x, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (GXOamAttr *)sDesignTabTargetFrameCells, x, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     i = 0;
     for (j = 0; j < 8; j++) {
         if (testFlags(4) && i == heldSlot) {
         } else {
-            u8 *e = (u8 *)this + j;
-            sDesignTabIconCell.attr2 = (sDesignTabIconCell.attr2 & 0xfffffc00) | (u16)(e[0x1074] * 4 + 0xc0) & 0x3ff;
+            u8 icon = slotIcons[j];
+            sDesignTabIconCell.attr2 = (sDesignTabIconCell.attr2 & 0xfffffc00) | (u16)(icon * 4 + 0xc0) & 0x3ff;
             s32 y, pal;
-            pal = e[0x1074] + 4;
-            y = (s32)(p + getSlotY(i));
+            pal = icon + 4;
+            y = p + getSlotY(i);
             s32 x = getSlotX(i);
             Oam_DrawObj(1, &sDesignTabIconCell, x, y, pal, 2, zero);
         }
@@ -579,11 +439,11 @@ BOOL DesignTab::handleTabSwitch() {
 }
 
 BOOL DesignTab::requestTab(s32 a) {
-    void *r = ProcBase_GetParent(this);
+    MenuTabBar *r = (MenuTabBar *)ProcBase_GetParent(this);
     s32 m = -1;
     if (a == m) goto fail;
     if (a == 1) goto fail;
-    ((MenuTabBar *)(r))->selectTab((u8)a);
+    r->selectTab((u8)a);
     transitionState = 2;
     setPhase(1);
     ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
@@ -605,7 +465,7 @@ void DesignTab::stateOpen() {
     setTransitionState(1);
     setFlags(1);
     applySlideOffset(6, 0, 0);
-    slideY = (u8 *)getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void DesignTab::stateOpening() {
@@ -614,7 +474,7 @@ void DesignTab::stateOpening() {
         resumeInput();
     }
     applySlideOffset(6, 0, 0);
-    slideY = (u8 *)getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void DesignTab::stateClose() {
@@ -622,7 +482,7 @@ void DesignTab::stateClose() {
     beginSubSlideOut(8, 0, 0, 0x30);
     setTransitionState(3);
     applySlideOffset(6, 0, 0);
-    slideY = (u8 *)getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void DesignTab::stateClosing() {
@@ -631,7 +491,7 @@ void DesignTab::stateClosing() {
         setPhase(5);
     } else {
         applySlideOffset(6, 0, 0);
-        slideY = (u8 *)getSlideOffsetY();
+        slideY = getSlideOffsetY();
     }
 }
 
@@ -685,8 +545,8 @@ BOOL DesignTab::canDecorateRoom() {
 
 void DesignTab::releaseResources() {
     PopupChoice_ForceClose(&popup);
-    BgVramTask_cancel(&bgTasks[0]);
-    BgVramTask_cancel(&bgTasks[1]);
+    bgTasks[0].cancel();
+    bgTasks[1].cancel();
 }
 
 void DesignTab::preInputUpdate() {
@@ -703,7 +563,7 @@ void DesignTab::preStateUpdate() {}
 void DesignTab::postStateUpdate() {
     updateTargetBlink();
     if (testFlags(2)) {
-        if (((BgVramTask *)(&bgTasks[0]))->requestScreen(&mainScreen[0], 6, 0x800, 0)) {
+        if (((BgVramTask *)(&bgTasks[0]))->requestScreen(mainScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -719,10 +579,10 @@ void DesignTab::setupBgLayers() {
 }
 
 void DesignTab::loadBgGfx() {
-    u32 *r4 = gCurrentHeap;
+    Heap *r4 = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/desi/b_myd_bg.bpl", r4, 6, 1, 1, 7);
     Gfx2d_LoadCharFile("menu/desi/b_myd_bg.bch", r4, 6, 0x10, 0x10, 0xc5);
-    File_LoadToBuffer("menu/desi/b_myd_a_bg.bsc", &mainScreen[0], 0x800);
+    File_LoadToBuffer("menu/desi/b_myd_a_bg.bsc", mainScreen, 0x800);
     u32 i = 9;
     do {
         if (isTargetDisabled(i)) {
@@ -734,33 +594,33 @@ void DesignTab::loadBgGfx() {
 }
 
 void DesignTab::loadPatternIcons() {
-    u32 *r6;
-    void *r5;
+    Heap *r6;
+    u32 *r5;
     u32 n;
     u32 i;
-    s32 v;
+    PlayerPatterns *v;
     u32 k;
     r6 = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/desi/b_myd_obj.bch", r6, 8, 0x140, 0x140, 0x17f);
-    r5 = Heap_AllocTail(r6, 0x1000);
-    v = (s32)PlayerData_getPatterns(PlayerData_GetCurrent());
+    r5 = (u32 *)Heap_AllocTail(r6, 0x1000);
+    v = (PlayerPatterns *)PlayerData_GetCurrent()->getPatterns();
     i = 0;
     k = 4;
     do {
-        Gfx2d_LinearToTilesInRow32(Pattern_getPixels(((PlayerPatterns *)((void *)v))->getPatternByOrder(i)), r5, i << 2, k, k);
+        Gfx2d_LinearToTilesInRow32((u32 *)v->getPatternByOrder(i)->getPixels(), r5, i << 2, k, k);
         i = (u8)(i + 1);
     } while (i < 8);
-    Gfx2d_LoadCharRange(r5, 8, 0xc0, 0xc0, 0x13f);
+    Gfx2d_LoadCharRange((u8 *)r5, 8, 0xc0, 0xc0, 0x13f);
     Heap_Free(r6, r5);
-    void *r7 = Heap_AllocTail(r6, 0x120);
+    u8 *r7 = (u8 *)Heap_AllocTail(r6, 0x120);
     i = 0;
     n = i;
     do {
-        MIi_CpuCopy16(PatternInfo_getPaletteData(((Pattern *)(((PlayerPatterns *)((void *)v))->getPatternByOrder(n)))->getInfo()), (u8 *)r7 + i * 2, 0x20);
+        MIi_CpuCopy16(v->getPatternByOrder(n)->getInfo()->getPaletteData(), r7 + i * 2, 0x20);
         i += 0x10;
         n = (u8)(n + 1);
     } while (n < 8);
-    File_LoadToBuffer("menu/desi/b_myd_obj.bpl", (u8 *)r7 + i * 2, 0x20);
+    File_LoadToBuffer("menu/desi/b_myd_obj.bpl", r7 + i * 2, 0x20);
     Gfx2d_LoadPaletteRange(r7, 8, 4, 4, 0xc);
     Heap_Free(r6, r7);
 }
@@ -864,7 +724,7 @@ void DesignTab::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
         ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
-    } else if (moveCursorByPad((void *)takeRepeatedKeys(), 0)) {
+    } else if (moveCursorByPad(takeRepeatedKeys(), 0)) {
         updateNameLabel();
         moveCursorToTarget();
         ((TouchPromptBalloon *)(&nameBalloon))->hide(0);
@@ -897,7 +757,7 @@ void DesignTab::updateCarry() {
     if (MenuCtrl_IsForceCloseDue()) {
         clearFlags(4);
         requestTab(7);
-    } else if (moveCursorByPad((void *)takeRepeatedKeys(), 1)) {
+    } else if (moveCursorByPad(takeRepeatedKeys(), 1)) {
         moveCursorToTarget();
     } else {
         if (gPad[1] & 1) {
@@ -1267,7 +1127,7 @@ void DesignTab::setPopupChoices(u32 i) {
 }
 
 u32 DesignTab::getPopupRowValue(u32 i) {
-    return ((u8 *)this + i)[0x7fd];
+    return choiceList.values[i];
 }
 
 void DesignTab::dropOnPlayerFigure() {
@@ -1289,7 +1149,7 @@ void DesignTab::dropOnPlayerFigure() {
         x = 0x12a8;
     }
     w = x;
-    MenuScreen_UploadClothPattern(&w, (void *)&bgTasks[1], clothImage, clothPalette);
+    MenuScreen_UploadClothPattern(&w, &bgTasks[1], clothImage, clothPalette);
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7)) {
         Pocket_AddItem((u16 *)&v, 0);
     }
@@ -1531,21 +1391,17 @@ void DesignTab::restoreCamera() {
 }
 
 void DesignTab::refreshNameLabel() {
-    u8 a[0x20];
-    u8 b[0x28];
     s32 x = getSlotY(balloonSlot);
     x -= 0x84;
     if (MenuCtrl_IsButtons()) {
         x -= 0xa;
     }
     ((LabelBalloon *)(&nameBalloon))->setPos(getSlotX(balloonSlot) - 0x78, x);
-    new (a) EncodedString16Buf();
-    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(PlayerData_GetCurrent()->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
-    new (b) LabelBalloonText();
-    StrBuf_GameToAscii(b, a);
-    ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)(b));
-    ((LabelBalloonText *)(b))->LabelBalloonText::~LabelBalloonText();
-    ((EncodedString16Buf *)(a))->EncodedString16Buf::~EncodedString16Buf();
+    EncodedString16Buf a;
+    ((PlayerPatterns *)PlayerData_GetCurrent()->getPatterns())->getPatternByOrder(balloonSlot)->getInfo()->getTitleEncoded(&a);
+    LabelBalloonText b;
+    StrBuf_GameToAscii((StrBuf *)&b, (StrBuf *)&a);
+    ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)&b);
 }
 
 void DesignTab::updateNameLabel() {
@@ -1735,7 +1591,7 @@ s32 DesignTab::getCursorTab() {
     return -1;
 }
 
-BOOL DesignTab::moveCursorHorizontal(void *pad, u32 f) {
+BOOL DesignTab::moveCursorHorizontal(u32 pad, u32 f) {
     if (MenuKeys_HasLeft(pad)) {
         if (cursorSlot == 8) {
             cursorSlot = 7;
@@ -1780,7 +1636,7 @@ void DesignTab::moveCursorFromTab(u32 idx) {
     ((MenuCursor *)(&cursor))->switchToAnim01();
 }
 
-void DesignTab::moveCursorVertical(void *pad, u32 f) {
+void DesignTab::moveCursorVertical(u32 pad, u32 f) {
     if (MenuKeys_HasUp(pad)) {
         if (cursorSlot == 8) {
             cursorSlot = 0;
@@ -1824,7 +1680,7 @@ void DesignTab::moveCursorVertical(void *pad, u32 f) {
     }
 }
 
-BOOL DesignTab::moveCursorByPad(void *pad, u32 f) {
+BOOL DesignTab::moveCursorByPad(u32 pad, u32 f) {
     u32 old = cursorSlot;
     clearFlags(0x60);
     if (!moveCursorHorizontal(pad, f)) {

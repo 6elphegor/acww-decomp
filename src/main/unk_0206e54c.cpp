@@ -888,7 +888,7 @@ extern "C" void *MenuCtrl_GetChatDraft(void) {
     return sChatDraft;
 }
 
-extern "C" void MenuCtrl_SetChatDraft(u32 a) {
+extern "C" void MenuCtrl_SetChatDraft(const u8 *a) {
     Mem_Copy(a, sChatDraft, 0x20);
 }
 

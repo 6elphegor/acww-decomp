@@ -4,11 +4,11 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ClockDateTime.h"
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
 #include "player/PlayerData.h"
 #include "ui/HandCursor.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -16,6 +16,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov134/unk_ov134_02291f60.h"
 #include "proto/ov137/unk_02295380.h"
 
@@ -28,27 +29,7 @@ extern const s32 sBirthdayCursorXTable[3];
 extern const s32 sBirthdayCursorYTable[3];
 extern u16 gPad[];
 
-
-void MenuButtons_LoadTextColors(void *self);
-
-// ov134 library object (class DateTimePicker): plain functions take the object first
-void DateTimePicker_Draw(void *self, s32 a, s32 b);
-void DateTimePicker_LoadObjGraphics(void *self);
-void DateTimePicker_DrawTitleAndFields(void *self, u32 a);
-void DateTimePicker_LoadBgGraphics(void *self);
-void DateTimePicker_GetDateTime(void *self, void *out);
-void DateTimePicker_EndFrame(void *self);
-void DateTimePicker_BeginFrame(void *self);
-void DateTimePicker_Shutdown(void *self);
-void DateTimePicker_Init(void *self, u32 a, u32 b, u32 c, u8 d);
 }
-
-
-
-
-
-
-
 
 class BirthdayMenu;
 typedef void (BirthdayMenu::*Unk_ov137_022962e0_Fn)();
@@ -167,7 +148,6 @@ BOOL BirthdayMenu::onDraw() {
     bottomButtons.drawAt(r2);
     return TRUE;
 }
-
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 sBirthdayCursorLeftTable[4];
@@ -323,7 +303,7 @@ void BirthdayMenu::loadBgGfx() {
 
 void BirthdayMenu::loadObjGfx() {
     DateTimePicker_LoadObjGraphics(&picker);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void BirthdayMenu::updateTouch() {
@@ -543,15 +523,15 @@ void BirthdayMenu::resumeInput() {
 }
 
 void BirthdayMenu::confirm() {
-    u32 w[2];
+    ClockDateTimeWords w;
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xb);
-    void *obj = PlayerData_GetCurrent();
-    w[0] = 0;
-    w[1] = 0;
-    DateTimePicker_GetDateTime(&picker, w);
-    ((PlayerData *)(obj))->setBirthday(((u8 *)w)[4], ((u8 *)w)[3]);
+    PlayerData *obj = PlayerData_GetCurrent();
+    w.words[0] = 0;
+    w.words[1] = 0;
+    DateTimePicker_GetDateTime(&picker, &w.dt);
+    obj->setBirthday(w.dt.month, w.dt.day);
 }
 
 void BirthdayMenu::openFieldList(u32 a) {

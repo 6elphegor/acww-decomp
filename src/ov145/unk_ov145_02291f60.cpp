@@ -17,62 +17,24 @@
 #include "save/MuseumData.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov145_02293820  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov145/unk_ov145_02291f60.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
 
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define HandCursor_getAnim _ZN10HandCursor7getAnimEv
-#define ScrollKnob_areAnimsDone _ZN10ScrollKnob12areAnimsDoneEv
-#define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define func_02133150 _s32_div_f
-#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
-#define MenuCursor_switchToAnim07 _ZN10MenuCursor14switchToAnim07Ev
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuScrollKnob_getGripY _ZN14MenuScrollKnob8getGripYEv
-#define MenuScrollKnob_getGripX _ZN14MenuScrollKnob8getGripXEv
-#define MenuScrollKnob_updateRelease _ZN14MenuScrollKnob13updateReleaseEv
-#define MenuScrollKnob_release _ZN14MenuScrollKnob7releaseEv
-#define MenuScrollKnob_grab _ZN14MenuScrollKnob4grabEv
-#define MenuScrollKnob_show _ZN14MenuScrollKnob4showEv
-#define MenuScrollKnob_hitTest _ZN14MenuScrollKnob7hitTestEii
-#define MenuBottomButtonsBody_getPressOffset _ZN21MenuBottomButtonsBody14getPressOffsetEv
-#define MenuBottomButtonsBody_stepPress _ZN21MenuBottomButtonsBody9stepPressEv
-#define MenuBottomButtonsBody_setSelected _ZN21MenuBottomButtonsBody11setSelectedEh
-#define MenuBottomButtonsBody_getTargetY _ZN21MenuBottomButtonsBody10getTargetYEi
-#define MenuBottomButtonsBody_getTargetX _ZN21MenuBottomButtonsBody10getTargetXEi
-#define MenuBottomButtonsBody_isTouched _ZN21MenuBottomButtonsBody9isTouchedEi
-#define MenuBottomButtons_setLayoutSingle05 _ZN17MenuBottomButtons17setLayoutSingle05Ei
-#define MenuBottomButtons_freeTexts _ZN17MenuBottomButtons9freeTextsEv
-#define MenuBottomButtons_drawAt _ZN17MenuBottomButtons6drawAtEi
-#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
-#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 
 
 // ---- main-module classes (copied from src/main) ----
@@ -93,60 +55,35 @@ class TextLabel;
 
 extern "C" {
 extern u8 gFieldSceneKind;
-extern u8 data_021ed0a0;
 extern u16 gPad[];
-extern void *gCurrentHeap;
 
-BOOL MuseumData_isDonated(void *a, void *b);
-s32 func_02133150(s32 a, s32 b);
-void ScrollKnob_moveTo(void *p, s32 a, s32 b);
-BOOL ScrollKnob_areAnimsDone(void *p);
-BOOL HandCursor_isAnimDone(void *p);
-BOOL HandCursor_getAnim(void *p);
-void Math_StepS32(void *p, s32 a, s32 b);
-void MenuButtons_LoadTextColors(void *p);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void BgVramTask_cancel(void *p);
-void MenuLauncher_onChildClosed(s32 self);
-void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void Menu_PlayScrollGrabSe(void *p);
-void Menu_PlayScrollTickSe(void *p);
-void MenuScrollKnob_grab(void *p);
-void MenuScrollKnob_show(void *p);
-void MenuScrollKnob_release(void *p);
-void MenuScrollKnob_updateRelease(void *p);
-void MenuCursorBase_setPoseRelease(void *p);
-void MenuCursor_setPosePress(void *p);
-void MenuCursorBase_setPoseIdle(void *p);
-void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, s32 c, s32 d);
-void MenuCursor_switchToAnim07(void *p);
-void MenuCursor_switchToAnim01(void *p);
-void MenuCursor_setAnimIfChanged(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetY(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetX(void *p, s32 a);
-void MenuBottomButtonsBody_setSelected(void *p, s32 a);
-s32 MenuScrollKnob_getGripY(void *p);
-s32 MenuScrollKnob_getGripX(void *p);
-void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
-BOOL MenuScrollKnob_hitTest(void *p, s32 a, s32 b);
-BOOL MenuCursorBase_isMoving(void *p);
-BOOL MenuBottomButtonsBody_stepPress(void *p);
-s32 MenuBottomButtonsBody_getPressOffset(void *p);
-BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
-void MenuBottomButtons_freeTexts(void *p);
-void MenuBottomButtons_setLayoutSingle05(void *p, s32 a);
-void MenuBottomButtons_drawAt(void *p, s32 a);
-void MenuCursorBase_drawWrapped(void *p);
+s32 _s32_div_f(s32 a, s32 b);
+// (proto/autoload_2/unk_020e7500.h conflicts with actor/Actor.h's List_Remove)
+BOOL Math_StepS32(s32 *p, s32 target, s32 step);
+extern MuseumData data_021ed0a0;  // gSaveData.museum
 }
 
 extern "C" ProcProfile sDonationMenuProfile = {(void *(*)())DonationMenu_Create, 0xba, 0xbe};
-extern "C" u32 data_ov145_02293820[32] = {0x20678026, 0x80c8, 0x678018, 0x80e8, 0x678008, 0x80e8, 0x6780f8, 0x80e8,
-                                          0x6780e8, 0x80e8, 0x6780d8, 0x80e8, 0x6780c8, 0x80e8, 0x6780ba, 0xffff80c8,
-                                          0x400d0045, 0x5106, 0x8005003d, 0xffff50c0, 0x41e80045, 0x5104, 0x81e0003d, 0xffff50c0,
-                                          0x41c40045, 0x50c6, 0x81bc003d, 0xffff50c0, 0x41a00045, 0x70c4, 0x8198003d, 0xffff70c0};
+extern "C" GXOamAttr data_ov145_02293820[16] = {
+    {0x20678026, 0xc8, 0, 0x8, 0x0},
+    {0x00678018, 0xe8, 0, 0x8, 0x0},
+    {0x00678008, 0xe8, 0, 0x8, 0x0},
+    {0x006780f8, 0xe8, 0, 0x8, 0x0},
+    {0x006780e8, 0xe8, 0, 0x8, 0x0},
+    {0x006780d8, 0xe8, 0, 0x8, 0x0},
+    {0x006780c8, 0xe8, 0, 0x8, 0x0},
+    {0x006780ba, 0xc8, 0, 0x8, 0xffff},
+    {0x400d0045, 0x106, 0, 0x5, 0x0},
+    {0x8005003d, 0xc0, 0, 0x5, 0xffff},
+    {0x41e80045, 0x104, 0, 0x5, 0x0},
+    {0x81e0003d, 0xc0, 0, 0x5, 0xffff},
+    {0x41c40045, 0xc6, 0, 0x5, 0x0},
+    {0x81bc003d, 0xc0, 0, 0x5, 0xffff},
+    {0x41a00045, 0xc4, 0, 0x7, 0x0},
+    {0x8198003d, 0xc0, 0, 0x7, 0xffff},
+};
 
 // ---- ov145 scene (vtable 0x022937c0), size 0x2188 ----
 class DonationMenu : public MenuProc {
@@ -261,14 +198,14 @@ public:
     /* 0x174 */ MenuBottomButtons bottomButtons;
     /* 0x2d8 */ LabelString textLabels[18];
     /* 0x758 */ BgVramTask vramTasks[3];
-    /* 0x7c4 */ u8 fossilItems[0x68];
-    /* 0x82c */ u8 fishItems[0x70];
-    /* 0x89c */ u8 insectItems[0x70];
-    /* 0x90c */ u8 paintingItems[0x28];
+    /* 0x7c4 */ u16 fossilItems[0x34];
+    /* 0x82c */ u16 fishItems[0x38];
+    /* 0x89c */ u16 insectItems[0x38];
+    /* 0x90c */ u16 paintingItems[0x14];
     /* 0x934 */ u16 shownRowItems[9];
-    /* 0x946 */ u8 rowTemplateScreen[0x800];
-    /* 0x1146 */ u8 listScreen[0x800];
-    /* 0x1946 */ u8 frameScreen[0x800];
+    /* 0x946 */ u16 rowTemplateScreen[0x400];
+    /* 0x1146 */ u16 listScreen[0x400];
+    /* 0x1946 */ u16 frameScreen[0x400];
     /* 0x2146 */ u16 basePalette[16];
     /* 0x2166 */ u16 workPalette[16];
 };
@@ -297,7 +234,7 @@ BOOL DonationMenu::onDelete() {
 
 BOOL DonationMenu::onDraw() {
     s32 i;
-    u8 *p;
+    GXOamAttr *p;
     s32 y;
     if (MenuCtrl_IsButtons()) {
         ((MenuCursorBase *)(&cursor))->drawWrapped();
@@ -312,7 +249,7 @@ BOOL DonationMenu::onDraw() {
         q->draw();
         Oam_DrawCell(1, data_ov145_02293820, 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
-    p = (u8 *)&data_ov145_02293820[16];
+    p = &data_ov145_02293820[8];
     for (i = 0; i < 4; i++) {
         s32 pal;
         if (i == targetTab) {
@@ -321,7 +258,7 @@ BOOL DonationMenu::onDraw() {
             pal = 5;
         }
         Oam_DrawCell(1, p, 0x80, y, pal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-        p += 0x10;
+        p += 2;
     }
     return TRUE;
 }
@@ -436,9 +373,9 @@ void DonationMenu::initDonation() {
 void DonationMenu::releaseResources() {
     resetTextLabels();
     ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
-    BgVramTask_cancel(&vramTasks[0]);
-    BgVramTask_cancel(&vramTasks[1]);
-    BgVramTask_cancel(&vramTasks[2]);
+    vramTasks[0].cancel();
+    vramTasks[1].cancel();
+    vramTasks[2].cancel();
 }
 
 void DonationMenu::preInputUpdate() {
@@ -455,9 +392,9 @@ void DonationMenu::postInputUpdate() {
 void DonationMenu::preStateUpdate() {
     resetTextLabels();
     ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
-    BgVramTask_cancel(&vramTasks[0]);
-    BgVramTask_cancel(&vramTasks[1]);
-    BgVramTask_cancel(&vramTasks[2]);
+    vramTasks[0].cancel();
+    vramTasks[1].cancel();
+    vramTasks[2].cancel();
     scrollKnob.update();
 }
 
@@ -484,11 +421,11 @@ void DonationMenu::loadBgGfx() {
     File_LoadToBuffer("menu/donation/bg_3.bpl", basePalette, 0x20);
     File_LoadToBuffer("menu/donation/b_bg.bsc", rowTemplateScreen, 0x800);
     File_LoadToBuffer("menu/donation/a_bg.bsc", frameScreen, 0x800);
-    Gfx2d_LoadScreen(frameScreen, 6, 0x800, 0);
+    Gfx2d_LoadScreen((u8 *)frameScreen, 6, 0x800, 0);
 }
 
 void DonationMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
     void *heap = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/donation/obj.bch", heap, 8, 0xc0, 0xc0, 0x13f);
     Gfx2d_LoadPaletteFile("menu/donation/obj.bpl", heap, 8, 4, 4, 9);
@@ -677,7 +614,7 @@ void DonationMenu::dragKnob(s32 a, s32 flag) {
     updateKnobPosition();
     s32 d = knobLastTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
         knobLastTickPos = knobPos;
     }
 }
@@ -703,7 +640,7 @@ void DonationMenu::moveKnobByKey() {
     if (old != knobPos) {
         syncScrollToKnob();
         updateKnobPosition();
-        Menu_PlayScrollTickSe(&scrollKnob);
+        Menu_PlayScrollTickSe();
     }
 }
 
@@ -722,7 +659,7 @@ void DonationMenu::updateKnobPosition() {
 void DonationMenu::syncScrollToKnob() {
     s32 t;
     s32 n = scrollMax;
-    t = func_02133150(knobPos * n, 0x78);
+    t = _s32_div_f(knobPos * n, 0x78);
     if (t < 0) {
         t = 0;
     }
@@ -735,7 +672,7 @@ void DonationMenu::syncScrollToKnob() {
 
 void DonationMenu::syncKnobToScroll() {
     if (scrollMax > 0) {
-        knobPos = func_02133150(scrollY * 0x78, scrollMax);
+        knobPos = _s32_div_f(scrollY * 0x78, scrollMax);
         updateKnobPosition();
     }
 }
@@ -746,7 +683,7 @@ s32 DonationMenu::collectDonated(u16 *out, s32 start, s32 n, s32 step) {
     s32 i;
     for (i = cnt; i < n; i++) {
         v = start;
-        if (((MuseumData *)(&data_021ed0a0))->isDonated((u16 *)(&v))) {
+        if (data_021ed0a0.isDonated(&v)) {
             out[cnt] = start;
             cnt++;
         }
@@ -764,19 +701,19 @@ s32 DonationMenu::collectDonatedFurniture(u16 *out, s32 start, s32 n) {
 }
 
 void DonationMenu::buildFossilList() {
-    tabCounts[3] = collectDonatedFurniture((u16 *)fossilItems, 0x450c, 0x34);
+    tabCounts[3] = collectDonatedFurniture(fossilItems, 0x450c, 0x34);
 }
 
 void DonationMenu::buildPaintingList() {
-    tabCounts[0] = collectDonatedFurniture((u16 *)paintingItems, 0x3894, 0x14);
+    tabCounts[0] = collectDonatedFurniture(paintingItems, 0x3894, 0x14);
 }
 
 void DonationMenu::buildFishList() {
-    tabCounts[1] = collectDonatedItems((u16 *)fishItems, 0x12e8, 0x38);
+    tabCounts[1] = collectDonatedItems(fishItems, 0x12e8, 0x38);
 }
 
 void DonationMenu::buildInsectList() {
-    tabCounts[2] = collectDonatedItems((u16 *)insectItems, 0x12b0, 0x38);
+    tabCounts[2] = collectDonatedItems(insectItems, 0x12b0, 0x38);
 }
 
 void DonationMenu::showCursor() {
@@ -903,8 +840,8 @@ void DonationMenu::drawEntryNames() {
                 w->copy(&b);
                 w2 = allocTextLabel();
                 s[1] = *list;
-                if (((MuseumData *)(&data_021ed0a0))->getDonorName(&a, (u16 *)(&s[1]))) {
-                    ((MsgString *)(w2))->copy((MsgString *)(&a));
+                if (data_021ed0a0.getDonorName(&a, &s[1])) {
+                    w2->copy(&a);
                 } else {
                     String_Load2dMenu(w2, 0xcc);
                 }
@@ -956,7 +893,7 @@ void DonationMenu::composeListScreen() {
     s32 i;
     MIi_CpuClear16(fill, listScreen, 0x800);
     for (i = 0; i < 9; i++) {
-        MIi_CpuCopy16(rowTemplateScreen + r6 * 0x80, listScreen + r4 * 0x80, 0x80);
+        MIi_CpuCopy16(&rowTemplateScreen[r6 * 0x40], &listScreen[r4 * 0x40], 0x80);
         r6++;
         if (r6 >= 9) {
             r6 = 0;
@@ -1000,7 +937,7 @@ s32 DonationMenu::getTabCount() {
 }
 
 u16 *DonationMenu::getTabItemPtr(s32 i) {
-    static u16 *tbl[4] = { (u16 *)paintingItems, (u16 *)fishItems, (u16 *)insectItems, (u16 *)fossilItems };
+    u16 *tbl[4] = {paintingItems, fishItems, insectItems, fossilItems};
     if (i < 0) {
         i = 0;
     }
@@ -1042,7 +979,7 @@ BOOL DonationMenu::activateTarget(u32 t) {
             return TRUE;
         case 5:
             ((MenuScrollKnob *)(&scrollKnob))->grab();
-            Menu_PlayScrollGrabSe(&scrollKnob);
+            Menu_PlayScrollGrabSe();
             setMainState(4);
             return TRUE;
         }

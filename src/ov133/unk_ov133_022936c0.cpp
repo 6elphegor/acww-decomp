@@ -13,9 +13,9 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCaretCells  // declared below: the shared prototype conflicts with the calls here
+#include "net/FriendEntry.h"
+#include "net/DwcFriendControl.h"
+#include "nitro/gxoam.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -28,6 +28,8 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/ov130/unk_ov130_02292360.h"
 #include "proto/ov133/unk_ov133_022936c0.h"
 
@@ -38,33 +40,12 @@ extern const u8 sFriendCodeTouchKeyMap[12];
 extern const s32 sFriendCodeCursorYTable[12];
 extern const u32 sKeyRowY[12];
 extern const s32 sFriendCodeCursorXTable[12];
-extern u32 sCaretCells[2];
 extern u8 gU8None;
 extern u16 gPad[];
 
-void *FriendList_GetEntries(void *p);
-BOOL DwcFriendData_Compare(u32 a, void *p);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void NumberPad_DrawKeypadFrame(s32 a);
-void MenuButtons_LoadTextColors(void *self);
-void _ZN14FriendCodeMenu12stateMessageEv();
-void _ZN14FriendCodeMenu10stateCloseEv();
-void _ZN14FriendCodeMenu12stateOpeningEv();
-void _ZN14FriendCodeMenu12stateClosingEv();
-void _ZN14FriendCodeMenu17updateCursorPressEv();
-void _ZN14FriendCodeMenu19updateCursorReleaseEv();
-void _ZN14FriendCodeMenu19stateRetryAddFriendEv();
-void _ZN14FriendCodeMenu9stateOpenEv();
-void _ZN14FriendCodeMenu9stateExitEv();
-void _ZN14FriendCodeMenu16stateCaretSelectEv();
-void _ZN14FriendCodeMenu20stateBackspaceRepeatEv();
-void _ZN14FriendCodeMenu17stateButtonRepeatEv();
-void _ZN14FriendCodeMenu9stateLoadEv();
-void _ZN14FriendCodeMenu16updateCursorMoveEv();
-void _ZN14FriendCodeMenu13updateButtonsEv();
-void _ZN14FriendCodeMenu19stateTouchDragCaretEv();
-void _ZN14FriendCodeMenu16stateTouchRepeatEv();
-void _ZN14FriendCodeMenu11updateTouchEv();
+// not in the shared headers (include/proto/.excluded)
+FriendEntry *FriendList_GetEntries(FriendEntry *p);
+BOOL DwcFriendData_Compare(DwcFriendData *self, void *src);
 }
 
 
@@ -82,13 +63,6 @@ extern "C" CommManager *gCommManager;
 
 
 
-// Local object with empty out-of-line ctor/dtor (func_02076f74 / func_02076f70)
-class DwcFriendData {
-public:
-    DwcFriendData();
-    ~DwcFriendData();
-    u32 v[3];
-};
 
 class FriendCodeMenu;
 typedef void (FriendCodeMenu::*Unk_ov133_022952bc_Fn)();
@@ -135,8 +109,8 @@ public:
     void cancel();
     void confirm();
     BOOL isOwnFriendCode();
-    BOOL isDuplicateFriend(u32 a);
-    void *getFriendEntry();
+    BOOL isDuplicateFriend(DwcFriendData *a);
+    FriendEntry *getFriendEntry();
     u32 hitTest(s32 x, s32 y);
     BOOL moveCursorByPad(u32 keys);
     void refreshCursor();
@@ -147,7 +121,7 @@ public:
     s32 getCursorTargetY();
     s32 getCursorTargetX();
     void showCursor();
-    void *allocLabel();
+    LabelString *allocLabel();
     void releaseLabels();
     void showMessage(u8 v, s32 b);
     void resumeInput();
@@ -239,53 +213,23 @@ BOOL FriendCodeMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" void *data_ov133_02295220[2];
-extern "C" void *data_ov133_02295238[2];
-extern "C" void *data_ov133_02295258[2];
-extern "C" void *data_ov133_02295240[2];
-extern "C" void *data_ov133_02295210[2];
-extern "C" void *data_ov133_02295200[2];
 extern "C" u16 sFriendCodeKeySeIds[10];
-extern "C" void *data_ov133_02295298[2];
-extern "C" void *data_ov133_02295290[2];
-extern "C" void *data_ov133_02295288[2];
-extern "C" u32 sCaretCells[2];
-extern "C" void *data_ov133_02295278[2];
+extern "C" GXOamAttr sCaretCells[1];
 extern "C" const u32 sKeyColumnX[3];
 extern "C" const s32 sFriendCodeCursorXTable[12];
-extern "C" void *data_ov133_02295250[2];
-extern "C" void *data_ov133_02295270[2];
-extern "C" void *data_ov133_02295280[2];
 extern "C" const u8 sKeyDigits[12];
-extern "C" void *data_ov133_02295208[2];
 extern "C" const u8 sFriendCodeTouchKeyMap[12];
-extern "C" void *data_ov133_02295260[2];
 extern "C" const s32 sFriendCodeCursorYTable[12];
-extern "C" void *data_ov133_02295248[2];
 extern "C" const u32 sKeyRowY[12];
-extern "C" void *data_ov133_02295228[2];
-extern "C" void *data_ov133_02295218[2];
 extern "C" ProcProfile sFriendCodeMenuProfile;
-
-extern "C" void *data_ov133_02295220[2] = {(void *)_ZN14FriendCodeMenu17updateCursorPressEv, 0};
-
-extern "C" void *data_ov133_02295238[2] = {(void *)_ZN14FriendCodeMenu19stateRetryAddFriendEv, 0};
-
-extern "C" void *data_ov133_02295258[2] = {(void *)_ZN14FriendCodeMenu20stateBackspaceRepeatEv, 0};
-
-extern "C" void *data_ov133_02295240[2] = {(void *)_ZN14FriendCodeMenu9stateOpenEv, 0};
-
-extern "C" void *data_ov133_02295210[2] = {(void *)_ZN14FriendCodeMenu12stateOpeningEv, 0};
-
-extern "C" void *data_ov133_02295200[2] = {(void *)_ZN14FriendCodeMenu12stateMessageEv, 0};
 
 BOOL FriendCodeMenu::execTransition() {
     static Unk_ov133_022952bc_Fn tbl[5] = {
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295270,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295240,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295210,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295208,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295218};
+        &FriendCodeMenu::stateLoad,
+        &FriendCodeMenu::stateOpen,
+        &FriendCodeMenu::stateOpening,
+        &FriendCodeMenu::stateClose,
+        &FriendCodeMenu::stateClosing};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
@@ -293,15 +237,7 @@ BOOL FriendCodeMenu::execTransition() {
 }
 extern "C" u16 sFriendCodeKeySeIds[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-extern "C" void *data_ov133_02295298[2] = {(void *)_ZN14FriendCodeMenu11updateTouchEv, 0};
-
-extern "C" void *data_ov133_02295290[2] = {(void *)_ZN14FriendCodeMenu16stateTouchRepeatEv, 0};
-
-extern "C" void *data_ov133_02295288[2] = {(void *)_ZN14FriendCodeMenu19stateTouchDragCaretEv, 0};
-
-extern "C" u32 sCaretCells[2] = {0x000080f8, 0xffff5181};
-
-extern "C" void *data_ov133_02295278[2] = {(void *)_ZN14FriendCodeMenu16updateCursorMoveEv, 0};
+extern "C" GXOamAttr sCaretCells[1] = {{0x000080f8, 0x181, 0, 0x5, 0xffff}};
 
 extern "C" const u32 sKeyColumnX[3] = {9, 0xe, 0x12};
 
@@ -309,19 +245,19 @@ extern "C" const s32 sFriendCodeCursorXTable[12] = {0x60, 0x80, 0xa0, 0x60, 0x80
 
 void FriendCodeMenu::runMainState() {
     static Unk_ov133_022952bc_Fn tbl[13] = {
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295298,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295290,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295288,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295280,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295278,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295220,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295228,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295260,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295258,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295250,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295248,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295200,
-        *(Unk_ov133_022952bc_Fn *)data_ov133_02295238};
+        &FriendCodeMenu::updateTouch,
+        &FriendCodeMenu::stateTouchRepeat,
+        &FriendCodeMenu::stateTouchDragCaret,
+        &FriendCodeMenu::updateButtons,
+        &FriendCodeMenu::updateCursorMove,
+        &FriendCodeMenu::updateCursorPress,
+        &FriendCodeMenu::updateCursorRelease,
+        &FriendCodeMenu::stateButtonRepeat,
+        &FriendCodeMenu::stateBackspaceRepeat,
+        &FriendCodeMenu::stateCaretSelect,
+        &FriendCodeMenu::stateExit,
+        &FriendCodeMenu::stateMessage,
+        &FriendCodeMenu::stateRetryAddFriend};
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
         switch (mainState) {
@@ -451,7 +387,7 @@ void FriendCodeMenu::preStateUpdate() {
     releaseLabels();
     bottomButtons.freeTexts();
     if (highlightTimer != 0) {
-        highlightTimer = *(volatile u8 *)&highlightTimer - 1;
+        highlightTimer = highlightTimer - 1;
         if (highlightTimer == 0) {
             if (repeatTimer != 0) {
                 highlightTimer = 1;
@@ -481,8 +417,8 @@ void FriendCodeMenu::setupBgLayers() {
 
 void FriendCodeMenu::loadBgGfx() {
     NumberPad_LoadBgGraphics(4);
-    File_LoadToBuffer((void *)"menu/bank/g0_bg.bsc", codeScreen, 0x800);
-    File_LoadToBuffer((void *)"menu/bank/g1_bg.bsc", keypadScreen, 0x800);
+    File_LoadToBuffer("menu/bank/g0_bg.bsc", codeScreen, 0x800);
+    File_LoadToBuffer("menu/bank/g1_bg.bsc", keypadScreen, 0x800);
     loadEntryCode();
     setFlags(2);
     setFlags(4);
@@ -490,11 +426,11 @@ void FriendCodeMenu::loadBgGfx() {
 
 void FriendCodeMenu::loadObjGfx() {
     NumberPad_LoadObjGraphics(7);
-    void *p = allocLabel();
+    LabelString *p = allocLabel();
     String_Load2dMenu(p, 0xd7);
-    ((LabelString *)p)->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
-    ((LabelString *)p)->redrawAligned(1, 0);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    p->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
+    p->redrawAligned(1, 0);
+    MenuButtons_LoadTextColors();
 }
 
 void FriendCodeMenu::updateTouch() {
@@ -674,9 +610,9 @@ void FriendCodeMenu::stateMessage() {
 }
 
 void FriendCodeMenu::stateRetryAddFriend() {
-    void *r = getFriendEntry();
+    FriendEntry *r = getFriendEntry();
     s32 idx = MenuCtrl_GetIndex();
-    u32 t = DwcFriendData_GetBytes(FriendEntry_GetFriendData(r));
+    void *t = DwcFriendData_GetBytes(FriendEntry_GetFriendData(r));
     if (Net_WifiAddFriend((u8)idx, t)) {
         setMainState(10);
     }
@@ -716,12 +652,12 @@ void FriendCodeMenu::releaseLabels() {
     labels[0].destroyLabel();
 }
 
-void *FriendCodeMenu::allocLabel() {
-    if ((*(volatile u8 *)&labelCount) >= 1) {
-        return &labels;
+LabelString *FriendCodeMenu::allocLabel() {
+    if (labelCount >= 1) {
+        return &labels[0];
     }
-    (*(volatile u8 *)&labelCount) = (*(volatile u8 *)&labelCount) + 1;
-    return (u8 *)&labels + ((*(volatile u8 *)&labelCount) - 1) * 0x40;
+    labelCount = labelCount + 1;
+    return &labels[labelCount - 1];
 }
 
 void FriendCodeMenu::showCursor() {
@@ -814,29 +750,29 @@ BOOL FriendCodeMenu::moveCursorByPad(u32 keys) {
     }
     if (old <= 0xb) {
         if (MenuKeys_HasLeft(keys)) {
-            if ((s32)(*(volatile u8 *)&cursorSlot) % 3 > 0) {
-                (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) - 1;
+            if ((s32)cursorSlot % 3 > 0) {
+                cursorSlot = cursorSlot - 1;
             }
         } else if (MenuKeys_HasRight(keys)) {
-            if ((s32)(*(volatile u8 *)&cursorSlot) % 3 < 2) {
-                (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) + 1;
+            if ((s32)cursorSlot % 3 < 2) {
+                cursorSlot = cursorSlot + 1;
             } else {
-                (*(volatile u8 *)&cursorSlot) = 0xd;
+                cursorSlot = 0xd;
             }
         }
-        if ((*(volatile u8 *)&cursorSlot) <= 0xb) {
+        if (cursorSlot <= 0xb) {
             if (MenuKeys_HasUp(keys)) {
-                if ((*(volatile u8 *)&cursorSlot) <= 2) {
-                    (*(volatile u8 *)&cursorSlot) = 0xc;
+                if (cursorSlot <= 2) {
+                    cursorSlot = 0xc;
                 } else {
-                    (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) - 3;
+                    cursorSlot = cursorSlot - 3;
                 }
             } else if (MenuKeys_HasDown(keys)) {
-                u32 v = (*(volatile u8 *)&cursorSlot);
+                u32 v = cursorSlot;
                 if (v < 9 || v > 0xb) {
-                    (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) + 3;
+                    cursorSlot = cursorSlot + 3;
                 } else {
-                    (*(volatile u8 *)&cursorSlot) = 0xe;
+                    cursorSlot = 0xe;
                 }
             }
         }
@@ -844,11 +780,11 @@ BOOL FriendCodeMenu::moveCursorByPad(u32 keys) {
         if (MenuKeys_HasDown(keys)) {
             s32 r = cursor.getScreenX();
             if (r <= 0x70) {
-                (*(volatile u8 *)&cursorSlot) = 0;
+                cursorSlot = 0;
             } else if (r <= 0x90) {
-                (*(volatile u8 *)&cursorSlot) = 1;
+                cursorSlot = 1;
             } else {
-                (*(volatile u8 *)&cursorSlot) = 2;
+                cursorSlot = 2;
             }
         } else if (moveCaretByPad(keys)) {
             Snd_PlaySe(0xb);
@@ -856,18 +792,18 @@ BOOL FriendCodeMenu::moveCursorByPad(u32 keys) {
         }
     } else if (old == 0xd) {
         if (MenuKeys_HasLeft(keys)) {
-            (*(volatile u8 *)&cursorSlot) = 0xe;
+            cursorSlot = 0xe;
         } else if (MenuKeys_HasUp(keys)) {
-            (*(volatile u8 *)&cursorSlot) = 0xb;
+            cursorSlot = 0xb;
         }
     } else if (old == 0xe) {
         if (MenuKeys_HasRight(keys)) {
-            (*(volatile u8 *)&cursorSlot) = 0xd;
+            cursorSlot = 0xd;
         } else if (MenuKeys_HasUp(keys)) {
-            (*(volatile u8 *)&cursorSlot) = 0xa;
+            cursorSlot = 0xa;
         }
     }
-    if (old == (*(volatile u8 *)&cursorSlot)) {
+    if (old == cursorSlot) {
         return FALSE;
     }
     return TRUE;
@@ -887,18 +823,18 @@ u32 FriendCodeMenu::hitTest(s32 x0, s32 y) {
     return 0xf;
 }
 
-void *FriendCodeMenu::getFriendEntry() {
-    void *h = PlayerData_GetCurrent()->getFriendList();
+FriendEntry *FriendCodeMenu::getFriendEntry() {
+    FriendList *h = (FriendList *)PlayerData_GetCurrent()->getFriendList();
     s32 idx = MenuCtrl_GetIndex();
-    return (u8 *)FriendList_GetEntries(h) + idx * 0x1c;
+    return FriendList_GetEntries(h->entries) + idx;
 }
 
-BOOL FriendCodeMenu::isDuplicateFriend(u32 a) {
-    void *h = PlayerData_GetCurrent();
+BOOL FriendCodeMenu::isDuplicateFriend(DwcFriendData *a) {
+    PlayerData *h = PlayerData_GetCurrent();
     s32 idx = MenuCtrl_GetIndex();
-    u8 *p = (u8 *)FriendList_GetEntries(((PlayerData *)h)->getFriendList());
+    FriendEntry *p = FriendList_GetEntries(((FriendList *)h->getFriendList())->entries);
     s32 i;
-    for (i = 0; i < 0x20; p += 0x1c, i++) {
+    for (i = 0; i < 0x20; p++, i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(p)) && i != idx) {
             if (DwcFriendData_Compare(a, FriendEntry_GetFriendData(p))) {
                 return TRUE;
@@ -909,20 +845,20 @@ BOOL FriendCodeMenu::isDuplicateFriend(u32 a) {
 }
 
 BOOL FriendCodeMenu::isOwnFriendCode() {
-    void *h = PlayerData_GetCurrent();
+    PlayerData *h = PlayerData_GetCurrent();
     s64 sum = 0;
     s32 i;
     for (i = 0; i < 12; i++) {
         sum = sum * 10 + (s64)(u32)codeDigits[i];
     }
-    return PlayerWifiData_GetFriendCode(((PlayerData *)h)->getWifiUserData()) == sum;
+    return PlayerWifiData_GetFriendCode(h->getWifiUserData()) == sum;
 }
 
 void FriendCodeMenu::confirm() {
-    void *h = PlayerData_GetCurrent();
+    PlayerData *h = PlayerData_GetCurrent();
     DwcFriendData l;
     DwcFriendData_Clear(&l);
-    if (!DwcFriendData_FromCodeDigits(&l, codeDigits, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()))) {
+    if (!DwcFriendData_FromCodeDigits(&l, codeDigits, PlayerWifiData_GetDwcUserData(h->getWifiUserData()))) {
         showMessage(0x19, 0);
         Snd_PlaySe(0x73);
         return;
@@ -932,14 +868,14 @@ void FriendCodeMenu::confirm() {
         Snd_PlaySe(0x73);
         return;
     }
-    if (isDuplicateFriend((u32)&l)) {
+    if (isDuplicateFriend(&l)) {
         showMessage(0x14, 0);
         Snd_PlaySe(0x73);
         return;
     }
-    void *s = getFriendEntry();
+    FriendEntry *s = getFriendEntry();
     void *t = FriendEntry_GetFriendData(s);
-    DwcFriendData_FromCodeDigits(t, codeDigits, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()));
+    DwcFriendData_FromCodeDigits(t, codeDigits, PlayerWifiData_GetDwcUserData(h->getWifiUserData()));
     MenuCtrl_SetResult(1);
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(3);
@@ -948,7 +884,7 @@ void FriendCodeMenu::confirm() {
     if (MenuCtrl_GetMode() == 0xe) {
         notifyParent(0xc);
     } else {
-        ((MenuTabBar *)((void *(*)(void *))ProcBase_GetParent)(this))->requestSaveOnClose();
+        ((MenuTabBar *)ProcBase_GetParent(this))->requestSaveOnClose();
         notifyParent(6);
         MenuCtrl_SetFriendPageFromIndex();
         if (gCommManager->isSlotActive(gCommManager->myAid)) {
@@ -956,7 +892,7 @@ void FriendCodeMenu::confirm() {
             case 3:
             case 4: {
                 s32 pl = MenuCtrl_GetIndex();
-                u32 x = DwcFriendData_GetBytes(FriendEntry_GetFriendData(s));
+                void *x = DwcFriendData_GetBytes(FriendEntry_GetFriendData(s));
                 if (!Net_WifiAddFriend((u8)pl, x)) {
                     setMainState(0xc);
                     return;
@@ -1032,14 +968,14 @@ BOOL FriendCodeMenu::moveCaretByPad(u32 key) {
     u32 old = caretPos;
     if (MenuKeys_HasLeft(key)) {
         if (caretPos != 0) {
-            caretPos = *(volatile u8 *)&caretPos - 1;
+            caretPos = caretPos - 1;
         }
     } else if (MenuKeys_HasRight(key)) {
-        if (getCodeLength() > *(volatile u8 *)&caretPos) {
-            caretPos = *(volatile u8 *)&caretPos + 1;
+        if (getCodeLength() > caretPos) {
+            caretPos = caretPos + 1;
         }
     }
-    if (old != *(volatile u8 *)&caretPos) {
+    if (old != caretPos) {
         s32 x = getCursorTargetX();
         s32 y = getCursorTargetY();
         cursor.warpTo(x, y);
@@ -1262,7 +1198,7 @@ void FriendCodeMenu::stopKeyRepeat() { repeatTimer = 0; }
 
 BOOL FriendCodeMenu::tickKeyRepeat() {
     if (repeatTimer != 0) {
-        repeatTimer = *(volatile u8 *)&repeatTimer - 1;
+        repeatTimer = repeatTimer - 1;
         if (repeatTimer == 0) {
             repeatTimer = 2;
             return TRUE;
@@ -1315,28 +1251,12 @@ void FriendCodeMenu::setFlags(u32 m) { flags = flags | m; }
 
 void FriendCodeMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
-extern "C" void *data_ov133_02295250[2] = {(void *)_ZN14FriendCodeMenu16stateCaretSelectEv, 0};
-
-extern "C" void *data_ov133_02295270[2] = {(void *)_ZN14FriendCodeMenu9stateLoadEv, 0};
-
-extern "C" void *data_ov133_02295280[2] = {(void *)_ZN14FriendCodeMenu13updateButtonsEv, 0};
-
 extern "C" const u8 sKeyDigits[12] = {7, 8, 9, 4, 5, 6, 1, 2, 3, 0, 0, 0};
-
-extern "C" void *data_ov133_02295208[2] = {(void *)_ZN14FriendCodeMenu10stateCloseEv, 0};
 
 extern "C" const u8 sFriendCodeTouchKeyMap[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
-extern "C" void *data_ov133_02295260[2] = {(void *)_ZN14FriendCodeMenu17stateButtonRepeatEv, 0};
-
 extern "C" const s32 sFriendCodeCursorYTable[12] = {0x68, 0x68, 0x68, 0x78, 0x78, 0x78, 0x88, 0x88, 0x88, 0x98, 0x98, 0x98};
 
-extern "C" void *data_ov133_02295248[2] = {(void *)_ZN14FriendCodeMenu9stateExitEv, 0};
-
 extern "C" const u32 sKeyRowY[12] = {0xc, 0xc, 0xc, 0xe, 0xe, 0xe, 0x10, 0x10, 0x10, 0x12, 0x12, 0x12};
-
-extern "C" void *data_ov133_02295228[2] = {(void *)_ZN14FriendCodeMenu19updateCursorReleaseEv, 0};
-
-extern "C" void *data_ov133_02295218[2] = {(void *)_ZN14FriendCodeMenu12stateClosingEv, 0};
 
 extern "C" ProcProfile sFriendCodeMenuProfile = {(void *(*)())FriendCodeMenu_Create, 0xb4, 0xb8};

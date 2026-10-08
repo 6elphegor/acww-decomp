@@ -4,13 +4,34 @@
 // Prototypes of the functions defined in src/ov140/unk_02292900.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
-#include "types.h"
 class DistantTownsMenu;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293e64
+extern GXOamAttr data_ov140_02293e64[42];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d80
+extern GXOamAttr data_ov140_02293d80[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d40
+extern GXOamAttr data_ov140_02293d40[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d00
+extern GXOamAttr data_ov140_02293d00[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d88
+extern GXOamAttr data_ov140_02293d88[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293dcc
+extern GXOamAttr data_ov140_02293dcc[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293da4
+extern GXOamAttr data_ov140_02293da4[5];
 #endif
 #ifndef PROTO_LOCAL_DistantTownsMenu_SetupBgLayers
 void DistantTownsMenu_SetupBgLayers();
@@ -21,29 +42,8 @@ void DistantTownsMenu_SetupBgLayers();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov140_02293e64
-extern u32 data_ov140_02293e64[84];
-#endif
-#ifndef PROTO_LOCAL_data_ov140_02293d80
-extern u32 data_ov140_02293d80[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov140_02293d40
-extern u32 data_ov140_02293d40[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov140_02293d00
-extern u32 data_ov140_02293d00[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov140_02293d88
-extern u32 data_ov140_02293d88[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov140_02293dcc
-extern u32 data_ov140_02293dcc[12];
-#endif
 #ifndef PROTO_LOCAL_DistantTownsMenu_Create
 DistantTownsMenu *DistantTownsMenu_Create();
-#endif
-#ifndef PROTO_LOCAL_data_ov140_02293da4
-extern u32 data_ov140_02293da4[10];
 #endif
 }
 #endif

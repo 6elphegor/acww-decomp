@@ -2,6 +2,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "save/BbsPost.h"
+#include "save/BbsBoard.h"
+#include "nitro/gxoam.h"
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
@@ -10,10 +12,8 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -32,21 +32,12 @@
 class BbsReadMenu;
 
 extern "C" {
-extern void *gCurrentHeap;
 extern u8 data_021e87d8[];
 extern u16 gPad[];
-void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void func_ov092_02291ce4(void *p, s32 a, s32 b);
 void func_ov092_02291c5c();
-BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
 void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 }
-
-
-class BbsBoard {
-public:
-    static void *getPost(s32 p);
-};
 
 
 
@@ -74,7 +65,7 @@ public:
     virtual BOOL execPhase4();
     virtual BOOL execClosed();
 
-    BOOL moveFocusByPad(void *pad);
+    BOOL moveFocusByPad(u32 pad);
     void refreshCursor();
     void releaseCursor();
     void pressCursor();
@@ -93,11 +84,11 @@ public:
     BOOL testFlags(u32 mask);
     void placeLabel(s32 idx, s32 a, s32 b, s32 c, s32 d);
     void setupButtonLabels();
-    void showPost(void *pad);
-    void markPostRead(void *unused);
+    void showPost(s32 idx);
+    void markPostRead(s32 idx);
     void showPostNumber(s32 i);
-    void showPostDate(void *unused);
-    void showPostText(void *unused);
+    void showPostDate(s32 idx);
+    void showPostText(s32 idx);
     void startButtonInput();
     void startTouchInput();
     void mainAct04();
@@ -122,7 +113,7 @@ public:
     void transitionAct02();
     void transitionAct01();
     void transitionAct00();
-    void drawPageDots(s32 a, s32 *p);
+    void drawPageDots(s32 a, s32 y);
 
     /* 0x091 */ u8 unk_91[3];
     /* 0x094 */ s32 slideY;
@@ -164,11 +155,10 @@ BOOL BbsReadMenu::onDelete() {
     return TRUE;
 }
 
-void BbsReadMenu::drawPageDots(s32 a, s32 *p) {
+void BbsReadMenu::drawPageDots(s32 a, s32 y) {
     u8 i;
-    s32 z = 0;
     for (i = 0; i < postCount; i++) {
-        Oam_DrawObj(z, (void *)(data_ov113_022936a0 + (i + 8) * 8), a, (s32)p, i == postIndex ? 11 : 10, 1, (s32 *)z);
+        Oam_DrawObj(0, &data_ov113_022936a0[8 + i], a, y, i == postIndex ? 11 : 10, 1, NULL);
     }
 }
 
@@ -188,22 +178,21 @@ BOOL BbsReadMenu::onDraw() {
     } else if (testFlags(4)) {
         p1 = 11;
     }
-    Oam_DrawCell(0, (void *)data_ov113_022936a0, 0x80, y, p0, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(0, (void *)(data_ov113_022936a0 + 0x20), 0x80, y, p1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(0, &data_ov113_022936a0[0], 0x80, y, p0, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(0, &data_ov113_022936a0[4], 0x80, y, p1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     x += pageDotsX;
     if (testFlags(0x100)) {
         x += getSlideOffsetX();
     }
-    drawPageDots(x, (s32 *)y);
+    drawPageDots(x, y);
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" ProcProfile data_ov113_022935c8;
-extern "C" u8 data_ov113_022936a0[0xb8];
+extern "C" GXOamAttr data_ov113_022936a0[23];
 
 extern "C" ProcProfile data_ov113_022935c8 = {(void *(*)())BbsReadMenu_Create, 0xa7, 0xab};
 
-extern "C" u8 data_ov113_022936a0[0xb8] = {0xf0,0x00,0x66,0x40,0xc0,0xb1,0x00,0x00,0xf0,0x80,0x76,0x00,0xc2,0xb1,0x00,0x00,0x00,0x00,0x66,0x60,0xc0,0xb1,0x00,0x00,0x00,0x80,0x76,0x20,0xc2,0xb1,0xff,0xff,
-0xf0,0x00,0x8a,0x51,0xc0,0xa1,0x00,0x00,0xf0,0x80,0x82,0x11,0xc2,0xa1,0x00,0x00,0x00,0x00,0x8a,0x71,0xc0,0xa1,0x00,0x00,0x00,0x80,0x82,0x31,0xc2,0xa1,0xff,0xff,0x38,0x00,0xc4,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xcc,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xd4,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xdc,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xe4,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xec,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xf4,0x01,0xe3,0xa1,0x00,0x00,0x38,0x00,0xfc,0x01,0xe3,0xb1,0x00,0x00,0x38,0x00,0x04,0x00,0xe3,0xa1,0x00,0x00,0x38,0x00,0x0c,0x00,0xe3,0xa1,0x00,0x00,0x38,0x00,0x14,0x00,0xe3,0xa1,0x00,0x00,0x38,0x00,0x1c,0x00,0xe3,0xa1,0x00,0x00,0x38,0x00,0x24,0x00,0xe3,0xa1,0x00,0x00,0x38,0x00,0x2c,0x00,0xe3,0xa1,0x00,0x00,0x38,0x00,0x34,0x00,0xe3,0xa1,0xff,0xff};
+extern "C" GXOamAttr data_ov113_022936a0[23] = {{0x406600f0, 0x1c0, 0, 0xb, 0x0}, {0x7680f0, 0x1c2, 0, 0xb, 0x0}, {0x60660000, 0x1c0, 0, 0xb, 0x0}, {0x20768000, 0x1c2, 0, 0xb, 0xffff}, {0x518a00f0, 0x1c0, 0, 0xa, 0x0}, {0x118280f0, 0x1c2, 0, 0xa, 0x0}, {0x718a0000, 0x1c0, 0, 0xa, 0x0}, {0x31828000, 0x1c2, 0, 0xa, 0xffff}, {0x1c40038, 0x1e3, 0, 0xa, 0x0}, {0x1cc0038, 0x1e3, 0, 0xa, 0x0}, {0x1d40038, 0x1e3, 0, 0xa, 0x0}, {0x1dc0038, 0x1e3, 0, 0xa, 0x0}, {0x1e40038, 0x1e3, 0, 0xa, 0x0}, {0x1ec0038, 0x1e3, 0, 0xa, 0x0}, {0x1f40038, 0x1e3, 0, 0xa, 0x0}, {0x1fc0038, 0x1e3, 0, 0xb, 0x0}, {0x40038, 0x1e3, 0, 0xa, 0x0}, {0xc0038, 0x1e3, 0, 0xa, 0x0}, {0x140038, 0x1e3, 0, 0xa, 0x0}, {0x1c0038, 0x1e3, 0, 0xa, 0x0}, {0x240038, 0x1e3, 0, 0xa, 0x0}, {0x2c0038, 0x1e3, 0, 0xa, 0x0}, {0x340038, 0x1e3, 0, 0xa, 0xffff}};
 
 BOOL BbsReadMenu::execTransition() {
     static Unk_ov113_02293640_Fn tbl[9] = {
@@ -267,7 +256,7 @@ void BbsReadMenu::transitionAct00() {
 
 void BbsReadMenu::transitionAct01() {
     setTransitionState(2);
-    showPost((void *)postIndex);
+    showPost(postIndex);
     slideY = getSlideOffsetY();
     setFlags(8);
 }
@@ -371,7 +360,7 @@ void BbsReadMenu::transitionAct07() {
     Gfx2d_ShowLayer(2);
     applySlideOffset(2, 0, 0);
     setTransitionState(8);
-    showPost((void *)postIndex);
+    showPost(postIndex);
 }
 
 void BbsReadMenu::transitionAct08() {
@@ -442,8 +431,8 @@ void BbsReadMenu::setupBgLayer() {
 void BbsReadMenu::loadBg() {
     void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/bbs/b_bbs.bpl", h, 2, 8, 8, 0xe);
-    File_LoadToBuffer((void *)"menu/bbs/b_bbs_us.bsc", bgScreenBuf, 0x800);
-    Gfx2d_LoadScreen(bgScreenBuf, 2, 0x800, 0);
+    File_LoadToBuffer("menu/bbs/b_bbs_us.bsc", bgScreenBuf, 0x800);
+    Gfx2d_LoadScreen((u8 *)bgScreenBuf, 2, 0x800, 0);
     Gfx2d_LoadCharFile("menu/bbs/b_bbs.bch", h, 2, 0x10, 0x10, 0x13f);
 }
 
@@ -460,7 +449,7 @@ void BbsReadMenu::mainAct00() {
 void BbsReadMenu::mainAct01() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-    } else if (moveFocusByPad((void *)takeRepeatedKeys())) {
+    } else if (moveFocusByPad(takeRepeatedKeys())) {
         moveCursorToTarget();
     } else {
         u16 v = gPad[1];
@@ -522,8 +511,8 @@ void BbsReadMenu::startButtonInput() {
     setMainState(1);
 }
 
-void BbsReadMenu::showPostText(void *unused) {
-    void *p = BbsBoard::getPost((s32)data_021e87d8);
+void BbsReadMenu::showPostText(s32 idx) {
+    BbsPost *p = ((BbsBoard *)data_021e87d8)->getPost(idx);
     s32 starts[7];
     s32 cnt;
     s32 i;
@@ -546,8 +535,8 @@ void BbsReadMenu::showPostText(void *unused) {
     bgTasks[0].requestChars(lineCharBufs, 2, 0x11, 0x11, 0x100);
 }
 
-void BbsReadMenu::showPostDate(void *unused) {
-    BbsPost *p = (BbsPost *)BbsBoard::getPost((s32)data_021e87d8);
+void BbsReadMenu::showPostDate(s32 idx) {
+    BbsPost *p = ((BbsBoard *)data_021e87d8)->getPost(idx);
     u8 buf[8];
     buf[0] = 0x37;
     buf[1] = 0x35;
@@ -581,8 +570,8 @@ void BbsReadMenu::showPostNumber(s32 i) {
     placeLabel(2, 0x11a, 5, 1, 0);
 }
 
-void BbsReadMenu::markPostRead(void *unused) {
-    BbsPost *p = (BbsPost *)BbsBoard::getPost((s32)data_021e87d8);
+void BbsReadMenu::markPostRead(s32 idx) {
+    BbsPost *p = ((BbsBoard *)data_021e87d8)->getPost(idx);
     s32 n = PlayerData_GetCurrentIndex();
     s32 m;
     if (p->isRead(n)) {
@@ -601,11 +590,11 @@ void BbsReadMenu::markPostRead(void *unused) {
     p->setRead(n);
 }
 
-void BbsReadMenu::showPost(void *pad) {
-    showPostDate(pad);
-    showPostNumber((s32)pad);
-    showPostText(pad);
-    markPostRead(pad);
+void BbsReadMenu::showPost(s32 idx) {
+    showPostDate(idx);
+    showPostNumber(idx);
+    showPostText(idx);
+    markPostRead(idx);
 }
 
 void BbsReadMenu::setupButtonLabels() {
@@ -697,7 +686,7 @@ void BbsReadMenu::setFocusHighlight(s32 flag) {
     case 3: {
         s32 e = flag ? 0xe : 0xd;
         s32 x = st * 6 + 4;
-        BgScreen_SetRectPalette(&bgScreenBuf, x, 0x14, x + 5, 0x16, e);
+        BgScreen_SetRectPalette(bgScreenBuf, x, 0x14, x + 5, 0x16, e);
         setFlags(1);
         break;
     }
@@ -886,7 +875,7 @@ void BbsReadMenu::refreshCursor() {
     cursor.update();
 }
 
-BOOL BbsReadMenu::moveFocusByPad(void *pad) {
+BOOL BbsReadMenu::moveFocusByPad(u32 pad) {
     u32 st = focus;
     if (st <= 3) {
         if (MenuKeys_HasLeft(pad)) {

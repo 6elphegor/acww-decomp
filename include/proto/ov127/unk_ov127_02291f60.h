@@ -4,26 +4,68 @@
 // Prototypes of the functions defined in src/ov127/unk_ov127_02291f60.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "game/ConstellationRecord.h"
 #include "game/StarSkyView.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL__ZN11StarSkyViewC1Ev
-void *_ZN11StarSkyViewC1Ev(void *s);
-#endif
-#ifndef PROTO_LOCAL__ZN11StarSkyViewD1Ev
-void _ZN11StarSkyViewD1Ev();
-#endif
 #ifndef PROTO_LOCAL_StarSky_LoadObjGraphics
 void StarSky_LoadObjGraphics();
 #endif
-#ifndef PROTO_LOCAL_StarSky_CancelUpload
-void StarSky_CancelUpload(void *p);
+#ifndef PROTO_LOCAL_StarSky_GetStarAt
+s32 StarSky_GetStarAt(s32 x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetStarAtCellIndex
+s32 StarSky_GetStarAtCellIndex(s32 i);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetLineAt
+s32 StarSky_GetLineAt(s32 x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetLineAtCellIndex
+s32 StarSky_GetLineAtCellIndex(s32 i);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetLinesAround
+s32 StarSky_GetLinesAround(u16 *out, s32 x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetStarX
+u32 StarSky_GetStarX(s32 i);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetStarY
+u32 StarSky_GetStarY(s32 i);
+#endif
+#ifndef PROTO_LOCAL_StarSky_GetLineStars
+const u8 *StarSky_GetLineStars(u16 i);
+#endif
+#ifndef PROTO_LOCAL_StarSky_FindConstellationByLine
+s32 StarSky_FindConstellationByLine(u16 v);
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fa4
+extern GXOamAttr data_ov127_02293fa4[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fac
+extern GXOamAttr data_ov127_02293fac[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fb4
+extern s32 data_ov127_02293fb4[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fc4
+extern s32 data_ov127_02293fc4[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fd4
+extern GXOamAttr data_ov127_02293fd4[4];
+#endif
+#ifndef PROTO_LOCAL_sTestedConstellationStars
+extern u8 sTestedConstellationStars[0x11];
+#endif
+#ifndef PROTO_LOCAL_sSavedConstellationStars
+extern u8 sSavedConstellationStars[0x11];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fa0
+extern u8 data_ov127_02293fa0[4];
 #endif
 #ifdef __cplusplus
 }
@@ -32,28 +74,31 @@ void StarSky_CancelUpload(void *p);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_StarSky_Reset
-void StarSky_Reset(u8 *s);
+void StarSky_Reset(StarSkyView *s);
 #endif
 #ifndef PROTO_LOCAL_StarSky_LoadSkyBg
-void StarSky_LoadSkyBg(u8 *s, u32 v);
+void StarSky_LoadSkyBg(StarSkyView *s, u32 v);
 #endif
 #ifndef PROTO_LOCAL_StarSky_LoadScopeBg
-void StarSky_LoadScopeBg(u8 *s, u32 v);
+void StarSky_LoadScopeBg(StarSkyView *s, u32 v);
 #endif
 #ifndef PROTO_LOCAL_StarSky_Update
 void StarSky_Update(StarSkyView *s);
+#endif
+#ifndef PROTO_LOCAL_StarSky_CancelUpload
+void StarSky_CancelUpload(StarSkyView *s);
 #endif
 #ifndef PROTO_LOCAL_StarSky_DrawArrows
 void StarSky_DrawArrows(StarSkyView *s, s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_StarSky_DrawScopeSprite
-void StarSky_DrawScopeSprite(void *s, s32 y);
+void StarSky_DrawScopeSprite(StarSkyView *s, s32 y);
 #endif
 #ifndef PROTO_LOCAL_StarSky_DrawStarMarker
 void StarSky_DrawStarMarker(StarSkyView *s, s32 i);
 #endif
 #ifndef PROTO_LOCAL_StarSky_HitArrow
-s32 StarSky_HitArrow(void *s, s32 x, s32 y);
+s32 StarSky_HitArrow(StarSkyView *s, s32 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_StarSky_ScrollByDir
 void StarSky_ScrollByDir(StarSkyView *s, s32 mode, s32 a, s32 b);
@@ -109,62 +154,11 @@ void StarSky_SetFlags(StarSkyView *s, u32 m);
 #ifndef PROTO_LOCAL_StarSky_ClearFlags
 void StarSky_ClearFlags(StarSkyView *s, u32 m);
 #endif
-#ifndef PROTO_LOCAL_StarSky_GetStarAt
-s32 StarSky_GetStarAt(s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetStarAtCellIndex
-s32 StarSky_GetStarAtCellIndex(s32 i);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetLineAt
-s32 StarSky_GetLineAt(s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetLineAtCellIndex
-s32 StarSky_GetLineAtCellIndex(s32 i);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetLinesAround
-s32 StarSky_GetLinesAround(u16 *out, s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetStarX
-u32 StarSky_GetStarX(s32 i);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetStarY
-u32 StarSky_GetStarY(s32 i);
-#endif
-#ifndef PROTO_LOCAL_StarSky_GetLineStars
-u8 *StarSky_GetLineStars(u16 i);
-#endif
-#ifndef PROTO_LOCAL_StarSky_FindConstellationByLine
-s32 StarSky_FindConstellationByLine(u16 v);
-#endif
 #ifndef PROTO_LOCAL_StarSky_CollectStars
 void StarSky_CollectStars(ConstellationRecord *p, u8 *out);
 #endif
-#ifndef PROTO_LOCAL_data_ov127_02293fa4
-extern u8 data_ov127_02293fa4[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov127_02293fac
-extern u8 data_ov127_02293fac[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov127_02293fb4
-extern s32 data_ov127_02293fb4[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov127_02293fc4
-extern s32 data_ov127_02293fc4[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov127_02293fd4
-extern u8 data_ov127_02293fd4[32];
-#endif
 #ifndef PROTO_LOCAL_StarSky_IsConstellationFree
 BOOL StarSky_IsConstellationFree(ConstellationRecord *p);
-#endif
-#ifndef PROTO_LOCAL_sTestedConstellationStars
-extern u8 sTestedConstellationStars[0x11];
-#endif
-#ifndef PROTO_LOCAL_sSavedConstellationStars
-extern u8 sSavedConstellationStars[0x11];
-#endif
-#ifndef PROTO_LOCAL_data_ov127_02293fa0
-extern u8 data_ov127_02293fa0[4];
 #endif
 }
 #endif

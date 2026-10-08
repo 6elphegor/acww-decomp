@@ -9,20 +9,13 @@
 #include "menu/MenuTextButton.h"
 #include "menu/MenuCursor.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_BgmTracks_FadeInScene22  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmTracks_FadeOutScene22  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadScopeBg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_Reset  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarTwinkle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarTwinkle_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov128_02295540  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov128_022955c0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "game/ConstellationRecord.h"
+#include "nitro/gxoam.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
@@ -34,25 +27,13 @@
 #include "proto/ov128/unk_ov128_022940e0.h"
 
 extern "C" {
-extern void *gCurrentHeap;
-extern u8 *data_021c1b3c;
 extern u16 gPad[];
 extern const u32 sNameLabelAnimY[4];
-extern u32 data_ov128_02295540[32];
-extern u32 data_ov128_022955c0[32];
+extern GXOamAttr data_ov128_02295540[16];
+extern GXOamAttr data_ov128_022955c0[16];
 
-// ov127 plain-C helpers on the sub-object at +0x478
-void StarSky_LoadObjGraphics(void *s);
-void StarSky_LoadScopeBg(void *s, u32 v, u32 w);
-void StarSky_LoadSkyBg(void *s, u32 v);
-void StarSky_Reset(void *s);
-
-void StarTwinkle_Init(void *p, s32 a);
-void StarTwinkle_Update(void *p);
-u8 *Constellation_GetRecord();
-void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void BgmTracks_FadeInScene22(void *p);
-void BgmTracks_FadeOutScene22(void *p);
+// src/main/unk_020afeb4.cpp (declared there with a file-local typedef of ConstellationRecord)
+ConstellationRecord *Constellation_GetRecord(s32 i);
 }
 
 static inline BOOL Unk_ov128_02294b44_Both() {
@@ -66,31 +47,6 @@ static inline BOOL Unk_ov128_02294b44_Both() {
 
 
 
-
-// Sprite/text pair element (0x50 bytes), vtable 0x022046dc
-struct GXOamAttr;
-
-
-
-
-
-extern "C" {
-void _ZN14StargazingMenu15transitionAct00Ev();
-void _ZN14StargazingMenu15transitionAct01Ev();
-void _ZN14StargazingMenu15transitionAct02Ev();
-void _ZN14StargazingMenu15transitionAct03Ev();
-void _ZN14StargazingMenu9mainAct00Ev();
-void _ZN14StargazingMenu9mainAct01Ev();
-void _ZN14StargazingMenu9mainAct02Ev();
-void _ZN14StargazingMenu9mainAct03Ev();
-void _ZN14StargazingMenu9mainAct04Ev();
-void _ZN14StargazingMenu9mainAct05Ev();
-void _ZN14StargazingMenu9mainAct06Ev();
-void _ZN14StargazingMenu16updateCursorMoveEv();
-void _ZN14StargazingMenu17updateCursorPressEv();
-void _ZN14StargazingMenu19updateCursorReleaseEv();
-void _ZN14StargazingMenu9mainAct0AEv();
-}
 
 class StargazingMenu;
 typedef void (StargazingMenu::*Unk_ov128_022954e0_Fn)();
@@ -216,46 +172,33 @@ BOOL StargazingMenu::onDraw() {
     return TRUE;
 }
 
-extern "C" u32 data_ov128_022955c0[32] = {0x8080, 0x511f, 0x8090, 0x511f, 0x80a0, 0x511f, 0x80b0, 0x511f, 0x80c0, 0x511f, 0x80d0, 0x511f, 0x80e0, 0x511f, 0x80f0, 0x511f, 0x8000, 0x511f, 0x8010, 0x511f, 0x8020, 0x511f, 0x8030, 0x511f, 0x8040, 0x511f, 0x8050, 0x511f, 0x8060, 0x511f, 0x8070, 0xffff511f};
-extern "C" u32 data_ov128_022952b8[8] = {0x4188004c, 0x50c6, 0x198804c, 0x50c8, 0x9188404c, 0x8106, 0x8180404c, 0xffff8106};
+extern "C" GXOamAttr data_ov128_022955c0[16] = {{0x8080, 0x11f, 0, 0x5, 0x0}, {0x8090, 0x11f, 0, 0x5, 0x0}, {0x80a0, 0x11f, 0, 0x5, 0x0}, {0x80b0, 0x11f, 0, 0x5, 0x0}, {0x80c0, 0x11f, 0, 0x5, 0x0}, {0x80d0, 0x11f, 0, 0x5, 0x0}, {0x80e0, 0x11f, 0, 0x5, 0x0}, {0x80f0, 0x11f, 0, 0x5, 0x0}, {0x8000, 0x11f, 0, 0x5, 0x0}, {0x8010, 0x11f, 0, 0x5, 0x0}, {0x8020, 0x11f, 0, 0x5, 0x0}, {0x8030, 0x11f, 0, 0x5, 0x0}, {0x8040, 0x11f, 0, 0x5, 0x0}, {0x8050, 0x11f, 0, 0x5, 0x0}, {0x8060, 0x11f, 0, 0x5, 0x0}, {0x8070, 0x11f, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr data_ov128_022952b8[4] = {{0x4188004c, 0xc6, 0, 0x5, 0x0}, {0x198804c, 0xc8, 0, 0x5, 0x0}, {0x9188404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
 extern "C" u8 sArrowCursorX[4] = {0x10, 0xf0, 0x80, 0x80};
-extern "C" u32 data_ov128_022953e0[14] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x81c8404c, 0x50ce, 0x91d0404c, 0x8106, 0x81bd404c, 0x8107, 0x819f404c, 0x8107, 0x8180404c, 0xffff8106};
-extern "C" u32 data_ov128_02295280[6] = {0x8188404c, 0x50c6, 0x9190404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" u32 data_ov128_022953b0[12] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x41c8004c, 0x50ce, 0x81a0404c, 0x8107, 0x91c0404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" u32 data_ov128_022952d8[8] = {0x8188404c, 0x50c6, 0x41a8004c, 0x50ca, 0x91a0404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" void *data_ov128_02295250[2] = {(void *)_ZN14StargazingMenu9mainAct06Ev, 0};
-extern "C" u32 data_ov128_02295498[16] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x41c8004c, 0x50ce, 0x1d8804c, 0x50d0, 0x81b1404c, 0x8107, 0x819d404c, 0x8107, 0x91c8404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" void *data_ov128_02295260[2] = {(void *)_ZN14StargazingMenu15transitionAct02Ev, 0};
-extern "C" void *data_ov128_02295210[2] = {(void *)_ZN14StargazingMenu16updateCursorMoveEv, 0};
-extern "C" void *data_ov128_02295248[2] = {(void *)_ZN14StargazingMenu9mainAct05Ev, 0};
-extern "C" void *data_ov128_02295228[2] = {(void *)_ZN14StargazingMenu15transitionAct01Ev, 0};
+extern "C" GXOamAttr data_ov128_022953e0[7] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x81a8404c, 0xca, 0, 0x5, 0x0}, {0x81c8404c, 0xce, 0, 0x5, 0x0}, {0x91d0404c, 0x106, 0, 0x8, 0x0}, {0x81bd404c, 0x107, 0, 0x8, 0x0}, {0x819f404c, 0x107, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_02295280[3] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x9190404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_022953b0[6] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x81a8404c, 0xca, 0, 0x5, 0x0}, {0x41c8004c, 0xce, 0, 0x5, 0x0}, {0x81a0404c, 0x107, 0, 0x8, 0x0}, {0x91c0404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_022952d8[4] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x41a8004c, 0xca, 0, 0x5, 0x0}, {0x91a0404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_02295498[8] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x81a8404c, 0xca, 0, 0x5, 0x0}, {0x41c8004c, 0xce, 0, 0x5, 0x0}, {0x1d8804c, 0xd0, 0, 0x5, 0x0}, {0x81b1404c, 0x107, 0, 0x8, 0x0}, {0x819d404c, 0x107, 0, 0x8, 0x0}, {0x91c8404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
 extern "C" u8 sArrowCursorY[4] = {0x60, 0x60, 0xb8, 0x08};
-extern "C" void *data_ov128_02295258[2] = {(void *)_ZN14StargazingMenu9mainAct03Ev, 0};
-extern "C" u32 data_ov128_02295458[16] = {0x8044404b, 0x50d3, 0x4064004b, 0x50d7, 0x8047404b, 0x8111, 0x903a404b, 0x8112, 0x805d404b, 0x8112, 0x903c404d, 0x1112, 0x805f404d, 0x1112, 0x8049404d, 0xffff1111};
-extern "C" u32 data_ov128_02295540[32] = {0x7040f8, 0x5104, 0x6040f8, 0x5104, 0x5040f8, 0x5104, 0x4040f8, 0x5104, 0x3040f8, 0x5104, 0x2040f8, 0x5104, 0x1040f8, 0x5104, 0x40f8, 0x5104, 0x1f040f8, 0x5104, 0x1e040f8, 0x5104, 0x1d040f8, 0x5104, 0x1c040f8, 0x5104, 0x1b040f8, 0x5104, 0x1a040f8, 0x5104, 0x19040f8, 0x5104, 0x18040f8, 0xffff5104};
-extern "C" void *sNameLabelFrames[12] = {data_ov128_02295268, data_ov128_022952b8, data_ov128_02295280, data_ov128_02295298, data_ov128_022952d8, data_ov128_02295350, data_ov128_022952f8, data_ov128_02295380, data_ov128_022953b0, data_ov128_02295498, data_ov128_022953e0, data_ov128_02295418};
-extern "C" u32 data_ov128_02295298[8] = {0x8188404c, 0x50c6, 0x1a8804c, 0x50ca, 0x9198404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" void *data_ov128_02295200[2] = {(void *)_ZN14StargazingMenu19updateCursorReleaseEv, 0};
-extern "C" u32 data_ov128_02295350[12] = {0x8188404c, 0x50c6, 0x41a8004c, 0x50ca, 0x1b8804c, 0x50cc, 0x419b004c, 0x5109, 0x91a8404c, 0x8106, 0x8180404c, 0xffff8106};
+extern "C" GXOamAttr data_ov128_02295458[8] = {{0x8044404b, 0xd3, 0, 0x5, 0x0}, {0x4064004b, 0xd7, 0, 0x5, 0x0}, {0x8047404b, 0x111, 0, 0x8, 0x0}, {0x903a404b, 0x112, 0, 0x8, 0x0}, {0x805d404b, 0x112, 0, 0x8, 0x0}, {0x903c404d, 0x112, 0, 0x1, 0x0}, {0x805f404d, 0x112, 0, 0x1, 0x0}, {0x8049404d, 0x111, 0, 0x1, 0xffff}};
+extern "C" GXOamAttr data_ov128_02295540[16] = {{0x7040f8, 0x104, 0, 0x5, 0x0}, {0x6040f8, 0x104, 0, 0x5, 0x0}, {0x5040f8, 0x104, 0, 0x5, 0x0}, {0x4040f8, 0x104, 0, 0x5, 0x0}, {0x3040f8, 0x104, 0, 0x5, 0x0}, {0x2040f8, 0x104, 0, 0x5, 0x0}, {0x1040f8, 0x104, 0, 0x5, 0x0}, {0x40f8, 0x104, 0, 0x5, 0x0}, {0x1f040f8, 0x104, 0, 0x5, 0x0}, {0x1e040f8, 0x104, 0, 0x5, 0x0}, {0x1d040f8, 0x104, 0, 0x5, 0x0}, {0x1c040f8, 0x104, 0, 0x5, 0x0}, {0x1b040f8, 0x104, 0, 0x5, 0x0}, {0x1a040f8, 0x104, 0, 0x5, 0x0}, {0x19040f8, 0x104, 0, 0x5, 0x0}, {0x18040f8, 0x104, 0, 0x5, 0xffff}};
+extern "C" GXOamAttr *sNameLabelFrames[12] = {data_ov128_02295268, data_ov128_022952b8, data_ov128_02295280, data_ov128_02295298, data_ov128_022952d8, data_ov128_02295350, data_ov128_022952f8, data_ov128_02295380, data_ov128_022953b0, data_ov128_02295498, data_ov128_022953e0, data_ov128_02295418};
+extern "C" GXOamAttr data_ov128_02295298[4] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x1a8804c, 0xca, 0, 0x5, 0x0}, {0x9198404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_02295350[6] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x41a8004c, 0xca, 0, 0x5, 0x0}, {0x1b8804c, 0xcc, 0, 0x5, 0x0}, {0x419b004c, 0x109, 0, 0x5, 0x0}, {0x91a8404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
 extern "C" const u32 sNameLabelAnimY[4] = {0x20, 0x11, 2, 0};
-extern "C" u32 data_ov128_02295380[12] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x1c8804c, 0x50ce, 0x91b8404c, 0x8106, 0x819c404c, 0x8107, 0x8180404c, 0xffff8106};
-extern "C" void *data_ov128_022951f0[2] = {(void *)_ZN14StargazingMenu15transitionAct03Ev, 0};
-extern "C" void *data_ov128_022951f8[2] = {(void *)_ZN14StargazingMenu9mainAct0AEv, 0};
-extern "C" void *data_ov128_02295230[2] = {(void *)_ZN14StargazingMenu9mainAct04Ev, 0};
-extern "C" u32 data_ov128_02295268[6] = {0x4188004c, 0x50c6, 0x5190004c, 0x8106, 0x4180004c, 0xffff8106};
-extern "C" u32 data_ov128_02295418[16] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x81c8404c, 0x50ce, 0x1e8804c, 0x50d2, 0x81b9404c, 0x8107, 0x819c404c, 0x8107, 0x91d8404c, 0x8106, 0x8180404c, 0xffff8106};
+extern "C" GXOamAttr data_ov128_02295380[6] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x81a8404c, 0xca, 0, 0x5, 0x0}, {0x1c8804c, 0xce, 0, 0x5, 0x0}, {0x91b8404c, 0x106, 0, 0x8, 0x0}, {0x819c404c, 0x107, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_02295268[3] = {{0x4188004c, 0xc6, 0, 0x5, 0x0}, {0x5190004c, 0x106, 0, 0x8, 0x0}, {0x4180004c, 0x106, 0, 0x8, 0xffff}};
+extern "C" GXOamAttr data_ov128_02295418[8] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x81a8404c, 0xca, 0, 0x5, 0x0}, {0x81c8404c, 0xce, 0, 0x5, 0x0}, {0x1e8804c, 0xd2, 0, 0x5, 0x0}, {0x81b9404c, 0x107, 0, 0x8, 0x0}, {0x819c404c, 0x107, 0, 0x8, 0x0}, {0x91d8404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
 extern "C" ProcProfile sStargazingMenuProfile = {(void *(*)())StargazingMenu_Create, 0xac, 0xb0};
-extern "C" u32 data_ov128_022952f8[10] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x8198404c, 0x8107, 0x91b0404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" void *data_ov128_02295220[2] = {(void *)_ZN14StargazingMenu9mainAct02Ev, 0};
-extern "C" void *data_ov128_02295238[2] = {(void *)_ZN14StargazingMenu9mainAct00Ev, 0};
-extern "C" void *data_ov128_02295240[2] = {(void *)_ZN14StargazingMenu9mainAct01Ev, 0};
+extern "C" GXOamAttr data_ov128_022952f8[5] = {{0x8188404c, 0xc6, 0, 0x5, 0x0}, {0x81a8404c, 0xca, 0, 0x5, 0x0}, {0x8198404c, 0x107, 0, 0x8, 0x0}, {0x91b0404c, 0x106, 0, 0x8, 0x0}, {0x8180404c, 0x106, 0, 0x8, 0xffff}};
 
 BOOL StargazingMenu::execTransition() {
     static Unk_ov128_022954e0_Fn tbl[4] = {
-        *(Unk_ov128_022954e0_Fn *)data_ov128_022951e8,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295228,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295260,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_022951f0};
+        &StargazingMenu::transitionAct00,
+        &StargazingMenu::transitionAct01,
+        &StargazingMenu::transitionAct02,
+        &StargazingMenu::transitionAct03};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
@@ -264,17 +207,17 @@ BOOL StargazingMenu::execTransition() {
 
 void StargazingMenu::runMainState() {
     static Unk_ov128_022954e0_Fn tbl[11] = {
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295238,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295240,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295220,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295258,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295230,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295248,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295250,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295210,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295208,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_02295200,
-        *(Unk_ov128_022954e0_Fn *)data_ov128_022951f8};
+        &StargazingMenu::mainAct00,
+        &StargazingMenu::mainAct01,
+        &StargazingMenu::mainAct02,
+        &StargazingMenu::mainAct03,
+        &StargazingMenu::mainAct04,
+        &StargazingMenu::mainAct05,
+        &StargazingMenu::mainAct06,
+        &StargazingMenu::updateCursorMove,
+        &StargazingMenu::updateCursorPress,
+        &StargazingMenu::updateCursorRelease,
+        &StargazingMenu::mainAct0A};
     (this->*tbl[mainState])();
 }
 
@@ -366,7 +309,7 @@ void StargazingMenu::initMembers() {
     cursorTarget = 1;
     resetNameLabel();
     PlayerActor_LocalRequestAct12();
-    BgmTracks_FadeOutScene22(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeOutScene22();
 }
 
 void StargazingMenu::releaseResources() {
@@ -375,7 +318,7 @@ void StargazingMenu::releaseResources() {
     closeButton.freeText();
     nameLabel.destroyLabel();
     PlayerActor_RequestAct10();
-    BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeInScene22();
     Gfx2d_LoadCharFile("menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 
@@ -388,7 +331,7 @@ void StargazingMenu::postInputUpdate() {
 
 void StargazingMenu::preStateUpdate() {
     nameLabel.destroyLabel();
-    StarTwinkle_Update(&twinkle);
+    StarTwinkle_Update((u8 *)&twinkle);
     closeButton.freeText();
 }
 
@@ -407,10 +350,10 @@ extern "C" void StargazingMenu_SetupBgLayers() {
 
 void StargazingMenu::setupSkyView() {
     StarSky_LoadSkyBg(&skyView, 3);
-    StarSky_LoadScopeBg(&skyView, 6, 0);
-    StarTwinkle_Init(&twinkle, 3);
-    StarSky_LoadObjGraphics(&skyView);
-    closeButton.setup((GXOamAttr *)data_ov128_02295458, 6, 2);
+    StarSky_LoadScopeBg(&skyView, 6);
+    StarTwinkle_Init((u8 *)&twinkle, 3);
+    StarSky_LoadObjGraphics();
+    closeButton.setup(data_ov128_02295458, 6, 2);
     closeButton.setLabelWithShadow(0x69);
     updateSkyScroll();
 }
@@ -719,8 +662,8 @@ void StargazingMenu::resetNameLabel() {
 
 void StargazingMenu::findCenterConstellation() {
     s32 a, b;
-    u8 *p = StarSky_GetOverscroll(&skyView) + 0x60;
-    if (StarSky_ScreenToCell(&skyView, 0x80, p, &a, &b)) {
+    s32 y = StarSky_GetOverscroll(&skyView) + 0x60;
+    if (StarSky_ScreenToCell(&skyView, 0x80, y, &a, &b)) {
         s32 r = StarSky_GetLineAt(a, b);
         if (r != -1) {
             centerConstellation = StarSky_FindConstellationByLine((u16)r);
@@ -742,8 +685,8 @@ void StargazingMenu::setupNameLabel() {
         nameLabelState = 1;
         s32 u = shownConstellation;
         if (u != labelConstellation) {
-            u8 *s = ((u8 *(*)(s32))Constellation_GetRecord)(u);
-            String_FromEncodedBytes(&nameLabel, s + 0x16, 0x10);
+            ConstellationRecord *r = Constellation_GetRecord(u);
+            String_FromEncodedBytes(&nameLabel, r->name, 0x10);
             nameLabelWidth = ((s32)nameLabel.getTextWidth() + 7) >> 3;
             if (nameLabelWidth < 2) {
                 nameLabelWidth = 2;
@@ -821,5 +764,3 @@ void StargazingMenu::setFlags(u32 m) { stateFlags = stateFlags | m; }
 
 void StargazingMenu::clearFlags(u32 m) { stateFlags = stateFlags & ~m; }
 
-extern "C" void *data_ov128_022951e8[2] = {(void *)_ZN14StargazingMenu15transitionAct00Ev, 0};
-extern "C" void *data_ov128_02295208[2] = {(void *)_ZN14StargazingMenu17updateCursorPressEv, 0};

@@ -4,16 +4,17 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ClockDateTime.h"
 #include "sys/ProcProfile.h"
 #include "menu/MenuLauncher.h"
 #include "ui/HandCursor.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov134/unk_ov134_02291f60.h"
 #include "proto/ov138/unk_ov138_02295380.h"
 
@@ -26,27 +27,7 @@ extern const s32 sDateSelectCursorXTable[5];
 extern const s32 sDateSelectCursorYTable[5];
 extern u16 gPad[];
 
-void MenuButtons_LoadTextColors(void *self);
-
-// ov134 library object (plain functions; first argument is the DateTimePicker object)
-void DateTimePicker_GetDateTime(void *self, void *out);
-s32 DateTimePicker_Draw(void *self, s32 a, s32 b);
-void DateTimePicker_LoadObjGraphics(void *self);
-void DateTimePicker_LoadBgGraphics(void *self);
-void DateTimePicker_DrawTitleAndFields(void *self, s32 a);
-void DateTimePicker_EndFrame(void *self);
-void DateTimePicker_BeginFrame(void *self);
-void DateTimePicker_Shutdown(void *self);
-void DateTimePicker_EnableMinLimit(void *self);
-void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 }
-
-
-
-
-
-
-
 
 class DateSelectMenu;
 typedef void (DateSelectMenu::*Unk_ov138_02296380_Fn)();
@@ -135,8 +116,6 @@ public:
     /* 0x0fc */ MenuBottomButtons bottomButtons;
     /* 0x260 */ DateTimePicker picker;
 };
-
-
 
 extern "C" DateSelectMenu *DateSelectMenu_Create() { return new DateSelectMenu(); }
 
@@ -313,7 +292,7 @@ void DateSelectMenu::loadBgGfx() {
 
 void DateSelectMenu::loadObjGfx() {
     DateTimePicker_LoadObjGraphics(&picker);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void DateSelectMenu::updateTouch() {
@@ -551,11 +530,11 @@ void DateSelectMenu::confirm() {
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xb);
-    u32 v[2];
-    v[0] = 0;
-    v[1] = 0;
-    DateTimePicker_GetDateTime(&picker, v);
-    MenuCtrl_SetDateTime(v);
+    ClockDateTimeWords v;
+    v.words[0] = 0;
+    v.words[1] = 0;
+    DateTimePicker_GetDateTime(&picker, &v.dt);
+    MenuCtrl_SetDateTime(&v);
     MenuCtrl_SetResult(1);
 }
 

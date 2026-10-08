@@ -16,10 +16,6 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -28,6 +24,8 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
@@ -42,8 +40,6 @@ extern u8 gU8None;
 extern u16 gPad[];
 
 
-void ChoiceIdList_Add(void *p, u32 a, u32 b);
-void ChoiceIdList_Clear(void *p, u32 v);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
 u32 PopupChoice_DecideCancel(void *p, s32 x);
@@ -53,9 +49,6 @@ BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 void PopupChoice_Update(void *p);
 void PopupChoice_ForceClose(void *p);
 void PopupChoice_Draw(void *p);
-void MenuButtons_LoadTextColors(void *p);
-
-void InventoryBg_LoadObjGraphics(void *p);
 }
 
 // ---- out-of-overlay classes, named as in their symbols.txt ----
@@ -99,8 +92,8 @@ public:
     void clearFlags(u32 mask);
     void setFlags(u32 mask);
     BOOL testFlags(u32 mask);
-    BOOL moveCursorByPad(void *pad);
-    void moveCursorInGrid(void *pad);
+    BOOL moveCursorByPad(u32 pad);
+    void moveCursorInGrid(u32 pad);
     void openItemChoice(u32 idx, u32 x);
     void setPopupChoices();
     void closeWithoutResult();
@@ -448,8 +441,8 @@ void SongPickMenu::setupBgLayers() {
 void SongPickMenu::resetPanelUnk() { InventoryBg_Load(&inventoryBg, 0); }
 
 void SongPickMenu::startPanels() {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
 }
 
 void SongPickMenu::updateTouch() {
@@ -534,7 +527,7 @@ void SongPickMenu::updateButtons() {
     if (M(s)->checkSwitchToTouch()) {
         SongPickMenu_StartTouchInput(s);
         ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
-    } else if (M(s)->moveCursorByPad((void *)M(s)->takeRepeatedKeys())) {
+    } else if (M(s)->moveCursorByPad(M(s)->takeRepeatedKeys())) {
         M(s)->updateNameLabel();
         M(s)->moveCursorToTarget();
         ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
@@ -1018,13 +1011,13 @@ void SongPickMenu::closeWithoutResult() {
 }
 
 void SongPickMenu::setPopupChoices() {
-    ChoiceIdList_Add(&choiceList, 0x73, 0);
-    ChoiceIdList_Add(&choiceList, 2, 1);
+    ChoiceIdList_Add((u8 *)&choiceList, 0x73, 0);
+    ChoiceIdList_Add((u8 *)&choiceList, 2, 1);
 }
 
 void SongPickMenu::openItemChoice(u32 idx, u32 x) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&choiceList, 1);
+    ChoiceIdList_Clear((u8 *)&choiceList, 1);
     if (SongPickMenu_IsPocketSlot((S *)this, idx)) {
         setPopupChoices();
         hideCursor();
@@ -1035,7 +1028,7 @@ void SongPickMenu::openItemChoice(u32 idx, u32 x) {
     }
 }
 
-void SongPickMenu::moveCursorInGrid(void *pad) {
+void SongPickMenu::moveCursorInGrid(u32 pad) {
     s32 r4 = cursorSlot;
     s32 r6 = 0;
     for (; r4 >= 5; r4 -= 5, r6++) {
@@ -1074,7 +1067,7 @@ void SongPickMenu::moveCursorInGrid(void *pad) {
     }
 }
 
-BOOL SongPickMenu::moveCursorByPad(void *pad) {
+BOOL SongPickMenu::moveCursorByPad(u32 pad) {
     u8 old = cursorSlot;
     clearFlags(0x18);
     if (pad == 0) {

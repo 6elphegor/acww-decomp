@@ -109,7 +109,7 @@ void InventoryBg_LoadBg(InventoryBg *s, s32 flag);
 void InventoryBg_LoadPicture(void *o, s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_InventoryBg_DrawSprite
-void InventoryBg_DrawSprite(s32 a, void *o);
+void InventoryBg_DrawSprite(InventoryBg *self, s32 y);
 #endif
 #ifndef PROTO_LOCAL_InventoryBg_StartBlink
 void InventoryBg_StartBlink(void *o, u32 v);

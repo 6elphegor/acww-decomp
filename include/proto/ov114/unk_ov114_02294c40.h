@@ -7,7 +7,7 @@
 #include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "menu/CreatureBookPanel.h"
-#include "types.h"
+#include "ui/LabelString.h"
 #endif
 
 #ifdef __cplusplus
@@ -98,7 +98,7 @@ u32 CreatureBook_AllocIconTask(CreatureBookPanel *s);
 void CreatureBook_ClearLabels(CreatureBookPanel *s);
 #endif
 #ifndef PROTO_LOCAL_CreatureBook_AllocLabel
-void *CreatureBook_AllocLabel(CreatureBookPanel *s);
+LabelString *CreatureBook_AllocLabel(CreatureBookPanel *s);
 #endif
 #ifndef PROTO_LOCAL_CreatureBook_SetNameLabel
 void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a);

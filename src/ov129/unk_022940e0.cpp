@@ -10,20 +10,10 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_BgmTracks_FadeInScene22  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmTracks_FadeOutScene22  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ConstellationRecord_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_SetCreator  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadScopeBg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_Reset  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarTwinkle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarTwinkle_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
@@ -32,58 +22,18 @@
 #include "proto/main/unk_020b0774.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov127/unk_ov127_02291f60.h"
 #include "proto/ov129/unk_022940e0.h"
 
 extern "C" {
 extern u16 gPad[];
-extern void *gCurrentHeap;
-extern u8 *data_021c1b3c;
 
-void *Constellation_GetRecord(s32 i);
-void ConstellationRecord_Clear(void *p);
-void Constellation_SetCreator(void *p);
-void Constellation_Store(void *p, s32 a, s32 b);
-void StarTwinkle_Init(void *a, s32 b);
-void StarTwinkle_Update(void *a);
-void BgmTracks_FadeInScene22(void *a);
-void BgmTracks_FadeOutScene22(void *a);
+// src/main/unk_020afeb4.cpp (declared there with a file-local typedef of ConstellationRecord)
+ConstellationRecord *Constellation_GetRecord(s32 i);
+void Constellation_Store(ConstellationRecord *e, s32 idx, s32 flag);
 
-void MenuButtons_LoadTextColors(void *p);
-
-void StarSky_LoadSkyBg(void *a, s32 b);
-void StarSky_LoadScopeBg(void *a, s32 b, s32 c);
-void StarSky_LoadObjGraphics(void *a);
-void StarSky_Reset(void *a);
-
-void _ZN23ConstellationEditorMenu9mainAct04Ev();
-void _ZN23ConstellationEditorMenu9mainAct02Ev();
-void _ZN23ConstellationEditorMenu9mainAct00Ev();
-void _ZN23ConstellationEditorMenu9mainAct05Ev();
-void _ZN23ConstellationEditorMenu9mainAct06Ev();
-void _ZN23ConstellationEditorMenu17updateCursorPressEv();
-void _ZN23ConstellationEditorMenu19updateCursorReleaseEv();
-void _ZN23ConstellationEditorMenu15transitionAct03Ev();
-void _ZN23ConstellationEditorMenu15transitionAct04Ev();
-void _ZN23ConstellationEditorMenu15transitionAct00Ev();
-void _ZN23ConstellationEditorMenu16updateCursorMoveEv();
-void _ZN23ConstellationEditorMenu9mainAct0AEv();
-void _ZN23ConstellationEditorMenu9mainAct0BEv();
-void _ZN23ConstellationEditorMenu15transitionAct08Ev();
-void _ZN23ConstellationEditorMenu9mainAct03Ev();
-void _ZN23ConstellationEditorMenu9mainAct0CEv();
-void _ZN23ConstellationEditorMenu9mainAct01Ev();
-void _ZN23ConstellationEditorMenu9mainAct0DEv();
-void _ZN23ConstellationEditorMenu15transitionAct0BEv();
-void _ZN23ConstellationEditorMenu9mainAct0EEv();
-void _ZN23ConstellationEditorMenu15transitionAct01Ev();
-void _ZN23ConstellationEditorMenu15transitionAct0AEv();
-void _ZN23ConstellationEditorMenu15transitionAct09Ev();
-void _ZN23ConstellationEditorMenu15transitionAct02Ev();
-void _ZN23ConstellationEditorMenu15transitionAct07Ev();
-void _ZN23ConstellationEditorMenu15transitionAct06Ev();
-void _ZN23ConstellationEditorMenu15transitionAct05Ev();
 extern const u8 sStarStateColours[4];
 extern const u8 data_ov129_0229649c[8];
 extern const u8 data_ov129_022964a4[8];
@@ -289,78 +239,35 @@ BOOL ConstellationEditorMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" void *data_ov129_02296538[2];
-extern "C" void *data_ov129_022965b8[2];
 extern "C" const u8 data_ov129_022964a4[8];
-extern "C" void *data_ov129_022965c0[2];
 extern "C" const u8 data_ov129_022964ac[8];
-extern "C" void *data_ov129_02296550[2];
-extern "C" void *data_ov129_022965e8[2];
-extern "C" void *data_ov129_022965e0[2];
-extern "C" void *data_ov129_022965d8[2];
-extern "C" void *data_ov129_022965d0[2];
-extern "C" void *data_ov129_022965a8[2];
-extern "C" void *data_ov129_022965a0[2];
 extern "C" const s32 data_ov129_022964bc[5];
-extern "C" void *data_ov129_02296578[2];
 extern "C" ProcProfile sConstellationEditorMenuProfile;
-extern "C" void *data_ov129_02296568[2];
-extern "C" void *data_ov129_02296560[2];
-extern "C" void *data_ov129_02296558[2];
 extern "C" const u8 sStarStateColours[4];
-extern "C" void *data_ov129_02296548[2];
 extern "C" const s32 data_ov129_022964d0[5];
-extern "C" void *data_ov129_022965c8[2];
-extern "C" void *data_ov129_02296570[2];
-extern "C" void *data_ov129_02296528[2];
-extern "C" void *data_ov129_02296598[2];
-extern "C" void *data_ov129_02296580[2];
 extern "C" const u8 data_ov129_0229649c[8];
 extern "C" u8 sEditorArrowCursorY[8];
 extern "C" const u8 data_ov129_022964b4[8];
-extern "C" void *data_ov129_02296530[2];
-extern "C" void *data_ov129_02296590[2];
-extern "C" void *data_ov129_02296520[2];
-extern "C" void *data_ov129_02296588[2];
 extern "C" u8 sEditorArrowCursorX[8];
-extern "C" void *data_ov129_02296540[2];
-extern "C" void *data_ov129_02296518[2];
-extern "C" void *data_ov129_022965b0[2];
-
-extern "C" void *data_ov129_02296538[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct06Ev, 0};
-
-extern "C" void *data_ov129_022965b8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct01Ev, 0};
 
 extern "C" const u8 data_ov129_022964a4[8] = {5, 4, 2, 2, 4, 5, 0, 0};
 
-extern "C" void *data_ov129_022965c0[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct0AEv, 0};
-
 extern "C" const u8 data_ov129_022964ac[8] = {1, 1, 4, 1, 4, 2, 0, 0};
-
-extern "C" void *data_ov129_02296550[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct03Ev, 0};
-
-extern "C" void *data_ov129_022965e8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct05Ev, 0};
-
-extern "C" void *data_ov129_022965e0[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct06Ev, 0};
-
-extern "C" void *data_ov129_022965d8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct07Ev, 0};
-
-extern "C" void *data_ov129_022965d0[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct02Ev, 0};
 
 BOOL ConstellationEditorMenu::execTransition() {
     static Unk_ov129_022965f8_Fn tbl[12] = {
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296560,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965b8,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965d0,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296550,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296558,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965e8,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965e0,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965d8,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296580,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965c8,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965c0,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965a8};
+        &ConstellationEditorMenu::transitionAct00,
+        &ConstellationEditorMenu::transitionAct01,
+        &ConstellationEditorMenu::transitionAct02,
+        &ConstellationEditorMenu::transitionAct03,
+        &ConstellationEditorMenu::transitionAct04,
+        &ConstellationEditorMenu::transitionAct05,
+        &ConstellationEditorMenu::transitionAct06,
+        &ConstellationEditorMenu::transitionAct07,
+        &ConstellationEditorMenu::transitionAct08,
+        &ConstellationEditorMenu::transitionAct09,
+        &ConstellationEditorMenu::transitionAct0A,
+        &ConstellationEditorMenu::transitionAct0B};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
@@ -369,21 +276,21 @@ BOOL ConstellationEditorMenu::execTransition() {
 
 void ConstellationEditorMenu::runMainState() {
     static Unk_ov129_022965f8_Fn tbl[15] = {
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296528,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296598,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296520,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296588,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296518,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296530,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296538,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296568,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296540,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296548,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296570,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296578,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_02296590,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965a0,
-        *(Unk_ov129_022965f8_Fn *)data_ov129_022965b0};
+        &ConstellationEditorMenu::mainAct00,
+        &ConstellationEditorMenu::mainAct01,
+        &ConstellationEditorMenu::mainAct02,
+        &ConstellationEditorMenu::mainAct03,
+        &ConstellationEditorMenu::mainAct04,
+        &ConstellationEditorMenu::mainAct05,
+        &ConstellationEditorMenu::mainAct06,
+        &ConstellationEditorMenu::updateCursorMove,
+        &ConstellationEditorMenu::updateCursorPress,
+        &ConstellationEditorMenu::updateCursorRelease,
+        &ConstellationEditorMenu::mainAct0A,
+        &ConstellationEditorMenu::mainAct0B,
+        &ConstellationEditorMenu::mainAct0C,
+        &ConstellationEditorMenu::mainAct0D,
+        &ConstellationEditorMenu::mainAct0E};
     (this->*tbl[mainState])();
 }
 
@@ -579,7 +486,7 @@ void ConstellationEditorMenu::initMembers() {
     endStar = 0xff;
     loadConstellation();
     PlayerActor_LocalRequestAct12();
-    BgmTracks_FadeOutScene22(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeOutScene22();
 }
 
 void ConstellationEditorMenu::releaseResources() {
@@ -587,7 +494,7 @@ void ConstellationEditorMenu::releaseResources() {
     StarSky_CancelUpload(&skyView);
     bottomButtons.freeTexts();
     PlayerActor_RequestAct10();
-    BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeInScene22();
     Gfx2d_LoadCharFile("menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 
@@ -601,7 +508,7 @@ void ConstellationEditorMenu::postInputUpdate() {
 }
 
 void ConstellationEditorMenu::preStateUpdate() {
-    StarTwinkle_Update(&twinkle);
+    StarTwinkle_Update((u8 *)&twinkle);
     bottomButtons.freeTexts();
     clearFlags(0x40);
 }
@@ -629,10 +536,10 @@ void ConstellationEditorMenu::setupBgLayers() {
 
 void ConstellationEditorMenu::setupSkyView() {
     StarSky_LoadSkyBg(&skyView, 3);
-    StarSky_LoadScopeBg(&skyView, 6, 1);
-    StarTwinkle_Init(&twinkle, 3);
-    StarSky_LoadObjGraphics(&skyView);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    StarSky_LoadScopeBg(&skyView, 6);
+    StarTwinkle_Init((u8 *)&twinkle, 3);
+    StarSky_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
     bottomButtons.setLayoutConfirmQuit04();
     if (editMode == 2) {
         ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
@@ -1009,10 +916,6 @@ void ConstellationEditorMenu::startQuit() {
     Snd_PlaySe(0x2a);
     clearFlags(0x80);
 }
-extern "C" void *data_ov129_022965a8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct0BEv, 0};
-
-extern "C" void *data_ov129_022965a0[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0DEv, 0};
-
 extern "C" const s32 data_ov129_022964bc[5] = {0, 0, 0, -4, 4};
 
 void ConstellationEditorMenu::acceptConfirmation() {
@@ -1026,8 +929,8 @@ void ConstellationEditorMenu::acceptConfirmation() {
         MenuCtrl_SetResult(1);
         s32 n = MenuCtrl_GetIndex();
         static ConstellationRecord obj;
-        ConstellationRecord_Clear(&obj);
-        Constellation_SetCreator(&obj);
+        ConstellationRecord_Clear((u8 *)&obj);
+        Constellation_SetCreator((u8 *)&obj);
         s32 i;
         for (i = 0; i < 16; i++) {
             obj.lines[i] = lines[i];
@@ -1277,7 +1180,7 @@ void ConstellationEditorMenu::markOtherConstellations() {
     s32 i = 0;
     do {
         if (i != n) {
-            ConstellationRecord *p = (ConstellationRecord *)Constellation_GetRecord(i);
+            ConstellationRecord *p = Constellation_GetRecord(i);
             if (p != NULL) {
                 s32 j = 0;
                 for (; j < 16; j++) {
@@ -1293,7 +1196,7 @@ void ConstellationEditorMenu::markOtherConstellations() {
 }
 
 void ConstellationEditorMenu::loadConstellation() {
-    ConstellationRecord *t = (ConstellationRecord *)Constellation_GetRecord(MenuCtrl_GetIndex());
+    ConstellationRecord *t = Constellation_GetRecord(MenuCtrl_GetIndex());
     s32 i;
     u16 *p = lines;
     u32 first = 0xffff;
@@ -1372,7 +1275,7 @@ void ConstellationEditorMenu::refreshLineStates(BOOL flag) {
 }
 
 BOOL ConstellationEditorMenu::touchesOtherConstellation(u32 a, u32 b) {
-    u8 *q = StarSky_GetLineStars(a);
+    const u8 *q = StarSky_GetLineStars(a);
     s32 i;
     for (i = 0; i < 2; i++) {
         u32 c = q[i];
@@ -1504,7 +1407,7 @@ u32 ConstellationEditorMenu::findLineBetween(u32 id, u32 val) {
     s32 n = StarSky_GetLinesAround(nb, x, y);
     s32 i;
     for (i = 0; i < n; i++) {
-        u8 *q = StarSky_GetLineStars(nb[i]);
+        const u8 *q = StarSky_GetLineStars(nb[i]);
         s32 j;
         for (j = 0; j < 2; j++) {
             if (val == q[j]) {
@@ -1516,7 +1419,7 @@ u32 ConstellationEditorMenu::findLineBetween(u32 id, u32 val) {
 }
 
 s32 ConstellationEditorMenu::removeCursorLine() {
-    volatile u8 *q;
+    const volatile u8 *q;
     u8 *pi;
     u16 *slot;
     s32 n;
@@ -1584,7 +1487,7 @@ s32 ConstellationEditorMenu::removeCursorLine() {
             return 0;
         }
     }
-    u8 *q2 = StarSky_GetLineStars(cursorLine);
+    const u8 *q2 = StarSky_GetLineStars(cursorLine);
     u32 r = 0xff;
     u32 c = endStar;
     u32 q0 = q2[0];
@@ -1622,7 +1525,7 @@ s32 ConstellationEditorMenu::tapFirstStar() {
 
 void ConstellationEditorMenu::advanceEndStar() {
     Snd_PlaySe(0x881);
-    u8 *q = StarSky_GetLineStars(cursorLine);
+    const u8 *q = StarSky_GetLineStars(cursorLine);
     u32 c = q[0];
     if (c == endStar) {
         endStar = q[1];
@@ -1728,31 +1631,11 @@ void ConstellationEditorMenu::setFlags(u32 mask) { stateFlags = stateFlags | mas
 
 void ConstellationEditorMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
-extern "C" void *data_ov129_02296578[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0BEv, 0};
-
 extern "C" ProcProfile sConstellationEditorMenuProfile = {(void *(*)())ConstellationEditorMenu_Create, 0xad, 0xb1};
-
-extern "C" void *data_ov129_02296568[2] = {(void *)_ZN23ConstellationEditorMenu16updateCursorMoveEv, 0};
-
-extern "C" void *data_ov129_02296560[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct00Ev, 0};
-
-extern "C" void *data_ov129_02296558[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct04Ev, 0};
 
 extern "C" const u8 sStarStateColours[4] = {4, 7, 6, 5};
 
-extern "C" void *data_ov129_02296548[2] = {(void *)_ZN23ConstellationEditorMenu19updateCursorReleaseEv, 0};
-
 extern "C" const s32 data_ov129_022964d0[5] = {0, 4, -4, 0, 0};
-
-extern "C" void *data_ov129_022965c8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct09Ev, 0};
-
-extern "C" void *data_ov129_02296570[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0AEv, 0};
-
-extern "C" void *data_ov129_02296528[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct00Ev, 0};
-
-extern "C" void *data_ov129_02296598[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct01Ev, 0};
-
-extern "C" void *data_ov129_02296580[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct08Ev, 0};
 
 extern "C" const u8 data_ov129_0229649c[8] = {0, 0, 5, 0, 2, 5, 0, 0};
 
@@ -1760,18 +1643,5 @@ extern "C" u8 sEditorArrowCursorY[8] = {0x60, 0x60, 0xb8, 0x08, 0, 0, 0, 0};
 
 extern "C" const u8 data_ov129_022964b4[8] = {3, 3, 3, 3, 1, 0, 0, 0};
 
-extern "C" void *data_ov129_02296530[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct05Ev, 0};
-
-extern "C" void *data_ov129_02296590[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0CEv, 0};
-
-extern "C" void *data_ov129_02296520[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct02Ev, 0};
-
-extern "C" void *data_ov129_02296588[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct03Ev, 0};
-
 extern "C" u8 sEditorArrowCursorX[8] = {0x10, 0xf0, 0x80, 0x80, 0, 0, 0, 0};
 
-extern "C" void *data_ov129_02296540[2] = {(void *)_ZN23ConstellationEditorMenu17updateCursorPressEv, 0};
-
-extern "C" void *data_ov129_02296518[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct04Ev, 0};
-
-extern "C" void *data_ov129_022965b0[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0EEv, 0};

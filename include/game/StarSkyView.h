@@ -11,7 +11,7 @@ public:
     StarSkyView();
     ~StarSkyView();
     /* 0x0000 */ BgVramTask screenTask;      // uploads skyScreenWork (StarSky_Update)
-    /* 0x0024 */ u8 skyScreen[0x1000];       // menu/star/bg.bsc with the constellation lines drawn in
+    /* 0x0024 */ u16 skyScreen[0x800];       // menu/star/bg.bsc with the constellation lines drawn in
     /* 0x1024 */ u16 skyScreenWork[0x800];   // skyScreen with the clipped rows blanked, uploaded
     /* 0x2024 */ u16 scopeScreen[0x400];     // menu/star/b_scp_bg.bsc (telescope frame)
     /* 0x2824 */ s16 scrollX;

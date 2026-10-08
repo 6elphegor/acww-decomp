@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "talk/EncodedString16Buf.h"
 #include "talk/LabelBalloonText.h"
 // ov125: scene overlay (class PatternSelectMenu, vtable 0x02298478, 0x6bc bytes).
@@ -16,43 +15,36 @@
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
 #include "ui/LabelBalloon.h"
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPatternSelectIconCell  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov125/unk_ov125_02297060.h"
 
-struct PopupChoiceIdList;
 
 extern "C" {
 extern volatile u16 gPad[];
-extern void *gCurrentHeap;
-void MIi_CpuCopy16(void *a, void *b, u32 n);
-void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
-void StrBuf_GameToAscii(void *p, void *q);
+void MIi_CpuCopy16(const void *src, void *dest, u32 size);
 
-
-BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
+// ov002's popup menu functions (src/ov002/unk_ov002_022013ac.cpp: the first argument is the PopupChoiceMenuBody)
+BOOL PopupChoice_MoveCursor(void *p, s32 a, u8 *pos, u32 n);
 BOOL PopupChoice_TickDecideDelay(void *p);
-u32 PopupChoice_DecideCancel(void *p, s32 x);
+u8 PopupChoice_DecideCancel(void *p, s32 x);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *p);
 void PopupChoice_Update(void *p);
-void PopupChoice_Close(void *p, u32 v);
-void PopupChoice_Open(void *p, u32 v);
+void PopupChoice_Close(void *p, s32 v);
+void PopupChoice_Open(void *p, s32 v);
 void PopupChoice_LoadChoiceBg(void *p);
-void MenuButtons_LoadTextColors(void *p);
 
 extern const u8 sPatternSelectSlotX[9];
 extern const u8 sPatternSelectSlotY[9];
@@ -93,7 +85,7 @@ public:
     void clearFlags(u32 mask);
     void setFlags(u32 mask);
     BOOL testFlags(u32 mask);
-    BOOL moveCursorByPad(void *pad);
+    BOOL moveCursorByPad(u32 pad);
     BOOL cursorRowDown(u32 lo, u32 hi, u32 to);
     BOOL cursorRowUp(u32 lo, u32 hi, u32 to);
     BOOL stepCursorLeft(u32 lo, u32 hi);
@@ -166,9 +158,8 @@ public:
     /* 0x6bb */ u8 returnState;
 };
 
-extern "C" u16 sPatternSelectIconCell[4];
 extern "C" ProcProfile sPatternSelectMenuProfile = {(void *(*)())PatternSelectMenu_Create, 0xaa, 0xae};
-u16 sPatternSelectIconCell[4] = {0x00f0, 0x81f0, 0x40c0, 0xffff};
+extern "C" u16 sPatternSelectIconCell[4] = {0x00f0, 0x81f0, 0x40c0, 0xffff};
 // Data order: this unit is placed object by object (see object_order.txt).
 
 static inline BOOL Unk_ov125_02297bd4_Both() {
@@ -207,11 +198,10 @@ BOOL PatternSelectMenu::onDraw() {
     header.drawPlain(0, r7);
     u8 i = 0;
     s32 j = 0;
-    s32 z = 0;
     do {
         sPatternSelectIconCell[2] = (sPatternSelectIconCell[2] & 0xfffffc00) | ((u16)(j * 4 + 0xc0) & 0x3ff);
         s32 y = r7 + getSlotY(i);
-        Oam_DrawObj(1, sPatternSelectIconCell, getSlotX(i), y, j + 5, 2, z);
+        Oam_DrawObj(1, sPatternSelectIconCell, getSlotX(i), y, j + 5, 2, NULL);
         i++;
         j++;
     } while (j < 8);
@@ -376,37 +366,34 @@ void PatternSelectMenu::loadHeaderBg() {
 }
 
 extern "C" void PatternSelect_LoadPatternIcons() {
-    void *heap = gCurrentHeap;
-    void *buf = Heap_AllocTail(heap, 0x1000);
-    void *obj = PlayerData_GetCurrent()->getPatterns();
+    Heap *heap = gCurrentHeap;
+    u32 *buf = (u32 *)Heap_AllocTail(heap, 0x1000);
+    PlayerPatterns *obj = (PlayerPatterns *)PlayerData_GetCurrent()->getPatterns();
     u8 i = 0;
     do {
-        void *t = ((PlayerPatterns *)(obj))->getPatternByOrder(i);
-        t = ((Pattern *)(t))->getPixels();
-        Gfx2d_LinearToTilesInRow32(t, buf, i * 4, 4, 4);
+        u8 *t = obj->getPatternByOrder(i)->getPixels();
+        Gfx2d_LinearToTilesInRow32((u32 *)t, buf, i * 4, 4, 4);
         i++;
     } while (i < 8);
-    Gfx2d_LoadCharRange(buf, 8, 0xc0, 0xc0, 0x13f);
+    Gfx2d_LoadCharRange((u8 *)buf, 8, 0xc0, 0xc0, 0x13f);
     Heap_Free(heap, buf);
-    void *buf2 = Heap_AllocTail(heap, 0x100);
+    u16 *buf2 = (u16 *)Heap_AllocTail(heap, 0x100);
     s32 off = 0;
     u8 k = 0;
     do {
-        void *t = ((PlayerPatterns *)(obj))->getPatternByOrder(k);
-        t = ((Pattern *)(t))->getInfo();
-        t = ((PatternInfo *)(t))->getPaletteData();
-        MIi_CpuCopy16(t, (u8 *)buf2 + off * 2, 0x20);
+        u8 *t = obj->getPatternByOrder(k)->getInfo()->getPaletteData();
+        MIi_CpuCopy16(t, buf2 + off, 0x20);
         off += 0x10;
         k++;
     } while (k < 8);
-    Gfx2d_LoadPaletteRange(buf2, 8, 5, 5, 0xc);
+    Gfx2d_LoadPaletteRange((u8 *)buf2, 8, 5, 5, 0xc);
     Heap_Free(heap, buf2);
 }
 
 void PatternSelectMenu::loadPatternIcons() {
     PatternSelect_LoadPatternIcons();
     header.loadObjGfx(4);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void PatternSelectMenu::updateTouch() {
@@ -445,7 +432,7 @@ void PatternSelectMenu::updateButtons() {
         startTouchInput();
         nameBalloon.hide(1);
     } else {
-        if (moveCursorByPad((void *)takeRepeatedKeys())) {
+        if (moveCursorByPad(takeRepeatedKeys())) {
             updateNameLabel();
             moveCursorToTarget();
             nameBalloon.hide(0);
@@ -613,21 +600,17 @@ u32 PatternSelectMenu::findTouchedSlot() {
 }
 
 void PatternSelectMenu::refreshNameLabel() {
-    u8 a[HOST_SIZED(0x20, EncodedString16Buf) / 1] HOST_ALIGN8;
-    u8 b[HOST_SIZED(0x28, LabelBalloonText) / 1] HOST_ALIGN8;
     s32 x = getSlotY(balloonSlot);
     x -= 0x84;
     if (MenuCtrl_IsButtons()) {
         x -= 0xa;
     }
     ((LabelBalloon *)(&nameBalloon))->setPos(getSlotX(balloonSlot) - 0x78, x);
-    new (a) EncodedString16Buf();
-    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(PlayerData_GetCurrent()->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
-    new (b) LabelBalloonText();
-    StrBuf_GameToAscii(b, a);
-    ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)(b));
-    ((LabelBalloonText *)(b))->LabelBalloonText::~LabelBalloonText();
-    ((EncodedString16Buf *)(a))->EncodedString16Buf::~EncodedString16Buf();
+    EncodedString16Buf a;
+    ((PlayerPatterns *)PlayerData_GetCurrent()->getPatterns())->getPatternByOrder(balloonSlot)->getInfo()->getTitleEncoded(&a);
+    LabelBalloonText b;
+    StrBuf_GameToAscii((StrBuf *)&b, (StrBuf *)&a);
+    ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)&b);
 }
 
 void PatternSelectMenu::updateNameLabel() {
@@ -641,29 +624,29 @@ void PatternSelectMenu::updateNameLabel() {
 }
 
 void PatternSelectMenu::setPopupChoices() {
-    ChoiceIdList_Clear(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 1);
+    ChoiceIdList_Clear(choiceList.msgIds, 1);
     switch (MenuCtrl_GetMode()) {
     case 5:
     case 8:
     case 9:
-        ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 0x91, 0);
+        ChoiceIdList_Add(choiceList.msgIds, 0x91, 0);
         break;
     case 4:
     case 7:
     case 10:
-        ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 0x72, 0);
+        ChoiceIdList_Add(choiceList.msgIds, 0x72, 0);
         break;
     default:
-        ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 0x28, 0);
+        ChoiceIdList_Add(choiceList.msgIds, 0x28, 0);
         break;
     }
-    ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 2, 1);
+    ChoiceIdList_Add(choiceList.msgIds, 2, 1);
 }
 
-u32 PatternSelectMenu::getPopupRowValue(u32 i) { return *((u8 *)this + i + 0x421); }
+u32 PatternSelectMenu::getPopupRowValue(u32 i) { return choiceList.values[i]; }
 
 void PatternSelectMenu::openPopup() {
-    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0)), 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, 0);
     s32 a = getSlotX(selectedSlot) - 0x18;
     s32 b = getSlotY(selectedSlot) - 0x10;
     popup.placeAbove(a, b);
@@ -816,7 +799,7 @@ BOOL PatternSelectMenu::cursorRowDown(u32 lo, u32 hi, u32 to) {
     return FALSE;
 }
 
-BOOL PatternSelectMenu::moveCursorByPad(void *pad) {
+BOOL PatternSelectMenu::moveCursorByPad(u32 pad) {
     u32 prev = cursorSlot;
     clearFlags(0xc);
     if (MenuKeys_HasLeft(pad)) {

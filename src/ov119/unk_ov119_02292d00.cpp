@@ -19,21 +19,6 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_MenuCtrl_ClearFriendPageFromIndex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_GetIndex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov119_02295588  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov119_02295648  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov119_02295660  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov119_02295778  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov119_022957a8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov119_022957d8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -53,59 +38,26 @@
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov119/unk_ov119_02292d00.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02093ff0.h"
+#include "net/FriendEntry.h"
 
-// Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
-#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
-#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
-#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
-#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
-#define PlayerData_getWifiUserData _ZN10PlayerData15getWifiUserDataEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define PlayerData_getFriendList _ZN10PlayerData13getFriendListEv
-#define MsgString_fromEncoded _ZN9MsgString11fromEncodedEP13EncodedStringii
-#define MsgString_setLine _ZN9MsgString7setLineEPh
-#define MsgString_clear _ZN9MsgString5clearEv
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define PlayerId_getName _ZN8PlayerId7getNameEv
-#define MenuTabBar_requestSaveOnClose _ZN10MenuTabBar18requestSaveOnCloseEv
-#define MenuTabBar_hideTabs _ZN10MenuTabBar8hideTabsEv
-#define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
-#define MenuTabBar_onTabMenuClosed _ZN10MenuTabBar15onTabMenuClosedEv
-#define PopupChoiceMenu_placeAbove _ZN15PopupChoiceMenu10placeAboveEii
-#define PopupChoiceMenu_init _ZN15PopupChoiceMenu4initEiiPKc
-#define PopupChoiceMenuBody_setRowsFromIds _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi
-#define PopupChoiceMenuBody_addCustomRow _ZN19PopupChoiceMenuBody12addCustomRowEP17PopupChoiceIdListPvj
-#define PopupChoiceMenuBody_hitTestRowOrLast _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii
-
-#define func_02094030 _ZN11MsgString9BC1Ev
-#define func_02094018 _ZN11MsgString9BD1Ev
 extern "C" {
 extern u8 gU8None;
 extern u16 gPad[];
-extern u32 gCurrentHeap;
 
-
-void *FriendList_GetEntries(void *p);
+FriendEntry *FriendList_GetEntries(void *p);
 BOOL DwcFriendData_Compare(void *p, void *q);
 void FriendList_Compact(void *p);
 void EncodedString_SetRaw(void *dst, void *src, s32 n);
-void String_SetSlot(s32 a, void *p);
-void *Msg_SkipLines(void *p, s32 i);
-void TownId_GetNameString(void *a, void *b);
-void *PlayerId_GetTownId(void *a);
+u8 *Msg_SkipLines(u8 *p, s32 i);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *src, void *dst, s32 n);
-s32 Oam_GetObjX(void *p);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-u32 MenuCtrl_ClearFriendPageFromIndex();
-u32 MenuCtrl_GetIndex(u32 a);
-
 
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
-void PopupChoiceMenu_placeAbove(void *self, u32 a, u32 b);
 BOOL PopupChoice_TickDecideDelay(void *self);
 u8 PopupChoice_DecideCancel(void *self, s32 x);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
@@ -115,90 +67,22 @@ s32 PopupChoice_ForceClose(void *p);
 void PopupChoice_LoadFriendBg(void *p);
 void PopupChoice_Draw(void *p);
 
-void LabelString_redrawAligned(void *self, s32 a, s32 b);
-void LabelString_createLabel(void *self, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f);
-void LabelString_destroyLabel(void *self);
-void PlayerId_getNameString(void *self, void *b);
-void *PlayerData_getWifiUserData(void *self);
-void *PlayerData_getPlayerId(void *self);
-void *PlayerData_getFriendList(void *self);
-void MsgString_fromEncoded(void *self, void *b, s32 c, s32 d);
-void MsgString_setLine(void *self, void *b);
-void MsgString_clear(void *self);
-void MsgString_copy(void *self, void *b);
-BOOL CommManager_isOnline(void *self);
-void *PlayerId_getName(void *self);
-void MenuTabBar_requestSaveOnClose(void *self);
-void MenuTabBar_hideTabs(void *self);
-void MenuTabBar_selectTab(void *self, u32 idx);
-void MenuTabBar_onTabMenuClosed(void *self);
-void PopupChoiceMenu_init(void *self, s32 a, s32 b, const char *c);
-void PopupChoiceMenuBody_setRowsFromIds(void *self, void *rec, u32 v);
-void PopupChoiceMenuBody_addCustomRow(void *self, void *rec, void *p, u32 v);
-s32 PopupChoiceMenuBody_hitTestRowOrLast(void *self, u32 a, u32 b);
-void _ZN11MsgString9CC2Ev(void *self);
-void _ZN15EncodedString8BC2Ev(void *self);
-void _ZN15EncodedString8BD1Ev(void *self);
-void _ZN11MsgString9BC1Ev(void *self);
-void _ZN11MsgString9BD1Ev(void *self);
 
 extern CommManager *gCommManager;
-extern u8 *data_ov119_02295648[6];
-extern u32 data_ov119_02295660[8];
-extern u32 data_ov119_02295778[12];
-extern u32 data_ov119_022957a8[12];
-extern u32 data_ov119_022957d8[24];
 extern GXOamAttr data_ov119_02295588;
 }
 
-
-
-
 struct PopupChoiceIdList;
-
-
-
-
-
-
 
 #define U970_A ((MenuCursorBase *)&cursor)
 #define U970_B ((MenuCursor *)&cursor)
 #define U970_C ((HandCursor *)&cursor)
-
-
 
 // stack helper objects (ctor/dtor are plain calls into main)
 
 class FriendRosterTab;
 typedef void (FriendRosterTab::*Unk_ov119_02295840_Fn)();
 
-#define U3D0 ((u8 *)&choiceList)
-extern "C" {
-void _ZN15FriendRosterTab11updateTouchEv();
-void _ZN15FriendRosterTab9mainAct01Ev();
-void _ZN15FriendRosterTab13updateButtonsEv();
-void _ZN15FriendRosterTab16updateCursorMoveEv();
-void _ZN15FriendRosterTab17updateCursorPressEv();
-void _ZN15FriendRosterTab19updateCursorReleaseEv();
-void _ZN15FriendRosterTab9mainAct06Ev();
-void _ZN15FriendRosterTab9mainAct07Ev();
-void _ZN15FriendRosterTab9mainAct08Ev();
-void _ZN15FriendRosterTab9mainAct09Ev();
-void _ZN15FriendRosterTab9mainAct0AEv();
-void _ZN15FriendRosterTab9mainAct0BEv();
-void _ZN15FriendRosterTab9mainAct0CEv();
-void _ZN15FriendRosterTab9mainAct0DEv();
-void _ZN15FriendRosterTab9mainAct0EEv();
-void _ZN15FriendRosterTab9mainAct0FEv();
-void _ZN15FriendRosterTab9mainAct10Ev();
-void _ZN15FriendRosterTab9mainAct11Ev();
-void _ZN15FriendRosterTab9stateLoadEv();
-void _ZN15FriendRosterTab9stateOpenEv();
-void _ZN15FriendRosterTab12stateOpeningEv();
-void _ZN15FriendRosterTab10stateCloseEv();
-void _ZN15FriendRosterTab12stateClosingEv();
-}
 #define A0V (*(volatile u8 *)&focus)
 #define E9V (*(volatile u8 *)&labelCount)
 #define B1V (*(volatile u8 *)&delayTimer)
@@ -244,8 +128,8 @@ public:
     BOOL hasGaps();
     void buildFriendIndex();
     u32 getFocusedFriendIndex();
-    void *getFocusedFriendEntry();
-    void *getFriendEntries();
+    FriendEntry *getFocusedFriendEntry();
+    FriendEntry *getFriendEntries();
     BOOL isWifiMode();
     void setPaletteFade(s32 x);
     u16 blendColor(s32 c1, s32 c2, s32 t, s32 n);
@@ -275,7 +159,7 @@ public:
     void showCursor();
     void addTitleLabel(u32 id);
     void addRegisterLabel();
-    void *allocTextLabel();
+    LabelString *allocTextLabel();
     void resetTextLabels();
     void showError(u8 v);
     void resumeInput();
@@ -378,7 +262,7 @@ BOOL FriendRosterTab::onDelete() {
 }
 
 BOOL FriendRosterTab::onDraw() {
-    u8 *p = (u8 *)slideY + 0x60;
+    s32 p = slideY + 0x60;
     s32 i;
     if (!testFlags(1)) {
         return TRUE;
@@ -387,131 +271,82 @@ BOOL FriendRosterTab::onDraw() {
     if (MenuCtrl_IsButtons()) {
         U970_A->drawWrapped();
     }
-    Oam_DrawCell(1, data_ov119_02295660, 0x80, (s32)p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov119_02295660, 0x80, p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     for (i = 0; i < 6; i++) {
-        Oam_DrawCell(1, data_ov119_02295648[i], 0x80, (s32)p, i == targetPage ? 5 : 4, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov119_02295648[i], 0x80, p, i == targetPage ? 5 : 4, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
-    Oam_DrawCell(1, data_ov119_02295778, 0x80, (s32)p, registerButtonPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov119_02295778, 0x80, p, registerButtonPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     s32 x = 0x80;
     switch (page) {
     case 4:
         for (i = 0; i < 12; i++) {
             data_ov119_02295588.attr2 = (data_ov119_02295588.attr2 & 0xfffffc00) | (u16)(ownCodeDigits[i] * 2 + 0x1a0) & 0x3ff;
-            Oam_DrawObj(1, &data_ov119_02295588, x, (s32)p, -1, 2, 0);
+            Oam_DrawObj(1, &data_ov119_02295588, x, p, -1, 2, NULL);
             x += 14;
         }
-        Oam_DrawCell(1, data_ov119_022957d8, 0x80, (s32)p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov119_022957d8, 0x80, p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     case 5:
         break;
     default:
         if (selectedRow != -1) {
-            Oam_DrawCell(1, data_ov119_022957a8, x, (s32)(p + selectedRow * 16 - 16), -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, data_ov119_022957a8, x, p + selectedRow * 16 - 16, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
         break;
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" void *data_ov119_022955e0[2];
-extern "C" void *data_ov119_022955e8[2];
-extern "C" void *data_ov119_022955b0[2];
-extern "C" u8 *data_ov119_02295648[6];
-extern "C" void *data_ov119_022955f8[2];
-extern "C" u32 data_ov119_02295660[8];
-extern "C" u32 data_ov119_022957d8[24];
-extern "C" void *data_ov119_022955a0[2];
-extern "C" void *data_ov119_02295580[2];
-extern "C" void *data_ov119_02295600[2];
-extern "C" u32 data_ov119_02295680[10];
+extern "C" GXOamAttr data_ov119_02295660[4];
+extern "C" GXOamAttr data_ov119_022957d8[12];
+extern "C" GXOamAttr data_ov119_02295680[5];
 extern "C" ProcProfile sFriendRosterTabProfile;
-extern "C" void *data_ov119_02295638[2];
-extern "C" void *data_ov119_02295630[2];
-extern "C" u32 data_ov119_022956d0[10];
-extern "C" void *data_ov119_02295620[2];
-extern "C" void *data_ov119_02295618[2];
-extern "C" void *data_ov119_02295610[2];
-extern "C" u32 data_ov119_022956f8[10];
-extern "C" u32 data_ov119_02295720[10];
-extern "C" void *data_ov119_02295608[2];
-extern "C" void *data_ov119_02295590[2];
-extern "C" void *data_ov119_022955d8[2];
-extern "C" void *data_ov119_02295640[2];
-extern "C" u32 data_ov119_022956a8[10];
-extern "C" void *data_ov119_02295628[2];
-extern "C" void *data_ov119_022955b8[2];
-extern "C" u32 data_ov119_02295748[12];
+extern "C" GXOamAttr data_ov119_022956d0[5];
+extern "C" GXOamAttr data_ov119_022956f8[5];
+extern "C" GXOamAttr data_ov119_02295720[5];
+extern "C" GXOamAttr data_ov119_022956a8[5];
+extern "C" GXOamAttr data_ov119_02295748[6];
 extern "C" GXOamAttr data_ov119_02295588;
-extern "C" void *data_ov119_022955a8[2];
-extern "C" void *data_ov119_02295598[2];
-extern "C" void *data_ov119_022955c0[2];
-extern "C" u32 data_ov119_02295778[12];
-extern "C" void *data_ov119_022955f0[2];
-extern "C" void *data_ov119_022955c8[2];
-extern "C" u32 data_ov119_022957a8[12];
+extern "C" GXOamAttr data_ov119_02295778[6];
+extern "C" GXOamAttr data_ov119_022957a8[6];
 
-extern "C" void *data_ov119_022955e0[2] = {(void *)_ZN15FriendRosterTab9mainAct11Ev, 0};
+extern "C" GXOamAttr *data_ov119_02295648[6] = {data_ov119_02295720, data_ov119_02295680, data_ov119_022956a8, data_ov119_022956d0, data_ov119_022956f8, data_ov119_02295748};
 
-extern "C" void *data_ov119_022955e8[2] = {(void *)_ZN15FriendRosterTab13updateButtonsEv, 0};
+extern "C" GXOamAttr data_ov119_02295660[4] = {{0x81b440bb, 0x160, 1, 0x4, 0x0}, {0x81d440bb, 0x164, 1, 0x4, 0x0}, {0x81f440bb, 0x168, 1, 0x4, 0x0}, {0x1480bb, 0x16c, 1, 0x4, 0xffff}};
 
-extern "C" void *data_ov119_022955b0[2] = {(void *)_ZN15FriendRosterTab19updateCursorReleaseEv, 0};
-
-extern "C" u8 *data_ov119_02295648[6] = {(u8 *)data_ov119_02295720, (u8 *)data_ov119_02295680, (u8 *)data_ov119_022956a8, (u8 *)data_ov119_022956d0, (u8 *)data_ov119_022956f8, (u8 *)data_ov119_02295748};
-
-extern "C" void *data_ov119_022955f8[2] = {(void *)_ZN15FriendRosterTab9mainAct0DEv, 0};
-
-extern "C" u32 data_ov119_02295660[8] = {0x81b440bb, 0x00004560, 0x81d440bb, 0x00004564, 0x81f440bb, 0x00004568, 0x001480bb, 0xffff456c};
-
-extern "C" u32 data_ov119_022957d8[24] = {0x00314000, 0x0000a1ba, 0x00234000, 0x0000a1ba, 0x00154000, 0x0000a1ba, 0x00074000, 0x0000a1ba, 0x01f94000, 0x0000a1b8, 0x01eb4000, 0x0000a1b8, 0x01dd4000, 0x0000a1b8, 0x01cf4000, 0x0000a1b8, 0x01c14000, 0x0000a1b6, 0x01b34000, 0x0000a1b6, 0x01a54000, 0x0000a1b6, 0x01974000, 0xffffa1b6};
-
-extern "C" void *data_ov119_022955a0[2] = {(void *)_ZN15FriendRosterTab17updateCursorPressEv, 0};
+extern "C" GXOamAttr data_ov119_022957d8[12] = {{0x314000, 0x1ba, 0, 0xa, 0x0}, {0x234000, 0x1ba, 0, 0xa, 0x0}, {0x154000, 0x1ba, 0, 0xa, 0x0}, {0x74000, 0x1ba, 0, 0xa, 0x0}, {0x1f94000, 0x1b8, 0, 0xa, 0x0}, {0x1eb4000, 0x1b8, 0, 0xa, 0x0}, {0x1dd4000, 0x1b8, 0, 0xa, 0x0}, {0x1cf4000, 0x1b8, 0, 0xa, 0x0}, {0x1c14000, 0x1b6, 0, 0xa, 0x0}, {0x1b34000, 0x1b6, 0, 0xa, 0x0}, {0x1a54000, 0x1b6, 0, 0xa, 0x0}, {0x1974000, 0x1b6, 0, 0xa, 0xffff}};
 
 BOOL FriendRosterTab::execTransition() {
     static Unk_ov119_02295840_Fn tbl[5] = {
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295640, *(Unk_ov119_02295840_Fn *)data_ov119_02295638,
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295630, *(Unk_ov119_02295840_Fn *)data_ov119_02295628,
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295620};
+        &FriendRosterTab::stateLoad, &FriendRosterTab::stateOpen,
+        &FriendRosterTab::stateOpening, &FriendRosterTab::stateClose,
+        &FriendRosterTab::stateClosing};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
-extern "C" void *data_ov119_02295580[2] = {(void *)_ZN15FriendRosterTab9mainAct07Ev, 0};
 
-extern "C" void *data_ov119_02295600[2] = {(void *)_ZN15FriendRosterTab9mainAct0BEv, 0};
-
-extern "C" u32 data_ov119_02295680[10] = {0x404d00e7, 0x000044c2, 0x804240e5, 0x0000450b, 0x006280e5, 0x0000450f, 0x404240f5, 0x0000454b, 0x006200f5, 0xffff454f};
+extern "C" GXOamAttr data_ov119_02295680[5] = {{0x404d00e7, 0xc2, 1, 0x4, 0x0}, {0x804240e5, 0x10b, 1, 0x4, 0x0}, {0x6280e5, 0x10f, 1, 0x4, 0x0}, {0x404240f5, 0x14b, 1, 0x4, 0x0}, {0x6200f5, 0x14f, 1, 0x4, 0xffff}};
 
 extern "C" ProcProfile sFriendRosterTabProfile = {(void *(*)())FriendRosterTab_Create, 0xa2, 0xa6};
 
-extern "C" void *data_ov119_02295638[2] = {(void *)_ZN15FriendRosterTab9stateOpenEv, 0};
+extern "C" GXOamAttr data_ov119_022956d0[5] = {{0x404d0007, 0xc6, 1, 0x4, 0x0}, {0x80424005, 0x10b, 1, 0x4, 0x0}, {0x628005, 0x10f, 1, 0x4, 0x0}, {0x40424015, 0x14b, 1, 0x4, 0x0}, {0x620015, 0x14f, 1, 0x4, 0xffff}};
 
-extern "C" void *data_ov119_02295630[2] = {(void *)_ZN15FriendRosterTab12stateOpeningEv, 0};
+extern "C" GXOamAttr data_ov119_022956f8[5] = {{0x404d0017, 0xc8, 0, 0x4, 0x0}, {0x80424015, 0x10b, 1, 0x4, 0x0}, {0x628015, 0x10f, 1, 0x4, 0x0}, {0x40424025, 0x14b, 1, 0x4, 0x0}, {0x620025, 0x14f, 1, 0x4, 0xffff}};
 
-extern "C" u32 data_ov119_022956d0[10] = {0x404d0007, 0x000044c6, 0x80424005, 0x0000450b, 0x00628005, 0x0000450f, 0x40424015, 0x0000454b, 0x00620015, 0xffff454f};
-
-extern "C" void *data_ov119_02295620[2] = {(void *)_ZN15FriendRosterTab12stateClosingEv, 0};
-
-extern "C" void *data_ov119_02295618[2] = {(void *)_ZN15FriendRosterTab9mainAct0AEv, 0};
-
-extern "C" void *data_ov119_02295610[2] = {(void *)_ZN15FriendRosterTab9mainAct06Ev, 0};
-
-extern "C" u32 data_ov119_022956f8[10] = {0x404d0017, 0x000040c8, 0x80424015, 0x0000450b, 0x00628015, 0x0000450f, 0x40424025, 0x0000454b, 0x00620025, 0xffff454f};
-
-extern "C" u32 data_ov119_02295720[10] = {0x404d00d7, 0x000054c0, 0x804240d5, 0x0000550b, 0x006280d5, 0x0000550f, 0x404240e5, 0x0000454b, 0x006200e5, 0xffff454f};
-
-extern "C" void *data_ov119_02295608[2] = {(void *)_ZN15FriendRosterTab11updateTouchEv, 0};
+extern "C" GXOamAttr data_ov119_02295720[5] = {{0x404d00d7, 0xc0, 1, 0x5, 0x0}, {0x804240d5, 0x10b, 1, 0x5, 0x0}, {0x6280d5, 0x10f, 1, 0x5, 0x0}, {0x404240e5, 0x14b, 1, 0x4, 0x0}, {0x6200e5, 0x14f, 1, 0x4, 0xffff}};
 
 void FriendRosterTab::runMainState() {
     static Unk_ov119_02295840_Fn tbl[18] = {
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295608, *(Unk_ov119_02295840_Fn *)data_ov119_022955a8,
-        *(Unk_ov119_02295840_Fn *)data_ov119_022955e8, *(Unk_ov119_02295840_Fn *)data_ov119_022955f0,
-        *(Unk_ov119_02295840_Fn *)data_ov119_022955a0, *(Unk_ov119_02295840_Fn *)data_ov119_022955b0,
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295610, *(Unk_ov119_02295840_Fn *)data_ov119_02295580,
-        *(Unk_ov119_02295840_Fn *)data_ov119_022955c8, *(Unk_ov119_02295840_Fn *)data_ov119_022955c0,
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295618, *(Unk_ov119_02295840_Fn *)data_ov119_02295600,
-        *(Unk_ov119_02295840_Fn *)data_ov119_02295598, *(Unk_ov119_02295840_Fn *)data_ov119_022955f8,
-        *(Unk_ov119_02295840_Fn *)data_ov119_022955d8, *(Unk_ov119_02295840_Fn *)data_ov119_02295590,
-        *(Unk_ov119_02295840_Fn *)data_ov119_022955b8, *(Unk_ov119_02295840_Fn *)data_ov119_022955e0};
+        &FriendRosterTab::updateTouch, &FriendRosterTab::mainAct01,
+        &FriendRosterTab::updateButtons, &FriendRosterTab::updateCursorMove,
+        &FriendRosterTab::updateCursorPress, &FriendRosterTab::updateCursorRelease,
+        &FriendRosterTab::mainAct06, &FriendRosterTab::mainAct07,
+        &FriendRosterTab::mainAct08, &FriendRosterTab::mainAct09,
+        &FriendRosterTab::mainAct0A, &FriendRosterTab::mainAct0B,
+        &FriendRosterTab::mainAct0C, &FriendRosterTab::mainAct0D,
+        &FriendRosterTab::mainAct0E, &FriendRosterTab::mainAct0F,
+        &FriendRosterTab::mainAct10, &FriendRosterTab::mainAct11};
     (this->*tbl[mainState])();
 }
 
@@ -592,7 +427,8 @@ void FriendRosterTab::stateLoad() {
     PopupChoice_LoadFriendBg(&popup);
     u32 v;
     if (MenuCtrl_IsFriendPageFromIndex()) {
-        v = MenuCtrl_GetIndex(MenuCtrl_ClearFriendPageFromIndex());
+        MenuCtrl_ClearFriendPageFromIndex();
+        v = MenuCtrl_GetIndex();
     } else {
         v = 0;
     }
@@ -924,8 +760,8 @@ void FriendRosterTab::mainAct0F() {
 }
 
 void FriendRosterTab::mainAct10() {
-    u8 *base = (u8 *)getFriendEntries();
-    void *r = DwcFriendData_GetBytes(FriendEntry_GetFriendData(base + friendIndex * 0x1c));
+    FriendEntry *base = getFriendEntries();
+    void *r = DwcFriendData_GetBytes(FriendEntry_GetFriendData(&base[friendIndex]));
     if (Net_WifiAddFriend(friendIndex, r)) {
         showFriend(friendIndex);
     }
@@ -978,7 +814,7 @@ void FriendRosterTab::resetTextLabels() {
     }
 }
 
-void *FriendRosterTab::allocTextLabel() {
+LabelString *FriendRosterTab::allocTextLabel() {
     if (E9V >= 0x13) {
         return &textLabels[0x12];
     }
@@ -1213,58 +1049,56 @@ BOOL FriendRosterTab::moveFocus(u32 keys) {
 void FriendRosterTab::openRegisterChoices()
 {
     registerButtonPalette = 7;
-    ChoiceIdList_Clear(U3D0, 0xa);
+    ChoiceIdList_Clear(choiceList.msgIds, 0xa);
     CommManager *g = gCommManager;
     if (((CommManager *)(g))->isOnline()) {
         s32 skip = g->myAid;
         s32 i = 0;
-        u32 tmp[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
-        new (tmp) MsgString9B();
+        MsgString9B tmp;
         for (; i < 4; i++) {
             if (skip != i) {
-                void *p = PlayerData_GetBySessionSlot(i);
+                PlayerData *p = PlayerData_GetBySessionSlot(i);
                 if (p) {
-                    ((PlayerId *)(((PlayerData *)(p))->getPlayerId()))->getNameString((MsgString *)(tmp));
-                    ((PopupChoiceMenuBody *)(&popup))->addCustomRow((PopupChoiceIdList *)(U3D0), tmp, (u8)(i + 6));
+                    p->getPlayerId()->getNameString(&tmp);
+                    ((PopupChoiceMenuBody *)(&popup))->addCustomRow(&choiceList, &tmp, (u8)(i + 6));
                 }
             }
         }
-        ((MsgString9B *)(tmp))->MsgString9B::~MsgString9B();
     }
-    ChoiceIdList_Add(U3D0, 0xce, 5);
-    ChoiceIdList_Add(U3D0, 2, 0xa);
+    ChoiceIdList_Add(choiceList.msgIds, 0xce, 5);
+    ChoiceIdList_Add(choiceList.msgIds, 2, 0xa);
     openPopup(0);
 }
 
 void FriendRosterTab::openFriendChoices()
 {
-    ChoiceIdList_Clear(U3D0, 0xa);
-    ChoiceIdList_Add(U3D0, 0xcf, 3);
-    ChoiceIdList_Add(U3D0, 0xd0, 2);
-    void *rec = getFocusedFriendEntry();
+    ChoiceIdList_Clear(choiceList.msgIds, 0xa);
+    ChoiceIdList_Add(choiceList.msgIds, 0xcf, 3);
+    ChoiceIdList_Add(choiceList.msgIds, 0xd0, 2);
+    FriendEntry *rec = getFocusedFriendEntry();
     if (rec) {
         if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec)) == 0) {
-            ChoiceIdList_Add(U3D0, 0xd1, 4);
+            ChoiceIdList_Add(choiceList.msgIds, 0xd1, 4);
         }
     }
-    ChoiceIdList_Add(U3D0, 0xd2, 0);
-    ChoiceIdList_Add(U3D0, 2, 0xa);
+    ChoiceIdList_Add(choiceList.msgIds, 0xd2, 0);
+    ChoiceIdList_Add(choiceList.msgIds, 2, 0xa);
     openPopup(0);
 }
 
 void FriendRosterTab::openRemoveConfirm()
 {
-    ChoiceIdList_Clear(U3D0, 0xa);
-    ChoiceIdList_Add(U3D0, 0xd3, 0xa);
-    ChoiceIdList_Add(U3D0, 4, 1);
-    ChoiceIdList_Add(U3D0, 0x13, 0xa);
+    ChoiceIdList_Clear(choiceList.msgIds, 0xa);
+    ChoiceIdList_Add(choiceList.msgIds, 0xd3, 0xa);
+    ChoiceIdList_Add(choiceList.msgIds, 4, 1);
+    ChoiceIdList_Add(choiceList.msgIds, 0x13, 0xa);
     openPopup(1);
     setFlags(0x10);
 }
 
 void FriendRosterTab::removeFriend()
 {
-    void *rec = getFocusedFriendEntry();
+    FriendEntry *rec = getFocusedFriendEntry();
     if (rec) {
         FriendEntry_Clear(rec);
         selectedRow = -1;
@@ -1289,7 +1123,7 @@ void FriendRosterTab::useCodeEntry()
     if (i == -1) {
         showError(0x13);
     } else {
-        FriendEntry_Clear((u8 *)getFriendEntries() + i * 0x1c);
+        FriendEntry_Clear(&getFriendEntries()[i]);
         MenuCtrl_SetIndex((u8)i);
         requestTab(0xe);
         hideTabBar();
@@ -1303,24 +1137,24 @@ void FriendRosterTab::registerPresentPlayer()
         showError(0x13);
         return;
     }
-    void *a = PlayerData_GetBySessionSlot(popupValue - 6);
-    if (isInRoster(PlayerWifiData_GetOwnFriendData(((PlayerData *)(a))->getWifiUserData()))) {
+    PlayerData *a = PlayerData_GetBySessionSlot(popupValue - 6);
+    if (isInRoster(PlayerWifiData_GetOwnFriendData((u8 *)a->getWifiUserData()))) {
         showError(0x14);
         return;
     }
-    u8 *b = (u8 *)getFriendEntries();
-    void *c = ((PlayerData *)(a))->getPlayerId();
-    u8 *rec = b + i * 0x1c;
+    FriendEntry *b = getFriendEntries();
+    PlayerId *c = a->getPlayerId();
+    FriendEntry *rec = &b[i];
     void *d = FriendEntry_GetFriendData(rec);
-    DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData(((PlayerData *)(a))->getWifiUserData()));
-    void *e = ((PlayerId *)(c))->getName();
-    Mem_Copy(e, FriendEntry_GetPlayerName(rec), 8);
-    void *f = TownId_GetName(PlayerId_GetTownId(c));
-    Mem_Copy(f, FriendEntry_GetTownName(rec), 8);
+    DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData((u8 *)a->getWifiUserData()));
+    u8 *e = c->getName();
+    Mem_Copy(e, FriendEntry_GetPlayerName((u8 *)rec), 8);
+    u16 *f = TownId_GetName((u16 *)PlayerId_GetTownId(c));
+    Mem_Copy(f, FriendEntry_GetTownName((u8 *)rec), 8);
     ((MenuTabBar *)(ProcBase_GetParent(this)))->requestSaveOnClose();
     friendIndex = i;
     if (isWifiMode()) {
-        if (Net_WifiAddFriend(friendIndex, DwcFriendData_GetBytes(FriendEntry_GetFriendData(b + friendIndex * 0x1c))) == 0) {
+        if (Net_WifiAddFriend(friendIndex, DwcFriendData_GetBytes(FriendEntry_GetFriendData(&b[friendIndex]))) == 0) {
             setMainState(0x10);
             return;
         }
@@ -1384,10 +1218,10 @@ BOOL FriendRosterTab::activateFocus()
 u8 FriendRosterTab::hitTest(s32 x, s32 y)
 {
     s32 i;
-    s32 t = Oam_GetObjX((u8 *)data_ov119_02295648[0] + 8) + 0x83;
+    s32 t = Oam_GetObjX(&data_ov119_02295648[0][1].attr01) + 0x83;
     if (t <= x && t + 0x22 >= x) {
         for (i = 0; i < 6; i++) {
-            s32 u = Oam_GetObjY((u8 *)data_ov119_02295648[i] + 8) + 0x61;
+            s32 u = Oam_GetObjY((s8 *)&data_ov119_02295648[i][1]) + 0x61;
             if (u <= y && u + 0x12 >= y) {
                 return (u8)(i + 8);
             }
@@ -1476,19 +1310,19 @@ BOOL FriendRosterTab::isWifiMode()
     return FALSE;
 }
 
-void *FriendRosterTab::getFriendEntries()
+FriendEntry *FriendRosterTab::getFriendEntries()
 {
     return FriendList_GetEntries(PlayerData_GetCurrent()->getFriendList());
 }
 
-void *FriendRosterTab::getFocusedFriendEntry()
+FriendEntry *FriendRosterTab::getFocusedFriendEntry()
 {
-    u8 *b = (u8 *)getFriendEntries();
+    FriendEntry *b = getFriendEntries();
     s32 v = getFocusedFriendIndex();
     if (v >= 0x20) {
         return 0;
     }
-    return b + v * 0x1c;
+    return &b[v];
 }
 
 u32 FriendRosterTab::getFocusedFriendIndex()
@@ -1498,11 +1332,11 @@ u32 FriendRosterTab::getFocusedFriendIndex()
 
 void FriendRosterTab::buildFriendIndex()
 {
-    u8 *b = (u8 *)getFriendEntries();
+    FriendEntry *b = getFriendEntries();
     s32 i;
     s32 n = 0;
     for (i = 0; i < 0x20; i++) {
-        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(b + i * 0x1c))) {
+        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(&b[i]))) {
             rosterIndices[n] = i;
             n++;
         }
@@ -1514,11 +1348,11 @@ void FriendRosterTab::buildFriendIndex()
 
 BOOL FriendRosterTab::hasGaps()
 {
-    u8 *b = (u8 *)getFriendEntries();
+    FriendEntry *b = getFriendEntries();
     s32 flag = 0;
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(b + i * 0x1c)) != 0) {
+        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(&b[i])) != 0) {
             if (flag != 0) {
                 return TRUE;
             }
@@ -1541,18 +1375,18 @@ void FriendRosterTab::compactRoster()
 s32 FriendRosterTab::syncFromWifiFriendList()
 {
     u8 *a = (u8 *)Net_GetWifiFriendList();
-    u8 *b = (u8 *)getFriendEntries();
+    FriendEntry *b = getFriendEntries();
     s32 i;
     s32 result = 0;
     u32 tmp[3];
     for (i = 0; i < 0x20; i++) {
         MI_CpuCopy8(a + i * 12, tmp, 12);
         if (Net_GetFriendDataType(tmp) == 0) {
-            if (DwcFriendData_IsValid(FriendEntry_GetFriendData(b + i * 0x1c)) == 0) {
+            if (DwcFriendData_IsValid(FriendEntry_GetFriendData(&b[i])) == 0) {
                 continue;
             }
         }
-        u8 *rec = b + i * 0x1c;
+        FriendEntry *rec = &b[i];
         if (Net_IsSameFriendData(tmp, DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec))) != 0) {
             s32 t = Net_IsBuddyFriendData(tmp);
             if (t == Net_IsBuddyFriendData(DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec)))) {
@@ -1568,8 +1402,8 @@ s32 FriendRosterTab::syncFromWifiFriendList()
 s32 FriendRosterTab::findFreeEntry()
 {
     s32 i;
-    u8 *p = (u8 *)getFriendEntries();
-    for (i = 0; i < 0x20; p += 0x1c, i++) {
+    FriendEntry *p = getFriendEntries();
+    for (i = 0; i < 0x20; p++, i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(p)) == 0) {
             return i;
         }
@@ -1578,7 +1412,7 @@ s32 FriendRosterTab::findFreeEntry()
 }
 
 BOOL FriendRosterTab::isInRoster(void *p) {
-    u8 *r = (u8 *)getFriendEntries();
+    FriendEntry *r = getFriendEntries();
     s32 i;
     for (i = 0; i < 0x20; i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(r))) {
@@ -1586,7 +1420,7 @@ BOOL FriendRosterTab::isInRoster(void *p) {
                 return TRUE;
             }
         }
-        r += 0x1c;
+        r++;
     }
     return FALSE;
 }
@@ -1595,19 +1429,17 @@ void FriendRosterTab::drawPresentPage() {
     s32 x = 0x1ce;
     s32 i;
     s32 y = 0x14e;
-    void *rec;
+    PlayerData *rec;
     s32 cur;
-    void *a;
-    void *b;
+    LabelString *a;
+    LabelString *b;
     CommManager *g;
     s32 pos = 0xc3;
     g = gCommManager;
     cur = g->myAid;
     s32 n = 0;
-    u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
-    u32 B[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
-    _ZN11MsgString9CC2Ev(A);
-    new (B) MsgString9B();
+    MsgString9C A;
+    MsgString9B B;
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
@@ -1622,12 +1454,12 @@ void FriendRosterTab::drawPresentPage() {
             }
         }
         if (rec != 0) {
-            void *g2 = ((PlayerData *)(rec))->getPlayerId();
+            PlayerId *g2 = rec->getPlayerId();
             TownId_GetNameString(PlayerId_GetTownId(g2), &A);
             String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
-            ((PlayerId *)(g2))->getNameString((MsgString *)(&B));
-            ((MsgString *)(b))->copy((MsgString *)(&B));
+            g2->getNameString(&B);
+            b->copy(&B);
             setRowIcon(&pageScreens[pos], 0x58);
             rowMarkMask = rowMarkMask | (1 << i);
         } else {
@@ -1644,29 +1476,23 @@ void FriendRosterTab::drawPresentPage() {
         pos += 0x40;
     }
     BgScreen_SetRectPalette(pageScreens, 5, 6, 0x17, 0x15, 5);
-    ((MsgString9B *)(B))->MsgString9B::~MsgString9B();
-    ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
 }
 
 void FriendRosterTab::drawOwnCodePage() {
-    void *g = PlayerData_GetCurrent()->getPlayerId();
-    void *a = allocTextLabel();
-    u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
-    _ZN11MsgString9CC2Ev(A);
+    PlayerId *g = PlayerData_GetCurrent()->getPlayerId();
+    LabelString *a = allocTextLabel();
+    MsgString9C A;
     TownId_GetNameString(PlayerId_GetTownId(g), &A);
     String_SetSlot(0, &A);
     String_Load2dMenu(a, 0x66);
     ((LabelString *)(a))->createLabel(4, 0x102, 10, 0xf, 0, 0);
     ((LabelString *)(a))->redrawAligned(0, 0);
-    void *b = allocTextLabel();
-    u32 B[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
-    new (B) MsgString9B();
-    ((PlayerId *)(g))->getNameString((MsgString *)(&B));
-    ((MsgString *)(b))->copy((MsgString *)(&B));
+    LabelString *b = allocTextLabel();
+    MsgString9B B;
+    g->getNameString(&B);
+    b->copy(&B);
     ((LabelString *)(b))->createLabel(4, 0x116, 8, 0xf, 0, 0);
     ((LabelString *)(b))->redrawAligned(0, 0);
-    ((MsgString9B *)(B))->MsgString9B::~MsgString9B();
-    ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
 }
 
 void FriendRosterTab::drawFriendCodeHelp() {
@@ -1683,7 +1509,7 @@ void FriendRosterTab::drawFriendCodeHelp() {
     String_Load2d(&helpText, &ch, 0);
     for (i = 0; i < 3; i++) {
         void *o = allocTextLabel();
-        ((MsgString *)(o))->setLine((u8 *)(Msg_SkipLines(HOST_AT(this, 0x8ae, helpText.text[0], 0), i)));
+        ((MsgString *)(o))->setLine(Msg_SkipLines(helpText.text, i));
         ((LabelString *)(o))->createLabel(4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
         ((LabelString *)(o))->redrawAligned(0, 0);
     }
@@ -1711,34 +1537,32 @@ void FriendRosterTab::setRowIcon(u16 *p, u32 v) {
 
 void FriendRosterTab::drawRosterPage() {
     s32 i;
-    u8 *recs;
-    void *a;
-    void *b;
-    recs = (u8 *)getFriendEntries();
+    FriendEntry *recs;
+    LabelString *a;
+    LabelString *b;
+    recs = getFriendEntries();
     s32 base = page << 3;
     s32 x = 0x1ce;
     s32 y = 0x14e;
     s32 pos = 0xc3;
-    u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
-    u32 B[HOST_SIZED(0x18, EncodedString8B) / 4] HOST_ALIGN8;
-    _ZN11MsgString9CC2Ev(A);
-    _ZN15EncodedString8BC2Ev(B);
+    MsgString9C A;
+    EncodedString8B B;
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
         s32 idx = rosterIndices[base];
-        u8 *rec;
+        FriendEntry *rec;
         if (idx < 0x20) {
-            rec = recs + idx * 0x1c;
+            rec = &recs[idx];
         } else {
             rec = 0;
         }
         if (rec != 0 && DwcFriendData_IsValid(FriendEntry_GetFriendData(rec))) {
-            EncodedString_SetRaw(&B, (void *)FriendEntry_GetTownName(rec), 8);
-            ((MsgString *)(&A))->fromEncoded((EncodedString *)(&B), 0, 0);
+            EncodedString_SetRaw(&B, FriendEntry_GetTownName((u8 *)rec), 8);
+            A.fromEncoded(&B, 0, 0);
             String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
-            String_FromEncodedBytes(b, (void *)FriendEntry_GetPlayerName(rec), 8);
+            String_FromEncodedBytes(b, FriendEntry_GetPlayerName((u8 *)rec), 8);
             rowCount = rowCount + 1;
             if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec))) {
                 setRowIcon(&pageScreens[pos], 0x50);
@@ -1759,8 +1583,6 @@ void FriendRosterTab::drawRosterPage() {
         base++;
         pos += 0x40;
     }
-    _ZN15EncodedString8BD1Ev(B);
-    ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
 }
 
 void FriendRosterTab::refreshPage() {
@@ -1804,11 +1626,11 @@ void FriendRosterTab::setPage(u8 s) {
 }
 
 u32 FriendRosterTab::getPageOfFriend(s32 idx) {
-    u8 *base = (u8 *)getFriendEntries();
+    FriendEntry *base = getFriendEntries();
     s32 cnt = 0;
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(base + i * 0x1c))) {
+        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(&base[i]))) {
             cnt++;
             if (i >= idx) {
                 i = 0x20;
@@ -1837,7 +1659,7 @@ void FriendRosterTab::loadOwnFriendCode() {
     }
 }
 
-u8 FriendRosterTab::getPopupRowValue(u32 idx) { return *((u8 *)this + idx + 0x3d5); }
+u8 FriendRosterTab::getPopupRowValue(u32 idx) { return choiceList.values[idx]; }
 
 void FriendRosterTab::onPopupChoice() {
     switch (popupValue) {
@@ -1873,7 +1695,7 @@ void FriendRosterTab::onPopupChoice() {
 }
 
 void FriendRosterTab::openPopup(u32 x) {
-    ((PopupChoiceMenuBody *)(&popup))->setRowsFromIds((PopupChoiceIdList *)(HOST_AT(this, 0x3d0, choiceList.msgIds[0], 0)), x);
+    ((PopupChoiceMenuBody *)(&popup))->setRowsFromIds(&choiceList, x);
     u32 r;
     if (focus == 0x16) {
         r = 0x9c;
@@ -1930,32 +1752,12 @@ void FriendRosterTab::setFlags(u32 mask) { flags = flags | mask; }
 
 void FriendRosterTab::clearFlags(u32 mask) { flags = flags & ~mask; }
 
-extern "C" void *data_ov119_02295590[2] = {(void *)_ZN15FriendRosterTab9mainAct0FEv, 0};
+extern "C" GXOamAttr data_ov119_022956a8[5] = {{0x404d00f7, 0xc4, 1, 0x4, 0x0}, {0x804240f5, 0x10b, 1, 0x4, 0x0}, {0x6280f5, 0x10f, 1, 0x4, 0x0}, {0x40424005, 0x14b, 1, 0x4, 0x0}, {0x620005, 0x14f, 1, 0x4, 0xffff}};
 
-extern "C" void *data_ov119_022955d8[2] = {(void *)_ZN15FriendRosterTab9mainAct0EEv, 0};
-
-extern "C" void *data_ov119_02295640[2] = {(void *)_ZN15FriendRosterTab9stateLoadEv, 0};
-
-extern "C" u32 data_ov119_022956a8[10] = {0x404d00f7, 0x000044c4, 0x804240f5, 0x0000450b, 0x006280f5, 0x0000450f, 0x40424005, 0x0000454b, 0x00620005, 0xffff454f};
-
-extern "C" void *data_ov119_02295628[2] = {(void *)_ZN15FriendRosterTab10stateCloseEv, 0};
-
-extern "C" void *data_ov119_022955b8[2] = {(void *)_ZN15FriendRosterTab9mainAct10Ev, 0};
-
-extern "C" u32 data_ov119_02295748[12] = {0x40490027, 0x0000b0d0, 0x00598027, 0x0000b0d2, 0x80424025, 0x0000b50b, 0x00628025, 0x0000b50f, 0x40424035, 0x0000b54b, 0x00620035, 0xffffb54f};
+extern "C" GXOamAttr data_ov119_02295748[6] = {{0x40490027, 0xd0, 0, 0xb, 0x0}, {0x598027, 0xd2, 0, 0xb, 0x0}, {0x80424025, 0x10b, 1, 0xb, 0x0}, {0x628025, 0x10f, 1, 0xb, 0x0}, {0x40424035, 0x14b, 1, 0xb, 0x0}, {0x620035, 0x14f, 1, 0xb, 0xffff}};
 
 extern "C" GXOamAttr data_ov119_02295588 = {0x419700f0, 0x1a0, 0, 0xa, 0xffff};
 
-extern "C" void *data_ov119_022955a8[2] = {(void *)_ZN15FriendRosterTab9mainAct01Ev, 0};
+extern "C" GXOamAttr data_ov119_02295778[6] = {{0x80454041, 0xca, 1, 0x7, 0x0}, {0x40650041, 0xce, 1, 0x7, 0x0}, {0x8059403f, 0x102, 1, 0x7, 0x0}, {0x4059404f, 0x142, 1, 0x7, 0x0}, {0x8041403f, 0x100, 1, 0x7, 0x0}, {0x4041404f, 0x140, 1, 0x7, 0xffff}};
 
-extern "C" void *data_ov119_02295598[2] = {(void *)_ZN15FriendRosterTab9mainAct0CEv, 0};
-
-extern "C" void *data_ov119_022955c0[2] = {(void *)_ZN15FriendRosterTab9mainAct09Ev, 0};
-
-extern "C" u32 data_ov119_02295778[12] = {0x80454041, 0x000074ca, 0x40650041, 0x000074ce, 0x8059403f, 0x00007502, 0x4059404f, 0x00007542, 0x8041403f, 0x00007500, 0x4041404f, 0xffff7540};
-
-extern "C" void *data_ov119_022955f0[2] = {(void *)_ZN15FriendRosterTab16updateCursorMoveEv, 0};
-
-extern "C" void *data_ov119_022955c8[2] = {(void *)_ZN15FriendRosterTab9mainAct08Ev, 0};
-
-extern "C" u32 data_ov119_022957a8[12] = {0x419840ed, 0x00005530, 0x402040ed, 0x00005530, 0x400040ed, 0x00005530, 0x41e840ed, 0x00005530, 0x41c840ed, 0x00005530, 0x41a840ed, 0xffff5530};
+extern "C" GXOamAttr data_ov119_022957a8[6] = {{0x419840ed, 0x130, 1, 0x5, 0x0}, {0x402040ed, 0x130, 1, 0x5, 0x0}, {0x400040ed, 0x130, 1, 0x5, 0x0}, {0x41e840ed, 0x130, 1, 0x5, 0x0}, {0x41c840ed, 0x130, 1, 0x5, 0x0}, {0x41a840ed, 0x130, 1, 0x5, 0xffff}};

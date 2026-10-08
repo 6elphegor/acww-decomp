@@ -162,11 +162,10 @@ void LetterRenderer::setSignature(u8 *data) {
     signatureLine.setText(&buf);
 }
 
-// highlightGreeting takes a third argument (r3, passed on to setHighlight) its symbol (u32, u32) doesn't show: defined
-// under the mangled name with the parameter spelled out.
-extern "C" void _ZN14LetterRenderer17highlightGreetingEjj(LetterRenderer *self, u32 a, u32 b, u32 c) {
+// highlightGreeting takes a third argument (r3, passed on to setHighlight) its DS symbol (u32, u32) doesn't show.
+void LetterRenderer::highlightGreeting(u32 a, u32 b, u32 c) {
     StackPad4 pad;
-    self->greetingLine.setHighlight(a, b, c);
+    greetingLine.setHighlight(a, b, c);
 }
 
 void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {

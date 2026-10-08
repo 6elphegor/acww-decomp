@@ -23,20 +23,16 @@
 #include "save/Pattern.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_GeneralMenuHeader_GetStyle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_InitWithName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov126_02299ad0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "net/FriendEntry.h"
+#include "nitro/gxoam.h"
+#include "text/Unk_02050288.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02051218.h"
@@ -48,185 +44,24 @@
 #include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov095/unk_02292360.h"
+#include "proto/ov124/unk_ov124_02296840.h"
 #include "proto/ov126/unk_02297060.h"
 
-#define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
-#define func_0206260c _ZN8ItemNameD1Ev
-#define func_0206267c _ZN8ItemNameC1Ev
-#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
-#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
-#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
-#define func_0206fca8 _ZN11LabelStringD1Ev
-#define func_0206fcc8 _ZN11LabelStringC1Ev
-#define PlayerPatterns_getPatternByOrder _ZN14PlayerPatterns17getPatternByOrderEj
-#define Pattern_getInfo _ZN7Pattern7getInfoEv
-#define PatternInfo_setTitleRaw _ZN11PatternInfo11setTitleRawEPh
-#define PatternInfo_getTitleRaw _ZN11PatternInfo11getTitleRawEPh
-#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define BlancaFaceRecord_getPattern _ZN16BlancaFaceRecord10getPatternEv
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define HandCursor_getAnim _ZN10HandCursor7getAnimEv
-#define PlayerId_getName _ZN8PlayerId7getNameEv
-#define PlayerId_setName _ZN8PlayerId7setNameEPv
-#define PlayerData_getFriendList _ZN10PlayerData13getFriendListEv
-#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define EncodedString_fromMsgString _ZN13EncodedString13fromMsgStringEP9MsgString
-#define MsgString_fromEncoded _ZN9MsgString11fromEncodedEP13EncodedStringii
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define MsgString_clear _ZN9MsgString5clearEv
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define MenuCursorBase_getScreenX _ZN14MenuCursorBase10getScreenXEv
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_moveToNear _ZN14MenuCursorBase10moveToNearEiiih
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_switchToAnim0D _ZN10MenuCursor14switchToAnim0DEv
-#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
-#define MenuCursor_switchToAnim07 _ZN10MenuCursor14switchToAnim07Ev
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuBottomButtonsBody_isButtonDisabled _ZN21MenuBottomButtonsBody16isButtonDisabledEi
-#define MenuBottomButtonsBody_enableButton _ZN21MenuBottomButtonsBody12enableButtonEi
-#define MenuBottomButtonsBody_disableButton _ZN21MenuBottomButtonsBody13disableButtonEi
-#define MenuBottomButtonsBody_getPressOffset _ZN21MenuBottomButtonsBody14getPressOffsetEv
-#define MenuBottomButtonsBody_stepPress _ZN21MenuBottomButtonsBody9stepPressEv
-#define MenuBottomButtonsBody_setSelected _ZN21MenuBottomButtonsBody11setSelectedEh
-#define MenuBottomButtonsBody_getTargetY _ZN21MenuBottomButtonsBody10getTargetYEi
-#define MenuBottomButtonsBody_getTargetX _ZN21MenuBottomButtonsBody10getTargetXEi
-#define MenuBottomButtonsBody_isTouched _ZN21MenuBottomButtonsBody9isTouchedEi
-#define MenuBottomButtonsBody_setLayoutYesNo09 _ZN21MenuBottomButtonsBody16setLayoutYesNo09Ei
-#define MenuBottomButtons_setLayoutConfirmAnd06 _ZN17MenuBottomButtons21setLayoutConfirmAnd06Eh
-#define MenuBottomButtons_setLayoutSingle05 _ZN17MenuBottomButtons17setLayoutSingle05Ei
-#define MenuBottomButtons_drawAt _ZN17MenuBottomButtons6drawAtEi
-#define MenuBottomButtons_freeTexts _ZN17MenuBottomButtons9freeTextsEv
-#define MenuErrorMessage_update _ZN16MenuErrorMessage6updateEi
-#define MenuErrorMessage_open _ZN16MenuErrorMessage4openEPhij
-#define MenuTabBar_requestSaveOnClose _ZN10MenuTabBar18requestSaveOnCloseEv
-#define MenuTabBar_showTabs _ZN10MenuTabBar8showTabsEv
-#define MenuTabBar_onTabMenuClosed _ZN10MenuTabBar15onTabMenuClosedEv
-#define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
-#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
-#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
-#define GeneralMenuHeader_resetFrame _ZN17GeneralMenuHeader10resetFrameEv
-#define GeneralMenuHeader_loadObjGfx _ZN17GeneralMenuHeader10loadObjGfxEi
-#define GeneralMenuHeader_drawWithIcon _ZN17GeneralMenuHeader12drawWithIconEii
-#define GeneralMenuHeader_setTitleHighlight _ZN17GeneralMenuHeader17setTitleHighlightEhhjj
-#define GeneralMenuHeader_setTitleText _ZN17GeneralMenuHeader12setTitleTextEPvi
-#define GeneralMenuHeader_redrawTitle _ZN17GeneralMenuHeader11redrawTitleEv
-#define GeneralMenuHeader_placeTitleText _ZN17GeneralMenuHeader14placeTitleTextEv
-#define GeneralMenuHeader_loadBgGfxForStyle _ZN17GeneralMenuHeader17loadBgGfxForStyleEi
 
 extern "C" {
 extern u16 gPad[];
-extern u8 gSaveBlancaFace[];
-extern u8 gSaveTownId[];
+extern BlancaFaceRecord gSaveBlancaFace;
+extern u16 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gU8None;
-extern u32 gCurrentHeap;
-extern u8 *gCommManager;
-extern u32 data_ov126_02299ad0[4];
+extern CommManager *gCommManager;
 
-// main
-void EncodedString_SetRaw(void *a, void *b, s32 c);
-void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
-void EncodedString_fromMsgString(void *a, void *b);
-void StrBuf_GetBytes(void *a, void *b, s32 c);
-void *BlancaFaceRecord_getPattern(void *a);
-void *Pattern_getInfo(void *a);
-void PatternInfo_setTitleRaw(void *a, void *b);
-void PatternInfo_getTitleRaw(void *a, void *b);
-s32 TownId_InitWithName(void *a, void *b);
-s32 PlayerData_getPlayerId(...);
-s32 PlayerId_getName(s32 a);
-void PlayerId_setName(s32 a, void *b);
-void func_0206fcc8(void *p);
-void func_0206fca8(void *p);
-void func_0206267c(void *p);
-void func_0206260c(void *p);
-void ItemName_setFromItem(void *p, void *q);
-void MsgString_copy(void *p, void *q);
-void MsgString_clear(void *p);
-void String_SetSlot(s32 a, void *p);
-void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void LabelString_redrawAligned(void *p, s32 a, s32 b);
-void LabelString_destroyLabel(void *p);
-s32 PlayerData_getPatterns(s32 a);
-s32 PlayerData_getFriendList(s32 a);
-void *PlayerPatterns_getPatternByOrder(s32 a, s32 b);
-void *FriendList_GetEntries(s32 a);
-BOOL CommManager_isSlotActive(void *g, s32 v);
-void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-BOOL HandCursor_getAnim(void *p);
-BOOL HandCursor_isAnimDone(void *p);
-
-// ov002 (non-base objects)
-void MenuCursor_setAnimIfChanged(void *p, s32 a);
-void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
-void MenuBottomButtons_setLayoutConfirmAnd06(void *p, s32 a);
-void MenuBottomButtons_setLayoutSingle05(void *p, s32 a);
-BOOL MenuBottomButtonsBody_isButtonDisabled(void *p, s32 a);
-BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
-void MenuBottomButtonsBody_disableButton(void *p, s32 a);
-void MenuBottomButtonsBody_enableButton(void *p, s32 a);
-void MenuBottomButtonsBody_setSelected(void *p, s32 a);
-BOOL MenuBottomButtonsBody_stepPress(void *p);
-s32 MenuBottomButtonsBody_getPressOffset(void *p);
-s32 MenuBottomButtonsBody_getTargetX(void *p, s32 a);
-s32 MenuBottomButtonsBody_getTargetY(void *p, s32 a);
-BOOL MenuCursorBase_isMoving(void *p);
-s32 MenuCursorBase_getScreenX(void *p);
-void MenuCursor_switchToAnim01(void *p);
-void MenuCursor_switchToAnim0D(void *p);
-void MenuCursor_switchToAnim07(void *p);
-void MenuErrorMessage_open(void *p, void *q, u32 a, u32 b);
-BOOL MenuErrorMessage_update(void *p, s32 a);
-void MenuCursorBase_setPoseIdle(void *p);
-void MenuCursorBase_setPoseRelease(void *p);
-void MenuCursor_setPosePress(void *p);
-void MenuCursorBase_moveToNear(void *p, s32 a, s32 b, s32 c, s32 d);
-void MenuCursorBase_drawWrapped(void *p);
-void MenuBottomButtons_drawAt(void *p, s32 a);
-void MenuBottomButtons_freeTexts(void *p);
-void MenuButtons_LoadTextColors(void *p);
-void MenuBottomButtonsBody_setLayoutYesNo09(void *p, s32 a);
-
-// ov124 / ov111 / ov115 / ov090 / ov092
-void GeneralMenuHeader_setTitleHighlight(void *p, s32 a, s32 b, s32 c, s32 d);
-void GeneralMenuHeader_setTitleText(void *p, void *q, u32 v);
-void GeneralMenuHeader_placeTitleText(void *p);
-void GeneralMenuHeader_redrawTitle(void *p);
-s32 GeneralMenuHeader_GetStyle(void *p);
-void GeneralMenuHeader_loadBgGfxForStyle(void *p, s32 a);
-void GeneralMenuHeader_drawWithIcon(void *p, s32 a, void *b);
-void GeneralMenuHeader_resetFrame(void *p);
-void GeneralMenuHeader_loadObjGfx(void *p, s32 v);
-void MenuTabBar_requestSaveOnClose(void *p);
-void MenuTabBar_showTabs(void *p);
-s32 MenuTabBar_onTabMenuClosed(void *p);
-void MenuTabBar_selectTab(void *p, s32 v);
-void MenuLauncher_onChildClosed(void *p);
-void MenuLauncher_setNextRequest(void *p, s32 a, s32 b);
-
-// ov095 (menu sub-object at +0x144)
-s32 Keyboard_ReplaceCharBeforeCursor(void *p, void *q, u32 a, u32 b, s32 c, s32 d);
-void Keyboard_PlayPasteSe(void *p);
-void Keyboard_PlayCopySe(void *p);
+// main (no shared prototype)
+BOOL EncodedString_SetRaw(EncodedString *buf, const void *src, s32 len);
+void *FriendList_GetEntries(void *list);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 static inline BOOL Unk_ov126_02298c4c_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -263,7 +98,7 @@ public:
     void storeFriendField1();
     void storeStatsPatternName();
     void storeConstellationName();
-    s32 storeTownName();
+    void storeTownName();
     void storePlayerName();
     void checkPasswordAnswer();
     void checkItemNameAnswer();
@@ -395,65 +230,7 @@ public:
 
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
 extern "C" ProcProfile data_ov126_022999e0 = {(void *(*)())NameEntryMenu_Create, 0xab, 0xaf};
-extern "C" u32 data_ov126_02299ad0[4] = {0x802040c8, 0x000051c0, 0x404000c8, 0xffff51c4};
-extern "C" void _ZN13NameEntryMenu15transitionAct01Ev();
-extern "C" void *data_ov126_02299ac0[2] = {(void *)_ZN13NameEntryMenu15transitionAct01Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct00Ev();
-extern "C" void *data_ov126_02299ac8[2] = {(void *)_ZN13NameEntryMenu15transitionAct00Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct04Ev();
-extern "C" void *data_ov126_02299a40[2] = {(void *)_ZN13NameEntryMenu9mainAct04Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct02Ev();
-extern "C" void *data_ov126_02299ab8[2] = {(void *)_ZN13NameEntryMenu15transitionAct02Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct03Ev();
-extern "C" void *data_ov126_02299ab0[2] = {(void *)_ZN13NameEntryMenu15transitionAct03Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct04Ev();
-extern "C" void *data_ov126_02299aa8[2] = {(void *)_ZN13NameEntryMenu15transitionAct04Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct05Ev();
-extern "C" void *data_ov126_02299aa0[2] = {(void *)_ZN13NameEntryMenu15transitionAct05Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct06Ev();
-extern "C" void *data_ov126_02299a98[2] = {(void *)_ZN13NameEntryMenu15transitionAct06Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct07Ev();
-extern "C" void *data_ov126_02299a90[2] = {(void *)_ZN13NameEntryMenu15transitionAct07Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct08Ev();
-extern "C" void *data_ov126_02299a88[2] = {(void *)_ZN13NameEntryMenu15transitionAct08Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct09Ev();
-extern "C" void *data_ov126_02299a80[2] = {(void *)_ZN13NameEntryMenu15transitionAct09Ev, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct0AEv();
-extern "C" void *data_ov126_02299a78[2] = {(void *)_ZN13NameEntryMenu15transitionAct0AEv, 0};
-extern "C" void _ZN13NameEntryMenu15transitionAct0BEv();
-extern "C" void *data_ov126_02299a70[2] = {(void *)_ZN13NameEntryMenu15transitionAct0BEv, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct09Ev();
-extern "C" void *data_ov126_02299a68[2] = {(void *)_ZN13NameEntryMenu9mainAct09Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct00Ev();
-extern "C" void *data_ov126_02299a10[2] = {(void *)_ZN13NameEntryMenu9mainAct00Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct01Ev();
-extern "C" void *data_ov126_02299a58[2] = {(void *)_ZN13NameEntryMenu9mainAct01Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct0BEv();
-extern "C" void *data_ov126_02299a50[2] = {(void *)_ZN13NameEntryMenu9mainAct0BEv, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct03Ev();
-extern "C" void *data_ov126_02299a60[2] = {(void *)_ZN13NameEntryMenu9mainAct03Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct02Ev();
-extern "C" void *data_ov126_02299a48[2] = {(void *)_ZN13NameEntryMenu9mainAct02Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct05Ev();
-extern "C" void *data_ov126_02299a38[2] = {(void *)_ZN13NameEntryMenu9mainAct05Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct06Ev();
-extern "C" void *data_ov126_02299a30[2] = {(void *)_ZN13NameEntryMenu9mainAct06Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct07Ev();
-extern "C" void *data_ov126_02299a28[2] = {(void *)_ZN13NameEntryMenu9mainAct07Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct08Ev();
-extern "C" void *data_ov126_02299a20[2] = {(void *)_ZN13NameEntryMenu9mainAct08Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct0FEv();
-extern "C" void *data_ov126_02299a18[2] = {(void *)_ZN13NameEntryMenu9mainAct0FEv, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct0AEv();
-extern "C" void *data_ov126_022999e8[2] = {(void *)_ZN13NameEntryMenu9mainAct0AEv, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct10Ev();
-extern "C" void *data_ov126_02299a00[2] = {(void *)_ZN13NameEntryMenu9mainAct10Ev, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct0CEv();
-extern "C" void *data_ov126_02299a08[2] = {(void *)_ZN13NameEntryMenu9mainAct0CEv, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct0DEv();
-extern "C" void *data_ov126_022999f8[2] = {(void *)_ZN13NameEntryMenu9mainAct0DEv, 0};
-extern "C" void _ZN13NameEntryMenu9mainAct0EEv();
-extern "C" void *data_ov126_022999f0[2] = {(void *)_ZN13NameEntryMenu9mainAct0EEv, 0};
+extern "C" GXOamAttr data_ov126_02299ad0[2] = {{0x802040c8, 0x1c0, 0, 0x5, 0x0}, {0x404000c8, 0x1c4, 0, 0x5, 0xffff}};
 
 extern "C" NameEntryMenu *NameEntryMenu_Create() { return new NameEntryMenu(); }
 
@@ -479,19 +256,19 @@ BOOL NameEntryMenu::onDelete() {
 }
 
 BOOL NameEntryMenu::onDraw() {
-    u8 *p = (u8 *)slideY;
+    s32 y = slideY;
     if (!testFlags(1)) {
         return FALSE;
     }
     if (MenuCtrl_IsButtons()) {
         ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
-    ((GeneralMenuHeader *)(&header))->drawWithIcon(0, (s32)(p));
+    ((GeneralMenuHeader *)(&header))->drawWithIcon(0, y);
     ((MenuBottomButtons *)(&bottomButtons))->drawAt(getSlideOffsetY());
-    Keyboard_Draw(&keyboard, 0x80, p + 0x60, 1);
-    Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, p + 0x60);
+    Keyboard_Draw(&keyboard, 0x80, y + 0x60, 1);
+    Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, y + 0x60);
     if (testFlags(0x100)) {
-        Oam_DrawCell(1, data_ov126_02299ad0, (u32)suffixLabelX + 0x80, p + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov126_02299ad0, (u32)suffixLabelX + 0x80, y + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     if (testFlags(2)) {
         s32 a = caretX;
@@ -505,7 +282,7 @@ BOOL NameEntryMenu::onDraw() {
 }
 
 BOOL NameEntryMenu::execTransition() {
-    static Unk_ov126_02299ae8_Fn tbl[12] = {*(Unk_ov126_02299ae8_Fn *)data_ov126_02299ac8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299ac0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299ab8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299ab0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299aa8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299aa0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a98, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a90, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a88, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a80, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a78, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a70};
+    static Unk_ov126_02299ae8_Fn tbl[12] = {&NameEntryMenu::transitionAct00, &NameEntryMenu::transitionAct01, &NameEntryMenu::transitionAct02, &NameEntryMenu::transitionAct03, &NameEntryMenu::transitionAct04, &NameEntryMenu::transitionAct05, &NameEntryMenu::transitionAct06, &NameEntryMenu::transitionAct07, &NameEntryMenu::transitionAct08, &NameEntryMenu::transitionAct09, &NameEntryMenu::transitionAct0A, &NameEntryMenu::transitionAct0B};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
@@ -513,7 +290,7 @@ BOOL NameEntryMenu::execTransition() {
 }
 
 void NameEntryMenu::runMainState() {
-    static Unk_ov126_02299ae8_Fn tbl[17] = {*(Unk_ov126_02299ae8_Fn *)data_ov126_02299a10, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a58, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a48, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a60, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a40, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a38, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a30, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a28, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a20, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a68, *(Unk_ov126_02299ae8_Fn *)data_ov126_022999e8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a50, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a08, *(Unk_ov126_02299ae8_Fn *)data_ov126_022999f8, *(Unk_ov126_02299ae8_Fn *)data_ov126_022999f0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a18, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a00};
+    static Unk_ov126_02299ae8_Fn tbl[17] = {&NameEntryMenu::mainAct00, &NameEntryMenu::mainAct01, &NameEntryMenu::mainAct02, &NameEntryMenu::mainAct03, &NameEntryMenu::mainAct04, &NameEntryMenu::mainAct05, &NameEntryMenu::mainAct06, &NameEntryMenu::mainAct07, &NameEntryMenu::mainAct08, &NameEntryMenu::mainAct09, &NameEntryMenu::mainAct0A, &NameEntryMenu::mainAct0B, &NameEntryMenu::mainAct0C, &NameEntryMenu::mainAct0D, &NameEntryMenu::mainAct0E, &NameEntryMenu::mainAct0F, &NameEntryMenu::mainAct10};
     (this->*tbl[mainState])();
 }
 
@@ -614,7 +391,7 @@ void NameEntryMenu::transitionAct03() {
             } else {
                 ((MenuTabBar *)(r6))->selectTab(6);
                 MenuCtrl_SetFriendPageFromIndex();
-                if (((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid)) {
+                if (gCommManager->isSlotActive(gCommManager->myAid)) {
                     s32 t = Net_GetMode();
                     if (t == 3) goto yes;
                     if (t == 4) {
@@ -752,7 +529,7 @@ void NameEntryMenu::init() {
         Keyboard_Init(&keyboard, 3);
         break;
     }
-    switch (GeneralMenuHeader_GetStyle(&header)) {
+    switch (GeneralMenuHeader_GetStyle()) {
     case 0:
         maxLength = 0x10;
         textLeft = 0x50;
@@ -832,7 +609,7 @@ void NameEntryMenu::setupBgLayers() {
 
 void NameEntryMenu::loadBg() {
     ((GeneralMenuHeader *)(&header))->loadBgGfxForStyle(4);
-    Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", (void *)gCurrentHeap, 4, 0x13d, 0x13d, 0x1e9);
+    Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", gCurrentHeap, 4, 0x13d, 0x13d, 0x1e9);
     Keyboard_LoadScreenFile(&keyboard, "menu/letter/b_key.bsc");
     refreshKeys();
     Keyboard_LoadScreenNow(&keyboard, 6);
@@ -842,13 +619,12 @@ void NameEntryMenu::loadBg() {
 void NameEntryMenu::loadObjGfx() {
     Keyboard_LoadObjGfx(&keyboard);
     ((GeneralMenuHeader *)(&header))->loadObjGfx(6);
-    Gfx2d_LoadPaletteFile("menu/han/obj.bpl", (void *)gCurrentHeap, 8, 5, 5, 5);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    Gfx2d_LoadPaletteFile("menu/han/obj.bpl", gCurrentHeap, 8, 5, 5, 5);
+    MenuButtons_LoadTextColors();
     if (testFlags(0x100)) {
-        u32 buf[0x44 / 4];
-        new (buf) LabelString();
-        ((MsgString *)(buf))->clear();
-        String_SetSlot(0, buf);
+        LabelString buf;
+        buf.clear();
+        String_SetSlot(0, &buf);
         if (MenuCtrl_GetMode() == 0x12) {
             String_Load2dMenu(&suffixLabel, 0x80);
         } else {
@@ -856,7 +632,6 @@ void NameEntryMenu::loadObjGfx() {
         }
         ((LabelString *)(&suffixLabel))->createLabel(8, 0x1c0, 6, 0xf, 0, 0);
         ((LabelString *)(&suffixLabel))->redrawAligned(0, 0);
-        ((LabelString *)(buf))->LabelString::~LabelString();
     }
 }
 
@@ -1263,7 +1038,7 @@ void NameEntryMenu::setCursorIndex(u32 v) {
 
 u32 NameEntryMenu::getCharBeforeCursor() {
     if (caretIndex == 0) return 0;
-    return *((u8 *)this + (caretIndex - 1) + 0x4088);
+    return text[caretIndex - 1];
 }
 
 void NameEntryMenu::updateCaretX() {
@@ -1297,7 +1072,7 @@ BOOL NameEntryMenu::touchTextField() {
 }
 
 s32 NameEntryMenu::navigateText(s32 a) {
-    void *p = (void *)a;
+    u32 p = a;
     if (p == 0) return 0;
     u32 r4 = caretIndex;
     if (MenuKeys_HasLeft(p) != 0) {
@@ -1381,7 +1156,7 @@ void NameEntryMenu::copy() {
         Mem_Clear(clipboard, 0x20);
         Mem_Copy(text + r6, clipboard, r4);
         setFlags(8);
-        Keyboard_PlayCopySe(&keyboard);
+        Keyboard_PlayCopySe();
         refreshKeys();
     }
 }
@@ -1401,7 +1176,7 @@ void NameEntryMenu::paste() {
                 i = n;
             }
         }
-        Keyboard_PlayPasteSe(&keyboard);
+        Keyboard_PlayPasteSe();
         setCursorIndex(v);
         updateCaretX();
         redrawText();
@@ -1490,7 +1265,7 @@ BOOL NameEntryMenu::applyModifierKey(s32 x) {
         break;
     }
     if (r2 == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&keyboard, text, r2, caretIndex, maxLength, 0x2710) == 0) return FALSE;
+    if (Keyboard_ReplaceCharBeforeCursor(&keyboard, text, r2, caretIndex) == 0) return FALSE;
     redrawText();
     updateCaretX();
     return TRUE;
@@ -1760,8 +1535,8 @@ u8 *NameEntryMenu::getFriendEntry() {
     PlayerData *t = PlayerData_GetCurrent();
     void *p = t->getFriendList();
     s32 idx = MenuCtrl_GetIndex();
-    u8 *q = (u8 *)FriendList_GetEntries(p);
-    return q + idx * 0x1c;
+    FriendEntry *q = (FriendEntry *)FriendList_GetEntries(p);
+    return (u8 *)&q[idx];
 }
 
 void NameEntryMenu::loadFriendField1() {
@@ -1834,12 +1609,12 @@ void NameEntryMenu::checkPasswordAnswer() {
 void NameEntryMenu::storePlayerName() {
     PlayerData *t = PlayerData_GetCurrent();
     t->getPlayerId();
-    s32 u = t->getPlayerId();
-    s32 n = PlayerDataArray_FindById(gSavePlayers, u);
+    PlayerId *u = t->getPlayerId();
+    s32 n = PlayerDataArray_FindById(gSavePlayers, (u16 *)u);
     s32 i;
     for (i = 0; i < 4; i++) {
         if (i != n && PlayerDataArray_IsUsed(gSavePlayers, i)) {
-            if (Text_EqualsTrimmed((void *)((PlayerId *)(((PlayerData *)(PlayerData_GetResident(gSavePlayers, i)))->getPlayerId()))->getName(), text, 8)) {
+            if (Text_EqualsTrimmed(((PlayerData *)PlayerData_GetResident(gSavePlayers, i))->getPlayerId()->getName(), text, 8)) {
                 MenuCtrl_SetResult(2);
                 return;
             }
@@ -1848,8 +1623,8 @@ void NameEntryMenu::storePlayerName() {
     ((PlayerId *)(t->getPlayerId()))->setName(text);
 }
 
-s32 NameEntryMenu::storeTownName() {
-    return TownId_InitWithName(gSaveTownId, text);
+void NameEntryMenu::storeTownName() {
+    TownId_InitWithName(gSaveTownId, text);
 }
 
 void NameEntryMenu::storeConstellationName() {
@@ -1862,7 +1637,7 @@ void NameEntryMenu::storeConstellationName() {
 
 void NameEntryMenu::storeStatsPatternName() {
     u8 buf[0x10];
-    void *p = ((BlancaFaceRecord *)(gSaveBlancaFace))->getPattern();
+    void *p = gSaveBlancaFace.getPattern();
     Mem_Copy(text, buf, 0x10);
     ((PatternInfo *)(((Pattern *)(p))->getInfo()))->setTitleRaw((u8 *)(buf));
 }
@@ -1908,7 +1683,7 @@ void NameEntryMenu::censorText() {
     ((MsgString *)(&censorString))->fromEncoded((EncodedString *)(&encodedText), 0, 0);
     if (String_CensorTaboo(&censorString)) {
         ((EncodedString *)(&encodedText))->fromMsgString((MsgString *)(&censorString));
-        StrBuf_GetBytes(&encodedText, buf, n);
+        StrBuf_GetBytes((StrBuf *)&encodedText, buf, n);
     }
 }
 

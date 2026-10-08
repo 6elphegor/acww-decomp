@@ -16,18 +16,15 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_GetPocketSelectLabel  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
@@ -41,23 +38,18 @@ class PopupChoiceIdList;
 extern "C" {
 extern u16 gPad[];
 
-u32 MenuCtrl_GetPocketSelectLabel();
 
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_Update(void *p);
 void PopupChoice_ForceClose(void *p);
 void PopupChoice_Draw(void *p);
-void MenuButtons_LoadTextColors(void *p);
 u32 PopupChoice_DecideCancel(void *p, s32 x);
-void ChoiceIdList_Clear(void *p, u32 v);
-void ChoiceIdList_Add(void *p, u32 a, u32 b);
 void PopupChoice_Open(void *p, u32 v);
 void PopupChoice_Close(void *p, u32 v);
 BOOL PopupChoice_MoveCursor(void *p, u32 a, void *b, u32 c);
 BOOL PopupChoice_TickDecideDelay(void *p);
 
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
-void InventoryBg_LoadObjGraphics(void *p);
 }
 
 static inline BOOL Unk_ov101_02296280_Both()
@@ -107,8 +99,8 @@ public:
     void clearFlags(u32 mask);
     void setFlags(u32 mask);
     BOOL testFlags(u32 mask);
-    BOOL moveCursorByPad(void *pad);
-    void moveCursorInGrid(void *pad);
+    BOOL moveCursorByPad(u32 pad);
+    void moveCursorInGrid(u32 pad);
     void selectPocket(u32 idx, u32 v);
     void setPopupChoices();
     void closeWithoutChoice();
@@ -436,8 +428,8 @@ void PocketItemSelectMenu::loadInventoryBg() {
 }
 
 void PocketItemSelectMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&inventoryBg);
-    MenuButtons_LoadTextColors(&bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
 }
 
 void PocketItemSelectMenu::mainAct00() {
@@ -538,7 +530,7 @@ void PocketItemSelectMenu::mainAct06() {
     if (checkSwitchToTouch()) {
         startTouchInput();
         nameBalloon.hide(1);
-    } else if (moveCursorByPad((void *)takeRepeatedKeys())) {
+    } else if (moveCursorByPad(takeRepeatedKeys())) {
         updateBalloonForCursor();
         moveCursorToTarget();
         nameBalloon.hide(0);
@@ -564,7 +556,7 @@ void PocketItemSelectMenu::mainAct06() {
 }
 
 void PocketItemSelectMenu::mainAct07() {
-    if (moveCursorByPad((void *)takeRepeatedKeys())) {
+    if (moveCursorByPad(takeRepeatedKeys())) {
         updateBalloonForCursor();
         moveCursorToTarget();
         nameBalloon.hide(0);
@@ -596,7 +588,7 @@ void PocketItemSelectMenu::mainAct08() {
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                ((MenuCursor *)&cursor)->setPosePress();
+                cursor.setPosePress();
                 setMainState(9);
             } else if (k & 2) {
                 cancelPopup();
@@ -1008,9 +1000,9 @@ void PocketItemSelectMenu::showCursor() {
     s32 b = getCursorTargetY();
     cursor.warpTo(a, b);
     if (cursorSlot == 0xf) {
-        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
+        cursor.setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+        cursor.setAnimIfChanged(1);
     }
     refreshCursor();
 }
@@ -1028,7 +1020,7 @@ s32 PocketItemSelectMenu::getCursorTargetX() {
 s32 PocketItemSelectMenu::getCursorTargetY() { return getSlotY(cursorSlot); }
 
 void PocketItemSelectMenu::hideCursor() {
-    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.setAnimIfChanged(0);
     cursor.update();
 }
 
@@ -1070,14 +1062,14 @@ void PocketItemSelectMenu::cursorToPopupTop() {
     s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.warpTo(a, b);
-    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
+    cursor.setAnimIfChanged(7);
 }
 
 void PocketItemSelectMenu::showCursorAtSlot() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     cursor.warpTo(a, b);
-    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+    cursor.setAnimIfChanged(1);
 }
 
 void PocketItemSelectMenu::refreshCursor() {
@@ -1086,14 +1078,14 @@ void PocketItemSelectMenu::refreshCursor() {
 }
 
 void PocketItemSelectMenu::pressCloseButton() {
-    ((MenuCursor *)&cursor)->setPosePress();
+    cursor.setPosePress();
     setMainState(0xb);
 }
 
 void PocketItemSelectMenu::beginPutDownAt(u32 v) {
     nameBalloon.hide(1);
     targetSlot = v;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
+    cursor.setAnimIfChanged(5);
     setMainState(0xf);
 }
 
@@ -1101,7 +1093,7 @@ void PocketItemSelectMenu::beginSwapAt(u32 v) {
     nameBalloon.hide(1);
     returnState = mainState;
     targetSlot = v;
-    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
+    cursor.setAnimIfChanged(6);
     setMainState(0x10);
 }
 
@@ -1155,13 +1147,13 @@ void PocketItemSelectMenu::closeWithoutChoice() {
 }
 
 void PocketItemSelectMenu::setPopupChoices() {
-    ChoiceIdList_Add(&choiceList, MenuCtrl_GetPocketSelectLabel(), 0);
-    ChoiceIdList_Add(&choiceList, 2, 1);
+    ChoiceIdList_Add((u8 *)&choiceList, MenuCtrl_GetPocketSelectLabel(), 0);
+    ChoiceIdList_Add((u8 *)&choiceList, 2, 1);
 }
 
 void PocketItemSelectMenu::selectPocket(u32 idx, u32 v) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&choiceList, 1);
+    ChoiceIdList_Clear((u8 *)&choiceList, 1);
     if (isPocketSlot(idx)) {
         setPopupChoices();
         hideCursor();
@@ -1172,7 +1164,7 @@ void PocketItemSelectMenu::selectPocket(u32 idx, u32 v) {
     }
 }
 
-void PocketItemSelectMenu::moveCursorInGrid(void *pad) {
+void PocketItemSelectMenu::moveCursorInGrid(u32 pad) {
     s32 col = cursorSlot;
     s32 row = 0;
     while (col >= 5) {
@@ -1208,13 +1200,13 @@ void PocketItemSelectMenu::moveCursorInGrid(void *pad) {
                 cursorSlot = cursorSlot + 5;
             } else {
                 cursorSlot = 0xf;
-                ((MenuCursor *)&cursor)->switchToAnim07();
+                cursor.switchToAnim07();
             }
         }
     }
 }
 
-BOOL PocketItemSelectMenu::moveCursorByPad(void *pad) {
+BOOL PocketItemSelectMenu::moveCursorByPad(u32 pad) {
     u8 old = cursorSlot;
     clearFlags(0x18);
     if (pad == 0) {
@@ -1225,7 +1217,7 @@ BOOL PocketItemSelectMenu::moveCursorByPad(void *pad) {
     } else if (cursorSlot == 0xf) {
         if (MenuKeys_HasUp(pad)) {
             cursorSlot = 0xe;
-            ((MenuCursor *)&cursor)->switchToAnim01();
+            cursor.switchToAnim01();
         }
     }
     if (old != cursorSlot) {

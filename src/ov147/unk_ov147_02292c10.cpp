@@ -1,15 +1,10 @@
-#include "uptr.h"
 #include "nitro/fs.h"
 // ov147 second translation unit (0x02292c10..0x022930bc): the object at scene+0xac and its helpers.
 #include "types.h"
 #include "menu/TitleBlinkText.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Gfx2d_GetMainPlanes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Gfx2d_HideMainPlanes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TitleBlinkText_HideBg3  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TitleBlinkText_LoadGraphics  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02119434.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/ov147/unk_ov147_02292c10.h"
 
@@ -18,18 +13,13 @@ extern s16 data_02135f44[];
 
 void G2x_SetBlendAlpha_(u32 a, s32 b, s32 c, s32 d, s32 e);
 s32 _s32_div_f(s32 a, s32 b);
-s32 Gfx2d_HideMainPlanes(s32 a);
-u32 Gfx2d_GetMainPlanes(s32 a);
 void DC_FlushRange(void *p, u32 size);
 void GX_LoadBG3Scr(void *p, u32 a, u32 size);
 void GX_LoadBGPltt(void *p, u32 a, u32 size);
 void GX_LoadBG3Char(void *p, u32 a, u32 size);
-BOOL FS_OpenFile(void *file, const char *path);
-void FS_ReadFile(void *a, void *b, u32 size);
-void FS_CloseFile(void *a);
-void FS_InitFile(void *a);
-void TitleBlinkText_LoadGraphics(s32 a);
-void TitleBlinkText_HideBg3();
+BOOL FS_OpenFile(FSFile *file, const char *path);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+BOOL FS_CloseFile(FSFile *file);
 }
 
 
@@ -125,43 +115,43 @@ extern "C" void TitleBlinkText_LoadGraphics(s32 idx) {
     char ncg[28] = "/a_mes/a_mes_ttl_bg_ncg.bin";
     const char *paths[2] = { "/a_mes/a_mes_ttl_a0_bg_nsc.bin", "/a_mes/a_mes_ttl_b0_bg_nsc.bin" };
     char ncl[28] = "/a_mes/a_mes_ttl_bg_ncl.bin";
-    u32 file[HOST_SIZED(0x4c, FSFile) / 4];
+    FSFile file;
     void *m;
-    FS_InitFile(file);
+    FS_InitFile(&file);
     m = TitleBlinkText_Alloc(0x9e0);
     if (m) {
-        TitleBlinkText_ReadChars(file, ncg, m);
+        TitleBlinkText_ReadChars(&file, ncg, m);
         TitleBlinkText_UploadChars(m);
         TitleBlinkText_Free(m);
     }
     m = TitleBlinkText_Alloc(0x20);
     if (m) {
-        TitleBlinkText_ReadPalette(file, ncl, m);
+        TitleBlinkText_ReadPalette(&file, ncl, m);
         TitleBlinkText_UploadPalette(m);
         TitleBlinkText_Free(m);
     }
     m = TitleBlinkText_Alloc(0x800);
     if (m) {
-        TitleBlinkText_ReadScreen(file, (void *)paths[idx], m);
+        TitleBlinkText_ReadScreen(&file, paths[idx], m);
         TitleBlinkText_UploadScreen(m);
         TitleBlinkText_Free(m);
     }
 }
 
-extern "C" void TitleBlinkText_ReadChars(void *a, void *b, void *c) {
-    FS_OpenFile(a, (const char *)b);
+extern "C" void TitleBlinkText_ReadChars(FSFile *a, const char *b, void *c) {
+    FS_OpenFile(a, b);
     FS_ReadFile(a, c, 0x9e0);
     FS_CloseFile(a);
 }
 
-extern "C" void TitleBlinkText_ReadPalette(void *a, void *b, void *c) {
-    FS_OpenFile(a, (const char *)b);
+extern "C" void TitleBlinkText_ReadPalette(FSFile *a, const char *b, void *c) {
+    FS_OpenFile(a, b);
     FS_ReadFile(a, c, 0x20);
     FS_CloseFile(a);
 }
 
-extern "C" void TitleBlinkText_ReadScreen(void *a, void *b, void *c) {
-    FS_OpenFile(a, (const char *)b);
+extern "C" void TitleBlinkText_ReadScreen(FSFile *a, const char *b, void *c) {
+    FS_OpenFile(a, b);
     FS_ReadFile(a, c, 0x800);
     FS_CloseFile(a);
 }
@@ -193,7 +183,8 @@ extern "C" void TitleBlinkText_ShowBg3() { Gfx2d_ShowMainPlanes(8); }
 
 extern "C" void TitleBlinkText_HideBg3() {
     volatile u32 *r = (volatile u32 *)0x4000000;
-    u32 v = Gfx2d_GetMainPlanes(Gfx2d_HideMainPlanes(8));
+    Gfx2d_HideMainPlanes(8);
+    u32 v = Gfx2d_GetMainPlanes();
     IO_W(r, (IO_R(r) & 0xffffe0ff) | (v << 8));
 }
 

@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "item/ItemName.h"
 #include "types.h"
 #include "nitro/gxoam.h"
@@ -41,8 +40,7 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 Item_GetInfoUnk02(u16 *item);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 
-s32 Msg_SkipLines(void *p, s32 i);
-void _ZN10BgVramTask6cancelEv(void *p);
+u8 *Msg_SkipLines(u8 *p, s32 i);
 void Math_StepS32(void *p, s32 a, s32 b);
 
 void func_020b8800(void *p);
@@ -165,8 +163,7 @@ void CreatureBookPanel::drawButtons(s32 y) {
     s32 i = 0;
     do {
         s32 pal = pageButtonPalettes[i];
-        u8 *b = (u8 *)this + i;
-        u8 *q = b + 0x128a;
+        u8 *q = &pageButtonFlashTimers[i];
         u32 v = *q;
         if (v != 0) {
             *q = v - 1;
@@ -174,15 +171,15 @@ void CreatureBookPanel::drawButtons(s32 y) {
         }
         // the next / previous page buttons' cells
         GXOamAttr *cell = i == 0 ? &data_ov114_02296588 : &data_ov114_02296590;
-        Oam_DrawObj(1, (u32 *)cell, 0x80, py, pal, 1, NULL);
+        Oam_DrawObj(1, cell, 0x80, py, pal, 1, NULL);
         i++;
     } while (i < 2);
     s32 py1 = py;
     if (touchTarget == 0) py1 = py + 2;
-    Oam_DrawObj(1, (u32 *)&data_ov114_022965c0[0], 0x80, py1, -1, 1, NULL);
+    Oam_DrawObj(1, &data_ov114_022965c0[0], 0x80, py1, -1, 1, NULL);
     s32 py2 = py;
     if (touchTarget == 1) py2 = py + 2;
-    Oam_DrawObj(1, (u32 *)&data_ov114_022965c0[1], 0x80, py2, -1, 1, NULL);
+    Oam_DrawObj(1, &data_ov114_022965c0[1], 0x80, py2, -1, 1, NULL);
     Oam_DrawCell(1, &data_ov114_022965c0[2], 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
@@ -388,7 +385,7 @@ MsgString406::~MsgString406() {}
 
 u32 MsgString406::capacity() { return 0x196; }
 
-u8 *MsgString406::data() { return HOST_AT(this, 0x12, unk_14[0], 0); }
+u8 *MsgString406::data() { return text; }
 
 void CreatureBook_LoadDescription(CreatureBookPanel *s)
 {
@@ -419,9 +416,9 @@ u8 CreatureBook_CountDescPages(CreatureBookPanel *s)
     s32 n = 0;
     s32 k = n;
     for (; n < 5; n++) {
-        s32 a = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k);
-        s32 b = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k + 1);
-        s32 c = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k + 2);
+        u8 *a = Msg_SkipLines(s->descText.text, k);
+        u8 *b = Msg_SkipLines(s->descText.text, k + 1);
+        u8 *c = Msg_SkipLines(s->descText.text, k + 2);
         k += 3;
         if (a == 0 && b == 0 && c == 0) {
             return (u8)n;
@@ -432,7 +429,7 @@ u8 CreatureBook_CountDescPages(CreatureBookPanel *s)
 
 void CreatureBook_ShowDescPage(CreatureBookPanel *s)
 {
-    void *o[3];
+    LabelString *o[3];
     s32 z10 = 0;
     s32 z14 = 0;
     s32 k = (u8)s->descPage * 3;
@@ -444,17 +441,17 @@ void CreatureBook_ShowDescPage(CreatureBookPanel *s)
     y = 0xbb;
     i = 0;
     do {
-        s32 t = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k);
-        void *ob;
-        if (t != 0) {
+        u8 *t = Msg_SkipLines(s->descText.text, k);
+        LabelString *ob;
+        if (t != NULL) {
             ob = o[i];
-            ((MsgString *)(ob))->setLine((u8 *)(t));
+            ob->setLine(t);
         } else {
             ob = o[i];
-            ((MsgString *)(ob))->clear();
+            ob->clear();
         }
-        ((LabelString *)(ob))->createLabel(s->mainLayer, y, 0xd, 2, 3, z10);
-        ((LabelString *)(ob))->redrawAligned(z14, z14);
+        ob->createLabel(s->mainLayer, y, 0xd, 2, 3, z10);
+        ob->redrawAligned(z14, z14);
         k++;
         y += 0x1a;
         i++;
@@ -516,7 +513,7 @@ void CreatureBook_CancelIconTasks(CreatureBookPanel *s)
 {
     s32 i;
     for (i = 0; i < 9; i++) {
-        _ZN10BgVramTask6cancelEv(&s->rowIconTasks[i]);
+        s->rowIconTasks[i].BgVramTask::cancel();
     }
     s->iconTaskCount = 0;
 }
@@ -535,13 +532,12 @@ void CreatureBook_ClearLabels(CreatureBookPanel *s)
 {
     s32 i;
     s->labelCount = 0;
-    u8 *b = (u8 *)s->labels;
     for (i = 0; i < 4; i++) {
-        ((LabelString *)(b + (i << 6)))->destroyLabel();
+        s->labels[i].destroyLabel();
     }
 }
 
-void *CreatureBook_AllocLabel(CreatureBookPanel *s)
+extern "C" LabelString *CreatureBook_AllocLabel(CreatureBookPanel *s)
 {
     u8 *p = &s->labelCount;
     u32 c = *p;
@@ -554,12 +550,11 @@ void *CreatureBook_AllocLabel(CreatureBookPanel *s)
 
 void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a)
 {
-    u32 obj[HOST_SIZED(0x24, ItemName) / 4] HOST_ALIGN8;
+    ItemName obj;
     u16 col;
     u32 v;
-    new (obj) ItemName();
     if (a == 0xff) {
-        ((MsgString *)(obj))->clear();
+        obj.clear();
     } else {
         switch (s->mode) {
         case 0:
@@ -569,17 +564,15 @@ void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a)
             v = a < 0x38 ? (u16)(a + 0x12b0) : 0x12b0;
             break;
         default:
-            ((ItemName *)(obj))->ItemName::~ItemName();
             return;
         }
         col = v;
-        ((ItemName *)(obj))->setFromItem(&col);
+        obj.setFromItem(&col);
     }
-    void *t = CreatureBook_AllocLabel(s);
-    ((MsgString *)(t))->copy((MsgString *)(obj));
-    ((LabelString *)(t))->createLabel(s->mainLayer, 0xa1, 0xd, 1, 3, 0);
-    ((LabelString *)(t))->redrawAligned(1, 0);
-    ((ItemName *)(obj))->ItemName::~ItemName();
+    LabelString *t = CreatureBook_AllocLabel(s);
+    t->copy(&obj);
+    t->createLabel(s->mainLayer, 0xa1, 0xd, 1, 3, 0);
+    t->redrawAligned(1, 0);
 }
 
 void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a)
@@ -602,11 +595,11 @@ void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a)
             src = &data_ov114_02296580;
             t14 = 4;
         }
-        Oam_DrawObj(1, (u32 *)src, rowY, x, m1, 2, NULL);
+        Oam_DrawObj(1, src, rowY, x, m1, 2, NULL);
         if (s->selectedEntry == s->firstVisibleEntry + i) {
-            Oam_DrawObj(1, (u32 *)&data_ov114_022965a0, rowY, x, m1, 2, NULL);
+            Oam_DrawObj(1, &data_ov114_022965a0, rowY, x, m1, 2, NULL);
         }
-        Oam_DrawObj(1, (u32 *)&data_ov114_02296598, rowY, x, t14, 2, NULL);
+        Oam_DrawObj(1, &data_ov114_02296598, rowY, x, t14, 2, NULL);
         rowY += 0x1b;
         idx++;
         if (idx >= 9) {
@@ -726,7 +719,7 @@ extern "C" void CreatureBook_SetRowIcon(CreatureBookPanel *s, u16 *item, s32 idx
     if (key != e->iconId) {
         e->iconId = key;
         u32 lo = e->cell.charNo;
-        void *dst = ((ItemIconCache *)(void *)(s))->getIconChars(key);
+        void *dst = s->iconCache.getIconChars(key);
         s32 n = CreatureBook_AllocIconTask(s);
         u8 *src = s->iconUploadChars[n].top;
         u8 *src2 = src + 0x40;
@@ -1026,19 +1019,19 @@ void CreatureBook_BuildCaughtMask(CreatureBookPanel *s) {
     for (i = 0; i < 3; i++) {
         s->caughtMask[i] = 0;
     }
-    void *p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     v = 0xfff1;
     if (s->mode == 0) {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
-            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &v)) {
+            if (Catalog_HasItem((u8 *)p->getCatalog(), &v)) {
                 s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     } else {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12b0) : 0x12b0;
-            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &v)) {
+            if (Catalog_HasItem((u8 *)p->getCatalog(), &v)) {
                 s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }

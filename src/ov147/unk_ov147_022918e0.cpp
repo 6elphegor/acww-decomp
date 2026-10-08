@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/TitleBlinkText.h"
@@ -16,18 +15,13 @@
 #include "talk/TalkMsgRequest.h"
 #include "sys/ProcProfile.h"
 #include "player/PlayerOptions.h"
-#define PROTO_LOCAL_Gfx2d_LoadCharRange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTitleLogoChars  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTitleLogoCharsWork  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTitleLogoHideMasks  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTitleLogoRevealMasks  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTitleLogoScreen  // declared below: the shared prototype conflicts with the calls here
+#include "snd/BgmManager.h"
+#include "snd/BgmVolumeMixer.h"
+#include "gfx/ScreenTransition.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -63,10 +57,6 @@ class TalkMsgRequest;
 
 
 extern "C" {
-void ScreenLayers_ReleaseStub(s32 a);
-void ScreenLayers_AcquireStub(s32 a);
-void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
-void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void MI_CpuFill8(void *a, s32 b, u32 n);
 u32 Clock_GetTimeOfDay();
@@ -75,8 +65,6 @@ extern u8 data_021e7f8c[];
 extern u8 gSavePlayers[];
 extern SaveData gSaveData;
 extern u8 gTalkMsgIndexEnd;
-extern u8 gScreenTransition;
-extern void *gCurrentHeap;
 }
 
 class TitleScreen;
@@ -114,19 +102,10 @@ public:
 
 
 extern "C" {
-extern u32 sTitleLogoCharsWork[][8];
-void _ZN14TitleBlinkTextD1Ev();
-void _ZN14TitleBlinkText11updateShownEv();
-void _ZN14TitleBlinkText11updateDelayEv();
-void _ZN14TitleBlinkText10updateIdleEv();
-extern u16 sTitleLogoScreen[];
-extern u32 sTitleLogoChars[][8];
-extern u32 sTitleLogoHideMasks[][8];
-extern u32 sTitleLogoRevealMasks[][8];
 extern const u8 sTitleGreetingMsgs[];
 extern TitleStateEntry sTitleStates[];
 extern u16 gPad[];
-extern u8 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;
 
 void *Scene_GetWarpRequest();
 void SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
@@ -150,7 +129,7 @@ static inline BOOL Unk_ov147_02291b28_IsTwo(u8 v) {
 }
 
 static inline BOOL Unk_ov147_022924c0_IsTwo() {
-    if (gScreenTransition == 2) {
+    if (gScreenTransition.state == 2) {
         return TRUE;
     }
     return FALSE;
@@ -251,7 +230,7 @@ TitleScreen::~TitleScreen() {}
 
 BOOL TitleScreen::onCreate() {
     talk.setOwner(this);
-    ((PlayerOptions *)(PlayerOptions_Get()))->reset();
+    PlayerOptions_Get()->reset();
     TalkRequestFlags_SetSceneHold();
     if (Main_TakeDwcInitResult() == 3) {
         wifiIdErased = 1;
@@ -318,7 +297,7 @@ void TitleScreen::stopBgm() {
 
 void TitleScreen::holdTalkDuck() {
     if (bgmMode == 1) {
-        *(s32 *)(data_021c1b3c + 0x248) = 0xb;
+        data_021c1b3c->mixer.talkDuckHold = 0xb;
     }
 }
 
@@ -389,17 +368,17 @@ void TitleScreen::updateOpenMenu() {
         talk.resetMsg();
         if (wifiIdErased != 0) {
             talk.setFileName(sTitleTalkFilePtr);
-            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = 0x32;
+            talk.msgIndex = 0x32;
             wifiIdErased = 0;
         } else if (backupError != 0) {
             talk.setFileName("sp_etc_sequence2");
-            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = 9;
+            talk.msgIndex = 9;
         } else if (gSaveData.testFlag(0x12)) {
             talk.setFileName(sTitleTalkFilePtr);
-            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = 0x24;
+            talk.msgIndex = 0x24;
         } else {
             talk.setFileName(sTitleTalkFilePtr);
-            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = talk.getGreetingMsg();
+            talk.msgIndex = talk.getGreetingMsg();
         }
         r->attachRequest(&talk);
         r->nextState = 1;
@@ -801,30 +780,30 @@ u8 TitleTalk::getGreetingMsg() {
 }
 
 void TitleScreen::loadLogo() {
-    ScreenLayers_AcquireStub(1);
+    ScreenLayers_AcquireStub();
     Gfx2d_SetLayerControl(5, 0, 0, 0);
     Gfx2d_SetLayerPriority(5, 1);
     Gfx2d_LoadPaletteFile("menu/title/bg_us.bpl", gCurrentHeap, 5, 8, 8, 0xf);
-    File_LoadToBuffer((void *)"menu/title/bg_us.bsc", sTitleLogoScreen, 0x800);
-    Gfx2d_LoadScreen(sTitleLogoScreen, 5, 0x800, 0);
-    File_LoadToBuffer((void *)"menu/title/bg_us.bch", sTitleLogoChars, 0x3800);
+    File_LoadToBuffer("menu/title/bg_us.bsc", sTitleLogoScreen, 0x800);
+    Gfx2d_LoadScreen((u8 *)sTitleLogoScreen, 5, 0x800, 0);
+    File_LoadToBuffer("menu/title/bg_us.bch", sTitleLogoChars, 0x3800);
     MI_CpuFill8(sTitleLogoCharsWork, 0, 0x3800);
-    File_LoadToBuffer((void *)"menu/title/mask0.bch", sTitleLogoHideMasks, 0xe0);
-    File_LoadToBuffer((void *)"menu/title/mask1.bch", sTitleLogoRevealMasks, 0x1e0);
-    File_LoadToBuffer((void *)"menu/title/mask2.bch", sTitleLogoMask2, 0x1e0);
-    Gfx2d_LoadCharRange(sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+    File_LoadToBuffer("menu/title/mask0.bch", sTitleLogoHideMasks, 0xe0);
+    File_LoadToBuffer("menu/title/mask1.bch", sTitleLogoRevealMasks, 0x1e0);
+    File_LoadToBuffer("menu/title/mask2.bch", sTitleLogoMask2, 0x1e0);
+    Gfx2d_LoadCharRange((u8 *)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
 }
 
 void TitleScreen::updateLogo() {
     switch (logoState) {
     case 0:
-        if (Unk_ov147_02291b28_IsTwo(gScreenTransition)) {
+        if (Unk_ov147_02291b28_IsTwo(gScreenTransition.state)) {
             loadLogo();
             startLogoReveal();
         }
         break;
     case 6:
-        if (Unk_ov147_02291b28_IsTwo(gScreenTransition)) {
+        if (Unk_ov147_02291b28_IsTwo(gScreenTransition.state)) {
             blinkText.requestVariant(1);
             idleTimer = 0xe10;
             logoState = 5;
@@ -873,7 +852,7 @@ void TitleScreen::dismissLogo() {
 
 void TitleScreen::hideLogo() {
     Gfx2d_HideLayer(5);
-    ScreenLayers_ReleaseStub(1);
+    ScreenLayers_ReleaseStub();
     logoState = 5;
 }
 
@@ -924,7 +903,7 @@ void TitleScreen::startLogoHide() {
 BOOL TitleScreen::stepLogoHide() {
     if (logoStep == 0) {
         Gfx2d_HideLayer(5);
-        ScreenLayers_ReleaseStub(1);
+        ScreenLayers_ReleaseStub();
         return TRUE;
     }
     logoStep = logoStep - 1;

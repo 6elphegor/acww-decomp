@@ -10,12 +10,7 @@
 #include "menu/MenuLauncher.h"
 #include "player/PlayerData.h"
 #include "ui/HandCursor.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchChanged  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchCurX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchCurY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchHeld  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -24,37 +19,14 @@
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02097110.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov130/unk_ov130_02292360.h"
 #include "proto/ov132/unk_ov132_022936c0.h"
 
 extern "C" {
-extern u8 gSaveHouse[];
 extern u16 gPad[];
-extern u8 gTouchHeld[];
-extern u8 gTouchChanged[];
-extern u8 gTouchCurX[];
-extern u8 gTouchCurY[];
-
-s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
-s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-
-void _ZN9HouseData7setDebtEi(void *self, s32 v);
-s32 _ZN9HouseData7getDebtEv(void *self);
-void MenuButtons_LoadTextColors(void *self);
-
-// ov130 (library overlay) plain functions; first argument is the NumberPad object
-void NumberPad_StopKeyRepeat(void *self);
-void NumberPad_PressKey(void *self);
 }
-
-
-
-
-
-
-
-
-
 
 class BankMenu;
 typedef void (BankMenu::*Unk_ov132_02294390_Fn)();
@@ -123,8 +95,8 @@ public:
     /* 0x25c */ LabelString labels[2];
     /* 0x2dc */ BgVramTask screenTasks[2];
     /* 0x324 */ MenuErrorMessage errorMessage;
-    /* 0x42c */ u8 layer6Screen[0x800];
-    /* 0xc2c */ u8 layer4Screen[0x800];
+    /* 0x42c */ u16 layer6Screen[0x400];
+    /* 0xc2c */ u16 layer4Screen[0x400];
     /* 0x142c */ u16 flags;
     /* 0x142e */ u8 cursorSlot;
     /* 0x142f */ u8 returnState;
@@ -136,7 +108,7 @@ public:
 
 
 static inline BOOL Unk_ov132_02293d40_Both() {
-    if (gTouchHeld[0] != 0 && gTouchChanged[0] != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
@@ -298,10 +270,10 @@ void BankMenu::loadBgGfx() {
     NumberPad_LoadBgGraphics(6);
     File_LoadToBuffer("menu/bank/c0_bg.bsc", layer6Screen, 0x800);
     BgScreen_SetRectPalette(layer6Screen, 6, 7, 0x19, 0xf, 6);
-    Gfx2d_LoadScreen(layer6Screen, 6, 0x800, 0);
+    Gfx2d_LoadScreen((u8 *)layer6Screen, 6, 0x800, 0);
     File_LoadToBuffer("menu/bank/c1_bg.bsc", layer4Screen, 0x800);
     BgScreen_SetRectPalette(layer4Screen, 6, 7, 0x19, 0xf, 6);
-    Gfx2d_LoadScreen(layer4Screen, 4, 0x800, 0);
+    Gfx2d_LoadScreen((u8 *)layer4Screen, 4, 0x800, 0);
     LabelString *p = (LabelString *)allocLabel();
     String_Load2dMenu(p, 0x5f);
     p->createLabel(4, 0x114, 0xe, 0xf, 0, 0);
@@ -313,7 +285,7 @@ void BankMenu::loadBgGfx() {
 }
 
 void BankMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&bottomButtons);
+    MenuButtons_LoadTextColors();
 }
 
 void BankMenu::updateTouch() {
@@ -325,8 +297,8 @@ void BankMenu::updateTouch() {
         if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
             quit();
         } else {
-            s32 x = gTouchCurX[0];
-            s32 y = gTouchCurY[0];
+            s32 x = gTouchCurX;
+            s32 y = gTouchCurY;
             if (x >= 0x40 && x < 0xc0) {
                 if (y >= 0x38 && y < 0x58) {
                     selectDeposit();
@@ -478,7 +450,7 @@ void BankMenu::selectDeposit() {
 }
 
 void BankMenu::selectWithdraw() {
-    if (PlayerInventory_GetBellsRoom(PlayerData_GetCurrent()->getInventory(), 1, 0) == 0) {
+    if (PlayerInventory_GetBellsRoom((u8 *)PlayerData_GetCurrent()->getInventory(), 1, 0) == 0) {
         showMessage(0xf);
     } else {
         nextMenuId = 0x36;

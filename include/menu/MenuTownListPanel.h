@@ -7,6 +7,7 @@
 #include "gfx/BgVramTask.h"
 #include "ui/LabelString.h"
 #include "menu/MenuTitleBalloon.h"
+#include "nitro/gxoam.h"
 
 class MenuTownListPanel {
 public:
@@ -16,7 +17,7 @@ public:
     void clearFlags(u32 m);
     void setFlags(u32 m);
     BOOL testFlags(u32 m);
-    u32 getCellList(s32 i);
+    GXOamAttr *getCellList(s32 i);
     void setRowPlayerName(s32 i, u8 *str, u8 pal);
     void setRowTownName(s32 i, u8 *str, u8 pal);
     LabelString *allocTextLabel();

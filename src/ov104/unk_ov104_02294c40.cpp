@@ -1,4 +1,3 @@
-#include "uptr.h"
 // ov104: scene overlay (class PostOfficeMenu, vtable 0x02298170). Linked as one unit.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -30,23 +29,11 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_ChoiceIdList_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChoiceIdList_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_FindAddresseePlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_FindAddresseeVillager  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_HasKnownAddressee  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_PutInMailbox  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_SendToVillager  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterGrid_SetLetters2D  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
+#include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02065330.h"
@@ -58,6 +45,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_02202fac.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
@@ -72,19 +60,8 @@ typedef PostOfficeMenu S;
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void Letter_Clear(void *p);
-void Letter_Copy(void *dst, void *src);
-s32 LetterDelivery_FindAddresseeVillager(void *p);
-void LetterDelivery_SendToVillager(void *p);
-s32 LetterDelivery_HasKnownAddressee(void *p);
-s32 LetterDelivery_FindAddresseePlayer(void *p);
-s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 
-void InventoryBg_LoadObjGraphics(void *p);
-void LetterGrid_SetLetters2D(void *p, void *q);
 
-void ChoiceIdList_Clear(void *p, s32 a);
-void ChoiceIdList_Add(void *p, s32 a, s32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, u32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
 u32 PopupChoice_DecideCancel(void *p, s32 a);
@@ -93,10 +70,8 @@ void PopupChoice_ForceClose(void *p);
 void PopupChoice_Update(void *p);
 void PopupChoice_Close(void *p, s32 a);
 void PopupChoice_Open(void *p, s32 a);
-void MenuButtons_LoadTextColors(void *p);
 
 extern u16 gPad[];
-extern u32 gCurrentHeap;
 extern u8 gSavePlayers[];
 }
 
@@ -151,16 +126,16 @@ public:
     void clearFlags(u32 mask);
     void setFlags(u32 mask);
     BOOL testFlags(u32 mask);
-    BOOL sendLetterRecord(void *p);
+    BOOL sendLetterRecord(Letter *p);
     void updateOnlineSend();
     void beginOnlineSend();
-    u32 deliverVillagerLettersNow(void *p);
-    u32 deliverToMailboxes(void *p);
-    s32 queueLetterForDelivery(void *p);
-    u32 queueLetters(void *p);
-    u32 checkSendLetters(void *p, s32 flag);
-    u32 takeFutureLetter(void *p);
-    BOOL hasFutureLetter(void *p);
+    u32 deliverVillagerLettersNow(Letter *p);
+    u32 deliverToMailboxes(Letter *p);
+    s32 queueLetterForDelivery(Letter *p);
+    u32 queueLetters(Letter *p);
+    u32 checkSendLetters(Letter *p, s32 flag);
+    u32 takeFutureLetter(Letter *p);
+    BOOL hasFutureLetter(Letter *p);
     void pressCancelButton();
     void pressSendButton();
     void returnUnsentLetters(s32 flag);
@@ -510,7 +485,7 @@ void PostOfficeMenu::transitionAct01() {
     PostOfficeMenu_LoadObjGraphics(this);
     InventoryItemGrid_LoadPockets(&pocketGrid);
     LetterGrid_LoadPocketLetters(&letterGrid);
-    LetterGrid_SetLetters2D(&letterGrid, boxLetters);
+    LetterGrid_SetLetters2D(&letterGrid, (u8 *)boxLetters);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -583,7 +558,7 @@ void PostOfficeMenu::transitionAct06() {
 
 void PostOfficeMenu::transitionAct07() {
     void *t = getSlotLetter(selectedSlot);
-    Letter_MarkRead((u32)t);
+    Letter_MarkRead((LetterView *)t);
     letterView.show((LetterView *)t, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -652,7 +627,7 @@ void PostOfficeMenu_InitParts(S *s) {
     s->popup.init(3, 0, 0);
     s->letterView.setLayer(3);
     for (i = 0; i < 10; i++) {
-        Letter_Clear((u8 *)s->boxLetters + i * sizeof(Letter));
+        Letter_Clear((LetterView *)&s->boxLetters[i]);
     }
     PostOfficeMenu_BackupPocketLetters(s);
     s->touchHoldDelay = 0;
@@ -669,7 +644,7 @@ void PostOfficeMenu_ReleaseResources(S *s) {
 
 void PostOfficeMenu_PreInputUpdate(S *s) {
     PostOfficeMenu_PreStateUpdate(s);
-    ((MenuCursorBuf0 *)&s->cursor)->update();
+    s->cursor.update();
 }
 
 void PostOfficeMenu_PostInputUpdate(S *s) {
@@ -711,8 +686,8 @@ void PostOfficeMenu_LoadBoxBg(S *s) {
 }
 
 void PostOfficeMenu_LoadObjGraphics(S *s) {
-    InventoryBg_LoadObjGraphics(&s->inventoryBg);
-    MenuButtons_LoadTextColors(&s->bottomButtons);
+    InventoryBg_LoadObjGraphics();
+    MenuButtons_LoadTextColors();
     s->bottomButtons.setLayoutConfirmAnd06(0x65);
 }
 
@@ -831,7 +806,7 @@ void PostOfficeMenu::mainAct06() {
                 if (t >= 0) {
                     if (testFlags(0x8000) == 0 || t != 0) {
                         u32 r;
-                        popupChoice = (HOST_AT(this, 0x277d, choiceList.values[0], 0))[t];
+                        popupChoice = choiceList.values[t];
                         r = 1;
                         if (popupChoice == 2) {
                             r = 0;
@@ -931,7 +906,7 @@ void PostOfficeMenu::mainAct09() {
         s32 a = letterCloseButton.getAnchorX(1);
         s32 b = letterCloseButton.getAnchorY(1);
         cursor.warpTo(a, b);
-        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+        cursor.setAnimIfChanged(1);
     }
     if (checkSwitchToTouch()) {
         PostOfficeMenu_HideCursor(this);
@@ -939,7 +914,7 @@ void PostOfficeMenu::mainAct09() {
     } else {
         u32 k = gPad[1];
         if ((k & 1) || (k & 2)) {
-            ((MenuCursor *)&cursor)->setPosePress();
+            cursor.setPosePress();
             setMainState(10);
         }
     }
@@ -962,7 +937,7 @@ void PostOfficeMenu::mainAct0B() {
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                ((MenuCursor *)&cursor)->setPosePress();
+                cursor.setPosePress();
                 setMainState(0xc);
             } else if (k & 2) {
                 PostOfficeMenu_CancelPopup(this);
@@ -974,7 +949,7 @@ void PostOfficeMenu::mainAct0B() {
 void PostOfficeMenu::mainAct0C() {
     if (cursor.isAnimDone()) {
         u32 r;
-        popupChoice = (HOST_AT(this, 0x277d, choiceList.values[0], 0))[popupRow];
+        popupChoice = choiceList.values[popupRow];
         r = 1;
         if (popupChoice == 2) {
             r = 0;
@@ -1255,9 +1230,9 @@ u8 PostOfficeMenu::findFreePocketSlot() {
 }
 
 u8 PostOfficeMenu::findFreeBoxSlot() {
-    u8 *p = (u8 *)boxLetters;
+    Letter *p = boxLetters;
     s32 i;
-    for (i = 0; i < 10; p += sizeof(Letter), i++) {
+    for (i = 0; i < 10; p++, i++) {
         if (((LetterView *)p)->getState() == 0) {
             return i + 0x15;
         }
@@ -1311,7 +1286,7 @@ u8 PostOfficeMenu::fromLetterGridIndex(u32 i) {
 }
 
 u8 PostOfficeMenu::getSlotAt(u32 i, s32 a, u32 flag) {
-    u32 r = ((LetterGrid *)(&letterGrid))->findPocketLetterAt(i, a);
+    u32 r = letterGrid.findPocketLetterAt(i, a);
     if (r == 0x37) {
         r = letterGrid.findLetterAt2D(i, a);
     }
@@ -1328,7 +1303,7 @@ u8 PostOfficeMenu::getSlotAt(u32 i, s32 a, u32 flag) {
 
 BOOL PostOfficeMenu::dropHeldOnSlot(u32 i) {
     if (isSlotEmpty(i) == 0) {
-        Letter_Copy(&swapLetter, getSlotLetter(i));
+        Letter_Copy((LetterView *)&swapLetter, (const LetterView *)getSlotLetter(i));
         putLetterInSlot(heldSlot, &swapLetter);
     }
     releaseHeldTo(i);
@@ -1337,7 +1312,7 @@ BOOL PostOfficeMenu::dropHeldOnSlot(u32 i) {
 
 void PostOfficeMenu::putLetterInSlot(u32 i, void *p) {
     if (isLetterSlot(i) || isBoxSlot(i)) {
-        letterGrid.setLetter(toLetterGridIndex(i), (s32)p);
+        letterGrid.setLetter(toLetterGridIndex(i), p);
     }
 }
 
@@ -1484,7 +1459,7 @@ void PostOfficeMenu::pickUpFrom(u32 i) {
     if (isLetterSlot(i) || isBoxSlot(i)) {
         u32 t = toLetterGridIndex(i);
         handKind = 1;
-        Letter_Copy(&heldLetter, letterGrid.getLetter(t));
+        Letter_Copy((LetterView *)&heldLetter, (const LetterView *)letterGrid.getLetter(t));
         letterGrid.clearLetter(t);
     }
 }
@@ -1498,7 +1473,7 @@ void PostOfficeMenu::releaseHeldTo(u32 i) {
 
 void PostOfficeMenu::exchangeHeldWith(u32 i) {
     if (handKind == 1) {
-        Letter_Copy(&swapLetter, &heldLetter);
+        Letter_Copy((LetterView *)&swapLetter, (const LetterView *)&heldLetter);
         pickUpFrom(i);
         putLetterInSlot(i, &swapLetter);
     }
@@ -1508,9 +1483,9 @@ void PostOfficeMenu_ShowCursor(S *s) {
     s32 r4 = PostOfficeMenu_GetCursorTargetX(s);
     s->cursor.warpTo(r4, PostOfficeMenu_GetCursorTargetY(s));
     if (s->isButtonSlot(s->cursorSlot)) {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+        s->cursor.setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+        s->cursor.setAnimIfChanged(1);
     }
     PostOfficeMenu_RefreshCursor(s);
 }
@@ -1531,8 +1506,8 @@ s32 PostOfficeMenu_GetCursorTargetY(S *s) {
 }
 
 void PostOfficeMenu_HideCursor(S *s) {
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
-    ((MenuCursorBuf0 *)&s->cursor)->update();
+    s->cursor.setAnimIfChanged(0);
+    s->cursor.update();
 }
 
 void PostOfficeMenu_MoveCursorToTarget(S *s) {
@@ -1575,34 +1550,34 @@ void PostOfficeMenu_CursorToPopupTop(S *s) {
     }
     r4 = ((PopupChoiceMenuBody *)&s->popup)->getRowX();
     s->cursor.warpTo(r4, ((PopupChoiceMenuBody *)&s->popup)->getRowY(s->popupRow));
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
+    s->cursor.setAnimIfChanged(7);
 }
 
 void PostOfficeMenu_ShowCursorAtSlot(S *s) {
     s32 r4 = PostOfficeMenu_GetCursorTargetX(s);
     s->cursor.warpTo(r4, PostOfficeMenu_GetCursorTargetY(s));
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
+    s->cursor.setAnimIfChanged(1);
 }
 
 void PostOfficeMenu_RefreshCursor(S *s) {
     s->cursor.setPoseIdle();
-    ((MenuCursorBuf0 *)&s->cursor)->update();
+    s->cursor.update();
 }
 
 void PostOfficeMenu_PressButton(S *s) {
-    ((MenuCursor *)&s->cursor)->setPosePress();
+    s->cursor.setPosePress();
     s->setMainState(0xe);
 }
 
 void PostOfficeMenu_BeginMoveFromPopup(S *s) {
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(4);
+    s->cursor.setAnimIfChanged(4);
     s->setMainState(0x10);
 }
 
 void PostOfficeMenu_BeginPutDownAt(S *s, u32 a) {
     s->nameBalloon.hide(1);
     s->targetSlot = a;
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(5);
+    s->cursor.setAnimIfChanged(5);
     s->setMainState(0x12);
 }
 
@@ -1610,7 +1585,7 @@ void PostOfficeMenu_BeginSwapAt(S *s, u32 a) {
     s->nameBalloon.hide(1);
     s->returnState = s->mainState;
     s->targetSlot = a;
-    ((MenuCursor *)&s->cursor)->setAnimIfChanged(6);
+    s->cursor.setAnimIfChanged(6);
     s->setMainState(0x13);
 }
 
@@ -1631,7 +1606,7 @@ void PostOfficeMenu_OpenPopup(S *s, s32 a) {
     r6 = s->getSlotX(s->selectedSlot);
     r2 = s->getSlotY(s->selectedSlot);
     if (a != 0) {
-        ((PopupChoiceMenu *)(&s->popup))->placeAboveBalloon((LabelBalloon *)(&s->nameBalloon));
+        s->popup.placeAboveBalloon((LabelBalloon *)(&s->nameBalloon));
     } else {
         s->popup.placeNearPoint(r6, r2);
     }
@@ -1651,25 +1626,25 @@ void PostOfficeMenu_SelectLetter(S *s, u32 a, s32 b) {
     s32 r5;
     s->clearFlags(0x8000);
     s->selectedSlot = a;
-    ChoiceIdList_Clear(&s->choiceList, 4);
+    ChoiceIdList_Clear((u8 *)&s->choiceList, 4);
     r7 = s->getSlotLetter(a);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&s->choiceList, 0, 0);
+        ChoiceIdList_Add((u8 *)&s->choiceList, 0, 0);
     }
     r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
-            ChoiceIdList_Add(&s->choiceList, 0x17, 1);
+            ChoiceIdList_Add((u8 *)&s->choiceList, 0x17, 1);
         } else {
-            ChoiceIdList_Add(&s->choiceList, 0x14, 1);
+            ChoiceIdList_Add((u8 *)&s->choiceList, 0x14, 1);
         }
     }
     if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
-            ChoiceIdList_Add(&s->choiceList, 0x15, 3);
+            ChoiceIdList_Add((u8 *)&s->choiceList, 0x15, 3);
         }
     }
-    ChoiceIdList_Add(&s->choiceList, 2, 4);
+    ChoiceIdList_Add((u8 *)&s->choiceList, 2, 4);
     PostOfficeMenu_HideCursor(s);
     if (b == 0) {
         s->nameBalloon.hide(1);
@@ -1679,36 +1654,36 @@ void PostOfficeMenu_SelectLetter(S *s, u32 a, s32 b) {
 
 void PostOfficeMenu_OpenDiscardConfirm(S *s) {
     s->setFlags(0x8000);
-    ChoiceIdList_Clear(&s->choiceList, 4);
-    ChoiceIdList_Add(&s->choiceList, 0x1a, 4);
-    ChoiceIdList_Add(&s->choiceList, 0x15, 2);
-    ChoiceIdList_Add(&s->choiceList, 0x19, 4);
+    ChoiceIdList_Clear((u8 *)&s->choiceList, 4);
+    ChoiceIdList_Add((u8 *)&s->choiceList, 0x1a, 4);
+    ChoiceIdList_Add((u8 *)&s->choiceList, 0x15, 2);
+    ChoiceIdList_Add((u8 *)&s->choiceList, 0x19, 4);
     PostOfficeMenu_OpenPopup(s, 0);
 }
 
 void PostOfficeMenu_MoveCursorInPocketLetters(S *s, s32 a, s32 b) {
     s32 r4 = s->cursorSlot - 0xb;
     s32 r6 = r4 >> 1;
-    if (MenuKeys_HasLeft((void *)a)) {
+    if (MenuKeys_HasLeft(a)) {
         if ((r4 & 1) > 0) {
             s->cursorSlot = s->cursorSlot - 1;
         } else {
             s->cursorSlot = r6 * 2 + 0x16;
             return;
         }
-    } else if (MenuKeys_HasRight((void *)a)) {
+    } else if (MenuKeys_HasRight(a)) {
         if ((r4 & 1) < 1) s->cursorSlot = s->cursorSlot + 1;
     }
     if (s->isLetterSlot(s->cursorSlot)) {
         if (s->testFlags(0x30) == 0) {
-            if (MenuKeys_HasUp((void *)a)) {
+            if (MenuKeys_HasUp(a)) {
                 if (r6 > 0) s->cursorSlot = s->cursorSlot - 2;
-            } else if (MenuKeys_HasDown((void *)a)) {
+            } else if (MenuKeys_HasDown(a)) {
                 if (r6 < 4) {
                     s->cursorSlot = s->cursorSlot + 2;
                 } else if (b == 0) {
                     s->cursorSlot = 0x1f;
-                    ((MenuCursor *)&s->cursor)->switchToAnim07();
+                    s->cursor.switchToAnim07();
                 }
             }
         }
@@ -1722,9 +1697,9 @@ void PostOfficeMenu_MoveCursorInBox(S *s, s32 a, s32 b) {
         r6++;
         r4 -= 2;
     }
-    if (MenuKeys_HasLeft((void *)a)) {
+    if (MenuKeys_HasLeft(a)) {
         if (r4 > 0) s->cursorSlot = s->cursorSlot - 1;
-    } else if (MenuKeys_HasRight((void *)a)) {
+    } else if (MenuKeys_HasRight(a)) {
         if (r4 < 1) {
             s->cursorSlot = s->cursorSlot + 1;
         } else {
@@ -1734,14 +1709,14 @@ void PostOfficeMenu_MoveCursorInBox(S *s, s32 a, s32 b) {
     }
     if (s->isBoxSlot(s->cursorSlot)) {
         if (s->testFlags(0x30) == 0) {
-            if (MenuKeys_HasUp((void *)a)) {
+            if (MenuKeys_HasUp(a)) {
                 if (r6 > 0) s->cursorSlot = s->cursorSlot - 2;
-            } else if (MenuKeys_HasDown((void *)a)) {
+            } else if (MenuKeys_HasDown(a)) {
                 if (r6 < 4) {
                     s->cursorSlot = s->cursorSlot + 2;
                 } else if (b == 0) {
                     s->cursorSlot = 0x20;
-                    ((MenuCursor *)&s->cursor)->switchToAnim07();
+                    s->cursor.switchToAnim07();
                 }
             }
         }
@@ -1749,13 +1724,13 @@ void PostOfficeMenu_MoveCursorInBox(S *s, s32 a, s32 b) {
 }
 
 void PostOfficeMenu_MoveCursorOnButtons(S *s, s32 a) {
-    if (MenuKeys_HasLeft((void *)a)) {
+    if (MenuKeys_HasLeft(a)) {
         s->cursorSlot = 0x20;
-    } else if (MenuKeys_HasRight((void *)a)) {
+    } else if (MenuKeys_HasRight(a)) {
         s->cursorSlot = 0x1f;
     }
-    if (MenuKeys_HasUp((void *)a)) {
-        ((MenuCursor *)&s->cursor)->switchToAnim01();
+    if (MenuKeys_HasUp(a)) {
+        s->cursor.switchToAnim01();
         if (s->cursorSlot == 0x20) {
             s->cursorSlot = 0x1d;
         } else {
@@ -1812,7 +1787,7 @@ void PostOfficeMenu_BackupPocketLetters(S *s) {
     u8 id;
     s32 i = 0;
     for (id = 0xb; id <= 0x14; i++, id++) {
-        Letter_Copy((u8 *)s->pocketLettersBackup + i * sizeof(Letter), s->getSlotLetter(id));
+        Letter_Copy((LetterView *)&s->pocketLettersBackup[i], (const LetterView *)s->getSlotLetter(id));
     }
 }
 
@@ -1820,16 +1795,16 @@ void PostOfficeMenu_RestorePocketLetters(S *s) {
     u8 id;
     s32 i = 0;
     for (id = 0xb; id <= 0x14; i++, id++) {
-        s->putLetterInSlot(id, (u8 *)s->pocketLettersBackup + i * sizeof(Letter));
+        s->putLetterInSlot(id, &s->pocketLettersBackup[i]);
     }
 }
 
 void PostOfficeMenu::returnUnsentLetters(s32 flag) {
     s32 i;
-    u8 *e = (u8 *)boxLetters;
-    for (i = 0; i < 10; e += sizeof(Letter), i++) {
+    Letter *e = boxLetters;
+    for (i = 0; i < 10; e++, i++) {
         if (flag != 0 && (sentLetterMask & (1 << i))) {
-            Letter_Clear(e);
+            Letter_Clear((LetterView *)e);
         } else if (((LetterView *)e)->getState() != 0) {
             s32 r = findFreePocketSlot();
             if (r != 0x21) {
@@ -1860,10 +1835,10 @@ void PostOfficeMenu::pressCancelButton() {
     clearFlags(0x100);
 }
 
-BOOL PostOfficeMenu::hasFutureLetter(void *p) {
-    u8 *q = (u8 *)p;
+BOOL PostOfficeMenu::hasFutureLetter(Letter *p) {
+    Letter *q = p;
     s32 i;
-    for (i = 0; i < 10; q += sizeof(Letter), i++) {
+    for (i = 0; i < 10; q++, i++) {
         if (((LetterView *)q)->getState() == 1 && ((LetterView *)q)->isToFutureSelf() != 0) {
             return TRUE;
         }
@@ -1871,12 +1846,12 @@ BOOL PostOfficeMenu::hasFutureLetter(void *p) {
     return FALSE;
 }
 
-u32 PostOfficeMenu::takeFutureLetter(void *p) {
+u32 PostOfficeMenu::takeFutureLetter(Letter *p) {
     u16 r = 0;
     s32 t = -1;
-    u8 *q = (u8 *)p;
+    Letter *q = p;
     s32 i;
-    for (i = 0; i < 10; q += sizeof(Letter), i++) {
+    for (i = 0; i < 10; q++, i++) {
         if (((LetterView *)q)->getState() == 1 && ((LetterView *)q)->isToFutureSelf() != 0) {
             if (t == -1) {
                 t = i;
@@ -1890,28 +1865,28 @@ u32 PostOfficeMenu::takeFutureLetter(void *p) {
             r |= 2;
         } else {
             r |= 1;
-            u8 *e = (u8 *)p + t * sizeof(Letter);
+            Letter *e = &p[t];
             MenuCtrl_SetFutureLetter(e);
-            Letter_Clear(e);
+            Letter_Clear((LetterView *)e);
         }
     }
     return r;
 }
 
-u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
+u32 PostOfficeMenu::checkSendLetters(Letter *p, s32 flag) {
     if (LetterList_CountUsed(p, 10) == 0) {
         return 0;
     }
     u16 r = 0;
-    u8 *q = (u8 *)p;
+    Letter *q = p;
     s32 i;
-    for (i = 0; i < 10; q += sizeof(Letter), i++) {
+    for (i = 0; i < 10; q++, i++) {
         if (((LetterView *)q)->getState() != 0) {
             if (((LetterView *)q)->getState() != 1) {
                 if (flag != 0) {
                     sentLetterMask |= 1 << i;
                 } else {
-                    Letter_Clear(q);
+                    Letter_Clear((LetterView *)q);
                 }
             } else if (((LetterView *)q)->isToFutureSelf() == 0) {
                 if (LetterDelivery_HasKnownAddressee(q) != 0) {
@@ -1919,7 +1894,7 @@ u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
                         if (flag != 0) {
                             sentLetterMask |= 1 << i;
                         } else {
-                            Letter_Clear(q);
+                            Letter_Clear((LetterView *)q);
                         }
                         r |= 0x300;
                     } else {
@@ -1934,21 +1909,21 @@ u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
     return r;
 }
 
-u32 PostOfficeMenu::queueLetters(void *p) {
+u32 PostOfficeMenu::queueLetters(Letter *p) {
     u16 r = 0;
     s32 n = LetterList_Compact(p, 10);
     if (n == 0) {
         return 0;
     }
-    u8 *q = (u8 *)p;
+    Letter *q = p;
     s32 i;
-    for (i = 0; i < n; q += sizeof(Letter), i++) {
+    for (i = 0; i < n; q++, i++) {
         if (((LetterView *)q)->getState() != 1) {
-            Letter_Clear(q);
+            Letter_Clear((LetterView *)q);
         } else if (((LetterView *)q)->isToFutureSelf() == 0) {
             if (LetterDelivery_HasKnownAddressee(q) != 0) {
                 if (queueLetterForDelivery(q) != 0) {
-                    Letter_Clear(q);
+                    Letter_Clear((LetterView *)q);
                     r |= 0x200;
                 } else {
                     r |= 0x20;
@@ -1959,11 +1934,11 @@ u32 PostOfficeMenu::queueLetters(void *p) {
     return r;
 }
 
-s32 PostOfficeMenu::queueLetterForDelivery(void *p) {
+s32 PostOfficeMenu::queueLetterForDelivery(Letter *p) {
     return LetterDelivery_QueueOutgoing(p, 1);
 }
 
-u32 PostOfficeMenu::deliverToMailboxes(void *p) {
+u32 PostOfficeMenu::deliverToMailboxes(Letter *p) {
     u16 r = 0;
     s32 n = LetterList_Compact(p, 10);
     if (n == 0) {
@@ -1971,19 +1946,19 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     }
     s32 t;
     u32 mask = 0;
-    u8 *q = (u8 *)p;
+    Letter *q = p;
     s32 cnt = 0;
     s32 i = 0;
     TalkWindowState *obj;
     s32 z;
     s32 j;
-    for (; i < n; q += sizeof(Letter), i++) {
+    for (; i < n; q++, i++) {
         if (((LetterView *)q)->isToFutureSelf() == 0) {
             t = LetterDelivery_FindAddresseePlayer(q);
             if (t != -2) {
                 if (t != -1) {
                     if (LetterDelivery_PutInMailbox(q, t, 1) != 0) {
-                        Letter_Clear(q);
+                        Letter_Clear((LetterView *)q);
                         r |= 0x200;
                     } else {
                         u32 bit = 1 << t;
@@ -1995,7 +1970,7 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
                 } else {
                     if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
                         LetterDelivery_SendToVillager(q);
-                        Letter_Clear(q);
+                        Letter_Clear((LetterView *)q);
                         r |= 0x200;
                     }
                 }
@@ -2028,18 +2003,18 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     return r;
 }
 
-u32 PostOfficeMenu::deliverVillagerLettersNow(void *p) {
+u32 PostOfficeMenu::deliverVillagerLettersNow(Letter *p) {
     u16 r = 0;
     s32 n = LetterList_Compact(p, 10);
     if (n == 0) {
         return 0;
     }
-    u8 *q = (u8 *)p;
+    Letter *q = p;
     s32 i;
-    for (i = 0; i < n; q += sizeof(Letter), i++) {
+    for (i = 0; i < n; q++, i++) {
         if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
             LetterDelivery_SendToVillager(q);
-            Letter_Clear(q);
+            Letter_Clear((LetterView *)q);
             r |= 0x200;
         }
     }
@@ -2106,7 +2081,7 @@ void PostOfficeMenu::updateOnlineSend() {
         }
     }
     while (sendIndex < 10) {
-        void *e = &boxLetters[sendIndex];
+        Letter *e = &boxLetters[sendIndex];
         if (((LetterView *)e)->isToFutureSelf() == 0) {
             if (((LetterView *)e)->getState() == 1) {
                 onlineSendResult |= 0x100;
@@ -2130,8 +2105,8 @@ void PostOfficeMenu::updateOnlineSend() {
     clearFlags(0x1000);
 }
 
-BOOL PostOfficeMenu::sendLetterRecord(void *p) {
-    void *heap = gMenuHeap;
+BOOL PostOfficeMenu::sendLetterRecord(Letter *p) {
+    Heap *heap = (Heap *)gMenuHeap;
     u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
     buf[0] = 8;
     MI_CpuCopy8(p, buf + 1, 0xf4);

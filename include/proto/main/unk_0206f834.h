@@ -18,7 +18,7 @@ void String_Load2dMenuByRef(void *a, u8 *p);
 void String_Load2dMenu(void *a, u8 v);
 #endif
 #ifndef PROTO_LOCAL_String_LoadByIndex
-void String_LoadByIndex(void *a, void *c, u8 v);
+void String_LoadByIndex(void *a, const char *c, u8 v);
 #endif
 #ifndef PROTO_LOCAL_String_FormatNumberWrapper
 void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);

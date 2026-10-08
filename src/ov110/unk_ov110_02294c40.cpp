@@ -18,10 +18,9 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostFoundRecycleMenu_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -39,12 +38,9 @@
 class LostFoundRecycleMenu;
 
 extern "C" {
-extern void *gCommManager;
-extern u8 gSaveLostAndFound[];
-extern u8 gSaveRecycleBin[];
+extern CommManager *gCommManager;
+extern SaveData gSaveData;
 extern u16 gPad[];
-extern s32 gCurrentHeap;
-extern void *gCommManager;
 BOOL Clock_GetWeekday();
 void MI_CpuCopy8(void *a, void *b, u32 c);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
@@ -54,7 +50,6 @@ void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
-void InventoryBg_LoadObjGraphics(void *a);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
 }
 
@@ -103,12 +98,12 @@ public:
     s32 packItemList(u16 *p);
     void confirm(s32 flag);
     void setOkLabel(s32 flag);
-    void *allocTextLabel();
+    LabelString *allocTextLabel();
     void resetTextLabels();
-    BOOL moveCursorByPad(void *pad, s32 mode);
-    void moveCursorOnButtons(void *pad);
-    void moveCursorInBox(void *pad, s32 mode);
-    void moveCursorInPockets(void *pad, s32 mode);
+    BOOL moveCursorByPad(u32 pad, s32 mode);
+    void moveCursorOnButtons(u32 pad);
+    void moveCursorInBox(u32 pad, s32 mode);
+    void moveCursorInPockets(u32 pad, s32 mode);
     void cancelChoiceList();
     void applyChoice();
     void startExchange(u8 v);
@@ -194,14 +189,6 @@ public:
     /* 0x26e4 */ LabelString textLabels[2];
 };
 
-static inline void func_0206fab4(void *p, s32 a, s32 b) { ((LabelString *)p)->redrawAligned((s32)a, (s32)b); }
-static inline void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) { ((LabelString *)p)->createLabel((u32)a, (u32)b, (u32)c, (u8)d, (u8)e, (s32)f); }
-static inline void func_0206fc44(void *p) { ((LabelString *)p)->destroyLabel(); }
-static inline void CommManager_endRecord(void *p, s32 a, s32 b) { ((CommManager *)p)->endRecord((u32)a, (u32)b); }
-static inline void CommManager_writeRecord(void *p, void *buf, s32 n) { ((CommManager *)p)->writeRecord((u8 *)buf, (u32)n); }
-static inline void CommManager_beginRecord(void *p) { ((CommManager *)p)->beginRecord(); }
-static inline s32 CommManager_getSendSeq(void *p) { return ((CommManager *)p)->getSendSeq(); }
-static inline BOOL CommManager_isOnline(void *p) { return ((CommManager *)p)->isOnline(); }
 static inline void func_02089ad8(void *p, s32 a, s32 b) { ((LabelBalloon *)p)->setPos((s32)a, (s32)b); }
 static inline void func_02089af0(void *p) { ((LabelBalloon *)p)->setPopUpward(); }
 static inline void func_02089af8(void *p) { ((LabelBalloon *)p)->setPopDownward(); }
@@ -235,7 +222,6 @@ static inline s32 func_ov002_022014a4(void *p) { return ((PopupChoiceMenuBody *)
 static inline s32 func_ov002_022014c0(void *a, s32 b, s32 c) { return ((PopupChoiceMenuBody *)a)->hitTestRowOrLast((s32)b, (s32)c); }
 static inline BOOL func_ov002_022017a4(void *p) { return ((PopupChoiceMenuBody *)p)->isClosed(); }
 static inline BOOL func_ov002_022017b4(void *p) { return ((PopupChoiceMenuBody *)p)->isOpen(); }
-static inline void func_ov002_02202310(void *a, s32 b, s32 c, s32 d) { ((PopupChoiceMenu *)a)->init((s32)b, (s32)c, (const char *)d); }
 static inline void func_ov002_022026c4(void *p, s32 a, s32 b, s32 c) { ((CursorMotion *)p)->startLinear((s32)a, (s32)b, (s32)c); }
 static inline void func_ov002_022026f4(void *p, s32 a, s32 b) { ((CursorMotion *)p)->setPos((s32)a, (s32)b); }
 static inline s32 func_ov002_02202708(void *p) { return ((CursorMotion *)p)->getY(); }
@@ -252,8 +238,6 @@ static inline void func_ov002_02202a18(void *p, s32 a, s32 b, s32 c) { ((MenuCur
 static inline void func_ov002_02202a40(void *p, s32 a, s32 b) { ((MenuCursorBase *)p)->warpTo((s32)a, (s32)b); }
 static inline void func_ov002_02202b68(void *p) { ((MenuCursor *)p)->setPosePress(); }
 static inline void func_ov002_02202d00(void *p, s32 a) { ((MenuCursor *)p)->setAnimIfChanged((s32)a); }
-static inline BOOL func_ov002_02204234(void *p, s32 a) { return ((MenuErrorMessage *)p)->update((s32)a); }
-static inline void func_ov092_02291ce4(s32 a, s32 b, s32 c) { ((MenuLauncher *)a)->setNextRequest((s32)b, (s32)c); }
 static inline void func_ov094_022941f8(void *a, s32 b) { ((LetterGrid *)a)->highlightLetterKinds((u32)b); }
 static inline void func_ov094_022943b0(void *p) { ((LetterGrid *)p)->clearMarks(); }
 static inline void func_ov094_022943f8(void *p) { ((LetterGrid *)p)->clearCursorSlot(); }
@@ -266,7 +250,7 @@ static inline BOOL func_ov110_02294d9c(LostFoundRecycleMenu *s) { return s->isRe
 static inline void func_ov110_02294e78(LostFoundRecycleMenu *s, u32 v) { s->confirm((s32)v); }
 static inline void func_ov110_02294fb8(LostFoundRecycleMenu *s, s32 a) { s->setOkLabel((s32)a); }
 static inline void func_ov110_02295034(LostFoundRecycleMenu *s) { s->resetTextLabels(); }
-static inline BOOL func_ov110_02295060(LostFoundRecycleMenu *s, u32 a, u32 b) { return s->moveCursorByPad((void *)a, (s32)b); }
+static inline BOOL func_ov110_02295060(LostFoundRecycleMenu *s, u32 a, u32 b) { return s->moveCursorByPad(a, (s32)b); }
 static inline void func_ov110_022953b4(LostFoundRecycleMenu *s) { s->cancelChoiceList(); }
 static inline void func_ov110_022953e0(LostFoundRecycleMenu *s) { s->applyChoice(); }
 static inline void func_ov110_02295404(LostFoundRecycleMenu *s, u32 v) { s->startExchange((u8)v); }
@@ -308,9 +292,6 @@ static inline void func_ov110_0229714c(LostFoundRecycleMenu *s) { s->transitionA
 static inline BOOL func_ov110_0229726c(LostFoundRecycleMenu *s) { return s->isForcedClose(); }
 static inline void func_ov110_0229728c(LostFoundRecycleMenu *s) { s->runMainState(); }
 
-extern "C" {
-void LostFoundRecycleMenu_LoadObjGraphics(LostFoundRecycleMenu *s);
-}
 
 
 
@@ -484,7 +465,7 @@ void LostFoundRecycleMenu::transitionAct04() {
     if (::func_ov110_02294d9c(s)) {
         ::func_ov002_022006e4(&s->nameBalloon, 1);
         ::LostFoundRecycleMenu_HideCursor(s);
-        ::func_ov092_02291ce4(::ProcBase_GetParent(s), 0x44, 1);
+        ((MenuLauncher *)::ProcBase_GetParent(s))->setNextRequest(0x44, 1);
         ::func_ov002_022008c4(s, 2, 4, 1, 0x30);
         ::func_ov002_02200850(s, 0x80);
         ::func_ov002_02200840(s, 4, 0, 0);
@@ -531,7 +512,7 @@ extern "C" void LostFoundRecycleMenu_Init(LostFoundRecycleMenu *s) {
     func_ov002_022027a4(&s->flyMotion);
     s->heldKind = 0;
     s->cursorSlot = 0;
-    func_ov002_02202310(&s->choiceMenu, 3, 1, 0);
+    s->choiceMenu.init(3, 1, NULL);
     s->numTextLabels = 0;
     switch (MenuCtrl_GetMode()) {
     case 0x1d:
@@ -542,10 +523,10 @@ extern "C" void LostFoundRecycleMenu_Init(LostFoundRecycleMenu *s) {
         func_ov110_02294d78(s, 0x200);
         break;
     case 0x1f:
-        MI_CpuCopy8(gSaveLostAndFound, s->boxItems, 0x1e);
+        MI_CpuCopy8(gSaveData.lostAndFound, s->boxItems, 0x1e);
         break;
     case 0x20:
-        MI_CpuCopy8(gSaveRecycleBin, s->boxItems, 0x1e);
+        MI_CpuCopy8(gSaveData.recycleBin, s->boxItems, 0x1e);
         break;
     }
     MI_CpuCopy8(s->boxItems, s->initialBoxItems, 0x1e);
@@ -631,7 +612,7 @@ extern "C" void LostFoundRecycleMenu_LoadTopBg(LostFoundRecycleMenu *s) {
 }
 
 extern "C" void LostFoundRecycleMenu_LoadObjGraphics(LostFoundRecycleMenu *s) {
-    InventoryBg_LoadObjGraphics(&s->inventoryBg);
+    InventoryBg_LoadObjGraphics();
 }
 
 void LostFoundRecycleMenu::mainAct00() {
@@ -830,7 +811,7 @@ void LostFoundRecycleMenu::mainAct07() {
     LostFoundRecycleMenu *s = this;
     if (::func_0208d4fc(&s->cursor)) {
         ::PopupChoice_DecideRow(&s->choiceMenu, s->choiceRow, 1);
-        s->chosenAction = *(u8 *)((u8 *)s + s->choiceRow + 0x25d5);
+        s->chosenAction = s->choiceList.values[s->choiceRow];
         ::func_ov002_02200a58(s, 0x12);
     }
 }
@@ -969,7 +950,7 @@ void LostFoundRecycleMenu::mainAct13() {
 
 void LostFoundRecycleMenu::mainAct14() {
     LostFoundRecycleMenu *s = this;
-    if (::func_ov002_02204234(((u8 *)&s->errorMessage), 1)) {
+    if (s->errorMessage.update(1)) {
         ::func_ov002_02200a58(s, s->returnState);
         ::func_0208d644(&s->cursor);
     }
@@ -1567,7 +1548,7 @@ void LostFoundRecycleMenu::cancelChoiceList() {
     setMainState(0x13);
 }
 
-void LostFoundRecycleMenu::moveCursorInPockets(void *pad, s32 mode) {
+void LostFoundRecycleMenu::moveCursorInPockets(u32 pad, s32 mode) {
     s32 r = cursorSlot;
     s32 q = 0;
     while (r >= 5) {
@@ -1616,7 +1597,7 @@ void LostFoundRecycleMenu::moveCursorInPockets(void *pad, s32 mode) {
     }
 }
 
-void LostFoundRecycleMenu::moveCursorInBox(void *pad, s32 mode) {
+void LostFoundRecycleMenu::moveCursorInBox(u32 pad, s32 mode) {
     s32 r = cursorSlot - 0xf;
     s32 q = 0;
     while (r >= 5) {
@@ -1665,7 +1646,7 @@ void LostFoundRecycleMenu::moveCursorInBox(void *pad, s32 mode) {
     }
 }
 
-void LostFoundRecycleMenu::moveCursorOnButtons(void *pad) {
+void LostFoundRecycleMenu::moveCursorOnButtons(u32 pad) {
     if (MenuKeys_HasRight(pad)) {
         if (MenuKeys_HasUp(pad)) {
             cursorSlot = 0x19;
@@ -1684,7 +1665,7 @@ void LostFoundRecycleMenu::moveCursorOnButtons(void *pad) {
     }
 }
 
-BOOL LostFoundRecycleMenu::moveCursorByPad(void *pad, s32 mode) {
+BOOL LostFoundRecycleMenu::moveCursorByPad(u32 pad, s32 mode) {
     u8 old = cursorSlot;
     clearFlags(0x30);
     clearFlags(0x100);
@@ -1717,11 +1698,11 @@ void LostFoundRecycleMenu::resetTextLabels() {
     s32 i;
     numTextLabels = 0;
     for (i = 0; i < 2; i++) {
-        func_0206fc44(&textLabels[i]);
+        textLabels[i].destroyLabel();
     }
 }
 
-void *LostFoundRecycleMenu::allocTextLabel() {
+LabelString *LostFoundRecycleMenu::allocTextLabel() {
     if (numTextLabels >= 2) {
         return &textLabels[1];
     }
@@ -1734,10 +1715,10 @@ void LostFoundRecycleMenu::setOkLabel(s32 flag) {
     if (flag != 0) {
         v = 0xf;
     }
-    void *p = allocTextLabel();
-    ((LabelString *)p)->createLabel(4, 0x1ca, 6, v, 9, 0);
+    LabelString *p = allocTextLabel();
+    p->createLabel(4, 0x1ca, 6, v, 9, 0);
     String_Load2dMenu(p, 0x88);
-    func_0206fab4(p, 1, 0);
+    p->redrawAligned(1, 0);
 }
 
 void LostFoundRecycleMenu::confirm(s32 flag) {
@@ -1785,13 +1766,13 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
             MenuCtrl_SetResult(1);
             MenuCtrl_SetIndex((u8)n);
             MenuCtrl_SetChosenItems(initialBoxItems);
-            MI_CpuCopy8(boxItems, gSaveLostAndFound, 0x1e);
+            MI_CpuCopy8(boxItems, gSaveData.lostAndFound, 0x1e);
             sendItemsRecord(3);
         }
         break;
     }
     case 0x20:
-        MI_CpuCopy8(boxItems, gSaveRecycleBin, 0x1e);
+        MI_CpuCopy8(boxItems, gSaveData.recycleBin, 0x1e);
         sendItemsRecord(4);
         MenuCtrl_SetResult(1);
         break;
@@ -1816,15 +1797,15 @@ s32 LostFoundRecycleMenu::packItemList(u16 *p) {
 
 void LostFoundRecycleMenu::sendItemsRecord(u8 v) {
     u8 buf[0x24];
-    if (CommManager_isOnline(gCommManager)) {
+    if (gCommManager->isOnline()) {
         setFlags(8);
         buf[0] = v;
         MI_CpuCopy8(boxItems, &buf[1], 0x1e);
-        void *g = gCommManager;
-        CommManager_beginRecord(g);
-        CommManager_writeRecord(g, buf, 0x1f);
-        CommManager_endRecord(g, 0x16, 4);
-        sendSeq = CommManager_getSendSeq(g);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(buf, 0x1f);
+        g->endRecord(0x16, 4);
+        sendSeq = g->getSendSeq();
     }
 }
 
@@ -1835,7 +1816,7 @@ BOOL LostFoundRecycleMenu::isResultSent() {
     if (testFlags(8) == 0) {
         return TRUE;
     }
-    if (CommManager_isOnline(gCommManager)) {
+    if (gCommManager->isOnline()) {
         if (Comm_IsSeqConfirmed(sendSeq) == 0) {
             return FALSE;
         }

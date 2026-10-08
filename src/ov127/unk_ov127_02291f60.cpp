@@ -2,30 +2,18 @@
 #include "gfx/VecFx32.h"
 #include "game/StarSkyView.h"
 #include "game/ConstellationRecord.h"
-#define PROTO_LOCAL_Constellation_HighlightAll  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_SetLinePalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_DrawArrows  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_DrawScopeSprite  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_DrawStarMarker  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_RebuildScreen  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_ScrollByDir  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_ScrollX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov127_02293fa4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov127_02293fac  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov127_02293fb4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov127_02293fc4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov127_02293fd4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/ov127/unk_ov127_02291f60.h"
 #include "gfx/BgVramTask.h"
+#include "nitro/gxoam.h"
 
 // File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
 #pragma opt_loop_invariants off
@@ -37,74 +25,57 @@ extern "C" const s32 data_ov127_02292abc[2];
 extern "C" const u8 kStarPositions[328];
 extern "C" const u8 kStarLines[908];
 extern "C" const u16 kStarSkyCells[2048];
-extern "C" u8 data_ov127_02293fa4[8];
-extern "C" u8 data_ov127_02293fac[8];
+extern "C" GXOamAttr data_ov127_02293fa4[1];
+extern "C" GXOamAttr data_ov127_02293fac[1];
 extern "C" s32 data_ov127_02293fb4[4];
 extern "C" s32 data_ov127_02293fc4[4];
-extern "C" u8 data_ov127_02293fd4[32];
+extern "C" GXOamAttr data_ov127_02293fd4[4];
 extern "C" u8 data_ov127_02293fa0[4];
 
 
 
 extern "C" {
-extern void *gCurrentHeap;
-void Constellation_HighlightAll(void *p);
-void _ZN10BgVramTaskC1Ev(void *self);
-
+// src/main/unk_020afeb4.cpp (declared there with a file-local typedef of ConstellationRecord)
 ConstellationRecord *Constellation_GetRecordAlt(s32 i);
 ConstellationRecord *Constellation_GetRecord(s32 i);
-void Constellation_SetLinePalette(void *p, u32 slot, s32 r);
-void _ZN10BgVramTask6cancelEv(void *self);
-void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
-void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-s32 Vec_MagXZ(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-
-void StarSky_ScrollX(StarSkyView *s, s32 a);
-namespace Unk_ov127_02292698_Ns {
-s32 StarSky_ScrollX(StarSkyView *s, s32 a);
-}
-void StarSky_ScrollByDir(StarSkyView *s, s32 mode, s32 a, s32 b);
 }
 
-// StarSkyView's constructor and destructor (ov129 constructs this class as a member)
-extern "C" void *_ZN11StarSkyViewC1Ev(void *s) {
-    _ZN10BgVramTaskC1Ev(s);
-    return s;
+// StarSkyView's constructor and destructor (ov128 / ov129 construct this class as a member)
+StarSkyView::StarSkyView() {}
+
+StarSkyView::~StarSkyView() {}
+
+extern "C" void StarSky_Reset(StarSkyView *s) {
+    s->flags = 0;
+    s->scrollX = 0;
+    s->scrollY = 0;
+    s->clipRows = 0;
+    s->overscroll = 0;
 }
 
-extern "C" void _ZN11StarSkyViewD1Ev() {}
-
-extern "C" void StarSky_Reset(u8 *s) {
-    *(u16 *)(s + 0x2830) = 0;
-    *(u16 *)(s + 0x2824) = 0;
-    *(u16 *)(s + 0x2826) = 0;
-    *(u16 *)(s + 0x282e) = 0;
-    *(u16 *)(s + 0x2828) = 0;
+extern "C" void StarSky_LoadSkyBg(StarSkyView *s, u32 v) {
+    s->skyLayer = v;
+    Gfx2d_SetLayerControl(s->skyLayer, 1, 0, 0);
+    Gfx2d_LoadCharFile("menu/star/b_bg.bch", gCurrentHeap, s->skyLayer, 0x10, 0x10, 0x1f);
+    File_LoadToBuffer("menu/star/bg.bsc", s->skyScreen, 0x1000);
+    Constellation_HighlightAll(s->skyScreen);
+    Gfx2d_LoadScreen((u8 *)s->skyScreen, s->skyLayer, 0x1000, 0);
 }
 
-extern "C" void StarSky_LoadSkyBg(u8 *s, u32 v) {
-    s[0x2832] = v;
-    Gfx2d_SetLayerControl(s[0x2832], 1, 0, 0);
-    Gfx2d_LoadCharFile("menu/star/b_bg.bch", gCurrentHeap, s[0x2832], 0x10, 0x10, 0x1f);
-    File_LoadToBuffer("menu/star/bg.bsc", s + 0x24, 0x1000);
-    Constellation_HighlightAll(s + 0x24);
-    Gfx2d_LoadScreen(s + 0x24, s[0x2832], 0x1000, 0);
-}
-
-extern "C" void StarSky_LoadScopeBg(u8 *s, u32 v) {
-    void *h = gCurrentHeap;
-    s[0x2833] = v;
-    Gfx2d_LoadPaletteFile("menu/star/b_scp_bg.bpl", h, s[0x2833], 4, 8, 0xb);
-    Gfx2d_LoadCharFile("menu/star/b_scp_bg.bch", h, s[0x2833], 0x20, 0x20, 0xbf);
-    File_LoadToBuffer("menu/star/b_scp_bg.bsc", s + 0x2024, 0x800);
-    Gfx2d_LoadScreen(s + 0x2024, s[0x2833], 0x800, 0);
+extern "C" void StarSky_LoadScopeBg(StarSkyView *s, u32 v) {
+    Heap *h = gCurrentHeap;
+    s->scopeLayer = v;
+    Gfx2d_LoadPaletteFile("menu/star/b_scp_bg.bpl", h, s->scopeLayer, 4, 8, 0xb);
+    Gfx2d_LoadCharFile("menu/star/b_scp_bg.bch", h, s->scopeLayer, 0x20, 0x20, 0xbf);
+    File_LoadToBuffer("menu/star/b_scp_bg.bsc", s->scopeScreen, 0x800);
+    Gfx2d_LoadScreen((u8 *)s->scopeScreen, s->scopeLayer, 0x800, 0);
 }
 
 extern "C" void StarSky_LoadObjGraphics() {
-    void *h = gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/star/b_scp_obj.bpl", h, 8, 5, 5, 9);
     Gfx2d_LoadCharFile("menu/star/b_scp_obj.bch", h, 8, 0xc0, 0xc0, 0x13f);
 }
@@ -140,7 +111,7 @@ extern "C" void StarSky_Update(StarSkyView *s)
         cnt = s->clipRows;
         if (cnt > 0) {
             p1 = s->skyScreenWork;
-            p2 = (u16 *)((u8 *)p1 + 0x800);
+            p2 = p1 + 0x400;
             for (i = 0; i < s->clipRows; i++) {
                 for (j = 0; j < 0x20; j++) {
                     *p1 = 0x4010;
@@ -150,8 +121,8 @@ extern "C" void StarSky_Update(StarSkyView *s)
                 }
             }
         } else if (cnt < 0) {
-            p1 = (u16 *)((u8 *)s->skyScreenWork + ((cnt + 0x20) << 6));
-            p2 = (u16 *)((u8 *)p1 + 0x800);
+            p1 = s->skyScreenWork + ((cnt + 0x20) << 5);
+            p2 = p1 + 0x400;
             for (i = 0; i > s->clipRows; i--) {
                 for (j = 0; j < 0x20; j++) {
                     *p1 = 0x4010;
@@ -161,14 +132,14 @@ extern "C" void StarSky_Update(StarSkyView *s)
                 }
             }
         }
-        ((BgVramTask *)(s))->requestScreen(s->skyScreenWork, s->skyLayer, 0x1000, 0);
+        s->screenTask.requestScreen(s->skyScreenWork, s->skyLayer, 0x1000, 0);
         StarSky_ClearFlags(s, 2);
     }
 }
 
-extern "C" void StarSky_CancelUpload(void *p)
+extern "C" void StarSky_CancelUpload(StarSkyView *s)
 {
-    _ZN10BgVramTask6cancelEv(p);
+    s->screenTask.cancel();
 }
 
 extern "C" void StarSky_DrawArrows(StarSkyView *s, s32 a, s32 b)
@@ -176,14 +147,14 @@ extern "C" void StarSky_DrawArrows(StarSkyView *s, s32 a, s32 b)
     s32 i, pal;
     for (i = 0; i < 4; i++) {
         pal = (i == s->activeArrow) ? 7 : b;
-        Oam_DrawObj(1, data_ov127_02293fd4 + i * 8, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fb4 + (i << 2)) + 0x80, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fc4 + (i << 2)) + 0x60, pal, 1, 0);
+        Oam_DrawObj(1, &data_ov127_02293fd4[i], (a >> 2) * data_ov127_02293fb4[i] + 0x80, (a >> 2) * data_ov127_02293fc4[i] + 0x60, pal, 1, NULL);
     }
     s->activeArrow = 4;
 }
 
-extern "C" void StarSky_DrawScopeSprite(void *s, s32 y)
+extern "C" void StarSky_DrawScopeSprite(StarSkyView *s, s32 y)
 {
-    Oam_DrawObj(1, data_ov127_02293fac, 0x80, y + 0x60, -1, 1, 0);
+    Oam_DrawObj(1, data_ov127_02293fac, 0x80, y + 0x60, -1, 1, NULL);
 }
 
 extern "C" void StarSky_DrawStarMarker(StarSkyView *s, s32 i)
@@ -198,17 +169,17 @@ extern "C" void StarSky_DrawStarMarker(StarSkyView *s, s32 i)
     s32 y = -b;
     y += 4;
     y += t << 3;
-    Oam_DrawObj(1, data_ov127_02293fa4, x & 0x1ff, y, -1, 2, 0);
+    Oam_DrawObj(1, data_ov127_02293fa4, x & 0x1ff, y, -1, 2, NULL);
 }
 
-extern "C" s32 StarSky_HitArrow(void *s, s32 x, s32 y)
+extern "C" s32 StarSky_HitArrow(StarSkyView *s, s32 x, s32 y)
 {
     s32 xs, ys;
     u8 i;
     xs = x - 0x80;
     ys = y - 0x60;
     for (i = 0; i < 4; i = i + 1) {
-        if (Cell_HitTest(data_ov127_02293fd4 + i * 8, xs, ys, 2, 2)) {
+        if (Cell_HitTest(&data_ov127_02293fd4[i], xs, ys, 2, 2)) {
             return i;
         }
     }
@@ -219,10 +190,10 @@ extern "C" void StarSky_ScrollByDir(StarSkyView *s, s32 mode, s32 a, s32 b)
 {
     switch (mode) {
     case 0:
-        Unk_ov127_02292698_Ns::StarSky_ScrollX(s, -a);
+        StarSky_ScrollX(s, -a);
         break;
     case 1:
-        Unk_ov127_02292698_Ns::StarSky_ScrollX(s, a);
+        StarSky_ScrollX(s, a);
         break;
     case 2:
         StarSky_ScrollY(s, a, b);
@@ -565,9 +536,9 @@ extern "C" u32 StarSky_GetStarY(s32 i)
     return kStarPositions[i * 2 + 1];
 }
 
-extern "C" u8 *StarSky_GetLineStars(u16 i)
+extern "C" const u8 *StarSky_GetLineStars(u16 i)
 {
-    return (u8 *)kStarLines + i * 2;
+    return &kStarLines[i * 2];
 }
 
 extern "C" s32 StarSky_FindConstellationByLine(u16 v)
@@ -590,7 +561,7 @@ extern "C" s32 StarSky_FindConstellationByLine(u16 v)
 extern "C" void StarSky_CollectStars(ConstellationRecord *p, u8 *out)
 {
     s32 i, k, j, n;
-    u8 *q;
+    const u8 *q;
     for (i = 0; i < 0x11; i++) {
         out[i] = 0xff;
     }
@@ -602,7 +573,7 @@ extern "C" void StarSky_CollectStars(ConstellationRecord *p, u8 *out)
         }
         q = StarSky_GetLineStars(v);
         for (k = 0; k < 2; k++) {
-            u8 *pk;
+            const u8 *pk;
             for (j = 0, pk = q + k; n >= j; j++) {
                 if (j == n) {
                     out[n] = *pk;
@@ -963,13 +934,9 @@ extern "C" const u16 kStarSkyCells[2048] = {
     0x10a2, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 };
 
-extern "C" u8 data_ov127_02293fa4[8] = {
-    0xf8, 0x00, 0xf8, 0x41, 0x16, 0x79, 0xff, 0xff,
-};
+extern "C" GXOamAttr data_ov127_02293fa4[1] = {{0x41f800f8, 0x116, 2, 0x7, 0xffff}};
 
-extern "C" u8 data_ov127_02293fac[8] = {
-    0xb0, 0x40, 0x80, 0x81, 0x0b, 0x81, 0xff, 0xff,
-};
+extern "C" GXOamAttr data_ov127_02293fac[1] = {{0x818040b0, 0x10b, 0, 0x8, 0xffff}};
 
 extern "C" s32 data_ov127_02293fb4[4] = {
     -1, 1, 0, 0,
@@ -979,9 +946,11 @@ extern "C" s32 data_ov127_02293fc4[4] = {
     0, 0, 1, -1,
 };
 
-extern "C" u8 data_ov127_02293fd4[32] = {
-    0xf0, 0x80, 0x88, 0x91, 0xc0, 0x60, 0x00, 0x00, 0xf0, 0x80, 0x68, 0x80, 0xc0, 0x60, 0x00, 0x00,
-    0x50, 0x40, 0xf0, 0xa1, 0xc2, 0x60, 0x00, 0x00, 0xa0, 0x40, 0xf0, 0x81, 0xc2, 0x60, 0xff, 0xff,
+extern "C" GXOamAttr data_ov127_02293fd4[4] = {
+    {0x918880f0, 0xc0, 0, 0x6, 0x0},
+    {0x806880f0, 0xc0, 0, 0x6, 0x0},
+    {0xa1f04050, 0xc2, 0, 0x6, 0x0},
+    {0x81f040a0, 0xc2, 0, 0x6, 0xffff},
 };
 
 extern "C" BOOL StarSky_IsConstellationFree(ConstellationRecord *p)

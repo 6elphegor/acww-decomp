@@ -6,7 +6,6 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #ifdef __cplusplus
-#include "types.h"
 class DesignTab;
 #endif
 
@@ -16,6 +15,12 @@ extern "C" {
 #ifndef PROTO_LOCAL_sDesignTabIconCell
 extern GXOamAttr sDesignTabIconCell;
 #endif
+#ifndef PROTO_LOCAL_sDesignTabTargetFrameCells
+extern u32 sDesignTabTargetFrameCells[8];
+#endif
+#ifndef PROTO_LOCAL_sDesignItemBase
+extern u16 sDesignItemBase[4];
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -24,12 +29,6 @@ extern GXOamAttr sDesignTabIconCell;
 extern "C" {
 #ifndef PROTO_LOCAL_DesignTab_Create
 DesignTab *DesignTab_Create();
-#endif
-#ifndef PROTO_LOCAL_sDesignTabTargetFrameCells
-extern u32 sDesignTabTargetFrameCells[8];
-#endif
-#ifndef PROTO_LOCAL_sDesignItemBase
-extern u16 sDesignItemBase[4];
 #endif
 }
 #endif

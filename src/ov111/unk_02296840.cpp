@@ -1,4 +1,3 @@
-#include "uptr.h"
 // ov111: scene overlay (class ChatMenu, vtable 0x02298a48, 0x3e58 bytes): a character/name entry screen.
 #include "types.h"
 #include "net/CommManager.h"
@@ -20,13 +19,6 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_BgScreen_ReplaceRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ChatBalloon_Post  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayCopySe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_TouchSendKey  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -60,17 +52,10 @@ extern "C" {
 extern u8 gU8None;
 extern u16 gPad[];
 extern CommManager *gCommManager;
-extern u32 gCurrentHeap;
 
-void ChatBalloon_Post(s32 a, void *p, void *q);
-void BgScreen_ReplaceRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void MsgTextLabel_Destroy(void *p);
 void *MsgTextLabel_CreateVram(u32 a, u32 b, u32 c);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
-void Keyboard_PlayPasteSe(void *p);
-void Keyboard_PlayCopySe(void *p);
-BOOL Keyboard_TouchSendKey(void *s);
-BOOL Keyboard_ReplaceCharBeforeCursor(void *p, void *q, u32 a, u32 b, u32 c, u32 d);
 }
 
 
@@ -133,7 +118,7 @@ public:
     BOOL tryPasteButton();
     BOOL tryBackspaceButton();
     BOOL tryPressKey();
-    s32 navigateText(void *pad);
+    s32 navigateText(u32 pad);
     void clearSelection();
     BOOL hasSelection();
     u32 getCharBeforeCursor();
@@ -272,7 +257,7 @@ extern "C" char data_ov111_022989c8[];
 extern "C" char data_ov111_022989e0[];
 extern "C" char data_ov111_022989f8[];
 extern "C" char data_ov111_02298a10[];
-extern "C" uptr sChatSendAnimScreens[4];
+extern "C" const char *sChatSendAnimScreens[4];
 
 // Scene registration entry read by main: factory, then two ids
 extern "C" ProcProfile data_ov111_02298920 = {(void *(*)())ChatMenu_Create, 0x9e, 0xa2};
@@ -631,7 +616,7 @@ void ChatMenu::mainAct09() {
         ChatMenu_StartTouchInput(this);
         return;
     }
-    switch (this->navigateText((void *)this->takeRepeatedKeys())) {
+    switch (this->navigateText(this->takeRepeatedKeys())) {
     case 1:
         Keyboard_ResetTypedRun(&this->keyboard);
         this->clearSelection();
@@ -692,7 +677,7 @@ void ChatMenu::mainAct0A() {
         if (this->selectionStart == this->selectionEnd) {
             this->clearFlags(1);
         }
-    } else if (this->navigateText((void *)this->takeRepeatedKeys()) == 1) {
+    } else if (this->navigateText(this->takeRepeatedKeys()) == 1) {
         Keyboard_ResetTypedRun(&this->keyboard);
         this->updateCaretX();
         this->selectionEnd = this->caretIndex;
@@ -840,20 +825,20 @@ void ChatMenu_Exit(S *s) {
 }
 
 void ChatMenu_LoadSendAnimFrame(S *s, u32 a) {
-    s32 r;
-    u32 name;
-    u32 g = gCurrentHeap;
+    u8 *r;
+    const char *name;
+    Heap *g = gCurrentHeap;
     if (a == 0) {
         name = sChatSendAnimScreens[0];
     } else {
         name = sChatSendAnimScreens[a - 1];
     }
-    r = File_LoadAlloc(name, g, -4, 0);
+    r = (u8 *)File_LoadAlloc(name, g, -4, 0);
     {
         u8 *src = s->keyboard.screenBuf;
-        MI_CpuCopy8((void *)(r + 0x100), src + 0x100, 0x140);
+        MI_CpuCopy8(r + 0x100, src + 0x100, 0x140);
         if (a == 1) {
-            BgScreen_ReplaceRectPalette(src, 0, 4, 0x1f, 9, 5, 6);
+            BgScreen_ReplaceRectPalette((u16 *)src, 0, 4, 0x1f, 9, 5, 6);
         }
     }
     Heap_Free(g, r);
@@ -942,7 +927,7 @@ void ChatMenu_SendText(S *s) {
     MsgString9B buf;
     ((PlayerId *)r->getPlayerId())->getNameString((MsgString *)&buf);
     String_CensorTaboo(&s->balloonText);
-    ChatBalloon_Post(gCommManager->myAid, &buf, &s->balloonText);
+    ChatBalloon_Post(gCommManager->myAid, (StrBuf *)&buf, &s->balloonText);
     ChatMenu_ClearText(s);
     ChatMenu_RedrawText(s);
 }
@@ -1009,7 +994,7 @@ BOOL ChatMenu_TryModifier103(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey103(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
+    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
     return FALSE;
 }
 
@@ -1027,7 +1012,7 @@ BOOL ChatMenu_TryModifier104(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey104(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
+    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
     return FALSE;
 }
 
@@ -1045,7 +1030,7 @@ BOOL ChatMenu_TryModifier105(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey105(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
+    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
     return FALSE;
 }
 
@@ -1083,7 +1068,7 @@ void ChatMenu_Copy(S *s) {
         Mem_Clear(s->clipboard, 0x20);
         Mem_Copy(s->text.text + lo, s->clipboard, cnt);
         s->setFlags(8);
-        Keyboard_PlayCopySe(&s->keyboard);
+        Keyboard_PlayCopySe();
         s->refreshKeys();
     }
 }
@@ -1112,7 +1097,7 @@ void ChatMenu_Paste(S *s) {
         }
         s->updateCaretX();
         ChatMenu_RedrawText(s);
-        Keyboard_PlayPasteSe(&s->keyboard);
+        Keyboard_PlayPasteSe();
         Keyboard_EndPaste(&s->keyboard);
     }
 }
@@ -1214,7 +1199,7 @@ BOOL ChatMenu::touchSendKey() {
     if (sendKeyAnim != 0) {
         return FALSE;
     }
-    if (Keyboard_TouchSendKey(&keyboard)) {
+    if (Keyboard_TouchSendKey()) {
         return startSend();
     }
     return FALSE;
@@ -1308,7 +1293,7 @@ void ChatMenu::clearSelection() {
     clearFlags(1);
 }
 
-s32 ChatMenu::navigateText(void *pad) {
+s32 ChatMenu::navigateText(u32 pad) {
     if (pad == 0) {
         return 0;
     }
@@ -1504,7 +1489,7 @@ void ChatMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 u32 EncodedString32::capacity() { return 0x20; }
 
-u8 *EncodedString32::data() { return HOST_AT(this, 0xe, text[0], 0); }
+u8 *EncodedString32::data() { return text; }
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 extern "C" char data_ov111_022989c8[] = "menu/chat2/b_cht.bsc";
@@ -1515,4 +1500,4 @@ extern "C" char data_ov111_022989f8[] = "menu/chat2/b_cht_1.bsc";
 
 extern "C" char data_ov111_02298a10[] = "menu/chat2/b_cht_2.bsc";
 
-extern "C" uptr sChatSendAnimScreens[4] = {(uptr)data_ov111_022989c8, (uptr)data_ov111_022989e0, (uptr)data_ov111_022989f8, (uptr)data_ov111_02298a10};
+extern "C" const char *sChatSendAnimScreens[4] = {data_ov111_022989c8, data_ov111_022989e0, data_ov111_022989f8, data_ov111_02298a10};

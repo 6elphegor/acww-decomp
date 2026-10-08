@@ -1,8 +1,8 @@
-#include "uptr.h"
 // ov146: scene overlay (class WfcFriendListMenu, vtable 0x02294080): wi-fi friend list menu.
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
+#include "net/Net.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
@@ -20,59 +20,22 @@
 #include "ui/HandCursor.h"
 #include "ui/LabelBalloon.h"
 #include "ui/ScrollKnob.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov146_02293e98  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcConfirmButtonCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcFrameCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcQuitButtonCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcRowCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcRowCellsSelected  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 #include "proto/ov146/unk_ov146_02291f60.h"
 
-#define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
-#define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
-#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
-#define ScrollKnob_areAnimsDone _ZN10ScrollKnob12areAnimsDoneEv
-#define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define func_02133150 _s32_div_f
-#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define MenuCursorBase_getScreenY _ZN14MenuCursorBase10getScreenYEv
-#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
-#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
-#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
-#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
-#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
-#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
-#define MenuCursor_switchToAnim07 _ZN10MenuCursor14switchToAnim07Ev
-#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
-#define MenuScrollKnob_getGripY _ZN14MenuScrollKnob8getGripYEv
-#define MenuScrollKnob_getGripX _ZN14MenuScrollKnob8getGripXEv
-#define MenuScrollKnob_updateRelease _ZN14MenuScrollKnob13updateReleaseEv
-#define MenuScrollKnob_release _ZN14MenuScrollKnob7releaseEv
-#define MenuScrollKnob_grab _ZN14MenuScrollKnob4grabEv
-#define MenuScrollKnob_show _ZN14MenuScrollKnob4showEv
-#define MenuScrollKnob_hitTest _ZN14MenuScrollKnob7hitTestEii
-#define MenuTitleBalloon_hideNow _ZN16MenuTitleBalloon7hideNowEv
-#define MenuTitleBalloon_showText _ZN16MenuTitleBalloon8showTextEhii
-#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
-#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 
 class WfcFriendListMenu;
 typedef void (WfcFriendListMenu::*Unk_ov146_02294080_Fn)();
@@ -91,48 +54,15 @@ class MsgString;
 
 extern "C" {
 extern u16 gPad[];
-extern void *gCurrentHeap;
 
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
-void BgVramTask_cancel(void *p);
 BOOL EncodedString_SetRaw(void *dst, const void *src, s32 n);
-s32 func_02133150(s32 a, s32 b);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-BOOL ScrollKnob_areAnimsDone(void *p);
-BOOL HandCursor_isAnimDone(void *p);
-void ScrollKnob_moveTo(void *p, s32 a, s32 b);
-void Math_StepS32(void *p, s32 a, s32 b);
-void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void MenuLauncher_onChildClosed(s32 self);
-void LabelBalloon_setPos(void *p, s32 a, s32 b);
-void LabelBalloon_showLayer2(void *p);
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-
-s32 MenuCursorBase_getScreenY(void *p);
-BOOL MenuCursorBase_isMoving(void *p);
-void MenuCursorBase_drawWrapped(void *p);
-void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, s32 c, s32 d);
-void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
-void MenuCursorBase_setPoseIdle(void *p);
-void MenuCursorBase_setPoseRelease(void *p);
-void MenuCursor_setPosePress(void *p);
-void MenuCursor_switchToAnim01(void *p);
-void MenuCursor_switchToAnim07(void *p);
-void MenuCursor_setAnimIfChanged(void *p, s32 a);
-void Menu_PlayScrollGrabSe(void *p);
-void Menu_PlayScrollTickSe(void *p);
-s32 MenuScrollKnob_getGripY(void *p);
-s32 MenuScrollKnob_getGripX(void *p);
-void MenuScrollKnob_updateRelease(void *p);
-void MenuScrollKnob_release(void *p);
-void MenuScrollKnob_grab(void *p);
-void MenuScrollKnob_show(void *p);
-BOOL MenuScrollKnob_hitTest(void *p, s32 x, s32 y);
-void MenuTitleBalloon_hideNow(void *p);
-void MenuTitleBalloon_showText(void *p, s32 a, s32 b, s32 c);
+s32 _s32_div_f(s32 a, s32 b);
+// (proto/autoload_2/unk_020e7500.h conflicts with actor/Actor.h's List_Remove)
+BOOL Math_StepS32(s32 *p, s32 target, s32 step);
 }
 
 // ---- ov002 sub-objects (opaque bodies) ----
@@ -180,11 +110,11 @@ public:
     void setScroll(s32 v);
     void flushVram();
     BOOL isFriendSelectable(s32 idx);
-    BOOL isFriendOnline(u8 *p);
+    BOOL isFriendOnline(NetWifiFriendStatus *p);
     BOOL rebuildOrder();
     void refreshFriendStatus();
     void initFriendStatus();
-    u8 *getFriendList();
+    NetWifiFriends *getFriendList();
     void drawStaticLabelsOnce();
     void drawStaticLabels();
     void renderRows();
@@ -254,9 +184,9 @@ public:
     /* 0x0ca */ u8 listStatus[0xea - 0xca];
     /* 0x0ea */ u8 listOrder[0x20];
     /* 0x10a */ u8 friendFade[0x20];
-    /* 0x12a */ u8 friendRecords[0x20 * 0x13];
-    /* 0x38a */ u8 listScreenSrc[0x800];
-    /* 0xb8a */ u8 listScreen[0x800];
+    /* 0x12a */ NetWifiFriendStatus friendRecords[0x20];
+    /* 0x38a */ u16 listScreenSrc[0x400];
+    /* 0xb8a */ u16 listScreen[0x400];
     /* 0x138a */ u16 rowPaletteSrc[16];
     /* 0x13aa */ u16 rowPalette[16];
     /* 0x13ca */ u8 unk_13ca[2];
@@ -268,20 +198,6 @@ public:
 };
 
 
-extern "C" void _ZN17WfcFriendListMenu15execCursorPressEv();
-extern "C" void _ZN17WfcFriendListMenu15execKnobReleaseEv();
-extern "C" void _ZN17WfcFriendListMenu9enterOpenEv();
-extern "C" void _ZN17WfcFriendListMenu17execCursorReleaseEv();
-extern "C" void _ZN17WfcFriendListMenu11execSlideInEv();
-extern "C" void _ZN17WfcFriendListMenu14execCursorMoveEv();
-extern "C" void _ZN17WfcFriendListMenu13execExitDelayEv();
-extern "C" void _ZN17WfcFriendListMenu12execJumpKnobEv();
-extern "C" void _ZN17WfcFriendListMenu11execButtonsEv();
-extern "C" void _ZN17WfcFriendListMenu12execDragKnobEv();
-extern "C" void _ZN17WfcFriendListMenu9execTouchEv();
-extern "C" void _ZN17WfcFriendListMenu12execSlideOutEv();
-extern "C" void _ZN17WfcFriendListMenu10startCloseEv();
-extern "C" void _ZN17WfcFriendListMenu12execKnobKeysEv();
 
 static inline BOOL Unk_ov146_022933bc_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -304,44 +220,16 @@ BOOL WfcFriendListMenu::onDelete() {
     releaseResources();
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" u32 data_ov146_02293e18[2];
-extern "C" void *data_ov146_02293e70[2];
-extern "C" u32 data_ov146_02293e98[4];
-extern "C" void *data_ov146_02293e00[2];
-extern "C" u32 sWfcRowCellsSelected[14];
-extern "C" void *data_ov146_02293e38[2];
-extern "C" void *data_ov146_02293e10[2];
-extern "C" u32 data_ov146_02293e48[2];
-extern "C" void *data_ov146_02293e08[2];
-extern "C" u32 data_ov146_02293f90[8];
 extern "C" ProcProfile sWfcFriendListMenuProfile;
-extern "C" void *data_ov146_02293e60[2];
-extern "C" void *data_ov146_02293e30[2];
-extern "C" u32 sWfcRowCells[12];
-extern "C" u32 data_ov146_02293f10[8];
-extern "C" void *data_ov146_02293e90[2];
-extern "C" void *data_ov146_02293e88[2];
-extern "C" u32 sWfcConfirmButtonCells[8];
-extern "C" u32 data_ov146_02293e78[2];
-extern "C" u32 data_ov146_02293e20[2];
-extern "C" void *data_ov146_02293e50[2];
-extern "C" void *data_ov146_02293e58[2];
-extern "C" u32 data_ov146_02293ed0[8];
-extern "C" u32 data_ov146_02293ef0[8];
-extern "C" void *data_ov146_02293e80[2];
-extern "C" u32 data_ov146_02293f30[8];
-extern "C" u32 sWfcFrameCells[24];
-extern "C" void *data_ov146_02293e28[2];
-extern "C" void *data_ov146_02293e40[2];
-extern "C" u32 sWfcQuitButtonCells[8];
 
-extern "C" u32 data_ov146_02293e18[2] = {0x804040d8, 0xffffc9c0};
+extern "C" GXOamAttr data_ov146_02293e18[1] = {
+    {0x804040d8, 0x1c0, 2, 0xc, 0xffff},
+};
 
-extern "C" void *data_ov146_02293e70[2] = {(void *)_ZN17WfcFriendListMenu9execTouchEv, 0};
-
-extern "C" u32 data_ov146_02293e98[4] = {0x0198003b, 0x0000d5d4, 0x01a0403b, 0xffffd5f4};
-
-extern "C" void *data_ov146_02293e00[2] = {(void *)_ZN17WfcFriendListMenu15execCursorPressEv, 0};
+extern "C" GXOamAttr data_ov146_02293e98[2] = {
+    {0x0198003b, 0x1d4, 1, 0xd, 0x0},
+    {0x01a0403b, 0x1f4, 1, 0xd, 0xffff},
+};
 
 BOOL WfcFriendListMenu::onDraw() {
     s32 i;
@@ -368,8 +256,8 @@ BOOL WfcFriendListMenu::onDraw() {
         }
         idx = i + topRow;
         if (idx < 0x20) {
-            void *tb[5] = {0, data_ov146_02293e18, data_ov146_02293e78, data_ov146_02293e20, data_ov146_02293e48};
-            void *h = tb[listStatus[idx]];
+            GXOamAttr *tb[5] = {0, data_ov146_02293e18, data_ov146_02293e78, data_ov146_02293e20, data_ov146_02293e48};
+            GXOamAttr *h = tb[listStatus[idx]];
             if (h != 0) {
                 Oam_DrawCell(1, h, 0x80, y2, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
             }
@@ -379,7 +267,7 @@ BOOL WfcFriendListMenu::onDraw() {
     Oam_DrawCell(1, sWfcQuitButtonCells, 0x80, y, quitButtonPal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     Oam_DrawCell(1, sWfcConfirmButtonCells, 0x80, y, confirmButtonPal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     Oam_DrawCell(1, data_ov146_02293e98, 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    void *tc[5] = {data_ov146_02293f90, data_ov146_02293ed0, data_ov146_02293ef0, data_ov146_02293f10, data_ov146_02293f30};
+    GXOamAttr *tc[5] = {data_ov146_02293f90, data_ov146_02293ed0, data_ov146_02293ef0, data_ov146_02293f10, data_ov146_02293f30};
     if (iconAnim[0] != 0) {
         iconAnim[0] = *(volatile u8 *)&iconAnim[0] - 1;
     } else {
@@ -392,61 +280,79 @@ BOOL WfcFriendListMenu::onDraw() {
     Oam_DrawCell(1, tc[iconAnim[1]], 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     return TRUE;
 }
-extern "C" u32 sWfcRowCellsSelected[14] = {0x403c40e6, 0x000058c6, 0x402040e6, 0x000058c6, 0x419400d7, 0x00005886, 0x400040e6,
-                                          0x000058c6, 0x41d840e6, 0x000058c6, 0x41b840e6, 0x000058c6, 0x419840e6, 0xffff58c6};
+extern "C" GXOamAttr sWfcRowCellsSelected[7] = {
+    {0x403c40e6, 0xc6, 2, 0x5, 0x0},
+    {0x402040e6, 0xc6, 2, 0x5, 0x0},
+    {0x419400d7, 0x86, 2, 0x5, 0x0},
+    {0x400040e6, 0xc6, 2, 0x5, 0x0},
+    {0x41d840e6, 0xc6, 2, 0x5, 0x0},
+    {0x41b840e6, 0xc6, 2, 0x5, 0x0},
+    {0x419840e6, 0xc6, 2, 0x5, 0xffff},
+};
 
-extern "C" void *data_ov146_02293e38[2] = {(void *)_ZN17WfcFriendListMenu14execCursorMoveEv, 0};
+extern "C" GXOamAttr data_ov146_02293e48[1] = {
+    {0x804040d8, 0x1cc, 2, 0xd, 0xffff},
+};
 
-extern "C" void *data_ov146_02293e10[2] = {(void *)_ZN17WfcFriendListMenu9enterOpenEv, 0};
-
-extern "C" u32 data_ov146_02293e48[2] = {0x804040d8, 0xffffd9cc};
-
-extern "C" void *data_ov146_02293e08[2] = {(void *)_ZN17WfcFriendListMenu15execKnobReleaseEv, 0};
-
-extern "C" u32 data_ov146_02293f90[8] = {0x0006003a, 0x0000c5d5, 0x01ff003a, 0x0000c5d5, 0x01f8003a, 0x0000c5d5, 0x01f1003a, 0xffffd5d5};
+extern "C" GXOamAttr data_ov146_02293f90[4] = {
+    {0x0006003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01ff003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01f8003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01f1003a, 0x1d5, 1, 0xd, 0xffff},
+};
 
 extern "C" ProcProfile sWfcFriendListMenuProfile = {(void *(*)())WfcFriendListMenu_Create, 0xbb, 0xbf};
 
-extern "C" void *data_ov146_02293e60[2] = {(void *)_ZN17WfcFriendListMenu12execDragKnobEv, 0};
+extern "C" GXOamAttr sWfcRowCells[6] = {
+    {0x403c40e6, 0xe6, 2, 0x4, 0x0},
+    {0x402040e6, 0xe6, 2, 0x4, 0x0},
+    {0x400040e6, 0xe6, 2, 0x4, 0x0},
+    {0x41d840e6, 0xe6, 2, 0x4, 0x0},
+    {0x41b840e6, 0xe6, 2, 0x4, 0x0},
+    {0x419840e6, 0xe6, 2, 0x4, 0xffff},
+};
 
-extern "C" void *data_ov146_02293e30[2] = {(void *)_ZN17WfcFriendListMenu11execSlideInEv, 0};
-
-extern "C" u32 sWfcRowCells[12] = {0x403c40e6, 0x000048e6, 0x402040e6, 0x000048e6, 0x400040e6, 0x000048e6,
-                                          0x41d840e6, 0x000048e6, 0x41b840e6, 0x000048e6, 0x419840e6, 0xffff48e6};
-
-extern "C" u32 data_ov146_02293f10[8] = {0x0006003a, 0x0000d5d5, 0x01ff003a, 0x0000d5d5, 0x01f8003a, 0x0000d5d5, 0x01f1003a, 0xffffd5d5};
-
-extern "C" void *data_ov146_02293e90[2] = {(void *)_ZN17WfcFriendListMenu12execKnobKeysEv, 0};
+extern "C" GXOamAttr data_ov146_02293f10[4] = {
+    {0x0006003a, 0x1d5, 1, 0xd, 0x0},
+    {0x01ff003a, 0x1d5, 1, 0xd, 0x0},
+    {0x01f8003a, 0x1d5, 1, 0xd, 0x0},
+    {0x01f1003a, 0x1d5, 1, 0xd, 0xffff},
+};
 
 BOOL WfcFriendListMenu::execTransition() {
     static Unk_ov146_02294080_Fn tbl[4] = {
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e10,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e30,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e88,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e80};
+        &WfcFriendListMenu::enterOpen,
+        &WfcFriendListMenu::execSlideIn,
+        &WfcFriendListMenu::startClose,
+        &WfcFriendListMenu::execSlideOut};
     beginFrame();
     (this->*tbl[transitionState])();
     updateList();
     return TRUE;
 }
-extern "C" void *data_ov146_02293e88[2] = {(void *)_ZN17WfcFriendListMenu10startCloseEv, 0};
+extern "C" GXOamAttr sWfcConfirmButtonCells[4] = {
+    {0x8011404a, 0x8d, 1, 0x8, 0x0},
+    {0x4031004a, 0x91, 1, 0x8, 0x0},
+    {0x80270043, 0x82, 1, 0x8, 0x0},
+    {0x800b0043, 0x80, 1, 0x8, 0xffff},
+};
 
-extern "C" u32 sWfcConfirmButtonCells[8] = {0x8011404a, 0x0000848d, 0x4031004a, 0x00008491, 0x80270043, 0x00008482, 0x800b0043, 0xffff8480};
-
-extern "C" u32 data_ov146_02293e78[2] = {0x804040d8, 0xffffc9c4};
+extern "C" GXOamAttr data_ov146_02293e78[1] = {
+    {0x804040d8, 0x1c4, 2, 0xc, 0xffff},
+};
 
 void WfcFriendListMenu::runMainState() {
     static Unk_ov146_02294080_Fn tbl[10] = {
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e70,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e60,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e50,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e58,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e90,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e08,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e38,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e00,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e28,
-        *(Unk_ov146_02294080_Fn *)data_ov146_02293e40};
+        &WfcFriendListMenu::execTouch,
+        &WfcFriendListMenu::execDragKnob,
+        &WfcFriendListMenu::execJumpKnob,
+        &WfcFriendListMenu::execButtons,
+        &WfcFriendListMenu::execKnobKeys,
+        &WfcFriendListMenu::execKnobRelease,
+        &WfcFriendListMenu::execCursorMove,
+        &WfcFriendListMenu::execCursorPress,
+        &WfcFriendListMenu::execCursorRelease,
+        &WfcFriendListMenu::execExitDelay};
     (this->*tbl[mainState])();
 }
 
@@ -899,23 +805,45 @@ void WfcFriendListMenu::resetTextPool() {
         textPool[i].destroyLabel();
     }
 }
-extern "C" u32 data_ov146_02293e20[2] = {0x804040d8, 0xffffc9c8};
+extern "C" GXOamAttr data_ov146_02293e20[1] = {
+    {0x804040d8, 0x1c8, 2, 0xc, 0xffff},
+};
 
-extern "C" void *data_ov146_02293e50[2] = {(void *)_ZN17WfcFriendListMenu12execJumpKnobEv, 0};
+extern "C" GXOamAttr data_ov146_02293ed0[4] = {
+    {0x0006003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01ff003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01f8003a, 0x1d5, 1, 0xd, 0x0},
+    {0x01f1003a, 0x1d5, 1, 0xd, 0xffff},
+};
 
-extern "C" void *data_ov146_02293e58[2] = {(void *)_ZN17WfcFriendListMenu11execButtonsEv, 0};
+extern "C" GXOamAttr data_ov146_02293ef0[4] = {
+    {0x0006003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01ff003a, 0x1d5, 1, 0xd, 0x0},
+    {0x01f8003a, 0x1d5, 1, 0xd, 0x0},
+    {0x01f1003a, 0x1d5, 1, 0xd, 0xffff},
+};
 
-extern "C" u32 data_ov146_02293ed0[8] = {0x0006003a, 0x0000c5d5, 0x01ff003a, 0x0000c5d5, 0x01f8003a, 0x0000d5d5, 0x01f1003a, 0xffffd5d5};
+extern "C" GXOamAttr data_ov146_02293f30[4] = {
+    {0x0006003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01ff003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01f8003a, 0x1d5, 1, 0xc, 0x0},
+    {0x01f1003a, 0x1d5, 1, 0xc, 0xffff},
+};
 
-extern "C" u32 data_ov146_02293ef0[8] = {0x0006003a, 0x0000c5d5, 0x01ff003a, 0x0000d5d5, 0x01f8003a, 0x0000d5d5, 0x01f1003a, 0xffffd5d5};
-
-extern "C" void *data_ov146_02293e80[2] = {(void *)_ZN17WfcFriendListMenu12execSlideOutEv, 0};
-
-extern "C" u32 data_ov146_02293f30[8] = {0x0006003a, 0x0000c5d5, 0x01ff003a, 0x0000c5d5, 0x01f8003a, 0x0000c5d5, 0x01f1003a, 0xffffc5d5};
-
-extern "C" u32 sWfcFrameCells[24] = {0x81a800a0, 0x0000b57b, 0x41c880a0, 0x0000b57f, 0x41a840c0, 0x0000b5fb, 0x01c800c0, 0x0000b5ff,
-                                          0x41ac40cd, 0x000054cd, 0x01cc40cd, 0x000054d1, 0x400440cd, 0x000054ed, 0x002440cd, 0x000054f1,
-                                          0x901840cc, 0x00005488, 0x800040cc, 0x00005488, 0x91c040cc, 0x00005488, 0x81a840cc, 0xffff5488};
+extern "C" GXOamAttr sWfcFrameCells[12] = {
+    {0x81a800a0, 0x17b, 1, 0xb, 0x0},
+    {0x41c880a0, 0x17f, 1, 0xb, 0x0},
+    {0x41a840c0, 0x1fb, 1, 0xb, 0x0},
+    {0x01c800c0, 0x1ff, 1, 0xb, 0x0},
+    {0x41ac40cd, 0xcd, 1, 0x5, 0x0},
+    {0x01cc40cd, 0xd1, 1, 0x5, 0x0},
+    {0x400440cd, 0xed, 1, 0x5, 0x0},
+    {0x002440cd, 0xf1, 1, 0x5, 0x0},
+    {0x901840cc, 0x88, 1, 0x5, 0x0},
+    {0x800040cc, 0x88, 1, 0x5, 0x0},
+    {0x91c040cc, 0x88, 1, 0x5, 0x0},
+    {0x81a840cc, 0x88, 1, 0x5, 0xffff},
+};
 
 void WfcFriendListMenu::renderRows() {
     static EncodedString8B sa;
@@ -933,7 +861,6 @@ void WfcFriendListMenu::renderRows() {
             rowFriends[col] = 0x20;
         } else {
             s32 e = listOrder[idx];
-            s32 off;
             if (e == rowFriends[col]) {
                 w1 = 0;
             } else if (e >= 0x20) {
@@ -945,13 +872,12 @@ void WfcFriendListMenu::renderRows() {
             } else {
                 rowFriends[col] = e;
                 w1 = allocText();
-                off = e * 0x13;
-                EncodedString_SetRaw(&sa, friendRecords + 8 + off, 8);
+                EncodedString_SetRaw(&sa, friendRecords[e].statusString + 8, 8);
                 sb.fromEncoded(&sa, 0, 0);
                 String_SetSlot(0, &sb);
                 String_Load2dMenu(w1, 0x66);
                 w2 = allocText();
-                String_FromEncodedBytes(w2, friendRecords + off, 8);
+                String_FromEncodedBytes(w2, (u8 *)friendRecords[e].statusString, 8);
             }
             if (w1) {
                 w1->createLabel(4, col * 0x14 + 0x11e, 10, 0xe - col, 0xf, 0);
@@ -1000,20 +926,20 @@ void WfcFriendListMenu::drawStaticLabelsOnce() {
 }
 
 // func_ov146_02292b1c (tail-call thunk) is defined last so it isn't inlined into callers
-u8 *WfcFriendListMenu::getFriendList() { return Net_GetWifiFriendList(); }
+NetWifiFriends *WfcFriendListMenu::getFriendList() { return (NetWifiFriends *)Net_GetWifiFriendList(); }
 
 void WfcFriendListMenu::initFriendStatus() {
     s32 i;
-    u8 *tbl;
+    NetWifiFriends *tbl;
     s32 z;
-    MI_CpuFill8(friendRecords, 0, 0x260);
-    tbl = (u8 *)getFriendList();
+    MI_CpuFill8(friendRecords, 0, sizeof(friendRecords));
+    tbl = getFriendList();
     i = 0;
     z = 0;
     do {
-        u8 *rec = tbl + 0x180 + i * 0x13;
+        NetWifiFriendStatus *rec = &tbl->status[i];
         if (isFriendOnline(rec)) {
-            MI_CpuCopy8(rec, friendRecords + (u32)i * 0x13, 0x13);
+            MI_CpuCopy8(rec, &friendRecords[i], sizeof(NetWifiFriendStatus));
             friendFade[i] = 0x14;
         } else {
             friendFade[i] = z;
@@ -1023,27 +949,26 @@ void WfcFriendListMenu::initFriendStatus() {
 }
 
 void WfcFriendListMenu::refreshFriendStatus() {
-    u8 *tbl = (u8 *)getFriendList();
+    NetWifiFriends *tbl = getFriendList();
     s32 i;
     s32 cnt = 0;
     for (i = 0; i < 0x20; i++) {
-        s32 off = i * 0x13;
-        if (isFriendOnline(tbl + 0x180 + off)) {
-            if ((friendRecords + off)[0x10] == 6) {
+        if (isFriendOnline(&tbl->status[i])) {
+            if (friendRecords[i].status == 6) {
                 if (friendFade[i] < 0x14) {
                     friendFade[i]++;
                 }
             } else {
                 friendFade[i] = 0;
-                MI_CpuCopy8(tbl + 0x180 + off, friendRecords + (u32)i * 0x13, 0x13);
+                MI_CpuCopy8(&tbl->status[i], &friendRecords[i], sizeof(NetWifiFriendStatus));
             }
             cnt++;
         } else {
-            if ((friendRecords + off)[0x10] == 6) {
+            if (friendRecords[i].status == 6) {
                 if (friendFade[i] != 0) {
                     friendFade[i]--;
                 } else {
-                    (friendRecords + off)[0x10] = 0;
+                    friendRecords[i].status = 0;
                 }
             }
         }
@@ -1072,23 +997,18 @@ BOOL WfcFriendListMenu::rebuildOrder() {
     s32 i;
     s32 cnt = 0;
     BOOL changed = FALSE;
-    u8 *tbl;
-    u8 *cp;
-    u8 *rec;
-    tbl = (u8 *)getFriendList();
+    NetWifiFriends *tbl;
+    tbl = getFriendList();
     for (i = 0; i < 0x20; i++) {
-        s32 off = i * 0x13;
-        rec = (u8 *)this + off;
-        if (rec[0x13a] == 6) {
-            cp = (u8 *)this + cnt;
-            if (i != cp[0xea]) {
+        if (friendRecords[i].status == 6) {
+            if (i != listOrder[cnt]) {
                 changed = TRUE;
-                cp[0xea] = i;
+                listOrder[cnt] = i;
             }
-            if (isFriendOnline(tbl + 0x180 + off)) {
-                rec[0x13c] = (tbl + off)[0x192];
+            if (isFriendOnline(&tbl->status[i])) {
+                friendRecords[i].c = tbl->status[i].c;
             }
-            cp[0xca] = (tbl + off)[0x192];
+            listStatus[cnt] = tbl->status[i].c;
             cnt++;
         }
     }
@@ -1102,8 +1022,8 @@ BOOL WfcFriendListMenu::rebuildOrder() {
     return changed;
 }
 
-BOOL WfcFriendListMenu::isFriendOnline(u8 *p) {
-    if (p[0x10] == 6 && p[0] != 0) {
+BOOL WfcFriendListMenu::isFriendOnline(NetWifiFriendStatus *p) {
+    if (p->status == 6 && p->statusString[0] != 0) {
         return TRUE;
     }
     return FALSE;
@@ -1113,10 +1033,9 @@ BOOL WfcFriendListMenu::isFriendSelectable(s32 idx) {
     if (idx >= 0x20) {
         return FALSE;
     }
-    u8 *g = getFriendList();
-    if (isFriendOnline(g + 0x180 + idx * 0x13)) {
-        u8 *e = g + idx * 0x13;
-        if (e[0x192] < 4) {
+    NetWifiFriends *g = getFriendList();
+    if (isFriendOnline(&g->status[idx])) {
+        if (g->status[idx].c < 4) {
             return TRUE;
         }
         return FALSE;
@@ -1126,12 +1045,12 @@ BOOL WfcFriendListMenu::isFriendSelectable(s32 idx) {
 
 void WfcFriendListMenu::flushVram() {
     if (testFlags(2)) {
-        if (((BgVramTask *)(HOST_AT(this, 0x1930, vramTasks[0], 0)))->requestScreen(HOST_AT(this, 0xb8a, listScreen[0], 0), 4, 0x800, 0)) {
+        if (vramTasks[0].requestScreen(listScreen, 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(8)) {
-        if (((BgVramTask *)(HOST_AT(this, 0x1954, vramTasks[1], 0)))->requestPalette(HOST_AT(this, 0x13aa, rowPalette[0], 0), 4, 7)) {
+        if (vramTasks[1].requestPalette(rowPalette, 4, 7)) {
             clearFlags(8);
         }
     }
@@ -1147,11 +1066,11 @@ void WfcFriendListMenu::setScroll(s32 v) {
 
 void WfcFriendListMenu::buildListScreen() {
     volatile u16 z = 0x10;
-    MIi_CpuClear16(z, HOST_AT(this, 0xb8a, listScreen[0], 0), 0x800);
+    MIi_CpuClear16(z, listScreen, 0x800);
     for (s32 i = 0; i < 7; i++) {
         s32 v = topRow + i;
         s32 m = v % 7;
-        MIi_CpuCopy16(HOST_AT(this, 0x38a, listScreenSrc[0], 0) + ((m * 2 + 7) << 6), HOST_AT(this, 0xb8a, listScreen[0], 0) + ((v & 0xf) << 7), 0x80);
+        MIi_CpuCopy16(&listScreenSrc[(m * 2 + 7) << 5], &listScreen[(v & 0xf) << 6], 0x80);
     }
     setFlags(2);
 }
@@ -1207,7 +1126,7 @@ void WfcFriendListMenu::dragKnob(s32 v, BOOL c) {
     placeKnob();
     s32 d = knobTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&knob);
+        Menu_PlayScrollTickSe();
         knobTickPos = knobPos;
     }
 }
@@ -1231,7 +1150,7 @@ void WfcFriendListMenu::moveKnobByKeys() {
     if (old != knobPos) {
         syncScrollFromKnob();
         placeKnob();
-        Menu_PlayScrollTickSe(&knob);
+        Menu_PlayScrollTickSe();
     }
 }
 
@@ -1248,7 +1167,7 @@ void WfcFriendListMenu::placeKnob() {
 }
 
 void WfcFriendListMenu::syncScrollFromKnob() {
-    s32 v = func_02133150(knobPos * 0x1a0, 0x50);
+    s32 v = _s32_div_f(knobPos * 0x1a0, 0x50);
     if (v < 0) {
         v = 0;
     }
@@ -1260,7 +1179,7 @@ void WfcFriendListMenu::syncScrollFromKnob() {
 }
 
 void WfcFriendListMenu::syncKnobFromScroll() {
-    knobPos = func_02133150(scrollY * 0x50, 0x1a0);
+    knobPos = _s32_div_f(scrollY * 0x50, 0x1a0);
     placeKnob();
 }
 
@@ -1270,7 +1189,7 @@ BOOL WfcFriendListMenu::decideTarget(u32 k) {
         if (idx >= 0x20) {
             return FALSE;
         }
-        u8 c = *((u8 *)this + idx + 0xea);
+        u8 c = listOrder[idx];
         if (isFriendSelectable(c)) {
             selectedFriend = c;
             Snd_PlaySe(0x29);
@@ -1282,7 +1201,7 @@ BOOL WfcFriendListMenu::decideTarget(u32 k) {
     switch (k) {
     case 2:
         ((MenuScrollKnob *)(&knob))->grab();
-        Menu_PlayScrollGrabSe(&knob);
+        Menu_PlayScrollGrabSe();
         setMainState(4);
         return TRUE;
     case 1:
@@ -1404,9 +1323,8 @@ void WfcFriendListMenu::targetFromCursorY() {
 
 void WfcFriendListMenu::cancelVramTasks() {
     s32 i = 0;
-    u8 *p = HOST_AT(this, 0x1930, vramTasks[0], 0);
     for (; i < 2; i++) {
-        BgVramTask_cancel(p + i * 0x24);
+        vramTasks[i].cancel();
     }
 }
 
@@ -1432,12 +1350,12 @@ void WfcFriendListMenu::updateRowColors() {
             u32 v;
             u32 base;
             u32 sel;
-            if (*((u8 *)this + idx * 0x13 + 0x13c) >= 4) {
-                base = *((u8 *)this + idx + 0x10a);
+            if (friendRecords[idx].c >= 4) {
+                base = friendFade[idx];
                 v = (u8)(base | 0x40);
                 sel = 7;
             } else {
-                base = *((u8 *)this + idx + 0x10a);
+                base = friendFade[idx];
                 v = base;
                 sel = 0xe;
             }
@@ -1460,8 +1378,9 @@ void WfcFriendListMenu::setFlags(u32 m) { flags = flags | m; }
 
 void WfcFriendListMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
-extern "C" void *data_ov146_02293e28[2] = {(void *)_ZN17WfcFriendListMenu17execCursorReleaseEv, 0};
-
-extern "C" void *data_ov146_02293e40[2] = {(void *)_ZN17WfcFriendListMenu13execExitDelayEv, 0};
-
-extern "C" u32 sWfcQuitButtonCells[8] = {0x81bf404a, 0x00008493, 0x41df004a, 0x00008497, 0x81d50043, 0x00008482, 0x81b90043, 0xffff8480};
+extern "C" GXOamAttr sWfcQuitButtonCells[4] = {
+    {0x81bf404a, 0x93, 1, 0x8, 0x0},
+    {0x41df004a, 0x97, 1, 0x8, 0x0},
+    {0x81d50043, 0x82, 1, 0x8, 0x0},
+    {0x81b90043, 0x80, 1, 0x8, 0xffff},
+};

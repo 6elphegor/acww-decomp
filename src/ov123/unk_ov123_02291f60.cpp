@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -13,9 +12,6 @@
 #include "save/BlancaFaceRecord.h"
 #include "save/Pattern.h"
 #include "save/PatternOrder.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Gfx2d_LinearToTiles4bpp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -31,18 +27,15 @@
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov123/unk_ov123_02291f60.h"
 
+#include "nitro/gxoam.h"
+#include "gfx/PatternTexCache.h"
+#include "proto/autoload_2/unk_020e8558.h"
+
 extern "C" {
 extern u8 gSaveBlancaFace;
 extern u16 gPad[];
-extern void *gCurrentHeap;
 
-s32 MIi_CpuCopy32(void *a, void *b, u32 n);
-void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
-
-// methods of other modules' classes, called with the object first (mangled-name trick)
-void *_ZN15PatternTexCache10getPaletteEi(void *self, s32 a);
-void _ZN10BgVramTask6cancelEv(void *self);
+void MIi_CpuCopy32(const void *src, void *dst, u32 n);
 }
 
 
@@ -119,7 +112,7 @@ public:
     void showGrid();
     void toggleGrid();
     BOOL moveCanvasCursor(s32 unused, s32 flag);
-    BOOL moveCursorByPad(void *pad);
+    BOOL moveCursorByPad(u32 pad);
     void moveCursorToTarget();
     void releaseCursor();
     void pressCursor();
@@ -263,7 +256,7 @@ public:
     /* 0xb8 */ LabelString paletteLabel[1];
     /* 0xf8 */ BgVramTaskPair bgTasks[3];
     /* 0x1a0 */ MenuCursorBuf0 cursor;
-    /* 0x204 */ u8 buttonScreen[0xa04 - 0x204];
+    /* 0x204 */ u16 buttonScreen[0x400];
     /* 0xa04 */ u8 canvasA[0x200];
     /* 0xc04 */ u8 canvasB[0x200];
     /* 0xe04 */ u8 zoomedCanvas[0x2e04 - 0xe04];
@@ -272,34 +265,6 @@ public:
     /* 0x5004 */ MenuBottomButtons bottomButtons;
 };
 
-// ptmf constants named so their order can be controlled
-extern "C" {
-void _ZN17PatternEditorMenu19stateConfirmOpeningEv();
-void _ZN17PatternEditorMenu13stateWaitWearEv();
-void _ZN17PatternEditorMenu18updateConfirmTouchEv();
-void _ZN17PatternEditorMenu10stateCloseEv();
-void _ZN17PatternEditorMenu19updateCursorReleaseEv();
-void _ZN17PatternEditorMenu9stateOpenEv();
-void _ZN17PatternEditorMenu19updateBarTransitionEv();
-void _ZN17PatternEditorMenu12stateOpeningEv();
-void _ZN17PatternEditorMenu13updateButtonsEv();
-void _ZN17PatternEditorMenu16stateConfirmOpenEv();
-void _ZN17PatternEditorMenu18updateCanvasCursorEv();
-void _ZN17PatternEditorMenu11stateRewearEv();
-void _ZN17PatternEditorMenu17updateCursorPressEv();
-void _ZN17PatternEditorMenu20updateConfirmButtonsEv();
-void _ZN17PatternEditorMenu16updateEyedropperEv();
-void _ZN17PatternEditorMenu17updateCanvasShapeEv();
-void _ZN17PatternEditorMenu17updateCanvasPaintEv();
-void _ZN17PatternEditorMenu16updateCursorMoveEv();
-void _ZN17PatternEditorMenu11updateTouchEv();
-void _ZN17PatternEditorMenu17updateTouchStrokeEv();
-void _ZN17PatternEditorMenu12stateClosingEv();
-void _ZN17PatternEditorMenu16stateConfirmBackEv();
-void _ZN17PatternEditorMenu19stateConfirmClosingEv();
-void _ZN17PatternEditorMenu17stateConfirmCloseEv();
-void _ZN17PatternEditorMenu12stateConfirmEv();
-}
 
 static inline BOOL Unk_ov123_022946c4_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -315,25 +280,11 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi)
         r = TRUE;
     }
     return r;
-}extern "C" void *data_ov123_022958d8[2] = {(void *)_ZN17PatternEditorMenu12stateClosingEv, 0};
-
-extern "C" void *data_ov123_02295808[2] = {(void *)_ZN17PatternEditorMenu19updateCursorReleaseEv, 0};
-
-extern "C" void *data_ov123_02295878[2] = {(void *)_ZN17PatternEditorMenu11stateRewearEv, 0};
-
-extern "C" void *data_ov123_02295860[2] = {(void *)_ZN17PatternEditorMenu16stateConfirmOpenEv, 0};
-
-extern "C" ProcProfile sPatternEditorMenuProfile = {(void *(*)())PatternEditorMenu_Create, 0xa9, 0xad};
-
-extern "C" void *data_ov123_02295890[2] = {(void *)_ZN17PatternEditorMenu16updateEyedropperEv, 0};
-
-extern "C" void *data_ov123_02295880[2] = {(void *)_ZN17PatternEditorMenu17updateCursorPressEv, 0};
+}extern "C" ProcProfile sPatternEditorMenuProfile = {(void *(*)())PatternEditorMenu_Create, 0xa9, 0xad};
 
 extern "C" u32 data_ov123_0229594c[4] = {0x400000f0, 0x000040c0, 0x41f800f8, 0xffff40c2};
 
 extern "C" u32 data_ov123_0229596c[8] = {0x718d0040, 0x0000410e, 0x617e0040, 0x0000410e, 0x518d0030, 0x0000410e, 0x417e0030, 0xffff410e};
-
-extern "C" void *data_ov123_02295820[2] = {(void *)_ZN17PatternEditorMenu12stateOpeningEv, 0};
 
 extern "C" const u16 sPatternEditorSineTable[322] = {0, 6, 0x000c, 0x0012, 0x0019, 0x001f, 0x0025, 0x002b, 0x0031, 0x0038, 0x003e, 0x0044, 0x004a, 0x0050, 0x0056, 0x005c, 0x0061, 0x0067, 0x006d, 0x0073, 0x0078, 0x007e, 0x0083, 0x0088, 0x008e, 0x0093, 0x0098, 0x009d, 0x00a2, 0x00a7, 0x00ab, 0x00b0, 0x00b5, 0x00b9, 0x00bd, 0x00c1, 0x00c5, 0x00c9, 0x00cd, 0x00d1, 0x00d4, 0x00d8, 0x00db, 0x00de, 0x00e1, 0x00e4, 0x00e7, 0x00ea, 0x00ec, 0x00ee, 0x00f1, 0x00f3, 0x00f4, 0x00f6, 0x00f8, 0x00f9, 0x00fb, 0x00fc, 0x00fd, 0x00fe, 0x00fe, 0x00ff, 0x00ff, 0x00ff, 0x0100, 0x00ff, 0x00ff, 0x00ff, 0x00fe, 0x00fe, 0x00fd, 0x00fc, 0x00fb, 0x00f9, 0x00f8, 0x00f6, 0x00f4, 0x00f3, 0x00f1, 0x00ee, 0x00ec, 0x00ea, 0x00e7, 0x00e4, 0x00e1, 0x00de, 0x00db, 0x00d8, 0x00d4, 0x00d1, 0x00cd, 0x00c9, 0x00c5, 0x00c1, 0x00bd, 0x00b9, 0x00b5, 0x00b0, 0x00ab, 0x00a7, 0x00a2, 0x009d, 0x0098, 0x0093, 0x008e, 0x0088, 0x0083, 0x007e, 0x0078, 0x0073, 0x006d, 0x0067, 0x0061, 0x005c, 0x0056, 0x0050, 0x004a, 0x0044, 0x003e, 0x0038, 0x0031, 0x002b, 0x0025, 0x001f, 0x0019, 0x0012, 0x000c, 6, 0, 0xfffa, 0xfff4, 0xffee, 0xffe7, 0xffe1, 0xffdb, 0xffd5, 0xffcf, 0xffc8, 0xffc2, 0xffbc, 0xffb6, 0xffb0, 0xffaa, 0xffa4, 0xff9f, 0xff99, 0xff93, 0xff8d, 0xff88, 0xff82, 0xff7d, 0xff78, 0xff72, 0xff6d, 0xff68, 0xff63, 0xff5e, 0xff59, 0xff55, 0xff50, 0xff4b, 0xff47, 0xff43, 0xff3f, 0xff3b, 0xff37, 0xff33, 0xff2f, 0xff2c, 0xff28, 0xff25, 0xff22, 0xff1f, 0xff1c, 0xff19, 0xff16, 0xff14, 0xff12, 0xff0f, 0xff0d, 0xff0c, 0xff0a, 0xff08, 0xff07, 0xff05, 0xff04, 0xff03, 0xff02, 0xff02, 0xff01, 0xff01, 0xff01, 0xff00, 0xff01, 0xff01, 0xff01, 0xff02, 0xff02, 0xff03, 0xff04, 0xff05, 0xff07, 0xff08, 0xff0a, 0xff0c, 0xff0d, 0xff0f, 0xff12, 0xff14, 0xff16, 0xff19, 0xff1c, 0xff1f, 0xff22, 0xff25, 0xff28, 0xff2c, 0xff2f, 0xff33, 0xff37, 0xff3b, 0xff3f, 0xff43, 0xff47, 0xff4b, 0xff50, 0xff55, 0xff59, 0xff5e, 0xff63, 0xff68, 0xff6d, 0xff72, 0xff78, 0xff7d, 0xff82, 0xff88, 0xff8d, 0xff93, 0xff99, 0xff9f, 0xffa4, 0xffaa, 0xffb0, 0xffb6, 0xffbc, 0xffc2, 0xffc8, 0xffcf, 0xffd5, 0xffdb, 0xffe1, 0xffe7, 0xffee, 0xfff4, 0xfffa, 0, 6, 0x000c, 0x0012, 0x0019, 0x001f, 0x0025, 0x002b, 0x0031, 0x0038, 0x003e, 0x0044, 0x004a, 0x0050, 0x0056, 0x005c, 0x0061, 0x0067, 0x006d, 0x0073, 0x0078, 0x007e, 0x0083, 0x0088, 0x008e, 0x0093, 0x0098, 0x009d, 0x00a2, 0x00a7, 0x00ab, 0x00b0, 0x00b5, 0x00b9, 0x00bd, 0x00c1, 0x00c5, 0x00c9, 0x00cd, 0x00d1, 0x00d4, 0x00d8, 0x00db, 0x00de, 0x00e1, 0x00e4, 0x00e7, 0x00ea, 0x00ec, 0x00ee, 0x00f1, 0x00f3, 0x00f4, 0x00f6, 0x00f8, 0x00f9, 0x00fb, 0x00fc, 0x00fd, 0x00fe, 0x00fe, 0x00ff, 0x00ff, 0x00ff, 0x003f, 0};
 
@@ -341,15 +292,9 @@ extern "C" const u16 sStampRing[16] = {0, 0, 0, 0x0fc0, 0x1fe0, 0x3870, 0x3030, 
 
 extern "C" const u16 sStampSquare[16] = {0, 0, 0, 0x1ff8, 0x1ff8, 0x1818, 0x1818, 0x1818, 0x1818, 0x1818, 0x1818, 0x1ff8, 0x1ff8, 0, 0, 0};
 
-extern "C" void *data_ov123_022958a0[2] = {(void *)_ZN17PatternEditorMenu17updateCanvasPaintEv, 0};
-
-extern "C" void *data_ov123_022957e8[2] = {(void *)_ZN17PatternEditorMenu13stateWaitWearEv, 0};
-
 extern "C" u16 data_ov123_02295840[4] = {0, 0x0010, 8, 0x0018};
 
 extern "C" u32 data_ov123_02295828[2] = {0x818840e0, 0xffff510a};
-
-extern "C" void *data_ov123_022958b0[2] = {(void *)_ZN17PatternEditorMenu16updateCursorMoveEv, 0};
 
 extern "C" u32 data_ov123_0229591c[4] = {0x81a880b0, 0x000050f9, 0x41a800d0, 0xffff5179};
 
@@ -357,39 +302,19 @@ extern "C" const u8 sPatternEditorNavUp[36] = {0, 0, 1, 2, 3, 4, 6, 6, 7, 8, 9, 
 
 extern "C" u32 data_ov123_022958b8[2] = {0x41f800f8, 0xffff4102};
 
-extern "C" void *data_ov123_02295810[2] = {(void *)_ZN17PatternEditorMenu9stateOpenEv, 0};
-
 extern "C" PatternShapeCornerCell data_ov123_022958c0 = {0xf8, 0x1f8, 0, 1, 0x40ca, 0xffff};
 
 extern "C" const u16 sStampStar[16] = {0, 0, 0, 0x0100, 0x0100, 0x0380, 0x3ff8, 0x0fe0, 0x07c0, 0x07c0, 0x0ee0, 0x0c60, 0x1010, 0, 0, 0};
-
-extern "C" void *data_ov123_022957e0[2] = {(void *)_ZN17PatternEditorMenu19stateConfirmOpeningEv, 0};
-
-extern "C" void *data_ov123_022957f0[2] = {(void *)_ZN17PatternEditorMenu18updateConfirmTouchEv, 0};
-
-extern "C" void *data_ov123_022957f8[2] = {(void *)_ZN17PatternEditorMenu10stateCloseEv, 0};
 
 extern "C" u32 data_ov123_02295a94[36] = {0x60084028, 0x000040f4, 0x400840a0, 0x000040f4, 0x51b88008, 0x00004115, 0x51b880e8, 0x00004115, 0x51b880c8, 0x00004115, 0x51b880a8, 0x00004115, 0x71b84028, 0x000040f5, 0x61d84028, 0x000040f4, 0x61f84028, 0x000040f4, 0x60284028, 0x000040f5, 0x40408008, 0x00004115, 0x404080e8, 0x00004115, 0x51b840a0, 0x000040f5, 0x41d840a0, 0x000040f4, 0x41f840a0, 0x000040f4, 0x404080c8, 0x00004115, 0x404080a8, 0x00004115, 0x402840a0, 0xffff40f5};
 
 extern "C" u32 data_ov123_02295a24[28] = {0x50428008, 0x00004115, 0x70424046, 0x000040f5, 0x50428026, 0x00004115, 0x504280e8, 0x00004115, 0x504280c8, 0x00004115, 0x504280a9, 0x00004115, 0x504240a1, 0x000040f5, 0x40788008, 0x00004115, 0x60604046, 0x000040f5, 0x40788026, 0x00004115, 0x407880e8, 0x00004115, 0x407880c8, 0x00004115, 0x407880a9, 0x00004115, 0x406040a1, 0xffff40f5};
 
-extern "C" void *data_ov123_022958f8[2] = {(void *)_ZN17PatternEditorMenu12stateConfirmEv, 0};
-
 extern "C" u32 data_ov123_02295b24[38] = {0x61984047, 0x000040f4, 0x11808038, 0x00004115, 0x01a88022, 0x00004115, 0x40234031, 0x000040f5, 0x40044031, 0x000040f4, 0x41e44031, 0x000040f4, 0x41c44031, 0x000040f4, 0x41ae4031, 0x000040f4, 0x01a8002e, 0x00004115, 0x01a0401a, 0x000040f7, 0x5180401a, 0x000040f5, 0x61e44047, 0x000040f4, 0x61c44047, 0x000040f4, 0x51808022, 0x00004115, 0x003b8038, 0x00004115, 0x60044047, 0x000040f4, 0x71804047, 0x000040f5, 0x61a44047, 0x000040f4, 0x60234047, 0xffff40f5};
-
-extern "C" void *data_ov123_022958f0[2] = {(void *)_ZN17PatternEditorMenu17stateConfirmCloseEv, 0};
-
-extern "C" void *data_ov123_022958e8[2] = {(void *)_ZN17PatternEditorMenu19stateConfirmClosingEv, 0};
-
-extern "C" void *data_ov123_022958e0[2] = {(void *)_ZN17PatternEditorMenu16stateConfirmBackEv, 0};
 
 extern "C" u32 data_ov123_02295848[2] = {0x018c0022, 0xffff4129};
 
-extern "C" void *data_ov123_022958d0[2] = {(void *)_ZN17PatternEditorMenu17updateTouchStrokeEv, 0};
-
-extern "C" void *data_ov123_022958c8[2] = {(void *)_ZN17PatternEditorMenu11updateTouchEv, 0};
-
-extern "C" void *data_ov123_02295900[3] = {data_ov123_02295a24, data_ov123_02295b24, data_ov123_02295a94};
+extern "C" GXOamAttr *data_ov123_02295900[3] = {(GXOamAttr *)data_ov123_02295a24, (GXOamAttr *)data_ov123_02295b24, (GXOamAttr *)data_ov123_02295a94};
 
 extern "C" const u8 sPatternEditorNavLeft[36] = {0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0x0c, 0x0d, 0x0e, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1e, 0x1e, 0, 0, 0, 0, 0};
 
@@ -399,15 +324,11 @@ extern "C" const u8 sPatternEditorCursorX[36] = {0xd5, 0xd5, 0xd5, 0xd5, 0xd5, 0
 
 extern "C" const u8 sPatternEditorCursorY[36] = {0x13, 0x2b, 0x43, 0x63, 0x7b, 0x9b, 0x13, 0x2b, 0x43, 0x63, 0x7b, 0x93, 0x86, 0x0e, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xa0, 0xb6, 0xb6, 0xa9, 0xa9, 0x50, 0, 0};
 
-extern "C" void *data_ov123_02295898[2] = {(void *)_ZN17PatternEditorMenu17updateCanvasShapeEv, 0};
-
 extern "C" u32 data_ov123_0229590c[4] = {0x018f0022, 0x00004129, 0x01880022, 0xffff4128};
 
 extern "C" u32 data_ov123_02295830[2] = {0x400000f0, 0xffff4110};
 
 extern "C" const u16 sStampHeart[16] = {0, 0, 0, 0, 0x1c70, 0x3ef8, 0x3ff8, 0x3ff8, 0x3ff8, 0x1ff0, 0x0fe0, 0x07c0, 0x0100, 0, 0, 0};
-
-extern "C" void *data_ov123_02295818[2] = {(void *)_ZN17PatternEditorMenu19updateBarTransitionEv, 0};
 
 extern "C" const u8 sPatternEditorButtonTileX1[13] = {0x1b, 0x1b, 0x1b, 0x1b, 0x1b, 0x1b, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 4};
 
@@ -425,11 +346,7 @@ extern "C" const u8 sFillMask[128] = {0, 0, 0x11, 0x11, 0x11, 0x11, 0, 0, 0, 0, 
 
 extern "C" const u8 sPatternEditorButtonTileY[13] = {1, 4, 7, 0x0b, 0x0e, 0x12, 1, 4, 7, 0x0b, 0x0e, 0x11, 0x10};
 
-extern "C" void *data_ov123_02295870[2] = {(void *)_ZN17PatternEditorMenu18updateCanvasCursorEv, 0};
-
 extern "C" const u8 sPatternEditorButtonTileX0[13] = {0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 1};
-
-extern "C" void *data_ov123_02295888[2] = {(void *)_ZN17PatternEditorMenu20updateConfirmButtonsEv, 0};
 
 extern "C" u16 *sStampBitmaps[4] = {(u16 *)sStampHeart, (u16 *)sStampStar, (u16 *)sStampRing, (u16 *)sStampSquare};
 
@@ -467,17 +384,17 @@ BOOL PatternEditorMenu::onDraw() {
     if (testFlags(1)) {
         s32 y = confirmScrollY + (slideY + 0x60);
         if (MenuCtrl_IsButtons()) {
-            Oam_DrawObj(1, (void *)data_ov123_02295828, 0x80, y, -1, -1, 0);
-            Oam_DrawCell(1, (void *)data_ov123_0229591c, 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawObj(1, data_ov123_02295828, 0x80, y, -1, -1, 0);
+            Oam_DrawCell(1, (GXOamAttr *)data_ov123_0229591c, 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
-        Oam_DrawCell(1, (void *)data_ov123_0229596c, colorMarkerX + 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (GXOamAttr *)data_ov123_0229596c, colorMarkerX + 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         if (paletteIndex < 9) {
-            Oam_DrawCell(1, (void *)data_ov123_02295848, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, (GXOamAttr *)data_ov123_02295848, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
-            Oam_DrawCell(1, (void *)data_ov123_0229590c, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, (GXOamAttr *)data_ov123_0229590c, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
         if (MenuCtrl_IsButtons()) {
-            Oam_DrawCell(1, (void *)((u32 *)data_ov123_02295900)[cursorMode], 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, data_ov123_02295900[cursorMode], 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
     return TRUE;
@@ -485,41 +402,39 @@ BOOL PatternEditorMenu::onDraw() {
 
 BOOL PatternEditorMenu::execTransition() {
     static Unk_ov123_022959c4_Fn tbl[12] = {
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295810,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295820,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295878,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022957e8,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022957f8,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958d8,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295860,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022957e0,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958f8,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958f0,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958e8,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958e0};
+        &PatternEditorMenu::stateOpen,
+        &PatternEditorMenu::stateOpening,
+        &PatternEditorMenu::stateRewear,
+        &PatternEditorMenu::stateWaitWear,
+        &PatternEditorMenu::stateClose,
+        &PatternEditorMenu::stateClosing,
+        &PatternEditorMenu::stateConfirmOpen,
+        &PatternEditorMenu::stateConfirmOpening,
+        &PatternEditorMenu::stateConfirm,
+        &PatternEditorMenu::stateConfirmClose,
+        &PatternEditorMenu::stateConfirmClosing,
+        &PatternEditorMenu::stateConfirmBack};
     preStateUpdate();
     (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
-}extern "C" void *data_ov123_02295838[2] = {(void *)_ZN17PatternEditorMenu13updateButtonsEv, 0};
-
-extern "C" u32 data_ov123_022958a8[2] = {0x01fc00fc, 0xffff4108};
+}extern "C" u32 data_ov123_022958a8[2] = {0x01fc00fc, 0xffff4108};
 
 void PatternEditorMenu::runMainState() {
     static Unk_ov123_022959c4_Fn tbl[13] = {
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958c8,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022957f0,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958d0,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295838,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295870,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958a0,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295898,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295890,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295888,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_022958b0,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295880,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295808,
-        *(Unk_ov123_022959c4_Fn *)data_ov123_02295818};
+        &PatternEditorMenu::updateTouch,
+        &PatternEditorMenu::updateConfirmTouch,
+        &PatternEditorMenu::updateTouchStroke,
+        &PatternEditorMenu::updateButtons,
+        &PatternEditorMenu::updateCanvasCursor,
+        &PatternEditorMenu::updateCanvasPaint,
+        &PatternEditorMenu::updateCanvasShape,
+        &PatternEditorMenu::updateEyedropper,
+        &PatternEditorMenu::updateConfirmButtons,
+        &PatternEditorMenu::updateCursorMove,
+        &PatternEditorMenu::updateCursorPress,
+        &PatternEditorMenu::updateCursorRelease,
+        &PatternEditorMenu::updateBarTransition};
     (this->*tbl[mainState])();
 }
 
@@ -582,13 +497,13 @@ void PatternEditorMenu::stateRewear() {
         stateClose();
         return;
     }
-    void *p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (testFlags(0x8000)) {
-        if (!PlayerActor_RequestWearShirtAlt(((PlayerData *)(p))->getShirt())) return;
+        if (!PlayerActor_RequestWearShirtAlt(p->getShirt())) return;
         clearFlags(0x8000);
     }
     if (testFlags(0x10000)) {
-        if (!PlayerActor_RequestWearHatAlt(((PlayerData *)(p))->getHat())) return;
+        if (!PlayerActor_RequestWearHatAlt(p->getHat())) return;
         clearFlags(0x8000);
     }
     setTransitionState(3);
@@ -602,7 +517,7 @@ void PatternEditorMenu::stateWaitWear() {
 
 void PatternEditorMenu::stateClose() {
     endScreenDim();
-    ((MenuLauncher *)((void *(*)(void *))ProcBase_GetParent)(this))->setNextRequest(0x44, 1);
+    ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(0xb, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(5);
@@ -782,10 +697,10 @@ void PatternEditorMenu::setupBgLayers() {
 }
 
 void PatternEditorMenu::loadBgGfx() {
-    void *p = gCurrentHeap;
+    Heap *p = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/edit/bg.bpl", p, 6, 4, 4, 0xe);
-    File_LoadToBuffer((void *)"menu/edit/a.bsc", HOST_AT(this, 0x204, buttonScreen[0], 0), 0x800);
-    Gfx2d_LoadScreen(HOST_AT(this, 0x204, buttonScreen[0], 0), 6, 0x800, 0);
+    File_LoadToBuffer("menu/edit/a.bsc", buttonScreen, 0x800);
+    Gfx2d_LoadScreen((u8 *)buttonScreen, 6, 0x800, 0);
     Gfx2d_LoadScreenFile("menu/edit/b.bsc", p, 4);
     Gfx2d_LoadScreenFile("menu/edit/c.bsc", p, 3);
     Gfx2d_LoadCharFile("menu/edit/bg1.bch", p, 6, 0x120, 0x120, 0x1ff);
@@ -793,7 +708,7 @@ void PatternEditorMenu::loadBgGfx() {
 }
 
 void PatternEditorMenu::loadObjGfx() {
-    void *p = gCurrentHeap;
+    Heap *p = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/edit/obj.bpl", p, 8, 4, 4, 0xc);
     Gfx2d_LoadCharFile("menu/edit/obj0.bch", p, 8, 0xc0, 0xc0, 0x12f);
     Gfx2d_LoadCharFile("menu/edit/obj1.bch", p, 8, 0x130, 0x130, 0x19f);
@@ -855,7 +770,7 @@ void PatternEditorMenu::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
     } else {
-        if (moveCursorByPad((void *)takeRepeatedKeys())) {
+        if (moveCursorByPad(takeRepeatedKeys())) {
             if (cursorMode == 0) {
                 savedCursorTarget = cursorTarget;
             }
@@ -1152,25 +1067,25 @@ void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 
 void PatternEditorMenu::loadFromPlayerPattern()
 {
-    void *b = PlayerData_GetCurrent()->getPatterns();
-    void *d = ((PlayerPatterns *)(b))->getPatternByOrder((u32)(MenuCtrl_GetIndex()));
-    MIi_CpuCopy32(((Pattern *)(d))->getPixels(), canvasA, 0x200);
-    MIi_CpuCopy32(((Pattern *)(d))->getPixels(), canvasB, 0x200);
-    u8 r = ((PatternInfo *)(((Pattern *)(d))->getInfo()))->getPalette();
+    PlayerPatterns *b = (PlayerPatterns *)PlayerData_GetCurrent()->getPatterns();
+    Pattern *d = b->getPatternByOrder(MenuCtrl_GetIndex());
+    MIi_CpuCopy32(d->getPixels(), canvasA, 0x200);
+    MIi_CpuCopy32(d->getPixels(), canvasB, 0x200);
+    u8 r = d->getInfo()->getPalette();
     setPalette(r);
 }
 
 void PatternEditorMenu::saveToPlayerPattern()
 {
-    void *a = PlayerData_GetCurrent();
-    void *b = ((PlayerData *)(a))->getPatterns();
-    void *c = MenuCtrl_GetIndex();
-    void *d = ((PlayerPatterns *)(b))->getPatternByOrder((u32)(c));
-    ((Pattern *)(d))->setPixels(getCanvas());
-    ((PatternInfo *)(((Pattern *)(d))->getInfo()))->setAuthorToCurrentPlayer();
-    ((PatternInfo *)(((Pattern *)(d))->getInfo()))->setPalette(paletteIndex);
-    s32 e = ((PatternOrder *)(((PlayerPatterns *)(b))->getPatternOrder()))->getSlot((u32)(c));
-    u16 *p = ((PlayerData *)(a))->getShirt();
+    PlayerData *a = PlayerData_GetCurrent();
+    PlayerPatterns *b = (PlayerPatterns *)a->getPatterns();
+    u32 c = MenuCtrl_GetIndex();
+    Pattern *d = b->getPatternByOrder(c);
+    d->setPixels(getCanvas());
+    d->getInfo()->setAuthorToCurrentPlayer();
+    d->getInfo()->setPalette(paletteIndex);
+    s32 e = b->getPatternOrder()->getSlot(c);
+    u16 *p = a->getShirt();
     s32 r;
     if (R1(p, 0x12a8, 0x12af)) {
         r = *p - 0x12a8;
@@ -1180,7 +1095,7 @@ void PatternEditorMenu::saveToPlayerPattern()
     if (r != -1 && r == e) {
         setFlags(0x8000);
     }
-    p = ((PlayerData *)(a))->getHat();
+    p = a->getHat();
     if (R1(p, 0x1429, 0x1430)) {
         r = *p - 0x1429;
     } else {
@@ -1193,24 +1108,24 @@ void PatternEditorMenu::saveToPlayerPattern()
 
 void PatternEditorMenu::loadFromExternalPattern()
 {
-    void *o = ((BlancaFaceRecord *)(&gSaveBlancaFace))->getPattern();
-    MIi_CpuCopy32(((Pattern *)(o))->getPixels(), canvasA, 0x200);
-    MIi_CpuCopy32(((Pattern *)(o))->getPixels(), canvasB, 0x200);
-    u8 r = ((PatternInfo *)(((Pattern *)(o))->getInfo()))->getPalette();
+    Pattern *o = (Pattern *)((BlancaFaceRecord *)(&gSaveBlancaFace))->getPattern();
+    MIi_CpuCopy32(o->getPixels(), canvasA, 0x200);
+    MIi_CpuCopy32(o->getPixels(), canvasB, 0x200);
+    u8 r = o->getInfo()->getPalette();
     setPalette(r);
 }
 
 void PatternEditorMenu::saveToExternalPattern()
 {
-    void *o = ((BlancaFaceRecord *)(&gSaveBlancaFace))->getPattern();
-    ((Pattern *)(o))->setPixels(getCanvas());
-    ((PatternInfo *)(((Pattern *)(o))->getInfo()))->setAuthorToCurrentPlayer();
-    ((PatternInfo *)(((Pattern *)(o))->getInfo()))->setPalette(paletteIndex);
+    Pattern *o = (Pattern *)((BlancaFaceRecord *)(&gSaveBlancaFace))->getPattern();
+    o->setPixels(getCanvas());
+    o->getInfo()->setAuthorToCurrentPlayer();
+    o->getInfo()->setPalette(paletteIndex);
 }
 
 void PatternEditorMenu::buildPreviewChars()
 {
-    Gfx2d_LinearToTiles4bpp(getCanvas(), previewChars, 4, 4);
+    Gfx2d_LinearToTiles4bpp((u32 *)getCanvas(), (u32 *)previewChars, 4, 4);
 }
 
 void PatternEditorMenu::loadPreviewChars()
@@ -1256,7 +1171,7 @@ Li:
     }
     i++;
     if (i < 0x20) goto Li;
-    Gfx2d_LinearToTiles4bpp(zoomedCanvas, canvasChars, 0x10, 0x10);
+    Gfx2d_LinearToTiles4bpp((u32 *)zoomedCanvas, (u32 *)canvasChars, 0x10, 0x10);
 }
 
 void PatternEditorMenu::loadCanvasChars()
@@ -1266,7 +1181,7 @@ void PatternEditorMenu::loadCanvasChars()
 
 void PatternEditorMenu::requestCanvasUpload()
 {
-    ((BgVramTask *)(HOST_AT(this, 0x130, bgTasks[1], 0)))->requestChars(canvasChars, 6, 0x20, 0x20, 0x11f);
+    ((BgVramTask *)(&bgTasks[1]))->requestChars(canvasChars, 6, 0x20, 0x20, 0x11f);
 }
 
 void PatternEditorMenu::flushCanvasGfx()
@@ -1282,8 +1197,8 @@ void PatternEditorMenu::flushCanvasGfx()
 
 void PatternEditorMenu::requestPaletteUpload()
 {
-    void *a = PatternTexCache_Get();
-    void *b = _ZN15PatternTexCache10getPaletteEi(a, paletteIndex);
+    PatternTexCache *a = PatternTexCache_Get();
+    u8 *b = a->getPalette(paletteIndex);
     ((BgVramTask *)(bgTasks))->requestPalette(b, 6, 0xe);
 }
 
@@ -1735,7 +1650,7 @@ s32 PatternEditorMenu::findSpanEnd(s32 x, s32 y, s32 v) {
         }
     }
     return 31;
-}extern "C" void *sPatternEditorToolCursors[12] = {data_ov123_0229594c, data_ov123_0229593c, data_ov123_0229595c, data_ov123_02295858, data_ov123_022958b8, 0, &data_ov123_022958c0, &data_ov123_022958c0, data_ov123_02295850, data_ov123_02295800, data_ov123_02295800, data_ov123_02295800};
+}extern "C" GXOamAttr *sPatternEditorToolCursors[12] = {(GXOamAttr *)data_ov123_0229594c, (GXOamAttr *)data_ov123_0229593c, (GXOamAttr *)data_ov123_0229595c, (GXOamAttr *)data_ov123_02295858, (GXOamAttr *)data_ov123_022958b8, 0, (GXOamAttr *)&data_ov123_022958c0, (GXOamAttr *)&data_ov123_022958c0, (GXOamAttr *)data_ov123_02295850, (GXOamAttr *)data_ov123_02295800, (GXOamAttr *)data_ov123_02295800, (GXOamAttr *)data_ov123_02295800};
 
 void PatternEditorMenu::floodFill(u8 x, u8 y, u32 tgt) {
     u32 cur;
@@ -1941,14 +1856,14 @@ void PatternEditorMenu::pickColorAtCursor() {
 void PatternEditorMenu::setButtonPalette(u32 a, u32 b) {
     if (a <= 0xc) {
         u32 t = sPatternEditorButtonTileY[a];
-        BgScreen_SetRectPalette(&buttonScreen, sPatternEditorButtonTileX0[a], t, sPatternEditorButtonTileX1[a], t + 2, b);
+        BgScreen_SetRectPalette(buttonScreen, sPatternEditorButtonTileX0[a], t, sPatternEditorButtonTileX1[a], t + 2, b);
         setFlags(0x10);
     }
 }
 
 void PatternEditorMenu::flushButtonScreen() {
     if (testFlags(0x10)) {
-        if (((BgVramTask *)(&bgTasks[2]))->requestScreen(&buttonScreen, 6, 0x800, 0)) {
+        if (((BgVramTask *)(&bgTasks[2]))->requestScreen(buttonScreen, 6, 0x800, 0)) {
             clearFlags(0x10);
         }
     }
@@ -2010,9 +1925,9 @@ void PatternEditorMenu::drawPreviewDot(s32 x, s32 y) {
 void PatternEditorMenu::drawCanvasCursor(s32 x, s32 y) {
     s32 a = canvasToScreenX(x);
     s32 b = canvasToScreenY(y);
-    void *p = sPatternEditorToolCursors[tool];
+    GXOamAttr *p = sPatternEditorToolCursors[tool];
     if (testFlags(0x800)) {
-        p = data_ov123_02295830;
+        p = (GXOamAttr *)data_ov123_02295830;
     }
     if (tool == 1) {
         a -= 2;
@@ -2116,7 +2031,7 @@ void PatternEditorMenu::endShapeAndResume() {
 void PatternEditorMenu::cancelVramTasks() {
     s32 i;
     for (i = 0; i < 3; i++) {
-        _ZN10BgVramTask6cancelEv(&bgTasks[i]);
+        bgTasks[i].cancel();
     }
 }
 
@@ -2212,8 +2127,8 @@ void PatternEditorMenu::moveCursorToTarget() {
     }
 }
 
-BOOL PatternEditorMenu::moveCursorByPad(void *pad) {
-    if (pad == NULL) {
+BOOL PatternEditorMenu::moveCursorByPad(u32 pad) {
+    if (pad == 0) {
         return FALSE;
     }
     u32 old = cursorTarget;

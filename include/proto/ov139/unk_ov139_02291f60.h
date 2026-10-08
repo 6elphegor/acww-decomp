@@ -4,40 +4,39 @@
 // Prototypes of the functions defined in src/ov139/unk_ov139_02291f60.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#include "uptr.h"
-#endif
+#include "nitro/gxoam.h"
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_sTownListCellLists
-extern uptr sTownListCellLists[8];
+extern GXOamAttr *sTownListCellLists[8];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_022925c0
-extern u32 data_ov139_022925c0[8];
+extern GXOamAttr data_ov139_022925c0[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_022925e0
-extern u32 data_ov139_022925e0[8];
+extern GXOamAttr data_ov139_022925e0[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_02292600
-extern u32 data_ov139_02292600[8];
+extern GXOamAttr data_ov139_02292600[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_02292620
-extern u32 data_ov139_02292620[8];
+extern GXOamAttr data_ov139_02292620[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_02292640
-extern u32 data_ov139_02292640[8];
+extern GXOamAttr data_ov139_02292640[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_022926d0
-extern u32 data_ov139_022926d0[84];
+extern GXOamAttr data_ov139_022926d0[42];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_022926a0
-extern u32 data_ov139_022926a0[12];
+extern GXOamAttr data_ov139_022926a0[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov139_02292660
-extern u32 data_ov139_02292660[8];
+extern GXOamAttr data_ov139_02292660[4];
 #endif
+#ifdef __cplusplus
 }
 #endif
 
