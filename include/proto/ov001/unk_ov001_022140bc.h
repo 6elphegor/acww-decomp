@@ -4,6 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022140bc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcAddrEdit;
+#ifndef __cplusplus
+typedef struct WfcAddrEdit WfcAddrEdit;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -81,6 +87,14 @@ void WfcAddrEdit_WaitErrorDialog();
 void WfcAddrEdit_ReturnToInput();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcAddrEdit
+extern WfcAddrEdit *sWfcAddrEdit;
+#endif
 }
 #endif
 

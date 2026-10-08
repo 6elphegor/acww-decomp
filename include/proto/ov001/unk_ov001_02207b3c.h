@@ -4,6 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02207b3c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcButtonBar;
+#ifndef __cplusplus
+typedef struct WfcButtonBar WfcButtonBar;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,6 +60,14 @@ void WfcButtonBar_DestroyTask(void *task, void *work);
 void WfcButtonBar_PressAnimTask(void *task, void *work);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcButtonBar
+extern WfcButtonBar *sWfcButtonBar;
+#endif
 }
 #endif
 

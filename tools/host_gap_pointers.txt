@@ -13,3 +13,5 @@ sProcCreateHook
 sProcCreateParent
 sProcDeleteHook
 data_01ff8ab4 8
+# PMRegInfo[4] (include/sys/PMCbInfo.h: a flag and a pointer each, 16 bytes on x86-64): the PMIC register reads
+data_021feb6c 8

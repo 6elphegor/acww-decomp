@@ -1,14 +1,13 @@
 #include "types.h"
 #include "npc/NpcResPool.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "npc/VillagerAnimHeapRefPool.h"
 #include "npc/NpcBodyAnimPool.h"
 #include "npc/NpcResPools.h"
 #include "proto/main/unk_02081cc0.h"
 #include "proto/main/unk_020821c4.h"
 
-// The pool a handle's getPool() returns depends on the handle's dynamic type; each getter below reads it as the pool
-// its call names (as the DS code does: the calls are non-virtual and the pools derive from NpcResPool at offset 0).
+// Each handle's getter reads the entry of the pool its getPool() returns (the pools derive from NpcResPool at offset 0).
 
 NpcResHandle::NpcResHandle() : slot(-1) {}
 
@@ -44,7 +43,7 @@ NpcBodyAnimHandle::NpcBodyAnimHandle() {}
 
 NpcBodyAnimHandle::~NpcBodyAnimHandle() {}
 
-AnimSlotRef *NpcResHandle::getBodyAnimLayer(u32 off) {
+AnimSlotRef *NpcBodyAnimHandle::getBodyAnimLayer(u32 off) {
     NpcResPool *c = getPool();
     AnimSlotRef *r = 0;
     if (c) {
@@ -57,9 +56,9 @@ VillagerAnimHeapHandle::VillagerAnimHeapHandle() {}
 
 VillagerAnimHeapHandle::~VillagerAnimHeapHandle() {}
 
-void *SpNpcAnimHeapHandle::getVillagerAnimHeapRef() {
+VillagerAnimHeapRef *VillagerAnimHeapHandle::getVillagerAnimHeapRef() {
     NpcResPool *p = getPool();
-    void *r = 0;
+    VillagerAnimHeapRef *r = 0;
     if (p) {
         r = static_cast<VillagerAnimHeapRefPool *>(p)->getHeapRef((s8)slot);
     }
@@ -70,9 +69,9 @@ SpNpcAnimHeapHandle::SpNpcAnimHeapHandle() {}
 
 SpNpcAnimHeapHandle::~SpNpcAnimHeapHandle() {}
 
-void *NpcClothTexHandle::getSpNpcAnimHeapRef() {
+SpNpcAnimHeapRef *SpNpcAnimHeapHandle::getSpNpcAnimHeapRef() {
     NpcResPool *p = getPool();
-    void *r = 0;
+    SpNpcAnimHeapRef *r = 0;
     if (p) {
         r = static_cast<SpNpcAnimHeapRefPool *>(p)->getHeapRef((s8)slot);
     }
@@ -83,9 +82,9 @@ NpcClothTexHandle::NpcClothTexHandle() {}
 
 NpcClothTexHandle::~NpcClothTexHandle() {}
 
-void *NpcTexPatBufRefHandle::getClothTex() {
+CharaClothTexRef *NpcClothTexHandle::getClothTex() {
     NpcResPool *p = getPool();
-    void *r = 0;
+    CharaClothTexRef *r = 0;
     if (p) {
         r = static_cast<NpcClothTexPool *>(p)->getClothTex((s8)slot);
     }
@@ -96,9 +95,9 @@ NpcTexPatBufRefHandle::NpcTexPatBufRefHandle() {}
 
 NpcTexPatBufRefHandle::~NpcTexPatBufRefHandle() {}
 
-void *NpcFaceAnimHandle::getTexPatBufRef() {
+NpcTexPatBufRef *NpcTexPatBufRefHandle::getTexPatBufRef() {
     NpcResPool *p = getPool();
-    void *r = 0;
+    NpcTexPatBufRef *r = 0;
     if (p) {
         r = static_cast<NpcTexPatBufRefPool *>(p)->getBufRef((s8)slot);
     }
@@ -109,9 +108,9 @@ NpcFaceAnimHandle::NpcFaceAnimHandle() {}
 
 NpcFaceAnimHandle::~NpcFaceAnimHandle() {}
 
-void *NpcTexPatHeapHandle::getFaceAnim() {
+CharaFaceAnimRef *NpcFaceAnimHandle::getFaceAnim() {
     NpcResPool *p = getPool();
-    void *r = 0;
+    CharaFaceAnimRef *r = 0;
     if (p) {
         r = static_cast<NpcFaceAnimPool *>(p)->getFaceAnim((s8)slot);
     }
@@ -122,9 +121,9 @@ NpcTexPatHeapHandle::NpcTexPatHeapHandle() {}
 
 NpcTexPatHeapHandle::~NpcTexPatHeapHandle() {}
 
-void *NpcHeldItemModelHandle::getTexPatHeapRef() {
+CharaFaceAnimWorkRef *NpcTexPatHeapHandle::getTexPatHeapRef() {
     NpcResPool *p = getPool();
-    void *r = 0;
+    CharaFaceAnimWorkRef *r = 0;
     if (p) {
         r = static_cast<NpcTexPatHeapPool *>(p)->getHeapRef((s8)slot);
     }
@@ -135,7 +134,7 @@ NpcHeldItemModelHandle::NpcHeldItemModelHandle() {}
 
 NpcHeldItemModelHandle::~NpcHeldItemModelHandle() {}
 
-BOOL NpcResHandleView::loadHeldItem(u16 *a) {
+BOOL NpcHeldItemModelHandle::loadHeldItem(u16 *a) {
     NpcResPool *p = getPool();
     BOOL r = FALSE;
     if (p) {
@@ -144,7 +143,7 @@ BOOL NpcResHandleView::loadHeldItem(u16 *a) {
     return r;
 }
 
-void *NpcResHandleView::getHeldItemModel() {
+HeldItemModel *NpcHeldItemModelHandle::getHeldItemModel() {
     NpcResPool *p = getPool();
     if (p) {
         return static_cast<NpcHeldItemModelPool *>(p)->getModel((s8)slot);

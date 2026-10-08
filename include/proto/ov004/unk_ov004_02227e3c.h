@@ -5,6 +5,8 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 class RecycleBox;
 #endif
 
@@ -23,6 +25,27 @@ extern char *sRecycleBoxMsgFilePtr;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov004_02250e70
+extern DebugColor data_ov004_02250e70;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250e64
+extern DebugColor data_ov004_02250e64;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250e60
+extern DebugColor data_ov004_02250e60;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250e6c
+extern DebugColor data_ov004_02250e6c;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250e5c
+extern DebugColor data_ov004_02250e5c;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250e4c
+extern DebugColor data_ov004_02250e4c;
+#endif
+#ifndef PROTO_LOCAL_sRecycleBoxProfile
+extern ActorProfile sRecycleBoxProfile;
+#endif
 #ifndef PROTO_LOCAL_sRecycleBox
 extern RecycleBox *sRecycleBox;
 #endif

@@ -4,19 +4,40 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0222bed0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct RoomItemDropList;
 struct Unk_ov004_0222bf34_P2;
+#ifndef __cplusplus
+typedef struct RoomItemDropList RoomItemDropList;
+typedef struct Unk_ov004_0222bf34_P2 Unk_ov004_0222bf34_P2;
+#endif
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "room/RoomItemDrop.h"
 #include "town/BlockMap.h"
-#include "types.h"
 class RoomItemIcons;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Room_SetItemAtUnit
+void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sRoomItemIconsProfile
+extern ProcProfile sRoomItemIconsProfile;
+#endif
 #ifndef PROTO_LOCAL_sRoomItemIcons
 extern RoomItemIcons *sRoomItemIcons;
+#endif
+#ifndef PROTO_LOCAL_sRoomItemDrops
+extern RoomItemDropList sRoomItemDrops;
 #endif
 #ifndef PROTO_LOCAL_RoomItemIcons_Create
 RoomItemIcons *RoomItemIcons_Create();
@@ -29,9 +50,6 @@ void RoomItemIcons_DrawIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s32 c, s16 d
 #endif
 #ifndef PROTO_LOCAL_RoomItemIcons_DrawItem
 void RoomItemIcons_DrawItem(u32 id, VecFx32Copy *a, VecFx32Copy *b, s32 c, s16 d, s16 e);
-#endif
-#ifndef PROTO_LOCAL_Room_SetItemAtUnit
-void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z);
 #endif
 #ifndef PROTO_LOCAL_ItemDrop_Settle
 void ItemDrop_Settle(RoomItemDrop *e);

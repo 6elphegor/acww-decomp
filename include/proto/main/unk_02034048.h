@@ -4,22 +4,16 @@
 // Prototypes of the functions defined in src/main/unk_02034048.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct RoomWallFloorPacket;
+#ifndef __cplusplus
+typedef struct RoomWallFloorPacket RoomWallFloorPacket;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_RoomWallFloor_ClearScenes
-void RoomWallFloor_ClearScenes();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_RoomWallFloor_MakeDesignItem
 void RoomWallFloor_MakeDesignItem(u16 *out, s32 a);
 #endif
@@ -47,6 +41,9 @@ BOOL RoomWallFloor_RestoreCarpet(s32 a);
 #ifndef PROTO_LOCAL_RoomWallFloor_Set
 void RoomWallFloor_Set(u16 *a, s32 b, s32 c, s32 d, u8 e);
 #endif
+#ifndef PROTO_LOCAL_RoomWallFloor_ClearScenes
+void RoomWallFloor_ClearScenes();
+#endif
 #ifndef PROTO_LOCAL_RoomWallFloor_SetSceneWallpaper
 BOOL RoomWallFloor_SetSceneWallpaper(u32 i, u16 *v);
 #endif
@@ -58,6 +55,15 @@ BOOL RoomWallFloor_SetSceneCarpet(u32 i, u16 *v);
 #endif
 #ifndef PROTO_LOCAL_RoomWallFloor_GetSceneCarpet
 u16 *RoomWallFloor_GetSceneCarpet(u32 i);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_RoomWallFloor_ApplyRecv
+void RoomWallFloor_ApplyRecv(RoomWallFloorPacket *p);
 #endif
 }
 #endif

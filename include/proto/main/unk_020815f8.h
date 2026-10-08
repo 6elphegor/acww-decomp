@@ -5,9 +5,11 @@
 
 #include "types.h"
 struct NpcActorRegistry;
+#ifndef __cplusplus
+typedef struct NpcActorRegistry NpcActorRegistry;
+#endif
 #ifdef __cplusplus
 #include "actor/NpcActor.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -16,15 +18,21 @@ extern "C" {
 #ifndef PROTO_LOCAL_NpcRegistry_Clear
 void NpcRegistry_Clear();
 #endif
+#ifndef PROTO_LOCAL_NpcRegistry_GetSlotCount
+s32 NpcRegistry_GetSlotCount();
+#endif
+#ifndef PROTO_LOCAL_NpcRegistry_RemoveVillager
+s32 NpcRegistry_RemoveVillager(u16 *handle);
+#endif
+#ifndef PROTO_LOCAL_NpcRegistry_RemoveSpNpc
+s32 NpcRegistry_RemoveSpNpc(u16 *handle);
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_NpcRegistry_GetSlotCount
-s32 NpcRegistry_GetSlotCount();
-#endif
 #ifndef PROTO_LOCAL_NpcRegistry_GetVillager
 NpcActor *NpcRegistry_GetVillager(s32 i);
 #endif
@@ -58,14 +66,8 @@ NpcActor *NpcRegistry_PickRandomVillager(s32 *idx);
 #ifndef PROTO_LOCAL_NpcRegistry_AddVillager
 s32 NpcRegistry_AddVillager(NpcActor *actor, u16 *handle);
 #endif
-#ifndef PROTO_LOCAL_NpcRegistry_RemoveVillager
-s32 NpcRegistry_RemoveVillager(u16 *handle);
-#endif
 #ifndef PROTO_LOCAL_NpcRegistry_AddSpNpc
 s32 NpcRegistry_AddSpNpc(NpcActor *actor, u16 *handle);
-#endif
-#ifndef PROTO_LOCAL_NpcRegistry_RemoveSpNpc
-s32 NpcRegistry_RemoveSpNpc(u16 *handle);
 #endif
 }
 #ifndef PROTO_LOCAL_gNpcActorRegistry

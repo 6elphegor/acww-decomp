@@ -4,6 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022156e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcManualSetupWork;
+#ifndef __cplusplus
+typedef struct WfcManualSetupWork WfcManualSetupWork;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -159,6 +165,14 @@ void WfcManualSetup_WaitDialogClosed();
 void WfcManualSetup_SetMode(u32 v);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcManualSetup
+extern WfcManualSetupWork *sWfcManualSetup;
+#endif
 }
 #endif
 

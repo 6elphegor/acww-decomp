@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class DistantTownsMenu;
 #endif
@@ -42,6 +43,9 @@ void DistantTownsMenu_SetupBgLayers();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sDistantTownsMenuProfile
+extern ProcProfile sDistantTownsMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_DistantTownsMenu_Create
 DistantTownsMenu *DistantTownsMenu_Create();
 #endif

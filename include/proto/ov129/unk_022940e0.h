@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov129/unk_022940e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class ConstellationEditorMenu;
 #endif
@@ -25,6 +26,9 @@ extern u8 sEditorArrowCursorX[8];
 extern "C" {
 #ifndef PROTO_LOCAL_ConstellationEditorMenu_Create
 ConstellationEditorMenu *ConstellationEditorMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sConstellationEditorMenuProfile
+extern ProcProfile sConstellationEditorMenuProfile;
 #endif
 }
 #endif

@@ -6,6 +6,9 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct SaveMenuStateEntry;
+#ifndef __cplusplus
+typedef struct SaveMenuStateEntry SaveMenuStateEntry;
+#endif
 #ifdef __cplusplus
 class SaveMenu;
 #endif

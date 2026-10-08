@@ -4,12 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220de1c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcEraseConfirmed
+extern volatile u8 sWfcEraseConfirmed;
 #endif
 #ifndef PROTO_LOCAL_WfcErase_Enter
 void WfcErase_Enter();
@@ -54,14 +54,6 @@ void WfcErase_WaitConfirmDialog();
 void WfcErase_WaitDialogClosed();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcEraseConfirmed
-extern volatile u8 sWfcEraseConfirmed;
-#endif
 }
 #endif
 

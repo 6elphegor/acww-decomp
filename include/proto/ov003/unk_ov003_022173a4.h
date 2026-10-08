@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_022173a4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "actor/ActorProfile.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,6 +15,14 @@ extern "C" {
 void *TownSign_Create();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sTownSignProfile
+extern ActorProfile sTownSignProfile;
+#endif
 }
 #endif
 

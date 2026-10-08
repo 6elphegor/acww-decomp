@@ -12,6 +12,13 @@
 struct SimpleStartApList;
 struct SimpleStartMd5Ctx;
 struct SimpleStartSessionId;
+struct SimpleStartWcmConfig;
+#ifndef __cplusplus
+typedef struct SimpleStartApList SimpleStartApList;
+typedef struct SimpleStartMd5Ctx SimpleStartMd5Ctx;
+typedef struct SimpleStartSessionId SimpleStartSessionId;
+typedef struct SimpleStartWcmConfig SimpleStartWcmConfig;
+#endif
 #ifdef __cplusplus
 #endif
 
@@ -375,11 +382,17 @@ void SimpleStart_NotifyStatus(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222c858
+extern SimpleStartWcmConfig *data_ov001_0222c858;
+#endif
 #ifndef PROTO_LOCAL_SimpleStart_FindSetupAp
 BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_BuildSessionId
 s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused);
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_Md5Init
+void SimpleStart_Md5Init(SimpleStartMd5Ctx *ctx);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_Md5Update
 void SimpleStart_Md5Update(SimpleStartMd5Ctx *ctx, const u8 *data, u32 len);

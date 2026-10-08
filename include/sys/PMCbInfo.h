@@ -12,4 +12,13 @@ struct PMCbInfo {
     /* 0x8 */ PMCbInfo *next;
 };
 
+// A PMIC register read in flight (data_021feb6c[register]): PMi_ReadRegisterAsync sets the destination,
+// PMi_CommonCallback stores the value there and sets the flag. 8 bytes on the DS; one array (the DS label
+// data_021feb70 = &data_021feb6c[0].ptr read the destination with the DS stride: on 64-bit hosts the stride and the
+// member's offset differ).
+typedef struct PMRegInfo {
+    /* 0x0 */ volatile unsigned short flag;
+    /* 0x4 */ unsigned short *ptr;
+} PMRegInfo;
+
 #endif // SYS_PMCBINFO_H

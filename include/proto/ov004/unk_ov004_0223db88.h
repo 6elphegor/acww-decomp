@@ -6,6 +6,9 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct MuseumInfoPoint;
+#ifndef __cplusplus
+typedef struct MuseumInfoPoint MuseumInfoPoint;
+#endif
 #ifdef __cplusplus
 class MuseumFossilRoom;
 class MuseumRoom;

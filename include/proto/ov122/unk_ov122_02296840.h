@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov122/unk_ov122_02296840.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class LetterWriteMenu;
 #endif
@@ -26,6 +27,9 @@ void LetterWriteMenu_SetupBgLayers();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov122_0229a130
+extern ProcProfile data_ov122_0229a130;
+#endif
 #ifndef PROTO_LOCAL_LetterWriteMenu_Create
 LetterWriteMenu *LetterWriteMenu_Create();
 #endif

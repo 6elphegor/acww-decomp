@@ -6,6 +6,11 @@
 #include "types.h"
 #include "net/WfcObjGroup.h"
 struct WfcTextCanvas;
+struct WfcTextWork;
+#ifndef __cplusplus
+typedef struct WfcTextCanvas WfcTextCanvas;
+typedef struct WfcTextWork WfcTextWork;
+#endif
 #ifdef __cplusplus
 #endif
 
@@ -39,6 +44,9 @@ void WfcText_DestroyBgCanvas(u32 idx);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcText
+extern WfcTextWork *sWfcText;
+#endif
 #ifndef PROTO_LOCAL_WfcText_CreateObjCanvas
 WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot);
 #endif

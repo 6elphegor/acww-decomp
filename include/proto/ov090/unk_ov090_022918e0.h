@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov090/unk_ov090_022918e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "menu/MenuTabBar.h"
 #endif
@@ -40,6 +41,9 @@ extern u8 sTabSwitchCooldown;
 extern "C" {
 #ifndef PROTO_LOCAL_MenuTabBar_Create
 MenuTabBar *MenuTabBar_Create();
+#endif
+#ifndef PROTO_LOCAL_sMenuTabBarProfile
+extern ProcProfile sMenuTabBarProfile;
 #endif
 }
 #endif

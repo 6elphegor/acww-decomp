@@ -4,7 +4,7 @@
 #include "types.h"
 #include "uptr.h"
 #include "gfx/MatTexVramTask.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 
 class VillagerActor;
 

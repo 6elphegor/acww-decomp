@@ -4,22 +4,16 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221eb38.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcHeaderWork;
+#ifndef __cplusplus
+typedef struct WfcHeaderWork WfcHeaderWork;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_WfcHeader_StartSlideOut
-void WfcHeader_StartSlideOut();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcHeader_Create
 void WfcHeader_Create(s32 n);
 #endif
@@ -40,6 +34,9 @@ void WfcHeader_SlideInTask4(void *r);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SlideInDone
 void WfcHeader_SlideInDone(void *r);
+#endif
+#ifndef PROTO_LOCAL_WfcHeader_StartSlideOut
+void WfcHeader_StartSlideOut();
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_SetStep
 void WfcHeader_SetStep(s32 n);
@@ -64,6 +61,15 @@ void WfcHeader_SlideOutTask0(void *a);
 #endif
 #ifndef PROTO_LOCAL_WfcHeader_IsSlideOutDone
 BOOL WfcHeader_IsSlideOutDone();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcHeader
+extern WfcHeaderWork *sWfcHeader;
 #endif
 }
 #endif

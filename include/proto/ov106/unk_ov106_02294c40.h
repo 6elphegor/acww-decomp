@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov106/unk_ov106_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class MailboxMenu;
 #endif
@@ -20,6 +21,9 @@ void MailboxMenu_SetupBgLayers();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sMailboxMenuProfile
+extern ProcProfile sMailboxMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_MailboxMenu_Create
 MailboxMenu *MailboxMenu_Create();
 #endif

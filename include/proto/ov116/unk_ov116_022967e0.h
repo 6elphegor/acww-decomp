@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov116/unk_ov116_022967e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class InsectBookTab;
 #endif
@@ -12,6 +13,9 @@ class InsectBookTab;
 extern "C" {
 #ifndef PROTO_LOCAL_InsectBookTab_Create
 InsectBookTab *InsectBookTab_Create();
+#endif
+#ifndef PROTO_LOCAL_sInsectBookTabProfile
+extern ProcProfile sInsectBookTabProfile;
 #endif
 }
 #endif

@@ -5,10 +5,10 @@
 
 #include "types.h"
 #include "net/DwcConnInfo.h"
-#include "net/DwcControl.h"
-#include "net/DwcMatchControl.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "net/DwcControl.h"
+#include "net/DwcFriendControl.h"
+#include "net/DwcMatchControl.h"
 #endif
 
 #ifdef __cplusplus
@@ -17,27 +17,6 @@ extern "C" {
 #ifndef PROTO_LOCAL_sDwcControl
 extern void *sDwcControl;
 #endif
-#ifndef PROTO_LOCAL_DwcCore_Shutdown
-void DwcCore_Shutdown(void);
-#endif
-#ifndef PROTO_LOCAL_DwcCore_Nop
-void DwcCore_Nop(void);
-#endif
-#ifndef PROTO_LOCAL_DwcCore_Process
-void DwcCore_Process();
-#endif
-#ifndef PROTO_LOCAL_DwcConn_ClearTables
-void DwcConn_ClearTables();
-#endif
-#ifndef PROTO_LOCAL_DwcConn_OnGt2SocketError
-void DwcConn_OnGt2SocketError(void *socket);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_data_ov065_02290674
 extern u32 data_ov065_02290674;
 #endif
@@ -47,20 +26,17 @@ extern void *sDwcConnTable[32];
 #ifndef PROTO_LOCAL_sDwcConnInfo
 extern u8 sDwcConnInfo[0x100];
 #endif
+#ifndef PROTO_LOCAL_DwcCore_Shutdown
+void DwcCore_Shutdown(void);
+#endif
 #ifndef PROTO_LOCAL_DwcCore_CheckFatalError
 s32 DwcCore_CheckFatalError(void);
 #endif
-#ifndef PROTO_LOCAL_DwcLogin_Start
-void DwcLogin_Start(s32 a, s32 b, DwcDoneCallback c, s32 d);
+#ifndef PROTO_LOCAL_DwcCore_Nop
+void DwcCore_Nop(void);
 #endif
-#ifndef PROTO_LOCAL_DwcFriend_UpdateServersAsync
-s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, s32 f3, s32 p5, s32 p6, s32 p7);
-#endif
-#ifndef PROTO_LOCAL_DwcMatch_SetupGameServer
-void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, s32 c, s32 d, s32 e);
-#endif
-#ifndef PROTO_LOCAL_DwcMatch_ConnectToFriendServer
-void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, s32 arg, s32 d, s32 e);
+#ifndef PROTO_LOCAL_DwcCore_Process
+void DwcCore_Process();
 #endif
 #ifndef PROTO_LOCAL_DwcConn_SetClosedCallback
 void DwcConn_SetClosedCallback(s32 a, s32 b);
@@ -93,25 +69,25 @@ s32 DwcCore_GetState();
 s32 DwcConn_CreateGt2Socket();
 #endif
 #ifndef PROTO_LOCAL_DwcConn_FindConnectionByAid
-u32 DwcConn_FindConnectionByAid(u32 v);
+void *DwcConn_FindConnectionByAid(u32 v);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_GetAid
-u32 DwcConn_GetAid(u32 v);
+u32 DwcConn_GetAid(void *v);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_GetSlotIndex
-u32 DwcConn_GetSlotIndex(u32 v);
+u32 DwcConn_GetSlotIndex(void *v);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_FindFreeSlot
 s32 DwcConn_FindFreeSlot();
 #endif
+#ifndef PROTO_LOCAL_DwcConn_ClearTables
+void DwcConn_ClearTables();
+#endif
 #ifndef PROTO_LOCAL_DwcConn_GetSlot
-u32 *DwcConn_GetSlot(u32 idx);
+void **DwcConn_GetSlot(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_FindSlotByProfileId
-u32 *DwcConn_FindSlotByProfileId(u32 key, s32 n);
-#endif
-#ifndef PROTO_LOCAL_DwcConn_GetConnInfo
-DwcConnInfo *DwcConn_GetConnInfo(u32 idx);
+void **DwcConn_FindSlotByProfileId(u32 key, s32 n);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_IsAidConnected
 u32 DwcConn_IsAidConnected(u32 v);
@@ -147,13 +123,37 @@ void DwcCore_OnGpError(s32 a, u32 *b);
 void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_OnGt2Receive
-void DwcConn_OnGt2Receive(s32 a, s32 b, s32 c, s32 d);
+void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_OnGt2Closed
-void DwcConn_OnGt2Closed(s32 a0, s32 a1);
+void DwcConn_OnGt2Closed(void *a0, s32 a1);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_OnGt2Ping
-void DwcConn_OnGt2Ping(s32 a, s32 b);
+void DwcConn_OnGt2Ping(void *a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_OnGt2SocketError
+void DwcConn_OnGt2SocketError(void *socket);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_DwcLogin_Start
+void DwcLogin_Start(s32 a, s32 b, DwcDoneCallback c, s32 d);
+#endif
+#ifndef PROTO_LOCAL_DwcFriend_UpdateServersAsync
+s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, DwcFriendStatusCallback f3, s32 p5, DwcFriendDeleteCallback p6, s32 p7);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_SetupGameServer
+void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, void *c, DwcNewClientCallback d, void *e);
+#endif
+#ifndef PROTO_LOCAL_DwcMatch_ConnectToFriendServer
+void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, void *arg, DwcNewClientCallback d, void *e);
+#endif
+#ifndef PROTO_LOCAL_DwcConn_GetConnInfo
+DwcConnInfo *DwcConn_GetConnInfo(u32 idx);
 #endif
 }
 #endif

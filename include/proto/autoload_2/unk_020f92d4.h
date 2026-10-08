@@ -4,9 +4,10 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020f92d4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "gfx/SplManager.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "gfx/SplEmitterViews.h"
+#include "gfx/SplManager.h"
+#include "gfx/SplViews.h"
 #endif
 
 #ifdef __cplusplus
@@ -15,12 +16,21 @@ extern "C" {
 #ifndef PROTO_LOCAL_func_020f9690
 void func_020f9690(void *e, void *l);
 #endif
+#ifndef PROTO_LOCAL_sAllocTex
+u32 sAllocTex(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_sAllocTexPalette
+u32 sAllocTexPalette(u32 a, u32 b);
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_spl_calc
+void spl_calc(MU *m, EU *e);
+#endif
 #ifndef PROTO_LOCAL_sDrawParent
 void sDrawParent(Pm *mp, u32 a);
 #endif
@@ -29,12 +39,6 @@ void sDrawChild(Pm *mp, u32 a);
 #endif
 #ifndef PROTO_LOCAL_spl_draw
 void spl_draw(Pm *m, u32 a);
-#endif
-#ifndef PROTO_LOCAL_sAllocTex
-u32 sAllocTex(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_sAllocTexPalette
-u32 sAllocTexPalette(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_SPL_Init
 PmNew *SPL_Init(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16 a4, u16 a5);

@@ -4,49 +4,28 @@
 // Prototypes of the functions defined in src/ov079/unk_ov079_022713c0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcWendellActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcWendellActEntry SpNpcWendellActEntry;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
+#include "game/FxVec3.h"
+#include "gfx/DebugColor.h"
 class SpNpcWendell;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_data_ov079_022729a0
-extern void *data_ov079_022729a0[2];
+#ifndef PROTO_LOCAL_sSpNpcWendellTexturePath
+extern u8 sSpNpcWendellTexturePath[];
 #endif
-#ifndef PROTO_LOCAL_data_ov079_02272990
-extern void *data_ov079_02272990[2];
+#ifndef PROTO_LOCAL_sSpNpcWendellModelPath
+extern u8 sSpNpcWendellModelPath[];
 #endif
-#ifndef PROTO_LOCAL_data_ov079_02272988
-extern void *data_ov079_02272988[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729b8
-extern void *data_ov079_022729b8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729d8
-extern void *data_ov079_022729d8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729c0
-extern void *data_ov079_022729c0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729a8
-extern void *data_ov079_022729a8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_02272980
-extern void *data_ov079_02272980[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_02272998
-extern void *data_ov079_02272998[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729c8
-extern void *data_ov079_022729c8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729b0
-extern void *data_ov079_022729b0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov079_022729d0
-extern void *data_ov079_022729d0[2];
+#ifndef PROTO_LOCAL_SpNpcWendell_AcceptAnyItem
+BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x);
 #endif
 #ifdef __cplusplus
 }
@@ -57,14 +36,32 @@ extern "C" {
 #ifndef PROTO_LOCAL_SpNpcWendell_Create
 SpNpcWendell *SpNpcWendell_Create();
 #endif
-#ifndef PROTO_LOCAL_sSpNpcWendellTexturePath
-extern u8 sSpNpcWendellTexturePath[];
+#ifndef PROTO_LOCAL_sSpNpcWendellProfile
+extern ActorProfile sSpNpcWendellProfile;
 #endif
-#ifndef PROTO_LOCAL_sSpNpcWendellModelPath
-extern u8 sSpNpcWendellModelPath[];
+#ifndef PROTO_LOCAL_data_ov079_02272b80
+extern DebugColor data_ov079_02272b80;
 #endif
-#ifndef PROTO_LOCAL_SpNpcWendell_AcceptAnyItem
-BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x);
+#ifndef PROTO_LOCAL_data_ov079_02272b8c
+extern DebugColor data_ov079_02272b8c;
+#endif
+#ifndef PROTO_LOCAL_data_ov079_02272b94
+extern DebugColor data_ov079_02272b94;
+#endif
+#ifndef PROTO_LOCAL_data_ov079_02272b98
+extern DebugColor data_ov079_02272b98;
+#endif
+#ifndef PROTO_LOCAL_data_ov079_02272b88
+extern DebugColor data_ov079_02272b88;
+#endif
+#ifndef PROTO_LOCAL_data_ov079_02272b90
+extern DebugColor data_ov079_02272b90;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcWendellActTable
+extern SpNpcWendellActEntry sSpNpcWendellActTable[5];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcWendellSideStepOffsets
+extern FxVec3 sSpNpcWendellSideStepOffsets[2];
 #endif
 }
 #endif

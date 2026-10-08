@@ -5,6 +5,12 @@
 
 #include "types.h"
 #include "nitro/wm.h"
+struct WfcUsbScanWork;
+#ifndef __cplusplus
+typedef struct WfcUsbScanWork WfcUsbScanWork;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,6 +40,14 @@ void WfcUsbScan_CheckGranted(WMStartScanExCallback *a);
 void WfcUsbScan_TimeoutTask(void *task, void *work);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcUsbScan
+extern WfcUsbScanWork *sWfcUsbScan;
+#endif
 }
 #endif
 

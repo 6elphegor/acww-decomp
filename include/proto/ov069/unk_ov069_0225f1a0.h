@@ -7,6 +7,11 @@
 struct VillagerTalkTopicsFns;
 struct VillagerTalkTopicsSubFns;
 struct VillagerTalkTopicsTableInit;
+#ifndef __cplusplus
+typedef struct VillagerTalkTopicsFns VillagerTalkTopicsFns;
+typedef struct VillagerTalkTopicsSubFns VillagerTalkTopicsSubFns;
+typedef struct VillagerTalkTopicsTableInit VillagerTalkTopicsTableInit;
+#endif
 #ifdef __cplusplus
 #endif
 

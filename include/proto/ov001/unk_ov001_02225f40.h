@@ -5,12 +5,21 @@
 
 #include "types.h"
 #include "net/WfcRect.h"
+struct WfcInputState;
+#ifndef __cplusplus
+typedef struct WfcInputState WfcInputState;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcTouchRepeatCounter
+extern u8 sWfcTouchRepeatCounter;
+#endif
+#ifndef PROTO_LOCAL_sWfcKeyRepeatCounters
+extern u8 sWfcKeyRepeatCounters[16];
 #endif
 #ifndef PROTO_LOCAL_WfcInput_Init
 void WfcInput_Init();
@@ -26,18 +35,6 @@ void WfcInput_UpdateKeys();
 #endif
 #ifndef PROTO_LOCAL_WfcInput_UpdateTouch
 void WfcInput_UpdateTouch();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcTouchRepeatCounter
-extern u8 sWfcTouchRepeatCounter;
-#endif
-#ifndef PROTO_LOCAL_sWfcKeyRepeatCounters
-extern u8 sWfcKeyRepeatCounters[16];
 #endif
 #ifndef PROTO_LOCAL_WfcInput_IsKeyHeld
 BOOL WfcInput_IsKeyHeld(u32 m);
@@ -68,6 +65,15 @@ BOOL WfcInput_IsTouchPressedInBox(WfcPosSize *r);
 #endif
 #ifndef PROTO_LOCAL_WfcInput_GetTouchPos
 BOOL WfcInput_GetTouchPos(WfcPoint *out);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcInput
+extern WfcInputState *sWfcInput;
 #endif
 }
 #endif

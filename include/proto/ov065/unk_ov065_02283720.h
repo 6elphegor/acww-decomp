@@ -4,51 +4,18 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02283720.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/darray.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_gti2GetResponse
+u8 *gti2GetResponse(u8 *out, u8 *in);
 #endif
 #ifndef PROTO_LOCAL_sGsPersistXorKey
 extern char *sGsPersistXorKey;
-#endif
-#ifndef PROTO_LOCAL_CloseStatsConnection
-void CloseStatsConnection();
-#endif
-#ifndef PROTO_LOCAL_data_ov065_02291104
-extern char data_ov065_02291104[0x100];
-#endif
-#ifndef PROTO_LOCAL_value_for_key
-char *value_for_key(char *s, char *key);
-#endif
-#ifndef PROTO_LOCAL_value_for_key_safe
-char *value_for_key_safe(char *s, char *key);
-#endif
-#ifndef PROTO_LOCAL_data_ov065_02291304
-extern char data_ov065_02291304[0x200];
-#endif
-#ifndef PROTO_LOCAL_rcvbuffer
-extern char *rcvbuffer;
-#endif
-#ifndef PROTO_LOCAL_ClosePendingCallbacks
-void ClosePendingCallbacks(void);
-#endif
-#ifndef PROTO_LOCAL_gpiDebug
-void gpiDebug(void *h, const char *fmt, ...);
-#endif
-#ifndef PROTO_LOCAL_data_ov065_02291204
-extern char data_ov065_02291204[0x100];
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_gti2GetResponse
-u8 *gti2GetResponse(u8 *out, u8 *in);
 #endif
 #ifndef PROTO_LOCAL_rcvmax
 extern s32 rcvmax;
@@ -59,6 +26,12 @@ BOOL gti2CheckResponse(u8 *a, u8 *b);
 #ifndef PROTO_LOCAL_data_ov065_0228df7c
 extern u8 data_ov065_0228df7c[16];
 #endif
+#ifndef PROTO_LOCAL_CloseStatsConnection
+void CloseStatsConnection();
+#endif
+#ifndef PROTO_LOCAL_data_ov065_02291104
+extern char data_ov065_02291104[0x100];
+#endif
 #ifndef PROTO_LOCAL_PersistThink
 s32 PersistThink();
 #endif
@@ -68,8 +41,14 @@ extern s32 rcvlen;
 #ifndef PROTO_LOCAL_xcode_buf
 void xcode_buf(char *p, s32 n);
 #endif
+#ifndef PROTO_LOCAL_value_for_key
+char *value_for_key(char *s, char *key);
+#endif
 #ifndef PROTO_LOCAL_enc1
 extern u8 enc1[16];
+#endif
+#ifndef PROTO_LOCAL_value_for_key_safe
+char *value_for_key_safe(char *s, char *key);
 #endif
 #ifndef PROTO_LOCAL_SocketReadable
 s32 SocketReadable(s32 a);
@@ -98,6 +77,9 @@ void ProcessGetData(char *s, s32 len);
 #ifndef PROTO_LOCAL_ProcessSetData
 void ProcessSetData(char *s, s32 len);
 #endif
+#ifndef PROTO_LOCAL_data_ov065_02291304
+extern char data_ov065_02291304[0x200];
+#endif
 #ifndef PROTO_LOCAL_ProcessStatement
 void ProcessStatement(char *s, s32 len);
 #endif
@@ -113,8 +95,29 @@ void CallReqCallback(s32 idx, s32 a, s32 b, void *p3, s32 p4);
 #ifndef PROTO_LOCAL_data_ov065_022910fc
 extern volatile s32 data_ov065_022910fc;
 #endif
+#ifndef PROTO_LOCAL_rcvbuffer
+extern char *rcvbuffer;
+#endif
+#ifndef PROTO_LOCAL_ClosePendingCallbacks
+void ClosePendingCallbacks(void);
+#endif
 #ifndef PROTO_LOCAL_strzcpy
 void strzcpy(char *dst, const char *src, s32 n);
+#endif
+#ifndef PROTO_LOCAL_gpiDebug
+void gpiDebug(void *h, const char *fmt, ...);
+#endif
+#ifndef PROTO_LOCAL_data_ov065_02291204
+extern char data_ov065_02291204[0x100];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_serverreqs
+extern DArrayImplementation *serverreqs;
 #endif
 }
 #endif

@@ -5,6 +5,9 @@
 
 #include "types.h"
 struct CharaAnimCache;
+#ifndef __cplusplus
+typedef struct CharaAnimCache CharaAnimCache;
+#endif
 #ifdef __cplusplus
 #include "player/AnimSlotRef.h"
 #include "sys/Heap.h"

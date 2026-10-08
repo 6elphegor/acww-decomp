@@ -4,11 +4,11 @@
 // Prototypes of the functions defined in src/main/unk_02070560.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "game/Unk_020702ec_Date.h"
 #ifdef __cplusplus
 #include "gfx/PatternTexCache.h"
 #include "gfx/TexPatVramAnim.h"
 #include "save/Pattern.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -26,11 +26,17 @@ void PlayerPatternDefaults_Ctor(void *p);
 #ifndef PROTO_LOCAL_PlayerPatternDefaults_Load
 void PlayerPatternDefaults_Load(void *p);
 #endif
+#ifndef PROTO_LOCAL_PlayerPatternDefaults_Extract
+BOOL PlayerPatternDefaults_Extract(void *a, void *b, s32 x);
+#endif
 #ifndef PROTO_LOCAL_AblePatternDefaults_Ctor
 void AblePatternDefaults_Ctor(void *p);
 #endif
 #ifndef PROTO_LOCAL_AblePatternDefaults_Load
 void AblePatternDefaults_Load(void *p);
+#endif
+#ifndef PROTO_LOCAL_AblePatternDefaults_Extract
+BOOL AblePatternDefaults_Extract(void *a, void *b, s32 x);
 #endif
 #ifndef PROTO_LOCAL_TownFlagPatternDefault_Ctor
 void TownFlagPatternDefault_Ctor(void *p);
@@ -38,8 +44,53 @@ void TownFlagPatternDefault_Ctor(void *p);
 #ifndef PROTO_LOCAL_TownFlagPatternDefault_Load
 void TownFlagPatternDefault_Load(void *p);
 #endif
+#ifndef PROTO_LOCAL_TownFlagPatternDefault_Extract
+BOOL TownFlagPatternDefault_Extract(void *a, void *b);
+#endif
 #ifndef PROTO_LOCAL_PresetPatternFile_Ctor
 void PresetPatternFile_Ctor(void *p);
+#endif
+#ifndef PROTO_LOCAL_PresetPatternFile_Load
+void PresetPatternFile_Load(void *dst, s32 n);
+#endif
+#ifndef PROTO_LOCAL_PresetPatternFile_Extract
+BOOL PresetPatternFile_Extract(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_PatternSrc_OnChanged
+BOOL PatternSrc_OnChanged(s32 cmd, s32 x);
+#endif
+#ifndef PROTO_LOCAL_Villager_MaybeCopyAblePattern
+BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_PatternSrc_Copy
+BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
+#endif
+#ifndef PROTO_LOCAL_PatternSrc_ResolveKind
+s32 PatternSrc_ResolveKind(s32 t);
+#endif
+#ifndef PROTO_LOCAL_PatternSrc_Swap
+BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
+#endif
+#ifndef PROTO_LOCAL_sPlayerPatternTexKeys
+extern u8 *sPlayerPatternTexKeys[4][8];
+#endif
+#ifndef PROTO_LOCAL_Pattern_RemovePlayerItems
+void Pattern_RemovePlayerItems(s32 p);
+#endif
+#ifndef PROTO_LOCAL_PatternTex_UploadPlayer
+BOOL PatternTex_UploadPlayer(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_PatternTex_UploadAble
+BOOL PatternTex_UploadAble(u32 x);
+#endif
+#ifndef PROTO_LOCAL_sAblePatternTexKeys
+extern u8 *sAblePatternTexKeys[8];
+#endif
+#ifndef PROTO_LOCAL_data_021cbcac
+extern u8 data_021cbcac[4];
+#endif
+#ifndef PROTO_LOCAL_sAbleDisplayDirtyBits
+extern u8 sAbleDisplayDirtyBits;
 #endif
 #ifdef __cplusplus
 }
@@ -83,47 +134,11 @@ BOOL PatternPresetInfo_Apply(PatternPresetInfoFile *tbl, PatternInfo *dst, s32 i
 #ifndef PROTO_LOCAL_PatternPresetInfo_Get
 PatternPresetInfoFile *PatternPresetInfo_Get(void);
 #endif
-#ifndef PROTO_LOCAL_PlayerPatternDefaults_Extract
-BOOL PlayerPatternDefaults_Extract(void *a, void *b, s32 x);
-#endif
-#ifndef PROTO_LOCAL_AblePatternDefaults_Extract
-BOOL AblePatternDefaults_Extract(void *a, void *b, s32 x);
-#endif
-#ifndef PROTO_LOCAL_TownFlagPatternDefault_Extract
-BOOL TownFlagPatternDefault_Extract(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_PresetPatternFile_Load
-void PresetPatternFile_Load(void *dst, s32 n);
-#endif
-#ifndef PROTO_LOCAL_PresetPatternFile_Extract
-BOOL PresetPatternFile_Extract(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_PatternSrc_OnChanged
-BOOL PatternSrc_OnChanged(s32 cmd, s32 x);
-#endif
-#ifndef PROTO_LOCAL_Villager_MaybeCopyAblePattern
-BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_PatternSrc_Copy
-BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
-#endif
-#ifndef PROTO_LOCAL_PatternSrc_ResolveKind
-s32 PatternSrc_ResolveKind(s32 t);
-#endif
-#ifndef PROTO_LOCAL_PatternSrc_Swap
-BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
-#endif
 #ifndef PROTO_LOCAL_sAblePatternTexWork
 extern ClothTexStorage *sAblePatternTexWork;
 #endif
 #ifndef PROTO_LOCAL_sAblePatternVramTasks
 extern TexPatVramTasks *sAblePatternVramTasks;
-#endif
-#ifndef PROTO_LOCAL_sPlayerPatternTexKeys
-extern u8 *sPlayerPatternTexKeys[4][8];
-#endif
-#ifndef PROTO_LOCAL_Pattern_RemovePlayerItems
-void Pattern_RemovePlayerItems(s32 p);
 #endif
 #ifndef PROTO_LOCAL_PatternSrc_GetSessionPlayer
 Pattern *PatternSrc_GetSessionPlayer(s32 a, s32 b);
@@ -161,26 +176,14 @@ Pattern *PatternSrc_GetCurrentPlayer(s32 i);
 #ifndef PROTO_LOCAL_PatternSrc_Get
 Pattern *PatternSrc_Get(s32 i, s32 a);
 #endif
-#ifndef PROTO_LOCAL_PatternTex_UploadPlayer
-BOOL PatternTex_UploadPlayer(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_PatternTex_UploadAble
-BOOL PatternTex_UploadAble(u32 x);
+#ifndef PROTO_LOCAL_PatternSrc_ApplyNetMove
+void PatternSrc_ApplyNetMove(Unk_0206fe80_Bits *p);
 #endif
 #ifndef PROTO_LOCAL_sPlayerPatternTexWork
 extern ClothTexStorage *sPlayerPatternTexWork;
 #endif
 #ifndef PROTO_LOCAL_sPlayerPatternVramTasks
 extern TexPatVramTasks *sPlayerPatternVramTasks;
-#endif
-#ifndef PROTO_LOCAL_sAblePatternTexKeys
-extern u8 *sAblePatternTexKeys[8];
-#endif
-#ifndef PROTO_LOCAL_data_021cbcac
-extern u8 data_021cbcac[4];
-#endif
-#ifndef PROTO_LOCAL_sAbleDisplayDirtyBits
-extern u8 sAbleDisplayDirtyBits;
 #endif
 }
 #ifndef PROTO_LOCAL_sPresetPatternBuffer

@@ -4,8 +4,31 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_0221ffb8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct BottleThrowStateEntry;
+struct FishAiStateEntry;
+struct FishBiteStateEntry;
+struct FishBiteWindow;
+struct FishCatch;
+struct FishCatchStateEntry;
+struct FishMoveStateEntry;
+struct FishRodParams;
+struct FishShadowStateEntry;
 struct FishSight;
+#ifndef __cplusplus
+typedef struct BottleThrowStateEntry BottleThrowStateEntry;
+typedef struct FishAiStateEntry FishAiStateEntry;
+typedef struct FishBiteStateEntry FishBiteStateEntry;
+typedef struct FishBiteWindow FishBiteWindow;
+typedef struct FishCatch FishCatch;
+typedef struct FishCatchStateEntry FishCatchStateEntry;
+typedef struct FishMoveStateEntry FishMoveStateEntry;
+typedef struct FishRodParams FishRodParams;
+typedef struct FishShadowStateEntry FishShadowStateEntry;
+typedef struct FishSight FishSight;
+#endif
 #ifdef __cplusplus
+#include "field/BottleThrow.h"
 #include "field/FishShadow.h"
 #include "gfx/ModelSlotPool.h"
 #include "gfx/VecFx32.h"
@@ -256,14 +279,50 @@ extern FishShadow sFishShadows[6];
 #ifndef PROTO_LOCAL_sFishFinModel
 extern FishFinModel sFishFinModel;
 #endif
+#ifndef PROTO_LOCAL_sFishCatches
+extern FishCatch sFishCatches[4];
+#endif
 #ifndef PROTO_LOCAL_sBottleThrowStateOwner
 extern BottleThrowStateOwner sBottleThrowStateOwner;
+#endif
+#ifndef PROTO_LOCAL_sBottleThrows
+extern BottleThrow sBottleThrows[4];
+#endif
+#ifndef PROTO_LOCAL_sBottleThrowStates
+extern BottleThrowStateEntry sBottleThrowStates[3];
+#endif
+#ifndef PROTO_LOCAL_sFishCatchStates
+extern FishCatchStateEntry sFishCatchStates[5];
+#endif
+#ifndef PROTO_LOCAL_sFishShadowAiTable
+extern FishAiStateEntry sFishShadowAiTable[2];
+#endif
+#ifndef PROTO_LOCAL_sFishShadowMoveStates
+extern FishMoveStateEntry sFishShadowMoveStates[6];
+#endif
+#ifndef PROTO_LOCAL_sFishBiteStates
+extern FishBiteStateEntry sFishBiteStates[8];
+#endif
+#ifndef PROTO_LOCAL_sFishRodParams
+extern FishRodParams sFishRodParams[2];
+#endif
+#ifndef PROTO_LOCAL_sFieldFishManagerProfile
+extern ProcProfile sFieldFishManagerProfile;
 #endif
 #ifndef PROTO_LOCAL_sFishSightGoldenRod
 extern FishSight sFishSightGoldenRod[5];
 #endif
+#ifndef PROTO_LOCAL_sFishBiteWindowGoldenRod
+extern FishBiteWindow sFishBiteWindowGoldenRod;
+#endif
+#ifndef PROTO_LOCAL_sFishBiteWindowFishingRod
+extern FishBiteWindow sFishBiteWindowFishingRod;
+#endif
 #ifndef PROTO_LOCAL_sFishSightFishingRod
 extern FishSight sFishSightFishingRod[5];
+#endif
+#ifndef PROTO_LOCAL_sFishShadowStates
+extern FishShadowStateEntry sFishShadowStates[5];
 #endif
 #ifndef PROTO_LOCAL_FieldFish_MoveXZ
 void FieldFish_MoveXZ(VecFx32 *p, s32 a, s32 ang);
@@ -273,6 +332,9 @@ BOOL FishShadow_CanSeeBobber(VecFx32 *self, s32 a1, s32 a2, s32 a3);
 #endif
 #ifndef PROTO_LOCAL_FishCroak_Clear
 void FishCroak_Clear(FishCroak *s);
+#endif
+#ifndef PROTO_LOCAL_FishCatch_Update
+void FishCatch_Update(FishCatch *self, s32 arg);
 #endif
 #ifndef PROTO_LOCAL_FishCroak_Init
 void FishCroak_Init(FishCroak *p);

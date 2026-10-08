@@ -4,27 +4,18 @@
 // Prototypes of the functions defined in src/main/unk_020a6388.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_NetArea_OnSceneCreateNop
-void NetArea_OnSceneCreateNop();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_NetArea_IsBusyStubB
 s32 NetArea_IsBusyStubB();
 #endif
 #ifndef PROTO_LOCAL_NetArea_IsBusyStubA
 s32 NetArea_IsBusyStubA();
+#endif
+#ifndef PROTO_LOCAL_NetArea_OnSceneCreateNop
+void NetArea_OnSceneCreateNop();
 #endif
 #ifndef PROTO_LOCAL_NetArea_QueueMoveRequest
 void NetArea_QueueMoveRequest(u32 a, u8 b);
@@ -38,6 +29,7 @@ void NetArea_SetMoveReady(s32 idx, u32 v);
 #ifndef PROTO_LOCAL_NetArea_SetPendingStatus
 void NetArea_SetPendingStatus(u32 idx, u32 a, u32 b, u32 c, u32 d);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

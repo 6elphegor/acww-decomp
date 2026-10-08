@@ -35,6 +35,9 @@ void OverlayMgr_UnloadOverlay(u32 id);
 #ifndef PROTO_LOCAL_OverlayMgr_LoadSlot
 void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
 #endif
+#ifndef PROTO_LOCAL_OverlayMgr_UnloadSlot
+void OverlayMgr_UnloadSlot(OverlaySlot *e);
+#endif
 #ifndef PROTO_LOCAL_OverlayMgr_Acquire
 void OverlayMgr_Acquire(u32 id);
 #endif

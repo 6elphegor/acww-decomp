@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_02215ad8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "actor/ActorProfile.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,6 +15,14 @@ extern "C" {
 void *KatrinaTent_Create();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sKatrinaTentProfile
+extern ActorProfile sKatrinaTentProfile;
+#endif
 }
 #endif
 

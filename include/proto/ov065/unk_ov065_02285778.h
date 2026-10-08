@@ -4,27 +4,15 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02285778.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov065_02291504
+extern s32 data_ov065_02291504;
 #endif
 #ifndef PROTO_LOCAL_data_ov065_02291508
 extern char data_ov065_02291508[0x2c];
-#endif
-#ifndef PROTO_LOCAL_gti2CreateConnectionObject
-void *gti2CreateConnectionObject();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_data_ov065_02291504
-extern s32 data_ov065_02291504;
 #endif
 #ifndef PROTO_LOCAL_gt2AddressToString
 char *gt2AddressToString(u32 ip, u16 port, char *buf);
@@ -35,6 +23,9 @@ BOOL gt2StringToAddress(char *s, u32 *pip, u16 *pport);
 #ifndef PROTO_LOCAL_gti2MessageCheck
 void gti2MessageCheck(u8 **s, s32 *len);
 #endif
+#ifndef PROTO_LOCAL_gti2CreateConnectionObject
+void *gti2CreateConnectionObject();
+#endif
 #ifndef PROTO_LOCAL_gti2UShortFromBuffer
 u32 gti2UShortFromBuffer(u8 *buf, s32 off);
 #endif
@@ -44,6 +35,7 @@ void gti2UShortToBuffer(u8 *buf, s32 off, s32 v);
 #ifndef PROTO_LOCAL_gti2SNDiff
 s16 gti2SNDiff(u32 a, u32 b);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

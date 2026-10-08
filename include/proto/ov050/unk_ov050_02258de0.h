@@ -4,8 +4,12 @@
 // Prototypes of the functions defined in src/ov050/unk_ov050_02258de0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct Unk_ov050_0225d1d4_Ent;
+#ifndef __cplusplus
+typedef struct Unk_ov050_0225d1d4_Ent Unk_ov050_0225d1d4_Ent;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcNookShop;
 #endif
 
@@ -20,6 +24,15 @@ extern char *sSpNpcNookShopTexturePaths[5];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcNookShopModelPaths
 extern char *sSpNpcNookShopModelPaths[5];
+#endif
+#ifndef PROTO_LOCAL_SpNpcNookShop_IsDeliveryParcel
+BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m);
+#endif
+#ifndef PROTO_LOCAL_SpNpcNookShop_GetHouseUpgradeMsg
+s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self);
+#endif
+#ifndef PROTO_LOCAL_SpNpcNookShop_IsEmptyItem
+BOOL SpNpcNookShop_IsEmptyItem(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_sSpNpcNookShopKey
 extern char sSpNpcNookShopKey[];
@@ -75,14 +88,17 @@ SpNpcNookShop *SpNpcNookShop_CreateTimmy();
 #ifndef PROTO_LOCAL_SpNpcNookShop_CreateTommy
 SpNpcNookShop *SpNpcNookShop_CreateTommy();
 #endif
-#ifndef PROTO_LOCAL_SpNpcNookShop_IsDeliveryParcel
-BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m);
+#ifndef PROTO_LOCAL_sSpNpcNookShopActTable
+extern Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 #endif
-#ifndef PROTO_LOCAL_SpNpcNookShop_GetHouseUpgradeMsg
-s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self);
+#ifndef PROTO_LOCAL_sSpNpcNookShopProfile
+extern ActorProfile sSpNpcNookShopProfile;
 #endif
-#ifndef PROTO_LOCAL_SpNpcNookShop_IsEmptyItem
-BOOL SpNpcNookShop_IsEmptyItem(u16 *p);
+#ifndef PROTO_LOCAL_sSpNpcTimmyProfile
+extern ActorProfile sSpNpcTimmyProfile;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcTommyProfile
+extern ActorProfile sSpNpcTommyProfile;
 #endif
 }
 #endif

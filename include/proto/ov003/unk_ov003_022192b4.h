@@ -5,11 +5,23 @@
 
 #include "types.h"
 #include "sys/ProcProfile.h"
+struct FieldItemFx;
 struct FieldItemFxTable;
 struct TreeAnim;
+struct TreeAnimRequest;
 struct TreeLeafFx;
+struct TreeLeafFxCbs;
+#ifndef __cplusplus
+typedef struct FieldItemFx FieldItemFx;
+typedef struct FieldItemFxTable FieldItemFxTable;
+typedef struct TreeAnim TreeAnim;
+typedef struct TreeAnimRequest TreeAnimRequest;
+typedef struct TreeLeafFx TreeLeafFx;
+typedef struct TreeLeafFxCbs TreeLeafFxCbs;
+#endif
 #ifdef __cplusplus
 #include "gfx/EffectSplEmitter.h"
+#include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
 #include "sys/Heap.h"
 class EffectModel;
@@ -920,8 +932,14 @@ s32 FieldItemFx_FindLandingUnit(s32 *p);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov003_02232b48
+extern TreeLeafFxCbs data_ov003_02232b48;
+#endif
 #ifndef PROTO_LOCAL_data_ov003_0223291c
 extern VecFx32 *data_ov003_0223291c[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232b78
+extern TreeLeafFxCbs data_ov003_02232b78;
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadIconModels
 BOOL FieldObj_LoadIconModels(FieldObjectManager *self);
@@ -959,6 +977,9 @@ s32 TreeLeafFx_OnEffectStep(EffectEmitterEntry *self);
 #ifndef PROTO_LOCAL_TreeLeafFx_OnEffectUpdate
 s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self);
 #endif
+#ifndef PROTO_LOCAL_TreeAnimSet_ProcessRequest
+void TreeAnimSet_ProcessRequest(TreeAnimSet *a, TreeAnimRequest *o);
+#endif
 #ifndef PROTO_LOCAL_TreeAnimSet_Request
 void TreeAnimSet_Request(TreeAnimSet *a, s32 id, s32 *pos, s32 c, s32 d);
 #endif
@@ -967,6 +988,12 @@ void TreeAnim_Begin(TreeAnim *o, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Tree_GetDropSide
 s32 Tree_GetDropSide(s32 aid, VecFx32 *p);
+#endif
+#ifndef PROTO_LOCAL_TreeAnim_Reset
+void TreeAnim_Reset(TreeAnim *self);
+#endif
+#ifndef PROTO_LOCAL_TreeAnim_ModelCallback
+void TreeAnim_ModelCallback(NNSG3dRS *rs);
 #endif
 #ifndef PROTO_LOCAL_TreeAnimSet_LoadAnims
 void TreeAnimSet_LoadAnims(TreeAnimSet *set);
@@ -977,8 +1004,47 @@ void TreeAnimSet_FreeAnims(TreeAnimSet *set);
 #ifndef PROTO_LOCAL_TreeAnimSet_GetAnimPath
 char *TreeAnimSet_GetAnimPath(TreeAnimSet *self, u32 a, u32 b);
 #endif
+#ifndef PROTO_LOCAL_TreeAnimRequest_Resolve
+void TreeAnimRequest_Resolve(TreeAnimRequest *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateToss
+void FieldItemFx_UpdateToss(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateHoleOpen
+void FieldItemFx_UpdateHoleOpen(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateHoleClose
+void FieldItemFx_UpdateHoleClose(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdatePop
+void FieldItemFx_UpdatePop(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateTreeDrop
+void FieldItemFx_UpdateTreeDrop(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateTreeDropFloat
+void FieldItemFx_UpdateTreeDropFloat(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateBeeHiveDrop
+void FieldItemFx_UpdateBeeHiveDrop(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateDigUpTree
+void FieldItemFx_UpdateDigUpTree(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdatePlant
+void FieldItemFx_UpdatePlant(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateHoleShrink
+void FieldItemFx_UpdateHoleShrink(FieldItemFx *self);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateStrikeShake
+void FieldItemFx_UpdateStrikeShake(FieldItemFx *self);
+#endif
 #ifndef PROTO_LOCAL_FieldItemFx_SplashPosCallback
 void FieldItemFx_SplashPosCallback(EffectModel *p);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_UpdateBalloonDrop
+void FieldItemFx_UpdateBalloonDrop(FieldItemFx *self);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartDigHole
 s32 FieldItemFx_StartDigHole(s32 type, VecFx32 *v, s32 w);

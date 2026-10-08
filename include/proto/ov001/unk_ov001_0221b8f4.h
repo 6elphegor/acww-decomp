@@ -4,12 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221b8f4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcTestSuccessTimer
+extern u8 sWfcTestSuccessTimer;
 #endif
 #ifndef PROTO_LOCAL_WfcTestSuccess_Enter
 void WfcTestSuccess_Enter();
@@ -39,14 +39,6 @@ void WfcTestSuccess_Exit();
 void WfcTestSuccess_CountDown();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcTestSuccessTimer
-extern u8 sWfcTestSuccessTimer;
-#endif
 }
 #endif
 

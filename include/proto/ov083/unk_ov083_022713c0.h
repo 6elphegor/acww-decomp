@@ -5,18 +5,31 @@
 
 #include "types.h"
 struct SpNpcTortimerFlowerFestActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcTortimerFlowerFestActEntry SpNpcTortimerFlowerFestActEntry;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcTortimerFlowerFest;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_sSpNpcTortimerFlowerFestTexturePath
 extern u8 sSpNpcTortimerFlowerFestTexturePath[];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcTortimerFlowerFestModelPath
 extern u8 sSpNpcTortimerFlowerFestModelPath[];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sSpNpcTortimerFlowerFestProfile
+extern ActorProfile sSpNpcTortimerFlowerFestProfile;
 #endif
 #ifndef PROTO_LOCAL_SpNpcTortimerFlowerFest_Create
 SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create();

@@ -9,6 +9,7 @@ struct CharaClothTexPool;
 typedef struct CharaClothTexPool CharaClothTexPool;
 #endif
 #ifdef __cplusplus
+#include "actor/CharaClothTexRef.h"
 #include "sys/Heap.h"
 #endif
 
@@ -35,6 +36,9 @@ void *CharaClothTexRef_GetBuffer(u8 *p);
 extern "C" {
 #ifndef PROTO_LOCAL_CharaClothTexPool_Create
 void CharaClothTexPool_Create(Heap *parent);
+#endif
+#ifndef PROTO_LOCAL_CharaClothTexPool_GetOwnRef
+CharaClothTexRef *CharaClothTexPool_GetOwnRef();
 #endif
 #ifndef PROTO_LOCAL_CharaClothTexPool_GetItem
 void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx);

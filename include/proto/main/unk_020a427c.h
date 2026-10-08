@@ -6,60 +6,14 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
+#include "net/NetSessionState.h"
 #include "sys/ProcBase.h"
 #include "sys/SceneBase.h"
-#include "types.h"
-class NetSessionState;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_NetArea_SendMoveTarget
-void NetArea_SendMoveTarget();
-#endif
-#ifndef PROTO_LOCAL_NetArea_OnStateAReceived
-void NetArea_OnStateAReceived();
-#endif
-#ifndef PROTO_LOCAL_NetArea_ApplyStateB
-void NetArea_ApplyStateB();
-#endif
-#ifndef PROTO_LOCAL_NetArea_SendStateToNewOwner
-void NetArea_SendStateToNewOwner();
-#endif
-#ifndef PROTO_LOCAL_NetArea_SendStateToRequester
-void NetArea_SendStateToRequester();
-#endif
-#ifndef PROTO_LOCAL_NetSession_Init
-void NetSession_Init();
-#endif
-#ifndef PROTO_LOCAL_NetSession_Exit
-void NetSession_Exit();
-#endif
-#ifndef PROTO_LOCAL_NetSession_OnBeginHost
-void NetSession_OnBeginHost();
-#endif
-#ifndef PROTO_LOCAL_NetSession_Reset
-void NetSession_Reset();
-#endif
-#ifndef PROTO_LOCAL_NetSession_Update
-void NetSession_Update();
-#endif
-#ifndef PROTO_LOCAL_NetSession_PostUpdate
-void NetSession_PostUpdate();
-#endif
-#ifndef PROTO_LOCAL_SceneBase_SetupGraphics
-void SceneBase_SetupGraphics(void);
-#endif
-#ifndef PROTO_LOCAL_Scene_RequestBoot
-void Scene_RequestBoot(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_NetArea_GetSlotScene
 s32 NetArea_GetSlotScene(s32 a);
 #endif
@@ -89,6 +43,9 @@ void NetArea_SendStateB(s32 a);
 #endif
 #ifndef PROTO_LOCAL_NetArea_FindSlotInScene
 s32 NetArea_FindSlotInScene(u32 a);
+#endif
+#ifndef PROTO_LOCAL_NetArea_SendMoveTarget
+void NetArea_SendMoveTarget();
 #endif
 #ifndef PROTO_LOCAL_NetSession_SetSyncState
 void NetSession_SetSyncState(s32 a, s32 b);
@@ -144,6 +101,18 @@ void NetArea_SetOwnerAck(s32 a);
 #ifndef PROTO_LOCAL_NetArea_GetSlotStatus
 void NetArea_GetSlotStatus(s32 idx, u8 *a, u8 *b, u8 *c);
 #endif
+#ifndef PROTO_LOCAL_NetArea_OnStateAReceived
+void NetArea_OnStateAReceived();
+#endif
+#ifndef PROTO_LOCAL_NetArea_ApplyStateB
+void NetArea_ApplyStateB();
+#endif
+#ifndef PROTO_LOCAL_NetArea_SendStateToNewOwner
+void NetArea_SendStateToNewOwner();
+#endif
+#ifndef PROTO_LOCAL_NetArea_SendStateToRequester
+void NetArea_SendStateToRequester();
+#endif
 #ifndef PROTO_LOCAL_NetSession_SetCtrl07Received
 void NetSession_SetCtrl07Received(s32 a);
 #endif
@@ -153,17 +122,47 @@ u8 NetSession_GetCtrl07Received();
 #ifndef PROTO_LOCAL_NetArea_IsUnsharedScene
 BOOL NetArea_IsUnsharedScene(s32 v);
 #endif
+#ifndef PROTO_LOCAL_NetSession_Init
+void NetSession_Init();
+#endif
+#ifndef PROTO_LOCAL_NetSession_Exit
+void NetSession_Exit();
+#endif
+#ifndef PROTO_LOCAL_NetSession_OnBeginHost
+void NetSession_OnBeginHost();
+#endif
+#ifndef PROTO_LOCAL_NetSession_Reset
+void NetSession_Reset();
+#endif
 #ifndef PROTO_LOCAL_NetSession_RemoveSlot
 void NetSession_RemoveSlot(s32 a);
 #endif
-#ifndef PROTO_LOCAL_SceneBase_Create
-SceneBase *SceneBase_Create(void);
+#ifndef PROTO_LOCAL_NetSession_Update
+void NetSession_Update();
+#endif
+#ifndef PROTO_LOCAL_NetSession_PostUpdate
+void NetSession_PostUpdate();
+#endif
+#ifndef PROTO_LOCAL_SceneBase_SetupGraphics
+void SceneBase_SetupGraphics(void);
 #endif
 #ifndef PROTO_LOCAL_Scene_Request
 void Scene_Request(u32 a, u32 b, u32 c, u32 d);
 #endif
+#ifndef PROTO_LOCAL_Scene_RequestBoot
+void Scene_RequestBoot(void);
+#endif
 #ifndef PROTO_LOCAL_Scene_CreateRequested
 BOOL Scene_CreateRequested(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SceneBase_Create
+SceneBase *SceneBase_Create(void);
 #endif
 #ifndef PROTO_LOCAL_Scene_CheckExit
 void Scene_CheckExit(ProcBase *p);

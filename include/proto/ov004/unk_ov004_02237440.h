@@ -4,9 +4,15 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_02237440.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct MuseumInsectBehavior;
+struct MuseumInsectParam;
+#ifndef __cplusplus
+typedef struct MuseumInsectBehavior MuseumInsectBehavior;
+typedef struct MuseumInsectParam MuseumInsectParam;
+#endif
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
-#include "types.h"
 class MuseumInsect;
 class MuseumInsectRoom;
 #endif
@@ -14,87 +20,6 @@ class MuseumInsectRoom;
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_FlapWings
-void MuseumInsect_FlapWings(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_ApproachHome
-void MuseumInsect_ApproachHome(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_StateRest
-void MuseumInsect_StateRest(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunButterfly
-void MuseumInsect_RunButterfly(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunDragonfly
-void MuseumInsect_RunDragonfly(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunHopper
-void MuseumInsect_RunHopper(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunPondSkater
-void MuseumInsect_RunPondSkater(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunMosquito
-void MuseumInsect_RunMosquito(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunFirefly
-void MuseumInsect_RunFirefly(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunFlyingInsect
-void MuseumInsect_RunFlyingInsect(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunFlea
-void MuseumInsect_RunFlea(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunMoleCricket
-void MuseumInsect_RunMoleCricket(void *self_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunPillBug
-void MuseumInsect_RunPillBug(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_PillBugNextWaypoint
-void MuseumInsect_PillBugNextWaypoint(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunMoth
-void MuseumInsect_RunMoth(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunArachnid
-void MuseumInsect_RunArachnid(void *o_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_FightSkirmish
-void MuseumInsect_FightSkirmish(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_FightCircleOther
-void MuseumInsect_FightCircleOther(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_FightCircleSelf
-void MuseumInsect_FightCircleSelf(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_FightPause
-void MuseumInsect_FightPause(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_FightClash
-void MuseumInsect_FightClash(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_ArachnidWalk
-void MuseumInsect_ArachnidWalk(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunDungBeetle
-void MuseumInsect_RunDungBeetle(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RunCockroach
-void MuseumInsect_RunCockroach(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsectRoom_Create
-void *MuseumInsectRoom_Create();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_sMuseumScorpionSlot
 extern s8 sMuseumScorpionSlot;
 #endif
@@ -110,15 +35,6 @@ u8 MuseumInsect_CheckFloorAhead(void *o_);
 #ifndef PROTO_LOCAL_MuseumInsect_CheckWallsAhead
 u8 MuseumInsect_CheckWallsAhead(void *o_);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_ProbeFloor
-u8 MuseumInsect_ProbeFloor(MuseumInsect *o);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_ProbeWalls
-u8 MuseumInsect_ProbeWalls(MuseumInsect *o);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_SetProbePoints
-void MuseumInsect_SetProbePoints(MuseumInsect *o);
-#endif
 #ifndef PROTO_LOCAL_MuseumInsect_MakeStepDir
 void MuseumInsect_MakeStepDir(void *v_, s32 a);
 #endif
@@ -128,11 +44,20 @@ s16 MuseumInsect_RandHeading();
 #ifndef PROTO_LOCAL_MuseumInsect_PointAtAngle
 void MuseumInsect_PointAtAngle(void *out_, void *base_, u32 ang, s32 rad);
 #endif
+#ifndef PROTO_LOCAL_MuseumInsect_FlapWings
+void MuseumInsect_FlapWings(void *o_);
+#endif
 #ifndef PROTO_LOCAL_MuseumInsect_RevertIfOffFloor
 BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_ClampToBounds
 u8 MuseumInsect_ClampToBounds(void *o_, void *v_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_ApproachHome
+void MuseumInsect_ApproachHome(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_StateRest
+void MuseumInsect_StateRest(void *self_);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_TickTimer
 s32 MuseumInsect_TickTimer(void *self_);
@@ -152,9 +77,6 @@ void MuseumInsect_BobHeight(void *self_, u32 a, s32 b, s32 c);
 #ifndef PROTO_LOCAL_MuseumInsect_CheckScared
 s32 MuseumInsect_CheckScared(void *self_);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_GetHomeDelta
-void MuseumInsect_GetHomeDelta(MuseumInsect *self, s16 *a, s32 *b, VecFx32 *c);
-#endif
 #ifndef PROTO_LOCAL_MuseumInsect_GetEscapeHeading
 s32 MuseumInsect_GetEscapeHeading(s32 a, s32 b);
 #endif
@@ -166,6 +88,129 @@ s32 MuseumInsect_TickAlert(void *self_);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_UpdateAlertLevel
 s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunButterfly
+void MuseumInsect_RunButterfly(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunDragonfly
+void MuseumInsect_RunDragonfly(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunHopper
+void MuseumInsect_RunHopper(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunPondSkater
+void MuseumInsect_RunPondSkater(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_PondSkaterGlide
+void MuseumInsect_PondSkaterGlide(void *self_, s16 *p);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RandTurn8
+s32 MuseumInsect_RandTurn8(s32 n);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunMosquito
+void MuseumInsect_RunMosquito(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunFirefly
+void MuseumInsect_RunFirefly(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunFlyingInsect
+void MuseumInsect_RunFlyingInsect(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunFlea
+void MuseumInsect_RunFlea(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunMoleCricket
+void MuseumInsect_RunMoleCricket(void *self_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_SteerFromEdges
+s32 MuseumInsect_SteerFromEdges(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunPillBug
+void MuseumInsect_RunPillBug(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_PillBugNextWaypoint
+void MuseumInsect_PillBugNextWaypoint(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_GetPillBugWaypoint
+void MuseumInsect_GetPillBugWaypoint(void *v_, s32 k);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunMoth
+void MuseumInsect_RunMoth(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunArachnid
+void MuseumInsect_RunArachnid(void *o_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_WiggleHeading
+void MuseumInsect_WiggleHeading(void *o_, s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_FightSkirmish
+void MuseumInsect_FightSkirmish(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_FightCircleOther
+void MuseumInsect_FightCircleOther(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_FightCircleSelf
+void MuseumInsect_FightCircleSelf(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_FightPause
+void MuseumInsect_FightPause(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_FightClash
+void MuseumInsect_FightClash(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_ArachnidWalk
+void MuseumInsect_ArachnidWalk(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_ArachnidFacePlayer
+BOOL MuseumInsect_ArachnidFacePlayer(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunDungBeetle
+void MuseumInsect_RunDungBeetle(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RunCockroach
+void MuseumInsect_RunCockroach(void *r_);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_ClampStep
+void MuseumInsect_ClampStep(void *out_, void *in_, s32 lim);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_RandTurn
+s32 MuseumInsect_RandTurn(s32 n);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsectRoom_Create
+void *MuseumInsectRoom_Create();
+#endif
+#ifndef PROTO_LOCAL_MuseumInsectRoom_FindFreeSlot
+s32 MuseumInsectRoom_FindFreeSlot();
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_GetTimeOfDayBit
+u32 MuseumInsect_GetTimeOfDayBit();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sMuseumInsectRoomProfile
+extern ProcProfile sMuseumInsectRoomProfile;
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectParams
+extern MuseumInsectParam sMuseumInsectParams[57];
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectBehaviors
+extern MuseumInsectBehavior sMuseumInsectBehaviors[57];
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_ProbeFloor
+u8 MuseumInsect_ProbeFloor(MuseumInsect *o);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_ProbeWalls
+u8 MuseumInsect_ProbeWalls(MuseumInsect *o);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_SetProbePoints
+void MuseumInsect_SetProbePoints(MuseumInsect *o);
+#endif
+#ifndef PROTO_LOCAL_MuseumInsect_GetHomeDelta
+void MuseumInsect_GetHomeDelta(MuseumInsect *self, s16 *a, s32 *b, VecFx32 *c);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_ButterflyFly
 void MuseumInsect_ButterflyFly(MuseumInsect *self);
@@ -200,12 +245,6 @@ void MuseumInsect_HopperChirp(MuseumInsect *o);
 #ifndef PROTO_LOCAL_MuseumInsect_PondSkaterStartGlide
 void MuseumInsect_PondSkaterStartGlide(MuseumInsect *o, s16 *p);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_PondSkaterGlide
-void MuseumInsect_PondSkaterGlide(void *self_, s16 *p);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RandTurn8
-s32 MuseumInsect_RandTurn8(s32 n);
-#endif
 #ifndef PROTO_LOCAL_MuseumInsect_MosquitoChase
 void MuseumInsect_MosquitoChase(MuseumInsect *self, s16 *p);
 #endif
@@ -227,38 +266,20 @@ void MuseumInsect_MoleCricketJump(MuseumInsect *self, s16 *p);
 #ifndef PROTO_LOCAL_MuseumInsect_MoleCricketCrawl
 void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_SteerFromEdges
-s32 MuseumInsect_SteerFromEdges(void *o_);
-#endif
 #ifndef PROTO_LOCAL_MuseumInsect_PillBugCheckCurl
 BOOL MuseumInsect_PillBugCheckCurl(MuseumInsect *o);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_PillBugWalk
 void MuseumInsect_PillBugWalk(MuseumInsect *o);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_GetPillBugWaypoint
-void MuseumInsect_GetPillBugWaypoint(void *v_, s32 k);
-#endif
 #ifndef PROTO_LOCAL_MuseumInsect_MothHover
 void MuseumInsect_MothHover(MuseumInsect *o);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_WiggleHeading
-void MuseumInsect_WiggleHeading(void *o_, s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_FaceEachOther
 BOOL MuseumInsect_FaceEachOther(MuseumInsect *a, MuseumInsect *b);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_UpdateFight
 BOOL MuseumInsect_UpdateFight(MuseumInsect *o);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_ArachnidFacePlayer
-BOOL MuseumInsect_ArachnidFacePlayer(void *r_);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_ClampStep
-void MuseumInsect_ClampStep(void *out_, void *in_, s32 lim);
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_RandTurn
-s32 MuseumInsect_RandTurn(s32 n);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_SetupHopper
 void MuseumInsect_SetupHopper(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d);
@@ -389,9 +410,6 @@ void MuseumInsect_UpdateDungBeetle(MuseumInsect *o);
 #ifndef PROTO_LOCAL_MuseumInsect_InitPlacement
 void MuseumInsect_InitPlacement(MuseumInsectRoom *m, MuseumInsect *s);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsectRoom_FindFreeSlot
-s32 MuseumInsectRoom_FindFreeSlot();
-#endif
 #ifndef PROTO_LOCAL_MuseumInsectRoom_AddInsect
 BOOL MuseumInsectRoom_AddInsect(MuseumInsectRoom *m, s8 v);
 #endif
@@ -406,9 +424,6 @@ MuseumInsect *MuseumInsect_FindScorpion();
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_FindDungBall
 MuseumInsect *MuseumInsect_FindDungBall();
-#endif
-#ifndef PROTO_LOCAL_MuseumInsect_GetTimeOfDayBit
-u32 MuseumInsect_GetTimeOfDayBit();
 #endif
 }
 #ifndef PROTO_LOCAL_sMuseumInsects

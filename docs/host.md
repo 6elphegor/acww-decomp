@@ -39,8 +39,11 @@ declaring what they use themselves. A unit that still declares something itself 
 before the includes (the header then leaves that declaration out): its uses don't match the real type yet - each
 one is a call or an access to fix (a blob passed for a typed object, a pointer kept in an integer, an argument
 count that differs, an array declared for a scalar). `grep -rn 'define PROTO_LOCAL_' src` lists them; the goal is
-none. Definitions whose types are local to one source file are not in the headers yet (include/proto/.excluded and
-the functions using file-local typedefs): moving those types to headers comes with the rewrite of their files.
+none. include/proto/.excluded lists the definitions left out of the headers: prototypes that do not compile alone
+(types local to one source file: moving them to headers comes with the rewrite of their files) and prototypes that
+conflict with a unit that uses them (the unit's own declaration or calls differ: each one a call to fix). Full
+regeneration: `python3 tools/host_decls.py --json D.json && python3 tools/host_protos.py --decls D.json
+--headers-only` (it compiles every unit against the new headers); `--only SRC...` regenerates single files' headers.
 
 Declarations: `tools/host_decls.py` (libclang; `pip install --user clang==21.*`) compares every declaration written
 in a source file with the function's definition; `tools/host_method_calls.py` rewrote the calls of methods through
@@ -237,8 +240,17 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   the house ("Please wake up your player"), the game saves its start-of-session state (`card 7` at 0x2200 and
   0x15e00) and the player stands in front of the house in town at ~frame 6000. `ACWW_POSLOG` and the town map
   (X, the pocket's map tab) were how the walk was found. The
-  x86-64 build gets through both name entries with that script and loads the town (frame ~12430), then crashes in
-  `spl_calc` (particles, `EffectSplProc::onExecute`) at frame ~13540. A script that gets through the
+  x86-64 build plays the same way: the name entries, the town (frame ~12430), Kapp'n's warp to the town hall, the
+  tutorial, then out of the town hall and around town (checked to frame 44000, no stop). Its virtual timing drifts
+  from the i386 build's by more than a few frames in the town hall (a Start press lands in the save menu: "I can't
+  save right now"), so its script keeps A going to 26500, then B every 60 frames to 27000, Down 27100-27500 (town
+  at ~28000), then Right / Down / Left / Up for a walk. The bugs on the way (the `spl_calc` crash reported earlier
+  no longer occurs): the PMIC register-read table (`PMRegInfo`, its destination read through a DS label at the DS
+  stride, the table larger than its gap object), and three views of objects at DS offsets: `Unk_02005e7c` and
+  `Unk_02007694`, the PlayerActor's net-event and action handlers, declared the actor's members at their DS
+  offsets (a pending field event read from other bytes: a pick-up fanfare at unit (-1183, 968) crashed in the town
+  hall; the player and Pelly not drawn); they now derive from PlayerActor without members of their own. The BGM
+  manager reached as bytes (`data_021c1b3c + 0x248` / `0x1c4` / `0x2e4`) is a `BgmManager *`. A script that gets through the
   name entries: the oracle's play script (A every second from frame 2400) plus, every 600 frames from 7630, a touch
   on the keyboard's Confirm button (218,180) (it only dismisses the "no room" message: touches on the keys don't
   register) and Start every 60 frames from 7650 (Start confirms a name); presses and touches 6 frames each.

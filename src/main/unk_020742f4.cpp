@@ -4,7 +4,7 @@
 #include "npc/VillagerState.h"
 #include "npc/ErrandRecord.h"
 #include "npc/VillagerMemory.h"
-#include "npc/VillagerDataProfileView.h"
+#include "save/VillagerData.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "save/BbsPost.h"
@@ -2229,7 +2229,7 @@ extern "C" void CommRecv_VillagerShirt() {
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         BOOL r4 = Unk_02075680_R(&l.x, 0x11a8, 0x12a7);
-        if (r4) ((VillagerDataProfileView *)r0)->setShirt(&l.x);
+        if (r4) ((VillagerData *)r0)->setShirt(&l.x);
     }
 }
 

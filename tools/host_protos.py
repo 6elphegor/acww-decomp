@@ -10,9 +10,17 @@ declaration of that function: the header leaves the prototype out when the unit 
 the function is listed - these are the calls to look at by hand.
 
 usage: host_protos.py --decls DECLS.json [--jobs N] [--report OUT] FILES...
+       host_protos.py --decls DECLS.json --headers-only     (regenerate every header, change no source file)
+       host_protos.py --only SRC...                         (regenerate the headers of these source files)
   DECLS.json: tools/host_decls.py --json (the definitions: prototype as written, linkage, namespace, types)
+
+Every unit is compiled against the new headers (32-bit and 64-bit, as the builds: no -fpermissive): a prototype
+that wasn't in the headers before and conflicts with a unit is left out (include/proto/.excluded, with the ones
+that don't compile alone) and the run lists the units whose errors no new prototype explains (--no-unit-check
+skips this).
 """
 import argparse
+import glob
 import json
 import os
 import re
@@ -26,7 +34,7 @@ import host_decls  # noqa: E402
 sys.setrecursionlimit(20000)
 CXX = ['gcc', '-x', 'c++', '-fsyntax-only', '-fno-short-enums', '-fsigned-char', '-fshort-wchar', '-ffreestanding',
        '-nostdinc', '-fno-builtin', '-DMODERN', '-DHOST', '-DGAME_VERSION_USA', '-Iinclude', '-std=gnu++14',
-       '-fno-exceptions', '-fno-rtti', '-fpermissive', '-w']
+       '-fno-exceptions', '-fno-rtti', '-w']  # (no -fpermissive: the builds don't use it)
 CC = ['gcc', '-x', 'c', '-fsyntax-only', '-fno-short-enums', '-fsigned-char', '-fshort-wchar', '-ffreestanding',
       '-nostdinc', '-fno-builtin', '-DMODERN', '-DHOST', '-DGAME_VERSION_USA', '-Iinclude', '-std=gnu11', '-w']
 CPP_ONLY = re.compile(r'\bbool\b|\bclass\b|\bnamespace\b|\btemplate\s*<|::|\bpublic\s*:|\bprivate\s*:|\bvirtual\b|&')
@@ -65,10 +73,30 @@ def header_is_cpp(h):
             # preprocessor lines (types.h: #if defined(MODERN) && defined(__cplusplus)) don't make a header C++-only
             body = re.sub(r'^[ \t]*#.*(?:\\\n.*)*', '', body, flags=re.M)
             _hdr_cpp_cache[h] = bool(CPP_ONLY.search(body)) or any(
-                os.path.exists(os.path.join('include', i)) and header_is_cpp(i) for i in incs)
+                os.path.exists(os.path.join('include', i)) and header_is_cpp(i) for i in incs) or \
+                not compiles_as_c(h)  # (what the patterns miss: methods in structs, `struct X *` named bare ...)
         except OSError:
             _hdr_cpp_cache[h] = True
     return _hdr_cpp_cache[h]
+
+
+def compiles_as_c(h):
+    """Whether a header compiles alone as C (64-bit): a header that doesn't is C++-only."""
+    r = subprocess.run(CC[:1] + ['-x', 'c'] + CC[3:] + ['-m64', '-'], input=f'#include "{h}"\n',
+                       capture_output=True, text=True)
+    return r.returncode == 0
+
+
+_bare_cache = {}
+
+
+def bare_name_in_c(h, name):
+    """Whether C code including header h can name the type `name` without its struct / union tag (a typedef)."""
+    if (h, name) not in _bare_cache:
+        r = subprocess.run(CC[:1] + ['-x', 'c'] + CC[3:] + ['-m64', '-'], input=f'#include "{h}"\n{name} *p_;\n',
+                           capture_output=True, text=True)
+        _bare_cache[(h, name)] = r.returncode == 0
+    return _bare_cache[(h, name)]
 
 
 def strip_defaults(proto):
@@ -190,6 +218,9 @@ def make_headers(defs, only=None):
                     includes.add(hh)
                     if header_is_cpp(hh):
                         cpp = True
+                    elif kind in ('STRUCT_DECL', 'UNION_DECL') and not src.endswith('.c') and \
+                            not bare_name_in_c(hh, name):
+                        cpp = True  # (a C++ unit names the struct without the tag; the header has no typedef)
                 else:
                     tag = {'STRUCT_DECL': 'struct', 'CLASS_DECL': 'class', 'UNION_DECL': 'union'}[kind]
                     parts = qual.split('::')
@@ -203,7 +234,8 @@ def make_headers(defs, only=None):
                         fwd_c.add(decl)
                         if not src.endswith('.c'):
                             cpp = True  # (a C++ unit names the struct without the tag: not C)
-            text = strip_defaults(' '.join(r['proto'].split())) if not r.get('var') else pretty(r['proto'])
+            proto = re.sub(r'//[^\n]*|/\*.*?\*/', ' ', r['proto'], flags=re.S)  # (a comment after the definition's
+            text = strip_defaults(' '.join(proto.split())) if not r.get('var') else pretty(proto)  # head: not the ;)
             if r.get('var'):  # a variable built by a constructor call: its declaration leaves the arguments out
                 text = re.sub(r'(\b%s)\s*\(.*\)$' % re.escape(r['name']), r'\1', text)
             if CPP_ONLY.search(text):
@@ -266,14 +298,57 @@ def check_headers(names_by_header):
             if r.returncode == 0:
                 continue
             lines = open(os.path.join('include', h)).read().split('\n')
+            hit = set()
             for ln in re.findall(r'include/%s:(\d+):\d+: error' % re.escape(h), r.stderr):
                 l = lines[int(ln) - 1]
                 for n in names:
                     if re.search(r'\b%s\s*[(\[;]' % re.escape(n), l):
-                        bad.add(n)
-            if 'error' in r.stderr and not re.search(r'include/%s:\d+:\d+: error' % re.escape(h), r.stderr):
-                bad |= set(names)  # an error in an included header: none of these
+                        hit.add(n)
+            # an error in an included header, or one on no prototype's line: none of these
+            bad |= hit or set(names)
     return bad
+
+
+def declared_names():
+    """The names the generated headers declare now (before a regeneration rewrites them)."""
+    names = set()
+    for h in glob.glob('include/proto/**/*.h', recursive=True):
+        names |= set(re.findall(r'^#ifndef PROTO_LOCAL_(\w+)', open(h).read(), re.M))
+    return names
+
+
+def error_names(path, err):
+    """The shared prototypes a unit's compiler errors involve: the declarations in include/proto the messages point
+    to, and the shared names on the unit's lines with errors."""
+    names = set()
+    for h, ln in re.findall(r'(include/proto/[\w/.]+\.h):(\d+):\d+:', err):
+        try:
+            lines = open(h).read().split('\n')
+        except OSError:
+            continue
+        ln = int(ln)
+        for l in lines[max(0, ln - 2):ln]:
+            names |= set(re.findall(r'PROTO_LOCAL_(\w+)', l))
+        if ln <= len(lines):
+            names |= {n for n in re.findall(r'\b(\w+)\b', lines[ln - 1]) if n in HEADER_OF}
+    # an error in a header a generated header includes (a unit's own definition of a type the header defines too):
+    # the prototypes that made the generated header include it
+    for h, ln in re.findall(r'(?:In file included from|^\s+from) (include/proto/[\w/.]+\.h):(\d+)', err, re.M):
+        try:
+            m = re.match(r'\s*#\s*include\s+"([^"]+)"', open(h).read().split('\n')[int(ln) - 1])
+        except (OSError, IndexError):
+            continue
+        if m:
+            hh = 'include/' + m.group(1)
+            ph = h[len('include/'):]
+            names |= {r['name'] for r in DEFS.values() if HEADER_OF.get(r['name']) == ph and
+                      any(t[2] == hh for t in r.get('types', []))}
+    cur = open(path, errors='replace').read().split('\n')
+    for ln in re.findall(r'^%s:(\d+):\d+: error' % re.escape(path), err, re.M):
+        ln = int(ln)
+        if 0 < ln <= len(cur):
+            names |= {n for n in re.findall(r'\b(\w+)\b', cur[ln - 1]) if n in HEADER_OF}
+    return names & set(HEADER_OF)
 
 
 def compile_errors(path):
@@ -439,7 +514,57 @@ def _init(decls):
             HEADER_OF[r['name']] = proto_header(r['file'])
 
 
-def regen_only(files):
+def settle(make, excluded, units, jobs, unit_check=True, log=print):
+    """Generate the headers (make(excluded)), leave out the prototypes that don't compile alone, then compile the
+    units against them: a prototype that wasn't shared before and conflicts with a unit (the unit's own declaration
+    with other types, a variable of the same name in a namespace, calls the prototype doesn't fit, a type the unit
+    defines itself that the header now includes) is left out too - the units' declarations stay as they were (the
+    apply step of a full run, or a fix by hand, resolves them). Returns the names left out."""
+    before = declared_names()
+    for unit_rnd in range(8):
+        for rnd in range(6):
+            HEADER_OF.clear()
+            n = make(excluded)
+            by_h = {}
+            for name, h in HEADER_OF.items():
+                by_h.setdefault(h, []).append(name)
+            bad = check_headers(by_h)
+            log(f'round {rnd}: {n} headers, {len(HEADER_OF)} prototypes, {len(bad)} left out (do not compile alone)')
+            if not bad:
+                break
+            excluded |= bad
+        if not unit_check or not units:
+            break
+        with Pool(jobs) as pool:
+            errs = dict(zip(units, pool.map(compile_errors, units, chunksize=1)))
+        failing = [u for u in units if errs[u]]
+        bad, unresolved = set(), []
+        for u in failing:
+            hit = error_names(u, errs[u]) - before
+            if hit:
+                bad |= hit
+            else:
+                unresolved.append(u)
+        log(f'units: {len(failing)} of {len(units)} fail to compile; {len(bad)} new prototypes left out (conflict '
+            f'with units); {len(unresolved)} units with errors no new prototype explains')
+        for u in unresolved:
+            first = '\n'.join(l for l in errs[u].split('\n') if ' error' in l)[:400]
+            log(f'  {u}: {first}')
+        if not bad:
+            break
+        excluded |= bad
+        units = failing
+    return excluded
+
+
+def units_including(headers):
+    """The source files that include one of these generated headers (relative to include/)."""
+    pat = re.compile(r'^\s*#\s*include\s+"(%s)"' % '|'.join(re.escape(h) for h in headers), re.M)
+    return [u for u in sorted(glob.glob('src/*/*.c') + glob.glob('src/*/*.cpp'))
+            if pat.search(open(u, errors='replace').read())]
+
+
+def regen_only(files, jobs, unit_check=True):
     """Rewrite the headers of the given source files from a fresh scan of just those files."""
     import tempfile
     tmp = tempfile.mktemp(suffix='.json')
@@ -455,17 +580,21 @@ def regen_only(files):
     if os.path.exists('include/proto/.excluded'):
         excluded = set(open('include/proto/.excluded').read().split())
     only = set(os.path.relpath(f) for f in files)
-    for rnd in range(6):
-        HEADER_OF.clear()
-        make_headers({k: v for k, v in DEFS.items() if v['name'] not in excluded and v['file'] in only}, only)
-        by_h = {}
-        for name, h in HEADER_OF.items():
-            by_h.setdefault(h, []).append(name)
-        bad = check_headers(by_h)
-        if not bad:
-            break
-        excluded |= bad
-        print(f'left out (do not compile alone): {", ".join(sorted(bad))}', file=sys.stderr)
+    # the names these files define get a fresh check: .excluded may list some that compile now (it was written by
+    # an earlier scan, before their types were fixed)
+    mine = {v['name'] for v in DEFS.values() if v['file'] in only}
+    stale = excluded & mine
+    excluded -= mine
+    units = units_including([proto_header(f) for f in only])
+    excluded = settle(lambda ex: make_headers({k: v for k, v in DEFS.items() if v['name'] not in ex and
+                                               v['file'] in only}, only),
+                      excluded, units, jobs, unit_check, log=lambda m: print(m, file=sys.stderr))
+    if excluded & mine:
+        print(f'left out: {", ".join(sorted(excluded & mine))}', file=sys.stderr)
+    if stale - excluded:
+        print(f'no longer left out: {", ".join(sorted(stale - excluded))}', file=sys.stderr)
+    with open('include/proto/.excluded', 'w') as fh:
+        fh.write('\n'.join(sorted(excluded)) + '\n')
     print(f'rewrote {len(only)} headers ({len(HEADER_OF)} declarations)', file=sys.stderr)
 
 
@@ -475,27 +604,20 @@ def main():
     ap.add_argument('--jobs', type=int, default=os.cpu_count())
     ap.add_argument('--report')
     ap.add_argument('--headers-only', action='store_true')
+    ap.add_argument('--no-unit-check', action='store_true',
+                    help='skip compiling the units against the new headers (prototypes that conflict stay in)')
     ap.add_argument('--only', nargs='+', metavar='SRC',
                     help='regenerate just the headers of these source files (after changing definitions there): '
                          'scans them, rewrites include/proto/<their headers>, leaves every other header alone')
     ap.add_argument('files', nargs='*')
     a = ap.parse_args()
     if a.only:
-        regen_only(a.only)
+        regen_only(a.only, a.jobs, not a.no_unit_check)
         return
     _init(a.decls)
-    excluded = set()
-    for rnd in range(6):
-        HEADER_OF.clear()
-        n = make_headers({k: v for k, v in DEFS.items() if v['name'] not in excluded})
-        by_h = {}
-        for name, h in HEADER_OF.items():
-            by_h.setdefault(h, []).append(name)
-        bad = check_headers(by_h)
-        print(f'round {rnd}: {n} headers, {len(HEADER_OF)} prototypes, {len(bad)} left out', file=sys.stderr)
-        if not bad:
-            break
-        excluded |= bad
+    units = sorted(glob.glob('src/*/*.c') + glob.glob('src/*/*.cpp'))
+    excluded = settle(lambda ex: make_headers({k: v for k, v in DEFS.items() if v['name'] not in ex}), set(), units,
+                      a.jobs, not a.no_unit_check, log=lambda m: print(m, file=sys.stderr))
     with open('include/proto/.excluded', 'w') as fh:
         fh.write('\n'.join(sorted(excluded)) + '\n')
     if a.headers_only:

@@ -9,6 +9,7 @@ union Slot8;
 union SlotS16;
 #ifdef __cplusplus
 #include "gfx/BgVramTask.h"
+#include "gfx/HBlankTask.h"
 #endif
 
 #ifdef __cplusplus
@@ -152,6 +153,9 @@ extern Slot8 sMenuScreenWipeFlags;
 #endif
 #ifndef PROTO_LOCAL_sMenuScreenBgKind
 extern Slot8 sMenuScreenBgKind;
+#endif
+#ifndef PROTO_LOCAL_sMenuWipeHBlankTask
+extern HBlankTask sMenuWipeHBlankTask;
 #endif
 #ifndef PROTO_LOCAL_sMenuScreenSteps
 extern BOOL (*sMenuScreenSteps[]) ();

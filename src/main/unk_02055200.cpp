@@ -5,6 +5,7 @@
 #include "gfx/ModelAnim.h"
 #include "gfx/Model.h"
 #include "gfx/NNSG3dResTex.h"
+#include "gfx/NNSG3dResMdl.h"
 #include "gfx/G3dResAccess.h"
 #include "gfx/NNSG3dResAnmCommon.h"
 #include "gfx/NNSG3dRS.h"
@@ -14,20 +15,6 @@
 #include "proto/main/unk_02055200.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0206d49c.h"
-
-struct NNSG3dResMdl {
-    u32 size;
-    u32 ofsSbc;
-    u32 ofsMat;
-    u8 unk_0c[0xc];
-    u8 numMat;
-};
-
-struct NNSG3dResMat {
-    u16 ofsDictTexToMatList;
-    u16 ofsDictPlttToMatList;
-    NNSG3dResDict dict;
-};
 
 struct ResCacheEntry {
     void *data;
@@ -301,7 +288,7 @@ void Model::initRenderObj() {
     NNS_G3dRenderObjInit(unk_08, resMdl);
     NNSG3dResMat *b = (NNSG3dResMat *)((u8 *)resMdl + resMdl->ofsMat);
     s32 i;
-    for (i = 0; i < resMdl->numMat; i++) {
+    for (i = 0; i < resMdl->info.numMat; i++) {
         u8 *ent = (u8 *)&b->dict + b->dict.ofsEntry;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
@@ -418,7 +405,7 @@ void Model::setPolygonId(u32 v) {
     b = (NNSG3dResMat *)((u8 *)resMdl + resMdl->ofsMat);
     i = 0;
     u32 sh = v << 24;
-    for (; i < resMdl->numMat; i++) {
+    for (; i < resMdl->info.numMat; i++) {
         u8 *ent = (u8 *)&b->dict + b->dict.ofsEntry;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
@@ -434,7 +421,7 @@ void Model::setAlpha(u32 v) {
     b = (NNSG3dResMat *)((u8 *)resMdl + resMdl->ofsMat);
     i = 0;
     u32 sh = v << 16;
-    for (; i < resMdl->numMat; i++) {
+    for (; i < resMdl->info.numMat; i++) {
         u8 *ent = (u8 *)&b->dict + b->dict.ofsEntry;
         u16 sz = *(u16 *)ent;
         ent += sz * i;

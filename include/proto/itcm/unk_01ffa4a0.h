@@ -18,6 +18,9 @@ void PXIi_HandlerRecvFifoNotEmpty(void);
 #ifndef PROTO_LOCAL_OSi_IdleThreadProc
 void OSi_IdleThreadProc(void);
 #endif
+#ifndef PROTO_LOCAL_OSi_EnterDmaCallback
+void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg);
+#endif
 #ifdef __cplusplus
 }
 #endif

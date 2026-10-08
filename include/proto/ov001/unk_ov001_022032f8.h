@@ -4,6 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022032f8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct AossWcmConfig;
+#ifndef __cplusplus
+typedef struct AossWcmConfig AossWcmConfig;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,6 +72,14 @@ s32 Aoss_WcmConnect(void *a, void *b, u32 c);
 s32 Aoss_WcmInit(void *fn, void *buf, u32 size);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sAossWcmConfig
+extern AossWcmConfig *sAossWcmConfig;
+#endif
 }
 #endif
 

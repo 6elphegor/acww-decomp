@@ -4,9 +4,6 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02226f68.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,12 +14,6 @@ void WfcTask_Init();
 #ifndef PROTO_LOCAL_WfcTask_Shutdown
 void WfcTask_Shutdown();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcTask_RunList
 void WfcTask_RunList(u32 i);
 #endif
@@ -44,6 +35,7 @@ void WfcTask_Release(u32 i, void *p);
 #ifndef PROTO_LOCAL_WfcTask_SetListActive
 void WfcTask_SetListActive(u32 i, u32 v);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

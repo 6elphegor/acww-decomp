@@ -5,9 +5,9 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 #include "field/Snowball.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -16,18 +16,21 @@ extern "C" {
 #ifndef PROTO_LOCAL_Snowball_Create
 void *Snowball_Create();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_Snowball_GetMinRadius
 s32 Snowball_GetMinRadius();
 #endif
 #ifndef PROTO_LOCAL_Snowball_GetMaxRadius
 s32 Snowball_GetMaxRadius();
 #endif
+#ifndef PROTO_LOCAL_Snowball_DropDisplacedItem
+BOOL Snowball_DropDisplacedItem(u16 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_Snowball_UpdateMatrix
 void Snowball_UpdateMatrix(Snowball *o, s32 a, s32 b);
 #endif
@@ -79,8 +82,8 @@ BOOL Snowball_PlaceSnowmanNearby(u32 a, VecFx32 *pos, u16 *out);
 #ifndef PROTO_LOCAL_Snowball_ClearItemAt
 BOOL Snowball_ClearItemAt(VecFx32 *p);
 #endif
-#ifndef PROTO_LOCAL_Snowball_DropDisplacedItem
-BOOL Snowball_DropDisplacedItem(u16 *p);
+#ifndef PROTO_LOCAL_sSnowballProfile
+extern ActorProfile sSnowballProfile;
 #endif
 #ifndef PROTO_LOCAL_Snowball_ChangeState
 BOOL Snowball_ChangeState(Snowball *o, s32 st);

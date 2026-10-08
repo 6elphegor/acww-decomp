@@ -4,25 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_02060034.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL__ZN12RoomItemGridC1Ev
-void *_ZN12RoomItemGridC1Ev(void *p);
-#endif
-#ifndef PROTO_LOCAL__ZN12RoomItemGridD1Ev
-void *_ZN12RoomItemGridD1Ev(void *p);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_PlayerHouse_ReplaceStructure
 BOOL PlayerHouse_ReplaceStructure(s32 x);
 #endif
@@ -68,6 +53,7 @@ void SongSet_ClearBit(u8 *bits, u32 i);
 #ifndef PROTO_LOCAL_SongSet_RemoveSong
 void SongSet_RemoveSong(u32 id);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

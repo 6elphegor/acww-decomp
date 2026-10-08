@@ -6,7 +6,6 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
-#include "types.h"
 class DummyProcC8;
 #endif
 

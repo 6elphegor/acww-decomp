@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/VillagerData.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203f3a0_L.h"
@@ -103,7 +104,6 @@ s32 Villager_GetIndex(void *);
 void *SaveVillagers_Get(void *, s32);
 s32 SaveVillagers_GetUnk3830Index(void *);
 u8 *Villager_GetBirthday(void *);
-void *_ZN12VillagerData13getVillagerIdEv(void *);
 
 void Event_RefreshToday(s32);
 // ClockDateTimeCopy has a copy constructor, so both mwcc and GCC pass it as a pointer to a caller-made copy: the
@@ -472,7 +472,7 @@ extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, EventDate *out)
 
 extern "C" BOOL Villager_IsSettledExcept(void *a, s32 b) {
     BOOL r = FALSE;
-    if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(a)))->isValid()) {
+    if (((VillagerData *)a)->getVillagerId()->isValid()) {
         if (Villager_GetResidentStatus(a) == 3) {
             s32 x = Villager_GetIndex(a);
             if (x != -1 && x != b) {

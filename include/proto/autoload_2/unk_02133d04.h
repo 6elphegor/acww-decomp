@@ -4,12 +4,10 @@
 // Prototypes of the functions defined in src/autoload_2/unk_02133d04.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_func_02133ef8
 void *func_02133ef8(void *ptr, size_t size);
 #endif
@@ -28,6 +26,7 @@ int __write_console(u32 handle, u8 *buffer, size_t *count, void *idle_proc);
 #ifndef PROTO_LOCAL___close_console
 int __close_console(u32 handle);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

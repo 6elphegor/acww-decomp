@@ -11,10 +11,17 @@ struct Unk_02083314_K;
 struct VisitorCheckEntry;
 struct VisitorSchedule;
 struct VisitorSpawnEntry;
+#ifndef __cplusplus
+typedef struct EventVisitorEntry EventVisitorEntry;
+typedef struct NpcNetRecord NpcNetRecord;
+typedef struct Unk_02083314_K Unk_02083314_K;
+typedef struct VisitorCheckEntry VisitorCheckEntry;
+typedef struct VisitorSchedule VisitorSchedule;
+typedef struct VisitorSpawnEntry VisitorSpawnEntry;
+#endif
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "npc/NpcSpawner.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -23,11 +30,20 @@ extern "C" {
 #ifndef PROTO_LOCAL_Town_RemoveShipParts
 void Town_RemoveShipParts();
 #endif
+#ifndef PROTO_LOCAL_NpcSpawn_GetSpNpcSlotCount
+s32 NpcSpawn_GetSpNpcSlotCount();
+#endif
 #ifndef PROTO_LOCAL_NpcSpawn_ResetAll
 void NpcSpawn_ResetAll();
 #endif
 #ifndef PROTO_LOCAL_NpcNetRecords_InitVillagers
 void NpcNetRecords_InitVillagers();
+#endif
+#ifndef PROTO_LOCAL_Event_IsActive
+BOOL Event_IsActive(s32 a, s32 *p);
+#endif
+#ifndef PROTO_LOCAL_Visitor_GetTodaysNpc
+void Visitor_GetTodaysNpc(u16 *out);
 #endif
 #ifndef PROTO_LOCAL_NpcSpawn_FixVillagerPos
 void NpcSpawn_FixVillagerPos(void *a, void *vec);
@@ -37,39 +53,6 @@ void NpcSpawner_SpawnVillagers(void *a);
 #endif
 #ifndef PROTO_LOCAL_NpcSpawner_SpawnPlayerHouseVisitor
 void NpcSpawner_SpawnPlayerHouseVisitor(void *a);
-#endif
-#ifndef PROTO_LOCAL_NpcNetRecord_ResetTalkSlots
-void NpcNetRecord_ResetTalkSlots();
-#endif
-#ifndef PROTO_LOCAL_NpcSpawner_RepickKatiePosOnline
-void NpcSpawner_RepickKatiePosOnline();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_NpcSpawn_GetSpNpcSlotCount
-s32 NpcSpawn_GetSpNpcSlotCount();
-#endif
-#ifndef PROTO_LOCAL_NpcSpawner_Create
-NpcSpawner *NpcSpawner_Create();
-#endif
-#ifndef PROTO_LOCAL_NpcSpawner_PickFreeRoomPos
-s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, void *out);
-#endif
-#ifndef PROTO_LOCAL_Event_IsActive
-BOOL Event_IsActive(s32 a, s32 *p);
-#endif
-#ifndef PROTO_LOCAL_Visitor_GetTodaysNpc
-void Visitor_GetTodaysNpc(u16 *out);
-#endif
-#ifndef PROTO_LOCAL_NpcSpawner_SpawnHouseOwner
-void NpcSpawner_SpawnHouseOwner(NpcSpawner *a);
-#endif
-#ifndef PROTO_LOCAL_NpcNetRecord_SetVillagerState
-BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
 #endif
 #ifndef PROTO_LOCAL_NpcNetRecord_SetVillagerSlots
 BOOL NpcNetRecord_SetVillagerSlots(u16 *p, u32 b, u32 c);
@@ -83,9 +66,6 @@ void NpcNetRecord_PackVillager(void *dst, s32 id);
 #ifndef PROTO_LOCAL_NpcNetRecord_GetVillagerVar
 u8 *NpcNetRecord_GetVillagerVar(u16 *p);
 #endif
-#ifndef PROTO_LOCAL_NpcNetRecord_SetSpNpcState
-BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
-#endif
 #ifndef PROTO_LOCAL_NpcNetRecord_SetSpNpcSlots
 BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c);
 #endif
@@ -94,9 +74,6 @@ void NpcNetRecord_PackSpNpc(void *dst, s32 id);
 #endif
 #ifndef PROTO_LOCAL_NpcNetRecord_GetSpNpcVar
 u8 *NpcNetRecord_GetSpNpcVar(u16 *p);
-#endif
-#ifndef PROTO_LOCAL_NpcNetRecord_SetState
-BOOL NpcNetRecord_SetState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
 #endif
 #ifndef PROTO_LOCAL_NpcNetRecord_SetSlots
 BOOL NpcNetRecord_SetSlots(u16 *p, u32 b, u32 c);
@@ -109,6 +86,9 @@ void NpcNetRecord_SetSlotsAndSync(u32 a, u32 b, u32 c, u16 *p);
 #endif
 #ifndef PROTO_LOCAL_NpcNetRecord_GetSlots
 BOOL NpcNetRecord_GetSlots(s32 *a, s32 *b, u16 *p);
+#endif
+#ifndef PROTO_LOCAL_NpcNetRecord_ResetTalkSlots
+void NpcNetRecord_ResetTalkSlots();
 #endif
 #ifndef PROTO_LOCAL_RoomFreeUnitMap_Build
 BOOL RoomFreeUnitMap_Build(u16 *out);
@@ -125,27 +105,6 @@ BOOL RoomFreeUnitMap_Test(u16 *arr, s32 x, s32 y);
 #ifndef PROTO_LOCAL_RoomFreeUnitMap_TestUpper
 BOOL RoomFreeUnitMap_TestUpper(u16 *arr, s32 x, s32 y);
 #endif
-#ifndef PROTO_LOCAL_VisitorSchedule_Set
-void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, VecFx32 *pos);
-#endif
-#ifndef PROTO_LOCAL_VisitorSchedule_IsSet
-BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
-#endif
-#ifndef PROTO_LOCAL_VisitorTable_FindByNpc
-u16 *VisitorTable_FindByNpc(const u16 *key, VisitorSpawnEntry *tbl, s32 n);
-#endif
-#ifndef PROTO_LOCAL_VisitorTable_FindByProfile
-u16 *VisitorTable_FindByProfile(const u16 *key, VisitorSpawnEntry *tbl, s32 n);
-#endif
-#ifndef PROTO_LOCAL_Visitor_ScheduleIfHigher
-BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos);
-#endif
-#ifndef PROTO_LOCAL_Visitor_ScheduleLow
-BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos);
-#endif
-#ifndef PROTO_LOCAL_Visitor_FindActiveEventEntry
-s32 Visitor_FindActiveEventEntry(const EventVisitorEntry *p, s32 n);
-#endif
 #ifndef PROTO_LOCAL_Visitor_IsNookJobActive
 BOOL Visitor_IsNookJobActive();
 #endif
@@ -155,14 +114,8 @@ BOOL Visitor_IsTaxiActive();
 #ifndef PROTO_LOCAL_Visitor_CheckResetti
 u16 *Visitor_CheckResetti();
 #endif
-#ifndef PROTO_LOCAL_VisitorPlace_Resetti
-BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p);
-#endif
 #ifndef PROTO_LOCAL_Visitor_CheckTomNook
 u16 *Visitor_CheckTomNook();
-#endif
-#ifndef PROTO_LOCAL_VisitorPlace_TomNook
-BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q);
 #endif
 #ifndef PROTO_LOCAL_Visitor_IsTortimerDue
 BOOL Visitor_IsTortimerDue();
@@ -182,29 +135,11 @@ u16 *Visitor_FindEventHost(s32 flag);
 #ifndef PROTO_LOCAL_Visitor_CheckEventHost
 u16 *Visitor_CheckEventHost(s32 a, s32 b, s32 c);
 #endif
-#ifndef PROTO_LOCAL_VisitorPlace_NearTownHall
-BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q);
-#endif
-#ifndef PROTO_LOCAL_VisitorPlace_NearPlayerHouse
-BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *q);
-#endif
-#ifndef PROTO_LOCAL_VisitorPlace_EventHost
-BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q);
-#endif
-#ifndef PROTO_LOCAL_VisitorPlace_Tortimer
-BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q);
-#endif
-#ifndef PROTO_LOCAL_VisitorPlace_Origin
-BOOL VisitorPlace_Origin(s32 a, VecFx32 *p);
-#endif
 #ifndef PROTO_LOCAL_Visitor_FindLyle
 u16 *Visitor_FindLyle(s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckLyle
 u16 *Visitor_CheckLyle(s32 a, s32 b, s32 c);
-#endif
-#ifndef PROTO_LOCAL_VisitorPlace_Lyle
-BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindJoan
 u16 *Visitor_FindJoan(s32 flag);
@@ -218,8 +153,8 @@ u16 *Visitor_FindKatie(s32 flag);
 #ifndef PROTO_LOCAL_Visitor_CheckKatie
 u16 *Visitor_CheckKatie(s32 a, s32 b, s32 c);
 #endif
-#ifndef PROTO_LOCAL_VisitorPlace_Katie
-BOOL VisitorPlace_Katie(s32 a, VecFx32 *p);
+#ifndef PROTO_LOCAL_NpcSpawner_RepickKatiePosOnline
+void NpcSpawner_RepickKatiePosOnline();
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindKaitlin
 u16 *Visitor_FindKaitlin(BOOL flag);
@@ -235,9 +170,6 @@ u16 *Visitor_FindBlanca(BOOL flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckBlanca
 u16 *Visitor_CheckBlanca();
-#endif
-#ifndef PROTO_LOCAL_Visitor_FindInEventTable
-u16 *Visitor_FindInEventTable(const EventVisitorEntry *tbl, const void *fn, s32 x, BOOL flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckDateVisitors
 u16 *Visitor_CheckDateVisitors();
@@ -262,6 +194,84 @@ BOOL VisitorPlace_Gulliver(void *self, void *b, u16 *out, void *d);
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_Gracie
 BOOL VisitorPlace_Gracie(void *self, void *g, u16 *out, s32 *a);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_NpcSpawner_Create
+NpcSpawner *NpcSpawner_Create();
+#endif
+#ifndef PROTO_LOCAL_NpcSpawner_PickFreeRoomPos
+s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, void *out);
+#endif
+#ifndef PROTO_LOCAL_NpcSpawner_SpawnHouseOwner
+void NpcSpawner_SpawnHouseOwner(NpcSpawner *a);
+#endif
+#ifndef PROTO_LOCAL_NpcNetRecord_SetVillagerState
+BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
+#endif
+#ifndef PROTO_LOCAL_NpcNetRecord_SetSpNpcState
+BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
+#endif
+#ifndef PROTO_LOCAL_NpcNetRecord_SetState
+BOOL NpcNetRecord_SetState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
+#endif
+#ifndef PROTO_LOCAL_VisitorSchedule_Set
+void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, VecFx32 *pos);
+#endif
+#ifndef PROTO_LOCAL_VisitorSchedule_Clear
+void VisitorSchedule_Clear(VisitorSchedule *g);
+#endif
+#ifndef PROTO_LOCAL_VisitorSchedule_IsSet
+BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
+#endif
+#ifndef PROTO_LOCAL_VisitorTable_FindByNpc
+u16 *VisitorTable_FindByNpc(const u16 *key, VisitorSpawnEntry *tbl, s32 n);
+#endif
+#ifndef PROTO_LOCAL_VisitorTable_FindByProfile
+u16 *VisitorTable_FindByProfile(const u16 *key, VisitorSpawnEntry *tbl, s32 n);
+#endif
+#ifndef PROTO_LOCAL_Visitor_ScheduleIfHigher
+BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos);
+#endif
+#ifndef PROTO_LOCAL_Visitor_ScheduleLow
+BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos);
+#endif
+#ifndef PROTO_LOCAL_Visitor_FindActiveEventEntry
+s32 Visitor_FindActiveEventEntry(const EventVisitorEntry *p, s32 n);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_Resetti
+BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_TomNook
+BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_NearTownHall
+BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_NearPlayerHouse
+BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *q);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_EventHost
+BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_Tortimer
+BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_Origin
+BOOL VisitorPlace_Origin(s32 a, VecFx32 *p);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_Lyle
+BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q);
+#endif
+#ifndef PROTO_LOCAL_VisitorPlace_Katie
+BOOL VisitorPlace_Katie(s32 a, VecFx32 *p);
+#endif
+#ifndef PROTO_LOCAL_Visitor_FindInEventTable
+u16 *Visitor_FindInEventTable(const EventVisitorEntry *tbl, const void *fn, s32 x, BOOL flag);
 #endif
 }
 #ifndef PROTO_LOCAL_sVillagerNetRecords

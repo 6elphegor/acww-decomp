@@ -4,15 +4,17 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0221b498.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcSableActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcSableActEntry SpNpcSableActEntry;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcSable;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_SpNpcSable_Create
-SpNpcSable *SpNpcSable_Create();
 #endif
 #ifndef PROTO_LOCAL_SpNpcSable_GetTalkCount
 u32 SpNpcSable_GetTalkCount(void *unused);
@@ -34,6 +36,21 @@ extern u8 sSpNpcSableModelPath[23];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcSableTexturePath
 extern u8 sSpNpcSableTexturePath[27];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SpNpcSable_Create
+SpNpcSable *SpNpcSable_Create();
+#endif
+#ifndef PROTO_LOCAL_sSpNpcSableProfile
+extern ActorProfile sSpNpcSableProfile;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcSableActTable
+extern SpNpcSableActEntry sSpNpcSableActTable[7];
 #endif
 }
 #endif

@@ -6,11 +6,11 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "field/GroundSoundSrc.h"
+#include "gfx/DebugColor.h"
 #include "gfx/Model.h"
 #include "gfx/VecFx32.h"
 #include "snd/RainSndChannel.h"
 #include "snd/SndEnvChannel.h"
-#include "types.h"
 struct BgAcreModel;
 #endif
 
@@ -29,6 +29,24 @@ void FieldGround_DestroyEnvChannel();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov003_02235460
+extern DebugColor data_ov003_02235460;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235474
+extern DebugColor data_ov003_02235474;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235470
+extern DebugColor data_ov003_02235470;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_0223546c
+extern DebugColor data_ov003_0223546c;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235468
+extern DebugColor data_ov003_02235468;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235464
+extern DebugColor data_ov003_02235464;
+#endif
 #ifndef PROTO_LOCAL_FieldGround_DrawBackdrop
 BOOL FieldGround_DrawBackdrop(Model *p);
 #endif

@@ -12,6 +12,7 @@ typedef struct VillagerRouteType VillagerRouteType;
 #endif
 #ifdef __cplusplus
 #include "actor/NpcActor.h"
+#include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
 #include "npc/NpcLookAt.h"
 #include "npc/VillagerRoute.h"
@@ -84,6 +85,12 @@ void VillagerRoute_Destruct();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_NpcActor_OnJointCalc
+void NpcActor_OnJointCalc(NNSG3dRS *self);
+#endif
+#ifndef PROTO_LOCAL_NpcActor_SetJointCallbackNext
+void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
+#endif
 #ifndef PROTO_LOCAL_Npc_RotateOffsetXZ
 void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang);
 #endif

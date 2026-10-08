@@ -186,13 +186,13 @@ BOOL VillagerHouse::onDelete() {
 
 s32 VillagerHouse::getHouseStyle() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)((VillagerDataProfileView *)SaveVillager(idx))->getInfo28();
+    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)SaveVillager(idx)->getInfo28();
     return r->f;
 }
 
 u8 VillagerHouse::getHouseVariant() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)((VillagerDataProfileView *)SaveVillager(idx))->getInfo28();
+    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)SaveVillager(idx)->getInfo28();
     return r->f & 3;
 }
 

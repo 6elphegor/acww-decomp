@@ -6,7 +6,6 @@
 #include "types.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus

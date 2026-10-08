@@ -160,7 +160,6 @@ BOOL Town_FindPlayerHouse(void* o, VecFx32* v, s32* a, s32* b);
 BOOL Town_FindGateHouse(void* o, VecFx32* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
 void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag);  // src/main/unk_020b60b0.cpp
-BOOL _ZN15BgModelCacheObj5setupEj(BgModelCacheObj *self, u32 flag);  // BgModelCacheObj::setup (class local to src/main/unk_02036c58.cpp)
 void ItemInfo_LoadIndoor(s32);
 s32 ResCache_Destroy();
 void ResCache_Init();
@@ -679,7 +678,7 @@ BOOL FieldScene::stepSetupSystems(u64) {
 }
 
 BOOL FieldScene::stepLoadResources(u64) {
-    _ZN15BgModelCacheObj5setupEj((BgModelCacheObj *)BgModelCache_Get(), gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
+    BgModelCache_Get()->setup(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     FtrInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     ItemInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     PatternTexCache_Get()->load();
@@ -792,7 +791,7 @@ BOOL FieldScene::onDelete() {
     ItemInfo_FreeIndoor();
     CharaShadow_Unload();
     ObjShadow_Exit();
-    ((BgModelCache *)BgModelCache_Get())->reset();
+    BgModelCache_Get()->reset();
     Scene_ShutdownGraphics();
     data_021ce63c = 0;
     if (Scene_GetCurrent() == 6) {

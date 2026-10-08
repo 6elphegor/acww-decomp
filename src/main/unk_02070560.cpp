@@ -24,6 +24,8 @@
 #include "item/ItemId.h"
 #include "item/ItemName.h"
 #include "npc/VillagerId.h"
+#include "npc/VillagerPlan.h"
+#include "save/VillagerData.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "room/HouseData.h"
@@ -56,8 +58,6 @@ class StrBuf;
 class GateHouse;
 struct NNSG3dResTex;
 class TexVramSlot;
-struct VillagerData;
-struct VillagerPlan;
 
 // ---- declared here: SDK functions, data defined elsewhere, functions whose shared declaration is left out of the
 // generated headers (include/proto/.excluded: their parameter types are local to their source files)
@@ -80,11 +80,6 @@ TownBlockMap *TownBlockMap_Get();
 TownBlockMap *HouseRoomMaps_Get(s32 i);
 u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
-// methods of classes defined in other source files (VillagerData: src/main/unk_02077ac4.cpp, VillagerPlan:
-// src/main/unk_02098e90.cpp), called by their symbols until the classes are in headers
-void *_ZN12VillagerData13getVillagerIdEv(VillagerData *self);
-void *_ZN12VillagerData10getPatternEv(VillagerData *self);
-u32 _ZN12VillagerPlan8getStateEv(VillagerPlan *self);
 
 extern SaveData gSaveData;
 extern CommManager *gCommManager;
@@ -644,9 +639,9 @@ static inline s32 Unk_020707ec_K3(BOOL f, u16 v) {
 extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
     VillagerData *p = (VillagerData *)SaveVillagers_Get(gSaveVillagers, a);
     if (p != NULL) {
-        if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(p))->isValid() != 0) {
+        if (p->getVillagerId()->isValid() != 0) {
             u32 val = *Villager_GetFashionTaste(p);
-            s32 mode = _ZN12VillagerPlan8getStateEv((VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(p)));
+            s32 mode = VillagerPlanBlock_GetPlan(Villager_GetPlan(p))->getState();
             u32 rnd = Random_GlobalBelow(100);
             s32 fa, fb, fc;
             u16 bufw[2];
@@ -970,7 +965,7 @@ extern "C" Pattern *PatternSrc_GetTownFlag(s32 x) {
 }
 extern "C" Pattern *PatternSrc_GetVillager(s32 x) {
     VillagerData *p = (VillagerData *)SaveVillagers_Get(gSaveVillagers, x);
-    if (p) return (Pattern *)_ZN12VillagerData10getPatternEv(p);
+    if (p) return (Pattern *)p->getPattern();
     return 0;
 }
 extern "C" Pattern *PatternSrc_GetPreset(s32 x) {

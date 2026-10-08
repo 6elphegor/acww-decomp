@@ -4,12 +4,16 @@
 // Prototypes of the functions defined in src/ov141/unk_ov141_02292900.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class NearbyTownsMenu;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sNearbyTownsMenuProfile
+extern ProcProfile sNearbyTownsMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_NearbyTownsMenu_Create
 NearbyTownsMenu *NearbyTownsMenu_Create();
 #endif

@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov103/unk_ov103_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class PocketLettersMenu;
 #endif
@@ -12,6 +13,9 @@ class PocketLettersMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_PocketLettersMenu_Create
 PocketLettersMenu *PocketLettersMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sPocketLettersMenuProfile
+extern ProcProfile sPocketLettersMenuProfile;
 #endif
 }
 #endif

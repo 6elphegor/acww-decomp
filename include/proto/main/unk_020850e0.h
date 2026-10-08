@@ -5,6 +5,9 @@
 
 #include "types.h"
 struct Unk_02085490_Pt;
+#ifndef __cplusplus
+typedef struct Unk_02085490_Pt Unk_02085490_Pt;
+#endif
 #ifdef __cplusplus
 #include "save/ContestRecord.h"
 #include "save/VillagerData.h"

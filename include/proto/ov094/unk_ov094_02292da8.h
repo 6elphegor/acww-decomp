@@ -43,6 +43,9 @@ extern OamObjTemplate sHeldItemSprite;
 #ifndef PROTO_LOCAL_sItemGridMarkSprites
 extern OamObjTemplate sItemGridMarkSprites[3];
 #endif
+#ifndef PROTO_LOCAL_sItemGridSlotSprites
+extern OamObjTemplate sItemGridSlotSprites[34];
+#endif
 #ifndef PROTO_LOCAL_InventoryItemGrid_Init
 void InventoryItemGrid_Init(InventoryItemGrid *o, u32 a);
 #endif

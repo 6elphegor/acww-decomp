@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov136/unk_ov136_02295380.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class TimeSelectMenu;
 #endif
@@ -12,6 +13,9 @@ class TimeSelectMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_TimeSelectMenu_Create
 TimeSelectMenu *TimeSelectMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sTimeSelectMenuProfile
+extern ProcProfile sTimeSelectMenuProfile;
 #endif
 }
 #endif

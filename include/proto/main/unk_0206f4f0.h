@@ -5,21 +5,11 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_CommSub_ClearBottleLetter
-void CommSub_ClearBottleLetter();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_CommSub_RecvBbsPost
 void CommSub_RecvBbsPost(u8 *p);
 #endif
@@ -34,6 +24,9 @@ void CommSub_RecvItemList15(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_CommSub_RecvBottleLetter
 void CommSub_RecvBottleLetter(u8 *p);
+#endif
+#ifndef PROTO_LOCAL_CommSub_ClearBottleLetter
+void CommSub_ClearBottleLetter();
 #endif
 #ifndef PROTO_LOCAL_CommSub_GetPostReply
 u8 CommSub_GetPostReply();
@@ -59,7 +52,11 @@ void HudCountdown_StartWithSe(u32 x);
 #ifndef PROTO_LOCAL_CommSub_RecvCountdownRequest
 void CommSub_RecvCountdownRequest(u8 *p);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sCommSubPostReply
 extern u8 sCommSubPostReply;
 #endif

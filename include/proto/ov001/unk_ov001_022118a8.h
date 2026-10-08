@@ -4,12 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022118a8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcAossDoneTimer
+extern u8 sWfcAossDoneTimer;
 #endif
 #ifndef PROTO_LOCAL_WfcAossDone_Enter
 void WfcAossDone_Enter();
@@ -39,14 +39,6 @@ void WfcAossDone_Exit();
 void WfcAossDone_WaitTimer();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcAossDoneTimer
-extern u8 sWfcAossDoneTimer;
-#endif
 }
 #endif
 

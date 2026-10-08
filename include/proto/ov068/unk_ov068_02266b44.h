@@ -4,7 +4,14 @@
 // Prototypes of the functions defined in src/ov068/unk_ov068_02266b44.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcNookIntroActEntry;
+struct SpNpcNookIntroTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcNookIntroActEntry SpNpcNookIntroActEntry;
+typedef struct SpNpcNookIntroTalkScript SpNpcNookIntroTalkScript;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class SpNpcNookIntro;
 #endif
 
@@ -47,8 +54,17 @@ extern char sNookTexRcs[0x1c];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sNookIntroTalkScripts
+extern SpNpcNookIntroTalkScript sNookIntroTalkScripts[2];
+#endif
 #ifndef PROTO_LOCAL_SpNpcNookIntro_Create
 SpNpcNookIntro *SpNpcNookIntro_Create();
+#endif
+#ifndef PROTO_LOCAL_sSpNpcNookIntroActTable
+extern SpNpcNookIntroActEntry sSpNpcNookIntroActTable[6];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcNookIntroProfile
+extern ActorProfile sSpNpcNookIntroProfile;
 #endif
 }
 #endif

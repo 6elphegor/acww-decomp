@@ -4,7 +4,14 @@
 // Prototypes of the functions defined in src/ov068/unk_ov068_0226c2e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcRoostGuestActEntry;
+struct SpNpcRoostGuestTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcRoostGuestActEntry SpNpcRoostGuestActEntry;
+typedef struct SpNpcRoostGuestTalkScript SpNpcRoostGuestTalkScript;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class SpNpcRoostGuest;
 #endif
 
@@ -115,6 +122,15 @@ u16 RoostGuest_PickKKSong(void *self);
 extern "C" {
 #ifndef PROTO_LOCAL_SpNpcRoostGuest_Create
 SpNpcRoostGuest *SpNpcRoostGuest_Create();
+#endif
+#ifndef PROTO_LOCAL_sSpNpcRoostGuestProfile
+extern ActorProfile sSpNpcRoostGuestProfile;
+#endif
+#ifndef PROTO_LOCAL_sKkShowScripts
+extern SpNpcRoostGuestTalkScript sKkShowScripts[6];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcRoostGuestActTable
+extern SpNpcRoostGuestActEntry sSpNpcRoostGuestActTable[5];
 #endif
 }
 #endif

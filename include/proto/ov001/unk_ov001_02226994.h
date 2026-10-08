@@ -5,8 +5,10 @@
 
 #include "types.h"
 struct WfcVramBlock;
+#ifndef __cplusplus
+typedef struct WfcVramBlock WfcVramBlock;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -23,6 +25,9 @@ void WfcVram_Init();
 extern "C" {
 #ifndef PROTO_LOCAL_WfcVram_AllocObjChar
 WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out);
+#endif
+#ifndef PROTO_LOCAL_WfcVram_FreeObjChar
+void WfcVram_FreeObjChar(WfcVramBlock *p);
 #endif
 }
 #endif

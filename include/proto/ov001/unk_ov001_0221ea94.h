@@ -5,18 +5,22 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_WfcTop_LoadScreen
 void WfcTop_LoadScreen(u32 i);
 #endif
 #ifndef PROTO_LOCAL_WfcTop_TransferTask
 void WfcTop_TransferTask(void *task);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_data_ov001_0222b46c
 extern char data_ov001_0222b46c[];
 #endif

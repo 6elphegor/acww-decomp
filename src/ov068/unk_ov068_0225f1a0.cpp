@@ -3898,8 +3898,8 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(FieldVillager *o) {
     FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     MsgString11 s1;
     MsgString11 s2;
-    static_cast<VillagerDataProfileView *>(a)->getCatchphrase(&s1, 0);
-    static_cast<VillagerDataProfileView *>(b)->getCatchphrase(&s2, 0);
+    static_cast<VillagerData *>(a)->getCatchphrase(&s1, 0);
+    static_cast<VillagerData *>(b)->getCatchphrase(&s2, 0);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     if (((MsgString *)(&s1))->equals((MsgString *)(&s2)) != 0) {
@@ -3930,7 +3930,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(FieldVillager *o) {
                         if (t1 == 0) {
                             if (t == *(u16 *)r7 && memcmp(q + 2, r7 + 2, 8) == 0 && q[0xb] == r7[0xb]) {
                             } else {
-                                static_cast<VillagerDataProfileView *>(e)->getCatchphrase(&s2, 0);
+                                static_cast<VillagerData *>(e)->getCatchphrase(&s2, 0);
                                 if (((MsgString *)(&s1))->equals((MsgString *)(&s2)) == 0) {
                                     mask |= 1 << i;
                                     mask = (u8)mask;
@@ -3973,11 +3973,11 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
         chatTarget = o;
     }
     BOOL ok = TRUE;
-    if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(a)->getShirt())) {
+    if (Unk_ov068_02262c20_InRange(static_cast<VillagerData *>(a)->getShirt())) {
     u8 *rec = (u8 *)static_cast<VillagerData *>(a)->getPattern();
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(b)->getShirt()) && ((Pattern *)((u8 *)static_cast<VillagerData *>(b)->getPattern()))->equals((Pattern *)(rec)) != 0) {
+    if (Unk_ov068_02262c20_InRange(static_cast<VillagerData *>(b)->getShirt()) && ((Pattern *)((u8 *)static_cast<VillagerData *>(b)->getPattern()))->equals((Pattern *)(rec)) != 0) {
         u8 *r7 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(a)->getVillagerId());
         u8 *p10 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(b)->getVillagerId());
         ok = FALSE;
@@ -4006,7 +4006,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
                         if (s1 == 0) {
                             if (t == *(u16 *)p10 && memcmp(q + 2, p10 + 2, 8) == 0 && q[0xb] == p10[0xb]) {
                             } else {
-                                if (!Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(e)->getShirt()) ||
+                                if (!Unk_ov068_02262c20_InRange(static_cast<VillagerData *>(e)->getShirt()) ||
                                     ((Pattern *)((u8 *)static_cast<VillagerData *>(e)->getPattern()))->equals((Pattern *)(rec)) == 0) {
                                     if (Villager_GetWhereabouts(e) != 0) {
                                         mask |= 1 << i;
@@ -4029,7 +4029,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
         u8 *dst = (u8 *)static_cast<VillagerData *>(b)->getPattern();
         *(Pattern *)dst = *(Pattern *)rec;
         h0 = 0x12a8;
-        static_cast<VillagerDataProfileView *>(b)->setShirt(&h0);
+        static_cast<VillagerData *>(b)->setShirt(&h0);
     }
     FieldVillagerAi_AddPartnerRelation(this, o, sChatSpreadShirtDeltas);
     if (ok && b != 0) {
@@ -4069,11 +4069,11 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(FieldVillager *o) {
     if (Unk_ov068_02262e5c_InRange(VillagerState_GetHeldItem(Villager_GetState(a))) == 0) {
         Villager_GetDefaultUmbrella(&v1, a);
         v0 = v1;
-        static_cast<VillagerDataProfileView *>(a)->setUmbrella(&v0);
+        static_cast<VillagerData *>(a)->setUmbrella(&v0);
     }
     Villager_GetDefaultShirt(&v2, a);
     v0 = v2;
-    u16 *p = static_cast<VillagerDataProfileView *>(a)->getShirt();
+    u16 *p = static_cast<VillagerData *>(a)->getShirt();
     BOOL same;
     if (Item_IsFurniture(p) != 0) {
         if (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&v0)) {
@@ -4091,7 +4091,7 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(FieldVillager *o) {
     if (same == 0) {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 0);
         FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 0);
-        static_cast<VillagerDataProfileView *>(a)->setShirt(&v0);
+        static_cast<VillagerData *>(a)->setShirt(&v0);
         chatTarget->actionCtrl.requestAct14(1, &v0);
         step = 2;
     } else {
@@ -4141,7 +4141,7 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(FieldVillager *o) {
         chatTarget = other;
     }
     void *rec = 0;
-    if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(a)->getShirt())) {
+    if (Unk_ov068_02262c20_InRange(static_cast<VillagerData *>(a)->getShirt())) {
         rec = (u8 *)static_cast<VillagerData *>(a)->getPattern();
     }
     rec = FieldVillagerAi_PickOtherAblePattern(this, rec);
@@ -4153,7 +4153,7 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(FieldVillager *o) {
     u8 *dst = (u8 *)static_cast<VillagerData *>(a)->getPattern();
     *(Pattern *)dst = *(Pattern *)rec;
     h0 = 0x12a8;
-    static_cast<VillagerDataProfileView *>(a)->setShirt(&h0);
+    static_cast<VillagerData *>(a)->setShirt(&h0);
     h1 = 0x12a8;
     chatTarget->actionCtrl.requestAct14(1, &h1);
     step = 2;

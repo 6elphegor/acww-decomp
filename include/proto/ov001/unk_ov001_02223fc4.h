@@ -5,6 +5,12 @@
 
 #include "types.h"
 #include "nitro/fs.h"
+struct WfcFsWork;
+#ifndef __cplusplus
+typedef struct WfcFsWork WfcFsWork;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,6 +43,14 @@ void WfcFs_FreeFile(void *p, ...);
 BOOL WfcUtil_StrEndsWith(const void *a, const void *b, s32 n);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcFs
+extern WfcFsWork *sWfcFs;
+#endif
 }
 #endif
 

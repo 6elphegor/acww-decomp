@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class FriendRosterTab;
 #endif
@@ -59,6 +60,9 @@ extern GXOamAttr data_ov119_022957a8[6];
 extern "C" {
 #ifndef PROTO_LOCAL_FriendRosterTab_Create
 FriendRosterTab *FriendRosterTab_Create();
+#endif
+#ifndef PROTO_LOCAL_sFriendRosterTabProfile
+extern ProcProfile sFriendRosterTabProfile;
 #endif
 }
 #endif

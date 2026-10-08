@@ -37,7 +37,6 @@ void *func_02106634(void *p, u32 i);
 void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 i);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
-u32 _ZN5Model12getRenderObjEv(void *p);
 s32 SceneLights_GetRoomColor();
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 v);

@@ -5,6 +5,9 @@
 
 #include "types.h"
 struct SndEnt;
+#ifndef __cplusplus
+typedef struct SndEnt SndEnt;
+#endif
 #ifdef __cplusplus
 #include "snd/BgmBeatPhase.h"
 #include "snd/SndMgr.h"

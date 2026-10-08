@@ -65,7 +65,7 @@
 #include "player/AnimSlotRef.h"
 #include "game/Unk_0203d820_Ptr.h"
 #include "gfx/Mtx43.h"
-#include "player/Unk_021c1b3c.h"
+#include "snd/BgmManager.h"
 #include "player/PlayerWalkWork.h"
 #include "player/PlayerHead.h"
 #include "player/PlayerChangeClothesArgs.h"
@@ -441,7 +441,7 @@ extern "C" {
 extern s16 data_02135f44[];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-extern u8 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;  // (the BGM manager)
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
@@ -507,7 +507,7 @@ s32 Item_GetFurnitureIndex(u16 *p);
 void PlayerActor_GetHeldItem(u16 *out, void *obj);
 extern u8 data_020c6194[], data_020c6198[], data_020c619c[], data_020c61a0[], data_020c61a4[], data_020c61a8[], data_020c61ac[], data_020c61b0[], data_020c61b4[];
 extern u8 gFieldSceneKind;
-extern Unk_021c1b3c *data_021c1b3c;
+extern BgmManager *data_021c1b3c;  // (the BGM manager)
 extern u8 gTalkMsgIndexEnd;
 extern char sPlayerClothTexName[], sPlayerSkinPalName[];
 }
@@ -643,7 +643,7 @@ void PlayerActor::onMessageEnd(u32 attr) {
         break;
     case 5:
     case 6:
-        data_021c1b3c->unk_248 = 0xb;
+        data_021c1b3c->mixer.talkDuckHold = 0xb;
         break;
     case 13: {
         u32 obj[9];
@@ -1041,7 +1041,7 @@ void PlayerActor::readInput() {
 
 void Unk_02007694::endChangeClothes(u32 a) {
     using namespace nL;
-    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->clothesWork;
     if (p->isApplied == 0) {
         switch (p->changeKind) {
         case 0:
@@ -1057,7 +1057,7 @@ void Unk_02007694::endChangeClothes(u32 a) {
             void *r = PlayerData_GetBySessionSlot(((Unk_02007694 *)this)->sessionSlot);
             if (r != NULL) {
                 PlayerData_SetStungFace(r, 0);
-                ((PlayerFaceTexRef *)(&((Unk_02007694 *)this)->faceTex[0]))->load(((PlayerData *)(r))->getFaceType());
+                (&((Unk_02007694 *)this)->faceTex)->load(((PlayerData *)(r))->getFaceType());
                 ((PlayerActor *)(this))->replayAnim();
                 VillagerStates_ClearUnk1dBit0();
             }
@@ -1090,9 +1090,9 @@ void Unk_02007694::endChangeClothes(u32 a) {
 void Unk_02007694::changeClothesApply() {
     using namespace nL;
     ((PlayerActor *)(this))->clearActionFlag(0xf);
-    if (((AnimFrameCtrl *)(&((Unk_02007694 *)this)->bodyAnimCtrl[0]))->hasPassedFrame(8)) {
+    if ((&static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel))->hasPassedFrame(8)) {
         ((PlayerActor *)(this))->setActionFlag(0xf);
-        switch (((Unk_02007694 *)this)->actionWork.changeKind) {
+        switch (((Unk_02007694 *)this)->clothesWork.changeKind) {
         case 0:
             changeClothesShirt();
             break;
@@ -1106,11 +1106,11 @@ void Unk_02007694::changeClothesApply() {
             void *r = PlayerData_GetBySessionSlot(((Unk_02007694 *)this)->sessionSlot);
             if (r != NULL) {
                 PlayerData_SetStungFace(r, 0);
-                ((PlayerFaceTexRef *)(&((Unk_02007694 *)this)->faceTex[0]))->load(((PlayerData *)(r))->getFaceType());
+                (&((Unk_02007694 *)this)->faceTex)->load(((PlayerData *)(r))->getFaceType());
                 u8 buf[2];
-                buf[0] = ((Unk_02007694 *)this)->bodyAnimPlayMode;
+                buf[0] = static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel).playMode;
                 ((PlayerActor *)(this))->setEyeAnimForBody((s32 *)(data_020d5e3c), &buf[0]);
-                buf[1] = ((Unk_02007694 *)this)->bodyAnimPlayMode;
+                buf[1] = static_cast<AnimFrameCtrl &>(((Unk_02007694 *)this)->bodyModel).playMode;
                 ((PlayerActor *)(this))->setMouthAnimForBody((s32 *)(data_020d5e44), &buf[1]);
                 VillagerStates_ClearUnk1dBit0();
             }
@@ -1647,12 +1647,12 @@ void Unk_02005e7c::handleNetEvent() {
     case 1:
     case 2: {
         if (action == 0x68) {
-            pa = (Unk_02005f50_Area *)actionWork;
+            pa = (Unk_02005f50_Area *)actionWorkRaw;
             s32 t = pa->a[1]; q1.x = pa->a[0]; q1.y = 0; q1.z = t;
             FieldPos_ToUnit(&ux, &uy, &q1);
             if (ux == x && uy == y) {
                 pa->e[0] = 1;
-                bodyAnimPlayMode = 1;
+                static_cast<AnimFrameCtrl &>(bodyModel).playMode = 1;  // (DS +0x2e0)
                 return;
             }
         }
@@ -1664,7 +1664,7 @@ void Unk_02005e7c::handleNetEvent() {
     case 21:
     case 22:
         if (action == 0x18) {
-            u8 *p = actionWork;
+            u8 *p = actionWorkRaw;
             ux = p[5];
             uy = p[5];
             if (ux == x && uy == y) {
@@ -1693,7 +1693,7 @@ void Unk_02005e7c::handleNetEvent() {
         break;
     case 5:
         if (action == 0x16) {
-            u8 *p = actionWork;
+            u8 *p = actionWorkRaw;
             ux = p[0];
             uy = p[1];
             if (ux == x && uy == y) {
@@ -1740,7 +1740,7 @@ void Unk_02005e7c::handleNetEvent() {
     }
     case 20:
         if (action == 0x66) {
-            pa = (Unk_02005f50_Area *)actionWork;
+            pa = (Unk_02005f50_Area *)actionWorkRaw;
             ux2 = 0;
             uy2 = 0;
             q20.x = pa->a[0]; q20.y = pa->a[1]; q20.z = pa->a[2];

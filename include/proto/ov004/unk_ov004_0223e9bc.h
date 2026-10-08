@@ -6,14 +6,11 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
-#include "types.h"
 class ShopStockPlacer;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_ShopStockPlacer_Create
-ShopStockPlacer *ShopStockPlacer_Create();
 #endif
 #ifndef PROTO_LOCAL_ShopStock_GetLayout
 const u32 *ShopStock_GetLayout();
@@ -35,6 +32,15 @@ BOOL ShopStock_FindTileOfStock(s32 *px, s32 *py, s32 code);
 #endif
 #ifndef PROTO_LOCAL_ShopStock_GetItemAtTile
 u16 *ShopStock_GetItemAtTile(s32 x, s32 y);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_ShopStockPlacer_Create
+ShopStockPlacer *ShopStockPlacer_Create();
 #endif
 }
 #ifndef PROTO_LOCAL_sShopStockPlacerProfile

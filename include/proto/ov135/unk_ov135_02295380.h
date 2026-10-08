@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov135/unk_ov135_02295380.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class ClockAdjustMenu;
 #endif
@@ -12,6 +13,9 @@ class ClockAdjustMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_ClockAdjustMenu_Create
 ClockAdjustMenu *ClockAdjustMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sClockAdjustMenuProfile
+extern ProcProfile sClockAdjustMenuProfile;
 #endif
 }
 #endif

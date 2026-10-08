@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0222a374.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class PlayerBedSetter;
 #endif
@@ -20,6 +21,9 @@ void Room_PlacePlayerBeds();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPlayerBedSetterProfile
+extern ProcProfile sPlayerBedSetterProfile;
+#endif
 #ifndef PROTO_LOCAL_PlayerBedSetter_Create
 PlayerBedSetter *PlayerBedSetter_Create();
 #endif

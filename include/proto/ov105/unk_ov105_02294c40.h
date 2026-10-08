@@ -4,6 +4,11 @@
 // Prototypes of the functions defined in src/ov105/unk_ov105_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct Unk_ov105_Ent;
+#ifndef __cplusplus
+typedef struct Unk_ov105_Ent Unk_ov105_Ent;
+#endif
 #ifdef __cplusplus
 class LetterStorageMenu;
 #endif
@@ -31,6 +36,12 @@ extern char data_ov105_022984e4[];
 extern "C" {
 #ifndef PROTO_LOCAL_LetterStorageMenu_Create
 LetterStorageMenu *LetterStorageMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sLetterStorageMenuProfile
+extern ProcProfile sLetterStorageMenuProfile;
+#endif
+#ifndef PROTO_LOCAL_data_ov105_02298544
+extern Unk_ov105_Ent data_ov105_02298544[9];
 #endif
 }
 #endif

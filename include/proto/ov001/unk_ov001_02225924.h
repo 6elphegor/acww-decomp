@@ -5,9 +5,6 @@
 
 #include "types.h"
 #include "net/WfcRect.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,23 +18,17 @@ void WfcHeap_Init(void *buf);
 #ifndef PROTO_LOCAL_WfcHeap_Destroy
 void WfcHeap_Destroy();
 #endif
-#ifndef PROTO_LOCAL_WfcHeap_FreeAndClear
-void WfcHeap_FreeAndClear(void **pp);
-#endif
-#ifndef PROTO_LOCAL_WfcHeap_Free
-void WfcHeap_Free(void *p);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcHeap_Alloc
 void *WfcHeap_Alloc(u32 size, u32 b);
 #endif
 #ifndef PROTO_LOCAL_WfcHeap_AllocClear
 void *WfcHeap_AllocClear(u32 size, u32 b);
+#endif
+#ifndef PROTO_LOCAL_WfcHeap_FreeAndClear
+void WfcHeap_FreeAndClear(void **pp);
+#endif
+#ifndef PROTO_LOCAL_WfcHeap_Free
+void WfcHeap_Free(void *p);
 #endif
 #ifndef PROTO_LOCAL_WfcGx_ShowPlanes
 void WfcGx_ShowPlanes(u32 eng, u32 m);
@@ -57,6 +48,7 @@ void WfcUtil_SetPoint(u32 a, u32 b, WfcPoint *out);
 #ifndef PROTO_LOCAL_WfcUtil_SetRect
 void WfcUtil_SetRect(u32 a, u32 b, u32 c, u32 d, WfcRect *out);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

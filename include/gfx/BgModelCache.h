@@ -2,7 +2,7 @@
 #define GFX_BGMODELCACHE_H
 
 // Background (acre) model cache: 31 acre model slots, 9 collision (bcl) slots and the ground/river animation
-// resources. Methods in src/main/unk_02036c58.cpp; also used by src/main/unk_02034438.cpp.
+// resources. Methods in src/main/unk_02036c58.cpp (the instance: gBgModelCache, BgModelCache_Get).
 #include "types.h"
 
 struct BgAcreModel {
@@ -30,8 +30,11 @@ struct BgModelCache {
     /* 0x5d0 */ BgAcreBcl bclCache[9];
     /* 0x618 */ u8 withAnims;
     /* 0x619 */ u8 pad_619[3];
-    /* 0x61c */ s32 heapSize;
-    /* 0x620 */ u8 pad_620[0x10];
+    /* 0x61c */ u32 heapSize;
+    /* 0x620 */ u32 unk_620;
+    /* 0x624 */ u32 unk_624;
+    /* 0x628 */ u32 unk_628;
+    /* 0x62c */ u32 unk_62c;
     /* 0x630 */ void *groundTex;
     /* 0x634 */ void *groundMatAnm;
     /* 0x638 */ void *groundTexSrtAnm;
@@ -40,6 +43,10 @@ struct BgModelCache {
     /* 0x644 */ void *beBPatAnm;
     /* 0x648 */ void *beBPatTex;
 
+    BgModelCache();
+    ~BgModelCache();
+    BOOL setup(u32 flag);
+    void clearEntries();
     void *getBeBPatTex();
     void *getBeBPatAnm();
     void *getRiverPatTex();

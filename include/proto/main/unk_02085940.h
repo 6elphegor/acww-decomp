@@ -6,11 +6,22 @@
 #include "types.h"
 #include "save/DramaPart.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Cell_HitTest
+BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
+#endif
+#ifndef PROTO_LOCAL_Cell_HitTestList
+s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
+#endif
+#ifndef PROTO_LOCAL_Oam_AllocAffine
+s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
+#endif
+#ifndef PROTO_LOCAL_Oam_UseBufferA
+BOOL Oam_UseBufferA(s32 t);
 #endif
 #ifndef PROTO_LOCAL_PlayerSpNpcRecord_Construct
 void PlayerSpNpcRecord_Construct();
@@ -48,17 +59,41 @@ void DramaRecord_GetLastPart(void *a, void *b);
 #ifndef PROTO_LOCAL_DramaRecord_SetLastPart
 void DramaRecord_SetLastPart(void *a, void *b);
 #endif
+#ifndef PROTO_LOCAL_DramaRecord_GetDate
+u8 *DramaRecord_GetDate(u8 *p);
+#endif
 #ifndef PROTO_LOCAL_LostChildRecord_Construct
 void *LostChildRecord_Construct(void *p);
 #endif
 #ifndef PROTO_LOCAL_LostChildRecord_Destruct
 void *LostChildRecord_Destruct(void *p);
 #endif
+#ifndef PROTO_LOCAL_LostChild_AdvanceDays
+void LostChild_AdvanceDays(s32 n);
+#endif
+#ifndef PROTO_LOCAL_LostChild_IsKatieDue
+BOOL LostChild_IsKatieDue();
+#endif
+#ifndef PROTO_LOCAL_LostChild_IsKaitlinDue
+BOOL LostChild_IsKaitlinDue();
+#endif
 #ifndef PROTO_LOCAL_LostChild_SaveToTown
 void LostChild_SaveToTown();
 #endif
 #ifndef PROTO_LOCAL_LostChild_LoadFromTown
 void LostChild_LoadFromTown();
+#endif
+#ifndef PROTO_LOCAL_Field_IsClearSpot
+BOOL Field_IsClearSpot(s32 x, s32 y, void *map);
+#endif
+#ifndef PROTO_LOCAL_Field_IsClearSpotYX
+BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map);
+#endif
+#ifndef PROTO_LOCAL_Field_IsClearSpotXY
+BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map);
+#endif
+#ifndef PROTO_LOCAL_Field_PickRandomInLine
+s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
 #endif
 #ifndef PROTO_LOCAL_VisitorPos_Construct
 void VisitorPos_Construct();
@@ -105,47 +140,11 @@ void RoostGuestRoll_Init(void *p);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_Cell_HitTest
-BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
-#endif
-#ifndef PROTO_LOCAL_Cell_HitTestList
-s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
-#endif
-#ifndef PROTO_LOCAL_Oam_AllocAffine
-s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
-#endif
-#ifndef PROTO_LOCAL_Oam_UseBufferA
-BOOL Oam_UseBufferA(s32 t);
-#endif
-#ifndef PROTO_LOCAL_DramaRecord_GetDate
-u8 *DramaRecord_GetDate(u8 *p);
-#endif
 #ifndef PROTO_LOCAL_Drama_FindScheduledPart
 BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 #endif
 #ifndef PROTO_LOCAL_Drama_GetAvailablePart
 BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
-#endif
-#ifndef PROTO_LOCAL_LostChild_AdvanceDays
-void LostChild_AdvanceDays(s32 n);
-#endif
-#ifndef PROTO_LOCAL_LostChild_IsKatieDue
-BOOL LostChild_IsKatieDue();
-#endif
-#ifndef PROTO_LOCAL_LostChild_IsKaitlinDue
-BOOL LostChild_IsKaitlinDue();
-#endif
-#ifndef PROTO_LOCAL_Field_IsClearSpot
-BOOL Field_IsClearSpot(s32 x, s32 y, void *map);
-#endif
-#ifndef PROTO_LOCAL_Field_IsClearSpotYX
-BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map);
-#endif
-#ifndef PROTO_LOCAL_Field_IsClearSpotXY
-BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map);
-#endif
-#ifndef PROTO_LOCAL_Field_PickRandomInLine
-s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
 #endif
 }
 #ifndef PROTO_LOCAL_data_020e0c88

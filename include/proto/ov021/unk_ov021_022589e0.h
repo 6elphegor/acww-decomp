@@ -4,12 +4,11 @@
 // Prototypes of the functions defined in src/ov021/unk_ov021_022589e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
 #include "game/FxVec3.h"
+#include "game/SceneInfo.h"
 #include "game/SceneWarp.h"
 #include "town/SceneMapInfo.h"
-#ifdef __cplusplus
-#include "game/SceneInfo.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -35,7 +34,7 @@ extern SceneInfo data_ov021_02258c4c;
 extern u32 data_ov021_02258c14[2];
 #endif
 #ifndef PROTO_LOCAL_data_ov021_02258cc4
-extern FxVec3 data_ov021_02258cc4 (0x10000, 0x200, 0x1d000);
+extern FxVec3 data_ov021_02258cc4;
 #endif
 #ifndef PROTO_LOCAL_data_ov021_02258d0c
 extern SceneWarp data_ov021_02258d0c[7];

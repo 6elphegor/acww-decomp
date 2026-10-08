@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #include "ui/InputModeIcon.h"
 #endif
 
@@ -14,6 +13,9 @@ extern "C" {
 #endif
 #ifndef PROTO_LOCAL_ReceivedLetter_Clear
 void ReceivedLetter_Clear(void *p);
+#endif
+#ifndef PROTO_LOCAL_ReceivedLetter_HasLetter
+BOOL ReceivedLetter_HasLetter(void *p);
 #endif
 #ifndef PROTO_LOCAL_ReceivedLetter_GetLetter
 void *ReceivedLetter_GetLetter(void *p);
@@ -26,6 +28,12 @@ void InputMode_SetButtons();
 #endif
 #ifndef PROTO_LOCAL_InputMode_SetTouch
 void InputMode_SetTouch();
+#endif
+#ifndef PROTO_LOCAL_InputMode_IsButtons
+BOOL InputMode_IsButtons();
+#endif
+#ifndef PROTO_LOCAL_InputMode_IsTouch
+BOOL InputMode_IsTouch();
 #endif
 #ifndef PROTO_LOCAL_InputModeIcon_Init
 void InputModeIcon_Init();
@@ -44,17 +52,6 @@ void InputModeIcon_Draw();
 #endif
 
 #ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_ReceivedLetter_HasLetter
-BOOL ReceivedLetter_HasLetter(void *p);
-#endif
-#ifndef PROTO_LOCAL_InputMode_IsButtons
-BOOL InputMode_IsButtons();
-#endif
-#ifndef PROTO_LOCAL_InputMode_IsTouch
-BOOL InputMode_IsTouch();
-#endif
-}
 #ifndef PROTO_LOCAL_sInputModeIcon
 extern InputModeIcon sInputModeIcon;
 #endif

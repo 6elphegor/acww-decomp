@@ -5,7 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 #endif
 
 #ifdef __cplusplus
@@ -14,14 +14,17 @@ extern "C" {
 #ifndef PROTO_LOCAL_GulliverShip_Create
 void *GulliverShip_Create();
 #endif
+#ifndef PROTO_LOCAL_sGulliverShipVisitorProfile
+extern u16 sGulliverShipVisitorProfile;
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sGulliverShipVisitorProfile
-extern u16 sGulliverShipVisitorProfile;
+#ifndef PROTO_LOCAL_sGulliverShipProfile
+extern ActorProfile sGulliverShipProfile;
 #endif
 }
 #endif

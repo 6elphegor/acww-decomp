@@ -4,11 +4,10 @@
 // Prototypes of the functions defined in src/ov043/unk_ov043_022589e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "game/SceneWarp.h"
-#include "town/SceneMapInfo.h"
 #ifdef __cplusplus
 #include "game/SceneInfo.h"
-#include "types.h"
+#include "game/SceneWarp.h"
+#include "town/SceneMapInfo.h"
 #endif
 
 #ifdef __cplusplus

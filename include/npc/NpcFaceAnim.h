@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "actor/BlinkTimer.h"
-#include "npc/NpcResHandleView.h"
+#include "npc/NpcResHandle.h"
 #include "gfx/MatTexPatAnim.h"
 
 class NpcActor;

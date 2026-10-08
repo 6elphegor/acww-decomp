@@ -5,28 +5,43 @@
 
 #include "types.h"
 #include "gfx/MagF.h"
+#ifdef __cplusplus
 #include "gfx/P.h"
 #include "gfx/SplEmitterE.h"
 #include "gfx/SplParticleViews.h"
 #include "gfx/SplPtclTypes.h"
-#ifdef __cplusplus
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_data_0213bba4
 extern s16 data_0213bba4[2];
 #endif
 #ifndef PROTO_LOCAL_WvrDummyAsyncCallback
 void WvrDummyAsyncCallback(u32 a, u32 b);
 #endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_spl_rndm_get_arb_vec_xyz
 void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_spl_rndm_get_arb_vec_xy
 void spl_rndm_get_arb_vec_xy(VecFx32 *v);
+#endif
+#ifndef PROTO_LOCAL_spl_push_front
+void spl_push_front(PList *l, P *n);
+#endif
+#ifndef PROTO_LOCAL_spl_pop_front
+P *spl_pop_front(PList *l);
+#endif
+#ifndef PROTO_LOCAL_spl_del
+P *spl_del(PList *l, P *n);
 #endif
 #ifndef PROTO_LOCAL_spl_calc_gravity
 void spl_calc_gravity(GravF *f, P *p, VecFx32 *acc);
@@ -64,8 +79,14 @@ void spl_chld_scl_out(P *p, Ctx *c, s32 t);
 #ifndef PROTO_LOCAL_spl_chld_alp_out
 void spl_chld_alp_out(P *p, void *x, s32 t);
 #endif
+#ifndef PROTO_LOCAL_spl_set_cross_to_axis
+void spl_set_cross_to_axis(E *e);
+#endif
 #ifndef PROTO_LOCAL_spl_set_circle_axis
 void spl_set_circle_axis(VecFx32 *out, const VecFx32 *in, E *e);
+#endif
+#ifndef PROTO_LOCAL_spl_gen_ptcl
+void spl_gen_ptcl(E *e, PList *freeList);
 #endif
 }
 #ifndef PROTO_LOCAL_data_021f5c3c

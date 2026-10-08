@@ -4,15 +4,17 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020e92f4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "game/FxVec3.h"
 #include "types64.h"
 #ifdef __cplusplus
+#include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Math_Sqrt64
+s32 Math_Sqrt64(u64 x);
 #endif
 #ifndef PROTO_LOCAL_Math_InitSqrt64
 void Math_InitSqrt64(void);
@@ -23,9 +25,6 @@ void Math_InitSqrt64(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_Math_Sqrt64
-s32 Math_Sqrt64(u64 x);
-#endif
 #ifndef PROTO_LOCAL_Vec_Sub
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 #endif

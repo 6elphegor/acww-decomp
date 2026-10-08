@@ -112,6 +112,22 @@ struct VillagerData {
     TownId letterTown;
 
     s32 receiveLetterFrom(LetterView *letter);
+    // profile: letter, catchphrase, shirt, umbrella (src/main/unk_02077ac4.cpp)
+    void getCatchphraseEncoded(void *p);
+    void getCatchphrase(void *p, void *q);
+    void clearCatchphrase();
+    void *getInfo28();
+    s32 findFreeSlot(s32 n);  // the first of n villagers from this one without a villager
+    void setUmbrella(u16 *p);
+    void setShirt(u16 *p);
+    u16 *getShirt();
+    BOOL hasLetterSenderMemory();
+    s32 findLetterSenderMemory();
+    void updateMemoriesFromPlayers();
+    void sendNewYearLetters(void *a);
+    void sendBirthdayLetters(void *a);
+    void replyToLetter(void *a, void *b);
+    BOOL hasLetterFrom(u16 *p);
     void *getLetter();
     void *getPattern();
     VillagerId *getVillagerId();
@@ -143,6 +159,10 @@ static_assert(sizeof(VillagerMemory) == 0x68, "VillagerMemory: DS save layout");
 static_assert(sizeof(VillagerData) == 0x700 && __alignof__(VillagerData) == 4, "VillagerData: DS save layout");
 static_assert(__builtin_offsetof(VillagerData, pattern) == 0x340, "VillagerData::pattern");
 static_assert(__builtin_offsetof(VillagerData, letter) == 0x568, "VillagerData::letter");
+static_assert(__builtin_offsetof(VillagerData, villagerId) == 0x6c0, "VillagerData::villagerId");
+static_assert(__builtin_offsetof(VillagerData, catchphrase) == 0x6de, "VillagerData::catchphrase");
+static_assert(__builtin_offsetof(VillagerData, shirt) == 0x6ec, "VillagerData::shirt");
+static_assert(__builtin_offsetof(VillagerData, umbrella) == 0x6f4, "VillagerData::umbrella");
 static_assert(__builtin_offsetof(VillagerData, letterTown) == 0x6f6, "VillagerData::letterTown");
 static_assert(__builtin_offsetof(SaveVillagers, nicknameDate) == 0x38c0, "SaveVillagers::nicknameDate");
 static_assert(__builtin_offsetof(SaveVillagers, furnitureDropDate) == 0x38ee, "SaveVillagers::furnitureDropDate");

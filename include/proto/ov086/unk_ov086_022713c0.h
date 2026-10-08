@@ -5,7 +5,11 @@
 
 #include "types.h"
 struct SpNpcTortimerCountdownActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcTortimerCountdownActEntry SpNpcTortimerCountdownActEntry;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class SpNpcTortimerCountdown;
 #endif
 
@@ -36,6 +40,9 @@ extern u8 sSpNpcTortimerCountdownTexturePath[];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSpNpcTortimerCountdownProfile
+extern ActorProfile sSpNpcTortimerCountdownProfile;
+#endif
 #ifndef PROTO_LOCAL_SpNpcTortimerCountdown_Create
 SpNpcTortimerCountdown *SpNpcTortimerCountdown_Create();
 #endif
