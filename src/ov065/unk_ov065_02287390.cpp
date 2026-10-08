@@ -23,9 +23,9 @@ qr2_implementation_s *current_rec = &static_qr2_rec;
 u8 data_ov065_0228e1b8[8] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2, 0, 0};
 qr2_implementation_s static_qr2_rec = {-1};
 s32 num_local_ips;
-u32 local_ip_list[5];
+GsInAddr local_ip_list[5];
 char qr2_hostname[0x40];
-u8 data_ov065_022917a0[0x100];
+char data_ov065_022917a0[0x100];
 }
 
 namespace F02287200 {
@@ -48,8 +48,6 @@ typedef DArrayImplementation Vec;
 extern "C" {
 extern Qr *current_rec;
 extern u8 data_ov065_0228e1b8[];
-extern s32 num_local_ips;
-extern u32 local_ip_list[];
 
 s32 OS_SPrintf(char *, const char *, ...);
 s32 sendto(s32, void *, s32, s32, void *, s32);
@@ -64,11 +62,8 @@ char *Sock_InetNtoA(GsInAddr);
 void qr_add_packet_header(Buf *, s32, u8 *);
 void qr2_buffer_addA(Buf *, const char *);
 void qr2_buffer_add_int(Buf *, s32);
-void qr_build_query_reply(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
-void handle_public_address(Qr *, u8 *);
-void compute_challenge_response(Qr *, Buf *, u8 *, s32);
 
-void GsNatNeg_FreeEntry(Ent *e);
+void GsNatNeg_FreeEntry(void *elem);
 void qr_build_partial_old_query_reply(Qr *q, Buf *buf, s32 kind);
 void qr_process_old_query(Qr *q, Buf *buf);
 BOOL qr_got_recent_message(Qr *q, u32 v);
@@ -88,10 +83,8 @@ namespace F02287b18 {
 extern "C" {
 extern qr2_implementation_s *current_rec;
 extern qr2_implementation_s static_qr2_rec;
-extern volatile s32 num_local_ips;
-extern GsBytes4 local_ip_list[];
 extern char qr2_hostname[];
-extern u8 data_ov065_022917a0[];
+extern char data_ov065_022917a0[];
 
 s32 func_02133150(s32, s32);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -105,12 +98,9 @@ s32 SocketShutDown();
 SockHostEnt *Sock_GetHostByName(const char *);
 void send_heartbeat(qr2_implementation_s *, s32);
 void send_keepalive(qr2_implementation_s *);
-s32 qr2_parse_queryA(qr2_implementation_s *, u8 *, s32, SockAddrIn *);
+void qr2_parse_queryA(qr2_implementation_s *, char *, s32, SockAddrIn *);
 
-void qr_build_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2);
 void qr_build_partial_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 type, s32 count, u8 *list);
-void handle_public_address(qr2_implementation_s *q, const char *s);
-void compute_challenge_response(qr2_implementation_s *q, qr2_buffer_s *b, const char *s, s32 n);
 void qr_add_packet_header(qr2_buffer_s *b, s32 c, u8 *ip);
 void gs_encrypt(u8 *key, s32 keylen, u8 *data, s32 datalen);
 void gs_encode(u8 *in, s32 len, u8 *out);
@@ -401,7 +391,7 @@ void enum_local_ips() {
             if (e == NULL) {
                 break;
             }
-            local_ip_list[i] = *(GsBytes4 *)e;
+            local_ip_list[i] = *(GsInAddr *)e;
             t = num_local_ips + 1;
             num_local_ips = t;
         } while (t < 5);
@@ -866,7 +856,7 @@ BOOL qr_got_recent_message(Qr *q, u32 v) {
 
 namespace F02287200 {
 extern "C" {
-void qr2_parse_queryA(Qr *q, s8 *data, s32 n, void *addr) {
+void qr2_parse_queryA(Qr *q, char *data, s32 n, SockAddrIn *addr) {
     struct {
         s32 x;
         Buf out;
@@ -905,8 +895,8 @@ void qr2_parse_queryA(Qr *q, s8 *data, s32 n, void *addr) {
     }
     type = data[2];
     {
-        s8 *hdr = data + 3;
-        s8 *body = data + 7;
+        char *hdr = data + 3;
+        char *body = data + 7;
         n -= 7;
         qr_add_packet_header(&l.out, type, (u8 *)hdr);
         switch (type) {
@@ -915,9 +905,9 @@ void qr2_parse_queryA(Qr *q, s8 *data, s32 n, void *addr) {
             break;
         case 1:
             if (n >= 13 && q->pa_callback != 0) {
-                handle_public_address(q, (u8 *)body + n - 13);
+                handle_public_address(q, body + n - 13);
             }
-            compute_challenge_response(q, &l.out, (u8 *)body, n);
+            compute_challenge_response(q, &l.out, body, n);
             break;
         case 2:
             if (n > 0x20) {
@@ -997,7 +987,7 @@ void send_heartbeat(Qr *q, s32 mode) {
     Buf buf;
     char tmp[20];
     s32 i;
-    u32 *p;
+    GsInAddr *p;
     buf.len = 0;
     qr_add_packet_header(&buf, 3, q->instance_key);
     i = 0;
@@ -1006,7 +996,7 @@ void send_heartbeat(Qr *q, s32 mode) {
         do {
             OS_SPrintf(tmp, "localip%d", i);
             qr2_buffer_addA(&buf, tmp);
-            qr2_buffer_addA(&buf, Sock_InetNtoA(*(GsInAddr *)p));
+            qr2_buffer_addA(&buf, Sock_InetNtoA(*p));
             p++;
         } while (++i < num_local_ips);
     }

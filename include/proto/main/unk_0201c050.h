@@ -879,7 +879,7 @@ extern decltype (& VillagerTalk :: playOwnerIdleAnim) data_020d7c10;
 void TalkChoiceList_SetIndices(ActorTalkRequest *a, u8 *src, s32 n, s32 m);
 #endif
 #ifndef PROTO_LOCAL_Npc_GetStateHeldItem
-void Npc_GetStateHeldItem(u16 *out, VillagerTalk *obj);
+void Npc_GetStateHeldItem(u16 *out, VillagerActor *obj);
 #endif
 #ifndef PROTO_LOCAL_VillagerTalk_EnsureMemory
 void VillagerTalk_EnsureMemory(VillagerTalk *self, void **pa, s32 *pb, void *c, void *d);

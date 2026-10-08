@@ -54,7 +54,6 @@ s32 gpiInitialize(GPConnection *h, s32 a, s32 b);
 s32 gpiProcess(GPConnection *h, s32 a);
 s32 gpiProcessConnectionManager(GPConnection *h);
 s32 gpiResetProfile(GPConnection *h, GPIProfile *n, s32 m);
-s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, s32 m);
 }
 
 extern "C" {

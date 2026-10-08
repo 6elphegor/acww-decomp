@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_Vec_Add
-void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, const VecFx32 *a, const VecFx32 *b);
 #endif
 #ifndef PROTO_LOCAL_Vec_DistSq
 s64 Vec_DistSq(VecFx32 *a, VecFx32 *b);

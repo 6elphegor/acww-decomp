@@ -15,6 +15,9 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_0227e160.h"
 #include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_0227df0c.h"
+#include "proto/ov065/unk_ov065_02280740.h"
+#include "proto/ov065/unk_ov065_02283304.h"
 
 // ov065 TU44: GP gpiConnect.c (0x0227e160..0x0227f2a4)
 
@@ -60,16 +63,12 @@ extern char data_ov065_0228d194[];
 extern "C" {
 s32 strncmp(const char *, const char *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 gpiValueForKey(const char *, const char *, char *, s32);
-void gpiSetErrorString(void *, const char *);
-void gpiSetError(void *, s32, const char *);
 s32 recv(s32, void *, s32, s32);
 s32 send(s32, void *, s32, s32);
 s32 GOAGetLastError(s32);
 s32 ArrayLength(s32);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-s32 gpiRemoveOperation(void *, void *);
 s32 gpiDestroyPeer(void *, void *);
 s32 gpiProfileMap(GPConnection *, s32 (*)(GPConnection *, GPIProfile *, void *), void *);
 s32 gpiDisconnectCleanupProfile(GPConnection *h, GPIProfile *n);
@@ -82,7 +81,6 @@ s32 gpiAppendCharToBuffer(GPConnection *, GPIBuffer *, char);
 s32 gpiSendOrBufferStringLen(GPConnection *, GPIPeer *, const char *, s32);
 s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
 s32 gpiCallCallback(GPConnection *, GPICallbackData *);
-s32 gpiAddCallback(GPConnection *, GPICallbackCopy, GPICallbackData *, GPIOperation *, s32);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
 
 
@@ -122,18 +120,10 @@ void B64Encode(char *, char *, s32, s32);
 s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
-s32 gpiAddCallback(GPConnection *, GPICallback, void *, GPIOperation *, s32);
-void randomString(void *, s32);
 s32 gpiFindProfileByUser(GPConnection *, char *, char *, GPIProfile **);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 void gpiRemoveProfileByID(GPConnection *, s32);
 GPIProfile *gpiProfileListAdd(GPConnection *, s32);
-void gpiRemoveOperation(GPConnection *, GPIOperation *);
-void gpiSetErrorString(GPConnection *, const char *);
-void gpiSetError(GPConnection *, s32, const void *);
-s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
-s32 gpiValueForKey(char *, const char *, char *, s32);
-s32 gpiCheckForError(GPConnection *, char *, s32);
 void strzcpy(char *, const char *, s32);
 s32 gpiSendNewuser(GPConnection *, GPIConnectData *);
 s32 gpiSendLogin(GPConnection *, GPIConnectData *);
@@ -187,14 +177,11 @@ extern char data_ov065_0228d750[];
 extern u8 data_0213a490[];
 
 s32 gpiReset(GPConnection *);
-void gpiSetErrorString(GPConnection *, const char *);
-void gpiSetError(GPConnection *, s32, const char *);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
 void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 char *goastrdup(const char *);
 s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallback, void *);
-void gpiFailedOpCallback(GPConnection *, GPIOperation *);
 void gpiDisconnect(GPConnection *, s32);
 s32 gpiProcess(GPConnection *, s32);
 s32 socket(s32, s32, s32);
@@ -207,8 +194,6 @@ s32 SetSockBlocking(s32, s32);
 SockHostEnt *Sock_GetHostByName(char *);
 s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
 void gpiInfoCacheToArg(s32, void *);
-s32 gpiRemoveOperation(GPConnection *, GPIOperation *);
-s32 gpiAddCallback(GPConnection *, GPICallback, void *, GPIOperation *, s32);
 s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 s32 gpiSendLocalInfo(GPConnection *, const char *, const char *);
@@ -545,11 +530,11 @@ s32 gpiProcessConnect(GPConnection *h, GPIOperation *n, char *line) {
             }
         }
         if (strstr(line, "\\fatal\\") != 0) {
-            gpiSetError(h, c->errorCode, c);
+            gpiSetError(h, c->errorCode, c->errorString);
             gpiCallErrorCallback(h, 4, 1);
             return 4;
         }
-        gpiSetError(h, c->errorCode, c);
+        gpiSetError(h, c->errorCode, c->errorString);
         gpiCallErrorCallback(h, 4, 0);
         return 4;
     }
@@ -671,7 +656,7 @@ s32 gpiProcessConnect(GPConnection *h, GPIOperation *n, char *line) {
             q->profile = c->profileid;
             q->result = 0;
             strzcpy(q->uniquenick, b2, 0x15);
-            t = gpiAddCallback(h, pr.p, q, n, 0);
+            t = gpiAddCallback(h, pr, q, n, 0);
             if (t != 0) {
                 return t;
             }

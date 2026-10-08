@@ -16,10 +16,10 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_sDwcLoginDoneCallback
-extern void (*sDwcLoginDoneCallback) (void *, void *, u32);
+extern DwcNasLoginCallback sDwcLoginDoneCallback;
 #endif
 #ifndef PROTO_LOCAL_sDwcLoginControl
-extern void *sDwcLoginControl;
+extern DwcLoginControl *sDwcLoginControl;
 #endif
 #ifndef PROTO_LOCAL_sDwcLoginDoneArg
 extern u32 sDwcLoginDoneArg;
@@ -31,7 +31,7 @@ extern s32 sDwcErrorCode;
 extern s32 sDwcErrorClass;
 #endif
 #ifndef PROTO_LOCAL_sDwcFriendControl
-extern void *sDwcFriendControl;
+extern DwcFriendControl *sDwcFriendControl;
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_GetStatus
 s32 DwcFriend_GetStatus(void *a, u8 *p1, u8 *p2, char *dst);
@@ -64,13 +64,13 @@ void DwcFriend_StartUpdate(char *a, char *b, void (*c)(s32, u32, s32), s32 d, Dw
 void DwcFriend_Fail(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_OnBuddyRequest
-void DwcFriend_OnBuddyRequest(void *a, u32 *b);
+void DwcFriend_OnBuddyRequest(GPConnection *a, u32 *b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_HandleAuthorizedMessage
-s32 DwcFriend_HandleAuthorizedMessage(void *a, GPRecvBuddyMessageArg *b);
+s32 DwcFriend_HandleAuthorizedMessage(GPConnection *a, GPRecvBuddyMessageArg *b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_OnBuddyStatus
-void DwcFriend_OnBuddyStatus(void *a, u32 *b);
+void DwcFriend_OnBuddyStatus(GPConnection *a, u32 *b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_GetProfileId
 s32 DwcFriend_GetProfileId(s32 i);
@@ -115,16 +115,16 @@ s32 DwcFriend_RemoveDuplicates(DwcFriendData *arr, s32 n, s32 id);
 s32 DwcFriend_SendBuddyRequest(s32 a);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_GetBuddyStatus
-s32 DwcFriend_GetBuddyStatus(void *a, void *b);
+s32 DwcFriend_GetBuddyStatus(void *a, GPBuddyStatus *b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_HandleGpResult
 s32 DwcFriend_HandleGpResult(s32 r);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_OnProfileSearch
-void DwcFriend_OnProfileSearch(void *x, GPProfileSearchResponseArg *p, s32 idx);
+void DwcFriend_OnProfileSearch(GPConnection *x, GPProfileSearchResponseArg *p, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_GetControlField20
-void *DwcFriend_GetControlField20(void);
+u32 DwcFriend_GetControlField20(void);
 #endif
 #ifndef PROTO_LOCAL_DwcLogin_InitControl
 void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
@@ -151,10 +151,10 @@ void DwcLogin_ResetState(void);
 s32 DwcLogin_HandleGpResult(s32 r);
 #endif
 #ifndef PROTO_LOCAL_DwcLogin_OnGpConnected
-void DwcLogin_OnGpConnected(void *a0, GPConnectResponseArg *x);
+void DwcLogin_OnGpConnected(GPConnection *a0, GPConnectResponseArg *x);
 #endif
 #ifndef PROTO_LOCAL_DwcLogin_OnNasAuthDone
-void DwcLogin_OnNasAuthDone(const char *a, const char *b);
+void DwcLogin_OnNasAuthDone(const char *a, const char *b, u32 arg);
 #endif
 #ifndef PROTO_LOCAL_DwcLogin_GpConnect
 void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d);
@@ -187,13 +187,13 @@ void DwcCore_SetError(s32 a, s32 b);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_DwcFriend_OnBuddyRequestInfo
-void DwcFriend_OnBuddyRequestInfo(void *x, GPGetInfoResponseArg *p);
+void DwcFriend_OnBuddyRequestInfo(GPConnection *x, GPGetInfoResponseArg *p);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_OnAuthorizedInfo
-void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p);
+void DwcFriend_OnAuthorizedInfo(GPConnection *x, GPGetInfoResponseArg *p);
 #endif
 #ifndef PROTO_LOCAL_DwcLogin_OnGpProfileInfo
-void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x);
+void DwcLogin_OnGpProfileInfo(GPConnection *a0, GPGetInfoResponseArg *x);
 #endif
 }
 #endif

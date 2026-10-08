@@ -52,6 +52,13 @@ passed unchanged). Both builds compile without -fpermissive (since 2026-10-08): 
 integer is an error, so a pointer can no longer be cut to 32 bits silently; `tools/host_strict_errors.sh` (64-bit
 syntax check of every C++ unit) reports any that come back.
 
+Portability check: `python3 tools/host_portcheck.py` parses every game unit with libclang for x86_64-linux (the
+baseline: what clang rejects although GCC accepts it) and for arm64-apple-macos and x86_64-w64-windows-gnu with
+`-mno-ms-bitfields` (`--targets` for others), and reports the baseline's errors and, per target, only the diagnostics
+beyond the baseline (`-v` lists them; exit status 0 when all are 0, as they are since 2026-10-08). A clang build:
+`python3 tools/configure_host.py --arch x86_64 --cc clang && ninja -f build_host64_clang.ninja` (build/host64_clang_usa;
+clang from the PATH or an LLVM release unpacked in ~/acww/toolchains/LLVM-*).
+
 The modern build (docs/modern.md) compiles the game with GCC and plays like the original in an emulator. The next
 step is a host build: the same sources compiled for the PC, with the DS hardware replaced. This note records what
 that involves and the choice still open.

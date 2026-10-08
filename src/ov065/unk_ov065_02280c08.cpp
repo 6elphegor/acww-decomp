@@ -16,6 +16,10 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02280c08.h"
 #include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_0227d96c.h"
+#include "proto/ov065/unk_ov065_0227df0c.h"
+#include "proto/ov065/unk_ov065_0228176c.h"
+#include "proto/ov065/unk_ov065_02283304.h"
 
 // ov065 TU47: GP gpiPeer.c (0x02280c08..0x0228176c)
 
@@ -34,25 +38,13 @@ namespace Na {
 
 
 extern "C" {
-void gpiSetErrorString(void *, const char *);
 void gpiSetError(void *, s32, const char *);
 s32 gpiProcessConnect(void *, void *, char *);
-s32 gpiProcessNewProfile(void *, void *, char *);
 s32 gpiProcessGetInfo(void *, void *, char *);
-s32 gpiProcessRegisterUniqueNick(void *, void *, char *);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 gpiSendOrBufferString(void *, void *, const char *);
-s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
-s32 gpiSendOrBufferChar(void *, void *, s32);
-s32 gpiAppendStringToBuffer(void *, void *, const char *);
-s32 gpiAppendIntToBuffer(void *, void *, s32);
-s32 gpiAppendStringToBufferLen(void *, void *, const char *, s32);
-s32 gpiAppendCharToBuffer(void *, void *, s32);
 void ArrayAppend(void *, void *);
-s32 gpiGetProfile(void *, s32, void *);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 void GsGpPeer_SetSocketBuffers(s32);
@@ -93,10 +85,9 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 
 }
 extern "C" {
-s32 gpiPeerFinishTransferMessage(void *h, GPIPeer *n, char *str, s32 len);
-s32 gpiPeerStartTransferMessage(void *h, GPIPeer *n, s32 a, GPITransferID *s);
-s32 gpiPeerAddMessage(void *h, GPIPeer *n, s32 a, const char *b);
-s32 gpiPeerStartConnect(void *h, GPIPeer *n);
+s32 gpiPeerFinishTransferMessage(GPConnection *h, GPIPeer *n, char *str, s32 len);
+s32 gpiPeerStartTransferMessage(GPConnection *h, GPIPeer *n, s32 a, GPITransferID *s);
+s32 gpiPeerAddMessage(GPConnection *h, GPIPeer *n, s32 a, const char *b);
 }
 }
 
@@ -127,22 +118,11 @@ s32 SetSockBlocking(s32, s32);
 char *goastrdup(const char *);
 s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiSendServerBuddyMessage(GPConnection *, s32, s32, const char *);
-s32 gpiClipBufferToPosition(GPConnection *, GPIBuffer *);
-s32 gpiReadMessageFromBuffer(GPConnection *, GPIBuffer *, char **, s32 *, s32 *);
 s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
 s32 gpiRecvToBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32 *, const char *);
-s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
-s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
-s32 gpiAddCallback(GPConnection *, GPICallback, void *, s32, s32);
 s32 gpiSendGetInfo(GPConnection *, s32, s32);
 s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallback, void *);
-s32 gpiPeerStartConnect(GPConnection *, GPIPeer *);
-void gpiRemoveProfile(GPConnection *, GPIProfile *);
-s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
 void gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, const char *);
-void gpiSetErrorString(GPConnection *, const char *);
-s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
-s32 gpiValueForKey(char *, const char *, char *, s32);
 
 s32 gpiCanFreeProfile(GPIProfile *);
 s32 gpiProcessPeerInitiatingConnection(GPConnection *, GPIPeer *);
@@ -435,7 +415,7 @@ s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
                     m->profile = n->profile;
                     m->message = goastrdup(v);
                     m->date = time(0);
-                    r = gpiAddCallback(h, pr.p, m, 0, 2);
+                    r = gpiAddCallback(h, pr, m, 0, 2);
                     if (r != 0) {
                         return r;
                     }
@@ -670,7 +650,7 @@ s32 gpiPeerGetSig(GPConnection *h, GPIPeer *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiPeerStartConnect(void *h, GPIPeer *n) {
+s32 gpiPeerStartConnect(GPConnection *h, GPIPeer *n) {
     SockAddrIn sa;
     GPIProfile *p;
     s32 e;
@@ -712,37 +692,37 @@ s32 gpiPeerStartConnect(void *h, GPIPeer *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiPeerAddMessage(void *h, GPIPeer *n, s32 a, const char *b) {
+s32 gpiPeerAddMessage(GPConnection *h, GPIPeer *n, s32 a, const char *b) {
     s32 len = STD_GetStringLength(b);
     GPIMessage t = {{0, 0, 0, 0}, 0, 0};
     s32 r;
     t.type = a;
-    r = gpiAppendStringToBuffer(h, &t, "\\m\\");
+    r = gpiAppendStringToBuffer(h, &t.buffer, "\\m\\");
     if (r != 0) {
         return r;
     }
-    r = gpiAppendIntToBuffer(h, &t, a);
+    r = gpiAppendIntToBuffer(h, &t.buffer, a);
     if (r != 0) {
         return r;
     }
-    r = gpiAppendStringToBuffer(h, &t, "\\len\\");
+    r = gpiAppendStringToBuffer(h, &t.buffer, "\\len\\");
     if (r != 0) {
         return r;
     }
-    r = gpiAppendIntToBuffer(h, &t, len);
+    r = gpiAppendIntToBuffer(h, &t.buffer, len);
     if (r != 0) {
         return r;
     }
-    r = gpiAppendStringToBuffer(h, &t, "\\msg\\\n");
+    r = gpiAppendStringToBuffer(h, &t.buffer, "\\msg\\\n");
     if (r != 0) {
         return r;
     }
     t.start = t.buffer.len;
-    r = gpiAppendStringToBufferLen(h, &t, b, len);
+    r = gpiAppendStringToBufferLen(h, &t.buffer, b, len);
     if (r != 0) {
         return r;
     }
-    r = gpiAppendCharToBuffer(h, &t, 0);
+    r = gpiAppendCharToBuffer(h, &t.buffer, 0);
     if (r != 0) {
         return r;
     }
@@ -755,7 +735,7 @@ s32 gpiPeerAddMessage(void *h, GPIPeer *n, s32 a, const char *b) {
 
 namespace Na {
 extern "C" {
-s32 gpiPeerStartTransferMessage(void *h, GPIPeer *n, s32 a, GPITransferID *s) {
+s32 gpiPeerStartTransferMessage(GPConnection *h, GPIPeer *n, s32 a, GPITransferID *s) {
     char buf[0x44];
     OS_SPrintf(buf, "\\m\\%d\\xfer\\%d %u %u", a, s->profileid, s->count, s->time);
     return gpiSendOrBufferString(h, n, buf);
@@ -765,7 +745,7 @@ s32 gpiPeerStartTransferMessage(void *h, GPIPeer *n, s32 a, GPITransferID *s) {
 
 namespace Na {
 extern "C" {
-s32 gpiPeerFinishTransferMessage(void *h, GPIPeer *n, char *str, s32 len) {
+s32 gpiPeerFinishTransferMessage(GPConnection *h, GPIPeer *n, char *str, s32 len) {
     char buf[0x24];
     s32 r;
     if (str == 0) {

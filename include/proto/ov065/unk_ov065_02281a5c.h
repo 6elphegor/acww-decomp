@@ -23,10 +23,10 @@ s32 gpiStartProfileSearch(void *h0, void *o0);
 s32 gpiInitSearchData(void *h0, void *out, s32 p2);
 #endif
 #ifndef PROTO_LOCAL_gpiProfilesTableHash
-s32 gpiProfilesTableHash(s32 *p, s32 n);
+s32 gpiProfilesTableHash(void *elem, s32 n);
 #endif
 #ifndef PROTO_LOCAL_gpiProfilesTableCompare
-s32 gpiProfilesTableCompare(s32 *a, s32 *b);
+s32 gpiProfilesTableCompare(void *a, void *b);
 #endif
 #ifndef PROTO_LOCAL_gpiProfilesTableFree
 void gpiProfilesTableFree(void *p);

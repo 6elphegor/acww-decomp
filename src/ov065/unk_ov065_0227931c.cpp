@@ -10,6 +10,8 @@
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_0227931c.h"
+#include "proto/ov065/unk_ov065_02278328.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
@@ -17,11 +19,11 @@
 extern "C" {
 s32 ghiThrottleBufferSize = 125;
 u32 ghiThrottleTimeDelay = 250;
-void **ghiConnections;
+GHIConnection **ghiConnections;
 s32 ghiNextUniqueID;
 s32 ghiNumConnections;
 s32 ghiConnectionsLen;
-void *ghiProxyAddress;
+char *ghiProxyAddress;
 u32 ghiProxyPort;
 s32 ghiReferenceCount;
 }
@@ -56,8 +58,6 @@ s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
 s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
-u32 GOAGetLastError(s32 s);
-s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
 void OS_Sleep(s32 ms);
 u64 func_02132ef8(u64 a, u32 b, u32 c);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
@@ -66,8 +66,6 @@ s32 CheckRcode(s32 a, s32 b);
 s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
-s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 
 }
 
@@ -77,11 +75,6 @@ static inline u32 Unk_ov065_02278dfc_Ntohl(u32 x) {
 }
 }
 extern "C" {
-s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
-void ghiFreeBuffer(GHIBuffer *o);
-s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size);
-s32 ghiInitBuffer(GHIConnection *ow, GHIBuffer *o, s32 size, s32 grow);
-s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 }
 }
 
@@ -92,25 +85,12 @@ typedef void (*GsHttpEncryptCleanupFn)(GHIConnection *, void *);
 
 
 extern "C" {
-extern GHIConnection **ghiConnections;
 extern s32 ghiConnectionsLen;
 extern s32 ghiNumConnections;
 extern s32 ghiNextUniqueID;
 extern u32 ghiThrottleTimeDelay;
 extern s32 ghiThrottleBufferSize;
 
-u32 ArrayLength(DArrayImplementation *);
-s32 send(s32, u8 *, s32, s32);
-s32 recv(s32, u8 *, s32, s32);
-s32 GOAGetLastError(s32);
-void shutdown(s32, s32);
-void closesocket(s32);
-BOOL ghiReadDataFromBuffer(void *, u8 *, s32 *);
-void ghiResetBuffer(void *);
-BOOL ghiAppendDataToBuffer(void *, u8 *, s32);
-void ghiFreeBuffer(void *);
-BOOL ghiInitBuffer(void *, void *, s32, s32);
-BOOL ghiResizeBuffer(void *, s32);
 void ghiPostCleanupState(void *);
 BOOL ghiIsPostAutoFree(void *);
 void ghiFreePost(void *);
@@ -125,15 +105,12 @@ void ghiEnumConnections(BOOL (*)(GHIConnection *));
 
 
 extern "C" {
-s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
 }
 extern "C" {
 void ghiCallPostCallback(GHIConnection *self);
 void ghiCallProgressCallback(GHIConnection *self, char *p1, u32 p2);
 void ghiCallCompletedCallback(GHIConnection *self);
-s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len);
-s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
-s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen);
+s32 ghiDoReceive(GHIConnection *self, char *buf, s32 *plen);
 BOOL ghiDecryptReceivedData(GHIConnection *self);
 void ghiCleanupConnections();
 void ghiRedirectConnection(GHIConnection *self);
@@ -156,7 +133,7 @@ namespace Nm {
 
 extern "C" {
 extern s32 ghiReferenceCount;
-extern void *ghiProxyAddress;
+extern char *ghiProxyAddress;
 extern u32 ghiThrottleTimeDelay;
 extern s32 ghiThrottleBufferSize;
 
@@ -184,16 +161,7 @@ void ghiLock();
 void ghiFreeLock();
 void ghiCreateLock();
 void ghiCleanupConnections();
-s32 ArrayLength(void *);
-GHIPostState *ArrayNth(void *, s32);
 s32 ghiSendBufferedData(GHIConnection *);
-void ghiResetBuffer(void *);
-s32 ghiTrySendThenBuffer(GHIConnection *, const void *, s32);
-s32 ghiDoSend(GHIConnection *, const void *, s32);
-BOOL ghiInitFixedBuffer(GHIConnection *, void *, void *, s32);
-BOOL ghiInitBuffer(GHIConnection *, void *, s32, s32);
-void ghiAppendCharToBuffer(void *, s32);
-BOOL ghiAppendDataToBuffer(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 fread(void *, s32, s32, u32);
 
@@ -211,7 +179,7 @@ GHIPost *ghttpNewPost();
 void ghttpThink();
 s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, ghttpProgressCallback f, ghttpCompletedCallback g, void *h);
 s32 ghttpPostA(const char *a, GHIPost *b, s32 c, ghttpCompletedCallback d, void *e);
-s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j);
+s32 ghttpGetExA(const char *a, const char *b, char *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j);
 s32 ghttpGetA(const char *a, s32 b, ghttpCompletedCallback c, void *d);
 void ghttpCleanup();
 void ghttpStartup();
@@ -262,7 +230,7 @@ s32 ghttpGetA(const char *a, s32 b, ghttpCompletedCallback c, void *d) {
 
 namespace Nm {
 extern "C" {
-s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j) {
+s32 ghttpGetExA(const char *a, const char *b, char *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j) {
     GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
@@ -726,7 +694,7 @@ BOOL ghiDecryptReceivedData(GHIConnection *self) {
 
 namespace Nc {
 extern "C" {
-s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen) {
+s32 ghiDoReceive(GHIConnection *self, char *buf, s32 *plen) {
     s32 len;
     s32 n = *plen - 1;
     if (self->throttle != 0) {
@@ -802,7 +770,7 @@ s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen) {
 
 namespace Nc {
 extern "C" {
-s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len) {
+s32 ghiDoSend(GHIConnection *self, const char *buf, s32 len) {
     s32 r = send(self->socket, buf, len, 0);
     if (r == -1) {
         s32 e = GOAGetLastError(self->socket);
@@ -824,7 +792,7 @@ s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len) {
+s32 ghiTrySendThenBuffer(GHIConnection *self, const char *buf, s32 len) {
     s32 r = 0;
     if (self->sendBuffer.len == 0) {
         r = ghiDoSend(self, buf, len);
@@ -986,7 +954,7 @@ void ghiFreeBuffer(GHIBuffer *o) {
 
 namespace Ng {
 extern "C" {
-s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len) {
+s32 ghiAppendDataToBuffer(GHIBuffer *o, const char *s, s32 len) {
     GHIConnection *ow = o->connection;
     s32 n;
     s32 r;

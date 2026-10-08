@@ -72,7 +72,7 @@ extern s32 OS_WakeupThreadDirect(void *t);
 extern s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
 extern void OS_Sleep(u32 ms);
 
-extern void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
+extern void WifiAp_GetNdwcshapApInfo(u8 *a, void *dst);
 extern u8 *WifiLink_GetConnectedBssid(void);
 extern u8 *WifiLink_GetConnectedSsid(u16 *out);
 extern s32 DwcHttp_AddField(void *l, const char *k, const char *v);

@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_sWifiLinkWork
-extern void *sWifiLinkWork;
+extern struct WifiLinkWork *volatile sWifiLinkWork;
 #endif
 #ifndef PROTO_LOCAL_sWifiLinkSendWaitQueue
 extern OSThreadQueue sWifiLinkSendWaitQueue;
@@ -39,7 +39,7 @@ u8 *WifiLink_GetConnectedBssid();
 u8 *WifiLink_GetConnectedSsid(u16 *out);
 #endif
 #ifndef PROTO_LOCAL_WifiLink_SendFrame
-s32 WifiLink_SendFrame(u32 a, void *b, u32 c);
+s32 WifiLink_SendFrame(u8 *a, void *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_WifiLink_OnSendDone
 void WifiLink_OnSendDone(WMMsg *p);
@@ -75,10 +75,10 @@ s32 WifiLink_Finish(void);
 s32 WifiLink_CleanupAsync(void);
 #endif
 #ifndef PROTO_LOCAL_WifiLink_SearchAsync
-s32 WifiLink_SearchAsync(void *a, void *b, s32 c);
+s32 WifiLink_SearchAsync(const u8 *a, const u8 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_WifiLink_BeginSearchAsync
-s32 WifiLink_BeginSearchAsync(void *a, void *b, s32 c);
+s32 WifiLink_BeginSearchAsync(const u8 *a, const u8 *b, s32 c);
 #endif
 #ifdef __cplusplus
 }

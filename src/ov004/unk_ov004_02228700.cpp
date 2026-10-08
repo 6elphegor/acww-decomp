@@ -63,7 +63,7 @@ public:
 
     /* 0x290 */ AnimModel partModel;     // the second part (obj_tailor2)
     /* 0x348 */ RoomObjRes partRes;
-    /* 0x3ec */ void *partTex;          // its texture: the RoomObjTex_* functions use only this first member
+    /* 0x3ec */ RoomObjTexHandle partTex; // its texture (RoomObjTex without its sync byte)
     /* 0x3f0 */ MatTexVramTask clothTexTask;
     /* 0x418 */ ModelAnim matAnim;
     /* 0x438 */ u32 pad_438;
@@ -73,8 +73,6 @@ public:
 
 extern "C" {
 extern Mtx43 data_021f47e0;
-void RoomObjRes_Free(void *);
-void *RoomObjRes_GetBta(void *, u32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 NNS_G3dBindMdlTex(void *, void *);
 s32 NNS_G3dBindMdlPltt(void *, void *);

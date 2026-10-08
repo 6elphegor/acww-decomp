@@ -14,6 +14,14 @@
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/ov065/unk_ov065_0225f1a0.h"
 #include "proto/ov065/unk_ov065_0225fdf0.h"
+extern "C" {
+SockCoreCommand *SockCore_AllocMsg(void *fn, SockCoreSocket *o, s32 c); // src/ov065/unk_ov065_0225f378.cpp
+u32 OS_DisableInterrupts(void);
+u32 OS_RestoreInterrupts(u32 state);
+void OS_Sleep(u32 msec);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void MI_CpuFill8(void *dst, u32 data, u32 size);
+}
 
 namespace Unk_ov065_02260de4_Ns {
 
@@ -28,29 +36,22 @@ struct SockPollFd {
 extern "C" {
 
 // main module
-s32 OS_DisableInterrupts();
-s32 OS_RestoreInterrupts(s32);
-s32 OS_Sleep(s32);
-s32 MI_CpuCopy8(const void *, void *, s32);
 s32 OS_SNPrintf(char *, u32, const char *, ...);
 s64 func_02133100(s64, s64);
 
 // same overlay, out of range
 s32 SockCore_GetSendRingFree(SockCoreSocket *);
 s32 SockCore_Cleanup();
-u32 SockCore_GetHostIp();
 s32 SockCore_SetDnsServers(u32, u32);
-u32 SockCore_ParseDottedAddr(const char *);
-u32 SockCore_ResolveHost(const char *);
 sptr SockCore_Accept(SockCoreSocket *, u16 *, u32 *);
 s32 SockCore_Listen(SockCoreSocket *);
-s32 SockCore_Connect(SockCoreSocket *, u32, u32);
-s32 SockCore_Bind(SockCoreSocket *, u32);
+s32 SockCore_Connect(SockCoreSocket *, u16, u32);
+s32 SockCore_Bind(SockCoreSocket *, u16);
 sptr SockCore_Create(void *);
 s32 SockCore_Close(SockCoreSocket *);
 s32 SockCore_Shutdown(SockCoreSocket *);
 s32 SockCore_SendTo(SockCoreSocket *, const void *, s32, u32, u32, u32);
-s32 SockCore_RecvFrom(SockCoreSocket *, void *, s32, u16 *, u32 *, u32);
+s32 SockCore_RecvFrom(SockCoreSocket *, void *, s32, u16 *, u32 *, s32);
 s32 Dns_QueryServer(s32, u32, u32);
 s32 IpAddr_Parse(s32, s32 *);
 
@@ -284,7 +285,7 @@ s32 Sock_Cleanup() {
     return SockCore_Cleanup();
 }
 
-char *Sock_InetNtoA(u32 a, ...) {
+char *Sock_InetNtoA(u32 a) {
     Sock_InetNtoP(2, &a, sInetNtoaBuf, 0x10);
     return sInetNtoaBuf;
 }
@@ -470,6 +471,8 @@ s32 SockCore_GetRecvAvailable(SockCoreSocket *o) {
 
 }
 
+namespace Unk_ov065_0225faf4_Ns { struct Unk_ov065_022603bc_Job; } // (the send job, defined below)
+
 namespace Unk_ov065_02260488_Ns {
 
 
@@ -504,25 +507,19 @@ typedef Unk_ov065_02260488_Node Node;
 typedef SockCoreConfig Alloc;
 
 extern "C" {
-u32 OS_DisableInterrupts();
-void OS_RestoreInterrupts(u32);
 s32 OS_GetProcMode();
-void MI_CpuCopy8(void *, void *, u32);
-void MI_CpuFill8(void *, s32, u32);
 void OS_JoinThread(void *);
 void OS_DisableScheduler();
 void OS_EnableScheduler();
 s32 OS_ReceiveMessage(void *, void *, s32);
 void OS_SendMessage(void *, void *, s32);
-void OS_Sleep(s32);
 s32 OS_TryLockMutex(void *);
 
-void SockCore_CmdSend();
-Node *SockCore_AllocMsg(void *, SockCoreSocket *, s32);
+s32 SockCore_CmdSend(Unk_ov065_0225faf4_Ns::Unk_ov065_022603bc_Job *j);
 s32 SockCore_ExecOnSendSide(SockCoreSocket *, Node *);
-void SockCore_FreeMsg(void *);
 void SockCore_PostCommand(void *, s32);
 void SockCore_PostCommandAsync(void *, void *);
+void SockCore_FreeMsg(void *);
 s32 SockCore_DestroyMsgPool();
 s32 Dns_Resolve(const char *);
 s32 IpSoc_AllocEphemeralPort();
@@ -537,9 +534,6 @@ s32 IpStack_RequestStop();
 void WifiLink_SetRecvCallback(s32);
 BOOL SockCore_IsInClosedList(SockCoreSocket *);
 s32 SockCore_IsInvalidHandle(SockCoreSocket *);
-void SockCore_RemoveFromClosedList(void *);
-void SockCore_RemoveFromOpenList(void *);
-void SockCore_AddToClosedList(void *);
 
 extern File *sSockClosedList;
 extern File *sSockOpenList;
@@ -548,11 +542,10 @@ extern u32 gOwnIp;
 extern IpStackConfig sIpStackParams;
 extern u32 sDnsServers[2];
 
-s32 SockCore_QueueSend(File *self, u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s32 wait);
+s32 SockCore_QueueSend(File *self, const u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s32 wait);
 s32 SockCore_GetSendRingFree(File *self);
 s32 SockCore_WaitSendRingSpace(File *self, s32 max, s32 want, s32 *out, s32 wait);
-s32 SockCore_SendLoop(File *self, u8 *buf, s32 len, s32 a4, u32 a5, s32 wait);
-s32 SockCore_SendTo(File *self, u8 *buf, s32 len, s32 a4, u32 a5, u32 a6);
+s32 SockCore_SendLoop(File *self, const u8 *buf, s32 len, s32 a4, u32 a5, s32 wait);
 s32 SockCore_CmdShutdown(Unk_ov065_02260488_Msg *m);
 s32 SockCore_Shutdown(File *self);
 void SockCore_FreeClosedSockets();
@@ -760,7 +753,7 @@ s32 SockCore_Close(File *self) {
     if (Unk_ov065_02260488_Local(self)) {
         SockCore_PostCommand(self->sendPipe, 0);
     }
-    Node *n = SockCore_AllocMsg((void *)SockCore_CmdClose, self, 1);
+    Node *n = (Node *)SockCore_AllocMsg((void *)SockCore_CmdClose, self, 1);
     n->replyQueue = NULL;
     SockCore_PostCommandAsync(self, n);
     return 0;
@@ -871,7 +864,7 @@ s32 SockCore_Shutdown(File *self) {
     self->flags = self->flags | 8;
     Q68 *q = self->sendPipe;
     if (q != NULL && q->owner != 0) {
-        Node *n = SockCore_AllocMsg((void *)SockCore_CmdShutdown, q->owner, self->blocking);
+        Node *n = (Node *)SockCore_AllocMsg((void *)SockCore_CmdShutdown, q->owner, self->blocking);
         if (n == NULL) {
             return -0x21;
         }
@@ -887,7 +880,7 @@ s32 SockCore_CmdShutdown(Unk_ov065_02260488_Msg *m) {
     return 0;
 }
 
-s32 SockCore_SendTo(File *self, u8 *buf, s32 len, s32 a4, u32 a5, u32 a6) {
+s32 SockCore_SendTo(File *self, const void *buf, s32 len, u32 a4, u32 a5, u32 a6) {
     Q68 *q;
     s32 flag;
     if (SockCore_IsInvalidHandle(self)) {
@@ -912,12 +905,12 @@ s32 SockCore_SendTo(File *self, u8 *buf, s32 len, s32 a4, u32 a5, u32 a6) {
         OS_LockMutex(&q->mutex);
         flag = 1;
     }
-    s32 r = SockCore_SendLoop(self, buf, len, a4, a5, flag);
+    s32 r = SockCore_SendLoop(self, (const u8 *)buf, len, a4, a5, flag);
     OS_UnlockMutex(&q->mutex);
     return r;
 }
 
-s32 SockCore_SendLoop(File *self, u8 *buf, s32 len, s32 a4, u32 a5, s32 wait) {
+s32 SockCore_SendLoop(File *self, const u8 *buf, s32 len, s32 a4, u32 a5, s32 wait) {
     s32 lim, total, off;
     total = 0;
     lim = self->sendPipe->owner->txBufSize;
@@ -996,9 +989,9 @@ s32 SockCore_GetSendRingFree(File *self) {
     return r;
 }
 
-s32 SockCore_QueueSend(File *self, u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s32 wait) {
+s32 SockCore_QueueSend(File *self, const u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s32 wait) {
     Q68 *q = self->sendPipe;
-    Node *n = SockCore_AllocMsg((void *)SockCore_CmdSend, q->owner, wait);
+    Node *n = (Node *)SockCore_AllocMsg((void *)SockCore_CmdSend, q->owner, wait);
     if (n == NULL) {
         return -0x21;
     }
@@ -1110,15 +1103,10 @@ extern s32 sSockConnectInProgressError;
 extern SockCoreConfig *sSockCoreConfig;
 extern SockUdpDropCounters sSockUdpDropCount;
 
-u32 OS_DisableInterrupts(...);
-void OS_RestoreInterrupts(u32 v);
 s32 OS_GetProcMode();
-void OS_Sleep(s32 v);
 s32 OS_TryLockMutex(void *m);
-void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 s32 SockCore_ExecOnRecvSide(Sess *s, void *m);
-void *SockCore_AllocMsg(void *fn, void *s, s32 idx);
 s32 SockCore_IsInvalidHandle(Sess *s);
 void IpSoc_Bind(u16 a, u16 b, u32 c);
 s32 IpSoc_TcpConnect();
@@ -1141,7 +1129,6 @@ u8 *SockCore_PeekStreamData(Sess *s, s32 *outlen, u16 *a, u16 *b, u32 *c);
 s32 SockCore_RecvStreamData(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb);
 s32 SockCore_RecvStream(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e);
 s32 SockCore_RecvLocked(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e, s32 f);
-s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e);
 s32 SockCore_CopySendChunk(u8 *buf, s32 n, WJob *j);
 s32 SockCore_CmdSend(WJob *j);
 }
@@ -1242,7 +1229,7 @@ s32 SockCore_CopySendChunk(u8 *buf, s32 n, WJob *j)
     return a + b;
 }
 
-s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
+s32 SockCore_RecvFrom(Sess *s, void *buf, s32 n, u16 *pa, u32 *pb, s32 e)
 {
     s32 blk;
     s32 r;
@@ -1278,7 +1265,7 @@ s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
     } else {
         OS_LockMutex(&c->mutex);
     }
-    r = SockCore_RecvLocked(s, buf, n, pa, pb, blk, e);
+    r = SockCore_RecvLocked(s, (u8 *)buf, n, pa, pb, blk, e);
     OS_UnlockMutex(&c->mutex);
     return r;
 }
@@ -1495,7 +1482,7 @@ s32 SockCore_RecvDatagram(Sess *s, u8 *dst, s32 max, u16 *o1, u32 *o2, s32 block
     Ctx *c = s->recvPipe;
     Node *n;
 
-    irq = OS_DisableInterrupts(c->head);
+    irq = OS_DisableInterrupts();
     n = c->head;
     while (n == NULL) {
         if (block == 0) {

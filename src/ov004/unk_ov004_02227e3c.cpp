@@ -98,7 +98,6 @@ s32 BoxCollider_Register(BoxCollider *, s32, s32, s32, VecFx32 *, s16, VecFx32 *
 s32 TalkRequest_SetTargetDone(void *);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-void *RoomObjRes_GetBca(void *, u32);
 void RoomObj_PlaySe(void *, s32);
 }// declarations (definition order below sets the data layout)
 extern "C" { extern DebugColor data_ov004_02250e70; }

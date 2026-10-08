@@ -343,7 +343,7 @@ VecFx32 *PlayerActor_GetTrackTarget(u32 a);
 BOOL PlayerActor_FieldUseTool(PlayerActor *self);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FieldStartToolAction
-BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, s32 *pos);
+BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, VecFx32 *pos);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FieldInteractAt
 BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a);

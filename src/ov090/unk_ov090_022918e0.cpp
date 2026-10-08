@@ -429,9 +429,9 @@ void MenuTabBar::showTab(u32 idx) {
         if (idx != loadedTab) {
             char buf[0x24];
             vramTasks[0].requestChars(commonObjChars, 8, 0x80, 0x80, 0xbf);
-            void *a = tabObjChars + idx * 0x60;
+            u32 *a = tabObjChars + idx * 0x60;
             u32 t = idx * 3 + 0x80;
-            vramTasks[1].requestCharPair(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
+            vramTasks[1].requestCharPair(a, a + 0x400 / sizeof(u32), 8, t, t + 2, t + 0x20, t + 0x22);
             Str_SPrintf(buf, "menu/tag/obj%d.bpl", idx);
             File_LoadToBuffer(buf, tabPalette, 0x20);
             vramTasks[2].requestPalette(tabPalette, 8, 0xf);

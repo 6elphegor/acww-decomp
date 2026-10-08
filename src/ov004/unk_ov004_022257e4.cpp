@@ -97,11 +97,6 @@ typedef BOOL (Cls::*Fn2)();
 extern "C" {
 extern CommManager *gCommManager;
 
-void *RoomObjRes_GetBca(void *, u32);
-void *RoomObjRes_GetBma(void *, u32);
-void *RoomObjTex_Get(void *);
-void RoomObjTex_Reset(void *);
-void RoomObjRes_Free(void *);
 void CheckInGate_SetInstance(Cls *c);
 
 void Math_ApproachS32Max(s32 *, s32, s32, s32);

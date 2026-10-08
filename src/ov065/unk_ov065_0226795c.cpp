@@ -6,16 +6,18 @@
 #include "net/SslSha1Context.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov065/unk_ov065_0226795c.h"
+extern "C" {
+extern void *(*sIpAlloc)(u32);
+extern void (*sIpFree)(void *);
+void MI_CpuFill8(void *dst, u32 data, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+}
 #pragma opt_strength_reduction off
 
 namespace Unk_ov065_02268470_Ns {
 extern "C" {
 
-extern void *(*sIpAlloc)(u32);
-extern void (*sIpFree)(void *);
 
-void MI_CpuCopy8(const void *src, void *dst, u32 n);
-void *MI_CpuFill8(void *dst, s32 v, u32 n);
 
 
 s32 SslBigNum_GetLength(u16 *a, s32 n)
@@ -442,11 +444,7 @@ void SslBigNum_ModInverse(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp)
 namespace Unk_ov065_02267ac0_Ns {
 extern "C" {
 
-extern u8 *(*sIpAlloc)(u32);
-extern void (*sIpFree)(u8 *);
 
-void MI_CpuFill8(void *, s32, u32);
-void MI_CpuCopy8(const void *, void *, u32);
 
 
 
@@ -518,7 +516,7 @@ void SslBigNum_ModExpMontgomery(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
         }
     }
     SslBigNum_MontgomeryStep(x, p5, 0, n, k, m, p1, p3, p4);
-    sIpFree((u8 *)buf);
+    sIpFree(buf);
 }
 
 void SslBigNum_FromBytes(u16 *dst, u8 *src, s32 n, u32 m) {
@@ -699,8 +697,6 @@ namespace Unk_ov065_022671a0_Ns {
 
 extern "C" {
 
-void MI_CpuFill8(void *dst, s32 v, s32 n);
-void MI_CpuCopy8(const void *src, void *dst, s32 n);
 
 u8 sSslSha1Padding[0x40] = {0x80};
 

@@ -4,6 +4,7 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/Model.h"
+#include "gfx/Mtx43.h"
 #include "gfx/NNSG3dResTex.h"
 #include "gfx/NNSG3dResMdl.h"
 #include "gfx/G3dResAccess.h"
@@ -431,8 +432,8 @@ void Model::setAlpha(u32 v) {
     }
 }
 
-extern "C" BOOL Model_GetJointWorldMtx(u8 *p, void *a, s32 b) {
-    if (!NNS_G3dGetResultMtx((u8 *)((Model *)p)->getRenderObj(), a, 0, b)) {  // (the render object's offset)
+extern "C" BOOL Model_GetJointWorldMtx(Model *p, Mtx43 *a, s32 b) {
+    if (!NNS_G3dGetResultMtx(p->getRenderObj(), a, 0, b)) {
         return FALSE;
     }
     MTX_Concat43(a, NNS_G3dGlbGetInvV(), a);
