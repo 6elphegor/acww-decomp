@@ -43,6 +43,9 @@ s32 Snd_CalcPan(VecFx32 *p, s32 m);
 #ifndef PROTO_LOCAL_Snd_ListenerPanCallback
 s32 Snd_ListenerPanCallback(PlayCtx *p);
 #endif
+#ifndef PROTO_LOCAL_Snd_CalcListenerDistance
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
+#endif
 #ifndef PROTO_LOCAL_SndVolumeCurve_Clear
 void SndVolumeCurve_Clear(Ramp *r);
 #endif

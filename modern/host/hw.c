@@ -182,6 +182,17 @@ static void run_events_body(void) {
         extern void host_heap_check(void);
         host_heap_check();
         host_screenshot();
+        {   // ACWW_POSLOG=<n>: the local player's position (fx32 x y z, in units of 1/4096) every n frames - for
+            // writing input scripts that walk somewhere
+            static long every = -2;
+            if (every == -2) every = getenv("ACWW_POSLOG") ? strtol(getenv("ACWW_POSLOG"), 0, 10) : 0;
+            if (every > 0 && host_frame() % (u64)every == 0) {
+                extern struct VecFx32 *PlayerActor_GetBodyPos(u32 idx);
+                const s32 *p = (const s32 *)PlayerActor_GetBodyPos(4);
+                if (p) fprintf(stderr, "pos %llu %.2f %.2f %.2f\n", (unsigned long long)host_frame(), p[0] / 4096.0,
+                               p[1] / 4096.0, p[2] / 4096.0);
+            }
+        }
         {   // ACWW_EXIT_FRAME=<n>: end the run after frame n (sound file closed as on an interrupt) - test runs
             // stop once they have what they compare instead of running out a timeout
             static long exitAt = -2;

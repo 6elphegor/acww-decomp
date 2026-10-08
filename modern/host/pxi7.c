@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "host.h"
@@ -117,37 +118,105 @@ static void nvram_word(u32 data) {
     if (data & 0x01000000) nvram_command();
 }
 
-// ---- RTC (tag 5): command in bits 8-14; the ARM7 writes the raw BCD date and time to the system work area. The
-// clock is fixed (2026-04-01 12:00:00, a Wednesday), as in the test emulator: runs are reproducible.
+// ---- RTC (tag 5): command in bits 8-14; the ARM7 writes the raw BCD date and time to the system work area
+// (year 00-99 = 2000-2099, month, day, day of the week 0 = Sunday; hour with bit 6 the PM flag, minute, second).
+// The clock is the host's local time; ACWW_RTC="YYYY-MM-DD HH:MM:SS" pins a fixed one (it doesn't advance), and
+// headless runs (ACWW_HEADLESS) default to the fixed 2026-04-01 12:00:00 (a Wednesday) so that they are
+// reproducible (the oracle's captures were taken with it); ACWW_RTC=host gives them the local time.
+static int sRtcFixed = -1;
+static struct tm sRtcTime;
+
+static void rtc_setup(void) {
+    const char *e = getenv("ACWW_RTC");
+    memset(&sRtcTime, 0, sizeof sRtcTime);
+    sRtcFixed = 0;
+    if (e && strcmp(e, "host")) {
+        int y, mo, d, h = 0, mi = 0, sec = 0;
+        if (sscanf(e, "%d-%d-%d %d:%d:%d", &y, &mo, &d, &h, &mi, &sec) >= 3 && y >= 2000 && y <= 2099 && mo >= 1 &&
+            mo <= 12 && d >= 1 && d <= 31 && h >= 0 && h < 24 && mi >= 0 && mi < 60 && sec >= 0 && sec < 60) {
+            sRtcTime = (struct tm){.tm_year = y - 1900, .tm_mon = mo - 1, .tm_mday = d, .tm_hour = h, .tm_min = mi,
+                                   .tm_sec = sec, .tm_isdst = -1};
+            sRtcFixed = 1;
+        } else {
+            fprintf(stderr, "pxi7: ACWW_RTC=\"%s\" is not YYYY-MM-DD HH:MM:SS (2000-2099): using the host's time\n", e);
+        }
+    } else if (!e && getenv("ACWW_HEADLESS")) {
+        sRtcTime = (struct tm){.tm_year = 126, .tm_mon = 3, .tm_mday = 1, .tm_hour = 12, .tm_isdst = -1};
+        sRtcFixed = 1;
+    }
+    if (sRtcFixed) {
+        struct tm t = sRtcTime;
+        t.tm_hour = 12;  // the day of the week (noon: no DST edge)
+        mktime(&t);
+        sRtcTime.tm_wday = t.tm_wday;
+    }
+}
+
+static u32 bcd(int v) { return (u32)(v / 10 << 4 | v % 10); }
+
 static void rtc_command(u32 data) {
     u32 cmd = (data & 0x7f00) >> 8;
     volatile u32 *raw = (volatile u32 *)0x027ffde8;
-    if (cmd == 0x10 || cmd == 0x11) raw[0] = 0x26 | 0x04 << 8 | 0x01 << 16 | 3u << 24;
-    if (cmd == 0x10 || cmd == 0x12) raw[1] = 0x12 | 0x40 | 0x00 << 8 | 0x00 << 16;
+    struct tm t;
+    if (sRtcFixed < 0) rtc_setup();
+    if (sRtcFixed) t = sRtcTime;
+    else {
+        time_t now = time(0);
+        localtime_r(&now, &t);
+        if (t.tm_year < 100) t = (struct tm){.tm_year = 100, .tm_mday = 1, .tm_wday = 6};  // before 2000: 2000-01-01
+        if (t.tm_year > 199)  // after 2099: 2099-12-31 23:59:59
+            t = (struct tm){.tm_year = 199, .tm_mon = 11, .tm_mday = 31, .tm_hour = 23, .tm_min = 59, .tm_sec = 59, .tm_wday = 4};
+    }
+    if (cmd == 0x10 || cmd == 0x11)
+        raw[0] = bcd(t.tm_year % 100) | bcd(t.tm_mon + 1) << 8 | bcd(t.tm_mday) << 16 | (u32)t.tm_wday << 24;
+    if (cmd == 0x10 || cmd == 0x12)
+        raw[1] = (bcd(t.tm_hour) | (t.tm_hour >= 12 ? 0x40u : 0)) | bcd(t.tm_min) << 8 | bcd(t.tm_sec) << 16;
     pxi7_send(5 | (cmd << 8) << 6);
 }
 
 // ---- card backup (tag 11, messages with the error bit): the save memory. CARDi_Request sends a request id; the
 // first request (0) is followed by the address of the shared command block: result 0x00, source 0x0c,
 // destination 0x10, length 0x14, total size 0x18. The reply is a message with the error bit; the result (0 = OK)
-// is in the block. The save memory is a file (ACWW_SAVE, default <rom>.sav), written back on every change.
+// is in the block. Requests (NitroSDK CARDRequest): 2 identify, 6 read, 7 write, 8 program, 9 verify, 10 erase
+// page, 11 erase sector, 12 erase chip. The ARM9 side splits a long write into page-sized requests (the stream
+// command), each followed by a verify. The save memory is kept in the host; with ACWW_SAVE=<file> it is loaded
+// from that file at the first access (a missing file is a blank memory, all 0xff) and every change is written
+// through to it. Without ACWW_SAVE every run starts with a blank save memory and nothing is written to disk.
 static u32 *sCardBlock;
 static int sCardWantBlock;
 static u8 *sSave;
 static u32 sSaveSize;
-static char sSavePath[1024];
+static const char *sSavePath;
+static FILE *sSaveFile;
 
 static void save_load(u32 size) {
     if (sSave && size <= sSaveSize) return;
     sSave = realloc(sSave, size);
     memset(sSave + sSaveSize, 0xff, size - sSaveSize);
     sSaveSize = size;
-    FILE *f = fopen(sSavePath, "rb");
-    if (f) { fread(sSave, 1, size, f); fclose(f); }
+    if (!sSavePath) return;
+    if (!sSaveFile) sSaveFile = fopen(sSavePath, "r+b");  // created at the first write if missing
+    if (sSaveFile) {
+        fseek(sSaveFile, 0, SEEK_SET);
+        size_t n = fread(sSave, 1, size, sSaveFile);
+        fprintf(stderr, "pxi7: save memory %#x bytes, %#zx loaded from %s\n", size, n, sSavePath);
+    }
 }
-static void save_store(void) {
-    FILE *f = fopen(sSavePath, "wb");
-    if (f) { fwrite(sSave, 1, sSaveSize, f); fclose(f); }
+// write a changed range through to the file (the whole memory when the file is new)
+static void save_store(u32 at, u32 len) {
+    if (!sSavePath || at >= sSaveSize) return;
+    if (!sSaveFile) {
+        sSaveFile = fopen(sSavePath, "w+b");
+        if (!sSaveFile) { perror(sSavePath); sSavePath = 0; return; }
+    }
+    fseek(sSaveFile, 0, SEEK_END);
+    long have = ftell(sSaveFile);
+    if (have >= 0 && have < (long)sSaveSize)  // a new or short file: complete it with the memory's rest first
+        fwrite(sSave + have, 1, sSaveSize - (u32)have, sSaveFile);
+    if (len > sSaveSize - at) len = sSaveSize - at;
+    fseek(sSaveFile, (long)at, SEEK_SET);
+    fwrite(sSave + at, 1, len, sSaveFile);
+    fflush(sSaveFile);
 }
 
 static void card_request(u32 data) {
@@ -159,24 +228,29 @@ static void card_request(u32 data) {
     if (b[6]) save_load(b[6]);
     u32 src = b[3], dst = b[4], len = b[5];
     switch (data) {
-    case 6:  // read
+    case 6:  // read: card address src to memory dst
         for (u32 i = 0; i < len; i++) ((u8 *)(uintptr_t)dst)[i] = src + i < sSaveSize ? sSave[src + i] : 0xff;
         break;
-    case 7: case 8:  // write, program
+    case 7: case 8:  // write, program: memory src to card address dst
         for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = ((u8 *)(uintptr_t)src)[i];
-        save_store();
+        save_store(dst, len);
         break;
     case 9:  // verify
         for (u32 i = 0; i < len && dst + i < sSaveSize; i++) if (sSave[dst + i] != ((u8 *)(uintptr_t)src)[i]) result = 5;
         break;
     case 10: case 11:  // erase page/sector
         for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = 0xff;
-        save_store();
+        save_store(dst, len);
         break;
-    default: break;  // identify, read id, ...
+    case 12:  // erase chip
+        if (sSave) memset(sSave, 0xff, sSaveSize);
+        save_store(0, sSaveSize);
+        break;
+    default: break;  // identify, read id, status ...
     }
     b[0] = result;
-    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %x dst %x len %x -> %u\n", data, src, dst, len, result);
+    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %x dst %x len %x -> %u (frame %llu)\n", data, src, dst, len, result,
+                              (unsigned long long)host_frame());
     pxi7_send_after(11 | 1u << 5, 20000);
 }
 
@@ -312,8 +386,8 @@ void pxi7_init(void) {
         t = strchr(t, ';');
         if (t) t++;
     }
-    const char *sv = getenv("ACWW_SAVE");
-    snprintf(sSavePath, sizeof sSavePath, "%s%s", sv ? sv : gHostRomPath, sv ? "" : ".sav");
+    sSavePath = getenv("ACWW_SAVE");
+    if (sSavePath && !*sSavePath) sSavePath = 0;
     const char *fw = getenv("ACWW_FIRMWARE");
     FILE *f = fw ? fopen(fw, "rb") : 0;
     if (f) { sNvramSize = (u32)fread(sNvram, 1, sizeof sNvram, f); fclose(f); }

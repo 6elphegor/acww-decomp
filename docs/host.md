@@ -13,7 +13,10 @@ Checking changes without the matching ROM: the behaviour must not change. The 32
 `~/acww/ref/oracle/oracle.sh <binary> quick|play` compares a build's screenshots and sound with captures of the
 reference build (`~/acww/ref/oracle`, not in the repository: commit a7a796d3 plus the fix of a read of stack garbage
 that made the earlier captures depend on stack contents; `oracle.sh <binary> record` re-records): `quick` - the attract demo and title, 60 s; `play` -
-scripted play through the intro (A every second), screenshots to frame 25000. The 64-bit build is compared with
+scripted play through the intro (A every second), screenshots to frame 25000. Since `Snd_CalcListenerDistance` is
+implemented (2026-10-08) the `quick` sound differs from the captures from ~25 s on: the attract demo's positional
+sounds (villagers, the town scene) had full volume with the stub, now they fade with distance; the screenshots and
+the `play` captures are unchanged, and a build with the stub put back matches the captures exactly. The 64-bit build is compared with
 the same captures (its virtual timing drifts by a frame or two after the first scene changes).
 
 `ACWW_EXIT_FRAME=<n>` ends a run after frame n (the sound file closed as on an interrupt): oracle.sh uses it, so a
@@ -106,11 +109,17 @@ viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for
 A = Y, Q/W = L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches; M mutes. Sound goes to
 the default audio device (SDL), about 70 ms behind.
 
-Environment: `ACWW_SAVE` (save file, default `<rom>.sav`), `ACWW_HEADLESS=1` (no window), `ACWW_FAST=1` (not paced to
-60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
+Environment: `ACWW_SAVE=<file>` (the save memory - the card's 256 KB backup flash - is loaded from that file at the
+game's first access and every write goes through to it; a missing file is a blank memory, created at the first
+write. Without `ACWW_SAVE` every run starts blank and nothing is written to disk), `ACWW_RTC` (the clock: the host's
+local time, years clamped to 2000-2099; `ACWW_RTC="2026-10-08 12:00:00"` pins a fixed date and time that doesn't
+advance. Headless runs default to the fixed 2026-04-01 12:00:00, the clock the oracle's captures were taken with, so
+that scripted runs stay reproducible; `ACWW_RTC=host` gives them the local time), `ACWW_HEADLESS=1` (no window),
+`ACWW_FAST=1` (not paced to 60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
 `ACWW_WAV=file.wav` (the sound, also headless; ACWW_KEYS masks are hex KEYINPUT bits: 1 A, 2 B, 8 Start, 10 Right,
 20 Left, 40 Up, 80 Down, 400 X, 800 Y), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
-`ACWW_IOHIST` (register accesses by address and code, to `acww_iohist.txt`), `ACWW_NOEMULATE` (single-step every
+`ACWW_IOHIST` (register accesses by address and code, to `acww_iohist.txt`), `ACWW_POSLOG=<n>` (the local player's
+position every n frames: for writing input scripts that walk somewhere), `ACWW_NOEMULATE` (single-step every
 access), `ACWW_WATCH=addr:len`, `ACWW_PROFILE`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
 `ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the viewer's audio
 device, underruns).
@@ -125,8 +134,8 @@ The runtime (`modern/host/`):
 - `vram.c`: VRAM banking with mmap (each VRAMCNT change remaps the banks into the CPU's windows).
 - `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
 - `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
-- `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (fixed clock), touch panel,
-  card backup (save file, replies delayed like the DS's), power management (PMIC registers kept in the host:
+- `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (the host's local time;
+  `ACWW_RTC`), touch panel, card backup (the save memory, `ACWW_SAVE`; replies delayed like the DS's), power management (PMIC registers kept in the host:
   backlights, sound amp, LED, battery never low; power-off ends the run); sound commands go to `snd7/`.
 - `snd7/`: the ARM7's sound driver, native: NitroSDK's driver (commands, sequence player, channel allocation,
   envelopes, LFOs, alarms; ported from pret/pokediamond's decompilation of the same SDK driver, its command set and
@@ -206,7 +215,7 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   Checked by cutting `gSaveData` out of `ACWW_RAMDUMP`s of both builds at the same frames of the scripted intro: the
   images differ only in content (random ids once the two runs' random numbers part, the bulletin board's default
   posts: the mail text builder's members are still DS-sized blobs, `include/talk/MailTextBuilder.h`), not in
-  layout. Neither build reaches the intro's first save yet. The i386 build crashed on arriving in town (ov009's
+  layout. The i386 build crashed on arriving in town (ov009's
   `sBuildingResources` still held the title demo's freed resources); with overlays reset on load it arrives in town
   and goes through the town hall's tutorial. It then stalled in `PMi_WaitBusy`: the game polls the battery every 20
   frames once the player can move (`LowBattery_Poll` -> `PM_GetBattery`, a PMIC register read through the PXI's PM
@@ -214,7 +223,24 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   stops at frame 21050, then Down from 21100 to 21500) the player leaves the town hall (town at ~frame 22000) and
   walks around town (checked to frame 34000: villagers, beach, no stop). With A and Start kept going after the
   tutorial the player only talks to Pelly again and again (Start opens the save menu, "I can't save right now" in a
-  new town until the first save). The
+  new town until the first save). How a new game first saves: the town hall's tutorial ends, the player goes into
+  their house (scene 1, a house room) and out again; Tom Nook then waits in front of the house (a visitor:
+  `Visitor_CheckTomNook` wants the previous scene to be a house room), tells about the loan, walks off and clears the
+  new-town state (`SpNpcNookIntro::mainAct04` -> `GameStart_Clear`); from then on Start opens "Do you want to quit
+  playing for now?" with "Save and end" first: the save (both copies of the town data, 0x0-0x2bfc0 in 256-byte
+  writes, each verified) and the title screen. The script that gets there (i386, the oracle's firmware image): the
+  town script above (A every 60 frames from 2400 to 21050, a touch at (128,96) at 2200, a touch at (218,180) every
+  600 frames from 7630 to 21050, Start every 60 frames from 7650 to 21050, Down 21100-21500), then (frame:frames:keys,
+  hex) 23200:60:80 23300:200:10 23520:220:80 23750:620:10 24380:120:80 24510:400:10 24970:175:40 25150:64:10
+  25220:100:40 25330:14:20 25350:150:40 (south, east, south over the lower bridge, east, north, to the house door at
+  (151, 109)), A at 25700-25940 every 60 (opens the door), 26600:150:80 (back out), A every 60 frames 27000-33540
+  (Tom Nook's talk), Start at 34000, A at 34200, 34400, ..., 35200 (Save and end). The save is written at frames
+  34786-34907 and the title screen is back at ~36500. A second run with that save file (`ACWW_SAVE`, the touch at
+  2200 and A every 60 frames from 2400) takes the title's continue path: a greeting ("Hello! You came"), the player wakes up in
+  the house ("Please wake up your player"), the game saves its start-of-session state (`card 7` at 0x2200 and
+  0x15e00) and the player stands in front of the house in town at ~frame 6000. With `ACWW_RTC="2026-10-08 18:30:00"` the same
+  continue shows 10/8 (Thursday) 6:30 PM, the evening sky and the weeds of the days that passed. `ACWW_POSLOG` and the town map
+  (X, the pocket's map tab) were how the walk was found. The
   x86-64 build plays the same way: the name entries, the town (frame ~12430), Kapp'n's warp to the town hall, the
   tutorial, then out of the town hall and around town (checked to frame 44000, no stop). Its virtual timing drifts
   from the i386 build's by more than a few frames in the town hall (a Start press lands in the save menu: "I can't
