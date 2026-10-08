@@ -18,7 +18,6 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_sTabSwitchCooldown  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -76,7 +75,6 @@ typedef void (MenuTabBar::*Unk_ov090_022921e0_Fn)();
 extern "C" {
 }
 
-extern "C" u8 sTabSwitchCooldown;
 extern "C" u32 sTabBarOamCells[32];
 
 static inline BOOL Unk_ov090_02291aa0_Both() {
@@ -121,11 +119,13 @@ BOOL MenuTabBar::onDraw() {
     s32 j = 0;
     i = j;
     for (; i <= 7; i++, j += 2) {
-        Oam_DrawObj(1, &sTabBarOamCells[j * 2], 0x80, slideY + 0x50, -1, 2, 0);
-        Oam_DrawObj(1, &sTabBarOamCells[(j + 1) * 2], 0x80, slideY + 0x50, -1, 2, 0);
+        Oam_DrawObj(1, &sTabBarOamCells[j * 2], 0x80, slideY + 0x50, -1, 2, NULL);
+        Oam_DrawObj(1, &sTabBarOamCells[(j + 1) * 2], 0x80, slideY + 0x50, -1, 2, NULL);
     }
     return TRUE;
-}// Declarations for data defined further down (definition order sets the data layout)
+}
+
+// Declarations for data defined further down (definition order sets the data layout)
 extern "C" ProcProfile sMenuTabBarProfile;
 extern "C" u32 sTabBarOamCells[32];
 
@@ -168,7 +168,7 @@ BOOL MenuTabBar::execMain() {
             if (slideY >= 0xe) {
                 slideY = 0x10;
             } else {
-                slideY = *(volatile u8 *)&slideY + 2;
+                slideY = slideY + 2;
             }
         }
     } else if (slideY != 0) {
@@ -176,7 +176,7 @@ BOOL MenuTabBar::execMain() {
             visible = 0;
             slideY = 0;
         } else {
-            slideY = *(volatile u8 *)&slideY - 4;
+            slideY = slideY - 4;
         }
     }
     if (lrSwitchEnabled != 0) {
@@ -339,7 +339,7 @@ void MenuTabBar::stateSlideIn() {
 }
 
 void MenuTabBar::stateSlideOut() {
-    if (*(volatile u8 *)&slideY <= 4) {
+    if (slideY <= 4) {
         visible = 0;
         setPhase(0);
     } else {
@@ -461,4 +461,6 @@ BOOL MenuTabBar::isJustOpened() {
     }
     return FALSE;
 }
+extern "C" {
 u8 sTabSwitchCooldown;
+}

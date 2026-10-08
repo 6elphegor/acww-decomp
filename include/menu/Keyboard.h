@@ -35,7 +35,7 @@ public:
     /* 0x002e */ u8 layout;
     /* 0x002f */ u8 cursorWrap;
     /* 0x0030 */ GXOamAttr *tabCells; // the page tab cell (3 tab objects, then the bar cell from entry 3)
-    /* 0x0034 */ u8 unk_34[0x22f4 - 0x34];
+    /* 0x0034 */ u8 keyChars[0x22c0];  // the key characters of the current mode (uploaded to BG chars 0x1ea..)
     /* 0x22f4 */ BgVramTask bgTasks[2];
     /* 0x233c */ LabelString labels[2];
     /* 0x23bc */ u8 screenBuf[0x800];

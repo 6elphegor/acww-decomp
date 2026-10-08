@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -35,6 +34,7 @@
 #include "proto/main/unk_02090268.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/ov076/unk_ov076_022713c0.h"
 
 
@@ -49,11 +49,10 @@ struct SpNpcPascalMsgLocal {
     u16 item;
 };
 
-struct Unk_ov076_02271a3c_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
+// the whole frame of an fx32 frame counter, as the DS code reads it (bits 12..27)
+static inline u32 SpNpcPascal_FrameInt(s32 frame) {
+    return ((u32)frame >> 12) & 0xffff;
+}
 
 
 extern "C" {
@@ -61,12 +60,10 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void EventWeekSlots_MarkPlayer(u32 id);
-void TalkRequest_SetTargetDone(void *self);
-void Math_StepAngle(void *a, s32 b, s32 c);
+BOOL TalkRequest_SetTargetDone(Character *c);
+BOOL Math_StepAngle(s16 *p, s16 target, s16 step);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
-extern u32 gVec3Zero;
-extern u32 __ptmf_null[];
 }
 
 
@@ -168,20 +165,6 @@ extern "C" {
 extern const TalkStartMsg sSpNpcPascalTopicMsgs[3];
 }
 
-typedef BOOL (SpNpcPascal::*SpNpcPascalActFn)();
-extern "C" {
-void _ZN11SpNpcPascal9mainAct03Ev();
-void _ZN11SpNpcPascal10setupAct05Ev();
-void _ZN11SpNpcPascal9mainAct05Ev();
-void _ZN11SpNpcPascal9mainAct04Ev();
-void _ZN11SpNpcPascal9mainAct01Ev();
-void _ZN11SpNpcPascal10setupAct04Ev();
-void _ZN11SpNpcPascal10setupAct03Ev();
-void _ZN11SpNpcPascal9mainAct02Ev();
-void _ZN11SpNpcPascal10setupAct00Ev();
-void _ZN11SpNpcPascal10setupAct01Ev();
-void _ZN11SpNpcPascal9mainAct00Ev();
-}
 // ---------------------------------------------------------------------------------------------------------------------
 
 SpNpcPascal *SpNpcPascal_Create() {
@@ -288,7 +271,7 @@ BOOL SpNpcPascal::setupAct04() {
         t = -t;
     }
     spinSpeed = t;
-    lookAt.setTarget(0, 0, NULL, (VecFx32 *)(&gVec3Zero), 4, data_020c6d1c, 1);
+    lookAt.setTarget(0, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     diveStartZ = position.z;
     return TRUE;
 }
@@ -299,12 +282,12 @@ BOOL SpNpcPascal::mainAct04() {
         ((NpcAnimCtrl *)(&animCtrl))->isAnimFinished((NpcActor *)(this))) {
         changeAct(5);
     } else {
-        if (((NpcAnimCtrl *)(&animCtrl))->getAnimId(0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)(HOST_AT(this, 0x190, model.curFrame, 0)))->mid == 0xb) {
-            *(HOST_AT(this, 0x511, shadowEnabled, 0)) = 0;
-            *(HOST_AT(this, 0x510, collisionEnabled, 0)) = 0;
+        if (((NpcAnimCtrl *)(&animCtrl))->getAnimId(0) == 0xf9 && SpNpcPascal_FrameInt(model.curFrame) == 0xb) {
+            shadowEnabled = 0;
+            collisionEnabled = 0;
         }
         Math_StepAngle(&rotY, 0, spinSpeed);
-        if (((Unk_ov076_02271a3c_Bits *)(HOST_AT(this, 0x190, model.curFrame, 0)))->mid == 0x1b) {
+        if (SpNpcPascal_FrameInt(model.curFrame) == 0x1b) {
             VecFx32 *pv = (VecFx32 *)&position;
             v.x = pv->x;
             v.y = pv->y;
@@ -345,7 +328,7 @@ BOOL SpNpcPascal::mainAct05() {
 void SpNpcPascalTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
-        resultHandler = *(Fn *)__ptmf_null;
+        resultHandler = NULL;
     }
 }
 
@@ -385,7 +368,7 @@ SpNpcPascalTalk::~SpNpcPascalTalk() {}
 
 void SpNpcPascalTalk::resetMsg() {
     ActorTalkRequest::resetMsg();
-    resultHandler = *(Fn *)__ptmf_null;
+    resultHandler = NULL;
 }
 
 void SpNpcPascalTalk::attachOwner(SpNpcPascal *o) {
@@ -557,7 +540,7 @@ void SpNpcPascal::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:
@@ -583,23 +566,12 @@ extern "C" ActorProfile sSpNpcPascalProfile = {(void *(*)())SpNpcPascal_Create, 
 
 extern "C" u8 sSpNpcPascalTexturePath[28] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 's', 'e', 'o', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-void *data_ov076_02272070[2] = {(void *)_ZN11SpNpcPascal10setupAct01Ev, 0};
-void *data_ov076_02272068[2] = {(void *)_ZN11SpNpcPascal10setupAct00Ev, 0};
-void *data_ov076_02272038[2] = {(void *)_ZN11SpNpcPascal9mainAct05Ev, 0};
-void *data_ov076_02272058[2] = {(void *)_ZN11SpNpcPascal10setupAct03Ev, 0};
-void *data_ov076_02272050[2] = {(void *)_ZN11SpNpcPascal10setupAct04Ev, 0};
-void *data_ov076_02272048[2] = {(void *)_ZN11SpNpcPascal9mainAct01Ev, 0};
-void *data_ov076_02272060[2] = {(void *)_ZN11SpNpcPascal9mainAct02Ev, 0};
-void *data_ov076_02272078[2] = {(void *)_ZN11SpNpcPascal9mainAct00Ev, 0};
-void *data_ov076_02272020[2] = {(void *)_ZN11SpNpcPascal9mainAct03Ev, 0};
-void *data_ov076_02272030[2] = {(void *)_ZN11SpNpcPascal10setupAct05Ev, 0};
-void *data_ov076_02272040[2] = {(void *)_ZN11SpNpcPascal9mainAct04Ev, 0};
 
 SpNpcPascalActEntry sSpNpcPascalActTable[6] = {
-    {*(SpNpcPascalActFn *)data_ov076_02272068, *(SpNpcPascalActFn *)data_ov076_02272078},
-    {*(SpNpcPascalActFn *)data_ov076_02272070, *(SpNpcPascalActFn *)data_ov076_02272048},
-    {NULL, *(SpNpcPascalActFn *)data_ov076_02272060},
-    {*(SpNpcPascalActFn *)data_ov076_02272058, *(SpNpcPascalActFn *)data_ov076_02272020},
-    {*(SpNpcPascalActFn *)data_ov076_02272050, *(SpNpcPascalActFn *)data_ov076_02272040},
-    {*(SpNpcPascalActFn *)data_ov076_02272030, *(SpNpcPascalActFn *)data_ov076_02272038},
+    {&SpNpcPascal::setupAct00, &SpNpcPascal::mainAct00},
+    {&SpNpcPascal::setupAct01, &SpNpcPascal::mainAct01},
+    {NULL, &SpNpcPascal::mainAct02},
+    {&SpNpcPascal::setupAct03, &SpNpcPascal::mainAct03},
+    {&SpNpcPascal::setupAct04, &SpNpcPascal::mainAct04},
+    {&SpNpcPascal::setupAct05, &SpNpcPascal::mainAct05},
 };

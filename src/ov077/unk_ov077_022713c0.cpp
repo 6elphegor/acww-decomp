@@ -27,7 +27,7 @@
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerSpNpcRecord.h"
-#define PROTO_LOCAL_PlayerActor_LocalPlayAnim99  // declared below: the shared prototype conflicts with the calls here
+#include "town/ResettiVisitFlag.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -49,20 +49,18 @@ class SpNpcResettiTalk;
 extern "C" {
 void TalkRequestFlags_ClearResetti();
 void TalkRequestFlags_SetResetti();
-s32 Math_IsInRange(void *p, u32 lo, u32 hi);
-s32 Math_CountDownU8(void *p);
-BOOL TalkRequest_SetTargetDone(void *p);
-void _ZN16ResettiVisitFlag3setEj(void *p, u32 v);
+BOOL Math_IsInRange(s32 v, s32 a, s32 b);
+u8 Math_CountDownU8(u8 *p);
+BOOL TalkRequest_SetTargetDone(Character *c);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, void *v);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 s32 BlockMap_FindItemAllAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g1, s32 g2);
 s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
-void PlayerActor_LocalPlayAnim99(void *p);
+void PlayerActor_LocalPlayAnim99();
 extern u16 data_020c6cc8;
 extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
-extern u32 __ptmf_null[];
 }
 
 
@@ -102,15 +100,10 @@ public:
     u8 pad_b9[3];
 };
 
-struct Unk_ov077_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-union Unk_ov077_Word {
-    u32 w;
-    Unk_ov077_Bits b;
-};
+// the whole frame of an fx32 frame counter, as the DS code reads it (bits 12..27)
+static inline u32 SpNpcResetti_FrameInt(s32 frame) {
+    return ((u32)frame >> 12) & 0xffff;
+}
 
 
 
@@ -184,55 +177,22 @@ u8 sSpNpcResettiTexturePath[27] = {'n','p','c','_','s','p','/','m','o','d','e','
 
 ActorProfile sSpNpcResettiProfile = {(void *(*)())SpNpcResetti_Create, 0x65, 0x6b, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" {
-void _ZN12SpNpcResetti9mainAct04Ev();
-void _ZN16SpNpcResettiTalk16scriptWaitForTipEv();
-void _ZN12SpNpcResetti10setupAct00Ev();
-void _ZN12SpNpcResetti9mainAct00Ev();
-void _ZN12SpNpcResetti10setupAct01Ev();
-void _ZN12SpNpcResetti9mainAct01Ev();
-void _ZN12SpNpcResetti10setupAct02Ev();
-void _ZN12SpNpcResetti9mainAct02Ev();
-void _ZN12SpNpcResetti10setupAct03Ev();
-void _ZN12SpNpcResetti10setupAct04Ev();
-void _ZN16SpNpcResettiTalk18scriptCheckApologyEv();
-void _ZN12SpNpcResetti10setupAct05Ev();
-void _ZN12SpNpcResetti9mainAct03Ev();
-void _ZN12SpNpcResetti9mainAct05Ev();
-}
 
-typedef BOOL (SpNpcResetti::*SpNpcResettiActFn)();
-typedef void (SpNpcResettiTalk::*SpNpcResettiTalkScriptFn)();
 
-void *data_ov077_02272104[2] = {(void *)_ZN12SpNpcResetti9mainAct01Ev, 0};
-void *data_ov077_022720cc[2] = {(void *)_ZN12SpNpcResetti10setupAct03Ev, 0};
-void *data_ov077_022720dc[2] = {(void *)_ZN12SpNpcResetti10setupAct00Ev, 0};
-void *data_ov077_0227212c[2] = {(void *)_ZN12SpNpcResetti9mainAct00Ev, 0};
-void *data_ov077_02272124[2] = {(void *)_ZN12SpNpcResetti10setupAct01Ev, 0};
-void *data_ov077_022720fc[2] = {(void *)_ZN16SpNpcResettiTalk18scriptCheckApologyEv, 0};
-void *data_ov077_02272114[2] = {(void *)_ZN12SpNpcResetti10setupAct02Ev, 0};
-void *data_ov077_0227210c[2] = {(void *)_ZN12SpNpcResetti9mainAct02Ev, 0};
-void *data_ov077_022720ec[2] = {(void *)_ZN12SpNpcResetti9mainAct04Ev, 0};
-void *data_ov077_022720c4[2] = {(void *)_ZN12SpNpcResetti10setupAct04Ev, 0};
-void *data_ov077_022720d4[2] = {(void *)_ZN16SpNpcResettiTalk16scriptWaitForTipEv, 0};
-void *data_ov077_0227211c[2] = {(void *)_ZN12SpNpcResetti10setupAct05Ev, 0};
-void *data_ov077_022720e4[2] = {(void *)_ZN12SpNpcResetti9mainAct03Ev, 0};
-void *data_ov077_022720f4[2] = {(void *)_ZN12SpNpcResetti9mainAct05Ev, 0};
 
 SpNpcResettiTalkScript sSpNpcResettiTalkScripts[3] = {
     {NULL, 0},
-    {*(SpNpcResettiTalkScriptFn *)data_ov077_022720fc, 0},
-    {*(SpNpcResettiTalkScriptFn *)data_ov077_022720d4, 1},
+    {&SpNpcResettiTalk::scriptCheckApology, 0},
+    {&SpNpcResettiTalk::scriptWaitForTip, 1},
 };
 
-#define T(a) *(SpNpcResettiActFn *)data_ov077_##a
 SpNpcResettiActEntry sSpNpcResettiActTable[6] = {
-    {T(022720dc), T(0227212c)},
-    {T(02272124), T(02272104)},
-    {T(02272114), T(0227210c)},
-    {T(022720cc), T(022720e4)},
-    {T(022720c4), T(022720ec)},
-    {T(0227211c), T(022720f4)},
+    {&SpNpcResetti::setupAct00, &SpNpcResetti::mainAct00},
+    {&SpNpcResetti::setupAct01, &SpNpcResetti::mainAct01},
+    {&SpNpcResetti::setupAct02, &SpNpcResetti::mainAct02},
+    {&SpNpcResetti::setupAct03, &SpNpcResetti::mainAct03},
+    {&SpNpcResetti::setupAct04, &SpNpcResetti::mainAct04},
+    {&SpNpcResetti::setupAct05, &SpNpcResetti::mainAct05},
 };
 
 static inline BOOL Unk_ov077_02271bf4_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
@@ -425,11 +385,11 @@ BOOL SpNpcResetti::setupAct04() {
 }
 
 BOOL SpNpcResetti::mainAct04() {
-    s32 r = PlayerActor_GetCharacter(4);
-    s16 v = ((NpcActor *)(this))->getAngleTo((NpcActor *)((void *)r));
+    Character *r = (Character *)PlayerActor_GetCharacter(4);
+    s16 v = ((NpcActor *)(this))->getAngleTo((NpcActor *)(r));
     rotY = v;
     moveAngleY = v;
-    if ((s16)((Unk_ov077_Word *)&model.curFrame)->b.mid == 0xc) {
+    if ((s16)SpNpcResetti_FrameInt(model.curFrame) == 0xc) {
         Effect_End(effectHandle);
         effectHandle = -1;
     }
@@ -453,12 +413,12 @@ BOOL SpNpcResetti::setupAct05() {
 }
 
 BOOL SpNpcResetti::mainAct05() {
-    s32 r = PlayerActor_GetCharacter(4);
+    Character *r = (Character *)PlayerActor_GetCharacter(4);
     s32 f;
-    s16 v = ((NpcActor *)(this))->getAngleTo((NpcActor *)((void *)r));
+    s16 v = ((NpcActor *)(this))->getAngleTo((NpcActor *)(r));
     rotY = v;
     moveAngleY = v;
-    f = (s16)((Unk_ov077_Word *)&model.curFrame)->b.mid;
+    f = (s16)SpNpcResetti_FrameInt(model.curFrame);
     if (f == 2) {
         effectHandle = Effect_Create(0x30, &position, 0, 0);
     }
@@ -471,7 +431,7 @@ BOOL SpNpcResetti::mainAct05() {
     if (animCtrl.isPlayingAnim(0xfe, &moveAnimSet)) {
         if (actionCtrl.isActionDone()) {
             TalkRequest_SetTargetDone(this);
-            _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(TownSessionState_Get()), 0);
+            TownSessionState_GetResettiFlag(TownSessionState_Get())->set(0);
             ProcBase_RequestDelete(this);
             if (effectHandle != -1) {
                 Effect_End(effectHandle);
@@ -484,19 +444,17 @@ BOOL SpNpcResetti::mainAct05() {
 }
 
 void SpNpcResettiTalk::update() {
-    s32 i = script * 12;
-    if (((u8 *)&sSpNpcResettiTalkScripts[0].flag)[i] != 0) {
-        if (((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
-            (this->*((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
+    if (sSpNpcResettiTalkScripts[script].flag != 0) {
+        if (sSpNpcResettiTalkScripts[script].fn != NULL) {
+            (this->*sSpNpcResettiTalkScripts[script].fn)();
         }
     }
 }
 
 void SpNpcResettiTalk::onTaskDone(u32) {
-    s32 i = script * 12;
-    if (((u8 *)&sSpNpcResettiTalkScripts[0].flag)[i] == 0) {
-        if (((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
-            (this->*((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
+    if (sSpNpcResettiTalkScripts[script].flag == 0) {
+        if (sSpNpcResettiTalkScripts[script].fn != NULL) {
+            (this->*sSpNpcResettiTalkScripts[script].fn)();
             setScript(0);
         }
     }
@@ -565,7 +523,7 @@ void SpNpcResettiTalk::attachOwner(SpNpcResetti *owner) {
 void SpNpcResettiTalk::onSignalTag(s32 a) {
     switch (a) {
     case 0:
-        PlayerActor_LocalPlayAnim99(this);
+        PlayerActor_LocalPlayAnim99();
         break;
     case 1:
         Snd_SeEmitterPlayOneShotAlt(&ownerNpc->seEmitter, 0x7f4, 0x7f, 0);
@@ -641,7 +599,7 @@ void SpNpcResettiTalk::onChoice(u32) {
     case 0x20:
     case 0x21: {
         u32 n = Random_GlobalBelow(0xd);
-        if (Math_IsInRange((void *)getChoiceList()->getSliderValue(), n, n + 5) != 0) {
+        if (Math_IsInRange(getChoiceList()->getSliderValue(), n, n + 5) != 0) {
             cmd = 0x22;
         } else {
             cmd = Random_GlobalBelow(2) == 0 ? 0x20 : 0x21;
@@ -661,7 +619,7 @@ void SpNpcResetti::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

@@ -34,14 +34,12 @@
 #include "save/Pattern.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
-#define PROTO_LOCAL_ClothTex_GetBufferSize  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/Model.h"
+#include "save/SaveData.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_0203c638.h"
@@ -57,138 +55,41 @@ class SpNpcBlanca;
 class SpNpcBlancaTalk;
 
 
-struct Unk_ov074_02271564_A {
-    u16 a;
-    u8 b[8];
-    u16 c;
-    u8 d[8];
-    s8 e;
-    u8 f;
-    u8 g[16];
-    u8 h;
-};
-
-struct Unk_ov074_02271564_B {
-    u16 a;
-    u8 b[8];
-    u16 c;
-    u8 d[8];
-    s8 e;
-    u8 f;
-};
-
-
-
-struct Unk_ov074_02271e54_V {
-    s32 x, y, z, w;
-};
-
-
-// Other modules' methods are called through their mangled symbol names (self first).
-#define NpcFootstepFx_disableFootsteps _ZN13NpcFootstepFx16disableFootstepsEv
-#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
-#define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
-#define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
-#define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
-#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP7VecFx32
-#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define func_0206260c _ZN8ItemNameD1Ev
-#define func_0206267c _ZN8ItemNameC1Ev
-#define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
-#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define Pattern_getInfo _ZN7Pattern7getInfoEv
-#define PatternInfo_getTitle _ZN11PatternInfo8getTitleEPv
-#define PatternInfo_getAuthor _ZN11PatternInfo9getAuthorEv
-#define func_02072064 _ZN11PatternInfoD1Ev
-#define BlancaFaceRecord_getConcept _ZN16BlancaFaceRecord10getConceptEv
-#define BlancaFaceRecord_setConcept _ZN16BlancaFaceRecord10setConceptEj
-#define BlancaFaceRecord_setState _ZN16BlancaFaceRecord8setStateEj
-#define BlancaFaceRecord_getPattern _ZN16BlancaFaceRecord10getPatternEv
-#define PlayerId_equals _ZN8PlayerId6equalsEPS_
-#define PlayerId_isValid _ZN8PlayerId7isValidEv
-#define func_020942c8 _ZN8PlayerIdC1Ev
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
+class Camera;
+extern Camera *gCamera;
+extern SaveData gSaveData;
 
 extern "C" {
-extern u8 gSaveBlancaFace[];
-extern u32 *data_ov074_022724e4;
-extern u32 *gCurrentHeap;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
-extern u8 gRandom[];
-extern s32 gVec3Zero[];
-extern u8 __ptmf_null[];
-extern void *gCamera;
-extern s32 gCameraLookAt[];
+extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 
-void *BlancaFaceRecord_getPattern(u8 *p);
-u32 ClothTex_GetBufferSize();
-u32 Heap_Alloc(u32 *a, u32 b);
-void Heap_Free(u32 *a, u32 b);
-s32 Impression_Evaluate(void *a, s32 b, s32 c);
-void BlancaFaceRecord_setConcept(u8 *p, s32 v);
-void BlancaFaceRecord_setState(u8 *p, s32 v);
+u32 Impression_Evaluate(PlayerData *a, s32 b, s32 c);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 TalkWindowState_setNextMessage(void *self, u8 *b, char *c);
-void TalkWindowState_setSlot(void *self, s32 a, void *b);
-u32 BlancaFaceRecord_getConcept(u8 *p);
-s32 ChoiceList_getResult(void *self);
-Unk_ov074_02271564_A *Pattern_getInfo(void *self);
-Unk_ov074_02271564_B *PatternInfo_getAuthor(Unk_ov074_02271564_A *a);
-void PatternInfo_getTitle(Unk_ov074_02271564_A *a, void *b);
-void func_02072064(Unk_ov074_02271564_A *a);
-BOOL PlayerId_isValid(Unk_ov074_02271564_B *b);
-BOOL PlayerId_equals(Unk_ov074_02271564_B *a, void *b);
-void func_020942c8(Unk_ov074_02271564_B *a);
-void func_0206267c(void *p);
-void func_0206260c(void *p);
-u32 NpcActor_getAngleTo(void *p, u32 x);
-void TalkRequest_SetTargetDone(void *p);
-void Math_CountDownU8(void *p);
-s32 Random_Next(u8 *p);
-s32 NpcActionCtrl_isActionDone(void *p);
-s32 NpcActionCtrl_getAction(void *p);
-s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-VecFx32 *NpcMoveCtrl_getDestination(void *p);
-void NpcFootstepFx_disableFootsteps(void *p);
-void NpcFootstepFx_enableFootsteps(void *p);
-BOOL NpcTalkCtrl_isBusy(void *p);
-void NpcTalkCtrl_requestTurnAndTalk(void *p, u32 a, u32 b, u32 c);
+BOOL TalkRequest_SetTargetDone(Character *c);
+u8 Math_CountDownU8(u8 *p);
+u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 NpcLookAt_getObstacleBits(void *p);
-s32 NpcMoveCtrl_hasArrived(void *a, void *b, s32 c);
-void NpcMoveCtrl_setDestination(void *a, void *b);
-BOOL NpcMoveCtrl_hasNextLeg(void *a);
-void NpcMoveCtrl_resetDestination(void *a);
-void Npc_RotateOffsetXZ(void *out, void *pos, s32 x, s32 y);
-s32 Npc_IsPosBlocked(void *p);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
 }
 
-
-
-
-
+// Blanca's face pattern record in the save data
+static inline BlancaFaceRecord *SpNpcBlanca_FaceRecord() {
+    return (BlancaFaceRecord *)gSaveData.blancaFace;
+}
 
 class SpNpcBlancaFaceTexture {
 public:
     SpNpcBlancaFaceTexture();
     ~SpNpcBlancaFaceTexture();
-    void release(u32 *p);
-    void apply(void *e);
-    u32 getTextureData();
-    void init(u32 *a, void *b);
-    u32 texBuffer;
+    void release(Heap *heap);
+    void apply(Model *mdl);
+    void *getTextureData();
+    void init(Heap *heap, Model *mdl);
+    void *texBuffer;
     MatTexVramTask texTask;
 };
 
@@ -255,12 +156,12 @@ struct SpNpcBlancaActEntry {
 extern "C" {
 SpNpcBlanca *SpNpcBlanca_Create();
 void SpNpcBlanca_ChangeAct(SpNpcBlanca *self, s32 state);
-s32 SpNpcBlanca_IsInCameraBox(void *self);
-s32 SpNpcBlanca_TryAvoidObstacle(void *self);
-s32 SpNpcBlanca_SteerAroundObstacle(void *self);
-s32 SpNpcBlanca_FindSidestepPos(void *self, void *out, void *x);
-s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b);
-s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b);
+s32 SpNpcBlanca_IsInCameraBox(SpNpcBlanca *self);
+BOOL SpNpcBlanca_TryAvoidObstacle(SpNpcBlanca *self);
+s32 SpNpcBlanca_SteerAroundObstacle(SpNpcBlanca *self);
+s32 SpNpcBlanca_FindSidestepPos(SpNpcBlanca *self, VecFx32 *out, FxVec3 *offset);
+s32 SpNpcBlanca_PickWanderTarget(SpNpcBlanca *self, s32 *a, s32 *b);
+s32 SpNpcBlanca_IsInFocusBox(SpNpcBlanca *self, VecFx32 *a, VecFx32 *b);
 extern u8 sSpNpcBlancaModelPath[];
 extern SpNpcBlancaActEntry sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
@@ -271,41 +172,8 @@ extern DebugColor data_ov074_022726e0;
 extern DebugColor data_ov074_022726f8;
 extern DebugColor data_ov074_022726e8;
 extern DebugColor data_ov074_022726f0;
-extern u32 sSpNpcBlancaFaceMaterialName;
+extern char sSpNpcBlancaFaceMaterialName[4];
 }
-
-typedef BOOL (SpNpcBlanca::*SpNpcBlancaActFn)();
-extern "C" {
-void _ZN11SpNpcBlanca9mainAct04Ev();
-extern void *data_ov074_022724e8[2];
-void _ZN15SpNpcBlancaTalk15onConceptChosenEv();
-extern void *data_ov074_022724f0[2];
-void _ZN11SpNpcBlanca9mainAct00Ev();
-extern void *data_ov074_022724f8[2];
-void _ZN11SpNpcBlanca9mainAct01Ev();
-extern void *data_ov074_02272500[2];
-void _ZN11SpNpcBlanca10setupAct02Ev();
-extern void *data_ov074_02272508[2];
-void _ZN11SpNpcBlanca9mainAct02Ev();
-extern void *data_ov074_02272510[2];
-void _ZN11SpNpcBlanca10setupAct03Ev();
-extern void *data_ov074_02272518[2];
-void _ZN11SpNpcBlanca9mainAct03Ev();
-extern void *data_ov074_02272520[2];
-void _ZN11SpNpcBlanca10setupAct04Ev();
-extern void *data_ov074_02272528[2];
-void _ZN15SpNpcBlancaTalk11onFaceDrawnEv();
-extern void *data_ov074_02272530[2];
-void _ZN11SpNpcBlanca10setupAct00Ev();
-extern void *data_ov074_02272538[2];
-}
-#define PM(a) (*(SpNpcBlancaActFn *)data_ov074_##a)
-
-
-#define F(T, o) (*(T *)((u8 *)this + (o)))
-#define P(o) ((void *)((u8 *)this + (o)))
-#define FS(T, o) (*(T *)((u8 *)self + (o)))
-#define PS(o) ((void *)((u8 *)self + (o)))
 
 extern "C" SpNpcBlanca *SpNpcBlanca_Create() {
     return new SpNpcBlanca();
@@ -362,53 +230,50 @@ extern "C" void SpNpcBlanca_ChangeAct(SpNpcBlanca *self, s32 state) {
 }
 
 BOOL SpNpcBlanca::setupAct02() {
-    void *self = this;
-    FS(u8, 0x651) = 0;
-    ((NpcActionCtrl *)(PS(0x564)))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    ((NpcFootstepFx *)(PS(0x558)))->enableFootsteps();
-    ((NpcFootstepFx *)(PS(0x558)))->enableFootsteps();
-    ((NpcLookAt *)(PS(0x3b0)))->setTarget(1, 0, 0, (VecFx32 *)(void *)(gVec3Zero), 4, data_020c6d1c, 1);
+    actCounter = 0;
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    footstepFx.enableFootsteps();
+    footstepFx.enableFootsteps();
+    lookAt.setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-extern "C" s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b) {
-    s32 *pa = (s32 *)a;
-    s32 *pb = (s32 *)b;
+extern "C" s32 SpNpcBlanca_IsInFocusBox(SpNpcBlanca *self, VecFx32 *pa, VecFx32 *pb) {
     BOOL r = FALSE;
     BOOL f6 = FALSE;
     BOOL f5 = FALSE;
-    if (pb[0] > pa[0] - 0x10000) {
-        if (pb[0] < pa[0] + 0x10000) {
+    if (pb->x > pa->x - 0x10000) {
+        if (pb->x < pa->x + 0x10000) {
             f5 = TRUE;
         }
     }
     if (f5) {
-        if (pb[2] > pa[2] - 0x1a000) {
+        if (pb->z > pa->z - 0x1a000) {
             f6 = TRUE;
         }
     }
     if (f6) {
-        if (pb[2] < pa[2] + 0xa000) {
+        if (pb->z < pa->z + 0xa000) {
             r = TRUE;
         }
     }
     return r;
 }
 
-extern "C" s32 SpNpcBlanca_IsInCameraBox(void *self) {
-    void *pos = PS(0x5c);
+extern "C" s32 SpNpcBlanca_IsInCameraBox(SpNpcBlanca *self) {
+    VecFx32 *pos = &self->position;
     s32 r = 0;
     VecFx32 v;
-    if (gCamera != 0) {
-        v.x = gCameraLookAt[0];
-        v.y = gCameraLookAt[1];
-        v.z = gCameraLookAt[2];
+    if (gCamera != NULL) {
+        v.x = gCameraLookAt.x;
+        v.y = gCameraLookAt.y;
+        v.z = gCameraLookAt.z;
         r = SpNpcBlanca_IsInFocusBox(self, &v, pos);
     }
     return r;
 }
 
-extern "C" s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b) {
+extern "C" s32 SpNpcBlanca_PickWanderTarget(SpNpcBlanca *self, s32 *a, s32 *b) {
     s32 r6 = 0;
     s32 i;
     VecFx32 v;
@@ -416,12 +281,12 @@ extern "C" s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b) {
     v.y = 0;
     v.z = 0;
     for (i = 0; i < 6; i++) {
-        s16 ang = Random_Next(gRandom);
+        s16 ang = Random_Next(&gRandom.seed);
         s32 idx = ((u16)ang >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
-        v.x = t + FS(s32, 0x5c);
+        v.x = t + self->position.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
-        v.z = t + FS(s32, 0x64);
+        v.z = t + self->position.z;
         FieldPos_SnapToUnitCenter(&v, &v);
         if (TownMap_IsPosWalkable(&v, r6) != 0) {
             *a = v.x;
@@ -433,11 +298,10 @@ extern "C" s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b) {
     return r6;
 }
 
-extern "C" s32 SpNpcBlanca_FindSidestepPos(void *self, void *out, void *x) {
-    Unk_ov074_02271e54_V t;
-    Unk_ov074_02271e54_V *o = (Unk_ov074_02271e54_V *)out;
+extern "C" s32 SpNpcBlanca_FindSidestepPos(SpNpcBlanca *self, VecFx32 *o, FxVec3 *offset) {
+    VecFx32 t;
     s32 r = 0;
-    Npc_RotateOffsetXZ(&t, PS(0x5c), (s32)x, FS(s16, 0x94));
+    Npc_RotateOffsetXZ(&t, &self->position, offset, self->moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         o->x = t.x;
         o->y = t.y;
@@ -447,10 +311,10 @@ extern "C" s32 SpNpcBlanca_FindSidestepPos(void *self, void *out, void *x) {
     return r;
 }
 
-extern "C" s32 SpNpcBlanca_SteerAroundObstacle(void *self) {
-    void *r1c = PS(0x564);
-    void *r4 = PS(0x350);
-    s32 r6 = ((NpcLookAt *)(PS(0x3a8)))->getObstacleBits();
+extern "C" s32 SpNpcBlanca_SteerAroundObstacle(SpNpcBlanca *self) {
+    NpcActionCtrl *r1c = &self->actionCtrl;
+    NpcMoveCtrl *r4 = &self->moveCtrl;
+    s32 r6 = ((NpcLookAt *)(&self->obstacleProbe))->getObstacleBits();
     s32 r7 = 0;
     VecFx32 v;
 
@@ -486,8 +350,8 @@ extern "C" s32 SpNpcBlanca_SteerAroundObstacle(void *self) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" BOOL SpNpcBlanca_TryAvoidObstacle(void *self) {
-    if (FS(u32, 0x98) != 0 && SpNpcBlanca_SteerAroundObstacle(self) != 0) {
+extern "C" BOOL SpNpcBlanca_TryAvoidObstacle(SpNpcBlanca *self) {
+    if (self->speed != 0 && SpNpcBlanca_SteerAroundObstacle(self) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -497,34 +361,34 @@ BOOL SpNpcBlanca::mainAct02() {
     s32 r6;
     VecFx32 v;
     VecFx32 w;
-    void *r4 = P(0x564);
+    NpcActionCtrl *r4 = &actionCtrl;
 
     r6 = SpNpcBlanca_IsInCameraBox(this);
-    Math_CountDownU8(P(0x651));
+    Math_CountDownU8(&actCounter);
     if (r6 != 0) {
         if (SpNpcBlanca_TryAvoidObstacle(this) == 0) {
             if (((NpcActionCtrl *)(r4))->isActionDone() != 0) {
-                if (((Unk_0201acf8 *)P(0x3aa))->getLevel() == 2) {
+                if (((Unk_0201acf8 *)&unk_3aa)->getLevel() == 2) {
                     ((NpcActionCtrl *)(r4))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                } else if ((Random_Next(gRandom) & 7) == 0) {
-                    v.x = gVec3Zero[0];
-                    v.y = gVec3Zero[1];
-                    v.z = gVec3Zero[2];
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
+                    v.x = gVec3Zero.x;
+                    v.y = gVec3Zero.y;
+                    v.z = gVec3Zero.z;
                     if (SpNpcBlanca_PickWanderTarget(this, &v.x, &v.z) != 0) {
-                        r6 = Math_AngleXZ(P(0x5c), &v.x);
-                        if (NpcActor_IsFrontAngle(r6 - F(s16, 0x8e)) != 0) {
+                        r6 = Math_AngleXZ(&position.x, &v.x);
+                        if (NpcActor_IsFrontAngle(r6 - rotY) != 0) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
-                            if (r6 != ((NpcActionCtrl *)(P(0x564)))->getAction()) {
+                            if (r6 != actionCtrl.getAction()) {
                                 ((NpcActionCtrl *)(r4))->requestAction(r6, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
-                                F(u8, 0x651) = 0x64;
+                                actCounter = 0x64;
                             }
                         } else {
-                            if (((NpcActionCtrl *)(P(0x564)))->getAction() != 4) {
+                            if (actionCtrl.getAction() != 4) {
                                 ((NpcActionCtrl *)(r4))->requestAction(4, 1, v.x, v.z, 0, r6, 0, 0, data_020c6cc8, 0);
-                                F(u8, 0x651) = 0x50;
+                                actCounter = 0x50;
                             }
                         }
                     } else {
@@ -534,16 +398,16 @@ BOOL SpNpcBlanca::mainAct02() {
                     ((NpcActionCtrl *)(r4))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             } else {
-                if (F(u32, 0x98) != 0) {
-                    if (((NpcActionCtrl *)(P(0x564)))->getAction() == 1 || ((NpcActionCtrl *)(P(0x564)))->getAction() == 2 || ((NpcActionCtrl *)(P(0x564)))->getAction() == 4) {
-                        if (F(u8, 0x651) == 0) {
+                if (speed != 0) {
+                    if (actionCtrl.getAction() == 1 || actionCtrl.getAction() == 2 || actionCtrl.getAction() == 4) {
+                        if (actCounter == 0) {
                             ((NpcActionCtrl *)(r4))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
-                            VecFx32 *src = ((NpcMoveCtrl *)(P(0x350)))->getDestination();
+                            VecFx32 *src = moveCtrl.getDestination();
                             w.x = src->x;
                             w.y = src->y;
                             w.z = src->z;
-                            if (NpcActor_IsFrontAngle(Math_AngleXZ(P(0x5c), &w.x) - F(s16, 0x8e)) == 0) {
+                            if (NpcActor_IsFrontAngle(Math_AngleXZ(&position.x, &w.x) - rotY) == 0) {
                                 ((NpcActionCtrl *)(r4))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }
                         }
@@ -552,7 +416,7 @@ BOOL SpNpcBlanca::mainAct02() {
             }
         }
     } else {
-        if (F(u32, 0x98) != 0) {
+        if (speed != 0) {
             SpNpcBlanca_ChangeAct(this, 3);
         }
     }
@@ -560,9 +424,9 @@ BOOL SpNpcBlanca::mainAct02() {
 }
 
 BOOL SpNpcBlanca::setupAct03() {
-    ((NpcActionCtrl *)(P(0x564)))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    F(u8, 0x651) = 0;
-    ((NpcFootstepFx *)(P(0x558)))->disableFootsteps();
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actCounter = 0;
+    footstepFx.disableFootsteps();
     return TRUE;
 }
 
@@ -586,9 +450,9 @@ BOOL SpNpcBlanca::mainAct00() {
 BOOL SpNpcBlanca::mainAct01() { return TRUE; }
 
 BOOL SpNpcBlanca::setupAct04() {
-    u32 a = (u32)talk.getTalkPlayer();
+    Character *a = talk.getTalkPlayer();
     s32 b = rotY;
-    if (a != 0) {
+    if (a != NULL) {
         b = ((NpcActor *)(this))->getAngleTo((NpcActor *)(a));
     }
     ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, b, 0);
@@ -600,24 +464,12 @@ BOOL SpNpcBlanca::mainAct04() { return TRUE; }
 void SpNpcBlancaTalk::onTaskDone(u32) {
     if (resultHandler != 0) {
         (this->*resultHandler)();
-        resultHandler = *(Fn *)__ptmf_null;
+        resultHandler = NULL;
     }
-}// Declarations for data defined further down (definition order sets the data layout)
-extern u32 *data_ov074_022724e4;
-extern u32 sSpNpcBlancaFaceMaterialName;
+}
+
 extern u8 sSpNpcBlancaModelPath[];
 extern ActorProfile sSpNpcBlancaProfile;
-extern void *data_ov074_022724e8[2];
-extern void *data_ov074_022724f0[2];
-extern void *data_ov074_022724f8[2];
-extern void *data_ov074_02272500[2];
-extern void *data_ov074_02272508[2];
-extern void *data_ov074_02272510[2];
-extern void *data_ov074_02272518[2];
-extern void *data_ov074_02272520[2];
-extern void *data_ov074_02272528[2];
-extern void *data_ov074_02272530[2];
-extern void *data_ov074_02272538[2];
 extern SpNpcBlancaActEntry sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
 
@@ -639,37 +491,25 @@ extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
 
 
 DebugColor data_ov074_022726e4(31, 20, 20, 31);
-void *data_ov074_022724f8[2] = {(void *)_ZN11SpNpcBlanca9mainAct00Ev, 0};
 DebugColor data_ov074_022726f4(20, 20, 31, 31);
 DebugColor data_ov074_022726e0(31, 31, 20, 31);
-void *data_ov074_022724f0[2] = {(void *)_ZN15SpNpcBlancaTalk15onConceptChosenEv, 0};
 DebugColor data_ov074_022726f8(20, 31, 20, 31);
 ActorProfile sSpNpcBlancaProfile = {(void *(*)())SpNpcBlanca_Create, 0x67, 0x6d, 2, 0x5000, 0x5000, 0x3e800};
 DebugColor data_ov074_022726e8(20, 31, 31, 31);
 DebugColor data_ov074_022726f0(20, 24, 24, 31);
-void *data_ov074_02272518[2] = {(void *)_ZN11SpNpcBlanca10setupAct03Ev, 0};
-u32 sSpNpcBlancaFaceMaterialName = 0x66;
-void *data_ov074_02272520[2] = {(void *)_ZN11SpNpcBlanca9mainAct03Ev, 0};
-void *data_ov074_02272528[2] = {(void *)_ZN11SpNpcBlanca10setupAct04Ev, 0};
-void *data_ov074_02272530[2] = {(void *)_ZN15SpNpcBlancaTalk11onFaceDrawnEv, 0};
-void *data_ov074_02272508[2] = {(void *)_ZN11SpNpcBlanca10setupAct02Ev, 0};
-void *data_ov074_02272500[2] = {(void *)_ZN11SpNpcBlanca9mainAct01Ev, 0};
+char sSpNpcBlancaFaceMaterialName[4] = "f";  // the face material
 u8 sSpNpcBlancaModelPath[] = "npc_sp/model/mka.nsbmd";
 SpNpcBlancaActEntry sSpNpcBlancaActTable[5] = {
-    {PM(02272538), PM(022724f8)},
-    {NULL, PM(02272500)},
-    {PM(02272508), PM(02272510)},
-    {PM(02272518), PM(02272520)},
-    {PM(02272528), PM(022724e8)},
+    {&SpNpcBlanca::setupAct00, &SpNpcBlanca::mainAct00},
+    {NULL, &SpNpcBlanca::mainAct01},
+    {&SpNpcBlanca::setupAct02, &SpNpcBlanca::mainAct02},
+    {&SpNpcBlanca::setupAct03, &SpNpcBlanca::mainAct03},
+    {&SpNpcBlanca::setupAct04, &SpNpcBlanca::mainAct04},
 };
 FxVec3 sSpNpcBlancaSidestepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
-void *data_ov074_02272538[2] = {(void *)_ZN11SpNpcBlanca10setupAct00Ev, 0};
-void *data_ov074_022724e8[2] = {(void *)_ZN11SpNpcBlanca9mainAct04Ev, 0};
-u32 *data_ov074_022724e4 = &sSpNpcBlancaFaceMaterialName;
-void *data_ov074_02272510[2] = {(void *)_ZN11SpNpcBlanca9mainAct02Ev, 0};
 
 void SpNpcBlancaTalk::setResultHandler(s32 idx) {
-    static Fn tbl[2] = {*(Fn *)data_ov074_02272530, *(Fn *)data_ov074_022724f0};
+    static Fn tbl[2] = {&SpNpcBlancaTalk::onFaceDrawn, &SpNpcBlancaTalk::onConceptChosen};
     resultHandler = tbl[idx];
 }
 
@@ -687,10 +527,10 @@ void SpNpcBlancaTalk::onFaceDrawn() {
 void SpNpcBlancaTalk::onConceptChosen() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *p = window;
-        u8 *const g = gSaveBlancaFace;
+        BlancaFaceRecord *const g = SpNpcBlanca_FaceRecord();
         u8 buf[1];
-        ((BlancaFaceRecord *)(g))->setConcept(Impression_Evaluate(PlayerData_GetCurrent(), 0, 0));
-        ((BlancaFaceRecord *)(g))->setState(3);
+        g->setConcept(Impression_Evaluate(PlayerData_GetCurrent(), 0, 0));
+        g->setState(3);
         buf[0] = Random_GlobalBelow(3) + 5;
         Talk_CheckAndSetPlayerFlag(0x2b, 1);
         ((TalkWindowState *)(p))->setNextMessage(buf, (void *)(((char *)"sp_npc_mysterycat")));
@@ -709,21 +549,19 @@ void SpNpcBlancaTalk::attachOwner(SpNpcBlanca *o) {
 
 void SpNpcBlancaTalk::start(TalkStartMsg *out) {
     u8 buf[1];
-    Unk_ov074_02271564_A l;
-    Unk_ov074_02271564_B m;
-    u32 obj[9];
+    ItemName title;
 
     out->msgKey = "sp_npc_mysterycat";
-    u8 *const g = gSaveBlancaFace;
-    l = *Pattern_getInfo(((BlancaFaceRecord *)(g))->getPattern());
-    m = *PatternInfo_getAuthor(&l);
+    BlancaFaceRecord *const g = SpNpcBlanca_FaceRecord();
+    PatternInfo *info = ((Pattern *)g->getPattern())->getInfo();
+    PlayerId *author = (PlayerId *)info->getAuthor();  // the pattern's author record is a PlayerId
     if (Random_GlobalBelow(2) == 0 || Talk_CheckAndSetPlayerFlag(0x2b, 0) == 0) {
         out->msgIndex = 3;
     } else {
-        if (((PlayerId *)(void *)(&m))->isValid() != 0) {
+        if (author->isValid() != 0) {
             PlayerData *p = PlayerData_GetCurrent();
-            u16 *q = (u16 *)p->getPlayerId();
-            if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && ((PlayerId *)(void *)(&m))->equals((PlayerId *)(q)) != 0) {
+            PlayerId *q = p->getPlayerId();
+            if (author->townId == q->townId && memcmp(author->townName, q->townName, 8) == 0 && author->equals(q) != 0) {
                 out->msgIndex = Random_GlobalBelow(4) + 0x18;
                 goto next;
             }
@@ -731,18 +569,14 @@ void SpNpcBlancaTalk::start(TalkStartMsg *out) {
         out->msgIndex = Random_GlobalBelow(4) + 0x11;
     }
 next:
-    new (obj) ItemName();
-    if (((PlayerId *)(void *)(&m))->isValid() != 0) {
-        setPlayerNameSlot((PlayerId *)&m, 1);
-        setTownNameSlot(PlayerId_GetTownId(&m), 0);
-        buf[0] = ((BlancaFaceRecord *)(g))->getConcept();
+    if (author->isValid() != 0) {
+        setPlayerNameSlot(author, 1);
+        setTownNameSlot(PlayerId_GetTownId(author), 0);
+        buf[0] = g->getConcept();
         ((TalkWindowState *)(window))->setSlotFromString(2, buf, "st_impress");
-        ((PatternInfo *)(void *)(&l))->getTitle(obj);
-        ((TalkWindowState *)(window))->setSlot(3, obj);
+        info->getTitle(&title);
+        ((TalkWindowState *)(window))->setSlot(3, &title);
     }
-    ((ItemName *)(obj))->ItemName::~ItemName();
-    new (&m) PlayerId();
-    ((PatternInfo *)((void *)(&l)))->~PatternInfo();
 }
 
 void SpNpcBlancaTalk::onMessageEnd(u32) {
@@ -779,33 +613,31 @@ void SpNpcBlancaTalk::onMessageEnd(u32) {
 
 void SpNpcBlancaTalk::onChoice(u32) {
     u8 buf[1];
-    Unk_ov074_02271564_A l;
-    Unk_ov074_02271564_B m;
     s32 t;
     s32 r5;
 
     r5 = ((ChoiceList *)(getChoiceList()))->getResult();
-    l = *Pattern_getInfo(((BlancaFaceRecord *)(gSaveBlancaFace))->getPattern());
-    m = *PatternInfo_getAuthor(&l);
+    PatternInfo *info = ((Pattern *)SpNpcBlanca_FaceRecord()->getPattern())->getInfo();
+    PlayerId *author = (PlayerId *)info->getAuthor();  // the pattern's author record is a PlayerId
     char *name = ((char *)"sp_npc_mysterycat");
     t = 0xff;
     switch (msgIndex) {
     case 3:
         if (r5 == 0) {
-            if (((PlayerId *)(void *)(&m))->isValid() != 0) {
+            if (author->isValid() != 0) {
                 PlayerData *p = PlayerData_GetCurrent();
-                u16 *q = (u16 *)p->getPlayerId();
-                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && ((PlayerId *)(void *)(&m))->equals((PlayerId *)(q)) != 0) {
+                PlayerId *q = p->getPlayerId();
+                if (author->townId == q->townId && memcmp(author->townName, q->townName, 8) == 0 && author->equals(q) != 0) {
                     t = 0xa;
                     break;
                 }
             }
             t = 9;
         } else {
-            if (((PlayerId *)(void *)(&m))->isValid() != 0) {
+            if (author->isValid() != 0) {
                 PlayerData *p = PlayerData_GetCurrent();
-                u16 *q = (u16 *)p->getPlayerId();
-                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && ((PlayerId *)(void *)(&m))->equals((PlayerId *)(q)) != 0) {
+                PlayerId *q = p->getPlayerId();
+                if (author->townId == q->townId && memcmp(author->townName, q->townName, 8) == 0 && author->equals(q) != 0) {
                     t = 0xc;
                     break;
                 }
@@ -823,8 +655,6 @@ void SpNpcBlancaTalk::onChoice(u32) {
         buf[0] = t;
         ((TalkWindowState *)(window))->setNextMessage(buf, (void *)(name));
     }
-    new (&m) PlayerId();
-    ((PatternInfo *)((void *)(&l)))->~PatternInfo();
 }
 
 BOOL SpNpcBlanca::acceptsInteraction(void *) {
@@ -856,38 +686,37 @@ SpNpcBlancaFaceTexture::SpNpcBlancaFaceTexture() {}
 // ---------------------------------------------------------------------------------------------------------------------
 SpNpcBlancaFaceTexture::~SpNpcBlancaFaceTexture() {}
 
-void SpNpcBlancaFaceTexture::init(u32 *a, void *b) {
-    texBuffer = Heap_Alloc(a, ClothTex_GetBufferSize());
-    apply(b);
+void SpNpcBlancaFaceTexture::init(Heap *heap, Model *mdl) {
+    texBuffer = Heap_Alloc(heap, ClothTex_GetBufferSize());
+    apply(mdl);
 }
 
-u32 SpNpcBlancaFaceTexture::getTextureData() {
-    u32 r = 0;
-    if (texBuffer != 0) {
+void *SpNpcBlancaFaceTexture::getTextureData() {
+    void *r = NULL;
+    if (texBuffer != NULL) {
         r = ClothTex_GetTexThunk(texBuffer);
     }
     return r;
 }
 
-void SpNpcBlancaFaceTexture::apply(void *e) {
-    Model *ent = (Model *)e;
+void SpNpcBlancaFaceTexture::apply(Model *ent) {
     void *t;
-    u32 h;
-    t = ((BlancaFaceRecord *)(gSaveBlancaFace))->getPattern();
-    if (t != 0) {
+    void *h;
+    t = SpNpcBlanca_FaceRecord()->getPattern();
+    if (t != NULL) {
         if (ClothTex_LoadPatternThunk(texBuffer, t) != 0) {
             h = getTextureData();
-            if (h != 0) {
-                ((MatTexVramTask *)(&texTask))->request(ent->resMdl, (const char *)(data_ov074_022724e4), h, 0, 0);
+            if (h != NULL) {
+                texTask.request(ent->resMdl, sSpNpcBlancaFaceMaterialName, h, 0, 0);
             }
         }
     }
 }
 
-void SpNpcBlancaFaceTexture::release(u32 *p) {
+void SpNpcBlancaFaceTexture::release(Heap *heap) {
     texTask.cancel();
-    if (texBuffer != 0) {
-        Heap_Free(p, texBuffer);
+    if (texBuffer != NULL) {
+        Heap_Free(heap, texBuffer);
     }
 }
 

@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -32,10 +31,13 @@
 #include "player/PlayerData.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "town/VisitorPos.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "save/SaveData.h"
+#include "sys/ClockDate.h"
+#include "player/PlayerDailyTalkFlags.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02040050.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
@@ -54,10 +56,6 @@ class SpNpcLyleTalk;
 
 class ActorTalkRequest;
 
-struct SpNpcLyleSidestepPos {
-    u32 v[4];
-};
-
 
 // Message sent to the scene (func_02067a84): id byte, then two halfwords.
 struct SpNpcLyleMsgLocal {
@@ -67,44 +65,31 @@ struct SpNpcLyleMsgLocal {
     u16 item2;
 };
 
-struct SpNpcLyleDateBuf {
-    u32 pad[2];
-};
-
 
 struct SpNpcLyleActEntry;
 
 
+
+class Camera;
+extern Camera *gCamera;
+extern SaveData gSaveData;
 
 extern "C" {
 extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
 extern s32 data_020c6cf0;
 extern s32 data_020c6d1c;
-extern u32 gVec3Zero[];
-extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
-extern u32 gRandom;
-extern u8 gSaveData[];
 extern s16 data_02135f44[];
-extern u32 __ptmf_null[];
 
-void _ZN20PlayerDailyTalkFlags10stampTodayEv(void *h);
-void Clock_GetDate(void *p);
-s32 Date_DaysBetween(void *p, s32 v);
+void Clock_GetDate(u8 *out);
+s32 Date_DaysBetween(u8 *a, u8 *b);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
-void EventWeek_SetLyleWeek(s32 a, s32 b);
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
-s32 Math_AngleXZ(void *a, void *b);
-u32 Random_Next(void *p);
-
-
-void Npc_RotateOffsetXZ(SpNpcLyleSidestepPos *t, void *pos, void *p, s32 ang);
-BOOL Npc_IsPosBlocked(SpNpcLyleSidestepPos *t);
-void TalkRequest_SetTargetDone(void *self);
-s32 Vec_Distance(void *a, void *b);
+u32 Random_Next(u32 *seed);
+BOOL TalkRequest_SetTargetDone(Character *c);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
@@ -175,7 +160,7 @@ public:
     BOOL mainAct03();
     BOOL tryAvoidObstacle();
     BOOL steerAroundObstacle();
-    BOOL findSidestepPos(VecFx32 *out, void *unused);
+    BOOL findSidestepPos(VecFx32 *out, FxVec3 *offset);
     BOOL pickWanderTarget(s32 *x, s32 *z);
     BOOL setupAct03();
     BOOL mainAct01();
@@ -224,51 +209,7 @@ extern SpNpcLyleActEntry sSpNpcLyleActTable[6];
 extern s16 sSpNpcLyleFrontAngle;
 extern FxVec3 sSpNpcLyleSidestepOffsets[2];
 SpNpcLyle *SpNpcLyle_Create();
-extern void *data_ov071_02272ac0[2];
-extern void *data_ov071_02272ac8[2];
-extern void *data_ov071_02272ad0[2];
-extern void *data_ov071_02272ad8[2];
-extern void *data_ov071_02272ae0[2];
-extern void *data_ov071_02272ae8[2];
-extern void *data_ov071_02272af0[2];
-extern void *data_ov071_02272af8[2];
-extern void *data_ov071_02272b00[2];
-extern void *data_ov071_02272b08[2];
-extern void *data_ov071_02272b10[2];
-extern void *data_ov071_02272b18[2];
-extern void *data_ov071_02272b20[2];
-extern void *data_ov071_02272b28[2];
-extern void *data_ov071_02272b30[2];
-extern void *data_ov071_02272b38[2];
-void _ZN9SpNpcLyle10setupAct01Ev();
-void _ZN9SpNpcLyle9mainAct02Ev();
-void _ZN9SpNpcLyle10setupAct03Ev();
-void _ZN9SpNpcLyle9mainAct00Ev();
-void _ZN9SpNpcLyle10setupAct00Ev();
-void _ZN9SpNpcLyle9mainAct03Ev();
-void _ZN13SpNpcLyleTalk21scriptCloseItemSelectEv();
-void _ZN9SpNpcLyle9mainAct04Ev();
-void _ZN9SpNpcLyle10setupAct05Ev();
-void _ZN9SpNpcLyle9mainAct05Ev();
-void _ZN9SpNpcLyle10act01Step0Ev();
-void _ZN9SpNpcLyle10act01Step1Ev();
-void _ZN9SpNpcLyle10setupAct04Ev();
-void _ZN9SpNpcLyle10act01Step2Ev();
-void _ZN13SpNpcLyleTalk17onClaimItemChosenEv();
-void _ZN9SpNpcLyle9mainAct01Ev();
 }
-
-void *data_ov071_02272b20[2] = {(void *)_ZN9SpNpcLyle10setupAct04Ev, 0};
-
-void *data_ov071_02272ac8[2] = {(void *)_ZN9SpNpcLyle9mainAct02Ev, 0};
-
-void *data_ov071_02272b38[2] = {(void *)_ZN9SpNpcLyle9mainAct01Ev, 0};
-
-void *data_ov071_02272af0[2] = {(void *)_ZN13SpNpcLyleTalk21scriptCloseItemSelectEv, 0};
-
-void *data_ov071_02272b00[2] = {(void *)_ZN9SpNpcLyle10setupAct05Ev, 0};
-
-void *data_ov071_02272b08[2] = {(void *)_ZN9SpNpcLyle9mainAct05Ev, 0};
 
 extern "C" SpNpcLyle *SpNpcLyle_Create() {
     return new SpNpcLyle();
@@ -507,15 +448,13 @@ BOOL SpNpcLyle::setupAct01() {
     chaseStart = *pv;
     ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xdf, 1, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(void *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     act01Step = 0;
     return TRUE;
 }
 
 BOOL SpNpcLyle::mainAct01() {
-    static Unk_ov071_02272198_Fn tbl[3] = {*(Unk_ov071_02272198_Fn *)data_ov071_02272b10,
-                                           *(Unk_ov071_02272198_Fn *)data_ov071_02272b18,
-                                           *(Unk_ov071_02272198_Fn *)data_ov071_02272b28};
+    static Unk_ov071_02272198_Fn tbl[3] = {&SpNpcLyle::act01Step0, &SpNpcLyle::act01Step1, &SpNpcLyle::act01Step2};
     if (act01Step < 3) {
         (this->*tbl[act01Step])();
     }
@@ -526,7 +465,7 @@ BOOL SpNpcLyle::setupAct03() {
     stepTimer = 0;
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(void *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -538,7 +477,7 @@ BOOL SpNpcLyle::pickWanderTarget(s32 *x, s32 *z) {
     v.z = 0;
     s32 i = r;
     for (; i < 6; i++) {
-        s16 a = Random_Next(&gRandom);
+        s16 a = Random_Next(&gRandom.seed);
         u32 idx = ((u16)a >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = t + position.x;
@@ -555,14 +494,14 @@ BOOL SpNpcLyle::pickWanderTarget(s32 *x, s32 *z) {
     return r;
 }
 
-BOOL SpNpcLyle::findSidestepPos(VecFx32 *out, void *unused) {
+BOOL SpNpcLyle::findSidestepPos(VecFx32 *out, FxVec3 *offset) {
     BOOL r = FALSE;
-    SpNpcLyleSidestepPos t;
-    Npc_RotateOffsetXZ(&t, &position, unused, moveAngleY);
+    VecFx32 t;
+    Npc_RotateOffsetXZ(&t, &position, offset, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
-        out->x = t.v[0];
-        out->y = t.v[1];
-        out->z = t.v[2];
+        out->x = t.x;
+        out->y = t.y;
+        out->z = t.z;
         r = TRUE;
     }
     return r;
@@ -606,7 +545,7 @@ BOOL SpNpcLyle::steerAroundObstacle() {
 }
 
 BOOL SpNpcLyle::tryAvoidObstacle() {
-    if (*(u32 *)(HOST_AT(this, 0x98, speed, 0)) != 0 && steerAroundObstacle()) {
+    if (speed != 0 && steerAroundObstacle()) {
         return TRUE;
     }
     return FALSE;
@@ -632,13 +571,12 @@ BOOL SpNpcLyle::mainAct03() {
             if (((NpcActionCtrl *)(p))->isActionDone() != 0) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                } else if ((Random_Next(&gRandom) & 7) == 0) {
-                    u32 *d = gVec3Zero;
-                    v.x = d[0];
-                    v.y = d[1];
-                    v.z = d[2];
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
+                    v.x = gVec3Zero.x;
+                    v.y = gVec3Zero.y;
+                    v.z = gVec3Zero.z;
                     if (pickWanderTarget(&v.x, &v.z) != 0) {
-                        s32 ang = Math_AngleXZ(&position, &v);
+                        s32 ang = Math_AngleXZ(&position.x, &v.x);
                         if (NpcActor_IsFrontAngle((s16)(ang - rotY)) != 0) {
                             s32 kind = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -664,11 +602,11 @@ BOOL SpNpcLyle::mainAct03() {
                     if (stepTimer == 0) {
                         ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
-                        u32 *q = (u32 *)((NpcMoveCtrl *)(&moveCtrl))->getDestination();
-                        v2.x = q[0];
-                        v2.y = q[1];
-                        v2.z = q[2];
-                        s32 a = Math_AngleXZ(&position, &v2);
+                        VecFx32 *q = ((NpcMoveCtrl *)(&moveCtrl))->getDestination();
+                        v2.x = q->x;
+                        v2.y = q->y;
+                        v2.z = q->z;
+                        s32 a = Math_AngleXZ(&position.x, &v2.x);
                         if (NpcActor_IsFrontAngle((s16)(a - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
@@ -717,11 +655,10 @@ BOOL SpNpcLyle::mainAct02() {
 void SpNpcLyleTalk::onTaskDone(u32) {
     if (script) {
         (this->*script)();
-        SpNpcLyleTalkScriptFn t = *(SpNpcLyleTalkScriptFn *)__ptmf_null;
-        script = t;
+        script = NULL;
         if (nextScript) {
             script = nextScript;
-            nextScript = t;
+            nextScript = NULL;
         }
     }
 }
@@ -730,29 +667,18 @@ s16 sSpNpcLyleFrontAngle = data_020c6cc0;
 
 u8 sSpNpcLyleModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 't', 't', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-void *data_ov071_02272ad0[2] = {(void *)_ZN9SpNpcLyle10setupAct03Ev, 0};
-
-void *data_ov071_02272ac0[2] = {(void *)_ZN9SpNpcLyle10setupAct01Ev, 0};
-
-void *data_ov071_02272ae8[2] = {(void *)_ZN9SpNpcLyle9mainAct03Ev, 0};
-
-void *data_ov071_02272b30[2] = {(void *)_ZN13SpNpcLyleTalk17onClaimItemChosenEv, 0};
-
-void *data_ov071_02272b28[2] = {(void *)_ZN9SpNpcLyle10act01Step2Ev, 0};
-
 void SpNpcLyleTalk::getScript(SpNpcLyleTalkScriptFn *out, s32 idx) {
-    static SpNpcLyleTalkScriptFn tbl[2] = {*(SpNpcLyleTalkScriptFn *)data_ov071_02272b30,
-                                           *(SpNpcLyleTalkScriptFn *)data_ov071_02272af0};
+    static SpNpcLyleTalkScriptFn tbl[2] = {&SpNpcLyleTalk::onClaimItemChosen, &SpNpcLyleTalk::scriptCloseItemSelect};
     *out = tbl[idx];
 }
 
 SpNpcLyleActEntry sSpNpcLyleActTable[6] = {
-    {*(SpNpcLyleActFn *)data_ov071_02272ae0, *(SpNpcLyleActFn *)data_ov071_02272ad8},
-    {*(SpNpcLyleActFn *)data_ov071_02272ac0, *(SpNpcLyleActFn *)data_ov071_02272b38},
-    {NULL, *(SpNpcLyleActFn *)data_ov071_02272ac8},
-    {*(SpNpcLyleActFn *)data_ov071_02272ad0, *(SpNpcLyleActFn *)data_ov071_02272ae8},
-    {*(SpNpcLyleActFn *)data_ov071_02272b20, *(SpNpcLyleActFn *)data_ov071_02272af8},
-    {*(SpNpcLyleActFn *)data_ov071_02272b00, *(SpNpcLyleActFn *)data_ov071_02272b08},
+    {&SpNpcLyle::setupAct00, &SpNpcLyle::mainAct00},
+    {&SpNpcLyle::setupAct01, &SpNpcLyle::mainAct01},
+    {NULL, &SpNpcLyle::mainAct02},
+    {&SpNpcLyle::setupAct03, &SpNpcLyle::mainAct03},
+    {&SpNpcLyle::setupAct04, &SpNpcLyle::mainAct04},
+    {&SpNpcLyle::setupAct05, &SpNpcLyle::mainAct05},
 };
 
 FxVec3 sSpNpcLyleSidestepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
@@ -767,17 +693,7 @@ const TalkStartMsg sSpNpcLyleTopicMsgs[3] = {
     {(const char *)sSpNpcLyleKey, 0x20},
 };
 
-void *data_ov071_02272b18[2] = {(void *)_ZN9SpNpcLyle10act01Step1Ev, 0};
-
 ActorProfile sSpNpcLyleProfile = {(void *(*)())SpNpcLyle_Create, 0x69, 0x6f, 2, 0x5000, 0x5000, 0x3e800};
-
-void *data_ov071_02272af8[2] = {(void *)_ZN9SpNpcLyle9mainAct04Ev, 0};
-
-void *data_ov071_02272ad8[2] = {(void *)_ZN9SpNpcLyle9mainAct00Ev, 0};
-
-void *data_ov071_02272ae0[2] = {(void *)_ZN9SpNpcLyle10setupAct00Ev, 0};
-
-void *data_ov071_02272b10[2] = {(void *)_ZN9SpNpcLyle10act01Step0Ev, 0};
 
 
 void SpNpcLyleTalk::setScript(s32 idx) {
@@ -878,9 +794,8 @@ SpNpcLyleTalk::~SpNpcLyleTalk() {}
 
 void SpNpcLyleTalk::resetMsg() {
     SpNpcTalkRequest::resetMsg();
-    SpNpcLyleTalkScriptFn t = *(SpNpcLyleTalkScriptFn *)__ptmf_null;
-    script = t;
-    nextScript = t;
+    script = NULL;
+    nextScript = NULL;
 }
 
 void SpNpcLyleTalk::attachOwner(SpNpcLyle *o) {
@@ -895,10 +810,10 @@ void SpNpcLyleTalk::start(TalkStartMsg *out) {
     BOOL b = FALSE;
     void *h = PlayerData_GetCurrent();
     if (((PlayerData *)(h))->testFlag(0x17) != 0) {
-        s32 v = PlayerSpNpcRecord_GetInsuranceDate(((PlayerData *)(h))->getSpNpcRecord());
-        SpNpcLyleDateBuf obj;
-        Clock_GetDate(&obj);
-        if (Date_DaysBetween(&obj, v) < 1) {
+        u8 *v = (u8 *)PlayerSpNpcRecord_GetInsuranceDate(((PlayerData *)(h))->getSpNpcRecord());
+        ClockDate today;
+        Clock_GetDate(&today.day);
+        if (Date_DaysBetween(&today.day, v) < 1) {
             topic = 1;
         } else if (((PlayerData *)(h))->testFlag(0x18) != 0) {
             if (Talk_CheckAndSetPlayerFlag(0x28, b) != 0) {
@@ -917,11 +832,11 @@ void SpNpcLyleTalk::start(TalkStartMsg *out) {
         b = TRUE;
     }
     if (topic >= 0 && topic < 3) {
-        out->msgIndex = *((u8 *)&sSpNpcLyleTopicMsgs[0].msgIndex + topic * 8);
+        out->msgIndex = sSpNpcLyleTopicMsgs[topic].msgIndex;
         if (b) {
             out->msgIndex = Random_GlobalBelow(5) + 0x28;
         }
-        out->msgKey = (const char *)((u32 *)sSpNpcLyleTopicMsgs)[topic * 2];
+        out->msgKey = sSpNpcLyleTopicMsgs[topic].msgKey;
     }
 }
 
@@ -987,7 +902,8 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         NpcActor_ChargePlayer(owner, 0xbb8);
         r5 = 0x1a;
         ((PlayerData *)(h))->setFlag(0x17);
-        _ZN20PlayerDailyTalkFlags10stampTodayEv(((PlayerData *)(h))->getSpNpcRecord());
+        // the record starts with the insurance date: stamped with the daily talk flags' date method
+        ((PlayerDailyTalkFlags *)((PlayerData *)(h))->getSpNpcRecord())->stampToday();
         break;
     case 0x16:
     case 0x1a:
@@ -1026,7 +942,6 @@ void SpNpcLyleTalk::onChoice(u32) {
     s32 t = getChoiceList()->getResult();
     u8 *const name = sSpNpcLyleKey;
     s32 r5 = 0xff;
-    u8 *g = gSaveData;
     s32 x = msgIndex;
     if (x > 0x15) {
         goto hi;
@@ -1078,7 +993,7 @@ blkE:
     goto end;
 blk8:
     r5 = (u8)(x + 1);
-    g[0x15e28] = t + 1;
+    gSaveData.unk_15e24[0x15e28 - 0x15e24] = t + 1;  // weekday picked for Lyle (read by EventWeekSlots_PlaceRedd)
     goto end;
 blkC:
     switch (t) {
@@ -1088,7 +1003,7 @@ blkC:
     case 3:
     case 4:
         r5 = 0xd;
-        MI_CpuFill8((u8 *)owner + 0x720, 0, 5);
+        MI_CpuFill8(owner->askedQuestions, 0, 5);
         questionCount = 0;
         if (t == 4) {
             EventWeek_SetLyleWeek(0, 1);
@@ -1151,7 +1066,7 @@ void SpNpcLyle::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(5);
         break;
     case 8:

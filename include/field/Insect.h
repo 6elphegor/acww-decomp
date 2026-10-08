@@ -33,8 +33,8 @@ public:
 
     // per-kind behavior helpers (src/ov068/unk_ov068_022687c0.cpp)
     void antsAppear();
-    void insectFleeFrom(s32 *p);
-    BOOL insectFindFlowerTarget(s16 *out, s32 *dist, s32 *pos);
+    void insectFleeFrom(VecFx32 *p);
+    BOOL insectFindFlowerTarget(s16 *out, s32 *dist, VecFx32 *pos);
     void insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc);
     void beeChasePlayer();
     void beeSwarmDescend();

@@ -1,7 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
-#include "game/Unk_0202368c_Obj.h"
 #include "item/ItemId.h"
 #include "town/VisitorPos.h"
 #include "talk/TalkStartMsg.h"
@@ -35,17 +34,18 @@
 #include "game/Unk_0201acf8.h"
 #include "item/ItemPickSpec.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "player/PlayerErrands.h"
+#include "npc/ErrandRecord.h"
+#include "town/VisitorPos.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02060b7c.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/ov078/unk_ov078_022713c0.h"
 
 
@@ -59,39 +59,26 @@ class ActorTalkRequest;
 
 
 
+class Camera;
+extern Camera *gCamera;
+
 extern "C" {
-void *_ZN13PlayerErrands15getParcelErrandEv(void *p);
-u16 *_ZN12ErrandRecord7getItemEv(void *p);
-s32 _ZN12ErrandRecord8isActiveEv(void *p);
-s32 _ZN12ErrandRecord7getStepEv(void *p);
-void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
-void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
-void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void EventWeekSlots_MarkPlayer(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 Math_AngleXZ(void *p, void *q);
-BOOL NpcActor_IsFrontAngle(s32 v);
-void Math_CountDownU8(void *p);
-u32 Random_Next(void *p);
+u8 Math_CountDownU8(u8 *p);
+u32 Random_Next(u32 *seed);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
-extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 BOOL TownMap_IsPosWalkable(VecFx32 *a, s32 b);
-BOOL Npc_IsPosBlocked(void *p);
-void Npc_RotateOffsetXZ(void *out, VecFx32 *a, VecFx32 *b, s32 c);
-void TalkRequest_SetTargetDone(void *p);
-void *TownSessionState_Get();
-VisitorPos *TownSessionState_GetVisitorPos(void *p);
+BOOL TalkRequest_SetTargetDone(Character *c);
 
-extern u32 gRandom[];
-extern VecFx32 gVec3Zero;
 }
 
 
@@ -161,28 +148,9 @@ struct SpNpcSaharahActEntry {
     BOOL (SpNpcSaharah::*enter)();
     BOOL (SpNpcSaharah::*exit)();
 };
-typedef BOOL (SpNpcSaharah::*SpNpcSaharahActFn)();
 
 
 extern "C" {
-void _ZN12SpNpcSaharah10setupAct00Ev();
-extern void *data_ov078_022723f8[2];
-void _ZN12SpNpcSaharah9mainAct00Ev();
-extern void *data_ov078_02272400[2];
-void _ZN12SpNpcSaharah9mainAct01Ev();
-extern void *data_ov078_022723e0[2];
-void _ZN12SpNpcSaharah10setupAct02Ev();
-extern void *data_ov078_022723c0[2];
-void _ZN12SpNpcSaharah9mainAct02Ev();
-extern void *data_ov078_022723c8[2];
-void _ZN12SpNpcSaharah10setupAct03Ev();
-extern void *data_ov078_022723d0[2];
-void _ZN12SpNpcSaharah9mainAct03Ev();
-extern void *data_ov078_022723d8[2];
-void _ZN12SpNpcSaharah10setupAct04Ev();
-extern void *data_ov078_022723e8[2];
-void _ZN12SpNpcSaharah9mainAct04Ev();
-extern void *data_ov078_022723f0[2];
 extern SpNpcSaharahActEntry sSpNpcSaharahActTable[5];
 extern DebugColor data_ov078_022725c4;
 extern DebugColor data_ov078_022725d0;
@@ -198,30 +166,21 @@ SpNpcSaharah *SpNpcSaharah_Create();
 }
 
 DebugColor data_ov078_022725c4(0x1f, 0x14, 0x14, 0x1f);
-extern "C" void *data_ov078_022723e0[2] = {(void *)_ZN12SpNpcSaharah9mainAct01Ev, 0};
-extern "C" void *data_ov078_022723d8[2] = {(void *)_ZN12SpNpcSaharah9mainAct03Ev, 0};
 extern "C" ActorProfile sSpNpcSaharahProfile = {(void *(*)())SpNpcSaharah_Create, 0x6a, 0x70, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov078_022723c0[2] = {(void *)_ZN12SpNpcSaharah10setupAct02Ev, 0};
-extern "C" void *data_ov078_022723d0[2] = {(void *)_ZN12SpNpcSaharah10setupAct03Ev, 0};
 DebugColor data_ov078_022725d0(0x14, 0x14, 0x1f, 0x1f);
 DebugColor data_ov078_022725d4(0x1f, 0x1f, 0x14, 0x1f);
 DebugColor data_ov078_022725c8(0x14, 0x1f, 0x14, 0x1f);
 extern "C" u8 sSpNpcSaharahModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'c', 'm', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcSaharahTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'c', 'm', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" void *data_ov078_022723e8[2] = {(void *)_ZN12SpNpcSaharah10setupAct04Ev, 0};
 DebugColor data_ov078_022725cc(0x14, 0x1f, 0x1f, 0x1f);
 DebugColor data_ov078_022725c0(0x14, 0x18, 0x18, 0x1f);
 SpNpcSaharahActEntry sSpNpcSaharahActTable[5] = {
-    {*(SpNpcSaharahActFn *)data_ov078_022723f8, *(SpNpcSaharahActFn *)data_ov078_02272400},
-    {NULL, *(SpNpcSaharahActFn *)data_ov078_022723e0},
-    {*(SpNpcSaharahActFn *)data_ov078_022723c0, *(SpNpcSaharahActFn *)data_ov078_022723c8},
-    {*(SpNpcSaharahActFn *)data_ov078_022723d0, *(SpNpcSaharahActFn *)data_ov078_022723d8},
-    {*(SpNpcSaharahActFn *)data_ov078_022723e8, *(SpNpcSaharahActFn *)data_ov078_022723f0},
+    {&SpNpcSaharah::setupAct00, &SpNpcSaharah::mainAct00},
+    {NULL, &SpNpcSaharah::mainAct01},
+    {&SpNpcSaharah::setupAct02, &SpNpcSaharah::mainAct02},
+    {&SpNpcSaharah::setupAct03, &SpNpcSaharah::mainAct03},
+    {&SpNpcSaharah::setupAct04, &SpNpcSaharah::mainAct04},
 };
-extern "C" void *data_ov078_022723f8[2] = {(void *)_ZN12SpNpcSaharah10setupAct00Ev, 0};
-extern "C" void *data_ov078_02272400[2] = {(void *)_ZN12SpNpcSaharah9mainAct00Ev, 0};
-extern "C" void *data_ov078_022723f0[2] = {(void *)_ZN12SpNpcSaharah9mainAct04Ev, 0};
-extern "C" void *data_ov078_022723c8[2] = {(void *)_ZN12SpNpcSaharah9mainAct02Ev, 0};
 FxVec3 sSpNpcSaharahSideStepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
 
 extern "C" SpNpcSaharah *SpNpcSaharah_Create() {
@@ -251,7 +210,7 @@ BOOL SpNpcSaharah::onDelete() {
     if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
-    TownSessionState_GetVisitorPos(TownSessionState_Get())->setPos(position.x, position.z);
+    ((VisitorPos *)TownSessionState_GetVisitorPos(TownSessionState_Get()))->setPos(position.x, position.z);
     return TRUE;
 }
 
@@ -329,7 +288,7 @@ BOOL SpNpcSaharah::isInViewBox(VecFx32 *a, VecFx32 *b) {
 BOOL SpNpcSaharah::isNearCameraTarget() {
     VecFx32 *pos = (VecFx32 *)&position;
     BOOL r = FALSE;
-    if (gCamera != 0) {
+    if (gCamera != NULL) {
         VecFx32 v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
@@ -347,7 +306,7 @@ BOOL SpNpcSaharah::findRandomWalkTarget(s32 *a, s32 *b) {
     v.y = 0;
     v.z = 0;
     for (i = 0; i < 6; i++) {
-        s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
+        s32 idx = ((u16)(s16)Random_Next(&gRandom.seed) >> 4) * 2;
         s32 g = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = g + position.x;
         g = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
@@ -365,8 +324,8 @@ BOOL SpNpcSaharah::findRandomWalkTarget(s32 *a, s32 *b) {
 
 BOOL SpNpcSaharah::getOffsetPosIfFree(VecFx32 *out, VecFx32 *p) {
     BOOL r = FALSE;
-    struct { s32 x, y, z, w; } t;
-    Npc_RotateOffsetXZ(&t, (VecFx32 *)&position, p, moveAngleY);
+    VecFx32 t;
+    Npc_RotateOffsetXZ(&t, &position, p, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.x;
         out->y = t.y;
@@ -432,12 +391,12 @@ BOOL SpNpcSaharah::mainAct02() {
             if (p->isActionDone() != 0) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                } else if ((Random_Next(gRandom) & 7) == 0) {
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     v.x = gVec3Zero.x;
                     v.y = gVec3Zero.y;
                     v.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        r6 = Math_AngleXZ(&position, &v);
+                        r6 = Math_AngleXZ(&position.x, &v.x);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY))) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -466,7 +425,7 @@ BOOL SpNpcSaharah::mainAct02() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &w.x) - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
@@ -520,7 +479,7 @@ void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
 
 void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     u16 h;
-    void *g = _ZN13PlayerErrands15getParcelErrandEv(PlayerData_GetCurrent()->getErrands());
+    ParcelErrand *g = ((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->getParcelErrand();
     MsgString9B o;
     out->msgKey = "sp_npc_camel";
     if (turbanSlot == -1) {
@@ -531,7 +490,7 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
         out->msgIndex = 0x14;
         return;
     }
-    if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 3) {
+    if (ParcelErrand_GetRecord(g)->isActive() != 0 && ParcelErrand_GetRecord(g)->getStep() == 3) {
         out->msgIndex = 0;
         return;
     }
@@ -539,11 +498,11 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
         out->msgIndex = 1;
         return;
     }
-    if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) == 0) {
+    if (ParcelErrand_GetRecord(g)->isActive() == 0) {
         out->msgIndex = 4;
         return;
     }
-    if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 0) {
+    if (ParcelErrand_GetRecord(g)->isActive() != 0 && ParcelErrand_GetRecord(g)->getStep() == 0) {
         if (ParcelErrand_GetRecipientName(g, &o)) {
             window->setSlot(0, &o);
         }
@@ -559,8 +518,8 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
             window->setSlot(0, &o);
         }
         out->msgIndex = 0xa;
-    } else if (_ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 1) {
-        _ZN12ErrandRecord7setStepEh(ParcelErrand_GetRecord(g), 2);
+    } else if (ParcelErrand_GetRecord(g)->getStep() == 1) {
+        ParcelErrand_GetRecord(g)->setStep(2);
         out->msgIndex = 0xc;
     }
 }
@@ -568,14 +527,13 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
 void SpNpcSaharahTalk::onMessageEnd(u32) {
     u8 b;
     u16 h[4];
-    Unk_0202368c_Obj o1, o2;
-    void *g;
+    ParcelErrand *g;
     u16 *p;
     u8 msg;
     u8 *s;
     h[0] = 0xfff1;
     MsgString9B o3;
-    g = _ZN13PlayerErrands15getParcelErrandEv(PlayerData_GetCurrent()->getErrands());
+    g = ((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->getParcelErrand();
     s = (u8 *)"sp_npc_camel";
     msg = 0;
     switch (msgIndex) {
@@ -588,7 +546,7 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
         if (msgIndex == 5) {
             ParcelErrand_Start(g);
         }
-        p = _ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g));
+        p = ParcelErrand_GetRecord(g)->getItem();
         {
             BOOL r;
             if (Item_IsFurniture(p)) {
@@ -616,8 +574,8 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
         }
     case 6:
     case 7:
-        Pocket_AddItem(_ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2);
-        ((ActorTalkRequest *)(this))->requestGiveItem(_ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2, 5, 0);
+        Pocket_AddItem(ParcelErrand_GetRecord(g)->getItem(), 2);
+        ((ActorTalkRequest *)(this))->requestGiveItem(ParcelErrand_GetRecord(g)->getItem(), 2, 5, 0);
         if (ParcelErrand_GetRecipientName(g, &o3)) {
             window->setSlot(0, &o3);
         }
@@ -628,20 +586,24 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
         }
         break;
     case 0xc:
-        ((ItemPickSpec *)(void *)(&o1))->set(4, 0x23);
-        ItemPick_One(&h[1], &o1, msg, msg, 1, 1, msg);
-        rewardItems[0].id = h[1];
-        ItemPickSpec_Destruct(&o1);
+        {
+            ItemPickSpec o1;
+            o1.set(4, 0x23);
+            ItemPick_One(&h[1], &o1, NULL, NULL, 1, 1, NULL);
+            rewardItems[0].id = h[1];
+        }
         ((ActorTalkRequest *)(this))->setItemNameSlot(&rewardItems[0].id, 1, 7);
-        ((ItemPickSpec *)(void *)(&o2))->set(3, 0x23);
-        ItemPick_One(&h[2], &o2, msg, msg, 1, 1, msg);
-        rewardItems[1].id = h[2];
-        ItemPickSpec_Destruct(&o2);
+        {
+            ItemPickSpec o2;
+            o2.set(3, 0x23);
+            ItemPick_One(&h[2], &o2, NULL, NULL, 1, 1, NULL);
+            rewardItems[1].id = h[2];
+        }
         ((ActorTalkRequest *)(this))->setItemNameSlot(&rewardItems[1].id, 2, 7);
         msg = 0xd;
         break;
     case 0xe:
-        _ZN12ErrandRecord7setStepEh(ParcelErrand_GetRecord(g), 3);
+        ParcelErrand_GetRecord(g)->setStep(3);
         EventWeekSlots_MarkPlayer(0x3e);
         break;
     case 0x15:
@@ -727,12 +689,12 @@ void SpNpcSaharah::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 1:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(0);
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(4);
         break;
     case 0:

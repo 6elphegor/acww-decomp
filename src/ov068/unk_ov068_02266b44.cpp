@@ -29,7 +29,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#include "room/HouseData.h"
+#include "save/SaveData.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_020943dc.h"
@@ -43,73 +44,19 @@ class FieldVillager;
 class SpNpcNookIntro;
 class SpNpcNookIntroTalk;
 
-#define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
-#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
-#define HouseData_getDebt _ZN9HouseData7getDebtEv
-#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define PlayerData_clearFlag _ZN10PlayerData9clearFlagEj
-
-
-
-
 extern "C" {
-BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
-void TalkRequest_SetTargetDone(void *p);
-u32 NookShop_GetLevel(void *p);
-u32 Math_CountDownU8(void *p);
-void Camera_SetModeDefault();
-void Camera_FocusOnPoint(VecFx32 *v);
-void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
-void PlayerData_clearFlag(void *self, s32 a);
-void *HouseData_getDebt(void *self);
-void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
-void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
-void ActorTalkRequest_setTalkPlayer(void *self, s32 a);
-void *ActorTalkRequest_getTalkPlayer(void *self);
-u32 NpcActor_getAngleTo(void *self, void *q);
-void NpcActor_setTalkRequest(void *self, void *q);
-void NpcActor_setNpcHandle(void *self, u16 *q);
-s32 NpcActionCtrl_isActionDone(void *self);
-s32 NpcActionCtrl_getAction(void *self);
-void NpcActionCtrl_requestAction(void *self, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 NpcTalkCtrl_isBusy(void *self);
-void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
+// (no shared prototypes: excluded from include/proto)
+BOOL TalkRequest_AddPlayerTalk6(Character *a, s32 b);
+BOOL TalkRequest_SetTargetDone(Character *x);
+u32 NookShop_GetLevel(void *p);  // (the shop record gSaveData.nookShop)
+u8 Math_CountDownU8(u8 *p);
+BOOL Camera_SetModeDefault(void);
+BOOL Camera_FocusOnPoint(VecFx32 *a);
 extern u16 data_020c6cc8;
-extern u32 data_021ed104;
-extern u8 gU8None;
-extern u8 gTalkMsgIndexEnd[];
-extern u8 gSaveHouse[];
-extern u8 gSavePlayers[];
-extern const char *sNookModelPaths[];
-extern const char *sNookTexPaths[];
+extern u8 gU8None;           // (TalkMsgIndex objects of src/main/unk_020a6974.cpp)
+extern u8 gTalkMsgIndexEnd;
+extern SaveData gSaveData;
 }
-
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-struct Unk_ov068_0226fea4_Flag {
-    u8 flag;
-    u8 pad[11];
-};
 
 class SpNpcNookIntroTalk : public SpNpcTalkRequest {
 public:
@@ -172,38 +119,14 @@ public:
     SpNpcNookIntroTalk talk;
     u16 startAngle;
     u8 pad_712[2];
-    s32 walkTargetX;
-    s32 walkTargetY;
-    s32 walkTargetZ;
+    VecFx32 walkTarget;
     u8 actTimer;
     u8 pad_721[3];
 };
 
-#define data_ov068_0226fe1c (sNookIntroTalkScripts) // (the flag column: the entries' flag member on hosts)
-#define PMA(x) (*(SpNpcNookIntroTalkScriptFn *)(x))
-#define PMB(x) (*(SpNpcNookIntroActFn *)(x))
-extern "C" {
-void _ZN14SpNpcNookIntro10setupAct03Ev();
-void _ZN14SpNpcNookIntro9mainAct01Ev();
-void _ZN14SpNpcNookIntro10setupAct00Ev();
-void _ZN14SpNpcNookIntro9mainAct00Ev();
-void _ZN14SpNpcNookIntro10setupAct04Ev();
-void _ZN14SpNpcNookIntro9mainAct03Ev();
-void _ZN18SpNpcNookIntroTalk13runWalkScriptEv();
-void _ZN14SpNpcNookIntro9mainAct04Ev();
-void _ZN14SpNpcNookIntro10setupAct05Ev();
-void _ZN14SpNpcNookIntro9mainAct02Ev();
-void _ZN14SpNpcNookIntro9mainAct05Ev();
-void _ZN14SpNpcNookIntro10setupAct01Ev();
-void _ZN14SpNpcNookIntro10setupAct02Ev();
-extern SpNpcNookIntroTalkScript sNookIntroTalkScripts[2];
-extern SpNpcNookIntroActEntry sSpNpcNookIntroActTable[6];
-}
-
 // data definitions before the function with the local static table (creation order)
 extern "C" char sNookTexRcd[0x1c] = "npc_sp/model/rcd_tex.nsbtx";
-extern "C" SpNpcNookIntroTalkScript sNookIntroTalkScripts[2] = {{0, 0}, {PMA(data_ov068_0226fd30), 1}};
-extern "C" void *data_ov068_0226fd30[2] = {(void *)_ZN18SpNpcNookIntroTalk13runWalkScriptEv, 0};
+extern "C" SpNpcNookIntroTalkScript sNookIntroTalkScripts[2] = {{NULL, 0}, {&SpNpcNookIntroTalk::runWalkScript, 1}};
 
 extern "C" SpNpcNookIntro *SpNpcNookIntro_Create() {
     return new SpNpcNookIntro();
@@ -217,10 +140,10 @@ BOOL SpNpcNookIntro::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    ((NpcActor *)(this))->setNpcHandle(&tbl[NookShop_GetLevel(&data_021ed104)].id);
-    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
+    setNpcHandle(&tbl[NookShop_GetLevel(gSaveData.nookShop)].id);
+    setTalkRequest(&talk);
     talk.attachOwner(this);
-    ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x399, 0x133, 0x199);
+    moveCtrl.setSpeedPreset(2, 0x399, 0x133, 0x199);
     return TRUE;
 }
 
@@ -228,36 +151,24 @@ BOOL SpNpcNookIntro::preCreate() {
 extern "C" const char *sNookModelPaths[4] = {sNookModelRcn, sNookModelRcc, sNookModelRcs,
                                                  sNookModelRcd};
 extern "C" char sNookModelRcn[0x18] = "npc_sp/model/rcn.nsbmd";
-extern "C" void *data_ov068_0226fd40[2] = {(void *)_ZN14SpNpcNookIntro10setupAct05Ev, 0};
-extern "C" void *data_ov068_0226fd00[2] = {(void *)_ZN14SpNpcNookIntro10setupAct03Ev, 0};
 extern "C" SpNpcNookIntroActEntry sSpNpcNookIntroActTable[6] = {
-    {PMB(data_ov068_0226fd10), PMB(data_ov068_0226fd18)},
-    {PMB(data_ov068_0226fd58), PMB(data_ov068_0226fd08)},
-    {PMB(data_ov068_0226fd60), PMB(data_ov068_0226fd48)},
-    {PMB(data_ov068_0226fd00), PMB(data_ov068_0226fd28)},
-    {PMB(data_ov068_0226fd20), PMB(data_ov068_0226fd38)},
-    {PMB(data_ov068_0226fd40), PMB(data_ov068_0226fd50)}};
+    {&SpNpcNookIntro::setupAct00, &SpNpcNookIntro::mainAct00},
+    {&SpNpcNookIntro::setupAct01, &SpNpcNookIntro::mainAct01},
+    {&SpNpcNookIntro::setupAct02, &SpNpcNookIntro::mainAct02},
+    {&SpNpcNookIntro::setupAct03, &SpNpcNookIntro::mainAct03},
+    {&SpNpcNookIntro::setupAct04, &SpNpcNookIntro::mainAct04},
+    {&SpNpcNookIntro::setupAct05, &SpNpcNookIntro::mainAct05}};
 extern "C" char sNookModelRcc[0x18] = "npc_sp/model/rcc.nsbmd";
-extern "C" void *data_ov068_0226fd08[2] = {(void *)_ZN14SpNpcNookIntro9mainAct01Ev, 0};
-extern "C" void *data_ov068_0226fd50[2] = {(void *)_ZN14SpNpcNookIntro9mainAct05Ev, 0};
-extern "C" void *data_ov068_0226fd18[2] = {(void *)_ZN14SpNpcNookIntro9mainAct00Ev, 0};
 extern "C" char sNookModelRcd[0x18] = "npc_sp/model/rcd.nsbmd";
-extern "C" void *data_ov068_0226fd58[2] = {(void *)_ZN14SpNpcNookIntro10setupAct01Ev, 0};
-extern "C" void *data_ov068_0226fd48[2] = {(void *)_ZN14SpNpcNookIntro9mainAct02Ev, 0};
 extern "C" char sNookTexRcn[0x1c] = "npc_sp/model/rcn_tex.nsbtx";
 extern "C" char sNookTexRcc[0x1c] = "npc_sp/model/rcc_tex.nsbtx";
 extern "C" char sNookIntroMsgFile[0x14] = "sp_etc_sequence4";
-extern "C" void *data_ov068_0226fd10[2] = {(void *)_ZN14SpNpcNookIntro10setupAct00Ev, 0};
-extern "C" void *data_ov068_0226fd38[2] = {(void *)_ZN14SpNpcNookIntro9mainAct04Ev, 0};
 extern "C" char sNookModelRcs[0x18] = "npc_sp/model/rcs.nsbmd";
 extern "C" const char *sNookTexPaths[4] = {sNookTexRcn, sNookTexRcc, sNookTexRcs,
                                                  sNookTexRcd};
-extern "C" void *data_ov068_0226fd60[2] = {(void *)_ZN14SpNpcNookIntro10setupAct02Ev, 0};
-extern "C" void *data_ov068_0226fd28[2] = {(void *)_ZN14SpNpcNookIntro9mainAct03Ev, 0};
 extern "C" void *sNookIntroMsgFilePtr = sNookIntroMsgFile;
 extern "C" char sNookTexRcs[0x1c] = "npc_sp/model/rcs_tex.nsbtx";
 extern "C" ActorProfile sSpNpcNookIntroProfile = {(void *(*)())SpNpcNookIntro_Create, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN14SpNpcNookIntro10setupAct04Ev, 0};
 
 BOOL SpNpcNookIntro::onCreate() {
     if (!SpNpcActor::onCreate()) {
@@ -266,11 +177,11 @@ BOOL SpNpcNookIntro::onCreate() {
     changeAct(0);
     startAngle = rotY;
     collider.groups |= 2;
-    void *p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (p != NULL) {
         if (!GameStart_IsNewResident()) {
             if (!GameStart_IsNewTown()) {
-                ((PlayerData *)(p))->clearFlag(1);
+                p->clearFlag(1);
             }
         }
     }
@@ -279,11 +190,11 @@ BOOL SpNpcNookIntro::onCreate() {
 }
 
 u8 *SpNpcNookIntro::getTexturePath() {
-    return (u8 *)sNookTexPaths[NookShop_GetLevel(&data_021ed104)];
+    return (u8 *)sNookTexPaths[NookShop_GetLevel(gSaveData.nookShop)];
 }
 
 u8 *SpNpcNookIntro::getModelPath() {
-    return (u8 *)sNookModelPaths[NookShop_GetLevel(&data_021ed104)];
+    return (u8 *)sNookModelPaths[NookShop_GetLevel(gSaveData.nookShop)];
 }
 
 BOOL SpNpcNookIntro::updateAct() {
@@ -317,17 +228,17 @@ BOOL SpNpcNookIntro::mainAct00() {
 
 BOOL SpNpcNookIntro::setupAct01() {
     u32 x;
-    void *p = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     x = 0;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)p);
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 1);
+    talkCtrl.requestTurnAndTalk(0, x, 1);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         Camera_SetModeDefault();
         Bgm_RequestSilence(0x13, 0x3c, 0);
         Bgm_Release(0x47);
@@ -337,7 +248,7 @@ BOOL SpNpcNookIntro::mainAct01() {
 }
 
 BOOL SpNpcNookIntro::setupAct02() {
-    VecFx32 v;
+    VecFx32Ctor v;
     VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
@@ -350,20 +261,20 @@ BOOL SpNpcNookIntro::setupAct02() {
 BOOL SpNpcNookIntro::mainAct02() {
     if (PlayerActor_IsScriptedWalking(4) == 0) {
         talk.resetMsg();
-        ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
     }
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::setupAct03() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct03() {
-    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
-        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+    if (actionCtrl.getAction() == 3) {
+        if (actionCtrl.isActionDone()) {
             changeAct(4);
         }
     }
@@ -371,18 +282,18 @@ BOOL SpNpcNookIntro::mainAct03() {
 }
 
 BOOL SpNpcNookIntro::setupAct04() {
-    walkTargetX = position.x;
-    walkTargetY = position.y;
-    walkTargetZ = position.z;
-    walkTargetX -= 0x2000;
-    walkTargetZ += 0xa000;
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
+    walkTarget.x = position.x;
+    walkTarget.y = position.y;
+    walkTarget.z = position.z;
+    walkTarget.x -= 0x2000;
+    walkTarget.z += 0xa000;
+    actionCtrl.requestAction(2, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
     actTimer = 0x3c;
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct04() {
-    if (((NpcActionCtrl *)(&actionCtrl))->isActionDone() != 0 || Math_CountDownU8(&actTimer) == 0) {
+    if (actionCtrl.isActionDone() != 0 || Math_CountDownU8(&actTimer) == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
@@ -417,9 +328,9 @@ void SpNpcNookIntroTalk::attachOwner(SpNpcNookIntro *o) {
 
 void SpNpcNookIntroTalk::start(TalkStartMsg *out_) {
     TalkStartMsg *out = (TalkStartMsg *)out_;
-    void *p = PlayerData_GetCurrent();
-    if (p != 0) {
-        ((PlayerData *)(p))->clearFlag(0x23);
+    PlayerData *p = PlayerData_GetCurrent();
+    if (p != NULL) {
+        p->clearFlag(0x23);
     }
     out->msgKey = (const char *)sNookIntroMsgFilePtr;
     out->msgIndex = 0x22;
@@ -431,20 +342,20 @@ void SpNpcNookIntroTalk::onMessageEnd(u32) {
     buf = 0;
     switch (msgIndex) {
     case 0x22:
-        ((TalkWindowState *)(sc))->setNextMessage((u8 *)(gTalkMsgIndexEnd), 0);
+        sc->setNextMessage(&gTalkMsgIndexEnd, 0);
         sc->openMode = 0;
         setScript(1);
         break;
     case 10:
     case 13: {
-        void *p = HouseData_getDebt(gSaveHouse);
-        if (p == 0) {
+        s32 debt = ((HouseData *)gSaveData.house)->getDebt();
+        if (debt == 0) {
             buf = 0xf;
         } else {
-            ((ActorTalkRequest *)(this))->setNumberSlot((s32)(p), 1, 0xa, 1, 0);
+            setNumberSlot(debt, 1, 0xa, 1, 0);
             if (GameStart_IsNewTown() != 0) {
                 buf = 0x1c;
-            } else if (PlayerDataArray_CountUsed(gSavePlayers) <= 1) {
+            } else if (PlayerDataArray_CountUsed(gSaveData.players) <= 1) {
                 buf = 0x27;
             } else {
                 buf = 0xb;
@@ -470,7 +381,7 @@ void SpNpcNookIntroTalk::onMessageEnd(u32) {
         break;
     }
     if (buf != 0) {
-        ((TalkWindowState *)(sc))->setNextMessage((u8 *)((u8 *)&buf), sNookIntroMsgFilePtr);
+        sc->setNextMessage((u8 *)&buf, sNookIntroMsgFilePtr);
     }
 }
 
@@ -478,7 +389,7 @@ void SpNpcNookIntroTalk::onChoice(u32) {
 }
 
 void SpNpcNookIntroTalk::update() {
-    if (data_ov068_0226fe1c[script].flag != 0) {
+    if (sNookIntroTalkScripts[script].flag != 0) {
         if (sNookIntroTalkScripts[script].fn) {
             (this->*sNookIntroTalkScripts[script].fn)();
         }
@@ -486,7 +397,7 @@ void SpNpcNookIntroTalk::update() {
 }
 
 void SpNpcNookIntroTalk::onTaskDone(u32) {
-    if (data_ov068_0226fe1c[script].flag == 0) {
+    if (sNookIntroTalkScripts[script].flag == 0) {
         if (sNookIntroTalkScripts[script].fn) {
             (this->*sNookIntroTalkScripts[script].fn)();
             setScript(0);
@@ -508,24 +419,24 @@ void SpNpcNookIntroTalk::runWalkScript() {
             PlayerActor_SetNoFaceTalkTarget(0, 4);
             SpNpcNookIntro *o = owner;
             VecFx32 *pv = &o->position;
-            VecFx32 *pd = (VecFx32 *)&o->walkTargetX;
+            VecFx32 *pd = &o->walkTarget;
             pd->x = pv->x;
             pd->y = pv->y;
             pd->z = pv->z;
             o = owner;
-            o->walkTargetX += 0x6000;
+            o->walkTarget.x += 0x6000;
             o = owner;
-            ((NpcActionCtrl *)(&o->actionCtrl))->requestAction(2, 2, o->walkTargetX, o->walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
+            o->actionCtrl.requestAction(2, 2, o->walkTarget.x, o->walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 1;
         }
         break;
     case 1: {
         SpNpcNookIntro *o = owner;
-        if (((NpcActionCtrl *)(&o->actionCtrl))->isActionDone() != 0) {
+        if (o->actionCtrl.isActionDone() != 0) {
             o = owner;
-            if (((NpcActionCtrl *)(&o->actionCtrl))->getAction() == 2) {
+            if (o->actionCtrl.getAction() == 2) {
                 o = owner;
-                ((NpcActionCtrl *)(&o->actionCtrl))->requestAction(0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                o->actionCtrl.requestAction(0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 scriptStep = 2;
             }
         }
@@ -533,9 +444,9 @@ void SpNpcNookIntroTalk::runWalkScript() {
     }
     case 2: {
         SpNpcNookIntro *o = owner;
-        if (((NpcActionCtrl *)(&o->actionCtrl))->isActionDone() != 0) {
+        if (o->actionCtrl.isActionDone() != 0) {
             o = owner;
-            if (((NpcActionCtrl *)(&o->actionCtrl))->getAction() == 0) {
+            if (o->actionCtrl.getAction() == 0) {
                 TalkWindowState *sc = (TalkWindowState *)window;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
@@ -543,7 +454,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
                 } else {
                     buf = 0xa;
                 }
-                ((TalkWindowState *)(sc))->setNextMessage((u8 *)((u8 *)&buf), sNookIntroMsgFilePtr);
+                sc->setNextMessage((u8 *)&buf, sNookIntroMsgFilePtr);
                 sc->nextState = 1;
                 o = owner;
                 VecFx32 t;

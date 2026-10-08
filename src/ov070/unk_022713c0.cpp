@@ -32,11 +32,8 @@
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
 #include "item/LetterView.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov070_022726e0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov070_022726e4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSpNpcGracieKey  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_0206269c.h"
@@ -141,7 +138,6 @@ struct SpNpcGracieActEntry {
 };
 
 extern "C" {
-extern u8 sSpNpcGracieKey[];
 extern const TalkStartMsg sSpNpcGracieTopicMsgs[];
 extern const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[];
 extern u16 data_020c6cc8;
@@ -150,13 +146,12 @@ void *MI_CpuFill8(void *, s32, u32);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void func_020b4154(void *p);
 s32 _s32_div_f(s32, s32);
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, void *f);
 u16 Item_MakePaper(u32 a, s32 b);
 void EventWeekSlots_MarkPlayer(u32 id);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 Item_GetPrice(u16 *);
-BOOL TalkRequest_SetTargetDone(void *p);
+BOOL TalkRequest_SetTargetDone(Character *c);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -164,15 +159,12 @@ extern "C" DebugColor data_ov070_022728c8;
 extern "C" u8 sSpNpcGracieTexturePath[];
 extern "C" ActorProfile sSpNpcGracieProfile;
 extern "C" u8 sSpNpcGracieModelPath[];
-extern "C" u32 data_ov070_022726e4[1];
-extern "C" u32 data_ov070_022726e0[1];
 extern "C" DebugColor data_ov070_022728d4;
 extern "C" const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[7];
 extern "C" SpNpcGracieActEntry sSpNpcGracieActTable[3];
 extern "C" DebugColor data_ov070_022728c4;
 extern "C" DebugColor data_ov070_022728c0;
 extern "C" DebugColor data_ov070_022728d8;
-extern "C" u8 sSpNpcGracieKey[];
 extern "C" const TalkStartMsg sSpNpcGracieTopicMsgs[7];
 extern "C" DebugColor data_ov070_022728cc;
 
@@ -438,12 +430,12 @@ void SpNpcGracieTalk::start(TalkStartMsg *out) {
         }
     }
     if (topic >= 0 && topic < 7) {
-        out->msgIndex = (&sSpNpcGracieTopicMsgs[0].msgIndex)[topic * 8];
+        out->msgIndex = sSpNpcGracieTopicMsgs[topic].msgIndex;
         if (topic == 2) {
             out->msgIndex = ownerNpc->talk.questionCount + 0x4c;
             ownerNpc->talk.questionCount++;
         }
-        out->msgKey = (const char *)*(u32 *)((u8 *)sSpNpcGracieTopicMsgs + topic * 8);
+        out->msgKey = sSpNpcGracieTopicMsgs[topic].msgKey;
     }
 }
 
@@ -589,9 +581,9 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
     if (t4 < 3) {
         u16 b = 0xfff1;
         r7->setFaceItem(&b);
-        const u8 *p6 = &sSpNpcGracieOutfitTiers[0].wornAsFaceItem[0] + idx * 16;
-        if (p6[t4] == 0) {
-            u16 val = ((const u16 *)((const u8 *)sSpNpcGracieOutfitTiers + idx * 16))[t4];
+        const SpNpcGracieOutfitTier *tier = &sSpNpcGracieOutfitTiers[idx];
+        if (tier->wornAsFaceItem[t4] == 0) {
+            u16 val = tier->items[t4];
             u16 g = val;
             PlayerActor_RequestWearHatAlt(&g);
             u16 h = val;
@@ -601,7 +593,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
             u16 j = 0xfff1;
             r7->setFaceItem(&j);
         } else {
-            u16 val = ((const u16 *)((const u8 *)sSpNpcGracieOutfitTiers + idx * 16))[t4];
+            u16 val = tier->items[t4];
             u16 k = val;
             PlayerActor_RequestWearFaceItemAlt(&k);
             u16 l = val;
@@ -623,7 +615,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
     }
     u16 o;
     u16 pp;
-    if ((&sSpNpcGracieOutfitTiers[0].bonusChance)[idx * 16] >= (u8)Random_GlobalBelow(0x65)) {
+    if (sSpNpcGracieOutfitTiers[idx].bonusChance >= (u8)Random_GlobalBelow(0x65)) {
         {
             ItemPickSpec o1;
             o1.set(2, 0x22);
@@ -686,7 +678,7 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
     }
     if (msgIndex == 0x24) {
         if (Inventory_FindEmptyLetter() != -1) {
-            void *obj = Inventory_GetEmptyLetter();
+            LetterView *obj = (LetterView *)Inventory_GetEmptyLetter();
             if (obj != NULL) {
                 PlayerSpNpcRecord *p = (PlayerSpNpcRecord *)r7->getSpNpcRecord();
                 MsgString25 str;
@@ -704,15 +696,15 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
                 ((ActorTalkRequest *)(this))->requestGiveItem(&s.giftItem, 0, 5, 0);
                 String_FormatNumber(&str, p->getStyleScore(), 10, 0, 0, 0);
                 MailText_SetSlot(0, &str);
-                Letter_ComposeFromMail(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
+                Letter_ComposeFromMail(obj, &s.letterLevel, (const char *)sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
                 if (r7 != NULL) {
                     s.paperItem = Item_MakePaper(0x10, 4);
                     Catalog_AddItem(r7->getCatalog(), &s.paperItem, 0);
                 }
                 if (lvl <= 2) {
-                    ((LetterView *)(obj))->setPresent(0x12a7, 1);
+                    obj->setPresent(0x12a7, 1);
                 } else if (lvl <= 4) {
-                    ((LetterView *)(obj))->setPresent(0x1248, 1);
+                    obj->setPresent(0x1248, 1);
                 }
             }
         }
@@ -821,7 +813,7 @@ void SpNpcGracie::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

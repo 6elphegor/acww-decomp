@@ -7,9 +7,11 @@
 #include "player/PlayerData.h"
 #include "menu/MenuErrorMessage.h"
 #include "menu/PocketMenu.h"
-#define PROTO_LOCAL_BottleThrow_IsActive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishCatch_StartRelease  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PocketMenu_GetPlayerSlot  // declared below: the shared prototype conflicts with the calls here
+#include "actor/Actor.h"
+#include "gfx/VecFx32.h"
+#include "town/BlockMap.h"
+#include "item/LetterView.h"
+#include "sys/Heap.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
@@ -23,42 +25,37 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov096/unk_02294c40.h"
 #include "proto/ov098/unk_ov098_0229b280.h"
 
+class TownBlockMap;
+
+// Functions whose definitions use file-local types (not in the shared headers).
 extern "C" {
-s32 FieldAction_RequestTool(s32 a, void *b, s32 c, s32 d, s32 e);
-s32 FieldAction_RequestAtFreeUnit(s32 a, s32 b, s32 c);
+s32 FieldAction_RequestTool(s32 a, s32 *unit, s32 sel, s32 d, u16 item);  // unit: {x, z} (Unk_02042588_Pos)
+s32 FieldAction_RequestAtFreeUnit(s32 a, s32 b, u16 c);
 s32 FieldAction_PollResult(s32 a);
 void FieldAction_Release(s32 a);
-void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-void FieldPos_ToUnit(s32 *x, s32 *z, void *p);
-void *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-u32 BlockMap_GetBlockAttr(void *grid, s32 x, s32 z);
-BOOL Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void MI_CpuCopy8(void *src, void *dst, s32 n);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
+void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
+TownBlockMap *TownBlockMap_Get();
+u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+s32 BlockMap_GetBlockAttr(BlockMap *g, s32 hx, s32 hy);
+BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 dir, u32 dist, u32 s5, s32 s6);
+void MI_CpuCopy8(const void *src, void *dest, u32 size);
+void BottleThrow_SetTarget(VecFx32 *v, s32 i);
+s32 PlayerActor_LocalRequestBuryItem(VecFx32 *p, u16 *b);
 
-extern void *gSceneBlockMap;
-extern u8 data_021e7f8c[];
+extern BlockMap *gSceneBlockMap;
+extern u8 data_021e7f8c[];  // the town exchange record (TownExchangeRecord) of the save data
 extern u16 gPad[];
 extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
-
-// other overlays
-BOOL BottleThrow_IsActive(void *p);
-void BottleThrow_SetTarget(void *p, void *q);
-BOOL FishCatch_StartRelease(void *p, s32 a, void *q);
-BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 }
 
 extern "C" CommManager *gCommManager;
-
-class PocketMenu;
-extern "C" {
-void *PocketMenu_GetPlayerSlot(PocketMenu *self);
-}
 
 
 
@@ -91,7 +88,7 @@ struct Unk_ov098_0229b790_Pt {
 extern "C" {
 }
 
-extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {
+extern "C" s32 PocketMenu_CanDropOutdoor(PocketMenu *self, u32 b) {
     InvItemStackPad pad;
     if (PlayerData_GetCurrent()->testFlag(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
@@ -146,12 +143,12 @@ void PocketMenu::addBottleOption() {
 }
 
 BOOL PocketMenu::findWaterNearPlayer(s32 flag) {
-    u8 *p = PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     s32 base;
-    u8 *q;
-    q = p + 0x5c;
+    VecFx32 *q;
+    q = &p->position;
     base = 0xa00;
-    u32 f = BlockMap_GetBlockAttr(gSceneBlockMap, *(s32 *)(p + 0x5c) >> 17, *(s32 *)(q + 8) >> 17);
+    u32 f = BlockMap_GetBlockAttr(gSceneBlockMap, p->position.x >> 17, q->z >> 17);
     if (flag) {
         if ((f & 0x7f000) == 0 && (f & 8) == 0) {
             return FALSE;
@@ -164,7 +161,7 @@ BOOL PocketMenu::findWaterNearPlayer(s32 flag) {
             base += 0x3e8;
         }
     }
-    return Ground_FindWaterAhead(&waterPos, q, *(s16 *)(p + 0x8e), 0x7800, base, 0xc);
+    return Ground_FindWaterAhead(&waterPos, q, p->rotY, 0x7800, base, 0xc);
 }
 
 void PocketMenu::actionReleaseFish() {
@@ -173,7 +170,7 @@ void PocketMenu::actionReleaseFish() {
 }
 
 void PocketMenu::mainAct30() {
-    void *r6 = PocketMenu_GetPlayerSlot(this);
+    u32 r6 = PocketMenu_GetPlayerSlot();
     s32 a = PocketMenu_GetItem(this, actionTarget);
     if (FishCatch_StartRelease(r6, a, &waterPos)) {
         struct {
@@ -204,7 +201,7 @@ void PocketMenu::sendReleasePacket(u8 a, u8 b) {
         u8 pkt[12];
         pkt[0] = b;
         pkt[1] = a;
-        NetBuf_PackPair20(&pkt[7], waterPos, waterPosZ);
+        NetBuf_PackPair20(&pkt[7], waterPos.x, waterPos.z);
         MI_CpuCopy8(&pkt[7], &pkt[2], 5);
         CommManager *g = gCommManager;
         g->beginRecord();
@@ -223,7 +220,7 @@ void PocketMenu::actionReleaseInsect() {
 }
 
 void PocketMenu::mainAct2C() {
-    void *r7 = PocketMenu_GetPlayerSlot(this);
+    u32 r7 = PocketMenu_GetPlayerSlot();
     if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
         l.a = PocketMenu_GetItem(this, actionTarget);
@@ -237,7 +234,7 @@ void PocketMenu::mainAct2C() {
         s32 r5 = ok ? a - 0x12b0 : -1;
         u32 t = (u8)Random_GlobalBelow(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
-        x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
+        x += ((Actor *)PlayerActor_GetActor(4))->rotY;
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
@@ -284,12 +281,12 @@ BOOL PocketMenu::findBuryHole() {
             return FALSE;
         }
     }
-    u8 *q = PlayerActor_GetActor(4);
+    Actor *q = (Actor *)PlayerActor_GetActor(4);
     s32 px = 0, py = 0;
-    void *grid = TownBlockMap_Get();
-    FieldPos_ToUnit(&px, &py, q + 0x5c);
+    BlockMap *grid = (BlockMap *)TownBlockMap_Get();
+    FieldPos_ToUnit(&px, &py, &q->position);
     s32 zero1 = 0, zero2 = 0;
-    s16 base = *(s16 *)(q + 0x8e);
+    s16 base = q->rotY;
     for (s32 i = 0; i < 3; i++) {
         s32 *p = getDirOffset(base + sBuryHoleAngles[i]);
         s32 x = px + p[0];
@@ -348,10 +345,10 @@ void PocketMenu::mainAct2D() {
 
 void PocketMenu::mainAct2E() {
     u16 v;
-    s32 out[3];
-    FieldPos_FromUnitCenter(out, digUnitX, digUnitY);
+    VecFx32 out;
+    FieldPos_FromUnitCenter(&out, digUnitX, digUnitY);
     v = PocketMenu_GetItem(this, actionTarget);
-    if (PlayerActor_LocalRequestBuryItem(out, &v)) {
+    if (PlayerActor_LocalRequestBuryItem(&out, &v)) {
         PocketMenu_ClearSlotItem(this, actionTarget);
         setMainState(0x2f);
     }
@@ -383,37 +380,37 @@ void PocketMenu::actionPlantItem() {
 void PocketMenu::actionThrowBottle() {
     sendBottleLetter();
     PlayerActor_LocalRequestThrowBottle();
-    BottleThrow_SetTarget(&waterPos, PocketMenu_GetPlayerSlot(this));
+    BottleThrow_SetTarget(&waterPos, PocketMenu_GetPlayerSlot());
     PocketMenu_ClearLetter(this, actionTarget);
     setMainState(0x33);
 }
 
 void PocketMenu::mainAct33() {
-    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot(this)) == 1) {
+    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot()) == 1) {
         setMainState(0x34);
     }
 }
 
 void PocketMenu::mainAct34() {
-    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot(this)) == 0) {
+    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot()) == 0) {
         PocketMenu_ReturnToIdle(this);
     }
 }
 
 void PocketMenu::sendBottleLetter() {
     sendReleasePacket(0, 5);
-    s32 p = PocketMenu_GetLetter(this, actionTarget);
+    LetterView *p = PocketMenu_GetLetter(this, actionTarget);
     CommManager *g = gCommManager;
     if (!g->isOnline() || g->myAid == 0) {
-        u8 *const d = data_021e7f8c;
-        Letter_Copy(TownExchange_GetLetter(d), (void *)p);
-        ((TownExchangeRecord *)d)->resetCounter();
-        ((TownExchangeRecord *)d)->setUnkFlag(0);
+        TownExchangeRecord *const d = (TownExchangeRecord *)data_021e7f8c;
+        Letter_Copy((LetterView *)TownExchange_GetLetter(d), p);
+        d->resetCounter();
+        d->setUnkFlag(0);
     } else {
-        void *heap = gMenuHeap;
+        Heap *heap = (Heap *)gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
         buf[0] = 6;
-        MI_CpuCopy8((void *)p, buf + 1, 0xf4);
+        MI_CpuCopy8(p, buf + 1, 0xf4);
         CommManager *g2 = gCommManager;
         g2->beginRecord();
         g2->writeRecord(buf, 0xf5);

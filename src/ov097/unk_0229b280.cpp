@@ -4,11 +4,8 @@
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
 #include "menu/PocketMenu.h"
-#define PROTO_LOCAL_RoomWallFloor_SetCarpet  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomWallFloor_SetWallpaper  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL__ZN10PocketMenu15actionUseCarpetEv  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL__ZN10PocketMenu18actionUseWallpaperEv  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02034048.h"
 #include "proto/main/unk_02060b9c.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
@@ -19,8 +16,6 @@
 extern "C" {
 s32 Item_IsFurniture(u16 *p);
 s32 FieldAction_RequestDrop(s32 a, s32 b);
-u16 *RoomWallFloor_SetWallpaper(void *a, s32 b, s32 c, s32 d);
-u16 *RoomWallFloor_SetCarpet(void *a, s32 b, s32 c, s32 d);
 }
 
 extern "C" CommManager *gCommManager;
@@ -43,17 +38,17 @@ static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" void _ZN10PocketMenu15actionUseCarpetEv(PocketMenu *self) {
+void PocketMenu::actionUseCarpet() {
     if (!PocketMenu_CanEditRoom()) {
-        PocketMenu_ReturnToIdle(self);
-        PocketMenu_ShowMessage(self, 23, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 23, 0xff, 1);
     } else {
     u16 v0;
     volatile u16 v1;
-    u32 k = self->actionTarget;
-    v0 = PocketMenu_GetItem(self, k);
-    self->requestCameraPop();
-    v1 = *RoomWallFloor_SetCarpet(&v0, 0, 1, 1);
+    u32 k = actionTarget;
+    v0 = PocketMenu_GetItem(this, k);
+    requestCameraPop();
+    v1 = *(u16 *)RoomWallFloor_SetCarpet(&v0, 0, 1, 1);
     BOOL r = FALSE;
     u32 x = v1;
     u32 y = v1;
@@ -61,25 +56,25 @@ extern "C" void _ZN10PocketMenu15actionUseCarpetEv(PocketMenu *self) {
         r = TRUE;
     }
     if (r) {
-        PocketMenu_SetSlotItem(self, k, x, 0);
+        PocketMenu_SetSlotItem(this, k, x, 0);
     } else {
-        PocketMenu_ClearSlotItem(self, k);
+        PocketMenu_ClearSlotItem(this, k);
     }
-    PocketMenu_ReturnToIdle(self);
+    PocketMenu_ReturnToIdle(this);
     }
 }
 
-extern "C" void _ZN10PocketMenu18actionUseWallpaperEv(PocketMenu *self) {
+void PocketMenu::actionUseWallpaper() {
     if (!PocketMenu_CanEditRoom()) {
-        PocketMenu_ReturnToIdle(self);
-        PocketMenu_ShowMessage(self, 24, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 24, 0xff, 1);
     } else {
     u16 v0;
     volatile u16 v1;
-    u32 k = self->actionTarget;
-    v0 = PocketMenu_GetItem(self, k);
-    self->requestCameraPop();
-    v1 = *RoomWallFloor_SetWallpaper(&v0, 0, 1, 1);
+    u32 k = actionTarget;
+    v0 = PocketMenu_GetItem(this, k);
+    requestCameraPop();
+    v1 = *(u16 *)RoomWallFloor_SetWallpaper(&v0, 0, 1, 1);
     BOOL r = FALSE;
     u32 x = v1;
     u32 y = v1;
@@ -87,11 +82,11 @@ extern "C" void _ZN10PocketMenu18actionUseWallpaperEv(PocketMenu *self) {
         r = TRUE;
     }
     if (r) {
-        PocketMenu_SetSlotItem(self, k, x, 0);
+        PocketMenu_SetSlotItem(this, k, x, 0);
     } else {
-        PocketMenu_ClearSlotItem(self, k);
+        PocketMenu_ClearSlotItem(this, k);
     }
-    PocketMenu_ReturnToIdle(self);
+    PocketMenu_ReturnToIdle(this);
     }
 }
 
@@ -115,7 +110,7 @@ extern "C" void PocketMenu_AddRoomItemOptions(PocketMenu *self, s32 a) {
 extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
     u16 in = a;
     u16 v;
-    s32 out;
+    u32 out;
     Item_ToPlacedForm(&v, &in, 0);
     if (Item_IsFurniture(&v)) {
         switch (FtrMgr_FindPlacementForPlayer(&out, &v, 1)) {

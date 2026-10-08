@@ -4,12 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_02087e0c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_Oam_GetObjWidth
 s32 Oam_GetObjWidth(u32 *p);
 #endif
@@ -20,11 +18,12 @@ s32 Oam_GetHeight(s32 a, s32 b);
 s32 Oam_GetObjHeight(u32 *p);
 #endif
 #ifndef PROTO_LOCAL_Oam_GetObjX
-s32 Oam_GetObjX(u32 *p);
+s32 Oam_GetObjX(const void *obj);
 #endif
 #ifndef PROTO_LOCAL_Oam_GetObjY
-s32 Oam_GetObjY(s8 *p);
+s32 Oam_GetObjY(const void *obj);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

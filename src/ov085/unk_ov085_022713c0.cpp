@@ -29,6 +29,7 @@
 #include "player/PlayerData.h"
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
+#include "save/VillagerData.h"
 #include "talk/MsgString.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -49,18 +50,13 @@ struct TalkStartMsg;
 
 
 extern "C" {
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void TalkRequest_SetTargetDone(void *p);
-void NookShop_PickFlowerBag(u16 *p);
-void Clock_GetDateTime(void *p);
-void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-u32 Event_GetDaysSinceStart(s32 v);
+s32 Event_GetDaysSinceStart(u32 id);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
-extern u8 gSaveData[];
+extern SaveData gSaveData;
 }
 
 
@@ -125,14 +121,11 @@ struct SpNpcTortimerBrightNightsActEntry {
 
 
 extern "C" {
-void TalkRequest_SetTargetDone(void *p);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void *SaveVillagers_Get(void *tbl, s32 idx);
-void *_ZN12VillagerData13getVillagerIdEv(void *p);
-void *Item_GetSaveData();
-void *SaveVillagers_FindBestFriendOf(void *p, s32 v);
-void SaveVillagers_ClearTalkedToday(void *p);
-s32 SaveVillagers_Count(void *p);
+u8 *SaveVillagers_Get(u8 *base, s32 idx);
+u8 *Item_GetSaveData();
+void *SaveVillagers_FindBestFriendOf(u8 *base, void *x);
+void SaveVillagers_ClearTalkedToday(u8 *p);
+s32 SaveVillagers_Count(u8 *base);
 extern u8 gSaveVillagers[];
 }
 
@@ -163,14 +156,14 @@ BOOL SpNpcTortimerBrightNights::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     festDay = Event_GetDaysSinceStart(0x11);
-    u8 *const g = gContestRecord;
-    ContestRecord_BeginFestival((ContestRecord *)g, 1);
+    ContestRecord *const g = (ContestRecord *)gContestRecord;
+    ContestRecord_BeginFestival(g, 1);
     if (!Talk_CheckAndSetPlayerFlag(0x1f, 0)) {
-        ((ContestRecord *)(g))->clearVotedVillager();
+        g->clearVotedVillager();
     }
     return TRUE;
 }
@@ -198,24 +191,24 @@ void SpNpcTortimerBrightNights::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerBrightNights::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerBrightNights::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerBrightNights::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     s32 x = 0;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerBrightNights::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -226,24 +219,24 @@ BOOL SpNpcTortimerBrightNights::mainAct02() { return TRUE; }
 
 void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     u8 b;
-    void *r7 = window->getChoiceList();
+    ChoiceList *r7 = window->getChoiceList();
     s32 i, n, r6;
     b = 0x3d;
     MsgString9B o;
-    ((ChoiceList *)(r7))->clear();
+    r7->clear();
     for (i = 0; i < 5; i++) {
         choiceVillagers[i] = -1;
     }
-    if (!((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, villagerPageStart))))->isValid()) {
+    if (!((VillagerData *)SaveVillagers_Get(gSaveVillagers, villagerPageStart))->getVillagerId()->isValid()) {
         villagerPageStart = 0;
     }
     r6 = villagerPageStart;
     n = 0;
     for (; r6 < 8 && n < 4; r6++) {
-        void *g = SaveVillagers_Get(gSaveVillagers, r6);
-        if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(g)))->isValid()) {
-            ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(g)))->getName(&o);
-            ((MsgString *)(((ChoiceEntry *)(((ChoiceList *)(r7))->getEntry(n)))->getText()))->copy((MsgString *)(void *)(&o));
+        VillagerData *g = (VillagerData *)SaveVillagers_Get(gSaveVillagers, r6);
+        if (g->getVillagerId()->isValid()) {
+            g->getVillagerId()->getName(&o);
+            r7->getEntry(n)->getText()->copy((MsgString *)&o);
             choiceVillagers[n] = r6;
             n++;
         }
@@ -253,15 +246,15 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
         villagerPageStart = 0;
     }
     if (SaveVillagers_Count(gSaveVillagers) > 4) {
-        void *p = ((ChoiceList *)(r7))->getEntry(n);
-        ((ChoiceEntry *)(p))->setMsgIndex((const u8 *)(&b));
-        ((ChoiceEntry *)(p))->setBmgName((const void *)(Choice_GetBmgName(0)));
-        ((ChoiceEntry *)(p))->loadText();
+        ChoiceEntry *p = r7->getEntry(n);
+        p->setMsgIndex(&b);
+        p->setBmgName(Choice_GetBmgName(0));
+        p->loadText();
         n++;
     }
-    ((ChoiceList *)(r7))->setCount(n);
+    r7->setCount(n);
     if (SaveVillagers_Count(gSaveVillagers) > 4) {
-        ((ChoiceList *)(r7))->setCancelToLast();
+        r7->setCancelToLast();
     }
     window->openChoices(1);
 }
@@ -290,23 +283,23 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
         }
     }
     if (ownerNpc->festDay == 6) {
-        if (((SaveData *)(gSaveData))->testFlag(0x11)) {
-            void *g = ((ContestRecord *)(gContestRecord))->getHolderVillager();
-            if (((VillagerId *)(g))->isValid()) {
+        if (gSaveData.testFlag(0x11)) {
+            VillagerId *g = ((ContestRecord *)gContestRecord)->getHolderVillager();
+            if (g->isValid()) {
                 MsgString9B o;
-                ((VillagerId *)(g))->getName(&o);
+                g->getName(&o);
                 window->setSlot(1, &o);
             }
             out->msgIndex = Random_GlobalBelow(3) + 0x11;
         } else {
             out->msgIndex = 0xf;
-            ((SaveData *)(gSaveData))->setFlag(0x11);
+            gSaveData.setFlag(0x11);
         }
     } else {
-        void *g = ((ContestRecord *)(gContestRecord))->getVotedVillager();
-        if (((VillagerId *)(g))->isValid()) {
+        VillagerId *g = ((ContestRecord *)gContestRecord)->getVotedVillager();
+        if (g->isValid()) {
             MsgString9B o;
-            ((VillagerId *)(g))->getName(&o);
+            g->getName(&o);
             window->setSlot(0, &o);
             out->msgIndex = Random_GlobalBelow(4) + 0xb;
         } else {
@@ -345,7 +338,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
         switch (msgIndex) {
         case 2:
             h0 = 0x1559;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&h0, 0, 5, 0);
+            requestGiveItem(&h0, 0, 5, 0);
             h1 = 0x1559;
             Pocket_AddItem(&h1, 0);
             b0 = 4;
@@ -354,20 +347,21 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
         }
     } else {
         if (msgIndex == 0xf) {
-            void *r = ((ContestRecord *)(gContestRecord))->getHolderVillager();
+            ContestRecord *rec = (ContestRecord *)gContestRecord;
+            VillagerId *r = rec->getHolderVillager();
             MsgString9B o;
-            if (((VillagerId *)(r))->isValid() == 0) {
-                void *b = Item_GetSaveData();
-                void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, PlayerData_GetCurrent()->getPlayerId());
-                if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(q)))->isValid()) {
-                    ((ContestRecord *)(gContestRecord))->setHolderVillager((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(q)));
-                    r = ((ContestRecord *)(gContestRecord))->getHolderVillager();
+            if (r->isValid() == 0) {
+                SaveData *b = (SaveData *)Item_GetSaveData();
+                VillagerData *q = (VillagerData *)SaveVillagers_FindBestFriendOf(b->villagers, PlayerData_GetCurrent()->getPlayerId());
+                if (q->getVillagerId()->isValid()) {
+                    rec->setHolderVillager(q->getVillagerId());
+                    r = rec->getHolderVillager();
                 }
             }
-            ((VillagerId *)(r))->getName(&o);
+            r->getName(&o);
             MailText_SetSlot(0, &o);
             window->setSlot(1, &o);
-            Bbs_PostMsgToday(Random_GlobalBelow(2), (u8 *)"bbs_snowfes");
+            Bbs_PostMsgToday(Random_GlobalBelow(2), "bbs_snowfes");
             SaveVillagers_ClearTalkedToday(gSaveVillagers);
             msg = 0x10;
         }
@@ -399,7 +393,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
             if (c >= 0) {
                 Pocket_RemoveItem(c);
                 h = 0x37e0;
-                ((ActorTalkRequest *)(this))->requestTakeItem(&h, 0, 5, 0);
+                requestTakeItem(&h, 0, 5, 0);
             }
             msg = 2;
         }
@@ -423,17 +417,17 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
         case 0x15: {
             s32 *p = &choiceVillagers[t];
             if (*p >= 0) {
-                u8 *g = gContestRecord;
+                ContestRecord *g = (ContestRecord *)gContestRecord;
                 MsgString9B o;
-                void *e = SaveVillagers_Get(gSaveVillagers, *p);
-                if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)))->isValid()) {
-                    ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)))->getName(&o);
+                VillagerData *e = (VillagerData *)SaveVillagers_Get(gSaveVillagers, *p);
+                if (e->getVillagerId()->isValid()) {
+                    e->getVillagerId()->getName(&o);
                     window->setSlot(0, &o);
                 }
                 if (Random_GlobalBelow(2) == 0) {
-                    ((ContestRecord *)(g))->setHolderVillager((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)));
+                    g->setHolderVillager(e->getVillagerId());
                 }
-                ((ContestRecord *)(g))->setVotedVillager((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)));
+                g->setVotedVillager(e->getVillagerId());
                 msg = (u8)(Random_GlobalBelow(2) + 9);
             } else if (k != 0x14) {
                 msg = 0x14;
@@ -452,7 +446,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerBrightNights::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -463,7 +457,7 @@ void SpNpcTortimerBrightNights::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

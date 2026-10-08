@@ -6,33 +6,32 @@
 #include "types.h"
 struct SpNpcCornimerActEntry;
 #ifdef __cplusplus
-#include "types.h"
 class SpNpcCornimer;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov087_02271d84
+extern u32 data_ov087_02271d84;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcCornimerTexturePath
+extern u8 sSpNpcCornimerTexturePath[];
+#endif
 #ifndef PROTO_LOCAL_sSpNpcCornimerFortuneStrKey
 extern char sSpNpcCornimerFortuneStrKey[];
 #endif
-#ifndef PROTO_LOCAL_data_ov087_02271da8
-extern void *data_ov087_02271da8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov087_02271d90
-extern void *data_ov087_02271d90[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov087_02271d88
-extern void *data_ov087_02271d88[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov087_02271da0
-extern void *data_ov087_02271da0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov087_02271d98
-extern void *data_ov087_02271d98[2];
+#ifndef PROTO_LOCAL_sSpNpcCornimerModelPath
+extern u8 sSpNpcCornimerModelPath[];
 #endif
 #ifndef PROTO_LOCAL_sSpNpcCornimerFortuneStr2Key
 extern char sSpNpcCornimerFortuneStr2Key[];
+#endif
+#ifndef PROTO_LOCAL_data_ov087_02271d80
+extern u32 data_ov087_02271d80;
+#endif
+#ifndef PROTO_LOCAL_SpNpcCornimer_IsAcorn
+BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m);
 #endif
 #ifdef __cplusplus
 }
@@ -40,23 +39,8 @@ extern char sSpNpcCornimerFortuneStr2Key[];
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov087_02271d84
-extern u32 data_ov087_02271d84;
-#endif
-#ifndef PROTO_LOCAL_sSpNpcCornimerTexturePath
-extern u8 sSpNpcCornimerTexturePath[];
-#endif
-#ifndef PROTO_LOCAL_sSpNpcCornimerModelPath
-extern u8 sSpNpcCornimerModelPath[];
-#endif
-#ifndef PROTO_LOCAL_data_ov087_02271d80
-extern u32 data_ov087_02271d80;
-#endif
 #ifndef PROTO_LOCAL_SpNpcCornimer_Create
 SpNpcCornimer *SpNpcCornimer_Create();
-#endif
-#ifndef PROTO_LOCAL_SpNpcCornimer_IsAcorn
-BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m);
 #endif
 }
 #ifndef PROTO_LOCAL_sSpNpcCornimerActTable

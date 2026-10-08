@@ -24,13 +24,14 @@ extern const s8 data_02135d5c[256];
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
 extern void MTX_Copy44To43_(void *, void *);
-extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
-extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
+// (src/autoload_2/unk_02106020.c)
+extern void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v);
+extern void NNS_G3dMdlSetMdlPolygonID(u8 *res, u32 i, u32 v);
+extern void NNS_G3dMdlSetMdlLightEnableFlag(u8 *res, u32 i, u32 v);
+extern void NNS_G3dMdlSetMdlEmi(u8 *res, u32 i, u32 v);
 
 // NNS_G3dMdl*All: apply a per-material setter to all materials of a model (count at +0x18)
-void NNS_G3dMdlSetMdlEmiAll(u8 *m, void *x)
+void NNS_G3dMdlSetMdlEmiAll(u8 *m, u32 x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -38,7 +39,7 @@ void NNS_G3dMdlSetMdlEmiAll(u8 *m, void *x)
     }
 }
 
-void NNS_G3dMdlSetMdlLightEnableFlagAll(u8 *m, void *x)
+void NNS_G3dMdlSetMdlLightEnableFlagAll(u8 *m, u32 x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -46,7 +47,7 @@ void NNS_G3dMdlSetMdlLightEnableFlagAll(u8 *m, void *x)
     }
 }
 
-void NNS_G3dMdlSetMdlPolygonIDAll(u8 *m, void *x)
+void NNS_G3dMdlSetMdlPolygonIDAll(u8 *m, u32 x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -54,7 +55,7 @@ void NNS_G3dMdlSetMdlPolygonIDAll(u8 *m, void *x)
     }
 }
 
-void NNS_G3dMdlSetMdlAlphaAll(u8 *m, void *x)
+void NNS_G3dMdlSetMdlAlphaAll(u8 *m, u32 x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {

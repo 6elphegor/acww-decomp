@@ -1049,7 +1049,7 @@ void SpNpcCeleste::onInteractionEvent(u32 a, u8) {
     case 0:
     case 1:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(3);
         break;
     case 8:

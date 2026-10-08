@@ -27,9 +27,6 @@
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerSpNpcRecord.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov087_02271d80  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov087_02271d84  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -38,6 +35,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/ov087/unk_ov087_022713c0.h"
 
 #pragma opt_loop_invariants off
@@ -50,18 +48,11 @@ struct TalkStartMsg;
 
 
 extern "C" {
-void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void TalkRequest_SetTargetDone(void *p);
-void NookShop_PickFlowerBag(u16 *p);
-void Clock_GetDateTime(void *p);
-void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-void _ZN8SaveData7setFlagEj(void *p, s32 v);
-u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
-extern u8 gSaveData[];
 }
 
 
@@ -121,15 +112,19 @@ struct Unk_ov087_02271cc4_Ent {
     s32 b;
 };
 
+// One acorn prize: the item and the acorns delivered it needs
+struct SpNpcCornimerPrize {
+    u16 item;
+    u8 acornsNeeded;
+    u8 pad;
+};
+
 
 extern "C" {
-void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
-u32 Item_MakePaper(u32 a, u32 b);
+u16 Item_MakePaper(u32 a, s32 b);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-extern const u8 sSpNpcCornimerPrizeTable[];
-extern u32 data_ov087_02271d80;
-extern u32 data_ov087_02271d84;
+extern const SpNpcCornimerPrize sSpNpcCornimerPrizeTable[12];
 extern const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4];
 }
 
@@ -142,22 +137,14 @@ extern "C" char sSpNpcCornimerFortuneStrKey[] = "st_fortune";
 extern "C" const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4] = {
     {sSpNpcCornimerFortuneStrKey, 0}, {sSpNpcCornimerFortuneStr2Key, 1}, {sSpNpcCornimerFortuneStr2Key, 2}, {sSpNpcCornimerFortuneStr2Key, 3},
 };
-extern "C" const u8 sSpNpcCornimerPrizeTable[0x30] = {24,50,5,0,32,50,10,0,36,50,25,0,20,50,40,0,12,50,60,0,16,50,80,0,40,50,100,0,28,50,120,0,44,50,140,0,8,50,170,0,13,17,200,0,81,17,230,0};
-extern "C" void _ZN13SpNpcCornimer10setupAct00Ev();
-extern "C" void _ZN13SpNpcCornimer9mainAct00Ev();
-extern "C" void _ZN13SpNpcCornimer10setupAct01Ev();
-extern "C" void _ZN13SpNpcCornimer9mainAct01Ev();
-extern "C" void _ZN13SpNpcCornimer9mainAct02Ev();
-extern "C" void *data_ov087_02271da8[2] = {(void *)_ZN13SpNpcCornimer10setupAct01Ev, 0};
-extern "C" void *data_ov087_02271d90[2] = {(void *)_ZN13SpNpcCornimer9mainAct02Ev, 0};
-extern "C" void *data_ov087_02271d88[2] = {(void *)_ZN13SpNpcCornimer10setupAct00Ev, 0};
-extern "C" void *data_ov087_02271da0[2] = {(void *)_ZN13SpNpcCornimer9mainAct00Ev, 0};
-extern "C" void *data_ov087_02271d98[2] = {(void *)_ZN13SpNpcCornimer9mainAct01Ev, 0};
-typedef BOOL (SpNpcCornimer::*Unk_ov087_Fn)();
+extern "C" const SpNpcCornimerPrize sSpNpcCornimerPrizeTable[12] = {
+    {0x3218, 5, 0},   {0x3220, 10, 0},  {0x3224, 25, 0},  {0x3214, 40, 0},  {0x320c, 60, 0},  {0x3210, 80, 0},
+    {0x3228, 100, 0}, {0x321c, 120, 0}, {0x322c, 140, 0}, {0x3208, 170, 0}, {0x110d, 200, 0}, {0x1151, 230, 0},
+};
 SpNpcCornimerActEntry sSpNpcCornimerActTable[3] = {
-    {*(Unk_ov087_Fn *)data_ov087_02271d88, *(Unk_ov087_Fn *)data_ov087_02271da0},
-    {*(Unk_ov087_Fn *)data_ov087_02271da8, *(Unk_ov087_Fn *)data_ov087_02271d98},
-    {NULL, *(Unk_ov087_Fn *)data_ov087_02271d90},
+    {&SpNpcCornimer::setupAct00, &SpNpcCornimer::mainAct00},
+    {&SpNpcCornimer::setupAct01, &SpNpcCornimer::mainAct01},
+    {NULL, &SpNpcCornimer::mainAct02},
 };
 extern "C" u8 sSpNpcCornimerModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','d','n','k','.','n','s','b','m','d',0};
 extern "C" char sSpNpcCornimerFortuneStr2Key[] = "st_fortune2";
@@ -229,7 +216,7 @@ BOOL SpNpcCornimer::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     ContestRecord_BeginFestival((ContestRecord *)gContestRecord, 2);
@@ -259,24 +246,24 @@ void SpNpcCornimer::changeAct(s32 state) {
 }
 
 BOOL SpNpcCornimer::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcCornimer::mainAct00() { return TRUE; }
 
 BOOL SpNpcCornimer::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcCornimer::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -295,12 +282,12 @@ void SpNpcCornimerTalk::attachOwner(SpNpcCornimer *owner) {
 }
 
 void SpNpcCornimerTalk::start(TalkStartMsg *out) {
-    void *g = PlayerData_GetCurrent();
-    ((PlayerData *)(g))->getErrands();
+    PlayerData *g = PlayerData_GetCurrent();
+    g->getErrands();
     out->msgKey = "sp_npc_acorn";
-    if (((PlayerData *)(g))->testFlag(0xf) == 0) {
+    if (g->testFlag(0xf) == 0) {
         out->msgIndex = 0;
-        ((PlayerData *)(g))->setFlag(0xf);
+        g->setFlag(0xf);
         Talk_CheckAndSetPlayerFlag(0x19, 1);
     } else if (Talk_CheckAndSetPlayerFlag(0x19, 1) == 0) {
         out->msgIndex = 2;
@@ -325,7 +312,7 @@ extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m) {
 
 void SpNpcCornimerTalk::onMessageEnd(u32) {
     CornimerMsgEndLocals buf;
-    void *g = PlayerData_GetCurrent()->getSpNpcRecord();
+    PlayerSpNpcRecord *g = (PlayerSpNpcRecord *)PlayerData_GetCurrent()->getSpNpcRecord();
     u32 k;
     buf.v[0] = 0xfff1;
     k = 0xff;
@@ -342,16 +329,16 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
                 }
                 i++;
             }
-            ((ActorTalkRequest *)(this))->setNumberSlot(cnt, 2, 3, 0, 0);
+            setNumberSlot(cnt, 2, 3, 0, 0);
             k = 5;
-        } else if (((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() >= 12) {
+        } else if (g->getAcornPrizeStep() >= 12) {
             k = 0x17;
         } else {
-            u32 a = ((PlayerSpNpcRecord *)(g))->getAcornPrizeStep();
-            u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
-            s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4] - b;
+            u32 a = g->getAcornPrizeStep();
+            u32 b = g->getAcornsDelivered();
+            s32 d = sSpNpcCornimerPrizeTable[a].acornsNeeded - b;
             if (d > 0) {
-                ((ActorTalkRequest *)(this))->setNumberSlot(d, 1, 3, 0, 0);
+                setNumberSlot(d, 1, 3, 0, 0);
                 k = 4;
             } else {
                 k = 0x16;
@@ -361,43 +348,43 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
     case 7:
     case 8:
     case 9:
-        ((ActorTalkRequest *)(this))->setNumberSlot(((PlayerSpNpcRecord *)(g))->getAcornsDelivered(), 0, 3, 0, 0);
-        if (((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() >= 12) {
+        setNumberSlot(g->getAcornsDelivered(), 0, 3, 0, 0);
+        if (g->getAcornPrizeStep() >= 12) {
             k = 0x16;
         } else {
             k = 0xa;
         }
         break;
     case 10: {
-        u32 t = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
-        if (t >= (sSpNpcCornimerPrizeTable + 2)[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4]) {
-            buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
-            ((ActorTalkRequest *)(this))->setItemNameSlot(&buf.v[1], 0, 7);
+        u32 t = g->getAcornsDelivered();
+        if (t >= sSpNpcCornimerPrizeTable[g->getAcornPrizeStep()].acornsNeeded) {
+            buf.v[1] = sSpNpcCornimerPrizeTable[g->getAcornPrizeStep()].item;
+            setItemNameSlot(&buf.v[1], 0, 7);
             k = 0xb;
         } else {
-            u32 a = ((PlayerSpNpcRecord *)(g))->getAcornPrizeStep();
-            u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
-            s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4];
+            u32 a = g->getAcornPrizeStep();
+            u32 b = g->getAcornsDelivered();
+            s32 d = sSpNpcCornimerPrizeTable[a].acornsNeeded;
             d -= b;
-            ((ActorTalkRequest *)(this))->setNumberSlot(d, 1, 3, 0, 0);
+            setNumberSlot(d, 1, 3, 0, 0);
             k = 0xf;
         }
         break;
     }
     case 11:
     case 13:
-        buf.v[2] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
+        buf.v[2] = sSpNpcCornimerPrizeTable[g->getAcornPrizeStep()].item;
         if (Unk_ov087_02271670_Z(Pocket_AddItem(&buf.v[2], 0))) {
             k = 0xc;
         } else {
-            ((PlayerSpNpcRecord *)(g))->advanceAcornPrizeStep();
-            buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
-            ((ActorTalkRequest *)(this))->requestGiveItem(&buf.v[3], 0, 5, 0);
-            if (((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() < 12) {
-                u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
-                if (b >= (sSpNpcCornimerPrizeTable + 2)[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4]) {
-                    buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
-                    ((ActorTalkRequest *)(this))->setItemNameSlot(&buf.v[4], 0, 7);
+            g->advanceAcornPrizeStep();
+            buf.v[3] = sSpNpcCornimerPrizeTable[g->getAcornPrizeStep()].item;
+            requestGiveItem(&buf.v[3], 0, 5, 0);
+            if (g->getAcornPrizeStep() < 12) {
+                u32 b = g->getAcornsDelivered();
+                if (b >= sSpNpcCornimerPrizeTable[g->getAcornPrizeStep()].acornsNeeded) {
+                    buf.v[4] = sSpNpcCornimerPrizeTable[g->getAcornPrizeStep()].item;
+                    setItemNameSlot(&buf.v[4], 0, 7);
                     k = 0xd;
                     break;
                 }
@@ -407,7 +394,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
         break;
     case 20:
         buf.v[5] = 0x1565;
-        ((ActorTalkRequest *)(this))->requestGiveItem(&buf.v[5], 0, 5, 0);
+        requestGiveItem(&buf.v[5], 0, 5, 0);
         k = 0x15;
         break;
     }
@@ -421,12 +408,12 @@ void SpNpcCornimerTalk::onChoice(u32) {
     CornimerChoiceLocals buf;
     u8 *sa = (u8 *)"sp_npc_acorn";
     s32 t5 = getChoiceList()->getResult();
-    void *g8 = PlayerData_GetCurrent();
+    PlayerData *g8 = PlayerData_GetCurrent();
     s32 k = 0xff;
     switch (msgIndex) {
     case 5:
         if (t5 == 0) {
-            void *g = ((PlayerData *)(g8))->getSpNpcRecord();
+            PlayerSpNpcRecord *g = (PlayerSpNpcRecord *)g8->getSpNpcRecord();
             s32 cntB;
             s32 cntA;
             buf.s[0] = 0xfff1;
@@ -449,7 +436,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
                 k = (u8)(Random_GlobalBelow(3) + 7);
                 cntA = 1;
                 while (cntB > 0) {
-                    ((PlayerSpNpcRecord *)(g))->addAcornsDelivered(cntA);
+                    g->addAcornsDelivered(cntA);
                     cntB--;
                 }
             } else if (cntB != 0) {
@@ -458,14 +445,14 @@ void SpNpcCornimerTalk::onChoice(u32) {
             } else {
                 k = 0x19;
             }
-            ((ActorTalkRequest *)(this))->requestTakeItem(&buf.s[0], 0, 5, 0);
+            requestTakeItem(&buf.s[0], 0, 5, 0);
         }
         break;
     case 16:
         if (t5 == 0) {
             k = 0x12;
             if (Inventory_FindEmptyLetter() != -1) {
-                void *obj = Inventory_GetEmptyLetter();
+                Letter *obj = Inventory_GetEmptyLetter();
                 if (obj != NULL) {
                     k = 0x13;
                     buf.a = 2;
@@ -477,19 +464,19 @@ void SpNpcCornimerTalk::onChoice(u32) {
                 loop16:
                     buf.a = (u8)r6;
                     ent = &sSpNpcCornimerFortuneLines[i];
-                    String_Load(&o, &buf.a, (s32)sSpNpcCornimerFortuneLines[i].a);
-                    MailText_SetSlot((void *)ent->b, &o);
+                    String_Load(&o, &buf.a, sSpNpcCornimerFortuneLines[i].a);
+                    MailText_SetSlot(ent->b, &o);
                     r6 = (n - 4) * 4;
                     r6 += Random_GlobalBelow(4);
                     r6 += i * 16;
                     i++;
                     if (i < 4) goto loop16;
                     buf.a = 2;
-                    Letter_ComposeFromMail(obj, &buf.a, (u8 *)"ev_fortune", &data_ov087_02271d84, &data_ov087_02271d80,
-                                  ((PlayerData *)(g8))->getPlayerId());
+                    Letter_ComposeFromMail((LetterView *)obj, &buf.a, "ev_fortune", &data_ov087_02271d84, &data_ov087_02271d80,
+                                           g8->getPlayerId());
                     if (g8 != NULL) {
                         buf.s[1] = Item_MakePaper(0x1d, 4);
-                        Catalog_AddItem(((PlayerData *)(g8))->getCatalog(), &buf.s[1], 0);
+                        Catalog_AddItem(g8->getCatalog(), &buf.s[1], 0);
                     }
                     Talk_CheckAndSetPlayerFlag(0x1a, 1);
                 }
@@ -505,7 +492,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
 
 BOOL SpNpcCornimer::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -515,7 +502,7 @@ void SpNpcCornimer::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

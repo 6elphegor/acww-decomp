@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/CharacterListNode.h"
@@ -13,78 +12,18 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "room/RoomObjTexAuto.h"
-#define PROTO_LOCAL_RoomObj_LoadResourcesByName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomObj_ReleaseResources  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov068/unk_ov068_0226d8a0.h"
-// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
-// Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
-// 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
-// original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
-//   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
-// Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
-//    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
-//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
-//    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
-//  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
-//    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
-
-
-
-
-
-
-// ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-
-
-
-
-extern "C" {
-void *RoomObjRes_GetBca(void *self, u32 i);
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void *RoomObjTex_Get(void *self);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
-void RoomObj_PlaySe(void *self, s32 v);
-void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
-void RoomObj_ActivateSe(void *self);
-}
-
-// ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-
-
-
-
-
-struct Unk_ov068_022708fc_Obj {
-    u8 pad[0x18];
-    u8 numMat;
+// The model resource (.nsbmd MDL0 model, ROM file layout): the material count NNS_G3dMdlSetMdlAlpha walks.
+struct RoostCafeSetResMdl {
+    /* 0x00 */ u8 pad[0x18];
+    /* 0x18 */ u8 numMat;
 };
 
-
-
-
 extern "C" {
-void RoomObj_LoadResourcesByName(char *s, void *a, void *b, void *c);
-void RoomObj_ReleaseResources(void *a, void *b);
-void Math_StepS32(void *dst, s32 v, s32 n);
-void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
+void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v);  // src/autoload_2/unk_02106020.c (no shared header)
+BOOL Math_StepS32(s32 *p, s32 target, s32 step);  // proto/autoload_2/unk_020e7500.h conflicts with actor/Actor.h
 }
 
 class RoostCafeSet : public RoomObjActor {
@@ -150,9 +89,9 @@ BOOL RoostCafeSet::onExecute() {
     if (alpha != targetAlpha) {
         Math_StepS32(&alpha, targetAlpha, 2);
     }
-    u32 n = (*(Unk_ov068_022708fc_Obj **)(HOST_AT(this, 0x148, model.resMdl, 0)))->numMat;
+    u32 n = ((RoostCafeSetResMdl *)model.resMdl)->numMat;
     for (u32 i = 0; i < n; i++) {
-        NNS_G3dMdlSetMdlAlpha(*(Unk_ov068_022708fc_Obj **)(HOST_AT(this, 0x148, model.resMdl, 0)), i, (u8)alpha);
+        NNS_G3dMdlSetMdlAlpha((u8 *)model.resMdl, i, (u8)alpha);
     }
     return TRUE;
 }
@@ -181,7 +120,7 @@ BOOL RoostCafeSet::changeSyncState(u32 v) {
     };
     if (v < 2) {
         if ((this->*tbl[v])()) {
-            if (((RoomObjActor *)(this))->storeSyncState(v)) {
+            if (storeSyncState(v)) {
                 tex.syncState = v;
                 return TRUE;
             }

@@ -4,6 +4,7 @@
 // Pockets tab of the pause menu (vtable 0x0229aea8, 0x2d80 bytes). Defined in ov096 (unk_02294c40.cpp); the field
 // actions (ov098) and the room actions (ov097) are in the overlays loaded after it.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "menu/MenuProc.h"
 #include "gfx/BgVramTask.h"
 #include "menu/InventoryItemGrid.h"
@@ -17,6 +18,8 @@
 #include "ui/LetterRenderer.h"
 #include "menu/MenuLabelButton.h"
 #include "item/Letter.h"
+
+class LetterView;
 
 class PocketMenu : public MenuProc {
 public:
@@ -40,15 +43,15 @@ public:
     void requestCameraPop();
     void requestCameraPush();
     void writeLetterOnPaper();
-    void *getActionLetter();
+    LetterView *getActionLetter();
     void closeLetterViewAndMenu();
     void closeLetterView();
     void actionReadLetter();
-    BOOL moveCursorByPad(void *, s32);
-    void moveCursorInPlayerArea(void *, s32);
-    void moveCursorInTabs(void *, s32);
-    void moveCursorInLetters(void *, s32);
-    void moveCursorInPockets(void *, s32);
+    BOOL moveCursorByPad(u32 keys, s32 mode);
+    void moveCursorInPlayerArea(u32 keys, s32 mode);
+    void moveCursorInTabs(u32 keys, s32 mode);
+    void moveCursorInLetters(u32 keys, s32 mode);
+    void moveCursorInPockets(u32 keys, s32 mode);
     void openAddresseePage(s32);
     void openAddresseeList();
     void openConfirmList();
@@ -271,7 +274,7 @@ public:
     /* 0x0c2 */ volatile u8 optionsOpenDelay;
     /* 0x0c3 */ u8 unk_c3;
     /* 0x0c4 */ s32 fieldRequest;
-    /* 0x0c8 */ u8 clothPalette[0x20];
+    /* 0x0c8 */ u16 clothPalette[0x10];
     /* 0x0e8 */ u8 clothImage[0x200];
     /* 0x2e8 */ BgVramTaskPair bgTasks[2];
     /* 0x358 */ InventoryItemGrid m_358;
@@ -285,9 +288,7 @@ public:
     /* 0x27fc */ MenuErrorMessage errorMessage;
     /* 0x2904 */ LetterRenderer m_2904;
     /* 0x2b14 */ MenuLabelButton m_2b14;
-    /* 0x2b84 */ s32 waterPos;              // water position ahead of the player (x, y, z; ov098)
-    /* 0x2b88 */ s32 waterPosY;
-    /* 0x2b8c */ s32 waterPosZ;
+    /* 0x2b84 */ VecFx32 waterPos;          // water position ahead of the player (ov098)
     /* 0x2b90 */ u32 digUnitX;
     /* 0x2b94 */ u32 digUnitY;
     /* 0x2b98 */ Letter m_2b98;

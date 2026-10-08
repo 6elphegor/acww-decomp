@@ -6,6 +6,7 @@
 struct NpcActionEntry;
 struct NpcEmotionEntry;
 class NpcActor;
+class Character;
 
 // Parameters of one NPC action request (0x34 bytes), current and pending copies inside NpcActionCtrl.
 struct NpcActionParams {
@@ -14,7 +15,8 @@ struct NpcActionParams {
     u16 blendFrames, animStartFrame;
     u8 animPlayMode, emotionId;
     u16 item;
-    s32 handOverKind, handOverPartner;
+    s32 handOverKind;
+    Character *handOverPartner;  // the player the item is handed to / taken from (ActorTalkRequest::talkPlayer)
     u8 handOverMode;
     s32 handOverVariant;
     void *clear();
@@ -41,8 +43,8 @@ struct NpcActionCtrl {
     void setTalking();
     void requestTalkingOff();
     void requestTalkingOn();
-    BOOL requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2);
-    BOOL requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2);
+    BOOL requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, Character *s2);
+    BOOL requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, Character *s2);
     BOOL requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1);
     BOOL requestStand(u32 a, u16 b);
     BOOL requestEmotion(s32 a, u8 b, u16 c);

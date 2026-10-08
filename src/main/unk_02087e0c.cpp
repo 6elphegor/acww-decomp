@@ -25,14 +25,15 @@ extern "C" s32 Oam_GetObjHeight(u32 *p) {
     return Oam_GetHeight((v << 16) >> 30, v >> 30);
 }
 
-extern "C" s32 Oam_GetObjX(u32 *p) {
-    s32 v = (*p << 7) >> 23;
+// (obj: an OAM object template, attr0|attr1 word first)
+extern "C" s32 Oam_GetObjX(const void *obj) {
+    s32 v = (*(const u32 *)obj << 7) >> 23;
     if (v >= 0x100) {
         v -= 0x200;
     }
     return v;
 }
 
-extern "C" s32 Oam_GetObjY(s8 *p) {
-    return *p;
+extern "C" s32 Oam_GetObjY(const void *obj) {
+    return *(const s8 *)obj;
 }

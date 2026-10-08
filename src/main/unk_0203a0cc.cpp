@@ -300,7 +300,7 @@ BOOL Camera::onCreate() {
             sCameraFollowVillagerIdx = i;
         }
         if (p) {
-            modeParam = (sptr)p;
+            followTarget = p;
             setMode(7);
         } else {
             sCameraFollowVillagerIdx = 8;

@@ -1,7 +1,6 @@
 #include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Unk_0202368c_Obj.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -33,12 +32,12 @@
 #include "player/PlayerSpNpcRecord.h"
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_ContestRecord_GetItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ContestRecord_SetItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#include "save/VillagerData.h"
+#include "sys/ClockDateTime.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_02060b9c.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02093ff0.h"
@@ -55,27 +54,19 @@ class SpNpcTortimerBugOffTalk;
 
 
 
-struct Unk_ov082_022718b0_Rec {
-    u32 a, b;
-};
+struct Unk_0202c92c_Ent;  // insect spawn table entry (src/main/unk_0201c050.cpp)
 
 extern "C" {
-void ContestRecord_GetItem(u16 *out, void *p);
-void ContestRecord_SetItem(void *p, u16 *q);
-void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
-void Clock_GetDateTime(void *p);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
-void *SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
-void *_ZN12VillagerData13getVillagerIdEv(void *v);
+void Clock_GetDateTime(ClockDateTime *p);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
+s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, Unk_0202c92c_Ent *tbl, s32 *arr, s32 cnt);
+void *SaveVillagers_PickRandomExcept(u8 *base, void **arr, s32 n);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
-extern u8 gSaveData[];
+extern SaveData gSaveData;
 extern u8 gSaveVillagers[];
-extern u32 __ptmf_null[];
 }
 
 
@@ -187,47 +178,49 @@ BOOL SpNpcTortimerBugOff::onCreate() {
         u16 s2;
         u16 s4;
         u16 s6;
-        s32 t[4];
+        s32 x;
+        s32 y;
+        ClockDateTimeWords date;
     } l;
-    void *g;
+    ContestRecord *g;
     s32 rnd;
-    u32 idx;
+    Unk_0202c92c_Ent *tbl;
     if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
-    g = gContestRecord;
+    g = (ContestRecord *)gContestRecord;
     ContestRecord_BeginContestDay(g, 2);
     ContestRecord_GetItem(&l.s2, g);
     if (!Unk_ov082_InRange(&l.s2, 0x12b0, 0x12e7)) {
-        ((ContestRecord *)(g))->getHolderPlayer();
+        g->getHolderPlayer();
         rnd = Random_GlobalBelow(2);
-        l.t[0] = 0;
-        l.t[1] = 0;
-        l.t[2] = 0;
-        l.t[3] = 0;
+        l.x = 0;
+        l.y = 0;
+        l.date.words[0] = 0;
+        l.date.words[1] = 0;
         l.w0 = 0xfff1;
-        Clock_GetDateTime(&l.t[2]);
-        idx = Insect_GetSpawnTable(((u8 *)&l)[0x14] - 1);
-        if (idx != 0) {
-            if (InsectPick_PickAnyHour(&l.w0, &l.t[0], &l.t[1], rnd, (void *)idx, 0, 0) == 0) {
-                InsectPick_PickAnyHour(&l.w0, &l.t[0], &l.t[1], rnd, (void *)idx, 0, 0);
+        Clock_GetDateTime(&l.date.dt);
+        tbl = (Unk_0202c92c_Ent *)Insect_GetSpawnTable(l.date.dt.month - 1);
+        if (tbl != NULL) {
+            if (InsectPick_PickAnyHour(&l.w0, &l.x, &l.y, rnd, tbl, NULL, 0) == 0) {
+                InsectPick_PickAnyHour(&l.w0, &l.x, &l.y, rnd, tbl, NULL, 0);
             }
         }
         ContestRecord_SetItem(g, &l.w0);
         ContestRecord_GetItem(&l.s4, g);
         if (Unk_ov082_InRange(&l.s4, 0x12b0, 0x12e7)) {
-            void *v = SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0);
-            if (v != 0) {
-                ((ContestRecord *)(g))->setHolderVillager((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(v)));
-                ((ContestRecord *)(g))->setKind(2);
-                ((SaveData *)(gSaveData))->setFlag(0xf);
+            VillagerData *v = (VillagerData *)SaveVillagers_PickRandomExcept(gSaveVillagers, NULL, 0);
+            if (v != NULL) {
+                g->setHolderVillager(v->getVillagerId());
+                g->setKind(2);
+                gSaveData.setFlag(0xf);
             }
         }
         entrySize = Contest_GetCatchSize(&l.w0);
-        ((ContestRecord *)(g))->setSize(entrySize);
+        g->setSize(entrySize);
     }
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     return TRUE;
@@ -256,24 +249,24 @@ void SpNpcTortimerBugOff::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerBugOff::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerBugOff::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerBugOff::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     u32 r = 0;
     if (p != NULL) {
-        r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        r = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
+    talkCtrl.requestTurnAndTalk(0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerBugOff::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -285,14 +278,16 @@ BOOL SpNpcTortimerBugOff::mainAct02() { return TRUE; }
 void SpNpcTortimerBugOffTalk::onTaskDone(u32) {
     if (script) {
         (this->*script)();
-        Fn t = *(Fn *)__ptmf_null;
+        Fn t = NULL;
         script = t;
         if (nextScript) {
             script = nextScript;
             nextScript = t;
         }
     }
-}// Declarations for data defined further down (definition order sets the data layout)
+}
+
+// Declarations for data defined further down (definition order sets the data layout)
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[];
 extern "C" ActorProfile sSpNpcTortimerBugOffProfile;
 extern "C" u8 sSpNpcTortimerBugOffModelPath[];
@@ -346,22 +341,22 @@ void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
         s32 r4 = MenuCtrl_GetIndex();
         entryItem = Pocket_GetItem(r4);
         ownerNpc->entrySize = Contest_GetCatchSize(&entryItem);
-        ((ActorTalkRequest *)(this))->requestTakeItem(&entryItem, 0, 4, 0);
+        requestTakeItem(&entryItem, 0, 4, 0);
         setNextScript(1);
-        ((ActorTalkRequest *)(this))->setItemNameSlot(&entryItem, 2, 7);
-        ((ActorTalkRequest *)(this))->setNumberSlot(ownerNpc->entrySize >> 12, 4, 3, 0, 0);
+        setItemNameSlot(&entryItem, 2, 7);
+        setNumberSlot(ownerNpc->entrySize >> 12, 4, 3, 0, 0);
         if (r4 >= 0) {
             Pocket_RemoveItem(r4);
         }
         b = 0xd;
     } else {
-        ((ActorTalkRequest *)(this))->requestReopenWindow();
+        requestReopenWindow();
     }
     r6->setNextMessage(&b, (void *)"sp_npc_turtle2");
 }
 
 void SpNpcTortimerBugOffTalk::scriptCloseItemSelect() {
-    ((ActorTalkRequest *)(this))->requestReopenWindow();
+    requestReopenWindow();
 }
 
 SpNpcTortimerBugOffTalk::SpNpcTortimerBugOffTalk() {
@@ -377,29 +372,28 @@ void SpNpcTortimerBugOffTalk::attachOwner(SpNpcTortimerBugOff *owner) {
     massageChairSlot = -1;
 }
 
-void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
-    Unk_ov082_022718b0_Rec *out = (Unk_ov082_022718b0_Rec *)out_;
+void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out) {
     u16 x[4];
-    Unk_ov082_022718b0_Rec rec;
+    ClockDateTimeWords rec;
     PlayerData_GetCurrent()->getErrands();
-    out->a = (u32)"sp_npc_turtle2";
-    rec.a = 0;
-    rec.b = 0;
-    Clock_GetDateTime(&rec);
+    out->msgKey = "sp_npc_turtle2";
+    rec.words[0] = 0;
+    rec.words[1] = 0;
+    Clock_GetDateTime(&rec.dt);
     if (massageChairSlot == -1) {
         x[1] = 0x37e0;
         massageChairSlot = Pocket_FindItem(&x[1]);
         if (massageChairSlot >= 0) {
-            out->a = (u32)"sp_npc_turtle";
-            *(HOST_AT(out, 4, b, 0)) = 0;
+            out->msgKey = "sp_npc_turtle";
+            out->msgIndex = 0;
             return;
         }
     }
-    u8 t = *((u8 *)&rec + 2);
+    u8 t = rec.dt.hour;
     if (!(t >= 0xc && t < 0x12)) {
-        *(HOST_AT(out, 4, b, 0)) = 2;
+        out->msgIndex = 2;
     } else {
-        *(HOST_AT(out, 4, b, 0)) = 3;
+        out->msgIndex = 3;
         PlayerActor_GetSlotHeldItem(&x[0], PlayerActor_GetLocalSessionSlot());
         if (!Talk_CheckAndSetPlayerFlag(0x1c, 0)) {
             x[2] = 0x1376;
@@ -409,9 +403,9 @@ void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
                     if (Unk_ov082_Neg(Pocket_FindItem(&x[3]))) {
                         if (!Unk_ov082_InRange(&x[0], 0x1377, 0x1377)) {
                             if (Pocket_FindEmpty() >= 0) {
-                                *(HOST_AT(out, 4, b, 0)) = 1;
+                                out->msgIndex = 1;
                             } else {
-                                *(HOST_AT(out, 4, b, 0)) = 0;
+                                out->msgIndex = 0;
                             }
                             return;
                         }
@@ -420,33 +414,33 @@ void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
             }
         }
         if (Talk_CheckAndSetPlayerFlag(0x1c, 1)) {
-            *(HOST_AT(out, 4, b, 0)) = 8;
+            out->msgIndex = 8;
         }
     }
 }
 
 s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
     u16 v, w;
-    u8 *r7 = gContestRecord;
+    ContestRecord *r7 = (ContestRecord *)gContestRecord;
     ContestRecord_GetItem(&v, r7);
     if (Unk_ov082_InRange(&v, 0x12b0, 0x12e7)) {
-        void *r6 = ((ContestRecord *)(r7))->getHolderPlayer();
-        void *r4 = ((ContestRecord *)(r7))->getHolderVillager();
+        PlayerId *r6 = (PlayerId *)r7->getHolderPlayer();
+        VillagerId *r4 = r7->getHolderVillager();
         ContestRecord_GetItem(&w, r7);
-        ((ActorTalkRequest *)(this))->setItemNameSlot(&w, 1, 7);
-        ((ActorTalkRequest *)(this))->setNumberSlot(((ContestRecord *)(r7))->getSize() >> 12, 0, 3, 0, 0);
-        if (((PlayerId *)(r6))->isValid()) {
-            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)(((ContestRecord *)(r7))->getHolderPlayer()), 1);
+        setItemNameSlot(&w, 1, 7);
+        setNumberSlot(r7->getSize() >> 12, 0, 3, 0, 0);
+        if (r6->isValid()) {
+            setPlayerNameSlot((PlayerId *)r7->getHolderPlayer(), 1);
             u16 *q = (u16 *)PlayerData_GetCurrent()->getPlayerId();
-            u16 *p = (u16 *)((ContestRecord *)(r7))->getHolderPlayer();
+            u16 *p = (u16 *)r7->getHolderPlayer();
             if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0 || ((PlayerId *)(p))->equals((PlayerId *)(q)) == 0) {
                 return 1;
             }
             return 0;
         }
-        if (((VillagerId *)(r4))->isValid()) {
+        if (r4->isValid()) {
             MsgString9B o;
-            ((VillagerId *)(r4))->getName(&o);
+            r4->getName(&o);
             window->setSlot(1, &o);
             return 2;
         }
@@ -457,8 +451,7 @@ s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
 void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
     u8 b1, b2;
     u16 h0, ha, hb, x14, h16, hc, hd;
-    Unk_0202368c_Obj o;
-    u8 *r6;
+    ContestRecord *r6;
     u8 *r7 = (u8 *)"sp_npc_turtle2";
     u32 msg = 0xff;
     if (massageChairSlot >= 0) {
@@ -467,7 +460,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             ha = 0x1559;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&ha, 0, 5, 0);
+            requestGiveItem(&ha, 0, 5, 0);
             hb = 0x1559;
             Pocket_AddItem(&hb, 0);
             b1 = 4;
@@ -477,18 +470,18 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
     }
     if (msgIndex == 0xd || msgIndex == 0x10 || msgIndex == 0x13 || msgIndex == 0x16) {
         h0 = 0xfff1;
-        r6 = gContestRecord;
+        r6 = (ContestRecord *)gContestRecord;
         switch (msgIndex) {
         case 0xd:
-            ((ActorTalkRequest *)(this))->requestKeepItem();
+            requestKeepItem();
             ContestRecord_GetItem(&x14, r6);
             if (!Unk_ov082_InRange(&x14, 0x12b0, 0x12e7)) {
                 msg = 0x16;
                 break;
             }
-            ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->setEnteredBugOff(1);
+            ((PlayerSpNpcRecord *)PlayerData_GetCurrent()->getSpNpcRecord())->setEnteredBugOff(1);
             {
-                s32 v = ((ContestRecord *)(r6))->getSize();
+                s32 v = r6->getSize();
                 if ((ownerNpc->entrySize >> 12) > (v >> 12)) {
                     msg = 0x10;
                     break;
@@ -525,16 +518,18 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
                 msg = 0x15;
             }
             ContestRecord_SetItem(r6, &entryItem);
-            ((ContestRecord *)(r6))->setSize(ownerNpc->entrySize);
-            ((ContestRecord *)(r6))->setHolderPlayer((Unk_02085810_Base *)(PlayerData_GetCurrent()->getPlayerId()));
-            ((ContestRecord *)(r6))->setKind(2);
-            ((SaveData *)(gSaveData))->setFlag(0xf);
-            ((ItemPickSpec *)(void *)(&o))->set(0, 0);
-            ItemPick_One(&h16, &o, 0, 0, 1, 1, 0);
-            h0 = h16;
-            ItemPickSpec_Destruct(&o);
-            ((ActorTalkRequest *)(this))->requestGiveItem(&h0, 0, 5, 0);
-            ((ActorTalkRequest *)(this))->setItemNameSlot(&h0, 0, 7);
+            r6->setSize(ownerNpc->entrySize);
+            r6->setHolderPlayer((Unk_02085810_Base *)(PlayerData_GetCurrent()->getPlayerId()));
+            r6->setKind(2);
+            gSaveData.setFlag(0xf);
+            {
+                ItemPickSpec o;
+                o.set(0, 0);
+                ItemPick_One(&h16, &o, NULL, NULL, 1, 1, NULL);
+                h0 = h16;
+            }
+            requestGiveItem(&h0, 0, 5, 0);
+            setItemNameSlot(&h0, 0, 7);
             Pocket_AddItem(&h0, 0);
             break;
         }
@@ -542,15 +537,15 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 1:
         hc = 0x1376;
-        ((ActorTalkRequest *)(this))->requestGiveItem(&hc, 0, 5, 0);
+        requestGiveItem(&hc, 0, 5, 0);
         hd = 0x1376;
         Pocket_AddItem(&hd, 0);
         msg = 4;
         Talk_CheckAndSetPlayerFlag(0x1c, 1);
         break;
     case 0xb:
-        ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcTortimerBugOff_IsInsect, 0xd, 1);
-        ((ActorTalkRequest *)(this))->openSubScene(0);
+        setPocketFilter(SpNpcTortimerBugOff_IsInsect, 0xd, 1);
+        openSubScene(0);
         setScript(0);
         break;
     }
@@ -572,7 +567,7 @@ void SpNpcTortimerBugOffTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                ((ActorTalkRequest *)(this))->requestTakeItem(&h, 0, 5, 0);
+                requestTakeItem(&h, 0, 5, 0);
             }
             msg = 2;
         }
@@ -604,7 +599,7 @@ void SpNpcTortimerBugOffTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerBugOff::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -614,7 +609,7 @@ void SpNpcTortimerBugOff::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

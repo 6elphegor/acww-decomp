@@ -5,8 +5,18 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "item/LetterView.h"
 #include "menu/PocketMenu.h"
-#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_PocketMenu_GetPlayerSlot
+u32 PocketMenu_GetPlayerSlot();
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -14,68 +24,8 @@ extern "C" {
 #ifndef PROTO_LOCAL_PocketMenu_Create
 PocketMenu *PocketMenu_Create();
 #endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct1BEv
-void _ZN10PocketMenu9mainAct1BEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct1CEv
-void _ZN10PocketMenu9mainAct1CEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct1DEv
-void _ZN10PocketMenu9mainAct1DEv(PocketMenu *s);
-#endif
 #ifndef PROTO_LOCAL_PocketMenu_TickOptionDecide
 s32 PocketMenu_TickOptionDecide(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct1EEv
-void _ZN10PocketMenu9mainAct1EEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct1FEv
-void _ZN10PocketMenu9mainAct1FEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct20Ev
-void _ZN10PocketMenu9mainAct20Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct21Ev
-void _ZN10PocketMenu9mainAct21Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct22Ev
-void _ZN10PocketMenu9mainAct22Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct23Ev
-void _ZN10PocketMenu9mainAct23Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct24Ev
-void _ZN10PocketMenu9mainAct24Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct25Ev
-void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct26Ev
-void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct27Ev
-void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct2AEv
-void _ZN10PocketMenu9mainAct2AEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct2BEv
-void _ZN10PocketMenu9mainAct2BEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct2FEv
-void _ZN10PocketMenu9mainAct2FEv(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct31Ev
-void _ZN10PocketMenu9mainAct31Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct32Ev
-void _ZN10PocketMenu9mainAct32Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct28Ev
-void _ZN10PocketMenu9mainAct28Ev(PocketMenu *s);
-#endif
-#ifndef PROTO_LOCAL__ZN10PocketMenu9mainAct29Ev
-void _ZN10PocketMenu9mainAct29Ev(PocketMenu *s);
 #endif
 #ifndef PROTO_LOCAL_PocketMenu_EnterTouchIdle
 void PocketMenu_EnterTouchIdle(PocketMenu *s);
@@ -210,10 +160,7 @@ u32 PocketMenu_GetItem(PocketMenu *s, u32 id);
 s32 PocketMenu_GetItemFlags(PocketMenu *s, u32 id);
 #endif
 #ifndef PROTO_LOCAL_PocketMenu_GetLetter
-void *PocketMenu_GetLetter(PocketMenu *s, u32 id);
-#endif
-#ifndef PROTO_LOCAL_PocketMenu_GetPlayerSlot
-u32 PocketMenu_GetPlayerSlot();
+LetterView *PocketMenu_GetLetter(PocketMenu *s, u32 id);
 #endif
 }
 #endif

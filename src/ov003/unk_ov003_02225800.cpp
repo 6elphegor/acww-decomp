@@ -1327,7 +1327,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Flower_GetColor(u16 *p);
 s32 Flower_GetSpecies(u16 *p);
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 void Vec_RotateY(V3 *o, s32 a);
 void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
@@ -1354,7 +1354,7 @@ extern "C" Actor *Insect_FindNearestPlayer(VecFx32 *pos);
 extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n);
 extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d);
 extern "C" void Insect_CheckTurnCount(Rec *o, s32 n);
-extern "C" BOOL Insect_IsOverWater(s32 v);
+extern "C" BOOL Insect_IsOverWater(VecFx32 *v);
 extern "C" void Insect_GetDirVec(V3 *o, s32 a);
 extern "C" BOOL Insect_SetFeelers(Rec *o, s32 a, s32 b);
 extern "C" u32 Insect_TestFeelersHole(Rec *o);
@@ -1460,7 +1460,7 @@ extern "C" void Insect_GetDirVec(V3 *o, s32 a) {
 #define func_02133150 _s32_div_f
 namespace s14 {
 // 0x222e2fc
-extern "C" BOOL Insect_IsOverWater(s32 v) {
+extern "C" BOOL Insect_IsOverWater(VecFx32 *v) {
     s32 x = 0;
     s32 y = 0;
     FieldPos_ToUnit(&x, &y, v);
@@ -2022,7 +2022,7 @@ extern "C" s32 Insect_CheckAlarm(Rec *self) {
     if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         Insect_FleeIfAlarmed(self, &v);
     } else {
-        (self)->insectFleeFrom((s32 *)(void *)(&v));
+        (self)->insectFleeFrom(&v);
     }
     return r;
 }

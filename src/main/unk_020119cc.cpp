@@ -2967,13 +2967,12 @@ void NpcActionCtrl::func_02019854() {
 
 void *NpcActionParams::clear() {
     using namespace nN;
-    return MI_CpuFill8(this, 0, 0x34);
+    return MI_CpuFill8(this, 0, sizeof(NpcActionParams));
 }
 
 void NpcActionParams::copyFrom(NpcActionParams *src) {
     using namespace nN;
-    MI_CpuCopy8(src, this, 0x34);
-    handOverPartner = src->handOverPartner;
+    MI_CpuCopy8(src, this, sizeof(NpcActionParams));
 }
 
 void NpcActionCtrl::startAction(NpcActor *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4) {
@@ -3116,7 +3115,7 @@ BOOL NpcActionCtrl::requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1) {
     return r;
 }
 
-BOOL NpcActionCtrl::requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2) {
+BOOL NpcActionCtrl::requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, Character *s2) {
     using namespace nN;
     BOOL r = FALSE;
     if (a >= pendingPriority || pendingPriority == 3) {
@@ -3133,7 +3132,7 @@ BOOL NpcActionCtrl::requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2)
     return r;
 }
 
-BOOL NpcActionCtrl::requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2) {
+BOOL NpcActionCtrl::requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, Character *s2) {
     using namespace nN;
     BOOL r = FALSE;
     if (a >= pendingPriority || pendingPriority == 3) {
@@ -3914,7 +3913,7 @@ BOOL NpcActionCtrl::setupAct0D(NpcActor *c) {
         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
     }
     Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x4f, 0x7f, 0);
-    HandOverItem_Begin(&d->item, d->handOverKind, d->handOverMode, d->handOverVariant, c, (Character *)d->handOverPartner);
+    HandOverItem_Begin(&d->item, d->handOverKind, d->handOverMode, d->handOverVariant, c, d->handOverPartner);
     HandOverItem_RequestMode(1, c);
     ((NpcActionCtrl *)(this))->setActionDone(0);
     if (d->handOverVariant == 1) {
@@ -3974,7 +3973,7 @@ void NpcActionCtrl::act0DStep4(NpcActor *c) {
     if (!HandOverItem_IsModeActive(1)) {
         NpcActionParams *d = ((NpcActionCtrl *)(this))->getCurParams();
         HandOverItem_SetNextMode(9, c);
-        if (HandOverItem_SwitchMaster((Character *)d->handOverPartner)) {
+        if (HandOverItem_SwitchMaster(d->handOverPartner)) {
             if (PlayerActor_LocalRequestAct37()) {
                 actStep = 2;
             }
@@ -4358,7 +4357,7 @@ void NpcActionCtrl::act0EStep19(NpcActor *c) {
     void *r = getCurParams();
     if (!HandOverItem_IsModeActive(2)) {
         HandOverItem_SetNextMode(9, c);
-        if (HandOverItem_SwitchMaster((Character *)((NpcActionParams *)r)->handOverPartner)) {
+        if (HandOverItem_SwitchMaster(((NpcActionParams *)r)->handOverPartner)) {
             if (PlayerActor_LocalRequestAct37()) {
                 actStep = 9;
             }
@@ -5308,7 +5307,7 @@ void NpcAnimCtrl::syncMouthType(NpcActor *scene) {
 ActorTalkRequest::ActorTalkRequest() {
     using namespace nH;
     subSceneItem = 0xfff1;
-    talkPlayer = 0;
+    talkPlayer = NULL;
     ownerActor = NULL;
     partnerActor = NULL;
     lastEmotion = 0;
@@ -5323,7 +5322,7 @@ ActorTalkRequest::~ActorTalkRequest() {
 void ActorTalkRequest::resetMsg() {
     using namespace nH;
     TalkMsgRequest::resetMsg();
-    talkPlayer = 0;
+    talkPlayer = NULL;
     partnerActor = NULL;
     actionActorIndex = 0;
     speakerIndex = 0;
@@ -5346,14 +5345,14 @@ void ActorTalkRequest::runDeferred() {
     using namespace nH;
 }
 
-void ActorTalkRequest::setTalkPlayer(u32 a) {
+void ActorTalkRequest::setTalkPlayer(Character *player) {
     using namespace nH;
-    talkPlayer = a;
+    talkPlayer = player;
 }
 
-void *ActorTalkRequest::getTalkPlayer() {
+Character *ActorTalkRequest::getTalkPlayer() {
     using namespace nH;
-    return (void *)talkPlayer;
+    return talkPlayer;
 }
 
 void ActorTalkRequest::setPartnerActor(NpcActor *p) {

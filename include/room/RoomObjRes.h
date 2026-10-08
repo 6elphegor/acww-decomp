@@ -12,6 +12,8 @@
 
 extern "C" {
 void *RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBma(void *self, u32 i);
+void *RoomObjRes_GetBta(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);

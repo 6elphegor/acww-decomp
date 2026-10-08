@@ -54,7 +54,6 @@ class SpNpcKatie;
 extern "C" {
 s32 Scene_GetCurrent(void);
 s32 Scene_GetPrevious(void);
-s32 _ZN16ActorTalkRequest13getTalkPlayerEv(void *a);
 void _ZN15KatieVisitState14clearFollowingEv(void *a);
 void _ZN15KatieVisitState12setFollowingEv(void *a);
 s32 _ZN15KatieVisitState11isFollowingEv(void *a);
@@ -348,11 +347,11 @@ BOOL SpNpcKatie::mainAct02() {
 }
 
 BOOL SpNpcKatie::setupAct03() {
-    s32 p, r4;
+    s32 r4;
     ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
-    p = _ZN16ActorTalkRequest13getTalkPlayerEv(&talk);
+    Character *p = talk.getTalkPlayer();
     r4 = 0;
-    if (p != 0) {
+    if (p != NULL) {
         r4 = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
     ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xac);
