@@ -58,7 +58,7 @@ void SaveVillagers_ApplyBadFortune(void *villagers);
 VillagerData *SaveVillagers_FindByName(u8 *villagers, u8 *name, s32 len, void *playerId);
 s32 Villager_FindMemoryIndex(VillagerMemory *t, void *id);
 VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
-VillagerState *Villager_GetState(VillagerData *a);  // (defined returning s32: the state's address)
+VillagerState *Villager_GetState(VillagerData *a);
 u32 VillagerState_GetMood(VillagerState *e);
 void VillagerState_AddMoodTimer(VillagerState *e, s32 v);
 void VillagerState_SetMoodTimer(VillagerState *e, u16 v);
