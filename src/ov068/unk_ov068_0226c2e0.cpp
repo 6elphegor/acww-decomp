@@ -1021,3 +1021,7 @@ extern "C" u16 RoostGuest_PickKKSong(void *self) {
 u32 SpNpcRoostGuest::getGuest() {
     return guestType;
 }
+
+// SpNpcRoostGuest::getGuest for src/ov004/unk_ov004_0221c01c.cpp (the class is defined in this file only; a direct
+// call, as the DS's)
+extern "C" s32 SpNpcRoostGuest_GetGuest(void *p) { return static_cast<SpNpcRoostGuest *>(p)->SpNpcRoostGuest::getGuest(); }

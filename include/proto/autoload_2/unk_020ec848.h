@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020ec848.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "sys/Heap.h"
 #include "sys/ProcBase.h"
@@ -13,11 +14,29 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL__ZN8ProcBasenwEm
-void *_ZN8ProcBasenwEm(u32 size);
+#ifndef PROTO_LOCAL_gProcCreateStep
+extern u8 gProcCreateStep;
 #endif
-#ifndef PROTO_LOCAL__ZN8ProcBasedlEPv
-void _ZN8ProcBasedlEPv(void *p);
+#ifndef PROTO_LOCAL_sProcCreateGroup
+extern u8 sProcCreateGroup;
+#endif
+#ifndef PROTO_LOCAL_gProcCreateProfile
+extern u16 gProcCreateProfile;
+#endif
+#ifndef PROTO_LOCAL_sProcCreateProfile
+extern u16 sProcCreateProfile;
+#endif
+#ifndef PROTO_LOCAL_sProcCreateHook
+extern u32 (*sProcCreateHook) (u32);
+#endif
+#ifndef PROTO_LOCAL_sProcDeleteHook
+extern void (*sProcDeleteHook) (u32);
+#endif
+#ifndef PROTO_LOCAL_sProcCreateParam
+extern u32 sProcCreateParam;
+#endif
+#ifndef PROTO_LOCAL_sProcNextId
+extern u32 sProcNextId;
 #endif
 #ifndef PROTO_LOCAL_Proc_CallCreateHook
 u32 Proc_CallCreateHook(u32 a);
@@ -34,53 +53,17 @@ void *Mem_AllocForNew(u32 size);
 #ifndef PROTO_LOCAL_Mem_FreeForDelete
 void Mem_FreeForDelete(void *p);
 #endif
-#ifndef PROTO_LOCAL__Znwm
-void *_Znwm(u32 size);
-#endif
-#ifndef PROTO_LOCAL__Znam
-void *_Znam(u32 size);
-#endif
-#ifndef PROTO_LOCAL__ZdlPv
-void _ZdlPv(void *p);
-#endif
-#ifndef PROTO_LOCAL__ZdaPv
-void _ZdaPv(void *p);
-#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL__ZN8ProcBaseC2Ev
-ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self);
+#ifndef PROTO_LOCAL_sProcCreateParent
+extern TreeNode *sProcCreateParent;
 #endif
-#ifndef PROTO_LOCAL__ZN8ProcBaseD0Ev
-ProcBase *_ZN8ProcBaseD0Ev(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBaseD2Ev
-void _ZN8ProcBaseD2Ev(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase8onCreateEv
-BOOL _ZN8ProcBase8onCreateEv(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase9preCreateEv
-BOOL _ZN8ProcBase9preCreateEv(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase10postCreateEi
-void _ZN8ProcBase10postCreateEi(ProcBase *self, s32 a);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase8onDeleteEv
-BOOL _ZN8ProcBase8onDeleteEv(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase9preDeleteEv
-BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase10postDeleteEv
-void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase15onDeleteRequestEv
-BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self);
+#ifndef PROTO_LOCAL_gProfileTable
+extern ProcProfile * *gProfileTable;
 #endif
 #ifndef PROTO_LOCAL_ProcBase_SetHeap
 void ProcBase_SetHeap(ProcBase *self, Heap *heap);
@@ -96,15 +79,6 @@ void ProcBase_SetExecutePriority(ProcBase *self, u16 v);
 #endif
 #ifndef PROTO_LOCAL_ProcBase_SetDrawPriority
 void ProcBase_SetDrawPriority(ProcBase *self, u16 v);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase16createHeapFittedEv
-BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap *parent);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase10createHeapEv
-BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *parent);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase14allocResourcesEv
-BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self);
 #endif
 #ifndef PROTO_LOCAL_ProcBase_StartCreate
 void ProcBase_StartCreate(ProcBase *self);

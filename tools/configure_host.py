@@ -52,9 +52,15 @@ LD_EMU = "elf_x86_64" if X64 else "elf_i386"
 
 GAME_FLAGS = " ".join([
     M_FLAG, "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
-    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections", "-malign-data=abi",
+    "-fno-strict-aliasing", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections", "-malign-data=abi",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
+    # the game's C library names renamed to ds_* (its own libc, apart from the host's)
+    "-include", "include/host_libc_rename.h",
 ])
+if not X64:
+    # small structs returned in memory, as mwcc does: kept while the 32-bit build is the reference (its captures were
+    # taken with it); the 64-bit builds use the platform ABI (clang supports the flag only on i386)
+    GAME_FLAGS += " -fpcc-struct-return"
 C_FLAGS = "-std=gnu11"
 CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit "
              "-fno-sized-deallocation")
@@ -143,11 +149,10 @@ def main():
         # The data between the decomp's units (gap objects of the DS build's delinking) and the linker labels inside
         # variables (the GCC DS build's script): generated once from those builds, which this branch no longer runs,
         # and kept in modern/gen/. --regen-gen rebuilds them from build/usa/delinks and build/modern_usa/arm9.ld.
-        n.rule("gaps", f"python3 tools/host_gaps.py {'--x86-64 --own-slots tools/host_gap_pointers.txt ' if X64 else ''}$in $out",
-               description="GAPS $out")
-        gen_gaps = f"modern/gen/gaps_{'x86_64' if X64 else 'i386'}.c"
+        n.rule("gaps", "python3 tools/host_gaps.py $in $out", description="GAPS $out")
+        gen_gaps = "modern/gen/gaps.c"  # typed C, the same for every architecture
         if args.regen_gen:
-            n.build(gen_gaps, "gaps", "tools/host_objects_aliases.txt", implicit=["tools/host_gaps.py", "tools/host_gap_pointers.txt"])
+            n.build(gen_gaps, "gaps", "tools/host_objects_aliases.txt", implicit=["tools/host_gaps.py"])
         gaps_c = gen_gaps
         n.build(str(build / "gaps.o"), "hostcc", gaps_c)
         objs.append(str(build / "gaps.o"))
@@ -158,7 +163,7 @@ def main():
         provides = "modern/gen/provides.ld"
         if args.regen_gen:
             n.build(provides, "provides", "build/modern_usa/arm9.ld", implicit=["tools/host_provides.py"])
-        # the game (and its own C library) in one object with the C library names made local (host_localize.py)
+        # the game (and its own C library) in one object
         game_objs = [o for o in objs if "/modern/host/" not in o and not o.endswith("/gaps.o")]
         # DTCM's variables at their DS address (0x027e0000): the SDK computes DTCM addresses from its first one
         dtcm_objs = [o for o in game_objs if "/src/dtcm/" in o]
@@ -191,16 +196,12 @@ def main():
         n.build([order_ld, overlay_table], "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
         n.build(str(build / "overlay_table.o"), "hostcc", overlay_table, variables={"flags": "-Imodern/host"})
         host_objs.append(str(build / "overlay_table.o"))
-        # the game's operator new/new[] are mwcc's names (unsigned long); its code compiled here calls the x86 names
-        # (unsigned int). Aliases inside the game object (made local with the C library names afterwards).
-        n.rule("partial", f"ld -m {LD_EMU} -r -T $order --defsym=_Znwj=_Znwm --defsym=_Znaj=_Znam -o $out @$list @$wrap",
+        n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list @$wrap",
                description="LD -r $out")
         n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt"), order_ld],
                 variables={"list": str(game_list), "wrap": str(build / "wrap.txt"), "order": order_ld})
-        libs = f"{LIBDIR}/libc.so.6 {LIBDIR}/libm.so.6 {LIBGCC} {LIBDIR}/libstdc++.so.6"
-        n.rule("localize", f"python3 tools/host_localize.py nm objcopy $in $out {libs}", description="LOCALIZE $out")
-        game_o = str(build / "game.o")
-        n.build(game_o, "localize", str(build / "game_all.o"), implicit=["tools/host_localize.py"])
+        # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
+        game_o = str(build / "game_all.o")
         objects_file = build / "objects.txt"
         objects_file.write_text("".join(f"{o}\n" for o in [game_o] + host_objs))
         if X64:

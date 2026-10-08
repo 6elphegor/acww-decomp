@@ -207,10 +207,6 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 namespace nA {
 extern "C" {
 
-#define SndMgr_update _ZN6SndMgr6updateEv
-void SndMgr_update(void *a);
-#define SndMgr_init _ZN6SndMgr4initEjjj
-void SndMgr_init(void *a, void *b, u32 c, void *d, s32 e);
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 union PM_02004ce8 {
@@ -553,8 +549,6 @@ inline BOOL Unk_020102a0_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 extern u8 gFieldSceneKind;
 extern u8 sPlayerSkinPalName[], sPlayerEyeTexName[], sPlayerMouthTexName[], sPlayerHairPalName[], sPlayerShirtTexName[], data_020d5e38[];
 s32 Math_Atan2(s32, s32);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll();
 BOOL TalkRequestFlags_IsResetti(void *);
 s32 func_01ffcb0c(s32, s32);
 void PlayerActor_GetHeldItem(u16 *, void *);

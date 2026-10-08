@@ -52,14 +52,6 @@
 #include "proto/ov004/unk_ov004_02235fd0.h"
 #include "proto/main/unk_0204cc1c.h"
 
-// other modules' symbols by their real names
-#define FtrActor_isGyroid _ZN8FtrActor8isGyroidEv
-#define FtrShirt_syncAct0 _ZN8FtrShirt8syncAct0Ev
-#define FtrShirt_syncAct1 _ZN8FtrShirt8syncAct1Ev
-#define FtrTv_markNearestTv _ZN5FtrTv13markNearestTvEv
-#define FtrClock_markNearestCabinClock _ZN8FtrClock21markNearestCabinClockEv
-#define FtrClock_markNearestSoundingClock _ZN8FtrClock24markNearestSoundingClockEv
-#define FtrBed_checkStepTile _ZN6FtrBed13checkStepTileEP7VecFx32iS1_
 
 
 
@@ -283,16 +275,16 @@ u32 FtrActor_GetLayer(void *);
 s32 FtrActor_RequestToggle(void *);
 u32 FtrActor_GetFtrIndex(void *o);
 BOOL FtrActor_IsPosClearOfCharacters(VecFx32 *, s32, s32, s32, s32);
-BOOL FtrActor_isGyroid(FtrActor *);
 u32 FtrActor_GetArgMode(u32 arg);
 u32 FtrActor_GetArgFtrIndex(u32 arg);
 u32 FtrActor_MakeSpawnArg(u32 a, u32 b, u32 c, u32 d, u8 f, u32 e);
-s32 FtrShirt_syncAct0(void *p);
-s32 FtrShirt_syncAct1(void *p);
-void FtrTv_markNearestTv(FtrActor *);
-void FtrClock_markNearestCabinClock(FtrActor *);
-void FtrClock_markNearestSoundingClock(FtrActor *);
-BOOL FtrBed_checkStepTile(FtrActor *, VecFx32 *, s32, VecFx32 *);
+// members of furniture classes defined in src/ov004/unk_ov004_02209f70.cpp, called through C functions there
+s32 FtrShirt_SyncAct0(FtrActor *o);
+s32 FtrShirt_SyncAct1(FtrActor *o);
+void FtrTv_MarkNearestTv(FtrActor *o);
+void FtrClock_MarkNearestCabinClock(FtrActor *o);
+void FtrClock_MarkNearestSoundingClock(FtrActor *o);
+s32 FtrBed_CheckStepTile(FtrActor *o, VecFx32 *pos, s32 ang, VecFx32 *out);
 void func_ov004_02235180();
 void func_ov004_022356cc();
 }
@@ -1302,6 +1294,9 @@ extern "C" s32 FtrMgr_IsFurnitureUsable() {
     return FALSE;
 }
 
+// (FtrMgr_CountSwitchedOn / FtrMgr_SwitchOffRandom predicate: the DS passed FtrActor::isGyroid itself)
+static BOOL isGyroid(FtrActor *o) { return o->isGyroid(); }
+
 // @0x2235028 unk_02234774.cpp
 extern "C" Actor *FtrMgr_SpawnFromArg(u32 self) {
     if (FtrActorTable_GetInstance()->countFree()) {
@@ -1314,8 +1309,8 @@ extern "C" Actor *FtrMgr_SpawnFromArg(u32 self) {
             v = sFtrKindProfiles[0];
         }
         if (a == 0x18 && b == 1) {
-            if ((u32)FtrMgr_CountSwitchedOn(FtrActor_isGyroid) >= 4) {
-                FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
+            if ((u32)FtrMgr_CountSwitchedOn(isGyroid) >= 4) {
+                FtrActor *e = FtrMgr_SwitchOffRandom(isGyroid, 0);
                 if (e != NULL) {
                     e->switchState.set(1, 0);
                     FtrSync_RequestToggleGyroid(Scene_GetCurrent(), &e->position, 0);
@@ -1360,7 +1355,7 @@ extern "C" s32 FtrMgr_GetSurfaceHeightAtPos(VecFx32 *p) {
 extern "C" s32 FtrMgr_CheckBedStep(VecFx32 *pos, s32 ang, VecFx32 *out) {
     FtrActor *m = FtrActorGrid_GetInstance()->getActorAtPos(pos, 0);
     if (m != NULL && Unk_ov004_02234f30_Is37(m)) {
-        return FtrBed_checkStepTile(m, pos, ang, out);
+        return FtrBed_CheckStepTile(m, pos, ang, out);
     }
     return 0;
 }
@@ -3393,7 +3388,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
         if (best != -1) {
             FtrActor *e = FtrActorTable_GetInstance()->get(best);
             if (e != NULL) {
-                FtrClock_markNearestCabinClock(e);
+                FtrClock_MarkNearestCabinClock(e);
             }
         }
     }
@@ -3430,7 +3425,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
         if (best != -1) {
             FtrActor *e = FtrActorTable_GetInstance()->get(best);
             if (e != NULL) {
-                FtrClock_markNearestSoundingClock(e);
+                FtrClock_MarkNearestSoundingClock(e);
             }
         }
     }
@@ -3472,7 +3467,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
             if (best != -1) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(best);
                 if (e != NULL) {
-                    FtrTv_markNearestTv(e);
+                    FtrTv_MarkNearestTv(e);
                     VecFx32 t = e->centerPos;
                     v8.x = t.x;
                     v8.y = t.y;
@@ -3906,7 +3901,7 @@ extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0) {
         switch (o->kind) {
         case 0x1b:
             if (o) {
-                return FtrShirt_syncAct1(o);
+                return FtrShirt_SyncAct1(o);
             }
             break;
         case 0x27:
@@ -3931,7 +3926,7 @@ extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0) {
         switch (o->kind) {
         case 0x1b:
             if (o) {
-                return FtrShirt_syncAct0(o);
+                return FtrShirt_SyncAct0(o);
             }
             break;
         case 0x27:

@@ -3,19 +3,15 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef int s32;
+#include "sdk_linker_symbols.h"
 
 extern s32 data_021fce88;
 extern u8 data_027e0000[]; // SDK_AUTOLOAD_DTCM_START (HW_DTCM): a real relocation to the dtcm module
 
-// Absolute symbols of the linker script (config/usa/arm9/abs_symbols.txt)
-extern u8 SDK_SYS_STACKSIZE[];            // 0x2000
-extern u8 SDK_IRQ_STACKSIZE[];            // 0x1000
-extern u8 SDK_SECTION_ARENA_DTCM_START[]; // 0x027e0460
-
 #define HW_DTCM ((u32)data_027e0000)
 #define HW_DTCM_SVC_STACK (HW_DTCM + 0x3f80)
-#define OSi_SYS_STACK_SIZE ((s32)SDK_SYS_STACKSIZE)
-#define OSi_IRQ_STACK_SIZE ((s32)SDK_IRQ_STACKSIZE)
+#define OSi_SYS_STACK_SIZE SDK_SYS_STACKSIZE
+#define OSi_IRQ_STACK_SIZE SDK_IRQ_STACKSIZE
 
 u32 OS_GetConsoleType(void); // OS_GetConsoleType
 
@@ -32,9 +28,9 @@ void *OS_GetInitArenaHi(s32 id) {
         u32 sysStackLo;
         if (!OSi_SYS_STACK_SIZE) {
             sysStackLo = HW_DTCM;
-            if (sysStackLo < (u32)SDK_SECTION_ARENA_DTCM_START) sysStackLo = (u32)SDK_SECTION_ARENA_DTCM_START;
+            if (sysStackLo < SDK_SECTION_ARENA_DTCM_START) sysStackLo = SDK_SECTION_ARENA_DTCM_START;
         } else if (OSi_SYS_STACK_SIZE < 0) {
-            sysStackLo = (u32)SDK_SECTION_ARENA_DTCM_START - OSi_SYS_STACK_SIZE;
+            sysStackLo = SDK_SECTION_ARENA_DTCM_START - OSi_SYS_STACK_SIZE;
         } else {
             sysStackLo = irqStackLo - OSi_SYS_STACK_SIZE;
         }

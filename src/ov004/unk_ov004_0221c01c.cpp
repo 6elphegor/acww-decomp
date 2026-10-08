@@ -91,7 +91,6 @@ struct SpNpcBrewsterActEntry {
     Unk_ov004_0224d0a0_Fn fn2;
 };
 
-#define SpNpcRoostGuest_getGuest _ZN15SpNpcRoostGuest8getGuestEv  // SpNpcRoostGuest is defined in ov068 only
 
 extern "C" {
 extern CommManager *gCommManager;
@@ -105,7 +104,7 @@ extern const u32 sSpNpcBrewsterGuestSpawnPos[];
 
 void Camera_UnmuteSe();
 s32 Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
-s32 SpNpcRoostGuest_getGuest(void *p);
+s32 SpNpcRoostGuest_GetGuest(void *p);  // (SpNpcRoostGuest is defined in ov068 only)
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 void Model_GetJointWorldMtx(void *p, void *q, s32 n);
@@ -448,7 +447,7 @@ void SpNpcBrewsterTalk::start(TalkStartMsg *out) {
         if (gCommManager->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
             out->msgIndex = Random_GlobalBelow(3) + 0x55;
         } else if (Talk_CheckAndSetPlayerFlag(0x17, 0) != 0) {
-            if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
+            if (o != 0 && SpNpcRoostGuest_GetGuest(o) == 7) {
                 out->msgIndex = 0x58;
             } else {
                 s32 c = h->getCafeVisits() >> 2;
@@ -457,7 +456,7 @@ void SpNpcBrewsterTalk::start(TalkStartMsg *out) {
         } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (Talk_CheckAndSetPlayerFlag(0x16, 1) == 0) {
                 out->msgIndex = h->getCafeVisits() >> 1;
-            } else if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
+            } else if (o != 0 && SpNpcRoostGuest_GetGuest(o) == 7) {
                 out->msgIndex = 0x58;
             } else {
                 out->msgIndex = (h->getCafeVisits() >> 2) + 0x49;

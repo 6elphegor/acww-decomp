@@ -1,5 +1,6 @@
 #include "uptr.h"
 #include "types.h"
+#include "sdk_linker_symbols.h"
 #include "sys/StackPad.h"
 #include "nitro/fs.h"
 #include "talk/MsgStringAttr.h"
@@ -42,7 +43,6 @@
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov002/unk_ov002_022025cc.h"
 
-extern u32 OVERLAY_65_ID[];
 
 // ---- buffer interface classes (defined elsewhere) ----
 
@@ -290,7 +290,7 @@ extern "C" void Main_Loop(void) {
 
 extern "C" u32 Main_InitDwc(void) {
     void *p = Mem_AllocAligned(0x700, 0x20);
-    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_65_ID);  // (the id: the symbol's value)
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, OVERLAY_65_ID);
     u32 r = DWC_Init(p);
     sDwcInitResult = r;
     OverlayHandle_Unload(&gOverlayHandle);

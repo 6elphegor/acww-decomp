@@ -78,8 +78,8 @@ void FxVec3_Construct(void);
 #ifndef PROTO_LOCAL_LitCedarPos_Construct
 void LitCedarPos_Construct(u32 *p);
 #endif
-#ifndef PROTO_LOCAL__ZN6FxVec3D1Ev
-void _ZN6FxVec3D1Ev(void *);
+#ifndef PROTO_LOCAL_FxVec3_Destruct
+void FxVec3_Destruct(void *);
 #endif
 #ifndef PROTO_LOCAL_NitroMain
 void NitroMain(void);

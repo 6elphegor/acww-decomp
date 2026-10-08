@@ -54,19 +54,6 @@ const u8 *host_rom(u32 *size);
 void NitroMain(void);
 void NitroStartUp(void);
 
-// linker symbols the DS build defines in its linker script
-#define ABS(name, value) __asm__(".globl " #name "\n.set " #name ", " #value)
-ABS(SDK_MAIN_ARENA_LO, 0x0229bdc0);  // past the overlay area (Startup_FillOverlayArea)
-ABS(SDK_SECTION_ARENA_ITCM_START, 0x01ff8000);
-ABS(SDK_SECTION_ARENA_DTCM_START, 0x027e0000);
-ABS(__exception_table_start__, 0);
-ABS(__exception_table_end__, 0);
-ABS(SDK_SYS_STACKSIZE, 0x2000);
-ABS(SDK_IRQ_STACKSIZE, 0x1000);
-ABS(SDK_SECTION_ARENA_EX_START, 0x02400000);
-#define OV(n) ABS(OVERLAY_##n##_ID, n)
-OV(0); OV(1); OV(2); OV(65); OV(66); OV(67); OV(68); OV(69); OV(93); OV(127);
-
 // before the game's static constructors (which may touch DS memory): map it first
 void host_vram_init(void);
 void melon_init(void);
@@ -139,6 +126,15 @@ void host_heap_check(void) {
 // The root heap's memory on 64-bit hosts (Heap_InitSystem): the game's objects are larger there (pointers), so the
 // DS's main RAM arena (about 1.4 MB for the root heap) runs out; the heap gets a larger block of its own instead.
 // Below 4 GB: the game keeps heap addresses in 32-bit words.
+static uintptr_t sRootHeapLo, sRootHeapHi;
+
+// ::operator delete (newdelete.cpp): is p a block of the game's heaps? They are in DS memory (main RAM and its
+// mirrors, ITCM, DTCM, shared WRAM) or, on 64-bit hosts, the root heap's block
+int host_is_game_heap(const void *p) {
+    uintptr_t a = (uintptr_t)p;
+    return (a >= 0x01ff8000 && a < 0x03810000) || (a >= sRootHeapLo && a < sRootHeapHi);
+}
+
 void *host_root_heap_region(unsigned int *size) {
     const unsigned int kSize = 8u << 20;
     void *want = (void *)(uintptr_t)0x50000000;
@@ -149,5 +145,7 @@ void *host_root_heap_region(unsigned int *size) {
         return 0;
     }
     *size = kSize;
+    sRootHeapLo = (uintptr_t)p;
+    sRootHeapHi = (uintptr_t)p + kSize;
     return p;
 }

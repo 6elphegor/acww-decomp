@@ -157,7 +157,7 @@ s32 Event_GetState(u32, void *, u32);
 // (the game's operator new returns NULL when the heap is full: a scene is constructed only in a block it got)
 #define NEW(T)                                                \
     do {                                                      \
-        void *p = ::operator new(sizeof(T));                  \
+        void *p = Mem_AllocForNew(sizeof(T));                 \
         gSndScene = p != NULL ? new (p) T() : NULL;           \
     } while (0)
 

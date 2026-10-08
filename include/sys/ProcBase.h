@@ -8,9 +8,9 @@
 class Heap;
 
 // Library base class of every task object (actors, scenes, menus); ARM code in autoload_2 (src/autoload_2/unk_020ec848.cpp,
-// vtable 0x0213b154) and ITCM (src/itcm/unk_01ffd0e4.cpp), defined there as extern "C" functions with the mangled names.
-// Each phase has three hooks: the main one, a pre-check and a post hook that gets the phase status (1/2), called by
-// ProcBase_RunPhase through member pointers. The post hooks of the four phases are slots 0x08, 0x14, 0x20 and 0x2c.
+// vtable 0x0213b154 on the DS) and ITCM (src/itcm/unk_01ffd0e4.cpp). Each phase has three hooks: the main one, a
+// pre-check and a post hook that gets the phase status (1/2), called by ProcBase_RunPhase through member pointers.
+// The post hooks of the four phases are slots 0x08, 0x14, 0x20 and 0x2c.
 class ProcBase {
 public:
     static void *operator new(size_t size);
@@ -19,7 +19,7 @@ public:
     ProcBase();
     virtual BOOL onCreate();                // 0x00 create
     virtual BOOL preCreate();                // 0x04 pre-create
-    virtual void postCreate(s32 status);    // 0x08 (body: _ZN8ProcBase10postCreateEi)
+    virtual void postCreate(s32 status);    // 0x08
     virtual BOOL onDelete();                // 0x0c delete
     virtual BOOL preDelete();               // 0x10
     virtual BOOL postDelete(s32 status);      // 0x14 post-delete
@@ -30,8 +30,8 @@ public:
     virtual BOOL preDraw();                 // 0x28
     virtual BOOL postDraw(s32 status);      // 0x2c
     virtual BOOL onDeleteRequest();                // 0x30 delete requested
-    virtual BOOL createHeapFitted();        // 0x34
-    virtual BOOL createHeap();              // 0x38
+    virtual BOOL createHeapFitted(u32 size, Heap *parent);  // 0x34
+    virtual BOOL createHeap(u32 size, Heap *parent);        // 0x38
     virtual BOOL allocResources();                // 0x3c
     virtual ~ProcBase();                    // 0x40
 
@@ -56,6 +56,12 @@ public:
     /* 0x48 */ void *seq;
     /* 0x4c */ Heap *procHeap;
 };
+
+// The phase dispatcher's member pointers (src/itcm/unk_01ffd0e4.cpp): the main hook and the pre-check, and the post
+// hook (called with the status; the post hooks that return a value have it ignored)
+typedef BOOL (ProcBase::*ProcPhaseFn)();
+typedef void (ProcBase::*ProcPhasePostFn)(s32);
+extern "C" s32 ProcBase_RunPhase(ProcBase *p, ProcPhaseFn main, ProcPhaseFn pre, ProcPhasePostFn post);
 
 // Vtable at 0x020d8c74 (emitted with postCreate in src/main/unk_0202e840.cpp). Its constructor and destructor are
 // inline, which is why derived constructors and destructors store two vtable pointers in a row. Size 0x50.

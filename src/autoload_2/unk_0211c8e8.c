@@ -158,7 +158,7 @@ extern PMCbInfo *data_021feb38;
 extern u32 data_021feb3c;
 extern PMCbInfo *data_021feb40;
 extern OSMutex data_021feb54;
-extern PMRegInfo data_021feb6c[4];
+PMRegInfo data_021feb6c[4];  // (autoload_3 .bss 0x021feb6c: gap data on the DS)
 extern RTCWork data_021feb90;
 
 extern u32 OS_DisableInterrupts(void);

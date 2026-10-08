@@ -1,5 +1,6 @@
 #include "uptr.h"
 #include "types.h"
+#include "sdk_linker_symbols.h"
 
 // U126: communication manager CommManager (singleton gCommManagerInstance, reached through the constant pointer
 // gCommManager) and its helpers, 0x020720f8-0x020742f4
@@ -1473,13 +1474,10 @@ void CommManager::clearConfirmedSeq() {
 // ======== unk_02071ae0.cpp ========
 namespace n1 {
 extern "C" {
-extern u32 OVERLAY_65_ID[];
 }
 extern "C" {
-extern u32 OVERLAY_66_ID[];
 }
 extern "C" {
-extern u32 OVERLAY_67_ID[];
 }
 extern "C" {
 extern u16 data_020cb6f4;
@@ -1583,7 +1581,7 @@ void NetOverlay_AssertWifi() {
     u32 x;
     if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
-    if ((u32)(uptr)OVERLAY_65_ID == x) ok = TRUE; else ok = FALSE;
+    if (OVERLAY_65_ID == x) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
 }
 void NetOverlay_AssertWireless() {
@@ -1591,7 +1589,7 @@ void NetOverlay_AssertWireless() {
     u32 x;
     if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
-    if ((u32)(uptr)OVERLAY_66_ID == x) ok = TRUE; else ok = FALSE;
+    if (OVERLAY_66_ID == x) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
 }
 void NetOverlay_AssertOv067() {
@@ -1599,7 +1597,7 @@ void NetOverlay_AssertOv067() {
     u32 x;
     if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
-    if ((u32)(uptr)OVERLAY_67_ID == x) ok = TRUE; else ok = FALSE;
+    if (OVERLAY_67_ID == x) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
 }
 void NetOverlay_AssertAny() {
@@ -1607,9 +1605,9 @@ void NetOverlay_AssertAny() {
     u32 x;
     if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
-    Unk_020720f8_Id a = (Unk_020720f8_Id)(u32)(uptr)OVERLAY_65_ID;
-    Unk_020720f8_Id b = (Unk_020720f8_Id)(u32)(uptr)OVERLAY_66_ID;
-    Unk_020720f8_Id c = (Unk_020720f8_Id)(u32)(uptr)OVERLAY_67_ID;
+    Unk_020720f8_Id a = (Unk_020720f8_Id)OVERLAY_65_ID;
+    Unk_020720f8_Id b = (Unk_020720f8_Id)OVERLAY_66_ID;
+    Unk_020720f8_Id c = (Unk_020720f8_Id)OVERLAY_67_ID;
     if (x == a || x == b || x == c) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
 }

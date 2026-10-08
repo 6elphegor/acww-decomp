@@ -8,12 +8,13 @@ typedef struct { u32 c1; u32 c2; } Cycle;
 typedef struct { u16 a; u8 b[3]; u8 pad; u16 c; u32 d; } Work;
 typedef struct { u8 pad[0xac]; u32 f_ac; u16 f_b0; u8 pad2[3]; u8 f_b5[3]; u8 pad3[6]; u16 f_be; } Buf;
 
-extern u16 data_02200054[2];
-extern u32 data_02200058;
-extern BOOL (*data_02200060)(void);
-extern Buf data_02200080;
-extern u8 data_02200084[];
-extern u32 data_0220005c;
+// the cartridge module's state (autoload_3 .bss 0x02200054-0x02200150; gap data on the DS: no unit owned it)
+u16 data_02200054[2];
+u32 data_02200058;
+u32 data_0220005c;
+BOOL (*data_02200060)(void);
+_Alignas(32) Buf data_02200080;  // (the PXI passes its main RAM offset / 32)
+#define data_02200084 ((u8 *)&data_02200080 + 4)
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02117984.h"
@@ -27,11 +28,12 @@ extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread 
 extern OSMutex data_02200298[9];  // the C library's critical-region mutexes (unk_02128030.c); [0]: exit
 extern u32 data_02200250;
 extern s32 data_02200274;
-extern s32 data_02200148;
-extern u32 data_0220014c;
-extern void (*data_02200144)(void);
-extern void (*data_02200150[])(void);
-extern void (*data_02200140)(void);
+// the C library's exit state (autoload_3 .bss 0x02200140-0x02200250)
+void (*data_02200140)(void);
+void (*data_02200144)(void);
+s32 data_02200148;
+u32 data_0220014c;
+void (*data_02200150[64])(void);  // the atexit functions
 extern BOOL OS_TryLockMutex(OSMutex *mutex);  // (assembly)
 
 extern void CpuSet(void *src, void *dst, u32 mode);

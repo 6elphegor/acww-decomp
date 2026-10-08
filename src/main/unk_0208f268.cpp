@@ -42,8 +42,6 @@ void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 v);
 void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
-#define Heap_destroy _ZN4Heap7destroyEv
-void Heap_destroy(void *);
 void *SPL_Create(void *, s32, VecFx32 *);
 void *SPL_CreateWithInitialize(void *, u32, void (*)(EffectSplEmitter *));
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);

@@ -75,7 +75,7 @@ Measured with the literal scan (comments and strings stripped). "Cast" means a l
 | Address range checks | about 25 | 8 | WM/FS buffer checks in autoload_2/unk_02122e24.c:143-179 and unk_02123444.c:299-321; unk_02114cd8.c:32; main/unk_02000c2c.cpp:102-103; `OS_SetArenaHi(0, 0x23ff000)` (main/unk_020b0a80.cpp:235); CTRDG PXI offset `((uptr)&data_02200080 - 0x02000000) >> 5` (autoload_2/unk_0212703c.c:608) | Range checks against host block bounds, or delete (the DS-only DMA-ability rules) |
 | I/O register casts | 830 | 121 | `IO_R(&R16(0x04001008))` | **None needed**: `IO_*` use the address only as a number (include/nitro/io_access.h) |
 | Absolute linker symbols (`.set`) | 68 references | 15 | `OVERLAY_65_ID` as an address (main/unk_020720f8.cpp:1586), `SDK_SECTION_ARENA_DTCM_START` | Constants in a header |
-| Gap data with DS numerals | 19 numerals in the DS RAM range (stale DS pointers) plus 41 in the I/O/VRAM range | modern/gen/gaps_x86_64.c | e.g. `host_gap0_1 = {0x2142600, 0x2142630, 0x20e7500, ...}` | Resolve to symbols, or prove unused |
+| Gap data with DS numerals | **Resolved (2.7)**: 6 in the unused `BuildInfo` (not emitted), 13 packed bytes of the building table (no pointers); the I/O/VRAM ones in gap code (not emitted) | – | – | – |
 | ROM-format data with DS pointers | Overlay table records (`sinit` pointers: autoload_2/unk_0211a49c.c:140-141); NFTR font unpacking adds the base to 5 fields in place (`u32 base = (u32)h`, autoload_2/unk_021031c4.c:69-97); sound archive `e->ptr = (u32)base + e->off` (autoload_2/unk_0210b448.c:365); snd7 treats a value below 0x02000000 as an offset (snd7/driver.c:122) | – | – | Keep offsets in the 32-bit file slots and resolve base + offset when used (or a 64-bit side table) |
 | Overlay shared-address thunks | 291 `--wrap` thunks in x86-64 asm (build/host64_usa/shared.s); plus 275 data references at shared overlay addresses that are not thunked (shared.log) | – | – | Typed C dispatchers generated from the proto headers, with the call sites renamed at the source |
 | provides.ld | 7784 PROVIDE lines: 7059 interior labels (`base + off`), 725 aliases. Only **99 labels and 133 aliases are referenced** (`nm -u game.o` ∩ provides) | – | – | Aliases: fix the callers' declarations. Labels: committed C accessors generated once by host_relayout.py |
@@ -121,12 +121,12 @@ These are the things that make "the game's memory anywhere" hard. Today they wor
 | `ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi` | configure_host.py:51, :201-203; tools/host_order.py | Variables in DS order (some code runs from one variable into the next); per-overlay data/bss/constructor ranges | Find and fix the overruns (guard-padding variant of order.ld on Linux), then drop the ordering. Overlay reset by a generated C table (`{&var, sizeof var}` per overlay) |
 | `.init_array` → `host_ovinit` ranges (98 constructors, 59 overlays; 91 overlay objects have `.init_array`) | host_order.py:92-97 | Overlay constructors run on load, not at start-up | Explicit per-overlay init functions (generated list of the overlay units' static-init functions, or the objects made constant-initialised) |
 | `--wrap` (291) and x86 asm thunks | configure_host.py:182-189, :201; tools/modern_shared.py | Calls to DS addresses that several overlays share | Typed C dispatchers + source rename |
-| `--defsym=_Znwj=_Znwm`, `_Znaj=_Znam` | configure_host.py:201 | mwcc's `operator new(unsigned long)` against the host's `size_t` | Define the operators with `size_t` in the source (Win64 mangles `_Znwy`) |
-| `objcopy --localize-symbols` (76 names: `memcpy`, `fread`, `abort`, socket names...) | configure_host.py:206-208; tools/host_localize.py | The game's own libc must not capture the runtime's references | A forced-include header that renames the game's libc names to `ds_*` |
+| ~~`--defsym=_Znwj=_Znwm`, `_Znaj=_Znam`~~ | – | **Gone (2.5)**: the global operators are the host's (modern/host/newdelete.cpp), the game allocates by name | – |
+| ~~`objcopy --localize-symbols`~~ (77/76 names) | – | **Gone (2.4)**: `include/host_libc_rename.h` (forced include) renames the game's libc names to `ds_*` | – |
 | `PROVIDE` (provides.ld, provides64.ld via host_relayout.py with pyelftools on DWARF) | configure_host.py:211-217 | Aliases and interior labels | See section 1.2: committed C; no ELF/DWARF reading at build time |
-| Gap data as inline asm with ELF directives (`.section .rodata.x,"a"`, `.size`) | modern/gen/gaps_x86_64.c (113 objects, 1098 `.long` words, 53 `.quad`) | Undecompiled data | Typed C initialisers. Lets the compiler encode PMFs per target: arm64 uses ARM's `{ptr, 2*adj+1}`, not x86's `{ptr+1, adj}` (12 hand-encoded in `ARM_VIRTUAL_PMFS`, tools/host_gaps.py:26-33) |
+| ~~Gap data as inline asm~~ | – | **Gone (2.7)**: `modern/gen/gaps.c`, typed C for every architecture (14 objects); bss labels defined in the sources; PMFs the compiler's | – |
 | `__start_gdata` / `__stop_gdata` / `__start_gbss` / `__stop_gbss` | hw.c:862-873 | Copy gdata/gbss into the main RAM memfd | Goes away with the fixed mapping |
-| `.set` absolute symbols | main.c:58-68 | Linker-script symbols of the DS build | C constants |
+| ~~`.set` absolute symbols~~ | – | **Gone (2.6)**: `include/sdk_linker_symbols.h` | – |
 | `constructor(101)` priorities | main.c:73, overlay.c:53 (and `constructor` overlay.c:43) | Map memory and snapshot overlays before the game's static constructors | Explicit init calls from `main()`. Unnecessary once no constructor touches fixed memory. Priorities aren't guaranteed across units on Mach-O/COFF |
 | `--allow-multiple-definition` | configure_host.py:65 | It hides a **bug**: the 9 `src/dtcm` objects are linked twice (12 symbols). They go into dtcm.o inside game.o and also stay in `host_objs`, because `host_objs = objs - game_objs` is computed after `dtcm_objs` were removed (configure_host.py:160-169; `objects.txt` lists them) | Exclude `dtcm_objs` from `host_objs`, then drop the option |
 | `.note.GNU-stack` sections | configure_host.py:176; irq_entry.S:66; coro_switch.S:177-179 (guarded) | ELF | Guard or remove |
@@ -162,7 +162,7 @@ These are the things that make "the game's memory anywhere" hard. Today they wor
 | Item | Measured | Mac arm64 | Windows | Action |
 |---|---|---|---|---|
 | GCC leniency: per-namespace `extern "C"` redeclarations with different types (the "views" trick: `namespace R1 { extern EffectManager gEffectManager; }`) | Clang errors in **47 units, 2370 errors** (1644 conflicting types, 536 redeclarations, 163 C-linkage conflicts, 20 redefinitions, 4 `void *` arithmetic, 2 ambiguous calls, 1 no matching call); g++ accepts them (notes only) | **Blocks Apple clang** | Blocks clang-mingw | Fix as part of the PROTO_LOCAL/views backlog. The libclang sweep is the check; the goal is 0 |
-| `-fpcc-struct-return` | Changes 39 functions in 17 units on x86-64 (`FS_LoadOverlayInfo`, `EventRule_*`, `SkySprite_*`, `BuildingActor::getSoundPos`...) | clang: unsupported except on i386 | – | Drop on x86-64 and run the oracle; fix any mismatched struct-returning declaration it exposes |
+| `-fpcc-struct-return` | **Dropped on x86-64 (2.2)**, oracle identical; on i386 kept but a no-op (866 units: same code without it) | clash gone | – | – |
 | `-malign-data=abi` | GCC x86 only | clang: unknown | – | Drop after the overrun fixes (section 3) |
 | char signedness | `-funsigned-char` changes 21 functions in 11 units (`OS_VSNPrintf`, `StringExpander`, `DebugText_PutString`, GameSpy ov065) | Apple arm64 char is signed anyway; `-fsigned-char` works | MinGW char signed | Keep `-fsigned-char` (Linux arm64 needs it). Optionally make those 21 functions use `s8` |
 | `-fshort-wchar` | `wchar_t` 72 uses in 4 files, `L""` 11 in 2 files | Supported by clang | wchar_t is 16-bit natively | Optional: `char16_t`/`u""`, then drop the flag |
@@ -174,7 +174,7 @@ These are the things that make "the game's memory anywhere" hard. Today they wor
 | Member-function-pointer encoding | 470 PMF types, 66 PMF casts in source (compiler-generated: fine); 12 hand-encoded in gap data | arm64 uses the ARM encoding | x86 encoding | Generate the gap PMFs from C (section 3) |
 | Varargs | `DS_VA_ARG` is the compiler's `va_arg` (include/ds_stdarg.h): portable. `host_panic` reinterprets a `void *` as a `va_list` (main.c:34-38, src/main/unk_02000c2c.cpp:74-79): only valid where `va_list` is a pointer | Apple: pointer (works); Linux arm64: struct (broken) | char* (works) | Debug path; pass a real `va_list` |
 | Division by zero | See section 2. Also `sdk.c:199-200` returns 0 for b == 0, but the DS routine returns the dividend (9 named calls, all with constant divisors, so harmless) | arm64 differs from the DS | – | `DS_DIV`/`DS_MOD` |
-| Mangled C++ names declared as C | 60 in 12 files (mangling contains `size_t`/`long` spellings that differ per target: `m` vs `y`) | Mach-O `_` prefix is consistent | Win64 `y` for 64-bit `size_t` | Member calls (host_method_calls.py) |
+| Mangled C++ names declared as C | **0 (2.5)** (was 47 in 17 files + 24 in proto headers) | – | – | Done: member functions, C functions in the defining unit |
 | Endianness | Little-endian everywhere | – | – | Nothing |
 | Platform macros in game code | `__x86_64__`/`__i386__`/`__linux__`: 0 in src/include (only `__LP64__` ×8) | – | – | Clean |
 | GNU extensions in the runtime | `typeof` (pxi7.c:27, :385), `localtime_r` (pxi7.c:165), `clock_nanosleep TIMER_ABSTIME` (hw.c:115; **absent on macOS**), `memfd_create`, `MAP_FIXED_NOREPLACE`, `MAP_32BIT` (Linux only), `shm_open`/`fork` (frontend.c), `mmap` of the ROM (card.c:25), `execinfo` | – | – | Platform layer (`modern/host/plat_posix.c`, `plat_win32.c`) or SDL |
@@ -214,6 +214,11 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
 ### Phase 2: toolchain neutrality (Linux, 2-3 weeks; overlaps phase 3)
 8. **2.1** Clang-clean the game. Fix the 47 units / 1735 distinct clang errors (namespace views → real types; this is the existing PROTO_LOCAL backlog). The portcheck reaching 0 is the check. Then get an LLVM toolchain into `~/acww/toolchains` (prebuilt tarball, no sudo needed) and add `--cc clang` to configure_host.py. Check: the clang x86-64 build passes the oracle. This catches most Apple-clang problems on Linux.
 9. **2.2** Drop `-fpcc-struct-return` on x86-64 (39 functions / 17 units change); oracle. Drop `-malign-data=abi` after step 2.8.
+   **Done (2026-10-08)** for x86-64: the 64-bit build's quick and play captures (screens and sound) are identical to the
+   build's own captures from before. The 32-bit build keeps the flag while it is the reference, but there it changes
+   nothing: all 866 units compile to the same code with and without it (`objdump -d` of each), since returning structs
+   in memory is the i386 Linux ABI's default. Dropping it on i386 too is safe; it is kept only so that the reference
+   build's command line is unchanged.
 10. **2.3** LLP64 readiness:
     - `IO_ADDR_` → `(unsigned int)(uptr)(p)`;
     - overlays.c `unsigned long` → `uptr`;
@@ -222,9 +227,51 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
 
     Check: portcheck win64-gnu-nomsbf reports 0 beyond the baseline (11 today, apart from the casts).
 11. **2.4** Game libc names: a forced-include `include/host_libc_rename.h` mapping the 76 clashing names to `ds_*`. Delete host_localize.py and the objcopy step. Check: `nm` shows no clash; oracle.
+    **Done (2026-10-08).** Re-measured: 77 names localised (i386), 76 (x86-64). Now: 66 C library names and the 5
+    `__cxa_vec_*` helpers renamed by macros in `include/host_libc_rename.h` (`-include` for every game unit); `atexit`
+    also through an asm label on its declaration, so that GCC's own registration of function-local static destructors
+    reaches the game's no-op (clang ignores the label for its emitted calls: use `-fno-c++-static-destructors` there);
+    the MSL's `std::terminate`/`dthandler` moved to namespace `msl`; `__cxa_pure_virtual` is the host's; the global
+    `operator new`/`delete` are the host's (`modern/host/newdelete.cpp`, see 2.5). `nm` of `game_all.o` against the
+    host's libc, libm, libgcc and libstdc++: 0 names defined by both; the game's only references into them are
+    `operator delete`/`delete[]`, `__cxa_pure_virtual`, libgcc's `__udivdi3`/`__umoddi3` (i386) and one
+    compiler-emitted `memset` (x86-64: the same result as the game's). host_localize.py and the
+    objcopy step are deleted (the link uses `game_all.o`). Oracle: identical (32-bit with the captures, 64-bit with its
+    own).
 12. **2.5** `operator new`/`delete` with `size_t` in the source; drop `--defsym`. Replace the 60 mangled-name C declarations with member calls.
+    **Done (2026-10-08)**, differently for operator new/delete: once the game's names are no longer made local (2.4),
+    a game-defined global `operator new` would serve melonDS and the C++ library too. So the program's global
+    operators are the host's (`modern/host/newdelete.cpp`, malloc), and `::operator delete` gives a block of the
+    game's heaps back to the game (`Mem_FreeForDelete`, the DS's operator delete; `host_is_game_heap` in main.c: DS
+    memory or the 64-bit root heap block). The game's 3 uses of the global operator new (a scene macro in
+    unk_020039ec.cpp, `new TalkWindowState[2]`, `__cxa_vec_new`) allocate by name: `Mem_AllocForNew`, or
+    `new (kGameHeap) T[n]` (include/sys/new.h). `ProcBase::operator new` takes `size_t`. No `--defsym`.
+    Mangled names: re-measured 47 occurrences in 17 files of src/ (20 `#define X _ZN...` aliases, the rest
+    `extern "C"` definitions and calls) plus 24 declarations in 4 generated proto headers; now **0**. ProcBase is a real
+    class (its members, constructor and destructor defined as members; its vtable is the compiler's, not the ROM's
+    from gap data); 11 aliases were unused (deleted); the calls into classes defined in another unit go through C
+    functions there (`FtrShirt_SyncAct0` ..., `SpNpcRoostGuest_GetGuest`, `PlayerData_GetNookPoints`: direct,
+    non-virtual calls as the DS's); `FxVec3::~FxVec3` is a member, with `FxVec3_Destruct` for the `__cxa_vec_*`
+    helpers. Oracle: identical.
 13. **2.6** Replace the `.set` absolute symbols (main.c:58-68; 68 references) with constants in a header.
+    **Done (2026-10-08):** 11 `.set` symbols, 67 references in 16 files (one an unbuilt `.s`) re-measured;
+    now `include/sdk_linker_symbols.h` (`#define` constants; the exception table bounds, both 0, are NULL in
+    `__FindExceptionTable`), 0 `.set` left in main.c. Oracle: identical.
 14. **2.7** Gap data as typed C for every architecture (113 objects; let the compiler encode the 12 PMFs; resolve or prove unused the 19 stale DS numerals). Drop the `--x86-64` asm emitter.
+    **Done (2026-10-08).** Re-measured: 56 gap sections, 84 labels (`.set` into the arrays), 12 hand-encoded PMFs, 7
+    labels unused. Now one file for every architecture, `modern/gen/gaps.c` (tools/host_gaps.py without `--x86-64`
+    and without the own-slot list `tools/host_gap_pointers.txt`, both deleted): 14 objects, each label its own C
+    object (the bytes, or a table of pointers: `data_01ff8ab4`), no asm. The 12 PMFs are the compiler's
+    (`&ProcBase::onCreate` ...); ProcBase's ROM vtable and next id went to its unit. The 52 zero-initialised labels (49 used)
+    are defined in the sources with their real types (pointers 8 bytes, `MBWork`, `WMMsg`, `PMRegInfo[4]` with their
+    64-bit sizes: before, they had their DS sizes on x86-64 and `MBWork`/`WMMsg` ran into the next label); labels
+    inside a larger object became macros over it (the WFC-ID block, the multiboot beacon, the cartridge buffer); the
+    ones whose users are only in overlays are in src/autoload_2/gap_vars.c (an overlay's variables are reset on load,
+    these must not be). They are now game variables in `gbss`, in DS order (order.ld), not host bss. Stale DS
+    numerals: of the 19 in the DS RAM range, 6 are in `BuildInfo` (the SDK's build strings, unused: no `nm -u`
+    reference in either build; not emitted) and 13 in `data_020d0a7c`, the building table (`BuildingInfo[0x22]`, 10
+    bytes of u8/u16 fields, no pointer: packed bytes that look like addresses); the I/O/VRAM-range ones are in the gap
+    *code* (ARM instructions of functions written in C, not emitted). Oracle: identical.
 15. **2.8** Variable order:
     - an order.ld variant that puts 64 poisoned bytes after every variable;
     - a per-frame check (`ACWW_GUARDS`) over the long scripts to list the overruns;

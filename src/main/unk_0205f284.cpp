@@ -57,10 +57,6 @@ void *NNS_G3dGetTex(void *p);
 s32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(s32 a);
 u32 Scene_GetMaxCharacters(s32 a);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(u32 heap);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(u32 heap);
 void *func_02060550(void *a, s32 b);
 void func_020607c8(void *a, u16 *b);
 u16 *func_020607d4(void *a);

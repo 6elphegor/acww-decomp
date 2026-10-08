@@ -30,7 +30,7 @@ extern WMArm9Buf *data_021ff46c;
 extern u16 data_021ff468;
 extern u8 data_021ff470[];
 extern u8 data_021ff490[];
-extern WMMsg data_021ff4b8;
+WMMsg data_021ff4b8;  // (autoload_3 .bss 0x021ff4b8: gap data on the DS)
 extern u8 data_021ff4cc[];
 extern u8 data_021ff4dc[];
 extern u8 data_021ff500[];

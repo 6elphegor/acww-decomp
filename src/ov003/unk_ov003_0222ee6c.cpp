@@ -22,13 +22,11 @@ public:
 
 // ---- externs ----
 // other modules' methods are reached through their real mangled symbols (object first)
-#define Camera_lerpPoses _ZN6Camera9lerpPosesEiii
 
 extern "C" {
 s32 Camera_CalcTriangleSpan(void *a, void *b, void *c, void *d, s32 *e);
 s32 Camera_CalcPointSpan(void *a, void *b, void *c, s32 *d);
 s32 FX_Div(s32 a, s32 b);
-s32 Camera_lerpPoses(void *self, s32 a, s32 b, s32 c);
 }
 
 
