@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "gfx/NNSG3dResAnmCommon.h"
 #include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -53,11 +54,10 @@ s32 Ground_GetDefaultY();
 BOOL PlayerActor_LocalRequestMailboxOpen(VecFx32 *p);
 void Mtx43_Translate(Mtx43 *m, s32 a, s32 b, s32 c);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-u8 *Scene_GetTouchPicker();
 BOOL Scene_InTown();
 }
 
-static inline TouchPicker *TouchPicker_Get() { return (TouchPicker *)Scene_GetTouchPicker(); }
+static inline TouchPicker *TouchPicker_Get() { return Scene_GetTouchPicker(); }
 
 // ============================================================ class Mailbox
 class Mailbox : public BuildingActor {

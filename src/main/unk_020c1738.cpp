@@ -35,6 +35,7 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020c1738.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // (defined in C units / units whose declarations aren't shared yet)
 extern "C" {
@@ -42,7 +43,6 @@ s32 Scene_GetCurrent(void);
 s32 func_01ffcb0c(s32 a, s32 b);  // FX_Mul
 u8 Math_CountDownU8(u8 *p);  // (src/autoload_2/unk_020e7500.cpp: its header conflicts with List.h here)
 u32 Random_Next(u32 *seed);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
@@ -573,7 +573,7 @@ BOOL SpNpcKaitlin::mainAct07() {
                     v1.y = gVec3Zero.y;
                     v1.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v1.x, &v1.z)) {
-                        s32 ang = Math_AngleXZ(&position.x, &v1.x);
+                        s32 ang = Math_AngleXZ(&position, &v1);
                         if (NpcActor_IsFrontAngle(ang - rotY)) {
                             s32 k = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -606,7 +606,7 @@ BOOL SpNpcKaitlin::mainAct07() {
                             v2.x = src->x;
                             v2.y = src->y;
                             v2.z = src->z;
-                            s32 ang = Math_AngleXZ(&position.x, &v2.x);
+                            s32 ang = Math_AngleXZ(&position, &v2);
                             if (!NpcActor_IsFrontAngle(ang - rotY)) {
                                 ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }

@@ -716,7 +716,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
         if (!Unk_ov047_0225a3e4_Same(&m.item, &m.cmpItem)) {
             ((ActorTalkRequest *)(this))->requestTakeItem(&m.item, 2, 5, 0);
         }
-        ((ErrandRecord *)ParcelErrand_GetRecord(&((PlayerErrands *)r7->getErrands())->parcelErrand))->setStep(1);
+        ((ErrandRecord *)ParcelErrand_GetRecord(&(r7->getErrands())->parcelErrand))->setStep(1);
         m.msgIndex = 0xe7;
     }
     ((TalkWindowState *)(o))->setNextMessage((u8 *)(&m), sSpNpcBlathersKey);
@@ -769,7 +769,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
         return;
     }
     out->msgKey = (const char *)sSpNpcBlathersKey;
-    ParcelErrand *r7 = &((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->parcelErrand;
+    ParcelErrand *r7 = &(PlayerData_GetCurrent()->getErrands())->parcelErrand;
     void *g = gCommManager;
     SpNpcBlathersStartLocal l;
     if (!((CommManager *)(g))->isOnline() && *DebugVar_GetPtr(0, 0x4a) == 0) {

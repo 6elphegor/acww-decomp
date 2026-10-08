@@ -75,7 +75,6 @@ PlayerData::PlayerData() {
     Catalog_Construct();
     PlayerOptions_ConstructInPlayer();
     FutureLetter_Construct((Letter *)futureLetter);
-    new (errands) PlayerErrands();
     PlayerWifiData_Construct(wifiUserData);
     FriendList_Construct(friendList);
     PlayerBank_Construct();
@@ -107,7 +106,6 @@ PlayerData::~PlayerData() {
     PlayerBank_Destruct();
     FriendList_Destruct(friendList);
     PlayerWifiData_Destruct(wifiUserData);
-    ((PlayerErrands *)errands)->~PlayerErrands();
     FutureLetter_Destruct((Letter *)futureLetter);
     PlayerOptions_DestructInPlayer();
     Catalog_Destruct();
@@ -120,7 +118,7 @@ void PlayerData::reset() {
     ((PlayerId *)(&id))->clear();
     ((PlayerInventory *)&inventory)->clear();
     Catalog_Clear(&catalog);
-    PlayerErrands_Clear((PlayerErrands *)errands);
+    PlayerErrands_Clear(&errands);
     heldItem = 0xfff1;
     NookPoints_Reset(&nookPoints);
     bed = 0xfff1;
@@ -230,11 +228,11 @@ void PlayerData::setBed(u16 *v) { bed = *v; }
 
 void *PlayerData::getPatterns() { return this; }
 
-void *PlayerData::getCatalog() { return &catalog; }
+u8 *PlayerData::getCatalog() { return catalog; }
 
 void *PlayerData::getNookPoints() { return &nookPoints; }
 
-void *PlayerData::getDramaRecord() { return &dramaRecord; }
+DramaRecord *PlayerData::getDramaRecord() { return &dramaRecord; }
 
 void *PlayerData::getLostChildRecord() { return &lostChildRecord; }
 
@@ -248,7 +246,7 @@ void *PlayerData::getFriendList() { return &friendList; }
 
 void *PlayerData::getOptions() { return &options; }
 
-void *PlayerData::getErrands() { return &errands; }
+PlayerErrands *PlayerData::getErrands() { return &errands; }
 
 void PlayerData::rerollFlaggedPocketItems()
 {
@@ -263,7 +261,7 @@ void PlayerData::rerollFlaggedPocketItems()
         u32 k = 1;
         s32 z28 = 0, z2c = 0, z40 = 0, z44 = 0, z3c = 0, z34 = 0, z38 = 0, z30 = 0, z4c = 0, z48 = 0, z20 = 0;
         v0 = 0xfff1;
-        ParcelErrand_Clear(&((PlayerErrands *)getErrands())->parcelErrand);
+        ParcelErrand_Clear(&getErrands()->parcelErrand);
         in = (PlayerInventory *)getInventory();
         p = in->getPocket(0);
         i = 0;
@@ -303,7 +301,7 @@ void PlayerData::rerollFlaggedPocketItems()
                 }
                 in->setPocket((u16 *)&v0, i, z48);
                 if (v0 != 0xfff1) {
-                    Catalog_SetItem((u8 *)getCatalog(), (u16 *)&v0, z4c, k);
+                    Catalog_SetItem(getCatalog(), (u16 *)&v0, z4c, k);
                 }
             }
         }
@@ -315,7 +313,7 @@ void PlayerData::resetForNewTown()
     if (isUsed()) {
         PlayerInventory *r7 = (PlayerInventory *)getInventory();
         u16 *r5 = r7->getPocket(0);
-        PlayerErrands *errandList = (PlayerErrands *)getErrands();
+        PlayerErrands *errandList = getErrands();
         PlayerErrandSlot_Clear(PlayerErrands_GetSlot(errandList, 0));
         PlayerErrandSlot_Clear(PlayerErrands_GetSlot(errandList, 1));
         HouseVisitInvite_Clear(&errandList->houseVisitInvite);
@@ -329,7 +327,7 @@ void PlayerData::resetForNewTown()
                 if (c >= 0x11a8 && c <= 0x12a7) ok = TRUE;
                 if (ok) {
                     r7->setPocket(r5, i, 1);
-                    Catalog_SetItem((u8 *)getCatalog(), r5, z, 1);
+                    Catalog_SetItem(getCatalog(), r5, z, 1);
                 }
             }
         }

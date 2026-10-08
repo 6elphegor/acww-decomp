@@ -53,7 +53,7 @@ s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 
 char *Sock_InetNtoA(GsInAddr a);
 SockHostEnt *Sock_GetHostByName(const char *name);
-s32 ArrayNth(void *list, s32 i);
+void *ArrayNth(void *list, s32 i);
 s32 ArrayLength(void *list);
 s32 inet_addr(const char *s);
 s32 getsockname(s32 fd, SockAddrIn *sa, s32 *len);

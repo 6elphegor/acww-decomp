@@ -166,7 +166,7 @@ void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, 
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 u8 Scene_GetPrevious();
 BOOL SceneId_IsHouseRoom(s32 x);
-s32 NNS_G3dGetTex(void *p);
+void *NNS_G3dGetTex(void *p);
 void func_02135558(void *a, void *b, void *c);
 void *func_020986c8(void *s);
 BOOL Item_IsNormalItem(u16 *p);
@@ -197,7 +197,7 @@ void Camera_GetLookAtBlock(Camera *a, s32 *x, s32 *z);
 extern "C" {
 }
 
-extern "C" s32 CarpetTex_GetTex(void *p) {
+extern "C" void *CarpetTex_GetTex(void *p) {
     return NNS_G3dGetTex(p);
 }
 
@@ -995,12 +995,12 @@ void Camera::updateModeTrackPair() {
     VecFx32 d;
     d = gVec3Zero;
     VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
-    void *q = PlayerActor_GetTrackTarget(4);
+    VecFx32 *q = PlayerActor_GetTrackTarget(4);
     if (p && q) {
         VecFx32 t;
         Vec_Sub(&t, p, q);
         s32 len = Vec_MagXZ(&t);
-        s32 ang = Math_AngleXZ((s32 *)p, (s32 *)q);
+        s32 ang = Math_AngleXZ(p, q);
         s32 sc = func_01ffcb0c(len, 0xb33);
         d = *p;
         s32 idx = ((u16)ang >> 4) * 2;

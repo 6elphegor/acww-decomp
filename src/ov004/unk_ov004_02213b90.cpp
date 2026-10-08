@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "proto/main/unk_020b4828.h"
 // mwcc-version: 1.2/sp2
 // ov004 TU05: .text 0x02213b90-0x02214948 (class MuseumExhibitInfo). The switch function
 // MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
@@ -39,7 +40,6 @@ s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
 }
 
@@ -465,7 +465,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        (Scene_GetTouchPicker())->addSphere(&touchSphere, &position, 0xc00, 0xe, index);
+        Scene_GetTouchPicker()->addSphere(&touchSphere, &position, 0xc00, 0xe, index);
     }
     return TRUE;
 }

@@ -523,7 +523,7 @@ void KappnTaxi::execTaxiDepart() {
                     departFrameCount = departFrameCount + 1;
                 }
                 if (departFrameCount == 0x10) {
-                    BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(0x5000);
+                    BuildingActor *q = BuildingList_FindByItem(0x5000);
                     if (q != NULL) {
                         s16 doorAngle;
                         VecFx32 door;
@@ -560,7 +560,7 @@ BOOL KappnTaxi::enterTaxiEnterTownHall() {
 }
 
 void KappnTaxi::execTaxiEnterTownHall() {
-    BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(0x5000);
+    BuildingActor *q = BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         q->openDoorForEntry();
         townHallGridX = q->getGridX();
@@ -581,7 +581,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
         warpDelayTimer = warpDelayTimer - 1;
     }
     if (warpDelayTimer == 0) {
-        BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(0x5000);
+        BuildingActor *q = BuildingList_FindByItem(0x5000);
         if (q != NULL) {
             if (q->getDoorPos(&v, &sv) != 0) {
                 SceneWarp_RequestExit(Scene_GetWarpRequest(), 9);
@@ -604,7 +604,7 @@ void KappnTaxi::execTaxiLeave() {
 }
 
 BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
-    BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(0x5000);
+    BuildingActor *q = BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         exitWalkDelay = 0x10;
         return q->openDoorForExit();
@@ -613,7 +613,7 @@ BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
 }
 
 void KappnTaxi::execTaxiPlayerExitTownHall() {
-    BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(0x5000);
+    BuildingActor *q = BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         if (q->isDoorIdle() != 0) {
             PlayerActor *o = (PlayerActor *)PlayerActor_GetActor(4);
@@ -716,7 +716,7 @@ BOOL KappnTaxi::enterTaxiLeaveEnd() {
 void KappnTaxi::execTaxiLeaveEnd() {
     if (sKappnTaxiLeaveTimer == 0) {
         TalkRequestFlags_ClearSceneHold();
-        SceneWarp_RequestFade((SceneWarp *)Scene_GetWarpRequest(), 0x2c, 2, 2);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         PlayerData_GetCurrent()->reset();
         gSaveData.resetPlayer(PlayerData_GetCurrentIndex());
     }

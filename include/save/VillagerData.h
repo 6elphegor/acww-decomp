@@ -4,6 +4,8 @@
 #include "types.h"
 #include "npc/VillagerId.h"
 #include "save/TownId.h"
+#include "save/Pattern.h"
+#include "item/Letter.h"
 
 class LetterView;
 
@@ -91,8 +93,8 @@ struct VillagerMemory {
 
 struct VillagerData {
     VillagerMemory memories[8];
-    u32 pattern[0x228 / 4];
-    u32 letter[0xf4 / 4];
+    Pattern pattern;
+    Letter letter;
     u32 planBlock[0x50 / 4];
     u16 furniture[10];
     VillagerId villagerId;
@@ -112,10 +114,10 @@ struct VillagerData {
     TownId letterTown;
 
     s32 receiveLetterFrom(LetterView *letter);
-    void *getLetter();
-    void *getPattern();
+    Letter *getLetter();
+    Pattern *getPattern();
     VillagerId *getVillagerId();
-    void setup(u32 id, u32 a, u32 b, u8 c);
+    void setup(u32 id, u32 a, void *b, u8 c);
     void copyFrom(void *src);
     void clear();
     ~VillagerData();
@@ -143,6 +145,7 @@ static_assert(sizeof(VillagerMemory) == 0x68, "VillagerMemory: DS save layout");
 static_assert(sizeof(VillagerData) == 0x700 && __alignof__(VillagerData) == 4, "VillagerData: DS save layout");
 static_assert(__builtin_offsetof(VillagerData, pattern) == 0x340, "VillagerData::pattern");
 static_assert(__builtin_offsetof(VillagerData, letter) == 0x568, "VillagerData::letter");
+static_assert(__builtin_offsetof(VillagerData, catchphrase) == 0x6de, "VillagerData::catchphrase");
 static_assert(__builtin_offsetof(VillagerData, letterTown) == 0x6f6, "VillagerData::letterTown");
 static_assert(__builtin_offsetof(SaveVillagers, nicknameDate) == 0x38c0, "SaveVillagers::nicknameDate");
 static_assert(__builtin_offsetof(SaveVillagers, furnitureDropDate) == 0x38ee, "SaveVillagers::furnitureDropDate");

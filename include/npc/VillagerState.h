@@ -2,6 +2,7 @@
 #define NPC_VILLAGERSTATE_H
 
 #include "types.h"
+#include "npc/ErrandRecord.h"
 
 // 0x2c-byte runtime state of one villager (entries of VillagerStateTable gVillagerStates). Ctor/dtor in main,
 // src/main/unk_02077ac4.cpp; used by unk_020742f4.cpp.
@@ -19,7 +20,7 @@ struct VillagerState {
 
     /* 0x00 */ u8 role;
     /* 0x01 */ u8 presence;
-    /* 0x04 */ u32 errand[3];
+    /* 0x04 */ ErrandRecord errand;
     /* 0x10 */ u32 trendScores[2];
     /* 0x18 */ u8 mood;
     /* 0x19 */ u8 unk_19;

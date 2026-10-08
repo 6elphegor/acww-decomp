@@ -9,16 +9,12 @@
 #include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0204a780.h"
 
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
 void Random_SetSeed(u32 *seed, u32 v);
 void Clock_GetDateTime(void *p);
-BOOL Item_TestInfoFlag4(u16 *p);
-BOOL Item_IsFurniture(u16 *p);
-s32 Item_GetFurnitureIndex(u16 *p);
-u16 Item_MakePaper(u32 a, s32 b);
-s32 Item_MakeFurniture(s32 a, s32 b);
 s32 FengShui_GetEastTotal(void);
 s32 FengShui_GetSouthTotal(void);
 s32 FX_Div(s32 a, s32 b);
@@ -26,26 +22,8 @@ void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
 void _ZN6ItemIdC1Ev(void *);
 void _ZN6ItemIdD1Ev(void *);
-BOOL Item_IsNormalItem(u16 *p);
-s32 Item_GetShirtUnkGroup(u16 *p);
 s32 ItemInfo_GetClass(u16 *p);
 s32 ItemInfo_GetSeason(u16 *p);
-s32 ItemList_IsFurniture(u16 *p);
-s32 ItemList_IsPaper(u16 *p);
-s32 Item_MakeShirt(u16 *p);
-s32 ItemList_IsShirt(u16 *p);
-s32 Item_MakeCarpet(u16 *p);
-s32 ItemList_IsCarpet(u16 *p);
-s32 Item_MakeWallpaper(u16 *p);
-s32 ItemList_IsWallpaper(u16 *p);
-s32 Item_MakeAccessory(u16 *p);
-s32 ItemList_IsAccessory(u16 *p);
-s32 Item_MakeHat(u16 *p);
-s32 ItemList_IsHat(u16 *p);
-s32 Item_MakeUmbrella(u16 *p);
-s32 ItemList_IsUmbrella(u16 *p);
-s32 Item_MakeFullHeadwear(u16 *p);
-s32 ItemList_IsFullHeadwear(u16 *p);
 }
 
 
@@ -75,13 +53,13 @@ extern const u8 sItemClassWeightOrders[18] = {
 extern const ItemPickList sItemPickLists[9] = {
     {(u16(*)(u32))ItemList_MakeFurniture, (s32(*)(u16 *))ItemList_GetNoSeason, Ftr_GetClass, 0x6e9, ItemList_IsFurniture},
     {ItemList_MakePaper, ItemInfo_GetSeason, ItemInfo_GetClass, 0x40, ItemList_IsPaper},
-    {(u16(*)(u32))Item_MakeShirt, ItemInfo_GetSeason, ItemInfo_GetClass, 0x100, ItemList_IsShirt},
-    {(u16(*)(u32))Item_MakeCarpet, ItemInfo_GetSeason, ItemInfo_GetClass, 0x44, ItemList_IsCarpet},
-    {(u16(*)(u32))Item_MakeWallpaper, ItemInfo_GetSeason, ItemInfo_GetClass, 0x44, ItemList_IsWallpaper},
-    {(u16(*)(u32))Item_MakeAccessory, ItemInfo_GetSeason, ItemInfo_GetClass, 0x40, ItemList_IsAccessory},
-    {(u16(*)(u32))Item_MakeHat, ItemInfo_GetSeason, ItemInfo_GetClass, 0x40, ItemList_IsHat},
-    {(u16(*)(u32))Item_MakeUmbrella, ItemInfo_GetSeason, ItemInfo_GetClass, 0x20, ItemList_IsUmbrella},
-    {(u16(*)(u32))Item_MakeFullHeadwear, ItemInfo_GetSeason, ItemInfo_GetClass, 0x20, ItemList_IsFullHeadwear},
+    {Item_MakeShirt, ItemInfo_GetSeason, ItemInfo_GetClass, 0x100, ItemList_IsShirt},
+    {Item_MakeCarpet, ItemInfo_GetSeason, ItemInfo_GetClass, 0x44, ItemList_IsCarpet},
+    {Item_MakeWallpaper, ItemInfo_GetSeason, ItemInfo_GetClass, 0x44, ItemList_IsWallpaper},
+    {Item_MakeAccessory, ItemInfo_GetSeason, ItemInfo_GetClass, 0x40, ItemList_IsAccessory},
+    {Item_MakeHat, ItemInfo_GetSeason, ItemInfo_GetClass, 0x40, ItemList_IsHat},
+    {Item_MakeUmbrella, ItemInfo_GetSeason, ItemInfo_GetClass, 0x20, ItemList_IsUmbrella},
+    {Item_MakeFullHeadwear, ItemInfo_GetSeason, ItemInfo_GetClass, 0x20, ItemList_IsFullHeadwear},
 };
 
 static inline BOOL Unk_0206277c_Bad1(u16 *p, u16 *e) {
@@ -324,7 +302,7 @@ extern "C" s32 ItemPick_GetSeason(s32 a, u32 b) {
 
 extern "C" BOOL ItemPick_IsCatalogued(void *p, u16 *q) {
     if (p != NULL) {
-        return Catalog_HasItem((u8 *)((PlayerData *)(p))->getCatalog(), q);
+        return Catalog_HasItem(((PlayerData *)(p))->getCatalog(), q);
     }
     return FALSE;
 }
@@ -507,9 +485,9 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
         if (a9 && Item_TestInfoFlag4(&v[2])) continue;
         if (a5) {
             if (a6) {
-                if (Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
+                if (Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
             } else {
-                if (!Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
+                if (!Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
             }
         } else {
             count++;
@@ -568,7 +546,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
         if (a9 && Item_TestInfoFlag4(&v[3])) continue;
         if (a5) {
             if (a6) {
-                if (Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[3])) {
+                if (Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[3])) {
                     if (pick == idx) {
                         *out = v[3];
                         return;
@@ -576,7 +554,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
                     idx++;
                 }
             } else {
-                if (!Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[3])) {
+                if (!Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[3])) {
                     if (pick == idx) {
                         *out = v[3];
                         return;

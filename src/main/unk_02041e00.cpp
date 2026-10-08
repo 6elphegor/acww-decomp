@@ -440,7 +440,7 @@ s32 BlockMap_IsBuriedAtUnit(void *b, s32 x, s32 y);
 BOOL Town_IsSaplingBlocker(u16 *p);
 BOOL Item_IsFlower(u16 *p);
 void FieldAction_ResolveBuryItem(void *a, u16 *p, u16 *q, u8 *r, u16 e);
-extern u8 gCommManager[];
+extern CommManager *gCommManager;
 s32 FieldAction_Add(void *g, void *a, s32 code, Unk_020434f0_P p, s32 v0, s32 v1, s32 v2, s32 v3, s32 v4, s32 v5);
 BOOL Field_IsLocalAid(void *a);
 s32 FieldAction_RequestWater(void *a, u16 *id, Unk_020434f0_P *pos, s32 d);
@@ -658,7 +658,7 @@ s32 Field_AidOrZero(u32 a);
 s32 PendingUnit_FindByAid(s32 a, Vec2 *p, s32 b);
 BOOL Item_IsTreeGrown(u16 *p);
 BOOL Town_CanReleaseBees();
-u32 TownBlockMap_Get();
+TownBlockMap *TownBlockMap_Get();
 s32 PendingUnit_Reserve(u8 a, Vec2 *p, u32 val, u32 code, u32 s0, u32 s1, u32 s2, u8 s3, u32 s4, s32 s5);
 s32 Item_GetFruitTreeFruit(u16 *p);
 u16 *BlockMap_GetItemPtr(void *obj, s32 tx, s32 ty, s32 px, s32 py, s32 z);
@@ -986,7 +986,7 @@ void HappyRoom_EvaluateHouse(void *);
 void RoomScoreEvaluator_Destruct(void *);
 void Sky_OnDayChange(s32);
 void NookShop_UpdateDaily(void *, s32);
-void SaveVillagers_OnNewDay(void *, void *);
+void SaveVillagers_OnNewDay(void *a, void *b);
 s32 Date_GetWeekday(s32, s32, s32);
 void Turnips_SpoilAll(void *);
 void ChopCount_ClearAll(void *);
@@ -6457,7 +6457,7 @@ extern "C" void TreeDrop_SpawnFruit(FieldActionResultMsg *o, u32 x, u32 code) {
     Vec2 pos;
     pos.x = 0;
     pos.y = 0;
-    u32 owner;
+    TownBlockMap *owner;
     u32 val;
     s32 n;
     owner = TownBlockMap_Get();
@@ -6475,7 +6475,7 @@ extern "C" void TreeDrop_SpawnFruit(FieldActionResultMsg *o, u32 x, u32 code) {
             vx = t;
             pos.x = (vx >> 8) + ((d >> 4) - 8);
             pos.y = (vy & 0xff) + ((d & 0xf) - 8);
-            if (TreeDrop_FindUnit(o, &pos, i, (void *)owner)) {
+            if (TreeDrop_FindUnit(o, &pos, i, owner)) {
                 Vec2 q;
                 q.x = pos.x;
                 q.y = pos.y;
@@ -6502,7 +6502,7 @@ extern "C" void TreeDrop_SpawnSpecial(FieldActionResultMsg *o, FieldActionReques
     Vec2 pos;
     Vec2 q;
     VecFx32 vec;
-    u32 owner;
+    TownBlockMap *owner;
     u32 code;
     pos.x = 0;
     pos.y = 0;
@@ -6547,7 +6547,7 @@ extern "C" void TreeDrop_SpawnSpecial(FieldActionResultMsg *o, FieldActionReques
         x2 = t2;
         pos.x = (x2 >> 8) + ((d >> 4) - 8);
         pos.y = (y2 & 0xff) + ((d & 0xf) - 8);
-        if (TreeDrop_FindUnit(o, &pos, idx, (void *)owner)) {
+        if (TreeDrop_FindUnit(o, &pos, idx, owner)) {
             q.x = pos.x;
             q.y = pos.y;
             PendingUnit_Reserve(x, &q, code, 0xfff1, 0, 0, 0, 0, 0, -1);
@@ -7134,7 +7134,7 @@ extern "C" u32 FieldPlayer_GetHeldItem(u32 slot) {
 
 namespace nD {
 extern "C" void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c) {
-    CommManager *g = *(CommManager **)gCommManager;
+    CommManager *g = gCommManager;
     if (FieldPlayer_GetHeldItem(g->localSlot) == 0x136a) {
         volatile u16 t = 0xfff1;
         t = c;
@@ -7228,7 +7228,7 @@ extern "C" void FieldAction_ResolveBuryItem(void *a, u16 *p, u16 *q, u8 *r, u16 
 namespace nD {
 extern "C" BOOL Town_CanReleaseBees(void) {
     BOOL r = FALSE;
-    CommManager *g = *(CommManager **)gCommManager;
+    CommManager *g = gCommManager;
     if (g->isSlotActive(g->myAid) == 0) {
         if (PlayerData_GetCurrent()->testFlag(1) == 0) {
             if (gTownUpdater.beesReleased == 0) {
@@ -7359,7 +7359,7 @@ extern "C" s32 FieldAction_RequestChop(void *a, u16 *id, Unk_020434f0_P *pos, s3
             kind = 0xd;
         } else if (*id >= 0xe8 && *id <= 0xfb) {
             kind = 0xc;
-            if (!((CommManager *)(*(void **)gCommManager))->isOnline()) {
+            if (!gCommManager->isOnline()) {
                 s32 q = (*id - 0xe8) / 5;
                 if (q == PlayerData_GetCurrentIndex()) {
                     if (mode != 2) {
@@ -7423,7 +7423,7 @@ extern "C" s32 FieldAction_RequestDig(void *a, void *b, u16 *id, Unk_020434f0_P 
     } else if (c >= 0xe8 && c <= 0xfb) {
         kind = 0xc;
         l.item = c;
-        if (!((CommManager *)(*(void **)gCommManager))->isOnline()) {
+        if (!gCommManager->isOnline()) {
             s32 q = (*id - 0xe8) / 5;
             if (q == PlayerData_GetCurrentIndex()) {
                 kind = 0xe;

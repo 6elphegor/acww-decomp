@@ -8,18 +8,15 @@
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_02060b9c.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern SaveData gSaveData;
 extern "C" {
 extern u8 gFieldSceneKind;
 
 // defined with file-local types (include/proto/.excluded)
-void *TownBlockMap_Get();
-void *HouseRoomMaps_Get(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
-void BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
 }
 
 static inline BOOL Unk_02060e3c_Eq(u16 *a, u16 *b) {

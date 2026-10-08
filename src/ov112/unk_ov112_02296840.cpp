@@ -1433,7 +1433,7 @@ extern "C" void BbsWriteMenu_ConfirmYes(S *s) {
         Bbs_AddPost(s->text);
         Snd_PlaySe(0x27);
         ((BbsWriteMenu *)s)->sendPostToPeers();
-        Arbeit_OnBbsPosted((PlayerErrands *)PlayerData_GetCurrent()->getErrands());
+        Arbeit_OnBbsPosted(PlayerData_GetCurrent()->getErrands());
     }
 }
 
@@ -2057,7 +2057,7 @@ void BbsWriteMenu::endDialogDim() {
 
 void BbsWriteMenu::sendPostToPeers() {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        Heap *heap = (Heap *)gMenuHeap;
+        Heap *heap = gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xc1);
         buf[0] = 0;
         MI_CpuCopy8(text, &buf[1], 0xc0);

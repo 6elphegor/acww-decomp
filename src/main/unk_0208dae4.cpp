@@ -78,8 +78,8 @@ ScrollKnob::~ScrollKnob() {
 
 void ScrollKnob::draw() {
     if (state != 0) {
-        GXOamAttr *h0 = static_cast<GXOamAttr *>(layerAnim1.getCell()); // (the frame cell: its OAM entries)
-        GXOamAttr *h1 = static_cast<GXOamAttr *>(priority.getCell()); // (the frame cell: its OAM entries)
+        GXOamAttr *h0 = layerAnim1.getCell(); // (the frame cell: its OAM entries)
+        GXOamAttr *h1 = priority.getCell(); // (the frame cell: its OAM entries)
         s32 a = layerAnim1.getFrameX(-1);
         s32 b = layerAnim1.getFrameY(-1);
         s32 c = priority.getFrameX(-1);

@@ -4,9 +4,11 @@
 #include "room/Unk_0209c41c_Actor.h"
 #include "actor/Actor.h"
 #include "game/FxVec3.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_0209c4a8.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 struct SceneExitResolveOut {
@@ -47,11 +49,6 @@ extern u8 gFieldSceneKind;
 extern const u8 sExclusiveRoomScenes[4];
 
 
-void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
-void SceneExit_SnapPos(void *o, u32 id, VecFx32 *v34, VecFx32 *v40);
-void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
-void *Scene_GetWarpRequest();
-s32 SceneExit_Resolve(void *o, u32 id, u8 *a, VecFx32 *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
 
@@ -228,9 +225,10 @@ extern "C" u32 RoomEntry_IsExclusiveScene(u32 v) {
 
 extern "C" s32 RoomEntry_IsExclusiveExit(u32 exitId) {
     SceneExitResolveOut t;
-    s32 b, a;
-    u32 c[3];
-    if (SceneExit_Resolve(Scene_GetWarpRequest(), exitId, (u8 *)&t, (VecFx32 *)c, (u32 *)&a, (u16 *)&b, &t.fadeOut, &t.fadeIn, 0, 0)) {
+    s16 b;
+    u32 a;
+    VecFx32 c;
+    if (SceneExit_Resolve(Scene_GetWarpRequest(), exitId, &t.scene, &c, &a, &b, &t.fadeOut, &t.fadeIn, NULL, NULL)) {
         return RoomEntry_IsExclusiveScene(t.scene);
     }
     return 0;
@@ -238,11 +236,11 @@ extern "C" s32 RoomEntry_IsExclusiveExit(u32 exitId) {
 
 extern "C" BOOL RoomEntry_Request(u32 id) {
     Actor *p = (Actor *)PlayerActor_GetActor(4);
-    void *o = Scene_GetWarpRequest();
+    SceneWarp *o = Scene_GetWarpRequest();
     SceneExitResult s;
     u32 a20, a24;
     VecFx32 v28, v34, v40, v4c;
-    s32 r = SceneExit_Resolve(o, id, &s.scene, &v28, &a20, &s.e, &s.fadeOut, &s.fadeIn, 0, 0);
+    s32 r = SceneExit_Resolve(o, id, &s.scene, &v28, &a20, &s.e, &s.fadeOut, &s.fadeIn, NULL, NULL);
     RoomEntryRequest_SetResult(&sRoomEntryRequest, 0);
     if (r != 0 && p != 0) {
         VecFx32 *pv = (VecFx32 *)&p->position;

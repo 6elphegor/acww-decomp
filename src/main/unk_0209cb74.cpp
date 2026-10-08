@@ -29,15 +29,6 @@ struct ClockOffset {
     s16 seconds;
 };
 
-struct Unk_0209cf28_T {
-    u32 lo;
-    u32 hi;
-    Unk_0209cf28_T() {
-        lo = 0;
-        hi = 0;
-    }
-};
-
 struct ClockDateInit {
     u8 day, month, year, pad_03;
     ClockDateInit() {
@@ -92,7 +83,7 @@ s32 Date_GetSeasonPeriod(ClockDateInit *t);
 s32 Date_IsAfterOrEqual(u8 *a, u8 *b);
 s32 Date_DaysBetween(u8 *a, u8 *b);
 void Clock_GetMinuteHour(u8 *out);
-void Clock_GetRtcDateTime(u8 *out);
+void Clock_GetRtcDateTime(ClockDateTime *out);
 void Clock_GetDate(u8 *out);
 s32 Clock_GetWeekday();
 s32 Date_GetDaysInMonth(u32 y, u32 m);
@@ -469,13 +460,13 @@ extern "C" void DateTime_SubSeconds(ClockDateTime *t, u32 sub) {
     t->second = r5;
 }
 
-extern "C" void DateTime_Sub(ClockDateTime *t, u8 *p) {
-    DateTime_SubSeconds(t, p[0]);
-    DateTime_SubMinutes(t, p[1]);
-    DateTime_SubHours(t, p[2]);
-    DateTime_SubDays(t, p[3]);
-    DateTime_SubMonths(t, p[4]);
-    DateTime_SubYears(t, p[5]);
+extern "C" void DateTime_Sub(ClockDateTime *t, ClockDateTime *p) {
+    DateTime_SubSeconds(t, p->second);
+    DateTime_SubMinutes(t, p->minute);
+    DateTime_SubHours(t, p->hour);
+    DateTime_SubDays(t, p->day);
+    DateTime_SubMonths(t, p->month);
+    DateTime_SubYears(t, p->year);
 }
 
 extern "C" BOOL DateTime_IsInvalid(u8 *p) {
@@ -547,18 +538,17 @@ extern "C" void Clock_GetDateTimeCleared(u8 *out) {
     out[0] = q[2];
 }
 
-extern "C" void Clock_GetRtcDateTime(u8 *out) {
-    s32 a[4];
-    s32 b[4];
-    Clock_ReadRtc((RTCDate *)a, (RTCTime *)b);
-    *(u32 *)out = 0;
-    *(u32 *)(out + 4) = 0;
-    out[5] = a[0];
-    out[4] = a[1];
-    out[3] = a[2];
-    out[2] = b[0];
-    out[1] = b[1];
-    out[0] = b[2];
+extern "C" void Clock_GetRtcDateTime(ClockDateTime *out) {
+    RTCDate a;
+    RTCTime b;
+    Clock_ReadRtc(&a, &b);
+    *out = ClockDateTime();
+    out->year = a.year;
+    out->month = a.month;
+    out->day = a.day;
+    out->hour = b.hour;
+    out->minute = b.minute;
+    out->second = b.second;
 }
 
 extern "C" void Clock_GetMinuteHour(u8 *out) {
@@ -779,18 +769,18 @@ extern "C" void ClockOffset_Clear(ClockOffset *t) {
 }
 
 extern "C" s32 ClockOffset_CalcMinutes(void *unused, u64 *b) {
-    Unk_0209cf28_T t;
-    Clock_GetRtcDateTime((u8 *)&t);
+    ClockDateTime t;
+    Clock_GetRtcDateTime(&t);
     if (*(u64 *)&t < *b) {
-        return DateTime_DiffMinutes((ClockDateTime *)&t, (ClockDateTime *)b);
+        return DateTime_DiffMinutes(&t, (ClockDateTime *)b);
     }
-    return -DateTime_DiffMinutes((ClockDateTime *)b, (ClockDateTime *)&t);
+    return -DateTime_DiffMinutes((ClockDateTime *)b, &t);
 }
 
 extern "C" s32 ClockOffset_CalcSeconds(void *unused, u8 *b) {
-    Unk_0209cf28_T t;
-    Clock_GetRtcDateTime((u8 *)&t);
-    return (s16)(b[0] - *(u8 *)&t);
+    ClockDateTime t;
+    Clock_GetRtcDateTime(&t);
+    return (s16)(b[0] - t.second);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)

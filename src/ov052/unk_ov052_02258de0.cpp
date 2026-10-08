@@ -47,6 +47,7 @@
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 #include "proto/ov052/unk_ov052_02258de0.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -71,8 +72,6 @@ void Ground_UnlockExit();
 void Ground_LockExit(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-u8 *Scene_GetTouchPicker();
 BOOL TouchPick_GetGroundPos(TouchPickResult *a, VecFx32 *b);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -931,13 +930,13 @@ BOOL SpNpcRedd::pickDisplayItem() {
     if (f) {
         void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
-            if (o != TouchPick_GetTargetObject((TouchPicker *)Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             VecFx32 v2;
-            TouchPick_GetGroundPos((TouchPicker *)Scene_GetTouchPicker(), &v2);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

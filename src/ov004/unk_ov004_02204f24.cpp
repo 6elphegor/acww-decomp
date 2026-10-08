@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "uptr.h"
+#include "proto/main/unk_020b4828.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
@@ -80,6 +81,7 @@ struct FxVec3 : VecFx32Copy {
 #include "player/PlayerId.h"
 #include "actor/NpcActor.h"
 #include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_0204cc1c.h"
 
 #ifndef HOST64
 // the DS layout (the 32-bit host build keeps it)
@@ -171,7 +173,6 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 
 // ================================================================ externs (functions without a shared prototype: their
 // definitions use types local to their units)
-struct Unk_0204e858_Grid;
 struct BoxColliderShape;
 struct WallEdge;
 class ModelSlot;
@@ -217,9 +218,6 @@ u8 *func_02106654(u8 *p);
 u8 *func_02106670(u8 *p, u32 i);
 u8 *func_02106690(u8 *p);
 u8 *func_021066ac(u8 *p, u32 i);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_ToUnit(s32 *x, s32 *z, VecFx32 *v);
 void MTX_Inverse43(const Mtx43 *src, Mtx43 *dst);
 void MTX_MultVec43(const VecFx32 *src, const Mtx43 *m, VecFx32 *dst);
 void Mtx43_Translate(Mtx43 *m, s32 x, s32 y, s32 z);
@@ -238,7 +236,6 @@ BOOL Scene_InHouseRoom(void);
 BOOL Scene_InUnk6To8(void);
 BOOL SceneId_IsHouseRoom(s32 scene);
 BOOL SceneId_IsVillagerHouse(u32 scene);
-TouchPicker *Scene_GetTouchPicker();
 s32 Ground_CanPlaceItem(s32 x, s32 y);
 s32 Ground_GetExitAtPos(VecFx32 *p);
 u16 GroundAttr_GetDragSe(s32 i);
@@ -246,9 +243,7 @@ void LightSwitch_SetOff(s32 i, u32 v);
 void LightSwitch_SetOn(s32 i, u32 a, u32 b);
 void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
-u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *grid, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 // (defined with the item pointer as an s32: src/main/unk_0204cc1c.cpp)
-void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *grid, u16 *item, s32 x, s32 z, u8 layer);
 BOOL BoxCollider_Register(BoxCollider *c, s32 a, s32 b, s32 cc, VecFx32 *pos, s16 angle, VecFx32 *scale);
 BOOL BoxCollider_Unregister(BoxCollider *c);
 // (autoload_2/unk_020e92f4.cpp; its shared header brings main's FxVec3, which this unit defines itself)
@@ -258,7 +253,7 @@ s32 Vec_NotEqual(VecFx32 *a, VecFx32 *b);
 void Vec_RotateY(VecFx32 *v, s32 angle);
 s32 Vec_SafeNormalize(VecFx32 *v);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-extern Unk_0204e858_Grid *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern Mtx43 data_021f47e0;              // scratch matrix
 extern FtrG3dGlbView data_027e00c8;      // NNS_G3dGlb
 extern const s16 data_02135f44[];        // FX_SinCosTable_
@@ -811,7 +806,7 @@ BOOL FtrActor::postDelete(s32 a) {
             findOwnTile(&x, &y, 0, 0);
             u32 r = Scene_GetCurrent();
             if (FtrMgr_IsSaleMode() && !SceneId_IsVillagerHouse(r) && !SceneId_IsHouseRoom(r)) {
-                Unk_0204e858_Grid *g = gSceneBlockMap;
+                BlockMap *g = gSceneBlockMap;
                 clearTiles(0, 0);
                 if (g) {
                     u16 v = 0x1547;
@@ -1425,7 +1420,7 @@ extern "C" void FtrActor_UpdateTopItemBoxes(FtrActor *self) {
     if (self->mapLayer == 0 && self->hasTopSurface == 1) {
         FtrTileList l;
         VecFx32 v;
-        Unk_0204e858_Grid *grid;
+        BlockMap *grid;
         u32 i;
         self->getTiles(&l, 0, 0);
         grid = gSceneBlockMap;
@@ -1644,7 +1639,7 @@ extern "C" void FtrActor_MakeItemForAngle(u16 *out, FtrActor *obj, s32 ang) {
 void FtrActor::clearTiles(s32 a, s32 b) {
     if (!isPreview()) {
         FtrTileList l;
-        Unk_0204e858_Grid *grid;
+        BlockMap *grid;
         u32 i;
         getTiles(&l, 0, 0);
         grid = gSceneBlockMap;
@@ -1837,7 +1832,7 @@ extern "C" s32 FtrActor_GetDragSe(void) {
 BOOL FtrActor::hasItemOnTop() {
     FtrTileList c;
     getTiles(&c, 0, 0);
-    Unk_0204e858_Grid *grid = gSceneBlockMap;
+    BlockMap *grid = gSceneBlockMap;
     if (mapLayer == 0 && hasTopSurface == 1) {
         u32 i;
         for (i = 0; i < c.getCount(); i++) {
@@ -1876,7 +1871,7 @@ BOOL FtrActor::canMoveTo(VecFx32 *a, s32 b) {
     FtrActor *obj;
     s32 y;
     s32 y2;
-    Unk_0204e858_Grid *grid;
+    BlockMap *grid;
     u16 *cell1;
     s32 x2;
     s32 x;
@@ -1971,7 +1966,7 @@ u16 FtrActor::makeCharId(VecFx32 *a, s32 b) {
 BOOL FtrActor::findOwnTile(s32 *ox, s32 *oy, VecFx32 *a, s32 b) {
     FtrTileList c;
     getTiles(&c, a, *(s16 *)&b);
-    Unk_0204e858_Grid *grid = gSceneBlockMap;
+    BlockMap *grid = gSceneBlockMap;
     u32 i;
     for (i = 0; i < c.getCount(); i++) {
         s32 y, x, hx, hy;
@@ -2038,7 +2033,7 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
             Unk_ov004_02206520_Ent *p = c.get(hiIdx);
             Unk_ov004_02206520_Ent *q = c.get(hiIdx);
             FieldPos_FromUnitCenter(&v2, p->x, q->y);
-            FtrActor_SpawnActorC0(&v2, Math_AngleXZ(&v2.x, &cam->x));
+            FtrActor_SpawnActorC0(&v2, Math_AngleXZ(&v2, cam));
         }
         c.release();
     }
@@ -2050,7 +2045,7 @@ void FtrActor::spawnActorC0AtCenter() {
     if (cam) {
         VecFx32 v;
         FtrActor_GetCenter(this, &v);
-        FtrActor_SpawnActorC0(&v, Math_AngleXZ(&v.x, &cam->x));
+        FtrActor_SpawnActorC0(&v, Math_AngleXZ(&v, cam));
     }
 }
 
@@ -2792,7 +2787,7 @@ BOOL FtrTopItems::add(u16 *id, VecFx32 *pos) {
 BOOL FtrTopItems::canPickUp(FtrActor *o) {
     FtrTileList list;
     o->getTiles((FtrTileList *)&list, 0, 0);
-    Unk_0204e858_Grid *grid = gSceneBlockMap;
+    BlockMap *grid = gSceneBlockMap;
     u32 i;
     for (i = 0; i < list.getCount(); i++) {
         s32 y = list.get(i)->y;
@@ -2817,7 +2812,7 @@ BOOL FtrTopItems::pickUpAll(FtrActor *o) {
     BOOL res = TRUE;
     FtrTileList list;
     o->getTiles((FtrTileList *)&list, 0, 0);
-    Unk_0204e858_Grid *grid = gSceneBlockMap;
+    BlockMap *grid = gSceneBlockMap;
     if (canPickUp(o)) {
         clearAll();
         FtrActor_CalcWorldMtx((FtrActor *)o, 0, 0);

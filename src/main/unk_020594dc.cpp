@@ -1,4 +1,5 @@
 #include "item/Letter.h"
+#include "save/VillagerData.h"
 #include "talk/MsgString25.h"
 #include "talk/MsgString33.h"
 // mwcc-flags: -str reuse
@@ -28,6 +29,7 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065330.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -228,8 +230,7 @@ static inline void Unk_0205a930_Clear(void *dst, u32 n)
 // ---- callees ----
 extern "C" {
 u8 *SaveVillagers_Find(u8 *base, u16 *x);
-u8 *Villager_GetBirthday(u32 a);
-u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+u8 *Villager_GetBirthday(VillagerData *a);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFurnitureDirection(u16 *p);
@@ -240,9 +241,6 @@ void Debug_SetHappyRoomBonusFlags(u32 v);
 s32 FtrClass_GetBasePoints(s32 v);
 s32 Series_GetType(s32 v);
 s32 ItemInfo_GetSeries(u16 *p);
-void *VillagerRoomMap_Create(s32 a, void *heap);
-void VillagerRoomMap_Destroy(void *heap);
-void *HouseRoomMaps_Get(s32 i);
 void *SaveVillagers_Get(void *p, s32 k);
 u32 Villager_GetCarpet(void *a);
 u32 Villager_GetWallpaper(void *a);
@@ -1514,9 +1512,8 @@ extern "C" BOOL Villager_SendBirthdayNoticeLetter(PlayerId *a, VillagerId *b)
 {
     u8 *r = SaveVillagers_Find(gSaveVillagers, (u16 *)b);
     if (r) {
-        // (Villager_GetBirthday, src/main/unk_02077ac4.cpp, takes the villager data as an integer)
-        MailText_SetSlotMonth(2, *Villager_GetBirthday((u32)(uptr)r));
-        MailText_SetSlotDayOrdinal(3, Villager_GetBirthday((u32)(uptr)r)[1]);
+        MailText_SetSlotMonth(2, *Villager_GetBirthday((VillagerData *)r));
+        MailText_SetSlotDayOrdinal(3, Villager_GetBirthday((VillagerData *)r)[1]);
         return Villager_SendLetterWithPaper("ev_nbirth", Random_GlobalBelow(3), a, b, 0, 0x1a);
     }
     return FALSE;

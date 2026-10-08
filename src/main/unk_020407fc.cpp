@@ -14,6 +14,7 @@
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_0204cc1c.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065e88.h"
@@ -73,9 +74,6 @@ void Clock_GetDateTime(void *);
 s32 TalkRequestFlags_IsEventWarpStarted(void);
 s32 TalkRequest_AddEventWarp(void);
 s32 TalkRequestFlags_IsEventWarpReady(void);
-s32 TownBlockMap_Get(void);
-s32 Town_FindGulliverShip(s32, void *);
-s32 Town_FindTownHall(s32, void *, s32, s32);
 s32 Event_GetStateAt(s32, void *, s32);
 s32 Event_GetState(s32, void *, s32);
 s32 TalkRequestFlags_IsSceneHold(void);
@@ -418,7 +416,7 @@ extern "C" BOOL EventAnnounce_RequestWarp(void)
 extern "C" void EventAnnounce_RunWarp(EventAnnouncer *)
 {
     VecFx32 pos;
-    s32 r;
+    BOOL found;
     if (TalkRequestFlags_IsEventWarpStarted() == 0) {
         if (TalkRequest_AddEventWarp() == 0) {
             sEventAnnounceState.announceState = 0;
@@ -429,14 +427,14 @@ extern "C" void EventAnnounce_RunWarp(EventAnnouncer *)
         sEventAnnouncePendingEvent = v;
         sEventAnnounceCurEvent = v;
         if (TalkRequestFlags_IsEventWarpReady() != 0 && Melody_IsBusy() == 0) {
-            r = TownBlockMap_Get();
-            if (r != 0) {
+            BlockMap *map = TownBlockMap_Get();
+            if (map != NULL) {
                 if (sEventAnnounceState.msgIndex == 14) {
-                    r = Town_FindGulliverShip(r, &pos);
+                    found = Town_FindGulliverShip(map, &pos);
                 } else {
-                    r = Town_FindTownHall(r, &pos, 0, 0);
+                    found = Town_FindTownHall(map, &pos, NULL, NULL);
                 }
-                if (r != 0) {
+                if (found) {
                     Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, &pos, 0x400000, 0, 2, 2);
                     data_021c1b3c->sceneFade.prepareEventWarp(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);

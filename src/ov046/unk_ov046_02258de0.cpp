@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
@@ -66,7 +67,6 @@ extern VecFx32 gVec3Zero;
 // (definitions in files whose types are local: include/proto/.excluded)
 BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-u8 *Scene_GetTouchPicker(void);
 void Camera_LockFocusYaw(void);
 BOOL TalkRequest_AddPlayerTalk6(Character *c, s32 b);  // (defined with u32: it is the Character)
 BOOL TalkRequest_SetTargetDone(Character *c);          // (likewise)
@@ -1104,7 +1104,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
             }
         }
         if (r6 != 0) {
-            if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &pos, &out, NULL) != 0) {
+            if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &pos, &out, NULL) != 0) {
                 if (out == 0x16) {
                     result = TRUE;
                     goto end;

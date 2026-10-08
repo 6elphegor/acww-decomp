@@ -10,9 +10,14 @@
 struct ItemId {
     /* 0x0 */ u16 id;
 
+#ifdef __cplusplus
     ItemId();
     ItemId(u16 x) { id = x; }
     ~ItemId();
+#endif
 };
+#ifndef __cplusplus
+typedef struct ItemId ItemId;
+#endif
 
 #endif

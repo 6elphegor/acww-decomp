@@ -42,6 +42,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/ov073/unk_ov073_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -61,7 +62,6 @@ BOOL TalkRequest_SetTargetDone(Character *c);
 u8 Math_CountDownU8(u8 *p);
 u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *p, s32 v);
 }
 
@@ -352,7 +352,7 @@ BOOL SpNpcJoan::mainAct02() {
                 } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     va = gVec3Zero;
                     if (pickWanderTarget(&va.x, &va.z)) {
-                        s32 t = Math_AngleXZ(&position.x, &va.x);
+                        s32 t = Math_AngleXZ(&position, &va);
                         if (NpcActor_IsFrontAngle(t - rotY)) {
                             u32 k = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -378,7 +378,7 @@ BOOL SpNpcJoan::mainAct02() {
                         ZERO_CALL(r4);
                     } else {
                         vb = *((NpcMoveCtrl *)(&moveCtrl))->getDestination();
-                        s32 t = Math_AngleXZ(&position.x, &vb.x);
+                        s32 t = Math_AngleXZ(&position, &vb);
                         if (NpcActor_IsFrontAngle(t - rotY) == 0) {
                             ZERO_CALL(r4);
                         }

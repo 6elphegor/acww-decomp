@@ -52,7 +52,7 @@ extern TalkRequestFn sTalkRequestBeginFns[];
 extern TalkRequestFn sTalkRequestEndFns[];
 
 extern "C" {
-extern s32 gCommManager;
+extern CommManager *gCommManager;
 
 Character *Character_FindByCharId(u32 id);
 TalkRequestEntry *TalkRequestPool_Alloc();
@@ -223,7 +223,7 @@ extern "C" BOOL TalkRequest_AcquireAreaTarget(TalkRequestEntry *t) {
     s32 r = CharInteractSync_CheckArea();
     switch (r) {
     case 2:
-        if (((CommManager *)(gCommManager))->isOnline()) {
+        if (gCommManager->isOnline()) {
             Character *o = Character_FindByCharId(t->targetId);
             if ((o)->isAreaSynced()) {
                 if (t->result == 1) {

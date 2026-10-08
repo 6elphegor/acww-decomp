@@ -38,6 +38,7 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/ov077/unk_ov077_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -52,15 +53,11 @@ void TalkRequestFlags_SetResetti();
 BOOL Math_IsInRange(s32 v, s32 a, s32 b);
 u8 Math_CountDownU8(u8 *p);
 BOOL TalkRequest_SetTargetDone(Character *c);
-s32 FieldPos_ToUnit(s32 *x, s32 *y, void *v);
-s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
-s32 BlockMap_FindItemAllAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g1, s32 g2);
-s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_LocalPlayAnim99();
 extern u16 data_020c6cc8;
 extern u8 gFieldSceneKind;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 }
 
 
@@ -293,7 +290,7 @@ BOOL SpNpcResetti::setupAct02() { return TRUE; }
 BOOL SpNpcResetti::mainAct02() { return TRUE; }
 
 BOOL SpNpcResetti::setupAct03() {
-    void *g;
+    BlockMap *g;
     s32 a, b, c, d;
     u16 u0, u1;
     ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xfd, 1, 0, 0);

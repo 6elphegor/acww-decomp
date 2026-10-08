@@ -3,7 +3,6 @@
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "field/Snowball.h"
-#include "town/Unk_0204e858_Grid.h"
 #include "actor/Actor.h"
 #include "field/LooseSnowballs.h"
 #include "field/SnowmanRecords.h"
@@ -13,6 +12,7 @@
 #include "proto/main/unk_020af3f4.h"
 #include "proto/ov003/unk_ov003_02212830.h"
 #include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
 struct UnitMaskChunk {
@@ -28,15 +28,10 @@ struct UnitMaskPool {
 
 // ---- externs ----
 extern "C" {
-extern Unk_0204e858_Grid *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern CommManager *gCommManager;
 extern SnowmanRecords data_021ed2e6;
 
-void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
 BOOL Ground_IsFreeGrass(s32 a, s32 b);
 void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
@@ -118,10 +113,10 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
 }
 
 extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
-    Unk_0204e858_Grid *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     u32 by, bx;
     s32 lx, n;
-    TownBlockCell *cell;
+    MapBlock *cell;
     for (by = 1; by <= 4; by++) {
         for (bx = 1; bx <= 4; bx++) {
             if (bx < g->width && by < g->height && g->blocks != 0) {
@@ -332,7 +327,7 @@ extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
 
 // a position for a loose snowball in b, away from c (when not NULL); d: also away from the items on the ground
 extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
-    Unk_0204e858_Grid *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     static UnitMaskPool pool;
     UnitMaskPool_Clear(&pool);
     u32 by, bx, ly, lx, k;

@@ -1178,7 +1178,7 @@ void CatalogMenu::buildFurnitureList() {
         if (r) goto next;
         if (Item_TestInfoFlag3(&id)) {
             tabTotalCounts[0] = tabTotalCounts[0] + 1;
-            if (Catalog_HasItem((u8 *)h->getCatalog(), &id)) {
+            if (Catalog_HasItem(h->getCatalog(), &id)) {
                 furnitureItems[n] = cur;
                 n++;
             }
@@ -1243,7 +1243,7 @@ s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off)
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
             tabTotalCounts[off] = tabTotalCounts[off] + 1;
-            if (Catalog_HasItem((u8 *)p->getCatalog(), &tmp)) {
+            if (Catalog_HasItem(p->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }
@@ -1262,7 +1262,7 @@ s32 CatalogMenu::collectCatalogued(u16 *out, u16 start, s32 n, s32 off) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
             tabTotalCounts[off] = tabTotalCounts[off] + 1;
-            if (Catalog_HasItem((u8 *)p->getCatalog(), &tmp)) {
+            if (Catalog_HasItem(p->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }

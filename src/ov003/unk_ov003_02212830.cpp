@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "proto/main/unk_0202fa70.h"
 #include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
@@ -37,6 +38,7 @@
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov003/unk_ov003_02212830.h"
 #include "proto/ov003/unk_ov003_0222e734.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -54,7 +56,7 @@ typedef void (Snowball::*Fn0)();
 typedef BOOL (Snowball::*Fn1)();
 
 extern "C" {
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern void *gCamera;
 extern VecFx32Ctor gCameraLookAt;
 extern s32 data_020c8cbc;
@@ -80,14 +82,9 @@ s32 Math_ApproachS16Div(s16 *p, s32 a, s32 b, s32 c);
 void Vec_Scale(void *v, s32 ang);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
-void Collision_Move(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
-void FieldPos_ToUnit(s32 *out1, s32 *out2, void *p);
-BOOL BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
-u16 *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
-s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 u16 Item_MakeSnowman(u32 x);
 s32 Item_IsSnowman(u16 *c);
 s32 Collision_GetUnitShape(s32 x, s32 y, s32 *a, s32 *b, s32 *c);
@@ -114,7 +111,7 @@ void Snowball_UpdateRolling(Snowball *o);
 void Snowball_UpdateMatrix(Snowball *o, s32 a, s32 b);
 s32 Snowball_Break(Snowball *o, s32 a);
 }
-static inline void *Unk_ov003_02213058_Cell(void *g, s32 x, s32 y) {
+static inline u16 *Unk_ov003_02213058_Cell(BlockMap *g, s32 x, s32 y) {
     s32 hx = x >> 4;
     s32 hy = y >> 4;
     return BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
@@ -266,7 +263,7 @@ BOOL Snowball::onDraw() {
 
 BOOL Snowball::onDelete() {
     if (snowballState == 9) {
-        void *g = gSceneBlockMap;
+        BlockMap *g = gSceneBlockMap;
         volatile s32 x, y;
         FieldPos_ToUnit((s32 *)&x, (s32 *)&y, &position);
         s32 lx = x;
@@ -619,7 +616,7 @@ extern "C" void Snowball_InitState(Snowball *o) {
 }
 
 extern "C" BOOL Snowball_CanBuildSnowmanAt(VecFx32 *pos) {
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g) {
         s32 px0, py0;
         s32 s18, s1c, s20;
@@ -673,7 +670,7 @@ extern "C" BOOL Snowball_CanBuildSnowmanAt(VecFx32 *pos) {
 extern "C" BOOL Snowball_PlaceSnowmanAt(u32 a, VecFx32 *pos, u16 *out) {
     *out = 0xfff1;
     if (Snowball_CanBuildSnowmanAt(pos)) {
-        void *g = gSceneBlockMap;
+        BlockMap *g = gSceneBlockMap;
         if (g) {
             u16 t;
             s32 x, y;
@@ -694,7 +691,7 @@ extern "C" BOOL Snowball_PlaceSnowmanAt(u32 a, VecFx32 *pos, u16 *out) {
 }
 
 extern "C" BOOL Snowball_PlaceSnowmanNearby(u32 a, VecFx32 *pos, u16 *out) {
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g) {
         volatile u16 t[1];
         s32 x, y;
@@ -738,7 +735,7 @@ extern "C" BOOL Snowball_PlaceSnowmanNearby(u32 a, VecFx32 *pos, u16 *out) {
 }
 
 extern "C" BOOL Snowball_ClearItemAt(VecFx32 *p) {
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g) {
         s32 x, y;
         u16 t;

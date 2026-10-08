@@ -59,7 +59,7 @@ u16 *PlayerActor_GetItemInFront();
 void PlayerActor_SetLocalExitId(s32 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SetLocalExitKind
-void PlayerActor_SetLocalExitKind(s32 *p);
+void PlayerActor_SetLocalExitKind(u32 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_PlayLocalSe
 void PlayerActor_PlayLocalSe(u32 x);

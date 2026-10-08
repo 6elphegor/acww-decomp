@@ -47,6 +47,7 @@
 #include "proto/ov004/unk_ov004_02225290.h"
 #include "proto/ov053/unk_ov053_02258de0.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -186,7 +187,6 @@ s32 Scene_GetPrevious();
 s32 Ground_IsOnLockedExit(void *p);
 BOOL TalkRequest_IsTalking(void);
 s32 TalkRequest_AddPlayerTalk7(void *p, s32 a);
-void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 s32 func_020aa514(void *p);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 }
@@ -435,7 +435,7 @@ BOOL SpNpcHarriet::setupAct06() {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    s32 r = Math_AngleXZ(&position.x, &v.x);
+    s32 r = Math_AngleXZ(&position, &v);
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }

@@ -78,7 +78,7 @@ BOOL PlayerHouse::initBuilding() {
 }
 
 BOOL PlayerHouse::onDraw() {
-    BuildingActor *o = static_cast<BuildingActor *>(BuildingList_FindByItem(0x501d));
+    BuildingActor *o = BuildingList_FindByItem(0x501d);
     if (o) {
         o->updateMatrix();
     }

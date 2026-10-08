@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+class MsgString;
+
 // A view of a villager's save data (VillagerData) at its profile members: letter, catchphrase, shirt, umbrella.
 // Defined in src/main/unk_02077ac4.cpp (which still keeps its own copy of the struct: switch it to this header).
 struct VillagerDataProfileView {
@@ -15,7 +17,7 @@ struct VillagerDataProfileView {
     u8 umbrella;
 
     void getCatchphraseEncoded(void *p);
-    void getCatchphrase(void *p, void *q);
+    void getCatchphrase(MsgString *p, void *q);
     void clearCatchphrase();
     void *getInfo28();
     s32 findFreeSlot(s32 n);

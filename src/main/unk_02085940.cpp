@@ -118,6 +118,7 @@ struct DramaScheduleEntry {
 };
 
 #include "player/PlayerDailyTalkFlags.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -150,13 +151,7 @@ s32 NookShop_GetLevel(void *p);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-void *TownBlockMap_Get();
-void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
-void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
-u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
 s32 Item_IsTreeStage0(u16 *p);
 extern BlockMap *gSceneBlockMap;
@@ -205,7 +200,7 @@ static inline BOOL Unk_0208709c_Chk(u16 *p) {
     return f9;
 }
 
-static inline u16 *Unk_0208709c_Cell(void *map, s32 x, s32 y) {
+static inline u16 *Unk_0208709c_Cell(BlockMap *map, s32 x, s32 y) {
     s32 hx = x >> 4;
     s32 hy = y >> 4;
     s32 lx = x - (hx << 4);
@@ -526,22 +521,21 @@ extern "C" void DramaRecord_Construct() {}
 
 extern "C" void DramaRecord_Destruct() {}
 
-extern "C" void DramaRecord_Clear(void *a) {
+extern "C" void DramaRecord_Clear(DramaRecord *a) {
     MI_CpuFill8(a, 0xff, 1);
 }
 
-extern "C" void DramaRecord_GetLastPart(void *a, void *b) {
-    MI_CpuCopy8(a, b, 1);
+extern "C" void DramaRecord_GetLastPart(DramaRecord *a, Unk_020874e8_Bits *b) {
+    MI_CpuCopy8(&a->lastPart, b, 1);
 }
 
-extern "C" void DramaRecord_SetLastPart(void *a, void *b) {
-    u8 *rec = (u8 *)a;
-    Clock_GetDate(rec + 1);
-    MI_CpuCopy8(b, rec, 1);
+extern "C" void DramaRecord_SetLastPart(DramaRecord *a, Unk_020874e8_Bits *b) {
+    Clock_GetDate((u8 *)&a->date);  // (Clock_GetDate still takes the date as bytes)
+    MI_CpuCopy8(b, &a->lastPart, 1);
 }
 
-extern "C" u8 *DramaRecord_GetDate(u8 *p) {
-    return p + 1;
+extern "C" ClockDate *DramaRecord_GetDate(DramaRecord *p) {
+    return &p->date;
 }
 
 extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out) {
@@ -632,9 +626,9 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
     }
     Unk_020874e8_Bits t;
     DramaRecord_GetLastPart(((PlayerData *)(o))->getDramaRecord(), &t);
-    u8 *p = DramaRecord_GetDate((u8 *)((PlayerData *)(o))->getDramaRecord());
+    ClockDate *p = DramaRecord_GetDate(((PlayerData *)(o))->getDramaRecord());
     if (d->a == t.a && d->b == t.b && d->c == t.c) {
-        if ((p[2] == a && p[1] == b && p[0] == c) || (p[2] == 0 && p[1] == 0 && p[0] == 0)) {
+        if ((p->year == a && p->month == b && p->day == c) || (p->year == 0 && p->month == 0 && p->day == 0)) {
             return TRUE;
         }
         return FALSE;
@@ -814,7 +808,7 @@ void KatieVisitState::clear() {
     following = 0;
 }
 
-extern "C" BOOL Field_IsClearSpot(s32 x, s32 y, void *map) {
+extern "C" BOOL Field_IsClearSpot(s32 x, s32 y, BlockMap *map) {
     if (map == 0) goto fail;
     if (TownMap_IsUnitWalkable(x, y, map) == 0) goto fail;
     for (s32 i = 1; i <= 2; i++) {
@@ -837,7 +831,7 @@ fail:
 }
 
 void KatieVisitState::pickKatiePos() {
-    void *map = TownBlockMap_Get();
+    BlockMap *map = TownBlockMap_Get();
     if (map != 0) {
         s32 cnt = 0;
         s32 bx = 0, by = 0;
@@ -1005,11 +999,11 @@ void PeteFallState::setVisitorActive() { visitorActive = 1; }
 
 s16 PeteFallState::getFacing() { return (s16)(facing << 14); }
 
-extern "C" BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map) { return Field_IsClearSpot(y, x, map); }
+extern "C" BOOL Field_IsClearSpotYX(s32 x, s32 y, BlockMap *map) { return Field_IsClearSpot(y, x, map); }
 
-extern "C" BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map) { return Field_IsClearSpot(x, y, map); }
+extern "C" BOOL Field_IsClearSpotXY(s32 x, s32 y, BlockMap *map) { return Field_IsClearSpot(x, y, map); }
 
-extern "C" s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n) {
+extern "C" s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, BlockMap *), s32 arg, s32 cur, s32 limit, BlockMap *m, u16 *buf, s32 n) {
     s32 r, bit = 0, i = 0, cnt = 0, bi, ii, k;
     if (cur > limit) {
         s32 t = cur;
@@ -1154,7 +1148,7 @@ void VisitorSpawnFlags::clearVisitorSpawned() { visitorSpawned = 0; }
 
 void VisitorSpawnFlags::setVisitorSpawned() { visitorSpawned = 1; }
 
-void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, VecFx32 *p) {
+void VisitorSpawnFlags::getGulliverSpawn(VecFx32 *v, u16 *out, VecFx32 *p) {
     if (gulliverSpotRolled == 0) ((VisitorSpawnFlags *)(this))->rollGulliverSpot();
     VecFx32 t;
     const VecXZ *tb = sGulliverSpotOffsets;
@@ -1182,7 +1176,7 @@ extern "C" void VisitorPos_Clear(void *p) {
     MI_CpuFill8(p, 0, 8);
 }
 
-s32 VisitorPos::countFreeInAcre(s32 *pos, void *ctx) {
+s32 VisitorPos::countFreeInAcre(s32 *pos, BlockMap *ctx) {
     s32 bx = 0, by = 0;
     s32 n = 0;
     s32 x, y;
@@ -1197,7 +1191,7 @@ s32 VisitorPos::countFreeInAcre(s32 *pos, void *ctx) {
     return n;
 }
 
-BOOL VisitorPos::pickFreeInAcre(VecFx32 *out, s32 *pos, void *ctx) {
+BOOL VisitorPos::pickFreeInAcre(VecFx32 *out, s32 *pos, BlockMap *ctx) {
     s32 n = 0;
     s32 bx = 0, by = 0;
     u16 arr[16];
@@ -1236,7 +1230,7 @@ BOOL VisitorPos::pickRandomPos() {
     s32 xy[2];
     VecFx32 out;
     s32 n;
-    TownBlockMap *o = (TownBlockMap *)TownBlockMap_Get();
+    TownBlockMap *o = TownBlockMap_Get();
     if (o != NULL) {
         n = 0;
         xy[0] = 0;

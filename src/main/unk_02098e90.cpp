@@ -1269,7 +1269,7 @@ s32 NookShop_IsClosedToday(void *p);
 }
 
 
-extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r);
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerId *r);
 extern "C" void Arbeit_Finish(PlayerErrands *m);
 extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m);
 extern "C" void Arbeit_StartBbsTask(PlayerErrands *m);
@@ -1289,11 +1289,11 @@ extern "C" void Arbeit_Start(PlayerErrands *m);
 extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m);
 extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
 extern "C" BOOL PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, MsgString *a, u16 *p);
-extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerIdCtorDtor *p, s32 idx);
+extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerId *p, s32 idx);
 extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i);
 extern "C" void PlayerErrands_Clear(PlayerErrands *m);
-extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerIdCtorDtor *r, void *src);
-extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor *p);
+extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerId *r, void *src);
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerId *p);
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x);
 extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p);
 extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z);
@@ -1439,7 +1439,7 @@ extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
     MI_CpuFill8(x->unk_20, 0, 1);
 }
 
-extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor *p) {
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerId *p) {
     if (((ErrandRecord *)(&x->errand))->isActive() && ((VillagerId *)(p))->isValid() && p->townId == x->townId &&
         memcmp(p->townName, x->townName, 8) == 0 && p->species == x->species) {
         return TRUE;
@@ -1447,7 +1447,7 @@ extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor 
     return FALSE;
 }
 
-extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerIdCtorDtor *r, void *src) {
+extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerId *r, void *src) {
     HouseVisitInvite_Clear(x);
     u16 v = 0xfff1;
     (&x->errand)->start(0x15, &v, 0);
@@ -1481,7 +1481,7 @@ extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i) {
     return r;
 }
 
-extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerIdCtorDtor *p, s32 idx) {
+extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerId *p, s32 idx) {
     PlayerErrandSlot *ret = 0;
     if (((VillagerId *)(void *)(p))->isValid()) {
         s32 i;
@@ -1709,7 +1709,7 @@ extern "C" void Arbeit_Finish(PlayerErrands *m) {
     }
 }
 
-extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r) {
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerId *r) {
     if (((VillagerId *)(void *)(r))->isValid() && PlayerErrands_IsJobActive(m) && r->townId == m->jobVillagers[1].townId &&
         memcmp(r->townName, m->jobVillagers[1].townName, 8) == 0 && r->species == m->jobVillagers[1].species) {
         return TRUE;
@@ -2059,12 +2059,12 @@ extern "C" void Pocket_SetItem(u16 *a, s32 b, s32 c) {
     void *r6 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         if (*a != 0xfff1 && b == 0) {
-            Catalog_SetItem((u8 *)((PlayerData *)(r6))->getCatalog(), a, 0, 1);
+            Catalog_SetItem(((PlayerData *)(r6))->getCatalog(), a, 0, 1);
         }
         if (b == 0) {
             if (Unk_02099124_R(a, 0x151f, 0x151f)) {
                 u16 t = 0x1033;
-                Catalog_SetItem((u8 *)((PlayerData *)(r6))->getCatalog(), &t, 0, 1);
+                Catalog_SetItem(((PlayerData *)(r6))->getCatalog(), &t, 0, 1);
             }
         }
         ((PlayerInventory *)(((PlayerData *)(r6))->getInventory()))->setPocket(a, c, b);
@@ -2163,7 +2163,7 @@ extern "C" s32 Pocket_FindItem(u16 *a) {
 
 extern "C" BOOL Player_GetDeliveryRecipientName(MsgString *a, u16 *b) {
     PlayerData *o = PlayerData_GetCurrent();
-    return PlayerErrands_GetDeliveryRecipientName((PlayerErrands *)o->getErrands(), a, b);
+    return PlayerErrands_GetDeliveryRecipientName(o->getErrands(), a, b);
 }
 
 // ======== data (rest; this order gives the original layout) ========

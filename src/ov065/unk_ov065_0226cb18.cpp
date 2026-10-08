@@ -120,7 +120,7 @@ extern u8 *WifiLink_GetConnectedSsid(u16 *out);
 extern s32 DwcHttp_AddField(DwcHttpFieldList *f, const char *k, const char *v);
 extern s32 DwcHttp_AddHeader(void *a, const char *k, const char *v);
 extern s32 DwcHttp_AddFormParam(void *a, const char *k, const char *v, u32 n);
-extern s32 DwcHttp_FindField(void *buf, u32 n, const char *key);
+extern char *DwcHttp_FindField(void *buf, s32 n, const char *key);
 extern s32 DwcHttp_GetFieldDecoded(void *buf, u32 n, const char *key, void *out, u32 max);
 extern s32 DwcHttp_GetFieldString(void *buf, u32 n, const char *key, void *out, u32 max);
 extern s32 DwcHttp_ParseResponse(void *buf, u32 n, u32 a, void *b);
@@ -470,7 +470,7 @@ s32 WifiAp_ProcessNetSetup(void) {
             NetCheck_Abort();
             NetCheck_Destroy();
         default:
-            c->foundApInfo[c->selectedAp * 4] = 2;
+            c->foundApInfo[c->selectedAp].status = 2;
             a = 0xb;
             break;
         }
@@ -499,10 +499,10 @@ s32 WifiAp_StepWaitAddress(WifiApContext *c) {
         return 0xd;
     }
     s64 now = OS_GetTick();
-    s64 d = now - *(s64 *)&c->stepStartTick;
+    s64 d = now - (s64)c->stepStartTick;
     u64 r = ((u64)d << 6) / 0x1ff6210LL;
     if (r >= 10) {
-        c->foundApInfo[c->selectedAp * 4] = 1;
+        c->foundApInfo[c->selectedAp].status = 1;
         return 0xb;
     }
     return 0xc;
@@ -526,7 +526,7 @@ s32 WifiAp_StepWaitNetCheck(WifiApContext *c) {
         }
         NetCheck_Destroy();
         if (r != 0xb) {
-            c->foundApInfo[c->selectedAp * 4] = 1;
+            c->foundApInfo[c->selectedAp].status = 1;
             return 0xb;
         }
         return 0xf;

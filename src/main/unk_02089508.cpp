@@ -50,8 +50,8 @@ LabelBalloon::~LabelBalloon() { freeLabels(); }
 
 void LabelBalloon::draw() {
     if (state != 0) {
-        GXOamAttr *h0 = (GXOamAttr *)layer1.getCell();
-        GXOamAttr *h1 = (GXOamAttr *)layer2.getCell();
+        GXOamAttr *h0 = layer1.getCell();
+        GXOamAttr *h1 = layer2.getCell();
         s32 base = getDrawX();
         s32 base2 = getDrawY();
         s32 x0 = base + layer1.getFrameX(-1);

@@ -8,6 +8,10 @@
 // recvBuffer, decodeBuffer, getFileBuffer).
 
 struct GHIConnection;
+#ifndef __cplusplus
+typedef struct GHIConnection GHIConnection;
+typedef struct GHIBuffer GHIBuffer;
+#endif
 
 struct GHIBuffer {
     /* 0x00 */ GHIConnection *connection;

@@ -18,8 +18,8 @@ TalkArrow::~TalkArrow() {}
 
 void TalkArrow::draw() {
     if (state != 0) {
-        GXOamAttr *a = static_cast<GXOamAttr *>(anim.getCell()); // (the frame cell: its OAM entries)
-        GXOamAttr *b = static_cast<GXOamAttr *>(subAnim.getCell()); // (the frame cell: its OAM entries)
+        GXOamAttr *a = anim.getCell(); // (the frame cell: its OAM entries)
+        GXOamAttr *b = subAnim.getCell(); // (the frame cell: its OAM entries)
         s32 ox0 = anim.getFrameX(-1);
         s32 oy0 = anim.getFrameY(-1);
         s32 ox1 = subAnim.getFrameX(-1);

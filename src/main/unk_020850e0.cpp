@@ -20,6 +20,7 @@
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02085940.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -66,9 +67,6 @@ s32 Item_GetInsectBaseSize(u16 *);
 s32 Event_GetDaysSinceStart(s32);
 s32 Event_GetState(s32, void *, s32);
 // src/main/unk_0204cc1c.cpp
-BOOL BlockMap_FindItemAllAttr(BlockMap *g, s32 *outx, s32 *outz, s32 *a3, s32 *p4, u16 *p5, u16 *p6, s32 filter, u8 p8);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
-u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 }
 
 struct ClockDateBytes {

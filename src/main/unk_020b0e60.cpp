@@ -18,6 +18,7 @@
 #include "save/TownStyleRecordView.h"
 #include "town/TownStyleRecord.h"
 #include "field/SnowmanRecords.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_02070560.h"
 #include "field/FieldStructureMgr.h"
 #include "proto/autoload_2/unk_020e8558.h"
@@ -31,6 +32,7 @@
 #include "proto/itcm/unk_01ffb4e8.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 extern "C" {
@@ -40,7 +42,7 @@ extern u32 OVERLAY_69_ID[];
 extern void *gCommManager;
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 gSaveVillagers;
 extern u8 data_021e58a6;
 extern u8 data_021ed2e6[];
@@ -66,12 +68,6 @@ struct Flags2 {
     u16 c : 4;
 };
 
-struct Grid {
-    u8 *data;
-    u32 w;
-    u32 h;
-};
-typedef Grid Map;
 
 struct Pal {
     u8 pad[0x18];
@@ -104,9 +100,9 @@ static inline BOOL func_020b2768_is_flag() {
     return FALSE;
 }
 
-static inline u8 *GetCell(Grid *g, s32 x, s32 y) {
-    if (x < g->w && y < g->h && g->data) {
-        return g->data + (x + y * g->w) * MAPBLOCK_SIZE;
+static inline MapBlock *GetCell(BlockMap *g, s32 x, s32 y) {
+    if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks) {
+        return g->blocks + (x + y * g->width);
     }
     return NULL;
 }
@@ -213,10 +209,10 @@ extern "C" {
 void MTX_RotZ33_(void *m, s32 sn, s32 cs);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-u32 MapBlock_HasAnyAttr(u8 *cell, u32 mask);
-BOOL MapBlock_FindItemInRange(u8 *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u32 d);
-u16 *MapBlock_GetItemPtr(u8 *cell, s32 a, s32 b, s32 c);
-BOOL MapBlock_SetItem(u8 *cell, u16 *t, u32 x, u32 y, u32 z);
+BOOL MapBlock_HasAnyAttr(MapBlock *o, u32 mask);
+BOOL MapBlock_FindItemInRange(void *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u8 d);
+u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
 void TownUpdater_MarkEventApplied(u32 id);
 u16 Item_MakePlayerHouse(u32 a);
 BOOL Item_IsPlayerHouse(u16 *p);
@@ -227,18 +223,10 @@ BOOL Item_IsNookShop(u16 *p);
 u32 Item_MakeBuilding(u32 v);
 s32 Item_GetFurnitureIndex(const u16 *p);
 BOOL Item_IsFurniture(u16 *p);
-BOOL BlockMap_RemoveStructureAt(Grid *g, u32 x, u32 y, u32 a, u32 b, Marker2 *m);
-BOOL BlockMap_RemoveStructure(Map *m, s32 x, s32 y, u16 *removed);
-void BlockMap_PutStructure(Map *m, u16 *p, s32 x, s32 y);
-Map *TownBlockMap_Get(void);
-u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 void Pattern_CopyFields(void *dst, void *src);
 u8 *SaveVillagers_Get(u8 *base, s32 idx);
 u32 Villager_GetWhereabouts(void *a);
 void Clock_GetMinuteHour(u8 *out);
-void Scene_GetWarpRequest(void);
 s32 ScenePos_GetUnitZ(void *a);
 s32 ScenePos_GetUnitX(void *a);
 u32 Scene_GetCurrent(void);
@@ -260,7 +248,7 @@ extern const u16 sSceneBuildingTable[52];
 
 // own prototypes
 extern "C" {
-void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
+void BuildingInfo_Copy(BuildingInfo *dst, const BuildingInfo *src);
 void BuildingInfo_Destroy(BuildingInfo *i);
 BOOL Building_RequestState(BuildingActor *o, s32 v);
 }
@@ -546,7 +534,7 @@ TownUnitShapeQuery::~TownUnitShapeQuery() {}
 BOOL TownUnitShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
     if (func_020b2768_is_flag()) {
         if (!sFieldObjectShapeQuery.FieldObjectShapeQuery::getUnitShape(a, b, c, x, y)) {
-            void *m = gSceneBlockMap;
+            BlockMap *m = gSceneBlockMap;
             if (m != NULL) {
                 s32 lx = x;
                 s32 ly = y;
@@ -686,14 +674,14 @@ extern "C" void TownStyleRecord_InitNew(u8 *self)
     ((TownStyleRecord *)self)->townFlag.initDefault();
     s32 j;
     s32 i;
-    u8 *cell;
-    Map *m;
+    MapBlock *cell;
+    BlockMap *m;
     u16 *p;
     m = TownBlockMap_Get();
     for (u32 y = 1; y <= 4; y++) {
         for (u32 x = 1; x <= 4; x++) {
-            if (x < m->w && y < m->h && m->data) {
-                cell = m->data + (x + y * m->w) * MAPBLOCK_SIZE;
+            if (x < (u32)m->width && y < (u32)m->height && m->blocks) {
+                cell = m->blocks + (x + y * m->width);
             } else {
                 cell = NULL;
             }
@@ -990,13 +978,13 @@ extern "C" BOOL BuildingState_Set(u32 id, u8 val)
 extern "C" u16 *Town_GetEventPlotItem(s32 *outX, s32 *outY)
 {
     s32 x, y;
-    Map *m = TownBlockMap_Get();
+    BlockMap *m = TownBlockMap_Get();
     s32 found = 0;
     *outX = 0;
     *outY = 0;
     if (m) {
-        s32 w = m->w;
-        s32 h = m->h;
+        s32 w = m->width;
+        s32 h = m->height;
         for (y = 0; y < h; y++) {
             for (x = 0; x < w; x++) {
                 if (BlockMap_GetBlockAttr(m, x, y) & 0x200) {
@@ -1009,10 +997,10 @@ extern "C" u16 *Town_GetEventPlotItem(s32 *outX, s32 *outY)
             }
         }
         if (found) {
-            u8 *cell;
+            MapBlock *cell;
             FieldUnit_FromBlockUnit(outX, outY, x, y, 10, 9);
-            if ((u32)x < m->w && (u32)y < m->h && m->data) {
-                cell = m->data + (x + y * m->w) * MAPBLOCK_SIZE;
+            if ((u32)x < (u32)m->width && (u32)y < (u32)m->height && m->blocks) {
+                cell = m->blocks + (x + y * m->width);
             } else {
                 cell = NULL;
             }
@@ -1032,7 +1020,7 @@ extern "C" void TownStructure_PlaceAtEventPlot(u16 id)
         s32 x, y;
         u16 *p = Town_GetEventPlotItem(&x, &y);
         if (p) {
-            Map *m = TownBlockMap_Get();
+            BlockMap *m = TownBlockMap_Get();
             if (m) {
                 if (InRange(*p)) {
                     BlockMap_RemoveStructure(m, x, y, NULL);
@@ -1059,7 +1047,7 @@ extern "C" BOOL TownStructure_RemoveFromEventPlot(u16 id)
                 eq = *p == id;
             }
             if (eq) {
-                Map *m = TownBlockMap_Get();
+                BlockMap *m = TownBlockMap_Get();
                 if (m) {
                     return BlockMap_RemoveStructure(m, x, y, NULL);
                 }
@@ -1085,7 +1073,7 @@ extern "C" void Town_PlaceCountdownSign(void) { TownStructure_PlaceAtEventPlot(0
 
 extern "C" BOOL Town_RemoveCountdownSign(void) { return TownStructure_RemoveFromEventPlot(0x501e); }
 
-extern "C" u32 MapBlock_CountSigns(u8 *cell) {
+extern "C" u32 MapBlock_CountSigns(MapBlock *cell) {
     u32 count = 0;
     u32 x, y;
     if (cell) {
@@ -1104,7 +1092,7 @@ extern "C" u32 MapBlock_CountSigns(u8 *cell) {
     return count;
 }
 
-extern "C" u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v) {
+extern "C" u32 MapBlock_ReplaceNthSign(MapBlock *cell, u32 target, u32 v) {
     u32 count = 0;
     u32 y, x;
     if (cell) {
@@ -1129,7 +1117,7 @@ extern "C" u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v) {
     return 0;
 }
 
-extern "C" BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v) {
+extern "C" BOOL MapBlock_ReplaceRandomSign(MapBlock *cell, u32 v) {
     u32 n = MapBlock_CountSigns(cell);
     if (n) {
         return MapBlock_ReplaceNthSign(cell, Random_GlobalBelow(n), v);
@@ -1138,7 +1126,7 @@ extern "C" BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v) {
 }
 
 extern "C" BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag) {
-    Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     s32 x, y, i, j;
     if (g == NULL) {
         return FALSE;
@@ -1206,7 +1194,7 @@ extern "C" BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag) {
 
 
 extern "C" BOOL Town_RemoveGulliverShip(void) {
-    Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     s32 y, x;
     if (g == NULL) {
         return FALSE;
@@ -1214,12 +1202,12 @@ extern "C" BOOL Town_RemoveGulliverShip(void) {
     static ItemId m1(0x5020);
     for (y = 1; y <= 4; y++) {
         for (x = 1; x <= 4; x++) {
-            u8 *cell = GetCell(g, x, y);
+            MapBlock *cell = GetCell(g, x, y);
             if (cell) {
                 u32 a, b;
                 if (MapBlock_FindItemInRange(cell, &a, &b, &m1, &m1, 0)) {
                     static Marker2 m2(0x500a);
-                    if (BlockMap_RemoveStructureAt(g, x, y, a, b, &m2)) {
+                    if (BlockMap_RemoveStructureAt(g, x, y, a, b, &m2.id)) {
                         Town_RemoveShipParts();
                         return TRUE;
                     }
@@ -1230,7 +1218,7 @@ extern "C" BOOL Town_RemoveGulliverShip(void) {
     return FALSE;
 }
 
-extern "C" void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src) {
+extern "C" void BuildingInfo_Copy(BuildingInfo *dst, const BuildingInfo *src) {
     dst->profile = src->profile;
     dst->entranceType = src->entranceType;
     dst->kind = src->kind;
@@ -1271,7 +1259,7 @@ extern "C" u32 Building_GetDoorAnimParamAt(VecFx32 *a) {
     if (!IsEnabled()) {
         return 1;
     }
-    o = static_cast<BuildingActor *>(Building_FindNearPos(a));
+    o = Building_FindNearPos(a);
     if (o) {
         if (o->getEntranceType() == 1) {
             u16 *i = static_cast<u16 *>(o->getDoorInAnim());
@@ -1401,7 +1389,7 @@ extern "C" BOOL Building_ApplyStateRecord(u16 *p) {
     u32 a = Item_MakeBuilding(f->a);
     u8 b = f->b;
     if (IsEnabled()) {
-        BuildingActor *o = static_cast<BuildingActor *>(BuildingList_FindByItem(a));
+        BuildingActor *o = BuildingList_FindByItem(a);
         if (o) {
             return o->setDoorState(b);
         }

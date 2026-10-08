@@ -44,14 +44,14 @@ extern "C" void Snowman_SendPrizeLetter() {
         u32 count = 0;
         for (u32 i = 0; i < 13; i++) {
             u16 t = sSnowmanPrizeItems[i];
-            if (!Catalog_HasItem((u8 *)obj->getCatalog(), &t)) count++;
+            if (!Catalog_HasItem(obj->getCatalog(), &t)) count++;
         }
         if (count) {
             u32 r = (u32)Random_GlobalBelow(count);
             u32 c = 0;
             for (u32 i = 0; i < 13; i++) {
                 u16 t = sSnowmanPrizeItems[i];
-                if (!Catalog_HasItem((u8 *)obj->getCatalog(), &t)) {
+                if (!Catalog_HasItem(obj->getCatalog(), &t)) {
                     if (c == r) {
                         Snowman_SendLetter(i);
                         return;

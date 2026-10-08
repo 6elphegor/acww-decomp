@@ -59,6 +59,7 @@
 #include "proto/main/unk_020abea8.h"
 #include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_020b7f7c.h"
+#include "proto/main/unk_0204cc1c.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -153,11 +154,6 @@ extern u8 data_ov005_0225b79c[];
 
 // ---- functions of other units ----
 u32 PlayerActor_GetResumeTransform(VecFx32* a, s16* b);
-void FieldPos_ToUnit(s32* a, s32* b, VecFx32* c);
-void FieldPos_SnapToUnitCenter(VecFx32* out, VecFx32* in);
-void* TownBlockMap_Get();
-BOOL Town_FindPlayerHouse(void* o, VecFx32* v, s32* a, s32* b);
-BOOL Town_FindGateHouse(void* o, VecFx32* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
 void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag);  // src/main/unk_020b60b0.cpp
 BOOL _ZN15BgModelCacheObj5setupEj(BgModelCacheObj *self, u32 flag);  // BgModelCacheObj::setup (class local to src/main/unk_02036c58.cpp)
@@ -1168,7 +1164,7 @@ extern "C" s32 SceneExit_ResolveSpecial(SceneWarp *a, s32 id, u8* type, VecFx32*
                     u8 n = t->count;
                     if (id >= 0 && id < n) {
                         SceneWarp* e = &entries[id];
-                        void* o = TownBlockMap_Get();
+                        BlockMap * o = TownBlockMap_Get();
                         s32 va, vb;
                         VecFx32 v;
                         switch (entries[id].type) {

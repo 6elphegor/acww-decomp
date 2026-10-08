@@ -14,6 +14,7 @@
 #include "proto/ov003/unk_ov003_02225108.h"
 #include "proto/ov003/unk_ov003_02225238.h"
 #include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -23,8 +24,6 @@
 
 
 extern "C" {
-void *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Item_IsBuildingOrOccupied(u16 *p);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
@@ -33,7 +32,7 @@ void *MI_CpuFill8(void *p, s32 v, u32 n);
 void InsectSpawn_BuildMasks()
 {
     u8 ty;
-    void *g;
+    BlockMap *g;
     s32 wy;
     u32 xo;
     u32 yo;

@@ -7,6 +7,12 @@
 #include "net/Net.h"
 #include "sys/OSMessageQueue.h"
 #include "types64.h"
+struct NetSlot;
+#ifndef __cplusplus
+typedef struct NetSlot NetSlot;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,7 +63,7 @@ void Net_OnLocalRecv(u32 aid, u8 *data, u32 size);
 void Net_OnWifiClientMatched(s32 result, s32 b, s32 c, s32 d, s32 e, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiClosedNop
-void Net_OnWifiClosedNop(void);
+void Net_OnWifiClosedNop(s32 error, s32 isLocal, s32 isServer, s32 aid, s32 index, s32 param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiSendDone
 void Net_OnWifiSendDone(u32 size, u32 aid);
@@ -69,34 +75,34 @@ void Net_OnWifiRecv(u32 aid, u8 *data, u32 size);
 void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_WifiCallbackNop
-void Net_WifiCallbackNop(void);
+void Net_WifiCallbackNop(s32 index, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiServersUpdated
 void Net_OnWifiServersUpdated(s32 result, s32 b, s32 arg);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiFriendStatus
-void Net_OnWifiFriendStatus(u32 a);
+void Net_OnWifiFriendStatus(s32 index, s32 status, char *statusString, s32 param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiFriendDeleted
-void Net_OnWifiFriendDeleted(u32 a);
+void Net_OnWifiFriendDeleted(s32 deletedIndex, s32 srcIndex, s32 param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiLogin
 void Net_OnWifiLogin(s32 result, s32 b, s32 arg);
 #endif
 #ifndef PROTO_LOCAL_Net_OnGameStatsUploadDone
-void Net_OnGameStatsUploadDone(s32 data, s32 len, s32 result, u32 ud);
+void Net_OnGameStatsUploadDone(char *data, s32 len, s32 result, void *ud);
 #endif
 #ifndef PROTO_LOCAL_Net_OnGameStatsDownloadDone
-void Net_OnGameStatsDownloadDone(s32 data, s32 len, s32 result, u32 ud);
+void Net_OnGameStatsDownloadDone(char *data, s32 len, s32 result, void *ud);
 #endif
 #ifndef PROTO_LOCAL_Net_OnHttpDownloadDone
-void Net_OnHttpDownloadDone(s32 data, s32 len, s32 result, u32 ud);
+void Net_OnHttpDownloadDone(char *data, s32 len, s32 result, void *ud);
 #endif
 #ifndef PROTO_LOCAL_Net_OnGameStatsChallenge
-void Net_OnGameStatsChallenge(s32 challenge, s32 len, s32 result, u32 ud);
+void Net_OnGameStatsChallenge(char *challenge, s32 len, s32 result, void *ud);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWlxStopped
-void Net_OnWlxStopped(u32 a);
+void Net_OnWlxStopped(s32 event, void *arg);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWlxExchangeDone
 void Net_OnWlxExchangeDone(void);
@@ -432,6 +438,14 @@ extern u8 data_021f488c;
 extern u8 data_0213b058;
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sSendSlots
+extern NetSlot sSendSlots[16];
+#endif
 }
 #endif
 

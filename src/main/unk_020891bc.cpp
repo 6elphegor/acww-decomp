@@ -72,7 +72,7 @@ void SpriteAnim::setFrame(s32 a, s32 b) {
     frameTime = b;
 }
 
-void *SpriteAnim::getCell() { return seq->frames[frameIndex].cell; }
+GXOamAttr *SpriteAnim::getCell() { return seq->frames[frameIndex].cell; }
 
 s32 SpriteAnim::getFrameIndex() { return frameIndex; }
 

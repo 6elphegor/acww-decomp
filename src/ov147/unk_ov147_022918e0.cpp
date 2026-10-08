@@ -18,6 +18,7 @@
 #include "snd/BgmManager.h"
 #include "snd/BgmVolumeMixer.h"
 #include "gfx/ScreenTransition.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -107,8 +108,6 @@ extern TitleStateEntry sTitleStates[];
 extern u16 gPad[];
 extern BgmManager *data_021c1b3c;
 
-void *Scene_GetWarpRequest();
-void SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void TalkRequestFlags_SetTitleTimeout();
 BOOL Math_CountDownU16(void *p);
 void TalkRequestFlags_ClearSceneHold();

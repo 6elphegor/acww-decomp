@@ -5,9 +5,9 @@
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/ov004/unk_ov004_0222a374.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // ---------------------------------------------------------------- PlayerBedSetter
-struct Unk_0204e858_Grid;
 
 struct Unk_ov004_0222a374_Loc {
     u16 a;
@@ -31,11 +31,10 @@ public:
 };
 
 extern "C" {
-extern Unk_0204e858_Grid *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 void Item_SetFurnitureDirection(u16 *p, s32 v);
-void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, u16 *item, s32 x, s32 y, s32 z);
 }
 
 
@@ -57,7 +56,7 @@ BOOL PlayerBedSetter::onCreate() {
 extern "C" {
 void Room_PlacePlayerBeds() {
     static Unk_ov004_0222a374_Pair tbl[4] = { Unk_ov004_0222a374_Pair(6, 9), Unk_ov004_0222a374_Pair(9, 9), Unk_ov004_0222a374_Pair(6, 12), Unk_ov004_0222a374_Pair(9, 12) };
-    Unk_0204e858_Grid *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g != 0) {
         s32 i;
         BOOL z1 = FALSE, z0 = FALSE, z2 = FALSE;

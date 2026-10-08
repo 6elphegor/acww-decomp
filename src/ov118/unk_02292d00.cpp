@@ -14,6 +14,7 @@
 #include "sys/ProcProfile.h"
 #include "talk/MsgString.h"
 #include "ui/HandCursor.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -50,7 +51,6 @@ BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void Math_StepS32(void *p, s32 a, s32 b);
-s32 Scene_GetWarpRequest();
 void *ScenePos_GetPos(void *p);
 }
 

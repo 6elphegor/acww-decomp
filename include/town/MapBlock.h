@@ -4,6 +4,7 @@
 #include "types.h"
 #include "uptr.h"
 #include "gfx/VecFx32.h"
+#include "town/MapBlockAcre.h"
 
 class BgAcreModel;
 
@@ -26,14 +27,7 @@ public:
     uptr buried;  // the buried-item mask (u16 *: TownBlockCell::buriedFlags)
 };
 
-// The acre id at the start of a MapBlock, seen on its own (MapBlockAcre::getUnk04 is the address of MapBlock::blockX).
-class MapBlockAcre {
-public:
-    s32 hasPond();
-    u32 getAcreId();
-    void setAcreId(u32 v);
-    u8 *getUnk04();
-    u32 acreId;
-};
+// The acre id at the start of a MapBlock, seen on its own (MapBlockAcre::getUnk04 is the address of MapBlock::blockX):
+// town/MapBlockAcre.h.
 
 #endif

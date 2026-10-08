@@ -41,6 +41,7 @@
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/ov075/unk_ov075_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class SpNpcPete;
@@ -55,7 +56,6 @@ BOOL TalkRequest_SetTargetDone(Character *c);
 u8 Math_CountDownU8(u8 *p);
 u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *out, void *in);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
@@ -421,7 +421,7 @@ BOOL SpNpcPete::mainAct05() {
                     a.y = gVec3Zero.y;
                     a.z = gVec3Zero.z;
                     if (pickWanderTarget(&a.x, &a.z) != 0) {
-                        r6 = Math_AngleXZ(&position.x, &a.x);
+                        r6 = Math_AngleXZ(&position, &a);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY)) != 0) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -450,7 +450,7 @@ BOOL SpNpcPete::mainAct05() {
                             b.x = q->x;
                             b.y = q->y;
                             b.z = q->z;
-                            if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &b.x) - rotY)) == 0) {
+                            if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &b) - rotY)) == 0) {
                                 r4->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }
                         }

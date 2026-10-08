@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "actor/CharacterListNode.h"
@@ -85,7 +86,7 @@ extern char sBuildingArcPath[];
 extern char sBuildingTexPath[];
 extern char sBuildingLightTexPath[];
 extern BuildingResources sBuildingResources[];
-extern u32 gCamera;
+extern Camera *gCamera;
 extern VecFx32 gCameraLookAt;
 extern BuildingInfo data_020d0a7c[0x22];
 extern BgmManager *data_021c1b3c;
@@ -106,7 +107,6 @@ s32 Ground_GetDefaultY(void);
 BOOL Item_IsNookShop(u16 *);
 BOOL TalkRequestFlags_IsResetti(void);
 BOOL TalkRequest_AddPlayerTalk6(Character *c, s32 b);  // (likewise)
-TouchPicker *Scene_GetTouchPicker(void);
 s32 TriangleTrigger_Unregister(TriangleTrigger *node);
 s32 TriangleTrigger_Register(TriangleTrigger *node);
 BOOL Gfx3d_LoadTex(void *tex, void *slot);

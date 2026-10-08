@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "sys/StackPad.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerId.h"
@@ -35,7 +36,6 @@ u8 *SaveVillagers_Get(u8 *p, s32 i);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-TouchPicker *Scene_GetTouchPicker();
 }
 
 class VillagerBoard;
@@ -104,7 +104,7 @@ BOOL VillagerBoard::onCreate() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), 0xc00, 9, param);
+    Scene_GetTouchPicker()->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), 0xc00, 9, param);
     return TRUE;
 }
 

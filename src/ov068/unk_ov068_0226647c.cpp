@@ -10,6 +10,7 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020943dc.h"
 #include "proto/ov068/unk_ov068_0226647c.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // The town tour's building table: the item range of each building (BlockMap_FindItemAllAttr)
 struct TownTourBuildingRange {
@@ -29,8 +30,6 @@ BOOL Math_StepS16(s16 *p, s16 target, s16 step);
 u16 Math_CountDownU16(u16 *p);
 void Camera_StartBlend(void);
 void Camera_FinishBlend(void);
-BOOL BlockMap_FindItemAllAttr(BlockMap *g, s32 *outx, s32 *outz, s32 *a3, s32 *p4, u16 *p5, u16 *p6, s32 filter, u8 p8);
-void FieldPos_FromBlockUnitCenter(VecFx32 *v, s32 a, s32 b, s32 c, s32 d);
 }
 extern const CameraSwayPattern kCameraSwayPatterns[4];  // src/main/unk_0203a0cc.cpp
 

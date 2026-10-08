@@ -64,7 +64,7 @@ extern "C" void InputModeIcon_Draw() { sInputModeIcon.draw(); }
 void InputModeIcon::draw() {
     if (isVisible != 0) {
         if (!isDrawBlocked()) {
-            GXOamAttr *h = (GXOamAttr *)anim.getCell();
+            GXOamAttr *h = anim.getCell();
             s32 x = getOriginX() + anim.getFrameX(-1);
             s32 y = getOriginY() + anim.getFrameY(-1);
             Oam_DrawCell(3, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);

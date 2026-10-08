@@ -28,6 +28,7 @@
 #include "proto/main/unk_02090268.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -70,11 +71,6 @@ void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
 BOOL func_02072e44(void *p);
 BOOL SceneId_IsTown(u32 v);
-void *TownBlockMap_Get();
-void *HouseRoomMaps_GetForScene(u32 v);
-void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
-void BlockMap_SetBuriedAtUnit(void *o, s32 a, s32 b);
-void BlockMap_ClearBuriedAtUnit(void *o, s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
 s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);

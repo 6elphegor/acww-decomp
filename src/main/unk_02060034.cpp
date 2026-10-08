@@ -10,6 +10,7 @@
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02060034.h"
 #include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern SaveData gSaveData;
 extern "C" {
@@ -18,14 +19,7 @@ extern HouseData gSaveHouse;
 // defined with file-local types (include/proto/.excluded)
 s32 SceneId_GetHouseRoom(u32 x);
 s32 SceneId_IsHouseRoom(u32 x);
-void HouseRoomMaps_UpdateAll();
-void HouseRoomMaps_BindBg();
-void *TownBlockMap_Get();
 u16 Item_MakePlayerHouse(s32 x);
-MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
-BOOL BlockMap_FindItemAnyAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 filter, s32 h);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
-void *BlockMap_SetItemAtUnit(void *g, u16 *a, s32 x, s32 z, u8 d);
 s32 Scene_GetCurrent();
 }
 
@@ -173,7 +167,7 @@ void HouseData::reset() {
 }
 
 extern "C" BOOL PlayerHouse_ReplaceStructure(s32 x) {
-    void *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     u16 arr[3];
     s32 ox, oz, a, b, c, d;
     StackPad24 pad;

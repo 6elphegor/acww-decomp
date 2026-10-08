@@ -33,8 +33,8 @@ LabelButton::~LabelButton() {
 
 void LabelButton::draw() {
     if (state != 0) {
-        GXOamAttr *h0 = (GXOamAttr *)layer1.getCell();
-        GXOamAttr *h1 = (GXOamAttr *)layer2.getCell();
+        GXOamAttr *h0 = layer1.getCell();
+        GXOamAttr *h1 = layer2.getCell();
         s32 a = layer1.getFrameX(-1);
         s32 b = layer1.getFrameY(-1);
         s32 c = layer2.getFrameX(-1);

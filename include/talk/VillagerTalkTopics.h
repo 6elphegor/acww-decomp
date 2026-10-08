@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "talk/VillagerTalkRequestReplyTopics.h"
+#include "gfx/VecFx32.h"
 
 // Villager talk topic state functions: the remaining topic state functions (greetings, memories, errands, items, ...). Views of the VillagerTalk object; base of the next topic class (ov069 chain).
 // Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
@@ -55,8 +56,8 @@ public:
     BOOL selectTsuStar();
     u32 selectTsuDrama();
     BOOL selectTsuEvent();
-    const char *findTsuEvent2Message(u8 *a, s32 *b, u8 *c, u32 *d);
-    const char *findTsuEvent1Message(u8 *a, s32 *b, u8 *c, u32 *d);
+    const char *findTsuEvent2Message(u8 *a, s32 *b, u8 *c, ClockDateTime *d);
+    const char *findTsuEvent1Message(u8 *a, s32 *b, u8 *c, ClockDateTime *d);
     BOOL selectTsuMemory();
     BOOL selectTsuAlways();
     BOOL selectTsuDress();
@@ -70,7 +71,7 @@ public:
     BOOL selectTsuFoAct();
     BOOL selectTsuFiAct();
     BOOL selectTsuInAct();
-    void selectTsuActMessage(s32 r1, TalkTopic *d);
+    void selectTsuActMessage(s32 r1, const TalkTopic *d);
     BOOL selectTsuHobbyHint();
     BOOL selectTsuNoHint();
     BOOL selectTsuSeHint();
@@ -249,14 +250,14 @@ public:
     BOOL isMoodTired(s32 x);
     BOOL isMoodSad(s32 x);
     BOOL isMoodAngry(s32 x);
-    TalkTopic *getBeeStingTopic(u32 *out, VillagerStateView *rec);
+    const TalkTopic *getBeeStingTopic(u32 *out, VillagerStateView *rec);
     BOOL isPlayerStung(VillagerStateView *rec);
     BOOL hasFleas();
-    TalkTopic *getPoisonTopic(s32 x);
-    BOOL findDangerousInsect(volatile s32 *out, void *p);
-    TalkTopic *getForeignTopic();
+    const TalkTopic *getPoisonTopic(s32 x);
+    BOOL findDangerousInsect(volatile s32 *out, VecFx32 *p);
+    const TalkTopic *getForeignTopic();
     BOOL isForeignMemory(s32 x);
-    TalkTopic *getFirstMeetingTopic(u32 *out, void *scene);
+    const TalkTopic *getFirstMeetingTopic(u32 *out, void *scene);
     BOOL isFirstMeeting(s32 x);
     BOOL isBeeSwarmOut();
     BOOL hasFallen();

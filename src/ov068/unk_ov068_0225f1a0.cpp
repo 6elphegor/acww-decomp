@@ -810,7 +810,7 @@ void Villager_AddTalkUrge(void *, s32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
 extern s32 sRandomRouteTypes[];
-extern u32 gCamera;
+extern Camera *gCamera;
 extern VecFx32 gCameraLookAt;
 extern u16 data_020c6cc8;
 extern s32 sFieldVillagerAiCooldown;
@@ -1911,7 +1911,7 @@ BOOL FieldVillager::isPlayerFacing() {
     if (collider.isHit != 0 && ((ActorCollider *)(&collider))->isHitByGroup(4) != 0) {
         Character *p = (Character *)PlayerActor_GetCharacter(4);
         if (p != NULL && p->speed != 0) {
-            s16 d = Math_AngleXZ(&p->position.x, &position.x) - p->moveAngleY;
+            s16 d = Math_AngleXZ(&p->position, &position) - p->moveAngleY;
             if (d < 0) {
                 d = -d;
             }
@@ -2225,7 +2225,7 @@ BOOL FieldVillager::updateAct() {
     }
     FieldVillagerAi_Update(&ai, this);
     fleaFx.update(this);
-    ((VillagerMood *)(&mood))->update((VillagerTalk *)(this));
+    mood.update(this);
     look.update(this);
     this->wasHitByNet = 0;
     return TRUE;
@@ -2790,7 +2790,7 @@ void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o) {
         if (Vec_DistXZ(pos, &e->position) >= 0x3000) {
             continue;
         }
-        s32 d = Math_AngleXZ(&pos->x, &e->position.x);
+        s32 d = Math_AngleXZ(pos, &e->position);
         if (NpcLookAt_IsWithin((s16)(d - s->rotY), lim) != 0) {
             return e;
         }
@@ -3170,7 +3170,7 @@ BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
                         goto fail;
                     }
                 }
-                s32 d = Math_AngleXZ(&r7->x, &va.x);
+                s32 d = Math_AngleXZ(r7, &va);
                 if (NpcActor_IsFrontAngle((s16)(d - o->rotY)) != 0) {
                     s32 m = 1;
                     if (Random_GlobalBelow(4) == 0 && FieldVillager_GetMood(o) == 0) {
@@ -3213,7 +3213,7 @@ BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
             vb.x = pv[0];
             vb.y = pv[1];
             vb.z = pv[2];
-            s32 d = Math_AngleXZ(&o->position.x, &vb.x);
+            s32 d = Math_AngleXZ(&o->position, &vb);
             if (NpcActor_IsFrontAngle((s16)(d - o->rotY)) == 0) {
                 r6->requestStand(1, data_020c6cc8);
             }
@@ -3812,12 +3812,12 @@ s32 FieldVillagerAi_OrderByFriendship(void *unused, void **a, void **b, void *c,
 
 namespace ns_02263600 {
 extern "C" {
-void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x) {
+Pattern *FieldVillagerAi_PickOtherAblePattern(void *unused, Pattern *x) {
     if (gSaveAbleSistersPatterns != NULL) {
         u32 i; u16 mask; u32 cnt; mask = 0; cnt = 0; i = 0;
         goto test0;
     loop0:
-        if (x == 0 || ((Pattern *)(((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern(i)))->equals((Pattern *)(x)) == 0) {
+        if (x == 0 || ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern(i)->equals(x) == 0) {
             mask |= 1 << i;
             cnt++;
         }
@@ -3974,10 +3974,10 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
     }
     BOOL ok = TRUE;
     if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(a)->getShirt())) {
-    u8 *rec = (u8 *)static_cast<VillagerData *>(a)->getPattern();
+    Pattern *rec = static_cast<VillagerData *>(a)->getPattern();
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(b)->getShirt()) && ((Pattern *)((u8 *)static_cast<VillagerData *>(b)->getPattern()))->equals((Pattern *)(rec)) != 0) {
+    if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(b)->getShirt()) && static_cast<VillagerData *>(b)->getPattern()->equals(rec) != 0) {
         u8 *r7 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(a)->getVillagerId());
         u8 *p10 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(b)->getVillagerId());
         ok = FALSE;
@@ -4007,7 +4007,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
                             if (t == *(u16 *)p10 && memcmp(q + 2, p10 + 2, 8) == 0 && q[0xb] == p10[0xb]) {
                             } else {
                                 if (!Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(e)->getShirt()) ||
-                                    ((Pattern *)((u8 *)static_cast<VillagerData *>(e)->getPattern()))->equals((Pattern *)(rec)) == 0) {
+                                    static_cast<VillagerData *>(e)->getPattern()->equals(rec) == 0) {
                                     if (Villager_GetWhereabouts(e) != 0) {
                                         mask |= 1 << i;
                                         mask = (u8)mask;
@@ -4026,8 +4026,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
         }
     }
     if (b != 0) {
-        u8 *dst = (u8 *)static_cast<VillagerData *>(b)->getPattern();
-        *(Pattern *)dst = *(Pattern *)rec;
+        *static_cast<VillagerData *>(b)->getPattern() = *rec;
         h0 = 0x12a8;
         static_cast<VillagerDataProfileView *>(b)->setShirt(&h0);
     }
@@ -4140,9 +4139,9 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(FieldVillager *o) {
     } else {
         chatTarget = other;
     }
-    void *rec = 0;
+    Pattern *rec = 0;
     if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(a)->getShirt())) {
-        rec = (u8 *)static_cast<VillagerData *>(a)->getPattern();
+        rec = static_cast<VillagerData *>(a)->getPattern();
     }
     rec = FieldVillagerAi_PickOtherAblePattern(this, rec);
     if (rec != 0) {
@@ -4150,8 +4149,7 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(FieldVillager *o) {
     Villagers_ShareNickname(b, a, 0);
     FieldVillagerAi_AddPartnerRelation(this, o, sChatAblePatternDeltas);
     FieldVillagerAi_AddMood(this, chatTarget, 1, 2, 0);
-    u8 *dst = (u8 *)static_cast<VillagerData *>(a)->getPattern();
-    *(Pattern *)dst = *(Pattern *)rec;
+    *static_cast<VillagerData *>(a)->getPattern() = *rec;
     h0 = 0x12a8;
     static_cast<VillagerDataProfileView *>(a)->setShirt(&h0);
     h1 = 0x12a8;
@@ -4837,7 +4835,7 @@ BOOL FieldVillagerAiBirthdayWait::enterBirthdayWait(FieldVillager *o) {
             *pv = q;
             VecFx32 *pw = &o->prevPosition;
             *pw = *pv;
-            o->rotY = Math_AngleXZ(&q.x, &p.x);
+            o->rotY = Math_AngleXZ(&q, &p);
             o->moveAngleY = o->rotY;
             o->moveCtrl.setTargetAngle(o->rotY);
         }

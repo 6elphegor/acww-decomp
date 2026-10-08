@@ -40,6 +40,7 @@
 #include "proto/ov107/unk_ov107_02294c40.h"
 #include "player/PlayerData.h"
 #include "actor/Actor.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -66,7 +67,6 @@ extern u16 gPad[];
 
 s32 PendingUnit_ClearActiveOfAid(u32 aid);
 void MI_CpuCopy8(void *a, void *b, u32 n);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 FieldAction_PollResult(s32 v);
 s32 FieldAction_PollDrop(s32 v);
 void FieldAction_Release(s32 v);
@@ -1080,7 +1080,7 @@ void PocketsFullMenu::storeNewItem() {
         r6 = Item_PickRandomPresent();
         r4 = 1;
     }
-    Catalog_SetItem((u8 *)PlayerData_GetCurrent()->getCatalog(), &b, 0, 1);
+    Catalog_SetItem(PlayerData_GetCurrent()->getCatalog(), &b, 0, 1);
     MenuCtrl_SetPocketsFullItem(getSlotItem(selectedSlot));
     putItemInSlot(selectedSlot, r6, r4);
 }

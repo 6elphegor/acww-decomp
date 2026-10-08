@@ -13,7 +13,7 @@
 // An 8-byte bss block (used by unk_02041e00.cpp).
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
 // size order (linkprep check); the original file is this one or another file between those neighbours.
-extern "C" { extern u8 data_021c47bc[8]; }
+
 u8 data_021c47bc[8];
 
 
@@ -190,7 +190,7 @@ s32 ItemInfo_GetIndoorUnk0(u16 *p);
 s32 ItemInfo_TestFlag4(u16 *p);
 BOOL ItemInfo_TestFlag3(u16 *p);
 s32 Fish_GetBaseSize(s32 x);
-void Item_FromPlacedForm(void *p, u32 x);
+void Item_FromPlacedForm(u16 *out, u16 *in);
 s32 Item_GetPrice(void *p);
 BOOL Item_IsTreeStage0(u16 *p);
 u16 Item_MakePlayerHouse(u32 x);
@@ -241,8 +241,8 @@ s32 Item_GetDesignPlayer(u16 *p);
 s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out);
 u16 Item_MakeMoneyBag(u32 x);
 BOOL Item_GetShirtUnkGroup(u16 *p);
-BOOL Item_TestInfoFlag4(u32 x);
-BOOL Item_TestInfoFlag3(u32 x);
+BOOL Item_TestInfoFlag4(u16 *p);
+BOOL Item_TestInfoFlag3(u16 *p);
 u16 Item_GetInsectBaseSize(u16 *p);
 s32 Item_GetInsectIndex(u16 *p);
 BOOL Item_IsInsect(u16 *p);
@@ -303,8 +303,8 @@ s32 Item_GetDesignPlayer(u16 *p);
 s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out);
 u16 Item_MakeMoneyBag(u32 x);
 BOOL Item_GetShirtUnkGroup(u16 *p);
-BOOL Item_TestInfoFlag4(u32 x);
-BOOL Item_TestInfoFlag3(u32 x);
+BOOL Item_TestInfoFlag4(u16 *p);
+BOOL Item_TestInfoFlag3(u16 *p);
 u16 Item_GetInsectBaseSize(u16 *p);
 s32 Item_GetInsectIndex(u16 *p);
 BOOL Item_IsInsect(u16 *p);
@@ -349,9 +349,11 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void DateTime_AddDays(void *p, s32 n);
+// (src/main/unk_0204cc1c.cpp; its proto header is not included here: town/TownMap.h -> item/ItemId.h collides with
+// this file's own ItemId)
 TownBlockMap *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(TownBlockMap *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
-void BlockMap_SetItemAtUnit(TownBlockMap *w, u16 *item, s32 x, s32 y, u32 z);
+u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+BOOL BlockMap_SetItemAtUnit(BlockMap *g, u16 *a, s32 x, s32 z, u8 d);
 extern void *gCommManager;
 extern u8 gSaveData[];
 extern Unk_0204c084_Data data_021ed1b0;
@@ -870,9 +872,9 @@ extern "C" u16 Item_GetInsectBaseSize(u16 *p) {
 }
 
 namespace nB {
-extern "C" BOOL Item_TestInfoFlag3(u32 x) {
+extern "C" BOOL Item_TestInfoFlag3(u16 *p) {
     ItemIdNoInit e;
-    Item_FromPlacedForm(&e, x);
+    Item_FromPlacedForm(&e.v, p);
     if (Item_GetIdClass(&e.v) == 1) return ItemInfo_TestFlag3(&e.v);
     if (Item_IsFurniture(&e.v)) return Ftr_TestIndoorFlag7(&e.v);
     return FALSE;
@@ -880,9 +882,9 @@ extern "C" BOOL Item_TestInfoFlag3(u32 x) {
 }
 
 namespace nB {
-extern "C" BOOL Item_TestInfoFlag4(u32 x) {
+extern "C" BOOL Item_TestInfoFlag4(u16 *p) {
     ItemIdNoInit e;
-    Item_FromPlacedForm(&e, x);
+    Item_FromPlacedForm(&e.v, p);
     if (Item_GetIdClass(&e.v) == 1) return ItemInfo_TestFlag4(&e.v);
     if (Item_IsFurniture(&e.v)) return Ftr_TestIndoorFlagC(&e.v);
     return TRUE;

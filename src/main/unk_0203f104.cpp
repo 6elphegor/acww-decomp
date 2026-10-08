@@ -80,7 +80,7 @@ extern u8 gSaveData[];
 extern u8 gSaveEventWeekSlots[];
 extern u8 gSaveBlancaFace[];
 extern u8 gBackup[];
-extern u32 gCommManager;
+extern CommManager *gCommManager;
 }
 
 extern "C" {
@@ -1002,7 +1002,7 @@ extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
 }
 
 BOOL EventCalendarModule::onCreate() {
-    if (((CommManager *)(gCommManager))->isOnline() == 0) {
+    if (gCommManager->isOnline() == 0) {
         if (sEventsOnlineRefresh) {
             Event_RefreshToday(0);
         }

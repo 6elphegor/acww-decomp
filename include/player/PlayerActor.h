@@ -259,11 +259,11 @@ public:
     void turnToward(s32 a);
     s32 getHeldToolKind();
     s32 getHeldHoldableIndex();
-    BOOL requestByFieldAnswer(s32 a, s32 b);
+    BOOL requestByFieldAnswer(VecFx32 *pos, s32 b);
     s32 startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b);
     s32 pollFieldQuery();
     void pollStoreQuery();
-    BOOL startFieldQuery(s32 a, s32 mode, s32 idx);
+    BOOL startFieldQuery(VecFx32 *pos, s32 mode, s32 idx);
     u32 getFieldAnswerKind();
     s32 interactAt(s32 a);
     s32 useHeldTool();
@@ -436,9 +436,7 @@ public:
     /* 0x818 */ s32 msgStep;
     /* 0x81c */ u16 actionItem;
     /* 0x81e */ u16 shownItem;
-    /* 0x820 */ s32 shownItemPosX;
-    /* 0x824 */ s32 shownItemPosY;
-    /* 0x828 */ s32 shownItemPosZ;
+    /* 0x820 */ VecFx32 shownItemPos;
     /* 0x82c */ s32 shownItemScaleX;
     /* 0x830 */ s32 shownItemScaleY;
     /* 0x834 */ s32 shownItemScaleZ;

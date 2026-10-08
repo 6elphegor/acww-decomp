@@ -49,6 +49,7 @@
 #include "proto/main/unk_020b7190.h"
 #include "proto/main/unk_020c0324.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class SpNpcKatie;
@@ -56,10 +57,6 @@ class SpNpcKatie;
 extern "C" {
 s32 Scene_GetCurrent(void);
 s32 Scene_GetPrevious(void);
-void *TownBlockMap_Get(void);
-void Town_FindGateHouse(void *a, VecFx32 *b, s32 c, s32 d);
-void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
-void FieldPos_FromUnitCenter(VecFx32 *a, s32 b, s32 c);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *a);
 void TalkRequestFlags_ClearSceneHold(void);
@@ -160,7 +157,7 @@ BOOL SpNpcKatie::onCreate() {
         }
         if (TownSessionState_GetKatieState(TownSessionState_Get())->isFollowing() != 0) {
             if (Scene_GetPrevious() == 0xb) {
-                Town_FindGateHouse(TownBlockMap_Get(), (VecFx32 *)&position, 0, 0);
+                Town_FindGateHouse(TownBlockMap_Get(), &position, NULL, NULL);
                 position.z -= 0x2000;
                 talk.setTopic(3);
                 changeAct(5);
@@ -293,7 +290,7 @@ BOOL SpNpcKatie::setupAct01() {
     collider.groups |= 2;
     ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x53, 1, data_020c6cc8, 0);
-    Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
+    Town_FindGateHouse(TownBlockMap_Get(), &a, NULL, NULL);
     FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
     if (b.z < a.z) {
         if (b.x >= a.x - 0x4000 && b.x <= a.x + 0x4000) {
@@ -394,7 +391,7 @@ BOOL SpNpcKatie::mainAct05() {
         return TRUE;
     }
     if (collisionEnabled == 0 && Scene_GetCurrent() == 0) {
-        Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
+        Town_FindGateHouse(TownBlockMap_Get(), &a, NULL, NULL);
         FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
         if (b.z > a.z) {
             collisionEnabled = 1;
@@ -544,7 +541,7 @@ BOOL SpNpcKatie::mainAct08() {
             vec24.x = 0xde00;
             vec24.y = 0;
             vec24.z = 0x13a00;
-            s32 t = Math_AngleXZ(&position.x, &vec24.x);
+            s32 t = Math_AngleXZ(&position, &vec24);
             ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
             reunionStep = 6;
         }

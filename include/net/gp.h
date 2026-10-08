@@ -8,6 +8,29 @@
 // (src/ov065/unk_ov065_02281a5c.cpp), buddy messages (unk_ov065_0227cd34.cpp, unk_ov065_02280c08.cpp) and the records
 // gpiCallCallback frees (unk_ov065_0227df0c.cpp).
 
+#ifndef __cplusplus  // (C: the struct tags as type names)
+typedef struct GPRecvBuddyMessageArg GPRecvBuddyMessageArg;
+typedef struct GPRecvBuddyRequestArg GPRecvBuddyRequestArg;
+typedef struct GPRecvBuddyStatusArg GPRecvBuddyStatusArg;
+typedef struct GPRecvGameInviteArg GPRecvGameInviteArg;
+typedef struct GPTransferCallbackArg GPTransferCallbackArg;
+typedef struct GPProfileSearchMatch GPProfileSearchMatch;
+typedef struct GPIsValidEmailResponseArg GPIsValidEmailResponseArg;
+typedef struct GPGetUserNicksResponseArg GPGetUserNicksResponseArg;
+typedef struct GPFindPlayerMatch GPFindPlayerMatch;
+typedef struct GPFindPlayersResponseArg GPFindPlayersResponseArg;
+typedef struct GPGetReverseBuddiesResponseArg GPGetReverseBuddiesResponseArg;
+typedef struct GPCheckResponseArg GPCheckResponseArg;
+typedef struct GPSuggestUniqueNickResponseArg GPSuggestUniqueNickResponseArg;
+typedef struct GPProfileSearchResponseArg GPProfileSearchResponseArg;
+typedef struct GPErrorArg GPErrorArg;
+typedef struct GPNewProfileResponseArg GPNewProfileResponseArg;
+typedef struct GPRegisterUniqueNickResponseArg GPRegisterUniqueNickResponseArg;
+typedef struct GPConnectResponseArg GPConnectResponseArg;
+typedef struct GPBuddyStatus GPBuddyStatus;
+typedef struct GPIConnection GPIConnection;
+#endif
+
 struct GPRecvBuddyMessageArg {
     /* 0x0 */ s32 profile;
     /* 0x4 */ s32 date;
@@ -109,6 +132,15 @@ struct GPErrorArg {
     /* 0x4 */ s32 errorCode;
     /* 0x8 */ void *errorString;
     /* 0xc */ s32 fatal;
+};
+
+struct GPNewProfileResponseArg {
+    /* 0x0 */ s32 result;
+    /* 0x4 */ s32 profile;
+};
+
+struct GPRegisterUniqueNickResponseArg {
+    /* 0x0 */ s32 result;
 };
 
 struct GPConnectResponseArg {

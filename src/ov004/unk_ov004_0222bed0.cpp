@@ -16,6 +16,7 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_0204cc1c.h"
 
 #define func_02133150 _s32_div_f
 
@@ -52,7 +53,7 @@ public:
     virtual BOOL onDraw();
 
     BOOL loadIconModels();
-    void drawGridItems(void *grid);
+    void drawGridItems(BlockMap *grid);
     Model *setupIconModel(u32 idx, const VecFx32Copy &pos, const VecFx32Copy &scale, s16 rx, s16 ry, s16 rz);
     void drawIconModel(Model *model, Mtx43 m);
     void drawItemModel(u16 id, const VecFx32Copy &pos, const VecFx32Copy &scale, s16 rx, s16 ry, s16 rz);
@@ -74,10 +75,7 @@ s32 ModelSet_Load(void *p, void *a, s32 b);
 void *ModelSet_Find(void *p, void *name);
 const char *Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
-void FieldPos_FromUnitCenter(VecFx32Copy *out, s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
-u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
 s32 Item_GetInfoUnk07(u16 *p);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
@@ -87,7 +85,6 @@ u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void PendingUnit_ApplyAt(void *p, u32 a);
 void Scene_InTown(void);
-void BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
 u32 Scene_GetCurrent(void);
 }
@@ -167,7 +164,7 @@ void RoomItemIcons::drawItemModel(u16 id, const VecFx32Copy &pos, const VecFx32C
     setupIconModel(Item_GetInfoUnk07((u16 *)&v), p, q, rx, ry, rz);
 }
 
-void RoomItemIcons::drawGridItems(void *grid) {
+void RoomItemIcons::drawGridItems(BlockMap *grid) {
     if (gCamera == NULL) {
         return;
     }
@@ -221,7 +218,7 @@ void RoomItemIcons::drawGridItems(void *grid) {
 }
 
 BOOL RoomItemIcons::onDraw() {
-    void *a = gSceneBlockMap;
+    BlockMap *a = gSceneBlockMap;
     void *b = gCamera;
     if (a != NULL && b != NULL) {
         drawGridItems(a);
@@ -237,7 +234,7 @@ BOOL RoomItemIcons::onDelete() {
 }
 
 extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, VecFx32Copy *v) {
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     Actor *o = (Actor *)PlayerActor_GetActor(4);
     BOOL r = FALSE;
     if (g != NULL && o != NULL) {

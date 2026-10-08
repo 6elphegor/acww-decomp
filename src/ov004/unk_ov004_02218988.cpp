@@ -524,7 +524,7 @@ BOOL FleaMarketBuyerVillager::mainAct03() {
         s32 r6 = Vec_DistXZ(&position, &targetPos);
         VecFx32 loc0;
         NpcActor_FindFreeUnitNear(&loc0, this, &targetPos);
-        s32 r1 = Math_AngleXZ(&position.x, &targetPos.x);
+        s32 r1 = Math_AngleXZ(&position, &targetPos);
         s32 r4 = Math_AngleDiffAbs(rotY, r1);
         if (r6 > viewDistance && Vec_NotEqual(&loc0, &position)) {
             changeAct(5);
@@ -539,7 +539,7 @@ BOOL FleaMarketBuyerVillager::setupAct04() {
     Vec_DistXZ(&position, &targetPos);
     VecFx32 loc1c;
     NpcActor_FindFreeUnitNear(&loc1c, this, &targetPos);
-    s32 r = Math_AngleXZ(&position.x, &targetPos.x);
+    s32 r = Math_AngleXZ(&position, &targetPos);
     actionCtrl.requestAction(3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }

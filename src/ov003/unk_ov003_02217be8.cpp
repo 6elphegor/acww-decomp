@@ -30,6 +30,7 @@
 #include "proto/main/unk_02088b98.h"
 #include "proto/ov003/unk_ov003_02217908.h"
 #include "proto/ov003/unk_ov003_02217be8.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -113,9 +114,7 @@ extern s32 data_020c8cbc;
 extern Mtx43 data_021f47e0;
 
 void Camera_GetLookAtBlock(Camera *, s32 *, s32 *);
-void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
-void FieldPos_FromBlockUnitCenter(VecFx32 *, s32, s32, s32, s32);
 void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Mtx43 *m, s32 a);
 void Ground_SetWaveLevel(s32 v);

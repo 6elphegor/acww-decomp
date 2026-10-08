@@ -21,6 +21,7 @@
 #include "proto/main/unk_02093ff0.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 extern "C" {
@@ -48,7 +49,6 @@ extern "C" {
 extern TownId gSaveTownId;
 extern u8 gSavePlayers[];
 s32 Scene_GetCurrent();
-s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
 
@@ -62,12 +62,12 @@ extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32
     }
     {
         s32 o1, o2;
-        s32 s[3];
+        VecFx32 s;
         s32 fv = *f;
-        s[0] = *e;
-        s[1] = 0;
-        s[2] = fv;
-        FieldPos_ToUnit(&o1, &o2, s);
+        s.x = *e;
+        s.y = 0;
+        s.z = fv;
+        FieldPos_ToUnit(&o1, &o2, &s);
         Area_PlaceItem(0, o1, o2, 0xfff1, 0);
     }
 }

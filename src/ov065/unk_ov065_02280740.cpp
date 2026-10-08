@@ -81,10 +81,6 @@ void gpiDestroyOperation(GPConnection *h, GPIOperation *n);
 
 
 
-// byte-sized unsigned enum: an enum-typed zero is not constant-folded/shared with later zeros
-#pragma enumsalwaysint off
-enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF = 0xff };
-#pragma enumsalwaysint reset
 
 
 
@@ -137,20 +133,13 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
                 return r;
             }
             case 1: {
-                u8 *m = (u8 *)GsUtil_Alloc(8);
+                GPNewProfileResponseArg *m = (GPNewProfileResponseArg *)GsUtil_Alloc(sizeof(GPNewProfileResponseArg));
                 if (m == 0) {
                     gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
-                m[0] = 0;
-                m[1] = 0;
-                m[2] = 0;
-                m[3] = 0;
-                m[4] = 0;
-                m[5] = 0;
-                m[6] = 0;
-                m[7] = 0;
-                *(s32 *)m = n->result;
+                memset(m, 0, sizeof(GPNewProfileResponseArg));
+                m->result = n->result;
                 r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
@@ -173,20 +162,11 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
             }
             case 3: {
                 GPProfileSearchResponseArg *m = (GPProfileSearchResponseArg *)GsUtil_Alloc(sizeof(GPProfileSearchResponseArg));
-                u8 *q;
-                u32 k;
-                Unk_ov065_02280a2c_Z z;
                 if (m == 0) {
                     gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
-                q = (u8 *)m;
-                k = sizeof(GPProfileSearchResponseArg);
-                z = Unk_ov065_02280a2c_Z_0;
-                do {
-                    *q++ = z;
-                    k--;
-                } while (k != 0);
+                memset(m, 0, sizeof(GPProfileSearchResponseArg));
                 m->result = n->result;
                 m->matches = NULL;
                 r = gpiAddCallback(h, w.p, m, n, 0);
@@ -196,16 +176,13 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
                 return r;
             }
             case 4: {
-                u8 *m = (u8 *)GsUtil_Alloc(4);
+                GPRegisterUniqueNickResponseArg *m = (GPRegisterUniqueNickResponseArg *)GsUtil_Alloc(sizeof(GPRegisterUniqueNickResponseArg));
                 if (m == 0) {
                     gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
-                m[0] = 0;
-                m[1] = 0;
-                m[2] = 0;
-                m[3] = 0;
-                *(s32 *)m = n->result;
+                memset(m, 0, sizeof(GPRegisterUniqueNickResponseArg));
+                m->result = n->result;
                 r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;

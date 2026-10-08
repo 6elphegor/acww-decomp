@@ -39,6 +39,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov004/unk_ov004_02214948.h"
 #include "proto/ov004/unk_ov004_02215f04.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -74,8 +75,6 @@ u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 BOOL Item_IsFurnitureOrF031(u16 *p);
 void Ground_UnlinkUnit(s32 x, s32 z);
 s32 Ground_GetWalkLinks(s32, s32);
-void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
 s32 Scene_GetVillagerHouse();
 BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
 u8 *SaveVillagers_Get(u8 *base, s32 idx);

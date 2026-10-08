@@ -140,8 +140,8 @@ void TalkBusyIcon::draw() {
         s32 x = posX + getOriginX();
         s32 y = posY + getOriginY();
         // the first cells of the spinner and of its frame (the DS read them as words 0 and 4 from data_020d5d0c)
-        GXOamAttr *h0 = (GXOamAttr *)data_020d5d0c[0].frames[0].cell;
-        GXOamAttr *h1 = (GXOamAttr *)data_020d5d14[1].frames[0].cell;
+        GXOamAttr *h0 = data_020d5d0c[0].frames[0].cell;
+        GXOamAttr *h1 = data_020d5d14[1].frames[0].cell;
         Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, rotation, -1, 0, 0);
         Oam_DrawCell(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         if (objWindow != 0) {
@@ -221,7 +221,7 @@ void TransitionCommIcon::draw() {
         if (suspended == 0) {
             s32 x = getOriginX();
             s32 y = getOriginY();
-            GXOamAttr *h = (GXOamAttr *)anim.getCell();
+            GXOamAttr *h = anim.getCell();
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
         }

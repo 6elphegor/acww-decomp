@@ -49,6 +49,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02214dfc.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -75,9 +76,7 @@ void *Villager_GetPlan(VillagerData *a);
 // (defined with S1 *s and u32 c: c is the u16 * the item is copied to, src/main/unk_020ac750.cpp)
 u16 *AbleShop_GetItem(void *s, u32 a, u16 *out);
 void Item_FromPlacedForm(u16 *out, u16 *in);
-TownBlockMap *TownBlockMap_Get();
 // (defined returning a RoomBlockMap *: the same layout as TownBlockMap, local to src/main/unk_0204cc1c.cpp)
-TownBlockMap *HouseRoomMaps_Get(s32 i);
 u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
 // methods of classes defined in other source files (VillagerData: src/main/unk_02077ac4.cpp, VillagerPlan:
@@ -611,7 +610,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
     case 5:
         if (Unk_0207116c_Eq0(gFieldSceneKind)) {
             if (Scene_InTown()) {
-                void *gate = BuildingList_FindByItem(0x500b);
+                BuildingActor *gate = BuildingList_FindByItem(0x500b);
                 if (gate) GateHouse_ApplyTownFlag((GateHouse *)gate);
             }
         }
@@ -813,15 +812,15 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
     s32 idx;
     s32 y2;
     s32 x2;
-    u8 *cells;
-    u8 *cell;
+    MapBlock *cells;
+    MapBlock *cell;
     TownBlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         s32 x, y;
         for (y = 1; y < g->height - 1; y++) {
             for (x = 1; x < g->width - 1; x++) {
                 if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks != NULL) {
-                    cell = g->blocks + (y * g->width + x) * MAPBLOCK_SIZE;
+                    cell = g->blocks + (y * g->width + x);
                 } else {
                     cell = NULL;
                 }
@@ -852,7 +851,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
     }
     m = 0;
     do {
-        TownBlockMap *g2 = HouseRoomMaps_Get(m);
+        RoomBlockMap *g2 = HouseRoomMaps_Get(m);
         if (g2 != NULL) {
             if ((u32)g2->width > 0 && (u32)g2->height > 0 && g2->blocks != NULL) {
                 cells = g2->blocks;

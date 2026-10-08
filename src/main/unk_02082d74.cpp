@@ -43,6 +43,7 @@ extern SaveData gSaveData;
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0204cc1c.h"
 
 struct VisitorSchedule;
 typedef void (NpcSpawner::*Unk_02083c28_Fn)(VecFx32 *, u16 *, VisitorSchedule *);
@@ -186,32 +187,23 @@ namespace F1 {
 extern "C" {
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-extern Unk_02082e80_Grid *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern s32 sVisitorSpawnTableCount;
 extern u8 gSaveBlancaFace;
-void FieldPos_SnapToUnitCenter(void *g, void *v);
 s32 Scene_GetCurrent();
 void Clock_GetDateTime(void *p);
 s32 MapBlock_HasAnyAttr(void *c, s32 v);
 s32 MapBlock_HasAllAttr(void *c, s32 v);
 s32 Ground_IsSandAboveSea(s32 x, s32 y);
-void FieldUnit_FromBlockUnit(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 }
 static inline BOOL Unk_02083058_IsA() { return gFieldSceneKind == 0 ? TRUE : FALSE; }
-static inline TownBlockCell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
-    if (x < g->size[0] && y < g->size[1] && g->blocks != NULL) {
-        return &g->blocks[y * g->size[0] + x];
-    }
-    return NULL;
-}
 }
 
 namespace F2 {
 extern "C" {
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern s32 sVisitorSpawnTableCount;
 extern EventVisitorEntry sEventHostTable[];
 extern s32 sEventHostCheckValues[];
@@ -219,11 +211,6 @@ s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(s32);
 void Clock_GetDateTime(void *);
-s32 FieldPos_FromUnitCenter(void *, s32, s32);
-s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void FieldPos_FromBlockUnitCenter(void *, s32, s32, s32, s32);
-void FieldPos_FromBlockUnit(void *, s32, s32, s32, s32);
-void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 }
 
 }
@@ -234,12 +221,10 @@ extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 extern VecFx32 gVec3Zero;
 extern u8 gSaveVillagers[];
-extern u16 *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 s32 Scene_GetCurrent();
 s32 Scene_InTown();
 s32 Field_ClearObjectFcFdAt(VecFx32 *v);
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void *VillagerStates_GetEntry(s32 i);
@@ -307,7 +292,6 @@ s32 Town_GetMaxOutdoorVillagers();
 s32 SaveVillagers_IsOutdoors(void *p, void *q);
 s32 Scene_GetCurrent();
 s32 SceneId_IsTownUnk31(s32 v);
-void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 s32 Villager_GetWhereabouts(void *p);
 void GroundInfo_Destruct(void *buf);
 s32 Event_GetState(s32 a, void *b, s32 c);
@@ -322,11 +306,9 @@ extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void *SaveVillagers_Get(void *, s32);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 VisitorSchedule_Clear(void *);
 s32 Scene_GetCurrent();
 s32 Scene_GetMaxSpNpcs(u32 i);
-void *TownBlockMap_Get();
 void *MapBlock_GetItemPtr(void *, s32, s32, s32);
 void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
 BOOL Item_IsFurniture(u16 *);
@@ -337,15 +319,15 @@ s32 Item_GetFurnitureIndex(u16 *);
 
 extern "C" void Town_RemoveShipParts()
 {
-    TownBlockMap *g = (TownBlockMap *)F5::TownBlockMap_Get();
+    TownBlockMap *g = TownBlockMap_Get();
     s32 x, y;
     if (g != NULL) {
         for (y = 1; y < 5; y++) {
             for (x = 1; x < 5; x++) {
-                u8 *cell;
+                MapBlock *cell;
                 u16 *p;
-                if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
-                    cell = g->blocks + (y * g->width + x) * MAPBLOCK_SIZE;
+                if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks != NULL) {
+                    cell = g->blocks + (y * g->width + x);
                 } else {
                     cell = NULL;
                 }
@@ -419,7 +401,7 @@ extern "C" void NpcNetRecords_InitVillagers()
             v.y = 0;
             v.z = 0;
             u8 *q = ((VillagerDataItemView *)o)->getHousePos();
-            F5::FieldPos_FromUnitCenter(&v, q[0] + 1, q[1] + 2);
+            FieldPos_FromUnitCenter(&v, q[0] + 1, q[1] + 2);
             NetBuf_PackPair20(p + 4, v.x, v.z);
             CommRecord_PackSource(p + 3, z, z);
             p[0] = 1;
@@ -427,7 +409,7 @@ extern "C" void NpcNetRecords_InitVillagers()
     }
 }
 
-extern "C" s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, void *out)
+extern "C" s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, VecFx32 *out)
 {
     s32 r6;
     if (RoomFreeUnitMap_Build(a->freeUnitMap.rows)) {
@@ -449,7 +431,7 @@ extern "C" s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, void *out)
                 for (x = 0; x < 16; x++) {
                     if (RoomFreeUnitMap_Test(a->freeUnitMap.rows, x, y)) {
                         if (r6 == 0) {
-                            F4::FieldPos_FromUnitCenter(out, x, y);
+                            FieldPos_FromUnitCenter(out, x, y);
                             return 1;
                         }
                         r6--;
@@ -535,14 +517,14 @@ extern "C" void Visitor_GetTodaysNpc(u16 *out)
     *out = 0xfff1;
 }
 
-extern "C" void NpcSpawn_FixVillagerPos(void *a, void *vec)
+extern "C" void NpcSpawn_FixVillagerPos(void *a, VecFx32 *vec)
 {
     u32 buf[17];
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(vec), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(vec, 0, 0);
     if (F4::Villager_GetWhereabouts(a) == 0) {
         if (((GroundInfoBase *)(buf))->getHeight(0)) {
             u8 *p = (u8 *)((VillagerDataItemView *)(a))->getHousePos();
-            F4::FieldPos_FromUnitCenter(vec, p[0] + 1, p[1] + 2);
+            FieldPos_FromUnitCenter(vec, p[0] + 1, p[1] + 2);
         }
     }
     F4::GroundInfo_Destruct(buf);
@@ -586,7 +568,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
                 F4::MI_CpuCopy8(e->rotY, &w.h[2], 2);
             } else {
                 u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
-                F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
+                FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             }
         } else if (NetArea_IsLocalOwner() && sVillagerNetRecords[i].isSet != 0) {
             NpcNetRecord *t = &sVillagerNetRecords[i];
@@ -594,14 +576,14 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
             s32 wb = w.b;
             if (wb != F4::Scene_GetCurrent() && F4::SceneId_IsTown(wb) == 0 && F4::SceneId_IsTownUnk31(w.b) == 0 && w.b != 0x2c) {
                 u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
-                F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
+                FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             } else {
                 NetBuf_UnpackPair20(t->position, (u32 *)&v.x, (u32 *)&v.z);
                 NpcSpawn_FixVillagerPos(r7, &v);
             }
         } else {
             u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
-            F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
+            FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
         }
         if (Actor::spawn((void *)0x84, (void *)(uptr)w.h[0], &v, &w.h[1], a)) {  // (Actor::spawn takes its ids as void *)
             cnt++;
@@ -1096,15 +1078,15 @@ RoomFreeUnitMap::~RoomFreeUnitMap() {}
 
 extern "C" BOOL RoomFreeUnitMap_Build(u16 *out) {
     s32 y, x;
-    u16 *grid = F3::gSceneBlockMap;
+    BlockMap *grid = F3::gSceneBlockMap;
     F3::MI_CpuFill8(out, 0, 0x20);
     if (grid) {
-        u16 *p = F3::BlockMap_GetItemPtr(grid, 0, 0, 0, 0, 0);
+        u16 *p = BlockMap_GetItemPtr(grid, 0, 0, 0, 0, 0);
         if (p) {
             for (y = 0; y < 16; y++) {
                 for (x = 0; x < 16; x++) {
                     VecFx32 v;
-                    F3::FieldPos_FromUnitCenter(&v, x, y);
+                    FieldPos_FromUnitCenter(&v, x, y);
                     GroundInfo o(&v, 0, 0);
                     if (*p == 0xfff1 && !o.getHeight(1)) {
                         RoomFreeUnitMap_Set(out, x, y);
@@ -1326,13 +1308,13 @@ extern "C" BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p)
     u16 k[2];
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
     if (c) {
-        void *g = F2::gSceneBlockMap;
+        BlockMap *g = F2::gSceneBlockMap;
         s32 x = 0, y = 0, z = 0, w = 0;
         if (g != 0) {
                 k[0] = 0x5014;
             k[1] = 0x501a;
-            if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
-                F2::FieldPos_FromBlockUnitCenter(p, x, y, z, w);
+            if (BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+                FieldPos_FromBlockUnitCenter(p, x, y, z, w);
                 p->z = p->z + 0x4000;
                 return TRUE;
             }
@@ -1357,16 +1339,16 @@ extern "C" u16 *Visitor_CheckTomNook()
 extern "C" BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     u16 k[2];
-    void *g = F2::gSceneBlockMap;
+    BlockMap *g = F2::gSceneBlockMap;
     s32 x = 0, y = 0, z = 0, w = 0;
     if (g != 0) {
         k[0] = 0x5014;
         k[1] = 0x501a;
-        if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+        if (BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
             q->a = 0;
             q->b = 0x4000;
             q->c = 0;
-            F2::FieldPos_FromBlockUnit(p, x, y, z, w);
+            FieldPos_FromBlockUnit(p, x, y, z, w);
             p->x = p->x - 0x8000;
             p->z = p->z + 0x6000;
             p->y = 0;
@@ -1477,19 +1459,19 @@ extern "C" u16 *Visitor_CheckEventHost(s32 a, s32 b, s32 c)
 
 extern "C" BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
-    void *g = F2::gSceneBlockMap;
+    BlockMap *g = F2::gSceneBlockMap;
     if (g != 0) {
         s32 x = 0, y = 0, z = 0, w = 0;
         u16 k;
         s32 bx, bz;
         k = 0x5000;
-        if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k, &k, 0x200, 0) != 0) {
+        if (BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k, &k, 0x200, 0) != 0) {
             bx = 0;
             bz = 0;
-            F2::FieldUnit_FromBlockUnit(&bx, &bz, x, y, z, w);
+            FieldUnit_FromBlockUnit(&bx, &bz, x, y, z, w);
             bx -= 2;
             bz += 3;
-            F2::FieldPos_FromUnitCenter(p, bx, bz);
+            FieldPos_FromUnitCenter(p, bx, bz);
             q->b = Random_GlobalBelow(0xffff);
             return TRUE;
         }
@@ -1500,19 +1482,19 @@ extern "C" BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q)
 extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     u16 k[2];
-    void *g = F2::gSceneBlockMap;
+    BlockMap *g = F2::gSceneBlockMap;
     if (g != 0) {
         s32 x = 0, y = 0, z = 0, w = 0;
         s32 bx, bz;
         k[0] = 0x5014;
         k[1] = 0x501a;
-        if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+        if (BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
             bx = 0;
             bz = 0;
-            F2::FieldUnit_FromBlockUnit(&bx, &bz, x, y, z, w);
+            FieldUnit_FromBlockUnit(&bx, &bz, x, y, z, w);
             bx += 2;
             bz += 2;
-            F2::FieldPos_FromUnitCenter(p, bx, bz);
+            FieldPos_FromUnitCenter(p, bx, bz);
             q->b = Random_GlobalBelow(0xffff);
             return TRUE;
         }
@@ -1574,13 +1556,13 @@ extern "C" BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q)
     u16 k[2];
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
     if (c) {
-        void *g = F2::gSceneBlockMap;
+        BlockMap *g = F2::gSceneBlockMap;
         s32 x = 0, y = 0, z = 0, w = 0;
         if (g != 0) {
             k[0] = 0x5014;
             k[1] = 0x501a;
-            if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
-                F2::FieldPos_FromBlockUnitCenter(p, x, y, z, w);
+            if (BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+                FieldPos_FromBlockUnitCenter(p, x, y, z, w);
                 p->x = p->x + 0x4000;
                 p->z = p->z + 0x4000;
                 q->b = -0x4000;
@@ -1670,7 +1652,7 @@ extern "C" BOOL VisitorPlace_Katie(s32 a, VecFx32 *p)
         ((KatieVisitState *)(TownSessionState_GetKatieState(TownSessionState_Get())))->getPos(p);
         return TRUE;
     }
-    F2::FieldPos_FromUnitCenter(p, 6, 0x11);
+    FieldPos_FromUnitCenter(p, 6, 0x11);
     p->x = p->x + 0x1000;
     return TRUE;
 }
@@ -1787,10 +1769,10 @@ extern "C" BOOL Visitor_CanPascalVisit() {
     return FALSE;
 }
 
-extern "C" BOOL VisitorPlace_Beach(void *self, void *p1) {
+extern "C" BOOL VisitorPlace_Beach(void *self, VecFx32 *p1) {
     static Unk_02082e80_Pos list[32];
-    TownBlockCell *c;
-    Unk_02082e80_Grid *m;
+    MapBlock *c;
+    BlockMap *m;
     s32 w;
     s32 count;
     s32 x;
@@ -1802,13 +1784,11 @@ extern "C" BOOL VisitorPlace_Beach(void *self, void *p1) {
     s32 xx;
     s32 yy;
     s32 by;
-    u32 *sz;
     if (!F1::Unk_02083058_IsA()) goto fail;
     m = F1::gSceneBlockMap;
     if (m == NULL) return FALSE;
-    sz = &m->size[0];
-    w = sz[0];
-    h = sz[1];
+    w = m->width;
+    h = m->height;
     count = 0;
     y = 0;
     goto ytest;
@@ -1816,15 +1796,15 @@ yloop:
     x = 0;
     goto xtest;
 xloop:
-    if ((u32)x < m->size[0] && (u32)y < m->size[1] && m->blocks != NULL) {
-        c = &m->blocks[y * m->size[0] + x];
+    if ((u32)x < (u32)m->width && (u32)y < (u32)m->height && m->blocks != NULL) {
+        c = &m->blocks[y * m->width + x];
     } else {
         c = NULL;
     }
     if (c != NULL && F1::MapBlock_HasAnyAttr(c, 0x7f000) && F1::MapBlock_HasAllAttr(c, 8)) {
         bx = 0;
         by = 0;
-        F1::FieldUnit_FromBlockUnit(&bx, &by, x, y, 0, 0);
+        FieldUnit_FromBlockUnit(&bx, &by, x, y, 0, 0);
         x1 = bx + 0x10;
         yy = by;
         y1 = by + 0x10;
@@ -1861,7 +1841,7 @@ ytest:
 ybreak:
     if (count > 0) {
         s32 i = Random_GlobalBelow(count);
-        F1::FieldPos_FromUnitCenter(p1, list[i].x, list[i].y);
+        FieldPos_FromUnitCenter(p1, list[i].x, list[i].y);
         return TRUE;
     }
 fail:
@@ -1882,18 +1862,18 @@ extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
 }
 
 extern "C" BOOL VisitorPlace_Gulliver(void *self, void *b, u16 *out, void *d) {
-    ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags(TownSessionState_Get())))->getGulliverSpawn(b, out + 1, (VecFx32 *)d);
+    ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags(TownSessionState_Get())))->getGulliverSpawn((VecFx32 *)b, out + 1, (VecFx32 *)d);
     return TRUE;
 }
 
-extern "C" BOOL VisitorPlace_Gracie(void *self, void *g, u16 *out, s32 *a) {
+extern "C" BOOL VisitorPlace_Gracie(void *self, VecFx32 *g, u16 *out, s32 *a) {
     VecFx32 v;
     s32 z = a[2] + 0x6000;
     s32 x = a[0] - 0x4000;
     v.x = x;
     v.y = 0;
     v.z = z;
-    F1::FieldPos_SnapToUnitCenter(g, &v);
+    FieldPos_SnapToUnitCenter(g, &v);
     out[1] = 0;
     return TRUE;
 }

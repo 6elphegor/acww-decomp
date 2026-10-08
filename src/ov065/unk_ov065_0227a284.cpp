@@ -39,7 +39,7 @@ extern s32 ghiThrottleBufferSize;
 extern char data_ov065_0228ca58[4];
 
 s32 ghiPostAddString(void *, const char *, const char *);
-s32 ghiNewPost();
+GHIPost *ghiNewPost();
 void ghiEnumConnections(s32 (*)(GHIConnection *));
 char *goastrdup(const char *);
 GHIConnection *ghiNewConnection();
@@ -261,7 +261,7 @@ s32 gpiProfileSearch(void *, char *, char *, char *, char *, char *, s32, s32, s
 s32 gpiAppendStringToBuffer(void *, char *, const char *);
 s32 gpiAppendIntToBuffer(void *, char *, s32);
 s32 gpiGetProfile(void *, s32, void *);
-s32 gpiFindBuddy(void *, s32);
+void *gpiFindBuddy(void *, s32);
 s32 gpiCanFreeProfile(void *);
 s32 gpiRemoveProfile(void *, void *);
 

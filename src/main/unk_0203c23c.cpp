@@ -129,7 +129,7 @@ extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
             Item_ToPlacedForm(&v[4], &v[1], 1);
             v[1] = v[4];
             if (Item_TestInfoFlag3(&v[1])) {
-                if (Catalog_HasItem((u8 *)s->getCatalog(), &v[1])) count++;
+                if (Catalog_HasItem(s->getCatalog(), &v[1])) count++;
             }
         }
         return count;
@@ -143,7 +143,7 @@ extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
         for (i = 0; i < n; i++) {
             v[3] = Item_MakeFurniture(r + i, z);
             if (Item_TestInfoFlag3(&v[3])) {
-                if (Catalog_HasItem((u8 *)s->getCatalog(), &v[3])) count++;
+                if (Catalog_HasItem(s->getCatalog(), &v[3])) count++;
             }
         }
     }

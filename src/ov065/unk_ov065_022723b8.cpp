@@ -19,6 +19,7 @@
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/ov065/unk_ov065_0226f9e0.h"
+#include "proto/ov065/unk_ov065_02270e34.h"
 #include "proto/ov065/unk_ov065_022723b8.h"
 #include "proto/ov065/unk_ov065_02277140.h"
 #include "proto/ov065/unk_ov065_02277974.h"
@@ -57,7 +58,7 @@ extern "C" {
 extern DwcFriendControl *sDwcFriendControl;
 extern DwcMatchControl *sDwcMatch;
 
-s32 DWC_GetGsProfileId(s32, void *);
+u32 DWC_GetGsProfileId(void *userData, void *fd);
 s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
@@ -69,10 +70,10 @@ s32 DwcCore_SetError(s32, s32);
 s32 DwcCore_HasError();
 s32 DwcLogin_IsLoggedIn();
 s32 DwcCore_GetState();
-s32 DwcLogin_GetUserData();
+void *DwcLogin_GetUserData();
 void DwcFriend_FinishUpdate();
 void DwcFriend_SyncList(void *, s32);
-s32 DwcFriend_GetControlField20();
+void *DwcFriend_GetControlField20();
 void DwcFriend_OnAuthorizedInfo();
 void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
@@ -97,7 +98,6 @@ s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
 s32 DwcFriend_GetStatusString(void *, char *);
 s32 DwcFriend_GetProfileId(s32);
 s32 DwcFriend_FindIndexByProfileId(s32);
-s32 DwcFriend_SetOwnStatus(s32, char *, char *);
 void DwcFriend_Fail(s32, s32);
 s32 DwcMatch_CountNnRetry(s32);
 
@@ -265,7 +265,6 @@ s32 DwcMatch_HandleSbResult(s32 a);
 s32 DwcMatch_HandleGpResult(s32 a);
 s32 DwcMatch_Cleanup(void);
 s32 DwcMatch_UpdateServerStatus(void);
-s32 DwcFriend_SetOwnStatus(s32, void *, s32);
 s32 gpIsBuddy(void *connection, s32 profile);
 s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, s32);
 s32 DwcMatch_HandleResult(s32 a);
@@ -274,11 +273,11 @@ s32 qr2_send_statechanged(void *qrec);
 s32 ServerBrowserFree(void *sb);
 s32 ServerBrowserClear(void *sb);
 void gt2CloseAllConnectionsHard(void *socket);
-s32 DwcLogin_GetUserData(void);
+void *DwcLogin_GetUserData(void);
 s32 gpGetBuddyIndex(void *connection, s32 profile, void *index);
 s32 gpGetBuddyStatus(void *connection, s32 index, void *status);
 s32 DwcMatch_SendReservation(s32, s32);
-s32 DWC_GetGsProfileId(s32, u8 *);
+u32 DWC_GetGsProfileId(void *userData, void *fd);
 s32 DWCi_Acc_IsValidFriendData(u8 *);
 s32 strtoul(void *, s32, s32);
 
@@ -487,7 +486,6 @@ void MI_CpuFill8(void *, s32, s32);
 u32 strtoul(const char *, char **, s32);
 
 void DwcMatch_ClearUserKeys(void);
-s32 DwcFriend_SetOwnStatus(s32, void *, s32);
 s32 DwcFriend_FindIndexByProfileId(s32);
 s32 DwcMatch_CancelNewClient(...);
 s32 DwcCore_GetState(void);
@@ -593,7 +591,6 @@ s32 DwcMatch_ProcessCancelSync(void);
 s32 DwcMatch_ProcessServerSync(void);
 void DwcMatch_Init(u32 type, u32 maxPlayers, DwcMatchedScCallback cb, void *param);
 void *ServerBrowserNewA(char *queryForGamename, char *queryFromGamename, char *queryFromKey, u32 a, u32 b, u32 c, u32 d, void *callback, void *instance);
-s32 DwcFriend_SetOwnStatus(s32, void *, s32);
 s32 DwcMatch_HandleGpResult(s32 a);
 s32 DwcMatch_UpdateServerStatus(void);
 s32 DwcMatch_OnServerBrowserEvent(void);
@@ -881,7 +878,7 @@ s32 DwcMatch_StartClient(u32 a0, DwcMatchedScCallback a1, void *a2, DwcNewClient
             return r;
         }
     }
-    r = DwcMatch_HandleGpResult(DwcFriend_SetOwnStatus(5, (char *)"", 0));
+    r = DwcMatch_HandleGpResult(DwcFriend_SetOwnStatus(5, "", NULL));
     if (r != 0) {
         return r;
     }
@@ -1326,7 +1323,7 @@ void DwcMatch_Fail(s32 a, s32 b) {
     if (g != NULL && a != 0) {
         DwcMatch_CloseAllConnections();
         DwcCore_SetError(a, b);
-        DwcFriend_SetOwnStatus(1, (char *)"", 0);
+        DwcFriend_SetOwnStatus(1, "", NULL);
         DwcMatchControl *c = g;
         BOOL x;
         BOOL y;
@@ -1652,7 +1649,7 @@ s32 DwcMatch_UpdateServerStatus(void) {
     GsUtil_AppendKeyValue((char *)"SCN", buf, buf2, 0x2f);
     OS_SNPrintf(buf, 12, (char *)"%u", 3);
     GsUtil_AppendKeyValue((char *)"VER", buf, buf2, 0x2f);
-    return DwcFriend_SetOwnStatus(6, buf2, 0);
+    return DwcFriend_SetOwnStatus(6, buf2, NULL);
 }
 #undef g
 }
@@ -3089,7 +3086,7 @@ void DwcMatch_AdvanceConnect(s32 a) {
         done = TRUE;
         break;
     case 4:
-        if (g->matchType != 2) DwcFriend_SetOwnStatus(2, (char *)"", done);
+        if (g->matchType != 2) DwcFriend_SetOwnStatus(2, "", NULL);
         {
             DwcMatchControl *c = g;
             BOOL r;
@@ -3151,7 +3148,7 @@ void DwcMatch_FinishCancelled(void) {
     s32 v;
     DwcMatchControl *c;
     BOOL r6, r5;
-    if (DwcMatch_HandleGpResult(DwcFriend_SetOwnStatus(1, (char *)"", 0)) == 0) {
+    if (DwcMatch_HandleGpResult(DwcFriend_SetOwnStatus(1, "", NULL)) == 0) {
         DwcMatch_Cleanup();
         c = g;
         v = c->resultProfileId;

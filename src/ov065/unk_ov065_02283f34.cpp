@@ -285,11 +285,11 @@ typedef GTI2IncomingBufferMessage It;
 
 extern "C" {
 
-s32 ArrayNth(void *, s32);
+void *ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 gti2GetChallenge(void *);
+char *gti2GetChallenge(void *);
 s32 gti2BufferShorten(void *, s32, s32);
 s32 gti2BufferWriteData(void *, void *, s32);
 s32 gti2GetBufferFreeSpace(void *);

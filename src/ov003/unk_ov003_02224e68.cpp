@@ -13,6 +13,7 @@
 #include "proto/ov003/unk_ov003_02225108.h"
 #include "proto/ov003/unk_ov003_02225238.h"
 #include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -22,8 +23,6 @@
 
 
 extern "C" {
-void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
 }
 
 BOOL Field_IsGrownTreeItem(u16 *p)

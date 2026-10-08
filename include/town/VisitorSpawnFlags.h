@@ -15,7 +15,7 @@ public:
     void clear();
     void destruct();
     void construct();
-    void getGulliverSpawn(void *v, u16 *out, VecFx32 *p);
+    void getGulliverSpawn(VecFx32 *v, u16 *out, VecFx32 *p);
 
     u8 visitorSpawned : 1;
     u8 gulliverSpotRolled : 1;

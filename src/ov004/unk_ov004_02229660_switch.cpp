@@ -2,6 +2,7 @@
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "room/RoomTelephoneActEntry.h"
 #include "gfx/DebugColor.h"
@@ -65,7 +66,6 @@ extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
 
 u32 Scene_GetCurrent();
-TouchPicker *Scene_GetTouchPicker();
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);

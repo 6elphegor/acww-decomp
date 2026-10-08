@@ -2,17 +2,12 @@
 #define TOWN_TOWNBLOCKMAP_H
 
 #include "types.h"
+#include "town/BlockMap.h"
 
-// 0x20-byte town block map (block array, dimensions, BG map slot). Defined in main, unk_0204cc1c.cpp.
-struct TownBlockMap {
-    /* 0x00 */ u8 *blocks;
-    /* 0x04 */ s32 width;
-    /* 0x08 */ s32 height;
-    /* 0x0c */ s32 unitsX;
-    /* 0x10 */ s32 unitsZ;
-    /* 0x14 */ s32 worldWidth;
-    /* 0x18 */ s32 worldHeight;
-    /* 0x1c */ s32 mapSlot;
+// The town's block map (gTownBlockMap: 6x6 acres built from the saved town map): a BlockMap with the town's own
+// set-up and BG binding. Methods in main, unk_0204cc1c.cpp.
+class TownBlockMap : public BlockMap {
+public:
     void releaseBg();
     void bindBg();
     void updateAcreIds();

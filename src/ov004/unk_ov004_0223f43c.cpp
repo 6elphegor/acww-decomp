@@ -110,7 +110,7 @@ void Camera_UpdateRoomFocus(Camera *self) {
     }
     sp4 = (self)->getRoomEdgeSide(&self->targetFocus.x);
     sp8 = 0;
-    ang = Math_AngleXZ(&self->targetFocus.x, &d.x);
+    ang = Math_AngleXZ(&self->targetFocus, &d);
     s32 av = ang < 0 ? (s16)-ang : ang;
     t = 0x2000 - av;
     if (t < 0) t = 0;

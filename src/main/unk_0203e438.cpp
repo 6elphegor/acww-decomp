@@ -118,7 +118,7 @@ BOOL Character::isInFacingArcOf(Character *other, s16 lo, s16 hi) {
     VecFx32 a, b;
     a = *other->getInteractionPos();
     b = *getInteractionPos();
-    s16 d = Math_AngleXZ(&a.x, &b.x) - other->rotY;
+    s16 d = Math_AngleXZ(&a, &b) - other->rotY;
     if (d >= lo && d <= hi) {
         return TRUE;
     }

@@ -25,6 +25,7 @@
 #include "proto/main/unk_020b60b0.h"
 #include "proto/main/unk_020b705c.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 // (defined in C units / units whose declarations aren't shared yet: as they are defined)
@@ -205,7 +206,6 @@ void Mtx43_SetRotX(Mtx43 *m, s32 angle);
 void Mtx43_Translate(Mtx43 *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Mtx43 *m, s32 angle);
 BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
 
 extern s32 gGfxMainOnTop;
 extern SceneInfo *gCurSceneInfo;

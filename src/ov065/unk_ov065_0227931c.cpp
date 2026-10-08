@@ -161,7 +161,7 @@ extern u32 ghiThrottleTimeDelay;
 extern s32 ghiThrottleBufferSize;
 
 s32 ghiPostAddString(void *, const char *, const char *);
-s32 ghiNewPost();
+GHIPost *ghiNewPost();
 void ghiEnumConnections(s32 (*)(GHIConnection *));
 char *goastrdup(const char *);
 GHIConnection *ghiNewConnection();
@@ -206,8 +206,8 @@ s32 ghiPostStringStateDoPosting(GHIPostState *, GHIConnection *);
 void ghttpStartup();
 }
 extern "C" {
-s32 ghttpPostAddStringA(void *a, const char *b, const char *c);
-s32 ghttpNewPost();
+s32 ghttpPostAddStringA(GHIPost *a, const char *b, const char *c);
+GHIPost *ghttpNewPost();
 void ghttpThink();
 s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, ghttpProgressCallback f, ghttpCompletedCallback g, void *h);
 s32 ghttpPostA(const char *a, GHIPost *b, s32 c, ghttpCompletedCallback d, void *e);
@@ -404,7 +404,7 @@ void ghttpThink() {
 
 namespace Nm {
 extern "C" {
-s32 ghttpNewPost() {
+GHIPost *ghttpNewPost() {
     return ghiNewPost();
 }
 }
@@ -412,7 +412,7 @@ s32 ghttpNewPost() {
 
 namespace Nm {
 extern "C" {
-s32 ghttpPostAddStringA(void *a, const char *b, const char *c) {
+s32 ghttpPostAddStringA(GHIPost *a, const char *b, const char *c) {
     if (a == 0) {
         return 0;
     }

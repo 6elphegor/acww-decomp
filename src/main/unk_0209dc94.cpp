@@ -60,14 +60,13 @@
 #include "proto/main/unk_020af3f4.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/main/unk_020c00c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 // The save record's members are still byte blocks (SaveData.h): the helpers get them as their own types.
 extern "C" {
 void SaveData_SyncClockOffset(SaveData *p);
 void Clock_Init();
-void HouseRoomMaps_UpdateAll();
-void HouseRoomMaps_BindBg();
 void VillagerStates_SetBirthdayVisitor(s32 v);
 void SaveVillagers_UpdateAllRoomInfo(void *self);
 void SaveVillagers_UpdateOutdoor(SaveVillagers *self, s32 x);
@@ -75,7 +74,6 @@ void SaveVillagers_DailyUpdate(u8 *self, s32 flag);
 void SaveVillagers_PlaceMissingHouses(u8 *self);
 void VillagerStates_ResetErrands();
 void SaveVillagers_AssignErrands(void *bb);
-void TownMap_Generate(TownMap *o, Heap *heap);
 s32 Scene_GetCurrent();
 void HappyRoom_SendWelcomeLetter();
 void Weather_RerollRainSlantAlt3();

@@ -58,6 +58,7 @@
 #include "gfx/ScreenTransition.h"
 #include "player/PlayerId.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 struct GuestSlotTriple { s32 v[3]; };
@@ -141,13 +142,9 @@ void LetterStorage_MarkValid(void *p);
 u16 Math_CountDownU16(u16 *p);
 u32 Scene_GetCurrent();
 void SceneWarp_SetFadeOut(void *warp, u8 v);
-TownBlockMap *TownBlockMap_Get();
 void Town_ClearBorderTrees(void *map);
-BOOL Town_FindTownHallFront(void *map, VecFx32 *pos, s32 *p3, s32 *p4);
 void Town_OnLoad();
 void TownState_ClampDate(void *date);
-void HouseRoomMaps_UpdateAll();
-void HouseRoomMaps_BindBg();
 void VillagerStates_Init();
 void VillagerStates_Destroy();
 void Weather_RerollRainSlant();
@@ -819,7 +816,7 @@ void SaveManager::execAct0F() {
     if (Unk_020a3238_Is2(gScreenTransition.state)) {
         if (o->state == 0) {
             o->detachRequest();
-            Town_FindTownHallFront(TownBlockMap_Get(), &v, 0, 0);
+            Town_FindTownHallFront(TownBlockMap_Get(), &v, NULL, NULL);
             SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v, 0x400000, -0x8000, 3, 2);
             this->setState(0);
         }

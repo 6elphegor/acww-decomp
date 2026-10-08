@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
 #include "snd/SndEnvChannel.h"
 #include "snd/SndSeEmitter.h"
@@ -21,7 +22,7 @@ struct Rb;  // (snd/SndBgmViews.h)
 #include "snd/SndPos.h"
 
 
-extern u32 gCamera;
+extern Camera *gCamera;
 extern VecFx32 gCameraEye;
 extern u8 gFieldSceneKind;
 extern u8 data_021f5be0[];
@@ -486,10 +487,9 @@ void SndEnvChannel::callUpdateRelative(VecFx32 *pos) {
 
 void SndEnvChannel::callUpdate(void *a) { update((VecFx32 *)a); }
 
-// (the sound id comes as void *: the callers call these through their symbols)
-void SndEnvChannel::callRequestSustained(void *a) { requestSustained((u32)(uptr)a); }
+void SndEnvChannel::callRequestSustained(u32 id) { requestSustained(id); }
 
-void SndEnvChannel::callRequest(void *a) { request((u32)(uptr)a); }
+void SndEnvChannel::callRequest(u32 id) { request(id); }
 
 void SndEnvChannel::callRelease() { vfunc_04(); }
 

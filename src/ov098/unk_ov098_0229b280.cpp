@@ -30,6 +30,7 @@
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov096/unk_02294c40.h"
 #include "proto/ov098/unk_ov098_0229b280.h"
+#include "proto/main/unk_0204cc1c.h"
 
 class TownBlockMap;
 
@@ -39,11 +40,6 @@ s32 FieldAction_RequestTool(s32 a, s32 *unit, s32 sel, s32 d, u16 item);  // uni
 s32 FieldAction_RequestAtFreeUnit(s32 a, s32 b, u16 c);
 s32 FieldAction_PollResult(s32 a);
 void FieldAction_Release(s32 a);
-void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
-TownBlockMap *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
-s32 BlockMap_GetBlockAttr(BlockMap *g, s32 hx, s32 hy);
 BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 dir, u32 dist, u32 s5, s32 s6);
 void MI_CpuCopy8(const void *src, void *dest, u32 size);
 void BottleThrow_SetTarget(VecFx32 *v, s32 i);
@@ -283,7 +279,7 @@ BOOL PocketMenu::findBuryHole() {
     }
     Actor *q = (Actor *)PlayerActor_GetActor(4);
     s32 px = 0, py = 0;
-    BlockMap *grid = (BlockMap *)TownBlockMap_Get();
+    BlockMap *grid = TownBlockMap_Get();
     FieldPos_ToUnit(&px, &py, &q->position);
     s32 zero1 = 0, zero2 = 0;
     s16 base = q->rotY;
@@ -407,7 +403,7 @@ void PocketMenu::sendBottleLetter() {
         d->resetCounter();
         d->setUnkFlag(0);
     } else {
-        Heap *heap = (Heap *)gMenuHeap;
+        Heap *heap = gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
         buf[0] = 6;
         MI_CpuCopy8(p, buf + 1, 0xf4);

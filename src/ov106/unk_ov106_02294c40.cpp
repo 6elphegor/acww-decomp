@@ -1575,7 +1575,7 @@ void MailboxMenu::registerLetterPaper(LetterView *p) {
         PlayerData *r4 = PlayerData_GetCurrent();
         u16 v = 0xfff1;
         v = Item_MakePaper(Letter_GetPaper(p), 4);
-        Catalog_SetItem((u8 *)r4->getCatalog(), &v, 0, 1);
+        Catalog_SetItem(r4->getCatalog(), &v, 0, 1);
     }
 }
 

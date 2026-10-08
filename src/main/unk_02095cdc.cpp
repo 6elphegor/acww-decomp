@@ -41,6 +41,7 @@
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -105,8 +106,6 @@ extern "C" {
 ProcBase *func_02002d3c(s32 a, s32 b);
 void *Town_GetUpdater();
 s32 Town_WashUpBottle(void *p);
-TownBlockMap *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(TownBlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 s32 SaveVillagers_DeliverLetter(void *self, void *p);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 BOOL SaveVillagers_IsValidIndex(u32 n);
@@ -675,7 +674,7 @@ extern "C" s32 BottleLetter_Open() {
     }
     PlayerData *t = PlayerData_GetCurrent();
     u16 buf = 0x1033;
-    Catalog_SetItem((u8 *)t->getCatalog(), &buf, 0, 1);
+    Catalog_SetItem(t->getCatalog(), &buf, 0, 1);
     Letter_Copy(LetterFields(r5), LetterFields(o));
     Letter_Clear(LetterFields(o));
     CommManager *g = gCommManager;

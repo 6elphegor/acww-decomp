@@ -829,7 +829,7 @@ void BirthdayHostVillager::mainAct08() {
     if (approachTimer != 0) {
         approachTimer--;
     }
-    r4 = Math_AngleXZ(&position.x, &a.x);
+    r4 = Math_AngleXZ(&position, &a);
     r0 = Math_AngleDiffAbs(rotY, r4);
     if (v <= 0x3000 || approachTimer == 0) {
         talkCtrl.requestTurnAndTalk(0, r4, 0);

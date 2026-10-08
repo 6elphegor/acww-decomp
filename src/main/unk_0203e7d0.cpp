@@ -100,7 +100,6 @@ void List_Remove(void *, void *);
 }
 
 extern "C" {
-s32 func_01ffcb0c(s32);
 }
 
 extern "C" {

@@ -36,6 +36,7 @@
 #include "talk/ChoiceList.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString9C.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0203c92c.h"
@@ -55,6 +56,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov004/unk_ov004_0221e3a4.h"
 #include "proto/ov054/unk_ov054_02258de0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -251,7 +253,6 @@ extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 
 BOOL Talk_IsInOwnTown(...);
-void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);
 s32 Talk_IsDramaPending(void *o, void *b, s32 c);
 void Talk_AdvanceDrama(void *o, void *b);
@@ -271,10 +272,6 @@ s32 Item_GetFurnitureIndex(u16 *p);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_SetTargetDone(void *self);
 void Clock_GetMinuteHour(void *p);
-void *TownBlockMap_Get();
-BOOL Town_FindTownHall(void *r, s32 *a, s32 *b, s32 *c);
-void *Scene_GetWarpRequest();
-s32 SceneWarp_RequestAt(void *r, s32 a, void *v, s32 b, s32 c, s32 d, s32 e);
 
 }
 
@@ -657,14 +654,14 @@ BOOL SpNpcPellyPhyllis::setupAct08() { return TRUE; }
 
 BOOL SpNpcPellyPhyllis::mainAct08() {
     s32 a, b;
-    s32 v[3];
+    VecFx32 v;
     if (TalkWindow_Get(0)->state == 5) {
         Taxi_SetLeaving();
-        void *r = TownBlockMap_Get();
+        BlockMap *r = TownBlockMap_Get();
         if (r) {
-            if (Town_FindTownHall(r, &v[0], &a, &b)) {
-                v[2] += 0x1000;
-                SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v[0], 0xec00000, 0, 2, 2);
+            if (Town_FindTownHall(r, &v, &a, &b)) {
+                v.z += 0x1000;
+                SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v, 0xec00000, 0, 2, 2);
             }
         }
         changeAct(5);
@@ -731,7 +728,7 @@ void SpNpcPellyPhyllisTalk::endComm() {
 void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
     void *g0 = PlayerData_GetCurrent();
     s32 r4 = 0;
-    ParcelErrand *g1 = static_cast<PlayerErrands *>(((PlayerData *)(g0))->getErrands())->getParcelErrand();
+    ParcelErrand *g1 = ((PlayerData *)(g0))->getErrands()->getParcelErrand();
     BOOL r7 = r4;
     u16 v[3];
     if (owner->isOnline()) {
@@ -1045,7 +1042,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     s32 r4 = 0x51;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        p = static_cast<PlayerErrands *>(PlayerData_GetCurrent()->getErrands())->getParcelErrand();
+        p = PlayerData_GetCurrent()->getErrands()->getParcelErrand();
         if (Talk_IsInOwnTown(p)) {
             BOOL same;
             s32 r5 = MenuCtrl_GetIndex();

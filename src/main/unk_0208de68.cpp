@@ -33,7 +33,7 @@ HudUnkIcon::~HudUnkIcon() {
 
 void HudUnkIcon::draw() {
     if (state != 0) {
-        GXOamAttr *h = static_cast<GXOamAttr *>(anim.getCell()); // (the frame cell: its OAM entries)
+        GXOamAttr *h = anim.getCell(); // (the frame cell: its OAM entries)
         s32 x = getOriginX() + anim.getFrameX(-1);
         s32 y = getOriginY() + anim.getFrameY(-1);
         Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);

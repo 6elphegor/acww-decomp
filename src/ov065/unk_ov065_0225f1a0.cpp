@@ -23,7 +23,7 @@ extern SockCreateParams sSockSendOnlyParams;
 void *MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 
-s32 WifiLink_GetConnectedBssid(void);
+u8 *WifiLink_GetConnectedBssid(void);
 void IpStack_SetThreadPriority(s32);
 void WifiLink_SetRecvCallback(void *);
 void IpStack_SetIdleCallback(void *);

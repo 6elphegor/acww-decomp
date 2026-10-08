@@ -36,10 +36,10 @@ void HandCursor::draw() {
     GXOamAttr *h0;
     s32 x, y, y0, x0;
     if (anim != 0) {
-        h0 = (GXOamAttr *)layer1.getCell();
+        h0 = layer1.getCell();
         GXOamAttr *h1;
         if (hasLayer2 != 0) {
-            h1 = (GXOamAttr *)layer2.getCell();
+            h1 = layer2.getCell();
         } else {
             h1 = NULL;
         }

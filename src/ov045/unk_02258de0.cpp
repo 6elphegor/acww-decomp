@@ -42,6 +42,7 @@
 #include "proto/ov004/unk_ov004_02228dcc.h"
 #include "proto/ov045/unk_02258de0.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 class SpNpcKatrina;
 class SpNpcKatrinaTalk;
@@ -51,7 +52,6 @@ extern "C" {
 BOOL TalkRequest_SetTargetDone(Character *c);           // (defined with u32: it is the Character)
 BOOL TalkRequest_AddPlayerTalk6(Character *c, s32 b);   // (likewise)
 void Clock_GetDateTime(ClockDateTime *p);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
 BOOL EncodedString_SetRaw(EncodedString *buf, const void *src, s32 len);
 BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void SaveVillagers_ApplyGoodFortune(void *villagers, void *playerId);

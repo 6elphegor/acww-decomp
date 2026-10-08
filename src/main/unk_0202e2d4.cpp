@@ -31,7 +31,7 @@ inline NpcActor::~NpcActor() {}
 
 extern "C" {
 extern u32 data_020d6f54[];
-extern u32 gCommManager;
+extern CommManager *gCommManager;
 extern u32 gVec3Zero;
 extern const s32 data_020c6cf0;
 extern u8 gFieldSceneKind;
@@ -98,7 +98,7 @@ BOOL SpNpcActor::onCreate() {
     if (!NpcActor::onCreate()) {
         return FALSE;
     }
-    if (!NetArea_IsLocalOwner() && ((CommManager *)(gCommManager))->isOnline() && !netSyncOff) {
+    if (!NetArea_IsLocalOwner() && gCommManager->isOnline() && !netSyncOff) {
         VecFx32 v;
         s16 s;
         v.x = 0;

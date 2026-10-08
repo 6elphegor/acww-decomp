@@ -5,6 +5,7 @@
 #include "nitro/io_access.h"
 #include "save/SaveData.h"
 #include "save/SaveRecord4.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/itcm/unk_01ffa4a0.h"
@@ -25,9 +26,7 @@ void VillagerStates_Init(void);
 void VillagerStates_Destroy(void);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
-void SceneWarp_RequestScene(void *p, u32 x);
 void FieldScene_Request(u32 a, u32 b);
-u8 *Scene_GetWarpRequest(void);
 void VramQueue2d_Init(void);
 void VramQueueTex_Init(void);
 void GX_SetBankForSubBG(u32 x);

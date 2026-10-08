@@ -13,6 +13,7 @@
 #include "sys/ClockDateTime.h"
 #include "town/TownBlockMap.h"
 #include "town/TownMap.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202e840.h"
@@ -22,6 +23,7 @@
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020af514.h"
 #include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // (defined in C units / units whose declarations aren't shared yet: as they are defined)
 extern "C" {
@@ -31,14 +33,11 @@ void DateTime_SubDays(ClockDateTime *p, s32 n);
 s32 Date_DaysBetween(u8 *a, u8 *b);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);  // FX_Mul
-TownBlockMap *TownBlockMap_Get();
 // (src/main/unk_0204cc1c.cpp takes the item as an s32 and the map as its Unk_0204e858_Grid view: the item is an
 // item id pointer passed on to MapBlock_SetItem)
-void *BlockMap_SetItemAtUnit(TownBlockMap *map, u16 *item, s32 x, s32 z, u8 layer);
 u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 }
 
 extern SaveData gSaveData;
@@ -66,11 +65,6 @@ inline void SetVec(VecFx32 *v, s32 x, s32 y, s32 z) {
 }
 
 extern "C" {
-BOOL SceneWarp_HasNoPos(SceneWarp *e);
-u32 SceneWarp_GetSpawnParam(SceneWarp *e);
-s32 SceneWarp_GetAngle(SceneWarp *e);
-VecFx32 *SceneWarp_GetPos(SceneWarp *e);
-u8 *Scene_GetWarpRequest(void);  // the requested warp (a SceneWarp)
 u32 Scene_GetCurrent();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InTown();
@@ -78,8 +72,6 @@ void Vec_RotateY(VecFx32 *, s32);
 
 extern CommManager *gCommManager;  // (gap data: the constant pointer to gCommManagerInstance)
 }
-
-static inline SceneWarp *WarpRequest() { return (SceneWarp *)Scene_GetWarpRequest(); }
 
 class ScenePlayerSpawn {
 public:
@@ -107,47 +99,47 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
         if (idx < 4 && PlayerDataArray_IsUsed(gSaveData.players, PlayerSession_GetDataIndex(i))) {
-            if (!gCommManager->isLocalSlot(i) || SceneWarp_HasNoPos(WarpRequest())) {
+            if (!gCommManager->isLocalSlot(i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
-                VecFx32 *v = SceneWarp_GetPos(WarpRequest());
+                VecFx32 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
                 pos->x = v->x;
                 pos->y = v->y;
                 pos->z = v->z;
-                s32 t = SceneWarp_GetAngle(WarpRequest());
+                s32 t = SceneWarp_GetAngle(Scene_GetWarpRequest());
                 rot_->x = 0;
                 rot_->y = t;
                 rot_->z = 0;
-                *out = SceneWarp_GetSpawnParam(WarpRequest());
+                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
             }
             return TRUE;
         }
     } else {
         if (gCommManager->isLocalSlot(i)) {
-            if (SceneWarp_HasNoPos(WarpRequest())) {
+            if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {
                 VecFx32 v;
                 v.x = 0;
                 v.y = 0;
                 v.z = 0;
-                if (!Scene_InTown() && SceneWarp_GetSpawnParam(WarpRequest()) == 0x800000) {
+                if (!Scene_InTown() && SceneWarp_GetSpawnParam(Scene_GetWarpRequest()) == 0x800000) {
                     i &= 3;
                     v.x = (i << 10) - 0x800;
                     v.y = 0;
                     v.z = 0;
-                    Vec_RotateY(&v, SceneWarp_GetAngle(WarpRequest()));
+                    Vec_RotateY(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
                 }
                 VecFx32 t;
-                Vec_Add(&t, SceneWarp_GetPos(WarpRequest()), &v);
+                Vec_Add(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
                 pos->x = t.x;
                 pos->y = t.y;
                 pos->z = t.z;
-                s32 u = SceneWarp_GetAngle(WarpRequest());
+                s32 u = SceneWarp_GetAngle(Scene_GetWarpRequest());
                 rot_->x = 0;
                 rot_->y = u;
                 rot_->z = 0;
-                *out = SceneWarp_GetSpawnParam(WarpRequest());
+                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
             }
             return TRUE;
         }

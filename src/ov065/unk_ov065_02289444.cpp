@@ -73,7 +73,6 @@ s32 SBIsNullServer(_SBServer *);
 s32 SBServerSetFlags(void *, s32);
 _SBServer *SBAllocServer(void *, u32, u32);
 s32 SBServerGetPing(void *);
-s32 StringHash(void *);
 s32 SBServerListCleanup(void *);
 s32 SBServerListDisconnect(void *);
 s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
@@ -88,7 +87,6 @@ s32 SBServerListRemoveAt(void *, s32);
 s32 SBServerListFindServerByIP(void *, u32, u32);
 s32 SBServerListFindServer(void *, _SBServer *);
 void SBServerListAppendServer(void *, _SBServer *);
-s32 SBServerListSort(void *);
 s32 ProcessIncomingData(void *);
 s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
 s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
@@ -106,7 +104,6 @@ s32 SBListThink(void *);
 s32 ProcessLanData(SBServerList *);
 s32 RefStringCompare(char **, char **);
 void RefStringFree(void **);
-s32 RefStringHash(void **);
 
 }
 }

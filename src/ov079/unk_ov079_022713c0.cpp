@@ -53,6 +53,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov079/unk_ov079_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -163,7 +164,6 @@ s32 Item_GetFishWaterClass(u16 *p);
 u8 Math_CountDownU8(u8 *p);
 u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
@@ -406,7 +406,7 @@ BOOL SpNpcWendell::mainAct02() {
                     v.y = gVec3Zero.y;
                     v.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        s32 t = Math_AngleXZ(&position.x, &v.x);
+                        s32 t = Math_AngleXZ(&position, &v);
                         if (NpcActor_IsFrontAngle((s16)(t - rotY))) {
                             t = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -436,7 +436,7 @@ BOOL SpNpcWendell::mainAct02() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &w.x) - rotY)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }

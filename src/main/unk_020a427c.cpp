@@ -11,6 +11,7 @@
 #include "nitro/io_access.h"
 #include "gfx/ScreenTransition.h"
 #include "player/PlayerData.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -79,12 +80,7 @@ void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
 void Field_UpdateActions(void);
-s32 Scene_GetWarpRequest(void);
 u32 Scene_GetRequestedScene(void);
-s32 SceneWarp_GetScene(s32 a);
-void Scene_SavePlayerPos(s32 a, s32 b);
-void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
-void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 s32 Scene_GetCurrent(void);
 s32 OS_ResetSystem(s32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 size);

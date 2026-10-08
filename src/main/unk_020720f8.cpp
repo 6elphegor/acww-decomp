@@ -371,7 +371,7 @@ extern "C" void Comm_StartOv067Mode() {
 extern "C" s32 Comm_End() {
     s32 r5 = 1;
     if (gCommManager->started != 0) {
-        Heap *r4 = (Heap *)gNetHeap;
+        Heap *r4 = gNetHeap;
         u32 r6 = r4->setFlags(0x8000);
         r4->setFlags(r6 | 0x2000);
         NetOverlay_AssertAny();
@@ -410,7 +410,7 @@ extern "C" s32 Comm_End() {
 }
 extern "C" void Comm_EndOv067Mode() {
     if (gCommManager->started != 0) {
-        Heap *const r5 = (Heap *)gNetHeap;
+        Heap *const r5 = gNetHeap;
         u32 r4 = r5->setFlags(0x8000);
         r5->setFlags(r4 | 0x2000);
         NetOverlay_AssertAny();

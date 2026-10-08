@@ -23,7 +23,7 @@ void FieldInfoLabelBalloon::draw() {
     s32 drawn = 0;
     if (blinkFrame < 0x19) {
         if (markerShown != 0) {
-            GXOamAttr *cell = (GXOamAttr *)markerAnim.getCell();
+            GXOamAttr *cell = markerAnim.getCell();
             SpriteAnim *anim = getAnim();
             x = getDrawX();
             s32 b = getDrawY();

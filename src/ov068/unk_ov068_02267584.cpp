@@ -27,6 +27,7 @@
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov003/unk_ov003_0222e734.h"
 #include "proto/ov068/unk_ov068_02267584.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern "C" {
 // (no shared prototypes: excluded from include/proto, or defined in .c files)
@@ -36,11 +37,6 @@ extern BlockMap *gSceneBlockMap;
 extern s16 data_02135f44[];  // sin/cos table
 extern s32 data_020c7c1c;
 extern SaveData gSaveData;
-void FieldPos_SnapToUnitCenter(VecFx32 *dst, VecFx32 *src);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
-u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
-u16 *BlockMap_GetItemPtrAtPos(BlockMap *g, VecFx32 *v, u8 layer);
-BOOL BlockMap_SetItemAtUnit(BlockMap *g, u16 *a, s32 x, s32 z, u8 d);
 u16 Item_MakeSnowman(u32 x);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);

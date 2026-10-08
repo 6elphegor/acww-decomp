@@ -80,9 +80,9 @@ const u16 data_020cab84[2] = {0x800, 0};
 extern const u16 data_020cab80[2];  // 0x020cab80, 0x020cab84: start of this file's .rodata; read by the unit at 0x020594dc (0x0205a900, 0x0205a90c)
 const u16 data_020cab80[2] = {0x400, 0};
 void *gRoomBclHeap;
-void *gNetHeap;
-void *gModelCacheHeap;
-void *gMenuHeap;
+Heap *gNetHeap;
+Heap *gModelCacheHeap;
+Heap *gMenuHeap;
 void *gBgHeap;
 extern const u16 sCharaAnimMouthAnims[0x144];
 const u16 sCharaAnimMouthAnims[0x144] = {
@@ -382,7 +382,7 @@ extern "C" Heap *NetHeap_Create(u32 size, Heap *parent) {
     return h;
 }
 
-extern "C" void NetHeap_Destroy() { ((Heap *)(gNetHeap))->destroy2(); gNetHeap = 0; }
+extern "C" void NetHeap_Destroy() { gNetHeap->destroy2(); gNetHeap = NULL; }
 
 extern "C" Heap *ModelCacheHeap_Create(u32 size, Heap *parent) {
     Heap *h = (Heap *)ExpHeap_Create(size, parent); // (ExpHeap: a Heap, its class local to its unit)
@@ -390,7 +390,7 @@ extern "C" Heap *ModelCacheHeap_Create(u32 size, Heap *parent) {
     return h;
 }
 
-extern "C" void ModelCacheHeap_Destroy() { ((Heap *)(gModelCacheHeap))->destroy2(); gModelCacheHeap = 0; }
+extern "C" void ModelCacheHeap_Destroy() { gModelCacheHeap->destroy2(); gModelCacheHeap = NULL; }
 
 extern "C" Heap *MenuHeap_Create(u32 size, Heap *parent) {
     Heap *h = (Heap *)ExpHeap_Create(size, parent); // (ExpHeap: a Heap, its class local to its unit)
@@ -398,7 +398,7 @@ extern "C" Heap *MenuHeap_Create(u32 size, Heap *parent) {
     return h;
 }
 
-extern "C" void MenuHeap_Destroy() { ((Heap *)(gMenuHeap))->destroy2(); gMenuHeap = 0; }
+extern "C" void MenuHeap_Destroy() { gMenuHeap->destroy2(); gMenuHeap = NULL; }
 
 extern "C" Heap *BgHeap_Create(u32 size, Heap *parent) {
     Heap *h = (Heap *)ExpHeap_Create(size, parent); // (ExpHeap: a Heap, its class local to its unit)

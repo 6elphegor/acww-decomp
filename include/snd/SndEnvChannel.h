@@ -21,8 +21,8 @@ public:
     // non-virtual wrappers of the slots, defined in main (src/main/unk_020039ec.cpp); the relative versions subtract
     // the camera eye position first
     void callRelease();
-    void callRequest(void *a);
-    void callRequestSustained(void *a);
+    void callRequest(u32 id);
+    void callRequestSustained(u32 id);
     void callUpdate(void *a);
     void callUpdateRelative(VecFx32 *pos);
     void callReset();

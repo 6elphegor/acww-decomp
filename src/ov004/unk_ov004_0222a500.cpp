@@ -1,4 +1,5 @@
 #include "game/BoxCollider.h"
+#include "proto/main/unk_020b4828.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -29,6 +30,7 @@
 #include "gfx/PatternTexCache.h"
 #include "nnsys/g3d_rt.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_020b8cd0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -213,12 +215,10 @@ s32 Scene_InNookShop(void);
 u32 Scene_GetHouseRoom(void);
 void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
-TouchPicker *Scene_GetTouchPicker(void);
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
-void *CarpetTex_GetTex(void *o);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
 BOOL BoxCollider_Unregister(BoxCollider *self);
 BOOL BoxCollider_Register(BoxCollider *self, s32 a, s32 b, s32 c, VecFx32 *p, s16 s, VecFx32 *q);
@@ -308,7 +308,7 @@ BOOL RoomShell::onExecute() {
     if (clockPos.x != 0) {
         s32 id = FtrMgr_GetCycleCounter();
         if (id == 9 || id == 0x1d) {
-            clockSe.callRequestSustained((void *)(0x4d1));
+            clockSe.callRequestSustained(0x4d1);
         }
     }
     VecFx32 v = clockPos;

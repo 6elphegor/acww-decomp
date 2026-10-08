@@ -963,108 +963,108 @@ extern s32 sSkyLineScrollY[2];
 extern s32 sSnowSideToggle;
 extern u16 sMoonColors[6];
 extern u16 sSkyBlendLineCache[2];
-extern u32 data_020e4644[2];
-extern u32 data_020e465c[2];
-extern u32 data_020e466c[2];
-extern u32 data_020e4674[2];
-extern u32 data_020e4684[2];
-extern u32 data_020e469c[2];
-extern u32 data_020e46dc[2];
-extern u32 data_020e46ec[2];
-extern u32 data_020e46fc[2];
-extern u32 data_020e470c[2];
-extern u32 data_020e4734[2];
-extern u32 data_020e475c[2];
-extern u32 data_020e4764[2];
-extern u32 data_020e476c[2];
-extern u32 data_020e4774[2];
-extern u32 data_020e477c[2];
-extern u32 data_020e47b4[2];
-extern u32 data_020e47c4[2];
-extern u32 data_020e47ec[2];
-extern u32 data_020e47f4[2];
-extern u32 data_020e47fc[2];
-extern u32 data_020e4814[2];
-extern u32 data_020e482c[2];
-extern u32 data_020e483c[2];
-extern u32 data_020e4844[2];
-extern u32 data_020e484c[2];
-extern u32 data_020e4854[2];
-extern u32 data_020e485c[2];
-extern u32 data_020e4864[2];
-extern u32 data_020e486c[2];
-extern u32 data_020e4874[2];
-extern u32 data_020e487c[2];
-extern u32 data_020e4884[2];
-extern u32 data_020e488c[2];
-extern u32 data_020e489c[2];
-extern u32 data_020e48bc[2];
-extern u32 data_020e48c4[2];
-extern u32 data_020e48cc[2];
-extern u32 data_020e48d4[2];
-extern u32 data_020e48dc[2];
-extern u32 data_020e48ec[2];
-extern u32 data_020e48f4[2];
-extern u32 data_020e491c[2];
-extern u32 data_020e492c[2];
-extern u32 data_020e495c[2];
-extern u32 data_020e497c[2];
-extern u32 data_020e4984[2];
-extern u32 data_020e498c[2];
-extern u32 data_020e499c[2];
-extern u32 data_020e49a4[2];
-extern u32 data_020e49cc[2];
-extern u32 data_020e49d4[2];
-extern u32 data_020e49ec[2];
-extern u32 data_020e49f4[2];
-extern u32 data_020e49fc[2];
-extern u32 data_020e4a0c[2];
-extern u32 data_020e4a14[2];
-extern u32 data_020e4a1c[2];
-extern u32 data_020e4a24[2];
-extern u32 data_020e4a3c[2];
-extern u32 data_020e4a54[2];
-extern u32 data_020e4a5c[2];
-extern u32 data_020e4b54[4];
-extern u32 data_020e4b64[4];
-extern u32 data_020e4b94[4];
-extern u32 data_020e4ba4[4];
-extern u32 data_020e4bb4[4];
-extern u32 data_020e4bc4[4];
-extern u32 data_020e4bd4[4];
-extern u32 data_020e4be4[4];
-extern u32 data_020e4bf4[4];
-extern u32 data_020e4c04[4];
-extern u32 data_020e4c14[4];
-extern u32 data_020e4c24[4];
-extern u32 data_020e4c34[4];
-extern u32 data_020e4c44[4];
-extern u32 data_020e4c54[4];
-extern u32 data_020e4c64[4];
-extern u32 data_020e4c74[4];
-extern u32 data_020e4c84[4];
-extern u32 data_020e4c94[4];
-extern u32 data_020e4cb4[4];
-extern u32 data_020e4cc4[4];
-extern u32 data_020e4cd4[4];
-extern u32 data_020e4ce4[4];
-extern u32 data_020e4cf4[4];
-extern u32 data_020e4d04[4];
-extern u32 data_020e4d14[4];
-extern u32 data_020e4d24[4];
-extern u32 data_020e5208[10];
-extern u32 data_020e52b8[12];
-extern u32 data_020e52e8[12];
-extern u32 data_020e5378[14];
-extern u32 data_020e53f8[18];
-extern u32 data_020e5440[18];
-extern u32 data_020e5488[18];
-extern u32 data_020e54d0[20];
-extern u32 data_020e5520[20];
-extern u32 data_020e5570[20];
-extern u32 data_020e55c0[20];
-extern u32 data_020e5610[20];
-extern u32 data_020e5a34[48];
+extern GXOamAttr data_020e4644[1];
+extern GXOamAttr data_020e465c[1];
+extern GXOamAttr data_020e466c[1];
+extern GXOamAttr data_020e4674[1];
+extern GXOamAttr data_020e4684[1];
+extern GXOamAttr data_020e469c[1];
+extern GXOamAttr data_020e46dc[1];
+extern GXOamAttr data_020e46ec[1];
+extern GXOamAttr data_020e46fc[1];
+extern GXOamAttr data_020e470c[1];
+extern GXOamAttr data_020e4734[1];
+extern GXOamAttr data_020e475c[1];
+extern GXOamAttr data_020e4764[1];
+extern GXOamAttr data_020e476c[1];
+extern GXOamAttr data_020e4774[1];
+extern GXOamAttr data_020e477c[1];
+extern GXOamAttr data_020e47b4[1];
+extern GXOamAttr data_020e47c4[1];
+extern GXOamAttr data_020e47ec[1];
+extern GXOamAttr data_020e47f4[1];
+extern GXOamAttr data_020e47fc[1];
+extern GXOamAttr data_020e4814[1];
+extern GXOamAttr data_020e482c[1];
+extern GXOamAttr data_020e483c[1];
+extern GXOamAttr data_020e4844[1];
+extern GXOamAttr data_020e484c[1];
+extern GXOamAttr data_020e4854[1];
+extern GXOamAttr data_020e485c[1];
+extern GXOamAttr data_020e4864[1];
+extern GXOamAttr data_020e486c[1];
+extern GXOamAttr data_020e4874[1];
+extern GXOamAttr data_020e487c[1];
+extern GXOamAttr data_020e4884[1];
+extern GXOamAttr data_020e488c[1];
+extern GXOamAttr data_020e489c[1];
+extern GXOamAttr data_020e48bc[1];
+extern GXOamAttr data_020e48c4[1];
+extern GXOamAttr data_020e48cc[1];
+extern GXOamAttr data_020e48d4[1];
+extern GXOamAttr data_020e48dc[1];
+extern GXOamAttr data_020e48ec[1];
+extern GXOamAttr data_020e48f4[1];
+extern GXOamAttr data_020e491c[1];
+extern GXOamAttr data_020e492c[1];
+extern GXOamAttr data_020e495c[1];
+extern GXOamAttr data_020e497c[1];
+extern GXOamAttr data_020e4984[1];
+extern GXOamAttr data_020e498c[1];
+extern GXOamAttr data_020e499c[1];
+extern GXOamAttr data_020e49a4[1];
+extern GXOamAttr data_020e49cc[1];
+extern GXOamAttr data_020e49d4[1];
+extern GXOamAttr data_020e49ec[1];
+extern GXOamAttr data_020e49f4[1];
+extern GXOamAttr data_020e49fc[1];
+extern GXOamAttr data_020e4a0c[1];
+extern GXOamAttr data_020e4a14[1];
+extern GXOamAttr data_020e4a1c[1];
+extern GXOamAttr data_020e4a24[1];
+extern GXOamAttr data_020e4a3c[1];
+extern GXOamAttr data_020e4a54[1];
+extern GXOamAttr data_020e4a5c[1];
+extern GXOamAttr data_020e4b54[2];
+extern GXOamAttr data_020e4b64[2];
+extern GXOamAttr data_020e4b94[2];
+extern GXOamAttr data_020e4ba4[2];
+extern GXOamAttr data_020e4bb4[2];
+extern GXOamAttr data_020e4bc4[2];
+extern GXOamAttr data_020e4bd4[2];
+extern GXOamAttr data_020e4be4[2];
+extern GXOamAttr data_020e4bf4[2];
+extern GXOamAttr data_020e4c04[2];
+extern GXOamAttr data_020e4c14[2];
+extern GXOamAttr data_020e4c24[2];
+extern GXOamAttr data_020e4c34[2];
+extern GXOamAttr data_020e4c44[2];
+extern GXOamAttr data_020e4c54[2];
+extern GXOamAttr data_020e4c64[2];
+extern GXOamAttr data_020e4c74[2];
+extern GXOamAttr data_020e4c84[2];
+extern GXOamAttr data_020e4c94[2];
+extern GXOamAttr data_020e4cb4[2];
+extern GXOamAttr data_020e4cc4[2];
+extern GXOamAttr data_020e4cd4[2];
+extern GXOamAttr data_020e4ce4[2];
+extern GXOamAttr data_020e4cf4[2];
+extern GXOamAttr data_020e4d04[2];
+extern GXOamAttr data_020e4d14[2];
+extern GXOamAttr data_020e4d24[2];
+extern GXOamAttr data_020e5208[5];
+extern GXOamAttr data_020e52b8[6];
+extern GXOamAttr data_020e52e8[6];
+extern GXOamAttr data_020e5378[7];
+extern GXOamAttr data_020e53f8[9];
+extern GXOamAttr data_020e5440[9];
+extern GXOamAttr data_020e5488[9];
+extern GXOamAttr data_020e54d0[10];
+extern GXOamAttr data_020e5520[10];
+extern GXOamAttr data_020e5570[10];
+extern GXOamAttr data_020e55c0[10];
+extern GXOamAttr data_020e5610[10];
+extern GXOamAttr data_020e5a34[24];
 extern u32 sSkyBlackBackdrop[1];
 extern u32 sSkyOutdoors;
 extern u8 data_020e4630[4];
@@ -2390,7 +2390,7 @@ SpriteAnimFrame data_020e6124[44] = {
     {data_020e49f4, 1, 0, 15},
     {data_020e49f4, 1, 0, 15},
 };
-u32 data_020e4c24[4] = {0x91f880e0, 0x9e, 0x91f88000, 0xffff011e};
+GXOamAttr data_020e4c24[2] = {{0x91f880e0, 0x9e, 0, 0x0, 0x0}, {0x91f88000, 0x11e, 0, 0x0, 0xffff}};
 }
 void SkySprite::initByKind(u32 a) {
     static void (SkySprite::*tbl[13])(u32) = {
@@ -2411,9 +2411,9 @@ const u16 data_020d1148[24] = {
     0xd2, 0xcb, 0xc3, 0xbb, 0xb4, 0xb4, 0xb4, 0xd2, 0xf0, 0x104, 0x118, 0x12c,
     0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x11b, 0xff, 0xee,
 };
-u32 data_020e4644[2] = {0x81f000f0, 0xffff309c};
+GXOamAttr data_020e4644[1] = {{0x81f000f0, 0x9c, 0, 0x3, 0xffff}};
 const s32 sSnowAnimIds[3] = {0x5, 0x6, 0x7};
-u32 data_020e4c34[4] = {0x51fc80e0, 0x9d, 0x51fc8000, 0xffff011d};
+GXOamAttr data_020e4c34[2] = {{0x51fc80e0, 0x9d, 0, 0x0, 0x0}, {0x51fc8000, 0x11d, 0, 0x0, 0xffff}};
 const u8 sSkyObjPalOverrideSlots[15] = {0xde, 0xdf, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xcb, 0xcc, 0xcd, 0xce,
     0xcf};
 char *data_020e4d70[5] = {data_020e4fe8, data_020e5008, data_020e5028,
@@ -2425,8 +2425,8 @@ const u16 data_020d1178[24] = {
 SpriteAnimFrame data_020e4ae8[1] = {
     {data_020e4864, 4, 0, 0},
 };
-u32 data_020e4c54[4] = {0x71fc8000, 0x9d, 0x71fc80e0, 0xffff011d};
-u32 data_020e497c[2] = {0x81f000f0, 0xffff211c};
+GXOamAttr data_020e4c54[2] = {{0x71fc8000, 0x9d, 0, 0x0, 0x0}, {0x71fc80e0, 0x11d, 0, 0x0, 0xffff}};
+GXOamAttr data_020e497c[1] = {{0x81f000f0, 0x11c, 0, 0x2, 0xffff}};
 SpriteAnimFrame data_020e5258[4] = {
     {data_020e49a4, 1, 0, 0},
     {data_020e4a1c, 1, 0, 0},
@@ -2485,12 +2485,10 @@ const s8 sWeatherHourTable[768] = {
     0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x4, 0x4, 0x3, 0x3, 0x3, 0x2, 0x2, 0x3,
     0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2,
 };
-u32 data_020e5610[20] = {0x1ff0009, 0x30d4, 0x300300e6, 0x3094, 0x201100ff, 0x30b6, 0x1e900fa, 0x30b6, 0xd00f4,
-    0x30b6, 0x1f700e9, 0x3095, 0x300f000c, 0x30b4, 0x1000ea, 0x30d7, 0x1f000ef, 0x30b4, 0x1ec0005, 0xffff3097};
-u32 data_020e5440[18] = {0x1f500e5, 0x30b7, 0x30130001, 0x30b7, 0x100d0009, 0x30b6, 0x200600e3, 0x30b6,
-    0x1e800f9, 0x30b6, 0x301000f7, 0x30b6, 0x201100ea, 0x3097, 0x31ed00ed, 0x3094, 0x11ed0006, 0xffff3097};
+GXOamAttr data_020e5610[10] = {{0x1ff0009, 0xd4, 0, 0x3, 0x0}, {0x300300e6, 0x94, 0, 0x3, 0x0}, {0x201100ff, 0xb6, 0, 0x3, 0x0}, {0x1e900fa, 0xb6, 0, 0x3, 0x0}, {0xd00f4, 0xb6, 0, 0x3, 0x0}, {0x1f700e9, 0x95, 0, 0x3, 0x0}, {0x300f000c, 0xb4, 0, 0x3, 0x0}, {0x1000ea, 0xd7, 0, 0x3, 0x0}, {0x1f000ef, 0xb4, 0, 0x3, 0x0}, {0x1ec0005, 0x97, 0, 0x3, 0xffff}};
+GXOamAttr data_020e5440[9] = {{0x1f500e5, 0xb7, 0, 0x3, 0x0}, {0x30130001, 0xb7, 0, 0x3, 0x0}, {0x100d0009, 0xb6, 0, 0x3, 0x0}, {0x200600e3, 0xb6, 0, 0x3, 0x0}, {0x1e800f9, 0xb6, 0, 0x3, 0x0}, {0x301000f7, 0xb6, 0, 0x3, 0x0}, {0x201100ea, 0x97, 0, 0x3, 0x0}, {0x31ed00ed, 0x94, 0, 0x3, 0x0}, {0x11ed0006, 0x97, 0, 0x3, 0xffff}};
 u8 data_020e4634[4] = {0x9};
-u32 data_020e48d4[2] = {0x81f000f0, 0xffff2098};
+GXOamAttr data_020e48d4[1] = {{0x81f000f0, 0x98, 0, 0x2, 0xffff}};
 const SkySpawnRate sSnowSpawnRates[4] = {{0x3e8, 0x7d0}, {0x3e8, 0x7d0}, {0x320, 0x3e8}, {0x258, 0x320}};
 SpriteAnimFrame data_020e58a8[9] = {
     {data_020e49f4, 1, 0, 0},
@@ -2504,17 +2502,15 @@ SpriteAnimFrame data_020e58a8[9] = {
     {NULL, 37, 0, 0},
 };
 const s32 sParticleAnimIds[6] = {0x2b, 0x10, 0x19, 0x1a, 0x1b, 0x1c};
-u32 data_020e470c[2] = {0x1fc00fc, 0xffff0078};
+GXOamAttr data_020e470c[1] = {{0x1fc00fc, 0x78, 0, 0x0, 0xffff}};
 const s32 sFireworkScaleSmallLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800};
 char data_020e5088[31] = "/sky/d_2d_b_cld_f_a_bg_nsc.bin";
-u32 data_020e52b8[12] = {0x1700f7, 0x30b7, 0x11f0000c, 0x3095, 0x100f000c, 0x30d4, 0x11e200fc, 0x3095,
-    0x101400e8, 0x30d6, 0x11ea00e9, 0xffff30b6};
+GXOamAttr data_020e52b8[6] = {{0x1700f7, 0xb7, 0, 0x3, 0x0}, {0x11f0000c, 0x95, 0, 0x3, 0x0}, {0x100f000c, 0xd4, 0, 0x3, 0x0}, {0x11e200fc, 0x95, 0, 0x3, 0x0}, {0x101400e8, 0xd6, 0, 0x3, 0x0}, {0x11ea00e9, 0xb6, 0, 0x3, 0xffff}};
 WeatherManager gWeatherManager;
-u32 data_020e5488[18] = {0x130002, 0x30f7, 0x31f500e5, 0x30f6, 0xc0007, 0x30f6, 0x200600e4, 0x30f6, 0x1e600fa,
-    0x30b6, 0x101300f5, 0x30b6, 0x201300ea, 0x3097, 0x31eb00eb, 0x30d5, 0x11f20008, 0xffff3097};
-u32 data_020e4a5c[2] = {0x400080f0, 0xffff0094};
-u32 data_020e4cc4[4] = {0x91f880e0, 0x9a, 0x91f88000, 0xffff011a};
-u32 data_020e4cd4[4] = {0x51fc80e0, 0x99, 0x51fc8000, 0xffff0119};
+GXOamAttr data_020e5488[9] = {{0x130002, 0xf7, 0, 0x3, 0x0}, {0x31f500e5, 0xf6, 0, 0x3, 0x0}, {0xc0007, 0xf6, 0, 0x3, 0x0}, {0x200600e4, 0xf6, 0, 0x3, 0x0}, {0x1e600fa, 0xb6, 0, 0x3, 0x0}, {0x101300f5, 0xb6, 0, 0x3, 0x0}, {0x201300ea, 0x97, 0, 0x3, 0x0}, {0x31eb00eb, 0xd5, 0, 0x3, 0x0}, {0x11f20008, 0x97, 0, 0x3, 0xffff}};
+GXOamAttr data_020e4a5c[1] = {{0x400080f0, 0x94, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4cc4[2] = {{0x91f880e0, 0x9a, 0, 0x0, 0x0}, {0x91f88000, 0x11a, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4cd4[2] = {{0x51fc80e0, 0x99, 0, 0x0, 0x0}, {0x51fc8000, 0x119, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e4ac4[1] = {
     {data_020e46dc, 1, 0, 0},
 };
@@ -2522,7 +2518,7 @@ SpriteAnimFrame data_020e4a94[1] = {
     {data_020e47c4, 1, 0, 0},
 };
 char data_020e4f88[30] = "/sky/d_2d_b_cld_f1_bg_ncl.bin";
-u32 data_020e4cf4[4] = {0x61fc8000, 0x99, 0x61fc80e0, 0xffff0119};
+GXOamAttr data_020e4cf4[2] = {{0x61fc8000, 0x99, 0, 0x0, 0x0}, {0x61fc80e0, 0x119, 0, 0x0, 0xffff}};
 U234_Record sSkyProcProfile = {(void *)SkyProc_Create, 0x89, 0x8f};
 char data_020e4e10[27] = "/sky/d_2d_b_cld_bg_ncg.bin";
 }
@@ -2553,12 +2549,12 @@ static inline void SkyObjGfx_LoadTileRow(const u8 *d, u32 a, u32 n, u32 k, BOOL 
 
 
 extern "C" {
-u32 data_020e47f4[2] = {0x81f000f0, 0xffff4118};
-u32 data_020e4d14[4] = {0x71fc8000, 0x99, 0x71fc80e0, 0xffff0119};
-u32 data_020e4d24[4] = {0x71fc8000, 0x98, 0x71fc80e0, 0xffff0118};
+GXOamAttr data_020e47f4[1] = {{0x81f000f0, 0x118, 0, 0x4, 0xffff}};
+GXOamAttr data_020e4d14[2] = {{0x71fc8000, 0x99, 0, 0x0, 0x0}, {0x71fc80e0, 0x119, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4d24[2] = {{0x71fc8000, 0x98, 0, 0x0, 0x0}, {0x71fc80e0, 0x118, 0, 0x0, 0xffff}};
 const SkyObjCharLayout sSkyObjCharLayouts[5] = {{0x0, 0x4, 0x0, 0x0}, {0x0, 0x0, 0x0, 0x4}, {0x4, 0x8, 0x4, 0x8}, {0x0, 0xc, 0x4, 0x8}, {0x4, 0x8, 0x0, 0xc}};
 u32 sSkyOutdoors;
-u32 data_020e487c[2] = {0x0, 0xffff0094};
+GXOamAttr data_020e487c[1] = {{0x0, 0x94, 0, 0x0, 0xffff}};
 char *data_020e4d98[5] = {data_020e5068, data_020e5068, data_020e5088,
     data_020e50a8, data_020e50c8};
 char data_020e4fa8[30] = "/sky/d_2d_b_cld_r0_bg_ncl.bin";
@@ -2614,14 +2610,14 @@ char data_020e50c8[31] = "/sky/d_2d_b_cld_r_a_bg_nsc.bin";
 SpriteAnimFrame data_020e4b30[1] = {
     {data_020e498c, 1, 0, 0},
 };
-u32 data_020e4a54[2] = {0x81f880f0, 0xffff4118};
-u32 data_020e4a3c[2] = {0x1fc80f8, 0xffff0094};
-u32 data_020e4984[2] = {0x81f880f0, 0xffff4098};
+GXOamAttr data_020e4a54[1] = {{0x81f880f0, 0x118, 0, 0x4, 0xffff}};
+GXOamAttr data_020e4a3c[1] = {{0x1fc80f8, 0x94, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4984[1] = {{0x81f880f0, 0x98, 0, 0x4, 0xffff}};
 const u8 sSkyStarBgLayer[4] = {
     0x4, 0x0, 0x0, 0x0,
 };
-u32 data_020e49ec[2] = {0x81e003e0, 0xffff9098};
-u32 data_020e476c[2] = {0x81f880f0, 0xffff4098};
+GXOamAttr data_020e49ec[1] = {{0x81e003e0, 0x98, 0, 0x9, 0xffff}};
+GXOamAttr data_020e476c[1] = {{0x81f880f0, 0x98, 0, 0x4, 0xffff}};
 SpriteAnimFrame data_020e4b3c[1] = {
     {data_020e482c, 1, 0, 0},
 };
@@ -2633,7 +2629,7 @@ SpriteAnimFrame data_020e53b0[6] = {
     {data_020e499c, 2, 0, 0},
     {data_020e469c, 2, 0, 0},
 };
-u32 data_020e49d4[2] = {0x1fc00fc, 0xffff0077};
+GXOamAttr data_020e49d4[1] = {{0x1fc00fc, 0x77, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e5980[15] = {
     {data_020e5208, 1, 0, 0},
     {data_020e54d0, 1, 0, 0},
@@ -2653,15 +2649,14 @@ SpriteAnimFrame data_020e5980[15] = {
 };
 SkyLight sSkyLight;
 const u8 *const data_020e478c[2] = {data_020d0ec8, data_020d0ee0};
-u32 data_020e469c[2] = {0x91f000f0, 0xffff2098};
+GXOamAttr data_020e469c[1] = {{0x91f000f0, 0x98, 0, 0x2, 0xffff}};
 char data_020e4e48[30] = "/sky/d_2d_b_cld_b0_bg_nsc.bin";
-u32 data_020e495c[2] = {0x81f000f0, 0xffff2118};
-u32 data_020e4764[2] = {0x81f000f0, 0xffff211c};
-u32 data_020e4874[2] = {0x81f880f0, 0xffff409e};
+GXOamAttr data_020e495c[1] = {{0x81f000f0, 0x118, 0, 0x2, 0xffff}};
+GXOamAttr data_020e4764[1] = {{0x81f000f0, 0x11c, 0, 0x2, 0xffff}};
+GXOamAttr data_020e4874[1] = {{0x81f880f0, 0x9e, 0, 0x4, 0xffff}};
 u16 sMoonColors[6];
 char data_020e4e68[30] = "/sky/d_2d_b_cld_f0_bg_nsc.bin";
-u32 data_020e5378[14] = {0x301500f7, 0x30f6, 0x11f1000a, 0x3095, 0xe000b, 0x30d4, 0x11e300fb, 0x3095, 0x200600e4,
-    0x30d4, 0x101300e8, 0x30d5, 0x31ea00ea, 0xffff30f5};
+GXOamAttr data_020e5378[7] = {{0x301500f7, 0xf6, 0, 0x3, 0x0}, {0x11f1000a, 0x95, 0, 0x3, 0x0}, {0xe000b, 0xd4, 0, 0x3, 0x0}, {0x11e300fb, 0x95, 0, 0x3, 0x0}, {0x200600e4, 0xd4, 0, 0x3, 0x0}, {0x101300e8, 0xd5, 0, 0x3, 0x0}, {0x31ea00ea, 0xf5, 0, 0x3, 0xffff}};
 const s32 sFireworkScaleSmall[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
 char data_020e4e88[30] = "/sky/d_2d_b_cld_f1_bg_nsc.bin";
 }
@@ -3191,7 +3186,7 @@ const u16 data_020d0ff8[24] = {
     0x0, 0x400, 0x800, 0xc01, 0x1001, 0x2444, 0x38a8, 0x468f, 0x53f9, 0x53f9, 0x53f9, 0x53f9,
 };
 char data_020e4ea8[30] = "/sky/d_2d_b_cld_c0_bg_nsc.bin";
-u32 data_020e485c[2] = {0x400080f0, 0xffff0096};
+GXOamAttr data_020e485c[1] = {{0x400080f0, 0x96, 0, 0x0, 0xffff}};
 const s32 sSnowParallax[3] = {0x7fff, 0x6667, 0x4cce};
 SpriteAnimFrame data_020e5704[8] = {
     {data_020e476c, 2, 0, 0},
@@ -3203,21 +3198,21 @@ SpriteAnimFrame data_020e5704[8] = {
     {data_020e4984, 4, 0, 0},
     {data_020e48ec, 10, 0, 0},
 };
-u32 data_020e491c[2] = {0x91f000f0, 0xffff209c};
-u32 data_020e4b64[4] = {0x41fc80e0, 0x99, 0x41fc8000, 0xffff0119};
+GXOamAttr data_020e491c[1] = {{0x91f000f0, 0x9c, 0, 0x2, 0xffff}};
+GXOamAttr data_020e4b64[2] = {{0x41fc80e0, 0x99, 0, 0x0, 0x0}, {0x41fc8000, 0x119, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e4a70[1] = {
     {data_020e46ec, 1, 0, 0},
 };
 u8 sSkyLineTablesReady;
 const u8 data_020d0e04[5] = {0xf, 0xe, 0xd, 0xe, 0xd};
 StarTwinkle data_021efc18;
-u32 data_020e47b4[2] = {0x41fb80f0, 0xffff9097};
+GXOamAttr data_020e47b4[1] = {{0x41fb80f0, 0x97, 0, 0x9, 0xffff}};
 const u16 data_020d1028[24] = {
     0x50a5, 0x50a5, 0x50a5, 0x50a5, 0x50a5, 0x4cc6, 0x4ce7, 0x4d4a, 0x4d8c, 0x4d8c, 0x4d6b, 0x4d6b,
     0x4d4a, 0x494a, 0x494a, 0x494a, 0x494a, 0x4929, 0x4ce7, 0x4ca5, 0x50a5, 0x50a5, 0x50a5, 0x50a5,
 };
 const u16 *const data_020e4b74[4] = {data_020d0fc8, data_020d0ff8, data_020d1028, data_020d1058};
-u32 data_020e47ec[2] = {0x81f000f0, 0xffff411c};
+GXOamAttr data_020e47ec[1] = {{0x81f000f0, 0x11c, 0, 0x4, 0xffff}};
 const u16 *const data_020e4b84[4] = {data_020d1088, data_020d10b8, data_020d10e8, data_020d1118};
 }
 void SkyShotSequence::update() {
@@ -3419,7 +3414,7 @@ void SkySePlayer::releaseAll() {
 
 void SkySePlayer::requestSustained(s32 idx, s32 a, VecFx32* p) {
     if (active) {
-        channels[idx].callRequestSustained((void *)a);
+        channels[idx].callRequestSustained(a);
         positions[idx].x = p->x;
         positions[idx].y = p->y;
         positions[idx].z = p->z;
@@ -3428,7 +3423,7 @@ void SkySePlayer::requestSustained(s32 idx, s32 a, VecFx32* p) {
 
 void SkySePlayer::request(s32 idx, s32 a, VecFx32* p) {
     if (active) {
-        channels[idx].callRequest((void *)a);
+        channels[idx].callRequest(a);
         positions[idx].x = p->x;
         positions[idx].y = p->y;
         positions[idx].z = p->z;
@@ -4092,9 +4087,9 @@ SpriteAnimFrame data_020e510c[3] = {
 SpriteAnimFrame data_020e4a88[1] = {
     {data_020e470c, 1, 0, 0},
 };
-u32 data_020e46dc[2] = {0x1fc00fc, 0xffff0040};
-u32 data_020e46fc[2] = {0x81f000f0, 0xffff209c};
-u32 data_020e4ba4[4] = {0xa1f88000, 0x9e, 0xa1f880e0, 0xffff011e};
+GXOamAttr data_020e46dc[1] = {{0x1fc00fc, 0x40, 0, 0x0, 0xffff}};
+GXOamAttr data_020e46fc[1] = {{0x81f000f0, 0x9c, 0, 0x2, 0xffff}};
+GXOamAttr data_020e4ba4[2] = {{0xa1f88000, 0x9e, 0, 0x0, 0x0}, {0xa1f880e0, 0x11e, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e4aa0[1] = {
     {data_020e48c4, 1, 0, 0},
 };
@@ -4111,12 +4106,12 @@ const u16 data_020d10e8[24] = {
     0x48a5, 0x48a5, 0x48a5, 0x48a5, 0x48a5, 0x48c6, 0x48e7, 0x4d29, 0x4d4a, 0x4d4a, 0x4d4a, 0x4d4a,
     0x4d4a, 0x4d4a, 0x4d4a, 0x4d4a, 0x4d4a, 0x4d29, 0x4ce7, 0x4ca5, 0x48a5, 0x48a5, 0x48a5, 0x48a5,
 };
-u32 data_020e4bb4[4] = {0x41fc80e0, 0x9d, 0x41fc8000, 0xffff011d};
+GXOamAttr data_020e4bb4[2] = {{0x41fc80e0, 0x9d, 0, 0x0, 0x0}, {0x41fc8000, 0x11d, 0, 0x0, 0xffff}};
 const u16 data_020d1118[24] = {
     0x6eb1, 0x72d1, 0x72d2, 0x76f4, 0x7af5, 0x7ef5, 0x7f14, 0x7f56, 0x7fb9, 0x7fb9, 0x7fb9, 0x7fb9,
     0x7fb9, 0x7fb9, 0x7fb9, 0x7fb9, 0x7fb9, 0x7b39, 0x76b6, 0x76f6, 0x7716, 0x76f5, 0x72f4, 0x6eb2,
 };
-u32 data_020e4bc4[4] = {0x1400e7, 0x30f6, 0x1e70000, 0xffff30b7};
+GXOamAttr data_020e4bc4[2] = {{0x1400e7, 0xf6, 0, 0x3, 0x0}, {0x1e70000, 0xb7, 0, 0x3, 0xffff}};
 const u8 data_020d0ef8[24] = {
     0xb, 0xb, 0xb, 0xb, 0xb, 0xb, 0x0, 0x13, 0x13, 0x14, 0x14, 0x15,
     0x15, 0x16, 0x16, 0x16, 0x15, 0x13, 0x0, 0xb, 0xb, 0xb, 0xb, 0xb,
@@ -4126,18 +4121,16 @@ SpriteAnimFrame data_020e5154[3] = {
     {data_020e4c74, 1, 0, 0},
     {data_020e4c84, 1, 0, 0},
 };
-u32 data_020e4bd4[4] = {0x1600e7, 0x30d4, 0x1e90002, 0xffff30f6};
+GXOamAttr data_020e4bd4[2] = {{0x1600e7, 0xd4, 0, 0x3, 0x0}, {0x1e90002, 0xf6, 0, 0x3, 0xffff}};
 char *data_020e5230[10] = {data_020e4e48, data_020e4e48, data_020e4e68,
     data_020e4e88, data_020e4ea8, data_020e4ec8, data_020e4ee8,
     data_020e4f08, data_020e4f28, data_020e4f48};
-u32 data_020e4a24[2] = {0x81f000f0, 0xffff2118};
-u32 data_020e4be4[4] = {0x1800e7, 0x30f7, 0x1eb0004, 0xffff30d4};
+GXOamAttr data_020e4a24[1] = {{0x81f000f0, 0x118, 0, 0x2, 0xffff}};
+GXOamAttr data_020e4be4[2] = {{0x1800e7, 0xf7, 0, 0x3, 0x0}, {0x1eb0004, 0xd4, 0, 0x3, 0xffff}};
 char **sCloudScreenFiles[3] = {data_020e5230, data_020e4d98, data_020e4d70};
 const u16 *const *const sSkyLightColorTables[5] = {data_020e4b74, data_020e4b74, data_020e4b84, data_020e4b84, data_020e4b84};
-u32 data_020e488c[2] = {0x0, 0xffff00b4};
-u32 data_020e55c0[20] = {0x300200e8, 0x3094, 0x201000fe, 0x30b6, 0x10000009, 0x30b6, 0x1eb00fa, 0x30b6, 0xc00f4,
-    0x30b6, 0x1f800eb, 0x3095, 0x300f000c, 0x30b4, 0x200f00ea, 0x30d7, 0x1f200f1, 0x30d7, 0x1ed0004,
-    0xffff3097};
+GXOamAttr data_020e488c[1] = {{0x0, 0xb4, 0, 0x0, 0xffff}};
+GXOamAttr data_020e55c0[10] = {{0x300200e8, 0x94, 0, 0x3, 0x0}, {0x201000fe, 0xb6, 0, 0x3, 0x0}, {0x10000009, 0xb6, 0, 0x3, 0x0}, {0x1eb00fa, 0xb6, 0, 0x3, 0x0}, {0xc00f4, 0xb6, 0, 0x3, 0x0}, {0x1f800eb, 0x95, 0, 0x3, 0x0}, {0x300f000c, 0xb4, 0, 0x3, 0x0}, {0x200f00ea, 0xd7, 0, 0x3, 0x0}, {0x1f200f1, 0xd7, 0, 0x3, 0x0}, {0x1ed0004, 0x97, 0, 0x3, 0xffff}};
 const u8 data_020d0f10[24] = {
     0xc, 0xc, 0xc, 0xc, 0xa, 0x6, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
     0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x6, 0xa, 0xc, 0xc, 0xc,
@@ -4146,31 +4139,31 @@ char data_020e5048[31] = "/sky/d_2d_b_cld_r_b_bg_nsc.bin";
 s32 sSkyLineScrollY[2];
 const s32 sSkySpriteDefaultGfx[13] = {0x0, 0x1, 0x2f, 0x2, 0x3, 0x1f, 0x23, 0x26, 0x2a, 0x2b, 0x2e, 0x32, 0x33};
 char data_020e4df4[27] = "/sky/a_sky_fly_obj_ncg.bin";
-u32 data_020e4bf4[4] = {0x51fc80e0, 0x9c, 0x51fc8000, 0xffff011c};
-u32 data_020e482c[2] = {0x81f004f0, 0xffff0094};
-u32 data_020e4684[2] = {0x81f000f0, 0xffff409c};
-u32 data_020e4c04[4] = {0x81f880e0, 0x9e, 0x81f88000, 0xffff011e};
-u32 data_020e4674[2] = {0x81f000f0, 0xffff3118};
+GXOamAttr data_020e4bf4[2] = {{0x51fc80e0, 0x9c, 0, 0x0, 0x0}, {0x51fc8000, 0x11c, 0, 0x0, 0xffff}};
+GXOamAttr data_020e482c[1] = {{0x81f004f0, 0x94, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4684[1] = {{0x81f000f0, 0x9c, 0, 0x4, 0xffff}};
+GXOamAttr data_020e4c04[2] = {{0x81f880e0, 0x9e, 0, 0x0, 0x0}, {0x81f88000, 0x11e, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4674[1] = {{0x81f000f0, 0x118, 0, 0x3, 0xffff}};
 char data_020e4ee8[30] = "/sky/d_2d_b_cld_r0_bg_nsc.bin";
-u32 data_020e49a4[2] = {0x81f000f0, 0xffff3098};
-u32 data_020e484c[2] = {0x81e003e0, 0xffff9118};
+GXOamAttr data_020e49a4[1] = {{0x81f000f0, 0x98, 0, 0x3, 0xffff}};
+GXOamAttr data_020e484c[1] = {{0x81e003e0, 0x118, 0, 0x9, 0xffff}};
 char data_020e4f28[30] = "/sky/d_2d_b_cld_h0_bg_nsc.bin";
 SpriteAnimFrame data_020e519c[3] = {
     {data_020e4cc4, 2, 0, 0},
     {data_020e4cd4, 1, 0, 0},
     {data_020e4b54, 1, 0, 0},
 };
-u32 data_020e4c44[4] = {0xb1f88000, 0x9e, 0xb1f880e0, 0xffff011e};
+GXOamAttr data_020e4c44[2] = {{0xb1f88000, 0x9e, 0, 0x0, 0x0}, {0xb1f880e0, 0x11e, 0, 0x0, 0xffff}};
 const SkySpawnRate sRainSpawnRates[4] = {{0x2d, 0x69}, {0x1e, 0x5a}, {0xf, 0x4b}, {0x1, 0x3c}};
-u32 data_020e47fc[2] = {0x91f000f0, 0xffff211c};
+GXOamAttr data_020e47fc[1] = {{0x91f000f0, 0x11c, 0, 0x2, 0xffff}};
 SpriteAnimFrame data_020e51c0[3] = {
     {data_020e4ce4, 2, 0, 0},
     {data_020e4cf4, 1, 0, 0},
     {data_020e4d04, 1, 0, 0},
 };
 u16 sSkyBlendLineCache[2] = {0xffff, 0xffff};  // (the last light parameter of each line buffer)
-u32 data_020e4c74[4] = {0x61fc8000, 0x9d, 0x61fc80e0, 0xffff011d};
-u32 data_020e4c84[4] = {0x61fc8000, 0x9c, 0x61fc80e0, 0xffff011c};
+GXOamAttr data_020e4c74[2] = {{0x61fc8000, 0x9d, 0, 0x0, 0x0}, {0x61fc80e0, 0x11d, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4c84[2] = {{0x61fc8000, 0x9c, 0, 0x0, 0x0}, {0x61fc80e0, 0x11c, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e4af4[1] = {
     {data_020e485c, 4, 0, 0},
 };
@@ -4181,20 +4174,16 @@ SpriteAnimFrame data_020e4ddc[2] = {
     {data_020e4a3c, 2, 0, 0},
     {data_020e483c, 1, 0, 0},
 };
-u32 data_020e5a34[48] = {0x800004d0, 0x1114, 0x802084d0, 0x1118, 0x3044d8, 0x113a, 0x403004e0, 0x115a,
-    0x802004f0, 0x1098, 0x1804f0, 0x109f, 0x80400410, 0x111c, 0x380410, 0x111b, 0x80404400, 0x10dc, 0x404004f0,
-    0x109c, 0x4004e8, 0x10bf, 0x91e004d0, 0x1114, 0x91d084d0, 0x1118, 0x11c044d8, 0x113a, 0x51c004e0, 0x115a,
-    0x91c004f0, 0x1098, 0x11e004f0, 0x109f, 0x91a00410, 0x111c, 0x11c00410, 0x111b, 0x91a04400, 0x10dc,
-    0x51b004f0, 0x109c, 0x11b804e8, 0x10bf, 0x5004f8, 0x10be, 0x11a804f8, 0xffff10be};
+GXOamAttr data_020e5a34[24] = {{0x800004d0, 0x114, 0, 0x1, 0x0}, {0x802084d0, 0x118, 0, 0x1, 0x0}, {0x3044d8, 0x13a, 0, 0x1, 0x0}, {0x403004e0, 0x15a, 0, 0x1, 0x0}, {0x802004f0, 0x98, 0, 0x1, 0x0}, {0x1804f0, 0x9f, 0, 0x1, 0x0}, {0x80400410, 0x11c, 0, 0x1, 0x0}, {0x380410, 0x11b, 0, 0x1, 0x0}, {0x80404400, 0xdc, 0, 0x1, 0x0}, {0x404004f0, 0x9c, 0, 0x1, 0x0}, {0x4004e8, 0xbf, 0, 0x1, 0x0}, {0x91e004d0, 0x114, 0, 0x1, 0x0}, {0x91d084d0, 0x118, 0, 0x1, 0x0}, {0x11c044d8, 0x13a, 0, 0x1, 0x0}, {0x51c004e0, 0x15a, 0, 0x1, 0x0}, {0x91c004f0, 0x98, 0, 0x1, 0x0}, {0x11e004f0, 0x9f, 0, 0x1, 0x0}, {0x91a00410, 0x11c, 0, 0x1, 0x0}, {0x11c00410, 0x11b, 0, 0x1, 0x0}, {0x91a04400, 0xdc, 0, 0x1, 0x0}, {0x51b004f0, 0x9c, 0, 0x1, 0x0}, {0x11b804e8, 0xbf, 0, 0x1, 0x0}, {0x5004f8, 0xbe, 0, 0x1, 0x0}, {0x11a804f8, 0xbe, 0, 0x1, 0xffff}};
 SkyGradient sSkyGradient;
-u32 data_020e4a1c[2] = {0x81f000f0, 0xffff309c};
+GXOamAttr data_020e4a1c[1] = {{0x81f000f0, 0x9c, 0, 0x3, 0xffff}};
 s32 sSkyLineScrollX[2];
-u32 data_020e4814[2] = {0x81f000f0, 0xffff4098};
-u32 data_020e4ce4[4] = {0xa1f88000, 0x9a, 0xa1f880e0, 0xffff011a};
+GXOamAttr data_020e4814[1] = {{0x81f000f0, 0x98, 0, 0x4, 0xffff}};
+GXOamAttr data_020e4ce4[2] = {{0xa1f88000, 0x9a, 0, 0x0, 0x0}, {0xa1f880e0, 0x11a, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e4b18[1] = {
     {data_020e4854, 4, 0, 0},
 };
-u32 data_020e4d04[4] = {0x61fc8000, 0x98, 0x61fc80e0, 0xffff0118};
+GXOamAttr data_020e4d04[2] = {{0x61fc8000, 0x98, 0, 0x0, 0x0}, {0x61fc80e0, 0x118, 0, 0x0, 0xffff}};
 u8 data_020e4630[4] = {0x3d};
 const u8 *const *const sSkyLightParamTables[5] = {data_020e478c, data_020e478c, data_020e4824, data_020e4824, data_020e4824};
 const u8 sSkyCloudBgLayer[4] = {
@@ -4207,14 +4196,14 @@ SpriteAnimFrame data_020e51e4[3] = {
 };
 char data_020e50a8[31] = "/sky/d_2d_b_cld_c_a_bg_nsc.bin";
 SkySprites gSkySprites;
-u32 data_020e499c[2] = {0x91f000f0, 0xffff2118};
+GXOamAttr data_020e499c[1] = {{0x91f000f0, 0x118, 0, 0x2, 0xffff}};
 SpriteAnimFrame data_020e4b48[1] = {
     {data_020e4734, 4, 0, 0},
 };
 const char *const sSkyObjCharFiles[3] = {data_020e4dac, data_020e4df4, 0};
-u32 data_020e477c[2] = {0x81f000f0, 0xffff311c};
-u32 data_020e4774[2] = {0x1fc00fc, 0xffff0057};
-u32 data_020e492c[2] = {0x91f000f0, 0xffff2118};
+GXOamAttr data_020e477c[1] = {{0x81f000f0, 0x11c, 0, 0x3, 0xffff}};
+GXOamAttr data_020e4774[1] = {{0x1fc00fc, 0x57, 0, 0x0, 0xffff}};
+GXOamAttr data_020e492c[1] = {{0x91f000f0, 0x118, 0, 0x2, 0xffff}};
 const u8 data_020d0ec8[24] = {
     0xe, 0xe, 0xe, 0xe, 0xe, 0xe, 0x0, 0x18, 0x18, 0x19, 0x19, 0x1a,
     0x1a, 0x1b, 0x1b, 0x1b, 0x1a, 0x18, 0x0, 0xe, 0xe, 0xe, 0xe, 0xe,
@@ -4225,22 +4214,20 @@ const FireworkColorPair sFireworkColors[4] = {
     {{4, 17, 31, 0}, {27, 3, 31, 0}},
     {{27, 3, 31, 0}, {31, 8, 8, 0}},
 };
-u32 data_020e486c[2] = {0x81f000f0, 0xffff3118};
-u32 data_020e4a14[2] = {0x81f880f0, 0xffff409a};
+GXOamAttr data_020e486c[1] = {{0x81f000f0, 0x118, 0, 0x3, 0xffff}};
+GXOamAttr data_020e4a14[1] = {{0x81f880f0, 0x9a, 0, 0x4, 0xffff}};
 const u16 data_020d0fc8[24] = {
     0x0, 0x400, 0x820, 0xc20, 0x1440, 0x3e0a, 0x67f4, 0x67fb, 0x67ff, 0x67ff, 0x67ff, 0x67ff,
     0x67ff, 0x5bff, 0x4bdf, 0x3fdf, 0x33df, 0x1abf, 0x21f, 0x16d, 0xa5, 0x63, 0x42, 0x21,
 };
 char data_020e4dac[23] = "/sky/a_sky_obj_ncg.bin";
 const s32 sSnowFallSpeeds[3] = {0x2402, 0x123a, 0x17e2};
-u32 data_020e5520[20] = {0x300000ed, 0x3094, 0x200a00fc, 0x30b6, 0x10010007, 0x30b6, 0x1ee00fa, 0x30b6, 0x900f3,
-    0x30b6, 0x1f900ee, 0x3095, 0x300b0008, 0x30b4, 0x100c00ed, 0x3097, 0x1f500f3, 0x30b4, 0x1ef0002,
-    0xffff3097};
-u32 data_020e49f4[2] = {0x81e003e0, 0xffff911c};
+GXOamAttr data_020e5520[10] = {{0x300000ed, 0x94, 0, 0x3, 0x0}, {0x200a00fc, 0xb6, 0, 0x3, 0x0}, {0x10010007, 0xb6, 0, 0x3, 0x0}, {0x1ee00fa, 0xb6, 0, 0x3, 0x0}, {0x900f3, 0xb6, 0, 0x3, 0x0}, {0x1f900ee, 0x95, 0, 0x3, 0x0}, {0x300b0008, 0xb4, 0, 0x3, 0x0}, {0x100c00ed, 0x97, 0, 0x3, 0x0}, {0x1f500f3, 0xb4, 0, 0x3, 0x0}, {0x1ef0002, 0x97, 0, 0x3, 0xffff}};
+GXOamAttr data_020e49f4[1] = {{0x81e003e0, 0x11c, 0, 0x9, 0xffff}};
 const s32 sParticleTrailScales[23] = {0x5000, 0x16db, 0x1000, 0xe8c, 0xd55, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xd55, 0xe8c, 0x1000, 0x11c7, 0x1400, 0x16db, 0x1aab, 0x2000, 0x2800, 0x3555, 0x5000, 0xa000};
-u32 data_020e48f4[2] = {0x81f880f0, 0xffff409c};
+GXOamAttr data_020e48f4[1] = {{0x81f880f0, 0x9c, 0, 0x4, 0xffff}};
 char data_020e5028[31] = "/sky/d_2d_b_cld_c_b_bg_nsc.bin";
-u32 data_020e4734[2] = {0x81f000f0, 0xffff0114};
+GXOamAttr data_020e4734[1] = {{0x81f000f0, 0x114, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e56b0[7] = {
     {data_020e48d4, 2, 0, 0},
     {data_020e46fc, 2, 0, 0},
@@ -4251,9 +4238,7 @@ SpriteAnimFrame data_020e56b0[7] = {
     {data_020e491c, 2, 0, 0},
 };
 u32 sSkyBlackBackdrop[1];
-u32 data_020e5570[20] = {0x300100ea, 0x3094, 0x200d00fd, 0x30b6, 0x10000008, 0x30b6, 0x1ec00fa, 0x30b6, 0xb00f3,
-    0x30b6, 0x1f800ec, 0x3095, 0x300e000b, 0x30b4, 0x100e00eb, 0x3097, 0x1f300f2, 0x30d7, 0x1ed0003,
-    0xffff3097};
+GXOamAttr data_020e5570[10] = {{0x300100ea, 0x94, 0, 0x3, 0x0}, {0x200d00fd, 0xb6, 0, 0x3, 0x0}, {0x10000008, 0xb6, 0, 0x3, 0x0}, {0x1ec00fa, 0xb6, 0, 0x3, 0x0}, {0xb00f3, 0xb6, 0, 0x3, 0x0}, {0x1f800ec, 0x95, 0, 0x3, 0x0}, {0x300e000b, 0xb4, 0, 0x3, 0x0}, {0x100e00eb, 0x97, 0, 0x3, 0x0}, {0x1f300f2, 0xd7, 0, 0x3, 0x0}, {0x1ed0003, 0x97, 0, 0x3, 0xffff}};
 SpriteAnimFrame data_020e5d04[44] = {
     {NULL, 2, 0, 0},
     {data_020e49ec, 1, 0, 0},
@@ -4309,7 +4294,7 @@ const u16 data_020d10b8[24] = {
     0x3ed0, 0x3ed0, 0x3ed0, 0x3ed0, 0x3ed0, 0x31e9, 0x24e2, 0x1060, 0x820, 0x420, 0x400, 0x0,
     0x0, 0x400, 0x800, 0xc01, 0x1001, 0x1801, 0x2443, 0x31ea, 0x3ed0, 0x3ed0, 0x3ed0, 0x3ed0,
 };
-u32 data_020e465c[2] = {0x81f000f0, 0xffff311c};
+GXOamAttr data_020e465c[1] = {{0x81f000f0, 0x11c, 0, 0x3, 0xffff}};
 SpriteAnimFrame data_020e57d0[9] = {
     {data_020e49ec, 1, 0, 0},
     {data_020e49ec, 1, 0, 0},
@@ -4321,15 +4306,15 @@ SpriteAnimFrame data_020e57d0[9] = {
     {data_020e49ec, 1, 0, 2},
     {NULL, 37, 0, 0},
 };
-u32 data_020e48bc[2] = {0x81f000f0, 0xffff209c};
+GXOamAttr data_020e48bc[1] = {{0x81f000f0, 0x9c, 0, 0x2, 0xffff}};
 SpriteAnimFrame data_020e4ab8[1] = {
     {data_020e47b4, 1, 0, 0},
 };
 char data_020e4f08[30] = "/sky/d_2d_b_cld_r1_bg_nsc.bin";
-u32 data_020e4884[2] = {0x81f000f0, 0xffff2098};
+GXOamAttr data_020e4884[1] = {{0x81f000f0, 0x98, 0, 0x2, 0xffff}};
 HBlankTask sSkyHBlankTask;
-u32 data_020e4c14[4] = {0x41fc80e0, 0x9c, 0x41fc8000, 0xffff011c};
-u32 data_020e466c[2] = {0x81f000f0, 0xffff209c};
+GXOamAttr data_020e4c14[2] = {{0x41fc80e0, 0x9c, 0, 0x0, 0x0}, {0x41fc8000, 0x11c, 0, 0x0, 0xffff}};
+GXOamAttr data_020e466c[1] = {{0x81f000f0, 0x9c, 0, 0x2, 0xffff}};
 SpriteAnimFrame data_020e583c[9] = {
     {data_020e484c, 1, 0, 0},
     {data_020e484c, 1, 0, 0},
@@ -4342,18 +4327,18 @@ SpriteAnimFrame data_020e583c[9] = {
     {NULL, 37, 0, 0},
 };
 char data_020e4f48[30] = "/sky/d_2d_b_cld_h1_bg_nsc.bin";
-u32 data_020e49cc[2] = {0x81f000f0, 0xffff3098};
-u32 data_020e4c64[4] = {0x71fc8000, 0x9c, 0x71fc80e0, 0xffff011c};
+GXOamAttr data_020e49cc[1] = {{0x81f000f0, 0x98, 0, 0x3, 0xffff}};
+GXOamAttr data_020e4c64[2] = {{0x71fc8000, 0x9c, 0, 0x0, 0x0}, {0x71fc80e0, 0x11c, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e5288[4] = {
     {data_020e4884, 2, 0, 0},
     {data_020e48bc, 2, 0, 0},
     {data_020e4a24, 2, 0, 0},
     {data_020e497c, 2, 0, 0},
 };
-u32 data_020e46ec[2] = {0x1fc00fc, 0xffff0058};
+GXOamAttr data_020e46ec[1] = {{0x1fc00fc, 0x58, 0, 0x0, 0xffff}};
 char *sSkyPaletteFiles[2][2] = {{data_020e4f68, data_020e4f88}, {data_020e4fa8, data_020e4fc8}};
-u32 data_020e49fc[2] = {0x81e003e0, 0xffff909c};
-u32 data_020e4a0c[2] = {0x41fb80f0, 0xffff9096};
+GXOamAttr data_020e49fc[1] = {{0x81e003e0, 0x9c, 0, 0x9, 0xffff}};
+GXOamAttr data_020e4a0c[1] = {{0x41fb80f0, 0x96, 0, 0x9, 0xffff}};
 SpriteAnimFrame data_020e6334[44] = {
     {NULL, 2, 0, 0},
     {data_020e49fc, 1, 0, 0},
@@ -4400,8 +4385,8 @@ SpriteAnimFrame data_020e6334[44] = {
     {data_020e49fc, 1, 0, 15},
     {data_020e49fc, 1, 0, 15},
 };
-u32 data_020e48cc[2] = {0xc1c003c0, 0xffff9098};
-u32 data_020e475c[2] = {0x81f000f0, 0xffff2118};
+GXOamAttr data_020e48cc[1] = {{0xc1c003c0, 0x98, 0, 0x9, 0xffff}};
+GXOamAttr data_020e475c[1] = {{0x81f000f0, 0x118, 0, 0x2, 0xffff}};
 SpriteAnimFrame data_020e5318[4] = {
     {data_020e4814, 1, 0, 0},
     {data_020e4684, 1, 0, 0},
@@ -4484,13 +4469,13 @@ SpriteAnimFrame data_020e5af4[44] = {
     {data_020e48cc, 1, 0, 15},
     {data_020e48cc, 1, 0, 15},
 };
-u32 data_020e4b54[4] = {0x51fc80e0, 0x98, 0x51fc8000, 0xffff0118};
+GXOamAttr data_020e4b54[2] = {{0x51fc80e0, 0x98, 0, 0x0, 0x0}, {0x51fc8000, 0x118, 0, 0x0, 0xffff}};
 const u8 sFireworksPatternDelays[20] = {
     0x0, 0x0, 0x78, 0xfa, 0x28, 0x78, 0xfa, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x28, 0x0,
     0x0, 0x28, 0x0, 0x0,
 };
 const u16 sSkyObjPalDefaultColor = 0;
-u32 data_020e47c4[2] = {0x41fb80f0, 0xffff9094};
+GXOamAttr data_020e47c4[1] = {{0x41fb80f0, 0x94, 0, 0x9, 0xffff}};
 const u16 data_020d1058[24] = {
     0x6731, 0x6b51, 0x6f51, 0x7351, 0x7792, 0x7fb4, 0x7ff5, 0x7ffc, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
     0x7fff, 0x7fff, 0x77df, 0x6fdf, 0x6bdf, 0x6f7f, 0x66ff, 0x5ef5, 0x6f97, 0x6f75, 0x6f74, 0x6b52,
@@ -4502,8 +4487,8 @@ const u16 data_020d1088[24] = {
     0x0, 0x1001, 0x2022, 0x3023, 0x3c44, 0x48a8, 0x554c, 0x5dee, 0x668f, 0x668f, 0x668f, 0x668f,
     0x668f, 0x668f, 0x668f, 0x668f, 0x668f, 0x5a2f, 0x4d8c, 0x4508, 0x3cc6, 0x2c63, 0x1c42, 0xc21,
 };
-u32 data_020e498c[2] = {0x41f003f0, 0xffff0810};
-u32 data_020e489c[2] = {0x81f880f0, 0xffff409c};
+GXOamAttr data_020e498c[1] = {{0x41f003f0, 0x10, 2, 0x0, 0xffff}};
+GXOamAttr data_020e489c[1] = {{0x81f880f0, 0x9c, 0, 0x4, 0xffff}};
 char *sCloudCharFiles[5] = {data_020e4e10, data_020e4e10, data_020e4e10,
     data_020e4e10, data_020e4e10};
 SpriteAnimFrame data_020e5f14[44] = {
@@ -4552,7 +4537,7 @@ SpriteAnimFrame data_020e5f14[44] = {
     {data_020e484c, 1, 0, 15},
     {data_020e484c, 1, 0, 15},
 };
-u32 data_020e4854[2] = {0x0, 0xffff00d4};
+GXOamAttr data_020e4854[1] = {{0x0, 0xd4, 0, 0x0, 0xffff}};
 const u16 *const sSkyFogOffsetTables[5] = {data_020d1148, data_020d1148, data_020d1178, data_020d1178, data_020d1178};
 SpriteAnimFrame data_020e4adc[1] = {
     {data_020e4a5c, 4, 0, 0},
@@ -4564,20 +4549,19 @@ SpriteAnimFrame data_020e4a64[1] = {
 SpriteAnimFrame data_020e4b24[1] = {
     {data_020e4774, 1, 0, 0},
 };
-u32 data_020e4c94[4] = {0x81f880e0, 0x9a, 0x81f88000, 0xffff011a};
-u32 data_020e4cb4[4] = {0x41fc80e0, 0x98, 0x41fc8000, 0xffff0118};
+GXOamAttr data_020e4c94[2] = {{0x81f880e0, 0x9a, 0, 0x0, 0x0}, {0x81f88000, 0x11a, 0, 0x0, 0xffff}};
+GXOamAttr data_020e4cb4[2] = {{0x41fc80e0, 0x98, 0, 0x0, 0x0}, {0x41fc8000, 0x118, 0, 0x0, 0xffff}};
 s32 sSkyCrossingWidth = data_020c8cbc * 6;
-u32 data_020e52e8[12] = {0x101400e8, 0x30b6, 0x1ef000d, 0x30b7, 0x11e300fe, 0x3095, 0x3012000a, 0x30d4,
-    0x101800f8, 0x30d4, 0x21e800e8, 0xffff30b7};
+GXOamAttr data_020e52e8[6] = {{0x101400e8, 0xb6, 0, 0x3, 0x0}, {0x1ef000d, 0xb7, 0, 0x3, 0x0}, {0x11e300fe, 0x95, 0, 0x3, 0x0}, {0x3012000a, 0xd4, 0, 0x3, 0x0}, {0x101800f8, 0xd4, 0, 0x3, 0x0}, {0x21e800e8, 0xb7, 0, 0x3, 0xffff}};
 char data_020e4fc8[30] = "/sky/d_2d_b_cld_r1_bg_ncl.bin";
 const s32 sRainSeIds[4] = {-1, 0x80a, 0x4ce, -1};
 const s32 sFireworkScaleBig[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
 char data_020e5008[31] = "/sky/d_2d_b_cld_f_b_bg_nsc.bin";
-u32 data_020e48ec[2] = {0x81f880f0, 0xffff411a};
-u32 data_020e4b94[4] = {0xb1f88000, 0x9a, 0xb1f880e0, 0xffff011a};
-u32 data_020e48c4[2] = {0x41fb80f0, 0xffff9095};
-u32 data_020e4844[2] = {0x81f000f0, 0xffff211c};
-u32 data_020e483c[2] = {0x1fc80f8, 0xffff0095};
+GXOamAttr data_020e48ec[1] = {{0x81f880f0, 0x11a, 0, 0x4, 0xffff}};
+GXOamAttr data_020e4b94[2] = {{0xb1f88000, 0x9a, 0, 0x0, 0x0}, {0xb1f880e0, 0x11a, 0, 0x0, 0xffff}};
+GXOamAttr data_020e48c4[1] = {{0x41fb80f0, 0x95, 0, 0x9, 0xffff}};
+GXOamAttr data_020e4844[1] = {{0x81f000f0, 0x11c, 0, 0x2, 0xffff}};
+GXOamAttr data_020e483c[1] = {{0x1fc80f8, 0x95, 0, 0x0, 0xffff}};
 SpriteAnimFrame data_020e5178[3] = {
     {data_020e4c94, 2, 0, 0},
     {data_020e4b64, 1, 0, 0},
@@ -4591,19 +4575,15 @@ SpriteAnimFrame data_020e4b0c[1] = {
     {data_020e488c, 4, 0, 0},
 };
 const s32 sRainParallax[3] = {0x7fff, 0x6667, 0x4cce};
-u32 data_020e54d0[20] = {0x31ff00f0, 0x3094, 0x200700fb, 0x30b6, 0x10020005, 0x30b6, 0x1f200fa, 0x30b6, 0x400f5,
-    0x30b6, 0x1f900f0, 0x3095, 0x30090006, 0x30b4, 0x100800ef, 0x3097, 0x1f600f4, 0x30b4, 0x1f00002,
-    0xffff3097};
+GXOamAttr data_020e54d0[10] = {{0x31ff00f0, 0x94, 0, 0x3, 0x0}, {0x200700fb, 0xb6, 0, 0x3, 0x0}, {0x10020005, 0xb6, 0, 0x3, 0x0}, {0x1f200fa, 0xb6, 0, 0x3, 0x0}, {0x400f5, 0xb6, 0, 0x3, 0x0}, {0x1f900f0, 0x95, 0, 0x3, 0x0}, {0x30090006, 0xb4, 0, 0x3, 0x0}, {0x100800ef, 0x97, 0, 0x3, 0x0}, {0x1f600f4, 0xb4, 0, 0x3, 0x0}, {0x1f00002, 0x97, 0, 0x3, 0xffff}};
 SpriteAnimFrame data_020e50e8[3] = {
     {data_020e4c04, 2, 0, 0},
     {data_020e4bb4, 1, 0, 0},
     {data_020e4c14, 1, 0, 0},
 };
-u32 data_020e5208[10] = {0x1fb00f1, 0x3095, 0x30060004, 0x30b4, 0x100500f1, 0x3097, 0x1fb00f8, 0x30b4, 0x1f20002,
-    0xffff3097};
-u32 data_020e4864[2] = {0x400080f0, 0xffff0095};
-u32 data_020e53f8[18] = {0x1f700e7, 0x30b7, 0x120000, 0x30f6, 0x1010000c, 0x3097, 0x300400e4, 0x3095, 0x1e900f9,
-    0x30b6, 0xe00f5, 0x30b6, 0x1100ea, 0x30d7, 0x11ef00ed, 0x30d7, 0x11ec0006, 0xffff3097};
+GXOamAttr data_020e5208[5] = {{0x1fb00f1, 0x95, 0, 0x3, 0x0}, {0x30060004, 0xb4, 0, 0x3, 0x0}, {0x100500f1, 0x97, 0, 0x3, 0x0}, {0x1fb00f8, 0xb4, 0, 0x3, 0x0}, {0x1f20002, 0x97, 0, 0x3, 0xffff}};
+GXOamAttr data_020e4864[1] = {{0x400080f0, 0x95, 0, 0x0, 0xffff}};
+GXOamAttr data_020e53f8[9] = {{0x1f700e7, 0xb7, 0, 0x3, 0x0}, {0x120000, 0xf6, 0, 0x3, 0x0}, {0x1010000c, 0x97, 0, 0x3, 0x0}, {0x300400e4, 0x95, 0, 0x3, 0x0}, {0x1e900f9, 0xb6, 0, 0x3, 0x0}, {0xe00f5, 0xb6, 0, 0x3, 0x0}, {0x1100ea, 0xd7, 0, 0x3, 0x0}, {0x11ef00ed, 0xd7, 0, 0x3, 0x0}, {0x11ec0006, 0x97, 0, 0x3, 0xffff}};
 }
 void SkySprites::updateFireworksShow() {
     BOOL r4 = FALSE;
@@ -5425,7 +5405,7 @@ extern "C" void SkySprites_Draw(SkySprites *obj) {
         if (e->state != 2) continue;
         if (e->hidden != 0) continue;
         sub = &e->anim;
-        r = (GXOamAttr *)sub->getCell();
+        r = sub->getCell();
         if (r == NULL) continue;
         pos = &e->screenPos;
         a = sub->getFrameX(id);
@@ -5578,7 +5558,7 @@ extern "C" void RainSe_Update(RainSndChannel *p) {
     if (p->volume != 0) {
         s32 k = sRainSeIds[Scene_GetSkyKind(0)];
         if (k >= 0) {
-            p->callRequest((void *)(k));
+            p->callRequest(k);
         }
     }
     func_02133ef8(v, 12);
@@ -6795,7 +6775,7 @@ extern "C" void Sky_RequestBirds(void) { gSkySprites.birdsRequested = 1; }
 
 
 extern "C" {
-u32 data_020e48dc[2] = {0x91f000f0, 0xffff211c};
+GXOamAttr data_020e48dc[1] = {{0x91f000f0, 0x11c, 0, 0x2, 0xffff}};
 const s32 sFireworkFlicker[2] = {0x1000, 0x800};
 const u8 sSkyPaletteLayer[4] = {
     0x6, 0x2, 0x0, 0x0,

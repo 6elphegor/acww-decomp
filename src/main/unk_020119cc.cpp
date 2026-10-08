@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "proto/main/unk_0202fa70.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -95,6 +96,7 @@
 #include "town/BlockMap.h"
 #include "town/MapBlock.h"
 #include "npc/VillagerRoute.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -356,13 +358,8 @@ s32 MapBlock_HasAnyAttr(void *, u32);
 s32 Random_PickSetBit(u32, s32, s32);
 void *SaveVillagers_PickRandomExcept(void *, void *, u32);
 void VillagerRoute_PickPathUnitInBlock(Vec2 *out, void *self, void *a, BlockMap *w);
-void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
-void FieldPos_FromUnitCenter(VecFx32 *, s32, s32);
-void *BlockMap_BlockHasAllAttr(BlockMap *map, s32 x, s32 z, u32 attr);
-MapBlock *BlockMap_FindBlockAllAttr(BlockMap *, u32);
 s32 Random_Next(void *);
 s32 func_01ffcb0c(s32, s32);
-void FieldPos_SnapToUnitCenter(VecFx32 *, VecFx32 *);
 s32 TownMap_IsPosWalkable(VecFx32 *, s32);
 s32 TownMap_IsUnitWalkable(s32, s32, BlockMap *);
 static inline MapBlock *GetCell(BlockMap *w, u32 x, u32 y)
@@ -388,15 +385,9 @@ extern "C" {
 namespace nC2 { extern VecXZ sRouteDirs[4]; }
 extern s32 sRouteDirs[];
 extern BlockMap *gSceneBlockMap;
-u32 BlockMap_GetBlockAttr(BlockMap *o, s32 x, s32 z);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-void FieldPos_ToBlockUnit2(RouteGridPos *a, RouteGridPos *c, VecFx32 *v);
-void FieldPos_FromBlockUnitCenter(VecFx32 *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, BlockMap *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
-void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
-void FieldPos_ToUnit(u32 *x, u32 *z, VecFx32 *v);
-void FieldPos_FromUnitCenter(VecFx32 *out, u32 x, u32 z);
 void *MI_CpuFill8(void *, int, u32);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridPos *p, BlockMap *obj);
@@ -407,8 +398,6 @@ void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridP
 namespace nD {
 extern "C" {
 
-void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
-void FieldPos_ToUnit(u32 *a, u32 *b, VecFx32 *v);
 void MI_CpuFill8(void* p, u32 v, u32 n);
 static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
 {
@@ -609,12 +598,10 @@ extern u16 data_020c6cc8;
 extern BlockMap *gSceneBlockMap;
 extern CommManager *gCommManager;
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void FieldPos_SnapToUnitCenter(VecFx32 *out, VecFx32 *in);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
-void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
 s32 Ground_GetDefaultY(s32 a);
 void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
 }
@@ -844,7 +831,7 @@ extern "C" BOOL NpcActor_IsFrontAngle(s32 x) {
 
 BOOL NpcActor::isPosInFront(s16 *out, VecFx32 *pos) {
     using namespace nR;
-    *out = Math_AngleXZ(&position.x, &pos->x);
+    *out = Math_AngleXZ(&position, pos);
     return NpcActor_IsFrontAngle((s16)(*out - rotY));
 }
 
@@ -886,7 +873,7 @@ s32 NpcActor::getAngleTo(NpcActor *other) {
     using namespace nR;
     s32 r = 0;
     if (other != NULL) {
-        r = Math_AngleXZ(&position.x, &other->position.x);
+        r = Math_AngleXZ(&position, &other->position);
     }
     return r;
 }
@@ -898,7 +885,7 @@ s32 NpcActor::getAngleToPlayer(u32 id) {
     VecFx32 vec;
     flag = 0;
     if (PlayerActor_GetSlotPosXZ(&flag, &vec.x, &vec.z, -1, id) != 0) {
-        result = Math_AngleXZ(&position.x, &vec.x);
+        result = Math_AngleXZ(&position, &vec);
     } else {
         NpcActor *p = (NpcActor *)PlayerActor_GetCharacter(id);
         if (p != NULL) {
@@ -1644,7 +1631,7 @@ void NpcMoveCtrl::applyMovement(Character *scene) {
             hi = curSpeedPreset.z;
         }
         Math_StepS32Alt(&scene->speed, lo, hi);
-        s32 ang = Math_AngleXZ(&scene->position.x, &destination.x);
+        s32 ang = Math_AngleXZ(&scene->position, &destination);
         if (ang == scene->moveAngleY) {
             s32 d = Vec_DistXZ(&destination, (VecFx32 *)&scene->position);
             if (d < scene->speed) {
@@ -1689,7 +1676,7 @@ s32 NpcMoveCtrl::getMoveMode() {
 
 void NpcMoveCtrl::aimAtDestination(Character *scene) {
     using namespace nP;
-    targetAngle = Math_AngleXZ(&scene->position.x, &destination.x);
+    targetAngle = Math_AngleXZ(&scene->position, &destination);
 }
 
 s32 NpcMoveCtrl::stepAngle(s16 *p, s16 target, s16 step, u8 mode) {
@@ -2048,7 +2035,7 @@ BOOL NpcLookAt::canSeeTarget(Character *scene) {
 
 s32 NpcLookAt::calcYaw(VecFx32 *a, VecFx32 *b, s32 c) {
     using namespace nP;
-    return (s16)(Math_AngleXZ(&b->x, &a->x) - c);
+    return (s16)(Math_AngleXZ(b, a) - c);
 }
 
 s32 NpcLookAt::calcPitch(VecFx32 *a, VecFx32 *b, s32 c) {
@@ -5259,7 +5246,7 @@ void ActorTalkRequest::makePlayerLookAt(NpcActor *p) {
     u32 a = TalkRequest_GetPlayerId();
     VecFx32 *b = (VecFx32 *)PlayerActor_GetBodyPos(a);
     if (b != NULL) {
-        s32 s = Math_AngleXZ(&b->x, &p->position.x);
+        s32 s = Math_AngleXZ(b, &p->position);
         s16 d = s - ((Actor *)PlayerActor_GetCharacter(4))->rotY;
         PlayerActor_SetHeadTilt(0, d, a);
     }
@@ -5270,7 +5257,7 @@ void ActorTalkRequest::makePlayerTurnTo(NpcActor *p) {
     u32 a = TalkRequest_GetPlayerId();
     VecFx32 *b = (VecFx32 *)PlayerActor_GetBodyPos(a);
     if (b != NULL) {
-        s32 s = Math_AngleXZ(&b->x, &p->position.x);
+        s32 s = Math_AngleXZ(b, &p->position);
         PlayerActor_SetHeadTilt(0, 0, a);
         PlayerActor_RequestTurnTo(s, a);
         PlayerActor_SetNoFaceTalkTarget(1, a);
@@ -6818,6 +6805,31 @@ s32 NpcActor::getTeachableEmotion() {
     return -1;
 }
 
+// The route code keeps unit / block coordinates unsigned (RouteGridPos, VillagerRoute::lastUnitX/Z); the field
+// position helpers (src/main/unk_0204cc1c.cpp) write them as s32.
+static inline void RouteUnit_FromPos(u32 *x, u32 *z, VecFx32 *v) {
+    s32 ux, uz;
+    FieldPos_ToUnit(&ux, &uz, v);
+    *x = ux;
+    *z = uz;
+}
+
+static inline void RouteUnit_FromBlockUnit(u32 *x, u32 *z, s32 bx, s32 bz, s32 ux, s32 uz) {
+    s32 ox, oz;
+    FieldUnit_FromBlockUnit(&ox, &oz, bx, bz, ux, uz);
+    *x = ox;
+    *z = oz;
+}
+
+static inline void RouteGridPos_FromPos(RouteGridPos *block, RouteGridPos *unit, VecFx32 *v) {
+    s32 b[2], u[2];
+    FieldPos_ToBlockUnit2(b, u, v);
+    block->x = b[0];
+    block->z = b[1];
+    unit->x = u[0];
+    unit->z = u[1];
+}
+
 VillagerRoute* VillagerRoute::resetTarget() {
     using namespace nD;
     targetUnit.x = 0;
@@ -6866,7 +6878,7 @@ void VillagerRoute::start(VecFx32 *pos, u32 idx, u32 b, NpcActor *owner) {
 
 void VillagerRoute::rememberUnit(VecFx32 *v) {
     using namespace nD;
-    FieldPos_ToUnit(&lastUnitX, &lastUnitZ, v);
+    RouteUnit_FromPos(&lastUnitX, &lastUnitZ, v);
 }
 
 void VillagerRoute::markUnitUnset() {
@@ -6881,7 +6893,7 @@ void VillagerRoute::checkUnitChanged(VecFx32 *v) {
     using namespace nD;
     u32 a = 0;
     u32 b = 0;
-    FieldPos_ToUnit(&a, &b, v);
+    RouteUnit_FromPos(&a, &b, v);
     if (lastUnitX != 0 && lastUnitZ != 0 && (lastUnitX != a || lastUnitZ != b)) {
         stepPhase = 3;
         ((VillagerRoute *)(this))->clearJunctions();
@@ -6941,12 +6953,12 @@ u32 VillagerRoute::pickAdjacentUnit(VecFx32 *v, BlockMap *o) {
     out.x = 0;
     out.z = 0;
     n = 0;
-    FieldPos_ToBlockUnit2(&a, &c, v);
+    RouteGridPos_FromPos(&a, &c, v);
     for (i = 0; i < 4; i++) {
         u32 x = c.x + ((VecXZ *)sRouteDirs)[i].x;
         u32 z = c.z + ((VecXZ *)sRouteDirs)[i].z;
         if (x < 16 && z < 16) {
-            FieldUnit_FromBlockUnit(&out.x, &out.z, a.x, a.z, x, z);
+            RouteUnit_FromBlockUnit(&out.x, &out.z, a.x, a.z, x, z);
             if (TownMap_IsUnitWalkable(out.x, out.z, o) != 0) {
                 mask = mask | (1 << i);
                 n++;
@@ -6984,7 +6996,7 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, VecFx32 *pos) {
     if (o == 0) {
         return 4;
     }
-    FieldPos_ToUnit(&p.x, &p.z, pos);
+    RouteUnit_FromPos(&p.x, &p.z, pos);
     RouteGridPos *pq = (RouteGridPos *)&o->unitsX;
     q.x = pq->x;
     q.z = pq->z;
@@ -6996,7 +7008,7 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, VecFx32 *pos) {
         cand[i].y = pos->y;
         cand[i].z = pos->z;
     }
-    FieldPos_ToUnit(&p.x, &p.z, pos);
+    RouteUnit_FromPos(&p.x, &p.z, pos);
     flag = (BlockMap_GetBlockAttr(o, pos->x >> 17, pos->z >> 17) & 0x7f000) != 0 ? 1 : 0;
     x0 = p.x & 0xfff0;
     z0 = p.z & 0xfff0;
@@ -7034,7 +7046,7 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, VecFx32 *pos) {
             dir = r;
         }
     }
-    FieldPos_ToUnit(&out->x, &out->z, &best);
+    RouteUnit_FromPos(&out->x, &out->z, &best);
 
     return dir;
 }
@@ -7181,7 +7193,7 @@ extern "C" void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused,
     s32 cnt = 0;
     s32 z, x;
     MI_CpuFill8(mask, 0, 32);
-    FieldUnit_FromBlockUnit(&bx, &bz, p->x, p->z, 0, 0);
+    RouteUnit_FromBlockUnit(&bx, &bz, p->x, p->z, 0, 0);
     for (z = 0; z < 16; z++) {
         for (x = 0; x < 16; x++) {
             if (obj->getWalkLinks(bx + x, bz + z) != 0) {
@@ -7258,7 +7270,7 @@ void VillagerRoute::planStep(VecFx32 *pos) {
     r.x = 0;
     r.z = 0;
     bestd = -4096;
-    FieldPos_ToUnit(&p.x, &p.z, pos);
+    RouteUnit_FromPos(&p.x, &p.z, pos);
     if ((present & ~dirs) == 0) {
         if (scanDir(&r, p, dirs, &q, o)) {
             waypoint.x = r.x;
@@ -7490,7 +7502,7 @@ BOOL VillagerRoute::stepWander(VecFx32 *p) {
     VecFx32 tmp;
     FieldPos_FromUnitCenter(&tmp, targetUnit.x, targetUnit.y);
     if (mode == 0) {
-        base = Math_AngleXZ(&p->x, &tmp.x);
+        base = Math_AngleXZ(p, &tmp);
         mag = 0x1000;
     } else if (mode == 1) {
         base = (s16)Random_Next(&gRandom);

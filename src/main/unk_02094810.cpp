@@ -4,6 +4,7 @@
 #include "gfx/Mtx43.h"
 #include "player/PlayerActor.h"
 #include "player/Unk_02007694.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_02000c2c.h"
 #include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02063904.h"
@@ -57,8 +58,6 @@ s32 TalkRequest_IsSaveMenuRunning();
 void PlayerActor_GetHeldItem(void *out, PlayerActor *o);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-void *Scene_GetWarpRequest();
-void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
 s32 PlayerActor_RequestStowItem(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 s32 PlayerActor_RequestFishReelIn(PlayerActor *o, u32 a, u32 b, s32 c);
 void PlayerActor_EndStandUpFront(PlayerActor *o, s32 a);
@@ -887,7 +886,7 @@ extern "C" s32 PlayerActor_RequestAct10() {
 extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
     PlayerActor *o = PlayerActor_Get(4);
     s16 h;
-    s32 pad;
+    u32 pad;
     VecFx32Ctor v;
     if (o) {
         o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);

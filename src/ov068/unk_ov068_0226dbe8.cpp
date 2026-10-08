@@ -199,7 +199,7 @@ BOOL Item_IsFurnitureOrF031(u16 *p);
 }
 
 static PlayerErrands *HouseVisit_GetErrands() {
-    return (PlayerErrands *)PlayerData_GetCurrent()->getErrands();
+    return PlayerData_GetCurrent()->getErrands();
 }
 
 extern "C" {

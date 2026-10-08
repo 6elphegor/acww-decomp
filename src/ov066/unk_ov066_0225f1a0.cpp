@@ -276,7 +276,7 @@ struct LocalWlSession {
     /* 0xa4 */ void (*childSendHook)(void);
     /* 0xa8 */ void (*shutdownHook)(void);
     /* 0xac */ void (*sendControlHook)(u8 *, u32, u32, void (*)(void));
-    /* 0xb0 */ s32 (*sendHook)(u32, u32, u32, u32);
+    /* 0xb0 */ s32 (*sendHook)(u8 *, u32, u32, void (*)(u32));
     /* 0xb4 */ s32 (*isReadyToSendHook)(void);
     /* 0xb8 */ void (*recvCallback)(u32, u8 *, u32);
     /* 0xbc */ void (*memberLeftHook)(u32);
@@ -453,7 +453,7 @@ void LocalWlMp_Start(u8 *msg) {
     sLocalWlSession->parentSendHook = LocalWlMp_ParentSendStep;
     sLocalWlSession->childSendHook = LocalWlMp_ChildSendStep;
     sLocalWlSession->sendControlHook = LocalWlMp_SendControl;
-    sLocalWlSession->sendHook = (s32 (*)(u32, u32, u32, u32))LocalWlMp_Send;
+    sLocalWlSession->sendHook = LocalWlMp_Send;
     sLocalWlSession->isReadyToSendHook = LocalWlMp_IsReadyToSend;
     sLocalWlSession->shutdownHook = LocalWlMp_Shutdown;
     sLocalWlSession->memberLeftHook = (void (*)(u32))LocalWlMp_OnMemberLeft;
@@ -994,14 +994,14 @@ void LocalWlMp_Reset(void) {
 #define LocalWl_PickChannel ((s32 (*)(u32))LocalWl_PickChannel)
 #define LocalWl_CompareMac ((s32 (*)(void *, void *))LocalWl_CompareMac)
 
-s32 LocalWlMp_SetRecvBuffer(s32 idx, u32 a, u32 b) {
+s32 LocalWlMp_SetRecvBuffer(s32 idx, u8 *a, u32 b) {
     BOOL r = FALSE;
     u32 t = OS_DisableInterrupts();
     LocalWlMpWork *g = sLocalWlMp;
     LocalWlMpRecvEntry *p;
     if (g != NULL && (p = g->recvEntries) != NULL && sLocalWlSession != NULL && idx < (s32)sLocalWl->maxMembers) {
         if ((g->recvActiveMask & (1 << idx)) == 0) {
-            p[idx].buffer = (u8 *)a;
+            p[idx].buffer = a;
             r = TRUE;
             p[idx].bufferSize = b;
         }
@@ -1428,7 +1428,7 @@ s32 LocalWl_IsReadyToSend(void) {
     return 0;
 }
 
-s32 LocalWl_Send(u32 a, u32 b, u32 c, u32 d) {
+s32 LocalWl_Send(u8 *a, u32 b, u32 c, void (*d)(u32)) {
     if (sLocalWlSession != NULL) {
         if (sLocalWlSession->sendHook != NULL) {
             return sLocalWlSession->sendHook(a, b, c, d);
@@ -2219,12 +2219,12 @@ BOOL LocalWl_IsMacSet(u8 *p) {
     return FALSE;
 }
 
-void LocalWl_SetRecvCallback(u32 v) {
+void LocalWl_SetRecvCallback(void (*v)(u32, u8 *, u32)) {
     if (sLocalWlSession == NULL) {
         return;
     }
     u32 s = OS_DisableInterrupts();
-    sLocalWlSession->recvCallback = (void (*)(u32, u8 *, u32))v;
+    sLocalWlSession->recvCallback = v;
     OS_RestoreInterrupts(s);
 }
 

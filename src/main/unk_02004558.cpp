@@ -1,4 +1,5 @@
 #include "game/CollisionState.h"
+#include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/sp2
 // Translation unit 0x02004558-0x0201106c (the player object, class PlayerActor). Built by two compilers:
 // this file (thunks need mwcc 1.2/sp2) and unk_02004558_extra.cpp (14 functions need 1.2/base); the
@@ -133,6 +134,7 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "sys/Heap.h"
 #include "gfx/ScreenTransition.h"
 #include "gfx/Camera.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
@@ -191,6 +193,7 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02235fd0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -389,8 +392,6 @@ extern u8 data_020c64c8[];
 extern u8 data_020c6434[];
 extern u8 sPlayerActionLevelsTilt[];
 void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
-void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
 void PlayerActor_RequestAct66(void *p, void *v, s32 a, s32 b, s32 c);
 void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force);
@@ -806,13 +807,11 @@ extern CommManager* gCommManager;
 extern u8 gFieldSceneKind[];
 extern u8 sPlayerActorErrorMsgFile[];
 extern char sPlayerActorMsgFile[];
-extern void* gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 void PendingUnit_CommitAt(Unk_02006d14_Pair* p, u32 v);
 void PendingUnit_ApplyAt(Unk_02006d14_Pair* p, u32 v);
-void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
 BOOL Item_IsFurniture(u16* p);
 s32 Item_GetFurnitureIndex(u16* p);
-void* BlockMap_GetItemPtrAtPos(void* a, void* b, u32 c);
 BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
 void Camera_SetMode4();
@@ -835,12 +834,10 @@ extern char sPlayerActorMsgFile[];
 extern u8 sPlayerActorErrorMsgFile[];
 BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
-void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
-u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
 void PendingUnit_CommitAt(Vec2* p, u32 z);
 void PendingUnit_ApplyAt(Vec2* p, u32 z);
 void VillagerTrend_NotifyUnk6(void* p);
-extern void* gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 BOOL Item_IsFurniture(void* p);
 u32 Item_GetFurnitureIndex(void* p);
 s32 _s32_div_f(s32 a, s32 b);
@@ -872,13 +869,11 @@ static inline void func_0200bc78_sub(VecFx32Ctor *o, VecFx32Ctor *a, VecFx32Ctor
     o->z = a->z - b->z;
 }
 extern u8 gFieldSceneKind;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern CommManager *gCommManager;
 extern u8 data_020c61d0[];
 extern u16 gPad[];
 BOOL Scene_InHouseRoom();
-void FieldPos_FromUnitCenter(void *, u32, u32);
-u16 *BlockMap_GetItemPtrAtPos(void *, void *, u32);
 void *TalkRequest_GetTalkTarget();
 s32 Math_Atan2(s32, s32);
 void PlayerActor_TurnAngle(void *, s32);
@@ -961,10 +956,6 @@ s32 Item_GetFurnitureIndex(u16 *p);
 s32 Scene_NoPlayerInUnsharedScene();
 void TalkRequest_FinishSceneEntry();
 BOOL TalkRequestFlags_IsResetti();
-u8 *Scene_GetTouchPicker();
-u16 *BlockMap_GetItemPtrAtPos(void *a, VecFx32Ctor *b, u32 c);
-void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32Ctor *v);
-void FieldPos_SnapToUnitCenter(VecFx32Ctor *a, VecFx32Ctor *b);
 s32 Vec_MagXZ(VecFx32Ctor *v);
 s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -972,7 +963,7 @@ s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 extern Unk_0200d64c_Keys gPad;
 extern s32 gGfxMainOnTop;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 data_020d5e50[];
 extern u8 data_020d5e34[];
 extern u8 data_020d5e48[];
@@ -1042,7 +1033,6 @@ s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_GetTan(PlayerActor *p);
-s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_CalcHandItemPos(VecFx32 *out, PlayerActor *p, void *args);
 void PlayerActor_StepTowardPoseFast(PlayerActor *p, s32 a, s32 b, s32 c);
@@ -1062,7 +1052,7 @@ extern "C" {
 extern s16 data_02135f44[];
 extern s32 sPlayerFrontPointDist;
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u32 data_020c6210[];
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
@@ -1075,7 +1065,6 @@ void MI_CpuCopy8(void *a, void *b, s32 n);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *a, VecFx32 *v);
 BOOL PlayerActor_ApproachAngle(s16 *a, s32 b, s32 c, s32 d, s32 e);
 void PlayerActor_TurnAngle(s16 *a, s32 b);
 s32 PlayerActor_ApproachCoord(void *a, s32 b);
@@ -1084,11 +1073,9 @@ void PlayerActor_GetHeldItem(Unk_0200f660_S *s, PlayerActor *o);
 BOOL Item_IsFurniture(Unk_0200f660_S *s);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 ItemInfo_GetHoldableIndex(Unk_0200f660_S *s);
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 void PlayerActor_RequestPickUpItem(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
 void PlayerActor_RequestPluckReach(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b);
 void PlayerActor_RequestAct66(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
-void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FieldAction_RequestToolForAid(void *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
 s32 FieldAction_RequestPickUpForAid(void *o, Unk_0200f6d4_V2 v, s32 a);
 s32 FieldAction_RequestFillHoleForAid(void *o, Unk_0200f6d4_V2 v, s32 a);
@@ -1107,7 +1094,7 @@ void PlayerActor_SetLastPlayDate(PlayerActor *o, PlayerData *a, Unk_0200f17c_Dat
 s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
 s32 PlayerActor_CompareLastPlayDateNow(void *o);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
-void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b);
+void PlayerActor_GetFrontUnitCenter(VecFx32 *a, PlayerActor *b);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
 void PlayerActor_StepTowardPoseFast(PlayerActor *o, s32 a, s32 b, s32 c);
 void PlayerActor_StepTowardPose(PlayerActor *o, s32 a, s32 b, s32 c);
@@ -1161,14 +1148,12 @@ extern u8 sPlayerActionColliderFlag2[];
 extern u16 sPlayerAnimResIndex[];
 BOOL Scene_InUnk6To8(void);
 u32 Scene_GetCurrent(void);
-u8 *Scene_GetTouchPicker();
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, u32 b);
 void BlendAnimModel_Play(void *p, void *anm, s32 blend, s32 mode, s32 speed, u16 frame, u16 numFrames);
 u32 Ground_GetDefaultY(u32 a);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
-void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 void PlayerActor_TurnAngle(void *a, s32 target);
 void *PlayerActor_GetPlayerData(void *p);
 s32 PlayerActor_GetTan(void *p);
@@ -1192,8 +1177,6 @@ s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 void PlayerActor_ApproachValue(s32 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 s32 Ground_GetExitAtPos(VecFx32 *p);
-void *Scene_GetWarpRequest(void);
-BOOL SceneExit_GetDoor(void *a, s32 b, s32 *c, s32 *d);
 BOOL Scene_InUnk6To8(void);
 void TalkRequest_FinishSceneEntry(void);
 void TalkRequest_AddLeaveRoom(void);
@@ -2005,9 +1988,9 @@ extern "C" void *PlayerActor_Create() {
 
 namespace nT {
 extern "C" void PlayerActor_CheckSceneExit(s32 a) {
-    s32 sp0;
+    s16 sp0;
     s32 sp4;
-    s32 sp8;
+    u32 sp8;
     VecFx32 *pos;
     if (((CommManager *)(gCommManager))->isLocalSlot(a) && !PlayerActor_TestSlotFlag(0xb, a) && !PlayerActor_TestSlotFlag(0x13, a) &&
         !PlayerActor_TestSlotFlag(5, a) && (pos = (VecFx32 *)PlayerActor_GetBodyPos(4)) != NULL) {
@@ -2481,7 +2464,7 @@ void PlayerActor::submitSceneCollider() {
         v.y = p->y;
         v.z = p->z;
         v.y += 0xb33;
-        TouchPicker *r = (TouchPicker *)Scene_GetTouchPicker();
+        TouchPicker *r = Scene_GetTouchPicker();
         r->addCylinder((TouchPickCylinder *)((u8 *)&touchCylinder), (VecFx32 *)(&v), 0xa00, 0x15cf, 1, (u8)sessionSlot);
     }
 }
@@ -2897,7 +2880,7 @@ u32 PlayerActor::getFieldAnswerKind() {
     return *(u32 *)((u8 *)FieldAction_Get(((PlayerActor *)this)->fieldQuery) + 0xc);
 }
 
-BOOL PlayerActor::startFieldQuery(s32 a, s32 mode, s32 idx) {
+BOOL PlayerActor::startFieldQuery(VecFx32 *a, s32 mode, s32 idx) {
     using namespace nQ;
     if (((PlayerActor *)this)->fieldQuery == -1 && gSceneBlockMap != NULL) {
         Unk_0200f6d4_V2 v;
@@ -2958,7 +2941,7 @@ s32 PlayerActor::startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b) {
     if (((PlayerActor *)this)->fieldQuery == -1) {
         s32 x = p->x, y = p->y;
         s32 hx = x >> 4, hy = y >> 4;
-        void *r = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        u16 *r = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (r == NULL) {
             ((PlayerActor *)this)->actionItem = ((PlayerActor *)this)->shownItem = 0xfff1;
             result = 2;
@@ -2984,7 +2967,7 @@ s32 PlayerActor::startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b) {
     return result;
 }
 
-BOOL PlayerActor::requestByFieldAnswer(s32 a, s32 b) {
+BOOL PlayerActor::requestByFieldAnswer(VecFx32 *a, s32 b) {
     using namespace nQ;
     s32 t = (((PlayerActor *)this))->getFieldAnswerKind();
     Unk_0200f6d4_V2 v;
@@ -3097,7 +3080,7 @@ s32 PlayerActor::turnAwayFromCamera(s32 a) {
 }
 
 namespace nQ {
-extern "C" void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b) {
+extern "C" void PlayerActor_GetFrontUnitCenter(VecFx32 *a, PlayerActor *b) {
     VecFx32 v;
     PlayerActor_GetFrontPoint(&v, b);
     FieldPos_SnapToUnitCenter(a, &v);
@@ -3254,9 +3237,9 @@ void PlayerActor::updateShownItemPos(u32 a, ...) {
     using namespace nP;
     VecFx32 v;
     PlayerActor_CalcHandItemPos(&v, ((PlayerActor *)this), &a);
-    Math_ApproachS32(&((PlayerActor *)this)->shownItemPosX, v.x, 0x800, 0x2000, 0x333);
-    Math_ApproachS32(&((PlayerActor *)this)->shownItemPosY, v.y, 0x800, 0x2000, 0x333);
-    Math_ApproachS32(&((PlayerActor *)this)->shownItemPosZ, v.z, 0x800, 0x2000, 0x333);
+    Math_ApproachS32(&((PlayerActor *)this)->shownItemPos.x, v.x, 0x800, 0x2000, 0x333);
+    Math_ApproachS32(&((PlayerActor *)this)->shownItemPos.y, v.y, 0x800, 0x2000, 0x333);
+    Math_ApproachS32(&((PlayerActor *)this)->shownItemPos.z, v.z, 0x800, 0x2000, 0x333);
 }
 
 BOOL PlayerActor::getNetTransformInArea(VecFx32 *out, s16 *ang) {
@@ -5054,11 +5037,11 @@ void PlayerActor::setupPickUpReach(PlayerActionRequest *item, u32 old) {
     p->b4 = 0;
     ((PlayerNetPickUpReachArgs *)&((PlayerActor *)this)->netData)->writePickUpReachNet(Unk_0200b750_Pair(a, b), c);
     if (c < 0) {
-        FieldPos_FromUnitCenter(&((PlayerActor *)this)->shownItemPosX, a, b);
+        FieldPos_FromUnitCenter(&((PlayerActor *)this)->shownItemPos, a, b);
         ((PlayerActor *)this)->shownItemScaleX = 0x1000;
         ((PlayerActor *)this)->shownItemScaleY = 0x1000;
         ((PlayerActor *)this)->shownItemScaleZ = 0x1000;
-        ((PlayerActor *)this)->shownItem = *BlockMap_GetItemPtrAtPos(gSceneBlockMap, &((PlayerActor *)this)->shownItemPosX, 0);
+        ((PlayerActor *)this)->shownItem = *BlockMap_GetItemPtrAtPos(gSceneBlockMap, &((PlayerActor *)this)->shownItemPos, 0);
         ((PlayerActor *)this)->actionItem = ((PlayerActor *)this)->shownItem;
     }
     if (Pocket_FindEmpty() == -1 && Scene_InHouseRoom()) {
@@ -5218,13 +5201,13 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
     u8 flag = o->commitUnit;
     if (z < 0) {
         BOOL r;
-        FieldPos_FromUnitCenter(&shownItemPosX, x, y);
+        FieldPos_FromUnitCenter(&shownItemPos, x, y);
         ((PlayerActor *)this)->shownItemScaleX = 0x1000;
         ((PlayerActor *)this)->shownItemScaleY = 0x1000;
         ((PlayerActor *)this)->shownItemScaleZ = 0x1000;
         r = Unk_0200add8_IsFFF1(&t[0], &t[2]);
         if (r) {
-            ((PlayerActor *)this)->shownItem = *BlockMap_GetItemPtrAtPos(gSceneBlockMap, &shownItemPosX, 0);
+            ((PlayerActor *)this)->shownItem = *BlockMap_GetItemPtrAtPos(gSceneBlockMap, &shownItemPos, 0);
             ((PlayerActor *)this)->actionItem = ((PlayerActor *)this)->shownItem;
         } else {
             ((PlayerActor *)this)->shownItem = t[0];
@@ -5409,9 +5392,9 @@ void PlayerActor::pickUpUpdateItem() {
         if (r == NULL) {
             return;
         }
-        ((PlayerActor *)this)->shownItemPosX = r->x;
-        ((PlayerActor *)this)->shownItemPosY = r->y;
-        ((PlayerActor *)this)->shownItemPosZ = r->z;
+        ((PlayerActor *)this)->shownItemPos.x = r->x;
+        ((PlayerActor *)this)->shownItemPos.y = r->y;
+        ((PlayerActor *)this)->shownItemPos.z = r->z;
         ((PlayerActor *)(this))->setActionFlag(0xd);
         ((PlayerActor *)this)->shownItemScaleX = 0x1000;
         ((PlayerActor *)this)->shownItemScaleY = 0x1000;
@@ -5548,7 +5531,7 @@ void PlayerActor::setupPickUpFanfare(PlayerActionRequest* item, u32 v) {
     s->unitX = a;
     s->unitZ = c;
     s->commitUnit = d;
-    FieldPos_FromUnitCenter(&((PlayerActor *)this)->shownItemPosX, a, c);
+    FieldPos_FromUnitCenter(&((PlayerActor *)this)->shownItemPos, a, c);
     ((PlayerActor *)this)->shownItemScaleX = 0x1000;
     ((PlayerActor *)this)->shownItemScaleY = 0x1000;
     ((PlayerActor *)this)->shownItemScaleZ = 0x1000;
@@ -5561,7 +5544,7 @@ void PlayerActor::setupPickUpFanfare(PlayerActionRequest* item, u32 v) {
         r = g[0] == 0xfff1;
     }
     if (r) {
-        u16* pp = (u16*)BlockMap_GetItemPtrAtPos(gSceneBlockMap, &((PlayerActor *)this)->shownItemPosX, 0);
+        u16* pp = (u16*)BlockMap_GetItemPtrAtPos(gSceneBlockMap, &((PlayerActor *)this)->shownItemPos, 0);
         ((PlayerActor *)this)->shownItem = *pp;
         ((PlayerActor *)this)->actionItem = ((PlayerActor *)this)->shownItem;
     } else {
@@ -6902,9 +6885,9 @@ void PlayerActor::setupHoldUpItem() {
     netData.writeU16(actionItem);
     VecFx32 v;
     PlayerActor_CalcHeldUpItemPos(&v, this, 0);
-    shownItemPosX = v.x;
-    shownItemPosY = v.y;
-    shownItemPosZ = v.z;
+    shownItemPos.x = v.x;
+    shownItemPos.y = v.y;
+    shownItemPos.z = v.z;
     t = 0x1000;
     shownItemScaleX = t;
     shownItemScaleY = t;
@@ -7596,18 +7579,18 @@ void PlayerActor::doDraw() {
         BOOL c = gFieldSceneKind == 0 ? TRUE : FALSE;
         if (c == TRUE) {
             VecFx32Copy a[2];
-            a[0].x = shownItemPosX;
-            a[0].y = shownItemPosY;
-            a[0].z = shownItemPosZ;
+            a[0].x = shownItemPos.x;
+            a[0].y = shownItemPos.y;
+            a[0].z = shownItemPos.z;
             a[1].x = shownItemScaleX;
             a[1].y = shownItemScaleY;
             a[1].z = shownItemScaleZ;
             Field_DrawItemModel(shownItem, &a[0], &a[1], 0, 0, 0);
         } else {
             VecFx32Copy b[2];
-            b[0].x = shownItemPosX;
-            b[0].y = shownItemPosY;
-            b[0].z = shownItemPosZ;
+            b[0].x = shownItemPos.x;
+            b[0].y = shownItemPos.y;
+            b[0].z = shownItemPos.z;
             b[1].x = shownItemScaleX;
             b[1].y = shownItemScaleY;
             b[1].z = shownItemScaleZ;

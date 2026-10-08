@@ -37,11 +37,11 @@ typedef GTI2IncomingBufferMessage It;
 
 extern "C" {
 extern u8 data_ov065_0228e150[];
-s32 ArrayNth(void *, s32);
+void *ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 gti2GetChallenge(void *);
+char *gti2GetChallenge(void *);
 s32 gti2BufferShorten(void *, s32, s32);
 s32 gti2BufferWriteData(void *, void *, s32);
 s32 gti2GetBufferFreeSpace(void *);
@@ -233,7 +233,7 @@ s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 
 char *Sock_InetNtoA(GsInAddr a);
 SockHostEnt *Sock_GetHostByName(const char *name);
-s32 ArrayNth(void *list, s32 i);
+void *ArrayNth(void *list, s32 i);
 s32 ArrayLength(void *list);
 s32 inet_addr(const char *s);
 s32 getsockname(s32 fd, SockAddrIn *sa, s32 *len);

@@ -49,6 +49,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov071/unk_ov071_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class SpNpcLyle;
@@ -91,7 +92,6 @@ u32 Item_GetFurnitureIndex(u16 *p);
 u32 Random_Next(u32 *seed);
 BOOL TalkRequest_SetTargetDone(Character *c);
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
@@ -576,7 +576,7 @@ BOOL SpNpcLyle::mainAct03() {
                     v.y = gVec3Zero.y;
                     v.z = gVec3Zero.z;
                     if (pickWanderTarget(&v.x, &v.z) != 0) {
-                        s32 ang = Math_AngleXZ(&position.x, &v.x);
+                        s32 ang = Math_AngleXZ(&position, &v);
                         if (NpcActor_IsFrontAngle((s16)(ang - rotY)) != 0) {
                             s32 kind = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -606,7 +606,7 @@ BOOL SpNpcLyle::mainAct03() {
                         v2.x = q->x;
                         v2.y = q->y;
                         v2.z = q->z;
-                        s32 a = Math_AngleXZ(&position.x, &v2.x);
+                        s32 a = Math_AngleXZ(&position, &v2);
                         if (NpcActor_IsFrontAngle((s16)(a - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }

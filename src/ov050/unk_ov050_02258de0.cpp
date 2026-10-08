@@ -59,6 +59,7 @@
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 #include "proto/ov050/unk_ov050_02258de0.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -355,7 +356,6 @@ BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetShopPrice(u16 *p);
 s32 Item_GetMemberPrice(u16 *p);
 s32 Item_GetPrice(u16 *p);
-void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *v);
 void VillagerTrend_OnFurnitureBought();
 BOOL SaveVillagers_AllKnowPlayer(u8 *self, void *p);
 s32 Date_DaysBetween(u8 *a, u8 *b);
@@ -374,7 +374,6 @@ void *NookShop_GetRenovation(void *g);
 BOOL NookShop_HasClass4Furniture(void *g);
 BOOL NookShop_IsPointSpecialToday(void *g);
 BOOL NookShop_IsSaleTime(void *g);
-u8 *Scene_GetTouchPicker();
 u8 Scene_GetPrevious();
 u32 Scene_GetCurrent();
 BOOL TouchPick_GetGroundPos(TouchPickResult *a, VecFx32 *b);
@@ -1433,7 +1432,7 @@ void SpNpcNookShopTalk::handleDeliveryMenu() {
                 requestTakeItem(&m.item, 2, 5, 0);
             }
             m.msgIndex = 3;
-            ((ErrandRecord *)(ParcelErrand_GetRecord(&((PlayerErrands *)r7->getErrands())->parcelErrand)))->setStep(1);
+            ((ErrandRecord *)(ParcelErrand_GetRecord(&(r7->getErrands())->parcelErrand)))->setStep(1);
         }
     }
     if (ownerNpc->isNook()) {
@@ -1551,7 +1550,7 @@ void SpNpcNookShopTalk::givePlantingItems() {
 
 BOOL SpNpcNookShopTalk::checkNotInUniform(TalkStartMsg *out) {
     PlayerData *r4 = PlayerData_GetCurrent();
-    if (Arbeit_IsOnDuty((PlayerErrands *)r4->getErrands()) && r4) {
+    if (Arbeit_IsOnDuty(r4->getErrands()) && r4) {
         u16 *p = r4->getShirt();
         u16 t;
         if (!Unk_ov050_0225bd54_Same(p, &t, 0x11a8)) {
@@ -1564,7 +1563,7 @@ BOOL SpNpcNookShopTalk::checkNotInUniform(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0B(TalkStartMsg *out) {
     PlayerData *g = PlayerData_GetCurrent();
-    PlayerErrands *s0 = (PlayerErrands *)g->getErrands();
+    PlayerErrands *s0 = g->getErrands();
     PlayerErrandSlot *a = PlayerErrands_GetSlot(s0, 0);
     void *r4 = PlayerErrandSlot_GetRecord(a);
     Pocket_FindEmpty();
@@ -1610,7 +1609,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0B(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0C(TalkStartMsg *out) {
     PlayerData *g = PlayerData_GetCurrent();
-    void *p = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)g->getErrands(), 0));
+    void *p = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(g->getErrands(), 0));
     Pocket_FindEmpty();
     if (!checkNotInUniform(out)) {
         BOOL k0 = FALSE, k1 = FALSE, k2 = FALSE, k3 = FALSE, k4 = FALSE;
@@ -1646,7 +1645,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0C(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0D(TalkStartMsg *out) {
     PlayerData *g = PlayerData_GetCurrent();
-    PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)g->getErrands(), 0));
+    PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(g->getErrands(), 0));
     Pocket_FindEmpty();
     if (!checkNotInUniform(out)) {
         if (!(g->testFlag(10) && SaveVillagers_AllKnowPlayer(gSaveData.villagers, g->getPlayerId()))) {
@@ -1667,7 +1666,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0D(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0E(TalkStartMsg *out) {
     if (!checkNotInUniform(out)) {
-        if (((ErrandRecord *)(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)PlayerData_GetCurrent()->getErrands(), 0))))->getStep() == 1) {
+        if (((ErrandRecord *)(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_GetCurrent()->getErrands(), 0))))->getStep() == 1) {
             out->msgIndex = 0x1e;
         } else if (ownerNpc->arbeitPrompted == 0) {
             out->msgIndex = 0x1c;
@@ -1682,7 +1681,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0E(TalkStartMsg *out) {
 void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
     if (!checkNotInUniform(out)) {
         PlayerData *g = PlayerData_GetCurrent();
-        PlayerErrandSlot *a = PlayerErrands_GetSlot((PlayerErrands *)g->getErrands(), 0);
+        PlayerErrandSlot *a = PlayerErrands_GetSlot(g->getErrands(), 0);
         void *b = PlayerErrandSlot_GetRecord(a);
         VillagerId *c = PlayerErrandSlot_GetVillager(a, 1);
         MsgString9B o;
@@ -1719,7 +1718,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
     if (checkNotInUniform(out) == 0) {
-        PlayerErrands *h = (PlayerErrands *)PlayerData_GetCurrent()->getErrands();
+        PlayerErrands *h = PlayerData_GetCurrent()->getErrands();
         if (((ErrandRecord *)(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))))->getStep() == 1) {
             out->msgIndex = 0x2c;
         } else if (ownerNpc->arbeitPrompted == 0) {
@@ -1733,7 +1732,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
     if (checkNotInUniform(out) == 0) {
-        PlayerErrands *h = (PlayerErrands *)PlayerData_GetCurrent()->getErrands();
+        PlayerErrands *h = PlayerData_GetCurrent()->getErrands();
         if (((ErrandRecord *)(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))))->getStep() == 1) {
             out->msgIndex = 0x31;
         } else if (ownerNpc->arbeitPrompted == 0) {
@@ -1747,7 +1746,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg12(TalkStartMsg *out) {
     if (checkNotInUniform(out) == 0) {
-        PlayerErrands *h = (PlayerErrands *)PlayerData_GetCurrent()->getErrands();
+        PlayerErrands *h = PlayerData_GetCurrent()->getErrands();
         if (((ErrandRecord *)(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))))->getStep() == 1) {
             out->msgIndex = 0x33;
         } else if (ownerNpc->arbeitPrompted == 0) {
@@ -1786,7 +1785,7 @@ extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31] = {
 };
 
 void SpNpcNookShopTalk::onArbeitMessageEnd() {
-    PlayerErrands *h = (PlayerErrands *)PlayerData_GetCurrent()->getErrands();
+    PlayerErrands *h = PlayerData_GetCurrent()->getErrands();
     PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
     nextMsg = 0xff;
     static SpNpcNookShopArbeitMessageEndHandler tbl[24] = {
@@ -2054,7 +2053,7 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
     u16 w0, w4, w6, w8, wa, t0, t1, t2, t3;
     ClockDateBytes s, v, o1, o2, c;
     PlayerData *h = PlayerData_GetCurrent();
-    ParcelErrand *r7 = &((PlayerErrands *)h->getErrands())->parcelErrand;
+    ParcelErrand *r7 = &(h->getErrands())->parcelErrand;
     x = h->getErrands();
     if (h->testFlag(1)) {
         void *ev = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)x, 0));
@@ -3047,13 +3046,13 @@ BOOL SpNpcNookShop::pickItemTopic() {
     if (f) {
         void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
-            if (o != TouchPick_GetTargetObject((TouchPicker *)Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             VecFx32 v2;
-            TouchPick_GetGroundPos((TouchPicker *)Scene_GetTouchPicker(), &v2);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

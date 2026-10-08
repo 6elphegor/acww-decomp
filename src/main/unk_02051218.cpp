@@ -5,6 +5,7 @@
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern "C" const u32 data_020ca638;
 
@@ -12,12 +13,11 @@ extern "C" {
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 gFieldSceneKind;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 
 u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);
 s32 FtrActor_GetFtrIndex(void *p);
-void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 
@@ -41,13 +41,13 @@ extern "C" u32 BedSpot_GetRollResult() { return SpotSync_GetReserveResult(); }
 extern "C" BOOL Room_CanDropOnFurnitureAt(s32 x, s32 y) {
     BOOL r;
     if (gFieldSceneKind == 1 ? TRUE : FALSE) {
-        void *p = gSceneBlockMap;
+        BlockMap *p = gSceneBlockMap;
         FtrActor *q = FtrActorGrid_GetInstance()->getActor(x, y, 0);
         if (p != NULL && q != NULL) {
             s32 hx = x >> 4;
             s32 hy = y >> 4;
             u16 code;
-            void *o = BlockMap_GetItemPtr(p, hx, hy, x - (hx << 4), y - (hy << 4), 1);
+            u16 *o = BlockMap_GetItemPtr(p, hx, hy, x - (hx << 4), y - (hy << 4), 1);
             if (FtrInfo_GetDmaUnk04(FtrActor_GetFtrIndex(q)) == 1 && o != NULL) {
                 if (Item_IsFurniture(o) != 0) {
                     code = 0xfff1;

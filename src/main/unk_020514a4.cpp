@@ -13,6 +13,7 @@
 #include "proto/main/unk_02060034.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class SpotReservation {
@@ -64,7 +65,7 @@ public:
 
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 gSaveHouse[];
 extern const FtrFootprintShape sFtrFootprint1x1;
 extern const FtrFootprintShape sFtrFootprint2x1;
@@ -82,10 +83,7 @@ u8 FtrActor_GetLayer(FtrActor *a);
 s32 FtrActor_PredIsStereo(void *p);
 
 u32 Scene_GetCurrent();
-void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void *BlockMap_GetForArea(s32 a);
-s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
+BlockMap *BlockMap_GetForArea(s32 a);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *p);
 s32 SceneId_IsHouseRoom(u32 id);
@@ -389,7 +387,7 @@ extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool 
             return o->changeAct(e, i);
         }
     }
-    void *t = BlockMap_GetForArea(a);
+    BlockMap *t = BlockMap_GetForArea(a);
     if (t) {
         s32 hb = b >> 4;
         s32 hc = c >> 4;
@@ -606,7 +604,7 @@ extern "C" s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g
 }
 
 extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i) {
-    void *o;
+    BlockMap *o;
     u16 loc[3];
     Unk_0205242c_Self pk;
     FtrPlaceRecord bits;
@@ -662,7 +660,7 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
 }
 
 extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h) {
-    void *o;
+    BlockMap *o;
     u32 idx;
     s32 x, y;
     BOOL k;
@@ -723,7 +721,7 @@ extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *
 }
 
 extern "C" void FtrSync_SetTopItem(s32 a, s32 b, s32 c, u16 *d, u8 f) {
-    void *o;
+    BlockMap *o;
     if ((gFieldSceneKind == 1 ? TRUE : FALSE) && a == Scene_GetCurrent()) {
         o = gSceneBlockMap;
     } else {
@@ -796,7 +794,7 @@ extern "C" void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d) {
     }
 }
 
-extern "C" void FtrSync_RequestToggleGyroid(s32 a, s32 b, s32 c) {
+extern "C" void FtrSync_RequestToggleGyroid(s32 a, VecFx32 *b, s32 c) {
     s32 x, y;
     FieldPos_ToUnit(&x, &y, b);
     FtrSync_RequestToggleGyroidAt(a, x, y, c);

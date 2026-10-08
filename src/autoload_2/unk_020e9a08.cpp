@@ -5,10 +5,6 @@
 // tail of RC_020e92f4), unk_020ea0b4.cpp, unk_020ea34c.cpp (G002c) and unk_020ea960.cpp (G003a) are merged into this
 // one file with one set of typed declarations. Its .data (0x0213b058-0x0213b120) and bss (autoload_3
 // 0x021f488c-0x021f5974) are defined at the end of the file.
-//
-// The overlays' network APIs (ov065 DWC / GameSpy HTTP, ov066 local wireless, ov067 Wlx) still take several buffers
-// and callbacks as 32-bit integers (their definitions; only works below 4 GB): the calls here convert at those places
-// (NetWord / NetPtr, marked "(ov06x: as an integer)").
 #include "types.h"
 #include "net/HexTable.h"
 #include "net/Net.h"
@@ -58,25 +54,12 @@ BOOL DWC_IsEqualFriendData(void *a, void *b);
 // ov065 functions the generated headers leave out (include/proto/.excluded), as their definitions write them
 void DwcInet_Init(DwcInetControl *p);
 void DwcNet_SetAllocator(void *(*alloc)(s32, s32, s32), void *(*free)(s32, void *, s32));
-void DwcCore_Init(DwcControl *g, void *userData, void *productId, const char *gameName, const char *secretKey,
-                  void *a5, void *a6, void *friendList, void *friendCount);
 s32 DwcMatch_SetOption(s32 m, u8 *p);
 BOOL DwcMatch_IsServerLocked(void);
 void DwcMatch_ClearServerLock(void);
 // ov066
 void *LocalWl_GetBeaconGameInfo(LocalWlBeacon *r);
 }
-
-// a buffer / callback address as the overlays' integer parameters take it, and back
-static inline u32 NetWord(const void *p) {
-    return (u32)(uptr)p;
-}
-static inline void *NetPtr(u32 w) {
-    return (void *)(uptr)w;
-}
-
-// the GameSpy HTTP request callback (ov065 DwcGsHttp_Get / _Post): data, length, result, user word
-typedef void (*NetHttpFn)(s32, s32, s32, u32);
 
 // the parameters LocalWlMp_Start reads (ov066: its config message)
 struct NetInit {
@@ -144,7 +127,7 @@ extern "C" BOOL Net_SendNextQueued(void) {
     if (OS_ReadMessage(&sSendQueue, &msg, 0) != 0) {
         s = &sSendSlots[(uptr)msg];
         st = sNetMode;
-        if ((u8)(st + 255) <= 1) return LocalWl_Send(NetWord(s->data), s->size, s->aid, NetWord((void *)Net_OnSendDone));  // (ov066: as integers)
+        if ((u8)(st + 255) <= 1) return LocalWl_Send(s->data, s->size, s->aid, Net_OnSendDone);
         if ((u8)(st + 253) <= 1) return DwcNet_SendReliable((u8)s->aid, s->data, s->size);
     }
     return FALSE;
@@ -237,7 +220,7 @@ extern "C" void Net_OnWifiClientMatched(s32 result, s32 b, s32 c, s32 d, s32 e, 
     if (result == 0) data_0213b06c = 0;
 }
 
-extern "C" void Net_OnWifiClosedNop(void) {
+extern "C" void Net_OnWifiClosedNop(s32 error, s32 isLocal, s32 isServer, s32 aid, s32 index, s32 param) {
 }
 
 extern "C" void Net_OnWifiSendDone(u32 size, u32 aid) {
@@ -256,7 +239,7 @@ extern "C" void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, void *p
     data_021f48cc = (u32)((OS_GetTick() << 6) / 33514);
 }
 
-extern "C" void Net_WifiCallbackNop(void) {
+extern "C" void Net_WifiCallbackNop(s32 index, void *param) {
 }
 
 extern "C" void Net_OnWifiServersUpdated(s32 result, s32 b, s32 arg) {
@@ -272,13 +255,15 @@ extern "C" void Net_OnWifiServersUpdated(s32 result, s32 b, s32 arg) {
     }
 }
 
-extern "C" void Net_OnWifiFriendStatus(u32 a) {
+extern "C" void Net_OnWifiFriendStatus(s32 index, s32 status, char *statusString, s32 param) {
+    u32 a = index;
     s32 local;
     NetWifiFriendStatus *st = &sWifiFriendList->status[a];
     st->status = DwcFriend_GetStatusData(&sWifiFriendList->friends[a], &st->b, &st->c, st->statusString, &local);
 }
 
-extern "C" void Net_OnWifiFriendDeleted(u32 a) {
+extern "C" void Net_OnWifiFriendDeleted(s32 deletedIndex, s32 srcIndex, s32 param) {
+    u32 a = deletedIndex;
     MI_CpuFill8(&sWifiFriendList->friends[a], 0, sizeof(NetWifiFriendData));
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
     sWifiFriendList->status[a].status = 0;
@@ -288,36 +273,36 @@ extern "C" void Net_OnWifiFriendDeleted(u32 a) {
 extern "C" void Net_OnWifiLogin(s32 result, s32 b, s32 arg) {
     if (result != 0) return;
     DwcFriend_SetStatusData(sWifiUserData, 16);  // (the name and town)
-    DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, arg, NetWord((void *)Net_OnWifiFriendStatus), arg,
-                                 NetWord((void *)Net_OnWifiFriendDeleted), arg);  // (ov065: callbacks as integers)
+    DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, arg, Net_OnWifiFriendStatus, arg, Net_OnWifiFriendDeleted,
+                                 arg);
 }
 
-extern "C" void Net_OnGameStatsUploadDone(s32 data, s32 len, s32 result, u32 ud) {
+extern "C" void Net_OnGameStatsUploadDone(char *data, s32 len, s32 result, void *ud) {
     data_0213b064 = 1;
 }
 
-// (the HTTP callbacks get the data and their user word as integers: ov065)
-extern "C" void Net_OnGameStatsDownloadDone(s32 data, s32 len, s32 result, u32 ud) {
-    if (data != 0 && len != 0 && result == 0) {
-        NasBase64_Decode((s8 *)NetPtr(data), len, (u8 *)NetPtr(ud), data_021f48ac);
+// (the HTTP callbacks get the received data and the request's user data: the destination buffer)
+extern "C" void Net_OnGameStatsDownloadDone(char *data, s32 len, s32 result, void *ud) {
+    if (data != NULL && len != 0 && result == 0) {
+        NasBase64_Decode((s8 *)data, len, (u8 *)ud, data_021f48ac);
     }
     data_0213b068 = 1;
 }
 
-extern "C" void Net_OnHttpDownloadDone(s32 data, s32 len, s32 result, u32 ud) {
-    if (data != 0 && len != 0 && result == 0) {
-        MI_CpuCopy8(NetPtr(data), NetPtr(ud), data_021f48ac);
+extern "C" void Net_OnHttpDownloadDone(char *data, s32 len, s32 result, void *ud) {
+    if (data != NULL && len != 0 && result == 0) {
+        MI_CpuCopy8(data, ud, data_021f48ac);
     }
     data_0213b068 = 1;
 }
 
 // the server's challenge: the hash of the secret and the challenge, hex-encoded, goes into the download request
-extern "C" void Net_OnGameStatsChallenge(s32 challenge, s32 len, s32 result, u32 ud) {
+extern "C" void Net_OnGameStatsChallenge(char *challenge, s32 len, s32 result, void *ud) {
     u32 i;
-    if (challenge != 0 && len != 0 && result == 0) {
-        char *d = (char *)NetPtr(ud);
+    if (challenge != NULL && len != 0 && result == 0) {
+        char *d = (char *)ud;
         STD_CopyString(d, NET_GAMESTATS_SECRET);
-        STD_ConcatenateString(d, (const char *)NetPtr(challenge));
+        STD_ConcatenateString(d, challenge);
         MATH_CalcSHA1(data_021f48a4 + 20, d, len + STD_GetStringLength(NET_GAMESTATS_SECRET));
         HexTable hex = data_0213b070;
         u8 *src = (u8 *)data_021f48a4 + 20;
@@ -327,14 +312,14 @@ extern "C" void Net_OnGameStatsChallenge(s32 challenge, s32 len, s32 result, u32
         }
         data_021f48a4[40] = 0;
         OS_SNPrintf(data_021f48dc, 0x100, "%s?pid=%llu&hash=%s&region=%s", data_021f48e4, Net_GetOwnFriendKey(&sWifiUserData->userData), data_021f48a4, data_021f48a8);
-        DwcGsHttp_Get(NetWord(data_021f48dc), Net_OnGameStatsDownloadDone, ud);  // (ov065: the URL as an integer)
+        DwcGsHttp_Get(data_021f48dc, Net_OnGameStatsDownloadDone, ud);
     } else {
         data_0213b068 = 1;
     }
 }
 
-extern "C" void Net_OnWlxStopped(u32 a) {
-    if (a == 0) data_021f48e0 = 1;
+extern "C" void Net_OnWlxStopped(s32 event, void *arg) {
+    if (event == 0) data_021f48e0 = 1;
 }
 
 extern "C" void Net_OnWlxExchangeDone(void) {
@@ -437,7 +422,7 @@ extern "C" void Net_StartLocal(u32 mode, NetRecvFn recv) {
     LocalWl_Init(data_0213b05c, Net_Alloc, Net_Free, NULL);
     LocalWl_SetEventCallback(Net_OnLocalPeerEvent);
     LocalWlMp_Start((u8 *)&init);
-    LocalWl_SetRecvCallback(NetWord((void *)Net_OnLocalRecv));  // (ov066: the callback as an integer)
+    LocalWl_SetRecvCallback(Net_OnLocalRecv);
     if (mode == 1) {
         LocalWl_RequestMode(3, 0, 0);
     } else if (mode == 2) {
@@ -493,9 +478,9 @@ extern "C" BOOL Net_WifiConnectStep(void) {
         DwcGsHttp_Startup();  // (the original passes the game name, which it doesn't use)
         data_0213b064 = 1;
         data_0213b06c = 1;
-        // (ov065: the product id and the friend count in pointer parameters)
-        DwcCore_Init((DwcControl *)data_021f4bc0, &sWifiUserData->userData, NetPtr(0x299e), "acrossingds", "h2P9x6", NULL, NULL,
-                     sWifiFriendList, NetPtr(32));
+        // (the game's friend list entries as DWC's friend data: both the SDK's 12-byte DWCFriendData)
+        DwcCore_Init((DwcControl *)data_021f4bc0, &sWifiUserData->userData, 0x299e, "acrossingds", "h2P9x6", 0, 0,
+                     (DwcFriendData *)sWifiFriendList->friends, 32);
         DwcLogin_Start(0, 0, Net_OnWifiLogin, 0);
         sWifiConnectStep = 3;
         break;
@@ -659,7 +644,7 @@ extern "C" BOOL Net_GetLinkLevel(void) {
 
 extern "C" BOOL Net_SetRecvBuffer(u32 aid, u8 *buf, u32 size) {
     u32 st = sNetMode;
-    if ((u8)(st + 255) <= 1) return LocalWlMp_SetRecvBuffer(aid, NetWord(buf), size);  // (ov066: the buffer as an integer)
+    if ((u8)(st + 255) <= 1) return LocalWlMp_SetRecvBuffer(aid, buf, size);
     if ((u8)(st + 253) > 1) return FALSE;
     return DwcNet_SetRecvBuffer((u8)aid, buf, size);
 }
@@ -943,10 +928,10 @@ extern "C" u8 *Net_GetWifiFriendList(void) {
 extern "C" BOOL Net_WifiStartHost(void) {
     if (sWifiConnectStep < 4) return FALSE;
     sNetMode = 3;
-    DwcMatch_SetupGameServer(data_021f488c, Net_OnWifiHostMatched, 0, NetWord((void *)Net_WifiCallbackNop), 0);  // (ov065: as an integer)
+    DwcMatch_SetupGameServer(data_021f488c, Net_OnWifiHostMatched, NULL, Net_WifiCallbackNop, NULL);
     DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
     DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
-    DwcConn_SetClosedCallback(NetWord((void *)Net_OnWifiClosedNop), 0);  // (ov065: as an integer)
+    DwcConn_SetClosedCallback(Net_OnWifiClosedNop, 0);
     return TRUE;
 }
 
@@ -956,10 +941,10 @@ extern "C" BOOL Net_WifiConnectToHost(u32 a) {
     sNetMode = 4;
     r = Net_WifiFindFriend(a);
     if (r == (u32)-1) return FALSE;
-    DwcMatch_ConnectToFriendServer(r, Net_OnWifiClientMatched, 0, NetWord((void *)Net_WifiCallbackNop), 0);  // (ov065: as an integer)
+    DwcMatch_ConnectToFriendServer(r, Net_OnWifiClientMatched, NULL, Net_WifiCallbackNop, NULL);
     DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
     DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
-    DwcConn_SetClosedCallback(NetWord((void *)Net_OnWifiClosedNop), 0);  // (ov065: as an integer)
+    DwcConn_SetClosedCallback(Net_OnWifiClosedNop, 0);
     return TRUE;
 }
 
@@ -1003,7 +988,7 @@ extern "C" u64 Net_GetFriendKey(void *friendData) {
 // uploads size bytes at data to url: base64 (after the secret, which the hash covers), the hash, the friend key and
 // the region
 extern "C" BOOL Net_GameStatsUpload(const char *url, void *data, u32 size, const char *region) {
-    s32 builder;
+    GHIPost *builder;
     HexTable hex;
     char buf[16];
     u32 sz;
@@ -1041,7 +1026,7 @@ extern "C" BOOL Net_GameStatsUpload(const char *url, void *data, u32 size, const
         DwcGsHttp_PostAddString(&builder, "hash", data_021f48c4);
         DwcGsHttp_PostAddString(&builder, "data", data_021f48b4 + 0x14);
         DwcGsHttp_PostAddString(&builder, "region", region);
-        DwcGsHttp_Post(NetWord(url), &builder, Net_OnGameStatsUploadDone, 0);  // (ov065: the URL as an integer)
+        DwcGsHttp_Post(url, &builder, Net_OnGameStatsUploadDone, NULL);
         return TRUE;
     }
     return FALSE;
@@ -1079,7 +1064,7 @@ extern "C" BOOL Net_GameStatsDownload(const char *url, void *buf, u32 size, cons
         data_021f48ac = size;
         data_021f48a8 = region;
         OS_SNPrintf(data_021f48dc, 0x100, "%s?pid=%llu&region=%s", data_021f48e4, Net_GetOwnFriendKey(&sWifiUserData->userData), region);
-        DwcGsHttp_Get(NetWord(data_021f48dc), Net_OnGameStatsChallenge, NetWord(buf));  // (ov065: as integers)
+        DwcGsHttp_Get(data_021f48dc, Net_OnGameStatsChallenge, buf);
         return TRUE;
     }
     return FALSE;
@@ -1091,7 +1076,7 @@ extern "C" BOOL Net_HttpDownload(const char *url, void *buf, u32 size, const cha
     if (data_0213b068 == 0) return FALSE;
     data_021f48ac = size;
     data_0213b068 = 0;
-    DwcGsHttp_Get(NetWord(url), Net_OnHttpDownloadDone, NetWord(buf));  // (ov065: as integers)
+    DwcGsHttp_Get(url, Net_OnHttpDownloadDone, buf);
     return TRUE;
 }
 
@@ -1132,8 +1117,8 @@ extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
     sWifiFriendList->status[a].status = 0;
     data_0213b06c = 1;
-    r = DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, 0, NetWord((void *)Net_OnWifiFriendStatus), 0,
-                                     NetWord((void *)Net_OnWifiFriendDeleted), 0);  // (ov065: callbacks as integers)
+    r = DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, 0, Net_OnWifiFriendStatus, 0, Net_OnWifiFriendDeleted,
+                                     0);
     if (r == 0) data_0213b06c = 0;
     return r;
 }
@@ -1169,7 +1154,7 @@ extern "C" void Net_StartOv067(void *send, void *recv, u32 n) {
     data_021f48e0 = 0;
     data_021f48e8 = 0;
     data_021f48c0 = Net_Alloc(0xa000, 32);
-    Wlx_Init(NetWord(data_021f48c0), NetWord((void *)Net_OnWlxStopped), 2);  // (ov067: as integers)
+    Wlx_Init(data_021f48c0, Net_OnWlxStopped, 2);
     Wlx_SetPacketSizes(60, 60, 1);
     Wlx_RegisterData(data_021f48b8, (void (*)(u32, void *))Net_OnWlxExchangeDone, (u8 *)send, n, (u8 *)recv, n);
 }

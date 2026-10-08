@@ -1,4 +1,5 @@
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "game/TouchPicker.h"
 #include "game/TouchPickSphere.h"
@@ -27,7 +28,6 @@ void MIi_CpuCopyFast(void *a, void *b, u32 c);
 void DC_FlushRange(void *a, u32 b);
 void GX_LoadOAM(void *a, u32 b, u32 c);
 void GXS_LoadOAM(void *a, u32 b, u32 c);
-TouchPicker *Scene_GetTouchPicker();
 }
 
 

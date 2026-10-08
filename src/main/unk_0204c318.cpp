@@ -5,6 +5,7 @@
 #include "town/TownState.h"
 #include "proto/main/unk_0204c318.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -12,10 +13,6 @@
 
 
 extern "C" {
-Unk_0204da0c_Map *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(Unk_0204da0c_Map *m, s32 cx, s32 cy, s32 lx, s32 ly, s32 z);
-s32 BlockMap_SetItemAtUnit(Unk_0204da0c_Map *m, u16 *v, s32 x, s32 y, s32 z);
-s32 BlockMap_ClearBuriedAtUnit(Unk_0204da0c_Map *m, s32 x, s32 y);
 void Clock_GetDate(void *p);
 s32 Date_IsAfterOrEqual(void *a, void *b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
@@ -112,11 +109,10 @@ extern "C" void TownState_ClampDate(ClockDate *p) {
 }
 
 extern "C" void Town_SetNativeFruitTrees(TownState *p) {
-    Unk_0204da0c_Map *m = TownBlockMap_Get();
+    BlockMap *m = TownBlockMap_Get();
     if (m) {
-        Unk_0204da0c_Size *sz = &m->size;
-        s32 w = sz->w << 4;
-        s32 h = sz->h << 4;
+        s32 w = m->width << 4;
+        s32 h = m->height << 4;
         s32 x, y, cx, cy;
         y = 0;
         u16 v = sNativeFruitTrees[p->nativeFruit];

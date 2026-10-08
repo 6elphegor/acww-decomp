@@ -89,7 +89,7 @@ extern u32 gOwnIp;
 extern u32 sIpThreadPriority;
 extern OSThread sIpRecvThread;
 extern OSThread sIpTimerThread;
-extern u32 sRecvRingWaiter;
+extern void *sRecvRingWaiter;
 extern u8 *sRecvRingBuf;
 extern u32 sRecvRingSize;
 extern void (*sIpIdleCallback)(void);
@@ -934,7 +934,7 @@ void OS_WakeupThreadDirect(OSThread *);
 // same overlay, out of range
 s32 Arp_SendRequest(u32);
 u32 Ip_GetNextHop(u32);
-s32 Arp_Lookup(u32);
+u8 *Arp_Lookup(u32);
 s32 Ip_IsMulticast(u32);
 u32 Ip_Checksum(u8 *, u32);
 u32 Ip_ChecksumFinish(u32);
@@ -1257,7 +1257,7 @@ s32 Ip_IsNextHopResolved(u32 x) {
     if (r == 0) {
         return 1;
     }
-    return Arp_Lookup(r);
+    return Arp_Lookup(r) != NULL;  // (the callers test it against 0)
 }
 
 void Tcp_SendControl(Sess *s, u32 a, u32 b) {
@@ -1765,7 +1765,7 @@ s32 Icmp_SendEchoRequest(u8 *, u32, Sess *);
 s32 Ssl_Write(u8 *, u32, u8 *, u32, Sess *);
 s32 Tcp_SendSegment(u8 *, u32, Sess *, u32, u32);
 s32 Ssl_Consume(u32, Sess *);
-s32 Ssl_Read(u32 *, Sess *);
+u8 *Ssl_Read(u32 *, Sess *);
 s32 Tcp_SendAck(Sess *, u32);
 s32 Tcp_SendFinAck(Sess *, u32);
 s32 Tcp_SendControl(Sess *, u32, u32);
@@ -2144,7 +2144,7 @@ u8 *IpSoc_Read(u32 *out) {
             return IpSoc_WaitDatagram(out, s);
         }
         if (s->useSsl != 0) {
-            return (u8 *)Ssl_Read(out, s);
+            return Ssl_Read(out, s);
         }
         return Tcp_Read(out, s);
     }

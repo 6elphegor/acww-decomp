@@ -13,6 +13,7 @@
 #include "talk/MsgString9C.h"
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -36,7 +37,6 @@
 #include "nitro/gxoam.h"
 
 extern "C" {
-u8 *Scene_GetWarpRequest();
 VecFx32 *ScenePos_GetPos(void *p);  // ScenePos (src/main/unk_020b4828.cpp)
 BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
 void MIi_CpuCopy16(const void *src, void *dst, u32 n);

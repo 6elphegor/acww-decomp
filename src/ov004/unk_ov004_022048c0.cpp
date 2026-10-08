@@ -1,4 +1,5 @@
 #include "game/BoxCollider.h"
+#include "proto/main/unk_020b4828.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -26,7 +27,6 @@ extern "C" {
 u16 *NookPoints_GetValuePtr(void *p);
 s32 NookPoints_GetRank(u32 x);
 s32 NookPoints_GetToNextRank(u16 *p);
-TouchPicker *Scene_GetTouchPicker();
 BOOL TalkRequest_SetTargetDone(void *p);
 BOOL BoxCollider_Unregister(BoxCollider *self);
 BOOL BoxCollider_Register(BoxCollider *self, s32 a, s32 b, s32 c, VecFx32 *pos, s16 angle, VecFx32 *scale);

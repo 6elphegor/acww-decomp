@@ -2,10 +2,11 @@
 #define GFX_SPRITEANIM_H
 
 #include "types.h"
+#include "nitro/gxoam.h"
 
 // 12-byte animation frame: cell pointer, duration and offset
 struct SpriteAnimFrame {
-    /* 0x00 */ void *cell;
+    /* 0x00 */ GXOamAttr *cell;
     /* 0x04 */ s32 duration;
     /* 0x08 */ s16 x;
     /* 0x0a */ s16 y;
@@ -31,7 +32,7 @@ public:
     s32 getFrameX(s32 v);
     SpriteAnimSeq *getSeq();
     s32 getFrameIndex();
-    void *getCell();
+    GXOamAttr *getCell();
     void setFrame(s32 a, s32 b);
     void setSpeed(s32 v);
     void setPlayOnce(s32 v);

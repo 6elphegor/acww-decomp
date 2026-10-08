@@ -5,6 +5,9 @@
 
 #include "types.h"
 struct CharaAnimCache;
+#ifndef __cplusplus
+typedef struct CharaAnimCache CharaAnimCache;
+#endif
 #ifdef __cplusplus
 #include "player/AnimSlotRef.h"
 #include "sys/Heap.h"
@@ -297,13 +300,13 @@ extern void *gSpNpcAnimPoolHeap;
 extern void *gRoomBclHeap;
 #endif
 #ifndef PROTO_LOCAL_gNetHeap
-extern void *gNetHeap;
+extern Heap *gNetHeap;
 #endif
 #ifndef PROTO_LOCAL_gModelCacheHeap
-extern void *gModelCacheHeap;
+extern Heap *gModelCacheHeap;
 #endif
 #ifndef PROTO_LOCAL_gMenuHeap
-extern void *gMenuHeap;
+extern Heap *gMenuHeap;
 #endif
 #ifndef PROTO_LOCAL_gBgHeap
 extern void *gBgHeap;

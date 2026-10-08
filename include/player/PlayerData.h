@@ -6,6 +6,8 @@
 #include "item/Letter.h"
 #include "save/Pattern.h"
 #include "game/NibblePair.h"
+#include "player/PlayerErrands.h"
+#include "save/DramaPart.h"
 
 // One player's save record (0x228c bytes on every host: plain data, the save image; gSavePlayers holds four,
 // gGuestPlayers three; walked as PlayerData[] / with sizeof(PlayerData)): patterns, inventory, catalog,
@@ -42,7 +44,7 @@ public:
     /* 0x1b48 */ u8 catalog[0x123];
     /* 0x1c6b */ u8 options[1];
     /* 0x1c6c */ u8 futureLetter[0xf8];
-    /* 0x1d64 */ u8 errands[0xac];
+    /* 0x1d64 */ PlayerErrands errands;
     /* 0x1e10 */ u8 wifiUserData[0x50];
     /* 0x1e60 */ u8 friendList[0x384];
     /* 0x21e4 */ u8 bank[8];
@@ -60,7 +62,7 @@ public:
     /* 0x2216 */ s16 lastPlayDate;
     /* 0x2218 */ u8 birthday[2];
     /* 0x221a */ u8 spNpcRecord[0x11];
-    /* 0x222b */ u8 dramaRecord[5];
+    /* 0x222b */ DramaRecord dramaRecord;
     /* 0x2230 */ u8 lostChildRecord[0xc];
     /* 0x223c */ NibblePair faceHair;
     /* 0x223d */ Unk_0209865c_Tri hairColorTanFortune;
@@ -72,16 +74,16 @@ public:
     /* 0x225c */ u8 foreignVillagerRecord[0x1a]; // ForeignVillagerRecord: town 0x00, villager 0x0a, present 0x16
     /* 0x2276 */ u8 id[0x16];
 
-    void *getErrands();
+    PlayerErrands *getErrands();
     void *getOptions();
     void *getFriendList();
     void *getWifiUserData();
     void *getSpNpcRecord();
     void *getDailyTalkFlags();
     void *getLostChildRecord();
-    void *getDramaRecord();
+    DramaRecord *getDramaRecord();
     void *getNookPoints();
-    void *getCatalog();
+    u8 *getCatalog();  // the catalog bits (Catalog_* in unk_0203c23c.cpp)
     void *getPatterns();
     void setBed(u16 *v);
     u16 *getBed();

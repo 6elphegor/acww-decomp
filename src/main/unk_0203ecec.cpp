@@ -44,7 +44,7 @@ extern u8 data_021e87d8[];
 }
 
 extern "C" {
-extern s32 gCamera;
+extern Camera *gCamera;
 }
 
 extern "C" {
@@ -63,7 +63,6 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 gCommManager;
 }
 
 extern "C" {
@@ -393,7 +392,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, const VecFx32 *in) {
     o->y = in->y;
     o->z = in->z;
     if (gCamera) {
-        s32 v = ((Camera *)(gCamera))->getPitch();
+        s32 v = gCamera->getPitch();
         if (v > 0x27f7) {
             v = 0x27f7;
         } else if (v < 0x21fd) {

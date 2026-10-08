@@ -1110,7 +1110,7 @@ s32 OS_TryLockMutex(void *m);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 s32 SockCore_ExecOnRecvSide(Sess *s, void *m);
-u32 SockCore_AllocMsg(void *fn, void *s, s32 idx);
+void *SockCore_AllocMsg(void *fn, void *s, s32 idx);
 s32 SockCore_IsInvalidHandle(Sess *s);
 void IpSoc_Bind(u16 a, u16 b, void *c);
 s32 IpSoc_TcpConnect();

@@ -2106,7 +2106,7 @@ void PostOfficeMenu::updateOnlineSend() {
 }
 
 BOOL PostOfficeMenu::sendLetterRecord(Letter *p) {
-    Heap *heap = (Heap *)gMenuHeap;
+    Heap *heap = gMenuHeap;
     u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
     buf[0] = 8;
     MI_CpuCopy8(p, buf + 1, 0xf4);

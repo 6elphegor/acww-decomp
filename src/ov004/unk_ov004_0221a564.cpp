@@ -264,7 +264,7 @@ BOOL SickVillager::preDelete() {
 
 BOOL SickVillager::updateAct() {
     execAct();
-    ((VillagerMood *)(&mood))->updateSoundPos((VillagerTalk *)(this));
+    mood.updateSoundPos(this);
     return TRUE;
 }
 
@@ -556,7 +556,7 @@ void SickVillager::mainAct00() {
     if (mood.severeSickness != 0) {
         if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
             if (gFrameCounter % 14 == 0) {
-                ((VillagerMood *)(&mood))->playMood3Effect((VillagerTalk *)(this));
+                mood.playMood3Effect(this);
             }
         }
     }

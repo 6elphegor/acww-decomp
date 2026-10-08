@@ -47,6 +47,7 @@
 #include "proto/main/unk_020a8c9c.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov088/unk_ov088_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -73,7 +74,6 @@ extern Camera *gCamera;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 BOOL TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void MI_CpuFill8(void *p, s32 v, u32 n);
@@ -423,7 +423,7 @@ BOOL SpNpcShrunk::mainAct02() {
                     v.y = gVec3Zero.y;
                     v.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        r6 = Math_AngleXZ(&position.x, &v.x);
+                        r6 = Math_AngleXZ(&position, &v);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY))) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -452,7 +452,7 @@ BOOL SpNpcShrunk::mainAct02() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &w.x) - rotY)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }

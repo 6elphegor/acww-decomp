@@ -51,14 +51,8 @@ s32 BuildingList_Add(void *p);
 #ifndef PROTO_LOCAL_BuildingList_Remove
 s32 BuildingList_Remove(void *p);
 #endif
-#ifndef PROTO_LOCAL_BuildingList_FindByGrid
-void *BuildingList_FindByGrid(s32 a, s32 b);
-#endif
 #ifndef PROTO_LOCAL_BuildingList_GetAt
 void *BuildingList_GetAt(s32 i);
-#endif
-#ifndef PROTO_LOCAL_BuildingList_FindByItem
-void *BuildingList_FindByItem(u32 id);
 #endif
 #ifndef PROTO_LOCAL_BuildingList_IndexOf
 s32 BuildingList_IndexOf(void *p);
@@ -124,7 +118,13 @@ s32 Building_OpenDoorForEntryAt(VecFx32 *a);
 s32 Building_OpenDoorForExitAt(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_Building_FindNearPos
-void *Building_FindNearPos(VecFx32 *a);
+BuildingActor *Building_FindNearPos(VecFx32 *a);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_FindByGrid
+BuildingActor *BuildingList_FindByGrid(s32 a, s32 b);
+#endif
+#ifndef PROTO_LOCAL_BuildingList_FindByItem
+BuildingActor *BuildingList_FindByItem(u32 id);
 #endif
 #ifndef PROTO_LOCAL_VillagerHouseTex_Load
 s32 VillagerHouseTex_Load(VillagerHouseTex *self);

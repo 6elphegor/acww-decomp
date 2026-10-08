@@ -188,7 +188,7 @@ extern "C" void *Gfx3d_CopyModel(u32 *a, void *heap) {
 }
 
 extern "C" void *ResCache_GetModel(u32 *a, u32 key) {
-    Heap *heap = (Heap *)gModelCacheHeap;
+    Heap *heap = gModelCacheHeap;
     void *r;
     if (key == 0x4e554c4c || (r = ResCache_FindModel(key)) == NULL) {
         if (sResCacheModelCount >= 0x96) {
@@ -219,7 +219,7 @@ extern "C" void *Gfx3d_CopyTex(void *a, void *heap) {
 }
 
 extern "C" void *ResCache_GetTex(void *a, u32 key) {
-    Heap *heap = (Heap *)gModelCacheHeap;
+    Heap *heap = gModelCacheHeap;
     void *r;
     if (key == 0x4e554c4c || (r = ResCache_FindTex(key)) == NULL) {
         if (sResCacheTexCount >= 0x3c) {

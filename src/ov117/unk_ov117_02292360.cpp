@@ -7,20 +7,16 @@
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov117/unk_ov117_02292360.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
 
 
-struct Unk_ov117_02292b54_Grid {
-    TownBlockCell *cells;
-    u32 w;
-    u32 h;
-};
 
-static inline TownBlockCell *Unk_ov117_02292b54_GetCell(Unk_ov117_02292b54_Grid *g, u32 x, u32 y) {
-    if (x < g->w && y < g->h && g->cells != NULL) {
-        return &g->cells[y * g->w + x];
+static inline MapBlock *Unk_ov117_02292b54_GetCell(BlockMap *g, u32 x, u32 y) {
+    if (x < (u32)g->width && y < (u32)g->height && g->blocks != NULL) {
+        return &g->blocks[y * g->width + x];
     }
     return NULL;
 }
@@ -33,10 +29,6 @@ extern u8 gSaveVillagers[];
 
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void CollisionMap_Select(s32 a);
-Unk_ov117_02292b54_Grid *TownBlockMap_Get();
-s32 BlockMap_FindItemAnyAttr(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
-void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 MapBlock_GetAttr(void *c);
 s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
 BOOL Ground_GetMapColors(u8 *out, s32 a, s32 b);
@@ -99,7 +91,7 @@ extern "C" u8 TownMapMarkers_GetKind(TownMapMarkers *s, u32 i) {
 extern "C" void TownMapMarkers_AddTerrainMarkers(TownMapMarkers *s) {
     s32 x, y;
     s32 n;
-    Unk_ov117_02292b54_Grid *g;
+    BlockMap *g;
     CollisionMap_Select(1);
     n = 0;
     g = TownBlockMap_Get();
@@ -165,7 +157,7 @@ extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
 }
 
 extern "C" void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s) {
-    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         ((HouseData *)gSaveHouse)->getLevel();
         u16 t[2];
@@ -196,7 +188,7 @@ extern "C" void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s) {
 }
 
 extern "C" void TownMapMarkers_AddMuseum(TownMapMarkers *s) {
-    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x5011;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
@@ -218,7 +210,7 @@ extern "C" void TownMapMarkers_AddMuseum(TownMapMarkers *s) {
 }
 
 extern "C" void TownMapMarkers_AddGateHouse(TownMapMarkers *s) {
-    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x500b;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
@@ -240,7 +232,7 @@ extern "C" void TownMapMarkers_AddGateHouse(TownMapMarkers *s) {
 }
 
 extern "C" void TownMapMarkers_AddAbleSisters(TownMapMarkers *s) {
-    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x500c;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
@@ -262,7 +254,7 @@ extern "C" void TownMapMarkers_AddAbleSisters(TownMapMarkers *s) {
 }
 
 extern "C" void TownMapMarkers_AddTownHall(TownMapMarkers *s) {
-    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x5000;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
@@ -284,7 +276,7 @@ extern "C" void TownMapMarkers_AddTownHall(TownMapMarkers *s) {
 }
 
 extern "C" void TownMapMarkers_AddNookShop(TownMapMarkers *s) {
-    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t[2];
         s32 x, z, a, b, c, d, o1, o2, o3, o4;

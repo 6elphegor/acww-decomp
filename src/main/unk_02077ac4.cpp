@@ -64,7 +64,7 @@ struct VillagerDataProfileView {
     u8 umbrella;
 
     void getCatchphraseEncoded(void *p);
-    void getCatchphrase(void *p, void *q);
+    void getCatchphrase(MsgString *p, void *q);
     void clearCatchphrase();
     void *getInfo28();
     s32 findFreeSlot(s32 n);
@@ -108,8 +108,10 @@ class MsgString;
 #include "save/TownExchangeRecord.h"
 #include "sys/Heap.h"
 #include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020b2c50.h"
 
 
 
@@ -189,13 +191,13 @@ void FieldPos_ToUnit(s32 *x, s32 *z, VecFx32 *pos);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 BOOL Item_IsNormalItem(void *);
 BOOL Field_IsUnitOccupied(s32, s32);
-s32 Field_FindPlayerAtUnit(s32, s32);
+void *Field_FindPlayerAtUnit(s32 x, s32 y);
 BOOL TownMap_FindBuildingAbove(s32, s32, s32, s32 *, s32 *);
 BOOL TownMap_IsUnitWalkable(s32, s32, void *);
 BOOL Item_IsFurniture(void *);
 BOOL Item_IsTreeStage0(void *);
 void *PlayerActor_GetBodyPos(s32);
-s32 PlayerActor_GetCharacter(s32);
+void *PlayerActor_GetCharacter(s32 id);
 struct VillagerStateTable *VillagerStates_Get();
 void *VillagerState_GetTalkRepeat(void *);
 s32 TalkRepeat_Reset(void *);
@@ -323,8 +325,8 @@ static inline BOOL Unk_02077f68_C9(u16 *p)
 }
 BOOL TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
 BOOL Field_IsUnitOccupied(s32 a, s32 b);
-s32 Field_FindPlayerAtUnit(s32 x, s32 y);
-void SaveVillagers_OnNewDay(u8 *a, s32 b);
+void *Field_FindPlayerAtUnit(s32 x, s32 y);
+void SaveVillagers_OnNewDay(u8 *a, void *b);
 void VillagerStates_ResetIdleFrames();
 s32 VillagerStates_GetFleaMarketBuyer();
 void VillagerStates_SetFleaMarketBuyer(s32 v);
@@ -369,20 +371,16 @@ extern u8 sStarElementCompat[][4];
 extern u8 sPersonalityCompat[][6];
 BOOL Scene_InVillagerHouse();
 BOOL Scene_InTown();
-void TrendScores_Clear(void *p);
-void TrendScores_Destruct(void *p);
-void TrendScores_Construct(void *p);
 s32 MI_CpuFill8(void *d, s32 v, s32 n);
-void *SaveVillagers_Get(void *t, s32 i);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 u32 VillagerId_GetPersonality(void *p);
 void *Villager_GetPlan(void *p);
-void *VillagerPlanBlock_GetPlan(void *p);
 void Clock_GetDateTime(void *p);
 void Villager_RecordPlayerActivity(void *o, u32 kind, s32 v);
 BOOL MapBlock_HasAllAttr(void *cell, s32 v);
-u8 *Villager_GetInfo(void *p);
-u32 Villager_GetAnimalKind(void *p);
-u32 Villager_GetStarSign(void *p);
+u8 *Villager_GetInfo(VillagerData *a);
+u32 Villager_GetAnimalKind(VillagerData *a);
+u32 Villager_GetStarSign(VillagerData *a);
 BOOL SaveVillagers_IsValidIndex(u32 n);
 s32 VillagerRelations_PairIndex(u8 *a, s32 b, s32 c);
 BOOL VillagerRelations_IsValidIndex(void *a, s32 k);
@@ -414,7 +412,7 @@ void VillagerState_SetMood(VillagerState *e, u32 v);
 u32 VillagerState_GetMood(VillagerState *e);
 void VillagerState_SetActivity(VillagerState *e, u32 v);
 u32 VillagerState_GetActivity(VillagerState *e);
-void *VillagerState_GetErrand(VillagerState *e);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 void VillagerState_SetPresence(VillagerState *e, u32 v);
 u32 VillagerState_GetPresence(VillagerState *e);
 void VillagerState_ResetRole(VillagerState *e);
@@ -472,7 +470,7 @@ void VillagerState_SetMood(VillagerState *e, u32 v);
 u32 VillagerState_GetMood(VillagerState *e);
 void VillagerState_SetActivity(VillagerState *e, u32 v);
 u32 VillagerState_GetActivity(VillagerState *e);
-void *VillagerState_GetErrand(VillagerState *e);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 void VillagerState_SetPresence(VillagerState *e, u32 v);
 u32 VillagerState_GetPresence(VillagerState *e);
 void VillagerState_ResetRole(VillagerState *e);
@@ -543,8 +541,8 @@ s32 SaveVillagers_CountImpl(void *);
 s32 VillagerStates_GetBirthdayVisitor(void *);
 u32 VillagerId_GetPersonality(VillagerId *o);
 BOOL Personality_IsAsleep(u32 idx, void *buf);
-s32 Item_GetSaveData();
-s32 SaveVillagers_GetUnk3830Index(s32);
+u8 *Item_GetSaveData();
+s32 SaveVillagers_GetUnk3830Index(void *p);
 s32 Villager_CanGoOutdoors(void *);
 s32 Random_GlobalBelow(s32);
 s32 DateTime_IsInvalid(void *);
@@ -626,9 +624,8 @@ void VillagerId_ConstructCopy(void *dst, void *src);
 void VillagerId_Destruct(void *);
 void *Letter_GetSenderPlayer(void *);
 void *Letter_GetRecipientVillager(void *);
-void Arbeit_OnLetterSent(void *, void *);
 void *SaveVillagers_Find(void *, void *);
-void *SaveVillagers_Get(void *, s32);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 s32 Date_IsAfterOrEqual(void *, void *);
@@ -728,7 +725,7 @@ s32 Event_GetState(u32 a, void *d, s32 z);
 u32 EventAnnounce_GetCurrentEvent();
 VillagerState *Villager_GetState(void *p);
 s32 VillagerState_GetPresence(void *p);
-void *VillagerState_GetErrand(VillagerState *e);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 s32 Random_PickSetBit(u32 mask, s32 cnt, s32 n);
 VillagerStateTable *VillagerStates_Get();
 s32 Villager_GetResidentStatus(VillagerData *a);
@@ -739,30 +736,22 @@ s32 DateTime_Make(void *d, void *e, s32 a, s32 b, s32 c);
 s32 DateTime_SubDays(void *d, s32 n);
 BOOL SaveVillagers_CanSomeoneGetSick(void *p);
 s32 SaveVillagers_PickSickVillager(void *p, u32 idx);
-void *SaveVillagers_Get(void *p, s32 i);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 void OutdoorSchedule_ForceReroll(void *p);
 s32 SaveVillagers_Count(void *p);
 BOOL Villager_IsFreeOfPlayerErrands(VillagerData *a);
 s32 Villager_GetUpcomingBirthdayDay(VillagerData *a, s32 b, u8 *c);
-u8 *Villager_GetInfo(void *p);
+u8 *Villager_GetInfo(VillagerData *a);
 s32 Random_GlobalBelow(s32 n);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 s32 Villager_MaybeCopyAblePattern(s32 a, s32 b);
 void Villager_UpdatePlanErrand(void *p);
-s32 Villager_GetPlan(void *p);
-s32 VillagerPlanBlock_GetErrand(s32 p);
-s32 PlanErrand_GetRecord(s32 p);
-s32 PlanErrand_GetPlayer(s32 p);
+void *Villager_GetPlan(void *p);
 void Villager_PlaceReceivedItems(void *p);
-s32 ErrandRecord_GetTime(void *p);
 s32 DateTime_DiffDays(void *a, void *b);
-void HouseVisitInvite_Clear(void *p);
 s32 Villager_SendHouseVisitLetter(u32 a, PlayerId *b, VillagerId *c);
 BOOL SaveVillagers_ShouldAssignErrands(void *p);
-s32 Errand_GetClassIndex(u32 *o, u32 v);
 u32 Villager_GetErrandKind(void *b, void *p, void *a);
-s32 Errand_GetClass(u32 x);
-s32 VillagerPlanBlock_GetPlan(s32 p);
 SickVillagerRecord *SaveVillagers_GetUnk3830(void *p);
 s32 SaveVillagers_GetUnk3830Index(void *p);
 void SaveVillagers_AdvanceSickDay(void *p);
@@ -793,7 +782,7 @@ extern CommManager *gCommManager;
 extern s32 sRelationLevelThresholds[4];
 extern u8 data_021cc9ac[];
 VillagerStateTable *VillagerStates_Get();
-void *VillagerState_GetErrand(VillagerState *e);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 s32 Villager_GetErrandKind(u8 *self, u8 *p, u8 *r);
 s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, u8 *r);
 u8 *SaveVillagers_FindByRelation(u8 *self, u8 *p, BOOL (**cmp)(s32, s32), s32 best);
@@ -801,21 +790,14 @@ BOOL Relation_IsLower(s32 a, s32 b);
 BOOL Relation_IsHigher(s32 a, s32 b);
 u32 SaveVillagers_GetRelationLevel(u8 *self, s32 a, s32 b);
 s32 SaveVillagers_Count(u8 *self);
-s32 Errand_GetClass(s32 v);
 VillagerState *Villager_GetState(u8 *p);
-u8 *PlayerErrands_GetSlot(u8 *p, s32 i);
-void *PlayerErrandSlot_GetRecord(void *p);
-u16 *PlayerErrandSlot_GetVillager(void *p, s32 i);
 s32 memcmp(void *a, void *b, u32 n);
-s32 HouseVisitInvite_IsFrom(u8 *a, u16 *b);
 u8 *Villager_GetPlan(u8 *p);
-void *VillagerPlanBlock_GetErrand(u8 *p);
-void *PlanErrand_GetRecord(void *p);
 VillagerState *VillagerStateTable_GetEntry(VillagerStateTable *m, s32 i);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 BOOL SaveVillagers_IsValidIndex(u32 n);
 u32 SaveVillagers_IsOccupied(u8 *self, s32 i);
-u8 *SaveVillagers_Get(u8 *self, s32 i);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 s32 VillagerRelations_GetScore(u8 *p, s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
 void VillagerRelations_Add(u8 *a, s32 p, s32 q, s32 r);
@@ -858,12 +840,10 @@ void SaveVillagers_UpdateSickVillager(u8 *self);
 void SaveVillagers_UpdateBirthdayNotices(u8 *self);
 s32 SaveVillagers_UpdateBirthdayParty(u8 *self);
 s32 Villager_UpdatePlan(void *p, ClockDateTime *b);
-void *VillagerPlanBlock_GetPlan(void *p);
 void Villager_PickRoomLayout(VillagerData *a, s32 b, s32 c);
 s32 Villager_InitPlanDateA(u8 *p, u8 *x);
 s32 Villager_InitPlanDateB(u8 *p, u8 *x);
 s32 Villager_UpdatePlanState(void *p, void *a, void *b, ClockDateTime *x);
-void *PlanErrand_Clear(void *p);
 void Villager_StartMovingOut(u8 *p, u8 *x);
 BOOL Villager_IsFreeOfPlayerErrands(VillagerData *a);
 u32 Random_PickSetBit(u32 m, s32 c, s32 n);
@@ -908,8 +888,6 @@ extern u8 sSpeciesCandidateBits[];
 s32 Villager_IsJustMovedIn(void *);
 s32 Villager_IsMovingOut(void *);
 void *Villager_GetPlan(void *p);
-void *VillagerPlanBlock_GetPlan(void *);
-void *VillagerPlan_GetPlanTime(void *);
 s32 DateTime_Compare(void *, void *, s32);
 s32 DateTime_DiffDays(void *, void *);
 s32 DateTime_IsInvalid(void *);
@@ -929,7 +907,7 @@ BOOL SaveVillagers_IsValidIndex(u32 n);
 s32 SaveVillagers_Count(SaveVillagers *);
 void SaveVillagers_Clear(void *);
 s32 SaveVillagers_FindFreeSlot(SaveVillagers *);
-void *SaveVillagers_Get(SaveVillagers *, s32);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 void SpeciesBits_Set(void *, u8);
 s32 SpeciesBits_Test(u8, void *);
@@ -1013,7 +991,7 @@ s32 SpeciesBits_Test(s32, u32 *);
 void *SaveVillagers_PickRandomExcept(u8 *, void **, s32);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 BOOL SaveVillagers_IsValidIndex(u32 n);
-u8 *SaveVillagers_Get(u8 *, s32);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 Text_TrimmedLength(u8 *, s32);
 BOOL Mem_Equal(u8 *, u8 *, s32);
@@ -1038,7 +1016,7 @@ u8 *SaveVillagers_FindByName(u8 *base, u8 *a1, s32 a2, void *a3);
 BOOL Mem_Equal(u8 *a, u8 *b, s32 n);
 s32 Text_TrimmedLength(u8 *s, s32 n);
 u8 *SaveVillagers_Find(u8 *base, u16 *x);
-u8 *SaveVillagers_Get(u8 *base, s32 idx);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
 BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 BOOL SaveVillagers_IsValidIndex(u32 n);
@@ -1066,10 +1044,6 @@ struct VillagerDataFurnitureView {
     u16 pad2[(0x6ea - 0x6c0) / 2];
     u16 shownFurnitureMask;
 };
-struct VillagerPlanView {
-    u8 pad[0x21];
-    u8 state2Flag : 1;
-};
 extern u8 sVillagerLetterPath[];
 extern u8 sVillagerLetter4Path[];
 extern u8 gSaveTownId[];
@@ -1089,24 +1063,16 @@ s32 Villager_GetResidentStatus(VillagerData *a);
 void *SaveVillagers_GetUnk3830(void *);
 s32 memcmp(void *, void *, u32);
 void *Villager_GetPlan(void *);
-void *VillagerPlanBlock_GetErrand(void *);
-void *PlanErrand_GetRecord(void *);
-s32 PlanErrand_Clear(void *);
-void *VillagerPlanBlock_GetPlan(void *);
 s32 Villager_NextFurnitureTaste(void *);
 void Villager_PickRoomLayout(VillagerData *a, s32 b, s32 c);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Villager_IsMoveTimeReached(void *, void *);
 void Villager_UpdateTrendDays(void *, ClockDateTime *);
-s32 Trend_IsValid(s32);
 VillagerState *Villager_GetState(void *);
-void *VillagerState_GetErrand(void *);
-s32 PlanState_GetGroup(s32);
-void *VillagerPlan_GetStateDate(void *);
-void *VillagerPlan_GetPlanTime(void *);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 s32 DateTime_IsInvalid(void *);
 s32 DateTime_Compare(void *, void *, s32);
-void *Villager_GetInfo3a(void *);
+u8 *Villager_GetInfo3a(VillagerData *a);
 s32 DateTime_DiffMinutes(void *, void *);
 void DateTime_AddDays(void *, s32);
 void *Personality_GetSleepHours(u32);
@@ -1152,7 +1118,7 @@ struct ImpressionRuleView {
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 extern ImpressionRuleView sImpressionRules[];
-BOOL Villager_IsInPlayerErrand(VillagerData *a, void *b);
+BOOL Villager_IsInPlayerErrand(VillagerData *a, PlayerErrands *b);
 VillagerStateTable *VillagerStates_Get();
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 s32 Item_GetPrice(u16 *);
@@ -1160,7 +1126,6 @@ s32 Random_GlobalBelow(s32);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
-s32 String_Load(void *, void *, void *);
 VillagerState *Villager_GetState(void *);
 u32 VillagerState_GetMood(VillagerState *e);
 void Clock_GetDateTime(void *);
@@ -1185,7 +1150,7 @@ void Villager_AddReceivedItem(VillagerData *self, u16 *val);
 void Villager_CompactReceivedItems(VillagerData *self);
 u16 *Villager_GetReceivedItem(VillagerData *self, u32 idx);
 void Villager_ClearReceivedItems(VillagerData *self);
-void Villager_GetImpressionText(void *self, void *out, PlayerData *p);
+void Villager_GetImpressionText(void *self, MsgString *out, PlayerData *p);
 u32 Villager_UpdateImpression(void *self, VillagerMemory *r, PlayerData *p);
 u32 Impression_Evaluate(PlayerData *a, s32 b, s32 c);
 BOOL Villager_IsFreeOfPlayerErrands(VillagerData *a);
@@ -1202,7 +1167,7 @@ void Villager_AddReceivedItem(VillagerData *self, u16 *val);
 void Villager_CompactReceivedItems(VillagerData *self);
 u16 *Villager_GetReceivedItem(VillagerData *self, u32 idx);
 void Villager_ClearReceivedItems(VillagerData *self);
-void Villager_GetImpressionText(void *self, void *out, PlayerData *p);
+void Villager_GetImpressionText(void *self, MsgString *out, PlayerData *p);
 u32 Villager_UpdateImpression(void *self, VillagerMemory *r, PlayerData *p);
 u32 Impression_Evaluate(PlayerData *a, s32 b, s32 c);
 BOOL ImpressionCond_Always(PlayerData *, s32, s32 );
@@ -1352,13 +1317,7 @@ extern u8 gSaveVillagers[];
 extern u8 data_020e05ac[];
 extern u16 sPackedFurnitureItems[];
 u8 *SaveVillagers_FindFriendOf(u8 *self, u8 *p);
-void *PlayerErrands_GetSlot(void *, s32);
-void *PlayerErrandSlot_GetRecord(void *);
-void *PlayerErrandSlot_GetVillager(void *, s32);
 s32 memcmp(void *, void *, s32);
-s32 Arbeit_IsLetterRecipient(void *, void *);
-s32 HouseVisitInvite_IsFrom(void *, void *);
-void *VillagerPlanBlock_GetPlan(void *);
 u32 VillagerState_GetRole(VillagerState *e);
 u32 VillagerState_GetPresence(VillagerState *e);
 VillagerStateTable *VillagerStates_Get();
@@ -1377,14 +1336,12 @@ s32 Item_GetFurnitureIndex(u16 *);
 s32 Item_SetFurnitureDirection(u16 *, s32);
 s32 Ftr_GetUnk05(u16 *);
 s32 RoomFtrState_ResetVillagerHouse(s32);
-s32 VillagerPlanBlock_GetErrand(void *);
-s32 PlanErrand_MarkReady(s32);
 void Item_ToPlacedForm(u16 *, u16 *, s32);
 s32 Random_GlobalBelow(s32);
 void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_SetMoveInKind(VillagerData *a, u32 b);
 u32 Villager_GetMoveInKind(VillagerData *a);
-BOOL Villager_IsInPlayerErrand(VillagerData *a, void *b);
+BOOL Villager_IsInPlayerErrand(VillagerData *a, PlayerErrands *b);
 BOOL Villager_CanBeTalkPartner(VillagerData *a);
 BOOL Villager_IsJustMovedIn(VillagerData *a);
 BOOL Villager_IsMovingIn(VillagerData *a);
@@ -1424,7 +1381,7 @@ static inline BOOL Unk_0207e440_InRange(volatile u16 *p) {
 void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_SetMoveInKind(VillagerData *a, u32 b);
 u32 Villager_GetMoveInKind(VillagerData *a);
-BOOL Villager_IsInPlayerErrand(VillagerData *a, void *b);
+BOOL Villager_IsInPlayerErrand(VillagerData *a, PlayerErrands *b);
 BOOL Villager_CanBeTalkPartner(VillagerData *a);
 BOOL Villager_IsJustMovedIn(VillagerData *a);
 BOOL Villager_IsMovingIn(VillagerData *a);
@@ -1465,19 +1422,13 @@ namespace nM {
 extern "C" {
 
 void *Villager_GetPlan(void *);
-void *VillagerPlanBlock_GetErrand(void *);
-void *VillagerPlanBlock_GetPlan(void *);
-void *PlanErrand_GetRecord(void *);
 s32 Item_GetPrice(u16 *);
-u32 PlanErrand_GetStep(void *);
-u32 PlanErrand_GetFossilGroup(void *);
 s32 Item_GetFossilGroup(u16 *);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
 s32 Random_GlobalBelow(s32);
 s32 RecycleBin_Add(u16);
-s32 PlanState_GetGroupIndex(u8 *, s32);
 s32 Item_IsFurniture(u16 *);
-s32 Villager_GetFurnitureTasteScore(void *, u16 *);
+u8 Villager_GetFurnitureTasteScore(VillagerData *a, u16 *b);
 void Item_ToPlacedForm(u16 *, u16 *, s32);
 u32 VillagerId_GetSpecies(VillagerId *o);
 u8 *VillagerInfo_Get(u32 n);
@@ -1517,22 +1468,20 @@ u8 *VillagerInfo_Get(u32 n);
 s32 VillagerMemory_IsUsed(void *);
 s32 VillagerMemory_MatchesPlayer(void *, void *);
 u16 *VillagerMemory_GetTownId(void *);
-u32 VillagerMemory_GetPlayerId(void *);
+void *VillagerMemory_GetPlayerId(void *p);
 s32 memcmp(void *, void *, u32);
-void VillagerMemory_InitForPlayer(void *, void *, u32, u32);
+BOOL VillagerMemory_InitForPlayer(void *self, void *a, u8 *b, u8 *c);
 u16 *PlayerId_GetTownId(void *p);
 s32 TownId_IsValid(void *);
 void *VillagerMemory_GetTalkDate(void *);
 s32 DateTime_Compare(void *, void *, u32);
 s32 DateTime_DiffMinutes(void *, void *);
 u32 Villager_GetFurnitureTasteIndex(VillagerData *self);
-u8 Furniture_ScoreAttribute(u32, u32, u32);
 u32 Date_GetStarSignOf(u8 *);
-u32 SaveVillagers_GetUnk3830Index(u32);
-u32 Item_GetSaveData();
+s32 SaveVillagers_GetUnk3830Index(void *p);
+u8 *Item_GetSaveData();
 s32 Villager_GetIndex(VillagerData *a);
 s32 Villager_GetResidentStatus(VillagerData *a);
-s32 HouseVisitInvite_IsFrom(void *, void *);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 EventSchedule_CollectDayAll(void *, void *);
@@ -1560,10 +1509,10 @@ s32 Villager_PickMemorySlotForNew(VillagerMemory *t);
 VillagerMemory *Villager_GetMemorySlotForNew(VillagerMemory *t);
 VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
 BOOL Villager_IsValidMemoryIndex(VillagerMemory *t, u32 i);
-u8 *Villager_GetFurnitureTaste(VillagerMemory *t, u32 i);
-u32 Villager_GetAnimalKind(u32 a);
-u8 *Villager_GetBirthday(u32 a);
-void Villager_SetCatchphraseEncoded(u32 a, void *b);
+u8 *Villager_GetFurnitureTaste(VillagerData *t, u32 i);
+u32 Villager_GetAnimalKind(VillagerData *a);
+u8 *Villager_GetBirthday(VillagerData *a);
+void Villager_SetCatchphraseEncoded(VillagerData *a, void *b);
 void Villagers_ShareNickname(void *a, void *b, void *c);
 VillagerMemory *Villager_SetNicknameFor(void *a, void *b, u32 c, void *d);
 VillagerMemory *Villager_SetNicknameFromMsgFor(void *a, void *b, void *c);
@@ -1587,24 +1536,24 @@ VillagerMemory *Villager_FindMemory(void *a, void *b);
 VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
 s32 Villager_FindMemoryIndex(VillagerMemory *t, void *id);
 BOOL Villager_IsValidMemoryIndex(VillagerMemory *t, u32 i);
-u8 *Villager_GetInfo3a(u32 a);
-u8 Villager_GetFurnitureTasteScore(u32 a, u32 b);
-u8 *Villager_GetFurnitureTaste(VillagerMemory *t, u32 i);
-u8 *Villager_GetInfo(u32 a);
-u8 *Villager_GetFashionTaste(u32 a);
-u32 Villager_GetInfoByte2(u32 a);
-u32 Villager_GetAnimalKind(u32 a);
-u32 Villager_GetStarSign(u32 a);
+u8 *Villager_GetInfo3a(VillagerData *a);
+u8 Villager_GetFurnitureTasteScore(VillagerData *a, u16 *b);
+u8 *Villager_GetFurnitureTaste(VillagerData *t, u32 i);
+u8 *Villager_GetInfo(VillagerData *a);
+u8 *Villager_GetFashionTaste(VillagerData *a);
+u32 Villager_GetInfoByte2(VillagerData *a);
+u32 Villager_GetAnimalKind(VillagerData *a);
+u32 Villager_GetStarSign(VillagerData *a);
 BOOL Villager_CanAttendParty(VillagerData *a);
 struct Unk_0207fa50_Rec {
     u16 id;
     u8 pad[10];
 };
 s32 Villager_GetUpcomingBirthdayDay(VillagerData *a, s32 b, u8 *c);
-u8 *Villager_GetBirthday(u32 a);
-void Villager_SetCatchphrase(u32 a, void *b, s32 c);
-void Villager_SetCatchphraseFromMsg(u32 a, u32 b);
-void Villager_SetCatchphraseEncoded(u32 a, void *b);
+u8 *Villager_GetBirthday(VillagerData *a);
+void Villager_SetCatchphrase(VillagerData *a, void *b, s32 c);
+void Villager_SetCatchphraseFromMsg(VillagerData *a, MsgString *b);
+void Villager_SetCatchphraseEncoded(VillagerData *a, void *b);
 }
 }
 
@@ -1616,13 +1565,12 @@ s32 StrBuf_ClearAlt(void *p);
 s32 EncodedString_SetRaw(void *dst, void *src, s32 n);
 s32 Villager_HasFlea(void *p);
 s32 Random_GlobalBelow(s32 a);
-s32 String_Load(void *a, void *b, void *c);
 s32 MI_CpuFill8(void *p, s32 v, s32 n);
 u32 VillagerId_GetSpecies(VillagerId *o);
 u8 *VillagerInfo_Get(u32 n);
 void *Letter_GetSenderPlayer(void *p);
 s32 Villager_FindMemoryIndex(void *t, void *p);
-s32 Villager_GetMemory(void *t, s32 p);
+VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 TownId_IsValid(void *p);
 s32 TownId_GetNameString(void *a, void *b);
@@ -1631,13 +1579,10 @@ s32 Villager_SendLetterWithPaper(void *a, u32 b, void *c, void *d, void *e, s32 
 s32 Clock_GetDateTime(void *p);
 s32 MI_CpuCopy8(void *a, void *b, s32 n);
 s32 Event_GetState(s32 a, void *b, s32 c);
-s32 String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void ItemPickSpec_Destruct(void *p);
 s32 ItemPick_One(void *a, void *b, void *c, void *d, s32 e, s32 f, void *g);
 s32 MailCheck_GradeLetter(void *p);
 s32 Letter_GetBodyLength(void *p);
-s32 TopicWord_PickRandom(void *a, s32 i);
-s32 String_LoadResolveAltText(void *a, void *b, s32 c);
 s32 ItemPick_FromRange(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 s32 Villager_SendLetter(void *a, s32 b, void *c, void *d, s32 e);
 s32 Villager_SendLetter4(void *a, s32 b, s32 c, void *d, void *e, u16 *f);
@@ -1692,21 +1637,16 @@ u8 *VillagerInfo_Get(u32 n);
 void Villager_SetWallpaper(void *, u32);
 void Villager_SetCarpet(void *, u32);
 void *Villager_GetPlan(void *);
-void VillagerPlanBlock_RollTrend(void *, void *, u32);
-u32 VillagerPlanBlock_GetPlan(void *);
 void Villager_PickRoomLayout(VillagerData *a, s32 b, s32 c);
 void Villager_PickShownFurniture(void *);
 void Villager_SetMoveInKind(void *, u32);
 void VillagerId_Clear(void *);
 void TownId_Clear(void *);
 void HousePos_Clear(void *);
-void VillagerPlanBlock_Clear(void *);
 void Letter_Clear(void *);
 void Villager_ClearReceivedItems(void *);
 void TownId_Destruct(void *);
 void VillagerId_Destruct(void *);
-void VillagerPlanBlock_Destruct(void *);
-void VillagerPlanBlock_Construct(void *);
 void VillagerId_Construct(void *);
 void TownId_Construct(void *);
 void EncodedString_SetRaw(void *, void *, s32);
@@ -1753,9 +1693,8 @@ void TownId_Destruct(void *p);
 void TownId_Construct(void *p);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 s32 VillagerId_IsValidSpecies(u32 x);
-BOOL String_Load(MsgString *buf, u8 *key, const char *name);
-u8 *SaveVillagers_Get(void *tbl, u32 idx);
-s32 Villager_GetInfoByte2(u8 *p);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
+u32 Villager_GetInfoByte2(VillagerData *a);
 s32 VillagerId_GetVoiceType(u8 *p);
 BOOL SaveVillagers_IsValidIndex(u32 n);
 void *VillagerMemory_GetPlayerId(void *p);
@@ -2682,7 +2621,7 @@ extern "C" BOOL Villager_GetSpeciesName(MsgString *buf, u32 x) {
     BOOL r = FALSE;
     if (VillagerId_IsValidSpecies(x)) {
         u8 k = x;
-        String_Load(buf, &k, (const char *)((u8 *)"st_npc_name"));
+        String_Load(buf, &k, "st_npc_name");
         r = TRUE;
     }
     return r;
@@ -2696,13 +2635,13 @@ extern "C" BOOL Npc_GetName(MsgString *self, u16 *p) {
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) {
-            u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
-            if (q) r = ((VillagerId *)((VillagerData *)(void *)(q))->getVillagerId())->getName((MsgString *)self);
+            VillagerData *q = SaveVillagers_Get(gSaveVillagers, idx);
+            if (q) r = q->getVillagerId()->getName(self);
         }
     } else {
         if (idx < 0x26) {
             u8 k = idx;
-            String_Load(self, &k, (const char *)((u8 *)"st_spnpc_name"));
+            String_Load(self, &k, "st_spnpc_name");
             r = TRUE;
         }
     }
@@ -2717,8 +2656,8 @@ extern "C" u32 Npc_GetVoiceType(u16 *p) {
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) {
-            u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
-            if (q) r = VillagerId_GetVoiceType((u8 *)((VillagerData *)(void *)(q))->getVillagerId());
+            VillagerData *q = SaveVillagers_Get(gSaveVillagers, idx);
+            if (q) r = VillagerId_GetVoiceType((u8 *)q->getVillagerId());
         }
     } else {
         u8 *q = SpNpc_GetInfo(p);
@@ -2735,7 +2674,7 @@ extern "C" u32 Npc_GetInfoByte2(u16 *p) {
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) {
-            u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
+            VillagerData *q = SaveVillagers_Get(gSaveVillagers, idx);
             if (q) r = Villager_GetInfoByte2(q);
         }
     } else {
@@ -2763,7 +2702,7 @@ extern "C" BOOL Villager_GetDefaultCatchphrase(MsgString *buf, u32 x) {
     BOOL r = FALSE;
     if (VillagerId_IsValidSpecies(x)) {
         u8 k = x;
-        String_Load(buf, &k, (const char *)((u8 *)"st_npc_habit"));
+        String_Load(buf, &k, "st_npc_habit");
         r = TRUE;
     }
     return r;
@@ -3325,9 +3264,7 @@ BOOL VillagerMemory::hasFortuneGreeting() {
 VillagerData::VillagerData() {
     using namespace nP;
     __cxa_vec_ctor(this, 8, 0x68, (void *(*)(void *))VillagerMemory_Construct, (void *(*)(void *, s32))VillagerMemory_Destruct);
-    new (pattern) Pattern();
-    new (letter) Letter();
-    VillagerPlanBlock_Construct(planBlock);
+    VillagerPlanBlock_Construct((VillagerPlanBlock *)planBlock);  // (the block stays untyped in VillagerData: its construction is explicit)
     for (s32 i = 0; i < 10; i++) {
         new (&furniture[i]) ItemId();
     }
@@ -3353,9 +3290,7 @@ VillagerData::~VillagerData() {
     for (s32 i = 10 - 1; i >= 0; i--) {
         ((ItemId *)&furniture[i])->~ItemId();
     }
-    VillagerPlanBlock_Destruct(planBlock);
-    ((Letter *)(letter))->Letter::~Letter();
-    ((Pattern *)(pattern))->~Pattern();
+    VillagerPlanBlock_Destruct((VillagerPlanBlock *)planBlock);  // (the block stays untyped in VillagerData: its construction is explicit)
     __cxa_vec_cleanup(this, 8, 0x68, (void *(*)(void *, s32))VillagerMemory_Destruct);
 }
 
@@ -3369,9 +3304,9 @@ void VillagerData::clear() {
     TownId_Clear(&movedFromTown);
     for (s32 i = 0; i < 10; i++) furniture[i] = 0xfff1;
     HousePos_Clear(&housePos);
-    VillagerPlanBlock_Clear(planBlock);
+    VillagerPlanBlock_Clear((VillagerPlanBlock *)planBlock);  // (the block stays untyped in VillagerData: its construction is explicit)
     moveInKind = 3;
-    Letter_Clear(letter);
+    Letter_Clear(&letter);
     Villager_ClearReceivedItems(this);
     TownId_Clear(&letterTown);
 }
@@ -3379,13 +3314,13 @@ void VillagerData::clear() {
 void VillagerData::copyFrom(void *src) {
     using namespace nP; MI_CpuCopy8(src, this, 0x700); }
 
-void VillagerData::setup(u32 id, u32 a, u32 b, u8 c) {
+void VillagerData::setup(u32 id, u32 a, void *b, u8 c) {
     using namespace nP;
     VillagerInfo *rec = (VillagerInfo *)VillagerInfo_Get(id);
     u32 t = 0;
     EncodedString10 tmp;
     if (rec) t = rec->personality;
-    villagerId.set(id, t, (void *)(b));
+    villagerId.set(id, t, b);
     StrBuf_ClearAlt(&tmp);
     if (Villager_GetDefaultCatchphraseEncoded(&tmp, id)) {
         tmp.copyTo(catchphrase, 10);
@@ -3400,9 +3335,9 @@ void VillagerData::setup(u32 id, u32 a, u32 b, u8 c) {
         Villager_SetWallpaper(this, rec->wallpaper);
         Villager_SetCarpet(this, rec->carpet);
         VillagerPlanBlock_RollTrend(Villager_GetPlan(this), rec->trendTable, c);
-        Villager_PickRoomLayout(this, ((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(this))))->getState(), 0);
+        Villager_PickRoomLayout(this, VillagerPlanBlock_GetPlan(Villager_GetPlan(this))->getState(), 0);
         roomLayout = rec->roomLayout;
-        if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(this))))->getState() == 2) {
+        if (VillagerPlanBlock_GetPlan(Villager_GetPlan(this))->getState() == 2) {
             roomLayout = roomLayout % 10;
         }
         Villager_PickShownFurniture(this);
@@ -3414,11 +3349,11 @@ void VillagerData::setup(u32 id, u32 a, u32 b, u8 c) {
 VillagerId *VillagerData::getVillagerId() {
     using namespace nP; return &villagerId; }
 
-void *VillagerData::getPattern() {
-    using namespace nP; return pattern; }
+Pattern *VillagerData::getPattern() {
+    using namespace nP; return &pattern; }
 
-void *VillagerData::getLetter() {
-    using namespace nP; return letter; }
+Letter *VillagerData::getLetter() {
+    using namespace nP; return &letter; }
 
 s32 VillagerData::receiveLetterFrom(LetterView *id) {
     using namespace nP;
@@ -3435,7 +3370,7 @@ s32 VillagerData::receiveLetterFrom(LetterView *id) {
     }
     if (e) {
         e->setLetterReceived();
-        Letter_Copy(letter, id);
+        Letter_Copy(&letter, id);
         TownId_Assign(&letterTown, gSaveTownId);
         v[0] = ((LetterView *)(void *)(id))->getPresent();
         if (v[0] != 0xfff1) {
@@ -3477,7 +3412,7 @@ void VillagerDataProfileView::replyToLetter(void *p, void *q) {
     using namespace nO;
     void *r;
     u32 v1c;
-    u32 x;
+    char *x;
     u8 c;
     u16 res, ha, hb, hc, hd;
     u32 v30;
@@ -3742,7 +3677,7 @@ s32 VillagerDataProfileView::findLetterSenderMemory() {
         PlayerId obj(*(const PlayerId *)(p));
         if (obj.isValid()) {
             s32 r = Villager_FindMemoryIndex(this, &obj);
-            void *m = (void *)Villager_GetMemory(this, r);
+            VillagerMemory *m = Villager_GetMemory((VillagerMemory *)this, r);  // (a view of the VillagerData: its memories first)
             if (m) {
                 if (((VillagerMemory *)(m))->isLetterReceived()) {
                     new (&obj) PlayerId();
@@ -3864,14 +3799,14 @@ void VillagerDataProfileView::clearCatchphrase() {
     MI_CpuFill8(catchphrase, 0x85, 10);
 }
 
-void VillagerDataProfileView::getCatchphrase(void *dst, void *flag) {
+void VillagerDataProfileView::getCatchphrase(MsgString *dst, void *flag) {
     using namespace nO;
     u8 b;
     EncodedString10 buf;
-    ((MsgString *)(dst))->clear();
+    dst->clear();
     if (flag && Villager_HasFlea(this)) {
         b = Random_GlobalBelow(0x10);
-        String_Load(dst, &b, ((u8 *)"st_itchy"));
+        String_Load(dst, &b, "st_itchy");
     } else {
         getCatchphraseEncoded(&buf);
         ((MsgString *)(dst))->fromEncoded(&buf, 0, 0);
@@ -3885,36 +3820,36 @@ void VillagerDataProfileView::getCatchphraseEncoded(void *p) {
 }
 
 namespace nN {
-extern "C" void Villager_SetCatchphraseFromMsg(u32 a, u32 b) {
+extern "C" void Villager_SetCatchphraseFromMsg(VillagerData *a, MsgString *b) {
     EncodedString10Storage s;
     new (&s) EncodedString10();
     StrBuf_ClearAlt(&s);
-    ((EncodedString *)(&s))->fromMsgString((MsgString *)(b));
+    ((EncodedString *)(&s))->fromMsgString(b);
     Villager_SetCatchphraseEncoded(a, &s);
     ((EncodedString10 *)(&s))->EncodedString10::~EncodedString10();
 }
 }
 
 namespace nN {
-extern "C" void Villager_SetCatchphraseEncoded(u32 a, void *b) {
-    ((EncodedString10 *)(b))->copyTo((void *)(a + 0x6de), 10);
+extern "C" void Villager_SetCatchphraseEncoded(VillagerData *a, void *b) {
+    ((EncodedString10 *)(b))->copyTo(a->catchphrase, 10);
 }
 }
 
 namespace nN {
-extern "C" void Villager_SetCatchphrase(u32 a, void *b, s32 c) {
-    MI_CpuFill8((void *)(a + 0x6de), 0, 10);
+extern "C" void Villager_SetCatchphrase(VillagerData *a, void *b, s32 c) {
+    MI_CpuFill8(a->catchphrase, 0, 10);
     if (c > 10) {
         c = 10;
     }
-    MI_CpuCopy8(b, (void *)(a + 0x6de), c);
+    MI_CpuCopy8(b, a->catchphrase, c);
 }
 }
 
 namespace nN {
-extern "C" u8 *Villager_GetBirthday(u32 a) {
+extern "C" u8 *Villager_GetBirthday(VillagerData *a) {
     u8 *r = NULL;
-    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)(a))->getVillagerId()));
+    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(a->getVillagerId()));
     if (p != NULL) {
         r = p + 0x26;
     }
@@ -3962,9 +3897,9 @@ extern "C" BOOL Villager_CanAttendParty(VillagerData *a) {
         void *r6 = PlayerData_GetCurrent();
         BOOL r = FALSE;
         if (r7 != Villager_GetIndex(a) && Villager_GetResidentStatus(a) == 3 && r6 != NULL) {
-            u8 *q = (u8 *)((PlayerData *)r6)->getErrands();
+            PlayerErrands *q = ((PlayerData *)r6)->getErrands();
             VillagerId *u = a->getVillagerId();
-            if (HouseVisitInvite_IsFrom(q + 0x88, u) == 0) {
+            if (HouseVisitInvite_IsFrom(&q->houseVisitInvite, u) == 0) {
                 r = TRUE;
             }
         }
@@ -3975,7 +3910,7 @@ extern "C" BOOL Villager_CanAttendParty(VillagerData *a) {
 }
 
 namespace nN {
-extern "C" u32 Villager_GetStarSign(u32 a) {
+extern "C" u32 Villager_GetStarSign(VillagerData *a) {
     u8 *p = Villager_GetBirthday(a);
     u32 r = 0xc;
     if (p != NULL) {
@@ -3986,9 +3921,9 @@ extern "C" u32 Villager_GetStarSign(u32 a) {
 }
 
 namespace nN {
-extern "C" u32 Villager_GetAnimalKind(u32 a) {
+extern "C" u32 Villager_GetAnimalKind(VillagerData *a) {
     u32 r = 0x21;
-    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)(a))->getVillagerId()));
+    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(a->getVillagerId()));
     if (p != NULL) {
         r = p[0x4c];
     }
@@ -3997,7 +3932,7 @@ extern "C" u32 Villager_GetAnimalKind(u32 a) {
 }
 
 namespace nN {
-extern "C" u32 Villager_GetInfoByte2(u32 a) {
+extern "C" u32 Villager_GetInfoByte2(VillagerData *a) {
     u32 i = Villager_GetAnimalKind(a);
     if (i >= 0x21) {
         i = 0;
@@ -4007,9 +3942,9 @@ extern "C" u32 Villager_GetInfoByte2(u32 a) {
 }
 
 namespace nN {
-extern "C" u8 *Villager_GetFashionTaste(u32 a) {
+extern "C" u8 *Villager_GetFashionTaste(VillagerData *a) {
     u8 *r = NULL;
-    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)(a))->getVillagerId()));
+    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(a->getVillagerId()));
     if (p != NULL) {
         r = p;
         r += 0x29;
@@ -4019,9 +3954,9 @@ extern "C" u8 *Villager_GetFashionTaste(u32 a) {
 }
 
 namespace nN {
-extern "C" u8 *Villager_GetInfo(u32 a) {
+extern "C" u8 *Villager_GetInfo(VillagerData *a) {
     u8 *r = NULL;
-    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)(a))->getVillagerId()));
+    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(a->getVillagerId()));
     if (p != NULL) {
         r = p;
     }
@@ -4030,10 +3965,10 @@ extern "C" u8 *Villager_GetInfo(u32 a) {
 }
 
 namespace nN {
-extern "C" u8 *Villager_GetFurnitureTaste(VillagerMemory *t, u32 i) {
+extern "C" u8 *Villager_GetFurnitureTaste(VillagerData *t, u32 i) {
     u8 *r = NULL;
     if (i < 6) {
-        u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)t)->getVillagerId()));
+        u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(t->getVillagerId()));
         if (p != NULL) {
             r = p + 0x1a + i * 2;
         }
@@ -4043,8 +3978,8 @@ extern "C" u8 *Villager_GetFurnitureTaste(VillagerMemory *t, u32 i) {
 }
 
 namespace nN {
-extern "C" u8 Villager_GetFurnitureTasteScore(u32 a, u32 b) {
-    u8 *p = Villager_GetFurnitureTaste((VillagerMemory *)a, Villager_GetFurnitureTasteIndex((VillagerData *)a));
+extern "C" u8 Villager_GetFurnitureTasteScore(VillagerData *a, u16 *b) {
+    u8 *p = Villager_GetFurnitureTaste(a, Villager_GetFurnitureTasteIndex(a));
     if (p != NULL) {
         return Furniture_ScoreAttribute(b, p[0], p[1]);
     }
@@ -4053,8 +3988,8 @@ extern "C" u8 Villager_GetFurnitureTasteScore(u32 a, u32 b) {
 }
 
 namespace nN {
-extern "C" u8 *Villager_GetInfo3a(u32 a) {
-    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(((VillagerData *)(void *)(a))->getVillagerId()));
+extern "C" u8 *Villager_GetInfo3a(VillagerData *a) {
+    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(a->getVillagerId()));
     if (p != NULL) {
         return p + 0x3a;
     }
@@ -4172,7 +4107,7 @@ extern "C" s32 Villager_PickMemoryToReplace(VillagerMemory *t, s32 (*cb)(void *,
         s32 i = 0;
         do {
             if (VillagerMemory_IsUsed(t) != 0) {
-                if (cb((void *)VillagerMemory_GetPlayerId(t), gSaveTownId, gSavePlayers) != 0) {
+                if (cb(VillagerMemory_GetPlayerId(t), gSaveTownId, gSavePlayers) != 0) {
                     if (best != NULL) {
                         if (((VillagerMemory *)(best))->isLetterReceived() == ((VillagerMemory *)(t))->isLetterReceived()) {
                             if (((VillagerMemory *)(best))->getFriendship() > ((VillagerMemory *)(t))->getFriendship()) {
@@ -4737,7 +4672,7 @@ BOOL VillagerDataItemView::isTasteFurniture(u16 *item) {
         }
     }
     if (ok) {
-        if (Villager_GetFurnitureTasteScore(this, item) > 0) {
+        if (Villager_GetFurnitureTasteScore(reinterpret_cast<VillagerData *>(this), item) > 0) {  // (a view of the VillagerData)
             r = TRUE;
         }
     }
@@ -4877,15 +4812,15 @@ BOOL VillagerDataItemView::tryPlaceFossil(u16 *item, s32 mode, s32 type, u8 a, u
                     }
                     BOOL occupied = matchesTrend(p, type);
                     if (b) {
-                        void *v10;
-                        void *v14;
+                        PlanErrand *v10;
+                        ErrandRecord *v14;
                         v10 = VillagerPlanBlock_GetErrand(Villager_GetPlan(this));
                         v14 = PlanErrand_GetRecord(v10);
                         Item_GetPrice(item);
                         Item_GetPrice(p);
                         if (type == 2) {
                             s32 lim = 0x18;
-                            if (((ErrandRecord *)(void *)(v14))->isActive() != 0 && ((ErrandRecord *)(void *)(v14))->getKind() == 2 &&
+                            if (v14->isActive() != 0 && v14->getKind() == 2 &&
                                 PlanErrand_GetStep(v10) >= 2 && PlanErrand_GetFossilGroup(v10) < 0x18) {
                                 lim = PlanErrand_GetFossilGroup(v10);
                             }
@@ -4940,12 +4875,12 @@ namespace nL {
 extern "C" BOOL Villager_PlaceItemInHouse(VillagerData *a, u16 *b) {
     u16 v[1];
     if (*b != 0xfff1) {
-        void *r6;
+        VillagerPlan *plan;
         s32 r7, s8, n, f;
         Item_ToPlacedForm(v, b, 1);
-        r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-        r7 = ((VillagerPlan *)(void *)(r6))->getState();
-        s8 = ((VillagerPlan *)(void *)(r6))->hasState2Flag();
+        plan = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+        r7 = plan->getState();
+        s8 = plan->hasState2Flag();
         if (Item_IsFurniture(v) != 0) {
             s32 r6 = ((VillagerDataItemView *)(a))->matchesTrend((u16 *)(b), r7);
             n = Ftr_GetUnk05(v);
@@ -5283,8 +5218,8 @@ extern "C" void *Villager_GetPlan(VillagerData *a) { return a->planBlock; }
 
 namespace nL {
 extern "C" s32 Villager_GetTrend(VillagerData *a, s32 b) {
-    if ((u32)((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(a->planBlock)))->getStateGroup() <= 1) {
-        return VillagerPlan::getTrendName((MsgString *)(uptr)b, ((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(a->planBlock)))->getState());
+    if ((u32)VillagerPlanBlock_GetPlan(a->planBlock)->getStateGroup() <= 1) {
+        return VillagerPlan::getTrendName((MsgString *)(uptr)b, VillagerPlanBlock_GetPlan(a->planBlock)->getState());
     } else {
         return VillagerPlan::getTrendName((MsgString *)(uptr)b, 7);
     }
@@ -5303,7 +5238,7 @@ extern "C" s32 Villager_GetResidentStatus(VillagerData *a) {
 namespace nL {
 extern "C" BOOL Villager_IsMovingOut(VillagerData *a) {
     if (a->getVillagerId()->isValid() != 0) {
-        if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(a))))->getState() == 9) return TRUE;
+        if (VillagerPlanBlock_GetPlan(Villager_GetPlan(a))->getState() == 9) return TRUE;
     }
     return FALSE;
 }
@@ -5312,7 +5247,7 @@ extern "C" BOOL Villager_IsMovingOut(VillagerData *a) {
 namespace nL {
 extern "C" BOOL Villager_IsMovingIn(VillagerData *a) {
     if (a->getVillagerId()->isValid() != 0) {
-        if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(a))))->getState() == 0xa) return TRUE;
+        if (VillagerPlanBlock_GetPlan(Villager_GetPlan(a))->getState() == 0xa) return TRUE;
     }
     return FALSE;
 }
@@ -5321,7 +5256,7 @@ extern "C" BOOL Villager_IsMovingIn(VillagerData *a) {
 namespace nL {
 extern "C" BOOL Villager_IsJustMovedIn(VillagerData *a) {
     if (a->getVillagerId()->isValid() != 0) {
-        if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(a))))->getState() == 0xb) return TRUE;
+        if (VillagerPlanBlock_GetPlan(Villager_GetPlan(a))->getState() == 0xb) return TRUE;
     }
     return FALSE;
 }
@@ -5329,7 +5264,7 @@ extern "C" BOOL Villager_IsJustMovedIn(VillagerData *a) {
 
 namespace nL {
 extern "C" BOOL Villager_CanBeTalkPartner(VillagerData *a) {
-    void *r4 = ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerErrands *r4 = PlayerData_GetCurrent()->getErrands();
     if (a->getVillagerId()->isValid() != 0) {
         if (Villager_GetResidentStatus(a) == 3) {
             if (Villager_GetWhereabouts(a) != 2) {
@@ -5342,18 +5277,17 @@ extern "C" BOOL Villager_CanBeTalkPartner(VillagerData *a) {
 }
 
 namespace nL {
-extern "C" BOOL Villager_IsInPlayerErrand(VillagerData *a, void *b) {
+extern "C" BOOL Villager_IsInPlayerErrand(VillagerData *a, PlayerErrands *b) {
     VillagerId *r4 = a->getVillagerId();
     if (r4->isValid() != 0) {
-        void *r7 = PlayerErrands_GetSlot(b, 0);
-        void *s0 = PlayerErrands_GetSlot(b, 1);
-        void *s4 = b;
+        PlayerErrandSlot *r7 = PlayerErrands_GetSlot(b, 0);
+        PlayerErrandSlot *s0 = PlayerErrands_GetSlot(b, 1);
+        HouseVisitInvite *s4 = &b->houseVisitInvite;
         VillagerId *r5;
-        s4 = (u8 *)b + 0x88;
-        if (((ErrandRecord *)(void *)(PlayerErrandSlot_GetRecord(r7)))->isActive() != 0) {
+        if (PlayerErrandSlot_GetRecord(r7)->isActive() != 0) {
             if (((r5 = (VillagerId *)(PlayerErrandSlot_GetVillager(r7, 0))), (r5->townId == r4->townId && memcmp(r5->townName, r4->townName, 8) == 0 && r5->species == r4->species)) || ((r5 = (VillagerId *)(PlayerErrandSlot_GetVillager(r7, 1))), (r5->townId == r4->townId && memcmp(r5->townName, r4->townName, 8) == 0 && r5->species == r4->species))) return TRUE;
         }
-        if (((ErrandRecord *)(void *)(PlayerErrandSlot_GetRecord(s0)))->isActive() != 0) {
+        if (PlayerErrandSlot_GetRecord(s0)->isActive() != 0) {
             if (((r5 = (VillagerId *)(PlayerErrandSlot_GetVillager(s0, 0))), (r5->townId == r4->townId && memcmp(r5->townName, r4->townName, 8) == 0 && r5->species == r4->species)) || ((r5 = (VillagerId *)(PlayerErrandSlot_GetVillager(s0, 1))), (r5->townId == r4->townId && memcmp(r5->townName, r4->townName, 8) == 0 && r5->species == r4->species))) return TRUE;
         }
         if (Arbeit_IsLetterRecipient(b, r4) != 0) return TRUE;
@@ -6105,7 +6039,7 @@ extern "C" u32 Villager_UpdateImpression(void *self, VillagerMemory *r, PlayerDa
 }
 
 namespace nJ {
-extern "C" void Villager_GetImpressionText(void *self, void *out, PlayerData *p) {
+extern "C" void Villager_GetImpressionText(void *self, MsgString *out, PlayerData *p) {
     VillagerMemory *r;
     if (p == 0) {
         p = PlayerData_GetCurrent();
@@ -6118,7 +6052,7 @@ extern "C" void Villager_GetImpressionText(void *self, void *out, PlayerData *p)
         u32 v = r->getImpression();
         if (v < 0x58) {
             u8 b = v;
-            String_Load(out, &b, ((u8 *)"st_impress"));
+            String_Load(out, &b, "st_impress");
         }
     }
 }
@@ -6333,11 +6267,11 @@ extern "C" BOOL Villager_IsFreeOfPlayerErrands(VillagerData *a) {
 namespace nI {
 extern "C" void Villager_StartMovingOut(void *a, void *b) {
     if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid()) {
-        VillagerPlanView *r4 = (VillagerPlanView *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-        if (((VillagerPlan *)(void *)(r4))->getState() == 2 || (((VillagerPlan *)(void *)(r4))->getState() == 8 && ((VillagerPlan *)(void *)(r4))->hasState2Flag() != 0)) {
-            r4->state2Flag = 1;
+        VillagerPlan *r4 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+        if (r4->getState() == 2 || (r4->getState() == 8 && r4->hasState2Flag() != 0)) {
+            r4->flags.state2Flag = 1;
         }
-        ((VillagerPlan *)(void *)(r4))->setState(9);
+        r4->setState(9);
         MI_CpuCopy8(b, VillagerPlan_GetPlanTime(r4), 8);
         PlanErrand_Clear(VillagerPlanBlock_GetErrand(Villager_GetPlan(a)));
     }
@@ -6347,8 +6281,8 @@ extern "C" void Villager_StartMovingOut(void *a, void *b) {
 namespace nI {
 extern "C" void Villager_StartMovingIn(void *a, void *b) {
     if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid()) {
-        void *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-        ((VillagerPlan *)(void *)(r6))->setState(10);
+        VillagerPlan *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+        r6->setState(10);
         MI_CpuCopy8(b, VillagerPlan_GetPlanTime(r6), 8);
         PlanErrand_Clear(VillagerPlanBlock_GetErrand(Villager_GetPlan(a)));
     }
@@ -6358,10 +6292,10 @@ extern "C" void Villager_StartMovingIn(void *a, void *b) {
 namespace nI {
 extern "C" s32 Villager_IsMoveTimeReached(void *a, void *b) {
     void *r5 = ((VillagerData *)(a))->getVillagerId();
-    u8 *r4 = (u8 *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-    if (((VillagerId *)(r5))->isValid() && ((VillagerPlan *)(void *)(r4))->isValidState()) {
+    VillagerPlan *plan = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+    if (((VillagerId *)(r5))->isValid() && plan->isValidState()) {
         u8 *r5b = (u8 *)Personality_GetSleepHours(VillagerId_GetPersonality(r5));
-        r4 = (u8 *)VillagerPlan_GetPlanTime(r4);
+        u8 *r4 = (u8 *)VillagerPlan_GetPlanTime(plan);
         if (DateTime_IsInvalid(r4) == 0) {
             u32 tmpw[2];
             tmpw[0] = 0;
@@ -6381,10 +6315,10 @@ extern "C" s32 Villager_IsMoveTimeReached(void *a, void *b) {
 namespace nI {
 extern "C" void Villager_ShareTrendWith(void *a, void *b) {
     if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid() && ((VillagerId *)(((VillagerData *)(b))->getVillagerId()))->isValid()) {
-        s16 *r6 = (s16 *)Villager_GetInfo3a(a);
+        s16 *r6 = (s16 *)Villager_GetInfo3a((VillagerData *)a);
         if (r6) {
-            VillagerPlan *r4 = (VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-            r4->addTrendOf((VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(b)), r6);
+            VillagerPlan *r4 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+            r4->addTrendOf(VillagerPlanBlock_GetPlan(Villager_GetPlan(b)), r6);
         }
     }
 }
@@ -6392,16 +6326,16 @@ extern "C" void Villager_ShareTrendWith(void *a, void *b) {
 
 namespace nI {
 extern "C" void Villager_RecordPlayerActivity(void *a, u32 kind, s32 v) {
-    if (((VillagerData *)a)->getVillagerId()->isValid()) ((VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a)))->addPendingScore(kind, v);
+    if (((VillagerData *)a)->getVillagerId()->isValid()) VillagerPlanBlock_GetPlan(Villager_GetPlan(a))->addPendingScore(kind, v);
 }
 }
 
 namespace nI {
 extern "C" void Villager_UpdateTrendDays(void *a, ClockDateTime *b) {
-    VillagerPlan *r5 = (VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+    VillagerPlan *r5 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     if (((VillagerData *)a)->getVillagerId()->isValid() && r5->isValidState() && ((VillagerPlan *)(void *)(r5))->hasTrend()) {
         void *r6 = VillagerPlan_GetStateDate(r5);
-        s16 *r7 = (s16 *)Villager_GetInfo3a(a);
+        s16 *r7 = (s16 *)Villager_GetInfo3a((VillagerData *)a);
         s32 r4;
         s32 cnt;
         u32 tmp[2];
@@ -6438,9 +6372,9 @@ extern "C" void Villager_UpdateTrendDays(void *a, ClockDateTime *b) {
 
 namespace nI {
 extern "C" void Villager_InitPlanDateA(void *a, void *b) {
-    void *r4 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-    if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid() && ((VillagerPlan *)(void *)(r4))->isValidState()) {
-        r4 = VillagerPlan_GetPlanTime(r4);
+    VillagerPlan *plan = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+    if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid() && plan->isValidState()) {
+        ClockDateTime *r4 = VillagerPlan_GetPlanTime(plan);
         if (DateTime_IsInvalid(r4) != 0 || DateTime_Compare(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
@@ -6448,9 +6382,9 @@ extern "C" void Villager_InitPlanDateA(void *a, void *b) {
 
 namespace nI {
 extern "C" void Villager_InitPlanDateB(void *a, void *b) {
-    void *r4 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-    if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid() && ((VillagerPlan *)(void *)(r4))->isValidState()) {
-        r4 = VillagerPlan_GetStateDate(r4);
+    VillagerPlan *plan = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
+    if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid() && plan->isValidState()) {
+        ClockDateTime *r4 = VillagerPlan_GetStateDate(plan);
         if (DateTime_IsInvalid(r4) != 0 || DateTime_Compare(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
@@ -6523,14 +6457,14 @@ namespace nI {
 extern "C" void Villager_UpdatePlanErrand(void *a) {
     if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid()) {
         void *r6 = Villager_GetPlan(a);
-        void *r7 = VillagerPlanBlock_GetErrand(r6);
-        void *r4 = PlanErrand_GetRecord(r7);
-        if (((ErrandRecord *)(void *)(r4))->isActive()) {
-            if (((ErrandRecord *)(void *)(r4))->getClass() == 0) {
-                if (((ErrandRecord *)(void *)(r4))->getStep() == 3) {
-                    if (((ErrandRecord *)(void *)(r4))->getKind() == 4) Villager_NextFurnitureTaste(a);
+        PlanErrand *r7 = VillagerPlanBlock_GetErrand(r6);
+        ErrandRecord *r4 = PlanErrand_GetRecord(r7);
+        if (r4->isActive()) {
+            if (r4->getClass() == 0) {
+                if (r4->getStep() == 3) {
+                    if (r4->getKind() == 4) Villager_NextFurnitureTaste(a);
                     PlanErrand_Clear(r7);
-                    ((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(r6)))->startTrendChange();
+                    VillagerPlanBlock_GetPlan(r6)->startTrendChange();
                 }
             }
         }
@@ -6909,10 +6843,11 @@ extern "C" BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx) {
 }
 
 namespace nH {
-extern "C" u8 *SaveVillagers_Get(u8 *base, s32 idx) {
-    u8 *r = NULL;
+// (base: the villager save block, SaveVillagers; still untyped in most of this file's SaveVillagers_* functions)
+extern "C" VillagerData *SaveVillagers_Get(void *base, s32 idx) {
+    VillagerData *r = NULL;
     if (SaveVillagers_IsValidIndex(idx)) {
-        r = base + idx * sizeof(VillagerData);
+        r = &((SaveVillagers *)base)->villagers[idx];
     }
     return r;
 }
@@ -6960,7 +6895,7 @@ extern "C" u8 *SaveVillagers_FindByName(u8 *base, u8 *a1, s32 a2, void *a3) {
     s32 n;
     s32 i;
     void *t;
-    p = SaveVillagers_Get(base, 0);
+    p = (u8 *)SaveVillagers_Get(base, 0);  // (walked as bytes below)
     MsgString9B objA;
     EncodedString8 objB;
     result = NULL;
@@ -7557,7 +7492,6 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
         && self->lastMovedOutSpecies != VillagerId_GetSpecies(((VillagerData *)(r7))->getVillagerId())) {
         if (r4 == 0) {
             s32 x = SaveVillagers_FindFreeSlot(self);
-            r4 = (void *)x;
             if (SaveVillagers_IsValidIndex(x) == 0) {
                 return;
             }
@@ -7606,9 +7540,9 @@ extern "C" s32 SaveVillagers_FindMovingOut(SaveVillagers *self) {
 namespace nG {
 extern "C" s32 SaveVillagers_FindMovingOutDue(SaveVillagers *self, void *name) {
     s32 idx = SaveVillagers_FindMovingOut(self);
-    void *v = SaveVillagers_Get(self, idx);
+    VillagerData *v = SaveVillagers_Get(self, idx);
     if (v != 0) {
-        void *q = VillagerPlanBlock_GetPlan(Villager_GetPlan(v));
+        VillagerPlan *q = VillagerPlanBlock_GetPlan(Villager_GetPlan(v));
         s32 r = DateTime_Compare(name, VillagerPlan_GetPlanTime(q), 0x3f);
         s32 n = 0;
         if (r == 1) {
@@ -7938,11 +7872,11 @@ extern "C" u8 *SaveVillagers_FindByRelation(u8 *self, u8 *p, BOOL (**cmp)(s32, s
             if (i != r6 && SaveVillagers_IsOccupied(self, i)) {
                 s32 v = VillagerRelations_GetScore(self + 0x3800, r6, i);
                 if ((*cmp)(best, v)) {
-                    r7 = SaveVillagers_Get(self, i);
+                    r7 = (u8 *)SaveVillagers_Get(self, i);
                     best = v;
                 } else if (best == v) {
                     if (r7 == NULL || (Random_GlobalBelow(4) & 1) == 1) {
-                        r7 = SaveVillagers_Get(self, i);
+                        r7 = (u8 *)SaveVillagers_Get(self, i);
                     }
                 }
             }
@@ -7998,21 +7932,21 @@ extern "C" s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, u8 *r4) {
         r4 = (u8 *)PlayerData_GetCurrent();
     }
     if (r4 != NULL) {
-        r4 = (u8 *)((PlayerData *)r4)->getErrands();
-        u8 *a = PlayerErrands_GetSlot(r4, 0);
-        u8 *b = PlayerErrands_GetSlot(r4, 1);
-        u32 *r4u = (u32 *)(r4 + 0x88);
-        if (((ErrandRecord *)(void *)(PlayerErrandSlot_GetRecord(a)))->isActive()) {
-            u16 *r7 = PlayerErrandSlot_GetVillager(a, 0);
+        PlayerErrands *errands = ((PlayerData *)r4)->getErrands();
+        PlayerErrandSlot *a = PlayerErrands_GetSlot(errands, 0);
+        PlayerErrandSlot *b = PlayerErrands_GetSlot(errands, 1);
+        HouseVisitInvite *invite = &errands->houseVisitInvite;
+        if (PlayerErrandSlot_GetRecord(a)->isActive()) {
+            u16 *r7 = (u16 *)PlayerErrandSlot_GetVillager(a, 0);
             if (r7[0] == r5[0] && memcmp(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
-                result = ((ErrandRecord *)(void *)(PlayerErrandSlot_GetRecord(a)))->getKind();
+                result = PlayerErrandSlot_GetRecord(a)->getKind();
                 goto end;
             }
         }
-        if (((ErrandRecord *)(void *)(PlayerErrandSlot_GetRecord(b)))->isActive()) {
-            u16 *r7 = PlayerErrandSlot_GetVillager(b, 0);
+        if (PlayerErrandSlot_GetRecord(b)->isActive()) {
+            u16 *r7 = (u16 *)PlayerErrandSlot_GetVillager(b, 0);
             if (r7[0] == r5[0] && memcmp(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
-                result = ((ErrandRecord *)(void *)(PlayerErrandSlot_GetRecord(b)))->getKind();
+                result = PlayerErrandSlot_GetRecord(b)->getKind();
                 goto end;
             }
         }
@@ -8023,11 +7957,10 @@ extern "C" s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, u8 *r4) {
                 goto end;
             }
         }
-        if (HouseVisitInvite_IsFrom((u8 *)r4u, r5)) {
-            r4u += 3;
-            result = ((ErrandRecord *)(void *)(r4u))->getKind();
-        } else if (((ErrandRecord *)(void *)(PlanErrand_GetRecord(VillagerPlanBlock_GetErrand(Villager_GetPlan(p)))))->isActive()) {
-            result = ((ErrandRecord *)(void *)(PlanErrand_GetRecord(VillagerPlanBlock_GetErrand(Villager_GetPlan(p)))))->getKind();
+        if (HouseVisitInvite_IsFrom(invite, (VillagerId *)r5)) {
+            result = invite->errand.getKind();
+        } else if (PlanErrand_GetRecord(VillagerPlanBlock_GetErrand(Villager_GetPlan(p)))->isActive()) {
+            result = PlanErrand_GetRecord(VillagerPlanBlock_GetErrand(Villager_GetPlan(p)))->getKind();
         }
     }
 end:
@@ -8046,8 +7979,8 @@ extern "C" s32 Villager_GetErrandKind(u8 *self, u8 *p, u8 *r5) {
         s32 r = Villager_GetPlayerErrandKind(self, p, r5);
         if ((u32)r < 0x16) {
             r7 = r;
-        } else if (((ErrandRecord *)(void *)(VillagerState_GetErrand(q)))->isActive()) {
-            r7 = ((ErrandRecord *)(void *)(VillagerState_GetErrand(q)))->getKind();
+        } else if (VillagerState_GetErrand(q)->isActive()) {
+            r7 = VillagerState_GetErrand(q)->getKind();
         }
     }
     return r7;
@@ -8064,7 +7997,7 @@ extern "C" BOOL SaveVillagers_ShouldAssignErrands(u8 *self) {
     s32 c5 = 0;
     s32 c4 = c5;
     s32 i = c5;
-    u8 *zero = (u8 *)c5;
+    u8 *zero = NULL;
     do {
         if (((VillagerData *)(void *)(p))->getVillagerId()->isValid()) {
             s32 r = Villager_GetErrandKind(self, p, zero);
@@ -8088,7 +8021,7 @@ namespace nF {
 extern "C" void VillagerStates_ResetErrands() {
     VillagerState *p = VillagerStates_Get()->entries;
     for (s32 i = 0; i < 8; i++) {
-        ((ErrandRecord *)(void *)(VillagerState_GetErrand(p)))->clear();
+        VillagerState_GetErrand(p)->clear();
         p++;
     }
 }
@@ -8102,7 +8035,7 @@ extern "C" void SaveVillagers_AssignErrands(void *bb) {
     s32 r4 = 8;
     if (a != 0) {
         u16 v[2];
-        u32 idx = 0;
+        s32 idx = 0;
         s32 self = SaveVillagers_GetUnk3830Index(b);
         s32 i;
         MI_CpuFill8(sErrandKindTaken, 0, r5);
@@ -8138,12 +8071,12 @@ extern "C" void SaveVillagers_AssignErrands(void *bb) {
             u8 *flag = &sErrandVillagerDone[i];
             if (*flag == 0) {
                 p2 = b + i * sizeof(VillagerData);
-                s32 e = VillagerPlanBlock_GetPlan(Villager_GetPlan(p2));
-                if (((VillagerPlan *)(void *)(e))->hasTrend()) {
-                    if (((VillagerPlan *)(void *)(e))->getStateGroup() == 0) {
-                        void *x = VillagerState_GetErrand(Villager_GetState(p2));
+                VillagerPlan *e = VillagerPlanBlock_GetPlan(Villager_GetPlan(p2));
+                if (e->hasTrend()) {
+                    if (e->getStateGroup() == 0) {
+                        ErrandRecord *x = VillagerState_GetErrand(Villager_GetState(p2));
                         v[0] = 0xfff1;
-                        ((ErrandRecord *)(void *)(x))->start(((VillagerPlan *)(void *)(e))->getState(), v, zero);
+                        x->start(e->getState(), v, zero);
                         *flag = 1;
                         r4--;
                     }
@@ -8202,20 +8135,19 @@ extern "C" void SaveVillagers_UpdatePlayerErrandKind15(void *unused, void *q) {
     for (i = 0; i < 4; i++) {
         void *e = PlayerData_GetResident(gSavePlayers, i);
         if (((PlayerId *)(void *)(((PlayerData *)(void *)(e))->getPlayerId()))->isValid()) {
-            u8 *r4 = (u8 *)((PlayerData *)(e))->getErrands() + 0x88;
-            u8 *r6 = r4 + 0xc;
-            if (((ErrandRecord *)r6)->isActive()) {
-                if (((ErrandRecord *)(void *)(r6))->getKind() == 0x15) {
-                    if (((VillagerId *)r4)->isValid()) {
-                        u8 *r7 = r4 + 0x18;
-                        if (((ErrandRecord *)r6)->getStep() == 0) {
-                            if (DateTime_DiffDays((void *)ErrandRecord_GetTime(r6), q) < 0) HouseVisitInvite_Clear(r4);
+            HouseVisitInvite *r4 = &((PlayerData *)(e))->getErrands()->houseVisitInvite;
+            ErrandRecord *r6 = &r4->errand;
+            if (r6->isActive()) {
+                if (r6->getKind() == 0x15) {
+                    if (r4->isValid()) {
+                        if (r6->getStep() == 0) {
+                            if (DateTime_DiffDays(ErrandRecord_GetTime(r6), q) < 0) HouseVisitInvite_Clear(r4);
                         } else if (((HouseVisitInviteGiftView *)r4)->giftKind != 0) {
-                            r7 = (u8 *)DateTime_DiffDays(r7, q);
-                            ((ErrandRecord *)(void *)(r6))->setStep(4);
-                            if (r7) {
+                            s32 days = DateTime_DiffDays(&r4->visitTime, q);
+                            r6->setStep(4);
+                            if (days) {
                                 u32 bits = ((HouseVisitInviteGiftView *)r4)->giftKind;
-                                if (Villager_SendHouseVisitLetter(bits, ((PlayerData *)e)->getPlayerId(), (VillagerId *)r4)) HouseVisitInvite_Clear(r4);
+                                if (Villager_SendHouseVisitLetter(bits, ((PlayerData *)e)->getPlayerId(), r4)) HouseVisitInvite_Clear(r4);
                             }
                         } else {
                             HouseVisitInvite_Clear(r4);
@@ -8240,11 +8172,11 @@ extern "C" void SaveVillagers_DailyVillagerUpdate(u8 *p, s32 q) {
                 }
             }
             Villager_UpdatePlanErrand(p);
-            s32 a = VillagerPlanBlock_GetErrand(Villager_GetPlan(p));
-            s32 c = PlanErrand_GetRecord(a);
-            if (((ErrandRecord *)(void *)(c))->isActive()) {
-                if (((ErrandRecord *)(void *)(c))->getStep() == 0) {
-                    ((PlayerId *)((void *)PlanErrand_GetPlayer(a)))->clear();
+            PlanErrand *a = VillagerPlanBlock_GetErrand(Villager_GetPlan(p));
+            ErrandRecord *c = PlanErrand_GetRecord(a);
+            if (c->isActive()) {
+                if (c->getStep() == 0) {
+                    PlanErrand_GetPlayer(a)->clear();
                 }
             }
             Villager_PlaceReceivedItems(p);
@@ -8297,7 +8229,7 @@ extern "C" s32 SaveVillagers_PickSickVillager(void *pp, u32 idx) {
         p += sizeof(VillagerData);
     }
     s32 r4 = Random_PickSetBit(mask, cnt, 8);
-    void *v = SaveVillagers_Get(b, r4);
+    VillagerData *v = SaveVillagers_Get(b, r4);
     if (v) {
         u8 *q = Villager_GetInfo(v);
         if (!(Random_GlobalBelow(sMonthlySickRoll[idx]) >= q[3] + 0x80)) return r4;
@@ -9648,16 +9580,16 @@ extern "C" s32 Relation_GetPersonalityScore(void *a, void *p, void *q) {
 
 namespace nB {
 extern "C" u32 Relation_GetStarElementScore(void *a, void *p, void *q) {
-    u8 x = Villager_GetStarSign(p) & 3;
-    u8 y = Villager_GetStarSign(q) & 3;
+    u8 x = Villager_GetStarSign((VillagerData *)p) & 3;
+    u8 y = Villager_GetStarSign((VillagerData *)q) & 3;
     return sStarElementCompat[x][y];
 }
 }
 
 namespace nB {
 extern "C" u32 Relation_GetSpeciesScore(void *a, void *p, void *q) {
-    u32 x = Villager_GetAnimalKind(p);
-    u32 y = Villager_GetAnimalKind(q);
+    u32 x = Villager_GetAnimalKind((VillagerData *)p);
+    u32 y = Villager_GetAnimalKind((VillagerData *)q);
     u8 (*t)[2];
     s32 i;
     if (x == y) {
@@ -9683,8 +9615,8 @@ extern "C" u32 Relation_GetSpeciesScore(void *a, void *p, void *q) {
 
 namespace nB {
 extern "C" u32 Relation_GetInfoBonus(void *a, void *p, void *q) {
-    u8 *x = Villager_GetInfo(p);
-    u8 *y = Villager_GetInfo(q);
+    u8 *x = Villager_GetInfo((VillagerData *)p);
+    u8 *y = Villager_GetInfo((VillagerData *)q);
     u32 r = 0;
     if (x != NULL && y != NULL) {
         r = 0x3f;
@@ -9695,8 +9627,8 @@ extern "C" u32 Relation_GetInfoBonus(void *a, void *p, void *q) {
 
 namespace nB {
 extern "C" u32 Relation_GetInfo04Diff(void *a, void *p, void *q) {
-    u8 *x = Villager_GetInfo(p);
-    u8 *y = Villager_GetInfo(q);
+    u8 *x = Villager_GetInfo((VillagerData *)p);
+    u8 *y = Villager_GetInfo((VillagerData *)q);
     u32 r = 0;
     if (x != NULL && y != NULL) {
         u32 yb = y[4];
@@ -9821,7 +9753,7 @@ extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p) {
             o = SaveVillagers_Get(gSaveVillagers, i);
             if (o != NULL) {
                 if (((VillagerId *)(((VillagerData *)(o))->getVillagerId()))->isValid()) {
-                    if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(o))))->isTrendOlderThanWeek((ClockDateTime *)&t)) {
+                    if (VillagerPlanBlock_GetPlan(Villager_GetPlan(o))->isTrendOlderThanWeek((ClockDateTime *)&t)) {
                         if (p != NULL) {
                             h = (i & 0xfff) | 0xe000;
                             if (Villager_IsActorInBox(&h, b[0], b[1], b[2], z1)) {
@@ -9935,7 +9867,6 @@ extern "C" void VillagerTrend_TickIdle() {
 
 VillagerState::VillagerState() {
     using namespace nB;
-    ((ErrandRecord *)(void *)(errand))->init();
     TrendScores_Construct(trendScores);
     heldItem = 0xfff1;
     TalkRepeat_Construct(&talkRepeat);
@@ -9944,8 +9875,7 @@ VillagerState::VillagerState() {
 VillagerState::~VillagerState() {
     using namespace nB;
     TalkRepeat_Destruct(&talkRepeat);
-    TrendScores_Destruct(trendScores);
-    ((ErrandRecord *)(void *)(errand))->func_0209ada0();
+    TrendScores_Destruct();
 }
 
 namespace nB {
@@ -9953,7 +9883,7 @@ extern "C" void VillagerState_Init(VillagerState *e) {
     MI_CpuFill8(e, 0, 0x2c);
     e->role = 0;
     e->presence = 3;
-    ((ErrandRecord *)(void *)(e->errand))->clear();
+    e->errand.clear();
     TrendScores_Clear(e->trendScores);
     e->mood = 5;
     e->activity = 0xc;
@@ -10013,7 +9943,7 @@ extern "C" void VillagerState_SetPresence(VillagerState *e, u32 v) { e->presence
 }
 
 namespace nB {
-extern "C" void *VillagerState_GetErrand(VillagerState *e) { return e->errand; }
+extern "C" ErrandRecord *VillagerState_GetErrand(VillagerState *e) { return &e->errand; }
 }
 
 namespace nB {
@@ -10323,7 +10253,7 @@ extern "C" void VillagerStates_ResetIdleFrames() {
 }
 
 namespace nA {
-extern "C" void SaveVillagers_OnNewDay(u8 *a, s32 b) {
+extern "C" void SaveVillagers_OnNewDay(u8 *a, void *b) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
@@ -10346,16 +10276,16 @@ extern "C" void SaveVillagers_OnNewDay(u8 *a, s32 b) {
                     ((VillagerMemory *)(e))->clearFortuneGreeting();
                 }
             }
-            ((VillagerDataProfileView *)(a))->sendBirthdayLetters((void *)(b));
-            ((VillagerDataProfileView *)(a))->sendNewYearLetters((void *)(b));
+            ((VillagerDataProfileView *)(a))->sendBirthdayLetters(b);
+            ((VillagerDataProfileView *)(a))->sendNewYearLetters(b);
         }
     }
 }
 }
 
 namespace nA {
-extern "C" s32 Field_FindPlayerAtUnit(s32 x, s32 y) {
-    s32 result = 0;
+extern "C" void *Field_FindPlayerAtUnit(s32 x, s32 y) {
+    void *result = NULL;
     s32 ax = 0;
     s32 ay = 0;
     s32 i;
@@ -10375,7 +10305,7 @@ extern "C" s32 Field_FindPlayerAtUnit(s32 x, s32 y) {
 
 namespace nA {
 extern "C" BOOL Field_IsUnitOccupied(s32 a, s32 b) {
-    BOOL r = Field_FindPlayerAtUnit(a, b);
+    BOOL r = Field_FindPlayerAtUnit(a, b) != NULL;
     if (r == 0) {
         r = NpcRegistry_FindAt(a, b) != NULL;
     }
@@ -10601,11 +10531,10 @@ namespace nA {
 extern "C" void VillagerAnimHeapPool_Free(void **p) {
     void *heap = gVillagerAnimPoolHeap;
     s32 i;
-    s32 z = 0;
     for (i = 0; i < 8; i++) {
         if (p[i] != 0) {
             ((Heap *)(p[i]))->freeAll();
-            p[i] = (void *)z;
+            p[i] = NULL;
         }
     }
     if (heap != 0) {
@@ -10661,11 +10590,10 @@ namespace nA {
 extern "C" void SpNpcAnimHeapPool_Free(void **p) {
     void *heap = gSpNpcAnimPoolHeap;
     s32 i;
-    s32 z = 0;
     for (i = 0; i < 4; i++) {
         if (p[i] != 0) {
             ((Heap *)(p[i]))->freeAll();
-            p[i] = (void *)z;
+            p[i] = NULL;
         }
     }
     if (heap != 0) {

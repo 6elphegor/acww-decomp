@@ -1,4 +1,5 @@
 #include "game/BoxCollider.h"
+#include "proto/main/unk_020b4828.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -93,7 +94,6 @@ extern BgmManager *data_021c1b3c;
 extern s32 gGfxMainOnTop;
 s32 BoxCollider_Unregister(BoxCollider *);
 s32 BoxCollider_Register(BoxCollider *, s32, s32, s32, VecFx32 *, s16, VecFx32 *);
-TouchPicker *Scene_GetTouchPicker(void);
 s32 TalkRequest_SetTargetDone(void *);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);

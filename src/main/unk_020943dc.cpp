@@ -15,16 +15,15 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02097d1c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 // (defined in units whose declarations aren't shared yet: as they are defined)
 extern "C" {
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;  // (gap data: the constant pointer to gCommManagerInstance)
-extern Unk_0204e858_Grid *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 BOOL Scene_InHouseRoom(void);
-u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, VecFx32 *v, s32 layer);
-s32 BlockMap_IsBuriedAtPos(Unk_0204e858_Grid *g, VecFx32 *v);
 u32 ItemInfo_GetHoldableCount();
 void ItemInfo_GetNthHoldable(u16 *out, s32 idx);
 void PlayerActor_GetHeldItem(u16 *out, void *x);
@@ -193,7 +192,7 @@ extern "C" u16 *PlayerActor_GetItemInFront() {
             }
         }
     } else {
-        Unk_0204e858_Grid *g = gSceneBlockMap;
+        BlockMap *g = gSceneBlockMap;
         if (BlockMap_IsBuriedAtPos(g, &buf)) return 0;
         r = BlockMap_GetItemPtrAtPos(g, &buf, 0);
     }
@@ -207,7 +206,7 @@ extern "C" void PlayerActor_SetLocalExitId(s32 *p) {
     }
 }
 
-extern "C" void PlayerActor_SetLocalExitKind(s32 *p) {
+extern "C" void PlayerActor_SetLocalExitKind(u32 *p) {
     PlayerActor *o = PlayerActor_Get(4);
     if (o) {
         o->exitMode = *p;

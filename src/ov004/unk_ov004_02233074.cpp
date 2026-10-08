@@ -50,6 +50,7 @@
 #include "proto/main/unk_020b8d98.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_02235fd0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // other modules' symbols by their real names
 #define FtrActor_isGyroid _ZN8FtrActor8isGyroidEv
@@ -208,7 +209,7 @@ extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 extern s16 data_02135f44[];
-extern Unk_0204e858_Grid *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 gBackup[];
 extern u8 gSavePlayers[];
 extern TvWeatherSrcView data_021ed2b0;
@@ -242,10 +243,6 @@ s32 Item_GetFurnitureDirection(void *);
 s32 Item_IsFurniture(void *p);
 s32 Item_IsNormalItem(u16 *p);
 u32 Item_GetPaperIndex(u16 *p);
-u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *w, void *q, u32 z);
-u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *w, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 s32 Backup_GetStatus(void *p);
 void FtrFootprint_Destruct(FtrFootprint *b);
 void Gfx3d_LoadTexAndPltt(void *a, void *b);
@@ -954,7 +951,7 @@ FtrActor *FtrActorGrid::getActor(s32 x, s32 y, s32 layer) {
 }
 
 // @0x22355b0 unk_022350c8.cpp
-FtrActor *FtrActorGrid::getActorAtPos(void *p, s32 layer) {
+FtrActor *FtrActorGrid::getActorAtPos(VecFx32 *p, s32 layer) {
     s32 x, y;
     FieldPos_ToUnit(&x, &y, p);
     return getActor(x, y, layer);
@@ -1321,7 +1318,7 @@ extern "C" Actor *FtrMgr_SpawnFromArg(u32 self) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
                     e->switchState.set(1, 0);
-                    FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (s32)(sptr)&e->position, 0);
+                    FtrSync_RequestToggleGyroid(Scene_GetCurrent(), &e->position, 0);
                 }
             }
         }
@@ -3342,9 +3339,9 @@ extern "C" void FtrMgr_CreateHook(void *) {
 
 // @0x2234a48 unk_02234774.cpp
 extern "C" void FtrMgr_SpawnAllFromMap(void *) {
-    Unk_0204e858_Grid *g = gSceneBlockMap;
-    void *cells;
-    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != NULL) {
+    BlockMap *g = gSceneBlockMap;
+    MapBlock *cells;
+    if ((u32)g->width > 0 && (u32)g->height > 0 && g->blocks != NULL) {
         cells = g->blocks;
     } else {
         cells = NULL;
@@ -3517,7 +3514,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
 // @0x22345c4 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, u16 *p1, u16 *p2) {
     s32 i;
-    Unk_0204e858_Grid *w;
+    BlockMap *w;
     s32 b24, b28;
     s32 c2c, c30;
     s32 layer;
@@ -3709,7 +3706,7 @@ extern "C" s32 FtrMgr_TryPlaceAt(u32 *out, s32 x, s32 y, s32 dir, s32 pl, u32 la
     FtrFootprint b;
     s34 = Item_MakeFurniture(pl, dir);
     FtrFootprint_Init((Unk_0205242c_Self *)&b, &s34);
-    Unk_0204e858_Grid *w = gSceneBlockMap;
+    BlockMap *w = gSceneBlockMap;
     BOOL ok = TRUE;
     u32 i = 0;
     z2 = i;

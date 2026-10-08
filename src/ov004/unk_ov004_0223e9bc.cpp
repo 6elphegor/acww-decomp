@@ -7,11 +7,12 @@
 #include "room/FtrActorGrid.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
+#include "proto/main/unk_0204cc1c.h"
 
 class ShopStockPlacer;
 
 extern "C" {
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 data_021ed104[];
 extern u8 data_021ed2d4[];
 extern u8 data_021ed2c0[];
@@ -36,8 +37,6 @@ u16 *NookShop_GetItem(void *tbl, s32 idx, u16 *out);
 s32 NookShop_FindItem(void *tbl, u16 *p);
 s32 AbleShop_FindItem(void *tbl, u16 *p);
 s32 ReddShop_FindItem(void *tbl, u16 *p);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 BlockMap_SetItemAtUnit(void *g, u16 *v, s32 x, s32 y, u32 z);
 s32 FtrActor_GetFtrIndex(void *o);
 
 u16 *ReddShop_GetItem(void *p, u32 a, void *b);
@@ -289,7 +288,7 @@ BOOL ShopStockPlacer::onDelete() { return TRUE; }
 
 BOOL ShopStockPlacer::placeItem(u16 *item, s32 code) {
     const u32 *tbl = ShopStock_GetLayout();
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     s32 y;
     s32 x;
     s32 hx;
@@ -394,7 +393,7 @@ extern "C" BOOL ShopStock_IsForSale(u16 *p) {
 extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
     static ItemId dflt(0xfff1);
     u16 cv[3];
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g) {
         s32 hx = x >> 4;
         s32 hy = y >> 4;
@@ -527,7 +526,7 @@ void ShopStockPlacer::placeScene10Stock() {
 
 BOOL ShopStockPlacer::setupScene10Shop() {
     placeScene10Stock();
-    void *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     u16 v;
     v = 0xfff1;
     v = 0x3e04;

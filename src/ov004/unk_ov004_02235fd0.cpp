@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/base
 // ov004 TU33: .text 0x02235fd0-0x02237440 (actor 0224ebec "bug" scene object + scene objects 0224eb9c)
 #include "types.h"
@@ -38,6 +39,7 @@
 #include "game/FxVec3.h"
 #include "snd/CreatureSndChannel.h"
 #include "town/BlockMap.h"
+#include "proto/main/unk_0204cc1c.h"
 
 #pragma opt_loop_invariants off
 
@@ -114,13 +116,10 @@ BOOL Scene_InHouseRoom();
 s32 Scene_GetHouseRoom();
 u8 *func_02106788(u8 *p);
 u8 *func_021067a4(u8 *p, u32 i);
-u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
-void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 // (main defines it with an integer for the actor and u16 for the angle)
-void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *prev, u16 angle, s32 radius, Actor *actor, u32 flags);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 // (main defines the position as an integer)
@@ -628,16 +627,16 @@ void HouseRoach::playSe(u32 sel) {
     case 0:
         wantsCrawlSe = 1;
         if (getSoundState() == 2) {
-            sound.callRequest((void *)(0x1d2));
+            sound.callRequest(0x1d2);
         } else {
             setSoundState(1);
         }
         break;
     case 1:
-        sound.callRequestSustained((void *)(0x1d3));
+        sound.callRequestSustained(0x1d3);
         break;
     default:
-        sound.callRequestSustained((void *)(0x1d4));
+        sound.callRequestSustained(0x1d4);
         break;
     }
 }
@@ -768,7 +767,7 @@ void HouseRoach::updateCrawl() {
     if (res == 2) {
         Actor *t = getNearestCharacter();
         if (t) {
-            moveAngleY = Math_AngleXZ(&t->position.x, &self0->x);
+            moveAngleY = Math_AngleXZ(&t->position, self0);
             rotY = moveAngleY;
         }
     }
@@ -796,7 +795,7 @@ BOOL HouseRoach::move() {
         if (o != 0 && hit == 0) {
             VecFx32 *q = &o->position;
             if (Vec_DistXZ(p6, q) < 0x1800) {
-                s32 d = Math_AngleXZ(&p6->x, &q->x);
+                s32 d = Math_AngleXZ(p6, q);
                 if ((d >= 0 && a >= 0) || (d <= 0 && a <= 0)) {
                     s32 t = d - a;
                     if (t < 0) {

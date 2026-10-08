@@ -9,7 +9,7 @@
 
 struct SceneExitResult {
     /* 0x00 */ u8 scene, fadeIn, fadeOut, d;
-    /* 0x04 */ u16 e;
+    /* 0x04 */ s16 e;
     /* 0x06 */ s16 f;
 };
 

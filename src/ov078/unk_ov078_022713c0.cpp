@@ -47,6 +47,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/ov078/unk_ov078_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -75,7 +76,6 @@ extern s32 data_020c6cf0;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 BOOL TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 BOOL TalkRequest_SetTargetDone(Character *c);
 
@@ -396,7 +396,7 @@ BOOL SpNpcSaharah::mainAct02() {
                     v.y = gVec3Zero.y;
                     v.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        r6 = Math_AngleXZ(&position.x, &v.x);
+                        r6 = Math_AngleXZ(&position, &v);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY))) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -425,7 +425,7 @@ BOOL SpNpcSaharah::mainAct02() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &w.x) - rotY)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
@@ -479,7 +479,7 @@ void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
 
 void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     u16 h;
-    ParcelErrand *g = ((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->getParcelErrand();
+    ParcelErrand *g = (PlayerData_GetCurrent()->getErrands())->getParcelErrand();
     MsgString9B o;
     out->msgKey = "sp_npc_camel";
     if (turbanSlot == -1) {
@@ -533,7 +533,7 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
     u8 *s;
     h[0] = 0xfff1;
     MsgString9B o3;
-    g = ((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->getParcelErrand();
+    g = (PlayerData_GetCurrent()->getErrands())->getParcelErrand();
     s = (u8 *)"sp_npc_camel";
     msg = 0;
     switch (msgIndex) {

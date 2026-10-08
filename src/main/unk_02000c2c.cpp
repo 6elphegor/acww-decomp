@@ -24,6 +24,7 @@
 #include "proto/main/unk_020b7f7c.h"
 #include "proto/main/unk_020de408.h"
 #include "proto/main/unk_020e0408.h"
+#include "proto/main/unk_0204cc1c.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -69,7 +70,6 @@ void MIi_CpuClearFast(u32 data, void *dest, u32 size);
 const char *Task_GetPhaseName(u32 a);
 u32 OS_GetIrqStackStatus(void);
 u32 OS_GetStackStatus(OSThread *a);
-void BlockMap_DebugStub(void);
 u8 *OS_GetDTCMAddress(void);
 
 void Fatal_PanicV(const char *a, u32 b, const char *c, void *d) {

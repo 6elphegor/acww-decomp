@@ -1,4 +1,5 @@
 #include "snd/SndSeEmitter.h"
+#include "save/VillagerData.h"
 #include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -10,6 +11,7 @@
 #include "proto/main/unk_020571f4.h"
 #include "proto/main/unk_02090268.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 struct FishHoldOffsets {
@@ -150,7 +152,6 @@ s32 Vec_DistXZ(void *a, void *b);
 void Math_StepS32(s32 *p, s32 target, s32 step);
 void Vec_RotateY(VecFx32 *v, s32 angle);
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
-void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 s32 Scene_GetCurrent();
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void Math_StepS32Alt(s32 *p, s32 a, s32 b);
@@ -164,8 +165,8 @@ BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 FishDisplay_Acquire();
 void Math_CountDownU8(void *p);
-void *SaveVillagers_Get(void *p, u32 v);
-u32 Villager_GetAnimalKind(u32 a);
+VillagerData *SaveVillagers_Get(void *base, s32 idx);
+u32 Villager_GetAnimalKind(VillagerData *a);
 
 // ---- own data (defined below / after the functions) ----
 extern const u8 sHandOverTakeTimeout[4];
@@ -232,7 +233,7 @@ extern "C" u32 HandOverItem_GetFishHoldOffsetSet(ProcBase *o)
     s32 t = (s32)(b & 0xf000) >> 12;
     if (t != 0xd) {
       if (t == 0xe) {
-        switch (Villager_GetAnimalKind((u32)(uptr)SaveVillagers_Get(gSaveVillagers, b & 0xfff))) {  // (it takes the VillagerData as an integer)
+        switch (Villager_GetAnimalKind(SaveVillagers_Get(gSaveVillagers, b & 0xfff))) {
         case 0: case 5: case 6: case 10: case 12: case 15: case 16: case 21: case 25: case 31: case 32:
             r = 4; break;
         case 1: case 2: case 4: case 7: case 9: case 13: case 14: case 17: case 19: case 20: case 22: case 23: case 26: case 27: case 29:

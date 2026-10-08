@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov004 TU04: .text 0x022136d0-0x02213b90 (class RoomBoardSign)
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
@@ -28,7 +29,6 @@ extern "C" {
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-TouchPicker *Scene_GetTouchPicker();
 u32 Scene_GetCurrent();
 }
 
@@ -118,7 +118,7 @@ BOOL RoomBoardSign::onCreate() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), radius, 0x10, index);
+    Scene_GetTouchPicker()->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), radius, 0x10, index);
     return TRUE;
 }
 

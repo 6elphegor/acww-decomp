@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "proto/main/unk_0202fa70.h"
 #include "game/CollisionState.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
@@ -59,6 +60,7 @@
 #include "gfx/ScreenTransition.h"
 #include "talk/MsgRequest.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 class FtrContact;
 
@@ -1363,14 +1365,12 @@ typedef Unk_ov004_02223314_Pl Pl;
 extern "C" {
 extern u8 gFieldSceneKind;
 extern void *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 
 void PlayerActor_ApproachValue(void *p, s32 a, u32 b, u32 c, u32 d);
 void PlayerActor_StepTowardXZ(Obj *o, s32 a, s32 b);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 s32 Camera_SnapToFocus(V3 *v);
-s32 FieldPos_FromUnitCenter(void *p, u32 a, s32 b);
-u16 *BlockMap_GetItemPtrAtPos(void *g, void *p, s32 a);
 s32 Scene_InHouseRoom(void);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
@@ -1700,13 +1700,13 @@ extern "C" void PlayerActor_SetupPickUpItem(Obj *o, Msg *m) {
     r->ftrIndex = b;
     a = pl->a;
     c = pl->b;
-    FieldPos_FromUnitCenter(&o->shownItemPosX, a, c);
-    o->shownItemPosY = FtrMgr_GetSurfaceHeightAtPos((VecFx32 *)&o->shownItemPosX);
+    FieldPos_FromUnitCenter(&o->shownItemPos, a, c);
+    o->shownItemPos.y = FtrMgr_GetSurfaceHeightAtPos(&o->shownItemPos);
     o->shownItemScaleX = 0x1000;
     o->shownItemScaleY = 0x1000;
     o->shownItemScaleZ = 0x1000;
     if (b < 0) {
-        p = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &o->shownItemPosX, 1);
+        p = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &o->shownItemPos, 1);
         if (p == 0) {
             o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
             (o)->requestWait(3, 1, -1);
@@ -3861,7 +3861,6 @@ s32 Vec_MagXZ(V3 *v);
 s32 Vec_DistXZ(V3 *a, V3 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void Collision_Move(void *a, V3 *b, V3 *c, s32 d, u32 e, Obj *f, u32 g);
 s32 Ground_GetDefaultY(u32 a);
 void PlayerActor_StepAlpha(Obj *o, u32 a, u32 b);
 void PlayerActor_RequestAct42(Obj *o, s32 a, s32 b);
@@ -4135,17 +4134,17 @@ extern "C" void PlayerActor_LeaveRoomUpdateAnim(Obj *o) {
 }
 
 extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
-    V3 *p = (V3 *)&o->position;
+    VecFx32 *p = &o->position;
     {
         CollisionState loc;
         s32 ang = o->rotY;
-        void *sel;
+        CollisionState *sel;
         if (((Unk_02007694 *)(void *)(o))->keepsBgCheckWork(o->action) == 0) {
             sel = &loc;
         } else {
-            sel = (u8 *)&o->bgCheckWork;
+            sel = &o->bgCheckWork;
         }
-        Collision_Move(sel, p, (V3 *)&o->prevPosition, ang, 0xfd7, o, 0xf);
+        Collision_Move(sel, p, &o->prevPosition, ang, 0xfd7, o, 0xf);
     }
     p->y = Ground_GetDefaultY(0);
     Rec *r = (Rec *)&o->actionWork;
@@ -5157,7 +5156,7 @@ typedef PlayerActionRequest Msg;
 extern "C" {
 extern void *gCommManager;
 extern s16 data_02135f44[];
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 
 s32 Vec_MagXZ(V3 *v);
 s32 Vec_DistXZ(void *a, void *b);
@@ -5169,9 +5168,7 @@ s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void *a, s32 b);
 s32 Scene_InHouseRoom();
-s32 BlockMap_GetItemPtrAtPos(void *a, V3 *v, u32 b);
-s32 Item_IsNormalItem(s32 a);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
+BOOL Item_IsNormalItem(u16 *p);
 
 void PlayerActor_RoomWalkUpdateAnim(Obj *o);
 void PlayerActor_RoomWalkCheckEnd(Obj *o);
@@ -5407,7 +5404,8 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
     Pair pa, pb, pc, pd, pe, pf;
     V3 tgt, tmp1, tmp2;
     s32 r5;
-    void *r6;
+    u16 *item;
+    BlockMap *r6;
     if (Scene_InHouseRoom() == 0) goto fail;
     if (o->sessionSlot != 0) goto fail;
     r5 = FtrMgr_FindFurnitureFacingPlayer(&u, &v, &o->actionItem, &o->shownItem);
@@ -5438,21 +5436,21 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
             tgt.z = o->targetPos.z;
             if ((o)->isPosInReach((s32 *)(void *)(&tgt), 0xe) == 0) goto second;
         }
-        r5 = BlockMap_GetItemPtrAtPos(r6, &tgt, 1);
+        item = BlockMap_GetItemPtrAtPos(r6, &tgt, 1);
         if (Pocket_FindEmpty() == -1) {
-            if (r5 == 0) goto second;
-            if (Item_IsNormalItem(r5) == 0) goto second;
+            if (item == 0) goto second;
+            if (Item_IsNormalItem(item) == 0) goto second;
             FieldPos_ToUnit(&o1, &o2, &tgt);
             pc.x = o1;
             pc.y = o2;
             ((PlayerActor *)(o))->requestPickUpReach(Unk_0200b750_Pair(pc.x, pc.y), -1, 6, -1);
             return 1;
         }
-        if (r5 == 0) goto second;
-        if (Item_IsNormalItem(r5) == 0) goto second;
+        if (item == 0) goto second;
+        if (Item_IsNormalItem(item) == 0) goto second;
         if ((u32)Room_CountOccupants() <= 1) {
-            if ((o)->startFieldQuery((s32)(sptr)&tgt, 0, param) == 0) goto second;
-            if ((o)->requestByFieldAnswer((s32)(sptr)&tgt, 1) == 0) goto second;
+            if ((o)->startFieldQuery(&tgt, 0, param) == 0) goto second;
+            if ((o)->requestByFieldAnswer(&tgt, 1) == 0) goto second;
             return 1;
         }
         FieldPos_ToUnit(&o1, &o2, &tgt);
@@ -5474,7 +5472,7 @@ second:
         if ((o)->isPosInReach((s32 *)(void *)(&tgt), 0xc) == 0) return 0;
     }
     {
-        s32 q = BlockMap_GetItemPtrAtPos(r6, &tgt, 0);
+        u16 *q = BlockMap_GetItemPtrAtPos(r6, &tgt, 0);
         if (q == 0) goto fail;
         if (Item_IsNormalItem(q) == 0) goto fail;
     }
@@ -5486,8 +5484,8 @@ second:
         return 1;
     }
     if ((u32)Room_CountOccupants() <= 1) {
-        if ((o)->startFieldQuery((s32)(sptr)&tgt, 0, param) == 0) goto fail;
-        if ((o)->requestByFieldAnswer((s32)(sptr)&tgt, 0) == 0) goto fail;
+        if ((o)->startFieldQuery(&tgt, 0, param) == 0) goto fail;
+        if ((o)->requestByFieldAnswer(&tgt, 0) == 0) goto fail;
         return 1;
     }
     FieldPos_ToUnit(&o1, &o2, &tgt);

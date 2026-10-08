@@ -1024,14 +1024,14 @@ void CreatureBook_BuildCaughtMask(CreatureBookPanel *s) {
     if (s->mode == 0) {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
-            if (Catalog_HasItem((u8 *)p->getCatalog(), &v)) {
+            if (Catalog_HasItem(p->getCatalog(), &v)) {
                 s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     } else {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12b0) : 0x12b0;
-            if (Catalog_HasItem((u8 *)p->getCatalog(), &v)) {
+            if (Catalog_HasItem(p->getCatalog(), &v)) {
                 s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }

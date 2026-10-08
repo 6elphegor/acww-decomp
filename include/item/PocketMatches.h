@@ -10,5 +10,8 @@ struct PocketMatches {
     /* 0x00 */ u16 pocketMask;
     /* 0x02 */ u8 count;
 };
+#ifndef __cplusplus
+typedef struct PocketMatches PocketMatches;
+#endif
 
 #endif // ITEM_POCKETMATCHES_H

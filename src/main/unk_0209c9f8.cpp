@@ -13,6 +13,7 @@
 #include "proto/main/unk_0209c9f8.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern const u16 sGameRootChildProfiles[8];
 const u16 sGameRootChildProfiles[8] = { 0xd7, 0xce, 0xcf, 0xcb, 8, 0xa, 0xcc, 0 };
@@ -22,14 +23,8 @@ GameProc *gGameRoot;
 extern "C" {
 BOOL AcreAttr_Unload();
 void ItemInfo_Exit();
-void FgData_Unload(void *heap);
-s32 TownBlockMap_Destroy(void *heap);
-void HouseRoomMaps_Destroy(void *heap);
 BOOL AcreAttr_Load();
 void ItemInfo_Init();
-BOOL FgData_Load(void *heap);
-BOOL TownBlockMap_Create(void *heap);
-BOOL HouseRoomMaps_Create(void *heap);
 }
 
 class GameRoot : public GameProc {

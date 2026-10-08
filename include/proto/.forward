@@ -8,3 +8,4 @@ FtrActor  # room/FtrActor.h brings the whole actor hierarchy
 BugNetTarget  # game/BugNetTarget.h brings the touch-pick classes
 FieldStructureMgr
 PlayerHouseTex
+CollisionState  # game/CollisionState.h is C++ the generator does not recognise (constructors in structs)

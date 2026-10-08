@@ -17,6 +17,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02214dfc.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_0204cc1c.h"
 
 struct GateHouseFlagTexture {
     GateHouseFlagTexture();
@@ -30,7 +31,6 @@ struct GateHouseFlagTexture {
 
 extern "C" {
 extern TownStyleRecordView gSaveTownFlag;
-void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 }
 
@@ -79,7 +79,7 @@ BOOL GateHouse::initBuilding() {
     flagTexture.apply(t, TownFlag_GetPattern(gSaveTownFlag.getTownFlag()));
     s32 x;
     s32 y;
-    FieldPos_ToUnit(&x, &y, &position.x);
+    FieldPos_ToUnit(&x, &y, &position);
     s32 i;
     for (i = -2; i <= 2; i++) {
         Ground_SetQuadrantsBlocked(x + i, y - 1, 0xf);

@@ -33,7 +33,9 @@
 #include "snd/BgmManager.h"
 #include "snd/BgmVolumeMixer.h"
 #include "ui/HudController.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0204cc1c.h"
 #include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0203c23c.h"
@@ -113,7 +115,7 @@ namespace ns_02204d90 {
 extern "C" {
 s32 Vec_DistXZ(s32 *a, s32 *b);
 extern s32 sFieldFrontDist[];
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 BOOL PlayerActor_FieldInteractFront(PlayerActor *self, s32 *p);
 s32 PlayerActor_FishFindCastTarget(PlayerActor *self, s32 *out, s32 *in);
 void PlayerActor_RequestAxeSwing(PlayerActor *self, s32 a, s32 b);
@@ -134,8 +136,6 @@ BOOL Vec_Equal(s32 *a, s32 *b);
 s32 Math_Atan2(s32 a, s32 b);
 BOOL Ground_IsWaterAt(s32 *p);
 BOOL Sky_IsShootingStarVisible();
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 *c);
-void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 
@@ -164,7 +164,7 @@ typedef Unk_ov003_022052f4_V2 V2;
 typedef Unk_ov003_022052f4_Date Date;
 
 extern "C" {
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 sFieldFrontDist[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
@@ -175,17 +175,14 @@ s32 Weather_GetCurrent();
 s32 PlayerActor_GetTan(Obj *o);
 void PlayerActor_SetLastPlayDate(Obj *o, s32 a, void *d);
 s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 a, s32 b);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 FieldAction_RequestPitfall(s32 a, V2 *p, s32 k);
 s32 Flower_Trample(V2 *p);
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void Tree_RequestShake(s32 a, V2 *p, s32 b);
 s32 Vec_Equal(V3 *a, V3 *b);
 s32 Math_Atan2(s32 a, s32 b);
 BOOL Ground_IsWaterAt(V3 *v);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 s32 Ground_GetHeightAt(V3 *v, s32 *out, s32 a);
-u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 
 BOOL PlayerActor_CheckToolHitActor(Obj *o);
 void PlayerActor_FieldUpdateTan(Obj *o);
@@ -442,7 +439,6 @@ s32 PlayerActor_StepTowardPose(Obj *o, s32 x, s32 z, s16 a);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void PlayerActor_GetHeldItem(u16 *a, Obj *o);
 s32 Sky_WishOnShootingStar();
-void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 
@@ -561,12 +557,6 @@ s32 TalkRequest_FinishSceneEntry();
 void TalkRequest_AddLeaveRoom();
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_IsFurniture(u16 *p);
-void FieldPos_ToUnit(s32 *x, s32 *y, V3 *v);
-s32 TownBlockMap_Get();
-s32 Town_FindPlayerHouse(s32 o, V3 *v, s32 *a, s32 *b);
-s32 Town_FindGateHouse(s32 o, V3 *v, s32 *a, s32 *b);
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 Math_Atan2(s32 a, s32 b);
 void PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Tree_RequestShake(u32 a, Pair *p, s32 b);
@@ -718,9 +708,6 @@ extern "C" {
 extern CommManager *gCommManager;
 
 void PlayerActor_TurnAngle(void *a, s32 b);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
-void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
-void FieldPos_FromUnitCenter(V3 *out, s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 
 void Tree_RequestShake(s32 a, Pair p, s32 b);
@@ -821,15 +808,13 @@ typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 
 s32 TalkRequest_AddSlingshot();
 void Sky_OnSlingshotFired(s32 h);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 s32 Math_Atan2(s32 a, s32 b);
-void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
-u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 
 void PlayerActor_Act66SetArgs(u8 *d, Pair v, u32 c);
 void PlayerActor_SlingshotUpdate(Obj *o);
@@ -913,8 +898,6 @@ extern "C" {
 extern CommManager *gCommManager;
 
 void func_02007c08_dummy();
-void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 Math_Atan2(s32 a, s32 b);
 void TalkRequest_FinishPlayerMessage();
 s32 TalkRequest_AddPlayerMessage();
@@ -1005,14 +988,11 @@ typedef PlayerDigUpItemArgs Pay;
 
 extern "C" {
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void Collision_AddDigHole(s32 a, s32 b);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 y);
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void VillagerTrend_OnItemDug(V3 *v);
 
 void PlayerActor_DigUpItemUpdate(Obj *o);
@@ -1109,16 +1089,13 @@ typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern s16 data_02135f44[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
-void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_01ffcb0c(s32 a, s32 b);
 
 s32 FieldItemFx_StartStrikeResult(Pair *p);
@@ -1273,9 +1250,6 @@ extern CommManager *gCommManager;
 
 s32 Math_Atan2(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
-void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
-void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -1418,18 +1392,15 @@ typedef Unk_ov003_0220c4ac_Rec Rec;
 
 extern "C" {
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern s16 data_02135f44[];
 
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void CollisionTag_Construct(void *p);
 void CollisionTag_Destruct(void *p);
 s32 Collision_TestSegment(void *p, V3 *a, V3 *b, s32 c);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 void Flower_PlayTrampleFx(void *p);
 s32 Ground_GetHeightAt(V3 *a, s32 *b, s32 c);
-void FieldPos_SnapToUnitCenter(V3 *a, V3 *b);
-u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -1662,8 +1633,7 @@ extern BgmManager *data_021c1b3c;
 s32 Math_Atan2(s32 a, s32 b);
 s32 PlayerActor_TurnAngle(s16 *a, s32 b);
 void FishShadow_OnRodPulled(FishShadow *o);  // (src/ov003/unk_ov003_0221ffb8.cpp)
-s32 Scene_GetTouchPicker();
-s32 TouchPick_GetGroundPos(s32 a, s32 b);
+BOOL TouchPick_GetGroundPos(TouchPickResult *r, VecFx32 *out);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 s32 Camera_SetMode5();
 s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s32 b);
@@ -1785,7 +1755,6 @@ void MTX_MultVec43(V3 *a, Mtx *m, V3 *out);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_GetHeldItem(u16 *out, Obj *o);
-s32 FieldPos_FromUnitCenter(V3 *v, s32 a, s32 b);
 s32 Tree_RequestChop(u32 a, P2 *p, s32 b);
 s32 FieldItemFx_StartStrikeResult(P2 *p);
 s32 Snowball_Break(void *q, s32 a);
@@ -2173,15 +2142,12 @@ typedef Unk_ov003_02210ef0_Pair Pair;
 
 extern "C" {
 extern CommManager *gCommManager;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 
 s32 PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 void VEC_Add(V3 *a, V3 *b, V3 *c);
 s32 Flower_SpawnPetalFxAt(u16 *a, Pair *b, s32 c, s32 d);
 void PendingUnit_ApplyAt(Pair *a, s32 b);
-void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
-u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_PluckReachGetNetData(void *p, Pair *q);
 s32 PlayerActor_RequestPluckReach(Obj *o, Pair *q, s32 a, s32 b);
@@ -2358,10 +2324,8 @@ s32 PlayerActor_RequestDoorEnter(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 
 s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e);
 s32 PlayerActor_RequestInsectShowCatch(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 s32 PlayerActor_RequestBuryItem(Obj *o, s32 a, Pair *p, u32 b, s32 c, s32 d);
 s32 PlayerActor_GetFrontUnitCenter(V3 *v, Obj *o);
-void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
 }
 
 static inline u16 Unk_ov003_022125ac_A(u32 x) {
@@ -2805,7 +2769,7 @@ extern "C" BOOL PlayerActor_ConfirmReleaseCreature() {
 }
 
 namespace ns_02211818 {
-extern "C" void *PlayerActor_GetTrackTarget(u32 a) {
+extern "C" VecFx32 *PlayerActor_GetTrackTarget(u32 a) {
     Obj *p = PlayerActor_Get(a);
     if (p != 0 && (p)->getHeldToolKind() == 3) {
         FishBobber *q = &p->heldItemModel.bobber;
@@ -5741,7 +5705,7 @@ extern "C" void PlayerActor_FishWaitCheckInput(Obj *o) {
             }
             PlayerActor_RequestFishReelIn(o, 0, 6, -1);
         } else {
-            if (o->actionPressed != 0 || TouchPick_GetGroundPos(Scene_GetTouchPicker(), 0)) {
+            if (o->actionPressed != 0 || TouchPick_GetGroundPos(Scene_GetTouchPicker(), NULL)) {
                 if (((FishBobber *)((u8 *)&o->heldItemModel.bobber))->tryHook()) {
                     PlayerActor_RequestFishHook(o, 6, -1);
                 } else {
@@ -8551,10 +8515,10 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     s32 z2 = o->heldItemJointMtx.m[11];
     s32 y2 = o->heldItemJointMtx.m[10];
     s32 x2 = o->heldItemJointMtx.m[9];
-    o->shownItemPosX = x2;
-    o->shownItemPosY = y2;
-    o->shownItemPosZ = z2;
-    WorldCurve_FromCurved((VecFx32 *)&o->shownItemPosX, (VecFx32 *)&o->shownItemPosX);
+    o->shownItemPos.x = x2;
+    o->shownItemPos.y = y2;
+    o->shownItemPos.z = z2;
+    WorldCurve_FromCurved(&o->shownItemPos, &o->shownItemPos);
     o->shownItemScaleX = 0x1000;
     o->shownItemScaleY = 0x1000;
     o->shownItemScaleZ = 0x1000;
@@ -8680,10 +8644,10 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             s32 z2 = o->heldItemJointMtx.m[11];
             s32 y2 = o->heldItemJointMtx.m[10];
             s32 x2 = o->heldItemJointMtx.m[9];
-            o->shownItemPosX = x2;
-            o->shownItemPosY = y2;
-            o->shownItemPosZ = z2;
-            WorldCurve_FromCurved((VecFx32 *)&o->shownItemPosX, (VecFx32 *)&o->shownItemPosX);
+            o->shownItemPos.x = x2;
+            o->shownItemPos.y = y2;
+            o->shownItemPos.z = z2;
+            WorldCurve_FromCurved(&o->shownItemPos, &o->shownItemPos);
         }
     }
 }
@@ -9340,7 +9304,7 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
             v.x = t2.x;
             v.y = t2.y;
             v.z = t2.z;
-            (o)->startFieldQuery((s32)(uptr)&v, 1, 5);
+            (o)->startFieldQuery(&v, 1, 5);
             break;
         case 0x23:
             if (*h != -1) {
@@ -10293,7 +10257,7 @@ namespace ns_022077c8 {
 extern "C" void PlayerActor_FaintWarp(Obj *o) {
     FaintWork *r4 = (FaintWork *)o->actionWorkRaw;
     V3 v;
-    s32 r6;
+    BlockMap *r6;
     if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(0x2e)) {
         if (r4->faintKind >= 2) {
             Bgm_ReleasePriority(0xc);
@@ -10303,16 +10267,16 @@ extern "C" void PlayerActor_FaintWarp(Obj *o) {
         r6 = TownBlockMap_Get();
         if (gCommManager->isLocalSlot(o->sessionSlot)) {
             if (r4->faintKind == 0) {
-                if (Town_FindPlayerHouse(r6, &v, 0, 0)) {
+                if (Town_FindPlayerHouse(r6, &v, NULL, NULL)) {
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, (V3 *)&o->position, 0x1b800000, 0, 2, 2);
                 }
             } else if (o->sessionSlot == 0) {
-                if (Town_FindPlayerHouse(r6, &v, 0, 0)) {
+                if (Town_FindPlayerHouse(r6, &v, NULL, NULL)) {
                     v.z += 0x2000;
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v, 0x1b800000, 0, 2, 2);
                 }
             } else {
-                if (Town_FindGateHouse(r6, &v, 0, 0)) {
+                if (Town_FindGateHouse(r6, &v, NULL, NULL)) {
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v, 0x1b800000, 0, 2, 2);
                 }
             }
@@ -11514,7 +11478,7 @@ extern "C" void PlayerActor_ThrowBottleShowItem(Obj *o) {
         s32 f = ((Unk_ov003_02205c90_Bits *)&o->bodyModel.curFrame)->f;
         if (f >= 6 && f <= 0x19) {
             (o)->setActionFlag(0xd);
-            o->getHeldItemPos((VecFx32 *)(u8 *)&o->shownItemPosX);
+            o->getHeldItemPos((VecFx32 *)(u8 *)&o->shownItemPos.x);
             o->shownItem = 0x1520;
             s32 v = (f - 6) * 0x333;
             if (f >= 0xb) {
@@ -11699,12 +11663,12 @@ extern "C" BOOL PlayerActor_FieldInteractFront(Obj *o, s32 *pa) {
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;
-        if (o->isPosInReach(&v.x, 0xd) && o->startFieldQuery((s32)(uptr)&v, 2, *pa) && o->requestByFieldAnswer((s32)(uptr)&v, 0)) return TRUE;  // (the methods take the position as s32: PlayerActor.h)
+        if (o->isPosInReach(&v.x, 0xd) && o->startFieldQuery(&v, 2, *pa) && o->requestByFieldAnswer(&v, 0)) return TRUE;  // (the methods take the position as s32: PlayerActor.h)
     } else {
         v.x = o->targetPos.x;
         v.y = o->targetPos.y;
         v.z = o->targetPos.z;
-        if (o->isPosInReach(&v.x, 0xd) && o->startFieldQuery((s32)(uptr)&v, 2, *pa) && o->requestByFieldAnswer((s32)(uptr)&v, 0)) return TRUE;  // (the methods take the position as s32: PlayerActor.h)
+        if (o->isPosInReach(&v.x, 0xd) && o->startFieldQuery(&v, 2, *pa) && o->requestByFieldAnswer(&v, 0)) return TRUE;  // (the methods take the position as s32: PlayerActor.h)
     }
     return FALSE;
 }
@@ -12112,13 +12076,13 @@ extern "C" BOOL PlayerActor_FieldUseTool(PlayerActor *self) {
         break;
     }
     if (self->inputMode == 2 && mode == 5) {
-        FieldPos_ToUnit(&xy[0], &xy[1], &self->targetPos.x);
+        FieldPos_ToUnit(&xy[0], &xy[1], &self->targetPos);
         s32 hx, hy, x, y;
         x = *(volatile s32 *)&xy[0];
         y = *(volatile s32 *)&xy[1];
         hx = x >> 4;
         hy = y >> 4;
-        u16 *cell = (u16 *)BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        u16 *cell = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (cell) {
             BOOL f8 = TRUE, f7 = TRUE, f6 = TRUE, f5 = TRUE, f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
             u32 v = *cell;
@@ -12305,7 +12269,7 @@ extern "C" BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, s3
         a.y = t2.y;
         a.z = t2.z;
         if (Vec_DistXZ(&self->position.x, pos) < 0x2334) {
-            if ((self)->startFieldQuery((s32)(uptr)&a.x, 1, 0)) {
+            if ((self)->startFieldQuery(&a, 1, 0)) {
                 BOOL f;
                 if ((self)->getFieldAnswerKind() == 1) {
                     f = FALSE;
@@ -12346,8 +12310,8 @@ extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a) {
             return FALSE;
         }
     }
-    if ((self)->startFieldQuery((s32)(uptr)&v.x, 0, a)) {
-        if ((self)->requestByFieldAnswer((s32)(uptr)&v.x, 0)) {
+    if ((self)->startFieldQuery(&v, 0, a)) {
+        if ((self)->requestByFieldAnswer(&v, 0)) {
             return TRUE;
         }
     }

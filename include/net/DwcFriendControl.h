@@ -8,11 +8,18 @@
 // the GP buddy list and the DwcFriend_UpdateServersAsync callbacks (src/ov065/unk_ov065_02270e34.cpp,
 // src/ov065/unk_ov065_022723b8.cpp).
 
+#ifndef __cplusplus  // (C: the struct tags as type names)
+typedef struct DwcFriendData DwcFriendData;
+typedef struct DwcFriendControl DwcFriendControl;
+#endif
+
 // 12-byte friend list entry (as ov133's local DwcFriendData). The (empty) constructor / destructor are in
 // src/main/unk_020742f4.cpp.
 struct DwcFriendData {
+#ifdef __cplusplus
     DwcFriendData();
     ~DwcFriendData();
+#endif
 
     /* 0x00 */ u8 unk_00[0xc];
 };
@@ -36,7 +43,7 @@ struct DwcFriendControl {
     /* 0x1f */ u8 updateStep;
     /* 0x20 */ u32 usePersist;
     /* 0x24 */ u32 unk_24;
-    /* 0x28 */ u32 buddyRequestText;
+    /* 0x28 */ char *buddyRequestText;  // (DwcControl::buddyRequestText)
     /* 0x2c */ DwcFriendUpdateCallback updateCallback;
     /* 0x30 */ s32 updateCallbackArg;
     /* 0x34 */ DwcFriendStatusCallback statusCallback;

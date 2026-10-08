@@ -54,7 +54,7 @@ NameLabelBalloon::~NameLabelBalloon() {
 
 void NameLabelBalloon::draw() {
     if (isVisible != 0) {
-        GXOamAttr *h = static_cast<GXOamAttr *>(anim.getCell()); // (the frame cell: its OAM entries)
+        GXOamAttr *h = anim.getCell(); // (the frame cell: its OAM entries)
         s32 a = getOriginX();
         s32 b = anim.getFrameX(-1);
         s32 x = alignX + (offsetX + a);

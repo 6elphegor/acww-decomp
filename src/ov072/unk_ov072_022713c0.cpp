@@ -38,6 +38,7 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov072/unk_ov072_022713c0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -61,11 +62,8 @@ extern u16 data_020c6cc8;
 BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 BOOL TalkRequest_SetTargetDone(Character *c);
 void EventWeekSlots_MarkPlayer(u32 id);
-TownBlockMap *TownBlockMap_Get();
 u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
-u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 BOOL Item_IsMarker(u16 *p);
 BOOL Item_IsTreeStage0(u16 *p);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
@@ -457,7 +455,7 @@ extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, BlockMap *g) {
 }
 
 extern "C" void SpNpcGulliver_ScatterShipParts() {
-    BlockMap *g = (BlockMap *)TownBlockMap_Get();
+    BlockMap *g = TownBlockMap_Get();
     s32 total, i;
     u8 *cnt;
     u16 *t;

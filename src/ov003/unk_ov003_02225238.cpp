@@ -5,7 +5,6 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "field/BottleThrow.h"
-#include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02094810.h"
@@ -14,6 +13,7 @@
 #include "proto/ov003/unk_ov003_02225108.h"
 #include "proto/ov003/unk_ov003_02225238.h"
 #include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -24,20 +24,18 @@
 
 extern "C" {
 
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 u32 MapBlock_GetAttr(void *block);
-s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
 s32 Ground_IsGrassUnit(s32 x, s32 y);
 s32 Ground_IsPond(s32 x, s32 y);
 s32 Ground_GetDigKind(s32 x, s32 y);
 
 }
 
-static inline u8 *Unk_ov003_02225238_Cell(Unk_ov003_02225238_Grid *g, u32 x, u32 y)
+static inline MapBlock *Unk_ov003_02225238_Cell(BlockMap *g, u32 x, u32 y)
 {
-    if (x < g->w && y < g->h && g->cells != 0) {
-        return g->cells + (y * g->w + x) * MAPBLOCK_SIZE;
+    if (x < (u32)g->width && y < (u32)g->height && g->blocks != 0) {
+        return g->blocks + (y * g->width + x);
     }
     return 0;
 }
@@ -130,7 +128,7 @@ static inline BOOL Unk_ov003_02225238_ChkB(u16 *p)
     if (!a6) { if (v != 0xa4) a7 = FALSE; } \
     if (!a7) { if (v != 0x1d) a8 = FALSE; } \
     res = a8; }
-BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode)
+extern "C" BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, BlockMap *grid, s32 mode)
 {
     u16 *blk = buf + (*px + *py * 4) * 0x10;
     s32 cnt0 = 0;
@@ -139,7 +137,7 @@ BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003
     s32 f20 = 0;
     s32 z = 0;
     if (mode == 6) {
-        u8 *cell = Unk_ov003_02225238_Cell(grid, *px + 1, *py + 1);
+        MapBlock *cell = Unk_ov003_02225238_Cell(grid, *px + 1, *py + 1);
         if (cell == 0) {
             return FALSE;
         }

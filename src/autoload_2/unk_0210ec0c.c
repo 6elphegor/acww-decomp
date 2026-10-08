@@ -176,7 +176,6 @@ extern void *NNS_SndHeapAlloc();
 // in-unit prototypes
 void RequestNextStrm(Ctx *);
 void StrmDataCallback(s32, s32, u32 *, u32, s32, Ctx *);
-void StrmBufDisposeCallback(void *, u32, Ctx *);
 void FreeCommandBuffer(Job *);
 Job *AllocCommandBuffer(void);
 Job *PopCommandBuffer(NNSFndList *);

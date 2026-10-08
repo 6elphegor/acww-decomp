@@ -28,10 +28,15 @@ struct EffectEmitterTag {
     /* 0x3 */ u8 unk_03;
 };
 
+// A tracked effect emitter's callbacks: init (when the emitter starts) and update (every frame; nonzero while the
+// emitter lives).
 struct EffectEmitterCbs {
-    /* 0x0 */ s32 (*unk_00)(EffectEmitterEntry *);
+    /* 0x0 */ void (*unk_00)(EffectEmitterEntry *);
     /* 0x4 */ s32 (*unk_04)(EffectEmitterEntry *);
 };
+
+// A one-shot effect emitter's init callback (EffectSpl_CreateOneShot takes a table of them, one per emitter).
+typedef void (*EffectOneShotCb)(EffectSplEmitter *);
 
 typedef void (*EffectSplEmitterCallback)(EffectSplEmitter *emitter, s32 flag);
 
@@ -41,8 +46,10 @@ typedef void (*EffectSplEmitterCallback)(EffectSplEmitter *emitter, s32 flag);
 // callback at 0x78 is called with flag 1 after the first spawn (EffectCb_AlignFirstParticle).
 class EffectSplEmitter {
 public:
-    s32 spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
-    s32 Effect_SpawnParticleLandings(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
+    s32 spawnLandingEffects(s32 id1, EffectOneShotCb const *d1, s32 id2, EffectOneShotCb const *d2, s32 id3, EffectOneShotCb const *d3, s32 id4,
+        EffectOneShotCb const *d4);
+    s32 Effect_SpawnParticleLandings(s32 id1, EffectOneShotCb const *d1, s32 id2, EffectOneShotCb const *d2, s32 id3, EffectOneShotCb const *d3, s32 id4,
+        EffectOneShotCb const *d4);
     void initKind02();
 
 #ifdef HOST64
@@ -117,7 +124,8 @@ public:
     BOOL updateKind56Main();
     s32 updateKind54B();
     void initAxisUpForward();
-    s32 updateLanding(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
+    s32 updateLanding(s32 id1, EffectOneShotCb const *d1, s32 id2, EffectOneShotCb const *d2, s32 id3, EffectOneShotCb const *d3, s32 id4,
+        EffectOneShotCb const *d4);
 
     /* 0x00 */ s32 resourceId;
     /* 0x04 */ EffectEmitterTag tag;

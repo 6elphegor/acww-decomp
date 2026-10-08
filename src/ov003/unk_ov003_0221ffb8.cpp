@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "proto/main/unk_0202fa70.h"
 #include "snd/SndSeEmitter.h"
 #include "uptr.h"
 // mwcc-version: 1.2/base
@@ -48,6 +49,7 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; the per-file aliases (E_f3, Obj_f6 .. Obj_f9, Rec_f7, Self_f5, ...) are typedefs of
@@ -57,7 +59,7 @@
 
 // Math_AngleXZ of two positions
 static inline s32 FishAngleXZ(VecFx32 *a, VecFx32 *b) {
-    return Math_AngleXZ(&a->x, &b->x);
+    return Math_AngleXZ(a, b);
 }
 
 static inline BOOL Unk_ov003_022203f8_Chk(s32 v) {
@@ -312,17 +314,12 @@ void MI_CpuCopy8(const void *src, void *dest, u32 size);
 void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Mtx43 *m, s32 angle);
 void Mtx43_RotateY(Mtx43 *m, s32 angle);
-void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 BOOL Ground_IsPond(s32 x, s32 y);
 BOOL Ground_FindWaterAhead(VecFx32 *out, VecFx32 *pos, s32 dir, u32 dist, u32 s5, s32 s6);
 void GroundInfo_Destruct(void *obj);
 u32 MapBlock_GetAttr(MapBlock *o);
 s32 FieldAction_FindDropUnit(u32 kind, Vec2 *p, u8 *out);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
-void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
-void FieldPos_SnapToUnitCenter(VecFx32 *dst, VecFx32 *src);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 u32 FishDisplay_GetRequestKind(u32 i);
 u32 FishDisplay_GetRequestFish(u32 i);
@@ -2450,7 +2447,7 @@ extern "C" void FishCroak_Croak(FishCroak *s, Obj_f6 *o)
 {
     if (s->b1 != 0) {
         s->b1 = s->b1 - 1;
-        o->envChannel.callRequest((void *)(0x82f));
+        o->envChannel.callRequest(0x82f);
     } else {
         s->b2 = FieldFish_RandRange(0x14, 0x50);
         s->b3 = 1;

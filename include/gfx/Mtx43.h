@@ -15,5 +15,9 @@ struct Mtx43 {
 struct Mtx43Align8 {
     /* 0x00 */ s64 v[6];
 };
+#ifndef __cplusplus
+typedef struct Mtx43 Mtx43;
+typedef struct Mtx43Align8 Mtx43Align8;
+#endif
 
 #endif

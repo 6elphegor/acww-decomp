@@ -36,7 +36,7 @@ s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32
 s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
 s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
 s32 gpiGetProfile(void *, s32, void *);
-s32 gpiFindBuddy(void *, s32);
+void *gpiFindBuddy(void *, s32);
 s32 gpiCanFreeProfile(void *);
 s32 gpiRemoveProfile(void *, void *);
 }

@@ -7,8 +7,15 @@
 // src/ov065/unk_ov065_02270e34.cpp). All sDwcMatch views of unk_ov065_022723b8.cpp are folded into it.
 
 typedef void (*DwcMatchedScCallback)(s32, s32, s32, s32, s32, void *); // server-client match done (..., param)
-typedef s32 (*DwcNewClientCallback)(s32, void *);
+typedef void (*DwcNewClientCallback)(s32, void *);  // (new client index, param; no result)
 typedef s32 (*DwcEvalCallback)(s32, void *);
+
+#ifndef __cplusplus  // (C: the struct tags as type names)
+typedef struct Unk_ov065_02290814_Sub Unk_ov065_02290814_Sub;
+typedef struct DwcNnRequest DwcNnRequest;
+typedef struct DwcMatchControl DwcMatchControl;
+typedef struct DwcMatchSyncOption DwcMatchSyncOption;
+#endif
 
 // DwcControl::transportSocket, the GT2 socket (DwcMatchControl::transportSocketPtr points there)
 struct Unk_ov065_02290814_Sub {

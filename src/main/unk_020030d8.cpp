@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
 #include "snd/TvSound.h"
 #include "gfx/SpriteAnim.h"
@@ -84,7 +85,7 @@ struct HudLinkIcon {
 extern SpriteAnimSeq data_020d467c[];
 
 
-extern s32 gCamera;
+extern Camera *gCamera;
 extern VecFx32 gCameraEye;
 
 // bss, in the order __sinit constructs them
@@ -261,7 +262,7 @@ HudUnkSlideIcon::~HudUnkSlideIcon() {
 
 void HudUnkSlideIcon::draw() {
     if (slideStep != 0) {
-        GXOamAttr *h = (GXOamAttr *)anim.getCell();
+        GXOamAttr *h = anim.getCell();
         if (h != 0) {
             s32 x = getOriginX() + anim.getFrameX(-1);
             s32 y = getOriginY() + anim.getFrameY(-1);

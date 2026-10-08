@@ -9,6 +9,7 @@
 #include "proto/main/unk_02052b50.h"
 #include "proto/ov004/unk_ov004_02213b90.h"
 #include "proto/ov004/unk_ov004_0223db88.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 // Spawn-definition record (0x1c bytes).
@@ -48,7 +49,7 @@ extern "C" MuseumData data_021ed0a0;
 
 
 extern "C" {
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern const MuseumInfoPointSet sMuseumInfoPointsByScene[];
 
 s32 FX_Div(s32 a, s32 b);
@@ -62,8 +63,6 @@ s32 MuseumInfoPoint_GetArc(Rec *r);
 s16 MuseumInfoPoint_GetAngle(Rec *r);
 V3 *MuseumInfoPoint_GetPos(Rec *r);
 void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, u8 *d, u8 e);
-void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-void BlockMap_SetItem(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
 }
 
 class MuseumRoom : public GameProc {
@@ -449,7 +448,7 @@ MuseumFossilRoom::~MuseumFossilRoom() {}
 
 BOOL MuseumFossilRoom::setupExhibits() {
     s32 y, x;
-    void *m = gSceneBlockMap;
+    BlockMap *m = gSceneBlockMap;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
             u16 *p = (u16 *)BlockMap_GetItemPtr(m, 0, 0, x, y, 0);

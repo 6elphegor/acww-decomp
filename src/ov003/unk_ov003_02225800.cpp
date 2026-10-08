@@ -1,4 +1,7 @@
 #include "uptr.h"
+#include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_0202fa70.h"
+#include "proto/main/unk_02002b1c.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -33,6 +36,7 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/ov003/unk_ov003_0222e5e0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -286,9 +290,7 @@ void *FxVec3_Construct(void *);
 void *func_02000c8c(void *);
 u32 Item_MakeBuilding(u32 a);
 void *StrBSize_Get(u16 *p);
-BuildingActor *BuildingList_FindByItem(u32 id);
 void func_02133150();
-void *TownBlockMap_Get();
 s32 Random_GlobalBelow(s32 n);
 BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
 Actor *PlayerActor_GetActor(u32 n);
@@ -298,7 +300,6 @@ s32 Weather_GetFallingPrecip();
 BOOL Town_GetRafflesiaPos(void *buf);
 void Clock_GetMinuteHour(void *p);
 void Clock_GetDayMonth(void *p);
-void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void ModelSlotHandle_Destroy(void *p);
 void ModelSlotHandle_Init(void *p);
 void func_0209c128(void *p);
@@ -334,7 +335,7 @@ extern "C" void Insect_SetAnimSpeed(Insect *self, u32 v);
 extern "C" void Insect_TickFrame(u8 *self);
 extern "C" s32 Insect_GetTimeSlot();
 extern "C" BOOL Insect_RollKind(u8 *out);
-extern "C" BOOL Insect_IsAtWateringPoint(void *p);
+extern "C" BOOL Insect_IsAtWateringPoint(VecFx32 *p);
 }
 
 #undef func_02133150
@@ -372,7 +373,6 @@ Actor *PlayerActor_GetActor(u32 n);
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 s32 Vec_DistXZ(void *a, void *b);
 void Mem_Free(void *p);
-s32 Math_AngleXZ(void *a, void *b);
 void Town_ClearBeesReleased(void);
 s32 Insect_RollKind(s8 *p);
 void Insect_SetScale(Rec *e, s32 v);
@@ -496,12 +496,8 @@ s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
 void Effect_End(s32 h);
 BOOL Camera_IsBlockingFocusView(void *p, s32 a, s32 b);
-void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 Vec_DistXZ(void *a, void *b);
 void func_020728c4(CommManager *g, s32 a, s32 b);
-void *TownBlockMap_Get(void);
-void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Insect_IsTreeKindForCulling(void *a, s32 t);
 void Insect_Draw(void *a, Rec *o);
 void Insect_SetScale(Rec *o, s32 v);
@@ -585,7 +581,6 @@ s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
-void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void func_02133ef8(void *p, s32 n);
 void *func_02106788(void *r);
 void *func_021067a4(void *a, u32 b);
@@ -633,7 +628,7 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode);
 
 namespace s05 {
 extern "C" {
-extern u32 *gCommManager[];
+extern CommManager *gCommManager;
 void FieldInsectHeap_Create();
 void FieldInsectHeap_Destroy();
 void SpecialInsectHeap_Create();
@@ -786,10 +781,6 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Vec_DistXZ(void *a, void *b);
-void *TownBlockMap_Get(void);
-void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 Math_AngleXZ(void *a, void *b);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 void Insect_Despawn(Rec *o);
 void Crawler_Escape(Rec *o, s16 *p);
@@ -800,7 +791,7 @@ void Insect_PlaySe(Rec *o, s32 a, s32 b);
 void Insect_UpdateAlarm(Rec *o, s32 *out);
 s32 Insect_FadeOut(Rec *o, s32 a);
 void Insect_FlapWings(Rec *o);
-BOOL Insect_IsOnFlower(void *p);
+BOOL Insect_IsOnFlower(VecFx32 *p);
 void Crawler_Wander(Rec *o);
 void Crawler_Watch(Rec *o, s16 *p);
 }
@@ -864,7 +855,7 @@ static inline BOOL Unk_ov003_02229dcc_Chk(u16 *p) {
 extern "C" void Insect_PlaceOnPlantSide(Rec *o);
 extern "C" void Crawler_Wander(Rec *o);
 extern "C" void Crawler_Watch(Rec *o, s16 *p);
-extern "C" BOOL Insect_IsOnFlower(void *pp);
+extern "C" BOOL Insect_IsOnFlower(VecFx32 *pp);
 extern "C" void Crawler_Update(Rec *o);
 extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p);
 extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p);
@@ -890,12 +881,8 @@ s32 Random_GlobalBelow(s32 n);
 s32 func_02133150(s32 a, s32 b);
 u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
-void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
-void *TownBlockMap_Get(void);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 NetArea_IsLocalOwner(void);
 s32 Math_ApproachVecXZ(V3 *a, V3 *b, s32 c, s32 d, s32 e);
-s32 Math_AngleXZ(V3 *a, V3 *b);
 void Insect_GetDirVec(V3 *out, s32 ang);
 void Insect_PlaySe(Rec *self, s32 a, s32 b);
 s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
@@ -990,7 +977,6 @@ u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Math_AngleXZ(void *a, void *b);
 s32 Ground_GetDefaultY(u32 a);
 s32 Random_GlobalBelow(s32 n);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
@@ -1045,16 +1031,12 @@ BOOL Ground_GetDigKind(s32 x, s32 y);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Math_AngleXZ(void *a, void *b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Ground_GetDefaultY(u32 a);
 void TownJunkInsects_Refresh();
-void *TownBlockMap_Get();
-void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void Insect_Despawn(Rec *e);
 void Crawler_Wander(Rec *o);
-BOOL Insect_IsAtWateringPoint(void *p);
+BOOL Insect_IsAtWateringPoint(VecFx32 *p);
 BOOL Insect_GroundWalkNet(Rec *o);
 BOOL Insect_GroundWalk(Rec *o);
 s32 Insect_FadeOut(Rec *o, s32 a);
@@ -1105,7 +1087,6 @@ extern CommManager *gCommManager;
 BOOL NetArea_IsLocalOwner();
 s32 Random_GlobalBelow(s32 n);
 s32 FX_Div(s32 a, s32 b);
-s32 Math_AngleXZ(void *a, void *b);
 s32 Ground_GetDefaultY(u32 a);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
@@ -1175,10 +1156,8 @@ BOOL NetArea_IsLocalOwner();
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(V3 *dst, V3 *a, V3 *b);
-s32 Math_AngleXZ(V3 *a, V3 *b);
 s32 Random_GlobalBelow(s32 n);
 s32 func_02133150(s32 a, s32 b);
-void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 s32 Math_ApproachVecXZ(V3 *a, V3 *b, s32 c, s32 d, s32 e);
 s32 Math_ApproachS32(s32 *a, s32 b, s32 c, s32 d, s32 e);
@@ -1226,7 +1205,6 @@ extern CommManager *gCommManager;
 extern s16 data_02135f44[];
 BOOL NetArea_IsLocalOwner();
 Actor *PlayerActor_GetActor(u32 n);
-s32 Math_AngleXZ(void *a, void *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *out);
@@ -1320,7 +1298,6 @@ s32 func_01ffcb0c(s32 a, s32 b);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Flower_GetColor(u16 *p);
 s32 Flower_GetSpecies(u16 *p);
-void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 void Vec_RotateY(V3 *o, s32 a);
 void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
@@ -1333,7 +1310,7 @@ s32 PlayerActor_GetDigCountdownAt(s32 a, s32 b);
 void Insect_CheckAlarm(Rec *o);
 s32 Insect_TickTimer(Rec *o);
 void Crawler_Wander(Rec *o);
-s32 Insect_IsOnFlower(V3 *p);
+BOOL Insect_IsOnFlower(VecFx32 *p);
 void Insect_SetFlutterTurnDelay(Rec *o);
 }
 
@@ -1671,7 +1648,7 @@ extern "C" BOOL Insect_SplashIfWater(Rec *o) {
     g.initAtPos((VecFx32 *)(&v), 0, 1);
     if (g.waterKind != 0) {
         v.y = g.waterSurfaceY + 0x100;
-        ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained((void *)(0x7e5));
+        ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained(0x7e5);
         switch (o->kind) {
         case 0xc:
         case 0xd:
@@ -1726,9 +1703,9 @@ extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b) {
     s32 r = Insect_GetSeId(o->kind, a);
     if (r >= 0) {
         if (b != 0) {
-            ((SndEnvChannel *)(&o->seEmitter))->callRequest((void *)(uptr)r); // (the wrapper takes the id as void *: src/main/unk_020039ec.cpp)
+            ((SndEnvChannel *)(&o->seEmitter))->callRequest(r);
         } else {
-            ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained((void *)(uptr)r);
+            ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained(r);
         }
     }
 }
@@ -3175,7 +3152,7 @@ extern "C" void Ant_Update(Rec *self) {
         }
         break;
     case 18: {
-        void *g = TownBlockMap_Get();
+        BlockMap *g = TownBlockMap_Get();
         V3 *pos = &self->position;
         s32 x, y;
         FieldPos_ToUnit(&x, &y, pos);
@@ -4046,7 +4023,7 @@ extern "C" void Spider_Update(Rec *self) {
         s32 xy[2];
         V3 q(self->behaviorWork, 0, self->position.z + 0x3e8);
         FieldPos_ToUnit(&xy[0], &xy[1], &q);
-        void *g = TownBlockMap_Get();
+        BlockMap *g = TownBlockMap_Get();
         if (g) {
             s32 x = *(volatile s32 *)&xy[0];
             s32 y = *(volatile s32 *)&xy[1];
@@ -4548,8 +4525,8 @@ extern "C" void Crawler_Update(Rec *o) {
 
 namespace s07 {
 // 0x2229dcc
-extern "C" BOOL Insect_IsOnFlower(void *pp) {
-    void *g = TownBlockMap_Get();
+extern "C" BOOL Insect_IsOnFlower(VecFx32 *pp) {
+    BlockMap *g = TownBlockMap_Get();
     if (g != 0) {
         s32 xy[2];
         FieldPos_ToUnit(&xy[0], &xy[1], pp);
@@ -5500,7 +5477,7 @@ BOOL InsectManager::onCreate() { using namespace s05;
     ((ModelSlotPool *)(&fieldInsectPool))->init(8, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)FieldInsectHeap_Create), (ModelSlotFreeFunc)((void *)FieldInsectHeap_Destroy));
     ((ModelSlotPool *)(&specialInsectPool))->init(2, (void *)(0x400), (void *)(0x40), 0x6e8, (ModelSlotAllocFunc)((void *)SpecialInsectHeap_Create), (ModelSlotFreeFunc)((void *)SpecialInsectHeap_Destroy));
     ((ModelSlotPool *)(&heldInsectPool))->init(4, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)HeldInsectHeap_Create), (ModelSlotFreeFunc)((void *)HeldInsectHeap_Destroy));
-    CommManager *g = (CommManager *)gCommManager[0];
+    CommManager *g = gCommManager;
     if (g->isSlotActive(g->myAid) == 0) {
         allocSpecialInsect(0x3a, 0);
         allocSpecialInsect(0x3b, 1);
@@ -6326,7 +6303,7 @@ extern "C" BOOL Insect_IsTreeStillThere(void *a, Rec *o) {
     {
         s32 x = 0, y = 0;
         FieldPos_ToUnit(&x, &y, &o->position);
-        void *grid = TownBlockMap_Get();
+        BlockMap *grid = TownBlockMap_Get();
         if (grid == 0) goto yes;
         s32 px = *(volatile s32 *)&x, py = *(volatile s32 *)&y;
         s32 hx = px >> 4;
@@ -6395,7 +6372,7 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
                 break;
             case 2:
                 Insect_LoadModel(a, o, 2);
-                Collision_Move(&o->collisionState, &o->position, &o->position, o->rotY, sInsectModelParams[o->kind].collisionRadius, zero, 10);
+                Collision_Move(&o->collisionState, &o->position, &o->position, o->rotY, sInsectModelParams[o->kind].collisionRadius, NULL, 10);
                 break;
             case 3:
                 Insect_Update(a, o, i, 3);
@@ -6671,7 +6648,7 @@ extern "C" s32 Insect_FinishCatch(u8 id) {
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     o->stateTimer = 0;
     o->lifeState = 4;
-    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
         CommManager *g = gCommManager;
         ((CommManager *)(g))->beginRecord();
         ((CommManager *)(g))->writeRecord((u8 *)(&id), 1);
@@ -6703,7 +6680,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
     else r = 1;
     if (o == 0) r = 1;
     if (r != 1) {
-        if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
+        if (gCommManager->isSlotActive(gCommManager->myAid)) {
             if (!NetArea_IsLocalOwner()) r = sInsectCatchResult;
         }
     }
@@ -6711,7 +6688,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
         u8 b;
         Insect_CancelCatch(id);
         b = id;
-        if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
+        if (gCommManager->isSlotActive(gCommManager->myAid)) {
             if (!NetArea_IsLocalOwner()) {
                 CommManager *g = gCommManager;
                 ((CommManager *)(g))->beginRecord();
@@ -6758,7 +6735,7 @@ extern "C" s32 Insect_TryCatch(u8 id) {
         NNS_G3dMdlSetMdlAlpha(o->pooledModel.getModel(), 0, 0);
         o->state = 0x10;
     }
-    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
         if (!NetArea_IsLocalOwner()) {
             sInsectCatchResult = 2;
             CommManager *g = gCommManager;
@@ -7288,7 +7265,7 @@ extern "C" BOOL Insect_IsBeeSwarmOut(void) {
 #define func_02133150 _s32_div_f
 namespace s00 {
 // 0x22260e8
-extern "C" BOOL Insect_IsAtWateringPoint(void *p)
+extern "C" BOOL Insect_IsAtWateringPoint(VecFx32 *p)
 {
     s32 c, d;
     s32 a, b;
@@ -7627,7 +7604,7 @@ extern "C" s32 InsectSpawn_PickPos(Insect *self, u16 *a, s32 code, u32 flag)
     s32 rndD;
     s32 rnd33;
     u32 n;
-    void *obj = TownBlockMap_Get();
+    BlockMap *obj = TownBlockMap_Get();
     if (obj == 0) {
         return 0;
     }

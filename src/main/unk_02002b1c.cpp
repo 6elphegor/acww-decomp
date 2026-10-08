@@ -207,8 +207,8 @@ void Actor::updatePosition(ActorCollider *v) {
     applyVelocity(v);
 }
 
-extern "C" s32 Math_AngleXZ(s32 *a, s32 *b) {
-    return Math_Atan2(b[0] - a[0], b[2] - a[2]);
+extern "C" s32 Math_AngleXZ(const VecFx32 *a, const VecFx32 *b) {
+    return Math_Atan2(b->x - a->x, b->z - a->z);
 }
 
 void Actor::calcModelMatrix(void *out) {

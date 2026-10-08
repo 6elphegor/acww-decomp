@@ -6,9 +6,9 @@
 #include "snd/SndSeEmitter.h"
 
 class VillagerMood;
-class VillagerTalk;
+class VillagerActor;
 
-typedef void (VillagerMood::*Unk_0201c078_State)(VillagerTalk *s);
+typedef void (VillagerMood::*Unk_0201c078_State)(VillagerActor *s);
 
 // Mood state of a villager (member at 0x838 of VillagerActor): current / pending mood and the mood animation and
 // effect sequence. Constructor / destructor are VillagerMood_Construct / VillagerMood_Destruct; all members are
@@ -17,30 +17,30 @@ class VillagerMood {
 public:
     VillagerMood();
     ~VillagerMood();
-    void update(VillagerTalk *s);
-    void updateMoodAnim(VillagerTalk *s, s32 next);
-    BOOL startMoodAnim(VillagerTalk *s, u32 idx);
-    BOOL isMoodAnimStart(VillagerTalk *s);
-    void updateMood3Effects(VillagerTalk *s);
-    BOOL beginMood3Effects(VillagerTalk *s);
-    void playMood3Effect(VillagerTalk *s);
-    void updateMood2Effects(VillagerTalk *s);
-    BOOL beginMood2Effects(VillagerTalk *s);
-    void playMood2Effect(VillagerTalk *s);
-    void updateMood1Effects(VillagerTalk *s);
-    BOOL beginMood1Effects(VillagerTalk *s);
-    void playMood1EffectB(VillagerTalk *s);
-    void playMood1EffectA(VillagerTalk *s);
-    BOOL isMoodAnim(VillagerTalk *s);
+    void update(VillagerActor *s);
+    void updateMoodAnim(VillagerActor *s, s32 next);
+    BOOL startMoodAnim(VillagerActor *s, u32 idx);
+    BOOL isMoodAnimStart(VillagerActor *s);
+    void updateMood3Effects(VillagerActor *s);
+    BOOL beginMood3Effects(VillagerActor *s);
+    void playMood3Effect(VillagerActor *s);
+    void updateMood2Effects(VillagerActor *s);
+    BOOL beginMood2Effects(VillagerActor *s);
+    void playMood2Effect(VillagerActor *s);
+    void updateMood1Effects(VillagerActor *s);
+    BOOL beginMood1Effects(VillagerActor *s);
+    void playMood1EffectB(VillagerActor *s);
+    void playMood1EffectA(VillagerActor *s);
+    BOOL isMoodAnim(VillagerActor *s);
     BOOL effectsEnabled();
     void disableEffects();
     void enableEffects();
-    void updateSoundPos(VillagerTalk *s);
-    void playMoodEffect(VillagerTalk *s, u32 a, u32 b);
+    void updateSoundPos(VillagerActor *s);
+    void playMoodEffect(VillagerActor *s, u32 a, u32 b);
     void requestApply();
     void addMood(u32 a, s32 b);
     void clearPending();
-    void setMoodAnimation(VillagerTalk *s, u32 mode);
+    void setMoodAnimation(VillagerActor *s, u32 mode);
     BOOL isActive();
     void stop();
     void start();

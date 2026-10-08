@@ -53,6 +53,7 @@
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_022264a0.h"
 #include "proto/ov068/unk_ov068_0226c2e0.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class ActorTalkRequest;
@@ -209,7 +210,6 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void Clock_GetDateTime(ClockDateTime *p);
 s32 Clock_GetWeekday();
 u16 Math_CountDownU16(u16 *p);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
 BOOL TalkRequest_AddPlayerTalk7(Character *a, s32 b);
 BOOL TalkRequest_SetTargetDone(Character *x);
 BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);

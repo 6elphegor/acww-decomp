@@ -17,6 +17,7 @@
 #include "proto/main/unk_02090268.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 extern "C" {
@@ -24,11 +25,6 @@ extern CommManager *gCommManager;
 
 // defined with file-local types (include/proto/.excluded)
 BOOL SceneId_IsTown(u32 v);
-void *TownBlockMap_Get();
-void *HouseRoomMaps_GetForScene(u32 v);
-void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
-void BlockMap_SetBuriedAtUnit(void *o, s32 a, s32 b);
-void BlockMap_ClearBuriedAtUnit(void *o, s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
 }
 
@@ -70,7 +66,7 @@ extern "C" BOOL ItemSync_Apply(u8 *p)
         u8 t[2];
         u16 h[2];
     } l;
-    void *o;
+    BlockMap *o;
     BOOL r6;
     s32 x, y;
     u16 id = NetBuf_ReadU16(p);

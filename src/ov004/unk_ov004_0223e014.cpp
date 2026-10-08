@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
@@ -54,7 +55,6 @@ BOOL Camera_ProjectCurvedToScreen(s32 *x, s32 *y, VecFx32 *p);
 void func_02094018(void *p);
 void func_02094030(void *);
 BOOL Math_CountDownU16(void *p);
-u8 *Scene_GetTouchPicker();
 void Clock_GetDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 void TalkRequestFlags_ClearSceneHold(void);
@@ -262,7 +262,7 @@ void ResidentSelect::updateTouchSelect() {
         return;
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
-        if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &out, &a, &c) && a == 1) {
+        if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &out, &a, &c) && a == 1) {
             gCommManager->localSlot = c;
             selectedResident = c;
             changeState(3);

@@ -12,5 +12,8 @@ struct ClockDate {
     /* 0x02 */ u8 year;
     /* 0x03 */ u8 pad_03;
 };
+#ifndef __cplusplus
+typedef struct ClockDate ClockDate;
+#endif
 
 #endif

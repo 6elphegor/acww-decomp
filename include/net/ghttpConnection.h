@@ -10,6 +10,13 @@
 
 struct DArrayImplementation;
 struct GHIConnection;
+#ifndef __cplusplus
+typedef struct DArrayImplementation DArrayImplementation;
+typedef struct GHIPostData GHIPostData;
+typedef struct GHIPost GHIPost;
+typedef struct GHIPostState GHIPostState;
+typedef struct GHIPostingState GHIPostingState;
+#endif
 
 // (request, bytesPosted, totalBytes, objectsPosted, totalObjects, param)
 typedef void (*ghttpPostCallback)(u32, u32, u32, u32, u32, void *);

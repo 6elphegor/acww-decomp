@@ -17,6 +17,7 @@
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/ov065/unk_ov065_0226fc18.h"
+#include "proto/ov065/unk_ov065_02270e34.h"
 #include "proto/ov065/unk_ov065_02277140.h"
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02277e70.h"
@@ -63,7 +64,6 @@ void DwcMatch_UpdateValidAidCount();
 void DwcMatch_OnClientDisconnected(u32);
 s32 DwcMatch_OnConnectionClosed(s32, s32, u32);
 void DwcMatch_RemoveMemberAt(s32, s32);
-void DwcFriend_SetOwnStatus(s32, void *, s32);
 void qr2_send_statechanged(void *qrec);
 u32 DwcFriend_FindIndexByProfileId(u32);
 void DwcMatch_ResetPlayerCounts();
@@ -112,7 +112,6 @@ void DwcFriend_OnUpdateDone(s32 a, s32 b);
 DwcConnInfo *gt2GetConnectionData(void *connection);
 void DwcLogin_Fail(s32 a, s32 b);
 void DwcFriend_ResetTimer();
-void DwcFriend_SetOwnStatus(s32 a, void *b, s32 c);
 void gt2CloseAllConnectionsHard(void *socket);
 void DwcFriend_Fail(s32 a, s32 b);
 void DwcMatch_Fail(s32 a, s32 b);
@@ -169,7 +168,7 @@ u32 DwcConn_GetMyAid();
 s32 DwcConn_GetConnectionCount();
 s32 DwcConn_CloseConnection(u32 a);
 s32 DwcConn_CloseAllConnections();
-void DwcConn_SetClosedCallback(s32 a, s32 b);
+void DwcConn_SetClosedCallback(DwcConnectionClosedCallback a, s32 b);
 void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, void *arg, DwcNewClientCallback d, void *e);
 void DwcMatch_SetupGameServer(s32 a, DwcMatchedScCallback b, void *c, DwcNewClientCallback d, void *e);
 s32 DwcFriend_UpdateServersAsync(char *s, DwcDoneCallback f1, s32 f2, DwcFriendStatusCallback f3, s32 p5, DwcFriendDeleteCallback p6, s32 p7);
@@ -190,7 +189,6 @@ namespace F02270b74 {
 
 
 namespace Unk_ov065_0227138c_Ns {
-extern "C" s32 DwcLogin_HandleGpResult(s32 r);
 }
 extern "C" {
 extern DwcControl *sDwcControl;
@@ -215,8 +213,8 @@ void DwcConn_OnGt2Ping(void);
 void DwcConn_ClearTables(void);
 void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
 void DwcLogin_OnLoginDone(void);
-void DwcFriend_InitControl(void *, void *, void *, void *, void *);
-void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, void *);
+void DwcFriend_InitControl(DwcFriendControl *a, GPConnection *b, char *c, DwcFriendData *d, s32 e);
+void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, u32);
 void MI_CpuCopy8(const void *, void *, u32);
 void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 gpSetInfosA(void *, s32, void *);
@@ -237,13 +235,12 @@ s32 DWCi_Acc_IsValidLoginId(void *);
 s32 DWCi_Acc_CheckConsoleUserId(void *);
 void DWCi_Acc_CreateTempLoginId(void *);
 void DWCi_Acc_SetPlayerId(void *, u32);
-s32 DwcFriend_SetOwnStatus(s32, void *);
 s32 DwcConn_CreateGt2Socket(void);
 s32 DwcMatch_StartQr2(u32);
 void DwcCore_Nop(void);
 s32 DwcCore_CheckFatalError(void);
 void DwcCore_Shutdown(void);
-void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, const char *a4, void *a5, void *a6, void *a7, void *a8);
+void DwcCore_Init(DwcControl *g, DwcUserData *a1, u32 productId, const char *a3, const char *a4, s32 sendBufSize, s32 recvBufSize, DwcFriendData *friendList, s32 friendListLen);
 void DwcCore_SetError(s32 a, s32 b);
 BOOL DwcCore_HasError(void);
 void DwcCore_ClearError(void);
@@ -271,15 +268,14 @@ void *DwcLogin_GetUserData(void);
         s->serverMatchCallback(10, 0, 1, 0, 0, s->serverMatchCallbackArg);                                  \
         if (G != 0 && G->state == 5) {                                        \
             DwcCore_SetState(3);                                            \
-            DwcFriend_SetOwnStatus(1, (void *)"", 0);                             \
+            DwcFriend_SetOwnStatus(1, "", NULL);                             \
             return;                                                            \
         }                                                                      \
     }
 
 namespace F02270b74 {
 extern "C" {
-void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, const char *a4,
-                         void *a5, void *a6, void *a7, void *a8) {
+void DwcCore_Init(DwcControl *g, DwcUserData *a1, u32 productId, const char *a3, const char *a4, s32 sendBufSize, s32 recvBufSize, DwcFriendData *friendList, s32 friendListLen) {
     sDwcControl = g;
     DwcCore_ClearError();
     sDwcControl->transportSocket = NULL;
@@ -287,8 +283,8 @@ void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, cons
     sDwcControl->gt2ReceivedCallback = (void *)DwcConn_OnGt2Receive;
     sDwcControl->gt2ClosedCallback = (void *)DwcConn_OnGt2Closed;
     sDwcControl->gt2PingCallback = (void *)DwcConn_OnGt2Ping;
-    sDwcControl->gt2SendBufferSize = a5 != NULL ? (s32)(uptr)a5 : 0x2000;
-    sDwcControl->gt2RecvBufferSize = a6 != NULL ? (s32)(uptr)a6 : 0x2000;
+    sDwcControl->gt2SendBufferSize = sendBufSize != 0 ? sendBufSize : 0x2000;
+    sDwcControl->gt2RecvBufferSize = recvBufSize != 0 ? recvBufSize : 0x2000;
     sDwcControl->gpConnection = NULL;
     sDwcControl->userData = a1;
     sDwcControl->state = 0;
@@ -310,12 +306,12 @@ void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, cons
     sDwcControl->closedCallback = 0;
     sDwcControl->closedCallbackArg = 0;
     DwcConn_ClearTables();
-    DwcLogin_InitControl(&sDwcControl->loginControl, a1, &sDwcControl->gpConnection, (u32)(uptr)a2, a1->gameCode,
+    DwcLogin_InitControl(&sDwcControl->loginControl, a1, &sDwcControl->gpConnection, productId, a1->gameCode,
                         (DwcLoginResultCallback)DwcLogin_OnLoginDone, 0);
-    DwcFriend_InitControl(&sDwcControl->friendControl, &sDwcControl->gpConnection, &sDwcControl->buddyRequestText, a7,
-                        a8);
+    DwcFriend_InitControl(&sDwcControl->friendControl, &sDwcControl->gpConnection, sDwcControl->buddyRequestText, friendList,
+                        friendListLen);
     DwcMatch_InitControl(&sDwcControl->matchControl, &sDwcControl->gpConnection, sDwcControl,
-                        &sDwcControl->gt2ConnectedCallback, data_ov065_02291104, data_ov065_02291204, a7, a8);
+                        &sDwcControl->gt2ConnectedCallback, data_ov065_02291104, data_ov065_02291204, friendList, friendListLen);
     DwcNet_InitChannelTable(&sDwcControl->netChannelTable);
     u32 n;
     if (STD_GetStringLength(a3) < 0x100) {
@@ -564,9 +560,9 @@ void DwcMatch_ConnectToFriendServer(s32 a, DwcMatchedScCallback cb, void *arg, D
 
 namespace F022700e4 {
 extern "C" {
-void DwcConn_SetClosedCallback(s32 a, s32 b) {
+void DwcConn_SetClosedCallback(DwcConnectionClosedCallback a, s32 b) {
     if (G != 0) {
-        G->closedCallback = (DwcConnectionClosedCallback)a;
+        G->closedCallback = a;
         G->closedCallbackArg = b;
     }
 }
@@ -581,7 +577,7 @@ s32 DwcConn_CloseAllConnections() {
         return -1;
     }
     if (s->matchControl.numClients == 0) {
-        DwcFriend_SetOwnStatus(1, (void *)"", 0);
+        DwcFriend_SetOwnStatus(1, "", NULL);
         NNFreeNegotiateList();
         DwcCore_SetState(3);
         return 1;
@@ -1191,10 +1187,10 @@ skip1:
         if (g->isClosingAll == 0) {
             DwcMatch_UpdateServerStatus();
         } else if (g->matchControl.numClients == 0) {
-            DwcFriend_SetOwnStatus(1, (void *)"", 0);
+            DwcFriend_SetOwnStatus(1, "", NULL);
         }
     } else if (g->matchControl.numClients == 0) {
-        DwcFriend_SetOwnStatus(1, (void *)"", 0);
+        DwcFriend_SetOwnStatus(1, "", NULL);
     }
     g = sDwcControl;
     if (g->matchControl.matchType != 0 && g->matchControl.matchType != 1) {

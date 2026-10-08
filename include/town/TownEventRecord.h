@@ -12,5 +12,8 @@ struct TownEventRecord {
     /* 0x04 */ s32 start;
     /* 0x08 */ s32 end;
 };
+#ifndef __cplusplus
+typedef struct TownEventRecord TownEventRecord;
+#endif
 
 #endif

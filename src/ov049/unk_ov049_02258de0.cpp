@@ -60,6 +60,7 @@
 #include "player/PlayerErrands.h"
 #include "room/FtrActorGrid.h"
 #include "proto/main/unk_020b4828.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern SaveData gSaveData;
 
@@ -93,8 +94,6 @@ BOOL TalkRequest_AddPlayerTalk6(NpcActor *self, s32 a);
 s32 TalkRequest_IsActive();
 BOOL TalkRequest_SetTargetDone(NpcActor *self);
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_ToUnit(s32 *bx, s32 *by, VecFx32 *pos);
-u8 *Scene_GetTouchPicker();
 BOOL TouchPick_GetGroundPos(TouchPickResult *a, VecFx32 *b);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -840,7 +839,7 @@ s32 SpNpcMabelTalk::getTopic() { return topic; }
 
 void SpNpcMabelTalk::start(TalkStartMsg *out) {
     PlayerData *r7 = PlayerData_GetCurrent();
-    ParcelErrand *r6 = &((PlayerErrands *)r7->getErrands())->parcelErrand;
+    ParcelErrand *r6 = &(r7->getErrands())->parcelErrand;
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
         out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
@@ -1518,7 +1517,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
     u16 v[3];
     ParcelErrand *hh;
     if (MenuCtrl_IsResultOk()) {
-        hh = &((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->parcelErrand;
+        hh = &(PlayerData_GetCurrent()->getErrands())->parcelErrand;
         if (Talk_IsInOwnTown()) {
             s32 n = (s32)MenuCtrl_GetIndex();
             v[1] = Pocket_GetItem(n);
@@ -1705,13 +1704,13 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     if (f) {
         void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
-            if (o != TouchPick_GetTargetObject((TouchPicker *)Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             VecFx32 v2;
-            TouchPick_GetGroundPos((TouchPicker *)Scene_GetTouchPicker(), &v2);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

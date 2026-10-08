@@ -5,9 +5,7 @@
 
 #include "types.h"
 #include "net/WifiApConfig.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
+#include "net/WifiApContext.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,23 +16,8 @@ extern void *sWifiApSocketConfig;
 #ifndef PROTO_LOCAL_sWifiApLinkWork
 extern void *sWifiApLinkWork;
 #endif
-#ifndef PROTO_LOCAL_WifiAp_FreeAll
-void WifiAp_FreeAll();
-#endif
-#ifndef PROTO_LOCAL_WifiAp_FreeContext
-void WifiAp_FreeContext();
-#endif
-#ifndef PROTO_LOCAL_WifiAp_HashReset
-void WifiAp_HashReset(void *ctx);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_sWifiApContext
-extern u8 *sWifiApContext;
+extern WifiApContext *sWifiApContext;
 #endif
 #ifndef PROTO_LOCAL_WifiAp_Init
 s32 WifiAp_Init(WifiApConfig *cfg);
@@ -60,6 +43,9 @@ void *WifiAp_AllocBlock(u32 m, u32 a);
 #ifndef PROTO_LOCAL_WifiAp_FreeBlock
 void WifiAp_FreeBlock(u32 m, void *a, u32 b);
 #endif
+#ifndef PROTO_LOCAL_WifiAp_FreeAll
+void WifiAp_FreeAll();
+#endif
 #ifndef PROTO_LOCAL_WifiAp_GetBlock
 void *WifiAp_GetBlock(u32 m);
 #endif
@@ -81,8 +67,14 @@ void WifiAp_SetConnectedApType(u32 v);
 #ifndef PROTO_LOCAL_WifiAp_FoldApIndex
 u32 WifiAp_FoldApIndex(u32 x);
 #endif
+#ifndef PROTO_LOCAL_WifiAp_FreeContext
+void WifiAp_FreeContext();
+#endif
 #ifndef PROTO_LOCAL_WifiAp_GetConnectResultKind
 s32 WifiAp_GetConnectResultKind();
+#endif
+#ifndef PROTO_LOCAL_WifiAp_HashReset
+void WifiAp_HashReset(void *ctx);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_HashSetSource
 void WifiAp_HashSetSource(void *ctx, const void *data, u32 len);
@@ -96,6 +88,7 @@ BOOL WifiAp_MacEquals(u8 *a, u8 *b);
 #ifndef PROTO_LOCAL_WifiAp_GetLinkLevel
 s32 WifiAp_GetLinkLevel();
 #endif
+#ifdef __cplusplus
 }
 #endif
 

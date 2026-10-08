@@ -66,7 +66,7 @@ public:
 
 
 extern "C" {
-char *Msg_SkipLines(char *p, u32 n);
+u8 *Msg_SkipLines(u8 *p, u32 n);
 void OS_ResetSystem(u32 parameter);  // src/autoload_2/unk_02115468.c
 u32 TextLabel_MeasureMsgWidth(MsgString *obj);
 MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
@@ -164,7 +164,7 @@ void Backup_CancelAndWait(void);
 s32 _s32_div_f(s32, s32);
 }
 
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern u16 gPad[];
 
 u32 sCommCautionErrorCode;
@@ -185,9 +185,9 @@ static inline BOOL Unk_02038058_IsOne(u8 v) {
 }
 
 extern "C" void Comm_SetShutdownErrorFlag() {
-    void *g = gCommManager;
-    u32 v = ((CommManager *)(g))->getErrorFlags() | 0x20;
-    ((CommManager *)(g))->setErrorFlags(v);
+    CommManager *g = gCommManager;
+    u32 v = g->getErrorFlags() | 0x20;
+    g->setErrorFlags(v);
 }
 
 CautionMsgString256::CautionMsgString256() { clear(); }
@@ -463,7 +463,7 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
 void CommCautionWindow::buildLine(u32 a, u32 b) {
     lineText.clear();
     countdownX = 0;
-    u8 *r = (u8 *)Msg_SkipLines((char *)message.data(), a);
+    u8 *r = Msg_SkipLines(message.data(), a);
     if (r != NULL) {
         lineText.setLine(r);
         if (seconds >= 0 && a == 3) {
@@ -520,13 +520,13 @@ void CommCautionWindow::muteSound() {
 void CommCautionWindow::checkNetError() {
     s32 s = Net_GetMode();
     if (s != 0 && s != 6) {
-        s32 r4 = ((CommManager *)(gCommManager))->getErrorMode();
+        s32 r4 = gCommManager->getErrorMode();
         s32 v = Net_GetError();
         if ((r4 == 0 && v != 0 && v != 0x800c && v != 0x400b) ||
             (r4 == 1 && v != 0 && v != 0x80ff && v != 0x800c && v != 0x4006 && v != 0x400a && v != 0x400b)) {
-            void *o = gCommManager;
-            u32 f = ((CommManager *)(o))->getErrorFlags() | 0x10;
-            ((CommManager *)(o))->setErrorFlags(f);
+            CommManager *o = gCommManager;
+            u32 f = o->getErrorFlags() | 0x10;
+            o->setErrorFlags(f);
         }
     }
 }
@@ -545,7 +545,7 @@ void CommCautionWindow::enterWatch() {
 
 void CommCautionWindow::execWatch() {
     if (errorPending != 0) {
-        if ((((CommManager *)(gCommManager))->getLatchedErrorFlags() & 0x7c) != 0) {
+        if ((gCommManager->getLatchedErrorFlags() & 0x7c) != 0) {
             hidePlanes();
             enterShutdown();
         } else {

@@ -28,6 +28,7 @@
 #include "proto/autoload_2/unk_0211a6c0.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_02039c08.h"
+#include "town/RoomBlockMap.h"
 #include "proto/main/unk_0204cc1c.h"
 #include "proto/main/unk_0204eeb4.h"
 #include "proto/main/unk_0204f134.h"
@@ -61,9 +62,6 @@ struct Unk_020ca2f4_Ent {
 
 // The block map of a villager's room (one block and its item grid); the house rooms' maps are allocated as plain
 // block maps on the DS (itemGrid lies past their allocation there).
-struct RoomBlockMap : BlockMap {
-    u16 *itemGrid;
-};
 
 struct TownBlockMapBuildLocals { volatile s32 xy[2]; VecFx32 v, w; };
 
@@ -73,18 +71,6 @@ struct BlockMapBuildLocals {
 };
 
 extern "C" {
-extern char sFgDataFiPath[];
-extern char sFgDataNrPath[];
-extern char sFgDataFoPath[];
-extern char sFgDataNfPath[];
-extern char sFgDataFiIndexPath[];
-extern char sFgDataNfIndexPath[];
-extern char sFgDataNrIndexPath[];
-extern char sFgDataFoIndexPath[];
-extern TownBlockMap *gTownBlockMap;
-extern FgDataIndex *gFgDataIndex;
-extern RoomBlockMap *gVillagerRoomMap;
-extern RoomBlockMap *gHouseRoomMaps[5];
 extern const Unk_020ca2f4_Ent sFgDataFiles[4];
 extern s32 data_020c8cbc; // a block's width and depth in world units
 extern s32 data_020c8cb8;
@@ -1045,10 +1031,10 @@ extern "C" void TownBlockMap_Destroy(void *heap) {
 }
 
 BOOL TownBlockMap::build(void *heap) {
-     BOOL result; TownBlockMapBuildLocals l; u8 *cell; MapBlockEntry *q; MapBlockEntry *tbl;
+     BOOL result; TownBlockMapBuildLocals l; MapBlock *cell; MapBlockEntry *q; MapBlockEntry *tbl;
     result = FALSE;
     mapSlot = 1;
-    if (!blocks) blocks = (u8 *)MapBlock_NewArray(0x24, heap, 4);
+    if (!blocks) blocks = MapBlock_NewArray(0x24, heap, 4);
     tbl = gSaveTownMap.buildBlockEntries(heap);
     if (blocks && tbl) {
         l.xy[0] = 0;
@@ -1070,9 +1056,9 @@ BOOL TownBlockMap::build(void *heap) {
                 l.w.x = l.v.x;
                 l.w.y = l.v.y;
                 l.w.z = l.v.z;
-                MapBlock_Init((MapBlock *)cell, q->acreId, &l.w, (s32)(uptr)q->layers[0], (s32)(uptr)q->layers[1],
+                MapBlock_Init(cell, q->acreId, &l.w, (s32)(uptr)q->layers[0], (s32)(uptr)q->layers[1],
                               (s32)(uptr)q->buried, 0, 0, (Unk_02037638_S8 *)l.xy, mapSlot);
-                cell += sizeof(MapBlock);
+                cell++;
                 q++;
             }
         }
@@ -1090,14 +1076,14 @@ void TownBlockMap::freeBlocks(void *heap) {
 }
 
 void TownBlockMap::updateAcreIds() {
-    s32 x; u8 *p; s32 y; u8 *c;
+    s32 x; u8 *p; s32 y; MapBlock *c;
     p = TownMap_GetAcres(&gSaveTownMap);
     if (p) {
         c = blocks;
         for (y = 0; y < height; y++) {
             for (x = 0; x < width; x++) {
                 if (c) ((MapBlockAcre *)c)->setAcreId(*p);
-                c += sizeof(MapBlock);
+                c++;
                 p++;
             }
         }
@@ -1112,7 +1098,7 @@ void TownBlockMap::bindBg() {
         for (x = 0; x < width; x++) {
             MapBlock *c;
             if ((u32)x < (u32)width && (u32)y < (u32)height && blocks) {
-                c = (MapBlock *)blocks + (x + y * width);
+                c = blocks + (x + y * width);
             } else {
                 c = 0;
             }
@@ -1170,7 +1156,7 @@ extern "C" void BlockMap_FindItem(u16 *ret, BlockMap *m, VecFx32 *pos, s32 *p4, 
     *ret = 0xfff1;
 }
 
-extern "C" void BlockMap_FindStructure(u16 *ret, BlockMap *m, s32 *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8) {
+extern "C" void BlockMap_FindStructure(u16 *ret, BlockMap *m, VecFx32 *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8) {
     StrBSizeData *h; u32 n; s32 sx, sz, ax; u16 t[2]; s32 a, b; VecFx32 v; u32 i; s32 d, az, zz;
     BlockMap_FindItem(t, m, &v, &a, &b, a6, a7, a8);
     if (!Unk_0204d560_Chk(t)) {
@@ -1190,9 +1176,9 @@ extern "C" void BlockMap_FindStructure(u16 *ret, BlockMap *m, s32 *pos, s32 *p4,
             az = FX_Div(sz, d);
             zz = v.z + az + 0x1000;
             s32 yy = Ground_GetDefaultY();
-            pos[0] = v.x + ax;
-            pos[1] = yy;
-            pos[2] = zz;
+            pos->x = v.x + ax;
+            pos->y = yy;
+            pos->z = zz;
             if (p4) *p4 = a;
             if (p5) *p5 = b;
             *ret = t[0];
@@ -1202,30 +1188,30 @@ extern "C" void BlockMap_FindStructure(u16 *ret, BlockMap *m, s32 *pos, s32 *p4,
     *ret = 0xfff1;
 }
 
-extern "C" BOOL Town_FindTownHall(BlockMap *a, s32 *pos, s32 *p3, s32 *p4) {
+extern "C" BOOL Town_FindTownHall(BlockMap *a, VecFx32 *pos, s32 *p3, s32 *p4) {
     u16 t[2];
     BlockMap_FindStructure(t, a, pos, p3, p4, 0x5000, 0x5000, 0x200);
     return Unk_0204d560_Chk(t) ? FALSE : TRUE;
 }
 
-extern "C" BOOL Town_FindPlayerHouse(BlockMap *a, s32 *pos, s32 *p3, s32 *p4) {
+extern "C" BOOL Town_FindPlayerHouse(BlockMap *a, VecFx32 *pos, s32 *p3, s32 *p4) {
     u16 t[2];
     BlockMap_FindStructure(t, a, pos, p3, p4, 0x5014, 0x501a, 1);
     return Unk_0204d560_Chk(t) ? FALSE : TRUE;
 }
 
-extern "C" BOOL Town_FindGateHouse(BlockMap *a, s32 *pos, s32 *p3, s32 *p4) {
+extern "C" BOOL Town_FindGateHouse(BlockMap *a, VecFx32 *pos, s32 *p3, s32 *p4) {
     u16 t[2];
     BlockMap_FindStructure(t, a, pos, p3, p4, 0x500b, 0x500b, 0x400);
     return Unk_0204d560_Chk(t) ? FALSE : TRUE;
 }
 
-extern "C" BOOL Town_FindTownHallFront(BlockMap *a, s32 *pos, s32 *p3, s32 *p4) {
+extern "C" BOOL Town_FindTownHallFront(BlockMap *a, VecFx32 *pos, s32 *p3, s32 *p4) {
     u16 t[2];
     BlockMap_FindStructure(t, a, pos, p3, p4, 0x5000, 0x5000, 0x200);
     if (!Unk_0204d560_Chk(t)) {
-        pos[0] -= 0x2000;
-        pos[2] += 0x8000;
+        pos->x -= 0x2000;
+        pos->z += 0x8000;
         if (p3) *p3 -= 1;
         if (p4) *p4 += 4;
         return TRUE;

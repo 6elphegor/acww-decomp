@@ -245,7 +245,7 @@ BOOL HouseOwnerVillager::updateAct() {
             }
         }
     }
-    mood.update(reinterpret_cast<VillagerTalk *>(this));  // VillagerMood takes its villager as a VillagerTalk *
+    mood.update(this);
     return TRUE;
 }
 

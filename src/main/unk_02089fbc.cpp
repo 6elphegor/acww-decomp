@@ -47,11 +47,7 @@ BOOL TalkRequest_IsActive();
 void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void Clock_GetRtcDateTime(void *p);
-s32 DateTime_Compare(void *a, void *b, s32 n);
-void DateTime_Sub(void *a, void *b);
 s32 Scene_GetCurrent();
-void DateTime_AddSeconds(void *p, s32 v);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
 s32 Clock_GetWeekday();
@@ -97,6 +93,7 @@ extern const u8 kHudCameraGridCells[18];
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
+#include "proto/main/unk_0209cb74.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_020030d8.h"
@@ -187,7 +184,7 @@ HudClock::~HudClock() {
 
 void HudClock::draw() {
     if (state != 0) {
-        GXOamAttr *a = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
+        GXOamAttr *a = anim.getCell();  // (SpriteAnimFrame::cell: an OAM cell)
         if (a != 0) {
             s32 x = anim.getFrameX(-1);
             s32 y = anim.getFrameY(-1);
@@ -679,7 +676,7 @@ HudCountdown::~HudCountdown() {
 
 void HudCountdown::draw() {
     if (state != 0) {
-        GXOamAttr *p = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
+        GXOamAttr *p = anim.getCell();  // (SpriteAnimFrame::cell: an OAM cell)
         if (p != 0) {
             s32 a = anim.getFrameX(-1);
             s32 b = anim.getFrameY(-1);
@@ -994,7 +991,7 @@ void HudCountdown::updateRemaining() {
     if (durationKind != 0) {
         MI_CpuCopy8(&endTime, &a, sizeof(a));
         b = ClockDateTime();
-        Clock_GetRtcDateTime((u8 *)&b);
+        Clock_GetRtcDateTime(&b);
         r = DateTime_Compare(&b, &a, 0x3f);
         if (r == 0) {
             goto yes;
@@ -1011,7 +1008,7 @@ void HudCountdown::updateRemaining() {
         } else {
             u32 k;
             MI_CpuCopy8(&b, &c, sizeof(c));
-            DateTime_Sub(&a, (u8 *)&c);
+            DateTime_Sub(&a, &c);
             k = x;
             t = DateTime_Compare(&remaining, &a, 1) ? TRUE : FALSE;
             x = (k | t) ? TRUE : FALSE;
@@ -1118,7 +1115,7 @@ void HudCameraGrid::draw() {
         s32 z = 0;
         for (; i < 9; i++) {
             SpriteAnim *e = &cellAnims[i];
-            GXOamAttr *p = static_cast<GXOamAttr *>(e->getCell());  // (SpriteAnimFrame::cell: an OAM cell)
+            GXOamAttr *p = e->getCell();  // (SpriteAnimFrame::cell: an OAM cell)
             if (p != NULL) {
                 s32 sx = e->getFrameX(nb);
                 s32 sy = e->getFrameY(nb);
@@ -1381,7 +1378,7 @@ HudCameraButton::~HudCameraButton() {
 
 void HudCameraButton::draw() {
     if (state != 0) {
-        GXOamAttr *v = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
+        GXOamAttr *v = anim.getCell();  // (SpriteAnimFrame::cell: an OAM cell)
         if (v != 0) {
             s32 x = anim.getFrameX(-1);
             s32 y = anim.getFrameY(-1);
@@ -1636,7 +1633,7 @@ HudWallet::~HudWallet() {
 
 void HudWallet::draw() {
     if (state != 0) {
-        GXOamAttr *h = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
+        GXOamAttr *h = anim.getCell();  // (SpriteAnimFrame::cell: an OAM cell)
         if (h != 0) {
             s32 a = getOriginX();
             s32 x = a + anim.getFrameX(-1);

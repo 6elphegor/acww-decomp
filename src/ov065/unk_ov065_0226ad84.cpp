@@ -18,7 +18,7 @@ extern "C" {
 WifiApAllocator *sWifiApAllocator;
 void *sWifiApSocketConfig;
 void *sWifiApLinkWork;
-u8 *sWifiApContext;
+WifiApContext *sWifiApContext;
 WifiApControl *sWifiApControl;
 
 u32 OS_DisableInterrupts();
@@ -58,15 +58,15 @@ s32 WifiAp_Init(WifiApConfig *cfg) {
     fc->state = 1;
     fc->furthestState = 1;
     fc->allocMask = 1;
-    sWifiApContext = (u8 *)WifiAp_AllocBlock(0x10, 0xd18);
+    sWifiApContext = (WifiApContext *)WifiAp_AllocBlock(0x10, sizeof(WifiApContext));
     sWifiApLinkWork = WifiAp_AllocBlock(2, 0x2300);
     sWifiApSocketConfig = WifiAp_AllocBlock(4, 0x58);
     sWifiApAllocator = (WifiApAllocator *)WifiAp_AllocBlock(8, 0xc);
-    { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApContext, 0xd18); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApContext, sizeof(WifiApContext)); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApLinkWork, 0x2300); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApSocketConfig, 0x58); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApAllocator, 0xc); }
-    ec = (WifiApContext *)sWifiApContext;
+    ec = sWifiApContext;
     ec->dmaNo = cfg->dmaNo;
     ec->powerMode = cfg->powerMode;
     f8 = sWifiApAllocator;
@@ -166,8 +166,8 @@ s32 WifiAp_RequestCleanup() {
 }
 
 void WifiAp_SetApEntry(u32 idx, void *dst) {
-    u8 *p = (u8 *)WifiAp_GetBlock(0x10);
-    MIi_CpuCopy32(dst, p + (idx << 8), 0xf0);
+    WifiApContext *c = (WifiApContext *)WifiAp_GetBlock(0x10);
+    MIi_CpuCopy32(dst, &c->userSettings[idx], 0xf0);
 }
 
 void *WifiAp_AllocBlock(u32 m, u32 a) {
@@ -192,7 +192,7 @@ void WifiAp_FreeAll() {
     if ((f->allocMask & 0x10) != 0) {
         void *o = WifiAp_GetBlock(0x10);
         f->allocMask &= ~0x10;
-        f->unk_04(0x10, o, 0xd18);
+        f->unk_04(0x10, o, sizeof(WifiApContext));
     }
     if ((f->allocMask & 8) != 0) {
         void *o = WifiAp_GetBlock(8);
@@ -236,13 +236,13 @@ void *WifiAp_GetBlock(u32 m) {
 
 void WifiAp_SetState(u8 v) {
     WifiApControl *f = (WifiApControl *)WifiAp_GetBlock(1);
-    u8 *e = (u8 *)WifiAp_GetBlock(0x10);
+    WifiApContext *e = (WifiApContext *)WifiAp_GetBlock(0x10);
     f->state = v;
     if (v < 0x10 && v > f->furthestState) {
         f->furthestState = v;
         if (v > 7) {
-            f->furthestApIndex = WifiAp_FoldApIndex(e[0xd0d]);
-            f->furthestApStatus = (e + e[0xd13] * 4)[0x444];
+            f->furthestApIndex = WifiAp_FoldApIndex(e->apType);
+            f->furthestApStatus = e->foundApInfo[e->selectedAp].status;
         }
     }
 }
@@ -274,24 +274,23 @@ u32 WifiAp_FoldApIndex(u32 x) {
 
 void WifiAp_FreeContext() {
     WifiAp_FreeBlock(8, sWifiApAllocator, 0xc);
-    WifiAp_FreeBlock(0x10, sWifiApContext, 0xd18);
+    WifiAp_FreeBlock(0x10, sWifiApContext, sizeof(WifiApContext));
 }
 
 s32 WifiAp_GetConnectResultKind() {
-    u8 *e = sWifiApContext;
-    u8 *cur = e + 0x474;
-    u8 idx = e[0xd13];
-    cur += idx * 0xc0;
+    WifiApContext *e = sWifiApContext;
+    u8 idx = e->selectedAp;
+    u8 *cur = e->foundApBss[idx].bssid;
     u32 i;
     u32 n;
-    if (e[0xd0d] >= 6) {
+    if (e->apType >= 6) {
         return 1;
     }
     i = 0;
-    n = e[0xd12];
+    n = e->numFoundAps;
     for (; i < n; i = (u8)(i + 1)) {
-        if (i != (u32)idx && (e + i * 4)[0x445] < 6) {
-            if (strncmp(cur, e + 0x474 + i * 0xc0, *(u16 *)(e + i * 0xc0 + 0x47a)) == 0) {
+        if (i != (u32)idx && e->foundApInfo[i].apType < 6) {
+            if (strncmp(cur, e->foundApBss[i].bssid, e->foundApBss[i].ssidLength) == 0) {
                 return 2;
             }
         }

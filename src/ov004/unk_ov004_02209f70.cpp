@@ -66,7 +66,7 @@
 #include "room/FtrPreviewer.h"
 #include "snd/SndSeEmitter.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_FtrSync_RequestToggleGyroid  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov004/unk_ov004_02209f70.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -74,6 +74,7 @@
 extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_020514a4.h"
@@ -95,6 +96,7 @@ extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 #include "proto/main/unk_0203c638.h"
 #include "proto/itcm/unk_01ffb4e8.h"
 #include "proto/main/unk_02055c38.h"
+#include "proto/main/unk_0204cc1c.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -468,7 +470,6 @@ extern u8 data_ov004_02240038[];
 extern char data_ov004_0224bb50[];
 
 s32 Item_MakeFurniture(s32 a, s32 b);
-void *CarpetTex_GetTex(void *p);  // (src/main/unk_0203a0cc.cpp returns it as s32)
 
 s32 FtrActor_GetFtrIndex(void *p);
 void FtrActor_StepAnims(void *p);
@@ -751,7 +752,7 @@ BOOL FtrCarpetSample::initModel() {
     u16 v = w;
     CarpetTex_Load(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer(), &v);
     void *h = model.resMdl;
-    void *r = p11::CarpetTex_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer());
+    void *r = CarpetTex_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer());
     if (((MatTexVramTask *)(&texTask))->request((void *)(h), (const char *)p11::data_ov004_0224bb50, r, 0, 0)) {
         return TRUE;
     }
@@ -1996,7 +1997,6 @@ extern u8 data_ov004_02240058[];
 
 
 u32 Scene_GetCurrent(void);
-void FtrSync_RequestToggleGyroid(u32, void *, u32);
 }
 }
 
@@ -2231,8 +2231,6 @@ s32 FtrActor_GetLayer(void *);
 s32 FtrActor_GetFtrIndex(void *);
 ModelSlot *FtrActor_GetHeap(void *self);
 
-s32 FieldPos_ToUnit(s32 *, s32 *, void *);
-s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
 s32 Scene_GetCurrent(void);
 s32 Scene_InVillagerHouse(void);
 }
@@ -2305,7 +2303,7 @@ void FtrGyroid::execFtrAct01() {
     if (switchState.isChanging()) {
         switchState.set(1, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
+        FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     }
 }
 
@@ -2314,7 +2312,7 @@ BOOL FtrGyroid::enterFtrAct01() {
     ((FtrActor *)(this))->playSound1();
     switchState.set(1, 0);
     syncStartFrames = 0xffff;
-    p16::FieldPos_ToUnit(&a, &b, &position);
+    FieldPos_ToUnit(&a, &b, &position);
     if (isInitializing != 0) {
         if (spawnMode != 0 || p16::Scene_InVillagerHouse() != 0) {
             Snd_BgmSyncSetState(&bgmSync, 1);
@@ -2360,13 +2358,13 @@ void FtrGyroid::execFtrAct00() {
     if (switchState.isChanging()) {
         switchState.set(0, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
+        FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     }
 }
 
 BOOL FtrGyroid::enterFtrAct00() {
     s32 a, b;
-    p16::FieldPos_ToUnit(&a, &b, &position);
+    FieldPos_ToUnit(&a, &b, &position);
     actAid = 0xff;
     RoomFtrState_RemoveGyroidBeat(a, b, p16::Scene_GetCurrent());
     setSyncState(0);
@@ -2515,7 +2513,7 @@ BOOL FtrGyroid::initModel() {
     if (spawnMode == 1) {
         switchState.set(0, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
+        FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     } else if (((FtrActor *)(this))->isPreview() != 0) {
         changeAct(0, 0xff);
     } else if (switchState.isOn() != 0) {
@@ -3369,13 +3367,12 @@ void FtrActor_StepAnims(void *self);
 
 namespace p19 {
 extern "C" {
-extern u8 *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 data_ov004_0224bbc0[];
 
 void Clock_GetMinuteHour(void *);
 u32 Scene_GetCurrent(void);
 void TalkRequest_SetTargetDone(void *);
-void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, u32);
 BOOL Item_IsFurniture(void *);
 }
 }
@@ -3823,8 +3820,6 @@ struct Unk_ov004_0221076c_R {
 
 namespace p21 {
 extern "C" {
-void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
-void FieldPos_ToUnit(s32 *x, s32 *y, void *v);
 s32 Vec_DistXZ(void *a, void *b);
 void Vec_RotateY(void *v, s32 a);
 void VEC_Add(void *a, void *b, void *c);
@@ -3840,8 +3835,6 @@ extern void *gCommManager;
 BOOL Item_IsFurniture(void *);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
-s32 Scene_GetWarpRequest(void);
-void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 }
 }
 
@@ -4025,7 +4018,7 @@ void FtrBed::execFtrAct06() {
         if (((TalkWindowState *)window)->state == 0) {
             ((Character *)(this))->detachTalkRequest(this);
             p21::TalkRequest_SetTargetDone(this);
-            p21::SceneWarp_RequestFade(p21::Scene_GetWarpRequest(), 0x2e, 2, 0);
+            SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 0);
             SaveManager_RequestAct01();
         }
     }
@@ -4162,9 +4155,9 @@ void FtrBed::execFtrAct00() {
                     VecFx32 a, b, c, e, f;
                     getSideTiles(&q);
                     Unk_ov004_02210d58_P *p0 = q.get(0);
-                    p21::FieldPos_FromUnitCenter(&a, p0->x, p0->y);
+                    FieldPos_FromUnitCenter(&a, p0->x, p0->y);
                     Unk_ov004_02210d58_P *p1 = q.get(1);
-                    p21::FieldPos_FromUnitCenter(&b, p1->x, p1->y);
+                    FieldPos_FromUnitCenter(&b, p1->x, p1->y);
                     s32 *pv = &pl->position.x;
                     c.x = pl->position.x;
                     c.y = pv[1];
@@ -4219,7 +4212,7 @@ s32 FtrBed::checkStepTile(VecFx32 *a, s32 b, VecFx32 *c) {
     VecFx32 out;
     s32 x, y;
     calcStepPos(&out, a, b, c);
-    p21::FieldPos_ToUnit(&x, &y, &out);
+    FieldPos_ToUnit(&x, &y, &out);
     FtrActor *obj = ((FtrActorGrid *)(FtrActorGrid_GetInstance()))->getActor(x, y, 0);
     if (p21::FtrActor_IsPosClearOfCharacters(&out, 0x800, 0x2000, 0x800, 0) == 0) {
         return 0;
@@ -4392,7 +4385,6 @@ BOOL PlayerActor_GetPosIfSitting(void *out, u32 i);
 BOOL FtrActor_StepAnims(FtrActor *o);
 void FtrActor_PlayAnimsFromLastFrame(FtrActor *o, s32 a, s32 b, s32 c);
 BOOL FtrActor_IsPosClearOfCharacters(void *v, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_ToUnit(s32 *a, s32 *b, void *v);
 BOOL Scene_InUnk6To8(void);
 void Vec_RotateY(void *v, u32 a);
 void VEC_Add(void *a, void *b, void *c);
@@ -4454,7 +4446,7 @@ u32 FtrBed::getLieTiles(void *o) {
             VecFx32 v;
             p22::FtrActor_LocalToWorld(this, &v, &p[i]);
             s32 *q = (s32 *)((FtrTilePair *)o)->get(i);
-            p22::FieldPos_ToUnit(q, q + 1, &v);
+            FieldPos_ToUnit(q, q + 1, &v);
         }
         return *(u32 *)((u8 *)p22::sFtrBedLieOffsets + 4 + (footprint << 3));
     }
@@ -4469,7 +4461,7 @@ u32 FtrBed::getSideTiles(void *o) {
             VecFx32 v;
             p22::FtrActor_LocalToWorld(this, &v, &p[i]);
             s32 *q = (s32 *)((FtrTilePair *)o)->get(i);
-            p22::FieldPos_ToUnit(q, q + 1, &v);
+            FieldPos_ToUnit(q, q + 1, &v);
         }
         return 2;
     }
@@ -4494,7 +4486,7 @@ BOOL FtrBed::updateActive() {
             VecFx32 v;
             s32 x, y;
             if (p22::PlayerActor_GetPosIfInBed(&v, i)) {
-                p22::FieldPos_ToUnit(&x, &y, &v);
+                FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
                 ((FtrActor *)(this))->getTiles(&list, NULL, z);
                 for (j = 0; j < list.getCount(); j++) {
@@ -4585,7 +4577,7 @@ BOOL FtrSeat::updateActive() {
         for (i = 0; i < 4; i++) {
             VecFx32 v;
             if (p22::PlayerActor_GetPosIfSitting(&v, i)) {
-                p22::FieldPos_ToUnit(&x, &y, &v);
+                FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
                 ((FtrActor *)(this))->getTiles(&list, NULL, z);
                 for (j = 0; j < list.getCount(); j++) {
@@ -5695,7 +5687,7 @@ void FtrGyroid::execFtrAct02() {
     if (switchState.isChanging()) {
         switchState.set(1, 0);
         u32 r4 = p15::Scene_GetCurrent();
-        p15::FtrSync_RequestToggleGyroid(r4, &position.x, p15::FtrActor_GetLayer(this));
+        FtrSync_RequestToggleGyroid(r4, &position, p15::FtrActor_GetLayer(this));
     }
 }
 
@@ -5815,7 +5807,7 @@ BOOL FtrStorage::enterTalkAct09() {
     } l;
     FtrTileList &list = l.list;
     ((FtrActor *)(this))->getTiles(&list, NULL, 0);
-    u8 *grid = p19::gSceneBlockMap;
+    BlockMap *grid = p19::gSceneBlockMap;
     if (grid != NULL) {
         u32 i;
         for (i = 0; i < list.getCount(); i++) {
@@ -5823,7 +5815,7 @@ BOOL FtrStorage::enterTalkAct09() {
             y = list.get(i)->y;
             s32 hx = x >> 4;
             s32 hy = y >> 4;
-            void *cell = p19::BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+            u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell != NULL && p19::Item_IsFurniture(cell)) {
                 r5 = (r5 + (x + (y << 4))) & 0xf;
                 break;

@@ -130,14 +130,14 @@ void WifiAp_BuildSocketConfig(u8 *a, WifiApContext *b, u8 *c) {
     o[1] = ((u32 *)a)[0];
     o[2] = ((u32 *)a)[1];
     if (b->apType < 6) {
-        u8 *q = (u8 *)b + (WifiAp_FoldApIndex(b->apType) << 8);
-        if (q[0xc0] != 0) {
+        WifiApUserSetting *q = &b->userSettings[WifiAp_FoldApIndex(b->apType)];
+        if (q->ip[0] != 0) {
             o[3] = 0;
-            o[4] = WifiAp_ReadAddress(q + 0xc0);
-            o[5] = WifiAp_PrefixToNetmask(q[0xd0]);
-            o[6] = WifiAp_ReadAddress(q + 0xc4);
-            o[7] = WifiAp_ReadAddress(q + 0xc8);
-            o[8] = WifiAp_ReadAddress(q + 0xcc);
+            o[4] = WifiAp_ReadAddress(q->ip);
+            o[5] = WifiAp_PrefixToNetmask(q->prefixLength);
+            o[6] = WifiAp_ReadAddress(q->gateway);
+            o[7] = WifiAp_ReadAddress(q->dns[0]);
+            o[8] = WifiAp_ReadAddress(q->dns[1]);
         } else {
             o[3] = 1;
             o[4] = 0;
@@ -171,11 +171,11 @@ u32 WifiAp_PrefixToNetmask(s32 n) {
 void WifiAp_ApplyStaticDns(WifiApContext *c) {
     u32 buf[2];
     if (c->apType < 6) {
-        u8 *q = (u8 *)c + (WifiAp_FoldApIndex(c->apType) << 8);
-        u32 sum = q[0xcb] + (q[0xca] + (q[0xc8] + q[0xc9]));
-        if (q[0xc0] == 0 && sum != 0) {
-            buf[0] = WifiAp_ReadAddress(q + 0xc8);
-            buf[1] = WifiAp_ReadAddress(q + 0xcc);
+        WifiApUserSetting *q = &c->userSettings[WifiAp_FoldApIndex(c->apType)];
+        u32 sum = q->dns[0][3] + (q->dns[0][2] + (q->dns[0][0] + q->dns[0][1]));
+        if (q->ip[0] == 0 && sum != 0) {
+            buf[0] = WifiAp_ReadAddress(q->dns[0]);
+            buf[1] = WifiAp_ReadAddress(q->dns[1]);
             Sock_SetDnsServers(&buf[0], &buf[1]);
         }
     }
@@ -258,24 +258,23 @@ s32 WifiAp_GetNthFoundChannel(u32 n) {
 
 void WifiAp_RescanForState(u32 r) {
     WifiApContext *c = (WifiApContext *)WifiAp_GetBlock(0x10);
-    u8 *cb = (u8 *)c;
     switch (r) {
     case 3: {
         s64 t = OS_GetTick();
-        *(s64 *)&c->stepStartTick = t;
+        c->stepStartTick = t;
         WifiAp_StartScan(gWifiLinkAnyBssid, gWifiLinkAnySsid, c->scanChannel, 0x200000);
         break;
     }
     case 4: {
         s64 t = OS_GetTick();
-        *(s64 *)&c->stepStartTick = t;
+        c->stepStartTick = t;
         WifiApSearchEntry *e = &c->searchEntries[c->searchIndex];
         WifiAp_StartScan(gWifiLinkAnyBssid, e->ssid, e->channelIndex, 0x300000);
         break;
     }
     case 5: {
         s64 t = OS_GetTick();
-        *(s64 *)&c->stepStartTick = t;
+        c->stepStartTick = t;
         WifiAp_StartScan(gWifiLinkAnyBssid, c->searchEntries[c->searchIndex].ssid, c->scanChannel, 0x300000);
         break;
     }
@@ -351,7 +350,7 @@ s32 WifiAp_GetWirelessOffError(void);
 s32 WifiAp_MapStartupError(u32 r);
 s32 WifiAp_GetErrorCode2(void);
 s32 WifiAp_StepFailedCleanup(void);
-u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, WifiApSearchEntry *out, WMBssDesc *rec);
+u32 WifiAp_BuildSearchFromFound(s32 n, WifiApFoundInfo *p, WifiApSearchEntry *out, WMBssDesc *rec);
 u8 WifiAp_BuildSearchFromSettings(WifiApContext *ctx);
 s32 WifiAp_BuildSearchWithHotspots(WifiApContext *ctx);
 s32 WifiAp_BuildSearchWithFreespot(WifiApContext *ctx);
@@ -369,21 +368,21 @@ s32 WifiAp_StepScanAllChannels(WifiApContext *ctx);
 s32 WifiAp_BeginSearch(WifiApContext *ctx);
 
 s32 WifiAp_BeginSearch(WifiApContext *ctx) {
-    *(u64 *)&ctx->stepStartTick = OS_GetTick();
+    ctx->stepStartTick = OS_GetTick();
     ctx->scanChannel = 0;
-    *(u64 *)&ctx->stepStartTick = OS_GetTick();
+    ctx->stepStartTick = OS_GetTick();
     WifiAp_StartScan(gWifiLinkAnyBssid, gWifiLinkAnySsid, ctx->scanChannel, 0x200000);
     return 3;
 }
 
 s32 WifiAp_StepScanAllChannels(WifiApContext *ctx) {
-    u64 dt = OS_GetTick() - *(u64 *)&ctx->stepStartTick;
+    u64 dt = OS_GetTick() - ctx->stepStartTick;
     if ((dt << 6) / 0x82ea >= 0x12c) {
         ctx->scanChannel = ctx->scanChannel + 2;
         if (ctx->scanChannel >= 0xd) {
             return WifiAp_FinishSearchPass(ctx, 3);
         }
-        *(u64 *)&ctx->stepStartTick = OS_GetTick();
+        ctx->stepStartTick = OS_GetTick();
         WifiAp_StartScan(gWifiLinkAnyBssid, gWifiLinkAnySsid, ctx->scanChannel, 0x200000);
     }
     return 3;
@@ -398,7 +397,7 @@ s32 WifiAp_RestartSearch(WifiApContext *ctx) {
 }
 
 s32 WifiAp_StepScanSsids(WifiApContext *ctx) {
-    u64 dt = OS_GetTick() - *(u64 *)&ctx->stepStartTick;
+    u64 dt = OS_GetTick() - ctx->stepStartTick;
     if ((dt << 6) / 0x82ea >= 0x96 || ctx->searchEntries[ctx->searchIndex].lo == 1) {
         ctx->searchEntries[ctx->searchIndex].lo = 0;
         ctx->searchIndex++;
@@ -406,14 +405,14 @@ s32 WifiAp_StepScanSsids(WifiApContext *ctx) {
             ctx->searchIndex = 0;
             return WifiAp_FinishSearchPass(ctx, 4);
         }
-        *(u64 *)&ctx->stepStartTick = OS_GetTick();
+        ctx->stepStartTick = OS_GetTick();
         WifiAp_StartScan(gWifiLinkAnyBssid, ctx->searchEntries[ctx->searchIndex].ssid, ctx->searchEntries[ctx->searchIndex].channelIndex, 0x300000);
     }
     return 4;
 }
 
 s32 WifiAp_StepScanFoundChannels(WifiApContext *ctx) {
-    u64 dt = OS_GetTick() - *(u64 *)&ctx->stepStartTick;
+    u64 dt = OS_GetTick() - ctx->stepStartTick;
     if ((dt << 6) / 0x82ea >= 0x96 || ctx->searchEntries[ctx->searchIndex].lo == 1) {
         ctx->searchEntries[ctx->searchIndex].lo = 0;
         ctx->searchIndex++;
@@ -426,7 +425,7 @@ s32 WifiAp_StepScanFoundChannels(WifiApContext *ctx) {
             ctx->stepCount = 0;
             return WifiAp_FinishSearchPass(ctx, 5);
         }
-        *(u64 *)&ctx->stepStartTick = OS_GetTick();
+        ctx->stepStartTick = OS_GetTick();
         WifiAp_StartScan(gWifiLinkAnyBssid, ctx->searchEntries[ctx->searchIndex].ssid, ctx->scanChannel, 0x300000);
     }
     return 5;
@@ -471,7 +470,7 @@ s32 WifiAp_CheckSearchResult(WifiApContext *ctx, s32 s) {
     i = 0;
     n = ctx->numFoundAps;
     for (; i < n; i++) {
-        if (ctx->foundApInfo[i * 4] == 0) {
+        if (ctx->foundApInfo[i].status == 0) {
             break;
         }
     }
@@ -492,7 +491,7 @@ s32 WifiAp_CheckSearchResult(WifiApContext *ctx, s32 s) {
     if (n == i) {
         return s;
     }
-    if (((u8 *)ctx + i * 4)[0x446] < 0x14) {
+    if (ctx->foundApInfo[i].linkLevel < 0x14) {
         return s;
     }
 reset:
@@ -533,7 +532,7 @@ s32 WifiAp_StepRecoverLink(void) {
     case 3:
         st = ctx->resumeState;
         if (ctx->altApTypePending == 1) {
-            ctx->foundApInfo[ctx->selectedAp * 4] = 0;
+            ctx->foundApInfo[ctx->selectedAp].status = 0;
             st = 7;
         } else if (st >= 3 && st <= 5) {
             WifiAp_RescanForState(st);
@@ -636,19 +635,19 @@ s32 WifiAp_BuildSearchWithHotspots(WifiApContext *ctx) {
 u8 WifiAp_BuildSearchFromSettings(WifiApContext *ctx) {
     s32 i;
     u8 cnt;
-    u8 *q;
+    WifiApUserSetting *q;
     WifiApSearchEntry *out;
     cnt = 0;
-    q = (u8 *)ctx;
+    q = ctx->userSettings;
     out = ctx->searchEntries;
-    for (i = 0; i < 3; q += 0x100, i++) {
+    for (i = 0; i < 3; q++, i++) {
         u32 lo = ctx->apFilter;
         if (lo == 0 || lo == i + 1) {
-            if (q[0xe7] != 0xff) {
+            if (q->setType != 0xff) {
                 u8 k = 0;
                 BOOL ok;
                 do {
-                    u8 c = (q + k)[0x40];
+                    u8 c = q->ssid[0][k];
                     if (c == 0) {
                         break;
                     }
@@ -666,11 +665,11 @@ u8 WifiAp_BuildSearchFromSettings(WifiApContext *ctx) {
                     cnt++;
                     out++;
                 }
-                if (q[0xe7] == 1) {
+                if (q->setType == 1) {
                     u8 k2 = 0;
                     BOOL ok2;
                     do {
-                        u8 c = (q + k2)[0x60];
+                        u8 c = q->ssid[1][k2];
                         if (c == 0) {
                             break;
                         }
@@ -695,7 +694,7 @@ u8 WifiAp_BuildSearchFromSettings(WifiApContext *ctx) {
     return cnt;
 }
 
-u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, WifiApSearchEntry *out, WMBssDesc *rec) {
+u32 WifiAp_BuildSearchFromFound(s32 n, WifiApFoundInfo *p, WifiApSearchEntry *out, WMBssDesc *rec) {
     u8 cnt = 0;
     u8 i = 0;
     if (n > 0) {
@@ -703,7 +702,7 @@ u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, WifiApSearchEntry *out, WMBssDesc 
             if (i >= 9) {
                 break;
             }
-            if (p[0] == 0 && rec->channel != p[3]) {
+            if (p->status == 0 && rec->channel != p->channel) {
                 u8 k = 0;
                 do {
                     u8 c = rec->ssid[k];
@@ -718,7 +717,7 @@ u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, WifiApSearchEntry *out, WMBssDesc 
                 out++;
                 cnt++;
             }
-            p += 4;
+            p++;
             rec++;
             i++;
         } while (i < n);
@@ -784,7 +783,7 @@ extern "C" {
 
 
 extern "C" {
-s32 WifiAp_SortFoundAp(s32 a, void *ctx);
+void WifiAp_SortFoundAp(u32 n, WifiApContext *ctx);
 s32 WifiAp_AddFoundChannel(u32 v);
 s32 WifiAp_IsFreespot(void *rec);
 s32 WifiAp_IsUsbConnectorAp(void *p);
@@ -996,17 +995,17 @@ s32 WifiAp_PrepareConnect(WifiApContext *ctx) {
     if (WifiAp_GetWepSetting(ctx, ctx->apType, ctx->wepSetting) != 0) {
         ctx->useSharedKey = 1;
         if ((((s32)rec->capaInfo >> 4) & 1) == 0) {
-            ctx->foundApInfo[ctx->selectedAp * 4] = 3;
+            ctx->foundApInfo[ctx->selectedAp].status = 3;
             return 9;
         }
         if (ctx->apType == 6 && rec->ssid[9] == 0) {
-            ctx->foundApInfo[ctx->selectedAp * 4] = 3;
+            ctx->foundApInfo[ctx->selectedAp].status = 3;
             return 9;
         }
     } else {
         ctx->useSharedKey = 0;
         if ((((s32)rec->capaInfo >> 4) & 1) == 1) {
-            ctx->foundApInfo[ctx->selectedAp * 4] = 3;
+            ctx->foundApInfo[ctx->selectedAp].status = 3;
             return 9;
         }
     }
@@ -1024,7 +1023,7 @@ s32 WifiAp_StepConnect(WifiApContext *ctx) {
         ctx->stepCount = ctx->stepCount + 1;
         if (ctx->stepCount > 3) {
             ctx->stepCount = 0;
-            ctx->foundApInfo[ctx->selectedAp * 4] = 1;
+            ctx->foundApInfo[ctx->selectedAp].status = 1;
             return 9;
         }
         if (ctx->stepCount != 1) {
@@ -1032,11 +1031,11 @@ s32 WifiAp_StepConnect(WifiApContext *ctx) {
                 ctx->useSharedKey = 0;
             } else if (ctx->connectFailKind == 2) {
                 ctx->stepCount = 0;
-                ctx->foundApInfo[ctx->selectedAp * 4] = 3;
+                ctx->foundApInfo[ctx->selectedAp].status = 3;
                 return 9;
             } else if (ctx->connectFailKind == 3) {
                 ctx->stepCount = 0;
-                ctx->foundApInfo[ctx->selectedAp * 4] = 4;
+                ctx->foundApInfo[ctx->selectedAp].status = 4;
                 return 9;
             }
         }
@@ -1045,8 +1044,7 @@ s32 WifiAp_StepConnect(WifiApContext *ctx) {
         s64 t;
         ctx->stepCount = 0;
         t = OS_GetTick();
-        ctx->stepStartTick = (u32)t;
-        ctx->stepStartTickHi = (u32)(t >> 32);
+        ctx->stepStartTick = t;
         return 10;
     }
     return 8;
@@ -1082,46 +1080,41 @@ u32 WifiAp_SelectApType(WifiApContext *ctx) {
         l.i = 0;
         s32 n = ctx->numSearchEntries;
         if (n > 0) {
-            u8 *p = (u8 *)ctx;
             WifiApSearchEntry *e;
             l.d = ctx->searchEntries[0].ssid;
             e = ctx->searchEntries;
             do {
                 u32 pr = l.rec->ssidLength;
-                if (pr == p[0x303] && strncmp(l.rec->ssid, l.d, pr) == 0) {
+                if (pr == e->ssidLength && strncmp(l.rec->ssid, l.d, pr) == 0) {
                     if (cnt == 0) {
-                        l.result = p[0x301];
+                        l.result = e->apType;
                     } else {
                         e->hi = 1;
                         ctx->altApTypePending = 1;
                     }
                     cnt++;
                 }
-                p += 0x24;
-                l.d += 0x24;
+                l.d += sizeof(WifiApSearchEntry);
                 e++;
                 l.i++;
             } while (l.i < ctx->numSearchEntries);
         }
     } else {
         WifiApSearchEntry *e;
-        u8 *p;
         s32 cnt;
         s32 i = l.result;
         cnt = i;
         if (i < ctx->numSearchEntries) {
             e = ctx->searchEntries;
-            p = (u8 *)ctx;
             do {
                 if (e->hi == 1) {
                     if (cnt == 0) {
                         e->hi = 0;
-                        l.result = p[0x301];
+                        l.result = e->apType;
                     }
                     cnt++;
                 }
                 e++;
-                p += 0x24;
                 i++;
             } while (i < ctx->numSearchEntries);
         }
@@ -1286,20 +1279,22 @@ s32 WifiAp_MatchSearchEntry(WMBssDesc *rec, s32 n, WifiApSearchEntry *e) {
 s32 WifiAp_AddFoundAp(u32 a, WMBssDesc *rec, WifiApContext *ctx) {
     s32 i = 0;
     s32 found = -1;
+    WMBssDesc *f;
     u8 *e;
     u32 b0;
     s32 n;
     n = ctx->numFoundAps;
     if (n > 0) {
-        e = ctx->foundApBss[0].bssid;
+        f = ctx->foundApBss;
         b0 = rec->bssid[0];
         do {
+            e = f->bssid;
             if (b0 == e[0] && rec->bssid[1] == e[1] && rec->bssid[2] == e[2] &&
                 rec->bssid[3] == e[3] && rec->bssid[4] == e[4] && rec->bssid[5] == e[5]) {
                 found = i;
                 break;
             }
-            e += 0xc0;
+            f++;
             i++;
         } while (i < n);
     }
@@ -1316,25 +1311,25 @@ s32 WifiAp_AddFoundAp(u32 a, WMBssDesc *rec, WifiApContext *ctx) {
 }
 
 void WifiAp_StoreNewFoundAp(u32 a, WMBssDesc *rec, WifiApContext *ctx) {
-    u8 *p = ctx->foundApInfo + 0x28;
-    WMBssDesc *q = ctx->foundApBss + 10;
-    p[1] = a;
+    WifiApFoundInfo *p = &ctx->foundApInfo[10];
+    WMBssDesc *q = &ctx->foundApBss[10];
+    p->apType = a;
     u16 f = rec->rssi;
-    p[2] = (u8)Unk_ov065_0226b488_Level(f);
-    p[3] = ctx->scanChannel + 1;
-    MIi_CpuCopy32(rec, q, 0xc0);
+    p->linkLevel = (u8)Unk_ov065_0226b488_Level(f);
+    p->channel = ctx->scanChannel + 1;
+    MIi_CpuCopy32(rec, q, sizeof(WMBssDesc));
 }
 
 void WifiAp_UpdateFoundAp(u32 a, WMBssDesc *rec, WifiApContext *ctx) {
-    u8 *p = ctx->foundApInfo + a * 4;
-    WMBssDesc *q = ctx->foundApBss + a;
+    WifiApFoundInfo *p = &ctx->foundApInfo[a];
+    WMBssDesc *q = &ctx->foundApBss[a];
     u16 f = rec->rssi;
     u8 w = (u8)Unk_ov065_0226b488_Level(f);
-    if (w > p[2]) {
-        p[2] = w;
-        p[3] = ctx->scanChannel + 1;
+    if (w > p->linkLevel) {
+        p->linkLevel = w;
+        p->channel = ctx->scanChannel + 1;
     }
-    MIi_CpuCopy32(rec, q, 0xc0);
+    MIi_CpuCopy32(rec, q, sizeof(WMBssDesc));
 }
 
 }
@@ -1427,11 +1422,9 @@ u8 WifiAp_ProcessNetSetup();
 
 
 
-void WifiAp_SortFoundAp(u32 n, u8 *base);
-
-void WifiAp_SortFoundAp(u32 n, u8 *base) {
-    WifiApFoundInfo *keys = (WifiApFoundInfo *)(base + 0x444);
-    WMBssDesc *recs = (WMBssDesc *)(base + 0x470);
+void WifiAp_SortFoundAp(u32 n, WifiApContext *ctx) {
+    WifiApFoundInfo *keys = ctx->foundApInfo;
+    WMBssDesc *recs = ctx->foundApBss;
     s32 j = n - 1;
     if (j >= 0) {
         WifiApFoundInfo *p4 = &keys[j];
@@ -1439,7 +1432,7 @@ void WifiAp_SortFoundAp(u32 n, u8 *base) {
         do {
             WifiApFoundInfo tk;
             WMBssDesc tr;
-            if (keys[n].info[2] < p4->info[2]) {
+            if (keys[n].linkLevel < p4->linkLevel) {
                 break;
             }
             MIi_CpuCopy32(p4, &tk, 4);

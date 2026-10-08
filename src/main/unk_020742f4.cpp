@@ -122,6 +122,7 @@ public:
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov003/unk_ov003_0222e5e0.h"
 #include "save/TownCompress.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -142,7 +143,7 @@ extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 }
 extern "C" {
 }
@@ -192,10 +193,8 @@ extern "C" {
 s32 Scene_GetMaxPlayers(s32);
 }
 extern "C" {
-void FieldPos_ToUnit(s32 *, s32 *, s32);
 }
 extern "C" {
-void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 }
 extern "C" {
 BOOL func_0204e418(void *, s32, s32);
@@ -881,7 +880,7 @@ extern "C" {
 void VillagerState_SetPresence(VillagerState *e, u32 v);
 }
 extern "C" {
-void *VillagerState_GetErrand(VillagerState *e);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 }
 extern "C" {
 u32 VillagerState_GetPresence(VillagerState *e);
@@ -1236,7 +1235,7 @@ extern "C" u32 CommPacket_GetType(u8 *p) { return (*p >> 2) & 0x1f; }
 
 extern "C" void *NetHeap_Alloc(s32 a, s32 b) { return Heap_AllocAligned((Heap *)gNetHeap, a, b); }  // (gNetHeap: a Heap, declared void * in unk_0205b7b0.cpp)
 
-extern "C" void NetHeap_Free(void *a) { Heap_Free((Heap *)gNetHeap, a); }
+extern "C" void NetHeap_Free(void *a) { Heap_Free(gNetHeap, a); }
 
 extern "C" BOOL Comm_HasSendCredit(u32 mask) {
     s32 i = 3;
@@ -1388,7 +1387,7 @@ extern "C" void CommBlock_ReadAct01(u8 *buf) {
         MI_CpuCopy8(buf, &t.b, 1);
         VillagerState_SetPresence(p, t.b);
         MI_CpuCopy8(buf + 1, &obj, 12);
-        ErrandRecord *q = (ErrandRecord *)VillagerState_GetErrand(p);
+        ErrandRecord *q = VillagerState_GetErrand(p);
         u32 a = obj.getKind();
         u16 *b = obj.getItem();
         q->start(a, b, z8);
@@ -1807,7 +1806,7 @@ extern "C" {
 VillagerState *Villager_GetState(void *);
 }
 extern "C" {
-void *VillagerState_GetErrand(VillagerState *e);
+ErrandRecord *VillagerState_GetErrand(VillagerState *e);
 }
 extern "C" {
 }
@@ -1850,10 +1849,8 @@ extern "C" {
 u16 ItemInfo_GetHoldableIndex(u16 *);
 }
 extern "C" {
-void *TownBlockMap_Get();
 }
 extern "C" {
-u16 *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, u32);
 }
 extern "C" {
 s32 PendingUnit_IndexAt(Vec2 *, u32);
@@ -1974,7 +1971,7 @@ extern "C" void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d) {
 }
 
 extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, u32 d) {
-    void *grid;
+    BlockMap *grid;
     volatile u16 c1, b1, c2, b2, a1, a2;
     FieldActionRequestMsg buf;
     Vec2 pt, pt2;
@@ -2183,7 +2180,7 @@ extern "C" void CommRecv_Act3D() {
         void *r4 = NULL;
         BOOL t = l.b ? TRUE : FALSE;
         BOOL r5 = t ? TRUE : FALSE;
-        ((ErrandRecord *)(VillagerState_GetErrand(Villager_GetState(r6))))->clear();
+        VillagerState_GetErrand(Villager_GetState(r6))->clear();
         if (n < 4) {
             void *q = PlayerData_GetBySessionSlot(n);
             if (q != NULL) {

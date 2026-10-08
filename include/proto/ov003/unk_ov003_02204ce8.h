@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "player/PlayerActor.h"
 #endif
 
@@ -58,9 +59,6 @@ s32 PlayerActor_LocalRequestReleaseCreature(u32 a);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_ConfirmReleaseCreature
 BOOL PlayerActor_ConfirmReleaseCreature();
-#endif
-#ifndef PROTO_LOCAL_PlayerActor_GetTrackTarget
-void *PlayerActor_GetTrackTarget(u32 a);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_LocalPlayAnim99
 void PlayerActor_LocalPlayAnim99();
@@ -338,6 +336,9 @@ void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_PlayerActor_GetTrackTarget
+VecFx32 *PlayerActor_GetTrackTarget(u32 a);
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_FieldUseTool
 BOOL PlayerActor_FieldUseTool(PlayerActor *self);
 #endif

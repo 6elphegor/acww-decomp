@@ -11,6 +11,7 @@
 #include "player/PlayerInventory.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ScreenTransition.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_02000b7c.h"
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02038474.h"
@@ -93,9 +94,6 @@ extern u16 gPad[];
 
 
 extern "C" {
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
-void Scene_SavePlayerPos(s32 a, s32 b);
 void TalkRequest_FinishSaveMenu();
 s32 TalkRequest_IsSaveMenuRunning();
 s32 Scene_GetCurrent();

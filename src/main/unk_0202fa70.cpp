@@ -77,7 +77,7 @@ void Vec3_MinInPlace(s32 *a, s32 *b);
 void Vec3_MaxInPlace(s32 *a, s32 *b);
 u32 CollisionMap_IsFullyBound(s32 i);
 void BoxCollider_ClearList(void *p);
-void TriangleTrigger_CheckAll(VecFx32 *a, s32 b, s32 c);
+void TriangleTrigger_CheckAll(VecFx32 *a, s32 b, Actor *c);
 void TriangleTrigger_ClearList(void *p);
 void *CollisionTag_Destruct(void *p);
 void *CollisionTag_Construct(void *p);
@@ -192,7 +192,7 @@ extern "C" BOOL Collision_IsSegmentOutsideBox(VecFx32 *a, VecFx32 *b, VecFx32 *c
 
 // a box collider (registered in the list sBoxColliderList; ov004's view of it: game/BoxCollider.h)
 struct BoxColliderX {
-    virtual void onEdgeContact(CollisionEdge *edge, s32 arg, s32 r);
+    virtual void onEdgeContact(CollisionEdge *edge, Actor *actor, s32 r);
     VecFx32 boxPos;
     VecFx32 size;
     VecFx32 scale;
@@ -247,7 +247,7 @@ struct MoveCollisionVisitor : CollisionVisitor {
     VecFx32 prevPos;
     u16 facingAngle;
     s32 radius;
-    s32 actor;
+    Actor *actor;
     u32 flags;
 
     MoveCollisionVisitor() {}
@@ -355,7 +355,7 @@ public:
     u32 numEdges;
     WallEdgeList();
     ~WallEdgeList();
-    BOOL collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out, s32 arg);
+    BOOL collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out, Actor *actor);
 };
 class FloorTriangleList {
 public:
@@ -529,7 +529,7 @@ extern "C" s32 Ground_GetDefaultY(void);
 extern "C" s32 Ground_GetHeightAt(VecFx32 *p, u32 *out, u32 flags0);
 extern "C" BOOL Collision_ClampToRect(s32 *p, s32 a, s32 *c, s32 w, s32 h);
 extern "C" u8 Collision_TestSegment(SegmentHitResult *out, VecFx32 *pos, VecFx32 *tgt, u32 flags);
-extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags);
+extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt, u16 hh, s32 arg5, Actor *actor, u32 flags);
 extern "C" s32 Ground_GetSpecialPieceKind(s32 x, s32 y);
 extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
 extern "C" u32 CollisionMap_IsBound(s32 a);
@@ -576,7 +576,7 @@ extern "C" BOOL Collision_IsSegmentOutsideBox(VecFx32 *a, VecFx32 *b, VecFx32 *c
 extern "C" BOOL BoxCollider_Unregister(BoxColliderX *n);
 extern "C" BOOL BoxCollider_Register(BoxColliderX *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 e, VecFx32 *v);
 extern "C" void BoxCollider_ClearList(void *p);
-extern "C" void TriangleTrigger_CheckAll(VecFx32* a, s32 b, s32 c);
+extern "C" void TriangleTrigger_CheckAll(VecFx32* a, s32 b, Actor *c);
 extern "C" s32 TriangleTrigger_Unregister(TriangleTrigger* node);
 extern "C" s32 TriangleTrigger_Register(TriangleTrigger* node);
 extern "C" void TriangleTrigger_ClearList(void *p);
@@ -1250,7 +1250,7 @@ WallEdgeList::WallEdgeList() : numEdges(0) {}
 
 WallEdgeList::~WallEdgeList() {}
 
-BOOL WallEdgeList::collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out, s32 arg) {
+BOOL WallEdgeList::collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out, Actor *actor) {
     WallEdge *e;
     s32 py;
     BOOL result = FALSE;
@@ -1276,7 +1276,7 @@ BOOL WallEdgeList::collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out,
                 if (k != 3) {
                     out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
-                        e->f_04->onEdgeContact(e, arg, r);
+                        e->f_04->onEdgeContact(e, actor, r);
                     }
                 }
                 result = TRUE;
@@ -1300,7 +1300,7 @@ BOOL WallEdgeList::collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out,
                 if (k != 3) {
                     out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
-                        e->f_04->onEdgeContact(e, arg, r);
+                        e->f_04->onEdgeContact(e, actor, r);
                     }
                 }
                 result = TRUE;
@@ -1323,7 +1323,7 @@ BOOL WallEdgeList::collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out,
                 if (k != 3) {
                     out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
-                        e->f_04->onEdgeContact(e, arg, r);
+                        e->f_04->onEdgeContact(e, actor, r);
                     }
                 }
                 result = TRUE;
@@ -1915,13 +1915,13 @@ extern "C" s32 TriangleTrigger_Unregister(TriangleTrigger* node) {
     return FALSE;
 }
 
-extern "C" void TriangleTrigger_CheckAll(VecFx32* a, s32 b, s32 c) {
+extern "C" void TriangleTrigger_CheckAll(VecFx32* a, s32 b, Actor *c) {
     TriangleTrigger* p;
     p = sTriangleTriggerList;
     if (p != NULL) {
         for (; p != NULL; p = p->next) {
             if ((s64)p->radiusSq >= Vec_DistSq(&p->center, a)) {
-                p->onActorNear(a, (Actor *)c, b);
+                p->onActorNear(a, c, b);
             }
         }
     }
@@ -1978,7 +1978,7 @@ BOOL BoxColliderX::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) 
     return TRUE;
 }
 
-void BoxColliderX::onEdgeContact(CollisionEdge *edge, s32 arg, s32 r) {}
+void BoxColliderX::onEdgeContact(CollisionEdge *edge, Actor *actor, s32 r) {}
 
 BoxColliderListOwner::BoxColliderListOwner() {}
 
@@ -2638,7 +2638,7 @@ extern "C" s32 Ground_GetSpecialPieceKind(s32 x, s32 y)
     return -1;
 }
 
-extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags)
+extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt, u16 hh, s32 arg5, Actor *actor, u32 flags)
 {
     struct { VecFx32 A, B, V1, C, D; } l;
     s32 lim, dx, dz;
@@ -2672,7 +2672,7 @@ extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt,
     o.prevPos.z = l.B.z;
     o.facingAngle = hh;
     o.radius = arg5;
-    o.actor = arg6;
+    o.actor = actor;
     o.flags = flags;
     (self)->beginStep();
     fl = (self->prevFlags & 2) ? TRUE : FALSE;
@@ -2706,7 +2706,7 @@ extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt,
         pos->y = l.A.y;
         pos->z = l.A.z;
     }
-    if (arg6) TriangleTrigger_CheckAll(&l.A, arg5, arg6);
+    if (actor) TriangleTrigger_CheckAll(&l.A, arg5, actor);
 }
 
 extern "C" u8 Collision_TestSegment(SegmentHitResult *out, VecFx32 *pos, VecFx32 *tgt, u32 flags)

@@ -5,7 +5,11 @@
 
 #include "types.h"
 struct Unk_0205242c_Item;
+#ifndef __cplusplus
+typedef struct Unk_0205242c_Item Unk_0205242c_Item;
+#endif
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "room/RoomFtrState.h"
 class FtrActor;
 class FtrPlaceRecord;
@@ -87,9 +91,6 @@ void FtrSync_SetRoomLight(s32 a, s32 b);
 #ifndef PROTO_LOCAL_FtrSync_RequestToggleGyroidAt
 void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d);
 #endif
-#ifndef PROTO_LOCAL_FtrSync_RequestToggleGyroid
-void FtrSync_RequestToggleGyroid(s32 a, s32 b, s32 c);
-#endif
 #ifndef PROTO_LOCAL_SpotSync_RequestReserve
 void SpotSync_RequestReserve(s32 *p);
 #endif
@@ -140,6 +141,9 @@ s32 FtrSync_ChangeAct(FtrActor *a, s32 b, u8 c, u8 d);
 #endif
 #ifndef PROTO_LOCAL_FtrSync_RequestAct
 s32 FtrSync_RequestAct(FtrActor *a, s32 b, u8 c, u8 d);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_RequestToggleGyroid
+void FtrSync_RequestToggleGyroid(s32 a, VecFx32 *b, s32 c);
 #endif
 }
 #ifndef PROTO_LOCAL_sVillagerHouseFtrStates

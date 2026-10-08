@@ -84,7 +84,7 @@ u32 BmgMsgAttr_LookupUnkA(BmgMsgAttr *s);
 u32 BmgMsgAttr_LookupUnkB(BmgMsgAttr *s);
 u32 BmgMsgAttr_LookupUnkC(BmgMsgAttr *s);
 // src/main/unk_02077ac4.cpp (the villager data: VillagerDataProfileView, VillagerMemory are declared there only)
-u32 Villager_GetAnimalKind(u32 a);
+u32 Villager_GetAnimalKind(VillagerData *a);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 Villager_FindMemoryIndex(VillagerMemory *t, void *id);
 VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
@@ -93,7 +93,7 @@ s32 Villager_GetTrend(VillagerData *a, s32 b);
 void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_GetEnemyName(void *a, MsgString *b);
 void Villager_GetRandomOtherName(void *a, MsgString *b);
-void Villager_GetImpressionText(void *self, void *out, PlayerData *p);
+void Villager_GetImpressionText(void *self, MsgString *out, PlayerData *p);
 VillagerState *Villager_GetState(VillagerData *a);
 u32 VillagerState_GetMood(VillagerState *e);
 s32 SaveVillagers_Count(u8 *base);
@@ -1636,7 +1636,7 @@ void TalkParser::tagBranchSpecies() {
     res = m->getSpeakerData();
     i = 0;
     if (res != 0) {
-        s32 c = Villager_GetAnimalKind((u32)(uptr)res);
+        s32 c = Villager_GetAnimalKind((VillagerData *)res);
         if (c != b[0]) i = 1;
     } else {
         debugPrintMissing(0xeeb, data_020dde24);

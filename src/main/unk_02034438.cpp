@@ -14,6 +14,7 @@
 #include "player/PlayerData.h"
 #include "player/PlayerErrands.h"
 #include "net/CommManager.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02133d04.h"
@@ -76,8 +77,6 @@ s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
 s32 Scene_GetPrevious(void);
 s32 Scene_InTownUnk31(void);
-s32 Scene_GetWarpRequest(void);
-s32 SceneWarp_GetScene(s32 req);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 extern ProcBase *gActorDefaultParent;
@@ -445,7 +444,7 @@ void FieldSpecialBgm::start() {
             play(4, 0x45, 1);
         } else if (Taxi_IsLeaving() != 0) {
             play(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (((PlayerData *)r5)->testFlag(0x23) != 0 || (((PlayerData *)r5)->testFlag(1) != 0 && PlayerErrands_IsJobActive((PlayerErrands *)r5->getErrands()) == 0))) {
+        } else if (r5 != 0 && (((PlayerData *)r5)->testFlag(0x23) != 0 || (((PlayerData *)r5)->testFlag(1) != 0 && PlayerErrands_IsJobActive(r5->getErrands()) == 0))) {
             play(0x1c, 0x46, 0);
         } else if (r5 != 0 && ((PlayerData *)r5)->testFlag(1) != 0) {
             play(0x1d, 0x48, 0);

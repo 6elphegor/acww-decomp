@@ -32,15 +32,12 @@
 #include "proto/main/unk_0209d81c.h"
 #include "proto/main/unk_020af3f4.h"
 #include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_0204cc1c.h"
 
 extern "C" {
 void SaveData_SyncClockOffset(SaveData *p);
 void TownState_InitNew(void *);
 void Town_ClearBorderTrees(void *);
-void HouseRoomMaps_BindBg(void);
-void HouseRoomMaps_UpdateAll(void);
-void *TownBlockMap_Get(void);
-void TownMap_Generate(void *, s32 heap);  // (TownMap keeps the heap in an s32)
 void FengShui_UpdateHouse(void);
 void HappyRoomDate_Reset(void *);
 void VillagerStates_SetBirthdayVisitor(s32);
@@ -69,7 +66,7 @@ u8 sFallbackTownName[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
 void SaveData::setupNoSave() {
     ClockOffset_Clear(&clockOffset);
     Clock_Init();
-    TownMap_Generate(&townMap, (s32)(sptr)gCurrentHeap);
+    TownMap_Generate((TownMap *)townMap, gCurrentHeap);
     SaveData_RefreshTownBlockMap(this);
     TownId_InitWithName((u16 *)townId, sFallbackTownName);
     SaveData_InitNew((u8 *)this);
@@ -131,7 +128,7 @@ void SaveData::setupMode05() {
 void SaveData::setupMode06() {
     void *a = PlayerData_GetCurrent();
     SaveData_SyncClockOffset(this);
-    TownMap_Generate(&townMap, (s32)(sptr)gCurrentHeap);
+    TownMap_Generate((TownMap *)townMap, gCurrentHeap);
     SaveData_RefreshTownBlockMap(this);
     ((SaveRecord4 *)(&unk_15fc5))->setDateToday((void *)(0));
     SaveData_InitCurrentPlayer((u8 *)this);

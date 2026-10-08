@@ -12,8 +12,10 @@ typedef struct Flags1 Flags1;
 #endif
 #ifdef __cplusplus
 #include "game/StrBSizeData.h"
+#include "gfx/NNSG3dRS.h"
 #include "gfx/VecFx32.h"
 #include "town/BuildingActor.h"
+#include "town/MapBlock.h"
 class FieldObjectShapeQuery;
 class FieldStructureMgr;
 #endif
@@ -102,20 +104,17 @@ void Town_PlaceCountdownSign(void);
 #ifndef PROTO_LOCAL_Town_RemoveCountdownSign
 BOOL Town_RemoveCountdownSign(void);
 #endif
-#ifndef PROTO_LOCAL_MapBlock_CountSigns
-u32 MapBlock_CountSigns(u8 *cell);
-#endif
-#ifndef PROTO_LOCAL_MapBlock_ReplaceNthSign
-u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v);
-#endif
-#ifndef PROTO_LOCAL_MapBlock_ReplaceRandomSign
-BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v);
-#endif
 #ifndef PROTO_LOCAL_Town_PlaceGulliverShip
 BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag);
 #endif
 #ifndef PROTO_LOCAL_Town_RemoveGulliverShip
 BOOL Town_RemoveGulliverShip(void);
+#endif
+#ifndef PROTO_LOCAL_BuildingInfo_Copy
+void BuildingInfo_Copy(BuildingInfo *dst, const BuildingInfo *src);
+#endif
+#ifndef PROTO_LOCAL_BuildingInfo_Destroy
+void BuildingInfo_Destroy(BuildingInfo *i);
 #endif
 #ifndef PROTO_LOCAL_BuildingInfo_GetProfile
 u16 BuildingInfo_GetProfile(BuildingInfo *i);
@@ -242,6 +241,21 @@ BOOL FieldStructureMgr_Register(FieldStructureMgr *v);
 #endif
 #ifndef PROTO_LOCAL_FieldStructureMgr_Get
 FieldStructureMgr *FieldStructureMgr_Get(void);
+#endif
+#ifndef PROTO_LOCAL_JointCb_RotateClockHourHand
+void JointCb_RotateClockHourHand(NNSG3dRS *rs);
+#endif
+#ifndef PROTO_LOCAL_JointCb_RotateClockMinuteHand
+void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
+#endif
+#ifndef PROTO_LOCAL_MapBlock_CountSigns
+u32 MapBlock_CountSigns(MapBlock *cell);
+#endif
+#ifndef PROTO_LOCAL_MapBlock_ReplaceNthSign
+u32 MapBlock_ReplaceNthSign(MapBlock *cell, u32 target, u32 v);
+#endif
+#ifndef PROTO_LOCAL_MapBlock_ReplaceRandomSign
+BOOL MapBlock_ReplaceRandomSign(MapBlock *cell, u32 v);
 #endif
 #ifndef PROTO_LOCAL_Building_GetDoorAnimParamAt
 u32 Building_GetDoorAnimParamAt(VecFx32 *a);

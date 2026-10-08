@@ -29,6 +29,7 @@
 #include "talk/ChoiceList.h"
 #include "gfx/ScreenTransition.h"
 #include "sys/OverlayHandle.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/main/unk_020039ec.h"
@@ -73,8 +74,6 @@ void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
-void *Scene_GetWarpRequest();
-s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void Camera_SetMode20At(void *p);
 }
 class SpNpcRoverTalk;

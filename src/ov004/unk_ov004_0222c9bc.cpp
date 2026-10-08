@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "Unk_020d8c7c.h"
 #include "room/RoomItemDrop.h"
 #include "gfx/NNSG3dRS.h"
@@ -8,7 +9,7 @@
 #include "snd/SndEnvChannel.h"
 #include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
-#include "gfx/V3.h"
+#include "gfx/VecFx32.h"
 #include "snd/CreatureSndChannel.h"
 #include "actor/StaticCollider.h"
 #include "sys/ProcProfile.h"
@@ -110,8 +111,8 @@ public:
     /* 0x165 */ u8 pad_165;
     /* 0x166 */ u16 modelSlot;
     /* 0x168 */ PooledModel pooledModel;
-    /* 0x1a8 */ V3 pos;
-    /* 0x1b4 */ V3 prevPos;
+    /* 0x1a8 */ VecFx32 pos;
+    /* 0x1b4 */ VecFx32 prevPos;
     union {
         /* 0x1c0 */ s16 unk_1c0;
         u16 unk_1c0u;
@@ -125,7 +126,7 @@ public:
     /* 0x1ca */ s8 verticalDir;
     /* 0x1cb */ u8 pad_1cb;
     /* 0x1cc */ s32 maxY;
-    /* 0x1d0 */ V3 bodyEnds[2];
+    /* 0x1d0 */ VecFx32 bodyEnds[2];
     /* 0x1e8 */ u8 contactFish;
     /* 0x1e9 */ u8 avoidedFish;
     /* 0x1ea */ u8 contactFlags;
@@ -206,9 +207,7 @@ public:
     virtual ~AquariumCrawfish();
     virtual void setup();
     virtual void update();
-    /* 0x1fc */ s32 homeX;
-    /* 0x200 */ s32 homeY;
-    /* 0x204 */ s32 homeZ;
+    /* 0x1fc */ VecFx32 home;
     /* 0x208 */ s16 wobbleAngle;
     /* 0x20a */ u8 pad_20a[2];
     /* 0x20c */ s32 walkSpeed;
@@ -227,8 +226,8 @@ public:
     virtual ~AquariumSeaButterfly();
     virtual void setup();
     virtual void update();
-    /* 0x258 */ s32 homePos[3];
-    /* 0x264 */ V3 hitCenter;
+    /* 0x258 */ VecFx32 homePos;
+    /* 0x264 */ VecFx32 hitCenter;
     /* 0x270 */ u8 swayUp;
     /* 0x271 */ u8 pad_271[3];
     /* 0x274 */ s32 swayCounter;
@@ -276,7 +275,7 @@ public:
     virtual ~AquariumSeahorse();
     virtual void setup();
     virtual void update();
-    /* 0x258 */ s32 homePos[3];
+    /* 0x258 */ VecFx32 homePos;
     /* 0x264 */ u8 swayUp;
     /* 0x265 */ u8 pad_265[3];
     /* 0x268 */ s32 swayCounter;
@@ -341,10 +340,8 @@ public:
     virtual ~AquariumHidingFish();
     virtual void setup();
     virtual void update();
-    /* 0x258 */ s32 homePos[3];
-    /* 0x264 */ s32 hideoutX;
-    /* 0x268 */ s32 hideoutY;
-    /* 0x26c */ s32 hideoutZ;
+    /* 0x258 */ VecFx32 homePos;
+    /* 0x264 */ VecFx32 hideout;
     /* 0x270 */ s32 hideTime;
     /* 0x274 */ u32 roamTime;
     /* 0x278 */ u32 roamTimer;
@@ -389,7 +386,7 @@ public:
     /* 0x264 */ u8 pulseState;
     /* 0x265 */ u8 pad_265[3];
     /* 0x268 */ s32 pulseTimer;
-    /* 0x26c */ V3 hitCenter;
+    /* 0x26c */ VecFx32 hitCenter;
     /* 0x278 */ s32 pulseStep;
     /* 0x27c */ s32 pulseMinScale;
     /* 0x280 */ u8 pulseBoostCount;
@@ -483,14 +480,13 @@ void *__cxa_vec_cleanup(void *, s32, s32, void *);
 extern s16 data_02135f44[];
 extern u8 data_021ed0a0[];
 extern Mtx43 data_021f47e0;
-extern V3 sRoomHasuPos;
+extern VecFx32 sRoomHasuPos;
 
-void MTX_MultVec43(V3 *, void *, V3 *);
+void MTX_MultVec43(VecFx32 *, void *, VecFx32 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
 void GroundInfo_Destruct(void *o);
-void *Scene_GetTouchPicker(void);
 s32 Math_StepS32Alt(void *p, s32 a, s32 b);
 s32 Math_StepS16(void *p, s32 a, s32 b);
 s32 Math_ApproachS16Div(void *p, s32 a, s32 b, s32 c);
@@ -529,7 +525,7 @@ static inline s32 Unk_ov004_0222d460_Clamp(s32 a) {
 extern "C" void *MuseumAquarium_Create();
 extern "C" void Aquarium_StepX(s32 *p, s32 a, u32 ang);
 extern "C" void Aquarium_StepZ(s32 *p, s32 a, u32 ang);
-extern "C" void Aquarium_StepXZ(V3 *p, s32 a, s16 ang);
+extern "C" void Aquarium_StepXZ(VecFx32 *p, s32 a, s16 ang);
 extern "C" void AquariumFish_UpdateWallTurn(E864 *o);
 extern "C" void AquariumFish_TurnAtWall(E864 *o);
 extern "C" void AquariumFish_PickTurn(E864 *o, s32 f, u32 a, u32 b);
@@ -548,9 +544,9 @@ extern "C" void AquariumFish_Bob(E864 *o, s32 m, s32 lim, u32 mode);
 extern "C" s32 Aquarium_RandFx(s32 a, s32 b);
 extern "C" s16 Aquarium_RandAngle(s32 a, s32 b);
 extern "C" s32 Aquarium_RandRange(s32 a, s32 b);
-extern "C" BOOL Aquarium_TurnTowardHome(void *obj, V3 *a, s32 *b, s32 max);
+extern "C" BOOL Aquarium_TurnTowardHome(void *obj, VecFx32 *a, VecFx32 *b, s32 max);
 extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v);
-extern "C" BOOL Aquarium_TestHeight800At(V3 *pos);
+extern "C" BOOL Aquarium_TestHeight800At(VecFx32 *pos);
 extern "C" BOOL AquariumFish_IsNearWall(E864 *o);
 extern "C" void Aquarium_Oscillate(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul);
 extern "C" void AquariumJellyfish_UpdateDrift(E7d4 *o);
@@ -561,7 +557,7 @@ extern "C" void AquariumJellyfish_UpdatePulse(E7d4 *o);
 extern "C" void AquariumJellyfish_BeginPulse(E7d4 *o);
 extern "C" void AquariumJellyfish_PulseGrow(E7d4 *o);
 extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o);
-extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out);
+extern "C" void AquariumFish_CalcHitCenter(R *o, VecFx32 *out);
 extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b);
 extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b);
 extern "C" void AquariumFrog_StartCroak(E834 *o);
@@ -598,9 +594,9 @@ extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e);
 extern "C" void AquariumFish_JointCalcPre(NNSG3dRS *c);
 extern "C" void AquariumFish_JointCalcPost(NNSG3dRS *c);
 extern "C" void AquariumFish_InstallJointCallbacks(NNSG3dRS *c);
-extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out);
+extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, VecFx32 *out);
 extern "C" BOOL AquariumFish_CheckTouched(E864 *e);
-extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p);
+extern "C" void AquariumFish_StartFlee(E864 *e, VecFx32 *p);
 extern "C" void AquariumFish_StateStart(E864 *e);
 extern "C" void AquariumFish_StateAccelerate(E864 *e);
 extern "C" void AquariumFish_StateCruise(E864 *e);
@@ -940,7 +936,7 @@ extern "C" void Aquarium_StepZ(s32 *p, s32 a, u32 ang) {
     *p += func_01ffcb0c(a, data_02135f44[idx + 1]);
 }
 
-extern "C" void Aquarium_StepXZ(V3 *p, s32 a, s16 ang) {
+extern "C" void Aquarium_StepXZ(VecFx32 *p, s32 a, s16 ang) {
     Aquarium_StepX((s32 *)p, a, ang);
     Aquarium_StepZ((s32 *)p + 2, a, ang);
 }
@@ -976,7 +972,7 @@ extern "C" void AquariumFish_TurnAtWall(E864 *o) {
                 o->state = 4;
             }
             if (o->isWallTurning == 0) {
-                V3 l;
+                VecFx32 l;
                 l.x = o->pos.x;
                 l.y = o->pos.y;
                 l.z = o->pos.z;
@@ -1237,11 +1233,11 @@ extern "C" s32 Aquarium_RandRange(s32 a, s32 b)
     return a + Random_GlobalBelow(b - a);
 }
 
-extern "C" BOOL Aquarium_TurnTowardHome(void *obj, V3 *a, s32 *b, s32 max)
+extern "C" BOOL Aquarium_TurnTowardHome(void *obj, VecFx32 *a, VecFx32 *b, s32 max)
 {
     BOOL r = TRUE;
     if (Vec_Distance(a, b) > max) {
-        Math_StepS16(obj, Math_AngleXZ(&a->x, b), 0x38e);
+        Math_StepS16(obj, Math_AngleXZ(a, b), 0x38e);
         r = FALSE;
     }
     return r;
@@ -1253,7 +1249,7 @@ extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v)
     s32 sgn = 2;
     s32 k[1];
     volatile s32 b, a;
-    V3 q;
+    VecFx32 q;
     s32 i;
     k[0] = sgn;
     if (v < 0) {
@@ -1288,7 +1284,7 @@ extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v)
     return r;
 }
 
-extern "C" BOOL Aquarium_TestHeight800At(V3 *pos)
+extern "C" BOOL Aquarium_TestHeight800At(VecFx32 *pos)
 {
     u32 buf[16];
     BOOL r = FALSE;
@@ -1303,7 +1299,7 @@ extern "C" BOOL Aquarium_TestHeight800At(V3 *pos)
 extern "C" BOOL AquariumFish_IsNearWall(E864 *o)
 {
     BOOL r = FALSE;
-    V3 v;
+    VecFx32 v;
     s32 x;
     v.x = o->pos.x;
     v.y = o->pos.y;
@@ -1532,11 +1528,11 @@ extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o) {
     }
 }
 
-extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
+extern "C" void AquariumFish_CalcHitCenter(R *o, VecFx32 *out) {
     s32 t = o->fishIndex;
     static s32 k1 = (sAquariumFishParams[t].hitHeight << 12) >> 7;
     static s32 k2 = (sAquariumFishParams[t].hitRadius << 12) >> 7;
-    V3 l[4];
+    VecFx32 l[4];
     l[0].x = 0;
     l[0].y = k1;
     l[0].z = 0;
@@ -1546,7 +1542,7 @@ extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
     data_021f47e0 = o->model.mtx;
     MTX_MultVec43(&l[0], &data_021f47e0, &l[2]);
     MTX_MultVec43(&l[1], &data_021f47e0, &l[3]);
-    V3 *p = &o->pos;
+    VecFx32 *p = &o->pos;
     out->x = (p->x + l[2].x) >> 1;
     out->z = (p->z + l[2].z) >> 1;
     if (l[3].y < p->y) {
@@ -1697,7 +1693,7 @@ void AquariumFrog::setup() {
 
 void AquariumFrog::update() {
     E834 *o = this;
-    V3 l[2];
+    VecFx32 l[2];
     l[0] = sRoomHasuPos;
     o->pos = l[0];
     l[1] = o->pos;
@@ -1731,7 +1727,7 @@ extern "C" void AquariumFrog_StartCroak(E834 *o) {
 
 extern "C" void AquariumFrog_Croak(E834 *o) {
     if (static_cast<AnimFrameCtrl *>(&o->model)->hasPassedFrame(1)) {
-        ((SndEnvChannel *)(&o->croakSound))->callRequestSustained((void *)(0x832));
+        ((SndEnvChannel *)(&o->croakSound))->callRequestSustained(0x832);
         o->croakCount++;
     }
     if (o->croakCount >= o->croakRepeatCount) {
@@ -1817,9 +1813,9 @@ void AquariumSeaButterfly::setup() {
     e->accel = 1;
     e->decel = 1;
     e->turnRange = 0x1e;
-    e->homePos[0] = 0x6000;
-    e->homePos[1] = 0;
-    e->homePos[2] = 0x14a00;
+    e->homePos.x = 0x6000;
+    e->homePos.y = 0;
+    e->homePos.z = 0x14a00;
     e->cruiseTimeMax = sAquariumFishParams[*p].cruiseTimeMax;
     e->cruiseTimeMin = sAquariumFishParams[*p].cruiseTimeMin;
     e->restTimeMax = sAquariumFishParams[*p].restTimeMax;
@@ -1830,7 +1826,7 @@ void AquariumSeaButterfly::setup() {
 void AquariumSeaButterfly::update() {
     E7bc *e = this;
     if ((u8)(e->state + 0xfd) <= 1) {
-        Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, e->homePos, 0x1000);
+        Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, &e->homePos, 0x1000);
     }
     (e->*sAquariumSwimStates[e->state])();
     Aquarium_Oscillate(&e->pitch, &e->swayUp, &e->swayCounter, 0x2aac, 0x12c);
@@ -1894,9 +1890,9 @@ void AquariumSeahorse::setup() {
     e->accel = 2;
     e->decel = 2;
     e->turnRange = 0x3c;
-    e->homePos[0] = 0x7000;
-    e->homePos[1] = 0;
-    e->homePos[2] = 0x14a00;
+    e->homePos.x = 0x7000;
+    e->homePos.y = 0;
+    e->homePos.z = 0x14a00;
     e->cruiseTimeMax = sAquariumFishParams[*p].cruiseTimeMax;
     e->cruiseTimeMin = sAquariumFishParams[*p].cruiseTimeMin;
     e->restTimeMax = sAquariumFishParams[*p].restTimeMax;
@@ -1905,7 +1901,7 @@ void AquariumSeahorse::setup() {
 
 void AquariumSeahorse::update() {
     E7a4 *e = this;
-    Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, e->homePos, 0x1000);
+    Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, &e->homePos, 0x1000);
     switch (e->subState) {
     case 1: {
         s32 r = Aquarium_RandRange(0, 0x64);
@@ -2063,7 +2059,7 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
     AquariumFish_UpdateAnimSpeed(o, 0x666);
     Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p != 0) {
-        V3 v;
+        VecFx32 v;
         VecFx32 *pv = &p->position;
         v.x = p->position.x;
         v.y = pv->y;
@@ -2084,7 +2080,7 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
 }
 
 extern "C" void AquariumPiranha_StateApproach(E75c *o) {
-    V3 v;
+    VecFx32 v;
     Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p == 0) {
         o->subState = 0;
@@ -2094,7 +2090,7 @@ extern "C" void AquariumPiranha_StateApproach(E75c *o) {
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
-    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos.x, &v.x), 0x222);
+    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos, &v), 0x222);
     Aquarium_StepXZ(&o->pos, o->maxSpeed, o->unk_1c0);
     if (p->speed != 0) {
         if (o->pitch != 0) Math_StepS16(&o->pitch, 0, 0x222);
@@ -2143,7 +2139,7 @@ extern "C" void AquariumPiranha_StateBite(E75c *o) {
         AquariumPiranha_BiteIdle(o);
         break;
     }
-    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos.x, &p->x), 0x222);
+    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos, p), 0x222);
     long long d = Vec_DistSqXZ(p, &o->pos);
     if (0x10000 < d) {
         o->subState = 0;
@@ -2325,16 +2321,16 @@ void AquariumHidingFish::setup() {
     o->contactFish = *p;
     o->avoidedFish = *p;
     if (*p == 0x26) {
-        o->homePos[0] = 0x9e00;
-        o->homePos[1] = 0x1000;
-        o->homePos[2] = 0x14700;
-        o->hideoutX = 0xa100;
-        o->hideoutY = 0xb00;
-        o->hideoutZ = 0x14a00;
+        o->homePos.x = 0x9e00;
+        o->homePos.y = 0x1000;
+        o->homePos.z = 0x14700;
+        o->hideout.x = 0xa100;
+        o->hideout.y = 0xb00;
+        o->hideout.z = 0x14a00;
     } else if (*p == 0xc) {
-        o->homePos[0] = 0x15900;
-        o->homePos[1] = 0x1000;
-        o->homePos[2] = 0x13900;
+        o->homePos.x = 0x15900;
+        o->homePos.y = 0x1000;
+        o->homePos.z = 0x13900;
     }
     AquariumFish_LoadParams(o);
 }
@@ -2351,7 +2347,7 @@ void AquariumHidingFish::update() {
 }
 
 extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o) {
-    if (Vec_Distance(&o->pos, o->homePos) <= 0x1000) {
+    if (Vec_Distance(&o->pos, &o->homePos) <= 0x1000) {
         o->subState = 1;
     } else {
         o->subState = 0;
@@ -2363,7 +2359,7 @@ extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o) {
         }
         (o->*sAquariumSwimStates[o->state])();
         AquariumFish_TurnToTarget(o);
-        if (Aquarium_TurnTowardHome(&o->unk_1c0, &o->pos, o->homePos, 0x1000)) {
+        if (Aquarium_TurnTowardHome(&o->unk_1c0, &o->pos, &o->homePos, 0x1000)) {
             if (o->roamTimer >= o->roamTime) {
                 o->roamTimer = 0;
                 o->unk_256 = 1;
@@ -2405,7 +2401,7 @@ extern "C" void AquariumHidingFish_UpdateGoby(E6fc *o) {
     }
     (o->*sAquariumSwimStates[o->state])();
     AquariumFish_TurnToTarget(o);
-    if (Aquarium_TurnTowardHome(&o->unk_1c0, &o->pos, o->homePos, 0x1000)) {
+    if (Aquarium_TurnTowardHome(&o->unk_1c0, &o->pos, &o->homePos, 0x1000)) {
         AquariumFish_UpdateWallTurn(o);
     } else {
         if (*(u8 *)&o->isWallTurning != 0) {
@@ -2430,13 +2426,13 @@ extern "C" void AquariumHidingFish_UpdateGoby(E6fc *o) {
 
 extern "C" void AquariumHidingFish_CheckTouch(E6fc *o) {
     u32 buf[4];
-    if (AquariumFish_GetTouchPoint(o, (V3 *)buf)) {
+    if (AquariumFish_GetTouchPoint(o, (VecFx32 *)buf)) {
         if (o->subState != 0) {
             if (o->unk_256 != 3) {
                 o->unk_256 = 2;
             }
         } else {
-            AquariumFish_StartFlee(o, (V3 *)buf);
+            AquariumFish_StartFlee(o, (VecFx32 *)buf);
         }
     }
 }
@@ -2470,21 +2466,21 @@ extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f) {
         o->unk_256 = 0;
         return;
     }
-    if (o->pos.y > o->hideoutY) {
+    if (o->pos.y > o->hideout.y) {
         if (f != 0) {
-            Math_StepS32Alt(&o->pos.y, o->hideoutY, o->verticalSpeed << 2);
+            Math_StepS32Alt(&o->pos.y, o->hideout.y, o->verticalSpeed << 2);
         } else {
-            Math_StepS32Alt(&o->pos.y, o->hideoutY, o->verticalSpeed);
+            Math_StepS32Alt(&o->pos.y, o->hideout.y, o->verticalSpeed);
         }
     }
-    if (Vec_Distance(&o->pos, &o->hideoutX) <= 0x800) {
-        if (o->pos.y <= o->hideoutY) {
+    if (Vec_Distance(&o->pos, &o->hideout) <= 0x800) {
+        if (o->pos.y <= o->hideout.y) {
             o->unk_256 = 3;
             o->stateTimer = 0;
             o->hideTime = Aquarium_RandRange(0x3c, 0x78);
         }
     } else {
-        o->unk_1c0 = Math_AngleXZ(&o->pos.x, &o->hideoutX);
+        o->unk_1c0 = Math_AngleXZ(&o->pos, &o->hideout);
         if (f != 0) {
             Aquarium_StepXZ(&o->pos, o->maxSpeed << 1, o->unk_1c0);
         } else {
@@ -2494,8 +2490,8 @@ extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f) {
 }
 
 extern "C" void AquariumHidingFish_StayHidden(E6fc *o) {
-    Math_StepS32Alt(&o->pos, o->hideoutX, o->maxSpeed);
-    Math_StepS32Alt(&o->pos.z, o->hideoutZ, o->maxSpeed);
+    Math_StepS32Alt(&o->pos.x, o->hideout.x, o->maxSpeed);
+    Math_StepS32Alt(&o->pos.z, o->hideout.z, o->maxSpeed);
     if (o->stateTimer > o->hideTime) {
         o->unk_256 = 0;
         o->stateTimer = 0;
@@ -2505,9 +2501,9 @@ extern "C" void AquariumHidingFish_StayHidden(E6fc *o) {
 
 void AquariumCrawfish::setup() {
     E84c *o = this;
-    o->homeX = 0xc800;
-    o->homeY = 0;
-    o->homeZ = 0x14a00;
+    o->home.x = 0xc800;
+    o->home.y = 0;
+    o->home.z = 0x14a00;
 }
 
 void AquariumCrawfish::update() {
@@ -2545,7 +2541,7 @@ extern "C" void AquariumCrawfish_StartWalk(E84c *o) {
 
 extern "C" void AquariumCrawfish_Walk(E84c *o) {
     s32 r;
-    Aquarium_TurnTowardHome(&o->unk_1c0, &o->pos, &o->homeX, 0x1600);
+    Aquarium_TurnTowardHome(&o->unk_1c0, &o->pos, &o->home, 0x1600);
     r = o->walkSpeed;
     o->pos.x += func_01ffcb0c(r, data_02135f44[((u16)o->unk_1c0 >> 4) * 2]);
     o->pos.z += func_01ffcb0c(r, data_02135f44[((u16)o->unk_1c0 >> 4) * 2 + 1]);
@@ -2833,12 +2829,12 @@ extern "C" void AquariumFish_InstallJointCallbacks(NNSG3dRS *c) {
     c->cbVecTiming[6] = 2;
 }
 
-extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
+extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, VecFx32 *out) {
     BOOL r = FALSE;
     u8 b;
     s32 t;
     VecFx32 v;
-    if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &v, &t, &b)) {
+    if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &v, &t, &b)) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {
@@ -2878,7 +2874,7 @@ extern "C" BOOL AquariumFish_CheckTouched(E864 *e) {
         }
         return FALSE;
     }
-    V3 v;
+    VecFx32 v;
     if (AquariumFish_GetTouchPoint(e, &v)) {
         AquariumFish_StartFlee(e, &v);
         r = TRUE;
@@ -2887,21 +2883,21 @@ extern "C" BOOL AquariumFish_CheckTouched(E864 *e) {
     return r;
 }
 
-extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p) {
+extern "C" void AquariumFish_StartFlee(E864 *e, VecFx32 *p) {
     if (e->isTouchFleeing == 0) {
         e->pitch = 0;
         e->state = 1;
         e->stateTimer = 0;
         if ((u8)(e->rank + 0xfc) <= 1) {
             if (e->contactTimer >= 0x7d) {
-                e->fleeAngle = Math_AngleXZ(&p->x, &e->pos.x);
+                e->fleeAngle = Math_AngleXZ(p, &e->pos);
             } else if (e->unk_1c0 >= 0) {
                 e->fleeAngle = Aquarium_RandRange(0x38e4, 0x471c);
             } else {
                 e->fleeAngle = -Aquarium_RandRange(0x38e4, 0x471c);
             }
         } else {
-            e->fleeAngle = Math_AngleXZ(&p->x, &e->pos.x);
+            e->fleeAngle = Math_AngleXZ(p, &e->pos);
         }
         if (e->wallTurnState == 1) {
             AquariumFish_CancelTurn(e);
@@ -3147,7 +3143,7 @@ extern "C" void AquariumFish_UpdateAvoid(E864 *e) {
 extern "C" void AquariumFish_AvoidOther(R *e) {
     s32 a;
     R** slot;
-    V3* v;
+    VecFx32* v;
     R* o;
     s32 c;
     s32 b;
@@ -3178,7 +3174,7 @@ extern "C" void AquariumFish_AvoidOther(R *e) {
             }
             AquariumFish_SplitDepth(e, slot);
         } else {
-            s32 r = Math_AngleXZ(&v->x, &e->pos.x);
+            s32 r = Math_AngleXZ(v, &e->pos);
             s32 d = (s16)(r - e->unk_1c0);
             if (d < 0) {
                 e->avoidAngle = r - 0x4000;
@@ -3207,7 +3203,7 @@ extern "C" void AquariumFish_ClearContact(R *e) {
 extern "C" s32 Aquarium_GetContactSide(R *a, R **b) {
     s32 r4 = (*b)->unk_1c0;
     s32 y, x;
-    s32 t = (s16)(Math_AngleXZ(&a->pos.x, &(*b)->pos.x) - 0x4000);
+    s32 t = (s16)(Math_AngleXZ(&a->pos, &(*b)->pos) - 0x4000);
     x = (s16)(a->unk_1c0 - t);
     y = (s16)(r4 - t);
     if (x * y < 0) {
@@ -3492,8 +3488,8 @@ BOOL MuseumAquarium::onCreate() {
         self->obstacles[4].box[4] = 0x700;
         sAquariumObstacleCount = 5;
         MuseumAquarium_CreateFreshwaterFish(self);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox(&self->touchBoxes[0], (VecFx32 *)(&sAquariumTankCenterA), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox(&self->touchBoxes[1], (VecFx32 *)(&sAquariumTankCenterB), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
+        Scene_GetTouchPicker()->addBox(&self->touchBoxes[0], (VecFx32 *)(&sAquariumTankCenterA), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
+        Scene_GetTouchPicker()->addBox(&self->touchBoxes[1], (VecFx32 *)(&sAquariumTankCenterB), 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
     } else {
         self->obstacles[0].box[0] = 0x8b00;
         self->obstacles[0].box[1] = 0xfffff300;
@@ -3522,7 +3518,7 @@ BOOL MuseumAquarium::onCreate() {
         self->extraBox[3] = 0xc00;
         self->extraBox[4] = 0x2000;
         MuseumAquarium_CreateSeaFish(self);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox(&self->touchBoxes[0], (VecFx32 *)(&sAquariumTankCenterA), 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
+        Scene_GetTouchPicker()->addBox(&self->touchBoxes[0], (VecFx32 *)(&sAquariumTankCenterA), 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
     Snd_PlaySeOnHandle(0x4da);
     return TRUE;
@@ -3720,7 +3716,7 @@ extern "C" s32 MuseumAquarium_FishStateLoad(Mgr *o, R **p, s32 i) {
 }
 
 extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x) {
-    V3 *v = &(*p)->pos;
+    VecFx32 *v = &(*p)->pos;
     if (sAquariumRoom == 0) {
         s32 a = func_01ffcb0c((*p)->hitBox.pushX, 0x99a);
         s32 b = func_01ffcb0c((*p)->hitBox.pushZ, 0x99a);
@@ -3753,10 +3749,10 @@ s32 MuseumAquarium::onExecute() {
     s32 i;
     R **p;
     if (sAquariumRoom == 0) {
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox(&o->touchBoxes[0]);
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox(&o->touchBoxes[1]);
+        Scene_GetTouchPicker()->pushBox(&o->touchBoxes[0]);
+        Scene_GetTouchPicker()->pushBox(&o->touchBoxes[1]);
     } else if (sAquariumRoom == 1) {
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox(&o->touchBoxes[0]);
+        Scene_GetTouchPicker()->pushBox(&o->touchBoxes[0]);
     }
     i = sAquariumEndFish - 1;
     p = &sAquariumFish[i];
@@ -3826,7 +3822,7 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
 
 extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p) {
     R *e = *p;
-    V3 *v = &e->pos;
+    VecFx32 *v = &e->pos;
     Mtx43_SetTranslate(&data_021f47e0, v->x, v->y, v->z);
     Mtx43_RotateY(&data_021f47e0, (*p)->unk_1c0);
     Mtx43_RotateX(&data_021f47e0, (*p)->pitch);
@@ -3840,7 +3836,7 @@ s32 MuseumAquarium::onDraw() {
     for (; i < sAquariumEndFish; p++, i++) {
         if (*p) {
             if ((*p)->loadState == 2) {
-                V3 v;
+                VecFx32 v;
                 switch ((*p)->fishIndex) {
                 case 0xb:
                     v.x = 0x1000;
@@ -3850,7 +3846,7 @@ s32 MuseumAquarium::onDraw() {
                     break;
                 case 0x24:
                     if (sAquariumJellyfish) {
-                        V3 *q = (V3 *)((u8 *)sAquariumJellyfish + 0x258);
+                        VecFx32 *q = (VecFx32 *)((u8 *)sAquariumJellyfish + 0x258);
                         v.x = q->x;
                         v.y = q->y;
                         v.z = q->z;
@@ -3895,7 +3891,7 @@ extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o) {
     R **p = &sAquariumFish[i];
     u16 id = 0xfff1;
     for (; i < sAquariumEndFish; p++, i++) {
-        V3 *v;
+        VecFx32 *v;
         id = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
         if (((MuseumData *)(data_021ed0a0))->isDonated(&id)) {
             v = &(*p)->pos;
@@ -3926,7 +3922,7 @@ extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o) {
             v->y = ((sAquariumFishParams[i].baseY << 12) >> 6) - 0x1000;
             {
                 R *e = *p;
-                V3 *d = &e->prevPos;
+                VecFx32 *d = &e->prevPos;
                 e->prevPos.x = v->x;
                 d->y = v->y;
                 d->z = v->z;
@@ -3996,13 +3992,13 @@ extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type) {
     R *o2;
     R *o3;
     s32 w, len, base;
-    V3 *v;
-    V3 *e;
+    VecFx32 *v;
+    VecFx32 *e;
     s32 bx0, bz0, bx1, bz1, ax0, az0, ax1, az1;
     o1 = (*ctx);
     v = &o1->pos;
-    V3 *q;
-    V3 *ep;
+    VecFx32 *q;
+    VecFx32 *ep;
     s32 off;
     s32 c164 = o1->rank;
     w = (sAquariumFishParams[type].hitRadius << 12) >> 7;
@@ -4039,8 +4035,8 @@ loop0:
         o2 = (*ctx);
         q = &o2->pos;
         off = k * 12;
-        V3 *arr = o2->bodyEnds;
-        ep = (V3 *)((u8 *)arr + off);
+        VecFx32 *arr = o2->bodyEnds;
+        ep = (VecFx32 *)((u8 *)arr + off);
         *(s32 *)((u8 *)arr + off) = o2->pos.x;
         ep->y = q->y;
         ep->z = q->z;
@@ -4048,9 +4044,9 @@ loop0:
             o1 = (*ctx);
             *(s32 *)((u8 *)o1->bodyEnds + off) += func_01ffcb0c(base, data_02135f44[(o1->unk_1c0u >> 4) * 2]);
             o2 = (*ctx);
-            ((V3 *)((u8 *)o2->bodyEnds + off))->z += func_01ffcb0c(base, data_02135f44[(o2->unk_1c0u >> 4) * 2 + 1]);
+            ((VecFx32 *)((u8 *)o2->bodyEnds + off))->z += func_01ffcb0c(base, data_02135f44[(o2->unk_1c0u >> 4) * 2 + 1]);
             o3 = (*ctx);
-            ep = (V3 *)((u8 *)o3->bodyEnds + off);
+            ep = (VecFx32 *)((u8 *)o3->bodyEnds + off);
             bx0 = *(s32 *)((u8 *)o3->bodyEnds + off);
             bz0 = ep->z;
             o = o3;
@@ -4060,10 +4056,10 @@ loop0:
             t = (u16)(s16)((s16)o3->unk_1c0 + 0x8000);
             t = (t >> 4) * 2;
             *(s32 *)((u8 *)o3->bodyEnds + off) += func_01ffcb0c(base, data_02135f44[t]);
-            e = (V3 *)((u8 *)(*ctx)->bodyEnds + off);
+            e = (VecFx32 *)((u8 *)(*ctx)->bodyEnds + off);
             e->z += func_01ffcb0c(base, data_02135f44[t + 1]);
             o = (*ctx);
-            ep = (V3 *)((u8 *)o->bodyEnds + off);
+            ep = (VecFx32 *)((u8 *)o->bodyEnds + off);
             bx1 = *(s32 *)((u8 *)o->bodyEnds + off);
             bz1 = ep->z;
         }
@@ -4096,12 +4092,12 @@ loop0:
         }
         if (k == 0) {
             o = (*ctx);
-            ep = (V3 *)((u8 *)o->bodyEnds + off);
+            ep = (VecFx32 *)((u8 *)o->bodyEnds + off);
             ax0 = *(s32 *)((u8 *)o->bodyEnds + off);
             az0 = ep->z;
         } else {
             o = (*ctx);
-            ep = (V3 *)((u8 *)o->bodyEnds + off);
+            ep = (VecFx32 *)((u8 *)o->bodyEnds + off);
             ax1 = *(s32 *)((u8 *)o->bodyEnds + off);
             az1 = ep->z;
         }
@@ -4110,7 +4106,7 @@ loop0:
     if (k < 2) goto loop0;
     Aquarium_ApplyCorrection(self, &o->pos.x, bx0, ax0, bx1, ax1);
     Aquarium_ApplyCorrection(self, &(*ctx)->pos.z, bz0, az0, bz1, az1);
-    V3 *dst = &(*ctx)->prevPos;
+    VecFx32 *dst = &(*ctx)->prevPos;
     dst->x = v->x;
     dst->y = v->y;
     dst->z = v->z;

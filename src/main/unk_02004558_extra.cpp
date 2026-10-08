@@ -2,6 +2,7 @@
 // The 14 functions of the translation unit 0x02004558-0x0201106c that only mwcc 1.2/base compiles
 // to the original code (see unk_02004558.cpp; same declarations, nothing else is defined here).
 #include "types.h"
+#include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
@@ -174,6 +175,7 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 
@@ -210,7 +212,7 @@ void SndMgr_update(void *a);
 #define SndMgr_init _ZN6SndMgr4initEjjj
 void SndMgr_init(void *a, void *b, u32 c, void *d, s32 e);
 extern u8 gFieldSceneKind;
-extern void *gCommManager;
+extern CommManager *gCommManager;
 union PM_02004ce8 {
     PMRaw raw;
     void (PlayerActor::*fn)();
@@ -225,7 +227,7 @@ extern "C" {
 void Model_GetJointWorldMtx(void *obj, Mtx43 *out, u32 idx);
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern s16 data_02135f44[];
 enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
 union PM_02005294 {
@@ -240,8 +242,6 @@ namespace nC {
 extern "C" {
 
 s32 FieldActionFx_Take(void *out, s32 v);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
-void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 void PlayerActor_RequestTreeShake(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void PlayerActor_RequestPluck(void *p, void *v, s32 a, s32 b);
 void PlayerActor_RequestAxeBreak(void *p, s32 a, void *v, s32 b, s32 c);
@@ -281,7 +281,7 @@ void TalkRequest_FinishPlayerMessage();
 namespace nF {
 extern "C" {
 
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern char sPlayerActorErrorMsgFile[];
 extern char sPlayerActorMsgFile[];
 extern char sPlayerActorGetInsectMsgFile[];
@@ -312,7 +312,7 @@ namespace nG {
 extern "C" {
 
 inline s32 Unk_0200905c_abs(s32 x) { return x < 0 ? -x : x; }
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern u32 sPlayerAct76Anims[];
 extern u16 data_020c61c0[];
 extern s16 data_02135f44[];
@@ -358,11 +358,9 @@ extern CommManager* gCommManager;
 extern u8 gFieldSceneKind[];
 extern u8 sPlayerActorErrorMsgFile[];
 extern u8 sPlayerActorMsgFile[];
-extern void* gSceneBlockMap;
-void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
+extern BlockMap *gSceneBlockMap;
 BOOL Item_IsFurniture(u16* p);
 s32 Item_GetFurnitureIndex(u16* p);
-void* BlockMap_GetItemPtrAtPos(void* a, void* b, u32 c);
 BOOL TalkRequest_AddPlayerMessage();
 BOOL TalkRequest_IsPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
@@ -376,14 +374,12 @@ s32 FieldAction_RequestPlaceAtPendingForAid(u32 a, u32 b);
 namespace nJ {
 extern "C" {
 
-extern void* gCommManager;
+extern CommManager *gCommManager;
 extern u8 sPlayerActorMsgFile[];
 extern u8 sPlayerActorErrorMsgFile[];
 BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
-void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
-u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
-extern void* gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 BOOL Item_IsFurniture(void* p);
 u32 Item_GetFurnitureIndex(void* p);
 static inline BOOL Unk_0200add8_R1(u16* p, u32 lo, u32 hi) { BOOL r = FALSE; if (*p >= lo && *p <= hi) r = TRUE; return r; }
@@ -410,11 +406,9 @@ static inline void func_0200bc78_sub(VecFx32Ctor *o, VecFx32Ctor *a, VecFx32Ctor
     o->z = a->z - b->z;
 }
 extern u8 gFieldSceneKind;
-extern void *gSceneBlockMap;
-extern void *gCommManager;
+extern BlockMap *gSceneBlockMap;
+extern CommManager *gCommManager;
 extern u16 gPad[];
-void FieldPos_FromUnitCenter(void *, u32, u32);
-u16 *BlockMap_GetItemPtrAtPos(void *, void *, u32);
 s32 Math_Atan2(s32, s32);
 }
 }
@@ -425,7 +419,7 @@ extern "C" {
 
 void VillagerStates_ClearUnk1dBit0();
 s32 func_01ffcb0c(s32 a, s32 b);
-extern u32 gCommManager;
+extern CommManager *gCommManager;
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern u8 data_020d5e3c[];
@@ -460,11 +454,7 @@ s32 Item_GetFurnitureIndex(u16 *p);
 s32 Scene_NoPlayerInUnsharedScene();
 void TalkRequest_FinishSceneEntry();
 BOOL TalkRequestFlags_IsResetti();
-u8 *Scene_GetTouchPicker();
-s32 TouchPick_GetGroundPos(u8 *obj, VecFx32Ctor *out);
-u16 *BlockMap_GetItemPtrAtPos(void *a, VecFx32Ctor *b, u32 c);
-void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32Ctor *v);
-void FieldPos_SnapToUnitCenter(VecFx32Ctor *a, VecFx32Ctor *b);
+BOOL TouchPick_GetGroundPos(TouchPickResult *obj, VecFx32 *out);
 BOOL Camera_ProjectCurvedToScreen(s32 *a, s32 *b, VecFx32Ctor *p);
 s32 Vec_MagXZ(VecFx32Ctor *v);
 s32 Math_Atan2(s32 a, s32 b);
@@ -473,12 +463,12 @@ s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 extern Unk_0200d64c_Keys gPad;
 extern s32 gGfxMainOnTop;
-extern void *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 data_020d5e50[];
 extern u8 data_020d5e34[];
 extern u8 data_020d5e48[];
 extern s16 data_02135f44[];
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern Camera *gCamera;  // (defined in data)
 static inline BOOL Unk_0200d64c_InRange(u16 h) {
     if (h >= 0xfc && h <= 0xfd) {
@@ -522,7 +512,6 @@ extern s16 data_02135f44[];
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 BOOL PlayerActor_IsWaitingForSlots();
 void PlayerActor_NetSendFaceChange();
 static inline BOOL Unk_0200ec54_Bit(u32 f, u32 m)
@@ -537,14 +526,12 @@ namespace nQ {
 extern "C" {
 
 extern s16 data_02135f44[];
-extern void *gCommManager;
-extern void *gSceneBlockMap;
+extern CommManager *gCommManager;
+extern BlockMap *gSceneBlockMap;
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *a, VecFx32 *v);
 void PlayerActor_GetHeldItem(Unk_0200f660_S *s, PlayerActor *o);
 BOOL Item_IsFurniture(Unk_0200f660_S *s);
 s32 Item_GetFurnitureIndex(u16 *p);
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 void PlayerActor_RequestAct66(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
 static inline void Unk_0200f070_Set(VecFx32 *r, s32 x, s32 y, s32 z)
 {
@@ -579,8 +566,7 @@ inline BOOL Unk_02010154_In(u16 *p) { BOOL r = FALSE; u16 v = *p; if (*p >= 0x13
 namespace nS {
 extern "C" {
 
-extern void *gCommManager;
-u32 Scene_GetTouchPicker(void);
+extern CommManager *gCommManager;
 void PlayerActor_GetHeldItem(u16 *out, u32 x);
 }
 }
@@ -591,7 +577,7 @@ extern "C" {
 
 s32 func_01ffcb0c(s32 a, s32 b);
 void TalkRequest_FinishSceneEntry(void);
-extern void *gCommManager;
+extern CommManager *gCommManager;
 }
 }
 
@@ -828,7 +814,7 @@ void PlayerActor::readInput() {
                 if (!PlayerActor_IsWaitingForSlots(this)) {
                     this->clearActionFlag(0x1b);
                     FieldInfoBalloon_ClearNetMsg();
-                    if (((CommManager *)gCommManager)->myAid == 0) {
+                    if (gCommManager->myAid == 0) {
                         if ((u8)(Net_GetMode() + 0xfd) <= 1) {
                             Net_WifiHostKeepAlive();
                         }
@@ -842,7 +828,7 @@ void PlayerActor::readInput() {
     } else {
     if (gGfxMainOnTop == 0) {
         vc = TouchPick_GetGroundPos(Scene_GetTouchPicker(), &p50);
-        if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &p68, &sp34, &sp30)) {
+        if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &p68, &sp34, &sp30)) {
             got = TRUE;
             {
                 switch (sp34) {
@@ -857,7 +843,7 @@ void PlayerActor::readInput() {
                 case 2: case 3: case 6: case 7: case 9: case 11: case 12: case 13: case 14: case 15: case 16: case 17:
                     if (Unk_0200d64c_Both()) {
                         v4 = 1;
-                        v8 = TouchPick_GetTargetObject((TouchPickResult *)Scene_GetTouchPicker(), 0, 0);
+                        v8 = TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0);
                         r5c = p50;
                     }
                     break;
@@ -1065,7 +1051,7 @@ void Unk_02007694::endChangeClothes(u32 a) {
         }
         }
     }
-    if (((CommManager *)(gCommManager))->isLocalSlot(((Unk_02007694 *)this)->sessionSlot)) {
+    if (gCommManager->isLocalSlot(((Unk_02007694 *)this)->sessionSlot)) {
         u32 i;
         switch (p->changeKind) {
         case 0:
@@ -1131,7 +1117,7 @@ void PlayerActor::pickUpReachUpdate() {
         u8 b = s->unk_04.b.unk_06;
         s32 v;
         u8 flag;
-        if (((CommManager *)(gCommManager))->isLocalSlot(this->sessionSlot)) {
+        if (gCommManager->isLocalSlot(this->sessionSlot)) {
             v = this->fieldAnswerKind;
         } else {
             v = s->unk_04.b.unk_07;
@@ -1380,7 +1366,7 @@ void PlayerActor::setupAct76(PlayerActionRequest *item, u32 old) {
     } else {
         HeldItemModel_PlayAnim(&this->heldItemModel, 0x1f, 3, 1);
     }
-    if (((CommManager *)(gCommManager))->isLocalSlot(this->sessionSlot)) {
+    if (gCommManager->isLocalSlot(this->sessionSlot)) {
         u32 t = 0xd;
         switch (a) {
         case 0:
@@ -1480,7 +1466,7 @@ void PlayerActor::act76Update() {
         return;
     case 0x86:
         lim = 0x19;
-        if (((CommManager *)(gCommManager))->isLocalSlot(sessionSlot)) {
+        if (gCommManager->isLocalSlot(sessionSlot)) {
             if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)bodyModel))->hasPassedFrame(0xc)) {
                 Camera_SetMode4();
             }

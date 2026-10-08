@@ -29,6 +29,7 @@
 #include "save/SaveData.h"
 #include "gfx/ScreenTransition.h"
 #include "sys/ClockDateTime.h"
+#include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02063904.h"
@@ -40,6 +41,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov051/unk_ov051_02258de0.h"
 #include "proto/ov068/unk_ov068_0226b9a8.h"
+#include "proto/main/unk_0204cc1c.h"
 
 
 class SpNpcKappn;
@@ -61,10 +63,6 @@ extern "C" {
 void Clock_GetDateTime(ClockDateTime *p);
 void SaveData_Setup(SaveData *p, u32 idx);
 void SaveData_Apply(SaveData *p);  // (defined with u8 *)
-TownBlockMap *TownBlockMap_Get(void);
-BOOL Town_FindTownHallFront(void *map, s32 *pos, s32 *p3, s32 *p4);
-u8 *Scene_GetWarpRequest(void);
-BOOL SceneWarp_RequestAt(u8 *request, u8 id, VecFx32 *v, u32 w, s16 s, u8 p, u8 q);  // (the request is a SceneWarp)
 void TalkRequestFlags_ClearSceneHold(void);
 void TalkRequestFlags_SetSceneHold(void);
 void Camera_SetSwayPattern3(void);
@@ -301,7 +299,7 @@ BOOL SpNpcKappn::mainAct03() {
             SaveData_Apply(&gSaveData);
         }
         gSaveData.clearFlag(0x12);
-        Town_FindTownHallFront(TownBlockMap_Get(), &pos.x, NULL, NULL);
+        Town_FindTownHallFront(TownBlockMap_Get(), &pos, NULL, NULL);
         SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &pos, 0x400000, -0x8000, 3, 2);
         changeAct(2);
     }

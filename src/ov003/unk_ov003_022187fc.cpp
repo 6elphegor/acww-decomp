@@ -25,6 +25,7 @@
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/main/unk_0204cc1c.h"
 
 // TU21 of ov003: house models, scene 0x022324ec (0x022187fc-0x02219294)
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
@@ -46,10 +47,7 @@ extern "C" {
 // (declarations of functions the shared headers leave out: include/proto/.excluded)
 BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
 u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
-void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 s32 Scene_InTown();
-TownBlockMap *TownBlockMap_Get();
-BOOL Town_FindTownHallFront(void *a, s32 *pos, s32 *p3, s32 *p4);
 u8 *NNS_G3dGetTex(u8 *p);
 u8 *NNS_G3dGetMdlSet(u8 *p);
 BOOL Gfx3d_LoadTex(NNSG3dResTex *a, TexVramSlot *b);
@@ -63,14 +61,11 @@ u8 *func_021066ac(u8 *p, u32 a);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 GroundSeason_IsSnow();
-void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
-void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 y);
-u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 BOOL Ground_SetQuadrantsBlocked(s32 x, s32 z, s32 mask);
 s32 TownState_FindEvent(s32 x, u32 id);
 BOOL NNS_FndMountArchive(NNSFndArchive *arc, const char *name, u32 *binary);
 BOOL NNS_FndUnmountArchive(NNSFndArchive *arc);
-void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
+void BuildingInfo_Copy(BuildingInfo *dst, const BuildingInfo *src);
 void BuildingInfo_Destroy(BuildingInfo *i);
 }
 
@@ -243,7 +238,7 @@ s32 FieldStructureMgr_SpawnAll(FieldStructureMgr *self) {
         if (!gCommManager->isSlotActive(gCommManager->myAid)) {
             TownBlockMap *k = TownBlockMap_Get();
             if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
-                if (Town_FindTownHallFront(k, &tl.x, &bx, &by)) {
+                if (Town_FindTownHallFront(k, &tl, &bx, &by)) {
                     buf[0] = 0x501b;
                     FieldStructureMgr_SpawnBuilding(self, &buf[0], bx, by + 1, 0);
                 }
@@ -325,38 +320,38 @@ u32 Field_GetDoorExitMode() { return sDoorExitMode; }
 void Field_SetDoorExitMode(u32 v) { sDoorExitMode = v; }
 
 s32 Building_OpenDoorForEntryAt(VecFx32 *a) {
-    void *r = Building_FindNearPos(a);
+    BuildingActor *r = Building_FindNearPos(a);
     if (r != 0) {
-        return ((BuildingActor *)r)->openDoorForEntry();
+        return r->openDoorForEntry();
     }
     return 0;
 }
 
 s32 Building_OpenDoorForExitAt(VecFx32 *a) {
-    void *r = Building_FindNearPos(a);
+    BuildingActor *r = Building_FindNearPos(a);
     if (r != 0) {
-        return ((BuildingActor *)r)->openDoorForExit();
+        return r->openDoorForExit();
     }
     return 0;
 }
 
 s32 VillagerHouse_TryOpenDoorForEntry(s32 a) {
-    void *r = BuildingList_FindByItem((u16)(a + 0x5001));
+    BuildingActor *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return ((BuildingActor *)r)->tryOpenDoorForEntry();
+        return r->tryOpenDoorForEntry();
     }
     return 0;
 }
 
 s32 VillagerHouse_TryOpenDoorForExit(s32 a) {
-    void *r = BuildingList_FindByItem((u16)(a + 0x5001));
+    BuildingActor *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return ((BuildingActor *)r)->tryOpenDoorForExit();
+        return r->tryOpenDoorForExit();
     }
     return 0;
 }
 
-void *Building_FindNearPos(VecFx32 *a) {
+BuildingActor *Building_FindNearPos(VecFx32 *a) {
     BlockMap *g = gSceneBlockMap;
     s32 xy[2];
     if (g != 0) {
@@ -365,7 +360,7 @@ void *Building_FindNearPos(VecFx32 *a) {
             for (s32 x = xy[0] - 3; x <= xy[0] + 3; x++) {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = BlockMap_GetItemPtr(reinterpret_cast<Unk_0204e858_Grid *>(g), hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != 0) {
                     BOOL f = FALSE;
                     u16 v = *cell;
@@ -373,7 +368,7 @@ void *Building_FindNearPos(VecFx32 *a) {
                         f = TRUE;
                     }
                     if (f) {
-                        void *r = BuildingList_FindByItem(v);
+                        BuildingActor *r = BuildingList_FindByItem(v);
                         if (r != 0) {
                             return r;
                         }
@@ -407,7 +402,7 @@ s32 BuildingList_Remove(void *p) {
     return 0;
 }
 
-void *BuildingList_FindByGrid(s32 a, s32 b) {
+BuildingActor *BuildingList_FindByGrid(s32 a, s32 b) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
         BuildingActor *e = sBuildingList[i];
@@ -425,7 +420,7 @@ void *BuildingList_GetAt(s32 i) {
     return 0;
 }
 
-void *BuildingList_FindByItem(u32 id) {
+BuildingActor *BuildingList_FindByItem(u32 id) {
     s32 i;
     s32 z0 = 0;
     s32 z1 = 0;

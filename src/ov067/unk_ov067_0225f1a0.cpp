@@ -148,7 +148,7 @@ struct WlxMember {
     u16 mac45;
 };
 
-typedef s32 (*WlxEventFn)(s32, void *);
+typedef void (*WlxEventFn)(s32, void *);  // (the results are not used)
 
 struct WlxWork {
     u32 dmaNo;
@@ -655,18 +655,18 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     return ret;
 }
 
-extern "C" void Wlx_Init(u32 a, u32 b, u32 c) {
+extern "C" void Wlx_Init(void *work, void (*cb)(s32, void *), u32 c) {
     volatile u32 z;
     s32 ie = OS_DisableInterrupts();
     if (Wlx_GetState() == 0) {
-        if ((a & 0x1f) != 0) {
+        if (((uptr)work & 0x1f) != 0) {
             Fatal_Trap();
         }
         z = 0;
-        sWlx = (WlxWork *)a;
-        MIi_CpuClear32(z, (void *)a, 0x5b74);
+        sWlx = (WlxWork *)work;
+        MIi_CpuClear32(z, work, 0x5b74);
         sWlx->dmaNo = c;
-        sWlx->eventCallback = (WlxEventFn)b;
+        sWlx->eventCallback = cb;
         WlxRole_Init(&sWlx->role);
         WlxBlock_Init(&sWlx->block);
         sWlx->parentParam.maxEntry = 1;

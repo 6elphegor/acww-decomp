@@ -18,7 +18,7 @@ extern "C" {
 
 void KkShowFx_Start(void) {
     OverlayMgr_Acquire(93 /* the staff roll's overlay */);
-    sKkShowFx = (StaffRoll *)Heap_Alloc((Heap *)gMenuHeap, sizeof(StaffRoll));  // (gMenuHeap: void *, main)
+    sKkShowFx = (StaffRoll *)Heap_Alloc(gMenuHeap, sizeof(StaffRoll));
     if (sKkShowFx) {
         new (sKkShowFx) StaffRoll;
     }
@@ -41,9 +41,9 @@ void KkShowFx_CallUnk1f70(void) {
 void KkShowFx_Stop() {
     if (sKkShowFxActive & 1) {
         sKkShowFx->stop();
-        void *heap = gMenuHeap;
+        Heap *heap = gMenuHeap;
         sKkShowFx->~StaffRoll();
-        Heap_Free((Heap *)heap, sKkShowFx);
+        Heap_Free(heap, sKkShowFx);
         sKkShowFx = 0;
         OverlayMgr_Release(93 /* the staff roll's overlay */);
     }

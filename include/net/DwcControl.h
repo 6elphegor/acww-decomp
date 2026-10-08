@@ -7,6 +7,12 @@
 #include "net/DwcUserData.h"
 #include "net/DwcMatchControl.h"
 
+#ifndef __cplusplus  // (C: the struct tags as type names)
+typedef struct DwcHttp DwcHttp;
+typedef struct DwcLoginControl DwcLoginControl;
+typedef struct DwcControl DwcControl;
+#endif
+
 struct DwcHttp;
 
 // DWC friend-match core state sDwcControl (DwcCore_Init: GT2 socket and callbacks, GP connection, state, aid, own
@@ -58,7 +64,7 @@ struct DwcControl {
     /* 0x02d */ u8 isClosingAll;
     /* 0x02e */ u16 unk_2e;
     /* 0x030 */ u32 ownProfileId;
-    /* 0x034 */ u8 buddyRequestText[0x20];
+    /* 0x034 */ char buddyRequestText[0x20];
     /* 0x054 */ char *gameName;
     /* 0x058 */ char *secretKey;
     /* 0x05c */ DwcDoneCallback loginCallback;

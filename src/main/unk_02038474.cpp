@@ -280,15 +280,15 @@ ChatBalloon::~ChatBalloon() {
 void ChatBalloon::draw() {
     if (visible != 0) {
         if (localIndex == 0) {
-            GXOamAttr *h = (GXOamAttr *)textAnim.getCell();
+            GXOamAttr *h = textAnim.getCell();
             s32 x = getOriginX() + textAnim.getFrameX(-1);
             s32 y = slideY + (popOffsetY + (stackY + getOriginY()) + textAnim.getFrameY(-1));
             Oam_DrawCell(0, h, x, y, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
-            GXOamAttr *h1 = (GXOamAttr *)nameAnim.getCell();
+            GXOamAttr *h1 = nameAnim.getCell();
             s32 x1 = getOriginX() + nameAnim.getFrameX(-1);
             s32 y1 = slideY + (popOffsetY + (stackY + getOriginY()) + nameAnim.getFrameY(-1));
-            GXOamAttr *h2 = (GXOamAttr *)textAnim.getCell();
+            GXOamAttr *h2 = textAnim.getCell();
             s32 x2 = getOriginX() + textAnim.getFrameX(-1);
             s32 y2 = slideY + (popOffsetY + (stackY + getOriginY()) + textAnim.getFrameY(-1));
             Oam_DrawCell(2, h1, x1, y1, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);

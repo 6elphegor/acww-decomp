@@ -232,7 +232,7 @@ s32 Dragonfly_FindPerch(Insect *o) {
                 o->behaviorWork = o->behaviorWork + 0x10;
                 {
                     s32 old = o->rotY;
-                    s32 rr = Math_AngleXZ(&pos->x, &v1e0->x);
+                    s32 rr = Math_AngleXZ(pos, v1e0);
                     o->turnAngle = rr + old;
                 }
                 o->state = 0xe;
@@ -369,7 +369,7 @@ void Dragonfly_FlyToPerch(Insect *o) {
     }
     if (t > 0 && o->isAlarmed == 0) {
         if (d > 0x266) {
-            ang = Math_AngleXZ(&pos->x, &v1e0->x);
+            ang = Math_AngleXZ(pos, v1e0);
             Insect_GetDirVec(&dv, ang);
             o->rotY = ang;
             pos->x = pos->x + func_01ffcb0c(dv.x, 0xa000);
@@ -516,7 +516,7 @@ extern "C" s32 Moth_FindNearestLight(Insect *o, V3 *out) {
             u32 cnt = obj->getLightUnitCount();
             s32 px = zp, pz = zp;
             if (cnt != 0) {
-                BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(id);
+                BuildingActor *q = BuildingList_FindByItem(id);
                 if (q != NULL) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
@@ -600,7 +600,7 @@ void Insect::dungBeetlePushSnowball() {
         s32 rot, r6;
         VecFx32 *q = &a->position;
         r6 = Snowball_GetRadius(a);
-        ang = (s16)Math_AngleXZ(&q->x, &pos->x);
+        ang = (s16)Math_AngleXZ(q, pos);
         rot = ang;
         w.x = q->x;
         w.y = q->y;
@@ -717,7 +717,7 @@ void Insect::mosquitoChase(s16 *p) {
         rnd = (u8)Random_GlobalBelow(0x64);
         s32 c = alarm;
         s32 h = rotY;
-        ang = (s16)(Math_AngleXZ(&pos->x, &pp->x) - h);
+        ang = (s16)(Math_AngleXZ(pos, pp) - h);
         if (isAlarmed != 0) {
             if (c < 0xfe) {
                 c = (s16)(c + 1);
@@ -779,7 +779,7 @@ void Insect::beeEnterSwarm() {
     Actor *tp = (Actor *)PlayerActor_GetActor(4);
     VecFx32 *v = &scale;
     if (tp != NULL) {
-        rotY = Math_AngleXZ(&position.x, &tp->position.x);
+        rotY = Math_AngleXZ(&position, &tp->position);
     }
     NNS_G3dMdlSetMdlAlpha((u8 *)pooledModel.getModel(), 0, 0x1f);
     state = 2;
@@ -858,7 +858,7 @@ void Insect::beeChasePlayer() {
         return;
     }
     VecFx32 *pp = &tp->position;
-    ang = Math_AngleXZ(&pos->x, &pp->x);
+    ang = Math_AngleXZ(pos, pp);
     s32 r6 = moveSpeed + behaviorWork;
     dist = Vec_DistXZ(pos, pp);
     if (dist < 0x1000) {
@@ -936,7 +936,7 @@ void Bee_StingAndLeave(Insect *o) {
             s16 c = o->rotY;
             s16 buf = c;
             V3 vec;
-            Math_StepAngle(&buf, Math_AngleXZ(&r6->x, &q->position.x), 0x1554);
+            Math_StepAngle(&buf, Math_AngleXZ(r6, &q->position), 0x1554);
             o->rotY = buf;
             Insect_GetDirVec(&vec, buf);
             r6->x = r6->x + func_01ffcb0c(0x23000, vec.x);
@@ -1006,7 +1006,7 @@ void Stinger_Walk(Insect *o, s16 *p, u32 mode) {
             if (*p == 0) {
                 Actor *q = (Actor *)PlayerActor_GetActor(4);
                 if (q) {
-                    o->rotY = Math_AngleXZ(&o->position.x, &q->position.x);
+                    o->rotY = Math_AngleXZ(&o->position, &q->position);
                     Insect_PlaySe(o, 1, 0);
                 }
             }
@@ -1073,7 +1073,7 @@ s32 Stinger_Threaten(Insect *o, u32 mode, VecFx32 *q) {
             if (mode == 1) {
                 if (*r6 == 0) {
                     Insect_PlaySe(o, 1, 0);
-                    t23a = Math_AngleXZ(&v->x, &q->x);
+                    t23a = Math_AngleXZ(v, q);
                 }
                 *r6 = *r6 + 1;
             }
@@ -1089,9 +1089,9 @@ s32 Stinger_Threaten(Insect *o, u32 mode, VecFx32 *q) {
             }
             if (o->unk_24b) {
                 if (Vec_DistXZ(v, q) < 0x2000) {
-                    Math_StepAngle(&t23a, Math_AngleXZ(&v->x, &q->x), 0xe38);
+                    Math_StepAngle(&t23a, Math_AngleXZ(v, q), 0xe38);
                 } else {
-                    Math_StepAngle(&t23a, Math_AngleXZ(&v->x, &q->x), 0x71c);
+                    Math_StepAngle(&t23a, Math_AngleXZ(v, q), 0x71c);
                 }
                 o->rotY = t23a;
             }
@@ -1154,7 +1154,7 @@ s32 Stinger_TryAttack(Insect *o, u32 mode, VecFx32 *q, s16 *p) {
         } else if (o->unk_24b) {
             s16 t = o->rotY;
             Insect_PlaySe(o, 0, 1);
-            Math_StepAngle(&t, Math_AngleXZ(&q->x, &v->x), 0x666);
+            Math_StepAngle(&t, Math_AngleXZ(q, v), 0x666);
             o->rotY = t;
             o->state = 7;
         }
@@ -1259,7 +1259,7 @@ BOOL Insect::insectFindFlowerTarget(s16 *out, s32 *dist, VecFx32 *pos) {
         pos->y = FX_Div(0xb000, 0x10000);
         pos->z += 0x1000;
     }
-    *out = Math_AngleXZ(&p->x, &pos->x);
+    *out = Math_AngleXZ(p, pos);
     *out = *out - rotY;
     if (*out > 0x38e) {
         *out = 0x38e;
@@ -1323,7 +1323,7 @@ void Insect::insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc) {
 
 void Insect::insectFleeFrom(VecFx32 *p) {
     if (p->x > 0 && isAlarmed == 0 && alarm >= alarmThreshold) {
-        turnAngle = Math_AngleXZ(&p->x, &position.x);
+        turnAngle = Math_AngleXZ(p, &position);
         waitTimer = (Random_GlobalBelow(4) + 7) * 20;
         state = 7;
         isAlarmed = 1;
