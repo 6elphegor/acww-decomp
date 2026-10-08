@@ -589,20 +589,22 @@ extern "C" u32 HappyRoom_RateMainRoom(RoomScoreEvaluator *p, s32 *out) {
     return flags;
 }
 
-extern "C" void HappyRoom_EvaluateHouse(s32 a) {
+extern "C" void HappyRoom_EvaluateHouse(void *evaluator) {  // (the caller's RoomScoreEvaluator)
+    RoomScoreEvaluator *a = (RoomScoreEvaluator *)evaluator;
     s32 v0;
     HouseRoomScoreSource ops;
     s32 v1, v2, v3;
-    HappyRoom_Evaluate((RoomScoreEvaluator *)a, (u16 *)&v0, &v1, &v2, &v3, (RoomScoreSourceCallView *)&ops, 5, 0, 1);
+    HappyRoom_Evaluate(a, (u16 *)&v0, &v1, &v2, &v3, (RoomScoreSourceCallView *)&ops, 5, 0, 1);
 }
 
-extern "C" s32 HappyRoom_EvaluateVillagerRoom(s32 a, s32 b, s32 *c, s32 *d, s32 *e, s32 *f) {
+extern "C" s32 HappyRoom_EvaluateVillagerRoom(void *evaluator, s32 b, u16 *c, s32 *d, s32 *e, s32 *f) {
+    RoomScoreEvaluator *a = (RoomScoreEvaluator *)evaluator;  // (the caller's)
     s32 r;
     if (sHappyRoomVillagerMap == NULL) {
         sHappyRoomVillagerMap = VillagerRoomMap_Create(b, gCurrentHeap);
     }
     VillagerRoomScoreSource ops;
-    r = HappyRoom_Evaluate((RoomScoreEvaluator *)a, (u16 *)c, d, e, (s32 *)f, (RoomScoreSourceCallView *)&ops, 1, b, 0);
+    r = HappyRoom_Evaluate(a, c, d, e, f, (RoomScoreSourceCallView *)&ops, 1, b, 0);
     if (sHappyRoomVillagerMap != NULL) {
         VillagerRoomMap_Destroy(gCurrentHeap);
         sHappyRoomVillagerMap = NULL;

@@ -261,6 +261,6 @@ extern "C" void RoomBoardSign_Spawn(void *a, s32 b, s32 c, s32 d) {
     loc[0] = 0;
     loc[1] = c;
     loc[2] = 0;
-    Actor::spawn((void *)(0x17), (void *)(0), a, loc, 0);
+    Actor::spawn(0x17, 0, a, loc, 0);
 }
 

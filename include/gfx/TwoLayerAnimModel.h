@@ -37,7 +37,7 @@ public:
     void assignJointsToLayer2(u32 a, u32 b);
     void playLayer2FromBase(u32 a, u32 b);
     void playLayer2(void *anm, u32 blend, u32 mode, u32 speed, u32 frame, u32 numFrames, BOOL g);
-    void drawLayered(u32 a);
+    void drawLayered(void *a);
     void updateLayers();
     BOOL allocLayerAnims(void *heap);
     void onJointCalcPostLayer2(NNSG3dRS *m);

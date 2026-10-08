@@ -1,17 +1,13 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WifiLinkEvent.h"
+#include "net/WifiLinkConfig.h"
 #include "uptr.h"
 #include "proto/ov001/unk_ov001_022032f8.h"
 
 typedef void (*AossWcmNotifyFunc)(s32, ...);
 
 // WCMConfig
-struct AossWcmConfig {
-    s32 dmaNo;
-    void *bssDescBuffer;
-    s32 bssDescBufferSize;
-    s32 bssDescMode;
-};
 
 
 extern "C" u8 *sAossWcmWork = 0;
@@ -24,7 +20,7 @@ extern "C" u8 *sAossWcmBssidPtr = 0;
 extern "C" s32 sAossWcmConnectOption = 0;
 extern "C" AossWcmNotifyFunc sAossWcmNotifyCb = 0;
 extern "C" u8 *sAossWcmSsidPtr = 0;
-extern "C" AossWcmConfig *sAossWcmConfig = 0;
+extern "C" WifiLinkConfig *sAossWcmConfig = 0;
 extern "C" s32 sAossWcmSearchOption = 0;
 
 extern "C" {
@@ -37,7 +33,7 @@ void MI_CpuCopy8(void *a, void *b, u32 n);
 s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_DisconnectAsync(void);
 s32 WifiLink_SearchAsync(void *a, void *b, s32 c);
-s32 WifiLink_StartupAsync(void *a, void *b);
+s32 WifiLink_StartupAsync(WifiLinkConfig *a, WifiLinkNotifyCallback b);
 s32 WifiLink_ConnectAsync(u8 *a, u8 *b, u32 c);
 s32 WifiLink_Init(void *, s32);
 void WifiLink_Finish(void);
@@ -49,14 +45,13 @@ extern u8 gWifiLinkAnySsid[];
 
 }
 
-extern "C" void Aoss_WcmCallback(void *arg) {
-    s16 *p = (s16 *)arg;
+extern "C" void Aoss_WcmCallback(WifiLinkEvent *p) {
     if (p == NULL) {
         return;
     }
-    switch ((u32)p[0]) {
+    switch ((u32)p->request) {
     case 1:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sAossWcmState == 4) {
                 sAossWcmState = 3;
                 if (sAossWcmNotifyCb != NULL) {
@@ -87,7 +82,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
         }
         break;
     case 3:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sAossWcmState == 6) {
                 sAossWcmState = 5;
                 if (sAossWcmNotifyCb != NULL) {
@@ -102,7 +97,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
         }
         break;
     case 5:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sAossWcmState == 8) {
                 sAossWcmState = 7;
                 if (sAossWcmNotifyCb != NULL) {
@@ -117,7 +112,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
         }
         break;
     case 4:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sAossWcmState == 4) {
                 sAossWcmState = 3;
                 if (sAossWcmNotifyCb != NULL) {
@@ -156,7 +151,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
         }
         break;
     case 6:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sAossWcmState == 4) {
                 sAossWcmState = 3;
                 if (sAossWcmNotifyCb != NULL) {
@@ -197,7 +192,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
         }
         break;
     case 2:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sAossWcmState == 2) {
                 WifiLink_Finish();
                 sAossWcmState = 0;
@@ -240,7 +235,7 @@ extern "C" s32 Aoss_WcmToIdle(void) {
         }
         return FALSE;
     case 1:
-        if (WifiLink_StartupAsync(sAossWcmConfig, (void *)Aoss_WcmCallback) == 3) {
+        if (WifiLink_StartupAsync(sAossWcmConfig, Aoss_WcmCallback) == 3) {
             goto ok;
         }
         return FALSE;
@@ -405,7 +400,7 @@ extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
     // buf: the WEP descriptor (0x50), the WCM config, the WifiLink work (0x2300), a BSS descriptor (0xc0), then the
     // BSS descriptor buffer, each aligned
     sAossWcmWepDesc = (u8 *)buf;
-    AossWcmConfig *p = (AossWcmConfig *)(((uptr)buf + 0x53) & ~(uptr)3);
+    WifiLinkConfig *p = (WifiLinkConfig *)(((uptr)buf + 0x53) & ~(uptr)3);
     sAossWcmConfig = p;
     uptr t = ((uptr)p + 0x2f) & ~(uptr)0x1f;
     sAossWcmWork = (u8 *)t;
@@ -424,7 +419,7 @@ extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
         sAossWcmState = 1;
     }
     if (sAossWcmState == 1) {
-        if (WifiLink_StartupAsync(sAossWcmConfig, (void *)Aoss_WcmCallback) != 3) {
+        if (WifiLink_StartupAsync(sAossWcmConfig, Aoss_WcmCallback) != 3) {
             OS_RestoreInterrupts(irq);
             return 0;
         }

@@ -585,7 +585,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
             u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
             FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
         }
-        if (Actor::spawn((void *)0x84, (void *)(uptr)w.h[0], &v, &w.h[1], a)) {  // (Actor::spawn takes its ids as void *)
+        if (Actor::spawn(0x84, w.h[0], &v, &w.h[1], a)) {
             cnt++;
         }
     next0:
@@ -649,12 +649,12 @@ extern "C" void NpcSpawner_SpawnHouseOwner(NpcSpawner *a)
                 }
             }
         }
-        Actor::spawn((void *)(uptr)c, (void *)(uptr)h[0], &v, &h[2], a);
+        Actor::spawn(c, h[0], &v, &h[2], a);
         if (r6 != 0xd8) {
             if (((s32)(h[1] & 0xf000) >> 12) == 0xe) {
                 NpcSpawner_PickFreeRoomPos(a, &v);
                 h[3] = Random_GlobalBelow(4) << 14;
-                Actor::spawn((void *)(uptr)r6, (void *)(uptr)h[1], &v, &h[2], a);
+                Actor::spawn(r6, h[1], &v, &h[2], a);
             }
         }
     }
@@ -739,7 +739,7 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
         }
     }
     if (flag) {
-        Actor::spawn((void *)(uptr)code, (void *)(uptr)h[0], &v, 0, a);
+        Actor::spawn(code, h[0], &v, 0, a);
     }
 }
 
@@ -1237,7 +1237,7 @@ u16 *NpcSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
                 } else {
                     clearVisitorOverlay();
                 }
-                if (Actor::spawn((void *)(e->id), (void *)(e->id2), &v, t, this)) {
+                if (Actor::spawn(e->id, e->id2, &v, t, this)) {
                     if (F3::Unk_02083c28_IsZero(F3::gFieldSceneKind)) {
                         if ((F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
                             VecFx32 w;

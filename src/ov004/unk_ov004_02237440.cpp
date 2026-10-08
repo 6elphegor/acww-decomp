@@ -3957,7 +3957,7 @@ extern "C" BOOL MuseumInsectRoom_AddInsect(MuseumInsectRoom *m, s8 v) {
 
 BOOL MuseumInsectRoom::onCreate() {
     // (MuseumInsectHeap_Create takes the parent heap as a pointer; the pool passes 0)
-    modelPool.init(0x20, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)MuseumInsectHeap_Create, MuseumInsectHeap_Destroy);
+    modelPool.init(0x20, 0x400, 0x40, 0x9c4, (ModelSlotAllocFunc)MuseumInsectHeap_Create, MuseumInsectHeap_Destroy);
     spawnDonatedInsects();
     return TRUE;
 }

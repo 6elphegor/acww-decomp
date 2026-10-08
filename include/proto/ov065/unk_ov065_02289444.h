@@ -74,6 +74,9 @@ s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag);
 #ifndef PROTO_LOCAL_IncomingListParseServer
 s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n);
 #endif
+#ifndef PROTO_LOCAL_SBSetLastListErrorPtr
+void SBSetLastListErrorPtr(SBServerList *ctx, const char *v);
+#endif
 #ifndef PROTO_LOCAL_ProcessMainListData
 s32 ProcessMainListData(SBServerList *c);
 #endif

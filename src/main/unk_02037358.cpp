@@ -5,6 +5,7 @@
 #include "town/MapBlock.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02037260.h"
+#include "proto/main/unk_0202fa70.h"
 #include "proto/main/unk_02037358.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0209bca8.h"
@@ -12,7 +13,6 @@
 
 extern "C" {
 void MI_CpuFill8(void *, s32, s32);
-s32 CollisionMap_SetBlock(s32, s32, s32, s32);
 }
 
 u8 *sAcreAttrData;
@@ -47,34 +47,36 @@ void MapBlock::clear() {
     }
 }
 
-void MapBlock::init(s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
+void MapBlock::init(s32 a, VecFx32 *v, u16 *layer0, u16 *layer1, u16 *buriedMask, BgAcreModel *k2, void *bcl, s32 k4,
+                    s32 k5, u32 mapSlot) {
     acreId = a;
     pos.x = v->x;
     pos.y = v->y;
     pos.z = v->z;
-    layers[0] = b;
-    layers[1] = k0;
-    buried = k1;
+    layers[0] = layer0;
+    layers[1] = layer1;
+    buried = buriedMask;
     blockX = k4;
     blockZ = k5;
-    bindBg(k2, k3, k6);
+    bindBg(k2, bcl, mapSlot);
 }
 
-extern "C" void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
+extern "C" void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, u16 *layer0, u16 *layer1, u16 *buriedMask, BgAcreModel *k2,
+                              void *bcl, Unk_02037638_S8 *k45, u32 mapSlot) {
     VecFx32 t;
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    self->init(a, &t, b, k0, k1, k2, k3, k45->a, k45->b, k6);
+    self->init(a, &t, layer0, layer1, buriedMask, k2, bcl, k45->a, k45->b, mapSlot);
 }
 
-void MapBlock::bindBg(BgAcreModel *s, u32 t, u32 u) {
+void MapBlock::bindBg(BgAcreModel *s, void *bcl, u32 mapSlot) {
     bgModel = s;
     if (bgModel != 0) {
-        t = (u32)(uptr)bgModel->bcl;  // (CollisionMap_SetBlock takes the collision data's address as an integer)
+        bcl = bgModel->bcl;
     }
-    if (t != 0) {
-        CollisionMap_SetBlock(blockX, blockZ, t, u);
+    if (bcl != 0) {
+        CollisionMap_SetBlock(blockX, blockZ, bcl, mapSlot);
     }
 }
 
@@ -116,7 +118,7 @@ extern "C" BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z) {
 extern "C" u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z) {
     u16 *r = 0;
     if (z < 2 && x < 0x10 && y < 0x10) {
-        u16 *t = (u16 *)((MapBlock *)cell)->layers[z];
+        u16 *t = ((MapBlock *)cell)->layers[z];
         if (t != 0) {
             r = t + (x + y * 16);
         }
@@ -167,7 +169,7 @@ extern "C" BOOL BuriedMask_Clear(void *base, u32 a, u32 b);
 extern "C" BOOL MapBlock_SetBuried(MapBlock *o, u32 a, u32 b) {
     BOOL r = FALSE;
     if (o->buried != 0) {
-        r = BuriedMask_Set((void *)o->buried, a, b);
+        r = BuriedMask_Set(o->buried, a, b);
     }
     return r;
 }
@@ -175,7 +177,7 @@ extern "C" BOOL MapBlock_SetBuried(MapBlock *o, u32 a, u32 b) {
 extern "C" BOOL MapBlock_ClearBuried(MapBlock *o, u32 a, u32 b) {
     BOOL r = FALSE;
     if (o->buried != 0) {
-        r = BuriedMask_Clear((void *)o->buried, a, b);
+        r = BuriedMask_Clear(o->buried, a, b);
     }
     return r;
 }

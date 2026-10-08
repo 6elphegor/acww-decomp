@@ -1,6 +1,7 @@
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/WifiLinkConfig.h"
 #include "net/WifiLinkSendState.h"
 #include "net/WifiLinkWork.h"
 #include "net/WifiApControl.h"
@@ -56,8 +57,8 @@ extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
 s32 WifiLink_GetPhase(void);
-s32 WifiLink_StartupAsync(void *a, void *b);
-s32 WifiAp_OnLinkNotify(void *a);
+s32 WifiLink_StartupAsync(WifiLinkConfig *a, WifiLinkNotifyCallback b);
+void WifiAp_OnLinkNotify(WifiLinkEvent *m);
 s32 WifiAp_BuildSearchList(s32 mode);
 void WifiAp_StartScan(void *a, void *b, s32 c, u32 d);
 s32 WifiAp_CheckSearchResult(void *ctx, s32 v);
@@ -185,13 +186,13 @@ s32 WifiAp_ProcessStartup(void) {
     s32 a = WifiLink_GetPhase();
     WifiApContext *c = (WifiApContext *)WifiAp_GetBlock(0x10);
     if (a == 1) {
-        u32 buf[4];
-        buf[0] = c->dmaNo;
-        buf[1] = 0;
-        buf[2] = 0;
-        buf[3] = 0;
+        WifiLinkConfig cfg;
+        cfg.dmaNo = c->dmaNo;
+        cfg.bssDescBuffer = NULL;
+        cfg.bssDescBufferSize = 0;
+        cfg.bssDescMode = 0;
         WifiAp_BuildSearchList(0);
-        s32 r = WifiLink_StartupAsync(buf, (void *)WifiAp_OnLinkNotify);
+        s32 r = WifiLink_StartupAsync(&cfg, WifiAp_OnLinkNotify);
         if (r == 1 || r >= 4) {
             WifiAp_SetError(1);
             return 0x11;

@@ -374,7 +374,7 @@ s32 TownState_GetNativeFruit(u8 *p);
 u16 Item_MakeFruit(s32 n);
 BOOL Item_Equals(u16 *a, u16 *b);
 s32 NookPoints_GetRankOf(u16 *p);
-s32 TownState_FindEvent(s32 x, u32 id);
+s32 TownState_FindEvent(TownState *x, u32 id);
 TownEventRecord *TownState_GetEvent(s32 i);
 ClockDate *TownState_GetPlayerDate(u8 *p, s32 i);
 static inline BOOL Unk_0204b9c0_R(u16 *p, u32 lo, u32 hi) {
@@ -427,9 +427,9 @@ BOOL TownState_IsPerfectStreak15();
 BOOL TownState_IsPlayerDateNotToday(u8 *p);
 void TownState_SetPlayerDateToday(u8 *p);
 ClockDate *TownState_GetPlayerDate(u8 *p, s32 i);
-s32 TownState_AddEvent(s32 x, u32 id);
-s32 TownState_FindEvent(s32 x, u32 id);
-void TownState_RemoveEvent(s32 x, u32 id);
+s32 TownState_AddEvent(TownState *x, u32 id);
+s32 TownState_FindEvent(TownState *x, u32 id);
+void TownState_RemoveEvent(TownState *x, u32 id);
 void TownState_ClearEvents();
 TownEventRecord *TownState_GetEvent(s32 i);
 void TownState_ClearUnk16(TownState *p);
@@ -524,7 +524,7 @@ extern "C" void TownState_ClearEvents() {
 }
 
 namespace nC {
-extern "C" void TownState_RemoveEvent(s32 x, u32 id) {
+extern "C" void TownState_RemoveEvent(TownState *x, u32 id) {
     s32 i = TownState_FindEvent(x, id);
     if (i >= 0) {
         TownEventRecord *e = TownState_GetEvent(i);
@@ -536,7 +536,7 @@ extern "C" void TownState_RemoveEvent(s32 x, u32 id) {
 }
 
 namespace nC {
-extern "C" s32 TownState_FindEvent(s32 x, u32 id) {
+extern "C" s32 TownState_FindEvent(TownState *x, u32 id) {
     s32 r = -1;
     TownEventRecord *e = TownState_GetEvent(0);
     for (s32 i = 0; i < 4; e++, i++) {
@@ -547,7 +547,7 @@ extern "C" s32 TownState_FindEvent(s32 x, u32 id) {
 }
 
 namespace nC {
-extern "C" s32 TownState_AddEvent(s32 x, u32 id) {
+extern "C" s32 TownState_AddEvent(TownState *x, u32 id) {
     s32 i = TownState_FindEvent(x, id);
     if (i < 0) {
         i = TownState_FindEvent(x, 0x63);

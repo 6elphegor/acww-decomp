@@ -17,6 +17,7 @@ typedef struct InsectModelParams InsectModelParams;
 #include "field/Insect.h"
 #include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
+class InsectManager;
 #endif
 
 #ifdef __cplusplus
@@ -82,9 +83,6 @@ s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx);
 #ifndef PROTO_LOCAL_FieldInsect_IsTreeKind
 BOOL FieldInsect_IsTreeKind(u32 idx);
 #endif
-#ifndef PROTO_LOCAL_Insect_UpdateSpawning
-void Insect_UpdateSpawning(void *self);
-#endif
 #ifndef PROTO_LOCAL_FieldInsect_UpdateAll
 void FieldInsect_UpdateAll(void *a);
 #endif
@@ -129,12 +127,6 @@ void Insect_CancelCatch(s32 id);
 #endif
 #ifndef PROTO_LOCAL_Insect_TryCatch
 s32 Insect_TryCatch(u8 id);
-#endif
-#ifndef PROTO_LOCAL_InsectPool_UpdateInViewOfPlayer
-void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
-#endif
-#ifndef PROTO_LOCAL_InsectPool_UpdateInView
-void InsectPool_UpdateInView(s32 obj, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Insect_EnableTrashFlies
 void Insect_EnableTrashFlies(void);
@@ -315,6 +307,15 @@ void Insect_UpdateKind38(Insect *a);
 #endif
 #ifndef PROTO_LOCAL_FieldInsect_GetPosAndKind
 s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx);
+#endif
+#ifndef PROTO_LOCAL_Insect_UpdateSpawning
+void Insect_UpdateSpawning(InsectManager *self);
+#endif
+#ifndef PROTO_LOCAL_InsectPool_UpdateInViewOfPlayer
+void InsectPool_UpdateInViewOfPlayer(InsectManager *obj, s32 flag, s32 idx, s32 x, s32 z);
+#endif
+#ifndef PROTO_LOCAL_InsectPool_UpdateInView
+void InsectPool_UpdateInView(InsectManager *obj, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Insect_SpawnBeeSwarm
 void Insect_SpawnBeeSwarm(VecFx32Ctor *v);

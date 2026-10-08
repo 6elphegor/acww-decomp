@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_Matchup1Hostname
-extern u32 Matchup1Hostname;
+extern char *Matchup1Hostname;
 #endif
 #ifndef PROTO_LOCAL_matchup1ip
 extern u32 matchup1ip;
@@ -68,7 +68,7 @@ void NNCancel(u32 cookie);
 void NNThink();
 #endif
 #ifndef PROTO_LOCAL_Matchup2Hostname
-extern u32 Matchup2Hostname;
+extern char *Matchup2Hostname;
 #endif
 #ifndef PROTO_LOCAL_NNProcessData
 void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);

@@ -67,9 +67,9 @@ s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, GPICallbackData *m, GPIOp
     *(GPICallbackCopy *)node = p;
     node->arg = m;
     if (g != NULL) {
-        node->operationID = (void *)g->id;
+        node->operationID = g->id;
     } else {
-        node->operationID = NULL;
+        node->operationID = 0;
     }
     node->type = k;
     node->pnext = NULL;
@@ -138,14 +138,14 @@ s32 gpiCallCallback(GPConnection *h, GPICallbackData *n) {
 }
 
 extern "C" {
-s32 gpiProcessCallbacks(GPConnection *h, void *key) {
+s32 gpiProcessCallbacks(GPConnection *h, s32 key) {
     GPIConnection *ctx = *h;
     GPICallbackData *head;
     GPICallbackData *tail;
     GPICallbackData *prev;
     GPICallbackData *node;
     GPICallbackData *next;
-    if (key != NULL) {
+    if (key != 0) {
         head = ctx->callbackList;
         tail = ctx->lastCallback;
         prev = NULL;

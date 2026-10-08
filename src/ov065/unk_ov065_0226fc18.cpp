@@ -68,7 +68,6 @@ void qr2_send_statechanged(void *qrec);
 u32 DwcFriend_FindIndexByProfileId(u32);
 void DwcMatch_ResetPlayerCounts();
 s32 DwcCore_SetState(s32);
-s32 DwcFriend_HandleAuthorizedMessage(void *, u32 *, u32);
 void DwcMatch_OnGpMatchCommand(void *, u32, void *);
 s32 DwcCore_HandleGpResult(s32);
 u32 DwcConn_AidListToBitmap(u8 *, s32);
@@ -86,8 +85,8 @@ void DwcConn_OnGt2SocketError(void *socket);
 void DwcConn_OnGt2Ping(void *a, s32 b);
 void DwcConn_OnGt2Closed(void *a0, s32 a1);
 void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d);
-void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c);
-void DwcCore_OnGpError(s32 a, u32 *b);
+void DwcMatch_OnGpBuddyMessage(void *a, GPRecvBuddyMessageArg *b, void *c);
+void DwcCore_OnGpError(s32 a, GPErrorArg *b);
 void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4);
 }
 }
@@ -1041,8 +1040,8 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcCore_OnGpError(s32 a, u32 *b) {
-    u32 t = b[1];
+void DwcCore_OnGpError(s32 a, GPErrorArg *b) {
+    u32 t = b->errorCode;
     if (t != 0x603 && t != 0x901 && t != 0xb01) {
         DwcCore_HandleGpResult(3);
     }
@@ -1052,15 +1051,15 @@ void DwcCore_OnGpError(s32 a, u32 *b) {
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
+void DwcMatch_OnGpBuddyMessage(void *a, GPRecvBuddyMessageArg *b, void *c) {
     u8 buf[12] = {0};
     char *s;
     char *e;
     u32 n;
     DwcControl *g;
 
-    s = (char *)b[2];
-    if (DwcFriend_HandleAuthorizedMessage(a, b, c) == 0) {
+    s = b->message;
+    if (DwcFriend_HandleAuthorizedMessage(a, b) == 0) {
         if (memcmp(s, "GPCM", STD_GetStringLength("GPCM")) == 0) {
             s += STD_GetStringLength("GPCM");
             e = strchr(s, 0x76);
@@ -1080,7 +1079,7 @@ void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
                             }
                         }
                         char *t = s + STD_GetStringLength("MAT");
-                        DwcMatch_OnGpMatchCommand(a, b[0], t);
+                        DwcMatch_OnGpMatchCommand(a, b->profile, t);
                     }
                 }
             }

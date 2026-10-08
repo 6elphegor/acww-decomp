@@ -283,7 +283,7 @@ BOOL SpNpcRoostGuest::preCreate() {
     case 6:
         if ((mo == 0x13 && dy >= 0x1e) || mo == 0x14 || mo == 0x15 || mo == 0x16 || (mo == 0x17 && dy <= 0x3b)) {
             guestType = 7;
-            Actor::spawn((void *)(0x10), (void *)(0), (void *)(0), (void *)(0), (void *)(0));
+            Actor::spawn(0x10, 0, NULL, NULL, NULL);
         }
         break;
     case 0:

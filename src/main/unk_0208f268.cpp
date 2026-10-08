@@ -803,16 +803,17 @@ BOOL EffectSplProc::onExecute()
     return TRUE;
 }
 
-extern "C" u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3)
+// (SPL passes the position by value as a 12-byte struct: three ints on the DS and on 32-bit x86, but two registers on
+// x86-64, where a callee taking three ints read the wrong values)
+extern "C" u16 EffectSpl_ToCurvedPos(VecFx32 *pos, VecFx32 v)
 {
-    VecFx32Ctor t(a1, a2, a3);
-    return WorldCurve_ToCurved((VecFx32 *)a0, &t);
+    VecFx32Ctor t(v.x, v.y, v.z);
+    return WorldCurve_ToCurved(pos, &t);
 }
 
 BOOL EffectSplProc::onDraw()
 {
-    // (the SPL manager keeps the view matrix and the position callback in u32 slots: SPL's own 64-bit work)
-    SPL_Draw((Mgr *)splManager, (u32)(uptr)&gViewMtx, (u32)(uptr)EffectSpl_ToCurvedPos);
+    SPL_Draw((Mgr *)splManager, gViewMtx.m, EffectSpl_ToCurvedPos);
     EffectModels_DrawAll(modelGroups);
     return TRUE;
 }
@@ -1298,7 +1299,7 @@ void EffectModelAnimFiles::free() {
 
 BOOL EffectModel::loadModel(s32 idx) {
     BOOL r = TRUE;
-    if (!((CachedModel *)(&model))->loadCached((void *)(idx + 0x6d656666), (void *)(sEffectModelFiles[idx]))) {
+    if (!((CachedModel *)(&model))->loadCached(idx + 0x6d656666, (void *)(sEffectModelFiles[idx]))) {
         r = FALSE;
     }
     return r;

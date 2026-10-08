@@ -161,12 +161,11 @@ void Actor::setSpawnTransform(void *a, void *b) {
     sActorSpawnRot = b;
 }
 
-void *Actor::spawn(void *a, void *b, void *c, void *d, void *e) {
-    void *t = e;
+void *Actor::spawn(u32 profile, u32 param, void *pos, void *angle, void *parent) {
+    void *t = parent;
     if (t == 0) t = gActorDefaultParent;
-    setSpawnTransform(c, d);
-    // (the profile id and the spawn parameter come as pointers: Actor::spawn's callers pass them so)
-    return GameProc_CreateChild((u32)(uptr)a, t, (u32)(uptr)b, 3);
+    setSpawnTransform(pos, angle);
+    return GameProc_CreateChild(profile, t, param, 3);
 }
 
 void Actor::setCullParams(s32 a, s32 b, s32 c) {

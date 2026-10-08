@@ -616,7 +616,6 @@ void TitleTalk::openChoiceSet(TitleChoiceSet *d) {
     sp10->reset(r7, r7 - 1);
     s32 r4;
     s32 z0 = 0;
-    s32 z1 = 0;
     for (r4 = 0; r4 < (s32)r7; r4++) {
         s32 f = z0;
         u8 c = r5[r4];
@@ -626,7 +625,7 @@ void TitleTalk::openChoiceSet(TitleChoiceSet *d) {
         }
         t[0] = c;
         t[1] = r6[r4];
-        sp10->setEntry(r4, t, 1, &t[1], (const char *)z1, f);
+        sp10->setEntry(r4, t, 1, &t[1], NULL, f);
     }
     sp10->loadTexts();
     sp0->openChoices(1);

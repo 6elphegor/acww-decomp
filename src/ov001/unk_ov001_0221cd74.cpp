@@ -55,7 +55,7 @@ extern "C" void WfcBgMap_TransferTask() {
 // a: a palette file (16-colour lines of 0x20 bytes); line b of it is copied to BG palette line c
 extern "C" void WfcUtil_RequestPaletteLine(void *a, s32 b, s32 c) {
     sWfcPaletteCopy.src = (u8 *)a + (b << 5);
-    sWfcPaletteCopy.dst = (void *)((c << 5) + 0x5000000);
+    sWfcPaletteCopy.dst = (void *)(uptr)((c << 5) + 0x5000000);  // (BG palette RAM: a hardware address)
     WfcTask_Add(1, (void *)WfcUtil_PaletteLineTask, 0, 0x78);
 }
 

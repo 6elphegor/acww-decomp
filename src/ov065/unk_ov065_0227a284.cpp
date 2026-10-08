@@ -1270,7 +1270,7 @@ s32 ghiPostInitState(GHIConnection *self) {
         do {
             GHIPostData *rec = (GHIPostData *)ArrayNth(self->post->data, i);
             s32 t = z;
-            pi->data = (GHIPostData *)t;
+            pi->data = NULL;
             pi->pos = t;
             pi->file = t;
             pi->fileLength = t;

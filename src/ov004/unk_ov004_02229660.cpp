@@ -415,7 +415,6 @@ void RoomTelephone::openChoices(PhoneChoiceSet *p, s32 v) {
     ChoiceList *o = (m)->getChoiceList();
     const u8 *s = p->choiceMsgs;
     u8 n = p->numChoices;
-    s32 z = 0;
     s32 i;
     s32 m1 = -1;
     if (v != m1) {
@@ -431,7 +430,7 @@ void RoomTelephone::openChoices(PhoneChoiceSet *p, s32 v) {
             c = 3;
         }
         u8 bb = b;
-        (o)->setEntry(i, (const u8 *)(&bb), 1, (const u8 *)(gTalkMsgIndexNone), (const char *)(z), c);
+        (o)->setEntry(i, (const u8 *)(&bb), 1, (const u8 *)(gTalkMsgIndexNone), NULL, c);
     }
     (o)->loadTexts();
     (m)->openChoices(1);

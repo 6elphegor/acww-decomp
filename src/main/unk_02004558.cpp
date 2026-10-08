@@ -1066,9 +1066,10 @@ s32 ItemInfo_GetHoldableIndex(Unk_0200f660_S *s);
 void PlayerActor_RequestPickUpItem(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
 void PlayerActor_RequestPluckReach(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b);
 void PlayerActor_RequestAct66(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
-s32 FieldAction_RequestToolForAid(void *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
-s32 FieldAction_RequestPickUpForAid(void *o, Unk_0200f6d4_V2 v, s32 a);
-s32 FieldAction_RequestFillHoleForAid(void *o, Unk_0200f6d4_V2 v, s32 a);
+// (src/main/unk_02041e00.cpp: its position type is local to that file; same layout)
+s32 FieldAction_RequestToolForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a, s32 b, u16 c);
+s32 FieldAction_RequestPickUpForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a);
+s32 FieldAction_RequestFillHoleForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a);
 s32 FieldAction_PollResult(s32 a);
 s32 FieldAction_PollDrop(s32 a);
 void FieldAction_Release(s32 a);
@@ -1089,7 +1090,7 @@ void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
 void PlayerActor_StepTowardPoseFast(PlayerActor *o, s32 a, s32 b, s32 c);
 void PlayerActor_StepTowardPose(PlayerActor *o, s32 a, s32 b, s32 c);
 namespace Unk_0200f7a0_NS {
-extern "C" s32 FieldAction_RequestToolForAid(void *o, Unk_0200f6d4_V2 *v, s32 a, s32 b, s32 c);
+extern "C" s32 FieldAction_RequestToolForAid(s32 aid, Unk_0200f6d4_V2 *v, s32 a, s32 b, u16 c);
 }
 }
 }
@@ -2410,9 +2411,9 @@ void PlayerActor::setSubColliderBody(u32 *a) {
     subCollider.setupForActorAt(this, (VecFx32 *)a, 0xfd7, 0x2800, 6, 0x2fc, 0, 0xff, 0x1000);  // (a is a position)
 }
 
-void PlayerActor::setSubCollider(u32 a, u32 b, u32 c) {
+void PlayerActor::setSubCollider(VecFx32 *pos, u32 b, u32 c) {
     using namespace nS;
-    ((ActorPlacedCollider *)((u8 *)&subCollider))->setupForActorAt(this, (VecFx32 *)(a), b, c, 0x11, 0x2c, 0, 0xff, 0x1000);
+    ((ActorPlacedCollider *)((u8 *)&subCollider))->setupForActorAt(this, pos, b, c, 0x11, 0x2c, 0, 0xff, 0x1000);
 }
 
 void PlayerActor::updateBodyCollider() {
@@ -2863,13 +2864,13 @@ BOOL PlayerActor::startFieldQuery(VecFx32 *a, s32 mode, s32 idx) {
         FieldPos_ToUnit(&v.x, &v.y, a);
         switch (mode) {
         case 0:
-            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestPickUpForAid((void *)((PlayerActor *)this)->sessionSlot, v, data_020c6210[idx]);
+            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestPickUpForAid(((PlayerActor *)this)->sessionSlot, &v, data_020c6210[idx]);
             break;
         case 1:
-            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestToolForAid((void *)((PlayerActor *)this)->sessionSlot, v, data_020c6210[idx], 0, 0xfff1);
+            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestToolForAid(((PlayerActor *)this)->sessionSlot, &v, data_020c6210[idx], 0, 0xfff1);
             break;
         case 2:
-            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestFillHoleForAid((void *)((PlayerActor *)this)->sessionSlot, v, data_020c6210[idx]);
+            ((PlayerActor *)this)->fieldQuery = FieldAction_RequestFillHoleForAid(((PlayerActor *)this)->sessionSlot, &v, data_020c6210[idx]);
             break;
         }
     }
@@ -2923,7 +2924,7 @@ s32 PlayerActor::startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b) {
             ((PlayerActor *)this)->actionItem = ((PlayerActor *)this)->shownItem = *(u16 *)r;
             l.v.x = p->x;
             l.v.y = p->y;
-            ((PlayerActor *)this)->fieldQuery = Unk_0200f7a0_NS::FieldAction_RequestToolForAid((void *)((PlayerActor *)this)->sessionSlot, &l.v, a, b, 0xfff1);
+            ((PlayerActor *)this)->fieldQuery = Unk_0200f7a0_NS::FieldAction_RequestToolForAid(((PlayerActor *)this)->sessionSlot, &l.v, a, b, 0xfff1);
             if (((PlayerActor *)this)->fieldQuery == -1) {
                 result = 0;
             } else {

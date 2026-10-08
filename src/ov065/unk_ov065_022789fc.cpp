@@ -152,7 +152,7 @@ s32 ghiSendBufferedData(GHIConnection *o) {
     s32 w, e;
     s32 r;
     do {
-        s32 t = GSISocketSelect(o->socket, (s32 *)z, &w, &e);
+        s32 t = GSISocketSelect(o->socket, NULL, &w, &e);
         if (t == ~z || e != 0) {
             o->completed = 1;
             o->result = 5;

@@ -3727,7 +3727,7 @@ BOOL FieldObj_LoadDesignModels(Obj *o) {
     u32 j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 8; j++) {
-            if (!((CachedModel *)(p))->loadWithSharedTex((u8 *)"/fg/obj_myD.nsbmd", (void *)(i), (void *)(j))) {
+            if (!((CachedModel *)(p))->loadWithSharedTex((u8 *)"/fg/obj_myD.nsbmd", i, j)) {
                 return FALSE;
             }
             p++;

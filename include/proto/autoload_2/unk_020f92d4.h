@@ -8,6 +8,7 @@
 #include "gfx/SplEmitterViews.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplViews.h"
+#include "gfx/V3.h"
 #endif
 
 #ifdef __cplusplus
@@ -32,13 +33,13 @@ extern "C" {
 void spl_calc(MU *m, EU *e);
 #endif
 #ifndef PROTO_LOCAL_sDrawParent
-void sDrawParent(Pm *mp, u32 a);
+void sDrawParent(Pm *mp, SplPosFn a);
 #endif
 #ifndef PROTO_LOCAL_sDrawChild
-void sDrawChild(Pm *mp, u32 a);
+void sDrawChild(Pm *mp, SplPosFn a);
 #endif
 #ifndef PROTO_LOCAL_spl_draw
-void spl_draw(Pm *m, u32 a);
+void spl_draw(Pm *m, SplPosFn a);
 #endif
 #ifndef PROTO_LOCAL_SPL_Init
 PmNew *SPL_Init(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16 a4, u16 a5);

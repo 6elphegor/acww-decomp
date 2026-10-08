@@ -242,7 +242,10 @@ void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
 void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
 #endif
 #ifndef PROTO_LOCAL_Icmp_SendEchoRequest
-void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
+void Icmp_SendEchoRequest(u8 *a, u32 b, IpSocket *c);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_SetUdpCallback
+void IpSoc_SetUdpCallback(IpSocketUdpCallback v);
 #endif
 #ifndef PROTO_LOCAL_IpStack_TimerThreadMain
 void IpStack_TimerThreadMain(void);
@@ -333,9 +336,6 @@ void IpSoc_Init();
 #endif
 #ifndef PROTO_LOCAL_IpSoc_Release
 void IpSoc_Release();
-#endif
-#ifndef PROTO_LOCAL_IpSoc_SetUdpCallback
-void IpSoc_SetUdpCallback(u32 v);
 #endif
 #ifndef PROTO_LOCAL_IpSoc_TcpListen
 void IpSoc_TcpListen();

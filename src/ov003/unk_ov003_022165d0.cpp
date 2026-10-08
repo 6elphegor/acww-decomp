@@ -72,7 +72,7 @@ BOOL PlayerHouse::initBuilding() {
     if (getDoorPos(&v, &ang)) {
         v.x -= 0x2000;
         v.z += 0x1000;
-        Actor::spawn((void *)(0x24), (void *)(0x501d), &v, (void *)(0), (void *)(0));
+        Actor::spawn(0x24, 0x501d, &v, NULL, NULL);
     }
     return TRUE;
 }

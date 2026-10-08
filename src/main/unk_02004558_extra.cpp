@@ -1774,7 +1774,7 @@ void PlayerActor::drawReady() {
     VecFx32 v;
     data_021cb69c = this->bodyModel.mtx;
     ((Model *)(&this->bodyModel))->setAlpha(this->alpha);
-    ((TwoLayerAnimModel *)(&this->bodyModel))->drawLayered(0);
+    ((TwoLayerAnimModel *)(&this->bodyModel))->drawLayered(NULL);
     Model_GetJointWorldMtx(&this->bodyModel, &this->headMtx, 0xf);
     Model_GetJointWorldMtx(&this->bodyModel, &this->toolHandMtx, 0xe);
     Model_GetJointWorldMtx(&this->bodyModel, &this->itemHandMtx, 0xb);

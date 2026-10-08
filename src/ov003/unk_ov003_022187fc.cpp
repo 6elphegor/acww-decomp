@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "town/TownState.h"
 #include "town/BlockMap.h"
 #include "gfx/VecFx32.h"
 #include "sys/ProcProfile.h"
@@ -62,7 +63,7 @@ s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 GroundSeason_IsSnow();
 BOOL Ground_SetQuadrantsBlocked(s32 x, s32 z, s32 mask);
-s32 TownState_FindEvent(s32 x, u32 id);
+s32 TownState_FindEvent(TownState *x, u32 id);
 BOOL NNS_FndMountArchive(NNSFndArchive *arc, const char *name, u32 *binary);
 BOOL NNS_FndUnmountArchive(NNSFndArchive *arc);
 void BuildingInfo_Copy(BuildingInfo *dst, const BuildingInfo *src);
@@ -274,7 +275,7 @@ s32 FieldStructureMgr_SpawnBuilding(FieldStructureMgr *self, u16 *pv, s32 x, s32
     }
     BuildingInfo_Copy(&obj, q);
     // (Actor::spawn takes the profile and the spawn parameter as pointer-sized values)
-    if (Actor::spawn((void *)(uptr)BuildingInfo_GetProfile(&obj), (void *)(uptr)*pv, &vec, 0, 0) != 0) {
+    if (Actor::spawn(BuildingInfo_GetProfile(&obj), *pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
             ((BlockMap *)gSceneBlockMap)->placeStructure(pv, x, y, 0);
             FieldStructureMgr_ApplyFootprint(self, pv, x, y);
@@ -552,7 +553,7 @@ s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
     u32 i;
     BOOL z;
     HouseLightUpDeco_Clear(r);
-    s32 c = TownState_FindEvent(0, 0x11);  // (its first argument, the town state, is not used)
+    s32 c = TownState_FindEvent(NULL, 0x11);  // (its first argument, the town state, is not used)
     z = FALSE;
     if (c == ~z) {
         return z;

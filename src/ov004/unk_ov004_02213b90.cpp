@@ -79,7 +79,7 @@ extern "C" void *MuseumExhibitInfo_SpawnAutoTalk() {
         sMuseumExhibitSpawnList = 0;
         sMuseumExhibitSpawnCount = 0;
         sMuseumExhibitSpawnFacingArc = 0;
-        return Actor::spawn((void *)0x19, 0, gVec3Zero, 0, 0);
+        return Actor::spawn(0x19, 0, gVec3Zero, 0, 0);
     }
     return 0;
 }
@@ -94,7 +94,7 @@ extern "C" void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s16 e, u8 
     loc[0] = 0;
     loc[1] = c;
     loc[2] = 0;
-    Actor::spawn((void *)(0x19), (void *)(0), b, loc, 0);
+    Actor::spawn(0x19, 0, b, loc, 0);
 }
 
 extern "C" void *MuseumExhibitInfo_GetByIndex(s32 i) {

@@ -124,11 +124,11 @@ s32 GetReceiveBufferSize(s32);
 s32 SetSendBufferSize(s32, s32);
 s32 SetReceiveBufferSize(s32, s32);
 s32 SetSockBlocking(s32, s32);
-s32 goastrdup(s32);
+char *goastrdup(const char *);
 s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiSendServerBuddyMessage(GPConnection *, s32, s32, const char *);
 s32 gpiClipBufferToPosition(GPConnection *, GPIBuffer *);
-s32 gpiReadMessageFromBuffer(GPConnection *, GPIBuffer *, s32 *, s32 *, s32 *);
+s32 gpiReadMessageFromBuffer(GPConnection *, GPIBuffer *, char **, s32 *, s32 *);
 s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
 s32 gpiRecvToBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32 *, const char *);
 s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
@@ -139,7 +139,7 @@ s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallbac
 s32 gpiPeerStartConnect(GPConnection *, GPIPeer *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
-s32 gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, char *, s32, s32);
+void gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, const char *);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
@@ -389,7 +389,7 @@ s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
     s32 len;
     s32 flag;
     GPICallbackCopy pr;
-    s32 v;
+    char *v;
     s32 type;
     s32 ext;
     s32 r;
@@ -433,7 +433,7 @@ s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
                         return 1;
                     }
                     m->profile = n->profile;
-                    m->message = (char *)goastrdup(v);
+                    m->message = goastrdup(v);
                     m->date = time(0);
                     r = gpiAddCallback(h, pr.p, m, 0, 2);
                     if (r != 0) {
@@ -453,7 +453,7 @@ s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
             case 0xce:
             case 0xcf:
             case 0xd0:
-                gpiHandleTransferMessage(h, n, type, n->inputBuffer.buffer, v, ext);
+                gpiHandleTransferMessage(h, n, type, n->inputBuffer.buffer);  // (the stripped handler reads the headers only)
                 break;
             }
             gpiClipBufferToPosition(h, &n->inputBuffer);

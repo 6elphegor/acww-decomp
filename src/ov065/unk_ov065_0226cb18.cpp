@@ -201,7 +201,6 @@ extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
 s32 WifiLink_GetPhase(void);
-s32 WifiLink_StartupAsync(void *a, void *b);
 s32 WifiAp_OnLinkNotify(void *a);
 void WifiAp_BuildSearchList(void);
 void WifiAp_StartScan(void *a, void *b, s32 c, u32 d);

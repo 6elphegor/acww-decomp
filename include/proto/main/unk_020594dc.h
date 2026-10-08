@@ -57,10 +57,10 @@ u32 HappyRoom_CalcLuckyBonus(u32 *p);
 void RoomScoreEvaluator_Destruct();
 #endif
 #ifndef PROTO_LOCAL_HappyRoom_EvaluateHouse
-void HappyRoom_EvaluateHouse(s32 a);
+void HappyRoom_EvaluateHouse(void *evaluator);
 #endif
 #ifndef PROTO_LOCAL_HappyRoom_EvaluateVillagerRoom
-s32 HappyRoom_EvaluateVillagerRoom(s32 a, s32 b, s32 *c, s32 *d, s32 *e, s32 *f);
+s32 HappyRoom_EvaluateVillagerRoom(void *evaluator, s32 b, u16 *c, s32 *d, s32 *e, s32 *f);
 #endif
 #ifndef PROTO_LOCAL_HappyRoom_SendScoreLetters
 BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n);

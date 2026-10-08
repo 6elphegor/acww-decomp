@@ -1047,13 +1047,13 @@ void CatalogMenu::drawItemNames() {
     s32 i;
     LabelString *w;
     s32 cnt;
-    s32 z4 = 0, z1 = 0, z2 = 0, z3 = 0;
+    s32 z1 = 0, z2 = 0, z3 = 0;
     s32 cur = topRow;
     u16 *list = getTabItemPtr(cur);
     s32 col = (cur + 9) % 9;
     cnt = getTabOwnedCount();
     for (i = 0; i < 9; i++) {
-        w = (LabelString *)z4;
+        w = NULL;
         if (cur < 0 || cur >= cnt) {
             shownRowItems[col] = 0xfff1;
             w = allocTextLabel();

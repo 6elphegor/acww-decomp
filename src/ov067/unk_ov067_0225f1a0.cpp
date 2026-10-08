@@ -191,7 +191,7 @@ s32 WM_Enable(void *);
 s32 WM_SetIndCallback(void *);
 s32 WM_SetPortCallback(u32, void *, u32);
 s32 WM_Finish(void);
-s32 WM_SetMPDataToPortEx(void *, u32, void *, ...);
+s32 WM_SetMPDataToPortEx(void *, void *, void *, u32, u32, u32, u32);
 
 // data
 extern WlxWmWork *sWlxWm;
@@ -903,7 +903,7 @@ extern "C" void WlxWm_SendMpData(WlxWmWork *s) {
     if (l.e > v) {
         return;
     }
-    s->isSending = WlxWm_CheckApiCall(s, 0xf, WM_SetMPDataToPortEx((void *)WlxWm_OnMpDataSent, 0, l.d, l.e, l.f, 4, 2));
+    s->isSending = WlxWm_CheckApiCall(s, 0xf, WM_SetMPDataToPortEx((void *)WlxWm_OnMpDataSent, NULL, l.d, l.e, l.f, 4, 2));
 }
 
 extern "C" void WlxWm_SetState(WlxWmWork *s, s32 st, void *arg) {
@@ -1046,7 +1046,7 @@ extern "C" void WlxWm_OnPortRecv(WMPortRecvCallback *m) {
         if (cb == NULL) {
             return;
         }
-        cb(10, (void *)sh);
+        cb(10, (void *)(uptr)sh);  // (event 10: the departed aid's bit as the argument)
         return;
     }
     }
@@ -1193,7 +1193,7 @@ extern "C" void WlxWm_OnParentEvent(WlxWmMsg *m) {
         u32 a;
         a = 1 << m->aid;
         if (cb != NULL) {
-            cb(0xa, (void *)a);
+            cb(0xa, (void *)(uptr)a);  // (event 10: the aid bit as the argument)
         }
         return;
     case 2: {

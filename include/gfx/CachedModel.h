@@ -12,8 +12,8 @@ public:
     BOOL release(void);
     BOOL allocJointRecord(void *heap);
     void setFromFile(void *a);
-    BOOL loadWithSharedTex(void *a, void *b, void *c);
-    BOOL loadCached(void *a, void *b);
+    BOOL loadWithSharedTex(void *a, s32 player, s32 pattern);
+    BOOL loadCached(u32 tag, void *path);  // tag: the model cache key (four characters)
     BOOL loadWithTex(void *res, void *name, void *tex, void *d, u32 *e, s32 f);
     BOOL load(void *res, void *name);
     BOOL loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag);

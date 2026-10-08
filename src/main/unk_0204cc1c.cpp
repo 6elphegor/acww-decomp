@@ -95,8 +95,8 @@ s32 SceneId_GetHouseRoom(u32 x);
 u8 *SaveVillagers_Get(u8 *base, s32 idx);
 void Villager_ResolveRoomLayout(VillagerData *a, u16 *b);
 MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x);
-void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3,
-                   Unk_02037638_S8 *k45, u32 k6);
+void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, u16 *layer0, u16 *layer1, u16 *buriedMask, BgAcreModel *k2,
+                   void *bcl, Unk_02037638_S8 *k45, u32 mapSlot);
 BOOL CollisionMap_Bind(u32 a, u32 b, UnitShapeQueryX *o, s32 idx);
 void CollisionMap_Release(s32 idx);
 void CollisionMap_Select(s32 v);
@@ -507,7 +507,7 @@ extern "C" s32 BlockMap_IsBuried(BlockMap *g, u32 hx, u32 hy, u32 lx, u32 ly) {
     MapBlock *cell = Unk_0204e858_GetCell(g, hx, hy);
     BOOL r = FALSE;
     if (cell != NULL && cell->buried != 0) {
-        r = Unk_0204e8b0_Bit((u16 *)cell->buried, lx, ly);
+        r = Unk_0204e8b0_Bit(cell->buried, lx, ly);
     }
     return r;
 }
@@ -723,7 +723,7 @@ void BlockMap::clear() {
     height = z;
     unitsX = z;
     unitsZ = z;
-    blocks = (MapBlock *)z;
+    blocks = NULL;
     mapSlot = z;
 }
 
@@ -784,7 +784,7 @@ BOOL BlockMap::build(MapBlockEntry *e, BlockMapSize *sz, void *heap) {
                 l.v.z = l.y << 17;
                 w = l.v;
                 BgAcreModel *h = BgModelCache_Get()->getAcre(e->acreId);
-                MapBlock_Init(buf, e->acreId, &w, (s32)(uptr)e->layers[0], (s32)(uptr)e->layers[1], (s32)(uptr)e->buried, h, 0,
+                MapBlock_Init(buf, e->acreId, &w, e->layers[0], e->layers[1], e->buried, h, NULL,
                               (Unk_02037638_S8 *)&l, 0);
                 buf++;
                 e++;
@@ -1056,8 +1056,8 @@ BOOL TownBlockMap::build(void *heap) {
                 l.w.x = l.v.x;
                 l.w.y = l.v.y;
                 l.w.z = l.v.z;
-                MapBlock_Init(cell, q->acreId, &l.w, (s32)(uptr)q->layers[0], (s32)(uptr)q->layers[1],
-                              (s32)(uptr)q->buried, 0, 0, (Unk_02037638_S8 *)l.xy, mapSlot);
+                MapBlock_Init(cell, q->acreId, &l.w, q->layers[0], q->layers[1], q->buried, 0, NULL, (Unk_02037638_S8 *)l.xy,
+                              mapSlot);
                 cell++;
                 q++;
             }
@@ -1106,7 +1106,7 @@ void TownBlockMap::bindBg() {
                 u32 t = ((MapBlockAcre *)c)->getAcreId();
                 void *d = gTownBclHeap;
                 BgModelCache_Get();
-                c->bindBg(0, (u32)(uptr)BgModel_LoadBcl(t, d), mapSlot);
+                c->bindBg(0, BgModel_LoadBcl(t, d), mapSlot);
             }
         }
     }
@@ -1321,7 +1321,7 @@ join:
         u32 a = ((MapBlockAcre *)h)->getAcreId();
         void *g = gRoomBclHeap;
         BgModelCache_Get();
-        h->bindBg(0, (u32)(uptr)BgModel_LoadBcl(a, g), p->mapSlot);
+        h->bindBg(0, BgModel_LoadBcl(a, g), p->mapSlot);
     }
 }
 
@@ -1348,8 +1348,7 @@ extern "C" BOOL HouseRoomMap_Init(RoomBlockMap *p, s32 i, void *heap) {
         CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
         l.w = l.v;
-        p->blocks->init(info->acreId, &l.w, (s32)(uptr)info->layers[0], (s32)(uptr)info->layers[1], (s32)(uptr)info->buried,
-                        0, 0, 0, 0, p->mapSlot);
+        p->blocks->init(info->acreId, &l.w, info->layers[0], info->layers[1], info->buried, 0, NULL, 0, 0, p->mapSlot);
         Heap_Free((Heap *)heap, info);
         r = TRUE;
     }
@@ -1429,10 +1428,9 @@ extern "C" BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap) {
         FieldUnit_FromBlockUnit(&p->unitsX, &p->unitsZ, p->width, p->height, 0, 0);
         CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
-        u32 t = (u32)(uptr)BgModelCache_Get()->getAcreBcl(info->acreId);
+        void *t = BgModelCache_Get()->getAcreBcl(info->acreId);
         l.w = l.v;
-        p->blocks->init(info->acreId, &l.w, (s32)(uptr)info->layers[0], (s32)(uptr)info->layers[1], (s32)(uptr)info->buried,
-                        0, t, 0, 0, p->mapSlot);
+        p->blocks->init(info->acreId, &l.w, info->layers[0], info->layers[1], info->buried, 0, t, 0, 0, p->mapSlot);
         Heap_Free((Heap *)heap, info);
         r = TRUE;
     }

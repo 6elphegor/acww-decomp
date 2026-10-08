@@ -126,8 +126,8 @@ void qr2_check_send_heartbeat(qr2_implementation_s *q);
 void qr2_check_queries(qr2_implementation_s *q);
 void qr2_think(qr2_implementation_s *q);
 void qr2_register_publicaddress_callback(qr2_implementation_s *q, qr2_publicaddresscallback_t cb);
-void qr2_register_clientmessage_callback(qr2_implementation_s *q, s32 v);
-void qr2_register_natneg_callback(qr2_implementation_s *q, s32 v);
+void qr2_register_clientmessage_callback(qr2_implementation_s *q, qr2_clientmessagecallback_t v);
+void qr2_register_natneg_callback(qr2_implementation_s *q, qr2_natnegcallback_t v);
 s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, qr2_serverkeycallback_t cb88,
                         qr2_playerteamkeycallback_t cb8c, qr2_playerteamkeycallback_t cb90, qr2_keylistcallback_t cb94, qr2_countcallback_t cb98,
                         qr2_adderrorcallback_t cb9c, void *ud);
@@ -166,9 +166,9 @@ s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *nam
     q->key_list_callback = cb94;
     q->playerteam_count_callback = cb98;
     q->adderror_callback = cb9c;
-    q->nn_callback = (qr2_natnegcallback_t)i;
-    q->cm_callback = (qr2_clientmessagecallback_t)i;
-    q->cdkeyprocess = i;
+    q->nn_callback = NULL;
+    q->cm_callback = NULL;
+    q->cdkeyprocess = NULL;
     q->ispublic = a5;
     q->read_socket = i;
     q->nat_negotiate = a6;
@@ -205,22 +205,22 @@ s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *nam
 
 namespace F02287b18 {
 extern "C" {
-void qr2_register_natneg_callback(qr2_implementation_s *q, s32 v) {
+void qr2_register_natneg_callback(qr2_implementation_s *q, qr2_natnegcallback_t v) {
     if (q == NULL) {
         q = current_rec;
     }
-    q->nn_callback = (qr2_natnegcallback_t)v;
+    q->nn_callback = v;
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void qr2_register_clientmessage_callback(qr2_implementation_s *q, s32 v) {
+void qr2_register_clientmessage_callback(qr2_implementation_s *q, qr2_clientmessagecallback_t v) {
     if (q == NULL) {
         q = current_rec;
     }
-    q->cm_callback = (qr2_clientmessagecallback_t)v;
+    q->cm_callback = v;
 }
 }
 }
@@ -878,7 +878,7 @@ void qr2_parse_queryA(Qr *q, s8 *data, s32 n, void *addr) {
     }
     c = data[0];
     if (c == 0x3b) {
-        qr2_clientmessagecallback_t cb = (qr2_clientmessagecallback_t)q->cdkeyprocess;
+        qr2_cdkeyprocesscallback_t cb = q->cdkeyprocess;
         if (cb != NULL) {
             cb((u8 *)data, n, addr);
             return;

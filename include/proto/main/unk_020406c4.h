@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_020406c4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ClockDateTime.h"
 #ifdef __cplusplus
 #include "game/EventWeekSlots.h"
 #endif
@@ -12,7 +13,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_WeekVisitors_FindFreeDays
-s32 WeekVisitors_FindFreeDays(void *, s32 *out, s32 x);
+s32 WeekVisitors_FindFreeDays(void *, s32 *out, ClockDateTime *x);
 #endif
 #ifndef PROTO_LOCAL_WeekVisitors_PickFreeDay
 s32 WeekVisitors_PickFreeDay(void *, s32 *arr, s32 n);

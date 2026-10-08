@@ -2955,7 +2955,7 @@ s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 s32 Scene_InVillagerHouse();
 u32 Scene_GetVillagerHouse();
 s32 Scene_InHouseRoom();
-s32 SaveVillagers_Get(void *p, u32 a);
+void *SaveVillagers_Get(void *p, s32 a);
 u32 Villager_GetInfo4d(void *v);
 s32 FtrActor_TestPlayerUnk();
 }
@@ -3084,9 +3084,9 @@ BOOL FtrStereo::enterTalkAct04() {
     if (p18::Scene_InVillagerHouse()) {
         u32 t = 0;
         u32 r = p18::Scene_GetVillagerHouse();
-        s32 v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+        void *v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
         if (v) {
-            t = p18::Villager_GetInfo4d((void *)v);
+            t = p18::Villager_GetInfo4d(v);
         }
         l.v = Unk_ov004_0220ec30_Val(t);
         new (buf1) ItemName(&l.v);
@@ -3271,9 +3271,9 @@ BOOL FtrStereo::initModel() {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
             u32 r = p18::Scene_GetVillagerHouse();
-            s32 v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+            void *v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
             if (v) {
-                t = p18::Villager_GetInfo4d((void *)v);
+                t = p18::Villager_GetInfo4d(v);
             }
             BOOL f = FALSE;
             volatile u16 *pg = &p18::sStereoSong;

@@ -450,7 +450,7 @@ extern "C" void Ground_SetWaveLevel(s32 v);
 extern "C" void CollisionMap_Release(s32 idx);
 extern "C" void CollisionMap_ClearBlocks(s32 idx);
 extern "C" void CollisionMap_Reset(s32 idx);
-extern "C" BOOL CollisionMap_SetBlock(s32 x, s32 y, s32 val, s32 idx);
+extern "C" BOOL CollisionMap_SetBlock(s32 x, s32 y, void *bcl, s32 idx);
 extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 mask);
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
 extern "C" void Collision_AddDigHole(s32 a, s32 b);
@@ -2846,11 +2846,11 @@ extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 mask) {
     Ground_SetWalkLinks(x, z, t);
 }
 
-extern "C" BOOL CollisionMap_SetBlock(s32 x, s32 y, s32 val, s32 idx) {
+extern "C" BOOL CollisionMap_SetBlock(s32 x, s32 y, void *bcl, s32 idx) {
     CollisionBlockRef *c = Unk_0203030c_Get(&sCollisionWorld.maps[idx], x, y);
     if (c) {
-        c->attrs = (u8 *)val;
-        c->walkLinks = (u8 *)val + 0x100;
+        c->attrs = (u8 *)bcl;  // (the block's collision data: 0x100 attribute bytes, then the walk links)
+        c->walkLinks = (u8 *)bcl + 0x100;
         sCollisionWorld.maps[idx].allBlocksSet = Unk_020303d0_All(idx);
         return TRUE;
     }

@@ -27,7 +27,7 @@ extern u16 data_020c6cc8;
 
 
 class SpNpcTestTalk;
-typedef void (SpNpcTestTalk::*SpNpcTestTalkEndFn)(void *);
+typedef void (SpNpcTestTalk::*SpNpcTestTalkEndFn)(u32);
 typedef void (SpNpcTestTalk::*SpNpcTestTalkStartFn)(void *);
 
 class SpNpcTestTalk : public ActorTalkRequest {
@@ -37,7 +37,7 @@ public:
     virtual void onMessageEnd(u32 attr);
     virtual void start(TalkStartMsg *out);
 
-    void onMessageEndPhase00(void *a);
+    void onMessageEndPhase00(u32 attr);
     void dispatchStart(TalkStartMsg *out);
     void startPhase00(TalkStartMsg *out);
     void setPhase(s32 v);
@@ -425,7 +425,7 @@ void SpNpcTestTalk::start(TalkStartMsg *out_) {
     dispatchStart(out);
 }
 
-void SpNpcTestTalk::onMessageEndPhase00(void *a) {}
+void SpNpcTestTalk::onMessageEndPhase00(u32 attr) {}
 
 char sSpNpcModelRcd[] = "npc_sp/model/rcd.nsbmd";
 char sSpNpcTexBoa[] = "npc_sp/model/boa_tex.nsbtx";
@@ -435,8 +435,7 @@ char sSpNpcModelCml[] = "npc_sp/model/cml.nsbmd";
 char sSpNpcModelPgb[] = "npc_sp/model/pgb.nsbmd";
 char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
-void SpNpcTestTalk::onMessageEnd(u32 a_) {
-    void *a = (void *)a_;
+void SpNpcTestTalk::onMessageEnd(u32 a) {
     static SpNpcTestTalkEndFn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
     if (phase >= 0 && phase < 1) {
         if (tbl[phase]) {

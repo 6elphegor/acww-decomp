@@ -699,9 +699,8 @@ extern "C" s32 ItemList_GetTownClassRank(u16 *p, s32 mode) {
         if (mode != 0) return v;
         {
             ItemClassOrder *base = ((ItemClassOrders *)(g + 0x15fbc))->get(idx);
-            s32 z = 0;
             for (u32 i = 0; i < 3; i++) {
-                if (v == base->pickClass(((volatile u32 *)sItemClassRanks)[i], (RandomSource *)z)) return ((volatile u32 *)sItemClassRanks)[i];
+                if (v == base->pickClass(((volatile u32 *)sItemClassRanks)[i], NULL)) return ((volatile u32 *)sItemClassRanks)[i];
             }
         }
         return v;

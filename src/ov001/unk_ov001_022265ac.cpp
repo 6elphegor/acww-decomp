@@ -10,12 +10,12 @@ s32 OS_DisableIrqMask(s32);
 s32 OS_EnableIrqMask(s32);
 void OS_SetIrqMask(u32);
 void OS_ResetRequestIrqMask(s32);
-s32 OS_GetIrqFunction(s32);
-void OS_SetIrqFunction(s32, void *);
+void (*OS_GetIrqFunction(u32 intrBit))(void);
+void OS_SetIrqFunction(u32 intrBit, void (*function)(void));
 void OS_EnableInterrupts(s32);
 }
 
-extern "C" u32 sWfcSavedVBlankHandler = 0;
+extern "C" void (*sWfcSavedVBlankHandler)(void) = 0;
 extern "C" u32 sWfcSavedIrqMask = 0;
 
 #pragma thumb off
@@ -26,7 +26,7 @@ void WfcIrq_Init()
     OS_SetIrqMask(0x40018);
     OS_EnableIrqMask(1);
     sWfcSavedVBlankHandler = OS_GetIrqFunction(1);
-    OS_SetIrqFunction(1, (void *)WfcIrq_VBlank);
+    OS_SetIrqFunction(1, WfcIrq_VBlank);
     OS_ResetRequestIrqMask(1);
     u16 t = IO_R((volatile u16 *)0x4000208);
     IO_W((volatile u16 *)0x4000208, 1);
@@ -38,7 +38,7 @@ void WfcIrq_Restore()
     u16 t = IO_R((volatile u16 *)0x4000208);
     IO_W((volatile u16 *)0x4000208, 0);
     OS_SetIrqMask(sWfcSavedIrqMask);
-    OS_SetIrqFunction(1, (void *)sWfcSavedVBlankHandler);
+    OS_SetIrqFunction(1, sWfcSavedVBlankHandler);
 }
 
 void WfcIrq_VBlank()

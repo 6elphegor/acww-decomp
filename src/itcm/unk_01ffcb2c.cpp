@@ -63,7 +63,7 @@ extern "C" BOOL func_01ffcc10(void *a, Obj *o) {
 extern "C" BOOL TownBlockMap_IsBuried(CellGrid *g, s32 x, s32 z) {
     s32 cx = x >> 4;
     s32 cz = z >> 4;
-    u16 row = g->cells[cx + cz * g->w].buriedFlags[z - (cz << 4)];
+    u16 row = g->cells[cx + cz * g->w].buried[z - (cz << 4)];
     if ((row & (1 << (x - (cx << 4)))) == 0) {
         return FALSE;
     }

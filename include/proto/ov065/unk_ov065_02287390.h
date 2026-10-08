@@ -59,10 +59,10 @@ extern qr2_implementation_s static_qr2_rec;
 s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, qr2_serverkeycallback_t cb88, qr2_playerteamkeycallback_t cb8c, qr2_playerteamkeycallback_t cb90, qr2_keylistcallback_t cb94, qr2_countcallback_t cb98, qr2_adderrorcallback_t cb9c, void *ud);
 #endif
 #ifndef PROTO_LOCAL_qr2_register_natneg_callback
-void qr2_register_natneg_callback(qr2_implementation_s *q, s32 v);
+void qr2_register_natneg_callback(qr2_implementation_s *q, qr2_natnegcallback_t v);
 #endif
 #ifndef PROTO_LOCAL_qr2_register_clientmessage_callback
-void qr2_register_clientmessage_callback(qr2_implementation_s *q, s32 v);
+void qr2_register_clientmessage_callback(qr2_implementation_s *q, qr2_clientmessagecallback_t v);
 #endif
 #ifndef PROTO_LOCAL_qr2_register_publicaddress_callback
 void qr2_register_publicaddress_callback(qr2_implementation_s *q, qr2_publicaddresscallback_t cb);

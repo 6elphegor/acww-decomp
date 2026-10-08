@@ -42,7 +42,7 @@ public:
     void calcVelocity();
     void applyVelocity(ActorCollider *v);
     void setCullParams(s32 a, s32 b, s32 c);
-    static void *spawn(void *a, void *b, void *c, void *d, void *e);
+    static void *spawn(u32 profile, u32 param, void *pos, void *angle, void *parent);
     static void setSpawnTransform(void *a, void *b);
     static void *findByProfile(u32 id, Actor *o);
     static void *findById(u32 id);

@@ -215,7 +215,7 @@ BOOL SpNpcBrewster::onCreate() {
         changeAct(0);
     }
     if (gCommManager->isSlotActive(gCommManager->myAid) == 0) {
-        Actor::spawn((void *)0x66, (void *)0xd01d, (void *)sSpNpcBrewsterGuestSpawnPos, (void *)data_ov004_02240120, 0);
+        Actor::spawn(0x66, 0xd01d, (void *)sSpNpcBrewsterGuestSpawnPos, (void *)data_ov004_02240120, 0);
     }
     return TRUE;
 }

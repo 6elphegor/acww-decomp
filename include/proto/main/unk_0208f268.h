@@ -29,9 +29,6 @@ void *EffectSpl_Alloc(u32 size);
 #ifndef PROTO_LOCAL_EffectSpl_LoadArchive
 void *EffectSpl_LoadArchive(void *unused);
 #endif
-#ifndef PROTO_LOCAL_EffectSpl_ToCurvedPos
-u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
-#endif
 #ifndef PROTO_LOCAL_EffectSpl_GetSeasonTint
 s16 EffectSpl_GetSeasonTint();
 #endif
@@ -49,6 +46,9 @@ BOOL EffectSpl_LoadTextures(EffectSplProc *p);
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_CopyResourceData
 void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p);
+#endif
+#ifndef PROTO_LOCAL_EffectSpl_ToCurvedPos
+u16 EffectSpl_ToCurvedPos(VecFx32 *pos, VecFx32 v);
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_GetSeasonTintVariant
 s16 EffectSpl_GetSeasonTintVariant(EffectSplEmitter *o);

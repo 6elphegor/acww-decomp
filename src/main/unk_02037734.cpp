@@ -318,7 +318,7 @@ void CommCautionWindow::init() {
     }
     clearPlaneState();
     if (a || b) {
-        ((CachedModel *)(&model))->loadCached((void *)(0x43617557), (void *)"caution/caution_window.nsbmd");
+        ((CachedModel *)(&model))->loadCached(0x43617557, (void *)"caution/caution_window.nsbmd");
         setupModelMatrix();
         lineIndex = 0;
         modelVisible = 0;

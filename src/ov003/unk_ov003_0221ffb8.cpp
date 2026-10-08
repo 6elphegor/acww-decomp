@@ -3239,8 +3239,8 @@ extern "C" void FishFinModel_Release(O_f3 *a) {
 
 //@ 0x2221524
 BOOL FieldFishManager::onCreate() {
-    shadowModelPool.init(6, NULL, NULL, 0x800, (ModelSlotAllocFunc)FishShadowHeap_Create, FishShadowHeap_Destroy);
-    finModelPool.init(1, (void *)0x400, (void *)0x80, 0x800, (ModelSlotAllocFunc)FishFinHeap_Create, FishFinHeap_Destroy);
+    shadowModelPool.init(6, 0, 0, 0x800, (ModelSlotAllocFunc)FishShadowHeap_Create, FishShadowHeap_Destroy);
+    finModelPool.init(1, 0x400, 0x80, 0x800, (ModelSlotAllocFunc)FishFinHeap_Create, FishFinHeap_Destroy);
     shadowAnimFile = File_LoadAlloc(sFishShadowAnimPath, gCurrentHeap, 4, NULL);
     FishShadow *s = sFishShadows;
     s32 i = 0;
@@ -4271,7 +4271,7 @@ extern "C" void FishShadow_SetAnimSpeed(FishShadow *self, s32 v) {
 extern "C" BOOL FishShadow_LoadModel(FishShadow *self, void *p, ModelSlotPool *q) {
     BOOL r = FALSE;
     AnimModel *o = &self->model;
-    o->loadCached((void *)0x66736477, sFishShadowModelPath);  // (cache tag 'fsdw')
+    o->loadCached(0x66736477, sFishShadowModelPath);  // (cache tag 'fsdw')
     if (p == NULL) {
         return r;
     }

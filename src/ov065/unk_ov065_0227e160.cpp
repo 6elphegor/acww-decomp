@@ -124,7 +124,7 @@ s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
 s32 gpiAddCallback(GPConnection *, GPICallback, void *, GPIOperation *, s32);
 void randomString(void *, s32);
-void gpiFindProfileByUser(GPConnection *, char *, char *, u32 **);
+s32 gpiFindProfileByUser(GPConnection *, char *, char *, GPIProfile **);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 void gpiRemoveProfileByID(GPConnection *, s32);
 GPIProfile *gpiProfileListAdd(GPConnection *, s32);
@@ -380,7 +380,7 @@ namespace Nb {
 extern "C" {
 s32 gpiSendLogin(GPConnection *h, GPIConnectData *req) {
     GPIConnection *c = *h;
-    u32 *out;
+    GPIProfile *out;
     char b1[0x21];
     char b2[0x200];
     char b3[0x50];
@@ -406,8 +406,8 @@ s32 gpiSendLogin(GPConnection *h, GPIConnectData *req) {
     if (c->infoCaching != 0) {
         gpiFindProfileByUser(h, c->nick, c->email, &out);
         if (out != NULL) {
-            c->userid = out[1];
-            c->profileid = out[0];
+            c->userid = out->userId;
+            c->profileid = out->profileId;
         }
     }
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\login\\");

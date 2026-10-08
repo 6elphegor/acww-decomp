@@ -11,6 +11,9 @@
 #include "proto/autoload_2/unk_0212b770.h"
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02283304.h"
+#include "net/gpiTransfer.h"
+#include "proto/ov065/unk_ov065_0227d96c.h"
+#include "proto/ov065/unk_ov065_02280c08.h"
 #include "proto/ov065/unk_ov065_02283720.h"
 
 // ov065 TU50: GP gpiTransfer/gpiUnique/gpiUtility (0x02283304..0x02283720)
@@ -47,9 +50,6 @@ SockHostEnt *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 void gpiCallErrorCallback(void *, s32, s32);
-s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
-s32 gpiSendOrBufferString(void *, s32, char *);
-s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
@@ -68,7 +68,7 @@ s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
 s32 gpiStartSearch(void *, void *, s32, void *, void *);
 s32 gpiStartProfileSearch(void *, void *);
-s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
+s32 gpiSendTransferReply(GPConnection *, GPITransferID *, GPIPeer *, s32, const char *);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {
@@ -101,8 +101,8 @@ extern "C" {
 
 }
 extern "C" {
-void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3);
-s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt);
+void gpiHandleTransferMessage(GPConnection *h, GPIPeer *p1, s32 p2, const char *p3);
+s32 gpiSendTransferReply(GPConnection *h, GPITransferID *a, GPIPeer *b, s32 c, const char *dflt);
 s32 gpiProcessRegisterUniqueNick(void *h, GPIOperation *s, char *str);
 void gpiSetErrorString(void *h, const char *msg);
 void gpiSetError(void *h, s32 code, const char *msg);
@@ -296,7 +296,7 @@ s32 gpiProcessRegisterUniqueNick(void *h, GPIOperation *s, char *str) {
 
 namespace Na {
 extern "C" {
-s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt) {
+s32 gpiSendTransferReply(GPConnection *h, GPITransferID *a, GPIPeer *b, s32 c, const char *dflt) {
     char buf[0x24];
     s32 r;
     if (dflt == NULL) {
@@ -311,7 +311,7 @@ s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt) {
     if (r != 0) {
         return r;
     }
-    r = gpiPeerFinishTransferMessage(h, b, dflt, -1);
+    r = gpiPeerFinishTransferMessage(h, b, (char *)dflt, -1);
     if (r != 0) {
         return r;
     }
@@ -322,12 +322,12 @@ s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt) {
 
 namespace Na {
 extern "C" {
-void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3) {
+void gpiHandleTransferMessage(GPConnection *h, GPIPeer *p1, s32 p2, const char *p3) {
     char buf[0x40];
-    s32 v[3];
+    GPITransferID v;
     if (gpiValueForKey(p3, "\\xfer\\", buf, 0x40) != 0) {
-        if (sscanf(buf, "%d %u %u", &v[0], &v[1], &v[2]) == 3) {
-            gpiSendTransferReply(h, v, p1, 2, NULL);
+        if (sscanf(buf, "%d %u %u", &v.profileid, &v.count, &v.time) == 3) {
+            gpiSendTransferReply(h, &v, p1, 2, NULL);
         }
     }
 }

@@ -119,7 +119,7 @@ struct SBServerList {
     /* 0x4a4 */ u32 srcip;
     /* 0x4a8 */ u16 defaultport;
     /* 0x4aa */ u16 pad_4aa;
-    /* 0x4ac */ char *lasterror;
+    /* 0x4ac */ const char *lasterror;
     /* 0x4b0 */ s32 slsocket;
     /* 0x4b4 */ u32 lanstarttime;
     /* 0x4b8 */ s32 fromgamever;

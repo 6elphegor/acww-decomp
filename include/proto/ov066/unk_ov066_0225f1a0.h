@@ -321,7 +321,7 @@ void LocalWl_AllocScanWork(void);
 void LocalWl_FreeScanWork(void);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_SetBeaconFilter
-void LocalWl_SetBeaconFilter(s32 v);
+void LocalWl_SetBeaconFilter(s32 (*v)(void *));
 #endif
 #ifndef PROTO_LOCAL_LocalWl_GetScanChannel
 u32 LocalWl_GetScanChannel(u32 idx);
@@ -384,7 +384,7 @@ s32 LocalWl_Finish(void);
 s32 LocalWl_IsModeReached(void);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_RequestMode
-s32 LocalWl_RequestMode(s32 a, u32 b, u32 c);
+s32 LocalWl_RequestMode(s32 a, void (*b)(u32), u32 c);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_StepReady
 void LocalWl_StepReady(void);
@@ -579,7 +579,7 @@ void LocalWl_OnEndMp(LocalWlEventMsg *m);
 void LocalWl_OnSetEntry(LocalWlEventMsg *m);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_ConnectToParent
-s32 LocalWl_ConnectToParent(LocalWlBeacon *p, u32 a, u32 b);
+s32 LocalWl_ConnectToParent(LocalWlBeacon *p, void (*a)(u32), u32 b);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_GetBeacon
 LocalWlBeacon *LocalWl_GetBeacon(u32 idx, u32 b);

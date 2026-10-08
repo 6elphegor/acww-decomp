@@ -1,6 +1,8 @@
 // mwcc-flags: -O4,p
 #pragma opt_dead_assignments off
 #include "types.h"
+#include "net/WifiLinkEvent.h"
+#include "net/WifiLinkConfig.h"
 #include "nitro/os_alarm.h"
 #include "uptr.h"
 #include "net/SimpleStart.h"
@@ -35,13 +37,6 @@ struct SimpleStartSessionId {
     u8 lowerMac[6];
     u8 tag[4];
 };
-// WifiLink_StartupAsync's configuration (ov065 WifiLinkConfig: the BSS descriptor buffer kept in a 32-bit slot there)
-struct SimpleStartWcmConfig {
-    s32 dmaNo;
-    u32 bssDescBuffer;
-    s32 bssDescBufferSize;
-    s32 bssDescMode;
-};
 struct SimpleStartWep40Key { u8 v[5]; };
 struct SimpleStartWep104Key { u8 v[13]; };
 struct SimpleStartWep128Key { u8 v[16]; };
@@ -72,7 +67,7 @@ u32 strlen(const char *s);
 s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_DisconnectAsync(void);
 s32 WifiLink_SearchAsync(void *a, void *b, s32 c);
-s32 WifiLink_StartupAsync(void *a, void *b);
+s32 WifiLink_StartupAsync(WifiLinkConfig *a, WifiLinkNotifyCallback b);
 s32 WifiLink_ConnectAsync(u8 *a, u8 *b, u32 c);
 s32 WifiLink_Finish(void);
 BOOL WifiLink_LockApList(BOOL a);
@@ -102,7 +97,7 @@ extern const u32 data_ov001_02228b34[256];
 extern const u32 data_ov001_02228f34[256];
 extern const u32 data_ov001_02229334[256];
 extern const u32 data_ov001_02229734[256];
-extern SimpleStartWcmConfig *data_ov001_0222c858;
+extern WifiLinkConfig *data_ov001_0222c858;
 }
 #define data_ov001_0222c92c (data_ov001_0222c924 + 8)
 #define data_ov001_0222ca70 ((u8 *)&sSimpleStartResult[10])
@@ -614,7 +609,7 @@ extern "C" s32 data_ov001_0222c870 = 0;
 extern "C" s32 data_ov001_0222c8a8 = 0;
 extern "C" u8 *data_ov001_0222c8a4 = 0;
 extern "C" s32 data_ov001_0222c8a0 = 0;
-extern "C" SimpleStartWcmConfig *data_ov001_0222c858 = 0;
+extern "C" WifiLinkConfig *data_ov001_0222c858 = 0;
 extern "C" s32 data_ov001_0222c874 = 0;
 extern "C" s32 sSimpleStartCancel = 0;
 extern "C" u8 *data_ov001_0222c890 = 0;
@@ -669,14 +664,13 @@ struct SimpleStartProtocolLocals { SockAddrIn req; SockAddrIn from; u32 w54; u32
 
 extern "C" {
 
-void SimpleStart_WcmCallback(void *pp) {
-    s16 *p = (s16 *)pp;
+void SimpleStart_WcmCallback(WifiLinkEvent *p) {
     if (p == 0) {
         return;
     }
-    switch (*p) {
+    switch (p->request) {
     case 1:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             s32 s = sSimpleStartWcmState;
             if (s == 4) {
                 sSimpleStartWcmState = 3;
@@ -712,7 +706,7 @@ void SimpleStart_WcmCallback(void *pp) {
             return;
         }
     case 3:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sSimpleStartWcmState == 6) {
                 sSimpleStartWcmState = 5;
                 if (sSimpleStartWcmNotifyCb != 0) {
@@ -727,7 +721,7 @@ void SimpleStart_WcmCallback(void *pp) {
         }
         return;
     case 5:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sSimpleStartWcmState == 8) {
                 sSimpleStartWcmState = 7;
                 if (sSimpleStartWcmNotifyCb != 0) {
@@ -742,7 +736,7 @@ void SimpleStart_WcmCallback(void *pp) {
         }
         return;
     case 4:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             s32 s = sSimpleStartWcmState;
             if (s == 4) {
                 sSimpleStartWcmState = 3;
@@ -779,7 +773,7 @@ void SimpleStart_WcmCallback(void *pp) {
         }
         return;
     case 6:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             s32 s = sSimpleStartWcmState;
             if (s == 4) {
                 sSimpleStartWcmState = 3;
@@ -818,7 +812,7 @@ void SimpleStart_WcmCallback(void *pp) {
         }
         return;
     case 2:
-        if (p[1] == 0) {
+        if (p->result == 0) {
             if (sSimpleStartWcmState == 2) {
                 WifiLink_Finish();
                 sSimpleStartWcmState = 0;
@@ -872,7 +866,7 @@ s32 SimpleStart_WcmToIdle(void) {
         }
         break;
     case 1:
-        if (WifiLink_StartupAsync(data_ov001_0222c858, (void *)SimpleStart_WcmCallback) != 3) {
+        if (WifiLink_StartupAsync(data_ov001_0222c858, SimpleStart_WcmCallback) != 3) {
             return 0;
         }
         break;
@@ -1023,14 +1017,14 @@ s32 SimpleStart_WcmInit(SimpleStartWcmNotifyFunc cb, u8 *buf, s32 size) {
     uptr a, b;
     data_ov001_0222c878 = buf;
     a = ((uptr)buf + 0x63) & ~(uptr)3;
-    data_ov001_0222c858 = (SimpleStartWcmConfig *)a;
+    data_ov001_0222c858 = (WifiLinkConfig *)a;
     b = (a + 0x2f) & ~(uptr)0x1f;
     data_ov001_0222c88c = (u8 *)b;
     b = (b + 0x231f) & ~(uptr)0x1f;
     data_ov001_0222c89c = (u8 *)b;
     b += 0xdf;
     b &= ~(uptr)0x1f;
-    data_ov001_0222c858->bssDescBuffer = (u32)b;
+    data_ov001_0222c858->bssDescBuffer = (void *)b;
     data_ov001_0222c858->bssDescBufferSize = (buf + size) - (u8 *)b;
     data_ov001_0222c858->bssDescMode = 0;
     data_ov001_0222c858->dmaNo = 3;
@@ -1043,7 +1037,7 @@ s32 SimpleStart_WcmInit(SimpleStartWcmNotifyFunc cb, u8 *buf, s32 size) {
         sSimpleStartWcmState = 1;
     }
     if (sSimpleStartWcmState == 1) {
-        if (WifiLink_StartupAsync(data_ov001_0222c858, (void *)SimpleStart_WcmCallback) != 3) {
+        if (WifiLink_StartupAsync(data_ov001_0222c858, SimpleStart_WcmCallback) != 3) {
             OS_RestoreInterrupts(e);
             return 0;
         }
@@ -1316,14 +1310,14 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
     SimpleStartApEntry *e2 = b->e;
     u32 cnt;
     u32 i = found;
-    if ((u8 *)a->count > (u8 *)0) {
+    if (a->count != 0) {
         do {
             u8 buf[0x22] = {0};
             memcpy(buf, e1->name, 0x20);
             buf[e1->len] = 0;
             u32 j = 0;
             cnt = b->count;
-            if ((u8 *)cnt > (u8 *)0) {
+            if (cnt != 0) {
                 u32 len = e1->len;
                 do {
                     if (len == 0 || len > 0x20) break;
@@ -1353,7 +1347,7 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
         e1 = a->e;
         e2 = b->e;
         u32 m = flagA;
-        if ((u8 *)b->count > (u8 *)0) {
+        if (b->count != 0) {
             do {
                 memcpy(buf2, e2->name, 0x20);
                 buf2[e2->len] = flagA;
@@ -1368,7 +1362,7 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
         }
         i = 0;
         u32 zz = i;
-        if ((u8 *)a->count > (u8 *)0) {
+        if (a->count != 0) {
             do {
                 memcpy(buf2, e1->name, 0x20);
                 buf2[e1->len] = zz;

@@ -832,7 +832,7 @@ extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 
 Bits16 *PlayerSession_GetLastPlayDate(void);
-u32 PlayerActor_GetPlayerData(Obj *o);
+void *PlayerActor_GetPlayerData(void *p);
 u32 PlayerActor_GetTan(Obj *o);
 s32 PlayerActor_CompareLastPlayDateNow(Obj *o);
 s32 Ground_GetDefaultY(u32 a);
@@ -921,7 +921,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckTurn(Obj *o) {
     v.x = s->x;
     v.y = s->y;
     v.z = s->z;
-    (o)->setSubCollider((u32)(uptr)&v, 0x1000, 0x1000);  // (called by its symbol elsewhere with the address as a u32)
+    (o)->setSubCollider(&v, 0x1000, 0x1000);
     ((ActorCollider *)(&o->subCollider))->submit();
 }
 
@@ -1057,7 +1057,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckEnd(Obj *o) {
             volatile u16 t[2];
             (o)->requestAct10(0, 5, -1);
             *PlayerSession_GetTanTimer() = 0x4650;
-            t[0] = ((PlayerData *)(PlayerActor_GetPlayerData(o)))->getLastPlayDate();
+            t[0] = static_cast<PlayerData *>(PlayerActor_GetPlayerData(o))->getLastPlayDate();
             t[1] = t[0];
             *(u16 *)PlayerSession_GetLastPlayDate() = t[1];
             s32 r5 = PlayerActor_CompareLastPlayDateNow(o);
@@ -3509,7 +3509,7 @@ extern "C" void PlayerActor_StandUpCheckTurn(Obj *o) {
     v.x = s->x;
     v.y = s->y;
     v.z = s->z;
-    (o)->setSubCollider((u32)(uptr)&v, 0x1000, 0x1000);  // (called by its symbol elsewhere with the address as a u32)
+    (o)->setSubCollider(&v, 0x1000, 0x1000);
     ((ActorCollider *)(&o->subCollider))->submit();
 }
 
@@ -4318,7 +4318,7 @@ extern "C" {
 extern void *gCommManager;
 
 void PlayerActor_GetHat(u16 *p, Obj *o);
-s32 PlayerActor_GetPlayerData(Obj *o);
+void *PlayerActor_GetPlayerData(void *p);
 s32 PlayerActor_GetHairStyle(Obj *o);
 s32 PlayerActor_GetHairColor(Obj *o);
 s32 TalkRequest_FinishSceneEntry(void);
@@ -4592,7 +4592,7 @@ extern "C" void PlayerActor_HaircutStartCheckEnd(Obj *o) {
             loc[0] = loc[1];
             s32 t = PlayerActor_GetHairColor(o);
             if ((o)->requestHatChange(loc, 0, t, 0)) {
-                ((PlayerData *)(PlayerActor_GetPlayerData(o)))->setHairStyle(0);
+                static_cast<PlayerData *>(PlayerActor_GetPlayerData(o))->setHairStyle(0);
             }
         }
     }
@@ -4681,9 +4681,9 @@ extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
             PlayerActor_GetHat(&loc[1], o);
             loc[0] = loc[1];
             if ((o)->requestHatChange(loc, r->hairStyle, r->hairColor, 0)) {
-                s32 p = PlayerActor_GetPlayerData(o);
-                ((PlayerData *)(p))->setHairStyle(r->hairStyle);
-                ((PlayerData *)(p))->setHairColor(r->hairColor);
+                PlayerData *p = static_cast<PlayerData *>(PlayerActor_GetPlayerData(o));
+                p->setHairStyle(r->hairStyle);
+                p->setHairColor(r->hairColor);
                 r->hairApplied = 1;
             }
         }

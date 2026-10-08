@@ -633,8 +633,8 @@ s32 Villager_SendBirthdayNoticeLetter(void *, void *);
 void VillagerState_SetMood(void *, s32);
 void VillagerState_SetMoodTimer(void *, s32);
 void RoomScoreEvaluator_Construct(void *);
+s32 HappyRoom_EvaluateVillagerRoom(void *evaluator, s32 b, u16 *c, s32 *d, s32 *e, s32 *f);
 void RoomScoreEvaluator_Destruct(void *);
-s32 HappyRoom_EvaluateVillagerRoom(void *, s32, u16 *, s32 *, s32 *, s32 *);
 void SaveVillagers_UpdateRoomInfo(void *, s32);
 void SaveVillagers_GiveFortuneGreeting(void *, void *);
 void SaveVillagers_DoubleTalkUrges(void *);
@@ -1322,7 +1322,7 @@ BOOL Villager_IsJustMovedIn(VillagerData *a);
 BOOL Villager_IsMovingIn(VillagerData *a);
 BOOL Villager_IsMovingOut(VillagerData *a);
 s32 Villager_GetResidentStatus(VillagerData *a);
-s32 Villager_GetTrend(VillagerData *a, s32 b);
+s32 Villager_GetTrend(VillagerData *a, MsgString *out);
 void *Villager_GetPlan(VillagerData *a);
 BOOL Villager_IsHouseAvailable();
 s32 Villager_GetWhereabouts(VillagerData *a);
@@ -1362,7 +1362,7 @@ BOOL Villager_IsJustMovedIn(VillagerData *a);
 BOOL Villager_IsMovingIn(VillagerData *a);
 BOOL Villager_IsMovingOut(VillagerData *a);
 s32 Villager_GetResidentStatus(VillagerData *a);
-s32 Villager_GetTrend(VillagerData *a, s32 b);
+s32 Villager_GetTrend(VillagerData *a, MsgString *out);
 void *Villager_GetPlan(VillagerData *a);
 BOOL Villager_IsHouseAvailable();
 s32 Villager_GetWhereabouts(VillagerData *a);
@@ -5192,11 +5192,11 @@ extern "C" void *Villager_GetPlan(VillagerData *a) { return a->planBlock; }
 }
 
 namespace nL {
-extern "C" s32 Villager_GetTrend(VillagerData *a, s32 b) {
+extern "C" s32 Villager_GetTrend(VillagerData *a, MsgString *out) {
     if ((u32)VillagerPlanBlock_GetPlan(a->planBlock)->getStateGroup() <= 1) {
-        return VillagerPlan::getTrendName((MsgString *)(uptr)b, VillagerPlanBlock_GetPlan(a->planBlock)->getState());
+        return VillagerPlan::getTrendName(out, VillagerPlanBlock_GetPlan(a->planBlock)->getState());
     } else {
-        return VillagerPlan::getTrendName((MsgString *)(uptr)b, 7);
+        return VillagerPlan::getTrendName(out, 7);
     }
 }
 }

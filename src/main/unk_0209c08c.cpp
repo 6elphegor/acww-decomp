@@ -54,13 +54,13 @@ TexVramSlot *ModelSlot::getVramSlot() {
 
 // TexVramSlot::alloc always returns TRUE.
 
-BOOL ModelSlot::init(void *texSize, void *plttSize, u32 heapSize, Heap *parent) {
+BOOL ModelSlot::init(u32 texSize, u32 plttSize, u32 heapSize, Heap *parent) {
     if (heapSize) {
         // (Heap is FrameHeap's only base: the same address)
         heap = (Heap *)FrameHeap_Create((heapSize + 3) & ~3, parent);
     }
     if (texSize != 0 || plttSize != 0) {
-        if (vramSlot.alloc((u32)(uptr)texSize, 0, (u32)(uptr)plttSize)) return TRUE;  // (the pool passes the sizes as pointers)
+        if (vramSlot.alloc(texSize, 0, plttSize)) return TRUE;
         return FALSE;
     }
     return TRUE;
@@ -130,7 +130,7 @@ void ModelSlotPool::release(u16 *idx) {
     }
 }
 
-BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free) {
+BOOL ModelSlotPool::init(u32 n, u32 texSize, u32 plttSize, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free) {
     Heap *mem;
     allocFunc = alloc;
     freeFunc = free;
@@ -145,7 +145,7 @@ BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc a
         u32 i;
         for (i = 0; i < numSlots; i++) {
             e = new (e) ModelSlot;
-            if (!e->init(a, b, size, mem)) return FALSE;
+            if (!e->init(texSize, plttSize, size, mem)) return FALSE;
             e++;
         }
     }

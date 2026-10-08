@@ -5,6 +5,7 @@
 // SPL-style particle manager (continued from G011b): resource file loader (func_020f92d4: counts + texture table), manager creation (SPL_Init),
 // file-read callbacks (f9620/f9658), emitter draw dispatch (f969c, f9714, f97d0) and the per-emitter simulation step (spl_calc).
 #include "types.h"
+#include "gfx/V3.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
@@ -45,12 +46,12 @@ extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 void spl_push_front(void *list, void *e);
 void spl_gen_ptcl(void *e, void *l);
-void sDrawChild(Pm *m, u32 a);
-void sDrawParent(Pm *m, u32 a);
-void spl_draw_chld_bb(Mc *m, Node *n, u32 a);
-void spl_draw_chld_dbb(Mc *m, Node *n, u32 a);
-void spl_draw_bb(Mc *m, Node *n, u32 a);
-void spl_draw_dbb(Mc *m, Node *n, u32 a);
+void sDrawChild(Pm *m, SplPosFn a);
+void sDrawParent(Pm *m, SplPosFn a);
+void spl_draw_chld_bb(Mc *m, Node *n, SplPosFn a);
+void spl_draw_chld_dbb(Mc *m, Node *n, SplPosFn a);
+void spl_draw_bb(Mc *m, Node *n, SplPosFn a);
+void spl_draw_dbb(Mc *m, Node *n, SplPosFn a);
 }
 
 
@@ -90,7 +91,7 @@ void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 
 
 typedef void (*TexFn)(void *);
-typedef void (*DrawFn)(Mc *, Node *, u32);
+typedef void (*DrawFn)(Mc *, Node *, SplPosFn);
 
 
 
@@ -263,7 +264,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
     if (e->cb) e->cb(e, 1);
 }
 
-extern "C" void sDrawParent(Pm *mp, u32 a) {
+extern "C" void sDrawParent(Pm *mp, SplPosFn a) {
     Mc *m = (Mc *)mp;
     Em *cur = m->cur;
     HdrW *h = cur->res->p0;
@@ -292,7 +293,7 @@ extern "C" void sDrawParent(Pm *mp, u32 a) {
     } while (n != 0);
 }
 
-extern "C" void sDrawChild(Pm *mp, u32 a) {
+extern "C" void sDrawChild(Pm *mp, SplPosFn a) {
     Mc *m = (Mc *)mp;
     Em *cur = m->cur;
     Res *res = cur->res;
@@ -319,7 +320,7 @@ extern "C" void sDrawChild(Pm *mp, u32 a) {
     } while (n != 0);
 }
 
-extern "C" void spl_draw(Pm *m, u32 a) {
+extern "C" void spl_draw(Pm *m, SplPosFn a) {
     Mc *mm = (Mc *)m;
     HdrW *ri = mm->cur->res->p0;
     if (ri->b21) {

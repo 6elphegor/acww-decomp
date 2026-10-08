@@ -403,7 +403,7 @@ BOOL FurnitureManager::onCreate() {
     if (Scene_InMuseumRoom()) {
         flags = 0x1c00;
     }
-    sFtrMgrPool.init(FtrMgr_GetMaxFurniture(), (void *)0x2000, (void *)0x80, flags, (ModelSlotAllocFunc)(void *)FurnitureHeap_Create,
+    sFtrMgrPool.init(FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (ModelSlotAllocFunc)(void *)FurnitureHeap_Create,
                      (ModelSlotFreeFunc)FurnitureHeap_Destroy);
     FtrMgr_CreateHook(this);
     if (FtrMgr_GetMaxFurniture() > 1) {
@@ -1322,7 +1322,7 @@ extern "C" Actor *FtrMgr_SpawnFromArg(u32 self) {
                 }
             }
         }
-        return (Actor *)Actor::spawn((void *)(uptr)v, (void *)(uptr)self, 0, 0, sFurnitureManager);
+        return (Actor *)Actor::spawn(v, self, 0, 0, sFurnitureManager);
     }
     return 0;
 }

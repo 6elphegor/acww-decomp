@@ -85,7 +85,7 @@ extern "C" s32 PlayerActor_GetObjectAlign() { return 4; }
 // carries the slot (bits 30-31) and the starting action (PlayerActor_ParamGetAction).
 extern "C" void *PlayerActor_Spawn(u32 slot, VecFx32 *pos, void *rot, u32 param)
 {
-    return Actor::spawn((void *)9, (void *)(uptr)(((slot << 30) & 0xc0000000) | (param & 0x3fffffff)), pos, rot, NULL);
+    return Actor::spawn(9, (((slot << 30) & 0xc0000000) | (param & 0x3fffffff)), pos, rot, NULL);
 }
 
 PlayerId::PlayerId(void *o) { TownId_Construct(); }

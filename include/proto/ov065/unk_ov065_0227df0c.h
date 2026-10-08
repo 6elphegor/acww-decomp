@@ -4,10 +4,20 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0227df0c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
 #include "net/gp.h"
+#ifdef __cplusplus
 #include "net/gpiCallback.h"
 #include "net/gpiOperation.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_gpiProcessCallbacks
+s32 gpiProcessCallbacks(GPConnection *h, s32 key);
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
@@ -17,9 +27,6 @@ s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, GPICallbackData *m, GPIOp
 #endif
 #ifndef PROTO_LOCAL_gpiCallCallback
 s32 gpiCallCallback(GPConnection *h, GPICallbackData *n);
-#endif
-#ifndef PROTO_LOCAL_gpiProcessCallbacks
-s32 gpiProcessCallbacks(GPConnection *h, void *key);
 #endif
 }
 #endif

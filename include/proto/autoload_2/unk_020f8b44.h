@@ -11,6 +11,7 @@ typedef struct Fp Fp;
 typedef struct Mgr Mgr;
 #endif
 #ifdef __cplusplus
+#include "gfx/V3.h"
 #endif
 
 #ifdef __cplusplus
@@ -25,7 +26,7 @@ s32 SPL_LoadTexByVRAMManager(Fp *self);
 s32 SPL_LoadTexPlttByVRAMManager(Fp *self);
 #endif
 #ifndef PROTO_LOCAL_SPL_Draw
-void SPL_Draw(Mgr *m, u32 a1, u32 a2);
+void SPL_Draw(Mgr *m, s32 *viewMtx, SplPosFn cb);
 #endif
 }
 #ifndef PROTO_LOCAL_data_021f5c38

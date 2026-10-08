@@ -11,7 +11,7 @@ class BugNetTarget : public TouchPickSphere {
 public:
     BugNetTarget();
     ~BugNetTarget();
-    void submit(VecFx32 *a, s32 b, VecFx32 *c, u8 d);
+    void submit(VecFx32 *a, s32 b, s32 radius, u8 d);
     /* 0x1c */ BugNetTarget *nextTarget;
     /* 0x20 */ u8 isHit;
     /* 0x24 */ s32 hitRadius;

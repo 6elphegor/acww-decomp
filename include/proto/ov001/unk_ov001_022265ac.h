@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_sWfcSavedVBlankHandler
-extern u32 sWfcSavedVBlankHandler;
+extern void (*sWfcSavedVBlankHandler) (void);
 #endif
 #ifndef PROTO_LOCAL_sWfcSavedIrqMask
 extern u32 sWfcSavedIrqMask;

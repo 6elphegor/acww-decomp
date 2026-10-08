@@ -31,9 +31,11 @@ typedef void (*qr2_adderrorcallback_t)(s32, const char *, void *);
 // Public address seen by the master: (ip, port, userData).
 typedef void (*qr2_publicaddresscallback_t)(u32, u32, void *);
 // NAT negotiation request from a client message: (cookie, userData).
-typedef s32 (*qr2_natnegcallback_t)(u32, void *);
+typedef void (*qr2_natnegcallback_t)(u32, void *);
 // Other client messages: (data, len, userData).
-typedef s32 (*qr2_clientmessagecallback_t)(u8 *, s32, void *);
+typedef void (*qr2_clientmessagecallback_t)(u8 *, u32, void *);
+// CD-key messages (0x3b): (data, len, sender address); never set in this game.
+typedef void (*qr2_cdkeyprocesscallback_t)(u8 *, u32, void *);
 
 struct qr2_implementation_s {
     /* 0x00 */ s32 hbsock;
@@ -58,7 +60,7 @@ struct qr2_implementation_s {
     /* 0xc4 */ s32 read_socket;
     /* 0xc8 */ s32 nat_negotiate;
     /* 0xcc */ SockAddrIn hbaddr;
-    /* 0xd4 */ s32 cdkeyprocess;
+    /* 0xd4 */ qr2_cdkeyprocesscallback_t cdkeyprocess;
     /* 0xd8 */ s32 client_message_keys[10];
     /* 0x100 */ s32 cur_message_key;
     /* 0x104 */ u32 publicip;

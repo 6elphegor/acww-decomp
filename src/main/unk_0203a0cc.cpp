@@ -1307,8 +1307,8 @@ extern "C" void Camera_LockFocusYaw(void) {
     gCamera->focusYawLocked = 1;
 }
 
-extern "C" void Camera_SnapToFocus(s32 a) {
-    (gCamera)->setFocusPreset11((u8 *)(void *)((CameraSetup *)&gCamera->target), (V3 *)(a));
+extern "C" void Camera_SnapToFocus(VecFx32 *a) {
+    (gCamera)->setFocusPreset11((u8 *)(void *)((CameraSetup *)&gCamera->target), a);
     *(CameraSetup *)&gCamera->current = *(CameraSetup *)&gCamera->target;
     VecFx32 v;
     Camera_GetLookAtPoint(&v, gCamera);

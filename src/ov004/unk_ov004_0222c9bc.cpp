@@ -3458,7 +3458,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
 
 BOOL MuseumAquarium::onCreate() {
     Mgr *self = this;
-    self->modelPool.init(0x38, (void *)(0x800), (void *)(0x80), 0xc00, (ModelSlotAllocFunc)((void *)MuseumAquariumHeap_Create), (ModelSlotFreeFunc)((void *)MuseumAquariumHeap_Destroy));
+    self->modelPool.init(0x38, 0x800, 0x80, 0xc00, (ModelSlotAllocFunc)((void *)MuseumAquariumHeap_Create), (ModelSlotFreeFunc)((void *)MuseumAquariumHeap_Destroy));
     sAquariumRoom = (s32)self->param;
     if (sAquariumRoom == 0) {
         self->obstacles[0].box[0] = 0xc000;

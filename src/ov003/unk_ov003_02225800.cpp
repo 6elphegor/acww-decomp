@@ -395,8 +395,6 @@ extern "C" void Insect_SpawnBeeSwarm(VecFx32Ctor *v);
 extern "C" s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d);
 extern "C" BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
 extern "C" void Insect_EnableTrashFlies(void);
-extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag);
-extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
 }
 
 
@@ -593,8 +591,8 @@ BOOL Insect_PickSpecialSpawn(s8 *a, s8 *b, s32 c);
 BOOL PlayerActor_TestSlotFlag9(s32 a);
 s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d);
 BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
-void InsectPool_UpdateInView(void *a, s32 b);
-void InsectPool_UpdateInViewOfPlayer(void *a, s32 flag, s32 idx, s32 x, s32 z);
+void InsectPool_UpdateInView(InsectManager *obj, s32 flag);
+void InsectPool_UpdateInViewOfPlayer(InsectManager *obj, s32 flag, s32 idx, s32 x, s32 z);
 void Insect_SetModelMatrix(void *a, Rec *e, s32 flag);
 void Insect_TickFrame(Rec *e);
 s32 Insect_UsesCollisionMove(void *a, Rec *e);
@@ -605,7 +603,7 @@ s32 Insect_Despawn(Rec *e);
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_UpdateSpawning(void *self);
+extern "C" void Insect_UpdateSpawning(InsectManager *self);
 extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx);
 extern "C" BOOL FieldInsect_IsTreeKind(u32 idx);
 extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx);
@@ -5474,9 +5472,9 @@ void InsectManager::freeInsect(Insect *e, s32 mode) { using namespace s05;
 
 // 0x2228710
 BOOL InsectManager::onCreate() { using namespace s05;
-    ((ModelSlotPool *)(&fieldInsectPool))->init(8, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)FieldInsectHeap_Create), (ModelSlotFreeFunc)((void *)FieldInsectHeap_Destroy));
-    ((ModelSlotPool *)(&specialInsectPool))->init(2, (void *)(0x400), (void *)(0x40), 0x6e8, (ModelSlotAllocFunc)((void *)SpecialInsectHeap_Create), (ModelSlotFreeFunc)((void *)SpecialInsectHeap_Destroy));
-    ((ModelSlotPool *)(&heldInsectPool))->init(4, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)HeldInsectHeap_Create), (ModelSlotFreeFunc)((void *)HeldInsectHeap_Destroy));
+    ((ModelSlotPool *)(&fieldInsectPool))->init(8, 0x400, 0x40, 0x9c4, (ModelSlotAllocFunc)((void *)FieldInsectHeap_Create), (ModelSlotFreeFunc)((void *)FieldInsectHeap_Destroy));
+    ((ModelSlotPool *)(&specialInsectPool))->init(2, 0x400, 0x40, 0x6e8, (ModelSlotAllocFunc)((void *)SpecialInsectHeap_Create), (ModelSlotFreeFunc)((void *)SpecialInsectHeap_Destroy));
+    ((ModelSlotPool *)(&heldInsectPool))->init(4, 0x400, 0x40, 0x9c4, (ModelSlotAllocFunc)((void *)HeldInsectHeap_Create), (ModelSlotFreeFunc)((void *)HeldInsectHeap_Destroy));
     CommManager *g = gCommManager;
     if (g->isSlotActive(g->myAid) == 0) {
         allocSpecialInsect(0x3a, 0);
@@ -5796,7 +5794,7 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
                 v2.y = v2.y - 0x1800;
             }
         }
-        ((BugNetTarget *)pp)->submit(&v2, sInsectModelParams[t4].netRadius, (VecFx32 *)0xd48, (u8)flags);
+        ((BugNetTarget *)pp)->submit(&v2, sInsectModelParams[t4].netRadius, 0xd48, (u8)flags);
     }
 L226:
     if (sInsectModelParams[t4].hasVisAnim == 0) {
@@ -5860,7 +5858,7 @@ BOOL InsectManager::onExecute() { using namespace s04;
         SpecialInsect_UpdateAll(self);
     }
     HeldInsect_UpdateAll(self);
-    Insect_UpdateSpawning(self);
+    Insect_UpdateSpawning(this);
     return TRUE;
 }
 #undef sInsectPathFmt0x
@@ -6076,7 +6074,7 @@ extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx) {
 #define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
 namespace s04 {
 // 0x2227cd0
-extern "C" void Insect_UpdateSpawning(void *self) {
+extern "C" void Insect_UpdateSpawning(InsectManager *self) {
     s8 b[8];
     s32 px, py;
     s32 r4 = gCommManager->isSlotActive(gCommManager->myAid);
@@ -6914,7 +6912,7 @@ BOOL InsectManager::onDelete() { using namespace s01;
 
 namespace s01 {
 // 0x2226874
-extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z) {
+extern "C" void InsectPool_UpdateInViewOfPlayer(InsectManager *obj, s32 flag, s32 idx, s32 x, s32 z) {
     Rec *e;
     s32 n;
     if (flag == 1) {
@@ -6944,7 +6942,7 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
             }
             u32 t = e->inView;
             if (t == 0 && r == 4) {
-                ((InsectManager *)((void *)obj))->freeInsect(e, flag);
+                obj->freeInsect(e, flag);
             } else if (x0 < p->x && x1 > p->x && z0 < p->z && z1 > p->z) {
                 if (t == 0) {
                     e->inView = 1;
@@ -6962,7 +6960,7 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
 
 namespace s01 {
 // 0x2226768
-extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
+extern "C" void InsectPool_UpdateInView(InsectManager *obj, s32 flag) {
     void *c = gCamera;
     Rec *e;
     s32 n;
@@ -6990,7 +6988,7 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
                 VecFx32Ctor *p = &e->position;
                 s32 r = Insect_GetWeatherReaction(e->kind, h);
                 if (e->inView == 0 && r == 4) {
-                    ((InsectManager *)((void *)obj))->freeInsect(e, flag);
+                    obj->freeInsect(e, flag);
                 } else {
                     if (r == 5) {
                         e->canSing = 0;

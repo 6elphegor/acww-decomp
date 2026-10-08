@@ -39,7 +39,7 @@ struct DwcMatchControl {
     /* 0x00d */ u8 numClients;
     /* 0x00e */ u8 numValidClients;
     /* 0x00f */ u8 unk_0f;
-    /* 0x010 */ void *qr2Object;
+    /* 0x010 */ struct qr2_implementation_s *qr2Object;
     /* 0x014 */ volatile u8 numPlayers;
     /* 0x015 */ volatile u8 matchType;
     /* 0x016 */ u8 maxPlayers;

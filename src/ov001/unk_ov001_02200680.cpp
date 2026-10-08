@@ -311,7 +311,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     for (;;) {
         if (sAossScanList != 0) {
             Aoss_Free(sAossScanList);
-            sAossScanList = (void *)z;
+            sAossScanList = NULL;  // (z: 0)
         }
         if (Aoss_ScanAps(&sAossScanList) == -1) {
             FAIL(0xf);
@@ -405,7 +405,7 @@ again:
         }
         if (sAossScanList != 0) {
             Aoss_Free(sAossScanList);
-            sAossScanList = (void *)z;
+            sAossScanList = NULL;  // (z: 0)
         }
         sAossScanList = Aoss_Alloc(0x58);
         if (sAossScanList == 0) {
@@ -535,7 +535,7 @@ again:
             for (;;) {
                 if (sAossScanList != 0) {
                     Aoss_Free(sAossScanList);
-                    sAossScanList = (void *)z;
+                    sAossScanList = NULL;  // (z: 0)
                 }
                 if (Aoss_ScanAps(&sAossScanList) == -1) {
                     FAIL(0xf);

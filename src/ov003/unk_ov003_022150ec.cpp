@@ -198,7 +198,6 @@ BOOL CountdownSign::onExecute() {
 BOOL CountdownSign::initBuilding() {
     getResources();
     onExecute();
-    s32 z = 0;
     u32 i = 0;
     VecFx32 v;
     do {
@@ -209,7 +208,7 @@ BOOL CountdownSign::initBuilding() {
         v.y = b;
         v.z = c;
         sCountdownSpawnIndex = i;
-        digits[i] = (CountdownDigit *)Actor::spawn((void *)0x26, (void *)0x501f, &v, (void *)(uptr)z, (void *)(uptr)z);
+        digits[i] = (CountdownDigit *)Actor::spawn(0x26, 0x501f, &v, NULL, NULL);
         i++;
     } while (i < 6);
     model.setInitCallback(CountdownSign_ModelCallback, this);

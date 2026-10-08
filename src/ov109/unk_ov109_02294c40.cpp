@@ -396,7 +396,7 @@ void SongPickMenu::initSongPick() {
     u32 z = 0;
     handKind = z;
     cursorSlot = z;
-    popup.init(3, 1, (const char *)z);
+    popup.init(3, 1, NULL);
     touchHoldDelay = 0;
 }
 

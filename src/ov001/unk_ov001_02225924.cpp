@@ -39,7 +39,7 @@ void WfcHeap_Init(void *buf);
 void *sWfcHeap;
 }
 
-static inline void Unk_ov001_02225ae8_Set(u32 ha, u32 va, WfcRect *r) {
+static inline void Unk_ov001_02225ae8_Set(uptr ha, uptr va, WfcRect *r) {  // (window registers: hardware addresses)
     u32 x1 = r->left;
     u32 x2 = r->right;
     u32 y1 = r->top;

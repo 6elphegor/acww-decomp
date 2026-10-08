@@ -346,7 +346,7 @@ public:
     void submitSceneCollider();
     void updateCollidersAtDrawPos(u32 *a);
     void updateBodyCollider();
-    void setSubCollider(u32 a, u32 b, u32 c);
+    void setSubCollider(VecFx32 *pos, u32 b, u32 c);
     void setSubColliderBody(u32 *a);
     void setBodyColliderAtDrawPos(u32 *a);
     void setBodyCollider(u32 *a);

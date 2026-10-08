@@ -42,8 +42,8 @@ OSMessageQueue sSockMsgFreeQueue;
 
 s32 SockCore_CreateMsgPool(s32 n)
 {
-    u32 a = (n * 4 + 3) & ~3;
-    u32 b = (n * 0x2c + 3) & ~3;
+    u32 a = (n * sizeof(OSMessage) + 3) & ~3;
+    u32 b = (n * SOCK_MSG_SIZE + 3) & ~3;
     u8 *p = (u8 *)sSockCoreConfig->alloc(b + a);
     u8 *e;
     if (p == NULL) {
@@ -53,7 +53,7 @@ s32 SockCore_CreateMsgPool(s32 n)
     e = p + a;
     while (n > 0) {
         SockCore_FreeMsg(e);
-        e += 0x2c;
+        e += SOCK_MSG_SIZE;
         n--;
     }
     sSockMsgPool = p;
@@ -135,16 +135,18 @@ s32 SockCore_PostCommandAsync(SockCoreSocket *o, SockCoreCommand *m)
 s32 SockCore_PostCommandAndWait(void *q, SockCoreCommand *m)
 {
     s32 res;
-    s32 buf;
+    OSMessage buf;
     OSMessageQueue lq;
     if (m->blocking == 0) {
         m->replyQueue = NULL;
         res = SockCore_PostCommand(q, m);
     } else {
+        OSMessage reply;
         OS_InitMessageQueue(&lq, &buf, 1);
         m->replyQueue = &lq;
         SockCore_PostCommand(q, m);
-        OS_ReceiveMessage(&lq, &res, 1);
+        OS_ReceiveMessage(&lq, &reply, 1);
+        res = (s32)(sptr)reply;  // (the command's result travels as the message)
     }
     return res;
 }
@@ -180,7 +182,7 @@ void SockCore_CommandThreadMain(void *q)
             m->sock->result = r;
         }
         if (m->replyQueue != NULL) {
-            OS_SendMessage(m->replyQueue, (void *)r, 0);
+            OS_SendMessage(m->replyQueue, (OSMessage)(sptr)r, 0);  // (the result as the message)
         }
         SockCore_FreeMsg(m);
         OS_EnableScheduler();

@@ -9,6 +9,7 @@
 #include "net/DwcFriendControl.h"
 #include "net/DwcMatchControl.h"
 #include "net/DwcUserData.h"
+#include "net/gp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -134,10 +135,10 @@ void DwcFriend_OnUpdateDone(s32 a, s32 b);
 void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4);
 #endif
 #ifndef PROTO_LOCAL_DwcCore_OnGpError
-void DwcCore_OnGpError(s32 a, u32 *b);
+void DwcCore_OnGpError(s32 a, GPErrorArg *b);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnGpBuddyMessage
-void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c);
+void DwcMatch_OnGpBuddyMessage(void *a, GPRecvBuddyMessageArg *b, void *c);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_OnGt2Receive
 void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d);

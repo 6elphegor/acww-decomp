@@ -137,7 +137,7 @@ DArrayImplementation *ArrayNew(s32, s32, void *);
 s32 ArrayAppend(void *, void *);
 s32 ArrayLength(void *);
 s32 InitCryptKey(SBServerList *, u8 *, s32);
-s32 SBSetLastListErrorPtr(SBServerList *, u8 *);
+void SBSetLastListErrorPtr(SBServerList *, const char *);
 s32 IncomingListParseServer(SBServerList *, u8 *, s32);
 
 s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len);
@@ -214,7 +214,7 @@ s32 NTSLengthSB(void *, s32);
 void SBReleaseStr(SBServerList *, const char *);
 void SBServerListClear(SBServerList *);
 
-void SBSetLastListErrorPtr(SBServerList *ctx, u32 v);
+void SBSetLastListErrorPtr(SBServerList *ctx, const char *v);
 s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n);
 s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag);
 void ParseServerIPPort(SBServerList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
@@ -261,7 +261,7 @@ SockHostEnt *Sock_GetHostByName(char *name);
 s32 socket(s32 a, s32 b, s32 c);
 s32 closesocket(s32 fd);
 s32 connect(s32 fd, void *sa, s32 len);
-s32 SBSetLastListErrorPtr(Ctx070 *c, ...);
+void SBSetLastListErrorPtr(Ctx070 *c, const char *v);
 void SBServerListDisconnect(Ctx070 *c);
 void *SBRefStrHash(Ctx070 *c);
 void *TableLookup(void *t, void *key);
@@ -614,7 +614,7 @@ void ErrorDisconnect(Ctx070 *c) {
         char *s = data_ov065_0228e954;
         s32 len = STD_GetStringLength(s);
         if (strncmp((char *)c->inbuffer, s, len) == 0) {
-            SBSetLastListErrorPtr(c, (char *)c->inbuffer + STD_GetStringLength(s));
+            SBSetLastListErrorPtr(c, (const char *)c->inbuffer + STD_GetStringLength(s));
             c->ListCallback(c, 5, SBNullServer, c->instance);
         }
     }
@@ -1303,9 +1303,9 @@ s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void SBSetLastListErrorPtr(SBServerList *ctx, u32 v)
+void SBSetLastListErrorPtr(SBServerList *ctx, const char *v)
 {
-    ctx->lasterror = (char *)v;
+    ctx->lasterror = v;
 }
 }
 }
@@ -1347,7 +1347,7 @@ s32 ProcessMainListData(SBServerList *c) {
         dd[1] = sp[0];
         if (*(u16 *)dd == 0xffff) {
             if (NTSLengthSB(p + 6, n - 6) == -1) goto end;
-            SBSetLastListErrorPtr(c, p + 6);
+            SBSetLastListErrorPtr(c, (const char *)(p + 6));  // (the message text in the received bytes)
             c->ListCallback(c, 5, SBNullServer, c->instance);
             if (c->inbuffer == 0) goto end;
         }

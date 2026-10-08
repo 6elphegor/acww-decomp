@@ -43,8 +43,8 @@
 #include "npc/VillagerData.h"
 #include "npc/VillagerPlan.h"
 #include "npc/VillagerRoute.h"
-// defined in src/main/unk_02077ac4.cpp, which takes the villager record in a u32
-extern "C" VillagerMemory *Villager_FindMemory(u32 data, void *playerId);
+// defined in src/main/unk_02077ac4.cpp (as the shared prototype; the header conflicts with this unit's other declarations)
+extern "C" VillagerMemory *Villager_FindMemory(void *a, void *b);
 #include "save/ContestRecord.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/MsgString.h"
@@ -826,7 +826,7 @@ s32 VillagerState_GetActivity(void *);
 s32 Villager_IsTalkUrgeFull(void *, s32);
 s32 Scene_InTownUnk31();
 void TalkRepeat_Tick(void *, s32);
-s32 VillagerState_GetTalkRepeat(void *);
+void *VillagerState_GetTalkRepeat(void *);
 s32 VillagerState_GetMood(void *);
 s32 TalkRequest_IsTalking();
 void *Villager_GetPlan(void *);
@@ -1901,7 +1901,7 @@ VillagerMemory *FieldVillager::getPlayerMemory() {
     }
     p = getVillagerData();
     if (x != NULL && static_cast<PlayerId *>(x)->isValid() && p != NULL && static_cast<VillagerId *>(static_cast<VillagerData *>(p)->getVillagerId())->isValid() != 0) {
-        return Villager_FindMemory((u32)(uptr)p, x);
+        return Villager_FindMemory(p, x);
     }
     return 0;
 }
@@ -2207,7 +2207,7 @@ void *FieldVillager_GetTalkRepeat(FieldVillager *o) {
     void *q;
     void *r;
     if (p != 0 && static_cast<VillagerId *>(static_cast<VillagerData *>(p)->getVillagerId())->isValid() != 0 && (q = Villager_GetState(p)) != 0) {
-        r = (void *)VillagerState_GetTalkRepeat(q);
+        r = VillagerState_GetTalkRepeat(q);
     } else {
         r = 0;
     }
@@ -3786,8 +3786,8 @@ s32 FieldVillagerAi_OrderByFriendship(void *unused, void **a, void **b, void *c,
     if (g != 0 && static_cast<PlayerId *>(g)->isValid() != 0) {
         s32 va = -128;
         s32 vb = -128;
-        VillagerMemory *p1 = Villager_FindMemory((u32)(uptr)c, g);
-        VillagerMemory *p2 = Villager_FindMemory((u32)(uptr)d, g);
+        VillagerMemory *p1 = Villager_FindMemory(c, g);
+        VillagerMemory *p2 = Villager_FindMemory(d, g);
         if (p1 != 0) {
             va = static_cast<VillagerMemory *>(p1)->getFriendship();
         }
@@ -4234,8 +4234,8 @@ BOOL FieldVillagerAiChat::isStrangerPlayerNear(FieldVillager *o, s32 v) {
     }
     if (h != 0 && h->isValid() != 0) {
         FieldVillager *p = static_cast<FieldVillager *>(static_cast<VillagerActor *>(o)->talkPartner);
-        VillagerMemory *a = Villager_FindMemory((u32)(uptr)o->getVillagerData(), h);
-        VillagerMemory *b = Villager_FindMemory((u32)(uptr)p->getVillagerData(), h);
+        VillagerMemory *a = Villager_FindMemory(o->getVillagerData(), h);
+        VillagerMemory *b = Villager_FindMemory(p->getVillagerData(), h);
         if (a == 0 || b == 0) {
             if (v < 0x6000) {
                 return TRUE;

@@ -164,7 +164,7 @@ s32 DwcFriend_RemoveDuplicates(DwcFriendData *, s32, s32);
 void DwcLogin_Process(void);
 void DwcLogin_Begin(void);
 void DwcLogin_InitControl(void *mem, DwcUserData *a, GPConnection *b, u32 c, u32 d, DwcLoginResultCallback e, u32 f);
-void *DwcFriend_GetControlField20(void);
+u32 DwcFriend_GetControlField20(void);
 void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p);
 void DwcFriend_OnBuddyRequestInfo(void *x, GPGetInfoResponseArg *p);
 void DwcFriend_OnProfileSearch(void *x, GPProfileSearchResponseArg *p, s32 idx);
@@ -203,7 +203,7 @@ s32 DwcCore_GetState();
 void *DwcLogin_GetUserData();
 void DwcFriend_FinishUpdate();
 void DwcFriend_SyncList(void *, s32);
-void *DwcFriend_GetControlField20();
+u32 DwcFriend_GetControlField20(void);
 void DwcFriend_OnAuthorizedInfo();
 void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
@@ -233,7 +233,7 @@ void DwcFriend_ClearControl();
 void DwcFriend_NotifyAdded(s32 idx);
 void DwcFriend_ResetTimer();
 void DwcFriend_OnBuddyStatus(void *a, u32 *b);
-s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b);
+s32 DwcFriend_HandleAuthorizedMessage(void *a, GPRecvBuddyMessageArg *b);
 void DwcFriend_OnBuddyRequest(void *a, u32 *b);
 void DwcFriend_StartUpdate(char *a, char *b, void (*c)(s32, u32, s32), s32 d, DwcFriendStatusCallback e, s32 f, DwcFriendDeleteCallback g, s32 h);
 void DwcFriend_Process();
@@ -496,9 +496,9 @@ void DwcFriend_OnBuddyRequest(void *a, u32 *b) {
 
 namespace F02271da0 {
 extern "C" {
-s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b) {
-    if (strcmp((const char *)b[2], "I have authorized your request to add me to your list") == 0) {
-        gpGetInfo(a, b[0], 0, 0, (GPCallback)DwcFriend_OnAuthorizedInfo, NULL);
+s32 DwcFriend_HandleAuthorizedMessage(void *a, GPRecvBuddyMessageArg *b) {
+    if (strcmp(b->message, "I have authorized your request to add me to your list") == 0) {
+        gpGetInfo(a, b->profile, 0, 0, (GPCallback)DwcFriend_OnAuthorizedInfo, NULL);
         return 1;
     }
     return 0;
@@ -997,9 +997,9 @@ void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p)
 
 namespace F02271488 {
 extern "C" {
-void *DwcFriend_GetControlField20(void)
+u32 DwcFriend_GetControlField20(void)
 {
-    return (void *)sDwcFriendControl->usePersist;
+    return sDwcFriendControl->usePersist;
 }
 }
 }

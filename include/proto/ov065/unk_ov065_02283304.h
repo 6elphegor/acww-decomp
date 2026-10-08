@@ -4,8 +4,11 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02283304.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/gp.h"
+#include "net/gpiTransfer.h"
 #ifdef __cplusplus
 #include "net/gpiOperation.h"
+#include "net/gpiPeer.h"
 #endif
 
 #ifdef __cplusplus
@@ -29,12 +32,6 @@ void gpiSetError(void *h, s32 code, const char *msg);
 #ifndef PROTO_LOCAL_gpiSetErrorString
 void gpiSetErrorString(void *h, const char *msg);
 #endif
-#ifndef PROTO_LOCAL_gpiSendTransferReply
-s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt);
-#endif
-#ifndef PROTO_LOCAL_gpiHandleTransferMessage
-void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3);
-#endif
 #ifdef __cplusplus
 }
 #endif
@@ -43,6 +40,12 @@ void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3);
 extern "C" {
 #ifndef PROTO_LOCAL_gpiProcessRegisterUniqueNick
 s32 gpiProcessRegisterUniqueNick(void *h, GPIOperation *s, char *str);
+#endif
+#ifndef PROTO_LOCAL_gpiSendTransferReply
+s32 gpiSendTransferReply(GPConnection *h, GPITransferID *a, GPIPeer *b, s32 c, const char *dflt);
+#endif
+#ifndef PROTO_LOCAL_gpiHandleTransferMessage
+void gpiHandleTransferMessage(GPConnection *h, GPIPeer *p1, s32 p2, const char *p3);
 #endif
 }
 #endif

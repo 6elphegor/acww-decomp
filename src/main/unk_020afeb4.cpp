@@ -505,7 +505,7 @@ BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *self, u8 *idxp, u64 start) {
     while (TRUE) {
         VecFx32 v;
         setv(&v, (n->actor.x << 12) >> 4, (n->actor.y << 12) >> 4, (n->actor.z << 12) >> 4);
-        Actor::spawn((void *)(n->actor.profile), (void *)(n->actor.spawnParam), (void *)(void *)(&v), &n->actor.rot[0], (void *)(0));
+        Actor::spawn(n->actor.profile, n->actor.spawnParam, &v, &n->actor.rot[0], NULL);
         n++;
         i++;
         if (idxp != NULL) {

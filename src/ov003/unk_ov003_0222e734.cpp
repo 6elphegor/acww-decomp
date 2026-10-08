@@ -96,13 +96,13 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
             } else {
                 Snowball_FindSpawnPos(self, &B, &A, 1);
             }
-            if (Actor::spawn((void *)0xbd, (void *)0, &A, (void *)0, self)) {
+            if (Actor::spawn(0xbd, 0, &A, NULL, self)) {
                 LooseSnowball *s = &LooseSnowballs_Get()->items[0];
                 s->posX = A.x;
                 s->posY = A.y;
                 s->posZ = A.z;
             }
-            if (Actor::spawn((void *)0xbd, (void *)1, &B, (void *)0, self)) {
+            if (Actor::spawn(0xbd, 1, &B, NULL, self)) {
                 LooseSnowball *s = &LooseSnowballs_Get()->items[1];
                 s->posX = B.x;
                 s->posY = B.y;
@@ -140,8 +140,8 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
                                     n = v * 2 + 2;
                                     VecFx32 loc;
                                     FieldPos_FromBlockUnitCenter(&loc, bx, by, lx, ly);
-                                    Actor::spawn((void *)0xbd, (void *)(uptr)n, &loc, (void *)0, self);
-                                    Actor::spawn((void *)0xbd, (void *)(uptr)(n + 1), &loc, (void *)0, self);
+                                    Actor::spawn(0xbd, n, &loc, NULL, self);
+                                    Actor::spawn(0xbd, (n + 1), &loc, NULL, self);
                                 }
                             }
                         }

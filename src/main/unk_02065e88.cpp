@@ -71,7 +71,7 @@ extern "C" {
 MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(MsgTextLabel *obj);
 u8 *Msg_GetColorTag(s32 i);
-u32 Msg_FindTag(u32 a, s32 b, s32 c);  // (a: the text's address; returns the tag's address or 0)
+u8 *Msg_FindTag(u8 *text, s32 group, s32 id);  // (the tag's address or NULL)
 void MsgTag_DtorStub();
 u8 *Bmg_GetMsgAttr(u8 *p);
 void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s);
@@ -89,7 +89,7 @@ VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 Villager_FindMemoryIndex(VillagerMemory *t, void *id);
 VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
 void Villager_GetNicknameFor(void *a, void *b, void *c);
-s32 Villager_GetTrend(VillagerData *a, s32 b);
+s32 Villager_GetTrend(VillagerData *a, MsgString *out);
 void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_GetEnemyName(void *a, MsgString *b);
 void Villager_GetRandomOtherName(void *a, MsgString *b);
@@ -155,7 +155,7 @@ extern SaveData gSaveData;
 extern HouseData gSaveHouse;  // (gSaveData.house)
 
 // Msg_FindTag with the text's address as a pointer
-static inline u8 *Msg_FindTagPtr(u8 *p, s32 group, s32 id) { return (u8 *)(uptr)Msg_FindTag((u32)(uptr)p, group, id); }
+static inline u8 *Msg_FindTagPtr(u8 *p, s32 group, s32 id) { return Msg_FindTag(p, group, id); }
 
 // ======== unk_0206c714.cpp ========
 namespace n0 {
@@ -2615,7 +2615,7 @@ BOOL TalkWindowState::buildTrend() {
     BOOL r4 = FALSE;
     trend.clear();
     if (r6 != 0) {
-        if (Villager_GetTrend((VillagerData *)r6, (s32)(sptr)&trend) != 0) {  // (b: the string, as an integer)
+        if (Villager_GetTrend((VillagerData *)r6, &trend) != 0) {
             r4 = TRUE;
         }
     }

@@ -245,7 +245,7 @@ void DwcNet_ProcessSend(void) {
                                 sDwcNetChannels->sendDoneCallback(r->sendSize, id);
                             }
                             r->isSending = z0;
-                            r->sendData = (u8 *)z0;
+                            r->sendData = NULL;
                             r->sentBytes = z0;
                             r->sendSize = z0;
                         }

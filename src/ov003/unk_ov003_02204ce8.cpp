@@ -168,12 +168,12 @@ extern BlockMap *gSceneBlockMap;
 extern u8 sFieldFrontDist[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
-s32 PlayerActor_GetPlayerData(Obj *o);
+void *PlayerActor_GetPlayerData(void *p);
 void Clock_GetDateTime(void *p);
 s32 PlayerActor_CompareLastPlayDateNow(Obj *o);
 s32 Weather_GetCurrent();
 s32 PlayerActor_GetTan(Obj *o);
-void PlayerActor_SetLastPlayDate(Obj *o, s32 a, void *d);
+void PlayerActor_SetLastPlayDate(Obj *o, PlayerData *a, void *d);
 s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 a, s32 b);
 s32 FieldAction_RequestPitfall(s32 a, V2 *p, s32 k);
 s32 Flower_Trample(V2 *p);
@@ -1967,7 +1967,7 @@ extern CommManager *gCommManager;
 
 s32 TalkRequest_FinishSceneEntry();
 s32 PlayerActor_GetHeldItem(H *h, Obj *o);
-s32 PlayerActor_GetPlayerData(Obj *o);
+void *PlayerActor_GetPlayerData(void *p);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 PlayerActor_RequestDoorEnter(Obj *o, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -4057,11 +4057,11 @@ extern "C" void PlayerActor_SetupStowItem(Obj *o, Msg *a) {
     H hh;
     RecA *p7d0 = (RecA *)&o->actionWork;
     PlayerActor_GetHeldItem(&hh, o);
-    s32 q = PlayerActor_GetPlayerData(o);
+    PlayerData *q = static_cast<PlayerData *>(PlayerActor_GetPlayerData(o));
     hh.b = 0xfff1;
-    ((PlayerData *)(q))->setHeldItem((u16 *)(&hh.b));
+    q->setHeldItem((u16 *)(&hh.b));
     (o)->startAnimOnce(0x6b, 3, 0);
-    ((PlayerData *)(q))->setHeldItem((u16 *)(&hh));
+    q->setHeldItem((u16 *)(&hh));
     s32 v;
     if ((r->bits & 3) == 2) {
         (o)->setActionFlag(0);
@@ -4256,11 +4256,11 @@ extern "C" void PlayerActor_SetupStowUmbrella(Obj *o, Msg *a) {
     } else {
         H hh;
         PlayerActor_GetHeldItem(&hh, o);
-        s32 q = PlayerActor_GetPlayerData(o);
+        PlayerData *q = static_cast<PlayerData *>(PlayerActor_GetPlayerData(o));
         hh.b = 0xfff1;
-        ((PlayerData *)(q))->setHeldItem((u16 *)(&hh.b));
+        q->setHeldItem((u16 *)(&hh.b));
         (o)->startAnimOnce(0x62, 3, 0);
-        ((PlayerData *)(q))->setHeldItem((u16 *)(&hh));
+        q->setHeldItem((u16 *)(&hh));
         (o)->clearActionFlag(0);
     }
     st = r->st;
@@ -4580,7 +4580,7 @@ extern "C" void PlayerActor_AxeSwingTrackTarget(Obj *o) {
     t.x = pv->x;
     t.y = pv->y;
     t.z = pv->z;
-    (o)->setSubCollider((u32)(uptr)&t, 0xf33, 0x1000);
+    (o)->setSubCollider(&t, 0xf33, 0x1000);
     ((ActorCollider *)((u8 *)&o->subCollider))->submit();
 }
 }
@@ -4659,7 +4659,7 @@ namespace ns_0220f314 {
 extern "C" void PlayerActor_AxeFollowThroughTrackTarget(Obj *o) {
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
-    (o)->setSubCollider((u32)(uptr)&v, 0xf33, 0x1000);
+    (o)->setSubCollider(&v, 0xf33, 0x1000);
     ((ActorCollider *)((u8 *)&o->subCollider))->submit();
 }
 }
@@ -6488,7 +6488,7 @@ namespace ns_0220cd4c {
 extern "C" void PlayerActor_BugNetSwingTrackTarget(Obj *o) {
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
-    (o)->setSubCollider((u32)(uptr)&v, 0x99a, 0x1000);
+    (o)->setSubCollider(&v, 0x99a, 0x1000);
     o->subCollider.submit();
 }
 }
@@ -7710,7 +7710,7 @@ extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o) {
     v.x = r->targetPos.x;
     v.y = r->targetPos.y;
     v.z = r->targetPos.z;
-    (o)->setSubCollider((u32)(uptr)&v, 0xf33, 0x1000);
+    (o)->setSubCollider(&v, 0xf33, 0x1000);
     o->subCollider.submit();
 }
 }
@@ -7856,7 +7856,7 @@ extern "C" void PlayerActor_ShovelWaitTrackTarget(Obj *o) {
     V3 v;
     u8 *p = (u8 *)&o->actionWork;
     FieldPos_FromUnitCenter(&v, p[0], p[1]);
-    (o)->setSubCollider((u32)(uptr)&v, 0xf33, 0x1000);
+    (o)->setSubCollider(&v, 0xf33, 0x1000);
     o->subCollider.submit();
 }
 }
@@ -11915,7 +11915,7 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     BOOL night;
     u16 *cnt;
     u8 *fl;
-    s32 tm;
+    PlayerData *tm;
     u32 A, B, C;
     if (o->drawStep == 0) return;
     night = FALSE;
@@ -11923,7 +11923,7 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     cnt = PlayerSession_GetTanTimer();
     if (*cnt == 0) *cnt = 1;
     fl = PlayerSession_GetSessionFlags();
-    tm = PlayerActor_GetPlayerData(o);
+    tm = static_cast<PlayerData *>(PlayerActor_GetPlayerData(o));
     l.t[0] = 0;
     l.t[1] = 0;
     Clock_GetDateTime(l.t);
@@ -11959,7 +11959,7 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     l.w0 = (l.w0 & ~0xf800) | ((C &= 0x1f) << 11);
     u32 n = (u8)(PlayerActor_GetTan(o) + 1);
     if (n > 7) n = 7;
-    ((PlayerData *)(tm))->setTan(n);
+    tm->setTan(n);
     PlayerActor_SetLastPlayDate(o, tm, &l);
     *cnt = 0x4650;
     *fl = *fl & 0xfb;

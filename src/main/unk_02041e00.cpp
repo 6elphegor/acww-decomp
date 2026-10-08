@@ -67,6 +67,7 @@ extern "C" u16 *PendingUnit_GetActivePosOfAid(u32 a);
 #include "proto/main/unk_020c00c0.h"
 #include "proto/ov003/unk_ov003_022192b4.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
+#include "proto/main/unk_020594dc.h"
 
 
 struct Unk_0204a768_Pos {
@@ -851,7 +852,6 @@ s32 TownBbs_UpdateDaily();
 s32 DateTime_SubHours(void *, s32);
 void TownState_PickNextWeekDate(u8 *dst, u8 *src);
 s32 RoomScoreEvaluator_Construct(void *);
-s32 HappyRoom_EvaluateHouse(void *);
 s32 RoomScoreEvaluator_Destruct(void *);
 extern u8 data_021ed29c[];
 s32 TownState_SetSeasonPeriod(u32);
@@ -951,7 +951,7 @@ s32 Event_GetState(s32, void *, s32);
 void Clock_GetCalendarKey(void *);
 u16 *TownState_GetEvent(s32);
 s32 Clock_GetYear();
-void TownState_RemoveEvent(s32 x, u32 id);  // (takes the TownState as s32: unk_0204a780.cpp)
+void TownState_RemoveEvent(TownState *x, u32 id);
 s32 Town_EndEventEffect(void *, s32, void *, s32, s32);
 void Town_UndecorateCedars(void *, void *, s32);
 void Town_ClearBorderTrees(void *);
@@ -982,7 +982,6 @@ void Town_BuryGyroids(void *, void *, s32, s32, u32);
 void Town_UpgradeBuriedShovels(void *, void *, s32, s32);
 void NookShop_ApplyRenovation();
 void RoomScoreEvaluator_Construct(void *);
-void HappyRoom_EvaluateHouse(void *);
 void RoomScoreEvaluator_Destruct(void *);
 void Sky_OnDayChange(s32);
 void NookShop_UpdateDaily(void *, s32);
@@ -1058,7 +1057,7 @@ s32 BlockMap_PlaceItem(void *m, s32 x, s32 z, u32 t, s32 f);
 s32 Item_IsTreeGrown(void *);
 void LitCedarList_Add(s32, s32);
 void Town_SpawnVillagerHouseFlowers(void *, void *, s32, s32);
-s32 TownState_FindEvent(s32 x, u32 id);  // (takes the TownState as s32: unk_0204a780.cpp)
+s32 TownState_FindEvent(TownState *x, u32 id);
 s32 DateTime_DiffDays(void *, void *);
 s32 Date_DaysBetween(u8 *a, u8 *b);
 s32 BlockMap_IsBuried(void *, s32, s32, s32, s32);
@@ -4480,7 +4479,7 @@ namespace nJ {
 extern "C" s32 Town_CountEventDays(void *a, s32 b, u8 *c, u8 *d, s32 e, s32 f, SaveData *g) {
     s32 r;
     if (e != 0) {
-        if (TownState_FindEvent((s32)(uptr)&g->townState, b) < 0) {
+        if (TownState_FindEvent(&g->townState, b) < 0) {
             if (f != 0) {
                 r = 1;
             } else {
@@ -4765,7 +4764,7 @@ extern "C" void Town_CleanupExpiredEvents(void *a, void *p, s32 x, s32 y, SaveDa
             if (k == Clock_GetYear() && q->start <= now && q->end >= now) {
             } else {
                 if (Town_EndEventEffect(a, id, p, x, y)) {
-                    TownState_RemoveEvent((s32)(uptr)&d->townState, id);
+                    TownState_RemoveEvent(&d->townState, id);
                 }
             }
         }

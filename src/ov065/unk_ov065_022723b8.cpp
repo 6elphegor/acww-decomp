@@ -73,7 +73,7 @@ s32 DwcCore_GetState();
 void *DwcLogin_GetUserData();
 void DwcFriend_FinishUpdate();
 void DwcFriend_SyncList(void *, s32);
-void *DwcFriend_GetControlField20();
+u32 DwcFriend_GetControlField20(void);
 void DwcFriend_OnAuthorizedInfo();
 void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
@@ -105,7 +105,7 @@ s32 DwcFriend_GetStatusString(void *a, char *b);
 s32 DwcMatch_CountNnRetry(s32 a);
 void DwcMatch_OnNnComplete(s32 a, s32 b, void *c, void *d);
 void DwcMatch_OnNnProgress(s32 state, void *user);
-void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n);
+void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n, void *ud);
 }
 
 }
@@ -164,7 +164,7 @@ void DwcMatch_Nop(void *a);
 
 enum Unk_ov065_02272734_Z { Unk_ov065_02272734_Z_0 = 0 };
 
-void DwcMatch_OnQr2NnRequest(u32 a);
+void DwcMatch_OnQr2NnRequest(u32 a, void *ud);
 void DwcMatch_OnQr2PublicAddress(u32 a, u32 b);
 s32 DwcMatch_OnQr2Error(s32 a);
 s32 DwcMatch_OnQr2Count(void);
@@ -599,8 +599,8 @@ u32 gt2GetLocalPort(void *socket);
 s32 qr2_init_socketA(void *qrec, s32 s, s32 port, char *gamename, char *secretKey, u32 ispublic, u32 natnegotiate, void *serverKey, void *playerKey, void *teamKey, void *keyList, void *count, void *addError, u32 userdata);
 s32 DwcMatch_HandleQr2Result(s32);
 s32 qr2_register_publicaddress_callback(void *, void *);
-s32 qr2_register_natneg_callback(void *, void *);
-s32 qr2_register_clientmessage_callback(void *, void *);
+void qr2_register_natneg_callback(qr2_implementation_s *, qr2_natnegcallback_t);
+void qr2_register_clientmessage_callback(qr2_implementation_s *, qr2_clientmessagecallback_t);
 s32 DwcMatch_OnQr2ServerKey(void);
 s32 DwcMatch_OnQr2PlayerKey(void);
 s32 DwcMatch_OnQr2TeamKey(void);
@@ -608,8 +608,6 @@ s32 DwcMatch_OnQr2KeyList(void);
 s32 DwcMatch_OnQr2Count(void);
 s32 DwcMatch_OnQr2Error(void);
 s32 DwcMatch_OnQr2PublicAddress(void);
-s32 DwcMatch_OnQr2NnRequest(void);
-s32 DwcMatch_OnQr2ClientMessage(void);
 s32 DwcMatch_ClearUserKeys(void);
 void DwcMatch_ResetState(u32);
 s32 DwcMatch_StartQr2(u32 a);
@@ -824,8 +822,8 @@ s32 DwcMatch_StartQr2(u32 a) {
     g->publicIp = 0;
     g->publicPort = 0;
     qr2_register_publicaddress_callback((void *)g->qr2Object, (void *)DwcMatch_OnQr2PublicAddress);
-    qr2_register_natneg_callback((void *)g->qr2Object, (void *)DwcMatch_OnQr2NnRequest);
-    qr2_register_clientmessage_callback((void *)g->qr2Object, (void *)DwcMatch_OnQr2ClientMessage);
+    qr2_register_natneg_callback(g->qr2Object, DwcMatch_OnQr2NnRequest);
+    qr2_register_clientmessage_callback(g->qr2Object, DwcMatch_OnQr2ClientMessage);
     qr2_send_statechanged((void *)g->qr2Object);
     return r;
 }
@@ -1661,7 +1659,7 @@ extern "C" {
 
 void DwcMatch_Shutdown(void) {
     s32 z = 0;
-    sDwcMatch = (DwcMatchControl *)z;
+    sDwcMatch = NULL;
     if (sDwcMatchUserFilter != 0) {
         DwcNet_Free(4, sDwcMatchUserFilter, z);
         sDwcMatchUserFilter = 0;
@@ -4374,7 +4372,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void DwcMatch_OnQr2NnRequest(u32 a)
+void DwcMatch_OnQr2NnRequest(u32 a, void *ud)
 {
     if (sDwcMatch->matchState == 1) {
         sDwcMatch->matchState = 6;
@@ -4405,7 +4403,7 @@ namespace F02271da0 {
 extern "C" {
 
 
-void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n) {
+void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n, void *ud) {
     u32 off = 0;
     DwcMatchCommandHeader hdr;
     u8 body[0x80];

@@ -433,14 +433,14 @@ void OS_WakeupThreadDirect(void *);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
 
-s32 WifiLink_SendFrame(u8 *, u8 *, u32);
+s32 WifiLink_SendFrame(u8 *, void *, u32);
 u32 Ip_Checksum(u8 *, u32);
 u32 Ip_ChecksumFinish(u32);
 u32 Ip_ChecksumAdd(u8 *, u32, u32);
 s32 Ip_GetNextHop(u32);
 s32 Ip_IsOnLocalNet(u32);
 
-void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
+void Icmp_SendEchoRequest(u8 *a, u32 b, IpSocket *c);
 void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
 void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
 void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
@@ -475,7 +475,7 @@ void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag);
 void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
 void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
 void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
-void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
+void Icmp_SendEchoRequest(u8 *a, u32 b, IpSocket *c);
 }
 
 s32 Ip_IsBroadcast(u32 ip)
@@ -884,7 +884,7 @@ void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag)
     }
 }
 
-void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c)
+void Icmp_SendEchoRequest(u8 *a, u32 b, IpSocket *c)
 {
     u8 *h = c->txBuf;
     u8 *q = h + 0x22;
@@ -896,10 +896,10 @@ void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c)
     sIcmpSeq = sIcmpSeq + 1;
     *(u16 *)(q + 6) = id;
     u32 t = Ip_ChecksumAdd(q, 8, 0);
-    t = Ip_ChecksumAdd((u8 *)a, b, t);
+    t = Ip_ChecksumAdd(a, b, t);
     u32 ck = Ip_ChecksumFinish((u16)t);
     *(u16 *)(q + 2) = BS16(ck);
-    Ip_Send(q, 8, (u8 *)a, b, c->remoteAddr, 1);
+    Ip_Send(q, 8, a, b, c->remoteAddr, 1);
 }
 
 }
@@ -1761,7 +1761,7 @@ s32 IpStack_ResetAddress(u32);
 s32 IpStack_Yield();
 s32 Ssl_GetReadLength(Sess *);
 s32 Udp_Send(u8 *, u32, Sess *);
-s32 Icmp_SendEchoRequest(u8 *, u32, Sess *);
+void Icmp_SendEchoRequest(u8 *, u32, Sess *);
 s32 Ssl_Write(u8 *, u32, u8 *, u32, Sess *);
 s32 Tcp_SendSegment(u8 *, u32, Sess *, u32, u32);
 s32 Ssl_Consume(u32, Sess *);
@@ -1804,7 +1804,7 @@ u32 IpSoc_GetPeer(u16 *, u32 *);
 s32 IpSoc_TcpConnect();
 s32 Tcp_Connect(Sess *);
 void IpSoc_TcpListen();
-void IpSoc_SetUdpCallback(u32);
+void IpSoc_SetUdpCallback(IpSocketUdpCallback);
 void Tcp_Listen(Sess *);
 void IpSoc_ShareWithThread(Thr *);
 void IpSoc_Release();
@@ -1836,7 +1836,7 @@ void IpSoc_Init();
 void IpSoc_Release();
 void IpSoc_ShareWithThread(Thr *t);
 void Tcp_Listen(Sess *s);
-void IpSoc_SetUdpCallback(u32 v);
+void IpSoc_SetUdpCallback(IpSocketUdpCallback v);
 void IpSoc_TcpListen();
 s32 Tcp_Connect(Sess *s);
 s32 IpSoc_TcpConnect();
@@ -2011,10 +2011,10 @@ void Tcp_Listen(Sess *s) {
     OS_SleepThread(0);
 }
 
-void IpSoc_SetUdpCallback(u32 v) {
+extern "C" void IpSoc_SetUdpCallback(IpSocketUdpCallback v) {
     Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        s->udpCallback = (IpSocketUdpCallback)v;
+        s->udpCallback = v;
     }
 }
 

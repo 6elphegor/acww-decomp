@@ -73,7 +73,7 @@ s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallbac
 s32 gpiPeerStartConnect(GPConnection *, GPIPeer *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
-s32 gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, char *, s32, s32);
+void gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, const char *);
 void gpiSetErrorString(GPConnection *, const char *);
 s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
@@ -158,9 +158,9 @@ struct GPIProfileMapData {
 
 
 struct GPIFindProfileByUserData {
-    s32 nick;
-    s32 email;
-    s32 *profile;
+    char *nick;
+    char *email;
+    GPIProfile **profile;
     s32 found;
 };
 
@@ -272,7 +272,7 @@ void *gpiFindBuddy(GPConnection *h, s32 a);
 s32 gpiCheckForBuddy(GPConnection *, GPIProfile *n, void *arg);
 s32 gpiProfileMap(GPConnection *h, gpiProfileMapFunc cb, void *arg);
 s32 gpiProfileMapCallback(GPIProfile *n, void *p);
-s32 gpiFindProfileByUser(GPConnection *h, s32 a, s32 b, s32 *out);
+s32 gpiFindProfileByUser(GPConnection *h, char *a, char *b, GPIProfile **out);
 s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *n, void *arg);
 s32 gpiRemoveProfile(GPConnection *h, void *n);
 void gpiRemoveProfileByID(GPConnection *h, s32 a);
@@ -398,9 +398,9 @@ s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *n, void *arg) {
     GPIFindProfileByUserData *l = (GPIFindProfileByUserData *)arg;
     char **e = (char **)n->cache;
     if (e != 0) {
-        if (strcmp((const char *)l->nick, e[0]) == 0) {
-            if (strcmp((const char *)l->email, e[2]) == 0) {
-                *(GPIProfile **)l->profile = n;
+        if (strcmp(l->nick, e[0]) == 0) {
+            if (strcmp(l->email, e[2]) == 0) {
+                *l->profile = n;
                 l->found = 1;
                 return 0;
             }
@@ -413,7 +413,7 @@ s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *n, void *arg) {
 
 namespace Nb {
 extern "C" {
-s32 gpiFindProfileByUser(GPConnection *h, s32 a, s32 b, s32 *out) {
+s32 gpiFindProfileByUser(GPConnection *h, char *a, char *b, GPIProfile **out) {
     GPIFindProfileByUserData l;
     l.nick = a;
     l.email = b;
@@ -421,7 +421,7 @@ s32 gpiFindProfileByUser(GPConnection *h, s32 a, s32 b, s32 *out) {
     l.found = 0;
     gpiProfileMap(h, gpiCheckProfileForUser, &l);
     if (l.found == 0) {
-        *out = 0;
+        *out = NULL;
     }
     return 0;
 }

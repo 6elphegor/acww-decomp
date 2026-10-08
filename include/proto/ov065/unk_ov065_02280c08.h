@@ -4,9 +4,9 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02280c08.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/gp.h"
 #include "net/gpiTransfer.h"
 #ifdef __cplusplus
-#include "net/gp.h"
 #include "net/gpiPeer.h"
 #endif
 
@@ -18,6 +18,9 @@ __declspec(weak) void Unk_ov065_02281180_pool_order(void);
 #endif
 #ifndef PROTO_LOCAL_GsGpPeer_SetSocketBuffers
 void GsGpPeer_SetSocketBuffers(s32 s);
+#endif
+#ifndef PROTO_LOCAL_gpiProcessPeers
+s32 gpiProcessPeers(GPConnection *h);
 #endif
 #ifndef PROTO_LOCAL_gpiFreeMessage
 void gpiFreeMessage(void *p);
@@ -48,9 +51,6 @@ void gpiDestroyPeer(GPConnection *h, GPIPeer *n);
 #endif
 #ifndef PROTO_LOCAL_gpiRemovePeer
 void gpiRemovePeer(GPConnection *h, GPIPeer *n);
-#endif
-#ifndef PROTO_LOCAL_gpiProcessPeers
-s32 gpiProcessPeers(GPConnection *h);
 #endif
 #ifndef PROTO_LOCAL_gpiGetPeerByProfile
 GPIPeer *gpiGetPeerByProfile(GPConnection *h, s32 id);

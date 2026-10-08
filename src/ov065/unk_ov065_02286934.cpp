@@ -176,7 +176,7 @@ void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n);
 }
 }
 
-extern "C" { u32 Matchup1Hostname; } //@
+extern "C" { char *Matchup1Hostname; } //@
 extern "C" { DArrayImplementation *negotiateList; } //@
 namespace N02287200 { extern "C" {
 Ent *FindNegotiatorForCookie(s32 x) {
@@ -411,10 +411,10 @@ extern "C" u32 ResolveServer(const char *name, const char *s) {
 namespace N022868b0 { extern "C" {
 extern "C" s32 ResolveServers() {
     if (matchup1ip == 0) {
-        matchup1ip = ResolveServer((const char *)Matchup1Hostname, "natneg1.gs.nintendowifi.net");
+        matchup1ip = ResolveServer(Matchup1Hostname, "natneg1.gs.nintendowifi.net");
     }
     if (matchup2ip == 0) {
-        matchup2ip = ResolveServer((const char *)Matchup2Hostname, "natneg2.gs.nintendowifi.net");
+        matchup2ip = ResolveServer(Matchup2Hostname, "natneg2.gs.nintendowifi.net");
     }
     if (matchup1ip == 0 || matchup2ip == 0) {
         return 0;
@@ -564,7 +564,7 @@ extern "C" void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa) {
 }
 } }
 
-extern "C" { u32 Matchup2Hostname; } //@
+extern "C" { char *Matchup2Hostname; } //@
 namespace N022868b0 { extern "C" {
 extern "C" void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
     if (pkt[0x13] == 0) {

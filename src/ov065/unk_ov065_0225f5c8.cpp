@@ -67,14 +67,14 @@ void IpSoc_Use(void *);
 void IpSoc_ShareWithThread(void *);
 void IpSoc_Init(void);
 void IpSoc_SetUdp(void);
-void IpSoc_SetUdpCallback(void *);
-void IpSoc_Bind(u32, u32, void *);
+void IpSoc_SetUdpCallback(IpSocketUdpCallback v);
+void IpSoc_Bind(u32, u32, u32);
 void IpSoc_TcpListen(void);
 u32 IpSoc_GetPeer(u16 *, u32 *);
 s32 IpSoc_TcpConnect(void);
 
 // this TU
-s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s);
+s32 SockCore_OnUdpReceive(u8 *data, u32 len, IpSocket *ip);
 s32 SockCore_Bind(Sess *s, u16 a);
 s32 SockCore_Connect(Sess *s, u16 a, u32 b);
 s32 SockCore_PostConnect(Sess *s);
@@ -136,8 +136,9 @@ extern "C" {
 s32 sSockConnectInProgressError = -0x1a;
 SockUdpDropCounters sSockUdpDropCount;
 
-s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
+s32 SockCore_OnUdpReceive(u8 *data, u32 len, IpSocket *ip)
 {
+    Sess *s = static_cast<Sess *>(ip);  // (the IpSocket of a SockCoreSocket)
     Ctx *c = s->recvPipe;
     u32 irq = OS_DisableInterrupts();
 
@@ -234,7 +235,7 @@ s32 SockCore_PostConnect(Sess *s)
     }
     j->localPort = s->boundPort;
     j->remotePort = s->peerPort;
-    j->remoteAddr = (void *)s->peerAddr;
+    j->remoteAddr = s->peerAddr;
     s->flags |= 2;
     return SockCore_ExecOnRecvSide((Obj *)s, (Msg *)j);
 }
@@ -390,7 +391,7 @@ s32 SockCore_CmdOpen(Msg *m)
     case 1:
         IpSoc_Init();
         IpSoc_SetUdp();
-        IpSoc_SetUdpCallback((void *)SockCore_OnUdpReceive);
+        IpSoc_SetUdpCallback(SockCore_OnUdpReceive);
         break;
     case 2:
         IpSoc_SetUdp();

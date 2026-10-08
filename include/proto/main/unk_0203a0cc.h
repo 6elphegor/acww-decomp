@@ -82,9 +82,6 @@ void Camera_SetSwayPattern3(void);
 #ifndef PROTO_LOCAL_Camera_LockFocusYaw
 void Camera_LockFocusYaw(void);
 #endif
-#ifndef PROTO_LOCAL_Camera_SnapToFocus
-void Camera_SnapToFocus(s32 a);
-#endif
 #ifndef PROTO_LOCAL_Camera_MuteSe
 void Camera_MuteSe(void);
 #endif
@@ -132,6 +129,9 @@ BOOL Camera_RetargetFocus(VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Camera_IsBlockingFocusView
 BOOL Camera_IsBlockingFocusView(VecFx32 *v, s32 unused, s32 h);
+#endif
+#ifndef PROTO_LOCAL_Camera_SnapToFocus
+void Camera_SnapToFocus(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_Camera_PlaySe
 void Camera_PlaySe(Camera *o, s32 a);

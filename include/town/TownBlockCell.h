@@ -1,21 +1,14 @@
 #ifndef TOWN_TOWNBLOCKCELL_H
 #define TOWN_TOWNBLOCKCELL_H
 
-// 0x28-byte cell of the town block map grid (TownBlockMap_Get; src/itcm/unk_01ffcb2c.cpp reads the u16 row table at
-// 0x24, src/main/unk_020af514.cpp walks the cells for MapBlock_GetItemPtr). View of the TU-local class MapBlock
-// (src/main/unk_02037358.cpp): bgModel at 0x20 is MapBlock::bgModel (the ov004 RoomShell reads the room model from it).
+// A cell of the town block map grid (TownBlockMap_Get): the MapBlock (town/MapBlock.h), under the name its older
+// users (ov003 / ov004 / ov117, itcm unk_01ffcb2c) give it.
 #include "types.h"
-#include "uptr.h"
+#include "town/MapBlock.h"
 
-struct BgAcreModel;
+typedef MapBlock TownBlockCell;
 
-struct TownBlockCell {
-    /* 0x00 */ u8 pad_00[0x20];
-    /* 0x20 */ BgAcreModel *bgModel;
-    /* 0x24 */ u16 *buriedFlags;
-};
-
-// a cell's size (0x28 on the DS; larger on 64-bit hosts)
-#define MAPBLOCK_SIZE HOST_SIZED(0x28, TownBlockCell)
+// a cell's size (0x28 on the DS)
+#define MAPBLOCK_SIZE sizeof(MapBlock)
 
 #endif

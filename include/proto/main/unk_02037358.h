@@ -64,7 +64,7 @@ u32 AcreAttr_GetType(u32 i);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_MapBlock_Init
-void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6);
+void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, u16 *layer0, u16 *layer1, u16 *buriedMask, BgAcreModel *k2, void *bcl, Unk_02037638_S8 *k45, u32 mapSlot);
 #endif
 #ifndef PROTO_LOCAL_MapBlock_NewArray
 MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x);

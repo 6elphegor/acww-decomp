@@ -128,7 +128,7 @@ BOOL VillagerHouse::initBuilding() {
     static FxVec3 v(-0x2000, 0x1000, 0x2000);
     VecFx32 tmp;
     Vec_Add(&tmp, &position, &v);
-    Actor::spawn((void *)(0x18), (void *)(idx), &tmp, (void *)(0), this);
+    Actor::spawn(0x18, idx, &tmp, NULL, this);
     sVillagerHouses[idx] = this;
     s32 k = getHouseVariant();
     void *r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);

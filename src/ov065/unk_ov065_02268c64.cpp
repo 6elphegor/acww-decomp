@@ -1,6 +1,7 @@
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/WifiLinkConfig.h"
 #include "net/WifiLinkSendState.h"
 #include "net/WifiLinkWork.h"
 #include "net/WifiApControl.h"
@@ -218,7 +219,7 @@ void WifiLink_OnScanResult(void);
 void WifiLink_OnWmCommand(void);
 void WifiLink_OnWmIndication(void);
 void WifiLink_SetupScanParams(void *, void *, s32);
-void WifiLink_ApplyConfig(void *, void *);
+void WifiLink_ApplyConfig(WifiLinkConfig *, WifiLinkNotifyCallback);
 void WifiLink_SetPhase(s32);
 void WifiLink_SetDefaultOptions(void);
 void WifiLink_RestartKeepAliveAlarm(void);
@@ -230,7 +231,7 @@ void WifiLink_InitSendState(void);
 s32 WifiLink_BeginSearchAsync(void *, void *, s32);
 s32 WifiLink_SearchAsync(void *, void *, s32);
 s32 WifiLink_CleanupAsync(void);
-s32 WifiLink_StartupAsync(void *, void *);
+s32 WifiLink_StartupAsync(WifiLinkConfig *, WifiLinkNotifyCallback);
 s32 WifiLink_Finish(void);
 s32 WifiLink_Init(void *, u32);
 void WifiApList_MoveToTail(WifiApListEntry *);
@@ -247,7 +248,7 @@ void WifiLink_UnlockFromIrq(OSMutex *);
 BOOL WifiLink_TryLockFromIrq(OSMutex *);
 void WifiLink_OnKeepAliveSent(void);
 void WifiLink_OnSendDone(WMMsg *);
-s32 WifiLink_SendFrame(u32, void *, u32);
+s32 WifiLink_SendFrame(u8 *, void *, u32);
 
 
 
@@ -276,7 +277,7 @@ static inline u8 *Unk_ov065_0226a6b4_Data(WifiApListEntry *n)
 
 
 
-s32 WifiLink_SendFrame(u32 a, void *b, u32 c)
+s32 WifiLink_SendFrame(u8 *a, void *b, u32 c)
 {
     u32 e = OS_DisableInterrupts();
     if (WifiLink_GetWork() == NULL) {
@@ -296,7 +297,7 @@ s32 WifiLink_SendFrame(u32 a, void *b, u32 c)
         return -4;
     }
     MI_CpuCopy8(b, s->sendBuf, c);
-    switch (WM_SetDCFData((void *)WifiLink_OnSendDone, (void *)a, s->sendBuf, (u16)c)) {
+    switch (WM_SetDCFData((void *)WifiLink_OnSendDone, a, s->sendBuf, (u16)c)) {
     case 0:
     case 1:
     case 3:
@@ -629,7 +630,7 @@ s32 WifiLink_Finish(void)
     return 0;
 }
 
-s32 WifiLink_StartupAsync(void *a, void *b)
+s32 WifiLink_StartupAsync(WifiLinkConfig *a, WifiLinkNotifyCallback b)
 {
     u32 e = OS_DisableInterrupts();
     WifiLinkWork *g = sWifiLinkWork;
@@ -809,12 +810,6 @@ namespace N_97ec {
 
 typedef WifiLinkWork G;
 
-struct WifiLinkConfig {
-    u32 dmaNo;
-    u32 apListBuf;
-    u32 apListBufSize;
-    u32 apListReplaceOldest;
-};
 
 extern "C" {
 extern G *sWifiLinkWork;
@@ -853,7 +848,7 @@ void WifiLink_NotifyRequest(s32 a, void *b, s32 c, s32 d);
 u32 WifiLink_NextAllowedChannel(s32);
 void WifiLink_SetDefaultOptions();
 void WifiLink_SetupScanParams(u8 *, u8 *, u32);
-void WifiLink_ApplyConfig(WifiLinkConfig *, u32);
+void WifiLink_ApplyConfig(WifiLinkConfig *, WifiLinkNotifyCallback);
 WifiLinkWork *WifiLink_GetWork();
 u32 WifiLink_UpdateOptions(u32);
 u32 WifiLink_GetPhase();
@@ -1116,27 +1111,27 @@ WifiLinkWork *WifiLink_GetWork() {
     return sWifiLinkWork;
 }
 
-void WifiLink_ApplyConfig(WifiLinkConfig *p, u32 arg) {
+void WifiLink_ApplyConfig(WifiLinkConfig *p, WifiLinkNotifyCallback arg) {
     if (p == 0) {
         sWifiLinkWork->dmaNo = 3;
         sWifiLinkWork->apList = 0;
         sWifiLinkWork->apListSize = 0;
         sWifiLinkWork->apListReplaceOldest = 0;
     } else {
-        u32 t4;
+        uptr t4;  // (the buffer's address: aligned to 4 below)
         sWifiLinkWork->dmaNo = p->dmaNo & 3;
-        t4 = p->apListBuf;
-        if (((4 - (t4 & 3)) & 3) + 0xc > p->apListBufSize) {
+        t4 = (uptr)p->bssDescBuffer;
+        if (((4 - (t4 & 3)) & 3) + 0xc > (u32)p->bssDescBufferSize) {
             sWifiLinkWork->apList = 0;
             sWifiLinkWork->apListSize = 0;
         } else {
-            sWifiLinkWork->apList = (WifiApList *)((t4 + 3) & ~3);
-            sWifiLinkWork->apListSize = p->apListBufSize - ((4 - (p->apListBuf & 3)) & 3);
+            sWifiLinkWork->apList = (WifiApList *)((t4 + 3) & ~(uptr)3);
+            sWifiLinkWork->apListSize = p->bssDescBufferSize - ((4 - (t4 & 3)) & 3);
             MI_CpuFill8((void *)sWifiLinkWork->apList, 0, sWifiLinkWork->apListSize);
         }
-        sWifiLinkWork->apListReplaceOldest = p->apListReplaceOldest;
+        sWifiLinkWork->apListReplaceOldest = p->bssDescMode;
     }
-    sWifiLinkWork->notifyCallback = (WifiLinkNotifyCallback)arg;
+    sWifiLinkWork->notifyCallback = arg;
 }
 
 void WifiLink_SetupScanParams(u8 *a, u8 *b, u32 c) {

@@ -26,7 +26,7 @@ struct GPICallbackData {
     /* 0x04 */ void *param;
     /* 0x08 */ void *arg;
     /* 0x0c */ s32 type;
-    /* 0x10 */ void *operationID;
+    /* 0x10 */ s32 operationID;  // the operation's id (0: none)
     /* 0x14 */ GPICallbackData *pnext;
 };
 

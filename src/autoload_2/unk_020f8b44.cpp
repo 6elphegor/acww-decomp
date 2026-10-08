@@ -5,6 +5,7 @@
 // autoload_2 0x020f8b44-0x020f92d4 (10 functions), PARTIAL, code unchanged from G011b: particle manager (emit, update);
 // 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (SPL_Load).
 #include "types.h"
+#include "gfx/V3.h"
 #include "gfx/SplEmitterViews.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_020f7a5c.h"
@@ -108,7 +109,7 @@ struct Mgr {
     u8 * tab;  // DS +0x1c
     u8 p20[0x18];  // DS +0x20 [0x14]
     Entry * cur;  // DS +0x34
-    uptr w38;  // DS +0x38
+    s32 *w38;  // DS +0x38: the view matrix
 #else
     u32 w0;
     Entry *act;
@@ -119,7 +120,7 @@ struct Mgr {
     u8 *tab;
     u8 p20[0x14];
     Entry *cur;
-    u32 w38;
+    s32 *w38;
 #endif
 };
 
@@ -222,7 +223,7 @@ void spl_init(Entry *e, void *tab, void *v);
 Entry *spl_pop_front(void *list);
 void spl_push_front(void *list, Entry *e);
 Entry *spl_del(void *list, Entry *e);
-void spl_draw(Mgr *m, u32 a);
+void spl_draw(Mgr *m, SplPosFn a);
 void spl_calc(Mgr *m, Entry *e);
 void spl_calc_gravity(void);
 void spl_calc_random(void);
@@ -398,15 +399,15 @@ extern "C" void SPL_Calc(Mgr *m) {
     if (data_021f5c38 > 1) data_021f5c38 = 0;
 }
 
-extern "C" void SPL_Draw(Mgr *m, u32 a1, u32 a2) {
+extern "C" void SPL_Draw(Mgr *m, s32 *viewMtx, SplPosFn cb) {
     Entry *e;
     IO_W((vu16 *)0x04000060, (u16)((IO_R((vu16 *)0x04000060) & ~0x3000) | 8));
-    m->w38 = a1;
+    m->w38 = viewMtx;
     e = m->act;
     if (e == 0) return;
     do {
         m->cur = e;
-        if (e->fl.b3 == 0) spl_draw(m, a2);
+        if (e->fl.b3 == 0) spl_draw(m, cb);
         e = e->next;
     } while (e != 0);
 }

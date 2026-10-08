@@ -173,8 +173,8 @@ BOOL Snowball::onCreate() {
     rotationQuat.y = data_020d0584[1];
     rotationQuat.z = data_020d0584[2];
     rotationQuat.w = data_020d0584[3];
-    ((CachedModel *)(&ballModel))->loadCached((void *)(0x534e5730), (void *)(void *)("/snowman/snowball1.nsbmd"));
-    ((CachedModel *)(&faceModel))->loadCached((void *)(0x534e5731), (void *)(void *)("/snowman/snow_face.nsbmd"));
+    ((CachedModel *)(&ballModel))->loadCached(0x534e5730, (void *)(void *)("/snowman/snowball1.nsbmd"));
+    ((CachedModel *)(&faceModel))->loadCached(0x534e5731, (void *)(void *)("/snowman/snow_face.nsbmd"));
     if (Snowball_IsLooseBall(this) != 0) {
         u32 i = param & 1;
         LooseSnowball *r = LooseSnowballs_Get()->items;

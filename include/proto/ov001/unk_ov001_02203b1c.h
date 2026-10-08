@@ -7,19 +7,19 @@
 #include "net/SimpleStart.h"
 #include "net/SockAddrIn.h"
 #include "net/SockStartupConfig.h"
+#include "net/WifiLinkConfig.h"
 #include "sys/OSThread.h"
 #include "uptr.h"
 struct SimpleStartApList;
 struct SimpleStartMd5Ctx;
 struct SimpleStartSessionId;
-struct SimpleStartWcmConfig;
 #ifndef __cplusplus
 typedef struct SimpleStartApList SimpleStartApList;
 typedef struct SimpleStartMd5Ctx SimpleStartMd5Ctx;
 typedef struct SimpleStartSessionId SimpleStartSessionId;
-typedef struct SimpleStartWcmConfig SimpleStartWcmConfig;
 #endif
 #ifdef __cplusplus
+#include "net/WifiLinkEvent.h"
 #endif
 
 #ifdef __cplusplus
@@ -118,6 +118,9 @@ extern u8 *data_ov001_0222c8a4;
 #ifndef PROTO_LOCAL_data_ov001_0222c8a0
 extern s32 data_ov001_0222c8a0;
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222c858
+extern WifiLinkConfig *data_ov001_0222c858;
+#endif
 #ifndef PROTO_LOCAL_data_ov001_0222c874
 extern s32 data_ov001_0222c874;
 #endif
@@ -192,9 +195,6 @@ extern u8 sSimpleStartTlvBuf[0x800];
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartPacketBuf
 extern u8 sSimpleStartPacketBuf[0x800];
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_WcmCallback
-void SimpleStart_WcmCallback(void *pp);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_WcmToIdle
 s32 SimpleStart_WcmToIdle(void);
@@ -382,8 +382,8 @@ void SimpleStart_NotifyStatus(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov001_0222c858
-extern SimpleStartWcmConfig *data_ov001_0222c858;
+#ifndef PROTO_LOCAL_SimpleStart_WcmCallback
+void SimpleStart_WcmCallback(WifiLinkEvent *p);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_FindSetupAp
 BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out);

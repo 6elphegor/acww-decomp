@@ -292,10 +292,10 @@ s32 DwcMatch_OnQr2Error(s32 a);
 void DwcMatch_OnQr2PublicAddress(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnQr2NnRequest
-void DwcMatch_OnQr2NnRequest(u32 a);
+void DwcMatch_OnQr2NnRequest(u32 a, void *ud);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnQr2ClientMessage
-void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n);
+void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n, void *ud);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnNnProgress
 void DwcMatch_OnNnProgress(s32 state, void *user);

@@ -67,7 +67,7 @@ void DwcFriend_Fail(s32 a, s32 b);
 void DwcFriend_OnBuddyRequest(void *a, u32 *b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_HandleAuthorizedMessage
-s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b);
+s32 DwcFriend_HandleAuthorizedMessage(void *a, GPRecvBuddyMessageArg *b);
 #endif
 #ifndef PROTO_LOCAL_DwcFriend_OnBuddyStatus
 void DwcFriend_OnBuddyStatus(void *a, u32 *b);

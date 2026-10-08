@@ -224,7 +224,7 @@ BOOL FishDisplay::onCreate() {
     } else if ((s32)param == 1) {
         sFishDisplayEntryCount = 1;
     }
-    modelPool.init(sFishDisplayEntryCount, (void *)(0x800), (void *)(0x80), 0x134c, FishDisplayHeap_Create, FishDisplayHeap_Destroy);
+    modelPool.init(sFishDisplayEntryCount, 0x800, 0x80, 0x134c, FishDisplayHeap_Create, FishDisplayHeap_Destroy);
     gFishDisplay = this;
     return TRUE;
 }

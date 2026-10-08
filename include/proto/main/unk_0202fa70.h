@@ -176,7 +176,7 @@ void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
 void Ground_ClearWalkLinks(s32 x, s32 z, s32 mask);
 #endif
 #ifndef PROTO_LOCAL_CollisionMap_SetBlock
-BOOL CollisionMap_SetBlock(s32 x, s32 y, s32 val, s32 idx);
+BOOL CollisionMap_SetBlock(s32 x, s32 y, void *bcl, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_CollisionMap_Reset
 void CollisionMap_Reset(s32 idx);

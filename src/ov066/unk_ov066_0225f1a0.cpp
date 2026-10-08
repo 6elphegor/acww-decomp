@@ -332,7 +332,7 @@ s32 WM_StartParent(void *);
 s32 WM_SetParentParameter(void *, void *);
 s32 WM_Reset(WMCallback cb);
 s32 WM_EndMP(void *);
-s32 WM_SetMPDataToPortEx(void *, u32, void *, u32, u32, u32, u32);
+s32 WM_SetMPDataToPortEx(void *, void *, void *, u32, u32, u32, u32);
 s32 WM_StartMPEx(void *, void *, u32, void *, u32, u32, u32, s32, s32, s32, s32);
 s32 WM_SetEntry(void *, u32);
 s32 WM_MeasureChannel(void *, s32, s32, u32, s32);
@@ -829,9 +829,9 @@ void LocalWlMp_OnMemberLeft(u32 idx) {
     } while (head != n);
 }
 
-// done: called with the WMPortSendCallback (WM_SetMPDataToPortEx keeps it in its u32 arg, see LocalWlMp_OnSetMpData)
+// done: called with the WMPortSendCallback (WM_SetMPDataToPortEx keeps it as the callback's arg, see LocalWlMp_OnSetMpData)
 s32 LocalWlMp_SetMpData(u32 port, void *data, u32 size, u32 destMask, void *done) {
-    s32 r = WM_SetMPDataToPortEx((void *)LocalWlMp_OnSetMpData, (u32)(uptr)done, data, size, destMask, port, 2);
+    s32 r = WM_SetMPDataToPortEx((void *)LocalWlMp_OnSetMpData, done, data, size, destMask, port, 2);
     if (r != 2 && r != 7) {
         LocalWl_SetError(r);
         return 0;
@@ -2118,7 +2118,7 @@ void LocalWl_StartParent(u32 v) {
     }
 }
 
-s32 LocalWl_ConnectToParent(LocalWlBeacon *p, u32 a, u32 b) {
+s32 LocalWl_ConnectToParent(LocalWlBeacon *p, void (*a)(u32), u32 b) {
     if (p != NULL && p->inUse != 0 && (p->tag == 0x2348 || p->tag == 0xbd8a)) {
         sLocalWlSession->selectedBeacon = p;
         sLocalWlSession->bits.beaconSelected = 1;
@@ -2257,9 +2257,9 @@ void LocalWl_FreeScanWork(void) {
     sLocalWlScan = NULL;
 }
 
-void LocalWl_SetBeaconFilter(s32 v) {
+void LocalWl_SetBeaconFilter(s32 (*v)(void *)) {
     u32 s = OS_DisableInterrupts();
-    sLocalWlScan->beaconFilter = (s32 (*)(void *))v;
+    sLocalWlScan->beaconFilter = v;
     OS_RestoreInterrupts(s);
 }
 
@@ -2586,7 +2586,7 @@ s32 LocalWl_IsModeReached(void) {
     return r;
 }
 
-s32 LocalWl_RequestMode(s32 a, u32 b, u32 c) {
+s32 LocalWl_RequestMode(s32 a, void (*b)(u32), u32 c) {
     if (sLocalWl == NULL) {
         return 0;
     }
@@ -2594,7 +2594,7 @@ s32 LocalWl_RequestMode(s32 a, u32 b, u32 c) {
         return 0;
     }
     sLocalWl->requestedMode = a;
-    sLocalWl->doneCallback = (void (*)(u32))b;
+    sLocalWl->doneCallback = b;
     sLocalWl->doneCallbackArg = c;
     if (sLocalWl->bits.modeRequestPending == 0) {
         sLocalWl->bits.modeRequestPending = 1;

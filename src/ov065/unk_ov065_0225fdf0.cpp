@@ -474,8 +474,8 @@ namespace Unk_ov065_02260488_Ns {
 
 
 struct Unk_ov065_02260488_Node {
-    u8 pad_00[8];
-    u32 replyQueue;
+    u8 pad_00[2 * sizeof(void *)];  // (handler, socket: SockCoreCommand)
+    void *replyQueue;
     u8 pad_0c;
     u8 blocking;
     u8 pad_0e[2];
@@ -493,8 +493,9 @@ struct Unk_ov065_02260488_Node {
 struct Unk_ov065_02260488_Msg {
     Unk_ov065_02260488_Msg *next;
     SockCoreSocket *sock;
-    u32 replyQueue;
+    void *replyQueue;
 };
+static_assert(sizeof(Unk_ov065_02260488_Node) <= SOCK_MSG_SIZE, "Unk_ov065_02260488_Node: a pool message");
 
 typedef SockCoreSocket File;
 typedef SockSendPipe Q68;
@@ -512,7 +513,7 @@ void OS_JoinThread(void *);
 void OS_DisableScheduler();
 void OS_EnableScheduler();
 s32 OS_ReceiveMessage(void *, void *, s32);
-void OS_SendMessage(void *, s32, s32);
+void OS_SendMessage(void *, void *, s32);
 void OS_Sleep(s32);
 s32 OS_TryLockMutex(void *);
 
@@ -760,10 +761,9 @@ s32 SockCore_Close(File *self) {
         SockCore_PostCommand(self->sendPipe, 0);
     }
     Node *n = SockCore_AllocMsg((void *)SockCore_CmdClose, self, 1);
-    s32 z = 0;
-    n->replyQueue = z;
+    n->replyQueue = NULL;
     SockCore_PostCommandAsync(self, n);
-    return z;
+    return 0;
 }
 
 s32 SockCore_CmdClose(Unk_ov065_02260488_Msg *m) {
@@ -832,8 +832,8 @@ void SockCore_StopCommandThread(OSMessageQueue *q, OSThread *thread) {
         if (OS_ReceiveMessage(q, &msg, 0)) {
             do {
                 if (msg != NULL) {
-                    if (((Unk_ov065_02260488_Msg *)msg)->replyQueue != 0) {
-                        OS_SendMessage((void *)((Unk_ov065_02260488_Msg *)msg)->replyQueue, -0xb, 0);
+                    if (((Unk_ov065_02260488_Msg *)msg)->replyQueue != NULL) {
+                        OS_SendMessage(((Unk_ov065_02260488_Msg *)msg)->replyQueue, (void *)(sptr)-0xb, 0);  // (the result as the message)
                     }
                     SockCore_FreeMsg(msg);
                 }
@@ -1068,9 +1068,12 @@ typedef SockSendPipe Rx;
 
 
 struct Unk_ov065_0225ff64_Job {
-    u32 unk_00;
+    void *handler;  // (the SockCoreCommand head)
     Sess *sock;
-    u8 pad_08[8];
+    void *replyQueue;
+    s8 sockType;
+    s8 blocking;
+    u8 pad_0e[2];
     u8 *buf;
     u32 len;
     u16 *outPort;
@@ -1078,9 +1081,12 @@ struct Unk_ov065_0225ff64_Job {
 };
 
 struct Unk_ov065_022603bc_Job {
-    u32 unk_00;
+    void *handler;  // (the SockCoreCommand head)
     Sess *sock;
-    u8 pad_08[8];
+    void *replyQueue;
+    s8 sockType;
+    s8 blocking;
+    u8 pad_0e[2];
     u8 *data1;
     s32 len1;
     u8 *data2;
@@ -1089,8 +1095,10 @@ struct Unk_ov065_022603bc_Job {
     u8 pad_22[2];
     u16 localPort;
     u16 remotePort;
-    void *remoteAddr;
+    u32 remoteAddr;  // IPv4 address
 };
+static_assert(sizeof(Unk_ov065_0225ff64_Job) <= SOCK_MSG_SIZE, "Unk_ov065_0225ff64_Job: a pool message");
+static_assert(sizeof(Unk_ov065_022603bc_Job) <= SOCK_MSG_SIZE, "Unk_ov065_022603bc_Job: a pool message");
 
 typedef Unk_ov065_0225faf4_Job Job;
 typedef Unk_ov065_0225ff64_Job RJob;
@@ -1112,7 +1120,7 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 SockCore_ExecOnRecvSide(Sess *s, void *m);
 void *SockCore_AllocMsg(void *fn, void *s, s32 idx);
 s32 SockCore_IsInvalidHandle(Sess *s);
-void IpSoc_Bind(u16 a, u16 b, void *c);
+void IpSoc_Bind(u16 a, u16 b, u32 c);
 s32 IpSoc_TcpConnect();
 void IpSoc_Consume(s32 n);
 u8 *IpSoc_Read(u32 *out);
@@ -1122,7 +1130,7 @@ s32 SockCore_CmdConnect(Job *j);
 s32 SockCore_PostConnect(Sess *s);
 s32 SockCore_Connect(Sess *s, u16 a, u32 b);
 s32 SockCore_Bind(Sess *s, u16 a);
-s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s);
+s32 SockCore_OnUdpReceive(u8 *data, u32 len, IpSocket *ip);
 s32 SockCore_RecvDatagram(Sess *s, u8 *dst, s32 max, u16 *o1, u32 *o2, s32 block);
 s32 SockCore_ConsumeRecvData(Sess *s);
 s32 SockCore_CmdConsume(Job *j);
@@ -1176,7 +1184,7 @@ s32 SockCore_CmdSend(WJob *j)
     s32 m;
 
     if (!IsTcp(s) || (s->flags & 4)) {
-        if (j->remoteAddr != NULL) {
+        if (j->remoteAddr != 0) {
             IpSoc_Bind(j->localPort, j->remotePort, j->remoteAddr);
         }
         if (IsTcp(s)) {

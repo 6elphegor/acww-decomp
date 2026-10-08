@@ -25,15 +25,6 @@ TownEventRecord *TownState_GetEvent(s32 i);
 #ifndef PROTO_LOCAL_TownState_ClearEvents
 void TownState_ClearEvents();
 #endif
-#ifndef PROTO_LOCAL_TownState_RemoveEvent
-void TownState_RemoveEvent(s32 x, u32 id);
-#endif
-#ifndef PROTO_LOCAL_TownState_FindEvent
-s32 TownState_FindEvent(s32 x, u32 id);
-#endif
-#ifndef PROTO_LOCAL_TownState_AddEvent
-s32 TownState_AddEvent(s32 x, u32 id);
-#endif
 #ifndef PROTO_LOCAL_TownState_GetPlayerDate
 ClockDate *TownState_GetPlayerDate(u8 *p, s32 i);
 #endif
@@ -531,6 +522,15 @@ void TownState_ClearUnk0c(TownState *p);
 #endif
 #ifndef PROTO_LOCAL_TownState_ClearUnk16
 void TownState_ClearUnk16(TownState *p);
+#endif
+#ifndef PROTO_LOCAL_TownState_RemoveEvent
+void TownState_RemoveEvent(TownState *x, u32 id);
+#endif
+#ifndef PROTO_LOCAL_TownState_FindEvent
+s32 TownState_FindEvent(TownState *x, u32 id);
+#endif
+#ifndef PROTO_LOCAL_TownState_AddEvent
+s32 TownState_AddEvent(TownState *x, u32 id);
 #endif
 #ifndef PROTO_LOCAL_TownState_UpdatePerfectStreak
 void TownState_UpdatePerfectStreak(TownState *p, s32 k, s32 add);

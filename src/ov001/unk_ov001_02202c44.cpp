@@ -50,7 +50,6 @@ s32 Aoss_RunProtocol(void *);
 void Aoss_SocketClose(s32);
 s32 WifiLink_ClearApList();
 s32 WifiLink_Init(void *, s32);
-s32 WifiLink_StartupAsync(void *, void *);
 s32 WifiLink_ConnectAsync(void *, void *, s32);
 s32 WifiLink_CleanupAsync();
 void Aoss_ConvertBssDesc(WMBssDesc *, AossApInfo *);

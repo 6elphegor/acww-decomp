@@ -229,7 +229,7 @@ extern "C" BOOL HouseRoach_SpawnFromFurniture(void *pos, u16 *angle) {
             for (i = 0; i < 3; i++) {
                 HouseRoach **s = &sHouseRoaches[i];
                 if (*s == 0) {
-                    *s = (HouseRoach *)Actor::spawn((void *)(0xc0), (void *)(0), pos, angle, sHouseRoachManager);
+                    *s = (HouseRoach *)Actor::spawn(0xc0, 0, pos, angle, sHouseRoachManager);
                     sHouseRoachActiveCount = sHouseRoachActiveCount + 1;
                     r = TRUE;
                     break;
@@ -324,7 +324,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(HouseRoachManager *owner) {
         y2++;
     yt1:
         if (y2 < g->unitsZ) goto yl1;
-        sHouseRoaches[i] = (HouseRoach *)Actor::spawn((void *)(0xc0), (void *)(0x1f), &loc, 0, owner);
+        sHouseRoaches[i] = (HouseRoach *)Actor::spawn(0xc0, 0x1f, &loc, 0, owner);
         sHouseRoachActiveCount = sHouseRoachActiveCount + 1;
     }
     return TRUE;
@@ -366,7 +366,7 @@ void HouseRoach::setSoundState(s32 v) {
 }
 
 BOOL HouseRoach::setup() {
-    model.loadCached((void *)(0x474f4b49), sHouseRoachModelPath);
+    model.loadCached(0x474f4b49, sHouseRoachModelPath);
     Heap *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
     ProcBase_SetHeap(this, h);
     model.allocAnmObj(0);

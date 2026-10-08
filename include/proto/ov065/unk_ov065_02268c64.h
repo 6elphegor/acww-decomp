@@ -4,11 +4,13 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02268c64.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/WifiLinkConfig.h"
 #include "net/WifiLinkSendState.h"
 #include "nitro/wm.h"
 #include "sys/OSThread.h"
 #include "uptr.h"
 #ifdef __cplusplus
+#include "net/WifiLinkEvent.h"
 #include "net/WifiLinkWork.h"
 #endif
 
@@ -69,9 +71,6 @@ s32 WifiLink_Init(void *a, u32 b);
 #ifndef PROTO_LOCAL_WifiLink_Finish
 s32 WifiLink_Finish(void);
 #endif
-#ifndef PROTO_LOCAL_WifiLink_StartupAsync
-s32 WifiLink_StartupAsync(void *a, void *b);
-#endif
 #ifndef PROTO_LOCAL_WifiLink_CleanupAsync
 s32 WifiLink_CleanupAsync(void);
 #endif
@@ -105,6 +104,9 @@ WifiApListEntry *WifiApList_FindById(u32 id);
 #ifndef PROTO_LOCAL_WifiApList_MoveToTail
 void WifiApList_MoveToTail(WifiApListEntry *node);
 #endif
+#ifndef PROTO_LOCAL_WifiLink_StartupAsync
+s32 WifiLink_StartupAsync(WifiLinkConfig *a, WifiLinkNotifyCallback b);
+#endif
 }
 namespace N_97ec {
 extern "C" {
@@ -125,6 +127,9 @@ u32 WifiLink_UpdateOptions(u32 v);
 #endif
 #ifndef PROTO_LOCAL_WifiLink_GetWork
 WifiLinkWork *WifiLink_GetWork();
+#endif
+#ifndef PROTO_LOCAL_WifiLink_ApplyConfig
+void WifiLink_ApplyConfig(WifiLinkConfig *p, WifiLinkNotifyCallback arg);
 #endif
 #ifndef PROTO_LOCAL_WifiLink_SetDefaultOptions
 void WifiLink_SetDefaultOptions();

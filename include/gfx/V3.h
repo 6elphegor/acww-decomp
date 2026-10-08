@@ -16,4 +16,7 @@ struct V3Arr {
     /* 0x0 */ s32 v[3];
 };
 
+// SPL_Draw's position callback (EffectSpl_ToCurvedPos): the particle position, by address and by value
+typedef u16 (*SplPosFn)(VecFx32 *pos, VecFx32 v);
+
 #endif

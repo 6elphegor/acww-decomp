@@ -390,7 +390,7 @@ BOOL SpNpcPellyPhyllis::preCreate() {
             vec.x = sSpNpcPellyPhyllisCounterPos[0].a;
             vec.y = sSpNpcPellyPhyllisCounterPos[0].b;
             vec.z = sSpNpcPellyPhyllisCounterPos[0].c;
-            Actor::spawn((void *)(0x7a), (void *)(sSpNpcPellyPhyllisHandles[1]), &vec, &l.spawnRot[0], this);
+            Actor::spawn(0x7a, sSpNpcPellyPhyllisHandles[1], &vec, &l.spawnRot[0], this);
         } else {
             sister = 1;
             window = 0;

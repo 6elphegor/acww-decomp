@@ -1,12 +1,13 @@
 #include "types.h"
 #include "game/EventWeekSlots.h"
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_020406c4.h"
 #include "proto/main/unk_02063904.h"
 
 
 extern "C" {
 
-void DateTime_AddDays(s32, s32);
+void DateTime_AddDays(ClockDateTime *, s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 EventSchedule_CollectAtNoon(void *, s32, void *);
 
@@ -18,7 +19,7 @@ extern const u32 sWeekVisitorIds[7];
 const u32 sWeekVisitorWeights[7] = {0xc, 0xc, 0xc, 0xc, 0x14, 0x14, 0xc};
 const u32 sWeekVisitorIds[7] = {0x3f, 0x40, 0x41, 0x42, 0x43, 0x44, 0x3e};
 
-extern "C" s32 WeekVisitors_FindFreeDays(void *, s32 *out, s32 x)
+extern "C" s32 WeekVisitors_FindFreeDays(void *, s32 *out, ClockDateTime *x)
 {
     s32 i;
     s32 cnt = 0;
@@ -26,7 +27,7 @@ extern "C" s32 WeekVisitors_FindFreeDays(void *, s32 *out, s32 x)
     u8 b[0x58];
     DateTime_AddDays(x, 1);
     for (i = 0; i < 5; i++) {
-        MI_CpuCopy8((void *)x, a, 8);
+        MI_CpuCopy8(x, a, 8);
         if (EventSchedule_CollectAtNoon(b, 7, a) <= 0) {
             *out = 1;
             cnt++;

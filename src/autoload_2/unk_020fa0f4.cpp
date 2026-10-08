@@ -1,6 +1,7 @@
 #include "gfx/SplReal.h"
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
+#include "gfx/V3.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
@@ -41,12 +42,12 @@ extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 void spl_push_front(void *list, void *e);
 void spl_gen_ptcl(void *e, void *l);
-void sDrawChild(Pm *m, u32 a);
-void sDrawParent(Pm *m, u32 a);
-void spl_draw_chld_bb(Mc *m, Node *n, u32 a);
-void spl_draw_chld_dbb(Mc *m, Node *n, u32 a);
-void spl_draw_bb(Mc *m, Node *n, u32 a);
-void spl_draw_dbb(Mc *m, Node *n, u32 a);
+void sDrawChild(Pm *m, SplPosFn a);
+void sDrawParent(Pm *m, SplPosFn a);
+void spl_draw_chld_bb(Mc *m, Node *n, SplPosFn a);
+void spl_draw_chld_dbb(Mc *m, Node *n, SplPosFn a);
+void spl_draw_bb(Mc *m, Node *n, SplPosFn a);
+void spl_draw_dbb(Mc *m, Node *n, SplPosFn a);
 }
 
 
@@ -92,7 +93,7 @@ void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 
 
 typedef void (*TexFn)(void *);
-typedef void (*DrawFn)(Mc *, Node *, u32);
+typedef void (*DrawFn)(Mc *, Node *, SplPosFn);
 
 
 static inline void G3_TexImageParam(u32 fmt, u32 texgen, u32 s, u32 t, u32 rep, u32 flip, u32 c0, u32 addr) {

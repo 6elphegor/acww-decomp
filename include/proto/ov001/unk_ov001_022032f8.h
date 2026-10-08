@@ -4,11 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022032f8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct AossWcmConfig;
-#ifndef __cplusplus
-typedef struct AossWcmConfig AossWcmConfig;
-#endif
+#include "net/WifiLinkConfig.h"
 #ifdef __cplusplus
+#include "net/WifiLinkEvent.h"
 #endif
 
 #ifdef __cplusplus
@@ -41,11 +39,11 @@ extern s32 sAossWcmConnectOption;
 #ifndef PROTO_LOCAL_sAossWcmSsidPtr
 extern u8 *sAossWcmSsidPtr;
 #endif
+#ifndef PROTO_LOCAL_sAossWcmConfig
+extern WifiLinkConfig *sAossWcmConfig;
+#endif
 #ifndef PROTO_LOCAL_sAossWcmSearchOption
 extern s32 sAossWcmSearchOption;
-#endif
-#ifndef PROTO_LOCAL_Aoss_WcmCallback
-void Aoss_WcmCallback(void *arg);
 #endif
 #ifndef PROTO_LOCAL_Aoss_WcmToIdle
 s32 Aoss_WcmToIdle(void);
@@ -77,8 +75,8 @@ s32 Aoss_WcmInit(void *fn, void *buf, u32 size);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sAossWcmConfig
-extern AossWcmConfig *sAossWcmConfig;
+#ifndef PROTO_LOCAL_Aoss_WcmCallback
+void Aoss_WcmCallback(WifiLinkEvent *p);
 #endif
 }
 #endif

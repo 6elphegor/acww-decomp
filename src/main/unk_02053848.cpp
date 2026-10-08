@@ -67,9 +67,9 @@ void *Gfx3d_CopyModel(void *a, void *heap);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
 void NNS_G3dForceBindMdlTex(void *a, void *b, s32 c, s32 d);
-void NNS_G3dForceBindMdlPltt(void *a, void *b, s32 c, void *d);
+BOOL NNS_G3dForceBindMdlPltt(void *mdl, void *tex, u32 i, u32 j);  // (j: the palette index)
 void *ResCache_GetModel(void *a, u32 tag);
-void *ResCache_FindModel(void *a);
+void *ResCache_FindModel(u32 key);
 void AnimModel_SwitchAnmObj(void *p, void *q);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);
 u16 Anim_GetFrameCountForMode(u32 kind, NNSG3dResJntAnm *p);
@@ -132,7 +132,7 @@ BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u3
     if (d != NULL) {
         s32 i;
         for (i = 0; i < f; i++) {
-            NNS_G3dForceBindMdlPltt(resMdl, d, i, (void *)e[i]);
+            NNS_G3dForceBindMdlPltt(resMdl, d, i, e[i]);
         }
     }
     Heap_Free(heap, h);
@@ -148,17 +148,17 @@ BOOL CachedModel::loadWithTex(void *res, void *name, void *tex, void *d, u32 *e,
     return loadWithTexKeyed(res, name, tex, d, e, f, 0x4e554c4c);
 }
 
-BOOL CachedModel::loadCached(void *a, void *b) {
-    resMdl = (NNSG3dResMdl *)ResCache_FindModel(a);
+BOOL CachedModel::loadCached(u32 tag, void *path) {
+    resMdl = (NNSG3dResMdl *)ResCache_FindModel(tag);
     if (resMdl != NULL) {
         initRenderObj();
         return TRUE;
     }
-    cacheKey = (u32)(uptr)a;  // (a: the cache key)
-    return loadKeyed(b, NULL, (u32)(uptr)a);
+    cacheKey = tag;
+    return loadKeyed(path, NULL, tag);
 }
 
-BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
+BOOL CachedModel::loadWithSharedTex(void *a, s32 player, s32 pattern) {
     Heap *heap = gCurrentHeap;
     void *h = File_LoadAlloc((const char *)a, heap, -4, 0);
     if (h == NULL) {
@@ -166,7 +166,7 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     resMdl = (NNSG3dResMdl *)ResCache_GetModel(p, 0x4e554c4c);
-    void *r = ((PatternTexCache *)PatternTexCache_Get())->getPlayerTexKey((s32)(sptr)b, (s32)(sptr)c);  // (b, c: the indices)
+    void *r = ((PatternTexCache *)PatternTexCache_Get())->getPlayerTexKey(player, pattern);
     NNS_G3dForceBindMdlTex(resMdl, r, 0, 0);
     NNS_G3dForceBindMdlPltt(resMdl, r, 0, 0);
     Heap_Free(heap, h);
@@ -620,8 +620,8 @@ void TwoLayerAnimModel::updateLayers() {
     }
 }
 
-void TwoLayerAnimModel::drawLayered(u32 a) {
-    ((AnimModel *)(this))->drawAnimated((void *)a);
+void TwoLayerAnimModel::drawLayered(void *a) {
+    ((AnimModel *)(this))->drawAnimated(a);
     AnimModel_SwitchAnmObj(this, anmObj);
 }
 

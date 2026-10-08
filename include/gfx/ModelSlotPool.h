@@ -13,7 +13,7 @@ class ModelSlot {
 public:
     ModelSlot();
     BOOL clear();
-    BOOL init(void *texSize, void *plttSize, u32 heapSize, Heap *parent);
+    BOOL init(u32 texSize, u32 plttSize, u32 heapSize, Heap *parent);
     TexVramSlot *getVramSlot();
     Heap *getHeap();
 
@@ -39,7 +39,7 @@ public:
     ModelSlotPool();
     ~ModelSlotPool();
     BOOL destroy();
-    BOOL init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free);
+    BOOL init(u32 n, u32 texSize, u32 plttSize, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free);
     void release(u16 *idx);
     ModelSlot *acquire(u16 *idx);
 

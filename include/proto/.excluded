@@ -131,7 +131,6 @@ SBSendNatNegotiateCookieToServer
 SBServerListCleanup
 SBServerListConnectAndQuery
 SBServerListDisconnect
-SBSetLastListErrorPtr
 SPL_Calc
 SPL_Create
 SPL_CreateWithInitialize
@@ -211,7 +210,6 @@ WfcTask_SetFunc
 WfcText_ReleaseBgCanvas
 WfcUtil_RectFromPosSize
 WifiLink_AddApListEntry
-WifiLink_ApplyConfig
 WifiLink_EndSearchAsync
 WifiLink_OnConnectEvent
 WifiLink_OnDcfEvent
