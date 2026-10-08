@@ -41,6 +41,10 @@ parser.add_argument("--strict-c", action="store_true",
                     help="the game's C units with -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast (and without "
                          "-w, which would hide them): every pointer kept in an integer is an error (docs/portability.md "
                          "0.3; meant for the x86-64 build, with --suffix)")
+parser.add_argument("--guards", action="store_true",
+                    help="the guard variant (a separate build: suffix _guards): poisoned bytes after every game variable "
+                         "(tools/host_guards.py), checked every frame with ACWW_GUARDS=1 (modern/host/guards.c; "
+                         "docs/portability.md 2.8)")
 parser.add_argument("--regen-gen", action="store_true",
                     help="regenerate modern/gen/gaps.c from the DS build's delinking (build/usa/delinks)")
 parser.add_argument("version", nargs="?", default="usa")
@@ -55,6 +59,8 @@ if CLANG:
         found = sorted(glob.glob(os.path.expanduser(f"~/acww/toolchains/LLVM-*/bin/{args.cc}")))
         if found:
             args.cc = found[-1]
+if args.guards and not args.suffix:
+    args.suffix = "_guards"
 X64 = args.arch == "x86_64"
 build = Path("build") / (f"host64{args.suffix}_{args.version}" if X64 else f"host{args.suffix}_{args.version}")
 NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
@@ -89,12 +95,14 @@ if CLANG:
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
+# (the guard variant's gdata is larger: its gbss further up, still below the main arena, SDK_MAIN_ARENA_LO)
 SECTIONS = ("-Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
-            "-Wl,--section-start=gbss=0x02040000")
+            f"-Wl,--section-start=gbss={'0x02080000' if args.guards else '0x02040000'}")
 M = args.melonds
+GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 if X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
-    HOST_FLAGS = "-m64 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude"
+    HOST_FLAGS = "-m64 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + GUARD_FLAGS
     # the program above the DS's address space (0x02000000-0x08000000), still below 4 GB
     LINK_FLAGS = f"-m64 -no-pie -Wl,-Ttext-segment=0x10000000 {SECTIONS}"
     HOST_CXX_FLAGS = (f"-m64 -fno-pie -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
@@ -103,7 +111,7 @@ if X64:
     LIBDIR, LIBGCC = "/usr/lib/x86_64-linux-gnu", "/usr/lib/gcc/x86_64-linux-gnu/15/libgcc.a"
 else:
     HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
-                  f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
+                  f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude") + GUARD_FLAGS
     LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
                   f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 {SECTIONS}")
     HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
@@ -208,8 +216,22 @@ def main():
                 variables={"flags": "-Imodern/host"})
         host_objs.append(str(build / "overlay_table.o"))
         n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list", description="LD -r $out")
-        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), order_ld],
-                variables={"list": str(game_list), "order": order_ld})
+        if args.guards:
+            # the ordinary partial link's map, then the same layout with a guard after every variable
+            n.rule("partial_map", f"ld -m {LD_EMU} -r -T $order -Map=$map -o $out @$list", description="LD -r $out")
+            n.build([str(build / "game_plain.o"), str(build / "game_plain.map")], "partial_map", game_objs,
+                    implicit=[str(game_list), order_ld],
+                    variables={"list": str(game_list), "order": order_ld, "map": str(build / "game_plain.map")})
+            n.rule("guards", "python3 tools/host_guards.py $in $out", description="GUARDS $out")
+            guard_ld, guard_c = str(build / "guards.ld"), str(build / "guard_table.c")
+            n.build([guard_ld, guard_c], "guards", str(build / "game_plain.map"), implicit=["tools/host_guards.py"])
+            n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), guard_ld],
+                    variables={"list": str(game_list), "order": guard_ld})
+            n.build(str(build / "guard_table.o"), "hostcc", guard_c, variables={"flags": "-Imodern/host"})
+            host_objs.append(str(build / "guard_table.o"))
+        else:
+            n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), order_ld],
+                    variables={"list": str(game_list), "order": order_ld})
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
         game_o = str(build / "game_all.o")
         objects_file = build / "objects.txt"

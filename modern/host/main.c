@@ -58,7 +58,12 @@ void NitroStartUp(void);
 // before the game's static constructors (which may touch DS memory): map it first
 void host_vram_init(void);
 void melon_init(void);
-__attribute__((constructor(101))) static void early_init(void) { host_map_memory(); host_vram_init(); }
+#include "guards.h"
+__attribute__((constructor(101))) static void early_init(void) {
+    host_map_memory();
+    host_vram_init();
+    host_guards_init();  // (the guard variant: configure_host.py --guards)
+}
 
 static void game_main(void *arg) {
     (void)arg;

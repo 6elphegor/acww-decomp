@@ -18,6 +18,7 @@
 
 #include "host.h"
 #include "plat.h"
+#include "guards.h"
 
 // 3D command port writes since the last ACWW_STATS line (register writes and GX FIFO DMA)
 static unsigned long long sGxWrites;
@@ -195,6 +196,7 @@ static void run_events_body(void) {
         frontend_frame();
         extern void host_heap_check(void);
         host_heap_check();
+        host_guards_frame();  // ACWW_GUARDS (the guard variant)
         host_screenshot();
         {   // ACWW_POSLOG=<n>: the local player's position (fx32 x y z, in units of 1/4096) every n frames - for
             // writing input scripts that walk somewhere
@@ -514,6 +516,7 @@ void host_io_ring_dump(void) {
 // the reports written at exit: atexit, ACWW_EXIT_FRAME (_exit), SIGINT (debug_posix.c)
 void host_exit_dumps(void) {
     io_hist_dump();
+    host_guards_exit();
     host_debug_exit_dumps();
 }
 

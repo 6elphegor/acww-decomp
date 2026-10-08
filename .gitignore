@@ -27,3 +27,5 @@ build_modern_warn.ninja
 build_host.ninja
 build_host64.ninja
 build_host64_clang.ninja
+build_host_guards.ninja
+build_host64_guards.ninja
