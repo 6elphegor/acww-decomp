@@ -15,11 +15,20 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_022884fc.h"
 #include "proto/ov065/unk_ov065_02289444.h"
+#include "proto/ov065/unk_ov065_02278328.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
+#include "proto/ov065/unk_ov065_02288c78.h"
+
+// defined in other units without a shared prototype
+extern "C" {
+_SBServer *SBAllocServer(SBServerList *unused, u32 addr, u32 port);  // src/ov065/unk_ov065_02288c78.cpp
+void SBServerSetFlags(_SBServer *e, u32 v);  // src/ov065/unk_ov065_02288c78.cpp
+}
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
 char *SBOverrideMasterServer;
-void *g_sortserverlist;
+SBServerList *g_sortserverlist;
 _SBServer *SBNullServer;
 }
 
@@ -50,17 +59,7 @@ extern _SBServer *SBNullServer;
 
 s32 OS_SPrintf(char *, const char *, ...);
 
-s32 ArrayLength(void *);
-void *TableLookup(void *, void *);
-s32 TableEnter(void *, void *);
-s32 TableCount(void *);
-s32 TableFree(void *);
-void *TableNew2(s32, s32, s32, void *, void *, void *);
-s32 inet_addr(s32);
-s32 recvfrom(s32, void *, s32, s32, void *, void *);
-s32 closesocket(s32);
 s32 CanReceiveOnSocket(s32);
-s32 msleep(s32);
 s32 SBQueryEngineRemoveServerFromFIFOs(void *, void *);
 s32 SBQueryEngineAddQueryKey(void *, s32);
 s32 SBQueryEngineThink(void *);
@@ -70,28 +69,9 @@ s32 SBEngineHaltUpdates(void *);
 s32 SBQueryEngineSetPublicIP(void *, s32);
 s32 SBQueryEngineInit(void *, s32, s32, s32, void *, void *);
 s32 SBIsNullServer(_SBServer *);
-s32 SBServerSetFlags(void *, s32);
-_SBServer *SBAllocServer(void *, u32, u32);
 s32 SBServerGetPing(void *);
-s32 SBServerListCleanup(void *);
-s32 SBServerListDisconnect(void *);
-s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
-s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 NTSLengthSB(char *, s32);
 char *SBRefStr(SBServerList *, const char *);
-s32 SBServerListClear(void *);
-s32 SBFreeDeadList(void *);
-_SBServer *SBServerListNth(void *, s32);
-s32 SBServerListCount(void *);
-s32 SBServerListRemoveAt(void *, s32);
-s32 SBServerListFindServerByIP(void *, u32, u32);
-s32 SBServerListFindServer(void *, _SBServer *);
-void SBServerListAppendServer(void *, _SBServer *);
-s32 ProcessIncomingData(void *);
-s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
-s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
 
-s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
 char *mytok(char *s, s32 ch);
 s32 CheckValidKey(char *s);
 char *SBServerGetStringValueA(void *a, char *k, char *d);
@@ -100,7 +80,7 @@ s32 ServerBrowserThink(void *o);
 s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
 void EngineCallback(void *, s32, _SBServer *, _ServerBrowser *);
 void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
-s32 SBListThink(void *);
+s32 SBListThink(SBServerList *sub);
 s32 ProcessLanData(SBServerList *);
 s32 RefStringCompare(char **, char **);
 void RefStringFree(void **);
@@ -115,32 +95,15 @@ namespace F02289808 {
 
 extern "C" {
 extern _SBServer *SBNullServer;
-s32 SBServerListConnectAndQuery(SBServerList *, s32, s32, s32, s32);
-s32 SendWithRetry(SBServerList *, u8 *, s32);
-s32 send(s32, void *, s32, s32);
-s32 recv(s32, void *, s32, s32);
 s32 CanReceiveOnSocket(s32);
 void ErrorDisconnect(SBServerList *);
 void GOADecrypt(void *, void *, s32);
-s32 ParseServerIPPort(SBServerList *, u8 *, s32, u32 *, u16 *);
-s32 SBServerListFindServerByIP(SBServerList *, u32, u32);
-_SBServer *SBAllocServer(SBServerList *, u32, u32);
 s32 SBIsNullServer(_SBServer *server);
-_SBServer *SBServerListNth(SBServerList *, s32);
-s32 SBServerListRemoveAt(SBServerList *, s32);
 s32 ParseServer(SBServerList *, _SBServer *, u8 *, s32, s32);
-void SBServerListAppendServer(SBServerList *, _SBServer *);
-s32 NTSLengthSB(u8 *, s32);
 char *SBRefStr(SBServerList *, const char *);
-s32 FreeKeyList(SBServerList *);
-DArrayImplementation *ArrayNew(s32, s32, void *);
-s32 ArrayAppend(void *, void *);
-s32 ArrayLength(void *);
-s32 InitCryptKey(SBServerList *, u8 *, s32);
 void SBSetLastListErrorPtr(SBServerList *, const char *);
 s32 IncomingListParseServer(SBServerList *, u8 *, s32);
 
-s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len);
 s32 ProcessAdHocData(SBServerList *c);
 
 s32 ProcessPushServer(SBServerList *c, u8 *p, s32 n);
@@ -189,45 +152,23 @@ extern "C" {
 
 s32 func_02133150(s32, s32);
 
-void *ArrayNth(void *, s32);
-s32 ArrayLength(void *);
-void ArrayFree(void *);
-s32 send(s32, void *, s32, s32);
-void closesocket(s32);
 void GOACryptInit(void *, void *, s32);
 u32 SBServerGetState(_SBServer *);
 void SBServerSetState(_SBServer *, u8);
 void SBServerSetICMPIP(_SBServer *, u32);
 void SBServerSetPrivateAddr(_SBServer *, u32, u32);
-void SBServerSetFlags(_SBServer *, u32);
-_SBServer *SBAllocServer(SBServerList *, u32, u32);
 s32 SBIsNullServer(_SBServer *);
-void SBServerAddIntKeyValue(_SBServer *, void *, u32);
-void SBServerAddKeyValue(_SBServer *, void *, void *);
-void SBRefStrHashCleanup(SBServerList *);
-void SBServerListAppendServer(SBServerList *, _SBServer *);
-s32 BufferAddByte(u8 **, u32, s32 *);
-void BufferAddNTS(u8 **, const char *, s32 *);
 s32 ServerListConnect(SBServerList *);
 void ErrorDisconnect(SBServerList *);
-s32 NTSLengthSB(void *, s32);
 void SBReleaseStr(SBServerList *, const char *);
-void SBServerListClear(SBServerList *);
 
 void SBSetLastListErrorPtr(SBServerList *ctx, const char *v);
 s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n);
 s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag);
-void ParseServerIPPort(SBServerList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
 s32 AllKeysPresent(SBServerList *ctx, u8 *buf, s32 n);
 s32 FullRulesPresent(u8 *buf, s32 n);
 s32 ServerSizeForFlags(u32 flags);
-void InitCryptKey(SBServerList *ctx, s8 *key, s32 n);
-void SBServerListCleanup(SBServerList *ctx);
-void SBServerListDisconnect(SBServerList *ctx);
-void FreeKeyList(SBServerList *ctx);
 void FreePopularValues(SBServerList *ctx);
-s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char *pass, u32 flags, u32 extra);
-s32 SendWithRetry(SBServerList *ctx, void *buf, s32 n);
 void SetupListChallenge(SBServerList *ctx);
 void BufferAddData(u8 **cur, const void *src, s32 n, s32 *len);
 void BufferAddInt(u8 **cur, u32 v, s32 *len);
@@ -240,7 +181,6 @@ namespace F0228ab3c {
 // ov065_070: GameSpy-like server-browser context (0x0228ab3c..0x0228b258)
 
 
-typedef SBServerList Ctx070;
 
 static inline void Cp4(GsBytes4 *d, GsBytes4 *s) {
     *d = *s;
@@ -251,73 +191,37 @@ extern "C" {
 extern char *SBOverrideMasterServer;
 extern char *data_ov065_0228e954;
 extern _SBServer *SBNullServer;
-extern Ctx070 *g_sortserverlist;
 extern u8 data_0213a410[];
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 strncmp(const char *a, const char *b, u32 n);
 
-s32 inet_addr(char *s);
 SockHostEnt *Sock_GetHostByName(char *name);
-s32 socket(s32 a, s32 b, s32 c);
-s32 closesocket(s32 fd);
-s32 connect(s32 fd, void *sa, s32 len);
-void SBSetLastListErrorPtr(Ctx070 *c, const char *v);
-void SBServerListDisconnect(Ctx070 *c);
-void *SBRefStrHash(Ctx070 *c);
-void *TableLookup(void *t, void *key);
-void TableRemove(void *t, void *key);
-void TableEnter(void *t, void *key);
-char *goastrdup(char *s);
-DArrayImplementation *ArrayNew(s32 a, s32 b, void *c);
-void *ArrayNth(void *v, s32 i);
-s32 ArrayLength(void *v);
-void ArrayClear(void *v);
-void ArrayDeleteAt(void *v, s32 i);
-void ArrayAppend(void *v, void *p);
-void ArraySort(void *v, void *cmp);
-void *SBServerGetNext(void *p);
-void SBServerFree(void *p);
-void SBServerSetNext(void *a, void *b);
-u32 SBServerGetPublicInetAddress(void *e);
-u32 SBServerGetPublicQueryPortNBO(void *e);
+void SBSetLastListErrorPtr(SBServerList *c, const char *v);
 char *SBServerGetStringValueA(void *rec, char *key, char *dflt);
-double SBServerGetFloatValueA(void *rec, char *key, s32 a, s32 b);
 s32 SBServerGetIntValueA(void *rec, char *key, s32 a);
 void SocketStartUp();
 
-void BufferAddByte(char **p, u8 c, s32 *n);
-void BufferAddNTS(char **p, char *s, s32 *n);
-s32 ServerListConnect(Ctx070 *c);
+s32 ServerListConnect(SBServerList *c);
 u32 StringHash__sb_serverlist(const char *s, u32 n);
-void ErrorDisconnect(Ctx070 *c);
-void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, void *h);
-s32 NTSLengthSB(const char *s, s32 n);
-void SBReleaseStr(Ctx070 *c, const char *key);
-char *SBRefStr(Ctx070 *c, const char *key);
-void SBAllocateServerList(Ctx070 *c);
-void SBServerListClear(Ctx070 *c);
-void SBFreeDeadList(Ctx070 *c);
-_SBServer *SBServerListNth(Ctx070 *c, s32 i);
-s32 SBServerListCount(Ctx070 *c);
-void SBServerListRemoveAt(Ctx070 *c, s32 i);
-void AddServerToDeadlist(Ctx070 *c, _SBServer *x);
-s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b);
-s32 SBServerListFindServer(Ctx070 *c, _SBServer *key);
-void SBServerListAppendServer(Ctx070 *c, _SBServer *a);
-void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode);
-s32 StrNoCaseKeyCompare(void **a, void **b);
-s32 StrCaseKeyCompare(void **a, void **b);
-s32 FloatKeyCompare(void **a, void **b);
-s32 IntKeyCompare(void **a, void **b);
+void ErrorDisconnect(SBServerList *c);
+void SBReleaseStr(SBServerList *c, const char *key);
+char *SBRefStr(SBServerList *c, const char *key);
+void SBAllocateServerList(SBServerList *c);
+void AddServerToDeadlist(SBServerList *c, _SBServer *x);
+void SBServerListSort(SBServerList *c, s32 a, char *b, u32 mode);
+s32 StrNoCaseKeyCompare(void *a, void *b);
+s32 StrCaseKeyCompare(void *a, void *b);
+s32 FloatKeyCompare(void *a, void *b);
+s32 IntKeyCompare(void *a, void *b);
 
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 IntKeyCompare(void **a, void **b) {
-    void *ra = *(void *volatile *)a;
-    void *rb = *b;
+s32 IntKeyCompare(void *a, void *b) { // an ArrayCompareFn on the _SBServer * elements
+    _SBServer *ra = *(_SBServer *volatile *)a;
+    _SBServer *rb = *(_SBServer **)b;
     s32 r = SBServerGetIntValueA(ra, g_sortserverlist->sortkey, 0);
     r -= SBServerGetIntValueA(rb, g_sortserverlist->sortkey, 0);
     if (g_sortserverlist->sortascending == 0) {
@@ -330,11 +234,11 @@ s32 IntKeyCompare(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 FloatKeyCompare(void **a, void **b) {
-    void *ra = *(void *volatile *)a;
-    void *rb = *b;
-    double d1 = SBServerGetFloatValueA(ra, g_sortserverlist->sortkey, 0, 0);
-    double d2 = SBServerGetFloatValueA(rb, g_sortserverlist->sortkey, 0, 0);
+s32 FloatKeyCompare(void *a, void *b) {
+    _SBServer *ra = *(_SBServer *volatile *)a;
+    _SBServer *rb = *(_SBServer **)b;
+    double d1 = SBServerGetFloatValueA(ra, g_sortserverlist->sortkey, 0);
+    double d2 = SBServerGetFloatValueA(rb, g_sortserverlist->sortkey, 0);
     double d = d1 - d2;
     if (g_sortserverlist->sortascending == 0) {
         d = 0 - d;
@@ -349,9 +253,9 @@ s32 FloatKeyCompare(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 StrCaseKeyCompare(void **a, void **b) {
-    char *s1 = SBServerGetStringValueA(*a, g_sortserverlist->sortkey, "");
-    char *s2 = SBServerGetStringValueA(*b, g_sortserverlist->sortkey, "");
+s32 StrCaseKeyCompare(void *a, void *b) {
+    char *s1 = SBServerGetStringValueA(*(_SBServer **)a, g_sortserverlist->sortkey, "");
+    char *s2 = SBServerGetStringValueA(*(_SBServer **)b, g_sortserverlist->sortkey, "");
     s32 r = strcmp(s1, s2);
     if (g_sortserverlist->sortascending == 0) {
         r = -r;
@@ -363,9 +267,9 @@ s32 StrCaseKeyCompare(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 StrNoCaseKeyCompare(void **a, void **b) {
-    char *s1 = SBServerGetStringValueA(*a, g_sortserverlist->sortkey, "");
-    char *s2 = SBServerGetStringValueA(*b, g_sortserverlist->sortkey, "");
+s32 StrNoCaseKeyCompare(void *a, void *b) {
+    char *s1 = SBServerGetStringValueA(*(_SBServer **)a, g_sortserverlist->sortkey, "");
+    char *s2 = SBServerGetStringValueA(*(_SBServer **)b, g_sortserverlist->sortkey, "");
     s32 r = func_02130b04(s1, s2);
     if (g_sortserverlist->sortascending == 0) {
         r = -r;
@@ -377,23 +281,23 @@ s32 StrNoCaseKeyCompare(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode) {
-    void *cmp;
+void SBServerListSort(SBServerList *c, s32 a, char *b, u32 mode) {
+    ArrayCompareFn cmp;
     switch (mode) {
     case 0:
-        cmp = (void *)IntKeyCompare;
+        cmp = IntKeyCompare;
         break;
     case 1:
-        cmp = (void *)FloatKeyCompare;
+        cmp = FloatKeyCompare;
         break;
     case 2:
-        cmp = (void *)StrCaseKeyCompare;
+        cmp = StrCaseKeyCompare;
         break;
     case 3:
-        cmp = (void *)StrNoCaseKeyCompare;
+        cmp = StrNoCaseKeyCompare;
         break;
     default:
-        cmp = (void *)StrNoCaseKeyCompare;
+        cmp = StrNoCaseKeyCompare;
         break;
     }
     c->sortkey = b;
@@ -406,7 +310,7 @@ void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBServerListAppendServer(Ctx070 *c, _SBServer *a) {
+void SBServerListAppendServer(SBServerList *c, _SBServer *a) {
     ArrayAppend(c->servers, &a);
     c->ListCallback(c, 0, a, c->instance);
 }
@@ -415,7 +319,7 @@ void SBServerListAppendServer(Ctx070 *c, _SBServer *a) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 SBServerListFindServer(Ctx070 *c, _SBServer *key) {
+s32 SBServerListFindServer(SBServerList *c, _SBServer *key) {
     s32 n = ArrayLength(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
@@ -430,8 +334,8 @@ s32 SBServerListFindServer(Ctx070 *c, _SBServer *key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b) {
-    void *e;
+s32 SBServerListFindServerByIP(SBServerList *c, s32 a, s32 b) {
+    _SBServer *e;
     s32 i;
     s32 n = ArrayLength(c->servers);
     for (i = 0; i < n; i++) {
@@ -447,7 +351,7 @@ s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b) {
 
 namespace F0228ab3c {
 extern "C" {
-void AddServerToDeadlist(Ctx070 *c, _SBServer *x) {
+void AddServerToDeadlist(SBServerList *c, _SBServer *x) {
     _SBServer *t = c->deadlist;
     if (t == NULL) {
         SBServerSetNext(x, NULL);
@@ -461,7 +365,7 @@ void AddServerToDeadlist(Ctx070 *c, _SBServer *x) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBServerListRemoveAt(Ctx070 *c, s32 i) {
+void SBServerListRemoveAt(SBServerList *c, s32 i) {
     _SBServer *v = *(_SBServer **)ArrayNth(c->servers, i);
     c->ListCallback(c, 2, v, c->instance);
     ArrayDeleteAt(c->servers, i);
@@ -472,7 +376,7 @@ void SBServerListRemoveAt(Ctx070 *c, s32 i) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 SBServerListCount(Ctx070 *c) {
+s32 SBServerListCount(SBServerList *c) {
     return ArrayLength(c->servers);
 }
 }
@@ -480,7 +384,7 @@ s32 SBServerListCount(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-_SBServer *SBServerListNth(Ctx070 *c, s32 i) {
+_SBServer *SBServerListNth(SBServerList *c, s32 i) {
     return *(_SBServer **)ArrayNth(c->servers, i);
 }
 }
@@ -488,7 +392,7 @@ _SBServer *SBServerListNth(Ctx070 *c, s32 i) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBFreeDeadList(Ctx070 *c) {
+void SBFreeDeadList(SBServerList *c) {
     if (c->deadlist != NULL) {
         _SBServer *cur = c->deadlist;
         while (cur != NULL) {
@@ -504,7 +408,7 @@ void SBFreeDeadList(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBServerListClear(Ctx070 *c) {
+void SBServerListClear(SBServerList *c) {
     s32 n = ArrayLength(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
@@ -519,7 +423,7 @@ void SBServerListClear(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBAllocateServerList(Ctx070 *c) {
+void SBAllocateServerList(SBServerList *c) {
     c->servers = ArrayNew(sizeof(_SBServer *), 0x64, 0);
     c->deadlist = NULL;
 }
@@ -528,18 +432,18 @@ void SBAllocateServerList(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-char *SBRefStr(Ctx070 *c, const char *key) {
+char *SBRefStr(SBServerList *c, const char *key) {
     SBRefString l;
     SBRefString *e;
     l.str = (char *)key;
-    e = (SBRefString *)TableLookup(SBRefStrHash(c), &l);
+    e = (SBRefString *)TableLookup(SBRefStrHash(), &l);
     if (e != NULL) {
         e->refcount++;
         return e->str;
     }
     l.str = goastrdup((char *)key);
     l.refcount = 1;
-    TableEnter(SBRefStrHash(c), &l);
+    TableEnter(SBRefStrHash(), &l);
     return l.str;
 }
 }
@@ -547,13 +451,13 @@ char *SBRefStr(Ctx070 *c, const char *key) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBReleaseStr(Ctx070 *c, const char *key) {
+void SBReleaseStr(SBServerList *c, const char *key) {
     const char *k = key;
-    SBRefString *e = (SBRefString *)TableLookup(SBRefStrHash(c), &k);
+    SBRefString *e = (SBRefString *)TableLookup(SBRefStrHash(), &k);
     if (e != NULL) {
         e->refcount--;
         if (e->refcount == 0) {
-            TableRemove(SBRefStrHash(c), &k);
+            TableRemove(SBRefStrHash(), &k);
         }
     }
 }
@@ -562,7 +466,7 @@ void SBReleaseStr(Ctx070 *c, const char *key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 NTSLengthSB(const char *s, s32 n) {
+s32 NTSLengthSB(const u8 *s, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         if (s[i] == 0) {
@@ -576,12 +480,12 @@ s32 NTSLengthSB(const char *s, s32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, void *h) {
+void SBServerListInit(SBServerList *c, char *a, char *b, char *d, s32 e, s32 f, void *g, void *h) {
     if (f != 0 || __GSIACResult == 1) {
         s32 neg = -1;
         c->state = 1;
         SBAllocateServerList(c);
-        SBRefStrHash(c);
+        SBRefStrHash();
         STD_CopyString(c->queryforgamename, a);
         STD_CopyString(c->queryfromgamename, b);
         STD_CopyString(c->queryfromkey, d);
@@ -609,7 +513,7 @@ void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *
 
 namespace F0228ab3c {
 extern "C" {
-void ErrorDisconnect(Ctx070 *c) {
+void ErrorDisconnect(SBServerList *c) {
     if (c->inbufferlen > 0 && (u32)c->inbufferlen > (u32)STD_GetStringLength(data_ov065_0228e954)) {
         char *s = data_ov065_0228e954;
         s32 len = STD_GetStringLength(s);
@@ -646,7 +550,7 @@ u32 StringHash__sb_serverlist(const char *s, u32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 ServerListConnect(Ctx070 *c) {
+s32 ServerListConnect(SBServerList *c) {
     struct {
         SockAddrIn sa;
         char host[0x80];
@@ -690,7 +594,7 @@ s32 ServerListConnect(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void BufferAddNTS(char **p, char *s, s32 *n) {
+void BufferAddNTS(u8 **p, const char *s, s32 *n) {
     s32 len;
     if (s == NULL) {
         s = "";
@@ -705,7 +609,7 @@ void BufferAddNTS(char **p, char *s, s32 *n) {
 
 namespace F0228ab3c {
 extern "C" {
-void BufferAddByte(char **p, u8 c, s32 *n) {
+void BufferAddByte(u8 **p, u8 c, s32 *n) {
     **p = c;
     ++*n;
     ++*p;
@@ -775,7 +679,7 @@ void SetupListChallenge(SBServerList *ctx)
 
 namespace F0228a20c {
 extern "C" {
-s32 SendWithRetry(SBServerList *ctx, void *buf, s32 n)
+s32 SendWithRetry(SBServerList *ctx, const void *buf, s32 n)
 {
     s32 tries = 1;
     s32 r;
@@ -953,7 +857,7 @@ void SBServerListCleanup(SBServerList *ctx)
 {
     SBServerListDisconnect(ctx);
     SBServerListClear(ctx);
-    SBRefStrHashCleanup(ctx);
+    SBRefStrHashCleanup();
     if (ctx->servers != 0) {
         ArrayFree((DArrayImplementation *)ctx->servers);
     }
@@ -964,7 +868,7 @@ void SBServerListCleanup(SBServerList *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void InitCryptKey(SBServerList *ctx, s8 *key, s32 n)
+void InitCryptKey(SBServerList *ctx, const u8 *key, s32 n)
 {
     s32 len;
     s8 *pw;
@@ -1211,12 +1115,12 @@ s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag)
                     }
                     if (c == 0xff) {
                         s32 l;
-                        SBServerAddKeyValue(ent, rec->keyName, buf);
+                        SBServerAddKeyValue(ent, rec->keyName, (char *)buf);
                         l = STD_GetStringLength((const char *)buf) + 1;
                         buf += l;
                         n -= l;
                     } else {
-                        SBServerAddKeyValue(ent, rec->keyName, (void *)ctx->popularvalues[c]);
+                        SBServerAddKeyValue(ent, rec->keyName, ctx->popularvalues[c]);
                     }
                     break;
                 }
@@ -1236,7 +1140,7 @@ s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag)
             l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
-            SBServerAddKeyValue(ent, p, buf);
+            SBServerAddKeyValue(ent, p, (char *)buf);
             l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
@@ -1877,9 +1781,9 @@ s32 ProcessLanData(SBServerList *s) {
 
 namespace F02288e2c {
 extern "C" {
-s32 SBListThink(void *sub) {
+s32 SBListThink(SBServerList *sub) {
     SBFreeDeadList(sub);
-    switch (*(s32 *)sub) {
+    switch (sub->state) {
     case 2:
     case 3:
         return ProcessIncomingData(sub);
@@ -1988,7 +1892,7 @@ void EngineCallback(void *a, s32 code, _SBServer *p, _ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-_ServerBrowser *ServerBrowserNewA(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
+_ServerBrowser *ServerBrowserNewA(char *a, char *b, char *c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
     _ServerBrowser *o;
     if (s7 == 0 && __GSIACResult != 1) {
         return NULL;

@@ -1,8 +1,6 @@
 Area_PlaceItem
 BlockMap_PlaceItem
 BlockMap_PlaceItemAt
-BufferAddByte
-BufferAddNTS
 Catalog_Clear
 Catalog_Init
 ChopCount_ClearAll
@@ -39,11 +37,9 @@ Field_AidOrZero
 Field_IsLocalAid
 Field_IsUnitClearOfOthers
 Flower_GetWateredForm
-FreeKeyList
 FriendList_Compact
 FriendList_GetEntries
 FtrFootprint_Destruct
-InitCryptKey
 Ip_Reassemble
 Item_RandomSeashell
 Item_ToPlantedFieldId
@@ -58,7 +54,6 @@ MoneyRock_Update
 NNS_FndMountArchive
 NNS_FndUnmountArchive
 NNS_G3dGeBufferOP_N
-NTSLengthSB
 OS_IsTickAvailable
 OutdoorSchedule_AddBirthdayVisitor
 OutdoorSchedule_Apply
@@ -79,7 +74,6 @@ OutdoorSchedule_Reroll
 OutdoorSchedule_SetOutdoorSlot
 OutdoorSchedule_Update
 OverlayHandle_Unload
-ParseServerIPPort
 Pattern_CopyFields
 PendingUnit_ApplyAt
 PendingUnit_CancelAt
@@ -123,14 +117,8 @@ PlayerActor_TurnAngle
 PlayerActor_TurnAngleSlow
 PlayerSession_GetLastPlayDate
 PocketMatches_Init
-ProcessIncomingData
 ReddLastSale_Clear
 RoomObjTex_Destruct
-SBSendMessageToServer
-SBSendNatNegotiateCookieToServer
-SBServerListCleanup
-SBServerListConnectAndQuery
-SBServerListDisconnect
 SPL_Calc
 SPL_Create
 SPL_CreateWithInitialize
@@ -140,7 +128,6 @@ SaveVillagers_SetTuneRequester
 SceneWarp_SetFadeOut
 Scene_GetCurrent
 Scene_GetPrevious
-SendWithRetry
 SockCore_CmdClose
 SockCore_CmdShutdown
 Sock_Poll

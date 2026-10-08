@@ -88,13 +88,13 @@ s32 listen(s32 a, s32 backlog);
 s32 accept(s32 a, u8 *sa, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_recv
-s32 recv(s32 a, char *b, s32 c, u32 d);
+s32 recv(s32 a, void *b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_recvfrom
-s32 recvfrom(s32 a, char *b, s32 c, u32 d, SockAddrIn *sa, s32 *len);
+s32 recvfrom(s32 a, void *b, s32 c, u32 d, SockAddrIn *sa, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_send
-s32 send(s32 a, const char *b, s32 c, u32 d);
+s32 send(s32 a, const void *b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_getsockopt
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
@@ -172,7 +172,7 @@ SockHostEnt *getlocalhost();
 s32 bind(s32 a, GsSockAddr *src, u32 len);
 #endif
 #ifndef PROTO_LOCAL_connect
-s32 connect(s32 a, GsSockAddr *src, u32 len);
+s32 connect(s32 a, const SockAddrIn *src, u32 len);
 #endif
 #ifndef PROTO_LOCAL_sendto
 s32 sendto(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len);

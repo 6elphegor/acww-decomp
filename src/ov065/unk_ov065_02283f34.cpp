@@ -461,7 +461,7 @@ s32 gti2ReceiveMessages(GTI2Socket *s) {
     if (CanReceiveOnSocket(s->socket) != 0) {
         do {
             len = 8;
-            s32 n = recvfrom(s->socket, (char *)buf, 0x5dc, 0, &a, &len);
+            s32 n = recvfrom(s->socket, buf, 0x5dc, 0, &a, &len);
             s32 m = -1;
             if (n == m) {
                 s32 e = GOAGetLastError();

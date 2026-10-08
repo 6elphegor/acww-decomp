@@ -503,10 +503,10 @@ s32 bind(s32 a, GsSockAddr *src, u32 len) {
 
 namespace FB {
 extern "C" {
-s32 connect(s32 a, GsSockAddr *src, u32 len) {
-    GsSockAddr l;
+s32 connect(s32 a, const SockAddrIn *src, u32 len) {
+    SockAddrIn l;
     l = *src;
-    l.b[0] = len;
+    l.len = len;
     return CheckRcode(Sock_Connect(a, &l), -1);
 }
 }
@@ -534,7 +534,7 @@ s32 accept(s32 a, u8 *sa, s32 *len) {
 
 namespace FB {
 extern "C" {
-s32 recv(s32 a, char *b, s32 c, u32 d) {
+s32 recv(s32 a, void *b, s32 c, u32 d) {
     return CheckRcode(Sock_Recv(a, b, c, d), -1);
 }
 }
@@ -542,7 +542,7 @@ s32 recv(s32 a, char *b, s32 c, u32 d) {
 
 namespace FB {
 extern "C" {
-s32 recvfrom(s32 a, char *b, s32 c, u32 d, SockAddrIn *sa, s32 *len) {
+s32 recvfrom(s32 a, void *b, s32 c, u32 d, SockAddrIn *sa, s32 *len) {
     s32 r;
     sa->len = *len;
     r = Sock_RecvFrom(a, b, c, d, sa);
@@ -554,7 +554,7 @@ s32 recvfrom(s32 a, char *b, s32 c, u32 d, SockAddrIn *sa, s32 *len) {
 
 namespace FB {
 extern "C" {
-s32 send(s32 a, const char *b, s32 c, u32 d) {
+s32 send(s32 a, const void *b, s32 c, u32 d) {
     return CheckRcode(Sock_Send(a, b, c, d), -1);
 }
 }
