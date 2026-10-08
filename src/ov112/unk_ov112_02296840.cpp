@@ -206,7 +206,7 @@ public:
     /* 0x4390 */ EncodedString192 encodedText;
     /* 0x4450 */ u8 unk_4450[0x10];
     /* 0x4460 */ u8 bgScreenBuf[0x800];
-    /* 0x4c60 */ u8 lineCharBufs[0x1e00];
+    /* 0x4c60 */ u8 lineCharBufs[6][0x500];  // the lines' text tiles
     /* 0x6a60 */ s32 lineStarts[7];
 };
 
@@ -1552,7 +1552,7 @@ extern "C" void BbsWriteMenu_RedrawText(S *s) {
         }
     }
     for (i = 0; i < 6; i++) {
-        s->lineLabels[i].createBufferLabel((u32)(s->lineCharBufs + i * 0x500), 0x14, 0xe, 0xd);
+        s->lineLabels[i].createBufferLabel(s->lineCharBufs[i], 0x14, 0xe, 0xd);
     }
     BbsWriteMenu_HighlightSelection(s);
     BbsWriteMenu_SetFlags(s, 4);

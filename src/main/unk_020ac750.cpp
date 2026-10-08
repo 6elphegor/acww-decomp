@@ -2031,7 +2031,7 @@ extern "C" void ReddShop_SendPasswordLetters() {
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(gSavePlayers, i);
                 if (p != NULL && ((PlayerData *)p)->isUsed() != 0 && ((PlayerData *)p)->testFlag(12) != 0) {
-                    Letter_ComposeFromMail((LetterView *)&ctx, &r, (void *)"sp_npc_foxmail", (u8 *)&data_020e2e44, (u8 *)&data_020e2e48, ((PlayerData *)p)->getPlayerId());
+                    Letter_ComposeFromMail((LetterView *)&ctx, &r, "sp_npc_foxmail", (u8 *)&data_020e2e44, (u8 *)&data_020e2e48, ((PlayerData *)p)->getPlayerId());
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
                         LetterDelivery_QueueOutgoing(&ctx, 0);
                     }
@@ -2490,7 +2490,7 @@ extern "C" void NookPoints_SendMemberLetters(void) {
                         Letter obj;
                         u8 ib;
                         ib = i;
-                        Letter_ComposeFromMail((LetterView *)&obj, &ib, (void *)"sp_npc_atm", (u8 *)&data_020e2e34, (u8 *)&data_020e2e38, ((PlayerData *)r5)->getPlayerId());
+                        Letter_ComposeFromMail((LetterView *)&obj, &ib, "sp_npc_atm", (u8 *)&data_020e2e34, (u8 *)&data_020e2e38, ((PlayerData *)r5)->getPlayerId());
                         ((LetterView *)&obj)->setPresent(kNookMemberGiftItems[i & 3], 1);
                         if (LetterDelivery_QueueOutgoing(&obj, z)) {
                             ((PlayerData *)(r5))->setFlag(j);
@@ -2674,7 +2674,7 @@ extern "C" BOOL NookShop_SendCatalogOrder(void *name) {
         void *r4 = PlayerData_GetCurrent();
         u8 *d = data_021ed104;
         by = NookShop_GetLevel(d);
-        Letter_ComposeFromMail((LetterView *)&obj, &by, (void *)"sp_npc_raccoon", (u8 *)&data_020e2e40, (u8 *)&data_020e2e3c, ((PlayerData *)r4)->getPlayerId());
+        Letter_ComposeFromMail((LetterView *)&obj, &by, "sp_npc_raccoon", (u8 *)&data_020e2e40, (u8 *)&data_020e2e3c, ((PlayerData *)r4)->getPlayerId());
         ((LetterView *)&obj)->setPresent(id, 1);
         u32 r = Item_GetMemberPrice(&id);
         if (LetterDelivery_QueueOutgoing(&obj, 0)) {

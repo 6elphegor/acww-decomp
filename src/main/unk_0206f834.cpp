@@ -44,9 +44,9 @@ class MsgString;
 
 extern "C" {
 BOOL EncodedString_SetRaw(EncodedString41 *buf, const void *src, s32 len);
-u32 Msg_MeasureWidth(u32 arg);
-TextLabel *MsgTextLabel_CreateBuffer(u32 a, u32 b, u32 c);
-TextLabel *MsgTextLabel_CreateVram(u32 a, u32 b, u32 c);
+u32 Msg_MeasureWidth(u8 *text);
+TextLabel *MsgTextLabel_CreateBuffer(void *buf, s32 widthTiles, s32 heightTiles);
+TextLabel *MsgTextLabel_CreateVram(u32 tileIndex, s32 widthTiles, s32 heightTiles);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -96,11 +96,11 @@ void LabelString::createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
     }
 }
 
-void LabelString::createBufferLabel(u32 a, u32 b, u8 x, u8 y) {
+void LabelString::createBufferLabel(void *buf, s32 widthTiles, u8 x, u8 y) {
     if (label != NULL) {
         destroyLabel();
     }
-    label = MsgTextLabel_CreateBuffer(a, b, 2);
+    label = MsgTextLabel_CreateBuffer(buf, widthTiles, 2);
     if (label != NULL) {
         label->bgColor = y;
         label->fgColor = x;
@@ -111,7 +111,7 @@ void LabelString::createBufferLabel(u32 a, u32 b, u8 x, u8 y) {
 void LabelString::redrawAligned(s32 a, s32 b) {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         if (b != 0) {
             label->underline = 1;
         } else {
@@ -129,7 +129,7 @@ void LabelString::redrawAligned(s32 a, s32 b) {
 void LabelString::redrawOffset(s32 a, s32 b) {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         if (a != 0) {
             label->alignCenter();
         } else {
@@ -143,7 +143,7 @@ void LabelString::redrawOffset(s32 a, s32 b) {
 void LabelString::redrawRight() {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         label->alignRight();
         label->requestRedraw();
     }
@@ -152,14 +152,13 @@ void LabelString::redrawRight() {
 void LabelString::redrawAt(s32 v) {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         label->xOffset = v;
         label->requestRedraw();
     }
 }
 
-// (Msg_MeasureWidth takes the text's address as a u32: TextLabel::textStart's type)
-u32 LabelString::getTextWidth() { return Msg_MeasureWidth((u32)(uptr)text); }
+u32 LabelString::getTextWidth() { return Msg_MeasureWidth(text); }
 
 void String_Load2dMenuByRef(void *a, u8 *p) { String_Load2d((MsgString *)a, p, NULL); }
 

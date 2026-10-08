@@ -6,13 +6,15 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
-#include "types.h"
 #include "ui/HudController.h"
 #include "ui/HudProc.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Hud_GetBells
+s32 Hud_GetBells();
 #endif
 #ifndef PROTO_LOCAL_Hud_Init
 void Hud_Init();
@@ -47,9 +49,6 @@ void *Hud_GetWallet();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_Hud_GetBells
-s32 Hud_GetBells();
-#endif
 #ifndef PROTO_LOCAL_HudProc_Create
 HudProc *HudProc_Create();
 #endif

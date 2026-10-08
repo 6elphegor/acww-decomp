@@ -945,7 +945,7 @@ TextLabel::TextLabel(u32 arg1, s32 arg2, s32 arg3) {
     charIndex = 0;
 }
 
-TextLabel::TextLabel(s32 arg1, s32 arg2, s32 arg3) {
+TextLabel::TextLabel(u8 *arg1, s32 arg2, s32 arg3) {
     Unk_02050288_08 zero;
 
     unk_04 = 0;
@@ -1021,8 +1021,8 @@ const u8 *Text_GetSpecialCharStr7(void) { return (const u8 *)&sSpecialCharStr7; 
 const u8 *Text_GetSpecialCharStr5(void) { return (const u8 *)&sSpecialCharStr5; }
 const u8 *Text_GetSpecialCharStr2(void) { return (const u8 *)&sSpecialCharStr2; }
 const u8 *Text_GetSpecialCharStr3(void) { return (const u8 *)&sSpecialCharStr3; }
-int Text_GetSpecialCharStr9(void) { return 0; }
-int Text_GetSpecialCharStr10(void) { return 0; }
+const u8 *Text_GetSpecialCharStr9(void) { return NULL; }
+const u8 *Text_GetSpecialCharStr10(void) { return NULL; }
 
 u32 Text_ToUpper(u32 key) {
     const u8 *entry = sToUpperPairs;

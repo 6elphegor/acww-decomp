@@ -119,7 +119,7 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
 
 extern "C" ProcBase *_ZN8ProcBaseD0Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
-    _ZN8ProcBasedlEPv(self);
+    ProcBase::operator delete(self);
     return self;
 }
 

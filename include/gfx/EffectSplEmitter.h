@@ -107,14 +107,15 @@ public:
 
 class EffectEmitterEntry {
 public:
-    void updateLanding5F();
-    void updateLanding1F1E();
-    void updateLanding1F1D();
-    void updateLanding1F1EB();
+    // the update callbacks (EffectEmitterCbs::unk_04): nonzero while the emitter lives
+    s32 updateLanding5F();
+    s32 updateLanding1F1E();
+    s32 updateLanding1F1D();
+    s32 updateLanding1F1EB();
     BOOL updateKind59();
     BOOL updateKind56Fade();
     BOOL updateKind56Main();
-    void updateKind54B();
+    s32 updateKind54B();
     void initAxisUpForward();
     s32 updateLanding(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
 

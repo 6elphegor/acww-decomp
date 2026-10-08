@@ -40,8 +40,8 @@ struct Unk_02050288_08 {  // an NNSFndLink (gTextLabelList)
 // Text drawn into the 4bpp tile buffer gTextTileBuffer with one of the fonts, then copied to VRAM
 class TextLabel {
 public:
-    TextLabel(s32 arg1, s32 arg2, s32 arg3);
-    TextLabel(u32 arg1, s32 arg2, s32 arg3);
+    TextLabel(u8 *buf, s32 widthTiles, s32 heightTiles);   // drawn into a buffer
+    TextLabel(u32 tileIndex, s32 widthTiles, s32 heightTiles);  // drawn into VRAM tiles
     virtual ~TextLabel();
     virtual void draw() = 0; // draws the text
     virtual u32 measureWidth() = 0;  // text width in pixels
@@ -72,10 +72,10 @@ public:
 
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ Unk_02050288_08 listLink;
-    /* 0x10 */ u32 textStart;
-    /* 0x14 */ u32 textEnd;
+    /* 0x10 */ u8 *textStart;
+    /* 0x14 */ u8 *textEnd;
     /* 0x18 */ s32 tileIndex;
-    /* 0x1c */ s32 destBuffer;
+    /* 0x1c */ u8 *destBuffer;
     /* 0x20 */ s32 widthTiles;
     /* 0x24 */ s32 heightTiles;
     /* 0x28 */ GameFontDesc *font;

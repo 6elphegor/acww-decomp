@@ -14,7 +14,7 @@ public:
     virtual void onTag(u8 *p);
 
     void popText();
-    void pushText(u8 *p);
+    void pushText(const u8 *p);  // (the text is only read)
     void begin(u8 *p);
     BOOL step(u32 arg);
     BOOL isLeadByte(u32 c);

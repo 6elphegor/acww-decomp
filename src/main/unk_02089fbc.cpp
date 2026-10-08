@@ -4,7 +4,7 @@
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
-#include "ui/NameLabelBalloonView.h"
+#include "ui/NameLabelBalloon.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "talk/MsgTextLabel.h"
@@ -29,7 +29,6 @@ struct SpriteAnimSeq;
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
-void String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
 void Math_StepS32Alt(void *p, s32 a, s32 b);
 MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
@@ -57,15 +56,10 @@ void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
 s32 Clock_GetWeekday();
 
-// plain-named functions of the unit
-s32 Hud_GetBells();
-
 // functions of the unit that other classes of the unit call (symbols.txt names)
 }
 
 extern u8 gFieldSceneKind;
-extern GameFontDesc gFontD;
-extern GameFontDesc gFontC;
 extern u8 data_020d479c[];
 extern u8 data_020d4794[];
 extern u8 data_020d477c[];
@@ -77,10 +71,10 @@ extern void *const gSpriteSeqTable[45];
 extern u16 gPad[];
 
 // Data of this unit
-extern const char *const kHudColonString;
-extern const char *const kHudAmPmStrings[2];
+extern char *const kHudColonString;
+extern char *const kHudAmPmStrings[2];
 extern const s16 kHudCountdownSeconds[6];
-extern const u16 kHudWeekdayGlyphs[8];
+extern const u8 kHudWeekdayGlyphs[8][2];
 extern const u8 kHudCameraGridTouchPos[18];
 extern const s8 kHudCameraGridDirs[18];
 extern const u8 kHudCameraGridCells[18];
@@ -88,207 +82,12 @@ extern const u8 kHudCameraGridCells[18];
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-// Methods of HudCountdown's neighbour state (symbols.txt calls this class HudCountdownLabels); same object layout
-class HudCountdownLabels {
-public:
-    void resetSlide();
-    void updateSlide();
-    void updateRemaining();
-    void refreshCountB();
-    void refreshCountA();
-    void refreshSeconds();
-    void refreshMinutes();
-    void refreshLabels();
-    void freeLabels();
-    void createCountBLabel();
-    void createCountALabel();
-    void createSecondsLabel();
-    void createMinutesLabel();
-    void createLabels();
-
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in HudCountdown)
-    uptr unk_00[0x6];  // DS +0x0 [0x24] (pointers)
-    TextLabel * minutesLabel;  // DS +0x24
-    TextLabel * secondsLabel;  // DS +0x28
-    TextLabel * countALabel;  // DS +0x2c
-    TextLabel * countBLabel;  // DS +0x30
-    uptr minutesText[0x5];  // DS +0x34 [0x18] (pointers)
-    uptr secondsText[0x5];  // DS +0x4c [0x18] (pointers)
-    uptr countAText[0x5];  // DS +0x64 [0x18] (pointers)
-    uptr countBText[0x5];  // DS +0x7c [0x18] (pointers)
-    u8 minutesDirty;  // DS +0x94
-    u8 secondsDirty;  // DS +0x95
-    u8 countADirty;  // DS +0x96
-    u8 countBDirty;  // DS +0x97
-    u8 showRequested;  // DS +0x98
-    u8 altLayout;  // DS +0x99
-    u8 unk_9a[0x2];  // DS +0x9a [0x2]
-    s32 countA;  // DS +0x9c
-    s32 countB;  // DS +0xa0
-    s32 durationKind;  // DS +0xa4
-    u8 endTime[0x8];  // DS +0xa8 [0x8]
-    u8 remaining[0x8];  // DS +0xb0 [0x8]
-    s32 finishTimer;  // DS +0xb8
-    s32 slideY;  // DS +0xbc
-    s32 slideTarget;  // DS +0xc0
-    s32 slideSpeed;  // DS +0xc4
-    s32 slideDelay;  // DS +0xc8
-    u32 lastTickTime;  // DS +0xcc
-    u32 lastTickTimeHi;  // DS +0xd0
-#else
-    /* 0x00 */ u32 unk_00[9];
-    /* 0x24 */ TextLabel *minutesLabel;
-    /* 0x28 */ TextLabel *secondsLabel;
-    /* 0x2c */ TextLabel *countALabel;
-    /* 0x30 */ TextLabel *countBLabel;
-    /* 0x34 */ u32 minutesText[6];
-    /* 0x4c */ u32 secondsText[6];
-    /* 0x64 */ u32 countAText[6];
-    /* 0x7c */ u32 countBText[6];
-    /* 0x94 */ u8 minutesDirty;
-    /* 0x95 */ u8 secondsDirty;
-    /* 0x96 */ u8 countADirty;
-    /* 0x97 */ u8 countBDirty;
-    /* 0x98 */ u8 showRequested;
-    /* 0x99 */ u8 altLayout;
-    /* 0x9a */ u8 unk_9a[2];
-    /* 0x9c */ s32 countA;
-    /* 0xa0 */ s32 countB;
-    /* 0xa4 */ s32 durationKind;
-    /* 0xa8 */ u8 endTime[8];
-    /* 0xb0 */ u8 remaining[8];
-    /* 0xb8 */ s32 finishTimer;
-    /* 0xbc */ s32 slideY;
-    /* 0xc0 */ s32 slideTarget;
-    /* 0xc4 */ s32 slideSpeed;
-    /* 0xc8 */ s32 slideDelay;
-    /* 0xcc */ u32 lastTickTime;
-    /* 0xd0 */ u32 lastTickTimeHi;
-#endif
-};
-
-
-// Methods that symbols.txt files under HudCameraGridStates (same object layout as HudCameraGrid)
-class HudCameraGridStates {
-public:
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in HudCameraGrid)
-    uptr unk_00[0x2];  // DS +0x0 [0xc] (pointers)
-    SpriteAnim cellAnims[0x9];  // DS +0xc
-    s32 state;  // DS +0xc0
-    s32 cell;  // DS +0xc4
-    s32 cellX;  // DS +0xc8
-    s32 cellY;  // DS +0xcc
-    s32 activeCell;  // DS +0xd0
-    u8 visible;  // DS +0xd4
-    u8 hpad_0[0x3];
-#else
-    u32 unk_00[3];
-    SpriteAnim cellAnims[9];
-    s32 state;
-    s32 cell;
-    s32 cellX;
-    s32 cellY;
-    s32 activeCell;
-    u8 visible;
-#endif
-
-    void updateClosing();
-    void enterClosing();
-    void updateOpen();
-    void enterOpen();
-    void updateOpening();
-    void enterOpening();
-    void updateClosed();
-    void enterClosed();
-    void setPosFromCell();
-    void setCellFromPos();
-    void applySelection();
-    BOOL moveByDpad();
-};
 
 
 
 
-// Methods that symbols.txt files under HudClockLabels (same object layout as HudClock)
-class HudClockLabels {
-public:
-    void resetSlide();
-    void updateSlide();
-    void pollDateTime();
-    void blinkColon();
-    void refreshMinute();
-    void refreshHour();
-    void refreshAmPm();
-    void refreshWeekday();
-    void refreshDay();
-    void refreshMonth();
-    void refreshLabels();
 
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in HudClock)
-    u8 unk_00[0x30];  // DS +0x0 [0x28]
-    TextLabel * monthLabel;  // DS +0x28
-    TextLabel * dayLabel;  // DS +0x2c
-    TextLabel * weekdayLabel;  // DS +0x30
-    TextLabel * amPmLabel;  // DS +0x34
-    TextLabel * hourLabel;  // DS +0x38
-    TextLabel * minuteLabel;  // DS +0x3c
-    TextLabel * colonLabel;  // DS +0x40
-    s32 colonTimer;  // DS +0x44
-    u8 monthDirty;  // DS +0x48
-    u8 dayDirty;  // DS +0x49
-    u8 weekdayDirty;  // DS +0x4a
-    u8 amPmDirty;  // DS +0x4b
-    u8 hourDirty;  // DS +0x4c
-    u8 minuteDirty;  // DS +0x4d
-    u8 hpad_0[0x2];
-    s32 slideY;  // DS +0x50
-    s32 slideTarget;  // DS +0x54
-    s32 slideSpeed;  // DS +0x58
-    s32 slideDelay;  // DS +0x5c
-    u8 day;  // DS +0x60
-    u8 month;  // DS +0x61
-    u8 minute;  // DS +0x62
-    u8 hour;  // DS +0x63
-    s32 weekday;  // DS +0x64
-    u8 hpad_1[0x4];
-    MsgString3 monthText;  // DS +0x68
-    MsgString3 dayText;  // DS +0x80
-    MsgString3 hourText;  // DS +0x98
-    MsgString3 minuteText;  // DS +0xb0
-#else
-    /* 0x00 */ u8 unk_00[0x28];
-    /* 0x28 */ TextLabel *monthLabel;
-    /* 0x2c */ TextLabel *dayLabel;
-    /* 0x30 */ TextLabel *weekdayLabel;
-    /* 0x34 */ TextLabel *amPmLabel;
-    /* 0x38 */ TextLabel *hourLabel;
-    /* 0x3c */ TextLabel *minuteLabel;
-    /* 0x40 */ TextLabel *colonLabel;
-    /* 0x44 */ s32 colonTimer;
-    /* 0x48 */ u8 monthDirty;
-    /* 0x49 */ u8 dayDirty;
-    /* 0x4a */ u8 weekdayDirty;
-    /* 0x4b */ u8 amPmDirty;
-    /* 0x4c */ u8 hourDirty;
-    /* 0x4d */ u8 minuteDirty;
-    /* 0x50 */ s32 slideY;
-    /* 0x54 */ s32 slideTarget;
-    /* 0x58 */ s32 slideSpeed;
-    /* 0x5c */ s32 slideDelay;
-    /* 0x60 */ u8 day;
-    /* 0x61 */ u8 month;
-    /* 0x62 */ u8 minute;
-    /* 0x63 */ u8 hour;
-    /* 0x64 */ s32 weekday;
-    /* 0x68 */ MsgString3 monthText;
-    /* 0x80 */ MsgString3 dayText;
-    /* 0x98 */ MsgString3 hourText;
-    /* 0xb0 */ MsgString3 minuteText;
-#endif
-};
+
 
 
 
@@ -298,10 +97,6 @@ public:
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
-#define PROTO_LOCAL_Hud_GetBells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontC  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontD  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_020030d8.h"
@@ -313,6 +108,8 @@ public:
 #include "proto/main/unk_02089fbc.h"
 #include "proto/main/unk_0208de68.h"
 #include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7190.h"
@@ -323,27 +120,26 @@ public:
 static inline BOOL Unk_0208a150_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL Unk_0208b9f0_Or(BOOL a, BOOL v) { if ((a | v) != 0) return TRUE; return FALSE; }
 
-namespace Unk_0208a814_NS { extern "C" s32 Hud_GetBells(...); }
 
 typedef void (HudCameraButton::*Unk_020e0f2c_Fn)();
 
-typedef void (HudCameraGridStates::*Unk_0208b728_Fn)();
+typedef void (HudCameraGrid::*Unk_0208b728_Fn)();
 
 typedef void (HudCountdown::*Unk_020e0f10_Fn)();
 
 typedef void (HudClock::*Unk_020e0f64_Fn)();
 
-void NameLabelBalloonView::createLabel() {
+void NameLabelBalloon::createLabel() {
     if (textLabel == NULL) {
         BOOL c = kind == 4 ? TRUE : FALSE;
         s32 width = c ? 0x1c8 : (kind << 6) + 0xc0;
         u8 t = c ? 0xe : 0xf;
         textLabel = MsgTextLabel_CreateVram(width, 0x14, 2);
-        MsgTextLabel *o = textLabel;
+        TextLabel *o = textLabel;
         if (o != NULL) {
             o->vramLoader = 4;
-            MsgTextLabel *p = textLabel;
-            p->textStart = (u32)((MsgString *)(HOST_AT(this, 0x38, pad_10[10], 0)))->data();
+            TextLabel *p = textLabel;
+            p->textStart = text.data();
             textLabel->copyMode = 2;
             textLabel->rowStride1K = 1;
             textLabel->bgColor = t;
@@ -353,7 +149,7 @@ void NameLabelBalloonView::createLabel() {
     }
 }
 
-void NameLabelBalloonView::freeLabel() {
+void NameLabelBalloon::freeLabel() {
     if (textLabel != NULL) {
         MsgTextLabel_Destroy(textLabel);
         textLabel = NULL;
@@ -378,8 +174,10 @@ HudClock::HudClock()
     : state(0), showDelay(0), monthLabel(NULL), dayLabel(NULL), weekdayLabel(NULL), amPmLabel(NULL), hourLabel(NULL), minuteLabel(NULL),
       colonLabel(NULL), colonTimer(0), monthDirty(0), dayDirty(0), weekdayDirty(0), amPmDirty(0), hourDirty(0), minuteDirty(0), showRequested(0),
       altLayout(0), slideY(0), slideTarget(0), slideSpeed(0), slideDelay(-1), weekday(0) {
-    dayMonth = 0;
-    minuteHour = 0;
+    day = 0;
+    month = 0;
+    minute = 0;
+    hour = 0;
 }
 
 HudClock::~HudClock() {
@@ -389,7 +187,7 @@ HudClock::~HudClock() {
 
 void HudClock::draw() {
     if (state != 0) {
-        void *a = anim.getCell();
+        GXOamAttr *a = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
         if (a != 0) {
             s32 x = anim.getFrameX(-1);
             s32 y = anim.getFrameY(-1);
@@ -407,10 +205,10 @@ void HudClock::update() {
     static Unk_020e0f64_Fn tbl[4] = {(Unk_020e0f64_Fn)&HudClock::updateHidden, (Unk_020e0f64_Fn)&HudClock::updateAppearing,
                                      (Unk_020e0f64_Fn)&HudClock::updateShown, (Unk_020e0f64_Fn)&HudClock::updateHiding};
     (this->*tbl[state])();
-    ((HudClockLabels *)(this))->pollDateTime();
-    ((HudClockLabels *)(this))->refreshLabels();
+    pollDateTime();
+    refreshLabels();
     if (state != 0) {
-        ((HudClockLabels *)(this))->updateSlide();
+        updateSlide();
     }
 }
 
@@ -466,7 +264,7 @@ void HudClock::updateHidden() {
 
 void HudClock::enterAppearing() {
     state = 1;
-    ((HudClockLabels *)(this))->resetSlide();
+    resetSlide();
     s32 i = altLayout != 0 ? 0x29 : 4;
     anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
     anim.setPlayOnce(1);
@@ -567,7 +365,7 @@ void HudClock::createMonthLabel() {
             monthLabel->rowStride1K = 1;
             monthLabel->bgColor = 0;
             monthLabel->fgColor = 0xc;
-            monthLabel->font = &gFontC;
+            monthLabel->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
             monthLabel->requestRedraw();
             monthDirty = 1;
         }
@@ -584,7 +382,7 @@ void HudClock::createDayLabel() {
             dayLabel->rowStride1K = 1;
             dayLabel->bgColor = 0;
             dayLabel->fgColor = 0xc;
-            dayLabel->font = &gFontC;
+            dayLabel->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
             dayLabel->requestRedraw();
             dayDirty = 1;
         }
@@ -601,7 +399,7 @@ void HudClock::createWeekdayLabel() {
             weekdayLabel->rowStride1K = 1;
             weekdayLabel->bgColor = 0;
             weekdayLabel->fgColor = 0xa;
-            weekdayLabel->font = &gFontC;
+            weekdayLabel->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
             weekdayLabel->requestRedraw();
             weekdayDirty = 1;
         }
@@ -618,7 +416,7 @@ void HudClock::createAmPmLabel() {
             amPmLabel->rowStride1K = 1;
             amPmLabel->bgColor = 0;
             amPmLabel->fgColor = 9;
-            amPmLabel->font = &gFontD;
+            amPmLabel->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
             amPmLabel->requestRedraw();
             amPmDirty = 1;
         }
@@ -635,7 +433,7 @@ void HudClock::createHourLabel() {
             hourLabel->rowStride1K = 1;
             hourLabel->bgColor = 0;
             hourLabel->fgColor = 9;
-            hourLabel->font = &gFontD;
+            hourLabel->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
             hourLabel->requestRedraw();
             hourDirty = 1;
         }
@@ -652,7 +450,7 @@ void HudClock::createMinuteLabel() {
             minuteLabel->rowStride1K = 1;
             minuteLabel->bgColor = 0;
             minuteLabel->fgColor = 9;
-            minuteLabel->font = &gFontD;
+            minuteLabel->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
             minuteLabel->requestRedraw();
             minuteDirty = 1;
         }
@@ -665,10 +463,10 @@ void HudClock::createColonLabel() {
         MsgTextLabel *o = colonLabel;
         if (o != NULL) {
             o->vramLoader = 4;
-            colonLabel->textStart = (u32)kHudColonString;
+            colonLabel->textStart = (u8 *)kHudColonString;
             colonLabel->copyMode = 2;
             colonLabel->rowStride1K = 1;
-            colonLabel->font = &gFontC;
+            colonLabel->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
             colonLabel->alignCenter();
             colonLabel->bgColor = 0;
             colonLabel->fgColor = 9;
@@ -708,7 +506,7 @@ void HudClock::freeLabels() {
     }
 }
 
-void HudClockLabels::refreshLabels() {
+void HudClock::refreshLabels() {
     refreshMonth();
     refreshDay();
     refreshWeekday();
@@ -718,50 +516,49 @@ void HudClockLabels::refreshLabels() {
     blinkColon();
 }
 
-void HudClockLabels::refreshMonth() {
+void HudClock::refreshMonth() {
     if (monthLabel != 0 && monthDirty != 0) {
         monthDirty = 0;
         String_FormatNumber(&monthText, month, 2, 0, 0, 1);
         TextLabel *t = monthLabel;
-        t->textStart = (u32)monthText.data();
+        t->textStart = monthText.data();
         monthLabel->alignRight();
         monthLabel->requestRedraw();
     }
 }
 
-void HudClockLabels::refreshDay() {
+void HudClock::refreshDay() {
     if (dayLabel != 0 && dayDirty != 0) {
         dayDirty = 0;
         String_FormatNumber(&dayText, day, 2, 0, 0, 1);
         TextLabel *t = dayLabel;
-        t->textStart = (u32)dayText.data();
+        t->textStart = dayText.data();
         dayLabel->requestRedraw();
     }
 }
 
-void HudClockLabels::refreshWeekday() {
+void HudClock::refreshWeekday() {
     if (weekdayLabel != 0 && weekdayDirty != 0) {
         weekdayDirty = 0;
         s32 i = *(volatile s32 *)&weekday;
-        const u16 *e = &kHudWeekdayGlyphs[i];
-        weekdayLabel->textStart = (u32)e;
+        weekdayLabel->textStart = const_cast<u8 *>(kHudWeekdayGlyphs[i]);
         weekdayLabel->alignCenter();
         weekdayLabel->requestRedraw();
     }
 }
 
-void HudClockLabels::refreshAmPm() {
+void HudClock::refreshAmPm() {
     if (amPmLabel != 0 && amPmDirty != 0) {
         amPmDirty = 0;
         s32 i = 0;
         if (hour >= 12) i = 1;
-        amPmLabel->textStart = (u32)kHudAmPmStrings[i];
+        amPmLabel->textStart = (u8 *)kHudAmPmStrings[i];
         amPmLabel->alignCenter();
         amPmLabel->requestRedraw();
     }
 }
 
-void HudClockLabels::refreshHour() {
+void HudClock::refreshHour() {
     if (hourLabel != 0 && hourDirty != 0) {
         hourDirty = 0;
         u8 c = hour;
@@ -769,24 +566,24 @@ void HudClockLabels::refreshHour() {
         if (c == 0) c = 12;
         String_FormatNumber(&hourText, c, 2, 0, 0, 1);
         TextLabel *t = hourLabel;
-        t->textStart = (u32)hourText.data();
+        t->textStart = hourText.data();
         hourLabel->alignRight();
         hourLabel->requestRedraw();
     }
 }
 
-void HudClockLabels::refreshMinute() {
+void HudClock::refreshMinute() {
     if (minuteLabel != 0 && minuteDirty != 0) {
         minuteDirty = 0;
         String_FormatNumber(&minuteText, minute, 2, 6, 0, 1);
         TextLabel *t = minuteLabel;
-        t->textStart = (u32)minuteText.data();
+        t->textStart = minuteText.data();
         minuteLabel->alignCenter();
         minuteLabel->requestRedraw();
     }
 }
 
-void HudClockLabels::blinkColon() {
+void HudClock::blinkColon() {
     if (colonLabel != 0) {
         colonTimer = colonTimer - 1;
         s32 t = colonTimer;
@@ -799,23 +596,26 @@ void HudClockLabels::blinkColon() {
     }
 }
 
-void HudClockLabels::pollDateTime() {
-    u16 v[2];
-    Clock_GetDayMonth(v);
-    Clock_GetMinuteHour(&v[1]);
+void HudClock::pollDateTime() {
+    u8 dayMonth[2];    // {day, month}
+    u8 minuteHour[2];  // {minute, hour}
+    Clock_GetDayMonth(dayMonth);
+    Clock_GetMinuteHour(minuteHour);
     s32 t = Clock_GetWeekday();
-    if (v[0] != *(u16 *)&day) {
-        if (((u8 *)v)[1] != month) monthDirty = 1;
-        if (((u8 *)v)[0] != day) dayDirty = 1;
-        *(u16 *)&day = v[0];
+    if (dayMonth[0] != day || dayMonth[1] != month) {
+        if (dayMonth[1] != month) monthDirty = 1;
+        if (dayMonth[0] != day) dayDirty = 1;
+        day = dayMonth[0];
+        month = dayMonth[1];
     }
-    if (v[1] != *(u16 *)&minute) {
-        if (((u8 *)v)[3] != hour) {
+    if (minuteHour[0] != minute || minuteHour[1] != hour) {
+        if (minuteHour[1] != hour) {
             hourDirty = 1;
             amPmDirty = 1;
         }
-        if (((u8 *)v)[2] != minute) minuteDirty = 1;
-        *(u16 *)&minute = v[1];
+        if (minuteHour[0] != minute) minuteDirty = 1;
+        minute = minuteHour[0];
+        hour = minuteHour[1];
     }
     if (t != weekday) {
         weekdayDirty = 1;
@@ -823,9 +623,9 @@ void HudClockLabels::pollDateTime() {
     }
 }
 
-void HudClockLabels::updateSlide() {
+void HudClock::updateSlide() {
     s32 a = ChatBalloon_IsOwnBusy();
-    s32 b = ((HudClock *)(this))->canShow();
+    s32 b = canShow();
     s32 t;
     if (a != 0 && b != 0) t = -0x14000; else t = 0;
     slideSpeed = slideSpeed + 0xa00;
@@ -844,7 +644,7 @@ void HudClockLabels::updateSlide() {
     Math_ApproachS32(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
 }
 
-void HudClockLabels::resetSlide() {
+void HudClock::resetSlide() {
     slideY = 0;
     slideTarget = 0;
     slideDelay = -1;
@@ -861,10 +661,8 @@ HudCountdown::HudCountdown() : state(0), minutesLabel(0), secondsLabel(0), count
     countA = 0;
     countB = 0;
     durationKind = 0;
-    endTime = 0;
-    endTimeHi = 0;
-    remaining = 0;
-    remainingHi = 0;
+    endTime = ClockDateTime();
+    remaining = ClockDateTime();
     finishTimer = 0;
     slideY = 0;
     slideTarget = 0;
@@ -881,7 +679,7 @@ HudCountdown::~HudCountdown() {
 
 void HudCountdown::draw() {
     if (state != 0) {
-        void *p = anim.getCell();
+        GXOamAttr *p = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
         if (p != 0) {
             s32 a = anim.getFrameX(-1);
             s32 b = anim.getFrameY(-1);
@@ -895,12 +693,12 @@ void HudCountdown::draw() {
 }
 
 void HudCountdown::update() {
-    ((HudCountdownLabels *)(this))->updateRemaining();
+    updateRemaining();
     static Unk_020e0f10_Fn tbl[4] = {(Unk_020e0f10_Fn)&HudCountdown::updateHidden, (Unk_020e0f10_Fn)&HudCountdown::updateAppearing,
                                      (Unk_020e0f10_Fn)&HudCountdown::updateShown, (Unk_020e0f10_Fn)&HudCountdown::updateHiding};
     (this->*tbl[state])();
-    ((HudCountdownLabels *)(this))->refreshLabels();
-    if (state != 0) ((HudCountdownLabels *)(this))->updateSlide();
+    refreshLabels();
+    if (state != 0) updateSlide();
 }
 
 void HudCountdown::reset() {
@@ -909,7 +707,7 @@ void HudCountdown::reset() {
 }
 
 void HudCountdown::release() {
-    ((HudCountdownLabels *)(this))->freeLabels();
+    freeLabels();
 }
 
 void HudCountdown::callUpdate() {
@@ -988,13 +786,13 @@ void HudCountdown::updateHidden() {
 
 void HudCountdown::enterAppearing() {
     state = 1;
-    ((HudCountdownLabels *)(this))->resetSlide();
+    resetSlide();
     s32 i;
     if (altLayout != 0) i = 0x2b; else i = 0x26;
     anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
     anim.setPlayOnce(1);
     anim.restart();
-    ((HudCountdownLabels *)(this))->createLabels();
+    createLabels();
 }
 
 void HudCountdown::updateAppearing() {
@@ -1022,7 +820,7 @@ void HudCountdown::enterHiding() {
 void HudCountdown::updateHiding() {
     anim.update();
     if (anim.isFinished() != 0) {
-        ((HudCountdownLabels *)(this))->freeLabels();
+        freeLabels();
         enterHidden();
     }
 }
@@ -1054,14 +852,14 @@ u8 HudCountdown::canShow() {
     return r;
 }
 
-void HudCountdownLabels::createLabels() {
+void HudCountdown::createLabels() {
     createMinutesLabel();
     createSecondsLabel();
     createCountALabel();
     createCountBLabel();
 }
 
-void HudCountdownLabels::createMinutesLabel() {
+void HudCountdown::createMinutesLabel() {
     minutesLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x114 : 0x80, 3, 2);
     if (minutesLabel != NULL) {
         minutesLabel->vramLoader = 4;
@@ -1069,14 +867,14 @@ void HudCountdownLabels::createMinutesLabel() {
         minutesLabel->rowStride1K = 1;
         minutesLabel->bgColor = 0;
         minutesLabel->fgColor = 0xc;
-        minutesLabel->font = &gFontC;
+        minutesLabel->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
         TextLabel *t = minutesLabel;
-        t->textStart = (u32)((StrBuf *)minutesText)->data();
+        t->textStart = minutesText.data();
         minutesDirty = 1;
     }
 }
 
-void HudCountdownLabels::createSecondsLabel() {
+void HudCountdown::createSecondsLabel() {
     secondsLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x117 : 0x83, 3, 2);
     if (secondsLabel != NULL) {
         secondsLabel->vramLoader = 4;
@@ -1084,14 +882,14 @@ void HudCountdownLabels::createSecondsLabel() {
         secondsLabel->rowStride1K = 1;
         secondsLabel->bgColor = 0;
         secondsLabel->fgColor = 0xc;
-        secondsLabel->font = &gFontC;
+        secondsLabel->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
         TextLabel *t = secondsLabel;
-        t->textStart = (u32)((StrBuf *)secondsText)->data();
+        t->textStart = secondsText.data();
         secondsDirty = 1;
     }
 }
 
-void HudCountdownLabels::createCountALabel() {
+void HudCountdown::createCountALabel() {
     countALabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x174 : 0xa8, 2, 1);
     if (countALabel != NULL) {
         countALabel->vramLoader = 4;
@@ -1099,14 +897,14 @@ void HudCountdownLabels::createCountALabel() {
         countALabel->rowStride1K = 1;
         countALabel->bgColor = 0;
         countALabel->fgColor = 5;
-        countALabel->font = &gFontD;
+        countALabel->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
         TextLabel *t = countALabel;
-        t->textStart = (u32)((StrBuf *)countAText)->data();
+        t->textStart = countAText.data();
         countADirty = 1;
     }
 }
 
-void HudCountdownLabels::createCountBLabel() {
+void HudCountdown::createCountBLabel() {
     countBLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x176 : 0xaa, 2, 1);
     if (countBLabel != NULL) {
         countBLabel->vramLoader = 4;
@@ -1114,14 +912,14 @@ void HudCountdownLabels::createCountBLabel() {
         countBLabel->rowStride1K = 1;
         countBLabel->bgColor = 0;
         countBLabel->fgColor = 5;
-        countBLabel->font = &gFontD;
+        countBLabel->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
         TextLabel *t = countBLabel;
-        t->textStart = (u32)((StrBuf *)countBText)->data();
+        t->textStart = countBText.data();
         countBDirty = 1;
     }
 }
 
-void HudCountdownLabels::freeLabels() {
+void HudCountdown::freeLabels() {
     if (minutesLabel != NULL) {
         MsgTextLabel_Destroy(minutesLabel);
         minutesLabel = NULL;
@@ -1140,31 +938,31 @@ void HudCountdownLabels::freeLabels() {
     }
 }
 
-void HudCountdownLabels::refreshLabels() {
+void HudCountdown::refreshLabels() {
     refreshMinutes();
     refreshSeconds();
     refreshCountA();
     refreshCountB();
 }
 
-void HudCountdownLabels::refreshMinutes() {
+void HudCountdown::refreshMinutes() {
     if (minutesDirty != 0 && minutesLabel != NULL) {
-        String_FormatNumber(&minutesText, remaining[1], 2, 6, 0, 1);
+        String_FormatNumber(&minutesText, remaining.minute, 2, 6, 0, 1);
         minutesLabel->alignRight();
         minutesLabel->requestRedraw();
         minutesDirty = 0;
     }
 }
 
-void HudCountdownLabels::refreshSeconds() {
+void HudCountdown::refreshSeconds() {
     if (secondsDirty != 0 && secondsLabel != NULL) {
-        String_FormatNumber(&secondsText, remaining[0], 2, 6, 0, 1);
+        String_FormatNumber(&secondsText, remaining.second, 2, 6, 0, 1);
         secondsLabel->requestRedraw();
         secondsDirty = 0;
     }
 }
 
-void HudCountdownLabels::refreshCountA() {
+void HudCountdown::refreshCountA() {
     if (countADirty != 0 && countALabel != NULL) {
         String_FormatNumber(&countAText, countA, 2, 6, 0, 1);
         countALabel->alignCenter();
@@ -1173,7 +971,7 @@ void HudCountdownLabels::refreshCountA() {
     }
 }
 
-void HudCountdownLabels::refreshCountB() {
+void HudCountdown::refreshCountB() {
     if (countBDirty != 0 && countBLabel != NULL) {
         String_FormatNumber(&countBText, countB, 2, 6, 0, 1);
         countBLabel->alignCenter();
@@ -1182,10 +980,10 @@ void HudCountdownLabels::refreshCountB() {
     }
 }
 
-void HudCountdownLabels::updateRemaining() {
-    u8 a[8];
-    u8 b[8];
-    u8 c[8];
+void HudCountdown::updateRemaining() {
+    ClockDateTime a;  // the end time, then the time left
+    ClockDateTime b;  // now
+    ClockDateTime c;
     BOOL x;
     BOOL y;
     BOOL t;
@@ -1194,11 +992,10 @@ void HudCountdownLabels::updateRemaining() {
         finishTimer = finishTimer - 1;
     }
     if (durationKind != 0) {
-        MI_CpuCopy8(endTime, a, 8);
-        ((u32 *)b)[0] = 0;
-        ((u32 *)b)[1] = 0;
-        Clock_GetRtcDateTime(b);
-        r = DateTime_Compare(b, a, 0x3f);
+        MI_CpuCopy8(&endTime, &a, sizeof(a));
+        b = ClockDateTime();
+        Clock_GetRtcDateTime((u8 *)&b);
+        r = DateTime_Compare(&b, &a, 0x3f);
         if (r == 0) {
             goto yes;
         }
@@ -1210,16 +1007,15 @@ void HudCountdownLabels::updateRemaining() {
         }
         y = x;
         if (x) {
-            ((u32 *)a)[0] = 0;
-            ((u32 *)a)[1] = 0;
+            a = ClockDateTime();
         } else {
             u32 k;
-            MI_CpuCopy8(b, c, 8);
-            DateTime_Sub(a, c);
+            MI_CpuCopy8(&b, &c, sizeof(c));
+            DateTime_Sub(&a, (u8 *)&c);
             k = x;
-            t = DateTime_Compare(remaining, a, 1) ? TRUE : FALSE;
+            t = DateTime_Compare(&remaining, &a, 1) ? TRUE : FALSE;
             x = (k | t) ? TRUE : FALSE;
-            r = DateTime_Compare(remaining, a, 2) ? TRUE : FALSE;
+            r = DateTime_Compare(&remaining, &a, 2) ? TRUE : FALSE;
             k |= r;
             y = k ? TRUE : FALSE;
         }
@@ -1229,9 +1025,9 @@ void HudCountdownLabels::updateRemaining() {
         *p94 = Unk_0208b9f0_Or(minutesDirty, y);
         if (x != 0 || y != 0) {
             u32 b0, b1;
-            MI_CpuCopy8(a, remaining, 8);
-            b0 = a[0];
-            b1 = a[1];
+            MI_CpuCopy8(&a, &remaining, sizeof(remaining));
+            b0 = a.second;
+            b1 = a.minute;
             if (b1 == 0) {
                 if (b0 == 0) {
                     finishTimer = 0x258;
@@ -1242,7 +1038,7 @@ void HudCountdownLabels::updateRemaining() {
                     FieldInfoBalloon_ShowTimerMsg(3);
                 } else if (b0 <= 10) {
                     u64 now = OS_GetTick();
-                    u64 d = now - *(u64 *)&lastTickTime;
+                    u64 d = now - ((u64)lastTickTimeHi << 32 | lastTickTime);
                     u64 q = (d << 6) / 0x82ea;
                     if (q <= 0x44c) {
                         if (Scene_GetCurrent() != 0x2e) {
@@ -1261,9 +1057,9 @@ void HudCountdownLabels::updateRemaining() {
     }
 }
 
-void HudCountdownLabels::updateSlide() {
+void HudCountdown::updateSlide() {
     BOOL a = ChatBalloon_IsOwnBusy();
-    BOOL b = ((HudCountdown *)(this))->canShow();
+    BOOL b = canShow();
     s32 t;
     s32 c4;
     if (a && b) {
@@ -1295,7 +1091,7 @@ end:
     Math_ApproachS32(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
 }
 
-void HudCountdownLabels::resetSlide() {
+void HudCountdown::resetSlide() {
     slideY = 0;
     slideTarget = 0;
     slideDelay = -1;
@@ -1322,7 +1118,7 @@ void HudCameraGrid::draw() {
         s32 z = 0;
         for (; i < 9; i++) {
             SpriteAnim *e = &cellAnims[i];
-            void *p = e->getCell();
+            GXOamAttr *p = static_cast<GXOamAttr *>(e->getCell());  // (SpriteAnimFrame::cell: an OAM cell)
             if (p != NULL) {
                 s32 sx = e->getFrameX(nb);
                 s32 sy = e->getFrameY(nb);
@@ -1334,9 +1130,9 @@ void HudCameraGrid::draw() {
 }
 
 void HudCameraGrid::update() {
-    static Unk_0208b728_Fn tbl[4] = {(Unk_0208b728_Fn)&HudCameraGridStates::updateClosed, (Unk_0208b728_Fn)&HudCameraGridStates::updateOpening,
-                                     (Unk_0208b728_Fn)&HudCameraGridStates::updateOpen, (Unk_0208b728_Fn)&HudCameraGridStates::updateClosing};
-    (((HudCameraGridStates *)this)->*tbl[state])();
+    static Unk_0208b728_Fn tbl[4] = {(Unk_0208b728_Fn)&HudCameraGrid::updateClosed, (Unk_0208b728_Fn)&HudCameraGrid::updateOpening,
+                                     (Unk_0208b728_Fn)&HudCameraGrid::updateOpen, (Unk_0208b728_Fn)&HudCameraGrid::updateClosing};
+    (this->*tbl[state])();
 }
 
 void HudCameraGrid::reset() {
@@ -1345,7 +1141,7 @@ void HudCameraGrid::reset() {
     cellX = 0;
     cellY = 0;
     activeCell = 0;
-    ((HudCameraGridStates *)(this))->enterClosed();
+    enterClosed();
 }
 
 void HudCameraGrid::resetCellAnims() {
@@ -1417,14 +1213,14 @@ BOOL HudCameraGrid::pickCellByTouch() {
         if (Input_IsTouchTrigInRect(a, a + 0x10, b, b + 0x10)) {
             r = TRUE;
             cell = i;
-            ((HudCameraGridStates *)(this))->setPosFromCell();
+            setPosFromCell();
             break;
         }
     }
     return r;
 }
 
-BOOL HudCameraGridStates::moveByDpad() {
+BOOL HudCameraGrid::moveByDpad() {
     s32 ox = cellX;
     s32 oy = cellY;
     u32 k = gPad[1];
@@ -1452,7 +1248,7 @@ BOOL HudCameraGridStates::moveByDpad() {
     return FALSE;
 }
 
-void HudCameraGridStates::applySelection() {
+void HudCameraGrid::applySelection() {
     Camera_SetPresetCell((kHudCameraGridCells + 1)[cell * 2], kHudCameraGridCells[cell * 2]);
     s32 p = activeCell;
     if (cell != p) {
@@ -1471,7 +1267,7 @@ void HudCameraGridStates::applySelection() {
     }
 }
 
-void HudCameraGridStates::setCellFromPos() {
+void HudCameraGrid::setCellFromPos() {
     s32 i = 0;
     while (i < 9) {
         s32 n = i * 2;
@@ -1482,22 +1278,22 @@ void HudCameraGridStates::setCellFromPos() {
     cell = i;
 }
 
-void HudCameraGridStates::setPosFromCell() {
+void HudCameraGrid::setPosFromCell() {
     cellX = kHudCameraGridDirs[cell * 2];
     cellY = (kHudCameraGridDirs + 1)[cell * 2];
 }
 
-void HudCameraGridStates::enterClosed() {
+void HudCameraGrid::enterClosed() {
     state = 0;
 }
 
-void HudCameraGridStates::updateClosed() {
+void HudCameraGrid::updateClosed() {
     if (visible != 0) {
         enterOpening();
     }
 }
 
-void HudCameraGridStates::enterOpening() {
+void HudCameraGrid::enterOpening() {
     s32 one = 1;
     state = one;
     s32 i;
@@ -1509,7 +1305,7 @@ void HudCameraGridStates::enterOpening() {
     }
 }
 
-void HudCameraGridStates::updateOpening() {
+void HudCameraGrid::updateOpening() {
     BOOL z = FALSE;
     BOOL r = TRUE;
     s32 i;
@@ -1525,17 +1321,17 @@ void HudCameraGridStates::updateOpening() {
     }
 }
 
-void HudCameraGridStates::enterOpen() {
+void HudCameraGrid::enterOpen() {
     state = 2;
 }
 
-void HudCameraGridStates::updateOpen() {
+void HudCameraGrid::updateOpen() {
     if (visible == 0) {
         enterClosing();
-    } else if (!((HudCameraGrid *)(this))->isOtherDeviceTriggered()) {
+    } else if (!isOtherDeviceTriggered()) {
         BOOL f = FALSE;
         if (Input_IsTouchMode()) {
-            if (((HudCameraGrid *)(this))->pickCellByTouch()) {
+            if (pickCellByTouch()) {
                 f = TRUE;
             }
         } else if (Input_IsButtonMode()) {
@@ -1549,7 +1345,7 @@ void HudCameraGridStates::updateOpen() {
     }
 }
 
-void HudCameraGridStates::enterClosing() {
+void HudCameraGrid::enterClosing() {
     state = 3;
     s32 i;
     for (i = 0; i < 9; i++) {
@@ -1560,7 +1356,7 @@ void HudCameraGridStates::enterClosing() {
     }
 }
 
-void HudCameraGridStates::updateClosing() {
+void HudCameraGrid::updateClosing() {
     BOOL z = FALSE;
     BOOL r = TRUE;
     s32 i;
@@ -1585,7 +1381,7 @@ HudCameraButton::~HudCameraButton() {
 
 void HudCameraButton::draw() {
     if (state != 0) {
-        void *v = anim.getCell();
+        GXOamAttr *v = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
         if (v != 0) {
             s32 x = anim.getFrameX(-1);
             s32 y = anim.getFrameY(-1);
@@ -1840,7 +1636,7 @@ HudWallet::~HudWallet() {
 
 void HudWallet::draw() {
     if (state != 0) {
-        void *h = anim.getCell();
+        GXOamAttr *h = static_cast<GXOamAttr *>(anim.getCell());  // (SpriteAnimFrame::cell: an OAM cell)
         if (h != 0) {
             s32 a = getOriginX();
             s32 x = a + anim.getFrameX(-1);
@@ -1972,9 +1768,8 @@ void HudWallet::createLabel() {
             label->bgColor = 0;
             label->fgColor = 0xc;
             TextLabel *o = label;
-            StrBuf *s = (StrBuf *)&text;
-            o->textStart = (u32)s->data();
-            label->font = &gFontD;
+            o->textStart = text.data();
+            label->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
             label->alignRight();
             label->requestRedraw();
         }
@@ -1998,7 +1793,7 @@ void HudWallet::syncValue() {
 BOOL HudWallet::rollTowardTarget() {
     BOOL r = FALSE;
     if (valueFrozen == 0) {
-        s32 v = Unk_0208a814_NS::Hud_GetBells(this);
+        s32 v = Hud_GetBells();
         if (shownBells != v) {
             s32 d = v - shownBells;
             if (d < 0) {
@@ -2117,8 +1912,8 @@ void HudController::init() {
     Hud_Show();
     Hud_ClearHideB();
     ((HudControllerStates *)(this))->enterModeForRoom();
-    ((HudClock *)(&clock))->reset();
-    ((HudCountdown *)(&countdown))->reset();
+    clock.reset();
+    countdown.reset();
     ((HudCameraButton *)(&cameraButton))->reset();
     wallet.reset();
     buttonLayout = 0;
@@ -2127,8 +1922,8 @@ void HudController::init() {
 void HudController::exit() {
     wallet.release();
     ((HudCameraButton *)(&cameraButton))->release();
-    ((HudCountdown *)(&countdown))->release();
-    ((HudClock *)(&clock))->release();
+    countdown.release();
+    clock.release();
 }
 
 void HudController::update() {
@@ -2137,16 +1932,16 @@ void HudController::update() {
         (Fn)&HudControllerStates::updateCameraButton, (Fn)&HudControllerStates::updateWallet, (Fn)&HudControllerStates::updateHidden,
     };
     (this->*tbl[state])();
-    ((HudClock *)(&clock))->callUpdate();
-    ((HudCountdown *)(&countdown))->callUpdate();
+    clock.callUpdate();
+    countdown.callUpdate();
     ((HudCameraButton *)(&cameraButton))->callUpdate();
     wallet.callUpdate();
     ((HudControllerStates *)(this))->updateInputLayout();
 }
 
 void HudController::draw() {
-    ((HudClock *)(&clock))->callDraw();
-    ((HudCountdown *)(&countdown))->callDraw();
+    clock.callDraw();
+    countdown.callDraw();
     ((HudCameraButton *)(&cameraButton))->callDraw();
     wallet.callDraw();
 }
@@ -2173,10 +1968,10 @@ void HudController::updateClock() {
     } else {
         a = FALSE;
     }
-    b = ((HudCountdown *)(&countdown))->isFinished() == 0 ? TRUE : FALSE;
+    b = countdown.isFinished() == 0 ? TRUE : FALSE;
     if (a || b) {
-        ((HudClock *)(&clock))->hide();
-        if (((HudClock *)(&clock))->isHidden() != 0) {
+        clock.hide();
+        if (clock.isHidden() != 0) {
             if (a) {
                 ((HudControllerStates *)(this))->enterHidden();
             } else {
@@ -2184,7 +1979,7 @@ void HudController::updateClock() {
             }
         }
     } else {
-        ((HudClock *)(&clock))->show();
+        clock.show();
     }
 }
 
@@ -2201,10 +1996,10 @@ void HudControllerStates::updateCountdown() {
     } else {
         r5 = FALSE;
     }
-    BOOL r0 = ((HudCountdown *)(&countdown))->isFinished();
+    BOOL r0 = countdown.isFinished();
     if (r5 || r0) {
-        ((HudCountdown *)(&countdown))->hide();
-        if (((HudCountdown *)(&countdown))->isHidden()) {
+        countdown.hide();
+        if (countdown.isHidden()) {
             if (r5) {
                 enterHidden();
             } else {
@@ -2214,7 +2009,7 @@ void HudControllerStates::updateCountdown() {
             }
         }
     } else {
-        ((HudCountdown *)(&countdown))->show();
+        countdown.show();
     }
 }
 
@@ -2260,15 +2055,15 @@ void HudControllerStates::updateHidden() {
 void HudControllerStates::updateSharedPanels() {
     if (Hud_GetSceneHudKind() != 0) {
         if (Unk_0208a150_IsOne(gFieldSceneKind)) {
-            if (((HudCountdown *)(&countdown))->isFinished()) {
-                ((HudCountdown *)(&countdown))->hide();
-                if (((HudCountdown *)(&countdown))->isHidden()) {
-                    ((HudClock *)(&clock))->show();
+            if (countdown.isFinished()) {
+                countdown.hide();
+                if (countdown.isHidden()) {
+                    clock.show();
                 }
             } else {
-                ((HudClock *)(&clock))->hide();
-                if (((HudClock *)(&clock))->isHidden()) {
-                    ((HudCountdown *)(&countdown))->show();
+                clock.hide();
+                if (clock.isHidden()) {
+                    countdown.show();
                 }
             }
         }
@@ -2356,10 +2151,11 @@ char sHudColonStr[] = ":";
 char sHudAmStr[] = "AM";
 char sHudPmStr[] = "PM";
 
-const char *const kHudColonString = sHudColonStr;
-const char *const kHudAmPmStrings[2] = {sHudAmStr, sHudPmStr};
+char *const kHudColonString = sHudColonStr;
+char *const kHudAmPmStrings[2] = {sHudAmStr, sHudPmStr};
 const s16 kHudCountdownSeconds[6] = {0, 180, 300, 600, 900, 0};
-const u16 kHudWeekdayGlyphs[8] = {'g', 'a', 'b', 'c', 'd', 'e', 'f', 0};
+// one-glyph strings: the weekday symbols of the clock font
+const u8 kHudWeekdayGlyphs[8][2] = {{'g', 0}, {'a', 0}, {'b', 0}, {'c', 0}, {'d', 0}, {'e', 0}, {'f', 0}, {0, 0}};
 const u8 kHudCameraGridTouchPos[18] = {0x5b, 0x3c, 0x49, 0x2b, 0x5b, 0x2b, 0x6c, 0x2b, 0x49,
                               0x3c, 0x6c, 0x3c, 0x49, 0x4c, 0x5b, 0x4c, 0x6c, 0x4c};
 const s8 kHudCameraGridDirs[18] = {0, 0, -1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
@@ -2373,75 +2169,3 @@ ProcProfile sHudProcProfile = {(void *(*)())HudProc_Create, 0xca, 0x8e};
 
 HudController gHud;
 
-#ifdef HOST64
-static_assert(__builtin_offsetof(HudClockLabels, unk_00) == 0x0, "HudClockLabels.unk_00");
-static_assert(__builtin_offsetof(HudClockLabels, monthLabel) == 0x30, "HudClockLabels.monthLabel");
-static_assert(__builtin_offsetof(HudClockLabels, dayLabel) == 0x38, "HudClockLabels.dayLabel");
-static_assert(__builtin_offsetof(HudClockLabels, weekdayLabel) == 0x40, "HudClockLabels.weekdayLabel");
-static_assert(__builtin_offsetof(HudClockLabels, amPmLabel) == 0x48, "HudClockLabels.amPmLabel");
-static_assert(__builtin_offsetof(HudClockLabels, hourLabel) == 0x50, "HudClockLabels.hourLabel");
-static_assert(__builtin_offsetof(HudClockLabels, minuteLabel) == 0x58, "HudClockLabels.minuteLabel");
-static_assert(__builtin_offsetof(HudClockLabels, colonLabel) == 0x60, "HudClockLabels.colonLabel");
-static_assert(__builtin_offsetof(HudClockLabels, colonTimer) == 0x68, "HudClockLabels.colonTimer");
-static_assert(__builtin_offsetof(HudClockLabels, monthDirty) == 0x6c, "HudClockLabels.monthDirty");
-static_assert(__builtin_offsetof(HudClockLabels, dayDirty) == 0x6d, "HudClockLabels.dayDirty");
-static_assert(__builtin_offsetof(HudClockLabels, weekdayDirty) == 0x6e, "HudClockLabels.weekdayDirty");
-static_assert(__builtin_offsetof(HudClockLabels, amPmDirty) == 0x6f, "HudClockLabels.amPmDirty");
-static_assert(__builtin_offsetof(HudClockLabels, hourDirty) == 0x70, "HudClockLabels.hourDirty");
-static_assert(__builtin_offsetof(HudClockLabels, minuteDirty) == 0x71, "HudClockLabels.minuteDirty");
-static_assert(__builtin_offsetof(HudClockLabels, slideY) == 0x74, "HudClockLabels.slideY");
-static_assert(__builtin_offsetof(HudClockLabels, slideTarget) == 0x78, "HudClockLabels.slideTarget");
-static_assert(__builtin_offsetof(HudClockLabels, slideSpeed) == 0x7c, "HudClockLabels.slideSpeed");
-static_assert(__builtin_offsetof(HudClockLabels, slideDelay) == 0x80, "HudClockLabels.slideDelay");
-static_assert(__builtin_offsetof(HudClockLabels, day) == 0x84, "HudClockLabels.day");
-static_assert(__builtin_offsetof(HudClockLabels, month) == 0x85, "HudClockLabels.month");
-static_assert(__builtin_offsetof(HudClockLabels, minute) == 0x86, "HudClockLabels.minute");
-static_assert(__builtin_offsetof(HudClockLabels, hour) == 0x87, "HudClockLabels.hour");
-static_assert(__builtin_offsetof(HudClockLabels, weekday) == 0x88, "HudClockLabels.weekday");
-static_assert(__builtin_offsetof(HudClockLabels, monthText) == 0x90, "HudClockLabels.monthText");
-static_assert(__builtin_offsetof(HudClockLabels, dayText) == 0xb8, "HudClockLabels.dayText");
-static_assert(__builtin_offsetof(HudClockLabels, hourText) == 0xe0, "HudClockLabels.hourText");
-static_assert(__builtin_offsetof(HudClockLabels, minuteText) == 0x108, "HudClockLabels.minuteText");
-#endif
-
-#ifdef HOST64
-static_assert(__builtin_offsetof(HudCameraGridStates, unk_00) == 0x0, "HudCameraGridStates.unk_00");
-static_assert(__builtin_offsetof(HudCameraGridStates, cellAnims) == 0x10, "HudCameraGridStates.cellAnims");
-static_assert(__builtin_offsetof(HudCameraGridStates, state) == 0xe8, "HudCameraGridStates.state");
-static_assert(__builtin_offsetof(HudCameraGridStates, cell) == 0xec, "HudCameraGridStates.cell");
-static_assert(__builtin_offsetof(HudCameraGridStates, cellX) == 0xf0, "HudCameraGridStates.cellX");
-static_assert(__builtin_offsetof(HudCameraGridStates, cellY) == 0xf4, "HudCameraGridStates.cellY");
-static_assert(__builtin_offsetof(HudCameraGridStates, activeCell) == 0xf8, "HudCameraGridStates.activeCell");
-static_assert(__builtin_offsetof(HudCameraGridStates, visible) == 0xfc, "HudCameraGridStates.visible");
-#endif
-
-#ifdef HOST64
-static_assert(__builtin_offsetof(HudCountdownLabels, unk_00) == 0x0, "HudCountdownLabels.unk_00");
-static_assert(__builtin_offsetof(HudCountdownLabels, minutesLabel) == 0x30, "HudCountdownLabels.minutesLabel");
-static_assert(__builtin_offsetof(HudCountdownLabels, secondsLabel) == 0x38, "HudCountdownLabels.secondsLabel");
-static_assert(__builtin_offsetof(HudCountdownLabels, countALabel) == 0x40, "HudCountdownLabels.countALabel");
-static_assert(__builtin_offsetof(HudCountdownLabels, countBLabel) == 0x48, "HudCountdownLabels.countBLabel");
-static_assert(__builtin_offsetof(HudCountdownLabels, minutesText) == 0x50, "HudCountdownLabels.minutesText");
-static_assert(__builtin_offsetof(HudCountdownLabels, secondsText) == 0x78, "HudCountdownLabels.secondsText");
-static_assert(__builtin_offsetof(HudCountdownLabels, countAText) == 0xa0, "HudCountdownLabels.countAText");
-static_assert(__builtin_offsetof(HudCountdownLabels, countBText) == 0xc8, "HudCountdownLabels.countBText");
-static_assert(__builtin_offsetof(HudCountdownLabels, minutesDirty) == 0xf0, "HudCountdownLabels.minutesDirty");
-static_assert(__builtin_offsetof(HudCountdownLabels, secondsDirty) == 0xf1, "HudCountdownLabels.secondsDirty");
-static_assert(__builtin_offsetof(HudCountdownLabels, countADirty) == 0xf2, "HudCountdownLabels.countADirty");
-static_assert(__builtin_offsetof(HudCountdownLabels, countBDirty) == 0xf3, "HudCountdownLabels.countBDirty");
-static_assert(__builtin_offsetof(HudCountdownLabels, showRequested) == 0xf4, "HudCountdownLabels.showRequested");
-static_assert(__builtin_offsetof(HudCountdownLabels, altLayout) == 0xf5, "HudCountdownLabels.altLayout");
-static_assert(__builtin_offsetof(HudCountdownLabels, unk_9a) == 0xf6, "HudCountdownLabels.unk_9a");
-static_assert(__builtin_offsetof(HudCountdownLabels, countA) == 0xf8, "HudCountdownLabels.countA");
-static_assert(__builtin_offsetof(HudCountdownLabels, countB) == 0xfc, "HudCountdownLabels.countB");
-static_assert(__builtin_offsetof(HudCountdownLabels, durationKind) == 0x100, "HudCountdownLabels.durationKind");
-static_assert(__builtin_offsetof(HudCountdownLabels, endTime) == 0x104, "HudCountdownLabels.endTime");
-static_assert(__builtin_offsetof(HudCountdownLabels, remaining) == 0x10c, "HudCountdownLabels.remaining");
-static_assert(__builtin_offsetof(HudCountdownLabels, finishTimer) == 0x114, "HudCountdownLabels.finishTimer");
-static_assert(__builtin_offsetof(HudCountdownLabels, slideY) == 0x118, "HudCountdownLabels.slideY");
-static_assert(__builtin_offsetof(HudCountdownLabels, slideTarget) == 0x11c, "HudCountdownLabels.slideTarget");
-static_assert(__builtin_offsetof(HudCountdownLabels, slideSpeed) == 0x120, "HudCountdownLabels.slideSpeed");
-static_assert(__builtin_offsetof(HudCountdownLabels, slideDelay) == 0x124, "HudCountdownLabels.slideDelay");
-static_assert(__builtin_offsetof(HudCountdownLabels, lastTickTime) == 0x128, "HudCountdownLabels.lastTickTime");
-static_assert(__builtin_offsetof(HudCountdownLabels, lastTickTimeHi) == 0x12c, "HudCountdownLabels.lastTickTimeHi");
-#endif

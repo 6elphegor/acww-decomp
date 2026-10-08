@@ -13,16 +13,8 @@
 #include "nitro/io_access.h"
 #include "gfx/BgModelCache.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_data_021eda50  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_021eda58  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov054_0225b7a8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gGfxFrameHooks  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gVBlanksPerFrame  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFishShadows  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/autoload_2/unk_02110c98.h"
 #include "proto/itcm/unk_01ff8ad4.h"
@@ -50,6 +42,7 @@
 #include "proto/main/unk_0205edfc.h"
 #include "proto/main/unk_0205ef08.h"
 #include "proto/main/unk_0205f284.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_02070560.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_020815f8.h"
@@ -104,7 +97,6 @@ struct ScenePos {
     s8 unitZ;    // 0x14
 };
 
-struct S2f0 { u32 f0; u8 f4; u8 pad[3]; u32 f8; u16 fc; };
 
 // 0x28-byte block: 0x20 bytes copied from a table, then three members
 struct S394 {
@@ -138,37 +130,25 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL onDeleteRequest();
+
+    // the steps of onCreate, run in turn (gSceneCreating) while the frame's time budget lasts
+    BOOL stepEnterScene(u64 start);
+    BOOL stepSetupSystems(u64 start);
+    BOOL stepLoadResources(u64 start);
+    BOOL stepCreateSceneProc(u64 start);
+    BOOL stepRunSceneEntries(u64 start);
+    BOOL stepFinish(u64 start);
 };
 
 // object sFieldGfxFrameHooks (gfx/GfxFrameHooks.h): only a vtable pointer; onPreTask/onPostTask are defined in another unit, onVBlank here
 
-// stand-in for the owner of the six pointer-to-member targets of the vfunc_00 table
-class FieldSceneSteps {
-public:
-    BOOL stepFinish(u32, u32);
-    BOOL stepRunSceneEntries(u32, u32);
-    BOOL stepCreateSceneProc(u32, u32);
-    BOOL stepLoadResources(u32, u32);
-    BOOL stepSetupSystems(u32, u32);
-    BOOL stepEnterScene(u32, u32);
-};
 
 extern "C" {
 // ---- data of other units ----
 extern s32 data_020c8cc0;
 extern CommManager *gCommManager;
 extern u8 data_021e5890[];
-extern S2f0* gActorDefaultParent;
-extern u8 gScreenTransition;
-extern u32 gGfxFrameHooks;
-extern u32 gVBlanksPerFrame;
-extern u8 data_021eda50[];
-extern u8 data_021eda58[];
-extern u32 gCurrentHeap;
-extern u32 OVERLAY_2_ID[];
-extern u8 sFishShadows[];
 extern u8 data_ov006_0225b7b4[];
-extern u8 data_ov054_0225b7a8[];
 extern u8 data_ov005_0225b79c[];
 
 // ---- functions of other units ----
@@ -179,8 +159,8 @@ void* TownBlockMap_Get();
 BOOL Town_FindPlayerHouse(void* o, VecFx32* v, s32* a, s32* b);
 BOOL Town_FindGateHouse(void* o, VecFx32* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
-void TouchPick_Cast(s32, u32, u32, u32);
-void _ZN15BgModelCacheObj5setupEj(s32, s32);
+void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag);  // src/main/unk_020b60b0.cpp
+BOOL _ZN15BgModelCacheObj5setupEj(BgModelCacheObj *self, u32 flag);  // BgModelCacheObj::setup (class local to src/main/unk_02036c58.cpp)
 void ItemInfo_LoadIndoor(s32);
 s32 ResCache_Destroy();
 void ResCache_Init();
@@ -195,9 +175,7 @@ void Field_UpdateActions();
 void Character_ResetList();
 void TalkRequestQueue_StartInitial();
 void NpcHeapPools_DestroyAll();
-void _ZN15PatternTexCache6unloadEv(void *self);
 void ItemInfo_FreeIndoor();
-void _ZN15PatternTexCache4loadEv(void *self);
 void NpcHeapPools_CreateAll();
 void NookShop_OnSceneLoad();
 }
@@ -210,7 +188,7 @@ u8 Scene_GetMaxFurniture(u32 i);
 u8 Scene_GetMaxSpNpcs(u32 i);
 u8 Scene_GetMaxCharacters(u32 i);
 u8 Scene_GetMaxPlayers(u32 i);
-u8 *Scene_GetWarpRequest(void);
+SceneWarp *Scene_GetWarpRequest(void);
 u8 SceneWarp_GetFadeIn(SceneWarp* e);
 void SceneWarp_SetFadeOut(SceneWarp* e, u8 v);
 u8 SceneWarp_GetFadeOut(SceneWarp* e);
@@ -220,13 +198,13 @@ s32 SceneWarp_GetAngle(SceneWarp* e);
 VecFx32* SceneWarp_GetPos(SceneWarp* e);
 void FieldScene_Request(s32 a, s32 b);
 u8 Scene_GetRequestedScene();
-u8 SceneWarp_GetScene(u8* p);
-void SceneWarp_Clear(u8* p);
-void Scene_ResetTownReturnPos(s32 unused);
-BOOL Scene_SetTownReturnPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q);
-BOOL Scene_SetSavedPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q);
-BOOL SceneExit_GetDoor(s32 unused, s32 id, u32* type, s16* s);
-BOOL SceneExit_SnapPos(s32 a, s32 id, VecFx32* out, VecFx32* in);
+u8 SceneWarp_GetScene(SceneWarp *e);
+void SceneWarp_Clear(SceneWarp *e);
+void Scene_ResetTownReturnPos(SceneWarp *unused);
+BOOL Scene_SetTownReturnPos(SceneWarp *unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q);
+BOOL Scene_SetSavedPos(SceneWarp *unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q);
+BOOL SceneExit_GetDoor(SceneWarp *unused, s32 id, u32* type, s16* s);
+BOOL SceneExit_SnapPos(SceneWarp *a, s32 id, VecFx32* out, VecFx32* in);
 BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q);
 BOOL SceneWarp_RequestFade(SceneWarp* e, u8 id, u8 p, u8 q);
 BOOL SceneWarp_RequestScene(SceneWarp* e, u8 id);
@@ -240,7 +218,7 @@ u32 ScenePos_GetSpawnParam(ScenePos* i);
 VecFx32* ScenePos_GetPos(ScenePos* i);
 void ScenePos_Set(ScenePos* i, s32 id, VecFx32* v, u32 w, s16 s, s32 p, s32 q);
 void ScenePos_Reset(ScenePos* i);
-u8* Scene_GetTouchPicker();
+TouchPicker *Scene_GetTouchPicker();
 BOOL GroundSeason_IsSnow();
 BOOL GroundSeason_IsSnowPhase(s32 a);
 u8 Scene_GetPrevious();
@@ -261,10 +239,10 @@ s32 Scene_GetMuseumRoom();
 s32 SceneId_GetMuseumRoom(u32 a);
 BOOL Scene_InNookShop();
 BOOL SceneId_IsNookShop(u32 a);
-void Scene_SavePlayerPos(s32 unused, s32 add);
-s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q);
-s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy);
-BOOL SceneWarp_RequestExit(s32 a, s32 id);
+void Scene_SavePlayerPos(SceneWarp *unused, s32 add);
+s32 SceneExit_ResolveSpecial(SceneWarp *a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q);
+s32 SceneExit_Resolve(SceneWarp *a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy);
+BOOL SceneWarp_RequestExit(SceneWarp *a, s32 id);
 s32 Scene_GetNookShop(void);
 s32 SceneId_GetNookShop(u32 x);
 BOOL Scene_InUnk6Or7(void);
@@ -275,15 +253,15 @@ BOOL Scene_InHouseRoom(void);
 BOOL SceneId_IsHouseRoom(s32 x);
 s32 Scene_GetHouseRoom(void);
 s32 SceneId_GetHouseRoom(u32 x);
-u32 Scene_GetMapInfo(void);
+SceneMapInfo *Scene_GetMapInfo(void);
 u8 Scene_GetSkyKind(BOOL a);
-void Fog_SetTable(s32 unused, u8* src);
+void Fog_SetTable(FieldScene *unused, u8* src);
 void Fog_SetOffset(u16 v);
 void Fog_SetAlpha(u32 v);
 s32 Scene_ShutdownGraphics(void);
 void Scene_SetupGraphics(void);
-void Fog_Apply(s32 unused);
-void Fog_InitDefault(s32 a);
+void Fog_Apply(FieldScene *unused);
+void Fog_InitDefault(FieldScene *a);
 u16 GroundSeason_GetColor(void);
 u32 GroundSeason_CalcPhase(void);
 void FieldScene_ReleaseOverlays(void);
@@ -561,9 +539,11 @@ extern "C" FieldScene *FieldScene_Create(void) {
     return new FieldScene();
 }
 
-extern "C" void FieldScene_AcquireOv002(void) { OverlayMgr_Acquire((u32)OVERLAY_2_ID); }
+enum { OVERLAY_ID_OV002 = 2 };  // (the linker symbol OVERLAY_2_ID: its address is the id)
 
-extern "C" void FieldScene_ReleaseOv002(void) { OverlayMgr_Release((u32)OVERLAY_2_ID); }
+extern "C" void FieldScene_AcquireOv002(void) { OverlayMgr_Acquire(OVERLAY_ID_OV002); }
+
+extern "C" void FieldScene_ReleaseOv002(void) { OverlayMgr_Release(OVERLAY_ID_OV002); }
 
 extern "C" void FieldScene_AcquireInfoOverlays(u8 *obj) {
     s32 a = ((SceneInfo *)obj)->infoOverlayA;  // (after the pointers: elsewhere on 64-bit hosts)
@@ -636,7 +616,7 @@ extern "C" u16 GroundSeason_GetColor(void) {
     return sGroundSeasonColors[0];
 }
 
-BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
+BOOL FieldScene::stepEnterScene(u64) {
     ScreenTransition_ShowCover();
     u8 m = sCurSceneId;
     u8 r0 = NetSession_GetActiveSyncKind();
@@ -645,10 +625,10 @@ BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
     }
     Character_ResetList();
     sPrevSceneId = sCurSceneId;
-    sCurSceneId = SceneWarp_GetScene((u8*)&sSceneWarpRequest);
+    sCurSceneId = SceneWarp_GetScene(&sSceneWarpRequest);
     FieldScene_AcquireOv002();
-    gGfxFrameHooks = (u32)&sFieldGfxFrameHooks;
-    ((TouchPicker *)(Scene_GetTouchPicker()))->reset();
+    gGfxFrameHooks = &sFieldGfxFrameHooks;
+    Scene_GetTouchPicker()->reset();
     data_021ef2d4 = 0;
     sOverlaySceneId = sCurSceneId;
     FieldScene_AcquireOverlays();
@@ -657,7 +637,7 @@ BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
     return TRUE;
 }
 
-BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
+BOOL FieldScene::stepSetupSystems(u64) {
     Scene_SetupGraphics();
     ScreenTransition_ShowCover();
     TransitionCommIcon_ResumeWinOut();
@@ -698,12 +678,11 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
     return TRUE;
 }
 
-BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
-    s32 t = BgModelCache_Get();
-    _ZN15BgModelCacheObj5setupEj(t, gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
+BOOL FieldScene::stepLoadResources(u64) {
+    _ZN15BgModelCacheObj5setupEj((BgModelCacheObj *)BgModelCache_Get(), gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     FtrInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     ItemInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
-    _ZN15PatternTexCache4loadEv(PatternTexCache_Get());
+    PatternTexCache_Get()->load();
     CharaAnimCache_Create(gCurrentHeap);
     CharaClothTexPool_Create(gCurrentHeap);
     PlayerFaceTexPool_Create(gCurrentHeap);
@@ -724,28 +703,28 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     PlayerActorHeap_Create(gCurrentHeap);
     RoomEntry_OnSceneLoad();
     if (Scene_GetCurrent() == 0x2c || Scene_GetCurrent() == 0x2d) {
-        Scene_ResetTownReturnPos((s32)Scene_GetWarpRequest());
+        Scene_ResetTownReturnPos(Scene_GetWarpRequest());
     }
     NookShop_OnSceneLoad();
     return TRUE;
 }
 
-BOOL FieldSceneSteps::stepCreateSceneProc(u32, u32) {
-    ((SceneInfo *)((void*)gCurSceneInfo))->createSceneMapModule();
+BOOL FieldScene::stepCreateSceneProc(u64) {
+    gCurSceneInfo->createSceneMapModule();
     return TRUE;
 }
 
-BOOL FieldSceneSteps::stepRunSceneEntries(u32 a, u32 b) {
-    return ((SceneInfo *)((void*)gCurSceneInfo))->runSpawnList((u8 *)(data_021eda50), (u8 *)(data_021eda58), a);
+BOOL FieldScene::stepRunSceneEntries(u64 start) {
+    return gCurSceneInfo->runSpawnList(&data_021eda50, &data_021eda58, start);
 }
 
-BOOL FieldSceneSteps::stepFinish(u32, u32) {
-    Fog_InitDefault((s32)this);
+BOOL FieldScene::stepFinish(u64) {
+    Fog_InitDefault(this);
     Effect_ResetAll();
     IO_W(&reg_4000008, (IO_R(&reg_4000008) & ~3) | 2);
     ActorCollider_InitList();
     data_021ce63c = 0;
-    SceneWarp_Clear((u8*)&sSceneWarpRequest);
+    SceneWarp_Clear(&sSceneWarpRequest);
     gVBlanksPerFrame = 3;
     TalkRequestQueue_StartInitial();
     if (Scene_GetCurrent() == 0x2e || Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f)
@@ -755,18 +734,17 @@ BOOL FieldSceneSteps::stepFinish(u32, u32) {
 }
 
 BOOL FieldScene::onCreate() {
-    FieldSceneSteps* self = (FieldSceneSteps*)this;
-    typedef BOOL (FieldSceneSteps::*M)(u32, u32);
+    typedef BOOL (FieldScene::*M)(u64);
     static M tbl[6] = {
-        &FieldSceneSteps::stepEnterScene, &FieldSceneSteps::stepSetupSystems, &FieldSceneSteps::stepLoadResources,
-        &FieldSceneSteps::stepCreateSceneProc, &FieldSceneSteps::stepRunSceneEntries, &FieldSceneSteps::stepFinish,
+        &FieldScene::stepEnterScene, &FieldScene::stepSetupSystems, &FieldScene::stepLoadResources,
+        &FieldScene::stepCreateSceneProc, &FieldScene::stepRunSceneEntries, &FieldScene::stepFinish,
     };
     u64 start = OS_GetTick();
     u32 fail = 0;
     for (;;) {
         u32 idx = gSceneCreating - 1;
         if (idx >= 6) break;
-        if ((self->*tbl[idx])((u32)start, (u32)(start >> 32))) {
+        if ((this->*tbl[idx])(start)) {
             gSceneCreating++;
             if (gSceneCreating > 6) break;
             u64 now = OS_GetTick();
@@ -791,8 +769,8 @@ BOOL FieldScene::onCreate() {
 
 BOOL FieldScene::onDelete() {
     Bgm_EndSceneBgm();
-    ((TouchPicker *)(Scene_GetTouchPicker()))->reset();
-    gGfxFrameHooks = 0;
+    Scene_GetTouchPicker()->reset();
+    gGfxFrameHooks = NULL;
     PlayerActorHeap_Destroy();
     NpcResPools_ClearOnSceneDelete();
     NpcHeapPools_DestroyAll();
@@ -809,12 +787,12 @@ BOOL FieldScene::onDelete() {
     PlayerFaceTexPool_Destroy();
     CharaClothTexPool_Destroy();
     CharaAnimCache_Destroy();
-    _ZN15PatternTexCache6unloadEv(PatternTexCache_Get());
+    PatternTexCache_Get()->unload();
     FtrInfo_FreeIndoor();
     ItemInfo_FreeIndoor();
     CharaShadow_Unload();
     ObjShadow_Exit();
-    ((BgModelCache *)((void *)BgModelCache_Get()))->reset();
+    ((BgModelCache *)BgModelCache_Get())->reset();
     Scene_ShutdownGraphics();
     data_021ce63c = 0;
     if (Scene_GetCurrent() == 6) {
@@ -851,28 +829,27 @@ BOOL FieldScene::onExecute() {
     Collision_UpdateDigHoles();
     ActorCollider_ClearList();
     BOOL b;
-    if (gScreenTransition == 2) b = TRUE; else b = FALSE;
+    if (gScreenTransition.state == 2) b = TRUE; else b = FALSE;
     if (!b && data_021c3cb8 == 0) return TRUE;
-    if (SceneId_IsValid(SceneWarp_GetScene((u8*)&sSceneWarpRequest))) {
-        s32 r4 = SceneWarp_GetFadeOut((SceneWarp*)Scene_GetWarpRequest());
-        FieldScene_Request(r4, SceneWarp_GetFadeIn((SceneWarp*)Scene_GetWarpRequest()));
+    if (SceneId_IsValid(SceneWarp_GetScene(&sSceneWarpRequest))) {
+        s32 r4 = SceneWarp_GetFadeOut(Scene_GetWarpRequest());
+        FieldScene_Request(r4, SceneWarp_GetFadeIn(Scene_GetWarpRequest()));
     }
     return TRUE;
 }
 
 BOOL FieldScene::onDraw() {
-    Fog_Apply((s32)this);
+    Fog_Apply(this);
     NNS_G3dGeFlushBuffer();
-    s32 r0 = (s32)Scene_GetTouchPicker();
-    TouchPick_Cast(r0, (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
+    TouchPick_Cast(Scene_GetTouchPicker(), (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
     FieldScene_DebugDraw();
     ActorCollider_ResolveAll();
     return TRUE;
 }
 
-BOOL FieldScene::onDeleteRequest() { return (BOOL)this; }
+BOOL FieldScene::onDeleteRequest() { return TRUE; }  // (the result is not used)
 
-extern "C" void Fog_InitDefault(s32 a) {
+extern "C" void Fog_InitDefault(FieldScene *a) {
     Fog_SetTable(a, sDefaultFogTable);
     BOOL b;
     if (gFieldSceneKind == 1) b = TRUE; else b = FALSE;
@@ -885,7 +862,7 @@ extern "C" void Fog_InitDefault(s32 a) {
     Fog_Apply(a);
 }
 
-extern "C" void Fog_Apply(s32 unused) {
+extern "C" void Fog_Apply(FieldScene *unused) {
     S394* a = &sFogState;
     G3X_SetFog(a->m20, 1, a->m21, a->h22);
     IO_W(&reg_4000358, a->h24 | (a->m26 << 16));
@@ -921,7 +898,7 @@ extern "C" void Fog_SetAlpha(u32 v) { sFogState.m26 = v & 0x1f; }
 
 extern "C" void Fog_SetOffset(u16 v) { sFogState.h22 = v; }
 
-extern "C" void Fog_SetTable(s32 unused, u8* src) {
+extern "C" void Fog_SetTable(FieldScene *unused, u8* src) {
     u8* dst = (u8*)&sFogState;
     s32 i;
     for (i = 0; i < 0x20; i++) {
@@ -936,7 +913,7 @@ void GfxFrameHooks::onVBlank() {}
 extern "C" u8 Scene_GetSkyKind(BOOL a) {
     u8 r = 0;
     if (gActorDefaultParent != NULL) {
-        u16 x = gActorDefaultParent->fc;
+        u16 x = gActorDefaultParent->profile;
         BOOL c3 = TRUE;
         BOOL c2 = TRUE;
         u8 m = gFieldSceneKind;
@@ -956,9 +933,9 @@ extern "C" u8 Scene_GetSkyKind(BOOL a) {
     return r;
 }
 
-extern "C" u32 Scene_GetMapInfo(void) {
-    u32 r = 0;
-    if (gCurSceneInfo != NULL) r = (u32)gCurSceneInfo->mapInfo;
+extern "C" SceneMapInfo *Scene_GetMapInfo(void) {
+    SceneMapInfo *r = NULL;
+    if (gCurSceneInfo != NULL) r = gCurSceneInfo->mapInfo;
     return r;
 }
 
@@ -1075,7 +1052,7 @@ extern "C" BOOL GroundSeason_IsSnowPhase(s32 a) {
 
 extern "C" BOOL GroundSeason_IsSnow() { return GroundSeason_IsSnowPhase(((Bits14*)&data_021e5890[0x14])->v); }
 
-extern "C" u8* Scene_GetTouchPicker() { return (u8*)&sTouchPicker; }
+extern "C" TouchPicker *Scene_GetTouchPicker() { return &sTouchPicker; }
 
 ScenePos::ScenePos() { ScenePos_Reset(this); }
 
@@ -1180,7 +1157,7 @@ extern "C" BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 
     return FALSE;
 }
 
-extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q) {
+extern "C" s32 SceneExit_ResolveSpecial(SceneWarp *a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q) {
     if (id != -1) {
         SceneInfo* d = gCurSceneInfo;
         if (d) {
@@ -1266,7 +1243,7 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, VecFx32* pos, u
     return 1;
 }
 
-extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy) {
+extern "C" s32 SceneExit_Resolve(SceneWarp *a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy) {
     s32 x, y;
     s32 r = SceneExit_ResolveSpecial(a, id, type, pos, w, s, &x, &y, p, q);
     if (ox) *ox = x;
@@ -1304,7 +1281,7 @@ extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, 
     return r;
 }
 
-extern "C" BOOL SceneWarp_RequestExit(s32 a, s32 id) {
+extern "C" BOOL SceneWarp_RequestExit(SceneWarp *a, s32 id) {
     u8 t, u, v;
     s16 s;
     s32 w, x, y;
@@ -1320,12 +1297,12 @@ extern "C" BOOL SceneWarp_RequestExit(s32 a, s32 id) {
         ScenePos_Set(&gTownReturnPos, t, &vec, w, s, x, y);
         break;
     }
-    if (SceneWarp_RequestAt((SceneWarp*)a, t, &vec, w, s, u, v)) return TRUE;
+    if (SceneWarp_RequestAt(a, t, &vec, w, s, u, v)) return TRUE;
 fail:
     return FALSE;
 }
 
-extern "C" BOOL SceneExit_GetDoor(s32 unused, s32 id, u32* type, s16* s) {
+extern "C" BOOL SceneExit_GetDoor(SceneWarp *unused, s32 id, u32* type, s16* s) {
     *type = 0;
     *s = 0;
     if (id != -1) {
@@ -1349,7 +1326,7 @@ extern "C" BOOL SceneExit_GetDoor(s32 unused, s32 id, u32* type, s16* s) {
     return FALSE;
 }
 
-extern "C" BOOL SceneExit_SnapPos(s32 a, s32 id, VecFx32* out, VecFx32* in) {
+extern "C" BOOL SceneExit_SnapPos(SceneWarp *a, s32 id, VecFx32* out, VecFx32* in) {
     u32 type;
     s16 s;
     VecFx32 t;
@@ -1371,7 +1348,7 @@ extern "C" BOOL SceneExit_SnapPos(s32 a, s32 id, VecFx32* out, VecFx32* in) {
     return FALSE;
 }
 
-extern "C" BOOL Scene_SetSavedPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q) {
+extern "C" BOOL Scene_SetSavedPos(SceneWarp *unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q) {
     if (SceneId_IsValid(id)) {
         ScenePos_Set(&sSavedScenePos, id, pos, w, s, p, q);
         return TRUE;
@@ -1380,7 +1357,7 @@ extern "C" BOOL Scene_SetSavedPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s
 }
 
 
-extern "C" void Scene_SavePlayerPos(s32 unused, s32 add) {
+extern "C" void Scene_SavePlayerPos(SceneWarp *unused, s32 add) {
     static s32 minZ = data_020c8cc0 + 0x1000;
     s16 s;
     s32 p, q;
@@ -1391,11 +1368,11 @@ extern "C" void Scene_SavePlayerPos(s32 unused, s32 add) {
     FieldPos_ToUnit(&p, &q, &v);
     if (Scene_GetCurrent() == 0xb && v.z < minZ) v.z = minZ;
     v.z += add;
-    Scene_SetSavedPos((s32)Scene_GetWarpRequest(), Scene_GetCurrent(), &v, (r << 22) & 0x3fc00000, s, p, q);
+    Scene_SetSavedPos(Scene_GetWarpRequest(), Scene_GetCurrent(), &v, (r << 22) & 0x3fc00000, s, p, q);
 }
 
 
-extern "C" BOOL Scene_SetTownReturnPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q) {
+extern "C" BOOL Scene_SetTownReturnPos(SceneWarp *unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q) {
     if (SceneId_IsValid(id)) {
         ScenePos_Set(&gTownReturnPos, id, pos, w, s, p, q);
         return TRUE;
@@ -1403,13 +1380,13 @@ extern "C" BOOL Scene_SetTownReturnPos(s32 unused, s32 id, VecFx32* pos, u32 w, 
     return FALSE;
 }
 
-extern "C" void Scene_ResetTownReturnPos(s32 unused) { ScenePos_Reset(&gTownReturnPos); }
+extern "C" void Scene_ResetTownReturnPos(SceneWarp *unused) { ScenePos_Reset(&gTownReturnPos); }
 
-extern "C" void SceneWarp_Clear(u8* p) { *p = 0x3f; }
+extern "C" void SceneWarp_Clear(SceneWarp *e) { e->type = 0x3f; }
 
-extern "C" u8 SceneWarp_GetScene(u8* p) { return *p; }
+extern "C" u8 SceneWarp_GetScene(SceneWarp *e) { return e->type; }
 
-extern "C" u8 Scene_GetRequestedScene() { return SceneWarp_GetScene((u8*)Scene_GetWarpRequest()); }
+extern "C" u8 Scene_GetRequestedScene() { return SceneWarp_GetScene(Scene_GetWarpRequest()); }
 
 extern "C" void FieldScene_Request(s32 a, s32 b) {
     if (gNextSceneProfile != 5) {
@@ -1435,7 +1412,7 @@ extern "C" void SceneWarp_SetFadeOut(SceneWarp* e, u8 v) { e->fadeOut = v; }
 
 extern "C" u8 SceneWarp_GetFadeIn(SceneWarp* e) { return e->fadeIn; }
 
-extern "C" u8 *Scene_GetWarpRequest(void) { return (u8 *)&sSceneWarpRequest; }
+extern "C" SceneWarp *Scene_GetWarpRequest(void) { return &sSceneWarpRequest; }
 
 extern "C" u8 Scene_GetMaxPlayers(u32 i) { return sSceneMaxPlayers[i]; }
 

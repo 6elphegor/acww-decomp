@@ -6,9 +6,11 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct GameFont;
+#ifndef __cplusplus
+typedef struct GameFont GameFont;
+#endif
 #ifdef __cplusplus
 #include "text/Unk_02050288.h"
-#include "types.h"
 class TextSystemModule;
 #endif
 
@@ -27,17 +29,56 @@ void TextLabel_FlushGroup1(void);
 #ifndef PROTO_LOCAL_Text_ResetLabels
 void Text_ResetLabels(void);
 #endif
+#ifndef PROTO_LOCAL_TextLabel_FlushGroup
+void TextLabel_FlushGroup(s32 arg0);
+#endif
 #ifndef PROTO_LOCAL_TextLabel_FlushGroup0
 void TextLabel_FlushGroup0(void);
 #endif
 #ifndef PROTO_LOCAL_TextLabel_DestroyAll
 void TextLabel_DestroyAll(void);
 #endif
+#ifndef PROTO_LOCAL_Text_GameCharToAscii
+BOOL Text_GameCharToAscii(char *out, u32 index);
+#endif
+#ifndef PROTO_LOCAL_Text_AsciiToGameCharPtr
+BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
+#endif
+#ifndef PROTO_LOCAL_Text_AsciiToGameChar
+BOOL Text_AsciiToGameChar(u8 *out, u32 c);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr1
+const u8 *Text_GetSpecialCharStr1(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr4
+const u8 *Text_GetSpecialCharStr4(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr6
+const u8 *Text_GetSpecialCharStr6(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr7
+const u8 *Text_GetSpecialCharStr7(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr5
+const u8 *Text_GetSpecialCharStr5(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr2
+const u8 *Text_GetSpecialCharStr2(void);
+#endif
+#ifndef PROTO_LOCAL_Text_GetSpecialCharStr3
+const u8 *Text_GetSpecialCharStr3(void);
+#endif
 #ifndef PROTO_LOCAL_Text_GetSpecialCharStr9
-int Text_GetSpecialCharStr9(void);
+const u8 *Text_GetSpecialCharStr9(void);
 #endif
 #ifndef PROTO_LOCAL_Text_GetSpecialCharStr10
-int Text_GetSpecialCharStr10(void);
+const u8 *Text_GetSpecialCharStr10(void);
+#endif
+#ifndef PROTO_LOCAL_Text_ToUpper
+u32 Text_ToUpper(u32 key);
+#endif
+#ifndef PROTO_LOCAL_Text_GetCharSortKey
+u16 Text_GetCharSortKey(u32 index);
 #endif
 #ifdef __cplusplus
 }
@@ -86,45 +127,6 @@ const u8 *GameFont_GetGlyphBitmap(GameFontDesc *font, u32 c);
 #endif
 #ifndef PROTO_LOCAL_GameFont_FindGlyph
 s32 GameFont_FindGlyph(GameFontDesc *font, s32 c);
-#endif
-#ifndef PROTO_LOCAL_TextLabel_FlushGroup
-void TextLabel_FlushGroup(s32 arg0);
-#endif
-#ifndef PROTO_LOCAL_Text_GameCharToAscii
-BOOL Text_GameCharToAscii(char *out, u32 index);
-#endif
-#ifndef PROTO_LOCAL_Text_AsciiToGameCharPtr
-BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
-#endif
-#ifndef PROTO_LOCAL_Text_AsciiToGameChar
-BOOL Text_AsciiToGameChar(u8 *out, u32 c);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr1
-const u8 *Text_GetSpecialCharStr1(void);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr4
-const u8 *Text_GetSpecialCharStr4(void);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr6
-const u8 *Text_GetSpecialCharStr6(void);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr7
-const u8 *Text_GetSpecialCharStr7(void);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr5
-const u8 *Text_GetSpecialCharStr5(void);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr2
-const u8 *Text_GetSpecialCharStr2(void);
-#endif
-#ifndef PROTO_LOCAL_Text_GetSpecialCharStr3
-const u8 *Text_GetSpecialCharStr3(void);
-#endif
-#ifndef PROTO_LOCAL_Text_ToUpper
-u32 Text_ToUpper(u32 key);
-#endif
-#ifndef PROTO_LOCAL_Text_GetCharSortKey
-u16 Text_GetCharSortKey(u32 index);
 #endif
 }
 #ifndef PROTO_LOCAL_sGameFontPartAttr

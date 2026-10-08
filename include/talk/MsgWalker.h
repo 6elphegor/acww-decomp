@@ -12,7 +12,7 @@ public:
     MsgWalker() {}
     virtual ~MsgWalker() {}
     virtual BOOL canContinue();
-    u8 *run(BOOL arg);
+    u8 *run(u8 *end);  // to end (NULL: the end code)
 };
 
 #endif

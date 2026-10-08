@@ -261,7 +261,6 @@ extern VecFx32 data_020d02c4;
 extern s16 data_02135f44[];
 
 
-void _ZN10EffectSlot5clearEv(void *r);
 
 s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
@@ -277,11 +276,9 @@ s32 EffectCb_InitTracked(void *p);
 s32 EffectSpl_ApplySceneTint(void *p);
 
 
-s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 
 void MI_CpuCopy8(void *, void *, u32);
 
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, s32 b, s32 c, s32 d);
 
 void GroundInfo_Destruct(void *buf);
 
@@ -383,13 +380,11 @@ s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *para
 
 s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
 
 
 s32 Effect_StartModel(s32 modelKind, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, EffectModelInitFn fn);
 
-void _ZN10EffectSlot5clearEv(void *e);
 
 void EffectSpl_ApplySceneTint(void *o);
 
@@ -397,7 +392,6 @@ s32 Weather_GetFallingPrecip();
 
 s32 GroundSeason_IsSnow();
 
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, s32 pos, s32 a, s32 b);
 
 void GroundInfo_Destruct(void *buf);
 
@@ -462,17 +456,14 @@ s32 EffectCb_InitOneShot(void *);
 
 s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *, s32, s32, s32, s32, s32, s32);
 
 
-s32 _ZN10EffectSlot5clearEv(void *);
 
 
 s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 waterId1, const void *waterCbs1, s32 waterId2, const void *waterCbs2, s32 groundId1, const void *groundCbs1, s32 groundId2, const void *groundCbs2);
 
 s32 Effect_StartWaterColumn(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *trackedCbs, const void *oneShotCbs, EffectModelInitFn fn);
 
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *, void *, s32, s32);
 
 void GroundInfo_Destruct(void *);
 
@@ -538,13 +529,11 @@ s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *para
 
 s32 EffectCb_InitOneShotOffset(void *obj, const void *a, const void *b);
 
-s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *obj, s32 h, s32 a, void *b, void *c, s32 d, s32 e);
 
 
 s32 EffectModel_Start(s32 kind, EffectModelInitFn fn);
 
 
-s32 _ZN10EffectSlot5clearEv(void *obj);
 
 s32 Weather_GetFallingPrecip();
 
@@ -591,9 +580,7 @@ extern s16 data_02135f44[];
 s32 EffectSpl_ApplySceneTint(void *);
 
 
-s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *, s32, s32, s32, s32, s32, s32);
 
-s32 _ZN10EffectSlot5clearEv(void *);
 
 void Vec_RotateY(void *, s32);
 
@@ -1043,14 +1030,14 @@ void EffectEmitterEntry::initAxisUpForward()
     MI_CpuCopy8(g, &gEffectManager[id.poolIndex], 0x1c);
 }
 
-void EffectEmitterEntry::updateLanding1F1D()
+s32 EffectEmitterEntry::updateLanding1F1D()
 { using namespace R6;
-    updateLanding(0x1f, data_020e16d4, 0x1d, data_020e16d4, 0x1d, data_020e16d4, -1, 0);
+    return updateLanding(0x1f, data_020e16d4, 0x1d, data_020e16d4, 0x1d, data_020e16d4, -1, 0);
 }
 
-void EffectEmitterEntry::updateLanding1F1EB()
+s32 EffectEmitterEntry::updateLanding1F1EB()
 { using namespace R6;
-    updateLanding(0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
+    return updateLanding(0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
 }
 
 namespace R6 {
@@ -1265,9 +1252,9 @@ extern "C" void EffectModel_InitUnitScale(void *o)
 }
 }
 
-void EffectEmitterEntry::updateLanding1F1E()
+s32 EffectEmitterEntry::updateLanding1F1E()
 { using namespace R6;
-    updateLanding(0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
+    return updateLanding(0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
 }
 
 namespace R6 {
@@ -1301,9 +1288,9 @@ extern "C" s32 Effect_CreateKind0B(s32 a, VecFx32 *b, s16 *c, s16 *d)
 }
 }
 
-void EffectEmitterEntry::updateLanding5F()
+s32 EffectEmitterEntry::updateLanding5F()
 { using namespace R6;
-    updateLanding(0x5f, data_020e16d4, -1, 0, -1, 0, -1, 0);
+    return updateLanding(0x5f, data_020e16d4, -1, 0, -1, 0, -1, 0);
 }
 
 namespace R5 {
@@ -2965,10 +2952,10 @@ extern "C" s32 EffectKind54_UpdateEmitter0(EffectEmitterEntry *p)
 }
 }
 
-void EffectEmitterEntry::updateKind54B() { using namespace R1;
+s32 EffectEmitterEntry::updateKind54B() { using namespace R1;
     EffectEmitterTag bytes = tag;
     EffectSlot *e = &gEffectManager.slots[bytes.poolIndex];
-    EffectCb_FollowTrackedOffset(this, e->param != 3 ? data_020d039c : data_020d03a8, data_020d02b8);
+    return EffectCb_FollowTrackedOffset(this, e->param != 3 ? data_020d039c : data_020d03a8, data_020d02b8);
 }
 
 namespace R1 {
@@ -3358,19 +3345,22 @@ extern "C" s32 Effect_CreateById(s32 a, VecFx32 *b, s16 *c, s16 *d) {
 }
 
 
+// The callbacks of the tables below that are methods (EffectEmitterCbs: s32 (*)(EffectEmitterEntry *); the one-shot
+// init callbacks: void (*)(EffectSplEmitter *))
+static s32 EffectEmitterEntry_UpdateKind59(EffectEmitterEntry *o) { return o->updateKind59(); }
+static s32 EffectEmitterEntry_UpdateKind56Fade(EffectEmitterEntry *o) { return o->updateKind56Fade(); }
+static s32 EffectEmitterEntry_UpdateKind56Main(EffectEmitterEntry *o) { return o->updateKind56Main(); }
+static s32 EffectEmitterEntry_UpdateKind54B(EffectEmitterEntry *o) { return o->updateKind54B(); }
+static s32 EffectEmitterEntry_UpdateLanding5F(EffectEmitterEntry *o) { return o->updateLanding5F(); }
+static s32 EffectEmitterEntry_UpdateLanding1F1E(EffectEmitterEntry *o) { return o->updateLanding1F1E(); }
+static s32 EffectEmitterEntry_UpdateLanding1F1EB(EffectEmitterEntry *o) { return o->updateLanding1F1EB(); }
+static s32 EffectEmitterEntry_UpdateLanding1F1D(EffectEmitterEntry *o) { return o->updateLanding1F1D(); }
+static void EffectEmitterEntry_InitAxisUpForward(EffectEmitterEntry *o) { o->initAxisUpForward(); }
+static void EffectSplEmitter_InitKind02(EffectSplEmitter *o) { o->initKind02(); }
+
 // ---- Data
 namespace DT {
 extern "C" {
-void _ZN18EffectEmitterEntry12updateKind59Ev();
-void _ZN18EffectEmitterEntry16updateKind56FadeEv();
-void _ZN18EffectEmitterEntry16updateKind56MainEv();
-void _ZN18EffectEmitterEntry13updateKind54BEv();
-void _ZN18EffectEmitterEntry15updateLanding5FEv();
-void _ZN18EffectEmitterEntry17updateLanding1F1EEv();
-void _ZN18EffectEmitterEntry18updateLanding1F1EBEv();
-void _ZN18EffectEmitterEntry17updateLanding1F1DEv();
-void _ZN18EffectEmitterEntry17initAxisUpForwardEv();
-void _ZN16EffectSplEmitter10initKind02Ev();
 void Effect_CreateTrackedRes();
 void Effect_CreateOneShotRes();
 void Effect_CreateNone();
@@ -3582,7 +3572,7 @@ void *data_020e148c[1] = {(void *)DT::EffectKind3E_InitEmitter0B};
 void *data_020e1494[1] = {(void *)DT::EffectKind19_InitEmitter0A};
 void *data_020e1484[1] = {(void *)DT::EffectKind29_InitEmitter0};
 void *data_020e14bc[1] = {(void *)DT::EffectKind17_InitEmitter0A};
-void *data_020e1474[1] = {(void *)DT::_ZN16EffectSplEmitter10initKind02Ev};
+void *data_020e1474[1] = {(void *)EffectSplEmitter_InitKind02};
 void *data_020e149c[1] = {(void *)DT::EffectKind32_InitEmitter0};
 void *data_020e14b4[1] = {(void *)DT::EffectCb_InitOneShotFacing};
 void *data_020e14ac[1] = {(void *)DT::EffectKind2A_InitEmitter0};
@@ -3598,40 +3588,40 @@ void *data_020e1498[1] = {(void *)DT::EffectKind3E_InitEmitter0A};
 void *data_020e1488[1] = {(void *)DT::EffectKind2C_InitEmitter0B};
 void *data_020e15b4[2] = {(void *)DT::EffectKind14_InitEmitter0A, (void *)DT::EffectKind13_UpdateEmitter0};
 void *data_020e14f4[2] = {(void *)DT::EffectKind31_InitEmitter0, (void *)DT::EffectKind31_UpdateEmitter0};
-void *data_020e14fc[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry15updateLanding5FEv};
+void *data_020e14fc[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding5F};
 void *data_020e150c[2] = {(void *)DT::EffectCb_InitOneShotFacingBack, (void *)DT::EffectCb_InitOneShotFacingBack};
-void *data_020e15f4[2] = {(void *)DT::EffectKind19_InitEmitter0B, (void *)DT::_ZN18EffectEmitterEntry17updateLanding1F1EEv};
+void *data_020e15f4[2] = {(void *)DT::EffectKind19_InitEmitter0B, (void *)EffectEmitterEntry_UpdateLanding1F1E};
 void *data_020e1564[2] = {(void *)DT::EffectKind5F_InitEmitter0, (void *)DT::EffectKind5F_InitEmitter0};
-void *data_020e152c[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry17updateLanding1F1EEv};
+void *data_020e152c[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding1F1E};
 void *data_020e1544[2] = {(void *)DT::EffectKind3A_InitEmitter0, (void *)DT::EffectKind3A_UpdateEmitter0};
-void *data_020e1574[2] = {(void *)DT::EffectKind16_InitEmitter0B, (void *)DT::_ZN18EffectEmitterEntry17updateLanding1F1EEv};
+void *data_020e1574[2] = {(void *)DT::EffectKind16_InitEmitter0B, (void *)EffectEmitterEntry_UpdateLanding1F1E};
 void *data_020e151c[2] = {(void *)DT::EffectKind14_InitEmitter0A, (void *)DT::EffectKind13_UpdateEmitter0};
 void *data_020e157c[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::EffectKind13_UpdateEmitter0};
 void *data_020e156c[2] = {(void *)DT::EffectKind3B_InitEmitter0, (void *)DT::EffectKind3B_UpdateEmitter0};
 void *data_020e1514[2] = {(void *)DT::EffectKind49_InitEmitter0, (void *)DT::EffectKind49_UpdateEmitter0};
-void *data_020e1524[2] = {(void *)DT::EffectKind17_InitEmitter0B, (void *)DT::_ZN18EffectEmitterEntry17updateLanding1F1EEv};
+void *data_020e1524[2] = {(void *)DT::EffectKind17_InitEmitter0B, (void *)EffectEmitterEntry_UpdateLanding1F1E};
 void *data_020e154c[2] = {(void *)DT::EffectKind1D_InitEmitter0, (void *)DT::EffectCb_FollowTracked};
 void *data_020e155c[2] = {(void *)DT::EffectKind39_InitEmitter0, (void *)DT::EffectKind39_UpdateEmitter0B};
-void *data_020e14ec[2] = {(void *)DT::_ZN18EffectEmitterEntry17initAxisUpForwardEv, (void *)DT::_ZN18EffectEmitterEntry17updateLanding1F1DEv};
+void *data_020e14ec[2] = {(void *)EffectEmitterEntry_InitAxisUpForward, (void *)EffectEmitterEntry_UpdateLanding1F1D};
 void *data_020e1554[2] = {(void *)DT::EffectKind39_InitEmitter0, (void *)DT::EffectKind39_UpdateEmitter0A};
 void *data_020e1534[2] = {(void *)DT::EffectKind1A_InitEmitter0, (void *)DT::EffectCb_FollowTracked};
 void *data_020e153c[2] = {(void *)DT::EffectKind1B_InitEmitter0, (void *)DT::EffectCb_FollowTracked};
 void *data_020e14e4[2] = {(void *)DT::EffectKind1E_InitEmitter0, (void *)DT::EffectCb_FollowTracked};
-void *data_020e1584[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry15updateLanding5FEv};
+void *data_020e1584[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding5F};
 void *data_020e158c[2] = {(void *)DT::EffectKind4A_InitEmitter0, (void *)DT::EffectKind4A_UpdateEmitter0};
-void *data_020e1594[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry18updateLanding1F1EBEv};
+void *data_020e1594[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding1F1EB};
 void *data_020e14dc[2] = {(void *)DT::EffectKind1F_InitEmitter0, (void *)DT::EffectCb_FollowTracked};
 void *data_020e159c[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_CountdownTracked};
 void *data_020e15a4[2] = {(void *)DT::EffectKind13_InitEmitter0, (void *)DT::EffectKind13_InitEmitter1};
 void *data_020e15ac[2] = {(void *)DT::EffectKind1C_InitEmitter0, (void *)DT::EffectCb_FollowTracked};
-void *data_020e14d4[2] = {(void *)DT::_ZN18EffectEmitterEntry17initAxisUpForwardEv, (void *)DT::_ZN18EffectEmitterEntry18updateLanding1F1EBEv};
+void *data_020e14d4[2] = {(void *)EffectEmitterEntry_InitAxisUpForward, (void *)EffectEmitterEntry_UpdateLanding1F1EB};
 void *data_020e15bc[2] = {(void *)DT::EffectKind26_InitEmitter0, (void *)DT::EffectKind26_UpdateEmitter0};
 void *data_020e15c4[2] = {(void *)DT::EffectKind07_InitEmitter0, (void *)DT::EffectKind07_InitEmitter1};
 void *data_020e15cc[2] = {(void *)DT::EffectKind33_InitEmitter0, (void *)DT::EffectKind33_UpdateEmitter0};
 void *data_020e15d4[2] = {(void *)DT::EffectKind3F_InitEmitter0B, (void *)DT::EffectKind3F_UpdateEmitter0};
-void *data_020e15dc[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry15updateLanding5FEv};
-void *data_020e15e4[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry17updateLanding1F1DEv};
-void *data_020e15ec[2] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry15updateLanding5FEv};
+void *data_020e15dc[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding5F};
+void *data_020e15e4[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding1F1D};
+void *data_020e15ec[2] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateLanding5F};
 void *data_020e1504[2] = {(void *)DT::EffectKind0E_InitEmitter0, (void *)DT::EffectKind0E_UpdateEmitter0};
 void *data_020e14cc[2] = {(void *)DT::EffectKind40_InitEmitter0, (void *)DT::EffectKind40_UpdateEmitter0};
 extern const s32 data_020d0228[3];
@@ -3710,8 +3700,8 @@ extern const s32 data_020d033c[3];
 const s32 data_020d033c[3] = {0, 4096, 4096};
 extern const s32 data_020d0360[3];
 const s32 data_020d0360[3] = {1229, 0, -307};
-void *data_020e162c[4] = {(void *)DT::EffectKind54_InitEmitter0, (void *)DT::EffectKind54_UpdateEmitter0, (void *)DT::EffectKind54_InitEmitter1, (void *)DT::_ZN18EffectEmitterEntry13updateKind54BEv};
-void *data_020e163c[4] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry12updateKind59Ev, (void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry12updateKind59Ev};
+void *data_020e162c[4] = {(void *)DT::EffectKind54_InitEmitter0, (void *)DT::EffectKind54_UpdateEmitter0, (void *)DT::EffectKind54_InitEmitter1, (void *)EffectEmitterEntry_UpdateKind54B};
+void *data_020e163c[4] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateKind59, (void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateKind59};
 void *data_020e164c[4] = {(void *)DT::EffectKind3B_InitEmitter0, (void *)DT::EffectKind3B_UpdateEmitter0, (void *)DT::EffectKind3B_InitEmitter0, (void *)DT::EffectKind3B_UpdateEmitter0};
 void *data_020e165c[4] = {(void *)DT::EffectKind24_InitEmitter0, (void *)DT::EffectKind24_InitEmitter0, (void *)DT::EffectKind24_InitEmitter0, (void *)DT::EffectKind24_InitEmitter0};
 void *data_020e166c[4] = {(void *)DT::EffectKind3D_InitEmitter0, (void *)DT::EffectKind3D_UpdateEmitter0, (void *)DT::EffectKind3D_InitEmitter0, (void *)DT::EffectKind3D_UpdateEmitter0};
@@ -3721,7 +3711,7 @@ void *data_020e16a4[6] = {(void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb
 void *data_020e16bc[6] = {(void *)DT::EffectKind4E_InitEmitter0, (void *)DT::EffectKind4E_UpdateEmitter0, (void *)DT::EffectKind4E_InitEmitter1, (void *)DT::EffectKind4E_UpdateEmitter1, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked};
 void *data_020e16d4[8] = {(void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly, (void *)DT::EffectCb_TintOnly};
 void *sEffectDefaultOneShotCbs[8] = {(void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot, (void *)DT::EffectCb_InitOneShot};
-void *data_020e1714[8] = {(void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry16updateKind56MainEv, (void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry16updateKind56FadeEv, (void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry16updateKind56FadeEv, (void *)DT::EffectCb_InitTracked, (void *)DT::_ZN18EffectEmitterEntry16updateKind56FadeEv};
+void *data_020e1714[8] = {(void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateKind56Main, (void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateKind56Fade, (void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateKind56Fade, (void *)DT::EffectCb_InitTracked, (void *)EffectEmitterEntry_UpdateKind56Fade};
 void *data_020e1734[10] = {(void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked, (void *)DT::EffectKind35_InitEmitter1, (void *)DT::EffectKind35_UpdateEmitter1, (void *)DT::EffectKind35_InitEmitter1, (void *)DT::EffectKind35_UpdateEmitter1, (void *)DT::EffectKind35_InitEmitter3, (void *)DT::EffectKind35_UpdateEmitter3, (void *)DT::EffectKind35_InitEmitter4, (void *)DT::EffectKind35_UpdateEmitter4};
 void *data_020e175c[10] = {(void *)DT::EffectCb_InitTracked, (void *)DT::EffectKind25_UpdateEmitter0, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectKind25_UpdateEmitter0, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectKind25_UpdateEmitter0, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectKind25_UpdateEmitter0, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectKind25_UpdateEmitter0};
 void *data_020e1784[14] = {(void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked, (void *)DT::EffectKind36_InitEmitter2, (void *)DT::EffectKind36_UpdateEmitter2, (void *)DT::EffectKind36_InitEmitter2, (void *)DT::EffectKind36_UpdateEmitter2, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked, (void *)DT::EffectCb_InitTracked, (void *)DT::EffectCb_FollowTracked};

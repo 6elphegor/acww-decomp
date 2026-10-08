@@ -36,6 +36,8 @@ public:
     void setOffset(s32 a, s32 b);           // 0x0208d314
     void release();                         // 0x0208d31c
     void setKind(s32 a);                    // 0x0208d324
+    void freeLabel();                       // (src/main/unk_02089fbc.cpp)
+    void createLabel();
 
     /* 0x0c */ s32 kind;
     /* 0x10 */ s32 seqIndex;

@@ -9,8 +9,8 @@ class MsgProcessor;
 // TextLabel driven by a message processor (0x84 bytes). Defined in src/main/unk_020a6974.cpp.
 class MsgTextLabel : public TextLabel {
 public:
-    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
-    MsgTextLabel(u32 arg1, s32 arg2, s32 arg3);
+    MsgTextLabel(u8 *buf, s32 widthTiles, s32 heightTiles);
+    MsgTextLabel(u32 tileIndex, s32 widthTiles, s32 heightTiles);
     virtual ~MsgTextLabel();
     virtual void draw();
     virtual u32 measureWidth();

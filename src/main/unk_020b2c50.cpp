@@ -20,11 +20,11 @@
 #include "proto/main/unk_020b2c50.h"
 
 extern "C" {
-u32 Msg_GetCharFromEnd(u32 a, u32 b);
-u32 Msg_GetCharAt(u32 a, u32 b);
+u32 Msg_GetCharFromEnd(u8 *text, u32 n);  // src/main/unk_020a6974.cpp
+u32 Msg_GetCharAt(u8 *text, u32 n);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 s32 FX_Modf(s32 v, s32 *out);
-char *Msg_SkipLines(char *p, u32 n);
+u8 *Msg_SkipLines(u8 *text, u32 n);
 }
 
 
@@ -365,7 +365,7 @@ void StringExpander::appendTagTail() {
 
 void StringExpander::insertNameChar0() {
     if (nicknameMode) {
-        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 0);
+        u32 a = Msg_GetCharAt(bank->nameSource->data(), 0);
         if (capitalizeNext) {
             a = Text_ToUpper(a);
             capitalizeNext = 0;
@@ -382,7 +382,7 @@ void StringExpander::insertNameChar0() {
 
 void StringExpander::insertNameChar1() {
     if (nicknameMode) {
-        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 1);
+        u32 a = Msg_GetCharAt(bank->nameSource->data(), 1);
         if (capitalizeNext) {
             a = Text_ToUpper(a);
             capitalizeNext = 0;
@@ -399,7 +399,7 @@ void StringExpander::insertNameChar1() {
 
 void StringExpander::insertNameChar2() {
     if (nicknameMode) {
-        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 2);
+        u32 a = Msg_GetCharAt(bank->nameSource->data(), 2);
         if (capitalizeNext) {
             a = Text_ToUpper(a);
             capitalizeNext = 0;
@@ -416,8 +416,8 @@ void StringExpander::insertNameChar2() {
 
 void StringExpander::insertNameLast2() {
     if (nicknameMode) {
-        u32 v, b, a;
-        v = (u32)bank->nameSource->data();
+        u32 b, a;
+        u8 *v = bank->nameSource->data();
         a = Msg_GetCharFromEnd(v, 0);
         b = Msg_GetCharFromEnd(v, 1);
         if (capitalizeNext) {
@@ -1018,10 +1018,10 @@ BOOL StringBank::censorTaboo() {
     censor.restartScan();
     u8 *start = output;
     while (censor.atEnd == 0) {
-        char *s = (char *)start;
+        u8 *s = start;
         s32 n = 0;
         for (; s != NULL && *s != 0xa; s = Msg_SkipLines(s, 1)) {
-            charReader.text = (u8 *)s;
+            charReader.text = s;
             n = matchTabooWord();
             if (n > 0) {
                 break;
