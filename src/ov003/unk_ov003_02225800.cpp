@@ -38,12 +38,20 @@
 #include "proto/ov003/unk_ov003_0222e5e0.h"
 #include "proto/main/unk_0204cc1c.h"
 
+// defined elsewhere (their definitions' types; the generated headers of those files don't fit here, or leave them out:
+// include/proto/.excluded)
+extern "C" {
+void GroundInfo_Destruct(void *obj);
+s32 Ground_GetDefaultY(void);
+void MI_CpuCopy8(const void *src, void *dest, u32 size);
+s32 Math_ApproachS32(s32 *p, s32 target, s32 ratio, s32 max, s32 min);
+s32 Math_ApproachVecXZ(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min);
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+s32 _s32_div_f(s32 a, s32 b);
+}
+
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
-
-
-extern "C" {
-}
 
 // ---- main-module classes (declarations only)
 
@@ -52,15 +60,6 @@ extern "C" {
 
 
 // ---- library sub-objects (declarations only; ctors/dtors live in main)
-
-
-
-
-
-
-
-
-
 
 
 class InsectManager : public GameProc, public InsectNetSync {
@@ -83,51 +82,6 @@ public:
     /* 0x98 */ void *specialAnimFiles[2]; // [0] bee swarm, [1] ant swarm .nsbca (Insect_LoadModel)
 };
 
-
-
-extern "C" void InsectManager_Create();
-extern "C" {
-void Insect_UpdateKind38(Insect *o);
-void Insect_InitKind38(Insect *o);
-void Insect_UpdateDungBeetle(Insect *o);
-void Insect_InitDungBeetle(Insect *o);
-void Insect_UpdateAnt(Insect *o);
-void Insect_InitAnt(Insect *o);
-void Insect_InitScorpion(Insect *o);
-void Insect_InitTarantula(Insect *o);
-void Insect_UpdateStinger(Insect *o);
-void Insect_UpdateSpider(Insect *o);
-void Insect_InitSpider(Insect *o);
-void Insect_UpdateFlea(Insect *o);
-void Insect_InitFlea(Insect *o);
-void Insect_UpdateFly(Insect *o);
-void Insect_InitFly(Insect *o);
-void Insect_UpdateHoneybee(Insect *o);
-void Insect_InitHoneybee(Insect *o);
-void Insect_UpdateBee(Insect *o);
-void Insect_InitBee(Insect *o);
-void Insect_UpdatePillBug(Insect *o);
-void Insect_UpdateMoleCricket(Insect *o);
-void Insect_InitBurrower(Insect *o);
-void Insect_InitCrawler(Insect *o);
-void Insect_UpdateCrawler(Insect *o);
-void Insect_UpdatePondskater(Insect *o);
-void Insect_InitPondskater(Insect *o);
-void Insect_UpdateDragonfly(Insect *o);
-void Insect_InitDragonfly(Insect *o);
-void Insect_InitHopper(Insect *o);
-void Insect_UpdateHopper(Insect *o);
-void Insect_InitTreeBug(Insect *o);
-void Insect_UpdateTreeBug(Insect *o);
-void Insect_UpdateMosquito(Insect *o);
-void Insect_InitMosquito(Insect *o);
-void Insect_UpdateFirefly(Insect *o);
-void Insect_InitFirefly(Insect *o);
-void Insect_InitMoth(Insect *o);
-void Insect_UpdateMoth(Insect *o);
-void Insect_InitButterfly(Insect *o);
-void Insect_UpdateButterfly(Insect *o);
-}
 
 extern "C" { Insect sFieldInsects[8]; }
 extern "C" { u16 data_ov003_02258f10; }
@@ -182,6 +136,202 @@ extern "C" InsectModelParams sInsectModelParams[60] = {
     {0x0, 0x0, 0x3e8, 0x3e8}, {0x1, 0x0, 0x44c, 0x640},
     {0x0, 0x0, 0xbb8, 0xbb8}, {0x0, 0x0, 0x7d0, 0x9c4},
 };
+// the functions defined in this file, with their definitions' types (the bodies below are in descending address order)
+extern "C" s32 Insect_CheckObstacle(Insect * o, s32 a, s32 b);
+extern "C" u32 Insect_TestFeelers(Insect * o);
+extern "C" u32 Insect_TestFeelersHole(Insect * o);
+extern "C" s32 Insect_SetFeelers(Insect * o, s32 a, s32 b);
+extern "C" void Insect_GetDirVec(VecFx32Ctor * o, s32 a);
+extern "C" s32 Insect_IsOverWater(VecFx32 * v);
+extern "C" void Insect_CheckTurnCount(Insect * o, s32 n);
+extern "C" s32 Insect_SetMoveTarget(Insect * o, u32 ang, s32 d);
+extern "C" s32 Insect_SetGroundMoveTarget(Insect * o, u32 ang, s32 n);
+extern "C" Actor * Insect_FindNearestPlayer(VecFx32 * pos);
+extern "C" void Insect_UpdateRest(Insect * o);
+extern "C" s32 Insect_LikesFlower(s32 a, u16 * b);
+extern "C" s32 Insect_SplashIfWater(Insect * o);
+extern "C" s32 Insect_CheckDigHit(Insect * o, VecFx32Ctor * a);
+extern "C" void Insect_PlaySe(Insect * o, s32 a, s32 b);
+extern "C" s32 Insect_GetSeId(s32 a, s32 b);
+extern "C" void Insect_FlutterPullBack(Insect * self, VecFx32Ctor * p, s32 a);
+extern "C" void Insect_SetFlutterTurnDelay(Insect * self);
+extern "C" s32 Insect_GetFlutterLeash(Insect * self);
+extern "C" s32 Insect_GetFlutterRange(Insect * self);
+extern "C" s32 Insect_GetFlutterTargetSpeed(Insect * self);
+extern "C" void Insect_FlutterSteer(Insect * self, s16 * p, s32 a, s32 b, u8 e, s32 f);
+extern "C" void Insect_FlutterBob(Insect * self, s32 a, s32 b, s32 c);
+extern "C" s32 Insect_CheckAlarm(Insect * self);
+extern "C" void Insect_FleeIfAlarmed(Insect * self, VecFx32Ctor * p);
+extern "C" void Insect_FlapWings(Insect * self);
+extern "C" void Butterfly_Update(Insect * self);
+extern "C" void Insect_FlutterFlight(Insect * self);
+extern "C" s32 Insect_TickTimer(Insect * self);
+extern "C" void Insect_FlyAwayArc(Insect * self, s32 a);
+extern "C" void Insect_FlutterAltitude(Insect * self, s16 * cnt);
+extern "C" s32 Insect_GetFlowerSpeciesMask(s32 a);
+extern "C" void Dragonfly_Update(Insect * self);
+extern "C" void Dragonfly_Hover(Insect * self, s16 * cnt);
+extern "C" void Dragonfly_FlyToTarget(Insect * self);
+extern "C" void Dragonfly_FlyOff(Insect * self, s16 * cnt);
+extern "C" void Dragonfly_CheckObstacle(Insect * self);
+extern "C" s32 Insect_ReflectAngle(s32 a, s32 mode);
+extern "C" s32 Insect_TurnToTarget(Insect * self, u32 a);
+extern "C" void Insect_AccumAlarm(Insect * o, VecFx32Ctor * out, s32 * dist, u8 * flag, u8 a, u8 b);
+extern "C" s32 Insect_UpdateAlarm(Insect * o, VecFx32Ctor * out);
+extern "C" void Hopper_Update(Insect * o);
+extern "C" void Hopper_Rest(Insect * o, s16 * p);
+extern "C" s16 Insect_RandomTurn(s32 a, s32 b);
+extern "C" void Hopper_Jump(Insect * o);
+extern "C" s32 Hopper_CheckObstacle(Insect * o, s16 * p);
+extern "C" void Locust_PlaySe(Insect * o);
+extern "C" void Cricket_Chirp(Insect * o);
+extern "C" void Pondskater_Update(Insect * o);
+extern "C" void Mosquito_Update(Insect * o);
+extern "C" void Firefly_Update(Insect * o);
+extern "C" void Firefly_Wander(Insect * o);
+extern "C" void Bee_Update(Insect * o);
+extern "C" void Hoverer_Update(Insect * self);
+extern "C" void Ant_Update(Insect * self);
+extern "C" void MoleCricket_Update(Insect * self);
+extern "C" void MoleCricket_CheckDugUp(Insect * self, s16 * cnt);
+extern "C" void Insect_HopArc(Insect * self, s16 * cnt);
+extern "C" void Insect_EscapeRun(Insect * self, s16 * cnt);
+extern "C" void MoleCricket_Burrow(Insect * self, s16 * cnt);
+extern "C" s32 Insect_SteerAroundObstacle(Insect * self);
+extern "C" void PillBug_Update(Insect * self);
+extern "C" void PillBug_Curled(Insect * self);
+extern "C" void PillBug_Walk(Insect * self);
+extern "C" s32 Insect_CheckRockStrike(Insect * self, s16 * out);
+extern "C" void Moth_Update(Insect * self);
+extern "C" void Flea_Update(Insect * self);
+extern "C" void Stinger_Update(Insect * self);
+extern "C" void DungBeetle_Update(Insect * self);
+extern "C" s32 Insect_FadeOut(Insect * self, s32 a);
+extern "C" s32 Insect_GroundWalk(Insect * self);
+extern "C" s32 Insect_GroundWalkNet(Insect * self);
+extern "C" void Insect_ClampStepXZ(VecFx32Ctor * out, VecFx32Ctor * in, s32 c);
+extern "C" void Spider_Update(Insect * self);
+extern "C" void TreeBug_Update(Insect * self);
+extern "C" void TreeBug_Idle(Insect * self, s16 * cnt);
+extern "C" void TreeBug_ClimbUp(Insect * self, s16 * cnt);
+extern "C" void TreeBug_ClimbDown(Insect * self, s16 * cnt);
+extern "C" void TreeBug_Wiggle(Insect * self, s16 * cnt);
+extern "C" void TreeBug_FlyOff(Insect * self, s16 * cnt);
+extern "C" void TreeBug_DropAndFly(Insect * o, s16 * p);
+extern "C" void Walkingstick_CheckAlarm(Insect * o, s16 * p);
+extern "C" void TreeBug_CheckAlarm(Insect * o, s16 * p);
+extern "C" void Crawler_Update(Insect * o);
+extern "C" s32 Insect_IsOnFlower(VecFx32 * pp);
+extern "C" void Crawler_Watch(Insect * o, s16 * p);
+extern "C" void Crawler_Wander(Insect * o);
+extern "C" void Insect_PlaceOnPlantSide(Insect * o);
+extern "C" void Insect_SetWanderBox(Insect * self);
+extern "C" void Insect_Despawn(Insect * self);
+extern "C" void Crawler_Escape(Insect * self, s16 * pp);
+extern "C" void Insect_InitBehavior(Insect * self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
+extern "C" s16 Insect_RandomAngle();
+extern "C" void Insect_UpdateButterfly(Insect * self);
+extern "C" void Insect_InitFlutter(Insect * self, s32 a, s32 b, s32 c, u8 d, s32 e);
+extern "C" void Insect_InitButterfly(Insect * self);
+extern "C" void Insect_UpdateMoth(Insect * self);
+extern "C" void Insect_InitMoth(Insect * self);
+extern "C" void Insect_InitFirefly(Insect * self);
+extern "C" void Insect_UpdateFirefly(Insect * self);
+extern "C" void Insect_InitMosquito(Insect * self);
+extern "C" void Insect_UpdateMosquito(Insect * self);
+extern "C" void Insect_PlaceOnTrunk(Insect * self, s32 a, s32 b, s32 c, s32 d);
+extern "C" void Insect_UpdateTreeBug(Insect * self);
+extern "C" void Insect_InitTreeBug(Insect * self);
+extern "C" void Insect_InitHop(Insect * self, s32 a, s32 b, s32 c, u8 d);
+extern "C" void Insect_UpdateHopper(Insect * self);
+extern "C" void Insect_InitHopper(Insect * self);
+extern "C" void Insect_InitDragonflyParams(Insect * a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
+extern "C" void Insect_InitDragonfly(Insect * a);
+extern "C" void Insect_UpdateDragonfly(Insect * a);
+extern "C" void Insect_InitPondskater(Insect * a);
+extern "C" void Insect_UpdatePondskater(Insect * a);
+extern "C" void Insect_InitOnPlant(Insect * a, s32 x, s32 y, s32 z, s16 w);
+extern "C" void Insect_UpdateCrawler(Insect * a);
+extern "C" void Insect_InitCrawler(Insect * a);
+extern "C" void Insect_InitBurrower(Insect * a);
+extern "C" void Insect_UpdateMoleCricket(Insect * a);
+extern "C" void Insect_UpdatePillBug(Insect * a);
+extern "C" void Insect_InitBee(Insect * a);
+extern "C" void Insect_UpdateBee(Insect * a);
+extern "C" void Insect_InitHoneybee(Insect * a);
+extern "C" void Insect_UpdateHoneybee(Insect * a);
+extern "C" void Insect_InitFly(Insect * a);
+extern "C" void Insect_UpdateFly(Insect * a);
+extern "C" void Insect_InitFlea(Insect * a);
+extern "C" void Insect_UpdateFlea(Insect * a);
+extern "C" void Insect_InitSpider(Insect * a);
+extern "C" void Insect_UpdateSpider(Insect * a);
+extern "C" void Insect_UpdateStinger(Insect * a);
+extern "C" void Insect_InitTarantula(Insect * a);
+extern "C" void Insect_InitScorpion(Insect * a);
+extern "C" void Insect_InitAnt(Insect * a);
+extern "C" void Insect_UpdateAnt(Insect * a);
+extern "C" void Insect_InitDungBeetle(Insect * a);
+extern "C" void Insect_UpdateDungBeetle(Insect * a);
+extern "C" void Insect_InitKind38(Insect * a);
+extern "C" void Insect_UpdateKind38(Insect * a);
+extern "C" void * InsectManager_Create();
+extern "C" void Insect_LoadModel(InsectManager * a, Insect * e, s32 mode);
+extern "C" void Insect_UpdateHideTimer(InsectManager * a, Insect * e);
+extern "C" void Insect_Update(InsectManager * a, Insect * e, s32 flags, s32 kind);
+extern "C" void Insect_CheckDisturbance(InsectManager * a, Insect * e);
+extern "C" s32 FieldInsect_GetKindAndAlarm(u8 * out, u32 idx);
+extern "C" s32 FieldInsect_IsTreeKind(u32 idx);
+extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor * out, u32 idx);
+extern "C" void Insect_UpdateSpawning(InsectManager * self);
+extern "C" void FieldInsect_UpdateAll(InsectManager * a);
+extern "C" s32 Insect_IsNetKindMismatch(InsectManager * a, Insect * o, s32 c, s32 d, s32 e);
+extern "C" s32 Insect_IsTreeStillThere(InsectManager * a, Insect * o);
+extern "C" void SpecialInsect_UpdateAll(InsectManager * a);
+extern "C" void HeldInsect_UpdateAll(InsectManager * a);
+extern "C" s32 Insect_UsesCollisionMove(InsectManager * a, Insect * o);
+extern "C" void HeldInsect_Release(s32 idx, s32 v);
+extern "C" u32 HeldInsect_GetStage(s32 idx);
+extern "C" s32 InsectPool_Draw(InsectManager * a, Insect * o, s32 n);
+extern "C" s32 Insect_IsTreeKindForCulling(InsectManager * a, s32 t);
+extern "C" VecFx32Ctor * HeldInsect_GetPos(s32 idx);
+extern "C" void HeldInsect_Start(s32 t, s32 idx);
+extern "C" void Insect_OnNetRemove(s32 id);
+extern "C" s32 Insect_CanHopAway(s32 t);
+extern "C" void Insect_OnClaimGranted(s32 id);
+extern "C" void HeldInsect_Remove(u8 id, s32 flag);
+extern "C" s32 Insect_FinishCatch(u8 id);
+extern "C" s32 Insect_GetCatchResult(s32 id);
+extern "C" void Insect_CancelCatch(s32 id);
+extern "C" s32 Insect_TryCatch(u8 id);
+extern "C" void Insect_SetScale(Insect * o, s32 v);
+extern "C" void Insect_Draw(InsectManager * a, Insect * o);
+extern "C" s32 Insect_HasShadow(InsectManager * a, Insect * o);
+extern "C" void Insect_SetModelMatrix(InsectManager * a, Insect * o, s32 flag);
+extern "C" void InsectPool_UpdateInViewOfPlayer(InsectManager * obj, s32 flag, s32 idx, s32 x, s32 z);
+extern "C" void InsectPool_UpdateInView(InsectManager * obj, s32 flag);
+extern "C" void Insect_EnableTrashFlies();
+extern "C" s32 Insect_Spawn(void * obj, s32 kind, u8 sub, s32 flag);
+extern "C" s32 Insect_TrySpawnRandom(InsectManager * a, s32 b, u8 c, u32 d);
+extern "C" void Insect_SpawnBeeSwarm(VecFx32Ctor * v);
+extern "C" s32 HeldInsect_SetHandMatrix(s32 idx, s16 * p, Mtx43 * q, s32 flag);
+extern "C" s32 Insect_NetClaim(s32 x);
+extern "C" s32 Insect_IsBeeSwarmOut();
+extern "C" s32 Insect_IsAtWateringPoint(VecFx32 * p);
+extern "C" s32 Insect_RollKind(u8 * out);
+extern "C" s32 Insect_GetTimeSlot();
+extern "C" void Insect_TickFrame(Insect * self);
+extern "C" void Insect_SetAnimSpeed(Insect * self, u32 v);
+extern "C" s32 Insect_PickSpecialSpawn(s8 * a, s8 * b, s32 c);
+extern "C" s32 Insect_IsAllowedOnline(s32 a);
+extern "C" s32 Insect_RollFromSpawnTable(u32 a, u32 b, u8 * out);
+extern "C" void FieldInsect_PurgeStale();
+extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b);
+extern "C" void InsectSpawn_CopyMask(void * p, s32 t);
+extern "C" s32 InsectSpawn_PickPos(Insect * self, u16 * a, s32 code, u32 flag);
+extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);
+extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
+
 extern "C" { u16 sFieldInsectPurgeTimer; }
 extern "C" { u8 sInsectCatchResult; }
 extern "C" ProcProfile sInsectManagerProfile = {(void *(*)())InsectManager_Create, 0xbc, 0xc0};
@@ -276,7 +426,6 @@ extern u8 sAntSpawnEnabled;
 extern u8 sWateringActive;
 extern u8 data_ov003_02258f04;
 extern u8 data_ov003_02258f08;
-extern s8 sTrashFlySpawnEnabled;
 extern u16 data_ov003_02258f10;
 extern u16 sFieldInsectPurgeTimer;
 extern Insect sFieldInsects[];
@@ -290,12 +439,9 @@ void *FxVec3_Construct(void *);
 void *func_02000c8c(void *);
 u32 Item_MakeBuilding(u32 a);
 void *StrBSize_Get(u16 *p);
-void func_02133150();
-s32 Random_GlobalBelow(s32 n);
 BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Vec_DistXZ(void *a, void *b);
-void *MI_CpuCopy8(void *dst, void *src, s32 n);
 s32 Weather_GetFallingPrecip();
 BOOL Town_GetRafflesiaPos(void *buf);
 void Clock_GetMinuteHour(void *p);
@@ -313,29 +459,8 @@ void func_0203239c(void *p);
 void func_020323b0(void *p);
 }
 
-extern "C" {
-s32 Insect_GetWeatherReaction(s32 a, s32 b);
-BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
-BOOL Insect_IsAllowedOnline(s32 a);
-s32 Insect_GetTimeSlot();
-void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
-}
 
 // prototypes of this segment's own functions
-extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
-extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);
-extern "C" s32 InsectSpawn_PickPos(Insect *self, u16 *a, s32 code, u32 flag);
-extern "C" void InsectSpawn_CopyMask(void *p, s32 t);
-extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b);
-extern "C" void FieldInsect_PurgeStale();
-extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
-extern "C" BOOL Insect_IsAllowedOnline(s32 a);
-extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c);
-extern "C" void Insect_SetAnimSpeed(Insect *self, u32 v);
-extern "C" void Insect_TickFrame(u8 *self);
-extern "C" s32 Insect_GetTimeSlot();
-extern "C" BOOL Insect_RollKind(u8 *out);
-extern "C" BOOL Insect_IsAtWateringPoint(VecFx32 *p);
 }
 
 #undef func_02133150
@@ -346,7 +471,6 @@ namespace s01 {
 struct InsectSpawnMask {
     u16 rows[4][4][16];  // as sInsectSpawnMaskLand / Dry
 };
-
 
 
 typedef Insect Rec;
@@ -362,10 +486,8 @@ extern s16 data_02135f44[];
 extern Rec sFieldInsects[];
 extern Rec sSpecialInsects[];
 extern Rec sHeldInsects[];
-extern u8 sTrashFlySpawnEnabled;
 u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
 s32 func_01ffcb0c(s32 a, s32 b);
-void Effect_End(s32);
 s32 Weather_GetFallingPrecip(void);
 s32 NetArea_IsLocalOwner(void);
 u8 Insect_GetHabitat(u8 v);
@@ -374,27 +496,12 @@ s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 s32 Vec_DistXZ(void *a, void *b);
 void Mem_Free(void *p);
 void Town_ClearBeesReleased(void);
-s32 Insect_RollKind(s8 *p);
-void Insect_SetScale(Rec *e, s32 v);
-void InsectSpawn_CopyMask(void *p, s32 t);
-void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);
 void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b);
-s32 InsectSpawn_PickPos(Insect *self, u16 *a, s32 code, u32 flag);
-s32 Insect_GetWeatherReaction(s32 kind, s32 h);
 Snowball *Snowball_GetLooseBall(u32 id);
 s32 Snowball_GetRadius(Snowball *o);
-s32 Insect_RandomTurn(s32 a, s32 b);
-BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
 }
 
 // prototypes of this segment's own functions
-extern "C" BOOL Insect_IsBeeSwarmOut(void);
-extern "C" BOOL Insect_NetClaim(s32 x);
-extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Mtx43 *q, s32 flag);
-extern "C" void Insect_SpawnBeeSwarm(VecFx32Ctor *v);
-extern "C" s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d);
-extern "C" BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
-extern "C" void Insect_EnableTrashFlies(void);
 }
 
 
@@ -403,7 +510,6 @@ namespace s02 {
 typedef VecFx32Ctor V3;
 
 typedef Mtx43 Blk;
-
 
 
 typedef Insect Obj;
@@ -416,7 +522,6 @@ extern u8 sInsectCatchResult;
 extern CommManager *gCommManager;
 extern Blk data_021f47e0;
 extern s16 data_02135f44[];
-s32 InsectPool_Draw(Obj *self, void *a, s32 n);
 s32 Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 Mtx43_RotateY(void *m, s32 a);
 s32 Mtx43_RotateZ(void *m, s32 a);
@@ -424,47 +529,15 @@ s32 Mtx43_RotateX(void *m, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
-s32 Effect_SetPosition(s32 h, V3 *v, s32 a, u16 *c);
-s32 Effect_End(s32 h);
 u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 void CharaShadow_DrawFaded(void *p, s32 a, u32 b, u8 c);
 BOOL NetArea_IsLocalOwner();
 Actor *PlayerActor_GetActor(u32 n);
 s32 func_ov003_02226a5c(Obj *self);
-void Insect_SetModelMatrix(void *a, Obj *o, s32 flag);
-BOOL Insect_HasShadow(void *a, Obj *o);
-void Insect_Draw(void *a, Obj *o);
-void Insect_SetScale(Obj *o, s32 v);
-s32 Insect_TryCatch(u8 id);
-void Insect_CancelCatch(s32 id);
-s32 Insect_GetCatchResult(s32 id);
-s32 Insect_FinishCatch(u8 id);
-void HeldInsect_Remove(u8 id, s32 flag);
-void Insect_OnClaimGranted(s32 id);
-BOOL Insect_CanHopAway(s32 t);
-void Insect_OnNetRemove(s32 id);
-void HeldInsect_Start(s32 t, s32 idx);
-V3 *HeldInsect_GetPos(s32 idx);
-BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag);
-extern "C" BOOL Insect_HasShadow(void *a, Obj *o);
-extern "C" void Insect_Draw(void *a, Obj *o);
-extern "C" void Insect_SetScale(Obj *o, s32 v);
-extern "C" s32 Insect_TryCatch(u8 id);
-extern "C" void Insect_CancelCatch(s32 id);
-extern "C" s32 Insect_GetCatchResult(s32 id);
-extern "C" s32 Insect_FinishCatch(u8 id);
-extern "C" void HeldInsect_Remove(u8 id, s32 flag);
-extern "C" void Insect_OnClaimGranted(s32 id);
-extern "C" BOOL Insect_CanHopAway(s32 t);
-extern "C" void Insect_OnNetRemove(s32 id);
-extern "C" void HeldInsect_Start(s32 t, s32 idx);
-extern "C" V3 *HeldInsect_GetPos(s32 idx);
-extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 }
 
 
@@ -474,8 +547,6 @@ typedef VecFx32Ctor V3;
 
 
 typedef Insect Rec;
-
-
 
 
 struct FieldInsectUpdateLocals {
@@ -492,18 +563,9 @@ extern Rec sHeldInsects[];
 s32 NetArea_IsLocalOwner(void);
 s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
-void Effect_End(s32 h);
 BOOL Camera_IsBlockingFocusView(void *p, s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 void func_020728c4(CommManager *g, s32 a, s32 b);
-BOOL Insect_IsTreeKindForCulling(void *a, s32 t);
-void Insect_Draw(void *a, Rec *o);
-void Insect_SetScale(Rec *o, s32 v);
-void HeldInsect_Remove(s32 id, s32 flag);
-void Insect_TurnToTarget(Rec *o, s32 v);
-s32 Insect_LoadModel(void *a, Rec *o, s32 v);
-s32 Insect_Update(void *a, Rec *o, s32 i, s32 v);
-s32 Insect_GetWeatherReaction(s32 a, s32 b);
 }
 
 static inline BOOL Unk_ov003_022277c0_Chk(u16 *p) {
@@ -538,15 +600,6 @@ static inline BOOL Unk_ov003_022277c0_Chk(u16 *p) {
 }
 
 // prototypes of this segment's own functions
-extern "C" s32 InsectPool_Draw(void *a, Rec *o, s32 n);
-extern "C" u32 HeldInsect_GetStage(s32 idx);
-extern "C" void HeldInsect_Release(s32 idx, s32 v);
-extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o);
-extern "C" void HeldInsect_UpdateAll(void *a);
-extern "C" void SpecialInsect_UpdateAll(void *a);
-extern "C" BOOL Insect_IsTreeStillThere(void *a, Rec *o);
-extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e);
-extern "C" void FieldInsect_UpdateAll(void *a);
 }
 
 
@@ -565,9 +618,6 @@ namespace s04 {
 typedef Insect Rec;
 
 
-
-
-
 extern "C" {
 extern CommManager *gCommManager;
 extern Rec sFieldInsects[];
@@ -578,7 +628,6 @@ BOOL NetArea_IsLocalOwner();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Vec_DistXZ(void *a, void *b);
-s32 Str_SPrintf(char *buf, char *fmt, ...);
 void func_02133ef8(void *p, s32 n);
 void *func_02106788(void *r);
 void *func_021067a4(void *a, u32 b);
@@ -586,31 +635,10 @@ void *func_021065dc(void *r);
 void *func_021065f8(void *a, u32 b);
 void *func_02106654(void *p);
 void *func_02106670(void *a, u32 b);
-void FieldInsect_PurgeStale();
-BOOL Insect_PickSpecialSpawn(s8 *a, s8 *b, s32 c);
 BOOL PlayerActor_TestSlotFlag9(s32 a);
-s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d);
-BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
-void InsectPool_UpdateInView(InsectManager *obj, s32 flag);
-void InsectPool_UpdateInViewOfPlayer(InsectManager *obj, s32 flag, s32 idx, s32 x, s32 z);
-void Insect_SetModelMatrix(void *a, Rec *e, s32 flag);
-void Insect_TickFrame(Rec *e);
-s32 Insect_UsesCollisionMove(void *a, Rec *e);
-void HeldInsect_UpdateAll(void *a);
-void SpecialInsect_UpdateAll(void *a);
-void FieldInsect_UpdateAll(void *a);
-s32 Insect_Despawn(Rec *e);
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_UpdateSpawning(InsectManager *self);
-extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx);
-extern "C" BOOL FieldInsect_IsTreeKind(u32 idx);
-extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx);
-extern "C" void Insect_CheckDisturbance(void *a, Rec *e);
-extern "C" void Insect_UpdateHideTimer(void *a, Rec *e);
-extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind);
-extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode);
 }
 
 #undef sInsectPathFmt0x
@@ -636,63 +664,9 @@ void HeldInsectHeap_Destroy();
 void InsectSpawn_BuildMasks();
 void TownJunkInsects_Refresh();
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
-s32 Random_GlobalBelow(s32 n);
-s16 Insect_RandomAngle();
-void Insect_InitBehavior(Insect *a, s32 v1, s32 v2, s32 v3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
-void Insect_InitFlutter(Insect *a, s32 x, s32 y, s32 z, u8 s0, s32 s1);
-s32 Insect_SetWanderBox(Insect *a);
-s32 Insect_PlaceOnPlantSide(Insect *a);
-void TreeBug_Update(Insect *a);
-void Insect_InitTreeBug(Insect *a);
-void DungBeetle_Update(Insect *a);
-void Ant_Update(Insect *a);
-void Stinger_Update(Insect *a);
-void Spider_Update(Insect *a);
-void Flea_Update(Insect *a);
-void Hoverer_Update(Insect *a);
-void Bee_Update(Insect *a);
-void PillBug_Update(Insect *a);
-void MoleCricket_Update(Insect *a);
-void Crawler_Update(Insect *a);
-void Pondskater_Update(Insect *a);
-void Dragonfly_Update(Insect *a);
-void Insect_InitOnPlant(Insect *a, s32 x, s32 y, s32 z, s16 w);
-void Insect_InitDragonflyParams(Insect *a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_UpdateKind38(Insect *a);
-extern "C" void Insect_InitKind38(Insect *a);
-extern "C" void Insect_UpdateDungBeetle(Insect *a);
-extern "C" void Insect_UpdateAnt(Insect *a);
-extern "C" void Insect_UpdateStinger(Insect *a);
-extern "C" void Insect_UpdateSpider(Insect *a);
-extern "C" void Insect_UpdateFlea(Insect *a);
-extern "C" void Insect_UpdateFly(Insect *a);
-extern "C" void Insect_UpdateHoneybee(Insect *a);
-extern "C" void Insect_UpdateBee(Insect *a);
-extern "C" void Insect_UpdatePillBug(Insect *a);
-extern "C" void Insect_UpdateMoleCricket(Insect *a);
-extern "C" void Insect_UpdateCrawler(Insect *a);
-extern "C" void Insect_UpdatePondskater(Insect *a);
-extern "C" void Insect_UpdateDragonfly(Insect *a);
-extern "C" void Insect_InitDungBeetle(Insect *a);
-extern "C" void Insect_InitAnt(Insect *a);
-extern "C" void Insect_InitScorpion(Insect *a);
-extern "C" void Insect_InitTarantula(Insect *a);
-extern "C" void Insect_InitSpider(Insect *a);
-extern "C" void Insect_InitFlea(Insect *a);
-extern "C" void Insect_InitFly(Insect *a);
-extern "C" void Insect_InitHoneybee(Insect *a);
-extern "C" void Insect_InitBee(Insect *a);
-extern "C" void Insect_InitBurrower(Insect *a);
-extern "C" void Insect_InitCrawler(Insect *a);
-extern "C" void Insect_InitOnPlant(Insect *a, s32 x, s32 y, s32 z, s16 w);
-extern "C" void Insect_InitPondskater(Insect *a);
-extern "C" void Insect_InitDragonfly(Insect *a);
-extern "C" void Insect_InitDragonflyParams(Insect *a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
-extern "C" // factory (allocates 0xa0 bytes)
-void *InsectManager_Create();
 }
 
 
@@ -703,68 +677,12 @@ typedef Insect Rec;
 typedef GroundInfoBase Buf;
 
 extern "C" {
-s32 Random_GlobalBelow(s32 a);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void VEC_Add(void *a, void *b, void *out);
-void GroundInfo_Destruct(Buf *b);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
-void Insect_SetAnimSpeed(Insect *self, u32 v);
-void TreeBug_Update(Rec *self);
-void Mosquito_Update(Rec *self);
-void Firefly_Update(Rec *self);
-void Moth_Update(Rec *self);
-void Hopper_Update(Rec *self);
-void Butterfly_Update(Rec *self);
-s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
-void Insect_GetDirVec(VecFx32Ctor *out, s32 a);
-void Insect_FlapWings(Rec *self);
-void Insect_PlaySe(Rec *self, s32 a, s32 b);
-s32 Insect_FadeOut(Rec *self, s32 a);
-s32 Insect_EscapeRun(Rec *self, s16 *cnt);
-void Insect_InitHopper(Rec *self);
-void Insect_UpdateHopper(Rec *self);
-void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d);
-void Insect_InitTreeBug(Rec *self);
-void Insect_UpdateTreeBug(Rec *self);
-void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d);
-void Insect_UpdateMosquito(Rec *self);
-void Insect_InitMosquito(Rec *self);
-void Insect_UpdateFirefly(Rec *self);
-void Insect_InitFirefly(Rec *self);
-void Insect_InitMoth(Rec *self);
-void Insect_UpdateMoth(Rec *self);
-void Insect_InitButterfly(Rec *self);
-void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e);
-void Insect_UpdateButterfly(Rec *self);
-s16 Insect_RandomAngle();
-void Insect_InitBehavior(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
-void Crawler_Escape(Rec *self, s16 *pp);
-void Insect_Despawn(Rec *self);
-void Insect_SetWanderBox(Rec *self);
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_InitHopper(Rec *self);
-extern "C" void Insect_UpdateHopper(Rec *self);
-extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d);
-extern "C" void Insect_InitTreeBug(Rec *self);
-extern "C" void Insect_UpdateTreeBug(Rec *self);
-extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d);
-extern "C" void Insect_UpdateMosquito(Rec *self);
-extern "C" void Insect_InitMosquito(Rec *self);
-extern "C" void Insect_UpdateFirefly(Rec *self);
-extern "C" void Insect_InitFirefly(Rec *self);
-extern "C" void Insect_InitMoth(Rec *self);
-extern "C" void Insect_UpdateMoth(Rec *self);
-extern "C" void Insect_InitButterfly(Rec *self);
-extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e);
-extern "C" void Insect_UpdateButterfly(Rec *self);
-extern "C" s16 Insect_RandomAngle();
-extern "C" void Insect_InitBehavior(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
-extern "C" void Crawler_Escape(Rec *self, s16 *pp);
-extern "C" void Insect_Despawn(Rec *self);
-extern "C" void Insect_SetWanderBox(Rec *self);
 }
 
 
@@ -774,24 +692,11 @@ typedef VecFx32Ctor V3;
 typedef Insect Rec;
 
 extern "C" {
-s32 Random_GlobalBelow(s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Vec_DistXZ(void *a, void *b);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
-void Insect_Despawn(Rec *o);
-void Crawler_Escape(Rec *o, s16 *p);
-void Insect_HopArc(Rec *o, s16 *p);
-void Insect_GetDirVec(V3 *v, s32 a);
-void Insect_CheckAlarm(Rec *o);
-void Insect_PlaySe(Rec *o, s32 a, s32 b);
-void Insect_UpdateAlarm(Rec *o, s32 *out);
-s32 Insect_FadeOut(Rec *o, s32 a);
-void Insect_FlapWings(Rec *o);
-BOOL Insect_IsOnFlower(VecFx32 *p);
-void Crawler_Wander(Rec *o);
-void Crawler_Watch(Rec *o, s16 *p);
 }
 
 static inline BOOL Unk_ov003_02229dcc_Chk(u16 *p) {
@@ -850,14 +755,6 @@ static inline BOOL Unk_ov003_02229dcc_Chk(u16 *p) {
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_PlaceOnPlantSide(Rec *o);
-extern "C" void Crawler_Wander(Rec *o);
-extern "C" void Crawler_Watch(Rec *o, s16 *p);
-extern "C" BOOL Insect_IsOnFlower(VecFx32 *pp);
-extern "C" void Crawler_Update(Rec *o);
-extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p);
-extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p);
-extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p);
 }
 
 
@@ -874,26 +771,9 @@ extern "C" {
 extern s16 data_02135f44[];
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void VEC_Add(V3 *dst, V3 *a, V3 *b);
-s32 Random_GlobalBelow(s32 n);
-s32 func_02133150(s32 a, s32 b);
 u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 s32 NetArea_IsLocalOwner(void);
-s32 Math_ApproachVecXZ(V3 *a, V3 *b, s32 c, s32 d, s32 e);
-void Insect_GetDirVec(V3 *out, s32 ang);
-void Insect_PlaySe(Rec *self, s32 a, s32 b);
-s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
-s32 Insect_FadeOut(Rec *self, s32 a);
-void Insect_Despawn(Rec *self);
-void Insect_SplashIfWater(Rec *self);
-s32 Insect_SteerAroundObstacle(Rec *self);
-s32 Insect_SetMoveTarget(Rec *self, s32 a, s32 b);
-void Walkingstick_CheckAlarm(Rec *self, s16 *cnt);
-void TreeBug_CheckAlarm(Rec *self, s16 *cnt);
-void TreeBug_DropAndFly(Rec *self, s16 *cnt);
-void Insect_EscapeRun(Rec *self, s16 *cnt);
-void Insect_HopArc(Rec *self, s16 *cnt);
 }
 
 static inline BOOL Unk_ov003_0222a8d0_Chk(u16 *p) {
@@ -946,15 +826,6 @@ static inline BOOL Unk_ov003_0222a8d0_Chk(u16 *p) {
 }
 
 // prototypes of this segment's own functions
-extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt);
-extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt);
-extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt);
-extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt);
-extern "C" void TreeBug_Idle(Rec *self, s16 *cnt);
-extern "C" void TreeBug_Update(Rec *self);
-extern "C" void Spider_Update(Rec *self);
-extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c);
-extern "C" s32 Insect_GroundWalkNet(Rec *self);
 }
 
 #undef func_02133150
@@ -975,44 +846,15 @@ u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Ground_GetDefaultY(u32 a);
-s32 Random_GlobalBelow(s32 n);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 BOOL PlayerActor_LocalHoldsNet();
 s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
-void Insect_SetScale(Rec *o, s32 v);
-void Insect_Despawn(Rec *e);
-void TreeBug_FlyOff(Rec *o, s16 *p);
-BOOL Insect_GroundWalkNet(Rec *o);
-void Insect_EscapeRun(Rec *o, s16 *p);
-void Insect_HopArc(Rec *o, s16 *p);
-s32 Insect_SteerAroundObstacle(Rec *o);
-s32 Insect_RandomTurn(s32 a, s32 b);
-void Insect_UpdateAlarm(Rec *o, s32 *out);
-s32 Insect_FlyAwayArc(Rec *o, s32 v, u8 *p);
-s32 Insect_TickTimer(Rec *o);
-s32 Insect_FlutterFlight(Rec *o);
-void Insect_PlaySe(Rec *o, s32 a, s32 b);
-s32 Insect_CheckDigHit(Rec *o, V3 *p);
-void Insect_SplashIfWater(Rec *o);
-Actor *Insect_FindNearestPlayer(VecFx32 *pos);
-void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
-void Insect_GetDirVec(V3 *v, s32 a);
 s32 Stinger_UpdateChase(Rec *o, s16 *p);
 void Stinger_Walk(Rec *o, s16 *p, s32 r);
 void Moth_CircleLight(Rec *o);
 }
 
 // prototypes of this segment's own functions
-extern "C" BOOL Insect_GroundWalk(Rec *self);
-extern "C" BOOL Insect_FadeOut(Rec *self, s32 a);
-extern "C" void DungBeetle_Update(Rec *self);
-extern "C" void Stinger_Update(Rec *self);
-extern "C" void Flea_Update(Rec *self);
-extern "C" void Moth_Update(Rec *self);
-extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out);
-extern "C" void PillBug_Walk(Rec *self);
-extern "C" void PillBug_Curled(Rec *self);
 }
 
 
@@ -1030,43 +872,10 @@ void NNS_G3dMdlSetMdlAlpha(void *res, u32 i, u32 v);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
-s32 Ground_GetDefaultY(u32 a);
 void TownJunkInsects_Refresh();
-void Insect_Despawn(Rec *e);
-void Crawler_Wander(Rec *o);
-BOOL Insect_IsAtWateringPoint(VecFx32 *p);
-BOOL Insect_GroundWalkNet(Rec *o);
-BOOL Insect_GroundWalk(Rec *o);
-s32 Insect_FadeOut(Rec *o, s32 a);
-void Insect_CheckRockStrike(Rec *o, s16 *p);
-void PillBug_Walk(Rec *o);
-void PillBug_Curled(Rec *o);
-s32 Insect_FlyAwayArc(Rec *o, s32 v);
-void Insect_FlapWings(Rec *o);
-void Insect_PlaySe(Rec *o, s32 a, s32 b);
-s32 Insect_CheckDigHit(Rec *o, V3 *p);
-void Insect_SplashIfWater(Rec *o);
-void Insect_UpdateRest(Rec *o);
-Actor *Insect_FindNearestPlayer(VecFx32 *pos);
-void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
-void Insect_GetDirVec(V3 *v, s32 a);
-s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
-void MoleCricket_Burrow(Rec *self, s16 *cnt);
-void Insect_EscapeRun(Rec *self, s16 *cnt);
-void Insect_HopArc(Rec *self, s16 *cnt);
-void MoleCricket_CheckDugUp(Rec *self, s16 *cnt);
 }
 
 // prototypes of this segment's own functions
-extern "C" void PillBug_Update(Rec *self);
-extern "C" s32 Insect_SteerAroundObstacle(Rec *self);
-extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt);
-extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt);
-extern "C" void Insect_HopArc(Rec *self, s16 *cnt);
-extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt);
-extern "C" void MoleCricket_Update(Rec *self);
-extern "C" void Ant_Update(Rec *self);
-extern "C" void Hoverer_Update(Rec *self);
 }
 
 
@@ -1079,64 +888,23 @@ typedef VecFx32Ctor V3;
 typedef Insect Rec;
 
 
-
 extern "C" {
 extern CommManager *gCommManager;
 BOOL NetArea_IsLocalOwner();
-s32 Random_GlobalBelow(s32 n);
 s32 FX_Div(s32 a, s32 b);
-s32 Ground_GetDefaultY(u32 a);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
-s32 func_02133150(s32 a, s32 b);
-s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
-s32 Math_ApproachS32(void *a, s32 b, s32 c, s32 d, s32 e);
 s32 Vec_DistXZ(void *a, void *b);
 Actor *PlayerActor_GetActor(u32 n);
-void Insect_SetAnimSpeed(Insect *self, u32 v);
-void Crawler_Escape(Rec *o, s16 *p);
-void Insect_Despawn(Rec *e);
-void TreeBug_FlyOff(Rec *o, s16 *p);
-s32 Insect_FadeOut(Rec *o, s32 a);
-s32 Insect_TurnToTarget(Rec *o, s32 a);
-s32 Insect_ReflectAngle(s32 a, void *b);
-s32 Insect_FlyAwayArc(Rec *o, s32 v);
-s32 Insect_FlapWings(Rec *o);
-s32 Insect_CheckAlarm(Rec *o);
-s32 Insect_FlutterBob(Rec *o, s32 a, s32 b, s32 c);
-s32 Insect_FlutterSteer(Rec *o, s16 *p, s32 a, s32 b, s32 c, s32 d);
-s32 Insect_GetFlutterRange(Rec *o);
-void Insect_PlaySe(Rec *o, s32 a, s32 b);
-void Insect_SplashIfWater(Rec *o);
-void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
-void Insect_CheckTurnCount(Rec *o, s32 a);
-void *Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 void Bee_StingAndLeave(Rec *o);
 void Bee_StretchSwarm(V3 *p, s32 a);
 void Pondskater_CheckObstacle(Rec *o, s16 *p);
 void Pondskater_StartSkate(Rec *o, s16 *p);
 void Pondskater_Skate(Rec *o, s16 *p);
-void Insect_AccumAlarmOffline(Rec *o, u8 *a, s32 *out);
+void Insect_AccumAlarmOffline(Rec *o, u8 *a, VecFx32Ctor *out);
 }
 
-namespace Unk_ov003_0222c7fc_Ns {
-extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, s32 a, s32 b);
-}
 
 // prototypes of this segment's own functions
-extern "C" void Bee_Update(Rec *o);
-extern "C" void Firefly_Wander(Rec *o);
-extern "C" void Firefly_Update(Rec *o);
-extern "C" void Mosquito_Update(Rec *o);
-extern "C" void Pondskater_Update(Rec *o);
-extern "C" void Cricket_Chirp(Rec *o);
-extern "C" void Locust_PlaySe(Rec *o);
-extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p);
-extern "C" void Hopper_Jump(Rec *o);
-extern "C" s16 Insect_RandomTurn(s32 a, s32 b);
-extern "C" void Hopper_Rest(Rec *o, s16 *p);
-extern "C" void Hopper_Update(Rec *o);
-extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out);
-extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b);
 }
 
 #undef func_02133150
@@ -1153,22 +921,7 @@ extern CommManager *gCommManager;
 BOOL NetArea_IsLocalOwner();
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void VEC_Add(V3 *dst, V3 *a, V3 *b);
-s32 Random_GlobalBelow(s32 n);
-s32 func_02133150(s32 a, s32 b);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
-s32 Math_ApproachVecXZ(V3 *a, V3 *b, s32 c, s32 d, s32 e);
-s32 Math_ApproachS32(s32 *a, s32 b, s32 c, s32 d, s32 e);
-s32 Insect_RandomTurn(u8 a, s32 b);
-void Insect_Despawn(Rec *self);
-s32 Insect_FadeOut(Rec *self, s32 a);
-void Insect_FlapWings(Rec *self);
-void Insect_CheckAlarm(Rec *self);
-s32 Insect_TickTimer(Rec *self);
-s32 Insect_SetMoveTarget(Rec *self, s32 a, s32 b);
-void Insect_CheckTurnCount(Rec *self, s32 a);
-void Insect_GetDirVec(V3 *out, s32 ang);
-s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
 void Dragonfly_FlyToPerch(Rec *self);
 void Dragonfly_FindPerch(Rec *self);
 }
@@ -1178,16 +931,6 @@ enum Unk_ov003_0222d1f0_K { K_300 = 0x300 };
 }
 
 // prototypes of this segment's own functions
-extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a);
-extern "C" s32 Insect_ReflectAngle(s32 a, s32 mode);
-extern "C" void Dragonfly_CheckObstacle(Rec *self);
-extern "C" void Dragonfly_FlyOff(Rec *self, s16 *cnt);
-extern "C" void Dragonfly_FlyToTarget(Rec *self);
-extern "C" void Dragonfly_Hover(Rec *self, s16 *cnt);
-extern "C" void Dragonfly_Update(Rec *self);
-extern "C" s32 Insect_GetFlowerSpeciesMask(s32 a);
-extern "C" void Insect_FlutterAltitude(Rec *self, s16 *cnt);
-extern "C" void Insect_FlyAwayArc(Rec *self, s32 a);
 }
 
 #undef func_02133150
@@ -1205,46 +948,15 @@ BOOL NetArea_IsLocalOwner();
 Actor *PlayerActor_GetActor(u32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void VEC_Add(void *a, void *b, void *out);
 void VEC_Subtract(void *a, void *b, void *out);
 void Vec_Sub(VecFx32Ctor *out, void *a, void *b);
 s32 Vec_MagXZ(VecFx32Ctor *v);
-s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
 s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 s32 func_021329d0(s32 a);
-s32 Random_GlobalBelow(s32 n);
-void Insect_SetAnimSpeed(Insect *self, u32 v);
-s32 Insect_ClampStepXZ(VecFx32Ctor *a, VecFx32Ctor *b, s32 c);
-s32 Insect_RandomTurn(s32 a, s32 b);
-s32 Insect_UpdateAlarm(Rec *self, VecFx32Ctor *out);
-s32 Insect_ReflectAngle(s32 a, s32 b);
-s32 Insect_FlutterAltitude(Rec *self, s16 *p);
-s32 Insect_FlyAwayArc(Rec *self, s32 v);
-s32 Insect_UpdateRest(Rec *self);
-Actor *Insect_FindNearestPlayer(VecFx32 *pos);
-s32 Insect_SetMoveTarget(Rec *self, s32 a, s32 b);
-void Insect_GetDirVec(VecFx32Ctor *out, s32 a);
-s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
 s32 Insect_ApproachFlower(Rec *self, s16 *p);
 s32 Moth_SteerToLight(Rec *self, s16 *p, VecFx32Ctor *out);
 }
 
-extern "C" {
-BOOL Insect_TickTimer(Rec *self);
-void Insect_FlutterFlight(Rec *self);
-void Butterfly_Update(Rec *self);
-void Insect_FlapWings(Rec *self);
-void Insect_FleeIfAlarmed(Rec *self, VecFx32Ctor *p);
-s32 Insect_CheckAlarm(Rec *self);
-void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c);
-void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f);
-s32 Insect_GetFlutterTargetSpeed(Rec *self);
-s32 Insect_GetFlutterRange(Rec *self);
-s32 Insect_GetFlutterLeash(Rec *self);
-void Insect_SetFlutterTurnDelay(Rec *self);
-void Insect_FlutterPullBack(Rec *self, VecFx32Ctor *p, s32 a);
-s32 Insect_GetSeId(s32 a, s32 b);
-}
 
 static inline BOOL Gt(s32 a, s32 b) {
     if (a > b) return TRUE;
@@ -1252,20 +964,6 @@ static inline BOOL Gt(s32 a, s32 b) {
 }
 
 // prototypes of this segment's own functions
-extern "C" BOOL Insect_TickTimer(Rec *self);
-extern "C" void Insect_FlutterFlight(Rec *self);
-extern "C" void Butterfly_Update(Rec *self);
-extern "C" void Insect_FlapWings(Rec *self);
-extern "C" void Insect_FleeIfAlarmed(Rec *self, VecFx32Ctor *p);
-extern "C" s32 Insect_CheckAlarm(Rec *self);
-extern "C" void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c);
-extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f);
-extern "C" s32 Insect_GetFlutterTargetSpeed(Rec *self);
-extern "C" s32 Insect_GetFlutterRange(Rec *self);
-extern "C" s32 Insect_GetFlutterLeash(Rec *self);
-extern "C" void Insect_SetFlutterTurnDelay(Rec *self);
-extern "C" void Insect_FlutterPullBack(Rec *self, VecFx32Ctor *p, s32 a);
-extern "C" s32 Insect_GetSeId(s32 a, s32 b);
 }
 
 #undef func_021329d0
@@ -1277,21 +975,13 @@ typedef VecFx32Ctor V3;
 typedef Insect Rec;
 
 
-
 extern "C" {
 extern CommManager *gCommManager;
 extern s16 data_02135f44[];
-extern u8 sHeldInsects[];
-extern u8 sSpecialInsects[];
-extern u8 sFieldInsects[];
-extern u8 sInsectNetSync[];
 extern u8 data_ov003_0225b470[];
 extern u8 data_ov003_0225b474[];
 extern u8 data_ov003_0225b475[];
 BOOL NetArea_IsLocalOwner();
-s32 Random_GlobalBelow(s32 n);
-s32 Ground_GetDefaultY(u32 a);
-s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 Actor *PlayerActor_GetActor(u32 n);
 s32 Flower_GetColor(u16 *p);
@@ -1301,33 +991,11 @@ void Vec_RotateY(V3 *o, s32 a);
 void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
 void NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 CommSyncVar_GetVarSize(s32 a);
-void MI_CpuCopy8(void *, void *, s32);
 void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
-s32 Insect_GetSeId(s32 a, s32 b);
-s32 PlayerActor_GetDigCountdownAt(s32 a, s32 b);
-void Insect_CheckAlarm(Rec *o);
-s32 Insect_TickTimer(Rec *o);
-void Crawler_Wander(Rec *o);
-BOOL Insect_IsOnFlower(VecFx32 *p);
-void Insect_SetFlutterTurnDelay(Rec *o);
+s32 PlayerActor_GetDigCountdownAt(VecFx32Ctor *a, s32 b);
 }
 
 // prototypes of this segment's own functions
-extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b);
-extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a);
-extern "C" BOOL Insect_SplashIfWater(Rec *o);
-extern "C" BOOL Insect_LikesFlower(s32 a, u16 *b);
-extern "C" void Insect_UpdateRest(Rec *o);
-extern "C" Actor *Insect_FindNearestPlayer(VecFx32 *pos);
-extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n);
-extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d);
-extern "C" void Insect_CheckTurnCount(Rec *o, s32 n);
-extern "C" BOOL Insect_IsOverWater(VecFx32 *v);
-extern "C" void Insect_GetDirVec(V3 *o, s32 a);
-extern "C" BOOL Insect_SetFeelers(Rec *o, s32 a, s32 b);
-extern "C" u32 Insect_TestFeelersHole(Rec *o);
-extern "C" u32 Insect_TestFeelers(Rec *o);
-extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 }
 
 #undef func_02133150
@@ -1497,7 +1165,7 @@ extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n) {
     dst = &o->targetPos;
     src = &o->position;
     lim = src->y;
-    if (lim < Ground_GetDefaultY(0)) lim = Ground_GetDefaultY(0);
+    if (lim < Ground_GetDefaultY()) lim = Ground_GetDefaultY();
     i = 1;
     n1 = n + 1;
     for (; i < n1; i++) {
@@ -1672,7 +1340,7 @@ extern "C" BOOL Insect_SplashIfWater(Rec *o) {
 #define func_02133150 _s32_div_f
 namespace s14 {
 // 0x222dd90
-extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
+extern "C" BOOL Insect_CheckDigHit(Rec *o, VecFx32Ctor *a) {
     s8 i;
     s8 *p = &o->hitCountdown;
     if (*p <= 0) {
@@ -2644,7 +2312,7 @@ extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8
 #define func_02133150 _s32_div_f
 namespace s11 {
 // 0x222c7fc
-extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
+extern "C" s32 Insect_UpdateAlarm(Rec *o, VecFx32Ctor *out) {
     s32 r = 0;
     s32 best;
     s32 flagC;
@@ -2661,7 +2329,7 @@ extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
     b[1] = 1;
     s14 = o->alarm;
     r4 = o->alarmThreshold;
-    out[0] = 0;
+    out->x = 0;
     if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         if (NetArea_IsLocalOwner() == 0) {
             flagC = r;
@@ -2669,12 +2337,12 @@ extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
         i = 0;
         zero = 0;
         do {
-            Unk_ov003_0222c7fc_Ns::Insect_AccumAlarm(o, &v, &dist, &b[1], i, flagC);
+            Insect_AccumAlarm(o, &v, &dist, &b[1], i, flagC);
             b[0] = (b[0] & b[1]) ? 1 : zero;
             if (best > dist) {
-                out[0] = v.x;
-                out[1] = v.y;
-                out[2] = v.z;
+                out->x = v.x;
+                out->y = v.y;
+                out->z = v.z;
                 best = dist;
             }
             i = (u8)(i + 1);
@@ -2849,9 +2517,9 @@ extern "C" void Hopper_Jump(Rec *o) {
         } else {
             v = g.getHeight(1);
             if (v > 0x4000) {
-                v = Ground_GetDefaultY(0);
+                v = Ground_GetDefaultY();
             } else {
-                v += Ground_GetDefaultY(0);
+                v += Ground_GetDefaultY();
             }
         }
         if (!Math_ApproachS32(&src->y, v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
@@ -2880,9 +2548,9 @@ extern "C" void Hopper_Jump(Rec *o) {
 #define func_02133150 _s32_div_f
 namespace s11 {
 // 0x222c3c4
-extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p) {
+extern "C" s32 Hopper_CheckObstacle(Rec *o, s16 *p) {
     if (!gCommManager->isSlotActive(gCommManager->myAid) || NetArea_IsLocalOwner()) {
-        void *r = Insect_CheckObstacle(o, 0x50, 0xe38);
+        s32 r = Insect_CheckObstacle(o, 0x50, 0xe38);
         if (r) {
             *p = 0;
             o->state = 0xf;
@@ -3306,7 +2974,7 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
             }
             self->alarm = 0;
             *cnt = 0;
-            pos->y = lim + Ground_GetDefaultY(0);
+            pos->y = lim + Ground_GetDefaultY();
             if (self->kind != 0x35) {
                 self->rotX = 0;
             }
@@ -3518,7 +3186,7 @@ extern "C" void PillBug_Curled(Rec *self) {
         }
     } else {
         V3 out;
-        Insect_UpdateAlarm(self, &out.x);
+        Insect_UpdateAlarm(self, &out);
         if (out.x != 0) {
             self->auxTimer = r4 - 1;
             if (self->alarm < self->alarmThreshold) {
@@ -3550,7 +3218,7 @@ extern "C" void PillBug_Walk(Rec *self) {
         }
     }
     V3 out;
-    Insect_UpdateAlarm(self, &out.x);
+    Insect_UpdateAlarm(self, &out);
     if (self->alarm >= self->alarmThreshold &&
         ((gCommManager)->isSlotActive(gCommManager->myAid) == 0 || NetArea_IsLocalOwner() != 0 ||
          (self->targetPos.x == self->position.x && self->targetPos.z == self->position.z))) {
@@ -3625,7 +3293,7 @@ extern "C" void Moth_Update(Rec *self) {
         break;
     case 9:
     case 11:
-        Insect_FlyAwayArc(self, 0x1ccd, p);
+        Insect_FlyAwayArc(self, 0x1ccd);
         break;
     case 7:
         Insect_FlutterFlight(self);
@@ -3678,10 +3346,10 @@ extern "C" void Flea_Update(Rec *self) {
             y0 = g.waterSurfaceY;
         } else {
             y0 = g.getHeight(1);
-            y0 += Ground_GetDefaultY(0);
+            y0 += Ground_GetDefaultY();
             if (y0 > 0x1000) {
                 if (y0 > 0x4000) {
-                    y0 = Ground_GetDefaultY(0);
+                    y0 = Ground_GetDefaultY();
                 } else {
                     pos->x = save.x;
                     pos->z = save.z;
@@ -4393,7 +4061,7 @@ extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
         o->state = 8;
     } else {
         V3 tv;
-        Insect_UpdateAlarm(o, (s32 *)&tv);
+        Insect_UpdateAlarm(o, &tv);
         if (tv.x != 0) {
             s16 v = ((o->alarmThreshold - o->alarm) * 31) / o->alarmThreshold;
             if (v <= 0) {
@@ -4417,7 +4085,7 @@ extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
     V3 *pos = &o->position;
     s32 n = o->alarm;
     V3 tv;
-    Insect_UpdateAlarm(o, (s32 *)&tv);
+    Insect_UpdateAlarm(o, &tv);
     if (tv.x != 0 && o->isAlarmed == 0) {
         s32 lim = o->alarmThreshold;
         if (n >= lim) {
@@ -5640,7 +5308,7 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
 #define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
 namespace s04 {
 // 0x2228308
-extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
+extern "C" void Insect_UpdateHideTimer(InsectManager *a, Rec *e) {
     if (e->updateFn != 0) {
         s32 t = e->kind;
         switch (t) {
@@ -5710,7 +5378,7 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
 #define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
 namespace s04 {
 // 0x2228060
-extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
+extern "C" void Insect_Update(InsectManager *a, Rec *e, s32 flags, s32 kind) {
     u8 r4 = e->inView;
     s32 r7 = gCommManager->isSlotActive(gCommManager->myAid);
     if (r7 != 0 && e->inViewMask != 0) {
@@ -5852,12 +5520,11 @@ L268:
 #define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
 // 0x222802c
 BOOL InsectManager::onExecute() { using namespace s04;
-    void *self = this;
-    FieldInsect_UpdateAll(self);
+    FieldInsect_UpdateAll(this);
     if ((gCommManager)->isSlotActive(gCommManager->myAid) == 0) {
-        SpecialInsect_UpdateAll(self);
+        SpecialInsect_UpdateAll(this);
     }
-    HeldInsect_UpdateAll(self);
+    HeldInsect_UpdateAll(this);
     Insect_UpdateSpawning(this);
     return TRUE;
 }
@@ -5884,7 +5551,7 @@ BOOL InsectManager::onExecute() { using namespace s04;
 #define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
 namespace s04 {
 // 0x2227f20
-extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
+extern "C" void Insect_CheckDisturbance(InsectManager *a, Rec *e) {
     VillagerActor *o;
     u8 ok;
     s32 px, py;
@@ -6132,7 +5799,7 @@ if (Insect_Spawn(self, b[2], (u8)b[3], 2)) {
 
 namespace s03 {
 // 0x2227970
-extern "C" void FieldInsect_UpdateAll(void *a) {
+extern "C" void FieldInsect_UpdateAll(InsectManager *a) {
     u32 k;
     CommManager *g;
     FieldInsectUpdateLocals l;
@@ -6282,7 +5949,7 @@ test0:
 
 namespace s03 {
 // 0x2227930
-extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
+extern "C" BOOL Insect_IsNetKindMismatch(InsectManager *a, Rec *o, s32 c, s32 d, s32 e) {
     s32 t = o->kind;
     if (d == 0) return FALSE;
     if (t < 0 || t != c) return TRUE;
@@ -6294,7 +5961,7 @@ extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
 
 namespace s03 {
 // 0x22277c0
-extern "C" BOOL Insect_IsTreeStillThere(void *a, Rec *o) {
+extern "C" BOOL Insect_IsTreeStillThere(InsectManager *a, Rec *o) {
     if (o->kind < 0) return FALSE;
     switch (o->kind) {
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x1f: case 0x21: case 0x22: case 0x23: case 0x24: case 0x26: case 0x27: case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f: case 0x34:
@@ -6321,7 +5988,7 @@ yes:
 
 namespace s03 {
 // 0x2227740
-extern "C" void SpecialInsect_UpdateAll(void *a) {
+extern "C" void SpecialInsect_UpdateAll(InsectManager *a) {
     Rec *o = sSpecialInsects;
     u8 i = 0;
     do {
@@ -6345,7 +6012,7 @@ extern "C" void SpecialInsect_UpdateAll(void *a) {
 
 namespace s03 {
 // 0x2227624
-extern "C" void HeldInsect_UpdateAll(void *a) {
+extern "C" void HeldInsect_UpdateAll(InsectManager *a) {
     CommManager *g = gCommManager;
     u32 cur = g->myAid;
     if (cur == 4) cur = 0;
@@ -6389,7 +6056,7 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
 
 namespace s03 {
 // 0x2227544
-extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o) {
+extern "C" BOOL Insect_UsesCollisionMove(InsectManager *a, Rec *o) {
     s32 t;
     u32 st;
     st = o->state;
@@ -6468,7 +6135,7 @@ extern "C" u32 HeldInsect_GetStage(s32 idx) {
 
 namespace s03 {
 // 0x22273b4
-extern "C" s32 InsectPool_Draw(void *a, Rec *o, s32 n) {
+extern "C" s32 InsectPool_Draw(InsectManager *a, Rec *o, s32 n) {
     s32 i = 0;
     goto test0;
 loop0:
@@ -6491,7 +6158,7 @@ test0:
 
 namespace s02 {
 // 0x222733c
-extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t) {
+extern "C" BOOL Insect_IsTreeKindForCulling(InsectManager *a, s32 t) {
     switch (t) {
     case 9:
     case 16:
@@ -6764,7 +6431,7 @@ extern "C" void Insect_SetScale(Obj *o, s32 v) {
 
 namespace s02 {
 // 0x2226c88
-extern "C" void Insect_Draw(void *a, Obj *o) {
+extern "C" void Insect_Draw(InsectManager *a, Obj *o) {
     s32 *p = &o->scale.x;
     if (*p > 0) {
         void *t = o->pooledModel.getModel();
@@ -6783,7 +6450,7 @@ extern "C" void Insect_Draw(void *a, Obj *o) {
 
 namespace s02 {
 // 0x2226c14
-extern "C" BOOL Insect_HasShadow(void *a, Obj *o) {
+extern "C" BOOL Insect_HasShadow(InsectManager *a, Obj *o) {
     s32 idx = o->kind;
     if (sInsectModelParams[idx].collisionRadius <= 1) return FALSE;
     switch (idx) {
@@ -6805,7 +6472,7 @@ extern "C" BOOL Insect_HasShadow(void *a, Obj *o) {
 
 namespace s02 {
 // 0x2226a9c
-extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
+extern "C" void Insect_SetModelMatrix(InsectManager *a, Obj *o, s32 flag) {
     V3 v;
     s32 r6 = WorldCurve_ToCurved(&v, &o->position);
     if (flag) {
@@ -6858,10 +6525,9 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
 #define sHeldInsects (*(Obj (*)[1])&::sHeldInsects)
 // 0x2226a5c
 BOOL InsectManager::onDraw() { using namespace s02;
-    Obj *self = (Obj *)this;
-    s32 r = InsectPool_Draw(self, sFieldInsects, 8);
-    r &= InsectPool_Draw(self, sSpecialInsects, 2);
-    r &= InsectPool_Draw(self, sHeldInsects, 4);
+    s32 r = InsectPool_Draw(this, sFieldInsects, 8);
+    r &= InsectPool_Draw(this, sSpecialInsects, 2);
+    r &= InsectPool_Draw(this, sHeldInsects, 4);
     return r;
 }
 #undef sFieldInsects
@@ -7122,7 +6788,7 @@ fail:
 
 namespace s01 {
 // 0x222644c
-extern "C" s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d) {
+extern "C" s32 Insect_TrySpawnRandom(InsectManager *a, s32 b, u8 c, u32 d) {
     Rec *e;
     s32 r;
     u8 i;
@@ -7331,12 +6997,12 @@ extern "C" s32 Insect_GetTimeSlot()
 #define func_02133150 _s32_div_f
 namespace s00 {
 // 0x222603c
-extern "C" void Insect_TickFrame(u8 *self)
+extern "C" void Insect_TickFrame(Insect *self)
 {
-    self += 0x24f;
-    (*self)++;
-    if (*self > 0x50) {
-        *self = 0;
+    u8 *p = &self->frameCounter;
+    (*p)++;
+    if (*p > 0x50) {
+        *p = 0;
     }
 }
 }
@@ -7384,7 +7050,7 @@ extern "C" void Insect_SetAnimSpeed(Insect *self, u32 v)
 #define func_02133150 _s32_div_f
 namespace s00 {
 // 0x2225e34
-extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c)
+extern "C" BOOL Insect_PickSpecialSpawn(s8 *a, s8 *b, s32 c)
 {
     s32 r = Weather_GetFallingPrecip();
     u8 buf[16];
