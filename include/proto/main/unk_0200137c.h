@@ -5,17 +5,13 @@
 
 #include "types.h"
 struct Gfx2dAffine;
-struct Gfx2dBgScroll;
-struct Gfx2dDispCtrl;
 struct Gfx2dOffset;
-struct Gfx2dWindowBlend;
+struct Gfx2dState;
 struct Gfx2dWindowRect;
 #ifndef __cplusplus
 typedef struct Gfx2dAffine Gfx2dAffine;
-typedef struct Gfx2dBgScroll Gfx2dBgScroll;
-typedef struct Gfx2dDispCtrl Gfx2dDispCtrl;
 typedef struct Gfx2dOffset Gfx2dOffset;
-typedef struct Gfx2dWindowBlend Gfx2dWindowBlend;
+typedef struct Gfx2dState Gfx2dState;
 typedef struct Gfx2dWindowRect Gfx2dWindowRect;
 #endif
 #ifdef __cplusplus
@@ -283,17 +279,8 @@ void Gfx2d_InitWindowRect(Gfx2dWindowRect* p);
 #ifndef PROTO_LOCAL_sGfx2dBackdropColor
 extern u8 sGfx2dBackdropColor[4];
 #endif
-#ifndef PROTO_LOCAL_sGfx2dBgScroll
-extern Gfx2dBgScroll sGfx2dBgScroll;
-#endif
-#ifndef PROTO_LOCAL_sGfx2dSubBg3Mtx
-extern u8 sGfx2dSubBg3Mtx[0x10];
-#endif
-#ifndef PROTO_LOCAL_sGfx2dDispCtrl
-extern Gfx2dDispCtrl sGfx2dDispCtrl;
-#endif
-#ifndef PROTO_LOCAL_sGfx2dWindowBlend
-extern Gfx2dWindowBlend sGfx2dWindowBlend;
+#ifndef PROTO_LOCAL_sGfx2d
+extern Gfx2dState sGfx2d;
 #endif
 #endif
 
