@@ -27,7 +27,7 @@ s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, const char *t);
 s32 gpiAuthBuddyRequest(GPConnection *h, s32 id);
 #endif
 #ifndef PROTO_LOCAL_gpiFixBuddyIndices
-s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, s32 m);
+s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, void *data);
 #endif
 #ifndef PROTO_LOCAL_gpiDeleteBuddy
 s32 gpiDeleteBuddy(GPConnection *h, s32 x);

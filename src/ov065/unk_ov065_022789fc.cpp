@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/GsSocket.h"
 #include "net/SockHostEnt.h"
+#include "net/SockAddrIn.h"
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
 
@@ -34,14 +35,13 @@ extern const char urlSafeEncodeing[];
 extern const char defaultEncoding[];
 extern s32 randomnum;
 extern s32 GSINitroErrno;
-s32 Sock_InetAtoN(s32, u32 *);
+s32 Sock_InetAtoN(const char *, u32 *);
 s32 Sock_GetSockName(s32, void *);
 s32 CheckRcode(s32, s32);
 s32 longrand(void);
 u32 nextlongrand(u32);
 void TripToQuart(char *, char *, s32);
-s32 inet_addr(s32);
-s32 OS_SPrintf(char *, char *, s32);
+s32 inet_addr(const char *cp);
 }
 }
 
@@ -63,10 +63,10 @@ extern SockHostEnt localhost;
 extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 void MI_CpuFill8(void *p, s32 v, s32 n);
-s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, void *sa);
-s32 Sock_Send(s32 a, s32 b, s32 c, u32 d);
-s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, u8 *sa);
-s32 Sock_Recv(s32 a, s32 b, s32 c, u32 d);
+s32 Sock_SendTo(s32 a, const void *b, s32 c, u32 d, void *sa);
+s32 Sock_Send(s32 a, const void *b, s32 c, u32 d);
+s32 Sock_RecvFrom(s32 a, void *b, s32 c, u32 d, u8 *sa);
+s32 Sock_Recv(s32 a, void *b, s32 c, u32 d);
 s32 Sock_Accept(s32 a, u8 *sa);
 s32 Sock_Listen(s32 a);
 s32 Sock_Connect(s32 a, void *sa);
@@ -78,8 +78,8 @@ s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
 s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
-u32 GOAGetLastError(s32 s);
-s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
+s32 GOAGetLastError(s32 s);
+s32 ghiDoSend(GHIConnection *o, const char *buf, s32 n);
 void OS_Sleep(s32 ms);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
@@ -87,7 +87,7 @@ s32 CheckRcode(s32 a, s32 b);
 s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, const char *s, s32 len);
 s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 }
 }
@@ -464,7 +464,7 @@ s32 CheckRcode(s32 a, s32 b) {
 
 namespace FB {
 extern "C" {
-s32 socket(s32 a, s32 b) {
+s32 socket(s32 a, s32 b, s32 protocol) {
     return CheckRcode(Sock_Create(a, b), -1);
 }
 }
@@ -488,13 +488,13 @@ s32 shutdown(s32 a, s32 how) { // how: unused by SockCore_Shutdown
 
 namespace FB {
 extern "C" {
-s32 bind(s32 a, GsSockAddr *src, u32 len) {
-    GsSockAddr l;
-    if (*(u16 *)&src->b[2] == 0) {
+s32 bind(s32 a, const SockAddrIn *src, u32 len) {
+    SockAddrIn l;
+    if (src->port == 0) {
         return 0;
     }
     l = *src;
-    l.b[0] = len;
+    l.len = len;
     return CheckRcode(Sock_Bind(a, &l), -1);
 }
 }
@@ -502,10 +502,10 @@ s32 bind(s32 a, GsSockAddr *src, u32 len) {
 
 namespace FB {
 extern "C" {
-s32 connect(s32 a, GsSockAddr *src, u32 len) {
-    GsSockAddr l;
+s32 connect(s32 a, const SockAddrIn *src, u32 len) {
+    SockAddrIn l;
     l = *src;
-    l.b[0] = len;
+    l.len = len;
     return CheckRcode(Sock_Connect(a, &l), -1);
 }
 }
@@ -533,7 +533,7 @@ s32 accept(s32 a, u8 *sa, s32 *len) {
 
 namespace FB {
 extern "C" {
-s32 recv(s32 a, s32 b, s32 c, u32 d) {
+s32 recv(s32 a, void *b, s32 c, u32 d) {
     return CheckRcode(Sock_Recv(a, b, c, d), -1);
 }
 }
@@ -541,7 +541,7 @@ s32 recv(s32 a, s32 b, s32 c, u32 d) {
 
 namespace FB {
 extern "C" {
-s32 recvfrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len) {
+s32 recvfrom(s32 a, void *b, s32 c, u32 d, u8 *sa, s32 *len) {
     s32 r;
     *sa = *len;
     r = Sock_RecvFrom(a, b, c, d, sa);
@@ -553,7 +553,7 @@ s32 recvfrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len) {
 
 namespace FB {
 extern "C" {
-s32 send(s32 a, s32 b, s32 c, u32 d) {
+s32 send(s32 a, const void *b, s32 c, u32 d) {
     return CheckRcode(Sock_Send(a, b, c, d), -1);
 }
 }
@@ -561,10 +561,10 @@ s32 send(s32 a, s32 b, s32 c, u32 d) {
 
 namespace FB {
 extern "C" {
-s32 sendto(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len) {
-    GsSockAddr l;
+s32 sendto(s32 a, const void *b, s32 c, u32 d, const SockAddrIn *addr, u32 len) {
+    SockAddrIn l;
     *(len ? &l : &l) = *addr;
-    l.b[0] = len;
+    l.len = len;
     return CheckRcode(Sock_SendTo(a, b, c, d, &l), -1);
 }
 }
@@ -589,10 +589,10 @@ s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e) {
 
 namespace FA {
 extern "C" {
-s32 getsockname(s32 a, u8 *p1, u32 *p2) {
-    *p1 = *p2;
+s32 getsockname(s32 a, SockAddrIn *p1, s32 *p2) {
+    p1->len = *p2;
     a = Sock_GetSockName(a, p1);
-    *p2 = *p1;
+    *p2 = p1->len;
     return CheckRcode(a, -1);
 }
 }
@@ -600,7 +600,7 @@ s32 getsockname(s32 a, u8 *p1, u32 *p2) {
 
 namespace FA {
 extern "C" {
-s32 inet_addr(s32 a) {
+s32 inet_addr(const char *a) {
     u32 v;
     if (Sock_InetAtoN(a, &v) == 0) {
         return -1;
@@ -612,7 +612,7 @@ s32 inet_addr(s32 a) {
 
 namespace FA {
 extern "C" {
-u32 GOAGetLastError(void) {
+s32 GOAGetLastError(s32 s) {
     return GSINitroErrno;
 }
 }

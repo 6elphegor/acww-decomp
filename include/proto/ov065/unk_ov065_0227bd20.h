@@ -25,7 +25,7 @@ s32 gpProcess(GPConnection *h);
 void gpDisconnect(GPConnection *h);
 #endif
 #ifndef PROTO_LOCAL_gpSetInfosA
-s32 gpSetInfosA(GPConnection *h, s32 a, s32 b);
+s32 gpSetInfosA(GPConnection *h, s32 a, char *b);
 #endif
 #ifndef PROTO_LOCAL_gpSendBuddyRequestA
 s32 gpSendBuddyRequestA(GPConnection *h, s32 v, const char *s);

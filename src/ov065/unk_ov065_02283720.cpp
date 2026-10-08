@@ -12,6 +12,7 @@
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212b770.h"
 #include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02278328.h"
 #include "proto/ov065/unk_ov065_02283720.h"
 
 
@@ -75,10 +76,6 @@ s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
-s32 ArrayLength(void *);
-void ArrayFree(void *);
-void *ArrayNth(void *, s32);
-void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
@@ -142,8 +139,6 @@ extern DArrayImplementation *serverreqs;
 
 s32 strncmp(const char *, const char *, u32);
 
-void *ArrayNth(DArrayImplementation *, s32);
-s32 ArrayLength(DArrayImplementation *);
 s32 CanReceiveOnSocket(s32);
 s32 recv(s32, char *, s32, s32);
 void shutdown(s32, s32);

@@ -12,6 +12,8 @@
 #include "proto/autoload_2/unk_0212fa54.h"
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02288c78.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
+extern "C" s32 NTSLengthSB(const char *s, s32 n); // src/ov065/unk_ov065_02289444.cpp
 
 extern "C" {
 char *data_ov065_0228e928[2] = {"queryid", "final"};
@@ -41,16 +43,9 @@ extern u8 data_0213a410[];
 u32 func_0213335c(u32 a, u32 b);
 void SocketStartUp(void);
 s32 CanReceiveOnSocket(s32 s);
-s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
-s32 sendto(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
 s32 closesocket(s32 s);
-s32 socket(s32 a, s32 b, s32 c);
 void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
-s32 NTSLengthSB(u8 *buf, s32 n);
 void SBReleaseStr(SBServerList *a, const char *p);
-void SBServerAddKeyValue(void *e, u32 v, u8 *buf);
-void SBServerParseQR2FullKeysSingle(void *e, u8 *buf, s32 n);
-void SBServerParseKeyVals(void *e, u8 *buf);
 }
 
 typedef GOACryptState Cipher;
@@ -78,7 +73,6 @@ void FIFOAddRear(List *l, Ent *e);
 s32 KeyValCompareKey(SBKeyValuePair *a, SBKeyValuePair *b);
 u32 KeyValHashKey(SBKeyValuePair *p, u32 n);
 void KeyValFree(SBKeyValuePair *p);
-u32 StringHash(u8 *s, u32 n);
 
 }
 }
@@ -119,11 +113,8 @@ s32 TableEnter(void *, void *);
 s32 TableCount(void *);
 s32 TableFree(void *);
 void *TableNew2(s32, s32, s32, void *, void *, void *);
-s32 inet_addr(s32);
-s32 recvfrom(s32, void *, s32, s32, void *, void *);
 s32 closesocket(s32);
 s32 CanReceiveOnSocket(s32);
-s32 msleep(s32);
 s32 SBQueryEngineRemoveServerFromFIFOs(void *, void *);
 s32 SBQueryEngineAddQueryKey(void *, s32);
 s32 SBQueryEngineThink(void *);
@@ -133,15 +124,13 @@ s32 SBEngineHaltUpdates(void *);
 s32 SBQueryEngineSetPublicIP(void *, s32);
 s32 SBQueryEngineInit(void *, s32, s32, s32, void *, void *);
 s32 SBIsNullServer(_SBServer *);
-s32 SBServerSetFlags(void *, s32);
-_SBServer *SBAllocServer(void *, u32, u32);
-s32 SBServerGetPing(void *);
-s32 StringHash(void *, s32);
+void SBServerSetFlags(_SBServer *, u32);
+_SBServer *SBAllocServer(SBServerList *, u32, u32);
+u32 SBServerGetPing(_SBServer *);
 s32 SBServerListCleanup(void *);
 s32 SBServerListDisconnect(void *);
 s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
 s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 NTSLengthSB(char *, s32);
 char *SBRefStr(SBServerList *, const char *);
 s32 SBServerListClear(void *);
 s32 SBFreeDeadList(void *);
@@ -153,10 +142,9 @@ s32 SBServerListFindServer(void *c, _SBServer *key);
 void SBServerListAppendServer(void *, _SBServer *);
 void SBServerListSort(void *c, s32 a, char *b, u32 mode);
 s32 ProcessIncomingData(void *);
-s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
-s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
+s32 SBSendNatNegotiateCookieToServer(SBServerList *c, u32 a1, u32 a2, u32 ip);
+s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len);
 
-s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
 char *mytok(char *s, s32 ch);
 s32 CheckValidKey(char *s);
 char *SBServerGetStringValueA(void *a, char *k, char *d);
@@ -169,7 +157,7 @@ s32 SBListThink(void *);
 s32 ProcessLanData(SBServerList *);
 s32 RefStringCompare(char **, char **);
 void RefStringFree(void **);
-s32 RefStringHash(void **, s32);
+s32 RefStringHash(SBRefString *, s32);
 
 }
 }
@@ -221,16 +209,16 @@ s32 ServerBrowserLimitUpdateA(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g)
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s32 e) {
+s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, const char *a, u16 b, void *c, s32 e) {
     s32 x = inet_addr(a);
-    return SBSendMessageToServer(&o->list, x, Unk_ov065_02289044_Htons(b), c, e);
+    return SBSendMessageToServer(&o->list, x, Unk_ov065_02289044_Htons(b), (u8 *)c, e);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c) {
+s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, const char *a, u16 b, s32 c) {
     s32 x = inet_addr(a);
     return SBSendNatNegotiateCookieToServer(&o->list, x, Unk_ov065_02289044_Htons(b), c);
 }
@@ -310,8 +298,8 @@ s32 ServerBrowserGetMyPublicIPAddr(_ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 RefStringHash(void **p, s32 numBuckets) {
-    return StringHash(*p, numBuckets);
+s32 RefStringHash(SBRefString *p, s32 numBuckets) {
+    return StringHash(p->str, numBuckets);
 }
 }
 }
@@ -408,7 +396,7 @@ char *SBServerGetStringValueA(void *a, char *k, char *d) {
 
 namespace F02288e2c {
 extern "C" {
-s32 SBServerGetIntValueA(void *a, char *b, s32 c) {
+s32 SBServerGetIntValueA(_SBServer *a, char *b, s32 c) {
     char *v;
     s32 t;
     if (strcmp(b, "ping") == 0) {
@@ -662,10 +650,10 @@ void SBServerParseQR2FullKeysSingle(_SBServer *c, char *p, s32 len) {
 
 namespace F022884fc {
 extern "C" {
-u32 StringHash(u8 *s, u32 n) {
+u32 StringHash(const char *s, u32 n) {
     s32 c;
     u32 h = 0;
-    c = *(s8 *)s;
+    c = *s;
     if (c != 0) {
         do {
             if (c >= 0 && c < 0x80) {
@@ -674,7 +662,7 @@ u32 StringHash(u8 *s, u32 n) {
             h = h * 0x9ccf9319;
             h += c;
             s++;
-            c = *(s8 *)s;
+            c = *s;
         } while (c != 0);
     }
     return h % n;
@@ -694,7 +682,7 @@ void KeyValFree(SBKeyValuePair *p) {
 namespace F022884fc {
 extern "C" {
 u32 KeyValHashKey(SBKeyValuePair *p, u32 n) {
-    return StringHash((u8 *)p->key, n);
+    return StringHash(p->key, n);
 }
 }
 }

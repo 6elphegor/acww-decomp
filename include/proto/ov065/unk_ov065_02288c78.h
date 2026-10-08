@@ -34,7 +34,7 @@ s32 ServerBrowserThink(void *o);
 s32 ServerBrowserHalt(void *o);
 #endif
 #ifndef PROTO_LOCAL_RefStringHash
-s32 RefStringHash(void **p, s32 numBuckets);
+s32 RefStringHash(SBRefString *p, s32 numBuckets);
 #endif
 #ifndef PROTO_LOCAL_RefStringCompare
 s32 RefStringCompare(char **a, char **b);
@@ -55,7 +55,7 @@ void SBServerAddIntKeyValue(void *a, char *b);
 char *SBServerGetStringValueA(void *a, char *k, char *d);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetIntValueA
-s32 SBServerGetIntValueA(void *a, char *b, s32 c);
+s32 SBServerGetIntValueA(_SBServer *a, char *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetFloatValueA
 u64 SBServerGetFloatValueA(void *a, char *b, u64 v);
@@ -73,7 +73,7 @@ s32 CheckValidKey(char *s);
 char *mytok(char *s, s32 ch);
 #endif
 #ifndef PROTO_LOCAL_StringHash
-u32 StringHash(u8 *s, u32 n);
+u32 StringHash(const char *s, u32 n);
 #endif
 #ifdef __cplusplus
 }
@@ -82,10 +82,10 @@ u32 StringHash(u8 *s, u32 n);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_ServerBrowserSendMessageToServerA
-s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s32 e);
+s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, const char *a, u16 b, void *c, s32 e);
 #endif
 #ifndef PROTO_LOCAL_ServerBrowserSendNatNegotiateCookieToServerA
-s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c);
+s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, const char *a, u16 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_ServerBrowserRemoveServer
 void ServerBrowserRemoveServer(_ServerBrowser *o, _SBServer *key);

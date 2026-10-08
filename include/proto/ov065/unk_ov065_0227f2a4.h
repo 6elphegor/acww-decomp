@@ -20,13 +20,13 @@ extern "C" {
 s32 gpiIntToDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc);
 #endif
 #ifndef PROTO_LOCAL_gpiSendLocalInfo
-s32 gpiSendLocalInfo(void *h, char *a, char *b);
+s32 gpiSendLocalInfo(GPConnection *h, char *a, char *b);
 #endif
 #ifndef PROTO_LOCAL_gpiSendUserInfo
-s32 gpiSendUserInfo(void *h, char *a, char *b);
+s32 gpiSendUserInfo(GPConnection *h, char *a, char *b);
 #endif
 #ifndef PROTO_LOCAL_gpiSetInfoi
-s32 gpiSetInfoi(void *h, s32 code, s32 val);
+s32 gpiSetInfoi(GPConnection *h, s32 code, s32 val);
 #endif
 #ifndef PROTO_LOCAL_Unk_ov065_0227f54c_pool_order
 __declspec(weak) void Unk_ov065_0227f54c_pool_order(void);
@@ -41,10 +41,10 @@ extern "C" {
 void gpiInfoCacheToArg(GPIInfoCache *s, GPGetInfoResponseArg *d);
 #endif
 #ifndef PROTO_LOCAL_gpiProcessGetInfo
-s32 gpiProcessGetInfo(void *h, GPIOperation *req, char *str);
+s32 gpiProcessGetInfo(GPConnection *h, GPIOperation *req, char *str);
 #endif
 #ifndef PROTO_LOCAL_gpiAddLocalInfo
-s32 gpiAddLocalInfo(void *h, GPIBuffer *p);
+s32 gpiAddLocalInfo(GPConnection *h, GPIBuffer *p);
 #endif
 #ifndef PROTO_LOCAL_gpiSetInfos
 s32 gpiSetInfos(GPConnection *h, s32 cmd, char *val);

@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_sDwcControl
-extern void *sDwcControl;
+extern DwcControl *sDwcControl;
 #endif
 #ifndef PROTO_LOCAL_data_ov065_02290674
 extern u32 data_ov065_02290674;
@@ -24,7 +24,7 @@ extern u32 data_ov065_02290674;
 extern void *sDwcConnTable[32];
 #endif
 #ifndef PROTO_LOCAL_sDwcConnInfo
-extern u8 sDwcConnInfo[0x100];
+extern DwcConnInfo sDwcConnInfo[32];
 #endif
 #ifndef PROTO_LOCAL_DwcCore_Init
 void DwcCore_Init(DwcControl *g, DwcUserData *a1, u32 productId, const char *a3, const char *a4, s32 sendBufSize, s32 recvBufSize, DwcFriendData *friendList, s32 friendListLen);
@@ -138,7 +138,7 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4);
 void DwcCore_OnGpError(s32 a, GPErrorArg *b);
 #endif
 #ifndef PROTO_LOCAL_DwcMatch_OnGpBuddyMessage
-void DwcMatch_OnGpBuddyMessage(void *a, GPRecvBuddyMessageArg *b, void *c);
+void DwcMatch_OnGpBuddyMessage(GPConnection *a, GPRecvBuddyMessageArg *b, void *c);
 #endif
 #ifndef PROTO_LOCAL_DwcConn_OnGt2Receive
 void DwcConn_OnGt2Receive(void *a, void *b, s32 c, s32 d);

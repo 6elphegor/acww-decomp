@@ -37,13 +37,13 @@ extern s8 *sWifiApNdwcshapKey2Ptr;
 extern s8 *sWifiApUsbKey2Ptr;
 #endif
 #ifndef PROTO_LOCAL_WifiAp_IsNdwcshapAp
-s32 WifiAp_IsNdwcshapAp(void *a);
+s32 WifiAp_IsNdwcshapAp(u8 *a);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_GetNdwcshapWepKey
-void WifiAp_GetNdwcshapWepKey(void *a, void *b);
+void WifiAp_GetNdwcshapWepKey(u8 *a, u8 *b);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_GetNdwcshapApInfo
-void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
+void WifiAp_GetNdwcshapApInfo(u8 *a, void *dst);
 #endif
 #ifndef PROTO_LOCAL_WifiAp_IsUsbConnectorAp
 s32 WifiAp_IsUsbConnectorAp(void *p);

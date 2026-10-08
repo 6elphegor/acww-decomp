@@ -13,6 +13,10 @@
 #include "proto/ov065/unk_ov065_0226cb18.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/ov065/unk_ov065_0225f1a0.h"
+extern "C" {
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void MI_CpuFill8(void *dst, u32 data, u32 size);
+}
 #pragma opt_strength_reduction off
 
 extern "C" {
@@ -94,8 +98,6 @@ extern char data_ov065_0228b90c[];
 extern char data_ov065_0228b918[];
 extern char data_ov065_0228b924[];
 
-extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
-extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void OS_GetMacAddress(void *p);
 extern s32 RTC_GetDate(void *p);
 extern s32 RTC_GetTime(void *p);
@@ -112,9 +114,6 @@ extern void DWCi_AUTH_MakeWiFiID(u8 *buf);
 extern void OS_JoinThread(void *p);
 extern void OS_Sleep(u32 ms);
 
-extern void WifiAp_DeriveUsbApWepKey(void *p, void *out);
-extern void WifiAp_DecodeNdwcshapSsid(void *in, void *out);
-extern void WifiAp_DeriveNdwcshapWepKey(void *in, void *p);
 extern u8 *WifiLink_GetConnectedBssid(void);
 extern u8 *WifiLink_GetConnectedSsid(u16 *out);
 extern s32 DwcHttp_AddField(DwcHttpFieldList *f, const char *k, const char *v);
@@ -139,11 +138,11 @@ extern s32 NasAuth_SendRequest(s32 a);
 
 void WifiAp_GetUsbApWepKey(u8 *p, u8 *out);
 s32 WifiAp_IsUsbConnectorAp(void *p);
-void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
-void WifiAp_GetNdwcshapWepKey(void *a, void *b);
-s32 WifiAp_IsNdwcshapAp(void *a);
+void WifiAp_GetNdwcshapApInfo(u8 *a, void *dst);
+void WifiAp_GetNdwcshapWepKey(u8 *a, u8 *b);
+s32 WifiAp_IsNdwcshapAp(u8 *a);
 
-s32 WifiAp_IsNdwcshapAp(void *a) {
+s32 WifiAp_IsNdwcshapAp(u8 *a) {
     u8 buf[0x1c];
     WifiAp_DecodeNdwcshapSsid(a, buf);
     if (memcmp(buf, "NDWCSHAP", 8) == 0) {
@@ -152,13 +151,13 @@ s32 WifiAp_IsNdwcshapAp(void *a) {
     return FALSE;
 }
 
-void WifiAp_GetNdwcshapWepKey(void *a, void *b) {
+void WifiAp_GetNdwcshapWepKey(u8 *a, u8 *b) {
     u8 buf[0x18];
     WifiAp_DecodeNdwcshapSsid(a, buf);
     WifiAp_DeriveNdwcshapWepKey(buf, b);
 }
 
-void WifiAp_GetNdwcshapApInfo(void *a, void *dst) {
+void WifiAp_GetNdwcshapApInfo(u8 *a, void *dst) {
     u8 buf[0x18];
     WifiAp_DecodeNdwcshapSsid(a, buf);
     if (memcmp(buf, "NDWCSHAP", 8) == 0) {
@@ -219,7 +218,6 @@ u32 NetCheck_GetErrorCode(void);
 s32 NetCheck_Abort(void);
 s32 NetCheck_Destroy(void);
 s32 NetCheck_Start(void *cfg);
-void MI_CpuCopy8(void *src, void *dst, u32 n);
 void DGT_Hash1Reset(void *ctx);
 void DGT_Hash1SetSource(void *ctx, void *p, u32 n);
 void DGT_Hash1GetDigest_R(void *out, void *ctx);
@@ -267,9 +265,6 @@ s32 WifiAp_StepStartSockets(WifiApContext *c);
 s32 WifiAp_ProcessNetSetup(void);
 s32 WifiAp_Base64Decode(u8 *in, u8 *out, u32 len, u32 max);
 s32 WifiAp_Base64Value(u32 c);
-void WifiAp_DeriveUsbApWepKey(u8 *a, u8 *b);
-void WifiAp_DeriveNdwcshapWepKey(u8 *a, u8 *b);
-void WifiAp_DecodeNdwcshapSsid(u8 *a, u8 *b);
 
 void WifiAp_DecodeNdwcshapSsid(u8 *a, u8 *b) {
     s32 i;

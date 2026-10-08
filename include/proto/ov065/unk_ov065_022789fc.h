@@ -6,6 +6,7 @@
 #include "types.h"
 #include "net/GsSocket.h"
 #include "net/SockHostEnt.h"
+#include "net/SockAddrIn.h"
 #ifdef __cplusplus
 #include "net/ghttpBuffer.h"
 #include "net/ghttpConnection.h"
@@ -72,7 +73,7 @@ s32 IsPrivateIP(u32 *p);
 s32 CheckRcode(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_socket
-s32 socket(s32 a, s32 b);
+s32 socket(s32 a, s32 b, s32 protocol);
 #endif
 #ifndef PROTO_LOCAL_closesocket
 s32 closesocket(s32 a);
@@ -87,13 +88,13 @@ s32 listen(s32 a, s32 backlog);
 s32 accept(s32 a, u8 *sa, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_recv
-s32 recv(s32 a, s32 b, s32 c, u32 d);
+s32 recv(s32 a, void *b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_recvfrom
-s32 recvfrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len);
+s32 recvfrom(s32 a, void *b, s32 c, u32 d, u8 *sa, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_send
-s32 send(s32 a, s32 b, s32 c, u32 d);
+s32 send(s32 a, const void *b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_getsockopt
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
@@ -102,13 +103,13 @@ s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 #endif
 #ifndef PROTO_LOCAL_getsockname
-s32 getsockname(s32 a, u8 *p1, u32 *p2);
+s32 getsockname(s32 a, SockAddrIn *p1, s32 *p2);
 #endif
 #ifndef PROTO_LOCAL_inet_addr
-s32 inet_addr(s32 a);
+s32 inet_addr(const char *a);
 #endif
 #ifndef PROTO_LOCAL_GOAGetLastError
-u32 GOAGetLastError(void);
+s32 GOAGetLastError(s32 s);
 #endif
 #ifndef PROTO_LOCAL_time
 s32 time(s32 *timer);
@@ -168,13 +169,13 @@ s32 ghiReadDataFromBuffer(GHIBuffer *o, char *dst, s32 *len);
 SockHostEnt *getlocalhost();
 #endif
 #ifndef PROTO_LOCAL_bind
-s32 bind(s32 a, GsSockAddr *src, u32 len);
+s32 bind(s32 a, const SockAddrIn *src, u32 len);
 #endif
 #ifndef PROTO_LOCAL_connect
-s32 connect(s32 a, GsSockAddr *src, u32 len);
+s32 connect(s32 a, const SockAddrIn *src, u32 len);
 #endif
 #ifndef PROTO_LOCAL_sendto
-s32 sendto(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len);
+s32 sendto(s32 a, const void *b, s32 c, u32 d, const SockAddrIn *addr, u32 len);
 #endif
 }
 #endif

@@ -17,7 +17,7 @@ extern s32 ghiThrottleBufferSize;
 extern u32 ghiThrottleTimeDelay;
 #endif
 #ifndef PROTO_LOCAL_ghiConnections
-extern void * *ghiConnections;
+extern GHIConnection **ghiConnections;
 #endif
 #ifndef PROTO_LOCAL_ghiNextUniqueID
 extern s32 ghiNextUniqueID;
@@ -29,7 +29,7 @@ extern s32 ghiNumConnections;
 extern s32 ghiConnectionsLen;
 #endif
 #ifndef PROTO_LOCAL_ghiProxyAddress
-extern void *ghiProxyAddress;
+extern char *ghiProxyAddress;
 #endif
 #ifndef PROTO_LOCAL_ghiProxyPort
 extern u32 ghiProxyPort;
@@ -47,7 +47,7 @@ void ghttpCleanup();
 s32 ghttpGetA(const char *a, s32 b, ghttpCompletedCallback c, void *d);
 #endif
 #ifndef PROTO_LOCAL_ghttpGetExA
-s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j);
+s32 ghttpGetExA(const char *a, const char *b, char *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j);
 #endif
 #ifndef PROTO_LOCAL_ghttpPostA
 s32 ghttpPostA(const char *a, GHIPost *b, s32 c, ghttpCompletedCallback d, void *e);
@@ -98,13 +98,13 @@ void ghiUnlock();
 BOOL ghiDecryptReceivedData(GHIConnection *self);
 #endif
 #ifndef PROTO_LOCAL_ghiDoReceive
-s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen);
+s32 ghiDoReceive(GHIConnection *self, char *buf, s32 *plen);
 #endif
 #ifndef PROTO_LOCAL_ghiDoSend
-s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
+s32 ghiDoSend(GHIConnection *self, const char *buf, s32 len);
 #endif
 #ifndef PROTO_LOCAL_ghiTrySendThenBuffer
-s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len);
+s32 ghiTrySendThenBuffer(GHIConnection *self, const char *buf, s32 len);
 #endif
 #ifndef PROTO_LOCAL_ghiCallCompletedCallback
 void ghiCallCompletedCallback(GHIConnection *self);
@@ -128,7 +128,7 @@ s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size);
 void ghiFreeBuffer(GHIBuffer *o);
 #endif
 #ifndef PROTO_LOCAL_ghiAppendDataToBuffer
-s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, const char *s, s32 len);
 #endif
 #ifdef __cplusplus
 }

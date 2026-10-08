@@ -15,6 +15,14 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02281a5c.h"
 #include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_0227df0c.h"
+#include "proto/ov065/unk_ov065_0227e160.h"
+#include "proto/ov065/unk_ov065_02280740.h"
+#include "proto/ov065/unk_ov065_02283304.h"
+#include "proto/ov065/unk_ov065_02278328.h"
+extern "C" {
+int strncmp(const char *a, const char *b, u32 n);
+}
 
 // ov065 TU49: GP gpiSearch.c (0x02281a5c..0x02283304)
 
@@ -32,36 +40,22 @@ namespace Nb {
 
 extern "C" {
 void _strlwr(char *);
-s32 gpiAddOperation(void *, s32, void *, void *, s32, GPCallback, void *);
 s32 gpiProcess(void *, s32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 SockHostEnt *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
-void gpiCallErrorCallback(void *, s32, s32);
 s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
 s32 gpiSendOrBufferString(void *, s32, char *);
 s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
-s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
-void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
-s32 ArrayLength(void *);
-void ArrayFree(void *);
-void *ArrayNth(void *, s32);
-void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
-s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
-void gpiSetErrorString(void *, const char *);
-void gpiSetError(void *, s32, const char *);
-s32 gpiValueForKey(const char *, const char *, char *, s32);
-s32 gpiCheckForError(void *, const char *, s32);
 s32 gpiInitSearchData(void *, void *, s32);
 s32 gpiStartSearch(void *, void *, s32, GPCallback, void *);
 s32 gpiStartProfileSearch(void *, void *);
-s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
 }
 
 }
@@ -74,21 +68,7 @@ extern "C" {
 
 typedef s32 (*gpiProfileMapFunc)(GPConnection *, GPIProfile *, void *);
 
-s32 TableMapSafe2(void *, s32 (*)(void *, void *), void *);
-s32 TableRemove(void *, void *);
-void *TableLookup(void *, void *);
-s32 TableEnter(void *, void *);
-void *TableNew(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
-void gpiSetErrorString(GPConnection *, const char *);
-void gpiSetError(GPConnection *, s32, const char *);
-s32 gpiCheckForError(GPConnection *, char *, s32);
-s32 gpiValueForKey(char *, const char *, void *, s32);
-s32 gpiCheckSocketConnect(GPConnection *, s32, void *);
-void gpiCallErrorCallback(GPConnection *, s32, s32);
-s32 gpiAddCallback(GPConnection *, GPICallback, void *, void *, s32);
-void gpiRemoveOperation(GPConnection *, GPIOperation *);
 void gpiFreeInfoCache(void *);
-s32 strncmp(const char *, const char *, s32);
 
 s32 gpiProcessSearch(GPConnection *, GPIOperation *);
 s32 gpiCheckForBuddy(GPConnection *, GPIProfile *, void *);
@@ -97,11 +77,10 @@ s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *, void *);
 s32 gpiGetProfile(GPConnection *, s32, void *);
 void gpiProfilesTableFree(void *);
 s32 gpiProfileMap(GPConnection *, gpiProfileMapFunc, void *);
-s32 gpiProfilesTableCompare(s32 *, s32 *);
-s32 gpiProfilesTableHash(s32 *, s32);
+s32 gpiProfilesTableCompare(void *, void *);
+s32 gpiProfilesTableHash(void *, s32);
 
 
-s32 gpiReadKeyAndValue(GPConnection *, char *, s32 *, char *, char *);
 void gpiAppendStringToBuffer(GPConnection *, char **, const char *);
 void gpiAppendIntToBuffer(GPConnection *, char **, s32);
 s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
@@ -537,7 +516,7 @@ again:
         } else {
             p->isValid = 1;
         }
-        r = gpiAddCallback(h, pr2.p, p, node, 0);
+        r = gpiAddCallback(h, pr2, p, node, 0);
         if (r == 0) {
             goto done;
         }
@@ -585,7 +564,7 @@ again:
                 ERR3()
             }
         } while (done == 0);
-        r = gpiAddCallback(h, pr3.p, p, node, 3);
+        r = gpiAddCallback(h, pr3, p, node, 3);
         if (r == 0) {
             goto done;
         }
@@ -639,7 +618,7 @@ again:
                 ERR3()
             }
         } while (done == 0);
-        r = gpiAddCallback(h, pr4.p, p4, node, 4);
+        r = gpiAddCallback(h, pr4, p4, node, 4);
         if (r == 0) {
             goto done;
         }
@@ -666,7 +645,7 @@ again:
         if (p == 0) ERRMEM("Out of memory.")
         p->result = a4;
         p->profile = a6;
-        r = gpiAddCallback(h, pr5.p, p, node, 0);
+        r = gpiAddCallback(h, pr5, p, node, 0);
         if (r == 0) {
             goto done;
         }
@@ -695,7 +674,7 @@ again:
         if (p == 0) ERRMEM("Out of memory.")
         p->result = a4;
         p->profile = a6;
-        r = gpiAddCallback(h, pr6.p, p, node, 0);
+        r = gpiAddCallback(h, pr6, p, node, 0);
         if (r == 0) {
             goto done;
         }
@@ -753,7 +732,7 @@ again:
                 ERR3()
             }
         } while (done == 0);
-        r = gpiAddCallback(h, pr7.p, p7, node, 8);
+        r = gpiAddCallback(h, pr7, p7, node, 8);
         if (r == 0) {
             goto done;
         }
@@ -790,7 +769,7 @@ again:
                 ERR3()
             }
         } while (done == 0);
-        r = gpiAddCallback(h, pr8.p, p, node, 9);
+        r = gpiAddCallback(h, pr8, p, node, 9);
         if (r != 0) {
             return r;
         }
@@ -845,12 +824,12 @@ s32 gpiProcessSearches(GPConnection *h) {
     return 0;
 }
 
-s32 gpiProfilesTableHash(s32 *p, s32 n) {
-    return *p % n;
+s32 gpiProfilesTableHash(void *elem, s32 n) { // a TableHashFn over GPIProfile elements
+    return ((GPIProfile *)elem)->profileId % n;
 }
 
-s32 gpiProfilesTableCompare(s32 *a, s32 *b) {
-    return *a - *b;
+s32 gpiProfilesTableCompare(void *a, void *b) { // an ArrayCompareFn over GPIProfile elements
+    return ((GPIProfile *)a)->profileId - ((GPIProfile *)b)->profileId;
 }
 
 void gpiProfilesTableFree(void *p) {
