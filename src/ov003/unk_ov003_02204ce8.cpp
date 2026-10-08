@@ -3801,9 +3801,9 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
         if (Scene_GetCurrent() == 0 && q != 0 && ((PlayerData *)q)->testFlag(0x23) != 0 &&
             (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || Scene_GetPrevious() == 6)) {
             t = 1;
-        } else if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 0) != 0) {
+        } else if (TownSessionState_TestFlag(TownSessionState_Get(), 0) != 0) {
             t = 2;
-        } else if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 5) != 0) {
+        } else if (TownSessionState_TestFlag(TownSessionState_Get(), 5) != 0) {
             t = 3;
         }
     } else {
@@ -3942,7 +3942,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     case 2: {
         CommManager *g = gCommManager;
         if (g->isLocalSlot(o->sessionSlot)) {
-            TownSessionState_ClearFlag((u32 *)TownSessionState_Get(), 0);
+            TownSessionState_ClearFlag(TownSessionState_Get(), 0);
         }
         if (Taxi_IsLeaving() == 0) {
             (o)->requestAct76(2, 0, 0, 6, -1);
@@ -3964,7 +3964,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     }
     case 3:
         if (gCommManager->isLocalSlot(o->sessionSlot)) {
-            TownSessionState_ClearFlag((u32 *)TownSessionState_Get(), 5);
+            TownSessionState_ClearFlag(TownSessionState_Get(), 5);
             PlayerData_GetCurrent()->clearFlag(1);
             TownBbs_UpdateDaily();
         }
@@ -4000,7 +4000,7 @@ extern "C" void PlayerActor_SetupAct3C(Obj *o) {
         (o)->startAnimOnce(0x35, 0, 0);
     }
     o->drawStep = 0;
-    if (TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 0) != 0 || TownSessionState_TestFlag((u32 *)TownSessionState_Get(), 5) != 0) {
+    if (TownSessionState_TestFlag(TownSessionState_Get(), 0) != 0 || TownSessionState_TestFlag(TownSessionState_Get(), 5) != 0) {
         if (gCommManager->isLocalSlot(o->sessionSlot)) {
             Bgm_RequestSilence(0x12, 0xf, 0);
         }
