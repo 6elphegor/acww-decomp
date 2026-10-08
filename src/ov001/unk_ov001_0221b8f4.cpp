@@ -20,6 +20,7 @@
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -30,22 +31,13 @@ u8 sWfcTestSuccessTimer;
 
 
 extern "C" {
-
-s32 GX_LoadBG2Char();
-s32 GX_LoadBGPltt();
-s32 GX_LoadBG2Scr();
+void GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcConfig_CommitEdit();
-
-
-
 void WfcTestSuccess_Enter() {
     sWfcTestSuccessTimer = 0;
     WfcTestSuccess_LoadBg();
     WfcUtil_ShowBottomMessage(0x77);
-    WfcUtil_SetScene((void *)WfcTestSuccess_FadeIn);
+    WfcUtil_SetScene(WfcTestSuccess_FadeIn);
 }
 
 void WfcTestSuccess_LoadBg() {
@@ -63,12 +55,12 @@ void WfcTestSuccess_LoadBg() {
 void WfcTestSuccess_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcTestSuccess_WaitFadeIn);
+    WfcUtil_SetScene(WfcTestSuccess_WaitFadeIn);
 }
 
 void WfcTestSuccess_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcTestSuccess_Update);
+    WfcUtil_SetScene(WfcTestSuccess_Update);
 }
 
 void WfcTestSuccess_Update() {
@@ -80,16 +72,16 @@ void WfcTestSuccess_Idle() {
 }
 
 void WfcTestSuccess_FadeOut() {
-    s32 x;
+    u32 x;
     WfcUtil_GetEditParams(0, &x);
     if (x != 0) WfcHeader_StartSlideOut();
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcTestSuccess_Exit);
+    WfcUtil_SetScene(WfcTestSuccess_Exit);
 }
 
 void WfcTestSuccess_Exit() {
-    s32 x;
+    u32 x;
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     if (WfcHeader_IsSlideOutDone() == 0) return;
@@ -101,14 +93,14 @@ void WfcTestSuccess_Exit() {
     WfcUtil_GetEditParams(0, &x);
     if (x == 0) {
         WfcUtil_SetEditParams(0, 0);
-        WfcUtil_SetScene((void *)WfcManualSetup_Enter);
+        WfcUtil_SetScene(WfcManualSetup_Enter);
     } else {
-        WfcUtil_SetScene((void *)WfcTopMenu_Enter);
+        WfcUtil_SetScene(WfcTopMenu_Enter);
     }
 }
 
 void WfcTestSuccess_CountDown() {
-    s32 x;
+    u32 x;
     s32 r;
     sWfcTestSuccessTimer++;
     if (sWfcTestSuccessTimer < 0xb4) return;
@@ -119,12 +111,12 @@ void WfcTestSuccess_CountDown() {
         break;
     case 1:
         if (x != 0) {
-            WfcUtil_SetScene((void *)WfcUtil_QuitFadeOut);
+            WfcUtil_SetScene(WfcUtil_QuitFadeOut);
             return;
         }
         break;
     }
-    WfcUtil_SetScene((void *)WfcTestSuccess_FadeOut);
+    WfcUtil_SetScene(WfcTestSuccess_FadeOut);
 }
 
 }

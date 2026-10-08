@@ -136,7 +136,7 @@ struct ImpressionRule {
     ImpressionCondFn f;
 };
 // Clock_GetDateTime record (8 bytes: second, minute, hour, day, month, year, ...), zeroed as two words.
-struct ClockDateTime {
+struct ClockDateTimeRaw {
     union {
         u32 v[2];
         u8 b[8];
@@ -838,19 +838,19 @@ u16 Item_MakeNeighborHouse(s32 i);
 BOOL BlockMap_PutStructure(void *g, u16 *v, u32 a, u32 b);
 BOOL HousePos_IsValid(HousePos *e);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
-void DateTime_Make(ClockDateTime *a, u8 *b, u32 c, u32 d, u32 e);
-void Clock_GetDateTime(ClockDateTime *a);
-s32 DateTime_Compare(ClockDateTime *a, u8 *b, u32 n);
-s32 DateTime_DiffDays(u8 *b, ClockDateTime *a);
+void DateTime_Make(ClockDateTimeRaw *a, u8 *b, u32 c, u32 d, u32 e);
+void Clock_GetDateTime(ClockDateTimeRaw *a);
+s32 DateTime_Compare(ClockDateTimeRaw *a, u8 *b, u32 n);
+s32 DateTime_DiffDays(u8 *b, ClockDateTimeRaw *a);
 void Villager_DropRandomFurniture(u8 *p);
 void Clock_GetDate(u8 *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void SaveVillagers_UpdatePlayerErrandKind15(void *unused, void *q);
-void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTime *b);
+void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTimeRaw *b);
 void SaveVillagers_TryStartMoveOut(u8 *self, u8 *x);
 s32 SaveVillagers_GetUnk3830Index(u8 *self);
-void SaveVillagers_ProcessTransfer(u8 *self, ClockDateTime *b);
-void SaveVillagers_TryRandomMoveIn(u8 *self, ClockDateTime *b);
+void SaveVillagers_ProcessTransfer(u8 *self, ClockDateTimeRaw *b);
+void SaveVillagers_TryRandomMoveIn(u8 *self, ClockDateTimeRaw *b);
 void SaveVillagers_DailyFurnitureUpdate(u8 *self);
 void VillagerStates_ResetErrands();
 BOOL SaveVillagers_ShouldAssignErrands(u8 *self);
@@ -867,7 +867,7 @@ void SaveVillagers_DailyVillagerUpdate(u8 *self, s32 f);
 void SaveVillagers_UpdateSickVillager(u8 *self);
 void SaveVillagers_UpdateBirthdayNotices(u8 *self);
 s32 SaveVillagers_UpdateBirthdayParty(u8 *self);
-void Villager_UpdatePlan(u8 *p, ClockDateTime *b);
+void Villager_UpdatePlan(u8 *p, ClockDateTimeRaw *b);
 void *VillagerPlanBlock_GetPlan(void *p);
 void Villager_PickRoomLayout(VillagerData *a, s32 b, s32 c);
 s32 Villager_InitPlanDateA(u8 *p, u8 *x);
@@ -900,7 +900,7 @@ void SaveVillagers_DailyFurnitureUpdate(u8 *self);
 void SaveVillagers_DailyUpdate(u8 *self, s32 flag);
 void SaveVillagers_UpdatePlansNow(u8 *self);
 void SaveVillagers_RefreshPlanStates(u8 *self);
-void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTime *x);
+void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTimeRaw *x);
 void SaveVillagers_TryStartMoveOut(u8 *self, u8 *x);
 s32 SaveVillagers_PickMoveOutCandidate(u8 *self);
 BOOL SaveVillagers_ShouldStartMoveOut(u8 *self, u8 *x);
@@ -5291,9 +5291,9 @@ extern "C" void *Villager_GetPlan(VillagerData *a) { return a->planBlock; }
 namespace nL {
 extern "C" s32 Villager_GetTrend(VillagerData *a, s32 b) {
     if ((u32)((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(a->planBlock)))->getStateGroup() <= 1) {
-        return ((VillagerPlan *)(void *)(b))->getTrendName(((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(a->planBlock)))->getState());
+        return VillagerPlan::getTrendName((MsgString *)(uptr)b, ((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(a->planBlock)))->getState());
     } else {
-        return ((VillagerPlan *)(void *)(b))->getTrendName(7);
+        return VillagerPlan::getTrendName((MsgString *)(uptr)b, 7);
     }
 }
 }
@@ -7646,8 +7646,8 @@ extern "C" BOOL SaveVillagers_ShouldStartMoveOut(u8 *self, u8 *x) {
         s32 r6 = SaveVillagers_FindMovingOut(self);
         s32 r0 = SaveVillagers_FindJustMovedIn(self);
         if (r6 == -1 && r0 == -1) {
-            if (DateTime_Compare((ClockDateTime *)x, self + 0x38c4, 0x3f) == 1) {
-                s32 n = DateTime_DiffDays(self + 0x38c4, (ClockDateTime *)x);
+            if (DateTime_Compare((ClockDateTimeRaw *)x, self + 0x38c4, 0x3f) == 1) {
+                s32 n = DateTime_DiffDays(self + 0x38c4, (ClockDateTimeRaw *)x);
                 if (n > 0) {
                     BOOL t;
                     if (n >= 4) {
@@ -7700,7 +7700,7 @@ extern "C" void SaveVillagers_TryStartMoveOut(u8 *self, u8 *x) {
 }
 
 namespace nF {
-extern "C" void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTime *x) {
+extern "C" void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTimeRaw *x) {
     u8 *p = self;
     s32 i = 0;
     do {
@@ -7739,13 +7739,13 @@ extern "C" void SaveVillagers_RefreshPlanStates(u8 *self) {
 namespace nF {
 extern "C" void SaveVillagers_UpdatePlansNow(u8 *self) {
     if (!gCommManager->isSlotActive(gCommManager->myAid)) {
-        ClockDateTime b;
+        ClockDateTimeRaw b;
         b.v[0] = 0;
         b.v[1] = 0;
         Clock_GetDateTime(&b);
         s32 i = 0;
         u8 *p = self;
-        ClockDateTime *pb = &b;
+        ClockDateTimeRaw *pb = &b;
         for (; i < 8; i++) {
             if (((VillagerData *)(void *)(p))->getVillagerId()->isValid()) {
                 Villager_UpdatePlan(p, pb);
@@ -7758,7 +7758,7 @@ extern "C" void SaveVillagers_UpdatePlansNow(u8 *self) {
 
 namespace nF {
 extern "C" void SaveVillagers_DailyUpdate(u8 *self, s32 flag) {
-    ClockDateTime b;
+    ClockDateTimeRaw b;
     b.v[0] = 0;
     b.v[1] = 0;
     Clock_GetDateTime(&b);
@@ -7786,8 +7786,8 @@ extern "C" void SaveVillagers_DailyUpdate(u8 *self, s32 flag) {
 
 namespace nF {
 extern "C" void SaveVillagers_DailyFurnitureUpdate(u8 *self) {
-    ClockDateTime a;
-    ClockDateTime b;
+    ClockDateTimeRaw a;
+    ClockDateTimeRaw b;
     DateTime_Make(&a, self + 0x38ee, 0, 0, 0);
     b.v[0] = 0;
     b.v[1] = 0;
@@ -8278,7 +8278,7 @@ extern "C" s32 SaveVillagers_PickSickVillager(void *pp, u32 idx) {
     u8 *b = (u8 *)pp;
     if (idx >= 12) return -1;
     u8 mask = 0;
-    ClockDateTime d;
+    ClockDateTimeRaw d;
     d.v[0] = 0;
     d.v[1] = 0;
     u8 *p = b;
@@ -8474,8 +8474,8 @@ extern "C" void SaveVillagers_PickGreeter(u8 *base) {
 
 namespace nE {
 extern "C" s32 VillagerEvent_GetTodayIndex() {
-    ClockDateTime a;
-    ClockDateTime b;
+    ClockDateTimeRaw a;
+    ClockDateTimeRaw b;
     u32 *t = sVillagerEventIds;
     s32 i;
     a.v[0] = 0;
@@ -8497,8 +8497,8 @@ extern "C" s32 VillagerEvent_GetTodayIndex() {
 
 namespace nE {
 extern "C" s32 VillagerEvent_FindUpcomingIndex(u32 n, void *src) {
-    ClockDateTime a;
-    ClockDateTime b;
+    ClockDateTimeRaw a;
+    ClockDateTimeRaw b;
     EventDayEntry buf[7];
     u32 i;
     a.v[0] = 0;
@@ -8914,7 +8914,7 @@ extern "C" void SaveVillagers_PickPlayerBirthdayVisitor(u8 *self, void *p) {
                     u8 *r4 = ((PlayerData *)(p))->getBirthday();
                     if (*(u16 *)r4 != 0) {
                         if (((PlayerId *)(a))->isValid() != 0) {
-                            ClockDateTime bb;
+                            ClockDateTimeRaw bb;
                             *(u32 *)&bb.b[0] = 0;
                             *(u32 *)&bb.b[4] = 0;
                             Clock_GetDateTime(&bb);
@@ -9801,7 +9801,7 @@ namespace nB {
 extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p) {
     if (gSaveVillagers != 0) {
         s32 b[4];
-        ClockDateTime t;
+        ClockDateTimeRaw t;
         s32 z1;
         u16 h;
         s32 i;
@@ -9825,7 +9825,7 @@ extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p) {
             o = SaveVillagers_Get(gSaveVillagers, i);
             if (o != NULL) {
                 if (((VillagerId *)(((VillagerData *)(o))->getVillagerId()))->isValid()) {
-                    if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(o))))->isTrendOlderThanWeek(&t)) {
+                    if (((VillagerPlan *)(void *)(VillagerPlanBlock_GetPlan(Villager_GetPlan(o))))->isTrendOlderThanWeek((ClockDateTime *)&t)) {
                         if (p != NULL) {
                             h = (i & 0xfff) | 0xe000;
                             if (Villager_IsActorInBox(&h, b[0], b[1], b[2], z1)) {

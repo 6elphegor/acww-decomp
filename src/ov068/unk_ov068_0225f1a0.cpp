@@ -1947,12 +1947,12 @@ void FieldVillager::chooseActivity() {
             void *p = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
             s32 r4 = static_cast<VillagerPlan *>(p)->getState();
             s32 r7 = Random_GlobalBelow(100);
-            Vec2 buf;
-            buf.x = 0;
-            buf.y = 0;
-            Clock_GetDateTime(&buf);
+            ClockDateTimeWords buf;
+            buf.words[0] = 0;
+            buf.words[1] = 0;
+            Clock_GetDateTime(&buf.dt);
             if (r7 < 30) {
-                if (static_cast<VillagerPlan *>(p)->isTrendOlderThan(&buf, 3) != 0) {
+                if (static_cast<VillagerPlan *>(p)->isTrendOlderThan(&buf.dt, 3) != 0) {
                     r4 = (u8)Random_GlobalBelow(r5);
                 }
             }
@@ -1982,12 +1982,12 @@ void FieldVillager::refreshActivity() {
         if (static_cast<VillagerId *>(static_cast<VillagerData *>(a)->getVillagerId())->isValid() != 0) {
             s32 t = VillagerState_GetActivity(Villager_GetState(a));
             void *p = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-            Vec2 buf;
-            buf.x = 0;
-            buf.y = 0;
-            Clock_GetDateTime(&buf);
+            ClockDateTimeWords buf;
+            buf.words[0] = 0;
+            buf.words[1] = 0;
+            Clock_GetDateTime(&buf.dt);
             if (Trend_IsValid(t) != 0 || t == 8) {
-                if (t == static_cast<VillagerPlan *>(p)->getState() || static_cast<VillagerPlan *>(p)->isTrendOlderThan(&buf, 3) != 0) {
+                if (t == static_cast<VillagerPlan *>(p)->getState() || static_cast<VillagerPlan *>(p)->isTrendOlderThan(&buf.dt, 3) != 0) {
                     if (((VillagerTalk *)(this))->getEventKind() != 3 && ((VillagerTalk *)(this))->getEventKind() != 4 && ((VillagerTalk *)(this))->getEventKind() != 5) {
                         return;
                     }
@@ -6107,7 +6107,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
 
 BOOL FieldVillagerLook::getFishPosIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
-    if (FishShadow_GetPos((u32 *)v, i) && Vec_DistXZ(p, v) < lim) {
+    if (FishShadow_GetPos(v, i) && Vec_DistXZ(p, v) < lim) {
         return TRUE;
     }
     return FALSE;

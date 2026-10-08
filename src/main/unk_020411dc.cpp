@@ -133,8 +133,7 @@ extern "C" void IrisWipe_Begin() {
     MIi_CpuClear16(z, sIrisWipeTableB, sizeof sIrisWipeTableB);
     sIrisWipeActiveTable = sIrisWipeTableA;
     IrisWipe_SetupLayers();
-    // (the H-blank handler goes to the task's parameter: HBlankTask keeps it in an s32)
-    if (HBlank_Add(&sIrisWipeHBlankTask, (s32)(uptr)IrisWipe_HBlank, IrisWipe_VBlankRegs, NULL) != 0) {
+    if (HBlank_Add(&sIrisWipeHBlankTask, IrisWipe_HBlank, IrisWipe_VBlankRegs, NULL) != 0) {
         sIrisWipeFlags |= 1;
     }
     if (gScreenTransition.progress == 0x1000) Gfx2d_SetBrightness(0);

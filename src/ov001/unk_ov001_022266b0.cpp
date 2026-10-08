@@ -1,13 +1,16 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/gxoam.h"
 #include "net/WfcListNode.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_022266b0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
 
+// The OAM shadow of both screens ([0] main, [1] sub); entries 0..0x3f of each are handed out by entryPools, the
+// rest belong to the object groups (unk_ov001_0222449c.cpp).
 struct WfcOamBuffer {
-    u8 pad_000[0x800];
+    GXOamAttr oam[2][0x80];
     void *entryPools[2];
     void *transferTask;
 };
@@ -38,22 +41,22 @@ extern "C" WfcOamBuffer *sWfcOamBuf = 0;
 void WfcOam_Init()
 {
     volatile u32 v;
-    WfcOamBuffer *b = (WfcOamBuffer *)WfcHeap_Alloc(HOST_SIZED(0x80c, WfcOamBuffer), 4);
+    WfcOamBuffer *b = (WfcOamBuffer *)WfcHeap_Alloc(sizeof(WfcOamBuffer), 4);
     s32 i;
     sWfcOamBuf = b;
     v = 0x200;
-    MIi_CpuClearFast(v, b, 0x800);
+    MIi_CpuClearFast(v, b->oam, sizeof(b->oam));
     for (i = 0; i < 2; i++) {
-        sWfcOamBuf->entryPools[i] = WfcPool_CreateFrom(0x40, (u8 *)sWfcOamBuf + i * 0x400, 8);
+        sWfcOamBuf->entryPools[i] = WfcPool_CreateFrom(0x40, sWfcOamBuf->oam[i], sizeof(GXOamAttr));
     }
     sWfcOamBuf->transferTask = WfcTask_Add(1, (void *)WfcOam_TransferTask, 0, 0xc8);
 }
 
 void WfcOam_TransferTask()
 {
-    DC_FlushRange(sWfcOamBuf, 0x800);
-    GX_LoadOAM(sWfcOamBuf, 0, 0x400);
-    GXS_LoadOAM((u8 *)sWfcOamBuf + 0x400, 0, 0x400);
+    DC_FlushRange(sWfcOamBuf->oam, sizeof(sWfcOamBuf->oam));
+    GX_LoadOAM(sWfcOamBuf->oam[0], 0, sizeof(sWfcOamBuf->oam[0]));
+    GXS_LoadOAM(sWfcOamBuf->oam[1], 0, sizeof(sWfcOamBuf->oam[1]));
 }
 
 void WfcOam_Shutdown()
@@ -62,29 +65,29 @@ void WfcOam_Shutdown()
     WfcHeap_FreeAndClear(&sWfcOamBuf);
 }
 
-void *WfcOam_AllocEntry(s32 idx, void *dst)
+GXOamAttr *WfcOam_AllocEntry(s32 idx, void *dst)
 {
-    void *r = WfcPool_Get(sWfcOamBuf->entryPools[idx]);
+    GXOamAttr *r = (GXOamAttr *)WfcPool_Get(sWfcOamBuf->entryPools[idx]);
     MIi_CpuCopy32(dst, r, 8);
     return r;
 }
 
-void WfcOam_FreeEntry(u32 *p)
+void WfcOam_FreeEntry(GXOamAttr *p)
 {
     s32 z = 0;
-    *p = (*p & 0xc1fffcff) | 0x200;
-    if ((u32)p >= (u32)sWfcOamBuf + 0x400) z = 1;
+    p->attr01 = (p->attr01 & 0xc1fffcff) | 0x200;
+    if (p >= sWfcOamBuf->oam[1]) z = 1;
     WfcPool_Put(sWfcOamBuf->entryPools[z], p);
 }
 
-u8 *WfcOam_GetEntry(s32 a, s32 b)
+GXOamAttr *WfcOam_GetEntry(s32 a, s32 b)
 {
-    return (u8 *)sWfcOamBuf + (a << 10) + (b << 3);
+    return &sWfcOamBuf->oam[a][b];
 }
 
 WfcListNode *WfcList_Create()
 {
-    WfcListNode *n = (WfcListNode *)WfcHeap_Alloc(HOST_SIZED(0x10, WfcListNode[2]), 4);
+    WfcListNode *n = (WfcListNode *)WfcHeap_Alloc(sizeof(WfcListNode[2]), 4);
     n[0].prev = 0;
     n[0].next = &n[1];
     n[1].prev = n;

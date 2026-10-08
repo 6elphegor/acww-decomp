@@ -263,7 +263,7 @@ void PlayerData::rerollFlaggedPocketItems()
         u32 k = 1;
         s32 z28 = 0, z2c = 0, z40 = 0, z44 = 0, z3c = 0, z34 = 0, z38 = 0, z30 = 0, z4c = 0, z48 = 0, z20 = 0;
         v0 = 0xfff1;
-        ParcelErrand_Clear((u8 *)&((PlayerErrands *)getErrands())->parcelErrand);
+        ParcelErrand_Clear(&((PlayerErrands *)getErrands())->parcelErrand);
         in = (PlayerInventory *)getInventory();
         p = in->getPocket(0);
         i = 0;

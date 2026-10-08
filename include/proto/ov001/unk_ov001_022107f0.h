@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022107f0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcTransferConfirmAccepted
+extern u8 sWfcTransferConfirmAccepted;
+#endif
+#ifndef PROTO_LOCAL_sWfcTransferConfirmError
+extern u8 sWfcTransferConfirmError;
 #endif
 #ifndef PROTO_LOCAL_WfcTransferConfirm_Enter
 void WfcTransferConfirm_Enter();
@@ -45,20 +48,9 @@ void WfcTransferConfirm_StartSendOrEnd();
 void WfcTransferConfirm_Exit();
 #endif
 #ifndef PROTO_LOCAL_WfcTransferConfirm_OnTransferError
-void WfcTransferConfirm_OnTransferError();
+void WfcTransferConfirm_OnTransferError(u32 event);
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcTransferConfirmAccepted
-extern u8 sWfcTransferConfirmAccepted;
-#endif
-#ifndef PROTO_LOCAL_sWfcTransferConfirmError
-extern u8 sWfcTransferConfirmError;
-#endif
 }
 #endif
 

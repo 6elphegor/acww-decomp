@@ -102,10 +102,10 @@ TownHall::~TownHall() {
 }
 
 BOOL TownHall::initBuilding() {
-    hourHandNode = ((G3dResAccess *)modelRes)->findNodeIdx("kh_j");
-    minuteHandNode = ((G3dResAccess *)modelRes)->findNodeIdx("km_j");
+    hourHandNode = ((G3dResAccess *)model.resMdl)->findNodeIdx("kh_j");
+    minuteHandNode = ((G3dResAccess *)model.resMdl)->findNodeIdx("km_j");
     if (hourHandNode != -1 && minuteHandNode != -1) {
-        ((Model *)model)->setCallback(TownHall_NodeCallback, 6, 2, this, 0);
+        model.setCallback(TownHall_NodeCallback, 6, 2, this, 0);
     }
     return TRUE;
 }

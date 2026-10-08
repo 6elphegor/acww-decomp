@@ -423,7 +423,7 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
             ((ItemName *)(c))->setFromItem((u16 *)(p));
             StrBuf_Copy(b, c);
         } else {
-            Player_GetDeliveryRecipientName(d, p);
+            Player_GetDeliveryRecipientName((MsgString *)d, p);
             String_SetSlot(0, d);
             String_Load2dMenu(a, 0x40);
             StrBuf_Copy(b, a);

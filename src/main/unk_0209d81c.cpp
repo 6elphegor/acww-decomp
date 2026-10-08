@@ -79,7 +79,7 @@ void SaveData::setupNoSave() {
     SaveVillagers_UpdateOutdoor(&villagers, 0);
     ((SaveRecord4 *)(&footer))->clearState();
     Weather_RerollRainSlantAlt();
-    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
+    TownSessionState_GetResettiFlag(TownSessionState_Get())->clear();
 }
 
 void SaveData::setupLoaded() {
@@ -92,7 +92,7 @@ void SaveData::setupLoaded() {
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     Weather_RerollRainSlantAlt2();
-    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
+    TownSessionState_GetResettiFlag(TownSessionState_Get())->clear();
     s32 z, i;
     u8 *p = gSaveData;
     i = 0;
@@ -124,7 +124,7 @@ void SaveData::setupMode05() {
     ((PlayerData *)(a))->setSkyShotHits(0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
+    TownSessionState_GetResettiFlag(TownSessionState_Get())->clear();
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -144,7 +144,7 @@ void SaveData::setupMode06() {
     ((PlayerData *)(a))->clearFlag(9);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
+    TownSessionState_GetResettiFlag(TownSessionState_Get())->clear();
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 

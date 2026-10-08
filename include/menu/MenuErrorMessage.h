@@ -12,8 +12,8 @@ public:
     MenuErrorMessage();
     ~MenuErrorMessage();
 
-    BOOL restoreBrightness();
-    s32 dimSubScreen();
+    void restoreBrightness();
+    void dimSubScreen();
     BOOL finishTalk();
     void advanceTalk();
     BOOL isTalkWaiting();

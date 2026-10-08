@@ -11,8 +11,10 @@ struct Flags1;
 typedef struct Flags1 Flags1;
 #endif
 #ifdef __cplusplus
+#include "game/StrBSizeData.h"
 #include "gfx/VecFx32.h"
 class FieldObjectShapeQuery;
+class FieldStructureMgr;
 #endif
 
 #ifdef __cplusplus
@@ -30,17 +32,8 @@ void StrBSize_Load(void);
 #ifndef PROTO_LOCAL_StrBSize_Unload
 void StrBSize_Unload(void);
 #endif
-#ifndef PROTO_LOCAL_StrBSize_Get
-void *StrBSize_Get(u16 *p);
-#endif
-#ifndef PROTO_LOCAL_FieldStructureMgr_Register
-BOOL FieldStructureMgr_Register(u32 v);
-#endif
 #ifndef PROTO_LOCAL_FieldStructureMgr_Unregister
 BOOL FieldStructureMgr_Unregister(void);
-#endif
-#ifndef PROTO_LOCAL_FieldStructureMgr_Get
-u32 FieldStructureMgr_Get(void);
 #endif
 #ifndef PROTO_LOCAL_TownStyleRecord_DestructStub
 void TownStyleRecord_DestructStub(void *p);
@@ -174,9 +167,6 @@ u32 Building_IsOwnerAsleep(u32 v);
 #ifndef PROTO_LOCAL_Building_ApplyStateRecord
 BOOL Building_ApplyStateRecord(u16 *p);
 #endif
-#ifndef PROTO_LOCAL_BuildingOccupancy_OnEnterRecord
-void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit);
-#endif
 #ifndef PROTO_LOCAL_BuildingOccupancy_OnLeaveRecord
 void BuildingOccupancy_OnLeaveRecord(u8 *p, s32 bit);
 #endif
@@ -243,8 +233,20 @@ void Building_PlayDoorChime(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_StrBSize_Get
+StrBSizeData *StrBSize_Get(u16 *p);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_Register
+BOOL FieldStructureMgr_Register(FieldStructureMgr *v);
+#endif
+#ifndef PROTO_LOCAL_FieldStructureMgr_Get
+FieldStructureMgr *FieldStructureMgr_Get(void);
+#endif
 #ifndef PROTO_LOCAL_Building_GetDoorAnimParamAt
 u32 Building_GetDoorAnimParamAt(VecFx32 *a);
+#endif
+#ifndef PROTO_LOCAL_BuildingOccupancy_OnEnterRecord
+void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit);
 #endif
 }
 #ifndef PROTO_LOCAL_Math_LerpFx
@@ -278,7 +280,7 @@ extern FieldObjectShapeQuery sFieldObjectShapeQuery;
 extern u8 sBuildingStates[0x22];
 #endif
 #ifndef PROTO_LOCAL_sFieldStructureMgr
-extern u32 sFieldStructureMgr;
+extern FieldStructureMgr *sFieldStructureMgr;
 #endif
 #ifndef PROTO_LOCAL_sHouseVisitorPresent
 extern u8 sHouseVisitorPresent;
@@ -287,7 +289,7 @@ extern u8 sHouseVisitorPresent;
 extern s32 sHourHandCos;
 #endif
 #ifndef PROTO_LOCAL_sStrBSizeTable
-extern void *sStrBSizeTable[0x22];
+extern StrBSizeData *sStrBSizeTable[0x22];
 #endif
 #ifndef PROTO_LOCAL_sTaxiArriving
 extern u8 sTaxiArriving;

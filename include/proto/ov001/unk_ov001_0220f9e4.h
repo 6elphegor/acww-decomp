@@ -84,13 +84,13 @@ extern "C" {
 extern u8 sWfcTransferIntroAccepted;
 #endif
 #ifndef PROTO_LOCAL_WfcTransferNotice_Enter
-s32 WfcTransferNotice_Enter();
+void WfcTransferNotice_Enter();
 #endif
 #ifndef PROTO_LOCAL_WfcTransferNotice_FadeIn
-s32 WfcTransferNotice_FadeIn();
+void WfcTransferNotice_FadeIn();
 #endif
 #ifndef PROTO_LOCAL_WfcTransferNotice_StartExit
-s32 WfcTransferNotice_StartExit();
+void WfcTransferNotice_StartExit();
 #endif
 }
 #endif

@@ -473,7 +473,7 @@ extern "C" void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e) {
         {
             FtrActor *o = FtrActorGrid_GetInstance()->getActor(b, c, d);
             if (o) {
-                if (((FtrSwitch *)o->switchState)->isOn() == 0) {
+                if (o->switchState.isOn() == 0) {
                     if ((u32)FtrMgr_CountSwitchedOn(FtrActor_IsGyroidPred) >= 4) {
                         FtrActor *r = FtrMgr_SwitchOffRandom(FtrActor_IsGyroidPred, 0);
                         if (r) {

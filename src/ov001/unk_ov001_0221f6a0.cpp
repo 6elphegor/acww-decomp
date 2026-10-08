@@ -3,13 +3,13 @@
 #include "types.h"
 #include "nitro/wm.h"
 #include "nitro/os_rtc.h"
-#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcUsbScan_WmCallback  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02115468.h"
 #include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_0206d49c.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/ov001/unk_ov001_0221f6a0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 
 #pragma thumb off
 
@@ -18,60 +18,60 @@ struct WfcUsbFoundAp {
     u8 isGranted;
 };
 
-// WMScanExParam (0x44) copied as 17 words: a WMScanExParam struct copy compiles differently
-struct WfcUsbScanParamCopy {
-    u32 v[17];
-};
-
 struct WfcUsbScanWork {
-    u8 pad_0000[0xf00];
+    u8 wmBuf[0xf00];  // WM_Initialize's work buffer
     u8 scanBuf[0x400];
     WfcUsbFoundAp foundAps[16];
-    void (*unk_1370)(s32);
+    void (*callback)(s32);
     WMScanExParam scanParam; // ssid: "NWCUSBAP", byte 9 = 1, owner nickname from byte 12
-    u8 pad_13b8[0x1b74 - 0x13b8]; // starts with the WM_ReadStatus buffer (WMStatus)
+    union {
+        WMStatus status;  // WM_ReadStatus
+        u8 statusBuf[0x7bc];
+    };
     u64 startTick;
-    u32 timeoutTask;
+    void *timeoutTask;
     u8 stopState;
     u8 pendingResult;
     u8 timedOut;
+    u8 unk_1b83[0x1d];  // (allocated, not used)
 };
+#if !HOST64
+static_assert(sizeof(WfcUsbScanWork) == 0x1ba0 && __builtin_offsetof(WfcUsbScanWork, startTick) == 0x1b74, "DS layout");
+#endif
 
 extern "C" const u8 sWfcEmptyBssid[8];
 extern "C" const u8 sWfcUsbApSsid[12];
-extern "C" const u32 sWfcUsbScanParam[17];
+extern "C" const WMScanExParam sWfcUsbScanParam;
 extern "C" WfcUsbScanWork *sWfcUsbScan;
 
 extern "C" {
 void DC_InvalidateRange(void *, s32);
 void MI_CpuCopy8(const void *, const void *, s32);
-void WM_ReadStatus(void *);
-s32 WM_Reset(void *);
-s32 WM_End(void *);
-s32 WM_Initialize(void *, void *, s32);
-s32 WM_StartScanEx(void *, void *);
+u32 WM_ReadStatus(void *dst);
+u32 WM_Reset(WMCallback cb);
+u32 WM_End(WMCallback cb);
+u32 WM_Initialize(void *buf, WMCallback cb, u16 dmaNo);
+u32 WM_StartScanEx(WMCallback cb, WMScanExParam *p);
 u32 WM_GetDispersionScanPeriod();
-void Fatal_Trap(void *);
-void WfcHeap_FreeAndClear(void *);
-void *WfcHeap_AllocClear(s32, s32);
-void WfcUsbScan_WmCallback(void *);
 }
+
+extern "C" {
 
 s32 WfcUsbScan_Start(void (*cb)(s32))
 {
     WfcUsbScanWork *g;
     OSOwnerInfo info;
-    g = (WfcUsbScanWork *)WfcHeap_AllocClear(0x1ba0, 0x20);
+    g = (WfcUsbScanWork *)WfcHeap_AllocClear(sizeof(WfcUsbScanWork), 0x20);
     sWfcUsbScan = g;
-    g->unk_1370 = cb;
+    g->callback = cb;
     g = sWfcUsbScan;
     g->startTick = OS_GetTick();
-    if (WM_Initialize(g, (void *)WfcUsbScan_WmCallback, 3) == 2) {
+    if (WM_Initialize(g->wmBuf, WfcUsbScan_WmCallback, 3) == 2) {
         do {
-            WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
+            WM_ReadStatus(&sWfcUsbScan->status);
             g = sWfcUsbScan;
-        } while (((WMStatus *)(HOST_AT(g, 0x13b8, pad_13b8[0], 0)))->state != 2);
-        *(WfcUsbScanParamCopy *)&g->scanParam = *(const WfcUsbScanParamCopy *)sWfcUsbScanParam;
+        } while (g->status.state != 2);
+        g->scanParam = sWfcUsbScanParam;
         g->scanParam.scanBuf = (WMBssDesc *)g->scanBuf;
         u16 v = WM_GetDispersionScanPeriod();
         sWfcUsbScan->scanParam.maxChannelTime = v;
@@ -84,29 +84,29 @@ s32 WfcUsbScan_Start(void (*cb)(s32))
             return 1;
         }
     }
-    WfcHeap_FreeAndClear(&sWfcUsbScan);
+    WfcHeap_FreeAndClear((void **)&sWfcUsbScan);
     return 0;
 }
 
 s32 WfcUsbScan_StartScan()
 {
-    return WM_StartScanEx((void *)WfcUsbScan_WmCallback, &sWfcUsbScan->scanParam) == 2 ? 1 : 0;
+    return WM_StartScanEx(WfcUsbScan_WmCallback, &sWfcUsbScan->scanParam) == 2 ? 1 : 0;
 }
 
 s32 WfcUsbScan_Stop()
 {
     WfcUsbScanWork *g = sWfcUsbScan;
     g->stopState = 1;
-    WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
-    if (((WMStatus *)((u8 *)sWfcUsbScan + 0x13b8))->state != 2) {
-        if (WM_Reset((void *)WfcUsbScan_WmCallback) != 2) {
+    WM_ReadStatus(&sWfcUsbScan->status);
+    if (sWfcUsbScan->status.state != 2) {
+        if (WM_Reset(WfcUsbScan_WmCallback) != 2) {
             return 0;
         }
         do {
-            WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
-        } while (((WMStatus *)((u8 *)sWfcUsbScan + 0x13b8))->state != 2);
+            WM_ReadStatus(&sWfcUsbScan->status);
+        } while (sWfcUsbScan->status.state != 2);
     }
-    if (WM_End((void *)WfcUsbScan_WmCallback) != 2) {
+    if (WM_End(WfcUsbScan_WmCallback) != 2) {
         return 0;
     }
     WfcUsbScanWork *h = sWfcUsbScan;
@@ -116,18 +116,18 @@ s32 WfcUsbScan_Stop()
     volatile WfcUsbScanWork *v = sWfcUsbScan;
     while (v->stopState != 2) {
     }
-    WfcHeap_FreeAndClear(&sWfcUsbScan);
+    WfcHeap_FreeAndClear((void **)&sWfcUsbScan);
     return 1;
 }
 
 void WfcUsbScan_SetCallback(void (*cb)(s32))
 {
-    sWfcUsbScan->unk_1370 = cb;
+    sWfcUsbScan->callback = cb;
 }
 
-void WfcUsbScan_WmCallback(void *arg0)
+void WfcUsbScan_WmCallback(WMMsg *msg)
 {
-    WMStartScanExCallback *m = (WMStartScanExCallback *)arg0;
+    WMStartScanExCallback *m = (WMStartScanExCallback *)msg;
     WfcUsbScanWork *g;
     if (m->errcode != 0) {
         return;
@@ -155,18 +155,17 @@ void WfcUsbScan_WmCallback(void *arg0)
         WfcUsbScan_StartScan();
         break;
     default:
-        Fatal_Trap(m);
+        Fatal_Trap();
         break;
     }
 }
 
-void WfcUsbScan_CollectAps(void *arg0)
+void WfcUsbScan_CollectAps(WMStartScanExCallback *a)
 {
     // DECL_BEGIN
     s32 i;
     WMBssDesc *e;
     s32 j;
-    WMStartScanExCallback *a = (WMStartScanExCallback *)arg0;
     WfcUsbFoundAp *p;
     WfcUsbScanWork *g;
     // DECL_END
@@ -184,10 +183,10 @@ void WfcUsbScan_CollectAps(void *arg0)
                     if ((e->ssid[9] & 1) == 0) {
                         goto next;
                     }
-                    if (g->unk_1370 == NULL) {
+                    if (g->callback == NULL) {
                         return;
                     }
-                    g->unk_1370(1);
+                    g->callback(1);
                     return;
                 }
             }
@@ -203,10 +202,9 @@ void WfcUsbScan_CollectAps(void *arg0)
     }
 }
 
-void WfcUsbScan_CheckGranted(void *arg0)
+void WfcUsbScan_CheckGranted(WMStartScanExCallback *a)
 {
     // DECL_BEGIN
-    WMStartScanExCallback *a = (WMStartScanExCallback *)arg0;
     WMBssDesc *e;
     WfcUsbScanWork *g = sWfcUsbScan;
     s32 i;
@@ -216,8 +214,8 @@ void WfcUsbScan_CheckGranted(void *arg0)
     WfcUsbScanWork *h;
     // DECL_END
     if (g->pendingResult != 0) {
-        if (g->unk_1370 != NULL) {
-            g->unk_1370(g->pendingResult);
+        if (g->callback != NULL) {
+            g->callback(g->pendingResult);
         }
         return;
     }
@@ -236,11 +234,11 @@ void WfcUsbScan_CheckGranted(void *arg0)
                     if (h->foundAps[j].isGranted != 0) {
                         break;
                     }
-                    if (h->unk_1370 == NULL) {
+                    if (h->callback == NULL) {
                         h->pendingResult = 1;
                         return;
                     }
-                    h->unk_1370(1);
+                    h->callback(1);
                     return;
                 }
             }
@@ -249,7 +247,7 @@ void WfcUsbScan_CheckGranted(void *arg0)
     } while (i < n);
 }
 
-void WfcUsbScan_TimeoutTask(s32 arg)
+void WfcUsbScan_TimeoutTask(void *task, void *work)
 {
     WfcUsbScanWork *g;
     s32 i, b, a;
@@ -265,18 +263,21 @@ void WfcUsbScan_TimeoutTask(s32 arg)
         }
     }
     if (b && a) {
-        if (g->unk_1370) g->unk_1370(2);
+        if (g->callback) g->callback(2);
     } else if (b) {
-        if (g->unk_1370) g->unk_1370(1);
+        if (g->callback) g->callback(1);
     } else if (!a) {
-        if (g->unk_1370) g->unk_1370(0);
+        if (g->callback) g->callback(0);
     }
     sWfcUsbScan->timeoutTask = 0;
     sWfcUsbScan->timedOut = 1;
-    WfcTask_RequestDelete(0, arg);
+    WfcTask_RequestDelete(0, task);
 }
 
 extern "C" const u8 sWfcEmptyBssid[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 extern "C" const u8 sWfcUsbApSsid[12] = {'N', 'W', 'C', 'U', 'S', 'B', 'A', 'P', 0, 0, 0, 0};
-extern "C" const u32 sWfcUsbScanParam[17] = {0x0, 0x3fff0400, 0xffff0000, 0xffffffff, 0x200002, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0};
+extern "C" const WMScanExParam sWfcUsbScanParam = {
+    0, 0x400, 0x3fff, 0, {0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, 2, 0x20, {0}, 8, {0},
+};
 extern "C" WfcUsbScanWork *sWfcUsbScan = 0;
+}

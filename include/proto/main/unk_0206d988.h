@@ -6,6 +6,7 @@
 #include "types.h"
 #include "snd/Melody.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #endif
 
 #ifdef __cplusplus
@@ -34,9 +35,6 @@ void Melody_PlayEditPattern(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Melody_Play
 void Melody_Play(u32 a);
-#endif
-#ifndef PROTO_LOCAL_Melody_PlayAt
-void Melody_PlayAt(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_Melody_StartTrackA
 void Melody_StartTrackA(s32 a);
@@ -67,6 +65,11 @@ void Melody_Update(void);
 #endif
 
 #ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Melody_PlayAt
+void Melody_PlayAt(VecFx32 *a, u32 b);
+#endif
+}
 #ifndef PROTO_LOCAL_sMelodyTimer
 extern s32 sMelodyTimer;
 #endif

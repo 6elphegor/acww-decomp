@@ -1,9 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#define PROTO_LOCAL_WfcMsg_InitPool  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcPool_CreateFrom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_0220cbd0.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 
 struct WfcMsgBank {
     u32 *offsets;
@@ -12,7 +11,7 @@ struct WfcMsgBank {
 };
 
 struct WfcMsgPool {
-    u8 bankStorage[0x60];
+    WfcMsgBank banks[8];
     void *pool;
 };
 
@@ -21,16 +20,15 @@ WfcMsgPool *sWfcMsgPool;
 
 extern void *WfcPool_Get(void *);
 extern void WfcPool_Put(void *, void *);
-extern void *WfcPool_CreateFrom(s32, void *, s32);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);
 
 #pragma thumb off
 
 void WfcMsg_InitPool() {
-    WfcMsgPool *m = (WfcMsgPool *)WfcHeap_Alloc(HOST_SIZED(0x64, WfcMsgPool), 4);
+    WfcMsgPool *m = (WfcMsgPool *)WfcHeap_Alloc(sizeof(WfcMsgPool), 4);
     sWfcMsgPool = m;
-    sWfcMsgPool->pool = WfcPool_CreateFrom(8, m, 0xc);
+    sWfcMsgPool->pool = WfcPool_CreateFrom(8, m->banks, sizeof(WfcMsgBank));
 }
 
 void WfcMsg_FreePool() {

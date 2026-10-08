@@ -106,7 +106,7 @@ void ReddPassword_ForgetVisitor();
 extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
         VillagerStates_ResetRuntime();
-        TownSessionState_Reset((u8 *)TownSessionState_Get());
+        TownSessionState_Reset(TownSessionState_Get());
     }
     RoomFtrState_ResetAll();
     RoomObjSync_Reset();

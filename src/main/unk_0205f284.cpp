@@ -146,7 +146,7 @@ static inline BOOL Unk_0205fbfc_Is1(u8 v) { return v == 1 ? TRUE : FALSE; }
 
 extern "C" void FishBobberPool_Create(void *parent)
 {
-    FishBobberHeap_Create(parent);
+    FishBobberHeap_Create((Heap *)parent);
     sFishBobberPool.allocBuffers();
     if (gFishBobberHeap != 0) {
         ((Heap *)(gFishBobberHeap))->adjust();
@@ -422,7 +422,7 @@ void FishBobber::endCatch()
 
 void FishBobber::startCatchLift()
 {
-    FishCatch_StartLift((void *)ownerAid, 0);
+    FishCatch_StartLift(ownerAid, 0);
     fish = 0;
 }
 
@@ -593,7 +593,7 @@ extern "C" void FishBobber_Draw(FishBobber *self, Mtx43 *m, VecFx32 *arg)
             mt = tmp;
         }
         ((Model *)e)->mtx = mt;
-        ((Model *)e)->drawScaled((s32 *)arg);
+        ((Model *)e)->drawScaled(&arg->x);
     }
 }
 

@@ -12,7 +12,7 @@
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_WfcCell_Load
-void WfcCell_Load(s32 which, u32 path);
+void WfcCell_Load(s32 which, void *path);
 #endif
 #ifndef PROTO_LOCAL_WfcCell_Unload
 void WfcCell_Unload(s32 which);
@@ -21,7 +21,7 @@ void WfcCell_Unload(s32 which);
 void WfcCell_Copy(s32 which, s32 idx, void *dst);
 #endif
 #ifndef PROTO_LOCAL_WfcObj_CreateSingle
-WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx);
+GXOamAttr *WfcObj_CreateSingle(s32 which, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_WfcObj_Create
 WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag);

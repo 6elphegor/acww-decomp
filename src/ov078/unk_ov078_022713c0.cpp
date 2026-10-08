@@ -60,7 +60,7 @@ class ActorTalkRequest;
 
 
 extern "C" {
-void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
+void *_ZN13PlayerErrands15getParcelErrandEv(void *p);
 u16 *_ZN12ErrandRecord7getItemEv(void *p);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord7getStepEv(void *p);
@@ -520,7 +520,7 @@ void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
 
 void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     u16 h;
-    void *g = _ZN18SickVillagerRecord15getParcelErrandEv(PlayerData_GetCurrent()->getErrands());
+    void *g = _ZN13PlayerErrands15getParcelErrandEv(PlayerData_GetCurrent()->getErrands());
     MsgString9B o;
     out->msgKey = "sp_npc_camel";
     if (turbanSlot == -1) {
@@ -575,7 +575,7 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
     u8 *s;
     h[0] = 0xfff1;
     MsgString9B o3;
-    g = _ZN18SickVillagerRecord15getParcelErrandEv(PlayerData_GetCurrent()->getErrands());
+    g = _ZN13PlayerErrands15getParcelErrandEv(PlayerData_GetCurrent()->getErrands());
     s = (u8 *)"sp_npc_camel";
     msg = 0;
     switch (msgIndex) {

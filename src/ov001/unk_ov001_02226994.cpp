@@ -1,9 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcListNode.h"
-#define PROTO_LOCAL_WfcPool_CreateFrom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcVram_Init  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206d49c.h"
+#include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_02226994.h"
 
 
@@ -14,8 +13,9 @@ struct WfcVramBlock {
     u16 blockSize;
 };
 
+// The OBJ character space of one screen, in blocks of 4 words between headNode (0x300) and tailNode (0x400).
 struct WfcVramHeap {
-    u8 pad_000[0x180];
+    WfcVramBlock nodes[0x20];
     WfcVramBlock headNode;
     WfcVramBlock tailNode;
     WfcListNode *list;
@@ -29,7 +29,6 @@ struct WfcVramWork {
 extern "C" {
 void *WfcHeap_AllocClear(s32, s32);
 void *WfcPool_Get(void *);
-void *WfcPool_CreateFrom(s32, void *, s32);
 void WfcPool_Put(void *, void *);
 void WfcList_PushFront(WfcListNode *head, WfcListNode *node);
 void WfcList_PushBack(WfcListNode *head, WfcListNode *node);
@@ -38,8 +37,7 @@ void WfcList_Remove(WfcListNode *node);
 WfcListNode *WfcList_Create();
 s32 OS_DisableIrqMask(s32);
 s32 OS_EnableIrqMask(s32);
-void WfcVram_FreeObjChar(WfcListNode *p);
-void WfcVram_Init();
+void WfcVram_FreeObjChar(WfcVramBlock *p);
 }
 
 extern "C" WfcVramWork *sWfcVram = 0;
@@ -48,19 +46,17 @@ extern "C" WfcVramWork *sWfcVram = 0;
 
 void WfcVram_Init()
 {
-#define Unk_ov001_02226b60_R (*(WfcVramHeap *)((u8 *)sWfcVram + off))
     s32 i;
-    u32 off;
-    sWfcVram = (WfcVramWork *)WfcHeap_AllocClear(HOST_SIZED(0x340, WfcVramWork), 4);
-    for (i = 0, off = 0; i < 2; i++, off += 0x1a0) {
-        Unk_ov001_02226b60_R.nodePool = WfcPool_CreateFrom(0x20, &Unk_ov001_02226b60_R, 0xc);
-        Unk_ov001_02226b60_R.list = WfcList_Create();
-        Unk_ov001_02226b60_R.headNode.blockStart = 0x300;
-        Unk_ov001_02226b60_R.tailNode.blockStart = 0x400;
-        WfcList_PushFront(Unk_ov001_02226b60_R.list, (WfcListNode *)&Unk_ov001_02226b60_R.headNode);
-        WfcList_PushBack(Unk_ov001_02226b60_R.list, (WfcListNode *)&Unk_ov001_02226b60_R.tailNode);
+    sWfcVram = (WfcVramWork *)WfcHeap_AllocClear(sizeof(WfcVramWork), 4);
+    for (i = 0; i < 2; i++) {
+        WfcVramHeap *h = &sWfcVram->heaps[i];
+        h->nodePool = WfcPool_CreateFrom(0x20, h->nodes, sizeof(WfcVramBlock));
+        h->list = WfcList_Create();
+        h->headNode.blockStart = 0x300;
+        h->tailNode.blockStart = 0x400;
+        WfcList_PushFront(h->list, (WfcListNode *)&h->headNode);
+        WfcList_PushBack(h->list, (WfcListNode *)&h->tailNode);
     }
-#undef Unk_ov001_02226b60_R
 }
 
 WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out)
@@ -72,8 +68,7 @@ WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out)
     s32 words;
     s32 old;
     s32 start;
-    u32 off = idx * 0x1a0;
-    blk = (WfcVramBlock *)WfcPool_Get(((WfcVramHeap *)((u8 *)sWfcVram + off))->nodePool);
+    blk = (WfcVramBlock *)WfcPool_Get(sWfcVram->heaps[idx].nodePool);
     words = (size + 3) & ~3;
     words >>= 2;
     blk->blockSize = words;
@@ -91,9 +86,9 @@ WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out)
                     break;
                 }
                 cur = nx;
-            } while (cur != (WfcVramBlock *)((u8 *)base + off + 0x18c));
+            } while (cur != &base->heaps[idx].tailNode);
         }
-        if (cur == (WfcVramBlock *)((u8 *)sWfcVram + off + 0x18c)) Fatal_Trap();
+        if (cur == &sWfcVram->heaps[idx].tailNode) Fatal_Trap();
     } else {
         base = sWfcVram;
         cur = &base->heaps[idx].tailNode;
@@ -107,21 +102,21 @@ WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out)
                     break;
                 }
                 cur = nx;
-            } while (cur != (WfcVramBlock *)((u8 *)base + off + 0x180));
+            } while (cur != &base->heaps[idx].headNode);
         }
-        if (cur == (WfcVramBlock *)((u8 *)sWfcVram + off + 0x180)) Fatal_Trap();
+        if (cur == &sWfcVram->heaps[idx].headNode) Fatal_Trap();
     }
     *out = blk->blockStart;
     OS_EnableIrqMask(old);
     return blk;
 }
 
-void WfcVram_FreeObjChar(WfcListNode *p)
+void WfcVram_FreeObjChar(WfcVramBlock *p)
 {
     s32 z = 0;
-    WfcList_Remove(p);
+    WfcList_Remove((WfcListNode *)p);
     WfcVramWork *b = sWfcVram;
-    if ((u32)p >= (u32)b + 0x1a0) z = 1;
+    if (p >= b->heaps[1].nodes) z = 1;
     WfcPool_Put(b->heaps[z].nodePool, p);
 }
 

@@ -8,6 +8,7 @@ struct Unk_ov004_0222bf34_P2;
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "room/RoomItemDrop.h"
+#include "town/BlockMap.h"
 #include "types.h"
 class RoomItemIcons;
 #endif
@@ -36,7 +37,7 @@ void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z);
 void ItemDrop_Settle(RoomItemDrop *e);
 #endif
 #ifndef PROTO_LOCAL_ItemDrop_Init
-void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v);
+void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, BlockMap *unused, s32 s16v, u32 u8v);
 #endif
 #ifndef PROTO_LOCAL_ItemDrop_Clear
 void ItemDrop_Clear(RoomItemDrop *e);

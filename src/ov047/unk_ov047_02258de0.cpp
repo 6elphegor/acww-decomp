@@ -30,6 +30,7 @@
 #include "player/PlayerData.h"
 #include "save/MuseumData.h"
 #include "save/SaveData.h"
+#include "player/PlayerErrands.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
 #include "proto/main/unk_02052b50.h"
@@ -79,14 +80,15 @@ struct SpNpcBlathersMsgLocal {
 typedef BOOL (*PocketFilterFn)(u16 *p, s32 m);
 typedef BOOL (SpNpcBlathers::*SpNpcBlathersActFn)();
 
+extern SaveData gSaveData;
+
+static inline MuseumData *Museum() { return (MuseumData *)gSaveData.museum; }
+
 extern "C" {
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern VecFx32 gVec3Zero;
-extern u8 gSaveData[];
-extern u8 data_021ed0a0[];
-extern u8 __ptmf_null[];
 
 // plain functions
 BOOL Talk_IsInOwnTown();
@@ -99,15 +101,7 @@ s32 Clock_GetTimeOfDay();
 s32 Math_CountDownU16(void *p);
 s32 strncmp(const char *a, const char *b, u32 n);
 u32 strlen(const char *s);
-
-// methods of other modules, called as free functions with the object first (mangled-name trick)
-NpcActor *_ZN16ActorTalkRequest13getTalkPlayerEv(void *self);
-u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
-void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
 }
-#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
-#define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 
 
 
@@ -143,9 +137,9 @@ public:
     void onKeepFossilChoice(u32 a);
     void onDonateMoreChoice2(u32 a);
     void onDonationOfferChoice(u32 a);
-    void onMainMenuChoice(s32 a);
+    void onMainMenuChoice(u32 choice);
     void dispatchChoice(u32 a);
-    void onDramaChoice(s32 a);
+    void onDramaChoice(u32 unused);
     void openExhibitList();
     void returnItemAndAskMore();
     void onAlreadyDonated();
@@ -231,133 +225,6 @@ public:
     s32 effectHandle;
 };
 
-extern "C" void _ZN17SpNpcBlathersTalk16onDeliveryChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk18onDonateMoreChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk20onAnythingElseChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk29onAppraiseDonatedFossilChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk23onAppraiseAnotherChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk18onKeepFossilChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk19onDonateMoreChoice2Ej();
-extern "C" void _ZN17SpNpcBlathersTalk21onDonationOfferChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk16onMainMenuChoiceEi();
-extern "C" void _ZN17SpNpcBlathersTalk14dispatchChoiceEj();
-extern "C" void _ZN17SpNpcBlathersTalk13onDramaChoiceEi();
-extern "C" void _ZN17SpNpcBlathersTalk15openExhibitListEv();
-extern "C" void _ZN17SpNpcBlathersTalk20returnItemAndAskMoreEv();
-extern "C" void _ZN17SpNpcBlathersTalk16onAlreadyDonatedEv();
-extern "C" void _ZN17SpNpcBlathersTalk15showFishCommentEv();
-extern "C" void _ZN17SpNpcBlathersTalk17showInsectCommentEv();
-extern "C" void _ZN17SpNpcBlathersTalk17onPaintingDonatedEv();
-extern "C" void _ZN17SpNpcBlathersTalk18onExhibitCompletedEv();
-extern "C" void _ZN17SpNpcBlathersTalk19onFossilPartDonatedEv();
-extern "C" void _ZN17SpNpcBlathersTalk21returnAppraisedFossilEv();
-extern "C" void _ZN17SpNpcBlathersTalk19offerFossilDonationEv();
-extern "C" void _ZN17SpNpcBlathersTalk21afterFossilIdentifiedEv();
-extern "C" void _ZN17SpNpcBlathersTalk14appraiseFossilEv();
-extern "C" void _ZN17SpNpcBlathersTalk14returnHeldItemEv();
-extern "C" void _ZN17SpNpcBlathersTalk14showMuseumMenuEv();
-extern "C" void _ZN17SpNpcBlathersTalk24returnItemAndAskShowMoreEv();
-extern "C" void _ZN17SpNpcBlathersTalk21returnItemAndShowMenuEv();
-extern "C" void _ZN17SpNpcBlathersTalk19openAppraisalPickerEv();
-extern "C" void _ZN17SpNpcBlathersTalk18openDonationPickerEv();
-extern "C" void _ZN17SpNpcBlathersTalk24scriptDeliveryItemChosenEv();
-extern "C" void _ZN17SpNpcBlathersTalk23scriptExhibitListClosedEv();
-extern "C" void _ZN17SpNpcBlathersTalk25scriptAppraisalItemChosenEv();
-extern "C" void _ZN17SpNpcBlathersTalk21scriptCloseItemSelectEv();
-extern "C" void _ZN17SpNpcBlathersTalk24scriptDonationItemChosenEv();
-extern "C" void _ZN13SpNpcBlathers9mainAct05Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct05Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct08Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct08Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct07Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct07Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct06Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct06Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct04Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct03Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct03Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct02Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct02Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct01Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct01Ev();
-extern "C" void _ZN13SpNpcBlathers9mainAct00Ev();
-extern "C" void _ZN13SpNpcBlathers10setupAct00Ev();
-extern "C" void *data_ov047_0225b320[2];
-extern "C" void *data_ov047_0225b328[2];
-extern "C" void *data_ov047_0225b330[2];
-extern "C" void *data_ov047_0225b338[2];
-extern "C" void *data_ov047_0225b340[2];
-extern "C" void *data_ov047_0225b348[2];
-extern "C" void *data_ov047_0225b350[2];
-extern "C" void *data_ov047_0225b358[2];
-extern "C" void *data_ov047_0225b360[2];
-extern "C" void *data_ov047_0225b368[2];
-extern "C" void *data_ov047_0225b370[2];
-extern "C" void *data_ov047_0225b378[2];
-extern "C" void *data_ov047_0225b380[2];
-extern "C" void *data_ov047_0225b388[2];
-extern "C" void *data_ov047_0225b390[2];
-extern "C" void *data_ov047_0225b398[2];
-extern "C" void *data_ov047_0225b3a0[2];
-extern "C" void *data_ov047_0225b3a8[2];
-extern "C" void *data_ov047_0225b3b0[2];
-extern "C" void *data_ov047_0225b3b8[2];
-extern "C" void *data_ov047_0225b3c0[2];
-extern "C" void *data_ov047_0225b3c8[2];
-extern "C" void *data_ov047_0225b3d0[2];
-extern "C" void *data_ov047_0225b3d8[2];
-extern "C" void *data_ov047_0225b3e0[2];
-extern "C" void *data_ov047_0225b3e8[2];
-extern "C" void *data_ov047_0225b3f0[2];
-extern "C" void *data_ov047_0225b3f8[2];
-extern "C" void *data_ov047_0225b400[2];
-extern "C" void *data_ov047_0225b408[2];
-extern "C" void *data_ov047_0225b410[2];
-extern "C" void *data_ov047_0225b418[2];
-extern "C" void *data_ov047_0225b420[2];
-extern "C" void *data_ov047_0225b428[2];
-extern "C" void *data_ov047_0225b430[2];
-extern "C" void *data_ov047_0225b438[2];
-extern "C" void *data_ov047_0225b440[2];
-extern "C" void *data_ov047_0225b448[2];
-extern "C" void *data_ov047_0225b450[2];
-extern "C" void *data_ov047_0225b458[2];
-extern "C" void *data_ov047_0225b460[2];
-extern "C" void *data_ov047_0225b468[2];
-extern "C" void *data_ov047_0225b470[2];
-extern "C" void *data_ov047_0225b478[2];
-extern "C" void *data_ov047_0225b480[2];
-extern "C" void *data_ov047_0225b488[2];
-extern "C" void *data_ov047_0225b490[2];
-extern "C" void *data_ov047_0225b498[2];
-extern "C" void *data_ov047_0225b4a0[2];
-extern "C" void *data_ov047_0225b4a8[2];
-extern "C" void *data_ov047_0225b4b0[2];
-extern "C" void *data_ov047_0225b4b8[2];
-extern "C" void *data_ov047_0225b4c0[2];
-extern "C" void *data_ov047_0225b4c8[2];
-extern "C" void *data_ov047_0225b4d0[2];
-extern "C" void *data_ov047_0225b4d8[2];
-extern "C" void *data_ov047_0225b4e0[2];
-extern "C" void *data_ov047_0225b4e8[2];
-extern "C" void *data_ov047_0225b4f0[2];
-extern "C" void *data_ov047_0225b4f8[2];
-extern "C" void *data_ov047_0225b500[2];
-extern "C" void *data_ov047_0225b508[2];
-extern "C" void *data_ov047_0225b510[2];
-extern "C" void *data_ov047_0225b518[2];
-extern "C" void *data_ov047_0225b520[2];
-extern "C" void *data_ov047_0225b528[2];
-extern "C" void *data_ov047_0225b530[2];
-extern "C" void *data_ov047_0225b538[2];
-extern "C" void *data_ov047_0225b540[2];
-extern "C" void *data_ov047_0225b548[2];
-extern "C" void *data_ov047_0225b550[2];
-extern "C" void *data_ov047_0225b558[2];
-extern "C" void *data_ov047_0225b560[2];
-extern "C" void *data_ov047_0225b568[2];
-extern "C" void *data_ov047_0225b570[2];
-extern "C" void *data_ov047_0225b578[2];
 
 struct SpNpcBlathersActEntry {
     BOOL (SpNpcBlathers::*enter)();
@@ -597,7 +464,7 @@ BOOL SpNpcBlathers::mainAct02() {
 }
 
 BOOL SpNpcBlathers::setupAct03() {
-    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
+    NpcActor *p = (NpcActor *)talk.getTalkPlayer();
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -672,7 +539,7 @@ BOOL SpNpcBlathers::mainAct08() { return TRUE; }
 void SpNpcBlathersTalk::onTaskDone(u32) {
     if (script) {
         (this->*script)();
-        Fn n = *(Fn *)__ptmf_null;
+        Fn n = NULL;
         script = n;
         if (nextScript) {
             script = nextScript;
@@ -681,15 +548,13 @@ void SpNpcBlathersTalk::onTaskDone(u32) {
     }
 }
 
-extern "C" void *data_ov047_0225b398[2] = {(void *)_ZN13SpNpcBlathers10setupAct00Ev, 0};
-
 extern "C" void SpNpcBlathersTalk_GetScript(SpNpcBlathersTalk *self, SpNpcBlathersTalk::Fn *out, s32 idx) {
     static SpNpcBlathersTalk::Fn tbl[5] = {
-        *(SpNpcBlathersTalk::Fn *)data_ov047_0225b518,
-        *(SpNpcBlathersTalk::Fn *)data_ov047_0225b510,
-        *(SpNpcBlathersTalk::Fn *)data_ov047_0225b508,
-        *(SpNpcBlathersTalk::Fn *)data_ov047_0225b500,
-        *(SpNpcBlathersTalk::Fn *)data_ov047_0225b4f8,
+        &SpNpcBlathersTalk::scriptDonationItemChosen,
+        &SpNpcBlathersTalk::scriptAppraisalItemChosen,
+        &SpNpcBlathersTalk::scriptDeliveryItemChosen,
+        &SpNpcBlathersTalk::scriptExhibitListClosed,
+        &SpNpcBlathersTalk::scriptCloseItemSelect,
     };
     *out = tbl[idx];
 }
@@ -730,8 +595,8 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
             if (Unk_ov047_0225a4a8_R(&item, 0x1549, 0x1549)) {
                 m.msgIndex = 0x21;
             } else {
-                void *g = data_021ed0a0;
-                if (((MuseumData *)(g))->isDonated(&item) == 0) {
+                MuseumData *g = Museum();
+                if (g->isDonated(&item) == 0) {
                     if (Unk_ov047_0225a4a8_R(&item, 0x450c, 0x45db)) {
                         appraisalFlow = 0;
                         m.msgIndex = 0x25;
@@ -757,12 +622,12 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
                         m.msgIndex = 0x43;
                     }
                 } else {
-                    switch (((MuseumData *)(g))->getDonationState(&item)) {
+                    switch (g->getDonationState(&item)) {
                     case 0:
                         m.msgIndex = 0x39;
                         break;
                     case 1:
-                        if (((MuseumData *)(g))->getDonorName((s32)(&ob), &item)) {
+                        if (g->getDonorName(&ob, &item)) {
                             ((TalkWindowState *)(o))->setSlot(0, &ob);
                         }
                         m.msgIndex = 0x38;
@@ -815,15 +680,15 @@ void SpNpcBlathersTalk::scriptExhibitListClosed() {
     void *o = window;
     if (MenuCtrl_IsResultOk()) {
         u8 cmd = 0x13;
-        void *g = data_021ed0a0;
-        s32 v = ((MuseumData *)(g))->getDonationPercent();
+        MuseumData *g = Museum();
+        s32 v = g->getDonationPercent();
         if (v == 0) {
             cmd = 0x10;
         } else if (v <= 0x1e000) {
             cmd = 0x11;
         } else if (v <= 0x46000) {
             cmd = 0x12;
-        } else if (((MuseumData *)(g))->isComplete()) {
+        } else if (g->isComplete()) {
             cmd = 0x49;
         }
         ((TalkWindowState *)(o))->setNextMessage((u8 *)(&cmd), sSpNpcBlathersKey);
@@ -851,7 +716,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
         if (!Unk_ov047_0225a3e4_Same(&m.item, &m.cmpItem)) {
             ((ActorTalkRequest *)(this))->requestTakeItem(&m.item, 2, 5, 0);
         }
-        ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(r7->getErrands())), 1);
+        ((ErrandRecord *)ParcelErrand_GetRecord(&((PlayerErrands *)r7->getErrands())->parcelErrand))->setStep(1);
         m.msgIndex = 0xe7;
     }
     ((TalkWindowState *)(o))->setNextMessage((u8 *)(&m), sSpNpcBlathersKey);
@@ -882,7 +747,7 @@ void SpNpcBlathersTalk::resetMsg() {
     ActorTalkRequest::resetMsg();
     pocketSlot = -1;
     item = 0xfff1;
-    Fn t = *(Fn *)__ptmf_null;
+    Fn t = NULL;
     script = t;
     nextScript = t;
 }
@@ -904,7 +769,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
         return;
     }
     out->msgKey = (const char *)sSpNpcBlathersKey;
-    u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_GetCurrent()->getErrands());
+    ParcelErrand *r7 = &((PlayerErrands *)PlayerData_GetCurrent()->getErrands())->parcelErrand;
     void *g = gCommManager;
     SpNpcBlathersStartLocal l;
     if (!((CommManager *)(g))->isOnline() && *DebugVar_GetPtr(0, 0x4a) == 0) {
@@ -944,7 +809,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
         }
         TownSessionState_SetFlag(TownSessionState_Get(), 9);
     } else if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
-        if (((MuseumData *)(data_021ed0a0))->isComplete()) {
+        if (Museum()->isComplete()) {
             if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 0;
             } else {
@@ -959,7 +824,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
         }
         ownerNpc->isAsleep = 0;
         TownSessionState_SetFlag(TownSessionState_Get(), 9);
-    } else if (((MuseumData *)(data_021ed0a0))->isComplete()) {
+    } else if (Museum()->isComplete()) {
         if (ownerNpc->isAsleep != 0) {
             out->msgIndex = 3;
             ownerNpc->isAsleep = 0;
@@ -979,8 +844,8 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
 void SpNpcBlathersTalk::commitDonation() {
     if (!Unk_ov047_022596e8_IsNone(&item)) {
         void *p = PlayerData_GetCurrent();
-        ((MuseumData *)(data_021ed0a0))->donate(&item);
-        ((SaveData *)(gSaveData))->setFlag(0xc);
+        Museum()->donate(&item);
+        gSaveData.setFlag(0xc);
         ((PlayerData *)(p))->setFlag(8);
         if (pocketSlot >= 0) {
             Pocket_RemoveItem(pocketSlot);
@@ -990,42 +855,18 @@ void SpNpcBlathersTalk::commitDonation() {
     }
 }
 
-extern "C" void *data_ov047_0225b450[2] = {(void *)_ZN17SpNpcBlathersTalk17showInsectCommentEv, 0};
-extern "C" void *data_ov047_0225b340[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b4f0[2] = {(void *)_ZN13SpNpcBlathers9mainAct02Ev, 0};
-extern "C" void *data_ov047_0225b328[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b440[2] = {(void *)_ZN17SpNpcBlathersTalk18onExhibitCompletedEv, 0};
-extern "C" void *data_ov047_0225b570[2] = {(void *)_ZN13SpNpcBlathers9mainAct03Ev, 0};
-extern "C" void *data_ov047_0225b330[2] = {(void *)_ZN13SpNpcBlathers9mainAct00Ev, 0};
-extern "C" void *data_ov047_0225b578[2] = {(void *)_ZN13SpNpcBlathers10setupAct03Ev, 0};
 SpNpcBlathersActEntry sSpNpcBlathersActTable[9] = {
-    {*(SpNpcBlathersActFn *)data_ov047_0225b398, *(SpNpcBlathersActFn *)data_ov047_0225b330},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b3a0, *(SpNpcBlathersActFn *)data_ov047_0225b338},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b368, *(SpNpcBlathersActFn *)data_ov047_0225b4f0},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b578, *(SpNpcBlathersActFn *)data_ov047_0225b570},
-    {NULL, *(SpNpcBlathersActFn *)data_ov047_0225b568},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b560, *(SpNpcBlathersActFn *)data_ov047_0225b558},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b550, *(SpNpcBlathersActFn *)data_ov047_0225b548},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b540, *(SpNpcBlathersActFn *)data_ov047_0225b538},
-    {*(SpNpcBlathersActFn *)data_ov047_0225b530, *(SpNpcBlathersActFn *)data_ov047_0225b528},
+    {&SpNpcBlathers::setupAct00, &SpNpcBlathers::mainAct00},
+    {&SpNpcBlathers::setupAct01, &SpNpcBlathers::mainAct01},
+    {&SpNpcBlathers::setupAct02, &SpNpcBlathers::mainAct02},
+    {&SpNpcBlathers::setupAct03, &SpNpcBlathers::mainAct03},
+    {NULL, &SpNpcBlathers::mainAct04},
+    {&SpNpcBlathers::setupAct05, &SpNpcBlathers::mainAct05},
+    {&SpNpcBlathers::setupAct06, &SpNpcBlathers::mainAct06},
+    {&SpNpcBlathers::setupAct07, &SpNpcBlathers::mainAct07},
+    {&SpNpcBlathers::setupAct08, &SpNpcBlathers::mainAct08},
 };
-extern "C" void *data_ov047_0225b568[2] = {(void *)_ZN13SpNpcBlathers9mainAct04Ev, 0};
-extern "C" void *data_ov047_0225b560[2] = {(void *)_ZN13SpNpcBlathers10setupAct05Ev, 0};
-extern "C" void *data_ov047_0225b558[2] = {(void *)_ZN13SpNpcBlathers9mainAct05Ev, 0};
-extern "C" void *data_ov047_0225b550[2] = {(void *)_ZN13SpNpcBlathers10setupAct06Ev, 0};
-extern "C" void *data_ov047_0225b548[2] = {(void *)_ZN13SpNpcBlathers9mainAct06Ev, 0};
-extern "C" void *data_ov047_0225b540[2] = {(void *)_ZN13SpNpcBlathers10setupAct07Ev, 0};
-extern "C" void *data_ov047_0225b538[2] = {(void *)_ZN13SpNpcBlathers9mainAct07Ev, 0};
-extern "C" void *data_ov047_0225b530[2] = {(void *)_ZN13SpNpcBlathers10setupAct08Ev, 0};
-extern "C" void *data_ov047_0225b528[2] = {(void *)_ZN13SpNpcBlathers9mainAct08Ev, 0};
-extern "C" void *data_ov047_0225b520[2] = {(void *)_ZN17SpNpcBlathersTalk20returnItemAndAskMoreEv, 0};
-extern "C" void *data_ov047_0225b518[2] = {(void *)_ZN17SpNpcBlathersTalk24scriptDonationItemChosenEv, 0};
-extern "C" void *data_ov047_0225b510[2] = {(void *)_ZN17SpNpcBlathersTalk25scriptAppraisalItemChosenEv, 0};
-extern "C" void *data_ov047_0225b508[2] = {(void *)_ZN17SpNpcBlathersTalk24scriptDeliveryItemChosenEv, 0};
 extern "C" ActorProfile sSpNpcBlathersProfile = {(void *(*)())SpNpcBlathers_Create, 0x6e, 0x74, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov047_0225b4f8[2] = {(void *)_ZN17SpNpcBlathersTalk21scriptCloseItemSelectEv, 0};
-extern "C" void *data_ov047_0225b400[2] = {(void *)_ZN17SpNpcBlathersTalk15openExhibitListEv, 0};
-
 void SpNpcBlathersTalk::onMessageEnd(u32) {
     void *p;
     volatile u8 hdr[4];
@@ -1037,7 +878,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
         goto end;
     }
     if ((s32)msgIndex < 0xc) {
-        if (((SaveData *)(gSaveData))->testFlag(0xc)) {
+        if (gSaveData.testFlag(0xc)) {
             nextMsg = 0x44;
         } else {
             nextMsg = 0xc;
@@ -1048,7 +889,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     }
     if (msgIndex == 0x33 || ((s32)msgIndex >= 0x6e && (s32)msgIndex <= 0xa5)) {
         commitDonation();
-        if (((MuseumData *)(data_021ed0a0))->isInsectsComplete()) {
+        if (Museum()->isInsectsComplete()) {
             nextMsg = 0x34;
         } else {
             nextMsg = 0x27;
@@ -1060,7 +901,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     }
     if ((s32)msgIndex >= 0xaa && (s32)msgIndex <= 0xe1) {
         commitDonation();
-        if (((MuseumData *)(data_021ed0a0))->isFishComplete()) {
+        if (Museum()->isFishComplete()) {
             nextMsg = 0x36;
         } else {
             nextMsg = 0x27;
@@ -1073,24 +914,24 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     p = PlayerData_GetCurrent();
     nextMsg = 0xff;
     static SpNpcBlathersMessageEndHandler tbl[35] = {
-        {0x14, *(SpNpcBlathersTalkFn *)data_ov047_0225b4d8}, {0x15, *(SpNpcBlathersTalkFn *)data_ov047_0225b4d0},
-        {0x16, *(SpNpcBlathersTalkFn *)data_ov047_0225b4c8}, {0x17, *(SpNpcBlathersTalkFn *)data_ov047_0225b4c0},
-        {0x18, *(SpNpcBlathersTalkFn *)data_ov047_0225b4b8}, {0x19, *(SpNpcBlathersTalkFn *)data_ov047_0225b4b0},
-        {0x1a, *(SpNpcBlathersTalkFn *)data_ov047_0225b4a8}, {0x1b, *(SpNpcBlathersTalkFn *)data_ov047_0225b4a0},
-        {0x1c, *(SpNpcBlathersTalkFn *)data_ov047_0225b498}, {0x1d, *(SpNpcBlathersTalkFn *)data_ov047_0225b490},
-        {0x1f, *(SpNpcBlathersTalkFn *)data_ov047_0225b3b8}, {0x26, *(SpNpcBlathersTalkFn *)data_ov047_0225b480},
-        {0x29, *(SpNpcBlathersTalkFn *)data_ov047_0225b478}, {0x2e, *(SpNpcBlathersTalkFn *)data_ov047_0225b470},
-        {0x2f, *(SpNpcBlathersTalkFn *)data_ov047_0225b3a8}, {0x30, *(SpNpcBlathersTalkFn *)data_ov047_0225b460},
-        {0x31, *(SpNpcBlathersTalkFn *)data_ov047_0225b4e8}, {0x32, *(SpNpcBlathersTalkFn *)data_ov047_0225b450},
-        {0x33, *(SpNpcBlathersTalkFn *)data_ov047_0225b320}, {0x34, *(SpNpcBlathersTalkFn *)data_ov047_0225b440},
-        {0x35, *(SpNpcBlathersTalkFn *)data_ov047_0225b438}, {0x36, *(SpNpcBlathersTalkFn *)data_ov047_0225b430},
-        {0x37, *(SpNpcBlathersTalkFn *)data_ov047_0225b428}, {0x38, *(SpNpcBlathersTalkFn *)data_ov047_0225b420},
-        {0x39, *(SpNpcBlathersTalkFn *)data_ov047_0225b418}, {0x3a, *(SpNpcBlathersTalkFn *)data_ov047_0225b410},
-        {0x3b, *(SpNpcBlathersTalkFn *)data_ov047_0225b408}, {0x3c, *(SpNpcBlathersTalkFn *)data_ov047_0225b520},
-        {0x3d, *(SpNpcBlathersTalkFn *)data_ov047_0225b3f0}, {0x3f, *(SpNpcBlathersTalkFn *)data_ov047_0225b400},
-        {0x40, *(SpNpcBlathersTalkFn *)data_ov047_0225b468}, {0x41, *(SpNpcBlathersTalkFn *)data_ov047_0225b4e0},
-        {0x42, *(SpNpcBlathersTalkFn *)data_ov047_0225b3d8}, {0x43, *(SpNpcBlathersTalkFn *)data_ov047_0225b3d0},
-        {0x6a, *(SpNpcBlathersTalkFn *)data_ov047_0225b3c8},
+        {0x14, &SpNpcBlathersTalk::openDonationPicker}, {0x15, &SpNpcBlathersTalk::returnHeldItem},
+        {0x16, &SpNpcBlathersTalk::openAppraisalPicker}, {0x17, &SpNpcBlathersTalk::openAppraisalPicker},
+        {0x18, &SpNpcBlathersTalk::showMuseumMenu}, {0x19, &SpNpcBlathersTalk::appraiseFossil},
+        {0x1a, &SpNpcBlathersTalk::afterFossilIdentified}, {0x1b, &SpNpcBlathersTalk::afterFossilIdentified},
+        {0x1c, &SpNpcBlathersTalk::afterFossilIdentified}, {0x1d, &SpNpcBlathersTalk::offerFossilDonation},
+        {0x1f, &SpNpcBlathersTalk::returnAppraisedFossil}, {0x26, &SpNpcBlathersTalk::onFossilPartDonated},
+        {0x29, &SpNpcBlathersTalk::onExhibitCompleted}, {0x2e, &SpNpcBlathersTalk::onPaintingDonated},
+        {0x2f, &SpNpcBlathersTalk::onPaintingDonated}, {0x30, &SpNpcBlathersTalk::onPaintingDonated},
+        {0x31, &SpNpcBlathersTalk::onExhibitCompleted}, {0x32, &SpNpcBlathersTalk::showInsectComment},
+        {0x33, &SpNpcBlathersTalk::showInsectComment}, {0x34, &SpNpcBlathersTalk::onExhibitCompleted},
+        {0x35, &SpNpcBlathersTalk::showFishComment}, {0x36, &SpNpcBlathersTalk::onExhibitCompleted},
+        {0x37, &SpNpcBlathersTalk::onAlreadyDonated}, {0x38, &SpNpcBlathersTalk::onAlreadyDonated},
+        {0x39, &SpNpcBlathersTalk::onAlreadyDonated}, {0x3a, &SpNpcBlathersTalk::returnItemAndAskMore},
+        {0x3b, &SpNpcBlathersTalk::returnItemAndAskMore}, {0x3c, &SpNpcBlathersTalk::returnItemAndAskMore},
+        {0x3d, &SpNpcBlathersTalk::returnItemAndAskMore}, {0x3f, &SpNpcBlathersTalk::openExhibitList},
+        {0x40, &SpNpcBlathersTalk::showMuseumMenu}, {0x41, &SpNpcBlathersTalk::showMuseumMenu},
+        {0x42, &SpNpcBlathersTalk::returnItemAndShowMenu}, {0x43, &SpNpcBlathersTalk::returnItemAndShowMenu},
+        {0x6a, &SpNpcBlathersTalk::returnItemAndAskShowMore},
     };
     u32 i;
     i = 0;
@@ -1101,7 +942,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     goto test;
 loop:
     u32 ida;
-    ida = *(u32 *)((u8 *)tp + i * 12);
+    ida = tp[i].id;
     u32 idb;
     idb = *pid;
     if (ida == idb) {
@@ -1113,7 +954,7 @@ test:
     s32 v50;
     v50 = *(volatile u8 *)&msgIndex;
     if (v50 >= 0x50 && v50 <= 0x67) {
-        if (((MuseumData *)(data_021ed0a0))->isFossilsComplete()) {
+        if (Museum()->isFossilsComplete()) {
             nextMsg = 0x29;
         } else if (appraisalFlow == 0) {
             nextMsg = 0x27;
@@ -1125,10 +966,10 @@ test:
     }
     if (msgIndex == 0x25 || msgIndex == 0x2c || msgIndex == 0x2d || msgIndex == 0x69) {
         if (!Unk_ov047_022596e8_IsNoneT(&item, *(u16 *)&tt[0])) {
-            void *g = data_021ed0a0;
+            MuseumData *g = Museum();
             s32 a, b, r;
-            ((MuseumData *)(g))->donate(&item);
-            ((SaveData *)(gSaveData))->setFlag(0xc);
+            g->donate(&item);
+            gSaveData.setFlag(0xc);
             ((PlayerData *)(p))->setFlag(8);
             if (pocketSlot >= 0) {
                 Pocket_RemoveItem(pocketSlot);
@@ -1184,7 +1025,7 @@ void SpNpcBlathersTalk::returnItemAndAskShowMore() {
 }
 
 void SpNpcBlathersTalk::showMuseumMenu() {
-    if (((SaveData *)(gSaveData))->testFlag(0xc)) {
+    if (gSaveData.testFlag(0xc)) {
         nextMsg = 0x46;
     } else {
         nextMsg = 0x45;
@@ -1217,7 +1058,7 @@ void SpNpcBlathersTalk::appraiseFossil() {
 void SpNpcBlathersTalk::afterFossilIdentified() {
     if (appraisalFlow == 0) {
         if (((CommManager *)(gCommManager))->isOnline() == 0 && *DebugVar_GetPtr(0, 0x4a) == 0 && Talk_IsInOwnTown() != 0 &&
-            ((MuseumData *)(data_021ed0a0))->isDonated(&item) == 0) {
+            Museum()->isDonated(&item) == 0) {
             nextMsg = 0x69;
         } else {
             nextMsg = 0x6a;
@@ -1231,7 +1072,7 @@ void SpNpcBlathersTalk::offerFossilDonation() {
     if (((CommManager *)(gCommManager))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         ((ActorTalkRequest *)(this))->requestReturnItem();
         nextMsg = 0x20;
-    } else if (Talk_IsInOwnTown() != 0 && ((MuseumData *)(data_021ed0a0))->isDonated(&item) == 0) {
+    } else if (Talk_IsInOwnTown() != 0 && Museum()->isDonated(&item) == 0) {
         nextMsg = 0x1e;
     } else {
         ((ActorTalkRequest *)(this))->requestReturnItem();
@@ -1255,7 +1096,7 @@ void SpNpcBlathersTalk::onFossilPartDonated() {
 }
 
 void SpNpcBlathersTalk::onExhibitCompleted() {
-    if (((MuseumData *)(data_021ed0a0))->isComplete()) {
+    if (Museum()->isComplete()) {
         nextMsg = 0x2a;
     } else {
         nextMsg = 0x2b;
@@ -1264,7 +1105,7 @@ void SpNpcBlathersTalk::onExhibitCompleted() {
 
 void SpNpcBlathersTalk::onPaintingDonated() {
     commitDonation();
-    if (((MuseumData *)(data_021ed0a0))->isPaintingsComplete()) {
+    if (Museum()->isPaintingsComplete()) {
         nextMsg = 0x31;
     } else {
         nextMsg = 0x27;
@@ -1367,14 +1208,11 @@ void SpNpcBlathersTalk::openExhibitList() {
     setScript(3);
 }
 
-extern "C" void *data_ov047_0225b4d8[2] = {(void *)_ZN17SpNpcBlathersTalk18openDonationPickerEv, 0};
-extern "C" void *data_ov047_0225b4d0[2] = {(void *)_ZN17SpNpcBlathersTalk14returnHeldItemEv, 0};
-
 void SpNpcBlathersTalk::onChoice(u32 a) {
     if (!GameStart_IsActive()) {
         static void (SpNpcBlathersTalk::*tbl[2])(u32) = {
-            *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3b0,
-            *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b348,
+            &SpNpcBlathersTalk::dispatchChoice,
+            &SpNpcBlathersTalk::onDramaChoice,
         };
         u32 i = 0;
         PlayerData_GetCurrent()->getErrands();
@@ -1385,14 +1223,14 @@ void SpNpcBlathersTalk::onChoice(u32 a) {
     }
 }
 
-void SpNpcBlathersTalk::onDramaChoice(s32 a) {
+void SpNpcBlathersTalk::onDramaChoice(u32) {
     u8 buf[4];
-    a = msgIndex;
+    s32 a = msgIndex;
     if (a <= 0x15) {
         u32 r = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
         nextMsg = 0xff;
         if (r != 0) {
-            if (((SaveData *)(gSaveData))->testFlag(0xc)) {
+            if (gSaveData.testFlag(0xc)) {
                 nextMsg = 0x47;
             } else {
                 nextMsg = 0x48;
@@ -1408,63 +1246,28 @@ void SpNpcBlathersTalk::onDramaChoice(s32 a) {
     }
 }
 
-extern "C" void *data_ov047_0225b4b8[2] = {(void *)_ZN17SpNpcBlathersTalk14showMuseumMenuEv, 0};
-extern "C" void *data_ov047_0225b3d0[2] = {(void *)_ZN17SpNpcBlathersTalk21returnItemAndShowMenuEv, 0};
-extern "C" void *data_ov047_0225b4a8[2] = {(void *)_ZN17SpNpcBlathersTalk21afterFossilIdentifiedEv, 0};
-extern "C" void *data_ov047_0225b4a0[2] = {(void *)_ZN17SpNpcBlathersTalk21afterFossilIdentifiedEv, 0};
-extern "C" void *data_ov047_0225b498[2] = {(void *)_ZN17SpNpcBlathersTalk21afterFossilIdentifiedEv, 0};
-extern "C" void *data_ov047_0225b490[2] = {(void *)_ZN17SpNpcBlathersTalk19offerFossilDonationEv, 0};
-extern "C" void *data_ov047_0225b488[2] = {(void *)_ZN17SpNpcBlathersTalk20onAnythingElseChoiceEj, 0};
-extern "C" void *data_ov047_0225b480[2] = {(void *)_ZN17SpNpcBlathersTalk19onFossilPartDonatedEv, 0};
-extern "C" void *data_ov047_0225b478[2] = {(void *)_ZN17SpNpcBlathersTalk18onExhibitCompletedEv, 0};
-extern "C" void *data_ov047_0225b470[2] = {(void *)_ZN17SpNpcBlathersTalk17onPaintingDonatedEv, 0};
-extern "C" void *data_ov047_0225b468[2] = {(void *)_ZN17SpNpcBlathersTalk14showMuseumMenuEv, 0};
-extern "C" void *data_ov047_0225b460[2] = {(void *)_ZN17SpNpcBlathersTalk17onPaintingDonatedEv, 0};
-extern "C" void *data_ov047_0225b348[2] = {(void *)_ZN17SpNpcBlathersTalk13onDramaChoiceEi, 0};
-extern "C" void *data_ov047_0225b3a0[2] = {(void *)_ZN13SpNpcBlathers10setupAct01Ev, 0};
-extern "C" void *data_ov047_0225b448[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
 extern "C" u8 sSpNpcBlathersModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
-extern "C" void *data_ov047_0225b438[2] = {(void *)_ZN17SpNpcBlathersTalk15showFishCommentEv, 0};
-extern "C" void *data_ov047_0225b430[2] = {(void *)_ZN17SpNpcBlathersTalk18onExhibitCompletedEv, 0};
-extern "C" void *data_ov047_0225b428[2] = {(void *)_ZN17SpNpcBlathersTalk16onAlreadyDonatedEv, 0};
-extern "C" void *data_ov047_0225b420[2] = {(void *)_ZN17SpNpcBlathersTalk16onAlreadyDonatedEv, 0};
-extern "C" void *data_ov047_0225b418[2] = {(void *)_ZN17SpNpcBlathersTalk16onAlreadyDonatedEv, 0};
-extern "C" void *data_ov047_0225b410[2] = {(void *)_ZN17SpNpcBlathersTalk20returnItemAndAskMoreEv, 0};
-extern "C" void *data_ov047_0225b408[2] = {(void *)_ZN17SpNpcBlathersTalk20returnItemAndAskMoreEv, 0};
-extern "C" void *data_ov047_0225b380[2] = {(void *)_ZN17SpNpcBlathersTalk19onDonateMoreChoice2Ej, 0};
-extern "C" void *data_ov047_0225b500[2] = {(void *)_ZN17SpNpcBlathersTalk23scriptExhibitListClosedEv, 0};
-extern "C" void *data_ov047_0225b4b0[2] = {(void *)_ZN17SpNpcBlathersTalk14appraiseFossilEv, 0};
-extern "C" void *data_ov047_0225b4e8[2] = {(void *)_ZN17SpNpcBlathersTalk18onExhibitCompletedEv, 0};
-extern "C" void *data_ov047_0225b3e0[2] = {(void *)_ZN17SpNpcBlathersTalk18onDonateMoreChoiceEj, 0};
-extern "C" void *data_ov047_0225b4c8[2] = {(void *)_ZN17SpNpcBlathersTalk19openAppraisalPickerEv, 0};
-extern "C" void *data_ov047_0225b360[2] = {(void *)_ZN17SpNpcBlathersTalk16onDeliveryChoiceEj, 0};
-extern "C" void *data_ov047_0225b3c8[2] = {(void *)_ZN17SpNpcBlathersTalk24returnItemAndAskShowMoreEv, 0};
-extern "C" void *data_ov047_0225b3c0[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b3b8[2] = {(void *)_ZN17SpNpcBlathersTalk21returnAppraisedFossilEv, 0};
-extern "C" void *data_ov047_0225b3b0[2] = {(void *)_ZN17SpNpcBlathersTalk14dispatchChoiceEj, 0};
-extern "C" void *data_ov047_0225b3a8[2] = {(void *)_ZN17SpNpcBlathersTalk17onPaintingDonatedEv, 0};
-
 void SpNpcBlathersTalk::dispatchChoice(u32 a) {
     u32 arg = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
     nextMsg = 0xff;
     static SpNpcBlathersChoiceHandler tbl[17] = {
-        {0xc, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b390},
-        {0xe, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b388},
-        {0x1e, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b370},
-        {0x20, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b378},
-        {0x21, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3e8},
-        {0x23, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b488},
-        {0x27, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3e0},
-        {0x44, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b358},
-        {0x45, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3c0},
-        {0x46, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b328},
-        {0x47, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b448},
-        {0x48, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b340},
-        {0x6b, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b380},
-        {0xe5, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3f8},
-        {0xe6, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b360},
-        {0xe9, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b350},
-        {0xea, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b458},
+        {0xc, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0xe, &SpNpcBlathersTalk::onDonationOfferChoice},
+        {0x1e, &SpNpcBlathersTalk::onKeepFossilChoice},
+        {0x20, &SpNpcBlathersTalk::onAppraiseAnotherChoice},
+        {0x21, &SpNpcBlathersTalk::onAppraiseDonatedFossilChoice},
+        {0x23, &SpNpcBlathersTalk::onAnythingElseChoice},
+        {0x27, &SpNpcBlathersTalk::onDonateMoreChoice},
+        {0x44, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0x45, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0x46, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0x47, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0x48, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0x6b, &SpNpcBlathersTalk::onDonateMoreChoice2},
+        {0xe5, &SpNpcBlathersTalk::onDeliveryChoice},
+        {0xe6, &SpNpcBlathersTalk::onDeliveryChoice},
+        {0xe9, &SpNpcBlathersTalk::onMainMenuChoice},
+        {0xea, &SpNpcBlathersTalk::onMainMenuChoice},
     };
     u32 i = 0;
     u8 *idp = &msgIndex;
@@ -1485,27 +1288,11 @@ test0:
     }
 }
 
-extern "C" void *data_ov047_0225b390[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b388[2] = {(void *)_ZN17SpNpcBlathersTalk21onDonationOfferChoiceEj, 0};
-extern "C" void *data_ov047_0225b370[2] = {(void *)_ZN17SpNpcBlathersTalk18onKeepFossilChoiceEj, 0};
-extern "C" void *data_ov047_0225b3f0[2] = {(void *)_ZN17SpNpcBlathersTalk20returnItemAndAskMoreEv, 0};
-extern "C" void *data_ov047_0225b3f8[2] = {(void *)_ZN17SpNpcBlathersTalk16onDeliveryChoiceEj, 0};
-extern "C" void *data_ov047_0225b3e8[2] = {(void *)_ZN17SpNpcBlathersTalk29onAppraiseDonatedFossilChoiceEj, 0};
 extern "C" u8 sSpNpcBlathersTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" void *data_ov047_0225b358[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b350[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b458[2] = {(void *)_ZN17SpNpcBlathersTalk16onMainMenuChoiceEi, 0};
-extern "C" void *data_ov047_0225b338[2] = {(void *)_ZN13SpNpcBlathers9mainAct01Ev, 0};
-extern "C" void *data_ov047_0225b378[2] = {(void *)_ZN17SpNpcBlathersTalk23onAppraiseAnotherChoiceEj, 0};
-extern "C" void *data_ov047_0225b4c0[2] = {(void *)_ZN17SpNpcBlathersTalk19openAppraisalPickerEv, 0};
-extern "C" void *data_ov047_0225b368[2] = {(void *)_ZN13SpNpcBlathers10setupAct02Ev, 0};
-extern "C" void *data_ov047_0225b320[2] = {(void *)_ZN17SpNpcBlathersTalk17showInsectCommentEv, 0};
 extern "C" const u8 sSpNpcBlathersDramaMsgTable[32] = {0, 1, 2, 3, 0, 0, 4, 5, 6, 0, 0, 0, 7, 8, 9, 10, 0, 0, 11, 12, 13, 14, 15, 0, 16, 17, 18, 19, 20, 21, 0, 0};
-extern "C" void *data_ov047_0225b4e0[2] = {(void *)_ZN17SpNpcBlathersTalk14showMuseumMenuEv, 0};
-extern "C" void *data_ov047_0225b3d8[2] = {(void *)_ZN17SpNpcBlathersTalk21returnItemAndShowMenuEv, 0};
-
-void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
-    if (((SaveData *)(gSaveData))->testFlag(0xc)) {
+void SpNpcBlathersTalk::onMainMenuChoice(u32 choice) {
+    s32 a = choice;
+    if (gSaveData.testFlag(0xc)) {
         if (a == 2) {
             a = 4;
         } else if (a > 2) {
@@ -1547,8 +1334,8 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
         }
         break;
     case 3: {
-        void *g = data_021ed0a0;
-        s32 r = ((MuseumData *)(g))->getDonationPercent();
+        MuseumData *g = Museum();
+        s32 r = g->getDonationPercent();
         nextMsg = 0x13;
         if (r == 0) {
             nextMsg = 0x10;
@@ -1556,7 +1343,7 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
             nextMsg = 0x11;
         } else if (r <= 0x46000) {
             nextMsg = 0x12;
-        } else if (((MuseumData *)(g))->isComplete()) {
+        } else if (g->isComplete()) {
             nextMsg = 0x49;
         }
         break;
@@ -1642,7 +1429,7 @@ void SpNpcBlathersTalk::onDeliveryChoice(u32 a) {
         ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcBlathers_IsDeliveryItem, 0xd, 0);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setScript(2);
-    } else if (((SaveData *)(gSaveData))->testFlag(0xc)) {
+    } else if (gSaveData.testFlag(0xc)) {
         nextMsg = 0xea;
     } else {
         nextMsg = 0xe9;

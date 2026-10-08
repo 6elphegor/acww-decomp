@@ -265,11 +265,11 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
     new (b3) LabelBalloonText();
     s32 k = Letter_GetKind(o);
     if (k == 0x11) {
-        Letter_GetSenderName(o, b1);
+        Letter_GetSenderName(o, (MsgString *)b1);
         String_SetSlot(1, b1);
         String_Load2dMenu(b0, 0x4b);
     } else if (k == 0) {
-        Letter_GetSenderName(o, b1);
+        Letter_GetSenderName(o, (MsgString *)b1);
         String_SetSlot(1, b1);
         if (t == 4) {
             String_Load2dMenu(b0, 0x4b);
@@ -287,7 +287,7 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
         String_SetSlot(0, b4);
         ((LabelString *)(b4))->LabelString::~LabelString();
     } else {
-        Letter_GetRecipientName(o, b1);
+        Letter_GetRecipientName(o, (MsgString *)b1);
         String_SetSlot(0, b1);
     }
     String_Load2dMenu(b0, 0x3c);

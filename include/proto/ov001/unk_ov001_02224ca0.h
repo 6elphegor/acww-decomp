@@ -41,19 +41,19 @@ u8 WfcFade_IsBusy(u32 mode);
 u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h);
 #endif
 #ifndef PROTO_LOCAL_WfcFade_Task
-void WfcFade_Task(s32 a, WfcFadeState *st);
+void WfcFade_Task(void *task, WfcFadeState *st);
 #endif
 #ifndef PROTO_LOCAL_WfcFade_StartWait
 s32 WfcFade_StartWait(u32 v);
 #endif
 #ifndef PROTO_LOCAL_WfcFade_WaitTask
-void WfcFade_WaitTask(s32 a, WfcFadeState *st);
+void WfcFade_WaitTask(void *task, WfcFadeState *st);
 #endif
 #ifndef PROTO_LOCAL_WfcPool_Create
 WfcPool *WfcPool_Create(s32 count);
 #endif
 #ifndef PROTO_LOCAL_WfcPool_CreateFrom
-WfcPool *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride);
+WfcPool *WfcPool_CreateFrom(s32 count, void *items, u32 stride);
 #endif
 }
 #endif

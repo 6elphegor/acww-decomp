@@ -4,14 +4,14 @@
 #include "types.h"
 #include "npc/VillagerId.h"
 #include "player/PlayerId.h"
+#include "npc/ErrandRecord.h"
 
 struct ClockDate;
 
-// The sick villager of the town and the players who visited it. Methods in src/main/unk_02098e90.cpp (which still
-// has its own copy of this definition: it should include this header instead).
+// The sick villager of the town and the players who visited it. Methods in src/main/unk_02098e90.cpp.
 class SickVillagerRecord {
 public:
-    u8 errand[0xc];
+    ErrandRecord errand;
     VillagerId villagerId;
     PlayerId visitors[5];
     u8 startDate[4];
@@ -29,9 +29,8 @@ public:
     VillagerId *getVillagerId();
     SickVillagerRecord *destructRecord();
     SickVillagerRecord *constructRecord();
-    void *getErrand();
+    ErrandRecord *getErrand();
     void resetRecord();
-    u8 *getParcelErrand();
 };
 
 #endif

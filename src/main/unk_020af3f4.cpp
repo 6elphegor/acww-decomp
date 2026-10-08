@@ -30,8 +30,8 @@ extern "C" void Snowman_SendLetter(u32 idx) {
             l.a = idx;
             ItemName s(&l.b);
             MailText_SetSlot(1, &s);
-            Letter_ComposeFromMail((LetterView *)&big, &l, (void *)"sp_npc_snowman", (u8 *)&data_020e2eb8,
-                                   (u8 *)&data_020e2ebc, obj->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&big, (const u8 *)&l, "sp_npc_snowman", &data_020e2eb8, &data_020e2ebc,
+                                   obj->getPlayerId());
             ((LetterView *)(&big))->setPresent(l.b, 1);
             LetterDelivery_QueueOutgoing(&big, 0);
         }

@@ -1,12 +1,14 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "uptr.h"
 #include "proto/ov001/unk_ov001_022032f8.h"
 
 typedef void (*AossWcmNotifyFunc)(s32, ...);
 
+// WCMConfig
 struct AossWcmConfig {
     s32 dmaNo;
-    u32 bssDescBuffer;
+    void *bssDescBuffer;
     s32 bssDescBufferSize;
     s32 bssDescMode;
 };
@@ -34,9 +36,9 @@ void MI_CpuCopy8(void *a, void *b, u32 n);
 
 s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_DisconnectAsync(void);
-s32 WifiLink_SearchAsync(s32 a, s32 b, s32 c);
+s32 WifiLink_SearchAsync(void *a, void *b, s32 c);
 s32 WifiLink_StartupAsync(void *a, void *b);
-s32 WifiLink_ConnectAsync(void *a, void *b, s32 c);
+s32 WifiLink_ConnectAsync(u8 *a, u8 *b, u32 c);
 s32 WifiLink_Init(void *, s32);
 void WifiLink_Finish(void);
 void WifiLink_LockApList(s32 a);
@@ -61,7 +63,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(6, 0);
                 }
             } else if (sAossWcmState == 6) {
-                if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
+                if (WifiLink_SearchAsync(sAossWcmBssidPtr, sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -122,7 +124,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(0xa, 0);
                 }
             } else if (sAossWcmState == 6) {
-                if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
+                if (WifiLink_SearchAsync(sAossWcmBssidPtr, sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -161,7 +163,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(0xe, 0);
                 }
             } else if (sAossWcmState == 6) {
-                if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
+                if (WifiLink_SearchAsync(sAossWcmBssidPtr, sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -308,7 +310,7 @@ extern "C" s32 Aoss_WcmStartSearch(u8 *a, u8 *b, s32 n, s32 d) {
         sAossWcmSsidPtr = gWifiLinkAnySsid;
     }
     if (sAossWcmState == 3) {
-        if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) != 3) {
+        if (WifiLink_SearchAsync(sAossWcmBssidPtr, sAossWcmSsidPtr, sAossWcmSearchOption) != 3) {
             goto fail;
         }
         sAossWcmState = 6;
@@ -400,15 +402,17 @@ extern "C" s32 Aoss_WcmConnect(void *a, void *b, u32 c) {
 
 extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
     u32 irq = OS_DisableInterrupts();
+    // buf: the WEP descriptor (0x50), the WCM config, the WifiLink work (0x2300), a BSS descriptor (0xc0), then the
+    // BSS descriptor buffer, each aligned
     sAossWcmWepDesc = (u8 *)buf;
-    AossWcmConfig *p = (AossWcmConfig *)(((u32)buf + 0x53) & ~3);
+    AossWcmConfig *p = (AossWcmConfig *)(((uptr)buf + 0x53) & ~(uptr)3);
     sAossWcmConfig = p;
-    u32 t = (((u32)p + 0x2f) & ~0x1f);
+    uptr t = ((uptr)p + 0x2f) & ~(uptr)0x1f;
     sAossWcmWork = (u8 *)t;
-    t = ((t + 0x231f) & ~0x1f);
+    t = (t + 0x231f) & ~(uptr)0x1f;
     sAossWcmBssDesc = (u8 *)t;
-    p->bssDescBuffer = (t + 0xdf) & ~0x1f;
-    sAossWcmConfig->bssDescBufferSize = (s32)((u32)buf + size - sAossWcmConfig->bssDescBuffer);
+    p->bssDescBuffer = (void *)((t + 0xdf) & ~(uptr)0x1f);
+    sAossWcmConfig->bssDescBufferSize = (s32)((u8 *)buf + size - (u8 *)sAossWcmConfig->bssDescBuffer);
     sAossWcmConfig->bssDescMode = 0;
     sAossWcmConfig->dmaNo = 3;
     sAossWcmNotifyCb = (AossWcmNotifyFunc)fn;

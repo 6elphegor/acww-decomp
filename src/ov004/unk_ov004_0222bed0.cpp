@@ -9,26 +9,15 @@
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
 #include "snd/SndSeEmitter.h"
-#define PROTO_LOCAL_FtrMgr_GetSurfaceHeightAtPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemDropList_Draw  // declared below: the shared prototype conflicts with the calls here
+#include "town/BlockMap.h"
+#include "game/FxVec3.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 
-// ---------------------------------------------------------------- real symbol names of main-module methods
-
-#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
-#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32
-#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
-#define Model_drawShapesDirect _ZN5Model16drawShapesDirectEPi
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_02133150 _s32_div_f
-
-#define Unk_c788_call _ZN13RoomItemIcons13drawItemModelEtRK11VecFx32CopyS2_sss
-#define Unk_c7e0_call _ZN13RoomItemIcons14setupIconModelEjRK11VecFx32CopyS2_sss
-
 
 struct Unk_ov004_0222bf34_P2 {
     s32 a, b;
@@ -74,32 +63,26 @@ public:
 
 // ---------------------------------------------------------------- externs
 extern "C" {
-extern s32 gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern void *gCamera;
 extern CommManager *gCommManager;
-extern u8 data_021f47e0[];
-extern u8 gCameraLookAt[];
+extern Mtx43 data_021f47e0;
+extern FxVec3 gCameraLookAt;
 
-s32 CommManager_isOnline(void *g);
 void ModelSet_Release(void *p);
 s32 ModelSet_Load(void *p, void *a, s32 b);
 void *ModelSet_Find(void *p, u32 a);
 u32 Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(VecFx32Copy *out, s32 a, s32 b);
-void SndSeEmitter_callStop(void *p);
-void SndSeEmitter_callUpdateRelative(void *p, void *v);
-void SndSeEmitter_callInit(void *p);
 void VEC_Add(void *a, void *b, void *c);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
-s32 FtrMgr_GetSurfaceHeightAtPos(void *p);
 s32 Item_GetInfoUnk07(u16 *p);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
-void Model_drawShapesDirect(void *p, s32 a);
 u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void PendingUnit_ApplyAt(void *p, u32 a);
@@ -107,12 +90,6 @@ void Scene_InTown(void);
 void BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
 u32 Scene_GetCurrent(void);
-
-// the manager's methods called as plain functions with the object first (the symbols.txt names)
-void Unk_c788_call(s32 mgr, u32 id, VecFx32Copy *a, VecFx32Copy *b, s32 c, s32 d, s32 e);
-void Unk_c7e0_call(s32 mgr, u32 id, VecFx32Copy *a, VecFx32Copy *b, s32 c, s32 d, s32 e);
-
-void ItemDropList_Draw(RoomItemDrop *e);
 }
 
 
@@ -161,7 +138,7 @@ void RoomItemIcons::drawIconModel(Model *model, Mtx43 m) {
     if (model != NULL) {
         volatile u16 tmp[2];
         model->mtx = m;
-        ((Model *)(model))->drawShapesDirect((s32 *)(0));
+        model->drawShapesDirect(0);
         tmp[0] = SceneLights_GetRoomColor();
         tmp[1] = tmp[0];
         NNS_G3dMdlSetMdlEmi(model->resMdl, 0, tmp[1]);
@@ -173,11 +150,11 @@ Model *RoomItemIcons::setupIconModel(u32 idx, const VecFx32Copy &pos, const VecF
     Mtx43 m;
     VecFx32 t;
     u32 r = WorldCurve_ToCurved(&t, &pos);
-    Mtx43_SetTranslate(data_021f47e0, t.x, t.y, t.z);
-    Mtx43_RotateX(data_021f47e0, r);
-    Mtx43_RotateXYZ(data_021f47e0, rx, ry, rz);
-    Mtx43_Scale(data_021f47e0, scale.x, scale.y, scale.z);
-    m = *(Mtx43 *)data_021f47e0;
+    Mtx43_SetTranslate(&data_021f47e0, t.x, t.y, t.z);
+    Mtx43_RotateX(&data_021f47e0, r);
+    Mtx43_RotateXYZ(&data_021f47e0, rx, ry, rz);
+    Mtx43_Scale(&data_021f47e0, scale.x, scale.y, scale.z);
+    m = data_021f47e0;
     drawIconModel(model, m);
     return model;
 }
@@ -204,9 +181,9 @@ void RoomItemIcons::drawGridItems(void *grid) {
     VecFx32Copy e2;
     s32 hi = 8;
     s32 j, i;
-    a.x = ((VecFx32Copy *)gCameraLookAt)->x;
-    a.y = ((VecFx32Copy *)gCameraLookAt)->y;
-    a.z = ((VecFx32Copy *)gCameraLookAt)->z;
+    a.x = gCameraLookAt.x;
+    a.y = gCameraLookAt.y;
+    a.z = gCameraLookAt.z;
     FieldPos_SnapToUnitCenter(&out, &a);
     b.x = out.x + 0x10000;
     b.y = 0;
@@ -214,8 +191,8 @@ void RoomItemIcons::drawGridItems(void *grid) {
     for (i = hi; i >= -8; i--) {
         FieldPos_SnapToUnitCenter(&c, &b);
         u32 r = WorldCurve_ToCurved(&d, &c);
-        Mtx43_SetTranslate(data_021f47e0, d.x, d.y, d.z);
-        Mtx43_RotateX(data_021f47e0, r);
+        Mtx43_SetTranslate(&data_021f47e0, d.x, d.y, d.z);
+        Mtx43_RotateX(&data_021f47e0, r);
         for (j = hi; j >= -8; j--) {
             u16 *p = BlockMap_GetItemPtrAtPos(grid, &c, 0);
             if (p != NULL && (s32)(*p & 0xf000) >> 12 == 1) {
@@ -244,7 +221,7 @@ void RoomItemIcons::drawGridItems(void *grid) {
 }
 
 BOOL RoomItemIcons::onDraw() {
-    void *a = (void *)gSceneBlockMap;
+    void *a = gSceneBlockMap;
     void *b = gCamera;
     if (a != NULL && b != NULL) {
         drawGridItems(a);
@@ -260,13 +237,13 @@ BOOL RoomItemIcons::onDelete() {
 }
 
 extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, VecFx32Copy *v) {
-    void *g = (void *)gSceneBlockMap;
+    void *g = gSceneBlockMap;
     Actor *o = (Actor *)PlayerActor_GetActor(4);
     BOOL r = FALSE;
     if (g != NULL && o != NULL) {
         CommManager *c = gCommManager;
         s32 a;
-        if (((CommManager *)(c))->isOnline()) {
+        if (c->isOnline()) {
             a = c->myAid;
         } else {
             a = 0;
@@ -295,7 +272,7 @@ extern "C" void RoomItemIcons_DrawIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s
         VecFx32Copy lb;
         la = *a;
         lb = *b;
-        Unk_c7e0_call((s32)sRoomItemIcons, id, &la, &lb, c, d, e);
+        sRoomItemIcons->setupIconModel(id, la, lb, c, d, e);
     }
 }
 
@@ -305,7 +282,7 @@ extern "C" void RoomItemIcons_DrawItem(u32 id, VecFx32Copy *a, VecFx32Copy *b, s
         VecFx32Copy lb;
         la = *a;
         lb = *b;
-        Unk_c788_call((s32)sRoomItemIcons, id, &la, &lb, c, d, e);
+        sRoomItemIcons->drawItemModel(id, la, lb, c, d, e);
     }
 }
 
@@ -314,7 +291,7 @@ extern "C" void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z) {
     if (gSceneBlockMap != 0) {
         volatile u16 buf = 0xfff1;
         buf = v;
-        BlockMap_SetItemAtUnit((void *)gSceneBlockMap, (u16 *)&buf, x, y, z);
+        BlockMap_SetItemAtUnit(gSceneBlockMap, (u16 *)&buf, x, y, z);
     }
 }
 
@@ -328,7 +305,7 @@ extern "C" void ItemDrop_Settle(RoomItemDrop *e) {
     }
 }
 
-extern "C" void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v) {
+extern "C" void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, BlockMap *unused, s32 s16v, u32 u8v) {
     e->group = idx;
     e->state = 1;
     e->isStill = flag;
@@ -392,7 +369,7 @@ extern "C" void ItemDrop_SetTrajectory(RoomItemDrop *e, Unk_ov004_0222bf34_P2 *p
     zero:
         e->unk_8e = 0;
     } else {
-        Snd_SeEmitterPlayOneShot((SndSeEmitter *)e->seEmitter, 0x75, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(&e->seEmitter, 0x75, 0x7f, 0);
     }
 }
 
@@ -410,7 +387,7 @@ extern "C" void ItemDrop_Update(RoomItemDrop *e) {
             u16 v1 = id;
             u16 v2 = id;
             if (v2 >= 0x1492 && v1 <= 0x14fd) in = TRUE;
-            if (in) Snd_SeEmitterPlayOneShot((SndSeEmitter *)e->seEmitter, 0x70, 0x7f, 0);
+            if (in) Snd_SeEmitterPlayOneShot(&e->seEmitter, 0x70, 0x7f, 0);
         }
         e->pos.y = e->landPos.y;
         if (e->bounceCount == 0) {
@@ -433,7 +410,7 @@ extern "C" void ItemDropList_Init(RoomItemDrop *e) {
         e->state = 0;
         e->item = 0xfff1;
         e->landItem = 0xfff1;
-        ((SndSeEmitter *)(e->seEmitter))->callInit();
+        e->seEmitter.callInit();
     }
 }
 
@@ -449,7 +426,7 @@ extern "C" void ItemDropList_Update(RoomItemDrop *e) {
             v.x = e->pos.x;
             v.y = e->pos.y;
             v.z = e->pos.z;
-            ((SndSeEmitter *)(e->seEmitter))->callUpdateRelative((VecFx32 *)(&v));
+            e->seEmitter.callUpdateRelative((VecFx32 *)(&v));
         }
     }
 }
@@ -463,9 +440,9 @@ extern "C" void ItemDropList_Draw(RoomItemDrop *e) {
             VecFx32Copy *q = (VecFx32Copy *)&e->scale;
             VecFx32Copy v;
             s32 r = WorldCurve_ToCurved(&v, &e->pos);
-            Mtx43_SetTranslate(data_021f47e0, v.x, v.y, v.z);
-            Mtx43_RotateX(data_021f47e0, r);
-            Mtx43_Scale(data_021f47e0, e->scale.x, q->y, q->z);
+            Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
+            Mtx43_RotateX(&data_021f47e0, r);
+            Mtx43_Scale(&data_021f47e0, e->scale.x, q->y, q->z);
             u32 idc = id;
             u32 t = (id & 0xf000) >> 12;
             if (t == 1 || t == 3 || t == 4) {
@@ -478,7 +455,7 @@ extern "C" void ItemDropList_Draw(RoomItemDrop *e) {
                 sc.x = 0x1000;
                 sc.y = 0x1000;
                 sc.z = 0x1000;
-                Unk_c788_call((s32)sRoomItemIcons, idc, &pos, &sc, 0, 0, 0);
+                sRoomItemIcons->drawItemModel(idc, pos, sc, 0, 0, 0);
             }
         }
     }
@@ -488,12 +465,12 @@ extern "C" void ItemDropList_Release(RoomItemDrop *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         if (e->state != 0) ItemDrop_Clear(e);
-        ((SndSeEmitter *)(e->seEmitter))->callStop();
+        e->seEmitter.callStop();
     }
 }
 
 extern "C" s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_0222bf34_P2 *p, VecFx32Copy *a, VecFx32Copy *b, s32 flag, u32 idv, s32 s16v, u32 u8v) {
-    s32 g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     if (g == 0) return 0;
     RoomItemDrop *e = (RoomItemDrop *)base + idx * 3;
     BOOL r = FALSE;

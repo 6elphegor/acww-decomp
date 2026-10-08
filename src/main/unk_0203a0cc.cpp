@@ -5,7 +5,8 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_0203bd10_Dtcm.h"
 #include "actor/VillagerActor.h"
-#include "game/Unk_021c47c4.h"
+#include "town/BlockMap.h"
+#include "town/MapBlock.h"
 #include "gfx/CameraPose.h"
 #include "gfx/CameraSetup.h"
 #include "gfx/FxMtx43.h"
@@ -17,10 +18,9 @@
 #include "gfx/DebugColor.h"
 #include "gfx/ViewFrustum.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_Camera_GetLookAtPoint  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
@@ -29,6 +29,7 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
@@ -67,87 +68,10 @@ struct CameraShakeParam {
 
 
 
-#ifdef HOST64
-// Camera: the DS offsets of the M() accesses -> the same members on 64-bit hosts (tools/host_offset_map.py)
-template <unsigned O> struct CameraHostOff;
-template <> struct CameraHostOff<0x80> { enum { v = 0xc0 }; };  // distanceOffset
-template <> struct CameraHostOff<0x90> { enum { v = 0xd0 }; };  // nearOffset
-template <> struct CameraHostOff<0x94> { enum { v = 0xd4 }; };  // farOffset
-template <> struct CameraHostOff<0x98> { enum { v = 0xd8 }; };  // fovyOffset
-template <> struct CameraHostOff<0xa8> { enum { v = 0xe8 }; };  // blendDelayOffset
-template <> struct CameraHostOff<0xac> { enum { v = 0xec }; };  // blendEndOffset
-template <> struct CameraHostOff<0xb0> { enum { v = 0xf0 }; };  // blendEaseInOffset
-template <> struct CameraHostOff<0xb4> { enum { v = 0xf4 }; };  // blendEaseOutOffset
-template <> struct CameraHostOff<0xb8> { enum { v = 0xf8 }; };  // blendDelay
-template <> struct CameraHostOff<0xbc> { enum { v = 0xfc }; };  // blendEnd
-template <> struct CameraHostOff<0xc0> { enum { v = 0x100 }; };  // blendEaseIn
-template <> struct CameraHostOff<0xc4> { enum { v = 0x104 }; };  // blendEaseOut
-template <> struct CameraHostOff<0xc8> { enum { v = 0x108 }; };  // blendTime
-template <> struct CameraHostOff<0xfc> { enum { v = 0x13c }; };  // target.h0
-template <> struct CameraHostOff<0xfe> { enum { v = 0x13e }; };  // target.h1
-template <> struct CameraHostOff<0x100> { enum { v = 0x140 }; };  // target.w0
-template <> struct CameraHostOff<0x104> { enum { v = 0x144 }; };  // target.x
-template <> struct CameraHostOff<0x108> { enum { v = 0x148 }; };  // target.y
-template <> struct CameraHostOff<0x10c> { enum { v = 0x14c }; };  // target.z
-template <> struct CameraHostOff<0x110> { enum { v = 0x150 }; };  // targetFocus.x
-template <> struct CameraHostOff<0x114> { enum { v = 0x154 }; };  // targetFocus.y
-template <> struct CameraHostOff<0x118> { enum { v = 0x158 }; };  // targetFocus.z
-template <> struct CameraHostOff<0x11c> { enum { v = 0x15c }; };  // saved
-template <> struct CameraHostOff<0x11e> { enum { v = 0x15e }; };  // savedPitch
-template <> struct CameraHostOff<0x120> { enum { v = 0x160 }; };  // savedDistance
-template <> struct CameraHostOff<0x124> { enum { v = 0x164 }; };  // savedOffset
-template <> struct CameraHostOff<0x128> { enum { v = 0x168 }; };  // savedOffsetY
-template <> struct CameraHostOff<0x12c> { enum { v = 0x16c }; };  // savedOffsetZ
-template <> struct CameraHostOff<0x130> { enum { v = 0x170 }; };  // savedFocus
-template <> struct CameraHostOff<0x134> { enum { v = 0x174 }; };  // savedFocusY
-template <> struct CameraHostOff<0x138> { enum { v = 0x178 }; };  // savedFocusZ
-template <> struct CameraHostOff<0x13c> { enum { v = 0x17c }; };  // savedEye
-template <> struct CameraHostOff<0x140> { enum { v = 0x180 }; };  // savedEyeY
-template <> struct CameraHostOff<0x144> { enum { v = 0x184 }; };  // savedEyeZ
-template <> struct CameraHostOff<0x148> { enum { v = 0x188 }; };  // current
-template <> struct CameraHostOff<0x14a> { enum { v = 0x18a }; };  // currentPitch
-template <> struct CameraHostOff<0x14c> { enum { v = 0x18c }; };  // currentDistance
-template <> struct CameraHostOff<0x150> { enum { v = 0x190 }; };  // currentOffset
-template <> struct CameraHostOff<0x154> { enum { v = 0x194 }; };  // currentOffsetY
-template <> struct CameraHostOff<0x158> { enum { v = 0x198 }; };  // currentOffsetZ
-template <> struct CameraHostOff<0x15c> { enum { v = 0x19c }; };  // currentFocus
-template <> struct CameraHostOff<0x160> { enum { v = 0x1a0 }; };  // currentFocusY
-template <> struct CameraHostOff<0x164> { enum { v = 0x1a4 }; };  // currentFocusZ
-template <> struct CameraHostOff<0x168> { enum { v = 0x1a8 }; };  // eye
-template <> struct CameraHostOff<0x16c> { enum { v = 0x1ac }; };  // eyeY
-template <> struct CameraHostOff<0x170> { enum { v = 0x1b0 }; };  // eyeZ
-template <> struct CameraHostOff<0x174> { enum { v = 0x1b4 }; };  // roll
-template <> struct CameraHostOff<0x178> { enum { v = 0x1b8 }; };  // pad_176.[2]
-template <> struct CameraHostOff<0x17c> { enum { v = 0x1bc }; };  // pad_176.[6]
-template <> struct CameraHostOff<0x180> { enum { v = 0x1c0 }; };  // pad_176.[10]
-template <> struct CameraHostOff<0x184> { enum { v = 0x1c4 }; };  // pad_176.[14]
-template <> struct CameraHostOff<0x188> { enum { v = 0x1c8 }; };  // lookTarget
-template <> struct CameraHostOff<0x194> { enum { v = 0x1d4 }; };  // lookEye
-template <> struct CameraHostOff<0x1a0> { enum { v = 0x1e0 }; };  // lookUp
-template <> struct CameraHostOff<0x1a4> { enum { v = 0x1e4 }; };  // lookUpY
-template <> struct CameraHostOff<0x1a8> { enum { v = 0x1e8 }; };  // lookUpZ
-template <> struct CameraHostOff<0x1ac> { enum { v = 0x1ec }; };  // eyeCurveAngle
-template <> struct CameraHostOff<0x1b0> { enum { v = 0x1f0 }; };  // aspect
-template <> struct CameraHostOff<0x1b4> { enum { v = 0x1f4 }; };  // nearClip
-template <> struct CameraHostOff<0x1b8> { enum { v = 0x1f8 }; };  // farClip
-template <> struct CameraHostOff<0x1bc> { enum { v = 0x1fc }; };  // pad_1bc.[0]
-template <> struct CameraHostOff<0x1c0> { enum { v = 0x200 }; };  // pad_1bc.[4]
-template <> struct CameraHostOff<0x1c4> { enum { v = 0x204 }; };  // pad_1bc.[8]
-template <> struct CameraHostOff<0x1c8> { enum { v = 0x208 }; };  // fovy
-template <> struct CameraHostOff<0x1e4> { enum { v = 0x224 }; };  // closeUpFactorTarget
-template <> struct CameraHostOff<0x1e8> { enum { v = 0x228 }; };  // closeUpFactor
-template <> struct CameraHostOff<0x1f4> { enum { v = 0x234 }; };  // viewPushed
-template <> struct CameraHostOff<0x1f8> { enum { v = 0x238 }; };  // mode
-template <> struct CameraHostOff<0x1fc> { enum { v = 0x23c }; };  // prevMode
-template <> struct CameraHostOff<0x200> { enum { v = 0x240 }; };  // startMode
-#define M(T, o) (*(T *)((u8 *)this + CameraHostOff<(o)>::v))
-#else
-#define M(T, o) (*(T *)((u8 *)this + (o)))
-#endif
 
 class Camera;
-typedef BOOL (Camera::*CameraModeInitFn)();
-typedef void (Camera::*CameraModeUpdateFn)();
+typedef BOOL (*CameraModeInitFn)(Camera *c);
+typedef void (*CameraModeUpdateFn)(Camera *c);
 struct CameraModeEntry {
     CameraModeInitFn init;
     CameraModeUpdateFn update;
@@ -193,7 +117,7 @@ extern VecFx32 gVec3Zero;
 extern SceneInfo *gCurSceneInfo;
 extern const CameraPoseGridRow sCameraPoseGrid[3];
 extern s32 data_020c8cb8;
-extern Unk_021c47c4 *gSceneBlockMap;
+extern BlockMap *gSceneBlockMap;
 extern u8 gViewFrustum[];
 extern u32 data_021c3240;
 extern u16 data_021c323c;
@@ -217,8 +141,6 @@ void MTX_MultVec43(void *in, void *m, void *out);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Vec_Scale(void *v, s32 s);
-void Camera_GetLookAtPoint(void *out, void *o);
-V3 *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent();
 void Vec_Sub(void *out, void *a, void *b);
 void Vec_ShiftRightTo(void *out, void *in, s32 s);
@@ -228,24 +150,22 @@ void VEC_Add(void *a, void *b, void *c);
 void Math_StepS16(s16 *p, s32 a, s32 b);
 void Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
 s32 Vec_MagXZ(void *v);
-s32 Math_AngleXZ(void *a, void *b);
 void Vec_RotateX(void *v, s32 a);
 void Vec_RotateY(void *v, s32 a);
 s32 Scene_InHouseRoom();
 s32 Scene_InVillagerHouse();
 s32 Scene_InMuseumRoom();
-void Camera_UpdateRoomFocus(void *self, s32 a);
+void Camera_UpdateRoomFocus(Camera *self);
 BOOL Vec_SafeNormalize(void *v);
 void Vec_RotateZ(void *v, s32 a);
 s32 FX_Inv(s32);
 s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
-s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
 void MTX_Inverse43(void *a, void *b);
 void Vec_ScaleTo(void *out, void *a, s32 n);
-void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, s32 scale, BOOL load, s32 *mtx);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
-void *Scene_GetPrevious();
-s32 SceneId_IsHouseRoom(void *a);
+u8 Scene_GetPrevious();
+BOOL SceneId_IsHouseRoom(s32 x);
 s32 NNS_G3dGetTex(void *p);
 void func_02135558(void *a, void *b, void *c);
 void *func_020986c8(void *s);
@@ -257,87 +177,6 @@ s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL Item_TestInfoFlag3(u16 *p);
 }
 
-extern "C" void Camera_UpdateMode20();
-extern "C" void _ZN6Camera13initModeShakeEv();
-extern "C" void Camera_UpdateMode16();
-extern "C" void Camera_InitMode11();
-extern "C" void Camera_InitMode12();
-extern "C" void _ZN6Camera15initModeDefaultEv();
-extern "C" void _ZN16CameraEventModes10initMode13Ev();
-extern "C" void Camera_UpdateMode18();
-extern "C" void _ZN16CameraEventModes12updateMode13Ev();
-extern "C" void Camera_UpdateMode12();
-extern "C" void _ZN6Camera9initMode4Ev();
-extern "C" void Camera_InitMode18();
-extern "C" void Camera_InitMode14();
-extern "C" void Camera_InitMode10();
-extern "C" void _ZN16CameraEventModes14updateModeSwayEv();
-extern "C" void _ZN16CameraEventModes12initModeSwayEv();
-extern "C" void _ZN16CameraEventModes18updateModeTownTourEv();
-extern "C" void Camera_UpdateMode14();
-extern "C" void _ZN6Camera19updateModeTrackPairEv();
-extern "C" void _ZN6Camera15initModeRestoreEv();
-extern "C" void Camera_InitMode15();
-extern "C" void _ZN6Camera17initModeTrackPairEv();
-extern "C" void _ZN6Camera11updateMode4Ev();
-extern "C" void _ZN6Camera17updateModeRestoreEv();
-extern "C" void _ZN6Camera11updateMode3Ev();
-extern "C" void _ZN6Camera9initMode3Ev();
-extern "C" void _ZN6Camera15updateModeFocusEv();
-extern "C" void _ZN6Camera13initModeFocusEv();
-extern "C" void _ZN6Camera11updateMode1Ev();
-extern "C" void _ZN6Camera9initMode1Ev();
-extern "C" void _ZN6Camera17updateModeDefaultEv();
-extern "C" void _ZN16CameraEventModes20initModeFollowTargetEv();  // ov068 (0x02266b24, shared with ov065)
-extern "C" void Camera_UpdateMode15();
-extern "C" void _ZN16CameraEventModes22updateModeFollowTargetEv();
-extern "C" void Camera_UpdateMode11();
-extern "C" void _ZN16CameraEventModes16initModeTownTourEv();
-extern "C" void Camera_InitMode16();
-extern "C" void Camera_UpdateMode10();
-extern "C" void Camera_InitMode20();
-extern void *data_020d9258[2];
-extern void *data_020d9260[2];
-extern void *data_020d9268[2];
-extern void *data_020d9270[2];
-extern void *data_020d9278[2];
-extern void *data_020d9280[2];
-extern void *data_020d9290[2];
-extern void *data_020d9298[2];
-extern void *data_020d92a0[2];
-extern void *data_020d92a8[2];
-extern void *data_020d92b0[2];
-extern void *data_020d92b8[2];
-extern void *data_020d92c0[2];
-extern void *data_020d92c8[2];
-extern void *data_020d92d0[2];
-extern void *data_020d92d8[2];
-extern void *data_020d92e0[2];
-extern void *data_020d92e8[2];
-extern void *data_020d92f0[2];
-extern void *data_020d92f8[2];
-extern void *data_020d9300[2];
-extern void *data_020d9308[2];
-extern void *data_020d9310[2];
-extern void *data_020d9318[2];
-extern void *data_020d9320[2];
-extern void *data_020d9328[2];
-extern void *data_020d9330[2];
-extern void *data_020d9338[2];
-extern void *data_020d9340[2];
-extern void *data_020d9348[2];
-extern void *data_020d9350[2];
-extern void *data_020d9358[2];
-extern void *data_020d9360[2];
-extern void *data_020d9368[2];
-extern void *data_020d9370[2];
-extern void *data_020d9378[2];
-extern void *data_020d9380[2];
-extern void *data_020d9388[2];
-extern void *data_020d9390[2];
-extern void *data_020d9398[2];
-extern void *data_020d93a0[2];
-extern void *data_020d93a8[2];
 
 // ---- own plain functions (file unk_0203a058) ----
 extern "C" {
@@ -351,7 +190,7 @@ BOOL Camera_ProjectToScreen(s32 *x, s32 *y, VecFx32 *p);
 BOOL Camera_IsBlending(void);
 void Camera_RestoreView(void);
 void Camera_PlaySe(Camera *o, s32 a);
-void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z);
+void Camera_GetLookAtBlock(Camera *a, s32 *x, s32 *z);
 }
 
 // ---- members called from the plain functions (explicit object argument; names filled by the build script) ----
@@ -444,7 +283,7 @@ BOOL Camera::onCreate() {
         } else {
             i = i + 1;
             if (i == 8) {
-                i = (s32)p;
+                i = 0;  // (p: still NULL here)
             } else {
                 while (i != sCameraFollowVillagerIdx) {
                     p = (VillagerActor *)NpcRegistry_GetVillager(i);
@@ -461,7 +300,7 @@ BOOL Camera::onCreate() {
             sCameraFollowVillagerIdx = i;
         }
         if (p) {
-            modeParam = (s32)p;
+            modeParam = (sptr)p;
             setMode(7);
         } else {
             sCameraFollowVillagerIdx = 8;
@@ -487,7 +326,7 @@ BOOL Camera::onCreate() {
         void *s = PlayerData_GetCurrent();
         if (s) {
             if (((PlayerData *)(s))->testFlag(0x23)) {
-                if (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || (s32)Scene_GetPrevious() == 6) setMode(0xd);
+                if (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || Scene_GetPrevious() == 6) setMode(0xd);
             }
         }
         break;
@@ -503,7 +342,7 @@ BOOL Camera::onCreate() {
 BOOL Camera::onExecute() {
     s32 v[4];
     updateMode();
-    Camera_GetLookAtPoint(v, this);
+    Camera_GetLookAtPoint((VecFx32 *)v, this);
     WorldCurve_Update(&gWorldCurve, (VecFx32 *)v);
     return TRUE;
 }
@@ -511,13 +350,13 @@ BOOL Camera::onExecute() {
 BOOL Camera::onDraw() {
     s32 i = fovy >> 5;
     s32 k = i * 2;
-    G3i_PerspectiveW_(data_02135f44[k], data_02135f44[k + 1], aspect, nearClip, farClip, 0x1000, 1, 0);
-    G3i_LookAt_(&lookEye, &lookUp, &lookTarget, 1, HOST_AT(this, 0x50, pad_00[0], 0));
-    MTX_Inverse43(HOST_AT(this, 0x50, pad_00[0], 0), HOST_AT(this, 0xcc, invViewMtx[0], 0));
+    G3i_PerspectiveW_(data_02135f44[k], data_02135f44[k + 1], aspect, nearClip, farClip, 0x1000, 1, NULL);
+    G3i_LookAt_(&lookEye, &lookUp, &lookTarget, 1, pad_00);
+    MTX_Inverse43(pad_00, invViewMtx);
     s32 j = (s16)(fovy + fovyOffset) >> 5;
     s32 m = j * 2;
     G3i_PerspectiveW_(data_02135f44[m], data_02135f44[m + 1], aspect, nearClip + nearOffset, farClip + farOffset, 0x1000, 0,
-                  (u32)data_027e00d0);
+                  (s32 *)data_027e00d0);
     data_027e0148[0x7c / 4] &= ~0x50;
     data_027e02c8.a = lookEye;
     data_027e02c8.b = lookEyeY;
@@ -556,7 +395,7 @@ void Camera::resetOffsets() {
 }
 
 V3 *Camera::getEye() {
-    return (V3 *)(HOST_AT(this, 0x168, eye, 0));
+    return (V3 *)&eye;
 }
 
 s16 Camera::getEyeCurveAngle() {
@@ -572,22 +411,22 @@ s16 Camera::getYaw() {
 }
 
 s32 Camera::getFollowSlack() {
-    return (s32)((u8 *)followSlackOffset + 0xf0a);
+    return followSlackOffset + 0xf0a;
 }
 
 s32 Camera::getDistance()
 {
-    return M(s32, 0x14c) + M(s32, 0x80);
+    return currentDistance + distanceOffset;
 }
 
 s32 Camera::getFovTan()
 {
-    return M(s32, 0x1c4);
+    return fovTan;
 }
 
 s32 Camera::getBlendDelay()
 {
-    s32 r = M(s32, 0xb8) + M(s32, 0xa8);
+    s32 r = blendDelay + blendDelayOffset;
     if (r < 0) r = 0;
     return r;
 }
@@ -597,47 +436,47 @@ s32 Camera::getBlendEnd()
     s32 a = getBlendEaseOut();
     s32 b = getBlendDelay();
     s32 tot = a + (b + getBlendEaseIn());
-    if (M(s32, 0xbc) < tot) M(s32, 0xbc) = tot;
-    s32 t = M(s32, 0xbc) + M(s32, 0xac);
+    if (blendEnd < tot) blendEnd = tot;
+    s32 t = blendEnd + blendEndOffset;
     if (t >= tot) tot = t;
     return tot;
 }
 
 s32 Camera::getBlendEaseIn()
 {
-    s32 r = M(s32, 0xc0) + M(s32, 0xb0);
+    s32 r = blendEaseIn + blendEaseInOffset;
     if (r < 0) r = 0;
     return r;
 }
 
 s32 Camera::getBlendEaseOut()
 {
-    s32 r = M(s32, 0xc4) + M(s32, 0xb4);
+    s32 r = blendEaseOut + blendEaseOutOffset;
     if (r < 0) r = 0;
     return r;
 }
 
 void Camera::setFovy(s32 a)
 {
-    M(s16, 0x1c8) = a;
-    s32 i = (u16)((s16)(M(s16, 0x1c8) + M(s16, 0x98)) >> 1) >> 4;
-    M(s32, 0x1bc) = data_02135f44[i * 2];
-    i = (u16)((s16)(M(s16, 0x1c8) + M(s16, 0x98)) >> 1) >> 4;
-    M(s32, 0x1c0) = data_02135f44[i * 2 + 1];
-    M(s32, 0x1c4) = func_01ffcb0c(M(s32, 0x1bc), FX_Inv(M(s32, 0x1c0)));
-    ((ViewFrustum *)(gViewFrustum))->setPerspective(M(s32, 0x1b0), (s16)(M(s16, 0x1c8) + M(s16, 0x98)), M(s32, 0x1b4) + M(s32, 0x90),
-                  M(s32, 0x1b8) + M(s32, 0x94));
+    fovy = a;
+    s32 i = (u16)((s16)(fovy + fovyOffset) >> 1) >> 4;
+    fovSin = data_02135f44[i * 2];
+    i = (u16)((s16)(fovy + fovyOffset) >> 1) >> 4;
+    fovCos = data_02135f44[i * 2 + 1];
+    fovTan = func_01ffcb0c(fovSin, FX_Inv(fovCos));
+    ((ViewFrustum *)(gViewFrustum))->setPerspective(aspect, (s16)(fovy + fovyOffset), nearClip + nearOffset,
+                  farClip + farOffset);
 }
 
 void Camera::updateEyeCurveAngle()
 {
-    M(s16, 0x1ac) = WorldCurve_GetHorizonAngle(&M(VecFx32, 0x194));
+    eyeCurveAngle = WorldCurve_GetHorizonAngle((VecFx32 *)&lookEye);
 }
 
-extern "C" void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z)
+extern "C" void Camera_GetLookAtBlock(Camera *a, s32 *x, s32 *z)
 {
     V3 t;
-    Camera_GetLookAtPoint(&t, (void *)a);
+    Camera_GetLookAtPoint(&t, a);
     *x = t.x >> 17;
     *z = t.z >> 17;
 }
@@ -645,35 +484,35 @@ extern "C" void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z)
 void Camera::calcRoomBounds()
 {
     if (gCurSceneInfo->isOutdoor == 0) {
-        Ground_GetFloorBounds(&M(s32, 0x178), &M(s32, 0x17c), &M(s32, 0x180), &M(s32, 0x184));
+        Ground_GetFloorBounds(&roomMinX, &roomMaxX, &roomMinZ, &roomMaxZ);
         s32 m = data_020c8cb8;
-        if (M(s32, 0x184) < m) {
-            M(s32, 0x184) = m;
+        if (roomMaxZ < m) {
+            roomMaxZ = m;
         }
     }
     if (Scene_GetCurrent() == 0x29) {
-        M(s32, 0x17c) += 0x4000;
-        M(s32, 0x184) += 0x4000;
+        roomMaxX += 0x4000;
+        roomMaxZ += 0x4000;
     } else {
-        Unk_021c47c4 *g = gSceneBlockMap;
-        u32 arg;
-        if ((u32 *)g->width > (u32 *)0 && (u32 *)g->height > (u32 *)0 && g->blocks != 0) {
-            arg = g->blocks;
+        BlockMap *g = gSceneBlockMap;
+        MapBlock *arg;
+        if ((u32)g->width > 0 && (u32)g->height > 0 && g->blocks != 0) {
+            arg = g->blocks;  // the first block
         } else {
-            arg = 0;
+            arg = NULL;
         }
-        switch (_ZN12MapBlockAcre9getAcreIdEv(arg) - 0x1009) {
+        switch ((u32)arg->acreId - 0x1009) {
         case 0:
         case 3:
-            M(s32, 0x178) += 0x2000;
+            roomMinX += 0x2000;
             break;
         case 1:
-            M(s32, 0x17c) -= 0x2000;
+            roomMaxX -= 0x2000;
             break;
         case 2:
         case 4:
-            M(s32, 0x178) += 0x2000;
-            M(s32, 0x17c) -= 0x2000;
+            roomMinX += 0x2000;
+            roomMaxX -= 0x2000;
             break;
         }
     }
@@ -682,24 +521,24 @@ void Camera::calcRoomBounds()
 BOOL Camera::clampToRoomBounds(s32 *p)
 {
     BOOL r = FALSE;
-    if (M(s32, 0x17c) - M(s32, 0x178) <= 0xa000) {
-        p[0] = (M(s32, 0x17c) + M(s32, 0x178)) >> 1;
+    if (roomMaxX - roomMinX <= 0xa000) {
+        p[0] = (roomMaxX + roomMinX) >> 1;
         r = TRUE;
-    } else if (p[0] < M(s32, 0x178) + 0x5000) {
-        p[0] = M(s32, 0x178) + 0x5000;
+    } else if (p[0] < roomMinX + 0x5000) {
+        p[0] = roomMinX + 0x5000;
         r = TRUE;
-    } else if (p[0] > M(s32, 0x17c) - 0x5000) {
-        p[0] = M(s32, 0x17c) - 0x5000;
+    } else if (p[0] > roomMaxX - 0x5000) {
+        p[0] = roomMaxX - 0x5000;
         r = TRUE;
     }
-    if (M(s32, 0x184) - M(s32, 0x180) <= 0x7000) {
-        p[2] = (M(s32, 0x184) + M(s32, 0x180)) >> 1;
+    if (roomMaxZ - roomMinZ <= 0x7000) {
+        p[2] = (roomMaxZ + roomMinZ) >> 1;
         r = TRUE;
-    } else if (p[2] < M(s32, 0x180) + 0x2000) {
-        p[2] = M(s32, 0x180) + 0x2000;
+    } else if (p[2] < roomMinZ + 0x2000) {
+        p[2] = roomMinZ + 0x2000;
         r = TRUE;
-    } else if (p[2] > M(s32, 0x184) - 0x5000) {
-        p[2] = M(s32, 0x184) - 0x5000;
+    } else if (p[2] > roomMaxZ - 0x5000) {
+        p[2] = roomMaxZ - 0x5000;
         r = TRUE;
     }
     return r;
@@ -708,7 +547,7 @@ BOOL Camera::clampToRoomBounds(s32 *p)
 void Camera::setFocusPreset11(u8 *o, V3 *v)
 {
     if (o == NULL) {
-        o = &M(u8, 0xfc);
+        o = (u8 *)&target;
     }
     loadPose(0xb, 0);
     ((V3 *)(o + 0x14))->x = v->x;
@@ -719,10 +558,10 @@ void Camera::setFocusPreset11(u8 *o, V3 *v)
 s32 Camera::getRoomEdgeSide(s32 *p)
 {
     s32 v = *p;
-    if (v < M(s32, 0x178) + 0x5000) {
+    if (v < roomMinX + 0x5000) {
         return 1;
     }
-    if (v > M(s32, 0x17c) - 0x5000) {
+    if (v > roomMaxX - 0x5000) {
         return 2;
     }
     return 0;
@@ -731,27 +570,27 @@ s32 Camera::getRoomEdgeSide(s32 *p)
 BOOL Camera::setMode(s32 idx)
 {
     if (idx < 0x15) {
-        if (idx != M(s32, 0x1f8)) {
-            M(s32, 0x1fc) = M(s32, 0x1f8);
-            if (idx != M(s32, 0x200)) {
-                M(s16, 0x11c) = M(s16, 0xfc);
-                M(s16, 0x11e) = M(s16, 0xfe);
-                M(s32, 0x120) = M(s32, 0x100);
-                M(s32, 0x124) = M(s32, 0x104);
-                M(s32, 0x128) = M(s32, 0x108);
-                M(s32, 0x12c) = M(s32, 0x10c);
-                M(s32, 0x130) = M(s32, 0x110);
-                M(s32, 0x134) = M(s32, 0x114);
-                M(s32, 0x138) = M(s32, 0x118);
-                M(s32, 0x13c) = M(s32, 0x168);
-                M(s32, 0x140) = M(s32, 0x16c);
-                M(s32, 0x144) = M(s32, 0x170);
+        if (idx != mode) {
+            prevMode = mode;
+            if (idx != startMode) {
+                saved = target.h0;
+                savedPitch = target.h1;
+                savedDistance = target.w0;
+                savedOffset = target.x;
+                savedOffsetY = target.y;
+                savedOffsetZ = target.z;
+                savedFocus = targetFocus.x;
+                savedFocusY = targetFocus.y;
+                savedFocusZ = targetFocus.z;
+                savedEye = eye;
+                savedEyeY = eyeY;
+                savedEyeZ = eyeZ;
             }
         }
-        M(u8, 0x1f4) = 0;
-        if ((this->*sCameraModeTable[idx].init)()) {
+        viewPushed = 0;
+        if (sCameraModeTable[idx].init(this)) {
             setDefaultProjection();
-            M(s32, 0x1f8) = idx;
+            mode = idx;
             updateMode();
             return TRUE;
         }
@@ -761,19 +600,19 @@ BOOL Camera::setMode(s32 idx)
 
 void Camera::updateMode()
 {
-    s32 i = M(s32, 0x1f8);
+    s32 i = mode;
     if (i < 0x15) {
-        (this->*sCameraModeTable[i].update)();
+        sCameraModeTable[i].update(this);
         updateEyeCurveAngle();
     }
 }
 
 void Camera::setDefaultProjection()
 {
-    M(s32, 0x1b0) = 0x1548;
-    M(s32, 0x1b4) = 0xf6;
-    M(s32, 0x1b8) = 0x3e800;
-    setFovy(M(s16, 0x1c8));
+    aspect = 0x1548;
+    nearClip = 0xf6;
+    farClip = 0x3e800;
+    setFovy(fovy);
 }
 
 void Camera::updateBlend()
@@ -785,35 +624,35 @@ void Camera::updateBlend()
         b = getBlendEnd();
         c = getBlendEaseIn();
         d = getBlendEaseOut();
-        a = Math_EaseRampProgress(M(s32, 0xc8), a, b, c, d);
-        Vec_Sub(&t1, (V3 *)&M(u8, 0x110), (V3 *)&M(u8, 0x15c));
+        a = Math_EaseRampProgress(blendTime, a, b, c, d);
+        Vec_Sub(&t1, (V3 *)&targetFocus.x, (V3 *)&currentFocus);
         Vec_Scale(&t1, a);
-        Vec_Add(&o1, (V3 *)&M(u8, 0x15c), &t1);
-        M(s32, 0x15c) = o1.x;
-        M(s32, 0x160) = o1.y;
-        M(s32, 0x164) = o1.z;
-        Vec_Sub(&t2, (V3 *)&M(u8, 0x104), (V3 *)&M(u8, 0x150));
+        Vec_Add(&o1, (V3 *)&currentFocus, &t1);
+        currentFocus = o1.x;
+        currentFocusY = o1.y;
+        currentFocusZ = o1.z;
+        Vec_Sub(&t2, (V3 *)&target.x, (V3 *)&currentOffset);
         Vec_Scale(&t2, a);
-        Vec_Add(&o2, (V3 *)&M(u8, 0x150), &t2);
-        M(s32, 0x150) = o2.x;
-        M(s32, 0x154) = o2.y;
-        M(s32, 0x158) = o2.z;
-        M(s16, 0x14a) += func_01ffcb0c(M(s16, 0xfe) - M(s16, 0x14a), a);
-        M(s16, 0x148) += func_01ffcb0c(M(s16, 0xfc) - M(s16, 0x148), a);
-        M(s32, 0x14c) += func_01ffcb0c(M(s32, 0x100) - M(s32, 0x14c), a);
-        M(s32, 0x1e8) += func_01ffcb0c(M(s32, 0x1e4) - M(s32, 0x1e8), a);
-        M(s32, 0xc8) += 0x1000;
+        Vec_Add(&o2, (V3 *)&currentOffset, &t2);
+        currentOffset = o2.x;
+        currentOffsetY = o2.y;
+        currentOffsetZ = o2.z;
+        currentPitch += func_01ffcb0c(target.h1 - currentPitch, a);
+        current += func_01ffcb0c(target.h0 - current, a);
+        currentDistance += func_01ffcb0c(target.w0 - currentDistance, a);
+        closeUpFactor += func_01ffcb0c(closeUpFactorTarget - closeUpFactor, a);
+        blendTime += 0x1000;
     } else {
-        M(s32, 0x15c) = M(s32, 0x110);
-        M(s32, 0x160) = M(s32, 0x114);
-        M(s32, 0x164) = M(s32, 0x118);
-        M(s32, 0x150) = M(s32, 0x104);
-        M(s32, 0x154) = M(s32, 0x108);
-        M(s32, 0x158) = M(s32, 0x10c);
-        M(s16, 0x14a) = M(s16, 0xfe);
-        M(s16, 0x148) = M(s16, 0xfc);
-        M(s32, 0x14c) = M(s32, 0x100);
-        M(s32, 0x1e8) = M(s32, 0x1e4);
+        currentFocus = targetFocus.x;
+        currentFocusY = targetFocus.y;
+        currentFocusZ = targetFocus.z;
+        currentOffset = target.x;
+        currentOffsetY = target.y;
+        currentOffsetZ = target.z;
+        currentPitch = target.h1;
+        current = target.h0;
+        currentDistance = target.w0;
+        closeUpFactor = closeUpFactorTarget;
     }
 }
 
@@ -826,16 +665,16 @@ void Camera::setLookAtOrbit(V3 *a, s32 r, s32 s, s32 z)
     Vec_RotateX(&t, (s16)-r);
     Vec_RotateY(&t, s);
     Vec_Add(&o, a, &t);
-    M(s32, 0x168) = o.x;
-    M(s32, 0x16c) = o.y;
-    M(s32, 0x170) = o.z;
-    s32 ang = WorldCurve_Apply(&M(VecFx32, 0x188), a);
-    WorldCurve_Apply(&M(VecFx32, 0x194), getEye());
-    M(s32, 0x1a0) = 0;
-    M(s32, 0x1a4) = 0x1000;
-    M(s32, 0x1a8) = 0;
-    Vec_RotateX((V3 *)&M(u8, 0x1a0), ang);
-    Vec_RotateZ((V3 *)&M(u8, 0x1a0), M(s16, 0x174));
+    eye = o.x;
+    eyeY = o.y;
+    eyeZ = o.z;
+    s32 ang = WorldCurve_Apply((VecFx32 *)&lookTarget, a);
+    WorldCurve_Apply((VecFx32 *)&lookEye, getEye());
+    lookUp = 0;
+    lookUpY = 0x1000;
+    lookUpZ = 0;
+    Vec_RotateX((V3 *)&lookUp, ang);
+    Vec_RotateZ((V3 *)&lookUp, roll);
     gCameraLookAt.x = a->x;
     gCameraLookAt.y = a->y;
     gCameraLookAt.z = a->z;
@@ -849,15 +688,15 @@ void Camera::setLookAtOrbit(V3 *a, s32 r, s32 s, s32 z)
 void Camera::setLookAt(V3 *a, V3 *b)
 {
     V3 d;
-    s32 ang = WorldCurve_Apply(&M(VecFx32, 0x188), a);
-    WorldCurve_Apply(&M(VecFx32, 0x194), b);
-    M(s32, 0x1a0) = 0;
-    M(s32, 0x1a4) = 0x1000;
-    M(s32, 0x1a8) = 0;
+    s32 ang = WorldCurve_Apply((VecFx32 *)&lookTarget, a);
+    WorldCurve_Apply((VecFx32 *)&lookEye, b);
+    lookUp = 0;
+    lookUpY = 0x1000;
+    lookUpZ = 0;
     s32 i = (u16)ang >> 4;
-    M(s32, 0x1a4) = data_02135f44[i * 2 + 1];
-    M(s32, 0x1a8) = data_02135f44[i * 2];
-    Vec_RotateZ((V3 *)&M(u8, 0x1a0), M(s16, 0x174));
+    lookUpY = data_02135f44[i * 2 + 1];
+    lookUpZ = data_02135f44[i * 2];
+    Vec_RotateZ((V3 *)&lookUp, roll);
     gCameraLookAt.x = a->x;
     gCameraLookAt.y = a->y;
     gCameraLookAt.z = a->z;
@@ -918,7 +757,7 @@ void Camera::updateModeDefault() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1018,7 +857,7 @@ void Camera::updateMode1() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1061,7 +900,7 @@ BOOL Camera::initModeFocus() {
     if (gCurSceneInfo->isOutdoor == 0) {
         loadPose(0xb, 0);
         roomFocusSide = 3;
-        Camera_UpdateRoomFocus(this, 0);
+        Camera_UpdateRoomFocus(this);
     } else {
         loadPose(0xa, 0);
         FieldCamera_UpdateFocusZoom(this);
@@ -1078,7 +917,7 @@ BOOL Camera::initModeFocus() {
 
 void Camera::updateModeFocus() {
     if (gCurSceneInfo->isOutdoor == 0) {
-        Camera_UpdateRoomFocus(this, 0);
+        Camera_UpdateRoomFocus(this);
     } else {
         FieldCamera_UpdateFocusZoom(this);
     }
@@ -1102,7 +941,7 @@ void Camera::updateMode3() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1132,7 +971,7 @@ void Camera::updateMode4() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1155,13 +994,13 @@ BOOL Camera::initModeTrackPair() {
 void Camera::updateModeTrackPair() {
     VecFx32 d;
     d = gVec3Zero;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     void *q = PlayerActor_GetTrackTarget(4);
     if (p && q) {
         VecFx32 t;
         Vec_Sub(&t, p, q);
         s32 len = Vec_MagXZ(&t);
-        s32 ang = Math_AngleXZ(p, q);
+        s32 ang = Math_AngleXZ((s32 *)p, (s32 *)q);
         s32 sc = func_01ffcb0c(len, 0xb33);
         d = *p;
         s32 idx = ((u16)ang >> 4) * 2;
@@ -1332,7 +1171,7 @@ extern "C" BOOL Camera_FocusOnPoint(VecFx32 *a) {
     if (Scene_GetCurrent() == 0xc) {
         return FALSE;
     }
-    s32 r = Camera_CalcPointSpan(PlayerActor_GetBodyPos(4), a, NULL, NULL);
+    s32 r = Camera_CalcPointSpan((VecFx32 *)PlayerActor_GetBodyPos(4), a, NULL, NULL);
     if (r >= 0xb000) {
         return Camera_SetModeDefault();
     }
@@ -1342,7 +1181,7 @@ extern "C" BOOL Camera_FocusOnPoint(VecFx32 *a) {
 }
 
 extern "C" void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b) {
-    s32 r = Camera_CalcTriangleSpan(PlayerActor_GetBodyPos(4), a, b, NULL, NULL);
+    s32 r = Camera_CalcTriangleSpan((VecFx32 *)PlayerActor_GetBodyPos(4), a, b, NULL, NULL);
     if (r >= 0xb000) {
         Camera_SetModeDefault();
     } else {
@@ -1551,28 +1390,72 @@ FxVec3 gCameraEye;
 FxVec3 gCameraLookAt;
 CameraSetup sCameraSavedSetup;
 FxVec3 sCameraSavedEye;
+// The camera modes of ov004 (src/ov004/unk_ov004_0223f43c.cpp) and ov068 (src/ov068/unk_ov068_0226647c.cpp).
+extern "C" {
+BOOL Camera_InitMode10(Camera *c);
+BOOL Camera_InitMode11(Camera *c);
+BOOL Camera_InitMode12(Camera *c);
+BOOL Camera_InitMode14(Camera *c);
+BOOL Camera_InitMode15(Camera *c);
+BOOL Camera_InitMode16(Camera *c);
+BOOL Camera_InitMode18(Camera *c);
+BOOL Camera_InitMode20(Camera *c);
+void Camera_UpdateMode10(Camera *c);
+void Camera_UpdateMode11(Camera *c);
+void Camera_UpdateMode12(Camera *c);
+void Camera_UpdateMode14(Camera *c);
+void Camera_UpdateMode15(Camera *c);
+void Camera_UpdateMode16(Camera *c);
+void Camera_UpdateMode18(Camera *c);
+void Camera_UpdateMode20(Camera *c);
+BOOL CameraEventModes_InitMode13(Camera *c);
+BOOL CameraEventModes_InitModeFollowTarget(Camera *c);
+BOOL CameraEventModes_InitModeSway(Camera *c);
+BOOL CameraEventModes_InitModeTownTour(Camera *c);
+void CameraEventModes_UpdateMode13(Camera *c);
+void CameraEventModes_UpdateModeFollowTarget(Camera *c);
+void CameraEventModes_UpdateModeSway(Camera *c);
+void CameraEventModes_UpdateModeTownTour(Camera *c);
+}
+// (the DS table held member-function pointers; these call the Camera modes defined in this file)
+static BOOL Camera_InitMode1Thunk(Camera *c) { return c->initMode1(); }
+static BOOL Camera_InitMode3Thunk(Camera *c) { return c->initMode3(); }
+static BOOL Camera_InitMode4Thunk(Camera *c) { return c->initMode4(); }
+static BOOL Camera_InitModeDefaultThunk(Camera *c) { return c->initModeDefault(); }
+static BOOL Camera_InitModeFocusThunk(Camera *c) { return c->initModeFocus(); }
+static BOOL Camera_InitModeRestoreThunk(Camera *c) { return c->initModeRestore(); }
+static BOOL Camera_InitModeShakeThunk(Camera *c) { return c->initModeShake(); }
+static BOOL Camera_InitModeTrackPairThunk(Camera *c) { return c->initModeTrackPair(); }
+static void Camera_UpdateMode1Thunk(Camera *c) { c->updateMode1(); }
+static void Camera_UpdateMode3Thunk(Camera *c) { c->updateMode3(); }
+static void Camera_UpdateMode4Thunk(Camera *c) { c->updateMode4(); }
+static void Camera_UpdateModeDefaultThunk(Camera *c) { c->updateModeDefault(); }
+static void Camera_UpdateModeFocusThunk(Camera *c) { c->updateModeFocus(); }
+static void Camera_UpdateModeRestoreThunk(Camera *c) { c->updateModeRestore(); }
+static void Camera_UpdateModeTrackPairThunk(Camera *c) { c->updateModeTrackPair(); }
+
 CameraModeEntry sCameraModeTable[21] = {
-    { *(CameraModeInitFn *)data_020d9280, *(CameraModeUpdateFn *)data_020d9368 },
-    { *(CameraModeInitFn *)data_020d9360, *(CameraModeUpdateFn *)data_020d9358 },
-    { *(CameraModeInitFn *)data_020d9350, *(CameraModeUpdateFn *)data_020d9348 },
-    { *(CameraModeInitFn *)data_020d9340, *(CameraModeUpdateFn *)data_020d9338 },
-    { *(CameraModeInitFn *)data_020d92b0, *(CameraModeUpdateFn *)data_020d9328 },
-    { *(CameraModeInitFn *)data_020d9320, *(CameraModeUpdateFn *)data_020d9300 },
-    { *(CameraModeInitFn *)data_020d9308, *(CameraModeUpdateFn *)data_020d9330 },
-    { *(CameraModeInitFn *)data_020d9370, *(CameraModeUpdateFn *)data_020d9380 },
-    { *(CameraModeInitFn *)data_020d9390, *(CameraModeUpdateFn *)data_020d92e8 },
-    { *(CameraModeInitFn *)data_020d92e0, *(CameraModeUpdateFn *)data_020d92d8 },
-    { *(CameraModeInitFn *)data_020d92d0, *(CameraModeUpdateFn *)data_020d93a0 },
-    { *(CameraModeInitFn *)data_020d9270, *(CameraModeUpdateFn *)data_020d9388 },
-    { *(CameraModeInitFn *)data_020d9278, *(CameraModeUpdateFn *)data_020d92a8 },
-    { *(CameraModeInitFn *)data_020d9290, *(CameraModeUpdateFn *)data_020d92a0 },
-    { *(CameraModeInitFn *)data_020d92c0, *(CameraModeUpdateFn *)data_020d92f8 },
-    { *(CameraModeInitFn *)data_020d9310, *(CameraModeUpdateFn *)data_020d9378 },
-    { *(CameraModeInitFn *)data_020d9398, *(CameraModeUpdateFn *)data_020d9268 },
-    { *(CameraModeInitFn *)data_020d9260, *(CameraModeUpdateFn *)data_020d92c8 },
-    { *(CameraModeInitFn *)data_020d92b8, *(CameraModeUpdateFn *)data_020d9298 },
-    { *(CameraModeInitFn *)data_020d92f0, *(CameraModeUpdateFn *)data_020d9318 },
-    { *(CameraModeInitFn *)data_020d93a8, *(CameraModeUpdateFn *)data_020d9258 }
+    { Camera_InitModeDefaultThunk, Camera_UpdateModeDefaultThunk },
+    { Camera_InitMode1Thunk, Camera_UpdateMode1Thunk },
+    { Camera_InitModeFocusThunk, Camera_UpdateModeFocusThunk },
+    { Camera_InitMode3Thunk, Camera_UpdateMode3Thunk },
+    { Camera_InitMode4Thunk, Camera_UpdateMode4Thunk },
+    { Camera_InitModeTrackPairThunk, Camera_UpdateModeTrackPairThunk },
+    { Camera_InitModeRestoreThunk, Camera_UpdateModeRestoreThunk },
+    { CameraEventModes_InitModeFollowTarget, CameraEventModes_UpdateModeFollowTarget },
+    { CameraEventModes_InitModeTownTour, CameraEventModes_UpdateModeTownTour },
+    { CameraEventModes_InitModeSway, CameraEventModes_UpdateModeSway },
+    { Camera_InitMode10, Camera_UpdateMode10 },
+    { Camera_InitMode11, Camera_UpdateMode11 },
+    { Camera_InitMode12, Camera_UpdateMode12 },
+    { CameraEventModes_InitMode13, CameraEventModes_UpdateMode13 },
+    { Camera_InitMode14, Camera_UpdateMode14 },
+    { Camera_InitMode15, Camera_UpdateMode15 },
+    { Camera_InitMode16, Camera_UpdateMode16 },
+    { Camera_InitModeShakeThunk, Camera_UpdateModeShake },
+    { Camera_InitMode18, Camera_UpdateMode18 },
+    { Camera_InitMode19, Camera_UpdateMode19 },
+    { Camera_InitMode20, Camera_UpdateMode20 }
 };
 Camera *gCamera;
 s32 gCameraDistance;
@@ -1580,48 +1463,6 @@ s32 gCameraDistance;
 s32 sCameraFollowVillagerIdx = 0x8;
 s32 sCameraSpanDepthScale = 0x1800;
 ProcProfile sCameraProfile = { (void *(*)())Camera_Create, 0xb, 0x6 };
-void *data_020d9258[2] = { (void *)Camera_UpdateMode20, 0 };
-void *data_020d9260[2] = { (void *)_ZN6Camera13initModeShakeEv, 0 };
-void *data_020d9268[2] = { (void *)Camera_UpdateMode16, 0 };
-void *data_020d9270[2] = { (void *)Camera_InitMode11, 0 };
-void *data_020d9278[2] = { (void *)Camera_InitMode12, 0 };
-void *data_020d9280[2] = { (void *)_ZN6Camera15initModeDefaultEv, 0 };
-void *data_020d9290[2] = { (void *)_ZN16CameraEventModes10initMode13Ev, 0 };
-void *data_020d9298[2] = { (void *)Camera_UpdateMode18, 0 };
-void *data_020d92a0[2] = { (void *)_ZN16CameraEventModes12updateMode13Ev, 0 };
-void *data_020d92a8[2] = { (void *)Camera_UpdateMode12, 0 };
-void *data_020d92b0[2] = { (void *)_ZN6Camera9initMode4Ev, 0 };
-void *data_020d92b8[2] = { (void *)Camera_InitMode18, 0 };
-void *data_020d92c0[2] = { (void *)Camera_InitMode14, 0 };
-void *data_020d92c8[2] = { (void *)Camera_UpdateModeShake, 0 };
-void *data_020d92d0[2] = { (void *)Camera_InitMode10, 0 };
-void *data_020d92d8[2] = { (void *)_ZN16CameraEventModes14updateModeSwayEv, 0 };
-void *data_020d92e0[2] = { (void *)_ZN16CameraEventModes12initModeSwayEv, 0 };
-void *data_020d92e8[2] = { (void *)_ZN16CameraEventModes18updateModeTownTourEv, 0 };
-void *data_020d92f0[2] = { (void *)Camera_InitMode19, 0 };
-void *data_020d92f8[2] = { (void *)Camera_UpdateMode14, 0 };
-void *data_020d9300[2] = { (void *)_ZN6Camera19updateModeTrackPairEv, 0 };
-void *data_020d9308[2] = { (void *)_ZN6Camera15initModeRestoreEv, 0 };
-void *data_020d9310[2] = { (void *)Camera_InitMode15, 0 };
-void *data_020d9318[2] = { (void *)Camera_UpdateMode19, 0 };
-void *data_020d9320[2] = { (void *)_ZN6Camera17initModeTrackPairEv, 0 };
-void *data_020d9328[2] = { (void *)_ZN6Camera11updateMode4Ev, 0 };
-void *data_020d9330[2] = { (void *)_ZN6Camera17updateModeRestoreEv, 0 };
-void *data_020d9338[2] = { (void *)_ZN6Camera11updateMode3Ev, 0 };
-void *data_020d9340[2] = { (void *)_ZN6Camera9initMode3Ev, 0 };
-void *data_020d9348[2] = { (void *)_ZN6Camera15updateModeFocusEv, 0 };
-void *data_020d9350[2] = { (void *)_ZN6Camera13initModeFocusEv, 0 };
-void *data_020d9358[2] = { (void *)_ZN6Camera11updateMode1Ev, 0 };
-void *data_020d9360[2] = { (void *)_ZN6Camera9initMode1Ev, 0 };
-void *data_020d9368[2] = { (void *)_ZN6Camera17updateModeDefaultEv, 0 };
-void *data_020d9370[2] = { (void *)_ZN16CameraEventModes20initModeFollowTargetEv, 0 };
-void *data_020d9378[2] = { (void *)Camera_UpdateMode15, 0 };
-void *data_020d9380[2] = { (void *)_ZN16CameraEventModes22updateModeFollowTargetEv, 0 };
-void *data_020d9388[2] = { (void *)Camera_UpdateMode11, 0 };
-void *data_020d9390[2] = { (void *)_ZN16CameraEventModes16initModeTownTourEv, 0 };
-void *data_020d9398[2] = { (void *)Camera_InitMode16, 0 };
-void *data_020d93a0[2] = { (void *)Camera_UpdateMode10, 0 };
-void *data_020d93a8[2] = { (void *)Camera_InitMode20, 0 };
 
 // .rodata 0x020c8ce4-0x020c8d3c: the three objects before sCameraBlendTable continue this file's ascending size run
 // (4, 0x24, 0x30, 0x60, 0x294). data_020c8ce4 is read by the unit at 0x02038474 (0x020388f8), sCameraPoseGrid by this

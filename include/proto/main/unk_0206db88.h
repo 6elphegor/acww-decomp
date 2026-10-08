@@ -9,7 +9,6 @@ union Slot8;
 union SlotS16;
 #ifdef __cplusplus
 #include "gfx/BgVramTask.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -30,11 +29,26 @@ void MenuScreen_StartWipeIn(void);
 #ifndef PROTO_LOCAL_MenuScreen_StartWipeOut
 void MenuScreen_StartWipeOut(void);
 #endif
+#ifndef PROTO_LOCAL_MenuScreen_IsWiping
+BOOL MenuScreen_IsWiping(void);
+#endif
+#ifndef PROTO_LOCAL_MenuScreen_IsOpen
+BOOL MenuScreen_IsOpen(void);
+#endif
+#ifndef PROTO_LOCAL_MenuScreen_IsClosed
+BOOL MenuScreen_IsClosed(void);
+#endif
 #ifndef PROTO_LOCAL_MenuScreen_SetupMainBg
 void MenuScreen_SetupMainBg();
 #endif
 #ifndef PROTO_LOCAL_MenuScreen_SetupSubBg
 void MenuScreen_SetupSubBg();
+#endif
+#ifndef PROTO_LOCAL_MenuScreen_LoadStdBackground
+BOOL MenuScreen_LoadStdBackground(u32 arg);
+#endif
+#ifndef PROTO_LOCAL_MenuScreen_LoadBackground
+BOOL MenuScreen_LoadBackground(u32 arg);
 #endif
 #ifndef PROTO_LOCAL_MenuScreen_BeginClose
 void MenuScreen_BeginClose();
@@ -53,30 +67,6 @@ void MenuScreen_Reset();
 #endif
 #ifndef PROTO_LOCAL_MenuScreen_Update
 void MenuScreen_Update();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_MenuScreen_IsWiping
-BOOL MenuScreen_IsWiping(void);
-#endif
-#ifndef PROTO_LOCAL_MenuScreen_IsOpen
-BOOL MenuScreen_IsOpen(void);
-#endif
-#ifndef PROTO_LOCAL_MenuScreen_IsClosed
-BOOL MenuScreen_IsClosed(void);
-#endif
-#ifndef PROTO_LOCAL_MenuScreen_UploadClothPattern
-void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img, u16 *pal);
-#endif
-#ifndef PROTO_LOCAL_MenuScreen_LoadStdBackground
-BOOL MenuScreen_LoadStdBackground(u32 arg);
-#endif
-#ifndef PROTO_LOCAL_MenuScreen_LoadBackground
-BOOL MenuScreen_LoadBackground(u32 arg);
 #endif
 #ifndef PROTO_LOCAL_MenuScreen_StepAct00
 BOOL MenuScreen_StepAct00();
@@ -128,6 +118,15 @@ BOOL MenuScreen_HasFlags(u32 a);
 #endif
 #ifndef PROTO_LOCAL_MenuScreen_SetBackgroundKind
 void MenuScreen_SetBackgroundKind(u32 a);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_MenuScreen_UploadClothPattern
+void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img, u16 *pal);
 #endif
 }
 #ifndef PROTO_LOCAL_sMenuScreenFlags

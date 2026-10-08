@@ -1,7 +1,9 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#define PROTO_LOCAL_WfcMoveMb_StartParent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcMove_StepMb  // declared below: the shared prototype conflicts with the calls here
+#include "net/WfcConfigSlot.h"
+#include "net/WfcMoveMbWork.h"
+#include "net/WfcMoveParams.h"
+#include "nitro/wm.h"
 #include "proto/autoload_2/unk_02124c40.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0206d49c.h"
@@ -17,8 +19,8 @@ struct WfcMoveSharedRecord {
 };
 
 struct WfcMoveWork {
-    u32 pad_000[0x40];
-    WfcMoveSharedRecord sharedRecv[2];
+    u8 sendBuf[0x100];                   // the data-sharing send buffer
+    WfcMoveSharedRecord sharedRecv[2];   // the children's shared data
     u8 pad_188[0x200 - 0x188];
     u16 blockIndex;
     u16 unk_202;
@@ -36,34 +38,29 @@ struct WfcMoveWork {
     u32 ackCount;
     u32 mbFrameCount;
     u32 waitTimer;
-    u32 childInfos[1];
-    u8 *config;
+    u8 *childInfos[1];
+    WfcConfigData *config;
     u8 pad_aa8[4];
     u8 request;
     u8 pad_aad[3];
     void *sendBuffer;
-    u32 romFilePathp;
-    u32 gameNamep;
-    u32 gameIntroductionp;
-    u32 iconCharPathp;
-    u32 iconPalettePathp;
-    u32 ggid;
-    u8 maxPlayerNum;
-    u8 pad_acd[0x33];
+    MBGameRegistry registry;
+    u8 pad_af0[0x10];
     u8 moveMbWork[1];
 };
+#if !HOST64
+static_assert(__builtin_offsetof(WfcMoveWork, registry) == 0xab4 && __builtin_offsetof(WfcMoveWork, moveMbWork) == 0xb00,
+              "DS layout");
+#endif
 
 extern "C" {
 void MI_CpuFill8(void *, s32, s32);
-void MI_CpuCopy8(void *, void *, s32);
+void MI_CpuCopy8(const void *, void *, s32);
 s32 MB_CommGetChildUser(s32);
 u32 WM_GetNextTgid();
 void DWCi_BACKUPlRead(void *);
 
-s32 WfcMoveMb_StartParent(void *, u16);
-u8 *WfcConfig_Get();
-
-void WfcMove_StepMb();
+WfcConfigData *WfcConfig_Get();
 }
 
 extern "C" WfcMoveWork *sWfcMove = 0;
@@ -71,7 +68,7 @@ extern "C" WfcMoveWork *sWfcMove = 0;
 #define H (sWfcMove)
 
 
-extern "C" void WfcMove_Init(WfcMoveWork *self, u32 *a) {
+extern "C" void WfcMove_Init(WfcMoveWork *self, const WfcMoveParams *a) {
     sWfcMove = self;
     WfcMoveMb_SetWork(self->moveMbWork);
     sWfcMove->tgid = 0;
@@ -80,14 +77,14 @@ extern "C" void WfcMove_Init(WfcMoveWork *self, u32 *a) {
     sWfcMove->prevState = 1;
     sWfcMove->waitTimer = 0;
     WfcMove_ClearBuffers();
-    sWfcMove->romFilePathp = a[0];
-    sWfcMove->gameNamep = a[1];
-    sWfcMove->gameIntroductionp = a[2];
-    sWfcMove->iconCharPathp = a[3];
-    sWfcMove->iconPalettePathp = a[4];
-    sWfcMove->ggid = a[5];
-    sWfcMove->languageCode = *(u8 *)&a[6];
-    sWfcMove->maxPlayerNum = 2;
+    sWfcMove->registry.romFilePathp = a->romFilePath;
+    sWfcMove->registry.gameNamep = a->gameName;
+    sWfcMove->registry.gameIntroductionp = a->gameIntroduction;
+    sWfcMove->registry.iconCharPathp = a->iconCharPath;
+    sWfcMove->registry.iconPalettePathp = a->iconPalettePath;
+    sWfcMove->registry.ggid = a->ggid;
+    sWfcMove->languageCode = a->languageCode;
+    sWfcMove->registry.maxPlayerNum = 2;
     OS_GetTick();
     DWCi_BACKUPlRead(sWfcMove->configBuf);
     OS_GetTick();
@@ -131,7 +128,7 @@ extern "C" BOOL WfcMove_RequestCancel() {
 }
 
 extern "C" void WfcMove_ResetSession() {
-    WfcMoveWh_SetGgid(sWfcMove->ggid);
+    WfcMoveWh_SetGgid(sWfcMove->registry.ggid);
     sWfcMove->state = 1;
     sWfcMove->tgid = WM_GetNextTgid();
     MI_CpuCopy8(sWfcMove->config, sWfcMove->configHead, 0x40);
@@ -314,13 +311,13 @@ extern "C" void WfcMove_StepMeasureChannel() {
 }
 
 extern "C" void WfcMove_StepInitMb() {
-    WfcMoveMb_Init((void *)sWfcMove->ggid, sWfcMove->tgid);
+    WfcMoveMb_Init(sWfcMove->registry.ggid, sWfcMove->tgid);
 }
 
 extern "C" void WfcMove_StepMb() {
     switch (WfcMoveMb_GetState()) {
     case 1:
-        WfcMoveMb_StartParent((u8 *)sWfcMove + 0xab4, sWfcMove->channel);
+        WfcMoveMb_StartParent(&sWfcMove->registry, sWfcMove->channel);
         return;
     case 2:
         if (WfcMoveMb_GetChildMask(2) != 0) { sWfcMove->state = 5; return; }
@@ -365,7 +362,7 @@ extern "C" void WfcMove_StepDataShare() {
     case 5:
     case 6: {
         s32 v = sWfcMove->blockIndex;
-        WfcMove_SendBlock(0, v, sWfcMove->config + (v % 16) * 0x40);
+        WfcMove_SendBlock(0, v, (u8 *)sWfcMove->config + (v % 16) * 0x40);
         WfcMove_ProcessRecv();
         if (sWfcMove->state == 0x1b) return;
         if (sWfcMove->failCount > 0x1e0) {
@@ -401,17 +398,17 @@ extern "C" s32 WfcMove_TryEnd() {
     return 1;
 }
 
-extern "C" s32 WfcMove_JudgeChild(s32 a) {
-    s32 r = WfcMoveMb_FindAidByMac(a + 10);
+extern "C" s32 WfcMove_JudgeChild(WMStartParentCallback *a) {
+    s32 r = WfcMoveMb_FindAidByMac(a->macAddress);
     if (r == 0) return 0;
     sWfcMove->childInfos[r - 1] = WfcMoveMb_GetChildInfo(r);
     return 1;
 }
 
 extern "C" void WfcMove_ClearBuffers() {
-    MI_CpuFill8((u8 *)sWfcMove + 0x100, 0, 0x100);
-    MI_CpuFill8(sWfcMove, 0, 0x100);
-    sWfcMove->sendBuffer = sWfcMove;
+    MI_CpuFill8(sWfcMove->sharedRecv, 0, 0x100);  // (with pad_188)
+    MI_CpuFill8(sWfcMove->sendBuf, 0, 0x100);
+    sWfcMove->sendBuffer = sWfcMove->sendBuf;
 }
 
 extern "C" void WfcMove_SendBlock(u32 a, u32 b, void *src) {
@@ -429,7 +426,7 @@ extern "C" void WfcMove_SendBlock(u32 a, u32 b, void *src) {
     if (WfcMoveWh_GetSysState() != 5) {
         return;
     }
-    if (DWCi_MOV_WH_StepDataSharing(H) == 0) {
+    if (DWCi_MOV_WH_StepDataSharing(H->sendBuf) == 0) {
         H->failCount = H->failCount + 4;
         return;
     }
@@ -488,6 +485,6 @@ extern "C" void WfcMove_ProcessRecv() {
 }
 
 extern "C" s32 WfcMove_GetChildReply() {
-    return *(u16 *)((u8 *)H + 0x144);
+    return H->sharedRecv[1].command;
 }
 

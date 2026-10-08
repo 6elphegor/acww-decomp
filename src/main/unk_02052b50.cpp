@@ -269,10 +269,10 @@ s32 FtrInfo_GetSeries(s32 n)
     return 0;
 }
 
-s32 Ftr_GetSeries(s32 n)
+s32 Ftr_GetSeries(u16 *n)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetSeries(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(n)) {
+        return FtrInfo_GetSeries(Item_GetFurnitureIndex(n));
     }
     return 0;
 }
@@ -305,10 +305,10 @@ s32 FtrInfo_GetUnk05(s32 n)
     return 0;
 }
 
-s32 Ftr_GetUnk05(s32 n)
+s32 Ftr_GetUnk05(u16 *n)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetUnk05(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(n)) {
+        return FtrInfo_GetUnk05(Item_GetFurnitureIndex(n));
     }
     return 0;
 }
@@ -323,10 +323,10 @@ s32 FtrInfo_GetCollectionGroup(s32 n)
     return 0;
 }
 
-s32 Ftr_GetCollectionGroup(s32 n)
+s32 Ftr_GetCollectionGroup(u16 *n)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetCollectionGroup(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(n)) {
+        return FtrInfo_GetCollectionGroup(Item_GetFurnitureIndex(n));
     }
     return 0;
 }
@@ -369,10 +369,10 @@ s32 FtrInfo_GetFlagPairA(s32 n)
     return 0;
 }
 
-s32 Ftr_GetFlagPairA(s32 n)
+s32 Ftr_GetFlagPairA(u16 *n)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetFlagPairA(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(n)) {
+        return FtrInfo_GetFlagPairA(Item_GetFurnitureIndex(n));
     }
     return 0;
 }
@@ -405,10 +405,10 @@ s32 FtrInfo_GetFlagPairB(s32 n)
     return 0;
 }
 
-s32 Ftr_GetFlagPairB(s32 n)
+s32 Ftr_GetFlagPairB(u16 *n)
 {
-    if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetFlagPairB(Item_GetFurnitureIndex((void *)n));
+    if (Item_IsFurniture(n)) {
+        return FtrInfo_GetFlagPairB(Item_GetFurnitureIndex(n));
     }
     return 0;
 }
@@ -585,7 +585,7 @@ u32 Fossil_CountInGroup(u32 v) {
 }
 
 u32 Ftr_GetIndexInSeries(u16 *p) {
-    s32 t = Ftr_GetSeries((s32)p);
+    s32 t = Ftr_GetSeries(p);
     u32 cnt = 0;
     s32 i = 0;
     BOOL z0 = FALSE, z8 = FALSE, zc = FALSE;

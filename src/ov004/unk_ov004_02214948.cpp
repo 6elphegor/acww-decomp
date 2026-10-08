@@ -26,13 +26,9 @@
 #include "npc/NpcTalkCtrl.h"
 #include "npc/VillagerId.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_BirthdayGuestVillager_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BirthdayHost_PickReturnGift  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -41,144 +37,36 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov004/unk_ov004_02214948.h"
+#include "proto/ov004/unk_ov004_02215f04.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "player/PlayerData.h"
+#include "save/VillagerData.h"
+#include "npc/VillagerPlan.h"
+#include "npc/BirthdayGuestVillager.h"
 
 extern "C" {
-}
-
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-
-
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-class BirthdayHostVillager;
-
-
-
-
-extern "C" {
-u16 BirthdayHost_PickReturnGift(s32 n);
-void func_ov004_0221570c(void *a, void *b);
-Actor *BirthdayGuestVillager_Get(void);
-u16 Room_PickRandomWalkTarget(void *, void *, s32);
-}
-
-#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
-#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
-#define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
-#define func_0201b138 _ZN8NpcActor6onDrawEv
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
-#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
-#define func_0202d928 _ZN13VillagerActor9preDeleteEv
-#define func_0202d948 _ZN13VillagerActor8onCreateEv
-#define func_0202dab0 _ZN13VillagerActor9preCreateEv
-#define ItemPickSpec_set _ZN12ItemPickSpec3setEii
-#define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
-#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define TalkWindowState_setNextMessageIfUnset _ZN15TalkWindowState21setNextMessageIfUnsetEPhPv
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define VillagerMemory_isPartyGreeted _ZN14VillagerMemory14isPartyGreetedEv
-#define VillagerMemory_setPartyGreeted _ZN14VillagerMemory15setPartyGreetedEv
-#define VillagerMemory_isPartyGiftReceived _ZN14VillagerMemory19isPartyGiftReceivedEv
-#define VillagerMemory_setPartyGiftReceived _ZN14VillagerMemory20setPartyGiftReceivedEv
-#define VillagerMemory_isTalkedToday _ZN14VillagerMemory13isTalkedTodayEv
-#define VillagerMemory_setTalkedToday _ZN14VillagerMemory14setTalkedTodayEv
-#define VillagerMemory_addFriendship _ZN14VillagerMemory13addFriendshipEi
-#define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define VillagerPlan_getState _ZN12VillagerPlan8getStateEv
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-
-extern "C" {
-VecFx32 *PlayerActor_GetBodyPos(u32);
-s32 NpcActor_getDistanceToPlayer(void *, u32);
-s32 NpcActionCtrl_getAction(void *);
-s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 Math_AngleXZ(void *, void *);
-s32 Math_AngleDiffAbs(s32, s32);
-void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
-s32 NpcActor_getAngleTo(void *, void *);
-s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
-s32 NpcActionCtrl_requestStand(void *, s32, u32);
-s32 Math_Atan2(s32, s32);
-s32 NpcActionCtrl_isActionDone(void *);
-s32 NpcActor_findAvoidPos(void *, void *);
-s32 Vec_NotEqual(void *, void *);
-s32 Vec_DistXZ(void *, void *);
-void TalkWindowState_setNextMessage(void *, void *, s32);
+s16 Math_Atan2(s32 x, s32 y);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_NotEqual(VecFx32 *a, VecFx32 *b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 TalkRequest_SetTargetDone(void *);
 s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern u8 gTalkMsgIndexEnd[];
-void *TalkWindowState_getChoiceList(void *);
-s32 ChoiceList_getResult(void *);
-void TalkWindowState_setNextMessageIfUnset(void *, void *, s32);
-void ActorTalkRequest_requestGiveItem(void *, void *, s32, s32, s32);
-void *VillagerMemory_getFriendship(void *);
-void VillagerMemory_addFriendship(void *, s8);
-void ItemPickSpec_set(void *, s32, s32);
-void ItemPickSpec_Destruct(void *);
-void ItemPick_One(u16 *, void *, s32, s32, s32, s32, s32);
-void *VillagerData_getVillagerId(void *);
 s32 Item_GetPrice(u16 *);
-void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
 void *Villager_GetPlan(void *);
-u32 VillagerPlan_getState(u32);
-s32 Item_IsFurniture(void *);
-void VillagerTalk_begin(void *, void *, u32);
-s32 func_0202d948(void *self);
-s32 func_0202dab0(void *self);
-s32 func_0202d928(void *self);
-void NpcFootstepFx_enableFootsteps(void *p);
-void Vec_Add(VecFx32 *out, void *a, void *b);
-void NpcActor_setTalkRequest(void *self, void *p);
-void ActorTalkRequest_setTalkPlayer(void *p, void *q);
-void Camera_FocusOnPoint(void *p);
+s32 Item_IsFurniture(u16 *);
+void Camera_FocusOnPoint(VecFx32 *p);
 void Camera_SetModeDefault();
-s32 PlayerData_getPlayerId(...);
-void *Villager_FindOrCreateMemory(void *p, s32 v);
-void VillagerMemory_RecordTalk(void *p, s32 a, s32 b, s32 c);
-s32 VillagerMemory_setPartyGiftReceived(void *p);
-s32 VillagerMemory_isPartyGiftReceived(void *p);
-s32 VillagerMemory_setTalkedToday(void *p);
-s32 VillagerMemory_isTalkedToday(void *p);
-s32 VillagerMemory_setPartyGreeted(void *p);
-s32 VillagerMemory_isPartyGreeted(void *p);
-s32 NpcTalkCtrl_isBusy(void *p);
-s32 func_0201b138(void *p);
+VillagerMemory *Villager_FindOrCreateMemory(VillagerMemory *t, void *b);
+void VillagerMemory_RecordTalk(VillagerMemory *self, void *a, u8 *b, u8 *c);
 s32 Item_GetFurnitureIndex(u16 *p);
 extern s32 data_020c8cb4;
 extern s32 data_020c8cb8;
 }
 
-
-
-extern "C" void _ZN20BirthdayHostVillager9drawModelEv();
-extern "C" void *data_ov004_0224befc[2];
 extern "C" DebugColor data_ov004_022503c0(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov004_022503dc(0x14, 0x14, 0x1f, 0x1f);
 extern "C" DebugColor data_ov004_022503c4(0x1f, 0x1f, 0x14, 0x1f);
@@ -242,7 +130,7 @@ extern "C" BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag) {
 }
 
 BOOL BirthdayHostVillager::preCreate() {
-    if (!((VillagerActor *)(this))->VillagerActor::preCreate()) {
+    if (!VillagerActor::preCreate()) {
         return FALSE;
     }
     position.x = data_020c8cb4 + 0x1000;
@@ -263,7 +151,7 @@ BOOL BirthdayHostVillager::preCreate() {
         }
     }
     rotY = 0;
-    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
+    setTalkRequest(&talk);
     talk.attachOwner(this);
     if (!talk.isPartyNotGreeted()) {
         changeAct(0);
@@ -275,22 +163,22 @@ BOOL BirthdayHostVillager::preCreate() {
     return TRUE;
 }
 
-extern "C" void *data_ov004_0224befc[2] = { (void *)_ZN20BirthdayHostVillager9drawModelEv, 0 };
+extern "C" Unk_ov004_0224c034_Fn data_ov004_0224befc = &BirthdayHostVillager::drawModel;
 extern "C" {
 u8 sBirthdayHostMsgFile[0x28];
 }
 
 BOOL BirthdayHostVillager::onCreate() {
-    if (!((VillagerActor *)(this))->VillagerActor::onCreate()) {
+    if (!VillagerActor::onCreate()) {
         return FALSE;
     }
-    drawFn = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
-    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    drawFn = data_ov004_0224befc;
+    footstepFx.enableFootsteps();
     return TRUE;
 }
 
 BOOL BirthdayHostVillager::drawModel() {
-    if (((NpcActor *)(this))->NpcActor::onDraw()) {
+    if (NpcActor::onDraw()) {
         return TRUE;
     }
     return FALSE;
@@ -304,7 +192,7 @@ BOOL BirthdayHostVillager::onDraw() {
 }
 
 BOOL BirthdayHostVillager::preDelete() {
-    if (!((VillagerActor *)(this))->VillagerActor::preDelete()) {
+    if (!VillagerActor::preDelete()) {
         return FALSE;
     }
     sBirthdayHostVillager = NULL;
@@ -317,16 +205,16 @@ BOOL BirthdayHostVillager::updateAct() {
 }
 
 void BirthdayHostVillager::recordPlayerTalk() {
-    void *o = PlayerData_GetCurrent();
+    PlayerData *o = PlayerData_GetCurrent();
     if (o != NULL && villagerData != NULL) {
-        s32 r = ((PlayerData *)(o))->getPlayerId();
-        void *p = Villager_FindOrCreateMemory(villagerData, r);
+        PlayerId *r = o->getPlayerId();
+        VillagerMemory *p = Villager_FindOrCreateMemory(((VillagerData *)villagerData)->memories, r);
         VillagerMemory_RecordTalk(p, 0, 0, 0);
     }
 }
 
 BOOL BirthdayHostVillager::acceptsInteraction(void *) {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
+    if (talkCtrl.isBusy()) {
         return FALSE;
     }
     if (act <= 3) {
@@ -336,7 +224,7 @@ BOOL BirthdayHostVillager::acceptsInteraction(void *) {
 }
 
 BOOL BirthdayHostVillager::acceptsSelfRequestedInteraction(void *) {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         return TRUE;
     }
     return FALSE;
@@ -350,18 +238,18 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
     v.y = v.y + 0x2000;
     switch (a) {
     case 3:
-        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
+        partnerPlayer = b;
         changeAct(4);
         break;
     case 0:
-        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
-        ((ActorTalkRequest *)(&talk))->setTalkPlayer((u32)(((NpcActor *)(this))->getPlayerActor(4)));
+        partnerPlayer = b;
+        talk.setTalkPlayer(getPlayerActor(4));
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
     case 1:
-        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
-        ((ActorTalkRequest *)(&talk))->setTalkPlayer((u32)(((NpcActor *)(this))->getPlayerActor(4)));
+        partnerPlayer = b;
+        talk.setTalkPlayer(getPlayerActor(4));
         Camera_FocusOnPoint(&v);
         changeAct(8);
         break;
@@ -381,18 +269,18 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
     }
 }
 
-void *BirthdayHostVillagerTalk::getPlayerMemory() {
+VillagerMemory *BirthdayHostVillagerTalk::getPlayerMemory() {
     if (villager != NULL && villager->villagerData != NULL) {
-        s32 r = PlayerData_GetCurrent()->getPlayerId();
-        return Villager_FindOrCreateMemory(villager->villagerData, r);
+        PlayerId *r = PlayerData_GetCurrent()->getPlayerId();
+        return Villager_FindOrCreateMemory(((VillagerData *)villager->villagerData)->memories, r);
     }
     return NULL;
 }
 
 BOOL BirthdayHostVillagerTalk::isPartyNotGreeted() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        if (VillagerMemory_isPartyGreeted(p) == 0) {
+        if (p->isPartyGreeted() == 0) {
             return TRUE;
         }
         return FALSE;
@@ -401,16 +289,16 @@ BOOL BirthdayHostVillagerTalk::isPartyNotGreeted() {
 }
 
 void BirthdayHostVillagerTalk::setPartyGreeted() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        VillagerMemory_setPartyGreeted(p);
+        p->setPartyGreeted();
     }
 }
 
 BOOL BirthdayHostVillagerTalk::isNotTalkedYet() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        if (VillagerMemory_isTalkedToday(p) == 0) {
+        if (p->isTalkedToday() == 0) {
             return TRUE;
         }
         return FALSE;
@@ -419,31 +307,31 @@ BOOL BirthdayHostVillagerTalk::isNotTalkedYet() {
 }
 
 void BirthdayHostVillagerTalk::setTalked() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        VillagerMemory_setTalkedToday(p);
+        p->setTalkedToday();
     }
 }
 
 u32 BirthdayHostVillagerTalk::hasReceivedGift() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        return VillagerMemory_isPartyGiftReceived(p);
+        return p->isPartyGiftReceived();
     }
     return 0;
 }
 
 void BirthdayHostVillagerTalk::setReceivedGift() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        VillagerMemory_setPartyGiftReceived(p);
+        p->setPartyGiftReceived();
     }
 }
 
 BOOL BirthdayHostVillagerTalk::isLikedGift(u16 *p) {
     BOOL r;
     if (villager && villager->villagerData) {
-        u32 c = VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(villager->villagerData)));
+        u32 c = ((VillagerPlan *)VillagerPlanBlock_GetPlan(Villager_GetPlan(villager->villagerData)))->getState();
         r = FALSE;
         switch (c) {
         case 0:
@@ -470,16 +358,16 @@ BOOL BirthdayHostVillagerTalk::isLikedGift(u16 *p) {
 }
 
 void BirthdayHostVillagerTalk::addFriendship(s32 v) {
-    void *p = this->getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        VillagerMemory_addFriendship(p, v);
+        p->addFriendship(v);
     }
 }
 
-void *BirthdayHostVillagerTalk::getFriendship() {
-    void *p = this->getPlayerMemory();
+s32 BirthdayHostVillagerTalk::getFriendship() {
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        return VillagerMemory_getFriendship(p);
+        return p->getFriendship();
     }
     return 0;
 }
@@ -498,29 +386,29 @@ void BirthdayHostVillagerTalk::update() {
             if (MenuCtrl_IsResultOk() == 0) {
                 window->nextState = 1;
                 b0 = Random_GlobalBelow(2) + 7;
-                ((TalkWindowState *)(window))->setNextMessage((u8 *)(&b0), (void *)(0));
+                window->setNextMessage((u8 *)(&b0), (void *)(0));
                 villager->changeAct(6);
             } else {
-                void *r6 = MenuCtrl_GetIndex();
-                x = Pocket_GetItem((s32)r6);
+                u32 r6 = MenuCtrl_GetIndex();
+                x = Pocket_GetItem(r6);
                 s32 r4 = Item_GetPrice(&x);
                 Pocket_RemoveItem(r6);
-                ((ActorTalkRequest *)(this))->setItemNameSlot(&x, 0, 7);
+                setItemNameSlot(&x, 0, 7);
                 if (isLikedGift(&x)) {
                     b1 = Random_GlobalBelow(2) + 0xd;
-                    ((TalkWindowState *)(window))->setNextMessage((u8 *)(&b1), (void *)(0));
+                    window->setNextMessage((u8 *)(&b1), (void *)(0));
                     addFriendship(5);
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(10);
-                    ((ActorTalkRequest *)(this))->requestTakeItem((u16 *)(&x), 0, 5, 0);
+                    requestTakeItem((u16 *)(&x), 0, 5, 0);
                     villager->changeAct(12);
                 } else {
                     b2 = Random_GlobalBelow(2) + 0xb;
-                    ((TalkWindowState *)(window))->setNextMessage((u8 *)(&b2), (void *)(0));
+                    window->setNextMessage((u8 *)(&b2), (void *)(0));
                     addFriendship(2);
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(5);
-                    ((ActorTalkRequest *)(this))->requestTakeItem((u16 *)(&x), 0, 5, 0);
+                    requestTakeItem((u16 *)(&x), 0, 5, 0);
                     villager->changeAct(12);
                 }
             }
@@ -529,16 +417,15 @@ void BirthdayHostVillagerTalk::update() {
 }
 
 void BirthdayHostVillagerTalk::attachOwner(BirthdayHostVillager *owner) {
-    ((VillagerTalk *)(this))->begin((VillagerActor *)(owner), 0x11);
+    begin(owner, 0x11);
     villager = owner;
 }
 
 void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
-    u8 *out = (u8 *)arg;
-    ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(sBirthdayHostMsgFile, 0x28, "ev_nbirth");
-    *(u32 *)out = (u32)sBirthdayHostMsgFile;
+    ((VillagerData *)villager->villagerData)->getVillagerId()->makeFileName(sBirthdayHostMsgFile, 0x28, "ev_nbirth");
+    arg->msgKey = (const char *)sBirthdayHostMsgFile;
     if (villager->act == 9) {
-        out[4] = Random_GlobalBelow(2);
+        arg->msgIndex = Random_GlobalBelow(2);
     } else {
         s32 k = 3;
         if (this->isNotTalkedYet()) {
@@ -549,28 +436,28 @@ void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
         this->setTalked();
         switch (k) {
         case 1:
-            out[4] = Random_GlobalBelow(2) + 2;
+            arg->msgIndex = Random_GlobalBelow(2) + 2;
             break;
         case 2:
-            out[4] = Random_GlobalBelow(4) + 0x13;
+            arg->msgIndex = Random_GlobalBelow(4) + 0x13;
             break;
         default:
-            out[4] = Random_GlobalBelow(2) + 4;
+            arg->msgIndex = Random_GlobalBelow(2) + 4;
             break;
         }
         BirthdayHostVillager *p = villager;
         if (p->talk.window) {
             if (p && p->villagerData) {
-                ((ActorTalkRequest *)(&villager->talk))->setVillagerNameSlot((VillagerId *)VillagerData_getVillagerId(p->villagerData), 1);
+                villager->talk.setVillagerNameSlot(((VillagerData *)p->villagerData)->getVillagerId(), 1);
             }
             s32 i = 0;
             BirthdayHostVillager **pp = &villager;
             goto test;
             for (;;) {
-                void *q;
-                q = NpcRegistry_GetVillager(i);
+                VillagerActor *q;
+                q = (VillagerActor *)NpcRegistry_GetVillager(i);
                 if (q && q != *pp) {
-                    ((ActorTalkRequest *)(&villager->talk))->setVillagerNameSlot((VillagerId *)VillagerData_getVillagerId(*(void **)((u8 *)q + 0x82c)), 0);
+                    villager->talk.setVillagerNameSlot(((VillagerData *)q->villagerData)->getVillagerId(), 0);
                     break;
                 }
                 i++;
@@ -578,8 +465,8 @@ void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
                 if (i >= NpcRegistry_GetSlotCount()) break;
             }
             u16 w = 0x1100;
-            ((ActorTalkRequest *)(this))->setItemNameSlot(&w, 0, 7);
-            ((ActorTalkRequest *)(this))->setItemNameSlot(&w, 1, 7);
+            setItemNameSlot(&w, 0, 7);
+            setItemNameSlot(&w, 1, 7);
         }
     }
 }
@@ -587,38 +474,30 @@ void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
 extern "C" u16 BirthdayHost_PickReturnGift(s32 n) {
     u16 w0, w1, w2, w3, w4;
     if (n <= 0) {
-        u32 o[2];
-        ((ItemPickSpec *)(o))->set(1, 0);
+        ItemPickSpec o;
+        o.set(1, 0);
         ItemPick_One(&w1, &o, 0, 0, 1, 1, 0);
-        u16 r = w1;
-        ItemPickSpec_Destruct(o);
-        return r;
+        return w1;
     }
     if (n <= 0x3f) {
         if (Random_GlobalBelow(2) == 0) {
-            u32 o[2];
-        ((ItemPickSpec *)(o))->set(0, 0);
+            ItemPickSpec o;
+            o.set(0, 0);
             ItemPick_One(&w2, &o, 0, 0, 1, 1, 0);
-            u16 r = w2;
-            ItemPickSpec_Destruct(o);
-            return r;
+            return w2;
         } else {
-            u32 o[2];
-        ((ItemPickSpec *)(o))->set(2, 0);
+            ItemPickSpec o;
+            o.set(2, 0);
             ItemPick_One(&w3, &o, 0, 0, 1, 1, 0);
-            u16 r = w3;
-            ItemPickSpec_Destruct(o);
-            return r;
+            return w3;
         }
     }
     ItemPick_FtrWallCarpetByClass(&w0, (u8 *)PlayerData_GetCurrent(), 0);
     if (w0 == 0xfff1) {
-        u32 o[2];
-        ((ItemPickSpec *)(o))->set(0, 0);
+        ItemPickSpec o;
+        o.set(0, 0);
         ItemPick_One(&w4, &o, 0, 0, 1, 1, 0);
-        u16 r = w4;
-        ItemPickSpec_Destruct(o);
-        return r;
+        return w4;
     }
     return w0;
 }
@@ -628,9 +507,9 @@ void BirthdayHostVillagerTalk::onMessageStart(u32) {
     case 0xf:
     case 0x10: {
         volatile u16 v;
-        v = BirthdayHost_PickReturnGift((s32)getFriendship());
+        v = BirthdayHost_PickReturnGift(getFriendship());
         villager->returnGift = v;
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u16 *)&v, 1, 7);
+        setItemNameSlot((u16 *)&v, 1, 7);
         break;
     }
     }
@@ -646,7 +525,7 @@ void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     case 7:
     case 8:
         b[0] = gTalkMsgIndexEnd[0];
-        ((TalkWindowState *)(window))->setNextMessageIfUnset((u8 *)(&b[0]), (void *)(0));
+        window->setNextMessageIfUnset((u8 *)(&b[0]), (void *)(0));
         break;
     case 9:
     case 10:
@@ -657,11 +536,11 @@ void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     case 13:
     case 14:
         b[1] = Random_GlobalBelow(2) + 0xf;
-        ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&b[1]), (void *)(0));
+        villager->talk.window->setNextMessage((u8 *)(&b[1]), (void *)(0));
         break;
     case 15:
     case 16:
-        ((ActorTalkRequest *)(this))->requestGiveItem((u16 *)(&villager->returnGift), 0, 5, 0);
+        requestGiveItem((u16 *)(&villager->returnGift), 0, 5, 0);
         Pocket_AddItem(&villager->returnGift, 0);
         villager->changeAct(13);
         break;
@@ -674,28 +553,28 @@ void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     case 21:
     case 22:
         b[2] = gTalkMsgIndexEnd[0];
-        ((TalkWindowState *)(window))->setNextMessageIfUnset((u8 *)(&b[2]), (void *)(0));
+        window->setNextMessageIfUnset((u8 *)(&b[2]), (void *)(0));
         break;
     }
 }
 
 void BirthdayHostVillagerTalk::onChoice(u32) {
     u8 b[3];
-    s32 r = ((ChoiceList *)(((TalkWindowState *)(villager->talk.window))->getChoiceList()))->getResult();
+    s32 r = villager->talk.window->getChoiceList()->getResult();
     switch (msgIndex) {
     case 4:
     case 5:
         if (r == 0) {
             if (MenuCtrl_BuildPocketMask(BirthdayHost_GiftFilter)) {
                 b[0] = Random_GlobalBelow(2) + 9;
-                ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&b[0]), (void *)(0));
+                villager->talk.window->setNextMessage((u8 *)(&b[0]), (void *)(0));
             } else {
                 b[1] = 6;
-                ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&b[1]), (void *)(0));
+                villager->talk.window->setNextMessage((u8 *)(&b[1]), (void *)(0));
             }
         } else {
             b[2] = Random_GlobalBelow(2) + 7;
-            ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&b[2]), (void *)(0));
+            villager->talk.window->setNextMessage((u8 *)(&b[2]), (void *)(0));
         }
         break;
     }
@@ -750,66 +629,65 @@ void BirthdayHostVillager::execAct() {
 }
 
 BOOL BirthdayHostVillager::setupAct00() {
-    if (((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8)) {
-        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    if (actionCtrl.requestStand(1, data_020c6cc8)) {
+        lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
 }
 
 void BirthdayHostVillager::mainAct00() {
-    s32 c[3];
-    u8 *m = (u8 *)&actionCtrl;
-    if (collider.isHit != 0 && ((NpcActionCtrl *)(m))->getAction() == 1) {
-        ((NpcActionCtrl *)(m))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    VecFx32 c;
+    if (collider.isHit != 0 && actionCtrl.getAction() == 1) {
+        actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         return;
     }
-    if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 0) {
+    if (actionCtrl.getAction() == 0) {
         if (walkTimer != 0) {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(walkTarget, &position, rotY);
-            waypoint[0] = walkTarget[0];
-            waypoint[1] = walkTarget[1];
-            waypoint[2] = walkTarget[2];
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
+            waypoint.x = walkTarget.x;
+            waypoint.y = walkTarget.y;
+            waypoint.z = walkTarget.z;
             if (walkAngle != rotY) {
-                if (((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) != 0) {
+                if (actionCtrl.requestAction(3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) != 0) {
                     walkTimer = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
+                if (actionCtrl.requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
                     walkTimer = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
-            if (((NpcActionCtrl *)((u8 *)&actionCtrl))->isActionDone() != 0) {
-                ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8);
+            if (actionCtrl.isActionDone() != 0) {
+                actionCtrl.requestStand(1, data_020c6cc8);
             }
         }
-    } else if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 3) {
-        if (((NpcActionCtrl *)((u8 *)&actionCtrl))->isActionDone() != 0) {
-            ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0);
+    } else if (actionCtrl.getAction() == 3) {
+        if (actionCtrl.isActionDone() != 0) {
+            actionCtrl.requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
         }
-    } else if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 1) {
-        switch (((NpcActor *)(this))->findAvoidPos((VecFx32 *)(c))) {
+    } else if (actionCtrl.getAction() == 1) {
+        switch (findAvoidPos(&c)) {
         case 1:
-            ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8);
+            actionCtrl.requestStand(1, data_020c6cc8);
             break;
         case 2:
-            waypoint[0] = c[0];
-            waypoint[1] = c[1];
-            waypoint[2] = c[2];
-            ((NpcMoveCtrl *)((u8 *)&moveCtrl))->setWaypoint((VecFx32 *)(waypoint));
+            waypoint.x = c.x;
+            waypoint.y = c.y;
+            waypoint.z = c.z;
+            moveCtrl.setWaypoint(&waypoint);
             break;
         default:
-            if (Vec_NotEqual(waypoint, walkTarget) != 0) {
-                waypoint[0] = walkTarget[0];
-                waypoint[1] = walkTarget[1];
-                waypoint[2] = walkTarget[2];
-                ((NpcMoveCtrl *)((u8 *)&moveCtrl))->setWaypoint((VecFx32 *)(walkTarget));
-            } else if (Vec_DistXZ(walkTarget, &position) < 0x200) {
-                ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8);
+            if (Vec_NotEqual(&waypoint, &walkTarget) != 0) {
+                waypoint.x = walkTarget.x;
+                waypoint.y = walkTarget.y;
+                waypoint.z = walkTarget.z;
+                moveCtrl.setWaypoint(&walkTarget);
+            } else if (Vec_DistXZ(&walkTarget, &position) < 0x200) {
+                actionCtrl.requestStand(1, data_020c6cc8);
             }
             break;
         }
@@ -817,14 +695,13 @@ void BirthdayHostVillager::mainAct00() {
 }
 
 BOOL BirthdayHostVillager::setupAct01() {
-    u8 *m = (u8 *)&actionCtrl;
     Actor *o = BirthdayGuestVillager_Get();
     if (o != 0) {
         s32 dx = o->position.x - position.x;
         s32 dz = o->position.z - position.z;
         s32 ang = Math_Atan2(dx, dz);
-        ((NpcActionCtrl *)(m))->requestAction(3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
-        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(2, 0, (Character *)o, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+        actionCtrl.requestAction(3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
+        lookAt.setTarget(2, 0, (Character *)o, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
@@ -843,10 +720,10 @@ void BirthdayHostVillager::mainAct02() {
     }
     switch (emotionTimer) {
     case 0x14:
-        ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestEmotion(1, 3, data_020c6cc8);
+        actionCtrl.requestEmotion(1, 3, data_020c6cc8);
         break;
     case 1:
-        ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestEmotion(1, 0, data_020c6cc8);
+        actionCtrl.requestEmotion(1, 0, data_020c6cc8);
         break;
     case 0:
         changeAct(0);
@@ -866,13 +743,13 @@ void BirthdayHostVillager::mainAct03() {
     switch (emotionTimer) {
     case 0x28:
         if (Random_GlobalBelow(2) == 0) {
-            ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestEmotion(1, 0xa, data_020c6cc8);
+            actionCtrl.requestEmotion(1, 0xa, data_020c6cc8);
         } else {
-            ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestEmotion(1, 0x17, data_020c6cc8);
+            actionCtrl.requestEmotion(1, 0x17, data_020c6cc8);
         }
         break;
     case 1:
-        ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestEmotion(1, 0, data_020c6cc8);
+        actionCtrl.requestEmotion(1, 0, data_020c6cc8);
         break;
     case 0:
         changeAct(0);
@@ -882,7 +759,7 @@ void BirthdayHostVillager::mainAct03() {
 
 BOOL BirthdayHostVillager::setupAct04() {
     if ((u32)(act - 1) <= 2) {
-        ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestEmotion(2, 0, data_020c6cc8);
+        actionCtrl.requestEmotion(2, 0, data_020c6cc8);
     }
     return TRUE;
 }
@@ -893,7 +770,7 @@ BOOL BirthdayHostVillager::setupAct05() {
     BOOL r;
     void *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        ((NpcTalkCtrl *)((u8 *)&talkCtrl))->requestTurnAndTalk(0, ((NpcActor *)(this))->getAngleTo((NpcActor *)(o)), 0);
+        talkCtrl.requestTurnAndTalk(0, getAngleTo((NpcActor *)(o)), 0);
         r = TRUE;
     } else {
         r = FALSE;
@@ -924,41 +801,41 @@ void BirthdayHostVillager::mainAct07() {
 
 BOOL BirthdayHostVillager::setupAct08() {
     approachTimer = 0x32;
-    ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 void BirthdayHostVillager::mainAct08() {
     VecFx32 a, b;
     s32 v, r4, r0;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
     b.x = a.x;
     b.y = a.y;
     b.z = a.z;
-    v = ((NpcActor *)(this))->getDistanceToPlayer(4);
+    v = getDistanceToPlayer(4);
     if (v > 0x4000) {
-        if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 1) {
-            ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (actionCtrl.getAction() == 1) {
+            actionCtrl.requestAction(2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 2) {
-            ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (actionCtrl.getAction() == 2) {
+            actionCtrl.requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    ((NpcMoveCtrl *)((u8 *)&moveCtrl))->setWaypoint((VecFx32 *)(&b));
+    moveCtrl.setWaypoint(&b);
     if (approachTimer != 0) {
         approachTimer--;
     }
-    r4 = Math_AngleXZ(&position, &a);
+    r4 = Math_AngleXZ(&position.x, &a.x);
     r0 = Math_AngleDiffAbs(rotY, r4);
     if (v <= 0x3000 || approachTimer == 0) {
-        ((NpcTalkCtrl *)((u8 *)&talkCtrl))->requestTurnAndTalk(0, r4, 0);
+        talkCtrl.requestTurnAndTalk(0, r4, 0);
         changeAct(9);
     } else if (r0 > 0x2000) {
-        ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(4, 2, b.x, b.z, 0, r4, 0, 0, data_020c6cc8, 0);
+        actionCtrl.requestAction(4, 2, b.x, b.z, 0, r4, 0, 0, data_020c6cc8, 0);
     }
 }
 
@@ -999,7 +876,7 @@ BOOL BirthdayHostVillager::setupAct0D() { return TRUE; }
 void BirthdayHostVillager::mainAct0D() {
     u8 buf[1];
     buf[0] = Random_GlobalBelow(2) + 0x11;
-    ((TalkWindowState *)(talk.window))->setNextMessage((u8 *)(buf), (void *)(0));
+    talk.window->setNextMessage(buf, 0);
     changeAct(6);
 }
 

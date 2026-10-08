@@ -3,16 +3,22 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "net/WfcObjGroup.h"
+
+struct WfcTextCanvas;
+typedef struct WfcTextCanvas WfcTextCanvas;
+typedef struct WfcTextKb WfcTextKb;
+typedef struct WfcNumPad WfcNumPad;
 
 // ov001 Wi-Fi setup on-screen text keyboard (sWfcTextKb, heap block of 0x128 bytes) and numeric pad (sWfcNumPad,
 // 0x6c bytes). Built in unk_ov001_02208c2c.cpp and unk_ov001_0220aba4.cpp.
 struct WfcTextKb {
-    /* 0x000 */ void *rowCanvases[3][4];
+    /* 0x000 */ WfcTextCanvas *rowCanvases[3][4];
     /* 0x030 */ GXOamAttr *charKeyOams[0x2f];
     /* 0x0ec */ GXOamAttr *funcKeyOams[4];
-    /* 0x0fc */ void *bottomButtons[2];
-    /* 0x104 */ void *rowTextObjs[4];
-    /* 0x114 */ void *cursorObj;
+    /* 0x0fc */ WfcObjGroup *bottomButtons[2];
+    /* 0x104 */ WfcObjGroup *rowTextObjs[4];
+    /* 0x114 */ WfcObjGroup *cursorObj;
     /* 0x118 */ void *task;
     /* 0x11c */ u8 inputKey;
     /* 0x11d */ u8 caseMode;
@@ -27,12 +33,12 @@ struct WfcTextKb {
 };
 
 struct WfcNumPad {
-    /* 0x00 */ void *rowCanvases[4];
+    /* 0x00 */ WfcTextCanvas *rowCanvases[4];
     /* 0x10 */ GXOamAttr *digitKeyOams[10];
     /* 0x38 */ GXOamAttr *funcKeyOams[2];
-    /* 0x40 */ void *bottomButtons[2];
-    /* 0x48 */ void *rowTextObjs[4];
-    /* 0x58 */ void *cursorObj;
+    /* 0x40 */ WfcObjGroup *bottomButtons[2];
+    /* 0x48 */ WfcObjGroup *rowTextObjs[4];
+    /* 0x58 */ WfcObjGroup *cursorObj;
     /* 0x5c */ void *task;
     /* 0x60 */ u8 inputKey;
     /* 0x61 */ s8 touchKey;

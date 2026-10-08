@@ -2,15 +2,17 @@
 #include "types.h"
 #include "proto/ov001/unk_ov001_0221cfc0.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
+#include "proto/ov001/unk_ov001_02224b14.h"
+#include "proto/ov001/unk_ov001_0222449c.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
 #pragma thumb off
 
 struct WfcScrollBar {
-    s32 thumbObj;
+    WfcObjGroup *thumbObj;
     u32 unk_04;
     u32 unk_08;
-    s32 task;
+    void *task;
     u16 posX;
     u16 posY;
     u16 dragStartTouchX;
@@ -30,13 +32,10 @@ void WfcInput_GetTouchPos(void *);
 s32 WfcInput_IsTouchHeldIn(void *);
 s32 WfcInput_IsTouchRepeatIn(void *);
 s32 WfcInput_IsTouchPressedIn(void *);
-void WfcObj_Free(s32);
+void WfcObj_Free(WfcObjGroup *);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
 void WfcUtil_SetPoint(s32, s32, void *);
-s32 WfcObj_Create(s32, s32, s32);
-void WfcObj_SetPos(s32, s32, u32, u32);
-void WfcObj_SetPriority(s32, s32, s32);
 s32 FX_DivS32(s32, s32);
 
 }
@@ -46,7 +45,7 @@ extern "C" const u8 sWfcScrollBarThumbCells[4] = { 0x10, 0x0f, 0x0e, 0x00 };
 WfcScrollBar *sWfcScrollBar;
 
 void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e) {
-    sWfcScrollBar = (WfcScrollBar *)WfcHeap_AllocClear(HOST_SIZED(0x20, WfcScrollBar), 4);
+    sWfcScrollBar = (WfcScrollBar *)WfcHeap_AllocClear(sizeof(WfcScrollBar), 4);
     sWfcScrollBar->thumbSize = a;
     sWfcScrollBar->trackLength = b;
     sWfcScrollBar->thumbPos = e;

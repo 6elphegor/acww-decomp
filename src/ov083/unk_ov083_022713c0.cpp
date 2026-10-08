@@ -149,7 +149,7 @@ BOOL SpNpcTortimerFlowerFest::onCreate() {
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     festDay = Event_GetDaysSinceStart(0xe);
-    ContestRecord_BeginFestival(gContestRecord, 0);
+    ContestRecord_BeginFestival((ContestRecord *)gContestRecord, 0);
     return TRUE;
 }
 
@@ -186,7 +186,7 @@ BOOL SpNpcTortimerFlowerFest::mainAct00() {
     }
     judgeTimer = 0x258;
     u8 *const g = gContestRecord;
-    ContestRecord_JudgeGardens(g);
+    ContestRecord_JudgeGardens((ContestRecord *)g);
     ((ContestRecord *)(g))->setKind(3);
     ((SaveData *)(gSaveData))->setFlag(0xf);
     return TRUE;

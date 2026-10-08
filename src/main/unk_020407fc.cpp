@@ -502,7 +502,7 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
         return;
     }
     if (Scene_GetCurrent() == 0) {
-        if (((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->isSet()) {
+        if (TownSessionState_GetResettiFlag(TownSessionState_Get())->isSet()) {
             if (!gCommManager->isSlotActive(gCommManager->myAid)) {
                 return;
             }

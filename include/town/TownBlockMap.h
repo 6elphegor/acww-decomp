@@ -13,7 +13,7 @@ struct TownBlockMap {
     /* 0x14 */ s32 worldWidth;
     /* 0x18 */ s32 worldHeight;
     /* 0x1c */ s32 mapSlot;
-    u32 releaseBg();
+    void releaseBg();
     void bindBg();
     void updateAcreIds();
     void freeBlocks(void *heap);

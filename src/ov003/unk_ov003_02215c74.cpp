@@ -133,7 +133,7 @@ BOOL VillagerHouse::initBuilding() {
     s32 k = getHouseVariant();
     void *r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
     void *r4 = VillagerHouseTex_GetLightTex(FieldStructureMgr_GetVillagerHouseTex(), k);
-    void *g = modelRes;
+    void *g = model.resMdl;
     if (r7) {
         NNS_G3dBindMdlTex(g, r7);
     }
@@ -153,7 +153,7 @@ BOOL VillagerHouse::initBuilding() {
                 void *d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
                 lightUpAnim.addToRenderObj(lightUpModel.getRenderObj());
-                lightUpModel.mtx = baseMatrix;
+                lightUpModel.mtx = model.mtx;
             }
         }
     }
@@ -162,7 +162,7 @@ BOOL VillagerHouse::initBuilding() {
 
 BOOL VillagerHouse::onExecute() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
-        lightUpModel.mtx = baseMatrix;
+        lightUpModel.mtx = model.mtx;
         if ((colliderFlags & 1) == 0) {
             lightUpAnim.step();
             *(u32 *)lightUpAnim.anmObj = lightUpAnim.curFrame;  // (the frame of the anm object)

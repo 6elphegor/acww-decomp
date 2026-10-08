@@ -31,7 +31,7 @@ void HBlank_RunVBlank();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_HBlank_Add
-BOOL HBlank_Add(HBlankTask *t, s32 a, void (*b)(), void (*c)());
+BOOL HBlank_Add(HBlankTask *t, void (*a)(), void (*b)(), void (*c)());
 #endif
 #ifndef PROTO_LOCAL_HBlank_Remove
 BOOL HBlank_Remove(HBlankTask *t);

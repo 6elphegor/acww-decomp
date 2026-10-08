@@ -34,8 +34,6 @@
 #include "menu/PopupChoiceMenu.h"
 #include "talk/TalkMsgRequest.h"
 #include "menu/MenuErrorMessage.h"
-#define PROTO_LOCAL__ZN8ProcBase10postDeleteEv  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -60,159 +58,19 @@
 #include "proto/ov002/unk_ov002_02202fac.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Real names of functions of other modules (plain names that are really methods / ctors / dtors)
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define func_02094018 _ZN11MsgString9BD1Ev
-#define func_02094030 _ZN11MsgString9BC1Ev
-#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_0206fcc8 _ZN11LabelStringC1Ev
-#define func_0206fca8 _ZN11LabelStringD1Ev
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define MsgString_append _ZN9MsgString6appendEPh
-#define MsgString_appendString _ZN9MsgString12appendStringEPS_
-#define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEP9MsgString
 
 extern "C" {
-BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);
-void _ZN8GameProc10postCreateEv(void *self, s32 a);
-void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
-s32 VillagerData_getVillagerId(void *self);
-void func_02094018(void *p);
-void func_02094030(void *p);
-void PlayerId_getNameString(s32 a, void *buf);
-s32 PlayerData_getPlayerId(void *self);
-void func_0206fcc8(void *p);
-void func_0206fca8(void *p);
-void MsgString_copy(void *self, void *src);
-void MsgString_append(void *self, const void *s);
-void MsgString_appendString(void *self, void *src);
-void LabelButton_setLabelText(void *self, void *src);
-
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 SaveVillagers_IsOccupied(void *a, s32 b);
-void *SaveVillagers_Get(void *a, s32 b);
-s32 Villager_FindMemory(void *a, s32 b);
-void MIi_CpuCopy16(void *dst, void *src, s32 n);
-void MIi_CpuClear16(s32 v, void *dst, s32 n);
-void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 
-extern void *gCurrentHeap;
 extern volatile u16 gPad[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
-extern u8 gTalkMsgIndexEnd[];
 }
-
-void operator delete(void *p);
-
-// Constructors / destructors that the symbols name differently from what the compiler generates (base-object C2 without
-// the unused C1, ctor/dtor of the 0x0220464c family) are defined as extern "C" functions with their real mangled names.
-extern "C" {
-extern char _ZTV9MenuTween[];
-extern char _ZTV8MenuProc[];
-extern char _ZTV19MenuLabelButtonBase[];
-extern char _ZTV8GameProc[];
-void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
-void *_ZN10HandCursorC2Ei(void *self, s32 flag);
-void *_ZN10HandCursorD2Ev(void *self);
-void *_ZN12CursorMotionC1Ev(void *self);
-void *_ZN12CursorMotionD1Ev(void *self);
-void _ZN10HandCursor4drawEv();
-void _ZN14MenuCursorBase6updateEv();
-void _ZN8UiWidget9setOriginEii();
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Classes of the main module
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Overlay 2 classes
 
-
-extern "C" {
-extern const u8 sTextButtonPressOffsets[];
-extern const u8 sMenuButtonTextColors[];
-extern const u8 sBottomButtonTargetX[];
-extern const u8 sBottomButtonTargetY[];
-extern const u8 sBottomButtonOfTarget[];
-}
-
-
-
-
-
-
-
 class MenuProc;
 typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-typedef PopupChoiceMenuBody Self;
-
-
-// Plain functions of the menu (they take the menu object first)
-extern "C" {
-BOOL PopupChoice_MoveCursor(Self *self, s32 p, u8 *pos, u32 n);
-BOOL PopupChoice_TickDecideDelay(Self *self);
-void PopupChoice_DecideAddressee(Self *self, u32 x);
-u8 PopupChoice_DecideCancel(Self *self, s32 x);
-void PopupChoice_DecideRow(Self *self, s32 a, s32 b);
-void PopupChoice_StartDecide(Self *self, s32 x);
-void PopupChoice_ForceClose(Self *self);
-void PopupChoice_Draw(Self *self);
-void PopupChoice_Update(Self *self);
-void PopupChoice_FitWidth(Self *self);
-s32 PopupChoice_GetHeight(Self *self);
-s32 PopupChoice_GetWidth(Self *self);
-void PopupChoice_StepSlideClose(Self *self);
-void PopupChoice_StepSlideOpen(Self *self);
-void PopupChoice_ApplySlide(Self *self);
-void PopupChoice_StepPopClose(Self *self);
-void PopupChoice_StepPopOpen(Self *self);
-void PopupChoice_BuildScreen(Self *self);
-void PopupChoice_SetState(Self *self, u32 x);
-void PopupChoice_Close(Self *self, s32 x);
-void PopupChoice_Open(Self *self, s32 x);
-void PopupChoice_OpenAddresseePage(Self *self, AddresseePageArg a, s32 x);
-void PopupChoice_LoadFriendBg(Self *self);
-void PopupChoice_LoadChoiceBg(Self *self);
-void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);
-void PopupChoice_SetPos(Self *self, s32 x, s32 y);
-void PopupChoice_ApplyScroll(Self *self, s32 x, s32 y);
-}
 
 static inline BOOL Unk_ov002_022009d4_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -225,7 +83,7 @@ KeyRepeat::KeyRepeat() {}
 
 KeyRepeat::~KeyRepeat() {}
 
-void KeyRepeatView::update()
+void KeyRepeat::update()
 {
     u32 prev = heldKeys;
     heldKeys = gPad[0] & 0xf0;
@@ -248,14 +106,14 @@ void KeyRepeatView::update()
     }
 }
 
-u8 KeyRepeatView::take()
+u8 KeyRepeat::take()
 {
     takenKeys = pendingKeys;
     pendingKeys = 0;
     return takenKeys;
 }
 
-BOOL KeyRepeatView::isUp()
+BOOL KeyRepeat::isUp()
 {
     if (takenKeys & 0x40) {
         return TRUE;
@@ -263,7 +121,7 @@ BOOL KeyRepeatView::isUp()
     return FALSE;
 }
 
-BOOL KeyRepeatView::isDown()
+BOOL KeyRepeat::isDown()
 {
     if (takenKeys & 0x80) {
         return TRUE;
@@ -271,7 +129,7 @@ BOOL KeyRepeatView::isDown()
     return FALSE;
 }
 
-BOOL KeyRepeatView::isLeft()
+BOOL KeyRepeat::isLeft()
 {
     if (takenKeys & 0x20) {
         return TRUE;
@@ -279,7 +137,7 @@ BOOL KeyRepeatView::isLeft()
     return FALSE;
 }
 
-BOOL KeyRepeatView::isRight()
+BOOL KeyRepeat::isRight()
 {
     if (takenKeys & 0x10) {
         return TRUE;
@@ -319,7 +177,7 @@ extern "C" BOOL MenuKeys_HasRight(u32 v)
     return FALSE;
 }
 
-void KeyRepeatView::init(s32 a, s32 b, s32 c)
+void KeyRepeat::init(s32 a, s32 b, s32 c)
 {
     heldKeys = 0;
     pendingKeys = 0;
@@ -331,10 +189,7 @@ void KeyRepeatView::init(s32 a, s32 b, s32 c)
     intervalStep = c;
 }
 
-extern "C" void *_ZN9MenuTweenC2Ev(MenuTween *self) {
-    *(void **)self = _ZTV9MenuTween + 8;
-    return self;
-}
+MenuTween::MenuTween() {}
 
 MenuTween::~MenuTween() {}
 
@@ -641,15 +496,9 @@ void MenuSlideView::applyWindow(s32 a) {
 
 void MenuSlideView::setExtent(s32 v) { extent = v; }
 
-extern "C" void *_ZN8MenuProcC2Ev(MenuProc *self) {
-    _ZN8ProcBaseC2Ev(self);
-    *(void *volatile *)self = _ZTV8GameProc + 8;
-    *(void **)self = _ZTV8MenuProc + 8;
-    new (&self->keyRepeat) KeyRepeat();
-    self->openMenuLink.prev = 0;
-    self->openMenuLink.next = 0;
-    new (&self->slide) MenuSlide();
-    return self;
+MenuProc::MenuProc() {
+    openMenuLink.prev = 0;
+    openMenuLink.next = 0;
 }
 
 MenuProc::~MenuProc() {}
@@ -660,21 +509,20 @@ BOOL MenuProc::preCreate() {
     }
     menuId = (s32)param;
     openMenuOwner = this;
-    ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7);
+    keyRepeat.init(8, 1, 7);
     return TRUE;
 }
 
 void MenuProc::postCreate(s32 a) {
     MenuCtrl_AddOpenMenu(&openMenuLink);
     if (a == 2) {
-        void *p = ProcBase_GetParent(this);
+        ProcBase *p = ProcBase_GetParent(this);
         if (p != 0) {
-            u8 *q = (u8 *)p;
-            ProcBase_SetExecutePriority(this, (u16)(*(u16 *)(q + 0x34) + 1));
-            ProcBase_SetDrawPriority(this, (u16)(*(u16 *)(q + 0x44) + 1));
+            ProcBase_SetExecutePriority(this, (u16)(p->executeNode.priority + 1));
+            ProcBase_SetDrawPriority(this, (u16)(p->drawNode.priority + 1));
         }
     }
-    _ZN8GameProc10postCreateEv(this, a);
+    GameProc::postCreate(a);
 }
 
 BOOL MenuProc::preDelete() {
@@ -688,7 +536,7 @@ BOOL MenuProc::postDelete(s32 a) {
     if (a == 2) {
         MenuCtrl_RemoveOpenMenu(&openMenuLink);
     }
-    return _ZN8ProcBase10postDeleteEv(this, a);
+    return ProcBase::postDelete(a);
 }
 
 BOOL MenuProc::preExecute() {
@@ -730,7 +578,7 @@ BOOL MenuProc::onExecute() {
         (Unk_ov002_02200a68_Fn)&MenuProc::execPhase4,
         (Unk_ov002_02200a68_Fn)&MenuProc::execClosed,
     };
-    ((KeyRepeatView *)&keyRepeat)->update();
+    keyRepeat.update();
     (this->*tbl[phase])();
     return TRUE;
 }
@@ -762,19 +610,19 @@ BOOL MenuProc::checkSwitchToTouch() {
     return FALSE;
 }
 
-u8 MenuProc::takeRepeatedKeys() { return ((KeyRepeatView *)&keyRepeat)->take(); }
+u8 MenuProc::takeRepeatedKeys() { return keyRepeat.take(); }
 
-BOOL MenuProc::isRepeatUp() { return ((KeyRepeatView *)&keyRepeat)->isUp(); }
+BOOL MenuProc::isRepeatUp() { return keyRepeat.isUp(); }
 
-BOOL MenuProc::isRepeatDown() { return ((KeyRepeatView *)&keyRepeat)->isDown(); }
+BOOL MenuProc::isRepeatDown() { return keyRepeat.isDown(); }
 
-BOOL MenuProc::isRepeatLeft() { return ((KeyRepeatView *)&keyRepeat)->isLeft(); }
+BOOL MenuProc::isRepeatLeft() { return keyRepeat.isLeft(); }
 
-BOOL MenuProc::isRepeatRight() { return ((KeyRepeatView *)&keyRepeat)->isRight(); }
+BOOL MenuProc::isRepeatRight() { return keyRepeat.isRight(); }
 
-void MenuProc::restartKeyRepeat() { ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7); }
+void MenuProc::restartKeyRepeat() { keyRepeat.init(8, 1, 7); }
 
-void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { ((KeyRepeatView *)&keyRepeat)->init(a, b, c); }
+void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { keyRepeat.init(a, b, c); }
 
 void *MenuProc::operator new(size_t size) {
     void *p = Heap_AllocTail(gMenuHeap, size);

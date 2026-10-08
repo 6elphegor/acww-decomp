@@ -6,46 +6,66 @@
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
+#include "nitro/fs.h"
+#include "snd/SndSeqHandle.h"
+
+// NNS_SndArcInitOnMemory's sound archive (NNSSndArc: unk_0210b448.c's Arc)
+struct WfcSoundArc {
+    u8 header[0x30];  // the SDAT header's fields
+    s32 fromFile;
+    FSFile file;
+    FSFileID id;
+    void *fat;
+    void *symb;
+    void *info;
+};
+
+struct WfcSound {
+    WfcSoundArc arc;
+    SndSeqHandle handle;
+    void *data;  // sound/sound_data.sdat
+    void *task;
+};
+
 #pragma thumb off
 
 extern "C" {
-s32 NNS_SndPlayerStopSeq(void *, u32);
-s32 NNS_SndPlayerSetTrackPitch(void *, s32, s32);
-s32 NNS_SndPlayerSetVolume(void *, s32);
-s32 NNS_SndArcInitOnMemory(void *, s32);
-s32 NNS_SndHandleInit(void *);
+s32 NNS_SndPlayerStopSeq(SndSeqHandle *, u32);
+s32 NNS_SndPlayerSetTrackPitch(SndSeqHandle *, s32, s32);
+s32 NNS_SndPlayerSetVolume(SndSeqHandle *, s32);
+s32 NNS_SndArcInitOnMemory(WfcSoundArc *, void *);
+s32 NNS_SndHandleInit(SndSeqHandle *);
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_Alloc(u32, u32);
 
 }
 
-u8 *sWfcSound;
+WfcSound *sWfcSound;
 
 void WfcSound_Init()
 {
-    s32 t;
-    sWfcSound = (u8 *)WfcHeap_Alloc(0x9c, 4);
-    *(s32 *)(sWfcSound + 0x94) = WfcFs_LoadFile("sound/sound_data.sdat.l", &t, 0x20);
+    u32 t;
+    sWfcSound = (WfcSound *)WfcHeap_Alloc(sizeof(WfcSound), 4);
+    sWfcSound->data = WfcFs_LoadFile((void *)"sound/sound_data.sdat.l", &t, 0x20);
     NNS_SndInit();
-    NNS_SndArcInitOnMemory(sWfcSound, *(s32 *)(sWfcSound + 0x94));
+    NNS_SndArcInitOnMemory(&sWfcSound->arc, sWfcSound->data);
     NNS_SndArcPlayerSetup(0);
-    NNS_SndHandleInit(sWfcSound + 0x90);
-    *(s32 *)(sWfcSound + 0x98) = WfcTask_Add(0, (void *)WfcSound_MainTask, 0, 0xc8);
+    NNS_SndHandleInit(&sWfcSound->handle);
+    sWfcSound->task = WfcTask_Add(0, (void *)WfcSound_MainTask, 0, 0xc8);
 }
 
 void WfcSound_Shutdown()
 {
-    WfcTask_RequestDelete(0, *(s32 *)(sWfcSound + 0x98));
+    WfcTask_RequestDelete(0, sWfcSound->task);
     WfcHeap_FreeAndClear(&sWfcSound);
 }
 
-s32 WfcSound_Play(s32 a) { return NNS_SndArcPlayerStartSeqArc(sWfcSound + 0x90, 0, a); }
+s32 WfcSound_Play(s32 a) { return NNS_SndArcPlayerStartSeqArc(&sWfcSound->handle, 0, a); }
 
-void WfcSound_SetVolume(s32 a) { NNS_SndPlayerSetVolume(sWfcSound + 0x90, a); }
+void WfcSound_SetVolume(s32 a) { NNS_SndPlayerSetVolume(&sWfcSound->handle, a); }
 
-void WfcSound_SetTrackPitch(s32 a, s32 b) { NNS_SndPlayerSetTrackPitch(sWfcSound + 0x90, a, b); }
+void WfcSound_SetTrackPitch(s32 a, s32 b) { NNS_SndPlayerSetTrackPitch(&sWfcSound->handle, a, b); }
 
-void WfcSound_Stop() { NNS_SndPlayerStopSeq(sWfcSound + 0x90, 0); }
+void WfcSound_Stop() { NNS_SndPlayerStopSeq(&sWfcSound->handle, 0); }
 
 void WfcSound_MainTask() { NNS_SndMain(); }
-

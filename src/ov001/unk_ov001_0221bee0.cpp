@@ -14,10 +14,8 @@
 #pragma thumb off
 
 extern "C" {
-s32 GX_LoadBG2Scr();
-s32 GX_LoadBG2Char();
-s32 GX_LoadBGPltt();
-void WfcUtil_LoadFileTo(void *, void *);
+void GX_LoadBG2Scr(void *, s32, u32);
+void WfcUtil_LoadFileTo(void *a, void (*fn)(void *, s32, u32));
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 
@@ -31,11 +29,11 @@ extern "C" void WfcUsbDone_Enter() {
     WfcHighlight_Set(8);
     WfcUtil_ShowBottomMessage(0x6f);
     WfcSound_Play(0x10);
-    WfcUtil_SetScene((void *)WfcUsbDone_FadeIn);
+    WfcUtil_SetScene(WfcUsbDone_FadeIn);
 }
 
 extern "C" void WfcUsbDone_LoadBg() {
-    WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
+    WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -51,12 +49,12 @@ extern "C" void WfcUsbDone_LoadBg() {
 extern "C" void WfcUsbDone_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcUsbDone_WaitFadeIn);
+    WfcUtil_SetScene(WfcUsbDone_WaitFadeIn);
 }
 
 extern "C" void WfcUsbDone_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcUsbDone_Update);
+    WfcUtil_SetScene(WfcUsbDone_Update);
 }
 
 extern "C" void WfcUsbDone_Update() {
@@ -70,7 +68,7 @@ extern "C" void WfcUsbDone_Idle() {
 extern "C" void WfcUsbDone_FadeOut() {
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcUsbDone_Exit);
+    WfcUtil_SetScene(WfcUsbDone_Exit);
 }
 
 extern "C" void WfcUsbDone_Exit() {
@@ -82,11 +80,11 @@ extern "C" void WfcUsbDone_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     WfcUtil_SetScreenFlags(0, 0);
     WfcUtil_SetEditParams(0, 2);
-    WfcUtil_SetScene((void *)WfcTestConfirm_Enter);
+    WfcUtil_SetScene(WfcTestConfirm_Enter);
 }
 
 extern "C" void WfcUsbDone_CountDown() {
     sWfcUsbDoneTimer++;
     if (sWfcUsbDoneTimer < 0x78) return;
-    WfcUtil_SetScene((void *)WfcUsbDone_FadeOut);
+    WfcUtil_SetScene(WfcUsbDone_FadeOut);
 }

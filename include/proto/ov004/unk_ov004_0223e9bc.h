@@ -16,7 +16,7 @@ extern "C" {
 ShopStockPlacer *ShopStockPlacer_Create();
 #endif
 #ifndef PROTO_LOCAL_ShopStock_GetLayout
-u8 *ShopStock_GetLayout();
+const u32 *ShopStock_GetLayout();
 #endif
 #ifndef PROTO_LOCAL_ShopStock_GetItemCode
 s32 ShopStock_GetItemCode(u16 *p);
@@ -36,24 +36,9 @@ BOOL ShopStock_FindTileOfStock(s32 *px, s32 *py, s32 code);
 #ifndef PROTO_LOCAL_ShopStock_GetItemAtTile
 u16 *ShopStock_GetItemAtTile(s32 x, s32 y);
 #endif
-#ifndef PROTO_LOCAL__ZN15ShopStockPlacer13callGetItemAtEv
-u16 *_ZN15ShopStockPlacer13callGetItemAtEv(s32 x, s32 y);
-#endif
 }
 #ifndef PROTO_LOCAL_sShopStockPlacerProfile
 extern ProcProfile sShopStockPlacerProfile;
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224f254
-extern void *data_ov004_0224f254[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224f25c
-extern void *data_ov004_0224f25c[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224f274
-extern void *data_ov004_0224f274[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224f264
-extern void *data_ov004_0224f264[2];
 #endif
 #endif
 

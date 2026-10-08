@@ -10,8 +10,8 @@
 
 class MenuCursorBase : public HandCursor {
 public:
-    MenuCursorBase(BOOL flag);
-    ~MenuCursorBase();
+    MenuCursorBase(BOOL flag) : HandCursor(flag) {}
+    ~MenuCursorBase() {}
     virtual void update();                    // 0x022027dc
 
     void drawWrapped();                         // 0x02202844

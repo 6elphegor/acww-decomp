@@ -44,7 +44,6 @@ typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
 #define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_02133150 _s32_div_f
-#define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
 #define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
@@ -109,7 +108,6 @@ void MenuButtons_LoadTextColors(void *p);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-BOOL MuseumData_getDonorName(void *a, void *b, void *c);
 void BgVramTask_cancel(void *p);
 void MenuLauncher_onChildClosed(s32 self);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
@@ -905,7 +903,7 @@ void DonationMenu::drawEntryNames() {
                 w->copy(&b);
                 w2 = allocTextLabel();
                 s[1] = *list;
-                if (((MuseumData *)(&data_021ed0a0))->getDonorName((s32)(&a), (u16 *)(&s[1]))) {
+                if (((MuseumData *)(&data_021ed0a0))->getDonorName(&a, (u16 *)(&s[1]))) {
                     ((MsgString *)(w2))->copy((MsgString *)(&a));
                 } else {
                     String_Load2dMenu(w2, 0xcc);

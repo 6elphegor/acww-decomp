@@ -3,11 +3,11 @@
 #include "gfx/VecFx32.h"
 #include "gfx/Camera.h"
 #include "gfx/DebugColor.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020943dc.h"
 #include "proto/ov004/unk_ov004_0223f43c.h"
 
 
@@ -33,15 +33,6 @@ struct CameraKkShowShot {
     s16 pad;
 };
 
-
-struct CameraTargetView {
-    s16 yaw;
-    u8 pad_02[0x12];
-    s32 focus;
-    s32 focusY;
-    s32 focusZ;
-};
-
 extern "C" {
 extern Camera *gCamera;
 extern VecFx32 gVec3Zero;
@@ -56,11 +47,7 @@ extern u32 data_ov004_0224f33c[];
 extern CameraKkShowShot sCameraKkShowShots[];
 extern const VecFx32 data_ov004_02246838;
 extern const VecFx32 data_ov004_0224682c;
-// linker-provided absolute symbol (overlay id 2 == the value 2): the original loads this constant from the literal pool
-
-VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent(void);
-s32 Math_AngleXZ(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void VEC_Subtract(void *a, void *b, void *c);
@@ -72,18 +59,6 @@ void Camera_FinishBlend(void);
 void Camera_PlaySe(Camera *o, s32 a);
 s32 Camera_CalcPointSpan(void *p, void *a, s32 *b, s32 *out);
 
-// methods of Camera (main), called through their real symbols with the object first
-s32 _ZN6Camera11getDistanceEv(Camera *o);
-s16 _ZN6Camera6getYawEv(Camera *o);
-s16 _ZN6Camera8getPitchEv(Camera *o);
-void _ZN6Camera11updateBlendEv(Camera *o);
-void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(Camera *o, void *a, s32 b, s32 c, s32 d);
-#define Camera_getDistance _ZN6Camera11getDistanceEv
-#define Camera_getYaw _ZN6Camera6getYawEv
-#define Camera_getPitch _ZN6Camera8getPitchEv
-#define Camera_updateBlend _ZN6Camera11updateBlendEv
-#define Camera_setLookAtOrbit _ZN6Camera14setLookAtOrbitEP7VecFx32iii
-
 void Camera_KkShowResetShot(Camera *o);
 void Camera_KkShowPickShot(Camera *o);
 void Camera_KkShowWideShot(Camera *o);
@@ -93,16 +68,17 @@ void Camera_KkShowWideShot(Camera *o);
     do {                                                                \
         VecFx32 cam;                                           \
         s32 p, q;                                                       \
-        Camera_updateBlend(o);                                               \
-        Camera_GetLookAtPoint(&cam, o);                                         \
-        p = Camera_getPitch(o);                                           \
-        q = Camera_getYaw(o);                                           \
-        Camera_setLookAtOrbit(o, &cam, p, q, Camera_getDistance(o));                 \
+        (o)->updateBlend();                                             \
+        Camera_GetLookAtPoint(&cam, o);                                 \
+        p = (o)->getPitch();                                            \
+        q = (o)->getYaw();                                              \
+        (o)->setLookAtOrbit(&cam, p, q, (o)->getDistance());            \
     } while (0)
 
 extern "C" {
 
-void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
+// Moves the room camera's target pose (yaw) and focus toward the player.
+void Camera_UpdateRoomFocus(Camera *self) {
     VecFx32 *p;
     s32 lim;
     s32 sp4;
@@ -113,10 +89,7 @@ void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
     VecFx32 d;
     s32 ang, r7;
     s32 t;
-    if (a == 0) {
-        a = (CameraTargetView *)&self->target.h0;
-    }
-    p = PlayerActor_GetBodyPos(4);
+    p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     t = Camera_CalcPointSpan(p, &self->focusPointA, &self->targetFocus.x, &dy);
     if (t < 0x4800) {
         t = 0x4800;
@@ -135,9 +108,9 @@ void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
         d.y = self->focusPointA.y;
         d.z = self->focusPointA.z;
     }
-    sp4 = (self)->getRoomEdgeSide(&a->focus);
+    sp4 = (self)->getRoomEdgeSide(&self->targetFocus.x);
     sp8 = 0;
-    ang = Math_AngleXZ(&a->focus, &d);
+    ang = Math_AngleXZ(&self->targetFocus.x, &d.x);
     s32 av = ang < 0 ? (s16)-ang : ang;
     t = 0x2000 - av;
     if (t < 0) t = 0;
@@ -161,12 +134,12 @@ void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
         u32 m = self->roomFocusSide;
         if (m == 1) lim = (s16)-lim;
         if (m != 0) {
-            a->yaw = func_01ffcb0c(lim, inv);
-            sp8 = func_01ffcb0c(dy, data_02135f44[((u16)a->yaw >> 4) * 2]);
+            self->target.h0 = func_01ffcb0c(lim, inv);
+            sp8 = func_01ffcb0c(dy, data_02135f44[((u16)self->target.h0 >> 4) * 2]);
         }
     }
-    a->focusZ += dy;
-    a->focus += sp8;
+    self->targetFocus.z += dy;
+    self->targetFocus.x += sp8;
 }
 
 BOOL Camera_InitMode10(Camera *self) {
@@ -182,7 +155,7 @@ BOOL Camera_InitMode10(Camera *self) {
 BOOL Camera_StartBlendToPlayer(Camera *self) {
     (self)->loadPose(sCameraPoseGrid[1][1], (CameraPose *)(0));
     (self)->setBlendPreset(0);
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     self->targetFocus.x = p->x;
     self->targetFocus.y = p->y;
     self->targetFocus.z = p->z;
@@ -196,7 +169,7 @@ void Camera_UpdateMode10(Camera *self) {
     Camera_GetLookAtPoint(&v, self);
     s32 a = (self)->getPitch();
     s32 b = (self)->getYaw();
-    Camera_setLookAtOrbit(self, &v, a, b, (self)->getDistance());
+    (self)->setLookAtOrbit(&v, a, b, (self)->getDistance());
 }
 
 s32 Camera_GetShopTier() {
@@ -289,7 +262,7 @@ BOOL Camera_InitMode16(Camera *o) {
 }
 
 void Camera_UpdateMode16(Camera *o) {
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     VecFx32 a, b;
     s32 d;
     Vec_Add(&a, p, &o->focusPointA);

@@ -17,7 +17,7 @@ struct MuseumInfoPointData {
     /* 0x0c */ s32 arc;
     /* 0x10 */ s16 angle;
     /* 0x12 */ s16 message;
-    /* 0x14 */ s32 itemList;
+    /* 0x14 */ u8 *itemList;
     /* 0x18 */ u8 itemCount;
     /* 0x19 */ u8 kind;
     /* 0x1a */ u8 pad_1a[2];
@@ -28,7 +28,7 @@ struct MuseumInfoPointDef {
     /* 0x0c */ u8 facingMask;
     /* 0x0d */ u8 kind;
     /* 0x0e */ s16 message;
-    /* 0x10 */ const void *itemList;
+    /* 0x10 */ const u8 *itemList;
     /* 0x14 */ u8 itemCount;
     /* 0x15 */ u8 pad_15[3];
 };
@@ -55,13 +55,13 @@ s32 FX_Div(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Scene_GetCurrent();
 u32 MuseumInfoPoint_GetItemCount(Rec *r);
-s32 MuseumInfoPoint_GetItemList(Rec *r);
+u8 *MuseumInfoPoint_GetItemList(Rec *r);
 s16 MuseumInfoPoint_GetMessage(Rec *r);
 u32 MuseumInfoPoint_GetKind(Rec *r);
 s32 MuseumInfoPoint_GetArc(Rec *r);
 s16 MuseumInfoPoint_GetAngle(Rec *r);
-void *MuseumInfoPoint_GetPos(Rec *r);
-void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32 d, u8 e);
+V3 *MuseumInfoPoint_GetPos(Rec *r);
+void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, u8 *d, u8 e);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void BlockMap_SetItem(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
 }
@@ -298,13 +298,13 @@ const MuseumInfoPointDef sMuseumInsectPointDefs27[4] = {
 const u8 data_ov004_02244124[1] = {0x2};
 const u8 data_ov004_022440e8[1] = {0x3};
 const MuseumInfoPointSet sMuseumInfoPointsByScene[7] = {
-    {0x25, (Rec *)sMuseumFossilPoints25, 12},
-    {0x26, (Rec *)sMuseumFossilPoints26, 12},
-    {0x23, (Rec *)sMuseumFishPoints23, 4},
-    {0x24, (Rec *)sMuseumFishPoints24, 2},
-    {0x29, (Rec *)sMuseumPaintingPoints29, 20},
-    {0x27, (Rec *)sMuseumInsectPoints27, 4},
-    {0x28, (Rec *)sMuseumInsectPoints28, 5},
+    {0x25, sMuseumFossilPoints25, 12},
+    {0x26, sMuseumFossilPoints26, 12},
+    {0x23, sMuseumFishPoints23, 4},
+    {0x24, sMuseumFishPoints24, 2},
+    {0x29, sMuseumPaintingPoints29, 20},
+    {0x27, sMuseumInsectPoints27, 4},
+    {0x28, sMuseumInsectPoints28, 5},
 };
 const u8 data_ov004_0224413c[2] = {0x10, 0x11};
 const u8 data_ov004_02244174[5] = {0x15, 0x16, 0x17, 0x23, 0x31};
@@ -320,7 +320,7 @@ const u8 data_ov004_022440d4[1] = {0x13};
 
 MuseumInfoPoint::~MuseumInfoPoint() {}
 
-extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32 d, u8 e) {
+extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, u8 *d, u8 e) {
     s32 sum; u32 i; s32 last; s32 cnt;
     r->pos.x = pos->x;
     r->pos.y = pos->y;
@@ -363,11 +363,11 @@ extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s3
 
 extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d) {
     VecFx32Ctor v(d->pos.x, d->pos.y, d->pos.z);
-    MuseumInfoPoint_Init(r, (V3 *)&v, d->facingMask, d->kind, d->message, (s32)d->itemList, d->itemCount);
+    MuseumInfoPoint_Init(r, (V3 *)&v, d->facingMask, d->kind, d->message, (u8 *)d->itemList, d->itemCount);
     return r;
 }
 
-extern "C" void *MuseumInfoPoint_GetPos(Rec *r) { return r; }
+extern "C" V3 *MuseumInfoPoint_GetPos(Rec *r) { return &r->pos; }
 
 extern "C" s16 MuseumInfoPoint_GetAngle(Rec *r) {
     return r->angle;
@@ -385,7 +385,7 @@ extern "C" s16 MuseumInfoPoint_GetMessage(Rec *r) {
     return r->message;
 }
 
-extern "C" s32 MuseumInfoPoint_GetItemList(Rec *r) {
+extern "C" u8 *MuseumInfoPoint_GetItemList(Rec *r) {
     return r->itemList;
 }
 
@@ -427,11 +427,11 @@ void MuseumRoom::spawnInfoPoints() {
             for (; j < n; j++) {
                 Rec *rec = &e->points[j];
                 u32 a = MuseumInfoPoint_GetKind(rec);
-                void *b = MuseumInfoPoint_GetPos(rec);
+                V3 *b = MuseumInfoPoint_GetPos(rec);
                 s32 c = MuseumInfoPoint_GetAngle(rec);
                 s32 d = MuseumInfoPoint_GetArc(rec);
                 s32 f = MuseumInfoPoint_GetMessage(rec);
-                s32 g = MuseumInfoPoint_GetItemList(rec);
+                u8 *g = MuseumInfoPoint_GetItemList(rec);
                 MuseumExhibitInfo_Spawn(a, b, c, d, f, g, MuseumInfoPoint_GetItemCount(rec));
             }
             break;

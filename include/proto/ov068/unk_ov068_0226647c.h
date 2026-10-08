@@ -7,14 +7,25 @@
 #ifdef __cplusplus
 #include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov068_0226fc48
+extern s32 data_ov068_0226fc48;
+#endif
 #ifndef PROTO_LOCAL_sTownTourOffsets
 extern void *sTownTourOffsets[7];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fc44
+extern s32 data_ov068_0226fc44;
+#endif
+#ifndef PROTO_LOCAL_sTownTourBuildings
+extern u16 sTownTourBuildings[14];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fc40
+extern s32 data_ov068_0226fc40;
 #endif
 #ifdef __cplusplus
 }
@@ -22,9 +33,6 @@ extern void *sTownTourOffsets[7];
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov068_0226fc48
-extern s32 data_ov068_0226fc48;
-#endif
 #ifndef PROTO_LOCAL_sTownTourOffsetVillagerHouse
 extern VecFx32 sTownTourOffsetVillagerHouse;
 #endif
@@ -33,9 +41,6 @@ extern VecFx32 sTownTourOffsetsNookShop[4];
 #endif
 #ifndef PROTO_LOCAL_sTownTourOffsetTownHall
 extern VecFx32 sTownTourOffsetTownHall;
-#endif
-#ifndef PROTO_LOCAL_data_ov068_0226fc44
-extern s32 data_ov068_0226fc44;
 #endif
 #ifndef PROTO_LOCAL_sTownTourOffsetMuseum
 extern VecFx32 sTownTourOffsetMuseum;
@@ -49,12 +54,6 @@ extern VecFx32 sTownTourOffsetPlayerHouse;
 #ifndef PROTO_LOCAL_sTownTourOffsetGateHouse
 extern VecFx32 sTownTourOffsetGateHouse;
 #endif
-#ifndef PROTO_LOCAL_sTownTourBuildings
-extern u16 sTownTourBuildings[14];
-#endif
-#ifndef PROTO_LOCAL_data_ov068_0226fc40
-extern s32 data_ov068_0226fc40;
-#endif
 #ifndef PROTO_LOCAL_Camera_SetSwayPattern
 void Camera_SetSwayPattern(Camera *c, s32 idx);
 #endif
@@ -63,6 +62,30 @@ void Camera_SetSwayPattern2(Camera *c, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_Camera_UpdateSway
 s32 Camera_UpdateSway(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_InitMode13
+BOOL CameraEventModes_InitMode13(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_InitModeFollowTarget
+BOOL CameraEventModes_InitModeFollowTarget(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_InitModeSway
+BOOL CameraEventModes_InitModeSway(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_InitModeTownTour
+BOOL CameraEventModes_InitModeTownTour(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_UpdateMode13
+void CameraEventModes_UpdateMode13(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_UpdateModeFollowTarget
+void CameraEventModes_UpdateModeFollowTarget(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_UpdateModeSway
+void CameraEventModes_UpdateModeSway(Camera *c);
+#endif
+#ifndef PROTO_LOCAL_CameraEventModes_UpdateModeTownTour
+void CameraEventModes_UpdateModeTownTour(Camera *c);
 #endif
 }
 #endif

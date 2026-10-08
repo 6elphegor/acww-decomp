@@ -4,9 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_020411dc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct ScreenTransition;
+#include "gfx/ScreenTransition.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -60,6 +59,12 @@ void CutTransition_VBlank();
 #ifndef PROTO_LOCAL_ScreenTransition_Init
 void ScreenTransition_Init();
 #endif
+#ifndef PROTO_LOCAL_ScreenTransition_StartFadeOut
+BOOL ScreenTransition_StartFadeOut(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_ScreenTransition_StartFadeIn
+BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c);
+#endif
 #ifndef PROTO_LOCAL_ScreenTransition_Update
 void ScreenTransition_Update();
 #endif
@@ -77,14 +82,6 @@ void ScreenTransition_HideCover();
 #endif
 
 #ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_ScreenTransition_StartFadeOut
-BOOL ScreenTransition_StartFadeOut(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_ScreenTransition_StartFadeIn
-BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c);
-#endif
-}
 #ifndef PROTO_LOCAL_sIrisWipeFlags
 extern u8 sIrisWipeFlags;
 #endif

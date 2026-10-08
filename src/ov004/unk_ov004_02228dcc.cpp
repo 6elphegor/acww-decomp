@@ -12,74 +12,13 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
-#include "room/FtrActorParts.h"
+#include "nnsys/g3d_rt.h"
 #include "gfx/Model.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_SpNpcKatrina_GetJointMtx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/ov004/unk_ov004_02228dcc.h"
 #include "proto/ov045/unk_02258de0.h"
-
-// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
-// Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
-// 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
-// original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
-//   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
-// Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
-//    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
-//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
-//    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
-//  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
-//    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
-
-
-
-
-
-
-
-// ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-
-
-
-
-extern "C" {
-void *RoomObjRes_GetBca(void *self, u32 i);
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void *RoomObjTex_Get(void *self);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
-void RoomObj_PlaySe(void *self, s32 v);
-void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
-void RoomObj_ActivateSe(void *self);
-}
-
-// ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-
-
-
-
-
-
-
-
 
 class TarotProps : public RoomObjActor {
 public:
@@ -106,10 +45,10 @@ public:
 
     /* 0x290 */ AnimModel partModels[3];
     /* 0x4b8 */ RoomObjRes partRes[3];
-    /* 0x6a4 */ u32 partTex[3]; // RoomObjTex slots (construct/destruct by hand)
+    /* 0x6a4 */ void *partTex[3]; // the parts' textures: the RoomObjTex_* functions use only RoomObjTex's first member
     /* 0x6b0 */ u8 partVisible[3];
     /* 0x6b3 */ u8 pad_6b3;
-    /* 0x6b4 */ FtrModelAnimView part1MatAnim; // a ModelAnim (C1/D1 by hand)
+    /* 0x6b4 */ ModelAnim part1MatAnim;
     /* 0x6d4 */ u8 modelVisible;
     /* 0x6d5 */ u8 pad_6d5[3];
     /* 0x6d8 */ s32 act;
@@ -122,25 +61,12 @@ extern "C" {
 extern Mtx43 data_021f47e0;
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
-void RoomObjRes_Free(void *);
-void RoomObjTex_Reset(void *);
-void RoomObjRes_Load(void *, const char *);
-void RoomObjTex_Load(void *, const char *);
-void *RoomObjRes_GetModel(void *);
-void *RoomObjTex_Get(void *);
-void *RoomObjRes_GetBca(void *, u32);
 void *RoomObjRes_GetBta(void *, u32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
-s32 NNS_G3dBindMdlTex(void *, u32);
-s32 NNS_G3dBindMdlPltt(void *, u32);
-Mtx43 *SpNpcKatrina_GetJointMtx(void);
-void *_ZN9AnimModelC1Ev(void *, s32);
-void *_ZN9AnimModelD1Ev(void *, s32);
-void *_ZN10RoomObjResC1Ev(void *, s32);
-void *_ZN10RoomObjResD1Ev(void *, s32);
+Mtx43 *SpNpcKatrina_GetJointMtx();  // ov045 (its shared prototype is not generated yet)
+s32 NNS_G3dBindMdlTex(void *, void *);
+s32 NNS_G3dBindMdlPltt(void *, void *);
 }
-
-#define F(T, off) (*(T *)((u8 *)this + off))
 
 // ---------------------------------------------------------------- data
 extern "C" ActorProfile sTarotPropsProfile = {(void *(*)())TarotProps_Create, 0x71, 0x1b, 0, 0xc8000, 0x12c000, 0x258000};
@@ -151,13 +77,11 @@ extern "C" TarotProps *TarotProps_Create() {
 }
 
 TarotProps::TarotProps() {
-    __cxa_vec_ctor(partTex, 3, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
-    new (&part1MatAnim) ModelAnim();
+    __cxa_vec_ctor(partTex, 3, sizeof(partTex[0]), (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
 }
 
 TarotProps::~TarotProps() {
-    ((ModelAnim *)(&part1MatAnim))->ModelAnim::~ModelAnim();
-    __cxa_vec_cleanup(partTex, 3, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
+    __cxa_vec_cleanup(partTex, 3, sizeof(partTex[0]), (void *(*)(void *, s32))RoomObjTex_Destruct);
 }
 
 BOOL TarotProps::onCreate() {
@@ -167,15 +91,15 @@ BOOL TarotProps::onCreate() {
     loadPart(1, (void *)"/roomObj/obj_tarot3.arc", (void *)"/roomObj/obj_tarot3.nsbtx");
     loadPart(2, (void *)"/roomObj/obj_tarot4.arc", (void *)"/roomObj/obj_tarot4.nsbtx");
     if (RoomObjRes_GetBca(&partRes[2], 0)) {
-        if (((AnimModel *)(&partModels[2]))->allocAnmObj(gBgHeap)) {
-            ((BlendAnimModel *)(&partModels[2]))->initAnim(RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
-            ((AnimModel *)(&partModels[2]))->attachAnim();
+        if (partModels[2].allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)&partModels[2])->initAnim(RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
+            partModels[2].attachAnim();
             partModels[2].frameStep = 0;
         }
     }
-    if (((ModelAnim *)(&part1MatAnim))->allocMatAnm((NNSG3dResMdl *)(partModels[1].resMdl), gBgHeap)) {
-        ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
-        ((ModelAnim *)(&part1MatAnim))->addToRenderObj(((Model *)(&partModels[1]))->getRenderObj());
+    if (part1MatAnim.allocMatAnm(partModels[1].resMdl, gBgHeap)) {
+        part1MatAnim.init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
+        part1MatAnim.addToRenderObj(partModels[1].getRenderObj());
         part1MatAnim.frameStep = 0;
     }
     changeAct(0);
@@ -183,9 +107,9 @@ BOOL TarotProps::onCreate() {
 }
 
 BOOL TarotProps::onExecute() {
-    ((AnimModel *)(&partModels[2]))->stepAnim();
-    ((AnimFrameCtrl *)(&part1MatAnim))->step();
-    *part1MatAnim.anmObj = part1MatAnim.curFrame;
+    partModels[2].stepAnim();
+    part1MatAnim.step();
+    ((G3dAnmObj *)part1MatAnim.anmObj)->frame = part1MatAnim.curFrame;
     Mtx43_SetTranslate(&data_021f47e0, position.x, position.y, position.z);
     partModels[1].mtx = data_021f47e0;
     partModels[2].mtx = data_021f47e0;
@@ -201,14 +125,14 @@ void TarotProps::drawAtKatrina() {
     Mtx43 *m = SpNpcKatrina_GetJointMtx();
     u8 i;
     data_021f47e0 = *m;
-    F(Mtx43, 0xec + 0x64) = data_021f47e0;
+    model.mtx = data_021f47e0;
     partModels[0].mtx = data_021f47e0;
     if (modelVisible) {
-        ((AnimModel *)(&model))->drawAnimated((void *)(0));
+        model.drawAnimated(0);
     }
     for (i = 0; i < 3; i++) {
         if (partVisible[i]) {
-            ((AnimModel *)(&partModels[i]))->drawAnimated((void *)(0));
+            partModels[i].drawAnimated(0);
         }
     }
 }
@@ -258,8 +182,8 @@ BOOL TarotProps::enterAct01() {
     partVisible[0] = 0;
     partVisible[1] = 1;
     partVisible[2] = 0;
-    ((BlendAnimModel *)(&partModels[2]))->initAnim(RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
-    ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
+    ((BlendAnimModel *)&partModels[2])->initAnim(RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
+    part1MatAnim.init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -277,7 +201,7 @@ BOOL TarotProps::enterAct02() {
     partVisible[2] = 1;
     partModels[2].curFrame = (u32)((s32)partModels[2].numFrames >> 12) << 16 >> 4;
     partModels[2].frameStep = 0;
-    part1MatAnim.curFrame = (u32)(*(s32 *)&F(u32, 0x6b8) >> 12) << 16 >> 4;
+    part1MatAnim.curFrame = (u32)((s32)part1MatAnim.numFrames >> 12) << 16 >> 4;
     part1MatAnim.frameStep = 0;
     return TRUE;
 }
@@ -293,8 +217,8 @@ BOOL TarotProps::enterAct03() {
     partVisible[0] = 1;
     partVisible[1] = 1;
     partVisible[2] = 1;
-    ((BlendAnimModel *)(&partModels[2]))->initAnim(RoomObjRes_GetBca(&partRes[2], 1), 1, 0x1000, 0, 0);
-    ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 1), 1, 0x1000, 0);
+    ((BlendAnimModel *)&partModels[2])->initAnim(RoomObjRes_GetBca(&partRes[2], 1), 1, 0x1000, 0, 0);
+    part1MatAnim.init(RoomObjRes_GetBta(&partRes[1], 1), 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -311,7 +235,7 @@ void TarotProps::execAct03() {
     if (SpNpcKatrina_GetAnimFrame() == 0x25) {
         modelVisible = 0;
     }
-    if (((AnimFrameCtrl *)((AnimFrameCtrl *)&partModels[2]))->isFinished()) {
+    if (partModels[2].isFinished()) {
         changeAct(0);
     }
 }
@@ -346,9 +270,9 @@ extern "C" void TarotProps_Draw() {
 void TarotProps::loadPart(s32 i, void *a, void *b) {
     RoomObjRes *t1 = &partRes[i];
     RoomObjRes_Load(t1, (const char *)a);
-    u32 *t2 = &partTex[i];
+    void **t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);
-    ((Model *)(&partModels[i]))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(t1)), 0);
+    partModels[i].setResource((NNSG3dResMdl *)RoomObjRes_GetModel(t1), 0);
     {
         void *x = RoomObjRes_GetModel(t1);
         NNS_G3dBindMdlTex(x, RoomObjTex_Get(t2));

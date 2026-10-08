@@ -4,8 +4,8 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220d1d8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcMsgBank;
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -32,9 +32,6 @@ extern char data_ov001_0222ab00[16];
 #ifndef PROTO_LOCAL_sWfcMsgFileNames
 extern void *sWfcMsgFileNames[6];
 #endif
-#ifndef PROTO_LOCAL_gWfcMsgBank
-extern void *gWfcMsgBank;
-#endif
 #ifndef PROTO_LOCAL_WfcBoot_Enter
 void WfcBoot_Enter();
 #endif
@@ -56,8 +53,14 @@ void WfcSimpleStart_Begin();
 #ifndef PROTO_LOCAL_WfcSimpleStart_End
 void WfcSimpleStart_End();
 #endif
+#ifndef PROTO_LOCAL_WfcSimpleStart_GetState
+s32 WfcSimpleStart_GetState();
+#endif
 #ifndef PROTO_LOCAL_WfcSimpleStart_ApplyResult
 void WfcSimpleStart_ApplyResult();
+#endif
+#ifndef PROTO_LOCAL_WfcSimpleStart_Alloc
+void *WfcSimpleStart_Alloc(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcSimpleStart_Free
 void WfcSimpleStart_Free(void *p);
@@ -68,11 +71,8 @@ void WfcSimpleStart_Free(void *p);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_WfcSimpleStart_GetState
-s32 WfcSimpleStart_GetState();
-#endif
-#ifndef PROTO_LOCAL_WfcSimpleStart_Alloc
-void *WfcSimpleStart_Alloc(s32 a);
+#ifndef PROTO_LOCAL_gWfcMsgBank
+extern WfcMsgBank *gWfcMsgBank;
 #endif
 }
 #endif

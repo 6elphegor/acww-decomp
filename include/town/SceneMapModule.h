@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "sys/ProcBase.h"
+#include "town/MapBlockEntry.h"
 
 // Game process that builds the scene block map and owns its layout grids (vtable 0x020da3cc). Defined in
 // src/main/unk_0204c50c.cpp; the destructor is implicit there (D1/D0 at the start of that unit).
@@ -24,8 +25,8 @@ public:
     void setOwnedGrid(u16 *v, s32 idx);
     void freeOwnedGrids(void *heap);
     void allocOwnedGrids(void *heap);
-    u32 *buildEntries(u32 *src, s32 n, void *heap);
-    u32 loadLayoutGrid(u32 v, s32 idx, void *heap);
+    MapBlockEntry *buildEntries(u32 *src, s32 n, void *heap);
+    u16 *loadLayoutGrid(u32 v, s32 idx, void *heap);
 };
 
 #endif

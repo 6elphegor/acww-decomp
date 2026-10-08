@@ -1,12 +1,11 @@
-#include "uptr.h"
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/Unk_ov001_02221734_D.h"
 #include "nitro/os_rtc.h"
 #include "net/WfcMoveMbWork.h"
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcMoveMb_RegisterFile  // declared below: the shared prototype conflicts with the calls here
+#include "nitro/fs.h"
 #include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02122e24.h"
 #include "proto/autoload_2/unk_02124c40.h"
 #include "proto/main/unk_0206d49c.h"
@@ -23,25 +22,24 @@ void OS_RestoreInterrupts(u32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 MB_CommResponseRequest(s32, s32);
 s32 MB_CommIsBootable(s32);
-s32 MB_CommGetChildUser(s32);
+const void *MB_CommGetChildUser(s32);
 void MB_DisconnectChild(s32);
-void FS_InitFile(void *);
-s32 FS_OpenFile(void *, s32);
-s32 MB_GetSegmentLength(void *);
-s32 MB_ReadSegment(void *, void *, u32);
-s32 MB_RegisterFile(void *, void *);
-void FS_CloseFile(void *);
+s32 FS_OpenFile(FSFile *, const char *);
+s32 MB_GetSegmentLength(FSFile *);
+s32 MB_ReadSegment(FSFile *, void *, u32);
+s32 MB_RegisterFile(const MBGameRegistry *, void *);
+void FS_CloseFile(FSFile *);
 s32 MB_StartParentFromIdle(s32);
 s32 MB_Init(void *, void *, s32, s32, s32);
 void MB_SetParentCommParam(u32, u32);
 void WfcMoveWh_SetWork(void *);
-
-s32 WfcMoveMb_RegisterFile(s32 *p);
 }
+
+static_assert(sizeof(WfcMoveMbWork) <= WFC_MOVE_WH_WORK_OFFSET, "WfcMoveMbWork overlaps the WfcMoveWhWork");
 
 void WfcMoveMb_SetWork(void *p) {
     sWfcMoveMb = (WfcMoveMbWork *)p;
-    WfcMoveWh_SetWork((u8 *)p + 0x1b160);
+    WfcMoveWh_SetWork((u8 *)p + WFC_MOVE_WH_WORK_OFFSET);
     sWfcMoveMb->mbWork = 0;
     sWfcMoveMb->segmentBuffer = 0;
 }
@@ -62,15 +60,15 @@ void WfcMoveMb_Init(s32 a, s32 b) {
     zp->v[4] = 0;
     zp->v[5] = 0;
     zp->v[6] = 0;
-    *(WfcMoveMbStateCopy *)sWfcMoveMb = *zp;
-    sWfcMoveMb->mbWork = (u8 *)sWfcMoveMb + 0x10040;
+    sWfcMoveMb->stateCopy = *zp;
+    sWfcMoveMb->mbWork = sWfcMoveMb->mbSystemWork;
     if (MB_Init(sWfcMoveMb->mbWork, &d, a, b, 2) != 0) Fatal_Trap();
     MB_SetParentCommParam(0x100, 1);
-    MB_CommSetParentStateCallback((void *)WfcMoveMb_ParentStateCallback);
+    MB_CommSetParentStateCallback((void (*)())WfcMoveMb_ParentStateCallback);  // (the SDK unit declares it untyped)
     WfcMoveMb_SetState(1);
 }
 
-void WfcMoveMb_StartParent(s32 *a, s32 b) {
+void WfcMoveMb_StartParent(MBGameRegistry *a, s32 b) {
     WfcMoveMb_SetState(2);
     if (MB_StartParentFromIdle(b) != 0) {
         WfcMoveMb_SetState(7);
@@ -80,27 +78,27 @@ void WfcMoveMb_StartParent(s32 *a, s32 b) {
     Fatal_Trap();
 }
 
-s32 WfcMoveMb_RegisterFile(s32 *p) {
-    void *q;
+s32 WfcMoveMb_RegisterFile(MBGameRegistry *p) {
+    FSFile *q;
     s32 r = 0;
-    u8 buf[0x48];
-    if (*p == 0) {
+    FSFile file;
+    if (p->romFilePathp == 0) {
         q = 0;
     } else {
-        FS_InitFile(buf);
-        if (FS_OpenFile(buf, *p) == 0) return r;
-        q = buf;
+        FS_InitFile(&file);
+        if (FS_OpenFile(&file, p->romFilePathp) == 0) return r;
+        q = &file;
     }
     if (MB_GetSegmentLength(q) != 0) {
         WfcMoveMbWork *g = sWfcMoveMb;
-        g->segmentBuffer = HOST_AT(g, 0x2c, pad_0e[30], 0);
+        g->segmentBuffer = g->segment;
         if (sWfcMoveMb->segmentBuffer != 0) {
             if (MB_ReadSegment(q, sWfcMoveMb->segmentBuffer, 0x10000) != 0) {
                 if (MB_RegisterFile(p, sWfcMoveMb->segmentBuffer) != 0) r = 1;
             }
         }
     }
-    if (q == buf) FS_CloseFile(buf);
+    if (q == &file) FS_CloseFile(&file);
     return r;
 }
 
@@ -254,14 +252,14 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
         u32 r = OS_DisableInterrupts();
         s->childMasks[0] = s->childMasks[0] | (1 << id);
         OS_RestoreInterrupts(r);
-        u8 *e = (u8 *)sWfcMoveMb + 0x24 + (id - 1) * 0x1e;
+        u8 *e = sWfcMoveMb->children[id - 1].mac;
         e[0] = data[0xa];
         e[1] = data[0xb];
         e[2] = data[0xc];
         e[3] = data[0xd];
         e[4] = data[0xe];
         e[5] = data[0xf];
-        *(u16 *)((u8 *)sWfcMoveMb + (id - 1) * 0x1e + 0x2a) = id;
+        sWfcMoveMb->children[id - 1].aid = id;
         break;
     }
     case 3: {
@@ -285,9 +283,9 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
         WfcMoveMbWork *s = sWfcMoveMb;
         s->childMasks[1] = s->childMasks[1] | (1 << id);
         WfcMoveMb_AcceptChild(id);
-        s32 r = MB_CommGetChildUser(id);
+        const void *r = MB_CommGetChildUser(id);
         if (r == 0) return;
-        MI_CpuCopy8((void *)r, (u8 *)sWfcMoveMb + 0xe + (id - 1) * 0x1e, 0x16);
+        MI_CpuCopy8((void *)r, sWfcMoveMb->children[id - 1].userInfo, 0x16);
         break;
     }
     case 14: {
@@ -374,7 +372,7 @@ u32 WfcMoveMb_GetChildMask(u32 i)
 
 u32 WfcMoveMb_GetChildState(u32 id)
 {
-    u16 buf[7];
+    WfcMoveMbStateCopy st;
     u32 r = OS_DisableInterrupts();
     u16 bit = 1 << id;
     WfcMoveMbWork *s = sWfcMoveMb;
@@ -382,13 +380,14 @@ u32 WfcMoveMb_GetChildState(u32 id)
         OS_RestoreInterrupts(r);
         return 0;
     }
-    MI_CpuCopy8(s, buf, 0xe);
+    MI_CpuCopy8(&s->stateCopy, &st, sizeof(st));
     OS_RestoreInterrupts(r);
-    if (buf[2] & bit) return 2;
-    if (buf[3] & bit) return 3;
-    if (buf[4] & bit) return 4;
-    if (buf[5] & bit) return 5;
-    if (buf[6] & bit) return 6;
+    u16 *masks = &st.v[1];  // the copy's childMasks
+    if (masks[1] & bit) return 2;
+    if (masks[2] & bit) return 3;
+    if (masks[3] & bit) return 4;
+    if (masks[4] & bit) return 5;
+    if (masks[5] & bit) return 6;
     return 1;
 }
 
@@ -396,7 +395,7 @@ u8 *WfcMoveMb_GetChildInfo(u32 id)
 {
     WfcMoveMbWork *s = sWfcMoveMb;
     if (s->childMasks[0] & (1 << id)) {
-        return HOST_AT(s, 0xe, pad_0e[0], 0) + (id - 1) * 0x1e;
+        return s->children[id - 1].userInfo;
     }
     return 0;
 }
@@ -408,9 +407,9 @@ u32 WfcMoveMb_FindAidByMac(u8 *mac)
     u16 mask = s->childMasks[0];
     for (i = 1; i < 2; i++) {
         if (mask & (1 << i)) {
-            u8 *e = HOST_AT(s, 0x24, pad_0e[22], 0) + (i - 1) * 0x1e;
+            u8 *e = s->children[i - 1].mac;
             if (mac[0] == e[0] && mac[1] == e[1] && mac[2] == e[2] && mac[3] == e[3] && mac[4] == e[4] && mac[5] == e[5]) {
-                return *(u16 *)((u8 *)s + (i - 1) * 0x1e + 0x2a);
+                return s->children[i - 1].aid;
             }
         }
     }

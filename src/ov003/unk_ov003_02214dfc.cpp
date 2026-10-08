@@ -75,7 +75,7 @@ GateHouse::~GateHouse() {
 }
 
 BOOL GateHouse::initBuilding() {
-    void *t = modelRes;
+    void *t = model.resMdl;
     flagTexture.apply(t, TownFlag_GetPattern(gSaveTownFlag.getTownFlag()));
     s32 x;
     s32 y;
@@ -88,7 +88,7 @@ BOOL GateHouse::initBuilding() {
 }
 
 BOOL GateHouse::onExecute() {
-    ((AnimModel *)model)->stepAnim();
+    model.stepAnim();
     return TRUE;
 }
 
@@ -137,7 +137,7 @@ BOOL GateHouse::alignsPlayerToDoor() {
 }
 
 extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
-    void *t = self->modelRes;
+    void *t = self->model.resMdl;
     self->flagTexture.apply(t, TownFlag_GetPattern(gSaveTownFlag.getTownFlag()));
     return TRUE;
 }

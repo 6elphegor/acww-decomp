@@ -4,12 +4,10 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02208388.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_sWfcPathBuf
 extern u8 sWfcPathBuf[0x40];
 #endif
@@ -26,11 +24,12 @@ void WfcUtil_OpenButtonBar(s32 a);
 void WfcUtil_ShowBottomMessage(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_ShowBottomMessageNum
-void WfcUtil_ShowBottomMessageNum(s32 a, s32 b);
+void WfcUtil_ShowBottomMessageNum(const u16 *name, s32 b);
 #endif
 #ifndef PROTO_LOCAL_WfcUtil_GetTextFlags
 u32 WfcUtil_GetTextFlags();
 #endif
+#ifdef __cplusplus
 }
 #endif
 

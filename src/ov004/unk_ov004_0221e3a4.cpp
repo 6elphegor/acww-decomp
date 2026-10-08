@@ -1,7 +1,4 @@
 #include "types.h"
-
-
-#include "types.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
@@ -55,33 +52,10 @@ struct SpNpcTortimer2ActEntry {
     BOOL (SpNpcTortimer2::*exit)();
 };
 
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
-
 extern "C" {
-extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern SpNpcTortimer2ActEntry sSpNpcTortimer2ActTable[];
-// 0x02250bcc is a label inside the 0x20-byte table (second ptmf of entry 0)
-#define data_ov004_02250bcc ((SpNpcTortimer2ActEntry *)((u8 *)sSpNpcTortimer2ActTable + 8))
-
-void NpcMoveAnimSet_setStandAnim(void *self, s32 a);
-s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
-s32 NpcActionCtrl_isActionDone(void *self);
-void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-s32 Math_CountDownU8(void *self);
+u8 Math_CountDownU8(u8 *p);
 }
 
 class SpNpcTortimer2 : public SpNpcActor {
@@ -111,7 +85,7 @@ BOOL SpNpcTortimer2::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xff);
+    moveAnimSet.setStandAnim(0xff);
     return TRUE;
 }
 
@@ -157,7 +131,7 @@ void SpNpcTortimer2::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer2::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     idleLoops = 0xa;
     return TRUE;
 }
@@ -172,15 +146,15 @@ BOOL SpNpcTortimer2::mainAct00() {
 }
 
 BOOL SpNpcTortimer2::setupAct01() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x100, 1, data_020c6cc8, 0);
+    actionCtrl.requestPlayAnim(1, 0x100, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer2::mainAct01() {
-    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x100, &moveAnimSet) && ((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
-        ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x101, 1, data_020c6cc8, 0);
+    if (animCtrl.isPlayingAnim(0x100, &moveAnimSet) && actionCtrl.isActionDone()) {
+        actionCtrl.requestPlayAnim(1, 0x101, 1, data_020c6cc8, 0);
     }
-    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x101, &moveAnimSet) && ((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+    if (animCtrl.isPlayingAnim(0x101, &moveAnimSet) && actionCtrl.isActionDone()) {
         changeAct(0);
     }
     return TRUE;
@@ -192,7 +166,7 @@ BOOL SpNpcTortimer2::mainAct01() {
 extern "C" BOOL SpNpcTortimer2_IsIdle() {
     SpNpcTortimer2 *y = sSpNpcTortimer2;
     if (y) {
-        if (((NpcAnimCtrl *)(&y->animCtrl))->isPlayingAnim(0xff, &y->moveAnimSet) && sSpNpcTortimer2->act == 0) {
+        if (y->animCtrl.isPlayingAnim(0xff, &y->moveAnimSet) && sSpNpcTortimer2->act == 0) {
             return TRUE;
         }
         return FALSE;
@@ -200,20 +174,11 @@ extern "C" BOOL SpNpcTortimer2_IsIdle() {
     return TRUE;
 }
 
-extern "C" void _ZN14SpNpcTortimer210setupAct00Ev();
-extern "C" void _ZN14SpNpcTortimer29mainAct00Ev();
-extern "C" void _ZN14SpNpcTortimer210setupAct01Ev();
-extern "C" void _ZN14SpNpcTortimer29mainAct01Ev();
 extern "C" u8 sSpNpcTortimer2ModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcTortimer2TexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 extern "C" ActorProfile sSpNpcTortimer2Profile = {(void *(*)())SpNpcTortimer2_Create, 0x5d, 0x64, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov004_0224d394[2] = {(void *)_ZN14SpNpcTortimer210setupAct01Ev, 0};
-extern "C" void *data_ov004_0224d39c[2] = {(void *)_ZN14SpNpcTortimer29mainAct01Ev, 0};
-extern "C" void *data_ov004_0224d384[2] = {(void *)_ZN14SpNpcTortimer210setupAct00Ev, 0};
-extern "C" void *data_ov004_0224d38c[2] = {(void *)_ZN14SpNpcTortimer29mainAct00Ev, 0};
-typedef BOOL (SpNpcTortimer2::*Unk_ov004_O_Fn)();
 extern "C" SpNpcTortimer2ActEntry sSpNpcTortimer2ActTable[2] = {
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d384, *(Unk_ov004_O_Fn *)data_ov004_0224d38c},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d394, *(Unk_ov004_O_Fn *)data_ov004_0224d39c},
+    {&SpNpcTortimer2::setupAct00, &SpNpcTortimer2::mainAct00},
+    {&SpNpcTortimer2::setupAct01, &SpNpcTortimer2::mainAct01},
 };
 extern "C" SpNpcTortimer2 *volatile sSpNpcTortimer2 = 0;

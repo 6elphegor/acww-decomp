@@ -182,7 +182,8 @@ static inline s16 *FtrFootprint_Tile(FtrFootprint *b, u32 i) {
 
 
 // main's 0x18-byte pool object
-typedef void *(*ModelSlotAllocFunc)(u32, u32);
+class Heap;
+typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
 typedef void (*ModelSlotFreeFunc)();
 
 // main object, vtable 0x0224e9d8
@@ -725,23 +726,23 @@ void FtrSoundEmitter::release() {
 }
 
 // @0x223591c unk_022350c8.cpp
-void FtrSoundEmitter::play(u32 a, u32 b) {
+void FtrSoundEmitter::play(u32 a, VecFx32 *b) {
     if (isAttached) {
-        Snd_PosNodePlay(&posNode, a, (VecFx32 *)(uptr)b);
+        Snd_PosNodePlay(&posNode, a, b);
     }
 }
 
 // @0x2235908 unk_022350c8.cpp
-void FtrSoundEmitter::playOnce(u32 a, u32 b) {
+void FtrSoundEmitter::playOnce(u32 a, VecFx32 *b) {
     if (isAttached) {
-        Snd_PosNodePlayOnce(&posNode, a, (VecFx32 *)(uptr)b);
+        Snd_PosNodePlayOnce(&posNode, a, b);
     }
 }
 
 // @0x22358f4 unk_022350c8.cpp
-void FtrSoundEmitter::setPan(u32 a) {
+void FtrSoundEmitter::setPan(VecFx32 *a) {
     if (isAttached) {
-        Snd_SetBgmPan(&posNode, (VecFx32 *)(uptr)a);
+        Snd_SetBgmPan(&posNode, a);
     }
 }
 
@@ -914,9 +915,9 @@ void FtrActorGrid::clear() {
 }
 
 // @0x223568c unk_022350c8.cpp
-BOOL FtrActorGrid::setCell(s32 id, s32 x, s32 y, u8 layer) {
+BOOL FtrActorGrid::setCell(FtrActor *actor, s32 x, s32 y, u8 layer) {
     u8 *p = &cells[layer & 1][y & 15][x & 15];
-    s32 i = FtrActorTable_GetInstance()->indexOf((void *)(sptr)id);
+    s32 i = FtrActorTable_GetInstance()->indexOf(actor);
     if (i != -1) {
         *p = i;
         return TRUE;
@@ -925,9 +926,9 @@ BOOL FtrActorGrid::setCell(s32 id, s32 x, s32 y, u8 layer) {
 }
 
 // @0x2235648 unk_022350c8.cpp
-BOOL FtrActorGrid::clearCell(s32 id, s32 x, s32 y, u8 layer) {
+BOOL FtrActorGrid::clearCell(FtrActor *actor, s32 x, s32 y, u8 layer) {
     u8 *p = &cells[layer & 1][y & 15][x & 15];
-    if (FtrActorTable_GetInstance()->indexOf((void *)(sptr)id) != -1) {
+    if (FtrActorTable_GetInstance()->indexOf(actor) != -1) {
         *p = 0xff;
         return TRUE;
     }
@@ -1322,7 +1323,7 @@ extern "C" Actor *FtrMgr_SpawnFromArg(u32 self) {
             if ((u32)FtrMgr_CountSwitchedOn(FtrActor_isGyroid) >= 4) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
-                    ((FtrSwitch *)e->switchState)->set(1, 0);
+                    e->switchState.set(1, 0);
                     FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (s32)(sptr)&e->position, 0);
                 }
             }
@@ -3228,7 +3229,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     s32 z = 0;
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
-        if (e != NULL && FtrActor_PredIsStereo(e) && ((FtrSwitch *)e->switchState)->isOn()) {
+        if (e != NULL && FtrActor_PredIsStereo(e) && e->switchState.isOn()) {
             FtrSync_ChangeAct(e, z, 0xff, 1);
         }
     }
@@ -3242,8 +3243,8 @@ extern "C" void FtrMgr_SetSwitchAll(u32 v, BOOL (*f)(FtrActor *), s32 a) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
             if (f == NULL || (f != NULL && f(e))) {
-                if (v != ((FtrSwitch *)e->switchState)->isOn()) {
-                    ((FtrSwitch *)e->switchState)->set(v, a);
+                if (v != e->switchState.isOn()) {
+                    e->switchState.set(v, a);
                 }
             }
         }
@@ -3257,7 +3258,7 @@ extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *)) {
     for (; i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
-            if (f == NULL || (f != NULL && f(e) && ((FtrSwitch *)e->switchState)->isOn())) {
+            if (f == NULL || (f != NULL && f(e) && e->switchState.isOn())) {
                 cnt++;
             }
         }
@@ -3276,9 +3277,9 @@ extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL) {
                 if (f == NULL || (f != NULL && f(e))) {
-                    if (((FtrSwitch *)e->switchState)->isOn()) {
+                    if (e->switchState.isOn()) {
                         if (cnt == pick) {
-                            ((FtrSwitch *)e->switchState)->set(0, a);
+                            e->switchState.set(0, a);
                             return e;
                         }
                         cnt++;
@@ -3384,7 +3385,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && (e)->isCabinClock()) {
                 VecFx32 v0c;
-                VecFx32 t = *(VecFx32 *)e->centerPos;
+                VecFx32 t = e->centerPos;
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
@@ -3421,7 +3422,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && (e)->isSoundingClock()) {
                 VecFx32 v0c;
-                VecFx32 t = *(VecFx32 *)e->centerPos;
+                VecFx32 t = e->centerPos;
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
@@ -3463,7 +3464,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(i);
                 if (e != NULL && (e)->isTvOn()) {
                     VecFx32 v20;
-                    VecFx32 t = *(VecFx32 *)e->centerPos;
+                    VecFx32 t = e->centerPos;
                     v20.x = t.x;
                     v20.y = t.y;
                     v20.z = t.z;
@@ -3478,7 +3479,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(best);
                 if (e != NULL) {
                     FtrTv_markNearestTv(e);
-                    VecFx32 t = *(VecFx32 *)e->centerPos;
+                    VecFx32 t = e->centerPos;
                     v8.x = t.x;
                     v8.y = t.y;
                     v8.z = t.z;

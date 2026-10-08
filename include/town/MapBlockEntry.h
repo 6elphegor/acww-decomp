@@ -3,11 +3,12 @@
 
 #include "types.h"
 
-// 0x10-byte map block entry (acre id, two layer words, buried flag). Constructor in main, unk_0204cc1c.cpp.
+// Map block entry (0x10 bytes on the DS): a block's acre id, its two item layers (16x16 items each) and its
+// buried-item mask, from which MapBlock::init sets the block up. Constructor in main, unk_0204cc1c.cpp.
 struct MapBlockEntry {
     /* 0x00 */ u32 acreId;
-    /* 0x04 */ u32 layers[2];
-    /* 0x0c */ u32 buried;
+    /* 0x04 */ u16 *layers[2];
+    /* 0x0c */ u16 *buried;
     MapBlockEntry();
 };
 

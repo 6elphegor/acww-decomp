@@ -4,25 +4,13 @@
 #include "uptr.h"
 #include "net/AossParam.h"
 #include "nitro/wm.h"
-#define PROTO_LOCAL_Aoss_ConnectAp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Aoss_PostAlarmMsg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Aoss_ScanAps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_CancelAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_CreateAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
+#include "sys/OSMessageQueue.h"
+#include "proto/autoload_2/unk_02114ef4.h"
 #include "proto/ov001/unk_ov001_02202c44.h"
 #include "proto/ov001/unk_ov001_022032f8.h"
 
 typedef void *(*AossAllocFunc)(u32);
 typedef void (*AossFreeFunc)(void *);
-
-struct AossApConfig {
-    s32 ssidLength;
-    u8 ssid[0x20];
-    s32 unk_24;
-    s32 wepKeyLength;
-    u8 wepKey[1];
-};
 
 struct AossRateEntry {
     u16 mask;
@@ -33,13 +21,13 @@ struct AossRateEntry {
 extern "C" void *sAossWlanWork = 0;
 extern "C" AossFreeFunc sAossFreeFunc = 0;
 extern "C" AossAllocFunc sAossAllocFunc = 0;
-extern "C" s32 (*sAossProgressCb)(void *) = 0;
-extern "C" u32 sAossMsgQueue[8] = {0};
+extern "C" s32 (*sAossProgressCb)(s32) = 0;
+extern "C" OSMessageQueue sAossMsgQueue = {};
 extern "C" AossRateEntry sAossRateTable[12] = {
     {0x1, 2}, {0x2, 4}, {0x4, 0xb}, {0x8, 0xc}, {0x10, 0x12}, {0x20, 0x16}, {0x40, 0x18}, {0x80, 0x24},
     {0x100, 0x30}, {0x200, 0x48}, {0x400, 0x60}, {0x800, 0x6c},
 };
-extern "C" u32 sAossMsgArray[4] = {0};
+extern "C" OSMessage sAossMsgArray[4] = {0};
 extern "C" u8 sAossBssDesc[0xc0] = {0};
 extern "C" u8 sAossWepDesc[0x74] = {0};
 
@@ -47,12 +35,9 @@ extern "C" {
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
 s32 OS_Sleep(s32);
-s32 OS_ReceiveMessage(void *, void *, s32);
-s32 OS_SendMessage(void *, s32, s32);
-void OS_InitMessageQueue(void *, void *, s32);
-void OS_CancelAlarm(void *);
-void OS_CreateAlarm(void *);
-void OS_SetAlarm(void *, u32, s32, void *, s32);
+BOOL OS_ReceiveMessage(OSMessageQueue *mq, OSMessage *msg, s32 flags);
+BOOL OS_SendMessage(OSMessageQueue *mq, OSMessage msg, s32 flags);
+void OS_InitMessageQueue(OSMessageQueue *mq, OSMessage *buf, s32 count);
 void MIi_CpuClear16(u16, void *, u32);
 void MIi_CpuCopy16(void *, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
@@ -68,7 +53,6 @@ s32 WifiLink_Init(void *, s32);
 s32 WifiLink_StartupAsync(void *, void *);
 s32 WifiLink_ConnectAsync(void *, void *, s32);
 s32 WifiLink_CleanupAsync();
-void Aoss_PostAlarmMsg(s32);
 void Aoss_ConvertBssDesc(WMBssDesc *, AossApInfo *);
 
 }
@@ -113,24 +97,25 @@ extern "C" void Aoss_SetBssDescSsid(void *a, void *b) {
     MI_CpuCopy8((u8 *)a + 4, (u8 *)b + 0xc, *(u16 *)((u8 *)b + 0xa));
 }
 
-extern "C" void Aoss_StoreConnectResult(void *a, void *b, s32 c) {
-    *(s32 *)a = c;
-    Aoss_ConvertBssDesc((WMBssDesc *)b, (AossApInfo *)((u8 *)a + 4));
+extern "C" void Aoss_StoreConnectResult(AossConnectResult *a, WMBssDesc *b, s32 c) {
+    a->connected = c;
+    Aoss_ConvertBssDesc(b, &a->ap);
 }
 
+// The messages are event codes (the WCM notifications, the alarms' timeouts)
 extern "C" void Aoss_PostWcmMsg(s32 a) {
-    OS_SendMessage(sAossMsgQueue, a, 0);
+    OS_SendMessage(&sAossMsgQueue, (OSMessage)(sptr)a, 0);
 }
 
-extern "C" void Aoss_PostAlarmMsg(s32 a) {
-    OS_SendMessage(sAossMsgQueue, a, 0);
+extern "C" void Aoss_PostAlarmMsg(void *a) {
+    OS_SendMessage(&sAossMsgQueue, a, 0);
 }
 
 extern "C" s32 Aoss_WlanStartup(AossAllocFunc a, AossFreeFunc b) {
     s32 ok = 1;
-    s32 msg;
+    OSMessage msg;
     void *p;
-    OS_InitMessageQueue(sAossMsgQueue, sAossMsgArray, 4);
+    OS_InitMessageQueue(&sAossMsgQueue, sAossMsgArray, 4);
     if (a == 0 || b == 0) {
         return -1;
     }
@@ -148,8 +133,8 @@ extern "C" s32 Aoss_WlanStartup(AossAllocFunc a, AossFreeFunc b) {
     }
     if (ok != 0) {
         do {
-            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
-            switch (msg) {
+            OS_ReceiveMessage(&sAossMsgQueue, &msg, 1);
+            switch ((sptr)msg) {
             case 4:
             case 5:
                 break;
@@ -181,7 +166,7 @@ extern "C" s32 Aoss_WlanStartup(AossAllocFunc a, AossFreeFunc b) {
 extern "C" s32 Aoss_WlanShutdown() {
     s32 r4 = 1;
     s32 res = -1;
-    s32 msg;
+    OSMessage msg;
     if (sAossFreeFunc == 0) {
         return res;
     }
@@ -189,8 +174,8 @@ extern "C" s32 Aoss_WlanShutdown() {
         return -1;
     }
     do {
-        OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
-        switch (msg) {
+        OS_ReceiveMessage(&sAossMsgQueue, &msg, 1);
+        switch ((sptr)msg) {
         case 20:
             r4 = 0;
             res = r4;
@@ -232,12 +217,12 @@ extern "C" s32 Aoss_WlanShutdown() {
 extern "C" s32 Aoss_WlanDisconnect() {
     Loop_02203004 loop;
     s32 res = -1;
-    s32 msg;
+    OSMessage msg;
     if (Aoss_WcmDisconnect()) {
         loop = LOOP_02203004_0;
         do {
-            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
-            switch (msg) {
+            OS_ReceiveMessage(&sAossMsgQueue, &msg, 1);
+            switch ((sptr)msg) {
             case 14:
                 res = loop;
                 break;
@@ -257,8 +242,8 @@ extern "C" s32 Aoss_ScanAps(void **out) {
     s32 r5 = r6;
     void *buf;
     u8 *r4;
-    s32 msg;
-    u32 thr[HOST_SIZED(44, OSAlarm) / 4] HOST_ALIGN8;  // OSAlarm (64 bytes on 64-bit hosts)
+    OSMessage msg;
+    OSAlarm alarm;
     if (sAossAllocFunc == 0 || sAossFreeFunc == 0) {
         return -1;
     }
@@ -267,12 +252,12 @@ extern "C" s32 Aoss_ScanAps(void **out) {
         return -1;
     }
     buf = r4;
-    if (Aoss_WcmStartSearch(r6, (void *)r6, r6, 0x30bffe)) {
-        OS_CreateAlarm(thr);
-        OS_SetAlarm(thr, 0x3fec42, r6, (void *)Aoss_PostAlarmMsg, 0x13);
+    if (Aoss_WcmStartSearch(NULL, NULL, 0, 0x30bffe)) {
+        OS_CreateAlarm(&alarm);
+        OS_SetAlarm(&alarm, 0x3fec42, Aoss_PostAlarmMsg, (void *)0x13);
         do {
-            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
-            switch (msg) {
+            OS_ReceiveMessage(&sAossMsgQueue, &msg, 1);
+            switch ((sptr)msg) {
             case 19:
                 if (r6 == 0) {
                     if (r5 != 0) {
@@ -350,15 +335,15 @@ extern "C" s32 Aoss_ScanAps(void **out) {
             }
         }
     done:
-        OS_CancelAlarm(thr);
+        OS_CancelAlarm(&alarm);
         do {
-        } while (OS_ReceiveMessage(sAossMsgQueue, &msg, 0) == 1);
+        } while (OS_ReceiveMessage(&sAossMsgQueue, &msg, 0) == 1);
     }
     sAossFreeFunc(buf);
     return res;
 }
 
-extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
+extern "C" s32 Aoss_ConnectAp(AossApConfig *a, AossConnectResult *b) {
     s32 r4;
     s32 res;
     s32 cnt;
@@ -367,9 +352,9 @@ extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
     r4 = 1;
     got = 0;
     res = -1;
-    if (a->unk_24 == 0) {
+    if (a->mode == 0) {
         r6 = 0x80000;
-    } else if (a->unk_24 == 1) {
+    } else if (a->mode == 1) {
         r6 = 0xc0000;
     }
     MI_CpuFill8(sAossWepDesc, 0, 0x60);
@@ -386,16 +371,16 @@ extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
     MI_CpuCopy8(a->wepKey, data_ov001_0222c6ce, a->wepKeyLength);
     WifiLink_ClearApList();
     if (Aoss_WcmStartSearch(0, a->ssid, a->ssidLength, 0x30bffe)) {
-        s32 msg;
-        u32 thr[HOST_SIZED(48, OSAlarm) / 4] HOST_ALIGN8;  // OSAlarm (64 bytes on 64-bit hosts)
+        OSMessage msg;
+        OSAlarm alarm;
         cnt = 0;
-        OS_CreateAlarm(thr);
-        OS_SetAlarm(thr, 0x3fec42, 0, (void *)Aoss_PostAlarmMsg, 0x12);
+        OS_CreateAlarm(&alarm);
+        OS_SetAlarm(&alarm, 0x3fec42, Aoss_PostAlarmMsg, (void *)0x12);
         r6 = r6 | 0x30000;
         s32 r5 = 0;
         do {
-            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
-            switch (msg) {
+            OS_ReceiveMessage(&sAossMsgQueue, &msg, 1);
+            switch ((sptr)msg) {
             case 18:
                 if (got == 0) {
                     r4 = r5;
@@ -403,7 +388,7 @@ extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
                 break;
             case 5:
                 if (got == 0) {
-                    OS_CancelAlarm(thr);
+                    OS_CancelAlarm(&alarm);
                     if (Aoss_WcmReadApList(sAossBssDesc, 1) != 1) {
                         r4 = r5;
                     } else {
@@ -445,11 +430,11 @@ extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
                 break;
             }
         } while (r4 != 0);
-        OS_CancelAlarm(thr);
+        OS_CancelAlarm(&alarm);
         do {
-        } while (OS_ReceiveMessage(sAossMsgQueue, &msg, r5) == 1);
+        } while (OS_ReceiveMessage(&sAossMsgQueue, &msg, r5) == 1);
     }
-    Aoss_StoreConnectResult(b, sAossBssDesc, res == 0);
+    Aoss_StoreConnectResult(b, (WMBssDesc *)sAossBssDesc, res == 0);
     return res;
 }
 
@@ -460,7 +445,7 @@ extern "C" s32 Aoss_Sleep(s32 a) {
 
 
 
-extern "C" s32 Aoss_NotifyProgress(void *a) {
+extern "C" s32 Aoss_NotifyProgress(s32 a) {
     if (sAossProgressCb) {
         sAossProgressCb(a);
     }

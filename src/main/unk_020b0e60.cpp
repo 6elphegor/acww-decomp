@@ -19,6 +19,7 @@
 #include "town/TownStyleRecord.h"
 #include "field/SnowmanRecords.h"
 #include "proto/main/unk_02070560.h"
+#include "field/FieldStructureMgr.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_02063904.h"
@@ -509,7 +510,7 @@ extern "C" void StrBSize_Load(void) {
         if (NNS_FndMountArchive(&file, "STR", p)) {
             for (i = 0; i < 0x22; i++) {
                 Str_SPrintf(name, "STR:a/%d.bsize", i);
-                sStrBSizeTable[i] = NNS_FndGetArchiveFileByName(name);
+                sStrBSizeTable[i] = (StrBSizeData *)NNS_FndGetArchiveFileByName(name);
             }
             NNS_FndUnmountArchive(&file);
         }
@@ -530,7 +531,7 @@ extern "C" void StrBSize_Unload(void) {
     }
 }
 
-extern "C" void *StrBSize_Get(u16 *p) {
+extern "C" StrBSizeData *StrBSize_Get(u16 *p) {
     if (sStrBSizeArchive != NULL) {
         s32 idx;
         BOOL in = FALSE;
@@ -550,7 +551,7 @@ extern "C" void *StrBSize_Get(u16 *p) {
     return 0;
 }
 
-extern "C" BOOL FieldStructureMgr_Register(u32 v) {
+extern "C" BOOL FieldStructureMgr_Register(FieldStructureMgr *v) {
     if (sFieldStructureMgr == 0) {
         sFieldStructureMgr = v;
         return TRUE;
@@ -566,7 +567,7 @@ extern "C" BOOL FieldStructureMgr_Unregister(void) {
     return FALSE;
 }
 
-extern "C" u32 FieldStructureMgr_Get(void) {
+extern "C" FieldStructureMgr *FieldStructureMgr_Get(void) {
     return sFieldStructureMgr;
 }
 
@@ -1668,9 +1669,9 @@ extern "C" void Building_PlayDoorChime(void) {
 
 
 u8 sBuildingStates[0x22];
-u32 sFieldStructureMgr;
+FieldStructureMgr *sFieldStructureMgr;
 u8 sHouseVisitorPresent;
 s32 sHourHandCos = 0x1000;
-void *sStrBSizeTable[0x22];  // the size tables of the .bsize files (in sStrBSizeArchive)
+StrBSizeData *sStrBSizeTable[0x22];
 u8 sTaxiArriving;
 s32 sHourHandSin;

@@ -28,23 +28,12 @@
 #include "talk/VillagerTalk.h"
 #include "talk/TalkTopicMsg.h"
 #include "npc/VillagerId.h"
+#include "save/VillagerData.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/ov004/unk_ov004_0221a218.h"
 
 class CafeVillager;
 
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
-#define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
-#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 typedef BOOL (CafeVillager::*Unk_ov004_0224c994_Fn)();
 
 struct CafeVillagerActEntry {
@@ -55,34 +44,8 @@ struct CafeVillagerActEntry {
 
 extern "C" {
 extern u16 data_020c6cc8;
-extern CafeVillagerActEntry sCafeVillagerActTable[3];
-
-void *VillagerData_getVillagerId(void *o);
-void ActorTalkRequest_setTalkPlayer(void *o, s32 a);
-s32 NpcTalkCtrl_isBusy(void *o);
 void TalkRequest_SetTargetDone(void *o);
-void *ActorTalkRequest_getTalkPlayer(void *o);
-s32 NpcActor_getAngleTo(void *o, void *p);
-void NpcTalkCtrl_requestTurnAndTalk(void *o, s32 a, s32 b, s32 c);
-void NpcMoveAnimSet_setStandAnim(void *o, s32 a);
-void NpcMoveAnimSet_setWalkAnim(void *o, s32 a);
-void NpcMoveAnimSet_setRunAnim(void *o, s32 a);
-void NpcActor_setTalkRequest(void *, void *);
-void VillagerTalk_begin(void *, void *, u32);
-void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 class CafeVillagerTalk : public VillagerTalk {
 public:
@@ -119,25 +82,12 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" ActorProfile sCafeVillagerProfile = {(void *(*)())CafeVillager_Create, 0x88, 0x8c, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
-u8 data_ov004_022508e0[0x28];
-void _ZN12CafeVillager10setupAct00Ev();
-void _ZN12CafeVillager9mainAct00Ev();
-void _ZN12CafeVillager9mainAct01Ev();
-void _ZN12CafeVillager10setupAct02Ev();
-void _ZN12CafeVillager9mainAct02Ev();
-// ptmf constants (named: their order cannot be reproduced natively), defined in the order that gives the original layout
-void *data_ov004_0224c8d4[2] = {(void *)_ZN12CafeVillager10setupAct02Ev, 0};
-void *data_ov004_0224c8bc[2] = {(void *)_ZN12CafeVillager10setupAct00Ev, 0};
-void *data_ov004_0224c8dc[2] = {(void *)_ZN12CafeVillager9mainAct01Ev, 0};
-void *data_ov004_0224c8cc[2] = {(void *)_ZN12CafeVillager9mainAct00Ev, 0};
-void *data_ov004_0224c8c4[2] = {(void *)_ZN12CafeVillager9mainAct02Ev, 0};
+char data_ov004_022508e0[0x28];
 }
-#define PM(x) (*(Unk_ov004_0224c994_Fn *)(x))
 extern "C" CafeVillagerActEntry sCafeVillagerActTable[3] = {
-    {PM(data_ov004_0224c8bc), PM(data_ov004_0224c8cc)},
-    {0, PM(data_ov004_0224c8dc)},
-    {PM(data_ov004_0224c8d4), PM(data_ov004_0224c8c4)}};
-#define data_ov004_02250910 ((CafeVillagerActEntry *)((u8 *)sCafeVillagerActTable + 8))
+    {&CafeVillager::setupAct00, &CafeVillager::mainAct00},
+    {0, &CafeVillager::mainAct01},
+    {&CafeVillager::setupAct02, &CafeVillager::mainAct02}};
 
 extern "C" CafeVillager *CafeVillager_Create() {
     return new CafeVillager;
@@ -147,10 +97,10 @@ BOOL CafeVillager::preCreate() {
     if (!VillagerActor::preCreate()) {
         return FALSE;
     }
-    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0x1e);
-    ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0x1e);
-    ((NpcMoveAnimSet *)(&moveAnimSet))->setRunAnim(0x1e);
-    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
+    moveAnimSet.setStandAnim(0x1e);
+    moveAnimSet.setWalkAnim(0x1e);
+    moveAnimSet.setRunAnim(0x1e);
+    setTalkRequest(&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -182,24 +132,24 @@ void CafeVillager::changeAct(s32 idx) {
 }
 
 BOOL CafeVillager::setupAct02() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL CafeVillager::mainAct02() { return TRUE; }
 
 BOOL CafeVillager::setupAct00() {
-    void *p = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
+    NpcActor *p = (NpcActor *)talk.getTalkPlayer();
     s32 v = 0;
     if (p) {
-        v = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        v = getAngleTo(p);
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, v, 0);
+    talkCtrl.requestTurnAndTalk(0, v, 0);
     return TRUE;
 }
 
 BOOL CafeVillager::mainAct00() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -214,14 +164,14 @@ CafeVillagerTalk::~CafeVillagerTalk() {}
 
 void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
     resetMsg();
-    ((VillagerTalk *)(this))->begin((VillagerActor *)(owner), 0x11);
+    begin(owner, 0x11);
     villager = owner;
 }
 
 void CafeVillagerTalk::start(TalkStartMsg *arg) {
     TalkTopicMsg *out = (TalkTopicMsg *)arg;
-    ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_022508e0), 0x28, "ai_shop3");
-    out->fileName = (u32)data_ov004_022508e0;
+    ((VillagerData *)villager->villagerData)->getVillagerId()->makeFileName(data_ov004_022508e0, 0x28, "ai_shop3");
+    out->fileName = data_ov004_022508e0;
     out->msgIndex = Random_GlobalBelow(5);
 }
 
@@ -230,7 +180,7 @@ void CafeVillagerTalk::onMessageEnd(u32) {}
 void CafeVillagerTalk::onChoice(u32) {}
 
 BOOL CafeVillager::acceptsInteraction(void *) {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         return TRUE;
     }
     return FALSE;
@@ -240,7 +190,7 @@ void CafeVillager::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(0);
         break;
     case 8:

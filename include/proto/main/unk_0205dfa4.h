@@ -10,8 +10,9 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/TwoLayerAnimModel.h"
+#include "player/FishBobber.h"
 #include "player/HeldItemModel.h"
-#include "types.h"
+#include "sys/Heap.h"
 class HeldItemModelBank;
 #endif
 
@@ -20,15 +21,6 @@ extern "C" {
 #endif
 #ifndef PROTO_LOCAL_HeldItemModels_Destroy
 void HeldItemModels_Destroy(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_HeldItemModels_Init
-void HeldItemModels_Init(u32 x);
 #endif
 #ifndef PROTO_LOCAL_HeldItem_GetModelPath
 char *HeldItem_GetModelPath(u32 x);
@@ -62,6 +54,18 @@ char *HeldItem_GetAnimPath(u32 x);
 #endif
 #ifndef PROTO_LOCAL_HeldItem_GetTexAnimPath
 char *HeldItem_GetTexAnimPath(u32 x);
+#endif
+#ifndef PROTO_LOCAL_HeldItemModel_GetModel
+void *HeldItemModel_GetModel(u8 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_HeldItemModels_Init
+void HeldItemModels_Init(Heap *x);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModels_AllocVram
 void HeldItemModels_AllocVram(HeldItemModelBank *self);
@@ -145,13 +149,13 @@ void HeldItemModels_RelocateTexture(HeldItemModelBank *self, u32 idx);
 s32 HeldItemModels_PollTexUpload(HeldItemModelBank *self, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModel_Setup
-void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, u32 a5, s32 flag);
+void HeldItemModel_Setup(HeldItemModel *o, u32 id, Character *x, u16 *code, void *a5, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModel_Release
 void HeldItemModel_Release(HeldItemModel *o);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModel_SetItem
-void HeldItemModel_SetItem(HeldItemModel *o, u16 *code, u32 c);
+void HeldItemModel_SetItem(HeldItemModel *o, u16 *code, void *c);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModel_PlayAnim
 void HeldItemModel_PlayAnim(HeldItemModel *o, s32 a, u32 b, u32 c);
@@ -167,9 +171,6 @@ void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src);
 #endif
 #ifndef PROTO_LOCAL_HeldItemModel_GetJointMtx
 void HeldItemModel_GetJointMtx(Mtx43 *out, HeldItemModel *o, u32 a);
-#endif
-#ifndef PROTO_LOCAL_HeldItemModel_GetModel
-void *HeldItemModel_GetModel(u8 *p);
 #endif
 }
 #ifndef PROTO_LOCAL_sHeldItemModelPathBuf
