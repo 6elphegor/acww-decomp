@@ -253,7 +253,7 @@ namespace Nb {
 extern "C" {
 GPIProfile *gpiProfileListAdd(GPConnection *h, s32 a) {
     GPIProfile *out;
-    HashImplementation **t = &(*h)->profileTable;
+    GPIConnection *c = *h;
     if (a <= 0) {
         return 0;
     }
@@ -269,8 +269,8 @@ GPIProfile *gpiProfileListAdd(GPConnection *h, s32 a) {
     tmp.authSig = 0;
     tmp.peerSig = 0;
     tmp.requestCount = 0;
-    TableEnter(*t, ad);
-    ((s32 *)t)[1]++;
+    TableEnter(c->profileTable, ad);
+    c->numProfiles++;
     if (gpiGetProfile(h, a, &out) != 0) {
         return out;
     }
