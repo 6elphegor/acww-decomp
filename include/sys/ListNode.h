@@ -5,6 +5,11 @@
 
 // Intrusive doubly linked list node and head/tail list of the in-house ARM helpers (autoload_2 0x020e7500) and
 // the task-system units (unk_020ed4bc, 020ed81c, 020edd58, 020ee98c). No defining TU (plain data).
+#ifndef __cplusplus
+typedef struct ListNode ListNode;
+typedef struct List List;
+#endif
+
 struct ListNode {
     /* 0x0 */ ListNode *prev;
     /* 0x4 */ ListNode *next;
@@ -14,7 +19,9 @@ struct List {
     /* 0x0 */ ListNode *head;
     /* 0x4 */ ListNode *tail;
 
-    List() : head(0), tail(0) {} // zeroes the file-scope heads (sVramQueueTex / sVramQueue2d) in __sinit
+#ifdef __cplusplus
+    List() : head(0), tail(0) {} // zeroes the file-scope heads (sVramQueueTex / sOpenMenuList ...) in __sinit
+#endif
 };
 
 #endif

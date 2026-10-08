@@ -31,13 +31,13 @@ extern "C" {
 PlayerActor *PlayerActor_Get(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetNetPosVar
-u32 PlayerActor_GetNetPosVar(s32 idx);
+u8 *PlayerActor_GetNetPosVar(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetNetAngleVar
-u32 PlayerActor_GetNetAngleVar(s32 idx);
+u8 *PlayerActor_GetNetAngleVar(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetNetStateVar
-u32 PlayerActor_GetNetStateVar(s32 idx);
+u8 *PlayerActor_GetNetStateVar(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_GetSlotPosXZ
 BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
@@ -64,13 +64,13 @@ void PlayerActor_PackHair(u8 *p, u32 a, u32 b);
 void PlayerActor_UnpackHair(u8 *src, u8 *a, u8 *b);
 #endif
 #ifndef PROTO_LOCAL_PlayerSessionTable_SetActor
-void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, u32 v);
+void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, PlayerActor *v);
 #endif
 #ifndef PROTO_LOCAL_PlayerSessionTable_ClearActor
 void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i);
 #endif
 #ifndef PROTO_LOCAL_PlayerSessionTable_GetActor
-u32 PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i);
+PlayerActor *PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i);
 #endif
 #ifndef PROTO_LOCAL_PlayerSessionTable_SetDataIndex
 void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v);
@@ -94,7 +94,7 @@ u8 PlayerSessionTable_GetGfxSlot(PlayerSessionTable *p, s32 i);
 u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerSession_SetActor
-void PlayerSession_SetActor(s32 i, u32 v);
+void PlayerSession_SetActor(s32 i, PlayerActor *v);
 #endif
 #ifndef PROTO_LOCAL_PlayerSession_ClearActor
 void PlayerSession_ClearActor(s32 i);

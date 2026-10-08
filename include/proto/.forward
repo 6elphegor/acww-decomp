@@ -4,3 +4,4 @@
 PlayerData
 BgAcreModel
 TouchPickResult  # game/TouchPicker.h is C++ the generator does not recognise (constructors in structs)
+MenuProcLink  # menu/MenuProc.h brings the process classes

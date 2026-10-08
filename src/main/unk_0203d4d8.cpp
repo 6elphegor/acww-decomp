@@ -43,7 +43,7 @@ extern TalkRequestFn sTalkRequestEndFns[];
 
 extern "C" {
 extern u8 gScreenTransition;
-extern s32 gActorDefaultParent;
+extern ProcBase *gActorDefaultParent;
 extern s32 gCommManager;
 
 Character *PlayerActor_GetActor(s32 id);
@@ -641,7 +641,7 @@ BOOL TalkRequestQueue::postExecute(u32 b) {
     NetArea_SendStateToNewOwner();
     NetArea_SendStateToRequester();
     if (gActorDefaultParent != 0) {
-        Scene_CheckExit((void *)gActorDefaultParent);
+        Scene_CheckExit(gActorDefaultParent);
     }
     return _ZN8ProcBase11postExecuteEv(this, b);
 }

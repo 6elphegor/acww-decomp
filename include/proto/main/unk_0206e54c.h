@@ -4,13 +4,15 @@
 // Prototypes of the functions defined in src/main/unk_0206e54c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ListNode.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "item/Letter.h"
+#include "sys/ProcBase.h"
 #include "types.h"
 class MenuManager;
-class Unk_021cb4e8;
 class Unk_021cb4f0;
+struct MenuProcLink;
 #endif
 
 #ifdef __cplusplus
@@ -27,6 +29,12 @@ void MenuCtrl_ClearMenuOnTop();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetMenuOnTop
 void MenuCtrl_SetMenuOnTop();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetTouch
+void MenuCtrl_SetTouch();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetButtons
+void MenuCtrl_SetButtons();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SyncFromInputMode
 void MenuCtrl_SyncFromInputMode();
@@ -127,6 +135,9 @@ void MenuCtrl_ClearFriendPageFromIndex(void);
 #ifndef PROTO_LOCAL_MenuCtrl_GetChatDraft
 void *MenuCtrl_GetChatDraft(void);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetChatDraft
+void MenuCtrl_SetChatDraft(const void *a);
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_ClearChatDraft
 void MenuCtrl_ClearChatDraft(void);
 #endif
@@ -146,10 +157,10 @@ void CommSub_RecvClearPendingUnit(u8 *o);
 MenuManager *MenuManager_Create();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_AddOpenMenu
-void MenuCtrl_AddOpenMenu(u32 v);
+void MenuCtrl_AddOpenMenu(MenuProcLink *v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_RemoveOpenMenu
-void MenuCtrl_RemoveOpenMenu(u8 *o);
+void MenuCtrl_RemoveOpenMenu(MenuProcLink *o);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_CreateRequestedMenu
 BOOL MenuCtrl_CreateRequestedMenu();
@@ -204,12 +215,6 @@ BOOL MenuCtrl_HasFlags(u32 m);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsMenuOnTop
 BOOL MenuCtrl_IsMenuOnTop();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetTouch
-s32 MenuCtrl_SetTouch();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetButtons
-s32 MenuCtrl_SetButtons();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsTouch
 BOOL MenuCtrl_IsTouch();
@@ -403,9 +408,6 @@ BOOL MenuCtrl_IsSyncMsgMenu(void);
 #ifndef PROTO_LOCAL_MenuCtrl_IsFriendPageFromIndex
 BOOL MenuCtrl_IsFriendPageFromIndex(void);
 #endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetChatDraft
-void MenuCtrl_SetChatDraft(u32 a);
-#endif
 }
 #ifndef PROTO_LOCAL_sMenuIndex
 extern u8 sMenuIndex;
@@ -417,7 +419,7 @@ extern u32 kMenuOverlayList18[3];
 extern u32 kMenuOverlayList28[3];
 #endif
 #ifndef PROTO_LOCAL_sOpenMenuList
-extern Unk_021cb4e8 sOpenMenuList;
+extern List sOpenMenuList;
 #endif
 #ifndef PROTO_LOCAL_kMenuOverlayList03
 extern u32 kMenuOverlayList03[2];
@@ -579,7 +581,7 @@ extern u32 kMenuOverlayList0E[3];
 extern u32 kMenuOverlayList11[3];
 #endif
 #ifndef PROTO_LOCAL_gMenuManager
-extern u32 gMenuManager;
+extern GameProc *gMenuManager;
 #endif
 #ifndef PROTO_LOCAL_kMenuOverlayList14
 extern u32 kMenuOverlayList14[3];
