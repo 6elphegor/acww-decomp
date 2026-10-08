@@ -56,7 +56,6 @@ void *HostMainRam_Ptr(unsigned int a) {
     return gHostMainRam + (a - HOST_MAIN_RAM_LO);
 }
 
-extern char __start_gdata[], __stop_gdata[], __start_gbss[], __stop_gbss[];
 void host_root_heap_bounds(uintptr_t *lo, uintptr_t *hi);  // main.c
 
 static int inside(uintptr_t a, uintptr_t n, const void *lo, size_t size) {
@@ -70,7 +69,19 @@ int HostMem_IsGameRam(const void *p, unsigned int n) {
     return inside(a, n, gHostMainRam, sizeof gHostMainRam) || inside(a, n, &gHostSysWork, sizeof gHostSysWork) ||
            inside(a, n, gHostDtcm, sizeof gHostDtcm) || inside(a, n, gHostItcm, sizeof gHostItcm) ||
            inside(a, n, gHostWramArena, sizeof gHostWramArena) ||
-           inside(a, n, __start_gdata, (size_t)(__stop_gdata - __start_gdata)) ||
-           inside(a, n, __start_gbss, (size_t)(__stop_gbss - __start_gbss)) ||
+           inside(a, n, gHostGameDataBegin, (size_t)(gHostGameDataEnd + 1 - gHostGameDataBegin)) ||
+           inside(a, n, gHostGameBssBegin, (size_t)(gHostGameBssEnd + 1 - gHostGameBssBegin)) ||
            (rhi > rlo && inside(a, n, (const void *)rlo, rhi - rlo));
+}
+
+// at start-up (hw.c's host_map_memory): the game's variables in the order the link was meant to give them, and the
+// host blocks aligned (the loader honours their alignment: a PIE build is loaded at an address aligned to its
+// segments' largest alignment)
+void HostMem_Check(void) {
+    if (!((uintptr_t)gHostGameDataBegin < (uintptr_t)gHostGameDataEnd &&
+          (uintptr_t)gHostGameBssBegin < (uintptr_t)gHostGameBssEnd))
+        host_fatal("the game's data and bss aren't between modern/link/game_begin.c's and game_end.c's variables");
+    if (((uintptr_t)gHostMainRam & 0x1fffff) || ((uintptr_t)gHostItcm & 0x7fff) || ((uintptr_t)gHostDtcm & 0x3fff) ||
+        ((uintptr_t)&gHostSysWork & 0xfff) || ((uintptr_t)gHostPltt & 0x7ff) || ((uintptr_t)gHostOam & 0x7ff))
+        host_fatal("a host memory block isn't aligned");
 }

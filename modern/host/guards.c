@@ -15,8 +15,6 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#include "sdk_linker_symbols.h"
-
 u64 host_frame(void);
 static unsigned sFill = 0xa5, sAltLo, sAltHi, sAltFill;
 static unsigned *sReports;
@@ -32,8 +30,6 @@ void host_guards_init(void) {
     sAltFill &= 0xff;
     e = getenv("ACWW_GUARDS");
     sCheck = e && *e && *e != '0';
-    extern char __stop_gbss[];
-    if ((uintptr_t)__stop_gbss > SDK_MAIN_ARENA_LO) host_fatal("guards: gbss runs into the main arena");
     long page = sysconf(_SC_PAGESIZE);
     for (unsigned i = 0; i < host_guard_count; i++) {
         const HostGuard *g = &host_guard_table[i];

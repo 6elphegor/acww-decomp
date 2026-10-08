@@ -8,7 +8,7 @@ same byte in the real structure (the member path in the 32-bit build's debug inf
 build's) and prints the view's members for the host: each member at its mapped place (padding between), blobs
 resized to what they cover in the real structure, 4-byte integers that hold a pointer in the real structure uptr.
 
-Usage: host_view_layout.py <game_all.o, 32-bit> <game_all.o, 64-bit> <view type> <real type> <header or source>
+Usage: host_view_layout.py <acww, 32-bit> <acww, 64-bit> <view type> <real type> <header or source>
        [--cu <source of the compile unit to take both types from>] [--apply]
        host_view_layout.py --remove <view type> <header or source> [<compile unit source>]  (drop a generated layout)
 The members are printed (to paste into an #ifdef HOST branch of the view's declaration).

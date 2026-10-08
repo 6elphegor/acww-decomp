@@ -1,8 +1,8 @@
 // Host build: the DS memory map and the ARM9 I/O registers.
 //
-// Only the game's data and bss are at their DS addresses (main RAM, below); the rest of the DS memory the game reaches
-// by address is host objects (include/host_mem.h: the system work area, DTCM, ITCM, palettes, OAM, VRAM through
-// vram.c's windows, the main RAM arena). The I/O registers are plain host arrays (host_io). The game reaches them only through HostIo_Read / HostIo_Write
+// Nothing is mapped at a DS address: the game's variables are ordinary data and bss, and the DS memory the game
+// reaches by address is host objects (include/host_mem.h: the system work area, DTCM, ITCM, palettes, OAM, VRAM
+// through vram.c's windows, the main RAM arena). The I/O registers are plain host arrays (host_io). The game reaches them only through HostIo_Read / HostIo_Write
 // (include/nitro/io_access.h), which carry out the access and its side effects. Nothing is mapped at the DS's I/O
 // addresses: a stray access there crashes (debug_posix.c reports where).
 //
@@ -153,18 +153,31 @@ static void host_screenshot(void) {
     }
 }
 
-// ---- the main RAM image for the debug dumps (ACWW_RAMHASH, ACWW_RAMDUMP): 4 MB as the DS's main RAM from
-// 0x02000000 - the arena block (gHostMainRam, 0x02200000-0x023fffff), the game's data and bss at their places, and the
-// system work area as main RAM's last 4 KB (its first 4 KB on 64-bit hosts, whose layout differs). On 32-bit hosts
-// the same bytes at the same offsets as when all of it was mapped there.
-extern char __start_gdata[], __stop_gdata[], __start_gbss[], __stop_gbss[];
+// ---- the main RAM image for the debug dumps (ACWW_RAMHASH, ACWW_RAMDUMP): 4 MB in the shape of the DS's main RAM
+// from 0x02000000 - the game's data from offset 0x1000 and its bss from 0x40000 (the places the DS-address link of
+// gdata/gbss gave them until docs/portability.md 3.3; the bss further up if the data is larger), the arena block
+// (gHostMainRam, 0x02200000-0x023fffff) and the system work area as main RAM's last 4 KB (its first 4 KB on 64-bit
+// hosts, whose layout differs). What doesn't fit below the arena is left out (reported once).
+static void ram_image_put(u8 *img, u32 *at, const char *lo, const char *end, u32 limit) {
+    size_t n = (size_t)(end - lo);
+    static int warned;
+    if (*at + n > limit) {
+        if (!warned++) fprintf(stderr, "host: RAM image: the game's data and bss don't fit, %zu bytes cut\n", *at + n - limit);
+        n = *at < limit ? limit - *at : 0;
+    }
+    memcpy(img + *at, lo, n);
+    *at += (u32)n;
+}
 static const u8 *host_ram_image(void) {
     static u8 *img;
     if (!img && !(img = malloc(0x400000))) host_fatal("no memory for the RAM image");
     memset(img, 0, 0x400000);
-    memcpy(img + (HOST_MAIN_RAM_LO - 0x02000000), gHostMainRam, sizeof gHostMainRam);
-    memcpy(img + ((uintptr_t)__start_gdata - 0x02000000), __start_gdata, __stop_gdata - __start_gdata);
-    memcpy(img + ((uintptr_t)__start_gbss - 0x02000000), __start_gbss, __stop_gbss - __start_gbss);
+    const u32 arena = HOST_MAIN_RAM_LO - 0x02000000;
+    u32 at = 0x1000;
+    ram_image_put(img, &at, gHostGameDataBegin, gHostGameDataEnd + 1, arena);
+    at = at <= 0x40000 ? 0x40000 : (at + 0xfff) & ~0xfffu;
+    ram_image_put(img, &at, gHostGameBssBegin, gHostGameBssEnd + 1, arena);
+    memcpy(img + arena, gHostMainRam, sizeof gHostMainRam);
     memcpy(img + 0x3ff000, &gHostSysWork, 0x1000);
     return img;
 }
@@ -605,62 +618,23 @@ unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long
     return v;
 }
 
-// ---- the memory map
-// Only main RAM is still mapped at its DS address (0x02000000, 4 MB): the program's .gdata/.gbss (the game's
-// variables) are placed there by the loader (step 3.3 of docs/portability.md makes them ordinary data). Everything
-// else the game reaches by a DS address is a host object (include/host_mem.h, mem.c, vram.c). Main RAM is a memfd so
-// that the loaded pages can be copied into it before it replaces them; its mirrors (0x02400000-0x02ffffff) aren't
-// mapped any more (the system work area at 0x027ff000, which the game reached through them, is gHostSysWork).
-// With ACWW_HIGHMEM=2 nothing is mapped: only the loader's pages of gdata and gbss remain (the harness, below).
-extern char __stop_gdata[], __start_gbss[], __stop_gbss[];
-static void map_main_ram(void) {
-    int fd = memfd_create("dsram", 0);
-    if (fd < 0 || ftruncate(fd, 0x400000) < 0) host_fatal("main RAM memfd");
-    u8 *ram = mmap(0, 0x400000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (ram == MAP_FAILED) host_fatal("main RAM map");
-    // the loaded pages: the one with the ELF headers and gdata from 0x02000000, gbss from 0x02040000
-    u32 gdata_end = ((u32)(uintptr_t)__stop_gdata + 0xfff) & ~0xfffu;
-    memcpy(ram, (void *)0x02000000, gdata_end - 0x02000000);
-    memcpy(ram + ((u32)(uintptr_t)__start_gbss - 0x02000000), __start_gbss, __stop_gbss - __start_gbss);
-    if (mmap((void *)0x02000000, 0x400000, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd, 0) == MAP_FAILED)
-        host_fatal("main RAM");
-    munmap(ram, 0x400000);
-    close(fd);
-}
-
-// ---- ACWW_HIGHMEM=1 (x86-64 Linux): the low-4 GB poisoning harness (docs/portability.md 3.0). The root heap and
-// the game's thread stacks go above 4 GB (main.c, os.c: at addresses whose low word is in poisoned space), and
-// every range below 4 GB that isn't mapped when the game starts is reserved without access (as macOS's
-// __PAGEZERO): only main RAM (gdata/gbss), the program image and what the C library mapped before (its first brk
-// heap) remain. ACWW_HIGHMEM=2 doesn't map main RAM either (3.2): of the DS's address space only the loader's pages
-// of gdata and gbss remain. A pointer cut to 32 bits, or a DS address used as a pointer, then faults at a low
-// address (or, sign-extended, at a non-canonical one), and the crash report (debug_posix.c) says where. A heap that
-// would grow by brk can't: malloc falls back to mmap, above 4 GB.
+// ---- ACWW_HIGHMEM=1 (x86-64 Linux): the low-4 GB poisoning harness (docs/portability.md 3.0, 3.3). The whole low
+// 4 GB (from vm.mmap_min_addr's 64 KB up) is reserved without access, as macOS's __PAGEZERO: the 64-bit build is a
+// PIE, so the program image, the C library's heap, the root heap and the threads' stacks are all above it (any
+// range already mapped below 4 GB is left alone and reported). A pointer cut to 32 bits, or a DS address used as a
+// pointer, then faults at a low address (or, sign-extended, at a non-canonical one), and the crash report
+// (debug_posix.c) says where. (ACWW_HIGHMEM=2, which left out main RAM's mapping before that went, is the same.)
 int host_highmem(void) {
     static int on = -1;
     if (on < 0) {
 #if defined(__x86_64__) && defined(__linux__)
         const char *e = getenv("ACWW_HIGHMEM");
-        on = e && *e && strcmp(e, "0") ? (atoi(e) >= 2 ? 2 : 1) : 0;
+        on = e && *e && strcmp(e, "0") ? 1 : 0;
 #else
         on = 0;
 #endif
     }
     return on;
-}
-
-// an anonymous mapping of n bytes above 4 GB, from `hint` on (successive calls with the same hint walk upwards;
-// MAP_FIXED_NOREPLACE: never over an existing mapping)
-void *host_highmem_alloc(uintptr_t *hint, size_t n) {
-    n = (n + 0xfff) & ~(size_t)0xfff;
-    for (int i = 0; i < 4096; i++) {
-        uintptr_t at = *hint;
-        void *p = mmap((void *)at, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
-        *hint += ((n + 0xfffff) & ~(size_t)0xfffff) + 0x100000;  // the next one further up, with a gap between
-        if (p == (void *)at) return p;
-        if (p != MAP_FAILED) munmap(p, n);
-    }
-    return 0;
 }
 
 static void highmem_poison(void) {
@@ -689,6 +663,7 @@ static void highmem_poison(void) {
             else { reserved += end - at; ranges++; }
         }
         if (last) break;
+        if (lo < top) fprintf(stderr, "host: ACWW_HIGHMEM: mapped below 4 GB: %lx-%lx\n", lo, hi);
         if (hi > at) at = hi;
         char *nl = strchr(l, '\n');
         l = nl ? nl + 1 : l + strlen(l);
@@ -698,13 +673,13 @@ static void highmem_poison(void) {
 #endif
 }
 
-// after main RAM is mapped (main.c's early_init)
+// at start-up (main.c's early_init)
 void host_highmem_init(void) {
     if (host_highmem()) highmem_poison();
 }
 
 void host_map_memory(void) {
-    if (host_highmem() < 2) map_main_ram();  // main RAM, 4 MB at 0x02000000 (the game's data is in it)
+    HostMem_Check();  // (mem.c: the game's variables and the host blocks where they should be)
     host_debug_init();
     R16(0x04000130) = 0x3ff;
     if (getenv("ACWW_IOHIST")) atexit(io_hist_dump);

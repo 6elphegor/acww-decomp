@@ -12,7 +12,7 @@ then that path's offset in the 64-bit build's) and rewrites the macro's definiti
     (the definition as written)
     #endif
 so an offset without a mapping doesn't compile (instead of silently using the DS offset).
-Usage: host_offset_map.py <game_all.o, 32-bit> <game_all.o, 64-bit> <type> <source> [--macro M]
+Usage: host_offset_map.py <acww, 32-bit> <acww, 64-bit> <type> <source> [--macro M]
 The type is taken from the source's compile unit. Run it again after the type changes (it replaces its block).
 """
 import re

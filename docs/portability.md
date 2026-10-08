@@ -19,11 +19,11 @@ No worktree was needed. All compiles read the main checkout and wrote only to th
 
 | # | Dependency | Size (measured) | Blocks | Portable replacement |
 |---|---|---|---|---|
-| A | Game data and memory at fixed DS addresses (gdata 0x02001000, gbss 0x02040000, .dtcm 0x027e0000, main RAM memfd and its mirrors, ITCM, WRAM, palette, VRAM, OAM, I/O pages) | 7 fixed mappings in hw.c, 3 `--section-start` options, `-Ttext-segment`, `MAP_32BIT`, root heap at 0x50000000 | macOS (`__PAGEZERO` covers the low 4 GB), Windows (no fixed low mappings in practice), PIE everywhere | Ordinary data/bss and heap blocks; host arrays for the system work area, DTCM, palette, OAM and VRAM banks. **Step 3.2 done:** only main RAM (gdata/gbss) is still mapped, 2 `--section-start` options left (3.3) |
+| A | Game data and memory at fixed DS addresses (gdata 0x02001000, gbss 0x02040000, .dtcm 0x027e0000, main RAM memfd and its mirrors, ITCM, WRAM, palette, VRAM, OAM, I/O pages) | 7 fixed mappings in hw.c, 3 `--section-start` options, `-Ttext-segment`, `MAP_32BIT`, root heap at 0x50000000 | macOS (`__PAGEZERO` covers the low 4 GB), Windows (no fixed low mappings in practice), PIE everywhere | Ordinary data/bss and heap blocks; host arrays for the system work area, DTCM, palette, OAM and VRAM banks. **Done (3.2, 3.3):** nothing is mapped at a DS address; the game's variables are ordinary data/bss, the x86-64 build a PIE (i386, the frozen reference, stays a fixed-address executable at the default 0x08048000) |
 | B | Pointers kept in 32-bit integers (works only below 4 GB) | C: 121 pointer-to-int + 96 int-to-pointer casts (55 files); C++: 186 int-to-pointer casts (67 files); explicit `(u32)(uptr)` 92 and `(T*)(uptr)` 31; PXI 26-bit pointers; snd7 38 conversions; DMA source/destination registers; resource offsets relocated in place | macOS arm64 and every build with memory above 4 GB | Real pointer types; offsets resolved when used; ARM7 services called directly. A low-4 GB poisoning harness finds the remaining sites on Linux. **Steps 3.0/3.1 done:** the harness (`ACWW_HIGHMEM`) runs every script; 0 C and 0 C++ int/pointer casts left (`--strict-c` clean); PXI, snd7 and DMA with real pointers |
 | C | DS addresses used as numbers in the source | Casts of DS constants to pointers (I/O excluded): 229 (system work area/DTCM 160 in 56 files, VRAM 32, palette 18, OAM 5, main RAM 10, WRAM 2, GBA slot 2). Address range checks: about 25 in 8 files. VRAM address tables: 2. I/O register casts: 830 in 121 files (harmless: only used as numbers by `IO_*`) | A, B | Named host objects through macros (`HW_SYSWORK`, `HW_PLTT`, `HW_OAM`, `HostVram_CpuPtr`). **Done (3.2):** 0 casts of DS constants to pointers outside I/O |
 | D | Signals and CPU tricks | SIGSEGV I/O emulation and single-stepping (x86 only), interrupt injection under SP (`-mno-red-zone`, irq_entry.S), SIGFPE division emulation, SIGVTALRM hang guard, SIGPROF, `ucontext` gregs | macOS (different ucontext, no x86), Windows (no signals), arm64 (no division trap) | Already almost unused: 0 trapped I/O accesses in 11043 attract-demo frames (`ACWW_IOHIST`); hang guard silent over 25001 play frames; 1 division-by-zero site (`spl_scl_in_out`). Replace with explicit code. **Done 2026-10-08 (phase 1): only debug aids remain, behind `HOST_DEBUG_POSIX`** |
-| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except one partial link** (2.4-2.11, 0.2, 3.2): left are `ld -r -T game.ld` (only names the data and bss `gdata`/`gbss`; the DS variable order is gone, 2.8) and the `--section-start`/`-Ttext-segment` options (3.3); `ld -r -T dtcm.ld` gone (3.2) |
+| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done** (2.4-2.11, 0.2, 3.2, 3.3): the game links with a plain `g++ -pie -o acww *.o <libs>` (i386: `-no-pie` and the sysroot's options); only the guard variant (a GNU-ld debugging build) keeps its partial links |
 | F | GCC-only leniency and flags | Clang (Apple's only compiler) rejects 47 units with 2370 errors (1735 distinct) that GCC accepts. **0 after step 2.1.** GCC-only flags: `-malign-data=abi` (**dropped, 2.8**), `-fpcc-struct-return` (unsupported by clang off i386; changes 39 functions in 17 units; dropped on x86-64, 2.2) | macOS | Fix the declarations (the PROTO_LOCAL backlog); drop the flags after testing them |
 | G | LLP64 (Windows) | 831 errors (mostly `IO_ADDR_`'s `(unsigned long)` cast), 8 `__LP64__` checks, `unsigned long` pointer words in modern/ds/overlays.c. **0 beyond the baseline with `-mno-ms-bitfields` after step 2.3.** MS bitfield layout breaks the save `static_assert`s (696 + 54 + others); the MSVC ABI also breaks member-pointer casts (133) and the MWCC_LAYOUT tail-padding trick | Windows | One-line `IO_ADDR_` fix; MinGW-w64 (clang or gcc, Itanium C++ ABI) with `-mno-ms-bitfields`, **not MSVC**. With these, only 11 extra diagnostics remain |
 | H | Display and frontend | melonDS (GPL-3.0, patched, 32-bit core for i386) behind 8 `melon_*` functions; a separate SDL2 viewer process through `shm_open` + `fork`/`execl` | Licence; process model on Windows | In-process SDL frontend; own renderer behind the same 8-function interface |
@@ -41,18 +41,18 @@ The good news:
 
 | Region | DS address | How the host provides it | Evidence |
 |---|---|---|---|
-| Game initialised data `gdata` | 0x02001000 | `-Wl,--section-start=gdata=0x02001000`; variables where the compiler and linker put them (the DS order is gone: 2.8) | tools/configure_host.py |
-| Game bss `gbss` | 0x02040000 | `--section-start=gbss=0x02040000` (x86-64: 0x11bbf0 bytes, ends at 0x0215bbf0) | configure_host.py:66; `readelf -S build/host64_usa/acww` |
+| ~~Game initialised data `gdata`~~ | – | **3.3:** the program's ordinary `.data` (between `gHostGameDataBegin`/`End`, modern/link/) | tools/configure_host.py |
+| ~~Game bss `gbss`~~ | – | **3.3:** the program's ordinary `.bss` (`gHostGameBssBegin`/`End`; x86-64: 0x11f6c8 bytes) | – |
 | DTCM module variables `.dtcm` | 0x027e0000 (16 KB) | **3.2:** ordinary variables; DTCM is a 16 KB host block (`gHostDtcm`, include/host_mem.h) | was configure_host.py:160-167, :65 |
-| Main RAM, 4 MB, mirrored to 0x02ffffff | 0x02000000 | `memfd_create` + 5 `MAP_FIXED` mappings; gdata/gbss copied into it via `__stop_gdata`, `__start_gbss`, `__stop_gbss`. **3.2:** one mapping, no mirrors (`ACWW_HIGHMEM=2`: none); the arena past the data is a host block (`gHostMainRam`, DS 0x02200000-0x023fffff) | modern/host/hw.c `map_main_ram` |
+| Main RAM, 4 MB, mirrored to 0x02ffffff | 0x02000000 | `memfd_create` + 5 `MAP_FIXED` mappings; gdata/gbss copied into it via `__stop_gdata`, `__start_gbss`, `__stop_gbss`. **3.2:** one mapping, no mirrors; the arena past the data is a host block (`gHostMainRam`, DS 0x02200000-0x023fffff). **3.3:** not mapped (no memfd) | – |
 | ITCM | 0x01ff8000 | **3.2:** a 32 KB host block (`gHostItcm`: only an arena on the host) | modern/host/mem.c |
 | Shared WRAM | 0x03000000 | **3.2:** not mapped (unused); the empty WRAM arena (0x037f8000) is `gHostWramArena` | mem.c |
 | Palette, OAM | 0x05000000, 0x07000000 | **3.2:** host arrays `gHostPltt`, `gHostOam` (`HW_PLTT`, `HW_OAM`) | mem.c |
 | VRAM windows | 0x06000000-0x068a3fff | **3.2:** 9 banks and 5 CPU window arrays (`HostVram_CpuPtr`), kept in step on every VRAMCNT change and before the renderer reads the banks | modern/host/vram.c |
 | I/O pages | 0x04000000, 0x04001000, 0x04100000 | memfd mapped twice (`PROT_NONE` for the game, read/write for the runtime) | hw.c:885-892, :902-904 |
-| x86-64 program image | 0x10000000 | `-Wl,-Ttext-segment=0x10000000`, `-no-pie` | configure_host.py:72 |
-| x86-64 root heap | 0x50000000 (8 MB); above 4 GB (0x5a0000000) with `ACWW_HIGHMEM` | `host_root_heap_region` | modern/host/main.c |
-| x86-64 thread stacks | below 4 GB (`mmap(... MAP_32BIT)`); above 4 GB (0x6b0000000 up) with `ACWW_HIGHMEM` | `host_stack_alloc` | modern/host/os.c |
+| x86-64 program image | anywhere | **3.3:** a PIE (`-fPIE -pie`), loaded where the kernel puts it (ASLR) | tools/configure_host.py |
+| x86-64 root heap | **3.3:** anywhere (an 8 MB anonymous mapping) | `host_root_heap_region` | modern/host/main.c |
+| x86-64 thread stacks | **3.3:** anywhere (anonymous mappings, no `MAP_32BIT`) | `host_stack_alloc` | modern/host/os.c |
 | Arena constants | 0x0229bdc0 etc. | `.set` absolute symbols `SDK_MAIN_ARENA_LO`, `SDK_SECTION_ARENA_*`, `OVERLAY_n_ID` | main.c:58-68 (68 references in 15 files) |
 | ROM header / system work area writes | 0x027ffe00, 0x027ffc00, 0x027ffc40, 0x027fff8c, 0x027ffde8, 0x027fffaa | **3.2:** the host runtime writes `gHostSysWork`'s members (`HostSysWork`, include/host_mem.h) | main.c, pxi7.c, frontend.c, os.c |
 
@@ -110,7 +110,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 | Fault reporting with frame-pointer walk and `execinfo` `backtrace` | hw.c:480-489, :643-666, :842-852 | Crash reporting | glibc | Optional per-platform crash handler |
 | Stack switching for game threads | coro_switch.S (i386, x86-64 System V, arm64 incl. Apple `_` prefix), coro.c | Yes | **Windows x64 missing** (`#error` at coro_switch.S:108: needs rdi, rsi, xmm6-15 and the TIB stack bounds) | Windows: a variant that also saves rdi, rsi, xmm6-15 and the TIB stack fields, or Fibers (`CreateFiber`/`SwitchToFiber`). The arm64 code exists but has never run |
 | `ucontext` | hw.c:21, :31-43, :541-553 | Only in the handlers above | glibc register names | Goes away with the handlers |
-| `-fno-pie`/`-no-pie`, `-Ttext-segment`, `--section-start` | configure_host.py:50, :65-66, :70-72, :78-82 | Yes | macOS has PIE only; Windows uses ASLR | PIE after phase 3 |
+| ~~`-fno-pie`/`-no-pie`, `-Ttext-segment`, `--section-start`~~ | – | – | – | **Done (3.3)** on x86-64: `-fPIE -pie`; i386 keeps `-fno-pie`/`-no-pie` (default fixed address, no options) |
 
 ---
 
@@ -119,14 +119,14 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 | Feature | Where | What for | Replacement |
 |---|---|---|---|
 | ~~`ld -r -T dtcm.ld`~~ | – | **Gone (3.2)**: DTCM is a host block (`gHostDtcm`), its variables ordinary variables | – |
-| ~~`ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi`~~ | – | **Gone (2.8)**: the overruns fixed (guard variant, `configure_host.py --guards`), no DS order; the partial link's `game.ld` only names the sections `gdata`/`gbss` (goes with 3.3) | – |
+| ~~`ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi`~~ | – | **Gone (2.8)**: the overruns fixed (guard variant, `configure_host.py --guards`), no DS order; `game.ld` gone too (3.3; only the guard variant links the game with `ld -r`) | – |
 | ~~`.init_array` → `host_ovinit` ranges~~ | – | **Gone (2.9)**: each overlay unit lists its variables (`HOST_OVERLAY_VARS`), explicit `StaticInit_<unit>`; modern/gen/overlay_table.c | – |
 | ~~`--wrap` (291) and x86 asm thunks~~ | – | **Gone (2.10)**: typed C dispatchers, call sites renamed | – |
 | ~~`--defsym=_Znwj=_Znwm`, `_Znaj=_Znam`~~ | – | **Gone (2.5)**: the global operators are the host's (modern/host/newdelete.cpp), the game allocates by name | – |
 | ~~`objcopy --localize-symbols`~~ (77/76 names) | – | **Gone (2.4)**: `include/host_libc_rename.h` (forced include) renames the game's libc names to `ds_*` | – |
 | ~~`PROVIDE` (provides.ld, provides64.ld via host_relayout.py with pyelftools on DWARF)~~ | – | **Gone (2.11)**: the aliases fixed in the sources, the labels C pointers; the build reads no DWARF | – |
 | ~~Gap data as inline asm~~ | – | **Gone (2.7)**: `modern/gen/gaps.c`, typed C for every architecture (14 objects); bss labels defined in the sources; PMFs the compiler's | – |
-| `__start_gdata` / `__stop_gdata` / `__start_gbss` / `__stop_gbss` | hw.c:862-873 | Copy gdata/gbss into the main RAM memfd | Goes away with the fixed mapping |
+| ~~`__start_gdata` / `__stop_gdata` / `__start_gbss` / `__stop_gbss`~~ | – | **Gone (3.3)**: the debug dumps and `HostMem_IsGameRam` use the variables of modern/link/game_begin.c and game_end.c, linked first and last of the game's objects | – |
 | ~~`.set` absolute symbols~~ | – | **Gone (2.6)**: `include/sdk_linker_symbols.h` | – |
 | `constructor(101)` priorities | main.c:73, overlay.c:53 (and `constructor` overlay.c:43) | Map memory and snapshot overlays before the game's static constructors | Explicit init calls from `main()`. Unnecessary once no constructor touches fixed memory. Priorities aren't guaranteed across units on Mach-O/COFF |
 | `--allow-multiple-definition` | configure_host.py:65 | It hides a **bug**: the 9 `src/dtcm` objects are linked twice (12 symbols). They go into dtcm.o inside game.o and also stay in `host_objs`, because `host_objs = objs - game_objs` is computed after `dtcm_objs` were removed (configure_host.py:160-169; `objects.txt` lists them) | Exclude `dtcm_objs` from `host_objs`, then drop the option |
@@ -188,7 +188,7 @@ Each step can be done and checked on this Linux x86-64 machine. "Oracle" means `
 
 Two cheap tools keep the work honest before any Mac or Windows hardware exists:
 - **libclang target sweep.** This audit's `sweep.py`, made into `tools/host_portcheck.py`. It parses all 865 units for arm64-apple-macos, x86_64-w64-windows-gnu (`-mno-ms-bitfields`) and x86_64-linux in about a minute, and reports only the diagnostics beyond the baseline.
-- **Low-4 GB poisoning harness.** Introduced in step 3.0.
+- **Low-4 GB poisoning harness.** Introduced in step 3.0. Since 3.3 it reserves the whole low 4 GB.
 
 ### Phase 0: guard rails (1-2 days)
 1. **0.1** Add `tools/host_portcheck.py` (the sweep). Today it reports clang-only errors in 47 units, 2568 extra diagnostics on win64-gnu and 0 on macos-arm64. Track the counts.
@@ -294,8 +294,8 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
     one (variable, object, frame, the first changed byte's address for a gdb hardware watchpoint), then restores it.
     `--only LO-HI` gives only some variables guards (bisecting a layout dependence). 9063 guards on i386 in the DS
     order (4665 data, 2822 read-only, 1576 bss), 9070 after the drop and the merge of 3.2 (DTCM's variables are
-    ordinary ones now; the same on x86-64). The variant's gbss starts at 0x02080000 (its gdata
-    is larger); `host_guards_init` checks that gbss still ends below the main arena.
+    ordinary ones now; the same on x86-64). (Since 3.3 the variant's gdata/gbss are ordinary sections of the
+    program, placed by the final link, no longer at DS addresses.)
 
     Found and fixed (each a separate commit; the writers from gdb watchpoints):
     - **Gfx2d state** (main, written past the end on every host): sGfx2dBgScroll, sGfx2dSubBg3Mtx, sGfx2dDispCtrl,
@@ -416,10 +416,11 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
     Oracle identical; host_strict_errors 0.
 
 After phase 2 the game links with a plain `cc *.o`: no `ld -r`, linker script, `--wrap`, `objcopy` or PROVIDE.
-**Status (2026-10-08):** no `--wrap`, `objcopy`, PROVIDE, `--defsym` or DWARF reading. Left: the two partial links
-(`ld -r -T game.ld`, which only names the game's data and bss `gdata`/`gbss` since 2.8, goes with step 3.3;
-`ld -r -T dtcm.ld`, gone in step 3.2) and the final link's `--section-start=gdata/gbss` and `-Ttext-segment`
-(step 3.3).
+**Status (2026-10-08, after 3.3):** done. No `ld -r`, linker script, `--wrap`, `objcopy`, PROVIDE, `--defsym`,
+`--section-start`, `-Ttext-segment` or DWARF reading: x86-64 links with `g++ -m64 -pie -o acww <objects> <melonDS
+libraries> -lstdc++ -lpthread -lm`. The i386 build adds only its sysroot options and `-no-pie` (it stays a
+fixed-address executable, as its captures were taken). The guard variant (`--guards`) still links the game with
+`ld -r` and a generated linker script, as a GNU-ld debugging tool.
 
 ### Phase 3: memory anywhere (Linux x86-64 above 4 GB, 3-6 weeks)
 19. **3.0** Low-4 GB poisoning harness (`ACWW_HIGHMEM=1` on x86-64):
@@ -604,6 +605,47 @@ After phase 2 the game links with a plain `cc *.o`: no `ld -r`, linker script, `
     fault and identical to the pre-change 64-bit runs without the harness; `--strict-c` 0, `host_strict_errors.sh` 0,
     `host_portcheck.py` 0 beyond the baseline on macos-arm64 and win64-gnu-nomsbf.
 22. **3.3** gdata/gbss become ordinary `.data`/`.bss`: drop the `--section-start` options, the main RAM memfd (its mirrors went in 3.2) and `__start_/__stop_`. Then `-fPIE -pie`, dropping `-Ttext-segment`, `-no-pie` and `MAP_32BIT`. Check: x86-64 PIE build under ASLR, oracle, and the harness poisoning the whole low 4 GB.
+
+    **Done (2026-10-08).** Before: `ld -r -T game.ld` (the game's data and bss as `gdata`/`gbss`), 2 `--section-start`
+    options, `-Ttext-segment=0x10000000`, `-fno-pie`/`-no-pie` on x86-64, main RAM as a memfd mapped at 0x02000000
+    (the loaded gdata/gbss pages copied into it), 4 `__start_/__stop_` symbols (hw.c, mem.c, guards.c), the root heap
+    at 0x50000000, `MAP_32BIT` stacks; the harness reserved 5 ranges, 3947 of the 4095 MB below 4 GB. Now:
+    - **The link** (tools/configure_host.py): the game's objects and the host's are linked directly, x86-64 with
+      `g++ -m64 -pie -o acww <objects> <melonDS libraries> -lstdc++ -lpthread -lm` (game, runtime and assembly
+      compiled `-fPIE`; melonDS's libraries were PIC already). The i386 build stays a fixed-address executable
+      (`-fno-pie`/`-no-pie`, the linker's default address) as the frozen reference; its data is ordinary too, and
+      its oracle is identical. No partial link, linker script, `--section-start` or `-Ttext-segment` is left
+      (the guard variant keeps its own `ld -r` with generated scripts: a GNU-ld debugging build; checked: it builds
+      as a PIE and runs).
+    - **Where the game's variables are** (the debug dumps, `HostMem_IsGameRam`: a heap can live in a static buffer,
+      e.g. `sFieldObjectModelHeapBuf`, and `::operator delete` must give its blocks back to it): between the
+      variables of modern/link/game_begin.c and game_end.c, linked first and last of the game's objects (linkers
+      keep the input order within an output section). Checked on the link map: all 673 .data and 397 .bss input
+      sections of game objects lie between them, nothing else does (x86-64: 0x30951 bytes of data, 0x11f6c8 of
+      bss); `HostMem_Check` checks the order and the host blocks' alignment at start-up (the kernel loads a PIE at
+      its segments' largest alignment, 2 MB for `gHostMainRam`). The game's constant data with pointers is in
+      `.data.rel.ro` in the PIE (read-only after relocation, as `.rodata` was).
+    - **The runtime**: no memfd, no mapping at a DS address; the root heap and the thread stacks are anonymous
+      mappings anywhere (no fixed address, no `MAP_32BIT`; `host_highmem_alloc` is gone). `ACWW_RAMDUMP` /
+      `ACWW_RAMHASH` keep the 4 MB image's shape (data from 0x1000, bss from 0x40000, the arena at 0x200000, the
+      system work area at 0x3ff000). The crash report prints each code address also less the load bias (the
+      address `addr2line -e build/host64_usa/acww` takes). The DWARF tools (host_view_layout.py,
+      host_var_sizes.py, ...) take the executable instead of `game_all.o`.
+    - **The harness** (`ACWW_HIGHMEM=1`; `=2` is the same now): the whole low 4 GB from 64 KB up, one range, 4095 MB,
+      is reserved `PROT_NONE`; nothing is mapped below 4 GB any more (anything that is gets reported).
+    - **A real 64-bit bug found**: `NNS_FndResizeForMBlockExpHeap` (src/autoload_2/unk_02100708.c) found a
+      block's header at the DS's 16 bytes before the block (`sizeof(MBlock)` is 24 on 64-bit hosts) and read its size
+      from the high half of the header's `prev` pointer. With the heap below 4 GB that was 0: a "grow" that found no
+      free block, so `FrameHeap::doAdjust` (shrinking a frame heap's block in its parent) failed silently; at a
+      PIE's addresses (0x7f...) it took the shrink path on the wrong header and broke the root heap's free list
+      (a crash at frame 526 of the attract demo, `PlayerBodyWorkPool_Create` -> `Heap::adjust`). Fixed separately
+      first; the fix alone changes no output (below).
+
+    Checks: i386 oracle quick (pictures and sound) and play identical to the captures. x86-64, against the build of
+    refs/heads/modern c792395e (non-PIE): with the heap fix alone, quick (pictures and sound), play, and under
+    `ACWW_HIGHMEM=1` the town script (32 screenshots to frame 32000) and the continue run from the i386 save (8
+    screenshots and the save file) identical; the PIE build with the fix identical to both, in runs at different
+    load addresses (ASLR on). `host_strict_errors.sh` 0.
 23. **3.4** Retire the i386 build as the reference: re-record the oracle from the x86-64 build. First make virtual time independent of code shape, so arm64 matches too. Today the 64-bit timing drifts by a frame or two after scene changes.
 
 ### Phase 4: platform layer and frontend (Linux first, about 1-2 weeks)

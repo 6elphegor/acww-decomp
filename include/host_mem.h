@@ -95,6 +95,11 @@ void *HostMainRam_Ptr(unsigned int dsaddr);
 // the empty private-WRAM arena (OS arena 6: lo == hi on the DS)
 extern unsigned char gHostWramArena[32];
 
+// The game's variables: ordinary data and bss of the program (docs/portability.md 3.3), between the variables of
+// modern/link/game_begin.c and game_end.c, the first and last of the game's objects in the link (linkers keep the
+// input order within .data and .bss). Its read-only data (and, in PIE builds, .data.rel.ro) lies elsewhere.
+extern char gHostGameDataBegin[1], gHostGameDataEnd[1], gHostGameBssBegin[1], gHostGameBssEnd[1];
+
 // is [p, p + n) inside one of the blocks above, the game's data and bss, or (64-bit hosts) the root heap's block?
 int HostMem_IsGameRam(const void *p, unsigned int n);
 

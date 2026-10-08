@@ -6,7 +6,7 @@ and the code writes past the block. Where the constant is a whole number of T (T
 build's debug information, which has the DS layout), the size becomes HOST_SIZED(N, T[k]) (include/uptr.h): N on
 the DS, at least the real size on the host. Structure names with several sizes in the program are skipped.
 
-Usage: host_alloc_sizes.py <game_all.o, 32-bit> [--check] FILE...
+Usage: host_alloc_sizes.py <acww, 32-bit> [--check] FILE...
 """
 import re
 import sys

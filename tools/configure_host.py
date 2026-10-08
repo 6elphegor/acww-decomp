@@ -69,8 +69,11 @@ G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 M_FLAG = "-m64" if X64 else "-m32"
 LD_EMU = "elf_x86_64" if X64 else "elf_i386"
 
+# x86-64: a position-independent executable (loaded anywhere, ASLR; docs/portability.md 3.3); i386, the frozen
+# reference, stays a fixed-address executable (its captures were taken so)
+PIE = "-fPIE" if X64 else "-fno-pie"
 GAME_FLAGS = " ".join([
-    M_FLAG, "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
+    M_FLAG, PIE, "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
     "-fno-strict-aliasing", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
     # the game's C library names renamed to ds_* (its own libc, apart from the host's)
@@ -96,16 +99,13 @@ if CLANG:
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
-# (the guard variant's gdata is larger: its gbss further up, still below the main arena, SDK_MAIN_ARENA_LO)
-SECTIONS = f"-Wl,--section-start=gdata=0x02001000 -Wl,--section-start=gbss={'0x02080000' if args.guards else '0x02040000'}"
 M = args.melonds
 GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 if X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
-    HOST_FLAGS = "-m64 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + GUARD_FLAGS
-    # the program above the DS's address space (0x02000000-0x08000000), still below 4 GB
-    LINK_FLAGS = f"-m64 -no-pie -Wl,-Ttext-segment=0x10000000 {SECTIONS}"
-    HOST_CXX_FLAGS = (f"-m64 -fno-pie -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
+    HOST_FLAGS = "-m64 -fPIE -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + GUARD_FLAGS
+    LINK_FLAGS = "-m64 -pie"
+    HOST_CXX_FLAGS = (f"-m64 -fPIE -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
                       "-DHOST")
     MELON_LIBS = f"{M}/build-core/src/libcore.a {M}/build-core/src/teakra/src/libteakra.a"
     LIBDIR, LIBGCC = "/usr/lib/x86_64-linux-gnu", "/usr/lib/gcc/x86_64-linux-gnu/15/libgcc.a"
@@ -113,7 +113,7 @@ else:
     HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
                   f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude") + GUARD_FLAGS
     LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
-                  f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 {SECTIONS}")
+                  f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32")
     HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
                       f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "
                       f"-I{M}/src -I{M}/build-core32/src -DHOST")
@@ -155,7 +155,7 @@ def main():
                depfile="$out.d", deps="gcc", description="CXX $in")
         n.rule("hostcc", f"{args.cc} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
-        n.rule("hostas_S", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
+        n.rule("hostas_S", f"{args.cc} {M_FLAG} {PIE} -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
         n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
@@ -190,29 +190,34 @@ def main():
             o = str(build / s.with_suffix(".o"))
             n.build(o, "cc", str(s))
             objs.append(o)
-        # the game (and its own C library) in one object
-        game_objs = [o for o in objs if "/modern/host/" not in o and not o.endswith("/gaps.o")]
+        # The game (and its own C library): ordinary objects, its variables in the program's .data and .bss
+        # (docs/portability.md 3.3), between the variables of modern/link/game_begin.c and game_end.c, linked first
+        # and last of the game's objects (linkers keep the input order within .data and .bss): the range the debug
+        # dumps and HostMem_IsGameRam use (include/host_mem.h)
+        marks = []
+        for s in (Path("modern/link/game_begin.c"), Path("modern/link/game_end.c")):
+            marks.append(str(build / s.with_suffix(".o")))
+            n.build(marks[-1], "cc", str(s))
+        host_objs = [o for o in objs if "/modern/host/" in o or o.endswith("/gaps.o")]
+        game_objs = [marks[0]] + [o for o in objs if o not in host_objs] + [marks[1]]
         # (DTCM's variables, src/dtcm, are ordinary game variables; DTCM itself is a host block: include/host_mem.h)
-        host_objs = [o for o in objs if o not in game_objs]
-        game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
+        game_list = build / "game_objects.txt"  # (also for tools/host_shared_calls.py)
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
-        # the game's data and bss as the sections gdata and gbss, which the final link places in DS main RAM (below);
-        # the variables where the compiler and linker put them (until docs/portability.md 3.3 makes them ordinary
-        # .data/.bss)
-        game_ld = str(build / "game.ld")
-        # (the guard variant: also the read-only data in one section, whose variables get guards too)
-        rodata = "    .rodata : { *(.rodata .rodata.*) }\n" if args.guards else ""
-        Path(game_ld).write_text("SECTIONS {\n    gdata : { *(.data .data.*) }\n" + rodata +
-                                 "    gbss : { *(.bss .bss.* COMMON) }\n}\n")
         # each overlay's units, their variables and static initialisers, for modern/host/overlay.c (generated C,
         # committed: tools/host_overlay_vars.py)
         n.build(str(build / "overlay_table.o"), "hostcc", "modern/gen/overlay_table.c",
                 variables={"flags": "-Imodern/host"})
         host_objs.append(str(build / "overlay_table.o"))
-        n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list", description="LD -r $out")
         if args.guards:
-            # the ordinary partial link's map, then the same layout with a guard after every variable
+            # the guard variant (a debugging build; GNU ld): the game linked into one object first (its data,
+            # read-only data and bss as the sections gdata, .rodata and gbss), whose map tools/host_guards.py reads,
+            # then the same layout again with a guard after every variable
+            game_ld = str(build / "game.ld")
+            Path(game_ld).write_text("SECTIONS {\n    gdata : { *(.data .data.*) }\n"
+                                     "    .rodata : { *(.rodata .rodata.*) }\n"
+                                     "    gbss : { *(.bss .bss.* COMMON) }\n}\n")
+            n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list", description="LD -r $out")
             n.rule("partial_map", f"ld -m {LD_EMU} -r -T $order -Map=$map -o $out @$list", description="LD -r $out")
             n.build([str(build / "game_plain.o"), str(build / "game_plain.map")], "partial_map", game_objs,
                     implicit=[str(game_list), game_ld],
@@ -224,15 +229,14 @@ def main():
                     variables={"list": str(game_list), "order": guard_ld})
             n.build(str(build / "guard_table.o"), "hostcc", guard_c, variables={"flags": "-Imodern/host"})
             host_objs.append(str(build / "guard_table.o"))
+            link_objs = [str(build / "game_all.o")] + host_objs
         else:
-            n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), game_ld],
-                    variables={"list": str(game_list), "order": game_ld})
+            link_objs = game_objs + host_objs
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
-        game_o = str(build / "game_all.o")
         objects_file = build / "objects.txt"
-        objects_file.write_text("".join(f"{o}\n" for o in [game_o] + host_objs))
+        objects_file.write_text("".join(f"{o}\n" for o in link_objs))
         exe = str(build / "acww")
-        n.build(exe, "link", [game_o] + host_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
+        n.build(exe, "link", link_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
         # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
         n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
                          "-l:libSDL2-2.0.so.0", description="VIEWER $out")

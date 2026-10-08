@@ -16,6 +16,7 @@
 #if HOST_DEBUG_POSIX
 
 #include <execinfo.h>
+#include <link.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,12 +42,26 @@
 
 #define PAGE 0x1000u
 
+// the program's load bias (a PIE: where it was loaded; 0 for a fixed-address program), read at start-up: the reports
+// print each code address also less it, the address addr2line and gdb take for the program file
+static uintptr_t sLoadBias;
+static int first_object(struct dl_phdr_info *info, size_t size, void *data) {
+    (void)size;
+    *(uintptr_t *)data = (uintptr_t)info->dlpi_addr;
+    return 1;  // (the program itself is the first)
+}
+static void print_code_address(const char *what, uintptr_t a) {
+    if (sLoadBias && a >= sLoadBias) fprintf(stderr, "%s%08lx (%lx)", what, (unsigned long)a, (unsigned long)(a - sLoadBias));
+    else fprintf(stderr, "%s%08lx", what, (unsigned long)a);
+}
+
 // frame-pointer walk, staying within 1 MB above the stack pointer (host stacks are 512 KB, the main one is the
 // process stack)
 static void host_backtrace(uintptr_t *bp, uintptr_t sp) {
     for (int i = 0; i < 24; i++) {
         if ((uintptr_t)bp < sp || (uintptr_t)bp > sp + 0x100000 || ((uintptr_t)bp & (sizeof *bp - 1))) break;
-        fprintf(stderr, "  from %08lx\n", (unsigned long)bp[1]);
+        print_code_address("  from ", bp[1]);
+        fprintf(stderr, "\n");
         sp = (uintptr_t)bp;
         bp = (uintptr_t *)bp[0];
     }
@@ -149,8 +164,9 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
     snd7_output_close();
     extern void frontend_shutdown(void);
     frontend_shutdown();
-    fprintf(stderr, "host: interrupted at frame %llu, pc %08lx\n", (unsigned long long)host_frame(),
-            (unsigned long)context_pc(ctx));
+    fprintf(stderr, "host: interrupted at frame %llu, ", (unsigned long long)host_frame());
+    print_code_address("pc ", context_pc(ctx));
+    fprintf(stderr, "\n");
     context_report(ctx);
     extern void host_dump_threads(void (*)(uintptr_t *, uintptr_t));
     host_dump_threads(host_backtrace);
@@ -162,8 +178,9 @@ static void on_fatal_signal(int sig, siginfo_t *si, void *ctx) {
 #if HAVE_UC_REGS
     if (sig == SIGSEGV && watch_fault(ctx, (uintptr_t)si->si_addr)) return;
 #endif
-    fprintf(stderr, "host: signal %d (%s) at frame %llu, pc %08lx, address %p\n", sig, strsignal(sig),
-            (unsigned long long)host_frame(), (unsigned long)context_pc(ctx), si->si_addr);
+    fprintf(stderr, "host: signal %d (%s) at frame %llu, ", sig, strsignal(sig), (unsigned long long)host_frame());
+    print_code_address("pc ", context_pc(ctx));
+    fprintf(stderr, ", address %p\n", si->si_addr);
     if (sig == SIGFPE)
         fprintf(stderr, "host: (an integer division the DS wouldn't trap on: it wants DS_DIV / DS_MOD, include/ds_div.h)\n");
     context_report(ctx);
@@ -186,6 +203,7 @@ void host_debug_crash_handlers(void) {
 }
 
 void host_debug_init(void) {
+    dl_iterate_phdr(first_object, &sLoadBias);
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
     sa.sa_flags = SA_SIGINFO | SA_NODEFER;

@@ -11,7 +11,7 @@ same DS byte at different places. Arrays of scalars (padding) count byte by byte
 --types: the same for named structure types (a type declared in several units: heap objects too). Types of the
 same name and the same 32-bit size are compared; unrelated types sharing a name can show up.
 
-Usage: host_view_conflicts.py <game_all.o, 32-bit> <game_all.o, 64-bit> [--types] [--json out.json]
+Usage: host_view_conflicts.py <acww, 32-bit> <acww, 64-bit> [--types] [--json out.json]
 """
 import json
 import sys

@@ -8,7 +8,7 @@ looked up, and the expression becomes HOST_AT(this, N, member.path, rem) (includ
 the DS, `(u8 *)&this->member.path + rem` on hosts. Offsets inside a base class or into padding are reported, not
 rewritten.
 
-Usage: host_this_offsets.py <game_all.o, 32-bit> [--check] FILE...
+Usage: host_this_offsets.py <acww, 32-bit> [--check] FILE...
 """
 import re
 import sys

@@ -64,7 +64,7 @@ __attribute__((constructor(101))) static void early_init(void) {
     host_map_memory();
     host_vram_init();
     host_guards_init();   // (the guard variant: configure_host.py --guards)
-    host_highmem_init();  // ACWW_HIGHMEM: the unused low 4 GB reserved from here on
+    host_highmem_init();  // ACWW_HIGHMEM: the low 4 GB reserved from here on
 }
 
 static void game_main(void *arg) {
@@ -158,10 +158,11 @@ void host_heap_check(void) {
 
 // The root heap's memory on 64-bit hosts (Heap_InitSystem): the game's objects are larger there (pointers), so the
 // DS's main RAM arena (about 1.4 MB for the root heap) runs out; the heap gets a larger block of its own instead
-// (below 4 GB, at 0x50000000, unless ACWW_HIGHMEM puts it above).
+// (anywhere: an anonymous mapping).
 
 // ::operator delete (newdelete.cpp): is p a block of the game's heaps? They are in the game's memory blocks
-// (include/host_mem.h: the main RAM block and the arenas) or, on 64-bit hosts, the root heap's block
+// (include/host_mem.h: the main RAM block and the arenas), the game's data and bss (a heap in a static buffer) or,
+// on 64-bit hosts, the root heap's block
 int host_is_game_heap(const void *p) {
     return HostMem_IsGameRam(p, 1);
 }
@@ -172,22 +173,8 @@ void host_root_heap_bounds(uintptr_t *lo, uintptr_t *hi) {
 
 void *host_root_heap_region(unsigned int *size) {
     const unsigned int kSize = 8u << 20;
-    if (host_highmem()) {  // above 4 GB, the low word of its addresses (0xa0000000...) in poisoned space
-        uintptr_t hint = 0x5a0000000ull;
-        void *p = host_highmem_alloc(&hint, kSize);
-        if (!p) return 0;
-        *size = kSize;
-        sRootHeapLo = (uintptr_t)p;
-        sRootHeapHi = (uintptr_t)p + kSize;
-        return p;
-    }
-    void *want = (void *)(uintptr_t)0x50000000;
-    void *p = mmap(want, kSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    void *p = mmap(0, kSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (p == MAP_FAILED) return 0;
-    if ((uintptr_t)p + kSize > 0xffffffffu) {
-        munmap(p, kSize);
-        return 0;
-    }
     *size = kSize;
     sRootHeapLo = (uintptr_t)p;
     sRootHeapHi = (uintptr_t)p + kSize;

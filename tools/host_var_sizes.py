@@ -6,7 +6,7 @@ bytes, on a 64-bit host the 8-byte stores run over the definition into the next 
 this collects the size of its type in each compile unit (definitions and extern declarations, the 64-bit build's
 debug information) and reports the ones with more than one size (arrays of unknown bound left out).
 
-Usage: host_var_sizes.py <game_all.o, 64-bit> [--small-defs]
+Usage: host_var_sizes.py <acww, 64-bit> [--small-defs]
 """
 import sys
 from collections import defaultdict

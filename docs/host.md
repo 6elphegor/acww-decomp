@@ -140,7 +140,7 @@ device, underruns).
 
 The runtime (`modern/host/`):
 
-- `hw.c`: the memory map (only main RAM with the game's data and bss is still at its DS address); the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
+- `hw.c`: nothing mapped at a DS address (the game's variables are ordinary data and bss); the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
   virtual time (scanlines, timers, VBlank), DMA, the divider and square root; interrupts taken after register
   accesses; 60 Hz pacing; the watchdog.
 - `plat.h`, `plat_posix.c`, `plat_win32.c`: monotonic time, sleeping until a deadline, a background thread.
@@ -170,10 +170,12 @@ The runtime (`modern/host/`):
   `frontend.c` + `viewer/` (window, input, sound; the viewer holds its audio queue at a target level by playing up
   to 0.5% faster or slower).
 
-The build (`tools/configure_host.py`): the game linked as one object (its data and bss named `gdata`/`gbss`,
-`build/.../game.ld`; the variables where the compiler and linker put them - no code depends on the DS's variable
-order since docs/portability.md 2.8), DTCM's variables ordinary variables (DTCM is a host
-block), its C library's
+The build (`tools/configure_host.py`): a plain link of the game's and the runtime's objects (docs/portability.md
+3.3; x86-64: `g++ -m64 -pie -o acww <objects> <melonDS libraries> -lstdc++ -lpthread -lm`, a position-independent
+executable; i386 a fixed-address one, `-no-pie`), the game's variables ordinary data and bss where the compiler and
+linker put them (no code depends on the DS's variable order since 2.8; modern/link/game_begin.c and game_end.c,
+linked first and last of the game's objects, mark where they are for the debug dumps and `HostMem_IsGameRam`),
+DTCM's variables ordinary variables (DTCM is a host block), its C library's
 names renamed to `ds_*` (`include/host_libc_rename.h`, included first in every game unit; the program's global
 operator new/delete are the host's, `modern/host/newdelete.cpp`: the game allocates from its heaps by name,
 `new (kGameHeap) T` / `Mem_AllocForNew`, and blocks of its heaps go back to them on delete), calls to addresses
@@ -214,20 +216,17 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 `python3 tools/configure_host.py --arch x86_64 && ninja -f build_host64.ninja` builds `build/host64_usa/acww`, a
 native x86-64 program (status: plays like the i386 build through the attract demo, the title (logo, clouds, talk
 text) into the town scene with villagers, insects, fish and particle effects; the pictures match the i386 build
-frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). Only the
-game's data and bss are still at their DS addresses (main RAM, 0x02000000), the program at 0x10000000
-(`-Wl,-Ttext-segment`); the rest of the DS memory is host objects (docs/portability.md 3.2). The root heap and the
-threads' stacks are below 4 GB by default (0x50000000, `host_stack_alloc` with MAP_32BIT). Making gdata/gbss ordinary
-data comes next (3.3).
+frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). It is a
+PIE (loaded anywhere, ASLR) with nothing at a DS address: the game's variables are ordinary data and bss, the rest
+of the DS memory host objects (docs/portability.md 3.2, 3.3); the root heap and the threads' stacks are anonymous
+mappings anywhere. Everything is above 4 GB. The crash report gives each code address also less the load bias, the
+address `addr2line` and gdb take for the program file.
 
-`ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0): the root heap and the
-threads' stacks above 4 GB, at addresses whose low word lies in poisoned space (0x5a0000000, 0x6b0000000 up), and
-every range below 4 GB that nothing uses when the game starts reserved without access (`PROT_NONE`, as macOS's
-`__PAGEZERO`); only main RAM (the game's data and bss), the program image and the C library's first heap stay.
-`ACWW_HIGHMEM=2` doesn't map main RAM either: of the DS's address space only the loader's pages of gdata and gbss
-remain, so any DS address used as a pointer faults (3.2). A pointer
+`ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0, 3.3): the whole low 4 GB
+(from 64 KB up) reserved without access (`PROT_NONE`, as macOS's `__PAGEZERO`); the PIE program, the C library's
+heap, the root heap and the stacks are all above it, so any DS address used as a pointer faults. A pointer
 cut to 32 bits then faults, and the crash report says where (its frames as addresses: `addr2line -f -i -C -e
-build/host64_usa/acww <addresses>` names them). The quick, play, town and save/continue scripts run through under it, with the same
+build/host64_usa/acww <addresses>` names them, with the addresses less the load bias that the report prints in parentheses). The quick, play, town and save/continue scripts run through under it, with the same
 pictures and sound as without it. Pointers that must live in a 32-bit slot of the DS's data formats (a sound bank's
 wave archive links, an NFTR font's block links, a wave loaded on its own) go through `include/host_ptr32.h`: the
 pointer itself when it fits, else a handle into a host table.
@@ -329,7 +328,7 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   player was never spawned: `localSlot` stayed 4).
 - Heaps are sized for the DS's objects: on 64-bit hosts every heap the game creates with a size is twice that
   (`ExpHeap_Create` / `FrameHeap_Create`), and the root heap is a block of its own (`host_root_heap_region`,
-  8 MB below 4 GB, above 4 GB with `ACWW_HIGHMEM`) instead of the DS's main RAM arena.
+  8 MB, an anonymous mapping) instead of the DS's main RAM arena.
 - Stack buffers sized to what the DS's stack slot padding absorbed: `Clock_GetDate` writes four bytes into
   three-byte locals (on x86-64 the fourth hit a saved register).
 - ARM idioms that don't carry over: an empty function's "result" is its first argument (still in r0 on the DS).
