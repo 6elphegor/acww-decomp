@@ -42,6 +42,7 @@ extern VillagerTalkTopicsSubFns sConnectTopic[1];
 extern VillagerTalkTopicsSubFns sEtcCancelTopicTable[1];
 extern VillagerTalkTopicsSubFns sSmallTalkTopicTable[2];
 extern VillagerTalkTopicsSubFns sRequestTopicsA[26];
+extern VillagerTalkTopicsSubFns sRequestTopicsB[47];
 extern VillagerTalkTopicsSubFns sEtcConnectTopicTable[6];
 extern VillagerTalkTopicsSubFns sEvKaraokeTopicTable[9];
 extern VillagerTalkTopicsSubFns sEvAdmireTopicTable[8];
@@ -266,22 +267,44 @@ extern "C" void StaticInit_unk_ov069_0225f1a0(void) {
     });
     VillagerTalkTopics_CopyTables();
 }
+// main's topic tables from this overlay's (the sizes the types' on every host: the DS byte counts copied half
+// of each table on 64-bit hosts; the request topics are two tables, A and B, filled from one)
+template <class D, class S, size_t N> static void CopyTopicTable(D (&dst)[N], const S *src) {
+    static_assert(sizeof(D) == sizeof(S), "topic table entries");
+    memcpy(dst, src, sizeof dst);
+}
 extern "C" void VillagerTalkTopics_CopyTables() {
-    memcpy(sHouseVisitTsuTopicTable, data_ov069_02260d24, 72);
-    memcpy(sTalkBeginTopics, data_ov069_022613cc, 408);
-    memcpy(sApSubTopics, data_ov069_02261294, 312);
-    memcpy(sConnectTopic, data_ov069_02260cc4, 24);
-    memcpy(sEtcCancelTopicTable, data_ov069_02260cdc, 24);
-    memcpy(sSmallTalkTopicTable, data_ov069_02260cf4, 48);
-    memcpy(sRequestTopicsA, data_ov069_02261564, 1752);
-    memcpy(sEtcConnectTopicTable, data_ov069_02260e2c, 144);
-    memcpy(sEvKaraokeTopicTable, data_ov069_022611bc, 216);
-    memcpy(sEvAdmireTopicTable, data_ov069_02261024, 192);
-    memcpy(sEvGardeniingTopicTable, data_ov069_02260d6c, 96);
-    memcpy(sEvAcornTopicTable, data_ov069_022610e4, 216);
-    memcpy(sEvSnowfesTopicTable, data_ov069_02260dcc, 96);
-    memcpy(sEvCountdownTopicTable, data_ov069_02260f64, 192);
-    memcpy(sEvBirthTopicTable, data_ov069_02260ebc, 168);
+    static_assert(sizeof data_ov069_02260d24 == sizeof sHouseVisitTsuTopicTable, "sHouseVisitTsuTopicTable");
+    CopyTopicTable(sHouseVisitTsuTopicTable, data_ov069_02260d24);
+    static_assert(sizeof data_ov069_022613cc == sizeof sTalkBeginTopics, "sTalkBeginTopics");
+    CopyTopicTable(sTalkBeginTopics, data_ov069_022613cc);
+    static_assert(sizeof data_ov069_02261294 == sizeof sApSubTopics, "sApSubTopics");
+    CopyTopicTable(sApSubTopics, data_ov069_02261294);
+    static_assert(sizeof data_ov069_02260cc4 == sizeof sConnectTopic, "sConnectTopic");
+    CopyTopicTable(sConnectTopic, data_ov069_02260cc4);
+    static_assert(sizeof data_ov069_02260cdc == sizeof sEtcCancelTopicTable, "sEtcCancelTopicTable");
+    CopyTopicTable(sEtcCancelTopicTable, data_ov069_02260cdc);
+    static_assert(sizeof data_ov069_02260cf4 == sizeof sSmallTalkTopicTable, "sSmallTalkTopicTable");
+    CopyTopicTable(sSmallTalkTopicTable, data_ov069_02260cf4);
+    static_assert(sizeof data_ov069_02261564 == sizeof sRequestTopicsA + sizeof sRequestTopicsB, "request topics");
+    CopyTopicTable(sRequestTopicsA, &data_ov069_02261564[0]);
+    CopyTopicTable(sRequestTopicsB, &data_ov069_02261564[26]);
+    static_assert(sizeof data_ov069_02260e2c == sizeof sEtcConnectTopicTable, "sEtcConnectTopicTable");
+    CopyTopicTable(sEtcConnectTopicTable, data_ov069_02260e2c);
+    static_assert(sizeof data_ov069_022611bc == sizeof sEvKaraokeTopicTable, "sEvKaraokeTopicTable");
+    CopyTopicTable(sEvKaraokeTopicTable, data_ov069_022611bc);
+    static_assert(sizeof data_ov069_02261024 == sizeof sEvAdmireTopicTable, "sEvAdmireTopicTable");
+    CopyTopicTable(sEvAdmireTopicTable, data_ov069_02261024);
+    static_assert(sizeof data_ov069_02260d6c == sizeof sEvGardeniingTopicTable, "sEvGardeniingTopicTable");
+    CopyTopicTable(sEvGardeniingTopicTable, data_ov069_02260d6c);
+    static_assert(sizeof data_ov069_022610e4 == sizeof sEvAcornTopicTable, "sEvAcornTopicTable");
+    CopyTopicTable(sEvAcornTopicTable, data_ov069_022610e4);
+    static_assert(sizeof data_ov069_02260dcc == sizeof sEvSnowfesTopicTable, "sEvSnowfesTopicTable");
+    CopyTopicTable(sEvSnowfesTopicTable, data_ov069_02260dcc);
+    static_assert(sizeof data_ov069_02260f64 == sizeof sEvCountdownTopicTable, "sEvCountdownTopicTable");
+    CopyTopicTable(sEvCountdownTopicTable, data_ov069_02260f64);
+    static_assert(sizeof data_ov069_02260ebc == sizeof sEvBirthTopicTable, "sEvBirthTopicTable");
+    CopyTopicTable(sEvBirthTopicTable, data_ov069_02260ebc);
 }
 
 // On the DS an empty object whose inline constructor runs the copy once all the tables are built (the call ends
