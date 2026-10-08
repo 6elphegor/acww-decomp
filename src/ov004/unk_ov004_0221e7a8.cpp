@@ -1585,18 +1585,17 @@ extern "C" void PlayerActor_EndGetIntoBed(Obj *o) {
 
 extern "C" void PlayerActor_GetIntoBedSlide(Obj *o) {
     Rec *r = (Rec *)&o->actionWork;
-    u8 *p;
+    s32 *p;
     s32 v;
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        p = (u8 *)o;
-        p += 0x5c;
+        p = &o->position.x;
         if ((r->targetAngle & 0x4000) != 0) {
             v = r->targetX;
         } else {
-            p += 8;
+            p = &o->position.z;
             v = r->targetZ;
         }
-        PlayerActor_ApproachValue((s32 *)p, v, 0x399, 0x1ec, 0x31);
+        PlayerActor_ApproachValue(p, v, 0x399, 0x1ec, 0x31);
     } else {
         (o)->netFollowTransform();
     }

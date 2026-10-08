@@ -4393,7 +4393,7 @@ u32 FtrBed::getLieTiles(void *o) {
             s32 *q = (s32 *)((FtrTilePair *)o)->get(i);
             FieldPos_ToUnit(q, q + 1, &v);
         }
-        return *(u32 *)((u8 *)sFtrBedLieOffsets + 4 + (footprint << 3));
+        return sFtrBedLieOffsets[footprint].count;
     }
     return 0;
 }
