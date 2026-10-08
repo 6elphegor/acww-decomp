@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/os_rtc.h"
+#include "host_mem.h"
 // NitroSDK CARD (card_common.c), autoload_2 0x0211d680-0x0211da74, with its bss (autoload_3 0x021febb4-0x021ff220).
 // Split from unk_0211d20c.c (rtc.c) by the files' bss. ARM code, mwcc 1.2/base -O4,p.
 // Functions are in reverse address order (mwcc emits in reverse source order).
@@ -182,7 +183,7 @@ void CARDi_InitCommon(void) {
     data_021fec00.cmd = (CARDCmd *)data_021febc0;
     MIi_CpuClearFast(zero, data_021febc0, sizeof(CARDCmd));
     DC_FlushRange(data_021febc0, sizeof(CARDCmd));
-    if (*(u16 *)0x027ffc40 != 2) MI_CpuCopy8((void *)0x027ffe00, (void *)0x027ffa80, 0x160);
+    if (*HW_SYSWORK(u16, wmBootBuf) != 2) MI_CpuCopy8(HW_SYSWORK(void, romHeader), HW_SYSWORK(void, cardRomHeader), 0x160);
     c->queue.head = c->queue.tail = 0;
     c->tq.head = c->tq.tail = 0;
     c->priority = 4;
@@ -190,7 +191,7 @@ void CARDi_InitCommon(void) {
     OS_CreateThread(&c->thread, (void (*)(void *))CARDi_TaskThread, 0, data_021fee20 + 0x100, 0x400, c->priority);
     OS_WakeupThreadDirect(&c->thread);
     PXI_SetFifoRecvCallback(11, CARDi_OnFifoRecv);
-    if (*(u16 *)0x027ffc40 != 2) CARD_Enable(1);
+    if (*HW_SYSWORK(u16, wmBootBuf) != 2) CARD_Enable(1);
 }
 
 // CARD_IsEnabled

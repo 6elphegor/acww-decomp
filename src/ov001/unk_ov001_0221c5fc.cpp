@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/os_rtc.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_02115468.h"
@@ -40,7 +41,7 @@ void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);  // unk_ov001_02208388.cpp
 extern "C" u8 sWfcUsbWaitResult = 0;
 
 extern "C" s32 WfcUsbWait_IsLidClosed() {
-    s32 t = *(u16 *)0x27fffa8 & 0x8000;
+    s32 t = *HW_SYSWORK(u16, buttonXY) & 0x8000;
     return (t >> 15) ? TRUE : FALSE;
 }
 

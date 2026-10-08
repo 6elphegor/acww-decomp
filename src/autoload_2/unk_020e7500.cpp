@@ -5,6 +5,7 @@
 // G001a (0x020e7500-0x020e8558) was split into four units by its data: each bss group of the range is sorted by size on
 // its own (4,4 | 1,1,2,2,8,0x48 | 1,2,6 | 0x30), so the range is at least four source files.
 #include "ds_div.h"
+#include "host_mem.h"
 #include "types.h"
 #include "sys/TreeNode.h"
 #include "gfx/VecFx32.h"
@@ -87,10 +88,10 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 // PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work X/Y/fold word 0x027fffa8)
 static inline u16 PAD_Read(void) {
-    return (u16)(((IO_R((vu16 *)0x04000130) | *(vu16 *)0x027fffa8) ^ 0x2fff) & 0x2fff);
+    return (u16)(((IO_R((vu16 *)0x04000130) | *HW_SYSWORK(vu16, buttonXY)) ^ 0x2fff) & 0x2fff);
 }
 static inline BOOL PAD_DetectFold(void) {
-    return (*(vu16 *)0x027fffa8 & 0x8000) >> 15;
+    return (*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15;
 }
 
 #define FX_SinIdx(a) data_02135f44[((a) >> 4) * 2]

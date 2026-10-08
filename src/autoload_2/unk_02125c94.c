@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // autoload_2 0x02125c94-0x0212703c: wireless helper (WH-like) state callback, job-queue thread, chunk reassembly. mwcc 1.2/base, -O4,p.
 #include "sys/OSThread.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02125c94.h"
 #include "proto/main/unk_0206d49c.h"
@@ -113,7 +114,7 @@ typedef struct { u8 pad[4]; u16 cur; } WRot;
 
 // lock acquire helper: spin on lock word 0x027fffe8 bit 0x40 / OS_TryLockCartridge
 void CTRDGi_LockByProcessor(u32 a, WLock *st) {
-    volatile u32 *const p = (volatile u32 *)0x027fffe8;  // the cartridge lock word
+    volatile u32 *const p = HW_SYSWORK(volatile u32, ctrdgLock);  // the cartridge lock word
     for (;;) {
         st->irq = OS_DisableInterrupts();
         st->flag = OS_ReadOwnerOfLockWord(p) & 0x40;

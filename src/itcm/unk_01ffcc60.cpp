@@ -2,6 +2,7 @@
 // I004b: itcm 0x01ffcc60-0x01ffcd50 (3 ARM functions): the vblank work callback, the window-edge animation step and an empty
 // function. mwcc 1.2/base, C++, ARM, -O4,p. The two H-blank handlers behind it (0x01ffcd50, 0x01ffceb8) are UNMATCHED, see notes.txt.
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/dtcm/unk_027e0434.h"
@@ -13,7 +14,6 @@ extern s32 sVBlankCount;
 extern u16 gMainWaitingFrame;
 extern OSThreadQueue gFrameWaitQueue;
 extern OSThreadQueue gVBlankQueue;
-extern u8 data_027e0000[];  // DTCM's start
 
 void VramQueueTex_Run(void);
 void HBlank_RunVBlank(void);
@@ -51,6 +51,6 @@ extern "C" void Main_VBlankCallback(void) {
     }
     HBlank_RunVBlank();
     OS_WakeupThread(&gVBlankQueue);
-    *(vu32 *)(data_027e0000 + 0x3ff8) |= 1;  // HW_INTR_CHECK_BUF (DTCM + 0x3ff8): the vblank interrupt was handled
+    *HW_INTR_CHECK_BUF |= 1;  // (DTCM + 0x3ff8): the vblank interrupt was handled
 }
 

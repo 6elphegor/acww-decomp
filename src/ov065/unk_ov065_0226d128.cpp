@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "host_mem.h"
 #include "net/DwcHttp.h"
 #include "net/NasAuthWork.h"
 #include "nitro/os_rtc.h"
@@ -474,9 +475,9 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *
     }
     MI_CpuCopy8(ptr, buf, len);
     OS_RestoreInterrupts(irq);
-    MI_CpuCopy8((void *)0x27ffe0c, code4, 4);
+    MI_CpuCopy8(HW_SYSWORK_AT(void, romHeader, 0xc), code4, 4);
     code4[4] = 0;
-    MI_CpuCopy8((void *)0x27ffe10, code2, 2);
+    MI_CpuCopy8(HW_SYSWORK_AT(void, romHeader, 0x10), code2, 2);
     code2[2] = 0;
     for (i = 0; i < 6; i++) {
         OS_SPrintf(macstr + i * 2, "%02x", mac[i]);

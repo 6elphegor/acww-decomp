@@ -26,8 +26,10 @@ Checking a rewrite of one file: `tools/host_objcmp.sh OLD.cpp NEW.cpp DIR` compi
 compares the code per function (`tools/host_fndiff.py DIR/A32.dis DIR/B32.dis -v`): every difference left should have
 an explanation (inlining, stack layout, a fixed bug).
 
-Finding where two builds part: `ACWW_RAMHASH=<file>` writes a hash of main RAM every frame and
-`ACWW_RAMDUMP=f1,f2,...:<prefix>` dumps it at frames (32-bit builds: the game's data and heaps live there). Diff
+Finding where two builds part: `ACWW_RAMHASH=<file>` writes a hash of main RAM (and DTCM and the system work area)
+every frame and `ACWW_RAMDUMP=f1,f2,...:<prefix>` dumps main RAM at frames: 4 MB as the DS's main RAM from
+0x02000000, assembled from the game's data and bss, the main RAM block (the root heap on 32-bit builds) and the system
+work area (include/host_mem.h; 32-bit builds: the game's data and heaps live there). Diff
 the dumps, ignoring the bytes that differ at an early frame (code addresses in static data), then watch the first
 address that differs. Code that reads memory nothing wrote (a lost argument, an uninitialized buffer) shows up as a
 difference that depends only on code shape.
@@ -138,12 +140,19 @@ device, underruns).
 
 The runtime (`modern/host/`):
 
-- `hw.c`: the memory map; the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
+- `hw.c`: the memory map (only main RAM with the game's data and bss is still at its DS address); the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
   virtual time (scanlines, timers, VBlank), DMA, the divider and square root; interrupts taken after register
   accesses; 60 Hz pacing; the watchdog.
 - `plat.h`, `plat_posix.c`, `plat_win32.c`: monotonic time, sleeping until a deadline, a background thread.
 - `debug_posix.c`: the signal-based debugging aids (`HOST_DEBUG_POSIX`).
-- `vram.c`: VRAM banking with mmap (each VRAMCNT change remaps the banks into the CPU's windows).
+- `mem.c`: the DS memory the game reaches by address, as host objects (include/host_mem.h): the system work area
+  (`gHostSysWork`, `HW_SYSWORK(T, member)`), DTCM and ITCM (16 / 32 KB blocks), palettes and OAM (`HW_PLTT`,
+  `HW_OAM`), the main RAM arena (`HostMainRam_Ptr`). Each block keeps the low bits of the DS's addresses.
+  `tools/host_hwaddr_rewrite.py` turns a literal DS address cast in the sources into these (`--check` lists any).
+- `vram.c`: VRAM banking without mappings: the banks are host memory, the CPU sees VRAM through five window arrays
+  (`HostVram_CpuPtr(dsaddr)`) that follow VRAMCNT - written back to the banks before the renderer reads them and at
+  every VRAMCNT change, then filled from the banks' new places, so a pointer kept across a change sees what the DS
+  shows there.
 - `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
 - `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (the host's local time;
@@ -163,7 +172,8 @@ The runtime (`modern/host/`):
 
 The build (`tools/configure_host.py`): the game linked as one object (its data and bss named `gdata`/`gbss`,
 `build/.../game.ld`; the variables where the compiler and linker put them - no code depends on the DS's variable
-order since docs/portability.md 2.8), DTCM's variables at 0x027e0000, its C library's
+order since docs/portability.md 2.8), DTCM's variables ordinary variables (DTCM is a host
+block), its C library's
 names renamed to `ds_*` (`include/host_libc_rename.h`, included first in every game unit; the program's global
 operator new/delete are the host's, `modern/host/newdelete.cpp`: the game allocates from its heaps by name,
 `new (kGameHeap) T` / `Mem_AllocForNew`, and blocks of its heaps go back to them on delete), calls to addresses
@@ -204,15 +214,18 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 `python3 tools/configure_host.py --arch x86_64 && ninja -f build_host64.ninja` builds `build/host64_usa/acww`, a
 native x86-64 program (status: plays like the i386 build through the attract demo, the title (logo, clouds, talk
 text) into the town scene with villagers, insects, fish and particle effects; the pictures match the i386 build
-frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). The DS
-memory is still at its DS addresses and the program at 0x10000000 (`-Wl,-Ttext-segment`); the root heap and the
-threads' stacks are below 4 GB by default (0x50000000, `host_stack_alloc` with MAP_32BIT). Moving the DS memory
-above 4 GB (macOS arm64) comes after (docs/portability.md 3.2, 3.3).
+frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). Only the
+game's data and bss are still at their DS addresses (main RAM, 0x02000000), the program at 0x10000000
+(`-Wl,-Ttext-segment`); the rest of the DS memory is host objects (docs/portability.md 3.2). The root heap and the
+threads' stacks are below 4 GB by default (0x50000000, `host_stack_alloc` with MAP_32BIT). Making gdata/gbss ordinary
+data comes next (3.3).
 
 `ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0): the root heap and the
 threads' stacks above 4 GB, at addresses whose low word lies in poisoned space (0x5a0000000, 0x6b0000000 up), and
 every range below 4 GB that nothing uses when the game starts reserved without access (`PROT_NONE`, as macOS's
-`__PAGEZERO`); only the DS mappings still in use, the program image and the C library's first heap stay. A pointer
+`__PAGEZERO`); only main RAM (the game's data and bss), the program image and the C library's first heap stay.
+`ACWW_HIGHMEM=2` doesn't map main RAM either: of the DS's address space only the loader's pages of gdata and gbss
+remain, so any DS address used as a pointer faults (3.2). A pointer
 cut to 32 bits then faults, and the crash report says where (its frames as addresses: `addr2line -f -i -C -e
 build/host64_usa/acww <addresses>` names them). The quick, play, town and save/continue scripts run through under it, with the same
 pictures and sound as without it. Pointers that must live in a 32-bit slot of the DS's data formats (a sound bank's

@@ -57,8 +57,7 @@ def labels_used():
     defined_in = {}
     for b in ("build/host_usa", "build/host64_usa"):
         objs = [l.strip() for l in open(f"{b}/objects.txt") if l.strip() and not l.strip().endswith("game_all.o")]
-        objs += [l.strip() for l in open(f"{b}/game_objects.txt") if l.strip() and "/src/" in l]
-        objs += sorted(str(p) for p in Path(b).glob("src/dtcm/*.o"))  # (linked apart, in dtcm.o)
+        objs += [l.strip() for l in open(f"{b}/game_objects.txt") if l.strip() and "/src/" in l]  # (with src/dtcm)
         out = subprocess.run(["nm", "-A", *objs], capture_output=True, text=True, check=True).stdout
         for line in out.splitlines():
             obj, _, rest = line.partition(":")

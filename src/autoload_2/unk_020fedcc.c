@@ -210,7 +210,7 @@ static inline u32 orr(u32 a, u32 b) { return a | b; }
 u32 DWC_Init(u8 *p) {
     BOOL r4 = 0;
     s32 r6;
-    OSi_ReferSymbol((void *)0x02000b84);
+    OSi_ReferSymbol(0);  // (the DS address 0x02000b84 of an SDK version string; an empty function)
     r6 = DWC_BM_Init(p);
     if (DWC_Auth_CheckWiFiIDNeedCreate()) {
         DWCi_AUTH_MakeWiFiID(p);

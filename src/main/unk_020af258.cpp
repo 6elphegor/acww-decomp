@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_mem.h"
 #include "game/Unk_021c47c4.h"
 #include "game/Unk_020aec00.h"
 #include "game/ShopAckCounter.h"
@@ -51,7 +52,7 @@ extern "C" void LidSleep_Init() {
 extern "C" void LidSleep_Update() {
     switch (sLidSleepState) {
     case 0:
-        if ((*(vu16 *)0x27fffa8 & 0x8000) >> 15) {
+        if ((*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15) {
             sLidSleepState = 1;
             LidSleep_BacklightOff();
             PM_SetLCDPower(0);
@@ -59,7 +60,7 @@ extern "C" void LidSleep_Update() {
         }
         break;
     case 1:
-        if (!((*(vu16 *)0x27fffa8 & 0x8000) >> 15)) {
+        if (!((*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15)) {
             sLidSleepState = 2;
             LidSleep_BacklightRestore();
             LidSleep_WakeLcd();

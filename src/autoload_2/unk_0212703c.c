@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK-era library code, autoload_2 0x0212703c-0x02128030. ARM code, mwcc 1.2/base, -O4,p.
 #include "ds_div.h"
+#include "host_mem.h"
 #include "types.h"
 #include "nitro/io_access.h"
 
@@ -599,11 +600,11 @@ void CTRDGi_InitModuleInfo(void) {
     CTRDGi_RestoreAccessCycle(&cyc);
     CTRDGi_UnlockByProcessor(data_02200054[1], saved);
     b = &data_02200080;
-    *(u16 *)0x027ffc30 = b->f_be;
+    *HW_SYSWORK(u16, ctrdgModuleInfo) = b->f_be;
     for (i = 0; i < 3; i++) {
-        ((u8 *)0x027ffc32)[i] = b->f_b5[i];
+        (HW_SYSWORK_AT(u8, ctrdgModuleInfo, 0x2))[i] = b->f_b5[i];
     }
-    w = (Work *)0x027ffc30;
+    w = HW_SYSWORK(Work, ctrdgModuleInfo);
     w->c = b->f_b0;
     w->d = b->f_ac;
     MIi_CpuCopy32(0xffff0020, data_02200084, 0x9c);

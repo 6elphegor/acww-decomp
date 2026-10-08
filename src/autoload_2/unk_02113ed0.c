@@ -1,4 +1,5 @@
 #include "sys/OSThread.h"
+#include "host_mem.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS (os_printf.c tail, os_thread.c, os_system.c, os_message.c, os_mutex.c): autoload_2 0x02113088-0x02114410.
 typedef unsigned char u8;
@@ -45,7 +46,6 @@ extern OSThread data_021fcc3c;
 extern OSThread data_021fccfc;
 extern u32 data_021fce84;
 extern u32 data_0213bff0;
-#define data_027fffa0 (*(volatile u32 *)0x027fffa0)  // the system area: a 32-bit address (OSThreadInfo *)
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 e);
@@ -88,8 +88,8 @@ void OS_CreateThread(OSThread *t, void (*f)(void *), void *arg, void *stack, u32
 // OS_IsRunOnEmulator-style hardware flag check
 BOOL func_02113ed0(void) {
     volatile u16 *p;
-    if (*(volatile u16 *)0x027ffc10 == 0) p = (volatile u16 *)0x027ff814;
-    else p = (volatile u16 *)0x027ffc14;
+    if (*HW_SYSWORK_AT(volatile u16, bootCheckInfo, 0x10) == 0) p = HW_SYSWORK_AT(volatile u16, reserved_680, 0x194);
+    else p = HW_SYSWORK_AT(volatile u16, bootCheckInfo, 0x14);
     return *p == 1;
 }
 

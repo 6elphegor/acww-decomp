@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_mem.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
@@ -50,7 +51,7 @@ extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
-extern u32 OS_GetDTCMAddress(void);
+extern void *OS_GetDTCMAddress(void);  // (the host's DTCM block)
 extern void MI_StopDma(u32);
 extern void MIi_CardDmaCopy32(u32, uptr, uptr, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
@@ -183,7 +184,7 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
 }
 
 void WmClearFifoRecvFlag(void) {
-    u16 *p = (u16 *)0x027fff96;
+    u16 *p = HW_SYSWORK(u16, wmCallbackControl);
     if (*p & 1) *p &= ~1;
 }
 

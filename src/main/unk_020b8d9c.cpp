@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_mem.h"
 #include "host_shared_calls.h"
 #include "gfx/HBlankTask.h"
 #include "uptr.h"
@@ -6296,9 +6297,9 @@ extern "C" void Sky_VBlankSub()
     volatile u16 v1, v2;
     s32 y = gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex];
     v1 = sSkyGradient.keyColors[0];
-    REG16(0x5000400) = v1;
+    REG16(HW_PLTT + 0x400) = v1;
     v2 = sSkyGradient.keyColors[1];
-    REG16(0x5000000) = v2;
+    REG16(HW_PLTT) = v2;
     SkyLineAffine *e = gWeatherManager.lineAffine[gWeatherManager.lineBufferIndex];
     IO_W(&REG16(0x4001030), e->pa);
     IO_W(&REG32(0x4001038), e->x);
@@ -6328,9 +6329,9 @@ extern "C" void Sky_VBlankMain()
     volatile u16 v1, v2;
     s32 y = gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex];
     v1 = sSkyGradient.keyColors[0];
-    REG16(0x5000400) = v1;
+    REG16(HW_PLTT + 0x400) = v1;
     v2 = sSkyGradient.keyColors[0];
-    REG16(0x5000000) = v2;
+    REG16(HW_PLTT) = v2;
     SkyLineAffine *e = gWeatherManager.lineAffine[gWeatherManager.lineBufferIndex];
     IO_W(&REG16(0x4000030), e->pa);
     IO_W(&REG32(0x4000038), e->x);
@@ -6390,8 +6391,8 @@ void Sky_VBlankDisabled(void);
 void Sky_VBlankDisabled(void) {
     vu16 t;
     t = sSkyGradient.keyColors[0];
-    *(vu16 *)0x5000400 = t;
-    *(vu16 *)0x5000000 = sSkyGradient.lineColors[0][0xbf];
+    *(vu16 *)(HW_PLTT + 0x400) = t;
+    *(vu16 *)HW_PLTT = sSkyGradient.lineColors[0][0xbf];
     IO_W((vu32 *)0x4000000, IO_R((vu32 *)0x4000000) & 0xfffff5ff);
 }
 

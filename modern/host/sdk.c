@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "ds_div.h"
+#include "host_mem.h"
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -28,7 +29,7 @@ void IC_InvalidateRange(void *p, u32 n) { (void)p; (void)n; }
 void OS_SetProtectionRegion1(u32 v) { (void)v; }
 void OS_SetProtectionRegion2(u32 v) { (void)v; }
 void OS_EnableDTCM(void) {}
-u32 OS_GetDTCMAddress(void) { return 0x027e0000; }
+void *OS_GetDTCMAddress(void) { return HW_DTCM_BLOCK; }  // (the host's DTCM block)
 
 // ---- MI: fills and copies (sizes in bytes; the 16/32-bit versions move whole units). A register on either side
 // (the 3D command FIFO, the matrix results, a DMA's registers) goes through the register model, unit by unit.

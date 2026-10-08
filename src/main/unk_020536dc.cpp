@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_mem.h"
 #include "gfx/ThreeLayerAnimModel.h"
 #include "gfx/GfxFrameHooks.h"
 #include "nitro/io_access.h"
@@ -39,12 +40,12 @@ extern "C" void Gfx_Init()
     IO_W(p, (IO_R(p) & 0xfffffdf1) | 0x20e);
     GX_SetBankForLCDC(0x1f7);
     a = 0;
-    MIi_CpuClearFast(a, (void *)0x6800000, 0x84000);
+    MIi_CpuClearFast(a, HostVram_CpuPtr(0x06800000), 0x84000);
     GX_DisableBankForLCDC();
     b = 0xc0;
-    MIi_CpuClearFast(b, (void *)0x7000000, 0x400);
+    MIi_CpuClearFast(b, (void *)HW_OAM, 0x400);
     c = 0;
-    MIi_CpuClearFast(c, (void *)0x5000000, 0x400);
+    MIi_CpuClearFast(c, (void *)HW_PLTT, 0x400);
     Gfx3d_Init();
     Gfx2d_LoadBackdropColor();
     VramQueue2d_Init();

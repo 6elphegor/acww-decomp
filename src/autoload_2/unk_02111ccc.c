@@ -1,4 +1,5 @@
 #include "proto/autoload_2/unk_0210fa84.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_02111ccc.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
@@ -57,7 +58,7 @@ void GX_BeginLoadTexPltt(void) {
 
 // GX_LoadBGExtPltt
 void GX_LoadTexPltt(const void *src, u32 offset, u32 size) {
-    u8 *dest = (u8 *)(uptr)data_021fcbf8 + offset;  // (a VRAM address: LCDC)
+    u8 *dest = (u8 *)HostVram_CpuPtr(data_021fcbf8 + offset);  // (a VRAM address: LCDC)
     if (data_0213bfec != -1) {
         MI_DmaCopy32Async(data_0213bfec, src, dest, size, 0, 0);
     } else {
@@ -77,32 +78,32 @@ void GX_EndLoadTexPltt(void) {
 
 // GX_LoadBGPltt (0x05000000)
 void GX_LoadBGPltt(const void *src, u32 offset, u32 size) {
-    copy16(data_0213bfec, src, (u8 *)0x5000000 + offset, size);
+    copy16(data_0213bfec, src, (u8 *)HW_PLTT + offset, size);
 }
 
 // GXS_LoadBGPltt (0x05000400)
 void GXS_LoadBGPltt(const void *src, u32 offset, u32 size) {
-    copy16(data_0213bfec, src, (u8 *)0x5000400 + offset, size);
+    copy16(data_0213bfec, src, (u8 *)(HW_PLTT + 0x400) + offset, size);
 }
 
 // GX_LoadOBJPltt (0x05000200)
 void GX_LoadOBJPltt(const void *src, u32 offset, u32 size) {
-    copy16(data_0213bfec, src, (u8 *)0x5000200 + offset, size);
+    copy16(data_0213bfec, src, (u8 *)(HW_PLTT + 0x200) + offset, size);
 }
 
 // GXS_LoadOBJPltt (0x05000600)
 void GXS_LoadOBJPltt(const void *src, u32 offset, u32 size) {
-    copy16(data_0213bfec, src, (u8 *)0x5000600 + offset, size);
+    copy16(data_0213bfec, src, (u8 *)(HW_PLTT + 0x600) + offset, size);
 }
 
 // GX_LoadOAM (main engine OAM, 0x07000000)
 void GX_LoadOAM(const void *src, u32 offset, u32 size) {
-    copy32(data_0213bfec, src, (u8 *)0x7000000 + offset, size);
+    copy32(data_0213bfec, src, (u8 *)HW_OAM + offset, size);
 }
 
 // GXS_LoadOAM (sub engine OAM, 0x07000400)
 void GXS_LoadOAM(const void *src, u32 offset, u32 size) {
-    copy32(data_0213bfec, src, (u8 *)0x7000400 + offset, size);
+    copy32(data_0213bfec, src, (u8 *)(HW_OAM + 0x400) + offset, size);
 }
 
 // ---- file-scope objects (.rodata 0x02139f44-0x02139f54)

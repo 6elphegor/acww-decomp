@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/io_access.h"
 #include "net/WfcPool.h"
 #include "net/WfcRect.h"
@@ -151,7 +152,7 @@ WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out,
     e->charName = t;
     *out = NNSi_G2dCalcRequiredOBJ(w, h);
     u32 tt = t;
-    u8 *base = mode == 1 ? (u8 *)0x6600000 : (u8 *)0x6400000;
+    u8 *base = mode == 1 ? (u8 *)HostVram_CpuPtr(0x06600000) : (u8 *)HostVram_CpuPtr(0x06400000);
     NNS_G2dCharCanvasInitForOBJ1D(&e->cc, base + (tt << 7), w, h, 4);
     e->cc.clear(&e->cc, 0);
     NNSG2dFont *ent = &sWfcText->fonts[slot];

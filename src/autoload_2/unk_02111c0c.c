@@ -4,6 +4,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "uptr.h"
+#include "host_mem.h"
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
@@ -21,11 +22,11 @@ static inline void copy32(s32 dmaNo, const void *src, void *dest, u32 size) {
 
 // G2_GetOBJCharPtr / G2S_GetOBJCharPtr (gx/g2.h): constant-returning inlines
 static inline void *G2_GetOBJCharPtr(void) {
-    return (void *)0x06400000; // HW_OBJ_VRAM
+    return HostVram_CpuPtr(0x06400000); // HW_OBJ_VRAM
 }
 
 static inline void *G2S_GetOBJCharPtr(void) {
-    return (void *)0x06600000; // HW_DB_OBJ_VRAM
+    return HostVram_CpuPtr(0x06600000); // HW_DB_OBJ_VRAM
 }
 
 // GX_LoadOBJ

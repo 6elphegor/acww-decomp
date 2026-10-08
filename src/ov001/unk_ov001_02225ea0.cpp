@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "proto/ov001/unk_ov001_02225ea0.h"
 
 #pragma thumb off
@@ -15,10 +16,10 @@ u8 sWfcLcdOff;
 
 void WfcUtil_UpdateLidPower() {
     if (sWfcLcdOff != 0) {
-        if (((*(vu16 *)0x27fffa8 & 0x8000) >> 15) != 0) return;
+        if (((*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15) != 0) return;
         if (PM_SetLCDPower(1) != 0) sWfcLcdOff = 0;
     } else {
-        if (((*(vu16 *)0x27fffa8 & 0x8000) >> 15) == 0) return;
+        if (((*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15) == 0) return;
         if (PM_SetLCDPower(0) != 0) sWfcLcdOff = 1;
     }
 }

@@ -45,7 +45,6 @@ extern OSThread data_021fcc3c;
 extern OSThread data_021fccfc;
 extern u32 data_021fce84;
 extern u32 data_0213bff0;
-#define data_027fffa0 (*(volatile u32 *)0x027fffa0)  // the system area: a 32-bit address (OSThreadInfo *)
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 e);

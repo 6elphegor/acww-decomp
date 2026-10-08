@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "host_mem.h"
 #include "net/WfcMoveMbWork.h"
 #include "nitro/wm.h"
 #include "proto/autoload_2/unk_02115468.h"
@@ -473,7 +474,7 @@ extern "C" s32 WfcMoveWh_StartMeasureChannel() {
     u16 v[3];
     u16 r;
     OS_GetMacAddress(v);
-    u32 m = *(volatile u32 *)0x27ffc3c;
+    u32 m = *HW_SYSWORK(volatile u32, vblankCount);
     u32 a = v[0] + m;
     u32 b = v[1] + a;
     sWfcMoveWh->rand = v[2] + b;

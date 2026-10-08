@@ -1,4 +1,5 @@
 #include "sys/PMCbInfo.h"
+#include "host_mem.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK TP (touch panel) / PM (power management) / RTC, ARM9 side: autoload_2 0x0211bcdc-0x0211d20c. mwcc 1.2/base.
 typedef unsigned char u8;
@@ -222,27 +223,27 @@ void RtcCommonCallback(u32 tag, u32 data, u32 err) {
         switch (data_021feb90.command) {
         case 0:
             p = data_021feb90.dst1;
-            p[0] = RtcBCD2HEX((*(volatile u8 *)0x027ffde8));
-            p[1] = RtcBCD2HEX((((*(volatile u32 *)0x027ffde8) << 19) >> 27));
-            p[2] = RtcBCD2HEX((((*(volatile u32 *)0x027ffde8) << 10) >> 26));
-            p[3] = (((*(volatile u32 *)0x027ffde8) << 5) >> 29);
+            p[0] = RtcBCD2HEX((*HW_SYSWORK(volatile u8, realTimeClock)));
+            p[1] = RtcBCD2HEX((((*HW_SYSWORK(volatile u32, realTimeClock)) << 19) >> 27));
+            p[2] = RtcBCD2HEX((((*HW_SYSWORK(volatile u32, realTimeClock)) << 10) >> 26));
+            p[3] = (((*HW_SYSWORK(volatile u32, realTimeClock)) << 5) >> 29);
             break;
         case 1:
             p = data_021feb90.dst1;
-            p[0] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 26) >> 26));
-            p[1] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 17) >> 25));
-            p[2] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 9) >> 25));
+            p[0] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 26) >> 26));
+            p[1] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 17) >> 25));
+            p[2] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 9) >> 25));
             break;
         case 2:
             p = data_021feb90.dst1;
-            p[0] = RtcBCD2HEX(((*(volatile u32 *)0x027ffde8) & 0xff));
-            p[1] = RtcBCD2HEX((((*(volatile u32 *)0x027ffde8) << 19) >> 27));
-            p[2] = RtcBCD2HEX((((*(volatile u32 *)0x027ffde8) << 10) >> 26));
-            p[3] = (((*(volatile u32 *)0x027ffde8) << 5) >> 29);
+            p[0] = RtcBCD2HEX(((*HW_SYSWORK(volatile u32, realTimeClock)) & 0xff));
+            p[1] = RtcBCD2HEX((((*HW_SYSWORK(volatile u32, realTimeClock)) << 19) >> 27));
+            p[2] = RtcBCD2HEX((((*HW_SYSWORK(volatile u32, realTimeClock)) << 10) >> 26));
+            p[3] = (((*HW_SYSWORK(volatile u32, realTimeClock)) << 5) >> 29);
             q = data_021feb90.dst2;
-            q[0] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 26) >> 26));
-            q[1] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 17) >> 25));
-            q[2] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 9) >> 25));
+            q[0] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 26) >> 26));
+            q[1] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 17) >> 25));
+            q[2] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 9) >> 25));
             break;
         case 3:
         case 4:
@@ -250,7 +251,7 @@ void RtcCommonCallback(u32 tag, u32 data, u32 err) {
             break;
         case 6:
             p = data_021feb90.dst1;
-            switch (((volatile RTCRawStatus *)0x027ffdea)->mode) {
+            switch ((HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->mode) {
             case 4:
                 *p = 1;
                 break;
@@ -261,7 +262,7 @@ void RtcCommonCallback(u32 tag, u32 data, u32 err) {
             break;
         case 7:
             p = data_021feb90.dst1;
-            if (((volatile RTCRawStatus *)0x027ffdea)->flag) {
+            if ((HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->flag) {
                 *p = 1;
             } else {
                 *p = 0;
@@ -269,35 +270,35 @@ void RtcCommonCallback(u32 tag, u32 data, u32 err) {
             break;
         case 8:
             p = data_021feb90.dst1;
-            p[0] = (((*(volatile u32 *)0x027ffdec) << 29) >> 29);
-            p[1] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 18) >> 26));
-            p[2] = RtcBCD2HEX((((*(volatile u32 *)0x027ffdec) << 9) >> 25));
+            p[0] = (((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 29) >> 29);
+            p[1] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 18) >> 26));
+            p[2] = RtcBCD2HEX((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 9) >> 25));
             p[3] = 0;
-            if ((((*(volatile u32 *)0x027ffdec) << 24) >> 31)) {
+            if ((((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 24) >> 31)) {
                 p[3] += 1;
             }
-            if (((*(volatile u32 *)0x027ffdec) << 16) >> 31) {
+            if (((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 16) >> 31) {
                 p[3] += 2;
             }
-            if (((*(volatile u32 *)0x027ffdec) << 8) >> 31) {
+            if (((*HW_SYSWORK_AT(volatile u32, realTimeClock, 0x4)) << 8) >> 31) {
                 p[3] += 4;
             }
             break;
         case 9:
             if (data_021feb90.busy == 0) {
                 if (*data_021feb90.dst1 == 1) {
-                    if (((volatile RTCRawStatus *)0x027ffdea)->mode != 4) {
+                    if ((HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->mode != 4) {
                         data_021feb90.busy++;
-                        ((volatile RTCRawStatus *)0x027ffdea)->mode = 4;
+                        (HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->mode = 4;
                         if (!RTCi_WriteRawStatus2Async()) {
                             data_021feb90.busy = 0;
                             result = 3;
                         }
                     }
                 } else {
-                    if (((volatile RTCRawStatus *)0x027ffdea)->mode != 0) {
+                    if ((HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->mode != 0) {
                         data_021feb90.busy++;
-                        ((volatile RTCRawStatus *)0x027ffdea)->mode = 0;
+                        (HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->mode = 0;
                         if (!RTCi_WriteRawStatus2Async()) {
                             data_021feb90.busy = 0;
                             result = 3;
@@ -311,18 +312,18 @@ void RtcCommonCallback(u32 tag, u32 data, u32 err) {
         case 10:
             if (data_021feb90.busy == 0) {
                 if (*data_021feb90.dst1 == 1) {
-                    if (!((volatile RTCRawStatus *)0x027ffdea)->flag) {
+                    if (!(HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->flag) {
                         data_021feb90.busy++;
-                        ((volatile RTCRawStatus *)0x027ffdea)->flag = 1;
+                        (HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->flag = 1;
                         if (!RTCi_WriteRawStatus2Async()) {
                             data_021feb90.busy = 0;
                             result = 3;
                         }
                     }
                 } else {
-                    if (((volatile RTCRawStatus *)0x027ffdea)->flag) {
+                    if ((HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->flag) {
                         data_021feb90.busy++;
-                        ((volatile RTCRawStatus *)0x027ffdea)->flag = 0;
+                        (HW_SYSWORK_AT(volatile RTCRawStatus, realTimeClock, 0x2))->flag = 0;
                         if (!RTCi_WriteRawStatus2Async()) {
                             data_021feb90.busy = 0;
                             result = 3;

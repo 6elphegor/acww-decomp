@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020b7d10.h"
@@ -31,7 +32,7 @@ extern "C" void Touch_Update(void) {
     gTouchPrevChanged = gTouchChanged ? 1 : 0;
     sTouchPrevRawX = (u8)gTouchX;
     sTouchPrevRawY = (u8)gTouchY;
-    if ((s32)(*(volatile u16 *)0x27fffa8 & 0x8000) >> 15) {
+    if ((s32)(*HW_SYSWORK(volatile u16, buttonXY) & 0x8000) >> 15) {
         gTouchChanged = t;
         gTouchHeld = 0;
         gTouchX = 0;

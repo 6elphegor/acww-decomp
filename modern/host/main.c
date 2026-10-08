@@ -1,5 +1,5 @@
 // Host build: entry point. Maps the DS memory, puts what the DS boot leaves in memory (ROM header, system work
-// area) in place and calls the game's NitroMain. See docs/host.md.
+// area: include/host_mem.h) in place and calls the game's NitroMain. See docs/host.md.
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -9,6 +9,7 @@
 
 #include "coro.h"
 #include "host.h"
+#include "host_mem.h"
 #include "overlay.h"
 
 int gHostVerbose;
@@ -83,9 +84,13 @@ int main(int argc, char **argv) {
     card_init(gHostRomPath);
     u32 size;
     const u8 *rom = host_rom(&size);
-    memcpy((void *)0x027ffe00, rom, 0x170);              // ROM header (HW_ROM_HEADER_BUF)
-    *(volatile u32 *)0x027ffc00 = *(const u32 *)(rom + 0x0c);   // card id stand-in
-    *(volatile u16 *)0x027ffc40 = 1;                     // boot type: ROM
+    // the ROM header (HW_ROM_HEADER_BUF, 0x160 bytes, and the DS boot's next 0x10: the system work area's
+    // isdReserved), a stand-in for the card id (HW_BOOT_CHECK_INFO_BUF), the boot type (HW_WM_BOOT_BUF): ROM
+    _Static_assert(sizeof gHostSysWork.romHeader + sizeof gHostSysWork.isdReserved >= 0x170, "ROM header");
+    memcpy(gHostSysWork.romHeader, rom, sizeof gHostSysWork.romHeader);
+    memcpy(gHostSysWork.isdReserved, rom + sizeof gHostSysWork.romHeader, 0x170 - sizeof gHostSysWork.romHeader);
+    memcpy(gHostSysWork.bootCheckInfo, rom + 0x0c, 4);
+    *(volatile u16 *)gHostSysWork.wmBootBuf = 1;
     pxi7_init();
     melon_init();
     host_debug_crash_handlers();  // (melonDS's JIT replaced the SIGSEGV handler)
@@ -102,46 +107,67 @@ int main(int argc, char **argv) {
     host_fatal("the game's main thread returned");
 }
 
-// ACWW_HEAPCHECK=1: walk every NNS expanded heap in DS RAM each frame (hw.c) and report the first broken block
+// ACWW_HEAPCHECK=1: walk every NNS expanded heap in the game's heap memory (the main RAM block; on 64-bit hosts
+// the root heap's block) each frame (hw.c) and report the first broken block. The NNS heap header and block header
+// (src/autoload_2/unk_02100d44.c), pointer-sized as there
+struct HeapCheckLink { void *prev, *next; };
+struct HeapCheckBlock { u16 sig, attr; u32 size; struct HeapCheckBlock *prev, *next; };
+struct HeapCheckHead {
+    u32 sig;
+    struct HeapCheckLink link;
+    struct { void *head, *tail; u16 num, offset; } childList;
+    uintptr_t start, end;
+    u32 attr;
+    struct HeapCheckBlock *freeHead, *freeTail, *usedHead, *usedTail;
+};
+static uintptr_t sRootHeapLo, sRootHeapHi;
+static int heap_check_range(const u8 *lo, const u8 *hi, int *heaps) {
+    for (const u8 *a = lo; a + sizeof(struct HeapCheckHead) <= hi; a += 4) {
+        const struct HeapCheckHead *h = (const void *)a;
+        if (h->sig != 0x45585048 || h->start < (uintptr_t)lo || h->start >= h->end || h->end > (uintptr_t)hi) continue;
+        (*heaps)++;
+        struct HeapCheckBlock *lists[2] = {h->freeHead, h->usedHead};
+        for (int l = 0; l < 2; l++) {
+            struct HeapCheckBlock *prev = 0;
+            u32 n = 0;
+            for (struct HeapCheckBlock *m = lists[l]; m && n < 100000; n++) {
+                if ((uintptr_t)m < h->start || (uintptr_t)m >= h->end || m->sig != (l ? 0x5544 : 0x4652) || m->prev != prev) {
+                    fprintf(stderr, "heapcheck: frame %llu heap %p %s block %p bad (sig %04x prev %p want %p)\n",
+                            (unsigned long long)host_frame(), (const void *)h, l ? "used" : "free", (void *)m,
+                            ((uintptr_t)m >= h->start && (uintptr_t)m < h->end) ? m->sig : 0,
+                            ((uintptr_t)m >= h->start && (uintptr_t)m < h->end) ? (void *)m->prev : 0, (void *)prev);
+                    return 1;
+                }
+                prev = m;
+                m = m->next;
+            }
+        }
+    }
+    return 0;
+}
 void host_heap_check(void) {
     static int on = -1, reported;
     if (on < 0) on = getenv("ACWW_HEAPCHECK") != 0;
     if (!on || reported) return;
     int heaps = 0;
-    for (u32 a = 0x02000000; a < 0x02400000; a += 4) {
-        u32 *h = (u32 *)(uintptr_t)a;
-        if (h[0] != 0x45585048 || h[6] < 0x02000000 || h[6] >= h[7] || h[7] > 0x02400000) continue;  // 'EXPH', start, end
-        heaps++;
-        u32 lists[2] = {h[9], h[11]};  // freeHead, usedHead
-        for (int l = 0; l < 2; l++) {
-            u32 prev = 0, n = 0;
-            for (u32 b = lists[l]; b && n < 100000; n++) {
-                u32 *m = (u32 *)(uintptr_t)b;
-                u16 sig = (u16)m[0];
-                if (b < h[6] || b >= h[7] || sig != (l ? 0x5544 : 0x4652) || m[2] != prev) {
-                    fprintf(stderr, "heapcheck: frame %llu heap %08x %s block %08x bad (sig %04x prev %08x want %08x)\n",
-                            (unsigned long long)host_frame(), a, l ? "used" : "free", b, sig, m[2], prev);
-                    reported = 1;
-                    return;
-                }
-                prev = b;
-                b = m[3];
-            }
-        }
-    }
-    if (host_frame() % 600 == 0) fprintf(stderr, "heapcheck: frame %llu: %d heaps fine\n", (unsigned long long)host_frame(), heaps);
+    reported = heap_check_range(gHostMainRam, gHostMainRam + sizeof gHostMainRam, &heaps) ||
+               (sRootHeapHi > sRootHeapLo && heap_check_range((const u8 *)sRootHeapLo, (const u8 *)sRootHeapHi, &heaps));
+    if (!reported && host_frame() % 600 == 0)
+        fprintf(stderr, "heapcheck: frame %llu: %d heaps fine\n", (unsigned long long)host_frame(), heaps);
 }
 
 // The root heap's memory on 64-bit hosts (Heap_InitSystem): the game's objects are larger there (pointers), so the
-// DS's main RAM arena (about 1.4 MB for the root heap) runs out; the heap gets a larger block of its own instead.
-// Below 4 GB: the game keeps heap addresses in 32-bit words.
-static uintptr_t sRootHeapLo, sRootHeapHi;
+// DS's main RAM arena (about 1.4 MB for the root heap) runs out; the heap gets a larger block of its own instead
+// (below 4 GB, at 0x50000000, unless ACWW_HIGHMEM puts it above).
 
-// ::operator delete (newdelete.cpp): is p a block of the game's heaps? They are in DS memory (main RAM and its
-// mirrors, ITCM, DTCM, shared WRAM) or, on 64-bit hosts, the root heap's block
+// ::operator delete (newdelete.cpp): is p a block of the game's heaps? They are in the game's memory blocks
+// (include/host_mem.h: the main RAM block and the arenas) or, on 64-bit hosts, the root heap's block
 int host_is_game_heap(const void *p) {
-    uintptr_t a = (uintptr_t)p;
-    return (a >= 0x01ff8000 && a < 0x03810000) || (a >= sRootHeapLo && a < sRootHeapHi);
+    return HostMem_IsGameRam(p, 1);
+}
+void host_root_heap_bounds(uintptr_t *lo, uintptr_t *hi) {
+    *lo = sRootHeapLo;
+    *hi = sRootHeapHi;
 }
 
 void *host_root_heap_region(unsigned int *size) {

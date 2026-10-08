@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_mem.h"
 #include "game/FxVec3.h"
 #include "sys/DebugText.h"
 #include "sys/ProcBase.h"
@@ -95,16 +96,10 @@ void Fatal_Panic(const char *fmt, ...) {
     host_panic_v("", 0, fmt, &ap);
 }
 
-// (DS addresses: main RAM and the DTCM)
+// (the DS checked main RAM up to the system area - a debugger's up to DTCM - and DTCM; the host: its game memory,
+// include/host_mem.h)
 BOOL CrashScreen_IsValidAddress(uptr addr, u32 len) {
-    uptr end = addr + len;
-    u8 *base = OS_GetDTCMAddress();
-    uptr lim2 = (uptr)base + 0x4000;
-    uptr lim1 = data_021fce88 != 0 ? 0x27e0000 : 0x23ff000;
-    if ((addr >= 0x2000000 && end <= lim1) || ((uptr)base <= addr && end <= lim2)) {
-        return TRUE;
-    }
-    return FALSE;
+    return HostMem_IsGameRam((const void *)addr, len) ? TRUE : FALSE;
 }
 
 void CrashScreen_DumpWords(u16 *dst, uptr src, u32 size) {
@@ -248,10 +243,10 @@ void CrashScreen_InitDisplay(void) {
     GXS_LoadBG1Char(sCrashFontChars, 0, 0x1000);
     GX_LoadBGPltt(sCrashFontPalette, 0x1a0, 0x60);
     GXS_LoadBGPltt(sCrashFontPalette, 0x1a0, 0x60);
-    *(vu16 *)0x5000000 = 0x7c00;
-    *(vu16 *)0x5000018 = 0x7c00;
-    *(vu16 *)0x5000400 = 0x7c00;
-    *(vu16 *)0x5000418 = 0x7c00;
+    *(vu16 *)HW_PLTT = 0x7c00;
+    *(vu16 *)(HW_PLTT + 0x18) = 0x7c00;
+    *(vu16 *)(HW_PLTT + 0x400) = 0x7c00;
+    *(vu16 *)(HW_PLTT + 0x418) = 0x7c00;
     sCrashScreenMain = (u16 *)G2_GetBG1ScrPtr();
     sCrashScreenSub = (u16 *)G2S_GetBG1ScrPtr();
     CrashScreen_Clear();
@@ -268,7 +263,7 @@ void CrashScreen_WaitVBlank(void) {
 
 void CrashScreen_Frame(void) {
     u32 state = sCrashScreenState;
-    u32 keys = (IO_R((vu16 *)0x4000130) | *(vu16 *)0x27fffa8);
+    u32 keys = (IO_R((vu16 *)0x4000130) | *HW_SYSWORK(vu16, buttonXY));
     u32 trig, prev, held;
     keys = (keys ^ 0x2fff) & 0x2fff;
     keys = (u16)keys & 0x3ff;
@@ -379,7 +374,7 @@ void NitroMain(void) {
     IO_W(ime, 1);
     OS_EnableInterrupts();
     Main_InitDwc();
-    if (*(u32 *)0x27ffc20 == 1) {
+    if (*HW_SYSWORK(u32, resetParameter) == 1) {
         Main_RunWifiUtility();
         ime = (vu16 *)0x4000208;
         (void)IO_R(ime);

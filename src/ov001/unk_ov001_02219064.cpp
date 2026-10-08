@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/io_access.h"
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
@@ -36,7 +37,7 @@ extern "C" u8 sWfcSimpleStartInitReady = 0;
 #define BGCNT(a, v) IO_W((volatile u16 *)(a), (IO_R((volatile u16 *)(a)) & ~3) | (v))
 
 extern "C" s32 WfcSimpleStartInit_IsLidClosed() {
-    s32 v = *(volatile u16 *)0x27fffa8 & 0x8000;
+    s32 v = *HW_SYSWORK(volatile u16, buttonXY) & 0x8000;
     v >>= 15;
     if (v != 0) return TRUE;
     return FALSE;

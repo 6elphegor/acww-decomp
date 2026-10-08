@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/io_access.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_02112458.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -21,26 +22,26 @@ s32 OS_UnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
 
 // OS_InitLock
 void OS_InitLock(void) {
-    volatile u16 *lock = (volatile u16 *)0x027ffff0;
+    volatile u16 *lock = HW_SYSWORK(volatile u16, initLock);
     if (data_021fcc10) {
         return;
     }
     data_021fcc10 = 1;
-    *(volatile u32 *)0x027ffff0 = 0;
-    OS_LockByWord(0x7e, (void *)0x027ffff0, 0);
+    *HW_SYSWORK(volatile u32, initLock) = 0;
+    OS_LockByWord(0x7e, HW_SYSWORK(void, initLock), 0);
     while (lock[3] != 0) {
         OSi_WaitByLoop();
     }
-    *(volatile u32 *)0x027fffb0 = 0xffffffff;
-    *(volatile u32 *)0x027fffb4 = 0xffff0000;
+    *HW_SYSWORK(volatile u32, lockIdFlagMain) = 0xffffffff;
+    *HW_SYSWORK_AT(volatile u32, lockIdFlagMain, 0x4) = 0xffff0000;
     {
         volatile u32 zero = 0;
-        MIi_CpuClear32(zero, (void *)0x027fffc0, 0x28);
+        MIi_CpuClear32(zero, HW_SYSWORK(void, vramCLock), 0x28);
     }
     IO_OR((volatile u16 *)0x04000204, 0x800);
     IO_OR((volatile u16 *)0x04000204, 0x80);
-    OS_UnlockByWord(0x7e, (void *)0x027ffff0, 0);
-    OS_LockByWord(0x7f, (void *)0x027ffff0, 0);
+    OS_UnlockByWord(0x7e, HW_SYSWORK(void, initLock), 0);
+    OS_LockByWord(0x7f, HW_SYSWORK(void, initLock), 0);
 }
 
 // OSi_LockByWord (spin until acquired)
@@ -112,12 +113,12 @@ s32 OSi_DoTryLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable
 
 // OS_UnlockCartridge
 void OS_UnlockCartridge(u32 lockID) {
-    OSi_DoUnlockByWord(lockID, (void *)0x027fffe8, OSi_FreeCartridgeBus, 1);
+    OSi_DoUnlockByWord(lockID, HW_SYSWORK(void, ctrdgLock), OSi_FreeCartridgeBus, 1);
 }
 
 // OS_LockCartridge
 s32 OS_TryLockCartridge(u32 lockID) {
-    return OSi_DoTryLockByWord(lockID, (void *)0x027fffe8, OSi_AllocateCartridgeBus, 1);
+    return OSi_DoTryLockByWord(lockID, HW_SYSWORK(void, ctrdgLock), OSi_AllocateCartridgeBus, 1);
 }
 
 // OSi_FreeCartridgeBus (EXMEMCNT &= ~0x80)
@@ -132,12 +133,12 @@ void OSi_FreeCartridgeBus(void) {
 
 // OS_LockCard
 void OS_LockCard(u32 lockID) {
-    OS_LockByWord(lockID, (void *)0x027fffe0, OSi_AllocateCardBus);
+    OS_LockByWord(lockID, HW_SYSWORK(void, cardLock), OSi_AllocateCardBus);
 }
 
 // OS_UnlockCard
 void OS_UnlockCard(u32 lockID) {
-    OS_UnlockByWord(lockID, (void *)0x027fffe0, OSi_FreeCardBus);
+    OS_UnlockByWord(lockID, HW_SYSWORK(void, cardLock), OSi_FreeCardBus);
 }
 
 // OSi_FreeCardBus (EXMEMCNT &= ~0x800)

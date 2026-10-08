@@ -5,6 +5,7 @@
 // TPData (a struct array at file scope in C++), and it is the first ARM initialiser of the library area, before the
 // vector file's (0x020c5f6c, gVec3Zero).
 #include "types.h"
+#include "host_mem.h"
 #include "sys/TreeNode.h"
 #include "gfx/VecFx32.h"
 #include "sys/ListNode.h"
@@ -82,10 +83,10 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 // PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work X/Y/fold word 0x027fffa8)
 static inline u16 PAD_Read(void) {
-    return (u16)(((IO_R((vu16 *)0x04000130) | *(vu16 *)0x027fffa8) ^ 0x2fff) & 0x2fff);
+    return (u16)(((IO_R((vu16 *)0x04000130) | *HW_SYSWORK(vu16, buttonXY)) ^ 0x2fff) & 0x2fff);
 }
 static inline BOOL PAD_DetectFold(void) {
-    return (*(vu16 *)0x027fffa8 & 0x8000) >> 15;
+    return (*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15;
 }
 
 #define FX_SinIdx(a) data_02135f44[((a) >> 4) * 2]

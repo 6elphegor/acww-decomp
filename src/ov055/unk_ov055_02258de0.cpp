@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_mem.h"
 #include "host_labels.h"
 #include "sdk_linker_symbols.h"
 #include "uptr.h"
@@ -352,7 +353,7 @@ void SpNpcRoverTalk::setScript(s32 v) { script = v; }
 void SpNpcRoverTalk::runTagMode() {
     u8 m[2];
     BOOL k;
-    if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) != 0) {
+    if (((*HW_SYSWORK(volatile u16, buttonXY) & 0x8000) >> 15) != 0) {
         k = TRUE;
     } else {
         k = FALSE;
@@ -380,7 +381,7 @@ void SpNpcRoverTalk::runTagMode() {
 }
 
 void SpNpcRoverTalk::waitLidOpen() {
-    if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
+    if (((*HW_SYSWORK(volatile u16, buttonXY) & 0x8000) >> 15) == 0) {
         Snd_PlaySe(0x69);
         window->unlockAdvance();
         setScript(0);
@@ -392,7 +393,7 @@ void SpNpcRoverTalk::waitLidOpen() {
 
 void SpNpcRoverTalk::waitTagModeStop() {
     TalkWindowState *r4 = window;
-    if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
+    if (((*HW_SYSWORK(volatile u16, buttonXY) & 0x8000) >> 15) == 0) {
         if ((NetOverlay_AssertOv067(), Net_WlxIsExchangeDone(NULL))) {
             Snd_PlaySe(0x69);
             Comm_EndOv067Mode();

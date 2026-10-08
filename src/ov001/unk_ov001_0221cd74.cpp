@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
@@ -55,7 +56,7 @@ extern "C" void WfcBgMap_TransferTask() {
 // a: a palette file (16-colour lines of 0x20 bytes); line b of it is copied to BG palette line c
 extern "C" void WfcUtil_RequestPaletteLine(void *a, s32 b, s32 c) {
     sWfcPaletteCopy.src = (u8 *)a + (b << 5);
-    sWfcPaletteCopy.dst = (void *)(uptr)((c << 5) + 0x5000000);  // (BG palette RAM: a hardware address)
+    sWfcPaletteCopy.dst = HW_PLTT + (c << 5);  // (BG palette RAM)
     WfcTask_Add(1, (void *)WfcUtil_PaletteLineTask, 0, 0x78);
 }
 
@@ -70,7 +71,7 @@ extern "C" void WfcUtil_RequestBgPalette(void *a) {
 }
 
 extern "C" void WfcUtil_BgPaletteTask(void *task) {
-    MIi_CpuCopy16(sWfcPaletteCopy.src, (void *)0x5000000, 0x200);
+    MIi_CpuCopy16(sWfcPaletteCopy.src, (void *)HW_PLTT, 0x200);
     WfcTask_RequestDelete(1, task);
 }
 

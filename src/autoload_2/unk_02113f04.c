@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // autoload_2 0x02113f04-0x02113fd8. ARM code, mwcc 1.2/base.
+#include "host_mem.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -27,8 +28,11 @@ u32 OSi_DetectDeviceType(void) {
     while (!done) {
         lockResult = -1;
         e = OS_DisableInterrupts();
-        if ((OS_ReadOwnerOfLockWord((void *)0x027fffe8) & 0x40) != 0 || (lockResult = OS_TryLockCartridge(id)) == 0) {
-            if (*(u32 *)0x08000000 == 0x544e494e && *(u32 *)0x08000004 == 0x4f444e45) {
+        if ((OS_ReadOwnerOfLockWord(HW_SYSWORK(void, ctrdgLock)) & 0x40) != 0 || (lockResult = OS_TryLockCartridge(id)) == 0) {
+            // the GBA slot's first words (0x08000000: "NINTENDO" for a DS option pak): the host has no slot, its
+            // reads give the open bus of an empty one
+            static const u32 kNoCartridge[2] = {0xffffffff, 0xffffffff};
+            if (kNoCartridge[0] == 0x544e494e && kNoCartridge[1] == 0x4f444e45) {
                 result = 0x01000000;
             } else {
                 result = 0x02000000;

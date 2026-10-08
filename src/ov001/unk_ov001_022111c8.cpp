@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/io_access.h"
 #include "net/WfcLoadFunc.h"
 #include "proto/ov001/unk_ov001_02207904.h"
@@ -35,7 +36,7 @@ extern "C" {
 
 
 BOOL WfcAossSetup_IsLidClosed() {
-    s32 t = (s32)(*(volatile u16 *)0x27fffa8 & 0x8000) >> 15;
+    s32 t = (s32)(*HW_SYSWORK(volatile u16, buttonXY) & 0x8000) >> 15;
     if (t != 0) return TRUE;
     return FALSE;
 }
