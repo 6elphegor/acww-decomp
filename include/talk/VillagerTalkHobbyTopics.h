@@ -10,7 +10,7 @@ struct TalkTopicMsg;
 
 class VillagerTalkHobbyTopics : public VillagerTalkAcornTopics {
 public:
-    void selectEtcConnectGardeniing();
+    void selectEtcConnectGardeniing(TalkTopicMsg *out);
     void continueEvGardeniingMsg10();
     void selectEvGardeniingMsg10(TalkTopicMsg *out);
     void selectEvGardeniingMsg13(TalkTopicMsg *out);
@@ -21,7 +21,7 @@ public:
     void endEvFishing();
     void selectEvFishing(TalkTopicMsg *out);
     void openSmallTalkChoiceAdmire();
-    void selectEtcConnectAdmire();
+    void selectEtcConnectAdmire(TalkTopicMsg *out);
     void continueEvAdmireMsg4();
     void selectEvAdmireMsg4(TalkTopicMsg *out);
     void selectEvAdmireMsg10(TalkTopicMsg *out);

@@ -576,7 +576,7 @@ namespace N02285f3c { extern "C" {
 void gti2FreeSocketConnection(Conn062 *p) {
     if (p->freeAtAcceptReject == 0 && p->callbackLevel == 0) {
         if (p->state == 7) {
-            s32 n = ArrayLength(*(void **)((u8 *)p->socket + 0x10));
+            s32 n = ArrayLength(p->socket->closedConnections);
             s32 i = 0;
             for (; i < n; i++) {
                 Conn062 *q = p;

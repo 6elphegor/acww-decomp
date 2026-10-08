@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "npc/VillagerState.h"
 #include "town/TownBlockCell.h"
 #include "types.h"
 #include "player/PlayerErrands.h"
@@ -247,7 +248,7 @@ s32 VillagerState_SetMoodTimer(void *p, s32 v);
 s32 VillagerTrend_TickIdle();
 s32 SaveVillagers_UpdatePlans(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
-void *Villager_GetState(void *p);
+VillagerState *Villager_GetState(void *p);
 s32 VillagerState_GetMood(void *p);
 s32 VillagerState_TickMoodTimer(void *p);
 s32 VillagerState_GetMoodTimer(void *p);
@@ -293,7 +294,7 @@ s32 SaveVillagers_FindIndex(void *p, void *q);
 s32 SaveVillagers_IsValidIndex(s32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *SaveVillagers_Find(void *p, void *q);
-void *Villager_GetState(void *p);
+VillagerState *Villager_GetState(void *p);
 void VillagerState_ResetRole(void *e);
 void SaveVillagers_PickFleaMarketBuyerNow(void *p);
 s32 Scene_GetVillagerHouse();

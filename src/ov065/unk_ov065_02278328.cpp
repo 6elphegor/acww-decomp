@@ -108,16 +108,9 @@ HashImplementation *TableNew2(s32 esize, s32 n, s32 cap, TableHashFn hash, Array
                                             ArrayElementFreeFn dtor) {
     HashImplementation *t = (HashImplementation *)GsUtil_Alloc(sizeof(HashImplementation));
     s32 i;
-    t->buckets = (DArrayImplementation **)GsUtil_Alloc(n * 4);
-    i = 0;
-    if (n > 0) {
-        s32 off = i;
-        do {
-            DArrayImplementation *v = ArrayNew(esize, cap, dtor);
-            *(DArrayImplementation **)((u8 *)t->buckets + off) = v;
-            off += 4;
-            i++;
-        } while (i < n);
+    t->buckets = (DArrayImplementation **)GsUtil_Alloc(n * sizeof(DArrayImplementation *));
+    for (i = 0; i < n; i++) {
+        t->buckets[i] = ArrayNew(esize, cap, dtor);
     }
     t->nbuckets = n;
     t->freefn = dtor;
@@ -128,14 +121,9 @@ HashImplementation *TableNew2(s32 esize, s32 n, s32 cap, TableHashFn hash, Array
 
 void TableFree(HashImplementation *t) {
     if (t != NULL) {
-        s32 i = 0;
-        if (t->nbuckets > 0) {
-            s32 off = i;
-            do {
-                ArrayFree(*(DArrayImplementation **)((u8 *)t->buckets + off));
-                off += 4;
-                i++;
-            } while (i < t->nbuckets);
+        s32 i;
+        for (i = 0; i < t->nbuckets; i++) {
+            ArrayFree(t->buckets[i]);
         }
         GsUtil_Free(t->buckets);
         GsUtil_Free(t);
@@ -148,57 +136,51 @@ s32 TableCount(HashImplementation *t) {
     if (t == NULL) {
         return sum;
     }
-    i = sum;
-    if (t->nbuckets > 0) {
-        s32 off = sum;
-        do {
-            sum += ArrayLength(*(DArrayImplementation **)((u8 *)t->buckets + off));
-            off += 4;
-            i++;
-        } while (i < t->nbuckets);
+    for (i = 0; i < t->nbuckets; i++) {
+        sum += ArrayLength(t->buckets[i]);
     }
     return sum;
 }
 
 void TableEnter(HashImplementation *t, void *key) {
-    s32 h;
+    DArrayImplementation *b;
     s32 r;
     if (t != NULL) {
-        h = t->hashfn(key, t->nbuckets) * 4;
-        r = ArraySearch(*(DArrayImplementation **)((u8 *)t->buckets + h), key, t->compfn, 0, 0);
+        b = t->buckets[t->hashfn(key, t->nbuckets)];
+        r = ArraySearch(b, key, t->compfn, 0, 0);
         if (r == -1) {
-            ArrayAppend(*(DArrayImplementation **)((u8 *)t->buckets + h), key);
+            ArrayAppend(b, key);
             return;
         }
-        ArrayReplaceAt(*(DArrayImplementation **)((u8 *)t->buckets + h), key, r);
+        ArrayReplaceAt(b, key, r);
     }
 }
 
 s32 TableRemove(HashImplementation *t, void *key) {
-    s32 h;
+    DArrayImplementation *b;
     s32 r;
     if (t == NULL) {
         return 0;
     }
-    h = t->hashfn(key, t->nbuckets) * 4;
-    r = ArraySearch(*(DArrayImplementation **)((u8 *)t->buckets + h), key, t->compfn, 0, 0);
+    b = t->buckets[t->hashfn(key, t->nbuckets)];
+    r = ArraySearch(b, key, t->compfn, 0, 0);
     if (r != -1) {
-        ArrayDeleteAt(*(DArrayImplementation **)((u8 *)t->buckets + h), r);
+        ArrayDeleteAt(b, r);
         return 1;
     }
     return 0;
 }
 
 void *TableLookup(HashImplementation *t, void *key) {
-    s32 h;
+    DArrayImplementation *b;
     s32 r;
     if (t == NULL) {
         return NULL;
     }
-    h = t->hashfn(key, t->nbuckets) * 4;
-    r = ArraySearch(*(DArrayImplementation **)((u8 *)t->buckets + h), key, t->compfn, 0, 0);
+    b = t->buckets[t->hashfn(key, t->nbuckets)];
+    r = ArraySearch(b, key, t->compfn, 0, 0);
     if (r != -1) {
-        return ArrayNth(*(DArrayImplementation **)((u8 *)t->buckets + h), r);
+        return ArrayNth(b, r);
     }
     return NULL;
 }

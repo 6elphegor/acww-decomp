@@ -6,6 +6,7 @@
 struct TalkTopicMsg;
 struct PlanErrand;
 class PlayerErrandSlot;
+class VillagerId;
 class VillagerActor;
 class VillagerTalkRequestItemTopics;
 
@@ -58,7 +59,7 @@ public:
     /* 0x154 */ u8 deliveryMinutes;
     /* 0x155 */ u8 deliveryTimeIndex;
     /* 0x156 */ u16 pendingSe;
-    /* 0x158 */ void *deliveryRecipient;
+    /* 0x158 */ VillagerId *deliveryRecipient;
     /* 0x15c */ PlayerErrandSlot *errandSlot;
     /* 0x160 */ PlanErrand *planErrand;
     /* 0x164 */ u8 pad_164[0x168 - 0x164];

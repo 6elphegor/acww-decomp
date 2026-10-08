@@ -44,7 +44,7 @@ public:
     void lookAtLocalPlayer(Character *scene);
     void lookAtTargetPlayer(Character *scene);
     void lookAtPlayer(Character *scene, s32 h, s32 limit, u8 flag);
-    void relax();
+    void relax(Character *);
     void lookAtActor(Character *scene, Character *tgt, VecFx32 *v, s32 limit, u8 flag);
     s32 clampPitch(s32 v);
     s32 calcClampedPitch(VecFx32 *a, VecFx32 *b, s32 c);
@@ -64,8 +64,8 @@ public:
     BOOL isOnTarget();
     BOOL isWithinYawLimit(s32 v);
     void update(NpcActor *base);
-    void approachManualAngles();
-    void lookAtPoint(NpcActor *o);
+    void approachManualAngles(Character *);
+    void lookAtPoint(Character *o);
     void storeHeadMtx(NpcActor *npc);
 };
 

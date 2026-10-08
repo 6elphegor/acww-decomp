@@ -15,10 +15,10 @@ struct NpcActionParams {
     u16 blendFrames, animStartFrame;
     u8 animPlayMode, emotionId;
     u16 item;
-    s32 handOverKind;
+    u32 handOverKind;
     Character *handOverPartner;  // the player the item is handed to / taken from (ActorTalkRequest::talkPlayer)
     u8 handOverMode;
-    s32 handOverVariant;
+    u32 handOverVariant;
     void *clear();
     void copyFrom(NpcActionParams *src);
 };
@@ -32,7 +32,7 @@ struct NpcActionCtrl {
     s32 setupAct02(NpcActor *o);
     void mainAct01(NpcActor *o);
     s32 setupAct01(NpcActor *o);
-    void mainAct00();
+    void mainAct00(NpcActor *o);
     s32 setupAct00(NpcActor *o);
     void postUpdate(NpcActor *arg);
     void update(NpcActor *arg);
@@ -71,11 +71,11 @@ struct NpcActionCtrl {
     void act13Step0(NpcActor *o);
     BOOL setupAct13(NpcActor *o);
     void mainAct12(NpcActor *o);
-    void act12Step1();
-    void act12Step0();
+    void act12Step1(NpcActor *o);
+    void act12Step0(NpcActor *o);
     BOOL setupAct12(NpcActor *o);
     void mainAct11(NpcActor *o);
-    void act11Step2();
+    void act11Step2(NpcActor *o);
     void act11Step1(NpcActor *o);
     void act11Step0(NpcActor *o);
     BOOL setupAct11(NpcActor *o);
@@ -83,7 +83,7 @@ struct NpcActionCtrl {
     BOOL setupAct10(NpcActor *o);
     void postAct0F(NpcActor *o);
     BOOL setupAct0F(NpcActor *o);
-    void postAct0E();
+    void postAct0E(NpcActor *o);
     void mainAct0E(NpcActor *o);
     void act0EStep01(NpcActor *o);
     void act0EStep02(NpcActor *o);

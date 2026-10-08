@@ -440,7 +440,7 @@ s32 ghiFindFreeSlot() {
     }
     base = ghiConnectionsLen;
     end = base + 4;
-    void *p = GsUtil_Realloc(ghiConnections, end * 4);
+    void *p = GsUtil_Realloc(ghiConnections, end * sizeof(GHIConnection *));
     if (p == 0) {
         return -1;
     }

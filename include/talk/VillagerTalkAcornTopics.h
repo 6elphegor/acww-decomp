@@ -22,7 +22,7 @@ public:
     void openEvAcornGiveChoice();
     void selectEvAcornMsg13(TalkTopicMsg *out);
     void openSmallTalkChoiceAcorn();
-    void selectEtcConnectAcorn();
+    void selectEtcConnectAcorn(TalkTopicMsg *out);
     void continueEvAcornMsg7();
     void selectEvAcornMsg7(TalkTopicMsg *out);
     void selectEvAcornMsg10(TalkTopicMsg *out);

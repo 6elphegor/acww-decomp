@@ -7,6 +7,7 @@
 
 class VillagerActor;
 class VillagerTalk;
+class ErrandRecord;
 
 typedef void (VillagerTalk::*Unk_020d8938_Fn)();
 typedef void (VillagerTalk::*Unk_020d8938_FnArg)(u32);
@@ -78,8 +79,8 @@ public:
     s32 attrPlayMemoryTune();
     s32 attrShowLetter();
     s32 attrGiveItem();
-    void *getUnk150();
-    void setUnk150(void *v);
+    ErrandRecord *getErrandRecord();
+    void setErrandRecord(ErrandRecord *v);
     void *getActorByIndex(s32 idx);
     void setChoiceFn(Unk_020d8938_Fn fn);
     void setTopicFns(VillagerTalkTopicFns *t);
@@ -113,7 +114,7 @@ public:
     /* 0x138 */ u8 unk_138;
     /* 0x139 */ u8 pad_139[3];
     /* 0x13c */ VillagerTalkTopicFns *choiceValues[5];
-    /* 0x150 */ void *errandRecord;  // ErrandRecord
+    /* 0x150 */ ErrandRecord *errandRecord;
     /* 0x154 */ u8 unk_154;
     /* 0x155 */ u8 unk_155;
     /* 0x156 */ u16 unk_156;

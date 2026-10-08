@@ -1217,16 +1217,16 @@ namespace F02270b74 {
 extern "C" {
 void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg) {
     NasAuthParams cfg;
-    MI_CpuFill8(&cfg, 0, 0x2c);
+    MI_CpuFill8(&cfg, 0, sizeof(cfg));
     sDwcLoginDoneCallback = cb;
     sDwcLoginDoneArg = arg;
     if (DWCi_Acc_IsAuthentic(sDwcLoginControl->userData)) {
-        DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 0x10, sDwcLoginControl->userData->gameCode,
+        DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->userData->loginId, sDwcLoginControl->userData->gameCode,
                       sDwcLoginControl->loginIdText);
     } else {
         if (DWCi_Acc_IsValidLoginId(&sDwcLoginControl->loginId) == 0) {
-            if (DWCi_Acc_CheckConsoleUserId((u8 *)sDwcLoginControl->userData + 4)) {
-                sDwcLoginControl->loginId = *(DwcLoginId *)((u8 *)sDwcLoginControl->userData + 4);
+            if (DWCi_Acc_CheckConsoleUserId(&sDwcLoginControl->userData->tempLoginId)) {
+                sDwcLoginControl->loginId = sDwcLoginControl->userData->tempLoginId;
             } else {
                 DWCi_Acc_CreateTempLoginId(&sDwcLoginControl->loginId);
             }
@@ -1297,7 +1297,7 @@ void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x) {
     if (x->result == 0) {
         if (sDwcLoginControl->state == 3) {
             if (x->lastname[0] == 0) {
-                DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, a);
+                DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->userData->tempLoginId, sDwcLoginControl->gameCode, a);
                 if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpSetInfosA(a0, 0x705, a)) == 0) {
                     sDwcLoginControl->state = 4;
                     s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(gpGetInfo(a0, x->profile, 0, 0, (GPCallback)DwcLogin_OnGpProfileInfo, NULL));
@@ -1312,7 +1312,7 @@ void DwcLogin_OnGpProfileInfo(void *a0, GPGetInfoResponseArg *x) {
                 sDwcLoginControl->state = 1;
             }
         } else if (sDwcLoginControl->state == 4) {
-            DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, &b[1]);
+            DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->userData->tempLoginId, sDwcLoginControl->gameCode, &b[1]);
             if (strcmp((const char *)&x->lastname[0], (const char *)&b[1]) == 0) {
                 DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->loginId, sDwcLoginControl->gameCode, &c[2]);
                 DWCi_Acc_SetLoginIdToUserData(sDwcLoginControl->userData, &sDwcLoginControl->loginId, x->profile);

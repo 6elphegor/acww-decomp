@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "host.h"
 
@@ -220,33 +221,58 @@ void pxi7_vblank(void) {
     if (sTpAuto && sCount == 0) { tp_sample(); pxi7_send(6 | (16u << 8) << 6); }
 }
 
-// ---- power management (tag 8): the PMIC behind the ARM7's SPI. Messages as NVRAM's (bit 25 start, bit 24 end,
-// bits 16-23 index), the command in bits 8-14 of the first: 0x63 utility (LEDs, backlights, power off; its
-// number in the low byte of the first word and the next word), 0x65 read register (the register in the low byte),
-// 0x66 set the LED blink pattern, 0x67 read it. The reply carries a command in bits 8-14 and a byte: a register
-// read answers with 0x70 + register and the value, the others with their own command and the result (0: success;
-// 0x67: the pattern). The PMIC here: both backlights on, battery fine, the LED on (pattern 0).
+// ---- power management (tag 8): the power management chip (PMIC) behind the ARM7's SPI. Messages as NVRAM's:
+// bit 25 start, bit 24 end, bits 16-23 index, the command in bits 8-14 of the first word, payload in the low bits.
+// Commands (all the ARM9 side sends): 0x63 utility (two words: number = word0 bits 0-7 << 16 | word1 bits 0-15),
+// 0x65 read register (bits 0-7: register), 0x66 set the LED pattern (bits 0-7), 0x67 get the LED pattern.
+// Reply: (command << 8 | value), the value the result (0 = success) - except for a register read, answered with
+// command 0x70 + register and the register's value, and 0x67 with the pattern; PMi_CommonCallback takes it apart.
+// Answered at once: the sync wrappers spin on memory (PMi_WaitBusy), where virtual time doesn't move.
+// PMIC registers: 0 control (bit 0 sound amp, bit 2 bottom backlight, bit 3 top backlight, bit 4 LED blink,
+// bit 5 blink fast, bit 6 power off), 1 battery (bit 0 low), 2 mic amp, 3 mic gain.
 static u32 sPmWords[4];
 static int sPmCount;
-static u8 sPmReg[4] = {0x0d, 0x00, 0x00, 0x00};  // control: sound amp, both backlights; battery: not low
-static u8 sPmLed;
+static u8 sPmReg[5] = {0x0d, 0x00, 0x00, 0x00, 0x00};  // amp and both backlights on, battery fine
+static u8 sPmLedPattern;
 
-static void pm_command(void) {
-    u32 cmd = sPmWords[0] >> 8 & 0x7f, arg = sPmWords[0] & 0xff, reply = cmd << 8;
-    switch (cmd) {
-    case 0x63: {  // utility: 1-3 LED, 4-9 backlights (4/5 top, 6/7 bottom, 8/9 both: on/off)
-        u32 n = arg << 16 | (sPmCount > 1 ? sPmWords[1] & 0xffff : 0);
-        static const u8 bits[] = {0, 0, 0, 0, 8, 8, 4, 4, 12, 12};
-        if (n >= 4 && n <= 9) sPmReg[0] = (u8)(n & 1 ? sPmReg[0] & ~bits[n] : sPmReg[0] | bits[n]);
-        break;
+static u32 pm_utility(u32 n) {
+    u8 *r = &sPmReg[0];
+    switch (n) {
+    case 1: *r &= ~0x30; break;                 // LED on
+    case 2: *r |= 0x30; break;                  // LED blinking fast
+    case 3: *r = (u8)((*r | 0x10) & ~0x20); break;  // LED blinking slowly
+    case 4: *r |= 0x04; break;                  // bottom backlight (LCD1) on / off
+    case 5: *r &= ~0x04; break;
+    case 6: *r |= 0x08; break;                  // top backlight (LCD2) on / off
+    case 7: *r &= ~0x08; break;
+    case 8: *r |= 0x0c; break;                  // both
+    case 9: *r &= ~0x0c; break;
+    case 10: *r |= 0x01; break;                 // sound amp on / off
+    case 11: *r &= ~0x01; break;
+    case 14: {                                  // force power off: the DS switches off; end the run like that
+        extern void snd7_output_close(void);
+        extern void frontend_shutdown(void);
+        fprintf(stderr, "host: power off requested by the game (frame %llu)\n", (unsigned long long)host_frame());
+        snd7_output_close();
+        frontend_shutdown();
+        _exit(0);
     }
-    case 0x65: reply = (0x70 + (arg & 3)) << 8 | sPmReg[arg & 3]; break;
-    case 0x66: sPmLed = (u8)arg; break;
-    case 0x67: reply |= sPmLed; break;
     default: break;
     }
-    if (gHostVerbose) fprintf(stderr, "pxi7: PM %02x %02x -> %04x\n", cmd, arg, reply);
-    pxi7_send(8 | reply << 6);
+    return 0;
+}
+
+static void pm_command(void) {
+    u32 cmd = sPmWords[0] >> 8 & 0x7f, arg = sPmWords[0] & 0xff, reply_cmd = cmd, value = 0;
+    switch (cmd) {
+    case 0x63: value = pm_utility(arg << 16 | (sPmWords[1] & 0xffff)); arg = arg << 16 | (sPmWords[1] & 0xffff); break;
+    case 0x65: reply_cmd = 0x70 + (arg & 3); value = arg < 5 ? sPmReg[arg] : 0; break;
+    case 0x66: sPmLedPattern = (u8)arg; break;
+    case 0x67: value = sPmLedPattern; break;
+    default: fprintf(stderr, "pxi7: PM command %02x (not handled)\n", cmd); break;
+    }
+    if (gHostVerbose) fprintf(stderr, "pxi7: PM %02x %x -> %02x (frame %llu)\n", cmd, arg, value, (unsigned long long)host_frame());
+    pxi7_send(8 | (reply_cmd << 8 | (value & 0xff)) << 6);
 }
 
 static void pm_word(u32 data) {

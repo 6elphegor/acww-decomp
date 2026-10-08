@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "npc/VillagerState.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/ActorProfile.h"
@@ -67,7 +68,7 @@ void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
 void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
-void *Villager_GetState(void *o);
+VillagerState *Villager_GetState(void *o);
 u32 VillagerState_GetRole(void *o);
 void VillagerState_SetRole(void *o, u32 a);
 void *VillagerState_GetTalkRepeat(void *o);

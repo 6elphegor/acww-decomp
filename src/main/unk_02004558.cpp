@@ -226,13 +226,10 @@ s32 Field_DrawItemModel(u16 a, void *b, void *c, s32 d, s32 e, s32 f);
 extern u8 data_020d5e20[];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-void _ZN6ItemIdD1Ev();
 union PM_02004ce8 {
     PMRaw raw;
     void (PlayerActor::*fn)();
 };
-extern PM_02004ce8 data_020d5fbc;
-extern PM_02004ce8 data_020d5ff4;
 }
 }
 
@@ -268,14 +265,7 @@ union PM_02005294 {
     PMRaw raw;
     void (PlayerActor::*fn)();
 };
-extern PM_02005294 data_020d6734;
-extern PM_02005294 data_020d6724;
-extern PM_02005294 data_020d5fd4;
-extern PM_02005294 data_020d6244;
-extern PM_02005294 data_020d623c;
-extern PM_02005294 data_020d6234;
 extern PM_02005294 data_020d622c;
-extern PM_02005294 data_020d6224;
 extern PM_02005294 data_020d621c;
 extern PM_02005294 data_020d6214;
 extern PM_02005294 data_020d619c;
@@ -284,18 +274,10 @@ extern PM_02005294 data_020d61fc;
 extern PM_02005294 data_020d61f4;
 extern PM_02005294 data_020d61c4;
 extern PM_02005294 data_020d61dc;
-extern PM_02005294 data_020d61e4;
 extern PM_02005294 data_020d658c;
 extern PM_02005294 data_020d6b94;
-extern PM_02005294 data_020d6604;
-extern PM_02005294 data_020d65bc;
-extern PM_02005294 data_020d65e4;
 extern PM_02005294 data_020d660c;
 extern PM_02005294 data_020d672c;
-extern PM_02005294 data_020d676c;
-extern PM_02005294 data_020d6db4;
-extern PM_02005294 data_020d6d8c;
-extern PM_02005294 data_020d6184;
 extern PM_02005294 data_020d617c;
 extern PM_02005294 data_020d6174;
 extern PM_02005294 data_020d616c;
@@ -316,12 +298,6 @@ extern PM_02005294 data_020d60fc;
 extern PM_02005294 data_020d60f4;
 extern PM_02005294 data_020d60ec;
 extern PM_02005294 data_020d60e4;
-extern PM_02005294 data_020d60dc;
-extern PM_02005294 data_020d60d4;
-extern PM_02005294 data_020d60cc;
-extern PM_02005294 data_020d60c4;
-extern PM_02005294 data_020d60bc;
-extern PM_02005294 data_020d60b4;
 extern PM_02005294 data_020d60ac;
 extern PM_02005294 data_020d60a4;
 extern PM_02005294 data_020d609c;
@@ -331,7 +307,6 @@ extern PM_02005294 data_020d6084;
 extern PM_02005294 data_020d607c;
 extern PM_02005294 data_020d6074;
 extern PM_02005294 data_020d606c;
-extern PM_02005294 data_020d6064;
 extern PM_02005294 data_020d605c;
 extern PM_02005294 data_020d6054;
 extern PM_02005294 data_020d604c;
@@ -379,17 +354,12 @@ extern PM_02005294 data_020d5f04;
 extern PM_02005294 data_020d5efc;
 extern PM_02005294 data_020d5ef4;
 extern PM_02005294 data_020d5ed4;
-extern PM_02005294 data_020d5eec;
-extern PM_02005294 data_020d5f8c;
 extern PM_02005294 data_020d5f9c;
 extern PM_02005294 data_020d5fa4;
 extern PM_02005294 data_020d6004;
 extern PM_02005294 data_020d6264;
 extern PM_02005294 data_020d618c;
-extern PM_02005294 data_020d61ac;
-extern PM_02005294 data_020d61d4;
 extern PM_02005294 data_020d659c;
-extern PM_02005294 data_020d65c4;
 extern PM_02005294 data_020d6dcc;
 extern PM_02005294 data_020d5e84;
 extern PM_02005294 data_020d5e7c;
@@ -399,10 +369,6 @@ extern PM_02005294 data_020d5e8c;
 extern PM_02005294 data_020d5e94;
 extern PM_02005294 data_020d5ea4;
 extern PM_02005294 data_020d5ebc;
-extern PM_02005294 data_020d5ecc;
-extern PM_02005294 data_020d5edc;
-extern PM_02005294 data_020d5f94;
-extern PM_02005294 data_020d5fac;
 extern PM_02005294 data_020d5fdc;
 extern PM_02005294 data_020d61b4;
 extern PM_02005294 data_020d65a4;
@@ -412,9 +378,6 @@ extern PM_02005294 data_020d611c;
 extern PM_02005294 data_020d5e9c;
 extern PM_02005294 data_020d5ec4;
 extern PM_02005294 data_020d5ee4;
-extern PM_02005294 data_020d5fb4;
-extern PM_02005294 data_020d6274;
-extern PM_02005294 data_020d65ac;
 }
 }
 
@@ -431,14 +394,7 @@ void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
 void PlayerActor_RequestAct66(void *p, void *v, s32 a, s32 b, s32 c);
 void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force);
-extern PM_020063a0 data_020d671c;
-extern PM_020063a0 data_020d624c;
-extern PM_020063a0 data_020d5fcc;
-extern PM_020063a0 data_020d6704;
-extern PM_020063a0 data_020d66fc;
-extern PM_020063a0 data_020d66f4;
 extern PM_020063a0 data_020d66ec;
-extern PM_020063a0 data_020d66e4;
 extern PM_020063a0 data_020d66dc;
 extern PM_020063a0 data_020d66d4;
 extern PM_020063a0 data_020d66cc;
@@ -447,18 +403,10 @@ extern PM_020063a0 data_020d66bc;
 extern PM_020063a0 data_020d66b4;
 extern PM_020063a0 data_020d66ac;
 extern PM_020063a0 data_020d66a4;
-extern PM_020063a0 data_020d669c;
 extern PM_020063a0 data_020d6694;
 extern PM_020063a0 data_020d620c;
-extern PM_020063a0 data_020d6684;
-extern PM_020063a0 data_020d667c;
-extern PM_020063a0 data_020d6674;
 extern PM_020063a0 data_020d666c;
 extern PM_020063a0 data_020d6664;
-extern PM_020063a0 data_020d665c;
-extern PM_020063a0 data_020d6654;
-extern PM_020063a0 data_020d664c;
-extern PM_020063a0 data_020d6644;
 extern PM_020063a0 data_020d663c;
 extern PM_020063a0 data_020d6634;
 extern PM_020063a0 data_020d662c;
@@ -479,12 +427,6 @@ extern PM_020063a0 data_020d6714;
 extern PM_020063a0 data_020d674c;
 extern PM_020063a0 data_020d6754;
 extern PM_020063a0 data_020d6dbc;
-extern PM_020063a0 data_020d6b8c;
-extern PM_020063a0 data_020d6d94;
-extern PM_020063a0 data_020d6dc4;
-extern PM_020063a0 data_020d6584;
-extern PM_020063a0 data_020d657c;
-extern PM_020063a0 data_020d6574;
 extern PM_020063a0 data_020d656c;
 extern PM_020063a0 data_020d6564;
 extern PM_020063a0 data_020d655c;
@@ -494,7 +436,6 @@ extern PM_020063a0 data_020d6544;
 extern PM_020063a0 data_020d653c;
 extern PM_020063a0 data_020d6534;
 extern PM_020063a0 data_020d652c;
-extern PM_020063a0 data_020d6524;
 extern PM_020063a0 data_020d651c;
 extern PM_020063a0 data_020d6514;
 extern PM_020063a0 data_020d650c;
@@ -542,17 +483,12 @@ extern PM_020063a0 data_020d63c4;
 extern PM_020063a0 data_020d63bc;
 extern PM_020063a0 data_020d63b4;
 extern PM_020063a0 data_020d63ac;
-extern PM_020063a0 data_020d63a4;
-extern PM_020063a0 data_020d639c;
 extern PM_020063a0 data_020d6394;
 extern PM_020063a0 data_020d5f0c;
 extern PM_020063a0 data_020d6384;
 extern PM_020063a0 data_020d637c;
 extern PM_020063a0 data_020d6374;
-extern PM_020063a0 data_020d636c;
-extern PM_020063a0 data_020d6364;
 extern PM_020063a0 data_020d635c;
-extern PM_020063a0 data_020d6354;
 extern PM_020063a0 data_020d634c;
 extern PM_020063a0 data_020d6344;
 extern PM_020063a0 data_020d633c;
@@ -562,10 +498,6 @@ extern PM_020063a0 data_020d6324;
 extern PM_020063a0 data_020d631c;
 extern PM_020063a0 data_020d6314;
 extern PM_020063a0 data_020d630c;
-extern PM_020063a0 data_020d6304;
-extern PM_020063a0 data_020d62fc;
-extern PM_020063a0 data_020d62f4;
-extern PM_020063a0 data_020d62ec;
 extern PM_020063a0 data_020d62e4;
 extern PM_020063a0 data_020d62dc;
 extern PM_020063a0 data_020d62d4;
@@ -575,9 +507,6 @@ extern PM_020063a0 data_020d62bc;
 extern PM_020063a0 data_020d62b4;
 extern PM_020063a0 data_020d62ac;
 extern PM_020063a0 data_020d62a4;
-extern PM_020063a0 data_020d629c;
-extern PM_020063a0 data_020d6294;
-extern PM_020063a0 data_020d628c;
 }
 }
 
@@ -592,14 +521,7 @@ union PM_02006d14 {
     PMRaw raw;
     Unk_02006d14_Fn fn;
 };
-extern PM_02006d14 data_020d6bcc;
-extern PM_02006d14 data_020d6bc4;
-extern PM_02006d14 data_020d6bbc;
-extern PM_02006d14 data_020d6bb4;
-extern PM_02006d14 data_020d6bac;
-extern PM_02006d14 data_020d6ba4;
 extern PM_02006d14 data_020d6b9c;
-extern PM_02006d14 data_020d648c;
 extern PM_02006d14 data_020d610c;
 extern PM_02006d14 data_020d6b84;
 extern PM_02006d14 data_020d6b7c;
@@ -608,18 +530,10 @@ extern PM_02006d14 data_020d6b6c;
 extern PM_02006d14 data_020d6b64;
 extern PM_02006d14 data_020d6b5c;
 extern PM_02006d14 data_020d6b54;
-extern PM_02006d14 data_020d6b4c;
 extern PM_02006d14 data_020d6b44;
 extern PM_02006d14 data_020d6b3c;
-extern PM_02006d14 data_020d6b34;
-extern PM_02006d14 data_020d6b2c;
-extern PM_02006d14 data_020d6b24;
 extern PM_02006d14 data_020d6b1c;
 extern PM_02006d14 data_020d6b14;
-extern PM_02006d14 data_020d6b0c;
-extern PM_02006d14 data_020d6b04;
-extern PM_02006d14 data_020d6afc;
-extern PM_02006d14 data_020d6af4;
 extern PM_02006d14 data_020d6aec;
 extern PM_02006d14 data_020d6ae4;
 extern PM_02006d14 data_020d6adc;
@@ -640,12 +554,6 @@ extern PM_02006d14 data_020d6a6c;
 extern PM_02006d14 data_020d6a64;
 extern PM_02006d14 data_020d6a5c;
 extern PM_02006d14 data_020d6a54;
-extern PM_02006d14 data_020d6a4c;
-extern PM_02006d14 data_020d6a44;
-extern PM_02006d14 data_020d6a3c;
-extern PM_02006d14 data_020d6a34;
-extern PM_02006d14 data_020d6a2c;
-extern PM_02006d14 data_020d6a24;
 extern PM_02006d14 data_020d6a1c;
 extern PM_02006d14 data_020d6a14;
 extern PM_02006d14 data_020d6a0c;
@@ -655,7 +563,6 @@ extern PM_02006d14 data_020d69f4;
 extern PM_02006d14 data_020d69ec;
 extern PM_02006d14 data_020d69e4;
 extern PM_02006d14 data_020d69dc;
-extern PM_02006d14 data_020d69d4;
 extern PM_02006d14 data_020d69cc;
 extern PM_02006d14 data_020d69c4;
 extern PM_02006d14 data_020d69bc;
@@ -703,17 +610,12 @@ extern PM_02006d14 data_020d6874;
 extern PM_02006d14 data_020d686c;
 extern PM_02006d14 data_020d6864;
 extern PM_02006d14 data_020d685c;
-extern PM_02006d14 data_020d6854;
-extern PM_02006d14 data_020d684c;
 extern PM_02006d14 data_020d6844;
 extern PM_02006d14 data_020d683c;
 extern PM_02006d14 data_020d6834;
 extern PM_02006d14 data_020d682c;
 extern PM_02006d14 data_020d6824;
-extern PM_02006d14 data_020d681c;
-extern PM_02006d14 data_020d6814;
 extern PM_02006d14 data_020d680c;
-extern PM_02006d14 data_020d6804;
 extern PM_02006d14 data_020d67fc;
 extern PM_02006d14 data_020d67f4;
 extern PM_02006d14 data_020d67ec;
@@ -723,10 +625,6 @@ extern PM_02006d14 data_020d67d4;
 extern PM_02006d14 data_020d67cc;
 extern PM_02006d14 data_020d67c4;
 extern PM_02006d14 data_020d67bc;
-extern PM_02006d14 data_020d67b4;
-extern PM_02006d14 data_020d67ac;
-extern PM_02006d14 data_020d67a4;
-extern PM_02006d14 data_020d679c;
 extern PM_02006d14 data_020d6794;
 extern PM_02006d14 data_020d678c;
 extern PM_02006d14 data_020d6784;
@@ -736,9 +634,6 @@ extern PM_02006d14 data_020d627c;
 extern PM_02006d14 data_020d6764;
 extern PM_02006d14 data_020d675c;
 extern PM_02006d14 data_020d626c;
-extern PM_02006d14 data_020d5ffc;
-extern PM_02006d14 data_020d6744;
-extern PM_02006d14 data_020d673c;
 }
 }
 
@@ -757,21 +652,13 @@ extern u8 sPlayerActionDonePriority[];
 extern u8 sPlayerActionPriority[];
 extern u8 sPlayerActionKeepsBgCheckWork[];
 void PlayerActor_CalcHeldUpItemPos(VecFx32 *out, Unk_02007694 *obj, s32 n);
-extern PM_020076f0 data_020d6da4;
-extern PM_020076f0 data_020d6dac;
-extern PM_020076f0 data_020d6d84;
-extern PM_020076f0 data_020d6d7c;
 extern PM_020076f0 data_020d6d74;
-extern PM_020076f0 data_020d6d6c;
 extern PM_020076f0 data_020d6d64;
 extern PM_020076f0 data_020d6d5c;
 extern PM_020076f0 data_020d6d54;
 extern PM_020076f0 data_020d6d4c;
 extern PM_020076f0 data_020d6d44;
-extern PM_020076f0 data_020d6d3c;
 extern PM_020076f0 data_020d6d34;
-extern PM_020076f0 data_020d6d2c;
-extern PM_020076f0 data_020d6d24;
 extern PM_020076f0 data_020d6d1c;
 extern PM_020076f0 data_020d6d14;
 extern PM_020076f0 data_020d6d0c;
@@ -785,7 +672,6 @@ extern PM_020076f0 data_020d6cd4;
 extern PM_020076f0 data_020d6ccc;
 extern PM_020076f0 data_020d6cc4;
 extern PM_020076f0 data_020d6cbc;
-extern PM_020076f0 data_020d6cb4;
 extern PM_020076f0 data_020d6cac;
 extern PM_020076f0 data_020d6ca4;
 extern PM_020076f0 data_020d6c9c;
@@ -809,7 +695,6 @@ extern PM_020076f0 data_020d6c14;
 extern PM_020076f0 data_020d6c0c;
 extern PM_020076f0 data_020d6c04;
 extern PM_020076f0 data_020d6bfc;
-extern PM_020076f0 data_020d6bf4;
 }
 }
 
@@ -1340,16 +1225,7 @@ void *PlayerActor_Create();
 
 namespace nPM {
 extern "C" {
-void _ZN11PlayerActor12drawNotReadyEv();
-void _ZN11PlayerActor9drawReadyEv();
-void _ZN11PlayerActor8mainInitEv();
-void _ZN11PlayerActor9mainAct01Ev();
-void _ZN11PlayerActor8mainWaitEv();
-void _ZN12Unk_020076948mainWalkEv();
-void _ZN12Unk_0200769412mainSkidTurnEv();
-void _ZN12Unk_020076949mainAct05Ev();
 void PlayerActor_MainReleaseCreature();
-void _ZN11PlayerActor17mainChangeClothesEv();
 void PlayerActor_MainLieInBed();
 void PlayerActor_MainGetOutOfBedCheck();
 void PlayerActor_MainGetOutOfBed();
@@ -1358,18 +1234,10 @@ void PlayerActor_MainBedRollBlocked();
 void PlayerActor_MainBedRoll();
 void PlayerActor_MainBedApproach();
 void PlayerActor_MainGetIntoBed();
-void _ZN11PlayerActor9mainAct10Ev();
 void PlayerActor_MainAct11();
 void PlayerActor_MainAct12();
-void _ZN11PlayerActor9mainAct13Ev();
-void _ZN11PlayerActor11mainEmotionEv();
-void _ZN11PlayerActor9mainAct15Ev();
 void PlayerActor_MainPluckReach();
 void PlayerActor_MainPluck();
-void _ZN11PlayerActor15mainPickUpReachEP19PlayerActionRequestj();
-void _ZN11PlayerActor10mainPickUpEv();
-void _ZN11PlayerActor17mainPickUpFanfareEv();
-void _ZN11PlayerActor21mainPickUpFanfareStowEv();
 void PlayerActor_MainPickUpItem();
 void PlayerActor_MainFtrGrabApproach();
 void PlayerActor_MainFtrHold();
@@ -1389,12 +1257,6 @@ void PlayerActor_MainStandUpFront();
 void PlayerActor_MainStorageOpen();
 void PlayerActor_MainStorageHold();
 void PlayerActor_MainStorageClose();
-void _ZN11PlayerActor9mainAct30Ev();
-void _ZN11PlayerActor9mainAct31Ev();
-void _ZN11PlayerActor9mainAct32Ev();
-void _ZN11PlayerActor9mainAct33Ev();
-void _ZN11PlayerActor9mainAct34Ev();
-void _ZN11PlayerActor9mainAct35Ev();
 void PlayerActor_MainAct36();
 void PlayerActor_MainAct37();
 void PlayerActor_MainDoorApproach();
@@ -1402,7 +1264,6 @@ void PlayerActor_MainDoorEnter();
 void PlayerActor_MainDoorExit();
 void PlayerActor_MainStowItem();
 void PlayerActor_MainStowUmbrella();
-void _ZN11PlayerActor18mainChangeHeldItemEv();
 void PlayerActor_MainLeaveRoom();
 void PlayerActor_MainAct41();
 void PlayerActor_MainAct42();
@@ -1450,17 +1311,12 @@ void PlayerActor_MainMailboxWait();
 void PlayerActor_MainMailboxClose();
 void PlayerActor_MainFaint();
 void PlayerActor_MainAct6E();
-void _ZN11PlayerActor10mainWalkToEv();
-void _ZN11PlayerActor10mainTurnToEv();
 void PlayerActor_MainTrip();
 void PlayerActor_MainAct72();
 void PlayerActor_MainPitfallFall();
 void PlayerActor_MainPitfallStruggle();
 void PlayerActor_MainPitfallClimbOut();
-void _ZN11PlayerActor9mainAct76Ev();
-void _ZN11PlayerActor9mainAct77Ev();
 void PlayerActor_MainBeeSting();
-void _ZN11PlayerActor9mainAct79Ev();
 void PlayerActor_MainHaircutCut();
 void PlayerActor_MainHaircutFinish();
 void PlayerActor_MainPhonePickUp();
@@ -1469,10 +1325,6 @@ void PlayerActor_MainPhoneHangUp();
 void PlayerActor_MainAct80();
 void PlayerActor_MainFirework();
 void PlayerActor_MainAct82();
-void _ZN11PlayerActor13mainLidClosedEv();
-void _ZN11PlayerActor16mainErrorMessageEv();
-void _ZN12Unk_0200769414mainHoldUpItemEv();
-void _ZN12Unk_0200769419mainLowerHeldUpItemEv();
 void _ZN19PlayerActTaxiGetOut14mainTaxiGetOutEv();
 void _ZN18PlayerActTaxiGetIn13mainTaxiGetInEv();
 void PlayerActor_MainThrowBottle();
@@ -1482,17 +1334,7 @@ void PlayerActor_MainDoorWalkOut();
 void PlayerActor_MainExitWalkOut();
 void PlayerActor_MainExitWalkIn();
 void PlayerActor_MainFishRelease();
-void _ZN12Unk_0200769412mainWaitMenuEv();
-void _ZN12Unk_020076949mainAct91Ev();
-void _ZN12Unk_020076949mainAct92Ev();
-void _ZN11PlayerActor7netInitEv();
-void _ZN11PlayerActor8netAct01Ej();
-void _ZN11PlayerActor7netWaitEj();
-void _ZN11PlayerActor7netWalkEv();
-void _ZN12Unk_0200769411netSkidTurnEv();
-void _ZN12Unk_020076948netAct05Ej();
 void PlayerActor_NetReleaseCreature();
-void _ZN12Unk_0200769416netChangeClothesEs();
 void PlayerActor_NetLieInBed();
 void PlayerActor_NetGetOutOfBed();
 void PlayerActor_NetBedRollCheck();
@@ -1500,16 +1342,8 @@ void PlayerActor_NetBedRollBlocked();
 void PlayerActor_NetBedRoll();
 void PlayerActor_NetBedApproach();
 void PlayerActor_NetGetIntoBed();
-void _ZN11PlayerActor8netAct10Ej();
 void PlayerActor_NetAct11();
-void _ZN11PlayerActor8netAct13Ej();
-void _ZN11PlayerActor10netEmotionEs();
-void _ZN11PlayerActor8netAct15Ej();
 void PlayerActor_NetPluckReach();
-void _ZN11PlayerActor14netPickUpReachEs();
-void _ZN11PlayerActor9netPickUpEs();
-void _ZN11PlayerActor16netPickUpFanfareEs();
-void _ZN11PlayerActor20netPickUpFanfareStowEs();
 void PlayerActor_NetFtrGrabApproach();
 void PlayerActor_NetFtrHold();
 void PlayerActor_NetFtrPush();
@@ -1525,12 +1359,6 @@ void PlayerActor_NetStandUpFront();
 void PlayerActor_NetStorageOpen();
 void PlayerActor_NetStorageHold();
 void PlayerActor_NetStorageClose();
-void _ZN11PlayerActor8netAct30Ev();
-void _ZN11PlayerActor8netAct31Ev();
-void _ZN11PlayerActor8netAct32Ej();
-void _ZN11PlayerActor8netAct33Ev();
-void _ZN11PlayerActor8netAct34Ev();
-void _ZN11PlayerActor8netAct35Ev();
 void PlayerActor_NetAct36();
 void PlayerActor_NetAct37();
 void PlayerActor_NetDoorApproach();
@@ -1540,7 +1368,6 @@ void PlayerActor_NetDoorExit();
 void PlayerActor_NetAct3C();
 void PlayerActor_NetStowItem();
 void PlayerActor_NetStowUmbrella();
-void _ZN11PlayerActor17netChangeHeldItemEj();
 void PlayerActor_NetLeaveRoom();
 void PlayerActor_NetAct41();
 void PlayerActor_NetAct42();
@@ -1583,16 +1410,11 @@ void PlayerActor_NetMailboxWait();
 void PlayerActor_NetMailboxClose();
 void PlayerActor_NetFaint();
 void PlayerActor_NetAct6E();
-void _ZN11PlayerActor9netWalkToEv();
-void _ZN11PlayerActor9netTurnToEv();
 void PlayerActor_NetTrip();
 void PlayerActor_NetAct72();
 void PlayerActor_NetPitfallFall();
 void PlayerActor_NetPitfallStruggle();
 void PlayerActor_NetPitfallClimbOut();
-void _ZN11PlayerActor8netAct76Es();
-void _ZN11PlayerActor8netAct77Ej();
-void _ZN11PlayerActor8netAct79Ej();
 void PlayerActor_NetHaircutStart();
 void PlayerActor_NetHaircutCut();
 void PlayerActor_NetHaircutFinish();
@@ -1602,10 +1424,6 @@ void PlayerActor_NetPhoneHangUp();
 void PlayerActor_NetAct80();
 void PlayerActor_NetFirework();
 void PlayerActor_NetAct82();
-void _ZN11PlayerActor12netLidClosedEj();
-void _ZN11PlayerActor15netErrorMessageEj();
-void _ZN11PlayerActor13netHoldUpItemEi();
-void _ZN12Unk_0200769418netLowerHeldUpItemEj();
 void _ZN19PlayerActTaxiGetOut13netTaxiGetOutEv();
 void _ZN18PlayerActTaxiGetIn12netTaxiGetInEv();
 void PlayerActor_NetThrowBottle();
@@ -1614,17 +1432,7 @@ void PlayerActor_NetDoorWalkOut();
 void PlayerActor_NetExitWalkOut();
 void PlayerActor_NetExitWalkIn();
 void PlayerActor_NetFishRelease();
-void _ZN12Unk_0200769411netWaitMenuEj();
-void _ZN12Unk_020076948netAct91Ev();
-void _ZN12Unk_020076948netAct92Ev();
-void _ZN11PlayerActor9setupInitEP19PlayerActionRequest();
-void _ZN11PlayerActor10setupAct01EP19PlayerActionRequestj();
-void _ZN11PlayerActor9setupWaitEP19PlayerActionRequestj();
-void _ZN11PlayerActor9setupWalkEP19PlayerActionRequestj();
-void _ZN12Unk_0200769413setupSkidTurnEP19PlayerActionRequest();
-void _ZN12Unk_0200769410setupAct05EP19PlayerActionRequest();
 void PlayerActor_SetupReleaseCreature();
-void _ZN12Unk_0200769418setupChangeClothesEP19PlayerActionRequest();
 void PlayerActor_SetupLieInBed();
 void PlayerActor_SetupGetOutOfBedCheck();
 void PlayerActor_SetupGetOutOfBed();
@@ -1633,18 +1441,10 @@ void PlayerActor_SetupBedRollBlocked();
 void PlayerActor_SetupBedRoll();
 void PlayerActor_SetupBedApproach();
 void PlayerActor_SetupGetIntoBed();
-void _ZN11PlayerActor10setupAct10EP19PlayerActionRequestj();
 void PlayerActor_SetupAct11();
 void PlayerActor_SetupAct12();
-void _ZN11PlayerActor10setupAct13EP19PlayerActionRequestj();
-void _ZN11PlayerActor12setupEmotionEP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct15EP19PlayerActionRequestj();
 void PlayerActor_SetupPluckReach();
 void PlayerActor_SetupPluck();
-void _ZN11PlayerActor16setupPickUpReachEP19PlayerActionRequestj();
-void _ZN11PlayerActor11setupPickUpEP19PlayerActionRequestj();
-void _ZN11PlayerActor18setupPickUpFanfareEP19PlayerActionRequestj();
-void _ZN11PlayerActor22setupPickUpFanfareStowEP19PlayerActionRequestj();
 void PlayerActor_SetupPickUpItem();
 void PlayerActor_SetupFtrGrabApproach();
 void PlayerActor_SetupFtrHold();
@@ -1665,12 +1465,6 @@ void PlayerActor_SetupStandUpFront();
 void PlayerActor_SetupStorageOpen();
 void PlayerActor_SetupStorageHold();
 void PlayerActor_SetupStorageClose();
-void _ZN11PlayerActor10setupAct30EP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct31EP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct32EP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct33EP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct34EP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct35EP19PlayerActionRequestj();
 void PlayerActor_SetupAct36();
 void PlayerActor_SetupAct37();
 void PlayerActor_SetupDoorApproach();
@@ -1680,7 +1474,6 @@ void PlayerActor_SetupDoorExit();
 void PlayerActor_SetupAct3C();
 void PlayerActor_SetupStowItem();
 void PlayerActor_SetupStowUmbrella();
-void _ZN11PlayerActor19setupChangeHeldItemEP19PlayerActionRequestj();
 void PlayerActor_SetupLeaveRoom();
 void PlayerActor_SetupAct41();
 void PlayerActor_SetupAct42();
@@ -1728,17 +1521,12 @@ void PlayerActor_SetupMailboxWait();
 void PlayerActor_SetupMailboxClose();
 void PlayerActor_SetupFaint();
 void PlayerActor_SetupAct6E();
-void _ZN11PlayerActor11setupWalkToEP19PlayerActionRequestj();
-void _ZN11PlayerActor11setupTurnToEP19PlayerActionRequestj();
 void PlayerActor_SetupTrip();
 void PlayerActor_SetupAct72();
 void PlayerActor_SetupPitfallFall();
 void PlayerActor_SetupPitfallStruggle();
 void PlayerActor_SetupPitfallClimbOut();
-void _ZN11PlayerActor10setupAct76EP19PlayerActionRequestj();
-void _ZN11PlayerActor10setupAct77EPh();
 void PlayerActor_SetupBeeSting();
-void _ZN11PlayerActor10setupAct79Ev();
 void PlayerActor_SetupHaircutStart();
 void PlayerActor_SetupHaircutFinish();
 void PlayerActor_SetupPhonePickUp();
@@ -1747,10 +1535,6 @@ void PlayerActor_SetupPhoneHangUp();
 void PlayerActor_SetupAct80();
 void PlayerActor_SetupFirework();
 void PlayerActor_SetupAct82();
-void _ZN11PlayerActor14setupLidClosedEjj();
-void _ZN11PlayerActor17setupErrorMessageEPh();
-void _ZN11PlayerActor15setupHoldUpItemEv();
-void _ZN12Unk_0200769420setupLowerHeldUpItemEv();
 void _ZN19PlayerActTaxiGetOut15setupTaxiGetOutEv();
 void _ZN18PlayerActTaxiGetIn14setupTaxiGetInEv();
 void PlayerActor_SetupThrowBottle();
@@ -1760,24 +1544,13 @@ void PlayerActor_SetupDoorWalkOut();
 void PlayerActor_SetupExitWalkOut();
 void PlayerActor_SetupExitWalkIn();
 void PlayerActor_SetupFishRelease();
-void _ZN12Unk_0200769413setupWaitMenuEP19PlayerActionRequest();
-void _ZN12Unk_0200769410setupAct91Ev();
-void _ZN12Unk_0200769410setupAct92Ev();
-void _ZN11PlayerActor7endInitEj();
-void _ZN11PlayerActor8endAct01Ev();
-void _ZN11PlayerActor7endWaitEv();
-void _ZN12Unk_0200769411endSkidTurnEj();
 void PlayerActor_EndReleaseCreature();
-void _ZN12Unk_0200769416endChangeClothesEj();
 void PlayerActor_EndLieInBed();
 void PlayerActor_EndGetOutOfBed();
 void PlayerActor_EndBedRoll();
 void PlayerActor_EndBedApproach();
 void PlayerActor_EndGetIntoBed();
-void _ZN11PlayerActor10endEmotionEv();
 void PlayerActor_EndPluck();
-void _ZN11PlayerActor9endPickUpEP19PlayerActionRequestj();
-void _ZN11PlayerActor16endPickUpFanfareEv();
 void PlayerActor_EndFtrGrabApproach();
 void PlayerActor_EndFtrPushMove();
 void PlayerActor_EndFtrPullMove();
@@ -1791,7 +1564,6 @@ void PlayerActor_EndStandUpSide1();
 void PlayerActor_EndStandUpFront();
 void PlayerActor_EndAct3C();
 void PlayerActor_EndStowItem();
-void _ZN11PlayerActor17endChangeHeldItemEv();
 void PlayerActor_EndUmbrellaSpin();
 void PlayerActor_EndAxeStrike();
 void PlayerActor_EndAxeChop();
@@ -1815,27 +1587,17 @@ void PlayerActor_EndFirework();
 void PlayerActor_EndAct82();
 void _ZN19PlayerActTaxiGetOut13endTaxiGetOutEv();
 void _ZN18PlayerActTaxiGetIn12endTaxiGetInEv();
-void _ZN12Unk_020076948endAct91Ev();
 }
 }
 
 namespace nA {
 extern "C" {
-PM_02004ce8 data_020d5fbc = {{(PMF)nPM::_ZN11PlayerActor12drawNotReadyEv, 0}};
-PM_02004ce8 data_020d5ff4 = {{(PMF)nPM::_ZN11PlayerActor9drawReadyEv, 0}};
 }
 }
 
 namespace nB {
 extern "C" {
-PM_02005294 data_020d6734 = {{(PMF)nPM::_ZN11PlayerActor8mainInitEv, 0}};
-PM_02005294 data_020d6724 = {{(PMF)nPM::_ZN11PlayerActor9mainAct01Ev, 0}};
-PM_02005294 data_020d5fd4 = {{(PMF)nPM::_ZN11PlayerActor8mainWaitEv, 0}};
-PM_02005294 data_020d6244 = {{(PMF)nPM::_ZN12Unk_020076948mainWalkEv, 0}};
-PM_02005294 data_020d623c = {{(PMF)nPM::_ZN12Unk_0200769412mainSkidTurnEv, 0}};
-PM_02005294 data_020d6234 = {{(PMF)nPM::_ZN12Unk_020076949mainAct05Ev, 0}};
 PM_02005294 data_020d622c = {{(PMF)nPM::PlayerActor_MainReleaseCreature, 0}};
-PM_02005294 data_020d6224 = {{(PMF)nPM::_ZN11PlayerActor17mainChangeClothesEv, 0}};
 PM_02005294 data_020d621c = {{(PMF)nPM::PlayerActor_MainLieInBed, 0}};
 PM_02005294 data_020d6214 = {{(PMF)nPM::PlayerActor_MainGetOutOfBedCheck, 0}};
 PM_02005294 data_020d619c = {{(PMF)nPM::PlayerActor_MainGetOutOfBed, 0}};
@@ -1844,18 +1606,10 @@ PM_02005294 data_020d61fc = {{(PMF)nPM::PlayerActor_MainBedRollBlocked, 0}};
 PM_02005294 data_020d61f4 = {{(PMF)nPM::PlayerActor_MainBedRoll, 0}};
 PM_02005294 data_020d61c4 = {{(PMF)nPM::PlayerActor_MainBedApproach, 0}};
 PM_02005294 data_020d61dc = {{(PMF)nPM::PlayerActor_MainGetIntoBed, 0}};
-PM_02005294 data_020d61e4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct10Ev, 0}};
 PM_02005294 data_020d658c = {{(PMF)nPM::PlayerActor_MainAct11, 0}};
 PM_02005294 data_020d6b94 = {{(PMF)nPM::PlayerActor_MainAct12, 0}};
-PM_02005294 data_020d6604 = {{(PMF)nPM::_ZN11PlayerActor9mainAct13Ev, 0}};
-PM_02005294 data_020d65bc = {{(PMF)nPM::_ZN11PlayerActor11mainEmotionEv, 0}};
-PM_02005294 data_020d65e4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct15Ev, 0}};
 PM_02005294 data_020d660c = {{(PMF)nPM::PlayerActor_MainPluckReach, 0}};
 PM_02005294 data_020d672c = {{(PMF)nPM::PlayerActor_MainPluck, 0}};
-PM_02005294 data_020d676c = {{(PMF)nPM::_ZN11PlayerActor15mainPickUpReachEP19PlayerActionRequestj, 0}};
-PM_02005294 data_020d6db4 = {{(PMF)nPM::_ZN11PlayerActor10mainPickUpEv, 0}};
-PM_02005294 data_020d6d8c = {{(PMF)nPM::_ZN11PlayerActor17mainPickUpFanfareEv, 0}};
-PM_02005294 data_020d6184 = {{(PMF)nPM::_ZN11PlayerActor21mainPickUpFanfareStowEv, 0}};
 PM_02005294 data_020d617c = {{(PMF)nPM::PlayerActor_MainPickUpItem, 0}};
 PM_02005294 data_020d6174 = {{(PMF)nPM::PlayerActor_MainFtrGrabApproach, 0}};
 PM_02005294 data_020d616c = {{(PMF)nPM::PlayerActor_MainFtrHold, 0}};
@@ -1876,12 +1630,6 @@ PM_02005294 data_020d60fc = {{(PMF)nPM::PlayerActor_MainStandUpFront, 0}};
 PM_02005294 data_020d60f4 = {{(PMF)nPM::PlayerActor_MainStorageOpen, 0}};
 PM_02005294 data_020d60ec = {{(PMF)nPM::PlayerActor_MainStorageHold, 0}};
 PM_02005294 data_020d60e4 = {{(PMF)nPM::PlayerActor_MainStorageClose, 0}};
-PM_02005294 data_020d60dc = {{(PMF)nPM::_ZN11PlayerActor9mainAct30Ev, 0}};
-PM_02005294 data_020d60d4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct31Ev, 0}};
-PM_02005294 data_020d60cc = {{(PMF)nPM::_ZN11PlayerActor9mainAct32Ev, 0}};
-PM_02005294 data_020d60c4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct33Ev, 0}};
-PM_02005294 data_020d60bc = {{(PMF)nPM::_ZN11PlayerActor9mainAct34Ev, 0}};
-PM_02005294 data_020d60b4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct35Ev, 0}};
 PM_02005294 data_020d60ac = {{(PMF)nPM::PlayerActor_MainAct36, 0}};
 PM_02005294 data_020d60a4 = {{(PMF)nPM::PlayerActor_MainAct37, 0}};
 PM_02005294 data_020d609c = {{(PMF)nPM::PlayerActor_MainDoorApproach, 0}};
@@ -1891,7 +1639,6 @@ PM_02005294 data_020d6084 = {{(PMF)nPM::PlayerActor_MainDoorExit, 0}};
 PM_02005294 data_020d607c = {{(PMF)PlayerActor_MainAct3C, 0}};
 PM_02005294 data_020d6074 = {{(PMF)nPM::PlayerActor_MainStowItem, 0}};
 PM_02005294 data_020d606c = {{(PMF)nPM::PlayerActor_MainStowUmbrella, 0}};
-PM_02005294 data_020d6064 = {{(PMF)nPM::_ZN11PlayerActor18mainChangeHeldItemEv, 0}};
 PM_02005294 data_020d605c = {{(PMF)nPM::PlayerActor_MainLeaveRoom, 0}};
 PM_02005294 data_020d6054 = {{(PMF)nPM::PlayerActor_MainAct41, 0}};
 PM_02005294 data_020d604c = {{(PMF)nPM::PlayerActor_MainAct42, 0}};
@@ -1939,17 +1686,12 @@ PM_02005294 data_020d5f04 = {{(PMF)nPM::PlayerActor_MainMailboxWait, 0}};
 PM_02005294 data_020d5efc = {{(PMF)nPM::PlayerActor_MainMailboxClose, 0}};
 PM_02005294 data_020d5ef4 = {{(PMF)nPM::PlayerActor_MainFaint, 0}};
 PM_02005294 data_020d5ed4 = {{(PMF)nPM::PlayerActor_MainAct6E, 0}};
-PM_02005294 data_020d5eec = {{(PMF)nPM::_ZN11PlayerActor10mainWalkToEv, 0}};
-PM_02005294 data_020d5f8c = {{(PMF)nPM::_ZN11PlayerActor10mainTurnToEv, 0}};
 PM_02005294 data_020d5f9c = {{(PMF)nPM::PlayerActor_MainTrip, 0}};
 PM_02005294 data_020d5fa4 = {{(PMF)nPM::PlayerActor_MainAct72, 0}};
 PM_02005294 data_020d6004 = {{(PMF)nPM::PlayerActor_MainPitfallFall, 0}};
 PM_02005294 data_020d6264 = {{(PMF)nPM::PlayerActor_MainPitfallStruggle, 0}};
 PM_02005294 data_020d618c = {{(PMF)nPM::PlayerActor_MainPitfallClimbOut, 0}};
-PM_02005294 data_020d61ac = {{(PMF)nPM::_ZN11PlayerActor9mainAct76Ev, 0}};
-PM_02005294 data_020d61d4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct77Ev, 0}};
 PM_02005294 data_020d659c = {{(PMF)nPM::PlayerActor_MainBeeSting, 0}};
-PM_02005294 data_020d65c4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct79Ev, 0}};
 PM_02005294 data_020d6dcc = {{(PMF)FieldObj_LoadIconModels, 0}};
 PM_02005294 data_020d5e84 = {{(PMF)nPM::PlayerActor_MainHaircutCut, 0}};
 PM_02005294 data_020d5e7c = {{(PMF)nPM::PlayerActor_MainHaircutFinish, 0}};
@@ -1959,10 +1701,6 @@ PM_02005294 data_020d5e8c = {{(PMF)nPM::PlayerActor_MainPhoneHangUp, 0}};
 PM_02005294 data_020d5e94 = {{(PMF)nPM::PlayerActor_MainAct80, 0}};
 PM_02005294 data_020d5ea4 = {{(PMF)nPM::PlayerActor_MainFirework, 0}};
 PM_02005294 data_020d5ebc = {{(PMF)nPM::PlayerActor_MainAct82, 0}};
-PM_02005294 data_020d5ecc = {{(PMF)nPM::_ZN11PlayerActor13mainLidClosedEv, 0}};
-PM_02005294 data_020d5edc = {{(PMF)nPM::_ZN11PlayerActor16mainErrorMessageEv, 0}};
-PM_02005294 data_020d5f94 = {{(PMF)nPM::_ZN12Unk_0200769414mainHoldUpItemEv, 0}};
-PM_02005294 data_020d5fac = {{(PMF)nPM::_ZN12Unk_0200769419mainLowerHeldUpItemEv, 0}};
 PM_02005294 data_020d5fdc = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut14mainTaxiGetOutEv, 0}};
 PM_02005294 data_020d61b4 = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn13mainTaxiGetInEv, 0}};
 PM_02005294 data_020d65a4 = {{(PMF)nPM::PlayerActor_MainThrowBottle, 0}};
@@ -1972,22 +1710,12 @@ PM_02005294 data_020d611c = {{(PMF)nPM::PlayerActor_MainDoorWalkOut, 0}};
 PM_02005294 data_020d5e9c = {{(PMF)nPM::PlayerActor_MainExitWalkOut, 0}};
 PM_02005294 data_020d5ec4 = {{(PMF)nPM::PlayerActor_MainExitWalkIn, 0}};
 PM_02005294 data_020d5ee4 = {{(PMF)nPM::PlayerActor_MainFishRelease, 0}};
-PM_02005294 data_020d5fb4 = {{(PMF)nPM::_ZN12Unk_0200769412mainWaitMenuEv, 0}};
-PM_02005294 data_020d6274 = {{(PMF)nPM::_ZN12Unk_020076949mainAct91Ev, 0}};
-PM_02005294 data_020d65ac = {{(PMF)nPM::_ZN12Unk_020076949mainAct92Ev, 0}};
 }
 }
 
 namespace nC {
 extern "C" {
-PM_020063a0 data_020d671c = {{(PMF)nPM::_ZN11PlayerActor7netInitEv, 0}};
-PM_020063a0 data_020d624c = {{(PMF)nPM::_ZN11PlayerActor8netAct01Ej, 0}};
-PM_020063a0 data_020d5fcc = {{(PMF)nPM::_ZN11PlayerActor7netWaitEj, 0}};
-PM_020063a0 data_020d6704 = {{(PMF)nPM::_ZN11PlayerActor7netWalkEv, 0}};
-PM_020063a0 data_020d66fc = {{(PMF)nPM::_ZN12Unk_0200769411netSkidTurnEv, 0}};
-PM_020063a0 data_020d66f4 = {{(PMF)nPM::_ZN12Unk_020076948netAct05Ej, 0}};
 PM_020063a0 data_020d66ec = {{(PMF)nPM::PlayerActor_NetReleaseCreature, 0}};
-PM_020063a0 data_020d66e4 = {{(PMF)nPM::_ZN12Unk_0200769416netChangeClothesEs, 0}};
 PM_020063a0 data_020d66dc = {{(PMF)nPM::PlayerActor_NetLieInBed, 0}};
 PM_020063a0 data_020d66d4 = {{(PMF)PlayerActor_NetGetOutOfBedCheck, 0}};
 PM_020063a0 data_020d66cc = {{(PMF)nPM::PlayerActor_NetGetOutOfBed, 0}};
@@ -1996,18 +1724,10 @@ PM_020063a0 data_020d66bc = {{(PMF)nPM::PlayerActor_NetBedRollBlocked, 0}};
 PM_020063a0 data_020d66b4 = {{(PMF)nPM::PlayerActor_NetBedRoll, 0}};
 PM_020063a0 data_020d66ac = {{(PMF)nPM::PlayerActor_NetBedApproach, 0}};
 PM_020063a0 data_020d66a4 = {{(PMF)nPM::PlayerActor_NetGetIntoBed, 0}};
-PM_020063a0 data_020d669c = {{(PMF)nPM::_ZN11PlayerActor8netAct10Ej, 0}};
 PM_020063a0 data_020d6694 = {{(PMF)nPM::PlayerActor_NetAct11, 0}};
 PM_020063a0 data_020d620c = {{(PMF)PlayerActor_NetAct12, 0}};
-PM_020063a0 data_020d6684 = {{(PMF)nPM::_ZN11PlayerActor8netAct13Ej, 0}};
-PM_020063a0 data_020d667c = {{(PMF)nPM::_ZN11PlayerActor10netEmotionEs, 0}};
-PM_020063a0 data_020d6674 = {{(PMF)nPM::_ZN11PlayerActor8netAct15Ej, 0}};
 PM_020063a0 data_020d666c = {{(PMF)nPM::PlayerActor_NetPluckReach, 0}};
 PM_020063a0 data_020d6664 = {{(PMF)PlayerActor_NetPluck, 0}};
-PM_020063a0 data_020d665c = {{(PMF)nPM::_ZN11PlayerActor14netPickUpReachEs, 0}};
-PM_020063a0 data_020d6654 = {{(PMF)nPM::_ZN11PlayerActor9netPickUpEs, 0}};
-PM_020063a0 data_020d664c = {{(PMF)nPM::_ZN11PlayerActor16netPickUpFanfareEs, 0}};
-PM_020063a0 data_020d6644 = {{(PMF)nPM::_ZN11PlayerActor20netPickUpFanfareStowEs, 0}};
 PM_020063a0 data_020d663c = {{(PMF)PlayerActor_NetPickUpItem, 0}};
 PM_020063a0 data_020d6634 = {{(PMF)nPM::PlayerActor_NetFtrGrabApproach, 0}};
 PM_020063a0 data_020d662c = {{(PMF)nPM::PlayerActor_NetFtrHold, 0}};
@@ -2028,12 +1748,6 @@ PM_020063a0 data_020d6714 = {{(PMF)nPM::PlayerActor_NetStandUpFront, 0}};
 PM_020063a0 data_020d674c = {{(PMF)nPM::PlayerActor_NetStorageOpen, 0}};
 PM_020063a0 data_020d6754 = {{(PMF)nPM::PlayerActor_NetStorageHold, 0}};
 PM_020063a0 data_020d6dbc = {{(PMF)nPM::PlayerActor_NetStorageClose, 0}};
-PM_020063a0 data_020d6b8c = {{(PMF)nPM::_ZN11PlayerActor8netAct30Ev, 0}};
-PM_020063a0 data_020d6d94 = {{(PMF)nPM::_ZN11PlayerActor8netAct31Ev, 0}};
-PM_020063a0 data_020d6dc4 = {{(PMF)nPM::_ZN11PlayerActor8netAct32Ej, 0}};
-PM_020063a0 data_020d6584 = {{(PMF)nPM::_ZN11PlayerActor8netAct33Ev, 0}};
-PM_020063a0 data_020d657c = {{(PMF)nPM::_ZN11PlayerActor8netAct34Ev, 0}};
-PM_020063a0 data_020d6574 = {{(PMF)nPM::_ZN11PlayerActor8netAct35Ev, 0}};
 PM_020063a0 data_020d656c = {{(PMF)nPM::PlayerActor_NetAct36, 0}};
 PM_020063a0 data_020d6564 = {{(PMF)nPM::PlayerActor_NetAct37, 0}};
 PM_020063a0 data_020d655c = {{(PMF)nPM::PlayerActor_NetDoorApproach, 0}};
@@ -2043,7 +1757,6 @@ PM_020063a0 data_020d6544 = {{(PMF)nPM::PlayerActor_NetDoorExit, 0}};
 PM_020063a0 data_020d653c = {{(PMF)nPM::PlayerActor_NetAct3C, 0}};
 PM_020063a0 data_020d6534 = {{(PMF)nPM::PlayerActor_NetStowItem, 0}};
 PM_020063a0 data_020d652c = {{(PMF)nPM::PlayerActor_NetStowUmbrella, 0}};
-PM_020063a0 data_020d6524 = {{(PMF)nPM::_ZN11PlayerActor17netChangeHeldItemEj, 0}};
 PM_020063a0 data_020d651c = {{(PMF)nPM::PlayerActor_NetLeaveRoom, 0}};
 PM_020063a0 data_020d6514 = {{(PMF)nPM::PlayerActor_NetAct41, 0}};
 PM_020063a0 data_020d650c = {{(PMF)nPM::PlayerActor_NetAct42, 0}};
@@ -2091,17 +1804,12 @@ PM_020063a0 data_020d63c4 = {{(PMF)nPM::PlayerActor_NetMailboxWait, 0}};
 PM_020063a0 data_020d63bc = {{(PMF)nPM::PlayerActor_NetMailboxClose, 0}};
 PM_020063a0 data_020d63b4 = {{(PMF)nPM::PlayerActor_NetFaint, 0}};
 PM_020063a0 data_020d63ac = {{(PMF)nPM::PlayerActor_NetAct6E, 0}};
-PM_020063a0 data_020d63a4 = {{(PMF)nPM::_ZN11PlayerActor9netWalkToEv, 0}};
-PM_020063a0 data_020d639c = {{(PMF)nPM::_ZN11PlayerActor9netTurnToEv, 0}};
 PM_020063a0 data_020d6394 = {{(PMF)nPM::PlayerActor_NetTrip, 0}};
 PM_020063a0 data_020d5f0c = {{(PMF)nPM::PlayerActor_NetAct72, 0}};
 PM_020063a0 data_020d6384 = {{(PMF)nPM::PlayerActor_NetPitfallFall, 0}};
 PM_020063a0 data_020d637c = {{(PMF)nPM::PlayerActor_NetPitfallStruggle, 0}};
 PM_020063a0 data_020d6374 = {{(PMF)nPM::PlayerActor_NetPitfallClimbOut, 0}};
-PM_020063a0 data_020d636c = {{(PMF)nPM::_ZN11PlayerActor8netAct76Es, 0}};
-PM_020063a0 data_020d6364 = {{(PMF)nPM::_ZN11PlayerActor8netAct77Ej, 0}};
 PM_020063a0 data_020d635c = {{(PMF)PlayerActor_NetBeeSting, 0}};
-PM_020063a0 data_020d6354 = {{(PMF)nPM::_ZN11PlayerActor8netAct79Ej, 0}};
 PM_020063a0 data_020d634c = {{(PMF)nPM::PlayerActor_NetHaircutStart, 0}};
 PM_020063a0 data_020d6344 = {{(PMF)nPM::PlayerActor_NetHaircutCut, 0}};
 PM_020063a0 data_020d633c = {{(PMF)nPM::PlayerActor_NetHaircutFinish, 0}};
@@ -2111,10 +1819,6 @@ PM_020063a0 data_020d6324 = {{(PMF)nPM::PlayerActor_NetPhoneHangUp, 0}};
 PM_020063a0 data_020d631c = {{(PMF)nPM::PlayerActor_NetAct80, 0}};
 PM_020063a0 data_020d6314 = {{(PMF)nPM::PlayerActor_NetFirework, 0}};
 PM_020063a0 data_020d630c = {{(PMF)nPM::PlayerActor_NetAct82, 0}};
-PM_020063a0 data_020d6304 = {{(PMF)nPM::_ZN11PlayerActor12netLidClosedEj, 0}};
-PM_020063a0 data_020d62fc = {{(PMF)nPM::_ZN11PlayerActor15netErrorMessageEj, 0}};
-PM_020063a0 data_020d62f4 = {{(PMF)nPM::_ZN11PlayerActor13netHoldUpItemEi, 0}};
-PM_020063a0 data_020d62ec = {{(PMF)nPM::_ZN12Unk_0200769418netLowerHeldUpItemEj, 0}};
 PM_020063a0 data_020d62e4 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut13netTaxiGetOutEv, 0}};
 PM_020063a0 data_020d62dc = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn12netTaxiGetInEv, 0}};
 PM_020063a0 data_020d62d4 = {{(PMF)nPM::PlayerActor_NetThrowBottle, 0}};
@@ -2124,22 +1828,12 @@ PM_020063a0 data_020d62bc = {{(PMF)nPM::PlayerActor_NetDoorWalkOut, 0}};
 PM_020063a0 data_020d62b4 = {{(PMF)nPM::PlayerActor_NetExitWalkOut, 0}};
 PM_020063a0 data_020d62ac = {{(PMF)nPM::PlayerActor_NetExitWalkIn, 0}};
 PM_020063a0 data_020d62a4 = {{(PMF)nPM::PlayerActor_NetFishRelease, 0}};
-PM_020063a0 data_020d629c = {{(PMF)nPM::_ZN12Unk_0200769411netWaitMenuEj, 0}};
-PM_020063a0 data_020d6294 = {{(PMF)nPM::_ZN12Unk_020076948netAct91Ev, 0}};
-PM_020063a0 data_020d628c = {{(PMF)nPM::_ZN12Unk_020076948netAct92Ev, 0}};
 }
 }
 
 namespace nD {
 extern "C" {
-PM_02006d14 data_020d6bcc = {{(PMF)nPM::_ZN11PlayerActor9setupInitEP19PlayerActionRequest, 0}};
-PM_02006d14 data_020d6bc4 = {{(PMF)nPM::_ZN11PlayerActor10setupAct01EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6bbc = {{(PMF)nPM::_ZN11PlayerActor9setupWaitEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6bb4 = {{(PMF)nPM::_ZN11PlayerActor9setupWalkEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6bac = {{(PMF)nPM::_ZN12Unk_0200769413setupSkidTurnEP19PlayerActionRequest, 0}};
-PM_02006d14 data_020d6ba4 = {{(PMF)nPM::_ZN12Unk_0200769410setupAct05EP19PlayerActionRequest, 0}};
 PM_02006d14 data_020d6b9c = {{(PMF)nPM::PlayerActor_SetupReleaseCreature, 0}};
-PM_02006d14 data_020d648c = {{(PMF)nPM::_ZN12Unk_0200769418setupChangeClothesEP19PlayerActionRequest, 0}};
 PM_02006d14 data_020d610c = {{(PMF)nPM::PlayerActor_SetupLieInBed, 0}};
 PM_02006d14 data_020d6b84 = {{(PMF)nPM::PlayerActor_SetupGetOutOfBedCheck, 0}};
 PM_02006d14 data_020d6b7c = {{(PMF)nPM::PlayerActor_SetupGetOutOfBed, 0}};
@@ -2148,18 +1842,10 @@ PM_02006d14 data_020d6b6c = {{(PMF)nPM::PlayerActor_SetupBedRollBlocked, 0}};
 PM_02006d14 data_020d6b64 = {{(PMF)nPM::PlayerActor_SetupBedRoll, 0}};
 PM_02006d14 data_020d6b5c = {{(PMF)nPM::PlayerActor_SetupBedApproach, 0}};
 PM_02006d14 data_020d6b54 = {{(PMF)nPM::PlayerActor_SetupGetIntoBed, 0}};
-PM_02006d14 data_020d6b4c = {{(PMF)nPM::_ZN11PlayerActor10setupAct10EP19PlayerActionRequestj, 0}};
 PM_02006d14 data_020d6b44 = {{(PMF)nPM::PlayerActor_SetupAct11, 0}};
 PM_02006d14 data_020d6b3c = {{(PMF)nPM::PlayerActor_SetupAct12, 0}};
-PM_02006d14 data_020d6b34 = {{(PMF)nPM::_ZN11PlayerActor10setupAct13EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6b2c = {{(PMF)nPM::_ZN11PlayerActor12setupEmotionEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6b24 = {{(PMF)nPM::_ZN11PlayerActor10setupAct15EP19PlayerActionRequestj, 0}};
 PM_02006d14 data_020d6b1c = {{(PMF)nPM::PlayerActor_SetupPluckReach, 0}};
 PM_02006d14 data_020d6b14 = {{(PMF)nPM::PlayerActor_SetupPluck, 0}};
-PM_02006d14 data_020d6b0c = {{(PMF)nPM::_ZN11PlayerActor16setupPickUpReachEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6b04 = {{(PMF)nPM::_ZN11PlayerActor11setupPickUpEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6afc = {{(PMF)nPM::_ZN11PlayerActor18setupPickUpFanfareEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6af4 = {{(PMF)nPM::_ZN11PlayerActor22setupPickUpFanfareStowEP19PlayerActionRequestj, 0}};
 PM_02006d14 data_020d6aec = {{(PMF)nPM::PlayerActor_SetupPickUpItem, 0}};
 PM_02006d14 data_020d6ae4 = {{(PMF)nPM::PlayerActor_SetupFtrGrabApproach, 0}};
 PM_02006d14 data_020d6adc = {{(PMF)nPM::PlayerActor_SetupFtrHold, 0}};
@@ -2180,12 +1866,6 @@ PM_02006d14 data_020d6a6c = {{(PMF)nPM::PlayerActor_SetupStandUpFront, 0}};
 PM_02006d14 data_020d6a64 = {{(PMF)nPM::PlayerActor_SetupStorageOpen, 0}};
 PM_02006d14 data_020d6a5c = {{(PMF)nPM::PlayerActor_SetupStorageHold, 0}};
 PM_02006d14 data_020d6a54 = {{(PMF)nPM::PlayerActor_SetupStorageClose, 0}};
-PM_02006d14 data_020d6a4c = {{(PMF)nPM::_ZN11PlayerActor10setupAct30EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6a44 = {{(PMF)nPM::_ZN11PlayerActor10setupAct31EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6a3c = {{(PMF)nPM::_ZN11PlayerActor10setupAct32EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6a34 = {{(PMF)nPM::_ZN11PlayerActor10setupAct33EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6a2c = {{(PMF)nPM::_ZN11PlayerActor10setupAct34EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6a24 = {{(PMF)nPM::_ZN11PlayerActor10setupAct35EP19PlayerActionRequestj, 0}};
 PM_02006d14 data_020d6a1c = {{(PMF)nPM::PlayerActor_SetupAct36, 0}};
 PM_02006d14 data_020d6a14 = {{(PMF)nPM::PlayerActor_SetupAct37, 0}};
 PM_02006d14 data_020d6a0c = {{(PMF)nPM::PlayerActor_SetupDoorApproach, 0}};
@@ -2195,7 +1875,6 @@ PM_02006d14 data_020d69f4 = {{(PMF)nPM::PlayerActor_SetupDoorExit, 0}};
 PM_02006d14 data_020d69ec = {{(PMF)nPM::PlayerActor_SetupAct3C, 0}};
 PM_02006d14 data_020d69e4 = {{(PMF)nPM::PlayerActor_SetupStowItem, 0}};
 PM_02006d14 data_020d69dc = {{(PMF)nPM::PlayerActor_SetupStowUmbrella, 0}};
-PM_02006d14 data_020d69d4 = {{(PMF)nPM::_ZN11PlayerActor19setupChangeHeldItemEP19PlayerActionRequestj, 0}};
 PM_02006d14 data_020d69cc = {{(PMF)nPM::PlayerActor_SetupLeaveRoom, 0}};
 PM_02006d14 data_020d69c4 = {{(PMF)nPM::PlayerActor_SetupAct41, 0}};
 PM_02006d14 data_020d69bc = {{(PMF)nPM::PlayerActor_SetupAct42, 0}};
@@ -2243,17 +1922,12 @@ PM_02006d14 data_020d6874 = {{(PMF)nPM::PlayerActor_SetupMailboxWait, 0}};
 PM_02006d14 data_020d686c = {{(PMF)nPM::PlayerActor_SetupMailboxClose, 0}};
 PM_02006d14 data_020d6864 = {{(PMF)nPM::PlayerActor_SetupFaint, 0}};
 PM_02006d14 data_020d685c = {{(PMF)nPM::PlayerActor_SetupAct6E, 0}};
-PM_02006d14 data_020d6854 = {{(PMF)nPM::_ZN11PlayerActor11setupWalkToEP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d684c = {{(PMF)nPM::_ZN11PlayerActor11setupTurnToEP19PlayerActionRequestj, 0}};
 PM_02006d14 data_020d6844 = {{(PMF)nPM::PlayerActor_SetupTrip, 0}};
 PM_02006d14 data_020d683c = {{(PMF)nPM::PlayerActor_SetupAct72, 0}};
 PM_02006d14 data_020d6834 = {{(PMF)nPM::PlayerActor_SetupPitfallFall, 0}};
 PM_02006d14 data_020d682c = {{(PMF)nPM::PlayerActor_SetupPitfallStruggle, 0}};
 PM_02006d14 data_020d6824 = {{(PMF)nPM::PlayerActor_SetupPitfallClimbOut, 0}};
-PM_02006d14 data_020d681c = {{(PMF)nPM::_ZN11PlayerActor10setupAct76EP19PlayerActionRequestj, 0}};
-PM_02006d14 data_020d6814 = {{(PMF)nPM::_ZN11PlayerActor10setupAct77EPh, 0}};
 PM_02006d14 data_020d680c = {{(PMF)nPM::PlayerActor_SetupBeeSting, 0}};
-PM_02006d14 data_020d6804 = {{(PMF)nPM::_ZN11PlayerActor10setupAct79Ev, 0}};
 PM_02006d14 data_020d67fc = {{(PMF)nPM::PlayerActor_SetupHaircutStart, 0}};
 PM_02006d14 data_020d67f4 = {{(PMF)FieldObj_LoadStones, 0}};
 PM_02006d14 data_020d67ec = {{(PMF)nPM::PlayerActor_SetupHaircutFinish, 0}};
@@ -2263,10 +1937,6 @@ PM_02006d14 data_020d67d4 = {{(PMF)nPM::PlayerActor_SetupPhoneHangUp, 0}};
 PM_02006d14 data_020d67cc = {{(PMF)nPM::PlayerActor_SetupAct80, 0}};
 PM_02006d14 data_020d67c4 = {{(PMF)nPM::PlayerActor_SetupFirework, 0}};
 PM_02006d14 data_020d67bc = {{(PMF)nPM::PlayerActor_SetupAct82, 0}};
-PM_02006d14 data_020d67b4 = {{(PMF)nPM::_ZN11PlayerActor14setupLidClosedEjj, 0}};
-PM_02006d14 data_020d67ac = {{(PMF)nPM::_ZN11PlayerActor17setupErrorMessageEPh, 0}};
-PM_02006d14 data_020d67a4 = {{(PMF)nPM::_ZN11PlayerActor15setupHoldUpItemEv, 0}};
-PM_02006d14 data_020d679c = {{(PMF)nPM::_ZN12Unk_0200769420setupLowerHeldUpItemEv, 0}};
 PM_02006d14 data_020d6794 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut15setupTaxiGetOutEv, 0}};
 PM_02006d14 data_020d678c = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn14setupTaxiGetInEv, 0}};
 PM_02006d14 data_020d6784 = {{(PMF)nPM::PlayerActor_SetupThrowBottle, 0}};
@@ -2276,29 +1946,18 @@ PM_02006d14 data_020d627c = {{(PMF)nPM::PlayerActor_SetupDoorWalkOut, 0}};
 PM_02006d14 data_020d6764 = {{(PMF)nPM::PlayerActor_SetupExitWalkOut, 0}};
 PM_02006d14 data_020d675c = {{(PMF)nPM::PlayerActor_SetupExitWalkIn, 0}};
 PM_02006d14 data_020d626c = {{(PMF)nPM::PlayerActor_SetupFishRelease, 0}};
-PM_02006d14 data_020d5ffc = {{(PMF)nPM::_ZN12Unk_0200769413setupWaitMenuEP19PlayerActionRequest, 0}};
-PM_02006d14 data_020d6744 = {{(PMF)nPM::_ZN12Unk_0200769410setupAct91Ev, 0}};
-PM_02006d14 data_020d673c = {{(PMF)nPM::_ZN12Unk_0200769410setupAct92Ev, 0}};
 }
 }
 
 namespace nE {
 extern "C" {
-PM_020076f0 data_020d6da4 = {{(PMF)nPM::_ZN11PlayerActor7endInitEj, 0}};
-PM_020076f0 data_020d6dac = {{(PMF)nPM::_ZN11PlayerActor8endAct01Ev, 0}};
-PM_020076f0 data_020d6d84 = {{(PMF)nPM::_ZN11PlayerActor7endWaitEv, 0}};
-PM_020076f0 data_020d6d7c = {{(PMF)nPM::_ZN12Unk_0200769411endSkidTurnEj, 0}};
 PM_020076f0 data_020d6d74 = {{(PMF)nPM::PlayerActor_EndReleaseCreature, 0}};
-PM_020076f0 data_020d6d6c = {{(PMF)nPM::_ZN12Unk_0200769416endChangeClothesEj, 0}};
 PM_020076f0 data_020d6d64 = {{(PMF)nPM::PlayerActor_EndLieInBed, 0}};
 PM_020076f0 data_020d6d5c = {{(PMF)nPM::PlayerActor_EndGetOutOfBed, 0}};
 PM_020076f0 data_020d6d54 = {{(PMF)nPM::PlayerActor_EndBedRoll, 0}};
 PM_020076f0 data_020d6d4c = {{(PMF)nPM::PlayerActor_EndBedApproach, 0}};
 PM_020076f0 data_020d6d44 = {{(PMF)nPM::PlayerActor_EndGetIntoBed, 0}};
-PM_020076f0 data_020d6d3c = {{(PMF)nPM::_ZN11PlayerActor10endEmotionEv, 0}};
 PM_020076f0 data_020d6d34 = {{(PMF)nPM::PlayerActor_EndPluck, 0}};
-PM_020076f0 data_020d6d2c = {{(PMF)nPM::_ZN11PlayerActor9endPickUpEP19PlayerActionRequestj, 0}};
-PM_020076f0 data_020d6d24 = {{(PMF)nPM::_ZN11PlayerActor16endPickUpFanfareEv, 0}};
 PM_020076f0 data_020d6d1c = {{(PMF)nPM::PlayerActor_EndFtrGrabApproach, 0}};
 PM_020076f0 data_020d6d14 = {{(PMF)nPM::PlayerActor_EndFtrPushMove, 0}};
 PM_020076f0 data_020d6d0c = {{(PMF)nPM::PlayerActor_EndFtrPullMove, 0}};
@@ -2312,7 +1971,6 @@ PM_020076f0 data_020d6cd4 = {{(PMF)nPM::PlayerActor_EndStandUpSide1, 0}};
 PM_020076f0 data_020d6ccc = {{(PMF)nPM::PlayerActor_EndStandUpFront, 0}};
 PM_020076f0 data_020d6cc4 = {{(PMF)nPM::PlayerActor_EndAct3C, 0}};
 PM_020076f0 data_020d6cbc = {{(PMF)nPM::PlayerActor_EndStowItem, 0}};
-PM_020076f0 data_020d6cb4 = {{(PMF)nPM::_ZN11PlayerActor17endChangeHeldItemEv, 0}};
 PM_020076f0 data_020d6cac = {{(PMF)nPM::PlayerActor_EndUmbrellaSpin, 0}};
 PM_020076f0 data_020d6ca4 = {{(PMF)nPM::PlayerActor_EndAxeStrike, 0}};
 PM_020076f0 data_020d6c9c = {{(PMF)nPM::PlayerActor_EndAxeChop, 0}};
@@ -2336,7 +1994,6 @@ PM_020076f0 data_020d6c14 = {{(PMF)nPM::PlayerActor_EndFirework, 0}};
 PM_020076f0 data_020d6c0c = {{(PMF)nPM::PlayerActor_EndAct82, 0}};
 PM_020076f0 data_020d6c04 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut13endTaxiGetOutEv, 0}};
 PM_020076f0 data_020d6bfc = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn12endTaxiGetInEv, 0}};
-PM_020076f0 data_020d6bf4 = {{(PMF)nPM::_ZN12Unk_020076948endAct91Ev, 0}};
 }
 }
 
@@ -5478,7 +5135,7 @@ void PlayerActor::pickUpReachWaitAnswer() {
     }
 }
 
-void PlayerActor::mainPickUpReach(PlayerActionRequest* item, u32 old) {
+void PlayerActor::mainPickUpReach() {
     using namespace nJ;
     Vec2 p;
     if (((CommManager *)(gCommManager))->isLocalSlot(((PlayerActor *)this)->sessionSlot)) {
@@ -5720,7 +5377,7 @@ void PlayerActor::netPickUp(s16 old) {
     }
 }
 
-void PlayerActor::endPickUp(PlayerActionRequest* item, u32 old) {
+void PlayerActor::endPickUp() {
     using namespace nJ;
     ((PlayerActor *)(this))->clearActionFlag(0xd);
 }
@@ -7482,17 +7139,17 @@ u8 Unk_02007694::getActionDonePriority(u32 a) {
 void Unk_02007694::endAction(u32 a) {
     using namespace nE;
     static void (Unk_02007694::*tbl[147])(u32) = {
-        data_020d6da4.fn, data_020d6dac.fn, data_020d6d84.fn, 0, data_020d6d7c.fn, 0,
-        data_020d6d74.fn, data_020d6d6c.fn, data_020d6d64.fn, 0, data_020d6d5c.fn, 0,
+        reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endInit), reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endAct01), reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endWait), 0, &Unk_02007694::endSkidTurn, 0,
+        data_020d6d74.fn, &Unk_02007694::endChangeClothes, data_020d6d64.fn, 0, data_020d6d5c.fn, 0,
         0, data_020d6d54.fn, data_020d6d4c.fn, data_020d6d44.fn, 0, 0,
-        0, 0, data_020d6d3c.fn, 0, 0, data_020d6d34.fn,
-        0, data_020d6d2c.fn, data_020d6d24.fn, 0, 0, data_020d6d1c.fn,
+        0, 0, reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endEmotion), 0, 0, data_020d6d34.fn,
+        0, reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endPickUp), reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endPickUpFanfare), 0, 0, data_020d6d1c.fn,
         0, 0, 0, 0, data_020d6d14.fn, data_020d6d0c.fn,
         data_020d6d04.fn, data_020d6cfc.fn, data_020d6cf4.fn, data_020d6cec.fn, data_020d6ce4.fn, data_020d6cdc.fn,
         data_020d6cd4.fn, 0, data_020d6ccc.fn, 0, 0, 0,
         0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0,
-        data_020d6cc4.fn, data_020d6cbc.fn, 0, data_020d6cb4.fn, 0, 0,
+        data_020d6cc4.fn, data_020d6cbc.fn, 0, reinterpret_cast<void (Unk_02007694::*)(u32)>(&PlayerActor::endChangeHeldItem), 0, 0,
         0, 0, 0, data_020d6cac.fn, 0, 0,
         0, data_020d6ca4.fn, data_020d6c9c.fn, data_020d6c94.fn, data_020d6c8c.fn, 0,
         0, data_020d6c84.fn, 0, 0, 0, 0,
@@ -7506,7 +7163,7 @@ void Unk_02007694::endAction(u32 a) {
         0, 0, data_020d6c1c.fn, data_020d6c14.fn, data_020d6c0c.fn, 0,
         0, 0, 0, data_020d6c04.fn, data_020d6bfc.fn, 0,
         0, 0, 0, 0, 0, 0,
-        0, data_020d6bf4.fn, 0,
+        0, reinterpret_cast<void (Unk_02007694::*)(u32)>(&Unk_02007694::endAct91), 0,
     };
     void (Unk_02007694::*fn)(u32) = tbl[((Unk_02007694 *)this)->action];
     if (fn) {
@@ -7541,17 +7198,17 @@ void Unk_02007694::resetRotXForAction(u32 a) {
 void PlayerActor::changeAction(PlayerActionRequest* item) {
     using namespace nD;
     static Unk_02006d14_Fn table[] = {
-        data_020d6bcc.fn, data_020d6bc4.fn, data_020d6bbc.fn, data_020d6bb4.fn, data_020d6bac.fn, data_020d6ba4.fn,
-        data_020d6b9c.fn, data_020d648c.fn, data_020d610c.fn, data_020d6b84.fn, data_020d6b7c.fn, data_020d6b74.fn,
-        data_020d6b6c.fn, data_020d6b64.fn, data_020d6b5c.fn, data_020d6b54.fn, data_020d6b4c.fn, data_020d6b44.fn,
-        data_020d6b3c.fn, data_020d6b34.fn, data_020d6b2c.fn, data_020d6b24.fn, data_020d6b1c.fn, data_020d6b14.fn,
-        data_020d6b0c.fn, data_020d6b04.fn, data_020d6afc.fn, data_020d6af4.fn, data_020d6aec.fn, data_020d6ae4.fn,
+        reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupInit), &PlayerActor::setupAct01, &PlayerActor::setupWait, &PlayerActor::setupWalk, reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupSkidTurn), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupAct05),
+        data_020d6b9c.fn, reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupChangeClothes), data_020d610c.fn, data_020d6b84.fn, data_020d6b7c.fn, data_020d6b74.fn,
+        data_020d6b6c.fn, data_020d6b64.fn, data_020d6b5c.fn, data_020d6b54.fn, &PlayerActor::setupAct10, data_020d6b44.fn,
+        data_020d6b3c.fn, &PlayerActor::setupAct13, &PlayerActor::setupEmotion, &PlayerActor::setupAct15, data_020d6b1c.fn, data_020d6b14.fn,
+        &PlayerActor::setupPickUpReach, &PlayerActor::setupPickUp, &PlayerActor::setupPickUpFanfare, &PlayerActor::setupPickUpFanfareStow, data_020d6aec.fn, data_020d6ae4.fn,
         data_020d6adc.fn, data_020d6ad4.fn, data_020d6acc.fn, data_020d6ac4.fn, data_020d6abc.fn, data_020d6ab4.fn,
         data_020d6aac.fn, data_020d6aa4.fn, data_020d6a9c.fn, data_020d6a94.fn, data_020d6a8c.fn, data_020d6a84.fn,
         data_020d6a7c.fn, data_020d6a74.fn, data_020d6a6c.fn, data_020d6a64.fn, data_020d6a5c.fn, data_020d6a54.fn,
-        data_020d6a4c.fn, data_020d6a44.fn, data_020d6a3c.fn, data_020d6a34.fn, data_020d6a2c.fn, data_020d6a24.fn,
+        &PlayerActor::setupAct30, &PlayerActor::setupAct31, &PlayerActor::setupAct32, &PlayerActor::setupAct33, &PlayerActor::setupAct34, &PlayerActor::setupAct35,
         data_020d6a1c.fn, data_020d6a14.fn, data_020d6a0c.fn, data_020d6a04.fn, data_020d69fc.fn, data_020d69f4.fn,
-        data_020d69ec.fn, data_020d69e4.fn, data_020d69dc.fn, data_020d69d4.fn, data_020d69cc.fn, data_020d69c4.fn,
+        data_020d69ec.fn, data_020d69e4.fn, data_020d69dc.fn, &PlayerActor::setupChangeHeldItem, data_020d69cc.fn, data_020d69c4.fn,
         data_020d69bc.fn, data_020d69b4.fn, data_020d69ac.fn, data_020d69a4.fn, data_020d699c.fn, data_020d638c.fn,
         data_020d608c.fn, data_020d6984.fn, data_020d697c.fn, data_020d6974.fn, data_020d696c.fn, data_020d6964.fn,
         data_020d695c.fn, data_020d6954.fn, data_020d694c.fn, data_020d6944.fn, data_020d693c.fn, data_020d6934.fn,
@@ -7559,13 +7216,13 @@ void PlayerActor::changeAction(PlayerActionRequest* item) {
         data_020d68fc.fn, data_020d68f4.fn, data_020d68ec.fn, data_020d68e4.fn, data_020d68dc.fn, data_020d68d4.fn,
         data_020d68cc.fn, data_020d68c4.fn, data_020d68bc.fn, data_020d68b4.fn, data_020d68ac.fn, data_020d68a4.fn,
         data_020d689c.fn, data_020d6894.fn, data_020d688c.fn, data_020d6884.fn, data_020d687c.fn, data_020d6874.fn,
-        data_020d686c.fn, data_020d6864.fn, data_020d685c.fn, data_020d6854.fn, data_020d684c.fn, data_020d6844.fn,
-        data_020d683c.fn, data_020d6834.fn, data_020d682c.fn, data_020d6824.fn, data_020d681c.fn, data_020d6814.fn,
-        data_020d680c.fn, data_020d6804.fn, data_020d67fc.fn, data_020d67f4.fn, data_020d67ec.fn, data_020d67e4.fn,
-        data_020d67dc.fn, data_020d67d4.fn, data_020d67cc.fn, data_020d67c4.fn, data_020d67bc.fn, data_020d67b4.fn,
-        data_020d67ac.fn, data_020d67a4.fn, data_020d679c.fn, data_020d6794.fn, data_020d678c.fn, data_020d6784.fn,
+        data_020d686c.fn, data_020d6864.fn, data_020d685c.fn, &PlayerActor::setupWalkTo, &PlayerActor::setupTurnTo, data_020d6844.fn,
+        data_020d683c.fn, data_020d6834.fn, data_020d682c.fn, data_020d6824.fn, &PlayerActor::setupAct76, reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupAct77),
+        data_020d680c.fn, reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupAct79), data_020d67fc.fn, data_020d67f4.fn, data_020d67ec.fn, data_020d67e4.fn,
+        data_020d67dc.fn, data_020d67d4.fn, data_020d67cc.fn, data_020d67c4.fn, data_020d67bc.fn, reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupLidClosed),
+        reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupErrorMessage), reinterpret_cast<nD::Unk_02006d14_Fn>(&PlayerActor::setupHoldUpItem), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupLowerHeldUpItem), data_020d6794.fn, data_020d678c.fn, data_020d6784.fn,
         data_020d677c.fn, data_020d6774.fn, data_020d627c.fn, data_020d6764.fn, data_020d675c.fn, data_020d626c.fn,
-        data_020d5ffc.fn, data_020d6744.fn, data_020d673c.fn,
+        reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupWaitMenu), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupAct91), reinterpret_cast<nD::Unk_02006d14_Fn>(&Unk_02007694::setupAct92),
     };
     u32 id = ((PlayerActionRequest *)item)->action;
     s16 v = ((PlayerActionRequest *)item)->netSeq;
@@ -7636,17 +7293,17 @@ void Unk_02005e7c::followNetAction() {
         return;
     }
     static void (Unk_02005e7c::*tbl[147])(s32) = {
-        data_020d671c.fn, data_020d624c.fn, data_020d5fcc.fn, data_020d6704.fn, data_020d66fc.fn, data_020d66f4.fn,
-        data_020d66ec.fn, data_020d66e4.fn, data_020d66dc.fn, data_020d66d4.fn, data_020d66cc.fn, data_020d66c4.fn,
-        data_020d66bc.fn, data_020d66b4.fn, data_020d66ac.fn, data_020d66a4.fn, data_020d669c.fn, data_020d6694.fn,
-        data_020d620c.fn, data_020d6684.fn, data_020d667c.fn, data_020d6674.fn, data_020d666c.fn, data_020d6664.fn,
-        data_020d665c.fn, data_020d6654.fn, data_020d664c.fn, data_020d6644.fn, data_020d663c.fn, data_020d6634.fn,
+        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netInit), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct01), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netWait), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netWalk), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netSkidTurn), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netAct05),
+        data_020d66ec.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netChangeClothes), data_020d66dc.fn, data_020d66d4.fn, data_020d66cc.fn, data_020d66c4.fn,
+        data_020d66bc.fn, data_020d66b4.fn, data_020d66ac.fn, data_020d66a4.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct10), data_020d6694.fn,
+        data_020d620c.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct13), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netEmotion), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct15), data_020d666c.fn, data_020d6664.fn,
+        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netPickUpReach), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netPickUp), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netPickUpFanfare), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netPickUpFanfareStow), data_020d663c.fn, data_020d6634.fn,
         data_020d662c.fn, data_020d6624.fn, data_020d661c.fn, data_020d6614.fn, data_020d5f54.fn, data_020d5e6c.fn,
         data_020d6be4.fn, data_020d65b4.fn, data_020d65cc.fn, data_020d65d4.fn, data_020d65dc.fn, data_020d65ec.fn,
         data_020d65fc.fn, data_020d670c.fn, data_020d6714.fn, data_020d674c.fn, data_020d6754.fn, data_020d6dbc.fn,
-        data_020d6b8c.fn, data_020d6d94.fn, data_020d6dc4.fn, data_020d6584.fn, data_020d657c.fn, data_020d6574.fn,
+        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct30), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct31), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct32), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct33), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct34), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct35),
         data_020d656c.fn, data_020d6564.fn, data_020d655c.fn, data_020d6554.fn, data_020d654c.fn, data_020d6544.fn,
-        data_020d653c.fn, data_020d6534.fn, data_020d652c.fn, data_020d6524.fn, data_020d651c.fn, data_020d6514.fn,
+        data_020d653c.fn, data_020d6534.fn, data_020d652c.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netChangeHeldItem), data_020d651c.fn, data_020d6514.fn,
         data_020d650c.fn, data_020d6504.fn, data_020d64fc.fn, data_020d64f4.fn, data_020d64ec.fn, data_020d64e4.fn,
         data_020d64dc.fn, data_020d64d4.fn, data_020d64cc.fn, data_020d64c4.fn, data_020d6bec.fn, data_020d6bdc.fn,
         data_020d6bd4.fn, data_020d64a4.fn, data_020d649c.fn, data_020d6494.fn, data_020d5f4c.fn, data_020d6484.fn,
@@ -7654,13 +7311,13 @@ void Unk_02005e7c::followNetAction() {
         data_020d644c.fn, data_020d6444.fn, data_020d643c.fn, data_020d6434.fn, data_020d642c.fn, data_020d6424.fn,
         data_020d641c.fn, data_020d6414.fn, data_020d640c.fn, data_020d6404.fn, data_020d63fc.fn, data_020d63f4.fn,
         data_020d63ec.fn, data_020d63e4.fn, data_020d63dc.fn, data_020d63d4.fn, data_020d63cc.fn, data_020d63c4.fn,
-        data_020d63bc.fn, data_020d63b4.fn, data_020d63ac.fn, data_020d63a4.fn, data_020d639c.fn, data_020d6394.fn,
-        data_020d5f0c.fn, data_020d6384.fn, data_020d637c.fn, data_020d6374.fn, data_020d636c.fn, data_020d6364.fn,
-        data_020d635c.fn, data_020d6354.fn, data_020d634c.fn, data_020d6344.fn, data_020d633c.fn, data_020d6334.fn,
-        data_020d632c.fn, data_020d6324.fn, data_020d631c.fn, data_020d6314.fn, data_020d630c.fn, data_020d6304.fn,
-        data_020d62fc.fn, data_020d62f4.fn, data_020d62ec.fn, data_020d62e4.fn, data_020d62dc.fn, data_020d62d4.fn,
+        data_020d63bc.fn, data_020d63b4.fn, data_020d63ac.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netWalkTo), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netTurnTo), data_020d6394.fn,
+        data_020d5f0c.fn, data_020d6384.fn, data_020d637c.fn, data_020d6374.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct76), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct77),
+        data_020d635c.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netAct79), data_020d634c.fn, data_020d6344.fn, data_020d633c.fn, data_020d6334.fn,
+        data_020d632c.fn, data_020d6324.fn, data_020d631c.fn, data_020d6314.fn, data_020d630c.fn, reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netLidClosed),
+        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netErrorMessage), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&PlayerActor::netHoldUpItem), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netLowerHeldUpItem), data_020d62e4.fn, data_020d62dc.fn, data_020d62d4.fn,
         data_020d62cc.fn, data_020d62c4.fn, data_020d62bc.fn, data_020d62b4.fn, data_020d62ac.fn, data_020d62a4.fn,
-        data_020d629c.fn, data_020d6294.fn, data_020d628c.fn,
+        reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netWaitMenu), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netAct91), reinterpret_cast<void (Unk_02005e7c::*)(s32)>(&Unk_02007694::netAct92),
     };
     (this->*tbl[st])(idx);
 }
@@ -7759,17 +7416,17 @@ void PlayerActor::doExecute() {
     ((PlayerActor *)this)->sePosY = 0;
     ((PlayerActor *)this)->sePosZ = 0;
     static void (PlayerActor::*tbl[147])() = {
-        data_020d6734.fn, data_020d6724.fn, data_020d5fd4.fn, data_020d6244.fn, data_020d623c.fn, data_020d6234.fn,
-        data_020d622c.fn, data_020d6224.fn, data_020d621c.fn, data_020d6214.fn, data_020d619c.fn, data_020d6204.fn,
-        data_020d61fc.fn, data_020d61f4.fn, data_020d61c4.fn, data_020d61dc.fn, data_020d61e4.fn, data_020d658c.fn,
-        data_020d6b94.fn, data_020d6604.fn, data_020d65bc.fn, data_020d65e4.fn, data_020d660c.fn, data_020d672c.fn,
-        data_020d676c.fn, data_020d6db4.fn, data_020d6d8c.fn, data_020d6184.fn, data_020d617c.fn, data_020d6174.fn,
+        &PlayerActor::mainInit, &PlayerActor::mainAct01, &PlayerActor::mainWait, reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainWalk), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainSkidTurn), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainAct05),
+        data_020d622c.fn, &PlayerActor::mainChangeClothes, data_020d621c.fn, data_020d6214.fn, data_020d619c.fn, data_020d6204.fn,
+        data_020d61fc.fn, data_020d61f4.fn, data_020d61c4.fn, data_020d61dc.fn, &PlayerActor::mainAct10, data_020d658c.fn,
+        data_020d6b94.fn, &PlayerActor::mainAct13, &PlayerActor::mainEmotion, &PlayerActor::mainAct15, data_020d660c.fn, data_020d672c.fn,
+        &PlayerActor::mainPickUpReach, &PlayerActor::mainPickUp, &PlayerActor::mainPickUpFanfare, &PlayerActor::mainPickUpFanfareStow, data_020d617c.fn, data_020d6174.fn,
         data_020d616c.fn, data_020d6164.fn, data_020d615c.fn, data_020d6154.fn, data_020d614c.fn, data_020d6144.fn,
         data_020d613c.fn, data_020d6134.fn, data_020d612c.fn, data_020d64bc.fn, data_020d64ac.fn, data_020d6114.fn,
         data_020d5e5c.fn, data_020d6104.fn, data_020d60fc.fn, data_020d60f4.fn, data_020d60ec.fn, data_020d60e4.fn,
-        data_020d60dc.fn, data_020d60d4.fn, data_020d60cc.fn, data_020d60c4.fn, data_020d60bc.fn, data_020d60b4.fn,
+        &PlayerActor::mainAct30, &PlayerActor::mainAct31, &PlayerActor::mainAct32, &PlayerActor::mainAct33, &PlayerActor::mainAct34, &PlayerActor::mainAct35,
         data_020d60ac.fn, data_020d60a4.fn, data_020d609c.fn, data_020d6094.fn, data_020d5eac.fn, data_020d6084.fn,
-        data_020d607c.fn, data_020d6074.fn, data_020d606c.fn, data_020d6064.fn, data_020d605c.fn, data_020d6054.fn,
+        data_020d607c.fn, data_020d6074.fn, data_020d606c.fn, &PlayerActor::mainChangeHeldItem, data_020d605c.fn, data_020d6054.fn,
         data_020d604c.fn, data_020d6044.fn, data_020d603c.fn, data_020d6034.fn, data_020d602c.fn, data_020d6024.fn,
         data_020d601c.fn, data_020d6014.fn, data_020d600c.fn, data_020d6284.fn, data_020d5fc4.fn, data_020d625c.fn,
         data_020d6254.fn, data_020d5fe4.fn, data_020d5fec.fn, data_020d6194.fn, data_020d61a4.fn, data_020d61bc.fn,
@@ -7777,13 +7434,13 @@ void PlayerActor::doExecute() {
         data_020d6d9c.fn, data_020d5f84.fn, data_020d5f7c.fn, data_020d5f74.fn, data_020d5f6c.fn, data_020d5f64.fn,
         data_020d5f5c.fn, data_020d6124.fn, data_020d5e64.fn, data_020d5f44.fn, data_020d5f3c.fn, data_020d5f34.fn,
         data_020d5f2c.fn, data_020d5f24.fn, data_020d5f1c.fn, data_020d5f14.fn, data_020d5eb4.fn, data_020d5f04.fn,
-        data_020d5efc.fn, data_020d5ef4.fn, data_020d5ed4.fn, data_020d5eec.fn, data_020d5f8c.fn, data_020d5f9c.fn,
-        data_020d5fa4.fn, data_020d6004.fn, data_020d6264.fn, data_020d618c.fn, data_020d61ac.fn, data_020d61d4.fn,
-        data_020d659c.fn, data_020d65c4.fn, data_020d6dcc.fn, data_020d5e84.fn, data_020d5e7c.fn, data_020d5e74.fn,
-        data_020d64b4.fn, data_020d5e8c.fn, data_020d5e94.fn, data_020d5ea4.fn, data_020d5ebc.fn, data_020d5ecc.fn,
-        data_020d5edc.fn, data_020d5f94.fn, data_020d5fac.fn, data_020d5fdc.fn, data_020d61b4.fn, data_020d65a4.fn,
+        data_020d5efc.fn, data_020d5ef4.fn, data_020d5ed4.fn, &PlayerActor::mainWalkTo, &PlayerActor::mainTurnTo, data_020d5f9c.fn,
+        data_020d5fa4.fn, data_020d6004.fn, data_020d6264.fn, data_020d618c.fn, &PlayerActor::mainAct76, &PlayerActor::mainAct77,
+        data_020d659c.fn, &PlayerActor::mainAct79, data_020d6dcc.fn, data_020d5e84.fn, data_020d5e7c.fn, data_020d5e74.fn,
+        data_020d64b4.fn, data_020d5e8c.fn, data_020d5e94.fn, data_020d5ea4.fn, data_020d5ebc.fn, &PlayerActor::mainLidClosed,
+        &PlayerActor::mainErrorMessage, reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainHoldUpItem), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainLowerHeldUpItem), data_020d5fdc.fn, data_020d61b4.fn, data_020d65a4.fn,
         data_020d6994.fn, data_020d5e54.fn, data_020d611c.fn, data_020d5e9c.fn, data_020d5ec4.fn, data_020d5ee4.fn,
-        data_020d5fb4.fn, data_020d6274.fn, data_020d65ac.fn,
+        reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainWaitMenu), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainAct91), reinterpret_cast<void (PlayerActor::*)()>(&Unk_02007694::mainAct92),
     };
     void (PlayerActor::*fn)() = tbl[((PlayerActor *)this)->action];
     ((PlayerActor *)(this))->updateFaceAnims();
@@ -7934,7 +7591,7 @@ void PlayerActor::doDraw() {
     using namespace nA;
     typedef void (PlayerActor::*Fn)();
     static Fn table[2] = {
-        data_020d5fbc.fn, data_020d5ff4.fn,
+        &PlayerActor::drawNotReady, &PlayerActor::drawReady,
     };
     Fn fn = table[drawStep];
     (this->*fn)();
@@ -8006,9 +7663,7 @@ BOOL PlayerActor::doDelete() {
     return TRUE;
 }
 
-namespace nA {
-extern "C" void _ZN6ItemIdD1Ev() {}
-}
+ItemId::~ItemId() {}
 
 PlayerActor::PlayerActor()
     : actionItem(0xfff1), shownItem(0xfff1), aheadUnitX(0), aheadUnitZ(0), runUnitX(0), runUnitZ(0), pitfallUnitX(0), pitfallUnitZ(0),

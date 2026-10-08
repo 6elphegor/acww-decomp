@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "npc/VillagerState.h"
 #include "uptr.h"
 // mwcc-version: 1.2/base
 // ov068 TU01 (.text 0x0225f1a0-0x0226647c): owner actor FieldVillager (vtable 0x0226fb78) and its state classes, 214 functions of 12 old files.
@@ -624,7 +625,7 @@ void Villagers_ShareNickname(void *, void *, s32);
 s32 Villager_GetDefaultCatchphraseEncoded(void *, s32);
 void Villager_SetCatchphraseEncoded(void *, void *);
 void Villager_SetCatchphraseFromMsg(void *, void *);
-void *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 u16 *VillagerState_GetHeldItem(void *);
 void Villager_GetDefaultUmbrella(u16 *, void *);
 void Villager_GetDefaultShirt(u16 *, void *);
@@ -666,7 +667,7 @@ s32 SaveVillagers_GetRelationLevel(void *, s32, s32);
 void SaveVillagers_AddRelation(void *, void *, void *, s32);
 void TalkRequest_SetTargetDone(void *);
 void Npc_GetStateHeldItem(void *, void *);
-void *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 s32 Villager_GetIndex(void *);
 void VillagerState_SetRole(void *, s32);
 void VillagerState_SetPresence(void *, s32);
@@ -705,7 +706,7 @@ extern s16 sFieldVillagerPushLimit[];
 extern u32 __ptmf_null[];
 }
 extern "C" {
-void *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 void VillagerState_SetRole(void *, s32);
 void VillagerState_SetPresence(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
@@ -737,7 +738,7 @@ s32 FieldAction_PollResult(s32 idx);
 void FieldAction_Release(s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 BlockMap_IsBuriedAtUnit(void *, s32, s32);
-void *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 s32 TalkRequest_IsTalking();
 void *TalkRequest_GetTalkTarget();
 void Vec_Sub(void *, void *, void *);
@@ -818,7 +819,7 @@ extern u8 sSimCatchClassWeights[];
 extern u8 sSimCatchClassWeightsPlanned[];
 extern ContestRecord gContestRecord;
 extern u32 gSceneBlockMap;
-void *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 void Clock_GetDateTime(void *);
 s32 Personality_IsAsleep(s32, void *);
 s32 VillagerState_GetActivity(void *);
@@ -864,7 +865,7 @@ extern u16 sFleaRemovedHoldFrames;
 extern u16 data_020c6cc8;
 extern CameraSwayPattern kCameraSwayPatterns[];
 extern s16 data_02135f44[];
-u8 *Villager_GetState(void *);
+VillagerState *Villager_GetState(void *);
 s32 VillagerState_GetActivity(void *);
 void *Villager_GetPlan(void *);
 void Clock_GetDateTime(void *);
