@@ -150,16 +150,22 @@ The runtime (`modern/host/`):
   to 0.5% faster or slower).
 
 The build (`tools/configure_host.py`): the game linked as one object, its variables in their original order
-(`tools/host_order.py`, `-fdata-sections -malign-data=abi`; each overlay's in a range of its own), DTCM's variables at 0x027e0000, its C library and
-operator new/delete names made local (`tools/host_localize.py`), the shared-overlay-address thunks for x86, gap data
-as C (`tools/host_gaps.py`).
+(`tools/host_order.py`, `-fdata-sections -malign-data=abi`; each overlay's in a range of its own), DTCM's variables at 0x027e0000, its C library's
+names renamed to `ds_*` (`include/host_libc_rename.h`, included first in every game unit; the program's global
+operator new/delete are the host's, `modern/host/newdelete.cpp`: the game allocates from its heaps by name,
+`new (kGameHeap) T` / `Mem_AllocForNew`, and blocks of its heaps go back to them on delete), the
+shared-overlay-address thunks for x86, gap data as typed C (`tools/host_gaps.py`, `modern/gen/gaps.c`, the same for
+every architecture; the zero-initialised gap variables are defined in the sources with their types). The DS linker
+script's absolute symbols are constants (`include/sdk_linker_symbols.h`). `-fpcc-struct-return` (small structs
+returned in memory, as mwcc) is kept for the 32-bit build only, where it is the i386 Linux ABI's default anyway.
 
 Differences from the DS that the sources handle under `HOST` (or MODERN):
 
 - The ARM C++ ABI's constructors return `this`, x86's don't: code using a constructor's result keeps the pointer;
   `void X_Create() { new X; }` create functions return the object.
-- Pointers to virtual member functions: ARM `{offset, 2*adj+1}`, x86 `{offset+1, adj}` (gap data re-encoded); member
-  functions defined as `extern "C"` must be 2-byte aligned (`-falign-functions=4`).
+- Pointers to virtual member functions: ARM `{offset, 2*adj+1}`, x86 `{offset+1, adj}`: the compiler's, written as
+  `&Class::member` (ProcBase's phase dispatch); member functions used as such must be 2-byte aligned
+  (`-falign-functions=4`).
 - Pointers in 26-bit PXI messages: host data addresses are reconstructed.
 - Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
 - Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
@@ -194,8 +200,7 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   each member at the place of the same byte in the real class) with `static_assert` checks
   (example: `TalkWindowState`).
 - Linker labels inside variables (`PROVIDE(x = base + off)`): `tools/host_relayout.py` moves them by the DWARF
-  member path (needs the 32-bit build's `game_all.o`). Gap data is emitted as assembly (`host_gaps.py --x86-64`),
-  pointers to member functions as 16-byte objects.
+  member path (needs the 32-bit build's `game_all.o`). Gap data is typed C (pointers 8 bytes on 64-bit hosts).
 - SDK objects the sources kept as byte blobs (OSThread, OSMutex, FSFile, FSArchive, NNSFndArchive, sound handles,
   the NNS G3D render / animation objects: `include/nnsys/g3d_rt.h`) have their real types on the host.
 - Data in the ROM's file formats keeps its 32-bit slots (the sound banks' wave archive links, offsets in G3D

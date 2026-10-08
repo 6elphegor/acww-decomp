@@ -93,8 +93,6 @@ typedef struct ExSpecification {
 #define EXCEPTION_ACTION_MASK 0x1f
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
 
-extern char __exception_table_start__[];
-extern char __exception_table_end__[];
 extern VoidFunc p__sinit_020c2cd0[]; // start of main's .ctor table
 extern DestructorChain *data_0220066c; // __global_destructor_chain
 extern VoidFunc data_0213c6b0; // thandler (= dthandler)
@@ -133,7 +131,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
         if (info->action_pointer == 0) {
             FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                std::terminate();
+                msl::terminate();
             }
             __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
@@ -402,7 +400,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             break;
         }
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         if (action & 0x80) {
@@ -444,7 +442,7 @@ extern "C" CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionIn
         case 1:
         case 14:
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         break;
@@ -538,7 +536,7 @@ extern "C" u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, 
         case 1:
         case 14:
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         break;
@@ -570,7 +568,7 @@ extern "C" void __ThrowHandler(ThrowContext *context) {
 
     FindExceptionRecord(context->returnaddr, &info);
     if (info.exception_record == 0) {
-        std::terminate();
+        msl::terminate();
     }
     __SetupFrameInfo(context, &info);
     if (context->throwtype == 0) {

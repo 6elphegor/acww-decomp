@@ -339,8 +339,8 @@ s32 ItemInfo_GetUnk02(u16 *p);
 s32 ItemInfo_GetPrice(const ItemId &p);
 s32 NookShop_IsSaleTime(void *p);
 s32 NookPoints_GetRank(u32 x);
+void *PlayerData_GetNookPoints(void *p);  // (src/main/unk_02097d1c.cpp)
 u16 *NookPoints_GetValuePtr(u16 *p);
-u16 *_ZN10PlayerData13getNookPointsEv(void *p);
 s32 Clock_GetDate(ClockDate *d);
 s32 Date_DaysBetween(ClockDate *a, ClockDate *b);
 s32 Clock_GetYear();
@@ -678,7 +678,7 @@ extern "C" s32 Item_GetMemberPrice(u16 *p) {
     if (Item_IsMoneyBag(p)) return a;
     void *g = PlayerData_GetCurrent();
     if (g) {
-        s32 c = NookPoints_GetRankOf(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(g)));
+        s32 c = NookPoints_GetRankOf(NookPoints_GetValuePtr((u16 *)PlayerData_GetNookPoints(g)));
         s32 k = 0;
         switch (c) {
         case 2: k = 5; break;

@@ -43,7 +43,6 @@
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
-#define func_02000c8c _ZN6FxVec3D1Ev
 #define func_02133150 _s32_div_f
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -764,7 +763,7 @@ extern "C" void *MuseumAquarium_Create() {
 
 AquariumFish::AquariumFish() {
     ModelSlotHandle_Init(&modelSlot);
-    __cxa_vec_ctor(bodyEnds, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
+    __cxa_vec_ctor(bodyEnds, 2, 0xc, (void *)FxVec3_Construct, (void *)FxVec3_Destruct);
     fishIndex = -1;
     loadState = 0;
     pooledModel.reset();
@@ -776,7 +775,7 @@ AquariumFish::AquariumFish() {
 }
 
 AquariumFish::~AquariumFish() {
-    __cxa_vec_cleanup(bodyEnds, 2, 0xc, (void *)func_02000c8c);
+    __cxa_vec_cleanup(bodyEnds, 2, 0xc, (void *)FxVec3_Destruct);
     ModelSlotHandle_Destroy(&modelSlot);
 }
 

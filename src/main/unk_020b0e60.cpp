@@ -39,9 +39,6 @@
 
 
 extern "C" {
-extern u32 OVERLAY_0_ID[];
-extern u32 OVERLAY_68_ID[];
-extern u32 OVERLAY_69_ID[];
 extern void *gCommManager;
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];

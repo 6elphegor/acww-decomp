@@ -1,6 +1,7 @@
 #include "uptr.h"
 #include "talk/ConstellationEncodedString16.h"
 #include "types.h"
+#include "sdk_linker_symbols.h"
 #include "gfx/VecFx32.h"
 #include "game/SceneInfo.h"
 #include "actor/Actor.h"
@@ -32,7 +33,6 @@ typedef ConstellationStore Base;
 extern "C" {
 extern Base data_021ec31c;
 u32 sConstellationColumns[2];  // .bss, autoload_3 0x021ee27c
-extern u32 OVERLAY_127_ID[];
 extern TownExchangeRecord data_021e7f8c;
 
 // external
@@ -330,11 +330,11 @@ s32 Constellation_FindVisibleNow(void) {
 }
 
 void Constellation_AcquireSkyOverlay(void) {
-    OverlayMgr_Acquire((u32)(uptr)OVERLAY_127_ID); // (the overlay id: the address of the linker symbol)
+    OverlayMgr_Acquire(OVERLAY_127_ID);
 }
 
 void Constellation_ReleaseSkyOverlay(void) {
-    OverlayMgr_Release((u32)(uptr)OVERLAY_127_ID);
+    OverlayMgr_Release(OVERLAY_127_ID);
 }
 
 BOOL Constellation_AddReceived(Entry *e) {

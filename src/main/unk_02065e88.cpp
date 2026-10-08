@@ -1,5 +1,6 @@
 #include "uptr.h"
 #include "types.h"
+#include "sys/new.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgTag.h"
@@ -2236,7 +2237,7 @@ extern "C" TalkWindowState *TalkWindow_Get(s32 i) {
     return r;
 }
 extern "C" void TalkWindow_CreateAll() {
-    gTalkWindows = new TalkWindowState[2];
+    gTalkWindows = new (kGameHeap) TalkWindowState[2];
     for (s32 i = 0; i < 2; i++) gTalkWindows[i].index = i;
 }
 extern "C" void TalkWindow_DestroyAll() {

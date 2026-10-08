@@ -32,8 +32,6 @@ extern u8 data_021ed104[];
 s32 Item_GetNookShopLevel(void *p);
 void Clock_GetDateTime(void *p);
 void Clock_GetMinuteHour(void *p);
-#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
-BOOL PlayerData_testFlag(void *p, s32 a);
 BOOL NookShop_IsClosedOn(void *p, void *q);
 BOOL NookShop_IsReopenDueNow(void *p);
 void *NookShop_GetRenovation(void *p);

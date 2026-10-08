@@ -47,13 +47,18 @@ extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 extern u32 data_0213bba8[];
 extern const u8 data_02135ca8[16];
 extern const u8 data_02135ca0[8];
-extern u8 data_021f5c62[];
-extern u8 data_021f5c5c[], data_021f5c61[], data_021f5c66[], data_021f5c68[];
-extern u32 data_021f5c58;
+// the WFC settings' state (autoload_3 .bss 0x021f5c50-0x021f5ca0; gap data on the DS: no unit owned it)
+volatile u16 data_021f5c50;
+volatile u32 data_021f5c54;
+u32 data_021f5c58;
+u8 data_021f5c5c[0x24];  // a 14-byte WFC-ID block (the rest unused up to 0x021f5c80)
+_Alignas(32) u8 data_021f5c80[0x20];  // the NVRAM status register read (a cache line)
+// inside the 14-byte WFC-ID block data_021f5c5c
+#define data_021f5c61 (data_021f5c5c + 5)
+#define data_021f5c62 (data_021f5c5c + 6)
+#define data_021f5c66 (data_021f5c5c + 10)
+#define data_021f5c68 (data_021f5c5c + 12)
 // set by the PXI callback while NVRAMm_ExecuteCommand polls them (see docs/modern.md, "volatile")
-extern volatile u16 data_021f5c50;
-extern volatile u32 data_021f5c54;
-extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[4];
 extern int memcmp(const void *a, const void *b, u32 n);            // src/autoload_2/unk_02128030.c
 extern s32 PXI_IsCallbackReady(u32 tag, u32 x);

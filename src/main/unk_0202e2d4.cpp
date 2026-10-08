@@ -47,8 +47,6 @@ BOOL Npc_GetName(MsgString *buf, u16 *p);
 
 // ---- SpNpcActor (scene object derived from NpcActor) ----
 
-#define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
-extern "C" void SndSeEmitter_dtorBase(void *p);
 
 
 

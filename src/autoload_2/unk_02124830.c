@@ -120,11 +120,11 @@ typedef struct {
     u8 peers[16][0x5d4];
 } WWork;
 
-extern WCtl *data_02200018;
-extern WWork *data_0220001c;
-extern u16 data_02200010;
-extern u8 *data_02200014;
-extern WScanParam data_02200020;
+WCtl *data_02200018;
+WWork *data_0220001c;
+u16 data_02200010;
+u8 *data_02200014;  // (autoload_3 .bss 0x02200010-0x02200040: gap data on the DS)
+WScanParam data_02200020;
 extern u16 data_0213c20c;
 extern u16 data_0213c210;
 extern u16 data_0213c214;

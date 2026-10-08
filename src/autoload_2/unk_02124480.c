@@ -133,12 +133,13 @@ extern BOOL MBi_IsTaskAvailable(void);
 extern void MBi_InitTaskThread(void *p, u32 len);
 
 extern MBBeacon data_021fffa0;
-extern u16 data_021fffa8[];
-extern u8 data_021fffae[];
 extern MBWork data_021fff8c;
 extern void (*data_021fff88)(u32);
 extern u32 data_021fff84;
-extern u8 data_021fffb0[4][22];
+// inside the beacon data_021fffa0
+#define data_021fffa8 ((u16 *)((u8 *)&data_021fffa0 + 8))
+#define data_021fffae ((u8 *)&data_021fffa0 + 0xe)
+#define data_021fffb0 (*(u8 (*)[4][22])((u8 *)&data_021fffa0 + 0x10))
 extern u32 MBi_calc_cksum(const u16 *p, int len);
 extern void WM_SetGameInfo(u32 a, void *p, u32 len, u32 b, u32 c, u32 d);
 

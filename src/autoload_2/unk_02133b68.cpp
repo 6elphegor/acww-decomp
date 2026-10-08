@@ -45,8 +45,6 @@ typedef struct ThrowContext {
     FrameState state;  // 0x1c
 } ThrowContext;
 
-extern char __exception_table_start__[];
-extern char __exception_table_end__[];
 
 
 // __PopStackFrame-like: restore the registers a frame saved (mask from the function header, highest first) and step to the caller:
@@ -95,8 +93,9 @@ extern "C" void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info) {
 
 // __FindExceptionTable
 extern "C" int __FindExceptionTable(ExceptionInfo *info, char *retaddr) {
-    info->exception_table_start = __exception_table_start__;
-    info->exception_table_end = __exception_table_end__;
+    // the linker script's __exception_table_start__ / __exception_table_end__: no exception table (both 0)
+    info->exception_table_start = NULL;
+    info->exception_table_end = NULL;
     return 1;
 }
 

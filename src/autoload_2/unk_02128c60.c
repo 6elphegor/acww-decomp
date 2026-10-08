@@ -36,7 +36,7 @@ extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7
 extern u32 data_02200250[];
 extern s32 data_02200274[];
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
-extern u32 data_02200650[];               // signal handler table (0 = SIG_DFL, 1 = SIG_IGN, else a function)
+u32 data_02200650[7];  // signal handler table (0 = SIG_DFL, 1 = SIG_IGN, else a function; autoload_3 .bss, gap data on the DS)
 
 int OS_TryLockMutex(OSMutex *);
 void exit(int);
