@@ -20,15 +20,15 @@
 
 extern "C" {
 
-const char sWifiApSsidFreespot[8] = {'F', 'R', 'E', 'E', 'S', 'P', 'O', 'T'};
-const char sWifiApSsidWayport[8] = {'W', 'a', 'y', 'p', 'o', 'r', 't', '2'};
-const char sWifiApSsidNintendoWfc[12] = "NINTENDOWFC";
-const u32 sWifiApScanChannelBits[13] = {0x8002, 0x8004, 0x8008, 0x8010, 0x8020, 0x8040, 0x8080, 0x8100, 0x8200, 0x8400, 0x8800, 0x9000, 0xa000};
+extern const char sWifiApSsidFreespot[8] = {'F', 'R', 'E', 'E', 'S', 'P', 'O', 'T'};
+extern const char sWifiApSsidWayport[8] = {'W', 'a', 'y', 'p', 'o', 'r', 't', '2'};
+extern const char sWifiApSsidNintendoWfc[12] = "NINTENDOWFC";
+extern const u32 sWifiApScanChannelBits[13] = {0x8002, 0x8004, 0x8008, 0x8010, 0x8020, 0x8040, 0x8080, 0x8100, 0x8200, 0x8400, 0x8800, 0x9000, 0xa000};
 
 char sWifiApSsidUsbConnector[12] = "NWCUSBAP";
 char sWifiApHostName[12] = "NINTENDO-DS";
 
-const SockStartupConfig sWifiApSocketConfigTemplate = {
+extern const SockStartupConfig sWifiApSocketConfigTemplate = {
     0x1000000, NULL, NULL, 1, 0, 0, 0, 0, 0, 0x1000, 0x1000, 0x2e4, 0, {0, 0, 0, 0, 0},
     sWifiApHostName,
     4,
