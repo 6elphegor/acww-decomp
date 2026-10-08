@@ -8,7 +8,7 @@
 class TalkWindowState;
 
 // Talk-window message request (vtable 0x020ddce8, 0x44 bytes): MsgRequest plus the speaker name and the talk window it
-// is attached to; the notification slots are called by TalkWindowState / TalkWindowMsg / the talk parsers.
+// is attached to; the notification slots are called by TalkWindowState and its parser (TalkParser).
 // Defined in src/main/unk_02065e88.cpp (0x02065e88..0x0206609c). The name kind (getNameKind, 0x2c) is
 // speakerName.attr.form.
 // Slot parameters are the ones the talk window passes; symbols.txt names TalkMsgRequest's empty bodies without them,
@@ -47,7 +47,7 @@ public:
     virtual void onTalkEnd();               // 0x74
 
     void detachWindow();
-    void attachWindow(u32 v);
+    void attachWindow(TalkWindowState *w);
     u32 getNameKind();
     u32 isNoSpeakerName();
     MsgString9 *getSpeakerName();

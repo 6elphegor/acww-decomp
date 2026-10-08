@@ -8,8 +8,12 @@
 // the GP buddy list and the DwcFriend_UpdateServersAsync callbacks (src/ov065/unk_ov065_02270e34.cpp,
 // src/ov065/unk_ov065_022723b8.cpp).
 
-// 12-byte friend list entry (as ov133's local DwcFriendData).
+// 12-byte friend list entry (as ov133's local DwcFriendData). The (empty) constructor / destructor are in
+// src/main/unk_020742f4.cpp.
 struct DwcFriendData {
+    DwcFriendData();
+    ~DwcFriendData();
+
     /* 0x00 */ u8 unk_00[0xc];
 };
 

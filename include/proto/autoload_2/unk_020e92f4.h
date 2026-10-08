@@ -88,7 +88,7 @@ void Vec_RotateZ(VecFx32 *v, s32 angle);
 #endif
 }
 #ifndef PROTO_LOCAL_gVec3Zero
-extern FxVec3 gVec3Zero (0, 0, 0);
+extern FxVec3 gVec3Zero;
 #endif
 #endif
 

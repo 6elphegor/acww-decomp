@@ -9,17 +9,15 @@ struct FtrSoundRecord;
 struct TvProgSlot;
 struct TvScreen;
 #ifdef __cplusplus
+#include "actor/Actor.h"
 #include "gfx/ModelSlotPool.h"
 #include "gfx/VecFx32.h"
 #include "room/FtrActor.h"
 #include "room/FtrActorTable.h"
+#include "room/FtrManager.h"
 #include "room/FtrPreviewer.h"
 #include "snd/TvSound.h"
 #include "types.h"
-class FtrActorGrid;
-class FtrActorHeap;
-class FtrContactSet;
-class FtrSoundList;
 class FurnitureManager;
 #endif
 
@@ -126,10 +124,10 @@ s32 FtrMgr_IsFurnitureEditable();
 s32 FtrMgr_IsFurnitureUsable();
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_SpawnFromArg
-s32 FtrMgr_SpawnFromArg(FtrActor *self);
+Actor *FtrMgr_SpawnFromArg(u32 self);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_SpawnFurniture
-s32 FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d);
+Actor *FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_GetSurfaceHeight
 s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y);
@@ -216,13 +214,13 @@ s32 FtrMgr_IsPickableByIndex(s32 i);
 s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_TryPlaceAt
-s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
+s32 FtrMgr_TryPlaceAt(u32 *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_FindPlacement
-s32 FtrMgr_FindPlacement(void *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode);
+s32 FtrMgr_FindPlacement(u32 *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_FindPlacementForPlayer
-s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c);
+s32 FtrMgr_FindPlacementForPlayer(u32 *a, u16 *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_GetCurPlayerIndex
 s32 FtrMgr_GetCurPlayerIndex();
@@ -303,7 +301,7 @@ BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r);
 BOOL FtrMoveAnim_ClearModel(FtrMoveAnim *r);
 #endif
 #ifndef PROTO_LOCAL_TvWeather_GetName
-s32 TvWeather_GetName(u32 i);
+const char *TvWeather_GetName(u32 i);
 #endif
 #ifndef PROTO_LOCAL_TvProgSlot_Load
 BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x);
@@ -342,7 +340,7 @@ s32 TvScreen_GetProgram(TvScreen *o);
 s32 TvScreen_GetWeather(TvScreen *o);
 #endif
 #ifndef PROTO_LOCAL_TvScreen_GetSound
-s32 TvScreen_GetSound(TvScreen *o);
+TvSound *TvScreen_GetSound(TvScreen *o);
 #endif
 #ifndef PROTO_LOCAL_TvScreen_GetLoopCount
 s32 TvScreen_GetLoopCount(TvScreen *o);
@@ -366,13 +364,13 @@ u16 FtrSound_GetSe2(s32 idx);
 u16 FtrSound_GetSe3(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_PlaySeatSound1At
-void FtrMgr_PlaySeatSound1At(s32 a);
+void FtrMgr_PlaySeatSound1At(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_PlaySeatSound0At
-void FtrMgr_PlaySeatSound0At(s32 a);
+void FtrMgr_PlaySeatSound0At(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_FtrMgr_PlaySeatSound2At
-void FtrMgr_PlaySeatSound2At(s32 a);
+void FtrMgr_PlaySeatSound2At(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_sFtrMgrTvSoundEnabled
 extern u8 sFtrMgrTvSoundEnabled;

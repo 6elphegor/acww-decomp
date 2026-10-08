@@ -3,8 +3,9 @@
 
 #include "types.h"
 
-// A villager's trend plan (VillagerPlanBlock_GetPlan). Methods defined in src/main/unk_02098e90.cpp (which still has
-// its own copy of these types: to be replaced by this header).
+// A villager's plan: its state (moving in / out, trends) with times, and the trend scores. Methods in
+// src/main/unk_02098e90.cpp (which still has its own copies of these definitions: it should include this header
+// instead).
 struct TrendScores {
     u8 values[8];
 

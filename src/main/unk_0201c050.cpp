@@ -2451,7 +2451,7 @@ BOOL VillagerActor::onCreate() {
     if (!((NpcAnimCtrl *)(HOST_AT(this, 0x334, animCtrl.unk_00[0], 0)))->initForActor((NpcActor *)(this), data_020c6cf0)) {
         return FALSE;
     }
-    ((NpcActionCtrl *)(HOST_AT(this, 0x564, actionCtrl.netMoveMode, 0)))->startAction((u8 *)(this), 0, 1, 0, 0, 0, 0, 0);
+    ((NpcActionCtrl *)(HOST_AT(this, 0x564, actionCtrl.netMoveMode, 0)))->startAction((NpcActor *)(this), 0, 1, 0, 0, 0, 0, 0);
     if (villagerData) {
         h = *_ZN23VillagerDataProfileView8getShirtEv(villagerData);
     }

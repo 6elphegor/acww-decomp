@@ -1,7 +1,6 @@
 #ifndef FIELD_SNOWBALL_H
 #define FIELD_SNOWBALL_H
 #include "snd/SndSeEmitter.h"
-#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -106,7 +105,7 @@ public:
     /* 0x310 */ s32 stepX; // per-frame step towards targetPos (snowman / stack states)
     /* 0x314 */ s32 stepZ;
     /* 0x318 */ VecFx32 lastFramePos;
-    /* 0x324 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
+    /* 0x324 */ SndSeEmitter seEmitter;
     /* 0x364 */ u8 fallFrames;
     /* 0x365 */ u8 prevContactCount;
     /* 0x366 */ u8 hitSeLatch;

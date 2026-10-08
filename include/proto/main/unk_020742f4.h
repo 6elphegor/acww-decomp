@@ -27,12 +27,6 @@ void VillagerSync_Act3C02(void *villager);
 #ifndef PROTO_LOCAL_Bbs_AddPost
 void Bbs_AddPost(void *dst);
 #endif
-#ifndef PROTO_LOCAL__ZN13DwcFriendDataC1Ev
-void _ZN13DwcFriendDataC1Ev(void *);
-#endif
-#ifndef PROTO_LOCAL__ZN13DwcFriendDataD1Ev
-void _ZN13DwcFriendDataD1Ev(void *);
-#endif
 #ifndef PROTO_LOCAL_DwcFriendData_Copy
 void *DwcFriendData_Copy(void *p, void *q);
 #endif
@@ -820,7 +814,7 @@ void CommRecv_ItemSet(u32 n);
 void CommRecv_ItemSetRequest(u32 n);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_Dispatch
-void CommRecv_Dispatch(u32 idx, u32 x, u32 a, u32 b, u8 c, u32 d);
+void CommRecv_Dispatch(u32 idx, u8 *x, u32 a, u32 b, u8 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommSend_MemberInfo
 BOOL CommSend_MemberInfo(u32 a);

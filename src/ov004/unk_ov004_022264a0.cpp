@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -9,6 +8,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
+#include "room/RoomObjTexAuto.h"
 #include "gfx/CachedModel.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
@@ -26,152 +26,11 @@
 #include "proto/ov004/unk_ov004_0221c01c.h"
 #include "proto/ov004/unk_ov004_022264a0.h"
 
-// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
-// Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
-// 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
-// original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
-//   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
-// Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
-//    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
-//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
-//    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
-//  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
-//    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
+// TU of ov004: Brewster's coffee set in the café (CafeCoffeeSet, a RoomObjActor): the cups, saucers, pigeon cup and
+// pot that follow Brewster's serving animation (SpNpcBrewster, ov004 0x0221c01c) state by state.
 
-
-
-
-
-
-
-// ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-
-
-
-
-extern "C" {
-void *RoomObjRes_GetBca(void *self, u32 i);
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void *RoomObjTex_Get(void *self);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
-void RoomObj_PlaySe(void *self, s32 v);
-void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
-void RoomObj_ActivateSe(void *self);
-}
-
-// ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-
-
-
-
-
-// ---------------------------------------------------------------- the state-actor object, seen two ways by the free functions
-struct ObjA {
-    u8 pad_00[0x290];
-    AnimModel partModels[4];
-    u8 pad_570[0x908 - 0x570];
-    RoomObjRes partRes[4];
-    u8 pad_b98[0xecc - 0xb98];
-    u32 partTex[4];
-    u8 pad_edc[0xef0 - 0xedc];
-    u8 part0Visible, part1Visible, part2Visible;
-    u8 pad_ef3[3];
-    u8 part6Visible, part7Visible;
-    u8 part8Visible, modelVisible;
-    u8 pad_efa[2];
-    s32 serveState;
-    u8 pad_f00[0xf38 - 0xf00];
-    s32 pourEffect;
-};
-
-struct Unk_ov004_02226574_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct Unk_ov004_02227228_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-typedef Mtx43 Mtx;
-typedef Unk_ov004_02227228_Bits Bits;
-
-class ObjB {
-public:
-    u8 pad_000[0x150];
-    Mtx modelMtx;
-    u8 pad_180[0x190 - 0x180];
-    s32 modelFrame;
-    u8 pad_194[4];
-    s32 modelFrameStep;
-    u8 pad_19c[0x2f4 - 0x19c];
-    Mtx part0Mtx;
-    u8 pad_324[0x334 - 0x324];
-    s32 part0Frame;
-    u8 pad_338[4];
-    s32 part0FrameStep;
-    u8 pad_340[0x3ac - 0x340];
-    Mtx part1Mtx;
-    u8 pad_3dc[0x3e8 - 0x3dc];
-    Bits part1FrameCount;
-    Bits part1Frame;
-    u8 pad_3f0[0x464 - 0x3f0];
-    Mtx part2Mtx;
-    u8 pad_494[0x4a0 - 0x494];
-    Bits part2FrameCount;
-    Bits part2Frame;
-    u8 pad_4a8[0x51c - 0x4a8];
-    Mtx part3Mtx;
-    u8 pad_54c[0x55c - 0x54c];
-    Bits part3Frame;
-    u8 pad_560[0x5d4 - 0x560];
-    Mtx part4Mtx;
-    u8 pad_604[0x68c - 0x604];
-    Mtx part5Mtx;
-    u8 pad_6bc[0x744 - 0x6bc];
-    Mtx part6Mtx;
-    u8 pad_774[0x7fc - 0x774];
-    Mtx part7Mtx;
-    u8 pad_82c[0x8b4 - 0x82c];
-    Mtx part8Mtx;
-    u8 pad_8e4[0xef0 - 0x8e4];
-    u8 partVisible[9];
-    u8 modelVisible;
-    u8 pad_efa[2];
-    s32 serveState;
-    u8 pad_f00[0xf10 - 0xf00];
-    s32 pourEffectX;
-    s32 pourEffectY;
-    s32 pourEffectZ;
-    u8 pad_f1c[0xf38 - 0xf1c];
-    s32 pourEffect;
-    s32 part4Effect;
-    s32 part6Effect;
-};
-typedef BOOL (ObjB::*Fn)();
-
-
-
+// The café's coffee set: the base model (RoomObjActor::model, the counter set) and nine parts: 0 the pot, 1 / 2 the
+// cup and saucer served, 3 the pigeon cup, 4..7 the cups and saucers on the counter, 8 the coffee beans.
 class CafeCoffeeSet : public RoomObjActor {
 public:
     CafeCoffeeSet();
@@ -183,10 +42,13 @@ public:
 
     /* 0x290 */ AnimModel partModels[9];
     /* 0x908 */ RoomObjRes partRes[9];
-    /* 0xecc */ u32 partTex[9]; // RoomObjTex slots (construct/destruct by hand)
-    /* 0xef0 */ u8 pad_ef0[3];
-    /* 0xef3 */ u8 part3Visible;
-    /* 0xef4 */ u8 pad_ef4[0xf1c - 0xef4];
+    /* 0xecc */ RoomObjTexAuto partTex[9];
+    /* 0xef0 */ u8 partVisible[9];
+    /* 0xef9 */ u8 modelVisible;
+    /* 0xefa */ u8 pad_efa[2];
+    /* 0xefc */ s32 serveState;  // CafeCoffeeSet_ChangeState
+    /* 0xf00 */ u8 unk_f00[0x10];
+    /* 0xf10 */ VecFx32 pourEffectPos;
     /* 0xf1c */ VecFx32 part4EffectPos;
     /* 0xf28 */ VecFx32 part6EffectPos;
     /* 0xf34 */ u16 part4EffectAngle;
@@ -196,31 +58,48 @@ public:
     /* 0xf40 */ s32 part6Effect;
 };
 
-#define F(T, off) (*(T *)((u8 *)this + off))
+// the whole frame number (bits 12..27) of an fx32 frame counter
+static inline u32 FrameInt(u32 v) {
+    return (v >> 12) & 0xffff;
+}
 
 extern "C" {
-extern Mtx data_021f47e0;
-extern u8 data_021ed0a0[];
-s32 NNS_G3dBindMdlTex(void *, u32);
-s32 NNS_G3dBindMdlPltt(void *, u32);
+extern Mtx43 data_021f47e0;
+BOOL Math_IsInRange(s32 v, s32 a, s32 b);
+BOOL NNS_G3dBindMdlTex(void *mdl, void *tex);
+BOOL NNS_G3dBindMdlPltt(void *mdl, void *tex);
 s32 Camera_RestorePrevMode(void);
 s32 Camera_MuteSe(void);
 s32 Camera_SetMode4(void);
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-s32 Math_IsInRange(void *p, u32 a, u32 b);
-void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
-void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
-void RoomObjTex_Construct(void *);
-void RoomObjTex_Destruct(void *);
-void *_ZN9AnimModelC1Ev(void *, s32);
-void *_ZN9AnimModelD1Ev(void *, s32);
-void *_ZN10RoomObjResC1Ev(void *, s32);
-void *_ZN10RoomObjResD1Ev(void *, s32);
-void CafeCoffeeSet_UpdateState03(ObjA *o);
-void CafeCoffeeSet_UpdateState04(ObjA *o);
-void CafeCoffeeSet_UpdateState05(ObjA *o);
-void CafeCoffeeSet_UpdateState06(ObjA *o);
-void CafeCoffeeSet_UpdateState08(ObjA *o);
+void Mtx43_SetTranslate(Mtx43 *m, s32 a, s32 b, s32 c);
+
+BOOL CafeCoffeeSet_ChangeState(CafeCoffeeSet *o, s32 n);
+void CafeCoffeeSet_UpdateState(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateMatrices(CafeCoffeeSet *o);
+void CafeCoffeeSet_LoadPart(CafeCoffeeSet *o, u32 idx, const char *id, const char *x);
+void CafeCoffeeSet_ReleasePart(CafeCoffeeSet *o, u32 idx);
+void CafeCoffeeSet_InitPartAnim(CafeCoffeeSet *o, u32 idx);
+void CafeCoffeeSet_SwitchAnim(CafeCoffeeSet *self, u32 id, AnimModel *m, RoomObjRes *res, u8 a5, s32 a6, u32 a7, u32 a8);
+BOOL CafeCoffeeSet_EnterState00(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState01(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState02(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState03(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState04(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState05(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState06(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState08(CafeCoffeeSet *o);
+BOOL CafeCoffeeSet_EnterState09(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState00(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState01(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState02(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState03(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState04(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState05(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState06(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState08(CafeCoffeeSet *o);
+void CafeCoffeeSet_UpdateState09(CafeCoffeeSet *o);
+}
+
 #define M0 (&o->partModels[0])
 #define M1 (&o->partModels[1])
 #define M2 (&o->partModels[2])
@@ -229,113 +108,16 @@ void CafeCoffeeSet_UpdateState08(ObjA *o);
 #define R2 (&o->partRes[2])
 #define UP(id, m, r, a5, a7) CafeCoffeeSet_SwitchAnim(o, id, m, r, a5, 0x1000, a7, 0)
 
-void CafeCoffeeSet_UpdateState09(ObjA *o);
-}
+// the set of the café (NULL while it doesn't exist)
+extern "C" CafeCoffeeSet *volatile sCafeCoffeeSet = 0;
 
-#define CDA (*(ObjA * volatile *)&sCafeCoffeeSet)
-#define CDB (*(ObjB * volatile *)&sCafeCoffeeSet)
-#define CDC (*(CafeCoffeeSet * volatile *)&sCafeCoffeeSet)
-// declarations (definition order below sets the data layout)
-extern "C" { extern FxVec3 data_ov004_02250d2c; }
-extern "C" { extern FxVec3 data_ov004_02250d44; }
-extern "C" { extern FxVec3 data_ov004_02250d5c; }
-extern "C" { extern void *data_ov004_0224d920[2]; }
-extern "C" { extern void *data_ov004_0224d8f8[2]; }
-extern "C" { extern void *data_ov004_0224d8e0[2]; }
-extern "C" { extern FxVec3 data_ov004_02250cd8; }
-extern "C" { extern void *data_ov004_0224d8d8[2]; }
-extern "C" { extern void *volatile sCafeCoffeeSet; }
-extern "C" { extern void *data_ov004_0224d908[2]; }
-extern "C" { extern FxVec3 data_ov004_02250cf0; }
-extern "C" { extern FxVec3 data_ov004_02250d08; }
-extern "C" { extern void *data_ov004_0224d948[2]; }
-extern "C" { extern void *data_ov004_0224d940[2]; }
-extern "C" { extern void *data_ov004_0224d8d0[2]; }
-extern "C" { extern void *data_ov004_0224d930[2]; }
-extern "C" { extern void *data_ov004_0224d8e8[2]; }
-extern "C" { extern void *data_ov004_0224d910[2]; }
-extern "C" { extern void *data_ov004_0224d960[2]; }
-extern "C" { extern void *data_ov004_0224d900[2]; }
-extern "C" { extern void *data_ov004_0224d950[2]; }
-extern "C" { extern void *data_ov004_0224d8f0[2]; }
-extern "C" { extern void *data_ov004_0224d918[2]; }
-extern "C" { extern void *data_ov004_0224d938[2]; }
-extern "C" { extern void *data_ov004_0224d958[2]; }
-extern "C" { extern void *data_ov004_0224d928[2]; }
-extern "C" { extern void *data_ov004_0224d8c8[2]; }
-extern "C" { extern ActorProfile sCafeCoffeeSetProfile; }// declarations (definition order below sets the data layout)
-extern "C" { extern FxVec3 data_ov004_02250d2c; }
-extern "C" { extern FxVec3 data_ov004_02250d44; }
-extern "C" { extern void *data_ov004_0224d938[2]; }
-extern "C" { extern FxVec3 data_ov004_02250d5c; }
-extern "C" { extern void *data_ov004_0224d8e0[2]; }
-extern "C" { extern FxVec3 data_ov004_02250cd8; }
-extern "C" { extern FxVec3 data_ov004_02250cf0; }
-extern "C" { extern void *data_ov004_0224d918[2]; }
-extern "C" { extern void *data_ov004_0224d908[2]; }
-extern "C" { extern FxVec3 data_ov004_02250d08; }
-extern "C" { extern void *data_ov004_0224d958[2]; }
-extern "C" { extern void *data_ov004_0224d950[2]; }
-extern "C" { extern void *data_ov004_0224d948[2]; }
-extern "C" { extern void *data_ov004_0224d940[2]; }
-extern "C" { extern void *data_ov004_0224d8d0[2]; }
-extern "C" { extern void *data_ov004_0224d8e8[2]; }
-extern "C" { extern void *data_ov004_0224d910[2]; }
-extern "C" { extern void *data_ov004_0224d930[2]; }
-extern "C" { extern void *data_ov004_0224d960[2]; }
-extern "C" { extern void *data_ov004_0224d900[2]; }
-extern "C" { extern void *data_ov004_0224d8f8[2]; }
-extern "C" { extern void *data_ov004_0224d8f0[2]; }
-extern "C" { extern void *data_ov004_0224d928[2]; }
-extern "C" { extern void *data_ov004_0224d920[2]; }
-extern "C" { extern void *data_ov004_0224d8d8[2]; }
-extern "C" { extern void *volatile sCafeCoffeeSet; }
-extern "C" { extern void *data_ov004_0224d8c8[2]; }
-extern "C" { extern ActorProfile sCafeCoffeeSetProfile; }
-
+// places of the parts
 extern "C" FxVec3 data_ov004_02250d2c(0, 0, 0);
-
 extern "C" FxVec3 data_ov004_02250d44(0x17700, 0x1900, 0x15800);
-
-extern "C" void *data_ov004_0224d938[2] = {(void *)CafeCoffeeSet_UpdateState04, 0};
-
 extern "C" FxVec3 data_ov004_02250d5c(0x17800, 0x1a00, 0x13400);
-
-extern "C" void *data_ov004_0224d8e0[2] = {(void *)CafeCoffeeSet_UpdateState08, 0};
-
 extern "C" FxVec3 data_ov004_02250cd8(0x10c00, 0x1600, 0x1b000);
-
 extern "C" FxVec3 data_ov004_02250cf0(0x16a00, 0x1900, 0x13000);
-
-extern "C" void *data_ov004_0224d918[2] = {(void *)CafeCoffeeSet_UpdateState09, 0};
-
-extern "C" void *data_ov004_0224d908[2] = {(void *)CafeCoffeeSet_UpdateState00, 0};
-
 extern "C" FxVec3 data_ov004_02250d08(0x16600, 0x1900, 0x11e00);
-
-extern "C" void *data_ov004_0224d958[2] = {(void *)CafeCoffeeSet_EnterState02, 0};
-
-extern "C" void *data_ov004_0224d950[2] = {(void *)CafeCoffeeSet_EnterState03, 0};
-
-extern "C" void *data_ov004_0224d948[2] = {(void *)CafeCoffeeSet_EnterState04, 0};
-
-extern "C" void *data_ov004_0224d940[2] = {(void *)CafeCoffeeSet_EnterState05, 0};
-
-extern "C" void *data_ov004_0224d8d0[2] = {(void *)CafeCoffeeSet_EnterState06, 0};
-
-extern "C" void *data_ov004_0224d8e8[2] = {(void *)CafeCoffeeSet_UpdateState05, 0};
-
-extern "C" void *data_ov004_0224d910[2] = {(void *)CafeCoffeeSet_EnterState09, 0};
-
-extern "C" void *data_ov004_0224d930[2] = {(void *)CafeCoffeeSet_EnterState08, 0};
-
-extern "C" void *data_ov004_0224d960[2] = {(void *)CafeCoffeeSet_EnterState01, 0};
-
-#define D2C ((s32 *)&data_ov004_02250d2c)
-#define D5C ((s32 *)&data_ov004_02250d5c)
-#define DCD8 ((s32 *)&data_ov004_02250cd8)
-#define DCF0 ((s32 *)&data_ov004_02250cf0)
-#define DD08 ((s32 *)&data_ov004_02250d08)
 
 // @2227b28
 extern "C" CafeCoffeeSet *CafeCoffeeSet_Create() {
@@ -344,17 +126,15 @@ extern "C" CafeCoffeeSet *CafeCoffeeSet_Create() {
 
 // @2227ab0
 CafeCoffeeSet::CafeCoffeeSet() {
-    __cxa_vec_ctor(partTex, 9, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
 }
 
 // @22279f0
 CafeCoffeeSet::~CafeCoffeeSet() {
-    __cxa_vec_cleanup(partTex, 9, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
 }
 
 // @2227728
 BOOL CafeCoffeeSet::onCreate() {
-    CDC = this;
+    sCafeCoffeeSet = this;
     loadResources("/roomObj/obj_cafe1.arc", "/roomObj/obj_cafe1.nsbtx");
     CafeCoffeeSet_LoadPart(this, 0, "/roomObj/obj_cafe2.arc", "/roomObj/obj_cafe2.nsbtx");
     CafeCoffeeSet_LoadPart(this, 1, "/roomObj/obj_cafe3.arc", "/roomObj/obj_cafe3.nsbtx");
@@ -365,11 +145,11 @@ BOOL CafeCoffeeSet::onCreate() {
     CafeCoffeeSet_LoadPart(this, 6, "/roomObj/obj_cafe3.arc", "/roomObj/obj_cafe3.nsbtx");
     CafeCoffeeSet_LoadPart(this, 7, "/roomObj/obj_cafe4.arc", "/roomObj/obj_cafe4.nsbtx");
     CafeCoffeeSet_LoadPart(this, 8, "/roomObj/obj_cafe6.arc", "/roomObj/obj_cafe6.nsbtx");
-    if (RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0) != 0) {
-        if (((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->allocAnmObj(gBgHeap) != 0) {
-            ((BlendAnimModel *)(HOST_AT(this, 0xec, model, 0)))->initAnim(RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0), 1, 0x1000, 0, 0);
-            ((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->attachAnim();
-            F(u32, 0x198) = 0;
+    if (RoomObjRes_GetBca(&res, 0) != 0) {
+        if (model.allocAnmObj(gBgHeap) != 0) {
+            ((BlendAnimModel *)&model)->initAnim(RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
+            model.attachAnim();
+            model.frameStep = 0;
         }
     }
     u8 i = 0;
@@ -378,23 +158,24 @@ BOOL CafeCoffeeSet::onCreate() {
         i++;
     } while (i < 9);
     CafeCoffeeSet_ChangeState(this, 0);
-    part3Visible = 1;
+    partVisible[3] = 1;
     CafeCoffeeSet_SwitchAnim(this, 8, &partModels[4], &partRes[4], 0, 0x1000, 0, 0);
     CafeCoffeeSet_SwitchAnim(this, 6, &partModels[5], &partRes[5], 0, 0x1000, 0, 0);
     CafeCoffeeSet_SwitchAnim(this, 8, &partModels[6], &partRes[6], 0, 0x1000, 0, 0);
     CafeCoffeeSet_SwitchAnim(this, 6, &partModels[7], &partRes[7], 0, 0x1000, 0, 0);
-    part4EffectPos = *(VecFx32 *)&data_ov004_02250cd8;
-    part6EffectPos = *(VecFx32 *)&data_ov004_02250cf0;
+    part4EffectPos = data_ov004_02250cd8;
+    part6EffectPos = data_ov004_02250cf0;
     part4EffectAngle = 0;
     part6EffectAngle = 0;
+    // the counter's cups stand at their last frame
     partModels[4].frameStep = 0;
-    partModels[4].curFrame = (u16)(((Bits *)&partModels[4].numFrames)->mid - 1) << 12;
+    partModels[4].curFrame = (u16)(FrameInt(partModels[4].numFrames) - 1) << 12;
     partModels[5].frameStep = 0;
-    partModels[5].curFrame = (u16)(((Bits *)&partModels[5].numFrames)->mid - 1) << 12;
+    partModels[5].curFrame = (u16)(FrameInt(partModels[5].numFrames) - 1) << 12;
     partModels[6].frameStep = 0;
-    partModels[6].curFrame = (u16)(((Bits *)&partModels[6].numFrames)->mid - 1) << 12;
+    partModels[6].curFrame = (u16)(FrameInt(partModels[6].numFrames) - 1) << 12;
     partModels[7].frameStep = 0;
-    partModels[7].curFrame = (u16)(((Bits *)&partModels[7].numFrames)->mid - 1) << 12;
+    partModels[7].curFrame = (u16)(FrameInt(partModels[7].numFrames) - 1) << 12;
     pourEffect = -1;
     part4Effect = -1;
     part6Effect = -1;
@@ -403,39 +184,39 @@ BOOL CafeCoffeeSet::onCreate() {
 
 // @22275fc
 BOOL CafeCoffeeSet::onExecute() {
-    ObjB *o = (ObjB *)this;
     u8 i;
     if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab)) {
-        BgmBeatPhase *t = Snd_GetBeatState();
+        BgmBeatPhase *t = (BgmBeatPhase *)Snd_GetBeatState();
         if (t != NULL) {
             if (t->seqVar2 != 1) {
-                o->modelFrame = 0;
-                o->modelFrameStep = t->loopFrame32;
-                ((AnimModel *)(HOST_AT(o, 0xec, pad_000[236], 0)))->stepAnim();
-                o->modelFrameStep = 0;
-                o->part0Frame = 0;
-                o->part0FrameStep = t->loopFrame32;
-                ((AnimModel *)(HOST_AT(o, 0x290, pad_19c[244], 0)))->stepAnim();
-                o->part0FrameStep = 0;
+                // (the base model and the pot keep the music's beat)
+                model.curFrame = 0;
+                model.frameStep = t->loopFrame32;
+                model.stepAnim();
+                model.frameStep = 0;
+                partModels[0].curFrame = 0;
+                partModels[0].frameStep = t->loopFrame32;
+                partModels[0].stepAnim();
+                partModels[0].frameStep = 0;
             }
         }
     }
-    ((AnimModel *)(HOST_AT(o, 0xec, pad_000[236], 0)))->stepAnim();
+    model.stepAnim();
     for (i = 0; i < 9; i++) {
-        ((AnimModel *)(HOST_AT(o, 0x290, pad_19c[244], 0) + i * 0xb8))->stepAnim();
+        partModels[i].stepAnim();
     }
-    CafeCoffeeSet_UpdateState(o);
-    if (o->pourEffect != -1) {
-        Effect_SetPosition(o->pourEffect, (VecFx32 *)&o->pourEffectX, 0, 0);
+    CafeCoffeeSet_UpdateState(this);
+    if (pourEffect != -1) {
+        Effect_SetPosition(pourEffect, &pourEffectPos, 0, 0);
     }
-    if (o->partVisible[4] != 0) {
-        if (o->part4Effect == -1) {
-            o->part4Effect = Effect_CreateById(0x6b, (VecFx32 *)HOST_AT(o, 0xf1c, pad_f1c[0], 0), (s16 *)HOST_AT(o, 0xf34, pad_f1c[24], 0), 0);
+    if (partVisible[4] != 0) {
+        if (part4Effect == -1) {
+            part4Effect = Effect_CreateById(0x6b, &part4EffectPos, (s16 *)&part4EffectAngle, 0);
         }
     }
-    if (o->partVisible[6] != 0) {
-        if (o->part6Effect == -1) {
-            o->part6Effect = Effect_CreateById(0x6b, (VecFx32 *)HOST_AT(o, 0xf28, pad_f1c[12], 0), (s16 *)HOST_AT(o, 0xf36, pad_f1c[26], 0), 0);
+    if (partVisible[6] != 0) {
+        if (part6Effect == -1) {
+            part6Effect = Effect_CreateById(0x6b, &part6EffectPos, (s16 *)&part6EffectAngle, 0);
         }
     }
     return TRUE;
@@ -443,117 +224,115 @@ BOOL CafeCoffeeSet::onExecute() {
 
 // @22275f8
 BOOL CafeCoffeeSet::onDraw() {
-    ObjB *o = (ObjB *)this;
     return TRUE;
 }
 
 // @2227228
-void CafeCoffeeSet_UpdateMatrices(void *ov) {
-    ObjB *o = (ObjB *)ov;
+extern "C" void CafeCoffeeSet_UpdateMatrices(CafeCoffeeSet *o) {
+    const FxVec3 &zero = data_ov004_02250d2c;
     u8 i;
-    data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-    o->modelMtx = data_021f47e0;
-    data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxE();
-    o->part0Mtx = data_021f47e0;
+    data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
+    o->model.mtx = data_021f47e0;
+    data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxE();
+    o->partModels[0].mtx = data_021f47e0;
     s32 st = o->serveState;
     if ((u32)(st - 8) <= 1) {
-        Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
-        o->part1Mtx = data_021f47e0;
+        Mtx43_SetTranslate(&data_021f47e0, zero.x, zero.y, zero.z);
+        o->partModels[1].mtx = data_021f47e0;
     } else if (st == 5) {
-        if (o->part1Frame.mid >= 0x10) {
-            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
-            o->pourEffectX = 0x16a00;
-            o->pourEffectY = 0x1900;
-            o->pourEffectZ = 0x15000;
+        if (FrameInt(o->partModels[1].curFrame) >= 0x10) {
+            Mtx43_SetTranslate(&data_021f47e0, zero.x, zero.y, zero.z);
+            o->pourEffectPos.x = 0x16a00;
+            o->pourEffectPos.y = 0x1900;
+            o->pourEffectPos.z = 0x15000;
         } else {
-            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-            o->pourEffectX = data_021f47e0.m[9];
-            o->pourEffectY = data_021f47e0.m[10];
-            o->pourEffectZ = data_021f47e0.m[11];
+            data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
+            o->pourEffectPos.x = data_021f47e0.m[9];
+            o->pourEffectPos.y = data_021f47e0.m[10];
+            o->pourEffectPos.z = data_021f47e0.m[11];
         }
     } else if (st == 6) {
-        if ((s32)o->part1Frame.mid >= (s32)o->part1FrameCount.mid - 0x2d) {
-            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
-            o->pourEffectX = 0x16a00;
-            o->pourEffectY = 0x1900;
-            o->pourEffectZ = 0x15000;
+        if ((s32)FrameInt(o->partModels[1].curFrame) >= (s32)FrameInt(o->partModels[1].numFrames) - 0x2d) {
+            Mtx43_SetTranslate(&data_021f47e0, zero.x, zero.y, zero.z);
+            o->pourEffectPos.x = 0x16a00;
+            o->pourEffectPos.y = 0x1900;
+            o->pourEffectPos.z = 0x15000;
         } else {
-            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-            o->pourEffectX = data_021f47e0.m[9];
-            o->pourEffectY = data_021f47e0.m[10];
-            o->pourEffectZ = data_021f47e0.m[11];
+            data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
+            o->pourEffectPos.x = data_021f47e0.m[9];
+            o->pourEffectPos.y = data_021f47e0.m[10];
+            o->pourEffectPos.z = data_021f47e0.m[11];
         }
     } else {
-        data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-        o->pourEffectX = data_021f47e0.m[9];
-        o->pourEffectY = data_021f47e0.m[10];
-        o->pourEffectZ = data_021f47e0.m[11];
+        data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
+        o->pourEffectPos.x = data_021f47e0.m[9];
+        o->pourEffectPos.y = data_021f47e0.m[10];
+        o->pourEffectPos.z = data_021f47e0.m[11];
     }
-    o->part1Mtx = data_021f47e0;
+    o->partModels[1].mtx = data_021f47e0;
     st = o->serveState;
     if ((u32)(st - 8) <= 1) {
-        Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
-        o->part2Mtx = data_021f47e0;
+        Mtx43_SetTranslate(&data_021f47e0, zero.x, zero.y, zero.z);
+        o->partModels[2].mtx = data_021f47e0;
     } else if (st == 5) {
-        if (o->part2Frame.mid >= 0x10) {
-            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+        if (FrameInt(o->partModels[2].curFrame) >= 0x10) {
+            Mtx43_SetTranslate(&data_021f47e0, zero.x, zero.y, zero.z);
         } else {
-            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
+            data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
         }
     } else if (st == 6) {
-        if ((s32)o->part2Frame.mid >= (s32)o->part2FrameCount.mid - 0x2d) {
-            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+        if ((s32)FrameInt(o->partModels[2].curFrame) >= (s32)FrameInt(o->partModels[2].numFrames) - 0x2d) {
+            Mtx43_SetTranslate(&data_021f47e0, zero.x, zero.y, zero.z);
         } else {
-            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
+            data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
         }
     } else {
-        data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
+        data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxB();
     }
-    o->part2Mtx = data_021f47e0;
-    if (o->part3Frame.mid >= 0xf && o->part3Frame.mid <= 0x48) {
-        data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxE();
+    o->partModels[2].mtx = data_021f47e0;
+    if (FrameInt(o->partModels[3].curFrame) >= 0xf && FrameInt(o->partModels[3].curFrame) <= 0x48) {
+        data_021f47e0 = *(Mtx43 *)SpNpcBrewster_GetJointMtxE();
     } else {
-        Mtx43_SetTranslate(&data_021f47e0, D5C[0], D5C[1], D5C[2]);
+        Mtx43_SetTranslate(&data_021f47e0, data_ov004_02250d5c.x, data_ov004_02250d5c.y, data_ov004_02250d5c.z);
     }
-    o->part3Mtx = data_021f47e0;
-    Mtx43_SetTranslate(&data_021f47e0, DCD8[0], DCD8[1], DCD8[2]);
-    o->part4Mtx = data_021f47e0;
-    o->part5Mtx = data_021f47e0;
-    Mtx43_SetTranslate(&data_021f47e0, DCF0[0], DCF0[1], DCF0[2]);
-    o->part6Mtx = data_021f47e0;
-    o->part7Mtx = data_021f47e0;
-    Mtx43_SetTranslate(&data_021f47e0, DD08[0], DD08[1], DD08[2]);
-    o->part8Mtx = data_021f47e0;
+    o->partModels[3].mtx = data_021f47e0;
+    Mtx43_SetTranslate(&data_021f47e0, data_ov004_02250cd8.x, data_ov004_02250cd8.y, data_ov004_02250cd8.z);
+    o->partModels[4].mtx = data_021f47e0;
+    o->partModels[5].mtx = data_021f47e0;
+    Mtx43_SetTranslate(&data_021f47e0, data_ov004_02250cf0.x, data_ov004_02250cf0.y, data_ov004_02250cf0.z);
+    o->partModels[6].mtx = data_021f47e0;
+    o->partModels[7].mtx = data_021f47e0;
+    Mtx43_SetTranslate(&data_021f47e0, data_ov004_02250d08.x, data_ov004_02250d08.y, data_ov004_02250d08.z);
+    o->partModels[8].mtx = data_021f47e0;
     if (o->modelVisible != 0) {
-        ((AnimModel *)(HOST_AT(o, 0xec, pad_000[236], 0)))->drawAnimated((void *)(NULL));
+        o->model.drawAnimated(NULL);
     }
     for (i = 0; i < 9; i++) {
         if (o->partVisible[i] != 0) {
-            ((AnimModel *)(HOST_AT(o, 0x290, pad_19c[244], 0) + i * 0xb8))->drawAnimated((void *)(NULL));
+            o->partModels[i].drawAnimated(NULL);
         }
     }
 }
 
 // @22271f4
 BOOL CafeCoffeeSet::onDelete() {
-    ObjB *o = (ObjB *)this;
     u8 i;
-    ((RoomObjActor *)o)->releaseResources();
+    releaseResources();
     for (i = 0; i < 9; i++) {
-        CafeCoffeeSet_ReleasePart(o, i);
+        CafeCoffeeSet_ReleasePart(this, i);
     }
-    CDB = NULL;
+    sCafeCoffeeSet = NULL;
     return TRUE;
 }
 
 // @2227104
-BOOL CafeCoffeeSet_ChangeState(void *ov, s32 n) {
-    ObjB *o = (ObjB *)ov;
-    static Fn tbl[10] = {*(Fn *)data_ov004_0224d8c8, *(Fn *)data_ov004_0224d960, *(Fn *)data_ov004_0224d958, *(Fn *)data_ov004_0224d950,
-                              *(Fn *)data_ov004_0224d948, *(Fn *)data_ov004_0224d940, *(Fn *)data_ov004_0224d8d0, *(Fn *)data_ov004_0224d928,
-                              *(Fn *)data_ov004_0224d930, *(Fn *)data_ov004_0224d910};
+extern "C" BOOL CafeCoffeeSet_ChangeState(CafeCoffeeSet *o, s32 n) {
+    static BOOL (*const tbl[10])(CafeCoffeeSet *) = {
+        CafeCoffeeSet_EnterState00, CafeCoffeeSet_EnterState01, CafeCoffeeSet_EnterState02, CafeCoffeeSet_EnterState03,
+        CafeCoffeeSet_EnterState04, CafeCoffeeSet_EnterState05, CafeCoffeeSet_EnterState06, CafeCoffeeSet_EnterState03,
+        CafeCoffeeSet_EnterState08, CafeCoffeeSet_EnterState09};
     if (n < 10) {
-        if ((o->*tbl[n])()) {
+        if (tbl[n](o)) {
             o->serveState = n;
             return TRUE;
         }
@@ -561,119 +340,103 @@ BOOL CafeCoffeeSet_ChangeState(void *ov, s32 n) {
     return FALSE;
 }
 
-extern "C" void *data_ov004_0224d900[2] = {(void *)CafeCoffeeSet_UpdateState01, 0};
-
-extern "C" void *data_ov004_0224d8f8[2] = {(void *)CafeCoffeeSet_UpdateState02, 0};
-
-extern "C" void *data_ov004_0224d8f0[2] = {(void *)CafeCoffeeSet_UpdateState03, 0};
-
-extern "C" void *data_ov004_0224d928[2] = {(void *)CafeCoffeeSet_EnterState03, 0};
-
-extern "C" void *data_ov004_0224d920[2] = {(void *)CafeCoffeeSet_UpdateState06, 0};
-
-extern "C" void *data_ov004_0224d8d8[2] = {(void *)CafeCoffeeSet_UpdateState03, 0};
-
-extern "C" void *volatile sCafeCoffeeSet = 0;
-
 // @2227024
-void CafeCoffeeSet_UpdateState(ObjB *o) {
-    static Fn tbl[10] = {*(Fn *)data_ov004_0224d908, *(Fn *)data_ov004_0224d900, *(Fn *)data_ov004_0224d8f8, *(Fn *)data_ov004_0224d8f0,
-                              *(Fn *)data_ov004_0224d938, *(Fn *)data_ov004_0224d8e8, *(Fn *)data_ov004_0224d920, *(Fn *)data_ov004_0224d8d8,
-                              *(Fn *)data_ov004_0224d8e0, *(Fn *)data_ov004_0224d918};
+extern "C" void CafeCoffeeSet_UpdateState(CafeCoffeeSet *o) {
+    static void (*const tbl[10])(CafeCoffeeSet *) = {
+        CafeCoffeeSet_UpdateState00, CafeCoffeeSet_UpdateState01, CafeCoffeeSet_UpdateState02, CafeCoffeeSet_UpdateState03,
+        CafeCoffeeSet_UpdateState04, CafeCoffeeSet_UpdateState05, CafeCoffeeSet_UpdateState06, CafeCoffeeSet_UpdateState03,
+        CafeCoffeeSet_UpdateState08, CafeCoffeeSet_UpdateState09};
     s32 i = o->serveState;
     if (i < 10) {
-        (o->*tbl[i])();
+        tbl[i](o);
     }
 }
-
-// ---------------------------------------------------------------- data
-extern "C" void *data_ov004_0224d8c8[2] = {(void *)CafeCoffeeSet_EnterState00, 0};
 
 extern "C" ActorProfile sCafeCoffeeSetProfile = {(void *(*)())CafeCoffeeSet_Create, 0x64, 0x13, 0, 0xc8000, 0x12c000, 0x258000};
 
 // @222700c
-BOOL CafeCoffeeSet_EnterState00(ObjB *o) {
+extern "C" BOOL CafeCoffeeSet_EnterState00(CafeCoffeeSet *o) {
     o->modelVisible = 1;
     o->partVisible[0] = 1;
     return TRUE;
 }
 
 // @2226f6c
-void CafeCoffeeSet_UpdateState00(ObjB *o) {
+extern "C" void CafeCoffeeSet_UpdateState00(CafeCoffeeSet *o) {
     SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf2) {
-        CafeCoffeeSet_SwitchAnim(o, 0, HOST_AT(o, 0xec, pad_000[236], 0), HOST_AT(o, 0x1a4, pad_19c[8], 0), 0, 0x1000, 0, 0);
-        CafeCoffeeSet_SwitchAnim(o, 0, HOST_AT(o, 0x290, pad_19c[244], 0), HOST_AT(o, 0x908, pad_8e4[36], 0), 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 0, &o->model, &o->res, 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 0, M0, R0, 0, 0x1000, 0, 0);
     } else if (SpNpcBrewster_GetAnimState() == 0xf4) {
-        CafeCoffeeSet_SwitchAnim(o, 1, HOST_AT(o, 0xec, pad_000[236], 0), HOST_AT(o, 0x1a4, pad_19c[8], 0), 0, 0x1000, 0, 0);
-        CafeCoffeeSet_SwitchAnim(o, 1, HOST_AT(o, 0x290, pad_19c[244], 0), HOST_AT(o, 0x908, pad_8e4[36], 0), 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 1, &o->model, &o->res, 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 1, M0, R0, 0, 0x1000, 0, 0);
     }
 }
 
 // @2226f68
-BOOL CafeCoffeeSet_EnterState01(ObjB *o) {
+extern "C" BOOL CafeCoffeeSet_EnterState01(CafeCoffeeSet *o) {
     return TRUE;
 }
 
 // @2226ec4
-void CafeCoffeeSet_UpdateState01(ObjB *o) {
+extern "C" void CafeCoffeeSet_UpdateState01(CafeCoffeeSet *o) {
     SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf3) {
-        CafeCoffeeSet_SwitchAnim(o, 0, HOST_AT(o, 0x348, pad_340[8], 0), HOST_AT(o, 0x9ac, pad_8e4[200], 0), 0, 0x1000, 0, 0);
-        CafeCoffeeSet_SwitchAnim(o, 0, HOST_AT(o, 0x400, pad_3f0[16], 0), HOST_AT(o, 0xa50, pad_8e4[364], 0), 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 0, M1, R1, 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 0, M2, R2, 0, 0x1000, 0, 0);
     } else if (SpNpcBrewster_GetAnimState() == 0xf5) {
-        CafeCoffeeSet_SwitchAnim(o, 1, HOST_AT(o, 0x348, pad_340[8], 0), HOST_AT(o, 0x9ac, pad_8e4[200], 0), 0, 0x1000, 0, 0);
-        CafeCoffeeSet_SwitchAnim(o, 1, HOST_AT(o, 0x400, pad_3f0[16], 0), HOST_AT(o, 0xa50, pad_8e4[364], 0), 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 1, M1, R1, 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 1, M2, R2, 0, 0x1000, 0, 0);
     }
 }
 
 // @2226ec0
-BOOL CafeCoffeeSet_EnterState02(ObjB *o) {
+extern "C" BOOL CafeCoffeeSet_EnterState02(CafeCoffeeSet *o) {
     return TRUE;
 }
 
 // @2226e18
-void CafeCoffeeSet_UpdateState02(ObjB *o) {
+extern "C" void CafeCoffeeSet_UpdateState02(CafeCoffeeSet *o) {
     SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf3) {
-        CafeCoffeeSet_SwitchAnim(o, 3, HOST_AT(o, 0x348, pad_340[8], 0), HOST_AT(o, 0x9ac, pad_8e4[200], 0), 0, 0x1000, 0, 0);
-        CafeCoffeeSet_SwitchAnim(o, 0, HOST_AT(o, 0x400, pad_3f0[16], 0), HOST_AT(o, 0xa50, pad_8e4[364], 0), 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 3, M1, R1, 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 0, M2, R2, 0, 0x1000, 0, 0);
     } else if (SpNpcBrewster_GetAnimState() == 0xf5) {
-        CafeCoffeeSet_SwitchAnim(o, 4, HOST_AT(o, 0x348, pad_340[8], 0), HOST_AT(o, 0x9ac, pad_8e4[200], 0), 0, 0x1000, 0, 0);
-        CafeCoffeeSet_SwitchAnim(o, 1, HOST_AT(o, 0x400, pad_3f0[16], 0), HOST_AT(o, 0xa50, pad_8e4[364], 0), 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 4, M1, R1, 0, 0x1000, 0, 0);
+        CafeCoffeeSet_SwitchAnim(o, 1, M2, R2, 0, 0x1000, 0, 0);
     }
 }
 
 // @2226e14
-BOOL CafeCoffeeSet_EnterState03(ObjB *o) {
+extern "C" BOOL CafeCoffeeSet_EnterState03(CafeCoffeeSet *o) {
     return TRUE;
 }
 
 // @2226c24
-void CafeCoffeeSet_UpdateState03(ObjA *o) {
+extern "C" void CafeCoffeeSet_UpdateState03(CafeCoffeeSet *o) {
     u32 t = SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf2) {
-        UP(0, HOST_AT(o, 0xec, pad_00[236], 0), HOST_AT(o, 0x1a4, pad_00[420], 0), 0, 0);
+        UP(0, &o->model, &o->res, 0, 0);
         UP(0, M0, R0, 0, 0);
     } else if (SpNpcBrewster_GetAnimState() == 0xf4) {
-        UP(1, HOST_AT(o, 0xec, pad_00[236], 0), HOST_AT(o, 0x1a4, pad_00[420], 0), 0, 0);
+        UP(1, &o->model, &o->res, 0, 0);
         UP(1, M0, R0, 0, 0);
     } else if (SpNpcBrewster_GetAnimState() == 0xf6) {
         if (t <= 6) {
             o->modelVisible = 1;
-            o->part0Visible = 1;
+            o->partVisible[0] = 1;
         } else {
             o->modelVisible = 0;
-            o->part0Visible = 0;
+            o->partVisible[0] = 0;
         }
         if (t >= 0x12) {
-            o->part1Visible = 1;
-            o->part2Visible = 1;
+            o->partVisible[1] = 1;
+            o->partVisible[2] = 1;
         } else {
-            o->part1Visible = 0;
-            o->part2Visible = 0;
+            o->partVisible[1] = 0;
+            o->partVisible[2] = 0;
         }
-        UP(2, HOST_AT(o, 0xec, pad_00[236], 0), HOST_AT(o, 0x1a4, pad_00[420], 0), 0, 0);
+        UP(2, &o->model, &o->res, 0, 0);
         UP(2, M0, R0, 0, 0);
         UP(2, M1, R1, 0, 0);
         UP(2, M2, R2, 0, 0);
@@ -687,13 +450,13 @@ void CafeCoffeeSet_UpdateState03(ObjA *o) {
 }
 
 // @2226be8
-BOOL CafeCoffeeSet_EnterState04(ObjA *o) {
-    ((BlendAnimModel *)(&o->partModels[3]))->initAnim(RoomObjRes_GetBca(&o->partRes[3], 0), 1, 0x1000, 0, 0);
+extern "C" BOOL CafeCoffeeSet_EnterState04(CafeCoffeeSet *o) {
+    ((BlendAnimModel *)&o->partModels[3])->initAnim(RoomObjRes_GetBca(&o->partRes[3], 0), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 // @2226b80
-void CafeCoffeeSet_UpdateState04(ObjA *o) {
+extern "C" void CafeCoffeeSet_UpdateState04(CafeCoffeeSet *o) {
     SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf7) {
         UP(5, M1, R1, 0, 0);
@@ -702,29 +465,29 @@ void CafeCoffeeSet_UpdateState04(ObjA *o) {
 }
 
 // @2226b7c
-BOOL CafeCoffeeSet_EnterState05(void) {
+extern "C" BOOL CafeCoffeeSet_EnterState05(CafeCoffeeSet *o) {
     return TRUE;
 }
 
 // @2226af0
-void CafeCoffeeSet_UpdateState05(ObjA *o) {
+extern "C" void CafeCoffeeSet_UpdateState05(CafeCoffeeSet *o) {
     u32 t = SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf8) {
         UP(6, M1, R1, 1, 0);
         UP(4, M2, R2, 1, 0);
         if (t == 0x3b) {
-            o->pourEffect = Effect_CreateById(0x6b, (VecFx32 *)HOST_AT(o, 0xf10, pad_f00[16], 0), (s16 *)HOST_AT(o, 0x8e, pad_00[142], 0), 0);
+            o->pourEffect = Effect_CreateById(0x6b, &o->pourEffectPos, &o->rotY, 0);
         }
     }
 }
 
 // @2226aec
-BOOL CafeCoffeeSet_EnterState06(void) {
+extern "C" BOOL CafeCoffeeSet_EnterState06(CafeCoffeeSet *o) {
     return TRUE;
 }
 
 // @2226a80
-void CafeCoffeeSet_UpdateState06(ObjA *o) {
+extern "C" void CafeCoffeeSet_UpdateState06(CafeCoffeeSet *o) {
     u32 t = SpNpcBrewster_GetAnimFrame();
     if (SpNpcBrewster_GetAnimState() == 0xf8) {
         UP(7, M1, R1, 3, t);
@@ -733,20 +496,21 @@ void CafeCoffeeSet_UpdateState06(ObjA *o) {
 }
 
 // @2226a68
-BOOL CafeCoffeeSet_EnterState08(ObjA *o) {
-    Effect_End((void *)o->pourEffect);
+extern "C" BOOL CafeCoffeeSet_EnterState08(CafeCoffeeSet *o) {
+    Effect_End(o->pourEffect);
     return TRUE;
 }
 
 // @2226914
-void CafeCoffeeSet_UpdateState08(ObjA *o) {
-    if (((BlendAnimModel *)(M1))->getAnmRes() == RoomObjRes_GetBca(R1, 6) && ((AnimFrameCtrl *)(HOST_AT(o, 0x3e4, partModels[1], 0)))->isFinished()) {
+extern "C" void CafeCoffeeSet_UpdateState08(CafeCoffeeSet *o) {
+    AnimFrameCtrl *f1 = &o->partModels[1];
+    if (((BlendAnimModel *)M1)->getAnmRes() == RoomObjRes_GetBca(R1, 6) && f1->isFinished()) {
         UP(9, M1, R1, 1, 0);
         UP(7, M2, R2, 1, 0);
-    } else if (((BlendAnimModel *)(M1))->getAnmRes() == RoomObjRes_GetBca(R1, 9) && ((AnimFrameCtrl *)(HOST_AT(o, 0x3e4, partModels[1], 0)))->isFinished()) {
+    } else if (((BlendAnimModel *)M1)->getAnmRes() == RoomObjRes_GetBca(R1, 9) && f1->isFinished()) {
         UP(0xa, M1, R1, 1, 0);
         UP(8, M2, R2, 1, 0);
-    } else if (((BlendAnimModel *)(M1))->getAnmRes() == RoomObjRes_GetBca(R1, 0xa) && ((AnimFrameCtrl *)(HOST_AT(o, 0x3e4, partModels[1], 0)))->isFinished()) {
+    } else if (((BlendAnimModel *)M1)->getAnmRes() == RoomObjRes_GetBca(R1, 0xa) && f1->isFinished()) {
         Camera_MuteSe();
         Camera_SetMode4();
         UP(0xb, M1, R1, 1, 0);
@@ -755,23 +519,15 @@ void CafeCoffeeSet_UpdateState08(ObjA *o) {
 }
 
 // @2226904
-BOOL CafeCoffeeSet_EnterState09(void) {
+extern "C" BOOL CafeCoffeeSet_EnterState09(CafeCoffeeSet *o) {
     Camera_RestorePrevMode();
     return TRUE;
 }
 
 // @222687c
-#define M0 (&o->partModels[0])
-#define M1 (&o->partModels[1])
-#define M2 (&o->partModels[2])
-#define R0 (&o->partRes[0])
-#define R1 (&o->partRes[1])
-#define R2 (&o->partRes[2])
-#define UP(id, m, r, a5, a7) CafeCoffeeSet_SwitchAnim(o, id, m, r, a5, 0x1000, a7, 0)
-
-void CafeCoffeeSet_UpdateState09(ObjA *o) {
-    if (((BlendAnimModel *)(M1))->getAnmRes() == RoomObjRes_GetBca(R1, 0xb)) {
-        if (((AnimFrameCtrl *)(HOST_AT(o, 0x3e4, partModels[1], 0)))->isFinished()) {
+extern "C" void CafeCoffeeSet_UpdateState09(CafeCoffeeSet *o) {
+    if (((BlendAnimModel *)M1)->getAnmRes() == RoomObjRes_GetBca(R1, 0xb)) {
+        if (static_cast<AnimFrameCtrl *>(M1)->isFinished()) {
             UP(0xc, M1, R1, 1, 0);
             UP(0xa, M2, R2, 1, 0);
         }
@@ -779,52 +535,47 @@ void CafeCoffeeSet_UpdateState09(ObjA *o) {
 }
 
 // @2226860
-void CafeCoffeeSet_SyncToBrewster(void) {
-    ObjA *g = CDA;
+extern "C" void CafeCoffeeSet_SyncToBrewster(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         CafeCoffeeSet_UpdateMatrices(g);
     }
 }
 
 // @22267dc
-void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x) {
-    ObjA *o = (ObjA *)ov;
-    u8 *b = (u8 *)o;
-    void *r = HOST_AT_A(b, ObjA, 0x908, partRes[0].archive, 0) + idx * 0xa4;
-    void *q;
+extern "C" void CafeCoffeeSet_LoadPart(CafeCoffeeSet *o, u32 idx, const char *id, const char *x) {
+    RoomObjRes *r = &o->partRes[idx];
+    RoomObjTexAuto *q;
     RoomObjRes_Load(r, id);
-    q = HOST_AT_A(b, ObjA, 0xecc, partTex[0], 0) + idx * 4;
+    q = &o->partTex[idx];
     RoomObjTex_Load(q, x);
-    ((Model *)(HOST_AT_A(b, ObjA, 0x290, partModels[0], 0) + idx * 0xb8))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(r)), 0);
+    o->partModels[idx].setResource((NNSG3dResMdl *)RoomObjRes_GetModel(r), 0);
     NNS_G3dBindMdlTex(RoomObjRes_GetModel(r), RoomObjTex_Get(q));
     NNS_G3dBindMdlPltt(RoomObjRes_GetModel(r), RoomObjTex_Get(q));
 }
 
 // @22267a8
-void CafeCoffeeSet_ReleasePart(void *ov, u32 idx) {
-    ObjA *o = (ObjA *)ov;
+extern "C" void CafeCoffeeSet_ReleasePart(CafeCoffeeSet *o, u32 idx) {
     RoomObjRes_Free(&o->partRes[idx]);
     RoomObjTex_Reset(&o->partTex[idx]);
 }
 
 // @2226724
-void CafeCoffeeSet_InitPartAnim(void *ov, u32 idx) {
-    ObjA *o = (ObjA *)ov;
+extern "C" void CafeCoffeeSet_InitPartAnim(CafeCoffeeSet *o, u32 idx) {
     RoomObjRes *r = &o->partRes[idx];
     if (RoomObjRes_GetBca(r, 0)) {
-        if (((AnimModel *)(&o->partModels[idx]))->allocAnmObj(gBgHeap)) {
-            u32 off = idx * 0xb8;
-            void *m = (u8 *)o->partModels + off;
-            ((BlendAnimModel *)(m))->initAnim(RoomObjRes_GetBca(r, 0), 1, 0x1000, 0, 0);
-            ((AnimModel *)(m))->attachAnim();
-            *(u32 *)((u8 *)o + off + 0x33c) = 0;
+        AnimModel *m = &o->partModels[idx];
+        if (m->allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)m)->initAnim(RoomObjRes_GetBca(r, 0), 1, 0x1000, 0, 0);
+            m->attachAnim();
+            m->frameStep = 0;
         }
     }
 }
 
 // @2226704
-s32 CafeCoffeeSet_SetState00(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState00(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 0);
     }
@@ -832,8 +583,8 @@ s32 CafeCoffeeSet_SetState00(void) {
 }
 
 // @22266e4
-s32 CafeCoffeeSet_SetState01(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState01(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 1);
     }
@@ -841,8 +592,8 @@ s32 CafeCoffeeSet_SetState01(void) {
 }
 
 // @22266c4
-s32 CafeCoffeeSet_SetState02(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState02(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 2);
     }
@@ -850,8 +601,8 @@ s32 CafeCoffeeSet_SetState02(void) {
 }
 
 // @22266a4
-s32 CafeCoffeeSet_SetState03(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState03(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 3);
     }
@@ -859,8 +610,8 @@ s32 CafeCoffeeSet_SetState03(void) {
 }
 
 // @2226684
-s32 CafeCoffeeSet_SetState04(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState04(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 4);
     }
@@ -868,8 +619,8 @@ s32 CafeCoffeeSet_SetState04(void) {
 }
 
 // @2226664
-s32 CafeCoffeeSet_SetState05(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState05(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 5);
     }
@@ -877,8 +628,8 @@ s32 CafeCoffeeSet_SetState05(void) {
 }
 
 // @2226644
-s32 CafeCoffeeSet_SetState06(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState06(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 6);
     }
@@ -886,8 +637,8 @@ s32 CafeCoffeeSet_SetState06(void) {
 }
 
 // @2226624
-s32 CafeCoffeeSet_SetState07(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState07(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 7);
     }
@@ -895,8 +646,8 @@ s32 CafeCoffeeSet_SetState07(void) {
 }
 
 // @2226604
-s32 CafeCoffeeSet_SetState08(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState08(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 8);
     }
@@ -904,8 +655,8 @@ s32 CafeCoffeeSet_SetState08(void) {
 }
 
 // @22265e4
-s32 CafeCoffeeSet_SetState09(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_SetState09(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return CafeCoffeeSet_ChangeState(g, 9);
     }
@@ -913,8 +664,8 @@ s32 CafeCoffeeSet_SetState09(void) {
 }
 
 // @22265c8
-s32 CafeCoffeeSet_GetState(void) {
-    ObjA *g = CDA;
+extern "C" s32 CafeCoffeeSet_GetState(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
         return g->serveState;
     }
@@ -922,12 +673,12 @@ s32 CafeCoffeeSet_GetState(void) {
 }
 
 // @2226574
-BOOL CafeCoffeeSet_IsAnim0BAtFrame9(void) {
-    ObjA *g = CDA;
+extern "C" BOOL CafeCoffeeSet_IsAnim0BAtFrame9(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
-        u32 t = ((BlendAnimModel *)(HOST_AT(g, 0x348, partModels[1], 0)))->getAnmRes();
-        if (t == RoomObjRes_GetBca(HOST_AT(g, 0x9ac, partRes[1].archive, 0), 0xb)) {
-            if (((Unk_ov004_02226574_Bits *)((u8 *)CDA + 0x3ec))->mid == 9) {
+        void *t = ((BlendAnimModel *)&g->partModels[1])->getAnmRes();
+        if (t == RoomObjRes_GetBca(&g->partRes[1], 0xb)) {
+            if (FrameInt(sCafeCoffeeSet->partModels[1].curFrame) == 9) {
                 return TRUE;
             }
         }
@@ -936,12 +687,12 @@ BOOL CafeCoffeeSet_IsAnim0BAtFrame9(void) {
 }
 
 // @2226520
-BOOL CafeCoffeeSet_IsAnim0CDone(void) {
-    ObjA *g = CDA;
+extern "C" BOOL CafeCoffeeSet_IsAnim0CDone(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
-        u32 t = ((BlendAnimModel *)(HOST_AT(g, 0x348, partModels[1], 0)))->getAnmRes();
-        if (t == RoomObjRes_GetBca(HOST_AT(g, 0x9ac, partRes[1].archive, 0), 0xc)) {
-            if (((AnimFrameCtrl *)((u8 *)CDA + 0x3e4))->isFinished()) {
+        void *t = ((BlendAnimModel *)&g->partModels[1])->getAnmRes();
+        if (t == RoomObjRes_GetBca(&g->partRes[1], 0xc)) {
+            if (static_cast<AnimFrameCtrl *>(&sCafeCoffeeSet->partModels[1])->isFinished()) {
                 return TRUE;
             }
         }
@@ -950,26 +701,26 @@ BOOL CafeCoffeeSet_IsAnim0CDone(void) {
 }
 
 // @22264dc
-void CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8) {
-    u32 t = ((BlendAnimModel *)(m))->getAnmRes();
+extern "C" void CafeCoffeeSet_SwitchAnim(CafeCoffeeSet *self, u32 id, AnimModel *m, RoomObjRes *res, u8 a5, s32 a6, u32 a7, u32 a8) {
+    void *t = ((BlendAnimModel *)m)->getAnmRes();
     if (t != RoomObjRes_GetBca(res, id)) {
-        ((BlendAnimModel *)(m))->initAnim(RoomObjRes_GetBca(res, id), a5, a6, *(u16 *)&a7, *(u16 *)&a8);
+        ((BlendAnimModel *)m)->initAnim(RoomObjRes_GetBca(res, id), a5, a6, (u16)a7, (u16)a8);
     }
 }
 
 // @22264b8
-void CafeCoffeeSet_StartEffectB(void) {
-    ObjA *g = CDA;
+extern "C" void CafeCoffeeSet_StartEffectB(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
-        g->part6Visible = 1;
-        CDA->part7Visible = 1;
+        g->partVisible[6] = 1;
+        sCafeCoffeeSet->partVisible[7] = 1;
     }
 }
 
 // @22264a0
-void CafeCoffeeSet_SetFlagEF8(void) {
-    ObjA *g = CDA;
+extern "C" void CafeCoffeeSet_SetFlagEF8(void) {
+    CafeCoffeeSet *g = sCafeCoffeeSet;
     if (g) {
-        g->part8Visible = 1;
+        g->partVisible[8] = 1;
     }
 }

@@ -4,14 +4,15 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_022150ec_switch.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "town/CountdownDigit.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
 #ifndef PROTO_LOCAL_CountdownDigit_Update
-void CountdownDigit_Update(void *arg);
+void CountdownDigit_Update(CountdownDigit *o);
 #endif
-#ifdef __cplusplus
 }
 #endif
 

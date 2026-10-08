@@ -8,28 +8,12 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
-#define PROTO_LOCAL_Visitor_ScheduleLow  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sGulliverShipVisitorProfile  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02082d74.h"
 #include "proto/ov003/unk_ov003_02217814.h"
 
-
-
-
-
-
-
-
-
-
-
-
-
 extern "C" {
-extern u32 sGulliverShipVisitorProfile;
-void Visitor_ScheduleLow(void *a, void *b, void *c);
-void *Scene_GetCurrent();
+s32 Scene_GetCurrent();
 }
-
 
 // ============================================================ class GulliverShip
 class GulliverShip : public BuildingActor {
@@ -43,7 +27,7 @@ public:
     virtual BOOL initBuilding();
 };
 
-extern "C" GulliverShip *GulliverShip_Create() {
+extern "C" void *GulliverShip_Create() {
     return new GulliverShip;
 }
 
@@ -70,5 +54,5 @@ BOOL GulliverShip::onDelete() {
     return TRUE;
 }
 
-extern "C" u32 sGulliverShipVisitorProfile = 0x60;
+extern "C" u16 sGulliverShipVisitorProfile = 0x60;
 extern "C" ActorProfile sGulliverShipProfile = {(void *(*)())GulliverShip_Create, 0x27, 0x2d, 0, 0xc8000, 0x12c000, 0x258000};

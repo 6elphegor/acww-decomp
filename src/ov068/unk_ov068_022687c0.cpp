@@ -73,8 +73,6 @@ void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Flower_GetSpecies(void *cell);
 s32 Vec_DistXZ(void *a, void *b);
-s32 Snowball_ChangeState(void *o, s32 st);
-s32 Snowball_Break(void *o, s32 a);
 s32 Vec_Distance(void *a, void *b);
 s32 Math_Atan2(s32 x, s32 z);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -108,8 +106,6 @@ void Insect_FlapWings(void *);
 s32 Insect_CheckAlarm(void *);
 void Insect_FlutterBob(void *, s32, s32, s32);
 s32 PlayerActor_IsLocalAct67HitAt(void *);
-s32 Snowball_GetRadius(void *);
-s32 Snowball_TrySetPos(void *, void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 Item_MakeBuilding(u32);
 void Vec_Sub(void *, void *, void *);
@@ -621,7 +617,7 @@ void Insect::dungBeetleWalk() {
 
 namespace B20 { extern "C" s16 Math_AngleXZ(void *, void *); }
 void Insect::dungBeetlePushSnowball() {
-    u8 *a = (u8 *)Snowball_GetLooseBall(behaviorWork);
+    Snowball *a = Snowball_GetLooseBall(behaviorWork);
     s32 *pos = &position.x;
     s32 w2[3];
     s32 w[3];
@@ -631,12 +627,12 @@ void Insect::dungBeetlePushSnowball() {
     volatile s32 tmp;
     if (a != 0) {
         s32 rot, r6;
-        q = a;
-        q = a + 0x5c;
+        q = (u8 *)a;
+        q = (u8 *)&a->position;
         r6 = Snowball_GetRadius(a);
         ang = B20::Math_AngleXZ(q, pos);
         rot = ang;
-        w[0] = *(s32 *)(a + 0x5c);
+        w[0] = a->position.x;
         w[1] = *(s32 *)(q + 4);
         w[2] = *(s32 *)(q + 8);
         static s32 base = (tmp = Snowball_GetMaxRadius(), tmp - Snowball_GetMinRadius());
@@ -671,7 +667,7 @@ void Insect::dungBeetlePushSnowball() {
             pos[0] = pos[0] - func_01ffcb0c(w2[0], 0x2666);
             pos[2] = pos[2] - func_01ffcb0c(w2[2], 0x2666);
         }
-        if (Snowball_TrySetPos(a, w) == 0) {
+        if (Snowball_TrySetPos(a, (VecFx32 *)w) == 0) {
             state = 5;
             ((AnimModel *)(&model))->setFrame(0);
             auxTimer = Random_GlobalBelow(0x14) + 0x28;

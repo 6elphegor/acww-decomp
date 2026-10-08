@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -O4,s
 #include "types.h"
-#include "field/Unk_ov003_02214494_Views.h"
+#include "sys/ClockDateTime.h"
 #include "gfx/NNSG3dRS.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -18,6 +18,7 @@
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022150ec_switch.h"
 
@@ -46,13 +47,8 @@ extern u32 sCountdownMinutes;
 extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
-extern void *gFieldStructureHeap;
-
 void CountdownSign_ModelCallback(NNSG3dRS *p);
-void Clock_GetDateTime(void *p);
-s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
-void _ZN13AnimFrameCtrl4stepEv(void *m);
-void _ZN13BuildingActor12updateMatrixEv(void *p);
+void Clock_GetDateTime(ClockDateTime *p);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
@@ -81,18 +77,17 @@ BOOL CountdownDigit::initBuilding() {
     digitIndex = sCountdownSpawnIndex;
     digit = 0;
     setCharId(digitIndex);
-    if (((ModelAnim *)(&matAnim))->allocMatAnm((NNSG3dResMdl *)(modelRes), gFieldStructureHeap)) {
-        s32 r1 = (s32)getBtaAnim(0);
-        ((ModelAnim *)(&matAnim))->init(r1, 1, 0x1000, 0);
-        ((ModelAnim *)(&matAnim))->addToRenderObj(((Model *)model)->getRenderObj());
+    if (matAnim.allocMatAnm((NNSG3dResMdl *)modelRes, gFieldStructureHeap)) {
+        matAnim.init(getBtaAnim(0), 1, 0x1000, 0);
+        matAnim.addToRenderObj(((Model *)model)->getRenderObj());
     }
     isCounting = 1;
     prevDigit = 0xff;
-    u32 tm[2];
-    tm[0] = 0;
-    tm[1] = 0;
-    Clock_GetDateTime(tm);
-    if (((u8 *)tm)[4] != 1) {
+    ClockDateTimeWords tm;
+    tm.words[0] = 0;
+    tm.words[1] = 0;
+    Clock_GetDateTime(&tm.dt);
+    if (tm.dt.month != 1) {
         switch (digitIndex) {
         case 0:
             digit = prevDigit = (sCountdownHours / 10) & 1;
@@ -125,14 +120,13 @@ BOOL CountdownDigit::initBuilding() {
 }
 
 
-extern "C" void CountdownDigit_Update(void *arg) {
-    CountdownDigit *o = (CountdownDigit *)arg;
+extern "C" void CountdownDigit_Update(CountdownDigit *o) {
     if (o->isCounting != 0) {
-        Unk_ov003_02214890_Buf l;
-        l.w0 = 0;
-        l.w1 = 0;
-        Clock_GetDateTime(&l);
-        if (((u8 *)&l)[4] == 1) {
+        ClockDateTimeWords l;
+        l.words[0] = 0;
+        l.words[1] = 0;
+        Clock_GetDateTime(&l.dt);
+        if (l.dt.month == 1) {
             goto clr;
         }
         switch (o->digitIndex) {

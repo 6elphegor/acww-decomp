@@ -3,16 +3,15 @@
 
 #include "types.h"
 
-struct MapBlockEntry;
+#include "town/MapBlockEntry.h"
 struct BlockMapSize;
 
-// The scene's block map (gSceneBlockMap): the block array, its dimensions in blocks, units and world coordinates, the
-// BG map slot. Methods defined in src/main/unk_0204cc1c.cpp (which still has its own copy of this class: to be
-// replaced by this header; src/main/unk_020119cc.cpp, unk_02077ac4.cpp and include/town/TownBlockMap.h are partial
-// views of the same object).
+// The scene's block map (gSceneBlockMap): the MapBlock grid (blocks, width x height), its size in units and the BG
+// map slot. Methods in src/main/unk_0204cc1c.cpp (which still has its own copy of this definition: it should include
+// this header instead). TownBlockMap (town/TownBlockMap.h) is an older view of the same object.
 class BlockMap {
 public:
-    void *blocks;
+    void *blocks;  // MapBlock[width * height]
     s32 width;
     s32 height;
     s32 unitsX;

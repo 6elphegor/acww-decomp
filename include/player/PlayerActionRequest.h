@@ -7,6 +7,13 @@
 #include "player/PlayerActionRequestBase.h"
 #include "player/PlayerChangeClothesArgs.h"
 #include "player/PlayerInitWork.h"
+#include "player/PlayerAct10Args.h"
+#include "player/PlayerAct30Args.h"
+#include "player/PlayerAct76Args.h"
+#include "player/PlayerPickUpFanfareArgs.h"
+#include "player/PlayerPickUpReachArgs.h"
+#include "player/PlayerTurnToWork.h"
+#include "player/PlayerWalkToArgs.h"
 
 class PlayerActionRequest : public PlayerActionRequestBase {
 public:
@@ -23,7 +30,19 @@ public:
         PlayerChangeClothesArgs unk_0c_c2fc;
         u8 unk_0c_b[0x10];
         PlayerInitArgs unk_0c_d5b4;
+        // the payloads of the actions (PlayerActor::requestXxx)
+        PlayerAct10Args act10;
+        PlayerNetPickUpReachArgs emotion;
+        PlayerPickUpReachArgs pickUpReach;
+        PlayerAct30Args act30;
+        PlayerWalkToArgs walkTo;
+        PlayerTurnToArgs turnTo;
+        PlayerAct76Args act76;
+        PlayerPickUpFanfareArgs pickUpFanfare;
+        PlayerPickUpFanfareStowArgs pickUpFanfareStow;
     };
 };
+
+static_assert(sizeof(PlayerActionRequest) == 0x1c, "PlayerActionRequest");
 
 #endif // PLAYER_PLAYERACTIONREQUEST_H

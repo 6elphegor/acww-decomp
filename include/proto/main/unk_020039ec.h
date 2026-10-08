@@ -43,9 +43,6 @@ void Snd_FadeOutScene();
 #ifndef PROTO_LOCAL_Snd_EndTalk
 void Snd_EndTalk();
 #endif
-#ifndef PROTO_LOCAL__ZN12SndSceneBase14setBankVariantEi
-void SndSceneBase_setBankVariant();
-#endif
 #ifndef PROTO_LOCAL_Snd_StopAuxSe
 void Snd_StopAuxSe();
 #endif
@@ -158,13 +155,13 @@ void Snd_SeEmitterPlayAlternate(void *e, u16 s);
 void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodePlay
-void Snd_PosNodePlay(u32 a, u32 b, VecFx32 *v);
+void Snd_PosNodePlay(void *a, u32 b, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodePlayOnce
-void Snd_PosNodePlayOnce(u32 a, u32 b, VecFx32 *v);
+void Snd_PosNodePlayOnce(void *a, u32 b, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Snd_SetBgmPan
-void Snd_SetBgmPan(u32 a, VecFx32 *v);
+void Snd_SetBgmPan(void *a, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Snd_PosNodeSetPitch
 void Snd_PosNodeSetPitch(void *n, s32 v);
@@ -203,7 +200,7 @@ void Snd_MelodySetPattern(void *c, u8 *src);
 void Snd_MelodyPlayPattern(void *c, u32 v, u8 *pat);
 #endif
 #ifndef PROTO_LOCAL_Snd_MelodyPlayAt
-void Snd_MelodyPlayAt(u32 a, VecFx32 *v, u32 c);
+void Snd_MelodyPlayAt(void *a, VecFx32 *v, u32 c);
 #endif
 #ifndef PROTO_LOCAL_Snd_MelodyPlay
 void Snd_MelodyPlay(void *c, u32 v);

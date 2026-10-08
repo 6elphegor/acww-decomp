@@ -5,9 +5,8 @@
 
 class FtrActor;
 
-// Room furniture grid: the furniture actor index of each unit cell, two layers of 16x16 (FtrActorGrid_GetInstance).
-// Methods defined in src/ov004/unk_ov004_02233074.cpp (which still has its own copy of this class: to be replaced by
-// this header).
+// The furniture actors of a room by unit (two layers of 16 x 16 actor indices; FtrActorGrid_GetInstance). Defined in
+// src/ov004/unk_ov004_02233074.cpp (which still keeps its own copy of the class: switch it to this header).
 class FtrActorGrid {
 public:
     u8 cells[2][16][16];

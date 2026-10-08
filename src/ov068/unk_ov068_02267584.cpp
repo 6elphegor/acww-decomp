@@ -45,7 +45,6 @@ void Camera_SetModeDefault();
 void func_02097ff4(void *p, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-s32 Snowball_ChangeState(void *o, s32 st);
 extern u16 data_020c6cc8;
 extern u32 data_021ed104;
 extern u32 gVec3Zero[];
@@ -58,7 +57,6 @@ void FieldPos_ToUnit(s32 *, s32 *, void *);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u16 Item_MakeSnowman(u32);
 void BlockMap_SetItemAtUnit(void *m, u16 *v, s32 x, s32 y, s32 z);
-s32 Snowball_Break(void *o, s32 a);
 void GroundInfo_initAtPos(void *, void *, s32, s32);
 s32 GroundInfo_Destruct(void *o);
 void Vec_Sub(void *, void *, void *);
@@ -143,7 +141,7 @@ void Snowball::spawnSnowballBreak() {
     v.y = v.y + (radius - 0x400);
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3e, &v, 0, &h);
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x81f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x81f, 0x7f, 0);
 }
 
 void Snowball::spawnSnowballSplash() {
@@ -155,7 +153,7 @@ void Snowball::spawnSnowballSplash() {
     v.y = data_020c7c1c + 0x100;
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3f, &v, 0, &h);
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x821, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x821, 0x7f, 0);
     FieldFish_ScareAround(&position, 0x5000);
 }
 
@@ -177,11 +175,11 @@ void Snowball::execSnowballRoll() {
     s32 a = rollVelZ;
     s32 sum = func_01ffcb0c(rollVelX, rollVelX) + func_01ffcb0c(a, a);
     if (talkAct == 0 && snowballState == 0 && sum > 0 && radius >= 0xa00 && snowballFlags.e != 0) {
-        u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
-        if (o != 0 && *(s32 *)(o + 0x268) >= 0xa00) {
-            d = Vec_Distance(&position, o + 0x5c);
+        Snowball *o = Snowball_FindOtherInBallState(this);
+        if (o != 0 && o->radius >= 0xa00) {
+            d = Vec_Distance(&position, &o->position);
             t = FX_Div(0, 0x64000) + 0x400;
-            FieldPos_ToUnit(&sx, &sy, o + 0x5c);
+            FieldPos_ToUnit(&sx, &sy, &o->position);
             cell = 0xfff1;
             if (grid != 0) {
                 u32 x = sx;
@@ -193,17 +191,17 @@ void Snowball::execSnowballRoll() {
                     cell = *c;
                 }
             }
-            if (Item_IsMarker(&cell) == 0 && o != 0 && d < t + (radius + *(s32 *)(o + 0x268)) &&
-                *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 0) {
+            if (Item_IsMarker(&cell) == 0 && o != 0 && d < t + (radius + o->radius) &&
+                o->talkAct == 0 && o->snowballState == 0) {
                 s32 r = Ground_GetDigKind(sx, sy);
                 switch (r) {
                 case 0:
                 case 1:
                     s32 lv;
-                    lv = Snowball_GetSizeRatioRank(FX_Div(radius, *(s32 *)(o + 0x268)));
-                    s32 res = SnowmanRecords_add(data_021ed2e6, radius, *(s32 *)(o + 0x268), lv);
+                    lv = Snowball_GetSizeRatioRank(FX_Div(radius, o->radius));
+                    s32 res = SnowmanRecords_add(data_021ed2e6, radius, o->radius, lv);
                     if (res != -1) {
-                        SnowballFlags &of = *(SnowballFlags *)(o + 0x374);
+                        SnowballFlags &of = o->snowballFlags;
                         of.a = res;
                         snowballFlags.a = of.a;
                         of.b = lv;
@@ -245,9 +243,9 @@ void Snowball::execSnowballRoll() {
         u16 *c = BlockMap_GetItemPtrAtPos(grid, &position, 0);
         if (c != 0 && Snowball_IsHoleItem(c) != 0) {
             if (Vec_DistXZ(objC, &position) < 0x1000) {
-                u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
-                if (o != 0 && *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 4) {
-                    if (Vec_DistXZ(o + 0x5c, &position) > *(s32 *)(o + 0x268) + radius) {
+                Snowball *o = Snowball_FindOtherInBallState(this);
+                if (o != 0 && o->talkAct == 0 && o->snowballState == 4) {
+                    if (Vec_DistXZ(&o->position, &position) > o->radius + radius) {
                         if (Snowball_ChangeState(this, 4) != 0) {
                             GroundInfo_Destruct(objA);
                             return;
@@ -571,7 +569,7 @@ s32 Snowball::enterSnowballStack() {
     stepX = FX_Div(targetPos.x - position.x, 0x10000);
     stepZ = FX_Div(targetPos.z - position.z, 0x10000);
     stepCount = 0;
-    Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x81e, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x81e, 0x7f, 0);
     return 1;
 }
 

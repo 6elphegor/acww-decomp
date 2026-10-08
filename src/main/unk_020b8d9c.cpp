@@ -30,12 +30,16 @@
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Weather_UpdateDaily  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "nitro/fs.h"
+#include "town/PeteFallState.h"
+#include "town/VisitorSpawnFlags.h"
+#include "player/PlayerDailyTalkFlags.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "gfx/ScreenTransition.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_020c00c0.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206269c.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/itcm/unk_01ffcc60.h"
@@ -73,7 +77,6 @@ struct MinuteHour;
 struct WeatherManager;
 struct SkyLightingLocals;
 struct SkySpawnRate;
-struct Unk_020bbcc8_Xxx;
 struct Letter;
 struct ItemPickSpec;
 struct PickedItem;
@@ -94,7 +97,6 @@ struct SkyObjPalette;
 struct SkySprites;
 struct SkyObjGfxDef;
 struct SkyObjCharLayout;
-struct SkySoundPosBuf;
 struct SkyLookAtVec;
 struct Unk_020bee28_Vec2;
 struct FireworkColorPair;
@@ -104,7 +106,6 @@ struct SkyShootingStarStackPad;
 struct Mtx43;
 struct WeatherRecord;
 struct EventDayEntry;
-struct TalkStartMsg;
 class SpNpcTalkRequest;
 class SpNpcKatieTalk;
 class SpNpcActor;
@@ -195,7 +196,12 @@ struct WeatherManager {
     void streamCurrentCloudScreen();
     void reloadCurrentCloudGraphics();
 };
-enum Unk_020ba518_E { Unk_020ba518_E0 = 0 };
+// Lighting of the scene for the current hour and weather (Sky_UpdateLighting): light colours, light parameters
+struct SkyLight {
+    /* 0x0 */ u16 colors[4];
+    /* 0x8 */ u8 params[2];
+    /* 0xa */ u8 pad_0a[2];
+};
 // Locals of Sky_UpdateLighting kept together in their stack order: room light colour, current time, 3D clear colour
 // (gradient key 1) and the colour argument of NNS_G3dGlbMaterialColorSpecEmi
 struct SkyLightingLocals {
@@ -223,9 +229,6 @@ struct SkySpawnRate {
     /* 0x0 */ s32 baseInterval;
     /* 0x4 */ s32 randomInterval;
 };
-struct Unk_020bbcc8_Xxx {
-    u32 a, b;
-};
 // Graphics slot of the sky sprites (SkySprites::gfxSlots, 5): which sky object's characters are loaded into the slot's
 // OBJ VRAM area, by how many sprites it is used, and whether the characters still have to be loaded / uploaded.
 struct SkyObjGfxSlot {
@@ -252,10 +255,29 @@ struct Unk_020bcb04_Ent {
     u16 id;
     u8 pad[10];
 };
+// One 16-colour row of the moon palette file (a_sky_moon_obj_ncl.bin, SkyObjGfxLoader::moonPalette), one per night
+// hour: colours 3..7 for a cloudy sky, 11..15 for a clear one (SkySprite_CalcMoonColors)
+struct SkyMoonPaletteRow {
+    /* 0x00 */ u16 unk_00[3];
+    /* 0x06 */ u16 cloudyColors[5];
+    /* 0x10 */ u16 unk_10[3];
+    /* 0x16 */ u16 clearColors[5];
+};
+// Loader of the sky objects' graphics (SkySprites::loader): the file, a read buffer, the characters of the 5 graphics
+// slots (8 tile rows of 0x180 bytes, the slots' parts side by side), the source palettes (a_sky_obj_ncl.bin) and the
+// moon palettes (a_sky_moon_obj_ncl.bin). init(): SkyObjGfxLoader_Init.
 struct SkyObjGfxLoader {
-    u8 unk_00[0x134c];
+    /* 0x0000 */ FSFile file;
+    /* 0x0048 */ u8 readBuf[0x400];
+    /* 0x0448 */ u8 chars[0xc00];
+    /* 0x1048 */ u8 palettes[0x1c0];
+    /* 0x1208 */ SkyMoonPaletteRow moonPalette[10];
+    /* 0x1348 */ u32 magic;
     void init();
 };
+#ifndef HOST64
+static_assert(sizeof(SkyObjGfxLoader) == 0x134c, "SkyObjGfxLoader");
+#endif
 // Sky sprite (0x74; SkySprites::sprites holds 60): rain drop, snow flake, particle, shooting star, moon, balloon, UFO,
 // Pete, lightning bolt, firework, rainbow, slingshot shot or bird (kind 0..12; 13 = free). initByKind/updateByKind/
 // endByKind dispatch to the kind's functions (methods here, SkySprite_* free functions for kinds 1..5).
@@ -307,20 +329,36 @@ struct SkySprite {
     void beginCrossing(s32 a, s32 b);
     s32 advanceCrossing(s32 a, s32 b, s32 c);
     // kind 0 rain drop
-    void initRainDrop(BOOL flag);
+    void initRainDrop(u32 flag);
     void updateRainDrop();
     void endRainDrop();
+    // kinds 1..5: snow flake, particle, shooting star, moon, balloon
+    void initSnowFlake(u32 arg);
+    void updateSnowFlake();
+    void endSnowFlake();
+    void initParticle(u32 arg);
+    void updateParticle();
+    void endParticle();
+    void initShootingStar(u32 unused);
+    void updateShootingStar();
+    void endShootingStar();
+    void initMoon(u32 unused);
+    void updateMoon();
+    void endMoon();
+    void initBalloon(u32 arg);
+    void updateBalloon();
+    void endBalloon();
     // kind 6 UFO
-    void initUfo();
+    void initUfo(u32 unused);
     void updateUfo();
     void endUfo();
     void spawnUfoDebris();
     // kind 7 Pete
-    void initPete();
+    void initPete(u32 unused);
     void updatePete();
     void endPete();
     // kind 8 lightning
-    void initLightning();
+    void initLightning(u32 unused);
     void updateLightning();
     void endLightning();
     // kind 9 firework
@@ -336,7 +374,7 @@ struct SkySprite {
     void releaseFireworkPalette();
     void endFirework();
     // kind 10 rainbow
-    void initRainbow();
+    void initRainbow(u32 unused);
     void updateRainbow();
     void endRainbow();
     // kind 11 slingshot shot
@@ -523,22 +561,29 @@ struct SkySprites {
     void fireworksPatternAct09();
     void fireworksPatternAct0A();
     void fireworksPatternAct0B();
+    void fireworksPatternAct0C();
+    void fireworksPatternAct0D();
+    void fireworksPatternAct0E();
+    void fireworksPatternAct0F();
+    void fireworksPatternAct10();
+    void fireworksPatternAct11();
+    void fireworksPatternAct12();
+    void fireworksPatternAct13();
 };
-// The original computes the destination address BEFORE loading *p. An enum-typed local is not forwarded by mwcc,
-// so holding the element base in one keeps the address computation where it is written.
-enum Unk_020bd718_E { Unk_020bd718_E0 };
+#ifndef HOST64
+static_assert(__builtin_offsetof(SkySprites, gfxSlots) == 0x1b30, "SkySprites.gfxSlots");
+static_assert(__builtin_offsetof(SkySprites, loader) == 0x1b6c, "SkySprites.loader");
+static_assert(__builtin_offsetof(SkySprites, palette) == 0x2eb8, "SkySprites.palette");
+static_assert(__builtin_offsetof(SkySprites, shotSeq) == 0x2fa8, "SkySprites.shotSeq");
+static_assert(__builtin_offsetof(SkySprites, se) == 0x2fcc, "SkySprites.se");
+static_assert(__builtin_offsetof(WeatherManager, rainSlant) == 0x1538, "WeatherManager.rainSlant");
+static_assert(__builtin_offsetof(WeatherManager, paletteFiles) == 0x1544, "WeatherManager.paletteFiles");
+#endif
 // Row of sSkyObjGfxTable (one per sky object graphic): char file (sSkyObjCharFiles), top/bottom tile numbers, char
 // layout (sSkyObjCharLayouts), source palette row and OBJ palette; unk_0e/unk_0f are 0 in every row
 struct SkyObjGfxDef { u32 charFile; u16 charTileA; u16 charTileB; u32 charLayout; s8 srcPalette; s8 objPalette; s8 unk_0e; s8 unk_0f; };
 // Row of sSkyObjCharLayouts: where the top and bottom tile runs of a graphic go in its slot
 struct SkyObjCharLayout { u32 topTileX; u32 topTileCount; u32 bottomTileX; u32 bottomTileCount; };
-// 16-byte local of SkySprite_RequestSe / RequestSeSustained; SkySprite_GetSoundPos fills the first three words
-struct SkySoundPosBuf {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-    /* 0x8 */ s32 volume;
-    /* 0xc */ s32 unk_0c;
-};
 // gCameraLookAt as SkySprite_ProjectWorldPos reads it, and its local copy (vector object, trivial ctor/dtor)
 struct SkyLookAtVec {
     /* 0x0 */ s32 x;
@@ -580,324 +625,261 @@ struct U234_Record {
     u16 executePriority;
     u16 drawPriority;
 };
-namespace n00 {
-extern "C" {
-extern const s32 data_020c8cbc;
-void SkyProc_Create(void);
-}
-}
 
-// ======== the unit's objects (defined further down, in creation order) ========
-namespace n00 {
+// ======== what this unit uses from other units (declared as the definitions write them) ========
 extern "C" {
-void _ZN15SkyShotSequence11actPeteFallEv(void);
-void _ZN15SkyShotSequence10actPeteHitEv(void);
-void _ZN9SkySprite7endPeteEv(void);
-void _ZN9SkySprite11initRainbowEv(void);
-void _ZN10SkySprites21fireworksPatternAct03Ev(void);
-void _ZN10SkySprites21fireworksPatternAct08Ev(void);
-void _ZN10SkySprites21fireworksPatternAct05Ev(void);
-void _ZN10SkySprites21fireworksPatternAct07Ev(void);
-void _ZN9SkySprite15updateLightningEv(void);
-void _ZN15SkyShotSequence14actBalloonDropEv(void);
-void SkySprites_FireworksPatternAct0E(void);
-void SkySprites_FireworksPatternAct12(void);
-void _ZN10SkySprites21fireworksPatternAct01Ev(void);
-void _ZN9SkySprite8initPeteEv(void);
-void SkySprites_FireworksPatternAct13(void);
-void SkySprite_InitParticle(void);
-void SkySprite_InitBalloon(void);
-void SkySprite_EndParticle(void);
-void _ZN15SkyShotSequence13actUfoCrashedEv(void);
-void _ZN9SkySprite8initBirdEj(void);
-void SkySprite_UpdateSnowFlake(void);
-void SkySprites_FireworksPatternAct11(void);
-void _ZN9SkySprite11endFireworkEv(void);
-void _ZN15SkyShotSequence13actBalloonHitEv(void);
-void _ZN10SkySprites21fireworksPatternAct02Ev(void);
-void _ZN9SkySprite13updateRainbowEv(void);
-void _ZN9SkySprite10updateShotEv(void);
-void _ZN9SkySprite8initShotEj(void);
-void _ZN15SkyShotSequence13actShotFlightEv(void);
-void SkySprites_FireworksPatternAct0D(void);
-void SkySprites_FireworksPatternAct0C(void);
-void _ZN10SkySprites21fireworksPatternAct09Ev(void);
-void _ZN10SkySprites21fireworksPatternAct0AEv(void);
-void SkySprites_FireworksPatternAct10(void);
-void _ZN9SkySprite13initLightningEv(void);
-void SkySprite_InitSnowFlake(void);
-void _ZN9SkySprite10updatePeteEv(void);
-void _ZN15SkyShotSequence9actUfoHitEv(void);
-void _ZN15SkyShotSequence13actPeteFallenEv(void);
-void SkySprite_UpdateParticle(void);
-void SkySprite_InitMoon(void);
-void _ZN10SkySprites21fireworksPatternAct04Ev(void);
-void _ZN9SkySprite7initUfoEv(void);
-void _ZN9SkySprite7endBirdEv(void);
-void _ZN9SkySprite7endShotEv(void);
-void _ZN9SkySprite10endRainbowEv(void);
-void _ZN9SkySprite12endLightningEv(void);
-void _ZN9SkySprite6endUfoEv(void);
-void SkySprite_EndBalloon(void);
-void SkySprite_EndMoon(void);
-void SkySprite_EndShootingStar(void);
-void _ZN9SkySprite14updateRainDropEv(void);
-void _ZN9SkySprite11endRainDropEv(void);
-void SkySprite_UpdateShootingStar(void);
-void _ZN9SkySprite9updateUfoEv(void);
-void SkySprites_FireworksPatternAct0F(void);
-void _ZN15SkyShotSequence10actUfoFallEv(void);
-void _ZN10SkySprites21fireworksPatternAct06Ev(void);
-void SkySprite_UpdateMoon(void);
-void SkySprite_UpdateBalloon(void);
-void _ZN9SkySprite10updateBirdEv(void);
-void SkySprite_EndSnowFlake(void);
-void _ZN9SkySprite12initFireworkEj(void);
-void _ZN9SkySprite14updateFireworkEv(void);
-void SkySprite_InitShootingStar(void);
-void _ZN10SkySprites21fireworksPatternAct0BEv(void);
-void _ZN9SkySprite12initRainDropEi(void);
-extern const u32 sSkyCloudBgLayer[1];
-extern const u32 sSkyPaletteLayer[1];
-extern const u32 sSkyStarBgLayer[1];
-extern const u32 sSkyNextCloudBgLayer[1];
-extern const u32 sSkyObjPalDefaultColor[1];
-extern const u32 sBirdDelays[1];
-extern const u8 data_020d0e04[5];
-extern const u32 sFireworkFlicker[2];
-extern void *const sSkyObjCharFiles[3];
-extern const u32 sRainParallax[3];
-extern const u32 sSnowAnimIds[3];
-extern const u32 sSnowFallSpeeds[3];
-extern const u32 sSnowParallax[3];
-extern const u8 sFireworksPatternWeights[14];
-extern const u8 sSkyObjPalOverrideSlots[15];
-extern const u32 sRainSeIds[4];
-extern const u32 sFireworkColors[4];
-extern const u32 sFireworkShellTypes[4];
-extern const u32 sSkyPaletteSetByLevel[5];
-extern const u32 sFireworksPatternDelays[5];
-extern const u32 data_020d0ec8[6];
-extern const u32 data_020d0ee0[6];
-extern const u32 data_020d0ef8[6];
-extern const u32 data_020d0f10[6];
-extern const u32 sParticleAnimIds[6];
-extern const u32 sRainSpawnRates[8];
-extern const u32 sSnowSpawnRates[8];
-extern const u32 sFireworkScaleBig[9];
-extern const u32 sFireworkScaleSmall[9];
-extern const u32 data_020d0fc8[12];
-extern const u32 data_020d0ff8[12];
-extern const u32 data_020d1028[12];
-extern const u32 data_020d1058[12];
-extern const u32 data_020d1088[12];
-extern const u32 data_020d10b8[12];
-extern const u32 data_020d10e8[12];
-extern const u32 data_020d1118[12];
-extern const u32 data_020d1148[12];
-extern const u32 data_020d1178[12];
-extern const u32 sSkySpriteDefaultGfx[13];
-extern const u32 sSkyObjCharLayouts[20];
-extern const u32 sParticleTrailScales[23];
-extern const u32 sFireworkScaleBigLong[44];
-extern const u32 sFireworkScaleSmallLong[44];
-extern const u32 sWeatherHourTable[192];
-extern const u32 sSkyObjGfxTable[208];
-extern u32 data_020e4630[1];
-extern u32 data_020e4634[1];
-extern u32 sSnowSideToggle[1];
-extern u32 sRainSideToggle[1];
-extern u32 sSkyBlendLineCache[1];
-extern u32 data_020e4644[2];
-extern void *data_020e464c[2];
+// SDK / runtime (assembly)
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void MI_CpuFill8(void *dst, u8 data, u32 size);
+void DC_FlushRange(const void *start, u32 size);
+s32 _s32_div_f(s32 a, s32 b);
+u32 _u32_div_f(u32 a, u32 b);
+void Sky_HBlankMain(void);
+void Sky_HBlankSub(void);
+fx32 func_01ffcb0c(fx32 v1, fx32 v2);
+fx32 FX_Div(fx32 numer, fx32 denom);
+fx32 FX_Inv(fx32 x);
+fx32 FX_Sqrt(fx32 x);
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+void MTX_MultVec43(const VecFx32 *pSrc, const Mtx43 *pMtx, VecFx32 *pDst);  // (MtxFx43 there: the same layout)
+void GX_LoadOBJ(const void *src, u32 offset, u32 size);
+void GXS_LoadOBJ(const void *src, u32 offset, u32 size);
+void GX_LoadOBJPltt(const void *src, u32 offset, u32 size);
+void GXS_LoadOBJPltt(const void *src, u32 offset, u32 size);
+void GX_LoadBGPltt(const void *src, u32 offset, u32 size);
+void GXS_LoadBGPltt(const void *src, u32 offset, u32 size);
+void NNS_G3dGlbMaterialColorSpecEmi(u32 a, u32 b, BOOL c);
+BOOL FS_OpenFile(FSFile *file, const char *path);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
+BOOL FS_CloseFile(FSFile *file);
+extern const s16 data_02135f44[4096 * 2];  // sine / cosine pairs
+// math, random (autoload_2)
+s16 Math_Atan2(s32 x, s32 y);
+BOOL Math_StepAngle(s16 *p, s16 target, s16 step);
+BOOL Math_StepS32Alt(s32 *p, s32 target, s32 step);
+u32 Random_NextBelow(u32 *seed, u32 n);
+void Random_SetSeed(u32 *seed, u32 v);
+void Vec_Scale(VecFx32 *v, s32 s);
+extern FxVec3 gVec3Zero;
+extern s32 gFrameCounter;
+extern Mtx43 data_021f47e0;
+// camera
+Mtx43 *Camera_GetViewMatrix(void);  // (MtxFx43 there: the same layout)
+s32 Camera_GetCloseUpFactor(void);
+s32 Camera_RestorePrevMode(void);
+void Camera_StartShake(s32 a);
+extern Camera *gCamera;
+extern FxVec3 gCameraLookAt;
+extern const s32 data_020c8cb8;
+extern const s32 data_020c8cbc;
+extern const u32 kFireworkBurstFlag29;
+// clock
+void Clock_GetDateTime(ClockDateTime *p);
+void Clock_GetDate(u8 *out);
+void Clock_GetMinuteHour(u8 *out);
+u32 Clock_GetSecond();
+s32 Date_DaysBetween(u8 *a, u8 *b);
+void DateTime_AddDays(ClockDateTime *p, s32 n);
+void DateTime_AddMinutes(ClockDateTime *p, s32 n);
+s32 DateTime_Compare(ClockDateTime *a, ClockDateTime *b, u32 mask);
+s32 DateTime_DiffDays(ClockDateTime *a, ClockDateTime *b);
+s32 DateTime_GetWeatherPeriod(u8 *p);
+void DateTime_SubHours(ClockDateTime *p, s32 n);
+// events
+s32 Event_GetState(s32 a, void *b, s32 c);
+// (defined as (EventEntryView *, ClockDateTimeCopy, s32), types of src/main/unk_0203f104.cpp: ClockDateTimeCopy has a
+// copy constructor, so the date is passed as a pointer to a copy)
+s32 EventSchedule_CollectDay(void *out, void *date, s32 x);
+void EventWeekSlots_MarkTodaySeen(u32 id);
+// scene, lights, fog
+u32 Scene_GetCurrent();
+u8 Scene_GetSkyKind(BOOL a);
+BOOL Scene_InTownUnk31();
+u8 SceneLights_GetLightParam(u32 x);
+s16 SceneLights_GetRoomColor(void);
+void SceneLights_StartFlash(u32 v);
+void Fog_SetAlpha(u32 v);
+void Fog_SetOffset(u16 v);
+extern u8 gFieldSceneKind;
+// H-blank tasks
+BOOL HBlank_Add(HBlankTask *t, s32 a, void (*b)(), void (*c)());
+BOOL HBlank_Remove(HBlankTask *t);
+BOOL HBlank_Replace(HBlankTask *t, s32 a, void (*b)());
+// save data
+extern SaveData gSaveData;
+}
+extern CommManager *const gCommManager;
+
+// ======== the unit's own functions and objects (defined further down) ========
+extern "C" {
+SkySprites *SkySprites_Destruct(SkySprites *p);
+SkyProc *SkyProc_Create();
+void Sky_ProjectToScreenX(s32 *out, VecFx32 *in);
+BOOL SkySprite_FollowShootingStar(SkySprite *this_);
+BOOL SkySprite_CalcMoonPos(VecFx32 *out);
+void SkySprite_CalcMoonColors(SkySprite *this_);
+void SkySprite_SetMoonClarity(SkySprite *this_);
+void SkySprite_FadeMoonClarity(SkySprite *this_);
+void SkySprite_InitMoonPalette(SkySprite *this_);
+void SkySprite_UpdateMoonPalette(SkySprite *this_);
+void SkySprite_ResetMoonPalette(void);
+void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed);
+s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag);
+Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b);
+void SkySprite_StartAnim(SkySprite* p);
+void SkySprite_Release(SkySprite* p);
+void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b);
+BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c);
+void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a);
+void SkySprite_ProjectCrossing(SkySprite* p, s32 a);
+BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c);
+s32 SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
+void SkySprite_GetSoundPos(SkySprite* p, VecFx32* out);
+void SkySprite_GetPos(SkySprite* p, VecFx32* out);
+void SkySprite_RequestSeSustained(SkySprite* p, s32 a);
+void SkySprite_RequestSe(SkySprite* p, s32 a);
+void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b);
+void SkyObjGfxLoader_Init(SkyObjGfxLoader *p);
+BOOL SkyObjGfxLoader_LoadChars(SkyObjGfxLoader *p, s32 idx);
+BOOL SkyObjGfxLoader_LoadPalettes(SkyObjGfxLoader *p);
+void SkyObjGfxLoader_FlushChars(SkyObjGfxLoader *p);
+void SkyObjGfxSlot_Init(SkyObjGfxSlot* p);
+void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, SkyObjGfxLoader *base);
+void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, SkyObjPalette *x);
+void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot* p, s32 v);
+void SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot* p, s32 a);
+void SkyObjGfxSlot_Release(SkyObjGfxSlot* p);
+SkyObjPalette*SkyObjPalette_Init(SkyObjPalette* p);
+void SkyObjPalette_Load(SkyObjPalette* p, SkyObjGfxLoader *base, u32 idx);
+void SkyShot_AddHit();
+BOOL SkyShot_HasMaxHits();
+s32 SkySprites_GetMoonPhaseGfx();
+void SkySprites_ApplyRainbowBlend(SkySprites *obj);
+void SkySprites_OnStarWish(SkySprites *obj);
+void SkySprites_Start(SkySprites *obj);
+void SkySprites_Stop(SkySprites *obj);
+void SkySprites_UpdateEvents(SkySprites *obj);
+void SkySprites_UpdateEventsIndoor(SkySprites *obj);
+void SkySprites_UpdateStub(void *);
+void SkySprites_Update(SkySprites *obj);
+void SkySprites_UpdateIndoor(SkySprites *obj);
+void SkySprites_Draw(SkySprites *obj);
+void Sky_CalcLightColors(s32 a, s32 b, u32 c, u32 d);
+void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d);
+void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d);
+void Sky_UpdateLighting(s32 a, s32 b);
+s16 Sky_GetLightColor(s32 i);
+u8 Sky_GetLightParam(s32 i);
+void RainSe_Init(RainSndChannel *p);
+void RainSe_Update(RainSndChannel *p);
+void RainSe_Release(RainSndChannel *p);
+void RainSe_InitVolume(RainSndChannel *p);
+void RainSe_FadeVolume(RainSndChannel *o);
+BOOL Sky_LoadPaletteFiles();
+BOOL Sky_AllocPaletteBufs(u16 **p);
+void Color_Lerp(u16 *d, const u16 *s1, const u16 *s2, s32 t);
+void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
+s32 Sky_ApplyPalettes(s32 x);
+void Sky_BlendPalettes();
+s32 Sky_LoadPalettes(s32 x);
+u16 Sky_CalcStarScrollX(WeatherManager *self, ClockDateTime *date);
+u32 Sky_CalcStarScrollY(WeatherManager *self, ClockDateTime *d);
+u32 Sky_GetStarScrollYNow(WeatherManager *self);
+void SkyGradient_Build();
+void Sky_UpdateLineTables();
+void Sky_VBlankSub();
+void Sky_VBlankMain();
+void Sky_VBlankDisabled(void);
+void Sky_FrameOutdoor(void);
+void Sky_FrameIndoor(void);
+BOOL Sky_LoadCloudBg(u32 idx);
+BOOL Sky_LoadNextCloudBg(u32 idx);
+BOOL Sky_LoadStarBg(u32 idx);
+void Sky_ResetObjGfx(void);
+BOOL Sky_SetEngine(s32 arg);
+void Sky_Disable(void);
+s32 Weather_GetFallingPrecip(void);
+s32 Weather_GetCurrent(void);
+void Weather_GetLevels(s32 *a, s32 *b);
+u32 Weather_GetPrecipKind(void);
+u16 *Sky_GetCurrentPalette(void);
+u32 Sky_GetStarScrollX(void);
+u32 Sky_GetStarScrollY(void);
+void Sky_GetStarViewingTime(ClockDateTime *out, s32 a, s32 b);
+void Weather_RerollRainSlantAlt3(void);
+void Weather_RerollRainSlantAlt2(void);
+void Weather_RerollRainSlantAlt(void);
+void Weather_RerollRainSlant(void);
+void Sky_OnDayChange(u32 x);
+void Sky_OnSlingshotFired(u32 x);
+void Sky_SwapBuffers(void);
+void Sky_EndBalloonDrop(void);
+void Sky_PlayBalloonDropSe(BOOL x);
+u32 Sky_IsShootingStarVisible(void);
+void Sky_WishOnShootingStar(void);
+void Sky_RequestBirds(void);
+extern HBlankTask sSkyHBlankTask;
+extern SkyGradient sSkyGradient;
+extern SkyLight sSkyLight;
+extern SkySpriteAnimDef sSkySpriteAnimSeqs[46];
+extern SkySprites gSkySprites;
+extern SpriteAnimFrame data_020e4a64[1];
+extern SpriteAnimFrame data_020e4a70[1];
+extern SpriteAnimFrame data_020e4a7c[1];
+extern SpriteAnimFrame data_020e4a88[1];
+extern SpriteAnimFrame data_020e4a94[1];
+extern SpriteAnimFrame data_020e4aa0[1];
+extern SpriteAnimFrame data_020e4aac[1];
+extern SpriteAnimFrame data_020e4ab8[1];
+extern SpriteAnimFrame data_020e4ac4[1];
+extern SpriteAnimFrame data_020e4adc[1];
+extern SpriteAnimFrame data_020e4ae8[1];
+extern SpriteAnimFrame data_020e4af4[1];
+extern SpriteAnimFrame data_020e4b00[1];
+extern SpriteAnimFrame data_020e4b0c[1];
+extern SpriteAnimFrame data_020e4b18[1];
+extern SpriteAnimFrame data_020e4b24[1];
+extern SpriteAnimFrame data_020e4b30[1];
+extern SpriteAnimFrame data_020e4b3c[1];
+extern SpriteAnimFrame data_020e4b48[1];
+extern SpriteAnimFrame data_020e4ddc[2];
+extern SpriteAnimFrame data_020e50e8[3];
+extern SpriteAnimFrame data_020e510c[3];
+extern SpriteAnimFrame data_020e5130[3];
+extern SpriteAnimFrame data_020e5154[3];
+extern SpriteAnimFrame data_020e5178[3];
+extern SpriteAnimFrame data_020e519c[3];
+extern SpriteAnimFrame data_020e51c0[3];
+extern SpriteAnimFrame data_020e51e4[3];
+extern SpriteAnimFrame data_020e5258[4];
+extern SpriteAnimFrame data_020e5288[4];
+extern SpriteAnimFrame data_020e5318[4];
+extern SpriteAnimFrame data_020e5348[4];
+extern SpriteAnimFrame data_020e53b0[6];
+extern SpriteAnimFrame data_020e56b0[7];
+extern SpriteAnimFrame data_020e5704[8];
+extern SpriteAnimFrame data_020e5764[9];
+extern SpriteAnimFrame data_020e57d0[9];
+extern SpriteAnimFrame data_020e583c[9];
+extern SpriteAnimFrame data_020e58a8[9];
+extern SpriteAnimFrame data_020e5914[9];
+extern SpriteAnimFrame data_020e5980[15];
+extern SpriteAnimFrame data_020e5af4[44];
+extern SpriteAnimFrame data_020e5d04[44];
+extern SpriteAnimFrame data_020e5f14[44];
+extern SpriteAnimFrame data_020e6124[44];
+extern SpriteAnimFrame data_020e6334[44];
+extern StarTwinkle data_021efc18;
 extern U234_Record sSkyProcProfile;
-extern u32 data_020e465c[2];
-extern void *data_020e4664[2];
-extern u32 data_020e466c[2];
-extern u32 data_020e4674[2];
-extern void *data_020e467c[2];
-extern u32 data_020e4684[2];
-extern void *data_020e468c[2];
-extern void *data_020e4694[2];
-extern u32 data_020e469c[2];
-extern void *data_020e46a4[2];
-extern void *data_020e46ac[2];
-extern void *data_020e46b4[2];
-extern void *data_020e46bc[2];
-extern void *data_020e46c4[2];
-extern void *data_020e46cc[2];
-extern void *data_020e46d4[2];
-extern u32 data_020e46dc[2];
-extern void *data_020e46e4[2];
-extern u32 data_020e46ec[2];
-extern void *data_020e46f4[2];
-extern u32 data_020e46fc[2];
-extern void *data_020e4704[2];
-extern u32 data_020e470c[2];
-extern void *data_020e4714[2];
-extern void *data_020e471c[2];
-extern void *data_020e4724[2];
-extern void *data_020e472c[2];
-extern u32 data_020e4734[2];
-extern void *data_020e473c[2];
-extern void *data_020e4744[2];
-extern void *data_020e474c[2];
-extern void *data_020e4754[2];
-extern u32 data_020e475c[2];
-extern u32 data_020e4764[2];
-extern u32 data_020e476c[2];
-extern u32 data_020e4774[2];
-extern u32 data_020e477c[2];
-extern void *data_020e4784[2];
-extern void *data_020e478c[2];
-extern void *data_020e4794[2];
-extern void *data_020e479c[2];
-extern void *data_020e47a4[2];
-extern void *data_020e47ac[2];
-extern u32 data_020e47b4[2];
-extern void *data_020e47bc[2];
-extern u32 data_020e47c4[2];
-extern void *data_020e47cc[2];
-extern void *data_020e47d4[2];
-extern void *data_020e47dc[2];
-extern void *data_020e47e4[2];
-extern u32 data_020e47ec[2];
-extern u32 data_020e47f4[2];
-extern u32 data_020e47fc[2];
-extern void *data_020e4804[2];
-extern void *data_020e480c[2];
-extern u32 data_020e4814[2];
-extern void *data_020e481c[2];
-extern void *data_020e4824[2];
-extern u32 data_020e482c[2];
-extern void *data_020e4834[2];
-extern u32 data_020e483c[2];
-extern u32 data_020e4844[2];
-extern u32 data_020e484c[2];
-extern u32 data_020e4854[2];
-extern u32 data_020e485c[2];
-extern u32 data_020e4864[2];
-extern u32 data_020e486c[2];
-extern u32 data_020e4874[2];
-extern u32 data_020e487c[2];
-extern u32 data_020e4884[2];
-extern u32 data_020e488c[2];
-extern void *data_020e4894[2];
-extern u32 data_020e489c[2];
-extern void *data_020e48a4[2];
-extern void *data_020e48ac[2];
-extern void *data_020e48b4[2];
-extern u32 data_020e48bc[2];
-extern u32 data_020e48c4[2];
-extern u32 data_020e48cc[2];
-extern u32 data_020e48d4[2];
-extern u32 data_020e48dc[2];
-extern void *data_020e48e4[2];
-extern u32 data_020e48ec[2];
-extern u32 data_020e48f4[2];
-extern void *data_020e48fc[2];
-extern void *data_020e4904[2];
-extern void *data_020e490c[2];
-extern void *data_020e4914[2];
-extern u32 data_020e491c[2];
-extern void *data_020e4924[2];
-extern u32 data_020e492c[2];
-extern void *data_020e4934[2];
-extern void *data_020e493c[2];
-extern void *data_020e4944[2];
-extern void *data_020e494c[2];
-extern void *data_020e4954[2];
-extern u32 data_020e495c[2];
-extern void *data_020e4964[2];
-extern void *data_020e496c[2];
-extern void *data_020e4974[2];
-extern u32 data_020e497c[2];
-extern u32 data_020e4984[2];
-extern u32 data_020e498c[2];
-extern void *data_020e4994[2];
-extern u32 data_020e499c[2];
-extern u32 data_020e49a4[2];
-extern void *data_020e49ac[2];
-extern void *data_020e49b4[2];
-extern void *data_020e49bc[2];
-extern void *data_020e49c4[2];
-extern u32 data_020e49cc[2];
-extern u32 data_020e49d4[2];
-extern void *data_020e49dc[2];
-extern void *data_020e49e4[2];
-extern u32 data_020e49ec[2];
-extern u32 data_020e49f4[2];
-extern u32 data_020e49fc[2];
-extern void *data_020e4a04[2];
-extern u32 data_020e4a0c[2];
-extern u32 data_020e4a14[2];
-extern u32 data_020e4a1c[2];
-extern u32 data_020e4a24[2];
-extern void *data_020e4a2c[2];
-extern void *data_020e4a34[2];
-extern u32 data_020e4a3c[2];
-extern void *data_020e4a44[2];
-extern void *data_020e4a4c[2];
-extern u32 data_020e4a54[2];
-extern u32 data_020e4a5c[2];
-extern void *data_020e4a64[3];
-extern void *data_020e4a70[3];
-extern void *data_020e4a7c[3];
-extern void *data_020e4a88[3];
-extern void *data_020e4a94[3];
-extern void *data_020e4aa0[3];
-extern void *data_020e4aac[3];
-extern void *data_020e4ab8[3];
-extern void *data_020e4ac4[3];
+extern WeatherManager gWeatherManager;
 extern char **sCloudScreenFiles[3];
-extern void *data_020e4adc[3];
-extern void *data_020e4ae8[3];
-extern void *data_020e4af4[3];
-extern void *data_020e4b00[3];
-extern void *data_020e4b0c[3];
-extern void *data_020e4b18[3];
-extern void *data_020e4b24[3];
-extern void *data_020e4b30[3];
-extern void *data_020e4b3c[3];
-extern void *data_020e4b48[3];
-extern u32 data_020e4b54[4];
-extern u32 data_020e4b64[4];
-extern void *data_020e4b74[4];
-extern void *data_020e4b84[4];
-extern u32 data_020e4b94[4];
-extern u32 data_020e4ba4[4];
-extern u32 data_020e4bb4[4];
-extern u32 data_020e4bc4[4];
-extern u32 data_020e4bd4[4];
-extern u32 data_020e4be4[4];
-extern u32 data_020e4bf4[4];
-extern u32 data_020e4c04[4];
-extern u32 data_020e4c14[4];
-extern u32 data_020e4c24[4];
-extern u32 data_020e4c34[4];
-extern u32 data_020e4c44[4];
-extern u32 data_020e4c54[4];
-extern u32 data_020e4c64[4];
-extern u32 data_020e4c74[4];
-extern u32 data_020e4c84[4];
-extern u32 data_020e4c94[4];
-extern char *sSkyPaletteFiles[2][2];
-extern u32 data_020e4cb4[4];
-extern u32 data_020e4cc4[4];
-extern u32 data_020e4cd4[4];
-extern u32 data_020e4ce4[4];
-extern u32 data_020e4cf4[4];
-extern u32 data_020e4d04[4];
-extern u32 data_020e4d14[4];
-extern u32 data_020e4d24[4];
-extern char *sCloudCharFiles[5];
-extern void *sSkyLightColorTables[5];
-extern void *sSkyFogOffsetTables[5];
 extern char *data_020e4d70[5];
-extern void *sSkyLightParamTables[5];
 extern char *data_020e4d98[5];
+extern char *data_020e5230[10];
+extern char *sCloudCharFiles[5];
+extern char *sSkyPaletteFiles[2][2];
 extern char data_020e4dac[23];
-extern void *data_020e4ddc[6];
 extern char data_020e4df4[27];
 extern char data_020e4e10[27];
 extern char data_020e4e48[30];
@@ -921,24 +903,159 @@ extern char data_020e5068[31];
 extern char data_020e5088[31];
 extern char data_020e50a8[31];
 extern char data_020e50c8[31];
-extern void *data_020e50e8[9];
-extern void *data_020e510c[9];
-extern void *data_020e5130[9];
-extern void *data_020e5154[9];
-extern void *data_020e5178[9];
-extern void *data_020e519c[9];
-extern void *data_020e51c0[9];
-extern void *data_020e51e4[9];
+extern const FireworkColorPair sFireworkColors[4];
+extern const SkyObjCharLayout sSkyObjCharLayouts[5];
+extern const SkyObjGfxDef sSkyObjGfxTable[52];
+extern const SkySpawnRate sRainSpawnRates[4];
+extern const SkySpawnRate sSnowSpawnRates[4];
+extern const char *const sSkyObjCharFiles[3];
+extern const s32 sFireworkFlicker[2];
+extern const s32 sFireworkScaleBigLong[44];
+extern const s32 sFireworkScaleBig[9];
+extern const s32 sFireworkScaleSmallLong[44];
+extern const s32 sFireworkScaleSmall[9];
+extern const s32 sParticleAnimIds[6];
+extern const s32 sParticleTrailScales[23];
+extern const s32 sRainParallax[3];
+extern const s32 sRainSeIds[4];
+extern const s32 sSkyPaletteSetByLevel[5];
+extern const s32 sSkySpriteDefaultGfx[13];
+extern const s32 sSnowAnimIds[3];
+extern const s32 sSnowFallSpeeds[3];
+extern const s32 sSnowParallax[3];
+extern const s8 sBirdDelays[4];
+extern const s8 sWeatherHourTable[768];
+extern const u16 *const *const sSkyLightColorTables[5];
+extern const u16 *const data_020e4b74[4];
+extern const u16 *const data_020e4b84[4];
+extern const u16 *const sSkyFogOffsetTables[5];
+extern const u16 data_020d0fc8[24];
+extern const u16 data_020d0ff8[24];
+extern const u16 data_020d1028[24];
+extern const u16 data_020d1058[24];
+extern const u16 data_020d1088[24];
+extern const u16 data_020d10b8[24];
+extern const u16 data_020d10e8[24];
+extern const u16 data_020d1118[24];
+extern const u16 data_020d1148[24];
+extern const u16 data_020d1178[24];
+extern const u16 sSkyObjPalDefaultColor;
+extern const u32 sFireworkShellTypes[4];
+extern const u8 *const *const sSkyLightParamTables[5];
+extern const u8 *const data_020e478c[2];
+extern const u8 *const data_020e4824[2];
+extern const u8 data_020d0e04[5];
+extern const u8 data_020d0ec8[24];
+extern const u8 data_020d0ee0[24];
+extern const u8 data_020d0ef8[24];
+extern const u8 data_020d0f10[24];
+extern const u8 sFireworksPatternDelays[20];
+extern const u8 sFireworksPatternWeights[14];
+extern const u8 sSkyCloudBgLayer[4];
+extern const u8 sSkyNextCloudBgLayer[4];
+extern const u8 sSkyObjPalOverrideSlots[15];
+extern const u8 sSkyPaletteLayer[4];
+extern const u8 sSkyStarBgLayer[4];
+extern s32 sRainSideToggle;
+extern s32 sSkyCrossingWidth;
+extern s32 sSkyLineScrollX[2];
+extern s32 sSkyLineScrollY[2];
+extern s32 sSnowSideToggle;
+extern u16 sMoonColors[6];
+extern u16 sSkyBlendLineCache[2];
+extern u32 data_020e4644[2];
+extern u32 data_020e465c[2];
+extern u32 data_020e466c[2];
+extern u32 data_020e4674[2];
+extern u32 data_020e4684[2];
+extern u32 data_020e469c[2];
+extern u32 data_020e46dc[2];
+extern u32 data_020e46ec[2];
+extern u32 data_020e46fc[2];
+extern u32 data_020e470c[2];
+extern u32 data_020e4734[2];
+extern u32 data_020e475c[2];
+extern u32 data_020e4764[2];
+extern u32 data_020e476c[2];
+extern u32 data_020e4774[2];
+extern u32 data_020e477c[2];
+extern u32 data_020e47b4[2];
+extern u32 data_020e47c4[2];
+extern u32 data_020e47ec[2];
+extern u32 data_020e47f4[2];
+extern u32 data_020e47fc[2];
+extern u32 data_020e4814[2];
+extern u32 data_020e482c[2];
+extern u32 data_020e483c[2];
+extern u32 data_020e4844[2];
+extern u32 data_020e484c[2];
+extern u32 data_020e4854[2];
+extern u32 data_020e485c[2];
+extern u32 data_020e4864[2];
+extern u32 data_020e486c[2];
+extern u32 data_020e4874[2];
+extern u32 data_020e487c[2];
+extern u32 data_020e4884[2];
+extern u32 data_020e488c[2];
+extern u32 data_020e489c[2];
+extern u32 data_020e48bc[2];
+extern u32 data_020e48c4[2];
+extern u32 data_020e48cc[2];
+extern u32 data_020e48d4[2];
+extern u32 data_020e48dc[2];
+extern u32 data_020e48ec[2];
+extern u32 data_020e48f4[2];
+extern u32 data_020e491c[2];
+extern u32 data_020e492c[2];
+extern u32 data_020e495c[2];
+extern u32 data_020e497c[2];
+extern u32 data_020e4984[2];
+extern u32 data_020e498c[2];
+extern u32 data_020e499c[2];
+extern u32 data_020e49a4[2];
+extern u32 data_020e49cc[2];
+extern u32 data_020e49d4[2];
+extern u32 data_020e49ec[2];
+extern u32 data_020e49f4[2];
+extern u32 data_020e49fc[2];
+extern u32 data_020e4a0c[2];
+extern u32 data_020e4a14[2];
+extern u32 data_020e4a1c[2];
+extern u32 data_020e4a24[2];
+extern u32 data_020e4a3c[2];
+extern u32 data_020e4a54[2];
+extern u32 data_020e4a5c[2];
+extern u32 data_020e4b54[4];
+extern u32 data_020e4b64[4];
+extern u32 data_020e4b94[4];
+extern u32 data_020e4ba4[4];
+extern u32 data_020e4bb4[4];
+extern u32 data_020e4bc4[4];
+extern u32 data_020e4bd4[4];
+extern u32 data_020e4be4[4];
+extern u32 data_020e4bf4[4];
+extern u32 data_020e4c04[4];
+extern u32 data_020e4c14[4];
+extern u32 data_020e4c24[4];
+extern u32 data_020e4c34[4];
+extern u32 data_020e4c44[4];
+extern u32 data_020e4c54[4];
+extern u32 data_020e4c64[4];
+extern u32 data_020e4c74[4];
+extern u32 data_020e4c84[4];
+extern u32 data_020e4c94[4];
+extern u32 data_020e4cb4[4];
+extern u32 data_020e4cc4[4];
+extern u32 data_020e4cd4[4];
+extern u32 data_020e4ce4[4];
+extern u32 data_020e4cf4[4];
+extern u32 data_020e4d04[4];
+extern u32 data_020e4d14[4];
+extern u32 data_020e4d24[4];
 extern u32 data_020e5208[10];
-extern char *data_020e5230[10];
-extern void *data_020e5258[12];
-extern void *data_020e5288[12];
 extern u32 data_020e52b8[12];
 extern u32 data_020e52e8[12];
-extern void *data_020e5318[12];
-extern void *data_020e5348[12];
 extern u32 data_020e5378[14];
-extern void *data_020e53b0[18];
 extern u32 data_020e53f8[18];
 extern u32 data_020e5440[18];
 extern u32 data_020e5488[18];
@@ -947,312 +1064,28 @@ extern u32 data_020e5520[20];
 extern u32 data_020e5570[20];
 extern u32 data_020e55c0[20];
 extern u32 data_020e5610[20];
-extern void *data_020e56b0[21];
-extern void *data_020e5704[24];
-extern void *data_020e5764[27];
-extern void *data_020e57d0[27];
-extern void *data_020e583c[27];
-extern void *data_020e58a8[27];
-extern void *data_020e5914[27];
-extern void *data_020e5980[45];
 extern u32 data_020e5a34[48];
-extern void *data_020e5af4[132];
-extern void *data_020e5d04[132];
-extern void *data_020e5f14[132];
-extern void *data_020e6124[132];
-extern void *data_020e6334[132];
-extern void *sSkySpriteAnimSeqs[138];
-extern u8 sSkyLineTablesReady;
 extern u32 sSkyBlackBackdrop[1];
 extern u32 sSkyOutdoors;
-extern s32 sSkyCrossingWidth;
-extern u32 sSkyLineScrollY[2];
-extern u32 sSkyLineScrollX[2];
-extern u32 sSkyLight[3];
-extern u32 sMoonColors[3];
-extern u32 sSkyHBlankTask[];
-extern SkyGradient sSkyGradient;
-extern StarTwinkle data_021efc18;
-extern WeatherManager gWeatherManager;
-extern SkySprites gSkySprites;
-}
+extern u8 data_020e4630[4];
+extern u8 data_020e4634[4];
+extern u8 sSkyLineTablesReady;
 }
 
 // ======== unk_020bfe30.cpp ========
-namespace n13 {
-static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
-    v->x = x;
-    v->y = y;
-    v->z = z;
-}
-extern "C" {
-void SkySprite_Release(void *p);
-}
-extern "C" {
-void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-Mtx43 *Camera_GetViewMatrix(void);
-}
-extern "C" {
-}
-extern "C" {
-void MTX_MultVec43(void *a, void *b, void *c);
-}
-extern "C" {
-}
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-extern "C" {
-void Vec_Scale(void *a, s32 b);
-}
-extern "C" {
-s32 __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*dtor)(void *));
-}
-extern "C" {
-}
-extern "C" {
-void _ZN14SkyShotRequestD1Ev(void *p);
-}
-extern "C" {
-void _ZN9SkySpriteD1Ev(void *p);
-}
-extern "C" {
-s32 DateTime_GetWeatherPeriod(void *p);
-}
-extern "C" {
-s32 _ZN11CommManager8isOnlineEv(CommManager *p);
-}
-extern "C" {
-void MI_CpuCopy8(void *a, void *b, s32 n);
-}
-extern "C" {
-void DateTime_SubHours(void *p, s32 n);
-}
-extern "C" {
-s32 DateTime_DiffMinutes(void *a, void *b);
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-void DateTime_AddDays(void *p, s32 n);
-}
-extern "C" {
-s32 Scene_GetCurrent(void);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-BOOL _ZN10PlayerData8testFlagEj(s32 a, s32 b);
-}
-extern "C" {
-u16 *Event_GetTodayList(void);
-}
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-void Clock_GetDate(void *p);
-}
-extern "C" {
-void _ZN10SpNpcActorD2Ev(void *p);
-}
-extern "C" {
-s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
-}
-extern "C" {
-s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
-}
-extern "C" {
-s32 _ZN10ChoiceList9getResultEv(void);
-}
-extern "C" {
-void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN15KatieVisitState12setFollowingEv(void);
-}
-extern "C" {
-void _ZN15KatieVisitState14clearFollowingEv(void);
-}
-extern "C" {
-s32 _ZN10PlayerData18getLostChildRecordEv(s32 a);
-}
-extern "C" {
-s32 _ZN15LostChildRecord9getTownIdEv(s32 a);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10PlayerData7setFlagEj(s32 a, s32 b);
-}
-extern "C" {
-void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-}
-extern "C" {
-s32 _ZN14NpcMoveAnimSet12setStandAnimEi(void *p, s32 a);
-}
-extern "C" {
-s32 _ZN14NpcMoveAnimSet11setWalkAnimEi(void *p, s32 a);
-}
-extern "C" {
-s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
-}
-extern "C" {
-void _ZN16SpNpcTalkRequestD2Ev(void *p);
-}
-extern "C" {
-void _ZN16SpNpcTalkRequestC2Ev(void *p);
-}
-extern "C" {
-void func_020c11b8(void *p, s32 n);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-}
-extern "C" {
-}
-extern "C" {
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
-}
-extern "C" {
-void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-}
-extern "C" {
-void _Z13func_020c22fcv(void);
-}
-extern "C" {
-void Camera_SetMode19(void);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
-}
-extern "C" {
-void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
-}
-extern "C" {
-s32 _ZN11NpcTalkCtrl6isBusyEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _Z13func_020c22e0v(void);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
-}
-extern "C" {
-s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
-}
-extern "C" {
-void _ZN15LostChildRecord5clearEv(s32 a);
-}
-extern "C" {
-void _ZN15KatieVisitState5clearEv(void);
-}
-extern "C" {
-s32 Scene_GetWarpRequest(void);
-}
-extern "C" {
-void SceneWarp_RequestExit(s32 a, s32 b);
-}
-extern "C" {
-extern u8 gScreenTransition;
-}
-extern "C" {
-extern VecFx32 sSpNpcKatieReunionWalkPos;
-}
-extern "C" {
-extern u16 data_020c6cc8;
-}
-extern "C" {
-extern u32 data_020c6d1c;
-}
-extern "C" {
-extern u8 gVec3Zero[];
-}
-extern "C" {
-extern s32 sRainParallax[];
-}
-extern "C" {
-extern s32 sRainSideToggle;
-}
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[0x4c]; } gWeatherManager; } }
-#define data_021f1448 n13::L_021f1448::gWeatherManager.v
-extern "C" {
-extern s16 data_02135f44[];
-}
-extern "C" {
-extern Mtx43 data_021f47e0;
-}
-extern "C" {
-extern s32 gCamera;
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-extern SpNpcKatie *sSpNpcKatieInstance;
-}
-extern "C" {
-extern u8 sWeatherPatternWeights[];
-}
-extern "C" {
-extern CommManager *gCommManager;
-}
-extern "C" {
-extern u32 sSpNpcKatieMsgKey;
-}
-// ---------------------------------------------------------------------------------------------------------------------
-static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
-    *dst += v;
-}
-static inline BOOL Unk_020c06a0_IsMode2() {
-    return gScreenTransition == 2;
-}
 
-extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in);
-extern "C" SkyProc *SkyProc_Create();
-extern "C" void *SkySprites_Destruct(void *p);
-
-extern "C" void *SkySprites_Destruct(void *p) {
-    __cxa_vec_cleanup((u8 *)p + 0x302c, 8, 0xc, _ZN6FxVec3D1Ev);
-    __cxa_vec_cleanup((u8 *)p + 0x2f58, 4, 0x14, _ZN14SkyShotRequestD1Ev);
-    __cxa_vec_cleanup(p, 0x3c, 0x74, _ZN9SkySpriteD1Ev);
+// ~SkySprites (_ZN10SkySpritesD1Ev is this function: modern/gen/provides.ld): the arrays of objects with destructors,
+// each from its last element, as __cxa_vec_cleanup destroyed them
+extern "C" SkySprites *SkySprites_Destruct(SkySprites *p) {
+    for (s32 i = 7; i >= 0; i--) {
+        p->se.positions[i].~FxVec3();
+    }
+    for (s32 i = 3; i >= 0; i--) {
+        p->shotRequests[i].~SkyShotRequest();
+    }
+    for (s32 i = 0x3b; i >= 0; i--) {
+        p->sprites[i].~SkySprite();
+    }
     return p;
 }
 
@@ -1271,32 +1104,30 @@ extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in) {
     v.y = in->y;
     v.z = in->z;
     VecFx32 a;
-    s32 b[3];
+    VecFx32 b;
     WorldCurve_Apply(&a, &v);
-    MTX_MultVec43(&a, &data_021f47e0, b);
-    s32 c = ((Camera *)(gCamera))->getFovTan();
+    MTX_MultVec43(&a, &data_021f47e0, &b);
+    s32 c = gCamera->getFovTan();
     s32 q = -FX_Div(0x60000, c);
-    Vec_Scale(b, FX_Div(q, b[2]));
-    *out = b[0] + 0x80000;
+    Vec_Scale(&b, FX_Div(q, b.z));
+    *out = b.x + 0x80000;
 }
 
-}
-void SkySprite::initRainDrop(BOOL flag) {
-    using namespace n13;
+void SkySprite::initRainDrop(u32 flag) {
     s32 idx;
     s32 x = (sRainSideToggle * Random_GlobalBelow(0x8a) + 0x80) << 12;
     sRainSideToggle *= -1;
     s32 y = -0x14000 - (Random_GlobalBelow(0x10) << 12);
-    VecFx32 *p34 = (VecFx32 *)&screenPos;
+    VecFx32 *p34 = &screenPos;
     p34->x = x;
     p34->y = y;
     p34->z = 0;
-    s32 mul = n00::gSkySprites.rainStrength;
+    s32 mul = gSkySprites.rainStrength;
     s32 rr = Random_GlobalBelow(0xaac) - 0x556;
-    s32 sh = ((mul * (rr + data_021f1448[0x38 / 2])) << 4) >> 16;
+    s32 sh = ((mul * (rr + gWeatherManager.rainSlant)) << 4) >> 16;
     idx = ((u16)sh >> 4) * 2;
-    VecFx32 *p40 = (VecFx32 *)&screenVel;
-    s16 *tab = data_02135f44;
+    VecFx32 *p40 = &screenVel;
+    const s16 *tab = data_02135f44;
     p40->x = tab[idx] * -0x24;
     p40->y = tab[idx + 1] * 0x24;
     p40->z = 0;
@@ -1322,14 +1153,11 @@ void SkySprite::initRainDrop(BOOL flag) {
     }
     priority = 2;
 }
-namespace n13 {
 
-}
 void SkySprite::updateRainDrop() {
-    using namespace n13;
-    VecFx32 *p = (VecFx32 *)&screenPos;
-    VEC_Add(p, (VecFx32 *)&screenVel, p);
-    Actor *e = PlayerActor_GetActor(4);
+    VecFx32 *p = &screenPos;
+    VEC_Add(p, &screenVel, p);
+    Actor *e = (Actor *)PlayerActor_GetActor(4);
     if (e) {
         s32 d = -(e->position.x - e->prevPosition.x);
         s32 m = sRainParallax[work2];
@@ -1344,20 +1172,13 @@ void SkySprite::updateRainDrop() {
         p->x -= 0x11e000;
     }
 }
-namespace n13 {
 
-}
 void SkySprite::endRainDrop() {
-    using namespace n13;
     SkySprite_Release(this);
 }
-namespace n13 {
 
-#undef data_021f1448
-}
 
 // ======== unk_020bf4ac.cpp ========
-namespace n12 {
 // Locals of SkySprite_CalcMoonColors: current time, the clear/cloudy colours of this hour and the next, the result
 struct MoonColorBlend {
     /* 0x0 */ u8 minute;
@@ -1368,228 +1189,53 @@ struct MoonColorBlend {
     /* 0x8 */ Rgb555 cloudyColorNext;
     /* 0xa */ u16 blended;
 };
-// One 16-colour row of the moon palette file (a_sky_moon_obj_ncl.bin, loaded at SkyObjGfxLoader+0x1208), one per
-// night hour: colours 3..7 for a cloudy sky, 11..15 for a clear one (SkySprite_CalcMoonColors)
-struct SkyMoonPaletteRow {
-    /* 0x00 */ u16 unk_00[3];
-    /* 0x06 */ u16 cloudyColors[5];
-    /* 0x10 */ u16 unk_10[3];
-    /* 0x16 */ u16 clearColors[5];
-};
-extern "C" {
-u32 SkySprite_Release(void *);
-}
-extern "C" {
-s32 SkySprite_AdvanceCrossing(void *, s32, s32, s32);
-}
-extern "C" {
-s32 SkySprite_CheckShotHit(void *, s32, s32, s32);
-}
-extern "C" {
-void SkyObjGfxSlot_SetGfx(void *, s32);
-}
-extern "C" {
-void _ZN15SkyShotSequence12onBalloonHitEh(void *, s32);
-}
-extern "C" {
-void SkySprite_RequestSeSustained(void *, s32);
-}
-extern "C" {
-void SkySprite_RequestSe(void *, s32);
-}
-extern "C" {
-void SkySprite_StartAnim(void *);
-}
-extern "C" {
-s32 func_01ffcb0c(s32, s32);
-}
-extern "C" {
-void VEC_Add(void *, void *, void *);
-}
-extern "C" {
-void _ZN15SkyShotSequence13onBalloonFellEv(void *);
-}
-extern "C" {
-void _ZN15SkyShotSequence9setTargetEiiih(void *, s32, s32, s32, s32);
-}
-extern "C" {
-}
-extern "C" {
-void SkySprite_BeginCrossing(void *, s32, s32);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN13SkyObjPalette11setOverrideEiPt(void *, s32, void *);
-}
-extern "C" {
-void Math_StepS32Alt(void *, s32, s32);
-}
-extern "C" {
-void Clock_GetMinuteHour(void *);
-}
-extern "C" {
-u32 Clock_GetSecond(void);
-}
-extern "C" {
-s32 _s32_div_f(s32, s32);
-}
-extern "C" {
-u32 _u32_div_f(u32, u32);
-}
-extern "C" {
-s32 FX_Sqrt(s32);
-}
-extern "C" {
-s32 FX_Div(s32, s32);
-}
-extern "C" {
-s32 Math_Atan2(s32, s32);
-}
-extern "C" {
-void SkySprite_RequestSeSustainedOn(void *, s32, s32);
-}
-extern "C" {
-void Vec_Scale(void *, s32);
-}
-extern "C" {
-BOOL _ZN10SpriteAnim10isFinishedEv(void *);
-}
-extern "C" {
-s32 _ZN10SkySprites8findKindEi(void *, s32);
-}
-extern "C" {
-BOOL SkySprite_FollowShootingStar(SkySprite *);
-}
-extern "C" {
-}
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } gSkySprites; } }
-#define data_021f3010 (*(decltype(&n12::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
-namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
-#define data_021f4488 (*(decltype(&n12::L_021f4488::gSkySprites.v))((u8 *)&::n00::gSkySprites.shotSeq.state + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern u32 gFrameCounter;
-}
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
-#define data_021f4398 (*(decltype(&n12::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern u16 sMoonColors[];
-}
-// One row per hour plus the next-hour row read at 23:00 (its last 4 bytes run past gSkySprites).
-namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; SkyMoonPaletteRow v[25]; } gSkySprites; } }
-#define data_021f4254 (*(decltype(&n12::L_021f4254::gSkySprites.v))((u8 *)&::n00::gSkySprites.loader.unk_00[4616] + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern s16 data_02135f44[];
-}
-extern "C" {
-extern s32 sParticleTrailScales[];
-}
-extern "C" {
-extern s32 sParticleAnimIds[];
-}
-extern "C" {
-extern s32 sSnowParallax[];
-}
-extern "C" {
-extern s32 sSnowFallSpeeds[];
-}
-extern "C" {
-extern s32 sSnowAnimIds[];
-}
-extern "C" {
-extern s32 sSnowSideToggle;
-}
-extern "C" {
-void SkySprite_ResetMoonPalette(void);
-}
-extern "C" {
-BOOL SkySprite_CalcMoonPos(void *out);
-}
-extern "C" {
-void SkySprite_UpdateMoonPalette(SkySprite *this_);
-}
-extern "C" {
-void SkySprite_InitMoonPalette(SkySprite *this_);
-}
-extern "C" {
-void SkySprite_FadeMoonClarity(SkySprite *this_);
-}
-extern "C" {
-void SkySprite_SetMoonClarity(SkySprite *this_);
-}
-extern "C" {
-void SkySprite_CalcMoonColors(SkySprite *this_);
-}
 
-extern "C" u32 SkySprite_EndBalloon(void *a);
-extern "C" void SkySprite_UpdateBalloon(SkySprite *this_);
-extern "C" void SkySprite_InitBalloon(SkySprite *this_, u32 arg);
-extern "C" void SkySprite_EndMoon(SkySprite *this_);
-extern "C" void SkySprite_UpdateMoon(SkySprite *this_);
-extern "C" void SkySprite_InitMoon(SkySprite *this_);
-extern "C" void SkySprite_ResetMoonPalette(void);
-extern "C" void SkySprite_UpdateMoonPalette(SkySprite *this_);
-extern "C" void SkySprite_InitMoonPalette(SkySprite *this_);
-extern "C" void SkySprite_FadeMoonClarity(SkySprite *this_);
-extern "C" void SkySprite_SetMoonClarity(SkySprite *this_);
-extern "C" void SkySprite_CalcMoonColors(SkySprite *this_);
-extern "C" BOOL SkySprite_CalcMoonPos(void *out_);
-extern "C" void SkySprite_EndShootingStar(SkySprite *this_);
-extern "C" void SkySprite_UpdateShootingStar(SkySprite *this_);
-extern "C" void SkySprite_InitShootingStar(SkySprite *this_);
-extern "C" void SkySprite_EndParticle(void *a);
-extern "C" void SkySprite_UpdateParticle(SkySprite *this_);
-extern "C" void SkySprite_InitParticle(SkySprite *this_, s32 arg);
-extern "C" BOOL SkySprite_FollowShootingStar(SkySprite *this_);
-extern "C" void SkySprite_EndSnowFlake(void *a);
-extern "C" void SkySprite_UpdateSnowFlake(SkySprite *this_);
-extern "C" void SkySprite_InitSnowFlake(SkySprite *this_, s32 arg);
 
-extern "C" void SkySprite_InitSnowFlake(SkySprite *this_, s32 arg) {
+void SkySprite::initSnowFlake(u32 arg) {
     s32 a = Random_GlobalBelow(3);
     s32 b = Random_GlobalBelow(0x80);
     s32 g = sSnowSideToggle;
     s32 x = (g * b + 0x80) << 12;
     VecFx32 *pos, *vel;
     sSnowSideToggle = g * 0xffffffff;
-    pos = &this_->screenPos;
-    this_->screenPos.x = x;
+    pos = &screenPos;
+    screenPos.x = x;
     pos->y = -0x14000;
     pos->z = 0;
-    vel = &this_->screenVel;
-    this_->screenVel.x = 0;
+    vel = &screenVel;
+    screenVel.x = 0;
     vel->y = sSnowFallSpeeds[a];
     vel->z = 0;
-    this_->work0 = Random_GlobalBelow(0x300) + 0x180;
-    this_->work1 = Random_GlobalBelow(0x10000);
-    this_->work2 = a;
-    this_->work3 = x;
-    this_->work4 = Random_GlobalBelow(2) + 0x5000;
-    this_->animSeq = sSnowAnimIds[a];
-    this_->priority = 2;
+    work0 = Random_GlobalBelow(0x300) + 0x180;
+    work1 = Random_GlobalBelow(0x10000);
+    work2 = a;
+    work3 = x;
+    work4 = Random_GlobalBelow(2) + 0x5000;
+    animSeq = sSnowAnimIds[a];
+    priority = 2;
     if (arg == 1) {
-        this_->screenPos.y = this_->screenPos.y + (Random_GlobalBelow(0x1c1) << 12);
+        screenPos.y = screenPos.y + (Random_GlobalBelow(0x1c1) << 12);
     }
 }
 
-extern "C" void SkySprite_UpdateSnowFlake(SkySprite *this_) {
-    VecFx32 *pos = &this_->screenPos;
+void SkySprite::updateSnowFlake() {
+    VecFx32 *pos = &screenPos;
     Actor *o;
     s32 base, ang;
-    VEC_Add(pos, &this_->screenVel, pos);
+    VEC_Add(pos, &screenVel, pos);
     o = (Actor *)PlayerActor_GetActor(4);
     if (o != NULL) {
         s32 dv = -(o->position.x - o->prevPosition.x);
-        dv = (dv * sSnowParallax[this_->work2]) >> 12;
-        dv += this_->work3;
-        this_->work3 = dv;
+        dv = (dv * sSnowParallax[work2]) >> 12;
+        dv += work3;
+        work3 = dv;
     }
-    base = this_->work3;
-    ang = (s16)((s16)this_->work1 + this_->work0);
-    this_->work1 = ang;
-    { s32 tv = data_02135f44[((u16)ang >> 4) * 2]; s32 sc = this_->work4; pos->x = base + ((tv * sc) >> 12); }
+    base = work3;
+    ang = (s16)((s16)work1 + work0);
+    work1 = ang;
+    { s32 tv = data_02135f44[((u16)ang >> 4) * 2]; s32 sc = work4; pos->x = base + ((tv * sc) >> 12); }
     if (pos->y > 0x1d4000) {
-        this_->state = 3;
+        state = 3;
     } else if (pos->x < -0x14000) {
         pos->x = pos->x + 0x11e000;
     } else if (pos->x > 0x114000) {
@@ -1597,11 +1243,11 @@ extern "C" void SkySprite_UpdateSnowFlake(SkySprite *this_) {
     }
 }
 
-extern "C" void SkySprite_EndSnowFlake(void *a) { SkySprite_Release(a); }
+void SkySprite::endSnowFlake() { SkySprite_Release(this); }
 
 extern "C" BOOL SkySprite_FollowShootingStar(SkySprite *this_) {
     SkyShootingStarStackPad pad;
-    SkySprite *p = &n00::gSkySprites.sprites[((SkySprites *)(&n00::gSkySprites))->findKind(3)];
+    SkySprite *p = &gSkySprites.sprites[gSkySprites.findKind(3)];
     BOOL result = FALSE;
     if (p != NULL && p->state == 2) {
         VecFx32 *pos = &p->screenPos;
@@ -1618,59 +1264,59 @@ extern "C" BOOL SkySprite_FollowShootingStar(SkySprite *this_) {
     return result;
 }
 
-extern "C" void SkySprite_InitParticle(SkySprite *this_, s32 arg) {
+void SkySprite::initParticle(u32 arg) {
     s32 m = arg & 0xf;
-    this_->animSeq = sParticleAnimIds[m];
+    animSeq = sParticleAnimIds[m];
     if (m == 1) {
-        this_->priority = 3;
+        priority = 3;
     } else {
-        this_->priority = 2;
+        priority = 2;
     }
-    this_->work0 = arg;
-    this_->work1 = 0;
+    work0 = arg;
+    work1 = 0;
     if (m == 1) {
         s32 v = sParticleTrailScales[0];
-        this_->scaleX = v;
-        this_->scaleY = v;
-        if (!SkySprite_FollowShootingStar(this_)) {
-            this_->state = 3;
+        scaleX = v;
+        scaleY = v;
+        if (!SkySprite_FollowShootingStar(this)) {
+            state = 3;
         }
     }
 }
 
-extern "C" void SkySprite_UpdateParticle(SkySprite *this_) {
-    s32 m = this_->work0 & 0xf;
-    this_->work1 = this_->work1 + 1;
+void SkySprite::updateParticle() {
+    s32 m = work0 & 0xf;
+    work1 = work1 + 1;
     if (m == 0) {
-        Vec_Scale(&this_->screenVel, 0xe66);
-        VEC_Add(&this_->screenPos, &this_->screenVel, &this_->screenPos);
-        if (((SpriteAnim *)(&this_->anim))->isFinished()) {
-            this_->state = 3;
+        Vec_Scale(&screenVel, 0xe66);
+        VEC_Add(&screenPos, &screenVel, &screenPos);
+        if (anim.isFinished()) {
+            state = 3;
         }
     } else if (m == 1) {
-        s32 n = this_->work1;
+        s32 n = work1;
         s32 v = sParticleTrailScales[n];
         if (n >= 0x17) {
-            this_->state = 3;
+            state = 3;
         } else {
-            this_->scaleX = v;
-            this_->scaleY = v;
-            *(u16 *)&this_->angle += 0xe39;
-            if (!SkySprite_FollowShootingStar(this_)) {
-                this_->state = 3;
+            scaleX = v;
+            scaleY = v;
+            *(u16 *)&angle += 0xe39;
+            if (!SkySprite_FollowShootingStar(this)) {
+                state = 3;
             }
         }
-    } else if (this_->work1 >= 6) {
-        this_->state = 3;
+    } else if (work1 >= 6) {
+        state = 3;
     }
 }
 
-extern "C" void SkySprite_EndParticle(void *a) { SkySprite_Release(a); }
+void SkySprite::endParticle() { SkySprite_Release(this); }
 
-extern "C" void SkySprite_InitShootingStar(SkySprite *this_) {
+void SkySprite::initShootingStar(u32 unused) {
     s32 ang, x, y, sn, cs, k, nx, ny;
-    this_->scaleX = 0x1000;
-    this_->scaleY = 0x800;
+    scaleX = 0x1000;
+    scaleY = 0x800;
     if (Random_GlobalBelow(2) == 0) {
         x = (Random_GlobalBelow(0x3c) + 0xc4) << 12;
         y = 0;
@@ -1684,55 +1330,54 @@ extern "C" void SkySprite_InitShootingStar(SkySprite *this_) {
     cs = data_02135f44[k + 1];
     x -= cs * 0x23;
     y -= sn * 0x23;
-    this_->screenPos.x = x;
-    this_->screenPos.y = y;
-    this_->screenPos.z = 0;
-    this_->screenVel.x = func_01ffcb0c(cs, 0x7800);
-    this_->screenVel.y = func_01ffcb0c(sn, 0x7800);
-    this_->screenVel.z = 0;
-    this_->angle = ang - 0x4000;
-    this_->animSeq = 0x11;
-    this_->priority = 3;
-    n00::gSkySprites.shootingStarVisible = 0;
-    SkySprite_RequestSeSustainedOn(this_, 6, 0x801);
+    screenPos.x = x;
+    screenPos.y = y;
+    screenPos.z = 0;
+    screenVel.x = func_01ffcb0c(cs, 0x7800);
+    screenVel.y = func_01ffcb0c(sn, 0x7800);
+    screenVel.z = 0;
+    angle = ang - 0x4000;
+    animSeq = 0x11;
+    priority = 3;
+    gSkySprites.shootingStarVisible = 0;
+    SkySprite_RequestSeSustainedOn(this, 6, 0x801);
 }
 
-extern "C" void SkySprite_UpdateShootingStar(SkySprite *this_) {
-    VEC_Add(&this_->screenPos, &this_->screenVel, &this_->screenPos);
-    s32 x = this_->screenPos.x >> 12;
+void SkySprite::updateShootingStar() {
+    VEC_Add(&screenPos, &screenVel, &screenPos);
+    s32 x = screenPos.x >> 12;
     BOOL out;
-    s32 y = this_->screenPos.y >> 12;
+    s32 y = screenPos.y >> 12;
     if (y < -0x23 || y > 0xca || x < -0x23 || x > 0x123) {
         out = TRUE;
     } else {
         out = FALSE;
     }
     s32 in;
-    if (this_->work0 == 0 && !out && y > 0 && y < 0xc0 && x > 0 && x < 0x100) {
+    if (work0 == 0 && !out && y > 0 && y < 0xc0 && x > 0 && x < 0x100) {
         in = 1;
     } else {
         in = 0;
     }
-    n00::gSkySprites.shootingStarVisible = in;
+    gSkySprites.shootingStarVisible = in;
     if (out) {
-        this_->state = 3;
+        state = 3;
     }
 }
 
-extern "C" void SkySprite_EndShootingStar(SkySprite *this_) {
-    n00::gSkySprites.shootingStarVisible = 0;
-    SkySprite_Release(this_);
+void SkySprite::endShootingStar() {
+    gSkySprites.shootingStarVisible = 0;
+    SkySprite_Release(this);
 }
 
-extern "C" BOOL SkySprite_CalcMoonPos(void *out_) {
-    s32 *out = (s32 *)out_;
+extern "C" BOOL SkySprite_CalcMoonPos(VecFx32 *out) {
     BOOL ok = TRUE;
-    u8 d[4];
+    MinuteHour d;
     u32 b, a, base, off, x;
     s32 r, y;
-    Clock_GetMinuteHour(d);
-    b = d[1];
-    a = d[0];
+    Clock_GetMinuteHour(&d.minute);
+    b = d.hour;
+    a = d.minute;
     base = Clock_GetSecond();
     off = 0;
     if (b >= 0x13) {
@@ -1748,11 +1393,11 @@ extern "C" BOOL SkySprite_CalcMoonPos(void *out_) {
         y = func_01ffcb0c(x - 0x800, x - 0x800);
         y = FX_Sqrt(0x1000 - y);
         y = FX_Div(y - 0xddb, 0x225);
-        out[0] = r;
+        out->x = r;
         y <<= 4;
         y = -y;
-        out[1] = y + 0x3c000;
-        out[2] = 0;
+        out->y = y + 0x3c000;
+        out->z = 0;
     }
     return ok;
 }
@@ -1764,12 +1409,12 @@ extern "C" void SkySprite_CalcMoonColors(SkySprite *this_) {
     s32 inv, v0, v1, v2, v3, v4, v5, w0, w1, t;
     u32 i;
     s32 r7, r5;
-    Clock_GetMinuteHour(&rec);
+    Clock_GetMinuteHour(&rec.minute);
     u32 idx = rec.hour;
     u32 mon = rec.minute;
     if (idx >= 0x13) idx -= 0x13; else idx += 5;
-    t0 = &data_021f4254[idx];
-    t1 = &data_021f4254[idx + 1];
+    t0 = &gSkySprites.loader.moonPalette[idx];
+    t1 = &gSkySprites.loader.moonPalette[idx + 1];
     t = this_->work3;
     inv = 0x1000 - t;
     r7 = _s32_div_f(mon << 12, 60);
@@ -1795,7 +1440,7 @@ extern "C" void SkySprite_CalcMoonColors(SkySprite *this_) {
 }
 
 extern "C" void SkySprite_SetMoonClarity(SkySprite *this_) {
-    s32 s = n00::gWeatherManager.level;
+    s32 s = gWeatherManager.level;
     s32 f;
     if (s != 3 && s != 4) {
         f = 0x1000;
@@ -1807,7 +1452,7 @@ extern "C" void SkySprite_SetMoonClarity(SkySprite *this_) {
 
 extern "C" void SkySprite_FadeMoonClarity(SkySprite *this_) {
     s32 v;
-    s32 s = n00::gWeatherManager.targetLevel;
+    s32 s = gWeatherManager.targetLevel;
     s32 f;
     if (s != 3 && s != 4) {
         f = 0x1000;
@@ -1820,236 +1465,109 @@ extern "C" void SkySprite_FadeMoonClarity(SkySprite *this_) {
 }
 
 extern "C" void SkySprite_InitMoonPalette(SkySprite *this_) {
-    u8 *p = data_021f4398;
+    SkyObjPalette *p = &gSkySprites.palette;
     SkySprite_SetMoonClarity(this_);
     SkySprite_CalcMoonColors(this_);
     for (u32 i = 0; i < 5; i++) {
-        _ZN13SkyObjPalette11setOverrideEiPt(p, i + 10, &sMoonColors[i]);
+        p->setOverride(i + 10, &sMoonColors[i]);
     }
 }
 
 extern "C" void SkySprite_UpdateMoonPalette(SkySprite *this_) {
-    u8 *p = data_021f4398;
+    SkyObjPalette *p = &gSkySprites.palette;
     SkySprite_FadeMoonClarity(this_);
     SkySprite_CalcMoonColors(this_);
     for (u32 i = 0; i < 5; i++) {
-        _ZN13SkyObjPalette11setOverrideEiPt(p, i + 10, &sMoonColors[i]);
+        p->setOverride(i + 10, &sMoonColors[i]);
     }
 }
 
 extern "C" void SkySprite_ResetMoonPalette(void) {
-    u8 *p = data_021f4398;
+    SkyObjPalette *p = &gSkySprites.palette;
     for (u32 i = 0; i < 5; i++) {
-        ((SkyObjPalette *)(p))->clearOverride(i + 10);
+        p->clearOverride(i + 10);
     }
 }
 
-extern "C" void SkySprite_InitMoon(SkySprite *this_) {
-    if (SkySprite_CalcMoonPos(&this_->screenPos)) {
-        this_->animSeq = 0x12;
-        this_->priority = 3;
-        SkySprite_InitMoonPalette(this_);
+void SkySprite::initMoon(u32 unused) {
+    if (SkySprite_CalcMoonPos(&screenPos)) {
+        animSeq = 0x12;
+        priority = 3;
+        SkySprite_InitMoonPalette(this);
     } else {
-        this_->state = 3;
+        state = 3;
     }
 }
 
-extern "C" void SkySprite_UpdateMoon(SkySprite *this_) {
+void SkySprite::updateMoon() {
     if ((gFrameCounter & 0x7f) == 0) {
-        if (!SkySprite_CalcMoonPos(&this_->screenPos)) {
-            this_->state = 3;
+        if (!SkySprite_CalcMoonPos(&screenPos)) {
+            state = 3;
         }
-        SkySprite_UpdateMoonPalette(this_);
+        SkySprite_UpdateMoonPalette(this);
     }
 }
 
-extern "C" void SkySprite_EndMoon(SkySprite *this_) {
+void SkySprite::endMoon() {
     SkySprite_ResetMoonPalette();
-    SkySprite_Release(this_);
+    SkySprite_Release(this);
 }
 
-extern "C" void SkySprite_InitBalloon(SkySprite *this_, u32 arg) {
-    SkySprite_BeginCrossing(this_, Random_GlobalBelow(2) == 0 ? 1 : 0, 0x3e8);
-    this_->animSeq = 1;
-    this_->priority = 2;
-    this_->work0 = 0;
+void SkySprite::initBalloon(u32 arg) {
+    SkySprite_BeginCrossing(this, Random_GlobalBelow(2) == 0 ? 1 : 0, 0x3e8);
+    animSeq = 1;
+    priority = 2;
+    work0 = 0;
     arg &= 1;
-    this_->work1 = arg != 0 ? 1 : 0;
-    this_->work2 = 0;
+    work1 = arg != 0 ? 1 : 0;
+    work2 = 0;
 }
 
-extern "C" void SkySprite_UpdateBalloon(SkySprite *this_) {
+void SkySprite::updateBalloon() {
     s32 t;
-    if (this_->work0 == 0) {
-        if (SkySprite_AdvanceCrossing(this_, 0x1ec, 0x5000, 0x3e8)) {
-            this_->state = 3;
-        } else if (SkySprite_CheckShotHit(this_, 0xe000, 0x1a000, -0x3000)) {
-            t = this_->gfxId + 1;
-            SkyObjGfxSlot_SetGfx(data_021f3010 + this_->gfxSlot * 12, t);
-            this_->gfxId = t;
-            _ZN15SkyShotSequence12onBalloonHitEh(data_021f4488, this_->work1 != 0 ? 1 : 0);
-            SkySprite_RequestSeSustained(this_, 0x7f8);
-            this_->work0 = 1;
+    if (work0 == 0) {
+        if (SkySprite_AdvanceCrossing(this, 0x1ec, 0x5000, 0x3e8)) {
+            state = 3;
+        } else if (SkySprite_CheckShotHit(this, 0xe000, 0x1a000, -0x3000)) {
+            t = gfxId + 1;
+            SkyObjGfxSlot_SetGfx(&gSkySprites.gfxSlots[gfxSlot], t);
+            gfxId = t;
+            gSkySprites.shotSeq.onBalloonHit(work1 != 0 ? 1 : 0);
+            SkySprite_RequestSeSustained(this, 0x7f8);
+            work0 = 1;
         } else {
-            SkySprite_RequestSe(this_, 0x7f7);
+            SkySprite_RequestSe(this, 0x7f7);
         }
-    } else if (this_->work0 == 1) {
-        this_->animSeq = 0;
-        SkySprite_StartAnim(this_);
-        this_->screenVel.x = 0;
-        this_->screenVel.y = -0x800;
-        this_->screenVel.z = 0;
-        this_->work0 = 2;
-        this_->work2 = 0;
+    } else if (work0 == 1) {
+        animSeq = 0;
+        SkySprite_StartAnim(this);
+        screenVel.x = 0;
+        screenVel.y = -0x800;
+        screenVel.z = 0;
+        work0 = 2;
+        work2 = 0;
     } else {
-        this_->screenVel.y += 0x666;
-        this_->screenVel.y = func_01ffcb0c(this_->screenVel.y, 0xfd7);
-        VEC_Add(&this_->screenPos, &this_->screenVel, &this_->screenPos);
-        if (this_->screenPos.y > 0xd0000) {
-            _ZN15SkyShotSequence13onBalloonFellEv(data_021f4488);
-            this_->state = 3;
+        screenVel.y += 0x666;
+        screenVel.y = func_01ffcb0c(screenVel.y, 0xfd7);
+        VEC_Add(&screenPos, &screenVel, &screenPos);
+        if (screenPos.y > 0xd0000) {
+            gSkySprites.shotSeq.onBalloonFell();
+            state = 3;
         }
     }
-    if ((s32)this_->work0 >= 1) {
-        _ZN15SkyShotSequence9setTargetEiiih(data_021f4488, this_->screenPos.x, this_->screenPos.y, this_->scaleX, this_->dir == 0 ? 1 : 0);
+    if ((s32)work0 >= 1) {
+        gSkySprites.shotSeq.setTarget(screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
     }
 }
 
-extern "C" u32 SkySprite_EndBalloon(void *a) { return SkySprite_Release(a); }
+void SkySprite::endBalloon() { SkySprite_Release(this); }
 
-#undef data_021f3010
-#undef data_021f4488
-#undef data_021f4398
-#undef data_021f4254
-}
 
 // ======== unk_020beb40.cpp ========
-namespace n11 {
-extern "C" {
-s32 func_01ffcb0c(s32 a, s32 b);
-}
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-extern "C" {
-void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
-}
-extern "C" {
-void Vec_Scale(VecFx32 *v, s32 scale);
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10SpriteAnim10isFinishedEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN10SpriteAnim7restartEv(void *p);
-}
-extern "C" {
-s32 SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot *p, s32 v);
-}
-extern "C" {
-void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot *p, s32 v);
-}
-extern "C" {
-void _ZN15SkyShotSequence9setTargetEiiih(void *p, s32 a, s32 b, s32 c, BOOL d);
-}
-extern "C" {
-void _ZN15SkyShotSequence10onPeteFellEv(void *p);
-}
-extern "C" {
-void _ZN15SkyShotSequence9onPeteHitEv(void *p);
-}
-extern "C" {
-void _ZN15SkyShotSequence9onUfoFellEv(void *p);
-}
-extern "C" {
-void _ZN15SkyShotSequence8onUfoHitEv(void *p);
-}
-extern "C" {
-void EventWeekSlots_MarkTodaySeen(s32 a);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag);
-}
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; SkyObjPalette v; } gSkySprites; } }
-#define data_021f4398 (*(decltype(&n11::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
-namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
-#define data_021f4488 (*(decltype(&n11::L_021f4488::gSkySprites.v))((u8 *)&::n00::gSkySprites.shotSeq.state + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern u8 gSaveData[];
-}
-extern "C" {
-extern u8 gSkySprites[];
-}
-extern "C" {
-extern VecFx32Copy gCameraLookAt;
-}
-extern "C" {
-extern VecFx32Copy gVec3Zero;
-}
-extern "C" {
-extern s32 data_020c8cb8;
-}
-extern "C" {
-extern s32 data_020c8cbc;
-}
-extern "C" {
-extern s32 sFireworkFlicker[];
-}
-extern "C" {
-extern FireworkColorPair sFireworkColors[];
-}
-extern "C" {
-extern s32 sFireworkScaleBig[];
-}
-extern "C" {
-extern s32 sFireworkScaleSmall[];
-}
-extern "C" {
-extern s32 sFireworkScaleBigLong[];
-}
-extern "C" {
-extern s32 sFireworkScaleSmallLong[];
-}
-extern "C" {
-extern s16 data_02135f44[];
-}
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
-#define data_021f3010 (*(decltype(&n11::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-SkySprite *_ZN10SkySprites5spawnEiiP7VecFx32i(void *tab, s32 a, s32 b, void *pos, s32 c);
-}
-extern "C" {
-void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed);
-}
-extern "C" {
-Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b);
-}
 
-extern "C" Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b);
-extern "C" s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag);
-extern "C" void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed);
 
-}
 void SkySprite::spawnUfoDebris()
 {
-    using namespace n11;
     if (work1 > 0) {
         if (work1 == 1) {
             s32 r4, scale, y, q, idx;
@@ -2063,7 +1581,7 @@ void SkySprite::spawnUfoDebris()
             pos.x = screenPos.x + func_01ffcb0c(q, data_02135f44[idx + 1]);
             pos.y = y;
             pos.z = 0;
-            SkySprite *o = _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 2, 0x3c, &pos, r4 & 0xf);
+            SkySprite *o = gSkySprites.spawn(2, 0x3c, &pos, r4 & 0xf);
             if (o) {
                 o->scaleX = scale;
                 o->scaleY = scale;
@@ -2073,34 +1591,28 @@ void SkySprite::spawnUfoDebris()
         }
     }
 }
-namespace n11 {
 
-}
-void SkySprite::initUfo()
+void SkySprite::initUfo(u32 unused)
 {
-    using namespace n11;
     beginCrossing(Random_GlobalBelow(2) == 0 ? 1 : 0, 0x1000);
     animSeq = 0x16;
     priority = 2;
-    ((SaveData *)(gSaveData))->setFlag(9);
+    gSaveData.setFlag(9);
     work0 = 0;
     work1 = 0;
     work2 = 0;
 }
-namespace n11 {
 
-}
 void SkySprite::updateUfo()
 {
-    using namespace n11;
     if (work0 == 0) {
         if (advanceCrossing(0x385, 0x1000, 0xfa0)) {
             state = 3;
         } else if (checkShotHit(0x1a000, 0xc000, 0x5000)) {
-            SkyObjGfxSlot_SetGfx(data_021f3010 + gfxSlot, 0x24);
+            SkyObjGfxSlot_SetGfx(&gSkySprites.gfxSlots[gfxSlot], 0x24);
             gfxId = 0x24;
             requestSeSustained(0x7fc);
-            _ZN15SkyShotSequence8onUfoHitEv(data_021f4488);
+            gSkySprites.shotSeq.onUfoHit();
             work0 = 1;
         } else {
             requestSe(0x7fb);
@@ -2113,8 +1625,8 @@ void SkySprite::updateUfo()
         screenVel.z = 0;
         work0 = 2;
     } else if (work0 == 2) {
-        if (((SpriteAnim *)(&anim))->isFinished()) {
-            SkyObjGfxSlot_SetGfx(data_021f3010 + gfxSlot, 0x25);
+        if (anim.isFinished()) {
+            SkyObjGfxSlot_SetGfx(&gSkySprites.gfxSlots[gfxSlot], 0x25);
             gfxId = 0x25;
             work0 = 3;
             work1 = 1;
@@ -2127,9 +1639,9 @@ void SkySprite::updateUfo()
     } else if (work0 == 4) {
         if (screenPos.y > 0xd0000) {
             EventWeekSlots_MarkTodaySeen(0x44);
-            s32 obj = PlayerActor_GetBodyPos(PlayerActor_GetLocalSessionSlot());
+            s32 *obj = (s32 *)PlayerActor_GetBodyPos(PlayerActor_GetLocalSessionSlot());
             Town_PlaceGulliverShip(obj, dir == 0 ? 1 : 0);
-            _ZN15SkyShotSequence9onUfoFellEv(data_021f4488);
+            gSkySprites.shotSeq.onUfoFell();
             state = 3;
         }
     }
@@ -2144,29 +1656,25 @@ void SkySprite::updateUfo()
             v.y = 0x800;
             sc = 0x1000;
         }
-        VEC_Add(&screenVel, (VecFx32 *)&v, &screenVel);
+        VEC_Add(&screenVel, &v, &screenVel);
         Vec_Scale(&screenVel, sc);
         VEC_Add(&screenPos, &screenVel, &screenPos);
     }
     if ((s32)work0 >= 1) {
-        _ZN15SkyShotSequence9setTargetEiiih(data_021f4488, screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
+        gSkySprites.shotSeq.setTarget(screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
     }
     spawnUfoDebris();
 }
-namespace n11 {
 
-}
 void SkySprite::endUfo()
 {
-    using namespace n11;
     release();
 }
-namespace n11 {
 
 extern "C" void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed)
 {
     SkyParticleStackPad tmp;
-    SkySprite *o = _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 2, 0x3c, pos, 0);
+    SkySprite *o = gSkySprites.spawn(2, 0x3c, pos, 0);
     if (o) {
         o->scaleX = scale;
         o->scaleY = scale;
@@ -2176,34 +1684,29 @@ extern "C" void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed)
     }
 }
 
-}
-void SkySprite::initPete()
+void SkySprite::initPete(u32 unused)
 {
-    using namespace n11;
     beginCrossing(gfxId == 0x28 ? 1 : 0, 0x8000);
     animSeq = 0x13;
     priority = 2;
     work0 = 0;
     work1 = 0;
 }
-namespace n11 {
 
-}
 void SkySprite::updatePete()
 {
-    using namespace n11;
     if (work0 == 0) {
         if (advanceCrossing(0x30a, 0x8000, -100)) {
             state = 3;
         } else if (checkShotHit(0x1b000, 0x15000, 0)) {
             s32 t = gfxId + 1;
-            SkyObjGfxSlot_SetGfx(data_021f3010 + gfxSlot, t);
+            SkyObjGfxSlot_SetGfx(&gSkySprites.gfxSlots[gfxSlot], t);
             gfxId = t;
-            _ZN15SkyShotSequence9onPeteHitEv(data_021f4488);
+            gSkySprites.shotSeq.onPeteHit();
             requestSeSustained(0x7ff);
             work0 = 1;
             work1 = 0;
-        } else if (((SpriteAnim *)(&anim))->getFrameIndex() == 0) {
+        } else if (anim.getFrameIndex() == 0) {
             if (work1++ == 0) requestSeSustained(0x7fe);
         } else {
             work1 = 0;
@@ -2211,7 +1714,7 @@ void SkySprite::updatePete()
     } else if (work0 == 1) {
         animSeq = 0x14;
         startAnim();
-        ((SpriteAnim *)(&anim))->pause();
+        anim.pause();
         screenVel.x = dir ? 0x3c00 : -0x3c00;
         screenVel.y = -0x4000;
         screenVel.z = 0;
@@ -2227,7 +1730,7 @@ void SkySprite::updatePete()
             scaleY = func_01ffcb0c(scaleY, 0x119a);
             work0 = 6;
             work1 = 0;
-            ((SpriteAnim *)(&anim))->restart();
+            anim.restart();
         }
     }
     if ((s32)work0 >= 6) {
@@ -2236,28 +1739,22 @@ void SkySprite::updatePete()
         VEC_Add(&screenPos, &screenVel, &screenPos);
     }
     if ((s32)work0 >= 6 && screenPos.y > 0xd0000) {
-        _ZN15SkyShotSequence10onPeteFellEv(data_021f4488);
+        gSkySprites.shotSeq.onPeteFell();
         EventWeekSlots_MarkTodaySeen(0x45);
         state = 3;
     }
     if ((s32)work0 >= 1) {
-        _ZN15SkyShotSequence9setTargetEiiih(data_021f4488, screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
+        gSkySprites.shotSeq.setTarget(screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
     }
 }
-namespace n11 {
 
-}
 void SkySprite::endPete()
 {
-    using namespace n11;
     release();
 }
-namespace n11 {
 
-}
-void SkySprite::initLightning()
+void SkySprite::initLightning(u32 unused)
 {
-    using namespace n11;
     s32 a = (Random_GlobalBelow(0x80) * (Random_GlobalBelow(2) * 2 - 1) + 0x80) << 12;
     s32 c = (Random_GlobalBelow(0x50) + 0x50) << 12;
     VecFx32 *p = &screenPos;
@@ -2267,23 +1764,16 @@ void SkySprite::initLightning()
     animSeq = Random_GlobalBelow(8) + 8;
     priority = 2;
 }
-namespace n11 {
 
-}
 void SkySprite::updateLightning()
 {
-    using namespace n11;
-    if (((SpriteAnim *)(&anim))->isFinished()) state = 3;
+    if (anim.isFinished()) state = 3;
 }
-namespace n11 {
 
-}
 void SkySprite::endLightning()
 {
-    using namespace n11;
     release();
 }
-namespace n11 {
 
 extern "C" s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag)
 {
@@ -2329,10 +1819,8 @@ extern "C" Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b)
     return Unk_020bee28_Vec2(a + p, b);
 }
 
-}
 void SkySprite::updateFireworkPalette()
 {
-    using namespace n11;
     s32 n = work1;
     s32 t, lo, hi, r, g, inv;
     if (n < 0x10) {
@@ -2356,10 +1844,10 @@ void SkySprite::updateFireworkPalette()
         if (x != 0) i1 = 1;
         else i1 = 0;
     }
-    s32 *p0 = sFireworkFlicker + i0;
-    s32 *p1 = sFireworkFlicker + i1;
+    const s32 *p0 = sFireworkFlicker + i0;
+    const s32 *p1 = sFireworkFlicker + i1;
     if (k >= 4 || lo >= 15 || hi >= 15) return;
-    FireworkColorPair *e = &sFireworkColors[k];
+    const FireworkColorPair *e = &sFireworkColors[k];
     r = 0; g = 0; inv = 0x1000 - t;
     r = func_01ffcb0c(sFireworkColors[k].start.r << 12, inv) + func_01ffcb0c(e->end.r << 12, t);
     g = func_01ffcb0c(sFireworkColors[k].start.g << 12, inv) + func_01ffcb0c(e->end.g << 12, t);
@@ -2388,40 +1876,31 @@ void SkySprite::updateFireworkPalette()
     col[1] = R1 | (G1 << 5) | (B1 << 10);
     s32 idx = gfxSlot;
     s32 u8v = gfxId;
-    SkyObjPalette *const pal = &data_021f4398;
+    SkyObjPalette *const pal = &gSkySprites.palette;
     pal->setOverride(lo, &col[0]);
     pal->setOverride(hi, &col[1]);
-    SkyObjGfxSlot_RefreshPalette(data_021f3010 + idx, u8v);
+    SkyObjGfxSlot_RefreshPalette(&gSkySprites.gfxSlots[idx], u8v);
 }
-namespace n11 {
 
-}
 void SkySprite::releaseFireworkPalette()
 {
-    using namespace n11;
     u32 v = work0;
     BOOL f = ((v >> 31) & 1) != 0;
     s32 lo = SkySprite_GetFireworkPalIndex((v >> 8) & 3, f);
     s32 hi = lo + 1;
-    if (lo < 15) data_021f4398.clearOverride(lo);
-    if (hi < 15) data_021f4398.clearOverride(hi);
+    if (lo < 15) gSkySprites.palette.clearOverride(lo);
+    if (hi < 15) gSkySprites.palette.clearOverride(hi);
 }
-namespace n11 {
 
-}
 s32 SkySprite::riseDistance(s32 a)
 {
-    using namespace n11;
     return a << 14;
 }
-namespace n11 {
 
-}
 void SkySprite::updateFireworkScale(s32 a)
 {
-    using namespace n11;
     s32 max;
-    s32 *tab;
+    const s32 *tab;
     u32 v = work0;
     BOOL f = ((v >> 30) & 1) != 0;
     if ((v >> 31) & 1) {
@@ -2431,19 +1910,16 @@ void SkySprite::updateFireworkScale(s32 a)
         if (f) { tab = sFireworkScaleSmallLong; max = 0xb0; }
         else { tab = sFireworkScaleSmall; max = 0x24; }
     }
-    if (a < 0) a = ((SpriteAnim *)(&anim))->getFrameIndex();
+    if (a < 0) a = anim.getFrameIndex();
     if (a < 0) max = 0;
     else if (a <= max) max = a;
     s32 x = tab[max];
     scaleX = x;
     scaleY = x;
 }
-namespace n11 {
 
-}
 void SkySprite::initFirework(u32 a)
 {
-    using namespace n11;
     s32 id = (a & 0xf) + 0x1d;
     animSeq = id;
     priority = 2;
@@ -2459,81 +1935,9 @@ void SkySprite::initFirework(u32 a)
         initFireworkBurst(a);
     }
 }
-namespace n11 {
 
-#undef data_021f4398
-#undef data_021f4488
-#undef data_021f3010
-}
 
 // ======== unk_020be204.cpp ========
-namespace n10 {
-extern "C" {
-}
-extern "C" {
-void SkySprite_ProjectFirework(VecFx32 *v, s32 a, s32 b, BOOL c);
-}
-extern "C" {
-void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
-}
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-extern "C" {
-s32 func_01ffcb0c(s32 a, s32 b);
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-void Vec_Scale(VecFx32 *v, s32 a);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10SpriteAnim10isFinishedEv(void *p);
-}
-extern "C" {
-void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void *a, u32 b, u32 c, void *d);
-}
-extern "C" {
-SkyShotRequest *_ZN10SkySprites14getShotRequestEi(void *a, u32 b);
-}
-extern "C" {
-VecFx32 Sky_ProjectToScreenX(VecFx32 *v);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10SkySprites5spawnEiiP7VecFx32i(void *a, u32 b, u32 c, void *d, u32 e);
-}
-extern "C" {
-void SceneLights_StartFlash(u32 a);
-}
-extern "C" {
-extern s8 sBirdDelays[];
-}
-extern "C" {
-extern u32 kFireworkBurstFlag29;
-}
-extern "C" {
-extern s32 data_020c8cb8;
-}
-extern "C" {
-extern s32 gCameraLookAt[];
-}
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
-#define data_021f44ac (*(decltype(&n10::L_021f44ac::gSkySprites.v))((u8 *)&::n00::gSkySprites.se.channels[0] + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern u8 gVec3Zero[];
-}
-extern "C" {
-extern u8 gSkySprites[];
-}
 static inline void SkyVec_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
@@ -2549,14 +1953,16 @@ static inline BOOL Sky_TestBit(u32 v, u32 n) {
 }
 static inline u32 Firework_VariantOf(Unk_020be820_E v) { return (v - 0x1d) & 0xf; }
 
-}
 void SkySprite::initFireworkBurst(u32 a) {
-    using namespace n10;
     BOOL b = Sky_TestBit(a, 31);
     updateFireworkScale(0);
     work3 = screenPos.x;
     work4 = screenPos.y;
-    SkySprite_ProjectFirework(&screenPos, work3, work4, b);
+    {
+        Unk_020bee28_Vec2 sp = SkySprite_ProjectFirework(work3, work4);
+        screenPos.x = sp.x;
+        screenPos.y = sp.y;
+    }
     u32 r2 = b ? 0x804 : 0x803;
     u32 m = (a >> 8) & 3;
     requestSeSustainedOn(b ? 1 : m + 2, r2);
@@ -2567,11 +1973,8 @@ void SkySprite::initFireworkBurst(u32 a) {
         SceneLights_StartFlash(m + 1);
     }
 }
-namespace n10 {
 
-}
 void SkySprite::initFireworkShell(u32 a) {
-    using namespace n10;
     BOOL b = Sky_TestBit(a, 31);
     s32 x, y;
     if (b) {
@@ -2589,7 +1992,11 @@ void SkySprite::initFireworkShell(u32 a) {
     work3 = x << 12;
     work4 = 0xbf000;
     screenPos.z = y << 12;
-    SkySprite_ProjectFirework(&screenPos, work3, work4, b);
+    {
+        Unk_020bee28_Vec2 sp = SkySprite_ProjectFirework(work3, work4);
+        screenPos.x = sp.x;
+        screenPos.y = sp.y;
+    }
     screenVel.x = 0;
     screenVel.y = -0x3800;
     screenVel.z = 0;
@@ -2602,11 +2009,8 @@ void SkySprite::initFireworkShell(u32 a) {
     }
     requestSeSustainedOn(m, 0x802);
 }
-namespace n10 {
 
-}
 void SkySprite::updateFirework() {
-    using namespace n10;
     work1++;
     u32 t = animSeq;
     BOOL m = FALSE;
@@ -2621,22 +2025,23 @@ void SkySprite::updateFirework() {
         updateFireworkBurst();
     }
 }
-namespace n10 {
 
-}
 void SkySprite::updateFireworkBurst() {
-    using namespace n10;
     u32 flags = work0;
     BOOL r4 = ((flags >> 30) & 1) ? FALSE : TRUE;
     BOOL r6 = Sky_TestBit(flags, 31);
-    if (((SpriteAnim *)(&anim))->isFinished()) {
+    if (anim.isFinished()) {
         if (r4) {
             releaseFireworkPalette();
         }
         state = 3;
     } else {
         updateFireworkScale(-1);
-        SkySprite_ProjectFirework(&screenPos, work3, work4, r6);
+        {
+            Unk_020bee28_Vec2 sp = SkySprite_ProjectFirework(work3, work4);
+            screenPos.x = sp.x;
+            screenPos.y = sp.y;
+        }
         if (r4) {
             updateFireworkPalette();
         }
@@ -2645,11 +2050,8 @@ void SkySprite::updateFireworkBurst() {
         work0 |= kFireworkBurstFlag29;
     }
 }
-namespace n10 {
 
-}
 void SkySprite::updateFireworkShell() {
-    using namespace n10;
     s32 lim;
     u32 flags = work0;
     BOOL b31 = Sky_TestBit(flags, 31);
@@ -2661,7 +2063,7 @@ void SkySprite::updateFireworkShell() {
         }
     } else {
         lim = 0xc0000 - screenPos.z;
-        s32 r = ((SkySprite *)(lim))->riseDistance(work1);
+        s32 r = riseDistance(work1);
         if (r <= 0x20000) {
             scaleY = FX_Div(0x20000, r);
             work4 = 0xc0000 - _s32_div_f(r, 2);
@@ -2678,7 +2080,11 @@ void SkySprite::updateFireworkShell() {
             }
             work4 = 0xc0000 - (r - FX_Div(0x10000, scaleY));
         }
-        SkySprite_ProjectFirework(&screenPos, work3, work4, b31);
+        {
+            Unk_020bee28_Vec2 sp = SkySprite_ProjectFirework(work3, work4);
+            screenPos.x = sp.x;
+            screenPos.y = sp.y;
+        }
     }
     if (done) {
         u32 m, a;
@@ -2696,15 +2102,12 @@ void SkySprite::updateFireworkShell() {
         }
         VecFx32 v;
         SkyVec_Set(&v, work3, screenPos.z - 0x2000, 0);
-        _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 9, 0x3c, &v, a);
-        _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 9, 0x3c, &v, m);
+        gSkySprites.spawn(9, 0x3c, &v, a);
+        gSkySprites.spawn(9, 0x3c, &v, m);
     }
 }
-namespace n10 {
 
-}
 void SkySprite::endFirework() {
-    using namespace n10;
     u32 t = animSeq;
     BOOL m = FALSE;
     t -= 0x21;
@@ -2717,35 +2120,23 @@ void SkySprite::endFirework() {
     }
     release();
 }
-namespace n10 {
 
-}
-void SkySprite::initRainbow() {
-    using namespace n10;
+void SkySprite::initRainbow(u32 unused) {
     screenPos.x = 0xb0000;
     screenPos.y = 0x67000;
     animSeq = 0x15;
     priority = 3;
 }
-namespace n10 {
 
-}
 void SkySprite::updateRainbow() {
-    using namespace n10;
 }
-namespace n10 {
 
-}
 void SkySprite::endRainbow() {
-    using namespace n10;
     release();
 }
-namespace n10 {
 
-}
 void SkySprite::initShot(u32 a) {
-    using namespace n10;
-    SkyShotRequest *rec = _ZN10SkySprites14getShotRequestEi(gSkySprites, a & 0xf);
+    SkyShotRequest *rec = gSkySprites.getShotRequest(a & 0xf);
     s32 id;
     animSeq = 0x2d;
     priority = 2;
@@ -2753,9 +2144,10 @@ void SkySprite::initShot(u32 a) {
     id = rec->playerSlot;
     work1 = id;
     VecFx32 *pos = &rec->pos;
-    const VecFx32 &vt = Sky_ProjectToScreenX(pos);
+    s32 vtx;
+    Sky_ProjectToScreenX(&vtx, pos);
     VecFx32 *p34 = &screenPos;
-    p34->x = vt.x;
+    p34->x = vtx;
     p34->y = 0xc5000;
     p34->z = 0;
     VecFx32 *p40 = &screenVel;
@@ -2766,7 +2158,7 @@ void SkySprite::initShot(u32 a) {
     if (id == PlayerActor_GetLocalSessionSlot() && pos->z < lim) {
         localShot = 1;
     }
-    s32 d = pos->z - gCameraLookAt[2];
+    s32 d = pos->z - gCameraLookAt.z;
     BOOL far = (d < -0x14000 || d > 0xf000) ? TRUE : FALSE;
     a |= far << 31;
     if (far || screenPos.y >= 0xc0000) {
@@ -2774,11 +2166,8 @@ void SkySprite::initShot(u32 a) {
     }
     work2 = a;
 }
-namespace n10 {
 
-}
 void SkySprite::updateShot() {
-    using namespace n10;
     u32 flags = work2;
     work0--;
     if ((s32)work0 < 0) {
@@ -2801,18 +2190,12 @@ void SkySprite::updateShot() {
         hidden = 0;
     }
 }
-namespace n10 {
 
-}
 void SkySprite::endShot() {
-    using namespace n10;
     release();
 }
-namespace n10 {
 
-}
 void SkySprite::initBird(u32 a) {
-    using namespace n10;
     work0 = a;
     work1 = sBirdDelays[a & 3] + 0x14;
     animSeq = 0x2c;
@@ -2831,15 +2214,12 @@ void SkySprite::initBird(u32 a) {
     work3 += 0x8cd;
     work4 -= 0x666;
 }
-namespace n10 {
 
-}
 void SkySprite::updateBird() {
-    using namespace n10;
     if (work1 > 0) {
         work1--;
         if (work1 <= 0 && (work0 & 3) == 0) {
-            _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, 7, 0x805, gVec3Zero);
+            gSkySprites.se.requestSustained(7, 0x805, &gVec3Zero);
         }
     } else {
         VecFx32 *pos = &screenPos;
@@ -2853,28 +2233,19 @@ void SkySprite::updateBird() {
         }
     }
 }
-namespace n10 {
 
-}
 void SkySprite::endBird() {
-    using namespace n10;
     release();
 }
-namespace n10 {
 
-}
 SkySprite *SkySprite::construct() {
-    using namespace n10;
     new (&anim) SpriteAnim();
     clear();
     resetFree();
     return this;
 }
-namespace n10 {
 
-}
 void SkySprite::clear() {
-    using namespace n10;
     u32 z = 0;
     u32 m = ~z;
     scaleX = 0x1000;
@@ -2903,11 +2274,8 @@ void SkySprite::clear() {
     work3 = 0;
     work4 = 0;
 }
-namespace n10 {
 
-}
 void SkySprite::resetFree() {
-    using namespace n10;
     kind = 0xd;
     state = 0;
     gfxId = 0x34;
@@ -2917,458 +2285,418 @@ void SkySprite::resetFree() {
     scaleY = 0x1000;
     angle = 0;
 }
-namespace n10 {
 
-}
-namespace n00 {
 extern "C" {
-const u32 sSkyObjGfxTable[208] = {0x0, 0xffff0000, 0x0, 0xc00, 0x0, 0xffff000c, 0x0, 0xc00, 0x0, 0xffff008c, 0x0,
-    0xc00, 0x0, 0x200ffff, 0x1, 0xc00, 0x0, 0x204ffff, 0x1, 0xc00, 0x0, 0x208ffff, 0x1, 0xc00, 0x0, 0x20cffff,
-    0x1, 0xc00, 0x0, 0x210ffff, 0x1, 0xc00, 0x0, 0x214ffff, 0x1, 0xc00, 0x0, 0x218ffff, 0x1, 0xc00, 0x0,
-    0x21cffff, 0x1, 0xc00, 0x0, 0x280ffff, 0x1, 0xc00, 0x0, 0x284ffff, 0x1, 0xc00, 0x0, 0x288ffff, 0x1, 0xc00,
-    0x0, 0x28cffff, 0x1, 0xc00, 0x0, 0x290ffff, 0x1, 0xc00, 0x0, 0x294ffff, 0x1, 0xc00, 0x0, 0x298ffff, 0x1,
-    0xc00, 0x0, 0x29cffff, 0x1, 0xc00, 0x0, 0x300ffff, 0x1, 0xc00, 0x0, 0x304ffff, 0x1, 0xc00, 0x0, 0x308ffff,
-    0x1, 0xc00, 0x0, 0x30cffff, 0x1, 0xc00, 0x0, 0x310ffff, 0x1, 0xc00, 0x0, 0x314ffff, 0x1, 0xc00, 0x0,
-    0x318ffff, 0x1, 0xc00, 0x0, 0x31cffff, 0x1, 0xc00, 0x0, 0x380ffff, 0x1, 0xc00, 0x0, 0x384ffff, 0x1, 0xc00,
-    0x0, 0x388ffff, 0x1, 0xc00, 0x0, 0x38cffff, 0x1, 0xc00, 0x1, 0x2800200, 0x2, 0xe04, 0x1, 0x2880208, 0x2,
-    0xe04, 0x1, 0x3800300, 0x2, 0xe0d, 0x1, 0x3880308, 0x2, 0xe0d, 0x1, 0x800000, 0x2, 0xe02, 0x1, 0x880008, 0x2,
-    0xe02, 0x1, 0x900010, 0x2, 0xe02, 0x1, 0x1800100, 0x2, 0xe03, 0x1, 0x1880108, 0x2, 0xe03, 0x1, 0x1900110,
-    0x2, 0xe03, 0x1, 0x1980118, 0x2, 0xe03, 0x0, 0x1800100, 0x2, 0xc00, 0x0, 0xffff010c, 0x0, 0xd09, 0x0,
-    0x1900110, 0x2, 0xd09, 0x0, 0x1980118, 0x2, 0xd09, 0x0, 0x800004, 0x4, 0xd01, 0x1, 0xffff0210, 0x0, 0xe03,
-    0x2, 0xffffffff, 0x6, 0xffff, 0x2, 0xffffffff, 0x6, 0xffff, 0x2, 0xffffffff, 0x6, 0xffff, 0x0, 0xffff0010,
-    0x0, 0xc00};
-const u32 sSkyNextCloudBgLayer[1] = {0x206};
-void *data_020e6124[132] = {0, (void *)0x2, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4,
-    (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0,
-    (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x10000, (void *)data_020e49f4, (void *)0x1, (void *)0x20000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x20000, (void *)data_020e49f4, (void *)0x1, (void *)0x30000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x30000, (void *)data_020e49f4, (void *)0x1, (void *)0x40000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x40000, (void *)data_020e49f4, (void *)0x1, (void *)0x50000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x50000, (void *)data_020e49f4, (void *)0x1, (void *)0x60000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x60000, (void *)data_020e49f4, (void *)0x1, (void *)0x60000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x70000, (void *)data_020e49f4, (void *)0x1, (void *)0x70000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x80000, (void *)data_020e49f4, (void *)0x1, (void *)0x80000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0x90000, (void *)data_020e49f4, (void *)0x1, (void *)0x90000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xa0000, (void *)data_020e49f4, (void *)0x1, (void *)0xa0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e49f4, (void *)0x1, (void *)0xb0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e49f4, (void *)0x1, (void *)0xc0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xc0000, (void *)data_020e49f4, (void *)0x1, (void *)0xc0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e49f4, (void *)0x1, (void *)0xd0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e49f4, (void *)0x1, (void *)0xe0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e49f4, (void *)0x1, (void *)0xe0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e49f4, (void *)0x1, (void *)0xf0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xf0000, (void *)data_020e49f4, (void *)0x1, (void *)0xf0000, (void *)data_020e49f4,
-    (void *)0x1, (void *)0xf0000};
+const SkyObjGfxDef sSkyObjGfxTable[52] = {
+    {0, 0x0, 0xffff, 0, 0, 12, 0, 0},
+    {0, 0xc, 0xffff, 0, 0, 12, 0, 0},
+    {0, 0x8c, 0xffff, 0, 0, 12, 0, 0},
+    {0, 0xffff, 0x200, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x204, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x208, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x20c, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x210, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x214, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x218, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x21c, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x280, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x284, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x288, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x28c, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x290, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x294, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x298, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x29c, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x300, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x304, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x308, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x30c, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x310, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x314, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x318, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x31c, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x380, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x384, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x388, 1, 0, 12, 0, 0},
+    {0, 0xffff, 0x38c, 1, 0, 12, 0, 0},
+    {1, 0x200, 0x280, 2, 4, 14, 0, 0},
+    {1, 0x208, 0x288, 2, 4, 14, 0, 0},
+    {1, 0x300, 0x380, 2, 13, 14, 0, 0},
+    {1, 0x308, 0x388, 2, 13, 14, 0, 0},
+    {1, 0x0, 0x80, 2, 2, 14, 0, 0},
+    {1, 0x8, 0x88, 2, 2, 14, 0, 0},
+    {1, 0x10, 0x90, 2, 2, 14, 0, 0},
+    {1, 0x100, 0x180, 2, 3, 14, 0, 0},
+    {1, 0x108, 0x188, 2, 3, 14, 0, 0},
+    {1, 0x110, 0x190, 2, 3, 14, 0, 0},
+    {1, 0x118, 0x198, 2, 3, 14, 0, 0},
+    {0, 0x100, 0x180, 2, 0, 12, 0, 0},
+    {0, 0x10c, 0xffff, 0, 9, 13, 0, 0},
+    {0, 0x110, 0x190, 2, 9, 13, 0, 0},
+    {0, 0x118, 0x198, 2, 9, 13, 0, 0},
+    {0, 0x4, 0x80, 4, 1, 13, 0, 0},
+    {1, 0x210, 0xffff, 0, 3, 14, 0, 0},
+    {2, 0xffff, 0xffff, 6, -1, -1, 0, 0},
+    {2, 0xffff, 0xffff, 6, -1, -1, 0, 0},
+    {2, 0xffff, 0xffff, 6, -1, -1, 0, 0},
+    {0, 0x10, 0xffff, 0, 0, 12, 0, 0},
+};
+const u8 sSkyNextCloudBgLayer[4] = {
+    0x6, 0x2, 0x0, 0x0,
+};
+SpriteAnimFrame data_020e6124[44] = {
+    {NULL, 2, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 1},
+    {data_020e49f4, 1, 0, 2},
+    {data_020e49f4, 1, 0, 2},
+    {data_020e49f4, 1, 0, 3},
+    {data_020e49f4, 1, 0, 3},
+    {data_020e49f4, 1, 0, 4},
+    {data_020e49f4, 1, 0, 4},
+    {data_020e49f4, 1, 0, 5},
+    {data_020e49f4, 1, 0, 5},
+    {data_020e49f4, 1, 0, 6},
+    {data_020e49f4, 1, 0, 6},
+    {data_020e49f4, 1, 0, 6},
+    {data_020e49f4, 1, 0, 7},
+    {data_020e49f4, 1, 0, 7},
+    {data_020e49f4, 1, 0, 8},
+    {data_020e49f4, 1, 0, 8},
+    {data_020e49f4, 1, 0, 9},
+    {data_020e49f4, 1, 0, 9},
+    {data_020e49f4, 1, 0, 10},
+    {data_020e49f4, 1, 0, 10},
+    {data_020e49f4, 1, 0, 11},
+    {data_020e49f4, 1, 0, 11},
+    {data_020e49f4, 1, 0, 11},
+    {data_020e49f4, 1, 0, 12},
+    {data_020e49f4, 1, 0, 12},
+    {data_020e49f4, 1, 0, 12},
+    {data_020e49f4, 1, 0, 13},
+    {data_020e49f4, 1, 0, 13},
+    {data_020e49f4, 1, 0, 13},
+    {data_020e49f4, 1, 0, 14},
+    {data_020e49f4, 1, 0, 14},
+    {data_020e49f4, 1, 0, 14},
+    {data_020e49f4, 1, 0, 14},
+    {data_020e49f4, 1, 0, 15},
+    {data_020e49f4, 1, 0, 15},
+    {data_020e49f4, 1, 0, 15},
+    {data_020e49f4, 1, 0, 15},
+};
 u32 data_020e4c24[4] = {0x91f880e0, 0x9e, 0x91f88000, 0xffff011e};
 }
-}
-namespace n10 {
-}
 void SkySprite::initByKind(u32 a) {
-    using namespace n10;
     static void (SkySprite::*tbl[13])(u32) = {
-        *(void (SkySprite::**)(u32))n00::data_020e4a4c, *(void (SkySprite::**)(u32))n00::data_020e481c, *(void (SkySprite::**)(u32))n00::data_020e4714,
-        *(void (SkySprite::**)(u32))n00::data_020e4a34, *(void (SkySprite::**)(u32))n00::data_020e48b4, *(void (SkySprite::**)(u32))n00::data_020e471c,
-        *(void (SkySprite::**)(u32))n00::data_020e48fc, *(void (SkySprite::**)(u32))n00::data_020e46f4, *(void (SkySprite::**)(u32))n00::data_020e480c,
-        *(void (SkySprite::**)(u32))n00::data_020e4a04, *(void (SkySprite::**)(u32))n00::data_020e468c,
-        *(void (SkySprite::**)(u32))n00::data_020e47ac, *(void (SkySprite::**)(u32))n00::data_020e473c,
+        &SkySprite::initRainDrop, &SkySprite::initSnowFlake, &SkySprite::initParticle,
+        &SkySprite::initShootingStar, &SkySprite::initMoon, &SkySprite::initBalloon,
+        &SkySprite::initUfo, &SkySprite::initPete, &SkySprite::initLightning,
+        &SkySprite::initFirework, &SkySprite::initRainbow,
+        &SkySprite::initShot, &SkySprite::initBird,
     };
     void (SkySprite::*fn)(u32) = tbl[kind];
     if (fn) {
         (this->*fn)(a);
     }
 }
-namespace n10 {
 
-}
-namespace n00 {
 extern "C" {
-const u32 data_020d1148[12] = {0xcb00d2, 0xbb00c3, 0xb400b4, 0xd200b4, 0x10400f0, 0x12c0118, 0x1400140,
-    0x1400140, 0x1400140, 0x1400140, 0x11b0140, 0xee00ff};
+const u16 data_020d1148[24] = {
+    0xd2, 0xcb, 0xc3, 0xbb, 0xb4, 0xb4, 0xb4, 0xd2, 0xf0, 0x104, 0x118, 0x12c,
+    0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x140, 0x11b, 0xff, 0xee,
+};
 u32 data_020e4644[2] = {0x81f000f0, 0xffff309c};
-void *data_020e4804[2] = {(void *)SkySprites_FireworksPatternAct10, 0};
-const u32 sSnowAnimIds[3] = {0x5, 0x6, 0x7};
+const s32 sSnowAnimIds[3] = {0x5, 0x6, 0x7};
 u32 data_020e4c34[4] = {0x51fc80e0, 0x9d, 0x51fc8000, 0xffff011d};
 const u8 sSkyObjPalOverrideSlots[15] = {0xde, 0xdf, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xcb, 0xcc, 0xcd, 0xce,
     0xcf};
 char *data_020e4d70[5] = {data_020e4fe8, data_020e5008, data_020e5028,
     data_020e5048, data_020e5048};
-const u32 data_020d1178[12] = {0x8f0096, 0x800087, 0x780078, 0x960078, 0xbc00b4, 0xc100c3, 0xd200d2, 0xd200d2,
-    0xd200d2, 0xd200d2, 0xc300d2, 0xa500b4};
-void *data_020e49dc[2] = {(void *)_ZN9SkySprite10updateBirdEv, 0};
-void *data_020e4ae8[3] = {(void *)data_020e4864, (void *)0x4, 0};
+const u16 data_020d1178[24] = {
+    0x96, 0x8f, 0x87, 0x80, 0x78, 0x78, 0x78, 0x96, 0xb4, 0xbc, 0xc3, 0xc1,
+    0xd2, 0xd2, 0xd2, 0xd2, 0xd2, 0xd2, 0xd2, 0xd2, 0xd2, 0xc3, 0xb4, 0xa5,
+};
+SpriteAnimFrame data_020e4ae8[1] = {
+    {data_020e4864, 4, 0, 0},
+};
 u32 data_020e4c54[4] = {0x71fc8000, 0x9d, 0x71fc80e0, 0xffff011d};
 u32 data_020e497c[2] = {0x81f000f0, 0xffff211c};
-void *data_020e49ac[2] = {(void *)_ZN15SkyShotSequence10actUfoFallEv, 0};
-void *data_020e5258[12] = {(void *)data_020e49a4, (void *)0x1, 0, (void *)data_020e4a1c, (void *)0x1, 0,
-    (void *)data_020e486c, (void *)0x1, 0, (void *)data_020e477c, (void *)0x1, 0};
+SpriteAnimFrame data_020e5258[4] = {
+    {data_020e49a4, 1, 0, 0},
+    {data_020e4a1c, 1, 0, 0},
+    {data_020e486c, 1, 0, 0},
+    {data_020e477c, 1, 0, 0},
+};
 const u32 sFireworkShellTypes[4] = {0x21, 0x24, 0x27, 0x2a};
-u32 sSnowSideToggle[1] = {0x1};
-const u32 sWeatherHourTable[192] = {0x0, 0x101, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1010000, 0x1010101, 0x1, 0x0, 0x0,
-    0x0, 0x1010100, 0x10101, 0x0, 0x1010101, 0x1, 0x1010100, 0x1010101, 0x0, 0x0, 0x1000000, 0x1010101,
-    0x1010101, 0x1010000, 0x1, 0x0, 0x1010100, 0x1010101, 0x2010101, 0x1020202, 0x1010101, 0x1010101, 0x1010101,
-    0x1020202, 0x1010101, 0x1010101, 0x1010202, 0x1010101, 0x1010101, 0x2020202, 0x2020101, 0x2010102, 0x2020202,
-    0x1010102, 0x2020201, 0x2020202, 0x1020202, 0x2020202, 0x1020202, 0x2010101, 0x2020202, 0x3030202, 0x2020203,
-    0x2020303, 0x2020202, 0x2020202, 0x2020202, 0x1020203, 0x3030302, 0x2030303, 0x3030202, 0x2020203, 0x3030302,
-    0x2030303, 0x2030302, 0x3030202, 0x2030303, 0x3020202, 0x3030303, 0x3030303, 0x3030203, 0x3030203, 0x3030303,
-    0x2020303, 0x3030303, 0x4030303, 0x4030304, 0x3040404, 0x3030303, 0x3030202, 0x3030303, 0x4040403, 0x4040404,
-    0x4030304, 0x4040404, 0x3030304, 0x3040404, 0x4040404, 0x4040404, 0x4040404, 0x3030404, 0x3020203, 0x4040303,
-    0x2020202, 0x1010102, 0x1010101, 0x2020101, 0x2020202, 0x3020202, 0x1010101, 0x1010101, 0x3020201, 0x2020203,
-    0x2020202, 0x2020202, 0x1010000, 0x2020201, 0x2020202, 0x2020202, 0x3030302, 0x2020202, 0x2030303, 0x2020202,
-    0x1010102, 0x1010101, 0x1000000, 0x2010101, 0x2020203, 0x2030202, 0x1010101, 0x1010101, 0x1010101, 0x1010101,
-    0x2030202, 0x1010202, 0x101, 0x0, 0x1010000, 0x10101, 0x1, 0x3010000, 0x1010101, 0x1010101, 0x1010101,
-    0x1010101, 0x0, 0x1030101, 0x1010101, 0x1010101, 0x1010101, 0x1010101, 0x0, 0x1000000, 0x1020401, 0x0, 0x0,
-    0x10100, 0x101, 0x1010100, 0x1010204, 0x1010101, 0x1010101, 0x1010101, 0x2010202, 0x3030202, 0x3040403,
-    0x3030303, 0x3030303, 0x3030303, 0x2020202, 0x2030303, 0x3030202, 0x2030303, 0x3030303, 0x2020303, 0x2020202,
-    0x2020202, 0x3030303, 0x3030303, 0x3030303, 0x3040303, 0x2020303, 0x2030302, 0x1010202, 0x2020202, 0x2020202,
-    0x2020202, 0x3030303, 0x3030303, 0x2020203, 0x2020202, 0x2020101, 0x2020202, 0x3030404, 0x3020203, 0x2020202,
-    0x2020202, 0x1010202, 0x2020202};
+s32 sSnowSideToggle = 1;
+const s8 sWeatherHourTable[768] = {
+    0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1,
+    0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1,
+    0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x2,
+    0x2, 0x2, 0x2, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+    0x2, 0x2, 0x2, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x1, 0x1,
+    0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x1, 0x1, 0x2, 0x2,
+    0x2, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2,
+    0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x1,
+    0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2,
+    0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2,
+    0x3, 0x2, 0x2, 0x1, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x3, 0x3,
+    0x3, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2, 0x3, 0x3, 0x2,
+    0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3,
+    0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x3, 0x3, 0x3, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+    0x3, 0x3, 0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x4, 0x4, 0x3, 0x3, 0x4,
+    0x4, 0x4, 0x4, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+    0x3, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x3, 0x3, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x3, 0x3, 0x3, 0x4, 0x4, 0x4, 0x3, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x4,
+    0x4, 0x4, 0x4, 0x4, 0x4, 0x4, 0x3, 0x3, 0x3, 0x2, 0x2, 0x3, 0x3, 0x3, 0x4, 0x4,
+    0x2, 0x2, 0x2, 0x2, 0x2, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2,
+    0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x3, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+    0x1, 0x2, 0x2, 0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2,
+    0x0, 0x0, 0x1, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2,
+    0x2, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x2,
+    0x2, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x2,
+    0x3, 0x2, 0x2, 0x2, 0x2, 0x2, 0x3, 0x2, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+    0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x2, 0x2, 0x3, 0x2, 0x2, 0x2, 0x1, 0x1,
+    0x1, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0,
+    0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x3, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+    0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x3, 0x1,
+    0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x4, 0x2, 0x1, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x0, 0x1, 0x1, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1,
+    0x4, 0x2, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+    0x2, 0x2, 0x1, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x4, 0x4, 0x3, 0x3, 0x3, 0x3, 0x3,
+    0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x2,
+    0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2,
+    0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3,
+    0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x4, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x3, 0x3, 0x2,
+    0x2, 0x2, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2,
+    0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2,
+    0x1, 0x1, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x4, 0x4, 0x3, 0x3, 0x3, 0x2, 0x2, 0x3,
+    0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x2, 0x1, 0x1, 0x2, 0x2, 0x2, 0x2,
+};
 u32 data_020e5610[20] = {0x1ff0009, 0x30d4, 0x300300e6, 0x3094, 0x201100ff, 0x30b6, 0x1e900fa, 0x30b6, 0xd00f4,
     0x30b6, 0x1f700e9, 0x3095, 0x300f000c, 0x30b4, 0x1000ea, 0x30d7, 0x1f000ef, 0x30b4, 0x1ec0005, 0xffff3097};
 u32 data_020e5440[18] = {0x1f500e5, 0x30b7, 0x30130001, 0x30b7, 0x100d0009, 0x30b6, 0x200600e3, 0x30b6,
     0x1e800f9, 0x30b6, 0x301000f7, 0x30b6, 0x201100ea, 0x3097, 0x31ed00ed, 0x3094, 0x11ed0006, 0xffff3097};
-u32 data_020e4634[1] = {0x9};
+u8 data_020e4634[4] = {0x9};
 u32 data_020e48d4[2] = {0x81f000f0, 0xffff2098};
-void *data_020e47cc[2] = {(void *)SkySprites_FireworksPatternAct0D, 0};
-void *data_020e47e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0AEv, 0};
-void *data_020e4834[2] = {(void *)_ZN9SkySprite10updatePeteEv, 0};
-const u32 sSnowSpawnRates[8] = {0x3e8, 0x7d0, 0x3e8, 0x7d0, 0x320, 0x3e8, 0x258, 0x320};
-void *data_020e472c[2] = {(void *)_ZN15SkyShotSequence13actUfoCrashedEv, 0};
-void *data_020e58a8[27] = {(void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0,
-    (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4,
-    (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0,
-    (void *)data_020e49f4, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
-const u32 sParticleAnimIds[6] = {0x2b, 0x10, 0x19, 0x1a, 0x1b, 0x1c};
+const SkySpawnRate sSnowSpawnRates[4] = {{0x3e8, 0x7d0}, {0x3e8, 0x7d0}, {0x320, 0x3e8}, {0x258, 0x320}};
+SpriteAnimFrame data_020e58a8[9] = {
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 0},
+    {data_020e49f4, 1, 0, 2},
+    {NULL, 37, 0, 0},
+};
+const s32 sParticleAnimIds[6] = {0x2b, 0x10, 0x19, 0x1a, 0x1b, 0x1c};
 u32 data_020e470c[2] = {0x1fc00fc, 0xffff0078};
-const u32 sFireworkScaleSmallLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
-    0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835,
-    0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800,
-    0x800, 0x800, 0x800};
-void *data_020e481c[2] = {(void *)SkySprite_InitSnowFlake, 0};
+const s32 sFireworkScaleSmallLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800};
 char data_020e5088[31] = "/sky/d_2d_b_cld_f_a_bg_nsc.bin";
 u32 data_020e52b8[12] = {0x1700f7, 0x30b7, 0x11f0000c, 0x3095, 0x100f000c, 0x30d4, 0x11e200fc, 0x3095,
     0x101400e8, 0x30d6, 0x11ea00e9, 0xffff30b6};
-void *data_020e4664[2] = {(void *)_ZN15SkyShotSequence10actPeteHitEv, 0};
-void *data_020e4904[2] = {(void *)_ZN9SkySprite7endBirdEv, 0};
 WeatherManager gWeatherManager;
 u32 data_020e5488[18] = {0x130002, 0x30f7, 0x31f500e5, 0x30f6, 0xc0007, 0x30f6, 0x200600e4, 0x30f6, 0x1e600fa,
     0x30b6, 0x101300f5, 0x30b6, 0x201300ea, 0x3097, 0x31eb00eb, 0x30d5, 0x11f20008, 0xffff3097};
 u32 data_020e4a5c[2] = {0x400080f0, 0xffff0094};
 u32 data_020e4cc4[4] = {0x91f880e0, 0x9a, 0x91f88000, 0xffff011a};
 u32 data_020e4cd4[4] = {0x51fc80e0, 0x99, 0x51fc8000, 0xffff0119};
-void *data_020e4ac4[3] = {(void *)data_020e46dc, (void *)0x1, 0};
-void *data_020e480c[2] = {(void *)_ZN9SkySprite13initLightningEv, 0};
-void *data_020e4a94[3] = {(void *)data_020e47c4, (void *)0x1, 0};
+SpriteAnimFrame data_020e4ac4[1] = {
+    {data_020e46dc, 1, 0, 0},
+};
+SpriteAnimFrame data_020e4a94[1] = {
+    {data_020e47c4, 1, 0, 0},
+};
 char data_020e4f88[30] = "/sky/d_2d_b_cld_f1_bg_ncl.bin";
 u32 data_020e4cf4[4] = {0x61fc8000, 0x99, 0x61fc80e0, 0xffff0119};
 U234_Record sSkyProcProfile = {(void *)SkyProc_Create, 0x89, 0x8f};
 char data_020e4e10[27] = "/sky/d_2d_b_cld_bg_ncg.bin";
-void *data_020e490c[2] = {(void *)_ZN9SkySprite7endShotEv, 0};
-}
-}
-namespace n10 {
 }
 void SkySprite::updateByKind() {
-    using namespace n10;
     static void (SkySprite::*tbl[13])() = {
-        *(void (SkySprite::**)())n00::data_020e4954, *(void (SkySprite::**)())n00::data_020e4744, *(void (SkySprite::**)())n00::data_020e48ac,
-        *(void (SkySprite::**)())n00::data_020e496c, *(void (SkySprite::**)())n00::data_020e49bc, *(void (SkySprite::**)())n00::data_020e49c4,
-        *(void (SkySprite::**)())n00::data_020e4974, *(void (SkySprite::**)())n00::data_020e4834, *(void (SkySprite::**)())n00::data_020e46bc,
-        *(void (SkySprite::**)())n00::data_020e4a2c, *(void (SkySprite::**)())n00::data_020e479c, *(void (SkySprite::**)())n00::data_020e47a4,
-        *(void (SkySprite::**)())n00::data_020e49dc,
+        &SkySprite::updateRainDrop, &SkySprite::updateSnowFlake, &SkySprite::updateParticle,
+        &SkySprite::updateShootingStar, &SkySprite::updateMoon, &SkySprite::updateBalloon,
+        &SkySprite::updateUfo, &SkySprite::updatePete, &SkySprite::updateLightning,
+        &SkySprite::updateFirework, &SkySprite::updateRainbow, &SkySprite::updateShot,
+        &SkySprite::updateBird,
     };
     void (SkySprite::*fn)() = tbl[kind];
     if (fn) {
         (this->*fn)();
     }
 }
-namespace n10 {
 
-#undef data_021f44ac
-}
 
 // ======== unk_020bd868.cpp ========
-namespace n09 {
 extern "C" {
-extern SkyObjGfxDef sSkyObjGfxTable[];
-}
-extern "C" {
-extern s32 gWeatherManager;
-}
-extern "C" {
-extern u16 sSkyObjPalDefaultColor;
-}
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
-#define data_021f4398 (*(decltype(&n09::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-void MI_CpuCopy8(void*, void*, u32);
-}
-extern "C" {
-void DC_FlushRange(void*, u32);
-}
-extern "C" {
-void GX_LoadOBJPltt(void*, u32, u32);
-}
-extern "C" {
-void GXS_LoadOBJPltt(void*, u32, u32);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN13SkyObjPalette10invalidateEi(SkyObjPalette*, s32);
-}
-extern "C" {
-void _ZN13SkyObjPalette13invalidateForEi(void*, s32);
-}
-extern "C" {
-void MI_CpuFill8(void*, u32, u32);
-}
-extern "C" {
-extern SkyObjCharLayout sSkyObjCharLayouts[];
-}
-extern "C" {
-void GX_LoadOBJ(u32, u32, u32);
-}
-extern "C" {
-void GXS_LoadOBJ(u32, u32, u32);
-}
-extern "C" {
-static inline void SkyObjGfx_LoadTileRow(u32 d, u32 a, u32 n, u32 k, BOOL flag) {
+static inline void SkyObjGfx_LoadTileRow(const u8 *d, u32 a, u32 n, u32 k, BOOL flag) {
     u32 sz = n << 5;
-    u32 src = (k + a) << 5;
-    GX_LoadOBJ(d, src, sz);
-    if (flag) GXS_LoadOBJ(d, src, sz);
+    u32 dst = (k + a) << 5;
+    GX_LoadOBJ(d, dst, sz);
+    if (flag) GXS_LoadOBJ(d, dst, sz);
 }
-}
-extern "C" {
-s32 FS_OpenFile(void*, const char*);
-}
-extern "C" {
-s32 FS_ReadFile(void*, void*, u32);
-}
-extern "C" {
-s32 FS_CloseFile(void*);
-}
-extern "C" {
-s32 FS_SeekFile(void*, u32, u32);
-}
-extern "C" {
-void FS_InitFile(void*);
-}
-extern "C" {
-extern const char* sSkyObjCharFiles[];
-}
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
-#define data_021f44ac (*(decltype(&n09::L_021f44ac::gSkySprites.v))((u8 *)&::n00::gSkySprites.se.channels[0] + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void*, s32, s32, void*);
-}
-extern "C" {
-void _ZN11SkySePlayer7requestEiiP7VecFx32(void*, s32, s32, void*);
-}
-extern "C" {
-void SkySprite_GetPos(SkySprite*, VecFx32*);
-}
-extern "C" {
-s32 SkySprite_MakeSoundPos(VecFx32*, s32, s32, s32);
-}
-extern "C" {
-void SkySprite_GetSoundPos(SkySprite*, VecFx32*);
-}
-extern "C" {
-s32 func_01ffcb0c(s32, s32);
-}
-extern "C" {
-s32 FX_Div(s32, s32);
-}
-extern "C" {
-s32 FX_Inv(s32);
-}
-extern "C" {
-s32 _s32_div_f(s32, s32);
-}
-extern "C" {
-extern s32 data_020c8cb8;
-}
-extern "C" {
-extern s32 data_020c8cbc;
-}
-extern "C" {
-extern s32 gCamera;
-}
-extern "C" {
-extern s32 sSkyCrossingWidth;
-}
-extern "C" {
-extern SkyLookAtVec gCameraLookAt;
-}
-extern "C" {
-extern s16 data_02135f44[][2];
-}
-extern "C" {
-s32 Camera_GetCloseUpFactor();
-}
-extern "C" {
-void SkySprite_ProjectWorldPos(SkySprite*, VecFx32*, s32);
-}
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
-#define data_021f3010 (*(decltype(&n09::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern SkySpriteAnimDef sSkySpriteAnimSeqs[];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10SpriteAnim7restartEv(void*);
 }
 
-extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx);
-extern "C" SkyObjPalette* SkyObjPalette_Init(SkyObjPalette* p);
-extern "C" void SkyObjGfxSlot_Release(SkyObjGfxSlot* p);
-extern "C" void SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot* p, s32 a);
-extern "C" void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot* p, s32 v);
-extern "C" void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, void* x);
-extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, u8* base);
-extern "C" void SkyObjGfxSlot_Init(SkyObjGfxSlot* p);
-extern "C" void SkyObjGfxLoader_FlushChars(u8* p);
-extern "C" BOOL SkyObjGfxLoader_LoadPalettes(u8* p);
-extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx);
-extern "C" void SkyObjGfxLoader_Init(u8* p);
-extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b);
-extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a);
-extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a);
-extern "C" void SkySprite_GetPos(SkySprite* p, VecFx32* out);
-extern "C" void SkySprite_GetSoundPos(SkySprite* p, VecFx32* out);
-extern "C" s32 SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
-extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c);
-extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a);
-extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a);
-extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c);
-extern "C" void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b);
-extern "C" void SkySprite_Release(SkySprite* p);
-extern "C" void SkySprite_StartAnim(SkySprite* p);
 
-}
-namespace n00 {
 extern "C" {
 u32 data_020e47f4[2] = {0x81f000f0, 0xffff4118};
 u32 data_020e4d14[4] = {0x71fc8000, 0x99, 0x71fc80e0, 0xffff0119};
 u32 data_020e4d24[4] = {0x71fc8000, 0x98, 0x71fc80e0, 0xffff0118};
-const u32 sSkyObjCharLayouts[20] = {0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x4, 0x8, 0x4, 0x8, 0x0, 0xc, 0x4, 0x8,
-    0x4, 0x8, 0x0, 0xc};
+const SkyObjCharLayout sSkyObjCharLayouts[5] = {{0x0, 0x4, 0x0, 0x0}, {0x0, 0x0, 0x0, 0x4}, {0x4, 0x8, 0x4, 0x8}, {0x0, 0xc, 0x4, 0x8}, {0x4, 0x8, 0x0, 0xc}};
 u32 sSkyOutdoors;
 u32 data_020e487c[2] = {0x0, 0xffff0094};
-void *data_020e4a34[2] = {(void *)SkySprite_InitShootingStar, 0};
-void *data_020e49bc[2] = {(void *)SkySprite_UpdateMoon, 0};
 char *data_020e4d98[5] = {data_020e5068, data_020e5068, data_020e5088,
     data_020e50a8, data_020e50c8};
 char data_020e4fa8[30] = "/sky/d_2d_b_cld_r0_bg_ncl.bin";
-void *sSkySpriteAnimSeqs[138] = {(void *)data_020e5318, (void *)0x4, (void *)0x1, (void *)data_020e5704, (void *)0x8,
-    0, (void *)data_020e4adc, (void *)0x1, (void *)0x1, (void *)data_020e4ae8, (void *)0x1, (void *)0x1,
-    (void *)data_020e4af4, (void *)0x1, (void *)0x1, (void *)data_020e4b00, (void *)0x1, (void *)0x1,
-    (void *)data_020e4b0c, (void *)0x1, (void *)0x1, (void *)data_020e4b18, (void *)0x1, (void *)0x1,
-    (void *)data_020e50e8, (void *)0x3, (void *)0x1, (void *)data_020e510c, (void *)0x3, (void *)0x1,
-    (void *)data_020e5130, (void *)0x3, (void *)0x1, (void *)data_020e5154, (void *)0x3, (void *)0x1,
-    (void *)data_020e5178, (void *)0x3, (void *)0x1, (void *)data_020e519c, (void *)0x3, (void *)0x1,
-    (void *)data_020e51c0, (void *)0x3, (void *)0x1, (void *)data_020e51e4, (void *)0x3, (void *)0x1,
-    (void *)data_020e4b30, (void *)0x1, (void *)0x1, (void *)data_020e4b3c, (void *)0x1, (void *)0x1,
-    (void *)data_020e4b48, (void *)0x1, (void *)0x1, (void *)data_020e5348, (void *)0x4, 0,
-    (void *)data_020e5258, (void *)0x4, 0, (void *)data_020e4a64, (void *)0x1, (void *)0x1,
-    (void *)data_020e56b0, (void *)0x7, 0, (void *)data_020e5288, (void *)0x4, (void *)0x1,
-    (void *)data_020e53b0, (void *)0x6, 0, (void *)data_020e4a70, (void *)0x1, (void *)0x1,
-    (void *)data_020e4b24, (void *)0x1, (void *)0x1, (void *)data_020e4a7c, (void *)0x1, (void *)0x1,
-    (void *)data_020e4a88, (void *)0x1, (void *)0x1, (void *)data_020e5764, (void *)0x9, (void *)0x1,
-    (void *)data_020e5af4, (void *)0x2c, (void *)0x1, (void *)data_020e57d0, (void *)0x9, (void *)0x1,
-    (void *)data_020e5d04, (void *)0x2c, (void *)0x1, (void *)data_020e4a94, (void *)0x1, (void *)0x1,
-    (void *)data_020e583c, (void *)0x9, (void *)0x1, (void *)data_020e5f14, (void *)0x2c, (void *)0x1,
-    (void *)data_020e4aa0, (void *)0x1, (void *)0x1, (void *)data_020e58a8, (void *)0x9, (void *)0x1,
-    (void *)data_020e6124, (void *)0x2c, (void *)0x1, (void *)data_020e4aac, (void *)0x1, (void *)0x1,
-    (void *)data_020e5914, (void *)0x9, (void *)0x1, (void *)data_020e6334, (void *)0x2c, (void *)0x1,
-    (void *)data_020e4ab8, (void *)0x1, (void *)0x1, (void *)data_020e5980, (void *)0xf, (void *)0x1,
-    (void *)data_020e4ddc, (void *)0x2, 0, (void *)data_020e4ac4, (void *)0x1, (void *)0x1};
+SkySpriteAnimDef sSkySpriteAnimSeqs[46] = {
+    {{data_020e5318, 4}, 1},
+    {{data_020e5704, 8}, 0},
+    {{data_020e4adc, 1}, 1},
+    {{data_020e4ae8, 1}, 1},
+    {{data_020e4af4, 1}, 1},
+    {{data_020e4b00, 1}, 1},
+    {{data_020e4b0c, 1}, 1},
+    {{data_020e4b18, 1}, 1},
+    {{data_020e50e8, 3}, 1},
+    {{data_020e510c, 3}, 1},
+    {{data_020e5130, 3}, 1},
+    {{data_020e5154, 3}, 1},
+    {{data_020e5178, 3}, 1},
+    {{data_020e519c, 3}, 1},
+    {{data_020e51c0, 3}, 1},
+    {{data_020e51e4, 3}, 1},
+    {{data_020e4b30, 1}, 1},
+    {{data_020e4b3c, 1}, 1},
+    {{data_020e4b48, 1}, 1},
+    {{data_020e5348, 4}, 0},
+    {{data_020e5258, 4}, 0},
+    {{data_020e4a64, 1}, 1},
+    {{data_020e56b0, 7}, 0},
+    {{data_020e5288, 4}, 1},
+    {{data_020e53b0, 6}, 0},
+    {{data_020e4a70, 1}, 1},
+    {{data_020e4b24, 1}, 1},
+    {{data_020e4a7c, 1}, 1},
+    {{data_020e4a88, 1}, 1},
+    {{data_020e5764, 9}, 1},
+    {{data_020e5af4, 44}, 1},
+    {{data_020e57d0, 9}, 1},
+    {{data_020e5d04, 44}, 1},
+    {{data_020e4a94, 1}, 1},
+    {{data_020e583c, 9}, 1},
+    {{data_020e5f14, 44}, 1},
+    {{data_020e4aa0, 1}, 1},
+    {{data_020e58a8, 9}, 1},
+    {{data_020e6124, 44}, 1},
+    {{data_020e4aac, 1}, 1},
+    {{data_020e5914, 9}, 1},
+    {{data_020e6334, 44}, 1},
+    {{data_020e4ab8, 1}, 1},
+    {{data_020e5980, 15}, 1},
+    {{data_020e4ddc, 2}, 0},
+    {{data_020e4ac4, 1}, 1},
+};
 char data_020e50c8[31] = "/sky/d_2d_b_cld_r_a_bg_nsc.bin";
-void *data_020e4964[2] = {(void *)_ZN9SkySprite11endRainDropEv, 0};
-void *data_020e4b30[3] = {(void *)data_020e498c, (void *)0x1, 0};
+SpriteAnimFrame data_020e4b30[1] = {
+    {data_020e498c, 1, 0, 0},
+};
 u32 data_020e4a54[2] = {0x81f880f0, 0xffff4118};
 u32 data_020e4a3c[2] = {0x1fc80f8, 0xffff0094};
 u32 data_020e4984[2] = {0x81f880f0, 0xffff4098};
-const u32 sSkyStarBgLayer[1] = {0x4};
+const u8 sSkyStarBgLayer[4] = {
+    0x4, 0x0, 0x0, 0x0,
+};
 u32 data_020e49ec[2] = {0x81e003e0, 0xffff9098};
 u32 data_020e476c[2] = {0x81f880f0, 0xffff4098};
-void *data_020e4754[2] = {(void *)_ZN9SkySprite11endFireworkEv, 0};
-void *data_020e4b3c[3] = {(void *)data_020e482c, (void *)0x1, 0};
-void *data_020e53b0[18] = {(void *)data_020e466c, (void *)0x2, 0, (void *)data_020e495c, (void *)0x2, 0,
-    (void *)data_020e4764, (void *)0x2, 0, (void *)data_020e48dc, (void *)0x2, 0, (void *)data_020e499c,
-    (void *)0x2, 0, (void *)data_020e469c, (void *)0x2, 0};
-void *data_020e4a2c[2] = {(void *)_ZN9SkySprite14updateFireworkEv, 0};
+SpriteAnimFrame data_020e4b3c[1] = {
+    {data_020e482c, 1, 0, 0},
+};
+SpriteAnimFrame data_020e53b0[6] = {
+    {data_020e466c, 2, 0, 0},
+    {data_020e495c, 2, 0, 0},
+    {data_020e4764, 2, 0, 0},
+    {data_020e48dc, 2, 0, 0},
+    {data_020e499c, 2, 0, 0},
+    {data_020e469c, 2, 0, 0},
+};
 u32 data_020e49d4[2] = {0x1fc00fc, 0xffff0077};
-void *data_020e46cc[2] = {(void *)SkySprites_FireworksPatternAct0E, 0};
-void *data_020e5980[45] = {(void *)data_020e5208, (void *)0x1, 0, (void *)data_020e54d0, (void *)0x1, 0,
-    (void *)data_020e5520, (void *)0x1, 0, (void *)data_020e5570, (void *)0x1, 0, (void *)data_020e55c0,
-    (void *)0x1, 0, (void *)data_020e5610, (void *)0x1, 0, (void *)data_020e53f8, (void *)0x3, 0,
-    (void *)data_020e5440, (void *)0x3, 0, (void *)data_020e5488, (void *)0x3, 0, (void *)data_020e5378,
-    (void *)0x3, 0, (void *)data_020e52b8, (void *)0x3, 0, (void *)data_020e52e8, (void *)0x3, 0,
-    (void *)data_020e4bc4, (void *)0x3, 0, (void *)data_020e4bd4, (void *)0x3, 0, (void *)data_020e4be4,
-    (void *)0x3, 0};
-u32 sSkyLight[3];
-void *data_020e478c[2] = {(void *)data_020d0ec8, (void *)data_020d0ee0};
+SpriteAnimFrame data_020e5980[15] = {
+    {data_020e5208, 1, 0, 0},
+    {data_020e54d0, 1, 0, 0},
+    {data_020e5520, 1, 0, 0},
+    {data_020e5570, 1, 0, 0},
+    {data_020e55c0, 1, 0, 0},
+    {data_020e5610, 1, 0, 0},
+    {data_020e53f8, 3, 0, 0},
+    {data_020e5440, 3, 0, 0},
+    {data_020e5488, 3, 0, 0},
+    {data_020e5378, 3, 0, 0},
+    {data_020e52b8, 3, 0, 0},
+    {data_020e52e8, 3, 0, 0},
+    {data_020e4bc4, 3, 0, 0},
+    {data_020e4bd4, 3, 0, 0},
+    {data_020e4be4, 3, 0, 0},
+};
+SkyLight sSkyLight;
+const u8 *const data_020e478c[2] = {data_020d0ec8, data_020d0ee0};
 u32 data_020e469c[2] = {0x91f000f0, 0xffff2098};
 char data_020e4e48[30] = "/sky/d_2d_b_cld_b0_bg_nsc.bin";
 u32 data_020e495c[2] = {0x81f000f0, 0xffff2118};
 u32 data_020e4764[2] = {0x81f000f0, 0xffff211c};
-void *data_020e4954[2] = {(void *)_ZN9SkySprite14updateRainDropEv, 0};
 u32 data_020e4874[2] = {0x81f880f0, 0xffff409e};
-u32 sMoonColors[3];
+u16 sMoonColors[6];
 char data_020e4e68[30] = "/sky/d_2d_b_cld_f0_bg_nsc.bin";
 u32 data_020e5378[14] = {0x301500f7, 0x30f6, 0x11f1000a, 0x3095, 0xe000b, 0x30d4, 0x11e300fb, 0x3095, 0x200600e4,
     0x30d4, 0x101300e8, 0x30d5, 0x31ea00ea, 0xffff30f5};
-const u32 sFireworkScaleSmall[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
+const s32 sFireworkScaleSmall[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
 char data_020e4e88[30] = "/sky/d_2d_b_cld_f1_bg_nsc.bin";
 }
-}
-namespace n09 {
-}
 void SkySprite::endByKind() {
-    using namespace n09;
     static void (SkySprite::*tbl[13])() = {
-        *(void (SkySprite::**)())n00::data_020e4964,
-        *(void (SkySprite::**)())n00::data_020e49e4,
-        *(void (SkySprite::**)())n00::data_020e4724,
-        *(void (SkySprite::**)())n00::data_020e494c,
-        *(void (SkySprite::**)())n00::data_020e4944,
-        *(void (SkySprite::**)())n00::data_020e493c,
-        *(void (SkySprite::**)())n00::data_020e4934,
-        *(void (SkySprite::**)())n00::data_020e467c,
-        *(void (SkySprite::**)())n00::data_020e4924,
-        *(void (SkySprite::**)())n00::data_020e4754,
-        *(void (SkySprite::**)())n00::data_020e4914,
-        *(void (SkySprite::**)())n00::data_020e490c,
-        *(void (SkySprite::**)())n00::data_020e4904,
+        &SkySprite::endRainDrop,
+        &SkySprite::endSnowFlake,
+        &SkySprite::endParticle,
+        &SkySprite::endShootingStar,
+        &SkySprite::endMoon,
+        &SkySprite::endBalloon,
+        &SkySprite::endUfo,
+        &SkySprite::endPete,
+        &SkySprite::endLightning,
+        &SkySprite::endFirework,
+        &SkySprite::endRainbow,
+        &SkySprite::endShot,
+        &SkySprite::endBird,
     };
     void (SkySprite::*fn)() = tbl[kind];
     if (fn) (this->*fn)();
 }
-namespace n09 {
 
 extern "C" void SkySprite_StartAnim(SkySprite* p) {
     Unk_020be0bc_E i = (Unk_020be0bc_E)p->animSeq;
     SkySpriteAnimDef* row = &sSkySpriteAnimSeqs[i];
-    ((SpriteAnim *)(&p->anim))->setSeq((SpriteAnimSeq *)(row));
-    ((SpriteAnim *)(&p->anim))->setPlayOnce(row->playOnce);
-    ((SpriteAnim *)(&p->anim))->restart();
+    p->anim.setSeq((SpriteAnimSeq *)(row));
+    p->anim.setPlayOnce(row->playOnce);
+    p->anim.restart();
 }
 
 extern "C" void SkySprite_Release(SkySprite* p) {
     s32 i = p->gfxSlot;
     if (i != 6) {
-        SkyObjGfxSlot_Release(&data_021f3010[i]);
+        SkyObjGfxSlot_Release(&gSkySprites.gfxSlots[i]);
     }
     (p)->resetFree();
 }
@@ -3435,7 +2763,7 @@ extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a) {
     p->scaleX = z;
     p->scaleY = z;
     idx = (u16)p->wavePhase >> 4;
-    z = func_01ffcb0c(data_02135f44[idx][0], a);
+    z = func_01ffcb0c(data_02135f44[idx * 2], a);
     z = func_01ffcb0c(z, sc);
     p->screenPos.y += z;
 }
@@ -3461,9 +2789,9 @@ extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c) {
     s32 right = x + hw;
     s32 top = y - hh;
     s32 bottom = y + hh;
-    SkySprite* o = &n00::gSkySprites.sprites[33];
+    SkySprite* o = &gSkySprites.sprites[33];
     BOOL found = FALSE;
-    for (; o < &n00::gSkySprites.sprites[45]; o++) {
+    for (; o < &gSkySprites.sprites[45]; o++) {
         if (o->state == 2 && o->localShot != 0) {
             d = o->screenVel.y;
             if (d < 0) d = -d;
@@ -3503,36 +2831,37 @@ extern "C" void SkySprite_GetPos(SkySprite* p, VecFx32* out) {
 }
 
 extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a) {
-    SkySoundPosBuf out;
-    SkySprite_GetSoundPos(p, (VecFx32*)&out);
-    _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, 0, a, &out);
+    VecFx32 out;
+    SkySprite_GetSoundPos(p, &out);
+    gSkySprites.se.requestSustained(0, a, &out);
 }
 
 extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a) {
-    SkySoundPosBuf out;
-    SkySprite_GetSoundPos(p, (VecFx32*)&out);
-    _ZN11SkySePlayer7requestEiiP7VecFx32(data_021f44ac, 0, a, &out);
+    VecFx32 out;
+    SkySprite_GetSoundPos(p, &out);
+    gSkySprites.se.request(0, a, &out);
 }
 
 extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b) {
     VecFx32 out;
     SkySprite_GetPos(p, &out);
-    _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, a, b, &out);
+    gSkySprites.se.requestSustained(a, b, &out);
 }
 
-extern "C" void SkyObjGfxLoader_Init(u8* p) {
-    FS_InitFile(p);
-    MI_CpuFill8(p + 0x48, 0, 0x400);
-    MI_CpuFill8(p + 0x448, 0, 0xc00);
-    MI_CpuFill8(p + 0x1048, 0, 0x1c0);
-    MI_CpuFill8(p + 0x1208, 0, 0x140);
-    *(u32*)(p + 0x1348) = 0x12345678;
+// SkyObjGfxLoader::init (modern/gen/provides.ld)
+extern "C" void SkyObjGfxLoader_Init(SkyObjGfxLoader *p) {
+    FS_InitFile(&p->file);
+    MI_CpuFill8(p->readBuf, 0, sizeof(p->readBuf));
+    MI_CpuFill8(p->chars, 0, sizeof(p->chars));
+    MI_CpuFill8(p->palettes, 0, sizeof(p->palettes));
+    MI_CpuFill8(p->moonPalette, 0, sizeof(p->moonPalette));
+    p->magic = 0x12345678;
 }
 
-extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx) {
-    SkyObjGfxDef* row = &sSkyObjGfxTable[idx];
-    SkyObjCharLayout* t;
-    s32 a = FS_OpenFile(p, sSkyObjCharFiles[row->charFile]);
+extern "C" BOOL SkyObjGfxLoader_LoadChars(SkyObjGfxLoader *p, s32 idx) {
+    const SkyObjGfxDef* row = &sSkyObjGfxTable[idx];
+    const SkyObjCharLayout* t;
+    s32 a = FS_OpenFile(&p->file, sSkyObjCharFiles[row->charFile]);
     BOOL ok1 = TRUE;
     BOOL ok2 = TRUE;
     u8* src;
@@ -3540,55 +2869,50 @@ extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx) {
     s32 f;
     t = &sSkyObjCharLayouts[row->charLayout];
     if (row->charTileA != 0xffff) {
-        src = p + 0x448;
-        ok1 &= FS_SeekFile(p, (row->charTileA & ~0x1f) << 5, 0);
+        src = p->chars;
+        ok1 &= FS_SeekFile(&p->file, (row->charTileA & ~0x1f) << 5, 0);
         for (i = 0; i < 4; i++) {
             if (t->topTileCount != 0) {
-                ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
-                MI_CpuCopy8(p + 0x48 + ((row->charTileA & 0x1f) << 5), src + (t->topTileX << 5), t->topTileCount << 5);
+                ok2 &= FS_ReadFile(&p->file, p->readBuf, 0x400) > 0;
+                MI_CpuCopy8(p->readBuf + ((row->charTileA & 0x1f) << 5), src + (t->topTileX << 5), t->topTileCount << 5);
             }
             src += 0x180;
         }
     }
     if (row->charTileB != 0xffff) {
-        src = p + 0xa48;
-        ok1 &= FS_SeekFile(p, (row->charTileB & ~0x1f) << 5, 0);
+        src = p->chars + 4 * 0x180;
+        ok1 &= FS_SeekFile(&p->file, (row->charTileB & ~0x1f) << 5, 0);
         for (i = 4; i < 8; i++) {
             if (t->bottomTileCount != 0) {
-                ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
-                MI_CpuCopy8(p + 0x48 + ((row->charTileB & 0x1f) << 5), src + (t->bottomTileX << 5), t->bottomTileCount << 5);
+                ok2 &= FS_ReadFile(&p->file, p->readBuf, 0x400) > 0;
+                MI_CpuCopy8(p->readBuf + ((row->charTileB & 0x1f) << 5), src + (t->bottomTileX << 5), t->bottomTileCount << 5);
             }
             src += 0x180;
         }
     }
-    f = FS_CloseFile(p);
+    f = FS_CloseFile(&p->file);
     if (a && ok1 && ok2 && f) return TRUE;
     return FALSE;
 }
 
-}
-namespace n00 {
 extern "C" {
-void *data_020e4924[2] = {(void *)_ZN9SkySprite12endLightningEv, 0};
-const u32 sSkyPaletteSetByLevel[5] = {0x0, 0x0, 0x0, 0x1, 0x1};
+const s32 sSkyPaletteSetByLevel[5] = {0x0, 0x0, 0x0, 0x1, 0x1};
 }
-}
-namespace n09 {
-extern "C" BOOL SkyObjGfxLoader_LoadPalettes(u8* p) {
+extern "C" BOOL SkyObjGfxLoader_LoadPalettes(SkyObjGfxLoader *p) {
     char name1[0x17] = "/sky/a_sky_obj_ncl.bin";
-    s32 a = FS_OpenFile(p, name1);
-    BOOL b = FS_ReadFile(p, p + 0x1048, 0x1c0) > 0;
-    s32 c = FS_CloseFile(p);
+    s32 a = FS_OpenFile(&p->file, name1);
+    BOOL b = FS_ReadFile(&p->file, p->palettes, 0x1c0) > 0;
+    s32 c = FS_CloseFile(&p->file);
     char name2[0x1c] = "/sky/a_sky_moon_obj_ncl.bin";
-    s32 d = FS_OpenFile(p, name2);
-    BOOL e = FS_ReadFile(p, p + 0x1208, 0x140) > 0;
-    s32 f = FS_CloseFile(p);
+    s32 d = FS_OpenFile(&p->file, name2);
+    BOOL e = FS_ReadFile(&p->file, p->moonPalette, 0x140) > 0;
+    s32 f = FS_CloseFile(&p->file);
     if (a && b && c && d && e && f) return TRUE;
     return FALSE;
 }
 
-extern "C" void SkyObjGfxLoader_FlushChars(u8* p) {
-    DC_FlushRange(p + 0x448, 0xc00);
+extern "C" void SkyObjGfxLoader_FlushChars(SkyObjGfxLoader *p) {
+    DC_FlushRange(p->chars, 0xc00);
 }
 
 extern "C" void SkyObjGfxSlot_Init(SkyObjGfxSlot* p) {
@@ -3598,20 +2922,20 @@ extern "C" void SkyObjGfxSlot_Init(SkyObjGfxSlot* p) {
     p->dirty = 0;
 }
 
-extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, u8* base) {
-    SkyObjCharLayout* row;
-    u32 dst;
+extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, SkyObjGfxLoader *base) {
+    const SkyObjCharLayout* row;
+    const u8 *dst;
     u32 o, k;
     BOOL flag;
-    if (gWeatherManager == 0) flag = TRUE; else flag = FALSE;
+    if (gWeatherManager.engine == 0) flag = TRUE; else flag = FALSE;
     SkyObjGfxLoader_FlushChars(base);
-    SkyObjGfxDef* ent = &sSkyObjGfxTable[p->gfxId];
+    const SkyObjGfxDef* ent = &sSkyObjGfxTable[p->gfxId];
     row = &sSkyObjCharLayouts[ent->charLayout];
-    dst = (u32)base + 0x448;
+    dst = base->chars;
     o = 0;
     k = 0x94;
     for (s32 i = 0; i < 4; i++) {
-        u32 d;
+        const u8 *d;
         u32 n = row->topTileCount;
         if (n != 0) {
             u32 a = row->topTileX;
@@ -3623,7 +2947,7 @@ extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, u8* base) {
         k += 0x20;
     }
     for (s32 i = 4; i < 8; i++) {
-        u32 d;
+        const u8 *d;
         u32 n = row->bottomTileCount;
         if (n != 0) {
             u32 a = row->bottomTileX;
@@ -3636,11 +2960,11 @@ extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, u8* base) {
     }
 }
 
-extern "C" void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, void* x) {
+extern "C" void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, SkyObjPalette *x) {
     p->refCount++;
     if (v != p->gfxId) {
         p->loaded = 0;
-        ((SkyObjPalette *)(x))->invalidateFor(v);
+        x->invalidateFor(v);
         p->gfxId = v;
     }
 }
@@ -3655,7 +2979,7 @@ extern "C" void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot* p, s32 v) {
 
 extern "C" void SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot* p, s32 a) {
     p->dirty = 1;
-    _ZN13SkyObjPalette13invalidateForEi(data_021f4398, a);
+    gSkySprites.palette.invalidateFor(a);
 }
 
 extern "C" void SkyObjGfxSlot_Release(SkyObjGfxSlot* p) {
@@ -3681,8 +3005,8 @@ extern "C" SkyObjPalette* SkyObjPalette_Init(SkyObjPalette* p) {
     return p;
 }
 
-extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx) {
-    SkyObjGfxDef* row = &sSkyObjGfxTable[idx];
+extern "C" void SkyObjPalette_Load(SkyObjPalette* p, SkyObjGfxLoader *base, u32 idx) {
+    const SkyObjGfxDef* row = &sSkyObjGfxTable[idx];
     s32 a = row->srcPalette;
     u32 b;
     s32 res;
@@ -3690,11 +3014,11 @@ extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx) {
         a += p->balloonColor;
     }
     b = row->objPalette << 5;
-    MI_CpuCopy8(base + 0x1048 + a * 32, p->colors, 0x20);
+    MI_CpuCopy8(base->palettes + a * 32, p->colors, 0x20);
     res = (p)->applyOverrides(row->objPalette);
     DC_FlushRange(p->colors, 0x20);
     GX_LoadOBJPltt(p->colors, b, 0x20);
-    if (gWeatherManager == 0) {
+    if (gWeatherManager.engine == 0) {
         GXS_LoadOBJPltt(p->colors, b, 0x20);
     }
     if (res == 0) {
@@ -3702,104 +3026,12 @@ extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx) {
     }
 }
 
-#undef data_021f4398
-#undef data_021f44ac
-#undef data_021f3010
-}
 
 // ======== unk_020bcf04.cpp ========
-namespace n08 {
-extern "C" {
-void* __cxa_vec_ctor(void* array, u32 count, u32 size, void* (*ctor)(void*), void* (*dtor)(void*, s32));
-}
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; SkySePlayer v; } gSkySprites; } }
-#define data_021f44ac (*(decltype(&n08::L_021f44ac::gSkySprites.v))((u8 *)&::n00::gSkySprites.se.channels[0] + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-void Math_StepAngle(s16* p, s32 target, s32 step);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void Sky_ProjectToScreenX(s32* out, void* p);
-}
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN13PeteFallState11pickFallPosEii(void *a, void* p, u8 b);
-}
-extern "C" {
-}
-extern "C" {
-void Camera_RestorePrevMode();
-}
-extern "C" {
-void Camera_StartShake(s32 a);
-}
-extern "C" {
-void SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN20PlayerDailyTalkFlags5clearEj(void* p, s32 a);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-BOOL SkyShot_HasMaxHits();
-}
-extern "C" {
-void SkyShot_AddHit();
-}
-extern "C" {
-extern u8 gSavePlayers[];
-}
-extern "C" {
-extern u8 data_021e58a6[];
-}
-extern "C" {
-extern u8 sSkyObjPalOverrideSlots[];
-}
-namespace L_020d18c8 { extern "C" { extern struct S { u8 p[0x1e0]; s8 v[0x160]; } sSkyObjGfxTable; } }
-#define data_020d18c8 n08::L_020d18c8::sSkyObjGfxTable.v
-extern "C" {
-extern SkyObjGfxDef sSkyObjGfxTable[];
-}
 typedef void (SkyShotSequence::*SkyShotActFn)();
 
-extern "C" BOOL SkyShot_HasMaxHits();
-extern "C" void SkyShot_AddHit();
 
-}
 BOOL SkyObjPalette::applyOverrides(s32 v) {
-    using namespace n08;
     BOOL result = FALSE;
     if (overrideMask != 0) {
         for (s32 i = 0; i < 15; i++) {
@@ -3814,19 +3046,13 @@ BOOL SkyObjPalette::applyOverrides(s32 v) {
     }
     return result;
 }
-namespace n08 {
 
-}
 void SkyObjPalette::pickBalloonColor() {
-    using namespace n08;
     balloonColor = Random_GlobalBelow(5);
-    invalidate(data_020d18c8[0x1d]);
+    invalidate(sSkyObjGfxTable[0x1f].objPalette);
 }
-namespace n08 {
 
-}
 void SkyObjPalette::invalidate(s32 v) {
-    using namespace n08;
     if (v < 0) {
         for (s32 i = 0; (u32)i < 4; i++) {
             loadedSrcPalettes[i] = -1;
@@ -3835,20 +3061,14 @@ void SkyObjPalette::invalidate(s32 v) {
         loadedSrcPalettes[v - 12] = -1;
     }
 }
-namespace n08 {
 
-}
 void SkyObjPalette::invalidateFor(s32 idx) {
-    using namespace n08;
-    SkyObjGfxDef* e = &sSkyObjGfxTable[idx];
+    const SkyObjGfxDef* e = &sSkyObjGfxTable[idx];
     invalidate(e->objPalette);
 }
-namespace n08 {
 
-}
 BOOL SkyObjPalette::isLoaded(s32 idx) {
-    using namespace n08;
-    SkyObjGfxDef* e = &sSkyObjGfxTable[idx];
+    const SkyObjGfxDef* e = &sSkyObjGfxTable[idx];
     s32 y = e->objPalette;
     s32 x = e->srcPalette;
     BOOL result = TRUE;
@@ -3859,54 +3079,35 @@ BOOL SkyObjPalette::isLoaded(s32 idx) {
     }
     return result;
 }
-namespace n08 {
 
-}
 void SkyObjPalette::setLoadedRow(s32 a, s32 b) {
-    using namespace n08;
     if (a >= 0 && b >= 0) {
         loadedSrcPalettes[a - 12] = b;
     }
 }
-namespace n08 {
 
-}
 void SkyObjPalette::clearOverride(s32 idx) {
-    using namespace n08;
     overrideMask &= ~(1 << idx);
 }
-namespace n08 {
 
-}
 BOOL SkyObjPalette::hasOverride(s32 idx) {
-    using namespace n08;
     if (overrideMask & (1 << idx)) {
         return TRUE;
     }
     return FALSE;
 }
-namespace n08 {
 
-}
 void SkyObjPalette::setOverride(s32 idx, u16* p) {
-    using namespace n08;
     overrideMask |= 1 << idx;
-    Unk_020bd718_E o = (Unk_020bd718_E)((u32)this + (idx << 1));
-    *(u16 *)(o + 10) = *p; // unk_0a[idx] = *p
+    overrideColors[idx] = *p;
     invalidate((sSkyObjPalOverrideSlots[idx] >> 4) & 0xf);
 }
-namespace n08 {
 
-}
 SkyShotRequest::SkyShotRequest() {
-    using namespace n08;
     clear();
 }
-namespace n08 {
 
-}
 void SkyShotRequest::set(s32 a, s32* p, u8 b) {
-    using namespace n08;
     playerSlot = a;
     pos.x = p[0];
     pos.y = p[1];
@@ -3914,11 +3115,8 @@ void SkyShotRequest::set(s32 a, s32* p, u8 b) {
     golden = b;
     pending = 1;
 }
-namespace n08 {
 
-}
 void SkyShotRequest::clear() {
-    using namespace n08;
     playerSlot = 4;
     pos.x = 0;
     pos.y = 0;
@@ -3926,159 +3124,126 @@ void SkyShotRequest::clear() {
     golden = 0;
     pending = 0;
 }
-namespace n08 {
 
-}
 SkyShotSequence::SkyShotSequence() {
-    using namespace n08;
     reset();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::startShot(s32 a) {
-    using namespace n08;
     if (a == PlayerActor_GetLocalSessionSlot()) {
         state = 1;
         playerSlot = a;
         timer = 0x2b;
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::endWatch(s32 a) {
-    using namespace n08;
     PlayerActor_SetWatchMode(0, a);
 }
-namespace n08 {
 
-}
 void SkyShotSequence::onBalloonHit(u8 a) {
-    using namespace n08;
     goldenBalloon = a;
     state = 2;
     PlayerActor_SetWatchMode(1, playerSlot);
     SkyShot_AddHit();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::onBalloonFell() {
-    using namespace n08;
     state = 3;
     timer = 2;
     balloonDropEnded = 0;
     landSePending = 0;
     splashSePending = 0;
 }
-namespace n08 {
 
-}
 void SkyShotSequence::onUfoHit() {
-    using namespace n08;
     state = 4;
     PlayerActor_SetWatchMode(1, playerSlot);
     SkyShot_AddHit();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::onUfoFell() {
-    using namespace n08;
     state = 5;
     timer = 0x1e;
 }
-namespace n08 {
 
-}
 void SkyShotSequence::onPeteHit() {
-    using namespace n08;
     state = 7;
     PlayerActor_SetWatchMode(1, playerSlot);
     SkyShot_AddHit();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::onPeteFell() {
-    using namespace n08;
     state = 8;
     timer = 0x14;
 }
-namespace n08 {
 
-}
 void SkyShotSequence::setTarget(s32 a, s32 b, s32 c, u8 d) {
-    using namespace n08;
     targetX = a;
     targetY = b;
     targetScale = c;
     fallDir = d;
 }
-namespace n08 {
 
-}
-namespace n00 {
 extern "C" {
-const u32 data_020d0ff8[12] = {0x53f953f9, 0x53f953f9, 0x428f53f9, 0x18823105, 0x4200820, 0x400, 0x4000000,
-    0xc010800, 0x24441001, 0x468f38a8, 0x53f953f9, 0x53f953f9};
+const u16 data_020d0ff8[24] = {
+    0x53f9, 0x53f9, 0x53f9, 0x53f9, 0x53f9, 0x428f, 0x3105, 0x1882, 0x820, 0x420, 0x400, 0x0,
+    0x0, 0x400, 0x800, 0xc01, 0x1001, 0x2444, 0x38a8, 0x468f, 0x53f9, 0x53f9, 0x53f9, 0x53f9,
+};
 char data_020e4ea8[30] = "/sky/d_2d_b_cld_c0_bg_nsc.bin";
 u32 data_020e485c[2] = {0x400080f0, 0xffff0096};
-const u32 sSnowParallax[3] = {0x7fff, 0x6667, 0x4cce};
-void *data_020e4784[2] = {(void *)_ZN15SkyShotSequence13actBalloonHitEv, 0};
-void *data_020e5704[24] = {(void *)data_020e476c, (void *)0x2, 0, (void *)data_020e4a14, (void *)0x3, 0,
-    (void *)data_020e489c, (void *)0x4, 0, (void *)data_020e4874, (void *)0xa, 0, (void *)data_020e48f4,
-    (void *)0x2, 0, (void *)data_020e4a54, (void *)0x3, 0, (void *)data_020e4984, (void *)0x4, 0,
-    (void *)data_020e48ec, (void *)0xa, 0};
+const s32 sSnowParallax[3] = {0x7fff, 0x6667, 0x4cce};
+SpriteAnimFrame data_020e5704[8] = {
+    {data_020e476c, 2, 0, 0},
+    {data_020e4a14, 3, 0, 0},
+    {data_020e489c, 4, 0, 0},
+    {data_020e4874, 10, 0, 0},
+    {data_020e48f4, 2, 0, 0},
+    {data_020e4a54, 3, 0, 0},
+    {data_020e4984, 4, 0, 0},
+    {data_020e48ec, 10, 0, 0},
+};
 u32 data_020e491c[2] = {0x91f000f0, 0xffff209c};
 u32 data_020e4b64[4] = {0x41fc80e0, 0x99, 0x41fc8000, 0xffff0119};
-void *data_020e4a70[3] = {(void *)data_020e46ec, (void *)0x1, 0};
-void *data_020e48fc[2] = {(void *)_ZN9SkySprite7initUfoEv, 0};
+SpriteAnimFrame data_020e4a70[1] = {
+    {data_020e46ec, 1, 0, 0},
+};
 u8 sSkyLineTablesReady;
-void *data_020e49e4[2] = {(void *)SkySprite_EndSnowFlake, 0};
-void *data_020e47dc[2] = {(void *)_ZN10SkySprites21fireworksPatternAct09Ev, 0};
 const u8 data_020d0e04[5] = {0xf, 0xe, 0xd, 0xe, 0xd};
 StarTwinkle data_021efc18;
 u32 data_020e47b4[2] = {0x41fb80f0, 0xffff9097};
-const u32 data_020d1028[12] = {0x50a550a5, 0x50a550a5, 0x4cc650a5, 0x4d4a4ce7, 0x4d8c4d8c, 0x4d6b4d6b,
-    0x494a4d4a, 0x494a494a, 0x4929494a, 0x4ca54ce7, 0x50a550a5, 0x50a550a5};
-void *data_020e4b74[4] = {(void *)data_020d0fc8, (void *)data_020d0ff8, (void *)data_020d1028,
-    (void *)data_020d1058};
+const u16 data_020d1028[24] = {
+    0x50a5, 0x50a5, 0x50a5, 0x50a5, 0x50a5, 0x4cc6, 0x4ce7, 0x4d4a, 0x4d8c, 0x4d8c, 0x4d6b, 0x4d6b,
+    0x4d4a, 0x494a, 0x494a, 0x494a, 0x494a, 0x4929, 0x4ce7, 0x4ca5, 0x50a5, 0x50a5, 0x50a5, 0x50a5,
+};
+const u16 *const data_020e4b74[4] = {data_020d0fc8, data_020d0ff8, data_020d1028, data_020d1058};
 u32 data_020e47ec[2] = {0x81f000f0, 0xffff411c};
-void *data_020e47d4[2] = {(void *)SkySprites_FireworksPatternAct0C, 0};
-void *data_020e4b84[4] = {(void *)data_020d1088, (void *)data_020d10b8, (void *)data_020d10e8,
-    (void *)data_020d1118};
-}
-}
-namespace n08 {
+const u16 *const data_020e4b84[4] = {data_020d1088, data_020d10b8, data_020d10e8, data_020d1118};
 }
 void SkyShotSequence::update() {
-    using namespace n08;
     static SkyShotActFn tbl[10] = {
         0,
-        *(SkyShotActFn *)n00::data_020e47bc,
-        *(SkyShotActFn *)n00::data_020e4784,
-        *(SkyShotActFn *)n00::data_020e46c4,
-        *(SkyShotActFn *)n00::data_020e4894,
-        *(SkyShotActFn *)n00::data_020e49ac,
-        *(SkyShotActFn *)n00::data_020e472c,
-        *(SkyShotActFn *)n00::data_020e4664,
-        *(SkyShotActFn *)n00::data_020e464c,
-        *(SkyShotActFn *)n00::data_020e48a4,
+        &SkyShotSequence::actShotFlight,
+        &SkyShotSequence::actBalloonHit,
+        &SkyShotSequence::actBalloonDrop,
+        &SkyShotSequence::actUfoHit,
+        &SkyShotSequence::actUfoFall,
+        &SkyShotSequence::actUfoCrashed,
+        &SkyShotSequence::actPeteHit,
+        &SkyShotSequence::actPeteFall,
+        &SkyShotSequence::actPeteFallen,
     };
     SkyShotActFn f = tbl[state];
     if (f) {
         (this->*f)();
     }
 }
-namespace n08 {
 
 extern "C" void SkyShot_AddHit() {
-    void* p = PlayerData_GetCurrent();
-    u32 n = ((PlayerData *)(p))->getSkyShotHits();
+    PlayerData *p = PlayerData_GetCurrent();
+    u32 n = p->getSkyShotHits();
     if (n < 0x10) {
-        ((PlayerData *)(p))->setSkyShotHits(n + 1);
+        p->setSkyShotHits(n + 1);
     }
 }
 
@@ -4086,27 +3251,19 @@ extern "C" BOOL SkyShot_HasMaxHits() {
     return PlayerData_GetCurrent()->getSkyShotHits() >= 0x10;
 }
 
-}
 void SkyShotSequence::actShotFlight() {
-    using namespace n08;
     timer--;
     if (timer <= 0) {
         endWatch(playerSlot);
         reset();
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actBalloonHit() {
-    using namespace n08;
     lookAtTarget();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actBalloonDrop() {
-    using namespace n08;
     relaxHead(0x190, 0x190);
     if (timer > 0) {
         timer--;
@@ -4120,7 +3277,7 @@ void SkyShotSequence::actBalloonDrop() {
         s32 id = landSePending != 0 ? 0x7f9 : 0x7fa;
         VecFx32 v;
         SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
-        data_021f44ac.requestSustained(0, id, &v);
+        gSkySprites.se.requestSustained(0, id, &v);
         landSePending = 0;
         splashSePending = 0;
     }
@@ -4129,62 +3286,47 @@ void SkyShotSequence::actBalloonDrop() {
         reset();
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actUfoHit() {
-    using namespace n08;
     lookAtTarget();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actUfoFall() {
-    using namespace n08;
     relaxHead(0x50, 0);
     timer--;
     if (timer <= 0) {
         VecFx32 v;
         Camera_StartShake(0xa3d);
         SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
-        data_021f44ac.requestSustained(0, 0x7fd, &v);
+        gSkySprites.se.requestSustained(0, 0x7fd, &v);
         timer = 0x32;
         state = 6;
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actUfoCrashed() {
-    using namespace n08;
     relaxHead(0x190, 0x190);
     timer--;
     if (timer <= 0) {
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
-            void* p = PlayerData_GetResident(gSavePlayers, i);
-            if (p && ((PlayerData *)(p))->isUsed()) {
-                _ZN20PlayerDailyTalkFlags5clearEj(((PlayerData *)(p))->getDailyTalkFlags(), 0x14);
+            PlayerData *p = (PlayerData *)PlayerData_GetResident(gSaveData.players, i);
+            if (p && p->isUsed()) {
+                ((PlayerDailyTalkFlags *)p->getDailyTalkFlags())->clear(0x14);
             }
         }
-        GulliverQuest_Clear(data_021e58a6);
+        GulliverQuest_Clear(gSaveData.gulliverQuest);
         EventAnnounce_Request(0x44, 0x63, 0);
         reset();
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actPeteHit() {
-    using namespace n08;
     lookAtTarget();
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actPeteFall() {
-    using namespace n08;
     relaxHead(0x50, 0);
     if (timer > 0) {
         timer--;
@@ -4192,33 +3334,27 @@ void SkyShotSequence::actPeteFall() {
         VecFx32 v;
         Camera_StartShake(0x5c3);
         SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
-        data_021f44ac.requestSustained(0, 0x800, &v);
+        gSkySprites.se.requestSustained(0, 0x800, &v);
         timer = 0x1e;
         state = 9;
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::actPeteFallen() {
-    using namespace n08;
     relaxHead(0x190, 0x190);
     timer--;
     if (timer <= 0) {
         void* p = PlayerActor_GetBodyPos(playerSlot);
         if (p) {
-            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(TownSessionState_Get()), p, fallDir);
+            ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->pickFallPos((VecFx32 *)p, fallDir);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         reset();
     }
 }
-namespace n08 {
 
-}
 void SkyShotSequence::reset() {
-    using namespace n08;
     state = 0;
     playerSlot = 4;
     timer = 0;
@@ -4233,12 +3369,9 @@ void SkyShotSequence::reset() {
     splashSePending = 0;
     goldenBalloon = 0;
 }
-namespace n08 {
 
-}
 void SkyShotSequence::lookAtTarget() {
-    using namespace n08;
-    void* p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     s32 x = 0x80000;
     if (p) {
         Sky_ProjectToScreenX(&x, p);
@@ -4254,20 +3387,14 @@ void SkyShotSequence::lookAtTarget() {
     headPitch = 4000;
     headYaw = v;
 }
-namespace n08 {
 
-}
 void SkyShotSequence::relaxHead(s32 a, s32 b) {
-    using namespace n08;
     Math_StepAngle(&headPitch, 0, a);
     Math_StepAngle(&headYaw, 0, b);
     PlayerActor_SetHeadTilt(headPitch, headYaw, 4);
 }
-namespace n08 {
 
-}
 SkySePlayer::SkySePlayer() {
-    using namespace n08;
     active = 0;
     for (FxVec3* p = positions; p < (FxVec3*)&active; p++) {
         p->x = 0;
@@ -4275,31 +3402,22 @@ SkySePlayer::SkySePlayer() {
         p->z = 0;
     }
 }
-namespace n08 {
 
-}
 void SkySePlayer::resetAll() {
-    using namespace n08;
     for (SkySndChannel* e = channels; e < (SkySndChannel*)positions; e++) {
         e->callReset();
     }
     active = 1;
 }
-namespace n08 {
 
-}
 void SkySePlayer::releaseAll() {
-    using namespace n08;
     active = 0;
     for (SkySndChannel* e = &channels[7]; e >= channels; e--) {
         e->callRelease();
     }
 }
-namespace n08 {
 
-}
 void SkySePlayer::requestSustained(s32 idx, s32 a, VecFx32* p) {
-    using namespace n08;
     if (active) {
         channels[idx].callRequestSustained((void *)a);
         positions[idx].x = p->x;
@@ -4307,11 +3425,8 @@ void SkySePlayer::requestSustained(s32 idx, s32 a, VecFx32* p) {
         positions[idx].z = p->z;
     }
 }
-namespace n08 {
 
-}
 void SkySePlayer::request(s32 idx, s32 a, VecFx32* p) {
-    using namespace n08;
     if (active) {
         channels[idx].callRequest((void *)a);
         positions[idx].x = p->x;
@@ -4319,11 +3434,8 @@ void SkySePlayer::request(s32 idx, s32 a, VecFx32* p) {
         positions[idx].z = p->z;
     }
 }
-namespace n08 {
 
-}
 void SkySePlayer::update() {
-    using namespace n08;
     if (active) {
         SkySndChannel* a = channels;
         FxVec3* b = positions;
@@ -4332,21 +3444,14 @@ void SkySePlayer::update() {
         }
     }
 }
-namespace n08 {
 
-}
 SkySprite::~SkySprite() {
-    using namespace n08;}
-namespace n08 {
+    }
 
-}
 SkyShotRequest::~SkyShotRequest() {
-    using namespace n08;}
-namespace n08 {
+    }
 
-}
 SkySprites::SkySprites() {
-    using namespace n08;
     spawnInterval = 0;
     spawnAccum = 0;
     precipIntensity = 0;
@@ -4373,140 +3478,20 @@ SkySprites::SkySprites() {
     rainStrength = 0;
     loader.init();
 }
-namespace n08 {
 
-#undef data_021f44ac
-#undef data_020d18c8
-}
 
 // ======== unk_020bc58c.cpp ========
-namespace n07 {
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[0x26]; } gWeatherManager; } }
-#define data_021f1448 n07::L_021f1448::gWeatherManager.v
-extern "C" {
-extern s32 sSkySpriteDefaultGfx[];
-}
-namespace L_020d16f0 { extern "C" { extern struct S { u8 p[0x8]; s32 v[1]; } sSkyObjGfxTable; } }
-#define data_020d16f0 n07::L_020d16f0::sSkyObjGfxTable.v
-namespace L_020d16f5 { extern "C" { extern struct S { u8 p[0xd]; s8 v[1]; } sSkyObjGfxTable; } }
-#define data_020d16f5 n07::L_020d16f5::sSkyObjGfxTable.v
-extern "C" {
-extern u8 gSavePlayers[];
-}
-extern "C" {
-extern u8 gSaveData[];
-}
-extern "C" {
-extern u8 data_020e4630[];
-}
 #define data_020e6794 ((u8 *)"ev_star")
-extern "C" {
-extern u8 data_020e4634[];
-}
-extern "C" {
-void SceneLights_StartFlash(s32 a);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN9SkySprite9endByKindEv(SkySprite *s);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void SkyObjGfxSlot_Acquire(void *a, s32 b, void *c);
-}
-extern "C" {
-void SkyObjGfxSlot_Upload(void *a, void *b);
-}
-extern "C" {
-}
-extern "C" {
-void SkyObjPalette_Load(void *a, void *b, s32 c);
-}
-extern "C" {
-void SkyObjGfxLoader_LoadChars(void *a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN15SkyShotSequence8endWatchEi(void *a, s32 b);
-}
-extern "C" {
-void Clock_GetDate(void *a);
-}
-extern "C" {
-void Clock_GetMinuteHour(void *a);
-}
-extern "C" {
-s32 Date_DaysBetween(void *a, void *b);
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-s32 FX_Div(s32 a, s32 b);
-}
-extern "C" {
-u32 Clock_GetSecond();
-}
-extern "C" {
-}
-extern "C" {
-u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
-}
-extern "C" {
-}
-extern "C" {
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void ItemPick_One(u16 *ret, ItemPickSpec q, u32 a, u32 b, u32 c, u32 d, u32 e);
-}
-extern "C" {
-s32 SkySprites_GetMoonPhaseGfx();
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-void MI_CpuCopy8(const void *src, void *dst, u32 size);
-}
-extern "C" {
-s32 EventSchedule_CollectDay(void *a, void *b, s32 c);
-}
-extern "C" {
-BOOL Event_GetState(u32 a, void *b, s32 c);
-}
 
-extern "C" s32 SkySprites_GetMoonPhaseGfx();
 
-}
 void SkySprites::reloadAllGfx() {
-    using namespace n07;
     SkyObjGfxSlot *p, *end = &gfxSlots[5];
     for (p = &gfxSlots[0]; p < end; p++) {
         s32 id = p->gfxId;
         if (id != 0x34) {
             s32 r;
             s32 flag = p->loaded;
-            r = ((SkyObjPalette *)(&palette))->isLoaded(id);
+            r = palette.isLoaded(id);
             if (flag == 0) {
                 SkyObjGfxLoader_LoadChars(&loader, id);
                 SkyObjGfxSlot_Upload(p, &loader);
@@ -4519,11 +3504,8 @@ void SkySprites::reloadAllGfx() {
         }
     }
 }
-namespace n07 {
 
-}
 void SkySprites::loadDirtyGfx() {
-    using namespace n07;
     SkyObjGfxSlot *end = &gfxSlots[5], *p;
     for (p = &gfxSlots[0]; p < end; p++) {
         s32 id = p->gfxId;
@@ -4536,11 +3518,8 @@ void SkySprites::loadDirtyGfx() {
         }
     }
 }
-namespace n07 {
 
-}
 void SkySprites::uploadDirtyGfx() {
-    using namespace n07;
     SkyObjGfxSlot *p, *end = &gfxSlots[5];
     for (p = &gfxSlots[0]; p < end; p++) {
         s32 id = p->gfxId;
@@ -4548,7 +3527,7 @@ void SkySprites::uploadDirtyGfx() {
             if (id != 0x34) {
                 s32 r;
                 s32 flag = p->loaded;
-                r = ((SkyObjPalette *)(&palette))->isLoaded(id);
+                r = palette.isLoaded(id);
                 if (flag == 0) {
                     SkyObjGfxSlot_Upload(p, &loader);
                     p->loaded = 1;
@@ -4561,14 +3540,11 @@ void SkySprites::uploadDirtyGfx() {
         }
     }
 }
-namespace n07 {
 
-}
 s32 SkySprites::pickGfxSlot(s32 t) {
-    using namespace n07;
     s32 grp;
     BOOL ok;
-    grp = data_020d16f0[t * 4];
+    grp = sSkyObjGfxTable[t].charLayout;
     ok = FALSE;
     if (grp == 6) {
         ok = TRUE;
@@ -4595,11 +3571,8 @@ s32 SkySprites::pickGfxSlot(s32 t) {
     if (!ok) return 5;
     return grp;
 }
-namespace n07 {
 
-}
 void SkySprites::releaseConflictingSlots(s32 k) {
-    using namespace n07;
     if (k == 0) {
         gfxSlots[3].gfxId = 0x34;
         return;
@@ -4625,11 +3598,8 @@ void SkySprites::releaseConflictingSlots(s32 k) {
         gfxSlots[3].gfxId = 0x34;
     }
 }
-namespace n07 {
 
-}
 s32 SkySprites::findFreeIndex(s32 kind, s32 idx) {
-    using namespace n07;
     s32 r = 0x3c;
     if (idx != 0x3c) {
         if (sprites[idx].kind == 0xd) r = idx;
@@ -4654,11 +3624,8 @@ s32 SkySprites::findFreeIndex(s32 kind, s32 idx) {
     }
     return r;
 }
-namespace n07 {
 
-}
 s32 SkySprites::findKind(s32 id) {
-    using namespace n07;
     s32 r = 0x3c;
     s32 i;
     SkySprite *p = sprites;
@@ -4670,47 +3637,38 @@ s32 SkySprites::findKind(s32 id) {
     }
     return r;
 }
-namespace n07 {
 
-}
 void SkySprites::start() {
-    using namespace n07;
     checkTodayEvents();
     spawnInitialPrecip();
     updateMoon();
     updateRainbow();
     balloonChance = 0;
 }
-namespace n07 {
 
-}
 void SkySprites::stop() {
-    using namespace n07;
     killAll();
 }
-namespace n07 {
 
-}
 void SkySprites::checkTodayEvents() {
-    using namespace n07;
-    u32 a[2];
-    u32 b[2];
-    u32 c[2];
+    ClockDateTimeWords a;
+    ClockDateTimeWords b;
+    ClockDateTimeWords c;
     Unk_020bcb04_Ent arr[7];
     Unk_020bcb04_Ent *p, *end;
     ufoEventToday = 0;
     peteEventToday = 0;
     fireworksToday = 0;
-    a[0] = 0;
-    a[1] = 0;
-    Clock_GetDateTime(a);
-    MI_CpuCopy8(a, b, 8);
-    end = arr + EventSchedule_CollectDay(arr, b, 0);
+    a.words[0] = 0;
+    a.words[1] = 0;
+    Clock_GetDateTime(&a.dt);
+    MI_CpuCopy8(&a, &b, 8);
+    end = arr + EventSchedule_CollectDay(arr, &b, 0);
     for (p = arr; p < end; p++) {
         u32 id = p->id;
         BOOL ok;
-        MI_CpuCopy8(a, c, 8);
-        if (Event_GetState(id, c, 0)) ok = TRUE; else ok = FALSE;
+        MI_CpuCopy8(&a, &c, 8);
+        if (Event_GetState(id, &c, 0)) ok = TRUE; else ok = FALSE;
         if (ok) {
             if (id == 0x44) {
                 ufoEventToday = 1;
@@ -4722,86 +3680,67 @@ void SkySprites::checkTodayEvents() {
         }
     }
 }
-namespace n07 {
 
-}
 void SkySprites::onDayChange(BOOL a) {
-    using namespace n07;
     if (a) {
-        ((SaveData *)(gSaveData))->clearFlag(9);
+        gSaveData.clearFlag(9);
         checkTodayEvents();
         sendWishLetters();
     }
 }
-namespace n07 {
 
-}
 void SkySprites::onSlingshotFired(s32 i) {
-    using namespace n07;
     s32 j = 0;
     if (i < 4) j = i;
-    s32 v = PlayerActor_GetBodyPos(i);
-    if (v != 0) {
+    u8 *v = PlayerActor_GetBodyPos(i);
+    if (v != NULL) {
         u16 buf[4];
         PlayerActor_GetSlotHeldItem(buf, i);
         s32 flag = 0;
         if (buf[0] >= 0x137b && buf[0] <= 0x137b) flag = 1;
         (getShotRequest(j))->set(i, (s32 *)(v), flag);
-        ((SkyShotSequence *)(&shotSeq))->startShot(i);
+        shotSeq.startShot(i);
     } else {
-        ((SkyShotSequence *)(&shotSeq))->endWatch(i);
+        shotSeq.endWatch(i);
     }
 }
-namespace n07 {
 
-}
 SkyShotRequest *SkySprites::getShotRequest(s32 i) {
-    using namespace n07;
     return &shotRequests[i];
 }
-namespace n07 {
 
-}
 void SkySprites::sendWishLetters() {
-    using namespace n07;
     s32 i;
     for (i = 0; i < 4; i++) {
-        void *o = PlayerData_GetResident(gSavePlayers, i);
-        if (o != NULL && _ZN10PlayerData8testFlagEj(o, 0x32) != 0) {
+        PlayerData *o = (PlayerData *)PlayerData_GetResident(gSaveData.players, i);
+        if (o != NULL && o->testFlag(0x32) != 0) {
             Letter ctx;
             StarWishLetterVars l;
             l.msgVariant = Random_GlobalBelow(3);
-            Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, ((PlayerData *)(o))->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&ctx, &l, data_020e6794, data_020e4634, data_020e4630, o->getPlayerId());
             ItemPickSpec q(0, 4);
-            ItemPick_One(&l.present, q, 0, 0, 1, 1, 0);
+            ItemPick_One(&l.present, &q, NULL, NULL, 1, 1, NULL);
             ((LetterView *)(&ctx))->setPresent(l.present, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&ctx) != 0) {
-                ((PlayerData *)(o))->clearFlag(0x32);
+                o->clearFlag(0x32);
             }
         }
     }
 }
-namespace n07 {
 
-}
 void SkySprites::initClock() {
-    using namespace n07;
-    Clock_GetMinuteHour(&minuteHour);
+    Clock_GetMinuteHour(&time.minute);
     second = Clock_GetSecond();
     prevMinuteHour = minuteHour;
     prevSecond = second;
 }
-namespace n07 {
 
-}
 void SkySprites::tickClock() {
-    using namespace n07;
     prevMinuteHour = minuteHour;
     prevSecond = second;
-    Clock_GetMinuteHour(&minuteHour);
+    Clock_GetMinuteHour(&time.minute);
     second = Clock_GetSecond();
 }
-namespace n07 {
 
 extern "C" s32 SkySprites_GetMoonPhaseGfx() {
     u8 buf[12];
@@ -4823,9 +3762,7 @@ extern "C" s32 SkySprites_GetMoonPhaseGfx() {
     return t + 3;
 }
 
-}
 s32 SkySprites::getGfxIdForKind(s32 kind, s32 arg) {
-    using namespace n07;
     s32 r = sSkySpriteDefaultGfx[kind];
     if (kind == 4) {
         r = SkySprites_GetMoonPhaseGfx();
@@ -4850,11 +3787,8 @@ s32 SkySprites::getGfxIdForKind(s32 kind, s32 arg) {
     }
     return r;
 }
-namespace n07 {
 
-}
 SkySprite *SkySprites::spawn(s32 kind, s32 idx, VecFx32 *vec, s32 arg) {
-    using namespace n07;
     s32 t = getGfxIdForKind(kind, arg);
     SkySprite *slot = NULL;
     s32 grp = pickGfxSlot(t);
@@ -4871,7 +3805,7 @@ SkySprite *SkySprites::spawn(s32 kind, s32 idx, VecFx32 *vec, s32 arg) {
             slot->state = 1;
             slot->gfxSlot = grp;
             slot->gfxId = t;
-            slot->palette = data_020d16f5[t * 16];
+            slot->palette = sSkyObjGfxTable[t].objPalette;
             if (vec != NULL) {
                 slot->screenPos.x = vec->x;
                 slot->screenPos.y = vec->y;
@@ -4883,11 +3817,8 @@ SkySprite *SkySprites::spawn(s32 kind, s32 idx, VecFx32 *vec, s32 arg) {
     }
     return slot;
 }
-namespace n07 {
 
-}
 void SkySprites::killKind(s32 id) {
-    using namespace n07;
     SkySprite *p, *end = &sprites[0x3c];
     for (p = &sprites[0]; p < end; p++) {
         if (id == p->kind) {
@@ -4896,11 +3827,8 @@ void SkySprites::killKind(s32 id) {
         }
     }
 }
-namespace n07 {
 
-}
 void SkySprites::killAll() {
-    using namespace n07;
     SkySprite *p, *end = &sprites[0x3c];
     for (p = &sprites[0]; p < end; p++) {
         if (p->kind != 0xd) {
@@ -4909,17 +3837,14 @@ void SkySprites::killAll() {
         }
     }
 }
-namespace n07 {
 
-}
 void SkySprites::spawnInitialPrecip() {
-    using namespace n07;
     BOOL a, b;
-    s32 v = data_021f1448[9];
+    s32 v = gWeatherManager.level;
     a = (v == 3);
     b = (v == 4);
     if (a || b) {
-        s32 w = data_021f1448[13];
+        s32 w = gWeatherManager.precipKind;
         s32 idx = 0xd;
         if (w == 1) idx = 0;
         else if (w == 2) idx = 1;
@@ -4940,11 +3865,8 @@ void SkySprites::spawnInitialPrecip() {
         rainStrength = 0;
     }
 }
-namespace n07 {
 
-}
 void SkySprites::updateLightning() {
-    using namespace n07;
     if (thunderTimer <= 0) thunderTimer = 0x32;
     thunderTimer--;
     if (thunderTimer <= 0) {
@@ -4955,11 +3877,8 @@ void SkySprites::updateLightning() {
         thunderTimer = Random_GlobalBelow(200) + 10;
     }
 }
-namespace n07 {
 
-}
 void SkySprites::updateThunderFlash() {
-    using namespace n07;
     if (thunderTimer <= 0) thunderTimer = 0x32;
     thunderTimer--;
     if (thunderTimer <= 0) {
@@ -4967,99 +3886,15 @@ void SkySprites::updateThunderFlash() {
         thunderTimer = Random_GlobalBelow(200) + 10;
     }
 }
-namespace n07 {
 
-#undef data_021f1448
-#undef data_020d16f0
-#undef data_020d16f5
-#undef data_020e6794
-}
 
 // ======== unk_020bbc28.cpp ========
-namespace n06 {
 typedef void (SkySprites::*Unk_020bbeb8_Fn)();
-extern "C" {
-extern CommManager *gCommManager;
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 Weather_GetFallingPrecip();
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN13PeteFallState15isVisitorActiveEv(void *self);
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv(void *self);
-}
-extern "C" {
-s32 _ZN8SaveData8testFlagEj(void *, s32);
-}
-extern "C" {
-extern char gSaveData[];
-}
-extern "C" {
-extern SkySpawnRate sRainSpawnRates[];
-}
-extern "C" {
-extern SkySpawnRate sSnowSpawnRates[];
-}
-namespace L_021ed2b6 { extern "C" { extern struct S { u8 p[6]; WeatherRecord v; } data_021ed2b0; } }
-extern "C" {
-void Clock_GetDateTime(void *);
-}
-extern "C" {
-void MI_CpuCopy8(void *, void *, u32);
-}
-extern "C" {
-s32 Event_GetState(s32, void *, s32);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-BOOL Scene_InTownUnk31();
-}
-extern "C" {
-BOOL _ZN11CommManager8isOnlineEv(CommManager *);
-}
-extern "C" {
-s32 Scene_GetCurrent();
-}
-extern "C" {
-void Math_StepS32Alt(void *, s32, s32);
-}
-extern "C" {
-}
-extern "C" {
-BOOL _ZN10PlayerData8testFlagEj(void *, s32);
-}
-extern "C" {
-BOOL SkyShot_HasMaxHits();
-}
-extern "C" {
-}
-extern "C" {
-u32 _u32_div_f(u32, u32);
-}
 
-}
 void SkySprites::updateRain() {
-    using namespace n06;
     s32 kind = 0;
-    s32 a = n00::gWeatherManager.level;
-    s32 b = n00::gWeatherManager.targetLevel;
+    s32 a = gWeatherManager.level;
+    s32 b = gWeatherManager.targetLevel;
     if (a == b) {
         if (a == 3) {
             kind = 2;
@@ -5082,7 +3917,7 @@ void SkySprites::updateRain() {
     if (kind == 0) {
         precipIntensity = 0;
     } else {
-        SkySpawnRate *t = &sRainSpawnRates[kind - 1];
+        const SkySpawnRate *t = &sRainSpawnRates[kind - 1];
         if (spawnInterval == 0) {
             spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
         }
@@ -5116,14 +3951,11 @@ void SkySprites::updateRain() {
     }
     Math_StepS32Alt(&rainStrength, b == 4 ? 0x1000 : 0x800, 2);
 }
-namespace n06 {
 
-}
 void SkySprites::updateSnow() {
-    using namespace n06;
     s32 kind = 0;
-    s32 a = n00::gWeatherManager.level;
-    s32 b = n00::gWeatherManager.targetLevel;
+    s32 a = gWeatherManager.level;
+    s32 b = gWeatherManager.targetLevel;
     if (a == b) {
         if (a == 3) {
             kind = 2;
@@ -5147,7 +3979,7 @@ void SkySprites::updateSnow() {
         spawnInterval = 0;
         snowCounter = 0;
     } else {
-        SkySpawnRate *t = &sSnowSpawnRates[kind - 1];
+        const SkySpawnRate *t = &sSnowSpawnRates[kind - 1];
         if (spawnInterval == 0) {
             spawnInterval = 0x3e8;
         }
@@ -5205,17 +4037,14 @@ void SkySprites::updateSnow() {
         }
     }
 }
-namespace n06 {
 
-}
 void SkySprites::updateShootingStar() {
-    using namespace n06;
     u8 v = time.hour;
     BOOL a = TRUE;
     if (v < 0x13 && v >= 4) {
         a = FALSE;
     }
-    s32 x = n00::gWeatherManager.level;
+    s32 x = gWeatherManager.level;
     BOOL c = FALSE;
     if (x != 3 && x != 4) {
         c = TRUE;
@@ -5231,7 +4060,7 @@ void SkySprites::updateShootingStar() {
                 spawn(3, 0x1e, 0, 0);
             }
         } else if (second == 0x1e && second != prevSecond) {
-            if (!Random_GlobalBelow(L_021ed2b6::data_021ed2b0.v.todayPattern == 0 ? 4 : 0x100)) {
+            if (!Random_GlobalBelow(((WeatherRecord *)gSaveData.weather)->todayPattern == 0 ? 4 : 0x100)) {
                 shootingStarDelay = Random_GlobalBelow(0x258);
             }
         }
@@ -5239,11 +4068,8 @@ void SkySprites::updateShootingStar() {
         shootingStarDelay = 0;
     }
 }
-namespace n06 {
 
-}
 void SkySprites::updateMoon() {
-    using namespace n06;
     u8 v = time.hour;
     BOOL b;
     if (sprites[31].kind == 4) {
@@ -5259,56 +4085,69 @@ void SkySprites::updateMoon() {
         killKind(4);
     }
 }
-namespace n06 {
 
-}
-namespace n00 {
 extern "C" {
-void *data_020e510c[9] = {(void *)data_020e4c24, (void *)0x2, 0, (void *)data_020e4c34, (void *)0x1, 0,
-    (void *)data_020e4bf4, (void *)0x1, 0};
-void *data_020e4a88[3] = {(void *)data_020e470c, (void *)0x1, 0};
+SpriteAnimFrame data_020e510c[3] = {
+    {data_020e4c24, 2, 0, 0},
+    {data_020e4c34, 1, 0, 0},
+    {data_020e4bf4, 1, 0, 0},
+};
+SpriteAnimFrame data_020e4a88[1] = {
+    {data_020e470c, 1, 0, 0},
+};
 u32 data_020e46dc[2] = {0x1fc00fc, 0xffff0040};
 u32 data_020e46fc[2] = {0x81f000f0, 0xffff209c};
-void *data_020e46f4[2] = {(void *)_ZN9SkySprite8initPeteEv, 0};
-void *data_020e46bc[2] = {(void *)_ZN9SkySprite15updateLightningEv, 0};
 u32 data_020e4ba4[4] = {0xa1f88000, 0x9e, 0xa1f880e0, 0xffff011e};
-void *data_020e4aa0[3] = {(void *)data_020e48c4, (void *)0x1, 0};
-void *data_020e4aac[3] = {(void *)data_020e4a0c, (void *)0x1, 0};
-void *data_020e5130[9] = {(void *)data_020e4c44, (void *)0x2, 0, (void *)data_020e4c54, (void *)0x1, 0,
-    (void *)data_020e4c64, (void *)0x1, 0};
+SpriteAnimFrame data_020e4aa0[1] = {
+    {data_020e48c4, 1, 0, 0},
+};
+SpriteAnimFrame data_020e4aac[1] = {
+    {data_020e4a0c, 1, 0, 0},
+};
+SpriteAnimFrame data_020e5130[3] = {
+    {data_020e4c44, 2, 0, 0},
+    {data_020e4c54, 1, 0, 0},
+    {data_020e4c64, 1, 0, 0},
+};
 char data_020e4ec8[30] = "/sky/d_2d_b_cld_c1_bg_nsc.bin";
-void *data_020e4894[2] = {(void *)_ZN15SkyShotSequence9actUfoHitEv, 0};
-const u32 data_020d10e8[12] = {0x48a548a5, 0x48a548a5, 0x48c648a5, 0x4d2948e7, 0x4d4a4d4a, 0x4d4a4d4a,
-    0x4d4a4d4a, 0x4d4a4d4a, 0x4d294d4a, 0x4ca54ce7, 0x48a548a5, 0x48a548a5};
+const u16 data_020d10e8[24] = {
+    0x48a5, 0x48a5, 0x48a5, 0x48a5, 0x48a5, 0x48c6, 0x48e7, 0x4d29, 0x4d4a, 0x4d4a, 0x4d4a, 0x4d4a,
+    0x4d4a, 0x4d4a, 0x4d4a, 0x4d4a, 0x4d4a, 0x4d29, 0x4ce7, 0x4ca5, 0x48a5, 0x48a5, 0x48a5, 0x48a5,
+};
 u32 data_020e4bb4[4] = {0x41fc80e0, 0x9d, 0x41fc8000, 0xffff011d};
-void *data_020e467c[2] = {(void *)_ZN9SkySprite7endPeteEv, 0};
-const u32 data_020d1118[12] = {0x72d16eb1, 0x76f472d2, 0x7ef57af5, 0x7f567f14, 0x7fb97fb9, 0x7fb97fb9,
-    0x7fb97fb9, 0x7fb97fb9, 0x7b397fb9, 0x76f676b6, 0x76f57716, 0x6eb272f4};
+const u16 data_020d1118[24] = {
+    0x6eb1, 0x72d1, 0x72d2, 0x76f4, 0x7af5, 0x7ef5, 0x7f14, 0x7f56, 0x7fb9, 0x7fb9, 0x7fb9, 0x7fb9,
+    0x7fb9, 0x7fb9, 0x7fb9, 0x7fb9, 0x7fb9, 0x7b39, 0x76b6, 0x76f6, 0x7716, 0x76f5, 0x72f4, 0x6eb2,
+};
 u32 data_020e4bc4[4] = {0x1400e7, 0x30f6, 0x1e70000, 0xffff30b7};
-const u32 data_020d0ef8[6] = {0xb0b0b0b, 0x13000b0b, 0x15141413, 0x16161615, 0xb001315, 0xb0b0b0b};
-void *data_020e4a04[2] = {(void *)_ZN9SkySprite12initFireworkEj, 0};
-void *data_020e5154[9] = {(void *)data_020e4ba4, (void *)0x2, 0, (void *)data_020e4c74, (void *)0x1, 0,
-    (void *)data_020e4c84, (void *)0x1, 0};
+const u8 data_020d0ef8[24] = {
+    0xb, 0xb, 0xb, 0xb, 0xb, 0xb, 0x0, 0x13, 0x13, 0x14, 0x14, 0x15,
+    0x15, 0x16, 0x16, 0x16, 0x15, 0x13, 0x0, 0xb, 0xb, 0xb, 0xb, 0xb,
+};
+SpriteAnimFrame data_020e5154[3] = {
+    {data_020e4ba4, 2, 0, 0},
+    {data_020e4c74, 1, 0, 0},
+    {data_020e4c84, 1, 0, 0},
+};
 u32 data_020e4bd4[4] = {0x1600e7, 0x30d4, 0x1e90002, 0xffff30f6};
 char *data_020e5230[10] = {data_020e4e48, data_020e4e48, data_020e4e68,
     data_020e4e88, data_020e4ea8, data_020e4ec8, data_020e4ee8,
     data_020e4f08, data_020e4f28, data_020e4f48};
-void *data_020e4944[2] = {(void *)SkySprite_EndMoon, 0};
 u32 data_020e4a24[2] = {0x81f000f0, 0xffff2118};
 u32 data_020e4be4[4] = {0x1800e7, 0x30f7, 0x1eb0004, 0xffff30d4};
 char **sCloudScreenFiles[3] = {data_020e5230, data_020e4d98, data_020e4d70};
-void *sSkyLightColorTables[5] = {(void *)data_020e4b74, (void *)data_020e4b74, (void *)data_020e4b84,
-    (void *)data_020e4b84, (void *)data_020e4b84};
+const u16 *const *const sSkyLightColorTables[5] = {data_020e4b74, data_020e4b74, data_020e4b84, data_020e4b84, data_020e4b84};
 u32 data_020e488c[2] = {0x0, 0xffff00b4};
 u32 data_020e55c0[20] = {0x300200e8, 0x3094, 0x201000fe, 0x30b6, 0x10000009, 0x30b6, 0x1eb00fa, 0x30b6, 0xc00f4,
     0x30b6, 0x1f800eb, 0x3095, 0x300f000c, 0x30b4, 0x200f00ea, 0x30d7, 0x1f200f1, 0x30d7, 0x1ed0004,
     0xffff3097};
-const u32 data_020d0f10[6] = {0xc0c0c0c, 0x60a, 0x0, 0x0, 0x6000000, 0xc0c0c0a};
-void *data_020e46b4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct07Ev, 0};
+const u8 data_020d0f10[24] = {
+    0xc, 0xc, 0xc, 0xc, 0xa, 0x6, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x6, 0xa, 0xc, 0xc, 0xc,
+};
 char data_020e5048[31] = "/sky/d_2d_b_cld_r_b_bg_nsc.bin";
-void *data_020e47a4[2] = {(void *)_ZN9SkySprite10updateShotEv, 0};
-u32 sSkyLineScrollY[2];
-const u32 sSkySpriteDefaultGfx[13] = {0x0, 0x1, 0x2f, 0x2, 0x3, 0x1f, 0x23, 0x26, 0x2a, 0x2b, 0x2e, 0x32, 0x33};
+s32 sSkyLineScrollY[2];
+const s32 sSkySpriteDefaultGfx[13] = {0x0, 0x1, 0x2f, 0x2, 0x3, 0x1f, 0x23, 0x26, 0x2a, 0x2b, 0x2e, 0x32, 0x33};
 char data_020e4df4[27] = "/sky/a_sky_fly_obj_ncg.bin";
 u32 data_020e4bf4[4] = {0x51fc80e0, 0x9c, 0x51fc8000, 0xffff011c};
 u32 data_020e482c[2] = {0x81f004f0, 0xffff0094};
@@ -5319,21 +4158,32 @@ char data_020e4ee8[30] = "/sky/d_2d_b_cld_r0_bg_nsc.bin";
 u32 data_020e49a4[2] = {0x81f000f0, 0xffff3098};
 u32 data_020e484c[2] = {0x81e003e0, 0xffff9118};
 char data_020e4f28[30] = "/sky/d_2d_b_cld_h0_bg_nsc.bin";
-void *data_020e519c[9] = {(void *)data_020e4cc4, (void *)0x2, 0, (void *)data_020e4cd4, (void *)0x1, 0,
-    (void *)data_020e4b54, (void *)0x1, 0};
-void *data_020e479c[2] = {(void *)_ZN9SkySprite13updateRainbowEv, 0};
+SpriteAnimFrame data_020e519c[3] = {
+    {data_020e4cc4, 2, 0, 0},
+    {data_020e4cd4, 1, 0, 0},
+    {data_020e4b54, 1, 0, 0},
+};
 u32 data_020e4c44[4] = {0xb1f88000, 0x9e, 0xb1f880e0, 0xffff011e};
-const u32 sRainSpawnRates[8] = {0x2d, 0x69, 0x1e, 0x5a, 0xf, 0x4b, 0x1, 0x3c};
+const SkySpawnRate sRainSpawnRates[4] = {{0x2d, 0x69}, {0x1e, 0x5a}, {0xf, 0x4b}, {0x1, 0x3c}};
 u32 data_020e47fc[2] = {0x91f000f0, 0xffff211c};
-void *data_020e51c0[9] = {(void *)data_020e4ce4, (void *)0x2, 0, (void *)data_020e4cf4, (void *)0x1, 0,
-    (void *)data_020e4d04, (void *)0x1, 0};
-u32 sSkyBlendLineCache[1] = {0xffffffff};
+SpriteAnimFrame data_020e51c0[3] = {
+    {data_020e4ce4, 2, 0, 0},
+    {data_020e4cf4, 1, 0, 0},
+    {data_020e4d04, 1, 0, 0},
+};
+u16 sSkyBlendLineCache[2] = {0xffff, 0xffff};  // (the last light parameter of each line buffer)
 u32 data_020e4c74[4] = {0x61fc8000, 0x9d, 0x61fc80e0, 0xffff011d};
 u32 data_020e4c84[4] = {0x61fc8000, 0x9c, 0x61fc80e0, 0xffff011c};
-void *data_020e4a4c[2] = {(void *)_ZN9SkySprite12initRainDropEi, 0};
-void *data_020e4af4[3] = {(void *)data_020e485c, (void *)0x4, 0};
-void *data_020e4b00[3] = {(void *)data_020e487c, (void *)0x4, 0};
-void *data_020e4ddc[6] = {(void *)data_020e4a3c, (void *)0x2, 0, (void *)data_020e483c, (void *)0x1, 0};
+SpriteAnimFrame data_020e4af4[1] = {
+    {data_020e485c, 4, 0, 0},
+};
+SpriteAnimFrame data_020e4b00[1] = {
+    {data_020e487c, 4, 0, 0},
+};
+SpriteAnimFrame data_020e4ddc[2] = {
+    {data_020e4a3c, 2, 0, 0},
+    {data_020e483c, 1, 0, 0},
+};
 u32 data_020e5a34[48] = {0x800004d0, 0x1114, 0x802084d0, 0x1118, 0x3044d8, 0x113a, 0x403004e0, 0x115a,
     0x802004f0, 0x1098, 0x1804f0, 0x109f, 0x80400410, 0x111c, 0x380410, 0x111b, 0x80404400, 0x10dc, 0x404004f0,
     0x109c, 0x4004e8, 0x10bf, 0x91e004d0, 0x1114, 0x91d084d0, 0x1118, 0x11c044d8, 0x113a, 0x51c004e0, 0x115a,
@@ -5341,282 +4191,433 @@ u32 data_020e5a34[48] = {0x800004d0, 0x1114, 0x802084d0, 0x1118, 0x3044d8, 0x113
     0x51b004f0, 0x109c, 0x11b804e8, 0x10bf, 0x5004f8, 0x10be, 0x11a804f8, 0xffff10be};
 SkyGradient sSkyGradient;
 u32 data_020e4a1c[2] = {0x81f000f0, 0xffff309c};
-u32 sSkyLineScrollX[2];
-void *data_020e464c[2] = {(void *)_ZN15SkyShotSequence11actPeteFallEv, 0};
+s32 sSkyLineScrollX[2];
 u32 data_020e4814[2] = {0x81f000f0, 0xffff4098};
 u32 data_020e4ce4[4] = {0xa1f88000, 0x9a, 0xa1f880e0, 0xffff011a};
-void *data_020e4b18[3] = {(void *)data_020e4854, (void *)0x4, 0};
+SpriteAnimFrame data_020e4b18[1] = {
+    {data_020e4854, 4, 0, 0},
+};
 u32 data_020e4d04[4] = {0x61fc8000, 0x98, 0x61fc80e0, 0xffff0118};
-u32 data_020e4630[1] = {0x3d};
-void *sSkyLightParamTables[5] = {(void *)data_020e478c, (void *)data_020e478c, (void *)data_020e4824,
-    (void *)data_020e4824, (void *)data_020e4824};
-const u32 sSkyCloudBgLayer[1] = {0x206};
-void *data_020e4794[2] = {(void *)_ZN10SkySprites21fireworksPatternAct02Ev, 0};
-void *data_020e51e4[9] = {(void *)data_020e4b94, (void *)0x2, 0, (void *)data_020e4d14, (void *)0x1, 0,
-    (void *)data_020e4d24, (void *)0x1, 0};
+u8 data_020e4630[4] = {0x3d};
+const u8 *const *const sSkyLightParamTables[5] = {data_020e478c, data_020e478c, data_020e4824, data_020e4824, data_020e4824};
+const u8 sSkyCloudBgLayer[4] = {
+    0x6, 0x2, 0x0, 0x0,
+};
+SpriteAnimFrame data_020e51e4[3] = {
+    {data_020e4b94, 2, 0, 0},
+    {data_020e4d14, 1, 0, 0},
+    {data_020e4d24, 1, 0, 0},
+};
 char data_020e50a8[31] = "/sky/d_2d_b_cld_c_a_bg_nsc.bin";
 SkySprites gSkySprites;
-void *data_020e4974[2] = {(void *)_ZN9SkySprite9updateUfoEv, 0};
-void *data_020e4994[2] = {(void *)SkySprites_FireworksPatternAct0F, 0};
 u32 data_020e499c[2] = {0x91f000f0, 0xffff2118};
-void *data_020e49b4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct06Ev, 0};
-void *data_020e4b48[3] = {(void *)data_020e4734, (void *)0x4, 0};
-void *const sSkyObjCharFiles[3] = {(void *)data_020e4dac, (void *)data_020e4df4, 0};
+SpriteAnimFrame data_020e4b48[1] = {
+    {data_020e4734, 4, 0, 0},
+};
+const char *const sSkyObjCharFiles[3] = {data_020e4dac, data_020e4df4, 0};
 u32 data_020e477c[2] = {0x81f000f0, 0xffff311c};
-void *data_020e46e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct01Ev, 0};
 u32 data_020e4774[2] = {0x1fc00fc, 0xffff0057};
 u32 data_020e492c[2] = {0x91f000f0, 0xffff2118};
-const u32 data_020d0ec8[6] = {0xe0e0e0e, 0x18000e0e, 0x1a191918, 0x1b1b1b1a, 0xe00181a, 0xe0e0e0e};
-const u32 sFireworkColors[4] = {0x21b0340, 0x340021b, 0x7c7b7e24, 0x211f7c7b};
+const u8 data_020d0ec8[24] = {
+    0xe, 0xe, 0xe, 0xe, 0xe, 0xe, 0x0, 0x18, 0x18, 0x19, 0x19, 0x1a,
+    0x1a, 0x1b, 0x1b, 0x1b, 0x1a, 0x18, 0x0, 0xe, 0xe, 0xe, 0xe, 0xe,
+};
+const FireworkColorPair sFireworkColors[4] = {
+    {{0, 26, 0, 0}, {27, 16, 0, 0}},
+    {{27, 16, 0, 0}, {0, 26, 0, 0}},
+    {{4, 17, 31, 0}, {27, 3, 31, 0}},
+    {{27, 3, 31, 0}, {31, 8, 8, 0}},
+};
 u32 data_020e486c[2] = {0x81f000f0, 0xffff3118};
 u32 data_020e4a14[2] = {0x81f880f0, 0xffff409a};
-const u32 data_020d0fc8[12] = {0x4000000, 0xc200820, 0x3e0a1440, 0x67fb67f4, 0x67ff67ff, 0x67ff67ff, 0x5bff67ff,
-    0x3fdf4bdf, 0x1abf33df, 0x16d021f, 0x6300a5, 0x210042};
+const u16 data_020d0fc8[24] = {
+    0x0, 0x400, 0x820, 0xc20, 0x1440, 0x3e0a, 0x67f4, 0x67fb, 0x67ff, 0x67ff, 0x67ff, 0x67ff,
+    0x67ff, 0x5bff, 0x4bdf, 0x3fdf, 0x33df, 0x1abf, 0x21f, 0x16d, 0xa5, 0x63, 0x42, 0x21,
+};
 char data_020e4dac[23] = "/sky/a_sky_obj_ncg.bin";
-const u32 sSnowFallSpeeds[3] = {0x2402, 0x123a, 0x17e2};
-void *data_020e4714[2] = {(void *)SkySprite_InitParticle, 0};
+const s32 sSnowFallSpeeds[3] = {0x2402, 0x123a, 0x17e2};
 u32 data_020e5520[20] = {0x300000ed, 0x3094, 0x200a00fc, 0x30b6, 0x10010007, 0x30b6, 0x1ee00fa, 0x30b6, 0x900f3,
     0x30b6, 0x1f900ee, 0x3095, 0x300b0008, 0x30b4, 0x100c00ed, 0x3097, 0x1f500f3, 0x30b4, 0x1ef0002,
     0xffff3097};
 u32 data_020e49f4[2] = {0x81e003e0, 0xffff911c};
-const u32 sParticleTrailScales[23] = {0x5000, 0x16db, 0x1000, 0xe8c, 0xd55, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f,
-    0xd55, 0xe8c, 0x1000, 0x11c7, 0x1400, 0x16db, 0x1aab, 0x2000, 0x2800, 0x3555, 0x5000, 0xa000};
-void *data_020e46a4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct08Ev, 0};
+const s32 sParticleTrailScales[23] = {0x5000, 0x16db, 0x1000, 0xe8c, 0xd55, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xd55, 0xe8c, 0x1000, 0x11c7, 0x1400, 0x16db, 0x1aab, 0x2000, 0x2800, 0x3555, 0x5000, 0xa000};
 u32 data_020e48f4[2] = {0x81f880f0, 0xffff409c};
 char data_020e5028[31] = "/sky/d_2d_b_cld_c_b_bg_nsc.bin";
 u32 data_020e4734[2] = {0x81f000f0, 0xffff0114};
-void *data_020e56b0[21] = {(void *)data_020e48d4, (void *)0x2, 0, (void *)data_020e46fc, (void *)0x2, 0,
-    (void *)data_020e475c, (void *)0x2, 0, (void *)data_020e4844, (void *)0x2, 0, (void *)data_020e47fc,
-    (void *)0x2, 0, (void *)data_020e492c, (void *)0x2, 0, (void *)data_020e491c, (void *)0x2, 0};
+SpriteAnimFrame data_020e56b0[7] = {
+    {data_020e48d4, 2, 0, 0},
+    {data_020e46fc, 2, 0, 0},
+    {data_020e475c, 2, 0, 0},
+    {data_020e4844, 2, 0, 0},
+    {data_020e47fc, 2, 0, 0},
+    {data_020e492c, 2, 0, 0},
+    {data_020e491c, 2, 0, 0},
+};
 u32 sSkyBlackBackdrop[1];
 u32 data_020e5570[20] = {0x300100ea, 0x3094, 0x200d00fd, 0x30b6, 0x10000008, 0x30b6, 0x1ec00fa, 0x30b6, 0xb00f3,
     0x30b6, 0x1f800ec, 0x3095, 0x300e000b, 0x30b4, 0x100e00eb, 0x3097, 0x1f300f2, 0x30d7, 0x1ed0003,
     0xffff3097};
-void *data_020e5d04[132] = {0, (void *)0x2, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec,
-    (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0,
-    (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x10000, (void *)data_020e49ec, (void *)0x1, (void *)0x20000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x20000, (void *)data_020e49ec, (void *)0x1, (void *)0x30000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x30000, (void *)data_020e49ec, (void *)0x1, (void *)0x40000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x40000, (void *)data_020e49ec, (void *)0x1, (void *)0x50000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x50000, (void *)data_020e49ec, (void *)0x1, (void *)0x60000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x60000, (void *)data_020e49ec, (void *)0x1, (void *)0x60000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x70000, (void *)data_020e49ec, (void *)0x1, (void *)0x70000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x80000, (void *)data_020e49ec, (void *)0x1, (void *)0x80000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0x90000, (void *)data_020e49ec, (void *)0x1, (void *)0x90000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xa0000, (void *)data_020e49ec, (void *)0x1, (void *)0xa0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e49ec, (void *)0x1, (void *)0xb0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e49ec, (void *)0x1, (void *)0xc0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xc0000, (void *)data_020e49ec, (void *)0x1, (void *)0xc0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e49ec, (void *)0x1, (void *)0xd0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e49ec, (void *)0x1, (void *)0xe0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e49ec, (void *)0x1, (void *)0xe0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e49ec, (void *)0x1, (void *)0xf0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xf0000, (void *)data_020e49ec, (void *)0x1, (void *)0xf0000, (void *)data_020e49ec,
-    (void *)0x1, (void *)0xf0000};
-const u32 data_020d0ee0[6] = {0x10101010, 0x80d, 0x0, 0x0, 0x8000000, 0x1010100d};
-void *data_020e48b4[2] = {(void *)SkySprite_InitMoon, 0};
-void *data_020e48ac[2] = {(void *)SkySprite_UpdateParticle, 0};
-u32 sRainSideToggle[1] = {0x1};
-const u32 data_020d10b8[12] = {0x3ed03ed0, 0x3ed03ed0, 0x31e93ed0, 0x106024e2, 0x4200820, 0x400, 0x4000000,
-    0xc010800, 0x18011001, 0x31ea2443, 0x3ed03ed0, 0x3ed03ed0};
+SpriteAnimFrame data_020e5d04[44] = {
+    {NULL, 2, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 1},
+    {data_020e49ec, 1, 0, 2},
+    {data_020e49ec, 1, 0, 2},
+    {data_020e49ec, 1, 0, 3},
+    {data_020e49ec, 1, 0, 3},
+    {data_020e49ec, 1, 0, 4},
+    {data_020e49ec, 1, 0, 4},
+    {data_020e49ec, 1, 0, 5},
+    {data_020e49ec, 1, 0, 5},
+    {data_020e49ec, 1, 0, 6},
+    {data_020e49ec, 1, 0, 6},
+    {data_020e49ec, 1, 0, 6},
+    {data_020e49ec, 1, 0, 7},
+    {data_020e49ec, 1, 0, 7},
+    {data_020e49ec, 1, 0, 8},
+    {data_020e49ec, 1, 0, 8},
+    {data_020e49ec, 1, 0, 9},
+    {data_020e49ec, 1, 0, 9},
+    {data_020e49ec, 1, 0, 10},
+    {data_020e49ec, 1, 0, 10},
+    {data_020e49ec, 1, 0, 11},
+    {data_020e49ec, 1, 0, 11},
+    {data_020e49ec, 1, 0, 11},
+    {data_020e49ec, 1, 0, 12},
+    {data_020e49ec, 1, 0, 12},
+    {data_020e49ec, 1, 0, 12},
+    {data_020e49ec, 1, 0, 13},
+    {data_020e49ec, 1, 0, 13},
+    {data_020e49ec, 1, 0, 13},
+    {data_020e49ec, 1, 0, 14},
+    {data_020e49ec, 1, 0, 14},
+    {data_020e49ec, 1, 0, 14},
+    {data_020e49ec, 1, 0, 14},
+    {data_020e49ec, 1, 0, 15},
+    {data_020e49ec, 1, 0, 15},
+    {data_020e49ec, 1, 0, 15},
+    {data_020e49ec, 1, 0, 15},
+};
+const u8 data_020d0ee0[24] = {
+    0x10, 0x10, 0x10, 0x10, 0xd, 0x8, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8, 0xd, 0x10, 0x10, 0x10,
+};
+s32 sRainSideToggle = 1;
+const u16 data_020d10b8[24] = {
+    0x3ed0, 0x3ed0, 0x3ed0, 0x3ed0, 0x3ed0, 0x31e9, 0x24e2, 0x1060, 0x820, 0x420, 0x400, 0x0,
+    0x0, 0x400, 0x800, 0xc01, 0x1001, 0x1801, 0x2443, 0x31ea, 0x3ed0, 0x3ed0, 0x3ed0, 0x3ed0,
+};
 u32 data_020e465c[2] = {0x81f000f0, 0xffff311c};
-void *data_020e57d0[27] = {(void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0,
-    (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec,
-    (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0,
-    (void *)data_020e49ec, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
-void *data_020e494c[2] = {(void *)SkySprite_EndShootingStar, 0};
+SpriteAnimFrame data_020e57d0[9] = {
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 0},
+    {data_020e49ec, 1, 0, 2},
+    {NULL, 37, 0, 0},
+};
 u32 data_020e48bc[2] = {0x81f000f0, 0xffff209c};
-void *data_020e4ab8[3] = {(void *)data_020e47b4, (void *)0x1, 0};
-void *data_020e48e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct04Ev, 0};
+SpriteAnimFrame data_020e4ab8[1] = {
+    {data_020e47b4, 1, 0, 0},
+};
 char data_020e4f08[30] = "/sky/d_2d_b_cld_r1_bg_nsc.bin";
 u32 data_020e4884[2] = {0x81f000f0, 0xffff2098};
-void *data_020e47bc[2] = {(void *)_ZN15SkyShotSequence13actShotFlightEv, 0};
-void *data_020e4a44[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0BEv, 0};
-void *data_020e46c4[2] = {(void *)_ZN15SkyShotSequence14actBalloonDropEv, 0};
-u32 sSkyHBlankTask[HOST_SIZED(0x1c, HBlankTask) / 4] HOST_ALIGN8;  // HBlankTask
-void *data_020e468c[2] = {(void *)_ZN9SkySprite11initRainbowEv, 0};
-void *data_020e473c[2] = {(void *)_ZN9SkySprite8initBirdEj, 0};
+HBlankTask sSkyHBlankTask;
 u32 data_020e4c14[4] = {0x41fc80e0, 0x9c, 0x41fc8000, 0xffff011c};
 u32 data_020e466c[2] = {0x81f000f0, 0xffff209c};
-void *data_020e49c4[2] = {(void *)SkySprite_UpdateBalloon, 0};
-void *data_020e583c[27] = {(void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
-    (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
-    (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
-    (void *)data_020e484c, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
+SpriteAnimFrame data_020e583c[9] = {
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 2},
+    {NULL, 37, 0, 0},
+};
 char data_020e4f48[30] = "/sky/d_2d_b_cld_h1_bg_nsc.bin";
 u32 data_020e49cc[2] = {0x81f000f0, 0xffff3098};
 u32 data_020e4c64[4] = {0x71fc8000, 0x9c, 0x71fc80e0, 0xffff011c};
-void *data_020e493c[2] = {(void *)SkySprite_EndBalloon, 0};
-void *data_020e5288[12] = {(void *)data_020e4884, (void *)0x2, 0, (void *)data_020e48bc, (void *)0x2, 0,
-    (void *)data_020e4a24, (void *)0x2, 0, (void *)data_020e497c, (void *)0x2, 0};
+SpriteAnimFrame data_020e5288[4] = {
+    {data_020e4884, 2, 0, 0},
+    {data_020e48bc, 2, 0, 0},
+    {data_020e4a24, 2, 0, 0},
+    {data_020e497c, 2, 0, 0},
+};
 u32 data_020e46ec[2] = {0x1fc00fc, 0xffff0058};
 char *sSkyPaletteFiles[2][2] = {{data_020e4f68, data_020e4f88}, {data_020e4fa8, data_020e4fc8}};
 u32 data_020e49fc[2] = {0x81e003e0, 0xffff909c};
 u32 data_020e4a0c[2] = {0x41fb80f0, 0xffff9096};
-void *data_020e6334[132] = {0, (void *)0x2, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc,
-    (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0,
-    (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x10000, (void *)data_020e49fc, (void *)0x1, (void *)0x20000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x20000, (void *)data_020e49fc, (void *)0x1, (void *)0x30000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x30000, (void *)data_020e49fc, (void *)0x1, (void *)0x40000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x40000, (void *)data_020e49fc, (void *)0x1, (void *)0x50000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x50000, (void *)data_020e49fc, (void *)0x1, (void *)0x60000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x60000, (void *)data_020e49fc, (void *)0x1, (void *)0x60000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x70000, (void *)data_020e49fc, (void *)0x1, (void *)0x70000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x80000, (void *)data_020e49fc, (void *)0x1, (void *)0x80000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0x90000, (void *)data_020e49fc, (void *)0x1, (void *)0x90000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xa0000, (void *)data_020e49fc, (void *)0x1, (void *)0xa0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e49fc, (void *)0x1, (void *)0xb0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e49fc, (void *)0x1, (void *)0xc0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xc0000, (void *)data_020e49fc, (void *)0x1, (void *)0xc0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e49fc, (void *)0x1, (void *)0xd0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e49fc, (void *)0x1, (void *)0xe0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e49fc, (void *)0x1, (void *)0xe0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e49fc, (void *)0x1, (void *)0xf0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xf0000, (void *)data_020e49fc, (void *)0x1, (void *)0xf0000, (void *)data_020e49fc,
-    (void *)0x1, (void *)0xf0000};
+SpriteAnimFrame data_020e6334[44] = {
+    {NULL, 2, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 1},
+    {data_020e49fc, 1, 0, 2},
+    {data_020e49fc, 1, 0, 2},
+    {data_020e49fc, 1, 0, 3},
+    {data_020e49fc, 1, 0, 3},
+    {data_020e49fc, 1, 0, 4},
+    {data_020e49fc, 1, 0, 4},
+    {data_020e49fc, 1, 0, 5},
+    {data_020e49fc, 1, 0, 5},
+    {data_020e49fc, 1, 0, 6},
+    {data_020e49fc, 1, 0, 6},
+    {data_020e49fc, 1, 0, 6},
+    {data_020e49fc, 1, 0, 7},
+    {data_020e49fc, 1, 0, 7},
+    {data_020e49fc, 1, 0, 8},
+    {data_020e49fc, 1, 0, 8},
+    {data_020e49fc, 1, 0, 9},
+    {data_020e49fc, 1, 0, 9},
+    {data_020e49fc, 1, 0, 10},
+    {data_020e49fc, 1, 0, 10},
+    {data_020e49fc, 1, 0, 11},
+    {data_020e49fc, 1, 0, 11},
+    {data_020e49fc, 1, 0, 11},
+    {data_020e49fc, 1, 0, 12},
+    {data_020e49fc, 1, 0, 12},
+    {data_020e49fc, 1, 0, 12},
+    {data_020e49fc, 1, 0, 13},
+    {data_020e49fc, 1, 0, 13},
+    {data_020e49fc, 1, 0, 13},
+    {data_020e49fc, 1, 0, 14},
+    {data_020e49fc, 1, 0, 14},
+    {data_020e49fc, 1, 0, 14},
+    {data_020e49fc, 1, 0, 14},
+    {data_020e49fc, 1, 0, 15},
+    {data_020e49fc, 1, 0, 15},
+    {data_020e49fc, 1, 0, 15},
+    {data_020e49fc, 1, 0, 15},
+};
 u32 data_020e48cc[2] = {0xc1c003c0, 0xffff9098};
 u32 data_020e475c[2] = {0x81f000f0, 0xffff2118};
-void *data_020e47ac[2] = {(void *)_ZN9SkySprite8initShotEj, 0};
-void *data_020e5318[12] = {(void *)data_020e4814, (void *)0x1, 0, (void *)data_020e4684, (void *)0x1, 0,
-    (void *)data_020e47f4, (void *)0x1, 0, (void *)data_020e47ec, (void *)0x1, 0};
-void *data_020e4744[2] = {(void *)SkySprite_UpdateSnowFlake, 0};
-void *data_020e5348[12] = {(void *)data_020e49cc, (void *)0x2, 0, (void *)data_020e4644, (void *)0x2, 0,
-    (void *)data_020e4674, (void *)0x2, 0, (void *)data_020e465c, (void *)0x2, 0};
-void *data_020e5914[27] = {(void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0,
-    (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc,
-    (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0,
-    (void *)data_020e49fc, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
-void *data_020e4914[2] = {(void *)_ZN9SkySprite10endRainbowEv, 0};
-void *data_020e4824[2] = {(void *)data_020d0ef8, (void *)data_020d0f10};
-void *data_020e5764[27] = {(void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0,
-    (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc,
-    (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0,
-    (void *)data_020e48cc, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
+SpriteAnimFrame data_020e5318[4] = {
+    {data_020e4814, 1, 0, 0},
+    {data_020e4684, 1, 0, 0},
+    {data_020e47f4, 1, 0, 0},
+    {data_020e47ec, 1, 0, 0},
+};
+SpriteAnimFrame data_020e5348[4] = {
+    {data_020e49cc, 2, 0, 0},
+    {data_020e4644, 2, 0, 0},
+    {data_020e4674, 2, 0, 0},
+    {data_020e465c, 2, 0, 0},
+};
+SpriteAnimFrame data_020e5914[9] = {
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 0},
+    {data_020e49fc, 1, 0, 2},
+    {NULL, 37, 0, 0},
+};
+const u8 *const data_020e4824[2] = {data_020d0ef8, data_020d0f10};
+SpriteAnimFrame data_020e5764[9] = {
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 2},
+    {NULL, 37, 0, 0},
+};
 char data_020e4fe8[31] = "/sky/d_2d_b_cld_b_b_bg_nsc.bin";
-void *data_020e4934[2] = {(void *)_ZN9SkySprite6endUfoEv, 0};
-void *data_020e5af4[132] = {0, (void *)0x2, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc,
-    (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0,
-    (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x10000, (void *)data_020e48cc, (void *)0x1, (void *)0x20000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x20000, (void *)data_020e48cc, (void *)0x1, (void *)0x30000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x30000, (void *)data_020e48cc, (void *)0x1, (void *)0x40000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x40000, (void *)data_020e48cc, (void *)0x1, (void *)0x50000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x50000, (void *)data_020e48cc, (void *)0x1, (void *)0x60000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x60000, (void *)data_020e48cc, (void *)0x1, (void *)0x60000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x70000, (void *)data_020e48cc, (void *)0x1, (void *)0x70000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x80000, (void *)data_020e48cc, (void *)0x1, (void *)0x80000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0x90000, (void *)data_020e48cc, (void *)0x1, (void *)0x90000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xa0000, (void *)data_020e48cc, (void *)0x1, (void *)0xa0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e48cc, (void *)0x1, (void *)0xb0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e48cc, (void *)0x1, (void *)0xc0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xc0000, (void *)data_020e48cc, (void *)0x1, (void *)0xc0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e48cc, (void *)0x1, (void *)0xd0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e48cc, (void *)0x1, (void *)0xe0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e48cc, (void *)0x1, (void *)0xe0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e48cc, (void *)0x1, (void *)0xf0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xf0000, (void *)data_020e48cc, (void *)0x1, (void *)0xf0000, (void *)data_020e48cc,
-    (void *)0x1, (void *)0xf0000};
+SpriteAnimFrame data_020e5af4[44] = {
+    {NULL, 2, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 0},
+    {data_020e48cc, 1, 0, 1},
+    {data_020e48cc, 1, 0, 2},
+    {data_020e48cc, 1, 0, 2},
+    {data_020e48cc, 1, 0, 3},
+    {data_020e48cc, 1, 0, 3},
+    {data_020e48cc, 1, 0, 4},
+    {data_020e48cc, 1, 0, 4},
+    {data_020e48cc, 1, 0, 5},
+    {data_020e48cc, 1, 0, 5},
+    {data_020e48cc, 1, 0, 6},
+    {data_020e48cc, 1, 0, 6},
+    {data_020e48cc, 1, 0, 6},
+    {data_020e48cc, 1, 0, 7},
+    {data_020e48cc, 1, 0, 7},
+    {data_020e48cc, 1, 0, 8},
+    {data_020e48cc, 1, 0, 8},
+    {data_020e48cc, 1, 0, 9},
+    {data_020e48cc, 1, 0, 9},
+    {data_020e48cc, 1, 0, 10},
+    {data_020e48cc, 1, 0, 10},
+    {data_020e48cc, 1, 0, 11},
+    {data_020e48cc, 1, 0, 11},
+    {data_020e48cc, 1, 0, 11},
+    {data_020e48cc, 1, 0, 12},
+    {data_020e48cc, 1, 0, 12},
+    {data_020e48cc, 1, 0, 12},
+    {data_020e48cc, 1, 0, 13},
+    {data_020e48cc, 1, 0, 13},
+    {data_020e48cc, 1, 0, 13},
+    {data_020e48cc, 1, 0, 14},
+    {data_020e48cc, 1, 0, 14},
+    {data_020e48cc, 1, 0, 14},
+    {data_020e48cc, 1, 0, 14},
+    {data_020e48cc, 1, 0, 15},
+    {data_020e48cc, 1, 0, 15},
+    {data_020e48cc, 1, 0, 15},
+    {data_020e48cc, 1, 0, 15},
+};
 u32 data_020e4b54[4] = {0x51fc80e0, 0x98, 0x51fc8000, 0xffff0118};
-const u32 sFireworksPatternDelays[5] = {0xfa780000, 0xfa7828, 0x0, 0x280000, 0x2800};
-const u32 sSkyObjPalDefaultColor[1] = {0x0};
+const u8 sFireworksPatternDelays[20] = {
+    0x0, 0x0, 0x78, 0xfa, 0x28, 0x78, 0xfa, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x28, 0x0,
+    0x0, 0x28, 0x0, 0x0,
+};
+const u16 sSkyObjPalDefaultColor = 0;
 u32 data_020e47c4[2] = {0x41fb80f0, 0xffff9094};
-const u32 data_020d1058[12] = {0x6b516731, 0x73516f51, 0x7fb47792, 0x7ffc7ff5, 0x7fff7fff, 0x7fff7fff,
-    0x7fff7fff, 0x6fdf77df, 0x6f7f6bdf, 0x5ef566ff, 0x6f756f97, 0x6b526f74};
-void *data_020e4a7c[3] = {(void *)data_020e49d4, (void *)0x1, 0};
-const u32 data_020d1088[12] = {0x10010000, 0x30232022, 0x48a83c44, 0x5dee554c, 0x668f668f, 0x668f668f,
-    0x668f668f, 0x668f668f, 0x5a2f668f, 0x45084d8c, 0x2c633cc6, 0xc211c42};
+const u16 data_020d1058[24] = {
+    0x6731, 0x6b51, 0x6f51, 0x7351, 0x7792, 0x7fb4, 0x7ff5, 0x7ffc, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+    0x7fff, 0x7fff, 0x77df, 0x6fdf, 0x6bdf, 0x6f7f, 0x66ff, 0x5ef5, 0x6f97, 0x6f75, 0x6f74, 0x6b52,
+};
+SpriteAnimFrame data_020e4a7c[1] = {
+    {data_020e49d4, 1, 0, 0},
+};
+const u16 data_020d1088[24] = {
+    0x0, 0x1001, 0x2022, 0x3023, 0x3c44, 0x48a8, 0x554c, 0x5dee, 0x668f, 0x668f, 0x668f, 0x668f,
+    0x668f, 0x668f, 0x668f, 0x668f, 0x668f, 0x5a2f, 0x4d8c, 0x4508, 0x3cc6, 0x2c63, 0x1c42, 0xc21,
+};
 u32 data_020e498c[2] = {0x41f003f0, 0xffff0810};
 u32 data_020e489c[2] = {0x81f880f0, 0xffff409c};
 char *sCloudCharFiles[5] = {data_020e4e10, data_020e4e10, data_020e4e10,
     data_020e4e10, data_020e4e10};
-void *data_020e471c[2] = {(void *)SkySprite_InitBalloon, 0};
-void *data_020e5f14[132] = {0, (void *)0x2, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
-    (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
-    (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
-    (void *)0x1, (void *)0x10000, (void *)data_020e484c, (void *)0x1, (void *)0x20000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x20000, (void *)data_020e484c, (void *)0x1, (void *)0x30000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x30000, (void *)data_020e484c, (void *)0x1, (void *)0x40000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x40000, (void *)data_020e484c, (void *)0x1, (void *)0x50000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x50000, (void *)data_020e484c, (void *)0x1, (void *)0x60000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x60000, (void *)data_020e484c, (void *)0x1, (void *)0x60000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x70000, (void *)data_020e484c, (void *)0x1, (void *)0x70000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x80000, (void *)data_020e484c, (void *)0x1, (void *)0x80000, (void *)data_020e484c,
-    (void *)0x1, (void *)0x90000, (void *)data_020e484c, (void *)0x1, (void *)0x90000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xa0000, (void *)data_020e484c, (void *)0x1, (void *)0xa0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e484c, (void *)0x1, (void *)0xb0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xb0000, (void *)data_020e484c, (void *)0x1, (void *)0xc0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xc0000, (void *)data_020e484c, (void *)0x1, (void *)0xc0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e484c, (void *)0x1, (void *)0xd0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xd0000, (void *)data_020e484c, (void *)0x1, (void *)0xe0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e484c, (void *)0x1, (void *)0xe0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xe0000, (void *)data_020e484c, (void *)0x1, (void *)0xf0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xf0000, (void *)data_020e484c, (void *)0x1, (void *)0xf0000, (void *)data_020e484c,
-    (void *)0x1, (void *)0xf0000};
+SpriteAnimFrame data_020e5f14[44] = {
+    {NULL, 2, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 0},
+    {data_020e484c, 1, 0, 1},
+    {data_020e484c, 1, 0, 2},
+    {data_020e484c, 1, 0, 2},
+    {data_020e484c, 1, 0, 3},
+    {data_020e484c, 1, 0, 3},
+    {data_020e484c, 1, 0, 4},
+    {data_020e484c, 1, 0, 4},
+    {data_020e484c, 1, 0, 5},
+    {data_020e484c, 1, 0, 5},
+    {data_020e484c, 1, 0, 6},
+    {data_020e484c, 1, 0, 6},
+    {data_020e484c, 1, 0, 6},
+    {data_020e484c, 1, 0, 7},
+    {data_020e484c, 1, 0, 7},
+    {data_020e484c, 1, 0, 8},
+    {data_020e484c, 1, 0, 8},
+    {data_020e484c, 1, 0, 9},
+    {data_020e484c, 1, 0, 9},
+    {data_020e484c, 1, 0, 10},
+    {data_020e484c, 1, 0, 10},
+    {data_020e484c, 1, 0, 11},
+    {data_020e484c, 1, 0, 11},
+    {data_020e484c, 1, 0, 11},
+    {data_020e484c, 1, 0, 12},
+    {data_020e484c, 1, 0, 12},
+    {data_020e484c, 1, 0, 12},
+    {data_020e484c, 1, 0, 13},
+    {data_020e484c, 1, 0, 13},
+    {data_020e484c, 1, 0, 13},
+    {data_020e484c, 1, 0, 14},
+    {data_020e484c, 1, 0, 14},
+    {data_020e484c, 1, 0, 14},
+    {data_020e484c, 1, 0, 14},
+    {data_020e484c, 1, 0, 15},
+    {data_020e484c, 1, 0, 15},
+    {data_020e484c, 1, 0, 15},
+    {data_020e484c, 1, 0, 15},
+};
 u32 data_020e4854[2] = {0x0, 0xffff00d4};
-void *sSkyFogOffsetTables[5] = {(void *)data_020d1148, (void *)data_020d1148, (void *)data_020d1178,
-    (void *)data_020d1178, (void *)data_020d1178};
-void *data_020e4adc[3] = {(void *)data_020e4a5c, (void *)0x4, 0};
-void *data_020e46ac[2] = {(void *)_ZN10SkySprites21fireworksPatternAct05Ev, 0};
-const u32 sFireworkScaleBigLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
-    0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835,
-    0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800,
-    0x800, 0x800, 0x800};
-void *data_020e496c[2] = {(void *)SkySprite_UpdateShootingStar, 0};
-void *data_020e4a64[3] = {(void *)data_020e5a34, (void *)0x4, 0};
-void *data_020e4b24[3] = {(void *)data_020e4774, (void *)0x1, 0};
+const u16 *const sSkyFogOffsetTables[5] = {data_020d1148, data_020d1148, data_020d1178, data_020d1178, data_020d1178};
+SpriteAnimFrame data_020e4adc[1] = {
+    {data_020e4a5c, 4, 0, 0},
+};
+const s32 sFireworkScaleBigLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800};
+SpriteAnimFrame data_020e4a64[1] = {
+    {data_020e5a34, 4, 0, 0},
+};
+SpriteAnimFrame data_020e4b24[1] = {
+    {data_020e4774, 1, 0, 0},
+};
 u32 data_020e4c94[4] = {0x81f880e0, 0x9a, 0x81f88000, 0xffff011a};
 u32 data_020e4cb4[4] = {0x41fc80e0, 0x98, 0x41fc8000, 0xffff0118};
 s32 sSkyCrossingWidth = data_020c8cbc * 6;
 u32 data_020e52e8[12] = {0x101400e8, 0x30b6, 0x1ef000d, 0x30b7, 0x11e300fe, 0x3095, 0x3012000a, 0x30d4,
     0x101800f8, 0x30d4, 0x21e800e8, 0xffff30b7};
 char data_020e4fc8[30] = "/sky/d_2d_b_cld_r1_bg_ncl.bin";
-void *data_020e48a4[2] = {(void *)_ZN15SkyShotSequence13actPeteFallenEv, 0};
-const u32 sRainSeIds[4] = {0xffffffff, 0x80a, 0x4ce, 0xffffffff};
-const u32 sFireworkScaleBig[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
+const s32 sRainSeIds[4] = {-1, 0x80a, 0x4ce, -1};
+const s32 sFireworkScaleBig[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
 char data_020e5008[31] = "/sky/d_2d_b_cld_f_b_bg_nsc.bin";
-void *data_020e474c[2] = {(void *)SkySprites_FireworksPatternAct11, 0};
 u32 data_020e48ec[2] = {0x81f880f0, 0xffff411a};
 u32 data_020e4b94[4] = {0xb1f88000, 0x9a, 0xb1f880e0, 0xffff011a};
-void *data_020e46d4[2] = {(void *)SkySprites_FireworksPatternAct12, 0};
-void *data_020e4694[2] = {(void *)_ZN10SkySprites21fireworksPatternAct03Ev, 0};
 u32 data_020e48c4[2] = {0x41fb80f0, 0xffff9095};
 u32 data_020e4844[2] = {0x81f000f0, 0xffff211c};
 u32 data_020e483c[2] = {0x1fc80f8, 0xffff0095};
-void *data_020e5178[9] = {(void *)data_020e4c94, (void *)0x2, 0, (void *)data_020e4b64, (void *)0x1, 0,
-    (void *)data_020e4cb4, (void *)0x1, 0};
+SpriteAnimFrame data_020e5178[3] = {
+    {data_020e4c94, 2, 0, 0},
+    {data_020e4b64, 1, 0, 0},
+    {data_020e4cb4, 1, 0, 0},
+};
 char data_020e5068[31] = "/sky/d_2d_b_cld_b_a_bg_nsc.bin";
-const u32 sBirdDelays[1] = {0x50301};
-void *data_020e4b0c[3] = {(void *)data_020e488c, (void *)0x4, 0};
-void *data_020e4704[2] = {(void *)SkySprites_FireworksPatternAct13, 0};
-const u32 sRainParallax[3] = {0x7fff, 0x6667, 0x4cce};
+const s8 sBirdDelays[4] = {
+    0x1, 0x3, 0x5, 0x0,
+};
+SpriteAnimFrame data_020e4b0c[1] = {
+    {data_020e488c, 4, 0, 0},
+};
+const s32 sRainParallax[3] = {0x7fff, 0x6667, 0x4cce};
 u32 data_020e54d0[20] = {0x31ff00f0, 0x3094, 0x200700fb, 0x30b6, 0x10020005, 0x30b6, 0x1f200fa, 0x30b6, 0x400f5,
     0x30b6, 0x1f900f0, 0x3095, 0x30090006, 0x30b4, 0x100800ef, 0x3097, 0x1f600f4, 0x30b4, 0x1f00002,
     0xffff3097};
-void *data_020e50e8[9] = {(void *)data_020e4c04, (void *)0x2, 0, (void *)data_020e4bb4, (void *)0x1, 0,
-    (void *)data_020e4c14, (void *)0x1, 0};
+SpriteAnimFrame data_020e50e8[3] = {
+    {data_020e4c04, 2, 0, 0},
+    {data_020e4bb4, 1, 0, 0},
+    {data_020e4c14, 1, 0, 0},
+};
 u32 data_020e5208[10] = {0x1fb00f1, 0x3095, 0x30060004, 0x30b4, 0x100500f1, 0x3097, 0x1fb00f8, 0x30b4, 0x1f20002,
     0xffff3097};
 u32 data_020e4864[2] = {0x400080f0, 0xffff0095};
 u32 data_020e53f8[18] = {0x1f700e7, 0x30b7, 0x120000, 0x30f6, 0x1010000c, 0x3097, 0x300400e4, 0x3095, 0x1e900f9,
     0x30b6, 0xe00f5, 0x30b6, 0x1100ea, 0x30d7, 0x11ef00ed, 0x30d7, 0x11ec0006, 0xffff3097};
-void *data_020e4724[2] = {(void *)SkySprite_EndParticle, 0};
-}
-}
-namespace n06 {
 }
 void SkySprites::updateFireworksShow() {
-    using namespace n06;
     BOOL r4 = FALSE;
     BOOL r6 = FALSE;
-    Unk_020bbcc8_Xxx s;
+    ClockDateTimeWords s;
     Unk_020bbeb8_Fn fn;
-    Unk_020bbcc8_Xxx t1, t2, t3, t4;
-    s.a = 0;
-    s.b = 0;
+    ClockDateTimeWords t1, t2, t3, t4;
+    s.words[0] = 0;
+    s.words[1] = 0;
     s32 kind = EventAnnounce_GetActiveEvent();
-    Clock_GetDateTime(&s);
+    Clock_GetDateTime(&s.dt);
     MI_CpuCopy8(&s, &t1, 8);
     if (Event_GetState(0x13, &t1, 1)) {
         u8 a = time.hour;
@@ -5656,13 +4657,13 @@ void SkySprites::updateFireworksShow() {
     }
     if (r4) {
         static Unk_020bbeb8_Fn tbl[20] = {
-            0, *(Unk_020bbeb8_Fn *)n00::data_020e46e4, *(Unk_020bbeb8_Fn *)n00::data_020e4794, *(Unk_020bbeb8_Fn *)n00::data_020e4694,
-            *(Unk_020bbeb8_Fn *)n00::data_020e48e4, *(Unk_020bbeb8_Fn *)n00::data_020e46ac, *(Unk_020bbeb8_Fn *)n00::data_020e49b4,
-            *(Unk_020bbeb8_Fn *)n00::data_020e46b4, *(Unk_020bbeb8_Fn *)n00::data_020e46a4, *(Unk_020bbeb8_Fn *)n00::data_020e47dc,
-            *(Unk_020bbeb8_Fn *)n00::data_020e47e4, *(Unk_020bbeb8_Fn *)n00::data_020e4a44, *(Unk_020bbeb8_Fn *)n00::data_020e47d4,
-            *(Unk_020bbeb8_Fn *)n00::data_020e47cc, *(Unk_020bbeb8_Fn *)n00::data_020e46cc, *(Unk_020bbeb8_Fn *)n00::data_020e4994,
-            *(Unk_020bbeb8_Fn *)n00::data_020e4804, *(Unk_020bbeb8_Fn *)n00::data_020e474c, *(Unk_020bbeb8_Fn *)n00::data_020e46d4,
-            *(Unk_020bbeb8_Fn *)n00::data_020e4704,
+            0, &SkySprites::fireworksPatternAct01, &SkySprites::fireworksPatternAct02, &SkySprites::fireworksPatternAct03,
+            &SkySprites::fireworksPatternAct04, &SkySprites::fireworksPatternAct05, &SkySprites::fireworksPatternAct06,
+            &SkySprites::fireworksPatternAct07, &SkySprites::fireworksPatternAct08, &SkySprites::fireworksPatternAct09,
+            &SkySprites::fireworksPatternAct0A, &SkySprites::fireworksPatternAct0B, &SkySprites::fireworksPatternAct0C,
+            &SkySprites::fireworksPatternAct0D, &SkySprites::fireworksPatternAct0E, &SkySprites::fireworksPatternAct0F,
+            &SkySprites::fireworksPatternAct10, &SkySprites::fireworksPatternAct11, &SkySprites::fireworksPatternAct12,
+            &SkySprites::fireworksPatternAct13,
         };
         if (fireworksPattern == 0) {
             s32 v;
@@ -5690,11 +4691,8 @@ void SkySprites::updateFireworksShow() {
         fireworksInterval = 0;
     }
 }
-namespace n06 {
 
-}
 void SkySprites::updateBalloon() {
-    using namespace n06;
     if (!(gCommManager)->isSlotActive(gCommManager->myAid)) {
         u8 v = time.hour;
         if (v >= 0xa && v < 0x10) {
@@ -5706,11 +4704,11 @@ void SkySprites::updateBalloon() {
                         }
                         u8 c = balloonChance;
                         if (Random_GlobalBelow(8) < c) {
-                            if (!_ZN10PlayerData8testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
+                            if (!PlayerData_GetCurrent()->testFlag(0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
                                 spawn(5, 0x2d, 0, 1);
                             } else {
                                 spawn(5, 0x2d, 0, 0);
-                                ((SkyObjPalette *)(&palette))->pickBalloonColor();
+                                palette.pickBalloonColor();
                             }
                             balloonChance = 1;
                         } else if (c < 8) {
@@ -5722,21 +4720,18 @@ void SkySprites::updateBalloon() {
         }
     }
 }
-namespace n06 {
 
-}
 void SkySprites::updateUfo() {
-    using namespace n06;
     if (ufoEventToday != 0) {
-        if (_ZN8SaveData8testFlagEj(gSaveData, 9)) {
+        if (gSaveData.testFlag(9)) {
             ufoEventToday = 0;
         } else {
-            Unk_020bbcc8_Xxx s;
-            Unk_020bbcc8_Xxx t;
-            s.a = 0;
-            s.b = 0;
+            ClockDateTimeWords s;
+            ClockDateTimeWords t;
+            s.words[0] = 0;
+            s.words[1] = 0;
             BOOL b;
-            Clock_GetDateTime(&s);
+            Clock_GetDateTime(&s.dt);
             MI_CpuCopy8(&s, &t, 8);
             if (Event_GetState(0x44, &t, 0) == 0) {
                 b = TRUE;
@@ -5754,7 +4749,7 @@ void SkySprites::updateUfo() {
             u32 m = (u32)v % 10;
             if (prevTime.minute != v) {
                 if (m == 2 || m == 7) {
-                    if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv(TownSessionState_GetVisitorFlags(TownSessionState_Get()))) {
+                    if (!((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags((u8 *)TownSessionState_Get())))->isVisitorSpawned()) {
                         if (sprites[45].kind != 6) {
                             if (ufoChance == 0) {
                                 ufoChance = Random_GlobalBelow(8) + 1;
@@ -5773,11 +4768,8 @@ void SkySprites::updateUfo() {
         }
     }
 }
-namespace n06 {
 
-}
 void SkySprites::updatePete() {
-    using namespace n06;
     if (peteEventToday != 0) {
         NpcActor *npc = NpcRegistry_FindSpNpc(8);
         if (npc) {
@@ -5792,7 +4784,7 @@ void SkySprites::updatePete() {
             if (r != 1 && r != 2) {
                 if (time.hour != prevTime.hour) {
                     if (time.hour == 9 || time.hour == 0x11) {
-                        if (!_ZN13PeteFallState15isVisitorActiveEv(TownSessionState_GetPeteFall(TownSessionState_Get()))) {
+                        if (!((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->isVisitorActive()) {
                             if (sprites[45].kind != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }
@@ -5803,53 +4795,13 @@ void SkySprites::updatePete() {
         }
     }
 }
-namespace n06 {
 
-}
 
 // ======== unk_020bb25c.cpp ========
-namespace n05 {
-extern "C" {
-}
-extern "C" {
-void SceneLights_StartFlash(s32 a);
-}
-extern "C" {
-BOOL Weather_GetFallingPrecip(void);
-}
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-u32 DateTime_Compare(void *a, void *b, s32 n);
-}
-extern "C" {
-void MI_CpuCopy8(void *a, void *b, s32 n);
-}
-namespace L_020d0e51 { extern "C" { extern struct S { u8 p[0x1]; u8 v[1]; } sFireworksPatternWeights; } }
-#define data_020d0e51 n05::L_020d0e51::sFireworksPatternWeights.v
-extern "C" {
-extern u8 sFireworksPatternDelays[];
-}
-extern "C" {
-extern u8 data_020d0e04[];
-}
-extern "C" {
-extern u32 sFireworkShellTypes[];
-}
-extern "C" {
-extern s32 sSkyOutdoors;
-}
-extern "C" {
-extern u8 data_021ed2b0[];
-}
-extern "C" void _ZN15SkyShotSequence8endWatchEi(void *p, s32 v);
 
-}
 void SkySprites::updateRainbow() {
-    using namespace n05;
     rainbowStrength = 0;
-    u8 k = data_021ed2b0[0xa];
+    u8 k = ((WeatherRecord *)gSaveData.weather)->todayPattern;
     if (k >= 0x13 && k <= 0x17) {
         if (*(data_020d0e04 + k - 0x13) == time.hour) {
             s32 n = time.minute;
@@ -5881,68 +4833,58 @@ void SkySprites::updateRainbow() {
         killKind(10);
     }
 }
-namespace n05 {
 
-}
 void SkySprites::spawnShots() {
-    using namespace n05;
     SkyShotRequest *p = &shotRequests[0];
     SkyShotRequest *end = p + 4;
     s32 slot = 0x21;
     s32 i = 0;
-    s32 vals[3];
-    vals[0] = 0;
-    vals[1] = 0;
-    vals[2] = 0;
     for (; p < end; p++, slot += 3, i++) {
         if (p->pending != 0) {
             u8 flag = p->golden;
-            if (spawn(0xb, slot, (VecFx32 *)vals[0], i)) {
+            if (spawn(0xb, slot, NULL, i)) {
                 if (flag != 0) {
-                    spawn(0xb, slot + 1, (VecFx32 *)vals[1], i | 0x10);
-                    spawn(0xb, slot + 2, (VecFx32 *)vals[2], i | 0x20);
+                    spawn(0xb, slot + 1, NULL, i | 0x10);
+                    spawn(0xb, slot + 2, NULL, i | 0x20);
                 }
             } else {
-                ((SkyShotSequence *)(&shotSeq))->endWatch(p->playerSlot);
+                shotSeq.endWatch(p->playerSlot);
             }
             (p)->clear();
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::updateBirds() {
-    using namespace n05;
     if (birdsRequested != 0) {
         birdsRequested = 0;
         BOOL a = Weather_GetFallingPrecip() == 0 ? TRUE : FALSE;
-        u32 x[6];
-        x[0] = 0;
-        x[1] = 0;
-        x[2] = 0;
-        x[3] = 0;
-        x[4] = 0;
-        x[5] = 0;
-        Clock_GetDateTime(&x[4]);
-        MI_CpuCopy8(&x[4], &x[0], 8);
-        MI_CpuCopy8(&x[4], &x[2], 8);
-        ((u8 *)x)[4] = 3;
-        ((u8 *)x)[3] = 0x10;
-        ((u8 *)x)[12] = 9;
-        ((u8 *)x)[11] = 0xf;
-        u32 r5 = DateTime_Compare(&x[0], &x[4], 0x18);
-        u32 r0 = DateTime_Compare(&x[4], &x[2], 0x18);
+        ClockDateTimeWords x[3];  // from, to, now
+        x[0].words[0] = 0;
+        x[0].words[1] = 0;
+        x[1].words[0] = 0;
+        x[1].words[1] = 0;
+        x[2].words[0] = 0;
+        x[2].words[1] = 0;
+        Clock_GetDateTime(&x[2].dt);
+        MI_CpuCopy8(&x[2], &x[0], 8);
+        MI_CpuCopy8(&x[2], &x[1], 8);
+        x[0].dt.month = 3;
+        x[0].dt.day = 0x10;
+        x[1].dt.month = 9;
+        x[1].dt.day = 0xf;
+        u32 r5 = DateTime_Compare(&x[0].dt, &x[2].dt, 0x18);
+        u32 r0 = DateTime_Compare(&x[2].dt, &x[1].dt, 0x18);
         BOOL b = FALSE;
         if (r5 == (u32)-1 || r5 == 0) {
             if (r0 == (u32)-1 || r0 == 0) {
                 b = TRUE;
             }
         }
-        ((u8 *)x)[2] = 6;
-        ((u8 *)x)[10] = 9;
-        r5 = DateTime_Compare(&x[0], &x[4], 4);
-        r0 = DateTime_Compare(&x[4], &x[2], 4);
+        x[0].dt.hour = 6;
+        x[1].dt.hour = 9;
+        r5 = DateTime_Compare(&x[0].dt, &x[2].dt, 4);
+        r0 = DateTime_Compare(&x[2].dt, &x[1].dt, 4);
         BOOL c = FALSE;
         if (r5 == (u32)-1 || r5 == 0) {
             if (r0 == (u32)-1) {
@@ -5956,11 +4898,8 @@ void SkySprites::updateBirds() {
         }
     }
 }
-namespace n05 {
 
-}
 BOOL SkySprites::canLaunchBig(s32 idx) {
-    using namespace n05;
     BOOL result = TRUE;
     SkySprite *p = &sprites[46];
     SkySprite *end = &sprites[59];
@@ -5977,11 +4916,8 @@ BOOL SkySprites::canLaunchBig(s32 idx) {
     }
     return result;
 }
-namespace n05 {
 
-}
 BOOL SkySprites::canLaunchSmall(s32 idx) {
-    using namespace n05;
     BOOL result = TRUE;
     SkySprite *p = &sprites[46];
     SkySprite *end = &sprites[59];
@@ -6005,11 +4941,8 @@ BOOL SkySprites::canLaunchSmall(s32 idx) {
     }
     return result;
 }
-namespace n05 {
 
-}
 void SkySprites::launchFirework(s32 idx, s32 a, s32 b) {
-    using namespace n05;
     if (sSkyOutdoors != 0) {
         Unk_020bb8a4_E fa = (Unk_020bb8a4_E)(a << 31); Unk_020bb8a4_E lo = (Unk_020bb8a4_E)((sFireworkShellTypes[idx] - 0x1d) & 0xf); Unk_020bb8a4_E i8 = (Unk_020bb8a4_E)((idx & 3) << 8); Unk_020bb8a4_E fb = (Unk_020bb8a4_E)(b << 28); spawn(9, 0x3c, 0, fb | (i8 | (lo | fa)));
     } else if (a != 0) {
@@ -6018,11 +4951,8 @@ void SkySprites::launchFirework(s32 idx, s32 a, s32 b) {
         SceneLights_StartFlash(idx + 1);
     }
 }
-namespace n05 {
 
-}
 void SkySprites::rollLaunchInterval(s32 *out) {
-    using namespace n05;
     s32 r;
     if (fireworksInterval > 0) {
         r = Random_GlobalBelow(fireworksInterval);
@@ -6031,11 +4961,8 @@ void SkySprites::rollLaunchInterval(s32 *out) {
     }
     *out = r + 0x41;
 }
-namespace n05 {
 
-}
 void SkySprites::tickBigLaunch() {
-    using namespace n05;
     fireworksBigTimer = fireworksBigTimer - 1;
     if (fireworksBigTimer <= 0) {
         s32 r = Random_GlobalBelow(4);
@@ -6045,11 +4972,8 @@ void SkySprites::tickBigLaunch() {
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::tickLowBigLaunch() {
-    using namespace n05;
     fireworksBigTimer = fireworksBigTimer - 1;
     if (fireworksBigTimer <= 0) {
         s32 r = Random_GlobalBelow(4);
@@ -6059,11 +4983,8 @@ void SkySprites::tickLowBigLaunch() {
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::tickSmallLaunches() {
-    using namespace n05;
     s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 i;
@@ -6078,11 +4999,8 @@ void SkySprites::tickSmallLaunches() {
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::tickPairLaunches() {
-    using namespace n05;
     s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 all = 1;
@@ -6117,11 +5035,8 @@ void SkySprites::tickPairLaunches() {
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::tickTripleLaunches() {
-    using namespace n05;
     s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 all = 1;
@@ -6155,11 +5070,8 @@ void SkySprites::tickTripleLaunches() {
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::setFireworksTiming(s32 a, s32 b, s32 c) {
-    using namespace n05;
     fireworksInterval = a;
     s32 r;
     if (c > 0) {
@@ -6169,14 +5081,11 @@ void SkySprites::setFireworksTiming(s32 a, s32 b, s32 c) {
     }
     fireworksPatternTime = b + r;
 }
-namespace n05 {
 
-}
 void SkySprites::selectFireworksPattern(s32 mode) {
-    using namespace n05;
     if (mode == 0x14) {
         u32 r = Random_GlobalBelow(100);
-        u8 *p = data_020d0e51;
+        const u8 *p = &sFireworksPatternWeights[1];
         s32 m = 5;
         s32 i;
         for (i = 1; i < 14; i++, p++) {
@@ -6207,11 +5116,8 @@ void SkySprites::selectFireworksPattern(s32 mode) {
         }
     }
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct01() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x14, 0x64, 400); 
@@ -6220,11 +5126,8 @@ void SkySprites::fireworksPatternAct01() {
     } 
     tickBigLaunch(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct02() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x64, 0x64, 500); 
@@ -6233,11 +5136,8 @@ void SkySprites::fireworksPatternAct02() {
     } 
     tickBigLaunch(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct03() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0xc8, 0x64, 600); 
@@ -6246,11 +5146,8 @@ void SkySprites::fireworksPatternAct03() {
     } 
     tickBigLaunch(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct04() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x32, 0x64, 400); 
@@ -6259,11 +5156,8 @@ void SkySprites::fireworksPatternAct04() {
     } 
     tickSmallLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct05() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0xa0, 0x64, 500); 
@@ -6272,11 +5166,8 @@ void SkySprites::fireworksPatternAct05() {
     } 
     tickSmallLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct06() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x12c, 0x64, 600); 
@@ -6285,11 +5176,8 @@ void SkySprites::fireworksPatternAct06() {
     } 
     tickSmallLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct07() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x1e, 0x96, 400); 
@@ -6298,11 +5186,8 @@ void SkySprites::fireworksPatternAct07() {
     } 
     tickPairLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct08() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x3c, 0x96, 500); 
@@ -6311,11 +5196,8 @@ void SkySprites::fireworksPatternAct08() {
     } 
     tickPairLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct09() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x64, 0x96, 600); 
@@ -6324,11 +5206,8 @@ void SkySprites::fireworksPatternAct09() {
     } 
     tickPairLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct0A() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x28, 0x96, 400); 
@@ -6337,11 +5216,8 @@ void SkySprites::fireworksPatternAct0A() {
     } 
     tickTripleLaunches(); 
 }
-namespace n05 {
 
-}
 void SkySprites::fireworksPatternAct0B() {
-    using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x50, 0x96, 500); 
@@ -6350,287 +5226,85 @@ void SkySprites::fireworksPatternAct0B() {
     } 
     tickTripleLaunches(); 
 }
-namespace n05 {
 
-#undef data_020d0e51
-}
 
 // ======== unk_020ba93c.cpp ========
-namespace n04 {
-extern "C" {
-extern s32 sRainSeIds[];
-}
-namespace L_021ef690 { extern "C" { extern struct S { u8 p[0x8]; u8 v[4]; } sSkyLight; } }
-#define data_021ef690 n04::L_021ef690::sSkyLight.v
-extern "C" {
-extern u16 sSkyLight[];
-}
-extern "C" {
-extern s32 sSkyOutdoors;
-}
-extern "C" {
-extern WeatherManager gWeatherManager;
-}
-extern "C" {
-extern u8 **sSkyLightParamTables[];
-}
-extern "C" {
-extern u16 *sSkyFogOffsetTables[];
-}
-extern "C" {
-extern u16 **sSkyLightColorTables[];
-}
-extern "C" {
-extern u8 data_021ef690_out[];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 Scene_GetSkyKind(s32);
-}
-extern "C" {
-void RainSe_FadeVolume(void*);
-}
-extern "C" {
-}
-extern "C" {
-void Clock_GetMinuteHour(void*);
-}
-extern "C" {
-u32 _u32_div_f(u32, u32);
-}
-extern "C" {
-void Sky_CalcLightColors(s32, s32, u32, u32);
-}
-extern "C" {
-void Sky_CalcLightParams(s32, s32, u32, u32);
-}
-extern "C" {
-void Sky_CalcFogOffset(s32, s32, u32, u32);
-}
-extern "C" {
-s32 Fog_SetOffset(u32);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void SkySprites_UpdateStub(void*);
-}
-extern "C" {
-void SkySprites_UpdateEvents(SkySprites*);
-}
-extern "C" {
-void _ZN10SkySprites12reloadAllGfxEv(void*);
-}
-extern "C" {
-void SkySprite_StartAnim(void*);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN9SkySprite9endByKindEv(void*);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _ZN10SkySprites8findKindEi(void*, s32);
-}
-extern "C" {
-void _ZN10SkySprites5spawnEiiP7VecFx32i(void*, s32, s32, s32, s32);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 Scene_GetCurrent();
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _s32_div_f(s32, s32);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void SkySprites_UpdateEventsIndoor(SkySprites*);
-}
-extern "C" {
-void Color_Lerp(u16*, u16*, u16*, s32);
-}
-extern "C" {
-void Fog_SetAlpha(s32);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-u16 SceneLights_GetRoomColor();
-}
-extern "C" {
-s32 NNS_G3dGlbMaterialColorSpecEmi(s32, u32, s32);
-}
 
-extern "C" void RainSe_InitVolume(RainSndChannel *p);
-extern "C" void RainSe_Release(void *p);
-extern "C" void RainSe_Update(RainSndChannel *p);
-extern "C" void RainSe_Init(RainSndChannel *p);
-extern "C" u8 Sky_GetLightParam(s32 i);
-extern "C" s16 Sky_GetLightColor(s32 i);
-extern "C" void Sky_UpdateLighting(s32 a, s32 b);
-extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d);
-extern "C" void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d);
-extern "C" void Sky_CalcLightColors(s32 a, s32 b, u32 c, u32 d);
-extern "C" void SkySprites_Draw(SkySprites *obj);
-extern "C" void SkySprites_UpdateIndoor(SkySprites *obj);
-extern "C" void SkySprites_Update(SkySprites *obj);
-extern "C" void SkySprites_UpdateStub(void *);
-extern "C" void SkySprites_UpdateEventsIndoor(SkySprites *obj);
-extern "C" void SkySprites_UpdateEvents(SkySprites *obj);
-extern "C" void SkySprites_Stop(SkySprites *obj);
-extern "C" void SkySprites_Start(SkySprites *obj);
-extern "C" void SkySprites_OnStarWish(SkySprites *obj);
-extern "C" void SkySprites_ApplyRainbowBlend(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct13(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct12(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct11(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct10(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct0F(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct0E(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct0D(SkySprites *obj);
-extern "C" void SkySprites_FireworksPatternAct0C(SkySprites *obj);
 
-extern "C" void SkySprites_FireworksPatternAct0C(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0x8c, 0x96, 0x258);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(0x14);
+void SkySprites::fireworksPatternAct0C() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0x8c, 0x96, 0x258);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(0x14);
     }
-    ((SkySprites *)(obj))->tickTripleLaunches();
+    tickTripleLaunches();
 }
 
-extern "C" void SkySprites_FireworksPatternAct0D(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0x64, 0x96);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(0x14);
+void SkySprites::fireworksPatternAct0D() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0x64, 0x96);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(0x14);
     }
 }
 
-extern "C" void SkySprites_FireworksPatternAct0E(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0x64, 0);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(0xf);
+void SkySprites::fireworksPatternAct0E() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0x64, 0);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(0xf);
     }
-    ((SkySprites *)(obj))->tickSmallLaunches();
+    tickSmallLaunches();
 }
 
-extern "C" void SkySprites_FireworksPatternAct0F(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0xc8, 0);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(4);
+void SkySprites::fireworksPatternAct0F() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0xc8, 0);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(4);
     }
-    ((SkySprites *)(obj))->tickBigLaunch();
+    tickBigLaunch();
 }
 
-extern "C" void SkySprites_FireworksPatternAct10(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0x64, 0);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(0x11);
+void SkySprites::fireworksPatternAct10() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0x64, 0);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(0x11);
     }
-    ((SkySprites *)(obj))->tickBigLaunch();
+    tickBigLaunch();
 }
 
-extern "C" void SkySprites_FireworksPatternAct11(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0x64, 0);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(1);
+void SkySprites::fireworksPatternAct11() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0x64, 0);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(1);
     }
-    ((SkySprites *)(obj))->tickSmallLaunches();
+    tickSmallLaunches();
 }
 
-extern "C" void SkySprites_FireworksPatternAct12(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0xe1, 0);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(0x13);
+void SkySprites::fireworksPatternAct12() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0xe1, 0);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(0x13);
     }
 }
 
-extern "C" void SkySprites_FireworksPatternAct13(SkySprites *obj) {
-    if (obj->fireworksPatternTime < 0) {
-        ((SkySprites *)(obj))->setFireworksTiming(0, 0x64, 0);
-    } else if (obj->fireworksPatternTime == 0) {
-        ((SkySprites *)(obj))->selectFireworksPattern(0x10);
+void SkySprites::fireworksPatternAct13() {
+    if (fireworksPatternTime < 0) {
+        setFireworksTiming(0, 0x64, 0);
+    } else if (fireworksPatternTime == 0) {
+        selectFireworksPattern(0x10);
     }
-    ((SkySprites *)(obj))->tickLowBigLaunch();
+    tickLowBigLaunch();
 }
 
 extern "C" void SkySprites_ApplyRainbowBlend(SkySprites *obj) {
-    u16 *p = (u16 *)((u8 *)gWeatherManager.lineBlend + gWeatherManager.lineBufferIndex * 0x180);
-    u16 *end1 = (u16 *)((u8 *)p + 0xee);
-    u16 *end2 = (u16 *)((u8 *)p + 0x12e);
+    u16 *p = gWeatherManager.lineBlend[gWeatherManager.lineBufferIndex];
+    u16 *end1 = p + 0x77;
+    u16 *end2 = p + 0x97;
     u32 v = obj->rainbowStrength;
     u16 h = v | 0x1000;
     s32 step, i;
@@ -6645,46 +5319,46 @@ extern "C" void SkySprites_ApplyRainbowBlend(SkySprites *obj) {
 }
 
 extern "C" void SkySprites_OnStarWish(SkySprites *obj) {
-    SkySprite *e = &obj->sprites[((SkySprites *)(obj))->findKind(3)];
+    SkySprite *e = &obj->sprites[obj->findKind(3)];
     if (e != NULL) {
-        ((SkySprites *)(obj))->spawn(2, 0x3c, (VecFx32 *)(0), 1);
+        obj->spawn(2, 0x3c, NULL, 1);
         e->work0 = 1;
     }
 }
 
 extern "C" void SkySprites_Start(SkySprites *obj) {
-    ((SkySprites *)(obj))->start();
-    ((SkySePlayer *)(HOST_AT(obj, 0x2fcc, se, 0)))->resetAll();
+    obj->start();
+    obj->se.resetAll();
 }
 
 extern "C" void SkySprites_Stop(SkySprites *obj) {
-    ((SkySePlayer *)(HOST_AT(obj, 0x2fcc, se.channels[0], 0)))->releaseAll();
-    ((SkySprites *)(obj))->stop();
+    obj->se.releaseAll();
+    obj->stop();
 }
 
 extern "C" void SkySprites_UpdateEvents(SkySprites *obj) {
     switch (gWeatherManager.precipKind) {
     case 1:
-        ((SkySprites *)(obj))->updateRain();
+        obj->updateRain();
         break;
     case 2:
-        ((SkySprites *)(obj))->updateSnow();
+        obj->updateSnow();
         break;
     default:
         obj->precipIntensity = 0;
         obj->snowCounter = 0;
         break;
     }
-    ((SkySprites *)(obj))->updateBirds();
-    ((SkySprites *)(obj))->updateMoon();
-    ((SkySprites *)(obj))->updateRainbow();
-    ((SkySprites *)(obj))->updateShootingStar();
-    ((SkySprites *)(obj))->updateFireworksShow();
+    obj->updateBirds();
+    obj->updateMoon();
+    obj->updateRainbow();
+    obj->updateShootingStar();
+    obj->updateFireworksShow();
     if (Scene_GetCurrent() != 0x2c) {
-        ((SkySprites *)(obj))->updateBalloon();
-        ((SkySprites *)(obj))->updateUfo();
-        ((SkySprites *)(obj))->updatePete();
-        ((SkySprites *)(obj))->spawnShots();
+        obj->updateBalloon();
+        obj->updateUfo();
+        obj->updatePete();
+        obj->spawnShots();
     }
 }
 
@@ -6692,9 +5366,9 @@ extern "C" void SkySprites_UpdateEventsIndoor(SkySprites *obj) {
     s32 r = Scene_GetSkyKind(0);
     if (r != 0 && r != 3) {
         if (gWeatherManager.precipKind == 1 && gWeatherManager.level == 4) {
-            ((SkySprites *)(obj))->updateThunderFlash();
+            obj->updateThunderFlash();
         }
-        ((SkySprites *)(obj))->updateFireworksShow();
+        obj->updateFireworksShow();
     }
 }
 
@@ -6705,35 +5379,35 @@ extern "C" void SkySprites_Update(SkySprites *obj) {
     SkySprite *e = obj->sprites;
     SkySprite *end = obj->sprites + 0x3c;
     s32 *cnt;
-    ((SkySprites *)(obj))->tickClock();
+    obj->tickClock();
     SkySprites_UpdateStub(obj);
     SkySprites_UpdateEvents(obj);
     cnt = &obj->spriteCount;
     for (; e < end; e++) {
         if (e->gfxId != 0x34) {
-            void *sub = &e->anim;
+            SpriteAnim *sub = &e->anim;
             switch (e->state) {
             case 1:
                 if (e->gfxSlot != 6) {
-                    ((SkySprites *)(obj))->reloadAllGfx();
+                    obj->reloadAllGfx();
                 }
                 SkySprite_StartAnim(e);
                 e->state = 2;
                 break;
             case 2:
-                ((SpriteAnim *)(sub))->update();
-                ((SkySprite *)(e))->updateByKind();
+                sub->update();
+                e->updateByKind();
                 break;
             case 3:
-                ((SkySprite *)(e))->endByKind();
+                e->endByKind();
                 *cnt -= 1;
                 break;
             }
         }
     }
-    ((SkySprites *)(obj))->loadDirtyGfx();
-    ((SkyShotSequence *)(HOST_AT(obj, 0x2fa8, shotSeq.state, 0)))->update();
-    ((SkySePlayer *)(HOST_AT(obj, 0x2fcc, se.channels[0], 0)))->update();
+    obj->loadDirtyGfx();
+    obj->shotSeq.update();
+    obj->se.update();
 }
 
 extern "C" void SkySprites_UpdateIndoor(SkySprites *obj) {
@@ -6746,19 +5420,19 @@ extern "C" void SkySprites_Draw(SkySprites *obj) {
     s32 yoff = gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex ^ 1];
     s32 id = -1;
     for (e = obj->sprites; e < end; e++) {
-        void *sub;
-        void *r;
-        Vec2 *pos;
+        SpriteAnim *sub;
+        GXOamAttr *r;
+        VecFx32 *pos;
         s32 a, b, x, y, py;
         if (e->kind == 0xd) continue;
         if (e->state != 2) continue;
         if (e->hidden != 0) continue;
         sub = &e->anim;
-        r = ((SpriteAnim *)(sub))->getCell();
+        r = (GXOamAttr *)sub->getCell();
         if (r == NULL) continue;
-        pos = (Vec2 *)&e->screenPos;
-        a = ((SpriteAnim *)(sub))->getFrameX(id);
-        b = ((SpriteAnim *)(sub))->getFrameY(id);
+        pos = &e->screenPos;
+        a = sub->getFrameX(id);
+        b = sub->getFrameY(id);
         x = a + ((pos->x + 0x800) >> 12);
         py = b + ((pos->y + 0x800) >> 12);
         y = py - yoff;
@@ -6800,11 +5474,10 @@ extern "C" void SkySprites_Draw(SkySprites *obj) {
 }
 
 extern "C" void Sky_CalcLightColors(s32 a, s32 b, u32 c, u32 d) {
-    u16 *out = (u16 *)sSkyLight;
+    u16 *out = sSkyLight.colors;
     u16 tmp[2];
-    u16 **tbl;
-    u16 **row;
-    u16 *t;
+    const u16 *const *row;
+    const u16 *t;
     s32 i;
     if (gWeatherManager.targetLevel != gWeatherManager.level) {
         for (i = 0; i < 4; i++) {
@@ -6831,9 +5504,9 @@ extern "C" void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d) {
     s32 cur = gWeatherManager.level;
     s32 next = gWeatherManager.targetLevel;
     if (next != cur) {
-        u16 *pc = sSkyFogOffsetTables[cur];
+        const u16 *pc = sSkyFogOffsetTables[cur];
         u32 t1 = (u16)(((0x1000 - a) * pc[c] + a * pc[d]) >> 12);
-        u16 *pn = sSkyFogOffsetTables[next];
+        const u16 *pn = sSkyFogOffsetTables[next];
         t1 = t1 * (0x1000 - b);
         u32 t2 = (u16)(((0x1000 - a) * pn[c] + a * pn[d]) >> 12);
         Fog_SetOffset((u16)((t1 + t2 * b) >> 12));
@@ -6843,7 +5516,7 @@ extern "C" void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d) {
 }
 
 extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d) {
-    u8 *out = data_021ef690;
+    u8 *out = sSkyLight.params;
     s32 i;
     s32 ia2, ia, ib;
     if (gWeatherManager.targetLevel != gWeatherManager.level) {
@@ -6851,9 +5524,9 @@ extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d) {
         ia = 0x1000 - a;
         ib = 0x1000 - b;
         for (; i < 2; i++) {
-            u8 *p1 = sSkyLightParamTables[gWeatherManager.level][i];
+            const u8 *p1 = sSkyLightParamTables[gWeatherManager.level][i];
             s32 t1 = (u16)((ia * p1[c] + a * p1[d]) >> 12);
-            u8 *p2 = sSkyLightParamTables[gWeatherManager.targetLevel][i];
+            const u8 *p2 = sSkyLightParamTables[gWeatherManager.targetLevel][i];
             t1 = t1 * ib;
             s32 t2 = (u16)((ia * p2[c] + a * p2[d]) >> 12);
             *out = (t1 + t2 * b) >> 12;
@@ -6863,7 +5536,7 @@ extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d) {
         i = 0;
         ia2 = 0x1000 - a;
         for (; i < 2; i++) {
-            u8 *p = sSkyLightParamTables[gWeatherManager.level][i];
+            const u8 *p = sSkyLightParamTables[gWeatherManager.level][i];
             *out = (ia2 * p[c] + a * p[d]) >> 12;
             out++;
         }
@@ -6873,7 +5546,7 @@ extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d) {
 extern "C" void Sky_UpdateLighting(s32 a, s32 b) {
     SkyLightingLocals b0;
     u32 hour, rem;
-    Clock_GetMinuteHour(&b0.time);
+    Clock_GetMinuteHour(&b0.time.minute);
     hour = b0.time.hour;
     rem = (hour + 1) % 24;
     Sky_CalcLightColors(a, b, hour, rem);
@@ -6882,7 +5555,7 @@ extern "C" void Sky_UpdateLighting(s32 a, s32 b) {
     if (sSkyOutdoors != 0) {
         Fog_SetAlpha(0);
         Gfx3d_SetClearDepth(0x1c2);
-        b0.clearColor = n00::sSkyGradient.keyColors[1];
+        b0.clearColor = sSkyGradient.keyColors[1];
         Gfx3d_SetClearColor(b0.clearColor);
     }
     b0.roomColor = SceneLights_GetRoomColor();
@@ -6891,16 +5564,16 @@ extern "C" void Sky_UpdateLighting(s32 a, s32 b) {
 }
 
 extern "C" s16 Sky_GetLightColor(s32 i) {
-    return sSkyLight[i];
+    return sSkyLight.colors[i];
 }
 
 extern "C" u8 Sky_GetLightParam(s32 i) {
-    return data_021ef690[i];
+    return sSkyLight.params[i];
 }
 
 extern "C" void RainSe_Init(RainSndChannel *p) {
     RainSe_InitVolume(p);
-    ((SndEnvChannel *)(p))->callReset();
+    p->callReset();
 }
 
 extern "C" void RainSe_Update(RainSndChannel *p) {
@@ -6908,17 +5581,17 @@ extern "C" void RainSe_Update(RainSndChannel *p) {
     if (p->volume != 0) {
         s32 k = sRainSeIds[Scene_GetSkyKind(0)];
         if (k >= 0) {
-            ((SndEnvChannel *)(p))->callRequest((void *)(k));
+            p->callRequest((void *)(k));
         }
     }
     func_02133ef8(v, 12);
     v[2] = p->volume >> 8;
-    ((SndEnvChannel *)(p))->callUpdate(v);
+    p->callUpdate(v);
     RainSe_FadeVolume(p);
 }
 
-extern "C" void RainSe_Release(void *p) {
-    ((SndEnvChannel *)(p))->callRelease();
+extern "C" void RainSe_Release(RainSndChannel *p) {
+    p->callRelease();
 }
 
 extern "C" void RainSe_InitVolume(RainSndChannel *p) {
@@ -6935,130 +5608,9 @@ extern "C" void RainSe_InitVolume(RainSndChannel *p) {
     }
 }
 
-#undef data_021ef690
-}
 
 // ======== unk_020b9fe4.cpp ========
-namespace n03 {
-extern "C" {
-BOOL Sky_AllocPaletteBufs(u16 **p);
-}
-extern "C" {
-BOOL Sky_LoadPaletteFiles();
-}
-extern "C" {
-void Sky_BlendPalettes();
-}
-extern "C" {
-s32 Sky_ApplyPalettes(s32 x);
-}
-extern "C" {
-void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
-}
-extern "C" {
-void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
-}
-extern "C" {
-void RainSe_FadeVolume(RainSndChannel *o);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-void TownId_CopyTo(void *a, void *b);
-}
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-s32 DateTime_GetWeatherPeriod(void *p);
-}
-extern "C" {
-void DateTime_SubHours(void *p, s32 a);
-}
-extern "C" {
-void Clock_GetMinuteHour(void *p);
-}
-extern "C" {
-void Weather_UpdateDaily(void *dst, void *src);
-}
-extern "C" {
-u16 Sky_CalcStarScrollY(WeatherManager *self, void *t);
-}
-extern "C" {
-u16 Sky_CalcStarScrollX(WeatherManager *self, void *t);
-}
-extern "C" {
-void Sky_UpdateLighting(s32 a, s32 b);
-}
-extern "C" {
-u32 _u32_div_f(u32 a, u32 b);
-}
-extern "C" {
-void Random_SetSeed(void *st, u32 v);
-}
-extern "C" {
-s32 Random_NextBelow(void *st, s32 n);
-}
-extern "C" {
-}
-extern "C" {
-void Math_StepS32Alt(s32 *p, s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-extern WeatherManager gWeatherManager;
-}
-extern "C" {
-extern char **sCloudScreenFiles[];  // (tables of path pointers)
-}
-extern "C" {
-extern char *sCloudCharFiles[];  // (path pointers)
-}
-extern "C" {
-extern s8 sWeatherHourTable[];
-}
-namespace L_021ed2b6 { extern "C" { extern struct S { u8 p[6]; WeatherRecord v; } data_021ed2b0; } }
-extern "C" {
-extern u8 gSaveData[];
-}
-extern "C" {
-extern u8 gSaveTownId[];
-}
-extern "C" {
-extern s32 sSkyOutdoors;
-}
-extern "C" {
-extern u8 sSkyPaletteLayer[];
-}
-extern "C" {
-extern s32 sSkyPaletteSetByLevel[];
-}
-extern "C" {
-extern char *sSkyPaletteFiles[2][2];  // (pointers)
-}
 
-extern "C" s32 Sky_LoadPalettes(s32 x);
-extern "C" void Sky_BlendPalettes();
-extern "C" s32 Sky_ApplyPalettes(s32 x);
-extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
-extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
-extern "C" BOOL Sky_AllocPaletteBufs(u16 **p);
-extern "C" BOOL Sky_LoadPaletteFiles();
-extern "C" void RainSe_FadeVolume(RainSndChannel *o);
 
 extern "C" void RainSe_FadeVolume(RainSndChannel *o) {
     s32 a = gWeatherManager.targetLevel == 3;
@@ -7116,28 +5668,25 @@ extern "C" BOOL Sky_AllocPaletteBufs(u16 **p) {
     return TRUE;
 }
 
-}
 void WeatherManager::rollRainSlant() {
-    using namespace n03;
     ClockDateTimeWords t;
     u32 st;
     u16 buf[8];
     u32 seed;
     t.words[0] = 0;
     t.words[1] = 0;
-    TownId_CopyTo(gSaveTownId, buf);
-    Clock_GetDateTime(&t);
+    TownId_CopyTo((u16 *)gSaveData.townId, buf);
+    Clock_GetDateTime(&t.dt);
     seed = t.dt.day | ((t.dt.month << 5) | ((buf[0] << 16) | ((t.dt.year & 0x1f) << 9)));
     Random_SetSeed(&st, 1);
     Random_SetSeed(&st, seed);
     rainSlant = Random_NextBelow(&st, 0x2aaa) - 0x1555;
 }
-namespace n03 {
 
-extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t) {
+extern "C" void Color_Lerp(u16 *d, const u16 *s1, const u16 *s2, s32 t) {
     Rgb555 *dc = (Rgb555 *)d;
-    Rgb555 *c1 = (Rgb555 *)s1;
-    Rgb555 *c2 = (Rgb555 *)s2;
+    const Rgb555 *c1 = (const Rgb555 *)s1;
+    const Rgb555 *c2 = (const Rgb555 *)s2;
     s32 inv = 0x1000 - t;
     dc->r = (c1->r * inv + c2->r * t) >> 12;
     dc->g = (c1->g * inv + c2->g * t) >> 12;
@@ -7155,11 +5704,9 @@ extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t) {
     }
 }
 
-}
 void WeatherManager::getSkyBlend(s32 *a, s32 *b) {
-    using namespace n03;
     MinuteHour t;
-    Clock_GetMinuteHour(&t);
+    Clock_GetMinuteHour(&t.minute);
     *a = (u32)(t.minute * 0x44445) >> 12;
     if (targetLevel != level) {
         *b = _s32_div_f(transitionProgress << 12, 32);
@@ -7167,7 +5714,6 @@ void WeatherManager::getSkyBlend(s32 *a, s32 *b) {
         *b = 0;
     }
 }
-namespace n03 {
 
 extern "C" s32 Sky_ApplyPalettes(s32 x) {
     u16 **pal = gWeatherManager.palettes;
@@ -7189,7 +5735,7 @@ extern "C" void Sky_BlendPalettes() {
     s32 h, pm;
     s32 h2, pm2;
     gWeatherManager.getSkyBlend(&a, &b);
-    Clock_GetMinuteHour(&t);
+    Clock_GetMinuteHour(&t.minute);
     h = t.hour;
     if ((s32)t.hour < 12) {
         pm = 0;
@@ -7204,28 +5750,26 @@ extern "C" void Sky_BlendPalettes() {
         h2 -= 12;
         pm2 = 1;
     }
-    Unk_020ba518_E set = (Unk_020ba518_E)sSkyPaletteSetByLevel[gWeatherManager.level];
-    u16 *s1 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm])[h * 16];
-    u16 *s2 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm2])[h2 * 16];
+    s32 set = sSkyPaletteSetByLevel[gWeatherManager.level];
+    u16 *s1 = &((u16 *)gWeatherManager.paletteFiles[set][pm])[h * 16];
+    u16 *s2 = &((u16 *)gWeatherManager.paletteFiles[set][pm2])[h2 * 16];
     Color_Lerp6(pal[0], s1, s2, a);
     if (gWeatherManager.targetLevel != gWeatherManager.level) {
-        set = (Unk_020ba518_E)sSkyPaletteSetByLevel[gWeatherManager.targetLevel];
-        s1 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm])[h * 16];
-        s2 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm2])[h2 * 16];
+        set = sSkyPaletteSetByLevel[gWeatherManager.targetLevel];
+        s1 = &((u16 *)gWeatherManager.paletteFiles[set][pm])[h * 16];
+        s2 = &((u16 *)gWeatherManager.paletteFiles[set][pm2])[h2 * 16];
         Color_Lerp6(pal[1], s1, s2, a);
         Color_Lerp6(pal[2], pal[0], pal[1], b);
-        n00::sSkyGradient.setKey(0, pal[2][4], 0);
-        n00::sSkyGradient.setKey(1, pal[2][5], 0xc0);
+        sSkyGradient.setKey(0, pal[2][4], 0);
+        sSkyGradient.setKey(1, pal[2][5], 0xc0);
     } else {
-        n00::sSkyGradient.setKey(0, pal[0][4], 0);
-        n00::sSkyGradient.setKey(1, pal[0][5], 0xc0);
+        sSkyGradient.setKey(0, pal[0][4], 0);
+        sSkyGradient.setKey(1, pal[0][5], 0xc0);
     }
     Sky_UpdateLighting(a, b);
 }
 
-}
 WeatherManager::WeatherManager() {
-    using namespace n03;
     engine = 0;
     transitionBusy = 0;
     curCloudScreen = 0;
@@ -7241,23 +5785,17 @@ WeatherManager::WeatherManager() {
     precipKind = 0;
     rollRainSlant();
 }
-namespace n03 {
 
-}
 void WeatherManager::func_020ba49c() {
-    using namespace n03;
 }
-namespace n03 {
 
-}
 void WeatherManager::init() {
-    using namespace n03;
     ClockDateTimeWords t;
     s32 r = getWeatherAtOffset(0);
     switch (r) {
     case 3:
     case 4:
-        L_021ed2b6::data_021ed2b0.v.rained = 1;
+        ((WeatherRecord *)gSaveData.weather)->rained = 1;
         break;
     }
     setLevels(r, r);
@@ -7272,12 +5810,11 @@ void WeatherManager::init() {
     transitionProgress = 0;
     t.words[0] = 0;
     t.words[1] = 0;
-    Clock_GetDateTime(&t);
-    starScrollY = Sky_CalcStarScrollY(this, &t);
-    DateTime_SubHours(&t, 6);
-    starScrollX = Sky_CalcStarScrollX(this, &t);
+    Clock_GetDateTime(&t.dt);
+    starScrollY = Sky_CalcStarScrollY(this, &t.dt);
+    DateTime_SubHours(&t.dt, 6);
+    starScrollX = Sky_CalcStarScrollX(this, &t.dt);
 }
-namespace n03 {
 
 extern "C" s32 Sky_LoadPalettes(s32 x) {
     s32 r = 0;
@@ -7294,18 +5831,16 @@ extern "C" s32 Sky_LoadPalettes(s32 x) {
     return r;
 }
 
-}
 s32 WeatherManager::getPrecipKind(s32 v) {
-    using namespace n03;
     s32 r = 0;
     ClockDateTimeWords t;
     t.words[0] = 0;
     t.words[1] = 0;
-    Clock_GetDateTime(&t);
+    Clock_GetDateTime(&t.dt);
     switch (v) {
     case 3:
     case 4:
-        switch (DateTime_GetWeatherPeriod(&t)) {
+        switch (DateTime_GetWeatherPeriod((u8 *)&t)) {
         case 0:
         case 1:
         case 2:
@@ -7324,11 +5859,8 @@ s32 WeatherManager::getPrecipKind(s32 v) {
     }
     return r;
 }
-namespace n03 {
 
-}
 void WeatherManager::setLevels(s32 a, s32 b) {
-    using namespace n03;
     s32 x = getPrecipKind(a);
     s32 y = getPrecipKind(b);
     if (x != 0) {
@@ -7341,11 +5873,8 @@ void WeatherManager::setLevels(s32 a, s32 b) {
     level = a;
     targetLevel = b;
 }
-namespace n03 {
 
-}
 void WeatherManager::startTransition(s32 v) {
-    using namespace n03;
     requestedLevel = v;
     if (v > level) {
         direction = 0;
@@ -7354,11 +5883,8 @@ void WeatherManager::startTransition(s32 v) {
     }
     nextCloudVariant = Random_GlobalBelow(2);
 }
-namespace n03 {
 
-}
 BOOL WeatherManager::requestLevel(s32 v) {
-    using namespace n03;
     BOOL r = FALSE;
     if (v == -1) {
     } else if (v == level) {
@@ -7371,24 +5897,21 @@ BOOL WeatherManager::requestLevel(s32 v) {
     }
     return r;
 }
-namespace n03 {
 
-}
 void WeatherManager::updateHourly() {
-    using namespace n03;
     ClockDateTimeWords t;
-    u8 *base = gSaveData;
+    WeatherRecord *w = (WeatherRecord *)gSaveData.weather;
     t.words[0] = 0;
     t.words[1] = 0;
-    Clock_GetDateTime(&t);
-    if ((L_021ed2b6::data_021ed2b0.v.hourBase + 6) % 24 != t.dt.hour) {
+    Clock_GetDateTime(&t.dt);
+    if ((w->hourBase + 6) % 24 != t.dt.hour) {
         s32 r;
-        Weather_UpdateDaily(base + 0x15f66, &t);
+        Weather_UpdateDaily(w, &t);
         r = getWeatherAtOffset(1);
         switch (r) {
         case 3:
         case 4:
-            base[0x15f6d] = 1;
+            w->rained = 1;
             break;
         }
         if (requestLevel(r)) {
@@ -7396,42 +5919,30 @@ void WeatherManager::updateHourly() {
             if (h < 0) {
                 h += 24;
             }
-            base[0x15f6c] = h;
+            w->hourBase = h;
         }
     }
 }
-namespace n03 {
 
-}
 s32 WeatherManager::getWeatherAtOffset(s32 v) {
-    using namespace n03;
-    s32 t = v + L_021ed2b6::data_021ed2b0.v.hourBase;
-    return getPatternWeather(L_021ed2b6::data_021ed2b0.v.todayPattern, t % 24);
+    s32 t = v + ((WeatherRecord *)gSaveData.weather)->hourBase;
+    return getPatternWeather(((WeatherRecord *)gSaveData.weather)->todayPattern, t % 24);
 }
-namespace n03 {
 
-}
 s32 WeatherManager::getPatternWeather(s32 a, s32 b) {
-    using namespace n03;
-    s8 *p = sWeatherHourTable + a * 24;
+    const s8 *p = sWeatherHourTable + a * 24;
     return p[b];
 }
-namespace n03 {
 
-}
 BOOL WeatherManager::loadCloudChars(s32 idx, s32 unused) {
-    using namespace n03;
     BOOL ok = FALSE;
     if (Gfx2d_LoadCharFile8bpp(sCloudCharFiles[idx], gCurrentHeap, unused, 16, 16, 47)) {
         ok = TRUE;
     }
     return ok;
 }
-namespace n03 {
 
-}
 BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
-    using namespace n03;
     BOOL ok = FALSE;
     s32 i;
     const char *res;
@@ -7452,11 +5963,8 @@ BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     }
     return ok;
 }
-namespace n03 {
 
-}
 void WeatherManager::loadNextCloudGraphics() {
-    using namespace n03;
     s32 mode, next;
     if (direction == 0) {
         mode = 1;
@@ -7477,11 +5985,8 @@ void WeatherManager::loadNextCloudGraphics() {
         }
     }
 }
-namespace n03 {
 
-}
 void WeatherManager::streamCloudScreen() {
-    using namespace n03;
     s32 idx = streamBlock;
     s32 blk = (((cloudScroll >> 8) - 8) & 0xff) >> 3;
     if (blk == idx) {
@@ -7501,74 +6006,15 @@ void WeatherManager::streamCloudScreen() {
         }
     }
 }
-namespace n03 {
 
-}
 
 // ======== unk_020b96b8.cpp ========
-namespace n02 {
-extern "C" {
-void Clock_GetMinuteHour(u8 *out);
-}
-extern "C" {
-}
-extern "C" {
-s32 SceneLights_GetLightParam(u32 x);
-}
-extern "C" {
-extern u8 sSkyLineTablesReady;
-}
-extern "C" {
-extern s32 sSkyLineScrollX[];
-}
-extern "C" {
-extern s32 sSkyLineScrollY[];
-}
-extern "C" {
-extern u16 sSkyBlendLineCache[];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
 #define REG16(a) (*(volatile u16 *)(a))
 #define REG32(a) (*(volatile u32 *)(a))
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-s32 DateTime_DiffDays(void *a, void *b);
-}
-extern "C" {
-u32 Sky_CalcStarScrollY(u32 unused, u8 *d);
-}
 
-extern "C" void Sky_VBlankMain();
-extern "C" void Sky_VBlankSub();
-extern "C" void Sky_UpdateLineTables();
-extern "C" void SkyGradient_Build();
-extern "C" u32 Sky_GetStarScrollYNow(u32 x);
-extern "C" u32 Sky_CalcStarScrollY(u32 unused, u8 *d);
-extern "C" u16 Sky_CalcStarScrollX(u32 unused, void *unused2);
 
-}
 void WeatherManager::reloadCurrentCloudGraphics()
 {
-    using namespace n02;
     s32 cur = level;
     if (loadCloudChars(cur, 6) != 0) {
         if (loadCloudScreen(&curCloudScreen, &curCloudScreenSize, 0, cur) != 0) {
@@ -7578,12 +6024,9 @@ void WeatherManager::reloadCurrentCloudGraphics()
         }
     }
 }
-namespace n02 {
 
-}
 void WeatherManager::streamCurrentCloudScreen()
 {
-    using namespace n02;
     s32 cur = streamBlock;
     s32 k = (((cloudScroll >> 8) - 8) & 0xff) >> 3;
     if (k == cur) {
@@ -7604,12 +6047,9 @@ void WeatherManager::streamCurrentCloudScreen()
         }
     }
 }
-namespace n02 {
 
-}
 void WeatherManager::updateTransitionStreamed()
 {
-    using namespace n02;
     if (transitionBusy != 0) {
         switch (transitionStep) {
         case 1:
@@ -7627,12 +6067,9 @@ void WeatherManager::updateTransitionStreamed()
         }
     }
 }
-namespace n02 {
 
-}
 void WeatherManager::transitionTimedBegin()
 {
-    using namespace n02;
     s32 cur = level;
     s32 next;
     if (requestedLevel > cur) {
@@ -7645,12 +6082,9 @@ void WeatherManager::transitionTimedBegin()
     transitionStep = 2;
     transitionTimer = 0;
 }
-namespace n02 {
 
-}
 void WeatherManager::transitionTimedBlend()
 {
-    using namespace n02;
     transitionTimer++;
     if (transitionTimer >= 0x2a8) {
         setLevels(targetLevel, targetLevel);
@@ -7658,22 +6092,16 @@ void WeatherManager::transitionTimedBlend()
     }
     transitionProgress = (transitionTimer << 5) / 0x2a8;
 }
-namespace n02 {
 
-}
 void WeatherManager::transitionTimedFinish()
 {
-    using namespace n02;
     transitionProgress = 0x20;
     transitionStep = 4;
     transitionTimer = 0;
 }
-namespace n02 {
 
-}
 void WeatherManager::transitionTimedWait()
 {
-    using namespace n02;
     transitionTimer++;
     if (transitionTimer >= 0x2a8) {
         if (requestedLevel == level) {
@@ -7686,12 +6114,9 @@ void WeatherManager::transitionTimedWait()
         }
     }
 }
-namespace n02 {
 
-}
 void WeatherManager::updateTransitionTimed()
 {
-    using namespace n02;
     if (transitionBusy != 0) {
         switch (transitionStep) {
         case 1:
@@ -7709,56 +6134,54 @@ void WeatherManager::updateTransitionTimed()
         }
     }
 }
-namespace n02 {
 
-extern "C" u16 Sky_CalcStarScrollX(u32 unused, void *unused2)
+// (self: unused)
+extern "C" u16 Sky_CalcStarScrollX(WeatherManager *self, ClockDateTime *date)
 {
-    u64 d = 0;
-    u64 t = 0x100000000ULL | 0x1000000;
-    d = t;
-    return (u16)((DateTime_DiffDays(&d, unused2) % 0x40) << 3);
+    ClockDateTimeWords epoch;  // 1 January 2000
+    epoch.words[0] = 0x1000000;
+    epoch.words[1] = 1;
+    return (u16)((DateTime_DiffDays(&epoch.dt, date) % 0x40) << 3);
 }
 
-extern "C" u32 Sky_CalcStarScrollY(u32 unused, u8 *d)
+// (self: unused)
+extern "C" u32 Sky_CalcStarScrollY(WeatherManager *self, ClockDateTime *d)
 {
-    s32 m = (d[2] + 6) % 0x18;
+    s32 m = (d->hour + 6) % 0x18;
     if (m >= 0xc) return 0x100;
     s32 t = m * 0x3c;
-    t += d[1];
+    t += d->minute;
     return (u32)((t * 0x68000) / 0x2d0 << 4) >> 16;
 }
 
-extern "C" u32 Sky_GetStarScrollYNow(u32 x)
+extern "C" u32 Sky_GetStarScrollYNow(WeatherManager *self)
 {
-    u8 d[8];
-    ((u32 *)d)[0] = 0;
-    ((u32 *)d)[1] = 0;
-    Clock_GetDateTime(d);
-    return Sky_CalcStarScrollY(x, d);
+    ClockDateTimeWords d;
+    d.words[0] = 0;
+    d.words[1] = 0;
+    Clock_GetDateTime(&d.dt);
+    return Sky_CalcStarScrollY(self, &d.dt);
 }
 
-}
 void SkyGradient::setKey(s32 idx, u16 color, s32 line)
 {
-    using namespace n02;
     keyColors[idx] = color;
     keyLines[idx] = line;
 }
-namespace n02 {
 
 extern "C" void SkyGradient_Build()
 {
-    s32 idx = (n00::sSkyGradient.bufferIndex + 1) % 2;
+    s32 idx = (sSkyGradient.bufferIndex + 1) % 2;
     volatile u16 out;
     Rgb555 c1, c2;
     volatile u16 in1, in2;
-    in1 = n00::sSkyGradient.keyColors[0];
+    in1 = sSkyGradient.keyColors[0];
     c1 = *(Rgb555 *)&in1;
-    in2 = n00::sSkyGradient.keyColors[1];
+    in2 = sSkyGradient.keyColors[1];
     c2 = *(Rgb555 *)&in2;
-    u16 *dst = (u16 *)((u8 *)n00::sSkyGradient.lineColors + idx * 0x180);
-    s32 s0 = n00::sSkyGradient.keyLines[0];
-    s32 s1 = n00::sSkyGradient.keyLines[1];
+    u16 *dst = sSkyGradient.lineColors[idx];
+    s32 s0 = sSkyGradient.keyLines[0];
+    s32 s1 = sSkyGradient.keyLines[1];
     s32 i = 0;
     s32 span = s1 - s0;
     s32 c2g = c2.g;
@@ -7782,22 +6205,22 @@ extern "C" void SkyGradient_Build()
         *dst++ = out;
         i++;
     } while (i < 0xc0);
-    n00::sSkyGradient.bufferIndex = idx;
+    sSkyGradient.bufferIndex = idx;
 }
 
 extern "C" void Sky_UpdateLineTables()
 {
     u16 *pal;
     s32 a = 0, b = 0;
-    s32 idx = (n00::gWeatherManager.lineBufferIndex + 1) % 2;
+    s32 idx = (gWeatherManager.lineBufferIndex + 1) % 2;
     s32 j, i;
-    pal = (u16 *)((u8 *)n00::gWeatherManager.lineBlend + idx * 0x180);
-    Actor *o = PlayerActor_GetActor(4);
+    pal = gWeatherManager.lineBlend[idx];
+    Actor *o = (Actor *)PlayerActor_GetActor(4);
     if (o) {
         VecFx32 *p = &o->position;
         if (p) {
             a = p->x >> 3;
-            s32 *g = &n00::gWeatherManager.prevPlayerZ;
+            s32 *g = &gWeatherManager.prevPlayerZ;
             s32 pos = p->z;
             s32 d = (pos - *g) >> 4;
             if (d < 0) {
@@ -7808,7 +6231,7 @@ extern "C" void Sky_UpdateLineTables()
             *g = pos;
         }
     }
-    s32 *gp = &n00::gWeatherManager.cloudScroll;
+    s32 *gp = &gWeatherManager.cloudScroll;
     s32 c = b; b = *gp; b += 0x60; b += c;
     if (b >= 0x10000) b -= 0x10000;
     *gp = b;
@@ -7817,7 +6240,7 @@ extern "C" void Sky_UpdateLineTables()
         for (i = 0; i < 2; i++) {
             sSkyLineScrollX[i] = a;
             sSkyLineScrollY[i] = b;
-            SkyLineAffine *q = (SkyLineAffine *)((u8 *)n00::gWeatherManager.lineAffine + i * 0x900);
+            SkyLineAffine *q = gWeatherManager.lineAffine[i];
             for (j = 0; j < 0xc0; j++) {
                 s32 t = -(j << 8) / 0xc0;
                 q->pa = 0x10000 / (t + 0x200);
@@ -7826,7 +6249,7 @@ extern "C" void Sky_UpdateLineTables()
                 q->x = a + n;
                 s32 u = (j * 0xc000 / 0xc0 + 0x3000) / 0xc0;
                 q->y = b + (u * u >> 8) * 0xc0;
-                q = (SkyLineAffine *)((u8 *)q + 0xc);
+                q++;
             }
         }
     }
@@ -7835,17 +6258,17 @@ extern "C" void Sky_UpdateLineTables()
     if (da != 0 || db != 0) {
         sSkyLineScrollX[idx] = a;
         sSkyLineScrollY[idx] = b;
-        s32 *end, *q;
-        q = (s32 *)((u8 *)n00::gWeatherManager.lineAffine + idx * 0x900);
-        end = (s32 *)((u8 *)q + 0x900);
+        SkyLineAffine *end, *q;
+        q = gWeatherManager.lineAffine[idx];
+        end = q + 0xc0;
         if (db == 0) {
-            for (; q < end; q += 3) q[0] += da;
+            for (; q < end; q++) q->x += da;
         } else if (da == 0) {
-            for (; q < end; q += 3) q[1] += db;
+            for (; q < end; q++) q->y += db;
         } else {
-            for (; q < end; q += 3) {
-                q[0] += da;
-                q[1] += db;
+            for (; q < end; q++) {
+                q->x += da;
+                q->y += db;
             }
         }
     }
@@ -7864,19 +6287,19 @@ extern "C" void Sky_UpdateLineTables()
         }
         for (; i < 0xc0; i++) *pal++ = 0x1000;
     }
-    n00::gWeatherManager.lineBufferIndex = idx;
+    gWeatherManager.lineBufferIndex = idx;
 }
 
 extern "C" void Sky_VBlankSub()
 {
     u8 t[2];
     volatile u16 v1, v2;
-    s32 y = n00::gWeatherManager.screenOffsetY[n00::gWeatherManager.bufferIndex];
-    v1 = n00::sSkyGradient.keyColors[0];
+    s32 y = gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex];
+    v1 = sSkyGradient.keyColors[0];
     REG16(0x5000400) = v1;
-    v2 = n00::sSkyGradient.keyColors[1];
+    v2 = sSkyGradient.keyColors[1];
     REG16(0x5000000) = v2;
-    SkyLineAffine *e = n00::gWeatherManager.lineAffine[n00::gWeatherManager.lineBufferIndex];
+    SkyLineAffine *e = gWeatherManager.lineAffine[gWeatherManager.lineBufferIndex];
     IO_W(&REG16(0x4001030), e->pa);
     IO_W(&REG32(0x4001038), e->x);
     IO_W(&REG32(0x400103c), e->y);
@@ -7888,27 +6311,27 @@ extern "C" void Sky_VBlankSub()
         IO_OR(&REG32(0x4001000), 0x200);
         if (MenuCtrl_IsMenuOnTop() == 0) Gfx2d_ShowSubPlanes(2);
     }
-    if (n00::gSkySprites.rainbowStrength != 0) {
+    if (gSkySprites.rainbowStrength != 0) {
         IO_W(&REG16(0x4001050), 0x2040);
     } else {
         IO_W(&REG16(0x4001050), 0x2042);
     }
-    u16 s = y + n00::gWeatherManager.starScrollY;
+    u16 s = y + gWeatherManager.starScrollY;
     if (s > 0x100) s = 0x100;
     IO_W(&REG16(0x4001016), s);
-    IO_W(&REG16(0x4001014), n00::gWeatherManager.starScrollX);
+    IO_W(&REG16(0x4001014), gWeatherManager.starScrollX);
 }
 
 extern "C" void Sky_VBlankMain()
 {
     u8 t[2];
     volatile u16 v1, v2;
-    s32 y = n00::gWeatherManager.screenOffsetY[n00::gWeatherManager.bufferIndex];
-    v1 = n00::sSkyGradient.keyColors[0];
+    s32 y = gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex];
+    v1 = sSkyGradient.keyColors[0];
     REG16(0x5000400) = v1;
-    v2 = n00::sSkyGradient.keyColors[0];
+    v2 = sSkyGradient.keyColors[0];
     REG16(0x5000000) = v2;
-    SkyLineAffine *e = n00::gWeatherManager.lineAffine[n00::gWeatherManager.lineBufferIndex];
+    SkyLineAffine *e = gWeatherManager.lineAffine[gWeatherManager.lineBufferIndex];
     IO_W(&REG16(0x4000030), e->pa);
     IO_W(&REG32(0x4000038), e->x);
     IO_W(&REG32(0x400003c), e->y);
@@ -7932,7 +6355,7 @@ extern "C" void Sky_VBlankMain()
             IO_W(&REG32(0x4000000), IO_R(&REG32(0x4000000)) & 0xfffffdff);
             Gfx2d_HideMainPlanes(2);
             IO_W(&REG16(0x4000050), 0x2048);
-        } else if (n00::gSkySprites.rainbowStrength != 0) {
+        } else if (gSkySprites.rainbowStrength != 0) {
             IO_W(&REG16(0x4000050), 0x2040);
         } else {
             IO_W(&REG16(0x4000050), 0x2042);
@@ -7941,10 +6364,10 @@ extern "C" void Sky_VBlankMain()
     r = 0xc0 - y;
     if (r < 0) r = 0;
     else if (r > 0xc0) r = 0xc0;
-    u16 s = y + n00::gWeatherManager.starScrollY;
+    u16 s = y + gWeatherManager.starScrollY;
     if (s > 0x100) s = 0x100;
     IO_W(&REG16(0x4000016), s);
-    IO_W(&REG16(0x4000014), n00::gWeatherManager.starScrollX);
+    IO_W(&REG16(0x4000014), gWeatherManager.starScrollX);
     Gfx2d_EnableMainWindows(1);
     Gfx2d_SetMainWin0Planes(0x15);
     Gfx2d_SetMainWinOutPlanes(0x1f);
@@ -7953,301 +6376,22 @@ extern "C" void Sky_VBlankMain()
 
 #undef REG16
 #undef REG32
-}
 
 // ======== unk_020b8d98.cpp ========
-namespace n01 {
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
-extern "C" {
-extern WeatherManager gWeatherManager;
-}
-extern "C" {
-extern u8 gSkySprites[];
-}
-extern "C" {
-extern u8 sSkyHBlankTask[];
-}
-extern "C" {
-extern u8 data_021efc18[];
-}
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
-#define data_021f4398 (*(decltype(&n01::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
-namespace L_021f304c { extern "C" { extern struct S { u8 p[0x1b6c]; u8 v[1]; } gSkySprites; } }
-#define data_021f304c (*(decltype(&n01::L_021f304c::gSkySprites.v))((u8 *)&::n00::gSkySprites.loader.unk_00[0] + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-extern u8 sSkyBlackBackdrop[];
-}
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[5]; } gSkySprites; } }
-#define data_021f3010 (*(decltype(&n01::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
-extern "C" {
-}
-extern "C" {
-extern u32 sSkyOutdoors;
-}
-extern "C" {
-extern u32 gCamera;
-}
-extern "C" {
-extern u8 sSkyStarBgLayer[];
-}
-extern "C" {
-extern u8 sSkyNextCloudBgLayer[];
-}
-extern "C" {
-extern u8 sSkyCloudBgLayer[];
-}
-extern "C" {
-extern u8 gFieldSceneKind;
-}
-#define data_020e676c ((char *)"menu/star/a_bg.bch")
-#define data_020e6780 ((u8 *)"menu/star/bg.bsc")
-extern "C" {
-}
-extern "C" {
-void _ZN10PlayerData7setFlagEj(void *p, u32 x);
-}
-extern "C" {
-void SkySprites_OnStarWish(void *p);
-}
-extern "C" {
-void _ZN10SkySprites14uploadDirtyGfxEv(void *p);
-}
-extern "C" {
-void _ZN10SkySprites16onSlingshotFiredEi(void *p, u32 x);
-}
-extern "C" {
-void _ZN10SkySprites11onDayChangeEi(void *p, u32 x);
-}
-extern "C" {
-}
-extern "C" {
-void Clock_GetDateTime(void *p);
-}
-extern "C" {
-void Sky_CalcStarScrollY(void *p, void *q);
-}
-extern "C" {
-void DateTime_SubHours(void *p, u32 x);
-}
-extern "C" {
-s32 Sky_CalcStarScrollX(void *p, void *q);
-}
-extern "C" {
-void MI_CpuCopy8(const void *src, void *dst, u32 size);
-}
-extern "C" {
-void DateTime_AddDays(void *p, s32 x);
-}
-extern "C" {
-void DateTime_AddMinutes(void *p, s32 x);
-}
-extern "C" {
-BOOL DateTime_Compare(void *p, void *q, u32 x);
-}
-extern "C" {
-s32 _s32_div_f(s32 a, s32 b);
-}
-extern "C" {
-}
-extern "C" {
-void HBlank_Replace(void *p, void *fn, void *cb);
-}
-extern "C" {
-u32 HBlank_Remove(void *p);
-}
-extern "C" {
-u32 HBlank_Add(void *p, void *fn, void *cb, void *cb2);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void Clock_GetMinuteHour(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void Sky_HBlankMain(void);
-}
-extern "C" {
-void Sky_HBlankSub(void);
-}
-extern "C" {
-void Sky_VBlankSub(void);
-}
-extern "C" {
-void Sky_VBlankMain(void);
-}
-extern "C" {
-void Sky_VBlankDisabled(void);
-}
-extern "C" {
-void Sky_FrameOutdoor(void);
-}
-extern "C" {
-void Sky_FrameIndoor(void);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN13SkyObjPalette10invalidateEi(void *p, s32 x);
-}
-extern "C" {
-void _ZN10SkySprites12reloadAllGfxEv(void *p);
-}
-extern "C" {
-void _ZN10SkySprites9initClockEv(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-BOOL Sky_LoadPalettes(u32 x);
-}
-extern "C" {
-void GX_LoadBGPltt(void *p, u32 a, u32 b);
-}
-extern "C" {
-void GXS_LoadBGPltt(void *p, u32 a, u32 b);
-}
-extern "C" {
-void SkySprites_Stop(void *p);
-}
-extern "C" {
-void RainSe_Release(void *p);
-}
-extern "C" {
-void SkySprites_Draw(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void SkySprites_Update(void *p);
-}
-extern "C" {
-void SkySprites_UpdateIndoor(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void RainSe_Update(void *p);
-}
-extern "C" {
-}
-extern "C" {
-BOOL SkyObjGfxLoader_LoadPalettes(void *p);
-}
-extern "C" {
-void SkySprites_Start(void *p);
-}
-extern "C" {
-void RainSe_Init(void *p);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void Sky_BlendPalettes(void);
-}
-extern "C" {
-void SkyGradient_Build(void);
-}
-extern "C" {
-void Sky_UpdateLineTables(void);
-}
-extern "C" {
-}
-extern "C" {
-void Sky_ApplyPalettes(s32 x);
-}
-extern "C" {
-}
-extern "C" {
-s32 Camera_GetCloseUpFactor(void);
-}
-extern "C" {
-u16 Sky_GetStarScrollYNow(void *p);
-}
-extern "C" {
-BOOL Sky_LoadStarBg(u32 idx);
-}
-extern "C" {
-BOOL Sky_LoadNextCloudBg(u32 idx);
-}
-extern "C" {
-BOOL Sky_LoadCloudBg(u32 idx);
-}
-extern "C" {
-void Sky_ResetObjGfx(void);
-}
+#define data_020e676c "menu/star/a_bg.bch"
+#define data_020e6780 "menu/star/bg.bsc"
 
-extern "C" void Sky_RequestBirds(void);
-extern "C" void Sky_WishOnShootingStar(void);
-extern "C" u32 Sky_IsShootingStarVisible(void);
-extern "C" void Sky_PlayBalloonDropSe(BOOL x);
-extern "C" void Sky_EndBalloonDrop(void);
-extern "C" void Sky_SwapBuffers(void);
-extern "C" void Sky_OnSlingshotFired(u32 x);
-extern "C" void Sky_OnDayChange(u32 x);
-extern "C" void Weather_RerollRainSlant(void);
-extern "C" void Weather_RerollRainSlantAlt(void);
-extern "C" void Weather_RerollRainSlantAlt2(void);
-extern "C" void Weather_RerollRainSlantAlt3(void);
-extern "C" void Sky_GetStarViewingTime(ClockDateTime *out, s32 a, s32 b);
-extern "C" u32 Sky_GetStarScrollY(void);
-extern "C" u32 Sky_GetStarScrollX(void);
-extern "C" u32 Sky_GetCurrentPalette(void);
-extern "C" u32 Weather_GetPrecipKind(void);
-extern "C" void Weather_GetLevels(s32 *a, s32 *b);
-extern "C" s32 Weather_GetCurrent(void);
-extern "C" s32 Weather_GetFallingPrecip(void);
-extern "C" void Sky_Disable(void);
-extern "C" BOOL Sky_SetEngine(s32 arg);
-extern "C" void Sky_ResetObjGfx(void);
-extern "C" BOOL Sky_LoadStarBg(u32 idx);
-extern "C" BOOL Sky_LoadNextCloudBg(u32 idx);
-extern "C" BOOL Sky_LoadCloudBg(u32 idx);
 void Sky_FrameIndoor(void);
 void Sky_FrameOutdoor(void);
 void Sky_VBlankDisabled(void);
 
 void Sky_VBlankDisabled(void) {
     vu16 t;
-    t = n00::sSkyGradient.keyColors[0];
+    t = sSkyGradient.keyColors[0];
     *(vu16 *)0x5000400 = t;
-    *(vu16 *)0x5000000 = n00::sSkyGradient.lineColors[0][0xbf];
+    *(vu16 *)0x5000000 = sSkyGradient.lineColors[0][0xbf];
     IO_W((vu32 *)0x4000000, IO_R((vu32 *)0x4000000) & 0xfffff5ff);
 }
 
@@ -8256,7 +6400,7 @@ void Sky_FrameOutdoor(void) {
     SkyGradient_Build();
     if (!MenuCtrl_IsMenuOnTop()) {
         Sky_UpdateLineTables();
-        ((WeatherManager *)(&gWeatherManager))->updateTransitionStreamed();
+        gWeatherManager.updateTransitionStreamed();
     }
     Sky_ApplyPalettes(gWeatherManager.engine);
     if (gCamera != 0) {
@@ -8268,17 +6412,15 @@ void Sky_FrameOutdoor(void) {
 }
 
 void Sky_FrameIndoor(void) {
-    u32 a, b;
+    s32 a, b;
     if (!MenuCtrl_IsMenuOnTop()) {
-        ((WeatherManager *)(&gWeatherManager))->updateTransitionTimed();
+        gWeatherManager.updateTransitionTimed();
     }
-    ((WeatherManager *)(&gWeatherManager))->getSkyBlend((s32 *)(void *)(&a), (s32 *)(void *)(&b));
+    gWeatherManager.getSkyBlend(&a, &b);
     Sky_BlendPalettes();
 }
 
-}
 BOOL SkyProc::onCreate() {
-    using namespace n01;
     u32 r4 = 0;
     u32 v = 0;
     BOOL t = (gFieldSceneKind == 0);
@@ -8286,102 +6428,81 @@ BOOL SkyProc::onCreate() {
         v = 1;
     }
     sSkyOutdoors = v;
-    ((WeatherManager *)(&gWeatherManager))->init();
+    gWeatherManager.init();
     if (sSkyOutdoors != 0) {
-        if (SkyObjGfxLoader_LoadPalettes(data_021f304c)) {
+        if (SkyObjGfxLoader_LoadPalettes(&gSkySprites.loader)) {
             if (Sky_SetEngine(0)) {
-                SkySprites_Start(gSkySprites);
-                r4 = HBlank_Add(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub, (void *)Sky_FrameOutdoor);
+                SkySprites_Start(&gSkySprites);
+                // (the H-blank handler: HBlank_Add takes it as an integer)
+                r4 = HBlank_Add(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankSub, Sky_VBlankSub, Sky_FrameOutdoor);
             }
         }
     } else {
         if (Sky_LoadPalettes(0)) {
-            r4 = HBlank_Add(sSkyHBlankTask, 0, 0, (void *)Sky_FrameIndoor);
+            r4 = HBlank_Add(&sSkyHBlankTask, 0, NULL, Sky_FrameIndoor);
         }
     }
     if (r4 != 0) {
-        RainSe_Init(HOST_AT(this, 0x50, envSndChannel, 0));
+        RainSe_Init(&envSndChannel);
     }
     return r4;
 }
-namespace n01 {
 
-}
 BOOL SkyProc::onExecute() {
-    using namespace n01;
     if (sSkyOutdoors != 0) {
         if (!MenuCtrl_IsMenuOnTop()) {
-            StarTwinkle_Update(data_021efc18);
+            StarTwinkle_Update((u8 *)&data_021efc18);
         }
-        SkySprites_Update(gSkySprites);
+        SkySprites_Update(&gSkySprites);
     } else {
-        SkySprites_UpdateIndoor(gSkySprites);
+        SkySprites_UpdateIndoor(&gSkySprites);
     }
-    ((WeatherManager *)(&gWeatherManager))->updateHourly();
-    RainSe_Update(HOST_AT(this, 0x50, envSndChannel, 0));
+    gWeatherManager.updateHourly();
+    RainSe_Update(&envSndChannel);
     return TRUE;
 }
-namespace n01 {
 
-}
 BOOL SkyProc::onDraw() {
-    using namespace n01;
     if (sSkyOutdoors != 0) {
-        SkySprites_Draw(gSkySprites);
+        SkySprites_Draw(&gSkySprites);
     }
     return TRUE;
 }
-namespace n01 {
 
-}
 BOOL SkyProc::onDelete() {
-    using namespace n01;
-    u32 saved = HBlank_Remove(sSkyHBlankTask);
+    BOOL saved = HBlank_Remove(&sSkyHBlankTask);
     s32 i, j, k;
-    u32 *pp;
     GX_LoadBGPltt(sSkyBlackBackdrop, 0, 2);
     GXS_LoadBGPltt(sSkyBlackBackdrop, 0, 2);
-    u32 *p4 = (u32 *)&gWeatherManager.curCloudScreen;
-    u32 v4 = *p4;
-    if (v4 != 0) {
-        Mem_Free(v4);
+    if (gWeatherManager.curCloudScreen != NULL) {
+        Mem_Free(gWeatherManager.curCloudScreen);
     }
-    *p4 = 0;
-    p4 = (u32 *)&gWeatherManager.cloudScreen;
-    v4 = *p4;
-    if (v4 != 0) {
-        Mem_Free(v4);
+    gWeatherManager.curCloudScreen = NULL;
+    if (gWeatherManager.cloudScreen != NULL) {
+        Mem_Free(gWeatherManager.cloudScreen);
     }
-    *p4 = 0;
+    gWeatherManager.cloudScreen = NULL;
     for (i = 0; i < 2; i++) {
-        u8 *row;
-        j = 0;
-        row = (u8 *)&gWeatherManager + i * 8;
-        for (; j < 2; j++) {
-            u8 *r0 = row + j * 4;
-            u32 *q = (u32 *)(r0 + 0x1544);
-            if (*(u32 *)(r0 + 0x1544) != 0) {
-                Mem_Free(*(u32 *)(r0 + 0x1544));
+        for (j = 0; j < 2; j++) {
+            if (gWeatherManager.paletteFiles[i][j] != NULL) {
+                Mem_Free(gWeatherManager.paletteFiles[i][j]);
             }
-            *q = 0;
+            gWeatherManager.paletteFiles[i][j] = NULL;
         }
     }
-    pp = (u32 *)gWeatherManager.palettes;
     for (k = 0; k < 3; k++) {
-        if (*pp != 0) {
-            Mem_Free(*pp);
-            *pp = 0;
+        if (gWeatherManager.palettes[k] != NULL) {
+            Mem_Free(gWeatherManager.palettes[k]);
+            gWeatherManager.palettes[k] = NULL;
         }
-        pp++;
     }
     if (sSkyOutdoors != 0) {
-        SkySprites_Stop(gSkySprites);
+        SkySprites_Stop(&gSkySprites);
     }
-    StarTwinkle_Stop(data_021efc18);
-    RainSe_Release(HOST_AT(this, 0x50, envSndChannel, 0));
+    StarTwinkle_Stop(&data_021efc18);
+    RainSe_Release(&envSndChannel);
     return saved;
 }
-namespace n01 {
 
 extern "C" BOOL Sky_LoadCloudBg(u32 idx) {
     u8 r5;
@@ -8391,10 +6512,10 @@ extern "C" BOOL Sky_LoadCloudBg(u32 idx) {
     result = FALSE;
     r5 = sSkyCloudBgLayer[idx];
     if (Sky_LoadPalettes(idx)) {
-        if (((WeatherManager *)(&gWeatherManager))->loadCloudChars(r4, r5)) {
+        if (gWeatherManager.loadCloudChars(r4, r5)) {
             u32 *r7 = &gWeatherManager.curCloudScreenSize;
-            if (((WeatherManager *)(&gWeatherManager))->loadCloudScreen((u8 **)(&gWeatherManager.curCloudScreen), (u32 *)(r7), 0, r4)) {
-                if (Gfx2d_LoadScreen((void *)gWeatherManager.curCloudScreen, r5, *r7, 0)) {
+            if (gWeatherManager.loadCloudScreen((u8 **)(&gWeatherManager.curCloudScreen), (u32 *)(r7), 0, r4)) {
+                if (Gfx2d_LoadScreen(gWeatherManager.curCloudScreen, r5, *r7, 0)) {
                     result = TRUE;
                 }
             }
@@ -8445,8 +6566,8 @@ extern "C" BOOL Sky_LoadNextCloudBg(u32 idx) {
             }
             break;
         }
-        if (((WeatherManager *)(&gWeatherManager))->loadCloudChars(r4, r7)) {
-            if (((WeatherManager *)(&gWeatherManager))->loadCloudScreen((u8 **)(&gWeatherManager.cloudScreen), (u32 *)(&gWeatherManager.cloudScreenSize), stk4, r4)) {
+        if (gWeatherManager.loadCloudChars(r4, r7)) {
+            if (gWeatherManager.loadCloudScreen((u8 **)(&gWeatherManager.cloudScreen), (u32 *)(&gWeatherManager.cloudScreenSize), stk4, r4)) {
                 u8 *buf = gWeatherManager.cloudScreen;
                 u32 off, n;
                 if (r4 == gWeatherManager.level) {
@@ -8470,36 +6591,36 @@ end:
 }
 
 extern "C" BOOL Sky_LoadStarBg(u32 idx) {
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     u8 v6 = sSkyStarBgLayer[idx];
-    void *buf;
+    u8 *buf;
     if (!Gfx2d_LoadCharFile(data_020e676c, heap, v6, 0x10, 0x10, 0x1f)) {
         return FALSE;
     }
-    buf = Heap_AllocTail(heap, 0x1000);
+    buf = (u8 *)Heap_AllocTail(heap, 0x1000);
     if (buf == NULL) {
         return FALSE;
     }
     File_LoadToBuffer(data_020e6780, buf, 0x1000);
-    Constellation_MaskSkyScreen(buf);
+    Constellation_MaskSkyScreen((u16 *)buf);
     if (!Gfx2d_LoadScreen(buf, v6, 0x1000, 0)) {
         Heap_Free(heap, buf);
         return FALSE;
     }
     Heap_Free(heap, buf);
-    StarTwinkle_Init(data_021efc18, v6);
+    StarTwinkle_Init((u8 *)&data_021efc18, v6);
     return TRUE;
 }
 
 extern "C" void Sky_ResetObjGfx(void) {
-    SkyObjGfxSlot *p = data_021f3010;
+    SkyObjGfxSlot *p = gSkySprites.gfxSlots;
     s32 i;
     for (i = 0; i < 5; p++, i++) {
         p->loaded = 0;
     }
-    _ZN13SkyObjPalette10invalidateEi(data_021f4398, -1);
-    _ZN10SkySprites12reloadAllGfxEv(gSkySprites);
-    _ZN10SkySprites9initClockEv(gSkySprites);
+    gSkySprites.palette.invalidate(-1);
+    gSkySprites.reloadAllGfx();
+    gSkySprites.initClock();
 }
 
 extern "C" BOOL Sky_SetEngine(s32 arg) {
@@ -8507,7 +6628,7 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
     MinuteHour t;
     if (arg == 0) {
         Gfx2d_SetSubBgModeState(1);
-        Clock_GetMinuteHour(&t);
+        Clock_GetMinuteHour(&t.minute);
         if (t.hour >= 6 && t.hour < 0x12) {
             Gfx2d_HideSubPlanes(2);
         } else {
@@ -8521,10 +6642,10 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
         IO_W(rb, (IO_R(rb) & ~3) | 2);
         IO_W(ra, (IO_R(ra) & 0x43) | 0x4c00);
         IO_W(rb, (IO_R(rb) & 0x43) | 0x6f00);
-        HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub);
+        HBlank_Replace(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankSub, Sky_VBlankSub);  // (the H-blank handler as an integer)
     } else {
         Gfx2d_SetMainBgModeState(1);
-        Clock_GetMinuteHour(&t);
+        Clock_GetMinuteHour(&t.minute);
         if (t.hour >= 6 && t.hour < 0x12) {
             Gfx2d_HideMainPlanes(2);
         } else {
@@ -8538,7 +6659,7 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
         IO_W(rb, (IO_R(rb) & ~3) | 2);
         IO_W(ra, (IO_R(ra) & 0x43) | 0x4400);
         IO_W(rb, (IO_R(rb) & 0x43) | 0x6700);
-        HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankMain, (void *)Sky_VBlankMain);
+        HBlank_Replace(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankMain, Sky_VBlankMain);  // (the H-blank handler as an integer)
     }
     if (arg != gWeatherManager.engine || arg == 1) {
         if (Sky_LoadCloudBg(arg) && Sky_LoadNextCloudBg(arg) && Sky_LoadStarBg(arg)) {
@@ -8547,20 +6668,19 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
             result = TRUE;
         }
     }
-    void *p = PlayerActor_GetActor(4);
-    u32 *dst = (u32 *)&gWeatherManager.prevPlayerZ;
-    *dst = 0;
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
+    gWeatherManager.prevPlayerZ = 0;
     if (p != NULL) {
-        p = (u8 *)p + 0x5c;
-        if (p != NULL) {
-            *dst = ((u32 *)p)[2];
+        VecFx32 *pos = &p->position;
+        if (pos != NULL) {
+            gWeatherManager.prevPlayerZ = pos->z;
         }
     }
     return result;
 }
 
 extern "C" void Sky_Disable(void) {
-    HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankNone, (void *)Sky_VBlankDisabled);
+    HBlank_Replace(&sSkyHBlankTask, (s32)(uptr)Sky_HBlankNone, Sky_VBlankDisabled);  // (the H-blank handler as an integer)
     Gfx2d_HideMainPlanes(0xa);
 }
 
@@ -8582,7 +6702,7 @@ extern "C" s32 Weather_GetFallingPrecip(void) {
     }
 }
 
-extern "C" s32 Weather_GetCurrent(void) { return ((WeatherManager *)(&gWeatherManager))->getWeatherAtOffset(0); }
+extern "C" s32 Weather_GetCurrent(void) { return gWeatherManager.getWeatherAtOffset(0); }
 
 extern "C" void Weather_GetLevels(s32 *a, s32 *b) {
     *a = gWeatherManager.level;
@@ -8591,11 +6711,11 @@ extern "C" void Weather_GetLevels(s32 *a, s32 *b) {
 
 extern "C" u32 Weather_GetPrecipKind(void) { return gWeatherManager.precipKind; }
 
-extern "C" u32 Sky_GetCurrentPalette(void) {
+extern "C" u16 *Sky_GetCurrentPalette(void) {
     if (gWeatherManager.targetLevel != gWeatherManager.level) {
-        return (u32)gWeatherManager.palettes[2];
+        return gWeatherManager.palettes[2];
     }
-    return (u32)gWeatherManager.palettes[0];
+    return gWeatherManager.palettes[0];
 }
 
 extern "C" u32 Sky_GetStarScrollX(void) { return gWeatherManager.starScrollX; }
@@ -8603,15 +6723,15 @@ extern "C" u32 Sky_GetStarScrollX(void) { return gWeatherManager.starScrollX; }
 extern "C" u32 Sky_GetStarScrollY(void) { return gWeatherManager.starScrollY; }
 
 extern "C" void Sky_GetStarViewingTime(ClockDateTime *out, s32 a, s32 b) {
-    u32 tmp[2];
+    ClockDateTimeWords tmp;
     s32 r7;
-    tmp[0] = 0;
-    tmp[1] = 0;
-    Clock_GetDateTime(tmp);
-    Sky_CalcStarScrollY(&gWeatherManager, tmp);
-    DateTime_SubHours(tmp, 6);
-    r7 = Sky_CalcStarScrollX(&gWeatherManager, tmp);
-    MI_CpuCopy8(tmp, out, 8);
+    tmp.words[0] = 0;
+    tmp.words[1] = 0;
+    Clock_GetDateTime(&tmp.dt);
+    Sky_CalcStarScrollY(&gWeatherManager, &tmp.dt);
+    DateTime_SubHours(&tmp.dt, 6);
+    r7 = Sky_CalcStarScrollX(&gWeatherManager, &tmp.dt);
+    MI_CpuCopy8(&tmp, out, 8);
     if (a < 0) {
         a += 0x200;
     }
@@ -8631,65 +6751,59 @@ extern "C" void Sky_GetStarViewingTime(ClockDateTime *out, s32 a, s32 b) {
     if (out->hour == 6) {
         DateTime_SubHours(out, 1);
     }
-    Clock_GetDateTime(tmp);
-    DateTime_AddMinutes(tmp, 0x1e);
-    if (DateTime_Compare(tmp, out, 0x3c) == 1) {
+    Clock_GetDateTime(&tmp.dt);
+    DateTime_AddMinutes(&tmp.dt, 0x1e);
+    if (DateTime_Compare(&tmp.dt, out, 0x3c) == 1) {
         DateTime_AddDays(out, 0x40);
     }
 }
 
-extern "C" void Weather_RerollRainSlantAlt3(void) { ((WeatherManager *)(&gWeatherManager))->rollRainSlant(); }
+extern "C" void Weather_RerollRainSlantAlt3(void) { gWeatherManager.rollRainSlant(); }
 
-extern "C" void Weather_RerollRainSlantAlt2(void) { ((WeatherManager *)(&gWeatherManager))->rollRainSlant(); }
+extern "C" void Weather_RerollRainSlantAlt2(void) { gWeatherManager.rollRainSlant(); }
 
-extern "C" void Weather_RerollRainSlantAlt(void) { ((WeatherManager *)(&gWeatherManager))->rollRainSlant(); }
+extern "C" void Weather_RerollRainSlantAlt(void) { gWeatherManager.rollRainSlant(); }
 
-extern "C" void Weather_RerollRainSlant(void) { ((WeatherManager *)(&gWeatherManager))->rollRainSlant(); }
+extern "C" void Weather_RerollRainSlant(void) { gWeatherManager.rollRainSlant(); }
 
-extern "C" void Sky_OnDayChange(u32 x) { _ZN10SkySprites11onDayChangeEi(gSkySprites, x); }
+extern "C" void Sky_OnDayChange(u32 x) { gSkySprites.onDayChange(x); }
 
-extern "C" void Sky_OnSlingshotFired(u32 x) { _ZN10SkySprites16onSlingshotFiredEi(gSkySprites, x); }
+extern "C" void Sky_OnSlingshotFired(u32 x) { gSkySprites.onSlingshotFired(x); }
 
 extern "C" void Sky_SwapBuffers(void) {
     gWeatherManager.bufferIndex ^= 1;
-    _ZN10SkySprites14uploadDirtyGfxEv(gSkySprites);
+    gSkySprites.uploadDirtyGfx();
 }
 
-extern "C" void Sky_EndBalloonDrop(void) { n00::gSkySprites.shotSeq.balloonDropEnded = 1; }
+extern "C" void Sky_EndBalloonDrop(void) { gSkySprites.shotSeq.balloonDropEnded = 1; }
 
 extern "C" void Sky_PlayBalloonDropSe(BOOL x) {
     if (x) {
-        n00::gSkySprites.shotSeq.splashSePending = 1;
+        gSkySprites.shotSeq.splashSePending = 1;
     } else {
-        n00::gSkySprites.shotSeq.landSePending = 1;
+        gSkySprites.shotSeq.landSePending = 1;
     }
 }
 
-extern "C" u32 Sky_IsShootingStarVisible(void) { return n00::gSkySprites.shootingStarVisible; }
+extern "C" u32 Sky_IsShootingStarVisible(void) { return gSkySprites.shootingStarVisible; }
 
 extern "C" void Sky_WishOnShootingStar(void) {
-    void *p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        ((PlayerData *)(p))->setFlag(0x32);
-        SkySprites_OnStarWish(gSkySprites);
+        p->setFlag(0x32);
+        SkySprites_OnStarWish(&gSkySprites);
     }
 }
 
-extern "C" void Sky_RequestBirds(void) { n00::gSkySprites.birdsRequested = 1; }
+extern "C" void Sky_RequestBirds(void) { gSkySprites.birdsRequested = 1; }
 
-#undef data_021f4398
-#undef data_021f304c
-#undef data_021f3010
-#undef data_020e676c
-#undef data_020e6780
-}
 
-namespace n00 {
 extern "C" {
 u32 data_020e48dc[2] = {0x91f000f0, 0xffff211c};
-const u32 sFireworkFlicker[2] = {0x1000, 0x800};
-const u32 sSkyPaletteLayer[1] = {0x206};
+const s32 sFireworkFlicker[2] = {0x1000, 0x800};
+const u8 sSkyPaletteLayer[4] = {
+    0x6, 0x2, 0x0, 0x0,
+};
 const u8 sFireworksPatternWeights[14] = {0x0, 0x5, 0xa, 0xf, 0x19, 0x23, 0x2d, 0x37, 0x41, 0x4b, 0x51, 0x59, 0x5f, 0x64};
 char data_020e4f68[30] = "/sky/d_2d_b_cld_f0_bg_ncl.bin";
-}
 }

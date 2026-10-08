@@ -5,7 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "town/BuildingActor.h"
 #endif
 
 #ifdef __cplusplus
@@ -30,7 +30,7 @@ void *VillagerHouse_Create();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_sVillagerHouses
-extern u32 sVillagerHouses[8];
+extern BuildingActor *sVillagerHouses[8];
 #endif
 }
 #endif

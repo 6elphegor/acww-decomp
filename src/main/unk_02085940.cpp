@@ -15,95 +15,9 @@
 #include "item/ItemName.h"
 #include "item/Letter.h"
 #include "town/TownBlockMap.h"
+#include "town/BlockMap.h"
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
-extern "C" {
-void _ZN8PlayerId5clearEv(void *p);
-void Clock_GetDate(u8 *p);
-void _ZN8PlayerIdC1Ev(void *p);
-void _ZN8PlayerIdC1EPv(void *p);
-void _ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
-void _ZN11MsgString25C1Ev(void *p);
-void _ZN11MsgString25D1Ev(void *p);
-void _ZN8ItemNameC1EPt(void *p, u16 *v);
-void _ZN8ItemNameD1Ev(void *p);
-void _ZN8SaveData9clearFlagEj(void *, u32);
-s32 _ZN8SaveData8testFlagEj(void *, s32);
-void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 Item_IsFurniture(u16 *p);
-u32 Item_GetFurnitureIndex(void *p);
-s32 _ZN10VillagerId7isValidEv(void *p);
-s32 _ZN8PlayerId7isValidEv(void *p);
-void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
-s32 Random_GlobalBelow(u32 n);
-void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
-void Clock_GetDateTime(void *p);
-void DateTime_SubDays(void *p, s32 v);
-s32 DateTime_Compare(void *a, void *b, s32 c);
-s32 DateTime_DiffDays(void *a, void *b);
-s32 Event_GetDaysSinceStart(s32 a);
-s32 _ZN10PlayerData6isUsedEv(void *p);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
-s32 _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(void *p);
-u16 *_ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
-void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
-void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
-void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
-void _ZN6LetterC1Ev(void *p);
-void _ZN6LetterD1Ev(void *p);
-s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
-s32 Clock_GetWeekday();
-s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
-s32 NookShop_GetLevel(void *p);
-void _ZN14RoostGuestRoll4rollEv(void *);
-void *MI_CpuFill8(void *d, s32 v, u32 n);
-void MI_CpuCopy8(void *, void *, u32);
-s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-void *TownBlockMap_Get();
-void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_SnapToUnitCenter(void *a, void *b);
-void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
-extern u8 gSaveData[];
-s32 TownId_Clear(void *p);
-s32 TownId_Destruct(void *p);
-s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
-s32 TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
-u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-s32 Item_IsMarker(u16 *p);
-s32 Item_IsTreeStage0(u16 *p);
-s32 _ZN7Pattern4fillEj(void *p, s32 v);
-void *_ZN7Pattern7getInfoEv(void *p);
-void *_ZN7PatternD1Ev(void *p);
-void *_ZN7PatternC1Ev(void *p);
-s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
-void *_ZN10PlayerData18getLostChildRecordEv(void *p);
-s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
-extern void *gSceneBlockMap;
-extern u8 data_021ed31a[];
-extern u8 data_021c47c4_dummy[];
-void *TownId_Construct(void *);
-s32 _ZN11CommManager8isOnlineEv(void *);
-BOOL _ZN10PlayerData8testFlagEj(void *, s32);
-void *_ZN10PlayerData14getDramaRecordEv(void *);
-s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
-void DateTime_AddDays(void *, s32);
-s32 _ZN10MuseumData10isCompleteEv(void *);
-BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
-void _ZN12ItemPickSpec3setEii(void *, s32, s32);
-void ItemPickSpec_Destruct(void *);
-void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-extern void *gCommManager;
-extern const u8 data_020cf288[];
-extern const u8 data_020cf328[];
-extern u8 data_021ed0a0[];
-extern u8 data_020e0c54[];
-extern u8 data_020e0c4c[];
-extern u8 data_020e0c44[];
-extern s32 gGfxMainOnTop;
-}
 #include "types.h"
 #include "item/ItemPickSpec.h"
 #include "item/LetterView.h"
@@ -113,28 +27,12 @@ extern s32 gGfxMainOnTop;
 #include "save/MuseumData.h"
 #include "save/Pattern.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_Field_PickRandomInLine  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostChildRecord_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostChildRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerSpNpcRecord_SendMissingLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0c44  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0c48  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0c4c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0c50  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0c54  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sContestResultMailFiles  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020030d8.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02085940.h"
@@ -145,16 +43,12 @@ extern s32 gGfxMainOnTop;
 
 
 
-extern u8 gSaveData[];
 
 
 extern u8 gSavePlayers[];
 
-extern u8 data_020e0c48[];
 
-extern u8 data_020e0c50[];
 
-extern void *sContestResultMailFiles[4];
 
 struct ContestLetterLocals {
     /* 0x00 */ u8 letterVariant;
@@ -168,81 +62,21 @@ struct ContestLetterLocals {
 
 
 
-class RoostGuestRoll {
-public:
-    BOOL hasLateGuest();
-    u32 getAfternoonGuest();
-    u32 getNoonGuest();
-    BOOL hasMorningGuest();
-    void roll();
-    void clear();
-    u8 morningGuest : 1;
-    u8 noonGuest : 3;
-    u8 afternoonGuest : 3;
-    u8 lateGuest : 1;
-};
+#include "game/RoostGuestRoll.h"
 
-extern u8 data_021ed104[];
 
 struct Unk_02086340_T {
     u32 w0, w1;
 };
 
-// ---- bitfield byte objects ----
-struct GulliverQuest {
-    u8 cnt : 3;
-    u8 flag : 1;
-    void start();
-    BOOL isStarted();
-    void addPart();
-    s32 getPartCount();
-};
+#include "game/GulliverQuest.h"
 
 
-// ---- 0x18-byte record ----
-struct ReddSaleName {
-    u8 b[8];
-};
+#include "game/ReddLastSale.h"
 
-struct ReddLastSale {
-    u16 townId;
-    ReddSaleName townName;
-    u16 playerId;
-    ReddSaleName playerName;
-    s8 gender;
-    u8 unk_15;
-    u16 item;
-    void copyItemFrom(const ReddLastSale *o);
-    void setItem(const ReddLastSale *o);
-    void setBuyer(const ReddLastSale *o);
-    void clear();
-    ReddLastSale();
-    ~ReddLastSale();
-};
+extern SaveData gSaveData;
 
-// ---- generator object ----
-struct TurnipMarket {
-    u8 weekStartDay, weekStartMonth, weekStartYear, unk_03, purchaseDay, purchaseMonth, purchaseYear, unk_07;
-    u16 peakPrice;
-    u8 prices[14];
-    u8 pattern;
-    void setPurchaseDate(void *src);
-    void checkTurnipExpiry();
-    void setWeekDate(void *src);
-    void updateDay(s32 d);
-    void spoilOnReset();
-    u16 getPrice();
-    void generateWeek(s32 flag);
-    s32 rollPeakPrice();
-    void generateSmallSpike();
-    u8 calcHighPrice();
-    u8 calcMidPrice();
-    u8 calcLowPrice();
-    void fillDecreasing(s32 i, s32 n);
-    u8 calcPrice(s32 k, s32 z);
-    void init();
-    void clear();
-};
+#include "game/TurnipMarket.h"
 
 // ---- position pair ----
 
@@ -251,126 +85,26 @@ extern const VecXZ sGulliverSpotOffsets[];
 
 extern const s16 sGulliverRepairedAngles[];
 
-extern GulliverQuest data_021e58a6;
 
 // 0x02086e60 record (also used by the free functions below)
 class Unk_02086e60;
 
-// ---- 0x02086b7c: random-flags byte
-class VisitorSpawnFlags {
-public:
-    void setVisitorSpawned();
-    void clearVisitorSpawned();
-    BOOL isVisitorSpawned();
-    void rollGulliverSpot();
-    void clear();
-    void destruct();
-    void construct();
-    void getGulliverSpawn(void *v, u16 *out, VecFx32 *p);
+#include "town/VisitorSpawnFlags.h"
 
-    u8 visitorSpawned : 1;
-    u8 gulliverSpotRolled : 1;
-    u8 gulliverSpot : 2;
-    u8 gulliverFacing : 2;
-};
+#include "town/PeteFallState.h"
 
-// ---- 0x02086c04: 12-byte position record with flag byte at +8
-class PeteFallState {
-public:
-    BOOL pickFallPos(s32 px, s32 flip);
-    s16 getFacing();
-    void setVisitorActive();
-    void clearVisitorActive();
-    BOOL isVisitorActive();
-    void unmarkFallPos();
-    void markFallPos();
-    BOOL hasFallPos();
-    void getPos(VecFx32 *out);
-    void setPos(VecFx32 *v);
-    void clear();
-    void destruct();
-    void construct();
 
-    s32 fallPosX;
-    s32 fallPosZ;
-    u8 fallPosValid : 1;
-    u8 visitorActive : 1;
-    u8 facing : 2;
-};
+#include "town/TownTravelState.h"
 
-struct Unk_02086c04_Map {
-    u32 pad[3];
-    s32 w, h;
-};
-
-// ---- 0x02086ef0: s16 + byte
-class TownTravelState {
-public:
-    s16 getAngle();
-    void setAngle(s32 v);
-    u8 getMode();
-    void setMode(u32 v);
-    void clearMode();
-    void destruct();
-    void construct();
-
-    s16 angle;
-    u8 mode;
-};
-
-// ---- 0x02086f14: one byte (TownSessionState+0x30)
-class ResettiVisitFlag {
-public:
-    void set(u32 v);
-    BOOL isSet();
-    void clear();
-    void destruct();
-    void construct();
-
-    u8 isPending;
-};
+#include "town/ResettiVisitFlag.h"
 
 struct Unk_02086f38_Buf {
     s32 a, b;
 };
 
-// ---- 0x02086f38: the shop's closing time, a DateTime (TownSessionState+0x18, TownSessionState_GetClosingTime)
-class ShopClosingTime {
-public:
-    BOOL isPastClosingTime();
-    void setClosingTimeToday();
-    ShopClosingTime *getTime();
-    void clearClosingTime();
-    void destruct();
-    void construct();
+#include "town/ShopClosingTime.h"
 
-    union {
-        struct {
-            /* 0x0 */ u8 second;
-            /* 0x1 */ u8 minute;
-            /* 0x2 */ u8 hour;
-        };
-        /* 0x0 */ s32 raw[2];
-    };
-};
-
-// ---- 0x02086f98: Katie's position and follow flag (TownSessionState+0xc, TownSessionState_GetKatieState)
-class KatieVisitState {
-public:
-    void clearFollowing();
-    void setFollowing();
-    BOOL isFollowing();
-    void getPos(VecFx32 *out);
-    void setPos(VecFx32 *v);
-    void pickKatiePos();
-    void clear();
-    void destruct();
-    void construct();
-
-    s32 posX;
-    s32 posZ;
-    u8 following;
-};
+#include "town/KatieVisitState.h"
 
 // ---- 0x02087224: big singleton (gSaveData)
 
@@ -383,24 +117,12 @@ struct DramaScheduleEntry {
     u32 c;
 };
 
-class PlayerDailyTalkFlags {
-public:
-    void clear(u32 i);
-    void set(u32 i);
-    BOOL test(u32 i);
-    void setDate(u8 *src);
-    void clearAll();
-    void stampToday();
-
-    u8 date[3];
-    u32 flags[2];
-};
+#include "player/PlayerDailyTalkFlags.h"
 
 
 
 
 
-enum Unk_020874e8_K { UNK_020874E8_K = 0x15db4 };
 
 struct MissingLetterLocals {
     u8 a;
@@ -413,47 +135,18 @@ struct MissingLetterLocals {
 
 // extern declarations
 extern "C" {
-void _ZN8PlayerId5clearEv(void *p);
 void Clock_GetDate(u8 *p);
-void _ZN8PlayerIdC1Ev(void *p);
-void _ZN8PlayerIdC1EPv(void *p);
-void _ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
-void _ZN11MsgString25C1Ev(void *p);
-void _ZN11MsgString25D1Ev(void *p);
-void _ZN8ItemNameC1EPt(void *p, u16 *v);
-void _ZN8ItemNameD1Ev(void *p);
-void _ZN8SaveData9clearFlagEj(void *, u32);
-s32 _ZN8SaveData8testFlagEj(void *, s32);
-void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-s32 _ZN10VillagerId7isValidEv(void *p);
-s32 _ZN8PlayerId7isValidEv(void *p);
-void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
-s32 Random_GlobalBelow(u32 n);
 void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
 void Clock_GetDateTime(void *p);
 void DateTime_SubDays(void *p, s32 v);
 s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
 s32 Event_GetDaysSinceStart(s32 a);
-s32 _ZN10PlayerData6isUsedEv(void *p);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
-s32 _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(void *p);
-u16 *_ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
-void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
-void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
-void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
-void _ZN6LetterC1Ev(void *p);
-void _ZN6LetterD1Ev(void *p);
-s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
-void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
@@ -461,83 +154,22 @@ void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
-void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
-extern u8 gSaveData[];
-s32 TownId_Clear(void *p);
-s32 TownId_Destruct(void *p);
-s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
+void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
 s32 Item_IsTreeStage0(u16 *p);
-s32 _ZN7Pattern4fillEj(void *p, s32 v);
-void *_ZN7Pattern7getInfoEv(void *p);
-void *_ZN7PatternD1Ev(void *p);
-void *_ZN7PatternC1Ev(void *p);
-s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
-void *_ZN10PlayerData18getLostChildRecordEv(void *p);
-s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
-extern void *gSceneBlockMap;
-extern u8 data_021ed31a[];
+extern BlockMap *gSceneBlockMap;
 extern u8 data_021c47c4_dummy[];
-void *TownId_Construct(void *);
-s32 _ZN11CommManager8isOnlineEv(void *);
-BOOL _ZN10PlayerData8testFlagEj(void *, s32);
-void *_ZN10PlayerData14getDramaRecordEv(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
-s32 _ZN10MuseumData10isCompleteEv(void *);
-BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
-void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void ItemPickSpec_Destruct(void *);
-void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
-extern u8 data_021ed0a0[];
-extern u8 data_020e0c54[];
-extern u8 data_020e0c4c[];
-extern u8 data_020e0c44[];
 extern s32 gGfxMainOnTop;
 }
 
-// own functions
-extern "C" {
-void ReddLastSale_Clear(ReddLastSale *p);
-s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
-void *LostChildRecord_Destruct(void *p);
-void *LostChildRecord_Construct(void *p);
-void PlayerSpNpcRecord_SendMissingLetter();
-}
-
-namespace Ns_02086204 {
-extern "C" {
-u32 _ZN8PlayerId5clearEv(void *p);
-s32 Random_GlobalBelow(s32 a);
-}
-}
-
-namespace Ns_02086b7c {
-extern "C" {
-void *MI_CpuCopy8(void *dst, const void *src, u32 n);
-s32 Random_GlobalBelow(s32 n);
-void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
-s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
-s32 Math_IsInRange(s32 a, s32 b, s32 c);
-}
-}
-
-namespace Ns_020874d8 {
-extern "C" {
-void _ZN10PlayerData9clearFlagEj(void *, s32);
-void MI_CpuCopy8(void *, void *, s32);
-void MI_CpuFill8(void *, s32, s32);
-void Clock_GetDate(void *);
-s32 Random_GlobalBelow(s32);
-u32 _ZN10PlayerData11getPlayerIdEv(void *);
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
-}
-}
 
 // ---- 0x0208709c: walkability test
 static inline BOOL Unk_0208709c_Chk(u16 *p) {
@@ -588,12 +220,13 @@ static inline BOOL Unk_0208709c_In(u16 *p) {
 }
 
 extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d) {
-    s32 r7 = Oam_GetObjX(p) - c;
+    u32 *obj = (u32 *)p;  // (an OAM entry)
+    s32 r7 = Oam_GetObjX(obj) - c;
     if (r7 > a) return FALSE;
-    if (r7 + (c * 2 + Oam_GetObjWidth(p)) < a) return FALSE;
-    s32 t = Oam_GetObjY(p) - d;
+    if (r7 + (c * 2 + Oam_GetObjWidth(obj)) < a) return FALSE;
+    s32 t = Oam_GetObjY((s8 *)obj) - d;
     if (t > b) return FALSE;
-    if (t + (d * 2 + Oam_GetObjHeight(p)) >= b) return TRUE;
+    if (t + (d * 2 + Oam_GetObjHeight(obj)) >= b) return TRUE;
     return FALSE;
 }
 
@@ -661,7 +294,7 @@ u8 *PlayerSpNpcRecord::getArbeitDate() { return serviceDates + 4; }
 
 void PlayerSpNpcRecord::stampArbeitDate() {
     u8 tmp[4];  // (Clock_GetDate writes four bytes)
-    Ns_020874d8::Clock_GetDate(tmp);
+    Clock_GetDate(tmp);
     serviceDates[6] = tmp[2];
     serviceDates[5] = tmp[1];
     serviceDates[4] = tmp[0];
@@ -746,7 +379,7 @@ extern "C" void *PlayerSpNpcRecord_GetInsuranceDate(void *p) { return p; }
 
 void PlayerDailyTalkFlags::stampToday() {
     u8 tmp[4];  // (Clock_GetDate writes four bytes)
-    Ns_020874d8::Clock_GetDate(tmp);
+    Clock_GetDate(tmp);
     date[2] = tmp[2];
     date[1] = tmp[1];
     date[0] = tmp[0];
@@ -760,92 +393,85 @@ void PlayerSpNpcRecord::addInsuranceClaim() {
 }
 
 extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
-    u8 big[HOST_SIZED(0xf4, Letter) / 1] HOST_ALIGN8;
     MissingLetterLocals l;
-    u8 obj[8];
-    void *r4 = PlayerData_GetCurrent();
-    if (r4 != NULL && ((PlayerData *)(r4))->testFlag(0x36)) {
-        new (big) Letter();
+    PlayerData *r4 = PlayerData_GetCurrent();
+    if (r4 != NULL && r4->testFlag(0x36)) {
+        Letter big;
         l.a = 0;
-        l.a = Ns_020874d8::Random_GlobalBelow(3);
-        Ns_020874d8::Clock_GetDate(l.c);
+        l.a = Random_GlobalBelow(3);
+        Clock_GetDate(l.c);
         l.b = LetterPaper_PickRandom(3, l.c[1]);
-        Ns_020874d8::Letter_ComposeFromMail(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(r4));
-        ((ItemPickSpec *)(obj))->set(0, 0x1b);
-        ItemPick_One(&l.h, obj, 0, 0, 1, 1, 0);
-        ((LetterView *)(big))->setPresent(l.h, 1);
-        ItemPickSpec_Destruct(obj);
-        if (LetterDelivery_QueueOutgoing(big, 0)) {
-            Ns_020874d8::_ZN10PlayerData9clearFlagEj(r4, 0x36);
+        Letter_ComposeFromMail((LetterView *)&big, &l, (void *)"sp_npc_missing", data_020e0c44, &l.b, r4->getPlayerId());
+        {
+            ItemPickSpec obj;
+            obj.set(0, 0x1b);
+            ItemPick_One(&l.h, &obj, 0, 0, 1, 1, 0);
+            ((LetterView *)&big)->setPresent(l.h, 1);
         }
-        ((Letter *)(big))->Letter::~Letter();
+        if (LetterDelivery_QueueOutgoing(&big, 0)) {
+            r4->clearFlag(0x36);
+        }
     }
 }
 
 BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
-    u32 big[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
+    Letter big;
     u8 c;
     BOOL r;
-    new (big) Letter();
     c = 0;
-    void *o = PlayerData_GetCurrent();
+    PlayerData *o = PlayerData_GetCurrent();
     c = idx;
-    Ns_020874d8::Letter_ComposeFromMail(big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(o));
-    ((LetterView *)(big))->setPresent(*v, 1);
-    if (LetterDelivery_QueueOutgoing(big, 0)) {
+    Letter_ComposeFromMail((LetterView *)&big, &c, (void *)"sp_npc_insurance", data_020e0c4c, data_020e0c54, o->getPlayerId());
+    ((LetterView *)&big)->setPresent(*v, 1);
+    if (LetterDelivery_QueueOutgoing(&big, 0)) {
         r = TRUE;
     } else {
         r = FALSE;
     }
-    ((Letter *)(big))->Letter::~Letter();
     return r;
 }
 
 void PlayerSpNpcRecord::sendInsuranceLetters() {
-    u32 bufA[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
-    u32 bufB[HOST_SIZED(0x20, MsgString9B) / 4] HOST_ALIGN8;
     u16 h[3];
     s32 r6;
-    _ZN11MsgString25C1Ev(bufA);
+    MsgString25 bufA;
     void *obj = PlayerData_GetCurrent();
-    new (bufB) MsgString9B();
+    MsgString9B bufB;
     PlayerSpNpcRecord *r7 = (PlayerSpNpcRecord *)((PlayerData *)(obj))->getSpNpcRecord();
     if (((PlayerData *)(obj))->testFlag(0x17)) {
         if (((PlayerData *)(obj))->testFlag(0x19)) {
             h[0] = 0x1492;
-            s32 r = Ns_020874d8::Random_GlobalBelow(2);
+            s32 r = Random_GlobalBelow(2);
             if (sendInsuranceLetter(r, &h[0])) {
-                Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x19);
+                ((PlayerData *)obj)->clearFlag(0x19);
             }
         }
         if (((PlayerData *)(obj))->testFlag(0x1a)) {
             h[1] = 0x1492;
-            s32 r = Ns_020874d8::Random_GlobalBelow(2);
+            s32 r = Random_GlobalBelow(2);
             if (sendInsuranceLetter(r + 2, &h[1])) {
-                Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x1a);
+                ((PlayerData *)obj)->clearFlag(0x1a);
             }
         }
     }
     if (((PlayerData *)(obj))->testFlag(0x18)) {
         if (r7->getInsuranceClaims() >= 1) {
-            String_FormatNumber(bufA, r7->getInsuranceClaims(), 10, 0, 0, 0);
-            MailText_SetSlot(3, bufA);
-            r6 = Ns_020874d8::Random_GlobalBelow(2) + 4;
+            String_FormatNumber(&bufA, r7->getInsuranceClaims(), 10, 0, 0, 0);
+            MailText_SetSlot(3, &bufA);
+            r6 = Random_GlobalBelow(2) + 4;
             u32 cnt = r7->getInsuranceClaims();
             if (cnt >= 10) {
                 cnt = 10;
                 r6 = 6;
             }
-            String_FormatNumber(bufA, cnt * 100, 10, 0, 0, 0);
-            MailText_SetSlot(4, bufA);
+            String_FormatNumber(&bufA, cnt * 100, 10, 0, 0, 0);
+            MailText_SetSlot(4, &bufA);
             h[2] = cnt + 0x1491;
             if (sendInsuranceLetter(r6, &h[2])) {
                 insuranceClaims = 0;
             }
         }
     }
-    ((MsgString9B *)(bufB))->MsgString9B::~MsgString9B();
-    _ZN11MsgString25D1Ev(bufA);
 }
 
 extern "C" void PlayerDailyTalkFlags_Construct() {}
@@ -853,7 +479,7 @@ extern "C" void PlayerDailyTalkFlags_Construct() {}
 extern "C" void PlayerDailyTalkFlags_Destruct() {}
 
 void PlayerDailyTalkFlags::clearAll() {
-    Ns_020874d8::MI_CpuFill8(flags, 0, 8);
+    MI_CpuFill8(flags, 0, 8);
 }
 
 void PlayerDailyTalkFlags::setDate(u8 *src) {
@@ -884,7 +510,7 @@ void PlayerDailyTalkFlags::set(u32 i) {
     if (w < 2) {
         flags[w] = *(volatile u32 *)&flags[w] | (1 << b);
     }
-    Ns_020874d8::Clock_GetDate(tmp);
+    Clock_GetDate(tmp);
     setDate(tmp);
 }
 
@@ -901,16 +527,17 @@ extern "C" void DramaRecord_Construct() {}
 extern "C" void DramaRecord_Destruct() {}
 
 extern "C" void DramaRecord_Clear(void *a) {
-    Ns_020874d8::MI_CpuFill8(a, 0xff, 1);
+    MI_CpuFill8(a, 0xff, 1);
 }
 
 extern "C" void DramaRecord_GetLastPart(void *a, void *b) {
-    Ns_020874d8::MI_CpuCopy8(a, b, 1);
+    MI_CpuCopy8(a, b, 1);
 }
 
-extern "C" void DramaRecord_SetLastPart(s32 a, void *b) {
-    Ns_020874d8::Clock_GetDate((void *)(a + 1));
-    Ns_020874d8::MI_CpuCopy8(b, (void *)a, 1);
+extern "C" void DramaRecord_SetLastPart(void *a, void *b) {
+    u8 *rec = (u8 *)a;
+    Clock_GetDate(rec + 1);
+    MI_CpuCopy8(b, rec, 1);
 }
 
 extern "C" u8 *DramaRecord_GetDate(u8 *p) {
@@ -1025,14 +652,12 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
             }
             break;
         case 3:
-            Unk_020874e8_K k;
-            k = UNK_020874E8_K;
-            if (NookShop_GetLevel((u8 *)((u32)gSaveData + k)) == 3) {
+            if (NookShop_GetLevel(gSaveData.nookShop) == 3) {
                 return TRUE;
             }
             break;
         case 1:
-            if (((PlayerData *)(o))->testFlag(8) || ((MuseumData *)(data_021ed0a0))->isComplete()) {
+            if (((PlayerData *)(o))->testFlag(8) || ((MuseumData *)gSaveData.museum)->isComplete()) {
                 return TRUE;
             }
             break;
@@ -1047,24 +672,24 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
 }
 
 extern "C" void *LostChildRecord_Construct(void *p) {
-    TownId_Construct(p);
+    TownId_Construct();
     return p;
 }
 
 extern "C" void *LostChildRecord_Destruct(void *p) {
-    TownId_Destruct(p);
+    TownId_Destruct();
     return p;
 }
 
 extern "C" void LostChild_AdvanceDays(s32 n) {
     if (n >= 1) {
-        u8 *const g = gSaveData;
-        s32 v = ((LostChildRecord *)data_021ed31a)->getDaysLeft() - n;
+        LostChildRecord *const g = (LostChildRecord *)gSaveData.lostChild;
+        s32 v = g->getDaysLeft() - n;
         if (v < 0) v = 0;
         if (v <= 0) {
-            ((LostChildRecord *)(g + 0x15fca))->clear();
+            g->clear();
         } else {
-            ((LostChildRecord *)(g + 0x15fca))->setDaysLeft((u8)v);
+            g->setDaysLeft((u8)v);
         }
         LostChild_LoadFromTown();
     }
@@ -1075,7 +700,7 @@ extern "C" BOOL LostChild_IsKatieDue() {
     if (c != 0) {
         LostChildRecord *p = (LostChildRecord *)((PlayerData *)(c))->getLostChildRecord();
         if (p->isKaitlinRole() == 0) {
-            if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
+            if (Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
@@ -1086,32 +711,32 @@ extern "C" BOOL LostChild_IsKaitlinDue() {
     if (c != 0) {
         LostChildRecord *p = (LostChildRecord *)((PlayerData *)(c))->getLostChildRecord();
         if (p->isKaitlinRole() == 1) {
-            if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
+            if (Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
 }
 
 extern "C" void LostChild_SaveToTown() {
-    u8 *const g = gSaveData;
+    u8 *const g = gSaveData.lostChild;
     void *c = PlayerData_GetCurrent();
     if (c != 0 && g != 0) {
-        Ns_02086b7c::MI_CpuCopy8(((PlayerData *)(c))->getLostChildRecord(), g + 0x15fca, 12);
+        MI_CpuCopy8(((PlayerData *)(c))->getLostChildRecord(), g, 12);
     }
 }
 
 extern "C" void LostChild_LoadFromTown() {
-    u8 *const g = gSaveData;
+    u8 *const g = gSaveData.lostChild;
     void *a = PlayerData_GetCurrent();
     if (a != 0 && g != 0) {
         void *b = ((PlayerData *)(a))->getLostChildRecord();
-        Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
-        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) ((PlayerData *)(a))->clearFlag(0x33);
+        MI_CpuCopy8(g, b, 12);
+        if (Math_IsInRange(((LostChildRecord *)g)->getDaysLeft(), 1, 7) == 0) ((PlayerData *)(a))->clearFlag(0x33);
     }
 }
 
 void LostChildRecord::clear() {
-    TownId_Clear(this);
+    TownId_Clear(getTownId());
     daysLeft = 0;
     kaitlinRole = 0;
     escorting = 0;
@@ -1171,7 +796,7 @@ void BlancaFaceRecord::setConcept(u32 v) { concept = v; }
 u8 BlancaFaceRecord::getConcept() { return concept; }
 
 BOOL BlancaFaceRecord::isBlancaDue() {
-    if (((SaveData *)(gSaveData))->testFlag(0x13) == 0 && visitState == 2) return TRUE;
+    if (gSaveData.testFlag(0x13) == 0 && visitState == 2) return TRUE;
     return FALSE;
 }
 
@@ -1219,7 +844,7 @@ void KatieVisitState::pickKatiePos() {
         u32 *tbl = sKatieSpotRows;
         s32 x, y;
         MI_CpuFill8(tbl, 0, 0x80);
-        Ns_02086b7c::FieldUnit_FromBlockUnit(&bx, &by, 2, 2, 0, 0);
+        FieldUnit_FromBlockUnit(&bx, &by, 2, 2, 0, 0);
         y = 0;
         do {
             x = 0;
@@ -1234,7 +859,7 @@ void KatieVisitState::pickKatiePos() {
             y++;
         } while (y < 32);
         if (cnt > 0) {
-            s32 x2, y2; s32 r = Ns_02086b7c::Random_GlobalBelow(cnt);
+            s32 x2, y2; s32 r = Random_GlobalBelow(cnt);
             tbl = sKatieSpotRows;
             y2 = 0;
             goto testy2;
@@ -1245,7 +870,7 @@ loopx2:
             if (((tbl[0] >> x2) & 1) != 0) {
                 if (r == 0) {
                     VecFx32 v;
-                    Ns_02086b7c::FieldPos_FromUnitCenter(&v, bx + x2, by + y2);
+                    FieldPos_FromUnitCenter(&v, bx + x2, by + y2);
                     setPos(&v);
                     goto after;
                 }
@@ -1410,7 +1035,7 @@ test1:
     if (k <= limit) goto loop1;
 done1:
     if (cnt > 0) {
-        r = Ns_02086b7c::Random_GlobalBelow(cnt);
+        r = Random_GlobalBelow(cnt);
         bi = 0; ii = 0;
         goto test2;
 loop2:
@@ -1435,9 +1060,9 @@ fail:
     return 0;
 }
 
-BOOL PeteFallState::pickFallPos(s32 px, s32 flip) {
+BOOL PeteFallState::pickFallPos(VecFx32 *px, s32 flip) {
     s32 dir;
-    Unk_02086c04_Map *map = (Unk_02086c04_Map *)gSceneBlockMap;
+    BlockMap *map = gSceneBlockMap;
     if (map == 0) {
         unmarkFallPos();
         return FALSE;
@@ -1445,9 +1070,8 @@ BOOL PeteFallState::pickFallPos(s32 px, s32 flip) {
     s32 f1, f2, w, h;
     Vec2 *sel = 0;
     s32 sx = 0, sy = 0;
-    s32 *dims = &map->w;
-    w = dims[0];
-    h = dims[1];
+    w = map->unitsX;
+    h = map->unitsZ;
     Vec2 p1, p2;
     u16 buf1[4], buf2[4];
     VecFx32 v;
@@ -1482,7 +1106,7 @@ loop:
     }
     if (f1 != 0) {
         if (f2 != 0) {
-            if (Ns_02086b7c::Random_GlobalBelow(10) & 1) {
+            if (Random_GlobalBelow(10) & 1) {
                 sel = &p2;
                 goto done;
             }
@@ -1499,9 +1123,9 @@ test:
     if (b < w) goto loop;
 done:
     if (sel != 0) {
-        Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->x, sel->y);
+        FieldPos_FromUnitCenter(&v, sel->x, sel->y);
         setPos(&v);
-        facing = Ns_02086b7c::Random_GlobalBelow(4);
+        facing = Random_GlobalBelow(4);
         markFallPos();
         return TRUE;
     }
@@ -1516,8 +1140,8 @@ void VisitorSpawnFlags::destruct() {}
 void VisitorSpawnFlags::clear() { MI_CpuFill8(this, 0, 1); }
 
 void VisitorSpawnFlags::rollGulliverSpot() {
-    gulliverSpot = Ns_02086b7c::Random_GlobalBelow(3);
-    gulliverFacing = Ns_02086b7c::Random_GlobalBelow(4);
+    gulliverSpot = Random_GlobalBelow(3);
+    gulliverFacing = Random_GlobalBelow(4);
     gulliverSpotRolled = 1;
 }
 
@@ -1541,9 +1165,9 @@ void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, VecFx32 *p) {
     t.y = 0;
     t.z = z;
     FieldPos_SnapToUnitCenter(v, &t);
-    if (data_021e58a6.getPartCount() >= 5) {
+    if (((GulliverQuest *)gSaveData.gulliverQuest)->getPartCount() >= 5) {
         *out = sGulliverRepairedAngles[gulliverSpot];
-    } else if (data_021e58a6.isStarted()) {
+    } else if (((GulliverQuest *)gSaveData.gulliverQuest)->isStarted()) {
         *out = 0;
     } else {
         *out = gulliverFacing << 14;
@@ -1590,7 +1214,7 @@ BOOL VisitorPos::pickFreeInAcre(VecFx32 *out, s32 *pos, void *ctx) {
         }
     }
     if (n > 0) {
-        s32 r = Ns_02086204::Random_GlobalBelow(n);
+        s32 r = Random_GlobalBelow(n);
         for (x = 0; x < 16; x++) {
             u16 *qq;
             for (y = 0, qq = &arr[x]; y < 16; y++) {
@@ -1630,7 +1254,7 @@ BOOL VisitorPos::pickRandomPos() {
             }
         }
         if (n > 0) {
-            s32 r = Ns_02086204::Random_GlobalBelow(n);
+            s32 r = Random_GlobalBelow(n);
             for (xy[1] = 1; xy[1] < h - 1; xy[1]++) {
                 for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
                     if ((buf[xy[1] - 1] >> (xy[0] - 1)) & 1) {
@@ -1711,7 +1335,7 @@ u8 TurnipMarket::calcHighPrice() {
 }
 
 void TurnipMarket::generateSmallSpike() {
-    s32 n = Ns_02086204::Random_GlobalBelow(6) + 7;
+    s32 n = Random_GlobalBelow(6) + 7;
     fillDecreasing(2, n - 3);
     prices[n - 3] = calcMidPrice();
     prices[n - 2] = calcMidPrice();
@@ -1729,7 +1353,7 @@ s32 TurnipMarket::rollPeakPrice() {
 
 void TurnipMarket::generateWeek(s32 flag) {
     if (pattern != 0xff) {
-        s32 r = Ns_02086204::Random_GlobalBelow(0x65);
+        s32 r = Random_GlobalBelow(0x65);
         switch (pattern) {
         case 0:
             if (r < 0x1e) pattern = 1;
@@ -1754,11 +1378,11 @@ void TurnipMarket::generateWeek(s32 flag) {
         }
         if (flag != 0) pattern = 2;
     } else {
-        pattern = Ns_02086204::Random_GlobalBelow(4);
+        pattern = Random_GlobalBelow(4);
     }
     peakPrice = 0;
     MI_CpuFill8(&prices[0], 0, 0xe);
-    prices[0] = Ns_02086204::Random_GlobalBelow(0x15) + 0x5a;
+    prices[0] = Random_GlobalBelow(0x15) + 0x5a;
     prices[1] = prices[0];
     switch (pattern) {
     case 0:
@@ -1776,7 +1400,7 @@ void TurnipMarket::generateWeek(s32 flag) {
         prices[13] = calcMidPrice();
         break;
     case 1: {
-        s32 n = Ns_02086204::Random_GlobalBelow(4) + 8;
+        s32 n = Random_GlobalBelow(4) + 8;
         prices[n] = rollPeakPrice();
         fillDecreasing(2, n - 2);
         prices[n - 1] = calcHighPrice();
@@ -1885,7 +1509,7 @@ void TurnipMarket::checkTurnipExpiry() {
     }
     if (DateTime_Compare(&l.b, &l.a, 0x38) == 1) {
         if (DateTime_DiffDays(&l.a, &l.b) >= 7) {
-            ((SaveData *)(gSaveData))->clearFlag(4);
+            gSaveData.clearFlag(4);
             setPurchaseDate(&l.b);
         }
     }
@@ -1916,7 +1540,7 @@ ReddLastSale::~ReddLastSale() {
 }
 
 void ReddLastSale::clear() {
-    Ns_02086204::_ZN8PlayerId5clearEv(this);
+    ((PlayerId *)this)->clear();
     item = 0xfff1;
 }
 
@@ -2020,7 +1644,7 @@ void RoostGuestRoll::roll() {
         if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
         else if (Math_IsInRange(b, 0x4b, 0x55)) afternoonGuest = 1;
         else afternoonGuest = 2;
-        if (Math_IsInRange(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) lateGuest = 1;
+        if (Math_IsInRange(c, 0, 0x1d) && NookShop_GetLevel(gSaveData.nookShop) == 3) lateGuest = 1;
         else lateGuest = 0;
         break;
     }
@@ -2037,11 +1661,11 @@ BOOL RoostGuestRoll::hasLateGuest() { if (lateGuest) return TRUE; return FALSE; 
 
 void ContestRecord::postResultNotice() {
     if (((PlayerId *)(this))->isValid() == 0 && ((VillagerId *)(&holderVillager))->isValid() == 0) {
-        ((SaveData *)(gSaveData))->clearFlag(0xf);
+        gSaveData.clearFlag(0xf);
         return;
     }
     if (kind != 1 && kind != 2 && kind != 3) return;
-    if (((SaveData *)(gSaveData))->testFlag(0xf) == 0) return;
+    if (gSaveData.testFlag(0xf) == 0) return;
     MsgString9B rec;
     if (((PlayerId *)(this))->isValid() != 0) ((PlayerId *)(this))->getNameString((MsgString *)(&rec));
     else ((VillagerId *)(&holderVillager))->getName(&rec);
@@ -2074,7 +1698,7 @@ void ContestRecord::postResultNotice() {
     if ((u8)(kind + 0xff) <= 1) k = Random_GlobalBelow(3);
     else k = Random_GlobalBelow(2);
     Bbs_PostMsgToday(k, sContestResultBbsFiles[kind]);
-    ((SaveData *)(gSaveData))->clearFlag(0xf);
+    gSaveData.clearFlag(0xf);
 }
 
 void ContestRecord::sendResultLetters() {
@@ -2100,7 +1724,7 @@ void ContestRecord::sendResultLetters() {
     if (r6 == -1 && DateTime_DiffDays(&l.now, l.contestTime) >= 10) {
     reset:
         clear();
-        ((SaveData *)(gSaveData))->clearFlag(0xf);
+        gSaveData.clearFlag(0xf);
         return;
     }
     if (kind != 3) {
@@ -2157,8 +1781,8 @@ void ContestRecord::sendResultLetters() {
             if (kind == 1) ok = ((PlayerSpNpcRecord *)(r7))->hasEnteredFishingTourney();
             else ok = ((PlayerSpNpcRecord *)(r7))->hasEnteredBugOff();
         } else {
-            u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
-            if ((holderPlayer.townId == p[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), p + 1, 8) == 0 && ((PlayerId *)(this))->equals((PlayerId *)(p)) != 0) || ((PlayerSpNpcRecord *)(r7))->hasFestivalGift() != 0) {
+            PlayerId *p = ((PlayerData *)r4)->getPlayerId();
+            if ((holderPlayer.townId == p->townId && memcmp(holderPlayer.townName, p->townName, 8) == 0 && ((PlayerId *)(this))->equals(p) != 0) || ((PlayerSpNpcRecord *)(r7))->hasFestivalGift() != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
                 ((PlayerId *)(((PlayerData *)(r4))->getPlayerId()))->getNameString((MsgString *)(&rec));
                 ((PlayerSpNpcRecord *)(r7))->clearFestivalGift();
@@ -2168,8 +1792,8 @@ void ContestRecord::sendResultLetters() {
         }
         if (ok == 0) continue;
         if ((u8)(kind + 0xff) <= 1) {
-            u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
-            if (holderPlayer.townId == q[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), q + 1, 8) == 0 && ((PlayerId *)(this))->equals((PlayerId *)(q)) != 0) {
+            PlayerId *q = ((PlayerData *)r4)->getPlayerId();
+            if (holderPlayer.townId == q->townId && memcmp(holderPlayer.townName, q->townName, 8) == 0 && ((PlayerId *)(this))->equals(q) != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
             } else {
                 l.letterVariant = Random_GlobalBelow(3) + 3;
@@ -2177,10 +1801,10 @@ void ContestRecord::sendResultLetters() {
             ((PlayerId *)(((PlayerData *)(r4))->getPlayerId()))->getNameString((MsgString *)(&rec));
             MailText_SetSlot(4, &rec);
         }
-        u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
-        Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
-        u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
-        if ((holderPlayer.townId == x[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), x + 1, 8) == 0 && ((PlayerId *)(this))->equals((PlayerId *)(x)) != 0) || kind == 3) {
+        PlayerId *w = ((PlayerData *)r4)->getPlayerId();
+        Letter_ComposeFromMail((LetterView *)&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
+        PlayerId *x = ((PlayerData *)r4)->getPlayerId();
+        if ((holderPlayer.townId == x->townId && memcmp(holderPlayer.townName, x->townName, 8) == 0 && ((PlayerId *)(this))->equals(x) != 0) || kind == 3) {
             l.trophy = 0x3878;
             if (kind == 2) l.trophy = 0x387c;
             else if (kind == 3) l.trophy = 0x3880;
@@ -2222,7 +1846,6 @@ extern const u8 data_020cf328[0x230];
 extern u8 data_020e0c4c[4];
 extern const VecXZ sGulliverSpotOffsets[3];
 extern u8 data_020e0c50[4];
-extern void *sContestResultMailFiles[4];
 extern u8 data_020e0c48[4];
 extern u8 data_020e0c54[4];
 extern u8 data_020e0c44[4];
@@ -2296,7 +1919,7 @@ char data_020e0c58[] = "ev_insect";
 
 char data_020e0c98[] = "bbs_gardening";
 
-uptr sContestResultBbsFiles[4] = {(uptr)data_020e0c7c, (uptr)data_020e0c7c, (uptr)data_020e0c64, (uptr)data_020e0c98};
+char *sContestResultBbsFiles[4] = {data_020e0c7c, data_020e0c7c, data_020e0c64, data_020e0c98};
 
 void *sContestResultMailFiles[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
 

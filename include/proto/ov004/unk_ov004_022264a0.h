@@ -4,81 +4,15 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_022264a0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct ObjA;
 #ifdef __cplusplus
+#include "gfx/AnimModel.h"
+#include "room/RoomObjRes.h"
 #include "types.h"
 class CafeCoffeeSet;
-class ObjB;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d938
-extern void *data_ov004_0224d938[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8e0
-extern void *data_ov004_0224d8e0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d918
-extern void *data_ov004_0224d918[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d908
-extern void *data_ov004_0224d908[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d958
-extern void *data_ov004_0224d958[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d950
-extern void *data_ov004_0224d950[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d948
-extern void *data_ov004_0224d948[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d940
-extern void *data_ov004_0224d940[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8d0
-extern void *data_ov004_0224d8d0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8e8
-extern void *data_ov004_0224d8e8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d910
-extern void *data_ov004_0224d910[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d930
-extern void *data_ov004_0224d930[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d960
-extern void *data_ov004_0224d960[2];
-#endif
-#ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateMatrices
-void CafeCoffeeSet_UpdateMatrices(void *ov);
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d900
-extern void *data_ov004_0224d900[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8f8
-extern void *data_ov004_0224d8f8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8f0
-extern void *data_ov004_0224d8f0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d928
-extern void *data_ov004_0224d928[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d920
-extern void *data_ov004_0224d920[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8d8
-extern void *data_ov004_0224d8d8[2];
-#endif
-#ifndef PROTO_LOCAL_sCafeCoffeeSet
-extern void *volatile sCafeCoffeeSet;
-#endif
-#ifndef PROTO_LOCAL_data_ov004_0224d8c8
-extern void *data_ov004_0224d8c8[2];
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_SyncToBrewster
 void CafeCoffeeSet_SyncToBrewster(void);
@@ -95,59 +29,65 @@ void CafeCoffeeSet_SetFlagEF8(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sCafeCoffeeSet
+extern CafeCoffeeSet *volatile sCafeCoffeeSet;
+#endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_Create
 CafeCoffeeSet *CafeCoffeeSet_Create();
 #endif
+#ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateMatrices
+void CafeCoffeeSet_UpdateMatrices(CafeCoffeeSet *o);
+#endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_ChangeState
-BOOL CafeCoffeeSet_ChangeState(void *ov, s32 n);
+BOOL CafeCoffeeSet_ChangeState(CafeCoffeeSet *o, s32 n);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateState
-void CafeCoffeeSet_UpdateState(ObjB *o);
+void CafeCoffeeSet_UpdateState(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState00
-BOOL CafeCoffeeSet_EnterState00(ObjB *o);
+BOOL CafeCoffeeSet_EnterState00(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateState00
-void CafeCoffeeSet_UpdateState00(ObjB *o);
+void CafeCoffeeSet_UpdateState00(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState01
-BOOL CafeCoffeeSet_EnterState01(ObjB *o);
+BOOL CafeCoffeeSet_EnterState01(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateState01
-void CafeCoffeeSet_UpdateState01(ObjB *o);
+void CafeCoffeeSet_UpdateState01(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState02
-BOOL CafeCoffeeSet_EnterState02(ObjB *o);
+BOOL CafeCoffeeSet_EnterState02(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateState02
-void CafeCoffeeSet_UpdateState02(ObjB *o);
+void CafeCoffeeSet_UpdateState02(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState03
-BOOL CafeCoffeeSet_EnterState03(ObjB *o);
+BOOL CafeCoffeeSet_EnterState03(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState04
-BOOL CafeCoffeeSet_EnterState04(ObjA *o);
+BOOL CafeCoffeeSet_EnterState04(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState05
-BOOL CafeCoffeeSet_EnterState05(void);
+BOOL CafeCoffeeSet_EnterState05(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState06
-BOOL CafeCoffeeSet_EnterState06(void);
+BOOL CafeCoffeeSet_EnterState06(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState08
-BOOL CafeCoffeeSet_EnterState08(ObjA *o);
+BOOL CafeCoffeeSet_EnterState08(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_EnterState09
-BOOL CafeCoffeeSet_EnterState09(void);
+BOOL CafeCoffeeSet_EnterState09(CafeCoffeeSet *o);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_LoadPart
-void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x);
+void CafeCoffeeSet_LoadPart(CafeCoffeeSet *o, u32 idx, const char *id, const char *x);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_ReleasePart
-void CafeCoffeeSet_ReleasePart(void *ov, u32 idx);
+void CafeCoffeeSet_ReleasePart(CafeCoffeeSet *o, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_InitPartAnim
-void CafeCoffeeSet_InitPartAnim(void *ov, u32 idx);
+void CafeCoffeeSet_InitPartAnim(CafeCoffeeSet *o, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_SetState00
 s32 CafeCoffeeSet_SetState00(void);
@@ -189,7 +129,7 @@ BOOL CafeCoffeeSet_IsAnim0BAtFrame9(void);
 BOOL CafeCoffeeSet_IsAnim0CDone(void);
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_SwitchAnim
-void CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8);
+void CafeCoffeeSet_SwitchAnim(CafeCoffeeSet *self, u32 id, AnimModel *m, RoomObjRes *res, u8 a5, s32 a6, u32 a7, u32 a8);
 #endif
 }
 #endif

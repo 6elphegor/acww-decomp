@@ -111,7 +111,7 @@ public:
     void clearRequests();
     PlayerActionRequest *getRequest(s32 i);
     BOOL pushRequest(PlayerActionRequest *r);
-    BOOL getRemoteTransform(u8 *a, s32 *b, s32 *c, u16 *d);
+    BOOL getRemoteTransform(u8 *scene, s32 *x, s32 *z, s16 *angle);
     u8 isLocomotionAction(u32 i);
 
     // method set 0x02006d14..
@@ -256,7 +256,7 @@ public:
     void updateFootstepFx();
     s32 turnAwayFromCamera(s32 a);
     s32 turnToCamera(s32 a);
-    s32 turnToward(s32 a);
+    void turnToward(s32 a);
     s32 getHeldToolKind();
     s32 getHeldHoldableIndex();
     BOOL requestByFieldAnswer(s32 a, s32 b);
@@ -281,10 +281,10 @@ public:
     void setShirtTexture(void *p);
     void applySkinHairPalette(s32 a, s32 b);
     s32 getTargetWalkSpeed();
-    void applyHoldPose(u16 *p, s32 b, void *c);
-    void applyHeldItemPose(s32 b, void *c);
+    void applyHoldPose(u16 *p, s32 b, u32 blendFrames);
+    void applyHeldItemPose(s32 b, u32 blendFrames);
     // method set 0x02008040..
-    void netHoldUpItem(void *arg);
+    void netHoldUpItem(s32 arg);
     void setupHoldUpItem();
     BOOL requestHoldUpItem(u16 *v, u32 a, u32 b);
     void mainErrorMessage();

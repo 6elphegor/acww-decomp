@@ -4,6 +4,8 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 
+class Actor;
+
 // 0x40-byte collision cylinder in the global collider list (vtable 0x020e0d00); base of StaticCollider and
 // ActorFollowCollider. Defined in src/main/unk_02088b98.cpp.
 class ActorCollider {
@@ -18,7 +20,7 @@ public:
     BOOL isHitByGroup(u32 mask);
     BOOL canCollideWith(ActorCollider *o);
     void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
-    s32 getHitActor();
+    Actor *getHitActor();  // the actor of the collider hit last (NULL: none)
     BOOL isPushedFromAngle(s32 a);
 
     /* 0x04 */ s32 radius;

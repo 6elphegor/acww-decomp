@@ -1805,7 +1805,7 @@ BOOL FieldVillager::drawDefault() {
     if (((NpcActor *)(this))->NpcActor::onDraw() == 0) {
         return FALSE;
     }
-    ((HeldToolModel *)((&heldTool)))->draw((Unk_02006d14 *)(this));
+    ((HeldToolModel *)((&heldTool)))->draw(this);
     return TRUE;
 }
 
@@ -3902,8 +3902,8 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(FieldVillager *o) {
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     if (((MsgString *)(&s1))->equals((MsgString *)(&s2)) != 0) {
-        u8 *r6 = static_cast<u8 *>(static_cast<VillagerData *>(a)->getVillagerId());
-        u8 *r7 = static_cast<u8 *>(static_cast<VillagerData *>(b)->getVillagerId());
+        u8 *r6 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(a)->getVillagerId());
+        u8 *r7 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(b)->getVillagerId());
         b = 0;
         if (gSaveVillagers != NULL) {
             void *e;
@@ -3912,7 +3912,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(FieldVillager *o) {
             for (i = 0; i < 8; i++) {
                 e = SaveVillagers_Get(gSaveVillagers, i);
                 if (e != 0) {
-                    u8 *q = static_cast<u8 *>(static_cast<VillagerData *>(e)->getVillagerId());
+                    u8 *q = reinterpret_cast<u8 *>(static_cast<VillagerData *>(e)->getVillagerId());
                     if (((VillagerId *)(q))->isValid() != 0) {
                         BOOL t1 = FALSE, t2 = FALSE;
                         u32 t = *(u16 *)q;
@@ -3977,8 +3977,8 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     if (Unk_ov068_02262c20_InRange(static_cast<VillagerDataProfileView *>(b)->getShirt()) && ((Pattern *)((u8 *)static_cast<VillagerData *>(b)->getPattern()))->equals((Pattern *)(rec)) != 0) {
-        u8 *r7 = static_cast<u8 *>(static_cast<VillagerData *>(a)->getVillagerId());
-        u8 *p10 = static_cast<u8 *>(static_cast<VillagerData *>(b)->getVillagerId());
+        u8 *r7 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(a)->getVillagerId());
+        u8 *p10 = reinterpret_cast<u8 *>(static_cast<VillagerData *>(b)->getVillagerId());
         ok = FALSE;
         b = 0;
         if (gSaveVillagers != NULL) {
@@ -3988,7 +3988,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
             for (i = 0; i < 8; i++) {
                 e = SaveVillagers_Get(gSaveVillagers, i);
                 if (e != 0) {
-                    u8 *q = static_cast<u8 *>(static_cast<VillagerData *>(e)->getVillagerId());
+                    u8 *q = reinterpret_cast<u8 *>(static_cast<VillagerData *>(e)->getVillagerId());
                     if (((VillagerId *)(q))->isValid() != 0) {
                         BOOL s1 = FALSE, s2 = FALSE;
                         u32 t = *(u16 *)q;
@@ -4959,7 +4959,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep0(FieldVillager *o) {
         } else if ((((u32)o->model.curFrame << 4) >> 16) < 8) {
             s32 v = o->heldTool.getAnimSpeed();
             if ((((u32)o->model.curFrame << 4) >> 16) == 7) {
-                o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), (void *)(0), 7);
+                o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), 0, 7);
             }
             if (v != 0x1000) {
                 v += 0x249;
@@ -4976,7 +4976,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep1(FieldVillager *o) {
     using namespace ns_02260f90;
     if (o->animCtrl.getAnimId(0) == 0xcd) {
         if (o->actionCtrl.isActionDone() != 0) {
-            o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), (void *)(0), 7);
+            o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), 0, 7);
             step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
@@ -5196,7 +5196,7 @@ void FieldVillagerAiStates::pitfallStep1(FieldVillager *o) {
             }
             Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x7e8, 0x7f, 0);
             o->heldTool.playPitfallHoleAnim(t, 1);
-            o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), (void *)(0x128), 3);
+            o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), 0x128, 3);
             step = 2;
             GroundInfo_Destruct(obj);
         }
@@ -5292,7 +5292,7 @@ void FieldVillagerAiStates::pitfallStep4(FieldVillager *o) {
         if (o->actionCtrl.isActionDone() != 0) {
             o->collider.groups &= ~2;
             step = 5;
-            o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), (void *)(0), 3);
+            o->animCtrl.playHoldItemPose((NpcActor *)(o), (u16 *)(&o->heldTool.heldItem), 0, 3);
             FieldVillagerAi_ChangeState(this, o, 0);
         }
     }

@@ -8,8 +8,9 @@
 #include "gfx/DebugColor.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "gfx/BgModelCache.h"
-#define PROTO_LOCAL_BgMgt_GetEntry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_FindSoundSrc  // declared below: the shared prototype conflicts with the calls here
+#include "field/GroundSoundSrc.h"
+#include "snd/RainSndChannel.h"
+#include "sys/new.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/ov003/unk_ov003_02217908.h"
 
@@ -21,33 +22,13 @@
 
 
 
-struct GroundSoundSrc {
-    u8 found;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-    s32 distance;
-    s32 kind;
-};
-
-struct Unk_ov003_022179b8_Ent {
-    s32 kind;
-    s32 x;
-    s32 z;
-};
-
 // 4-byte colour constructors (unreferenced except by __sinit)
 extern "C" {
 extern void *gSceneBlockMap;
 extern void *gCamera;
 extern s32 data_020c8cbc;
-extern u8 data_0213b91c[];
-extern u8 data_0213b938[];
 
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-}
-Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
-extern "C" {
 }
 
 extern "C" {
@@ -61,9 +42,6 @@ DebugColor data_ov003_02235464(20, 24, 24, 31);
 }
 
 // ---- functions ----
-extern "C" {
-void FieldGround_ResetSoundSrc(GroundSoundSrc *r);
-}
 
 extern "C" BOOL FieldGround_DrawBackdrop(Model *p) {
     if (gCamera != 0) {
@@ -78,7 +56,7 @@ extern "C" BOOL FieldGround_ReleaseBackdrop(Model *p) {
     return TRUE;
 }
 
-extern "C" void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y) {
+extern "C" BgAcreModel *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y) {
     Unk_0204e858_Grid *g = (Unk_0204e858_Grid *)gSceneBlockMap;
     if (g != 0) {
         TownBlockCell *c;
@@ -95,7 +73,7 @@ extern "C" void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y) {
 }
 
 extern "C" void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y) {
-    BgAcreModel *s = (BgAcreModel *)FieldGround_GetBlockAcre(r, x, y);
+    BgAcreModel *s = FieldGround_GetBlockAcre(r, x, y);
     if (s != 0) {
         return s->bsd;
     }
@@ -120,17 +98,17 @@ extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, VecFx32
                 u32 i;
                 n = BgMgt_GetCount((s16 *)obj);
                 for (i = 0; i < n; i++) {
-                    Unk_ov003_022179b8_Ent e = BgMgt_GetEntry(obj, i);
-                    switch (e.kind) {
+                    VecFx32 e = BgMgt_GetEntry(obj, i); // x: the object's kind, y / z: its x / z in the block
+                    switch (e.x) {
                     case 5:
                     case 15:
                     case 17:
                     case 18: {
                         VecFx32 p;
-                        p.x = base.x + e.x;
+                        p.x = base.x + e.y;
                         p.y = 0;
                         p.z = base.z + e.z;
-                        FieldGround_ConsiderSoundSrc(out, Vec_DistXZ(&p, pos), &p, e.kind);
+                        FieldGround_ConsiderSoundSrc(out, Vec_DistXZ(&p, pos), &p, e.x);
                     }
                     }
                 }
@@ -142,9 +120,9 @@ extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, VecFx32
 
 extern "C" BOOL FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, VecFx32 *p, s32 k) {
     if (d < r->distance) {
-        r->posX = p->x;
-        r->posY = p->y;
-        r->posZ = p->z;
+        r->pos.x = p->x;
+        r->pos.y = p->y;
+        r->pos.z = p->z;
         r->distance = d;
         r->kind = k;
         r->found = 1;
@@ -158,16 +136,16 @@ extern "C" void FieldGround_EndSoundSrc() {
 
 extern "C" void FieldGround_ResetSoundSrc(GroundSoundSrc *r) {
     r->found = 0;
-    r->posX = 0;
-    r->posY = 0;
-    r->posZ = 0;
+    r->pos.x = 0;
+    r->pos.y = 0;
+    r->pos.z = 0;
     r->kind = 0x11;
     r->distance = data_020c8cbc << 3;
 }
 
-extern "C" s32 *FieldGround_GetSoundSrcPos(GroundSoundSrc *r) {
+extern "C" VecFx32 *FieldGround_GetSoundSrcPos(GroundSoundSrc *r) {
     if (r->found != 0) {
-        return &r->posX;
+        return &r->pos;
     }
     return 0;
 }
@@ -176,9 +154,9 @@ extern "C" s32 FieldGround_GetSoundSrcKind(GroundSoundSrc *r) {
     return r->kind;
 }
 
-extern "C" void FieldGround_InitEnvChannel(void *volatile *p) {
-    *p = data_0213b91c;
-    *p = data_0213b938;
+// the inline constructor of FieldGround's channel (it stores the base's vtable, then its own)
+extern "C" void FieldGround_InitEnvChannel(RainSndChannel *p) {
+    new (p) RainSndChannel;
 }
 
 extern "C" void FieldGround_DestroyEnvChannel() {
@@ -188,7 +166,7 @@ extern "C" void FieldGround_ResetEnvChannel(SndEnvChannel *p) {
     p->callReset();
 }
 
-extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, VecFx32 *v, void *a) {
+extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, VecFx32 *v, u32 a) {
     VecFx32 t;
     t.x = v->x;
     t.y = v->y;

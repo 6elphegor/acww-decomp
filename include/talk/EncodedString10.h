@@ -5,8 +5,7 @@
 #include "talk/EncodedString.h"
 
 // EncodedString with a 10-byte buffer (0x18 bytes). The text starts at 0x0e, in the tail padding of
-// EncodedString's attribute record. Defined in src/main/unk_02077ac4.cpp, which keeps its own declaration (vtable
-// emission order).
+// EncodedString's attribute record. Defined in src/main/unk_02077ac4.cpp.
 class EncodedString10 : public EncodedString {
 public:
     EncodedString10();

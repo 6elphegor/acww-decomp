@@ -5,23 +5,23 @@
 #include "item/ItemName.h"
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
+#include "field/LooseSnowballs.h"
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snowman_SendLetter  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_020e2eb8  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_020e2ebc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gLooseSnowballs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020af3f4.h"
+#include "proto/main/unk_020af514.h"
 
 
 extern "C" {
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 void Snowman_SendLetter(u32 a);
-extern u8 gLooseSnowballs[];
 extern const u16 sSnowmanPrizeItems[];
 extern u32 data_020e2eb8, data_020e2ebc;
 }
@@ -69,7 +69,7 @@ extern "C" void Snowman_SendPrizeLetter() {
     }
 }
 
-extern "C" u8 *LooseSnowballs_Get() { return gLooseSnowballs; }
+extern "C" LooseSnowballs *LooseSnowballs_Get() { return &gLooseSnowballs; }
 
 
 u32 data_020e2ebc = 0x11;

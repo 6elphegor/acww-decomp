@@ -734,7 +734,6 @@ FieldActions_Init
 FieldActions_Update
 FieldGround_OnBeachMaterial
 FieldGround_OnModelInit
-FieldGround_ResetSoundSrc
 FieldItemFx_Clear
 FieldItemFx_Finish
 FieldItemFx_InitBalloonDrop

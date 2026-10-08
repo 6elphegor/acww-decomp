@@ -132,7 +132,7 @@ public:
     u8 *getDayUpdateDate();
     s32 findUnusedSlot(s32 n);
     BOOL getOtherResidentName(void *p);
-    s32 pickOtherResident();
+    PlayerData *pickOtherResident();
     void setInventoryBackground(u16 *p);
     void *getInventoryBackground();
     void resetForNewTown();
