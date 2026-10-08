@@ -645,7 +645,8 @@ fixed-address executable, as its captures were taken). The guard variant (`--gua
     refs/heads/modern c792395e (non-PIE): with the heap fix alone, quick (pictures and sound), play, and under
     `ACWW_HIGHMEM=1` the town script (32 screenshots to frame 32000) and the continue run from the i386 save (8
     screenshots and the save file) identical; the PIE build with the fix identical to both, in runs at different
-    load addresses (ASLR on). `host_strict_errors.sh` 0.
+    load addresses (ASLR on). `host_strict_errors.sh` 0. All of it again after merging refs/heads/modern 83890c6a
+    (4.1-4.3): the same results.
 23. **3.4** Retire the i386 build as the reference: re-record the oracle from the x86-64 build. First make virtual time independent of code shape, so arm64 matches too. Today the 64-bit timing drifts by a frame or two after scene changes.
 
 ### Phase 4: platform layer and frontend (Linux first, about 1-2 weeks)
