@@ -119,7 +119,7 @@ def main():
                depfile="$out.d", deps="gcc", description="CC $in")
         n.rule("cxx", f"{args.cc} -x c++ {GAME_FLAGS} {CXX_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CXX $in")
-        n.rule("hostcc", f"{args.cc} {HOST_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
+        n.rule("hostcc", f"{args.cc} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
         n.rule("provides", "python3 tools/host_provides.py $in $out", description="PROVIDES $out")
         n.rule("hostas_S", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
@@ -192,10 +192,14 @@ def main():
         n.rule("hostas", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.build(str(build / "shared.o"), "hostas", str(build / "shared.s"))
         host_objs.append(str(build / "shared.o"))
-        # the variables in their original order (tools/host_order.py)
+        # the variables in their original order, each overlay's data, bss and constructors in ranges of their own,
+        # and the table of those ranges for modern/host/overlay.c (tools/host_order.py)
         n.rule("order", "python3 tools/host_order.py $in $out", description="ORDER $out")
         order_ld = str(build / "order.ld")
-        n.build(order_ld, "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
+        overlay_table = str(build / "overlay_table.c")
+        n.build([order_ld, overlay_table], "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
+        n.build(str(build / "overlay_table.o"), "hostcc", overlay_table, variables={"flags": "-Imodern/host"})
+        host_objs.append(str(build / "overlay_table.o"))
         # the game's operator new/new[] are mwcc's names (unsigned long); its code compiled here calls the x86 names
         # (unsigned int). Aliases inside the game object (made local with the C library names afterwards).
         n.rule("partial", f"ld -m {LD_EMU} -r -T $order --defsym=_Znwj=_Znwm --defsym=_Znaj=_Znam -o $out @$list @$wrap",

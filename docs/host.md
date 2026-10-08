@@ -59,7 +59,8 @@ that involves and the choice still open.
   ITCM 0x01ff8000, I/O 0x04000000, VRAM 0x06000000...) so that those addresses keep working unchanged. A 64-bit build
   needs the view classes and hardcoded offsets replaced by real member accesses first.
 - Overlays: on the host they are all linked into one program; loading an overlay becomes "reset its data and bss and
-  run its constructors". The shared-address thunks of the modern build (modern/ds/overlays.c) carry over.
+  run its constructors" (done: `modern/host/overlay.c`, see the status below). The shared-address thunks of the
+  modern build (modern/ds/overlays.c) carry over.
 
 ## What has to be provided
 
@@ -133,7 +134,7 @@ The runtime (`modern/host/`):
   to 0.5% faster or slower).
 
 The build (`tools/configure_host.py`): the game linked as one object, its variables in their original order
-(`tools/host_order.py`, `-fdata-sections -malign-data=abi`), DTCM's variables at 0x027e0000, its C library and
+(`tools/host_order.py`, `-fdata-sections -malign-data=abi`; each overlay's in a range of its own), DTCM's variables at 0x027e0000, its C library and
 operator new/delete names made local (`tools/host_localize.py`), the shared-overlay-address thunks for x86, gap data
 as C (`tools/host_gaps.py`).
 
@@ -184,6 +185,9 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
 - Data in the ROM's file formats keeps its 32-bit slots (the sound banks' wave archive links, offsets in G3D
   resources).
 - Hand-written varargs: `DS_VA_ARG` (`include/ds_stdarg.h`).
+- The ROM's overlay table: 32-byte records whose two .sinit pointers are 8 bytes each in the host's
+  `FSOverlayInfoHeader`; `FS_LoadOverlayInfo` copies the fields one by one (copied whole, the file id was left
+  unset and some overlays - 2, 3, 6 in the title demo - failed to load, unnoticed while constructors ran at start-up).
 - The save data (`gSaveData`, include/save/SaveData.h) is written to and read from the save file as it is in memory,
   so its records are plain data with the DS layout on every host, checked by `static_assert`s of their sizes and key
   offsets (SaveData, PlayerData, VillagerData / SaveVillagers, Letter and the letter containers, Pattern, TownState,
@@ -195,9 +199,14 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   Checked by cutting `gSaveData` out of `ACWW_RAMDUMP`s of both builds at the same frames of the scripted intro: the
   images differ only in content (random ids once the two runs' random numbers part, the bulletin board's default
   posts: the mail text builder's members are still DS-sized blobs, `include/talk/MailTextBuilder.h`), not in
-  layout. Neither build reaches the intro's first save yet (the i386 build crashes on arriving in town: ov009's
-  `sBuildingResources` still hold the title demo's freed resources, overlay data not being reset on reload - see
-  below; the x86-64 build stalls after the name entry: its name entry menu is never deleted).
+  layout. Neither build reaches the intro's first save yet. The i386 build crashed on arriving in town (ov009's
+  `sBuildingResources` still held the title demo's freed resources); with overlays reset on load it arrives in town
+  and goes through the town hall's tutorial, then stalls in `PMi_WaitBusy` (frame ~19300 of the script below). The
+  x86-64 build gets through both name entries with that script and loads the town (frame ~12430), then crashes in
+  `spl_calc` (particles, `EffectSplProc::onExecute`) at frame ~13540. A script that gets through the
+  name entries: the oracle's play script (A every second from frame 2400) plus, every 600 frames from 7630, a touch
+  on the keyboard's Confirm button (218,180) (it only dismisses the "no room" message: touches on the keys don't
+  register) and Start every 60 frames from 7650 (Start confirms a name).
 - A C-style cast from a base pointer to a derived class is a static downcast (it subtracts the base's offset):
   converting a derived pointer to its base subobject's address needs `reinterpret_cast` after the `static_cast`.
 - Members reached by a DS offset from a pointer: `tools/host_this_offsets.py` rewrites `(u8 *)this + N` (and
@@ -231,8 +240,21 @@ contents, 3D command and register access counts per interval), `ACWW_VRAMDUMP=<f
 OAM, display I/O), `ACWW_PROCLOG=1` (processes created), screenshots at the same frames; the random number calls
 (a breakpoint on `Random_NextBelow` logging the callers) show where the two runs' logic first differs.
 
-Not done yet: resetting an overlay's data when it is loaded again. The game reaches each scene later (in frames)
-than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
+Overlays are reset when they are loaded, as on the DS (which reads a fresh image from the ROM, clears the bss and
+runs the static constructors): the partial link puts each overlay's variables (the objects under `src/ovNNN/`) into a
+range of its own inside gdata and gbss and its `.init_array` entries into the section `host_ovinit`
+(`tools/host_order.py`, symbols `host_ovNNN_{data,bss,init}_{start,end}`, a table for the runtime in
+`build/<b>/overlay_table.c`). `modern/host/overlay.c` keeps a copy of every overlay's data as linked (taken before any
+constructor runs); `FS_StartOverlay` restores overlay N's data, clears its bss and runs its constructors in object
+order. The overlays' constructors don't run at start-up any more (main's, the autoloads' and DTCM's still do, and
+their data is never touched). Overlays that share an address range on the DS keep separate variables here; each
+is reset on its own load. 138 overlays, 61.7 KB of data, 249 KB of bss, 98 constructors (in 59 overlays). Debugging:
+`ACWW_OVLOG=1` lists each load (and how many bytes the reset undoes), `ACWW_OVRESET=0` restores the earlier
+behaviour (every overlay's constructors once at start-up, no reset), `ACWW_OVRESET=-4,9` that for the overlays listed.
+Some constructors use the divider registers (ov004's `MuseumInfoPoint_Init`: `FX_Div`), so virtual time now passes
+for them at the overlay's load instead of before the first frame.
+
+The game reaches each scene later (in frames) than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
 have).
 
 ## The choice: how to provide the hardware (decided: A for the display for now, B for sound)
