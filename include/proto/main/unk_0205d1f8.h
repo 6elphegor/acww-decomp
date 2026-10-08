@@ -5,18 +5,21 @@
 
 #include "types.h"
 struct CharaFaceAnimWorkPool;
+#ifndef __cplusplus
+typedef struct CharaFaceAnimWorkPool CharaFaceAnimWorkPool;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "sys/Heap.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_CharaFaceAnimWorkPool_Create
-void CharaFaceAnimWorkPool_Create(void *parent);
-#endif
 #ifndef PROTO_LOCAL_CharaFaceAnimWorkPool_Destroy
 void CharaFaceAnimWorkPool_Destroy();
+#endif
+#ifndef PROTO_LOCAL_CharaFaceAnimWork_GetHeapSize
+u32 CharaFaceAnimWork_GetHeapSize();
 #endif
 #ifdef __cplusplus
 }
@@ -24,8 +27,8 @@ void CharaFaceAnimWorkPool_Destroy();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_CharaFaceAnimWork_GetHeapSize
-u32 CharaFaceAnimWork_GetHeapSize();
+#ifndef PROTO_LOCAL_CharaFaceAnimWorkPool_Create
+void CharaFaceAnimWorkPool_Create(Heap *parent);
 #endif
 }
 #ifndef PROTO_LOCAL_sCharaFaceAnimWorkPool

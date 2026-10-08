@@ -1,17 +1,12 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
-#define PROTO_LOCAL_gNetSessionState  // declared below: the shared prototype conflicts with the calls here
+#include "net/NetSessionState.h"
 #include "proto/main/unk_020a6388.h"
+#include "proto/main/unk_020a427c.h"
 
 
 extern CommManager *gCommManager;
-
-
-extern NetSlotStatus gNetSessionState[];
-extern NetMoveRequest data_021edaa0[];
-extern u8 data_021edac0[];  // gNetSessionState + 0x2c (NetMoveReady[4] member of U195's singleton)
-extern u8 data_021edad0[];  // gNetSessionState + 0x3c (NetPendingStatus[4] member)
 
 extern "C" s32 NetArea_IsBusyStubB() { return 0; }
 
@@ -20,7 +15,7 @@ extern "C" s32 NetArea_IsBusyStubA() { return 0; }
 extern "C" void NetArea_OnSceneCreateNop() {}
 
 extern "C" void NetArea_QueueMoveRequest(u32 a, u8 b) {
-    NetMoveRequest *p = data_021edaa0;
+    NetMoveRequest *p = gNetSessionState.moveQueue;
     s32 i;
     for (i = 3; i >= 0; p++, i--) {
         s32 v;
@@ -34,7 +29,7 @@ extern "C" void NetArea_QueueMoveRequest(u32 a, u8 b) {
 }
 
 extern "C" void NetArea_SetSlotStatus(s32 idx, u32 b, u32 c, u32 d, u32 e) {
-    NetSlotStatus *t = &gNetSessionState[idx];
+    NetSlotStatus *t = &gNetSessionState.slotStatus[idx];
     u8 v[3];
     t->get(&v[0], &v[1], &v[2]);
     if (e & 1) {
@@ -50,8 +45,8 @@ extern "C" void NetArea_SetSlotStatus(s32 idx, u32 b, u32 c, u32 d, u32 e) {
     gCommManager->flushDeferred();
 }
 
-extern "C" void NetArea_SetMoveReady(s32 idx, u32 v) { ((NetMoveReady *)data_021edac0)[idx].set(v); }
+extern "C" void NetArea_SetMoveReady(s32 idx, u32 v) { gNetSessionState.moveReady[idx].set(v); }
 
 extern "C" void NetArea_SetPendingStatus(u32 idx, u32 a, u32 b, u32 c, u32 d) {
-    ((NetPendingStatus *)(&((NetPendingStatus *)data_021edad0)[idx]))->setMasked(a, b, c, d);
+    gNetSessionState.pendingStatus[idx].setMasked(a, b, c, d);
 }

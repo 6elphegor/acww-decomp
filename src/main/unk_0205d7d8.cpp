@@ -109,7 +109,7 @@ extern "C" BOOL HeldItemModel_IsBobberLanded(HeldItemModel *p) {
     return p->bobber.isInWater();
 }
 
-extern "C" void PlayerHeadBank_Init(void *parent) {
+extern "C" void PlayerHeadBank_Init(Heap *parent) {
     PlayerHeadModelHeap_Create(parent);
     MGR->setup();
     if (gPlayerHeadModelHeap != NULL)

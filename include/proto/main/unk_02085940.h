@@ -173,7 +173,7 @@ extern char data_020e0c98[];
 extern char *sContestResultBbsFiles[4];
 #endif
 #ifndef PROTO_LOCAL_sContestResultMailFiles
-extern void *sContestResultMailFiles[4];
+extern char *sContestResultMailFiles[4];
 #endif
 #ifndef PROTO_LOCAL_data_020e0c70
 extern char data_020e0c70[];

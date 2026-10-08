@@ -11,7 +11,7 @@ class TalkBmgReader : public BmgReader {
 public:
     TalkBmgReader();
     virtual ~TalkBmgReader();
-    virtual u32 getBuffer();  // (BmgReader's interface: the buffer's address)
+    virtual u8 *getBuffer();
     virtual u32 getBufferSize();
     void clear();
 

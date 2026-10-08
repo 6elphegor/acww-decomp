@@ -130,7 +130,7 @@ extern "C" void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e)
     }
 }
 
-extern "C" void PlayerPalettePool_Create(void *parent)
+extern "C" void PlayerPalettePool_Create(Heap *parent)
 {
     PlayerPaletteHeap_Create(parent);
     PlayerPalettePool_AllocBuffers(sPlayerPalettePool.buffers);

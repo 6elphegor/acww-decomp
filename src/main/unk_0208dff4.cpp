@@ -51,7 +51,7 @@ void LabelButton::setLabelText(MsgString *src) {
     ((MsgString *)&text)->copy(src);
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)text.data();
+        o->textStart = text.data();
         label->alignCenter();
         label->requestRedraw();
         textColorDirty = 1;
@@ -113,7 +113,7 @@ void LabelButton::createLabel() {
         if (label != NULL) {
             label->vramLoader = 4;
             TextLabel *t = label;
-            t->textStart = (u32)text.data();
+            t->textStart = text.data();
             if (onBufferA != 0) {
                 label->copyMode = 2;
             }

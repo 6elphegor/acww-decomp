@@ -5,29 +5,20 @@
 
 #include "types.h"
 struct PlayerBodyModelPool;
+#ifndef __cplusplus
+typedef struct PlayerBodyModelPool PlayerBodyModelPool;
+#endif
 #ifdef __cplusplus
 #include "gfx/TexVramTask.h"
-#include "types.h"
+#include "sys/Heap.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_PlayerBodyModelPool_Create
-void PlayerBodyModelPool_Create(void *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyModelPool_Destroy
 void PlayerBodyModelPool_Destroy();
 #endif
-#ifndef PROTO_LOCAL_PlayerBodyModelRef_Destruct
-void PlayerBodyModelRef_Destruct();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_PlayerBodyModel_GetPath
 char *PlayerBodyModel_GetPath(u32 i);
 #endif
@@ -45,6 +36,9 @@ u32 PlayerBodyModel_GetPlttVramSize();
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyModelRef_Init
 void PlayerBodyModelRef_Init(u8 *p);
+#endif
+#ifndef PROTO_LOCAL_PlayerBodyModelRef_Destruct
+void PlayerBodyModelRef_Destruct();
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyModelRef_SetSlot
 void PlayerBodyModelRef_SetSlot(u8 *p, u32 v);
@@ -66,6 +60,15 @@ void *PlayerBodyModelRef_GetBuffer(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyModelRef_GetVramSlot
 void *PlayerBodyModelRef_GetVramSlot(u8 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerBodyModelPool_Create
+void PlayerBodyModelPool_Create(Heap *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyModelRef_GetTexTask
 TexVramTask *PlayerBodyModelRef_GetTexTask(u8 *p);

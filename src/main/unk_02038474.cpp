@@ -567,7 +567,7 @@ void ChatBalloon::createNameLabel() {
         if (nameLabel != NULL) {
             nameLabel->vramLoader = 4;
             TextLabel *t = nameLabel;
-            t->textStart = (u32)((StrBuf *)&name)->data();
+            t->textStart = ((StrBuf *)&name)->data();
             if (gGfxMainOnTop == 0) {
                 nameLabel->copyMode = 3;
             } else {
@@ -595,7 +595,7 @@ void ChatBalloon::createTextLabel() {
         if (textLabel != NULL) {
             textLabel->vramLoader = 4;
             TextLabel *t = textLabel;
-            t->textStart = (u32)((MsgString *)&text)->data();
+            t->textStart = ((MsgString *)&text)->data();
             if (gGfxMainOnTop == 0) {
                 textLabel->copyMode = 3;
             } else {

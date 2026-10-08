@@ -5,14 +5,15 @@
 
 #include "types.h"
 struct PlayerFaceTexPool;
+#ifndef __cplusplus
+typedef struct PlayerFaceTexPool PlayerFaceTexPool;
+#endif
 #ifdef __cplusplus
+#include "sys/Heap.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_PlayerFaceTexPool_Create
-void PlayerFaceTexPool_Create(void *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerFaceTexPool_Destroy
 void PlayerFaceTexPool_Destroy();
@@ -31,6 +32,11 @@ void PlayerFaceTexPool_AllocBuffers(void **arr);
 #endif
 
 #ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_PlayerFaceTexPool_Create
+void PlayerFaceTexPool_Create(Heap *parent);
+#endif
+}
 #ifndef PROTO_LOCAL_sPlayerFaceTexPathBuf
 extern char sPlayerFaceTexPathBuf[0x14];
 #endif

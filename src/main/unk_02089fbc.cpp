@@ -343,7 +343,7 @@ void NameLabelBalloonView::createLabel() {
         if (o != NULL) {
             o->vramLoader = 4;
             MsgTextLabel *p = textLabel;
-            p->textStart = (u32)((MsgString *)(HOST_AT(this, 0x38, pad_10[10], 0)))->data();
+            p->textStart = ((MsgString *)(HOST_AT(this, 0x38, pad_10[10], 0)))->data();
             textLabel->copyMode = 2;
             textLabel->rowStride1K = 1;
             textLabel->bgColor = t;
@@ -665,7 +665,7 @@ void HudClock::createColonLabel() {
         MsgTextLabel *o = colonLabel;
         if (o != NULL) {
             o->vramLoader = 4;
-            colonLabel->textStart = (u32)kHudColonString;
+            colonLabel->textStart = (u8 *)kHudColonString;
             colonLabel->copyMode = 2;
             colonLabel->rowStride1K = 1;
             colonLabel->font = &gFontC;
@@ -723,7 +723,7 @@ void HudClockLabels::refreshMonth() {
         monthDirty = 0;
         String_FormatNumber(&monthText, month, 2, 0, 0, 1);
         TextLabel *t = monthLabel;
-        t->textStart = (u32)monthText.data();
+        t->textStart = monthText.data();
         monthLabel->alignRight();
         monthLabel->requestRedraw();
     }
@@ -734,7 +734,7 @@ void HudClockLabels::refreshDay() {
         dayDirty = 0;
         String_FormatNumber(&dayText, day, 2, 0, 0, 1);
         TextLabel *t = dayLabel;
-        t->textStart = (u32)dayText.data();
+        t->textStart = dayText.data();
         dayLabel->requestRedraw();
     }
 }
@@ -744,7 +744,7 @@ void HudClockLabels::refreshWeekday() {
         weekdayDirty = 0;
         s32 i = *(volatile s32 *)&weekday;
         const u16 *e = &kHudWeekdayGlyphs[i];
-        weekdayLabel->textStart = (u32)e;
+        weekdayLabel->textStart = (u8 *)e;
         weekdayLabel->alignCenter();
         weekdayLabel->requestRedraw();
     }
@@ -755,7 +755,7 @@ void HudClockLabels::refreshAmPm() {
         amPmDirty = 0;
         s32 i = 0;
         if (hour >= 12) i = 1;
-        amPmLabel->textStart = (u32)kHudAmPmStrings[i];
+        amPmLabel->textStart = (u8 *)kHudAmPmStrings[i];
         amPmLabel->alignCenter();
         amPmLabel->requestRedraw();
     }
@@ -769,7 +769,7 @@ void HudClockLabels::refreshHour() {
         if (c == 0) c = 12;
         String_FormatNumber(&hourText, c, 2, 0, 0, 1);
         TextLabel *t = hourLabel;
-        t->textStart = (u32)hourText.data();
+        t->textStart = hourText.data();
         hourLabel->alignRight();
         hourLabel->requestRedraw();
     }
@@ -780,7 +780,7 @@ void HudClockLabels::refreshMinute() {
         minuteDirty = 0;
         String_FormatNumber(&minuteText, minute, 2, 6, 0, 1);
         TextLabel *t = minuteLabel;
-        t->textStart = (u32)minuteText.data();
+        t->textStart = minuteText.data();
         minuteLabel->alignCenter();
         minuteLabel->requestRedraw();
     }
@@ -1071,7 +1071,7 @@ void HudCountdownLabels::createMinutesLabel() {
         minutesLabel->fgColor = 0xc;
         minutesLabel->font = &gFontC;
         TextLabel *t = minutesLabel;
-        t->textStart = (u32)((StrBuf *)minutesText)->data();
+        t->textStart = ((StrBuf *)minutesText)->data();
         minutesDirty = 1;
     }
 }
@@ -1086,7 +1086,7 @@ void HudCountdownLabels::createSecondsLabel() {
         secondsLabel->fgColor = 0xc;
         secondsLabel->font = &gFontC;
         TextLabel *t = secondsLabel;
-        t->textStart = (u32)((StrBuf *)secondsText)->data();
+        t->textStart = ((StrBuf *)secondsText)->data();
         secondsDirty = 1;
     }
 }
@@ -1101,7 +1101,7 @@ void HudCountdownLabels::createCountALabel() {
         countALabel->fgColor = 5;
         countALabel->font = &gFontD;
         TextLabel *t = countALabel;
-        t->textStart = (u32)((StrBuf *)countAText)->data();
+        t->textStart = ((StrBuf *)countAText)->data();
         countADirty = 1;
     }
 }
@@ -1116,7 +1116,7 @@ void HudCountdownLabels::createCountBLabel() {
         countBLabel->fgColor = 5;
         countBLabel->font = &gFontD;
         TextLabel *t = countBLabel;
-        t->textStart = (u32)((StrBuf *)countBText)->data();
+        t->textStart = ((StrBuf *)countBText)->data();
         countBDirty = 1;
     }
 }
@@ -1973,7 +1973,7 @@ void HudWallet::createLabel() {
             label->fgColor = 0xc;
             TextLabel *o = label;
             StrBuf *s = (StrBuf *)&text;
-            o->textStart = (u32)s->data();
+            o->textStart = s->data();
             label->font = &gFontD;
             label->alignRight();
             label->requestRedraw();

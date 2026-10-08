@@ -7,14 +7,12 @@
 #ifdef __cplusplus
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
+#include "sys/Heap.h"
 class PlayerGlassesModelPool;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_PlayerGlassesModelPool_Create
-void PlayerGlassesModelPool_Create(void *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerGlassesModelPool_Destroy
 void PlayerGlassesModelPool_Destroy();
@@ -79,6 +77,9 @@ void PlayerGlassesModelRef_SetModelId(u8 *p, s32 v);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_PlayerGlassesModelPool_Create
+void PlayerGlassesModelPool_Create(Heap *parent);
+#endif
 #ifndef PROTO_LOCAL_PlayerGlassesModelRef_GetVramSlot
 TexVramSlot *PlayerGlassesModelRef_GetVramSlot(u8 *p);
 #endif

@@ -16,15 +16,11 @@ struct PlayerBodyWorkPool {
 
 extern "C" {
 extern CommManager *gCommManager;
-#define Heap_freeAll _ZN4Heap7freeAllEv
-extern void Heap_freeAll(void *p);
-#define Heap_adjust _ZN4Heap6adjustEv
-extern void Heap_adjust(void *p);
 }
 
 PlayerBodyWorkPool sPlayerBodyWorkPool;
 
-extern "C" void PlayerBodyWorkPool_Create(void *parent) {
+extern "C" void PlayerBodyWorkPool_Create(Heap *parent) {
     PlayerBodyAnimHeap_Create(parent);
     PlayerBodyWorkPool_CreateHeaps(sPlayerBodyWorkPool.heaps);
     if (gPlayerBodyAnimHeap) {

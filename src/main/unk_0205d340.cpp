@@ -24,7 +24,7 @@ struct PlayerFaceTexPool {
 char sPlayerFaceTexPathBuf[0x14];
 PlayerFaceTexPool sPlayerFaceTexPool;
 
-extern "C" void PlayerFaceTexPool_Create(void *parent) {
+extern "C" void PlayerFaceTexPool_Create(Heap *parent) {
     PlayerFaceTexHeap_Create(parent);
     PlayerFaceTexPool_AllocBuffers(sPlayerFaceTexPool.ptr);
     if (gPlayerFaceTexHeap) {
