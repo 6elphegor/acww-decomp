@@ -95,7 +95,7 @@
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
+#define SickVillagerRecord_getParcelErrand _ZN13PlayerErrands15getParcelErrandEv  // (PlayerErrands::getParcelErrand)
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv

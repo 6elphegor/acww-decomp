@@ -3717,7 +3717,7 @@ void SkySprites::sendWishLetters() {
             Letter ctx;
             StarWishLetterVars l;
             l.msgVariant = Random_GlobalBelow(3);
-            Letter_ComposeFromMail((LetterView *)&ctx, &l, data_020e6794, data_020e4634, data_020e4630, o->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&ctx, &l.msgVariant, data_020e6794, data_020e4634, data_020e4630, o->getPlayerId());
             ItemPickSpec q(0, 4);
             ItemPick_One(&l.present, &q, NULL, NULL, 1, 1, NULL);
             ((LetterView *)(&ctx))->setPresent(l.present, 1);

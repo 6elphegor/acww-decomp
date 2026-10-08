@@ -8,7 +8,9 @@
 class ModelSlot;
 
 typedef void (*ModelSlotFreeFunc)();
-typedef void *(*ModelSlotAllocFunc)(u32, u32);
+class Heap;
+// the slots' heap: created with a size under a parent heap (the *Heap_Create functions of src/main/unk_0205b7b0.cpp)
+typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
 
 class ModelSlotHandle {
 public:

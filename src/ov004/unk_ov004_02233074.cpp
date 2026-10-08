@@ -182,7 +182,8 @@ static inline s16 *FtrFootprint_Tile(FtrFootprint *b, u32 i) {
 
 
 // main's 0x18-byte pool object
-typedef void *(*ModelSlotAllocFunc)(u32, u32);
+class Heap;
+typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
 typedef void (*ModelSlotFreeFunc)();
 
 // main object, vtable 0x0224e9d8

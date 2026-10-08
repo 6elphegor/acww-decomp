@@ -8,6 +8,7 @@ struct Unk_02096354_Arg;
 #ifdef __cplusplus
 #include "item/Letter.h"
 #include "types.h"
+class PlayerData;
 #endif
 
 #ifdef __cplusplus
@@ -59,13 +60,13 @@ s32 LetterDelivery_FindAddresseePlayer(Letter *letter);
 s32 LetterDelivery_FindAddresseeVillager(Letter *letter);
 #endif
 #ifndef PROTO_LOCAL_LetterList_Compact
-s32 LetterList_Compact(void *base, s32 n);
+s32 LetterList_Compact(Letter *base, s32 n);
 #endif
 #ifndef PROTO_LOCAL_LetterList_CountUsed
-s32 LetterList_CountUsed(void *base, s32 n);
+s32 LetterList_CountUsed(Letter *base, s32 n);
 #endif
 #ifndef PROTO_LOCAL_LetterDelivery_HasFutureLetter
-s32 LetterDelivery_HasFutureLetter(void *p);
+s32 LetterDelivery_HasFutureLetter(PlayerData *p);
 #endif
 #ifndef PROTO_LOCAL_LetterDelivery_HasFreeOutgoingSlot
 s32 LetterDelivery_HasFreeOutgoingSlot(void);
@@ -116,7 +117,7 @@ s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d);
 s32 MotherLetter_Send(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_MotherLetter_GetFileName
-u8 *MotherLetter_GetFileName(s32 a);
+const char *MotherLetter_GetFileName(s32 a);
 #endif
 #ifndef PROTO_LOCAL_MotherLetter_GetPresent
 u16 MotherLetter_GetPresent(s32 code);

@@ -4,10 +4,10 @@
 #include "types.h"
 #include "item/ItemId.h"
 #include "gfx/VecFx32.h"
+#include "town/MapBlockEntry.h"
 
 // The town map record of the save (SaveData::townMap): acre ids, the items lying on each of the 16 town acres and
-// their buried-item masks. Defined in src/main/unk_0204cc1c.cpp (which still keeps its own copy of these classes:
-// switch it to this header).
+// their buried-item masks. Defined in src/main/unk_0204cc1c.cpp.
 
 struct AcreItemGrid {
     ItemId e[0x100];
@@ -32,19 +32,14 @@ public:
     TownMap();
     ~TownMap();
 
-    void *buildBlockEntries(s32 heap);
+    MapBlockEntry *buildBlockEntries(void *heap);
     void updateGroundSeason();
     u32 getGrassType();
     BOOL toTownAcreIndex(Vec2 *out, Vec2 *in);
     BOOL isTownAcre(s32 x, s32 y);
-    void *getAcreBuried(Vec2 *in);
-    void *getAcreItems(Vec2 *in);
+    u16 *getAcreBuried(Vec2 *in);
+    u16 *getAcreItems(Vec2 *in);
     void clear();
-    BOOL placeStructure(u16 *a, s32 x, s32 y, u8 flag);
-    BOOL putStructure(u16 *a, s32 x, s32 y);
-    BOOL removeStructure(s32 x, s32 y, u16 *p);
-    BOOL replaceStructure(u16 *a, u16 *b, u16 *c, s32 x, s32 y);
-    BOOL replaceStructure(u16 *a, u16 *b, u16 *c, Vec2 pos);
 };
 
 #endif

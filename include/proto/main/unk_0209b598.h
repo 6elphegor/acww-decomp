@@ -14,7 +14,7 @@ extern "C" {
 void Town_SetGenGateMode(s32 v);
 #endif
 #ifndef PROTO_LOCAL_Town_GenerateAcres
-void Town_GenerateAcres(s32 arg);
+void Town_GenerateAcres(u8 *acres);
 #endif
 }
 #ifndef PROTO_LOCAL_sTownGenGateMode

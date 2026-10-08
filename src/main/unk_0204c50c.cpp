@@ -8,6 +8,8 @@
 #include "town/TownState.h"
 #include "town/SceneMapModule.h"
 #include "room/HouseData.h"
+#include "town/BlockMap.h"
+#include "town/TownMap.h"
 #define PROTO_LOCAL_House_GetLevelAcreId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
@@ -118,17 +120,6 @@ extern "C" {
 s32 FengShui_UpdateHouse();
 }
 
-extern "C" {
-s32 _ZN8BlockMap4freeEi(void *a, void *heap);
-}
-
-extern "C" {
-void _ZN8BlockMap5clearEv(void *self);
-}
-
-extern "C" {
-s32 _ZN8BlockMap5buildEP13MapBlockEntryP12BlockMapSizei(void *a, void *b, void *c, void *heap);
-}
 
 extern "C" {
 }
@@ -178,20 +169,17 @@ extern "C" {
 s32 SceneId_IsHouseRoom(s32 x);
 }
 
-extern "C" {
-void *_ZN7TownMap17buildBlockEntriesEi(void *p, void *heap);
-}
 
 extern "C" {
 void *ItemGrid_Alloc(void *heap, s32 n);
 }
 
 extern "C" {
-void *VillagerRoom_BuildEntry(void *a, u32 b, void *heap);
+MapBlockEntry *VillagerRoom_BuildEntry(u16 *dst, u32 b, void *heap);
 }
 
 extern "C" {
-void *MapBlockEntry_NewArray(s32 n, void *heap);
+MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
 }
 
 extern "C" {
@@ -310,25 +298,25 @@ u32 SceneMapModule::loadLayoutGrid(u32 v, s32 idx, void *heap) {
     return r;
 }
 
-u32 *SceneMapModule::buildEntries(u32 *src, s32 n, void *heap) {
-    u32 *r = NULL;
+MapBlockEntry *SceneMapModule::buildEntries(u32 *src, s32 n, void *heap) {
+    MapBlockEntry *r = NULL;
     s32 i;
     if (Scene_GetCurrent() == 0 || Scene_GetCurrent() == 0x31 || Scene_GetCurrent() == 0x2c) {
-        r = (u32 *)_ZN7TownMap17buildBlockEntriesEi(gSaveTownMap, heap);
+        r = ((TownMap *)gSaveTownMap)->buildBlockEntries(heap);
     } else if (Scene_InHouseRoom()) {
-        r = (u32 *)((HouseData *)(gSaveHouse))->buildRoomBlockEntry(Scene_GetHouseRoom(), heap);
+        r = ((HouseData *)(gSaveHouse))->buildRoomBlockEntry(Scene_GetHouseRoom(), heap);
     } else if (Scene_InVillagerHouse()) {
         i = Scene_GetVillagerHouse();
-        r = (u32 *)ItemGrid_Alloc(heap, 4);
-        setOwnedGrid((u32)r, 0);
-        r = (u32 *)VillagerRoom_BuildEntry(r, i, heap);
+        u16 *grid = (u16 *)ItemGrid_Alloc(heap, 4);
+        setOwnedGrid((u32)(uptr)grid, 0);
+        r = VillagerRoom_BuildEntry(grid, i, heap);
     } else if (src != NULL && n > 0) {
-        r = (u32 *)MapBlockEntry_NewArray(n, heap);
+        r = MapBlockEntry_NewArray(n, heap);
         if (r != NULL) {
             for (i = 0; i < n; i++) {
-                u32 *e = r + i * 4;
-                e[0] = *src;
-                e[1] = loadLayoutGrid(e[0], i, heap);
+                MapBlockEntry *e = &r[i];
+                e->acreId = *src;
+                e->layers[0] = (u16 *)(uptr)loadLayoutGrid(e->acreId, i, heap); // (the grid as an integer)
                 src++;
             }
         }
@@ -418,26 +406,26 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
     SceneMapInfo *info;
     void *h;
     u32 *src;
-    u32 *r;
-    struct { s32 a; s32 b; } sz;
+    MapBlockEntry *r;
+    BlockMapSize sz;
     ownedGrids = NULL;
     numOwnedGrids = 0;
     if (gSceneBlockMap == NULL) {
-        gSceneBlockMap = Heap_Alloc(heap, 0x20);
-        if (gSceneBlockMap != NULL) _ZN8BlockMap5clearEv(gSceneBlockMap);
+        gSceneBlockMap = Heap_Alloc(heap, sizeof(BlockMap)); // (0x20 on the DS: the 64-bit object is larger)
+        if (gSceneBlockMap != NULL) ((BlockMap *)gSceneBlockMap)->clear();
     }
     if (gSceneBlockMap != NULL) {
         info = Scene_GetMapInfo();
         h = gCurrentHeap;
         src = NULL;
-        sz.a = 0;
-        sz.b = 0;
+        sz.v[0] = 0;
+        sz.v[1] = 0;
         if (info != NULL) {
             u32 nb = info->height;
             u32 na = info->width;
-            sz.a = na;
-            sz.b = nb;
-            numOwnedGrids = sz.a * sz.b;
+            sz.v[0] = na;
+            sz.v[1] = nb;
+            numOwnedGrids = sz.v[0] * sz.v[1];
             allocOwnedGrids(h);
             src = info->acreIds;
             getHouseUnk(src, numOwnedGrids);
@@ -445,7 +433,7 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
         }
         r = buildEntries(src, numOwnedGrids, h);
         if (r != NULL) {
-            _ZN8BlockMap5buildEP13MapBlockEntryP12BlockMapSizei(gSceneBlockMap, r, &sz, h);
+            ((BlockMap *)gSceneBlockMap)->build(r, &sz, h);
             if (Unk_0204c5c0_IsZero(gFieldSceneKind)) Town_ClearBorderTrees((Unk_0204da0c_Map *)gSceneBlockMap);
             Heap_Free(h, r);
         }
@@ -463,7 +451,7 @@ BOOL SceneMapModule::onDelete() {
     void *heap = gCurrentHeap;
     if (gSceneBlockMap != NULL) {
         freeOwnedGrids(heap);
-        _ZN8BlockMap4freeEi(gSceneBlockMap, heap);
+        ((BlockMap *)gSceneBlockMap)->free(heap);
         Heap_Free(heap, gSceneBlockMap);
         gSceneBlockMap = NULL;
     }

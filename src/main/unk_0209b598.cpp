@@ -14,10 +14,10 @@ extern "C" void Town_SetGenGateMode(s32 v) {
     sTownGenGateMode = v;
 }
 
-extern "C" void Town_GenerateAcres(s32 arg) {
+extern "C" void Town_GenerateAcres(u8 *acres) {
     u32 buf[HOST_SIZED(0x140, TownAcreGenerator) / 4] HOST_ALIGN8;
     new (buf) TownAcreGenerator();
     ((TownAcreGenerator *)(buf))->generate(sTownGenGateMode);
-    ((TownAcreGenerator *)(buf))->writeAcreIds((u8 *)(arg));
+    ((TownAcreGenerator *)(buf))->writeAcreIds(acres);
     ((TownAcreGenerator *)(buf))->~TownAcreGenerator();
 }

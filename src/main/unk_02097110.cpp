@@ -6,24 +6,16 @@
 #include "save/SaveData.h"
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBank_PayInterest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBank_SendDonationLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBank_SendMilestoneLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e1df8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e1dfc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e1e00  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e1e04  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e1e08  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e1e0c  // declared below: the shared prototype conflicts with the calls here
+#include "save/TownId.h"
 #include "proto/autoload_2/unk_0211ea4c.h"
 #include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097110.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b2c50.h"
 
 
 struct PlayerBank {
@@ -32,26 +24,8 @@ struct PlayerBank {
 };
 
 extern SaveData gSaveData;
-
-extern "C" {
-extern u8 sFatalEntered;
-extern u8 gSaveTownId[];
-
-extern s32 data_020e1df8;
-extern s32 data_020e1dfc;
-extern s32 data_020e1e00;
-extern s32 data_020e1e04;
-extern s32 data_020e1e08;
-extern s32 data_020e1e0c;
-
-void _ZN11MsgString9CC2Ev(void *);
-void TownId_GetNameString(void *, void *);
-void _ZN11MsgString25C1Ev(void *);
-void _ZN11MsgString25D1Ev(void *);
-void String_FormatNumber(void *, s32, s32, s32, s32, s32);
-s32 _s32_div_f(s32, s32);
-void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
-}
+extern TownId gSaveTownId;
+extern "C" u8 sFatalEntered;
 
 s32 data_020e1e08 = 6;
 s32 data_020e1e04 = 0x1c;
@@ -97,8 +71,7 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
     if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
             s32 m = PlayerBank_GetBalance(o);
-            s32 q = _s32_div_f(m, 2000);
-            n = q * n * 10;
+            n = m / 2000 * n * 10;
             if (n > 99999) {
                 n = 99999;
             }
@@ -110,15 +83,12 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
                     }
                     PlayerBank_SetBalance(o, t);
                     Letter e;
-                    u8 ch;
-                    u32 buf[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
-                    ch = 0;
-                    _ZN11MsgString25C1Ev(buf);
-                    String_FormatNumber(buf, n, 10, 1, 0, 0);
-                    MailText_SetSlot(1, buf);
-                    Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, s->getPlayerId());
+                    u8 ch = 0;
+                    MsgString25 str;
+                    String_FormatNumber(&str, n, 10, 1, 0, 0);
+                    MailText_SetSlot(1, &str);
+                    Letter_ComposeFromMail((LetterView *)&e, &ch, "sp_npc_pelican", &data_020e1e08, &data_020e1e04, s->getPlayerId());
                     LetterDelivery_PutInAddresseeMailbox(&e);
-                    _ZN11MsgString25D1Ev(buf);
                 }
             }
         }
@@ -151,25 +121,18 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 u8 ch;
                 ch = k + 0x15;
                 Letter e;
-                u32 buf[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
-                _ZN11MsgString9CC2Ev(buf);
-                TownId_GetNameString(gSaveTownId, buf);
-                MailText_SetSlot(0, buf);
-                Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, s->getPlayerId());
+                MsgString9C town;
+                TownId_GetNameString(&gSaveTownId, &town);
+                MailText_SetSlot(0, &town);
+                Letter_ComposeFromMail((LetterView *)&e, &ch, "sp_npc_pelican", &data_020e1e00, &data_020e1dfc, s->getPlayerId());
                 ((LetterView *)(&e))->setPresent(col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
                     s->setFlag(bit);
                 }
-                ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
             }
         }
     }
-}// Declarations for data defined further down (definition order sets the data layout)
-
-
-
-
-
+}
 
 extern "C" void PlayerBank_SendDonationLetter(s32 n) {
     PlayerData *s = PlayerData_GetCurrent();
@@ -181,7 +144,7 @@ extern "C" void PlayerBank_SendDonationLetter(s32 n) {
             u8 ch;
             ch = id;
             u32 v;
-            Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, s->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&e, &ch, "sp_npc_pelican", &data_020e1df8, &data_020e1e0c, s->getPlayerId());
             v = 0xfff1;
             if (id > 13) goto hi;
             if (id >= 13) goto c13;

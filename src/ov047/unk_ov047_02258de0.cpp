@@ -102,11 +102,11 @@ u32 strlen(const char *s);
 
 // methods of other modules, called as free functions with the object first (mangled-name trick)
 NpcActor *_ZN16ActorTalkRequest13getTalkPlayerEv(void *self);
-u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
+u32 _ZN13PlayerErrands15getParcelErrandEv(u32 a);
 void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
 }
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
+#define SickVillagerRecord_getParcelErrand _ZN13PlayerErrands15getParcelErrandEv  // (PlayerErrands::getParcelErrand)
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 
 

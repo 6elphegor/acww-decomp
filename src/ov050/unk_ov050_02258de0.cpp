@@ -110,7 +110,7 @@
 #define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
+#define SickVillagerRecord_getParcelErrand _ZN13PlayerErrands15getParcelErrandEv  // (PlayerErrands::getParcelErrand)
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define ErrandRecord_getStep _ZN12ErrandRecord7getStepEv
 #define ErrandRecord_getKind _ZN12ErrandRecord7getKindEv
@@ -2542,7 +2542,7 @@ void SpNpcNookShopTalk::arbeitStartFurnitureDelivery(void *h) {
         new (buf) MsgString9B();
         Arbeit_StartFurnitureDelivery(h);
         v = 0x1563;
-        PlayerErrands_GetDeliveryRecipientName(h, buf, &v);
+        PlayerErrands_GetDeliveryRecipientName(h, (MsgString *)buf, &v);
         ((TalkWindowState *)(window))->setSlot(1, buf);
         ownerNpc->arbeitPrompted = 0;
         nextMsg = 0x18;
@@ -2630,7 +2630,7 @@ void SpNpcNookShopTalk::arbeitStartCarpetDelivery(void *h) {
     if (Pocket_FindEmpty() >= 0) {
         Arbeit_StartCarpetDelivery(h);
         v = 0x1561;
-        PlayerErrands_GetDeliveryRecipientName(h, buf, &v);
+        PlayerErrands_GetDeliveryRecipientName(h, (MsgString *)buf, &v);
         ((TalkWindowState *)(window))->setSlot(1, buf);
         nextMsg = 0x29;
     } else {
@@ -2656,7 +2656,7 @@ void SpNpcNookShopTalk::arbeitStartWateringCanDelivery(void *h) {
         new (buf) MsgString9B();
         Arbeit_StartWateringCanDelivery(h);
         v[1] = 0x1564;
-        PlayerErrands_GetDeliveryRecipientName(h, buf, &v[1]);
+        PlayerErrands_GetDeliveryRecipientName(h, (MsgString *)buf, &v[1]);
         ((TalkWindowState *)(window))->setSlot(1, buf);
         nextMsg = 0x2e;
         ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();

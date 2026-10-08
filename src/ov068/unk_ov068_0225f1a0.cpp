@@ -192,7 +192,7 @@
 #define PlayerId_isValid _ZN8PlayerId7isValidEv
 #define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define VillagerPlan_isTrendOlderThan _ZN12VillagerPlan16isTrendOlderThanEPvj
+#define VillagerPlan_isTrendOlderThan _ZN12VillagerPlan16isTrendOlderThanEP13ClockDateTimej
 #define VillagerPlan_getState _ZN12VillagerPlan8getStateEv
 #define MsgString_equals _ZN9MsgString6equalsEPS_
 class FieldVillager;

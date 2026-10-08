@@ -2,6 +2,7 @@
 #include "sys/NNSFndArchive.h"
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "town/BlockMap.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
@@ -72,7 +73,6 @@ public:
 // other modules' methods are reached through their real mangled symbols (object first)
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
-#define TownMap_placeStructure _ZN7TownMap14placeStructureEPtiih
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define TownStyleRecordView_getHouseStyles _ZN19TownStyleRecordView14getHouseStylesEv
 #define StrBSizeData_getSolidUnit _ZN12StrBSizeData12getSolidUnitEPiS0_S0_j
@@ -138,7 +138,6 @@ s32 BuildingInfo_GetKind(void *o);
 s32 BuildingInfo_GetProfile(void *o);
 void BuildingInfo_Destroy(void *o);
 s32 Actor_spawn(s32 self, void *b, void *c, void *d, void *e);
-void TownMap_placeStructure(void *self, u16 *p, s32 x, s32 y, u8 z);
 void FieldStructureMgr_Unregister(s32 a);
 void Gfx3d_LoadPltt(void *, s32);
 extern u32 gSaveTownState[];
@@ -363,7 +362,7 @@ s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag) 
     BuildingInfo_Copy(obj, q);
     if (Actor::spawn((void *)(BuildingInfo_GetProfile(obj)), (void *)*pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
-            TownMap_placeStructure(gSceneBlockMap, pv, x, y, 0);
+            ((BlockMap *)gSceneBlockMap)->placeStructure(pv, x, y, 0);
             FieldStructureMgr_ApplyFootprint((s32)self, pv, x, y);
         }
         BuildingInfo_Destroy(obj);
