@@ -25,4 +25,6 @@ public:
     /* 0x98e */ u16 pad_98e;
 };
 
+static_assert(sizeof(LetterOutbox) == 0x990, "LetterOutbox: SaveData::letterOutbox");
+
 #endif

@@ -121,7 +121,7 @@ public:
     /* 0x0c */ ErrandRecord errand;
     /* 0x18 */ u32 visitTime;
     /* 0x1c */ u32 visitTimeHi;
-    /* 0x20 */ u8 unk_20[8];
+    /* 0x20 */ u8 unk_20[4];  // (DS size: PlayerErrands is 0xac, include/player/PlayerErrands.h)
 };
 
 class PlayerErrands {

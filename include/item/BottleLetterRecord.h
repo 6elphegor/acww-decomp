@@ -17,4 +17,6 @@ public:
     /* 0xf4 */ u8 usedMessageBits[5];
 };
 
+static_assert(sizeof(BottleLetterRecord) == 0xfc, "BottleLetterRecord: SaveData::bottleLetter");
+
 #endif

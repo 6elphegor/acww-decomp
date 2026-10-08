@@ -9,6 +9,7 @@
 #include "item/Letter.h"
 #include "types.h"
 class MenuManager;
+struct ListNode;
 class Unk_021cb4e8;
 class Unk_021cb4f0;
 #endif
@@ -146,10 +147,10 @@ void CommSub_RecvClearPendingUnit(u8 *o);
 MenuManager *MenuManager_Create();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_AddOpenMenu
-void MenuCtrl_AddOpenMenu(u32 v);
+void MenuCtrl_AddOpenMenu(ListNode *v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_RemoveOpenMenu
-void MenuCtrl_RemoveOpenMenu(u8 *o);
+void MenuCtrl_RemoveOpenMenu(ListNode *o);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_CreateRequestedMenu
 BOOL MenuCtrl_CreateRequestedMenu();

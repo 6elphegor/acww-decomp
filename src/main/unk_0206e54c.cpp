@@ -1,4 +1,7 @@
+#include "uptr.h"
 #include "types.h"
+#include "menu/MenuProc.h"
+#include "sys/ListNode.h"
 #include "Unk_020d8c7c.h"
 #include "item/Letter.h"
 #include "sys/ProcProfile.h"
@@ -33,16 +36,8 @@
 #include "proto/main/unk_020b7d84.h"
 
 
-// 8-byte list head sOpenMenuList: inline constructor, no destructor
-class Unk_021cb4e8 {
-public:
-    Unk_021cb4e8() {
-        a = 0;
-        b = 0;
-    }
-    u32 a;
-    u32 b;
-};
+// list head sOpenMenuList (a List: two pointers, 16 bytes on 64-bit hosts): inline constructor, no destructor
+class Unk_021cb4e8 : public List {};
 
 // 8-byte object sMenuDateTime: destructor is func_020044dc (alias in aliases.txt)
 class Unk_021cb4f0 {
@@ -279,11 +274,18 @@ BOOL MenuManager::onExecute() {
 
 BOOL MenuManager::onDraw() { return TRUE; }
 
-extern "C" void MenuCtrl_AddOpenMenu(u32 v) { List_PushBack(&sOpenMenuList, v); }
+// An open menu's link in sOpenMenuList, followed by its owner (MenuProc::openMenuLink, openMenuOwner). (The DS
+// offsets, owner at link + 4 + 4 and its menu id at + 0x90, read the cleared link on 64-bit hosts.)
+struct OpenMenuLink {
+    ListNode link;
+    MenuProc *owner;
+};
 
-extern "C" void MenuCtrl_RemoveOpenMenu(u8 *o) {
+extern "C" void MenuCtrl_AddOpenMenu(ListNode *v) { List_PushBack(&sOpenMenuList, v); }
+
+extern "C" void MenuCtrl_RemoveOpenMenu(ListNode *o) {
     List_Remove(&sOpenMenuList, o);
-    MenuCtrl_SetReleasePending(*(*(u8 **)(o + 8) + 0x90));
+    MenuCtrl_SetReleasePending(((OpenMenuLink *)o)->owner->menuId);
 }
 
 extern "C" void MenuCtrl_ReleaseClosedMenus() {
@@ -296,10 +298,10 @@ extern "C" void MenuCtrl_ReleaseClosedMenus() {
 }
 
 extern "C" BOOL MenuCtrl_CreateRequestedMenu() {
-    u32 t;
+    void *t;
     if (sMenuRequest[0] != 3) return FALSE;
-    if (sOpenMenuList.a != 0) t = ((u32 *)sOpenMenuList.a)[2];
-    else t = gMenuManager;
+    if (sOpenMenuList.head != 0) t = ((OpenMenuLink *)sOpenMenuList.head)->owner;
+    else t = (void *)(uptr)gMenuManager;
     MenuCtrl_ResetForceClose();
     if (!GameProc_CreateChild(kMenuProfileIds[sMenuRequest[1]], t, sMenuRequest[1], 4)) return FALSE;
     sMenuRequest[0] = 1;
@@ -340,13 +342,13 @@ extern "C" void MenuCtrl_ResetFlags() {
 
 extern "C" BOOL MenuCtrl_IsIdle() {
     if (sMenuRequest[0] != 1) return FALSE;
-    if (sOpenMenuList.a == 0) return TRUE;
+    if (sOpenMenuList.head == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL MenuCtrl_IsMenuOpen() {
     if (sMenuRequest[0] == 0) return FALSE;
-    if (sOpenMenuList.a != 0) return TRUE;
+    if (sOpenMenuList.head != 0) return TRUE;
     return FALSE;
 }
 
@@ -359,7 +361,7 @@ extern "C" BOOL MenuCtrl_RequestOpen(u32 v) {
 
 extern "C" BOOL MenuCtrl_RequestOpenNested(u32 v) {
     if (sMenuRequest[0] != 1) return FALSE;
-    if (sOpenMenuList.a == 0) return FALSE;
+    if (sOpenMenuList.head == 0) return FALSE;
     if (MenuCtrl_IsLoaded(v)) return FALSE;
     sMenuRequest[1] = v;
     sMenuRequest[0] = 2;
