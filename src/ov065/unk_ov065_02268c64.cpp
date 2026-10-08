@@ -853,6 +853,9 @@ u32 WifiLink_GetPhase();
 s32 WifiLink_TerminateAsync();
 s32 WifiLink_DisconnectAsync();
 s32 WifiLink_ConnectAsync(u8 *, u8 *, u32);
+// defined below (C names, as declared at the top)
+void WifiLink_SetupScanParams(const u8 *a, const u8 *b, u32 c);
+s32 WifiLink_EndSearchAsync();
 }
 
 s32 WifiLink_EndSearchAsync() {
