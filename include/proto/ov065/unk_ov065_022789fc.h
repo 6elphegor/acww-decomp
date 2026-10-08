@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "net/GsSocket.h"
+#include "net/SockAddrIn.h"
 #include "net/SockHostEnt.h"
 #ifdef __cplusplus
 #include "net/ghttpBuffer.h"
@@ -87,13 +88,13 @@ s32 listen(s32 a, s32 backlog);
 s32 accept(s32 a, u8 *sa, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_recv
-s32 recv(s32 a, s32 b, s32 c, u32 d);
+s32 recv(s32 a, char *b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_recvfrom
-s32 recvfrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len);
+s32 recvfrom(s32 a, char *b, s32 c, u32 d, SockAddrIn *sa, s32 *len);
 #endif
 #ifndef PROTO_LOCAL_send
-s32 send(s32 a, s32 b, s32 c, u32 d);
+s32 send(s32 a, const char *b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_getsockopt
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);

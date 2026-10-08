@@ -822,17 +822,6 @@ gTownEval
 gTownUpdater
 ghiNewPost
 ghiPostCleanupState
-gti2AcceptConnection
-gti2BufferShorten
-gti2BufferWriteByte
-gti2BufferWriteData
-gti2BufferWriteUShort
-gti2ConnectAttemptCallback
-gti2ConnectedCallback
-gti2ConnectionClosed
-gti2GetBufferFreeSpace
-gti2GetChallenge
-gti2NewIncomingConnection
 sApSubTopics
 sBmgDatHeader
 sBmgFileHeader

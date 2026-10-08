@@ -120,13 +120,13 @@ void *ArrayNth(void *v, s32 i);
 void ArrayDeleteAt(void *v, s32 i);
 s32 ArrayLength(void *v);
 void ArrayFree(void *v);
-void *ArrayNew(s32 size, s32 cap, void *dtor);
+DArrayImplementation *ArrayNew(s32 size, s32 cap, void *dtor);
 void *TableMapSafe2(void *t, BOOL (*cb)(Conn062 **, u32 *), void *arg);
 void *TableLookup(void *t, void *key);
 void TableRemove(void *t, void *key);
 void TableEnter(void *t, void *key);
 void TableFree(void *t);
-void *TableNew2(s32 esize, s32 n, s32 cap, u32 (*hash)(Conn062 **, u32), s32 (*cmp)(Conn062 **, Conn062 **),
+HashImplementation *TableNew2(s32 esize, s32 n, s32 cap, u32 (*hash)(Conn062 **, u32), s32 (*cmp)(Conn062 **, Conn062 **),
                           void *dtor);
 s32 GOAGetLastError(s32 fd);
 s32 inet_addr(char *s);

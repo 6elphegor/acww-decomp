@@ -15,6 +15,14 @@
 #include "proto/ov065/unk_ov065_02283720.h"
 #include "proto/ov065/unk_ov065_02283f34.h"
 #include "proto/ov065/unk_ov065_02285778.h"
+#include "proto/ov065/unk_ov065_02278328.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
+
+// defined in other units without a shared prototype
+extern "C" {
+void gti2CloseSocket(GTI2Socket *c);  // src/ov065/unk_ov065_02285778.cpp
+BOOL gti2SocketSend(GTI2Socket *c, u32 ip, u16 port, u8 *buf, s32 len);  // src/ov065/unk_ov065_02285778.cpp
+}
 
 extern "C" { u8 data_ov065_0228e14c[4] = {0xfe, 0xfe, 0, 0}; }
 
@@ -36,14 +44,7 @@ extern char data_ov065_0228e108[];
 
 s32 strncmp(const char *, const char *, u32);
 
-void *ArrayNth(DArrayImplementation *, s32);
-s32 ArrayLength(DArrayImplementation *);
 s32 CanReceiveOnSocket(s32);
-s32 recv(s32, char *, s32, s32);
-void shutdown(s32, s32);
-void closesocket(s32);
-s32 current_time(u8 *);
-void gti2CloseSocket(GTI2Socket *);
 
 s32 gti2VerifyChallenge(u8 *);
 
@@ -89,37 +90,16 @@ extern "C" s32 gti2NewOutgoingConnection(GTI2Socket *s, GTI2Connection **pc, u32
 }
 
 extern "C" {
-extern void *ArrayNth(void *, s32);
-extern s32 ArrayLength(void *);
-extern void ArrayFree(void *);
-extern s32 TableRemove(void *, void *);
-extern s32 ArrayAppend(void *, void *);
-extern void TableMapSafe(void *, void *, void *);
 extern void msleep(s32);
 
-extern s32 gti2CloseSocket(void *);
-extern s32 gti2SocketSend(void *, u32, u16, u8 *, s32);
 extern s32 gti2FreeSocketConnection(void *);
 extern s32 gti2NewSocketConnection(void *, void *, u32, u32);
 
-extern void gti2GetChallenge(void *);
-extern void gti2SendClientChallenge(void *, void *);
-extern s32 gt2Think(void *);
-extern void gti2Send(void *, u8 *, s32, s32);
-extern s32 gti2ResendMessage(void *, void *);
-extern void gti2SendClosed(void *);
 extern s32 gti2SendPing(GTI2Connection *);
-extern s32 gti2SendAck(void *);
-extern s32 gti2SendKeepAlive(void *);
-extern void gti2SendClose(void *);
-extern void gti2SendReject(void *, u8 *, s32);
-extern void gti2SendAccept(void *);
 
 s32 gti2ReceiveFilterCallback(GTI2Connection *c, s32 a, u8 *msg, u32 len, u32 rel);
 s32 gti2SendFilterCallback(GTI2Connection *c, s32 a, u8 *msg, u32 len, u32 rel);
 s32 gti2ClosedCallback(GTI2Connection *c, s32 a);
-s32 gti2ConnectedCallback(GTI2Connection *c, s32 a, u8 *b, s32 d);
-void gti2ConnectionClosed(GTI2Connection *c, ...);
 void gti2CloseConnection(GTI2Connection *c, s32 x);
 s32 gti2CheckKeepAlive(GTI2Connection *c, u32 t);
 s32 gti2CheckPendingAck(GTI2Connection *c, u32 t);
@@ -128,7 +108,6 @@ s32 gti2CheckTimeout(GTI2Connection *c, u32 t);
 s32 gti2ConnectionSendData(GTI2Connection *c, u8 *a, s32 b);
 s32 gti2StartConnectionAttempt(GTI2Connection *c, u8 *msg, s32 len, GsTransportConnCallbacks *x);
 s32 gti2NewOutgoingConnection(GTI2Socket *s, GTI2Connection **pc, u32 ip, u32 port);
-void gti2CloseAllConnectionsHardMap(GTI2Connection **p);
 void gt2CloseConnectionHard(GTI2Connection *c);
 
 
@@ -176,60 +155,41 @@ extern "C" {
 
 // ov065_060: GameSpy-style (SOCKS5-like) connection handshake builders and UDP receive path (0x02284b8c..0x02285440)
 
-typedef GTI2Socket Sock;
 
-typedef GTI2Connection Conn;
-typedef GTI2Buffer Buf;
 
 extern "C" {
 extern u8 data_ov065_0228e14c[];
 
 
 
-void gti2RejectConnection(Conn *, u8 *, s32);
-s32 gti2AcceptConnection(Conn *, void *);
-void gti2Listen(Sock *, gt2ConnectAttemptCallback callback);
-s32 gti2SocketConnectionsThink(Sock *);
-s32 gti2FreeClosedConnections(Sock *);
-s32 gti2SocketError(Sock *);
-void gt2CloseAllConnectionsHard(Sock *);
-void gti2CloseSocket(Sock *);
-s32 gti2CreateSocket(Sock **, char *, u32, u32, gt2SocketErrorCallback);
-s32 gti2ConnectionSendData(Conn *, u8 *, s32);
-s32 gti2SocketSend(Sock *, u32, u16, u8 *, s32);
-s32 gti2BufferWriteData(Buf *, const u8 *, s32);
-s32 gti2BufferWriteUShort(Buf *, s32);
-s32 gti2BufferWriteByte(Buf *, s32);
-s32 gti2GetBufferFreeSpace(Buf *);
-s32 gti2BufferShorten(Buf *, s32, s32);
-s32 ArrayLength(void *);
-void *ArrayNth(void *, s32);
-void ArrayAppend(void *, void *);
-s32 gti2ConnectionMemoryError(Conn *);
+void gti2RejectConnection(GTI2Connection *, u8 *, s32);
+void gti2Listen(GTI2Socket *, gt2ConnectAttemptCallback callback);
+s32 gti2SocketConnectionsThink(GTI2Socket *);
+s32 gti2FreeClosedConnections(GTI2Socket *);
+s32 gti2SocketError(GTI2Socket *);
+void gt2CloseAllConnectionsHard(GTI2Socket *);
+s32 gti2CreateSocket(GTI2Socket **, char *, u32, u32, gt2SocketErrorCallback);
+s32 gti2ConnectionSendData(GTI2Connection *, u8 *, s32);
+s32 gti2ConnectionMemoryError(GTI2Connection *);
 s32 CanReceiveOnSocket(s32);
-s32 recvfrom(s32, u8 *, s32, s32, void *, s32 *);
-s32 GOAGetLastError(s32);
-Conn *gti2SocketFindConnection(Sock *, s32, s32);
-s32 gti2DumpCallback(Sock *, Conn *, s32, s32, s32, u8 *, s32, s32);
-s32 gti2UnrecognizedMessageCallback(Sock *, s32, s32, u8 *, s32, s32 *);
-s32 gti2NewIncomingConnection(Sock *, Conn **, s32, s32);
-s32 gti2ConnectionError(Conn *, s32, s32);
-s32 gti2HandleAppUnreliable(Conn *, u8 *, s32);
-s32 gti2ConnectionCommunicationError(Conn *);
-s32 gti2HandleReliableMessage(Conn *, s32, u8 *, s32);
-s32 gti2HandleUnreliableMessage(Conn *, s32, u8 *, s32);
+GTI2Connection *gti2SocketFindConnection(GTI2Socket *, s32, s32);
+s32 gti2DumpCallback(GTI2Socket *, GTI2Connection *, s32, s32, s32, u8 *, s32, s32);
+s32 gti2UnrecognizedMessageCallback(GTI2Socket *, s32, s32, u8 *, s32, s32 *);
+s32 gti2ConnectionError(GTI2Connection *, s32, s32);
+s32 gti2HandleAppUnreliable(GTI2Connection *, u8 *, s32);
+s32 gti2ConnectionCommunicationError(GTI2Connection *);
+s32 gti2HandleReliableMessage(GTI2Connection *, s32, u8 *, s32);
+s32 gti2HandleUnreliableMessage(GTI2Connection *, s32, u8 *, s32);
 
-s32 gti2SendClosedOnSocket(Sock *, s32, s32);
-s32 gti2SendClosed(Conn *);
-s32 gti2BeginReliableMessage(Conn *, u32, s32, s32 *);
-s32 gti2EndReliableMessage(Conn *);
-s32 gti2StoreOutgoingReliableMessageInfo(Conn *, u32, s32);
-s32 gti2ReceiveMessages(Sock *);
-s32 gti2HandleConnectionReset(Sock *, s32, u32);
-s32 gti2HandleMessage(Sock *, u8 *, s32, s32, s32);
-s32 gti2SendAppReliable(Conn *, u8 *, s32);
-s32 gti2SendAppUnreliable(Conn *, u8 *, s32);
-s32 gti2SendReject(Conn *, u8 *, s32);
+s32 gti2SendClosedOnSocket(GTI2Socket *, s32, s32);
+s32 gti2BeginReliableMessage(GTI2Connection *, u32, s32, s32 *);
+s32 gti2EndReliableMessage(GTI2Connection *);
+s32 gti2StoreOutgoingReliableMessageInfo(GTI2Connection *, u32, s32);
+s32 gti2ReceiveMessages(GTI2Socket *);
+s32 gti2HandleConnectionReset(GTI2Socket *, s32, u32);
+s32 gti2HandleMessage(GTI2Socket *, u8 *, s32, s32, s32);
+s32 gti2SendAppReliable(GTI2Connection *, u8 *, s32);
+s32 gti2SendAppUnreliable(GTI2Connection *, u8 *, s32);
 
 
 
@@ -280,52 +240,33 @@ extern "C" {
 
 
 
-typedef GTI2Connection Cn;
-typedef GTI2IncomingBufferMessage It;
 
 extern "C" {
 
-void *ArrayNth(void *, s32);
-s32 ArrayLength(void *);
-s32 ArrayDeleteAt(void *, s32);
-s32 ArrayInsertSorted(void *, void *, void *);
-char *gti2GetChallenge(void *);
-s32 gti2BufferShorten(void *, s32, s32);
-s32 gti2BufferWriteData(void *, void *, s32);
-s32 gti2GetBufferFreeSpace(void *);
-s32 gti2PingCallback(Cn *, s32);
-s32 gti2ConnectedCallback(Cn *, s32, void *, s32);
-s32 gti2ConnectAttemptCallback(void *, Cn *, s32, s32, s32, void *, s32);
-s32 gti2ConnectionClosed(Cn *);
-s32 gti2ResendMessage(Cn *, void *);
-s32 gti2SendClosed(Cn *);
-s32 gti2SendPong(Cn *, void *, s32);
-s32 gti2SendNack(Cn *, u16, u16);
-s32 gti2SendClientResponse(Cn *, void *, void *, s32);
-s32 gti2SendServerChallenge(Cn *, void *, void *);
-s32 gti2ConnectionMemoryError(Cn *);
-s32 gti2ConnectionCommunicationError(Cn *);
-s32 gti2ConnectionError(Cn *, s32, s32);
-s32 gti2HandleESN(Cn *, s32);
+s32 gti2PingCallback(GTI2Connection *, s32);
+s32 gti2ConnectionMemoryError(GTI2Connection *);
+s32 gti2ConnectionCommunicationError(GTI2Connection *);
+s32 gti2ConnectionError(GTI2Connection *, s32, s32);
+s32 gti2HandleESN(GTI2Connection *, s32);
 
-s32 gti2HandleAck(Cn *c, u8 *p, s32 n);
-s32 gti2HandleNack(Cn *c, u8 *p, s32 n);
-s32 gti2HandlePing(Cn *c, u8 *p, s32 n);
-s32 gti2HandlePong(Cn *c, u8 *p, s32 n);
-s32 gti2HandleClosed(Cn *c);
-void gti2SetPendingAck(Cn *c);
-s32 gti2DeliverHoldMessages(Cn *c);
-void gti2RemoveHoldMessage(Cn *c, It *e, s32 i);
-s32 gti2BufferIncomingMessage(Cn *c, s32 a, u32 seq, u8 *p, s32 n, s32 *out);
-s32 gti2IncomingBufferMessageCompare(It *a, It *b);
-s32 gti2DeliverReliableMessage(Cn *c, s32 mode, u8 *p, s32 n);
-s32 gti2HandleClose(Cn *c);
-s32 gti2HandleReject(Cn *c, u8 *p, s32 n);
-s32 gti2HandleAccept(Cn *c);
-s32 gti2HandleClientResponse(Cn *c, u8 *p, s32 n);
-s32 gti2HandleServerChallenge(Cn *c, u8 *p, s32 n);
-s32 gti2HandleClientChallenge(Cn *c, u8 *p, s32 n);
-s32 gti2HandleAppReliable(Cn *c, u8 *p, s32 n);
+s32 gti2HandleAck(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandleNack(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandlePing(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandlePong(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandleClosed(GTI2Connection *c);
+void gti2SetPendingAck(GTI2Connection *c);
+s32 gti2DeliverHoldMessages(GTI2Connection *c);
+void gti2RemoveHoldMessage(GTI2Connection *c, GTI2IncomingBufferMessage *e, s32 i);
+s32 gti2BufferIncomingMessage(GTI2Connection *c, s32 a, u32 seq, u8 *p, s32 n, s32 *out);
+s32 gti2IncomingBufferMessageCompare(GTI2IncomingBufferMessage *a, GTI2IncomingBufferMessage *b);
+s32 gti2DeliverReliableMessage(GTI2Connection *c, s32 mode, u8 *p, s32 n);
+s32 gti2HandleClose(GTI2Connection *c);
+s32 gti2HandleReject(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandleAccept(GTI2Connection *c);
+s32 gti2HandleClientResponse(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandleServerChallenge(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandleClientChallenge(GTI2Connection *c, u8 *p, s32 n);
+s32 gti2HandleAppReliable(GTI2Connection *c, u8 *p, s32 n);
 
 
 
@@ -351,7 +292,7 @@ s32 gti2HandleAppReliable(Cn *c, u8 *p, s32 n);
 }
 
 namespace N02285630 { extern "C" {
-BOOL gti2HandlePong(Cn *c, u8 *p, s32 n)
+BOOL gti2HandlePong(GTI2Connection *c, u8 *p, s32 n)
 {
     GsBytes4 t;
     s32 now;
@@ -371,7 +312,7 @@ BOOL gti2HandlePong(Cn *c, u8 *p, s32 n)
 } }
 
 namespace N02285630 { extern "C" {
-BOOL gti2HandleClosed(Cn *c)
+BOOL gti2HandleClosed(GTI2Connection *c)
 {
     if (c->state == 7) return TRUE;
     s32 f;
@@ -382,7 +323,7 @@ BOOL gti2HandleClosed(Cn *c)
 } }
 
 namespace N02285630 { extern "C" {
-BOOL gti2HandleUnreliableMessage(Cn *c, s32 t, u8 *a, s32 b)
+BOOL gti2HandleUnreliableMessage(GTI2Connection *c, s32 t, u8 *a, s32 b)
 {
     u8 *x = a + 3;
     s32 y = b - 3;
@@ -402,8 +343,8 @@ BOOL gti2HandleUnreliableMessage(Cn *c, s32 t, u8 *a, s32 b)
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2HandleMessage(Sock *s, u8 *data, s32 n, s32 addr, s32 port) {
-    Conn *c = gti2SocketFindConnection(s, addr, port);
+s32 gti2HandleMessage(GTI2Socket *s, u8 *data, s32 n, s32 addr, s32 port) {
+    GTI2Connection *c = gti2SocketFindConnection(s, addr, port);
     s32 flag;
     s32 out;
     if (s->receiveDumpCallback != 0) {
@@ -445,7 +386,7 @@ s32 gti2HandleMessage(Sock *s, u8 *data, s32 n, s32 addr, s32 port) {
             }
         }
     }
-    Conn *k = c;
+    GTI2Connection *k = c;
     if (k->state == 7) {
         if (flag == 0 || data[2] != 0x68) {
             if (gti2SendClosed(k) == 0) {
@@ -486,8 +427,8 @@ s32 gti2HandleMessage(Sock *s, u8 *data, s32 n, s32 addr, s32 port) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2HandleConnectionReset(Sock *s, s32 addr, u32 port) {
-    Conn *c = gti2SocketFindConnection(s, addr, port);
+s32 gti2HandleConnectionReset(GTI2Socket *s, s32 addr, u32 port) {
+    GTI2Connection *c = gti2SocketFindConnection(s, addr, port);
     if (s->receiveDumpCallback != 0) {
         if (gti2DumpCallback(s, c, addr, port, 1, 0, 0, 0) == 0) {
             return 0;
@@ -513,17 +454,17 @@ s32 gti2HandleConnectionReset(Sock *s, s32 addr, u32 port) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2ReceiveMessages(Sock *s) {
+s32 gti2ReceiveMessages(GTI2Socket *s) {
     SockAddrIn a;
     s32 len;
     u8 buf[0x5dc];
     if (CanReceiveOnSocket(s->socket) != 0) {
         do {
             len = 8;
-            s32 n = recvfrom(s->socket, buf, 0x5dc, 0, &a, &len);
+            s32 n = recvfrom(s->socket, (char *)buf, 0x5dc, 0, &a, &len);
             s32 m = -1;
             if (n == m) {
-                s32 e = GOAGetLastError(s->socket);
+                s32 e = GOAGetLastError();
                 if (e == -15) {
                     if (gti2HandleConnectionReset(s, a.addr, Swap16(a.port)) == 0) {
                         return 0;
@@ -544,7 +485,7 @@ s32 gti2ReceiveMessages(Sock *s) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2StoreOutgoingReliableMessageInfo(Conn *o, u32 seq, s32 need) {
+s32 gti2StoreOutgoingReliableMessageInfo(GTI2Connection *o, u32 seq, s32 need) {
     GTI2OutgoingBufferMessage r = {0, 0, 0, 0};
     r.start = o->outgoingBuffer.len;
     r.len = need;
@@ -560,7 +501,7 @@ s32 gti2StoreOutgoingReliableMessageInfo(Conn *o, u32 seq, s32 need) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2BeginReliableMessage(Conn *o, u32 type, s32 need, s32 *out) {
+s32 gti2BeginReliableMessage(GTI2Connection *o, u32 type, s32 need, s32 *out) {
     if (gti2GetBufferFreeSpace(&o->outgoingBuffer) < need) {
         if (gti2ConnectionMemoryError(o) == 0) {
             return 0;
@@ -587,7 +528,7 @@ s32 gti2BeginReliableMessage(Conn *o, u32 type, s32 need, s32 *out) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2EndReliableMessage(Conn *o) {
+s32 gti2EndReliableMessage(GTI2Connection *o) {
     s32 c = ArrayLength(o->outgoingBufferMessages);
     s32 *it = (s32 *)ArrayNth(o->outgoingBufferMessages, c - 1);
     if (gti2ConnectionSendData(o, o->outgoingBuffer.buffer + it[0], it[1]) == 0) {
@@ -599,7 +540,7 @@ s32 gti2EndReliableMessage(Conn *o) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendAppReliable(Conn *o, u8 *a, s32 n) {
+s32 gti2SendAppReliable(GTI2Connection *o, u8 *a, s32 n) {
     s32 r;
     if (gti2BeginReliableMessage(o, 0, n + 7, &r) == 0) {
         return 0;
@@ -616,7 +557,7 @@ s32 gti2SendAppReliable(Conn *o, u8 *a, s32 n) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendClientChallenge(Conn *o, u8 *a) {
+s32 gti2SendClientChallenge(GTI2Connection *o, u8 *a) {
     s32 r;
     if (gti2BeginReliableMessage(o, 1, 0x27, &r) == 0) {
         return 0;
@@ -633,7 +574,7 @@ s32 gti2SendClientChallenge(Conn *o, u8 *a) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendServerChallenge(Conn *o, u8 *a, u8 *b) {
+s32 gti2SendServerChallenge(GTI2Connection *o, u8 *a, u8 *b) {
     s32 r;
     if (gti2BeginReliableMessage(o, 2, 0x47, &r) == 0) {
         return 0;
@@ -652,7 +593,7 @@ s32 gti2SendServerChallenge(Conn *o, u8 *a, u8 *b) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendClientResponse(Conn *o, u8 *a, u8 *b, s32 n) {
+s32 gti2SendClientResponse(GTI2Connection *o, u8 *a, u8 *b, s32 n) {
     s32 r;
     if (gti2BeginReliableMessage(o, 3, n + 0x27, &r) == 0) {
         return 0;
@@ -670,7 +611,7 @@ s32 gti2SendClientResponse(Conn *o, u8 *a, u8 *b, s32 n) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendAccept(Conn *o) {
+s32 gti2SendAccept(GTI2Connection *o) {
     s32 r;
     if (gti2BeginReliableMessage(o, 4, 7, &r) == 0) {
         return 0;
@@ -686,7 +627,7 @@ s32 gti2SendAccept(Conn *o) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendReject(Conn *o, u8 *a, s32 n) {
+s32 gti2SendReject(GTI2Connection *o, u8 *a, s32 n) {
     s32 r;
     if (gti2BeginReliableMessage(o, 5, n + 7, &r) == 0) {
         return 0;
@@ -703,7 +644,7 @@ s32 gti2SendReject(Conn *o, u8 *a, s32 n) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendClose(Conn *o) {
+s32 gti2SendClose(GTI2Connection *o) {
     s32 r;
     if (gti2BeginReliableMessage(o, 6, 7, &r) == 0) {
         return 0;
@@ -719,7 +660,7 @@ s32 gti2SendClose(Conn *o) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendKeepAlive(Conn *o) {
+s32 gti2SendKeepAlive(GTI2Connection *o) {
     s32 r;
     if (gti2BeginReliableMessage(o, 7, 7, &r) == 0) {
         return 0;
@@ -735,7 +676,7 @@ s32 gti2SendKeepAlive(Conn *o) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendAppUnreliable(Conn *o, u8 *data, s32 n) {
+s32 gti2SendAppUnreliable(GTI2Connection *o, u8 *data, s32 n) {
     u8 *t;
     s32 total;
     if (n < 2 || memcmp(data, data_ov065_0228e14c, 2) != 0) {
@@ -760,7 +701,7 @@ s32 gti2SendAppUnreliable(Conn *o, u8 *data, s32 n) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendAck(Conn *o) {
+s32 gti2SendAck(GTI2Connection *o) {
     u8 buf[5];
     u8 *const p = buf;
     const u8 *const s = data_ov065_0228e14c;
@@ -777,7 +718,7 @@ s32 gti2SendAck(Conn *o) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendNack(Conn *o, s32 a, s32 b) {
+s32 gti2SendNack(GTI2Connection *o, s32 a, s32 b) {
     u8 buf[8];
     s32 n = 0;
     u8 *const p = buf;
@@ -799,7 +740,7 @@ s32 gti2SendNack(Conn *o, s32 a, s32 b) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendPing(Conn *o) {
+s32 gti2SendPing(GTI2Connection *o) {
     u32 t;
     u8 buf[11];
     u8 *const p = buf;
@@ -828,20 +769,20 @@ s32 gti2SendPing(Conn *o) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendPong(Conn *o, u8 *b, s32 n) {
+s32 gti2SendPong(GTI2Connection *o, u8 *b, s32 n) {
     b[2] = 0x67;
     return gti2ConnectionSendData(o, b, n);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendClosed(Conn *o) {
+s32 gti2SendClosed(GTI2Connection *o) {
     return gti2SendClosedOnSocket(o->socket, o->ip, o->port);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2SendClosedOnSocket(Sock *a, s32 b, s32 c) {
+s32 gti2SendClosedOnSocket(GTI2Socket *a, s32 b, s32 c) {
     u8 buf[3];
     u8 *const p = buf;
     const u8 *const s = data_ov065_0228e14c;
@@ -856,7 +797,7 @@ s32 gti2SendClosedOnSocket(Sock *a, s32 b, s32 c) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gti2ResendMessage(Conn *o, s32 *m) {
+s32 gti2ResendMessage(GTI2Connection *o, s32 *m) {
     gti2UShortToBuffer(o->outgoingBuffer.buffer, m[0] + 5, o->expectedSerialNumber);
     if (gti2ConnectionSendData(o, o->outgoingBuffer.buffer + m[0], m[1]) == 0) {
         return 0;
@@ -870,7 +811,7 @@ s32 gti2ResendMessage(Conn *o, s32 *m) {
 } }
 
 namespace N02284b8c { extern "C" {
-void gti2Send(Conn *o, u8 *a, s32 b, s32 mode) {
+void gti2Send(GTI2Connection *o, u8 *a, s32 b, s32 mode) {
     if (mode != 0) {
         gti2SendAppReliable(o, a, b);
     } else {
@@ -880,20 +821,20 @@ void gti2Send(Conn *o, u8 *a, s32 b, s32 mode) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gt2CreateSocket(Sock **a, char *b, s32 c, s32 d, gt2SocketErrorCallback e) {
+s32 gt2CreateSocket(GTI2Socket **a, char *b, s32 c, s32 d, gt2SocketErrorCallback e) {
     return gti2CreateSocket(a, b, c, d, e);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-void gt2CloseSocket(Sock *o) {
+void gt2CloseSocket(GTI2Socket *o) {
     gt2CloseAllConnectionsHard(o);
     gti2CloseSocket(o);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-void gt2Think(Sock *s) {
+void gt2Think(GTI2Socket *s) {
     if (gti2ReceiveMessages(s) != 0) {
         if (gti2SocketConnectionsThink(s) != 0) {
             gti2FreeClosedConnections(s);
@@ -903,19 +844,19 @@ void gt2Think(Sock *s) {
 } }
 
 namespace N02284b8c { extern "C" {
-void gt2Listen(Sock *p, gt2ConnectAttemptCallback callback) {
+void gt2Listen(GTI2Socket *p, gt2ConnectAttemptCallback callback) {
     gti2Listen(p, callback);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gt2Accept(Conn *o, void *x) {
+s32 gt2Accept(GTI2Connection *o, GsTransportConnCallbacks *x) {
     return gti2AcceptConnection(o, x);
 }
 } }
 
 namespace N02284b8c { extern "C" {
-void gt2Reject(Conn *o, u8 *a, s32 b) {
+void gt2Reject(GTI2Connection *o, u8 *a, s32 b) {
     return gti2RejectConnection(o, a, b);
 }
 } }
@@ -1003,16 +944,17 @@ void gt2CloseConnectionHard(GTI2Connection *c)
 } }
 
 namespace N02284240 { extern "C" {
-void gti2CloseAllConnectionsHardMap(GTI2Connection **p)
+s32 gti2CloseAllConnectionsHardMap(void *elem, void *arg) // a GsArrayMapFn (TableMapSafe ignores the result)
 {
-    gt2CloseConnectionHard(*p);
+    gt2CloseConnectionHard(*(GTI2Connection **)elem);
+    return 1;
 }
 } }
 
 namespace N02284240 { extern "C" {
 void gt2CloseAllConnectionsHard(GTI2Socket *s)
 {
-    TableMapSafe(s->connections, (void *)gti2CloseAllConnectionsHardMap, NULL);
+    TableMapSafe(s->connections, gti2CloseAllConnectionsHardMap, NULL);
 }
 } }
 
@@ -1120,9 +1062,9 @@ s32 gti2StartConnectionAttempt(GTI2Connection *c, u8 *msg, s32 len, GsTransportC
         c->closedCallback = x->closed;
         c->pingCallback = x->ping;
     }
-    gti2GetChallenge(&buf);
-    gti2GetResponse(c->response, (u8 *)&buf);
-    gti2SendClientChallenge(c, &buf);
+    gti2GetChallenge(buf.bytes);
+    gti2GetResponse(c->response, buf.bytes);
+    gti2SendClientChallenge(c, buf.bytes);
     c->state = 0;
     return FALSE;
 }
@@ -1612,10 +1554,10 @@ void gti2BufferWriteUShort(GTI2Buffer *b, s32 v) {
 } }
 
 namespace N022838c4 { extern "C" {
-void gti2BufferWriteData(GTI2Buffer *b, char *s, s32 n) {
+void gti2BufferWriteData(GTI2Buffer *b, const u8 *s, s32 n) {
     if (s != 0 && n != 0) {
         if (n == -1) {
-            n = STD_GetStringLength(s);
+            n = STD_GetStringLength((const char *)s);
         }
         memcpy(b->buffer + b->len, s, n);
         b->len += n;
@@ -1694,7 +1636,7 @@ char *gti2GetChallenge(u8 *out) {
     u32 t1;
     u32 v[9];
     u32 acc;
-    srand(current_time(out));
+    srand(current_time());
     out[0] = rand() % 0x5d + 0x21;
     acc = 0;
     i = 1;
