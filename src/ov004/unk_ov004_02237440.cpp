@@ -82,7 +82,6 @@
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 #define func_0209c2d8 _ZN13ModelSlotPoolD1Ev
 #define func_0209c2dc _ZN13ModelSlotPoolC1Ev
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_021355f0 __cxa_vec_cleanup
 #define func_02135714 __cxa_vec_ctor
 
@@ -374,7 +373,6 @@ extern u8 data_021ed0a0[];
 u32 ModelSlotPool_acquire(void *self, void *p);
 void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 BOOL PooledModel_loadFromSlot(void *self, u32 a, void *s);
-void *ModelSlot_getHeap(ModelSlot *self);
 void *Model_getRenderObj(void *self);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
@@ -4166,7 +4164,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
                 Str_SPrintf(pth + 1, "%s.nsbca", nm);
             }
             if (File_Exists(pth + 1)) {
-                sp10 = ModelSlot_getHeap(res);
+                sp10 = res->getHeap();
                 if (t == 0x38) {
                     tmp = m->dungBallAnimFile = File_LoadAlloc(pth + 1, gCurrentHeap, 4, 0);
                 } else if (t == 0x23) {

@@ -7,8 +7,8 @@
 #include "game/CollisionCylinder.h"
 #include "game/CollisionEdge.h"
 #include "game/CollisionSegment.h"
-#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcb2c.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202e9d4.h"
 
 
@@ -18,7 +18,6 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(...);
 s32 VEC_DotProduct(void *a, void *b);
 void VEC_Add(void *o, void *a, void *b);
-void Vec_Add(void *o, void *a, void *b);
 void Vec_RotateY(void *v, s16 a);
 void Vec_Sub(void *o, void *a, void *b);
 void Vec_CrossCopy(void *o, void *a, void *b, void *c);

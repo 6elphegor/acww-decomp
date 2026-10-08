@@ -10,23 +10,15 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0208eeac.h"
 
-extern "C" {
-s32 TalkRequestFlags_IsSceneHold();
-}
-
-
-
 
 InputModeIcon sInputModeIcon;
-
-
 
 
 ReceivedLetterBlock::ReceivedLetterBlock() {}
 
 ReceivedLetterBlock::~ReceivedLetterBlock() {}
 
-extern "C" void ReceivedLetter_Clear(void *p) { Letter_Clear(p); }
+extern "C" void ReceivedLetter_Clear(void *p) { Letter_Clear((LetterView *)p); }
 
 extern "C" BOOL ReceivedLetter_HasLetter(void *p) {
     if (((LetterView *)(p))->getState()) {
@@ -72,7 +64,7 @@ extern "C" void InputModeIcon_Draw() { sInputModeIcon.draw(); }
 void InputModeIcon::draw() {
     if (isVisible != 0) {
         if (!isDrawBlocked()) {
-            void *h = anim.getCell();
+            GXOamAttr *h = (GXOamAttr *)anim.getCell();
             s32 x = getOriginX() + anim.getFrameX(-1);
             s32 y = getOriginY() + anim.getFrameY(-1);
             Oam_DrawCell(3, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);

@@ -52,8 +52,8 @@ extern "C" void WfcBgMap_TransferTask() {
     sWfcBgMap->isTransferPending = 0;
 }
 
-extern "C" void WfcUtil_RequestPaletteLine(s32 a, s32 b, s32 c) {
-    sWfcPaletteCopy.src = (void *)(a + (b << 5));
+extern "C" void WfcUtil_RequestPaletteLine(void *a, s32 b, s32 c) {
+    sWfcPaletteCopy.src = (u8 *)a + (b << 5);
     sWfcPaletteCopy.dst = (void *)((c << 5) + 0x5000000);
     WfcTask_Add(1, (void *)WfcUtil_PaletteLineTask, 0, 0x78);
 }
@@ -63,8 +63,8 @@ extern "C" void WfcUtil_PaletteLineTask(s32 a) {
     WfcTask_RequestDelete(1, a);
 }
 
-extern "C" void WfcUtil_RequestBgPalette(s32 a) {
-    sWfcPaletteCopy.src = (void *)a;
+extern "C" void WfcUtil_RequestBgPalette(void *a) {
+    sWfcPaletteCopy.src = a;
     WfcTask_Add(1, (void *)WfcUtil_BgPaletteTask, 0, 0x78);
 }
 

@@ -4,50 +4,20 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02203b1c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/SimpleStart.h"
 #include "net/SockAddrIn.h"
+#include "net/SockStartupConfig.h"
+#include "sys/OSThread.h"
+#include "uptr.h"
 struct SimpleStartApList;
 struct SimpleStartMd5Ctx;
 struct SimpleStartSessionId;
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_sSimpleStartSocConfig
-extern void *sSimpleStartSocConfig[22];
-#endif
-#ifndef PROTO_LOCAL_sSimpleStartStatusCb
-extern void (*sSimpleStartStatusCb) (void *);
-#endif
-#ifndef PROTO_LOCAL_sSimpleStartFreeFunc
-extern void (*sSimpleStartFreeFunc) (void *);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_WcmCallback
-void SimpleStart_WcmCallback(void *pp);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_ClearMsgQueue
-void SimpleStart_ClearMsgQueue(void);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_Disconnect
-void SimpleStart_Disconnect(void);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_ThreadMain
-void SimpleStart_ThreadMain();
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_Free
-void SimpleStart_Free(void *p);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_NotifyStatus
-void SimpleStart_NotifyStatus(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_data_ov001_0222c898
 extern u8 *data_ov001_0222c898;
 #endif
@@ -55,7 +25,7 @@ extern u8 *data_ov001_0222c898;
 extern s32 sSimpleStartStackSize;
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartAllocFunc
-extern void *(*sSimpleStartAllocFunc) (u32);
+extern SimpleStartAllocFunc sSimpleStartAllocFunc;
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartStep
 extern s32 sSimpleStartStep;
@@ -70,10 +40,13 @@ extern u8 sSimpleStartSetupSsid[7];
 extern u8 data_ov001_0222a548[7];
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222a550
-extern u8 data_ov001_0222a550[12];
+extern char data_ov001_0222a550[12];
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartMd5Padding
 extern u8 sSimpleStartMd5Padding[64];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartSocConfig
+extern SockStartupConfig sSimpleStartSocConfig;
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222c850
 extern u8 data_ov001_0222c850;
@@ -98,6 +71,12 @@ extern s32 data_ov001_0222a53c;
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222c884
 extern u32 data_ov001_0222c884;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartWcmNotifyCb
+extern SimpleStartWcmNotifyFunc sSimpleStartWcmNotifyCb;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartStatusCb
+extern SimpleStartStatusFunc sSimpleStartStatusCb;
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartResultCode
 extern s32 sSimpleStartResultCode;
@@ -147,8 +126,11 @@ extern u8 *data_ov001_0222c88c;
 #ifndef PROTO_LOCAL_sSimpleStartState
 extern s32 sSimpleStartState;
 #endif
+#ifndef PROTO_LOCAL_sSimpleStartFreeFunc
+extern SimpleStartFreeFunc sSimpleStartFreeFunc;
+#endif
 #ifndef PROTO_LOCAL_data_ov001_0222c880
-extern s32 data_ov001_0222c880;
+extern u8 *data_ov001_0222c880;
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartWcmState
 extern s32 sSimpleStartWcmState;
@@ -157,7 +139,7 @@ extern s32 sSimpleStartWcmState;
 extern s32 sSimpleStartMsgHead;
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222c878
-extern s32 data_ov001_0222c878;
+extern u8 *data_ov001_0222c878;
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222c8b0
 extern s32 data_ov001_0222c8b0;
@@ -178,7 +160,7 @@ extern u32 sSimpleStartMsgQueue[4];
 extern u8 data_ov001_0222c8fc[0x10];
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartAllocMutex
-extern u8 sSimpleStartAllocMutex[0x18];
+extern OSMutex sSimpleStartAllocMutex;
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222c944
 extern u8 data_ov001_0222c944[0x20];
@@ -190,7 +172,7 @@ extern u8 data_ov001_0222c924[0x20];
 extern u8 data_ov001_0222c964[0x24];
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartThread
-extern u8 sSimpleStartThread[0xc0];
+extern OSThread sSimpleStartThread;
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartResult
 extern u32 sSimpleStartResult[58];
@@ -203,6 +185,9 @@ extern u8 sSimpleStartTlvBuf[0x800];
 #endif
 #ifndef PROTO_LOCAL_sSimpleStartPacketBuf
 extern u8 sSimpleStartPacketBuf[0x800];
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_WcmCallback
+void SimpleStart_WcmCallback(void *pp);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_WcmToIdle
 s32 SimpleStart_WcmToIdle(void);
@@ -223,16 +208,19 @@ s32 SimpleStart_WcmCleanup(void);
 s32 SimpleStart_WcmConnect(void *p, void *x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_WcmInit
-s32 SimpleStart_WcmInit(void *cb, void *buf, s32 size);
+s32 SimpleStart_WcmInit(SimpleStartWcmNotifyFunc cb, u8 *buf, s32 size);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_WcmGetState
 s32 SimpleStart_WcmGetState(void);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_SocAlloc
-void *SimpleStart_SocAlloc(s32 a, s32 n);
+void *SimpleStart_SocAlloc(s32 a, u32 size);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_SocFree
-void SimpleStart_SocFree(s32 a, void *p, s32 n);
+void SimpleStart_SocFree(s32 a, void *p, u32 size);
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_ClearMsgQueue
+void SimpleStart_ClearMsgQueue(void);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_PopMsg
 s32 SimpleStart_PopMsg(void);
@@ -241,7 +229,7 @@ s32 SimpleStart_PopMsg(void);
 void SimpleStart_PushMsg(u32 v, u32 w);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_AlarmCallback
-void SimpleStart_AlarmCallback(u32 a);
+void SimpleStart_AlarmCallback(void *arg);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_WlanStartup
 s32 SimpleStart_WlanStartup(s32 n);
@@ -252,20 +240,20 @@ s32 SimpleStart_WlanShutdown(void);
 #ifndef PROTO_LOCAL_SimpleStart_ConnectAp
 s32 SimpleStart_ConnectAp(void);
 #endif
-#ifndef PROTO_LOCAL_SimpleStart_FindSetupAp
-BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out);
+#ifndef PROTO_LOCAL_SimpleStart_Disconnect
+void SimpleStart_Disconnect(void);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_SearchAp
 s32 SimpleStart_SearchAp();
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_SendTo
-s32 SimpleStart_SendTo(u8 *a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e);
+s32 SimpleStart_SendTo(sptr a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_SendBroadcast
-s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c);
+s32 SimpleStart_SendBroadcast(sptr a, u8 *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_SendPacket
-s32 SimpleStart_SendPacket(u8 *a, u8 *b, u8 *c, u32 d);
+s32 SimpleStart_SendPacket(sptr a, SockAddrIn *b, u8 *c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_CheckPacket
 u8 *SimpleStart_CheckPacket(u8 *pkt, s32 *type, s32 *len);
@@ -295,10 +283,7 @@ s32 SimpleStart_RecvPacket(u8 *pkt, s32 type, u8 *dst, u8 *extra);
 u32 SimpleStart_BuildHelloPacket(u8 *pkt);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_GetOwnMac
-BOOL SimpleStart_GetOwnMac(void *mac);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_BuildSessionId
-s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused);
+BOOL SimpleStart_GetOwnMac(u8 *mac);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_ParseConfigTlvs
 s32 SimpleStart_ParseConfigTlvs(u8 *p);
@@ -311,6 +296,9 @@ s32 SimpleStart_BuildResult();
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_RunProtocol
 s32 SimpleStart_RunProtocol();
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_ThreadMain
+void SimpleStart_ThreadMain(void *arg);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_AesKeyWrap
 s32 SimpleStart_AesKeyWrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 keylen);
@@ -332,12 +320,6 @@ void SimpleStart_AesEncryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_AesDecryptBlock
 void SimpleStart_AesDecryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_Md5Update
-void SimpleStart_Md5Update(SimpleStartMd5Ctx *ctx, const u8 *data, u32 len);
-#endif
-#ifndef PROTO_LOCAL_SimpleStart_Md5Final
-void SimpleStart_Md5Final(u8 *out, SimpleStartMd5Ctx *ctx);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_Md5Transform
 void SimpleStart_Md5Transform(u32 *state, u8 *block);
@@ -363,6 +345,9 @@ u32 SimpleStart_GetMilliseconds();
 #ifndef PROTO_LOCAL_SimpleStart_Calloc
 void *SimpleStart_Calloc(u32 n, u32 m);
 #endif
+#ifndef PROTO_LOCAL_SimpleStart_Free
+void SimpleStart_Free(void *p);
+#endif
 #ifndef PROTO_LOCAL_SimpleStart_FormatHexByte
 s32 SimpleStart_FormatHexByte(char *buf, u32 v);
 #endif
@@ -370,16 +355,37 @@ s32 SimpleStart_FormatHexByte(char *buf, u32 v);
 s32 SimpleStart_FormatMac(char *dst, s8 *src);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_Start
-s32 SimpleStart_Start(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
+s32 SimpleStart_Start(u32 a0, s32 a1, SimpleStartStatusFunc a2, SimpleStartAllocFunc a3, SimpleStartFreeFunc a4, s32 a5);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_Stop
 s32 SimpleStart_Stop(void);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_GetStatus
-s32 SimpleStart_GetStatus(s32 *out);
+s32 SimpleStart_GetStatus(SimpleStartStatus *out);
 #endif
 #ifndef PROTO_LOCAL_SimpleStart_GetResult
 s32 SimpleStart_GetResult(void *dst);
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_NotifyStatus
+void SimpleStart_NotifyStatus(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SimpleStart_FindSetupAp
+BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out);
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_BuildSessionId
+s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused);
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_Md5Update
+void SimpleStart_Md5Update(SimpleStartMd5Ctx *ctx, const u8 *data, u32 len);
+#endif
+#ifndef PROTO_LOCAL_SimpleStart_Md5Final
+void SimpleStart_Md5Final(u8 *out, SimpleStartMd5Ctx *ctx);
 #endif
 }
 #endif

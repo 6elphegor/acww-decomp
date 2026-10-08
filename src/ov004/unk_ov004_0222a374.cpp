@@ -84,7 +84,7 @@ void Room_PlacePlayerBeds() {
                 if (r == 0) {
                     Item_SetFurnitureDirection(&l, 3);
                     if (x < 8) {
-                        if (Ftr_GetUnk05(&l) == 2) {
+                        if (Ftr_GetUnk05(&l.a) == 2) {
                             x--;
                         }
                     }

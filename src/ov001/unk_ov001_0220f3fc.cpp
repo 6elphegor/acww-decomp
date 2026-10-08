@@ -31,7 +31,6 @@ s32 OS_SpinWait(u32 a);
 s32 PM_ForceToPowerOff();
 void WfcUtil_LoadFileTo(void *a, void *b);
 s32 WfcUtil_SetScene(void *p);
-s32 WfcTransfer_SetCallback(void *a);
 s32 WfcTransferSend_OnResult(s32 a);
 s32 WfcTransferSend_FadeOut();
 s32 WfcTransferSend_FadeIn();
@@ -152,7 +151,7 @@ s32 WfcTransferSend_FadeIn() {
 
 void WfcTransferSend_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcTransfer_SetCallback((void *)WfcTransferSend_OnResult);
+    WfcTransfer_SetCallback((WfcTransferCallback)WfcTransferSend_OnResult);
     C668(WfcTransferSend_Update);
 }
 

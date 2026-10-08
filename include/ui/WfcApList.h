@@ -5,13 +5,15 @@
 #include "nitro/gxoam.h"
 #include "net/WfcApScanEntry.h"
 
-// ov001 Wi-Fi setup access-point list screen (sWfcApList, heap block of 0x5c bytes) listing WfcApScanEntry records.
+struct WfcTextCanvas;
+
+// ov001 Wi-Fi setup access-point list screen (sWfcApList, heap block of 0x5c bytes on the DS) listing WfcApScanEntry records.
 // Built in unk_ov001_02211b2c.cpp and unk_ov001_022118a8.cpp.
 struct WfcApList {
     /* 0x00 */ WfcApScanEntry *apEntries;
-    /* 0x04 */ u32 *bgMapFile;
-    /* 0x08 */ u32 *paletteFile;
-    /* 0x0c */ void *textCanvas;
+    /* 0x04 */ void *bgMapFile;
+    /* 0x08 */ void *paletteFile;
+    /* 0x0c */ WfcTextCanvas *textCanvas;
     /* 0x10 */ GXOamAttr *securityIcons[5];
     /* 0x24 */ GXOamAttr *signalIcons[5];
     /* 0x38 */ void *scrollTask;

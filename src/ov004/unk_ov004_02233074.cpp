@@ -182,8 +182,6 @@ static inline s16 *FtrFootprint_Tile(FtrFootprint *b, u32 i) {
 
 
 // main's 0x18-byte pool object
-typedef void *(*ModelSlotAllocFunc)(u32, u32);
-typedef void (*ModelSlotFreeFunc)();
 
 // main object, vtable 0x0224e9d8
 class FurnitureManager : public GameProc {

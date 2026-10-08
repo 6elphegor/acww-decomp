@@ -5,7 +5,6 @@
 #include "proto/main/unk_020b8cf8.h"
 
 
-
 extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {
     s32 idx;
     BOOL ok = FALSE;
@@ -19,7 +18,7 @@ extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {
         idx = -1;
     }
     if (idx != -1) {
-        u8 buf[0x20];
+        char buf[0x20];
         Str_SPrintf(buf, "/wall/wall_%d.nsbtx", idx);
         if (File_LoadToBuffer(buf, dst, -1)) {
             return TRUE;

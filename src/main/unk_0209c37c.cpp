@@ -11,7 +11,7 @@ u32 DebugVar_GetStub() {
 }
 
 u16 *DebugVar_GetPtr(u32 a, u32 b) {
-    return (u16 *)((u32)sDebugVarTable + (a << 8) + b * 2);
+    return &sDebugVarTable[(a << 7) + b];  // rows of 0x80 entries
 }
 
 }

@@ -25,39 +25,37 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "game/Unk_0201acf8.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "game/Random.h"
+#include "save/LostChildRecord.h"
+
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020c1738.h"
 
+// (defined in C units / units whose declarations aren't shared yet)
 extern "C" {
 s32 Scene_GetCurrent(void);
-void Npc_RotateOffsetXZ(void *out, void *pos, void *a, s32 b);
-s32 Math_AngleXZ(void *pos, void *v);
-void Math_CountDownU8(void *p);
-u32 Random_Next(void *p);
-s32 func_01ffcb0c(s32 a, s32 b);
+s32 func_01ffcb0c(s32 a, s32 b);  // FX_Mul
+u8 Math_CountDownU8(u8 *p);  // (src/autoload_2/unk_020e7500.cpp: its header conflicts with List.h here)
+u32 Random_Next(u32 *seed);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
-u16 *_ZN15LostChildRecord9getTownIdEv(void *p);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
-extern s32 gVec3Zero[3];
-extern s32 gCamera;
-extern s32 gCameraLookAt[3];
-extern u8 gRandom[];
-extern s16 data_02135f44[];
+extern void *gCamera;
+extern VecFx32 gCameraLookAt;
+extern s16 data_02135f44[];  // FX_SinCosTable_: sin, cos pairs
 extern s32 data_020c6cf0;
 }
 
 
 // ---- SpNpcKaitlinTalk and its bases (vtable 0x020ddcf0 chain) ----
-
 
 
 class SpNpcKaitlinTalk : public SpNpcTalkRequest {
@@ -78,10 +76,6 @@ public:
 };
 
 // ---- SpNpcKaitlin / SpNpcKatie and their bases (scene object derived from NpcActor) ----
-
-
-
-
 
 
 class SpNpcKaitlin;
@@ -112,7 +106,7 @@ public:
     BOOL mainAct07();
     BOOL tryAvoidObstacle();
     BOOL avoidObstacle();
-    BOOL findSidestepPos(VecFx32 *out, s32 *data);
+    BOOL findSidestepPos(VecFx32 *out, VecFx32 *offset);
     BOOL findRandomWalkTarget(s32 *px, s32 *pz);
     BOOL isInCameraView();
     BOOL isInViewBox(VecFx32 *a, VecFx32 *b);
@@ -139,7 +133,6 @@ public:
     SpNpcKaitlinTalk talk;
     u32 unk_70c;
 };
-
 
 
 extern SpNpcKaitlinActEntry sSpNpcKaitlinActTable[10];
@@ -187,7 +180,7 @@ BOOL SpNpcKaitlin::onCreate() {
     changeAct(0);
     if (Scene_GetCurrent() == 0x2f) {
         collisionEnabled = 0;
-        lookAt.setTarget(0, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+        lookAt.setTarget(0, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
         position.x = 0x10000;
         position.z = 0x16800;
     }
@@ -320,7 +313,7 @@ void SpNpcKaitlin::onJoinTalk() {
 }
 
 void SpNpcKaitlin::onLeaveTalk() {
-    lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    lookAt.setTarget(1, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     changeAct(0);
 }
 
@@ -429,9 +422,9 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
 }
 
 void SpNpcKaitlinTalk::onMessageStart(u32) {
-    void *r4 = PlayerData_GetCurrent()->getLostChildRecord();
-    ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv(r4), 0);
-    ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv(r4), 1);
+    LostChildRecord *r4 = (LostChildRecord *)PlayerData_GetCurrent()->getLostChildRecord();
+    ((ActorTalkRequest *)this)->setTownNameSlot(r4->getTownId(), 0);
+    ((ActorTalkRequest *)this)->setTownNameSlot(r4->getTownId(), 1);
 }
 
 void SpNpcKaitlinTalk::onMessageEnd(u32) {}
@@ -443,7 +436,7 @@ BOOL SpNpcKaitlin::setupAct07() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    lookAt.setTarget(1, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -470,11 +463,11 @@ BOOL SpNpcKaitlin::isInViewBox(VecFx32 *a, VecFx32 *b) {
 BOOL SpNpcKaitlin::isInCameraView() {
     VecFx32 *pos = (VecFx32 *)&position;
     s32 r = 0;
-    if (gCamera != 0) {
+    if (gCamera != NULL) {
         VecFx32 v;
-        v.x = gCameraLookAt[0];
-        v.y = gCameraLookAt[1];
-        v.z = gCameraLookAt[2];
+        v.x = gCameraLookAt.x;
+        v.y = gCameraLookAt.y;
+        v.z = gCameraLookAt.z;
         r = isInViewBox(&v, pos);
     }
     return r;
@@ -490,7 +483,7 @@ BOOL SpNpcKaitlin::findRandomWalkTarget(s32 *px, s32 *pz) {
     v.y = 0;
     v.z = 0;
     for (i = 0; i < 6; i++) {
-        s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
+        s32 idx = ((u16)(s16)Random_Next(&gRandom.seed) >> 4) * 2;
         s32 m = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = m + position.x;
         m = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
@@ -506,10 +499,10 @@ BOOL SpNpcKaitlin::findRandomWalkTarget(s32 *px, s32 *pz) {
     return result;
 }
 
-BOOL SpNpcKaitlin::findSidestepPos(VecFx32 *out, s32 *data) {
+BOOL SpNpcKaitlin::findSidestepPos(VecFx32 *out, VecFx32 *offset) {
     BOOL result = FALSE;
     VecFx32 v;
-    Npc_RotateOffsetXZ(&v, &position, data, moveAngleY);
+    Npc_RotateOffsetXZ(&v, (VecFx32 *)&position, offset, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
         out->y = v.y;
@@ -532,7 +525,7 @@ BOOL SpNpcKaitlin::avoidObstacle() {
             result = TRUE;
             break;
         case 1:
-            if (findSidestepPos(&v, &data_021f4658[1].x)) {
+            if (findSidestepPos(&v, &data_021f4658[1])) {
                 ((NpcMoveCtrl *)(p350))->setDestination((VecFx32 *)(&v));
             } else {
                 ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -540,7 +533,7 @@ BOOL SpNpcKaitlin::avoidObstacle() {
             result = TRUE;
             break;
         case 2:
-            if (findSidestepPos(&v, &data_021f4658[0].x)) {
+            if (findSidestepPos(&v, &data_021f4658[0])) {
                 ((NpcMoveCtrl *)(p350))->setDestination((VecFx32 *)(&v));
             } else {
                 ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -574,13 +567,13 @@ BOOL SpNpcKaitlin::mainAct07() {
             if (((NpcActionCtrl *)(p564))->isActionDone()) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                } else if ((Random_Next(gRandom) & 7) == 0) {
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     VecFx32 v1;
-                    v1.x = gVec3Zero[0];
-                    v1.y = gVec3Zero[1];
-                    v1.z = gVec3Zero[2];
+                    v1.x = gVec3Zero.x;
+                    v1.y = gVec3Zero.y;
+                    v1.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v1.x, &v1.z)) {
-                        s32 ang = Math_AngleXZ(&position, &v1);
+                        s32 ang = Math_AngleXZ(&position.x, &v1.x);
                         if (NpcActor_IsFrontAngle(ang - rotY)) {
                             s32 k = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -613,7 +606,7 @@ BOOL SpNpcKaitlin::mainAct07() {
                             v2.x = src->x;
                             v2.y = src->y;
                             v2.z = src->z;
-                            s32 ang = Math_AngleXZ(&position, &v2);
+                            s32 ang = Math_AngleXZ(&position.x, &v2.x);
                             if (!NpcActor_IsFrontAngle(ang - rotY)) {
                                 ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }

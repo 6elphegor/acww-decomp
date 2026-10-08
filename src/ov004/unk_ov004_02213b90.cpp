@@ -519,7 +519,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), (VecFx32 *)(0xc00), 0xe, index);
+        (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), 0xc00, 0xe, index);
     }
     return TRUE;
 }

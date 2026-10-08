@@ -50,7 +50,7 @@ extern "C" GameRoot *GameRoot_Create() {
 ProcProfile sGameRootProfile = {(void *(*)())GameRoot_Create, 0x0, 0xd7};
 
 extern "C" void GameRoot_Boot() {
-    s32 r;
+    ProcBase *r;
     s32 i;
     Scene_RequestBoot();
     r = GameProc_CreateRoot(0, 0, 1);

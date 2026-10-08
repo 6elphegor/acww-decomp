@@ -1690,11 +1690,11 @@ extern "C" BOOL Scene_CreateRequested(void) {
     if (gNextSceneProfile == 2) {
         OS_ResetSystem(1);
     }
-    s32 r = GameProc_CreateChild(gNextSceneProfile, gGameRoot, 0, 2);
-    if (r != 0) {
+    ProcBase *r = GameProc_CreateChild(gNextSceneProfile, gGameRoot, 0, 2);
+    if (r != NULL) {
         gNextSceneProfile = 0xd8;
         sSceneExists = 1;
-        return r;
+        return TRUE;  // (the DS returned the process pointer; the one caller ignores the result)
     }
     return FALSE;
 }

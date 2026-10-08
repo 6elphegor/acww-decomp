@@ -2,7 +2,6 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/main/unk_020501d4.h"
@@ -19,8 +18,6 @@ extern "C" {
 void *NNS_FndGetNextListObject(void *list, void *prev);
 void NNS_FndRemoveListObject(void *list, void *obj);
 void NNS_FndInitList(void *list, u32 offset);
-#define Heap_destroy2 _ZN4Heap8destroy2Ev
-void Heap_destroy2(void *heap);
 void DC_FlushRange(void *ptr, u32 size);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
@@ -37,8 +34,6 @@ void GXS_LoadBG1Char(void *src, u32 offset, u32 size);
 void GXS_LoadBG2Char(void *src, u32 offset, u32 size);
 void GXS_LoadBG3Char(void *src, u32 offset, u32 size);
 void GXS_LoadOBJ(void *src, u32 offset, u32 size);
-
-extern void *gCurrentHeap;
 
 }
 
@@ -556,14 +551,14 @@ extern "C" void Text_InitSystem(void) {
     heap = ExpHeap_Create(0x1800, gCurrentHeap);
     gTextHeap = heap;
     if (heap != NULL) {
-        NNS_FndInitList(gTextLabelList, (u32)&((TextLabel *)0)->listLink);  // (8 on the DS)
+        NNS_FndInitList(gTextLabelList, __builtin_offsetof(TextLabel, listLink));  // (8 on the DS)
     }
 }
 
 extern "C" void Text_ShutdownSystem(void) {
     if (gTextHeap != NULL) {
         TextLabel_DestroyAll();
-        ((Heap *)(gTextHeap))->destroy2();
+        static_cast<Heap *>(gTextHeap)->destroy2();
         gTextHeap = NULL;
     }
     GameFont_Free(&gFontASub);
@@ -905,7 +900,7 @@ extern "C" void TextLabel_DestroyAll(void) {
         }
         NNS_FndRemoveListObject(gTextLabelList, obj);
         obj->~TextLabel();
-        Heap_Free(gTextHeap, obj);
+        Heap_Free(static_cast<Heap *>(gTextHeap), obj);
     }
 }
 
@@ -1016,7 +1011,7 @@ BOOL Text_AsciiToGameChar(u8 *out, u32 c) {
         i++;
         entry++;
     }
-    return (BOOL)out; // not found: the original returns out (nonzero)
+    return (BOOL)(uptr)out; // not found: the original returns out (nonzero; callers add it to their position)
 }
 
 const u8 *Text_GetSpecialCharStr1(void) { return (const u8 *)&sSpecialCharStr1; }

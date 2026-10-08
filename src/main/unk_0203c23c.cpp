@@ -8,7 +8,6 @@ class VillagerActor;
 #include "sys/CameraBase.h"
 #include "gfx/Camera.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_gWorldCurve  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203ecec.h"
@@ -19,199 +18,14 @@ class VillagerActor;
 #include "proto/main/unk_02097444.h"
 
 
-
-
-
-
-extern "C" {
-extern void *gCamera;
-}
-
-extern "C" {
-extern u32 gWorldCurve[];
-}
-
-extern "C" {
-extern s32 sCameraFollowVillagerIdx;
-}
-
-extern "C" {
-extern s32 sCameraSpanDepthScale;
-}
-
-extern "C" {
-extern s16 data_02135f44[];
-}
-
-extern "C" {
-extern CameraPose sCameraPoseTable[];
-}
-
-extern "C" {
-extern u32 sCameraBlendTable[][4];
-}
-
-extern "C" {
-extern u32 data_027e0148[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern Unk_0203bd10_Dtcm data_027e02c8;
-}
-
-extern "C" {
-extern u32 data_027e00d0[];
-}
-
-extern "C" {
-extern u32 data_027e0114[];
-}
-
-extern "C" {
-void MTX_Identity43_(void *p);
-}
-
-extern "C" {
-void MTX_Inverse43(void *a, void *b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void VEC_Add(void *a, void *b, void *c);
-}
-
-extern "C" {
-s32 func_01ffcb0c(s32 a, s32 b);
-}
-
-extern "C" {
-void Vec_ScaleTo(void *out, void *a, s32 n);
-}
-
-extern "C" {
-void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
-}
-
-extern "C" {
-void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
-}
-
-extern "C" {
-void func_0203b768(void *self);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_0203b9d4(void *self);
-}
-
-extern "C" {
-s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_02098044(void *s, s32 a);
-}
-
-extern "C" {
-void *Scene_GetPrevious();
-}
-
-extern "C" {
-s32 SceneId_IsHouseRoom(void *a);
-}
-
-extern "C" {
-void Camera_FinishBlend();
-}
-
-extern "C" {
-s32 NNS_G3dGetTex();
-}
-
-extern "C" {
-void func_02135558(void *a, void *b, void *c);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
 extern "C" {
 BOOL Item_IsNormalItem(u16 *p);
-}
-
-extern "C" {
 BOOL Item_IsFurniture(u16 *p);
-}
-
-extern "C" {
 s32 Item_GetFurnitureIndex(u16 *p);
-}
-
-extern "C" {
 s32 Item_GetPaperIndex(u16 *p);
-}
-
-extern "C" {
 s32 Item_MakeFurniture(s32 a, s32 b);
-}
-
-extern "C" {
 BOOL Item_TestInfoFlag3(u16 *p);
 }
-
 
 
 static inline BOOL Unk_0203c23c_InRange(u16 c, u32 lo, u32 hi) {
@@ -303,7 +117,7 @@ extern "C" BOOL Catalog_AddItem(void *a, u16 *p, s32 c) {
 }
 
 extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
-    void *s = PlayerData_GetCurrent();
+    PlayerData *s = PlayerData_GetCurrent();
     s32 count = 0;
     u16 v[6];
     v[0] = base;
@@ -315,7 +129,7 @@ extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
             Item_ToPlacedForm(&v[4], &v[1], 1);
             v[1] = v[4];
             if (Item_TestInfoFlag3(&v[1])) {
-                if (Catalog_HasItem((u8 *)((PlayerData *)(s))->getCatalog(), &v[1])) count++;
+                if (Catalog_HasItem((u8 *)s->getCatalog(), &v[1])) count++;
             }
         }
         return count;
@@ -324,12 +138,12 @@ extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
         u32 i;
         s32 z;
         v[2] = base;
-        u8 *r = (u8 *)Item_GetFurnitureIndex(&v[2]);
+        s32 r = Item_GetFurnitureIndex(&v[2]);
         z = 0;
         for (i = 0; i < n; i++) {
-            v[3] = Item_MakeFurniture((s32)r + i, z);
+            v[3] = Item_MakeFurniture(r + i, z);
             if (Item_TestInfoFlag3(&v[3])) {
-                if (Catalog_HasItem((u8 *)((PlayerData *)(s))->getCatalog(), &v[3])) count++;
+                if (Catalog_HasItem((u8 *)s->getCatalog(), &v[3])) count++;
             }
         }
     }
@@ -363,8 +177,8 @@ extern "C" s32 Catalog_CountInsects() {
 }
 
 extern "C" BOOL Catalog_AddCreature(u16 *p) {
-    void *s = PlayerData_GetCurrent();
-    if (s) return Catalog_AddItem(((PlayerData *)(s))->getCatalog(), p, 1);
+    PlayerData *s = PlayerData_GetCurrent();
+    if (s) return Catalog_AddItem(s->getCatalog(), p, 1);
     return FALSE;
 }
 

@@ -97,7 +97,6 @@
 #define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
 #define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_02133150 _s32_div_f
 #define func_021355f0 __cxa_vec_cleanup
 
@@ -391,7 +390,6 @@ BOOL CommManager_isMyAid(void *g, s32 a);
 BOOL CommManager_isOnline(void *g);
 void ModelSlotPool_release(void *p, void *q);
 void *ModelSlotPool_acquire(void *p, void *q);
-s32 ModelSlot_getHeap(void *a);
 s64 Vec_DistSqXZ(void *a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 func_021065dc(s32 a);
@@ -4371,9 +4369,9 @@ extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
         return r;
     }
     void *slot = ((void *(*)(s32, void *))ModelSlotPool_acquire)(q, HOST_AT_A(self, FishShadow, 0x7c, modelSlot[0], 0));
-    s32 t = ((s32 (*)(void *))ModelSlot_getHeap)(slot);
+    Heap *t = ((ModelSlot *)(slot))->getHeap();
     s32 u = func_021065f8(func_021065dc((s32)p), r);
-    if (((BOOL (*)(void *, s32))AnimModel_allocAnmObj)(o, t)) {
+    if (((AnimModel *)(o))->allocAnmObj(t)) {
         ((BlendAnimModel *)(o))->initAnim(u, r, 0x1000, 1, r);
         ((AnimModel *)(o))->attachAnim();
         r = TRUE;
@@ -4391,7 +4389,7 @@ extern "C" BOOL FishFinModel_Load(u8 *self, void *a)
     if (((PooledModel *)(m))->loadFromSlot((ModelSlot *)(res), (const char *)((*(void * *)((u8 *)&sFishFinModelPath))))) {
         u8 *r4 = HOST_AT_A(self, FishFinModel, 0x58, model, 0);
         ((Model *)(r4))->setResource((NNSG3dResMdl *)(((PooledModel *)(m))->getModel()), 0);
-        void *nm = ((void * (*)(void *))ModelSlot_getHeap)(res);
+        void *nm = ((ModelSlot *)(res))->getHeap();
         s32 v = func_021065f8(func_021065dc((s32)File_LoadAlloc((*(void * *)((u8 *)&sFishFinAnimPath)), nm, 4, 0)), 0);
         if (((AnimModel *)(r4))->allocAnmObj(nm)) {
             ((BlendAnimModel *)(r4))->initAnim(v, 0, 0x1000, 1, 0);

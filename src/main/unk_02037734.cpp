@@ -679,4 +679,18 @@ void CommCautionWindow::execEnded() {
     }
 }
 
+// The reset state (the DS has these two in unk_020376c0, there for a DS-offset view of this class)
+void CommCautionWindow::enterReset() {
+    state = 7;
+    timer = 1;
+    modelVisible = 1;
+}
+
+void CommCautionWindow::execReset() {
+    timer = timer - 1;
+    if (timer <= 0) {
+        OS_ResetSystem(0);
+    }
+}
+
 // Data order: this unit is placed object by object (see object_order.txt).

@@ -7,34 +7,25 @@
 #include "gfx/Model.h"
 #include "gfx/CachedModel.h"
 #include "game/GroundInfo.h"
-#define PROTO_LOCAL_CharaShadow_Draw  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"
 
 
-
-
-
-
-
-
+// (defined in C units / units whose declarations aren't shared yet: as they are defined)
 extern "C" {
 s32 FX_Div(s32 a, s32 b);
-s32 func_01ffcb0c(s32 a, s32 b);
-void NNS_G3dMdlSetMdlDiff(u32 a, u32 b, u32 c);
-void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-void Mtx43_RotateX(void *m, s32 a);
-s32 Ground_GetDefaultY(s32 a);
-void GroundInfo_Destruct(GroundInfoBase *p);
+s32 func_01ffcb0c(s32 a, s32 b);  // FX_Mul
+void NNS_G3dMdlSetMdlDiff(u8 *res, u32 i, u32 v);
+void NNSi_G3dModifyMatFlag(u8 *res, BOOL on, u32 mask);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Mtx43 *m, s32 angle);
+s32 Ground_GetDefaultY(void);
 BOOL Scene_InMuseumRoom(void);
-Col SceneLights_GetRoomColor(void);
+s16 SceneLights_GetRoomColor(void);
 extern u8 gFieldSceneKind;
-extern u8 data_021f47e0[];
 }
-
-extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c);
+extern Mtx43 data_021f47e0;  // the model code's work matrix (src/autoload_2/unk_020e82bc.cpp: the same 12 words)
 
 u32 sCharaShadowPolyId = 1;
 
@@ -48,21 +39,20 @@ extern "C" BOOL CharaShadow_Load() {
     } else {
         ret = FALSE;
     }
-    u8 *p = (u8 *)sCharaShadowModel.resMdl;
-    u8 *q = p + *(s32 *)(p + 8);
-    q = q + *(s32 *)(q + *(u16 *)(q + 0xa) + 8);
-    sCharaShadowMatData = (NNSG3dResMatData *)q;
+    // material 0 of the model resource (file format: NNSG3dResMdl::ofsMat at 8, the material dictionary at
+    // NNSG3dResMat + 4 with its ofsEntry at +6, entry 0's offset after the 4-byte entry header)
+    u8 *mdl = (u8 *)sCharaShadowModel.resMdl;
+    u8 *mat = mdl + *(s32 *)(mdl + 8);
+    sCharaShadowMatData = (NNSG3dResMatData *)(mat + *(s32 *)(mat + *(u16 *)(mat + 0xa) + 8));
     sCharaShadowPolyId = 1;
-    NNSi_G3dModifyMatFlag((u32)sCharaShadowModel.resMdl, 1, 0x40);
+    NNSi_G3dModifyMatFlag((u8 *)sCharaShadowModel.resMdl, 1, 0x40);
     return ret;
 }
 
 extern "C" void CharaShadow_UpdateColor() {
-    Col c0, c1;
     sCharaShadowPolyId = 1;
-    c0 = SceneLights_GetRoomColor();
-    c1 = c0;
-    NNS_G3dMdlSetMdlDiff((u32)sCharaShadowModel.resMdl, 0, c1.v);
+    u16 c = SceneLights_GetRoomColor();
+    NNS_G3dMdlSetMdlDiff((u8 *)sCharaShadowModel.resMdl, 0, c);
 }
 
 extern "C" void CharaShadow_Unload() {
@@ -82,8 +72,6 @@ extern "C" void CharaShadow_DrawFaded(VecFx32 *pos, s32 a, s32 b, s32 c) {
 }
 
 extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c) {
-    GroundInfoBase buf1;
-    GroundInfoBase buf2;
     VecFx32 pos2;
     VecFx32 out;
     VecFx32 scale;
@@ -93,17 +81,17 @@ extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c) {
     }
     s32 lvl = ObjShadow_GetCharaAlpha(pos, a);
     off = 0;
-    if (gFieldSceneKind == 0 ? 1 : off) {
-        ((GroundInfo *)(void *)(&buf1))->initAtPos(pos, 0, 0);
-        off = (&buf1)->getHeight(0);
+    if (gFieldSceneKind == 0) {
+        GroundInfo ground;
+        ground.initAtPos(pos, 0, 0);
+        off = ground.getHeight(0);
         if (off > 0) {
             off = 0;
         }
-        GroundInfo_Destruct(&buf1);
     } else if (Scene_InMuseumRoom()) {
-        ((GroundInfo *)(void *)(&buf2))->initAtPos(pos, 0, 0);
-        off = (&buf2)->getHeight(0);
-        GroundInfo_Destruct(&buf2);
+        GroundInfo ground;
+        ground.initAtPos(pos, 0, 0);
+        off = ground.getHeight(0);
     }
     d = pos->y - off;
     if (d < 0) {
@@ -128,11 +116,11 @@ extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c) {
         if (a > 0) {
             s32 t;
             pos2 = *pos;
-            pos2.y = off + Ground_GetDefaultY(0);
+            pos2.y = off + Ground_GetDefaultY();
             t = WorldCurve_ToCurved(&out, &pos2);
-            Mtx43_SetTranslate(data_021f47e0, out.x, out.y, out.z);
-            Mtx43_RotateX(data_021f47e0, t);
-            *(Mtx43 *)sCharaShadowModel.unk_64 = *(Mtx43 *)data_021f47e0;
+            Mtx43_SetTranslate(&data_021f47e0, out.x, out.y, out.z);
+            Mtx43_RotateX(&data_021f47e0, t);
+            sCharaShadowModel.mtx = data_021f47e0;
             scale.x = a;
             scale.y = 0x1000;
             scale.z = a;
@@ -155,6 +143,6 @@ extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c) {
 extern "C" void CharaShadow_DrawPlayer(VecFx32 *pos, s32 a) {
     VecFx32 v;
     v = *pos;
-    v.y = v.y - (Ground_GetDefaultY(0) + 0x800);
+    v.y = v.y - (Ground_GetDefaultY() + 0x800);
     CharaShadow_Draw(&v, a, 0xe00, 0x1000);
 }

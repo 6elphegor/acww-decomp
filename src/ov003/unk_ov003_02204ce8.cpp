@@ -6287,7 +6287,7 @@ extern "C" s32 PlayerActor_FishWaitFaceBobber(Obj *o) {
 
 namespace ns_0220e030 {
 extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o) {
-    if (HeldItemModel_IsBobberLanded((u8 *)&o->heldItemModel) && o->heldItemModel.bobber.justLanded) {
+    if (HeldItemModel_IsBobberLanded(&o->heldItemModel) && o->heldItemModel.bobber.justLanded) {
         (o)->playSe(0x84b);
         V3 *p = (V3 *)&o->heldItemModel.bobber.pos;
         o->sePosX = p->x;
@@ -6303,7 +6303,7 @@ extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o) {
 namespace ns_0220e030 {
 extern "C" void PlayerActor_FishWaitCheckInput(Obj *o) {
     PlayerActor_FishWaitOnBobberLand(o);
-    if (HeldItemModel_IsBobberLanded((u8 *)&o->heldItemModel)) {
+    if (HeldItemModel_IsBobberLanded(&o->heldItemModel)) {
         if ((o)->testActionFlag(0xb)) {
             s32 fish = FishBobber_getFish((u8 *)&o->heldItemModel.bobber);
             if (fish) {

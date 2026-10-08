@@ -6,6 +6,10 @@
 // Wi-Fi connection settings of the ov001 setup utility: four 0x100-byte NVRAM slots plus the slot being edited
 // (sWfcConfig, src/ov001/unk_ov001_0221dcec.cpp). Other ov001 screens read the edit slot as raw bytes
 // (WfcConfig_GetEdit()[0xf5] etc.); unk_ov001_022156e0.cpp reads wepMode through this type.
+typedef struct WfcWepModeBits WfcWepModeBits;
+typedef struct WfcConfigSlot WfcConfigSlot;
+typedef struct WfcConfigData WfcConfigData;
+
 struct WfcWepModeBits {
     u8 wepKeySize : 2;
     u8 wepAscii : 6;

@@ -26,222 +26,25 @@
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020d477c.h"
 
-typedef volatile u16 vu16;
-typedef volatile u32 vu32;
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Externs
-
 extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u8 data_02135934[];
-}
-
-extern "C" {
-extern u32 sAbAllObjCharPath[];
-}
-
-extern "C" {
-extern u32 sAbAllObjPalettePath[];
-}
-
-extern "C" {
-extern u32 sPersonalityFileNameFmt[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern s16 data_02135f44[];
-}
-
-extern "C" {
+extern s16 data_02135f44[];  // the sine / cosine table (FX_SinCosTable_)
 extern ProcProfile **gProfileTable;
-}
-
-extern "C" {
-extern u32 gSaveTownId;
-}
-
-extern "C" {
-extern u32 sPersonalityVoiceTypes[];
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u8 gViewFrustum[];
-}
-
-extern "C" {
-void G3X_SetClearColor(u16 a, u32 b, u32 c, u32 d, u32 e);
-}
-
-extern "C" {
-void DC_FlushRange(void *p, u32 n);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void MTX_Inverse43(void *a, void *b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void OS_EnableDTCM(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void GX_LoadOBJ(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-void GXS_LoadOBJ(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-void GX_LoadOBJPltt(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void List_Remove(void *list, void *node);
-}
-
-extern "C" {
 void List_PushBack(void *list, void *node);
-}
-
-extern "C" {
+s16 Math_Atan2(s32 x, s32 y);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-}
-
-extern "C" {
 void Mtx43_RotateX(void *m, s32 a);
-}
-
-extern "C" {
 void Mtx43_RotateY(void *m, s32 a);
-}
-
-extern "C" {
-s16 Math_Atan2(s32 a, s32 b);
-}
-
-extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
-}
-
-extern "C" {
 void VEC_Add(void *a, void *b, void *c);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 BOOL Villager_GetSpeciesName(MsgString *buf, u32 x);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void MI_CpuFill8(void *p, u32 v, u32 n);
-}
-
-extern "C" {
 void *ProcList_FindByProfile(void *list, u32 id, void *p);
-}
-
-extern "C" {
 void *ProcList_FindById(void *list, u32 id);
 }
-
-extern "C" {
-}
-
-
-extern "C" {
-void func_020030b4_dummy(void);
-}
-
-
-
-extern Mtx43 data_02135934_;
-
-
-
-
-
-
-
+extern ViewFrustum gViewFrustum;
 
 ActorList gActorList;
 void *sActorSpawnPos;
 void *sActorSpawnRot;
-
-
-
-
-// prototypes (test harness)
 
 extern "C" u32 VillagerId_GetVoiceType(VillagerId *o) { return Villager_PersonalityToVoiceType(o->personality); }
 
@@ -314,7 +117,7 @@ BOOL Actor::preExecute() {
         v[0] = drawPos.x;
         v[1] = z;
         v[2] = x;
-        r4 = ((ViewFrustum *)gViewFrustum)->testSphere(&gViewMtx, v, cullRadius, (s32 *)viewPos);
+        r4 = gViewFrustum.testSphere(&gViewMtx, v, cullRadius, (s32 *)viewPos);
     }
     actorFlags &= ~4;
     if (actorFlags & 3) {
@@ -362,7 +165,8 @@ void *Actor::spawn(void *a, void *b, void *c, void *d, void *e) {
     void *t = e;
     if (t == 0) t = gActorDefaultParent;
     setSpawnTransform(c, d);
-    return GameProc_CreateChild(a, t, b, 3);
+    // (the profile id and the spawn parameter come as pointers: Actor::spawn's callers pass them so)
+    return GameProc_CreateChild((u32)(uptr)a, t, (u32)(uptr)b, 3);
 }
 
 void Actor::setCullParams(s32 a, s32 b, s32 c) {
@@ -408,12 +212,12 @@ extern "C" s32 Math_AngleXZ(s32 *a, s32 *b) {
 }
 
 void Actor::calcModelMatrix(void *out) {
-    u32 m[12];
-    Mtx43_SetTranslate(m, drawPos.x, drawPos.y, drawPos.z);
-    Mtx43_RotateX(m, (s16)drawTilt);
-    Mtx43_RotateY(m, rotY);
-    if (rotX != 0) Mtx43_RotateX(m, rotX);
-    *(Mtx43 *)out = *(Mtx43 *)m;
+    Mtx43 m;
+    Mtx43_SetTranslate(&m, drawPos.x, drawPos.y, drawPos.z);
+    Mtx43_RotateX(&m, (s16)drawTilt);
+    Mtx43_RotateY(&m, rotY);
+    if (rotX != 0) Mtx43_RotateX(&m, rotX);
+    *(Mtx43 *)out = m;
 }
 
 

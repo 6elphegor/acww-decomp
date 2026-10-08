@@ -4,15 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02219c3c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_sWfcConnSelect
-extern void *sWfcConnSelect;
+#ifndef PROTO_LOCAL_sWfcConnSelectCursor
+extern u8 sWfcConnSelectCursor;
 #endif
 #ifndef PROTO_LOCAL_WfcConnSelect_Enter
 void WfcConnSelect_Enter();
@@ -56,6 +53,9 @@ void WfcConnSelect_Exit();
 #ifndef PROTO_LOCAL_WfcConnSelect_DrawCursor
 void WfcConnSelect_DrawCursor();
 #endif
+#ifndef PROTO_LOCAL_WfcConnSelect_MoveCursor
+void WfcConnSelect_MoveCursor(u32 a);
+#endif
 #ifndef PROTO_LOCAL_WfcConnSelect_PressEraseButton
 void WfcConnSelect_PressEraseButton();
 #endif
@@ -68,27 +68,16 @@ void WfcConnSelect_WaitDialogClosed();
 #ifndef PROTO_LOCAL_WfcConnSelect_HighlightSelection
 void WfcConnSelect_HighlightSelection();
 #endif
-#ifndef PROTO_LOCAL_data_ov001_0222b260
-extern char data_ov001_0222b260[22];
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcConnSelectCursor
-extern u8 sWfcConnSelectCursor;
-#endif
-#ifndef PROTO_LOCAL_WfcConnSelect_MoveCursor
-void WfcConnSelect_MoveCursor(u32 a);
-#endif
 #ifndef PROTO_LOCAL_data_ov001_0222b244
 extern u8 data_ov001_0222b244[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222b240
 extern u8 data_ov001_0222b240[4];
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222b260
+extern char data_ov001_0222b260[22];
+#endif
+#ifdef __cplusplus
 }
 #endif
 

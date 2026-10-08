@@ -29,7 +29,6 @@ s32 OS_SpinWait(u32 a);
 s32 PM_ForceToPowerOff();
 void WfcUtil_LoadFileTo(void *a, void *b);
 s32 WfcUtil_SetScene(void *p);
-s32 WfcTransfer_SetCallback(void *a);
 s32 WfcTransferNotice_StartExit();
 s32 WfcTransferNotice_FadeIn();
 s32 WfcTransferNotice_Enter();

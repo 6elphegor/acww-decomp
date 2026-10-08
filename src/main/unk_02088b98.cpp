@@ -13,16 +13,12 @@
 #include "actor/ActorCollider.h"
 #include "actor/Actor.h"
 #include "gfx/SpriteAnim.h"
-#define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02088b98.h"
 
 // A bss word of this file, used by other files through its address.
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
 // size order (linkprep check); the original file is this one or another file between those neighbours.
-extern "C" { extern u32 data_021ce63c; }
 u32 data_021ce63c;
-
-
 
 
 extern "C" {
@@ -68,7 +64,7 @@ u32 StaticCollider::getOwnerId() { return FALSE; }
 
 VecFx32 *StaticCollider::getPos() { return &position; }
 
-u32 ActorPlacedCollider::getOwnerId() { return ((ActorFollowCollider *)(this))->ActorFollowCollider::getOwnerId(); }
+u32 ActorPlacedCollider::getOwnerId() { return ActorFollowCollider::getOwnerId(); }
 
 VecFx32 *ActorPlacedCollider::getPos() { return &position; }
 
@@ -277,12 +273,12 @@ ActorFollowCollider::ActorFollowCollider() {
 ActorFollowCollider::~ActorFollowCollider() {
 }
 
-VecFx32 *ActorFollowCollider::getPos() { return (VecFx32 *)(ownerActor + 0x5c); }
+VecFx32 *ActorFollowCollider::getPos() { return &ownerActor->position; }
 
-u32 ActorFollowCollider::getOwnerId() { return *(u32 *)(ownerActor + 4); }
+u32 ActorFollowCollider::getOwnerId() { return ownerActor->id; }
 
 void ActorFollowCollider::setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
-    ownerActor = (u8 *)p;
+    ownerActor = static_cast<Actor *>(p);
     setup(a, b, c, d, e, f, g);
 }
 

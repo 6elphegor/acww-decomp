@@ -3,10 +3,16 @@
 #include "types.h"
 #include "nitro/os_alarm.h"
 #include "uptr.h"
+#include "net/SimpleStart.h"
 #include "net/SockAddrIn.h"
+#include "net/SockStartupConfig.h"
 #include "nitro/wm.h"
-
-typedef void (*SimpleStartWcmNotifyFunc)(...);
+#include "sys/OSThread.h"
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/itcm/unk_01ffa4a0.h"
 
 struct SimpleStartMd5Ctx {
     u32 state[4];
@@ -29,6 +35,7 @@ struct SimpleStartSessionId {
     u8 lowerMac[6];
     u8 tag[4];
 };
+// WifiLink_StartupAsync's configuration (ov065 WifiLinkConfig: the BSS descriptor buffer kept in a 32-bit slot there)
 struct SimpleStartWcmConfig {
     s32 dmaNo;
     u32 bssDescBuffer;
@@ -43,54 +50,44 @@ struct SimpleStartResult { u8 pad[0x20]; s32 securityType; s32 unk_24; };
 struct SimpleStartConfigView { u8 pad[0x2c]; s32 securityType; s32 unk_30; u8 pad2[0x28]; s32 unk_5c; };
 struct SimpleStartExchangeKey { u8 v[8]; };
 
+#include "proto/ov001/unk_ov001_02203b1c.h"
+
 extern "C" {
+// (NitroSDK, src/autoload_2 / itcm C units without generated prototypes)
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 v);
-void MI_CpuFill8(void *p, u32 v, u32 n);
-void MIi_CpuCopy32(void *dst, void *src, u32 n);
-void MI_CpuCopy8(void *dst, void *src, s32 n);
-void OS_Sleep(s32 n);
-s32 OS_IsThreadTerminated(void *a);
-void OS_WakeupThreadDirect(void *a);
-void OS_JoinThread(void *a);
-s32 OS_IsThreadAvailable(void);
-void OS_CreateThread(void *a, void *fn, u32 b, void *c, u32 d, u32 e);
-void OS_UnlockMutex(void *p);
-void OS_LockMutex(void *p);
-void OS_CancelAlarm(void *p);
-void OS_CreateAlarm(void *p);
-void OS_SetAlarm(void *p, s32 a, s32 b, void *cb, s32 prio);
-void OS_GetMacAddress(void *macAddr);
-void strcpy(void *d, void *s);
-u32 strlen(const void *s);
+void MI_CpuFill8(void *dst, u8 v, u32 size);
+void MIi_CpuCopy32(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void OS_Sleep(u32 msec);
+BOOL OS_IsThreadTerminated(OSThread *t);
+void OS_WakeupThreadDirect(OSThread *t);
+void OS_JoinThread(OSThread *t);
+u32 OS_IsThreadAvailable(void);
+void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio);
+void OS_GetMacAddress(u8 *macAddr);
+u32 strlen(const char *s);
 
+// (src/ov065/unk_ov065_02268c64.cpp, unk_ov065_0225fdf0.cpp: their generated headers leave these out)
 s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_DisconnectAsync(void);
 s32 WifiLink_SearchAsync(void *a, void *b, s32 c);
-s32 WifiLink_StartupAsync(void *p, void *cb);
-s32 WifiLink_ConnectAsync(void *a, void *b, s32 c);
+s32 WifiLink_StartupAsync(void *a, void *b);
+s32 WifiLink_ConnectAsync(u8 *a, u8 *b, u32 c);
 s32 WifiLink_Finish(void);
-s32 WifiLink_LockApList(s32 a);
-s32 WifiLink_GetApListCount(void);
-void *WifiLink_GetApListEntry(u32 a);
-s32 WifiLink_Init(void *p, s32 n);
-s32 Sock_Cleanup(void);
-s32 Sock_Startup(void *p);
-u8 *SockCore_GetHostIp();
-void IpAddr_StoreBe32(u8 *a, u8 *out);
-s32 Sock_SendTo(u8 *a, u8 *d, u32 e, u32 f, SockAddrIn *hdr);
-s32 Sock_Create(s32, s32, s32);
-s32 Sock_Bind(s32, void *);
-s32 Sock_Close(s32);
-s32 Sock_RecvFrom(s32, void *, s32, s32, void *);
-
-void SimpleStart_Md5Init(SimpleStartMd5Ctx *ctx);
-s32 SimpleStart_BuildResult();
-s32 SimpleStart_SearchAp();
-s32 SimpleStart_ConnectAp(void);
-void SimpleStart_AlarmCallback(u32 a);
-void SimpleStart_SocFree(s32 a, void *p, s32 n);
-void *SimpleStart_SocAlloc(s32 a, s32 n);
+BOOL WifiLink_LockApList(BOOL a);
+u32 WifiLink_GetApListCount(void);
+void *WifiLink_GetApListEntry(u32 id);
+s32 WifiLink_Init(void *a, u32 b);
+s32 Sock_Cleanup();
+s32 Sock_Startup(SockStartupConfig *s);
+s32 SockCore_GetHostIp();
+void IpAddr_StoreBe32(u32 v, u8 *p);
+s32 Sock_SendTo(sptr a, const void *b, s32 c, u32 d, SockAddrIn *sa);
+sptr Sock_Create(s32 a, s32 b);
+s32 Sock_Bind(sptr a, SockAddrIn *sa);
+s32 Sock_Close(sptr a);
+s32 Sock_RecvFrom(sptr a, void *b, s32 c, u32 d, SockAddrIn *sa);
 
 extern const u32 sSimpleStartAesRcon[10];
 extern u8 gWifiLinkAnyBssid[];
@@ -105,12 +102,7 @@ extern const u32 data_ov001_02228b34[256];
 extern const u32 data_ov001_02228f34[256];
 extern const u32 data_ov001_02229334[256];
 extern const u32 data_ov001_02229734[256];
-extern u8 *data_ov001_0222a52c;
-extern void *sSimpleStartSocConfig[22];
 extern SimpleStartWcmConfig *data_ov001_0222c858;
-extern SimpleStartWcmNotifyFunc sSimpleStartWcmNotifyCb;
-extern u8 sSimpleStartAllocMutex[0x18];
-extern u8 sSimpleStartTlvBuf[0x800];
 }
 #define data_ov001_0222c92c (data_ov001_0222c924 + 8)
 #define data_ov001_0222ca70 ((u8 *)&sSimpleStartResult[10])
@@ -592,14 +584,15 @@ extern "C" const u32 data_ov001_02228334[256] = {
 };
 extern "C" u8 *data_ov001_0222c898 = 0;
 extern "C" s32 sSimpleStartStackSize = 0x800;
-extern "C" void *(*sSimpleStartAllocFunc)(u32) = 0;
+extern "C" SimpleStartAllocFunc sSimpleStartAllocFunc = 0;
 extern "C" s32 sSimpleStartStep = 0;
 extern "C" u32 data_ov001_0222c864 = 0;
 extern "C" u8 sSimpleStartSetupSsid[7] = {0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0};
 extern "C" u8 data_ov001_0222a548[7] = {6, 0, 1, 2, 3, 4, 5};
-extern "C" u8 data_ov001_0222a550[12] = {0x4e, 0x49, 0x4e, 0x54, 0x45, 0x4e, 0x44, 0x4f, 0x2d, 0x44, 0x53, 0};
+extern "C" char data_ov001_0222a550[12] = "NINTENDO-DS";
 extern "C" u8 sSimpleStartMd5Padding[64] = {0x80};
-extern "C" void *sSimpleStartSocConfig[22] = {(void *)0x1000000, (void *)SimpleStart_SocAlloc, (void *)SimpleStart_SocFree, (void *)0x0, (void *)0xb000a8c0, (void *)0xffffff, (void *)0xc800a8c0, (void *)0x2000a8c0, (void *)0x0, (void *)0x1000, (void *)0x1000, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)0x0, (void *)data_ov001_0222a550, (void *)0x4, (void *)0x0, (void *)0x0};
+// the socket layer's setup: static addresses 192.168.0.176/24, gateway .200, DNS .32 (DHCP mode 0)
+extern "C" SockStartupConfig sSimpleStartSocConfig = {0x1000000, SimpleStart_SocAlloc, SimpleStart_SocFree, 0, 0xb000a8c0, 0xffffff, 0xc800a8c0, 0x2000a8c0, 0, 0x1000, 0x1000, 0, 0, {0, 0, 0, 0, 0}, data_ov001_0222a550, 0x4, {0, 0}};
 extern "C" u8 data_ov001_0222c850 = 0;
 extern "C" u8 *data_ov001_0222c894 = 0;
 extern "C" u32 sSimpleStartDeadline = 0xffffffff;
@@ -609,7 +602,7 @@ extern "C" u8 *data_ov001_0222a52c = sSimpleStartTlvBuf + 8;
 extern "C" s32 data_ov001_0222a53c = 0x40;
 extern "C" u32 data_ov001_0222c884 = 0;
 extern "C" SimpleStartWcmNotifyFunc sSimpleStartWcmNotifyCb = 0;
-extern "C" void (*sSimpleStartStatusCb)(void *) = 0;
+extern "C" SimpleStartStatusFunc sSimpleStartStatusCb = 0;
 extern "C" s32 sSimpleStartResultCode = 0;
 extern "C" s32 data_ov001_0222c8c4 = 0;
 extern "C" s32 sSimpleStartMaxAps = 0;
@@ -627,51 +620,28 @@ extern "C" s32 sSimpleStartCancel = 0;
 extern "C" u8 *data_ov001_0222c890 = 0;
 extern "C" u8 *data_ov001_0222c88c = 0;
 extern "C" s32 sSimpleStartState = 0;
-extern "C" void (*sSimpleStartFreeFunc)(void *) = 0;
-extern "C" s32 data_ov001_0222c880 = 0;
+extern "C" SimpleStartFreeFunc sSimpleStartFreeFunc = 0;
+extern "C" u8 *data_ov001_0222c880 = 0;
 extern "C" s32 sSimpleStartWcmState = 0;
 extern "C" s32 sSimpleStartMsgHead = 0;
-extern "C" s32 data_ov001_0222c878 = 0;
+extern "C" u8 *data_ov001_0222c878 = 0;
 extern "C" s32 data_ov001_0222c8b0 = 0;
 extern "C" u8 data_ov001_0222c8d4[6] = {0};
 extern "C" u8 data_ov001_0222c8dc[6] = {0};
 extern "C" u8 data_ov001_0222c8e4[8] = {0};
 extern "C" u32 sSimpleStartMsgQueue[4] = {0};
 extern "C" u8 data_ov001_0222c8fc[0x10] = {0};
-extern "C" u8 sSimpleStartAllocMutex[0x18] = {0};
+extern "C" OSMutex sSimpleStartAllocMutex = {};
 extern "C" u8 data_ov001_0222c944[0x20] = {0};
 extern "C" u8 data_ov001_0222c924[0x20] = {0};
 extern "C" u8 data_ov001_0222c964[0x24] = {0};
-extern "C" u8 sSimpleStartThread[0xc0] = {0};
+extern "C" OSThread sSimpleStartThread = {};
 extern "C" u32 sSimpleStartResult[58] = {0};
 extern "C" u32 data_ov001_0222cb30[149] = {0};
 extern "C" u8 sSimpleStartTlvBuf[0x800] = {0};
 extern "C" u8 sSimpleStartPacketBuf[0x800] = {0};
 
 
-// mwcc-flags: -O4,p
-#pragma opt_dead_assignments off
-#include "types.h"
-#define PROTO_LOCAL_OS_CancelAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_CreateAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SimpleStart_AlarmCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SimpleStart_BuildResult  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SimpleStart_ConnectAp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SimpleStart_SearchAp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SimpleStart_SocAlloc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SimpleStart_SocFree  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov001_0222a52c  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov001_0222a550  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSimpleStartAllocMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSimpleStartSocConfig  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSimpleStartTlvBuf  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_strcpy  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_02128030.h"
-#include "proto/itcm/unk_01ffa4a0.h"
-#include "proto/ov001/unk_ov001_02203b1c.h"
 
 struct SimpleStartKeyWrapBlock { u8 b[8]; };
 
@@ -695,7 +665,9 @@ static inline u32 Unk_ov001_0220607c_Swap(u8 *p)
 }
 
 
-struct SimpleStartProtocolLocals { SockAddrIn req; u8 buf[8]; u32 w54; u32 w58; u32 w5c; };
+struct SimpleStartProtocolLocals { SockAddrIn req; SockAddrIn from; u32 w54; u32 w58; u32 w5c; };
+
+extern "C" {
 
 void SimpleStart_WcmCallback(void *pp) {
     s16 *p = (s16 *)pp;
@@ -722,7 +694,7 @@ void SimpleStart_WcmCallback(void *pp) {
                 }
                 return;
             } else if (s == 8) {
-                if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
+                if (WifiLink_ConnectAsync(data_ov001_0222c89c, data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
                     return;
                 }
                 sSimpleStartWcmState = 3;
@@ -792,7 +764,7 @@ void SimpleStart_WcmCallback(void *pp) {
                     }
                 }
             } else if (s == 8) {
-                if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
+                if (WifiLink_ConnectAsync(data_ov001_0222c89c, data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
@@ -829,7 +801,7 @@ void SimpleStart_WcmCallback(void *pp) {
                     }
                 }
             } else if (s == 8) {
-                if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
+                if (WifiLink_ConnectAsync(data_ov001_0222c89c, data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
@@ -1023,9 +995,9 @@ s32 SimpleStart_WcmConnect(void *p, void *x, s32 y) {
     s32 e = OS_DisableInterrupts();
     data_ov001_0222c8a8 = y;
     if (x != 0) {
-        MI_CpuCopy8(x, (void *)data_ov001_0222c878, 0x60);
+        MI_CpuCopy8(x, data_ov001_0222c878, 0x60);
     } else {
-        MI_CpuFill8((void *)data_ov001_0222c878, 0, 0x60);
+        MI_CpuFill8(data_ov001_0222c878, 0, 0x60);
     }
     MIi_CpuCopy32(p, data_ov001_0222c89c, 0xc0);
     if (SimpleStart_WcmToIdle() == 1) {
@@ -1034,7 +1006,7 @@ s32 SimpleStart_WcmConnect(void *p, void *x, s32 y) {
         return 1;
     }
     if (sSimpleStartWcmState == 3) {
-        if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
+        if (WifiLink_ConnectAsync(data_ov001_0222c89c, data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
             sSimpleStartWcmState = 8;
             OS_RestoreInterrupts(e);
             return 1;
@@ -1044,23 +1016,25 @@ s32 SimpleStart_WcmConnect(void *p, void *x, s32 y) {
     return 0;
 }
 
-s32 SimpleStart_WcmInit(void *cb, void *buf, s32 size) {
+// the work area: 0x60 bytes of connection data, the WifiLink configuration, WifiLink's 0x2300-byte work (32-byte
+// aligned), the connect target's BSS descriptor (0xc0) and the rest for the BSS descriptor buffer
+s32 SimpleStart_WcmInit(SimpleStartWcmNotifyFunc cb, u8 *buf, s32 size) {
     s32 e = OS_DisableInterrupts();
-    u32 a, b;
-    data_ov001_0222c878 = (s32)buf;
-    a = ((u32)buf + 0x63) & ~3;
+    uptr a, b;
+    data_ov001_0222c878 = buf;
+    a = ((uptr)buf + 0x63) & ~(uptr)3;
     data_ov001_0222c858 = (SimpleStartWcmConfig *)a;
-    b = (a + 0x2f) & ~0x1f;
+    b = (a + 0x2f) & ~(uptr)0x1f;
     data_ov001_0222c88c = (u8 *)b;
-    b = (b + 0x231f) & ~0x1f;
+    b = (b + 0x231f) & ~(uptr)0x1f;
     data_ov001_0222c89c = (u8 *)b;
     b += 0xdf;
-    b &= ~0x1f;
-    data_ov001_0222c858->bssDescBuffer = b;
-    data_ov001_0222c858->bssDescBufferSize = ((u32)buf + size) - data_ov001_0222c858->bssDescBuffer;
+    b &= ~(uptr)0x1f;
+    data_ov001_0222c858->bssDescBuffer = (u32)b;
+    data_ov001_0222c858->bssDescBufferSize = (buf + size) - (u8 *)b;
     data_ov001_0222c858->bssDescMode = 0;
     data_ov001_0222c858->dmaNo = 3;
-    sSimpleStartWcmNotifyCb = (SimpleStartWcmNotifyFunc)cb;
+    sSimpleStartWcmNotifyCb = cb;
     if (sSimpleStartWcmState == 0) {
         if (WifiLink_Init(data_ov001_0222c88c, 0x2300) != 0) {
             OS_RestoreInterrupts(e);
@@ -1085,22 +1059,24 @@ s32 SimpleStart_WcmGetState(void) {
     return sSimpleStartWcmState;
 }
 
-void *SimpleStart_SocAlloc(s32 a, s32 n) {
+void *SimpleStart_SocAlloc(s32 a, u32 size) {
+    s32 n = size;
     void *r;
     if (n > 0) {
-        OS_LockMutex(sSimpleStartAllocMutex);
+        OS_LockMutex(&sSimpleStartAllocMutex);
         r = sSimpleStartAllocFunc(n);
-        OS_UnlockMutex(sSimpleStartAllocMutex);
+        OS_UnlockMutex(&sSimpleStartAllocMutex);
         return r;
     }
     return 0;
 }
 
-void SimpleStart_SocFree(s32 a, void *p, s32 n) {
+void SimpleStart_SocFree(s32 a, void *p, u32 size) {
+    s32 n = size;
     if (p != 0 && n > 0) {
-        OS_LockMutex(sSimpleStartAllocMutex);
+        OS_LockMutex(&sSimpleStartAllocMutex);
         sSimpleStartFreeFunc(p);
-        OS_UnlockMutex(sSimpleStartAllocMutex);
+        OS_UnlockMutex(&sSimpleStartAllocMutex);
     }
 }
 
@@ -1149,8 +1125,9 @@ void SimpleStart_PushMsg(u32 v, u32 w) {
     }
 }
 
-void SimpleStart_AlarmCallback(u32 a) {
-    SimpleStart_PushMsg(a, 0);
+// (the alarm's argument is the message to push)
+void SimpleStart_AlarmCallback(void *arg) {
+    SimpleStart_PushMsg((u32)(uptr)arg, 0);
 }
 
 s32 SimpleStart_WlanStartup(s32 n) {
@@ -1168,13 +1145,13 @@ s32 SimpleStart_WlanStartup(s32 n) {
         return -1;
     }
     Unk_ov001_02206ef8_Mask m = UNK_OV001_02206EF8_MASK;
-    u32 al = ((u32)q + m) & ~(0x20 - 1);
-    data_ov001_0222c890 = (u8 *)al;
+    u8 *al = (u8 *)(((uptr)q + m) & ~(uptr)(0x20 - 1));
+    data_ov001_0222c890 = al;
     u32 t = o + 0x2490;
-    u32 s2 = al + t;
-    r = (u8 *)((s2 + m) & ~(0x20 - 1));
+    u8 *s2 = al + t;
+    r = (u8 *)(((uptr)s2 + m) & ~(uptr)(0x20 - 1));
     data_ov001_0222c8ac = r;
-    if (SimpleStart_WcmInit((void *)SimpleStart_PushMsg, (void *)al, t) == 0) {
+    if (SimpleStart_WcmInit(SimpleStart_PushMsg, al, t) == 0) {
         return -2;
     }
     do {
@@ -1232,15 +1209,15 @@ s32 SimpleStart_ConnectAp(void) {
     s32 cont = 1;
     s32 res = -2;
     u8 *p = data_ov001_0222c8ac + data_ov001_0222c868 * 0xc0;
-    u32 alarm[HOST_SIZED(44, OSAlarm) / 4] HOST_ALIGN8;  // OSAlarm (64 bytes on 64-bit hosts)
+    OSAlarm alarm;
     if (p == 0) {
         return 0;
     }
     if (SimpleStart_WcmConnect(p, 0, 0x30000) == 0) {
         return -2;
     }
-    OS_CreateAlarm(alarm);
-    OS_SetAlarm(alarm, 0x3fec42, 0, (void *)SimpleStart_AlarmCallback, 0x12);
+    OS_CreateAlarm(&alarm);
+    OS_SetAlarm(&alarm, 0x3fec42, SimpleStart_AlarmCallback, (void *)0x12);
     s32 z = 0;
     s32 k = -8;
     do {
@@ -1282,12 +1259,12 @@ s32 SimpleStart_ConnectAp(void) {
             } while (m != 0);
         }
     } while (cont != 0);
-    OS_CancelAlarm(alarm);
+    OS_CancelAlarm(&alarm);
     while (SimpleStart_PopMsg() != 0) {
     }
     if (res > 0) {
         data_ov001_0222c870 = 1;
-        if (Sock_Startup(sSimpleStartSocConfig) < 0) {
+        if (Sock_Startup(&sSimpleStartSocConfig) < 0) {
             res = -2;
         } else {
             data_ov001_0222c874 = 1;
@@ -1354,7 +1331,7 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
                         u32 c = e1->name[0];
                         if (c == 0 || c == 0x20) break;
                     }
-                    u32 n = strlen(buf);
+                    u32 n = strlen((const char *)buf);
                     if (memcmp(buf, e2->name, n) == 0 && memcmp(e1->bssid, e2->bssid, 4) == 0 &&
                         e1->privacy != e2->privacy && e1->privacy == 0) {
                         found = TRUE;
@@ -1380,7 +1357,7 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
             do {
                 memcpy(buf2, e2->name, 0x20);
                 buf2[e2->len] = flagA;
-                u32 n = strlen(sSimpleStartSetupSsid);
+                u32 n = strlen((const char *)sSimpleStartSetupSsid);
                 if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e2->privacy == 0) {
                     flagB = TRUE;
                     break;
@@ -1395,10 +1372,10 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
             do {
                 memcpy(buf2, e1->name, 0x20);
                 buf2[e1->len] = zz;
-                u32 x = strlen(buf2);
-                u32 y = strlen(sSimpleStartSetupSsid);
+                u32 x = strlen((const char *)buf2);
+                u32 y = strlen((const char *)sSimpleStartSetupSsid);
                 if (x == y) {
-                    u32 n = strlen(sSimpleStartSetupSsid);
+                    u32 n = strlen((const char *)sSimpleStartSetupSsid);
                     if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e1->privacy == 0) {
                         flagA = TRUE;
                         break;
@@ -1428,7 +1405,7 @@ s32 SimpleStart_SearchAp() {
     WMBssDesc *src;
     s32 idx = 0;
     u8 unkbuf[0x20];
-    u8 name[0x30];
+    OSAlarm alarm;
     s32 cont;
     s32 t;
     s32 sc;
@@ -1444,8 +1421,8 @@ s32 SimpleStart_SearchAp() {
             result = -2;
             goto cleanup;
         }
-        OS_CreateAlarm(name);
-        OS_SetAlarm(name, 0xffb10, 0, (void *)SimpleStart_AlarmCallback, 0x13);
+        OS_CreateAlarm(&alarm);
+        OS_SetAlarm(&alarm, 0xffb10, SimpleStart_AlarmCallback, (void *)0x13);
         cont = 1;
         result = 0;
         do {
@@ -1461,8 +1438,8 @@ s32 SimpleStart_SearchAp() {
                     sc = SimpleStart_WcmReadApList(data_ov001_0222c8ac, sSimpleStartMaxAps);
                     if (sc > result) {
                         result = sc;
-                        OS_CancelAlarm(name);
-                        OS_SetAlarm(name, 0xffb10, 0, (void *)SimpleStart_AlarmCallback, 0x13);
+                        OS_CancelAlarm(&alarm);
+                        OS_SetAlarm(&alarm, 0xffb10, SimpleStart_AlarmCallback, (void *)0x13);
                     }
                     break;
                 case 10:
@@ -1478,7 +1455,7 @@ s32 SimpleStart_SearchAp() {
                 }
             }
         } while (cont != 0);
-        OS_CancelAlarm(name);
+        OS_CancelAlarm(&alarm);
         while (SimpleStart_PopMsg() != 0) {}
         if (sSimpleStartCancel != 0) break;
         j = 0;
@@ -1503,7 +1480,7 @@ s32 SimpleStart_SearchAp() {
             if (SimpleStart_FindSetupAp(buf1, buf2, &idx) != 0) {
                 SimpleStartApEntry *e = &buf1->e[idx];
                 data_ov001_0222c868 = idx;
-                strcpy(data_ov001_0222c964, e->name);
+                strcpy((char *)data_ov001_0222c964, (const char *)e->name);
                 {
                     u8 *md = data_ov001_0222c8dc;
                     const u8 *ms = e->bssid;
@@ -1530,13 +1507,13 @@ cleanup:
     return result;
 }
 
-s32 SimpleStart_SendTo(u8 *a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e) {
+s32 SimpleStart_SendTo(sptr a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e) {
     s32 r = Sock_SendTo(a, d, e, 0, hdr);
     if (r < 0) r = -4;
     return r;
 }
 
-s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c) {
+s32 SimpleStart_SendBroadcast(sptr a, u8 *b, u32 c) {
     SockAddrIn h;
     u8 out[4];
     h.len = 8;
@@ -1547,7 +1524,7 @@ s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c) {
     return SimpleStart_SendTo(a, &h, out, b, c);
 }
 
-s32 SimpleStart_SendPacket(u8 *a, u8 *b, u8 *c, u32 d) {
+s32 SimpleStart_SendPacket(sptr a, SockAddrIn *b, u8 *c, u32 d) {
     return SimpleStart_SendBroadcast(a, c, d);
 }
 
@@ -1683,10 +1660,10 @@ u32 SimpleStart_BuildHelloPacket(u8 *pkt) {
     if (data_ov001_0222c8a0 != 0) {
         r = SimpleStart_PutTlv(r, 4, data_ov001_0222c8d4, 6);
     }
-    return SimpleStart_BuildPacket(pkt, 2, sSimpleStartTlvBuf, (u32)r - (u32)data_ov001_0222a52c + 8, 0);
+    return SimpleStart_BuildPacket(pkt, 2, sSimpleStartTlvBuf, r - data_ov001_0222a52c + 8, 0);
 }
 
-BOOL SimpleStart_GetOwnMac(void *mac) {
+BOOL SimpleStart_GetOwnMac(u8 *mac) {
     OS_GetMacAddress(mac);
     return TRUE;
 }
@@ -1807,7 +1784,7 @@ s32 SimpleStart_BuildResult()
 {
     s32 ret = 1;
 
-    strcpy(&CA48_A, &data_ov001_0222cc30);
+    strcpy((char *)&CA48_A, (const char *)&data_ov001_0222cc30);
     switch (data_ov001_0222cc30.securityType) {
     case 0:
         CA48_A.securityType = 0;
@@ -1828,7 +1805,7 @@ s32 SimpleStart_BuildResult()
             for (; i < 4; i++) {
                 memcpy(bp, src, 0x20);
                 buf[0x20] = 0;
-                switch (strlen(bp)) {
+                switch (strlen((const char *)bp)) {
                 case 5:
                     a->securityType = 1;
                     *(SimpleStartWep40Key *)dst = *(SimpleStartWep40Key *)bp;
@@ -1882,7 +1859,7 @@ s32 SimpleStart_BuildResult()
 
 s32 SimpleStart_RunProtocol()
 {
-    s32 h = 0;
+    sptr h = 0;
     s32 result = -5;
     u32 t40 = 0;
     s32 retries = 0;
@@ -1913,7 +1890,7 @@ s32 SimpleStart_RunProtocol()
             sSimpleStartStep = 3;
             break;
         case 3:
-            h = Sock_Create(2, 2, 0);
+            h = Sock_Create(2, 2);
             if (h < 0) {
                 result = -2;
                 done = 1;
@@ -1939,9 +1916,9 @@ s32 SimpleStart_RunProtocol()
                 done = 1;
                 break;
             }
-            l.buf[0] = 8;
-            SimpleStart_BuildSessionId((SimpleStartSessionId *)data_ov001_0222c8fc, l.buf);
-            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
+            l.from.len = 8;
+            SimpleStart_BuildSessionId((SimpleStartSessionId *)data_ov001_0222c8fc, &l.from);
+            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, &l.from) > 0) {
                 if (SimpleStart_ParseHelloReply(sSimpleStartPacketBuf, &data_ov001_0222c8a0) != 0) {
                     sSimpleStartDeadline = SimpleStart_GetMilliseconds() + 30000;
                     sSimpleStartStep = 5;
@@ -1952,7 +1929,7 @@ s32 SimpleStart_RunProtocol()
             break;
         case 5:
             data_ov001_0222c864 = SimpleStart_BuildHelloPacket(sSimpleStartPacketBuf);
-            SimpleStart_SendPacket((u8 *)h, l.buf, sSimpleStartPacketBuf, data_ov001_0222c864);
+            SimpleStart_SendPacket(h, &l.from, sSimpleStartPacketBuf, data_ov001_0222c864);
             t40 = SimpleStart_GetMilliseconds();
             sSimpleStartStep = 6;
             break;
@@ -1963,7 +1940,7 @@ s32 SimpleStart_RunProtocol()
                 done = 1;
                 break;
             }
-            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0
+            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, &l.from) > 0
                 && SimpleStart_RecvPacket(sSimpleStartPacketBuf, 3, sSimpleStartTlvBuf, data_ov001_0222c8fc) != 0) {
                 u8 *q = SimpleStart_FirstTlv(sSimpleStartTlvBuf, (s32 *)&l.w54, (s32 *)&l.w58);
                 if (l.w54 != 0x101) break;
@@ -1982,13 +1959,13 @@ s32 SimpleStart_RunProtocol()
         case 7:
             data_ov001_0222c884 = SimpleStart_BuildTlvBlock(sSimpleStartTlvBuf, 0x102, data_ov001_0222c92c, 8);
             data_ov001_0222c864 = SimpleStart_BuildPacket(sSimpleStartPacketBuf, 4, sSimpleStartTlvBuf, data_ov001_0222c884, data_ov001_0222c8fc);
-            SimpleStart_SendPacket((u8 *)h, l.buf, sSimpleStartPacketBuf, data_ov001_0222c864);
+            SimpleStart_SendPacket(h, &l.from, sSimpleStartPacketBuf, data_ov001_0222c864);
             t40 = SimpleStart_GetMilliseconds();
             __builtin__clear(data_ov001_0222cb30, 0x254);
             sSimpleStartStep = 8;
             break;
         case 8:
-            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
+            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, &l.from) > 0) {
                 data_ov001_0222c884 = SimpleStart_RecvPacket(sSimpleStartPacketBuf, 5, sSimpleStartTlvBuf, C924_B8.v);
                 if (data_ov001_0222c884 != 0 && SimpleStart_ParseConfigTlvs(sSimpleStartTlvBuf) != 0) {
                     if (*(s8 *)&data_ov001_0222cc30 != 0) data_ov001_0222c850 = 1;
@@ -2017,7 +1994,7 @@ s32 SimpleStart_RunProtocol()
                 retries = 10;
                 sSimpleStartStep = 10;
             } else {
-                SimpleStart_SendPacket((u8 *)h, l.buf, sSimpleStartPacketBuf, data_ov001_0222c864);
+                SimpleStart_SendPacket(h, &l.from, sSimpleStartPacketBuf, data_ov001_0222c864);
                 t40 = SimpleStart_GetMilliseconds();
                 sSimpleStartStep = 10;
             }
@@ -2040,7 +2017,7 @@ s32 SimpleStart_RunProtocol()
     return result;
 }
 
-void SimpleStart_ThreadMain()
+void SimpleStart_ThreadMain(void *arg)
 {
     s32 r = SimpleStart_RunProtocol();
     sSimpleStartResultCode = r;
@@ -2546,16 +2523,16 @@ s32 SimpleStart_FormatMac(char *dst, s8 *src) {
     return cur - start;
 }
 
-s32 SimpleStart_Start(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
+s32 SimpleStart_Start(u32 a0, s32 a1, SimpleStartStatusFunc a2, SimpleStartAllocFunc a3, SimpleStartFreeFunc a4, s32 a5) {
     s32 r;
     if (sSimpleStartState >= 1 && sSimpleStartState <= 5) {
         return -10;
     }
     data_ov001_0222a53c = a1;
     sSimpleStartState = 7;
-    sSimpleStartStatusCb = (void (*)(void *))a2;
-    sSimpleStartAllocFunc = (void *(*)(u32))a3;
-    sSimpleStartFreeFunc = (void (*)(void *))a4;
+    sSimpleStartStatusCb = a2;
+    sSimpleStartAllocFunc = a3;
+    sSimpleStartFreeFunc = a4;
     sSimpleStartStackSize = a5;
     r = SimpleStart_WlanStartup(a1);
     data_ov001_0222c8c4 = 1;
@@ -2563,7 +2540,7 @@ s32 SimpleStart_Start(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
         sSimpleStartResultCode = r;
         return r;
     }
-    data_ov001_0222c880 = ((s32 (*)(s32))sSimpleStartAllocFunc)(sSimpleStartStackSize);
+    data_ov001_0222c880 = (u8 *)sSimpleStartAllocFunc(sSimpleStartStackSize);
     if (data_ov001_0222c880 == 0) {
         r = -1;
         sSimpleStartResultCode = r;
@@ -2574,13 +2551,13 @@ s32 SimpleStart_Start(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
         sSimpleStartResultCode = r;
         return r;
     }
-    OS_CreateThread(sSimpleStartThread, (void *)SimpleStart_ThreadMain, 0, (void *)(data_ov001_0222c880 + (sSimpleStartStackSize & ~7)), sSimpleStartStackSize, a0);
+    OS_CreateThread(&sSimpleStartThread, SimpleStart_ThreadMain, 0, data_ov001_0222c880 + (sSimpleStartStackSize & ~7), sSimpleStartStackSize, a0);
     sSimpleStartState = 1;
     sSimpleStartDeadline = SimpleStart_GetMilliseconds() + 60000;
     sSimpleStartCancel = 0;
     __builtin__clear(sSimpleStartResult, 0xe8);
     SimpleStart_NotifyStatus();
-    OS_WakeupThreadDirect(sSimpleStartThread);
+    OS_WakeupThreadDirect(&sSimpleStartThread);
     data_ov001_0222c8b4 = 1;
     return 1;
 }
@@ -2593,14 +2570,14 @@ s32 SimpleStart_Stop(void) {
             OS_Sleep(100);
         }
         OS_Sleep(500);
-        if (OS_IsThreadTerminated(sSimpleStartThread) == 0) {
+        if (OS_IsThreadTerminated(&sSimpleStartThread) == 0) {
             do {
-                OS_WakeupThreadDirect(sSimpleStartThread);
-                OS_JoinThread(sSimpleStartThread);
-            } while (OS_IsThreadTerminated(sSimpleStartThread) == 0);
+                OS_WakeupThreadDirect(&sSimpleStartThread);
+                OS_JoinThread(&sSimpleStartThread);
+            } while (OS_IsThreadTerminated(&sSimpleStartThread) == 0);
         }
         if (data_ov001_0222c880 != 0) {
-            sSimpleStartFreeFunc((void *)data_ov001_0222c880);
+            sSimpleStartFreeFunc(data_ov001_0222c880);
             data_ov001_0222c880 = 0;
         }
         data_ov001_0222c8b4 = 0;
@@ -2616,14 +2593,14 @@ s32 SimpleStart_Stop(void) {
     return -10;
 }
 
-s32 SimpleStart_GetStatus(s32 *out) {
-    out[0] = sSimpleStartState;
+s32 SimpleStart_GetStatus(SimpleStartStatus *out) {
+    out->state = sSimpleStartState;
     if (sSimpleStartDeadline == -1) {
-        out[1] = -1;
+        out->remainingMs = -1;
     } else {
-        out[1] = sSimpleStartDeadline - SimpleStart_GetMilliseconds();
+        out->remainingMs = sSimpleStartDeadline - SimpleStart_GetMilliseconds();
     }
-    out[2] = sSimpleStartResultCode;
+    out->result = sSimpleStartResultCode;
     return TRUE;
 }
 
@@ -2633,12 +2610,13 @@ s32 SimpleStart_GetResult(void *dst) {
 }
 
 void SimpleStart_NotifyStatus(void) {
-    s32 buf[3];
-    SimpleStart_GetStatus(buf);
-    sSimpleStartStatusCb(buf);
+    SimpleStartStatus buf;
+    SimpleStart_GetStatus(&buf);
+    sSimpleStartStatusCb(&buf);
 }
 
 
 
 
 
+}

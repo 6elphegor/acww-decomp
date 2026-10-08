@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"
@@ -13,34 +14,37 @@
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
+#include "proto/ov001/unk_ov001_02225f40.h"
 
 #pragma thumb off
 
-#define REGSET(a) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= 3; *(volatile u16 *)(a) = t; } while (0)
+#define REGSET(a) do { u32 t = IO_R((volatile u16 *)(a)); t &= ~3; t |= 3; IO_W((volatile u16 *)(a), t); } while (0)
+
+// a loader for WfcUtil_LoadFileTo (src/ov001/unk_ov001_02208388.cpp): the GX_Load* functions
+typedef void (*WfcLoadFunc)(void *, s32, u32);
+
 extern "C" {
 
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcGx_HidePlanes(s32, s32);
-void WfcUtil_LoadFileTo(const char *, void *);
-s32 WfcInput_IsKeyPressed(s32);
-s32 swprintf(void *, s32, void *, s32);
-void GX_LoadBG2Scr(void *, s32, u32);
+void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);              // unk_ov001_02208388.cpp
+s32 swprintf(wchar_t *s, u32 n, const wchar_t *fmt, ...);      // src/autoload_2/unk_0212c11c.c
+void GX_LoadBG2Scr(const void *src, u32 offset, u32 size);     // src/autoload_2/unk_02111864.c
 
 
 const u16 sWfcErrorTextRect[4] = {0x0d, 0x3c, 0xe6, 0x5e};
 const u8 sWfcErrorCodeFont[8] = {0, 1, 1, 1, 1, 1, 0, 0};
 const u16 sWfcErrorCodePos[6][2] = {{0x62, 0x22}, {0x62, 0x22}, {0x3d, 0x22}, {0x65, 0x22}, {0x6c, 0x22}, {0x34, 0x22}};
-u16 sWfcErrorCodeFormat[4] = {0x25, 0x64, 0, 0};
+wchar_t sWfcErrorCodeFormat[4] = {0x25, 0x64, 0, 0};
 s32 sWfcErrorCode;
 
 void WfcError_Enter() {
     WfcError_LoadBg();
     WfcError_DrawMessage();
-    WfcUtil_SetScene((void *)WfcError_FadeIn);
+    WfcUtil_SetScene(WfcError_FadeIn);
 }
 
 void WfcError_LoadBg() {
-    WfcUtil_LoadFileTo("char/jb4Error.nsc.l", (void *)GX_LoadBG2Scr);
+    WfcUtil_LoadFileTo((void *)"char/jb4Error.nsc.l", (WfcLoadFunc)GX_LoadBG2Scr);
     REGSET(0x4001008);
     REGSET(0x400100a);
     REGSET(0x4000008);
@@ -49,9 +53,9 @@ void WfcError_LoadBg() {
 }
 
 void WfcError_DrawMessage() {
-    s32 sel;
+    u32 sel;
     s32 r4;
-    u16 buf[8];
+    wchar_t buf[8];
     WfcUtil_GetEditParams(0, &sel);
     s32 v = sWfcErrorCode;
     if (v >= -20099) r4 = 0;
@@ -89,33 +93,33 @@ void WfcError_DrawMessage() {
     else if (v >= -52999) r4 = 0;
     else if (v >= -53299) r4 = 0x15;
     else r4 = 0;
-    s32 r5 = WfcText_CreateBgCanvas(0, sWfcErrorCodeFont[WfcUtil_GetLanguage()]);
-    s32 r4b = WfcMsg_GetString(gWfcMsgBank, r4);
+    WfcTextCanvas *canvas = WfcText_CreateBgCanvas(0, sWfcErrorCodeFont[WfcUtil_GetLanguage()]);
+    u8 *text = WfcMsg_GetString((WfcMsgBank *)gWfcMsgBank, r4);
     swprintf(buf, 8, sWfcErrorCodeFormat, -sWfcErrorCode);
     u32 a = sWfcErrorCodePos[WfcUtil_GetLanguage()][1];
     u32 b = sWfcErrorCodePos[WfcUtil_GetLanguage()][0];
-    WfcText_DrawMonospace(r5, b, a, 2, 10, buf, 0);
-    WfcText_DrawTextRect(r5, sWfcErrorTextRect[0], sWfcErrorTextRect[1], sWfcErrorTextRect[2], sWfcErrorTextRect[3], 2, WfcUtil_GetTextFlags(), r4b);
-    WfcText_RequestTransfer(r5);
+    WfcText_DrawMonospace(canvas, b, a, 2, 10, (u16 *)buf, 0);
+    WfcText_DrawTextRect(canvas, sWfcErrorTextRect[0], sWfcErrorTextRect[1], sWfcErrorTextRect[2], sWfcErrorTextRect[3], 2, WfcUtil_GetTextFlags(), text);
+    WfcText_RequestTransfer(canvas);
 }
 
 void WfcError_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcError_WaitFadeIn);
+    WfcUtil_SetScene(WfcError_WaitFadeIn);
 }
 
 void WfcError_WaitFadeIn() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(4);
-    WfcUtil_SetScene((void *)WfcError_WaitButtonBar);
+    WfcUtil_SetScene(WfcError_WaitButtonBar);
 }
 
 void WfcError_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcError_Update);
+    WfcUtil_SetScene(WfcError_Update);
 }
 
 void WfcError_Update() {
@@ -134,13 +138,13 @@ void WfcError_Idle() {}
 void WfcError_HandleResult() {
     if (WfcButtonBar_GetResult() != 0) return;
     WfcSound_Play(6);
-    WfcUtil_SetScene((void *)WfcError_StartExit);
+    WfcUtil_SetScene(WfcError_StartExit);
 }
 
 void WfcError_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcError_FadeOut);
+    WfcUtil_SetScene(WfcError_FadeOut);
 }
 
 void WfcError_FadeOut() {
@@ -148,11 +152,11 @@ void WfcError_FadeOut() {
     WfcButtonBar_Close();
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcError_Exit);
+    WfcUtil_SetScene(WfcError_Exit);
 }
 
 void WfcError_Exit() {
-    s32 sel;
+    u32 sel;
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     if (WfcButtonBar_IsClosed() == 0) return;
@@ -163,12 +167,12 @@ void WfcError_Exit() {
     WfcUtil_GetEditParams(0, &sel);
     if (sel != 0) {
         WfcUtil_SetScreenFlags(2, 1);
-        WfcUtil_SetScene((void *)WfcConnSelect_Enter);
+        WfcUtil_SetScene(WfcConnSelect_Enter);
     } else {
         WfcUtil_SetScreenFlags(2, 0);
         WfcUtil_SetEditParams(0, 0);
         WfcManualSetup_SetMode(0);
-        WfcUtil_SetScene((void *)WfcManualSetup_Enter);
+        WfcUtil_SetScene(WfcManualSetup_Enter);
     }
 }
 

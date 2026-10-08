@@ -9,7 +9,7 @@
 #include "talk/TalkRequestQueue.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_0203e438.h"
 #include "proto/main/unk_0203e7d0.h"
 #include "proto/main/unk_0206e54c.h"
@@ -20,177 +20,23 @@
 extern "C" const s16 data_020c905c;
 
 
-
-
 class Character;
-
 
 
 extern CharacterList gCharacterList;
 
 
-
-extern "C" {
-extern TalkRequestEntry *gTalkRequestCurrent;
-}
-
-extern "C" {
-extern u32 sTalkTargetId;
-}
-
-extern "C" {
-extern u32 sTalkRequestFlags;
-}
-
-extern "C" {
-extern u32 sTalkRequestList;
-}
-
-extern "C" {
-extern CommManager *volatile gCommManager;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
 extern "C" {
 void PrioList_Init(void *);
-}
-
-extern "C" {
-void TalkRequestPool_Reset(void);
-}
-
-extern "C" {
-void TalkRequestFlags_Clear(u32);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void TalkRequest_SetTalkTarget(u32);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-TalkRequestEntry *TalkRequestPool_Alloc(void);
-}
-
-extern "C" {
 void List_Remove(void *, void *);
-}
-
-extern "C" {
 s32 func_01ffcb0c(s32 v1, s32 v2);
-}
-
-extern "C" {
 void Talk_DetachRequest(TalkMsgRequest *req);
-}
-
-extern "C" {
 void Talk_AttachRequestToWindow0(TalkMsgRequest *req);
-}
-
-extern "C" {
-s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
-}
-
-extern "C" {
 long long Vec_MagSqXZ(VecFx32 *);
-}
-
-extern "C" {
 void *PrioList_FindById(void *, u32);
-}
-
-extern "C" {
 void PrioList_PushBack(void *, void *);
-}
-
-extern "C" {
-void _ZN5Actor10postCreateEv(void *, s32);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL _ZN11CommManager7isMyAidEj(void *, u32);
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL _ZN11CommManager8isOnlineEv(void *);
-}
-
-extern "C" {
-void _ZN11CommManager11beginRecordEv(void *);
-}
-
-extern "C" {
-void _ZN11CommManager11writeRecordEPhj(void *, void *, u32);
-}
-
-extern "C" {
-void _ZN11CommManager9endRecordEjj(void *, u32, u32);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void TalkRequestQueue_Reset(void);
-}
-
-extern "C" {
-}
-
-extern "C" {
 Character *Character_FindByCharId(u32 id);
 }
-
 
 
 CharacterList gCharacterList;
@@ -223,7 +69,7 @@ void Character::postCreate(s32 a) {
     if (a == 2) {
         PrioList_PushBack(&gCharacterList, &charNode);
     }
-    _ZN5Actor10postCreateEv(this, a);
+    Actor::postCreate(a);
 }
 
 BOOL Character::preDelete() {
@@ -272,7 +118,7 @@ BOOL Character::isInFacingArcOf(Character *other, s16 lo, s16 hi) {
     VecFx32 a, b;
     a = *other->getInteractionPos();
     b = *getInteractionPos();
-    s16 d = Math_AngleXZ(&a, &b) - *(s16 *)(HOST_AT(other, 0x8e, rotY, 0));
+    s16 d = Math_AngleXZ(&a.x, &b.x) - other->rotY;
     if (d >= lo && d <= hi) {
         return TRUE;
     }
@@ -330,7 +176,6 @@ void Character::setTalkStartMode1() {
     clearCharFlags(3);
     setCharFlags(2);
 }
-
 
 
 // A shared constant (0x2aaa: 60 degrees as a u16 angle), defined after its use here so that it is loaded, not folded; an overlay reads it too.

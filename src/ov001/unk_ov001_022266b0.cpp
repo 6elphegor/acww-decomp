@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcListNode.h"
+#include "nitro/gxoam.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_022266b0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
@@ -69,11 +70,11 @@ void *WfcOam_AllocEntry(s32 idx, void *dst)
     return r;
 }
 
-void WfcOam_FreeEntry(u32 *p)
+extern "C" void WfcOam_FreeEntry(GXOamAttr *p)
 {
     s32 z = 0;
-    *p = (*p & 0xc1fffcff) | 0x200;
-    if ((u32)p >= (u32)sWfcOamBuf + 0x400) z = 1;
+    p->attr01 = (p->attr01 & 0xc1fffcff) | 0x200;
+    if ((u8 *)p >= (u8 *)sWfcOamBuf + 0x400) z = 1;
     WfcPool_Put(sWfcOamBuf->entryPools[z], p);
 }
 

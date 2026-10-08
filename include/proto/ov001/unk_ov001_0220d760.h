@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220d760.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcTopMenuSel
+extern volatile u8 sWfcTopMenuSel;
+#endif
+#ifndef PROTO_LOCAL_sWfcTopMenuPalette
+extern void *sWfcTopMenuPalette;
 #endif
 #ifndef PROTO_LOCAL_WfcTopMenu_Enter
 void WfcTopMenu_Enter();
@@ -47,24 +50,13 @@ void WfcTopMenu_FadeOut();
 #ifndef PROTO_LOCAL_WfcTopMenu_Exit
 void WfcTopMenu_Exit();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcTopMenuSel
-extern volatile u8 sWfcTopMenuSel;
-#endif
-#ifndef PROTO_LOCAL_sWfcTopMenuPalette
-extern u32 *sWfcTopMenuPalette;
-#endif
 #ifndef PROTO_LOCAL_WfcTopMenu_MoveCursor
 void WfcTopMenu_MoveCursor(s32 a);
 #endif
 #ifndef PROTO_LOCAL_WfcTopMenu_HighlightSelection
-s32 WfcTopMenu_HighlightSelection();
+void WfcTopMenu_HighlightSelection();
 #endif
+#ifdef __cplusplus
 }
 #endif
 

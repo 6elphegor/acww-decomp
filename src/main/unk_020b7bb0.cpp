@@ -6,15 +6,6 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020b7bb0.h"
 
-extern "C" {
-// Other files
-void *_ZN12LabelBalloon7getAnimEv(void *p);
-}
-
-
-
-
-
 FieldInfoLabelBalloon::FieldInfoLabelBalloon() : LabelBalloon(1) {
     blinkFrame = 0;
     markerRequest = 0;
@@ -28,26 +19,26 @@ FieldInfoLabelBalloon::~FieldInfoLabelBalloon() {
 }
 
 void FieldInfoLabelBalloon::draw() {
-    s32 r7, y;
-    s32 r4 = 0;
+    s32 x, y;
+    s32 drawn = 0;
     if (blinkFrame < 0x19) {
         if (markerShown != 0) {
-            void *a = ((SpriteAnim *)(&markerAnim))->getCell();
-            r7 = (s32)_ZN12LabelBalloon7getAnimEv(this);
-            r4 = ((LabelBalloon *)(this))->getDrawX();
-            s32 b = ((LabelBalloon *)(this))->getDrawY();
-            r4 = r4 + ((SpriteAnim *)((void *)r7))->getFrameX(-1) + ((SpriteAnim *)(&markerAnim))->getFrameX(-1);
-            y = b + ((SpriteAnim *)((void *)r7))->getFrameY(-1) + ((SpriteAnim *)(&markerAnim))->getFrameY(-1);
-            Oam_DrawCell(0, (u32)a, r4, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
-            r4 = 1;
+            GXOamAttr *cell = (GXOamAttr *)markerAnim.getCell();
+            SpriteAnim *anim = getAnim();
+            x = getDrawX();
+            s32 b = getDrawY();
+            x = x + anim->getFrameX(-1) + markerAnim.getFrameX(-1);
+            y = b + anim->getFrameY(-1) + markerAnim.getFrameY(-1);
+            Oam_DrawCell(0, cell, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            drawn = 1;
         }
-        ((LabelBalloon *)(this))->LabelBalloon::draw();
+        LabelBalloon::draw();
     }
-    markerDrawn = r4;
+    markerDrawn = drawn;
 }
 
 void FieldInfoLabelBalloon::update() {
     markerDrawnPrev = markerDrawn;
-    ((LabelBalloon *)(this))->LabelBalloon::update();
-    ((FieldInfoLabelBalloon *)(this))->updateBlink();
+    LabelBalloon::update();
+    updateBlink();
 }

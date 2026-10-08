@@ -183,6 +183,7 @@ def make_headers(defs, only=None):
                         cpp = True
                     else:
                         fwd_c.add(decl)
+                        cpp = True  # (C would need the struct keyword in the prototype)
             text = strip_defaults(' '.join(r['proto'].split())) if not r.get('var') else pretty(r['proto'])
             if r.get('var'):  # a variable built by a constructor call: its declaration leaves the arguments out
                 text = re.sub(r'(\b%s)\s*\(.*\)$' % re.escape(r['name']), r'\1', text)

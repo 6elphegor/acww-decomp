@@ -1662,7 +1662,7 @@ extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
                 if (Item_IsNormalItem(c)) {
                     FieldPos_FromUnitCenter(&v, x, y);
                     v.y = FtrMgr_GetSurfaceHeight(x, y);
-                    ((TouchPicker *)(Scene_GetTouchPicker()))->addCylinder((TouchPickCylinder *)(HOST_AT(self, 0x1cc, topItemCylinders[0], 0) + i * 0x20), (VecFx32 *)(&v), (VecFx32 *)(0xccd), (VecFx32 *)(0x100), 10, 0xff);
+                    ((TouchPicker *)(Scene_GetTouchPicker()))->addCylinder((TouchPickCylinder *)(HOST_AT(self, 0x1cc, topItemCylinders[0], 0) + i * 0x20), (VecFx32 *)(&v), 0xccd, 0x100, 10, 0xff);
                 }
             }
         }

@@ -1,9 +1,8 @@
 #include "types.h"
 #include "sys/DebugText.h"
-#define PROTO_LOCAL_DebugText_VPrintf  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_VSNPrintf  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
+#include "ds_stdarg.h"
+#include "proto/autoload_2/unk_02101048.h"
+#include "proto/autoload_2/unk_021127c0.h"
 #include "proto/main/unk_0206d49c.h"
 #include "proto/main/unk_020b7f7c.h"
 
@@ -12,16 +11,7 @@ void NNS_GfdInitFrmTexVramManager(u32 a, u32 b);
 void NNS_GfdInitFrmPlttVramManager(u32 a, u32 b);
 u32 GX_GetSizeOfTexPltt(void);
 u32 GX_GetBankForTex(void);
-void OS_VSNPrintf(char *buf, u32 size, const char *fmt, char *ap);
 }
-
-extern "C" {
-extern u32 (*data_0213bc10)(u32, u32);
-extern u32 (*data_0213bc18)(u32);
-}
-
-
-extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap);
 
 extern "C" void DebugText_PutChar(u16 *dst, u32 base, s32 c) {
     *dst = base + c;
@@ -35,7 +25,7 @@ extern "C" void DebugText_PutString(u16 *dst, u32 base, const char *s) {
     }
 }
 
-extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap) {
+extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, DS_VA_LIST ap) {
     char buf[0x81];
     OS_VSNPrintf(buf, 0x81, fmt, ap);
     DebugText_PutString(a, b, buf);
@@ -46,8 +36,10 @@ extern "C" void DebugText_Print(DebugText *self, u16 *dst, const char *s) {
 }
 
 extern "C" void DebugText_Printf(DebugText *self, u16 *a, const char *fmt, ...) {
-    char *ap = (char *)(((u32)&fmt) & ~3) + 4;
+    DS_VA_LIST ap;
+    va_start(ap, fmt);
     DebugText_VPrintf(a, self->charBase, fmt, ap);
+    va_end(ap);
 }
 
 extern "C" void TexVram_Alloc4x4(u32 *o0, u32 *o1, u32 size) {
@@ -135,7 +127,8 @@ extern "C" u32 PlttVram_AllocRaw(u32 a) {
     return p;
 }
 
-extern "C" u32 TexVram_Alloc(u32 a, u32 b) {
+// NitroSystem's texture / palette VRAM allocators (data_0213bc10 / data_0213bc18; opt unused)
+extern "C" u32 TexVram_Alloc(u32 a, BOOL b, u32 opt) {
     u32 x, y;
     if (b != 0) {
         TexVram_Alloc4x4(&x, &y, a);
@@ -145,7 +138,7 @@ extern "C" u32 TexVram_Alloc(u32 a, u32 b) {
     return (b << 31) | (((a >> 4) << 16) | ((x >> 3) & 0xffff));
 }
 
-extern "C" u32 PlttVram_Alloc(u32 a) {
+extern "C" u32 PlttVram_Alloc(u32 a, BOOL is4pltt, u32 opt) {
     a = (a + 7) & ~7;
     u32 r = PlttVram_AllocRaw(a);
     return ((a >> 3) << 16) | ((r >> 3) & 0xffff);

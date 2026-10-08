@@ -20,6 +20,7 @@
 #include "actor/VillagerActor.h"
 #include "sys/ProcProfile.h"
 #include "field/Insect.h"
+#include "field/InsectSpawnList.h"
 #include "field/InsectNetSync.h"
 #include "field/Snowball.h"
 #include "game/StrBSizeData.h"
@@ -259,16 +260,6 @@ extern "C" { FxVec3NoCtor sWateringPos; }
 #define func_02133150 _s32_div_f
 namespace s00 {
 
-struct InsectSpawnEntry {
-    u8 kind;
-    u8 cumulativeChance;
-};
-
-struct InsectSpawnList {
-    InsectSpawnEntry *entries;
-    u8 entryCount;
-    u8 pad_05[3];
-};
 
 // {minute, hour} as Clock_GetMinuteHour writes it (same as G12's MinuteHour, src/main/unk_020b8d9c.cpp)
 struct MinuteHour {
@@ -572,7 +563,6 @@ extern "C" void FieldInsect_UpdateAll(void *a);
 }
 
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -604,7 +594,6 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
 void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void func_02133ef8(void *p, s32 n);
-void *ModelSlot_getHeap(void *h);
 void *func_02106788(void *r);
 void *func_021067a4(void *a, u32 b);
 void *func_021065dc(void *r);
@@ -638,7 +627,6 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind);
 extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode);
 }
 
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -5528,7 +5516,6 @@ BOOL InsectManager::onCreate() { using namespace s05;
     return TRUE;
 }
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -5595,7 +5582,7 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     if (!File_Exists(l.path)) {
         return;
     }
-    h2 = ModelSlot_getHeap(h);
+    h2 = ((ModelSlot *)(h))->getHeap();
     void *r7;
     if (mode == 1) {
         if (t4 == 0x3a) {
@@ -5662,7 +5649,6 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     }
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -5674,7 +5660,6 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -5734,7 +5719,6 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
     }
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -5746,7 +5730,6 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -5878,7 +5861,6 @@ L268:
     }
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -5890,7 +5872,6 @@ L268:
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -5912,7 +5893,6 @@ BOOL InsectManager::onExecute() { using namespace s04;
     Insect_UpdateSpawning(self);
     return TRUE;
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -5924,7 +5904,6 @@ BOOL InsectManager::onExecute() { using namespace s04;
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -5991,7 +5970,6 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
     }
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -6003,7 +5981,6 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -6029,7 +6006,6 @@ extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
     return r;
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -6041,7 +6017,6 @@ extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -6076,7 +6051,6 @@ extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
     return FALSE;
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -6088,7 +6062,6 @@ extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -6110,7 +6083,6 @@ extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx) {
     return e->kind;
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -6122,7 +6094,6 @@ extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx) {
 #undef sInsectJointAnimExtFmt
 #undef sInsectTexAnimPathFmt
 
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define sInsectPathFmt0x "/insect/01/bug0%d"
 #define sInsectPathFmt1x "/insect/11/bug%d"
 #define sInsectPathFmt2x "/insect/21/bug%d"
@@ -6180,7 +6151,6 @@ if (Insect_Spawn(self, b[2], (u8)b[3], 2)) {
     }
 }
 }
-#undef ModelSlot_getHeap
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x

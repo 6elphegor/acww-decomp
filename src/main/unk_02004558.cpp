@@ -2825,7 +2825,7 @@ void PlayerActor::submitSceneCollider() {
         v.z = p->z;
         v.y += 0xb33;
         TouchPicker *r = (TouchPicker *)Scene_GetTouchPicker();
-        r->addCylinder((TouchPickCylinder *)((u8 *)&touchCylinder), (VecFx32 *)(&v), (VecFx32 *)(0xa00), (VecFx32 *)(0x15cf), 1, (u8)sessionSlot);
+        r->addCylinder((TouchPickCylinder *)((u8 *)&touchCylinder), (VecFx32 *)(&v), 0xa00, 0x15cf, 1, (u8)sessionSlot);
     }
 }
 

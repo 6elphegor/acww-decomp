@@ -251,34 +251,34 @@ void MenuHeap_Create(u32 size, void *parent);
 void BgHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FurnitureHeap_Create
-void FurnitureHeap_Create(u32 size, void *parent);
+void *FurnitureHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FieldStructureHeap_Create
 void FieldStructureHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_SpecialInsectHeap_Create
-void SpecialInsectHeap_Create(u32 size, void *parent);
+void *SpecialInsectHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_HeldInsectHeap_Create
-void HeldInsectHeap_Create(u32 size, void *parent);
+void *HeldInsectHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FieldInsectHeap_Create
-void FieldInsectHeap_Create(u32 size, void *parent);
+void *FieldInsectHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsectHeap_Create
-void MuseumInsectHeap_Create(u32 size, void *parent);
+void *MuseumInsectHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FishShadowHeap_Create
-void FishShadowHeap_Create(u32 size, void *parent);
+void *FishShadowHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FishFinHeap_Create
-void FishFinHeap_Create(u32 size, void *parent);
+void *FishFinHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FishDisplayHeap_Create
-void FishDisplayHeap_Create(u32 size, void *parent);
+void *FishDisplayHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_MuseumAquariumHeap_Create
-void MuseumAquariumHeap_Create(u32 size, void *parent);
+void *MuseumAquariumHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_TownBclHeap_Create
 void TownBclHeap_Create(s32 x);

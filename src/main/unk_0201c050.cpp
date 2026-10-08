@@ -10465,7 +10465,7 @@ BOOL VillagerTalkTopics::selectTsuStar() {
     p18 = 0;
     r5 = -1;
     result = FALSE;
-    if (r4 != -1 && ConstellationStore_IsUsed((u8 *)base, r4) != 0 && r7 != 0) {
+    if (r4 != -1 && ConstellationStore_IsUsed((ConstellationStore *)base, r4) != 0 && r7 != 0) {
         rec = (u8 *)base + r4 * 0x46;
         if (((PlayerId *)(rec))->isValid() != 0) {
             q = ((PlayerData *)(r7))->getPlayerId();

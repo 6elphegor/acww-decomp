@@ -8,7 +8,7 @@
 // to this file or to the one before it (0x02060034, house rooms, which has no other .data); it is defined here.
 
 extern "C" {
-void *Clock_GetTimeSeed();
+u32 Clock_GetTimeSeed(); // src/main/unk_0209cb74.cpp
 }
 
 
@@ -20,6 +20,6 @@ Random gRandom;
 Random::~Random() {}
 
 extern "C" void Random_SeedGlobal() {
-    void *r = Clock_GetTimeSeed();
-    Random_SetSeed(&gRandom, (u32)r);
+    u32 r = Clock_GetTimeSeed();
+    Random_SetSeed(&gRandom.seed, r);
 }

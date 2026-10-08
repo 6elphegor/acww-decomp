@@ -1286,7 +1286,7 @@ extern "C" void TownMap_Generate(TownMap *o, s32 arg) {
     ((TownMap *)(o))->clear();
     o->grassType = Ns_0204d560::Random_GlobalBelow(3);
     do {
-        Town_GenerateAcres(o);
+        Town_GenerateAcres(o->acres);
         TownMap_ApplyAcreLayouts(o, arg);
     } while (!TownMap_HasEnoughSigns(o) || !TownMap_HasEnoughRocks(o));
 }

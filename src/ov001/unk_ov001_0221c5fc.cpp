@@ -18,21 +18,23 @@
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
+#include "proto/ov001/unk_ov001_02225924.h"
+#include "proto/ov001/unk_ov001_02225f40.h"
 
 #pragma thumb off
 
 
-extern "C" {
-s32 GX_LoadBG2Scr();
-s32 GX_LoadBG2Char();
-s32 GX_LoadBGPltt();
-void MIi_CpuClear16(u16, void *, u32);
-void MIi_CpuCopy16(void *, void *, u32);
-void WfcUtil_LoadFileTo(void *, void *);
-s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcInput_IsKeyPressed(s32);
+// a loader for WfcUtil_LoadFileTo (src/ov001/unk_ov001_02208388.cpp): the GX_Load* functions
+typedef void (*WfcLoadFunc)(void *, s32, u32);
 
+extern "C" {
+// SDK
+void GX_LoadBG2Scr(const void *src, u32 offset, u32 size);
+void GX_LoadBG2Char(const void *src, u32 offset, u32 size);
+void GX_LoadBGPltt(const void *src, u32 offset, u32 size);
+void MIi_CpuClear16(u16 v, void *dst, u32 n);
+void MIi_CpuCopy16(const void *src, void *dst, u32 size);
+void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);  // unk_ov001_02208388.cpp
 }
 
 extern "C" u8 sWfcUsbWaitResult = 0;
@@ -56,15 +58,15 @@ extern "C" void WfcUsbWait_Enter() {
     MIi_CpuCopy16(s.nickName, b, s.nickNameLength << 1);
     WfcUtil_ShowBottomMessageNum(b, 0x6d);
     WfcBusyIcon_Create(0);
-    WfcUsbScan_Start((void *)WfcUsbWait_OnScanResult);
+    WfcUsbScan_Start(WfcUsbWait_OnScanResult);
     WfcSound_Play(0xb);
-    WfcUtil_SetScene((void *)WfcUsbWait_FadeIn);
+    WfcUtil_SetScene(WfcUsbWait_FadeIn);
 }
 
 extern "C" void WfcUsbWait_LoadBg() {
-    WfcUtil_LoadFileTo((void *)"char/jbBgStep3.ncg.l", (void *)GX_LoadBG2Char);
-    WfcUtil_LoadFileTo((void *)"char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
-    WfcUtil_LoadFileTo((void *)"char/jb4Usb.nsc.l", (void *)GX_LoadBG2Scr);
+    WfcUtil_LoadFileTo((void *)"char/jbBgStep3.ncg.l", (WfcLoadFunc)GX_LoadBG2Char);
+    WfcUtil_LoadFileTo((void *)"char/ybBgStep3.ncl.l", (WfcLoadFunc)GX_LoadBGPltt);
+    WfcUtil_LoadFileTo((void *)"char/jb4Usb.nsc.l", (WfcLoadFunc)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -80,19 +82,19 @@ extern "C" void WfcUsbWait_LoadBg() {
 extern "C" void WfcUsbWait_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcUsbWait_WaitFadeIn);
+    WfcUtil_SetScene(WfcUsbWait_WaitFadeIn);
 }
 
 extern "C" void WfcUsbWait_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(2);
-    WfcUtil_SetScene((void *)WfcUsbWait_WaitButtonBar);
+    WfcUtil_SetScene(WfcUsbWait_WaitButtonBar);
 }
 
 extern "C" void WfcUsbWait_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
-    WfcUtil_SetScene((void *)WfcUsbWait_Update);
+    WfcUtil_SetScene(WfcUsbWait_Update);
 }
 
 extern "C" void WfcUsbWait_Update() {
@@ -118,13 +120,13 @@ extern "C" void WfcUsbWait_HandleResult() {
     sWfcUsbWaitResult = 2;
     WfcSound_Stop();
     WfcSound_Play(7);
-    WfcUtil_SetScene((void *)WfcUsbWait_StartExit);
+    WfcUtil_SetScene(WfcUsbWait_StartExit);
 }
 
 extern "C" void WfcUsbWait_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    WfcUtil_SetScene((void *)WfcUsbWait_FadeOut);
+    WfcUtil_SetScene(WfcUsbWait_FadeOut);
 }
 
 extern "C" void WfcUsbWait_FadeOut() {
@@ -132,7 +134,7 @@ extern "C" void WfcUsbWait_FadeOut() {
     WfcButtonBar_Close();
     if ((u8)(sWfcUsbWaitResult + 0xfe) <= 1) WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcUsbWait_Exit);
+    WfcUtil_SetScene(WfcUsbWait_Exit);
 }
 
 extern "C" void WfcUsbWait_Exit() {
@@ -151,17 +153,17 @@ extern "C" void WfcUsbWait_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     if (sWfcUsbWaitResult == 2) {
         WfcUtil_SetScreenFlags(2, 1);
-        WfcUtil_SetScene((void *)WfcConnSelect_Enter);
+        WfcUtil_SetScene(WfcConnSelect_Enter);
     } else if (sWfcUsbWaitResult == 3) {
         WfcUtil_SetScreenFlags(2, 1);
-        WfcUtil_SetScene((void *)WfcUsbIntro_Enter);
+        WfcUtil_SetScene(WfcUsbIntro_Enter);
     } else {
         WfcUtil_SetScreenFlags(0, 0);
-        WfcUtil_SetScene((void *)WfcUsbDone_Enter);
+        WfcUtil_SetScene(WfcUsbDone_Enter);
     }
 }
 
-extern "C" void WfcUsbWait_OnScanResult(u32 a) {
+extern "C" void WfcUsbWait_OnScanResult(s32 a) {
     if (sWfcUsbWaitResult != 0) return;
     switch (a) {
     case 0:
@@ -170,25 +172,25 @@ extern "C" void WfcUsbWait_OnScanResult(u32 a) {
         WfcSound_Play(0x12);
         WfcDialog_Open(0x45, 1, 1, -1, 0);
         WfcButtonBar_DisableInput();
-        WfcUtil_SetScene((void *)WfcUsbWait_NotFoundDialog);
+        WfcUtil_SetScene(WfcUsbWait_NotFoundDialog);
         break;
     case 1:
         sWfcUsbWaitResult = 1;
         WfcSound_Stop();
-        WfcUtil_SetScene((void *)WfcUsbWait_StartExit);
+        WfcUtil_SetScene(WfcUsbWait_StartExit);
         break;
     case 2:
         WfcSound_Stop();
         WfcUsbScan_SetCallback(0);
         WfcDialog_Open(0x47, 0, 1, -1, 0);
         WfcButtonBar_DisableInput();
-        WfcUtil_SetScene((void *)WfcUsbWait_GrantedDialog);
+        WfcUtil_SetScene(WfcUsbWait_GrantedDialog);
         break;
     case 3:
         sWfcUsbWaitResult = 2;
         WfcSound_Stop();
         WfcSound_Play(9);
-        WfcUtil_SetScene((void *)WfcUsbWait_StartExit);
+        WfcUtil_SetScene(WfcUsbWait_StartExit);
         break;
     }
 }
@@ -197,12 +199,12 @@ extern "C" void WfcUsbWait_NotFoundDialog() {
     if (WfcDialog_GetResult() != 0) return;
     WfcSound_Play(6);
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcUsbWait_WaitNotFoundClosed);
+    WfcUtil_SetScene(WfcUsbWait_WaitNotFoundClosed);
 }
 
 extern "C" void WfcUsbWait_WaitNotFoundClosed() {
     if (WfcDialog_IsOpen() != 0) return;
-    WfcUtil_SetScene((void *)WfcUsbWait_StartExit);
+    WfcUtil_SetScene(WfcUsbWait_StartExit);
 }
 
 extern "C" void WfcUsbWait_GrantedDialog() {
@@ -216,18 +218,18 @@ extern "C" void WfcUsbWait_GrantedDialog() {
         WfcSound_Play(7);
     }
     WfcDialog_Close();
-    WfcUtil_SetScene((void *)WfcUsbWait_WaitGrantedClosed);
+    WfcUtil_SetScene(WfcUsbWait_WaitGrantedClosed);
 }
 
 extern "C" void WfcUsbWait_WaitGrantedClosed() {
     if (WfcDialog_IsOpen() != 0) return;
     if (sWfcUsbWaitResult == 1) {
-        WfcUtil_SetScene((void *)WfcUsbWait_StartExit);
+        WfcUtil_SetScene(WfcUsbWait_StartExit);
         return;
     }
     WfcSound_Play(0xb);
     WfcButtonBar_EnableInput();
     sWfcUsbWaitResult = 0;
-    WfcUsbScan_SetCallback((s32)WfcUsbWait_OnScanResult);
-    WfcUtil_SetScene((void *)WfcUsbWait_Update);
+    WfcUsbScan_SetCallback(WfcUsbWait_OnScanResult);
+    WfcUtil_SetScene(WfcUsbWait_Update);
 }

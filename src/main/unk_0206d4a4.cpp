@@ -4,42 +4,38 @@
 #include "nitro/io_access.h"
 #include "sys/OSThread.h"
 
-extern u32 OVERLAY_1_ID[];
-extern u32 OVERLAY_65_ID[];
+#include "sys/OverlayHandle.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0206d5b8.h"
 
+// The overlays this unit loads (the linker's OVERLAY_<n>_ID symbols are these numbers)
+enum { OVERLAY_ID_WFC_UTIL = 1, OVERLAY_ID_DWC = 65 };
+
+extern OverlayHandle gOverlayHandle;
 extern "C" {
 extern u8 data_021fccfc[];
-extern u8 gOverlayHandle[];
 extern u8 sFatalEntered;
 u32 OS_DisableInterrupts(void);
 void OS_Halt(void);
 void OS_RestoreInterrupts(u32 v);
 void OS_DisableIrqMask(s32 v);
 void OS_ResetRequestIrqMask(s32 v);
-void OverlayHandle_Load(void *p, s32 v);
-void OverlayHandle_Unload(void *p);
-void DwcNet_SetAllocator(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
-void OverlayMgr_Acquire(u32 id);
-void OverlayMgr_Release(u32 id);
-void *Mem_AllocAligned(u32 size, u32 align);
-void Mem_Free(void *p);
-void WfcUtil_Run(void *p, s32 a, s32 b);
+// (src/main/unk_020742f4.cpp: they take the handle through its own view of OverlayHandle)
+void OverlayHandle_Load(OverlayHandle *p, s32 v);
+void OverlayHandle_Unload(OverlayHandle *p);
+// (src/ov065/unk_ov065_02277974.cpp: the DWC allocator hooks)
+void DwcNet_SetAllocator(void *(*alloc)(u32, u32, s32), void (*free)(u32, void *));
+void WfcUtil_Run(void *work, s32 a, s32 b);
 s32 PXI_SendWordByFifo(s32 a, s32 b, s32 c);
 void WaitByLoop(s32 n);
-void Fatal_ExceptionCallback(void *arg, void *p);
-void Random_SetSeed(void *st, u32 v);
 }
 
 // 4-byte colour constants (constructed by __sinit)
 
-extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n);
-extern "C" void Main_DwcFree(u32 a, void *p);
-extern "C" void Main_RunWifiUtility(void);
-extern "C" void Main_PxiSendWordRetry(s32 a, s32 b);
-extern "C" void Fatal_Handler(void *arg);
-
-extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n) {
-    return Mem_AllocAligned((u32)p, n);
+// DWC's allocator hooks: (allocation name, size, alignment) / (name, block)
+extern "C" void *Main_DwcAlloc(u32 name, u32 size, s32 align) {
+    return Mem_AllocAligned(size, align);
 }
 
 extern "C" void Main_DwcFree(u32 a, void *p) {
@@ -53,14 +49,14 @@ extern "C" void Main_RunWifiUtility(void) {
     IO_W(reg, 0);
     OS_DisableIrqMask(7);
     OS_ResetRequestIrqMask(7);
-    OverlayHandle_Load(gOverlayHandle, (s32)OVERLAY_65_ID);
+    OverlayHandle_Load(&gOverlayHandle, OVERLAY_ID_DWC);
     DwcNet_SetAllocator(Main_DwcAlloc, Main_DwcFree);
-    OverlayMgr_Acquire((u32)OVERLAY_1_ID);
+    OverlayMgr_Acquire(OVERLAY_ID_WFC_UTIL);
     void *p = Mem_AllocAligned(0x40000, 0x20);
     WfcUtil_Run(p, 1, 0x20);
     Mem_Free(p);
-    OverlayMgr_Release((u32)OVERLAY_1_ID);
-    OverlayHandle_Unload(gOverlayHandle);
+    OverlayMgr_Release(OVERLAY_ID_WFC_UTIL);
+    OverlayHandle_Unload(&gOverlayHandle);
     IO_R(reg);
     IO_W(reg, old);
     OS_RestoreInterrupts(ime);

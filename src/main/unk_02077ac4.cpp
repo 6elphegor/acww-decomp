@@ -562,7 +562,7 @@ s32 DateTime_Compare(void *, void *, s32);
 s32 DateTime_DiffMinutes(void *, void *);
 VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 Villager_GetWhereabouts(void *);
-s32 Insect_GetSpawnTable(s32);
+void *Insect_GetSpawnTable(s32);
 void Villager_ClearTalkedToday(void *);
 s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p);
 BOOL VillagerRelations_IsValidIndex(void *a, u32 i);

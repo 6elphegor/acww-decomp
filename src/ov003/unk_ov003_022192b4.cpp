@@ -80,7 +80,6 @@ typedef u32 FileBufSlot;
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 #define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
 #define PooledModel_getModel _ZN11PooledModel8getModelEv
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 
 
@@ -1386,14 +1385,13 @@ BOOL ModelSet_Load(void *t, void *file, void *heap);
 void *ModelSet_Find(void *t, void *name);
 void Gfx3d_LoadPltt(void *a, u32 b);
 void Gfx3d_LoadTex(void *a, u32 b);
-u32 Item_GetIconModelName(s32 a, s32 b);
+const char *Item_GetIconModelName(s32 a, s32 b);
 s32 TownState_GetSeasonPeriod();
 void *NNS_G3dGetTex(void *file);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *ModelSlotPool_acquire(void *a, void *b);
 BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
 void *PooledModel_getModel(void *a);
-void *ModelSlot_getHeap(void *a);
 s32 func_021065dc();
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();

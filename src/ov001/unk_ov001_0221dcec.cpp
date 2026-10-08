@@ -51,18 +51,18 @@ void WfcConfig_FormatEditDns2(void *p);
 void WfcConfig_FormatEditDns1(void *p);
 void WfcConfig_FormatEditGateway(void *p);
 void WfcConfig_FormatEditSubnetMask(void *p);
-void WfcConfig_FormatEditIp(s32 a);
+void WfcConfig_FormatEditIp(void *p);
 void WfcConfig_GetEditSsid(void *src);
-void WfcConfig_SetEditDns2(s32 a);
-void WfcConfig_SetEditDns1(s32 a);
-void WfcConfig_SetEditGateway(s32 a);
-void WfcConfig_SetEditSubnetMask(s32 a);
-void WfcConfig_SetEditIp(s32 a);
-void WfcConfig_SetEditWepKey(u8 *s);
+void WfcConfig_SetEditDns2(void *a);
+void WfcConfig_SetEditDns1(void *a);
+void WfcConfig_SetEditGateway(void *a);
+void WfcConfig_SetEditSubnetMask(void *a);
+void WfcConfig_SetEditIp(void *a);
+void WfcConfig_SetEditWepKey(void *key);
 void WfcConfig_SetEditSsid(void *a);
 void WfcConfig_SetEditAutoDns(u32 v);
 void WfcConfig_SetEditAutoIp(u32 v);
-u8 *WfcConfig_GetEdit();
+WfcConfigSlot *WfcConfig_GetEdit();
 void WfcConfig_Shutdown();
 void WfcConfig_Init();
 }
@@ -82,7 +82,7 @@ void WfcConfig_Init()
 
 void WfcConfig_Shutdown() { WfcHeap_FreeAndClear(&sWfcConfig); }
 
-u8 *WfcConfig_GetEdit() { return (u8 *)sWfcConfig + 0x400; }
+WfcConfigSlot *WfcConfig_GetEdit() { return &sWfcConfig->editSlot; }
 
 void WfcConfig_SetEditAutoIp(u32 v) { ((u8 *)sWfcConfig)[0x4f5] = v; }
 
@@ -94,8 +94,9 @@ void WfcConfig_SetEditSsid(void *a)
     ((u8 *)sWfcConfig)[0x4e7] = 0;
 }
 
-void WfcConfig_SetEditWepKey(u8 *s)
+void WfcConfig_SetEditWepKey(void *key)
 {
+    u8 *s = (u8 *)key;
     s32 i;
     s32 n;
     u8 *d;
@@ -146,26 +147,26 @@ void WfcConfig_SetEditWepKey(u8 *s)
     }
 }
 
-void WfcConfig_SetEditIp(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c0); }
+void WfcConfig_SetEditIp(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c0); }
 
-void WfcConfig_SetEditSubnetMask(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4f0); }
+void WfcConfig_SetEditSubnetMask(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4f0); }
 
-void WfcConfig_SetEditGateway(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c4); }
+void WfcConfig_SetEditGateway(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c4); }
 
-void WfcConfig_SetEditDns1(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c8); }
+void WfcConfig_SetEditDns1(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c8); }
 
-void WfcConfig_SetEditDns2(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4cc); }
+void WfcConfig_SetEditDns2(void *a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4cc); }
 
 void WfcConfig_GetEditSsid(void *src)
 {
     MI_CpuCopy8((u8 *)sWfcConfig + 0x440, src, 0x20);
 }
 
-void WfcConfig_FormatEditIp(s32 a)
+void WfcConfig_FormatEditIp(void *a)
 {
     u8 *g = (u8 *)sWfcConfig;
     u8 *p = g + 0x4c0;
-    OS_SPrintf((void *)a, "%3d%3d%3d%3d", p[0], p[1], p[2], p[3]);
+    OS_SPrintf(a, "%3d%3d%3d%3d", p[0], p[1], p[2], p[3]);
 }
 
 void WfcConfig_FormatEditSubnetMask(void *p) {

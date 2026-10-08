@@ -4,9 +4,7 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022266b0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
+#include "nitro/gxoam.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,24 +18,19 @@ void WfcOam_TransferTask();
 #ifndef PROTO_LOCAL_WfcOam_Shutdown
 void WfcOam_Shutdown();
 #endif
-#ifndef PROTO_LOCAL_WfcList_Destroy
-void WfcList_Destroy(void *a, ...);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcOam_AllocEntry
 void *WfcOam_AllocEntry(s32 idx, void *dst);
 #endif
 #ifndef PROTO_LOCAL_WfcOam_FreeEntry
-void WfcOam_FreeEntry(u32 *p);
+void WfcOam_FreeEntry(GXOamAttr *p);
 #endif
 #ifndef PROTO_LOCAL_WfcOam_GetEntry
 u8 *WfcOam_GetEntry(s32 a, s32 b);
 #endif
+#ifndef PROTO_LOCAL_WfcList_Destroy
+void WfcList_Destroy(void *a, ...);
+#endif
+#ifdef __cplusplus
 }
 #endif
 

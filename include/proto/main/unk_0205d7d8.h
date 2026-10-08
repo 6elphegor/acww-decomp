@@ -7,7 +7,7 @@
 #ifdef __cplusplus
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
-#include "types.h"
+#include "player/HeldItemModel.h"
 class PlayerHeadBank;
 #endif
 
@@ -19,18 +19,6 @@ void PlayerHeadBank_Init(void *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerHeadBank_Destroy
 void PlayerHeadBank_Destroy(void);
-#endif
-#ifndef PROTO_LOCAL__ZN10PlayerHeadD1Ev
-void PlayerHead_dtor();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_HeldItemModel_IsBobberLanded
-BOOL HeldItemModel_IsBobberLanded(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerHead_GetModelPath
 char *PlayerHead_GetModelPath(u32 a);
@@ -65,9 +53,6 @@ s32 PlayerHead_GetTex4x4VramSize(void);
 #ifndef PROTO_LOCAL_PlayerHead_GetPlttVramSize
 s32 PlayerHead_GetPlttVramSize(void);
 #endif
-#ifndef PROTO_LOCAL__ZN10PlayerHeadC1Ev
-void PlayerHead_ctor(u8 *p);
-#endif
 #ifndef PROTO_LOCAL_PlayerHead_SetSlot
 void PlayerHead_SetSlot(u8 *p, u8 v);
 #endif
@@ -95,17 +80,26 @@ void *PlayerHead_GetModelFile(u8 *p, s32 j);
 #ifndef PROTO_LOCAL_PlayerHead_SetModelFile
 void PlayerHead_SetModelFile(u8 *p, s32 j, void *v);
 #endif
-#ifndef PROTO_LOCAL_PlayerHead_GetVramSlot
-TexVramSlot *PlayerHead_GetVramSlot(u8 *p, s32 j);
-#endif
-#ifndef PROTO_LOCAL_PlayerHead_GetTexTask
-TexVramTask *PlayerHead_GetTexTask(u8 *p, s32 j);
-#endif
 #ifndef PROTO_LOCAL_PlayerHead_GetModelId
 s32 PlayerHead_GetModelId(u8 *p, s32 j);
 #endif
 #ifndef PROTO_LOCAL_PlayerHead_SetModelId
 void PlayerHead_SetModelId(u8 *p, s32 j, u32 v);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_HeldItemModel_IsBobberLanded
+BOOL HeldItemModel_IsBobberLanded(HeldItemModel *p);
+#endif
+#ifndef PROTO_LOCAL_PlayerHead_GetVramSlot
+TexVramSlot *PlayerHead_GetVramSlot(u8 *p, s32 j);
+#endif
+#ifndef PROTO_LOCAL_PlayerHead_GetTexTask
+TexVramTask *PlayerHead_GetTexTask(u8 *p, s32 j);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerHeadPathBuf

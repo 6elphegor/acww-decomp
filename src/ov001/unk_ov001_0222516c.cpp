@@ -57,10 +57,10 @@ void *WfcObj_GetOam(void *, u32);
 void WfcObj_SetAffineMode(void *, s32, u32, u32);
 void WfcObj_SetModePalette(void *, s32, u32, u32);
 void WfcObj_SetPriority(void *, s32, s32);
-void NNSi_G2dTextCanvasDrawTextRect(void *, s32, s32, s32, s32, s32, s32, s32);
+void NNSi_G2dTextCanvasDrawTextRect(void *, s32, s32, s32, s32, s32, s32, const void *);
 u32 NNS_G2dFontFindGlyphIndex(void *, u32);
 void *NNS_G2dFontGetCharWidthsFromIndex(void *, u32);
-void NNS_G2dCharCanvasDrawChar(s32, void *, s32, s32, s32, u16);
+void NNS_G2dCharCanvasDrawChar(void *, void *, s32, s32, s32, u16);
 void NNSi_G2dTextCanvasDrawText(void *, s32, s32, s32, s32, s32);
 void MIi_CpuClear16(u32, void *, u32);
 void DC_FlushRange(void *, u32);
@@ -208,11 +208,11 @@ void WfcText_DrawText(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e) {
     NNSi_G2dTextCanvasDrawText(&o->charCanvas, a, b, c, d, e);
 }
 
-void WfcText_DrawChar(s32 a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx) {
+void WfcText_DrawChar(WfcTextCanvas *a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx) {
     NNS_G2dCharCanvasDrawChar(a0, &sWfcText->fonts[idx * 0xc], a1, a2, a3, a4);
 }
 
-void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx) {
+void WfcText_DrawMonospace(WfcTextCanvas *a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx) {
     if (*p == 0) {
         return;
     }
@@ -235,8 +235,8 @@ void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 id
     } while (*p != 0);
 }
 
-void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
-    NNSi_G2dTextCanvasDrawTextRect(&o->charCanvas, a, b, c, d, e, f, g);
+void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, const void *text) {
+    NNSi_G2dTextCanvasDrawTextRect(&o->charCanvas, a, b, c, d, e, f, text);
 }
 
 void WfcText_Clear(WfcTextCanvas *o, s32 a) {

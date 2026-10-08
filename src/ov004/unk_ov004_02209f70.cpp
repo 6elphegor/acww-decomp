@@ -2,6 +2,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/CachedModel.h"
+#include "gfx/ModelSlotPool.h"
 #include "room/FtrManager.h"
 #include "gfx/VecFx32.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
@@ -1668,7 +1669,6 @@ s32 _ZN15PatternTexCache15getPlayerTexKeyEii(void *, u8, u8);
 s32 FtrSync_RequestAct(void *, s32, s32, s32);
 s32 FtrSync_ChangeAct(void *, s32, s32, s32);
 void Item_FromPlacedForm(u16 *, u16 *);
-void *_ZN9ModelSlot7getHeapEv(ModelSlot *slot);
 void MTX_MultVec43(void *, void *, void *);
 void GroundInfo_Destruct(void *);
 }
@@ -1861,7 +1861,7 @@ BOOL FtrShirt::initModel() {
     if (r) {
         p14::Item_FromPlacedForm(&w, &v);
         ModelSlot *h = p14::FtrActor_GetHeap(this);
-        clothTex = Heap_Alloc(p14::_ZN9ModelSlot7getHeapEv(h), 0x2c4);
+        clothTex = Heap_Alloc(h->getHeap(), 0x2c4);
         ClothTex_LoadItem(clothTex, &w, 0);
         if (((FtrSwitch *)(switchState))->isOn()) {
             changeAct(0, 0xff);
@@ -2011,7 +2011,6 @@ extern u8 data_ov004_02240058[];
 
 
 void FtrSync_RequestAct(void *, s32, s32, s32);
-void *_ZN9ModelSlot7getHeapEv(ModelSlot *slot);
 u32 Scene_GetCurrent(void);
 void FtrSync_RequestToggleGyroid(u32, void *, u32);
 }
@@ -2183,27 +2182,27 @@ BOOL FtrKind19::initModel() {
     ModelSlot *r4 = p15::FtrActor_GetHeap(this);
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(0) != NULL) {
         void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[3]))->allocJointAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((ModelAnim *)(&anims[3]))->allocJointAnm((NNSG3dResMdl *)(t), r4->getHeap())) {
             ((ModelAnim *)(&anims[3]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(0), 0, 0x1000, 0);
             ((ModelAnim *)(&anims[3]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0) != NULL) {
         void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[1]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((ModelAnim *)(&anims[1]))->allocMatAnm((NNSG3dResMdl *)(t), r4->getHeap())) {
             ((ModelAnim *)(&anims[1]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0), 0, 0x1000, 0);
             ((ModelAnim *)(&anims[1]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0) != NULL) {
-        if (((AnimModel *)(model))->allocAnmObj(p15::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((AnimModel *)(model))->allocAnmObj(r4->getHeap())) {
             ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
             ((AnimModel *)(model))->attachAnim();
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(0) != NULL) {
         void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[2]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((ModelAnim *)(&anims[2]))->allocMatAnm((NNSG3dResMdl *)(t), r4->getHeap())) {
             NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(0);
             ((ModelAnim *)(&anims[2]))->initWithTex(r, ((FtrModelRes *)(modelRes))->getTexture(), 0, 0x1000, 0);
             ((ModelAnim *)(&anims[2]))->addToRenderObj(((Model *)(model))->getRenderObj());
@@ -2211,7 +2210,7 @@ BOOL FtrKind19::initModel() {
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
         void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[0]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((ModelAnim *)(&anims[0]))->allocMatAnm((NNSG3dResMdl *)(t), r4->getHeap())) {
             ((ModelAnim *)(&anims[0]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0), 3, 0x1000, 0);
             ((ModelAnim *)(&anims[0]))->addToRenderObj(((Model *)(model))->getRenderObj());
         }
@@ -2250,7 +2249,6 @@ ModelSlot *FtrActor_GetHeap(void *self);
 
 s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
-void *_ZN9ModelSlot7getHeapEv(ModelSlot *slot);
 s32 Scene_GetCurrent(void);
 s32 Scene_InVillagerHouse(void);
 }
@@ -2529,7 +2527,7 @@ BOOL FtrGyroid::initModel() {
     actAid = 0xff;
     initSync(FtrSound_GetSe3(p16::FtrActor_GetFtrIndex(this)));
     ((FtrActor *)(this))->initAnims(0, 1, 0x1000, 0);
-    ((CachedModel *)(model))->allocJointRecord(p16::_ZN9ModelSlot7getHeapEv(p16::FtrActor_GetHeap(this)));
+    ((CachedModel *)(model))->allocJointRecord((p16::FtrActor_GetHeap(this))->getHeap());
     if (spawnMode == 1) {
         ((FtrSwitch *)(switchState))->set(0, 0);
         s32 s = p16::Scene_GetCurrent();
@@ -3393,7 +3391,6 @@ extern u8 *gSceneBlockMap;
 extern u8 data_ov004_0224bbc0[];
 
 void Clock_GetMinuteHour(void *);
-void *_ZN9ModelSlot7getHeapEv(ModelSlot *slot);
 u32 Scene_GetCurrent(void);
 void TalkRequest_SetTargetDone(void *);
 BOOL FtrSync_ChangeAct(void *, s32, s32, s32);
@@ -3468,12 +3465,12 @@ BOOL FtrClock::initModel() {
     curTime.h = prevTime.h;
     chimesLeft = -1;
     if (kind == 0x10) {
-        if (((AnimModel *)(model))->allocAnmObj(p19::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((AnimModel *)(model))->allocAnmObj(r4->getHeap())) {
             ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)((void *)((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
             ((AnimModel *)(model))->attachAnim();
         }
     } else if (kind == 0x11) {
-        if (((AnimModel *)(model))->allocAnmObj(p19::_ZN9ModelSlot7getHeapEv(r4))) {
+        if (((AnimModel *)(model))->allocAnmObj(r4->getHeap())) {
             ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)((void *)((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
             ((AnimModel *)(model))->attachAnim();
         }

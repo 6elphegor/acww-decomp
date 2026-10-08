@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02210cc0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcTransferWaitResult
+extern u8 sWfcTransferWaitResult;
+#endif
+#ifndef PROTO_LOCAL_WfcTransferWait_IsLidClosed
+BOOL WfcTransferWait_IsLidClosed();
 #endif
 #ifndef PROTO_LOCAL_WfcTransferWait_Enter
 void WfcTransferWait_Enter();
@@ -47,21 +50,10 @@ void WfcTransferWait_FadeOut();
 #ifndef PROTO_LOCAL_WfcTransferWait_Exit
 void WfcTransferWait_Exit();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcTransferWaitResult
-extern u8 sWfcTransferWaitResult;
-#endif
-#ifndef PROTO_LOCAL_WfcTransferWait_IsLidClosed
-BOOL WfcTransferWait_IsLidClosed();
-#endif
 #ifndef PROTO_LOCAL_WfcTransferWait_OnTransferEvent
-void WfcTransferWait_OnTransferEvent(s32 a);
+void WfcTransferWait_OnTransferEvent(u32 a);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

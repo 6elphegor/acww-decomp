@@ -268,7 +268,7 @@ void Item_FromPlacedForm(u16 *out, u16 *in);
 }
 
 extern "C" {
-u32 Series_GetName(s32);
+u8 *Series_GetName(s32);
 }
 
 extern "C" {
@@ -379,7 +379,7 @@ BOOL ItemName::setFromItem(u16 *p) {
 
 BOOL ItemName::setSeriesName(s32 idx) {
     if (idx < 0x4a) {
-        setString((u8 *)Series_GetName(idx));
+        setString(Series_GetName(idx));
         return TRUE;
     }
     return FALSE;

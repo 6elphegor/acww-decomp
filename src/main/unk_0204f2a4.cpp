@@ -61,7 +61,6 @@ void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 gFieldSceneKind;
-void *_ZN9ModelSlot7getHeapEv(void *);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
@@ -347,7 +346,7 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), buf)) {
         u8 *m = HOST_AT(e, 0x98, model[0], 0);
         ((Model *)(m))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), 0);
-        t = _ZN9ModelSlot7getHeapEv(x);
+        t = ((ModelSlot *)(x))->getHeap();
         if (id < 10) {
             Str_SPrintf(buf, "/fish/0%d/fish0%d.nsbca", q, id);
         } else {
@@ -391,7 +390,7 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
     if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), sFishShadowMdlPath)) {
         u8 *m = HOST_AT(e, 0x98, model[0], 0);
         ((Model *)(m))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), NULL);
-        void *t = _ZN9ModelSlot7getHeapEv(x);
+        void *t = ((ModelSlot *)(x))->getHeap();
         void *u = func_021065f8(func_021065dc(File_LoadAlloc(sFishShadowAnmPath, t, 4, NULL)), 0);
         if (((AnimModel *)(m))->allocAnmObj(t)) {
             ((BlendAnimModel *)(m))->initAnim(u, 0, 0x1000, 1, 0);

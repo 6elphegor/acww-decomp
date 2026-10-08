@@ -25,7 +25,6 @@ extern u8 GX_LoadBG2Scr[];
 void MIi_CpuClear16(u32 a, void *b, u32 c);
 void MIi_CpuCopy16(void *a, void *b, u32 c);
 void WfcUtil_LoadFileTo(void *a, void *b);
-s32 WfcTransfer_SetCallback(void *a);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 s32 WfcInput_IsKeyPressed(u32 a);

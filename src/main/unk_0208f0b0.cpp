@@ -51,7 +51,7 @@ extern "C" void TownExchange_InitNop() {}
 extern "C" void TownExchange_Clear(void *p) {
     MI_CpuFill8(p, 0, 0x84c);
     Letter_Clear(p);
-    ConstellationRecord_Clear((u8 *)p + 0xf4);
+    ConstellationRecord_Clear((ConstellationRecord *)((u8 *)p + 0xf4));
 }
 
 void TownExchangeRecord::setChecksum(u32 v) { checksum = v; }

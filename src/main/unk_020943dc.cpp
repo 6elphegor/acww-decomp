@@ -5,7 +5,7 @@
 #include "player/PlayerActor.h"
 #include "player/PlayerData.h"
 #include "player/PlayerFaceTexRef.h"
-#define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
+#include "town/Unk_0204e858_Grid.h"
 #include "proto/main/unk_02004558.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205dfa4.h"
@@ -17,147 +17,26 @@
 #include "proto/ov004/unk_ov004_02233074.h"
 
 
-
-
+// (defined in units whose declarations aren't shared yet: as they are defined)
 extern "C" {
 extern u8 gFieldSceneKind;
+extern CommManager *gCommManager;  // (gap data: the constant pointer to gCommManagerInstance)
+extern Unk_0204e858_Grid *gSceneBlockMap;
+BOOL Scene_InHouseRoom(void);
+u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, VecFx32 *v, s32 layer);
+s32 BlockMap_IsBuriedAtPos(Unk_0204e858_Grid *g, VecFx32 *v);
+u32 ItemInfo_GetHoldableCount();
+void ItemInfo_GetNthHoldable(u16 *out, s32 idx);
+void PlayerActor_GetHeldItem(u16 *out, void *x);
+s32 PlayerActor_GetHairStyle(void *p);
+s32 PlayerActor_GetHairColor(void *p);
 }
 
-extern "C" {
-extern u8 sEmotionHoldFrames[];
-}
+s32 sPlayerFrontItemDist = 0xccd;
 
-extern "C" {
-}
-
-extern "C" {
-extern CommManager *gCommManager;
-}
-
-extern "C" {
-extern void *gSceneBlockMap;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 Scene_InHouseRoom();
-}
-
-extern "C" {
-}
-
-extern "C" {
-u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
-}
-
-extern "C" {
-s32 BlockMap_IsBuriedAtPos(void *g, void *v);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 ItemInfo_GetHoldableCount();
-}
-
-extern "C" {
-void ItemInfo_GetNthHoldable(u16 *out, u32 v);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 TalkRequest_IsSaveMenuRunning();
-}
-
-extern "C" {
-void PlayerActor_GetHeldItem(void *out, PlayerActor *o);
-}
-
-extern "C" {
-s32 Item_IsFurniture(void *p);
-}
-
-extern "C" {
-s32 Item_GetFurnitureIndex(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *Scene_GetWarpRequest();
-}
-
-extern "C" {
-void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
-}
-
-extern "C" {
-s32 PlayerActor_RequestStowItem(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
-}
-
-extern "C" {
-s32 PlayerActor_RequestFishReelIn(PlayerActor *o, u32 a, u32 b, s32 c);
-}
-
-extern "C" {
-}
-
-// members of PlayerActor whose symbols.txt names do not fit the method declarations (taken `this` first)
-extern "C" {
-s32 PlayerActor_GetHairStyle(PlayerActor *o);
-s32 PlayerActor_GetHairColor(PlayerActor *o);
-}
-
-u32 sPlayerFrontItemDist = 0xccd;
-
-extern "C" u8 *PlayerActor_GetBodyPos(u32 idx) {
+extern "C" VecFx32 *PlayerActor_GetBodyPos(u32 idx) {
     PlayerActor *o = PlayerActor_Get(idx);
-    if (o) return (u8 *)&o->bodyPos;
+    if (o) return &o->bodyPos;
     return 0;
 }
 
@@ -247,13 +126,13 @@ extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     PlayerActor *o = PlayerActor_Get(idx);
     if (!o) return FALSE;
     if (o->animId >= 0xa1) return FALSE;
-    u8 *v;
+    u32 v;
     if (a) {
-        v = ((PlayerData *)(p))->getFaceType() + 0x10;
+        v = ((PlayerData *)(p))->getFaceType() + 0x10;  // the stung face
     } else {
         v = ((PlayerData *)(p))->getFaceType();
     }
-    (&o->faceTex)->load((u32)(v));
+    o->faceTex.load(v);
     return TRUE;
 }
 
@@ -314,7 +193,7 @@ extern "C" u16 *PlayerActor_GetItemInFront() {
             }
         }
     } else {
-        void *g = gSceneBlockMap;
+        Unk_0204e858_Grid *g = gSceneBlockMap;
         if (BlockMap_IsBuriedAtPos(g, &buf)) return 0;
         r = BlockMap_GetItemPtrAtPos(g, &buf, 0);
     }

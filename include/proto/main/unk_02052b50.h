@@ -6,7 +6,6 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "game/InfoTableSet.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -24,6 +23,9 @@ void FtrInfoTables_Open(void *p);
 #ifndef PROTO_LOCAL_FtrInfoTables_Close
 void FtrInfoTables_Close(void *p);
 #endif
+#ifndef PROTO_LOCAL_FtrInfoTables_LoadIndoor
+void FtrInfoTables_LoadIndoor(void *p, s32 a);
+#endif
 #ifndef PROTO_LOCAL_FtrInfoTables_FreeIndoor
 void FtrInfoTables_FreeIndoor(void *p);
 #endif
@@ -33,20 +35,11 @@ void FtrInfo_Init();
 #ifndef PROTO_LOCAL_FtrInfo_Exit
 void FtrInfo_Exit();
 #endif
-#ifndef PROTO_LOCAL_FtrInfo_FreeIndoor
-void FtrInfo_FreeIndoor();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_FtrInfoTables_LoadIndoor
-void FtrInfoTables_LoadIndoor(void *p, s32 a);
-#endif
 #ifndef PROTO_LOCAL_FtrInfo_LoadIndoor
 void FtrInfo_LoadIndoor(s32 a);
+#endif
+#ifndef PROTO_LOCAL_FtrInfo_FreeIndoor
+void FtrInfo_FreeIndoor();
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetPrice
 s32 FtrInfo_GetPrice(s32 n);
@@ -82,25 +75,25 @@ s32 FtrInfo_GetColor2(s32 n);
 s32 FtrInfo_GetSeries(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetSeries
-s32 Ftr_GetSeries(s32 n);
+s32 Ftr_GetSeries(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetClass
 s32 FtrInfo_GetClass(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetClass
-s32 Ftr_GetClass(s32 n);
+s32 Ftr_GetClass(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetUnk05
 s32 FtrInfo_GetUnk05(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetUnk05
-s32 Ftr_GetUnk05(s32 n);
+s32 Ftr_GetUnk05(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetCollectionGroup
 s32 FtrInfo_GetCollectionGroup(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetCollectionGroup
-s32 Ftr_GetCollectionGroup(s32 n);
+s32 Ftr_GetCollectionGroup(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_TestAlwaysFlag4
 s32 FtrInfo_TestAlwaysFlag4(s32 n);
@@ -109,19 +102,19 @@ s32 FtrInfo_TestAlwaysFlag4(s32 n);
 s32 FtrInfo_GetFlagPairA(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetFlagPairA
-s32 Ftr_GetFlagPairA(s32 n);
+s32 Ftr_GetFlagPairA(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetFlagPairB
 s32 FtrInfo_GetFlagPairB(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetFlagPairB
-s32 Ftr_GetFlagPairB(s32 n);
+s32 Ftr_GetFlagPairB(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetUnk06
 s32 FtrInfo_GetUnk06(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetUnk06
-s32 Ftr_GetUnk06(s32 n);
+s32 Ftr_GetUnk06(u16 *item);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetDmaUnk04
 s32 FtrInfo_GetDmaUnk04(s32 n);
@@ -177,7 +170,11 @@ u32 Ftr_GetIndexInSeries(u16 *p);
 #ifndef PROTO_LOCAL_FtrInfo_CountInSeries
 u32 FtrInfo_CountInSeries(u32 v);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_gFtrInfo
 extern InfoTableSet gFtrInfo;
 #endif

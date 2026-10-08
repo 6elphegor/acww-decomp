@@ -11,7 +11,7 @@
 
 
 struct PlayerBodyModelPool {
-    u32 buffers[4];
+    void *buffers[4];
     TexVramSlot vramSlots[4];
     TexVramTask texTasks[4];
 
@@ -19,25 +19,20 @@ struct PlayerBodyModelPool {
     ~PlayerBodyModelPool();
     TexVramTask *getTexTask(s32 i);
     void *getVramSlot(s32 i);
-    u32 getBuffer(s32 i);
+    void *getBuffer(s32 i);
     void freeBuffers();
     void allocBuffers();
 };
 
 extern "C" {
 extern CommManager *gCommManager;
-
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *);
-s32 NNS_G3dGetTex(void *);
+u8 *NNS_G3dGetTex(u8 *p);
 }
 
 extern "C" void PlayerBodyModelPool_Create(void *parent) {
     PlayerBodyModelHeap_Create(parent);
     sPlayerBodyModelPool.allocBuffers();
-    if (gPlayerBodyModelHeap) ((Heap *)(gPlayerBodyModelHeap))->adjust();
+    if (gPlayerBodyModelHeap) static_cast<Heap *>(gPlayerBodyModelHeap)->adjust();
 }
 
 extern "C" void PlayerBodyModelPool_Destroy() {
@@ -67,18 +62,18 @@ void PlayerBodyModelPool::allocBuffers() {
         u32 c = PlayerBodyModel_GetPlttVramSize();
         vramSlots[i].alloc((void *)a, (void *)b, (void *)c);
     }
-    void *heap = gPlayerBodyModelHeap;
-    for (i = 0; i < cnt; i++) buffers[i] = (u32)Heap_AllocAligned(heap, PlayerBodyModel_GetBufferSize(), 4);
+    Heap *heap = static_cast<Heap *>(gPlayerBodyModelHeap);
+    for (i = 0; i < cnt; i++) buffers[i] = Heap_AllocAligned(heap, PlayerBodyModel_GetBufferSize(), 4);
 }
 
 void PlayerBodyModelPool::freeBuffers() {
     for (s32 i = 0; i < 4; i++) vramSlots[i].clear();
     s32 j;
-    for (j = 0; j < 4; j++) buffers[j] = 0;
-    if (gPlayerBodyModelHeap) ((Heap *)(gPlayerBodyModelHeap))->freeAll();
+    for (j = 0; j < 4; j++) buffers[j] = NULL;
+    if (gPlayerBodyModelHeap) static_cast<Heap *>(gPlayerBodyModelHeap)->freeAll();
 }
 
-u32 PlayerBodyModelPool::getBuffer(s32 i) { return buffers[i]; }
+void *PlayerBodyModelPool::getBuffer(s32 i) { return buffers[i]; }
 void *PlayerBodyModelPool::getVramSlot(s32 i) { return &vramSlots[i]; }
 TexVramTask *PlayerBodyModelPool::getTexTask(s32 i) { return &texTasks[i]; }
 
@@ -100,8 +95,8 @@ extern "C" s32 PlayerBodyModelRef_Load(u8 *p, u32 idx) {
 }
 
 extern "C" void PlayerBodyModelRef_RelocateTexture(u8 *p) {
-    s32 x = NNS_G3dGetTex(PlayerBodyModelRef_GetBuffer(p));
-    ((TexVramSlot *)PlayerBodyModelRef_GetVramSlot(p))->relocateTexture((void *)x);
+    u8 *tex = NNS_G3dGetTex(static_cast<u8 *>(PlayerBodyModelRef_GetBuffer(p)));
+    static_cast<TexVramSlot *>(PlayerBodyModelRef_GetVramSlot(p))->relocateTexture(tex);
 }
 
 extern "C" s32 PlayerBodyModelRef_PollTexUpload(u8 *p) {
@@ -111,12 +106,12 @@ extern "C" s32 PlayerBodyModelRef_PollTexUpload(u8 *p) {
     if (a) return TRUE;
     BOOL b = s == 1 ? TRUE : FALSE;
     if (!b) {
-        e->requestTexResource((u32 *)NNS_G3dGetTex(PlayerBodyModelRef_GetBuffer(p)), 1);
+        e->requestTexResource((u32 *)NNS_G3dGetTex(static_cast<u8 *>(PlayerBodyModelRef_GetBuffer(p))), 1);
     }
     return FALSE;
 }
 
-extern "C" void *PlayerBodyModelRef_GetBuffer(u8 *p) { return (void *)sPlayerBodyModelPool.getBuffer(*p); }
+extern "C" void *PlayerBodyModelRef_GetBuffer(u8 *p) { return sPlayerBodyModelPool.getBuffer(*p); }
 extern "C" void *PlayerBodyModelRef_GetVramSlot(u8 *p) { return sPlayerBodyModelPool.getVramSlot(*p); }
 extern "C" TexVramTask *PlayerBodyModelRef_GetTexTask(u8 *p) { return sPlayerBodyModelPool.getTexTask(*p); }
 // Declarations for data defined further down (definition order sets the data layout)

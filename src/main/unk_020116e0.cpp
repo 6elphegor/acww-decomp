@@ -10,8 +10,6 @@
 // lookup table in .rodata (0x020c6c88-0x020c6cbc).
 
 
-// Methods of the same object under the class name of an earlier unit (0x0201106c-0x020116e0); called by
-// their symbols.txt names.
 extern "C" {
 s32 Scene_GetCurrent(void);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
@@ -27,8 +25,8 @@ extern "C" const u8 sSceneHudKinds[0x34] = {
 };
 
 HudObjGfx::HudObjGfx() {
-    paletteBuf = 0;
-    charBuf = 0;
+    paletteBuf = NULL;
+    charBuf = NULL;
     pendingCameraButtonScreens = 3;
     msgUiActive = 0;
     countdownVariant = 0;
@@ -36,8 +34,8 @@ HudObjGfx::HudObjGfx() {
 }
 
 HudObjGfx::~HudObjGfx() {
-    ((HudObjGfxIo *)(this))->freePalette();
-    ((HudObjGfxIo *)(this))->freeChars();
+    freePalette();
+    freeChars();
 }
 
 extern "C" void HudObjGfx_LoadForScene(void) {
@@ -65,7 +63,7 @@ extern "C" void HudObjGfx_LoadSlideIcon(u32 a) { sHudObjGfx.loadSlideIcon(a); }
 extern "C" void HudObjGfx_FlushCameraButton(void) {
     HudObjGfx *p = &sHudObjGfx;
     if (sHudObjGfx.pendingCameraButtonScreens != 3) {
-        ((HudObjGfxIo *)(p))->uploadCameraButtonChars(p->pendingCameraButtonScreens);
+        p->uploadCameraButtonChars(p->pendingCameraButtonScreens);
         p->pendingCameraButtonScreens = 3;
     }
 }
@@ -81,10 +79,10 @@ extern "C" void HudObjGfx_ClearMsgUiActive(void) { sHudObjGfx.msgUiActive = 0; }
 void HudObjGfx::loadForScene(u32 a) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (p->loadPalette(4)) ((HudObjGfxIo *)(p))->uploadPalette(a);
-    ((HudObjGfxIo *)(p))->freePalette();
-    if (p->loadChars()) ((HudObjGfxIo *)(p))->uploadChars(a);
-    ((HudObjGfxIo *)(p))->freeChars();
+    if (p->loadPalette(4)) p->uploadPalette(a);
+    p->freePalette();
+    if (p->loadChars()) p->uploadChars(a);
+    p->freeChars();
     if (Hud_GetSceneHudKind() == 2) {
         if (InputMode_IsTouch()) loadCameraButton(1, 0, a);
     }
@@ -93,10 +91,10 @@ void HudObjGfx::loadForScene(u32 a) {
 void HudObjGfx::loadKind(u32 a, u32 b) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (p->loadPalette(a)) ((HudObjGfxIo *)(p))->uploadPalette(b);
-    ((HudObjGfxIo *)(p))->freePalette();
-    if (((HudObjGfxIo *)(p))->loadKindChars(a)) ((HudObjGfxIo *)(p))->uploadKindChars(b);
-    ((HudObjGfxIo *)(p))->releaseKindChars();
+    if (p->loadPalette(a)) p->uploadPalette(b);
+    p->freePalette();
+    if (p->loadKindChars(a)) p->uploadKindChars(b);
+    p->releaseKindChars();
     if (a == 2 || (a == 4 && Hud_GetSceneHudKind() == 2)) {
         if (InputMode_IsTouch()) loadCameraButton(1, 0, b);
     }
@@ -105,26 +103,26 @@ void HudObjGfx::loadKind(u32 a, u32 b) {
 void HudObjGfx::loadCameraButton(u32 a, u32 b, u32 c) {
     s32 r;
     HudObjGfx_InitFile(&sHudObjGfx);
-    r = ((HudObjGfxIo *)(&sHudObjGfx))->loadCameraButtonChars(a);
+    r = sHudObjGfx.loadCameraButtonChars(a);
     if (b != 0) {
         pendingCameraButtonScreens = c;
     } else if (r != 0) {
-        ((HudObjGfxIo *)(&sHudObjGfx))->uploadCameraButtonChars(c);
+        sHudObjGfx.uploadCameraButtonChars(c);
     }
 }
 
 void HudObjGfx::loadLinkIcon(u32 v) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (((HudObjGfxIo *)(p))->loadLinkIconChars(v)) ((HudObjGfxIo *)(p))->uploadLinkIconChars();
-    ((HudObjGfxIo *)(this))->releaseLinkIconChars();
+    if (p->loadLinkIconChars(v)) p->uploadLinkIconChars();
+    releaseLinkIconChars();
 }
 
 void HudObjGfx::loadSlideIcon(u32 v) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (((HudObjGfxIo *)(p))->loadSlideIconChars(v)) ((HudObjGfxIo *)(p))->uploadSlideIconChars();
-    ((HudObjGfxIo *)(this))->releaseSlideIconChars();
+    if (p->loadSlideIconChars(v)) p->uploadSlideIconChars();
+    releaseSlideIconChars();
 }
 
-extern "C" void HudObjGfx_InitFile(void *p) { FS_InitFile(p); }
+extern "C" void HudObjGfx_InitFile(HudObjGfx *p) { FS_InitFile(&p->file); }

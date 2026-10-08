@@ -1,21 +1,19 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#define PROTO_LOCAL_WfcMove_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcMove_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WfcTransfer_Task  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sWfcTransfer  // declared below: the shared prototype conflicts with the calls here
+#include "net/WfcTransfer.h"
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_0220cbd0.h"
 #include "proto/ov001/unk_ov001_0220cd24.h"
 #include "proto/ov001/unk_ov001_0220d1d8.h"
 #include "proto/ov001/unk_ov001_02222e84.h"
+#include "proto/ov001/unk_ov001_02225924.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
-typedef void (*WfcTransferCallback)(u32);
-
 struct WfcTransferWork {
-    u8 unk_00000[0x1e280];
+    // the transfer's work (WfcMoveWork, unk_ov001_02222e84.cpp: its multiboot and wireless work follow it; on
+    // x86-64 they end at 0x1da84, inside this area)
+    u8 moveWork[0x1e280];
     u8 childUser[0x18];
     WfcTransferCallback callback;
     void *task;
@@ -23,42 +21,36 @@ struct WfcTransferWork {
     u8 isCancelled;
 };
 
+// WfcMove_Init's parameters (u32 slots: rom file path, game name, introduction, icon character and palette paths,
+// ggid, language code in the low byte of the last)
 struct WfcMoveParams {
-    s32 v[7];
+    u32 v[7];
 };
 
 //DEFS
 extern "C" char data_ov001_0222aa60[0x14] = "dwc:/move/child.srl";
 extern "C" char data_ov001_0222aa8c[0x18] = "dwc:/move/banner.char";
 extern "C" char data_ov001_0222aa74[0x18] = "dwc:/move/banner.plt";
-extern "C" WfcMoveParams data_ov001_0222aaa4 = {{(s32)data_ov001_0222aa60, 0, 0, (s32)data_ov001_0222aa8c, (s32)data_ov001_0222aa74, 0x159, 0}};
-extern "C" WfcTransferWork *sWfcTransfer;
+extern "C" WfcMoveParams data_ov001_0222aaa4 = {{(u32)data_ov001_0222aa60, 0, 0, (u32)data_ov001_0222aa8c, (u32)data_ov001_0222aa74, 0x159, 0}};
 WfcTransferWork *sWfcTransfer;
 //ENDDEFS
 
 extern "C" {
 
-extern void MIi_CpuCopy16(void *, void *, u32);
-
-extern void WfcMove_Init(void *, void *);
-extern void WfcMove_Update(void *);
-extern void WfcHeap_FreeAndClear(void *);
-extern void *WfcHeap_Alloc(s32, s32);
-
-void WfcTransfer_Task(s32 a);
+void MIi_CpuCopy16(const void *src, void *dst, u32 size);
 
 #pragma thumb off
 
 void WfcTransfer_Start(WfcTransferCallback a) {
-    sWfcTransfer = (WfcTransferWork *)WfcHeap_Alloc(HOST_SIZED(0x1e2a4, WfcTransferWork), 0x20);
+    sWfcTransfer = (WfcTransferWork *)WfcHeap_Alloc(sizeof(WfcTransferWork), 0x20);
     sWfcTransfer->callback = a;
     sWfcTransfer->hasPendingEvent = 0;
     sWfcTransfer->isCancelled = 0;
     WfcMoveParams s = data_ov001_0222aaa4;
-    s.v[1] = (s32)WfcMsg_GetString(gWfcMsgBank, 0xf);
-    s.v[2] = (s32)WfcMsg_GetString(gWfcMsgBank, 0x10);
+    s.v[1] = (u32)WfcMsg_GetString((WfcMsgBank *)gWfcMsgBank, 0xf);
+    s.v[2] = (u32)WfcMsg_GetString((WfcMsgBank *)gWfcMsgBank, 0x10);
     *(u8 *)&s.v[6] = WfcUtil_GetLanguage() + 0x31;
-    WfcMove_Init(sWfcTransfer, &s);
+    WfcMove_Init((WfcMoveWork *)sWfcTransfer->moveWork, s.v);
     if (WfcMove_Start() == 0) Fatal_Trap();
     sWfcTransfer->task = WfcTask_Add(0, (void *)WfcTransfer_Task, 0, 0x78);
 }
@@ -67,10 +59,10 @@ void WfcTransfer_RequestEnd() {
     WfcTask_Add(0, (void *)WfcTransfer_EndTask, 0, 0x78);
 }
 
-void WfcTransfer_EndTask(s32 a) {
+void WfcTransfer_EndTask(void *task) {
     if (WfcMove_RequestCancel() != 0) {
         sWfcTransfer->isCancelled = 1;
-        WfcTask_RequestDelete(0, a);
+        WfcTask_RequestDelete(0, task);
     }
 }
 
@@ -94,10 +86,10 @@ u8 *WfcTransfer_GetChildUser() {
 // (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (2 bytes differ: the jump-table guard comes out as
 // `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge`).
-void WfcTransfer_Task(s32 a) {
+void WfcTransfer_Task(void *task) {
     u8 t[2];
     s32 x;
-    WfcMove_Update((void *)a);
+    WfcMove_Update();
     if (sWfcTransfer->hasPendingEvent != 0 && sWfcTransfer->isCancelled == 0) {
         WfcTransferCallback f = sWfcTransfer->callback;
         if (f != 0) f(0);
@@ -145,7 +137,7 @@ high34:
 b5:
         if (t[1] != 0) {
             u8 *d = sWfcTransfer->childUser;
-            void *q = WfcMove_GetChildUser();
+            u8 *q = WfcMove_GetChildUser();
             MIi_CpuCopy16(q, d, 0x16);
             WfcTransferCallback f = sWfcTransfer->callback;
             if (f == 0) sWfcTransfer->hasPendingEvent = 1;
@@ -181,8 +173,8 @@ b12:
         }
     goto end;
 b34:
-        WfcTask_RequestDelete(0, a);
-        WfcHeap_FreeAndClear(&sWfcTransfer);
+        WfcTask_RequestDelete(0, task);
+        WfcHeap_FreeAndClear((void **)&sWfcTransfer);
     goto end;
 end:;
 }

@@ -8,9 +8,7 @@
 class CollisionSegment;
 
 struct HitSphere {
-    /* 0x0 */ s32 centerX;
-    /* 0x4 */ s32 centerY;
-    /* 0x8 */ s32 centerZ;
+    /* 0x0 */ VecFx32 center;
     /* 0xc */ s32 radius;
 
     HitSphere();

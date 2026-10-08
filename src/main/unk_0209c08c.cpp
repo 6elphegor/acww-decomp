@@ -14,69 +14,8 @@
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
 #include "gfx/PooledModel.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0209c08c.h"
-
-
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern void *gCurrentHeap;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-// ---- CommManager (comm state; only the methods used here)
-
-// ---- RecordFile (cached record table)
-
-// ---- 8-byte cell
-
-// ---- 6x6 cell grid
-
-// ---- row helper
-
-// ---- model resource helpers
-
-
-
-
-
-
-// ---- pool entry (0x1c bytes)
-class ModelSlot {
-public:
-    ModelSlot();
-    BOOL clear();
-    BOOL init(void *a, void *b, u32 size, void *extra);
-    TexVramSlot *getVramSlot();
-    void *getHeap();
-
-    u8 inUse;
-    void *heap;
-    TexVramSlot vramSlot;
-};
 
 // ---- model resource holder (derived from ModelResource)
 
@@ -105,7 +44,7 @@ ModelSlot::ModelSlot() {
     heap = 0;
 }
 
-void *ModelSlot::getHeap() {
+Heap *ModelSlot::getHeap() {
     return heap;
 }
 
@@ -115,12 +54,13 @@ TexVramSlot *ModelSlot::getVramSlot() {
 
 // TexVramSlot::alloc always returns TRUE.
 
-BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {
-    if (size) {
-        heap = FrameHeap_Create((size + 3) & ~3, (u32)extra);
+BOOL ModelSlot::init(void *texSize, void *plttSize, u32 heapSize, Heap *parent) {
+    if (heapSize) {
+        // (Heap is FrameHeap's only base: the same address)
+        heap = (Heap *)FrameHeap_Create((heapSize + 3) & ~3, parent);
     }
-    if (a != 0 || b != 0) {
-        if ((&vramSlot)->alloc(a, 0, b)) return TRUE;
+    if (texSize != 0 || plttSize != 0) {
+        if (vramSlot.alloc(texSize, 0, plttSize)) return TRUE;
         return FALSE;
     }
     return TRUE;
@@ -185,21 +125,21 @@ void ModelSlotPool::release(u16 *idx) {
         arr[i].inUse = 0;
         lastFreed = *idx;
         *idx = 0xffff;
-        if (e->heap) ((Heap *)(e->heap))->freeAll();
+        if (e->heap) e->heap->freeAll();
         numInUse--;
     }
 }
 
 BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free) {
-    void *mem;
+    Heap *mem;
     allocFunc = alloc;
     freeFunc = free;
     u32 total = n * ((size + MODELSLOT_HEAP_OVERHEAD) & ~3);
     numSlots = n;
     mem = 0;
     numInUse = 0;
-    if (size) mem = allocFunc(total, 0);
-    slots = (ModelSlot *)Mem_Alloc(numSlots * HOST_SIZED(0x1c, ModelSlot));
+    if (size) mem = (Heap *)allocFunc(total, 0);
+    slots = (ModelSlot *)Mem_Alloc(numSlots * sizeof(ModelSlot));
     ModelSlot *e = slots;
     if (e) {
         u32 i;
@@ -277,7 +217,5 @@ extern "C" void Scene_SaveFadeIn(u32 v) {
 extern "C" u32 Scene_GetSavedFadeIn() {
     return sSavedFadeIn.fadeIn;
 }
-
-
 
 

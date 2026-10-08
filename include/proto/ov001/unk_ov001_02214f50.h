@@ -4,12 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02214f50.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcErrorCode
+extern s32 sWfcErrorCode;
 #endif
 #ifndef PROTO_LOCAL_WfcError_Enter
 void WfcError_Enter();
@@ -50,21 +50,10 @@ void WfcError_FadeOut();
 #ifndef PROTO_LOCAL_WfcError_Exit
 void WfcError_Exit();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcErrorCodeFormat
-extern u16 sWfcErrorCodeFormat[4];
-#endif
-#ifndef PROTO_LOCAL_sWfcErrorCode
-extern s32 sWfcErrorCode;
-#endif
 #ifndef PROTO_LOCAL_WfcError_SetCode
 void WfcError_SetCode(s32 a);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

@@ -14,54 +14,40 @@
 #include "gfx/ObjShadowStrip.h"
 #include "nitro/io_access.h"
 #include "gfx/G3dResAccess.h"
-#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/TexVramSlot.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/itcm/unk_01ff8ad4.h"
 #include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020abea8.h"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+// (defined in C units / units whose declarations aren't shared yet: as they are defined)
 extern "C" {
 s32 FX_Div(s32 a, s32 b);
-s32 func_01ffcb0c(s32 a, s32 b);
+s32 func_01ffcb0c(s32 a, s32 b);  // FX_Mul
 u32 _s32_div_f(u32 a, u32 b);
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
-void MTX_Concat43(void *a, void *b, void *c);
-void VEC_Normalize(void *a, void *b);
-s32 Ground_GetDefaultY(s32 a);
-Col SceneLights_GetRoomColor(void);
-RGB SceneLights_GetFlashColor(void);
-s32 SceneLights_GetLightParam(s32 a);
-void Clock_GetMinuteHour(void *p);
-extern s32 gCurrentHeap;
-extern s32 gBgHeap;
-extern u8 data_021f47e0[];
-u8 *NNS_G3dGetTex(void *p);
-void Gfx3d_LoadTexAndPltt(void *p, s32 a);
-u8 *Gfx3d_CopyTex(void *p, s32 heap);
-extern s32 gCamera;
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_Scale(Mtx43 *m, s32 x, s32 y, s32 z);
+void MTX_Concat43(const Mtx43 *a, const Mtx43 *b, Mtx43 *ab);
+void VEC_Normalize(const VecFx32 *src, VecFx32 *dst);
+s32 Ground_GetDefaultY(void);
+s16 SceneLights_GetRoomColor(void);   // an RGB555 colour
+s16 SceneLights_GetFlashColor(void);  // an RGB555 colour
+u8 SceneLights_GetLightParam(u32 x);
+void Clock_GetMinuteHour(u8 *out);
+NNSG3dResTex *NNS_G3dGetTex(void *file);
+BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *tex, TexVramSlot *slot);
+void *Gfx3d_CopyTex(void *tex, void *heap);
+extern void *gCamera;
 extern VecFx32 gCameraLookAt;
-extern u8 gViewMtx[];
 }
+extern Mtx43 data_021f47e0;  // the model code's work matrix (src/autoload_2/unk_020e82bc.cpp: the same 12 words)
 
 #define REG(a) (*(volatile u32 *)(a))
 
@@ -81,22 +67,23 @@ static inline NNSG3dResDictPlttData *Unk_020ac500_PlttData(const NNSG3dResTex *t
 }
 
 
-extern "C" void ObjShadow_NormalizeAxes(void *a, void *b) {
-    VEC_Normalize(a, b);
-    VEC_Normalize((u8 *)a + 12, (u8 *)b + 12);
-    VEC_Normalize((u8 *)a + 24, (u8 *)b + 24);
+// the matrix's three axes (its rows 0..2) normalized
+extern "C" void ObjShadow_NormalizeAxes(Mtx43 *m, VecFx32 *axes) {
+    VEC_Normalize((VecFx32 *)&m->m[0], &axes[0]);
+    VEC_Normalize((VecFx32 *)&m->m[3], &axes[1]);
+    VEC_Normalize((VecFx32 *)&m->m[6], &axes[2]);
 }
 
-extern "C" void ObjShadow_Init(void *arg) {
+extern "C" void ObjShadow_Init(BOOL outdoor) {
     u32 *texData;
-    s32 heap = gBgHeap;
-    if (arg != 0) {
+    Heap *heap = (Heap *)gBgHeap;
+    if (outdoor) {
         sObjShadowSkew = 0;
         ObjShadowTexture *e = sObjShadowTextures;
         void *file = File_Load("/shadow/tex_shadow.nsbtx");
-        u8 *res = NNS_G3dGetTex(file);
-        Gfx3d_LoadTexAndPltt(res, 0);
-        res = Gfx3d_CopyTex(res, heap);
+        NNSG3dResTex *tex0 = NNS_G3dGetTex(file);
+        Gfx3d_LoadTexAndPltt(tex0, NULL);
+        u8 *res = (u8 *)Gfx3d_CopyTex(tex0, heap);
         Mem_Free(file);
         u32 i;
         for (i = 0; i < 3; i++) {
@@ -147,19 +134,17 @@ ObjShadowStrip sRockShadow;
 ObjShadowStrip sSignShadow;
 
 extern "C" void ObjShadow_Update() {
-    struct {
-        u8 a, b;
-    } t;
-    Clock_GetMinuteHour(&t);
-    s32 x = (t.a + ((t.b + 6) % 12) * 60) << 12;
+    u8 t[2];  // minute, hour
+    Clock_GetMinuteHour(t);
+    s32 x = (t[0] + ((t[1] + 6) % 12) * 60) << 12;
     x = FX_Div(x, 0x2d0000);
     sObjShadowSkew = func_01ffcb0c((x - 0x800) << 1, 0x1000);
-    Mtx43_SetTranslate(data_021f47e0, 0, 0, 0);
-    Mtx43_Scale(data_021f47e0, 0x20000, 0x20000, 0x20000);
-    MTX_Concat43(data_021f47e0, gViewMtx, sObjShadowViewMtx);
-    ObjShadow_NormalizeAxes(sObjShadowViewMtx, sObjShadowNormMtx);
-    RGB c1 = SceneLights_GetFlashColor();
-    u8 s = c1.b + (c1.r + c1.g);
+    Mtx43_SetTranslate(&data_021f47e0, 0, 0, 0);
+    Mtx43_Scale(&data_021f47e0, 0x20000, 0x20000, 0x20000);
+    MTX_Concat43(&data_021f47e0, &gViewMtx, &sObjShadowViewMtx);
+    ObjShadow_NormalizeAxes(&sObjShadowViewMtx, sObjShadowNormMtx);
+    u16 c = SceneLights_GetFlashColor();
+    u8 s = ((c >> 10) & 0x1f) + ((c & 0x1f) + ((c >> 5) & 0x1f));  // b + (r + g)
     u8 r4 = func_01ffcb0c(0x10000, FX_Div(s << 12, 0x5d000)) >> 12;
     s32 base = SceneLights_GetLightParam(0);
     u8 v = base + r4;
@@ -178,7 +163,7 @@ extern "C" void ObjShadow_Exit() {
         e->texRes = 0;
         e++;
     }
-    s32 heap = gBgHeap;
+    Heap *heap = (Heap *)gBgHeap;
     sTreeShadowStage2.release(heap);
     sTreeShadowStage3.release(heap);
     sTreeShadowStage4.release(heap);
@@ -187,7 +172,7 @@ extern "C" void ObjShadow_Exit() {
 }
 
 extern "C" u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 r4) {
-    if (gCamera != 0) {
+    if (gCamera != NULL) {
         VecFx32CtorDtor v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
@@ -228,8 +213,8 @@ const ObjShadowTexDef sObjShadowTexDefs[3] = {
 char sObjShadowTexNameGr[] = "obj_sdw_gr";
 s32 sObjShadowSkew;
 u8 sCharaShadowAlpha = 0x12;
-u8 sObjShadowNormMtx[0x24];
-u8 sObjShadowViewMtx[0x30];
+VecFx32 sObjShadowNormMtx[3];  // the view matrix's axes, normalized
+Mtx43 sObjShadowViewMtx;
 
 extern "C" u8 ObjShadow_GetObjAlpha(VecFx32 *p, s32 q) {
     return ObjShadow_CalcAlpha(p, q, sObjShadowAlpha);
@@ -283,9 +268,9 @@ ObjShadowStrip::ObjShadowStrip() {
 
 ObjShadowStrip::~ObjShadowStrip() {}
 
-BOOL ObjShadowStrip::build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap) {
+BOOL ObjShadowStrip::build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, Heap *heap) {
     u32 i;
-    if (heap == 0) {
+    if (heap == NULL) {
         heap = gCurrentHeap;
     }
     texture = &sObjShadowTextures[idx];
@@ -299,9 +284,10 @@ BOOL ObjShadowStrip::build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s3
     cachedZ = 0;
     numRows = _s32_div_f(shift - 0x200, 0x2000) + 2;
     u32 n4 = numRows << 2;
-    rowDepths = (s32 *)Heap_Alloc(heap, (n4 << 1) + numRows * 12);
-    rowTexT = (s32 *)((u8 *)rowDepths + n4);
-    rowVertices = (VecFx32 *)((u8 *)rowTexT + n4);
+    // one block: the depths, the texture t coordinates (an s32 each) and the vertices
+    rowDepths = (s32 *)Heap_Alloc(heap, (n4 << 1) + numRows * sizeof(VecFx32));
+    rowTexT = rowDepths + numRows;
+    rowVertices = (VecFx32 *)(rowTexT + numRows);
     for (i = 0; i < numRows; i++) {
         if (i == numRows - 1) {
             rowDepths[i] = shift;
@@ -327,7 +313,6 @@ BOOL ObjShadowStrip::build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s3
 
 void ObjShadowStrip::draw(VecFx32 *pos) {
     VecFx32 tmp;
-    Col c0, c1;
     if (texture != 0 && texture->texRes != 0) {
         u8 lvl = ObjShadow_GetObjAlpha(pos, cullExtent);
         if (lvl > 1) {
@@ -335,7 +320,7 @@ void ObjShadowStrip::draw(VecFx32 *pos) {
             IO_W(&REG(0x40004a8), texture->texImageParam);
             IO_W(&REG(0x40004ac), texture->plttBase);
             IO_W(&REG(0x4000440), 1);
-            G3_LoadMtx43(sObjShadowViewMtx);
+            G3_LoadMtx43(&sObjShadowViewMtx);
             IO_W(&REG(0x40004a4), (lvl << 16) | ((texture->polygonId << 24) | 0x8080));
             s32 *p7 = rowDepths;
             s32 *p28 = rowTexT;
@@ -359,7 +344,7 @@ void ObjShadowStrip::draw(VecFx32 *pos) {
                 hi = t + (pos->x + halfWidth);
                 if (pos->z != cachedZ) {
                     neg = -*p7;
-                    s32 y = Ground_GetDefaultY(z1);
+                    s32 y = Ground_GetDefaultY();
                     tmp.x = z2;
                     tmp.y = y;
                     tmp.z = neg;
@@ -368,9 +353,7 @@ void ObjShadowStrip::draw(VecFx32 *pos) {
                     vp->y >>= shift;
                     vp->z >>= shift;
                 }
-                c0 = SceneLights_GetRoomColor();
-                c1 = c0;
-                IO_W(&REG(0x4000480), c1.v);
+                IO_W(&REG(0x4000480), (u16)SceneLights_GetRoomColor());
                 IO_W(&REG(0x4000488), (u16)((texLeftS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16));
                 s16 zz = vp->z;
                 IO_W(&REG(0x400048c), (u16)((lo << 11) >> 16) | ((u16)(s16)vp->y << 16));
@@ -390,8 +373,8 @@ void ObjShadowStrip::draw(VecFx32 *pos) {
     }
 }
 
-void ObjShadowStrip::release(s32 heap) {
-    if (heap == 0) {
+void ObjShadowStrip::release(Heap *heap) {
+    if (heap == NULL) {
         heap = gCurrentHeap;
     }
     if (rowDepths != 0) {

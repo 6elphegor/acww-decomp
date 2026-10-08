@@ -33,7 +33,7 @@ struct SceneSpawnRecord {
 class SceneSpawnGroup {
 public:
     BOOL createProcs(u8 *idx, u64 start);
-    BOOL spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi);
+    BOOL spawnPlayersAndCamera(u8 *idx, u64 start);
 
     /* 0x00 */ u8 kind;
     /* 0x01 */ u8 count;

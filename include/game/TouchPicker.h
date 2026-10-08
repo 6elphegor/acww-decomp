@@ -33,9 +33,9 @@ struct TouchPicker : TouchPickResult {
     void reset();
     BOOL addTriangle(TouchPickTriangle *o, VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e);
     BOOL pushTriangle(TouchPickTriangle *o);
-    BOOL addCylinder(TouchPickCylinder *o, VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e);
+    BOOL addCylinder(TouchPickCylinder *o, VecFx32 *pos, s32 radius, s32 height, s32 kind, u8 index);
     BOOL pushCylinder(TouchPickCylinder *o);
-    BOOL addSphere(TouchPickSphere *o, VecFx32 *a, VecFx32 *b, s32 c, u8 d);
+    BOOL addSphere(TouchPickSphere *o, VecFx32 *pos, s32 radius, s32 kind, u8 index);
     BOOL pushSphere(TouchPickSphere *o);
     BOOL addBox(TouchPickBox *box, VecFx32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
     BOOL pushBox(TouchPickBox *box);

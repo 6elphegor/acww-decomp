@@ -6,7 +6,6 @@
 #include "types.h"
 struct WfcTextCanvas;
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -27,6 +26,12 @@ void WfcText_Init();
 #ifndef PROTO_LOCAL_WfcText_Shutdown
 void WfcText_Shutdown();
 #endif
+#ifndef PROTO_LOCAL_WfcText_BgTransferTask
+void WfcText_BgTransferTask(u32 task, u8 *flag);
+#endif
+#ifndef PROTO_LOCAL_WfcText_DestroyBgCanvas
+void WfcText_DestroyBgCanvas(u32 idx);
+#endif
 #ifndef PROTO_LOCAL_WfcText_RequestTransfer
 void WfcText_RequestTransfer(void *o);
 #endif
@@ -42,23 +47,17 @@ WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out,
 #ifndef PROTO_LOCAL_WfcText_CreateBgCanvas
 WfcTextCanvas *WfcText_CreateBgCanvas(u32 idx, u32 slot);
 #endif
-#ifndef PROTO_LOCAL_WfcText_BgTransferTask
-void WfcText_BgTransferTask(u32 task, u8 *flag);
-#endif
-#ifndef PROTO_LOCAL_WfcText_DestroyBgCanvas
-void WfcText_DestroyBgCanvas(u32 idx);
-#endif
 #ifndef PROTO_LOCAL_WfcText_DrawText
 void WfcText_DrawText(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawChar
-void WfcText_DrawChar(s32 a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx);
+void WfcText_DrawChar(WfcTextCanvas *a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawMonospace
-void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx);
+void WfcText_DrawMonospace(WfcTextCanvas *a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_WfcText_DrawTextRect
-void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, const void *text);
 #endif
 #ifndef PROTO_LOCAL_WfcText_Clear
 void WfcText_Clear(WfcTextCanvas *o, s32 a);
