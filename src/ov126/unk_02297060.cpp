@@ -1,6 +1,8 @@
 // ov126: scene overlay (class NameEntryMenu, vtable 0x02299ae8, size 0x40c8).
 // Text-entry screen (name/password style) with a cursor, a selection range and an 0x20-byte edit buffer.
 #include "types.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
@@ -52,9 +54,9 @@
 
 extern "C" {
 extern u16 gPad[];
-extern BlancaFaceRecord gSaveBlancaFace;
-extern u16 gSaveTownId[];
-extern u8 gSavePlayers[];
+#define gSaveBlancaFace HOST_LABEL(BlancaFaceRecord *, gSaveBlancaFace)
+#define gSaveTownId HOST_LABEL(u16 (*)[], gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern u8 gU8None;
 extern CommManager *gCommManager;
 
@@ -266,7 +268,7 @@ BOOL NameEntryMenu::onDraw() {
     ((GeneralMenuHeader *)(&header))->drawWithIcon(0, y);
     ((MenuBottomButtons *)(&bottomButtons))->drawAt(getSlideOffsetY());
     Keyboard_Draw(&keyboard, 0x80, y + 0x60, 1);
-    Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, y + 0x60);
+    Shared_Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, y + 0x60);
     if (testFlags(0x100)) {
         Oam_DrawCell(1, data_ov126_02299ad0, (u32)suffixLabelX + 0x80, y + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
@@ -351,7 +353,7 @@ void NameEntryMenu::transitionAct00() {
 }
 
 void NameEntryMenu::transitionAct01() {
-    Keyboard_RestoreLastPage(&keyboard, 6);
+    Shared_Keyboard_RestoreLastPage(&keyboard, 6);
     loadObjGfx();
     redrawText();
     setupDialogButtons();
@@ -529,7 +531,7 @@ void NameEntryMenu::init() {
         Keyboard_Init(&keyboard, 3);
         break;
     }
-    switch (GeneralMenuHeader_GetStyle()) {
+    switch (Shared_GeneralMenuHeader_GetStyle()) {
     case 0:
         maxLength = 0x10;
         textLeft = 0x50;
@@ -613,7 +615,7 @@ void NameEntryMenu::loadBg() {
     Keyboard_LoadScreenFile(&keyboard, "menu/letter/b_key.bsc");
     refreshKeys();
     Keyboard_LoadScreenNow(&keyboard, 6);
-    Keyboard_LoadLetterChars(&keyboard, 6);
+    Shared_Keyboard_LoadLetterChars(&keyboard, 6);
 }
 
 void NameEntryMenu::loadObjGfx() {
@@ -679,11 +681,11 @@ void NameEntryMenu::mainAct01() {
 void NameEntryMenu::mainAct02() {
     if (gTouchHeld == 0) {
         setMainState(0);
-    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&keyboard)) {
         s32 t = Keyboard_GetPressedKey(&keyboard);
         s32 r = Keyboard_GetKeyCode(&keyboard, t, 8);
         pressKeyCode(r);
-        Keyboard_HighlightKey(&keyboard, t);
+        Shared_Keyboard_HighlightKey(&keyboard, t);
     }
 }
 
@@ -748,7 +750,7 @@ void NameEntryMenu::mainAct06() {
         s32 r = navigateText(takeRepeatedKeys());
         switch (r) {
         case 1:
-            Keyboard_ResetTypedRun(&keyboard);
+            Shared_Keyboard_ResetTypedRun(&keyboard);
             clearSelection();
             updateCaretX();
             redrawText();
@@ -756,7 +758,7 @@ void NameEntryMenu::mainAct06() {
             Snd_PlaySe(0xb);
             break;
         case 2:
-            Keyboard_EnterTabRowAtX(&keyboard, ((MenuCursorBase *)(&cursor))->getScreenX());
+            Shared_Keyboard_EnterTabRowAtX(&keyboard, ((MenuCursorBase *)(&cursor))->getScreenX());
             leaveTextToKeys();
             break;
         default: {
@@ -787,7 +789,7 @@ void NameEntryMenu::mainAct07() {
     if ((gPad[0] & 1) == 0) {
         setMainState(6);
     } else if (navigateText(takeRepeatedKeys()) == 1) {
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
         extendSelection();
         updateCaretX();
         redrawText();
@@ -805,14 +807,14 @@ void NameEntryMenu::mainAct08() {
 
 void NameEntryMenu::mainAct09() {
     if (((HandCursor *)(&cursor))->isAnimDone()) {
-        s32 t = Keyboard_PressCursorKey(&keyboard);
+        s32 t = Shared_Keyboard_PressCursorKey(&keyboard);
         s32 r = pressKeyCode(Keyboard_GetKeyCode(&keyboard, t, 8));
         if (r == 1 && (gPad[0] & 1) != 0) {
             Keyboard_StartKeyRepeat(&keyboard);
             setMainState(0xa);
-            Keyboard_HighlightKey(&keyboard, t);
+            Shared_Keyboard_HighlightKey(&keyboard, t);
         } else if (r == 4) {
-            Keyboard_ClearHighlight(&keyboard);
+            Shared_Keyboard_ClearHighlight(&keyboard);
         } else if (r != 3) {
             releaseCursor();
         }
@@ -822,11 +824,11 @@ void NameEntryMenu::mainAct09() {
 void NameEntryMenu::mainAct0A() {
     if ((gPad[0] & 1) == 0) {
         releaseCursor();
-    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&keyboard)) {
         s32 t = Keyboard_GetPressedKey(&keyboard);
         s32 r = Keyboard_GetKeyCode(&keyboard, t, 8);
         pressKeyCode(r);
-        Keyboard_HighlightKey(&keyboard, t);
+        Shared_Keyboard_HighlightKey(&keyboard, t);
     }
 }
 
@@ -840,7 +842,7 @@ void NameEntryMenu::mainAct0B() {
 void NameEntryMenu::mainAct0C() {
     if ((gPad[0] & 2) == 0) {
         setMainState(returnState);
-    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&keyboard)) {
         Keyboard_ShrinkTypedRun(&keyboard);
         if (backspace(0)) {
             if (testFlags(0x80)) {
@@ -1002,20 +1004,20 @@ void NameEntryMenu::refreshKeys() {
     }
     Keyboard_DisableKey(&keyboard, 0);
     if (hasSelection()) {
-        Keyboard_EnableKey(&keyboard, 0xb);
+        Shared_Keyboard_EnableKey(&keyboard, 0xb);
     } else {
         Keyboard_DisableKey(&keyboard, 0xb);
     }
     if (testFlags(8)) {
-        Keyboard_EnableKey(&keyboard, 0xc);
+        Shared_Keyboard_EnableKey(&keyboard, 0xc);
     } else {
         Keyboard_DisableKey(&keyboard, 0xc);
     }
     if (hasSelection()) {
-        Keyboard_DisableModifierKeys(&keyboard);
-        Keyboard_EnableKey(&keyboard, 6);
+        Shared_Keyboard_DisableModifierKeys(&keyboard);
+        Shared_Keyboard_EnableKey(&keyboard, 6);
     } else if (caretIndex == 0) {
-        Keyboard_DisableModifierKeys(&keyboard);
+        Shared_Keyboard_DisableModifierKeys(&keyboard);
     } else {
         Keyboard_UpdateModifierKeys(&keyboard, getCharBeforeCursor());
     }
@@ -1066,7 +1068,7 @@ BOOL NameEntryMenu::touchTextField() {
     setCursorFromTouchX(r1);
     startSelection();
     setMainState(1);
-    Keyboard_ResetTypedRun(&keyboard);
+    Shared_Keyboard_ResetTypedRun(&keyboard);
     redrawText();
     return TRUE;
 }
@@ -1121,7 +1123,7 @@ void NameEntryMenu::deleteSelection() {
         lo = s;
         hi = e;
     }
-    u8 r = Keyboard_DeleteRange(&keyboard, text, lo, hi, maxLength);
+    u8 r = Shared_Keyboard_DeleteRange(&keyboard, text, lo, hi, maxLength);
     setCursorIndex(r);
     clearSelection();
 }
@@ -1156,7 +1158,7 @@ void NameEntryMenu::copy() {
         Mem_Clear(clipboard, 0x20);
         Mem_Copy(text + r6, clipboard, r4);
         setFlags(8);
-        Keyboard_PlayCopySe();
+        Shared_Keyboard_PlayCopySe();
         refreshKeys();
     }
 }
@@ -1164,7 +1166,7 @@ void NameEntryMenu::copy() {
 void NameEntryMenu::paste() {
     if (testFlags(8) != 0) {
         Keyboard_BeginPaste(&keyboard);
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
         if (hasSelection() != 0) deleteSelection();
         s32 n = Text_GetLength(clipboard, 0x20);
         u8 v;
@@ -1185,12 +1187,12 @@ void NameEntryMenu::paste() {
 }
 
 s32 NameEntryMenu::touchKey() {
-    Keyboard_ClearHighlight(&keyboard);
-    s32 r4 = Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
+    Shared_Keyboard_ClearHighlight(&keyboard);
+    s32 r4 = Shared_Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
     if (r4 != -1) {
         s32 r1 = Keyboard_GetKeyCode(&keyboard, r4, 8);
         s32 r6 = pressKeyCode(r1);
-        Keyboard_HighlightKey(&keyboard, r4);
+        Shared_Keyboard_HighlightKey(&keyboard, r4);
         Keyboard_StartKeyRepeat(&keyboard);
         return r6;
     }
@@ -1199,7 +1201,7 @@ s32 NameEntryMenu::touchKey() {
 
 s32 NameEntryMenu::pressKeyCode(s32 x) {
     s32 r6 = 1;
-    s32 r7 = Keyboard_HandleModeKey(&keyboard, x, 6);
+    s32 r7 = Shared_Keyboard_HandleModeKey(&keyboard, x, 6);
     if (r7 != 0) {
         redrawText();
         return r7;
@@ -1258,14 +1260,14 @@ BOOL NameEntryMenu::applyModifierKey(s32 x) {
         r2 = Keyboard_ModifyCharKey103(&keyboard, r2);
         break;
     case 0x104:
-        r2 = Keyboard_ModifyCharKey104(&keyboard, r2);
+        r2 = Shared_Keyboard_ModifyCharKey104(&keyboard, r2);
         break;
     case 0x105:
         r2 = Keyboard_ModifyCharKey105(&keyboard, r2);
         break;
     }
     if (r2 == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&keyboard, text, r2, caretIndex) == 0) return FALSE;
+    if (Shared_Keyboard_ReplaceCharBeforeCursor(&keyboard, text, r2, caretIndex) == 0) return FALSE;
     redrawText();
     updateCaretX();
     return TRUE;
@@ -1273,7 +1275,7 @@ BOOL NameEntryMenu::applyModifierKey(s32 x) {
 
 BOOL NameEntryMenu::backspace(s32 x) {
     if (hasSelection() != 0) {
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
         Snd_PlaySe(0x35);
         goto done;
     }
@@ -1314,7 +1316,7 @@ BOOL NameEntryMenu::insertCharRaw(u32 x) {
 BOOL NameEntryMenu::insertChar(u32 x) {
     if (hasSelection() != 0) {
         deleteSelection();
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
     }
     BOOL r = insertCharRaw(x);
     redrawText();
@@ -1350,7 +1352,7 @@ void NameEntryMenu::highlightSelection() {
         r1 = 7;
         r2 = 6;
     } else {
-        r0 = Keyboard_GetTypedRunLength(&keyboard);
+        r0 = Shared_Keyboard_GetTypedRunLength(&keyboard);
         if (r0 != 0) {
             r4 = caretIndex - r0;
         }
@@ -1441,7 +1443,7 @@ void NameEntryMenu::pressCursor() {
 }
 
 void NameEntryMenu::releaseCursor() {
-    Keyboard_ClearHighlight(&keyboard);
+    Shared_Keyboard_ClearHighlight(&keyboard);
     ((MenuCursorBase *)(&cursor))->setPoseRelease();
     setMainState(0xb);
 }
@@ -1455,7 +1457,7 @@ BOOL NameEntryMenu::tryPressKey() {
     if ((gPad[1] & 1) == 0) {
         return FALSE;
     }
-    s32 t = Keyboard_PressCursorKey(&keyboard);
+    s32 t = Shared_Keyboard_PressCursorKey(&keyboard);
     if (t == -1) {
         return FALSE;
     }
@@ -1463,7 +1465,7 @@ BOOL NameEntryMenu::tryPressKey() {
         return FALSE;
     }
     Keyboard_GetKeyCode(&keyboard, t, 8);
-    Keyboard_HighlightKey(&keyboard, t);
+    Shared_Keyboard_HighlightKey(&keyboard, t);
     pressCursor();
     return TRUE;
 }
@@ -1491,7 +1493,7 @@ BOOL NameEntryMenu::tryPasteButton() {
         return FALSE;
     }
     pressKeyCode(0x119);
-    Keyboard_HighlightKey(&keyboard, 0xdc);
+    Shared_Keyboard_HighlightKey(&keyboard, 0xdc);
     snapCursor();
     returnState = mainState;
     setMainState(0xe);
@@ -1506,7 +1508,7 @@ BOOL NameEntryMenu::tryCopyButton() {
         return FALSE;
     }
     pressKeyCode(0x118);
-    Keyboard_HighlightKey(&keyboard, 0xdb);
+    Shared_Keyboard_HighlightKey(&keyboard, 0xdb);
     returnState = mainState;
     setMainState(0xd);
     return FALSE;
@@ -1702,3 +1704,11 @@ void NameEntryMenu::clearFlags(u32 mask) {
     flags = flags & ~mask;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02297060) {
+    HOST_OVERLAY_VAR(data_ov126_022999e0),
+    HOST_OVERLAY_VAR(data_ov126_02299ad0),
+    HOST_OVERLAY_VARS_END
+};

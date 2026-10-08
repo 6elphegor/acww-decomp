@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "player/PlayerActor.h"
 #include "actor/Actor.h"
 #include "gfx/VecFx32.h"
@@ -46,8 +47,8 @@ extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
 
 
 extern "C" {
-extern TownId gSaveTownId;
-extern u8 gSavePlayers[];
+#define gSaveTownId HOST_LABEL(TownId *, gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 s32 Scene_GetCurrent();
 s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }

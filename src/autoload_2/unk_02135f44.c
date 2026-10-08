@@ -519,3 +519,10 @@ const s16 data_02135f44[4096 * 2] = {
     -101, 4095, -94, 4095, -88, 4095, -82, 4095, -75, 4095, -69, 4095, -63, 4096, -57, 4096,
     -50, 4096, -44, 4096, -38, 4096, -31, 4096, -25, 4096, -19, 4096, -13, 4096, -6, 4096,
 };
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_02136744, (char *)&data_02135f44[1024]);
+HOST_LABEL_DEFINE(data_02136f44, (char *)&data_02135f44[2048]);
+HOST_LABEL_DEFINE(data_02138f44, (char *)&data_02135f44[6144]);

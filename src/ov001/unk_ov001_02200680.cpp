@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -1705,7 +1706,7 @@ extern "C" s32 Aoss_NetStartup(u32 a, u32 b, u32 c) {
     sAossSocConfig.ipAddress = Aoss_Htonl(a);
     sAossSocConfig.netmask = Aoss_Htonl(b);
     sAossSocConfig.gateway = Aoss_Htonl(c);
-    if (Sock_Startup(&sAossSocConfig) < 0) {
+    if (Shared_Sock_Startup(&sAossSocConfig) < 0) {
         return -1;
     }
     if (gOwnIp == 0) {
@@ -1779,7 +1780,7 @@ extern "C" s32 Aoss_SocketCreate(s32 a, s32 b, s32 c) {
 
 extern "C" s32 Aoss_SocketBind(s32 a, u8 *b, s32 c) {
     *b = c;
-    return Sock_Bind(a, b);
+    return Shared_Sock_Bind(a, b);
 }
 
 extern "C" s32 Aoss_SocketClose(s32 s) {
@@ -1895,3 +1896,28 @@ extern "C" AossSession sAossSession = {0};
 extern "C" s32 sAossSocket = -1;
 
 extern "C" u8 sAossNameBuf[0x280] = {0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02200680) {
+    HOST_OVERLAY_VAR(sAossError),
+    HOST_OVERLAY_VAR(sAossRc4Key),
+    HOST_OVERLAY_VAR(sAossRandSeeded),
+    HOST_OVERLAY_VAR(sAossCrcTable),
+    HOST_OVERLAY_VAR(sAossConnectResult),
+    HOST_OVERLAY_VAR(sAossSessionId),
+    HOST_OVERLAY_VAR(sAossScanList),
+    HOST_OVERLAY_VAR(sAossPacketBuf),
+    HOST_OVERLAY_VAR(sAossProgress),
+    HOST_OVERLAY_VAR(sAossDefaultRetry),
+    HOST_OVERLAY_VAR(sAossKeyBlockTags),
+    HOST_OVERLAY_VAR(sAossSocConfig),
+    HOST_OVERLAY_VAR(sAossEncryptFlag),
+    HOST_OVERLAY_VAR(sAossRand),
+    HOST_OVERLAY_VAR(sAossKeyBuf),
+    HOST_OVERLAY_VAR(sAossSession),
+    HOST_OVERLAY_VAR(sAossSocket),
+    HOST_OVERLAY_VAR(sAossNameBuf),
+    HOST_OVERLAY_VARS_END
+};

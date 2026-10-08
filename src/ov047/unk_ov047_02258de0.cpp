@@ -867,6 +867,27 @@ SpNpcBlathersActEntry sSpNpcBlathersActTable[9] = {
     {&SpNpcBlathers::setupAct08, &SpNpcBlathers::mainAct08},
 };
 extern "C" ActorProfile sSpNpcBlathersProfile = {(void *(*)())SpNpcBlathers_Create, 0x6e, 0x74, 2, 0x5000, 0x5000, 0x3e800};
+// SpNpcBlathersTalk::onMessageEnd's static tbl
+SpNpcBlathersMessageEndHandler SpNpcBlathersTalk_onMessageEnd_tbl[35] = {
+        {0x14, &SpNpcBlathersTalk::openDonationPicker}, {0x15, &SpNpcBlathersTalk::returnHeldItem},
+        {0x16, &SpNpcBlathersTalk::openAppraisalPicker}, {0x17, &SpNpcBlathersTalk::openAppraisalPicker},
+        {0x18, &SpNpcBlathersTalk::showMuseumMenu}, {0x19, &SpNpcBlathersTalk::appraiseFossil},
+        {0x1a, &SpNpcBlathersTalk::afterFossilIdentified}, {0x1b, &SpNpcBlathersTalk::afterFossilIdentified},
+        {0x1c, &SpNpcBlathersTalk::afterFossilIdentified}, {0x1d, &SpNpcBlathersTalk::offerFossilDonation},
+        {0x1f, &SpNpcBlathersTalk::returnAppraisedFossil}, {0x26, &SpNpcBlathersTalk::onFossilPartDonated},
+        {0x29, &SpNpcBlathersTalk::onExhibitCompleted}, {0x2e, &SpNpcBlathersTalk::onPaintingDonated},
+        {0x2f, &SpNpcBlathersTalk::onPaintingDonated}, {0x30, &SpNpcBlathersTalk::onPaintingDonated},
+        {0x31, &SpNpcBlathersTalk::onExhibitCompleted}, {0x32, &SpNpcBlathersTalk::showInsectComment},
+        {0x33, &SpNpcBlathersTalk::showInsectComment}, {0x34, &SpNpcBlathersTalk::onExhibitCompleted},
+        {0x35, &SpNpcBlathersTalk::showFishComment}, {0x36, &SpNpcBlathersTalk::onExhibitCompleted},
+        {0x37, &SpNpcBlathersTalk::onAlreadyDonated}, {0x38, &SpNpcBlathersTalk::onAlreadyDonated},
+        {0x39, &SpNpcBlathersTalk::onAlreadyDonated}, {0x3a, &SpNpcBlathersTalk::returnItemAndAskMore},
+        {0x3b, &SpNpcBlathersTalk::returnItemAndAskMore}, {0x3c, &SpNpcBlathersTalk::returnItemAndAskMore},
+        {0x3d, &SpNpcBlathersTalk::returnItemAndAskMore}, {0x3f, &SpNpcBlathersTalk::openExhibitList},
+        {0x40, &SpNpcBlathersTalk::showMuseumMenu}, {0x41, &SpNpcBlathersTalk::showMuseumMenu},
+        {0x42, &SpNpcBlathersTalk::returnItemAndShowMenu}, {0x43, &SpNpcBlathersTalk::returnItemAndShowMenu},
+        {0x6a, &SpNpcBlathersTalk::returnItemAndAskShowMore},
+    };
 void SpNpcBlathersTalk::onMessageEnd(u32) {
     void *p;
     volatile u8 hdr[4];
@@ -913,32 +934,12 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     }
     p = PlayerData_GetCurrent();
     nextMsg = 0xff;
-    static SpNpcBlathersMessageEndHandler tbl[35] = {
-        {0x14, &SpNpcBlathersTalk::openDonationPicker}, {0x15, &SpNpcBlathersTalk::returnHeldItem},
-        {0x16, &SpNpcBlathersTalk::openAppraisalPicker}, {0x17, &SpNpcBlathersTalk::openAppraisalPicker},
-        {0x18, &SpNpcBlathersTalk::showMuseumMenu}, {0x19, &SpNpcBlathersTalk::appraiseFossil},
-        {0x1a, &SpNpcBlathersTalk::afterFossilIdentified}, {0x1b, &SpNpcBlathersTalk::afterFossilIdentified},
-        {0x1c, &SpNpcBlathersTalk::afterFossilIdentified}, {0x1d, &SpNpcBlathersTalk::offerFossilDonation},
-        {0x1f, &SpNpcBlathersTalk::returnAppraisedFossil}, {0x26, &SpNpcBlathersTalk::onFossilPartDonated},
-        {0x29, &SpNpcBlathersTalk::onExhibitCompleted}, {0x2e, &SpNpcBlathersTalk::onPaintingDonated},
-        {0x2f, &SpNpcBlathersTalk::onPaintingDonated}, {0x30, &SpNpcBlathersTalk::onPaintingDonated},
-        {0x31, &SpNpcBlathersTalk::onExhibitCompleted}, {0x32, &SpNpcBlathersTalk::showInsectComment},
-        {0x33, &SpNpcBlathersTalk::showInsectComment}, {0x34, &SpNpcBlathersTalk::onExhibitCompleted},
-        {0x35, &SpNpcBlathersTalk::showFishComment}, {0x36, &SpNpcBlathersTalk::onExhibitCompleted},
-        {0x37, &SpNpcBlathersTalk::onAlreadyDonated}, {0x38, &SpNpcBlathersTalk::onAlreadyDonated},
-        {0x39, &SpNpcBlathersTalk::onAlreadyDonated}, {0x3a, &SpNpcBlathersTalk::returnItemAndAskMore},
-        {0x3b, &SpNpcBlathersTalk::returnItemAndAskMore}, {0x3c, &SpNpcBlathersTalk::returnItemAndAskMore},
-        {0x3d, &SpNpcBlathersTalk::returnItemAndAskMore}, {0x3f, &SpNpcBlathersTalk::openExhibitList},
-        {0x40, &SpNpcBlathersTalk::showMuseumMenu}, {0x41, &SpNpcBlathersTalk::showMuseumMenu},
-        {0x42, &SpNpcBlathersTalk::returnItemAndShowMenu}, {0x43, &SpNpcBlathersTalk::returnItemAndShowMenu},
-        {0x6a, &SpNpcBlathersTalk::returnItemAndAskShowMore},
-    };
     u32 i;
     i = 0;
     u8 *pid;
     pid = &msgIndex;
     SpNpcBlathersMessageEndHandler *tp;
-    tp = tbl;
+    tp = SpNpcBlathersTalk_onMessageEnd_tbl;
     goto test;
 loop:
     u32 ida;
@@ -1509,4 +1510,14 @@ void SpNpcBlathers::onInteractionEvent(u32 cmd, u8 arg) {
 
 // ---- data
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_ov047_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcBlathersActTable),
+    HOST_OVERLAY_VAR(sSpNpcBlathersProfile),
+    HOST_OVERLAY_VAR(SpNpcBlathersTalk_onMessageEnd_tbl),
+    HOST_OVERLAY_VAR(sSpNpcBlathersModelPath),
+    HOST_OVERLAY_VAR(sSpNpcBlathersTexturePath),
+    HOST_OVERLAY_VARS_END
+};

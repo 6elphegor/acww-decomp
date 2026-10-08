@@ -1,4 +1,6 @@
 #include "ds_div.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "talk/MsgString9C.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -42,9 +44,9 @@
 extern "C" {
 extern u16 gPad[];
 extern u8 gFieldSceneKind;
-extern u8 gSaveTownId[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
+#define gSaveTownId HOST_LABEL(u8 (*)[], gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 
 s32 _s32_div_f(s32 a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
@@ -615,10 +617,10 @@ void MapTab::loadBgGfx() {
 }
 
 void MapTab::loadMapStep1() {
-    TownMapImage_AllocGlobal();
+    Shared_TownMapImage_AllocGlobal();
     TownMapImage_DrawRowGlobal(0);
-    TownMapImage_BuildMarkersGlobal(0);
-    TownMapImage_BuildMarkersGlobal(1);
+    Shared_TownMapImage_BuildMarkersGlobal(0);
+    Shared_TownMapImage_BuildMarkersGlobal(1);
 }
 
 void MapTab::loadMapStep2() {
@@ -631,9 +633,9 @@ void MapTab::loadMapImage() {
     TownMapMarkers *b;
     TownMapImage_DrawRowGlobal(3);
     a = mapChars;
-    TownMapMarkers_Clear(&townMarkers);
+    Shared_TownMapMarkers_Clear(&townMarkers);
     b = &townMarkers;
-    TownMapImage_FinishGlobal(a, b); // ov117 (the decompiler named ov094's function at the same address)
+    Shared_TownMapImage_FinishGlobal(a, b); // ov117 (the decompiler named ov094's function at the same address)
     Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
     setupMarkers(b);
 }
@@ -1099,7 +1101,7 @@ void MapTab::setupMarkers(TownMapMarkers *p) {
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
-        rec = TownMapMarkers_Get(p, i);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(p, i);
         if (rec != 0) {
             switch (TownMapMarkers_GetKind(p, i)) {
             case 0:
@@ -1127,7 +1129,7 @@ void MapTab::setupMarkers(TownMapMarkers *p) {
     j = 3;
     k = 0;
     for (; k < 0xe; j++, k++) {
-        rec = TownMapMarkers_Get(p, j);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(p, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
                 buildingMarkers[k].cell = 0;
@@ -1718,3 +1720,14 @@ MapTabMarker::MapTabMarker() {}
 
 MapTabMarker::~MapTabMarker() {}
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02292d00) {
+    HOST_OVERLAY_VAR(sMapTabResidentsButtonCells),
+    HOST_OVERLAY_VAR(sMapTabIconCell),
+    HOST_OVERLAY_VAR(sMapTabPlacesButtonCells),
+    HOST_OVERLAY_VAR(sMapTabProfile),
+    HOST_OVERLAY_VAR(sMapTabFrameCells),
+    HOST_OVERLAY_VARS_END
+};

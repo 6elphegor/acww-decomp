@@ -1920,3 +1920,14 @@ void ServerBrowserFree(_ServerBrowser *o) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02289444) {
+    HOST_OVERLAY_VAR(data_ov065_0228e954),
+    HOST_OVERLAY_VAR(SBOverrideMasterServer),
+    HOST_OVERLAY_VAR(g_sortserverlist),
+    HOST_OVERLAY_VAR(SBNullServer),
+    HOST_OVERLAY_VARS_END
+};

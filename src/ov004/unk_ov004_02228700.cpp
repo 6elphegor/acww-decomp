@@ -1,4 +1,5 @@
 #include "gfx/MatTexVramTask.h"
+#include "host_overlay_vars.h"
 #include "gfx/ModelAnim.h"
 #include "item/DateSeededRandomSource.h"
 // mwcc-version: 1.2/base
@@ -33,10 +34,12 @@ struct Unk_ov004_022288c0_Bits {
     u32 hi : 4;
 };
 
+extern "C" void ClothTex_Construct();
+extern "C" void ClothTex_Destruct();
 // the global object at 0x02250f6c: constructed / registered by the unit's __sinit (ctor and dtor are two 2-byte stubs in main)
 struct ClothTex {
-    ClothTex();
-    ~ClothTex();
+    ClothTex() { ClothTex_Construct(); }
+    ~ClothTex() { ClothTex_Destruct(); }
     u8 pad_00[0x2c4];
 };
 
@@ -293,3 +296,19 @@ extern "C" u32 SewingMachine_GetFrame() {
     }
     return 0;
 }
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov004_02228700(void) {
+    HOST_STATIC_CONSTRUCT(sSewingMachineCloth);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02228700) {
+    HOST_OVERLAY_VAR(sSewingMachineProfile),
+    HOST_OVERLAY_VAR(sSewingMachine),
+    HOST_OVERLAY_VAR(sSewingMachineCloth),
+    HOST_OVERLAY_VARS_END
+};

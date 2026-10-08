@@ -551,3 +551,24 @@ void gpiDebug(void *h, const char *fmt, ...) {
 extern "C" { char data_ov065_02291204[0x100]; } //@ (the secret key)
 
 extern "C" { DArrayImplementation *serverreqs; } //@
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02283720) {
+    HOST_OVERLAY_VAR(sGsPersistXorKey),
+    HOST_OVERLAY_VAR(rcvmax),
+    HOST_OVERLAY_VAR(data_ov065_0228df7c),
+    HOST_OVERLAY_VAR(data_ov065_02291104),
+    HOST_OVERLAY_VAR(rcvlen),
+    HOST_OVERLAY_VAR(enc1),
+    HOST_OVERLAY_VAR(enc3),
+    HOST_OVERLAY_VAR(stats_initstate),
+    HOST_OVERLAY_VAR(data_ov065_02291304),
+    HOST_OVERLAY_VAR(sGsPersistSocket),
+    HOST_OVERLAY_VAR(data_ov065_022910fc),
+    HOST_OVERLAY_VAR(rcvbuffer),
+    HOST_OVERLAY_VAR(data_ov065_02291204),
+    HOST_OVERLAY_VAR(serverreqs),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "proto/main/unk_020b4828.h"
 // mwcc-version: 1.2/sp2
 // ov004 TU05: .text 0x02213b90-0x02214948 (class MuseumExhibitInfo). The switch function
@@ -34,7 +35,7 @@ extern char gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s16 data_02135f44[];
 extern CommManager *gCommManager;
-extern MuseumData data_021ed0a0;  // the museum record in the save
+#define data_021ed0a0 HOST_LABEL(MuseumData *, data_021ed0a0)  // the museum record in the save
 
 s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
@@ -515,3 +516,26 @@ MuseumExhibitInfo::MuseumExhibitInfo() {
 extern "C" MuseumExhibitInfo *MuseumExhibitInfo_Create(void) {
     return new MuseumExhibitInfo;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02213b90) {
+    HOST_OVERLAY_VAR(data_ov004_022502f4),
+    HOST_OVERLAY_VAR(data_ov004_022502e4),
+    HOST_OVERLAY_VAR(data_ov004_022502ec),
+    HOST_OVERLAY_VAR(data_ov004_022502dc),
+    HOST_OVERLAY_VAR(data_ov004_022502d0),
+    HOST_OVERLAY_VAR(data_ov004_022502e0),
+    HOST_OVERLAY_VAR(sMuseumExhibitInfoProfile),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnMsg),
+    HOST_OVERLAY_VAR(sMuseumExhibitMsgFile),
+    HOST_OVERLAY_VAR(sMuseumExhibitAutoTalkActive),
+    HOST_OVERLAY_VAR(sMuseumExhibitInfoCount),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnKind),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnList),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnCount),
+    HOST_OVERLAY_VAR(sMuseumExhibitSpawnFacingArc),
+    HOST_OVERLAY_VAR(sMuseumExhibitInfos),
+    HOST_OVERLAY_VARS_END
+};

@@ -69,3 +69,11 @@ void WfcSound_SetTrackPitch(s32 a, s32 b) { NNS_SndPlayerSetTrackPitch(&sWfcSoun
 void WfcSound_Stop() { NNS_SndPlayerStopSeq(&sWfcSound->handle, 0); }
 
 void WfcSound_MainTask() { NNS_SndMain(); }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221e930) {
+    HOST_OVERLAY_VAR(sWfcSound),
+    HOST_OVERLAY_VARS_END
+};

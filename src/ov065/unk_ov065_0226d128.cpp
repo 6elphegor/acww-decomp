@@ -558,3 +558,22 @@ void NasAuth_SetState(s32 v) {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226d128) {
+    HOST_OVERLAY_VAR(sNasLangCode04),
+    HOST_OVERLAY_VAR(sNasUserId),
+    HOST_OVERLAY_VAR(sNasLangCode01),
+    HOST_OVERLAY_VAR(sNasLangCode06),
+    HOST_OVERLAY_VAR(sNasDefaultUrl),
+    HOST_OVERLAY_VAR(sNasLangCode00),
+    HOST_OVERLAY_VAR(sNasLangCode05),
+    HOST_OVERLAY_VAR(sNasLangCode02),
+    HOST_OVERLAY_VAR(sNasHttpParams),
+    HOST_OVERLAY_VAR(sNasLangCode03),
+    HOST_OVERLAY_VAR(sNasAuth),
+    HOST_OVERLAY_VAR(sNasLangCodeTable),
+    HOST_OVERLAY_VARS_END
+};

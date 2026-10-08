@@ -244,3 +244,16 @@ void WfcUtil_RequestExit() {
 }
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220c594) {
+    HOST_OVERLAY_VAR(sWfcLanguage),
+    HOST_OVERLAY_VAR(sWfcParams),
+    HOST_OVERLAY_VAR(sWfcExitRequested),
+    HOST_OVERLAY_VAR(sWfcWorkArea),
+    HOST_OVERLAY_VAR(sWfcSceneFunc),
+    HOST_OVERLAY_VAR(sWfcScreenFlags),
+    HOST_OVERLAY_VARS_END
+};

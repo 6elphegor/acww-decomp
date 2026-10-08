@@ -49,3 +49,11 @@ void WfcIrq_VBlank()
     g[0x3fe] |= 1;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022265ac) {
+    HOST_OVERLAY_VAR(sWfcSavedVBlankHandler),
+    HOST_OVERLAY_VAR(sWfcSavedIrqMask),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerId.h"
@@ -207,7 +208,7 @@ BOOL FriendCodeMenu::onDraw() {
         cursor.drawWrapped();
     }
     bottomButtons.drawAt(slideY);
-    NumberPad_DrawKeypadFrame(slideY);
+    Shared_NumberPad_DrawKeypadFrame(slideY);
     if (caretBlinkTimer & 0x10) {
         Oam_DrawCell(1, sCaretCells, (caretPos << 4) + 0x20, slideY + 0x40, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
@@ -946,7 +947,7 @@ BOOL FriendCodeMenu::applyKey(s32 a) {
     case 11:
         if (a) {
             clearCode();
-            NumberPad_PlayCancelSe();
+            Shared_NumberPad_PlayCancelSe();
         }
         repeatTimer = 0;
         return FALSE;
@@ -1260,3 +1261,13 @@ extern "C" const s32 sFriendCodeCursorYTable[12] = {0x68, 0x68, 0x68, 0x78, 0x78
 extern "C" const u32 sKeyRowY[12] = {0xc, 0xc, 0xc, 0xe, 0xe, 0xe, 0x10, 0x10, 0x10, 0x12, 0x12, 0x12};
 
 extern "C" ProcProfile sFriendCodeMenuProfile = {(void *(*)())FriendCodeMenu_Create, 0xb4, 0xb8};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov133_022936c0) {
+    HOST_OVERLAY_VAR(sFriendCodeKeySeIds),
+    HOST_OVERLAY_VAR(sCaretCells),
+    HOST_OVERLAY_VAR(sFriendCodeMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

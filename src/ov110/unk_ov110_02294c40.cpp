@@ -1,6 +1,7 @@
 // ov110: inventory / item-selling scene overlay (class LostFoundRecycleMenu, vtable 0x02297778).
 // Linked overlay: the whole of .text/.data/.bss comes from this file.
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "ui/CursorMotion.h"
@@ -341,7 +342,7 @@ BOOL LostFoundRecycleMenu::onDraw() {
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
         letterGrid.drawPocketLetters(0, pocketsSlideY);
-        InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
 }
@@ -418,10 +419,10 @@ void LostFoundRecycleMenu::transitionAct00() {
 void LostFoundRecycleMenu::transitionAct01() {
     LostFoundRecycleMenu *s = this;
     ::LostFoundRecycleMenu_LoadObjGraphics(s);
-    ::InventoryItemGrid_LoadPockets(&s->itemGrid);
+    ::Shared_InventoryItemGrid_LoadPockets(&s->itemGrid);
     ::InventoryItemGrid_LoadBox(&s->itemGrid, s->boxItems);
     ::LostFoundRecycleMenu_DisableRejectedItems(s);
-    ::LetterGrid_LoadPocketLetters(&s->letterGrid);
+    ::Shared_LetterGrid_LoadPocketLetters(&s->letterGrid);
     ::func_ov094_022941f8(&s->letterGrid, 0xf);
     ::func_ov002_022008e0(s, 8, 0, 0, 0x30);
     ::Gfx2d_ShowLayer(6);
@@ -506,7 +507,7 @@ extern "C" void LostFoundRecycleMenu_Init(LostFoundRecycleMenu *s) {
     s->stateFlags = 0;
     InventoryItemGrid_Init(&s->itemGrid, 1);
     func_ov094_02294644(&s->letterGrid, 2);
-    InventoryBg_Init(&s->inventoryBg, 6);
+    Shared_InventoryBg_Init(&s->inventoryBg, 6);
     s->balloonSlot = 0x1f;
     func_ov002_022027a4(&s->flyMotion);
     s->heldKind = 0;
@@ -535,7 +536,7 @@ extern "C" void LostFoundRecycleMenu_Init(LostFoundRecycleMenu *s) {
 extern "C" void LostFoundRecycleMenu_Exit(LostFoundRecycleMenu *s) {
     LostFoundRecycleMenu_CancelUploads(s);
     InventoryBg_Exit(&s->inventoryBg);
-    InventoryItemGrid_Exit(&s->itemGrid);
+    Shared_InventoryItemGrid_Exit(&s->itemGrid);
     PopupChoice_ForceClose(&s->choiceMenu);
     func_ov110_02295034(s);
 }
@@ -551,14 +552,14 @@ extern "C" void LostFoundRecycleMenu_PostInputUpdate(LostFoundRecycleMenu *s) {
 
 extern "C" void LostFoundRecycleMenu_PreStateUpdate(LostFoundRecycleMenu *s) {
     LostFoundRecycleMenu_CancelUploads(s);
-    InventoryBg_PreUpdate(&s->inventoryBg);
+    Shared_InventoryBg_PreUpdate(&s->inventoryBg);
     InventoryItemGrid_PreUpdate(&s->itemGrid);
     func_ov094_0229462c(&s->letterGrid);
     func_ov110_02295034(s);
 }
 
 extern "C" void LostFoundRecycleMenu_PostStateUpdate(LostFoundRecycleMenu *s) {
-    PopupChoice_Update(&s->choiceMenu);
+    Shared_PopupChoice_Update(&s->choiceMenu);
     InventoryBg_Update(&s->inventoryBg);
     if (func_ov002_0220071c(&s->nameBalloon)) {
         LostFoundRecycleMenu_PlaceNameBalloon(s);
@@ -900,7 +901,7 @@ void LostFoundRecycleMenu::mainAct0F() {
     if (::MenuCursor_IsGripping(&s->cursor)) {
         if (::func_ov110_02294d88(s, 0x40)) {
             ::func_ov110_02294d68(s, 0x40);
-            ::Inventory_PlayPickUpSe();
+            ::Shared_Inventory_PlayPickUpSe();
         }
         ::LostFoundRecycleMenu_TrackCursor(s);
     }
@@ -1016,7 +1017,7 @@ extern "C" void LostFoundRecycleMenu_PickUpWithTouch(LostFoundRecycleMenu *s, u3
         func_ov002_02200a58(s, 3);
     }
     LostFoundRecycleMenu_TrackTouch(s);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 extern "C" void LostFoundRecycleMenu_PickUpWithHand(LostFoundRecycleMenu *s, u32 a) {
@@ -1027,7 +1028,7 @@ extern "C" void LostFoundRecycleMenu_PickUpWithHand(LostFoundRecycleMenu *s, u32
         s->returnState = 5;
     }
     LostFoundRecycleMenu_TrackCursor(s);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 extern "C" void LostFoundRecycleMenu_StartFlyHeldItem(LostFoundRecycleMenu *s, u32 a, u32 b) {
@@ -1112,7 +1113,7 @@ extern "C" u32 LostFoundRecycleMenu_FindSlotAt(LostFoundRecycleMenu *s, u32 a, u
         }
         return LostFoundRecycleMenu_GridToPocketSlot(s, t);
     }
-    t = InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
+    t = Shared_InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&s->itemGrid, t)) return 0x1f;
@@ -1181,7 +1182,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsItemRejected(LostFoundRecycleMenu *s, u32
         return TRUE;
     }
     u32 t = LostFoundRecycleMenu_GetSlotItem(s, a);
-    if (InvItem_IsNonTransferable(t)) {
+    if (Shared_InvItem_IsNonTransferable(t)) {
         return TRUE;
     }
     v = t;
@@ -1217,7 +1218,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsItemRejected(LostFoundRecycleMenu *s, u32
     case 0x1f:
         return TRUE;
     case 0x20:
-        if (InvItem_IsTurnipFishOrInsect(t)) {
+        if (Shared_InvItem_IsTurnipFishOrInsect(t)) {
             BOOL f = FALSE;
             u16 x = v;
             u16 y = v;
@@ -1246,7 +1247,7 @@ extern "C" void LostFoundRecycleMenu_DisableRejectedItems(LostFoundRecycleMenu *
 extern "C" BOOL LostFoundRecycleMenu_IsSlotDisabled(LostFoundRecycleMenu *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     return FALSE;
 }
@@ -1262,7 +1263,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsSlotEmpty(LostFoundRecycleMenu *s, u32 a)
 extern "C" u32 LostFoundRecycleMenu_GetSlotItem(LostFoundRecycleMenu *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotItem(&s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return Shared_InventoryItemGrid_GetSlotItem(&s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     return 0xfff1;
 }
@@ -1284,7 +1285,7 @@ extern "C" void LostFoundRecycleMenu_ClearCursorSlots(LostFoundRecycleMenu *s)
 extern "C" void LostFoundRecycleMenu_SetCursorSlot(LostFoundRecycleMenu *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_SetCursorSlot(&s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
+        Shared_InventoryItemGrid_SetCursorSlot(&s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
         func_ov094_022943f8(&s->letterGrid);
     } else if (LostFoundRecycleMenu_IsButtonSlot(s, a)) {
         LostFoundRecycleMenu_ClearCursorSlots(s);
@@ -1293,7 +1294,7 @@ extern "C" void LostFoundRecycleMenu_SetCursorSlot(LostFoundRecycleMenu *s, u32 
 
 extern "C" void LostFoundRecycleMenu_ClearMarks(LostFoundRecycleMenu *s)
 {
-    InventoryItemGrid_ClearMarks(&s->itemGrid);
+    Shared_InventoryItemGrid_ClearMarks(&s->itemGrid);
     func_ov094_022943b0(&s->letterGrid);
 }
 
@@ -1331,7 +1332,7 @@ extern "C" void LostFoundRecycleMenu_PlaceNameBalloon(LostFoundRecycleMenu *s)
     func_02089ad8(&s->nameBalloon, a, b);
     if (LostFoundRecycleMenu_IsPocketSlot(s, s->balloonSlot) || LostFoundRecycleMenu_IsBoxSlot(s, s->balloonSlot)) {
         u32 t = LostFoundRecycleMenu_ToGridSlot(s, s->balloonSlot);
-        InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
+        Shared_InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
     }
 }
 
@@ -1384,10 +1385,10 @@ extern "C" void LostFoundRecycleMenu_PickUpItem(LostFoundRecycleMenu *s, u32 a)
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
         u32 t = LostFoundRecycleMenu_ToGridSlot(s, a);
         s->heldKind = 1;
-        s->heldItem = InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
+        s->heldItem = Shared_InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
         s->heldItemFlags = InventoryItemGrid_GetSlotFlags(&s->itemGrid, t);
-        InventoryItemGrid_ClearSlot(&s->itemGrid, t);
-        InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
+        Shared_InventoryItemGrid_ClearSlot(&s->itemGrid, t);
+        Shared_InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
     }
 }
 
@@ -1834,3 +1835,10 @@ void LostFoundRecycleMenu::setFlags(u32 mask) { stateFlags |= mask; }
 
 void LostFoundRecycleMenu::clearFlags(u32 mask) { stateFlags &= ~mask; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov110_02294c40) {
+    HOST_OVERLAY_VAR(sLostFoundRecycleMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

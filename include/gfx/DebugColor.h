@@ -12,12 +12,8 @@ struct DebugColor {
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-    DebugColor(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
+    // constexpr: the static copies are constant data (no constructor runs when an overlay is loaded)
+    constexpr DebugColor(u8 r_, u8 g_, u8 b_, u8 a_) : r(r_), g(g_), b(b_), a(a_) {}
 };
 
 #endif

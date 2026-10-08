@@ -7,14 +7,17 @@
 
 class MsgString;
 
+extern "C" void *TrendScores_Construct(void *p);
+extern "C" void TrendScores_Destruct();
+extern "C" void TrendScores_Clear(void *p);
 // A villager's plan: its state (moving in / out, trends) with times, and the trend scores. Methods in
 // src/main/unk_02098e90.cpp.
 class TrendScores {
 public:
     u8 values[8];
 
-    TrendScores();
-    ~TrendScores();
+    TrendScores() { TrendScores_Construct(this); }
+    ~TrendScores() { TrendScores_Destruct(); }
     u32 get(u32 i);
     void set(u8 i, u32 v);
     void add(u8 i, u32 v);
@@ -23,7 +26,7 @@ public:
     // the scores from src (8 bytes). The decomp's copy() took no source: on the DS the caller's own register
     // argument went along (VillagerPlan::rollTrend's trend table), so it is passed explicitly here.
     void copy(const u8 *src);
-    void clear();
+    void clear() { TrendScores_Clear(this); }
 };
 
 struct VillagerPlanFlags { u8 state2Flag : 1; u8 x : 7; };
@@ -61,8 +64,6 @@ public:
     BOOL isValidState();
     BOOL hasTrend();
     void clear();
-    void resetAndHalveScores(u8 i);
-    u32 pickTopScore();
 };
 
 // A villager's plan block (VillagerData::planBlock, Villager_GetPlan): the plan and its errand for a player.

@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/base
 #pragma opt_loop_invariants off
 #include "types.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
 #include "sys/ProcProfile.h"
@@ -13,9 +15,9 @@ class ShopStockPlacer;
 
 extern "C" {
 extern BlockMap *gSceneBlockMap;
-extern u8 data_021ed104[];
-extern u8 data_021ed2d4[];
-extern u8 data_021ed2c0[];
+#define data_021ed104 HOST_LABEL(u8 (*)[], data_021ed104)
+#define data_021ed2d4 HOST_LABEL(u8 (*)[], data_021ed2d4)
+#define data_021ed2c0 HOST_LABEL(u8 (*)[], data_021ed2c0)
 extern const u32 sNookShopLayouts[];
 extern const u32 sScene10ShopLayout[];
 extern const u32 sScene15ShopLayout[];
@@ -390,8 +392,17 @@ extern "C" BOOL ShopStock_IsForSale(u16 *p) {
     return k;
 }
 
+// ShopStock_GetItemAt's static dflt, initialised at its first use after the overlay was loaded
+ItemId ShopStock_GetItemAt_dflt;
+u8 ShopStock_GetItemAt_dflt_init;
+// ShopStock_GetItemAt's static v2, initialised at its first use after the overlay was loaded
+ItemId ShopStock_GetItemAt_v2;
+u8 ShopStock_GetItemAt_v2_init;
 extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
-    static ItemId dflt(0xfff1);
+    if (!ShopStock_GetItemAt_dflt_init) {
+        HOST_STATIC_INIT(ShopStock_GetItemAt_dflt, ItemId(0xfff1));
+        ShopStock_GetItemAt_dflt_init = 1;
+    }
     u16 cv[3];
     BlockMap *g = gSceneBlockMap;
     if (g) {
@@ -402,10 +413,13 @@ extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
             if (!Unk_ov004_0223ed40_Chk(r4, &cv[1], 0xfff1)) {
                 if (Item_IsFurnitureOrF031(r4)) {
                     FtrActor *o = FtrActorGrid_GetInstance()->getActor(x, y, 0);
-                    if (!o) return &dflt.id;
-                    static ItemId v2(0xfff1);
-                    v2.id = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
-                    if (ShopStock_IsForSale(&v2.id)) return &v2.id;
+                    if (!o) return &ShopStock_GetItemAt_dflt.id;
+                    if (!ShopStock_GetItemAt_v2_init) {
+                        HOST_STATIC_INIT(ShopStock_GetItemAt_v2, ItemId(0xfff1));
+                        ShopStock_GetItemAt_v2_init = 1;
+                    }
+                    ShopStock_GetItemAt_v2.id = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
+                    if (ShopStock_IsForSale(&ShopStock_GetItemAt_v2.id)) return &ShopStock_GetItemAt_v2.id;
                 } else if (Item_IsNormalItem(r4)) {
                     if (!Unk_ov004_0223ed40_Chk(r4, &cv[2], 0x1547)) {
                         if (ShopStock_IsForSale(r4)) return r4;
@@ -414,7 +428,7 @@ extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
             }
         }
     }
-    return &dflt.id;
+    return &ShopStock_GetItemAt_dflt.id;
 }
 
 extern "C" s32 ShopStock_GetCode22Index(s32 x, s32 y) {
@@ -599,3 +613,14 @@ BOOL ShopStockPlacer::setupNoShop() {
     return TRUE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0223e9bc) {
+    HOST_OVERLAY_VAR(sShopStockPlacerProfile),
+    HOST_OVERLAY_VAR(ShopStock_GetItemAt_dflt),
+    HOST_OVERLAY_VAR(ShopStock_GetItemAt_dflt_init),
+    HOST_OVERLAY_VAR(ShopStock_GetItemAt_v2),
+    HOST_OVERLAY_VAR(ShopStock_GetItemAt_v2_init),
+    HOST_OVERLAY_VARS_END
+};

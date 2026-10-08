@@ -1,4 +1,5 @@
 #include "game/BoxCollider.h"
+#include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
@@ -277,17 +278,23 @@ void RecycleBox::updateState03() {
     }
 }
 
+// RecycleBox::changeAct's static tbl, initialised at its first use after the overlay was loaded
+Unk_ov004_022280b0_Fn RecycleBox_changeAct_tbl[6];
+u8 RecycleBox_changeAct_tbl_init;
 BOOL RecycleBox::changeAct(s32 m) {
-    static Unk_ov004_022280b0_Fn tbl[6] = {
+    if (!RecycleBox_changeAct_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(RecycleBox_changeAct_tbl, {
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct00,
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct01,
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct02,
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct03,
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct04,
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct05,
-    };
+    });
+        RecycleBox_changeAct_tbl_init = 1;
+    }
     if (m < 6) {
-        if ((this->*tbl[m])()) {
+        if ((this->*RecycleBox_changeAct_tbl[m])()) {
             act = m;
             return TRUE;
         }
@@ -396,3 +403,22 @@ void RecycleBox::initCollision() {
 void RecycleBox::removeCollision() {
     BoxCollider_Unregister(&collider);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02227e3c) {
+    HOST_OVERLAY_VAR(data_ov004_02250e70),
+    HOST_OVERLAY_VAR(data_ov004_02250e64),
+    HOST_OVERLAY_VAR(data_ov004_02250e60),
+    HOST_OVERLAY_VAR(data_ov004_02250e6c),
+    HOST_OVERLAY_VAR(data_ov004_02250e5c),
+    HOST_OVERLAY_VAR(data_ov004_02250e4c),
+    HOST_OVERLAY_VAR(sRecycleBoxProfile),
+    HOST_OVERLAY_VAR(sRecycleBoxMsgFile),
+    HOST_OVERLAY_VAR(sRecycleBoxMsgFilePtr),
+    HOST_OVERLAY_VAR(sRecycleBox),
+    HOST_OVERLAY_VAR(RecycleBox_changeAct_tbl),
+    HOST_OVERLAY_VAR(RecycleBox_changeAct_tbl_init),
+    HOST_OVERLAY_VARS_END
+};

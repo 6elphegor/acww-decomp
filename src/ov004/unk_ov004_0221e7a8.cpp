@@ -5526,3 +5526,19 @@ extern "C" void PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim) 
 
 
 }  // namespace ns_0221e7a8
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221e7a8) {
+    HOST_OVERLAY_VAR(data_ov004_0224d4a4),
+    HOST_OVERLAY_VAR(sRoomPlayerMsgFile),
+    HOST_OVERLAY_VAR(data_ov004_0224d4a8),
+    HOST_OVERLAY_VAR(sFtrPullDist),
+    HOST_OVERLAY_VAR(sSeatApproachDist),
+    HOST_OVERLAY_VAR(data_ov004_0224d4b0),
+    HOST_OVERLAY_VAR(sRoomInteractDist),
+    HOST_OVERLAY_VAR(sRoomErrorMsgFile),
+    HOST_OVERLAY_VAR(data_ov004_0224d4b4),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 
 
 #include "types.h"
@@ -84,7 +85,7 @@ extern "C" {
 extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[];
 extern SpNpcBookerActEntry sSpNpcBookerActTable[];
 extern const char *sSpNpcBookerMsgFiles[1];
@@ -657,4 +658,20 @@ extern "C" SpNpcBookerActEntry sSpNpcBookerActTable[7] = {
     {&SpNpcBooker::setupAct04, &SpNpcBooker::mainAct04},
     {&SpNpcBooker::setupAct05, &SpNpcBooker::mainAct05},
     {&SpNpcBooker::setupAct06, &SpNpcBooker::mainAct06},
+};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221d748) {
+    HOST_OVERLAY_VAR(data_ov004_0224d1e0),
+    HOST_OVERLAY_VAR(data_ov004_0224d1f4),
+    HOST_OVERLAY_VAR(data_ov004_0224d224),
+    HOST_OVERLAY_VAR(sSpNpcBookerMsgFiles),
+    HOST_OVERLAY_VAR(sSpNpcBookerModelPath),
+    HOST_OVERLAY_VAR(sSpNpcBookerTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcBookerProfile),
+    HOST_OVERLAY_VAR(sSpNpcBookerTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcBookerActTable),
+    HOST_OVERLAY_VARS_END
 };

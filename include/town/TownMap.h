@@ -15,10 +15,12 @@ struct AcreItemGrid {
     ~AcreItemGrid();
 };
 
+extern "C" void BuriedMask_Construct();
+extern "C" void BuriedMask_Destruct();
 struct BuriedMask {
     u8 data[0x20];
-    BuriedMask();
-    ~BuriedMask();
+    BuriedMask() { BuriedMask_Construct(); }
+    ~BuriedMask() { BuriedMask_Destruct(); }
 };
 
 class TownMap {

@@ -799,3 +799,21 @@ void SpNpcShrunk::teachEmotion(s32 a, s32 b) {
     EventWeekSlots_MarkPlayer(0x43);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov088_022713c0) {
+    HOST_OVERLAY_VAR(data_ov088_022727b4),
+    HOST_OVERLAY_VAR(data_ov088_022727a8),
+    HOST_OVERLAY_VAR(data_ov088_022727a4),
+    HOST_OVERLAY_VAR(data_ov088_022727a0),
+    HOST_OVERLAY_VAR(sSpNpcShrunkTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcShrunkModelPath),
+    HOST_OVERLAY_VAR(data_ov088_022727b0),
+    HOST_OVERLAY_VAR(sSpNpcShrunkProfile),
+    HOST_OVERLAY_VAR(data_ov088_022727ac),
+    HOST_OVERLAY_VAR(sSpNpcShrunkTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcShrunkActTable),
+    HOST_OVERLAY_VAR(sSpNpcShrunkSideStepOffsets),
+    HOST_OVERLAY_VARS_END
+};

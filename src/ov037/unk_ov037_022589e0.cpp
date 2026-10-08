@@ -44,3 +44,18 @@ SceneWarpList data_ov037_02258abc = {data_ov037_02258b24, 3};
 SceneInfo data_ov037_02258ad4 = {&data_ov037_02258ab4, 0, &data_ov037_02258aa4, &data_ov037_02258abc, -1, -1};
 
 u32 data_ov037_02258ac4[4] = {0xc9, 0xca, 0xb, 0xc7};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov037_022589e0) {
+    HOST_OVERLAY_VAR(data_ov037_02258aac),
+    HOST_OVERLAY_VAR(data_ov037_02258b24),
+    HOST_OVERLAY_VAR(data_ov037_02258aa0),
+    HOST_OVERLAY_VAR(data_ov037_02258aa4),
+    HOST_OVERLAY_VAR(data_ov037_02258ab4),
+    HOST_OVERLAY_VAR(data_ov037_02258abc),
+    HOST_OVERLAY_VAR(data_ov037_02258ad4),
+    HOST_OVERLAY_VAR(data_ov037_02258ac4),
+    HOST_OVERLAY_VARS_END
+};

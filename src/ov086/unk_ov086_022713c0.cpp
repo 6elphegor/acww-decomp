@@ -414,3 +414,17 @@ void SpNpcTortimerCountdown::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov086_022713c0) {
+    HOST_OVERLAY_VAR(data_ov086_02271c24),
+    HOST_OVERLAY_VAR(data_ov086_02271c20),
+    HOST_OVERLAY_VAR(sSpNpcTortimerCountdownFortuneStrKey),
+    HOST_OVERLAY_VAR(sSpNpcTortimerCountdownActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerCountdownFortuneStr2Key),
+    HOST_OVERLAY_VAR(sSpNpcTortimerCountdownModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerCountdownProfile),
+    HOST_OVERLAY_VAR(sSpNpcTortimerCountdownTexturePath),
+    HOST_OVERLAY_VARS_END
+};

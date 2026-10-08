@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
 #include "net/NetSessionState.h"
@@ -66,7 +67,7 @@ struct NetStatusMsg {
 
 extern "C" {
 extern CommManager *gCommManager;
-extern TownId gSaveTownId;
+#define gSaveTownId HOST_LABEL(TownId *, gSaveTownId)
 }
 
 static inline BOOL Unk_020a42c4_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }

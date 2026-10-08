@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "talk/TalkWindowState.h"
@@ -64,9 +65,9 @@ s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, Unk_0202c92c_Ent *tbl,
 void *SaveVillagers_PickRandomExcept(u8 *base, void **arr, s32 n);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 extern SaveData gSaveData;
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 }
 
 
@@ -618,3 +619,13 @@ void SpNpcTortimerBugOff::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov082_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffProfile),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBugOffActTable),
+    HOST_OVERLAY_VARS_END
+};

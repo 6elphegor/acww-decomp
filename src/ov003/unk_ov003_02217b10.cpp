@@ -82,3 +82,16 @@ BOOL FieldGroundBackdrop::followCamera() {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02217b10) {
+    HOST_OVERLAY_VAR(data_ov003_02235478),
+    HOST_OVERLAY_VAR(data_ov003_0223547c),
+    HOST_OVERLAY_VAR(data_ov003_02235488),
+    HOST_OVERLAY_VAR(data_ov003_02235484),
+    HOST_OVERLAY_VAR(data_ov003_02235480),
+    HOST_OVERLAY_VAR(data_ov003_0223548c),
+    HOST_OVERLAY_VARS_END
+};

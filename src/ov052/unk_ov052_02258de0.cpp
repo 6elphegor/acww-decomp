@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "game/TouchPicker.h"
 #include "item/ItemId.h"
@@ -87,8 +88,8 @@ s32 Vec_NotEqual(void *a, void *b);
 s32 Vec_Equal(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
-extern ReddLastSale data_021ed284;  // Redd's last sale (save data)
-extern u8 data_021ed2c0[];
+#define data_021ed284 HOST_LABEL(ReddLastSale *, data_021ed284)  // Redd's last sale (save data)
+#define data_021ed2c0 HOST_LABEL(u8 (*)[], data_021ed2c0)
 extern u16 gPad[];
 extern s16 data_02135f44[];
 extern BlockMap *gSceneBlockMap;
@@ -1021,4 +1022,16 @@ extern "C" SpNpcReddActEntry sSpNpcReddActTable[11] = {
     {&SpNpcRedd::setupAct08, &SpNpcRedd::mainAct08},
     {&SpNpcRedd::setupAct09, &SpNpcRedd::mainAct09},
     {&SpNpcRedd::setupAct0A, &SpNpcRedd::mainAct0A},
+};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov052_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcReddKey),
+    HOST_OVERLAY_VAR(sSpNpcReddModelPath),
+    HOST_OVERLAY_VAR(sSpNpcReddTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcReddProfile),
+    HOST_OVERLAY_VAR(sSpNpcReddActTable),
+    HOST_OVERLAY_VARS_END
 };

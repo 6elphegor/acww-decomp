@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_shared_calls.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
@@ -499,7 +500,7 @@ void KappnTaxi::execTaxiDepart() {
                     departFrameCount = departFrameCount + 1;
                 }
                 if (departFrameCount == 0x10) {
-                    BuildingActor *q = BuildingList_FindByItem(0x5000);
+                    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
                     if (q != NULL) {
                         s16 doorAngle;
                         VecFx32 door;
@@ -536,7 +537,7 @@ BOOL KappnTaxi::enterTaxiEnterTownHall() {
 }
 
 void KappnTaxi::execTaxiEnterTownHall() {
-    BuildingActor *q = BuildingList_FindByItem(0x5000);
+    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         q->openDoorForEntry();
         townHallGridX = q->getGridX();
@@ -557,7 +558,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
         warpDelayTimer = warpDelayTimer - 1;
     }
     if (warpDelayTimer == 0) {
-        BuildingActor *q = BuildingList_FindByItem(0x5000);
+        BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
         if (q != NULL) {
             if (q->getDoorPos(&v, &sv) != 0) {
                 SceneWarp_RequestExit(Scene_GetWarpRequest(), 9);
@@ -580,7 +581,7 @@ void KappnTaxi::execTaxiLeave() {
 }
 
 BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
-    BuildingActor *q = BuildingList_FindByItem(0x5000);
+    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         exitWalkDelay = 0x10;
         return q->openDoorForExit();
@@ -589,7 +590,7 @@ BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
 }
 
 void KappnTaxi::execTaxiPlayerExitTownHall() {
-    BuildingActor *q = BuildingList_FindByItem(0x5000);
+    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         if (q->isDoorIdle() != 0) {
             PlayerActor *o = (PlayerActor *)PlayerActor_GetActor(4);
@@ -810,3 +811,17 @@ void PlayerActor::mainTaxiGetIn() {
     mainTaxiGetInFinish();
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226a794) {
+    HOST_OVERLAY_VAR(data_ov068_02271090),
+    HOST_OVERLAY_VAR(data_ov068_02271098),
+    HOST_OVERLAY_VAR(data_ov068_022710a4),
+    HOST_OVERLAY_VAR(data_ov068_022710a0),
+    HOST_OVERLAY_VAR(data_ov068_02271094),
+    HOST_OVERLAY_VAR(data_ov068_0227109c),
+    HOST_OVERLAY_VAR(sKappnTaxiProfile),
+    HOST_OVERLAY_VAR(sKappnTaxiLeaveTimer),
+    HOST_OVERLAY_VARS_END
+};

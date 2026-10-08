@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
+#include "host_labels.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -30,7 +31,7 @@ struct GateHouseFlagTexture {
 };
 
 extern "C" {
-extern TownStyleRecordView gSaveTownFlag;
+#define gSaveTownFlag HOST_LABEL(TownStyleRecordView *, gSaveTownFlag)
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 }
 
@@ -169,6 +170,17 @@ extern "C" char data_ov003_022312a4[12] = "obj_check2";
 extern "C" char data_ov003_022312b0[12] = "obj_check1";
 extern "C" char data_ov003_022312bc[12] = "obj_check0";
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
-
+HOST_OVERLAY_VARS(unk_ov003_02214dfc) {
+    HOST_OVERLAY_VAR(data_ov003_02235228),
+    HOST_OVERLAY_VAR(data_ov003_0223524c),
+    HOST_OVERLAY_VAR(data_ov003_02235204),
+    HOST_OVERLAY_VAR(sGateHouseProfile),
+    HOST_OVERLAY_VAR(sGateHouseModelNames),
+    HOST_OVERLAY_VAR(data_ov003_022312a4),
+    HOST_OVERLAY_VAR(data_ov003_022312b0),
+    HOST_OVERLAY_VAR(data_ov003_022312bc),
+    HOST_OVERLAY_VARS_END
+};

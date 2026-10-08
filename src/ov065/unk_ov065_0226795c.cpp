@@ -768,3 +768,11 @@ void SslMd5_Decode(void *dst, const void *src, s32 n)
 
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226795c) {
+    HOST_OVERLAY_VAR(Unk_ov065_022671a0_Ns::sSslSha1Padding),
+    HOST_OVERLAY_VARS_END
+};

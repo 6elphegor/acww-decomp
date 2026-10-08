@@ -1,4 +1,6 @@
 #include "uptr.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "talk/ConstellationEncodedString16.h"
 #include "types.h"
 #include "sdk_linker_symbols.h"
@@ -31,9 +33,9 @@ typedef ConstellationStore Base;
 
 
 extern "C" {
-extern Base data_021ec31c;
+#define data_021ec31c HOST_LABEL(Base *, data_021ec31c)
 u32 sConstellationColumns[2];  // .bss, autoload_3 0x021ee27c
-extern TownExchangeRecord data_021e7f8c;
+#define data_021e7f8c HOST_LABEL(TownExchangeRecord *, data_021e7f8c)
 
 // external
 s32 Sky_GetStarViewingTime(void *a, s32 x, s32 y);
@@ -347,7 +349,7 @@ BOOL Constellation_AddReceived(Entry *e) {
         return FALSE;
     }
     Constellation_AcquireSkyOverlay();
-    r = StarSky_IsConstellationFree(e);
+    r = Shared_StarSky_IsConstellationFree(e);
     Constellation_ReleaseSkyOverlay();
     if (r) {
         Constellation_Store(e, idx, 1);

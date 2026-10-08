@@ -715,3 +715,12 @@ s32 DwcHttp_GetFieldString(DwcHttpField *tbl, s32 n, const char *key, char *dst,
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226de0c) {
+    HOST_OVERLAY_VAR(sDwcHttpRootCaList),
+    HOST_OVERLAY_VAR(sDwcHttpTestServer),
+    HOST_OVERLAY_VARS_END
+};

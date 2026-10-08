@@ -346,3 +346,11 @@ extern "C" const s8 sWfcDialogKeyButtons[6][2] = {{1, 0}, {0, -1}, {1, 0}, {0, -
 extern "C" const WfcPoint data_ov001_0222a410[6] = {{0xea, 0x72}, {0xea, 0x72}, {0xf8, 0x70}, {0xf8, 0x70}, {0x64, 0x70}, {0xea, 0x72}};
 
 extern "C" const WfcPoint sWfcDialogButtonPos[5][2] = {{{0x10, 0x84}, {0x84, 0x84}}, {{0x10, 0x84}, {0x84, 0x84}}, {{9, 0xa7}, {0x83, 0xa7}}, {{9, 0xa7}, {0x83, 0xa7}}, {{9, 0xa7}, {0x83, 0xa7}}};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221feac) {
+    HOST_OVERLAY_VAR(sWfcDialog),
+    HOST_OVERLAY_VARS_END
+};

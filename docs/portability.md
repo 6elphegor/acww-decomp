@@ -23,7 +23,7 @@ No worktree was needed. All compiles read the main checkout and wrote only to th
 | B | Pointers kept in 32-bit integers (works only below 4 GB) | C: 121 pointer-to-int + 96 int-to-pointer casts (55 files); C++: 186 int-to-pointer casts (67 files); explicit `(u32)(uptr)` 92 and `(T*)(uptr)` 31; PXI 26-bit pointers; snd7 38 conversions; DMA source/destination registers; resource offsets relocated in place | macOS arm64 and every build with memory above 4 GB | Real pointer types; offsets resolved when used; ARM7 services called directly. A low-4 GB poisoning harness finds the remaining sites on Linux. **Steps 3.0/3.1 done:** the harness (`ACWW_HIGHMEM`) runs every script; 0 C and 0 C++ int/pointer casts left (`--strict-c` clean); PXI, snd7 and DMA with real pointers |
 | C | DS addresses used as numbers in the source | Casts of DS constants to pointers (I/O excluded): 229 (system work area/DTCM 160 in 56 files, VRAM 32, palette 18, OAM 5, main RAM 10, WRAM 2, GBA slot 2). Address range checks: about 25 in 8 files. VRAM address tables: 2. I/O register casts: 830 in 121 files (harmless: only used as numbers by `IO_*`) | A, B | Named host objects through macros (`HW_SYSWORK`, `HW_PLTT`, `HW_OAM`, `HostVram_CpuPtr`) |
 | D | Signals and CPU tricks | SIGSEGV I/O emulation and single-stepping (x86 only), interrupt injection under SP (`-mno-red-zone`, irq_entry.S), SIGFPE division emulation, SIGVTALRM hang guard, SIGPROF, `ucontext` gregs | macOS (different ucontext, no x86), Windows (no signals), arm64 (no division trap) | Already almost unused: 0 trapped I/O accesses in 11043 attract-demo frames (`ACWW_IOHIST`); hang guard silent over 25001 play frames; 1 division-by-zero site (`spl_scl_in_out`). Replace with explicit code. **Done 2026-10-08 (phase 1): only debug aids remain, behind `HOST_DEBUG_POSIX`** |
-| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes |
+| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except the two partial links** (2.4-2.7, 2.9-2.11, 0.2): left are `ld -r -T order.ld` (variable order, 2.8), `ld -r -T dtcm.ld` (3.2) and the `--section-start`/`-Ttext-segment` options (3.3) |
 | F | GCC-only leniency and flags | Clang (Apple's only compiler) rejects 47 units with 2370 errors (1735 distinct) that GCC accepts. **0 after step 2.1.** GCC-only flags: `-malign-data=abi`, `-fpcc-struct-return` (unsupported by clang off i386; changes 39 functions in 17 units) | macOS | Fix the declarations (the PROTO_LOCAL backlog); drop the flags after testing them |
 | G | LLP64 (Windows) | 831 errors (mostly `IO_ADDR_`'s `(unsigned long)` cast), 8 `__LP64__` checks, `unsigned long` pointer words in modern/ds/overlays.c. **0 beyond the baseline with `-mno-ms-bitfields` after step 2.3.** MS bitfield layout breaks the save `static_assert`s (696 + 54 + others); the MSVC ABI also breaks member-pointer casts (133) and the MWCC_LAYOUT tail-padding trick | Windows | One-line `IO_ADDR_` fix; MinGW-w64 (clang or gcc, Itanium C++ ABI) with `-mno-ms-bitfields`, **not MSVC**. With these, only 11 extra diagnostics remain |
 | H | Display and frontend | melonDS (GPL-3.0, patched, 32-bit core for i386) behind 8 `melon_*` functions; a separate SDL2 viewer process through `shm_open` + `fork`/`execl` | Licence; process model on Windows | In-process SDL frontend; own renderer behind the same 8-function interface |
@@ -77,8 +77,8 @@ Measured with the literal scan (comments and strings stripped). "Cast" means a l
 | Absolute linker symbols (`.set`) | 68 references | 15 | `OVERLAY_65_ID` as an address (main/unk_020720f8.cpp:1586), `SDK_SECTION_ARENA_DTCM_START` | Constants in a header |
 | Gap data with DS numerals | **Resolved (2.7)**: 6 in the unused `BuildInfo` (not emitted), 13 packed bytes of the building table (no pointers); the I/O/VRAM ones in gap code (not emitted) | – | – | – |
 | ROM-format data with DS pointers | Overlay table records (`sinit` pointers: autoload_2/unk_0211a49c.c:140-141); NFTR font unpacking adds the base to 5 fields in place (`u32 base = (u32)h`, autoload_2/unk_021031c4.c:69-97); sound archive `e->ptr = (u32)base + e->off` (autoload_2/unk_0210b448.c:365); snd7 treats a value below 0x02000000 as an offset (snd7/driver.c:122) | – | – | Keep offsets in the 32-bit file slots and resolve base + offset when used (or a 64-bit side table) |
-| Overlay shared-address thunks | 291 `--wrap` thunks in x86-64 asm (build/host64_usa/shared.s); plus 275 data references at shared overlay addresses that are not thunked (shared.log) | – | – | Typed C dispatchers generated from the proto headers, with the call sites renamed at the source |
-| provides.ld | 7784 PROVIDE lines: 7059 interior labels (`base + off`), 725 aliases. Only **99 labels and 133 aliases are referenced** (`nm -u game.o` ∩ provides) | – | – | Aliases: fix the callers' declarations. Labels: committed C accessors generated once by host_relayout.py |
+| Overlay shared-address thunks | **Resolved (2.10)**: 163 typed C dispatchers (`Shared_<name>`, include/host_shared_calls.h), the rest direct calls; the 275 data references reviewed | – | – | – |
+| provides.ld | **Resolved (2.11)**: deleted. The 126 referenced aliases are fixed in the sources, the 91 referenced labels are C pointers (include/host_labels.h) | – | – | – |
 
 ### 1.3 Pointers kept in 32 bits
 
@@ -120,11 +120,11 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 |---|---|---|---|
 | `ld -r -T dtcm.ld` | configure_host.py:163-167 | DTCM variables in one 0x4000 block at 0x027e0000 | DTCM block as a host array; DTCM variables as ordinary variables |
 | `ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi` | configure_host.py:51, :201-203; tools/host_order.py | Variables in DS order (some code runs from one variable into the next); per-overlay data/bss/constructor ranges | Find and fix the overruns (guard-padding variant of order.ld on Linux), then drop the ordering. Overlay reset by a generated C table (`{&var, sizeof var}` per overlay) |
-| `.init_array` → `host_ovinit` ranges (98 constructors, 59 overlays; 91 overlay objects have `.init_array`) | host_order.py:92-97 | Overlay constructors run on load, not at start-up | Explicit per-overlay init functions (generated list of the overlay units' static-init functions, or the objects made constant-initialised) |
-| `--wrap` (291) and x86 asm thunks | configure_host.py:182-189, :201; tools/modern_shared.py | Calls to DS addresses that several overlays share | Typed C dispatchers + source rename |
+| ~~`.init_array` → `host_ovinit` ranges~~ | – | **Gone (2.9)**: each overlay unit lists its variables (`HOST_OVERLAY_VARS`), explicit `StaticInit_<unit>`; modern/gen/overlay_table.c | – |
+| ~~`--wrap` (291) and x86 asm thunks~~ | – | **Gone (2.10)**: typed C dispatchers, call sites renamed | – |
 | ~~`--defsym=_Znwj=_Znwm`, `_Znaj=_Znam`~~ | – | **Gone (2.5)**: the global operators are the host's (modern/host/newdelete.cpp), the game allocates by name | – |
 | ~~`objcopy --localize-symbols`~~ (77/76 names) | – | **Gone (2.4)**: `include/host_libc_rename.h` (forced include) renames the game's libc names to `ds_*` | – |
-| `PROVIDE` (provides.ld, provides64.ld via host_relayout.py with pyelftools on DWARF) | configure_host.py:211-217 | Aliases and interior labels | See section 1.2: committed C; no ELF/DWARF reading at build time |
+| ~~`PROVIDE` (provides.ld, provides64.ld via host_relayout.py with pyelftools on DWARF)~~ | – | **Gone (2.11)**: the aliases fixed in the sources, the labels C pointers; the build reads no DWARF | – |
 | ~~Gap data as inline asm~~ | – | **Gone (2.7)**: `modern/gen/gaps.c`, typed C for every architecture (14 objects); bss labels defined in the sources; PMFs the compiler's | – |
 | `__start_gdata` / `__stop_gdata` / `__start_gbss` / `__stop_gbss` | hw.c:862-873 | Copy gdata/gbss into the main RAM memfd | Goes away with the fixed mapping |
 | ~~`.set` absolute symbols~~ | – | **Gone (2.6)**: `include/sdk_linker_symbols.h` | – |
@@ -289,14 +289,86 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
     - make the 98 overlay constructors explicit (a generated `OvNNN_StaticInit()` per overlay calling the units' init functions, or the objects made constant-initialised).
 
     Check: `ACWW_OVLOG` output (bytes reset, constructors run) is the same as today; oracle.
+
+    **Done (2026-10-08).** Re-measured: 91 overlay units (in 54 overlays) had a compiler-generated static initialiser
+    (`.init_array`), in both builds; 83 function-local statics of overlay units (33 constant data, 50 bss, 57 guard
+    variables) were data no table could name. Now:
+    - Every overlay unit ends with the list of its variables (`HOST_OVERLAY_VARS(<unit>) { HOST_OVERLAY_VAR(x), ... }`,
+      include/host_overlay_vars.h): 2961 variables in 332 units, generated by `tools/host_overlay_vars.py` from both
+      builds' objects (names qualified by libclang where a unit defines them in a namespace; `--check` lists what is
+      out of date, function-local statics and unexpected static initialisers). modern/gen/overlay_table.c (generated,
+      committed) collects the lists and the units' `StaticInit_<unit>` per overlay. `modern/host/overlay.c` copies the
+      variables in `HostOverlay_Init()`, called first in `main()` (no constructor priority), restores them when the
+      overlay is loaded and runs its StaticInits in link order. order.ld keeps only the variable order: no
+      `host_ovNNN_*` symbols, no `host_ovinit`.
+    - The initialisers became constant data where they are constant: constexpr constructors (`DebugColor`,
+      `VecFx32Ctor`/`VecFx32Copy`, `FxVec3`, `SceneWarp`, `ItemId(u16)` and local value types), trivial destructors
+      where the DS's were empty (`FxVec3`, `Vec3Z`, `SceneWarp`), the spawn lists' counts as constants
+      (`ROOM_COMMON_PROFILE_COUNT`, `FIELD_SCENE_PROFILE_COUNT`: on the DS copied from ov004's / ov003's variable),
+      main's const values written as literals. That leaves 15 `StaticInit_<unit>` functions: member-function-pointer
+      tables (cast between types or copied from other variables: `HOST_STATIC_INIT_ARRAY`), the museum's information
+      points (`MuseumInfoPoint_InitFromDef`, which uses the divider: virtual time passes at the load as before),
+      `gSceneBlockMap` read at the load, ov069's copy of its tables into main's, and the objects of classes with
+      default constructors (`HOST_STATIC_CONSTRUCT`: these are constructed at start-up too - their constructors only
+      set their members - and again at every load).
+    - The function-local statics moved out of their functions (`<Class>_<function>_<name>`); the 37 initialised at
+      run time keep their lazy initialisation with an explicit guard variable that is reset with the overlay.
+    - `ACWW_OVLOG`: the same bytes reset at every load of the quick and play scripts (0 changed, as before);
+      constructors 1/1/4/8/1 for overlays 69/68/3/4/9 instead of 1/5/13/22/1, 0 instead of 1 for 6 and 44 (constant
+      data now). Oracle identical (32-bit with the captures, 64-bit with its own pre-change run).
 17. **2.10** Shared-address calls:
     - typed C dispatchers (`Shared_<Name>(args)` → `Modern_SharedResolve`) generated from the proto headers;
     - rename the call sites at the source;
     - delete `--wrap` and the asm;
     - review the 275 data references at shared overlay addresses.
+
+    **Done (2026-10-08).** `tools/host_shared_calls.py` (the overlays' symbols.txt and both builds' objects) writes
+    include/host_shared_calls.h, modern/gen/shared_calls.c (the dispatchers) and modern/gen/shared_table.c (each
+    dispatcher's candidates by symbol: plain C declarations of the names, also of C++ ones - the mangled name is a C
+    identifier and gets the same prefix on Mach-O); `--rename` renamed the references outside the named function's
+    overlay (575 in 52 units, libclang; one inline constructor in room/RoomObjTexAuto.h by hand). Of the 291 thunks:
+    - 163 C functions with another function at their address got a dispatcher. Its parameters are pointers as
+      `void *` and integers as they are, as many as the callers pass: main's player actions call ov003's functions
+      with the arguments of the ov004 functions at the same addresses (`FishShadow_RunAi(this, 0, 6, -1)` for a
+      one-parameter function); 13 calls whose results are typed pointers got casts. A candidate must be defined in
+      both builds (a non-virtual thunk's name differs: `_ZThn236_` / `_ZThn328_`).
+    - 62 had no other function defined at their address (the thunk always returned the named one) and 66 are member
+      functions, constructors and destructors: called on an object of their class, whose code is in the named
+      overlay, which is therefore loaded. They are direct calls. Logged over the play script before the change: every
+      resolution was the named function (and once, a constructor at start-up, no overlay loaded: the named one too).
+    - The 275 data references (193 symbols, `--report`): main's tables of the overlays' process profiles (145) and
+      of the scene and menu overlays' records (44), used once that overlay is loaded; main's read of ov004's
+      `sHouseRoachActiveCount`, behind `Scene_InHouseRoom()`; the room overlays' references to ov004's
+      `sRoomCommonProfiles` / `sRoomSceneEntryList` (loaded with ov004); one ov009 vtable entry read by ov003 (loaded
+      together). Each means the named overlay's data: no dispatch needed.
+    `Modern_SharedResolve` takes a `HostSharedCall`; configure_host.py has no shared rule and no `--wrap`; modern_shared.py
+    keeps only the DS (ARM) thunks for configure_modern.py. Oracle identical.
 18. **2.11** provides.ld: fix the 133 alias users' declarations; turn the 99 interior labels into committed C accessors (one last run of host_relayout.py). The build no longer reads DWARF and needs no linker script.
 
+    **Done (2026-10-08).** Re-measured after 2.9: 126 aliases and 91 labels referenced (`nm -u` of both builds'
+    game_all.o ∩ provides.ld; 8 labels fewer since the 2.1 merge). modern/gen/provides.ld, provides64.ld, the
+    relayout step and tools/host_provides.py are gone.
+    - Aliases (126 → 0): members declared only, whose symbols symbols.txt gave to other functions, have bodies:
+      constructors and destructors calling the C functions (`AnimSlotRef() { AnimSlotRef_Init(this); }`, ~45
+      classes, the same signatures as the definitions, ABI unchanged: user-provided as before), methods calling the
+      methods they were labels of (`BgmRequest() { initEmpty(); }`, `~NpcLookAt() { clearTargetActor(); }`);
+      `CollisionTriangleX` is a typedef of `CollisionTriangle`; `CollisionCylinderX`'s two clip functions forward to
+      `CollisionCylinder`'s; `TrendScores::pickTop` / `resetAndHalve` are the functions symbols.txt filed under
+      `VillagerPlan`; the `VillagerActor` partner methods and `SkySprite`'s, `SkySprites`', `WeatherManager`'s members
+      are defined in their units; `ItemPickSpec_Destruct(p)` calls are `p->~ItemPickSpec()`; empty DS destructors
+      are `{}`.
+    - Labels (91 → C): `tools/host_labels.py` (one run, while the labels were still provided) put a pointer per label
+      at the end of the base variable's unit (`HOST_LABEL_DEFINE(gSavePlayers, (char *)&gSaveData.players[0])`, 14
+      units): a member path from the 32-bit DWARF where the base has a type, so the 7 labels that host_relayout.py
+      moved on 64-bit (`gSndBgmHandle`, `sHouseVisitTsuTopicTable` + 0x30, ...) are right by construction, base +
+      offset where it is bytes; include/host_labels.h declares them. The 257 declarations of labels (111 files) are
+      macros with the unit's own type: `#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)`.
+    Oracle identical; host_strict_errors 0.
+
 After phase 2 the game links with a plain `cc *.o`: no `ld -r`, linker script, `--wrap`, `objcopy` or PROVIDE.
+**Status (2026-10-08):** no `--wrap`, `objcopy`, PROVIDE, `--defsym` or DWARF reading. Left: the two partial links
+(`ld -r -T order.ld` for the variables' DS order, step 2.8; `ld -r -T dtcm.ld` for the DTCM block, step 3.2) and the
+final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
 
 ### Phase 3: memory anywhere (Linux x86-64 above 4 GB, 3-6 weeks)
 19. **3.0** Low-4 GB poisoning harness (`ACWW_HIGHMEM=1` on x86-64):

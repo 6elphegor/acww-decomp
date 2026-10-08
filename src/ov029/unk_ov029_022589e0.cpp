@@ -12,7 +12,6 @@
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
 
-extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
 extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -29,7 +28,7 @@ extern u32 data_ov029_02258b84[2];
 u32 data_ov029_02258b80[1] = {0x1010};
 
 SceneSpawnGroup data_ov029_02258bb8[3] = {
-    {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
+    {2, ROOM_COMMON_PROFILE_COUNT, 0, sRoomCommonProfiles},
     {2, 2, 0, data_ov029_02258b84},
     {1, 1, 0, data_ov029_02258ba4},
 };
@@ -57,3 +56,19 @@ SceneWarp data_ov029_02258c54[7] = {
 SceneInfo data_ov029_02258bd0 = {&data_ov029_02258b9c, 0, &data_ov029_02258b94, &data_ov029_02258b8c, -1, -1};
 
 u32 data_ov029_02258b84[2] = {0x100d0, 0x100c2};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov029_022589e0) {
+    HOST_OVERLAY_VAR(data_ov029_02258b80),
+    HOST_OVERLAY_VAR(data_ov029_02258bb8),
+    HOST_OVERLAY_VAR(data_ov029_02258ba4),
+    HOST_OVERLAY_VAR(data_ov029_02258b9c),
+    HOST_OVERLAY_VAR(data_ov029_02258b8c),
+    HOST_OVERLAY_VAR(data_ov029_02258b94),
+    HOST_OVERLAY_VAR(data_ov029_02258c54),
+    HOST_OVERLAY_VAR(data_ov029_02258bd0),
+    HOST_OVERLAY_VAR(data_ov029_02258b84),
+    HOST_OVERLAY_VARS_END
+};

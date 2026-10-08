@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -51,7 +52,7 @@ void Clock_GetDateTime(ClockDateTime *p);
 s32 Event_GetDaysSinceStart(u32 id);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 extern SaveData gSaveData;
 }
 
@@ -370,3 +371,14 @@ void SpNpcTortimerFlowerFest::onInteractionEvent(u32 v, u8) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov083_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerFlowerFestActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFlowerFestTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFlowerFestModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFlowerFestProfile),
+    HOST_OVERLAY_VARS_END
+};

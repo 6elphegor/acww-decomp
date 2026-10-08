@@ -1103,3 +1103,21 @@ extern "C" void WfcManualSetup_WaitDialogClosed() {
 extern "C" void WfcManualSetup_SetMode(u32 v) {
     sWfcManualSetupMode = v;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022156e0) {
+    HOST_OVERLAY_VAR(sWfcManualSetupToggleItems),
+    HOST_OVERLAY_VAR(data_ov001_0222b050),
+    HOST_OVERLAY_VAR(data_ov001_0222b060),
+    HOST_OVERLAY_VAR(data_ov001_0222b078),
+    HOST_OVERLAY_VAR(data_ov001_0222b090),
+    HOST_OVERLAY_VAR(sWfcAddressFormat),
+    HOST_OVERLAY_VAR(sWfcManualSetupCursorItem),
+    HOST_OVERLAY_VAR(sWfcManualSetupMode),
+    HOST_OVERLAY_VAR(sWfcManualSetupCursorRow),
+    HOST_OVERLAY_VAR(sWfcManualSetupScroll),
+    HOST_OVERLAY_VAR(sWfcManualSetup),
+    HOST_OVERLAY_VARS_END
+};

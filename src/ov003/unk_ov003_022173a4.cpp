@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_labels.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -27,7 +28,7 @@
 
 
 extern "C" {
-extern SaveTownStateView data_021ed150;
+#define data_021ed150 HOST_LABEL(SaveTownStateView *, data_021ed150)
 
 }
 
@@ -89,3 +90,11 @@ BOOL TownSign::isOpen() {
 }
 
 extern "C" ActorProfile sTownSignProfile = {(void *(*)())TownSign_Create, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022173a4) {
+    HOST_OVERLAY_VAR(sTownSignProfile),
+    HOST_OVERLAY_VARS_END
+};

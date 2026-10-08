@@ -1679,3 +1679,11 @@ char *gti2GetChallenge(u8 *out) {
     return (char *)out;
 }
 } }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02283f34) {
+    HOST_OVERLAY_VAR(data_ov065_0228e14c),
+    HOST_OVERLAY_VARS_END
+};

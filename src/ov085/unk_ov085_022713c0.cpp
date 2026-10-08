@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -55,7 +56,7 @@ void TalkRequest_SetTargetDone(void *p);
 s32 Event_GetDaysSinceStart(u32 id);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 extern SaveData gSaveData;
 }
 
@@ -126,7 +127,7 @@ u8 *Item_GetSaveData();
 void *SaveVillagers_FindBestFriendOf(u8 *base, void *x);
 void SaveVillagers_ClearTalkedToday(u8 *p);
 s32 SaveVillagers_Count(u8 *base);
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 }
 
 SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3] = {
@@ -466,3 +467,13 @@ void SpNpcTortimerBrightNights::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov085_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerBrightNightsActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBrightNightsTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBrightNightsModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerBrightNightsProfile),
+    HOST_OVERLAY_VARS_END
+};

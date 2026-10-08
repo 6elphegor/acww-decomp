@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/base
 // ov004 TU33: .text 0x02235fd0-0x02237440 (actor 0224ebec "bug" scene object + scene objects 0224eb9c)
@@ -108,7 +109,7 @@ public:
 
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 gSaveHouse[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
 extern BlockMap *gSceneBlockMap;
 extern s16 data_02135f44[];  // sine / cosine pairs by angle >> 4
 
@@ -901,3 +902,19 @@ extern "C" Actor *sHouseRoachVillager = 0;
 extern "C" volatile u8 sHouseRoachTotal = 0;
 
 extern "C" HouseRoach *sHouseRoaches[3] = {0};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02235fd0) {
+    HOST_OVERLAY_VAR(sHouseRoachManagerProfile),
+    HOST_OVERLAY_VAR(sHouseRoachModelPath),
+    HOST_OVERLAY_VAR(sHouseRoachProfile),
+    HOST_OVERLAY_VAR(sHouseRoachTurnCounter),
+    HOST_OVERLAY_VAR(sHouseRoachActiveCount),
+    HOST_OVERLAY_VAR(sHouseRoachManager),
+    HOST_OVERLAY_VAR(sHouseRoachVillager),
+    HOST_OVERLAY_VAR(sHouseRoachTotal),
+    HOST_OVERLAY_VAR(sHouseRoaches),
+    HOST_OVERLAY_VARS_END
+};

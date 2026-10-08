@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "field/Insect.h"
@@ -517,7 +518,7 @@ extern "C" s32 Moth_FindNearestLight(Insect *o, V3 *out) {
             u32 cnt = obj->getLightUnitCount();
             s32 px = zp, pz = zp;
             if (cnt != 0) {
-                BuildingActor *q = BuildingList_FindByItem(id);
+                BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(id);
                 if (q != NULL) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
@@ -589,6 +590,9 @@ void Insect::dungBeetleWalk() {
 }
 
 
+// Insect::dungBeetlePushSnowball's static base, initialised at its first use after the overlay was loaded
+s32 Insect_dungBeetlePushSnowball_base;
+u8 Insect_dungBeetlePushSnowball_base_init;
 void Insect::dungBeetlePushSnowball() {
     Snowball *a = Snowball_GetLooseBall(behaviorWork);
     VecFx32 *pos = &position;
@@ -606,8 +610,11 @@ void Insect::dungBeetlePushSnowball() {
         w.x = q->x;
         w.y = q->y;
         w.z = q->z;
-        static s32 base = (tmp = Snowball_GetMaxRadius(), tmp - Snowball_GetMinRadius());
-        r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - Snowball_GetMinRadius(), base));
+        if (!Insect_dungBeetlePushSnowball_base_init) {
+            Insect_dungBeetlePushSnowball_base = (tmp = Snowball_GetMaxRadius(), tmp - Snowball_GetMinRadius());
+            Insect_dungBeetlePushSnowball_base_init = 1;
+        }
+        r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - Snowball_GetMinRadius(), Insect_dungBeetlePushSnowball_base));
         if (frameCounter % 0x14 == 0) {
             s32 t = (s32)(Insect_RandomTurn(6, 1) << 17) >> 16;
             ang += t;
@@ -1336,3 +1343,12 @@ void Insect::antsAppear() {
     NNS_G3dMdlSetMdlAlpha((u8 *)pooledModel.getModel(), 0, 0x1f);
     state = 0x12;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_022687c0) {
+    HOST_OVERLAY_VAR(Insect_dungBeetlePushSnowball_base),
+    HOST_OVERLAY_VAR(Insect_dungBeetlePushSnowball_base_init),
+    HOST_OVERLAY_VARS_END
+};

@@ -1030,3 +1030,17 @@ void send_heartbeat(Qr *q, s32 mode) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02287390) {
+    HOST_OVERLAY_VAR(current_rec),
+    HOST_OVERLAY_VAR(data_ov065_0228e1b8),
+    HOST_OVERLAY_VAR(static_qr2_rec),
+    HOST_OVERLAY_VAR(num_local_ips),
+    HOST_OVERLAY_VAR(local_ip_list),
+    HOST_OVERLAY_VAR(qr2_hostname),
+    HOST_OVERLAY_VAR(data_ov065_022917a0),
+    HOST_OVERLAY_VARS_END
+};

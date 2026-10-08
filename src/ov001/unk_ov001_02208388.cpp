@@ -90,3 +90,11 @@ extern "C" u32 WfcUtil_GetTextFlags() {
 }
 
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02208388) {
+    HOST_OVERLAY_VAR(sWfcPathBuf),
+    HOST_OVERLAY_VARS_END
+};

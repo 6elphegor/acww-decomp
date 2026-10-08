@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "sdk_linker_symbols.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -149,7 +150,7 @@ extern "C" {
 // ---- data of other units ----
 extern s32 data_020c8cc0;
 extern CommManager *gCommManager;
-extern u8 data_021e5890[];
+#define data_021e5890 HOST_LABEL(u8 (*)[], data_021e5890)
 extern u8 data_ov006_0225b7b4[];
 extern u8 data_ov005_0225b79c[];
 
@@ -1100,8 +1101,6 @@ SceneWarp::SceneWarp() {
     exitAngle = 0;
     exitKind = 0;
 }
-
-SceneWarp::~SceneWarp() {}
 
 extern "C" void SceneWarp_Init(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
     e->type = id;

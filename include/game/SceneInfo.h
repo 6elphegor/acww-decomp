@@ -41,6 +41,13 @@ public:
     /* 0x04 */ void *list;
 };
 
+// The entry counts of the common spawn groups: ov004's sRoomCommonProfiles (sRoomCommonProfileCount) for the room
+// scenes, ov003's sFieldSceneProfiles (sFieldSceneProfileCount) for the field scenes. On the DS each scene overlay's
+// __sinit copied the count from the other overlay's variable (never written) into its spawn list; here the lists use
+// the constants and are constant data.
+#define ROOM_COMMON_PROFILE_COUNT 0x11
+#define FIELD_SCENE_PROFILE_COUNT 0xe
+
 class SceneSpawnList {
 public:
     BOOL run(u8 *entryIdx, u8 *subIdx, u64 start);

@@ -91,3 +91,11 @@ BOOL NewYearCountdown::onExecute() {
     }
     return TRUE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0222bcfc) {
+    HOST_OVERLAY_VAR(sNewYearCountdownProfile),
+    HOST_OVERLAY_VARS_END
+};

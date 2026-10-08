@@ -750,3 +750,16 @@ extern "C" s32 SpNpcKappn_GetAnimState() {
 
 extern "C" const u32 sSpNpcKappnFaceTable[16] = {4, 6, 5, 5, 1, 0, 0, 1, 6, 4, 3, 2, 2, 7, 7, 3};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov051_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcKappnTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcKappnActTable),
+    HOST_OVERLAY_VAR(sSpNpcKappnModelPath),
+    HOST_OVERLAY_VAR(sSpNpcKappnKey),
+    HOST_OVERLAY_VAR(sSpNpcKappnInstance),
+    HOST_OVERLAY_VAR(sSpNpcKappnProfile),
+    HOST_OVERLAY_VAR(sSpNpcKappnMsgKey),
+    HOST_OVERLAY_VARS_END
+};

@@ -143,3 +143,11 @@ extern "C" void WfcUsbIntro_Exit() {
         WfcUtil_SetScene(WfcUsbWait_Enter);
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221c180) {
+    HOST_OVERLAY_VAR(sWfcUsbIntroOk),
+    HOST_OVERLAY_VARS_END
+};

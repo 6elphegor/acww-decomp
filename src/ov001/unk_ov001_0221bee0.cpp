@@ -88,3 +88,11 @@ extern "C" void WfcUsbDone_CountDown() {
     if (sWfcUsbDoneTimer < 0x78) return;
     WfcUtil_SetScene(WfcUsbDone_FadeOut);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221bee0) {
+    HOST_OVERLAY_VAR(sWfcUsbDoneTimer),
+    HOST_OVERLAY_VARS_END
+};

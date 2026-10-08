@@ -288,3 +288,11 @@ s32 DwcGsHttp_ReportError(s32 e) {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02277e70) {
+    HOST_OVERLAY_VAR(AC),
+    HOST_OVERLAY_VARS_END
+};

@@ -12,7 +12,7 @@ struct ItemId {
 
 #ifdef __cplusplus
     ItemId();
-    ItemId(u16 x) { id = x; }
+    constexpr ItemId(u16 x) : id(x) {}
     ~ItemId();
 #endif
 };

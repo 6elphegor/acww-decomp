@@ -310,4 +310,27 @@ extern "C" s32 Camera_UpdateSway(Camera *c) {
     return 0;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_ov068_0226647c) {
+    HOST_OVERLAY_VAR(data_ov068_0226fc48),
+    HOST_OVERLAY_VAR(sTownTourOffsets),
+    HOST_OVERLAY_VAR(sTownTourOffsetVillagerHouse),
+    HOST_OVERLAY_VAR(data_ov068_02270fd4),
+    HOST_OVERLAY_VAR(sTownTourOffsetsNookShop),
+    HOST_OVERLAY_VAR(data_ov068_02270fd0),
+    HOST_OVERLAY_VAR(data_ov068_02270fc4),
+    HOST_OVERLAY_VAR(data_ov068_02270fc8),
+    HOST_OVERLAY_VAR(sTownTourOffsetTownHall),
+    HOST_OVERLAY_VAR(data_ov068_0226fc44),
+    HOST_OVERLAY_VAR(sTownTourOffsetMuseum),
+    HOST_OVERLAY_VAR(data_ov068_02270fd8),
+    HOST_OVERLAY_VAR(sTownTourOffsetAbleSisters),
+    HOST_OVERLAY_VAR(sTownTourOffsetPlayerHouse),
+    HOST_OVERLAY_VAR(sTownTourOffsetGateHouse),
+    HOST_OVERLAY_VAR(sTownTourBuildings),
+    HOST_OVERLAY_VAR(data_ov068_0226fc40),
+    HOST_OVERLAY_VAR(data_ov068_02270fcc),
+    HOST_OVERLAY_VARS_END
+};

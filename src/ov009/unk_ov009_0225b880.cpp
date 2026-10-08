@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_shared_calls.h"
+#include "host_overlay_vars.h"
 #include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
@@ -535,13 +537,13 @@ extern "C" BOOL Building_IsNight() {
 
 char *BuildingActor::getArcPath() {
     u32 i = buildingIndex;
-    Str_SPrintf(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingArcPath, sBuildingArcPathFmt, i, i, Shared_Field_GetStructureTexSuffix());
     return sBuildingArcPath;
 }
 
 char *BuildingActor::getTexPath() {
     u32 i = buildingIndex;
-    Str_SPrintf(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingTexPath, sBuildingTexPathFmt, i, i, Shared_Field_GetStructureTexSuffix());
     return sBuildingTexPath;
 }
 
@@ -555,7 +557,7 @@ char *BuildingActor::getLightTexPath() {
         return 0;
     }
     u32 i = buildingIndex;
-    Str_SPrintf(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Shared_Field_GetStructureTexSuffix());
     return sBuildingLightTexPath;
 }
 
@@ -1339,7 +1341,7 @@ BOOL BuildingActor::enterEntry05() {
             }
         }
         if (usesDoorApproach()) {
-            if (PlayerActor_LocalRequestDoorApproach(&p4, &v.z, &ang)) {
+            if (Shared_PlayerActor_LocalRequestDoorApproach(&p4, &v.z, &ang)) {
                 return TRUE;
             }
         } else {
@@ -1728,3 +1730,40 @@ extern "C" char sBuildingArcPathFmt[24] = "/str/arc/%d/str%d%c.arc";
 extern "C" char sBuildingArcPath[32] = {0};
 extern "C" char sBuildingTexPath[32] = {0};
 extern "C" char sBuildingLightTexPath[32] = {0};
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov009_0225b880(void) {
+    HOST_STATIC_CONSTRUCT(sBuildingResources);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov009_0225b880) {
+    HOST_OVERLAY_VAR(data_ov009_0225e4fc),
+    HOST_OVERLAY_VAR(data_ov009_0225e4e0),
+    HOST_OVERLAY_VAR(data_ov009_0225e4f4),
+    HOST_OVERLAY_VAR(data_ov009_0225e4f0),
+    HOST_OVERLAY_VAR(data_ov009_0225e500),
+    HOST_OVERLAY_VAR(data_ov009_0225e4f8),
+    HOST_OVERLAY_VAR(sBuildingResources),
+    HOST_OVERLAY_VAR(sBuildingActorProfile),
+    HOST_OVERLAY_VAR(sBuildingDefaultMsgFile),
+    HOST_OVERLAY_VAR(data_ov009_0225e3e8),
+    HOST_OVERLAY_VAR(data_ov009_0225e3ec),
+    HOST_OVERLAY_VAR(data_ov009_0225e3fc),
+    HOST_OVERLAY_VAR(data_ov009_0225e40c),
+    HOST_OVERLAY_VAR(data_ov009_0225e41c),
+    HOST_OVERLAY_VAR(data_ov009_0225e42c),
+    HOST_OVERLAY_VAR(data_ov009_0225e43c),
+    HOST_OVERLAY_VAR(data_ov009_0225e44c),
+    HOST_OVERLAY_VAR(data_ov009_0225e45c),
+    HOST_OVERLAY_VAR(sBuildingLightTexPathFmt),
+    HOST_OVERLAY_VAR(sBuildingTexPathFmt),
+    HOST_OVERLAY_VAR(sBuildingArcPathFmt),
+    HOST_OVERLAY_VAR(sBuildingArcPath),
+    HOST_OVERLAY_VAR(sBuildingTexPath),
+    HOST_OVERLAY_VAR(sBuildingLightTexPath),
+    HOST_OVERLAY_VARS_END
+};

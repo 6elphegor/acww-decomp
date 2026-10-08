@@ -72,3 +72,11 @@ extern "C" BOOL InsectNetSync_Get(void *a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f) 
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_0222e5e0) {
+    HOST_OVERLAY_VAR(sInsectNetSync),
+    HOST_OVERLAY_VARS_END
+};

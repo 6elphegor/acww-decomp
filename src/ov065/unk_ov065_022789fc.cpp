@@ -775,3 +775,16 @@ void B64Encode(char *in, char *out, s32 n, s32 mode) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_022789fc) {
+    HOST_OVERLAY_VAR(randomnum),
+    HOST_OVERLAY_VAR(GSINitroErrno),
+    HOST_OVERLAY_VAR(data_ov065_0229107c),
+    HOST_OVERLAY_VAR(localhost),
+    HOST_OVERLAY_VAR(data_ov065_02291094),
+    HOST_OVERLAY_VAR(data_ov065_022910a8),
+    HOST_OVERLAY_VARS_END
+};

@@ -144,3 +144,12 @@ void WfcTransferFailed_Exit() {
     }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02210390) {
+    HOST_OVERLAY_VAR(sWfcTransferFailedTopShown),
+    HOST_OVERLAY_VAR(sWfcTransferFailedRetry),
+    HOST_OVERLAY_VARS_END
+};

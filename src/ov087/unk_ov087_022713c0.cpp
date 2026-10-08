@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -52,7 +53,7 @@ BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void TalkRequest_SetTargetDone(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 }
 
 
@@ -511,4 +512,17 @@ void SpNpcCornimer::onInteractionEvent(u32 a, u8 b) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_ov087_022713c0) {
+    HOST_OVERLAY_VAR(data_ov087_02271d84),
+    HOST_OVERLAY_VAR(sSpNpcCornimerTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcCornimerProfile),
+    HOST_OVERLAY_VAR(sSpNpcCornimerFortuneStrKey),
+    HOST_OVERLAY_VAR(sSpNpcCornimerActTable),
+    HOST_OVERLAY_VAR(sSpNpcCornimerModelPath),
+    HOST_OVERLAY_VAR(sSpNpcCornimerFortuneStr2Key),
+    HOST_OVERLAY_VAR(data_ov087_02271d80),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
@@ -265,7 +266,7 @@ void TimeSelectMenu::postInputUpdate() { postStateUpdate(); }
 
 void TimeSelectMenu::preStateUpdate() {
     bottomButtons.freeTexts();
-    DateTimePicker_BeginFrame(&picker);
+    Shared_DateTimePicker_BeginFrame(&picker);
 }
 
 void TimeSelectMenu::postStateUpdate() { DateTimePicker_EndFrame(&picker); }
@@ -299,7 +300,7 @@ void TimeSelectMenu::updateTouch() {
         } else {
             u32 a = gTouchCurX;
             u32 b = gTouchCurY;
-            if (DateTimePicker_GrabHand(&picker, a, b)) {
+            if (Shared_DateTimePicker_GrabHand(&picker, a, b)) {
                 setMainState(1);
             }
             s32 r = DateTimePicker_HitTestTimeField(&picker, a, b);
@@ -312,7 +313,7 @@ void TimeSelectMenu::updateTouch() {
 
 void TimeSelectMenu::stateHandDrag() {
     if (gTouchHeld == 0) {
-        if (DateTimePicker_EndHandDrag(&picker)) {
+        if (Shared_DateTimePicker_EndHandDrag(&picker)) {
             setMainState(2);
         } else {
             setMainState(0);
@@ -323,7 +324,7 @@ void TimeSelectMenu::stateHandDrag() {
 }
 
 void TimeSelectMenu::stateHandAnim() {
-    if (DateTimePicker_UpdateHandAnim(&picker)) {
+    if (Shared_DateTimePicker_UpdateHandAnim(&picker)) {
         setMainState(0);
     }
 }
@@ -334,7 +335,7 @@ void TimeSelectMenu::stateListTouch() {
         return;
     }
     if (Unk_ov136_02295c0c_Both()) {
-        s32 r = DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY);
+        s32 r = Shared_DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY);
         switch (r) {
         case 0:
             decideList();
@@ -494,13 +495,13 @@ void TimeSelectMenu::stateExit() {
 }
 
 void TimeSelectMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&picker)) {
+    if (Shared_DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void TimeSelectMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&picker)) {
+    if (Shared_DateTimePicker_UpdateListClose(&picker)) {
         s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
             cursorSlot = 2;
@@ -551,14 +552,14 @@ void TimeSelectMenu::openFieldList(u32 a) {
 void TimeSelectMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&picker);
+    Shared_DateTimePicker_DecideList(&picker);
     setMainState(0xf);
 }
 
 void TimeSelectMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&picker);
+    Shared_DateTimePicker_CancelList(&picker);
     setMainState(0xf);
 }
 
@@ -704,3 +705,11 @@ extern "C" const u8 sTimeSelectCursorRightTable[3] = {1, 1, 2};
 extern "C" const u8 sTimeSelectCursorUpTable[3] = {0, 1, 1};
 
 extern "C" const u8 sTimeSelectCursorDownTable[3] = {2, 2, 2};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov136_02295380) {
+    HOST_OVERLAY_VAR(sTimeSelectMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

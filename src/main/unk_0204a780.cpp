@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "field/MoneyRockState.h"
 #include "town/TownState.h"
 #include "town/TownEventRecord.h"
@@ -18,11 +19,13 @@
 MoneyRockState data_021c47bc;
 
 
+extern "C" void Item_SetId(u16 *p, u32 v);
+extern "C" void Item_FromPlacedForm(u16 *out, u16 *in);
 struct ItemId {
     u16 v;
     ItemId();
-    ItemId(u32 x);
-    ItemId(u16 *src);
+    ItemId(u32 x) { Item_SetId(&v, x); }
+    ItemId(u16 *src) { Item_FromPlacedForm(&v, src); }
     ~ItemId();
 };
 
@@ -30,7 +33,7 @@ struct ItemId {
 struct ItemIdNoInit {
     u16 v;
     ItemIdNoInit() {}
-    ~ItemIdNoInit();
+    ~ItemIdNoInit() {}  // ItemId's (empty) destructor on the DS
 };
 
 // ---- unk_0204a754.cpp
@@ -356,8 +359,8 @@ u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 BOOL BlockMap_SetItemAtUnit(BlockMap *g, u16 *a, s32 x, s32 z, u8 d);
 extern void *gCommManager;
 extern u8 gSaveData[];
-extern Unk_0204c084_Data data_021ed1b0;
-extern TownEventRecord gSaveTownEvents[];
+#define data_021ed1b0 HOST_LABEL(Unk_0204c084_Data *, data_021ed1b0)
+#define gSaveTownEvents HOST_LABEL(TownEventRecord (*)[], gSaveTownEvents)
 BOOL Item_IsFish(u16 *p);
 s32 Item_GetFishIndex(u16 *p);
 BOOL Item_IsGyroid(u16 *p);

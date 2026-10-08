@@ -1813,3 +1813,24 @@ extern "C" SpNpcMabelActEntry sSpNpcMabelActTable[16] = {
 extern "C" const u8 sSpNpcMabelDramaMsgTable[28] = {0x00, 0x01, 0x02, 0x03, 0xfe, 0xfe, 0xfe, 0x04, 0x05, 0x06, 0xfe, 0xfe, 0xfe, 0xfe, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0xfe, 0xfe, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11};
 
 extern "C" ActorProfile sSpNpcMabelProfile = {(void *(*)())SpNpcMabel_Create, 0x79, 0x7d, 2, 0x5000, 0x5000, 0x3e800};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov049_02258de0) {
+    HOST_OVERLAY_VAR(data_ov049_0225ba48),
+    HOST_OVERLAY_VAR(sSpNpcMabelSequence4Key),
+    HOST_OVERLAY_VAR(sSpNpcMabelDramaKey),
+    HOST_OVERLAY_VAR(data_ov049_0225ba44),
+    HOST_OVERLAY_VAR(sSpNpcMabelMsgKeys),
+    HOST_OVERLAY_VAR(data_ov049_0225ba4c),
+    HOST_OVERLAY_VAR(sSpNpcMabelModelPath),
+    HOST_OVERLAY_VAR(sSpNpcMabelItemChoiceMenus),
+    HOST_OVERLAY_VAR(sSpNpcMabelTexturePath),
+    HOST_OVERLAY_VAR(data_ov049_0225ba40),
+    HOST_OVERLAY_VAR(sSpNpcMabelTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcMabelKey),
+    HOST_OVERLAY_VAR(sSpNpcMabelActTable),
+    HOST_OVERLAY_VAR(sSpNpcMabelProfile),
+    HOST_OVERLAY_VARS_END
+};

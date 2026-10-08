@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "sys/new.h"
 #include "text/Unk_02050288.h"
@@ -153,7 +154,7 @@ extern const char *const sTalkMessageSubdirs[26];
 extern const u16 data_020cba10[2];
 }
 extern SaveData gSaveData;
-extern HouseData gSaveHouse;  // (gSaveData.house)
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)  // (gSaveData.house)
 
 // Msg_FindTag with the text's address as a pointer
 static inline u8 *Msg_FindTagPtr(u8 *p, s32 group, s32 id) { return Msg_FindTag(p, group, id); }

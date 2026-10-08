@@ -830,3 +830,20 @@ void SpNpcWendell::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov079_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcWendellTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcWendellProfile),
+    HOST_OVERLAY_VAR(data_ov079_02272b80),
+    HOST_OVERLAY_VAR(data_ov079_02272b8c),
+    HOST_OVERLAY_VAR(data_ov079_02272b94),
+    HOST_OVERLAY_VAR(data_ov079_02272b98),
+    HOST_OVERLAY_VAR(data_ov079_02272b88),
+    HOST_OVERLAY_VAR(data_ov079_02272b90),
+    HOST_OVERLAY_VAR(sSpNpcWendellActTable),
+    HOST_OVERLAY_VAR(sSpNpcWendellModelPath),
+    HOST_OVERLAY_VAR(sSpNpcWendellSideStepOffsets),
+    HOST_OVERLAY_VARS_END
+};

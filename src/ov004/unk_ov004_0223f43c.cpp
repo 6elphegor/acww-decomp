@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 #include "gfx/Camera.h"
 #include "gfx/DebugColor.h"
@@ -490,10 +491,10 @@ const VecFx32 data_ov004_0224682c = {0x10000, 0, 0x11000};
 u32 data_ov004_0224f32c[4] = {0, 0x3c000, 0x5000, 0x5000};
 DebugColor data_ov004_02258998(20, 31, 31, 31);
 DebugColor data_ov004_0225899c(20, 24, 24, 31);
-CameraSetup sCameraKkShowSetup = {0, 0x1100, 0x14100, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0x13600, 0x200, 0x17600)};
+CameraSetup sCameraKkShowSetup;  // initialised by StaticInit_unk_ov004_0223f43c
 u32 data_ov004_0224f31c[4] = {0, 0x438000, 0, 0x384000};
 u32 data_ov004_0224f33c[4] = {0, 0x7d0000, 0x7d0000, 0};
-CameraSetup sCameraKkShowWideSetup = {0, -0x200, 0x6a00, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0x10400, 0x200, 0x12b00)};
+CameraSetup sCameraKkShowWideSetup;  // initialised by StaticInit_unk_ov004_0223f43c
 CameraKkShowShot sCameraKkShowShots[14] = {
     {0xf9fc, 0x2000, 0x157c2, -2009, -8523, 0xe700, 0x0, -12544, 3328, 40, 0},
     {0xf623, 0x1b00, 0x11405, -1571, 0x1bfb, 0xb000, 0x20, 15104, 1280, -48, 0},
@@ -511,4 +512,31 @@ CameraKkShowShot sCameraKkShowShots[14] = {
     {0x1a6f6, 0x2000, 0x15892, -5483, -2535, 0xe700, -48, -13568, 2560, -24, 0},
 };
 
-CameraSetup sCameraKkShowPrevSetup = {0x1b00, 0x1000, 0x9700, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0xf5ad, 0x200, 0x12757)};
+CameraSetup sCameraKkShowPrevSetup;  // initialised by StaticInit_unk_ov004_0223f43c
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit.
+extern "C" void StaticInit_unk_ov004_0223f43c(void) {
+    HOST_STATIC_INIT(sCameraKkShowSetup, {0, 0x1100, 0x14100, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0x13600, 0x200, 0x17600)});
+    HOST_STATIC_INIT(sCameraKkShowWideSetup, {0, -0x200, 0x6a00, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0x10400, 0x200, 0x12b00)});
+    HOST_STATIC_INIT(sCameraKkShowPrevSetup, {0x1b00, 0x1000, 0x9700, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0xf5ad, 0x200, 0x12757)});
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0223f43c) {
+    HOST_OVERLAY_VAR(data_ov004_022589a4),
+    HOST_OVERLAY_VAR(data_ov004_02258994),
+    HOST_OVERLAY_VAR(data_ov004_02258990),
+    HOST_OVERLAY_VAR(data_ov004_022589a0),
+    HOST_OVERLAY_VAR(data_ov004_0224f32c),
+    HOST_OVERLAY_VAR(data_ov004_02258998),
+    HOST_OVERLAY_VAR(data_ov004_0225899c),
+    HOST_OVERLAY_VAR(sCameraKkShowSetup),
+    HOST_OVERLAY_VAR(data_ov004_0224f31c),
+    HOST_OVERLAY_VAR(data_ov004_0224f33c),
+    HOST_OVERLAY_VAR(sCameraKkShowWideSetup),
+    HOST_OVERLAY_VAR(sCameraKkShowShots),
+    HOST_OVERLAY_VAR(sCameraKkShowPrevSetup),
+    HOST_OVERLAY_VARS_END
+};

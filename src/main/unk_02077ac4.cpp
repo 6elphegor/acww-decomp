@@ -1,8 +1,10 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "town/TownBlockMap.h"
 #include "uptr.h"
 #include "item/Letter.h"
 #include "player/PlayerId.h"
+#include "sys/new.h"
 #include "talk/EncodedString8.h"
 #include "talk/MsgString25.h"
 #include "talk/MsgString33.h"
@@ -49,10 +51,10 @@ class LetterView;
 
 
 
-struct NullPlayerIdLocal : public PlayerId {  // (constructor, destructor and clear: aliases of PlayerId's, modern/gen/provides.ld)
-    NullPlayerIdLocal();
-    ~NullPlayerIdLocal();
-    void clear();
+struct NullPlayerIdLocal : public PlayerId {  // (constructor, destructor and clear: PlayerId's, under these names in symbols.txt)
+    NullPlayerIdLocal() : PlayerId((void *)NULL) {}
+    ~NullPlayerIdLocal() { new (static_cast<PlayerId *>(this)) PlayerId(); }
+    void clear() { PlayerId::clear(); }
 };
 
 
@@ -174,11 +176,11 @@ void OutdoorSchedule_Update(OutdoorSchedule *self, u8 *p, s32 keep);
 extern u8 gFieldSceneKind;
 extern BlockMap *gSceneBlockMap;
 extern CommManager *gCommManager;
-extern TownId gSaveTownId;
-extern long long gSaveTownTune;
+#define gSaveTownId HOST_LABEL(TownId *, gSaveTownId)
+#define gSaveTownTune HOST_LABEL(long long *, gSaveTownTune)
 s32 EventSchedule_CollectDayAll(EventDayEntry *out, const ClockDateTime *date);
-extern u8 gSaveVillagers[];  // SaveVillagers (the SaveVillagers_* functions take it as bytes)
-extern u8 gSavePlayers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)  // SaveVillagers (the SaveVillagers_* functions take it as bytes)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 // StrBuf (text/Unk_02050288.h) and the EncodedString buffers (talk/EncodedStringBase.h) are the same interface
 // (virtual destructor, size, data) under two names; these take the latter here
 void StrBuf_ClearAlt(EncodedStringBase *buf);
@@ -374,7 +376,7 @@ extern u8 data_021cc9ac[];
 namespace nG {
 extern "C" {
 
-extern u8 data_021e7f8c[];
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)
 }
 }
 
@@ -535,7 +537,6 @@ void *Letter_GetSenderPlayer(void *p);
 s32 TownId_GetNameString(void *a, void *b);
 s32 MailText_SetSlot(s32 a, void *b);
 s32 Villager_SendLetterWithPaper(void *a, u32 b, void *c, void *d, void *e, s32 f);
-void ItemPickSpec_Destruct(void *p);
 s32 ItemPick_One(void *a, void *b, void *c, void *d, s32 e, s32 f, void *g);
 s32 MailCheck_GradeLetter(void *p);
 s32 Letter_GetBodyLength(void *p);
@@ -2222,8 +2223,8 @@ void VillagerData::replyToLetter(void *p, void *q) {
                     t2[1] = t1[1];
                     ItemPick_One(&ha, t2, 0, 0, 1, 1, 0);
                     res = ha;
-                    ItemPickSpec_Destruct(t2);
-                    ItemPickSpec_Destruct(t1);
+                    ((ItemPickSpec *)t2)->~ItemPickSpec();
+                    ((ItemPickSpec *)t1)->~ItemPickSpec();
                 } else {
                     ItemPick_FromRange(&hb, 0x1518, 5, 0, 0, 0, 1, 10, 0, 1);
                     res = hb;
@@ -2234,16 +2235,16 @@ void VillagerData::replyToLetter(void *p, void *q) {
                 t4[1] = t3[1];
                 ItemPick_One(&hc, t4, 0, 0, 1, 1, 0);
                 res = hc;
-                ItemPickSpec_Destruct(t4);
-                ItemPickSpec_Destruct(t3);
+                ((ItemPickSpec *)t4)->~ItemPickSpec();
+                ((ItemPickSpec *)t3)->~ItemPickSpec();
             } else {
                 ((ItemPickSpec *)(t5))->set(sLetterReplyGiftLists[Random_GlobalBelow(3)], 0);
                 t6[0] = t5[0];
                 t6[1] = t5[1];
                 ItemPick_One(&hd, t6, 0, 0, 1, 1, 0);
                 res = hd;
-                ItemPickSpec_Destruct(t6);
-                ItemPickSpec_Destruct(t5);
+                ((ItemPickSpec *)t6)->~ItemPickSpec();
+                ((ItemPickSpec *)t5)->~ItemPickSpec();
             }
             if (res != 0xfff1) {
                 v1c = 10;
@@ -2300,14 +2301,14 @@ extern "C" void Villager_SendBirthdayLetter(VillagerData *t, void *p, void *q) {
                             o2[1] = o1[1];
                             ItemPick_One(&h[1], o2, hp, hp, 1, 1, hp);
                             h[0] = h[1];
-                            ItemPickSpec_Destruct(o2);
+                            ((ItemPickSpec *)o2)->~ItemPickSpec();
                             if (h[0] != 0xfff1) {
                                 hp = h;
                             }
                             if (Villager_SendLetterWithPaper(((u8 *)"ev_birth"), (u8)Random_GlobalBelow(3), r7, r10, hp, -1)) {
                                 ((VillagerMemory *)(e))->setBirthdayLetterSent();
                             }
-                            ItemPickSpec_Destruct(o1);
+                            ((ItemPickSpec *)o1)->~ItemPickSpec();
                         }
                     }
                 }

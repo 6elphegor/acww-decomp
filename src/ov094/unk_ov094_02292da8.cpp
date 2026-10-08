@@ -615,3 +615,13 @@ BOOL InventoryItemGrid_TestBit(u32 *bits, s32 i) {
 }
 
 }  // extern "C"
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov094_02292da8) {
+    HOST_OVERLAY_VAR(sHeldItemSprite),
+    HOST_OVERLAY_VAR(sItemGridMarkSprites),
+    HOST_OVERLAY_VAR(sItemGridSlotSprites),
+    HOST_OVERLAY_VARS_END
+};

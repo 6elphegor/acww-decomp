@@ -1,4 +1,5 @@
 #include "talk/EncodedString16Buf.h"
+#include "host_shared_calls.h"
 #include "talk/LabelBalloonText.h"
 // ov125: scene overlay (class PatternSelectMenu, vtable 0x02298478, 0x6bc bytes).
 #include "types.h"
@@ -345,7 +346,7 @@ void PatternSelectMenu::preStateUpdate() {
 }
 
 void PatternSelectMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     if (nameBalloon.updatePrompt()) {
         refreshNameLabel();
     }
@@ -849,3 +850,11 @@ void PatternSelectMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 extern "C" const u8 sPatternSelectSlotX[9] = {0x28, 0x60, 0x98, 0xd0, 0x38, 0x70, 0xa8, 0xe0, 0xb9};
 extern "C" const u8 sPatternSelectSlotY[9] = {0x7c, 0x7c, 0x7c, 0x7c, 0xa4, 0xa4, 0xa4, 0xa4, 0xd1};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov125_02297060) {
+    HOST_OVERLAY_VAR(sPatternSelectMenuProfile),
+    HOST_OVERLAY_VAR(sPatternSelectIconCell),
+    HOST_OVERLAY_VARS_END
+};

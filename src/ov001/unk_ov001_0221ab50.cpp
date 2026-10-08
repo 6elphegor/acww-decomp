@@ -282,3 +282,17 @@ extern "C" const WfcRect sWfcSetupMethodRects[2][4] = {
 extern "C" char data_ov001_0222b304[24] = "char/ybBgStep2.ncl.l";
 
 extern "C" char data_ov001_0222b2ec[24] = "char/jbBgStep2.ncg.l";
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221ab50) {
+    HOST_OVERLAY_VAR(sWfcSetupMethodColumn),
+    HOST_OVERLAY_VAR(sWfcSetupMethodChosen),
+    HOST_OVERLAY_VAR(sWfcSetupMethodCursor),
+    HOST_OVERLAY_VAR(sWfcSetupMethodPalette),
+    HOST_OVERLAY_VAR(data_ov001_0222b2d0),
+    HOST_OVERLAY_VAR(data_ov001_0222b304),
+    HOST_OVERLAY_VAR(data_ov001_0222b2ec),
+    HOST_OVERLAY_VARS_END
+};

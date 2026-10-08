@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU12 (actor 02231c14): .text 0x022165d0-0x02216824
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
@@ -20,7 +21,7 @@
 #include "proto/ov003/unk_ov003_022187fc.h"
 
 extern "C" {
-extern HouseData gSaveHouse;
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)
 extern const s8 sHexDigits[];
 
 void *NNS_G3dGetTex(void *p);
@@ -126,3 +127,11 @@ BOOL PlayerHouse::isOpen() { return TRUE; }
 
 BOOL PlayerHouse::playsDoorMelody() { return TRUE; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022165d0) {
+    HOST_OVERLAY_VAR(sPlayerHouseProfile),
+    HOST_OVERLAY_VAR(data_ov003_02235358),
+    HOST_OVERLAY_VARS_END
+};

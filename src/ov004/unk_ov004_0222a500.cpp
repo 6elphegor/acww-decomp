@@ -1,4 +1,6 @@
 #include "game/BoxCollider.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_0202fa70.h"
 #include "types.h"
@@ -230,8 +232,8 @@ void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);
 
-extern u8 gSaveHouse[];
-extern u8 gSaveVillagers[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern Mtx43 data_021f47e0;
 extern u32 data_020c8cc0;
 extern Unk_0204e858_Grid *gSceneBlockMap;
@@ -364,6 +366,12 @@ static inline BOOL Unk_ov004_0222b610_InB(u16 *p) {
     return r;
 }
 
+// RoomShell_GetSceneWallFloor's static t, initialised at its first use after the overlay was loaded
+ItemId RoomShell_GetSceneWallFloor_t[6];
+u8 RoomShell_GetSceneWallFloor_t_init;
+// RoomShell_GetSceneWallFloor's static t, initialised at its first use after the overlay was loaded
+ItemId RoomShell_GetSceneWallFloor_t_2[6];
+u8 RoomShell_GetSceneWallFloor_t_2_init;
 extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, s32 *d) {
     s32 r = Scene_GetCurrent();
     *d = 0;
@@ -388,21 +396,27 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
         if (Unk_ov004_0222b610_InA(p)) {
             *a = *p;
         } else {
-            static ItemId t[6] = {
+            if (!RoomShell_GetSceneWallFloor_t_init) {
+                HOST_STATIC_INIT_ARRAY(RoomShell_GetSceneWallFloor_t, {
                 ItemId(0x1140), ItemId(0x1141), ItemId(0x1142),
                 ItemId(0x1143), ItemId(0x1143), ItemId(0x1143)
-            };
-            *a = t[i].id;
+            });
+                RoomShell_GetSceneWallFloor_t_init = 1;
+            }
+            *a = RoomShell_GetSceneWallFloor_t[i].id;
         }
         p = RoomWallFloor_GetSceneCarpet(r);
         if (Unk_ov004_0222b610_InB(p)) {
             *c = *p;
         } else {
-            static ItemId t[6] = {
+            if (!RoomShell_GetSceneWallFloor_t_2_init) {
+                HOST_STATIC_INIT_ARRAY(RoomShell_GetSceneWallFloor_t_2, {
                 ItemId(0x1184), ItemId(0x1185), ItemId(0x1186),
                 ItemId(0x1187), ItemId(0x1187), ItemId(0x1187)
-            };
-            *c = t[i].id;
+            });
+                RoomShell_GetSceneWallFloor_t_2_init = 1;
+            }
+            *c = RoomShell_GetSceneWallFloor_t_2[i].id;
         }
     }
 }
@@ -755,10 +769,16 @@ extern "C" {
 ItemId sRoomNoItem(0xfff1);
 }
 
+// RoomScene0ACollider::init's static s, initialised at its first use after the overlay was loaded
+FxVec3 RoomScene0ACollider_init_s;
+u8 RoomScene0ACollider_init_s_init;
 void RoomScene0ACollider::init() {
     if (Scene_GetCurrent() == 0xa) {
-        static FxVec3 s(0xe000, 0, data_020c8cc0 + 0x1000);
-        BoxCollider_Register(&collider, 0x8000, 0x2000, 0x1000, &s, 0, 0);
+        if (!RoomScene0ACollider_init_s_init) {
+            HOST_STATIC_INIT(RoomScene0ACollider_init_s, FxVec3(0xe000, 0, data_020c8cc0 + 0x1000));
+            RoomScene0ACollider_init_s_init = 1;
+        }
+        BoxCollider_Register(&collider, 0x8000, 0x2000, 0x1000, &RoomScene0ACollider_init_s, 0, 0);
     }
 }
 
@@ -1085,3 +1105,24 @@ extern "C" void RoomShell_InitRenderObj(void *p) {
     self->cbVecFunc[6] = (void *)RoomShell_NodeDescCallback;
     self->cbVecTiming[6] = 2;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0222a500) {
+    HOST_OVERLAY_VAR(sRoomShellProfile),
+    HOST_OVERLAY_VAR(sRoomHasuPos),
+    HOST_OVERLAY_VAR(sRoomShell),
+    HOST_OVERLAY_VAR(RoomShell_GetSceneWallFloor_t),
+    HOST_OVERLAY_VAR(RoomShell_GetSceneWallFloor_t_init),
+    HOST_OVERLAY_VAR(RoomShell_GetSceneWallFloor_t_2),
+    HOST_OVERLAY_VAR(RoomShell_GetSceneWallFloor_t_2_init),
+    HOST_OVERLAY_VAR(sRoomCarpetMatNameStr),
+    HOST_OVERLAY_VAR(sRoomCarpetMatName),
+    HOST_OVERLAY_VAR(sRoomNoItem),
+    HOST_OVERLAY_VAR(RoomScene0ACollider_init_s),
+    HOST_OVERLAY_VAR(RoomScene0ACollider_init_s_init),
+    HOST_OVERLAY_VAR(sRoomWallpaperMatNameStr),
+    HOST_OVERLAY_VAR(sRoomWallpaperMatName),
+    HOST_OVERLAY_VARS_END
+};

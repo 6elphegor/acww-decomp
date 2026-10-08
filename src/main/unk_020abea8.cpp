@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "sys/new.h"
 #include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/ObjShadowTexture.h"
@@ -262,6 +263,12 @@ ObjShadowStrip::ObjShadowStrip() {
     rowTexT = 0;
     rowVertices = 0;
     texture = 0;
+}
+
+// the second constructor (0x020ac1e0, returning this): the same code
+ObjShadowStrip *ObjShadowStrip::func_020ac1e0() {
+    new (this) ObjShadowStrip();
+    return this;
 }
 
 ObjShadowStrip::~ObjShadowStrip() {}

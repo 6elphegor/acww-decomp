@@ -1,4 +1,5 @@
 #include "talk/MsgString25.h"
+#include "host_labels.h"
 #include "talk/MsgString9C.h"
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -21,7 +22,7 @@
 
 
 extern SaveData gSaveData;
-extern TownId gSaveTownId;
+#define gSaveTownId HOST_LABEL(TownId *, gSaveTownId)
 extern "C" u8 sFatalEntered;
 
 s32 data_020e1e08 = 6;

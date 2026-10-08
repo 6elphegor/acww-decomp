@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "uptr.h"
 #include "talk/EncodedString8B.h"
 #include "talk/MsgString9B.h"
@@ -528,7 +529,7 @@ void FriendRosterTab::preStateUpdate() {
 
 void FriendRosterTab::postStateUpdate() {
     uploadScreen();
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
 }
 
 void FriendRosterTab::preInputUpdate() {
@@ -1762,3 +1763,23 @@ extern "C" GXOamAttr data_ov119_02295588 = {0x419700f0, 0x1a0, 0, 0xa, 0xffff};
 extern "C" GXOamAttr data_ov119_02295778[6] = {{0x80454041, 0xca, 1, 0x7, 0x0}, {0x40650041, 0xce, 1, 0x7, 0x0}, {0x8059403f, 0x102, 1, 0x7, 0x0}, {0x4059404f, 0x142, 1, 0x7, 0x0}, {0x8041403f, 0x100, 1, 0x7, 0x0}, {0x4041404f, 0x140, 1, 0x7, 0xffff}};
 
 extern "C" GXOamAttr data_ov119_022957a8[6] = {{0x419840ed, 0x130, 1, 0x5, 0x0}, {0x402040ed, 0x130, 1, 0x5, 0x0}, {0x400040ed, 0x130, 1, 0x5, 0x0}, {0x41e840ed, 0x130, 1, 0x5, 0x0}, {0x41c840ed, 0x130, 1, 0x5, 0x0}, {0x41a840ed, 0x130, 1, 0x5, 0xffff}};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov119_02292d00) {
+    HOST_OVERLAY_VAR(data_ov119_02295648),
+    HOST_OVERLAY_VAR(data_ov119_02295660),
+    HOST_OVERLAY_VAR(data_ov119_022957d8),
+    HOST_OVERLAY_VAR(data_ov119_02295680),
+    HOST_OVERLAY_VAR(sFriendRosterTabProfile),
+    HOST_OVERLAY_VAR(data_ov119_022956d0),
+    HOST_OVERLAY_VAR(data_ov119_022956f8),
+    HOST_OVERLAY_VAR(data_ov119_02295720),
+    HOST_OVERLAY_VAR(data_ov119_022956a8),
+    HOST_OVERLAY_VAR(data_ov119_02295748),
+    HOST_OVERLAY_VAR(data_ov119_02295588),
+    HOST_OVERLAY_VAR(data_ov119_02295778),
+    HOST_OVERLAY_VAR(data_ov119_022957a8),
+    HOST_OVERLAY_VARS_END
+};

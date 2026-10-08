@@ -1,5 +1,6 @@
 // ov105: scene overlay (class LetterStorageMenu, vtable 0x02298594). Linked as one unit.
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerData.h"
@@ -392,7 +393,7 @@ BOOL LetterStorageMenu::onDraw() {
             }
         }
         letterGrid.drawPocketLetters(0, slideY - 0x10);
-        InventoryBg_DrawSprite(&inventoryBg, slideY - 0x10);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, slideY - 0x10);
     }
     if (testFlags(0x200)) {
         letterGrid.drawLetters0A(boxSlideX, -0x10);
@@ -527,8 +528,8 @@ void LetterStorageMenu::transitionAct00() {
 
 void LetterStorageMenu::transitionAct01() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&pocketGrid);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -758,7 +759,7 @@ void LetterStorageMenu::initParts() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     letterGrid.init(1);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x41;
     flyMotion.reset();
     handKind = 0;
@@ -785,7 +786,7 @@ void LetterStorageMenu::initParts() {
 void LetterStorageMenu::releaseResources() {
     cancelBgTasks();
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     letterView.release();
     bottomButtons.freeTexts();
@@ -802,14 +803,14 @@ void LetterStorageMenu::postInputUpdate() {
 
 void LetterStorageMenu::preStateUpdate() {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     letterGrid.updateCursorLift();
     bottomButtons.freeTexts();
 }
 
 void LetterStorageMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (nameBalloon.updatePrompt()) {
         placeBalloon();
@@ -1225,7 +1226,7 @@ void LetterStorageMenu::mainAct14() {
     if (s->cursor.isGripping()) {
         if (s->testFlags(0x40)) {
             s->clearFlags(0x40);
-            Inventory_PlayPickUpSe();
+            Shared_Inventory_PlayPickUpSe();
         }
         s->getHandPos();
     }
@@ -1318,7 +1319,7 @@ void LetterStorageMenu::mainAct1B() {
 
 void LetterStorageMenu::mainAct1C() {
     S *s = this;
-    if (LetterGrid_UpdatePopAnim(&s->letterGrid)) {
+    if (Shared_LetterGrid_UpdatePopAnim(&s->letterGrid)) {
         s->setFlags(0x1000);
         s->handKind = 0;
         s->resumeInput();
@@ -1468,7 +1469,7 @@ void LetterStorageMenu::beginDragFromSlot(u8 a) {
         setMainState(4);
     }
     getDragPos();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void LetterStorageMenu::pickUpAtSlot(u8 a) {
@@ -1481,7 +1482,7 @@ void LetterStorageMenu::pickUpAtSlot(u8 a) {
         returnState = 8;
     }
     getHandPos();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void LetterStorageMenu::flyHeldTo(u32 a, u32 c) {
@@ -1650,7 +1651,7 @@ s32 LetterStorageMenu::getSlotX(u32 a) {
 
 s32 LetterStorageMenu::getSlotY(u32 a) {
     if (isLetterSlot(a) || isStorageSlot(a)) {
-        return LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(a)) - 0x10;
+        return Shared_LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(a)) - 0x10;
     }
     if (a == 0x3d) {
         return 0xb6;
@@ -1662,7 +1663,7 @@ s32 LetterStorageMenu::getSlotY(u32 a) {
 }
 
 void LetterStorageMenu::disableAllPockets() {
-    InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
+    Shared_InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
     letterGrid.highlightLetterKinds(4);
 }
 
@@ -1697,7 +1698,7 @@ void LetterStorageMenu::setFocusSlot(u32 b) {
 
 void LetterStorageMenu::clearHoverSlot() {
     S *s = this;
-    InventoryItemGrid_ClearMarks(&s->pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&s->pocketGrid);
     s->letterGrid.clearMarks();
 }
 
@@ -2237,7 +2238,7 @@ void LetterStorageMenu::drawPageTabs() {
 }
 
 void LetterStorageMenu::loadPage() {
-    LetterGrid_SetLetters0A(&letterGrid, (u8 *)&storageLetters[currentPage * 0x19]);
+    Shared_LetterGrid_SetLetters0A(&letterGrid, (u8 *)&storageLetters[currentPage * 0x19]);
     Gfx2d_LoadCharFile(sLetterStoragePageChars[currentPage], gCurrentHeap, 4, 0x1e2, 0x1e2, 0x1ed);
     beginSubSlideIn(2, 0, 2, 0x30);
     setSlideExtent(0xc0);
@@ -2333,4 +2334,17 @@ extern "C" Unk_ov105_Ent data_ov105_02298544[9] = {
     {0x41ac00c0, 0x000041c0}, {0x41ac00c1, 0x0000411e}, {0x41ac00c3, 0x0000111e},
     {0x41c400c0, 0x000041c2}, {0x41c400c1, 0x0000511e}, {0x41c400c3, 0x0000111e},
     {0x41dc00c0, 0x000041c4}, {0x41dc00c1, 0x0000511e}, {0x41dc00c3, 0xffff111e},
+};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov105_02294c40) {
+    HOST_OVERLAY_VAR(sLetterStorageMenuProfile),
+    HOST_OVERLAY_VAR(data_ov105_02298524),
+    HOST_OVERLAY_VAR(sLetterStoragePageChars),
+    HOST_OVERLAY_VAR(data_ov105_02298504),
+    HOST_OVERLAY_VAR(data_ov105_022984e4),
+    HOST_OVERLAY_VAR(data_ov105_02298544),
+    HOST_OVERLAY_VARS_END
 };

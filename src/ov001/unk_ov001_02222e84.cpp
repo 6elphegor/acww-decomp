@@ -488,3 +488,10 @@ extern "C" s32 WfcMove_GetChildReply() {
     return H->sharedRecv[1].command;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02222e84) {
+    HOST_OVERLAY_VAR(sWfcMove),
+    HOST_OVERLAY_VARS_END
+};

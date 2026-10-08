@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "save/VillagerData.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
@@ -78,8 +79,8 @@ struct EventWeekSlotView {
 
 extern "C" {
 extern u8 gSaveData[];
-extern u8 gSaveEventWeekSlots[];
-extern u8 gSaveBlancaFace[];
+#define gSaveEventWeekSlots HOST_LABEL(u8 (*)[], gSaveEventWeekSlots)
+#define gSaveBlancaFace HOST_LABEL(u8 (*)[], gSaveBlancaFace)
 extern u8 gBackup[];
 extern CommManager *gCommManager;
 }

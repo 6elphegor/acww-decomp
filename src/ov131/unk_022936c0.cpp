@@ -1,4 +1,6 @@
 #include "types.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
@@ -25,7 +27,7 @@
 extern "C" {
 extern u16 gPad[];
 }
-extern HouseData gSaveHouse;
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)
 
 static inline BOOL func_ov131_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -128,7 +130,7 @@ BOOL AmountEntryMenu::onDraw() {
         return FALSE;
     }
     bottomButtons.drawAt(getSlideOffsetY());
-    NumberPad_Draw(&numberPad, getSlideOffsetY());
+    Shared_NumberPad_Draw(&numberPad, getSlideOffsetY());
     return TRUE;
 }
 
@@ -241,7 +243,7 @@ void AmountEntryMenu::preStateUpdate() {
 
 void AmountEntryMenu::postStateUpdate() {
     numberPad.flushScreens();
-    if (NumberPad_GetValue(&numberPad) == 0) {
+    if (Shared_NumberPad_GetValue(&numberPad) == 0) {
         ((MenuBottomButtonsBody *)&bottomButtons)->disableButton(6);
     } else {
         ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
@@ -273,7 +275,7 @@ void AmountEntryMenu::updateTouch() {
             } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
-                if (NumberPad_HitTestKey(&numberPad, gTouchCurX, gTouchCurY) != 0xd) {
+                if (Shared_NumberPad_HitTestKey(&numberPad, gTouchCurX, gTouchCurY) != 0xd) {
                     NumberPad_PressKey(&numberPad);
                     setMainState(1);
                 }
@@ -322,7 +324,7 @@ void AmountEntryMenu::updateCursorMove() {
 
 void AmountEntryMenu::updateCursorPress() {
     if (((HandCursor *)(&cursor))->isAnimDone()) {
-        if (NumberPad_PressCursorKey(&numberPad)) {
+        if (Shared_NumberPad_PressCursorKey(&numberPad)) {
             setMainState(6);
         } else if (NumberPad_IsCursorOnOk(&numberPad)) {
             if (!confirm()) {
@@ -393,7 +395,7 @@ BOOL AmountEntryMenu::confirm() {
     setTransitionState(2);
     setMainState(7);
     MenuCtrl_SetResult(1);
-    MenuCtrl_SetAmount(NumberPad_GetValue(&numberPad));
+    MenuCtrl_SetAmount(Shared_NumberPad_GetValue(&numberPad));
     commitAmount();
     return TRUE;
 }
@@ -410,7 +412,7 @@ void AmountEntryMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     ((MenuCursorBase *)&cursor)->warpTo(a, b);
-    if (NumberPad_IsCursorOnButton(&numberPad)) {
+    if (Shared_NumberPad_IsCursorOnButton(&numberPad)) {
         ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
         ((MenuCursor *)&cursor)->setAnimIfChanged(1);
@@ -418,7 +420,7 @@ void AmountEntryMenu::showCursor() {
     refreshCursor();
 }
 
-s32 AmountEntryMenu::getCursorTargetX() { return NumberPad_GetCursorX(&numberPad); }
+s32 AmountEntryMenu::getCursorTargetX() { return Shared_NumberPad_GetCursorX(&numberPad); }
 
 s32 AmountEntryMenu::getCursorTargetY() { return NumberPad_GetCursorY(&numberPad); }
 
@@ -428,7 +430,7 @@ void AmountEntryMenu::hideCursor() {
 }
 
 void AmountEntryMenu::moveCursorToTarget() {
-    if (NumberPad_IsCursorOnButton(&numberPad)) {
+    if (Shared_NumberPad_IsCursorOnButton(&numberPad)) {
         ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
         ((MenuCursor *)&cursor)->switchToAnim01();
@@ -514,11 +516,11 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     }
-    NumberPad_SetAmounts(&numberPad, mx, hi, lo);
+    Shared_NumberPad_SetAmounts(&numberPad, mx, hi, lo);
 }
 
 void AmountEntryMenu::commitAmount() {
-    s32 a = NumberPad_GetValue(&numberPad);
+    s32 a = Shared_NumberPad_GetValue(&numberPad);
     s32 b = NumberPad_GetTopAmount(&numberPad);
     s32 c = NumberPad_GetBottomAmount(&numberPad);
     PlayerData *p = PlayerData_GetCurrent();
@@ -561,4 +563,10 @@ void AmountEntryMenu::setFlags(u32 mask) { flags = flags | mask; }
 
 // ---------------------------------------------------------------------------------------------
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_022936c0) {
+    HOST_OVERLAY_VAR(sAmountEntryMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

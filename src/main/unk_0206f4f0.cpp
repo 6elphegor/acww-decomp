@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "save/TownExchangeRecord.h"
@@ -24,13 +25,13 @@
 
 
 extern "C" {
-extern u32 gSaveTownTune[];
+#define gSaveTownTune HOST_LABEL(u32 (*)[], gSaveTownTune)
 extern CommManager *gCommManager;
-extern u32 gSaveVillagers[];
-extern u8 data_021eceac[];
-extern u8 data_021e7f8c[];
-extern u8 gSaveLostAndFound[];
-extern u8 gSaveRecycleBin[];
+#define gSaveVillagers HOST_LABEL(u32 (*)[], gSaveVillagers)
+#define data_021eceac HOST_LABEL(u8 (*)[], data_021eceac)
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)
+#define gSaveLostAndFound HOST_LABEL(u8 (*)[], gSaveLostAndFound)
+#define gSaveRecycleBin HOST_LABEL(u8 (*)[], gSaveRecycleBin)
 extern u8 gFieldSceneKind;
 extern u32 data_020c7c1c;
 

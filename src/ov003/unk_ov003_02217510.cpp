@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -27,7 +28,7 @@
 
 
 extern "C" {
-extern u8 data_021ed104[];
+#define data_021ed104 HOST_LABEL(u8 (*)[], data_021ed104)
 
 s32 Item_GetNookShopLevel(void *p);
 void Clock_GetDateTime(void *p);
@@ -189,3 +190,11 @@ BOOL ShopBuilding::playsDoorMelody() {
 }
 
 extern "C" ActorProfile sShopBuildingProfile = {(void *(*)())ShopBuilding_Create, 0x21, 0x27, 0, 0xc8000, 0x12c000, 0x258000};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02217510) {
+    HOST_OVERLAY_VAR(sShopBuildingProfile),
+    HOST_OVERLAY_VARS_END
+};

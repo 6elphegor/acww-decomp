@@ -1,5 +1,6 @@
 // ov113: scene overlay (class BbsReadMenu, vtable 0x02293640, 0x29cc bytes).
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "save/BbsPost.h"
 #include "save/BbsBoard.h"
@@ -32,7 +33,7 @@
 class BbsReadMenu;
 
 extern "C" {
-extern u8 data_021e87d8[];
+#define data_021e87d8 HOST_LABEL(u8 (*)[], data_021e87d8)
 extern u16 gPad[];
 void func_ov092_02291ce4(void *p, s32 a, s32 b);
 void func_ov092_02291c5c();
@@ -959,3 +960,12 @@ BOOL BbsReadMenu::moveFocusByPad(u32 pad) {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02291f60) {
+    HOST_OVERLAY_VAR(data_ov113_022935c8),
+    HOST_OVERLAY_VAR(data_ov113_022936a0),
+    HOST_OVERLAY_VARS_END
+};

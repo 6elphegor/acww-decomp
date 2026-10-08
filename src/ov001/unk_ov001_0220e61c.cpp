@@ -167,3 +167,11 @@ extern "C" void WfcSysInfo_Exit() {
     WfcUtil_SetScene(WfcOptions_Enter);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220e61c) {
+    HOST_OVERLAY_VAR(data_ov001_0222acd8),
+    HOST_OVERLAY_VAR(data_ov001_0222ad14),
+    HOST_OVERLAY_VARS_END
+};

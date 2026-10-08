@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "npc/VillagerId.h"
 #include "player/PlayerErrands.h"
 #include "save/VillagerData.h"
@@ -171,7 +173,7 @@ extern s32 data_020c8cb8;
 extern s32 data_020c8cbc;
 extern BlockMap *gSceneBlockMap;
 extern VillagerTalkTopicFns sHouseVisitTsuTopicTable[];
-extern VillagerTalkTopicFns data_021be810[];
+#define data_021be810 HOST_LABEL(VillagerTalkTopicFns (*)[], data_021be810)
 extern u8 gTalkMsgIndexEnd;
 
 // defined without a shared declaration (include/proto/.excluded)
@@ -828,7 +830,7 @@ void HouseVisitVillager::execVisitWander() {
             wanderTimer--;
         }
         if (wanderTimer == 0) {
-            wanderAngle = Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
+            wanderAngle = Shared_Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
@@ -948,3 +950,21 @@ BOOL HouseVisitVillager::canPlayTalkMelody() {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226dbe8) {
+    HOST_OVERLAY_VAR(sHouseVisitVillager),
+    HOST_OVERLAY_VAR(data_ov068_022712a8),
+    HOST_OVERLAY_VAR(sHouseVisitMsgFileName),
+    HOST_OVERLAY_VAR(sHouseVisitVillagerProfile),
+    HOST_OVERLAY_VAR(data_ov068_02271298),
+    HOST_OVERLAY_VAR(data_ov068_022712b0),
+    HOST_OVERLAY_VAR(data_ov068_022712a0),
+    HOST_OVERLAY_VAR(data_ov068_0227129c),
+    HOST_OVERLAY_VAR(data_ov068_02270a3c),
+    HOST_OVERLAY_VAR(data_ov068_022712a4),
+    HOST_OVERLAY_VAR(data_ov068_022712b8),
+    HOST_OVERLAY_VARS_END
+};

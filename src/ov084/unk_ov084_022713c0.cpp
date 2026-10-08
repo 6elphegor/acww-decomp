@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -126,7 +127,7 @@ extern "C" {
 u16 Item_MakePaper(u32 a, s32 b);
 s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
 void Clock_GetDate(u8 *out);
-extern u8 gContestRecord[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 extern const SpNpcTortimerFireworksFortuneLine sSpNpcTortimerFireworksFortuneLines[4];
 }
 
@@ -491,3 +492,17 @@ void SpNpcTortimerFireworks::onInteractionEvent(u32 v, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov084_022713c0) {
+    HOST_OVERLAY_VAR(data_ov084_02271d44),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksProfile),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksFortuneStrKey),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerFireworksFortuneStr2Key),
+    HOST_OVERLAY_VAR(data_ov084_02271d40),
+    HOST_OVERLAY_VARS_END
+};

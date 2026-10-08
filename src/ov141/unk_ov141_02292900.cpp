@@ -734,3 +734,10 @@ void NearbyTownsMenu::setFlags(u32 m) { flags = flags | m; }
 
 void NearbyTownsMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov141_02292900) {
+    HOST_OVERLAY_VAR(sNearbyTownsMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

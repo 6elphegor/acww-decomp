@@ -143,7 +143,7 @@ extern u8 sInputLocked;
 struct TalkMsgIndex {
     u8 v;
     TalkMsgIndex(u8 x) { v = x; }
-    ~TalkMsgIndex();
+    ~TalkMsgIndex() {}  // on the DS the empty function PlayerActor::func_020082a8
 };
 
 extern TalkMsgIndex gU8None;

@@ -199,3 +199,11 @@ void WfcConnTest_Free(u32 name, void *p, u32 size) {
 
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221b44c) {
+    HOST_OVERLAY_VAR(sWfcConnTestSucceeded),
+    HOST_OVERLAY_VARS_END
+};

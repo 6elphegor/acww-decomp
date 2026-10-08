@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "field/Snowball.h"
@@ -30,7 +32,7 @@ struct UnitMaskPool {
 extern "C" {
 extern BlockMap *gSceneBlockMap;
 extern CommManager *gCommManager;
-extern SnowmanRecords data_021ed2e6;
+#define data_021ed2e6 HOST_LABEL(SnowmanRecords *, data_021ed2e6)
 
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
 BOOL Ground_IsFreeGrass(s32 a, s32 b);
@@ -326,10 +328,16 @@ extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
 }
 
 // a position for a loose snowball in b, away from c (when not NULL); d: also away from the items on the ground
+// Snowball_FindSpawnPos's static pool, initialised at its first use after the overlay was loaded
+UnitMaskPool Snowball_FindSpawnPos_pool;
+u8 Snowball_FindSpawnPos_pool_init;
 extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
     BlockMap *g = gSceneBlockMap;
-    static UnitMaskPool pool;
-    UnitMaskPool_Clear(&pool);
+    if (!Snowball_FindSpawnPos_pool_init) {
+        HOST_STATIC_CONSTRUCT(Snowball_FindSpawnPos_pool);
+        Snowball_FindSpawnPos_pool_init = 1;
+    }
+    UnitMaskPool_Clear(&Snowball_FindSpawnPos_pool);
     u32 by, bx, ly, lx, k;
     for (by = 1; by < 6; by++) {
         for (bx = 1; bx < 6; bx++) {
@@ -338,7 +346,7 @@ extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
                     s32 x, y;
                     FieldUnit_FromBlockUnit(&x, &y, bx, by, lx, ly);
                     if (!Ground_IsFreeGrassOffPath(x, y) || !Ground_IsFreeGrass(x, y + 1) || !Ground_IsFreeGrass(x, y + 2)) {
-                        UnitMaskPool_Mark(&pool, x, y);
+                        UnitMaskPool_Mark(&Snowball_FindSpawnPos_pool, x, y);
                     } else if (d != 0) {
                         s32 ex = *(volatile s32 *)&x;
                         s32 ey = *(volatile s32 *)&y;
@@ -346,7 +354,7 @@ extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
                         s32 hy = ey >> 4;
                         u16 *cell = BlockMap_GetItemPtr(g, hx, hy, ex - (hx << 4), ey - (hy << 4), 0);
                         if (cell != 0 && *cell != 0xfff1) {
-                            UnitMaskPool_Mark(&pool, x, y);
+                            UnitMaskPool_Mark(&Snowball_FindSpawnPos_pool, x, y);
                         }
                     }
                 }
@@ -359,12 +367,12 @@ extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
         s32 yy, xx;
         for (yy = py - 7; yy <= py + 7; yy++) {
             for (xx = px - 7; xx <= px + 7; xx++) {
-                UnitMaskPool_Mark(&pool, xx, yy);
+                UnitMaskPool_Mark(&Snowball_FindSpawnPos_pool, xx, yy);
             }
         }
     }
     s32 ox, oy;
-    if (UnitMaskPool_PickRandom(&pool, &ox, &oy)) {
+    if (UnitMaskPool_PickRandom(&Snowball_FindSpawnPos_pool, &ox, &oy)) {
         FieldPos_FromUnitCenter(b, ox, oy);
         return TRUE;
     } else if (d != 0) {
@@ -372,3 +380,13 @@ extern "C" BOOL Snowball_FindSpawnPos(void *a, VecFx32 *b, VecFx32 *c, s32 d) {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_0222e734) {
+    HOST_OVERLAY_VAR(sSnowballs),
+    HOST_OVERLAY_VAR(Snowball_FindSpawnPos_pool),
+    HOST_OVERLAY_VAR(Snowball_FindSpawnPos_pool_init),
+    HOST_OVERLAY_VARS_END
+};

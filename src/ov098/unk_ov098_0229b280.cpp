@@ -1,4 +1,6 @@
 #include "types.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerData.h"
@@ -46,7 +48,7 @@ void BottleThrow_SetTarget(VecFx32 *v, s32 i);
 s32 PlayerActor_LocalRequestBuryItem(VecFx32 *p, u16 *b);
 
 extern BlockMap *gSceneBlockMap;
-extern u8 data_021e7f8c[];  // the town exchange record (TownExchangeRecord) of the save data
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)  // the town exchange record (TownExchangeRecord) of the save data
 extern u16 gPad[];
 extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
 }
@@ -75,10 +77,7 @@ static inline BOOL Unk_ov098_0229b2d8_Both() {
 
 struct Unk_ov098_0229b790_Pt {
     s32 x, y;
-    Unk_ov098_0229b790_Pt(s32 a, s32 b) {
-        x = a;
-        y = b;
-    }
+    constexpr Unk_ov098_0229b790_Pt(s32 a, s32 b) : x(a), y(b) {}
 };
 
 extern "C" {
@@ -91,7 +90,7 @@ extern "C" s32 PocketMenu_CanDropOutdoor(PocketMenu *self, u32 b) {
             return 0;
         }
     }
-    return InvItem_IsNotFishInsectOrFlower(b);
+    return Shared_InvItem_IsNotFishInsectOrFlower(b);
 }
 
 void PocketMenu::addFieldOptions(u16 v) {
@@ -166,7 +165,7 @@ void PocketMenu::actionReleaseFish() {
 }
 
 void PocketMenu::mainAct30() {
-    u32 r6 = PocketMenu_GetPlayerSlot();
+    u32 r6 = Shared_PocketMenu_GetPlayerSlot();
     s32 a = PocketMenu_GetItem(this, actionTarget);
     if (FishCatch_StartRelease(r6, a, &waterPos)) {
         struct {
@@ -188,7 +187,7 @@ void PocketMenu::mainAct30() {
         }
         sendFishReleasePacket((u8)r1);
         PlayerActor_LocalReleaseCatch(1);
-        PocketMenu_StartRemoveBlink(this);
+        Shared_PocketMenu_StartRemoveBlink(this);
     }
 }
 
@@ -216,7 +215,7 @@ void PocketMenu::actionReleaseInsect() {
 }
 
 void PocketMenu::mainAct2C() {
-    u32 r7 = PocketMenu_GetPlayerSlot();
+    u32 r7 = Shared_PocketMenu_GetPlayerSlot();
     if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
         l.a = PocketMenu_GetItem(this, actionTarget);
@@ -235,7 +234,7 @@ void PocketMenu::mainAct2C() {
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
         sendInsectReleasePacket((u8)r5, t);
-        PocketMenu_StartRemoveBlink(this);
+        Shared_PocketMenu_StartRemoveBlink(this);
     }
 }
 
@@ -252,8 +251,8 @@ void PocketMenu::sendInsectReleasePacket(u8 a, u32 b) {
     }
 }
 
-s32 *PocketMenu::getDirOffset(s16 a) {
-    static Unk_ov098_0229b790_Pt tbl[16] = {
+// PocketMenu::getDirOffset's static tbl
+Unk_ov098_0229b790_Pt PocketMenu_getDirOffset_tbl[16] = {
         Unk_ov098_0229b790_Pt(0, 1),   Unk_ov098_0229b790_Pt(1, 1),   Unk_ov098_0229b790_Pt(1, 1),
         Unk_ov098_0229b790_Pt(1, 0),   Unk_ov098_0229b790_Pt(1, 0),   Unk_ov098_0229b790_Pt(1, -1),
         Unk_ov098_0229b790_Pt(1, -1),  Unk_ov098_0229b790_Pt(0, -1),  Unk_ov098_0229b790_Pt(0, -1),
@@ -261,7 +260,8 @@ s32 *PocketMenu::getDirOffset(s16 a) {
         Unk_ov098_0229b790_Pt(-1, 0),  Unk_ov098_0229b790_Pt(-1, 1),  Unk_ov098_0229b790_Pt(-1, 1),
         Unk_ov098_0229b790_Pt(0, 1),
     };
-    return &tbl[(a >> 12) & 15].x;
+s32 *PocketMenu::getDirOffset(s16 a) {
+    return &PocketMenu_getDirOffset_tbl[(a >> 12) & 15].x;
 }
 
 BOOL PocketMenu::findBuryHole() {
@@ -376,19 +376,19 @@ void PocketMenu::actionPlantItem() {
 void PocketMenu::actionThrowBottle() {
     sendBottleLetter();
     PlayerActor_LocalRequestThrowBottle();
-    BottleThrow_SetTarget(&waterPos, PocketMenu_GetPlayerSlot());
+    BottleThrow_SetTarget(&waterPos, Shared_PocketMenu_GetPlayerSlot());
     PocketMenu_ClearLetter(this, actionTarget);
     setMainState(0x33);
 }
 
 void PocketMenu::mainAct33() {
-    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot()) == 1) {
+    if (BottleThrow_IsActive(Shared_PocketMenu_GetPlayerSlot()) == 1) {
         setMainState(0x34);
     }
 }
 
 void PocketMenu::mainAct34() {
-    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot()) == 0) {
+    if (BottleThrow_IsActive(Shared_PocketMenu_GetPlayerSlot()) == 0) {
         PocketMenu_ReturnToIdle(this);
     }
 }
@@ -457,3 +457,11 @@ void PocketMenu::mainAct39() {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov098_0229b280) {
+    HOST_OVERLAY_VAR(sBuryHoleAngles),
+    HOST_OVERLAY_VAR(PocketMenu_getDirOffset_tbl),
+    HOST_OVERLAY_VARS_END
+};

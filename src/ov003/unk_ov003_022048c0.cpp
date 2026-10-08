@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_labels.h"
 #include "proto/main/unk_020b4828.h"
 #include "sys/StackPad.h"
 #include "actor/ActorProfile.h"
@@ -31,7 +32,7 @@
 struct TouchPicker;
 
 extern "C" {
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 u8 *SaveVillagers_Get(u8 *p, s32 i);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
@@ -221,3 +222,18 @@ extern "C" VillagerBoard *VillagerBoard_Get(s32 i) {
     return 0;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022048c0) {
+    HOST_OVERLAY_VAR(data_ov003_02234f80),
+    HOST_OVERLAY_VAR(data_ov003_02234f64),
+    HOST_OVERLAY_VAR(data_ov003_02234f68),
+    HOST_OVERLAY_VAR(data_ov003_02234f70),
+    HOST_OVERLAY_VAR(data_ov003_02234f6c),
+    HOST_OVERLAY_VAR(data_ov003_02234f74),
+    HOST_OVERLAY_VAR(sVillagerBoardCount),
+    HOST_OVERLAY_VAR(sVillagerBoardProfile),
+    HOST_OVERLAY_VAR(sVillagerBoards),
+    HOST_OVERLAY_VARS_END
+};

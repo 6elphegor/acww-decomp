@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -O4,s -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "field/Unk_ov003_02214494_Views.h"
 #include "actor/ActorProfile.h"
@@ -52,7 +53,7 @@ s32 Scene_GetCurrent();
 s32 Ground_GetDefaultY(u32 a);
 s32 ReddPassword_LearnCurrentPlayer();
 s32 ReddPassword_CurrentPlayerKnows();
-extern ReddShop data_021ed2c0;
+#define data_021ed2c0 HOST_LABEL(ReddShop *, data_021ed2c0)
 void Clock_GetDateTime(ClockDateTime *p);
 }
 
@@ -381,3 +382,17 @@ void ReddTent::execTentWarp() {
         }
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02214494) {
+    HOST_OVERLAY_VAR(data_ov003_02235144),
+    HOST_OVERLAY_VAR(data_ov003_02235160),
+    HOST_OVERLAY_VAR(data_ov003_0223514c),
+    HOST_OVERLAY_VAR(data_ov003_02235158),
+    HOST_OVERLAY_VAR(data_ov003_0223515c),
+    HOST_OVERLAY_VAR(data_ov003_02235148),
+    HOST_OVERLAY_VAR(sReddTentProfile),
+    HOST_OVERLAY_VARS_END
+};

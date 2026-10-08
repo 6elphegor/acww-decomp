@@ -8,10 +8,12 @@
 // This is the PlayerId record (PlayerId::equals = 0x020941e8). Used in src/main/unk_02070560.cpp and
 // src/main/unk_020720f8.cpp (the func_020941e8 declaration has no symbol of its own and is never called).
 
+extern "C" void TownId_Construct();
+extern "C" void TownId_Destruct();
 class Unk_020942c8 {
 public:
-    Unk_020942c8();
-    ~Unk_020942c8();
+    Unk_020942c8() { TownId_Construct(); }  // the code of PlayerId(void *), whose name symbols.txt gives it
+    ~Unk_020942c8() { TownId_Destruct(); }  // the code of PlayerId(), whose name symbols.txt gives it
     /* 0x00 */ u16 townId;
     /* 0x02 */ EncodedName8 townName;
     /* 0x0a */ u16 playerId;

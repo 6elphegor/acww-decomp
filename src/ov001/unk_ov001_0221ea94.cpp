@@ -36,3 +36,16 @@ void WfcTop_TransferTask(void *task)
     WfcTask_RequestDelete(1, task);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221ea94) {
+    HOST_OVERLAY_VAR(data_ov001_0222b46c),
+    HOST_OVERLAY_VAR(data_ov001_0222b480),
+    HOST_OVERLAY_VAR(data_ov001_0222b494),
+    HOST_OVERLAY_VAR(data_ov001_0222b4a8),
+    HOST_OVERLAY_VAR(data_ov001_0222b4bc),
+    HOST_OVERLAY_VAR(sWfcTopScreenPaths),
+    HOST_OVERLAY_VAR(sWfcTopScreenData),
+    HOST_OVERLAY_VARS_END
+};

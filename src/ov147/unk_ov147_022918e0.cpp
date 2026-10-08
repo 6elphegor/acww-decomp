@@ -1,4 +1,6 @@
 #include "types.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "menu/TitleBlinkText.h"
 #include "save/SaveData.h"
@@ -62,8 +64,8 @@ void MI_CpuCopy8(void *a, void *b, u32 n);
 void MI_CpuFill8(void *a, s32 b, u32 n);
 u32 Clock_GetTimeOfDay();
 
-extern u8 data_021e7f8c[];
-extern u8 gSavePlayers[];
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern SaveData gSaveData;
 extern u8 gTalkMsgIndexEnd;
 }
@@ -496,36 +498,80 @@ TitleTalk::~TitleTalk() {}
 
 void TitleTalk::setOwner(void *owner) { titleScreen = (TitleScreen *)owner; }
 
-void TitleTalk::onMessageEnd(u32) {
-    static u8 s258[4] = { 0x02, 0x0a, 0x0b, 0x05 };
-    static u8 s260[4] = { 2, 0x37, 1, gTalkMsgIndexEnd };
-    static u8 s250[4] = { 0x00, 0x0a, 0x0b, 0x05 };
-    static u8 s268[4] = { gTalkMsgIndexEnd, 0x37, 1, gTalkMsgIndexEnd };
-    static u8 s244[2] = { 0x12, 0x13 };
-    static u8 s254[4] = { gTalkMsgIndexEnd, 0x37, 1, gTalkMsgIndexEnd };
-    static u8 s27c[5] = { 0x01, 0x02, 0x0a, 0x0b, 0x05 };
-    static u8 s284[5] = { gTalkMsgIndexEnd, 2, 0x37, 1, gTalkMsgIndexEnd };
-    static u8 s274[4] = { 0x03, 0x18, 0x0e, 0x05 };
-    static u8 s264[4] = { 0x09, 0x30, 0x00, 0x31 };
-    static u8 s248[3] = { 0x18, 0x0e, 0x05 };
-    static u8 s26c[4] = { 0x01, 0x0a, 0x0b, 0x05 };
-    static u8 s25c[4] = { 0x03, 0x04, 0x0e, 0x05 };
-    static u8 s278[4] = { 0x09, 0x03, 0x00, 0x31 };
-    static u8 s28c[5] = { 0x03, 0x04, 0x18, 0x0e, 0x05 };
-    static u8 s294[5] = { 0x09, 0x03, 0x30, 0x00, 0x31 };
-    static u8 s24c[3] = { 0x30, 0x00, 0x31 };
-    static u8 s240[2] = { gTalkMsgIndexEnd, 0x31 };
-    static TitleChoiceSet descs[9] = {
-        { s258, s260, 4 },
-        { s250, s268, 4 },
-        { s26c, s254, 4 },
-        { s27c, s284, 5 },
-        { s274, s264, 4 },
-        { s248, s24c, 3 },
-        { s25c, s278, 4 },
-        { s28c, s294, 5 },
-        { s244, s240, 2 },
+// TitleTalk::onMessageEnd's static s258
+u8 TitleTalk_onMessageEnd_s258[4] = { 0x02, 0x0a, 0x0b, 0x05 };
+// TitleTalk::onMessageEnd's static s260, initialised at its first use after the overlay was loaded
+u8 TitleTalk_onMessageEnd_s260[4];
+u8 TitleTalk_onMessageEnd_s260_init;
+// TitleTalk::onMessageEnd's static s250
+u8 TitleTalk_onMessageEnd_s250[4] = { 0x00, 0x0a, 0x0b, 0x05 };
+// TitleTalk::onMessageEnd's static s268, initialised at its first use after the overlay was loaded
+u8 TitleTalk_onMessageEnd_s268[4];
+u8 TitleTalk_onMessageEnd_s268_init;
+// TitleTalk::onMessageEnd's static s244
+u8 TitleTalk_onMessageEnd_s244[2] = { 0x12, 0x13 };
+// TitleTalk::onMessageEnd's static s254, initialised at its first use after the overlay was loaded
+u8 TitleTalk_onMessageEnd_s254[4];
+u8 TitleTalk_onMessageEnd_s254_init;
+// TitleTalk::onMessageEnd's static s27c
+u8 TitleTalk_onMessageEnd_s27c[5] = { 0x01, 0x02, 0x0a, 0x0b, 0x05 };
+// TitleTalk::onMessageEnd's static s284, initialised at its first use after the overlay was loaded
+u8 TitleTalk_onMessageEnd_s284[5];
+u8 TitleTalk_onMessageEnd_s284_init;
+// TitleTalk::onMessageEnd's static s274
+u8 TitleTalk_onMessageEnd_s274[4] = { 0x03, 0x18, 0x0e, 0x05 };
+// TitleTalk::onMessageEnd's static s264
+u8 TitleTalk_onMessageEnd_s264[4] = { 0x09, 0x30, 0x00, 0x31 };
+// TitleTalk::onMessageEnd's static s248
+u8 TitleTalk_onMessageEnd_s248[3] = { 0x18, 0x0e, 0x05 };
+// TitleTalk::onMessageEnd's static s26c
+u8 TitleTalk_onMessageEnd_s26c[4] = { 0x01, 0x0a, 0x0b, 0x05 };
+// TitleTalk::onMessageEnd's static s25c
+u8 TitleTalk_onMessageEnd_s25c[4] = { 0x03, 0x04, 0x0e, 0x05 };
+// TitleTalk::onMessageEnd's static s278
+u8 TitleTalk_onMessageEnd_s278[4] = { 0x09, 0x03, 0x00, 0x31 };
+// TitleTalk::onMessageEnd's static s28c
+u8 TitleTalk_onMessageEnd_s28c[5] = { 0x03, 0x04, 0x18, 0x0e, 0x05 };
+// TitleTalk::onMessageEnd's static s294
+u8 TitleTalk_onMessageEnd_s294[5] = { 0x09, 0x03, 0x30, 0x00, 0x31 };
+// TitleTalk::onMessageEnd's static s24c
+u8 TitleTalk_onMessageEnd_s24c[3] = { 0x30, 0x00, 0x31 };
+// TitleTalk::onMessageEnd's static s240, initialised at its first use after the overlay was loaded
+u8 TitleTalk_onMessageEnd_s240[2];
+u8 TitleTalk_onMessageEnd_s240_init;
+// TitleTalk::onMessageEnd's static descs
+TitleChoiceSet TitleTalk_onMessageEnd_descs[9] = {
+        { TitleTalk_onMessageEnd_s258, TitleTalk_onMessageEnd_s260, 4 },
+        { TitleTalk_onMessageEnd_s250, TitleTalk_onMessageEnd_s268, 4 },
+        { TitleTalk_onMessageEnd_s26c, TitleTalk_onMessageEnd_s254, 4 },
+        { TitleTalk_onMessageEnd_s27c, TitleTalk_onMessageEnd_s284, 5 },
+        { TitleTalk_onMessageEnd_s274, TitleTalk_onMessageEnd_s264, 4 },
+        { TitleTalk_onMessageEnd_s248, TitleTalk_onMessageEnd_s24c, 3 },
+        { TitleTalk_onMessageEnd_s25c, TitleTalk_onMessageEnd_s278, 4 },
+        { TitleTalk_onMessageEnd_s28c, TitleTalk_onMessageEnd_s294, 5 },
+        { TitleTalk_onMessageEnd_s244, TitleTalk_onMessageEnd_s240, 2 },
     };
+void TitleTalk::onMessageEnd(u32) {
+    if (!TitleTalk_onMessageEnd_s260_init) {
+        HOST_STATIC_INIT_ARRAY(TitleTalk_onMessageEnd_s260, { 2, 0x37, 1, gTalkMsgIndexEnd });
+        TitleTalk_onMessageEnd_s260_init = 1;
+    }
+    if (!TitleTalk_onMessageEnd_s268_init) {
+        HOST_STATIC_INIT_ARRAY(TitleTalk_onMessageEnd_s268, { gTalkMsgIndexEnd, 0x37, 1, gTalkMsgIndexEnd });
+        TitleTalk_onMessageEnd_s268_init = 1;
+    }
+    if (!TitleTalk_onMessageEnd_s254_init) {
+        HOST_STATIC_INIT_ARRAY(TitleTalk_onMessageEnd_s254, { gTalkMsgIndexEnd, 0x37, 1, gTalkMsgIndexEnd });
+        TitleTalk_onMessageEnd_s254_init = 1;
+    }
+    if (!TitleTalk_onMessageEnd_s284_init) {
+        HOST_STATIC_INIT_ARRAY(TitleTalk_onMessageEnd_s284, { gTalkMsgIndexEnd, 2, 0x37, 1, gTalkMsgIndexEnd });
+        TitleTalk_onMessageEnd_s284_init = 1;
+    }
+    if (!TitleTalk_onMessageEnd_s240_init) {
+        HOST_STATIC_INIT_ARRAY(TitleTalk_onMessageEnd_s240, { gTalkMsgIndexEnd, 0x31 });
+        TitleTalk_onMessageEnd_s240_init = 1;
+    }
     TalkWindowState *r5 = TalkWindow_Get(0);
     s32 r6 = PlayerDataArray_CountUsed(gSavePlayers);
     s32 r0 = gSaveData.isValid();
@@ -540,24 +586,24 @@ void TitleTalk::onMessageEnd(u32) {
     case 0x2f:
     case 0x31:
         if (r6 <= 0 && r0 != 0) {
-            openChoiceSet(&descs[0]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[0]);
         } else if (r0 == 0) {
-            openChoiceSet(&descs[1]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[1]);
         } else if (r6 == 4) {
-            openChoiceSet(&descs[2]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[2]);
         } else {
-            openChoiceSet(&descs[3]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[3]);
         }
         break;
     case 1:
         if (r6 <= 0 && r0 != 0) {
-            openChoiceSet(&descs[4]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[4]);
         } else if (r0 == 0) {
-            openChoiceSet(&descs[5]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[5]);
         } else if (r6 == 4) {
-            openChoiceSet(&descs[6]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[6]);
         } else {
-            openChoiceSet(&descs[7]);
+            openChoiceSet(&TitleTalk_onMessageEnd_descs[7]);
         }
         break;
     case 0x27:
@@ -586,13 +632,13 @@ void TitleTalk::onMessageEnd(u32) {
         r2->changeState(3);
         break;
     case 0:
-        openChoiceSet(&descs[8]);
+        openChoiceSet(&TitleTalk_onMessageEnd_descs[8]);
         break;
     case 0x30:
-        openChoiceSet(&descs[8]);
+        openChoiceSet(&TitleTalk_onMessageEnd_descs[8]);
         break;
     case 0x35:
-        openChoiceSet(&descs[8]);
+        openChoiceSet(&TitleTalk_onMessageEnd_descs[8]);
         break;
     case 0x24:
         r5->setSilent();
@@ -667,17 +713,22 @@ void TitleTalk::onWindowClose() {
     }
 }
 
+typedef void (TitleTalk::*TitleTalk_onChoice_Fn)();
+// TitleTalk::onChoice's static t0
+TitleTalk_onChoice_Fn TitleTalk_onChoice_t0[4] = { 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
+// TitleTalk::onChoice's static t1
+TitleTalk_onChoice_Fn TitleTalk_onChoice_t1[4] = { &TitleTalk::chooseNewGame, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
+// TitleTalk::onChoice's static t2
+TitleTalk_onChoice_Fn TitleTalk_onChoice_t2[4] = { &TitleTalk::chooseContinue, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
+// TitleTalk::onChoice's static t3
+TitleTalk_onChoice_Fn TitleTalk_onChoice_t3[5] = { &TitleTalk::chooseContinue, 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
 void TitleTalk::onChoice(u32) {
     typedef void (TitleTalk::*Fn)();
     TalkWindowState *sp0 = TalkWindow_Get(0);
     s32 r5 = sp0->getChoiceList()->getResult();
     s32 sp4 = PlayerDataArray_CountUsed(gSavePlayers);
     s32 sp8 = gSaveData.isValid();
-    static Fn t0[4] = { 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
-    static Fn t1[4] = { &TitleTalk::chooseNewGame, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
-    static Fn t2[4] = { &TitleTalk::chooseContinue, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
-    static Fn t3[5] = { &TitleTalk::chooseContinue, 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
-    static Fn *tbl[4] = { t0, t1, t2, t3 };
+    static Fn *tbl[4] = { TitleTalk_onChoice_t0, TitleTalk_onChoice_t1, TitleTalk_onChoice_t2, TitleTalk_onChoice_t3 };
     s32 mode = 3;
     switch (msgIndex) {
     case 0:
@@ -942,3 +993,47 @@ extern "C" char *sTitleTalkFilePtr = sTitleTalkFile;
 extern "C" u32 sTitleLogoCharsWork[0x1c0][8] = { 0 };
 extern "C" u32 sTitleLogoChars[0x1c0][8] = { 0 };
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov147_022918e0) {
+    HOST_OVERLAY_VAR(sTitleLogoRevealMasks),
+    HOST_OVERLAY_VAR(sTitleTalkFile),
+    HOST_OVERLAY_VAR(sTitleStates),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s258),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s260),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s260_init),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s250),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s268),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s268_init),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s244),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s254),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s254_init),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s27c),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s284),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s284_init),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s274),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s264),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s248),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s26c),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s25c),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s278),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s28c),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s294),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s24c),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s240),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_s240_init),
+    HOST_OVERLAY_VAR(TitleTalk_onMessageEnd_descs),
+    HOST_OVERLAY_VAR(TitleTalk_onChoice_t0),
+    HOST_OVERLAY_VAR(TitleTalk_onChoice_t1),
+    HOST_OVERLAY_VAR(TitleTalk_onChoice_t2),
+    HOST_OVERLAY_VAR(TitleTalk_onChoice_t3),
+    HOST_OVERLAY_VAR(sTitleLogoHideMasks),
+    HOST_OVERLAY_VAR(sTitleLogoScreen),
+    HOST_OVERLAY_VAR(sTitleLogoMask2),
+    HOST_OVERLAY_VAR(sTitleScreenProfile),
+    HOST_OVERLAY_VAR(sTitleTalkFilePtr),
+    HOST_OVERLAY_VAR(sTitleLogoCharsWork),
+    HOST_OVERLAY_VAR(sTitleLogoChars),
+    HOST_OVERLAY_VARS_END
+};

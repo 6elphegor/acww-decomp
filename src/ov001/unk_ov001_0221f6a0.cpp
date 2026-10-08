@@ -281,3 +281,11 @@ extern "C" const WMScanExParam sWfcUsbScanParam = {
 };
 extern "C" WfcUsbScanWork *sWfcUsbScan = 0;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221f6a0) {
+    HOST_OVERLAY_VAR(sWfcUsbScan),
+    HOST_OVERLAY_VARS_END
+};

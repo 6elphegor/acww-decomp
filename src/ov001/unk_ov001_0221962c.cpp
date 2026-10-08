@@ -187,3 +187,11 @@ extern "C" void WfcApSearch_WaitDialogClosed() {
     WfcUtil_SetScene(WfcApSearch_StartExit);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221962c) {
+    HOST_OVERLAY_VAR(sWfcApSearchResult),
+    HOST_OVERLAY_VAR(sWfcApSearchTimer),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
@@ -38,7 +39,7 @@ BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequestFlags_SetEventWarpBlock();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 }
 
 
@@ -378,3 +379,13 @@ void SpNpcTortimer::onInteractionEvent(u32 a, u8 b) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov080_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcTortimerActTable),
+    HOST_OVERLAY_VAR(sSpNpcTortimerTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerModelPath),
+    HOST_OVERLAY_VAR(sSpNpcTortimerProfile),
+    HOST_OVERLAY_VARS_END
+};

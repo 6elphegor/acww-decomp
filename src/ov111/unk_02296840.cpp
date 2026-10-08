@@ -1,5 +1,6 @@
 // ov111: scene overlay (class ChatMenu, vtable 0x02298a48, 0x3e58 bytes): a character/name entry screen.
 #include "types.h"
+#include "host_shared_calls.h"
 #include "net/CommManager.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -421,7 +422,7 @@ void ChatMenu::transitionAct00() {
 }
 
 void ChatMenu::transitionAct01() {
-    Keyboard_LoadEmotionIcons(&this->keyboard);
+    Shared_Keyboard_LoadEmotionIcons(&this->keyboard);
     ChatMenu_LoadBg(this);
     this->setTransitionState(2);
     if (this->testFlags(0x20) == 0) {
@@ -430,7 +431,7 @@ void ChatMenu::transitionAct01() {
 }
 
 void ChatMenu::transitionAct02() {
-    Keyboard_RestoreLastPage(&this->keyboard, 6);
+    Shared_Keyboard_RestoreLastPage(&this->keyboard, 6);
     this->endKeyboardFrame();
     this->setFlags(4);
     this->beginSubSlideIn(8, 3, 0, 0x30);
@@ -494,10 +495,10 @@ void ChatMenu::mainAct00() {
 void ChatMenu::mainAct01() {
     if (gTouchHeld == 0) {
         this->setMainState(0);
-    } else if (Keyboard_TickKeyRepeat(&this->keyboard) != 0) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&this->keyboard) != 0) {
         s32 r5 = Keyboard_GetPressedKey(&this->keyboard);
         this->pressKeyCode(Keyboard_GetKeyCode(&this->keyboard, r5, 8));
-        Keyboard_HighlightKey(&this->keyboard, r5);
+        Shared_Keyboard_HighlightKey(&this->keyboard, r5);
     }
 }
 
@@ -566,15 +567,15 @@ void ChatMenu::mainAct04() {
 
 void ChatMenu::mainAct05() {
     if (this->cursor.isAnimDone() != 0) {
-        s32 r6 = Keyboard_PressCursorKey(&this->keyboard);
+        s32 r6 = Shared_Keyboard_PressCursorKey(&this->keyboard);
         s32 r4 = this->pressKeyCode(Keyboard_GetKeyCode(&this->keyboard, r6, 8));
         if (r4 != 3) {
             if (r4 == 1 && (gPad[0] & 1) != 0) {
                 Keyboard_StartKeyRepeat(&this->keyboard);
                 this->setMainState(6);
-                Keyboard_HighlightKey(&this->keyboard, r6);
+                Shared_Keyboard_HighlightKey(&this->keyboard, r6);
             } else {
-                Keyboard_ClearHighlight(&this->keyboard);
+                Shared_Keyboard_ClearHighlight(&this->keyboard);
                 if (r4 != 4) {
                     this->releaseCursor();
                 }
@@ -585,12 +586,12 @@ void ChatMenu::mainAct05() {
 
 void ChatMenu::mainAct06() {
     if ((gPad[0] & 1) == 0) {
-        Keyboard_ClearHighlight(&this->keyboard);
+        Shared_Keyboard_ClearHighlight(&this->keyboard);
         this->releaseCursor();
-    } else if (Keyboard_TickKeyRepeat(&this->keyboard) != 0) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&this->keyboard) != 0) {
         s32 r5 = Keyboard_GetPressedKey(&this->keyboard);
         this->pressKeyCode(Keyboard_GetKeyCode(&this->keyboard, r5, 8));
-        Keyboard_HighlightKey(&this->keyboard, r5);
+        Shared_Keyboard_HighlightKey(&this->keyboard, r5);
     }
 }
 
@@ -603,7 +604,7 @@ void ChatMenu::mainAct07() {
 void ChatMenu::mainAct08() {
     if ((gPad[0] & 2) == 0) {
         this->setMainState(this->returnState);
-    } else if (Keyboard_TickKeyRepeat(&this->keyboard) != 0) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&this->keyboard) != 0) {
         this->pressKeyCode(0x100);
         if (this->testFlags(2) != 0) {
             this->snapCursor();
@@ -618,7 +619,7 @@ void ChatMenu::mainAct09() {
     }
     switch (this->navigateText(this->takeRepeatedKeys())) {
     case 1:
-        Keyboard_ResetTypedRun(&this->keyboard);
+        Shared_Keyboard_ResetTypedRun(&this->keyboard);
         this->clearSelection();
         this->updateCaretX();
         ChatMenu_RedrawText(this);
@@ -626,7 +627,7 @@ void ChatMenu::mainAct09() {
         Snd_PlaySe(0xb);
         break;
     case 4:
-        Keyboard_SelectSendKey(&this->keyboard);
+        Shared_Keyboard_SelectSendKey(&this->keyboard);
         this->clearFlags(2);
         this->setMainState(3);
         this->moveCursorToTarget();
@@ -639,7 +640,7 @@ void ChatMenu::mainAct09() {
         this->moveCursorToTarget();
         break;
     case 3:
-        Keyboard_EnterTabRowAtX2(&this->keyboard, ((MenuCursorBase *)&this->cursor)->getScreenX());
+        Shared_Keyboard_EnterTabRowAtX2(&this->keyboard, ((MenuCursorBase *)&this->cursor)->getScreenX());
         this->clearFlags(2);
         this->setMainState(3);
         this->moveCursorToTarget();
@@ -678,7 +679,7 @@ void ChatMenu::mainAct0A() {
             this->clearFlags(1);
         }
     } else if (this->navigateText(this->takeRepeatedKeys()) == 1) {
-        Keyboard_ResetTypedRun(&this->keyboard);
+        Shared_Keyboard_ResetTypedRun(&this->keyboard);
         this->updateCaretX();
         this->selectionEnd = this->caretIndex;
         this->snapCursor();
@@ -724,7 +725,7 @@ void ChatMenu_ResumeInput(S *s) {
 }
 
 void ChatMenu_PlayEmotion(S *s) {
-    u8 b = Keyboard_GetSelectedEmotion(&s->keyboard);
+    u8 b = Shared_Keyboard_GetSelectedEmotion(&s->keyboard);
     PlayerActor_RequestEmotion(&b);
     s->emotionTimer = 0x14;
 }
@@ -754,7 +755,7 @@ void ChatMenu::mainAct0D() {
     } else if (this->sendAnimDelay != 0) {
         this->sendAnimDelay = *(volatile u8 *)&this->sendAnimDelay - 1;
     } else {
-        Keyboard_ResetTypedRun(&this->keyboard);
+        Shared_Keyboard_ResetTypedRun(&this->keyboard);
         this->setMainState(0xe);
     }
 }
@@ -842,7 +843,7 @@ void ChatMenu_LoadSendAnimFrame(S *s, u32 a) {
         }
     }
     Heap_Free(g, r);
-    Keyboard_MarkScreenDirty(&s->keyboard);
+    Shared_Keyboard_MarkScreenDirty(&s->keyboard);
 }
 
 void ChatMenu_DrawKeyboard(S *s) {
@@ -866,7 +867,7 @@ void ChatMenu_DrawKeyboard(S *s) {
     if (s->sendAnimFrame == 0 && (s->caretBlinkTimer & 0x10) != 0) {
         Keyboard_DrawCaret(&s->keyboard, s->caretX + 0x18, r4 - 0x38, 2);
     }
-    Keyboard_DrawCopyPasteKeysChat(&s->keyboard, 0x80, r4);
+    Shared_Keyboard_DrawCopyPasteKeysChat(&s->keyboard, 0x80, r4);
     Keyboard_DrawLengthGauge(&s->keyboard, 0x80, r4, s->lengthGauge);
 }
 
@@ -899,7 +900,7 @@ void ChatMenu_CreateTextLabel(S *s) {
                 }
                 s->textLabel->setHighlight(2, 1, lo, cnt);
             } else {
-                u32 r = Keyboard_GetTypedRunLength(&s->keyboard);
+                u32 r = Shared_Keyboard_GetTypedRunLength(&s->keyboard);
                 if (r != 0) {
                     s->textLabel->setHighlight(0xe, 2, s->caretIndex - r, r);
                 }
@@ -939,7 +940,7 @@ void ChatMenu_BeginSend(S *s) {
 BOOL ChatMenu_InsertChar(S *s, u32 a) {
     if (s->hasSelection()) {
         ChatMenu_DeleteSelection(s);
-        Keyboard_ResetTypedRun(&s->keyboard);
+        Shared_Keyboard_ResetTypedRun(&s->keyboard);
     }
     if (Keyboard_InsertChar(&s->keyboard, s->text.text, a, &s->caretIndex, 0x20, 0xa0, 0, 1)) {
         s->updateCaretX();
@@ -952,7 +953,7 @@ BOOL ChatMenu_InsertChar(S *s, u32 a) {
 
 BOOL ChatMenu_Backspace(S *s, Unk_ov111_022970cc_Status a) {
     if (s->hasSelection()) {
-        Keyboard_ResetTypedRun(&s->keyboard);
+        Shared_Keyboard_ResetTypedRun(&s->keyboard);
         Snd_PlaySe(0x35);
     } else if (s->caretIndex != 0) {
         s->selectionStart = s->caretIndex;
@@ -985,7 +986,7 @@ void ChatMenu_DeleteSelection(S *s) {
         lo = b;
         hi = a;
     }
-    s->caretIndex = Keyboard_DeleteRange(&s->keyboard, s->text.text, lo, hi, 0x20);
+    s->caretIndex = Shared_Keyboard_DeleteRange(&s->keyboard, s->text.text, lo, hi, 0x20);
     s->clearSelection();
 }
 
@@ -994,7 +995,7 @@ BOOL ChatMenu_TryModifier103(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey103(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
+    if (Shared_Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
     return FALSE;
 }
 
@@ -1010,9 +1011,9 @@ void ChatMenu_ApplyModifier103(S *s) {
 BOOL ChatMenu_TryModifier104(S *s) {
     u32 a = s->getCharBeforeCursor();
     if (a == 0) return FALSE;
-    u32 b = Keyboard_ModifyCharKey104(&s->keyboard, a);
+    u32 b = Shared_Keyboard_ModifyCharKey104(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
+    if (Shared_Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
     return FALSE;
 }
 
@@ -1030,7 +1031,7 @@ BOOL ChatMenu_TryModifier105(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey105(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
+    if (Shared_Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex)) return TRUE;
     return FALSE;
 }
 
@@ -1068,7 +1069,7 @@ void ChatMenu_Copy(S *s) {
         Mem_Clear(s->clipboard, 0x20);
         Mem_Copy(s->text.text + lo, s->clipboard, cnt);
         s->setFlags(8);
-        Keyboard_PlayCopySe();
+        Shared_Keyboard_PlayCopySe();
         s->refreshKeys();
     }
 }
@@ -1080,10 +1081,10 @@ void ChatMenu_Paste(S *s) {
         s32 z;
         Keyboard_BeginPaste(&s->keyboard);
         if (s->hasSelection()) {
-            s->caretIndex = Keyboard_DeleteRange(&s->keyboard, s->text.text, s->selectionStart, s->selectionEnd, 0x20);
+            s->caretIndex = Shared_Keyboard_DeleteRange(&s->keyboard, s->text.text, s->selectionStart, s->selectionEnd, 0x20);
             s->clearFlags(1);
         }
-        Keyboard_ResetTypedRun(&s->keyboard);
+        Shared_Keyboard_ResetTypedRun(&s->keyboard);
         n = Text_GetLength(s->clipboard, 0x20);
         i = 0;
         z = i;
@@ -1108,7 +1109,7 @@ void ChatMenu_PlayErrorSe(S *s) {
 
 s32 ChatMenu::pressKeyCode(u32 x) {
     Unk_ov111_022970cc_Status r = UNK_OV111_ST_1;
-    s32 t = Keyboard_HandleModeKey(&keyboard, x, 6);
+    s32 t = Shared_Keyboard_HandleModeKey(&keyboard, x, 6);
     if (t != 0) {
         ChatMenu_RedrawText(this);
         return t;
@@ -1158,7 +1159,7 @@ s32 ChatMenu::pressKeyCode(u32 x) {
             if (emotionTimer != 0) {
                 return 0;
             }
-            Keyboard_SelectEmotionByCode(&keyboard, x);
+            Shared_Keyboard_SelectEmotionByCode(&keyboard, x);
             ChatMenu_PlayEmotion(this);
             releaseCursor();
             r = UNK_OV111_ST_3;
@@ -1184,13 +1185,13 @@ s32 ChatMenu::pressKeyCode(u32 x) {
 }
 
 s32 ChatMenu::touchKey() {
-    Keyboard_ClearHighlight(&keyboard);
-    s32 r4 = Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
+    Shared_Keyboard_ClearHighlight(&keyboard);
+    s32 r4 = Shared_Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
     if (r4 == -1) {
         return 0;
     }
     s32 r6 = pressKeyCode(Keyboard_GetKeyCode(&keyboard, r4, 8));
-    Keyboard_HighlightKey(&keyboard, r4);
+    Shared_Keyboard_HighlightKey(&keyboard, r4);
     Keyboard_StartKeyRepeat(&keyboard);
     return r6;
 }
@@ -1199,7 +1200,7 @@ BOOL ChatMenu::touchSendKey() {
     if (sendKeyAnim != 0) {
         return FALSE;
     }
-    if (Keyboard_TouchSendKey()) {
+    if (Shared_Keyboard_TouchSendKey()) {
         return startSend();
     }
     return FALSE;
@@ -1257,7 +1258,7 @@ void ChatMenu::dragSelection() {
 void ChatMenu::setCaretFromTouchX(u32 v) {
     caretX = v - 0x18;
     snapCaretToText();
-    Keyboard_ResetTypedRun(&keyboard);
+    Shared_Keyboard_ResetTypedRun(&keyboard);
     ChatMenu_RedrawText(this);
 }
 
@@ -1322,7 +1323,7 @@ BOOL ChatMenu::tryPressKey() {
     if ((gPad[1] & 1) == 0) {
         return FALSE;
     }
-    s32 r4 = Keyboard_PressCursorKey(&keyboard);
+    s32 r4 = Shared_Keyboard_PressCursorKey(&keyboard);
     if (r4 == -1) {
         return FALSE;
     }
@@ -1334,7 +1335,7 @@ BOOL ChatMenu::tryPressKey() {
         }
         return FALSE;
     }
-    Keyboard_HighlightKey(&keyboard, r4);
+    Shared_Keyboard_HighlightKey(&keyboard, r4);
     pressCursor();
     return TRUE;
 }
@@ -1362,7 +1363,7 @@ BOOL ChatMenu::tryPasteButton() {
         return FALSE;
     }
     pressKeyCode(0x119);
-    Keyboard_HighlightKey(&keyboard, 0xdc);
+    Shared_Keyboard_HighlightKey(&keyboard, 0xdc);
     snapCursor();
     returnState = mainState;
     setMainState(0xc);
@@ -1377,7 +1378,7 @@ BOOL ChatMenu::tryCopyButton() {
         return FALSE;
     }
     pressKeyCode(0x118);
-    Keyboard_HighlightKey(&keyboard, 0xdb);
+    Shared_Keyboard_HighlightKey(&keyboard, 0xdb);
     returnState = mainState;
     setMainState(0xb);
     return TRUE;
@@ -1457,20 +1458,20 @@ void ChatMenu::endKeyboardFrame() { Keyboard_EndFrame(&keyboard, 6); }
 void ChatMenu::refreshKeys() {
     Keyboard_DisableKey(&keyboard, 0);
     if (hasSelection()) {
-        Keyboard_EnableKey(&keyboard, 0xb);
+        Shared_Keyboard_EnableKey(&keyboard, 0xb);
     } else {
         Keyboard_DisableKey(&keyboard, 0xb);
     }
     if (testFlags(8)) {
-        Keyboard_EnableKey(&keyboard, 0xc);
+        Shared_Keyboard_EnableKey(&keyboard, 0xc);
     } else {
         Keyboard_DisableKey(&keyboard, 0xc);
     }
     if (hasSelection()) {
-        Keyboard_DisableModifierKeys(&keyboard);
-        Keyboard_EnableKey(&keyboard, 6);
+        Shared_Keyboard_DisableModifierKeys(&keyboard);
+        Shared_Keyboard_EnableKey(&keyboard, 6);
     } else if (caretIndex == 0) {
-        Keyboard_DisableModifierKeys(&keyboard);
+        Shared_Keyboard_DisableModifierKeys(&keyboard);
     } else {
         Keyboard_UpdateModifierKeys(&keyboard, getCharBeforeCursor());
     }
@@ -1501,3 +1502,16 @@ extern "C" char data_ov111_022989f8[] = "menu/chat2/b_cht_1.bsc";
 extern "C" char data_ov111_02298a10[] = "menu/chat2/b_cht_2.bsc";
 
 extern "C" const char *sChatSendAnimScreens[4] = {data_ov111_022989c8, data_ov111_022989e0, data_ov111_022989f8, data_ov111_02298a10};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02296840) {
+    HOST_OVERLAY_VAR(data_ov111_02298920),
+    HOST_OVERLAY_VAR(data_ov111_022989c8),
+    HOST_OVERLAY_VAR(data_ov111_022989e0),
+    HOST_OVERLAY_VAR(data_ov111_022989f8),
+    HOST_OVERLAY_VAR(data_ov111_02298a10),
+    HOST_OVERLAY_VAR(sChatSendAnimScreens),
+    HOST_OVERLAY_VARS_END
+};

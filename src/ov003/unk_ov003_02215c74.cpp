@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU10 (actor 022318e8): .text 0x02215c74-0x02216430
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -28,7 +29,7 @@
 #include "proto/ov003/unk_ov003_022187fc.h"
 
 extern "C" {
-extern SaveVillagers gSaveVillagers;
+#define gSaveVillagers HOST_LABEL(SaveVillagers *, gSaveVillagers)
 extern CommManager *gCommManager;
 extern const u8 sVillagerHouseClosedMsgs[];
 extern const u8 sVillagerHouseClosedMsgsAlt[];
@@ -123,11 +124,12 @@ extern "C" const u8 sVillagerHouseClosedMsgs[8] = { 0x10, 0x11, 0x12, 0x0e, 0x0f
 
 extern "C" ActorProfile sVillagerHouseProfile = { (void *(*)())VillagerHouse_Create, 0x1d, 0x23, 0, 0xc8000, 0x12c000, 0x258000 };
 
+// VillagerHouse::initBuilding's static v
+FxVec3 VillagerHouse_initBuilding_v(-0x2000, 0x1000, 0x2000);
 BOOL VillagerHouse::initBuilding() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    static FxVec3 v(-0x2000, 0x1000, 0x2000);
     VecFx32 tmp;
-    Vec_Add(&tmp, &position, &v);
+    Vec_Add(&tmp, &position, &VillagerHouse_initBuilding_v);
     Actor::spawn(0x18, idx, &tmp, NULL, this);
     sVillagerHouses[idx] = this;
     s32 k = getHouseVariant();
@@ -307,3 +309,15 @@ BOOL VillagerHouse::playsDoorMelody() {
     return TRUE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02215c74) {
+    HOST_OVERLAY_VAR(data_ov003_022352d4),
+    HOST_OVERLAY_VAR(sVillagerHouses),
+    HOST_OVERLAY_VAR(data_ov003_02235308),
+    HOST_OVERLAY_VAR(data_ov003_02235330),
+    HOST_OVERLAY_VAR(sVillagerHouseProfile),
+    HOST_OVERLAY_VAR(VillagerHouse_initBuilding_v),
+    HOST_OVERLAY_VARS_END
+};

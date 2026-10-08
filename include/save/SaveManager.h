@@ -200,18 +200,22 @@ public:
     /* 0x10a */ NibblePair slotOrder;
 };
 
+extern "C" void *AxMail_Construct(void *p);
+extern "C" void *AxMail_Destruct(void *p);
 // the three file-scope objects of __sinit (constructors and destructors are functions of other units)
 class AxMail {
 public:
-    AxMail();
-    ~AxMail();
+    AxMail() { AxMail_Construct(this); }
+    ~AxMail() { AxMail_Destruct(this); }
     u32 unk_00[0x42];
 };
 
+extern "C" void AxBbsNotice_Construct(void);
+extern "C" void AxBbsNotice_Destruct(void);
 class AxBbsNotice {
 public:
-    AxBbsNotice();
-    ~AxBbsNotice();
+    AxBbsNotice() { AxBbsNotice_Construct(); }
+    ~AxBbsNotice() { AxBbsNotice_Destruct(); }
     u8 unk_00[0xd2];
 };
 

@@ -210,3 +210,10 @@ void WfcObj_GetPos(WfcObjGroup *self, s32 idx, u32 *o1, u32 *o2) {
     *o2 = p[idx].attr01 & 0xff;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0222449c) {
+    HOST_OVERLAY_VAR(sWfcObj),
+    HOST_OVERLAY_VARS_END
+};

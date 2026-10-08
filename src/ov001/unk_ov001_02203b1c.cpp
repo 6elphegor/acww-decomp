@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #pragma opt_dead_assignments off
 #include "types.h"
+#include "host_shared_calls.h"
 #include "net/WifiLinkEvent.h"
 #include "net/WifiLinkConfig.h"
 #include "nitro/os_alarm.h"
@@ -1258,7 +1259,7 @@ s32 SimpleStart_ConnectAp(void) {
     }
     if (res > 0) {
         data_ov001_0222c870 = 1;
-        if (Sock_Startup(&sSimpleStartSocConfig) < 0) {
+        if (Shared_Sock_Startup(&sSimpleStartSocConfig) < 0) {
             res = -2;
         } else {
             data_ov001_0222c874 = 1;
@@ -1895,7 +1896,7 @@ s32 SimpleStart_RunProtocol()
             l.req.family = 2;
             l.req.port = 0x1e6;
             l.req.addr = 0;
-            result = Sock_Bind(h, &l.req);
+            result = Shared_Sock_Bind(h, &l.req);
             if (result < 0) {
                 result = -2;
                 done = 1;
@@ -2614,3 +2615,67 @@ void SimpleStart_NotifyStatus(void) {
 
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02203b1c) {
+    HOST_OVERLAY_VAR(data_ov001_0222c898),
+    HOST_OVERLAY_VAR(sSimpleStartStackSize),
+    HOST_OVERLAY_VAR(sSimpleStartAllocFunc),
+    HOST_OVERLAY_VAR(sSimpleStartStep),
+    HOST_OVERLAY_VAR(data_ov001_0222c864),
+    HOST_OVERLAY_VAR(sSimpleStartSetupSsid),
+    HOST_OVERLAY_VAR(data_ov001_0222a548),
+    HOST_OVERLAY_VAR(data_ov001_0222a550),
+    HOST_OVERLAY_VAR(sSimpleStartMd5Padding),
+    HOST_OVERLAY_VAR(sSimpleStartSocConfig),
+    HOST_OVERLAY_VAR(data_ov001_0222c850),
+    HOST_OVERLAY_VAR(data_ov001_0222c894),
+    HOST_OVERLAY_VAR(sSimpleStartDeadline),
+    HOST_OVERLAY_VAR(data_ov001_0222c89c),
+    HOST_OVERLAY_VAR(data_ov001_0222c868),
+    HOST_OVERLAY_VAR(data_ov001_0222a52c),
+    HOST_OVERLAY_VAR(data_ov001_0222a53c),
+    HOST_OVERLAY_VAR(data_ov001_0222c884),
+    HOST_OVERLAY_VAR(sSimpleStartWcmNotifyCb),
+    HOST_OVERLAY_VAR(sSimpleStartStatusCb),
+    HOST_OVERLAY_VAR(sSimpleStartResultCode),
+    HOST_OVERLAY_VAR(data_ov001_0222c8c4),
+    HOST_OVERLAY_VAR(sSimpleStartMaxAps),
+    HOST_OVERLAY_VAR(sSimpleStartMsgTail),
+    HOST_OVERLAY_VAR(data_ov001_0222c8b4),
+    HOST_OVERLAY_VAR(data_ov001_0222a530),
+    HOST_OVERLAY_VAR(data_ov001_0222c8ac),
+    HOST_OVERLAY_VAR(data_ov001_0222c870),
+    HOST_OVERLAY_VAR(data_ov001_0222c8a8),
+    HOST_OVERLAY_VAR(data_ov001_0222c8a4),
+    HOST_OVERLAY_VAR(data_ov001_0222c8a0),
+    HOST_OVERLAY_VAR(data_ov001_0222c858),
+    HOST_OVERLAY_VAR(data_ov001_0222c874),
+    HOST_OVERLAY_VAR(sSimpleStartCancel),
+    HOST_OVERLAY_VAR(data_ov001_0222c890),
+    HOST_OVERLAY_VAR(data_ov001_0222c88c),
+    HOST_OVERLAY_VAR(sSimpleStartState),
+    HOST_OVERLAY_VAR(sSimpleStartFreeFunc),
+    HOST_OVERLAY_VAR(data_ov001_0222c880),
+    HOST_OVERLAY_VAR(sSimpleStartWcmState),
+    HOST_OVERLAY_VAR(sSimpleStartMsgHead),
+    HOST_OVERLAY_VAR(data_ov001_0222c878),
+    HOST_OVERLAY_VAR(data_ov001_0222c8b0),
+    HOST_OVERLAY_VAR(data_ov001_0222c8d4),
+    HOST_OVERLAY_VAR(data_ov001_0222c8dc),
+    HOST_OVERLAY_VAR(data_ov001_0222c8e4),
+    HOST_OVERLAY_VAR(sSimpleStartMsgQueue),
+    HOST_OVERLAY_VAR(data_ov001_0222c8fc),
+    HOST_OVERLAY_VAR(sSimpleStartAllocMutex),
+    HOST_OVERLAY_VAR(data_ov001_0222c944),
+    HOST_OVERLAY_VAR(data_ov001_0222c924),
+    HOST_OVERLAY_VAR(data_ov001_0222c964),
+    HOST_OVERLAY_VAR(sSimpleStartThread),
+    HOST_OVERLAY_VAR(sSimpleStartResult),
+    HOST_OVERLAY_VAR(data_ov001_0222cb30),
+    HOST_OVERLAY_VAR(sSimpleStartTlvBuf),
+    HOST_OVERLAY_VAR(sSimpleStartPacketBuf),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,6 @@
 #include "types.h"
+#include "host_shared_calls.h"
+#include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "game/ConstellationRecord.h"
 #include "gfx/StarTwinkle.h"
@@ -230,7 +232,7 @@ BOOL ConstellationEditorMenu::onDraw() {
         }
     }
     if (testFlags(1)) {
-        StarSky_DrawArrows(&skyView, arrowsSlideY, 5);
+        Shared_StarSky_DrawArrows(&skyView, arrowsSlideY, 5);
     }
     if (endStar != 0xff) {
         if (testFlags(0x80)) {
@@ -491,7 +493,7 @@ void ConstellationEditorMenu::initMembers() {
 
 void ConstellationEditorMenu::releaseResources() {
     StarTwinkle_Stop(&twinkle);
-    StarSky_CancelUpload(&skyView);
+    Shared_StarSky_CancelUpload(&skyView);
     bottomButtons.freeTexts();
     PlayerActor_RequestAct10();
     BgmTracks_FadeInScene22();
@@ -555,9 +557,9 @@ void ConstellationEditorMenu::mainAct00() {
     } else if (Unk_ov129_02295000_Both()) {
         s32 a = gTouchCurX;
         s32 b = gTouchCurY;
-        scrollDir = StarSky_HitArrow(&skyView, a, b);
+        scrollDir = Shared_StarSky_HitArrow(&skyView, a, b);
         if (scrollDir != 4) {
-            StarSky_ScrollInDir(&skyView, scrollDir, 0);
+            Shared_StarSky_ScrollInDir(&skyView, scrollDir, 0);
             setMainState(1);
             clearTappedStar();
         } else if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6) == 0 && ((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
@@ -591,16 +593,16 @@ void ConstellationEditorMenu::mainAct01() {
         StarSky_StartBounce(&skyView, scrollDir);
         setMainState(2);
     } else {
-        StarSky_ScrollInDir(&skyView, scrollDir, 0);
+        Shared_StarSky_ScrollInDir(&skyView, scrollDir, 0);
     }
 }
 
 void ConstellationEditorMenu::mainAct02() {
     if (StarSky_UpdateBounce(&skyView)) {
         if (gTouchHeld != 0) {
-            scrollDir = StarSky_HitArrow(&skyView, gTouchPressX, gTouchPressY);
+            scrollDir = Shared_StarSky_HitArrow(&skyView, gTouchPressX, gTouchPressY);
             if (scrollDir != 4) {
-                StarSky_ScrollInDir(&skyView, scrollDir, 0);
+                Shared_StarSky_ScrollInDir(&skyView, scrollDir, 0);
                 setMainState(1);
                 return;
             }
@@ -656,11 +658,11 @@ void ConstellationEditorMenu::mainAct03() {
             if (ox != nx || oy != pointerY) {
                 if (nx < 0x30) {
                     pointerX = 0x30;
-                    StarSky_ScrollX(&skyView, -4);
+                    Shared_StarSky_ScrollX(&skyView, -4);
                     setFlags(0x40);
                 } else if (nx > 0xd0) {
                     pointerX = 0xd0;
-                    StarSky_ScrollX(&skyView, 4);
+                    Shared_StarSky_ScrollX(&skyView, 4);
                     setFlags(0x40);
                 }
                 if (pointerY < 0x1c) {
@@ -716,7 +718,7 @@ void ConstellationEditorMenu::mainAct05() {
         setMainState(6);
         StarSky_StartBounce(&skyView, scrollDir);
     } else {
-        StarSky_ScrollInDir(&skyView, scrollDir, 0);
+        Shared_StarSky_ScrollInDir(&skyView, scrollDir, 0);
     }
 }
 
@@ -765,7 +767,7 @@ void ConstellationEditorMenu::updateCursorPress() {
             case 2:
             case 3:
                 scrollDir = v;
-                StarSky_ScrollInDir(&skyView, scrollDir, 0);
+                Shared_StarSky_ScrollInDir(&skyView, scrollDir, 0);
                 setMainState(5);
                 break;
             }
@@ -902,7 +904,7 @@ void ConstellationEditorMenu::startFinish() {
     Constellation_CalcCentre(lines, &a, &b);
     a = a & 0xfffc;
     b = b & 0xfffc;
-    StarSky_SetScrollTarget(&skyView, a, b);
+    Shared_StarSky_SetScrollTarget(&skyView, a, b);
     Snd_PlaySe(0x87f);
     clearFlags(0x80);
 }
@@ -918,6 +920,9 @@ void ConstellationEditorMenu::startQuit() {
 }
 extern "C" const s32 data_ov129_022964bc[5] = {0, 0, 0, -4, 4};
 
+// ConstellationEditorMenu::acceptConfirmation's static obj, initialised at its first use after the overlay was loaded
+ConstellationRecord ConstellationEditorMenu_acceptConfirmation_obj;
+u8 ConstellationEditorMenu_acceptConfirmation_obj_init;
 void ConstellationEditorMenu::acceptConfirmation() {
     ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
     setTransitionState(2);
@@ -928,17 +933,20 @@ void ConstellationEditorMenu::acceptConfirmation() {
     } else {
         MenuCtrl_SetResult(1);
         s32 n = MenuCtrl_GetIndex();
-        static ConstellationRecord obj;
-        ConstellationRecord_Clear(&obj);
-        Constellation_SetCreator((u8 *)&obj);
+        if (!ConstellationEditorMenu_acceptConfirmation_obj_init) {
+            HOST_STATIC_CONSTRUCT(ConstellationEditorMenu_acceptConfirmation_obj);
+            ConstellationEditorMenu_acceptConfirmation_obj_init = 1;
+        }
+        ConstellationRecord_Clear(&ConstellationEditorMenu_acceptConfirmation_obj);
+        Constellation_SetCreator((u8 *)&ConstellationEditorMenu_acceptConfirmation_obj);
         s32 i;
         for (i = 0; i < 16; i++) {
-            obj.lines[i] = lines[i];
+            ConstellationEditorMenu_acceptConfirmation_obj.lines[i] = lines[i];
         }
         for (i = 0; i < 16; i++) {
-            obj.name[i] = constellationName[i];
+            ConstellationEditorMenu_acceptConfirmation_obj.name[i] = constellationName[i];
         }
-        Constellation_Store(&obj, n, 0);
+        Constellation_Store(&ConstellationEditorMenu_acceptConfirmation_obj, n, 0);
         Snd_PlaySe(0x27);
     }
 }
@@ -1119,9 +1127,9 @@ void ConstellationEditorMenu::updateHoverStar() {
     if (r4 != 0xffff) {
         u32 t = lineStates[r4];
         if (t == 2) {
-            StarSky_RebuildScreen(&skyView, r4, 0xb);
+            Shared_StarSky_RebuildScreen(&skyView, r4, 0xb);
         } else if (t == 3) {
-            StarSky_RebuildScreen(&skyView, r4, 8);
+            Shared_StarSky_RebuildScreen(&skyView, r4, 8);
         }
     }
     hoverLine = r4;
@@ -1141,7 +1149,7 @@ void ConstellationEditorMenu::flashTappedStar() {
     }
     if (cursorLine != 0xffff) {
         if ((u8)(lineStates[cursorLine] + 0xfe) <= 1) {
-            StarSky_RebuildScreen(&skyView, cursorLine, 10);
+            Shared_StarSky_RebuildScreen(&skyView, cursorLine, 10);
         }
     }
     flashLine = cursorLine;
@@ -1214,7 +1222,7 @@ void ConstellationEditorMenu::loadConstellation() {
         u32 y = StarSky_GetStarY(endStar) << 3;
         x = (x + 4) & 0xfffc;
         y = (y + 4) & 0xfffc;
-        StarSky_SetScroll(&skyView, x, y);
+        Shared_StarSky_SetScroll(&skyView, x, y);
         for (i = 0; i < 16; i++) {
             constellationName[i] = t->name[i];
         }
@@ -1255,7 +1263,7 @@ void ConstellationEditorMenu::markEndCandidates() {
 }
 
 void ConstellationEditorMenu::updateStarSprite(s32 i) {
-    StarSky_RebuildScreen(&skyView, i, sStarStateColours[lineStates[i]]);
+    Shared_StarSky_RebuildScreen(&skyView, i, sStarStateColours[lineStates[i]]);
 }
 
 void ConstellationEditorMenu::updateAllStarSprites() {
@@ -1326,7 +1334,7 @@ BOOL ConstellationEditorMenu::pickAt(s32 x, s32 y) {
     s32 i;
     for (i = 0; i < 5; i++) {
         s32 ox, oy;
-        if (StarSky_ScreenToCellInScope(&skyView, x + data_ov129_022964bc[i], y + data_ov129_022964d0[i], &ox, &oy)) {
+        if (Shared_StarSky_ScreenToCellInScope(&skyView, x + data_ov129_022964bc[i], y + data_ov129_022964d0[i], &ox, &oy)) {
             if (cursorStar == 0xff) {
                 s32 r = StarSky_GetStarAt(ox, oy);
                 if (r != ~z1) {
@@ -1645,3 +1653,14 @@ extern "C" const u8 data_ov129_022964b4[8] = {3, 3, 3, 3, 1, 0, 0, 0};
 
 extern "C" u8 sEditorArrowCursorX[8] = {0x10, 0xf0, 0x80, 0x80, 0, 0, 0, 0};
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_022940e0) {
+    HOST_OVERLAY_VAR(ConstellationEditorMenu_acceptConfirmation_obj),
+    HOST_OVERLAY_VAR(ConstellationEditorMenu_acceptConfirmation_obj_init),
+    HOST_OVERLAY_VAR(sConstellationEditorMenuProfile),
+    HOST_OVERLAY_VAR(sEditorArrowCursorY),
+    HOST_OVERLAY_VAR(sEditorArrowCursorX),
+    HOST_OVERLAY_VARS_END
+};

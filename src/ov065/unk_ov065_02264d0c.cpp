@@ -1868,3 +1868,23 @@ extern "C" u8 sSslOidMd5WithRsa[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1,
 extern "C" u8 sSslRandSeeded = 0;
 extern "C" u8 sSslOidSha1WithRsa[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 5, 0, 0, 0};
 extern "C" char *sSslCertOidTable[6] = {(char *)sSslOidNone, (char *)sSslOidRsaEncryption, (char *)sSslOidRsaX500, (char *)sSslOidMd5WithRsa, (char *)sSslOidSha1WithRsa, (char *)sSslOidCommonName};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02264d0c) {
+    HOST_OVERLAY_VAR(sSslNoSession),
+    HOST_OVERLAY_VAR(sSslRandPool),
+    HOST_OVERLAY_VAR(sSslSessionIdCounter),
+    HOST_OVERLAY_VAR(sSslOidNone),
+    HOST_OVERLAY_VAR(sSslOidCommonName),
+    HOST_OVERLAY_VAR(gSslRsaThreadPriority),
+    HOST_OVERLAY_VAR(sSslCipherSuites),
+    HOST_OVERLAY_VAR(sSslOidRsaX500),
+    HOST_OVERLAY_VAR(sSslOidRsaEncryption),
+    HOST_OVERLAY_VAR(sSslOidMd5WithRsa),
+    HOST_OVERLAY_VAR(sSslRandSeeded),
+    HOST_OVERLAY_VAR(sSslOidSha1WithRsa),
+    HOST_OVERLAY_VAR(sSslCertOidTable),
+    HOST_OVERLAY_VARS_END
+};

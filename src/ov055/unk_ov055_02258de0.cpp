@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "sdk_linker_symbols.h"
 #include "uptr.h"
 #include "item/ItemId.h"
@@ -63,7 +64,7 @@ class SpNpcRover;
 
 
 extern "C" {
-extern u8 data_021ecfa8[];
+#define data_021ecfa8 HOST_LABEL(u8 (*)[], data_021ecfa8)
 extern u16 data_020c6cc8;
 extern u16 gPad[];
 extern const void *sSpNpcRoverMsgKey;
@@ -494,4 +495,17 @@ void SpNpcRover::restoreOv068() {
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcRover
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_ov055_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcRoverKey),
+    HOST_OVERLAY_VAR(sSpNpcRoverMsgKey),
+    HOST_OVERLAY_VAR(sSpNpcRoverModelPath),
+    HOST_OVERLAY_VAR(sSpNpcRoverTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcRoverProfile),
+    HOST_OVERLAY_VAR(sSpNpcRoverTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcRoverActTable),
+    HOST_OVERLAY_VAR(sSpNpcRoverInstance),
+    HOST_OVERLAY_VARS_END
+};

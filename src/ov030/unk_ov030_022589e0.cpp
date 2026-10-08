@@ -6,7 +6,6 @@
 // Generated from the original image; the definition order below
 // reproduces the original data/bss order (mwcc size heapsort) and the __sinit order.
 
-extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
 extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -21,7 +20,7 @@ extern SceneInfo data_ov030_02258a44;
 u32 data_ov030_02258a04[1] = {0x1029};
 
 SceneSpawnGroup data_ov030_02258a2c[3] = {
-    {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
+    {2, ROOM_COMMON_PROFILE_COUNT, 0, sRoomCommonProfiles},
     {2, 1, 0, data_ov030_02258a00},
     {0, 1, 0, data_ov030_02258a18},
 };
@@ -37,3 +36,17 @@ SceneSpawnList data_ov030_02258a08 = {3, 0, data_ov030_02258a2c};
 u32 data_ov030_02258a00[1] = {0xb};
 
 SceneInfo data_ov030_02258a44 = {&data_ov030_02258a08, 0, &data_ov030_02258a10, 0, 0x37, -1};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov030_022589e0) {
+    HOST_OVERLAY_VAR(data_ov030_02258a04),
+    HOST_OVERLAY_VAR(data_ov030_02258a2c),
+    HOST_OVERLAY_VAR(data_ov030_02258a18),
+    HOST_OVERLAY_VAR(data_ov030_02258a10),
+    HOST_OVERLAY_VAR(data_ov030_02258a08),
+    HOST_OVERLAY_VAR(data_ov030_02258a00),
+    HOST_OVERLAY_VAR(data_ov030_02258a44),
+    HOST_OVERLAY_VARS_END
+};

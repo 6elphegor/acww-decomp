@@ -233,3 +233,11 @@ extern "C" void WfcUsbWait_WaitGrantedClosed() {
     WfcUsbScan_SetCallback(WfcUsbWait_OnScanResult);
     WfcUtil_SetScene(WfcUsbWait_Update);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221c5fc) {
+    HOST_OVERLAY_VAR(sWfcUsbWaitResult),
+    HOST_OVERLAY_VARS_END
+};

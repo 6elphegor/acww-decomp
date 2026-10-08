@@ -6,7 +6,6 @@
 // Generated from the original image; the definition order below
 // reproduces the original data/bss order (mwcc size heapsort) and the __sinit order.
 
-extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
 extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -25,5 +24,17 @@ SceneMapInfo data_ov008_0225b784 = {data_ov008_0225b780, 1, 1};
 SceneInfo data_ov008_0225b79c = {&data_ov008_0225b78c, 1, &data_ov008_0225b784, 0, -1, -1};
 
 SceneSpawnGroup data_ov008_0225b794[1] = {
-    {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
+    {2, ROOM_COMMON_PROFILE_COUNT, 0, sRoomCommonProfiles},
+};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov008_0225b760) {
+    HOST_OVERLAY_VAR(data_ov008_0225b780),
+    HOST_OVERLAY_VAR(data_ov008_0225b78c),
+    HOST_OVERLAY_VAR(data_ov008_0225b784),
+    HOST_OVERLAY_VAR(data_ov008_0225b79c),
+    HOST_OVERLAY_VAR(data_ov008_0225b794),
+    HOST_OVERLAY_VARS_END
 };

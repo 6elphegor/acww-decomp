@@ -1,5 +1,6 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -71,8 +72,8 @@ VillagerMemory *Villager_FindMemory(void *a, void *b);
 void MIi_CpuCopy16(const void *src, void *dest, u32 size);
 void MIi_CpuClear16(u16 data, void *dest, u32 size);
 
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1010,3 +1011,11 @@ void PopupChoiceMenuBody::load2dString(MsgString *buf, u32 c)
     u8 t = c;
     String_Load2d(buf, &t, 0);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov002_022013ac) {
+    HOST_OVERLAY_VAR(sPopupChoicePopOffsets),
+    HOST_OVERLAY_VARS_END
+};

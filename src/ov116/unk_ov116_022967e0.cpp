@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
@@ -137,7 +138,7 @@ BOOL InsectBookTab::onDraw() {
         cursor.drawWrapped();
     }
     bookPanel.drawButtons(slideY);
-    CreatureBook_DrawRows(&bookPanel, slideY);
+    Shared_CreatureBook_DrawRows(&bookPanel, slideY);
     bookPanel.drawScrollKnob();
     return TRUE;
 }
@@ -320,7 +321,7 @@ void InsectBookTab::loadBgGfx() {
 
 void InsectBookTab::loadObjGfx() {
     bookPanel.loadObjGraphics();
-    CreatureBook_RefreshRowIcons(&bookPanel);
+    Shared_CreatureBook_RefreshRowIcons(&bookPanel);
 }
 
 void InsectBookTab::updateTouch() {
@@ -343,7 +344,7 @@ void InsectBookTab::mainAct01() {
     if (gTouchHeld != 0) {
         CreatureBook_UpdateScrollTouch(&bookPanel, gTouchCurX);
     } else {
-        CreatureBook_EndScrollTouch(&bookPanel);
+        Shared_CreatureBook_EndScrollTouch(&bookPanel);
         setMainState(0);
     }
 }
@@ -377,14 +378,14 @@ void InsectBookTab::updateCursorMove() {
 
 void InsectBookTab::updateCursorPress() {
     if (cursor.isAnimDone()) {
-        s32 r = CreatureBook_GetFocusedTab(&bookPanel);
+        s32 r = Shared_CreatureBook_GetFocusedTab(&bookPanel);
         if (r != -1) {
             if (requestTab(r) != 0) {
                 return;
             }
             goto bea;
         } else {
-            if (CreatureBook_ActivateFocus(&bookPanel) == 0) {
+            if (Shared_CreatureBook_ActivateFocus(&bookPanel) == 0) {
                 goto bea;
             }
             setMainState(6);
@@ -405,7 +406,7 @@ void InsectBookTab::updateCursorRelease() {
 }
 
 void InsectBookTab::mainAct06() {
-    if (CreatureBook_WaitScrollHoldStart(&bookPanel)) {
+    if (Shared_CreatureBook_WaitScrollHoldStart(&bookPanel)) {
         setMainState(7);
     }
     bookPanel.placeScrollKnob(slideY);
@@ -467,8 +468,8 @@ void InsectBookTab::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     cursor.warpTo(a, b);
-    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
-    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+    s32 r = Shared_CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || Shared_CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
         ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
     } else {
         ((MenuCursor *)&cursor)->setAnimIfChanged(1);
@@ -477,11 +478,11 @@ void InsectBookTab::showCursor() {
 }
 
 s32 InsectBookTab::getCursorTargetX() {
-    return CreatureBook_GetFocusX(&bookPanel);
+    return Shared_CreatureBook_GetFocusX(&bookPanel);
 }
 
 s32 InsectBookTab::getCursorTargetY() {
-    return CreatureBook_GetFocusY(&bookPanel);
+    return Shared_CreatureBook_GetFocusY(&bookPanel);
 }
 
 void InsectBookTab::hideCursor() {
@@ -490,8 +491,8 @@ void InsectBookTab::hideCursor() {
 }
 
 void InsectBookTab::moveCursorToTarget() {
-    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
-    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+    s32 r = Shared_CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || Shared_CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
         ((MenuCursor *)&cursor)->switchToAnim0D();
     } else {
         ((MenuCursor *)&cursor)->switchToAnim01();
@@ -533,3 +534,11 @@ BOOL InsectBookTab::testFlags(u32 mask) {
 void InsectBookTab::setFlags(u32 mask) {
     flags |= mask;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov116_022967e0) {
+    HOST_OVERLAY_VAR(sInsectBookTabProfile),
+    HOST_OVERLAY_VARS_END
+};

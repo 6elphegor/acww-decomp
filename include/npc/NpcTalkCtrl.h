@@ -5,14 +5,14 @@
 
 class NpcActor;
 
+extern "C" void NpcTalkCtrl_Destroy(void);
 // 0x10-byte NPC talk controller (turn-and-talk state machine), NpcActor::talkCtrl (+0x618). Defined in main,
 // unk_020119cc.cpp (the unk_02013b10.cpp part, 0x02013b10..0x02014254; empty C1 0x02014254, D1 label 0x02014250 =
 // NpcTalkCtrl_Destroy). NpcActor's fields from 0x628 follow it.
 class NpcTalkCtrl {
 public:
     NpcTalkCtrl();
-    ~NpcTalkCtrl();
-
+    ~NpcTalkCtrl() { NpcTalkCtrl_Destroy(); }
     /* 0x00 */ s32 act07Variant;
     /* 0x04 */ s16 turnSpeed;
     /* 0x06 */ s16 turnAngle;

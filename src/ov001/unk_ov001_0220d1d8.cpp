@@ -195,3 +195,19 @@ void WfcSimpleStart_Free(void *p) {
 }
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220d1d8) {
+    HOST_OVERLAY_VAR(data_ov001_0222ab10),
+    HOST_OVERLAY_VAR(data_ov001_0222aae0),
+    HOST_OVERLAY_VAR(data_ov001_0222aaf0),
+    HOST_OVERLAY_VAR(data_ov001_0222aac0),
+    HOST_OVERLAY_VAR(data_ov001_0222aad0),
+    HOST_OVERLAY_VAR(data_ov001_0222ab00),
+    HOST_OVERLAY_VAR(sWfcMsgFileNames),
+    HOST_OVERLAY_VAR(gWfcMsgBank),
+    HOST_OVERLAY_VAR(sWfcSimpleStartStatus),
+    HOST_OVERLAY_VARS_END
+};

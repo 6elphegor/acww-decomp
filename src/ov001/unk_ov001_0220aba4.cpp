@@ -640,3 +640,12 @@ void WfcNumPad_Destroy(void *a, void *work) {
     WfcHeap_FreeAndClear((void **)&sWfcNumPad);
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220aba4) {
+    HOST_OVERLAY_VAR(sWfcNumPad),
+    HOST_OVERLAY_VAR(data_ov001_0222aa58),
+    HOST_OVERLAY_VARS_END
+};

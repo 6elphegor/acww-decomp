@@ -1083,3 +1083,12 @@ s32 gti2HandlePing(Cn *c, u8 *p, s32 n)
 {
 }
 } }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02285778) {
+    HOST_OVERLAY_VAR(data_ov065_02291504),
+    HOST_OVERLAY_VAR(data_ov065_02291508),
+    HOST_OVERLAY_VARS_END
+};

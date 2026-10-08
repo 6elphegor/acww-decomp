@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Move the labels inside data for a 64-bit host build (tools/configure_host.py --arch x86_64).
+"""Move the labels inside data for a 64-bit host build (no longer part of the build: the labels are C now,
+tools/host_labels.py; the DWARF helpers here are used by the layout tools).
 
 The linker script names some addresses inside variables (`PROVIDE("x" = "base" + 0x10)`, tools/host_provides.py):
 a member of a structure, an element of an array, an entry of a vtable. The offsets are the DS's, which the 32-bit

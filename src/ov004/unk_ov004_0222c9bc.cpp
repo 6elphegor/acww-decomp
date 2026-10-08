@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/base
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 #include "Unk_020d8c7c.h"
 #include "room/RoomItemDrop.h"
@@ -477,7 +479,7 @@ void *__cxa_vec_ctor(void *, s32, s32, void *, void *);
 void *__cxa_vec_cleanup(void *, s32, s32, void *);
 
 extern s16 data_02135f44[];
-extern u8 data_021ed0a0[];
+#define data_021ed0a0 HOST_LABEL(u8 (*)[], data_021ed0a0)
 extern Mtx43 data_021f47e0;
 extern VecFx32 sRoomHasuPos;
 
@@ -1527,17 +1529,29 @@ extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o) {
     }
 }
 
+// AquariumFish_CalcHitCenter's static k1, initialised at its first use after the overlay was loaded
+s32 AquariumFish_CalcHitCenter_k1;
+u8 AquariumFish_CalcHitCenter_k1_init;
+// AquariumFish_CalcHitCenter's static k2, initialised at its first use after the overlay was loaded
+s32 AquariumFish_CalcHitCenter_k2;
+u8 AquariumFish_CalcHitCenter_k2_init;
 extern "C" void AquariumFish_CalcHitCenter(R *o, VecFx32 *out) {
     s32 t = o->fishIndex;
-    static s32 k1 = (sAquariumFishParams[t].hitHeight << 12) >> 7;
-    static s32 k2 = (sAquariumFishParams[t].hitRadius << 12) >> 7;
+    if (!AquariumFish_CalcHitCenter_k1_init) {
+        AquariumFish_CalcHitCenter_k1 = (sAquariumFishParams[t].hitHeight << 12) >> 7;
+        AquariumFish_CalcHitCenter_k1_init = 1;
+    }
+    if (!AquariumFish_CalcHitCenter_k2_init) {
+        AquariumFish_CalcHitCenter_k2 = (sAquariumFishParams[t].hitRadius << 12) >> 7;
+        AquariumFish_CalcHitCenter_k2_init = 1;
+    }
     VecFx32 l[4];
     l[0].x = 0;
-    l[0].y = k1;
+    l[0].y = AquariumFish_CalcHitCenter_k1;
     l[0].z = 0;
     l[1].x = 0;
     l[1].y = 0;
-    l[1].z = k2;
+    l[1].z = AquariumFish_CalcHitCenter_k2;
     data_021f47e0 = o->model.mtx;
     MTX_MultVec43(&l[0], &data_021f47e0, &l[2]);
     MTX_MultVec43(&l[1], &data_021f47e0, &l[3]);
@@ -4131,13 +4145,13 @@ RoomItemDrop::~RoomItemDrop() {
 
 extern "C" {
 void *data_ov004_0224e6d8[2] = {(void *)AquariumFish_StateCruise, 0};
-PairFn sAquariumSwimFishRoomFns[2] = {{*(Fn *)data_ov004_0224e610, *(Fn *)data_ov004_0224e618}, {*(Fn *)data_ov004_0224e600, *(Fn *)data_ov004_0224e688}};
+PairFn sAquariumSwimFishRoomFns[2];  // initialised by StaticInit_unk_ov004_0222c9bc
 void *data_ov004_0224e618[2] = {(void *)AquariumSwimFish_UpdateFreshwater, 0};
 void *data_ov004_0224e688[2] = {(void *)AquariumSwimFish_UpdateSea, 0};
 void *data_ov004_0224e620[2] = {(void *)AquariumFish_StateNone, 0};
 void *data_ov004_0224e628[2] = {(void *)AquariumFish_StateDecelerate, 0};
 void *data_ov004_0224e648[2] = {(void *)AquariumFish_StateFlee, 0};
-Fn sAquariumSwimStates[7] = {*(Fn *)data_ov004_0224e620, *(Fn *)data_ov004_0224e648, *(Fn *)data_ov004_0224e6d0, *(Fn *)data_ov004_0224e630, *(Fn *)data_ov004_0224e6d8, *(Fn *)data_ov004_0224e628, *(Fn *)data_ov004_0224e660};
+Fn sAquariumSwimStates[7];  // initialised by StaticInit_unk_ov004_0222c9bc
 void *data_ov004_0224e630[2] = {(void *)AquariumFish_StateAccelerate, 0};
 R *sAquariumFish[0x38];
 void *data_ov004_0224e640[2] = {(void *)MuseumAquarium_FishStateLoad, 0};
@@ -4150,7 +4164,7 @@ E834 *sAquariumFrog;
 void *data_ov004_0224e690[2] = {(void *)AquariumFish_StateFlee, 0};
 void *data_ov004_0224e6b0[2] = {(void *)AquariumEel_StateStart, 0};
 void *data_ov004_0224e6a8[2] = {(void *)AquariumFish_StateCruise, 0};
-Fn sAquariumFastSwimStates[6] = {*(Fn *)data_ov004_0224e6c8, *(Fn *)data_ov004_0224e690, *(Fn *)data_ov004_0224e6b8, *(Fn *)data_ov004_0224e698, *(Fn *)data_ov004_0224e6a8, *(Fn *)data_ov004_0224e680};
+Fn sAquariumFastSwimStates[6];  // initialised by StaticInit_unk_ov004_0222c9bc
 void *data_ov004_0224e698[2] = {(void *)AquariumFish_StateAccelerate, 0};
 void *data_ov004_0224e608[2] = {(void *)AquariumEel_StateHold, 0};
 void *data_ov004_0224e678[2] = {(void *)AquariumEel_StateSlowDown, 0};
@@ -4159,10 +4173,76 @@ u8 sAquariumFirstFish;
 void *data_ov004_0224e660[2] = {(void *)AquariumFish_StateRest, 0};
 u8 sAquariumRoom;
 E7d4 *sAquariumJellyfish;
-Fn804 sAquariumEelStates[5] = {*(Fn804 *)data_ov004_0224e6b0, *(Fn804 *)data_ov004_0224e6a0, *(Fn804 *)data_ov004_0224e608, *(Fn804 *)data_ov004_0224e678, *(Fn804 *)data_ov004_0224e5f8};
+Fn804 sAquariumEelStates[5];  // initialised by StaticInit_unk_ov004_0222c9bc
 u8 sAquariumEndFish = 0x23;
-Fn sAquariumPiranhaStates[3] = {*(Fn *)data_ov004_0224e668, *(Fn *)data_ov004_0224e658, *(Fn *)data_ov004_0224e650};
+Fn sAquariumPiranhaStates[3];  // initialised by StaticInit_unk_ov004_0222c9bc
 u8 sAquariumObstacleCount = 0x05;
-MgrFn sAquariumFishLoadStates[3] = {*(MgrFn *)data_ov004_0224e638, *(MgrFn *)data_ov004_0224e640, *(MgrFn *)data_ov004_0224e670};
+MgrFn sAquariumFishLoadStates[3];  // initialised by StaticInit_unk_ov004_0222c9bc
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the initialisers the compiler
+// doesn't make constant data.
+extern "C" void StaticInit_unk_ov004_0222c9bc(void) {
+    HOST_STATIC_INIT_ARRAY(sAquariumSwimFishRoomFns, {{*(Fn *)data_ov004_0224e610, *(Fn *)data_ov004_0224e618}, {*(Fn *)data_ov004_0224e600, *(Fn *)data_ov004_0224e688}});
+    HOST_STATIC_INIT_ARRAY(sAquariumSwimStates, {*(Fn *)data_ov004_0224e620, *(Fn *)data_ov004_0224e648, *(Fn *)data_ov004_0224e6d0, *(Fn *)data_ov004_0224e630, *(Fn *)data_ov004_0224e6d8, *(Fn *)data_ov004_0224e628, *(Fn *)data_ov004_0224e660});
+    HOST_STATIC_INIT_ARRAY(sAquariumFastSwimStates, {*(Fn *)data_ov004_0224e6c8, *(Fn *)data_ov004_0224e690, *(Fn *)data_ov004_0224e6b8, *(Fn *)data_ov004_0224e698, *(Fn *)data_ov004_0224e6a8, *(Fn *)data_ov004_0224e680});
+    HOST_STATIC_INIT_ARRAY(sAquariumEelStates, {*(Fn804 *)data_ov004_0224e6b0, *(Fn804 *)data_ov004_0224e6a0, *(Fn804 *)data_ov004_0224e608, *(Fn804 *)data_ov004_0224e678, *(Fn804 *)data_ov004_0224e5f8});
+    HOST_STATIC_INIT_ARRAY(sAquariumPiranhaStates, {*(Fn *)data_ov004_0224e668, *(Fn *)data_ov004_0224e658, *(Fn *)data_ov004_0224e650});
+    HOST_STATIC_INIT_ARRAY(sAquariumFishLoadStates, {*(MgrFn *)data_ov004_0224e638, *(MgrFn *)data_ov004_0224e640, *(MgrFn *)data_ov004_0224e670});
+}
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0222c9bc) {
+    HOST_OVERLAY_VAR(data_ov004_0224e638),
+    HOST_OVERLAY_VAR(sAquariumTankCenterA),
+    HOST_OVERLAY_VAR(data_ov004_0224e600),
+    HOST_OVERLAY_VAR(data_ov004_0224e610),
+    HOST_OVERLAY_VAR(data_ov004_0224e6d0),
+    HOST_OVERLAY_VAR(sAquariumTankCenterB),
+    HOST_OVERLAY_VAR(data_ov004_0224e670),
+    HOST_OVERLAY_VAR(data_ov004_0224e668),
+    HOST_OVERLAY_VAR(data_ov004_0224e680),
+    HOST_OVERLAY_VAR(data_ov004_0224e6a0),
+    HOST_OVERLAY_VAR(data_ov004_0224e5f8),
+    HOST_OVERLAY_VAR(AquariumFish_CalcHitCenter_k1),
+    HOST_OVERLAY_VAR(AquariumFish_CalcHitCenter_k1_init),
+    HOST_OVERLAY_VAR(AquariumFish_CalcHitCenter_k2),
+    HOST_OVERLAY_VAR(AquariumFish_CalcHitCenter_k2_init),
+    HOST_OVERLAY_VAR(data_ov004_0224e6d8),
+    HOST_OVERLAY_VAR(sAquariumSwimFishRoomFns),
+    HOST_OVERLAY_VAR(data_ov004_0224e618),
+    HOST_OVERLAY_VAR(data_ov004_0224e688),
+    HOST_OVERLAY_VAR(data_ov004_0224e620),
+    HOST_OVERLAY_VAR(data_ov004_0224e628),
+    HOST_OVERLAY_VAR(data_ov004_0224e648),
+    HOST_OVERLAY_VAR(sAquariumSwimStates),
+    HOST_OVERLAY_VAR(data_ov004_0224e630),
+    HOST_OVERLAY_VAR(sAquariumFish),
+    HOST_OVERLAY_VAR(data_ov004_0224e640),
+    HOST_OVERLAY_VAR(data_ov004_0224e650),
+    HOST_OVERLAY_VAR(data_ov004_0224e658),
+    HOST_OVERLAY_VAR(data_ov004_0224e6c8),
+    HOST_OVERLAY_VAR(sMuseumAquariumProfile),
+    HOST_OVERLAY_VAR(data_ov004_0224e6b8),
+    HOST_OVERLAY_VAR(sAquariumFrog),
+    HOST_OVERLAY_VAR(data_ov004_0224e690),
+    HOST_OVERLAY_VAR(data_ov004_0224e6b0),
+    HOST_OVERLAY_VAR(data_ov004_0224e6a8),
+    HOST_OVERLAY_VAR(sAquariumFastSwimStates),
+    HOST_OVERLAY_VAR(data_ov004_0224e698),
+    HOST_OVERLAY_VAR(data_ov004_0224e608),
+    HOST_OVERLAY_VAR(data_ov004_0224e678),
+    HOST_OVERLAY_VAR(sAquariumSeaButterfly),
+    HOST_OVERLAY_VAR(sAquariumFirstFish),
+    HOST_OVERLAY_VAR(data_ov004_0224e660),
+    HOST_OVERLAY_VAR(sAquariumRoom),
+    HOST_OVERLAY_VAR(sAquariumJellyfish),
+    HOST_OVERLAY_VAR(sAquariumEelStates),
+    HOST_OVERLAY_VAR(sAquariumEndFish),
+    HOST_OVERLAY_VAR(sAquariumPiranhaStates),
+    HOST_OVERLAY_VAR(sAquariumObstacleCount),
+    HOST_OVERLAY_VAR(sAquariumFishLoadStates),
+    HOST_OVERLAY_VARS_END
+};

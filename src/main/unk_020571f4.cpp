@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "snd/SndSeEmitter.h"
 #include "save/VillagerData.h"
 #include "uptr.h"
@@ -146,7 +147,7 @@ static inline BOOL Unk_02058ddc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 // ---- externals ----
 extern "C" {
 extern u8 gFieldSceneKind[];
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 
 void FishDisplay_Release(s32 a);
 s32 Vec_DistXZ(void *a, void *b);

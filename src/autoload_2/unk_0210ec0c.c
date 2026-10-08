@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "uptr.h"
 #include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
@@ -140,7 +141,7 @@ extern Job data_021fbdd8[8];
 extern void *data_021fbdb0;
 extern u8 data_021fbf60[];
 extern EffCtl data_0213bf10;
-extern s32 data_0213bf28[];
+#define data_0213bf28 HOST_LABEL(s32 (*)[], data_0213bf28)
 extern s16 data_02139fb4[];
 
 // externs: functions
@@ -371,3 +372,8 @@ void OutputEffectSurround(s16 *l, s16 *r, u32 len, EffCtl *c)
 // ---- file-scope objects (.data 0x0213bf10-0x0213bfe8): the capture-effect control block. data_0213bf28 (its sample
 // work area u.w) is an interior label (autoload_2 lcf_symbols.txt).
 EffCtl data_0213bf10 = {-1};
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_0213bf28, (char *)&data_0213bf10.u.w[0]);

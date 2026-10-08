@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "uptr.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 #include "proto/main/unk_0202fa70.h"
@@ -7444,3 +7445,36 @@ extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16])
 }
 #undef func_02133150
 
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov003_02225800(void) {
+    HOST_STATIC_CONSTRUCT(sFieldInsects);
+    HOST_STATIC_CONSTRUCT(sSpecialInsects);
+    HOST_STATIC_CONSTRUCT(sHeldInsects);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02225800) {
+    HOST_OVERLAY_VAR(sFieldInsects),
+    HOST_OVERLAY_VAR(data_ov003_02258f10),
+    HOST_OVERLAY_VAR(sWateringActive),
+    HOST_OVERLAY_VAR(sInsectSpawnMaskDry),
+    HOST_OVERLAY_VAR(sSpecialInsects),
+    HOST_OVERLAY_VAR(sTrashFlySpawnEnabled),
+    HOST_OVERLAY_VAR(sAntSpawnEnabled),
+    HOST_OVERLAY_VAR(sHeldInsects),
+    HOST_OVERLAY_VAR(data_ov003_02258f08),
+    HOST_OVERLAY_VAR(data_ov003_02258f04),
+    HOST_OVERLAY_VAR(sInsectSpawnTimer),
+    HOST_OVERLAY_VAR(sInsectSpawnMaskLand),
+    HOST_OVERLAY_VAR(sInsectModelParams),
+    HOST_OVERLAY_VAR(sFieldInsectPurgeTimer),
+    HOST_OVERLAY_VAR(sInsectCatchResult),
+    HOST_OVERLAY_VAR(sInsectManagerProfile),
+    HOST_OVERLAY_VAR(sInsectBehaviors),
+    HOST_OVERLAY_VAR(sWateringPos),
+    HOST_OVERLAY_VARS_END
+};

@@ -10,18 +10,19 @@
 
 // A VillagerId with the constructors / destructor of its helpers (VillagerId_Construct, _ConstructCopy, _Destruct).
 extern "C" VillagerId *VillagerId_ConstructCopy(VillagerId *p, VillagerId *other);
+extern "C" VillagerId *VillagerId_Construct(VillagerId *p);
+extern "C" VillagerId *VillagerId_Destruct(VillagerId *p);
 class VillagerIdCtorDtor : public VillagerId {
 public:
-    VillagerIdCtorDtor();
+    VillagerIdCtorDtor() { VillagerId_Construct(this); }
     explicit VillagerIdCtorDtor(VillagerId *src) { VillagerId_ConstructCopy(this, src); }
-    ~VillagerIdCtorDtor();
+    ~VillagerIdCtorDtor() { VillagerId_Destruct(this); }
 };
 
 class PlayerErrandSlot : public ErrandRecord {
 public:
-    PlayerErrandSlot();
-    ~PlayerErrandSlot();
-
+    PlayerErrandSlot() {}  // the base's and the members' constructors: PlayerErrandSlot_Construct
+    ~PlayerErrandSlot() {}  // the members' and the base's destructors: PlayerErrandSlot_Destruct
     /* 0x0c */ VillagerIdCtorDtor villagers[2];
     /* 0x24 */ u8 presentReaction;
 };

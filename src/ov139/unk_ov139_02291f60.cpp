@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_overlay_vars.h"
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -179,16 +180,28 @@ LabelString *MenuTownListPanel::allocTextLabel() {
 
 
 
+// MenuTownListPanel::setRowTownName's static sA, initialised at its first use after the overlay was loaded
+EncodedString8B MenuTownListPanel_setRowTownName_sA;
+u8 MenuTownListPanel_setRowTownName_sA_init;
+// MenuTownListPanel::setRowTownName's static sB, initialised at its first use after the overlay was loaded
+MsgString9C MenuTownListPanel_setRowTownName_sB;
+u8 MenuTownListPanel_setRowTownName_sB_init;
 void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
     LabelString *t = allocTextLabel();
-    static EncodedString8B sA;
-    static MsgString9C sB;
+    if (!MenuTownListPanel_setRowTownName_sA_init) {
+        HOST_STATIC_CONSTRUCT(MenuTownListPanel_setRowTownName_sA);
+        MenuTownListPanel_setRowTownName_sA_init = 1;
+    }
+    if (!MenuTownListPanel_setRowTownName_sB_init) {
+        HOST_STATIC_CONSTRUCT(MenuTownListPanel_setRowTownName_sB);
+        MenuTownListPanel_setRowTownName_sB_init = 1;
+    }
     if (str == NULL) {
         t->clear();
     } else {
-        EncodedString_SetRaw(&sA, str, 8);
-        sB.fromEncoded(&sA, 0, 0);
-        String_SetSlot(0, &sB);
+        EncodedString_SetRaw(&MenuTownListPanel_setRowTownName_sA, str, 8);
+        MenuTownListPanel_setRowTownName_sB.fromEncoded(&MenuTownListPanel_setRowTownName_sA, 0, 0);
+        String_SetSlot(0, &MenuTownListPanel_setRowTownName_sB);
         String_Load2dMenu(t, 0x66);
     }
     u32 a = i * 0x14 + 0x11e;
@@ -242,5 +255,22 @@ void MenuTownListPanel::clearFlags(u32 m) { flags &= ~m; }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
+HOST_OVERLAY_VARS(unk_ov139_02291f60) {
+    HOST_OVERLAY_VAR(sTownListCellLists),
+    HOST_OVERLAY_VAR(data_ov139_022925c0),
+    HOST_OVERLAY_VAR(data_ov139_022925e0),
+    HOST_OVERLAY_VAR(data_ov139_02292600),
+    HOST_OVERLAY_VAR(data_ov139_02292620),
+    HOST_OVERLAY_VAR(data_ov139_02292640),
+    HOST_OVERLAY_VAR(data_ov139_022926d0),
+    HOST_OVERLAY_VAR(data_ov139_022926a0),
+    HOST_OVERLAY_VAR(MenuTownListPanel_setRowTownName_sA),
+    HOST_OVERLAY_VAR(MenuTownListPanel_setRowTownName_sA_init),
+    HOST_OVERLAY_VAR(MenuTownListPanel_setRowTownName_sB),
+    HOST_OVERLAY_VAR(MenuTownListPanel_setRowTownName_sB_init),
+    HOST_OVERLAY_VAR(data_ov139_02292660),
+    HOST_OVERLAY_VARS_END
+};

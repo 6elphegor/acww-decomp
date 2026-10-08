@@ -257,3 +257,10 @@ void WfcScrollBar_SetThumbPos(u32 a) {
     sWfcScrollBar->thumbPos = a;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221cfc0) {
+    HOST_OVERLAY_VAR(sWfcScrollBar),
+    HOST_OVERLAY_VARS_END
+};

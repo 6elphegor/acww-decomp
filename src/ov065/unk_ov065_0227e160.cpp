@@ -802,3 +802,11 @@ void gpiCallErrorCallback(GPConnection *h, s32 a, s32 b) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0227e160) {
+    HOST_OVERLAY_VAR(data_ov065_0228d1a4),
+    HOST_OVERLAY_VARS_END
+};

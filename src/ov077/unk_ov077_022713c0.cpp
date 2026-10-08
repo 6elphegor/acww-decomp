@@ -110,7 +110,7 @@ static inline u32 SpNpcResetti_FrameInt(s32 frame) {
 
 struct Unk_ov077_02271a84_Pt {
     s32 x, y;
-    Unk_ov077_02271a84_Pt(s32 a, s32 b) { x = a; y = b; }
+    constexpr Unk_ov077_02271a84_Pt(s32 a, s32 b) : x(a), y(b) {}
 };
 
 class SpNpcResetti : public SpNpcActor {
@@ -311,6 +311,13 @@ BOOL SpNpcResetti::setupAct03() {
     return TRUE;
 }
 
+// SpNpcResetti::mainAct03's static tbl1
+Unk_ov077_02271a84_Pt SpNpcResetti_mainAct03_tbl1[5] = {
+        Unk_ov077_02271a84_Pt(0, 3), Unk_ov077_02271a84_Pt(-1, 3), Unk_ov077_02271a84_Pt(-1, 2),
+        Unk_ov077_02271a84_Pt(1, 3), Unk_ov077_02271a84_Pt(1, 2)
+    };
+// SpNpcResetti::mainAct03's static tbl2
+Unk_ov077_02271a84_Pt SpNpcResetti_mainAct03_tbl2[2] = { Unk_ov077_02271a84_Pt(-2, 2), Unk_ov077_02271a84_Pt(2, 2) };
 BOOL SpNpcResetti::mainAct03() {
     Character *pl = (Character *)PlayerActor_GetCharacter(4);
     s32 dx, dz;
@@ -339,19 +346,14 @@ BOOL SpNpcResetti::mainAct03() {
         rotY = w;
         moveAngleY = w;
     }
-    static Unk_ov077_02271a84_Pt tbl1[5] = {
-        Unk_ov077_02271a84_Pt(0, 3), Unk_ov077_02271a84_Pt(-1, 3), Unk_ov077_02271a84_Pt(-1, 2),
-        Unk_ov077_02271a84_Pt(1, 3), Unk_ov077_02271a84_Pt(1, 2)
-    };
-    static Unk_ov077_02271a84_Pt tbl2[2] = { Unk_ov077_02271a84_Pt(-2, 2), Unk_ov077_02271a84_Pt(2, 2) };
     i = 0;
-    Unk_ov077_02271a84_Pt pb = tbl2[1];
-    Unk_ov077_02271a84_Pt pa = tbl2[0];
+    Unk_ov077_02271a84_Pt pb = SpNpcResetti_mainAct03_tbl2[1];
+    Unk_ov077_02271a84_Pt pa = SpNpcResetti_mainAct03_tbl2[0];
     for (; i < 5; i++) {
         BOOL hit = FALSE;
-        s32 tx = tbl1[i].x;
+        s32 tx = SpNpcResetti_mainAct03_tbl1[i].x;
         if (tx == dx) {
-            s32 ty = tbl1[i].y;
+            s32 ty = SpNpcResetti_mainAct03_tbl1[i].y;
             if (ty == dz) {
                 hit = TRUE;
             }
@@ -625,3 +627,18 @@ void SpNpcResetti::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov077_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcResettiKey),
+    HOST_OVERLAY_VAR(sSpNpcResettiMsgKey),
+    HOST_OVERLAY_VAR(sSpNpcResettiModelPath),
+    HOST_OVERLAY_VAR(sSpNpcResettiTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcResettiProfile),
+    HOST_OVERLAY_VAR(sSpNpcResettiTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcResettiActTable),
+    HOST_OVERLAY_VAR(SpNpcResetti_mainAct03_tbl1),
+    HOST_OVERLAY_VAR(SpNpcResetti_mainAct03_tbl2),
+    HOST_OVERLAY_VARS_END
+};

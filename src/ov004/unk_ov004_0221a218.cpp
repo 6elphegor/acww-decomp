@@ -199,3 +199,12 @@ void CafeVillager::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_0221a218) {
+    HOST_OVERLAY_VAR(sCafeVillagerProfile),
+    HOST_OVERLAY_VAR(data_ov004_022508e0),
+    HOST_OVERLAY_VAR(sCafeVillagerActTable),
+    HOST_OVERLAY_VARS_END
+};

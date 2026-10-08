@@ -426,3 +426,11 @@ s32 DwcNet_GetSendSpace(s32 id) {
     return t;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02277140) {
+    HOST_OVERLAY_VAR(sDwcNetChannels),
+    HOST_OVERLAY_VAR(sDwcNetRandState),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "save/ErrandRecord.h"
 #include "save/SickVillagerRecord.h"
 #include "talk/EncodedString8B.h"
@@ -248,9 +249,9 @@ struct SpNpcPellyPhyllisActEntry {
 extern "C" {
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
-extern u8 gSaveHouse[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
 extern u8 gSaveData[];
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 
 BOOL Talk_IsInOwnTown(...);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);
@@ -1638,17 +1639,23 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     o->openChoices(1);
 }
 
+typedef void (SpNpcPellyPhyllisTalk::*SpNpcPellyPhyllisTalk_Fn)();
+// SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice's static a1
+SpNpcPellyPhyllisTalk_Fn SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a1[2] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::showGoodbye};
+// SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice's static a2
+SpNpcPellyPhyllisTalk_Fn SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a2[4] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askSavings, &SpNpcPellyPhyllisTalk::openLetterStorage,
+                       &SpNpcPellyPhyllisTalk::showGoodbye};
+// SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice's static a3
+SpNpcPellyPhyllisTalk_Fn SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a3[5] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askLoanPayment, &SpNpcPellyPhyllisTalk::askSavings,
+                       &SpNpcPellyPhyllisTalk::openLetterStorage, &SpNpcPellyPhyllisTalk::showGoodbye};
+// SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice's static a4
+SpNpcPellyPhyllisTalk_Fn SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a4[3] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askSavings, &SpNpcPellyPhyllisTalk::showGoodbye};
+// SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice's static a5
+SpNpcPellyPhyllisTalk_Fn SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a5[4] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askLoanPayment, &SpNpcPellyPhyllisTalk::askSavings,
+                       &SpNpcPellyPhyllisTalk::showGoodbye};
 void SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice(s32 a) {
     s32 idx = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
-    static Fn a1[2] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::showGoodbye};
-    static Fn a2[4] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askSavings, &SpNpcPellyPhyllisTalk::openLetterStorage,
-                       &SpNpcPellyPhyllisTalk::showGoodbye};
-    static Fn a3[5] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askLoanPayment, &SpNpcPellyPhyllisTalk::askSavings,
-                       &SpNpcPellyPhyllisTalk::openLetterStorage, &SpNpcPellyPhyllisTalk::showGoodbye};
-    static Fn a4[3] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askSavings, &SpNpcPellyPhyllisTalk::showGoodbye};
-    static Fn a5[4] = {&SpNpcPellyPhyllisTalk::startMailLetters, &SpNpcPellyPhyllisTalk::askLoanPayment, &SpNpcPellyPhyllisTalk::askSavings,
-                       &SpNpcPellyPhyllisTalk::showGoodbye};
-    static Fn *tbls[5] = {a2, a3, a1, a4, a5};
+    static Fn *tbls[5] = {SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a2, SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a3, SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a1, SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a4, SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a5};
     static const s32 cnt[5] = {4, 5, 2, 3, 4};
     if (idx < cnt[menuKind]) {
         (this->*tbls[menuKind][idx])();
@@ -1838,3 +1845,31 @@ extern "C" const u8 data_ov054_0225b354[3] = {0xeb, 0xec, 0x56};
 extern "C" const u8 data_ov054_0225b364[5] = {0xeb, 0xed, 0xec, 0xd5, 0x56};
 extern "C" const u8 data_ov054_0225b348[2] = {2, 1};
 extern "C" const Unk_ov054_0225b3ac_Row sSpNpcPellyPhyllisCounterPos[2] = {{0xf000, 0, 0x13000}, {0x13000, 0, 0x13000}};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov054_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisMsgKeys),
+    HOST_OVERLAY_VAR(sSpNpcPellyDramaKey),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisMenus),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcPellyTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisTexturePaths),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisActTable),
+    HOST_OVERLAY_VAR(sSpNpcPhyllisTexturePath),
+    HOST_OVERLAY_VAR(SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a1),
+    HOST_OVERLAY_VAR(SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a2),
+    HOST_OVERLAY_VAR(SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a3),
+    HOST_OVERLAY_VAR(SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a4),
+    HOST_OVERLAY_VAR(SpNpcPellyPhyllisTalk_onPostOfficeMenuChoice_a5),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisProfile),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisModelPaths),
+    HOST_OVERLAY_VAR(sSpNpcPellyKey),
+    HOST_OVERLAY_VAR(sSpNpcPellyModelPath),
+    HOST_OVERLAY_VAR(sSpNpcPhyllisKey),
+    HOST_OVERLAY_VAR(sSpNpcPhyllisModelPath),
+    HOST_OVERLAY_VAR(sSpNpcPellyPhyllisSequence4Key),
+    HOST_OVERLAY_VAR(sSpNpcPhyllisDramaKey),
+    HOST_OVERLAY_VARS_END
+};

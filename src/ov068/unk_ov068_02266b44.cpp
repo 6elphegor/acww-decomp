@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "item/ItemId.h"
@@ -132,15 +133,21 @@ extern "C" SpNpcNookIntro *SpNpcNookIntro_Create() {
     return new SpNpcNookIntro();
 }
 
+// SpNpcNookIntro::preCreate's static tbl, initialised at its first use after the overlay was loaded
+ItemId SpNpcNookIntro_preCreate_tbl[4];
+u8 SpNpcNookIntro_preCreate_tbl_init;
 BOOL SpNpcNookIntro::preCreate() {
-    static ItemId tbl[4] = {
+    if (!SpNpcNookIntro_preCreate_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(SpNpcNookIntro_preCreate_tbl, {
         ItemId(0xd019), ItemId(0xd01a),
         ItemId(0xd01b), ItemId(0xd01c)
-    };
+    });
+        SpNpcNookIntro_preCreate_tbl_init = 1;
+    }
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setNpcHandle(&tbl[NookShop_GetLevel(gSaveData.nookShop)].id);
+    setNpcHandle(&SpNpcNookIntro_preCreate_tbl[NookShop_GetLevel(gSaveData.nookShop)].id);
     setTalkRequest(&talk);
     talk.attachOwner(this);
     moveCtrl.setSpeedPreset(2, 0x399, 0x133, 0x199);
@@ -491,3 +498,26 @@ void SpNpcNookIntro::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_02266b44) {
+    HOST_OVERLAY_VAR(sNookTexRcd),
+    HOST_OVERLAY_VAR(sNookIntroTalkScripts),
+    HOST_OVERLAY_VAR(SpNpcNookIntro_preCreate_tbl),
+    HOST_OVERLAY_VAR(SpNpcNookIntro_preCreate_tbl_init),
+    HOST_OVERLAY_VAR(sNookModelPaths),
+    HOST_OVERLAY_VAR(sNookModelRcn),
+    HOST_OVERLAY_VAR(sSpNpcNookIntroActTable),
+    HOST_OVERLAY_VAR(sNookModelRcc),
+    HOST_OVERLAY_VAR(sNookModelRcd),
+    HOST_OVERLAY_VAR(sNookTexRcn),
+    HOST_OVERLAY_VAR(sNookTexRcc),
+    HOST_OVERLAY_VAR(sNookIntroMsgFile),
+    HOST_OVERLAY_VAR(sNookModelRcs),
+    HOST_OVERLAY_VAR(sNookTexPaths),
+    HOST_OVERLAY_VAR(sNookIntroMsgFilePtr),
+    HOST_OVERLAY_VAR(sNookTexRcs),
+    HOST_OVERLAY_VAR(sSpNpcNookIntroProfile),
+    HOST_OVERLAY_VARS_END
+};

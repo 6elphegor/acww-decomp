@@ -1,4 +1,6 @@
 #include "types.h"
+#include "host_shared_calls.h"
+#include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 
 // mwcc-flags: -str reuse
@@ -520,7 +522,7 @@ BOOL SpNpcHarriet::mainAct08() {
         out[1] = talk.getNewHairColor();
         out[0] = talk.getNewHairStyle();
         PlayerActor_LocalRequestHaircutStart(&out[0], &out[1]);
-        BarberMachine_Start();
+        Shared_BarberMachine_Start();
         Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x41, 0x7f, 0);
     }
     if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0xf1, &moveAnimSet)) {
@@ -601,17 +603,23 @@ s32 SpNpcHarrietTalk::getTopic() {
     return topic;
 }
 
+// SpNpcHarrietTalk::start's static tbl, initialised at its first use after the overlay was loaded
+TalkStartMsg SpNpcHarrietTalk_start_tbl[14];
+u8 SpNpcHarrietTalk_start_tbl_init;
 void SpNpcHarrietTalk::start(TalkStartMsg *out) {
     void *p = PlayerData_GetCurrent();
-    static TalkStartMsg tbl[14] = {
+    if (!SpNpcHarrietTalk_start_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(SpNpcHarrietTalk_start_tbl, {
         {(const char *)sSpNpcHarrietMsgKey, 0x43}, {(const char *)sSpNpcHarrietMsgKey, 0},    {(const char *)sSpNpcHarrietMsgKey, 2},
         {(const char *)sSpNpcHarrietMsgKey, 0x40}, {(const char *)sSpNpcHarrietMsgKey, 0x3e}, {(const char *)sSpNpcHarrietMsgKey, 0xd},
         {(const char *)sSpNpcHarrietMsgKey, 0x3d}, {(const char *)sSpNpcHarrietMsgKey, 0x45}, {(const char *)sSpNpcHarrietMsgKey, 0x42},
         {(const char *)sSpNpcHarrietMsgKey, 0x41}, {(const char *)sSpNpcHarrietMsgKey, 0x46}, {(const char *)sSpNpcHarrietMsgKey, 5},
         {(const char *)sSpNpcHarrietMsgKey, 6},    {(const char *)sSpNpcHarrietMsgKey, 7},
-    };
+    });
+        SpNpcHarrietTalk_start_tbl_init = 1;
+    }
     if (getTopic() == 4) {
-        out->msgKey = (const char *)tbl[topic].msgKey;
+        out->msgKey = (const char *)SpNpcHarrietTalk_start_tbl[topic].msgKey;
         out->msgIndex = getQuestionsStartMsg();
     } else {
         if (getTopic() != 0 && getTopic() != 3 && getTopic() != 5 &&
@@ -633,8 +641,8 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
             }
         }
         if (topic >= 0 && topic < 0xe) {
-            out->msgIndex = tbl[topic].msgIndex;
-            out->msgKey = (const char *)tbl[topic].msgKey;
+            out->msgIndex = SpNpcHarrietTalk_start_tbl[topic].msgIndex;
+            out->msgKey = (const char *)SpNpcHarrietTalk_start_tbl[topic].msgKey;
         }
     }
 }
@@ -903,4 +911,17 @@ s32 SpNpcHarriet::isSessionPaid() {
     return TownSessionState_TestFlag(TownSessionState_Get(), 7);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
+HOST_OVERLAY_VARS(unk_ov053_02258de0) {
+    HOST_OVERLAY_VAR(sSpNpcHarrietProfile),
+    HOST_OVERLAY_VAR(sSpNpcHarrietMsgKey),
+    HOST_OVERLAY_VAR(sSpNpcHarrietTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcHarrietKey),
+    HOST_OVERLAY_VAR(sSpNpcHarrietModelPath),
+    HOST_OVERLAY_VAR(sSpNpcHarrietActTable),
+    HOST_OVERLAY_VAR(SpNpcHarrietTalk_start_tbl),
+    HOST_OVERLAY_VAR(SpNpcHarrietTalk_start_tbl_init),
+    HOST_OVERLAY_VARS_END
+};

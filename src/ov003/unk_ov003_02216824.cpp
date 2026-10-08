@@ -481,3 +481,16 @@ void Mailbox::execMailGone() {
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02216824) {
+    HOST_OVERLAY_VAR(data_ov003_02235380),
+    HOST_OVERLAY_VAR(data_ov003_0223537c),
+    HOST_OVERLAY_VAR(data_ov003_02235390),
+    HOST_OVERLAY_VAR(data_ov003_02235394),
+    HOST_OVERLAY_VAR(data_ov003_0223538c),
+    HOST_OVERLAY_VAR(data_ov003_02235388),
+    HOST_OVERLAY_VAR(sMailboxProfile),
+    HOST_OVERLAY_VARS_END
+};

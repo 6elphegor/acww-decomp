@@ -1217,3 +1217,14 @@ void DwcConn_OnGt2SocketError(void *socket) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226fc18) {
+    HOST_OVERLAY_VAR(sDwcControl),
+    HOST_OVERLAY_VAR(data_ov065_02290674),
+    HOST_OVERLAY_VAR(sDwcConnTable),
+    HOST_OVERLAY_VAR(sDwcConnInfo),
+    HOST_OVERLAY_VARS_END
+};

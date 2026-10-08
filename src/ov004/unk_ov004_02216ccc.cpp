@@ -45,7 +45,7 @@ typedef void (HouseOwnerAi::*Unk_ov004_02216ff4_VFn)(HouseOwnerVillager *);
 struct HouseOwnerStepDir {
     s32 dx;
     s32 dy;
-    HouseOwnerStepDir(s32 a, s32 b) : dx(a), dy(b) {}
+    constexpr HouseOwnerStepDir(s32 a, s32 b) : dx(a), dy(b) {}
 };
 
 struct HouseOwnerAiState {
@@ -581,3 +581,12 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02216ccc) {
+    HOST_OVERLAY_VAR(sHouseOwnerVillagerProfile),
+    HOST_OVERLAY_VAR(sHouseOwnerAiStates),
+    HOST_OVERLAY_VAR(sHouseOwnerStepDirs),
+    HOST_OVERLAY_VARS_END
+};

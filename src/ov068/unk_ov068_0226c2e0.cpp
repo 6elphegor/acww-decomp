@@ -1025,3 +1025,47 @@ u32 SpNpcRoostGuest::getGuest() {
 // SpNpcRoostGuest::getGuest for src/ov004/unk_ov004_0221c01c.cpp (the class is defined in this file only; a direct
 // call, as the DS's)
 extern "C" s32 SpNpcRoostGuest_GetGuest(void *p) { return static_cast<SpNpcRoostGuest *>(p)->SpNpcRoostGuest::getGuest(); }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226c2e0) {
+    HOST_OVERLAY_VAR(sRoostTexMof),
+    HOST_OVERLAY_VAR(sRoostTexEnd),
+    HOST_OVERLAY_VAR(sRoostMsgCf3),
+    HOST_OVERLAY_VAR(sRoostTexPga),
+    HOST_OVERLAY_VAR(sRoostModelPga),
+    HOST_OVERLAY_VAR(sKkMouthM5),
+    HOST_OVERLAY_VAR(sKkMouthM4),
+    HOST_OVERLAY_VAR(sRoostTexPgb),
+    HOST_OVERLAY_VAR(sRoostModelPgb),
+    HOST_OVERLAY_VAR(sRoostGuestTexPaths),
+    HOST_OVERLAY_VAR(sRoostMsgCf4),
+    HOST_OVERLAY_VAR(sRoostModelWip),
+    HOST_OVERLAY_VAR(sSpNpcRoostGuestProfile),
+    HOST_OVERLAY_VAR(sRoostMsgCf2),
+    HOST_OVERLAY_VAR(sRoostTexWip),
+    HOST_OVERLAY_VAR(sRoostModelEnd),
+    HOST_OVERLAY_VAR(sKkMouthM2),
+    HOST_OVERLAY_VAR(sRoostGuestMsgFiles),
+    HOST_OVERLAY_VAR(sRoostGuestModelPaths),
+    HOST_OVERLAY_VAR(sKkMouthM1),
+    HOST_OVERLAY_VAR(sRoostModelMof),
+    HOST_OVERLAY_VAR(sRoostMsgDog),
+    HOST_OVERLAY_VAR(sRoostModelOtt),
+    HOST_OVERLAY_VAR(sRoostTexPoo),
+    HOST_OVERLAY_VAR(sRoostTexOtt),
+    HOST_OVERLAY_VAR(sKkShowScripts),
+    HOST_OVERLAY_VAR(sRoostMsgCf7),
+    HOST_OVERLAY_VAR(sKkMouthM3),
+    HOST_OVERLAY_VAR(sRoostTexXct),
+    HOST_OVERLAY_VAR(sRoostMsgCf1),
+    HOST_OVERLAY_VAR(sKkMouthTextures),
+    HOST_OVERLAY_VAR(sRoostMsgCf6),
+    HOST_OVERLAY_VAR(sRoostMsgCf5),
+    HOST_OVERLAY_VAR(sRoostModelXct),
+    HOST_OVERLAY_VAR(sKkMouthM0),
+    HOST_OVERLAY_VAR(sSpNpcRoostGuestActTable),
+    HOST_OVERLAY_VAR(sRoostModelPoo),
+    HOST_OVERLAY_VARS_END
+};

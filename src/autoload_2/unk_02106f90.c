@@ -7,6 +7,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef short s16;
 #include "types64.h"
+#include "host_labels.h"
 typedef int BOOL;
 #define NULL 0
 
@@ -15,7 +16,11 @@ typedef int BOOL;
 #include "proto/autoload_2/unk_02106f90.h"
 
 extern G3dRS *data_021f5cc0;
-extern const u8 data_02135e5c[9][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4]; // e5d..e5f: interior labels
+extern const u8 data_02135e5c[9][4];
+// e5d..e5f: interior labels
+#define data_02135e5d HOST_LABEL(const u8 (*)[][4], data_02135e5d)
+#define data_02135e5e HOST_LABEL(const u8 (*)[][4], data_02135e5e)
+#define data_02135e5f HOST_LABEL(const u8 (*)[][4], data_02135e5f)
 extern void MI_Zero36B(void *);
 extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 
@@ -281,3 +286,10 @@ const u8 data_02135e5c[9][4] = {
     {1, 2, 7, 8}, {0, 2, 6, 8}, {0, 1, 6, 7},
     {1, 2, 4, 5}, {0, 2, 3, 5}, {0, 1, 3, 4},
 };
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_02135e5d, (char *)&data_02135e5c[1]);
+HOST_LABEL_DEFINE(data_02135e5e, (char *)&data_02135e5c[2]);
+HOST_LABEL_DEFINE(data_02135e5f, (char *)&data_02135e5c[3]);

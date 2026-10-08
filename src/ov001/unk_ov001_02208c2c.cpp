@@ -953,3 +953,23 @@ void WfcTextKb_Destroy(void *a, void *work) {
     WfcHeap_FreeAndClear((void **)&sWfcTextKb);
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02208c2c) {
+    HOST_OVERLAY_VAR(data_ov001_0222a914),
+    HOST_OVERLAY_VAR(data_ov001_0222a978),
+    HOST_OVERLAY_VAR(data_ov001_0222a9dc),
+    HOST_OVERLAY_VAR(data_ov001_0222a884),
+    HOST_OVERLAY_VAR(data_ov001_0222a8b4),
+    HOST_OVERLAY_VAR(data_ov001_0222a8e4),
+    HOST_OVERLAY_VAR(data_ov001_0222a874),
+    HOST_OVERLAY_VAR(sWfcTextKbGlyphMaps),
+    HOST_OVERLAY_VAR(sWfcTextKbCharMaps),
+    HOST_OVERLAY_VAR(data_ov001_0222a844),
+    HOST_OVERLAY_VAR(data_ov001_0222a84c),
+    HOST_OVERLAY_VAR(data_ov001_0222a854),
+    HOST_OVERLAY_VAR(sWfcTextKb),
+    HOST_OVERLAY_VARS_END
+};

@@ -407,6 +407,9 @@ s32 Snowball::enterSnowball05() {
     return 1;
 }
 
+// Snowball::execSnowball05's static thr, initialised at its first use after the overlay was loaded
+s32 Snowball_execSnowball05_thr;
+u8 Snowball_execSnowball05_thr_init;
 void Snowball::execSnowball05() {
     rollVelZ += FX_Div(0, 0x3e8000) + 0x158;
     position.x += rollVelX;
@@ -416,8 +419,11 @@ void Snowball::execSnowball05() {
         d = -d;
     }
     position.y = -func_01ffcb0c(d, 0x3d7);
-    static s32 thr = FX_Div(0, 0x64000) + 0x3000;
-    if (d >= thr) {
+    if (!Snowball_execSnowball05_thr_init) {
+        Snowball_execSnowball05_thr = FX_Div(0, 0x64000) + 0x3000;
+        Snowball_execSnowball05_thr_init = 1;
+    }
+    if (d >= Snowball_execSnowball05_thr) {
         Snowball_ChangeState(this, 6);
     }
 }
@@ -617,3 +623,11 @@ void Snowball::execSnowballCrumble2() {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_02267584) {
+    HOST_OVERLAY_VAR(Snowball_execSnowball05_thr),
+    HOST_OVERLAY_VAR(Snowball_execSnowball05_thr_init),
+    HOST_OVERLAY_VARS_END
+};

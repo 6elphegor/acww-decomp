@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "nitro/fs.h"
 #include "net/CommManager.h"
 #include "npc/VillagerState.h"
@@ -939,7 +940,7 @@ extern "C" {
 FriendEntry *FriendList_GetEntries(FriendEntry *p);
 }
 extern "C" {
-extern u8 data_021e87d8[];
+#define data_021e87d8 HOST_LABEL(u8 (*)[], data_021e87d8)
 }
 extern "C" {
 extern u8 gU8None[];
@@ -1862,10 +1863,10 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern u32 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u32 (*)[], gSaveVillagers)
 }
 extern "C" {
-extern u8 gSaveTownId[];
+#define gSaveTownId HOST_LABEL(u8 (*)[], gSaveTownId)
 }
 extern "C" {
 extern u8 gFieldSceneKind;

@@ -20,8 +20,8 @@ class TexVramSlot;
 // symbols.txt gives the twin's C2/D2 names as labels of the real functions.
 class ModelBaseDecl {
 public:
-    ModelBaseDecl();
-    virtual ~ModelBaseDecl();
+    ModelBaseDecl() {}  // ModelBase's, empty
+    virtual ~ModelBaseDecl() {}  // ModelBase's, empty
 };
 
 class Model : public ModelBaseDecl {

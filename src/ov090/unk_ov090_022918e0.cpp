@@ -464,3 +464,13 @@ BOOL MenuTabBar::isJustOpened() {
 extern "C" {
 u8 sTabSwitchCooldown;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov090_022918e0) {
+    HOST_OVERLAY_VAR(sMenuTabBarProfile),
+    HOST_OVERLAY_VAR(sTabBarOamCells),
+    HOST_OVERLAY_VAR(sTabSwitchCooldown),
+    HOST_OVERLAY_VARS_END
+};

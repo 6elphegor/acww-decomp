@@ -175,3 +175,15 @@ b34:
 end:;
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0220cd24) {
+    HOST_OVERLAY_VAR(data_ov001_0222aa60),
+    HOST_OVERLAY_VAR(data_ov001_0222aa8c),
+    HOST_OVERLAY_VAR(data_ov001_0222aa74),
+    HOST_OVERLAY_VAR(data_ov001_0222aaa4),
+    HOST_OVERLAY_VAR(sWfcTransfer),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "town/BlockMap.h"
@@ -139,9 +140,9 @@ extern const u16 kNookFlowerBagItems[12];
 
 // the save data's shops (linker labels) and the shop functions of this file, as defined
 extern "C" {
-extern NookShop data_021ed104;  // SaveData::nookShop
-extern ReddShop data_021ed2c0;  // SaveData::reddShop
-extern AbleShop data_021ed2d4;  // SaveData::ableShop
+#define data_021ed104 HOST_LABEL(NookShop *, data_021ed104)  // SaveData::nookShop
+#define data_021ed2c0 HOST_LABEL(ReddShop *, data_021ed2c0)  // SaveData::reddShop
+#define data_021ed2d4 HOST_LABEL(AbleShop *, data_021ed2d4)  // SaveData::ableShop
 u32 Scene_GetCurrent(void);
 void MI_CpuCopy8(const void *src, void *dest, u32 size);
 void AbleShop_BuyAt(u32 a, u32 b, u32 c);
@@ -614,7 +615,8 @@ extern "C" void NookShop_Clear(NookShop *p) {
 namespace n4 {
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 gSavePlayers[], data_021ee17c[], data_021ee180[], data_021ee20c[], gSaveData[];
+extern u8 data_021ee17c[], data_021ee180[], data_021ee20c[], gSaveData[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 }
 extern "C" {
 }
@@ -1623,10 +1625,10 @@ extern "C" {
 extern u8 gSaveData[];
 }
 extern "C" {
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 }
 extern "C" {
-extern u8 data_021ed284[];
+#define data_021ed284 HOST_LABEL(u8 (*)[], data_021ed284)
 }
 extern "C" {
 extern CommManager *gCommManager;

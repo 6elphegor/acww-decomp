@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -126,10 +127,16 @@ BOOL BulletinBoard::setBoardState(s32 m) {
     return FALSE;
 }
 
+// BulletinBoard::updateBoardState's static tbl, initialised at its first use after the overlay was loaded
+Unk_02214208_Fn BulletinBoard_updateBoardState_tbl[3];
+u8 BulletinBoard_updateBoardState_tbl_init;
 void BulletinBoard::updateBoardState() {
-    static Unk_02214208_Fn tbl[3] = { (Unk_02214208_Fn)&BulletinBoard::execBoardIdle, (Unk_02214208_Fn)&BulletinBoard::execBoardOpen, (Unk_02214208_Fn)&BulletinBoard::execBoardRead };
+    if (!BulletinBoard_updateBoardState_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(BulletinBoard_updateBoardState_tbl, { (Unk_02214208_Fn)&BulletinBoard::execBoardIdle, (Unk_02214208_Fn)&BulletinBoard::execBoardOpen, (Unk_02214208_Fn)&BulletinBoard::execBoardRead });
+        BulletinBoard_updateBoardState_tbl_init = 1;
+    }
     if (boardState < 3) {
-        (this->*tbl[boardState])();
+        (this->*BulletinBoard_updateBoardState_tbl[boardState])();
     }
 }
 
@@ -160,3 +167,18 @@ void BulletinBoard::execBoardRead() {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022141bc) {
+    HOST_OVERLAY_VAR(data_ov003_02235110),
+    HOST_OVERLAY_VAR(data_ov003_02235100),
+    HOST_OVERLAY_VAR(data_ov003_02235104),
+    HOST_OVERLAY_VAR(data_ov003_022350fc),
+    HOST_OVERLAY_VAR(data_ov003_022350f8),
+    HOST_OVERLAY_VAR(data_ov003_022350f4),
+    HOST_OVERLAY_VAR(sBulletinBoardProfile),
+    HOST_OVERLAY_VAR(BulletinBoard_updateBoardState_tbl),
+    HOST_OVERLAY_VAR(BulletinBoard_updateBoardState_tbl_init),
+    HOST_OVERLAY_VARS_END
+};

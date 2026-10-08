@@ -620,3 +620,16 @@ __declspec(weak) void Unk_ov065_0226ecfc_pool_order(void) {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226ec94) {
+    HOST_OVERLAY_VAR(sNetCheckUrlPtr),
+    HOST_OVERLAY_VAR(sNetCheckHttp),
+    HOST_OVERLAY_VAR(sNetCheckUrl),
+    HOST_OVERLAY_VAR(sNetCheck),
+    HOST_OVERLAY_VAR(sNetCheckHttpParams),
+    HOST_OVERLAY_VAR(sNetCheckNasConfig),
+    HOST_OVERLAY_VARS_END
+};

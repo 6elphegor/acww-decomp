@@ -25,8 +25,13 @@ class CollisionCylinderX : public CollisionCircle {
 public:
     /* 0x10 */ s32 cylinderHeight;
 
-    BOOL clipSegmentSideBounded(VecFx32 *out, VecFx32 *a);   // label, 0x0202f7b8
-    BOOL clipSegmentCaps(VecFx32 *out, VecFx32 *a);          // label, 0x0202f968
+    // labels of CollisionCylinder's functions (0x0202f7b8, 0x0202f968)
+    BOOL clipSegmentSideBounded(VecFx32 *out, VecFx32 *a) {
+        return reinterpret_cast<CollisionCylinder *>(this)->clipSegmentSideBounded(out, a);
+    }
+    BOOL clipSegmentCaps(VecFx32 *out, VecFx32 *a) {
+        return reinterpret_cast<CollisionCylinder *>(this)->clipSegmentCaps(out, a);
+    }
     BOOL clipSegmentSide(VecFx32 *out, VecFx32 *a);
     BOOL clipSegmentTop(VecFx32 *out, VecFx32 *a);
     BOOL landOnTop(VecFx32 *out, VecFx32 *a);

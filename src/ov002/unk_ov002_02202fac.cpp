@@ -869,3 +869,17 @@ void MenuBottomButtonsBody::enableButton(s32 idx) {
 BOOL MenuBottomButtonsBody::isButtonDisabled(s32 idx) {
     return buttons[getButtonOfTarget(idx)].isDisabled();
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov002_02202fac) {
+    HOST_OVERLAY_VAR(sButtonCellsW8),
+    HOST_OVERLAY_VAR(sButtonCellsW4A),
+    HOST_OVERLAY_VAR(sButtonCellsW6A),
+    HOST_OVERLAY_VAR(sButtonCellsW6B),
+    HOST_OVERLAY_VAR(sButtonCellsW12),
+    HOST_OVERLAY_VAR(sButtonCellsW6Single),
+    HOST_OVERLAY_VAR(sButtonCellsW4B),
+    HOST_OVERLAY_VARS_END
+};

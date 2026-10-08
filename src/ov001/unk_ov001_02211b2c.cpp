@@ -634,3 +634,14 @@ void WfcApList_WaitDialogClosed() {
 }
 
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02211b2c) {
+    HOST_OVERLAY_VAR(data_ov001_0222aea8),
+    HOST_OVERLAY_VAR(sWfcApListCursor),
+    HOST_OVERLAY_VAR(sWfcApListScroll),
+    HOST_OVERLAY_VAR(sWfcApList),
+    HOST_OVERLAY_VARS_END
+};

@@ -163,6 +163,10 @@ CheckInGate::~CheckInGate() {
 }
 
 // @2226158
+// CheckInGate::onCreate's static sa
+FxVec3 CheckInGate_onCreate_sa(0xb000, 0, 0x10800);
+// CheckInGate::onCreate's static sb
+FxVec3 CheckInGate_onCreate_sb(0x15000, 0, 0x10800);
 BOOL CheckInGate::onCreate() {
     s32 v;
     TownTravelState *s = (TownTravelState *)TownSessionState_GetTravelState(TownSessionState_Get());
@@ -201,10 +205,8 @@ BOOL CheckInGate::onCreate() {
     }
     CheckInGate_SetInstance(this);
     doorOffset = -1;
-    static FxVec3 sa(0xb000, 0, 0x10800);
-    static FxVec3 sb(0x15000, 0, 0x10800);
-    BoxCollider_Register(&leftCollider, 0x2000, 0x1c00, 0x2000, &sa, 0, 0);
-    BoxCollider_Register(&rightCollider, 0x2000, 0x1c00, 0x2000, &sb, 0, 0);
+    BoxCollider_Register(&leftCollider, 0x2000, 0x1c00, 0x2000, &CheckInGate_onCreate_sa, 0, 0);
+    BoxCollider_Register(&rightCollider, 0x2000, 0x1c00, 0x2000, &CheckInGate_onCreate_sb, 0, 0);
     return TRUE;
 }
 
@@ -563,3 +565,27 @@ void CheckInGate::updateState03() {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_022257e4) {
+    HOST_OVERLAY_VAR(CheckInGate_onCreate_sa),
+    HOST_OVERLAY_VAR(CheckInGate_onCreate_sb),
+    HOST_OVERLAY_VAR(data_ov004_0224d7ac),
+    HOST_OVERLAY_VAR(sCheckInGate),
+    HOST_OVERLAY_VAR(data_ov004_0224d788),
+    HOST_OVERLAY_VAR(data_ov004_02250c48),
+    HOST_OVERLAY_VAR(data_ov004_02250c4c),
+    HOST_OVERLAY_VAR(data_ov004_02250c40),
+    HOST_OVERLAY_VAR(data_ov004_0224d7b8),
+    HOST_OVERLAY_VAR(data_ov004_02250c44),
+    HOST_OVERLAY_VAR(data_ov004_0224d794),
+    HOST_OVERLAY_VAR(data_ov004_02250c50),
+    HOST_OVERLAY_VAR(data_ov004_0224d7a0),
+    HOST_OVERLAY_VAR(data_ov004_0224d7c4),
+    HOST_OVERLAY_VAR(sCheckInGateGroundMats),
+    HOST_OVERLAY_VAR(data_ov004_02250c38),
+    HOST_OVERLAY_VAR(data_ov004_0224d77c),
+    HOST_OVERLAY_VAR(sCheckInGateProfile),
+    HOST_OVERLAY_VARS_END
+};

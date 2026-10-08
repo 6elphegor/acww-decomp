@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_labels.h"
 #include "proto/main/unk_0202fa70.h"
 #include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
@@ -62,7 +63,7 @@ extern VecFx32Ctor gCameraLookAt;
 extern s32 data_020c8cbc;
 extern u32 gFrameCounter;
 extern s32 data_020d0584[4];
-extern SnowmanRecords data_021ed2e6;
+#define data_021ed2e6 HOST_LABEL(SnowmanRecords *, data_021ed2e6)
 extern s16 data_02135f44[];
 extern const s16 sSnowmanNeighbourOffsets[16];
 // 0x0222efba is the table's second element: no separate symbol once this unit is linked
@@ -926,3 +927,11 @@ void Snowball::mainTalkEnd() {
 }
 
 // ================================================================
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_02212830) {
+    HOST_OVERLAY_VAR(sSnowballProfile),
+    HOST_OVERLAY_VARS_END
+};

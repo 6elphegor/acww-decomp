@@ -1,4 +1,7 @@
 #include "ds_div.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
+#include "host_overlay_vars.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -42,9 +45,9 @@ BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
 void MIi_CpuCopy16(const void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 extern u8 gFieldSceneKind;
-extern u8 gSaveTownId[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
+#define gSaveTownId HOST_LABEL(u8 (*)[], gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern u16 gPad[];
 struct Unk_ov120_02293a2c_Oam {
     u16 attr0;
@@ -538,14 +541,20 @@ void MapViewerMenu::loadBgGfx() {
 }
 
 
+// MapViewerMenu::loadMapImage's static obj, initialised at its first use after the overlay was loaded
+TownMapMarkers MapViewerMenu_loadMapImage_obj;
+u8 MapViewerMenu_loadMapImage_obj_init;
 void MapViewerMenu::loadMapImage() {
     Heap *h = gCurrentHeap;
     u8 *p = (u8 *)Heap_AllocTail(h, 0x2000);
-    static TownMapMarkers obj;
-    TownMapMarkers_Clear(&obj);
-    TownMapImage_Build(p, &obj);
+    if (!MapViewerMenu_loadMapImage_obj_init) {
+        HOST_STATIC_CONSTRUCT(MapViewerMenu_loadMapImage_obj);
+        MapViewerMenu_loadMapImage_obj_init = 1;
+    }
+    Shared_TownMapMarkers_Clear(&MapViewerMenu_loadMapImage_obj);
+    TownMapImage_Build(p, &MapViewerMenu_loadMapImage_obj);
     Gfx2d_LoadCharRange(p, 4, 0x60, 0x60, 0x15f);
-    setupMarkers(&obj);
+    setupMarkers(&MapViewerMenu_loadMapImage_obj);
     Heap_Free(h, p);
 }
 
@@ -924,7 +933,7 @@ void MapViewerMenu::setupMarkers(TownMapMarkers *src) {
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
-        rec = TownMapMarkers_Get(src, i);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(src, i);
         if (rec != 0) {
             switch (TownMapMarkers_GetKind(src, i)) {
             case 0:
@@ -952,7 +961,7 @@ void MapViewerMenu::setupMarkers(TownMapMarkers *src) {
     j = 3;
     k = 0;
     for (; k < 0xe; j++, k++) {
-        rec = TownMapMarkers_Get(src, j);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(src, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
                 buildingMarkers[k].cell = 0;
@@ -1450,5 +1459,16 @@ MapViewMarker::MapViewMarker() {}
 
 MapViewMarker::~MapViewMarker() {}
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
 
-
+HOST_OVERLAY_VARS(unk_ov120_02292d00) {
+    HOST_OVERLAY_VAR(sMapViewPlacesButtonCells),
+    HOST_OVERLAY_VAR(sMapViewIconCell),
+    HOST_OVERLAY_VAR(sMapViewFrameCells),
+    HOST_OVERLAY_VAR(sMapViewResidentsButtonCells),
+    HOST_OVERLAY_VAR(sMapViewerMenuProfile),
+    HOST_OVERLAY_VAR(MapViewerMenu_loadMapImage_obj),
+    HOST_OVERLAY_VAR(MapViewerMenu_loadMapImage_obj_init),
+    HOST_OVERLAY_VARS_END
+};

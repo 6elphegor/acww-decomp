@@ -195,3 +195,10 @@ void WfcUtil_RectFromPosSize(WfcPoint *a, WfcPoint *b, WfcRect *out) {
     out->bottom = a->y + b->y;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02225924) {
+    HOST_OVERLAY_VAR(sWfcHeap),
+    HOST_OVERLAY_VARS_END
+};

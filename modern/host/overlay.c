@@ -1,11 +1,13 @@
 // Host build: loading an overlay resets its variables, as the DS does.
 //
 // On the DS, loading an overlay (FS_LoadOverlayImage + FS_StartOverlay) reads a fresh copy of its code and
-// initialised data from the ROM, clears its bss and runs its static constructors. The host has every overlay linked
-// into the program, each one's data, bss and constructors in ranges of their own (tools/host_order.py), so loading
-// overlay N copies N's data back from a copy taken at start-up, clears N's bss and runs N's constructors (they don't
-// run at start-up: they aren't in .init_array). Overlays that share an address range on the DS each keep their own
-// variables here; each one is reset when it is loaded. ACWW_OVLOG=1 lists the loads.
+// initialised data from the ROM, clears its bss and runs its static initialisers. The host has every overlay linked
+// into the program. Each overlay unit lists its variables (HOST_OVERLAY_VARS, generated at the end of the unit by
+// tools/host_overlay_vars.py) and may have an explicit initialiser, StaticInit_<unit>, for what the DS's __sinit did
+// that isn't constant data; modern/gen/overlay_table.c collects them per overlay. Loading overlay N copies each of
+// N's variables back from a copy taken at start-up (HostOverlay_Init, from main()), then runs N's units'
+// StaticInit_<unit> in link order. Overlays that share an address range on the DS each keep their own variables here;
+// each one is reset when it is loaded. ACWW_OVLOG=1 lists the loads.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,19 +15,23 @@
 #include "host.h"
 #include "overlay.h"
 
-static char **sPristine;  // per table entry: the data as linked
-static unsigned char *sKeep;  // per table entry: not reset (ACWW_OVRESET)
+static unsigned char **sPristine;  // per unit: its variables' bytes as linked, one after the other
+static unsigned char *sKeep;       // per overlay id: not reset (ACWW_OVRESET)
+static unsigned sMaxId;
 static int sLog;
 
-// ACWW_OVRESET=0 (for comparisons): the earlier behaviour - every overlay's constructors once at start-up, nothing
-// reset on loads; ACWW_OVRESET=-5,9: that for the overlays listed only
+// ACWW_OVRESET=0 (for comparisons): the overlays' static initialisers run once at start-up, nothing is reset on
+// loads; ACWW_OVRESET=-5,9: that for the overlays listed only
 static void parse_keep(void) {
     const char *e = getenv("ACWW_OVRESET");
-    sKeep = calloc(gHostOverlayCount, 1);
+    for (unsigned i = 0; i < gHostOverlayUnitCount; i++) {
+        if (gHostOverlayUnits[i].id > sMaxId) sMaxId = gHostOverlayUnits[i].id;
+    }
+    sKeep = calloc(sMaxId + 1, 1);
     if (!sKeep) host_fatal("overlay data copy");
     if (!e) return;
     if (!strcmp(e, "0")) {
-        memset(sKeep, 1, gHostOverlayCount);
+        memset(sKeep, 1, sMaxId + 1);
         return;
     }
     if (*e != '-') return;
@@ -33,65 +39,93 @@ static void parse_keep(void) {
         char *q;
         unsigned long id = strtoul(p, &q, 10);
         if (q == p) break;
-        for (unsigned i = 0; i < gHostOverlayCount; i++) {
-            if (gHostOverlays[i].id == id) sKeep[i] = 1;
-        }
+        if (id <= sMaxId) sKeep[id] = 1;
         p = *q == ',' ? q + 1 : q;
     }
 }
 
-__attribute__((constructor)) static void overlay_keep_ctors(void) {
-    for (unsigned i = 0; i < gHostOverlayCount; i++) {
-        if (!sKeep[i]) continue;
-        for (HostOverlayCtor *c = gHostOverlays[i].init; c < gHostOverlays[i].initEnd; c++) {
-            if (*c) (*c)();
+// From main(), before the game starts: after the static constructors, which construct some overlay objects (those
+// whose classes have default constructors; StaticInit_<unit> constructs them again at every load) and touch no other
+// overlay variable.
+void HostOverlay_Init(void) {
+    sLog = getenv("ACWW_OVLOG") != NULL;
+    parse_keep();
+    sPristine = calloc(gHostOverlayUnitCount, sizeof *sPristine);
+    if (!sPristine) host_fatal("overlay data copy");
+    size_t total = 0, nvars = 0;
+    for (unsigned i = 0; i < gHostOverlayUnitCount; i++) {
+        const HostOverlayVar *v = gHostOverlayUnits[i].vars;
+        if (!v) continue;
+        size_t n = 0;
+        for (; v->addr; v++, nvars++) n += v->size;
+        total += n;
+        sPristine[i] = malloc(n ? n : 1);
+        if (!sPristine[i]) host_fatal("overlay data copy");
+        unsigned char *p = sPristine[i];
+        for (v = gHostOverlayUnits[i].vars; v->addr; v++) {
+            memcpy(p, v->addr, v->size);
+            p += v->size;
         }
+    }
+    if (sLog) fprintf(stderr, "overlays: %u units, %zu variables, %zu bytes kept\n", gHostOverlayUnitCount, nvars, total);
+    for (unsigned i = 0; i < gHostOverlayUnitCount; i++) {
+        const HostOverlayUnit *u = &gHostOverlayUnits[i];
+        if (sKeep[u->id] && u->staticInit) u->staticInit();
     }
 }
 
-// before the game's static constructors (the main program's may write to anything)
-__attribute__((constructor(101))) static void overlay_snapshot(void) {
-    sLog = getenv("ACWW_OVLOG") != NULL;
-    parse_keep();
-    sPristine = calloc(gHostOverlayCount, sizeof *sPristine);
-    if (!sPristine) host_fatal("overlay data copy");
-    size_t total = 0;
-    for (unsigned i = 0; i < gHostOverlayCount; i++) {
-        const HostOverlayRanges *o = &gHostOverlays[i];
-        size_t n = (size_t)(o->dataEnd - o->data);
-        total += n;
-        if (n == 0) continue;
-        sPristine[i] = malloc(n);
-        if (!sPristine[i]) host_fatal("overlay data copy");
-        memcpy(sPristine[i], o->data, n);
+// ACWW_OVLOG: what the reset undoes. Variables that are all zero as linked (the bss: GCC and clang put the
+// zero-initialised ones there) count separately from the others (data), as the DS's two parts of an overlay.
+typedef struct {
+    size_t bytes, vars, changed;
+    const char *first;
+    size_t firstOff;
+} ResetStats;
+
+static void log_unit(const HostOverlayUnit *u, const unsigned char *pristine, ResetStats *data, ResetStats *bss) {
+    for (const HostOverlayVar *v = u->vars; v->addr; v++) {
+        int zero = 1;
+        for (size_t k = 0; k < v->size && zero; k++) zero = pristine[k] == 0;
+        ResetStats *s = zero ? bss : data;
+        s->bytes += v->size;
+        s->vars++;
+        const unsigned char *cur = v->addr;
+        for (size_t k = 0; k < v->size; k++) {
+            if (cur[k] != pristine[k] && !s->changed++) {
+                s->first = v->name;
+                s->firstOff = k;
+            }
+        }
+        pristine += v->size;
     }
-    if (sLog) fprintf(stderr, "overlays: %u, %zu bytes of data kept\n", gHostOverlayCount, total);
 }
 
 void HostOverlay_Load(unsigned id) {
-    for (unsigned i = 0; i < gHostOverlayCount; i++) {
-        const HostOverlayRanges *o = &gHostOverlays[i];
-        if (o->id != id || sKeep[i]) continue;
-        if (sLog) {
-            // what the reset undoes: data bytes changed since start-up, bss bytes not zero (the first of each)
-            size_t nd = 0, nb = 0, fd = 0, fb = 0;
-            for (char *p = o->data; p < o->dataEnd; p++) {
-                if (*p != sPristine[i][p - o->data] && !nd++) fd = (size_t)(p - o->data);
-            }
-            for (char *p = o->bss; p < o->bssEnd; p++) {
-                if (*p && !nb++) fb = (size_t)(p - o->bss);
-            }
-            fprintf(stderr, "frame %llu: overlay %u loaded: data %p+%#zx (%zu bytes changed, first at %p), bss "
-                    "%p+%#zx (%zu bytes not zero, first at %p), %zu constructors\n",
-                    (unsigned long long)host_frame(), id, (void *)o->data, (size_t)(o->dataEnd - o->data), nd,
-                    (void *)(o->data + fd), (void *)o->bss, (size_t)(o->bssEnd - o->bss), nb, (void *)(o->bss + fb),
-                    (size_t)(o->initEnd - o->init));
+    if (id > sMaxId || sKeep[id]) return;
+    ResetStats data = {0, 0, 0, "-", 0}, bss = {0, 0, 0, "-", 0};
+    unsigned inits = 0;
+    for (unsigned i = 0; i < gHostOverlayUnitCount; i++) {
+        const HostOverlayUnit *u = &gHostOverlayUnits[i];
+        if (u->id != id || !u->vars) continue;
+        if (sLog) log_unit(u, sPristine[i], &data, &bss);
+        const unsigned char *p = sPristine[i];
+        for (const HostOverlayVar *v = u->vars; v->addr; v++) {
+            memcpy(v->addr, p, v->size);
+            p += v->size;
         }
-        if (o->dataEnd > o->data) memcpy(o->data, sPristine[i], (size_t)(o->dataEnd - o->data));
-        memset(o->bss, 0, (size_t)(o->bssEnd - o->bss));
-        for (HostOverlayCtor *c = o->init; c < o->initEnd; c++) {
-            if (*c) (*c)();
-        }
-        return;
+    }
+    // then the units' static initialisers, in link order (as the DS's .sinit list)
+    for (unsigned i = 0; i < gHostOverlayUnitCount; i++) {
+        const HostOverlayUnit *u = &gHostOverlayUnits[i];
+        if (u->id != id || !u->staticInit) continue;
+        u->staticInit();
+        inits++;
+    }
+    if (sLog) {
+        fprintf(stderr, "frame %llu: overlay %u loaded: data %zu bytes in %zu variables (%zu bytes changed, first in "
+                "%s+%#zx), bss %zu bytes in %zu variables (%zu bytes not zero, first in %s+%#zx), %u constructors\n",
+                (unsigned long long)host_frame(), id, data.bytes, data.vars, data.changed, data.first, data.firstOff,
+                bss.bytes, bss.vars, bss.changed, bss.first, bss.firstOff, inits);
     }
 }
+

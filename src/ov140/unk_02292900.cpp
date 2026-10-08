@@ -959,3 +959,17 @@ void DistantTownsMenu::setFlags(u32 m) { flags = flags | m; }
 
 void DistantTownsMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02292900) {
+    HOST_OVERLAY_VAR(data_ov140_02293e64),
+    HOST_OVERLAY_VAR(sDistantTownsMenuProfile),
+    HOST_OVERLAY_VAR(data_ov140_02293d80),
+    HOST_OVERLAY_VAR(data_ov140_02293d40),
+    HOST_OVERLAY_VAR(data_ov140_02293d00),
+    HOST_OVERLAY_VAR(data_ov140_02293d88),
+    HOST_OVERLAY_VAR(data_ov140_02293dcc),
+    HOST_OVERLAY_VAR(data_ov140_02293da4),
+    HOST_OVERLAY_VARS_END
+};

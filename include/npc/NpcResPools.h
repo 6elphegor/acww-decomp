@@ -15,10 +15,12 @@
 // animation and villager animation heap pools have their own headers (npc/NpcBodyAnimPool.h,
 // npc/VillagerAnimHeapRefPool.h).
 
+extern "C" void NpcTexPatBufRef_Init(s32 *p);
+extern "C" void NpcTexPatBufRef_Deinit();
 struct NpcTexPatBufRef {
     u32 pad;
-    NpcTexPatBufRef();
-    ~NpcTexPatBufRef();
+    NpcTexPatBufRef() { NpcTexPatBufRef_Init((s32 *)&pad); }
+    ~NpcTexPatBufRef() { NpcTexPatBufRef_Deinit(); }
 };
 
 struct NpcFaceAnimSlot : NpcResSlot {

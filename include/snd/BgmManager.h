@@ -12,10 +12,9 @@ class BgmManager;
 // 0x1c-byte slot
 class BgmRequest {
 public:
-    BgmRequest();
-    BgmRequest(s32 a, u32 b, s32 c, s32 d, u8 e);
-    ~BgmRequest();
-
+    BgmRequest() { initEmpty(); }
+    BgmRequest(s32 a, u32 b, s32 c, s32 d, u8 e) { init(a, b, c, d, e); }
+    ~BgmRequest() { func_02036c18(); }
     BOOL tickLifetime();
     void copyFrom(BgmRequest *src);
     void clear();
@@ -40,7 +39,7 @@ public:
 // the symbols name this class in the parameter of three methods of the composite
 class BgmRequestView : public BgmRequest {
 public:
-    BOOL clearPlaying();
+    BOOL clearPlaying() { playing = 0; return FALSE; }  // BgmManager::clearPlaying's code (requests[0], at offset 0)
     BOOL clearVolumePending();
 };
 
@@ -66,7 +65,8 @@ public:
     void stopFireworks();
     void stopCountdown();
     void stopNewYearDay();
-    s32 stopNewYearDayAlias(); // alias of func_02036220 declared s32 so the caller emits bl instead of a tail branch
+    // stopNewYearDay (func_02036220) under a second name declared s32, so that the caller emits bl, not a tail branch
+    s32 stopNewYearDayAlias() { stopNewYearDay(); return 0; }
     void stopNewYearNight();
     void stopNewYearFanfare();
     void playFireworks(u32 a);
@@ -136,7 +136,7 @@ public:
 class BgmCommandQueue {
 public:
     BgmCommandQueue(BgmManager *owner);
-    ~BgmCommandQueue();
+    ~BgmCommandQueue() { func_02035740(); }
     void flush();
     void clear();
     BgmCommandQueue *init(BgmManager *owner);

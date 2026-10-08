@@ -424,3 +424,16 @@ void WfcAddrEdit_ReturnToInput() {
 }
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022140bc) {
+    HOST_OVERLAY_VAR(data_ov001_0222af7c),
+    HOST_OVERLAY_VAR(sWfcAddrEditTitleMsgs),
+    HOST_OVERLAY_VAR(data_ov001_0222af88),
+    HOST_OVERLAY_VAR(sWfcAddrEditLoadFuncs),
+    HOST_OVERLAY_VAR(sWfcAddrEditStoreFuncs),
+    HOST_OVERLAY_VAR(sWfcAddrEdit),
+    HOST_OVERLAY_VARS_END
+};

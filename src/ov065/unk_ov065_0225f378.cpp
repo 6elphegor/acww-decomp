@@ -191,3 +191,12 @@ void SockCore_CommandThreadMain(void *q)
     }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0225f378) {
+    HOST_OVERLAY_VAR(sSockMsgPool),
+    HOST_OVERLAY_VAR(sSockMsgFreeQueue),
+    HOST_OVERLAY_VARS_END
+};

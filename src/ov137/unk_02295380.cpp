@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
@@ -279,7 +280,7 @@ void BirthdayMenu::postInputUpdate() {
 
 void BirthdayMenu::preStateUpdate() {
     bottomButtons.freeTexts();
-    DateTimePicker_BeginFrame(&picker);
+    Shared_DateTimePicker_BeginFrame(&picker);
 }
 
 void BirthdayMenu::postStateUpdate() {
@@ -329,7 +330,7 @@ void BirthdayMenu::stateListTouch() {
         return;
     }
     if (Unk_ov137_Both()) {
-        switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
+        switch (Shared_DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
         case 0:
             decideList();
             break;
@@ -486,13 +487,13 @@ void BirthdayMenu::stateExit() {
 }
 
 void BirthdayMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&picker)) {
+    if (Shared_DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void BirthdayMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&picker)) {
+    if (Shared_DateTimePicker_UpdateListClose(&picker)) {
         s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
             cursorSlot = 2;
@@ -543,14 +544,14 @@ void BirthdayMenu::openFieldList(u32 a) {
 void BirthdayMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&picker);
+    Shared_DateTimePicker_DecideList(&picker);
     setMainState(0xd);
 }
 
 void BirthdayMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&picker);
+    Shared_DateTimePicker_CancelList(&picker);
     setMainState(0xd);
 }
 
@@ -694,3 +695,11 @@ extern "C" const u8 sBirthdayCursorDownTable[4] = {2, 2, 2, 0};
 extern "C" const s32 sBirthdayCursorYTable[3] = {0x78, 0x78, 0};
 
 extern "C" ProcProfile sBirthdayMenuProfile = {(void *(*)())BirthdayMenu_Create, 0xb0, 0xb4};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02295380) {
+    HOST_OVERLAY_VAR(sBirthdayMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 
 #include "Unk_020d8c7c.h"
@@ -86,7 +87,7 @@ void MIi_CpuClear16(u16 v, void *dst, u32 size);
 }
 
 extern CommManager *gCommManager;
-extern u8 data_021ed170[];
+#define data_021ed170 HOST_LABEL(u8 (*)[], data_021ed170)
 extern u8 gSaveData[];
 extern BgmManager *data_021c1b3c;
 

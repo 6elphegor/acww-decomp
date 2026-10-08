@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "net/CommManager.h"
 #include "town/TownUpdateThread.h"
 #include "game/EventDayEntry.h"
@@ -19,7 +20,7 @@ extern CommManager *gCommManager;
 extern TownUpdater gTownUpdater;
 extern volatile u32 gTownEval[];
 extern u8 gSaveData[];
-extern u8 data_021ed20c[];
+#define data_021ed20c HOST_LABEL(u8 (*)[], data_021ed20c)
 
 u8 sTownBbsUpdateCtx[4];
 TownJunkInsectFlags gTownJunkInsectFlags;

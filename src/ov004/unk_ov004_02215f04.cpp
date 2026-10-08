@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 // mwcc-version: 1.2/base
 // ov004 TU07: .text 0x02215f04-0x02216ccc (classes BirthdayGuestVillager and its member BirthdayGuestVillagerTalk)
 #include "types.h"
@@ -61,7 +62,7 @@ extern s32 data_020c8cbc;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern Unk_0204e858_Grid *gSceneBlockMap;
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 Vec_NotEqual(VecFx32 *a, VecFx32 *b);
@@ -634,3 +635,19 @@ BOOL BirthdayGuestVillager::canPlayTalkMelody() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02215f04) {
+    HOST_OVERLAY_VAR(data_ov004_02250588),
+    HOST_OVERLAY_VAR(data_ov004_02250598),
+    HOST_OVERLAY_VAR(data_ov004_0225057c),
+    HOST_OVERLAY_VAR(data_ov004_02250580),
+    HOST_OVERLAY_VAR(data_ov004_0225058c),
+    HOST_OVERLAY_VAR(data_ov004_02250594),
+    HOST_OVERLAY_VAR(sBirthdayGuestVillagerProfile),
+    HOST_OVERLAY_VAR(sBirthdayGuestVillager),
+    HOST_OVERLAY_VAR(data_ov004_0224c158),
+    HOST_OVERLAY_VAR(sBirthdayGuestMsgFile),
+    HOST_OVERLAY_VARS_END
+};

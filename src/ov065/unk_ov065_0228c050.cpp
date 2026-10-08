@@ -26,3 +26,14 @@ u8 data_ov065_0228c0b8[128] = {
 };
 SslRootCa sRootCaNintendo = {data_ov065_0228c068, 0x80, data_ov065_0228c0b8, 3, data_ov065_0228c050};
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0228c050) {
+    HOST_OVERLAY_VAR(data_ov065_0228c050),
+    HOST_OVERLAY_VAR(data_ov065_0228c068),
+    HOST_OVERLAY_VAR(data_ov065_0228c0b8),
+    HOST_OVERLAY_VAR(sRootCaNintendo),
+    HOST_OVERLAY_VARS_END
+};

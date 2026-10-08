@@ -1,5 +1,6 @@
 // ov103: scene overlay (class PocketLettersMenu, vtable 0x02296da0, 0x2b04 bytes). Linked unit.
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "menu/PopupChoiceIdList.h"
@@ -296,7 +297,7 @@ BOOL PocketLettersMenu::onDraw() {
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, slideY);
         letterGrid.drawPocketLetters(0, slideY);
-        InventoryBg_DrawSprite(&inventoryBg, slideY);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, slideY);
     }
     if (testFlags(0x80)) {
         s32 r = getSlideOffsetY();
@@ -366,8 +367,8 @@ void PocketLettersMenu::transitionAct00() {
 
 void PocketLettersMenu::transitionAct01() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&pocketGrid);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -467,7 +468,7 @@ void PocketLettersMenu::initParts() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     letterGrid.init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x15;
     flyMotion.reset();
     handKind = 0;
@@ -479,7 +480,7 @@ void PocketLettersMenu::initParts() {
 void PocketLettersMenu::releaseResources() {
     cancelBgTasks();
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     letterView.release();
 }
@@ -495,13 +496,13 @@ void PocketLettersMenu::postInputUpdate() {
 
 void PocketLettersMenu::preStateUpdate() {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     letterGrid.updateCursorLift();
 }
 
 void PocketLettersMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (nameBalloon.updatePrompt()) {
         placeBalloon();
@@ -953,13 +954,13 @@ s32 PocketLettersMenu::getSlotX(u32 a) {
 
 s32 PocketLettersMenu::getSlotY(u32 a) {
     if (isLetterSlot(a)) {
-        return LetterGrid_GetSlotY(&letterGrid, toLetterIndex(a));
+        return Shared_LetterGrid_GetSlotY(&letterGrid, toLetterIndex(a));
     }
     return 0;
 }
 
 void PocketLettersMenu::disableAllPockets() {
-    InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
+    Shared_InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
 }
 
 BOOL PocketLettersMenu::isSlotDisabled(u32 a) {
@@ -991,7 +992,7 @@ void PocketLettersMenu::setFocusSlot(u32 a) {
 }
 
 void PocketLettersMenu::clearHoverSlot() {
-    InventoryItemGrid_ClearMarks(&pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&pocketGrid);
     letterGrid.clearMarks();
 }
 
@@ -1302,3 +1303,11 @@ BOOL PocketLettersMenu::testFlags(u32 mask) {
 void PocketLettersMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
 void PocketLettersMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov103_02294c40) {
+    HOST_OVERLAY_VAR(sPocketLettersMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

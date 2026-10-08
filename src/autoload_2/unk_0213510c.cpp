@@ -6,6 +6,7 @@
 // .exception 0x020c2b34-0x020c2bb0 (the try/catch tables of the __cxa_vec_* functions).
 // The .data range ends with the 12 zero bytes that align the end of autoload_2's data to 32 bytes (0x0213c6c0).
 #include "types.h"
+#include "host_labels.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02133b68.h"
@@ -100,7 +101,7 @@ typedef struct ExSpecification {
 #define EXCEPTION_ACTION_MASK 0x1f
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
 
-extern VoidFunc p__sinit_020c2cd0[]; // start of main's .ctor table
+#define p__sinit_020c2cd0 HOST_LABEL(VoidFunc (*)[], p__sinit_020c2cd0)  // start of main's .ctor table
 
 extern "C" {
 void sys_writec(const u8 *p);

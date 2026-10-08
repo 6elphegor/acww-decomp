@@ -181,3 +181,12 @@ void WfcError_SetCode(s32 a) {
 }
 }
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02214f50) {
+    HOST_OVERLAY_VAR(sWfcErrorCodeFormat),
+    HOST_OVERLAY_VAR(sWfcErrorCode),
+    HOST_OVERLAY_VARS_END
+};

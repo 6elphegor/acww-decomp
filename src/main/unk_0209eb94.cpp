@@ -1,4 +1,5 @@
 #include "talk/MsgString9B.h"
+#include "host_labels.h"
 #include "talk/MsgString9C.h"
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -76,7 +77,7 @@ static inline BOOL Unk_020a42c4_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
 // for those). Where a definition takes a pointer as an integer (the Backup_* buffers in unk_0204fe7c.cpp, the
 // SceneWarp_RequestExit warp request in unk_020b4828.cpp), the declaration here gives the pointer type.
 
-// the save state's sub-records, labels inside gSaveData (members of SaveData at their offsets: modern/gen/provides.ld)
+// the save state's sub-records, labels inside gSaveData (members of SaveData at their offsets: include/host_labels.h)
 struct SaveClockOffset {  // SaveData::clockOffset (Clock_* in unk_0209cb74.cpp)
     u32 minutes;
     u16 seconds;
@@ -85,10 +86,10 @@ struct SaveClockOffset {  // SaveData::clockOffset (Clock_* in unk_0209cb74.cpp)
 
 extern "C" {
 extern SaveData gSaveData;
-extern BlancaFaceRecord gSaveBlancaFace;  // gSaveData.blancaFace
-extern TownExchangeRecord data_021e7f8c;  // gSaveData.townExchange
-extern SaveClockOffset data_021ed304;     // gSaveData.clockOffset
-extern SaveRecord4 gSaveFooter;           // gSaveData.footer
+#define gSaveBlancaFace HOST_LABEL(BlancaFaceRecord *, gSaveBlancaFace)  // gSaveData.blancaFace
+#define data_021e7f8c HOST_LABEL(TownExchangeRecord *, data_021e7f8c)  // gSaveData.townExchange
+#define data_021ed304 HOST_LABEL(SaveClockOffset *, data_021ed304)  // gSaveData.clockOffset
+#define gSaveFooter HOST_LABEL(SaveRecord4 *, gSaveFooter)  // gSaveData.footer
 extern Backup gBackup;
 extern CommManager *gCommManager;
 extern u8 gTalkMsgIndexEnd;

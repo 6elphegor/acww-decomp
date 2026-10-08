@@ -2,12 +2,13 @@
 #define ITEM_ITEMPICKSPEC_H
 
 // Item-pick request (item list + item class) passed to ItemPick_One. Methods at 0x02063380.. (src/main/unk_0206269c.cpp);
-// set() and ItemPickSpec(s32, s32) share one symbol, ~ItemPickSpec is ItemPickSpec_Destruct.
+// set() and ItemPickSpec(s32, s32) share one symbol (the constructor calls set() here), ~ItemPickSpec is
+// ItemPickSpec_Destruct.
 #include "types.h"
 
 struct ItemPickSpec {
     ItemPickSpec() {}
-    ItemPickSpec(s32 a, s32 b);
+    ItemPickSpec(s32 a, s32 b) { set(a, b); }
     ItemPickSpec(const ItemPickSpec &o) { listIndex = o.listIndex; itemClass = o.itemClass; }
     ~ItemPickSpec();
     s32 getClass();

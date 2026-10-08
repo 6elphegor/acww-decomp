@@ -1109,3 +1109,31 @@ void MelodyMenu::clearFlags(u32 mask) {
     flags = flags & ~mask;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov143_02291f60) {
+    HOST_OVERLAY_VAR(sMelodyMenuProfile),
+    HOST_OVERLAY_VAR(data_ov143_02293980),
+    HOST_OVERLAY_VAR(data_ov143_02293950),
+    HOST_OVERLAY_VAR(data_ov143_022939e8),
+    HOST_OVERLAY_VAR(data_ov143_02293a00),
+    HOST_OVERLAY_VAR(data_ov143_02293af0),
+    HOST_OVERLAY_VAR(data_ov143_02293a18),
+    HOST_OVERLAY_VAR(data_ov143_02293a30),
+    HOST_OVERLAY_VAR(data_ov143_02293a48),
+    HOST_OVERLAY_VAR(data_ov143_02293a60),
+    HOST_OVERLAY_VAR(data_ov143_02293a78),
+    HOST_OVERLAY_VAR(data_ov143_02293a90),
+    HOST_OVERLAY_VAR(data_ov143_02293aa8),
+    HOST_OVERLAY_VAR(data_ov143_02293ac0),
+    HOST_OVERLAY_VAR(data_ov143_02293ad8),
+    HOST_OVERLAY_VAR(data_ov143_02293b08),
+    HOST_OVERLAY_VAR(data_ov143_02293b20),
+    HOST_OVERLAY_VAR(data_ov143_022939a0),
+    HOST_OVERLAY_VAR(data_ov143_022939b8),
+    HOST_OVERLAY_VAR(data_ov143_022939d0),
+    HOST_OVERLAY_VAR(data_ov143_022938c8),
+    HOST_OVERLAY_VAR(sMelodyNoteSprites),
+    HOST_OVERLAY_VARS_END
+};

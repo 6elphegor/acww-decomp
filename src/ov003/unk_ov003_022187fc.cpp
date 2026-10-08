@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 #include "town/TownState.h"
 #include "town/BlockMap.h"
 #include "gfx/VecFx32.h"
@@ -37,11 +39,11 @@ struct NNSG3dResTex;
 struct TexVramSlot;
 
 extern "C" {
-extern TownStyleRecordView gSaveTownFlag;
+#define gSaveTownFlag HOST_LABEL(TownStyleRecordView *, gSaveTownFlag)
 extern BlockMap *gSceneBlockMap;
 extern BuildingInfo data_020d0a7c[];  // the building info table (0x22 records, by building item id & 0xfff)
 extern CommManager *gCommManager;
-extern u8 gSaveTownState[];
+#define gSaveTownState HOST_LABEL(u8 (*)[], gSaveTownState)
 }
 
 extern "C" {
@@ -625,3 +627,26 @@ void PlayerHouseTex_Release(PlayerHouseTex *p) {
 }
 
 }
+
+// Run when the overlay is loaded (modern/host/overlay.c), as the DS's __sinit: the default constructors of
+// the unit's objects.
+extern "C" void StaticInit_unk_ov003_022187fc(void) {
+    HOST_STATIC_CONSTRUCT(sPlayerHouseTex);
+    HOST_STATIC_CONSTRUCT(sVillagerHouseTex);
+    HOST_STATIC_CONSTRUCT(sHouseLightUpDeco);
+}
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov003_022187fc) {
+    HOST_OVERLAY_VAR(sPlayerHouseTex),
+    HOST_OVERLAY_VAR(sVillagerHouseTex),
+    HOST_OVERLAY_VAR(sHouseLightUpDeco),
+    HOST_OVERLAY_VAR(sFieldStructureMgrProfile),
+    HOST_OVERLAY_VAR(sDoorExitMode),
+    HOST_OVERLAY_VAR(sSpawnedBuildingCount1),
+    HOST_OVERLAY_VAR(data_ov003_02235888),
+    HOST_OVERLAY_VAR(sBuildingList),
+    HOST_OVERLAY_VARS_END
+};

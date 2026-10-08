@@ -88,3 +88,10 @@ extern "C" void WfcSimpleStartDone_CountDown() {
     WfcUtil_SetScene(WfcSimpleStartDone_FadeOut);
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02218dc8) {
+    HOST_OVERLAY_VAR(sWfcSimpleStartDoneTimer),
+    HOST_OVERLAY_VARS_END
+};

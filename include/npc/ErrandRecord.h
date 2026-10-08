@@ -15,8 +15,8 @@ public:
     u8 kind;
     u8 stepBits;
 
-    ErrandRecord();
-    ~ErrandRecord();
+    ErrandRecord() { init(); }
+    ~ErrandRecord() { func_0209ada0(); }
     void setItem(u16 *p);
     u16 *getItem();
     void setExtra(u8 v);

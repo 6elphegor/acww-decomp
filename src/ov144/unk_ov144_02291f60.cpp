@@ -1376,3 +1376,12 @@ void MusicMenu::setFlags(u32 m) { flags = flags | m; }
 void MusicMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 #undef C
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov144_02291f60) {
+    HOST_OVERLAY_VAR(sMusicMenuProfile),
+    HOST_OVERLAY_VAR(data_ov144_02293d70),
+    HOST_OVERLAY_VARS_END
+};

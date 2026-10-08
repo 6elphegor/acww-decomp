@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "host_shared_calls.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/CharacterListNode.h"
@@ -118,7 +119,7 @@ BOOL TaxiInterior::onExecute() {
     if (isDriverAnimating) {
         driverModel.stepAnim();
     }
-    s32 t = SpNpcKappn_GetAnimState();
+    s32 t = Shared_SpNpcKappn_GetAnimState();
     SpNpcKappn_GetAnimFrame();
     s32 k = 0;
     switch (t) {
@@ -308,3 +309,12 @@ extern "C" void TaxiInterior_SetPartAnim(TaxiInterior *self, u8 k, AnimModel *pa
         ((BlendAnimModel *)part)->initAnim(RoomObjRes_GetBca(res, k), s0, s1, s2, s3);
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov068_0226b9a8) {
+    HOST_OVERLAY_VAR(sTaxiInteriorProfile),
+    HOST_OVERLAY_VAR(sTaxiInterior),
+    HOST_OVERLAY_VARS_END
+};

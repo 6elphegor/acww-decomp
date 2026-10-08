@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "sys/StackPad.h"
 #include "town/MapBlockEntry.h"
 #include "item/ItemId.h"
@@ -14,7 +15,7 @@
 
 extern SaveData gSaveData;
 extern "C" {
-extern HouseData gSaveHouse;
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)
 
 // defined with file-local types (include/proto/.excluded)
 s32 SceneId_GetHouseRoom(u32 x);
@@ -28,7 +29,7 @@ class EmptyItemId {
 public:
     u16 item;
     inline EmptyItemId() { item = 0xfff1; }
-    ~EmptyItemId();
+    ~EmptyItemId() {}  // ItemId's (empty) destructor on the DS
 };
 
 extern const u16 data_020cb550[7];

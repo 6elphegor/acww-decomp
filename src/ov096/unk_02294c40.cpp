@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_shared_calls.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -209,9 +210,9 @@ BOOL PocketMenu::onDraw() {
     drawHand();
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&m_358, 0, slideY);
-        InventoryItemGrid_DrawExtraMarks(&m_358, 0, slideY);
+        Shared_InventoryItemGrid_DrawExtraMarks(&m_358, 0, slideY);
         m_db8.drawPocketLetters(0, slideY);
-        InventoryBg_DrawSprite(&m_de0, slideY);
+        Shared_InventoryBg_DrawSprite(&m_de0, slideY);
     }
     if (testFlags(0x100)) {
         m_2b14.setPos(0, getSlideOffsetY());
@@ -366,7 +367,7 @@ BOOL PocketMenu::requestTab(s32 a) {
 
 void PocketMenu::stateLoadBg() {
     setupBgLayer();
-    InventoryBg_LoadBg(&m_de0, 1);
+    Shared_InventoryBg_LoadBg(&m_de0, 1);
     setTransitionState(1);
     if (testFlags(0x80000) == 0) {
         stateLoadBgChars();
@@ -391,8 +392,8 @@ void PocketMenu::stateLoadObj() {
 }
 
 void PocketMenu::stateSlideIn() {
-    InventoryItemGrid_LoadPockets(&m_358);
-    LetterGrid_LoadPocketLetters(&m_db8);
+    Shared_InventoryItemGrid_LoadPockets(&m_358);
+    Shared_LetterGrid_LoadPocketLetters(&m_db8);
     beginSubSlideIn(8, 3, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, 0);
@@ -500,7 +501,7 @@ void PocketMenu::initPocketMenu() {
     stateFlags = 0;
     InventoryItemGrid_Init(&m_358, 2);
     m_db8.init(2);
-    InventoryBg_Init(&m_de0, 6);
+    Shared_InventoryBg_Init(&m_de0, 6);
     balloonTarget = 0x26;
     m_23c0.setPriority(2);
     m_2480.reset();
@@ -518,7 +519,7 @@ void PocketMenu::initPocketMenu() {
 void PocketMenu::releaseResources() {
     PocketMenu_CancelVramTasks(this);
     InventoryBg_Exit(&m_de0);
-    InventoryItemGrid_Exit(&m_358);
+    Shared_InventoryItemGrid_Exit(&m_358);
     PopupChoice_ForceClose(PocketMenu_Popup(this));
     m_2904.release();
 }
@@ -534,14 +535,14 @@ void PocketMenu::postInputUpdate() {
 
 void PocketMenu::preStateUpdate() {
     PocketMenu_CancelVramTasks(this);
-    InventoryBg_PreUpdate(&m_de0);
+    Shared_InventoryBg_PreUpdate(&m_de0);
     InventoryItemGrid_PreUpdate(&m_358);
     m_db8.updateCursorLift();
 }
 
 void PocketMenu::postStateUpdate() {
     updateCameraView();
-    PopupChoice_Update(PocketMenu_Popup(this));
+    Shared_PopupChoice_Update(PocketMenu_Popup(this));
     InventoryBg_Update(&m_de0);
     if (m_23c0.updatePrompt()) {
         positionLabelBalloon();
@@ -584,7 +585,7 @@ void PocketMenu::mainAct00() {
             break;
         case 2:
             setMainState(9);
-            InventoryBg_SetBellsPanelMode(&m_de0, bellsPanelMode);
+            Shared_InventoryBg_SetBellsPanelMode(&m_de0, bellsPanelMode);
             break;
         default:
             if (PocketMenu_HitPlayer(this, a, b)) {
@@ -808,17 +809,17 @@ void PocketMenu::mainAct08() {
 void PocketMenu::mainAct09() {
     if (MenuCtrl_IsForceCloseDue()) {
         requestTab(7);
-        InventoryBg_SetBellsPanelMode(&m_de0, 0);
+        Shared_InventoryBg_SetBellsPanelMode(&m_de0, 0);
     } else if (gTouchHeld == 0) {
         setMainState(0);
-        InventoryBg_SetBellsPanelMode(&m_de0, 0);
+        Shared_InventoryBg_SetBellsPanelMode(&m_de0, 0);
     } else if (isTouchHeldFor(4)) {
         PocketMenu_BeginTouchOnTarget(this, 0x25);
         grabOffsetX = -8;
         grabOffsetY = -8;
         PocketMenu_StartTouchDrag(this, 0x25);
         setFlags(0x4000);
-        InventoryBg_SetBellsPanelMode(&m_de0, bellsPanelMode);
+        Shared_InventoryBg_SetBellsPanelMode(&m_de0, bellsPanelMode);
     }
 }
 
@@ -1080,7 +1081,7 @@ void PocketMenu::mainAct16() {
     if (m_2498.isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
-            Inventory_PlayPickUpSe();
+            Shared_Inventory_PlayPickUpSe();
         }
         syncHandFromCursor();
     }
@@ -1284,7 +1285,7 @@ void PocketMenu::mainAct25()
     if (requestUseOnPlayer(r4, handItem)) {
         setMainState(0x26);
         handItem = swapEquipped(r4, handItem);
-        InventoryBg_StartBlink(&m_de0, 1);
+        Shared_InventoryBg_StartBlink(&m_de0, 1);
     }
 }
 
@@ -1292,7 +1293,7 @@ void PocketMenu::mainAct26()
 {
     if (InventoryBg_UpdateBlink(&m_de0)) {
         clearHand();
-        InventoryBg_LoadPictureForHeldItem(&m_de0);
+        Shared_InventoryBg_LoadPictureForHeldItem(&m_de0);
         if (handItem != 0xfff1) {
             if (testFlags(0x8000)) {
                 PocketMenu_FlyItemTo(this, 0x24, handSource, handItem, 0);
@@ -1317,7 +1318,7 @@ void PocketMenu::mainAct27()
 
 void PocketMenu::mainAct2A()
 {
-    if (LetterGrid_UpdatePopAnim(&m_db8)) {
+    if (Shared_LetterGrid_UpdatePopAnim(&m_db8)) {
         clearHand();
         PocketMenu_ReturnToIdle(this);
     }
@@ -1325,7 +1326,7 @@ void PocketMenu::mainAct2A()
 
 void PocketMenu::mainAct2B()
 {
-    if (InventoryItemGrid_UpdatePresentAnim(&m_358)) {
+    if (Shared_InventoryItemGrid_UpdatePresentAnim(&m_358)) {
         void *p = PlayerData_GetCurrent();
         u32 v = handItem;
         if (v == 0x136a) {
@@ -1385,7 +1386,7 @@ void PocketMenu::mainAct28()
     switch (FieldAction_PollDrop(fieldRequest)) {
     case 1:
         if (testFlags(0x1000)) {
-            InventoryItemGrid_ClearSlot(&m_358, PocketMenu_TargetToGridIndex(this, actionTarget));
+            Shared_InventoryItemGrid_ClearSlot(&m_358, PocketMenu_TargetToGridIndex(this, actionTarget));
             PocketMenu_ReturnToIdle(this);
         } else {
             clearHand();
@@ -1412,7 +1413,7 @@ void PocketMenu::mainAct29()
     switch (FieldAction_PollResult(fieldRequest)) {
     case 1:
         if (testFlags(0x1000)) {
-            InventoryItemGrid_ClearSlot(&m_358, PocketMenu_TargetToGridIndex(this, actionTarget));
+            Shared_InventoryItemGrid_ClearSlot(&m_358, PocketMenu_TargetToGridIndex(this, actionTarget));
             PocketMenu_ReturnToIdle(this);
         } else {
             clearHand();
@@ -1533,7 +1534,7 @@ extern "C" void PocketMenu_StartTouchDrag(PocketMenu *s, u32 a)
     }
     s->syncHandFromTouch();
     s->clearFlags(0x4000);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
     s->swapTarget = 0x26;
 }
 
@@ -1556,7 +1557,7 @@ extern "C" void PocketMenu_StartButtonDrag(PocketMenu *s, u32 a)
         break;
     }
     s->syncHandFromCursor();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 extern "C" void PocketMenu_FlyHandTo(PocketMenu *s, u32 a, u32 b)
@@ -1851,7 +1852,7 @@ extern "C" BOOL PocketMenu_HitPlayer(PocketMenu *s, s32 x, s32 y)
 
 extern "C" BOOL PocketMenu_HitWalletIcon(PocketMenu *s, s32 x, s32 y)
 {
-    if (InventoryItemGrid_HitTestSlot21(&s->m_358, x, y)) {
+    if (Shared_InventoryItemGrid_HitTestSlot21(&s->m_358, x, y)) {
         return TRUE;
     }
     return FALSE;
@@ -1910,7 +1911,7 @@ extern "C" s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id)
         return InventoryItemGrid_GetSlotY(&s->m_358, PocketMenu_TargetToGridIndex(s, id));
     }
     if (PocketMenu_IsLetterTarget(s, id)) {
-        return LetterGrid_GetSlotY(&s->m_db8, PocketMenu_TargetToLetterIndex(s, id));
+        return Shared_LetterGrid_GetSlotY(&s->m_db8, PocketMenu_TargetToLetterIndex(s, id));
     }
     if (PocketMenu_IsTabTarget(s, id)) {
         return 8;
@@ -1927,7 +1928,7 @@ extern "C" s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id)
 extern "C" s32 PocketMenu_IsSlotDisabled(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->m_358, PocketMenu_TargetToGridIndex(s, id));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&s->m_358, PocketMenu_TargetToGridIndex(s, id));
     }
     if (PocketMenu_IsLetterTarget(s, id)) {
         return s->m_db8.isHighlighted(PocketMenu_TargetToLetterIndex(s, id));
@@ -1949,7 +1950,7 @@ extern "C" s32 PocketMenu_IsSlotEmpty(PocketMenu *s, u32 id)
 extern "C" u32 PocketMenu_GetItem(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
-        return InventoryItemGrid_GetSlotItem(&s->m_358, PocketMenu_TargetToGridIndex(s, id));
+        return Shared_InventoryItemGrid_GetSlotItem(&s->m_358, PocketMenu_TargetToGridIndex(s, id));
     }
     if (PocketMenu_IsLetterTarget(s, id)) {
         if (PocketMenu_IsSlotEmpty(s, id)) {
@@ -2005,10 +2006,10 @@ s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
             return 3;
         }
         s32 s = p->getState();
-        if (s == 7 || s == 8 || InvItem_IsNonTransferable(b)) {
+        if (s == 7 || s == 8 || Shared_InvItem_IsNonTransferable(b)) {
             return 2;
         }
-        if (InvItem_IsTurnipFishOrInsect(b)) {
+        if (Shared_InvItem_IsTurnipFishOrInsect(b)) {
             return 4;
         }
         tmp = b;
@@ -2110,7 +2111,7 @@ void PocketMenu::selectTarget(u32 a) {
     if (PocketMenu_IsPocketTarget(this, a)) {
         s32 s = PocketMenu_TargetToGridIndex(this, a);
         m_db8.clearCursorSlot();
-        InventoryItemGrid_SetCursorSlot(&m_358, s);
+        Shared_InventoryItemGrid_SetCursorSlot(&m_358, s);
     } else if (PocketMenu_IsLetterTarget(this, a)) {
         s32 s = PocketMenu_TargetToLetterIndex(this, a);
         InventoryItemGrid_ClearCursorSlot(&m_358);
@@ -2122,9 +2123,9 @@ void PocketMenu::selectTarget(u32 a) {
 }
 
 void PocketMenu::clearHighlights() {
-    InventoryItemGrid_ClearMarks(&m_358);
+    Shared_InventoryItemGrid_ClearMarks(&m_358);
     m_db8.clearMarks();
-    InventoryBg_ResetHighlight(&m_de0);
+    Shared_InventoryBg_ResetHighlight(&m_de0);
 }
 
 void PocketMenu::highlightTarget(u32 a) {
@@ -2184,7 +2185,7 @@ void PocketMenu::positionLabelBalloon() {
     m_23c0.setPos(x, y);
     if (PocketMenu_IsPocketTarget(this, balloonTarget)) {
         s32 s = PocketMenu_TargetToGridIndex(this, balloonTarget);
-        InventoryItemGrid_ShowSlotName(&m_358, &m_23c0, s);
+        Shared_InventoryItemGrid_ShowSlotName(&m_358, &m_23c0, s);
     } else if (PocketMenu_IsLetterTarget(this, balloonTarget)) {
         s32 s = PocketMenu_TargetToLetterIndex(this, balloonTarget);
         m_db8.showLetterName(&m_23c0, s);
@@ -2236,7 +2237,7 @@ void PocketMenu::setHandItem(u32 a, u32 b) {
     handKind = 2;
     handItem = a;
     handItemFlags = b;
-    InventoryItemGrid_SetHeldItem(&m_358, handItem, handItemFlags);
+    Shared_InventoryItemGrid_SetHeldItem(&m_358, handItem, handItemFlags);
     updateHandPrice();
 }
 
@@ -2245,7 +2246,7 @@ void PocketMenu::pickUpItemFrom(u32 a) {
     handItem = PocketMenu_GetItem(this, a);
     handItemFlags = PocketMenu_GetItemFlags(this, a);
     PocketMenu_ClearSlotItem(this, a);
-    InventoryItemGrid_SetHeldItem(&m_358, handItem, handItemFlags);
+    Shared_InventoryItemGrid_SetHeldItem(&m_358, handItem, handItemFlags);
     updateHandPrice();
 }
 
@@ -2580,7 +2581,7 @@ BOOL PocketMenu::depositHeldBag() {
         PocketMenu_ReturnToIdle(this);
     } else {
         handItem = r;
-        InventoryItemGrid_SetHeldItem(&m_358, handItem, handItemFlags);
+        Shared_InventoryItemGrid_SetHeldItem(&m_358, handItem, handItemFlags);
         PocketMenu_FlyHandTo(this, handSource, 4);
     }
     return TRUE;
@@ -2872,7 +2873,7 @@ BOOL PocketMenu::canDropItem(s32 a) {
         return PocketMenu_CanDropOutdoor(this, a);
     }
     if (Scene_InHouseRoom()) {
-        if (PocketMenu_CanEditRoom()) {
+        if (Shared_PocketMenu_CanEditRoom()) {
             return TRUE;
         }
         return FALSE;
@@ -2911,7 +2912,7 @@ void PocketMenu::actionDropItem() {
                 setFlags(0x1000);
             } else {
                 s32 x = PocketMenu_TargetToGridIndex(this, t);
-                InventoryItemGrid_ClearSlot(&m_358, x);
+                Shared_InventoryItemGrid_ClearSlot(&m_358, x);
                 PocketMenu_ReturnToIdle(this);
             }
         }
@@ -3053,7 +3054,7 @@ void PocketMenu::actionUnwrapItem() {
         handY = handY - 2;
     }
     setMainState(0x2b);
-    InventoryItemGrid_StartPresentAnim(&m_358, handItem, handItemFlags);
+    Shared_InventoryItemGrid_StartPresentAnim(&m_358, handItem, handItemFlags);
 }
 
 void PocketMenu::actionAct09() {
@@ -3256,7 +3257,7 @@ void PocketMenu::addItemOptions(s32 a) {
         ChoiceIdList_Add(optionList, 9, 0x14);
         break;
     case 2:
-        if (InvItem_IsDeliveryItem(a) == 0) {
+        if (Shared_InvItem_IsDeliveryItem(a) == 0) {
             ChoiceIdList_Add(optionList, 0x17, 0x14);
         }
         break;
@@ -3771,3 +3772,10 @@ void PocketMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
 // destructor is implicit (member destructors run in reverse order)
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_02294c40) {
+    HOST_OVERLAY_VAR(sPocketMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

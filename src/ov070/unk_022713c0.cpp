@@ -821,3 +821,23 @@ void SpNpcGracie::onInteractionEvent(u32 a, u8) {
         break;
     }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_022713c0) {
+    HOST_OVERLAY_VAR(data_ov070_022728c0),
+    HOST_OVERLAY_VAR(data_ov070_022728c8),
+    HOST_OVERLAY_VAR(data_ov070_022728d8),
+    HOST_OVERLAY_VAR(data_ov070_022726e4),
+    HOST_OVERLAY_VAR(data_ov070_022728d4),
+    HOST_OVERLAY_VAR(sSpNpcGracieTexturePath),
+    HOST_OVERLAY_VAR(data_ov070_022726e0),
+    HOST_OVERLAY_VAR(data_ov070_022728cc),
+    HOST_OVERLAY_VAR(data_ov070_022728c4),
+    HOST_OVERLAY_VAR(sSpNpcGracieModelPath),
+    HOST_OVERLAY_VAR(sSpNpcGracieProfile),
+    HOST_OVERLAY_VAR(sSpNpcGracieActTable),
+    HOST_OVERLAY_VAR(sSpNpcGracieKey),
+    HOST_OVERLAY_VARS_END
+};

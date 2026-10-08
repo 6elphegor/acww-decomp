@@ -1,4 +1,6 @@
 #include "gfx/TexPatVramAnim.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "gfx/TexPatVramUploader.h"
 #include "gfx/PatternTexCache.h"
 #include "uptr.h"
@@ -83,13 +85,13 @@ BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
 extern SaveData gSaveData;
 extern CommManager *gCommManager;
 extern u8 gFieldSceneKind[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
-extern AbleSistersPatterns gSaveAbleSistersPatterns;
-extern BlancaFaceRecord gSaveBlancaFace;
-extern TownStyleRecordView gSaveTownFlag;
-extern HouseData gSaveHouse;
-extern u8 data_021ed2d4[];  // the Able Sisters' shop (gSaveData.ableShop)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
+#define gSaveAbleSistersPatterns HOST_LABEL(AbleSistersPatterns *, gSaveAbleSistersPatterns)
+#define gSaveBlancaFace HOST_LABEL(BlancaFaceRecord *, gSaveBlancaFace)
+#define gSaveTownFlag HOST_LABEL(TownStyleRecordView *, gSaveTownFlag)
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)
+#define data_021ed2d4 HOST_LABEL(u8 (*)[], data_021ed2d4)  // the Able Sisters' shop (gSaveData.ableShop)
 extern u16 data_020cb6f4;
 extern u16 data_020d03cc;
 extern u16 data_020d03d0;
@@ -605,7 +607,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
     case 5:
         if (Unk_0207116c_Eq0(gFieldSceneKind)) {
             if (Scene_InTown()) {
-                BuildingActor *gate = BuildingList_FindByItem(0x500b);
+                BuildingActor *gate = (BuildingActor *)Shared_BuildingList_FindByItem(0x500b);
                 if (gate) GateHouse_ApplyTownFlag((GateHouse *)gate);
             }
         }

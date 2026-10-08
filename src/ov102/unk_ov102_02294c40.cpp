@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "ui/CursorMotion.h"
@@ -285,7 +286,7 @@ BOOL ChestMenu::onDraw() {
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
         letterGrid.drawPocketLetters(0, pocketsSlideY);
-        InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -370,9 +371,9 @@ void ChestMenu::transitionAct00() {
 
 void ChestMenu::transitionAct01() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&itemGrid);
+    Shared_InventoryItemGrid_LoadPockets(&itemGrid);
     ChestMenu_DisableRejectedItems(this);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -483,7 +484,7 @@ void ChestMenu::initMembers() {
     stateFlags = 0;
     InventoryItemGrid_Init(&itemGrid, 1);
     letterGrid.init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x25;
     flyMotion.reset();
     heldKind = 0;
@@ -497,7 +498,7 @@ void ChestMenu::initMembers() {
 void ChestMenu::releaseResources() {
     ChestMenu_CancelUploads(this);
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&itemGrid);
+    Shared_InventoryItemGrid_Exit(&itemGrid);
     resetTextLabels();
 }
 
@@ -512,7 +513,7 @@ void ChestMenu::postInputUpdate() {
 
 void ChestMenu::preStateUpdate() {
     ChestMenu_CancelUploads(this);
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&itemGrid);
     letterGrid.updateCursorLift();
     resetTextLabels();
@@ -806,7 +807,7 @@ void ChestMenu::mainAct0C() {
     if (cursor.isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
-            Inventory_PlayPickUpSe();
+            Shared_Inventory_PlayPickUpSe();
         }
         ChestMenu_TrackCursor(this);
     }
@@ -896,7 +897,7 @@ void ChestMenu_PickUpWithTouch(S *s, u8 a) {
         s->setMainState(2);
     }
     ChestMenu_TrackTouch(s);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void ChestMenu_PickUpWithHand(S *s, u8 a) {
@@ -909,7 +910,7 @@ void ChestMenu_PickUpWithHand(S *s, u8 a) {
         s->returnState = 4;
     }
     ChestMenu_TrackCursor(s);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void ChestMenu_StartFlyHeldItem(S *s, u32 a, u32 b) {
@@ -1032,7 +1033,7 @@ u32 ChestMenu_FindSlotAt(S *s, u32 a, u32 b, u32 c)
         }
         return ChestMenu_GridToPocketSlot(s, r);
     }
-    r = InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
+    r = Shared_InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
     if (r == 0x23) {
         goto fail;
     }
@@ -1128,10 +1129,10 @@ BOOL ChestMenu_IsItemRejected(S *s, u32 a)
         return TRUE;
     }
     u32 t = ChestMenu_GetSlotItem(s, a);
-    if (InvItem_IsTurnipFishOrInsect(t)) {
+    if (Shared_InvItem_IsTurnipFishOrInsect(t)) {
         return TRUE;
     }
-    if (InvItem_IsNonTransferable(t)) {
+    if (Shared_InvItem_IsNonTransferable(t)) {
         return TRUE;
     }
     return FALSE;
@@ -1151,7 +1152,7 @@ void ChestMenu_DisableRejectedItems(S *s)
 BOOL ChestMenu_IsSlotDisabled(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     return FALSE;
 }
@@ -1167,7 +1168,7 @@ BOOL ChestMenu_IsSlotEmpty(S *s, u32 a)
 u32 ChestMenu_GetSlotItem(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotItem(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
+        return Shared_InventoryItemGrid_GetSlotItem(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     return 0xfff1;
 }
@@ -1189,7 +1190,7 @@ void ChestMenu_ClearCursorSlots(S *s)
 void ChestMenu_SetCursorSlot(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_SetCursorSlot(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
+        Shared_InventoryItemGrid_SetCursorSlot(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
         s->letterGrid.clearCursorSlot();
     } else {
         ChestMenu_ClearCursorSlots(s);
@@ -1198,7 +1199,7 @@ void ChestMenu_SetCursorSlot(S *s, u32 a)
 
 void ChestMenu_ClearMarks(S *s)
 {
-    InventoryItemGrid_ClearMarks(&s->itemGrid);
+    Shared_InventoryItemGrid_ClearMarks(&s->itemGrid);
     s->letterGrid.clearMarks();
 }
 
@@ -1236,7 +1237,7 @@ void ChestMenu_PlaceNameBalloon(S *s)
     s->nameBalloon.setPos(a, b);
     if (ChestMenu_IsPocketSlot(s, s->balloonSlot) || ChestMenu_IsBoxSlot(s, s->balloonSlot)) {
         u32 t = ChestMenu_ToGridSlot(s, s->balloonSlot);
-        InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
+        Shared_InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
     }
 }
 
@@ -1292,10 +1293,10 @@ void ChestMenu_PickUpItem(S *s, u32 a)
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
         u32 t = ChestMenu_ToGridSlot(s, a);
         s->heldKind = 1;
-        s->heldItem = InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
+        s->heldItem = Shared_InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
         s->heldItemFlags = InventoryItemGrid_GetSlotFlags(&s->itemGrid, t);
-        InventoryItemGrid_ClearSlot(&s->itemGrid, t);
-        InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
+        Shared_InventoryItemGrid_ClearSlot(&s->itemGrid, t);
+        Shared_InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
     }
 }
 
@@ -1761,4 +1762,13 @@ extern "C" Unk_ov102_02297580_Ent sChestPageTabSprites[18] = {
     {0x406000bf, 0x000061d0},
     {0x406000bf, 0x0000511e},
     {0x406000c1, 0xffff111e},
+};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov102_02294c40) {
+    HOST_OVERLAY_VAR(sChestMenuProfile),
+    HOST_OVERLAY_VAR(sChestPageTabSprites),
+    HOST_OVERLAY_VARS_END
 };

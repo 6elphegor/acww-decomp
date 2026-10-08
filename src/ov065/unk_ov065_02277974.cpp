@@ -306,3 +306,15 @@ u64 DwcNet_GetTimeMs() {
     return (OS_GetTick() << 6) / 0x82ea;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02277974) {
+    HOST_OVERLAY_VAR(sDwcFreeHook),
+    HOST_OVERLAY_VAR(__GSIACResult),
+    HOST_OVERLAY_VAR(sDwcInet),
+    HOST_OVERLAY_VAR(sDwcAllocHook),
+    HOST_OVERLAY_VAR(GSIACHostname),
+    HOST_OVERLAY_VAR(__GSIACGamename),
+    HOST_OVERLAY_VARS_END
+};

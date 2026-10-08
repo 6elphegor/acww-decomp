@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
 #include "save/DramaPart.h"
@@ -45,7 +46,7 @@
 
 
 
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 
 
 

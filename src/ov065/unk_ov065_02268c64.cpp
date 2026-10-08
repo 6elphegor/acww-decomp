@@ -1788,3 +1788,14 @@ void WifiLink_OnReset(WMMsg *m)
 }
 }
 }  // namespace N_8470
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_02268c64) {
+    HOST_OVERLAY_VAR(sWifiLinkSendState),
+    HOST_OVERLAY_VAR(sWifiLinkWork),
+    HOST_OVERLAY_VAR(sWifiLinkSendWaitQueue),
+    HOST_OVERLAY_VAR(sWifiLinkSendLock),
+    HOST_OVERLAY_VARS_END
+};

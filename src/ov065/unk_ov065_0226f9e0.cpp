@@ -139,3 +139,12 @@ s32 NasBase64_Decode(s8 *in, u32 len, u8 *out, u32 cap) {
     return n;
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0226f9e0) {
+    HOST_OVERLAY_VAR(sNasBase64Alphabet),
+    HOST_OVERLAY_VAR(sNasBase64AlphabetPtr),
+    HOST_OVERLAY_VARS_END
+};

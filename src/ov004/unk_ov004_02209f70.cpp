@@ -1,4 +1,6 @@
 #include "uptr.h"
+#include "host_labels.h"
+#include "host_overlay_vars.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/CachedModel.h"
@@ -2936,7 +2938,7 @@ public:
 
 namespace p18 {
 extern "C" {
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 s32 Scene_InVillagerHouse();
 s32 Scene_InHouseRoom();
 void *SaveVillagers_Get(void *p, s32 a);
@@ -3068,7 +3070,7 @@ BOOL FtrStereo::enterTalkAct04() {
     if (p18::Scene_InVillagerHouse()) {
         u32 t = 0;
         u32 r = Scene_GetVillagerHouse();
-        void *v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+        void *v = p18::SaveVillagers_Get(gSaveVillagers, r);
         if (v) {
             t = p18::Villager_GetInfo4d(v);
         }
@@ -3146,17 +3148,23 @@ BOOL FtrStereo::enterTalkAct00() {
     return TRUE;
 }
 
+// FtrStereo::execTalkAct's static tbl, initialised at its first use after the overlay was loaded
+Unk_ov004_0220ead4_Fn FtrStereo_execTalkAct_tbl[6];
+u8 FtrStereo_execTalkAct_tbl_init;
 void FtrStereo::execTalkAct() {
-    static Unk_ov004_0220ead4_Fn tbl[6] = {
+    if (!FtrStereo_execTalkAct_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(FtrStereo_execTalkAct_tbl, {
         &FtrStereo::execTalkAct00,
         (Unk_ov004_0220ead4_Fn)&FtrStereo::execTalkAct01,
         &FtrStereo::execTalkAct02,
         (Unk_ov004_0220ead4_Fn)&FtrStereo::execTalkAct03,
         &FtrStereo::execTalkAct04,
         &FtrStereo::execTalkAct05,
-    };
+    });
+        FtrStereo_execTalkAct_tbl_init = 1;
+    }
     if (talkAct < 6) {
-        (this->*tbl[talkAct])();
+        (this->*FtrStereo_execTalkAct_tbl[talkAct])();
     }
 }
 
@@ -3255,7 +3263,7 @@ BOOL FtrStereo::initModel() {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
             u32 r = Scene_GetVillagerHouse();
-            void *v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+            void *v = p18::SaveVillagers_Get(gSaveVillagers, r);
             if (v) {
                 t = p18::Villager_GetInfo4d(v);
             }
@@ -5389,14 +5397,20 @@ BOOL FtrKind02::enterFtrAct00() {
     return TRUE;
 }
 
+// FtrKind02::execFtrAct's static tbl, initialised at its first use after the overlay was loaded
+BOOL (FtrKind02::*FtrKind02_execFtrAct_tbl[2])();
+u8 FtrKind02_execFtrAct_tbl_init;
 void FtrKind02::execFtrAct() {
-    static BOOL (FtrKind02::*tbl[2])() = {
+    if (!FtrKind02_execFtrAct_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(FtrKind02_execFtrAct_tbl, {
         (BOOL (FtrKind02::*)())&FtrKind02::execFtrAct00,
         (BOOL (FtrKind02::*)())&FtrKind02::execFtrAct01,
-    };
+    });
+        FtrKind02_execFtrAct_tbl_init = 1;
+    }
     u32 i = ftrAct;
     if (i < 2) {
-        (this->*tbl[i])();
+        (this->*FtrKind02_execFtrAct_tbl[i])();
     }
 }
 
@@ -5876,9 +5890,14 @@ BOOL FtrStorage::enterTalkAct00() {
     return TRUE;
 }
 
+typedef BOOL (FtrStorage::*FtrStorage_execTalkAct_Fn)();
+// FtrStorage::execTalkAct's static tbl, initialised at its first use after the overlay was loaded
+FtrStorage_execTalkAct_Fn FtrStorage_execTalkAct_tbl[12];
+u8 FtrStorage_execTalkAct_tbl_init;
 void FtrStorage::execTalkAct() {
     typedef BOOL (FtrStorage::*Fn)();
-    static Fn tbl[12] = {
+    if (!FtrStorage_execTalkAct_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(FtrStorage_execTalkAct_tbl, {
         (Fn)&FtrStorage::execTalkAct00,
         &FtrStorage::execTalkAct01,
         (Fn)&FtrStorage::execTalkAct02,
@@ -5891,10 +5910,12 @@ void FtrStorage::execTalkAct() {
         (Fn)&FtrStorage::execTalkAct09,
         (Fn)&FtrStorage::execTalkAct0A,
         (Fn)&FtrStorage::execTalkAct0B,
-    };
+    });
+        FtrStorage_execTalkAct_tbl_init = 1;
+    }
     s32 s = talkAct;
     if (s < 12) {
-        (this->*tbl[s])();
+        (this->*FtrStorage_execTalkAct_tbl[s])();
     }
 }
 
@@ -6152,3 +6173,72 @@ extern "C" void FtrClock_MarkNearestSoundingClock(FtrActor *o) { static_cast<Ftr
 extern "C" s32 FtrBed_CheckStepTile(FtrActor *o, VecFx32 *pos, s32 ang, VecFx32 *out) {
     return static_cast<FtrBed *>(o)->FtrBed::checkStepTile(pos, ang, out);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02209f70) {
+    HOST_OVERLAY_VAR(FtrStereo_execTalkAct_tbl),
+    HOST_OVERLAY_VAR(FtrStereo_execTalkAct_tbl_init),
+    HOST_OVERLAY_VAR(FtrKind02_execFtrAct_tbl),
+    HOST_OVERLAY_VAR(FtrKind02_execFtrAct_tbl_init),
+    HOST_OVERLAY_VAR(FtrStorage_execTalkAct_tbl),
+    HOST_OVERLAY_VAR(FtrStorage_execTalkAct_tbl_init),
+    HOST_OVERLAY_VAR(data_ov004_0224fc84),
+    HOST_OVERLAY_VAR(data_ov004_0224fc9c),
+    HOST_OVERLAY_VAR(data_ov004_0224fac0),
+    HOST_OVERLAY_VAR(data_ov004_0224fcb4),
+    HOST_OVERLAY_VAR(sStereoSong),
+    HOST_OVERLAY_VAR(data_ov004_02249028),
+    HOST_OVERLAY_VAR(sFtrCompassProfile),
+    HOST_OVERLAY_VAR(sFtrVillagerPicProfile),
+    HOST_OVERLAY_VAR(sFtrPhoneProfile),
+    HOST_OVERLAY_VAR(sFtrClockProfile),
+    HOST_OVERLAY_VAR(sFtrStereoProfile),
+    HOST_OVERLAY_VAR(sFtrInstrumentProfile),
+    HOST_OVERLAY_VAR(sFtrPiggyBankProfile),
+    HOST_OVERLAY_VAR(sFtrMetronomeProfile),
+    HOST_OVERLAY_VAR(sFtrBasicProfile),
+    HOST_OVERLAY_VAR(sFtrTvProfile),
+    HOST_OVERLAY_VAR(sFtrKind02Profile),
+    HOST_OVERLAY_VAR(sFtrKind03Profile),
+    HOST_OVERLAY_VAR(sFtrTvVcrProfile),
+    HOST_OVERLAY_VAR(sFtrKind04Profile),
+    HOST_OVERLAY_VAR(sFtrKind05Profile),
+    HOST_OVERLAY_VAR(sFtrCartProfile),
+    HOST_OVERLAY_VAR(sFtrGyroidProfile),
+    HOST_OVERLAY_VAR(sFtrWallpaperSampleProfile),
+    HOST_OVERLAY_VAR(sFtrKind06Profile),
+    HOST_OVERLAY_VAR(sFtrCarpetSampleProfile),
+    HOST_OVERLAY_VAR(sFtrKind25Profile),
+    HOST_OVERLAY_VAR(sFtrHeadwearProfile),
+    HOST_OVERLAY_VAR(sFtrKind07Profile),
+    HOST_OVERLAY_VAR(sFtrKind19Profile),
+    HOST_OVERLAY_VAR(sFtrSeatProfile),
+    HOST_OVERLAY_VAR(sFtrBedProfile),
+    HOST_OVERLAY_VAR(sFtrCannonProfile),
+    HOST_OVERLAY_VAR(sFtrComputerProfile),
+    HOST_OVERLAY_VAR(sFtrNookwayProfile),
+    HOST_OVERLAY_VAR(sFtrShirtProfile),
+    HOST_OVERLAY_VAR(sFtrStorageProfile),
+    HOST_OVERLAY_VAR(sFtrMyDesignProfile),
+    HOST_OVERLAY_VAR(sFtrSingingInsectProfile),
+    HOST_OVERLAY_VAR(sFtrDesignDisplayProfile),
+    HOST_OVERLAY_VAR(data_ov004_0224bb44),
+    HOST_OVERLAY_VAR(data_ov004_0224bb50),
+    HOST_OVERLAY_VAR(data_ov004_0224bb60),
+    HOST_OVERLAY_VAR(data_ov004_0224bb70),
+    HOST_OVERLAY_VAR(data_ov004_0224bb80),
+    HOST_OVERLAY_VAR(data_ov004_0224bb88),
+    HOST_OVERLAY_VAR(data_ov004_0224bb8c),
+    HOST_OVERLAY_VAR(data_ov004_0224bb90),
+    HOST_OVERLAY_VAR(data_ov004_0224bb94),
+    HOST_OVERLAY_VAR(data_ov004_0224bb98),
+    HOST_OVERLAY_VAR(data_ov004_0224bba0),
+    HOST_OVERLAY_VAR(data_ov004_0224bba8),
+    HOST_OVERLAY_VAR(data_ov004_0224bbb0),
+    HOST_OVERLAY_VAR(data_ov004_0224bbc0),
+    HOST_OVERLAY_VAR(data_ov004_0224bbd0),
+    HOST_OVERLAY_VAR(data_ov004_0224bbe4),
+    HOST_OVERLAY_VARS_END
+};

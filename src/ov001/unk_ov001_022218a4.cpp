@@ -747,3 +747,23 @@ extern "C" char data_ov001_0222b604[] = "DWCi_MOV_WH_SYSSTATE_MEASURECHANNEL";
 extern "C" char *sWfcMoveWhSysStateNames[10] = {data_ov001_0222b4ec, data_ov001_0222b508, data_ov001_0222b55c, data_ov001_0222b524, data_ov001_0222b57c, data_ov001_0222b5bc, data_ov001_0222b59c, data_ov001_0222b604, data_ov001_0222b5e0, data_ov001_0222b540};
 
 extern "C" WfcMoveWhWork *sWfcMoveWh = 0;
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022218a4) {
+    HOST_OVERLAY_VAR(data_ov001_0222b4ec),
+    HOST_OVERLAY_VAR(data_ov001_0222b508),
+    HOST_OVERLAY_VAR(sWfcMoveWhDebugPrint),
+    HOST_OVERLAY_VAR(data_ov001_0222b524),
+    HOST_OVERLAY_VAR(data_ov001_0222b540),
+    HOST_OVERLAY_VAR(data_ov001_0222b55c),
+    HOST_OVERLAY_VAR(data_ov001_0222b57c),
+    HOST_OVERLAY_VAR(data_ov001_0222b59c),
+    HOST_OVERLAY_VAR(data_ov001_0222b5bc),
+    HOST_OVERLAY_VAR(data_ov001_0222b5e0),
+    HOST_OVERLAY_VAR(data_ov001_0222b604),
+    HOST_OVERLAY_VAR(sWfcMoveWhSysStateNames),
+    HOST_OVERLAY_VAR(sWfcMoveWh),
+    HOST_OVERLAY_VARS_END
+};

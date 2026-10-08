@@ -196,3 +196,25 @@ extern "C" char data_ov124_02296ed4[20] = "menu/han/obj1.bch";
 extern "C" u8 data_ov124_02296f50[32] = {0xa8, 0x0, 0xe8, 0x81, 0x5a, 0x41, 0x0, 0x0, 0xa8, 0x80, 0x8, 0x80, 0x5e, 0x41, 0x0, 0x0, 0xc8, 0x40, 0xe8, 0x81, 0xda, 0x41, 0x0, 0x0, 0xc8, 0x0, 0x8, 0x40, 0xde, 0x41, 0xff, 0xff};
 extern "C" char data_ov124_02296e98[20] = "menu/han/obj0.bch";
 extern "C" u8 data_ov124_02296f70[32] = {0xa1, 0x0, 0xa0, 0x81, 0x5a, 0x41, 0x0, 0x0, 0xa1, 0x80, 0xc0, 0x81, 0x5e, 0x41, 0x0, 0x0, 0xc1, 0x40, 0xa0, 0x81, 0xda, 0x41, 0x0, 0x0, 0xc1, 0x0, 0xc0, 0x41, 0xde, 0x41, 0xff, 0xff};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov124_02296840) {
+    HOST_OVERLAY_VAR(sGeneralHeaderScreens),
+    HOST_OVERLAY_VAR(data_ov124_02296ec0),
+    HOST_OVERLAY_VAR(data_ov124_02296e70),
+    HOST_OVERLAY_VAR(data_ov124_02296f24),
+    HOST_OVERLAY_VAR(sGeneralHeaderObjChars),
+    HOST_OVERLAY_VAR(data_ov124_02296f90),
+    HOST_OVERLAY_VAR(data_ov124_02296ee8),
+    HOST_OVERLAY_VAR(data_ov124_02296e84),
+    HOST_OVERLAY_VAR(data_ov124_02296f10),
+    HOST_OVERLAY_VAR(data_ov124_02296eac),
+    HOST_OVERLAY_VAR(data_ov124_02296efc),
+    HOST_OVERLAY_VAR(data_ov124_02296ed4),
+    HOST_OVERLAY_VAR(data_ov124_02296f50),
+    HOST_OVERLAY_VAR(data_ov124_02296e98),
+    HOST_OVERLAY_VAR(data_ov124_02296f70),
+    HOST_OVERLAY_VARS_END
+};

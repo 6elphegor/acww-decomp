@@ -1573,3 +1573,15 @@ s32 ghiProcessConnection(GHIConnection *c) {
 }
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov065_0227a284) {
+    HOST_OVERLAY_VAR(data_ov065_0228ca58),
+    HOST_OVERLAY_VAR(data_ov065_022910e4),
+    HOST_OVERLAY_VAR(data_ov065_022910e0),
+    HOST_OVERLAY_VAR(data_ov065_022910dc),
+    HOST_OVERLAY_VAR(data_ov065_022910e8),
+    HOST_OVERLAY_VARS_END
+};

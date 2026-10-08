@@ -629,3 +629,21 @@ void SpNpcPete::onInteractionEvent(u32 a, u8) {
     }
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov075_022713c0) {
+    HOST_OVERLAY_VAR(sSpNpcPeteTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcPeteProfile),
+    HOST_OVERLAY_VAR(data_ov075_0227248c),
+    HOST_OVERLAY_VAR(data_ov075_02272494),
+    HOST_OVERLAY_VAR(sSpNpcPeteModelPath),
+    HOST_OVERLAY_VAR(data_ov075_02272490),
+    HOST_OVERLAY_VAR(data_ov075_02272484),
+    HOST_OVERLAY_VAR(data_ov075_02272488),
+    HOST_OVERLAY_VAR(data_ov075_02272480),
+    HOST_OVERLAY_VAR(sSpNpcPeteTalkScripts),
+    HOST_OVERLAY_VAR(sSpNpcPeteActTable),
+    HOST_OVERLAY_VAR(sSpNpcPeteSidestepOffsets),
+    HOST_OVERLAY_VARS_END
+};

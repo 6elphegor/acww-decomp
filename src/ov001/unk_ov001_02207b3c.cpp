@@ -216,3 +216,11 @@ extern "C" void WfcButtonBar_PressAnimTask(void *task, void *work) {
 }
 
 #pragma thumb reset
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_02207b3c) {
+    HOST_OVERLAY_VAR(sWfcButtonBar),
+    HOST_OVERLAY_VARS_END
+};

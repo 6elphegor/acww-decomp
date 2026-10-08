@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
@@ -47,7 +48,7 @@ public:
 };
 
 extern "C" {
-extern u8 data_021ed0a0[];
+#define data_021ed0a0 HOST_LABEL(u8 (*)[], data_021ed0a0)
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);
 u16 Item_MakeInsect(u32 x);
 }
@@ -182,3 +183,22 @@ BOOL MuseumDisplay::isShownNode(s32 c) {
     }
     return FALSE;
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02227b44) {
+    HOST_OVERLAY_VAR(data_ov004_02250e08),
+    HOST_OVERLAY_VAR(data_ov004_02250e18),
+    HOST_OVERLAY_VAR(sMuseumPictureTexPath),
+    HOST_OVERLAY_VAR(sMuseumDisplayNodeName),
+    HOST_OVERLAY_VAR(data_ov004_02250e14),
+    HOST_OVERLAY_VAR(sMuseumInsectTexPath),
+    HOST_OVERLAY_VAR(sMuseumInsectArcPath),
+    HOST_OVERLAY_VAR(data_ov004_02250e1c),
+    HOST_OVERLAY_VAR(data_ov004_02250e10),
+    HOST_OVERLAY_VAR(data_ov004_02250e0c),
+    HOST_OVERLAY_VAR(sMuseumPictureArcPath),
+    HOST_OVERLAY_VAR(sMuseumDisplayProfile),
+    HOST_OVERLAY_VARS_END
+};

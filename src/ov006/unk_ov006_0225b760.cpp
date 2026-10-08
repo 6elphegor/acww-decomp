@@ -36,9 +36,22 @@ u32 data_ov006_0225b790[3] = {0xbc, 0xd0, 0xd4};
 SceneSpawnList data_ov006_0225b780 = {3, 0, data_ov006_0225b7b4};
 
 SceneSpawnGroup data_ov006_0225b7b4[3] = {
-    {2, (u8)sFieldSceneProfileCount, 0, sFieldSceneProfiles},
+    {2, FIELD_SCENE_PROFILE_COUNT, 0, sFieldSceneProfiles},
     {2, 3, 0, data_ov006_0225b790},
     {1, 0, 0, 0},
 };
 
 SceneMapInfo data_ov006_0225b788 = {data_ov006_0225b7cc, 6, 6};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov006_0225b760) {
+    HOST_OVERLAY_VAR(data_ov006_0225b7cc),
+    HOST_OVERLAY_VAR(data_ov006_0225b79c),
+    HOST_OVERLAY_VAR(data_ov006_0225b790),
+    HOST_OVERLAY_VAR(data_ov006_0225b780),
+    HOST_OVERLAY_VAR(data_ov006_0225b7b4),
+    HOST_OVERLAY_VAR(data_ov006_0225b788),
+    HOST_OVERLAY_VARS_END
+};

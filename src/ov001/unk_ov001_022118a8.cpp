@@ -113,3 +113,11 @@ void WfcAossDone_WaitTimer() {
 
 }
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022118a8) {
+    HOST_OVERLAY_VAR(sWfcAossDoneTimer),
+    HOST_OVERLAY_VARS_END
+};

@@ -431,3 +431,21 @@ extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
     return 0;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_022032f8) {
+    HOST_OVERLAY_VAR(sAossWcmWork),
+    HOST_OVERLAY_VAR(sAossWcmWepDesc),
+    HOST_OVERLAY_VAR(sAossWcmBssDesc),
+    HOST_OVERLAY_VAR(sAossWcmBssid),
+    HOST_OVERLAY_VAR(sAossWcmState),
+    HOST_OVERLAY_VAR(sAossWcmSsid),
+    HOST_OVERLAY_VAR(sAossWcmBssidPtr),
+    HOST_OVERLAY_VAR(sAossWcmConnectOption),
+    HOST_OVERLAY_VAR(sAossWcmNotifyCb),
+    HOST_OVERLAY_VAR(sAossWcmSsidPtr),
+    HOST_OVERLAY_VAR(sAossWcmConfig),
+    HOST_OVERLAY_VAR(sAossWcmSearchOption),
+    HOST_OVERLAY_VARS_END
+};

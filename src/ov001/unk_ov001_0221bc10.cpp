@@ -94,3 +94,11 @@ extern "C" void WfcTestConfirm_Exit() {
     WfcUtil_SetScreenFlags(0, 1);
     WfcUtil_SetScene(WfcConnTest_Enter);
 }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov001_0221bc10) {
+    HOST_OVERLAY_VAR(sWfcTestConfirmMessages),
+    HOST_OVERLAY_VARS_END
+};

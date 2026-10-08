@@ -617,11 +617,8 @@ extern "C" u8 sSpNpcCelesteKey[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's',
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
-void SpNpcCelesteTalk::onMessageEnd(u32) {
-    if (GameStart_IsActive() == 0) {
-        PlayerData_GetCurrent();
-        nextMsg = 0xff;
-        static SpNpcCelesteMessageEndHandler tbl[29] = {
+// SpNpcCelesteTalk::onMessageEnd's static tbl
+SpNpcCelesteMessageEndHandler SpNpcCelesteTalk_onMessageEnd_tbl[29] = {
             {0x00, &SpNpcCelesteTalk::announceNewConstellations},
             {0x04, &SpNpcCelesteTalk::showTelescopeMenu},
             {0x05, &SpNpcCelesteTalk::startNameEntry},
@@ -652,11 +649,15 @@ void SpNpcCelesteTalk::onMessageEnd(u32) {
             {0x40, &SpNpcCelesteTalk::showConstellationList},
             {0x41, &SpNpcCelesteTalk::showConstellationList},
         };
+void SpNpcCelesteTalk::onMessageEnd(u32) {
+    if (GameStart_IsActive() == 0) {
+        PlayerData_GetCurrent();
+        nextMsg = 0xff;
         s32 i = 0;
         u8 *p = &msgIndex;
-        SpNpcCelesteMessageEndHandler *t = tbl;
+        SpNpcCelesteMessageEndHandler *t = SpNpcCelesteTalk_onMessageEnd_tbl;
         for (; (u32)i < 0x1d; i++) {
-            u32 a = tbl[i].id;
+            u32 a = SpNpcCelesteTalk_onMessageEnd_tbl[i].id;
             u32 b = *p;
             if (a == b) {
                 (this->*t[i].f)();
@@ -1128,3 +1129,21 @@ BOOL SpNpcCeleste::tryStartTelescopeTalk() {
     return FALSE;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov046_02258de0) {
+    HOST_OVERLAY_VAR(data_ov046_0225ae04),
+    HOST_OVERLAY_VAR(data_ov046_0225ae08),
+    HOST_OVERLAY_VAR(data_ov046_0225ae20),
+    HOST_OVERLAY_VAR(data_ov046_0225ae10),
+    HOST_OVERLAY_VAR(data_ov046_0225ae00),
+    HOST_OVERLAY_VAR(data_ov046_0225ae0c),
+    HOST_OVERLAY_VAR(sSpNpcCelesteModelPath),
+    HOST_OVERLAY_VAR(sSpNpcCelesteTexturePath),
+    HOST_OVERLAY_VAR(sSpNpcCelesteProfile),
+    HOST_OVERLAY_VAR(sSpNpcCelesteActTable),
+    HOST_OVERLAY_VAR(sSpNpcCelesteKey),
+    HOST_OVERLAY_VAR(SpNpcCelesteTalk_onMessageEnd_tbl),
+    HOST_OVERLAY_VARS_END
+};

@@ -1,4 +1,6 @@
 #include "types.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "ui/CursorMotion.h"
@@ -43,8 +45,8 @@ void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
 extern CommManager *gCommManager;
-extern u8 gSaveLostAndFound[];
-extern u8 gSaveRecycleBin[];
+#define gSaveLostAndFound HOST_LABEL(u8 (*)[], gSaveLostAndFound)
+#define gSaveRecycleBin HOST_LABEL(u8 (*)[], gSaveRecycleBin)
 extern u16 gPad[];
 }
 
@@ -306,7 +308,7 @@ BOOL ShopSellMenu::onDraw() {
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
         letterGrid.drawPocketLetters(0, pocketsSlideY);
-        InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -367,10 +369,10 @@ void ShopSellMenu::transitionAct00() {
 
 void ShopSellMenu::transitionAct01() {
     ShopSellMenu_LoadObjGraphics(this);
-    InventoryItemGrid_LoadPockets(&itemGrid);
+    Shared_InventoryItemGrid_LoadPockets(&itemGrid);
     InventoryItemGrid_LoadBox(&itemGrid, boxItems);
     ShopSellMenu_DisableRejectedItems(this);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -454,7 +456,7 @@ extern "C" void ShopSellMenu_Init(S *s) {
     s->stateFlags = 0;
     InventoryItemGrid_Init(&s->itemGrid, 1);
     s->letterGrid.init(2);
-    InventoryBg_Init(&s->inventoryBg, 6);
+    Shared_InventoryBg_Init(&s->inventoryBg, 6);
     s->balloonSlot = 0x20;
     s->flyMotion.reset();
     s->heldKind = 0;
@@ -483,7 +485,7 @@ extern "C" void ShopSellMenu_Init(S *s) {
 extern "C" void ShopSellMenu_Exit(S *s) {
     ShopSellMenu_CancelUploads(s);
     InventoryBg_Exit(&s->inventoryBg);
-    InventoryItemGrid_Exit(&s->itemGrid);
+    Shared_InventoryItemGrid_Exit(&s->itemGrid);
     PopupChoice_ForceClose(&s->choiceMenu);
     s->resetTextLabels();
 }
@@ -499,14 +501,14 @@ extern "C" void ShopSellMenu_PostInputUpdate(S *s) {
 
 extern "C" void ShopSellMenu_PreStateUpdate(S *s) {
     ShopSellMenu_CancelUploads(s);
-    InventoryBg_PreUpdate(&s->inventoryBg);
+    Shared_InventoryBg_PreUpdate(&s->inventoryBg);
     InventoryItemGrid_PreUpdate(&s->itemGrid);
     s->letterGrid.updateCursorLift();
     s->resetTextLabels();
 }
 
 extern "C" void ShopSellMenu_PostStateUpdate(S *s) {
-    PopupChoice_Update(&s->choiceMenu);
+    Shared_PopupChoice_Update(&s->choiceMenu);
     InventoryBg_Update(&s->inventoryBg);
     if (s->nameBalloon.updatePrompt()) {
         ShopSellMenu_PlaceNameBalloon(s);
@@ -846,7 +848,7 @@ void ShopSellMenu::mainAct0F() {
     if (s->cursor.isGripping()) {
         if (s->testFlags(0x40)) {
             s->clearFlags(0x40);
-            Inventory_PlayPickUpSe();
+            Shared_Inventory_PlayPickUpSe();
         }
         ShopSellMenu_TrackCursor(s);
     }
@@ -962,7 +964,7 @@ extern "C" void ShopSellMenu_PickUpWithTouch(S *s, u32 a) {
         s->setMainState(3);
     }
     ShopSellMenu_TrackTouch(s);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 extern "C" void ShopSellMenu_PickUpWithHand(S *s, u32 a) {
@@ -973,7 +975,7 @@ extern "C" void ShopSellMenu_PickUpWithHand(S *s, u32 a) {
         s->returnState = 5;
     }
     ShopSellMenu_TrackCursor(s);
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 extern "C" void ShopSellMenu_StartFlyHeldItem(S *s, u32 a, u32 b) {
@@ -1058,7 +1060,7 @@ extern "C" u32 ShopSellMenu_FindSlotAt(S *s, u32 a, u32 b, s32 c) {
         }
         return ShopSellMenu_GridToPocketSlot(s, t);
     }
-    t = InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
+    t = Shared_InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&s->itemGrid, t)) return 0x20;
@@ -1127,7 +1129,7 @@ extern "C" BOOL ShopSellMenu_IsItemRejected(S *s, u32 a)
         return TRUE;
     }
     u32 t = ShopSellMenu_GetSlotItem(s, a);
-    if (InvItem_IsNonTransferable(t)) {
+    if (Shared_InvItem_IsNonTransferable(t)) {
         return TRUE;
     }
     v = t;
@@ -1163,7 +1165,7 @@ extern "C" BOOL ShopSellMenu_IsItemRejected(S *s, u32 a)
     case 0x1f:
         return TRUE;
     case 0x20:
-        if (InvItem_IsTurnipFishOrInsect(t)) {
+        if (Shared_InvItem_IsTurnipFishOrInsect(t)) {
             BOOL f = FALSE;
             u16 x = v;
             u16 y = v;
@@ -1192,7 +1194,7 @@ extern "C" void ShopSellMenu_DisableRejectedItems(S *s)
 extern "C" BOOL ShopSellMenu_IsSlotDisabled(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     return FALSE;
 }
@@ -1208,7 +1210,7 @@ extern "C" BOOL ShopSellMenu_IsSlotEmpty(S *s, u32 a)
 extern "C" u32 ShopSellMenu_GetSlotItem(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotItem(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
+        return Shared_InventoryItemGrid_GetSlotItem(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     return 0xfff1;
 }
@@ -1230,7 +1232,7 @@ extern "C" void ShopSellMenu_ClearCursorSlots(S *s)
 extern "C" void ShopSellMenu_SetCursorSlot(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_SetCursorSlot(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
+        Shared_InventoryItemGrid_SetCursorSlot(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
         s->letterGrid.clearCursorSlot();
     } else if (ShopSellMenu_IsButtonSlot(s, a)) {
         ShopSellMenu_ClearCursorSlots(s);
@@ -1239,7 +1241,7 @@ extern "C" void ShopSellMenu_SetCursorSlot(S *s, u32 a)
 
 extern "C" void ShopSellMenu_ClearMarks(S *s)
 {
-    InventoryItemGrid_ClearMarks(&s->itemGrid);
+    Shared_InventoryItemGrid_ClearMarks(&s->itemGrid);
     s->letterGrid.clearMarks();
 }
 
@@ -1277,7 +1279,7 @@ extern "C" void ShopSellMenu_PlaceNameBalloon(S *s)
     s->nameBalloon.setPos(a, b);
     if (ShopSellMenu_IsPocketSlot(s, s->balloonSlot) || ShopSellMenu_IsBoxSlot(s, s->balloonSlot)) {
         u32 t = ShopSellMenu_ToGridSlot(s, s->balloonSlot);
-        InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
+        Shared_InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
     }
 }
 
@@ -1330,10 +1332,10 @@ extern "C" void ShopSellMenu_PickUpItem(S *s, u32 a)
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
         u32 t = ShopSellMenu_ToGridSlot(s, a);
         s->heldKind = 1;
-        s->heldItem = InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
+        s->heldItem = Shared_InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
         s->heldItemFlags = InventoryItemGrid_GetSlotFlags(&s->itemGrid, t);
-        InventoryItemGrid_ClearSlot(&s->itemGrid, t);
-        InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
+        Shared_InventoryItemGrid_ClearSlot(&s->itemGrid, t);
+        Shared_InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
     }
 }
 
@@ -1796,3 +1798,11 @@ BOOL ShopSellMenu::testFlags(u32 mask) {
 void ShopSellMenu::setFlags(u32 mask) { stateFlags |= mask; }
 
 void ShopSellMenu::clearFlags(u32 mask) { stateFlags &= ~mask; }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov100_02294c40) {
+    HOST_OVERLAY_VAR(sShopSellMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

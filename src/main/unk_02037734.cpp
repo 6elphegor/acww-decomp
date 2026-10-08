@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "text/Unk_02050288.h"
@@ -87,10 +88,10 @@ struct Unk_02037ea0_G {
     VecFx32 a, c, b;
 };
 extern VecFx32 gVec3Zero;
-extern Unk_02037ea0_G data_027e02c8;
-extern u8 data_027e00d0[];
-extern u8 data_027e0114[];
-extern u32 data_027e0148[];
+#define data_027e02c8 HOST_LABEL(Unk_02037ea0_G *, data_027e02c8)
+#define data_027e00d0 HOST_LABEL(u8 (*)[], data_027e00d0)
+#define data_027e0114 HOST_LABEL(u8 (*)[], data_027e0114)
+#define data_027e0148 HOST_LABEL(u32 (*)[], data_027e0148)
 
 struct Unk_02037b90_S {
     u8 a, b, c;

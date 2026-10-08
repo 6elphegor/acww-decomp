@@ -13,9 +13,8 @@ class VillagerActor;
 // symbols are labels of construct (0x0202d7f4) / destruct (0x0202d7e0).
 class VillagerClothModel {
 public:
-    VillagerClothModel();
-    ~VillagerClothModel();
-
+    VillagerClothModel() { construct(); }
+    ~VillagerClothModel() { destruct(); }
     u16 *getItem();
     void release();
     BOOL change(VillagerActor *parent, u16 *id);

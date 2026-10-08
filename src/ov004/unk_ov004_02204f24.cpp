@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "uptr.h"
+#include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -37,12 +38,11 @@
 #include "game/CollisionVec2.h"
 #include "game/CollisionEdge.h"
 
-// main class 0x02000c8c (3 words, registered for destruction through __register_global_object); this unit's statics
-// use an inline empty default constructor (game/FxVec3.h: the out-of-line one)
+// main class 0x02000c8c (3 words; on the DS registered for destruction through __register_global_object, trivial
+// here: game/FxVec3.h); this unit's statics use an inline empty default constructor
 struct FxVec3 : VecFx32Copy {
     FxVec3() {}
-    FxVec3(s32 a, s32 b, s32 c) : VecFx32Copy(a, b, c) {}
-    ~FxVec3();
+    constexpr FxVec3(s32 a, s32 b, s32 c) : VecFx32Copy(a, b, c) {}
 };
 
 #include "room/FtrModelAnim.h"
@@ -864,20 +864,26 @@ FxVec3 *sFtrFootprintCorners[3] = {data_ov004_0224f88c, data_ov004_0224f8bc, dat
 u16 gFtrSoundNone = 0xffff;
 
 // @022091fc
+// FtrActor::getInteractionPos's static v, initialised at its first use after the overlay was loaded
+FxVec3 FtrActor_getInteractionPos_v;
+u8 FtrActor_getInteractionPos_v_init;
 VecFx32 *FtrActor::getInteractionPos() {
-    static FxVec3 v;
-    v.x = position.x;
-    v.y = position.y;
-    v.z = position.z;
+    if (!FtrActor_getInteractionPos_v_init) {
+        HOST_STATIC_CONSTRUCT(FtrActor_getInteractionPos_v);
+        FtrActor_getInteractionPos_v_init = 1;
+    }
+    FtrActor_getInteractionPos_v.x = position.x;
+    FtrActor_getInteractionPos_v.y = position.y;
+    FtrActor_getInteractionPos_v.z = position.z;
     Actor *o = (Actor *)PlayerActor_GetActor(4);
     if (o) {
         s32 i = (u16)o->rotY >> 4;
         s32 k = i * 2;
-        v.x = o->position.x + data_02135f44[k];  // sin
-        v.y = o->position.y;
-        v.z = o->position.z + data_02135f44[k + 1];  // cos
+        FtrActor_getInteractionPos_v.x = o->position.x + data_02135f44[k];  // sin
+        FtrActor_getInteractionPos_v.y = o->position.y;
+        FtrActor_getInteractionPos_v.z = o->position.z + data_02135f44[k + 1];  // cos
     }
-    return (VecFx32 *)&v;
+    return (VecFx32 *)&FtrActor_getInteractionPos_v;
 }
 
 // @022091f0
@@ -1550,6 +1556,8 @@ const u8 sFtrPolygonIds[0x1c] = {0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
                                       0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c};
 
 // @02207c40
+// FtrActor::getTiles's static s
+FxVec3 FtrActor_getTiles_s(0, 0, 0);
 void FtrActor::getTiles(FtrTileList *l, VecFx32 *x, s32 y) {
     VecFx32 c;
     VecFx32 d;
@@ -1573,8 +1581,7 @@ void FtrActor::getTiles(FtrTileList *l, VecFx32 *x, s32 y) {
             data_021f47e0 = worldMtx;
         }
         {
-            static FxVec3 s(0, 0, 0);
-            MTX_MultVec43(&s, &data_021f47e0, &d);
+            MTX_MultVec43(&FtrActor_getTiles_s, &data_021f47e0, &d);
         }
         FieldPos_ToUnit(&ox, &oy, &d);
         l->add(ox, oy);
@@ -1666,6 +1673,10 @@ void FtrActor::clearTiles(s32 a, s32 b) {
 }
 
 // @022078d8
+// FtrActor::writeTiles's static s0
+FxVec3 FtrActor_writeTiles_s0(0, 0, 0);
+// FtrActor::writeTiles's static s1
+FxVec3 FtrActor_writeTiles_s1(0, 0, 0x1000);
 void FtrActor::writeTiles(s32 unused, VecFx32 *x, s32 y, u8 flag) {
     if (!isPreview()) {
         FtrTileList l;
@@ -1677,10 +1688,8 @@ void FtrActor::writeTiles(s32 unused, VecFx32 *x, s32 y, u8 flag) {
         a = 0xfff1;
         if (mapLayer == 1) {
             VecFx32 v1, v2;
-            static FxVec3 s0(0, 0, 0);
-            static FxVec3 s1(0, 0, 0x1000);
-            MTX_MultVec43(&s0, &data_021f47e0, &v1);
-            MTX_MultVec43(&s1, &data_021f47e0, &v2);
+            MTX_MultVec43(&FtrActor_writeTiles_s0, &data_021f47e0, &v1);
+            MTX_MultVec43(&FtrActor_writeTiles_s1, &data_021f47e0, &v2);
             s32 ang = Math_Atan2(v2.x - v1.x, v2.z - v1.z);
             FtrActor_MakeItemForAngle(&b, this, ang);
             a = b;
@@ -2434,35 +2443,38 @@ char sFtrModelName[] = "FTR:a/bmd/bmd0";
 char *sFtrModelNamePtr = sFtrModelName;
 
 // @02206570
+// FtrCollider::slideOwnerForWideFtr's static tbl0
+FxVec3 FtrCollider_slideOwnerForWideFtr_tbl0[2] = {FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0)};
+// FtrCollider::slideOwnerForWideFtr's static tbl1
+FxVec3 FtrCollider_slideOwnerForWideFtr_tbl1[2] = {FxVec3(0, 0, 0), FxVec3(0x2000, 0, 0)};
+// FtrCollider::slideOwnerForWideFtr's static one
+FxVec3 FtrCollider_slideOwnerForWideFtr_one(0x2000, 0, 0);
 void FtrCollider::slideOwnerForWideFtr(Actor *b) {
     FtrActor *o;
     VecFx32Ctor tmp[2];
     o = owner;
     if (o->footprint == 1) {
-        static FxVec3 tbl0[2] = {FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0)};
-        static FxVec3 tbl1[2] = {FxVec3(0, 0, 0), FxVec3(0x2000, 0, 0)};
-        static FxVec3 one(0x2000, 0, 0);
         s32 r6;
         Mtx43_SetRotY(&data_021f47e0, owner->rotY);
-        MTX_MultVec43(&one, &data_021f47e0, &tmp[0]);
-        FtrActor_LocalToWorld(owner, &tmp[1], &tbl1[0]);
+        MTX_MultVec43(&FtrCollider_slideOwnerForWideFtr_one, &data_021f47e0, &tmp[0]);
+        FtrActor_LocalToWorld(owner, &tmp[1], &FtrCollider_slideOwnerForWideFtr_tbl1[0]);
         r6 = Vec_Distance(&b->position, &tmp[1]);
-        FtrActor_LocalToWorld(owner, &tmp[1], &tbl1[1]);
+        FtrActor_LocalToWorld(owner, &tmp[1], &FtrCollider_slideOwnerForWideFtr_tbl1[1]);
         if (r6 < Vec_Distance(&b->position, &tmp[1])) {
-            if (Vec_NotEqual(&owner->modelOffset, &tbl0[0])) {
+            if (Vec_NotEqual(&owner->modelOffset, &FtrCollider_slideOwnerForWideFtr_tbl0[0])) {
                 VecFx32 *d = &owner->modelOffset;
-                FxVec3 *s = &tbl0[0];
+                FxVec3 *s = &FtrCollider_slideOwnerForWideFtr_tbl0[0];
                 d->x = s->x;
                 d->y = s->y;
                 d->z = s->z;
                 VEC_Subtract(&owner->position, &tmp[0], &owner->position);
             }
         } else {
-            if (Vec_NotEqual(&owner->modelOffset, &tbl0[1])) {
+            if (Vec_NotEqual(&owner->modelOffset, &FtrCollider_slideOwnerForWideFtr_tbl0[1])) {
                 VecFx32 *d = &owner->modelOffset;
-                d->x = tbl0[1].x;
-                d->y = tbl0[1].y;
-                d->z = tbl0[1].z;
+                d->x = FtrCollider_slideOwnerForWideFtr_tbl0[1].x;
+                d->y = FtrCollider_slideOwnerForWideFtr_tbl0[1].y;
+                d->z = FtrCollider_slideOwnerForWideFtr_tbl0[1].z;
                 VEC_Add(&owner->position, &tmp[0], &owner->position);
             }
         }
@@ -2800,8 +2812,14 @@ BOOL FtrTopItems::canPickUp(FtrActor *o) {
 }
 
 // @02205f58
+// FtrTopItems::pickUpAll's static dflt, initialised at its first use after the overlay was loaded
+ItemId FtrTopItems_pickUpAll_dflt;
+u8 FtrTopItems_pickUpAll_dflt_init;
 BOOL FtrTopItems::pickUpAll(FtrActor *o) {
-    static ItemId dflt(0xfff1);
+    if (!FtrTopItems_pickUpAll_dflt_init) {
+        HOST_STATIC_INIT(FtrTopItems_pickUpAll_dflt, ItemId(0xfff1));
+        FtrTopItems_pickUpAll_dflt_init = 1;
+    }
     BOOL res = TRUE;
     FtrTileList list;
     o->getTiles((FtrTileList *)&list, 0, 0);
@@ -3301,15 +3319,21 @@ BOOL FtrActor::setAct(s32 idx) {
 }
 
 // @022055ec
+// FtrActor::execAct's static tbl, initialised at its first use after the overlay was loaded
+Unk_ov004_0224882c_Fn FtrActor_execAct_tbl[9];
+u8 FtrActor_execAct_tbl_init;
 void FtrActor::execAct() {
-    static Unk_ov004_0224882c_Fn tbl[9] = {
+    if (!FtrActor_execAct_tbl_init) {
+        HOST_STATIC_INIT_ARRAY(FtrActor_execAct_tbl, {
         (Unk_ov004_0224882c_Fn)&FtrActor::execAppear, (Unk_ov004_0224882c_Fn)&FtrActor::execIdle,
         (Unk_ov004_0224882c_Fn)&FtrActor::execRotate, (Unk_ov004_0224882c_Fn)&FtrActor::execPush,
         (Unk_ov004_0224882c_Fn)&FtrActor::execPull, (Unk_ov004_0224882c_Fn)&FtrActor::execRemove,
         (Unk_ov004_0224882c_Fn)&FtrActor::execHide, (Unk_ov004_0224882c_Fn)&FtrActor::execIdle,
         (Unk_ov004_0224882c_Fn)&FtrActor::execPreview,
-    };
-    if (baseAct < 9) (this->*tbl[baseAct])();
+    });
+        FtrActor_execAct_tbl_init = 1;
+    }
+    if (baseAct < 9) (this->*FtrActor_execAct_tbl[baseAct])();
 }
 
 // @0220552c
@@ -3578,3 +3602,48 @@ void FtrActor::execPreview() {
     drawScale = drawScaleY = drawScaleZ = v;
 }
 
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov004_02204f24) {
+    HOST_OVERLAY_VAR(data_ov004_0224f60c),
+    HOST_OVERLAY_VAR(data_ov004_0224f62c),
+    HOST_OVERLAY_VAR(data_ov004_0224f63c),
+    HOST_OVERLAY_VAR(data_ov004_0224f608),
+    HOST_OVERLAY_VAR(data_ov004_0224f61c),
+    HOST_OVERLAY_VAR(data_ov004_0224f618),
+    HOST_OVERLAY_VAR(sFtrActorProfile),
+    HOST_OVERLAY_VAR(data_ov004_0224f88c),
+    HOST_OVERLAY_VAR(data_ov004_0224f8bc),
+    HOST_OVERLAY_VAR(data_ov004_0224f8ec),
+    HOST_OVERLAY_VAR(sFtrPreviewYaw),
+    HOST_OVERLAY_VAR(sFtrFootprintCorners),
+    HOST_OVERLAY_VAR(gFtrSoundNone),
+    HOST_OVERLAY_VAR(FtrActor_getInteractionPos_v),
+    HOST_OVERLAY_VAR(FtrActor_getInteractionPos_v_init),
+    HOST_OVERLAY_VAR(sFtrPreviewPitch),
+    HOST_OVERLAY_VAR(FtrActor_getTiles_s),
+    HOST_OVERLAY_VAR(FtrActor_writeTiles_s0),
+    HOST_OVERLAY_VAR(FtrActor_writeTiles_s1),
+    HOST_OVERLAY_VAR(sFtrArcPathBuf),
+    HOST_OVERLAY_VAR(sFtrTexPathBuf),
+    HOST_OVERLAY_VAR(sFtrModelName),
+    HOST_OVERLAY_VAR(sFtrModelNamePtr),
+    HOST_OVERLAY_VAR(FtrCollider_slideOwnerForWideFtr_tbl0),
+    HOST_OVERLAY_VAR(FtrCollider_slideOwnerForWideFtr_tbl1),
+    HOST_OVERLAY_VAR(FtrCollider_slideOwnerForWideFtr_one),
+    HOST_OVERLAY_VAR(FtrTopItems_pickUpAll_dflt),
+    HOST_OVERLAY_VAR(FtrTopItems_pickUpAll_dflt_init),
+    HOST_OVERLAY_VAR(data_ov004_02248710),
+    HOST_OVERLAY_VAR(data_ov004_02248718),
+    HOST_OVERLAY_VAR(data_ov004_02248720),
+    HOST_OVERLAY_VAR(sFtrGlowMatNames),
+    HOST_OVERLAY_VAR(data_ov004_022486fc),
+    HOST_OVERLAY_VAR(data_ov004_02248704),
+    HOST_OVERLAY_VAR(data_ov004_02248708),
+    HOST_OVERLAY_VAR(data_ov004_02248700),
+    HOST_OVERLAY_VAR(sFtrVisNodeNames),
+    HOST_OVERLAY_VAR(FtrActor_execAct_tbl),
+    HOST_OVERLAY_VAR(FtrActor_execAct_tbl_init),
+    HOST_OVERLAY_VARS_END
+};

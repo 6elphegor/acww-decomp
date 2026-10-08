@@ -1,5 +1,7 @@
 // ov104: scene overlay (class PostOfficeMenu, vtable 0x02298170). Linked as one unit.
 #include "types.h"
+#include "host_labels.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerData.h"
@@ -72,7 +74,7 @@ void PopupChoice_Close(void *p, s32 a);
 void PopupChoice_Open(void *p, s32 a);
 
 extern u16 gPad[];
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 }
 
 // Main-module helper classes (real symbol names) -------------------------------------------------
@@ -348,7 +350,7 @@ BOOL PostOfficeMenu::onDraw() {
         s32 t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
         letterGrid.drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&inventoryBg, t);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, t);
     }
     if (testFlags(0x200)) {
         letterGrid.drawLetters2D(boxSlideX, -0x10);
@@ -483,9 +485,9 @@ void PostOfficeMenu::transitionAct00() {
 
 void PostOfficeMenu::transitionAct01() {
     PostOfficeMenu_LoadObjGraphics(this);
-    InventoryItemGrid_LoadPockets(&pocketGrid);
-    LetterGrid_LoadPocketLetters(&letterGrid);
-    LetterGrid_SetLetters2D(&letterGrid, (u8 *)boxLetters);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_LetterGrid_SetLetters2D(&letterGrid, (u8 *)boxLetters);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -619,7 +621,7 @@ void PostOfficeMenu_InitParts(S *s) {
     s->stateFlags = 0;
     InventoryItemGrid_Init(&s->pocketGrid, 2);
     s->letterGrid.init(1);
-    InventoryBg_Init(&s->inventoryBg, 6);
+    Shared_InventoryBg_Init(&s->inventoryBg, 6);
     s->balloonSlot = 0x21;
     s->flyMotion.reset();
     s->handKind = 0;
@@ -636,7 +638,7 @@ void PostOfficeMenu_InitParts(S *s) {
 void PostOfficeMenu_ReleaseResources(S *s) {
     s->cancelBgTasks();
     InventoryBg_Exit(&s->inventoryBg);
-    InventoryItemGrid_Exit(&s->pocketGrid);
+    Shared_InventoryItemGrid_Exit(&s->pocketGrid);
     PopupChoice_ForceClose(&s->popup);
     s->letterView.release();
     s->bottomButtons.freeTexts();
@@ -653,14 +655,14 @@ void PostOfficeMenu_PostInputUpdate(S *s) {
 
 void PostOfficeMenu_PreStateUpdate(S *s) {
     s->cancelBgTasks();
-    InventoryBg_PreUpdate(&s->inventoryBg);
+    Shared_InventoryBg_PreUpdate(&s->inventoryBg);
     InventoryItemGrid_PreUpdate(&s->pocketGrid);
     s->letterGrid.updateCursorLift();
     s->bottomButtons.freeTexts();
 }
 
 void PostOfficeMenu_PostStateUpdate(S *s) {
-    PopupChoice_Update(&s->popup);
+    Shared_PopupChoice_Update(&s->popup);
     InventoryBg_Update(&s->inventoryBg);
     if (s->nameBalloon.updatePrompt()) {
         s->placeBalloon();
@@ -1036,7 +1038,7 @@ void PostOfficeMenu::mainAct14() {
     if (cursor.isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
-            Inventory_PlayPickUpSe();
+            Shared_Inventory_PlayPickUpSe();
         }
         getHandPos();
     }
@@ -1116,7 +1118,7 @@ void PostOfficeMenu::mainAct1B() {
 }
 
 void PostOfficeMenu::mainAct1C() {
-    if (LetterGrid_UpdatePopAnim(&letterGrid)) {
+    if (Shared_LetterGrid_UpdatePopAnim(&letterGrid)) {
         handKind = 0;
         resumeInput();
     }
@@ -1172,7 +1174,7 @@ void PostOfficeMenu::beginDragFromSlot(u32 i) {
         setMainState(4);
     }
     getDragPos();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void PostOfficeMenu::pickUpAtSlot(u32 i) {
@@ -1183,7 +1185,7 @@ void PostOfficeMenu::pickUpAtSlot(u32 i) {
         returnState = 8;
     }
     getHandPos();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void PostOfficeMenu::flyHeldTo(u32 i, u32 a) {
@@ -1340,7 +1342,7 @@ s32 PostOfficeMenu::getSlotX(u32 i) {
 
 s32 PostOfficeMenu::getSlotY(u32 i) {
     if (isLetterSlot(i) || isBoxSlot(i)) {
-        return LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(i)) - 0x10;
+        return Shared_LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(i)) - 0x10;
     } else {
         if ((u8)(i + 0xe1) <= 1) {
             return 0xb6;
@@ -1350,7 +1352,7 @@ s32 PostOfficeMenu::getSlotY(u32 i) {
 }
 
 void PostOfficeMenu::disableAllPockets() {
-    InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
+    Shared_InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
     letterGrid.highlightLetterKinds(0xe);
 }
 
@@ -1385,7 +1387,7 @@ void PostOfficeMenu::setFocusSlot(u32 i) {
 }
 
 void PostOfficeMenu::clearHoverSlot() {
-    InventoryItemGrid_ClearMarks(&pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&pocketGrid);
     letterGrid.clearMarks();
 }
 
@@ -2129,3 +2131,11 @@ BOOL PostOfficeMenu::testFlags(u32 mask) {
 void PostOfficeMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
 void PostOfficeMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov104_02294c40) {
+    HOST_OVERLAY_VAR(sPostOfficeMenuProfile),
+    HOST_OVERLAY_VARS_END
+};

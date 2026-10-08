@@ -15,6 +15,7 @@
 //   The "Rb" state machine (f83fc, f8604, f86c0..f8b08, called by name from main) stays plain extern "C" over a struct view.
 // The scene class file (unk_020f0fb4.cpp) and main call the constructors / destructors by their func_ names (aliases keep them).
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "snd/BgmBeatSync.h"
 #include "snd/SndBgmViews.h"
@@ -40,7 +41,7 @@ static inline BgmTempoTracker *SceneTempo() {
 }
 
 extern "C" {
-extern Hr gSndBgmHandle;
+#define gSndBgmHandle HOST_LABEL(Hr *, gSndBgmHandle)
 // (not in the shared headers: not decompiled yet, or defined with file-local types)
 s32 FX_Div(s32 a, s32 b);
 void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);

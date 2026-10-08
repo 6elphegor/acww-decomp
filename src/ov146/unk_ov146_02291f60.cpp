@@ -1,5 +1,6 @@
 // ov146: scene overlay (class WfcFriendListMenu, vtable 0x02294080): wi-fi friend list menu.
 #include "types.h"
+#include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "net/Net.h"
@@ -845,9 +846,21 @@ extern "C" GXOamAttr sWfcFrameCells[12] = {
     {0x81a840cc, 0x88, 1, 0x5, 0xffff},
 };
 
+// WfcFriendListMenu::renderRows's static sa, initialised at its first use after the overlay was loaded
+EncodedString8B WfcFriendListMenu_renderRows_sa;
+u8 WfcFriendListMenu_renderRows_sa_init;
+// WfcFriendListMenu::renderRows's static sb, initialised at its first use after the overlay was loaded
+MsgString9C WfcFriendListMenu_renderRows_sb;
+u8 WfcFriendListMenu_renderRows_sb_init;
 void WfcFriendListMenu::renderRows() {
-    static EncodedString8B sa;
-    static MsgString9C sb;
+    if (!WfcFriendListMenu_renderRows_sa_init) {
+        HOST_STATIC_CONSTRUCT(WfcFriendListMenu_renderRows_sa);
+        WfcFriendListMenu_renderRows_sa_init = 1;
+    }
+    if (!WfcFriendListMenu_renderRows_sb_init) {
+        HOST_STATIC_CONSTRUCT(WfcFriendListMenu_renderRows_sb);
+        WfcFriendListMenu_renderRows_sb_init = 1;
+    }
     LabelString *w1;
     LabelString *w2;
     s32 j;
@@ -872,9 +885,9 @@ void WfcFriendListMenu::renderRows() {
             } else {
                 rowFriends[col] = e;
                 w1 = allocText();
-                EncodedString_SetRaw(&sa, friendRecords[e].statusString + 8, 8);
-                sb.fromEncoded(&sa, 0, 0);
-                String_SetSlot(0, &sb);
+                EncodedString_SetRaw(&WfcFriendListMenu_renderRows_sa, friendRecords[e].statusString + 8, 8);
+                WfcFriendListMenu_renderRows_sb.fromEncoded(&WfcFriendListMenu_renderRows_sa, 0, 0);
+                String_SetSlot(0, &WfcFriendListMenu_renderRows_sb);
                 String_Load2dMenu(w1, 0x66);
                 w2 = allocText();
                 String_FromEncodedBytes(w2, (u8 *)friendRecords[e].statusString, 8);
@@ -1383,4 +1396,31 @@ extern "C" GXOamAttr sWfcQuitButtonCells[4] = {
     {0x41df004a, 0x97, 1, 0x8, 0x0},
     {0x81d50043, 0x82, 1, 0x8, 0x0},
     {0x81b90043, 0x80, 1, 0x8, 0xffff},
+};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov146_02291f60) {
+    HOST_OVERLAY_VAR(data_ov146_02293e18),
+    HOST_OVERLAY_VAR(data_ov146_02293e98),
+    HOST_OVERLAY_VAR(sWfcRowCellsSelected),
+    HOST_OVERLAY_VAR(data_ov146_02293e48),
+    HOST_OVERLAY_VAR(data_ov146_02293f90),
+    HOST_OVERLAY_VAR(sWfcFriendListMenuProfile),
+    HOST_OVERLAY_VAR(sWfcRowCells),
+    HOST_OVERLAY_VAR(data_ov146_02293f10),
+    HOST_OVERLAY_VAR(sWfcConfirmButtonCells),
+    HOST_OVERLAY_VAR(data_ov146_02293e78),
+    HOST_OVERLAY_VAR(data_ov146_02293e20),
+    HOST_OVERLAY_VAR(data_ov146_02293ed0),
+    HOST_OVERLAY_VAR(data_ov146_02293ef0),
+    HOST_OVERLAY_VAR(data_ov146_02293f30),
+    HOST_OVERLAY_VAR(sWfcFrameCells),
+    HOST_OVERLAY_VAR(WfcFriendListMenu_renderRows_sa),
+    HOST_OVERLAY_VAR(WfcFriendListMenu_renderRows_sa_init),
+    HOST_OVERLAY_VAR(WfcFriendListMenu_renderRows_sb),
+    HOST_OVERLAY_VAR(WfcFriendListMenu_renderRows_sb_init),
+    HOST_OVERLAY_VAR(sWfcQuitButtonCells),
+    HOST_OVERLAY_VARS_END
 };

@@ -1861,3 +1861,56 @@ extern "C" GXOamAttr data_ov134_02294f44[3] = {{0x2e8008, 0xca, 1, 0x6, 0x0}, {0
 extern "C" const u32 sFieldTopDefault[6] = {0xd, 0xd, 0xd, 0x11, 0x11, 0xd};
 extern "C" char data_ov134_02294de8[19] = "menu/clock/bg1.bpl";
 extern "C" char *sFieldScreenFiles[4] = {data_ov134_02294e3c, data_ov134_02294e54, data_ov134_02294e6c, data_ov134_02294e24};
+
+// ---- overlay variables (generated: tools/host_overlay_vars.py) ----
+#include "host_overlay_vars.h"
+
+HOST_OVERLAY_VARS(unk_ov134_02291f60) {
+    HOST_OVERLAY_VAR(data_ov134_02294dc4),
+    HOST_OVERLAY_VAR(data_ov134_02294fb4),
+    HOST_OVERLAY_VAR(sObjVariantFiles),
+    HOST_OVERLAY_VAR(data_ov134_02294e3c),
+    HOST_OVERLAY_VAR(data_ov134_02294d44),
+    HOST_OVERLAY_VAR(data_ov134_02294d4c),
+    HOST_OVERLAY_VAR(data_ov134_02294f5c),
+    HOST_OVERLAY_VAR(data_ov134_02294fd4),
+    HOST_OVERLAY_VAR(data_ov134_02294e6c),
+    HOST_OVERLAY_VAR(data_ov134_02294ff4),
+    HOST_OVERLAY_VAR(data_ov134_022950a4),
+    HOST_OVERLAY_VAR(data_ov134_022950d4),
+    HOST_OVERLAY_VAR(data_ov134_02295104),
+    HOST_OVERLAY_VAR(data_ov134_02294d54),
+    HOST_OVERLAY_VAR(data_ov134_02294db4),
+    HOST_OVERLAY_VAR(data_ov134_02295204),
+    HOST_OVERLAY_VAR(data_ov134_02295194),
+    HOST_OVERLAY_VAR(data_ov134_02294f2c),
+    HOST_OVERLAY_VAR(data_ov134_02294f14),
+    HOST_OVERLAY_VAR(data_ov134_02294efc),
+    HOST_OVERLAY_VAR(data_ov134_02294eb4),
+    HOST_OVERLAY_VAR(data_ov134_02294dfc),
+    HOST_OVERLAY_VAR(data_ov134_02294ecc),
+    HOST_OVERLAY_VAR(data_ov134_02294e24),
+    HOST_OVERLAY_VAR(data_ov134_02294d84),
+    HOST_OVERLAY_VAR(data_ov134_02295074),
+    HOST_OVERLAY_VAR(data_ov134_02294da4),
+    HOST_OVERLAY_VAR(data_ov134_02294e54),
+    HOST_OVERLAY_VAR(data_ov134_02295014),
+    HOST_OVERLAY_VAR(data_ov134_02295134),
+    HOST_OVERLAY_VAR(sBgPaletteFiles),
+    HOST_OVERLAY_VAR(data_ov134_02295164),
+    HOST_OVERLAY_VAR(data_ov134_02294e9c),
+    HOST_OVERLAY_VAR(data_ov134_02294d74),
+    HOST_OVERLAY_VAR(data_ov134_02294ee4),
+    HOST_OVERLAY_VAR(data_ov134_02294f94),
+    HOST_OVERLAY_VAR(data_ov134_022951c4),
+    HOST_OVERLAY_VAR(data_ov134_02295034),
+    HOST_OVERLAY_VAR(data_ov134_02294e84),
+    HOST_OVERLAY_VAR(data_ov134_02294dd4),
+    HOST_OVERLAY_VAR(data_ov134_02294f74),
+    HOST_OVERLAY_VAR(data_ov134_02295054),
+    HOST_OVERLAY_VAR(data_ov134_02294e10),
+    HOST_OVERLAY_VAR(data_ov134_02294f44),
+    HOST_OVERLAY_VAR(data_ov134_02294de8),
+    HOST_OVERLAY_VAR(sFieldScreenFiles),
+    HOST_OVERLAY_VARS_END
+};
