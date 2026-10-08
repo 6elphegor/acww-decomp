@@ -2824,14 +2824,14 @@ skip:
 extern "C" void AquariumFish_JointCalcPre(NNSG3dRS *c) {
     AquariumFish *m = (AquariumFish *)c->pRenderObj->ptrUser;
     if (m) {
-        m->model.onJointCalcPre((BlendAnimModel *)c);
+        m->model.onJointCalcPre(c);
     }
 }
 
 extern "C" void AquariumFish_JointCalcPost(NNSG3dRS *c) {
     AquariumFish *m = (AquariumFish *)c->pRenderObj->ptrUser;
     if (m) {
-        m->model.onJointCalcPost((BlendAnimModel *)c);
+        m->model.onJointCalcPost(c);
     }
 }
 

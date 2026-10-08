@@ -2480,12 +2480,12 @@ void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
     m->trans.x = v[0];
     m->trans.y = v[1];
     m->trans.z = v[2];
-    model.onJointCalcPost((BlendAnimModel *)(o));
+    model.onJointCalcPost(o);
 }
 
 BOOL FtrGyroid::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
     // BlendAnimModel::onJointCalcPre is void; the original returns whatever it left in r0 (no caller uses it).
-    this->model.onJointCalcPre((BlendAnimModel *)(rs));
+    this->model.onJointCalcPre(rs);
     return TRUE;
 }
 
@@ -4191,7 +4191,7 @@ s32 FtrBed::checkStepTile(VecFx32 *a, s32 b, VecFx32 *c) {
             return 2;
         }
         if (rotY == obj->rotY) {
-            if (FtrBedKindCheck::R(*(u16 *)((u8 *)obj + 0xc))) {
+            if (FtrBedKindCheck::R(obj->profile)) {  // (was the DS offset 0xc)
                 FtrBedLieTiles q1, q2;
                 u32 n1 = getLieTiles(&q1);
                 u32 n2 = ((FtrBed *)obj)->getLieTiles(&q2);

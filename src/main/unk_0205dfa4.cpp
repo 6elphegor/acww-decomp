@@ -421,7 +421,7 @@ HeldItemModel::~HeldItemModel() {
 extern "C" void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs) {
     HeldItemModel *q = (HeldItemModel *)rs->pRenderObj->ptrUser;
     if (q) {
-        HeldItemModels_GetModel(&sHeldItemModelBank, q->slot)->onJointCalcPre((BlendAnimModel *)rs);
+        HeldItemModels_GetModel(&sHeldItemModelBank, q->slot)->onJointCalcPre(rs);
     }
     rs->cbVecFunc[6] = (void *)HeldItemModels_OnJointCalcPost; // NODEDESC
     rs->cbVecTiming[6] = 2;
@@ -430,7 +430,7 @@ extern "C" void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs) {
 extern "C" void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs) {
     NNSG3dRenderObj *p = rs->pRenderObj;
     if (p->ptrUser != 0) {
-        ((BlendAnimModel *)(HeldItemModels_GetModel(&sHeldItemModelBank, ((HeldItemModel *)p->ptrUser)->slot)))->onJointCalcPost((BlendAnimModel *)(rs));
+        ((BlendAnimModel *)(HeldItemModels_GetModel(&sHeldItemModelBank, ((HeldItemModel *)p->ptrUser)->slot)))->onJointCalcPost(rs);
     }
     rs->cbVecFunc[6] = (void *)HeldItemModels_OnJointCalcPre;
     rs->cbVecTiming[6] = 1;

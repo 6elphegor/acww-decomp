@@ -490,7 +490,7 @@ namespace nH {
 extern "C" {
 
 s32 Scene_GetCurrent(void);
-s32 Npc_GetVoiceType(void *p);
+u32 Npc_GetVoiceType(u16 *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
@@ -4964,12 +4964,12 @@ s32 ActorTalkRequest::getVoiceType() {
     switch (speakerIndex) {
     case 0:
         if (ownerActor != NULL) {
-            return Npc_GetVoiceType(((void *)((u8 *)(ownerActor) + (0xea))));
+            return Npc_GetVoiceType(&ownerActor->npcHandle);  // (was the DS offset 0xea)
         }
         break;
     case 1:
         if (partnerActor != NULL) {
-            return Npc_GetVoiceType(((void *)((u8 *)(partnerActor) + (0xea))));
+            return Npc_GetVoiceType(&partnerActor->npcHandle);
         }
         break;
     }
@@ -4984,11 +4984,11 @@ void ActorTalkRequest::playEmotion(u32 a, u32 b) {
         if (p != NULL) {
             if (!p->isItemActionBusy()) {
                 if (p->lastEmotion == a) {
-                    if (((NpcActionCtrl *)(((void *)((u8 *)(o) + (0x564)))))->getAction() == 8) {
+                    if (((NpcActionCtrl *)(&o->actionCtrl))->getAction() == 8) {
                         return;
                     }
                 }
-                ((NpcActionCtrl *)(((void *)((u8 *)(o) + (0x564)))))->requestEmotion(2, a, data_020c6cc8[0]);
+                ((NpcActionCtrl *)(&o->actionCtrl))->requestEmotion(2, a, data_020c6cc8[0]);
                 p->lastEmotion = a;
             }
         }

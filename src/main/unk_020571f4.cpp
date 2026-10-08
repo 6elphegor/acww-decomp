@@ -536,7 +536,7 @@ VecFx32 HandOverItem::getHoldOffset(u32 idx)
     u32 t = 0xd8;
     Character *o = chars[idx];
     if (o != NULL) {
-        t = *(u16 *)((u8 *)o + 0xc);
+        t = o->profile;  // (was the DS offset 0xc)
     }
     if (t == 0x6b) {
         return data_020ca6a0;

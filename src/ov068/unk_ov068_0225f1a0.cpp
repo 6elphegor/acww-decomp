@@ -4994,10 +4994,11 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
         o->actionCtrl.requestPlayAnim(1, 0xcd, 3, w, 0);
         o->heldTool.attach((NpcActor *)o, (u16 *)(pos), 0xcd, w);
         o->heldTool.playAnim(0x26, 1, 3);
-        void *p = o->heldTool.getModel();
-        if (p != 0) {
-            u32 bits = (*(u32 *)((u8 *)p + 0xa0) << 4) >> 16;
-            ((AnimFrameCtrl *)((u8 *)p + 0x9c))->setup(bits, 3, 0x1000, (u16)(bits - 1));
+        BlendAnimModel *p = o->heldTool.getModel();
+        if (p != 0) {  // (the model's frame control, read at its DS offsets 0x9c / 0xa0)
+            AnimFrameCtrl *fc = p;
+            u32 bits = ((u32)fc->numFrames << 4) >> 16;
+            fc->setup(bits, 3, 0x1000, (u16)(bits - 1));
         }
         o->heldTool.setAnimSpeed(0x1000);
         Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x858, 0x7f, 0);

@@ -53,7 +53,7 @@ struct NNSG3dResJntAnm {
 
 extern "C" {
 void MTX_Identity33_(void *p);
-s32 func_01ffcc10(void *a, void *o);
+BOOL func_01ffcc10(void *a, NNSG3dRS *o);
 void NNS_G3dAnmObjInit(void *a, void *b, void *c, void *d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
@@ -453,24 +453,24 @@ BlendAnimModel::BlendAnimModel()
 
 BlendAnimModel::~BlendAnimModel() {}
 
-void BlendAnimModel::captureJointPose(BlendAnimModel *x)
+void BlendAnimModel::captureJointPose(NNSG3dRS *x)
 {
     if (blendStep != 0) {
         JointBlend &r = *this;
-        ((JointBlend *)(&r))->capturePose((NNSG3dRS *)(x));
+        ((JointBlend *)(&r))->capturePose(x);
     }
 }
 
-void BlendAnimModel::onJointCalcPre(BlendAnimModel *x)
+void BlendAnimModel::onJointCalcPre(NNSG3dRS *x)
 {
     if (func_01ffcc10(this, x) == 0) {
         captureJointPose(x);
     }
 }
 
-void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
+void BlendAnimModel::applyJointBlend(NNSG3dRS *x)
 {
-    NNSG3dJntAnmResult *d = (NNSG3dJntAnmResult *)x->anmObj;
+    NNSG3dJntAnmResult *d = x->pJntAnmResult;  // (read as the model's anmObj, at the same DS offset 0xb4)
     if (d->flag & 4) {
         d->trans.x = 0;
         d->trans.y = 0;
@@ -481,11 +481,11 @@ void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
     }
     if (blendStep != 0) {
         JointBlend &r = *this;
-        ((JointBlend *)(&r))->blendPose((NNSG3dRS *)(x));
+        ((JointBlend *)(&r))->blendPose(x);
     }
 }
 
-void BlendAnimModel::onJointCalcPost(BlendAnimModel *x)
+void BlendAnimModel::onJointCalcPost(NNSG3dRS *x)
 {
     if (func_01ffcc10(this, x) == 0) {
         applyJointBlend(x);
@@ -571,7 +571,7 @@ void TwoLayerAnimModel::onJointCalcPreLayer2(NNSG3dRS *m) {
             captureLayer2Pose(m);
         } else {
             AnimModel_SwitchAnmObj(this, anmObj);
-            captureJointPose((BlendAnimModel *)m);
+            captureJointPose(m);
         }
     }
 }
@@ -592,7 +592,7 @@ void TwoLayerAnimModel::onJointCalcPostLayer2(NNSG3dRS *m) {
         if (isLayer2Joint(m->c[1])) {
             applyLayer2Blend(m);
         } else {
-            applyJointBlend((BlendAnimModel *)m);
+            applyJointBlend(m);
         }
     }
 }
@@ -740,7 +740,7 @@ void ThreeLayerAnimModel::onJointCalcPreLayer3(NNSG3dRS *m) {
                 captureLayer2Pose(m);
             } else {
                 AnimModel_SwitchAnmObj(this, anmObj);
-                captureJointPose((BlendAnimModel *)m);
+                captureJointPose(m);
             }
         }
     }
@@ -761,17 +761,17 @@ void ThreeLayerAnimModel::onJointCalcPostLayer3(NNSG3dRS *m) {
     if (func_01ffcc10(this, m) == 0) {
         u32 x = layer3JointMaskHi | (layer3JointMask | (layer2JointMask | layer2JointMaskHi));
         if (x == 0) {
-            applyJointBlend((BlendAnimModel *)m);
+            applyJointBlend(m);
         } else {
             u32 t = m->c[1];
             if ((x & (1 << (t & 0x1f))) == 0) {
-                applyJointBlend((BlendAnimModel *)m);
+                applyJointBlend(m);
             } else if (isLayer3Joint(t)) {
                 applyLayer3Blend(m);
             } else if (isLayer2Joint(t)) {
                 applyLayer2Blend(m);
             } else {
-                applyJointBlend((BlendAnimModel *)m);
+                applyJointBlend(m);
             }
         }
     }

@@ -6,6 +6,7 @@
 #include "town/TownBlockCell.h"
 #include "gfx/Camera.h"
 #include "gfx/HBlankTask.h"
+#include "gfx/NNSG3dRS.h"
 #include "nitro/io_access.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
@@ -15,14 +16,6 @@ struct CellGrid {
     /* 0x04 */ s32 w;
 };
 
-struct Kind {
-    u8 cmd;
-};
-
-struct Obj {
-    /* 0x00 */ Kind *c;
-    /* 0x04 */ u8 *pRenderObj;
-};
 
 extern "C" {
 extern HBlankTask *sHBlankListHead;
@@ -50,11 +43,13 @@ extern "C" void HBlank_Handler(void) {
     }
 }
 
-extern "C" BOOL func_01ffcc10(void *a, Obj *o) {
-    if ((o->c->cmd & 0x1f) != 6) {
+// a joint callback's check: TRUE unless the current SBC command is NODEDESC and the render object records joint
+// animation results (recJntAnm; it was read as the word at the DS offset 0x34, part of ptrUser on 64-bit hosts)
+extern "C" BOOL func_01ffcc10(void *a, NNSG3dRS *o) {
+    if ((o->c[0] & 0x1f) != 6) {
         return TRUE;
     }
-    if (*(u32 *)(o->pRenderObj + 0x34) == 0) {
+    if (o->pRenderObj->recJntAnm == 0) {
         return TRUE;
     }
     return FALSE;

@@ -257,17 +257,6 @@ struct ShapeCylinder : CollisionCylinderX, CollisionTagX {
     /* 0x22 */ s16 unitZ;
 };
 
-struct WallEdgeStorage {
-    u8 pad[0x30];
-};
-struct WallEdgeListWriter {
-    BOOL addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxCollider *d3);
-    BOOL addEdgeCopy(WallEdgeStorage *e);
-    
-    void buildFromCells(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
-    WallEdgeStorage edges[0x18];
-    /* 0x480 */ volatile u32 numEdges;
-};
 BOOL ShapeCylinder_AddLinkWall(ShapeCylinder *a, WallEdgeListWriter *out, ShapeCylinder *b);
 struct ShapeCylinderList {
     ShapeCylinderList();
@@ -322,6 +311,13 @@ public:
     WallEdgeList();
     ~WallEdgeList();
     BOOL collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out, Actor *actor);
+};
+// the list's filling side (the collision query's wall gathering): the list itself (it was a DS-layout view - 0x30-byte
+// edges, the count at 0x480 - which on 64-bit hosts wrote the edges and the count elsewhere: no walls were found)
+struct WallEdgeListWriter : WallEdgeList {
+    BOOL addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxCollider *d3);
+    BOOL addEdgeCopy(WallEdge *e);
+    void buildFromCells(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
 };
 class FloorTriangleList {
 public:
@@ -1272,11 +1268,11 @@ BOOL WallEdgeList::collide(VecFx32 *pos, VecFx32 *q, s32 r, CollisionState *out,
     return result;
 }
 
-BOOL WallEdgeListWriter::addEdgeCopy(WallEdgeStorage *e) {
+BOOL WallEdgeListWriter::addEdgeCopy(WallEdge *e) {
     if (numEdges < 0x18) {
         u32 n = numEdges;
         numEdges = n + 1;
-        ((WallEdge *)(&edges[n]))->copyEdge((WallEdge *)(e));
+        edges[n].copyEdge(e);
         return TRUE;
     }
     return FALSE;
@@ -1284,7 +1280,7 @@ BOOL WallEdgeListWriter::addEdgeCopy(WallEdgeStorage *e) {
 
 BOOL WallEdgeListWriter::addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, BoxCollider *d3) {
     WallEdge t((CollisionVec2 *)a, (CollisionVec2 *)b, (CollisionVec2 *)c, d0, d1, d2, d3);
-    BOOL r = addEdgeCopy((WallEdgeStorage *)&t);
+    BOOL r = addEdgeCopy(&t);
     return r;
 }
 
@@ -2128,12 +2124,11 @@ extern "C" void BoxCollider_GatherAll(BoxColliderListOwner *unused, VecFx32 *pos
             for (i = 0; i < ((volatile BoxCollider *)n)->numCorners; i++) {
                 if (res[i & 3] == 0) {
                     Unk_02031960_P8 e0, e1;
-                    u8 obj[0x34];
                     ((CollisionVec2 *)(&e0))->set(n->worldCorners[i & (n->numCorners - 1)].x, n->worldCorners[i & (n->numCorners - 1)].z);
                     ((CollisionVec2 *)(&e1))->set(n->worldCorners[(i + 1) & (n->numCorners - 1)].x, n->worldCorners[(i + 1) & (n->numCorners - 1)].z);
-                    new (obj) WallEdge((CollisionVec2 *)(void *)(&e0), (CollisionVec2 *)(void *)(&e1), &n->edgeNormals[i & (n->numCorners - 1)], base, 1, 1, n);
-                    walls->addEdgeCopy((WallEdgeStorage *)(obj));
-                    ((WallEdge *)(obj))->~WallEdge();
+                    // (a WallEdge of its own: it was built in a 0x34-byte buffer, the DS's size; 64 bytes on 64-bit hosts)
+                    WallEdge obj((CollisionVec2 *)(void *)(&e0), (CollisionVec2 *)(void *)(&e1), &n->edgeNormals[i & (n->numCorners - 1)], base, 1, 1, n);
+                    walls->addEdgeCopy(&obj);
                 }
             }
         }

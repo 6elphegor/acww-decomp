@@ -19,10 +19,10 @@ public:
     // anm: the joint animation resource (an entry of a .bca file); blend: frames of blending from the current pose
     void playBlend(void *anm, s32 blend, s32 mode, s32 speed, u16 frame, u16 numFrames);
     void stepBlend();
-    void onJointCalcPost(BlendAnimModel *x);
-    void applyJointBlend(BlendAnimModel *x);
-    void onJointCalcPre(BlendAnimModel *x);
-    void captureJointPose(BlendAnimModel *x);
+    void onJointCalcPost(NNSG3dRS *x);
+    void applyJointBlend(NNSG3dRS *x);
+    void onJointCalcPre(NNSG3dRS *x);
+    void captureJointPose(NNSG3dRS *x);
     NNSG3dAnmObj *getAnmObj();
     void *getAnmRes();
     void initAnim(void *anm, s32 mode, s32 speed, u16 frame, u16 numFrames);
