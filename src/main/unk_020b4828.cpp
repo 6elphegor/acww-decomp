@@ -264,7 +264,7 @@ BOOL SceneId_IsNookShop(u32 a);
 void Scene_SavePlayerPos(s32 unused, s32 add);
 s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q);
 s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy);
-BOOL SceneWarp_RequestExit(s32 a, s32 id);
+BOOL SceneWarp_RequestExit(SceneWarp* warp, s32 id);
 s32 Scene_GetNookShop(void);
 s32 SceneId_GetNookShop(u32 x);
 BOOL Scene_InUnk6Or7(void);
@@ -1304,12 +1304,12 @@ extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, 
     return r;
 }
 
-extern "C" BOOL SceneWarp_RequestExit(s32 a, s32 id) {
+extern "C" BOOL SceneWarp_RequestExit(SceneWarp* warp, s32 id) {
     u8 t, u, v;
     s16 s;
     s32 w, x, y;
     VecFx32 vec;
-    s32 r = SceneExit_Resolve(a, id, &t, &vec, (u32*)&w, &s, &u, &v, &x, &y);
+    s32 r = SceneExit_Resolve(0, id, &t, &vec, (u32*)&w, &s, &u, &v, &x, &y);
     switch (r) {
     case 0:
         goto fail;
@@ -1320,7 +1320,7 @@ extern "C" BOOL SceneWarp_RequestExit(s32 a, s32 id) {
         ScenePos_Set(&gTownReturnPos, t, &vec, w, s, x, y);
         break;
     }
-    if (SceneWarp_RequestAt((SceneWarp*)a, t, &vec, w, s, u, v)) return TRUE;
+    if (SceneWarp_RequestAt(warp, t, &vec, w, s, u, v)) return TRUE;
 fail:
     return FALSE;
 }

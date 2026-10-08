@@ -220,6 +220,41 @@ void pxi7_vblank(void) {
     if (sTpAuto && sCount == 0) { tp_sample(); pxi7_send(6 | (16u << 8) << 6); }
 }
 
+// ---- power management (tag 8): the PMIC behind the ARM7's SPI. Messages as NVRAM's (bit 25 start, bit 24 end,
+// bits 16-23 index), the command in bits 8-14 of the first: 0x63 utility (LEDs, backlights, power off; its
+// number in the low byte of the first word and the next word), 0x65 read register (the register in the low byte),
+// 0x66 set the LED blink pattern, 0x67 read it. The reply carries a command in bits 8-14 and a byte: a register
+// read answers with 0x70 + register and the value, the others with their own command and the result (0: success;
+// 0x67: the pattern). The PMIC here: both backlights on, battery fine, the LED on (pattern 0).
+static u32 sPmWords[4];
+static int sPmCount;
+static u8 sPmReg[4] = {0x0d, 0x00, 0x00, 0x00};  // control: sound amp, both backlights; battery: not low
+static u8 sPmLed;
+
+static void pm_command(void) {
+    u32 cmd = sPmWords[0] >> 8 & 0x7f, arg = sPmWords[0] & 0xff, reply = cmd << 8;
+    switch (cmd) {
+    case 0x63: {  // utility: 1-3 LED, 4-9 backlights (4/5 top, 6/7 bottom, 8/9 both: on/off)
+        u32 n = arg << 16 | (sPmCount > 1 ? sPmWords[1] & 0xffff : 0);
+        static const u8 bits[] = {0, 0, 0, 0, 8, 8, 4, 4, 12, 12};
+        if (n >= 4 && n <= 9) sPmReg[0] = (u8)(n & 1 ? sPmReg[0] & ~bits[n] : sPmReg[0] | bits[n]);
+        break;
+    }
+    case 0x65: reply = (0x70 + (arg & 3)) << 8 | sPmReg[arg & 3]; break;
+    case 0x66: sPmLed = (u8)arg; break;
+    case 0x67: reply |= sPmLed; break;
+    default: break;
+    }
+    if (gHostVerbose) fprintf(stderr, "pxi7: PM %02x %02x -> %04x\n", cmd, arg, reply);
+    pxi7_send(8 | reply << 6);
+}
+
+static void pm_word(u32 data) {
+    if (data & 0x02000000) sPmCount = 0;
+    if (sPmCount < 4) sPmWords[sPmCount++] = data;
+    if (data & 0x01000000) pm_command();
+}
+
 // ---- sound (tag 7): the native sound driver (snd7/): a command list's address, or 0 = process now
 void snd7_receive(u32 data);
 
@@ -230,6 +265,7 @@ static void service(u32 tag, u32 data, u32 err) {
     case 5: rtc_command(data); break;
     case 6: tp_command(data); break;
     case 7: snd7_receive(data ? (u32)(uintptr_t)ptr26(data) : 0); break;
+    case 8: pm_word(data); break;
     case 11: card_request(data); break;
     case 15:  // WVR: VRAM C/D for the wireless reboot driver; the ARM7 acknowledges at once
         if (data >> 16 == 1) pxi7_send(15 | 0x10000u << 6);
