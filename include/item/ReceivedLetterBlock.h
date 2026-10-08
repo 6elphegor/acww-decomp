@@ -18,4 +18,6 @@ public:
     /* 0xf9 */ u8 pad_f9[3];
 };
 
+static_assert(sizeof(ReceivedLetterBlock) == 0xfc, "ReceivedLetterBlock: DS layout");
+
 #endif

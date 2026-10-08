@@ -20,4 +20,6 @@ public:
     /* 0x98a */ u16 pad_98a;
 };
 
+static_assert(sizeof(PlayerMailbox) == 0x98c, "PlayerMailbox: SaveData::mailboxes[i]");
+
 #endif

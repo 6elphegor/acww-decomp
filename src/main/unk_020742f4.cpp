@@ -2551,7 +2551,7 @@ fail:
     return FALSE;
 }
 extern "C" BOOL CommSend_PlayerData(u8 *p, u32 v) {
-    return CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), 0x228c, 4, v);
+    return CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), sizeof(PlayerData), 4, v);
 }
 extern "C" BOOL CommSend_SyncVarChunk(u8 *p, u32 v) {
     return CommSend_Chunked(p, gCommManager->getSyncVarBuf(), 0x68c, 0xc, v);
@@ -2759,7 +2759,7 @@ extern "C" s32 CommCtrl_SendAct14() {
 }
 extern "C" s32 CommSend_PlayerDataToHost(u8 *a) {
     PlayerData *r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot));
-    return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
+    return CommSend_Chunked(a, r, sizeof(PlayerData), 0x15, 1);
 }
 extern "C" s32 CommSend_LetterStorageToHost(u8 *a) {
     u8 *r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)));

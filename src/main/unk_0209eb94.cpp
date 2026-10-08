@@ -187,8 +187,8 @@ BOOL SaveManager::onCreate() {
     talk.setOwner(this);
     bufferHeap = gCurrentHeap;
     if (Scene_GetCurrent() == 0x2e || Scene_GetCurrent() == 6 || Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0xb) {
-        workBuf = (u8 *)Heap_Alloc(bufferHeap, 0x15fe0);
-        readBackBuf = (u8 *)Heap_Alloc(bufferHeap, 0x15fe0);
+        workBuf = (u8 *)Heap_Alloc(bufferHeap, sizeof(SaveData));
+        readBackBuf = (u8 *)Heap_Alloc(bufferHeap, sizeof(SaveData));
         letterStorage = (u8 *)Heap_Alloc(bufferHeap, 0x11df4);
         Save_ReadSlot(2);
         void *r4 = SaveManager_GetLetterStorage();
@@ -199,10 +199,10 @@ BOOL SaveManager::onCreate() {
         LetterStorage_MarkValid(r4);
     }
     if (Scene_GetCurrent() == 9) {
-        playerDataCopy = Heap_Alloc(bufferHeap, 0x228c);
+        playerDataCopy = Heap_Alloc(bufferHeap, sizeof(PlayerData));
     }
     if (Scene_GetCurrent() == 0x2e) {
-        saveDataCopy = Heap_Alloc(bufferHeap, 0x15fe0);
+        saveDataCopy = Heap_Alloc(bufferHeap, sizeof(SaveData));
         villagerTransferBackup = Heap_Alloc(bufferHeap, 0x84c);
     }
     if (sSaveManagerRequest == 0x14 || sSaveManagerRequest == 0x15) {
@@ -211,9 +211,9 @@ BOOL SaveManager::onCreate() {
         townCompressThread->init();
     }
     if (sSaveManagerRequest == 0x14) {
-        SaveData *p = (SaveData *)Heap_Alloc(bufferHeap, 0x15fe0);
+        SaveData *p = (SaveData *)Heap_Alloc(bufferHeap, sizeof(SaveData));
         gTownTransferBuf = p;
-        ((SaveRecord4 *)p->footer)->clearState();
+        p->footer.clearState();
     }
     return TRUE;
 }
@@ -310,7 +310,7 @@ void SaveManager::enterAct01() {
     this->startTalk("sp_etc_sequence2", 1);
     MenuCtrl_ClearClockChangeFlags();
     ((PlayerData *)(r5))->clearFlag(2);
-    TownState_ClampDate(gSaveData.townState);
+    TownState_ClampDate(&gSaveData.townState);
     actStep = 0;
 }
 
@@ -372,7 +372,7 @@ void SaveManager::enterAct02() {
     this->startTalk("sp_npc_gatekeeper", 0x66);
     MenuCtrl_ClearClockChangeFlags();
     ((PlayerData *)(r5))->clearFlag(2);
-    TownState_ClampDate(gSaveData.townState);
+    TownState_ClampDate(&gSaveData.townState);
     actStep = 0;
 }
 
@@ -597,7 +597,7 @@ void SaveManager::enterAct06() {
     gSaveData.resetPlayer(sEraseResidentSlot);
     this->startTalk("sp_etc_sequence1", 7);
     if (PlayerDataArray_CountUsed(gSaveData.players) == 0) {
-        ((TownState *)gSaveData.townState)->unk_22 = 0;
+        gSaveData.townState.unk_22 = 0;
     }
     actStep = 0;
 }
@@ -1015,7 +1015,7 @@ void SaveManager::execAct14() {
             CommManager *r5 = gCommManager;
             r5->myAid = r7;
             void *r6 = PlayerData_Get(PlayerSession_GetDataIndex(r5->localSlot));
-            MI_CpuCopy8(r6, PlayerData_Get(r5->myAid + 3), 0x228c);
+            MI_CpuCopy8(r6, PlayerData_Get(r5->myAid + 3), sizeof(PlayerData));
             sSessionResidentIndex = PlayerSession_GetDataIndex(r5->localSlot);
             r5->localSlot = r7;
             u32 cnt = 0;
@@ -1033,7 +1033,7 @@ void SaveManager::execAct14() {
             NetArea_SetSlotStatus(r7, 0xc, 1, 0, 7);
             PlayerSession_SetDataIndex(0, hostDataIndex);
             PlayerSession_SetDataIndex(r7, r7 + 3);
-            MI_CpuCopy8(gTownTransferBuf, &gSaveData, 0x15fe0);
+            MI_CpuCopy8(gTownTransferBuf, &gSaveData, sizeof(SaveData));
             u8 buf1[8];
             u8 buf2[8];
             MI_CpuCopy8(&hostDateTime, buf1, 8);
@@ -1051,7 +1051,7 @@ void SaveManager::execAct14() {
             HouseRoomMaps_UpdateAll();
             HouseRoomMaps_BindBg();
             Comm_ResetPeerState(4);
-            Melody_SetPacked((u32 *)gSaveData.townTune);
+            Melody_SetPacked((u32 *)&gSaveData.townTune);
             Weather_RerollRainSlant();
             sessionJoined = 1;
             r5->setMode(1);
@@ -2194,7 +2194,7 @@ void SaveManager::execAct1F() {
             Comm_SetLostFlag();
         } else if ((NetOverlay_AssertAny(), Net_IsReadyToSend())) {
             ((HudWallet *)Hud_GetWallet())->freezeValue();
-            MI_CpuCopy8(PlayerData_GetCurrent(), playerDataCopy, 0x228c);
+            MI_CpuCopy8(PlayerData_GetCurrent(), playerDataCopy, sizeof(PlayerData));
             ((PlayerData *)(PlayerData_GetCurrent()))->reset();
             gSaveData.resetPlayer(PlayerData_GetCurrentIndex());
             actStep = 5;
@@ -2251,7 +2251,7 @@ void SaveManager::execAct1F() {
         if (Wifi_EndSession()) {
             NetOverlay_Restore();
         }
-        MI_CpuCopy8(playerDataCopy, PlayerData_GetCurrent(), 0x228c);
+        MI_CpuCopy8(playerDataCopy, PlayerData_GetCurrent(), sizeof(PlayerData));
         ((HudWallet *)Hud_GetWallet())->unfreezeValue();
         actStep = 0x16;
         break;
@@ -2360,7 +2360,7 @@ void SaveManagerTalk::onChoice(u32) {
 
 extern "C" void Save_StoreCurrentPlayerToResident(void) {
     void *o = PlayerData_GetCurrent();
-    MI_CpuCopy8(o, (void *)PlayerData_Get(sSessionResidentIndex), 0x228c);
+    MI_CpuCopy8(o, (void *)PlayerData_Get(sSessionResidentIndex), sizeof(PlayerData));
 }
 
 void SaveManager::backupVillagerTransfer() {

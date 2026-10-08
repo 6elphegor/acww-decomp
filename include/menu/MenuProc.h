@@ -2,6 +2,7 @@
 #define MENU_MENUPROC_H
 
 #include "types.h"
+#include "sys/ListNode.h"
 #include "sys/ProcBase.h"
 #include "sys/KeyRepeat.h"
 #include "menu/MenuSlide.h"
@@ -56,9 +57,8 @@ public:
 
     /* 0x50 */ KeyRepeat keyRepeat;         // vptr; the repeat state (KeyRepeatView) continues to 0x64
     /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x64 */ ListNode openMenuLink;      // in the open menus' list (MenuCtrl_AddOpenMenu / MenuCtrl_RemoveOpenMenu)
+    /* 0x6c */ MenuProc *openMenuOwner;    // follows the link: MenuCtrl_RemoveOpenMenu reaches the menu through it
     /* 0x70 */ MenuSlide slide;
     /* 0x8c */ u8 transitionState;
     /* 0x8d */ u8 mainState;

@@ -4060,7 +4060,7 @@ void SkySprites::updateShootingStar() {
                 spawn(3, 0x1e, 0, 0);
             }
         } else if (second == 0x1e && second != prevSecond) {
-            if (!Random_GlobalBelow(((WeatherRecord *)gSaveData.weather)->todayPattern == 0 ? 4 : 0x100)) {
+            if (!Random_GlobalBelow((&gSaveData.weather)->todayPattern == 0 ? 4 : 0x100)) {
                 shootingStarDelay = Random_GlobalBelow(0x258);
             }
         }
@@ -4801,7 +4801,7 @@ void SkySprites::updatePete() {
 
 void SkySprites::updateRainbow() {
     rainbowStrength = 0;
-    u8 k = ((WeatherRecord *)gSaveData.weather)->todayPattern;
+    u8 k = (&gSaveData.weather)->todayPattern;
     if (k >= 0x13 && k <= 0x17) {
         if (*(data_020d0e04 + k - 0x13) == time.hour) {
             s32 n = time.minute;
@@ -5795,7 +5795,7 @@ void WeatherManager::init() {
     switch (r) {
     case 3:
     case 4:
-        ((WeatherRecord *)gSaveData.weather)->rained = 1;
+        (&gSaveData.weather)->rained = 1;
         break;
     }
     setLevels(r, r);
@@ -5900,7 +5900,7 @@ BOOL WeatherManager::requestLevel(s32 v) {
 
 void WeatherManager::updateHourly() {
     ClockDateTimeWords t;
-    WeatherRecord *w = (WeatherRecord *)gSaveData.weather;
+    WeatherRecord *w = &gSaveData.weather;
     t.words[0] = 0;
     t.words[1] = 0;
     Clock_GetDateTime(&t.dt);
@@ -5925,8 +5925,8 @@ void WeatherManager::updateHourly() {
 }
 
 s32 WeatherManager::getWeatherAtOffset(s32 v) {
-    s32 t = v + ((WeatherRecord *)gSaveData.weather)->hourBase;
-    return getPatternWeather(((WeatherRecord *)gSaveData.weather)->todayPattern, t % 24);
+    s32 t = v + (&gSaveData.weather)->hourBase;
+    return getPatternWeather((&gSaveData.weather)->todayPattern, t % 24);
 }
 
 s32 WeatherManager::getPatternWeather(s32 a, s32 b) {

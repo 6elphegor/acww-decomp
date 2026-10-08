@@ -796,7 +796,7 @@ void LetterStorageMenu::initParts() {
         u8 *p = (u8 *)((LetterStorage *)q)->getPage(0);
         for (i = 0; i < 0x4b; i++) {
             Letter_Copy(&storageLetters[i], p);
-            p += 0xf4;
+            p += sizeof(Letter);
         }
     }
     func_ov105_0229514c();

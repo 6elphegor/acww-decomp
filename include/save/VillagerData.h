@@ -122,7 +122,7 @@ struct VillagerData {
     VillagerData();
 };
 
-// Villager save block (gSaveVillagers, 0x3910 bytes)
+// Villager save block (gSaveVillagers, SaveData::villagers: 0x38f4 bytes)
 struct SaveVillagers {
       VillagerData villagers[8];
       u32 relations[7];
@@ -134,10 +134,18 @@ struct SaveVillagers {
       s8 lastMovedOutSpecies;
       s8 lastMovedInIndex;
       s8 lastSickIndex;
-      u8 unk_38eb[3];
-      u8 furnitureDropDate[0x20];
+      u8 unk_38eb[3];           // 0x38ec: the town tune request bits (SaveVillagersTuneView)
+      u8 furnitureDropDate[4];  // 0x38ee (Clock_GetDate)
+      u8 pad_38f2[2];
 };
 
-static_assert(sizeof(VillagerData) == 0x700, "VillagerData");
+static_assert(sizeof(VillagerMemory) == 0x68, "VillagerMemory: DS save layout");
+static_assert(sizeof(VillagerData) == 0x700 && __alignof__(VillagerData) == 4, "VillagerData: DS save layout");
+static_assert(__builtin_offsetof(VillagerData, pattern) == 0x340, "VillagerData::pattern");
+static_assert(__builtin_offsetof(VillagerData, letter) == 0x568, "VillagerData::letter");
+static_assert(__builtin_offsetof(VillagerData, letterTown) == 0x6f6, "VillagerData::letterTown");
+static_assert(__builtin_offsetof(SaveVillagers, nicknameDate) == 0x38c0, "SaveVillagers::nicknameDate");
+static_assert(__builtin_offsetof(SaveVillagers, furnitureDropDate) == 0x38ee, "SaveVillagers::furnitureDropDate");
+static_assert(sizeof(SaveVillagers) == 0x38f4, "SaveVillagers: SaveData::villagers");
 
 #endif

@@ -4480,7 +4480,7 @@ namespace nJ {
 extern "C" s32 Town_CountEventDays(void *a, s32 b, u8 *c, u8 *d, s32 e, s32 f, SaveData *g) {
     s32 r;
     if (e != 0) {
-        if (TownState_FindEvent((s32)(uptr)g->townState, b) < 0) {
+        if (TownState_FindEvent((s32)(uptr)&g->townState, b) < 0) {
             if (f != 0) {
                 r = 1;
             } else {
@@ -4497,7 +4497,7 @@ extern "C" s32 Town_CountEventDays(void *a, s32 b, u8 *c, u8 *d, s32 e, s32 f, S
             t.b[2] = d[5];
             t.b[1] = d[4];
             t.b[0] = d[3];
-            r = Date_DaysBetween(t.b, g->townEventDate);
+            r = Date_DaysBetween(t.b, &g->townState.eventUpdateDay);
             if (r < 0) r = 0;
         }
     } else {
@@ -4765,7 +4765,7 @@ extern "C" void Town_CleanupExpiredEvents(void *a, void *p, s32 x, s32 y, SaveDa
             if (k == Clock_GetYear() && q->start <= now && q->end >= now) {
             } else {
                 if (Town_EndEventEffect(a, id, p, x, y)) {
-                    TownState_RemoveEvent((s32)(uptr)d->townState, id);
+                    TownState_RemoveEvent((s32)(uptr)&d->townState, id);
                 }
             }
         }
@@ -5342,7 +5342,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
             l.c3.b = ((u8 *)&l.t)[4];
             l.c3.a = ((u8 *)&l.t)[3];
             Turnips_SpoilAll(gTownUpdater);
-            TownState_PickNextWeekDate(base->townState, (u8 *)&l.c3);
+            TownState_PickNextWeekDate((u8 *)&base->townState, (u8 *)&l.c3);
             RoomScoreEvaluator_Construct(&o);
             HappyRoom_EvaluateHouse(&o);
             RoomScoreEvaluator_Destruct(&o);
@@ -7142,7 +7142,7 @@ extern "C" void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c) {
         if (Unk_02043c28_InR(a, &t, 0x1492, 0x14fd)) {
             *out = 0x26;
             *flag = 0;
-            if (TownState_IsPlayerDateNotToday(gSaveData.townState)) {
+            if (TownState_IsPlayerDateNotToday((u8 *)&gSaveData.townState)) {
                 s32 x = Item_GetPrice(&t);
                 s32 y = FengShui_GetWestTotal();
                 s32 sum = x / 1000 + y / 25;
@@ -7151,7 +7151,7 @@ extern "C" void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c) {
                 }
                 if (Random_GlobalBelow(100) < sum) {
                     *out = 0x57;
-                    TownState_SetPlayerDateToday(gSaveData.townState);
+                    TownState_SetPlayerDateToday((u8 *)&gSaveData.townState);
                 }
             }
         }
@@ -8631,7 +8631,7 @@ namespace nA {
 extern "C" void TownBbs_PostSlogan(void *o, SaveData *save, Unk_02042104_Date *d) {
     u8 buf[0x54];
     Unk_02042104_Date tmp;
-    s32 n = TownBbs_UnpackUsedMask(o, buf, save->bbsSloganUsed, 0x54);
+    s32 n = TownBbs_UnpackUsedMask(o, buf, save->townState.unk_16, 0x54);
     if (n == 0) {
         n = 0x54;
         MI_CpuFill8(buf, 0, n);
@@ -8639,7 +8639,7 @@ extern "C" void TownBbs_PostSlogan(void *o, SaveData *save, Unk_02042104_Date *d
     n = Random_GlobalBelow(n);
     MI_CpuCopy8(d, &tmp, 8);
     TownBbs_PostRandomUnused(o, n, "bbs_slogan", buf, 0x54, &tmp);
-    TownBbs_PackUsedMask(o, save->bbsSloganUsed, buf, 11);
+    TownBbs_PackUsedMask(o, save->townState.unk_16, buf, 11);
 }
 }
 
@@ -8647,7 +8647,7 @@ namespace nA {
 extern "C" void TownBbs_PostPelicanNotice(void *o, SaveData *save, Unk_02042104_Date *d) {
     u8 buf[0x4c];
     Unk_02042104_Date tmp;
-    s32 n = TownBbs_UnpackUsedMask(o, buf, save->bbsPelicanUsed, 0x4c);
+    s32 n = TownBbs_UnpackUsedMask(o, buf, save->townState.unk_0c, 0x4c);
     if (n == 0) {
         n = 0x4c;
         MI_CpuFill8(buf, 0, n);
@@ -8655,7 +8655,7 @@ extern "C" void TownBbs_PostPelicanNotice(void *o, SaveData *save, Unk_02042104_
     n = Random_GlobalBelow(n);
     MI_CpuCopy8(d, &tmp, 8);
     TownBbs_PostRandomUnused(o, n, "bbs_pelican", buf, 0x4c, &tmp);
-    TownBbs_PackUsedMask(o, save->bbsPelicanUsed, buf, 10);
+    TownBbs_PackUsedMask(o, save->townState.unk_0c, buf, 10);
 }
 }
 

@@ -34,7 +34,6 @@
 #include "menu/PopupChoiceMenu.h"
 #include "talk/TalkMsgRequest.h"
 #include "menu/MenuErrorMessage.h"
-#define PROTO_LOCAL_MenuCtrl_RemoveOpenMenu  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL__ZN8ProcBase10postDeleteEv  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
@@ -90,7 +89,6 @@ void MsgString_append(void *self, const void *s);
 void MsgString_appendString(void *self, void *src);
 void LabelButton_setLabelText(void *self, void *src);
 
-void MenuCtrl_RemoveOpenMenu(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 SaveVillagers_IsOccupied(void *a, s32 b);
 void *SaveVillagers_Get(void *a, s32 b);
@@ -648,8 +646,8 @@ extern "C" void *_ZN8MenuProcC2Ev(MenuProc *self) {
     *(void *volatile *)self = _ZTV8GameProc + 8;
     *(void **)self = _ZTV8MenuProc + 8;
     new (&self->keyRepeat) KeyRepeat();
-    self->openMenuPrev = 0;
-    self->openMenuNext = 0;
+    self->openMenuLink.prev = 0;
+    self->openMenuLink.next = 0;
     new (&self->slide) MenuSlide();
     return self;
 }
@@ -667,7 +665,7 @@ BOOL MenuProc::preCreate() {
 }
 
 void MenuProc::postCreate(s32 a) {
-    MenuCtrl_AddOpenMenu(&openMenuPrev);
+    MenuCtrl_AddOpenMenu(&openMenuLink);
     if (a == 2) {
         void *p = ProcBase_GetParent(this);
         if (p != 0) {
@@ -688,7 +686,7 @@ BOOL MenuProc::preDelete() {
 
 BOOL MenuProc::postDelete(s32 a) {
     if (a == 2) {
-        MenuCtrl_RemoveOpenMenu(&openMenuPrev);
+        MenuCtrl_RemoveOpenMenu(&openMenuLink);
     }
     return _ZN8ProcBase10postDeleteEv(this, a);
 }
