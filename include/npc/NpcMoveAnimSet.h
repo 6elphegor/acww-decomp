@@ -8,8 +8,7 @@
 
 struct NpcMoveAnimSet {
     NpcMoveAnimSet();
-    ~NpcMoveAnimSet();
-
+    ~NpcMoveAnimSet() { func_0201ad38(); }
     s32 standAnim;
     s32 walkAnim;
     s32 runAnim;

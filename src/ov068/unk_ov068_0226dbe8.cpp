@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "npc/VillagerId.h"
 #include "player/PlayerErrands.h"
@@ -172,7 +173,7 @@ extern s32 data_020c8cb8;
 extern s32 data_020c8cbc;
 extern BlockMap *gSceneBlockMap;
 extern VillagerTalkTopicFns sHouseVisitTsuTopicTable[];
-extern VillagerTalkTopicFns data_021be810[];
+#define data_021be810 HOST_LABEL(VillagerTalkTopicFns (*)[], data_021be810)
 extern u8 gTalkMsgIndexEnd;
 
 // defined without a shared declaration (include/proto/.excluded)

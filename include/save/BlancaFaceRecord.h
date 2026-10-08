@@ -7,8 +7,8 @@
 
 class BlancaFaceRecord {
 public:
-    BlancaFaceRecord();
-    ~BlancaFaceRecord();
+    BlancaFaceRecord() { construct(); }
+    ~BlancaFaceRecord() { destruct(); }
     u16 getChecksum();
     void setChecksum(u32 v);
     BOOL isBlancaDue();

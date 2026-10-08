@@ -58,3 +58,8 @@ OSIrqFunction data_027e0000[22] = {
 OSIrqCallbackInfo data_027e0058[8];
 
 #pragma section DTCM end
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_027e0088, (char *)&data_027e0058[4].func);

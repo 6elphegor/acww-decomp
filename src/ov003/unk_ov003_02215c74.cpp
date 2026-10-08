@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU10 (actor 022318e8): .text 0x02215c74-0x02216430
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -28,7 +29,7 @@
 #include "proto/ov003/unk_ov003_022187fc.h"
 
 extern "C" {
-extern SaveVillagers gSaveVillagers;
+#define gSaveVillagers HOST_LABEL(SaveVillagers *, gSaveVillagers)
 extern CommManager *gCommManager;
 extern const u8 sVillagerHouseClosedMsgs[];
 extern const u8 sVillagerHouseClosedMsgsAlt[];

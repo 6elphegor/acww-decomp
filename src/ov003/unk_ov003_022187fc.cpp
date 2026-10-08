@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "town/TownState.h"
 #include "town/BlockMap.h"
@@ -38,11 +39,11 @@ struct NNSG3dResTex;
 struct TexVramSlot;
 
 extern "C" {
-extern TownStyleRecordView gSaveTownFlag;
+#define gSaveTownFlag HOST_LABEL(TownStyleRecordView *, gSaveTownFlag)
 extern BlockMap *gSceneBlockMap;
 extern BuildingInfo data_020d0a7c[];  // the building info table (0x22 records, by building item id & 0xfff)
 extern CommManager *gCommManager;
-extern u8 gSaveTownState[];
+#define gSaveTownState HOST_LABEL(u8 (*)[], gSaveTownState)
 }
 
 extern "C" {

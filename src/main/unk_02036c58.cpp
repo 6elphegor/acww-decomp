@@ -1,4 +1,5 @@
 #include "sys/NNSFndArchive.h"
+#include "host_labels.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -35,10 +36,11 @@ void *NNS_G3dGetTex(void *);
 void Gfx3d_LoadTexAndPltt(void *, s32);
 void *Gfx3d_CopyTex(void *, void *);
 void MI_CpuCopy8(void *, void *, u32);
-extern Unk_021e5890_T data_021e5890;}
+#define data_021e5890 HOST_LABEL(Unk_021e5890_T *, data_021e5890)
+}
 
 extern "C" {
-extern TownMap gSaveTownMap;
+#define gSaveTownMap HOST_LABEL(TownMap *, gSaveTownMap)
 s32 Scene_GetCurrent(void);
 }
 extern const u8 sBgHeapSizeByRoom[];

@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 #pragma opt_loop_invariants off
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
@@ -14,9 +15,9 @@ class ShopStockPlacer;
 
 extern "C" {
 extern BlockMap *gSceneBlockMap;
-extern u8 data_021ed104[];
-extern u8 data_021ed2d4[];
-extern u8 data_021ed2c0[];
+#define data_021ed104 HOST_LABEL(u8 (*)[], data_021ed104)
+#define data_021ed2d4 HOST_LABEL(u8 (*)[], data_021ed2d4)
+#define data_021ed2c0 HOST_LABEL(u8 (*)[], data_021ed2c0)
 extern const u32 sNookShopLayouts[];
 extern const u32 sScene10ShopLayout[];
 extern const u32 sScene15ShopLayout[];

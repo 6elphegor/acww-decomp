@@ -12,8 +12,7 @@
 class NpcMoveCtrl {
 public:
     NpcMoveCtrl();
-    ~NpcMoveCtrl();
-
+    ~NpcMoveCtrl() { func_0201acc8(); }
     /* 0x00 */ VecFx32 curSpeedPreset;
     /* 0x0c */ VecFx32 speedPresets[3];
     /* 0x30 */ s32 moveMode;

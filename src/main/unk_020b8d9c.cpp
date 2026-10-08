@@ -1076,8 +1076,29 @@ extern u8 sSkyLineTablesReady;
 
 // ======== unk_020bfe30.cpp ========
 
-// ~SkySprites (_ZN10SkySpritesD1Ev is this function: modern/gen/provides.ld): the arrays of objects with destructors,
+// ~SkySprites (_ZN10SkySpritesD1Ev is this function on the DS; ~SkySprites does the same): the arrays of objects with destructors,
 // each from its last element, as __cxa_vec_cleanup destroyed them
+// Members that symbols.txt names as labels of other functions (on the DS the same code): defined here by those
+// functions.
+SkySprite::SkySprite() {  // construct()'s code: anim is constructed as a member
+    clear();
+    resetFree();
+}
+void SkySprite::release() { SkySprite_Release(this); }
+void SkySprite::startAnim() { SkySprite_StartAnim(this); }
+void SkySprite::requestSe(s32 a) { SkySprite_RequestSe(this, a); }
+void SkySprite::requestSeSustained(s32 a) { SkySprite_RequestSeSustained(this, a); }
+void SkySprite::requestSeSustainedOn(u32 a, u32 b) { SkySprite_RequestSeSustainedOn(this, a, b); }
+s32 SkySprite::checkShotHit(s32 a, s32 b, s32 c) { return SkySprite_CheckShotHit(this, a, b, c); }
+void SkySprite::beginCrossing(s32 a, s32 b) { SkySprite_BeginCrossing(this, a, b); }
+s32 SkySprite::advanceCrossing(s32 a, s32 b, s32 c) { return SkySprite_AdvanceCrossing(this, a, b, c); }
+SkyObjGfxSlot::SkyObjGfxSlot() { SkyObjGfxSlot_Init(this); }
+void SkyObjGfxLoader::init() { SkyObjGfxLoader_Init(this); }
+SkyObjPalette::SkyObjPalette() { SkyObjPalette_Init(this); }
+SkySprites::~SkySprites() {}  // the members' destructors: SkySprites_Destruct's code
+void SkySprites::applyRainbowBlend() { SkySprites_ApplyRainbowBlend(this); }
+WeatherManager::~WeatherManager() { func_020ba49c(); }
+
 extern "C" SkySprites *SkySprites_Destruct(SkySprites *p) {
     for (s32 i = 7; i >= 0; i--) {
         p->se.positions[i].~FxVec3();
@@ -2845,7 +2866,7 @@ extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b) {
     gSkySprites.se.requestSustained(a, b, &out);
 }
 
-// SkyObjGfxLoader::init (modern/gen/provides.ld)
+// SkyObjGfxLoader::init (calls it)
 extern "C" void SkyObjGfxLoader_Init(SkyObjGfxLoader *p) {
     FS_InitFile(&p->file);
     MI_CpuFill8(p->readBuf, 0, sizeof(p->readBuf));

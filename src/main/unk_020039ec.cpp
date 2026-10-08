@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
 #include "snd/SndEnvChannel.h"
@@ -25,7 +26,7 @@ struct Rb;  // (snd/SndBgmViews.h)
 extern Camera *gCamera;
 extern VecFx32 gCameraEye;
 extern u8 gFieldSceneKind;
-extern u8 data_021f5be0[];
+#define data_021f5be0 HOST_LABEL(u8 (*)[], data_021f5be0)
 
 
 

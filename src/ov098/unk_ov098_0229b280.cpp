@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -47,7 +48,7 @@ void BottleThrow_SetTarget(VecFx32 *v, s32 i);
 s32 PlayerActor_LocalRequestBuryItem(VecFx32 *p, u16 *b);
 
 extern BlockMap *gSceneBlockMap;
-extern u8 data_021e7f8c[];  // the town exchange record (TownExchangeRecord) of the save data
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)  // the town exchange record (TownExchangeRecord) of the save data
 extern u16 gPad[];
 extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
 }

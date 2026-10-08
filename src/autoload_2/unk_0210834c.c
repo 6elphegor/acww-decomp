@@ -7,6 +7,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 #include "types64.h"
+#include "host_labels.h"
 typedef int BOOL;
 typedef struct VecFx32 { s32 x, y, z; } VecFx32;
 #include "nnsys/g3d_rt.h"
@@ -19,7 +20,7 @@ typedef struct JntAnmResult {
     VecFx32 scaleEx1;   // 0x1c
 } JntAnmResult;
 extern RS *data_021f5cc0;               // NNS_G3dRS
-extern ScaleCache data_021f6ac4[];      // NNS_G3dRSOnGlb.scaleCache
+#define data_021f6ac4 HOST_LABEL(ScaleCache (*)[], data_021f6ac4)  // NNS_G3dRSOnGlb.scaleCache
 extern void MIi_CpuCopy32(const void *, void *, u32);   // MI_CpuCopy32
 static inline s32 FX_Mul(s32 a, s32 b) { return (s32)(((s64)a * b) >> 12); }
 static inline BOOL BitVecCheck(const u32 *vec, u32 idx) { return (BOOL)(vec[idx >> 5] & (1 << (idx & 31))); }

@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
@@ -40,8 +41,8 @@ void NNS_G3dRenderObjSetInitFunc(void *p, void (*fn)(NNSG3dRS *));
 void NNS_G3dRenderObjSetCallBack(void *p, void (*fn)(NNSG3dRS *), u8 *addr, s32 cmd, s32 timing);
 s32 NNS_G3dDraw(void *p);
 void MI_Copy36B(void *p, void *q);
-extern u8 data_027e0184[];
-extern u32 data_027e0148[];
+#define data_027e0184 HOST_LABEL(u8 (*)[], data_027e0184)
+#define data_027e0148 HOST_LABEL(u32 (*)[], data_027e0148)
 void NNS_G3dGlbSetBaseTrans(void *p);
 void NNS_G3dGlbSetBaseScale(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);

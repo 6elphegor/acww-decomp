@@ -3,12 +3,14 @@
 
 #include "types.h"
 
+struct BmgMsgAttr;
+extern "C" BmgMsgAttr *BmgMsgAttr_Init(BmgMsgAttr *s);
+extern "C" void BmgMsgAttr_Fini();
 // 0xc-byte BMG message attribute record (text offset + 8 attribute bytes). Its ctor/dtor are still the C
 // functions BmgMsgAttr_Init / BmgMsgAttr_Fini in unk_020a6914.cpp.
 struct BmgMsgAttr {
-    BmgMsgAttr();
-    ~BmgMsgAttr();
-
+    BmgMsgAttr() { BmgMsgAttr_Init(this); }
+    ~BmgMsgAttr() { BmgMsgAttr_Fini(); }
     /* 0x00 */ u32 textOffset;
     /* 0x04 */ u8 windowStyle;
     /* 0x05 */ u8 friendshipDelta;

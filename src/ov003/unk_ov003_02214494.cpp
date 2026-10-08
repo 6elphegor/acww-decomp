@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -O4,s -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "field/Unk_ov003_02214494_Views.h"
 #include "actor/ActorProfile.h"
@@ -52,7 +53,7 @@ s32 Scene_GetCurrent();
 s32 Ground_GetDefaultY(u32 a);
 s32 ReddPassword_LearnCurrentPlayer();
 s32 ReddPassword_CurrentPlayerKnows();
-extern ReddShop data_021ed2c0;
+#define data_021ed2c0 HOST_LABEL(ReddShop *, data_021ed2c0)
 void Clock_GetDateTime(ClockDateTime *p);
 }
 

@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_labels.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -27,7 +28,7 @@
 
 
 extern "C" {
-extern SaveTownStateView data_021ed150;
+#define data_021ed150 HOST_LABEL(SaveTownStateView *, data_021ed150)
 
 }
 

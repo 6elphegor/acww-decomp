@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -126,7 +127,7 @@ extern "C" {
 u16 Item_MakePaper(u32 a, s32 b);
 s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
 void Clock_GetDate(u8 *out);
-extern u8 gContestRecord[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 extern const SpNpcTortimerFireworksFortuneLine sSpNpcTortimerFireworksFortuneLines[4];
 }
 

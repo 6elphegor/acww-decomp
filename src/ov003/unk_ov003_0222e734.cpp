@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
@@ -31,7 +32,7 @@ struct UnitMaskPool {
 extern "C" {
 extern BlockMap *gSceneBlockMap;
 extern CommManager *gCommManager;
-extern SnowmanRecords data_021ed2e6;
+#define data_021ed2e6 HOST_LABEL(SnowmanRecords *, data_021ed2e6)
 
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
 BOOL Ground_IsFreeGrass(s32 a, s32 b);

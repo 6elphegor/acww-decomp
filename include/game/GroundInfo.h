@@ -12,7 +12,7 @@ class GroundInfo : public GroundInfoBase {
 public:
     GroundInfo() {}
     GroundInfo(VecFx32 *v, s32 a, s32 b);
-    GroundInfo(u32 x, u32 y, u32 z, u32 w);
+    GroundInfo(u32 x, u32 y, u32 z, u32 w) { initAtUnit(x, y, z, w); }
     ~GroundInfo();
     GroundInfo *initAtUnit(s32 x, s32 z, s32 a, s32 b);
     GroundInfo *initAtPos(VecFx32 *v, s32 a, s32 b);

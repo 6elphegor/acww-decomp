@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -27,7 +28,7 @@
 
 
 extern "C" {
-extern u8 data_021ed104[];
+#define data_021ed104 HOST_LABEL(u8 (*)[], data_021ed104)
 
 s32 Item_GetNookShopLevel(void *p);
 void Clock_GetDateTime(void *p);

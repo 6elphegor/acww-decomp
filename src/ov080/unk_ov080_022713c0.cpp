@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
@@ -38,7 +39,7 @@ BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequestFlags_SetEventWarpBlock();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 }
 
 

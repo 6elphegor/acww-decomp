@@ -19,7 +19,7 @@ struct HeldToolModel {
     /* 0x3c */ u8 visible;
     /* 0x3d */ u8 pad_3d[3];
 
-    ~HeldToolModel();
+    ~HeldToolModel() { destroy(); }
     void setModelAnimSpeed(u32 v);
     BlendAnimModel *getModel();
     void setAnimSpeed(u32 v);

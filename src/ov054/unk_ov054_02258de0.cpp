@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "save/ErrandRecord.h"
 #include "save/SickVillagerRecord.h"
 #include "talk/EncodedString8B.h"
@@ -248,9 +249,9 @@ struct SpNpcPellyPhyllisActEntry {
 extern "C" {
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
-extern u8 gSaveHouse[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
 extern u8 gSaveData[];
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 
 BOOL Talk_IsInOwnTown(...);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);

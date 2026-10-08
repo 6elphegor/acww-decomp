@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "proto/main/unk_020b4828.h"
 // mwcc-version: 1.2/sp2
 // ov004 TU05: .text 0x02213b90-0x02214948 (class MuseumExhibitInfo). The switch function
@@ -34,7 +35,7 @@ extern char gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s16 data_02135f44[];
 extern CommManager *gCommManager;
-extern MuseumData data_021ed0a0;  // the museum record in the save
+#define data_021ed0a0 HOST_LABEL(MuseumData *, data_021ed0a0)  // the museum record in the save
 
 s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);

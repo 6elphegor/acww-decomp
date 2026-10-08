@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "proto/main/unk_020b4828.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -43,7 +44,7 @@ struct PadState {
 };
 
 extern "C" {
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern PadState gPad;
 extern CommManager *gCommManager;
 extern const Vec2 sResidentLabelOffsets[];

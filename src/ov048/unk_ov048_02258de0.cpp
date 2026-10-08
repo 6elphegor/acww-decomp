@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 #include "save/Pattern.h"
@@ -89,7 +90,7 @@ extern const VecFx32 sCopperArrivalWalkPos;
 extern const VecFx32 sCopperDepartWalkPos;
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
-extern TownId gSaveTownId;
+#define gSaveTownId HOST_LABEL(TownId *, gSaveTownId)
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 BOOL Math_CountDownU16(void *);
 s32 Math_IsInRange(s32, s32, s32);

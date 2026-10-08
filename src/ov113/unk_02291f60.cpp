@@ -1,5 +1,6 @@
 // ov113: scene overlay (class BbsReadMenu, vtable 0x02293640, 0x29cc bytes).
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "save/BbsPost.h"
 #include "save/BbsBoard.h"
@@ -32,7 +33,7 @@
 class BbsReadMenu;
 
 extern "C" {
-extern u8 data_021e87d8[];
+#define data_021e87d8 HOST_LABEL(u8 (*)[], data_021e87d8)
 extern u16 gPad[];
 void func_ov092_02291ce4(void *p, s32 a, s32 b);
 void func_ov092_02291c5c();

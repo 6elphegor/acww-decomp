@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "sdk_linker_symbols.h"
 #include "uptr.h"
 #include "item/ItemId.h"
@@ -63,7 +64,7 @@ class SpNpcRover;
 
 
 extern "C" {
-extern u8 data_021ecfa8[];
+#define data_021ecfa8 HOST_LABEL(u8 (*)[], data_021ecfa8)
 extern u16 data_020c6cc8;
 extern u16 gPad[];
 extern const void *sSpNpcRoverMsgKey;

@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "host_overlay_vars.h"
 #include "npc/VillagerState.h"
@@ -443,7 +444,7 @@ struct VillagerStateFlags {
 
 extern "C" {
 extern s32 data_020c6d1c;
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern BlockMap *gSceneBlockMap;
 extern s16 sFieldVillagerPushLimit;
 extern u16 sFleaRemovedHoldFrames;
@@ -656,7 +657,7 @@ static inline BOOL Unk_ov068_02262e5c_InRange(u16 *p) {
 
 namespace ns_02263600 {
 extern "C" {
-extern u8 gSaveAbleSistersPatterns[];
+#define gSaveAbleSistersPatterns HOST_LABEL(u8 (*)[], gSaveAbleSistersPatterns)
 extern u8 gVec3Zero[];
 extern u16 data_020c6cc8;
 void *SaveVillagers_PickRandomExcept(void *, void *, s32);
@@ -800,7 +801,7 @@ extern u16 data_020c6cc8;
 extern FieldVillagerAiState sFieldVillagerAiTable[];
 extern u8 sSimCatchClassWeights[];
 extern u8 sSimCatchClassWeightsPlanned[];
-extern ContestRecord gContestRecord;
+#define gContestRecord HOST_LABEL(ContestRecord *, gContestRecord)
 VillagerState *Villager_GetState(void *);
 void Clock_GetDateTime(void *);
 s32 Personality_IsAsleep(s32, void *);

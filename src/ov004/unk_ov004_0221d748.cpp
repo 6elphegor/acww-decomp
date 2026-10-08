@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 
 
 #include "types.h"
@@ -84,7 +85,7 @@ extern "C" {
 extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[];
 extern SpNpcBookerActEntry sSpNpcBookerActTable[];
 extern const char *sSpNpcBookerMsgFiles[1];

@@ -6,6 +6,7 @@ typedef unsigned int u32;
 typedef signed short s16;
 typedef signed int s32;
 #include "types64.h"
+#include "host_labels.h"
 
 typedef void (*TPCallback)(u32 command, u32 result, u32 arg);
 
@@ -37,7 +38,7 @@ typedef struct {
 } TPCalibInternal;
 
 extern TPWork data_021feaf4;
-extern TPCalibInternal data_021feb0c;
+#define data_021feb0c HOST_LABEL(TPCalibInternal *, data_021feb0c)
 
 extern u32 OS_DisableInterrupts(void);               // OS_DisableInterrupts
 extern void OS_RestoreInterrupts(u32 e);             // OS_RestoreInterrupts
@@ -93,3 +94,8 @@ u32 TP_CheckError(u32 mask) {
 // record, an interior label)
 u16 data_021feaf0; // used by TP_Init (unk_0211bcdc.c)
 TPWork data_021feaf4;
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_021feb0c, (char *)&data_021feaf4.pad16[2]);

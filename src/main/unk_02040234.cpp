@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_020d96fc_G.h"
 #include "sys/ClockDateTime.h"
@@ -27,19 +28,19 @@ u32 sEventWeekLastHour;
 }
 
 extern "C" {
-extern u8 gSaveEventWeekSlots[];
+#define gSaveEventWeekSlots HOST_LABEL(u8 (*)[], gSaveEventWeekSlots)
 }
 
 extern "C" {
-extern u8 data_021ed174[];
+#define data_021ed174 HOST_LABEL(u8 (*)[], data_021ed174)
 }
 
 extern "C" {
-extern Unk_020d96fc_G data_021ed170;
+#define data_021ed170 HOST_LABEL(Unk_020d96fc_G *, data_021ed170)
 }
 
 extern "C" {
-extern ReddShop data_021ed2c0;
+#define data_021ed2c0 HOST_LABEL(ReddShop *, data_021ed2c0)
 }
 
 extern "C" {

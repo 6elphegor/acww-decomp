@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "host_overlay_vars.h"
 #include "types.h"
@@ -44,9 +45,9 @@ BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
 void MIi_CpuCopy16(const void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 extern u8 gFieldSceneKind;
-extern u8 gSaveTownId[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
+#define gSaveTownId HOST_LABEL(u8 (*)[], gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern u16 gPad[];
 struct Unk_ov120_02293a2c_Oam {
     u16 attr0;

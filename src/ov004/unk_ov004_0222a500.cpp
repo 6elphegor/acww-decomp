@@ -1,4 +1,5 @@
 #include "game/BoxCollider.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_0202fa70.h"
@@ -231,8 +232,8 @@ void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);
 
-extern u8 gSaveHouse[];
-extern u8 gSaveVillagers[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern Mtx43 data_021f47e0;
 extern u32 data_020c8cc0;
 extern Unk_0204e858_Grid *gSceneBlockMap;

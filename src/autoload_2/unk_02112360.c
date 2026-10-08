@@ -1,3 +1,4 @@
+#include "host_labels.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -7,7 +8,7 @@ typedef int s32;
 typedef struct { u32 a, b, c; } T12;
 void OS_EnableIrqMask(u32 mask);                                   // OS_EnableIrqMask
 typedef struct { void *func; u32 enable; void *arg; } IrqCb;  // (OSIrqCallbackInfo: pointers on hosts)
-extern IrqCb data_027e0088[]; // OSi_IrqCallbackInfo
+#define data_027e0088 HOST_LABEL(IrqCb (*)[], data_027e0088)  // OSi_IrqCallbackInfo
 
 // clears two words at 0x027e0450 (DTCM), probably an OS_Init* helper
 void OS_InitIrqTable(void) {

@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "uptr.h"
 #include "types.h"
 #include "sys/StackPad.h"
@@ -178,10 +179,11 @@ struct FieldActionState {
     u8 chopCounts[0x400];
 };
 
+extern "C" void LitCedarPos_Construct(u32 *p);
 // element of sLitCedars (24 x 8 bytes); the constructor is LitCedarPos_Construct of another unit
 struct LitCedarPos {
     u32 unk_00[2];
-    LitCedarPos();
+    LitCedarPos() { LitCedarPos_Construct(unk_00); }
 };
 
 // sPendingUnits (0x144 bytes; data_021c3f8c is its offset 4: 20 entries of 0x10 bytes)
@@ -343,9 +345,9 @@ extern const u16 *data_020da2ac[7];
 extern const u16 *data_020da2c8[7];
 extern const u16 *data_020da2e4[7];
 extern MoneyRockState data_021c47bc;
-extern u8 gSaveRecycleBin[];
-extern TownState gSaveTownState;
-extern u8 gSaveVillagers[];
+#define gSaveRecycleBin HOST_LABEL(u8 (*)[], gSaveRecycleBin)
+#define gSaveTownState HOST_LABEL(TownState *, gSaveTownState)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern BlockMap *gSceneBlockMap;
 extern TownEval gTownEval;
 extern TownUpdater gTownUpdater;
@@ -387,7 +389,7 @@ void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 p
 void OS_WakeupThreadDirect(void *th);
 u32 DC_FlushAll();
 void TownUpdateThread_Main(u8 *arg);
-extern u8 data_021ed20c[];
+#define data_021ed20c HOST_LABEL(u8 (*)[], data_021ed20c)
 extern u8 sTownBbsUpdateCtx[];
 s32 TownBbs_GetDaysToPost(void *o, u8 *a, Unk_02042104_Date *d);
 void TownBbs_CatchUpPelicanDate(void *o, u8 *base, Unk_02042104_Date *d);
@@ -802,7 +804,7 @@ void Turnips_SpoilAll(void *);
 s32 Scene_GetCurrent();
 void Town_RefreshEvents(TownUpdater *, s32);
 void Town_UpdateDay(s32);
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 void *HouseRoomMaps_Get(s32);
 s32 Town_IsSandAt(BlockMap *p, s32 x, s32 y);
 void BlockMap_SpoilTurnips(void *, TownBlockMap *);
@@ -811,7 +813,7 @@ s32 Scene_InTownUnk31();
 s32 EventWeekSlots_Update();
 s32 TownBbs_UpdateDaily();
 void TownState_PickNextWeekDate(u8 *dst, u8 *src);
-extern u8 data_021ed29c[];
+#define data_021ed29c HOST_LABEL(u8 (*)[], data_021ed29c)
 s32 TownState_SetSeasonPeriod(u32);
 s32 DateTime_GetSeasonPeriod(void *);
 s32 TownUpdateThread_Request(void *, void *, s32, s32);
@@ -858,15 +860,15 @@ namespace nI {
 extern "C" {
 
 extern CommManager *gCommManager;
-extern char gContestRecord[];
-extern char data_021ed0a0[];
-extern char gSaveHouse[];
-extern char gSaveLostAndFound[];
-extern char gSaveTownMap[];
-extern char data_021e58a7[];
-extern char data_021ed104[];
-extern char gSaveBlancaFace[];
-extern u8 gSaveTownEventDate[];
+#define gContestRecord HOST_LABEL(char (*)[], gContestRecord)
+#define data_021ed0a0 HOST_LABEL(char (*)[], data_021ed0a0)
+#define gSaveHouse HOST_LABEL(char (*)[], gSaveHouse)
+#define gSaveLostAndFound HOST_LABEL(char (*)[], gSaveLostAndFound)
+#define gSaveTownMap HOST_LABEL(char (*)[], gSaveTownMap)
+#define data_021e58a7 HOST_LABEL(char (*)[], data_021e58a7)
+#define data_021ed104 HOST_LABEL(char (*)[], data_021ed104)
+#define gSaveBlancaFace HOST_LABEL(char (*)[], gSaveBlancaFace)
+#define gSaveTownEventDate HOST_LABEL(u8 (*)[], gSaveTownEventDate)
 void Town_SpawnSeashellsInAcre(TownUpdater *, BlockMap *, s32);
 void TownEval_EvaluateAcreAt(TownEval *a, void *b, s32 i, s32 j);
 s32 Town_IsSandAt(BlockMap *p, s32 x, s32 y);

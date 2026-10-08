@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -122,10 +123,10 @@ extern u8 gViewFrustum[];
 extern u32 data_021c3240;
 extern u16 data_021c323c;
 extern u8 data_020d9400[];
-extern u32 data_027e0148[];
-extern Unk_0203bd10_Dtcm data_027e02c8;
-extern u32 data_027e00d0[];
-extern u32 data_027e0114[];
+#define data_027e0148 HOST_LABEL(u32 (*)[], data_027e0148)
+#define data_027e02c8 HOST_LABEL(Unk_0203bd10_Dtcm *, data_027e02c8)
+#define data_027e00d0 HOST_LABEL(u32 (*)[], data_027e00d0)
+#define data_027e0114 HOST_LABEL(u32 (*)[], data_027e0114)
 }
 extern CameraModeEntry sCameraModeTable[];
 extern const u32 sCameraBlendTable[6][4];

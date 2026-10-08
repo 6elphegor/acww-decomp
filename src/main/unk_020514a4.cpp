@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "room/RoomFtrState.h"
 #include "room/FtrActor.h"
@@ -66,7 +67,7 @@ public:
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 extern BlockMap *gSceneBlockMap;
-extern u8 gSaveHouse[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
 extern const FtrFootprintShape sFtrFootprint1x1;
 extern const FtrFootprintShape sFtrFootprint2x1;
 extern const FtrFootprintShape sFtrFootprint2x2;

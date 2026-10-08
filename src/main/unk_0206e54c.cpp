@@ -29,6 +29,7 @@
 #include "proto/main/unk_020b7d84.h"
 
 
+extern "C" void func_020044dc();
 // The date and time a menu was opened with (sMenuDateTime): cleared as two words by its inline constructor;
 // destructor func_020044dc (alias in aliases.txt)
 class Unk_021cb4f0 {
@@ -37,7 +38,7 @@ public:
         w.words[0] = 0;
         w.words[1] = 0;
     }
-    ~Unk_021cb4f0();
+    ~Unk_021cb4f0() { func_020044dc(); }
     ClockDateTimeWords w;
 };
 

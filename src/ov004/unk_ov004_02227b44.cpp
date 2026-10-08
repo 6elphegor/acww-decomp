@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
@@ -47,7 +48,7 @@ public:
 };
 
 extern "C" {
-extern u8 data_021ed0a0[];
+#define data_021ed0a0 HOST_LABEL(u8 (*)[], data_021ed0a0)
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);
 u16 Item_MakeInsect(u32 x);
 }

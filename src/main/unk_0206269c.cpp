@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "item/ItemClassOrders.h"
 #include "item/ItemId.h"
 #include "item/ItemPickSpec.h"
@@ -33,7 +34,7 @@ struct ItemPickList {
     s32 (*unk_10)(u16 *);
 };
 
-extern ItemClassOrders data_021ed30c;
+#define data_021ed30c HOST_LABEL(ItemClassOrders *, data_021ed30c)
 extern const u8 sItemClassWeightOrders[];
 extern const u32 sItemClassRanks[];
 extern const ItemPickList sItemPickLists[];

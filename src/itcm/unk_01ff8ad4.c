@@ -1,4 +1,5 @@
 #include "nitro/mtx.h"
+#include "host_labels.h"
 // mwcc-flags: -nothumb -O4,p
 // I001d: itcm 0x01ff8ad4-0x01ff9e10, NitroSystem g3d: NNS_G3dDraw, GE command buffer / display-list send, SBC handlers MAT/MTX/NODE/NODEDESC/NOP/POSSCALE/RET/SHP, Maya joint scale + joint matrix (17 functions). ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -262,7 +263,7 @@ extern void (*data_0213bd40[])(MatAnm *); // texture matrix functions (by textur
 extern void (*data_0213be50[])(RS *, u32); // NNS_G3dFuncSbcTable
 extern void (*data_0213bd60[])(RS *, u32, const ResMatData *, u32); // NNS_G3dFuncSbcMatTable
 extern RS *data_021f5cc0;                 // NNS_G3dRS
-extern ScaleCache data_021f6ac4[];        // joint scale cache
+#define data_021f6ac4 HOST_LABEL(ScaleCache (*)[], data_021f6ac4)  // joint scale cache
 extern const u8 data_02135d38[][4];       // pivot index table
 extern void (*data_0213bd70[])(RS *, u32, const ResShpData *, u32); // NNS_G3dFuncSbcShpTable
 extern void (*const data_01ff8ab4[8])(MtxFx44 *, const MatAnm *); // texture SRT functions (table inside itcm .text)

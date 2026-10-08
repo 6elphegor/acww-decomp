@@ -1,5 +1,6 @@
 // ov145: scene overlay (class DonationMenu, vtable 0x022937c0): donation / catalogue list menu.
 #include "types.h"
+#include "host_labels.h"
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -62,7 +63,7 @@ void MIi_CpuClear16(u16 v, void *dst, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
 // (proto/autoload_2/unk_020e7500.h conflicts with actor/Actor.h's List_Remove)
 BOOL Math_StepS32(s32 *p, s32 target, s32 step);
-extern MuseumData data_021ed0a0;  // gSaveData.museum
+#define data_021ed0a0 HOST_LABEL(MuseumData *, data_021ed0a0)  // gSaveData.museum
 }
 
 extern "C" ProcProfile sDonationMenuProfile = {(void *(*)())DonationMenu_Create, 0xba, 0xbe};

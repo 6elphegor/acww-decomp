@@ -14,8 +14,7 @@ class NpcActor;
 class NpcLookAt {
 public:
     NpcLookAt();
-    ~NpcLookAt();
-
+    ~NpcLookAt() { clearTargetActor(); }
     u8 lookType;
     u8 pad_01[3];
     Character *targetActor;

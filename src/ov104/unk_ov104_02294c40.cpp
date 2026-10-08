@@ -1,5 +1,6 @@
 // ov104: scene overlay (class PostOfficeMenu, vtable 0x02298170). Linked as one unit.
 #include "types.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -73,7 +74,7 @@ void PopupChoice_Close(void *p, s32 a);
 void PopupChoice_Open(void *p, s32 a);
 
 extern u16 gPad[];
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 }
 
 // Main-module helper classes (real symbol names) -------------------------------------------------

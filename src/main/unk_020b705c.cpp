@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionCylinder.h"
@@ -7,8 +8,8 @@
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
-extern s16 data_02136f44[];
-extern s16 data_02138f44[];
+#define data_02136f44 HOST_LABEL(s16 (*)[], data_02136f44)
+#define data_02138f44 HOST_LABEL(s16 (*)[], data_02138f44)
 }
 
 struct TouchPickDrumStackPad {

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "sys/SceneBase.h"
@@ -32,7 +33,7 @@ void GX_SetBankForSubBG(u32 x);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
 extern u8 gSaveData;
-extern u8 gSaveFooter;
+#define gSaveFooter HOST_LABEL(u8 *, gSaveFooter)
 }
 
 

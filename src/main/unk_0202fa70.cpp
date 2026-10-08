@@ -246,7 +246,7 @@ struct CellWallNormal : VecXZ {
     inline CellWallNormal(s32 x, s32 z) {
         ((CollisionVec2 *)(this))->set(x, z);
     }
-    ~CellWallNormal();
+    ~CellWallNormal() {}  // CollisionVec2's (empty) destructor on the DS
 };
 struct ShapeCylinder : CollisionCylinderX, CollisionTagX {
     ShapeCylinder();

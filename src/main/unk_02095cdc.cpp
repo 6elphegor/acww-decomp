@@ -1,4 +1,5 @@
 #include "player/PlayerId.h"
+#include "host_labels.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -88,19 +89,19 @@ extern u32 sPlayerPosSyncVars[];
 extern u32 sPlayerAngleSyncVars[];
 extern u32 sPlayerStateSyncVars[];
 extern const u8 sThrownBottleReturnOdds[];
-extern TownExchangeRecord data_021e7f8c;
-extern BottleLetterRecord data_021eceac;
+#define data_021e7f8c HOST_LABEL(TownExchangeRecord *, data_021e7f8c)
+#define data_021eceac HOST_LABEL(BottleLetterRecord *, data_021eceac)
 extern u8 gU8None[];
-extern SaveTownStateView data_021ed150;
-extern u8 data_021ecfa8[];
+#define data_021ed150 HOST_LABEL(SaveTownStateView *, data_021ed150)
+#define data_021ecfa8 HOST_LABEL(u8 (*)[], data_021ecfa8)
 extern const u32 sSeasonLetterPaperCounts[];
 extern const u8 *sSeasonLetterPapers[];
 extern const u32 sPersonalityLetterPaperCounts[];
 extern const u8 *sPersonalityLetterPapers[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
-extern LetterOutbox data_021eb98c;
-extern PlayerMailbox data_021e935c[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
+#define data_021eb98c HOST_LABEL(LetterOutbox *, data_021eb98c)
+#define data_021e935c HOST_LABEL(PlayerMailbox (*)[], data_021e935c)
 
 extern "C" {
 ProcBase *func_02002d3c(s32 a, s32 b);

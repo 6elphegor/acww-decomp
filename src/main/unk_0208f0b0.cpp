@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "save/TownExchangeRecord.h"
 #include "game/ConstellationRecord.h"
 #include "item/Letter.h"
@@ -14,7 +15,7 @@ void VillagerTransfer_ConstructVillager(void *p);
 void MI_CpuFill8(void *p, s32 v, u32 n);
 }
 
-extern u8 data_021e7f8c[];
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)
 
 struct TownExchangeFlagBits {
     u8 b0 : 1;

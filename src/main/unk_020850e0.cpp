@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "npc/VillagerId.h"
 #include "save/Unk_02085810_Rec.h"
@@ -26,10 +27,10 @@
 
 
 
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern u8 gFieldSceneKind;
 extern BlockMap *gSceneBlockMap;
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern SaveData gSaveData;
 
 // Neighbour offsets of the grid probes.

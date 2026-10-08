@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "town/TownBlockCell.h"
 #include "types.h"
 #include "sys/StackPad.h"
@@ -75,10 +76,10 @@ extern const Unk_020ca2f4_Ent sFgDataFiles[4];
 extern s32 data_020c8cbc; // a block's width and depth in world units
 extern s32 data_020c8cb8;
 }
-extern HouseData gSaveHouse;      // SaveData::house
-extern TownMap gSaveTownMap;      // SaveData::townMap
-extern u8 gSaveVillagers[];       // SaveData::villagers
-extern SnowmanRecords data_021ed2e6; // SaveData::snowmen
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)  // SaveData::house
+#define gSaveTownMap HOST_LABEL(TownMap *, gSaveTownMap)  // SaveData::townMap
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)  // SaveData::villagers
+#define data_021ed2e6 HOST_LABEL(SnowmanRecords *, data_021ed2e6)  // SaveData::snowmen
 extern CommManager *gCommManager;
 
 // Functions defined in other units without a shared prototype yet (as their definitions declare them).

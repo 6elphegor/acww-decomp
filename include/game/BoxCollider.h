@@ -12,7 +12,7 @@ class Actor;
 // belongs to the unit at 0x0202e9d4
 struct ZeroedCollisionVec2 : CollisionVec2 {
     ZeroedCollisionVec2() { set(0, 0); }
-    ~ZeroedCollisionVec2();
+    ~ZeroedCollisionVec2() {}
 };
 
 // 0x9c-byte box collider registered with BoxCollider_Register (the list sBoxColliderList; methods in main,

@@ -1,3 +1,4 @@
+#include "host_labels.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) g3d: global state (NNS_G3dGlb*: camera/light/projection matrices, fog/edge tables in DTCM),
 // render-state callbacks. autoload_2 0x021040ac-0x021045e4. ARM, mwcc 1.2/base, -O4,p.
@@ -23,8 +24,13 @@ typedef union Glb {
     } n;
 } Glb;
 extern Glb data_027e00c8;
-extern u8 data_027e0228[], data_027e01f8[], data_027e01c8[], data_027e0184[], data_027e0114[];
-extern u32 data_027e0170[], data_027e0148[];
+#define data_027e0228 HOST_LABEL(u8 (*)[], data_027e0228)
+#define data_027e01f8 HOST_LABEL(u8 (*)[], data_027e01f8)
+#define data_027e01c8 HOST_LABEL(u8 (*)[], data_027e01c8)
+#define data_027e0184 HOST_LABEL(u8 (*)[], data_027e0184)
+#define data_027e0114 HOST_LABEL(u8 (*)[], data_027e0114)
+#define data_027e0170 HOST_LABEL(u32 (*)[], data_027e0170)
+#define data_027e0148 HOST_LABEL(u32 (*)[], data_027e0148)
 extern void MTX_Concat43(void *, void *, void *);
 extern void MTX_ScaleApply43(void *, void *, s32, s32, s32);
 extern void MTX_Inverse43(void *, void *);
@@ -33,7 +39,7 @@ extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 extern void MTX_Identity43_(void *);
 extern void MTX_Identity44_(void *);
 extern void MTX_Identity33_(void *);
-extern u8 data_027e00d0[];
+#define data_027e00d0 HOST_LABEL(u8 (*)[], data_027e00d0)
 
 
 typedef struct Cb {  // NNSG3dAnmObj (all its fields: the pointers are larger on 64-bit hosts)

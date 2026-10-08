@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "item/Letter.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -21,7 +22,7 @@
 
 
 extern "C" {
-extern u8 data_021e87d8[];
+#define data_021e87d8 HOST_LABEL(u8 (*)[], data_021e87d8)
 s32 MI_CpuFill8(void *dst, s32 v, s32 n);
 s32 List_Remove(void *list, void *node);
 }

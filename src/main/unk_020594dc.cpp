@@ -1,4 +1,5 @@
 #include "item/Letter.h"
+#include "host_labels.h"
 #include "save/VillagerData.h"
 #include "talk/MsgString25.h"
 #include "talk/MsgString33.h"
@@ -103,13 +104,13 @@ public:
 extern "C" {
 extern const u16 data_020cab80[];
 extern const u16 data_020cab84[];
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 }
 extern SaveData gSaveData;
 extern "C" {
-extern u8 gSavePlayers[];
-extern u8 gSaveHappyRoomDate[];
-extern u8 gSaveHouse[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveHappyRoomDate HOST_LABEL(u8 (*)[], gSaveHappyRoomDate)
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
 }
 
 // ---- own data ----

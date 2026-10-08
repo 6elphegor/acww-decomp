@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 
@@ -46,7 +47,7 @@ typedef MuseumInfoPointData Rec;
 
 
 
-extern "C" MuseumData data_021ed0a0;
+#define data_021ed0a0 HOST_LABEL(MuseumData *, data_021ed0a0)
 
 
 extern "C" {

@@ -1,4 +1,5 @@
 #include "talk/MsgString33.h"
+#include "host_labels.h"
 #include "talk/MsgString9B.h"
 #include "talk/MsgString9C.h"
 #include "types.h"
@@ -49,7 +50,7 @@ extern "C" {
 s32 Item_GetPrice(u16 *p);
 void LetterDefaults_Init(void *p);
 s32 Date_DaysBetween(u8 *a, u8 *b);
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 s32 Villager_SendLetter4(const char *a, s32 b, s32 c, void *d, void *e, void *f);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -75,8 +76,8 @@ BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void *SaveVillagers_PickRandomExcept(u8 *base, void **arr, s32 n);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
-extern u8 gSaveVillagers[];
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern SaveData gSaveData;
 }
 

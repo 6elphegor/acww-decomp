@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -34,7 +35,7 @@
 #include "proto/autoload_2/unk_020e8558.h"
 
 extern "C" {
-extern u8 gSaveBlancaFace;
+#define gSaveBlancaFace HOST_LABEL(u8 *, gSaveBlancaFace)
 extern u16 gPad[];
 
 void MIi_CpuCopy32(const void *src, void *dst, u32 n);

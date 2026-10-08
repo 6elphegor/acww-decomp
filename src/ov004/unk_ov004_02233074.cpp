@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "gfx/TwoLayerAnimModel.h"
 // mwcc-version: 1.2/base
@@ -199,8 +200,8 @@ void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, 
 extern s16 data_02135f44[];
 extern BlockMap *gSceneBlockMap;
 extern u8 gBackup[];
-extern u8 gSavePlayers[];
-extern TvWeatherSrcView data_021ed2b0;
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define data_021ed2b0 HOST_LABEL(TvWeatherSrcView *, data_021ed2b0)
 extern Mtx43 data_021f47e0;
 extern VecFx32 gVec3Zero;
 extern const u8 sFtrPlaceDirOrder[4];

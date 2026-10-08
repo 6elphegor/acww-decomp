@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
@@ -2937,7 +2938,7 @@ public:
 
 namespace p18 {
 extern "C" {
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 s32 Scene_InVillagerHouse();
 s32 Scene_InHouseRoom();
 void *SaveVillagers_Get(void *p, s32 a);
@@ -3069,7 +3070,7 @@ BOOL FtrStereo::enterTalkAct04() {
     if (p18::Scene_InVillagerHouse()) {
         u32 t = 0;
         u32 r = Scene_GetVillagerHouse();
-        void *v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+        void *v = p18::SaveVillagers_Get(gSaveVillagers, r);
         if (v) {
             t = p18::Villager_GetInfo4d(v);
         }
@@ -3262,7 +3263,7 @@ BOOL FtrStereo::initModel() {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
             u32 r = Scene_GetVillagerHouse();
-            void *v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+            void *v = p18::SaveVillagers_Get(gSaveVillagers, r);
             if (v) {
                 t = p18::Villager_GetInfo4d(v);
             }

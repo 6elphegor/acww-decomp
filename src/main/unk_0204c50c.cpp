@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "town/SceneMapInfo.h"
@@ -36,11 +37,11 @@ extern "C" {
 }
 
 extern "C" {
-extern u32 gSaveHouse[];
+#define gSaveHouse HOST_LABEL(u32 (*)[], gSaveHouse)
 }
 
 extern "C" {
-extern u32 gSaveTownMap[];
+#define gSaveTownMap HOST_LABEL(u32 (*)[], gSaveTownMap)
 }
 
 extern "C" {

@@ -3,8 +3,9 @@
 docs/host.md). Experimental; the DS hardware is being replaced piece by piece.
 
 The game's sources are compiled freestanding, as for the DS (-nostdinc, mwcc's type rules), with -DMODERN -DHOST.
-The runtime (modern/host/) uses the host's C library. The names the DS linker script gives to addresses (symbols.txt
-aliases, interior labels) come from the modern build's script (build/modern_usa/arm9.ld: PROVIDE lines).
+The runtime (modern/host/) uses the host's C library. No linker script supplies names: the labels symbols.txt
+gives to places inside variables are pointers defined in C (include/host_labels.h, tools/host_labels.py), the second
+names of functions are the functions themselves in the sources.
 
 Needs a 32-bit sysroot (memory: acww-host-toolchain): --sysroot <dir>.
 """
@@ -41,7 +42,7 @@ parser.add_argument("--strict-c", action="store_true",
                          "-w, which would hide them): every pointer kept in an integer is an error (docs/portability.md "
                          "0.3; meant for the x86-64 build, with --suffix)")
 parser.add_argument("--regen-gen", action="store_true",
-                    help="regenerate modern/gen/ from the DS builds' outputs (build/usa/delinks, build/modern_usa/arm9.ld)")
+                    help="regenerate modern/gen/gaps.c from the DS build's delinking (build/usa/delinks)")
 parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
@@ -146,11 +147,10 @@ def main():
                depfile="$out.d", deps="gcc", description="CXX $in")
         n.rule("hostcc", f"{args.cc} {HOST_FLAGS} $flags -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
-        n.rule("provides", "python3 tools/host_provides.py $in $out", description="PROVIDES $out")
         n.rule("hostas_S", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
-        n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects $provides {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
+        n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
                description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
@@ -165,9 +165,9 @@ def main():
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             n.build(o, rule, str(s))
             objs.append(o)
-        # The data between the decomp's units (gap objects of the DS build's delinking) and the linker labels inside
-        # variables (the GCC DS build's script): generated once from those builds, which this branch no longer runs,
-        # and kept in modern/gen/. --regen-gen rebuilds them from build/usa/delinks and build/modern_usa/arm9.ld.
+        # The data between the decomp's units (gap objects of the DS build's delinking): generated once from that
+        # build, which this branch no longer runs, and kept in modern/gen/. --regen-gen rebuilds it from
+        # build/usa/delinks.
         n.rule("gaps", "python3 tools/host_gaps.py $in $out", description="GAPS $out")
         gen_gaps = "modern/gen/gaps.c"  # typed C, the same for every architecture
         if args.regen_gen:
@@ -182,9 +182,6 @@ def main():
             o = str(build / s.with_suffix(".o"))
             n.build(o, "cc", str(s))
             objs.append(o)
-        provides = "modern/gen/provides.ld"
-        if args.regen_gen:
-            n.build(provides, "provides", "build/modern_usa/arm9.ld", implicit=["tools/host_provides.py"])
         # the game (and its own C library) in one object
         game_objs = [o for o in objs if "/modern/host/" not in o and not o.endswith("/gaps.o")]
         # DTCM's variables at their DS address (0x027e0000): the SDK computes DTCM addresses from its first one
@@ -217,17 +214,8 @@ def main():
         game_o = str(build / "game_all.o")
         objects_file = build / "objects.txt"
         objects_file.write_text("".join(f"{o}\n" for o in [game_o] + host_objs))
-        if X64:
-            # the labels inside data at their 64-bit offsets (tools/host_relayout.py; needs the 32-bit build's
-            # game object for the DS layout: build build_host.ninja first)
-            n.rule("relayout", "python3 tools/host_relayout.py $in $out", description="RELAYOUT $out")
-            relaid = str(build / "provides64.ld")
-            n.build(relaid, "relayout", [provides, f"build/host_{args.version}/game_all.o", str(build / "game_all.o")],
-                    implicit=["tools/host_relayout.py"])
-            provides = relaid
         exe = str(build / "acww")
-        n.build(exe, "link", [game_o] + host_objs, implicit=[provides, str(objects_file)],
-                variables={"objects": str(objects_file), "provides": provides})
+        n.build(exe, "link", [game_o] + host_objs, implicit=[str(objects_file)], variables={"objects": str(objects_file)})
         # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
         n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
                          "-l:libSDL2-2.0.so.0", description="VIEWER $out")

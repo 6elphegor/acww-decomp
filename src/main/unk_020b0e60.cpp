@@ -1,4 +1,5 @@
 #include "town/TownBlockCell.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "sys/NNSFndArchive.h"
 #include "types.h"
@@ -44,11 +45,11 @@ extern void *gCommManager;
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern BlockMap *gSceneBlockMap;
-extern u8 gSaveVillagers;
-extern u8 data_021e58a6;
-extern u8 data_021ed2e6[];
+#define gSaveVillagers HOST_LABEL(u8 *, gSaveVillagers)
+#define data_021e58a6 HOST_LABEL(u8 *, data_021e58a6)
+#define data_021ed2e6 HOST_LABEL(u8 (*)[], data_021ed2e6)
 extern s32 gFrameCounter;
-extern u32 data_027e0148[];
+#define data_027e0148 HOST_LABEL(u32 (*)[], data_027e0148)
 }
 
 

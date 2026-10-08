@@ -8,6 +8,7 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 #include "types64.h"
+#include "host_labels.h"
 #include "nitro/io_access.h"
 typedef int BOOL;
 #define NULL 0
@@ -34,7 +35,8 @@ typedef union Glb {
     } n;
 } Glb;
 extern Glb data_027e00c8;
-extern u8 data_027e0114[], data_027e0184[];
+#define data_027e0114 HOST_LABEL(u8 (*)[], data_027e0114)
+#define data_027e0184 HOST_LABEL(u8 (*)[], data_027e0184)
 extern BOOL G3X_GetClipMtx(void *);
 typedef struct Cb {  // NNSG3dAnmObj (all its fields: the pointers are larger on 64-bit hosts)
     s32 frame;          // 0x00
@@ -55,12 +57,16 @@ extern void MTX_Concat44(void *, void *, void *);
 extern s32 VEC_Mag(void *);
 extern void VEC_Normalize(void *, void *);
 extern void MIi_CpuSend32(void *, void *, u32);
-extern s32 data_0213be38[3];
-extern s32 data_0213be44[3];
-extern s32 data_0213be14[9];
-extern u8 data_0213be0c[]; extern u32 data_0213be08[18];
-extern s32 data_0213bdf0[3], data_0213bdfc[3];
-extern u8 data_0213bdc4[], data_0213bdcc[]; extern u32 data_0213bdc0[18];
+#define data_0213be38 HOST_LABEL(s32 (*)[3], data_0213be38)
+#define data_0213be44 HOST_LABEL(s32 (*)[3], data_0213be44)
+#define data_0213be14 HOST_LABEL(s32 (*)[9], data_0213be14)
+#define data_0213be0c HOST_LABEL(u8 (*)[], data_0213be0c)
+extern u32 data_0213be08[18];
+#define data_0213bdf0 HOST_LABEL(s32 (*)[3], data_0213bdf0)
+#define data_0213bdfc HOST_LABEL(s32 (*)[3], data_0213bdfc)
+#define data_0213bdc4 HOST_LABEL(u8 (*)[], data_0213bdc4)
+#define data_0213bdcc HOST_LABEL(u8 (*)[], data_0213bdcc)
+extern u32 data_0213bdc0[18];
 
 // marks (in a bit set) every table slot flagged 0x100 in a linked list of nodes
 void updateHintVec_(u32 *bits, Cb *n)
@@ -361,3 +367,17 @@ u32 data_0213bd50[2] = {0x2a, 0};
 // the SBC and G3D functions in autoload_2 and ITCM.
 void *data_021f5cc0;
 u32 data_021f5cc4[0x500];
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_0213bd5c, (char *)&data_0213bd58[1]);
+HOST_LABEL_DEFINE(data_0213bdc4, (char *)&data_0213bdc0[1]);
+HOST_LABEL_DEFINE(data_0213bdcc, (char *)&data_0213bdc0[3]);
+HOST_LABEL_DEFINE(data_0213bdf0, (char *)&data_0213bdc0[12]);
+HOST_LABEL_DEFINE(data_0213bdfc, (char *)&data_0213bdc0[15]);
+HOST_LABEL_DEFINE(data_0213be0c, (char *)&data_0213be08[1]);
+HOST_LABEL_DEFINE(data_0213be14, (char *)&data_0213be08[3]);
+HOST_LABEL_DEFINE(data_0213be38, (char *)&data_0213be08[12]);
+HOST_LABEL_DEFINE(data_0213be44, (char *)&data_0213be08[15]);
+HOST_LABEL_DEFINE(data_021f6ac4, (char *)&data_021f5cc4[896]);

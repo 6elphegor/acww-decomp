@@ -8,6 +8,7 @@ typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;
 #include "types64.h"
+#include "host_labels.h"
 
 #include "ds_stdarg.h"
 
@@ -32,7 +33,7 @@ typedef int (*ReadProc)(void *, int, int);
 extern u32 data_0213c4fc;                 // rand seed (defined below)
 extern scan_format data_0213c500;         // default_scan_format {0,0,0,0, 0x7fffffff, zeros}
 extern const u16 data_0213a510[];         // __ctype_map
-extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7])
+#define data_02200324 HOST_LABEL(OSMutex *, data_02200324)  // signal-table mutex (data_02200298[7])
 extern u32 data_02200250[];
 extern s32 data_02200274[];
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)

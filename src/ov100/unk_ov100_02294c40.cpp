@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -44,8 +45,8 @@ void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
 extern CommManager *gCommManager;
-extern u8 gSaveLostAndFound[];
-extern u8 gSaveRecycleBin[];
+#define gSaveLostAndFound HOST_LABEL(u8 (*)[], gSaveLostAndFound)
+#define gSaveRecycleBin HOST_LABEL(u8 (*)[], gSaveRecycleBin)
 extern u16 gPad[];
 }
 

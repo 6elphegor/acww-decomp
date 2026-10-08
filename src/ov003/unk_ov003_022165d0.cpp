@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU12 (actor 02231c14): .text 0x022165d0-0x02216824
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
@@ -20,7 +21,7 @@
 #include "proto/ov003/unk_ov003_022187fc.h"
 
 extern "C" {
-extern HouseData gSaveHouse;
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)
 extern const s8 sHexDigits[];
 
 void *NNS_G3dGetTex(void *p);

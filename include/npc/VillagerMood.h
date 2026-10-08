@@ -10,13 +10,15 @@ class VillagerActor;
 
 typedef void (VillagerMood::*Unk_0201c078_State)(VillagerActor *s);
 
+extern "C" void *VillagerMood_Construct(void *p);
+extern "C" void *VillagerMood_Destruct(void *p);
 // Mood state of a villager (member at 0x838 of VillagerActor): current / pending mood and the mood animation and
 // effect sequence. Constructor / destructor are VillagerMood_Construct / VillagerMood_Destruct; all members are
 // defined in src/main/unk_0201c050.cpp.
 class VillagerMood {
 public:
-    VillagerMood();
-    ~VillagerMood();
+    VillagerMood() { VillagerMood_Construct(this); }
+    ~VillagerMood() { VillagerMood_Destruct(this); }
     void update(VillagerActor *s);
     void updateMoodAnim(VillagerActor *s, s32 next);
     BOOL startMoodAnim(VillagerActor *s, u32 idx);

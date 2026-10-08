@@ -1,6 +1,7 @@
 // ov126: scene overlay (class NameEntryMenu, vtable 0x02299ae8, size 0x40c8).
 // Text-entry screen (name/password style) with a cursor, a selection range and an 0x20-byte edit buffer.
 #include "types.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -53,9 +54,9 @@
 
 extern "C" {
 extern u16 gPad[];
-extern BlancaFaceRecord gSaveBlancaFace;
-extern u16 gSaveTownId[];
-extern u8 gSavePlayers[];
+#define gSaveBlancaFace HOST_LABEL(BlancaFaceRecord *, gSaveBlancaFace)
+#define gSaveTownId HOST_LABEL(u16 (*)[], gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern u8 gU8None;
 extern CommManager *gCommManager;
 

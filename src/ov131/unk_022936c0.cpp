@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -26,7 +27,7 @@
 extern "C" {
 extern u16 gPad[];
 }
-extern HouseData gSaveHouse;
+#define gSaveHouse HOST_LABEL(HouseData *, gSaveHouse)
 
 static inline BOOL func_ov131_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {

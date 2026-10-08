@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "proto/main/unk_0202fa70.h"
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -412,7 +413,7 @@ namespace nB {
 extern "C" {
 
 extern BlockMap *gSceneBlockMap;
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern s16 data_02135f44[];
 s32 MapBlock_HasAnyAttr(void *, u32);
 s32 Random_PickSetBit(u32, s32, s32);

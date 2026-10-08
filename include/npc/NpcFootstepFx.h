@@ -12,7 +12,7 @@ struct NpcFootstepFx {
     /* 0x1 */ u8 pad_01[3];
     /* 0x4 */ u32 prevMoveMode;
     NpcFootstepFx();
-    ~NpcFootstepFx();
+    ~NpcFootstepFx() { func_020135e0(); }
     void updateFootsteps(NpcActor* p);
     void playFootstepSe(NpcActor* p);
     void disableFootsteps();

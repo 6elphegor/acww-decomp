@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString33B.h"
@@ -49,8 +50,8 @@ struct PlayerIdLocal : PlayerId {
     ~PlayerIdLocal() { new (static_cast<PlayerId *>(this)) PlayerId(); }
 };
 
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 
 extern "C" {
 void *MI_CpuFill8(void *dst, u32 v, u32 n);

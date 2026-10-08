@@ -27,10 +27,12 @@ typedef void (*ModelSlotFreeFunc)();
 // src/main/unk_0205b7b0.cpp)
 typedef Heap *(*ModelSlotAllocFunc)(u32 size, Heap *parent);
 
+extern "C" void ModelSlotHandle_Init(u16 *p);
+extern "C" void ModelSlotHandle_Destroy(u16 *p);
 class ModelSlotHandle {
 public:
-    ModelSlotHandle();
-    ~ModelSlotHandle();
+    ModelSlotHandle() { ModelSlotHandle_Init(&index); }
+    ~ModelSlotHandle() { ModelSlotHandle_Destroy(&index); }
     /* 0x0 */ u16 index;
 };
 

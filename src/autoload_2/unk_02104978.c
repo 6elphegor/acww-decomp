@@ -8,6 +8,7 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 #include "types64.h"
+#include "host_labels.h"
 typedef int BOOL;
 #define NULL 0
 
@@ -34,9 +35,10 @@ typedef union Glb {
     } n;
 } Glb;
 extern Glb data_027e00c8;
-extern u8 data_027e0114[], data_027e0184[];
+#define data_027e0114 HOST_LABEL(u8 (*)[], data_027e0114)
+#define data_027e0184 HOST_LABEL(u8 (*)[], data_027e0184)
 extern u32 data_0213bd58[2];
-extern u32 data_0213bd5c;
+#define data_0213bd5c HOST_LABEL(u32 *, data_0213bd5c)
 
 // NNS_G3dFuncSbc_CALLDL (9-byte SBC command: display list offset + size, sent via NNS_G3dGeSendDL)
 static inline u32 rd32(u8 *p) { return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24); }

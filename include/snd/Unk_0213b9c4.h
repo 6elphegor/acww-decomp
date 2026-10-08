@@ -10,7 +10,7 @@
 // link-once SndSeEmitterKind2 D1 of the same name is multiply defined in mwld (see unk_020f30fc.cpp).
 class Unk_0213b9c4 : public SndSeEmitter {
 public:
-    Unk_0213b9c4();
+    Unk_0213b9c4() { kind = 2; }  // SndSeEmitterKind2's constructor (C1 0x020f3e50)
     virtual ~Unk_0213b9c4();
 };
 

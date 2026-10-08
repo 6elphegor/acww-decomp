@@ -54,3 +54,17 @@ typedef struct NNSG3dGlb {
 NNSG3dGlb data_027e00c8;
 
 #pragma section DTCM end
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_027e00d0, (char *)&data_027e00c8.projMtx.m[0]);
+HOST_LABEL_DEFINE(data_027e0114, (char *)&data_027e00c8.cameraMtx.m[0]);
+HOST_LABEL_DEFINE(data_027e0148, (char *)&data_027e00c8.lightVec[0]);
+HOST_LABEL_DEFINE(data_027e0170, (char *)&data_027e00c8.lightColor[0]);
+HOST_LABEL_DEFINE(data_027e0184, (char *)&data_027e00c8.prmBaseRot.m[0]);
+HOST_LABEL_DEFINE(data_027e01a8, (char *)&data_027e00c8.prmBaseTrans.x);
+HOST_LABEL_DEFINE(data_027e01c8, (char *)&data_027e00c8.invCameraMtx.m[0]);
+HOST_LABEL_DEFINE(data_027e01f8, (char *)&data_027e00c8.srtCameraMtx.m[0]);
+HOST_LABEL_DEFINE(data_027e0228, (char *)&data_027e00c8.invSrtCameraMtx.m[0]);
+HOST_LABEL_DEFINE(data_027e02c8, (char *)&data_027e00c8.invCameraProjMtx.m[0]);

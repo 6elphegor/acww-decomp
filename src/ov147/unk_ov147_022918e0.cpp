@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "Unk_020d8c7c.h"
 #include "menu/TitleBlinkText.h"
@@ -63,8 +64,8 @@ void MI_CpuCopy8(void *a, void *b, u32 n);
 void MI_CpuFill8(void *a, s32 b, u32 n);
 u32 Clock_GetTimeOfDay();
 
-extern u8 data_021e7f8c[];
-extern u8 gSavePlayers[];
+#define data_021e7f8c HOST_LABEL(u8 (*)[], data_021e7f8c)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern SaveData gSaveData;
 extern u8 gTalkMsgIndexEnd;
 }

@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
+#include "host_labels.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -30,7 +31,7 @@ struct GateHouseFlagTexture {
 };
 
 extern "C" {
-extern TownStyleRecordView gSaveTownFlag;
+#define gSaveTownFlag HOST_LABEL(TownStyleRecordView *, gSaveTownFlag)
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 }
 

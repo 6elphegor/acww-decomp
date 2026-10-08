@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
+#include "host_labels.h"
 #include "host_overlay_vars.h"
 #include "proto/main/unk_020b4828.h"
 #include "Unk_020d8c7c.h"
@@ -478,7 +479,7 @@ void *__cxa_vec_ctor(void *, s32, s32, void *, void *);
 void *__cxa_vec_cleanup(void *, s32, s32, void *);
 
 extern s16 data_02135f44[];
-extern u8 data_021ed0a0[];
+#define data_021ed0a0 HOST_LABEL(u8 (*)[], data_021ed0a0)
 extern Mtx43 data_021f47e0;
 extern VecFx32 sRoomHasuPos;
 

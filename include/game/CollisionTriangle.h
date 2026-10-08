@@ -2,7 +2,7 @@
 #define GAME_COLLISIONTRIANGLE_H
 
 // Collision triangle (vtable 0x020d8ccc; 0x34 bytes). Defined in src/main/unk_0202e9d4.cpp. The derived
-// triangles are built on its second name CollisionTriangleX (game/CollisionTriangleX.h).
+// triangles are built on its second name CollisionTriangleX (game/CollisionTriangleX.h: the same class here).
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"

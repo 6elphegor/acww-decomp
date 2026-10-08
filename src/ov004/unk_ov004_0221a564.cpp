@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_labels.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
@@ -57,7 +58,7 @@ extern SickVillager *sSickVillager;
 extern "C" {
 extern u16 data_020c6cc8;
 extern u32 gFrameCounter;
-extern u8 gSaveVillagers[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 extern u8 gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s32 data_020c6d1c;

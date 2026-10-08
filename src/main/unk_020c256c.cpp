@@ -494,3 +494,8 @@ char sSpNpcModelUpa[] = "npc_sp/model/upa.nsbmd";
 char sSpNpcTexRcs[] = "npc_sp/model/rcs_tex.nsbtx";
 char sSpNpcTexPlc[] = "npc_sp/model/plc_tex.nsbtx";
 char sSpNpcModelLrc[] = "npc_sp/model/lrc.nsbmd";
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(p__sinit_020c2cd0, (char *)&sSpNpcModelPaths[78]);

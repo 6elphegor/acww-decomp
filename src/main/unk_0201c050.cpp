@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "town/TownBlockCell.h"
 // mwcc-flags: -str reuse
@@ -207,9 +208,11 @@ class SpNpcActor;
 
 
 
+extern "C" void TownId_Construct();
+extern "C" void TownId_Destruct();
 struct TownIdView {
-    TownIdView();
-    ~TownIdView();
+    TownIdView() { TownId_Construct(); }
+    ~TownIdView() { TownId_Destruct(); }
     /* 0x00 */ u16 townId;
     /* 0x02 */ u8 townName[8];
     /* 0x0a */ u8 pad_0a[6];
@@ -609,14 +612,14 @@ extern u8 gTalkMsgIndexNone[];
 extern const u16 data_020c6cc8[2];
 extern CommManager *const gCommManager;
 extern u8 gTalkMsgIndexEnd;
-extern u8 gSaveVillagers[];
-extern u8 gContestRecord[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
+#define gContestRecord HOST_LABEL(u8 (*)[], gContestRecord)
 extern SaveData gSaveData;
 extern u8 gFieldSceneKind;
-extern u8 gSavePlayers[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
 extern BlockMap *gSceneBlockMap;
-extern u16 gSaveTownId[];
-extern u8 data_021ed2c0[];
+#define gSaveTownId HOST_LABEL(u16 (*)[], gSaveTownId)
+#define data_021ed2c0 HOST_LABEL(u8 (*)[], data_021ed2c0)
 extern const u16 data_020c6cf0[2];
 }
 
@@ -11153,6 +11156,13 @@ s32 VillagerTalk::acceptPartnerInvite() { return 0; }
 
 s32 VillagerTalk::endPartnerTalk() { return 0; }
 
+// VillagerActor's: the same functions on the DS (symbols.txt labels of VillagerTalk's)
+s32 VillagerActor::canAcceptPartnerInvite() { return 0; }
+
+s32 VillagerActor::acceptPartnerInvite(VillagerActor *) { return 0; }
+
+s32 VillagerActor::endPartnerTalk() { return 0; }
+
 BOOL VillagerTalk::hasPartner() {
     if (((VillagerActor *)this)->talkPartner != NULL) {
         return TRUE;
@@ -11560,3 +11570,8 @@ extern "C" void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p) {
     p->cbVecFunc[6] = (void *)NpcActor_OnJointCalc; // NODEDESC
     p->cbVecTiming[6] = 2;
 }
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_021be810, (char *)&sHouseVisitTsuTopicTable[2]);

@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "talk/MsgString33.h"
 #include "talk/MsgString9B.h"
 #include "types.h"
@@ -132,7 +133,8 @@ extern "C" void TrendScores_Copy(void *p, void *q)
 
 void TrendScores::copy(const u8 *src) { TrendScores_Copy(values, (void *)src); }
 
-u32 VillagerPlan::pickTopScore()
+// (symbols.txt: VillagerPlan::pickTopScore, a label of this function)
+u8 TrendScores::pickTop()
 {
     u8 res = 8;
     u16 mask = 0;
@@ -166,12 +168,13 @@ u32 VillagerPlan::pickTopScore()
 }
 
 
-void VillagerPlan::resetAndHalveScores(u8 i)
+// (symbols.txt: VillagerPlan::resetAndHalveScores, a label of this function)
+void TrendScores::resetAndHalve(u32 i)
 {
-    ((TrendScores *)(this))->set(i, 0);
+    set((u8)i, 0);
     for (s32 j = 0; j < 8; j++) {
-        u32 v = ((TrendScores *)(this))->get((u8)j);
-        ((TrendScores *)(this))->set((u8)j, (v << 23) >> 24);
+        u32 v = get((u8)j);
+        set((u8)j, (v << 23) >> 24);
     }
 }
 
@@ -1260,8 +1263,8 @@ extern "C" u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v) {
 
 // ======== unk_020998b8.cpp ========
 extern "C" {
-extern u8 gSaveVillagers[];
-extern u8 data_021ed104[];
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
+#define data_021ed104 HOST_LABEL(u8 (*)[], data_021ed104)
 void *SaveVillagers_PickRandomTalkPartner(void *g, VillagerIdCtorDtor **a, s32 n);
 BOOL Npc_GetName(MsgString *self, u16 *p);
 s32 NookShop_IsOpenHour();

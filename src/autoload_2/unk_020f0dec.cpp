@@ -96,3 +96,9 @@ void SndMgr::startOutputEffect() {
 void SndMgr::stopAll() {
     NNS_SndCaptureStopEffect();
 }
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_021f5be0, (char *)&gSndMgr.menuDuck);
+HOST_LABEL_DEFINE(gSndBgmHandle, (char *)&gSndMgr.bgmHandle.p);

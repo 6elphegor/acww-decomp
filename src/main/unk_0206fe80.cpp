@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_labels.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
 #include "game/Unk_020702ec_Date.h"
@@ -22,13 +23,13 @@
 
 
 extern "C" {
-extern u8 gSavePlayers[];
-extern u16 gSaveTownId[];
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveTownId HOST_LABEL(u16 (*)[], gSaveTownId)
 extern u8 gSaveData[];
-extern u8 gSaveAbleSistersPatterns[];
-extern u8 gSaveBlancaFace[];
-extern u8 gSaveVillagers[];
-extern u8 gSaveTownFlag[];
+#define gSaveAbleSistersPatterns HOST_LABEL(u8 (*)[], gSaveAbleSistersPatterns)
+#define gSaveBlancaFace HOST_LABEL(u8 (*)[], gSaveBlancaFace)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
+#define gSaveTownFlag HOST_LABEL(u8 (*)[], gSaveTownFlag)
 extern s32 (*sPatternSourceGetters[])(s32);
 
 s32 FX_Div(s32 a, s32 b);

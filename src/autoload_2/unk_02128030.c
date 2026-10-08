@@ -380,3 +380,8 @@ char *data_0213c388[8] = {
 u32 data_02200250[9];
 s32 data_02200274[9];
 OSMutex data_02200298[9];
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_02200324, (char *)&data_02200298[5].prev);

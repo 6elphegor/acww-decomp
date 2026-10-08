@@ -27,7 +27,7 @@ struct NpcActionParams {
 // Defined in src/main/unk_020119cc.cpp (0x02019020..0x02019858).
 struct NpcActionCtrl {
     NpcActionCtrl();
-    ~NpcActionCtrl();
+    ~NpcActionCtrl() { func_02019854(); }
     void mainAct02(NpcActor *o);
     s32 setupAct02(NpcActor *o);
     void mainAct01(NpcActor *o);

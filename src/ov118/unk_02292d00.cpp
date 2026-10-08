@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_labels.h"
 #include "host_shared_calls.h"
 #include "talk/MsgString9C.h"
 #include "types.h"
@@ -43,9 +44,9 @@
 extern "C" {
 extern u16 gPad[];
 extern u8 gFieldSceneKind;
-extern u8 gSaveTownId[];
-extern u8 gSavePlayers[];
-extern u8 gSaveVillagers[];
+#define gSaveTownId HOST_LABEL(u8 (*)[], gSaveTownId)
+#define gSavePlayers HOST_LABEL(u8 (*)[], gSavePlayers)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 
 s32 _s32_div_f(s32 a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);

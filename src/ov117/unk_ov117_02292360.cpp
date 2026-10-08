@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_labels.h"
 #include "town/TownMapMarkers.h"
 #include "game/StrBSizeData.h"
 #include "npc/VillagerDataItemView.h"
@@ -24,8 +25,8 @@ static inline MapBlock *Unk_ov117_02292b54_GetCell(BlockMap *g, u32 x, u32 y) {
 
 extern "C" {
 TownMapImage *sTownMapImage;
-extern u8 gSaveHouse[];
-extern u8 gSaveVillagers[];
+#define gSaveHouse HOST_LABEL(u8 (*)[], gSaveHouse)
+#define gSaveVillagers HOST_LABEL(u8 (*)[], gSaveVillagers)
 
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void CollisionMap_Select(s32 a);

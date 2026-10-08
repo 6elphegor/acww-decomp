@@ -4,6 +4,7 @@
 // 6 clearImage, 7 bgExtPltt, 8 objExtPltt, 9 subBg, 10 subObj, 11 subBgExtPltt, 12 subObjExtPltt); the game and
 // the delinked callers also refer to its members by their own symbols (data_021fcbda ... data_021fcbf0).
 #include "nitro/io_access.h"
+#include "host_labels.h"
 #include "proto/autoload_2/unk_0210f154.h"
 #include "proto/main/unk_0206d49c.h"
 typedef unsigned char u8;
@@ -16,18 +17,18 @@ extern u32 data_0213bfec; // dma number used by GX_Init (-1: CPU)
 extern u16 data_021fcbd0; // GX VRAM lock id
 extern u16 data_021fcbd4; // sDispMode
 extern u16 data_021fcbd8[13];
-extern u16 data_021fcbda;
-extern u16 data_021fcbdc;
-extern u16 data_021fcbde;
-extern u16 data_021fcbe0;
-extern u16 data_021fcbe2;
-extern u16 data_021fcbe4;
-extern u16 data_021fcbe6;
-extern u16 data_021fcbe8;
-extern u16 data_021fcbea;
-extern u16 data_021fcbec;
-extern u16 data_021fcbee;
-extern u16 data_021fcbf0;
+#define data_021fcbda HOST_LABEL(u16 *, data_021fcbda)
+#define data_021fcbdc HOST_LABEL(u16 *, data_021fcbdc)
+#define data_021fcbde HOST_LABEL(u16 *, data_021fcbde)
+#define data_021fcbe0 HOST_LABEL(u16 *, data_021fcbe0)
+#define data_021fcbe2 HOST_LABEL(u16 *, data_021fcbe2)
+#define data_021fcbe4 HOST_LABEL(u16 *, data_021fcbe4)
+#define data_021fcbe6 HOST_LABEL(u16 *, data_021fcbe6)
+#define data_021fcbe8 HOST_LABEL(u16 *, data_021fcbe8)
+#define data_021fcbea HOST_LABEL(u16 *, data_021fcbea)
+#define data_021fcbec HOST_LABEL(u16 *, data_021fcbec)
+#define data_021fcbee HOST_LABEL(u16 *, data_021fcbee)
+#define data_021fcbf0 HOST_LABEL(u16 *, data_021fcbf0)
 
 extern u32 OS_GetLockID(void);
 extern void MI_DmaFill32(u32 dmaNo, void *dest, u32 data, u32 size);
@@ -316,3 +317,19 @@ void GX_DispOn(void) {
 // ---- file-scope objects (autoload_3 .bss 0x021fcbd8-0x021fcbf4): the VRAM bank assignment record of gx_vramcnt.c;
 // data_021fcbda .. data_021fcbf0 are its members (interior labels, autoload_3 lcf_symbols.txt)
 u16 data_021fcbd8[13];
+
+// ---- labels inside this unit's variables (generated: tools/host_labels.py) ----
+#include "host_labels.h"
+
+HOST_LABEL_DEFINE(data_021fcbda, (char *)&data_021fcbd8[1]);
+HOST_LABEL_DEFINE(data_021fcbdc, (char *)&data_021fcbd8[2]);
+HOST_LABEL_DEFINE(data_021fcbde, (char *)&data_021fcbd8[3]);
+HOST_LABEL_DEFINE(data_021fcbe0, (char *)&data_021fcbd8[4]);
+HOST_LABEL_DEFINE(data_021fcbe2, (char *)&data_021fcbd8[5]);
+HOST_LABEL_DEFINE(data_021fcbe4, (char *)&data_021fcbd8[6]);
+HOST_LABEL_DEFINE(data_021fcbe6, (char *)&data_021fcbd8[7]);
+HOST_LABEL_DEFINE(data_021fcbe8, (char *)&data_021fcbd8[8]);
+HOST_LABEL_DEFINE(data_021fcbea, (char *)&data_021fcbd8[9]);
+HOST_LABEL_DEFINE(data_021fcbec, (char *)&data_021fcbd8[10]);
+HOST_LABEL_DEFINE(data_021fcbee, (char *)&data_021fcbd8[11]);
+HOST_LABEL_DEFINE(data_021fcbf0, (char *)&data_021fcbd8[12]);

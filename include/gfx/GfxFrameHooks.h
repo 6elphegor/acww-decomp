@@ -9,8 +9,8 @@
 // src/main/unk_020b4828.cpp (vtable 0x020e41c8).
 class GfxFrameHooks {
 public:
-    virtual inline void onPreTask();
-    virtual inline void onPostTask();
+    virtual inline void onPreTask() {}  // GfxFrameHooks_PreTaskStub, empty
+    virtual inline void onPostTask() {}  // GfxFrameHooks_PostTaskStub, empty
     virtual void onVBlank();
 };
 
