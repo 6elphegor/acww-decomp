@@ -4,7 +4,6 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_02288c78.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "types64.h"
 #ifdef __cplusplus
 #include "net/hashtable.h"
 #include "net/sb_internal.h"
@@ -48,9 +47,6 @@ char *SBServerGetStringValueA(void *a, char *k, char *d);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetIntValueA
 s32 SBServerGetIntValueA(void *a, char *b, s32 c);
-#endif
-#ifndef PROTO_LOCAL_SBServerGetFloatValueA
-u64 SBServerGetFloatValueA(void *a, char *b, u64 v);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPrivateInetAddress
 s32 SBServerGetPrivateInetAddress(s32 *o);
@@ -108,6 +104,9 @@ s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
 #endif
 #ifndef PROTO_LOCAL_SBServerAddIntKeyValue
 void SBServerAddIntKeyValue(_SBServer *a, char *b, s32 v);
+#endif
+#ifndef PROTO_LOCAL_SBServerGetFloatValueA
+double SBServerGetFloatValueA(_SBServer *a, char *b, double v);
 #endif
 #ifndef PROTO_LOCAL_SBServerGetPublicInetAddress
 u32 SBServerGetPublicInetAddress(_SBServer *o);

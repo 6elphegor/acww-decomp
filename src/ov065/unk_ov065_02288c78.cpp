@@ -436,7 +436,7 @@ call:
 
 namespace F02288e2c {
 extern "C" {
-u64 SBServerGetFloatValueA(void *a, char *b, u64 v) {
+double SBServerGetFloatValueA(_SBServer *a, char *b, double v) {
     SBServerGetStringValueA(a, b, 0);
     return v;
 }
