@@ -103,7 +103,8 @@ the default audio device (SDL), about 70 ms behind.
 
 Environment: `ACWW_SAVE` (save file, default `<rom>.sav`), `ACWW_HEADLESS=1` (no window), `ACWW_FAST=1` (not paced to
 60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
-`ACWW_WAV=file.wav` (the sound, also headless), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
+`ACWW_WAV=file.wav` (the sound, also headless; ACWW_KEYS masks are hex KEYINPUT bits: 1 A, 2 B, 8 Start, 10 Right,
+20 Left, 40 Up, 80 Down, 400 X, 800 Y), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
 `ACWW_IOHIST` (register accesses by address and code, to `acww_iohist.txt`), `ACWW_NOEMULATE` (single-step every
 access), `ACWW_WATCH=addr:len`, `ACWW_PROFILE`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
 `ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the viewer's audio
@@ -120,7 +121,8 @@ The runtime (`modern/host/`):
 - `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
 - `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (fixed clock), touch panel,
-  card backup (save file, replies delayed like the DS's); sound commands go to `snd7/`.
+  card backup (save file, replies delayed like the DS's), power management (PMIC registers kept in the host:
+  backlights, sound amp, LED, battery never low; power-off ends the run); sound commands go to `snd7/`.
 - `snd7/`: the ARM7's sound driver, native: NitroSDK's driver (commands, sequence player, channel allocation,
   envelopes, LFOs, alarms; ported from pret/pokediamond's decompilation of the same SDK driver, its command set and
   shared structures checked against ACWW's ARM9 side, tables from ACWW's ARM7 program) in `driver.c`, `seq.c`,
@@ -201,12 +203,18 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   posts: the mail text builder's members are still DS-sized blobs, `include/talk/MailTextBuilder.h`), not in
   layout. Neither build reaches the intro's first save yet. The i386 build crashed on arriving in town (ov009's
   `sBuildingResources` still held the title demo's freed resources); with overlays reset on load it arrives in town
-  and goes through the town hall's tutorial, then stalls in `PMi_WaitBusy` (frame ~19300 of the script below). The
+  and goes through the town hall's tutorial. It then stalled in `PMi_WaitBusy`: the game polls the battery every 20
+  frames once the player can move (`LowBattery_Poll` -> `PM_GetBattery`, a PMIC register read through the PXI's PM
+  tag 8), and the host didn't answer the PM tag at all; `pxi7.c` now does. With the script below extended (it
+  stops at frame 21050, then Down from 21100 to 21500) the player leaves the town hall (town at ~frame 22000) and
+  walks around town (checked to frame 34000: villagers, beach, no stop). With A and Start kept going after the
+  tutorial the player only talks to Pelly again and again (Start opens the save menu, "I can't save right now" in a
+  new town until the first save). The
   x86-64 build gets through both name entries with that script and loads the town (frame ~12430), then crashes in
   `spl_calc` (particles, `EffectSplProc::onExecute`) at frame ~13540. A script that gets through the
   name entries: the oracle's play script (A every second from frame 2400) plus, every 600 frames from 7630, a touch
   on the keyboard's Confirm button (218,180) (it only dismisses the "no room" message: touches on the keys don't
-  register) and Start every 60 frames from 7650 (Start confirms a name).
+  register) and Start every 60 frames from 7650 (Start confirms a name); presses and touches 6 frames each.
 - A C-style cast from a base pointer to a derived class is a static downcast (it subtracts the base's offset):
   converting a derived pointer to its base subobject's address needs `reinterpret_cast` after the `static_cast`.
 - Members reached by a DS offset from a pointer: `tools/host_this_offsets.py` rewrites `(u8 *)this + N` (and

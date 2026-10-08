@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "host.h"
 
@@ -220,6 +221,66 @@ void pxi7_vblank(void) {
     if (sTpAuto && sCount == 0) { tp_sample(); pxi7_send(6 | (16u << 8) << 6); }
 }
 
+// ---- power management (tag 8): the power management chip (PMIC) behind the ARM7's SPI. Messages as NVRAM's:
+// bit 25 start, bit 24 end, bits 16-23 index, the command in bits 8-14 of the first word, payload in the low bits.
+// Commands (all the ARM9 side sends): 0x63 utility (two words: number = word0 bits 0-7 << 16 | word1 bits 0-15),
+// 0x65 read register (bits 0-7: register), 0x66 set the LED pattern (bits 0-7), 0x67 get the LED pattern.
+// Reply: (command << 8 | value), the value the result (0 = success) - except for a register read, answered with
+// command 0x70 + register and the register's value, and 0x67 with the pattern; PMi_CommonCallback takes it apart.
+// Answered at once: the sync wrappers spin on memory (PMi_WaitBusy), where virtual time doesn't move.
+// PMIC registers: 0 control (bit 0 sound amp, bit 2 bottom backlight, bit 3 top backlight, bit 4 LED blink,
+// bit 5 blink fast, bit 6 power off), 1 battery (bit 0 low), 2 mic amp, 3 mic gain.
+static u32 sPmWords[4];
+static int sPmCount;
+static u8 sPmReg[5] = {0x0d, 0x00, 0x00, 0x00, 0x00};  // amp and both backlights on, battery fine
+static u8 sPmLedPattern;
+
+static u32 pm_utility(u32 n) {
+    u8 *r = &sPmReg[0];
+    switch (n) {
+    case 1: *r &= ~0x30; break;                 // LED on
+    case 2: *r |= 0x30; break;                  // LED blinking fast
+    case 3: *r = (u8)((*r | 0x10) & ~0x20); break;  // LED blinking slowly
+    case 4: *r |= 0x04; break;                  // bottom backlight (LCD1) on / off
+    case 5: *r &= ~0x04; break;
+    case 6: *r |= 0x08; break;                  // top backlight (LCD2) on / off
+    case 7: *r &= ~0x08; break;
+    case 8: *r |= 0x0c; break;                  // both
+    case 9: *r &= ~0x0c; break;
+    case 10: *r |= 0x01; break;                 // sound amp on / off
+    case 11: *r &= ~0x01; break;
+    case 14: {                                  // force power off: the DS switches off; end the run like that
+        extern void snd7_output_close(void);
+        extern void frontend_shutdown(void);
+        fprintf(stderr, "host: power off requested by the game (frame %llu)\n", (unsigned long long)host_frame());
+        snd7_output_close();
+        frontend_shutdown();
+        _exit(0);
+    }
+    default: break;
+    }
+    return 0;
+}
+
+static void pm_command(void) {
+    u32 cmd = sPmWords[0] >> 8 & 0x7f, arg = sPmWords[0] & 0xff, reply_cmd = cmd, value = 0;
+    switch (cmd) {
+    case 0x63: value = pm_utility(arg << 16 | (sPmWords[1] & 0xffff)); arg = arg << 16 | (sPmWords[1] & 0xffff); break;
+    case 0x65: reply_cmd = 0x70 + (arg & 3); value = arg < 5 ? sPmReg[arg] : 0; break;
+    case 0x66: sPmLedPattern = (u8)arg; break;
+    case 0x67: value = sPmLedPattern; break;
+    default: fprintf(stderr, "pxi7: PM command %02x (not handled)\n", cmd); break;
+    }
+    if (gHostVerbose) fprintf(stderr, "pxi7: PM %02x %x -> %02x (frame %llu)\n", cmd, arg, value, (unsigned long long)host_frame());
+    pxi7_send(8 | (reply_cmd << 8 | (value & 0xff)) << 6);
+}
+
+static void pm_word(u32 data) {
+    if (data & 0x02000000) sPmCount = 0;
+    if (sPmCount < 4) sPmWords[sPmCount++] = data;
+    if (data & 0x01000000) pm_command();
+}
+
 // ---- sound (tag 7): the native sound driver (snd7/): a command list's address, or 0 = process now
 void snd7_receive(u32 data);
 
@@ -230,6 +291,7 @@ static void service(u32 tag, u32 data, u32 err) {
     case 5: rtc_command(data); break;
     case 6: tp_command(data); break;
     case 7: snd7_receive(data ? (u32)(uintptr_t)ptr26(data) : 0); break;
+    case 8: pm_word(data); break;
     case 11: card_request(data); break;
     case 15:  // WVR: VRAM C/D for the wireless reboot driver; the ARM7 acknowledges at once
         if (data >> 16 == 1) pxi7_send(15 | 0x10000u << 6);
