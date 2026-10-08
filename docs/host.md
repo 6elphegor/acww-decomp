@@ -42,7 +42,9 @@ the functions using file-local typedefs): moving those types to headers comes wi
 Declarations: `tools/host_decls.py` (libclang; `pip install --user clang==21.*`) compares every declaration written
 in a source file with the function's definition; `tools/host_method_calls.py` rewrote the calls of methods through
 their mangled names into member calls (non-virtual where the method is virtual, as the direct call was; pointers
-passed unchanged); `tools/host_strict_errors.sh` counts what still needs -fpermissive.
+passed unchanged). Both builds compile without -fpermissive (since 2026-10-08): a conversion between a pointer and an
+integer is an error, so a pointer can no longer be cut to 32 bits silently; `tools/host_strict_errors.sh` (64-bit
+syntax check of every C++ unit) reports any that come back.
 
 The modern build (docs/modern.md) compiles the game with GCC and plays like the original in an emulator. The next
 step is a host build: the same sources compiled for the PC, with the DS hardware replaced. This note records what

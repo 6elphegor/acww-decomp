@@ -767,14 +767,14 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 void PlayerActor_GetHeldItem(u16* out, void* p);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void* out, s32 a);
-void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, u32 d);
+void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, Character *d);
 void PlayerActor_InitAct32Work(u32* p);
 void PlayerActor_NetReadChangeHeldItem(void* p, u16* out);
 void PlayerActor_NetWriteChangeHeldItem(void* p, u32 v);
 void PlayerActor_NetReadChangeHeldItem(void* p, u16* out);
 void PlayerActor_NetWriteChangeHeldItem(void* p, u32 v);
 void PlayerActor_InitAct32Work(u32* p);
-void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, u32 d);
+void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, Character *d);
 static inline BOOL Unk_02009624_Check()
 {
     if (gFieldSceneKind == 0) {
@@ -3638,10 +3638,7 @@ BOOL PlayerActor::pushRequest(PlayerActionRequest *r) {
             ((PlayerActor *)this)->bestRequest = n;
         }
         PlayerActionRequest *d = &((PlayerActor *)this)->requests[((PlayerActor *)this)->requestCount];
-        d->action = r->action;
-        d->priority = r->priority;
-        d->netSeq = r->netSeq;
-        d->unk_0c = r->unk_0c;
+        *d = *r;  // (the whole payload: larger than unk_0c when it holds a pointer)
         ((PlayerActor *)this)->requestCount++;
         return TRUE;
     }
@@ -5890,7 +5887,7 @@ void PlayerActor::mainPickUpFanfareStow() {
 }
 
 namespace nH {
-extern "C" void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, u32 d) {
+extern "C" void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, Character *d) {
     p->kind = a;
     p->nextMode = b;
     p->variant = c;
@@ -5898,7 +5895,7 @@ extern "C" void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c
 }
 }
 
-s32 PlayerActor::requestAct30(u16* p, u32 b, u32 c, u32 d, u32 e, u32 f, s16 g) {
+s32 PlayerActor::requestAct30(u16* p, u32 b, u32 c, u32 d, Character *e, u32 f, s16 g) {
     using namespace nH;
     PlayerActionRequest obj;
     s32 r;
@@ -5913,7 +5910,7 @@ s32 PlayerActor::requestAct30(u16* p, u32 b, u32 c, u32 d, u32 e, u32 f, s16 g) 
 void PlayerActor::setupAct30(PlayerActionRequest* item, u32 old) {
     using namespace nH;
     PlayerAct30Args* s = (PlayerAct30Args *)((PlayerActionRequest *)item)->unk_0c_b;
-    HandOverItem_Begin(&((PlayerActor *)this)->actionItem, ((PlayerAct30Args *)((PlayerActionRequest *)item)->unk_0c_b)->kind, s->nextMode, s->variant, ((PlayerActor *)this), (Character *)s->partner);
+    HandOverItem_Begin(&((PlayerActor *)this)->actionItem, ((PlayerAct30Args *)((PlayerActionRequest *)item)->unk_0c_b)->kind, s->nextMode, s->variant, ((PlayerActor *)this), s->partner);
     ((PlayerActor *)(this))->startAnimOnce(0x28, 3, 0);
     HandOverItem_RequestMode(1, ((PlayerActor *)this));
     ((PlayerActor *)(this))->playSe(0x4f);

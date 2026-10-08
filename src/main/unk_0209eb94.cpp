@@ -57,6 +57,7 @@
 #include "sys/OSThread.h"
 #include "gfx/ScreenTransition.h"
 #include "player/PlayerId.h"
+#include "proto/main/unk_020b4828.h"
 
 
 struct GuestSlotTriple { s32 v[3]; };
@@ -139,10 +140,6 @@ void LetterStorage_MarkInterrupted(void *p);
 void LetterStorage_MarkValid(void *p);
 u16 Math_CountDownU16(u16 *p);
 u32 Scene_GetCurrent();
-u8 *Scene_GetWarpRequest();
-BOOL SceneWarp_RequestExit(void *warp, s32 id);
-BOOL SceneWarp_RequestAt(void *warp, u8 id, VecFx32 *v, u32 w, s16 s, u8 p, u8 q);
-BOOL SceneWarp_RequestFade(void *warp, u8 id, u8 p, u8 q);
 void SceneWarp_SetFadeOut(void *warp, u8 v);
 TownBlockMap *TownBlockMap_Get();
 void Town_ClearBorderTrees(void *map);

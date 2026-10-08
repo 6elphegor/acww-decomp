@@ -164,7 +164,7 @@ u32 WM_EndDCF(WMCallback cb) {
 }
 
 // WM_StartMPEx (request 14)
-u32 WM_StartMPEx(WMCallback cb, u32 a, u16 len, u32 c, u16 s1, u16 s2, u16 s3, u32 s4, u32 s5, u32 s6, u32 s7) {
+u32 WM_StartMPEx(WMCallback cb, void *a, u16 len, void *c, u16 s1, u16 s2, u16 s3, u32 s4, u32 s5, u32 s6, u32 s7) {
     WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(2, 7, 8);
     if (r != 0) return r;

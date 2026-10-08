@@ -529,7 +529,7 @@ void BbsReadMenu::showPostText(s32 idx) {
     }
     for (i = 0; i < 6; i++) {
         LabelString *o = &lineLabels[i];
-        o->createBufferLabel((u32)lineCharBufs[i], 0x14, 0xe, 0xd);
+        o->createBufferLabel(lineCharBufs[i], 0x14, 0xe, 0xd);
         o->redrawAligned(z2, z2);
     }
     bgTasks[0].requestChars(lineCharBufs, 2, 0x11, 0x11, 0x100);

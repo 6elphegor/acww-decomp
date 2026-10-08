@@ -7,6 +7,7 @@
 #include "gfx/SpriteAnim.h"
 #include "talk/MsgString3.h"
 #include "ui/HudWallet.h"
+#include "sys/ClockDateTime.h"
 
 class TextLabel;
 class MsgTextLabel;
@@ -44,13 +45,28 @@ public:
     void callUpdate();
     void release();
     void reset();
+    // (symbols.txt files these under HudCountdownLabels)
+    void resetSlide();
+    void updateSlide();
+    void updateRemaining();
+    void refreshCountB();
+    void refreshCountA();
+    void refreshSeconds();
+    void refreshMinutes();
+    void refreshLabels();
+    void freeLabels();
+    void createCountBLabel();
+    void createCountALabel();
+    void createSecondsLabel();
+    void createMinutesLabel();
+    void createLabels();
 
     /* 0x0c */ SpriteAnim anim;
     /* 0x20 */ s32 state;
-    /* 0x24 */ sptr minutesLabel;  // (a TextLabel pointer)
-    /* 0x28 */ sptr secondsLabel;  // (a TextLabel pointer)
-    /* 0x2c */ sptr countALabel;  // (a TextLabel pointer)
-    /* 0x30 */ sptr countBLabel;  // (a TextLabel pointer)
+    /* 0x24 */ MsgTextLabel *minutesLabel;
+    /* 0x28 */ MsgTextLabel *secondsLabel;
+    /* 0x2c */ MsgTextLabel *countALabel;
+    /* 0x30 */ MsgTextLabel *countBLabel;
     /* 0x34 */ MsgString3 minutesText;
     /* 0x4c */ MsgString3 secondsText;
     /* 0x64 */ MsgString3 countAText;
@@ -64,17 +80,15 @@ public:
     /* 0x9c */ s32 countA;
     /* 0xa0 */ s32 countB;
     /* 0xa4 */ s32 durationKind;
-    /* 0xa8 */ s32 endTime;
-    /* 0xac */ s32 endTimeHi;
-    /* 0xb0 */ s32 remaining;
-    /* 0xb4 */ s32 remainingHi;
+    /* 0xa8 */ ClockDateTime endTime;
+    /* 0xb0 */ ClockDateTime remaining;  // time left (second, minute used)
     /* 0xb8 */ s32 finishTimer;
     /* 0xbc */ s32 slideY;
     /* 0xc0 */ s32 slideTarget;
     /* 0xc4 */ s32 slideSpeed;
     /* 0xc8 */ s32 slideDelay;
-    /* 0xcc */ s32 lastTickTime;
-    /* 0xd0 */ s32 lastTickTimeHi;
+    /* 0xcc */ u32 lastTickTime;  // OS_GetTick() of the last countdown tick sound, low and high words
+    /* 0xd0 */ u32 lastTickTimeHi;
 };
 
 // 3x3 camera direction grid (0xd8 bytes, vtable 0x020e0f40; 0x0208b5e4..0x0208b8ac)
@@ -95,6 +109,19 @@ public:
     void callUpdate();
     void resetCellAnims();
     void reset();
+    // (symbols.txt files these under HudCameraGridStates)
+    void updateClosing();
+    void enterClosing();
+    void updateOpen();
+    void enterOpen();
+    void updateOpening();
+    void enterOpening();
+    void updateClosed();
+    void enterClosed();
+    void setPosFromCell();
+    void setCellFromPos();
+    void applySelection();
+    BOOL moveByDpad();
 
     /* 0x0c */ SpriteAnim cellAnims[9];
     /* 0xc0 */ s32 state;
@@ -179,6 +206,18 @@ public:
     void callUpdate();
     void release();
     void reset();
+    // (symbols.txt files these under HudClockLabels)
+    void resetSlide();
+    void updateSlide();
+    void pollDateTime();
+    void blinkColon();
+    void refreshMinute();
+    void refreshHour();
+    void refreshAmPm();
+    void refreshWeekday();
+    void refreshDay();
+    void refreshMonth();
+    void refreshLabels();
 
     /* 0x0c */ SpriteAnim anim;
     /* 0x20 */ s32 state;
@@ -190,7 +229,7 @@ public:
     /* 0x38 */ MsgTextLabel *hourLabel;
     /* 0x3c */ MsgTextLabel *minuteLabel;
     /* 0x40 */ MsgTextLabel *colonLabel;
-    /* 0x44 */ u32 colonTimer;
+    /* 0x44 */ s32 colonTimer;
     /* 0x48 */ u8 monthDirty;
     /* 0x49 */ u8 dayDirty;
     /* 0x4a */ u8 weekdayDirty;
@@ -203,8 +242,10 @@ public:
     /* 0x54 */ s32 slideTarget;
     /* 0x58 */ s32 slideSpeed;
     /* 0x5c */ s32 slideDelay;
-    /* 0x60 */ u16 dayMonth;
-    /* 0x62 */ u16 minuteHour;
+    /* 0x60 */ u8 day;  // as Clock_GetDayMonth / Clock_GetMinuteHour write them
+    /* 0x61 */ u8 month;
+    /* 0x62 */ u8 minute;
+    /* 0x63 */ u8 hour;
     /* 0x64 */ s32 weekday;
     /* 0x68 */ MsgString3 monthText;
     /* 0x80 */ MsgString3 dayText;

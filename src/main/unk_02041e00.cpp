@@ -803,7 +803,7 @@ s32 FieldActions_Update(void *);
 s32 TownJunkInsects_Apply(void *);
 s32 FieldActions_Init(void *);
 s32 PendingUnits_ClearAll(void *);
-s32 Town_MarkEventApplied(void *, void *);
+void Town_MarkEventApplied(void *a, u32 b);
 s32 ChopCount_ClearAll(void *);
 s32 Town_ClearObjectsFcFd(void *);
 s32 _s32_div_f(s32, s32);
@@ -871,7 +871,7 @@ s32 DateTime_DiffMinutes(void *, void *);
 void PendingUnit_Clear(PendingUnit *p);
 void Field_UpdateActions();
 void Field_ResetActions();
-void TownUpdater_MarkEventApplied(void *p);
+void TownUpdater_MarkEventApplied(u32 id);
 void Town_RefreshDailyObjects();
 void LitCedarList_Clear();
 void LitCedarList_Add(s32 a, s32 b);
@@ -5610,8 +5610,8 @@ extern "C" void Town_RefreshDailyObjects() {
 }
 
 namespace nH {
-extern "C" void TownUpdater_MarkEventApplied(void *p) {
-    Town_MarkEventApplied(gTownUpdater, p);
+extern "C" void TownUpdater_MarkEventApplied(u32 id) {
+    Town_MarkEventApplied(gTownUpdater, id);
 }
 }
 

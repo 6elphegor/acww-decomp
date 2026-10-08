@@ -2577,7 +2577,7 @@ done:
     if (r4 == 7) {
         r4 = FieldVillagerAi_PickRandomRouteType(self);
     }
-    self->route.start((u32)(uptr)&o->position, r4, a, (u32)(uptr)o);
+    self->route.start(&o->position, r4, a, o);
 }
 }
 }
@@ -3271,7 +3271,7 @@ BOOL FieldVillagerAiStates::execOffscreen(FieldVillager *o) {
                 FieldVillagerAi_ChangeState(this, o, 3);
             } else {
                 if (route.getStage() != 3 && FieldVillagerAi_ShouldGoHome(this, o) != 0) {
-                    route.start((u32)(uptr)&o->position, 3, 1, (u32)(uptr)o);
+                    route.start(&o->position, 3, 1, o);
                     routeStepTimer = 0;
                 }
                 if (routeStepTimer == 0) {

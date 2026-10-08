@@ -126,12 +126,12 @@ void LabelBalloon::setClampToScreen(u8 v) { clampToScreen = v; }
 void LabelBalloon::refreshText(s32 flag) {
     TextLabel *p = label;
     if (p) {
-        p->textStart = (u32)text.data();
+        p->textStart = text.data();
         label->requestRedraw();
     }
     p = label2;
     if (p) {
-        p->textStart = (u32)text2.data();
+        p->textStart = text2.data();
         label2->requestRedraw();
     }
     if (flag) {
@@ -353,7 +353,7 @@ void LabelBalloon::createLabels() {
         if (label != NULL) {
             label->vramLoader = 4;
             TextLabel *t = label;
-            t->textStart = (u32)((StrBuf *)&text)->data();
+            t->textStart = ((StrBuf *)&text)->data();
             label->group = 1;
             if (onBufferA != 0) {
                 label->copyMode = 2;
@@ -374,7 +374,7 @@ void LabelBalloon::createLabels() {
         if (label2 != NULL) {
             label2->vramLoader = 4;
             TextLabel *t = label2;
-            t->textStart = (u32)((StrBuf *)&text2)->data();
+            t->textStart = ((StrBuf *)&text2)->data();
             label2->group = 1;
             if (onBufferA != 0) {
                 label2->copyMode = 2;

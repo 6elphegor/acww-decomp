@@ -15,7 +15,7 @@ public:
     virtual void onChar(u32 c);
     virtual void onTag(u8 *p);
 
-    /* 0x2c */ u32 altTextEnd;
+    /* 0x2c */ u8 *altTextEnd;
 };
 
 #endif

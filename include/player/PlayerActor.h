@@ -168,7 +168,7 @@ public:
     void act30CheckEnd();
     void act30UpdateAnim();
     void setupAct30(PlayerActionRequest* item, u32 old);
-    s32 requestAct30(u16* p, u32 b, u32 c, u32 d, u32 e, u32 f, s16 g);
+    s32 requestAct30(u16* p, u32 b, u32 c, u32 d, Character *e, u32 f, s16 g);
     void mainPickUpFanfareStow();
     void pickUpFanfareStowShrink();
     void netAct35();

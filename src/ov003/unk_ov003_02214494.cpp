@@ -22,6 +22,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_02214494.h"
+#include "proto/main/unk_020b4828.h"
 
 extern "C" DebugColor data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov003_02235160(0x14, 0x14, 0x1f, 0x1f);
@@ -47,10 +48,7 @@ extern "C" ActorProfile sReddTentProfile = {(void *(*)())ReddTent_Create, 0x1b, 
 extern "C" {
 BOOL TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
-void *Scene_GetWarpRequest();
-BOOL SceneWarp_RequestExit(void *o, s32 a);
 s32 Scene_GetCurrent();
-void Scene_SetTownReturnPos(void *o, s32 a, VecFx32 *v, u32 b, s32 c, u32 d, u32 e);
 s32 Ground_GetDefaultY(u32 a);
 s32 ReddPassword_LearnCurrentPlayer();
 s32 ReddPassword_CurrentPlayerKnows();
@@ -375,7 +373,7 @@ void ReddTent::execTentWarp() {
             if (SceneWarp_RequestExit(Scene_GetWarpRequest(), t)) {
                 v.y = Ground_GetDefaultY(0);
                 v.z = v.z + 0x1000;
-                void *o = Scene_GetWarpRequest();
+                SceneWarp *o = Scene_GetWarpRequest();
                 s32 r = Scene_GetCurrent();
                 Scene_SetTownReturnPos(o, r, &v, 0xf000000, (s16)(ang + 0x8000), gridX, gridZ);
                 entryFlags.f0 = 1;

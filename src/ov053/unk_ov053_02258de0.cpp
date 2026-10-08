@@ -46,6 +46,7 @@
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_02225290.h"
 #include "proto/ov053/unk_ov053_02258de0.h"
+#include "proto/main/unk_020b4828.h"
 
 
 
@@ -179,8 +180,6 @@ s32 Math_CountDownU8(void *);
 BOOL Camera_SetMode16At(VecFx32 *v);
 void TalkRequest_SetTargetDone(void *self);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void *Scene_GetWarpRequest();
-s32 SceneWarp_RequestExit(void *, s32);
 void Camera_SetModeDefault();
 void Ground_LockExit(s32 a);
 s32 Scene_GetPrevious();

@@ -46,6 +46,7 @@
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 #include "proto/ov052/unk_ov052_02258de0.h"
+#include "proto/main/unk_020b4828.h"
 
 
 class ActorTalkRequest;
@@ -76,8 +77,6 @@ BOOL TouchPick_GetGroundPos(TouchPickResult *a, VecFx32 *b);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetPrice(u16 *p);
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestExit(s32 a, s32 b);
 BOOL Scene_GetPrevious();
 void ReddShop_BuyAt(s32 a, s32 b, s32 c);
 BOOL ReddShop_IsPurchaseSynced();

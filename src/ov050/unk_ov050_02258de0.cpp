@@ -58,6 +58,7 @@
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 #include "proto/ov050/unk_ov050_02258de0.h"
+#include "proto/main/unk_020b4828.h"
 
 
 class ActorTalkRequest;
@@ -373,8 +374,6 @@ void *NookShop_GetRenovation(void *g);
 BOOL NookShop_HasClass4Furniture(void *g);
 BOOL NookShop_IsPointSpecialToday(void *g);
 BOOL NookShop_IsSaleTime(void *g);
-s32 Scene_GetWarpRequest();
-BOOL SceneWarp_RequestExit(s32 a, s32 b);
 u8 *Scene_GetTouchPicker();
 u8 Scene_GetPrevious();
 u32 Scene_GetCurrent();

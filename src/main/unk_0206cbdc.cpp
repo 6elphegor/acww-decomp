@@ -326,7 +326,7 @@ void LetterTextLine::redrawIfDirty(BOOL b) {
             TextLabel *t;
             isDirty = 0;
             t = textLabel;
-            t->textStart = (u32)data();
+            t->textStart = data();
             if (b) textLabel->alignRight();
             textLabel->requestRedraw();
         }

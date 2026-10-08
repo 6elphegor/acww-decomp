@@ -816,8 +816,7 @@ BOOL BlockMap::placeStructure(u16 *a, s32 x, s32 y, u8 flag) {
     tile = 0xfff1;
     if (p) tile = *p;
     if (flag && FieldStructureMgr_Get()) {
-        // (FieldStructureMgr_Get returns the manager as an integer)
-        return FieldStructureMgr_SpawnBuilding((void *)(uptr)FieldStructureMgr_Get(), a, x, y, 1);
+        return FieldStructureMgr_SpawnBuilding(FieldStructureMgr_Get(), a, x, y, 1);
     }
     if (putStructure(a, x, y)) {
         if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) LostAndFound_Add(tile);

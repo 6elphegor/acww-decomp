@@ -29,7 +29,7 @@ extern CommManager *gCommManager;
 u8 *NNS_G3dGetTex(u8 *p);
 }
 
-extern "C" void PlayerBodyModelPool_Create(void *parent) {
+extern "C" void PlayerBodyModelPool_Create(Heap *parent) {
     PlayerBodyModelHeap_Create(parent);
     sPlayerBodyModelPool.allocBuffers();
     if (gPlayerBodyModelHeap) static_cast<Heap *>(gPlayerBodyModelHeap)->adjust();

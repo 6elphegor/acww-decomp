@@ -21,7 +21,7 @@ public:
     void redrawRight();
     void redrawOffset(s32 a, s32 b);
     void redrawAligned(s32 a, s32 b);
-    void createBufferLabel(u32 a, u32 b, u8 x, u8 y);
+    void createBufferLabel(void *buf, s32 widthTiles, u8 x, u8 y);  // drawn into buf (2 tiles high)
     void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void setLayerColors(u32 id, u8 x, u8 y);

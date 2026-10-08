@@ -59,6 +59,7 @@
 #include "save/SaveData.h"
 #include "player/PlayerErrands.h"
 #include "room/FtrActorGrid.h"
+#include "proto/main/unk_020b4828.h"
 
 extern SaveData gSaveData;
 
@@ -112,8 +113,6 @@ void Camera_SetMode4();
 u32 strlen(const char *s);
 s32 strncmp(const char *a, const char *b, u32 n);
 void NpcActor_FindFreeUnitNear(VecFx32 *out, NpcActor *self, VecFx32 *v);
-s32 Scene_GetWarpRequest();
-void SceneWarp_RequestExit(s32 a, s32 b);
 BOOL Scene_GetPrevious();
 void Ground_LockExit(s32 a);
 }

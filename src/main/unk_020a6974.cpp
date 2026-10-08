@@ -25,10 +25,10 @@
 #include "talk/MsgString33.h"
 #include "talk/ChoiceString.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_File_ReadRange  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02119434.h"
+#include "proto/main/unk_02063904.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020029e8.h"
@@ -42,127 +42,8 @@
 #include "proto/main/unk_020b7190.h"
 #include "proto/main/unk_020b7d84.h"
 
-
 extern "C" {
 // Other files
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void File_ReadRange(void *file, void *buf, u32 size, u32 offset);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 }
 
 extern "C" {
@@ -182,28 +63,15 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-void FS_CloseFile(void *file);
+void FS_CloseFile(FSFile *file);
 }
 
 extern "C" {
-void FS_InitFile(void *file);
-}
-
-extern "C" {
-BOOL FS_OpenFile(void *file, const char *path);
-}
-
-extern "C" {
-}
-
-extern "C" {
+BOOL FS_OpenFile(FSFile *file, const char *path);
 }
 
 extern "C" {
 char *strncpy(char *dst, const char *src, u32 n);
-}
-
-extern "C" {
 }
 
 extern "C" {
@@ -242,10 +110,6 @@ BOOL Msg_EncodeGameChar(u8 *out, const u8 *src);
 
 extern "C" {
 BOOL Msg_DecodeGameChar(char *out, u8 c);
-}
-
-extern "C" {
-u32 Msg_GetCharAt(u32 a, u32 b);
 }
 
 extern "C" {
@@ -293,42 +157,12 @@ void MsgUiProc_ShowObjPlane(void);
 }
 
 extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 extern u16 gPad[2];
 }
 
 extern u8 sInputButtonMode;
 
-extern "C" {
-}
-
 extern u8 sInputLocked;
-
-extern "C" {
-}
 
 // class of the byte globals registered with the destructor at 0x020082a8
 struct TalkMsgIndex {
@@ -336,7 +170,6 @@ struct TalkMsgIndex {
     TalkMsgIndex(u8 x) { v = x; }
     ~TalkMsgIndex();
 };
-
 
 extern TalkMsgIndex gU8None;
 extern TalkMsgIndex gTalkMsgIndexNone;
@@ -357,64 +190,12 @@ class EncodedString;
 class MsgRequest;
 class MsgRenderProcessor;
 class MsgTextLabel;
-class MsgString;
 class MsgQuery;
 class MsgString33;
 class MsgCopyProcessor;
 class BmgReader;
-class MsgParser;
-class MsgStringAttr;
-class MsgProcessor;
-class MsgWalker;
-class EncodedString;
-class MsgRequest;
-class MsgRenderProcessor;
-class MsgTextLabel;
-class MsgString;
-class MsgQuery;
-class MsgString33;
-class MsgCopyProcessor;
-class BmgReader;
-class MsgParser;
-class MsgStringAttr;
-class MsgProcessor;
-class MsgWalker;
-class EncodedString;
-class MsgRequest;
-class MsgRenderProcessor;
-class MsgTextLabel;
-class MsgString;
-class MsgQuery;
-class MsgString33;
-class MsgCopyProcessor;
-class BmgReader;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ChoiceString: talk/ChoiceString.h
-
-
-class MsgProcessor;
-
-
-
-
-
-
-
 
 extern "C" {
 extern BmgInfHeader sBmgInfHeader;
@@ -432,7 +213,6 @@ extern MsgRenderProcessor gMsgRenderProcessor;
 extern MsgCopyProcessor gMsgCopyProcessor;
 extern MsgQuery gMsgQuery;
 
-
 extern "C" {
 void BmgMsgAttr_Clear(BmgMsgAttr *s);
 }
@@ -446,9 +226,6 @@ static inline BOOL IsTouching() {
 // MsgTag::MsgTag(), which func_020a6a0c calls to re-construct its token in place. A placement new adds a
 // null check, and C++ has no other way to call a constructor on an existing object.
 
-extern "C" {
-u32 Msg_CountChars(u32 a);
-}
 // prototypes (test harness)
 extern "C" void MsgUiProc_ShowObjPlane();
 extern "C" void MsgUiProc_HideObjPlane();
@@ -459,10 +236,10 @@ extern "C" u8 Bmg_ReadU8(void *p);
 extern "C" u8 *Bmg_GetMsgAttr(u8 *p);
 extern "C" void MsgRunner_DtorStub(void);
 extern "C" MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
-extern "C" MsgTextLabel *MsgTextLabel_CreateBuffer(s32 a, s32 b, s32 c);
+extern "C" MsgTextLabel *MsgTextLabel_CreateBuffer(void *buf, s32 b, s32 c);
 extern "C" void MsgTextLabel_Destroy(MsgTextLabel *obj);
-extern "C" u32 Msg_MeasureWidth(u32 arg);
-extern "C" u32 TextLabel_MeasureMsgWidth(TextLabel *obj);
+extern "C" u32 Msg_MeasureWidth(u8 *text);
+extern "C" u32 TextLabel_MeasureMsgWidth(MsgString *s);
 extern "C" BOOL EncodedString_SetRaw(StrBuf *buf, const void *src, s32 len);
 extern "C" u8 Msg_ReadU8(u8 *p, u32 i);
 extern "C" u16 Msg_ReadU16(u8 *p, u32 i);
@@ -507,14 +284,13 @@ extern "C" void Input_LoadMode(void);
 extern "C" void Input_StoreMode(void);
 extern "C" BOOL Input_IsKeyBlocked(void);
 extern "C" BOOL Input_IsTouchBlocked(void);
-extern "C" u32 Msg_FindTag(u32 a, s32 b, s32 c);
-extern "C" u32 Msg_GetCharAt(u32 a, u32 b);
-extern "C" u32 Msg_GetCharFromEnd(u32 a, u32 b);
-extern "C" u32 Msg_CountChars(u32 a);
-extern "C" u32 Msg_SkipLines(u32 a, u32 b);
+extern "C" u8 *Msg_FindTag(u8 *text, s32 group, s32 id);
+extern "C" u32 Msg_GetCharAt(u8 *text, u32 index);
+extern "C" u32 Msg_GetCharFromEnd(u8 *text, u32 n);
+extern "C" u32 Msg_CountChars(u8 *text);
+extern "C" u8 *Msg_SkipLines(u8 *text, u32 n);
 extern "C" BOOL Msg_DecodeGameChar(char *out, u8 c);
 extern "C" BOOL Msg_EncodeGameChar(u8 *out, const u8 *src);
-
 
 const u32 sBmgMsgAttrTableC[25] = {0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1};
 TalkMsgIndex gU8None(0xff);
@@ -572,7 +348,7 @@ BmgReader::BmgReader(u8 arg1) {
     msgIndex = gU8None.v;
     textOffset = 0;
     textSize = 0;
-    FS_InitFile(file);
+    FS_InitFile(&file);
     MI_CpuFill8(&filePath, 0, 0x3f);
 }
 
@@ -582,13 +358,13 @@ BmgReader::~BmgReader() {
 
 u8 BmgReader::open(const char *path) {
     strncpy((char *)filePath, path, 0x3e);
-    isOpen = FS_OpenFile(file, path) ? 1 : 0;
+    isOpen = FS_OpenFile(&file, path) ? 1 : 0;
     return isOpen;
 }
 
 void BmgReader::close() {
     if (isOpen != 0) {
-        FS_CloseFile(file);
+        FS_CloseFile(&file);
         isOpen = 0;
         msgIndex = gU8None.v;
     }
@@ -639,7 +415,7 @@ void BmgReader::resetState() {
 }
 
 BOOL BmgReader::readFileHeader() {
-    File_ReadRange(file, &sBmgFileHeader, 0x20, 0);
+    File_ReadRange(&file, &sBmgFileHeader, 0x20, 0);
     sBmgFileHeader.magic = Bmg_ReadMagic(&sBmgFileHeader);
     sBmgFileHeader.type = Bmg_ReadMagic(&sBmgFileHeader.type);
     sBmgFileHeader.fileSize = Bmg_ReadU32(&sBmgFileHeader.fileSize);
@@ -656,7 +432,7 @@ BOOL BmgReader::readFileHeader() {
 }
 
 BOOL BmgReader::readInfHeader() {
-    File_ReadRange(file, &sBmgInfHeader, 0x14, 0x20);
+    File_ReadRange(&file, &sBmgInfHeader, 0x14, 0x20);
     sBmgInfHeader.magic = Bmg_ReadMagic(&sBmgInfHeader);
     sBmgInfHeader.size = Bmg_ReadU32(&sBmgInfHeader.size);
     sBmgInfHeader.msgCount = Bmg_ReadU16(&sBmgInfHeader.msgCount);
@@ -678,7 +454,7 @@ BOOL BmgReader::readInfHeader() {
 }
 
 BOOL BmgReader::readDatHeader() {
-    File_ReadRange(file, &sBmgDatHeader, 12, sBmgInfHeader.size + 0x20);
+    File_ReadRange(&file, &sBmgDatHeader, 12, sBmgInfHeader.size + 0x20);
     sBmgDatHeader.magic = Bmg_ReadMagic(&sBmgDatHeader);
     sBmgDatHeader.size = Bmg_ReadU32(&sBmgDatHeader.size + 0);
     return sBmgDatHeader.magic == 0x44415431;
@@ -688,7 +464,7 @@ BOOL BmgReader::readInfEntry() {
     u32 buf[2];
     u32 off = msgIndex * 4 + 0x10;
     BOOL last = (u32)(sBmgInfHeader.msgCount - 1) == msgIndex;
-    File_ReadRange(file, buf, last ? 4 : 8, off + 0x20);
+    File_ReadRange(&file, buf, last ? 4 : 8, off + 0x20);
     textOffset = Bmg_ReadU32(&buf[0]);
     if (last) {
         textSize = sBmgDatHeader.size - (textOffset + 8);
@@ -705,7 +481,7 @@ BOOL BmgReader::readInfEntryWithAttr() {
     s32 i;
     u32 off = msgIndex * 12 + 0x10;
     BOOL last = (u32)(sBmgInfHeader.msgCount - 1) == msgIndex;
-    File_ReadRange(file, buf, last ? 12 : 24, off + 0x20);
+    File_ReadRange(&file, buf, last ? 12 : 24, off + 0x20);
     if (last) {
         count = 1;
     } else {
@@ -732,13 +508,13 @@ BOOL BmgReader::readInfEntryWithAttr() {
 }
 
 BOOL BmgReader::readText() {
-    u32 a = getBuffer();
+    u8 *a = getBuffer();
     u32 b = getBufferSize();
     u32 off = textOffset + 8;
     if (b >= textSize) {
         b = textSize;
     }
-    File_ReadRange(file, (void *)a, b, sBmgInfHeader.size + 0x20 + off);
+    File_ReadRange(&file, a, b, sBmgInfHeader.size + 0x20 + off);
     return TRUE;
 }
 
@@ -859,10 +635,10 @@ void MsgParser::begin(u8 *p) {
     onBegin();
 }
 
-void MsgParser::pushText(u8 *p) {
+void MsgParser::pushText(const u8 *p) {
     if (p != NULL) {
         _ZN12MsgCallStack4pushERKj(&callStack, &cursor);
-        cursor = p;
+        cursor = const_cast<u8 *>(p);
     }
 }
 
@@ -876,10 +652,10 @@ BOOL MsgWalker::canContinue() {
     return TRUE;
 }
 
-u8 *MsgWalker::run(BOOL arg) {
+u8 *MsgWalker::run(u8 *end) {
     u8 *r = NULL;
     for (;;) {
-        if (cursor == (u8 *)arg) {
+        if (cursor == end) {
             onEnd();
             break;
         }
@@ -887,7 +663,7 @@ u8 *MsgWalker::run(BOOL arg) {
             r = cursor;
             break;
         }
-        if (!step((u32)r)) {
+        if (!step(0)) {  // (r is still NULL here)
             break;
         }
     }
@@ -925,7 +701,7 @@ void MsgProcessor::clearStopAtNewline() { stopAtNewline = 0; }
 
 // ---- MsgRenderProcessor
 MsgRenderProcessor::MsgRenderProcessor() : MsgProcessor(1) {
-    altTextEnd = 0;
+    altTextEnd = NULL;
 }
 
 MsgRenderProcessor::~MsgRenderProcessor() {}
@@ -946,8 +722,8 @@ void MsgRenderProcessor::onChar(u32 c) {
     if (label != NULL) {
         label->onChar(c);
     }
-    if (altTextEnd != 0 && (u8 *)cursor == (u8 *)altTextEnd) {
-        altTextEnd = 0;
+    if (altTextEnd != NULL && cursor == altTextEnd) {
+        altTextEnd = NULL;
         popText();
     }
 }
@@ -967,11 +743,11 @@ void MsgRenderProcessor::onTag(u8 *p) {
             if (!Talk_IsAltTextEnabled()) {
                 skip(x * 2);
                 pushText((u8 *)z);
-                altTextEnd = (u32)y;
+                altTextEnd = (u8 *)y;
             }
         }
     } else if (a == 0) {
-        u8 *r = NULL;
+        const u8 *r = NULL;
         if (b == 0) {
             r = Text_GetSpecialCharStr6();
         } else if (b == 1) {
@@ -999,7 +775,7 @@ void MsgRenderProcessor::onTag(u8 *p) {
 // ---- MsgTextLabel
 extern "C" MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c) {
     BOOL ok = FALSE;
-    void *mem = Heap_Alloc(gTextHeap, HOST_SIZED(0x84, MsgTextLabel));
+    void *mem = Heap_Alloc(static_cast<Heap *>(gTextHeap), sizeof(MsgTextLabel));
     MsgTextLabel *obj = NULL;
     if (mem != NULL) {
         obj = new (mem) MsgTextLabel(a, b, c);
@@ -1011,12 +787,12 @@ extern "C" MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c) {
     return obj;
 }
 
-extern "C" MsgTextLabel *MsgTextLabel_CreateBuffer(s32 a, s32 b, s32 c) {
+extern "C" MsgTextLabel *MsgTextLabel_CreateBuffer(void *buf, s32 b, s32 c) {
     BOOL ok = FALSE;
-    void *mem = Heap_Alloc(gTextHeap, HOST_SIZED(0x84, MsgTextLabel));
+    void *mem = Heap_Alloc(static_cast<Heap *>(gTextHeap), sizeof(MsgTextLabel));
     MsgTextLabel *obj = NULL;
     if (mem != NULL) {
-        obj = new (mem) MsgTextLabel(a, b, c);
+        obj = new (mem) MsgTextLabel(static_cast<u8 *>(buf), b, c);
         ok = TRUE;
     }
     if (ok) {
@@ -1029,31 +805,31 @@ extern "C" void MsgTextLabel_Destroy(MsgTextLabel *obj) {
     if (obj != NULL) {
         NNS_FndRemoveListObject(gTextLabelList, obj);
         obj->~MsgTextLabel();
-        Heap_Free(gTextHeap, obj);
+        Heap_Free(static_cast<Heap *>(gTextHeap), obj);
     }
 }
 
-extern "C" u32 Msg_MeasureWidth(u32 arg) {
+extern "C" u32 Msg_MeasureWidth(u8 *text) {
     u32 r = 0;
     MsgTextLabel *obj = MsgTextLabel_CreateVram(0, 1, 2);
     if (obj != NULL) {
-        obj->textStart = arg;
+        obj->textStart = text;
         r = obj->measureWidth();
     }
     MsgTextLabel_Destroy(obj);
     return r;
 }
 
-extern "C" u32 TextLabel_MeasureMsgWidth(TextLabel *obj) {
-    return Msg_MeasureWidth(obj->measureWidth());
+extern "C" u32 TextLabel_MeasureMsgWidth(MsgString *s) {
+    return Msg_MeasureWidth(s->data());
 }
 
-MsgTextLabel::MsgTextLabel(u32 arg1, s32 arg2, s32 arg3) : TextLabel(arg1, arg2, arg3) {
+MsgTextLabel::MsgTextLabel(u32 tileIndex, s32 widthTiles, s32 heightTiles) : TextLabel(tileIndex, widthTiles, heightTiles) {
     mode = 0;
     processor = NULL;
 }
 
-MsgTextLabel::MsgTextLabel(s32 arg1, s32 arg2, s32 arg3) : TextLabel(arg1, arg2, arg3) {
+MsgTextLabel::MsgTextLabel(u8 *buf, s32 widthTiles, s32 heightTiles) : TextLabel(buf, widthTiles, heightTiles) {
     mode = 0;
     processor = NULL;
 }
@@ -1108,8 +884,8 @@ void MsgTextLabel::draw() {
     mode = 1;
     p->setLabel(this);
     p->reset();
-    p->begin((u8 *)textStart);
-    p->run((u8 *)textEnd);
+    p->begin(textStart);
+    p->run(textEnd);
     p->clearLabel();
     mode = 0;
 }
@@ -1122,8 +898,8 @@ u32 MsgTextLabel::measureWidth() {
     mode = 2;
     p->setLabel(this);
     p->reset();
-    p->begin((u8 *)textStart);
-    p->run((u8 *)textEnd);
+    p->begin(textStart);
+    p->run(textEnd);
     p->clearLabel();
     mode = 0;
     return curX;
@@ -1220,7 +996,7 @@ BOOL MsgString::fromEncoded(EncodedString *src, BOOL a, BOOL b) {
                 if (c == 0) {
                     done = TRUE;
                     if (b) {
-                        strcpy(tmp, Text_GetSpecialCharStr3());
+                        strcpy(tmp, (const char *)Text_GetSpecialCharStr3());
                         n = strlen(tmp);
                         if (pos + n > dstSize) {
                             over = done;
@@ -1228,7 +1004,7 @@ BOOL MsgString::fromEncoded(EncodedString *src, BOOL a, BOOL b) {
                     }
                 } else if (a) {
                     if (c == 0xa) {
-                        strcpy(tmp, Text_GetSpecialCharStr2());
+                        strcpy(tmp, (const char *)Text_GetSpecialCharStr2());
                         n = strlen(tmp);
                         if (pos + n > dstSize) {
                             over = TRUE;
@@ -1291,7 +1067,7 @@ u8 MsgString::appendString(MsgString *other) {
 
 BOOL MsgString::equals(MsgString *other) {
     u8 *o = other->data();
-    return strcmp(data(), o) == 0;
+    return strcmp((const char *)data(), (const char *)o) == 0;
 }
 
 BOOL MsgString::assignRange(u8 *start, u8 *end) {
@@ -1697,7 +1473,7 @@ MsgString33::~MsgString33() {}
 
 u32 MsgString33::capacity() { return 0x21; }
 
-u8 *MsgString33::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *MsgString33::data() { return text; }
 
 void MsgString33::initEmpty() { clear(); }
 
@@ -1909,24 +1685,24 @@ MsgQuery::MsgQuery() : mode(0) {
 
 MsgQuery::~MsgQuery() {}
 
-extern "C" u32 Msg_FindTag(u32 a, s32 b, s32 c) {
+extern "C" u8 *Msg_FindTag(u8 *a, s32 b, s32 c) {
     gMsgQuery.resetQuery();
     gMsgQuery.mode = 0;
     gMsgQuery.findGroup = b;
     gMsgQuery.findId = c;
-    gMsgQuery.begin((u8 *)a);
+    gMsgQuery.begin(a);
     gMsgQuery.run(FALSE);
     if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
-        return (u32)gMsgQuery.tag.raw;
+        return gMsgQuery.tag.raw;
     }
     return 0;
 }
 
-extern "C" u32 Msg_GetCharAt(u32 a, u32 b) {
+extern "C" u32 Msg_GetCharAt(u8 *a, u32 b) {
     gMsgQuery.resetQuery();
     gMsgQuery.mode = 1;
     gMsgQuery.targetIndex = b;
-    gMsgQuery.begin((u8 *)a);
+    gMsgQuery.begin(a);
     gMsgQuery.run(FALSE);
     if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
         return gMsgQuery.curChar;
@@ -1934,7 +1710,7 @@ extern "C" u32 Msg_GetCharAt(u32 a, u32 b) {
     return 0;
 }
 
-extern "C" u32 Msg_GetCharFromEnd(u32 a, u32 b) {
+extern "C" u32 Msg_GetCharFromEnd(u8 *a, u32 b) {
     s32 n = Msg_CountChars(a) - b - 1;
     u32 r = 0;
     if (n >= 0) {
@@ -1943,10 +1719,10 @@ extern "C" u32 Msg_GetCharFromEnd(u32 a, u32 b) {
     return r;
 }
 
-extern "C" u32 Msg_CountChars(u32 a) {
+extern "C" u32 Msg_CountChars(u8 *a) {
     gMsgQuery.resetQuery();
     gMsgQuery.mode = 3;
-    gMsgQuery.begin((u8 *)a);
+    gMsgQuery.begin(a);
     gMsgQuery.run(FALSE);
     if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
         return gMsgQuery.charCount;
@@ -1954,14 +1730,14 @@ extern "C" u32 Msg_CountChars(u32 a) {
     return 0;
 }
 
-extern "C" u32 Msg_SkipLines(u32 a, u32 b) {
+extern "C" u8 *Msg_SkipLines(u8 *a, u32 b) {
     gMsgQuery.resetQuery();
     gMsgQuery.mode = 4;
     gMsgQuery.targetLines = b;
-    gMsgQuery.begin((u8 *)a);
+    gMsgQuery.begin(a);
     gMsgQuery.run(FALSE);
     if (((Flag18 *)((u8 *)&gMsgQuery.findGroup))->flag) {
-        return (u32)gMsgQuery.cursor;
+        return gMsgQuery.cursor;
     }
     return 0;
 }

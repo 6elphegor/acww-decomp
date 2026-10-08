@@ -209,7 +209,7 @@ void MenuCtrl_SetChosenItems(u16 *src);
 u16 *MenuCtrl_GetChosenItems(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_ReturnChosenItems
-void MenuCtrl_ReturnChosenItems(void *p);
+void MenuCtrl_ReturnChosenItems(BOOL returnItems);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_ReplaceBackupItem
 void MenuCtrl_ReplaceBackupItem(u32 key, u16 val);

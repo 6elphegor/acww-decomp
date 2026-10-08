@@ -37,6 +37,7 @@
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 #include "proto/ov068/unk_ov068_0226a794.h"
+#include "proto/main/unk_020b4828.h"
 
 
 
@@ -171,12 +172,7 @@ void DateTime_SubDays(ClockDateTime *p, s32 n);
 void PlayerActor_SetLastPlayDate(PlayerActor *o, PlayerData *a, Unk_0200f17c_Date *d);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
-u8 *Scene_GetWarpRequest(void);  // (the SceneWarp request)
-BOOL SceneWarp_RequestFade(SceneWarp *e, u8 id, u8 p, u8 q);
-BOOL SceneWarp_RequestExit(SceneWarp *warp, s32 id);
 u32 Scene_GetCurrent();
-BOOL Scene_SetTownReturnPos(s32 unused, s32 id, VecFx32 *pos, u32 w, s16 s, s32 p, s32 q);
-void Scene_ResetTownReturnPos(s32 unused);
 BOOL Npc_GetName(MsgString *self, u16 *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s16 Math_Atan2(s32 x, s32 y);
@@ -588,7 +584,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
         BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(0x5000);
         if (q != NULL) {
             if (q->getDoorPos(&v, &sv) != 0) {
-                SceneWarp_RequestExit((SceneWarp *)Scene_GetWarpRequest(), 9);
+                SceneWarp_RequestExit(Scene_GetWarpRequest(), 9);
                 v.z = v.z + 0x1000;
                 Scene_SetTownReturnPos(0, Scene_GetCurrent(), &v, 0xf000000, (s16)(sv + 0x8000), townHallGridX, townHallGridZ);
                 TalkRequestFlags_ClearSceneHold();

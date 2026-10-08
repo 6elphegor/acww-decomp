@@ -913,7 +913,7 @@ void ChatMenu_RedrawText(S *s) {
     if (s->textLabel != NULL) {
         ((MsgString *)&s->balloonText)->fromEncoded(&s->text, 0, 0);
         TextLabel *t = s->textLabel;
-        t->textStart = ((TextLabel *)&s->balloonText)->measureWidth();
+        t->textStart = s->balloonText.data();
         s->textLabel->requestRedraw();
         s->lengthGauge = Text_GetLength(s->text.text, 0x20) * 0x1f / 0x20;
         if (s->lengthGauge > 0x1f) {

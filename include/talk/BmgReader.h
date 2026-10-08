@@ -42,7 +42,7 @@ class BmgReader {
 public:
     BmgReader(u8 arg1);
     virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
+    virtual u8 *getBuffer() = 0;  // the buffer the message is read into
     virtual u32 getBufferSize() = 0;
 
     BOOL readText();
@@ -58,7 +58,7 @@ public:
 
     /* 0x04 */ u8 hasAttributes;
     /* 0x05 */ u8 filePath[0x3f];
-    /* 0x44 */ u8 file[HOST_SIZED(0x48, FSFile)] HOST_ALIGN8; // FSFile (larger on 64-bit hosts)
+    /* 0x44 */ FSFile file;
     /* 0x8c */ u8 isOpen;
     /* 0x8d */ u8 msgIndex;
     /* 0x90 */ u32 entry[3];

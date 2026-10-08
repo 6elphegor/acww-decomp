@@ -333,7 +333,7 @@ s32 WM_SetParentParameter(void *, void *);
 s32 WM_Reset(WMCallback cb);
 s32 WM_EndMP(void *);
 s32 WM_SetMPDataToPortEx(void *, u32, void *, u32, u32, u32, u32);
-s32 WM_StartMPEx(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
+s32 WM_StartMPEx(void *, void *, u32, void *, u32, u32, u32, s32, s32, s32, s32);
 s32 WM_SetEntry(void *, u32);
 s32 WM_MeasureChannel(void *, s32, s32, u32, s32);
 s32 WM_SetGameInfo(void *, void *, u32, u32, u32, u8);
@@ -1959,8 +1959,8 @@ void LocalWl_OnSetGameInfo(LocalWlEventMsg *m) {
 }
 
 void LocalWl_StartMp(void) {
-    s32 r = WM_StartMPEx((void *)LocalWl_OnMpEvent, (u32)sLocalWlSession->recvBuf, sLocalWlSession->recvBufSize,
-                          (u32)sLocalWlSession->sendBuf, sLocalWlSession->sendBufSize, sLocalWl->mpFreq, 4,
+    s32 r = WM_StartMPEx((void *)LocalWl_OnMpEvent, sLocalWlSession->recvBuf, sLocalWlSession->recvBufSize,
+                          sLocalWlSession->sendBuf, sLocalWlSession->sendBufSize, sLocalWl->mpFreq, 4,
                           sLocalWl->bits.f0, sLocalWl->bits.f1, 1,
                           sLocalWl->bits.f2);
     if (r == 2) {
