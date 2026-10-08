@@ -1,4 +1,5 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
+#include "ds_div.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -404,9 +405,9 @@ void CursorMotion::setPos(s32 x, s32 y) {
 void CursorMotion::startLinear(s32 x, s32 y, s32 n) {
     mode = 2;
     x = x << 4;
-    stepX = (x - posX) / n;
+    stepX = DS_DIV((x - posX), n);
     y = y << 4;
-    stepY = (y - posY) / n;
+    stepY = DS_DIV((y - posY), n);
     framesLeft = n;
 }
 

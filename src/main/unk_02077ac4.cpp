@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "town/TownBlockMap.h"
 #include "uptr.h"
 #include "item/Letter.h"
@@ -3563,7 +3564,7 @@ BOOL VillagerDataItemView::tryPlaceFossil(u16 *item, s32 mode, s32 type, u8 a, u
                 s32 idx = getFossilPartIndex(item);
                 s32 slot = 0;
                 if (idx >= 0) {
-                    slot = lo + idx % range;
+                    slot = lo + DS_MOD(idx, range);
                 }
                 if (isValidFurnitureIndex(slot)) {
                     u16 *p = furniture + slot;

@@ -8,6 +8,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 typedef u16 wchar_t;
+#include "ds_div.h"
 #include "types64.h"
 #define NULL ((void *)0)
 #include "ds_stdarg.h"  // DS_VA_ARG_C (both builds)
@@ -143,8 +144,8 @@ wchar_t *long2str__wide(s32 num, wchar_t *buff, print_format format) {
         break;
     }
     do {
-        s32 digit = unsigned_num % base;
-        unsigned_num /= base;
+        s32 digit = DS_UMOD(unsigned_num, base);
+        unsigned_num = DS_UDIV(unsigned_num, base);
         if (digit < 10) digit += '0';
         else if (format.conversion_char == 'x') digit += 'a' - 10;
         else digit += 'A' - 10;
@@ -214,8 +215,8 @@ wchar_t *longlong2str__wide(s64 num, wchar_t *buff, print_format format) {
         break;
     }
     do {
-        s32 digit = unsigned_num % base;
-        unsigned_num /= base;
+        s32 digit = DS_UMOD64(unsigned_num, base);
+        unsigned_num = DS_UDIV64(unsigned_num, base);
         if (digit < 10) digit += '0';
         else if (format.conversion_char == 'x') digit += 'a' - 10;
         else digit += 'A' - 10;

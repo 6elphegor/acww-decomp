@@ -4,6 +4,7 @@
 // __SetupCatchInfo, __FindExceptionHandler, __HandleUnexpected, __IsInSpecification, the rethrow catch-info
 // lookup and __UnwindStack. C++ with exceptions on (like the original): owns main's .exceptix entries
 // 0x020c2bd4-0x020c2c40 and .exception tables 0x020c2b04-0x020c2b2c.
+#include "ds_div.h"
 #include "types.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_0212703c.h"
@@ -93,8 +94,6 @@ typedef struct ExSpecification {
 #define EXCEPTION_ACTION_MASK 0x1f
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
 
-extern char __exception_table_start__[];
-extern char __exception_table_end__[];
 extern VoidFunc p__sinit_020c2cd0[]; // start of main's .ctor table
 extern DestructorChain *data_0220066c; // __global_destructor_chain
 extern VoidFunc data_0213c6b0; // thandler (= dthandler)
@@ -133,7 +132,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
         if (info->action_pointer == 0) {
             FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                std::terminate();
+                msl::terminate();
             }
             __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
@@ -389,7 +388,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
                 total = *(u32 *)(context->FP + bytes);
             }
             ptr += total;
-            for (n = total / size; n; n--) {
+            for (n = DS_UDIV(total, size); n; n--) {
                 ptr -= size;
                 dtor(ptr, -1);
             }
@@ -402,7 +401,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             break;
         }
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         if (action & 0x80) {
@@ -444,7 +443,7 @@ extern "C" CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionIn
         case 1:
         case 14:
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         break;
@@ -538,7 +537,7 @@ extern "C" u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, 
         case 1:
         case 14:
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         break;
@@ -570,7 +569,7 @@ extern "C" void __ThrowHandler(ThrowContext *context) {
 
     FindExceptionRecord(context->returnaddr, &info);
     if (info.exception_record == 0) {
-        std::terminate();
+        msl::terminate();
     }
     __SetupFrameInfo(context, &info);
     if (context->throwtype == 0) {

@@ -68,20 +68,7 @@ void host_deliver_irqs(void) {
 
 void OS_IrqHandler(void) { host_deliver_irqs(); }
 
-// entered through irq_entry.S from an interrupted game context (hw.c host_irq_inject)
-void host_irq_entry(void) {
-    host_deliver_irqs();
-}
 int host_irq_ready(void) { return !sIrqDisabled && !sInIrq && host_irq_pending(); }
-
-// SIGVTALRM (hw.c): the game is spinning on memory that an interrupt handler changes (no I/O, no wait, so virtual
-// time stands still): let time pass and deliver what's due.
-int host_async_tick(void) {
-    if (sIrqDisabled || sInIrq) return 0;
-    host_advance_to_next_event();
-    host_deliver_irqs();
-    return 1;
-}
 void OSi_ExceptionHandler(void) { host_fatal("OSi_ExceptionHandler"); }
 
 // ---- thread contexts: a host stack per OSContext (coro.h), in a side table. The game's thread stacks (in DS
@@ -161,7 +148,7 @@ void OS_LoadContext(void *t) {
     host_fatal("a discarded thread was resumed");
 }
 
-// for the interrupt handler (hw.c): where each suspended game thread is (a frame-pointer walk from the frame
+// for the SIGINT report (debug_posix.c): where each suspended game thread is (a frame-pointer walk from the frame
 // host_coro_switch left: the callee-saved registers, ebp / rbp among them)
 void host_dump_threads(void (*backtrace)(uintptr_t *bp, uintptr_t sp)) {
     for (int i = 0; i < MAX_CTX; i++) {

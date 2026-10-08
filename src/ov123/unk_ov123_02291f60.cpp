@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -1529,7 +1530,7 @@ void PatternEditorMenu::drawEllipse(s32 x0, s32 y0, s32 x1, u8 y1, u32 c, u32 fi
         df = -df;
     }
     sum = hw + hh;
-    step = 0x40 / (s16)(sum - ((sum >> 1) - (sum >> 3) - (df >> 1) - 5) | 1);
+    step = DS_DIV(0x40, (s16)(sum - ((sum >> 1) - (sum >> 3) - (df >> 1) - 5) | 1));
     d &= 1;
     w &= 1;
     for (i = 0; i < 0x40; i = i + step) {

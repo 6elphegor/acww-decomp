@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -1440,7 +1441,7 @@ void WifiLink_OnScanResult(WMStartScanExCallback *m) {
                 u32 cnt = WifiLink_CountBits(t & 0x3ffe);
                 if (cnt != 0) {
                     u32 x = sWifiLinkWork->scanCount;
-                    if (x % cnt == 0) {
+                    if (DS_UMOD(x, cnt) == 0) {
                         WifiLink_Notify(8, 0, x, 0, 0x718);
                     }
                 }

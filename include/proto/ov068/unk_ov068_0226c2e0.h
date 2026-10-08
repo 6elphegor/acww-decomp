@@ -114,6 +114,9 @@ extern char sRoostModelPoo[23];
 #ifndef PROTO_LOCAL_RoostGuest_PickKKSong
 u16 RoostGuest_PickKKSong(void *self);
 #endif
+#ifndef PROTO_LOCAL_SpNpcRoostGuest_GetGuest
+s32 SpNpcRoostGuest_GetGuest(void *p);
+#endif
 #ifdef __cplusplus
 }
 #endif

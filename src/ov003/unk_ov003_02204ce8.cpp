@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
@@ -5541,7 +5542,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
             v48.y = 0x19a;
             v48.z = -0x19a;
         } else if ((s32)m >= 0x10) {
-            s32 q = (s32)((m - 15) * 0x19a) / (s32)(((Unk_ov003_0220d6f4_Bits *)&o->bodyModel.numFrames)->mid - 0x10);
+            s32 q = DS_DIV((s32)((m - 15) * 0x19a), (s32)(((Unk_ov003_0220d6f4_Bits *)&o->bodyModel.numFrames)->mid - 0x10));
             v48.x = v48.x + q * 2;
             v48.y = v48.y + q;
             v48.z = v48.z - q;
@@ -6548,7 +6549,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         if (f >= 0x24) {
             s32 num = (f - 0x23) * 0x19a;
             s32 den = ((Unk_ov003_0220bc84_Bits *)&o->bodyModel.numFrames)->f - 0x24;
-            s32 e = num / den;
+            s32 e = DS_DIV(num, den);
             d.x = d.x + e * 2;
             d.y = d.y + e;
             d.z = d.z - e;

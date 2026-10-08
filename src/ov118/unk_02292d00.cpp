@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "talk/MsgString9C.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -1334,7 +1335,7 @@ void MapTab::updateListScroll() {
                 listScroll = listScrollTarget;
             }
         }
-        knobPos = (s32)(listScroll * 0x58) / n;
+        knobPos = DS_DIV((s32)(listScroll * 0x58), n);
     }
 }
 

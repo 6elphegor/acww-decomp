@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/SegmentHitResult.h"
@@ -2488,7 +2489,7 @@ extern "C" BOOL Ground_IsWaterAround(VecFx32 *pos, s32 r, s32 *out, s32 flags)
 extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 dir, u32 count, s32 r, s32 flags)
 {
     if (count >= 1) {
-        u32 step = dist / count;
+        u32 step = DS_UDIV(dist, count);
         VecFx32 v;
         u32 i;
         v.x = 0;

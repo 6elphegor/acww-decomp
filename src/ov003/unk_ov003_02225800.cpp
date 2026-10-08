@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
 #include "proto/main/unk_0202fa70.h"
@@ -1570,7 +1571,7 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
         }
         return;
     }
-    if (self->frameCounter % b == 0 && rnd > e) {
+    if (DS_MOD(self->frameCounter, b) == 0 && rnd > e) {
         self->unk_24b = flag == 0 ? 1 : 0;
     }
     if (rnd > self->cooldownTimer) {
@@ -4063,7 +4064,7 @@ extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
         V3 tv;
         Insect_UpdateAlarm(o, &tv);
         if (tv.x != 0) {
-            s16 v = ((o->alarmThreshold - o->alarm) * 31) / o->alarmThreshold;
+            s16 v = DS_DIV(((o->alarmThreshold - o->alarm) * 31), o->alarmThreshold);
             if (v <= 0) {
                 Insect_Despawn(o);
                 o->isAlarmed = 1;

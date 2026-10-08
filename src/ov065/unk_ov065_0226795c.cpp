@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
+#include "ds_div.h"
 #include "types.h"
 #include "uptr.h"
 #include "net/SslSha1Context.h"
@@ -351,7 +352,7 @@ void SslBigNum_DivMod(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
                 do {
                     u32 qq;
                     memmove(t1 + 1, t1, cs);
-                    qq = ((u64)rp[-3] + (((u64)rp[-2] << 16) + (((u64)rp[0] << 48) + ((u64)rp[-1] << 32)))) / d;
+                    qq = DS_UDIV64(((u64)rp[-3] + (((u64)rp[-2] << 16) + (((u64)rp[0] << 48) + ((u64)rp[-1] << 32)))), d);
                     if (qq > 0xffff) {
                         qq = 0xffff;
                     }

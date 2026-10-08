@@ -100,8 +100,6 @@ typedef struct ExSpecification {
 #define EXCEPTION_ACTION_MASK 0x1f
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
 
-extern char __exception_table_start__[];
-extern char __exception_table_end__[];
 extern VoidFunc p__sinit_020c2cd0[]; // start of main's .ctor table
 
 extern "C" {
@@ -129,7 +127,7 @@ void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset);
 DestructorChain *data_0220066c;
 
 // thandler, the terminate handler (autoload_2 .data 0x0213c6b0), initially dthandler
-VoidFunc data_0213c6b0 = std::dthandler;
+VoidFunc data_0213c6b0 = msl::dthandler;
 
 // __partial_array_destructor-style cleanup: destroy the constructed elements [start, ptr) backwards.
 extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor) {
@@ -139,15 +137,15 @@ extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor)
             dtor(ptr);
         }
     } catch (...) {
-        std::terminate();
+        msl::terminate();
     }
 }
 
 // __cxa_vec_new (label in symbols.txt)
 extern "C" void *__cxa_vec_new(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
-    // the game's operator new[] by its symbol: it returns NULL when the heap is full, while a C++ call of ::operator new[]
-    // is assumed to return non-NULL (GCC drops the check below)
-    char *block = (char *)_Znam(count * size + padding);
+    // the game's operator new[] (Mem_AllocForNew): it returns NULL when the heap is full, while a C++ call of
+    // ::operator new[] is assumed to return non-NULL (GCC drops the check below)
+    char *block = (char *)Mem_AllocForNew(count * size + padding);
     char *array;
     char *ptr;
 
@@ -172,7 +170,7 @@ extern "C" void *__cxa_vec_new(size_t count, size_t size, size_t padding, ObjFun
             if (dtor) {
                 func_021358a8(array, ptr, size, dtor);
             }
-            ::operator delete[](block);
+            Mem_FreeForDelete(block);
             throw;
         }
     }
@@ -222,7 +220,7 @@ extern "C" void __cxa_vec_dtor(void *array, size_t count, size_t size, ObjFunc d
                     dtor(ptr);
                 }
             } catch (...) {
-                std::terminate();
+                msl::terminate();
             }
             throw;
         }
@@ -241,7 +239,7 @@ extern "C" void __cxa_vec_cleanup(void *array, size_t count, size_t size, ObjFun
                 dtor(ptr);
             }
         } catch (...) {
-            std::terminate();
+            msl::terminate();
         }
     }
 }
@@ -252,17 +250,17 @@ extern "C" void __cxa_vec_delete(void *array, size_t size, size_t padding, ObjFu
         if (dtor) {
             __cxa_vec_dtor(array, ((size_t *)array)[-1], size, dtor);
         }
-        ::operator delete[]((char *)array - padding);
+        Mem_FreeForDelete((char *)array - padding);
     }
 }
 
 // dthandler: default terminate handler
-void std::dthandler() {
+void msl::dthandler() {
     abort();
 }
 
 // terminate
-void std::terminate() {
+void msl::terminate() {
     data_0213c6b0();
 }
 

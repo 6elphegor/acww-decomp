@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "item/ItemName.h"
 #include "types.h"
 #include "nitro/gxoam.h"
@@ -502,9 +503,9 @@ void CreatureBook_SetBgFadeColor(CreatureBookPanel *s, s32 a, s32 b)
     u8 bl = (c1 & 0x7c00) >> 10;
     s32 d = b - a;
     s32 c2 = s->paletteFile[2];
-    r = ((u8)(c2 & 0x1f) * a + r * d) / b;
-    g = ((u8)((c2 & 0x3e0) >> 5) * a + g * d) / b;
-    bl = ((u8)((c2 & 0x7c00) >> 10) * a + bl * d) / b;
+    r = DS_DIV(((u8)(c2 & 0x1f) * a + r * d), b);
+    g = DS_DIV(((u8)((c2 & 0x3e0) >> 5) * a + g * d), b);
+    bl = DS_DIV(((u8)((c2 & 0x7c00) >> 10) * a + bl * d), b);
     s->paletteBuf[2] = r | (g << 5) | (bl << 10);
     CreatureBook_SetFlags(s, 1);
 }

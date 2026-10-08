@@ -10,11 +10,8 @@
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL__ZN8ProcBase11postExecuteEv
-BOOL _ZN8ProcBase11postExecuteEv(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase8postDrawEv
-BOOL _ZN8ProcBase8postDrawEv(ProcBase *self);
+#ifndef PROTO_LOCAL_ProcBase_RunPhase
+s32 ProcBase_RunPhase(ProcBase *p, ProcPhaseFn a, ProcPhaseFn b, ProcPhasePostFn c);
 #endif
 }
 #endif

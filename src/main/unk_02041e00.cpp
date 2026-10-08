@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 #include "types.h"
 #include "sys/StackPad.h"
@@ -3679,8 +3680,8 @@ extern "C" void Town_BuryFossils(TownUpdater *a, BlockMap *b, s32 c, s32 d) {
     s32 x = Random_GlobalBelow(c - 1);
     s32 y = Random_GlobalBelow(d - 1);
     for (; n > 0; n--) {
-        x = (x + 1 + Random_GlobalBelow(c - 1)) % c;
-        y = (y + 1 + Random_GlobalBelow(d - 1)) % d;
+        x = DS_UMOD((x + 1 + Random_GlobalBelow(c - 1)), c);
+        y = DS_UMOD((y + 1 + Random_GlobalBelow(d - 1)), d);
         Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1549, Town_CanBuryAt, 1);
     }
 }
@@ -3885,8 +3886,8 @@ extern "C" void Town_BuryGyroids(TownUpdater *a, BlockMap *b, s32 c, s32 d, u8 e
             for (s32 i = 0; i < 3; i++) {
                 ItemPick_FromRange(&v[1], 0x45dc, 0x7f, 0, 0, 0, 1, 10, 0, 1);
                 v[0] = v[1];
-                px = (px + 1 + Random_GlobalBelow(c - 1)) % c;
-                py = (py + 1 + Random_GlobalBelow(d - 1)) % d;
+                px = DS_UMOD((px + 1 + Random_GlobalBelow(c - 1)), c);
+                py = DS_UMOD((py + 1 + Random_GlobalBelow(d - 1)), d);
                 Town_SpawnItemInAcre(a, b, px + 1, py + 1, v[0], Town_CanBuryAt, 1);
             }
             break;

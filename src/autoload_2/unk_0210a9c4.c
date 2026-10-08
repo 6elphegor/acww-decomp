@@ -12,6 +12,7 @@ typedef int BOOL;
 typedef enum { SND_WAVE_FORMAT_PCM8, SND_WAVE_FORMAT_PCM16 } SNDWaveFormat;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
+#include "ds_div.h"
 #include "sys/PMCbInfo.h"
 #include "proto/autoload_2/unk_0210a9c4.h"
 typedef struct Strm {
@@ -111,7 +112,7 @@ BOOL NNSi_SndCaptureStart(s32 type, void *buffer0, void *buffer1, u32 bufLen, s3
 
     is8bit = format == 1 ? 1 : 0;
 
-    timer = 16756991 / sampleRate;
+    timer = DS_DIV(16756991, sampleRate);
 
     if (callback != NULL)
     {
@@ -120,7 +121,7 @@ BOOL NNSi_SndCaptureStart(s32 type, void *buffer0, void *buffer1, u32 bufLen, s3
             samples >>= 1;
 
         timer      = ((timer + 16) & ~0x1f);
-        alarmTimer = (timer >> 5) * (samples / interval);
+        alarmTimer = (timer >> 5) * (DS_UDIV(samples, interval));
 
         alarmOffset = 32;
         if (!is8bit)
@@ -188,7 +189,7 @@ BOOL NNSi_SndCaptureStart(s32 type, void *buffer0, void *buffer1, u32 bufLen, s3
     cap->bufL   = (u32)buffer0;
     cap->bufR   = (u32)buffer1;
     cap->size    = bufLen;
-    cap->blkSize = bufLen / interval;
+    cap->blkSize = DS_UDIV(bufLen, interval);
     cap->blkIdx = 0;
     cap->nBlocks    = interval;
     cap->cb    = callback;

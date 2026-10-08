@@ -1,5 +1,6 @@
 #include "uptr.h"
 #include "types.h"
+#include "sdk_linker_symbols.h"
 #include "nitro/io_access.h"
 #include "sys/OSThread.h"
 #include "game/GroundInfo.h"
@@ -77,9 +78,6 @@ extern "C" {
 
 
 extern "C" {
-extern u32 OVERLAY_0_ID[];
-extern u32 OVERLAY_68_ID[];
-extern u32 OVERLAY_69_ID[];
 }
 
 volatile u8 sWvrStartUpDone;
@@ -196,7 +194,7 @@ extern "C" void Main_Init(void) {
     GX_HBlankIntr(1);
     Backup_InitDefault();
     Main_LoadBuildTime();
-    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_69_ID);  // (the ids: symbol values)
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, OVERLAY_69_ID);
     OverlayHandle_Unload(&gOverlayHandle);
     Touch_Init();
     Main_InitTick();
@@ -220,7 +218,7 @@ extern "C" void Main_Init(void) {
     IO_W((vu32 *)0x40004c4, 0);
     Main_InitNop();
     GameRoot_Boot();
-    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_68_ID);
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, OVERLAY_68_ID);
 }
 
 extern "C" void Startup_OnWvrStartUp(u32 a, u32 b) {

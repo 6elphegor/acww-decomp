@@ -1,53 +1,38 @@
 // Host build: the DS memory map and the ARM9 I/O registers.
 //
-// The game's memory is mapped at the DS addresses, so hardcoded addresses keep working. The I/O pages
-// (0x04000000, 0x04100000) are mapped twice from one memfd: the game's view has no access, the runtime's view is
-// writable. An access to the game's view faults. The plain moves (nearly all accesses) are carried out by the
-// handler, which decodes the instruction (emulate_access); for anything else it prepares the register for a
-// read, opens the page, single-steps the instruction (trap flag) and, after it, handles the written value and
-// closes the page again. Every write is seen, even of an unchanged value.
+// The game's memory is mapped at the DS addresses, so hardcoded addresses keep working. The I/O registers are
+// plain host arrays (host_io). The game reaches them only through HostIo_Read / HostIo_Write
+// (include/nitro/io_access.h), which carry out the access and its side effects. Nothing is mapped at the DS's I/O
+// addresses: a stray access there crashes (debug_posix.c reports where).
 //
 // Time is virtual: a cycle counter (ARM9 bus clock) that advances a little on every I/O read (so polling loops
-// progress) and jumps to the next event when the game halts or waits.
+// progress) and jumps to the next event when the game halts or waits. Interrupts are taken only at safe points:
+// after a register access, and when the game enables interrupts, halts or waits (os.c).
 
 #define _GNU_SOURCE
-#include <execinfo.h>
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
-#include <sys/time.h>
-#include <sys/ucontext.h>
 #include <unistd.h>
 
 #include "host.h"
+#include "plat.h"
 
 // 3D command port writes since the last ACWW_STATS line (register writes and GX FIFO DMA)
 static unsigned long long sGxWrites;
-static u64 sIoCount;  // trapped and called register accesses
-
-// the interrupted context's registers (signal handlers)
-#if defined(__x86_64__)
-#define R_PC REG_RIP
-#define R_SP REG_RSP
-#define R_BP REG_RBP
-#define R_AX REG_RAX
-#define R_DX REG_RDX
-#else
-#define R_PC REG_EIP
-#define R_SP REG_ESP
-#define R_BP REG_EBP
-#define R_AX REG_EAX
-#define R_DX REG_EDX
-#endif
+static u64 sIoCount;  // register accesses
 
 #define IO0 0x04000000u
 #define IOB 0x04001000u  // engine B's display registers
 #define IO1 0x04100000u
 #define PAGE 0x1000u
 
-static u8 *sIo0, *sIoB, *sIo1;  // the runtime's views
+// the register pages: 0x04000000 (engine A's display registers and the rest), 0x04001000 (engine B's display
+// registers), 0x04100000 (the IPC receive FIFO, card data)
+static u8 sIo0[PAGE] __attribute__((aligned(8)));
+static u8 sIoB[PAGE] __attribute__((aligned(8)));
+static u8 sIo1[PAGE] __attribute__((aligned(8)));
 u8 *host_io(u32 a) { return a >= IO1 ? sIo1 + (a - IO1) : a >= IOB ? sIoB + (a - IOB) : sIo0 + (a - IO0); }
 static int is_io(u32 a) { return (a >= IO0 && a < IOB + PAGE) || (a >= IO1 && a < IO1 + PAGE); }
 
@@ -99,20 +84,45 @@ static u64 tm_next_overflow(Timer *t) {
 }
 
 // ---- real time: one frame per 1/60 s unless ACWW_FAST is set
-#include <errno.h>
-#include <time.h>
 static int sFast = -1;
-static struct timespec sNextFrame;
+static u64 sNextFrame;  // host_plat_time_ns
 static void host_pace_frame(void) {
     if (sFast < 0) sFast = getenv("ACWW_FAST") != 0;
     if (sFast) return;
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    if (sNextFrame.tv_sec == 0) sNextFrame = now;
-    sNextFrame.tv_nsec += 16715000;  // 59.83 Hz
-    if (sNextFrame.tv_nsec >= 1000000000) { sNextFrame.tv_nsec -= 1000000000; sNextFrame.tv_sec++; }
-    if (now.tv_sec > sNextFrame.tv_sec + 1) sNextFrame = now;  // far behind: don't try to catch up
-    while (clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sNextFrame, 0) == EINTR) {}  // SIGVTALRM interrupts it
+    u64 now = host_plat_time_ns();
+    if (sNextFrame == 0) sNextFrame = now;
+    sNextFrame += 16715000;                                  // 59.83 Hz
+    if (now > sNextFrame + 1000000000u) sNextFrame = now;  // far behind: don't try to catch up
+    host_plat_sleep_until_ns(sNextFrame);
+}
+
+// ---- watchdog: a background thread that reports (only reports) when virtual time stops moving. The game waiting
+// for an interrupt handler by spinning on memory, without a register access, a halt or a wait, would hang here (on
+// the DS the interrupt arrives anyway). No such loop is known; a reported one wants an explicit wait at the site
+// (OS_Halt, or a call that advances time and takes the interrupts). Nothing is done to the game's thread.
+// ACWW_WATCHDOG=<ms>: the threshold in real time (default 2000), 0 turns it off.
+static u32 sHeartbeat, sHeartbeatFrame;  // the low word of the cycle counter and the frame (relaxed atomics)
+static void watchdog(void *arg) {
+    u32 limit = (u32)(uintptr_t)arg, still = 0, last = 0;
+    int reported = 0;
+    for (;;) {
+        host_plat_sleep_ms(100);
+        u32 hb = __atomic_load_n(&sHeartbeat, __ATOMIC_RELAXED);
+        if (hb != last) { last = hb; still = 0; reported = 0; continue; }
+        still += 100;
+        if (still >= limit && !reported) {
+            reported = 1;
+            fprintf(stderr, "host: watchdog: virtual time hasn't moved for %u ms (frame %u): the game spins without a "
+                    "register access or a wait (break in with a debugger; SIGINT lists the threads)\n", still,
+                    __atomic_load_n(&sHeartbeatFrame, __ATOMIC_RELAXED));
+        }
+    }
+}
+static void watchdog_start(void) {
+    const char *e = getenv("ACWW_WATCHDOG");
+    long ms = e ? strtol(e, 0, 10) : 2000;
+    if (ms <= 0) return;
+    if (!host_plat_thread_start(watchdog, (void *)(uintptr_t)ms)) fprintf(stderr, "host: no watchdog thread\n");
 }
 
 // ---- screenshots: ACWW_SHOT="frame:path.ppm;..." (both screens, 256x384)
@@ -162,9 +172,10 @@ static void dma_on_vblank(void);
 static int sInEvents;
 static void run_events_body(void);
 static void run_events(void) {
-    if (sInEvents) return;  // a signal arrived while events were being handled
+    if (sInEvents) return;  // (a register access from inside the event handling)
     sInEvents = 1;
     run_events_body();
+    __atomic_store_n(&sHeartbeat, (u32)sCycles, __ATOMIC_RELAXED);
     sInEvents = 0;
 }
 void snd7_run(u64 now);
@@ -172,6 +183,9 @@ static void run_events_body(void) {
     snd7_run(sCycles);
     pxi7_run_due();
     while (sCycles >= sNextVblank) {
+        static int watchdogOn;
+        if (!watchdogOn) { watchdogOn = 1; watchdog_start(); }
+        __atomic_store_n(&sHeartbeatFrame, (u32)host_frame(), __ATOMIC_RELAXED);
         u16 st = R16(0x04000004);
         if (st & 8) host_irq_raise(1);    // VBlank
         if (st & 16) host_irq_raise(2);   // HBlank (once per frame: the per-line effects aren't emulated)
@@ -202,6 +216,7 @@ static void run_events_body(void) {
                 snd7_output_close();
                 extern void frontend_shutdown(void);
                 frontend_shutdown();
+                host_exit_dumps();  // (_exit runs no atexit handlers)
                 fprintf(stderr, "host: exit at frame %llu (ACWW_EXIT_FRAME)\n", (unsigned long long)host_frame());
                 _exit(0);
             }
@@ -279,11 +294,9 @@ static void run_events_body(void) {
             fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
         }
         if (getenv("ACWW_FPS") && host_frame() % 120 == 0) {  // frames per second of real time, over the last 120
-            static struct timespec last;
-            struct timespec now;
-            clock_gettime(CLOCK_MONOTONIC, &now);
-            double dt = (double)(now.tv_sec - last.tv_sec) + (double)(now.tv_nsec - last.tv_nsec) * 1e-9;
-            if (last.tv_sec) fprintf(stderr, "fps: frame %llu %.1f\n", (unsigned long long)host_frame(), 120 / dt);
+            static u64 last;
+            u64 now = host_plat_time_ns();
+            if (last) fprintf(stderr, "fps: frame %llu %.1f\n", (unsigned long long)host_frame(), 120 / ((double)(now - last) * 1e-9));
             last = now;
         }
         host_pace_frame();
@@ -465,93 +478,45 @@ static void io_write(u32 a, u32 old) {
     }
 }
 
-static void host_irq_inject(ucontext_t *uc);
-
-// ---- the fault handler
-static u32 sFaultAddr;
-static int sFaultWrite;
-static u32 sFaultOld;
-static void *page_of(u32 a) { return (void *)(uintptr_t)(a & ~(PAGE - 1)); }
-
-struct IoLog { u32 addr, eip, write; };
+// ---- the game's register accesses (include/nitro/io_access.h)
+// ACWW_IOHIST: which registers are accessed how often, and from where (acww_iohist.txt, written at exit, on SIGINT
+// and at ACWW_EXIT_FRAME). The last 16 accesses are listed on SIGINT.
+static int sIoHist = -1;
+static struct { u32 addr, write, n; uintptr_t pc; } sHist[4096];
+struct IoLog { u32 addr, write; uintptr_t pc; };
 static struct IoLog sRing[16];
 static u32 sRingPos;
-
-// frame-pointer walk, staying within 1 MB above the stack pointer (host stacks are 512 KB, the main one is the
-// process stack)
-static void host_backtrace(uintptr_t *bp, uintptr_t sp) {
-    for (int i = 0; i < 24; i++) {
-        if ((uintptr_t)bp < sp || (uintptr_t)bp > sp + 0x100000 || ((uintptr_t)bp & (sizeof *bp - 1))) break;
-        fprintf(stderr, "  from %08lx\n", (unsigned long)bp[1]);
-        sp = (uintptr_t)bp;
-        bp = (uintptr_t *)bp[0];
-    }
-}
-
-// ---- data write-watch for debugging: ACWW_WATCH=addr:len protects the page and logs the writes in the range
-static u32 sWatchLo, sWatchHi, sWatchPage, sWatchStep, sWatchEip;
-static u8 sWatchOld[64];
-static void watch_init(void) {
-    const char *w = getenv("ACWW_WATCH");
-    if (!w) return;
-    unsigned a, n;
-    if (sscanf(w, "%x:%x", &a, &n) != 2) return;
-    sWatchLo = a; sWatchHi = a + (n > 64 ? 64 : n); sWatchPage = a & ~(PAGE - 1);
-    mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
-}
-
-static int sNoEmulate;  // ACWW_NOEMULATE: single-step every access (for comparisons)
-static void host_irq_inject(ucontext_t *uc);
-
-// ACWW_IOHIST: which registers are accessed how often, and from where (printed at exit)
-static int sIoHist;
-static struct { u32 addr, eip, write, n; } sHist[4096];
-static void io_hist(u32 a, u32 eip, int write) {
-    u32 h = (a * 2654435761u ^ eip * 40503u ^ (u32)write) & 4095;
+static void io_hist(u32 a, uintptr_t pc, int write) {
+    u32 h = (a * 2654435761u ^ (u32)pc * 40503u ^ (u32)(pc >> 16 >> 16) ^ (u32)write) & 4095;
     for (u32 i = 0; i < 4096; i++, h = (h + 1) & 4095) {
-        if (sHist[h].n && (sHist[h].addr != a || sHist[h].eip != eip || sHist[h].write != (u32)write)) continue;
-        sHist[h].addr = a; sHist[h].eip = eip; sHist[h].write = (u32)write; sHist[h].n++;
+        if (sHist[h].n && (sHist[h].addr != a || sHist[h].pc != pc || sHist[h].write != (u32)write)) continue;
+        sHist[h].addr = a; sHist[h].pc = pc; sHist[h].write = (u32)write; sHist[h].n++;
         return;
     }
 }
 static void io_hist_dump(void) {
+    static int done;
+    if (sIoHist <= 0 || done) return;
+    done = 1;
     FILE *f = fopen("acww_iohist.txt", "w");
     if (!f) return;
     for (int i = 0; i < 4096; i++)
-        if (sHist[i].n) fprintf(f, "%u %08x %08x %c\n", sHist[i].n, sHist[i].addr, sHist[i].eip, sHist[i].write ? 'w' : 'r');
+        if (sHist[i].n) fprintf(f, "%u %08x %08lx %c\n", sHist[i].n, sHist[i].addr, (unsigned long)sHist[i].pc, sHist[i].write ? 'w' : 'r');
     fclose(f);
 }
-
-// The common accesses are carried out here instead of single-stepped: the plain moves GCC emits for volatile
-// register accesses (mov of 8/16/32 bits to or from a register, of an immediate, the moffs forms, movzx/movsx).
-// The fault gives the address; the instruction gives the size, the direction and the register. Returns the
-// instruction's length, or 0 for anything else (then: single step).
-// ModRM + SIB + displacement of a memory operand (also RIP-relative on x86-64: the same length)
-static u32 modrm_len(const u8 *p) {  // ModRM + SIB + displacement, for a memory operand
-    u32 mod = p[0] >> 6, rm = p[0] & 7, n = 1;
-    if (mod == 3) return 0;
-    if (rm == 4) {
-        n++;
-        if (mod == 0 && (p[1] & 7) == 5) n += 4;
-    } else if (mod == 0 && rm == 5) {
-        n += 4;
+void host_io_ring_dump(void) {
+    fprintf(stderr, "host: %llu I/O accesses; last ones:\n", (unsigned long long)sIoCount);
+    for (int i = 0; i < 16; i++) {
+        struct IoLog *l = &sRing[(sRingPos + i) & 15];
+        fprintf(stderr, "  %s %08x from %08lx\n", l->write ? "write" : "read ", l->addr, (unsigned long)l->pc);
     }
-    return n + (mod == 1 ? 1 : mod == 2 ? 4 : 0);
 }
-#if defined(__i386__)
-static const int kGreg[8] = {REG_EAX, REG_ECX, REG_EDX, REG_EBX, REG_ESP, REG_EBP, REG_ESI, REG_EDI};
-static u32 get_reg(ucontext_t *uc, u32 r, u32 size) {
-    if (size == 1) return (u32)uc->uc_mcontext.gregs[kGreg[r & 3]] >> (r & 4 ? 8 : 0) & 0xff;
-    return (u32)uc->uc_mcontext.gregs[kGreg[r]] & (size == 2 ? 0xffffu : ~0u);
+// the reports written at exit: atexit, ACWW_EXIT_FRAME (_exit), SIGINT (debug_posix.c)
+void host_exit_dumps(void) {
+    io_hist_dump();
+    host_debug_exit_dumps();
 }
-static void set_reg(ucontext_t *uc, u32 r, u32 size, u32 v) {
-    greg_t *g = &uc->uc_mcontext.gregs[kGreg[size == 1 ? r & 3 : r]];
-    if (size == 4) *g = (greg_t)v;
-    else if (size == 2) *g = (greg_t)(((u32)*g & 0xffff0000u) | (v & 0xffff));
-    else if (r & 4) *g = (greg_t)(((u32)*g & 0xffff00ffu) | (v & 0xff) << 8);
-    else *g = (greg_t)(((u32)*g & 0xffffff00u) | (v & 0xff));
-}
-#endif
+
 static u32 io_load(u32 a, u32 size) {
     io_read(a);
     return size == 1 ? *host_io(a) : size == 2 ? *(u16 *)host_io(a) : *(u32 *)host_io(a);
@@ -563,29 +528,32 @@ static void io_store(u32 a, u32 size, u32 v) {
     else *(u32 *)host_io(a) = v;
     io_write(a, old);
 }
-// the game's register accesses (include/nitro/io_access.h): as a trapped access would be handled, then the
-// interrupts that became due are taken, as host_irq_inject does after a trapped access
+// after each access: the interrupts that became due are taken
 int host_irq_ready(void);
 static inline void io_access_done(void) {
     if (host_irq_ready()) host_deliver_irqs();
 }
-#define io_check_addr(a) io_check_addr_(a, __builtin_return_address(0))
-static void io_check_addr_(u32 a, void *caller) {
-    if (!is_io(a)) {
-        fprintf(stderr, "host: register access to %08x (not an I/O register) from %p\n", a, caller);
+// (the whole pointer-sized address: a host pointer above 4 GB whose low word looks like a register isn't one)
+static void io_note(uintptr_t a, int write, void *caller) {
+    if (a > 0xffffffffu || !is_io((u32)a)) {
+        fprintf(stderr, "host: register access to %08lx (not an I/O register) from %p\n", (unsigned long)a, caller);
         host_fatal("bad register address");
     }
-}
-unsigned long long HostIo_Read(unsigned int a, unsigned int size) {
-    io_check_addr(a);
     sIoCount++;
+    sRing[sRingPos++ & 15] = (struct IoLog){(u32)a, (u32)write, (uintptr_t)caller};
+    if (sIoHist < 0) sIoHist = getenv("ACWW_IOHIST") != NULL;
+    if (sIoHist) io_hist((u32)a, (uintptr_t)caller, write);
+}
+unsigned long long HostIo_Read(uintptr_t addr, unsigned int size) {
+    io_note(addr, 0, __builtin_return_address(0));
+    u32 a = (u32)addr;
     unsigned long long v = size == 8 ? io_load(a, 4) | (unsigned long long)io_load(a + 4, 4) << 32 : io_load(a, size);
     io_access_done();
     return v;
 }
-unsigned long long HostIo_Write(unsigned int a, unsigned int size, unsigned long long v) {
-    io_check_addr(a);
-    sIoCount++;
+unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long long v) {
+    io_note(addr, 1, __builtin_return_address(0));
+    u32 a = (u32)addr;
     if (size == 8) {
         io_store(a, 4, (u32)v);
         io_store(a + 4, 4, (u32)(v >> 32));
@@ -594,261 +562,6 @@ unsigned long long HostIo_Write(unsigned int a, unsigned int size, unsigned long
     }
     io_access_done();
     return v;
-}
-
-#if defined(__i386__)
-static u32 emulate_access(ucontext_t *uc, u32 a) {
-    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[R_PC], *start = p;
-    u32 osize = 4, n;
-    if (*p == 0x66) { osize = 2; p++; }
-    switch (*p) {
-    case 0x88: case 0x89: case 0x8a: case 0x8b: {  // mov m, r / mov r, m
-        u32 size = *p & 1 ? osize : 1, r = p[1] >> 3 & 7;
-        if (!(n = modrm_len(p + 1))) return 0;
-        if (*p & 2) set_reg(uc, r, size, io_load(a, size));
-        else io_store(a, size, get_reg(uc, r, size));
-        return (u32)(p + 1 + n - start);
-    }
-    case 0xc6: case 0xc7: {  // mov m, imm
-        u32 size = *p & 1 ? osize : 1;
-        if ((p[1] >> 3 & 7) != 0 || !(n = modrm_len(p + 1))) return 0;
-        const u8 *imm = p + 1 + n;
-        io_store(a, size, size == 1 ? imm[0] : size == 2 ? *(const u16 *)imm : *(const u32 *)imm);
-        return (u32)(imm + size - start);
-    }
-    case 0xa0: case 0xa1: case 0xa2: case 0xa3: {  // mov al/ax/eax <-> moffs
-        u32 size = *p & 1 ? osize : 1;
-        if (*p & 2) io_store(a, size, get_reg(uc, 0, size));
-        else set_reg(uc, 0, size, io_load(a, size));
-        return (u32)(p + 5 - start);
-    }
-    case 0x0f: {  // movzx / movsx r32, m8 / m16
-        u8 op = p[1];
-        if (osize != 4 || (op != 0xb6 && op != 0xb7 && op != 0xbe && op != 0xbf)) return 0;
-        if (!(n = modrm_len(p + 2))) return 0;
-        u32 size = op & 1 ? 2 : 1, v = io_load(a, size);
-        if (op & 8) v = size == 1 ? (u32)(s32)(int8_t)v : (u32)(s32)(int16_t)v;
-        set_reg(uc, p[2] >> 3 & 7, 4, v);
-        return (u32)(p + 2 + n - start);
-    }
-    default:
-        return 0;
-    }
-}
-#else
-// (the decoding above is for i386; elsewhere every missed access is single-stepped)
-static u32 emulate_access(ucontext_t *uc, u32 a) { (void)uc; (void)a; return 0; }
-#endif
-
-static void on_segv(int sig, siginfo_t *si, void *ctx) {
-    (void)sig;
-    ucontext_t *uc = ctx;
-    u32 a = (u32)(uintptr_t)si->si_addr;
-    if (sWatchPage && (a & ~(PAGE - 1)) == sWatchPage) {
-        memcpy(sWatchOld, (void *)(uintptr_t)sWatchLo, sWatchHi - sWatchLo);
-        sWatchEip = (u32)uc->uc_mcontext.gregs[R_PC];
-        sWatchStep = 1;
-        mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ | PROT_WRITE);
-        uc->uc_mcontext.gregs[REG_EFL] |= 0x100;
-        sigaddset(&uc->uc_sigmask, SIGVTALRM);
-        return;
-    }
-    if (!is_io(a)) {
-        fprintf(stderr, "host: segfault at %08x, eip %08x, ebp %08x\n", a, (u32)uc->uc_mcontext.gregs[R_PC],
-                (u32)uc->uc_mcontext.gregs[R_BP]);
-        fprintf(stderr, "  [sp] %08lx\n", (unsigned long)*(uintptr_t *)uc->uc_mcontext.gregs[R_SP]);
-        host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
-        extern void frontend_shutdown(void);
-        frontend_shutdown();
-        _exit(4);
-        signal(SIGSEGV, SIG_DFL);
-        return;
-    }
-    sFaultAddr = a;
-    sFaultWrite = (uc->uc_mcontext.gregs[REG_ERR] & 2) != 0;
-    sRing[sRingPos++ & 15] = (struct IoLog){a, (u32)uc->uc_mcontext.gregs[R_PC], sFaultWrite};
-    sIoCount++;
-    if (sIoHist) io_hist(a, (u32)uc->uc_mcontext.gregs[R_PC], sFaultWrite);
-    if (!sNoEmulate) {
-        u32 len = emulate_access(uc, a);
-        if (len) {
-            uc->uc_mcontext.gregs[R_PC] += len;
-            host_irq_inject(uc);
-            return;
-        }
-    }
-    sFaultOld = R32(a & ~3u);
-    if (!sFaultWrite) io_read(a);
-    mprotect(page_of(a), PAGE, PROT_READ | PROT_WRITE);
-    uc->uc_mcontext.gregs[REG_EFL] |= 0x100;  // trap after the instruction
-    sigaddset(&uc->uc_sigmask, SIGVTALRM);      // no interrupt between the access and its handling
-}
-
-static void on_trap(int sig, siginfo_t *si, void *ctx) {
-    (void)sig; (void)si;
-    ucontext_t *uc = ctx;
-    if (sWatchStep) {
-        sWatchStep = 0;
-        uc->uc_mcontext.gregs[REG_EFL] &= ~0x100;
-        sigdelset(&uc->uc_sigmask, SIGVTALRM);
-        if (memcmp(sWatchOld, (void *)(uintptr_t)sWatchLo, sWatchHi - sWatchLo)) {
-            fprintf(stderr, "watch: frame %llu eip %08x:", (unsigned long long)host_frame(), sWatchEip);
-            for (u32 i = 0; i < sWatchHi - sWatchLo; i += 4) fprintf(stderr, " %08x", *(u32 *)(uintptr_t)(sWatchLo + i));
-            fprintf(stderr, "\n");
-            host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
-        }
-        mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
-        return;
-    }
-    uc->uc_mcontext.gregs[REG_EFL] &= ~0x100;
-    sigdelset(&uc->uc_sigmask, SIGVTALRM);
-    mprotect(page_of(sFaultAddr), PAGE, PROT_NONE);
-    if (sFaultWrite) io_write(sFaultAddr, sFaultOld);
-    host_irq_inject(uc);
-}
-
-// ---- profiling: ACWW_PROFILE=1 samples the interrupted EIP (SIGPROF); the counts are printed on SIGINT
-#define PROF_SLOTS 65536
-static u32 sProfAddr[PROF_SLOTS], sProfCount[PROF_SLOTS];
-static void on_prof(int sig, siginfo_t *si, void *ctx) {
-    (void)sig; (void)si;
-    u32 eip = (u32)((ucontext_t *)ctx)->uc_mcontext.gregs[R_PC];
-    u32 h = (eip >> 2) * 2654435761u >> 16;
-    for (int i = 0; i < 16; i++, h = (h + 1) & (PROF_SLOTS - 1)) {
-        if (sProfAddr[h] == eip || !sProfAddr[h]) { sProfAddr[h] = eip; sProfCount[h]++; return; }
-    }
-}
-static void prof_dump(void) {
-    if (!getenv("ACWW_PROFILE")) return;
-    FILE *f = fopen("acww_profile.txt", "w");
-    if (!f) return;
-    for (int i = 0; i < PROF_SLOTS; i++) if (sProfCount[i]) fprintf(f, "%u %08x\n", sProfCount[i], sProfAddr[i]);
-    fclose(f);
-    fprintf(stderr, "host: profile in acww_profile.txt\n");
-}
-
-// interrupt injection: an interrupted context inside the game's code with an interrupt due goes to
-// host_irq_stub (irq_entry.S) first, like an IRQ exception. Not in the runtime's or the libraries' code.
-extern char host_game_text_start[], host_game_text_end[];
-void host_irq_stub(void);
-int host_irq_ready(void);
-static void host_irq_inject(ucontext_t *uc) {
-    u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
-    if (eip < (u32)(uintptr_t)host_game_text_start || eip >= (u32)(uintptr_t)host_game_text_end) return;
-    if (uc->uc_mcontext.gregs[REG_EFL] & 0x100) return;  // single-stepping an I/O access
-    if (!host_irq_ready()) return;
-    uintptr_t *sp = (uintptr_t *)uc->uc_mcontext.gregs[R_SP];  // (x86-64: the game has no red zone)
-    *--sp = (uintptr_t)uc->uc_mcontext.gregs[R_PC];
-    uc->uc_mcontext.gregs[R_SP] = (greg_t)(uintptr_t)sp;
-    uc->uc_mcontext.gregs[R_PC] = (greg_t)(uintptr_t)host_irq_stub;
-}
-
-int host_async_tick(void);
-static u64 sTickCycles;
-// where the game was found spinning (printed on SIGINT)
-static u32 sSpinEip[256], sSpinN[256];
-static void spin_log(u32 eip) {
-    for (int i = 0; i < 256; i++) {
-        if (sSpinEip[i] == eip || !sSpinEip[i]) { sSpinEip[i] = eip; sSpinN[i]++; return; }
-    }
-}
-static void spin_dump(void) {
-    for (int i = 0; i < 256 && sSpinEip[i]; i++) fprintf(stderr, "spin: %08x %u\n", sSpinEip[i], sSpinN[i]);
-}
-
-static void on_alarm(int sig, siginfo_t *si, void *ctx) {
-    (void)sig; (void)si;
-    ucontext_t *uc = ctx;
-    u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
-    int in_game = eip >= (u32)(uintptr_t)host_game_text_start && eip < (u32)(uintptr_t)host_game_text_end;
-    // The game spinning on memory (waiting for an interrupt handler without touching a register, so virtual time
-    // stands still): after 100 ms of the game's CPU time of that, let time pass and take the interrupts it raised. Only a hang guard:
-    // the game reaches registers or waits far more often, and acting sooner would make runs depend on the real
-    // clock. Each site is reported (it wants an explicit wait). Never in the runtime's or a library's code.
-    static u32 still;
-    still = sCycles == sTickCycles ? still + 1 : 0;
-    sTickCycles = sCycles;
-    if (still >= 50 && in_game) {
-        still = 0;
-        spin_log(eip);
-        static u32 reported[16];
-        int known = 0;
-        for (int i = 0; i < 16; i++) known |= reported[i] == eip;
-        for (int i = 0; !known && i < 16; i++) if (!reported[i]) { reported[i] = eip; break; }
-        if (!known) fprintf(stderr, "host: the game spins without progress at %08x (frame %llu)\n", eip, (unsigned long long)host_frame());
-        host_advance_to_next_event();
-        host_irq_inject(uc);
-    }
-}
-
-static void on_int(int sig, siginfo_t *si, void *ctx) {
-    (void)sig; (void)si;
-    ucontext_t *uc = ctx;
-    fprintf(stderr, "host: %llu I/O accesses; last ones:\n", (unsigned long long)sIoCount);
-    for (int i = 0; i < 16; i++) {
-        struct IoLog *l = &sRing[(sRingPos + i) & 15];
-        fprintf(stderr, "  %s %08x at %08x\n", l->write ? "write" : "read ", l->addr, l->eip);
-    }
-    prof_dump();
-    spin_dump();
-    if (sIoHist) io_hist_dump();
-    extern void snd7_output_close(void);
-    snd7_output_close();
-    extern void frontend_shutdown(void);
-    frontend_shutdown();
-    fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
-            (u32)uc->uc_mcontext.gregs[R_PC]);
-    host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
-    extern void host_dump_threads(void (*)(uintptr_t *, uintptr_t));
-    host_dump_threads(host_backtrace);
-    void *bt[32];
-    int n = backtrace(bt, 32);
-    backtrace_symbols_fd(bt, n, 2);
-    _exit(3);
-}
-
-// Integer division by zero: the DS has no divide instruction, the compiler's routine (_s32_div_f, _u32_div_f)
-// returns the dividend as the quotient and 0 as the remainder; x86 traps. The game does divide by zero in places
-// (e.g. spl_scl_in_out at the end of an animation), so the x86 div/idiv gets the DS's result. Each site is
-// reported once.
-static int emulate_div_by_zero(ucontext_t *uc) {
-    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[R_PC], *start = p;
-    int o16 = 0, w64 = 0;
-    if (*p == 0x66) { o16 = 1; p++; }
-#if defined(__x86_64__)
-    if ((*p & 0xf0) == 0x40) { w64 = *p & 8; p++; }  // REX
-#endif
-    if ((*p != 0xf7 && *p != 0xf6) || ((p[1] >> 3 & 7) != 6 && (p[1] >> 3 & 7) != 7)) return 0;
-    u32 n = (p[1] >> 6) == 3 ? 1 : modrm_len(p + 1);
-    if (!n) return 0;
-    greg_t *eax = &uc->uc_mcontext.gregs[R_AX], *edx = &uc->uc_mcontext.gregs[R_DX];
-    if (*p == 0xf6) *eax = (greg_t)(((uintptr_t)*eax & ~(uintptr_t)0xff00));           // AL = AL, AH = 0
-    else if (o16) *edx = (greg_t)((uintptr_t)*edx & ~(uintptr_t)0xffff);               // AX = AX, DX = 0
-    else if (w64) *edx = 0;                                                             // RAX = RAX, RDX = 0
-    else { *eax = (greg_t)(u32)*eax; *edx = 0; }                                        // EAX = EAX, EDX = 0
-    u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
-    static u32 seen[64];
-    static int nseen;
-    int known = 0;
-    for (int i = 0; i < nseen; i++) known |= seen[i] == eip;
-    if (!known && nseen < 64) {
-        seen[nseen++] = eip;
-        fprintf(stderr, "host: division by zero at %08x (frame %llu): the DS's result\n", eip, (unsigned long long)host_frame());
-    }
-    uc->uc_mcontext.gregs[R_PC] += (greg_t)(p + 1 + n - start);
-    return 1;
-}
-
-// a crash in the game (division by zero, ...): where
-static void on_fatal_signal(int sig, siginfo_t *si, void *ctx) {
-    ucontext_t *uc = ctx;
-    if (sig == SIGFPE && si->si_code == FPE_INTDIV && emulate_div_by_zero(uc)) return;
-    fprintf(stderr, "host: signal %d (%s) at frame %llu, eip %08x, address %p\n", sig, strsignal(sig),
-            (unsigned long long)host_frame(), (u32)uc->uc_mcontext.gregs[R_PC], si->si_addr);
-    host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
-    extern void frontend_shutdown(void);
-    frontend_shutdown();
-    _exit(5);
 }
 
 // ---- the memory map
@@ -882,15 +595,6 @@ static void map_main_ram(void) {
             host_fatal("main RAM mirror");
 }
 
-static u8 *map_io(u32 a) {
-    int fd = memfd_create("dsio", 0);
-    if (fd < 0 || ftruncate(fd, PAGE) < 0) host_fatal("memfd");
-    void *game = mmap((void *)(uintptr_t)a, PAGE, PROT_NONE, MAP_SHARED | MAP_FIXED_NOREPLACE, fd, 0);
-    void *mine = mmap(0, PAGE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (game != (void *)(uintptr_t)a || mine == MAP_FAILED) host_fatal("can't map the I/O registers");
-    return mine;
-}
-
 void host_map_memory(void) {
     map_fixed(0x01ff8000, 0x8000);    // ITCM
     map_main_ram();                   // main RAM, 4 MB at 0x02000000 and its mirrors (the game's data is in it)
@@ -899,41 +603,7 @@ void host_map_memory(void) {
     map_fixed(0x05000000, 0x800);     // palettes
     map_fixed(0x06000000, 0x900000);  // VRAM: vram.c maps the banks into it
     map_fixed(0x07000000, 0x800);     // OAM
-    sIo0 = map_io(IO0);
-    sIoB = map_io(IOB);
-    sIo1 = map_io(IO1);
-    struct sigaction sa;
-    memset(&sa, 0, sizeof sa);
-    sa.sa_flags = SA_SIGINFO | SA_NODEFER;
-    sigaddset(&sa.sa_mask, SIGVTALRM);
-    sa.sa_sigaction = on_segv;
-    sigaction(SIGSEGV, &sa, 0);
-    sa.sa_sigaction = on_trap;
-    sigaction(SIGTRAP, &sa, 0);
-    sa.sa_sigaction = on_int;
-    sigaction(SIGINT, &sa, 0);
-    sa.sa_sigaction = on_fatal_signal;
-    sigaction(SIGFPE, &sa, 0);
-    sigaction(SIGILL, &sa, 0);
-    sigaction(SIGBUS, &sa, 0);
-    // SIGVTALRM is blocked while an I/O access is being single-stepped (the handlers' sa_mask) and inside itself
-    struct sigaction al;
-    memset(&al, 0, sizeof al);
-    al.sa_flags = SA_SIGINFO;
-    al.sa_sigaction = on_alarm;
-    sigaction(SIGVTALRM, &al, 0);
-    // (the process's own CPU time, not the wall clock: on a loaded machine a long stretch of the game's work must not
-    // look like a hang - that made runs depend on the machine's load)
-    struct itimerval it = {{0, 2000}, {0, 2000}};
-    setitimer(ITIMER_VIRTUAL, &it, 0);
-    if (getenv("ACWW_PROFILE")) {
-        sa.sa_sigaction = on_prof;
-        sigaction(SIGPROF, &sa, 0);
-        struct itimerval pt = {{0, 1000}, {0, 1000}};
-        setitimer(ITIMER_PROF, &pt, 0);
-    }
+    host_debug_init();
     R16(0x04000130) = 0x3ff;
-    watch_init();
-    if (getenv("ACWW_IOHIST")) { sIoHist = 1; atexit(io_hist_dump); }
-    sNoEmulate = getenv("ACWW_NOEMULATE") != NULL;
+    if (getenv("ACWW_IOHIST")) atexit(io_hist_dump);
 }

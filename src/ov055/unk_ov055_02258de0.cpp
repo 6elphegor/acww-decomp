@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sdk_linker_symbols.h"
 #include "uptr.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
@@ -62,8 +63,6 @@ class SpNpcRover;
 
 
 extern "C" {
-extern u32 OVERLAY_68_ID[];
-extern u32 OVERLAY_67_ID[];
 extern u8 data_021ecfa8[];
 extern u16 data_020c6cc8;
 extern u16 gPad[];
@@ -484,12 +483,12 @@ void SpNpcRover::saveTagData() {
 
 void SpNpcRover::loadTagModeOverlay() {
     OverlayHandle_Unload(&gOverlayHandle);
-    OverlayHandle_Load(reinterpret_cast<OverlayHandleView *>(&gOverlayHandle), (s32)(uptr)OVERLAY_67_ID);
+    OverlayHandle_Load(reinterpret_cast<OverlayHandleView *>(&gOverlayHandle), OVERLAY_67_ID);
 }
 
 void SpNpcRover::restoreOv068() {
     OverlayHandle_Unload(&gOverlayHandle);
-    OverlayHandle_Load(reinterpret_cast<OverlayHandleView *>(&gOverlayHandle), (s32)(uptr)OVERLAY_68_ID);
+    OverlayHandle_Load(reinterpret_cast<OverlayHandleView *>(&gOverlayHandle), OVERLAY_68_ID);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

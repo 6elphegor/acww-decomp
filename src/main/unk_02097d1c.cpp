@@ -231,6 +231,8 @@ void *PlayerData::getPatterns() { return this; }
 u8 *PlayerData::getCatalog() { return catalog; }
 
 void *PlayerData::getNookPoints() { return &nookPoints; }
+// (for src/main/unk_0204a780.cpp, whose own declarations don't go with PlayerData's header)
+extern "C" void *PlayerData_GetNookPoints(void *p) { return static_cast<PlayerData *>(p)->getNookPoints(); }
 
 DramaRecord *PlayerData::getDramaRecord() { return &dramaRecord; }
 

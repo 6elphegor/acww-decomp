@@ -2,6 +2,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "ds_div.h"
 #include "types64.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212b770.h"
@@ -116,7 +117,7 @@ u64 __strtoull(int base, int max_width, int (*ReadProc)(void *, int, int), void 
         scan_state = failure;
     else
         c = fetch();
-    if (base) value_max = 0xffffffffffffffffULL / base;
+    if (base) value_max = DS_UDIV64(0xffffffffffffffffULL, base);
     while (count <= max_width && c != -1 && !(scan_state & (finished | failure))) {
         switch (scan_state) {
         case start:
@@ -153,7 +154,7 @@ u64 __strtoull(int base, int max_width, int (*ReadProc)(void *, int, int), void 
         case need_digit:
         case digit_loop:
             if (base == 0) base = 10;
-            if (!value_max) value_max = 0xffffffffffffffffULL / base;
+            if (!value_max) value_max = DS_UDIV64(0xffffffffffffffffULL, base);
             if (isdigit_(c)) {
                 c -= '0';
                 if (c >= base) {

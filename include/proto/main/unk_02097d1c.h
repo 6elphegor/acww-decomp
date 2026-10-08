@@ -14,6 +14,9 @@ BOOL PlayerData_HasStungFace(void *p);
 #ifndef PROTO_LOCAL_PlayerData_SetStungFace
 void PlayerData_SetStungFace(void *p, u32 flag);
 #endif
+#ifndef PROTO_LOCAL_PlayerData_GetNookPoints
+void *PlayerData_GetNookPoints(void *p);
+#endif
 #ifndef PROTO_LOCAL_PlayerData_UpdateDay
 void PlayerData_UpdateDay();
 #endif

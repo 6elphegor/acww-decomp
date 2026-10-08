@@ -42,8 +42,12 @@ extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 extern const u32 data_0213bba8[];
 extern const u8 data_02135ca8[];
 extern const u8 data_02135ca0[];
-extern u8 data_021f5c62[];
-extern u8 data_021f5c5c[], data_021f5c61[], data_021f5c66[], data_021f5c68[];
+extern u8 data_021f5c5c[];
+// inside the 14-byte WFC-ID block data_021f5c5c
+#define data_021f5c61 (data_021f5c5c + 5)
+#define data_021f5c62 (data_021f5c5c + 6)
+#define data_021f5c66 (data_021f5c5c + 10)
+#define data_021f5c68 (data_021f5c5c + 12)
 extern u32 data_021f5c58;
 // set by the PXI callback while NVRAMm_ExecuteCommand polls them (see docs/modern.md, "volatile")
 extern volatile u16 data_021f5c50;

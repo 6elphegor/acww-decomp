@@ -4,14 +4,14 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef signed int s32;
+#include "sdk_linker_symbols.h"
 
 extern u8 data_027e0000[];      // SDK_AUTOLOAD_DTCM_START (HW_DTCM)
-extern u8 SDK_IRQ_STACKSIZE[];  // absolute linker symbol, 0x1000
 extern u32 data_021fcc0c;       // OSi_IrqStackWarningOffset
 
 #define HW_DTCM ((u32)data_027e0000)
 #define OSi_IRQ_STACK_BOTTOM (HW_DTCM + 0x3f80)                                 // HW_SVC_STACK_END
-#define OSi_IRQ_STACK_TOP (OSi_IRQ_STACK_BOTTOM - (s32)SDK_IRQ_STACKSIZE)
+#define OSi_IRQ_STACK_TOP (OSi_IRQ_STACK_BOTTOM - SDK_IRQ_STACKSIZE)
 
 // OS_SetIrqStackChecker
 void OS_SetIrqStackChecker(void) {

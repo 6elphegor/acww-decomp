@@ -12,6 +12,7 @@ typedef struct Unk_ov004_02210d58_P Unk_ov004_02210d58_P;
 #ifdef __cplusplus
 #include "actor/ActorProfile.h"
 #include "game/FxVec3.h"
+#include "gfx/VecFx32.h"
 class FtrActor;
 class FtrDesignDisplay;
 class FtrMyDesign;
@@ -284,6 +285,24 @@ extern ActorProfile sFtrSingingInsectProfile;
 #endif
 #ifndef PROTO_LOCAL_sFtrDesignDisplayProfile
 extern ActorProfile sFtrDesignDisplayProfile;
+#endif
+#ifndef PROTO_LOCAL_FtrShirt_SyncAct0
+s32 FtrShirt_SyncAct0(FtrActor *o);
+#endif
+#ifndef PROTO_LOCAL_FtrShirt_SyncAct1
+s32 FtrShirt_SyncAct1(FtrActor *o);
+#endif
+#ifndef PROTO_LOCAL_FtrTv_MarkNearestTv
+void FtrTv_MarkNearestTv(FtrActor *o);
+#endif
+#ifndef PROTO_LOCAL_FtrClock_MarkNearestCabinClock
+void FtrClock_MarkNearestCabinClock(FtrActor *o);
+#endif
+#ifndef PROTO_LOCAL_FtrClock_MarkNearestSoundingClock
+void FtrClock_MarkNearestSoundingClock(FtrActor *o);
+#endif
+#ifndef PROTO_LOCAL_FtrBed_CheckStepTile
+s32 FtrBed_CheckStepTile(FtrActor *o, VecFx32 *pos, s32 ang, VecFx32 *out);
 #endif
 }
 #ifndef PROTO_LOCAL_data_ov004_0224fc84

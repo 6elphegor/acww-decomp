@@ -75,7 +75,7 @@ extern "C" u8 NextAction(ActionIterator *iter) {
         if (!info->action_pointer || *info->action_pointer & 0x80) {
             FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                std::terminate();
+                msl::terminate();
             }
             __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
@@ -208,7 +208,7 @@ extern "C" u8 NextAction(ActionIterator *iter) {
             break;
         }
         default:
-            std::terminate();
+            msl::terminate();
             break;
         }
         break;

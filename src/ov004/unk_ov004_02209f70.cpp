@@ -6141,3 +6141,14 @@ char data_ov004_0224bbc0[15] = "obj_etc_nchest";
 char data_ov004_0224bbd0[17] = "sp_etc_sequence4";
 char data_ov004_0224bbe4[17] = "sp_etc_sequence2";
 }
+
+// The furniture classes' members that src/ov004/unk_ov004_02233074.cpp calls (the classes are defined in this file;
+// direct calls, as the DS's)
+extern "C" s32 FtrShirt_SyncAct0(FtrActor *o) { return static_cast<FtrShirt *>(o)->FtrShirt::syncAct0(); }
+extern "C" s32 FtrShirt_SyncAct1(FtrActor *o) { return static_cast<FtrShirt *>(o)->FtrShirt::syncAct1(); }
+extern "C" void FtrTv_MarkNearestTv(FtrActor *o) { static_cast<FtrTv *>(o)->FtrTv::markNearestTv(); }
+extern "C" void FtrClock_MarkNearestCabinClock(FtrActor *o) { static_cast<FtrClock *>(o)->FtrClock::markNearestCabinClock(); }
+extern "C" void FtrClock_MarkNearestSoundingClock(FtrActor *o) { static_cast<FtrClock *>(o)->FtrClock::markNearestSoundingClock(); }
+extern "C" s32 FtrBed_CheckStepTile(FtrActor *o, VecFx32 *pos, s32 ang, VecFx32 *out) {
+    return static_cast<FtrBed *>(o)->FtrBed::checkStepTile(pos, ang, out);
+}

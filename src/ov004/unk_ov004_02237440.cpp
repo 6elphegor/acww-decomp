@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 #include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/base
@@ -734,7 +735,7 @@ extern "C" void MuseumInsect_Wander(void *self_, s32 a, s32 b, u32 c) {
     u32 rnd = (u8)Random_GlobalBelow(100);
     VecFx32 *v = &self->position;
     VecFx32 o;
-    if (sMuseumInsectFrame % b == 0 && rnd > c) {
+    if (DS_MOD(sMuseumInsectFrame, b) == 0 && rnd > c) {
         if (r7 == 0) {
             r7 = 1;
         } else {
@@ -3367,7 +3368,7 @@ void MuseumInsect::setupLanternFly()
 
 extern "C" void MuseumInsect_SetupHopper(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d) {
     s32 t = MuseumInsect_RandHeading();
-    ((MuseumInsect *)(o))->init(a, b, 0, t, 0, 0x1000 / c);
+    ((MuseumInsect *)(o))->init(a, b, 0, t, 0, DS_DIV(0x1000, c));
     o->subCounter = (Random_GlobalBelow(9) + 2) * 20;
     o->travelDistance = d;
 }
@@ -3436,7 +3437,7 @@ extern "C" void MuseumInsect_UpdateDragonfly(MuseumInsect *o) { MuseumInsect_Run
 
 extern "C" void MuseumInsect_SetupDragonfly(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d, u8 e, s32 f) {
     s32 t = MuseumInsect_RandHeading();
-    ((MuseumInsect *)(o))->init(a, b, 0, t, c, 0x1000 / d);
+    ((MuseumInsect *)(o))->init(a, b, 0, t, c, DS_DIV(0x1000, d));
     o->travelDistance = e;
     o->speciesWork = f;
     VecFx32 *sv = &o->position;

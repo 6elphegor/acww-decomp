@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -116,9 +117,9 @@ void MenuTownListPanel::setRowFadeColor(s32 a, s32 x, s32 n, s32 e) {
     u8 b = (c1 & 0x7c00) >> 10;
     s32 d = n - x;
     u16 c2 = basePalette[e];
-    r = ((u8)(c2 & 0x1f) * x + r * d) / n;
-    g = ((u8)((c2 & 0x3e0) >> 5) * x + g * d) / n;
-    b = ((u8)((c2 & 0x7c00) >> 10) * x + b * d) / n;
+    r = DS_DIV(((u8)(c2 & 0x1f) * x + r * d), n);
+    g = DS_DIV(((u8)((c2 & 0x3e0) >> 5) * x + g * d), n);
+    b = DS_DIV(((u8)((c2 & 0x7c00) >> 10) * x + b * d), n);
     workPalette[(u8)(0xe - a)] = r | (g << 5) | (b << 10);
     setFlags(1);
 }

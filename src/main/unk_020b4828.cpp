@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sdk_linker_symbols.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/GfxFrameHooks.h"
@@ -534,11 +535,10 @@ extern "C" FieldScene *FieldScene_Create(void) {
     return new FieldScene();
 }
 
-enum { OVERLAY_ID_OV002 = 2 };  // (the linker symbol OVERLAY_2_ID: its address is the id)
 
-extern "C" void FieldScene_AcquireOv002(void) { OverlayMgr_Acquire(OVERLAY_ID_OV002); }
+extern "C" void FieldScene_AcquireOv002(void) { OverlayMgr_Acquire(OVERLAY_2_ID); }
 
-extern "C" void FieldScene_ReleaseOv002(void) { OverlayMgr_Release(OVERLAY_ID_OV002); }
+extern "C" void FieldScene_ReleaseOv002(void) { OverlayMgr_Release(OVERLAY_2_ID); }
 
 extern "C" void FieldScene_AcquireInfoOverlays(u8 *obj) {
     s32 a = ((SceneInfo *)obj)->infoOverlayA;  // (after the pointers: elsewhere on 64-bit hosts)

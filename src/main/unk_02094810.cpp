@@ -288,7 +288,7 @@ extern "C" u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p)
 PlayerSessionTable::PlayerSessionTable()
 {
     u32 i;
-    __cxa_vec_ctor(lastPositions, 4, 12, (void *)FxVec3_Construct, (void *)_ZN6FxVec3D1Ev);
+    __cxa_vec_ctor(lastPositions, 4, 12, (void *)FxVec3_Construct, (void *)FxVec3_Destruct);
     for (i = 0; i < 4; i++) {
         PlayerSessionTable_ClearDataIndex(&gPlayerSessionTable, i);
         PlayerSessionTable_ClearGfxSlot(&gPlayerSessionTable, i);
@@ -308,7 +308,7 @@ PlayerSessionTable::PlayerSessionTable()
 
 PlayerSessionTable::~PlayerSessionTable()
 {
-    __cxa_vec_cleanup(lastPositions, 4, 12, (void *)_ZN6FxVec3D1Ev);
+    __cxa_vec_cleanup(lastPositions, 4, 12, (void *)FxVec3_Destruct);
 }
 
 extern "C" void PlayerSession_SetActor(s32 i, PlayerActor *v)

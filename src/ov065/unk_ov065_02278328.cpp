@@ -1,4 +1,5 @@
 // mwcc-flags: -O4,p -str reuse
+#include "ds_div.h"
 #include "types.h"
 #include "net/darray.h"
 #include "net/hashtable.h"
@@ -280,7 +281,7 @@ void ArrayInsertAt(DArrayImplementation *v, void *x, s32 i) {
 void ArrayInsertSorted(DArrayImplementation *v, void *key, ArrayCompareFn cmp) {
     s32 found;
     u8 *r = mybsearch(key, v->list, v->count, v->elemsize, cmp, &found);
-    ArrayInsertAt(v, key, (s32)(r - v->list) / v->elemsize);
+    ArrayInsertAt(v, key, DS_DIV((s32)(r - v->list), v->elemsize));
 }
 
 void ArrayRemoveAt(DArrayImplementation *v, s32 i) {
@@ -320,7 +321,7 @@ s32 ArraySearch(DArrayImplementation *v, void *key, ArrayCompareFn cmp, s32 star
         r = mylsearch(key, (u8 *)ArrayNth(v, start), n - start, v->elemsize, cmp);
     }
     if (r != NULL && found != 0) {
-        return (s32)(r - v->list) / v->elemsize;
+        return DS_DIV((s32)(r - v->list), v->elemsize);
     }
     return -1;
 }

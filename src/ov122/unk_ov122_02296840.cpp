@@ -1,4 +1,5 @@
 // ov122: scene overlay (class LetterWriteMenu, vtable 0x0229a1b8, 0x4664 bytes): chat keyboard/text-entry list screen.
+#include "ds_div.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/LetterRenderer.h"
@@ -694,7 +695,7 @@ void LetterWriteMenu::preStateUpdate() { ((MenuBottomButtons *)(&bottomButtons))
 void LetterWriteMenu::postStateUpdate() {
     if (testFlags(0x1000)) {
         u32 n = getFieldCapacity();
-        lengthGauge = Text_GetLength(getFieldBuffer(), n) * 0x1f / (s32)n;
+        lengthGauge = DS_DIV(Text_GetLength(getFieldBuffer(), n) * 0x1f, (s32)n);
         if (lengthGauge > 0x1f) {
             lengthGauge = 0x1f;
         }

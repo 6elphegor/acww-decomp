@@ -2,10 +2,8 @@
 // G005a: autoload_2 0x020ec848-0x020ed4bc (37 functions). mwcc 1.2/base, C++, ARM, -O4,p.
 // The tail-call stubs into the "current heap" new/delete, the object factory (Proc_Create: builds a scene object
 // through the table gProfileTable, runs the registered hooks, links it into the object tree) and the library base class
-// ProcBase (members at 0x020ecc6c-0x020ed378; vtable 0x0213b154 stays extern, nothing is defined here).
-// The symbols.txt names of the class members are C++-mangled (_ZN8ProcBase...). They are defined here as
-// extern "C" functions that carry the mangled identifier verbatim and take the object first (as the game code
-// declares them), so no vtable, D0/D1 or C1 is emitted. Virtual calls go through the declared-only virtuals.
+// ProcBase (members at 0x020ecc6c-0x020ed378; its vtable, 0x0213b154 on the DS, is the compiler's: emitted here
+// with onCreate). The phase member-function pointers (0x0213b124-0x0213b14c on the DS) are the compiler's too.
 #include "types.h"
 #include "sys/Heap.h"
 #include "sys/TreeNode.h"
@@ -21,33 +19,22 @@
 #include "proto/itcm/unk_01ffcfc0.h"
 
 
-class ProcBase;
-
-
-
-
-// the dispatcher's pointer-to-member type: two pointers on the host (the arguments are passed as such on x86-64)
-class ProcBase;
-typedef BOOL (ProcBase::*P2)();
-
-
-
 extern "C" {
-extern u8 gProcCreateStep;
-extern u8 sProcCreateGroup;
-extern u16 gProcCreateProfile;
-extern u16 sProcCreateProfile;
-extern TreeNode *sProcCreateParent;
-extern u32 (*sProcCreateHook)(u32);
-extern void (*sProcDeleteHook)(u32);
-extern u32 sProcCreateParam;
-extern u32 sProcNextId;
-extern P2 data_0213b124, data_0213b12c, data_0213b134, data_0213b13c, data_0213b144, data_0213b14c;
-extern u32 data_0213b15c[];
+// the object factory's state (autoload_3 .bss 0x021f59c4-0x021f59e8, gap data on the DS: no unit owned it) and the
+// next object id (autoload_2 .data 0x0213b120)
+u8 gProcCreateStep;
+u8 sProcCreateGroup;
+u16 gProcCreateProfile;
+u16 sProcCreateProfile;
+TreeNode *sProcCreateParent;
+u32 (*sProcCreateHook)(u32);
+void (*sProcDeleteHook)(u32);
+u32 sProcCreateParam;
+ProcProfile **gProfileTable;
+u32 sProcNextId = 1;
 extern u32 gTaskPhase;
 extern TreeNode gProcTree;
 extern QList gTaskExecuteList, gTaskCreateList, gTaskDrawList, gTaskDeleteList;
-extern ProcProfile **gProfileTable;
 
 // (the task lists and the object tree: their definitions use other names for the same types, include/proto/.excluded)
 void List_PushBack(QList *l, QNode *n);
@@ -57,7 +44,6 @@ void TreeNode_Attach(TreeNode *root, TreeNode *n, TreeNode *parent);
 TreeNode *TreeNode_Construct(TreeNode *n);
 void Task_InsertByPriority(QList *l, QNode *n);
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8 (assembly)
-u32 ProcBase_RunPhase(void *p, P2 a, P2 b, P2 c); // (itcm, unk_01ffd0e4.cpp)
 }
 
 static inline BOOL isZero(u32 v) {
@@ -80,8 +66,8 @@ static inline BOOL isTwo(u32 v) {
     return v == 2;
 }
 
-extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
-    *(u32 **)self = data_0213b15c;
+ProcBase::ProcBase() {
+    ProcBase *self = this;
     TreeNode_Construct(&self->treeNode);
     self->treeNode.owner = self;
     self->executeNode.prev = NULL;
@@ -114,28 +100,21 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
         if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) self->procFlags |= 2;
         if ((parent->procFlags & 4) != 0 || (parent->procFlags & 8) != 0) self->procFlags |= 8;
     }
-    return self;
 }
 
-extern "C" ProcBase *_ZN8ProcBaseD0Ev(ProcBase *self) {
-    *(u32 **)self = data_0213b15c;
-    ProcBase::operator delete(self);
-    return self;
-}
+// (the deleting destructor frees with ProcBase::operator delete)
+ProcBase::~ProcBase() {}
 
-extern "C" void _ZN8ProcBaseD2Ev(ProcBase *self) {
-    *(u32 **)self = data_0213b15c;
-}
-
-extern "C" BOOL _ZN8ProcBase8onCreateEv(ProcBase *self) {
+BOOL ProcBase::onCreate() {
     return TRUE;
 }
 
-extern "C" BOOL _ZN8ProcBase9preCreateEv(ProcBase *self) {
+BOOL ProcBase::preCreate() {
     return TRUE;
 }
 
-extern "C" void _ZN8ProcBase10postCreateEi(ProcBase *self, s32 a) {
+void ProcBase::postCreate(s32 a) {
+    ProcBase *self = this;
     if (a != 2) return;
     List_Remove(&gTaskCreateList, &self->executeNode);
     if (isThree(gTaskPhase)) {
@@ -147,11 +126,12 @@ extern "C" void _ZN8ProcBase10postCreateEi(ProcBase *self, s32 a) {
     self->state = 1;
 }
 
-extern "C" BOOL _ZN8ProcBase8onDeleteEv(ProcBase *self) {
+BOOL ProcBase::onDelete() {
     return TRUE;
 }
 
-extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
+BOOL ProcBase::preDelete() {
+    ProcBase *self = this;
     if ((self->seq == NULL || CmdSeq_Poll((CmdSeq *)self->seq) != 0) && self->treeNode.child == NULL) {
     } else {
         return FALSE;
@@ -159,16 +139,19 @@ extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
-    if (a != 2) return;
+// (the DS's returns nothing: the dispatcher calls it through a void member pointer)
+BOOL ProcBase::postDelete(s32 a) {
+    ProcBase *self = this;
+    if (a != 2) return FALSE;
     TreeNode_Detach(&gProcTree, &self->treeNode);
     List_Remove(&gTaskDeleteList, &self->executeNode);
     if (self->procHeap != NULL) (self->procHeap)->destroy2();
     if (self->seq != NULL) CmdSeq_Undo((CmdSeq *)self->seq);
     delete self;
+    return FALSE;
 }
 
-extern "C" BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self) {
+BOOL ProcBase::onDeleteRequest() {
     return 0; // the original returns whatever r0 holds; callers ignore it
 }
 
@@ -225,7 +208,8 @@ extern "C" void ProcBase_SetDrawPriority(ProcBase *self, u16 v) {
     }
 }
 
-extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap *parent) {
+BOOL ProcBase::createHeapFitted(u32 size, Heap *parent) {
+    ProcBase *self = this;
     Heap *h = NULL;
     u32 need;
     Heap *h2;
@@ -313,7 +297,8 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
     return FALSE;
 }
 
-extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *parent) {
+BOOL ProcBase::createHeap(u32 size, Heap *parent) {
+    ProcBase *self = this;
     if (self->procHeap != NULL) return TRUE;
     if (size != 0) {
         Heap *h = FrameHeap_CreateAsCurrent(size, parent);
@@ -339,18 +324,18 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
     return FALSE;
 }
 
-extern "C" BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self) {
+BOOL ProcBase::allocResources() {
     return TRUE;
 }
 
-extern "C" void *_ZN8ProcBasenwEm(u32 size) {
+void *ProcBase::operator new(size_t size) {
     void *p = (gProcHeap)->alloc(size, -4);
     if (p == NULL) return NULL;
     MI_CpuFill8(p, 0, size);
     return p;
 }
 
-extern "C" void _ZN8ProcBasedlEPv(void *p) {
+void ProcBase::operator delete(void *p) {
     (gProcHeap)->free(p);
 }
 
@@ -367,13 +352,14 @@ extern "C" void ProcBase_StartCreate(ProcBase *self) {
 }
 
 void ProcBase::taskCreate() {
-    ProcBase_RunPhase(this, data_0213b13c, data_0213b134, data_0213b124);
+    ProcBase_RunPhase(this, &ProcBase::onCreate, &ProcBase::preCreate, &ProcBase::postCreate);
 }
 
 // (the task list's member pointer is void: the phase result is not used)
 void ProcBase::taskDelete() {
     u16 id = profile;
-    u32 r = ProcBase_RunPhase(this, data_0213b12c, data_0213b144, data_0213b14c);
+    u32 r = ProcBase_RunPhase(this, &ProcBase::onDelete, &ProcBase::preDelete,
+                              reinterpret_cast<ProcPhasePostFn>(&ProcBase::postDelete));
     if (r == 1) Proc_CallDeleteHook(id);
 }
 
@@ -455,18 +441,6 @@ extern "C" void Mem_FreeForDelete(void *p) {
     Heap_Free(gCurrentHeap, p);
 }
 
-extern "C" void *_Znwm(u32 size) {
-    return Mem_AllocForNew(size);
-}
-
-extern "C" void *_Znam(u32 size) {
-    return Mem_AllocForNew(size);
-}
-
-extern "C" void _ZdlPv(void *p) {
-    Mem_FreeForDelete(p);
-}
-
-extern "C" void _ZdaPv(void *p) {
-    Mem_FreeForDelete(p);
-}
+// The DS's global operator new / new[] / delete / delete[] were these two (Mem_AllocForNew, Mem_FreeForDelete). On the
+// host the program's global operators are modern/host/newdelete.cpp's: the game allocates by name (include/sys/new.h)
+// and its deletes come back to Mem_FreeForDelete there.

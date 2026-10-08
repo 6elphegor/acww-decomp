@@ -1,4 +1,5 @@
 // mwcc-flags: -O4,p -str reuse
+#include "ds_div.h"
 #include "types.h"
 #include "net/GsBytes.h"
 #include "net/darray.h"
@@ -542,7 +543,7 @@ u32 StringHash__sb_serverlist(const char *s, u32 n) {
         s++;
         ch = *s;
     }
-    return h % n;
+    return DS_UMOD(h, n);
 }
 }
 }
@@ -877,7 +878,7 @@ void InitCryptKey(SBServerList *ctx, const u8 *key, s32 n)
     len = STD_GetStringLength((const char *)ctx->queryfromkey);
     pw = (s8 *)ctx->queryfromkey;
     for (i = 0; i < n; i++) {
-        s32 c = pw[i % len];
+        s32 c = pw[DS_MOD(i, len)];
         j = (i * c) % 8;
         ctx->mychallenge[j] = (s8)(ctx->mychallenge[j] ^ (s8)(ctx->mychallenge[i % 8] ^ key[i]));
     }

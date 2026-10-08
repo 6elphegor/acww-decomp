@@ -3,15 +3,11 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef int s32;
+#include "sdk_linker_symbols.h"
 
 extern s32 data_021fce88;
 
-// Absolute symbol of the linker script (config/usa/arm9/abs_symbols.txt): start of the main-RAM extended arena,
-// 0x02400000. As a plain number the compiler would emit `mov r0, #0x2400000`; the original loads it from the pool.
-extern u8 SDK_SECTION_ARENA_EX_START[];
-
-// The modern build's layout differs: the arena bounds come from its linker script
-extern u8 SDK_MAIN_ARENA_LO[], SDK_SECTION_ARENA_ITCM_START[], SDK_SECTION_ARENA_DTCM_START[];
+// The arena bounds: the linker script's absolute symbols (sdk_linker_symbols.h)
 #define ARENA_MAIN_LO SDK_MAIN_ARENA_LO
 #define ARENA_ITCM_LO SDK_SECTION_ARENA_ITCM_START
 #define ARENA_DTCM_LO SDK_SECTION_ARENA_DTCM_START

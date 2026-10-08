@@ -2,6 +2,7 @@
 #include "talk/MsgString9C.h"
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "sdk_linker_symbols.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -91,9 +92,6 @@ extern SaveRecord4 gSaveFooter;           // gSaveData.footer
 extern Backup gBackup;
 extern CommManager *gCommManager;
 extern u8 gTalkMsgIndexEnd;
-extern u32 OVERLAY_65_ID[];  // (linker symbols: their addresses are the overlay ids)
-extern u32 OVERLAY_66_ID[];
-extern u32 OVERLAY_68_ID[];
 
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void MI_CpuFill8(void *dst, u32 v, u32 size);
@@ -3893,17 +3891,17 @@ extern "C" void SaveManager_SetSaveCorrupted(u32 v) { data_021ed390 = v; }
 
 extern "C" void NetOverlay_LoadWireless(void) {
     OverlayHandle_Unload((OverlayHandleView *)&gOverlayHandle);
-    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_66_ID);
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, OVERLAY_66_ID);
 }
 
 extern "C" void NetOverlay_LoadWifi(void) {
     OverlayHandle_Unload((OverlayHandleView *)&gOverlayHandle);
-    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_65_ID);
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, OVERLAY_65_ID);
 }
 
 extern "C" void NetOverlay_Restore(void) {
     OverlayHandle_Unload((OverlayHandleView *)&gOverlayHandle);
-    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, (s32)(uptr)OVERLAY_68_ID);
+    OverlayHandle_Load((OverlayHandleView *)&gOverlayHandle, OVERLAY_68_ID);
 }
 
 void TownCompressBuffer::compress() {

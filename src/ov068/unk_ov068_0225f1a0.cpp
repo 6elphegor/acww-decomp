@@ -73,7 +73,6 @@ extern "C" VillagerMemory *Villager_FindMemory(void *a, void *b);
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov068/unk_ov068_0225f1a0.h"
 #include "proto/ov068/unk_ov068_0226647c.h"
-#define HeldToolModel_init _ZN13HeldToolModel4initEv
 class FieldVillager;
 class FieldVillagerAiLeaveHouse;
 class FieldVillagerAi;
@@ -86,7 +85,6 @@ extern "C" Unk_ov068_0226fb80_Fn data_ov068_0226f910;
 extern "C" Unk_ov068_0226fb80_Fn data_ov068_0226fa68;
 
 extern "C" s32 func_01ffcb0c(s32, s32);
-extern "C" void HeldToolModel_init(void *);
 class FieldVillager;
 class FieldVillagerAi;
 
@@ -852,7 +850,6 @@ s32 VillagerStates_GetBirthdayVisitor();
 s32 Villager_GetIndex(void *);
 s32 VillagerStates_GetBirthdayHost();
 s32 VillagerState_GetRole(void *);
-void HeldToolModel_init(void *);
 s32 Math_CountDownU16(void *);
 s32 func_01ffcb0c(s32, s32);
 }

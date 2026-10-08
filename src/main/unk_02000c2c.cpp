@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/FxVec3.h"
 #include "sys/DebugText.h"
 #include "sys/ProcBase.h"
 #include "sys/QNode.h"
@@ -362,8 +363,10 @@ void LitCedarPos_Construct(u32 *p) {
     p[1] = 0;
 }
 
-// shared empty destructor (other units call it by this name and by the labels on it)
-void _ZN6FxVec3D1Ev(void *) {}
+// FxVec3's destructor, empty (0x02000c8c; the other vector classes' destructors are the same function:
+// modern/gen/provides.ld), and the same as a function for the array helpers (__cxa_vec_ctor / __cxa_vec_cleanup)
+FxVec3::~FxVec3() {}
+void FxVec3_Destruct(void *) {}
 
 // the game's entry point, called by crt0 (symbols.txt: `main`; see renames.txt)
 void NitroMain(void) {

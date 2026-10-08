@@ -24,7 +24,6 @@ struct NNSG3dResMdl;
 // 4-byte colour constructors (unreferenced except by __sinit)
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define Camera_getEyeCurveAngle _ZN6Camera16getEyeCurveAngleEv
 
 extern "C" {
 extern void *gCamera;
@@ -34,7 +33,6 @@ extern VecFx32 gCameraLookAt;
 
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
-s32 Camera_getEyeCurveAngle(void *self);
 void *BgModelCache_getAcre(void *self, s32 i);
 }
 

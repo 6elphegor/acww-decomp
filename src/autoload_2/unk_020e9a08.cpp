@@ -5,6 +5,7 @@
 // tail of RC_020e92f4), unk_020ea0b4.cpp, unk_020ea34c.cpp (G002c) and unk_020ea960.cpp (G003a) are merged into this
 // one file with one set of typed declarations. Its .data (0x0213b058-0x0213b120) and bss (autoload_3
 // 0x021f488c-0x021f5974) are defined at the end of the file.
+#include "ds_div.h"
 #include "types.h"
 #include "net/HexTable.h"
 #include "net/Net.h"
@@ -337,7 +338,7 @@ extern "C" void Net_WifiPingNextPeer(void) {
     if (sWifiConnectStep < 5) return;
     ms = (OS_GetTick() << 6) / 33514;
     ms = ms / 250;
-    v = (u8)(ms % data_021f488c);
+    v = (u8)(DS_UMOD64(ms, data_021f488c));
     if (data_0213b058 == v) return;
     data_0213b058 = v;
     if (v != DwcConn_GetMyAid()) {

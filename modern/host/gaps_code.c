@@ -3,8 +3,6 @@
 
 #include "host.h"
 
-unsigned long long HostIo_Write(unsigned int addr, unsigned int size, unsigned long long value);
-
 void __sinit_020c5fa0(void) {}  // a static initialiser in main's .ctor (its body is ARM code in a gap)
 void Sky_HBlankMain(void) {}    // HBlank effects: per-line scroll/colour of the sky (not emulated per line)
 void Sky_HBlankSub(void) {}

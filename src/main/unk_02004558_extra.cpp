@@ -207,10 +207,6 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 namespace nA {
 extern "C" {
 
-#define SndMgr_update _ZN6SndMgr6updateEv
-void SndMgr_update(void *a);
-#define SndMgr_init _ZN6SndMgr4initEjjj
-void SndMgr_init(void *a, void *b, u32 c, void *d, s32 e);
 extern CommManager *gCommManager;
 union PM_02004ce8 {
     PMRaw raw;
@@ -480,8 +476,6 @@ extern "C" {
 inline BOOL Unk_0200f9d4_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 inline BOOL Unk_020102a0_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 s32 Math_Atan2(s32, s32);
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll();
 s32 func_01ffcb0c(s32, s32);
 inline BOOL Unk_02010154_In(u16 *p) { BOOL r = FALSE; u16 v = *p; if (*p >= 0x1380 && v <= 0x139f) r = TRUE; return r; }
 }

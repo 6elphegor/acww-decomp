@@ -1,3 +1,4 @@
+#include "ds_div.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -667,7 +668,7 @@ u32 StringHash(const char *s, u32 n) {
             c = *s;
         } while (c != 0);
     }
-    return h % n;
+    return DS_UMOD(h, n);
 }
 }
 }
