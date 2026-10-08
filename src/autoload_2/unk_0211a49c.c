@@ -130,6 +130,20 @@ BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
 BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
 u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 
+// The ROM's overlay table holds 32-byte records in the DS layout; the host's header is larger on 64-bit hosts (the
+// .sinit pointers, DS addresses the host doesn't use): field by field
+static void FSi_SetOverlayHeader(FSOverlayInfoHeader *h, const u32 *r) {
+    h->id = r[0];
+    h->ram_address = r[1];
+    h->ram_size = r[2];
+    h->bss_size = r[3];
+    h->sinit_init = (void (**)(void))(unsigned long)r[4];
+    h->sinit_init_end = (void (**)(void))(unsigned long)r[5];
+    h->file_id = r[6];
+    h->compressed = r[7] & 0xffffff;
+    h->flag = r[7] >> 24;
+}
+
 // FSi_LoadOverlayInfoCore (ROM table read)
 BOOL FSi_LoadOverlayInfoCore(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u32 offset_arm9, u32 len_arm9, u32 offset_arm7, u32 len_arm7) {
     FSROMTable pr[1];
@@ -147,11 +161,13 @@ BOOL FSi_LoadOverlayInfoCore(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u
         FSFile file[1];
         FS_InitFile(file);
         if (!FS_OpenFileDirect(file, arc, pr->offset + pos, pr->offset + pr->length, -1)) return 0;
-        if (FS_ReadFile(file, p, 32) != 32) {
+        u32 rec[8];
+        if (FS_ReadFile(file, rec, 32) != 32) {
             FS_CloseFile(file);
             return 0;
         }
         FS_CloseFile(file);
+        FSi_SetOverlayHeader(&p->header, rec);
         p->target = target;
         if (!FS_OpenFileFast(file, FS_GetOverlayFileID(&p->header))) return 0;
         p->start = file->prop.file.start;
@@ -171,7 +187,9 @@ BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id) {
         FSFile file[1];
         const u32 pos = id * 32;
         if (pos >= t->size) return 0;
-        MI_CpuCopy8(t->ptr + pos, p, 32);
+        u32 rec[8];
+        MI_CpuCopy8(t->ptr + pos, rec, 32);
+        FSi_SetOverlayHeader(&p->header, rec);
         p->target = target;
         FS_InitFile(file);
         if (!FS_OpenFileFast(file, FS_GetOverlayFileID(&p->header))) return 0;

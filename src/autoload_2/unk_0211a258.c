@@ -135,12 +135,15 @@ static inline const FSROMTable *GetOVT(int target) {
 }
 
 void Modern_OverlayStarted(u32 id, u32 start, u32 end);  // modern/ds/overlays.c
+void HostOverlay_Load(unsigned id);  // modern/host/overlay.c
 
 // FSi_StartOverlay
 void FS_StartOverlay(FSOverlayInfoHeader *h) {
-    // the host build has every overlay linked in (and its constructors run at start-up): starting one only records
-    // it (modern/host, docs/host.md)
+    // the host build has every overlay linked in: starting one records it and resets its variables as the DS's
+    // load does (its data as linked, its bss cleared, its static constructors run: modern/host/overlay.c,
+    // docs/host.md)
     Modern_OverlayStarted(h->id, h->ram_address, h->ram_address + h->ram_size + h->bss_size);
+    HostOverlay_Load(h->id);
     return;
     u32 size = FSi_GetOverlayBinarySize(h);
     void (**it)(void);
