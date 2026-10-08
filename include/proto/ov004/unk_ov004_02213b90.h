@@ -15,6 +15,9 @@ extern "C" {
 #ifndef PROTO_LOCAL_sMuseumExhibitMsgFile
 extern char sMuseumExhibitMsgFile[];
 #endif
+#ifndef PROTO_LOCAL_MuseumExhibitInfo_SpawnAutoTalk
+void *MuseumExhibitInfo_SpawnAutoTalk();
+#endif
 #ifndef PROTO_LOCAL_MuseumExhibitInfo_ClearRegistry
 void MuseumExhibitInfo_ClearRegistry(void);
 #endif
@@ -47,9 +50,6 @@ extern u32 sMuseumExhibitSpawnFacingArc;
 #endif
 #ifndef PROTO_LOCAL_sMuseumExhibitInfos
 extern MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
-#endif
-#ifndef PROTO_LOCAL_MuseumExhibitInfo_SpawnAutoTalk
-s32 MuseumExhibitInfo_SpawnAutoTalk();
 #endif
 #ifndef PROTO_LOCAL_MuseumExhibitInfo_Spawn
 void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s16 e, u8 *f, s32 g);

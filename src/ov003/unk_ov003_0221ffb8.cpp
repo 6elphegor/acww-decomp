@@ -94,7 +94,6 @@
 #define func_0209c128 _ZN11PooledModelD1Ev
 #define func_0209c140 _ZN11PooledModelC1Ev
 #define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
-#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
 #define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 #define func_02133150 _s32_div_f
@@ -442,7 +441,6 @@ BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
 void func_0209c128(void *p);
 void func_0209c140(void *p);
 s32 ModelSlotPool_destroy(void *p);
-void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 void ModelSlotHandle_Destroy(void *p);
 void ModelSlotHandle_Init(void *p);
 s32 Weather_GetFallingPrecip();

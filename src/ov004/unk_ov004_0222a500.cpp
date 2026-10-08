@@ -26,10 +26,12 @@
 #include "room/HouseData.h"
 #include "room/HouseRoom.h"
 #include "snd/SndEnvChannel.h"
-#define PROTO_LOCAL_FtrMgr_GetCycleCounter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Wallpaper_GetTex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/PatternTexCache.h"
+#include "nnsys/g3d_rt.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_020b8cd0.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/main/unk_02034048.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_02070560.h"
@@ -39,36 +41,6 @@
 #include "proto/main/unk_020b8d98.h"
 #include "proto/ov004/unk_ov004_022136d0.h"
 #include "proto/ov004/unk_ov004_0222a500.h"
-
-// ---------------------------------------------------------------- real symbol names of main-module methods
-// (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
-#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
-#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
-#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
-#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
-#define GroundInfo_initAtUnit _ZN10GroundInfo10initAtUnitEiiii
-#define BlendAnimModel_getAnmObj _ZN14BlendAnimModel9getAnmObjEv
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_clearResource _ZN5Model13clearResourceEv
-#define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define MatTexBinder_getMaterial _ZN12MatTexBinder11getMaterialEv
-#define MatTexBinder_bindByIdx _ZN12MatTexBinder9bindByIdxEPhii
-#define MatTexBinder_bindByName _ZN12MatTexBinder10bindByNameEPhPKcS2_
-#define MatTexBinder_setMaterialByName _ZN12MatTexBinder17setMaterialByNameEPhPKc
-#define HouseData_getRoom _ZN9HouseData7getRoomEi
-#define HouseRoom_setCarpet _ZN9HouseRoom9setCarpetEPtj
-#define HouseRoom_setWallpaper _ZN9HouseRoom12setWallpaperEPtj
-#define HouseRoom_getCarpet _ZN9HouseRoom9getCarpetEPi
-#define HouseRoom_getWallpaper _ZN9HouseRoom12getWallpaperEPi
-#define PatternTexCache_getPlayerTexKey _ZN15PatternTexCache15getPlayerTexKeyEii
-#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP7VecFx32S3_S3_ih
-#define TouchPicker_pushCylinder _ZN11TouchPicker12pushCylinderEP17TouchPickCylinder
-#define MatTexVramTask_cancel _ZN14MatTexVramTask6cancelEv
 
 // ---------------------------------------------------------------- library-side classes (real symbols)
 
@@ -93,12 +65,6 @@ struct WallpaperTexBuf {
 
 
 
-extern "C" {
-void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *ctor, void *dtor);
-void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *dtor);
-void _ZN11BoxColliderC1Ev(void *self);
-void _ZN11BoxColliderD2Ev(void *self);
-}
 
 
 
@@ -153,7 +119,7 @@ public:
     ~RoomWallpaper();
 
     void applyDefault(u16 v, void *a, s32 b);
-    BOOL bindMaterial(u8 *a, u32 b);
+    BOOL bindMaterial(u8 *a, u8 *b);
     u32 getDesignKey();
     u16 *getPrevItem();
     u16 *getItem();
@@ -183,17 +149,24 @@ public:
     /* 0x20 */ u8 isActive;
 };
 
-// class Z (two 0x9c-byte elements)
+// the colliders of a house room's entrance
 class RoomEntranceColliders {
 public:
     RoomEntranceColliders();
     ~RoomEntranceColliders();
-    void releaseScene0A();
-    void initScene0A();
     BOOL release();
     BOOL init();
 
-    u8 colliders[2][0x9c];
+    BoxCollider colliders[2];
+};
+
+// the collider of scene 0xa
+class RoomScene0ACollider {
+public:
+    void release();
+    void init();
+
+    BoxCollider collider;
 };
 
 class RoomShell : public GameProc {
@@ -218,16 +191,15 @@ public:
     /* 0x0128 */ RoomWallpaper wallpaper;
     /* 0x1228 */ RoomCarpet carpet;
     /* 0x3328 */ RoomEntranceColliders entranceColliders;
-    /* 0x3460 */ u8 scene0ACollider[HOST_SIZED(0x9c, BoxCollider) / 1] HOST_ALIGN8;  // BoxCollider (C1 / D2 called by hand, as the original does)
-    /* 0x34fc */ u8 scene22Shape[HOST_SIZED(0x24, RoomScene22Shape) / 1] HOST_ALIGN8;  // RoomScene22Shape
+    /* 0x3460 */ RoomScene0ACollider scene0ACollider;
+    /* 0x34fc */ RoomScene22Shape scene22Shape;
     /* 0x3520 */ s8 hourHandNode;
     /* 0x3521 */ s8 minuteHandNode;
     /* 0x3522 */ s8 roomSize;
     /* 0x3523 */ s8 hasuNode;
     /* 0x3524 */ u32 pad_3524;
     /* 0x3528 */ VecFx32 clockPos;
-    /* 0x3534 */ void *clockSe;
-    /* 0x3538 */ u8 pad_3538[8];
+    /* 0x3534 */ SndEnvChannel clockSe;
     /* 0x3540 */ s8 wdMatIdx;
 };
 
@@ -241,68 +213,36 @@ s32 Scene_InNookShop(void);
 u32 Scene_GetHouseRoom(void);
 void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
-u32 Scene_GetTouchPicker(void);
-u32 TouchPicker_addCylinder(u32 o, void *obj, void *v, s32 a, s32 b, s32 c, s32 d);
-u32 TouchPicker_pushCylinder(u32 o, void *obj);
+TouchPicker *Scene_GetTouchPicker(void);
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
-u8 *PatternTexCache_getPlayerTexKey(u32 a, u32 b, u32 c);
 void *CarpetTex_GetTex(void *o);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
-void *Wallpaper_GetTex(void *o);
-void *HouseData_getRoom(void *self, u32 idx);
-void HouseRoom_setCarpet(void *o, u16 *p, u32 k);
-s32 HouseRoom_setWallpaper(void *self, u16 *a, u32 b);
-BOOL BoxCollider_Unregister(void *self);
-BOOL BoxCollider_Register(void *self, s32 a, s32 b, s32 c, void *p, s32 s, void *q);
-void MatTexVramTask_cancel(void *self);
-void MatTexBinder_bindByIdx(void *self, u8 *a, s32 b, s32 c);
-void MatTexBinder_bindByName(void *self, u8 *a, const char *b, const char *c);
-void MatTexBinder_setMaterialByName(void *self, u8 *a, const char *b);
-s32 MatTexBinder_getMaterial(void *self);
+BOOL BoxCollider_Unregister(BoxCollider *self);
+BOOL BoxCollider_Register(BoxCollider *self, s32 a, s32 b, s32 c, VecFx32 *p, s16 s, VecFx32 *q);
 s32 FX_Div(s32 a, s32 b);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 u32 SceneLights_GetMatLightMask2();
-s32 AnimModel_allocAnmObj(void *self, u32 a);
-void AnimModel_attachAnim(void *self);
-void *Model_getRenderObj(void *self);
-u16 *HouseRoom_getWallpaper(void *self, s32 *i);
-u16 *HouseRoom_getCarpet(void *self, s32 *i);
 void *SaveVillagers_Get(void *self, s32 i);
 u32 Villager_GetWallpaper(void *self);
 u32 Villager_GetCarpet(void *self);
-void *GroundInfo_initAtUnit(void *self, s32 a, s32 b, s32 c, s32 d);
-s32 GroundInfoBase_getHeight(void *self, s32 a);
-void GroundInfo_Destruct(void *self);
 s32 SceneId_IsHouseRoom(s32 r);
 s32 SceneId_GetHouseRoom(s32 r);
 s32 SceneId_IsVillagerHouse(s32 r);
 s32 SceneId_GetVillagerHouse(s32 r);
 s32 SceneId_IsNookShop(s32 r);
 s32 SceneId_GetNookShop(s32 r);
-void Model_clearResource(void *self);
-void SndEnvChannel_callRelease(void *self);
-void AnimModel_drawAnimated(void *self, s32 a);
 void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
-s32 BlendAnimModel_getAnmObj(void *self);
-void AnimModel_stepAnim(void *self);
-void AnimFrameCtrl_step(void *self);
-s32 FtrMgr_GetCycleCounter(s32 a);
-void SndEnvChannel_callRequestSustained(void *self, u32 a);
-void SndEnvChannel_callUpdateRelative(void *self, VecFx32 *v);
-void SndEnvChannel_callReset(void *self);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);
 
 extern u8 gSaveHouse[];
 extern u8 gSaveVillagers[];
-extern u8 data_021f47e0[];
-extern u8 data_0213b91c[];
+extern Mtx43 data_021f47e0;
 extern u32 data_020c8cc0;
 extern Unk_0204e858_Grid *gSceneBlockMap;
-extern u32 gBgHeap;
 
 // own functions (plain symbols), declared before their first use
 }
@@ -330,55 +270,50 @@ extern "C" RoomShell *RoomShell_Create() {
 }
 
 RoomShell::RoomShell() {
-    _ZN11BoxColliderC1Ev(scene0ACollider);
-    new (scene22Shape) RoomScene22Shape();
-    clockSe = data_0213b91c;
     hourHandNode = minuteHandNode = wdMatIdx = -1;
 }
 
 RoomShell::~RoomShell() {
-    ((RoomScene22Shape *)(scene22Shape))->~RoomScene22Shape();
-    _ZN11BoxColliderD2Ev(scene0ACollider);
 }
 
 BOOL RoomShell::onCreate() {
     sRoomShell = this;
     entranceColliders.init();
-    ((RoomEntranceColliders *)&scene0ACollider)->initScene0A();
-    ((RoomScene22Shape *)scene22Shape)->init();
+    scene0ACollider.init();
+    scene22Shape.init();
     calcRoomSize();
     initAnims();
     setMatLightFlags((u8 *)model.resMdl);
     storeBaseMtx();
     initWallAndFloor();
-    hourHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx("kh_j");
-    minuteHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx("km_j");
-    hasuNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx("hasu1");
-    wdMatIdx = ((G3dResAccess *)((u8 *)model.resMdl))->findMatIdx("wd");
-    ((Model *)(&model))->setInitCallback((void (*)(NNSG3dRS *))RoomShell_InitRenderObj, this);
+    hourHandNode = ((G3dResAccess *)model.resMdl)->findNodeIdx("kh_j");
+    minuteHandNode = ((G3dResAccess *)model.resMdl)->findNodeIdx("km_j");
+    hasuNode = ((G3dResAccess *)model.resMdl)->findNodeIdx("hasu1");
+    wdMatIdx = ((G3dResAccess *)model.resMdl)->findMatIdx("wd");
+    model.setInitCallback((void (*)(NNSG3dRS *))RoomShell_InitRenderObj, this);
     RoomShell_SpawnBoardSigns(this);
-    ((SndEnvChannel *)(&clockSe))->callReset();
+    clockSe.callReset();
     return TRUE;
 }
 
 BOOL RoomShell::onExecute() {
-    if (((BlendAnimModel *)(&model))->getAnmObj()) {
-        ((AnimModel *)(&model))->stepAnim();
+    if (((BlendAnimModel *)&model)->getAnmObj()) {
+        model.stepAnim();
     }
     RoomShellMatAnim *e = matAnim;
     if (RoomShellMatAnim_GetAnmObj(e)) {
-        ((AnimFrameCtrl *)(e))->step();
-        *(u32 *)matAnim[0].anmObj = matAnim[0].curFrame;
+        e->step();
+        ((G3dAnmObj *)matAnim[0].anmObj)->frame = matAnim[0].curFrame;
     }
     if (clockPos.x != 0) {
-        s32 id = FtrMgr_GetCycleCounter(clockPos.x);
+        s32 id = FtrMgr_GetCycleCounter();
         if (id == 9 || id == 0x1d) {
-            ((SndEnvChannel *)(&clockSe))->callRequestSustained((void *)(0x4d1));
+            clockSe.callRequestSustained((void *)(0x4d1));
         }
     }
     VecFx32 v = clockPos;
-    ((SndEnvChannel *)(&clockSe))->callUpdateRelative(&v);
-    ((RoomScene22Shape *)scene22Shape)->update();
+    clockSe.callUpdateRelative(&v);
+    scene22Shape.update();
     data_021ce63c = 0;
     return TRUE;
 }
@@ -392,32 +327,31 @@ BOOL RoomShell::onDraw() {
         t.b = t.a;
         NNS_G3dMdlSetMdlDiff((u8 *)model.resMdl, wdMatIdx, t.b);
     }
-    ((AnimModel *)(&model))->drawAnimated((void *)(0));
+    model.drawAnimated(0);
     return TRUE;
 }
 
 BOOL RoomShell::onDelete() {
-    ((RoomWallpaper *)&wallpaper)->release();
-    ((RoomScene22Shape *)scene22Shape)->release();
-    ((RoomEntranceColliders *)&scene0ACollider)->releaseScene0A();
+    wallpaper.release();
+    scene22Shape.release();
+    scene0ACollider.release();
     carpet.release();
     entranceColliders.release();
-    ((Model *)(&model))->clearResource();
+    model.clearResource();
     sRoomShell = 0;
-    ((SndEnvChannel *)(&clockSe))->callRelease();
+    clockSe.callRelease();
     return TRUE;
 }
 
 void RoomShell::calcRoomSize() {
-    u32 buf[0x44 / 4];
     s32 cnt = 0;
     s32 i;
     for (i = 0; i < 16; i++) {
-        ((GroundInfo *)(buf))->initAtUnit(i, 10, 0, 0);
-        if (((GroundInfoBase *)(buf))->getHeight(0) == 0) {
+        GroundInfo g;
+        g.initAtUnit(i, 10, 0, 0);
+        if (g.getHeight(0) == 0) {
             cnt++;
         }
-        GroundInfo_Destruct(buf);
     }
     roomSize = cnt;
 }
@@ -443,10 +377,10 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
     *d = 0;
     *b = *d;
     if (SceneId_IsHouseRoom(r)) {
-        void *o = ((HouseData *)(gSaveHouse))->getRoom(SceneId_GetHouseRoom(r));
+        HouseRoom *o = ((HouseData *)gSaveHouse)->getRoom(SceneId_GetHouseRoom(r));
         if (o != NULL) {
-            *a = *((HouseRoom *)(o))->getWallpaper(b);
-            *c = *((HouseRoom *)(o))->getCarpet(d);
+            *a = *o->getWallpaper(b);
+            *c = *o->getCarpet(d);
         }
     } else if (SceneId_IsVillagerHouse(r)) {
         void *o = SaveVillagers_Get(gSaveVillagers, SceneId_GetVillagerHouse(r));
@@ -494,13 +428,13 @@ static inline BOOL Unk_ov004_0222b510_Range(volatile u16 *p) {
 void RoomShell::initWallAndFloor() {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     TownBlockCell *c;
-    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != NULL) {
+    if (g->width != 0 && g->height != 0 && g->blocks != NULL) {
         c = g->blocks;
     } else {
         c = NULL;
     }
     BgAcreModel *r = c->bgModel;
-    wallpaper.bindMaterial((u8 *)model.resMdl, (u32)r->tex);
+    wallpaper.bindMaterial((u8 *)model.resMdl, (u8 *)r->tex);
     carpet.bindMaterial((u8 *)model.resMdl, (u8 *)r->tex);
     volatile u16 h[2];
     s32 w8;
@@ -514,37 +448,37 @@ void RoomShell::initWallAndFloor() {
     if (Unk_ov004_0222b510_Range(&h[1])) {
         carpet.applyDefault(0x1182, (G3dResAccess *)model.resMdl, w12);
     }
-    ((RoomWallpaper *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)model.resMdl, w8);
+    wallpaper.setWallpaper((u16 *)&h[0], (G3dResAccess *)model.resMdl, w8);
     carpet.setCarpet((u16 *)&h[1], (G3dResAccess *)model.resMdl, w12);
 }
 
 void RoomShell::initAnims() {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     TownBlockCell *c;
-    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != NULL) {
+    if (g->width != 0 && g->height != 0 && g->blocks != NULL) {
         c = g->blocks;
     } else {
         c = NULL;
     }
     BgAcreModel *r = c->bgModel;
-    ((Model *)(&model))->setResourceAndBind((NNSG3dResMdl *)(r->mdl), (NNSG3dResTex *)(r->tex));
+    model.setResourceAndBind((NNSG3dResMdl *)(r->mdl), (NNSG3dResTex *)(r->tex));
     if (r->jntAnm != 0) {
-        if (((AnimModel *)(&model))->allocAnmObj((void *)(gBgHeap))) {
+        if (model.allocAnmObj(gBgHeap)) {
             ((BlendAnimModel *)(&model))->initAnim(r->jntAnm, 0, 0x1000, 0, 0);
-            ((AnimModel *)(&model))->attachAnim();
+            model.attachAnim();
         }
     }
     if (r->texSrtAnm != 0) {
-        if (((ModelAnim *)(matAnim))->allocMatAnm((NNSG3dResMdl *)((u8 *)model.resMdl), (void *)(gBgHeap))) {
-            ((ModelAnim *)(matAnim))->init(r->texSrtAnm, 0, 0x1000, 0);
-            ((ModelAnim *)(matAnim))->addToRenderObj(Model_getRenderObj(&model));
+        if (matAnim[0].allocMatAnm(model.resMdl, gBgHeap)) {
+            matAnim[0].init(r->texSrtAnm, 0, 0x1000, 0);
+            matAnim[0].addToRenderObj(model.getRenderObj());
         }
     }
 }
 
 void RoomShell::storeBaseMtx() {
-    Mtx43_SetTranslate(data_021f47e0, 0, 0, 0);
-    *(Mtx43 *)&model.mtx = *(Mtx43 *)data_021f47e0;
+    Mtx43_SetTranslate(&data_021f47e0, 0, 0, 0);
+    model.mtx = data_021f47e0;
 }
 
 void RoomShell::setMatLightFlags(u8 *p) {
@@ -587,10 +521,10 @@ u32 RoomWallpaper::getDesignKey() {
     return designKey;
 }
 
-BOOL RoomWallpaper::bindMaterial(u8 *a, u32 b) {
+BOOL RoomWallpaper::bindMaterial(u8 *a, u8 *b) {
     if (b != 0) {
-        ((MatTexBinder *)(&matBinder))->setMaterialByName(a, sRoomWallpaperMatNameStr);
-        texRes = (u8 *)b;
+        matBinder.setMaterialByName(a, sRoomWallpaperMatNameStr);
+        texRes = b;
         return TRUE;
     }
     return FALSE;
@@ -598,21 +532,21 @@ BOOL RoomWallpaper::bindMaterial(u8 *a, u32 b) {
 
 void RoomWallpaper::applyDefault(u16 v, void *a, s32 b) {
     u16 t = v;
-    ((RoomWallpaper *)this)->setWallpaper(&t, (G3dResAccess *)a, b);
+    setWallpaper(&t, (G3dResAccess *)a, b);
 }
 
 extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
     if (Scene_InHouseRoom()) {
-        void *r = ((HouseData *)(gSaveHouse))->getRoom(Scene_GetHouseRoom());
+        HouseRoom *r = ((HouseData *)gSaveHouse)->getRoom(Scene_GetHouseRoom());
         if (r != NULL) {
-            ((HouseRoom *)(r))->setWallpaper(a, b);
+            r->setWallpaper(a, b);
         }
     }
 }
 
 BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (((G3dResAccess *)(a))->findMatIdx(sRoomWallpaperMatName) == -1) return FALSE;
+    if (a->findMatIdx(sRoomWallpaperMatName) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
         u32 x = Item_GetFurnitureIndex(&item);
         u32 y = Item_GetFurnitureIndex(q);
@@ -632,10 +566,10 @@ BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
         if (in != FALSE) {
             if (Wallpaper_LoadTexture(&texBuf, q) == 0) goto fail;
             if (Scene_InNookShop() == 0) {
-                ((MatTexBinder *)(&matBinder))->bindByName(texRes, "dummy_wall", "dummy_wall_pl");
+                matBinder.bindByName(texRes, "dummy_wall", "dummy_wall_pl");
             }
-            void *r = Wallpaper_GetTex(&texBuf);
-            if (((MatTexVramTask *)(&texTask))->request(a, (const char *)(sRoomWallpaperMatName), r, 0, 0) == 0) goto fail;
+            void *r = Wallpaper_GetTex((u8 *)&texBuf);
+            if (texTask.request(a, (const char *)(sRoomWallpaperMatName), r, 0, 0) == 0) goto fail;
             prevItem = item;
             item = *q;
             RoomWallpaper_SaveToHouseRoom(this, &item, key);
@@ -644,9 +578,8 @@ BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
         } else if (v >= 0x1188 && v <= 0x11a7) {
             u32 t7 = Item_GetDesignPlayer(q);
             u32 t8 = Item_GetDesignSlot(q);
-            u32 h = PatternTexCache_Get();
-            u8 *idx = PatternTexCache_getPlayerTexKey(h, (u8)t7, (u8)t8);
-            ((MatTexBinder *)(&matBinder))->bindByIdx(idx, 0, 0);
+            u8 *idx = PatternTexCache_Get()->getPlayerTexKey((u8)t7, (u8)t8);
+            matBinder.bindByIdx(idx, 0, 0);
             prevItem = item;
             item = *q;
             designKey = key;
@@ -667,7 +600,7 @@ done:
 }
 
 void RoomWallpaper::release() {
-    ((MatTexVramTask *)(&texTask))->cancel();
+    texTask.cancel();
 }
 
 // ---- dummy floor object (manager + 0x1228)
@@ -694,7 +627,7 @@ u32 RoomCarpet::getDesignKey() {
 
 BOOL RoomCarpet::bindMaterial(u8 *buf, u8 *p) {
     if (p != 0) {
-        ((MatTexBinder *)(&matBinder))->setMaterialByName(buf, sRoomCarpetMatNameStr);
+        matBinder.setMaterialByName(buf, sRoomCarpetMatNameStr);
         texRes = p;
         return TRUE;
     }
@@ -709,16 +642,16 @@ BOOL RoomCarpet::applyDefault(u16 v, G3dResAccess *a, s32 key) {
 void RoomCarpet::saveToHouseRoom(u16 *q, u32 key) {
     if (Scene_InHouseRoom() != 0) {
         u32 t = Scene_GetHouseRoom();
-        void *o = ((HouseData *)(gSaveHouse))->getRoom(t);
+        HouseRoom *o = ((HouseData *)gSaveHouse)->getRoom(t);
         if (o != 0) {
-            ((HouseRoom *)(o))->setCarpet(q, key);
+            o->setCarpet(q, key);
         }
     }
 }
 
 BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (((G3dResAccess *)(a))->findMatIdx(sRoomCarpetMatName) == -1) return FALSE;
+    if (a->findMatIdx(sRoomCarpetMatName) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
         u32 x = Item_GetFurnitureIndex(&item);
         u32 y = Item_GetFurnitureIndex(q);
@@ -738,10 +671,10 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
         if (in != FALSE) {
             if (CarpetTex_Load(&texBuf, q) == 0) goto fail;
             if (Scene_InNookShop() == 0) {
-                ((MatTexBinder *)(&matBinder))->bindByName(texRes, "dummy_floor", "dummy_floor_pl");
+                matBinder.bindByName(texRes, "dummy_floor", "dummy_floor_pl");
             }
             void *r = CarpetTex_GetTex(&texBuf);
-            if (((MatTexVramTask *)(&texTask))->request(a, (const char *)(sRoomCarpetMatName), r, 0, 0) == 0) goto fail;
+            if (texTask.request(a, (const char *)(sRoomCarpetMatName), r, 0, 0) == 0) goto fail;
             prevItem = item;
             item = *q;
             saveToHouseRoom(&item, key);
@@ -750,9 +683,8 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
         } else if (v >= 0x1188 && v <= 0x11a7) {
             u32 t7 = Item_GetDesignPlayer(q);
             u32 t8 = Item_GetDesignSlot(q);
-            u32 h = PatternTexCache_Get();
-            u8 *idx = PatternTexCache_getPlayerTexKey(h, (u8)t7, (u8)t8);
-            ((MatTexBinder *)(&matBinder))->bindByIdx(idx, 0, 0);
+            u8 *idx = PatternTexCache_Get()->getPlayerTexKey((u8)t7, (u8)t8);
+            matBinder.bindByIdx(idx, 0, 0);
             prevItem = item;
             item = *q;
             designKey = key;
@@ -773,7 +705,7 @@ done:
 }
 
 void RoomCarpet::release() {
-    ((MatTexVramTask *)(&texTask))->cancel();
+    texTask.cancel();
 }
 
 // ---- element of the manager's 0x20-byte array
@@ -783,17 +715,15 @@ RoomShellMatAnim::RoomShellMatAnim() {
 RoomShellMatAnim::~RoomShellMatAnim() {
 }
 
-extern "C" u32 RoomShellMatAnim_GetAnmObj(ModelAnim *o) {
+extern "C" NNSG3dAnmObj *RoomShellMatAnim_GetAnmObj(ModelAnim *o) {
     return o->anmObj;
 }
 
 // ---- class Z
 RoomEntranceColliders::RoomEntranceColliders() {
-    __cxa_vec_ctor(colliders, 2, 0x9c, (void *)_ZN11BoxColliderC1Ev, (void *)_ZN11BoxColliderD2Ev);
 }
 
 RoomEntranceColliders::~RoomEntranceColliders() {
-    __cxa_vec_cleanup(colliders, 2, 0x9c, (void *)_ZN11BoxColliderD2Ev);
 }
 
 extern "C" BOOL RoomEntranceColliders_InHouseScene() {
@@ -833,19 +763,19 @@ extern "C" {
 ItemId sRoomNoItem(0xfff1);
 }
 
-void RoomEntranceColliders::initScene0A() {
+void RoomScene0ACollider::init() {
     if (Scene_GetCurrent() == 0xa) {
         static FxVec3 s(0xe000, 0, data_020c8cc0 + 0x1000);
-        BoxCollider_Register(&colliders[0], 0x8000, 0x2000, 0x1000, &s, 0, 0);
+        BoxCollider_Register(&collider, 0x8000, 0x2000, 0x1000, &s, 0, 0);
     }
 }
 
 extern "C" char sRoomWallpaperMatNameStr[] = "m_dummy_wall";
 extern "C" const char *sRoomWallpaperMatName = sRoomWallpaperMatNameStr;
 
-void RoomEntranceColliders::releaseScene0A() {
+void RoomScene0ACollider::release() {
     if (Scene_GetCurrent() == 0xa) {
-        BoxCollider_Unregister(&colliders[0]);
+        BoxCollider_Unregister(&collider);
     }
 }
 
@@ -866,13 +796,13 @@ void RoomScene22Shape::init() {
         v.x = 0x108f6;
         v.y = 0;
         v.z = 0x1351e;
-        ((TouchPicker *)(Scene_GetTouchPicker()))->addCylinder((TouchPickCylinder *)(this), (VecFx32 *)(&v), 0xf33, 0x6000, 0x16, 0xff);
+        Scene_GetTouchPicker()->addCylinder(this, &v, 0xf33, 0x6000, 0x16, 0xff);
     }
 }
 
 void RoomScene22Shape::update() {
     if (isActive != 0) {
-        ((TouchPicker *)(Scene_GetTouchPicker()))->pushCylinder((TouchPickCylinder *)(this));
+        Scene_GetTouchPicker()->pushCylinder(this);
     }
 }
 
@@ -997,12 +927,12 @@ void RoomShell::onMatCallback(s32 idx, NNSG3dRS *o) {
     BOOL a;
     BOOL b;
     s32 v8, vc, v10;
-    if (idx == ((MatTexBinder *)(&wallpaper.matBinder))->getMaterial()) {
+    if (idx == wallpaper.matBinder.getMaterial()) {
         a = TRUE;
     } else {
         a = FALSE;
     }
-    if (idx == ((MatTexBinder *)(&carpet.matBinder))->getMaterial()) {
+    if (idx == carpet.matBinder.getMaterial()) {
         b = TRUE;
     } else {
         b = FALSE;
@@ -1084,7 +1014,7 @@ struct RoomBoardSignDef {
 extern "C" void RoomShell_SpawnBoardSigns(void *self) {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     TownBlockCell *c;
-    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != 0) {
+    if (g->width != 0 && g->height != 0 && g->blocks != 0) {
         c = g->blocks;
     } else {
         c = 0;

@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 
@@ -59,75 +58,29 @@ class ActorTalkRequest;
 
 
 
+// Sable's talks by talk count: the first message and how many follow it
+struct SpNpcSableTalkRange {
+    u8 firstMsg;
+    s32 count;
+};
+
 struct Unk_ov004_0221b6d4_Bits {
     u8 a : 2;
     u8 b : 3;
     u8 c : 3;
 };
 
-// Real symbol names of the callees outside this unit (all are called as free functions taking the object first).
-#define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
-#define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
-#define NpcActor_setNetUserBytes _ZN8NpcActor15setNetUserBytesEPvi
-#define NpcActor_getNetUserBytes _ZN8NpcActor15getNetUserBytesEPhj
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
-#define func_0201b08c _ZN8NpcActor18onInteractionEventEi
-#define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
-#define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
-#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor
-#define PlayerSpNpcRecord_setSableTalkCount _ZN17PlayerSpNpcRecord17setSableTalkCountEj
-#define PlayerSpNpcRecord_getSableTalkCount _ZN17PlayerSpNpcRecord17getSableTalkCountEv
 
 extern "C" {
 extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern VecFx32 gVec3Zero;
-extern const u8 sSpNpcSableDramaMsgs[];
-extern const u8 sSpNpcSableWeekdayMsgs[];
-extern const u8 sSpNpcSableTalkMsgs[];
+extern const u8 sSpNpcSableDramaMsgs[4][7];
+extern const u8 sSpNpcSableWeekdayMsgs[8];
+extern const SpNpcSableTalkRange sSpNpcSableTalkMsgs[12];
+extern const char *sSpNpcSableMsgFiles[3];
 
-s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
-BOOL NpcActor_isNetOwner(void *self);
-BOOL NpcActor_netIsTalkLocked(void *self);
-void NpcActor_setNetUserBytes(void *self, void *p, s32 n);
-BOOL NpcActor_getNetUserBytes(void *self, u8 *p, u32 n);
-void NpcActor_setTalkRequest(void *self, void *p);
-s32 NpcActor_getAngleTo(void *self, void *p);
-void NpcActor_setCollisionRadius(void *self, s32 v);
-void func_0201b08c(void *self, u32 a, u32 b);
-void Character_setInteractionRange(void *self, s32 v);
-void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
-void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
-NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
-s32 NpcActionCtrl_getAction(void *self);
-BOOL NpcActionCtrl_isActionDone(void *self);
-void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-BOOL NpcTalkCtrl_isBusy(void *self);
-void NpcTalkCtrl_requestTalk(void *self, u8 a, u8 b);
-void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-BOOL NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
-BOOL CommManager_isOnline(void *g);
-void *PlayerData_getSpNpcRecord(void *p);
-void ActorTalkRequest_setPartnerActor(void *self, void *p);
-void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
-u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
 void Talk_AdvanceDrama(void *self, void *p);
@@ -189,7 +142,7 @@ public:
 
 struct SpNpcSableActEntry {
     BOOL (SpNpcSable::*enter)();
-    BOOL (SpNpcSable::*exit)();
+    BOOL (SpNpcSable::*update)();
 };
 
 extern "C" {
@@ -242,8 +195,8 @@ BOOL SpNpcSable::updateAct() {
     sewCycle = SewingMachine_GetFrame() / 0x38;
     ((NpcActor *)(this))->setNetUserBytes(&sewCycle, 1);
     BOOL r = FALSE;
-    if (sSpNpcSableActTable[act].exit) {
-        r = (this->*sSpNpcSableActTable[act].exit)();
+    if (sSpNpcSableActTable[act].update) {
+        r = (this->*sSpNpcSableActTable[act].update)();
     }
     return r;
 }
@@ -287,7 +240,7 @@ BOOL SpNpcSable::setupAct01() {
     if (SpNpcSable_GetTalkCount(this) < 6) {
         ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(1, 0);
     } else {
-        NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
+        NpcActor *p = (NpcActor *)talk.getTalkPlayer();
         s32 r = 0;
         if (p) {
             r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
@@ -411,7 +364,7 @@ void SpNpcSableTalk::attachOwner(SpNpcSable *o) {
 }
 
 void SpNpcSableTalk::start(TalkStartMsg *out_) {
-    TalkTopicMsg *out = (TalkTopicMsg *)out_;
+    TalkStartMsg *out = out_;
     u32 idx = SpNpcSable_GetTalkCount(owner);
     void *g = gCommManager;
     if (((CommManager *)(g))->isOnline() != 0 || *(s16 *)DebugVar_GetPtr(0, 0x4a) != 0) {
@@ -425,13 +378,13 @@ void SpNpcSableTalk::start(TalkStartMsg *out_) {
         if (Talk_IsDramaPending(owner, &bits, 2) != 0) {
             idx = 1;
             owner->isDramaTalk = idx;
-            out->msgIndex = (sSpNpcSableDramaMsgs + bits.b * 7)[bits.c];
+            out->msgIndex = sSpNpcSableDramaMsgs[bits.b][bits.c];
             Talk_AdvanceDrama(owner, &bits);
         } else if (Talk_CheckAndSetPlayerFlag(0x10, 1) == 0) {
             if (idx >= 0xc) {
                 out->msgIndex = sSpNpcSableWeekdayMsgs[Clock_GetWeekday()];
             } else {
-                out->msgIndex = sSpNpcSableTalkMsgs[idx * 8];
+                out->msgIndex = sSpNpcSableTalkMsgs[idx].firstMsg;
             }
             idx = 0;
         } else {
@@ -444,14 +397,13 @@ void SpNpcSableTalk::start(TalkStartMsg *out_) {
                 } else if (t > 0xb) {
                     t = 0xb;
                 }
-                u32 o = t << 3;
-                s32 r = Random_GlobalBelow(*(s32 *)(sSpNpcSableTalkMsgs + 4 + o)) + 1;
-                out->msgIndex = r + sSpNpcSableTalkMsgs[o];
+                s32 r = Random_GlobalBelow(sSpNpcSableTalkMsgs[t].count) + 1;
+                out->msgIndex = r + sSpNpcSableTalkMsgs[t].firstMsg;
             }
             idx = 0;
         }
     }
-    out->fileName = sSpNpcSableMsgFiles[idx];
+    out->msgKey = sSpNpcSableMsgFiles[idx];
     if (((CommManager *)(g))->isOnline() == 0 && *(s16 *)DebugVar_GetPtr(0, 0x4a) == 0 && idx == 0) {
         switch (out->msgIndex) {
         case 2:
@@ -557,7 +509,7 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
         }
         break;
     }
-    func_0201b08c(this, idx, v);
+    NpcActor::onInteractionEvent(idx, v);
 }
 
 extern "C" u32 SpNpcSable_GetTalkCount(void *unused) {
@@ -571,50 +523,25 @@ extern "C" void SpNpcSable_SetTalkCount(void *unused, u32 a) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 extern "C" const u8 sSpNpcSableWeekdayMsgs[8] = {0x27, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x00};
-extern "C" const u8 sSpNpcSableDramaMsgs[0x1c] = {0, 1, 2, 3, 0xfe, 0xfe, 0xfe, 4, 5, 6, 0xfe, 0xfe, 0xfe, 0xfe, 7, 8, 9, 10, 11, 0xfe, 0xfe, 11, 12, 13, 14, 15, 16, 17};
-extern "C" const u8 sSpNpcSableTalkMsgs[0x60] = {0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 9, 0, 0, 0, 2, 0, 0, 0, 12, 0, 0, 0, 2, 0, 0, 0, 15, 0, 0, 0, 2, 0, 0, 0, 18, 0, 0, 0, 2, 0, 0, 0, 21, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 2, 0, 0, 0, 27, 0, 0, 0, 2, 0, 0, 0, 30, 0, 0, 0, 2, 0, 0, 0};
+extern "C" const u8 sSpNpcSableDramaMsgs[4][7] = {
+    {0, 1, 2, 3, 0xfe, 0xfe, 0xfe}, {4, 5, 6, 0xfe, 0xfe, 0xfe, 0xfe}, {7, 8, 9, 10, 11, 0xfe, 0xfe}, {11, 12, 13, 14, 15, 16, 17},
+};
+extern "C" const SpNpcSableTalkRange sSpNpcSableTalkMsgs[12] = {
+    {0, 5}, {0, 5}, {0, 5}, {6, 2}, {9, 2}, {12, 2}, {15, 2}, {18, 2}, {21, 2}, {24, 2}, {27, 2}, {30, 2},
+};
 extern "C" u8 data_ov004_0224cd04[14] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'd', 'r', 'a', 'm', 'a', '3', 0};
 extern "C" u8 data_ov004_0224cd14[15] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'o', 's', 'i', 's', 't', 'e', 'r', 0};
 extern "C" u8 data_ov004_0224cd24[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's', 'e', 'q', 'u', 'e', 'n', 'c', 'e', '4', 0};
-extern "C" uptr sSpNpcSableMsgFiles[3] = {(uptr)data_ov004_0224cd14, (uptr)data_ov004_0224cd04, (uptr)data_ov004_0224cd24};
+extern "C" const char *sSpNpcSableMsgFiles[3] = {(const char *)data_ov004_0224cd14, (const char *)data_ov004_0224cd04, (const char *)data_ov004_0224cd24};
 extern "C" u8 sSpNpcSableModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcSableTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 extern "C" ActorProfile sSpNpcSableProfile = {(void *(*)())SpNpcSable_Create, 0x77, 0x7c, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void _ZN10SpNpcSable10setupAct05Ev();
-extern "C" void _ZN10SpNpcSable9mainAct05Ev();
-extern "C" void _ZN10SpNpcSable9mainAct00Ev();
-extern "C" void _ZN10SpNpcSable10setupAct06Ev();
-extern "C" void _ZN10SpNpcSable9mainAct06Ev();
-extern "C" void _ZN10SpNpcSable10setupAct01Ev();
-extern "C" void _ZN10SpNpcSable10setupAct00Ev();
-extern "C" void _ZN10SpNpcSable10setupAct03Ev();
-extern "C" void _ZN10SpNpcSable10setupAct04Ev();
-extern "C" void _ZN10SpNpcSable9mainAct04Ev();
-extern "C" void _ZN10SpNpcSable9mainAct03Ev();
-extern "C" void _ZN10SpNpcSable9mainAct01Ev();
-extern "C" void _ZN10SpNpcSable9mainAct02Ev();
-extern "C" void _ZN10SpNpcSable10setupAct02Ev();
-extern "C" void *data_ov004_0224cc88[2] = {(void *)_ZN10SpNpcSable10setupAct05Ev, 0};
-extern "C" void *data_ov004_0224ccf0[2] = {(void *)_ZN10SpNpcSable10setupAct02Ev, 0};
-extern "C" void *data_ov004_0224cce8[2] = {(void *)_ZN10SpNpcSable9mainAct02Ev, 0};
-extern "C" void *data_ov004_0224cce0[2] = {(void *)_ZN10SpNpcSable9mainAct01Ev, 0};
-extern "C" void *data_ov004_0224ccd8[2] = {(void *)_ZN10SpNpcSable9mainAct03Ev, 0};
-extern "C" void *data_ov004_0224ccd0[2] = {(void *)_ZN10SpNpcSable9mainAct04Ev, 0};
-extern "C" void *data_ov004_0224ccc8[2] = {(void *)_ZN10SpNpcSable10setupAct04Ev, 0};
-extern "C" void *data_ov004_0224cc98[2] = {(void *)_ZN10SpNpcSable9mainAct00Ev, 0};
-extern "C" void *data_ov004_0224cca0[2] = {(void *)_ZN10SpNpcSable10setupAct06Ev, 0};
-extern "C" void *data_ov004_0224ccb8[2] = {(void *)_ZN10SpNpcSable10setupAct00Ev, 0};
-extern "C" void *data_ov004_0224ccb0[2] = {(void *)_ZN10SpNpcSable10setupAct01Ev, 0};
-extern "C" void *data_ov004_0224cca8[2] = {(void *)_ZN10SpNpcSable9mainAct06Ev, 0};
-extern "C" void *data_ov004_0224ccc0[2] = {(void *)_ZN10SpNpcSable10setupAct03Ev, 0};
-extern "C" void *data_ov004_0224cc90[2] = {(void *)_ZN10SpNpcSable9mainAct05Ev, 0};
-typedef BOOL (SpNpcSable::*Unk_ov004_Fn)();
 extern "C" SpNpcSableActEntry sSpNpcSableActTable[7] = {
-    {*(Unk_ov004_Fn *)data_ov004_0224ccb8, *(Unk_ov004_Fn *)data_ov004_0224cc98},
-    {*(Unk_ov004_Fn *)data_ov004_0224ccb0, *(Unk_ov004_Fn *)data_ov004_0224cce0},
-    {*(Unk_ov004_Fn *)data_ov004_0224ccf0, *(Unk_ov004_Fn *)data_ov004_0224cce8},
-    {*(Unk_ov004_Fn *)data_ov004_0224ccc0, *(Unk_ov004_Fn *)data_ov004_0224ccd8},
-    {*(Unk_ov004_Fn *)data_ov004_0224ccc8, *(Unk_ov004_Fn *)data_ov004_0224ccd0},
-    {*(Unk_ov004_Fn *)data_ov004_0224cc88, *(Unk_ov004_Fn *)data_ov004_0224cc90},
-    {*(Unk_ov004_Fn *)data_ov004_0224cca0, *(Unk_ov004_Fn *)data_ov004_0224cca8},
+    {&SpNpcSable::setupAct00, &SpNpcSable::mainAct00},
+    {&SpNpcSable::setupAct01, &SpNpcSable::mainAct01},
+    {&SpNpcSable::setupAct02, &SpNpcSable::mainAct02},
+    {&SpNpcSable::setupAct03, &SpNpcSable::mainAct03},
+    {&SpNpcSable::setupAct04, &SpNpcSable::mainAct04},
+    {&SpNpcSable::setupAct05, &SpNpcSable::mainAct05},
+    {&SpNpcSable::setupAct06, &SpNpcSable::mainAct06},
 };

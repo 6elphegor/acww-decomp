@@ -38,52 +38,9 @@
 #include "proto/ov004/unk_ov004_02213b90.h"
 #include "proto/ov004/unk_ov004_02237440.h"
 #include "gfx/Model.h"
-
-// ---- main / runtime symbols by their real names
-#define func_02000c8c _ZN6FxVec3D1Ev
-#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
-#define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
-#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
-#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
-#define func_02031c10 _ZN11BoxColliderD2Ev
-#define func_02031c48 _ZN11BoxColliderC1Ev
-#define func_0203239c _ZN14CollisionStateD1Ev
-#define func_020323b0 _ZN14CollisionStateC1Ev
-#define AnimModel_detachVisAnim _ZN9AnimModel13detachVisAnimEv
-#define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define func_020548a0 _ZN9AnimModelD1Ev
-#define func_020548d0 _ZN9AnimModelC1Ev
-#define func_02054e24 _ZN11CachedModelD1Ev
-#define func_02054e3c _ZN11CachedModelC1Ev
-#define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
-#define func_02088bb0 _ZN14StaticColliderD1Ev
-#define func_02088bc8 _ZN14StaticColliderC1Ev
-#define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP7VecFx32iijjjhi
-#define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
-#define ActorCollider_submit _ZN13ActorCollider6submitEv
-#define PooledModel_getModel _ZN11PooledModel8getModelEv
-#define PooledModel_unload _ZN11PooledModel6unloadEv
-#define PooledModel_reset _ZN11PooledModel5resetEv
-#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
-#define func_0209c128 _ZN11PooledModelD1Ev
-#define func_0209c140 _ZN11PooledModelC1Ev
-#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
-#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
-#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
-#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
-#define func_0209c2d8 _ZN13ModelSlotPoolD1Ev
-#define func_0209c2dc _ZN13ModelSlotPoolC1Ev
-#define func_021355f0 __cxa_vec_cleanup
-#define func_02135714 __cxa_vec_ctor
+#include "game/BoxCollider.h"
+#include "actor/Actor.h"
+#include "game/FxVec3.h"
 
 // ---- main-module classes used by this unit
 
@@ -97,8 +54,10 @@ public:
     virtual ~MuseumInsectAnim();
 };
 
+struct MuseumInsectPlayerInfo;
+
 struct MuseumInsectBehavior {
-    void (*setup)(void *);
+    void (*setup)(MuseumInsect *);
     void (*update)(MuseumInsect *);
 };
 
@@ -122,9 +81,7 @@ struct Unk_ov004_0223b1e8_Bits {
 };
 
 // Insect slot of the museum insect room (0x2d8 bytes, sMuseumInsects[0x20]). One layout for all 57 species: the
-// setup / update pair of sMuseumInsectBehaviors[insectIndex] initialises and drives it. The CollisionState, the AnimModel
-// and the creature sound are constructed as members; the sub-objects after the model are constructed in the
-// constructor body (probe vectors, hit collider, cached model, model-slot handle, pooled model resource).
+// setup / update pair of sMuseumInsectBehaviors[insectIndex] initialises and drives it.
 class MuseumInsect {
 public:
     MuseumInsect();
@@ -186,7 +143,7 @@ public:
     BOOL isPlayerNear();
     void runSpider();
     s32 crawl();
-    void scurry(VecFx32 *v);
+    void scurry(MuseumInsectPlayerInfo *v);
 
     /* 0x000 */ MuseumInsectAnim matAnim;
     /* 0x020 */ u8 isBumped;
@@ -239,18 +196,17 @@ public:
     /* 0x171 */ u8 pad_171;
     /* 0x172 */ s16 moveState;
     /* 0x174 */ s32 stateTimer;
-    /* 0x178 */ VecFx32 probePoints[2];
+    /* 0x178 */ FxVec3 probePoints[2];
     /* 0x190 */ s16 pitch;
     /* 0x192 */ s16 yaw;
     /* 0x194 */ s16 roll;
     /* 0x196 */ s8 insectIndex;
     /* 0x197 */ u8 pad_197;
     /* 0x198 */ s32 loadState;
-    /* 0x19c */ u8 hitBox[HOST_SIZED(0x4c, StaticCollider)] HOST_ALIGN8; // StaticCollider
-    /* 0x1e8 */ u8 cachedModel[0x284 - 0x1e8];
-    /* 0x284 */ u16 modelSlot;
-    /* 0x286 */ u8 pad_286[2];
-    /* 0x288 */ u8 pooledModel[0x2c8 - 0x288];
+    /* 0x19c */ StaticCollider hitBox;
+    /* 0x1e8 */ CachedModel cachedModel;
+    /* 0x284 */ ModelSlotHandle modelSlot;
+    /* 0x288 */ PooledModel pooledModel;
     /* 0x2c8 */ VecFx32 position;
     /* 0x2d4 */ void (*updateFn)(MuseumInsect *);
 };
@@ -268,10 +224,6 @@ struct MuseumFireflyStackPad {
     s32 v[3];
     MuseumFireflyStackPad() {}
     ~MuseumFireflyStackPad() {}
-};
-
-struct GroundInfoStorage {
-    u32 v[0x44 / 4];
 };
 
 struct MuseumInsectPlayerInfo {
@@ -309,156 +261,54 @@ public:
     BOOL hasHitBox(u32 id, u8 flag);
     void updateInsect(MuseumInsect *e);
 
-    /* 0x050 */ u8 obstacleHitBoxes[4][0x4c];
-    /* 0x180 */ u8 modelPool[0x18];
+    /* 0x050 */ StaticCollider obstacleHitBoxes[4];
+    /* 0x180 */ ModelSlotPool modelPool;
     /* 0x198 */ void *dungBeetleAnimFile;
     /* 0x19c */ void *dungBallAnimFile;
 };
 
 extern "C" {
-void * _ZN12MuseumInsect5crawlEv(void *self);
-void *_ZN16MuseumInsectRoomC1Ev(void *self);
-extern MuseumInsectParam sMuseumInsectParams[];
-BOOL AnimModel_allocAnmObj(void *self, u32 a);
-void *func_02106788(void *a);
-void *func_021067a4(void *a, s32 b);
-void AnimModel_attachAnim(void *p);
-void SndEnvChannel_callReset(void *p);
-void func_020548a0(void *p);
-void func_0203239c(void *p);
-void func_020323b0(void *p);
-void func_020548d0(void *p);
-void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
-void func_021355f0(void *p, u32 n, u32 size, void *dtor);
+extern MuseumData data_021ed0a0;
+u8 *func_02106788(u8 *p);
+u8 *func_021067a4(u8 *p, u32 i);
+u8 *func_021065dc(u8 *p);
+u8 *func_021065f8(u8 *p, u32 i);
+u8 *func_02106654(u8 *p);
+u8 *func_02106670(u8 *p, u32 i);
+u32 NNS_G3dMdlGetMdlAlpha(void *res, u32 i);
+// (main defines the position as an integer)
+BOOL BoxCollider_Register(BoxCollider *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 angle, VecFx32 *scale);
+BOOL BoxCollider_Unregister(BoxCollider *n);
+// (main defines it with an integer for the actor and u16 for the angle)
+void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *prev, u16 angle, s32 radius, void *actor, u32 flags);
 s32 Vec_DistXZ(void *a, void *b);
-void Clock_GetMinuteHour(void *p);
-void func_0209c2d8(void *p);
-void func_0209c2dc(void *p);
-void func_02088bb0(void *p);
-void func_02088bc8(void *p);
-void AnimModel_detachVisAnim(void *p);
-void AnimModel_detachJointAnim(void *p);
-void SndEnvChannel_callRelease(void *p);
-void PooledModel_unload(void *p);
-void ModelSlotPool_release(void *p, void *q);
-void func_0209c128(void *p);
-void func_02054e24(void *p);
-void func_02054e3c(void *p);
-void func_0209c140(void *p);
-void PooledModel_reset(void *p);
-void ModelSlotPool_destroy(void *p);
-void *PooledModel_getModel(void *p);
-u32 NNS_G3dMdlGetMdlAlpha(u32 a, u32 b);
-void AnimModel_drawAnimated(void *obj, void *arg);
-void AnimModel_stepAnim(void *obj);
-s32 MuseumData_isDonated(void *tbl, void *v);
-void func_02031c48(void *p);
-void func_02031c10(void *p);
-u8 BoxCollider_Register(void *p, u32 a, u32 b, u32 c, void *r, s32 d, s32 e);
-void BoxCollider_Unregister(void *p);
-void StaticCollider_setupAtPos(void *obj, void *v, s32 a, s32 b, u32 mode, u32 c0, u32 z, u32 ff, u32 k);
-void ActorCollider_submit(void *obj);
-s32 ActorCollider_isHitByGroup(void *obj, u32 flag);
 s32 Model_GetJointWorldMtx(void *obj, void *buf, s32 z);
-void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
-void AnimFrameCtrl_step(void *e);
-void SndEnvChannel_callUpdateRelative(void *obj, void *v);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s16 a);
 void Mtx43_RotateY(void *m, s32 a);
 void Mtx43_RotateZ(void *m, s32 a);
 extern V3_7690 sMuseumFleaDrawScale;
 extern Mtx43 data_021f47e0;
-extern u8 data_021ed0a0[];
-u32 ModelSlotPool_acquire(void *self, void *p);
-void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-BOOL PooledModel_loadFromSlot(void *self, u32 a, void *s);
-void *Model_getRenderObj(void *self);
-void *func_021065dc(void *a);
-void *func_021065f8(void *a, s32 b);
-void *func_02106654(void *p);
-void *func_02106670(void *a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_ov004_022378e4(void *m);
-void func_ov004_0223756c(void *m);
-extern char data_ov004_0224ef74[], data_ov004_0224ef88[], data_ov004_0224ef9c[], data_ov004_0224efb0[];
-extern char data_ov004_0224efc4[], data_ov004_0224efd8[], data_ov004_0224efec[], data_ov004_0224f000[];
-extern char data_ov004_0224f014[], data_ov004_0224f028[], data_ov004_0224f03c[], data_ov004_0224f048[];
-extern char data_ov004_0224f054[], data_ov004_0224f060[];
 void NNS_G3dMdlSetMdlAlpha(void *c, s32 i, s32 v);
-s32 AnimFrameCtrl_setup(void *p, s32 a, s32 b, s32 c, s32 d);
-void func_ov004_022398f4(void *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_ov004_02239804(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_ov004_02239988(void *o);
-void func_ov004_022399d0(void *o, void *a, void *b);
-void func_ov004_02239574(void *o, s32 a, s32 b);
-void func_ov004_0223a25c(void *o);
-void func_ov004_0223a3c0(void *o);
-void func_ov004_02239d18(void *o);
-void AnimModel_setFrame(void *p, s32 a);
 extern s16 data_02136744[];
 void Vec_Sub(void *out, void *a, void *b);
 s32 Vec_SafeNormalize(void *v);
 s32 Vec_DotXZ(void *a, void *b);
 s32 Math_StepAngle(void *p, s32 target, s32 step);
-void GroundInfo_Destruct(void *p);
 extern s16 data_02135f44[];
-void func_ov004_0223a6e8(void *r, void *out);
-void *func_ov004_0223a570(void *r);
 s32 Math_ApproachS32(void *v, s32 a, s32 b, s32 c, s32 d);
 void Vec_ScaleTo(void *out, void *in, s32 s);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
 s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
 s32 FX_Div(s32, s32);
-void func_ov004_02239a4c(void *, s32);
 s32 Math_ApproachVec(void *a, void *b, s32 c, s32 d, s32 e);
-void SndEnvChannel_callRequest(void *o, s32 id);
-void SndEnvChannel_callRequestSustained(void *o, s32 id);
 void Vec_RotateY(void *v, s32 a);
-void func_ov004_02237690(void *p);
+void Clock_GetMinuteHour(MinuteHour *out);
 }
 
 
-extern "C" {
-void _ZN12MuseumInsect15setupLanternFlyEv(void *self);
-void _ZN12MuseumInsect18setupEveningCicadaEv(void *self);
-void _ZN12MuseumInsect17setupWalkerCicadaEv(void *self);
-void _ZN12MuseumInsect17setupRobustCicadaEv(void *self);
-void _ZN12MuseumInsect16setupBrownCicadaEv(void *self);
-void _ZN12MuseumInsect12updateCicadaEv(void *self);
-void _ZN12MuseumInsect16setupOakSilkMothEv(void *self);
-void _ZN12MuseumInsect17setupWalkingstickEv(void *self);
-void _ZN12MuseumInsect18setupGoliathBeetleEv(void *self);
-void _ZN12MuseumInsect17setupScarabBeetleEv(void *self);
-void _ZN12MuseumInsect16setupRainbowStagEv(void *self);
-void _ZN12MuseumInsect19setupLonghornBeetleEv(void *self);
-void _ZN12MuseumInsect16setupFruitBeetleEv(void *self);
-void _ZN12MuseumInsect16setupJewelBeetleEv(void *self);
-void _ZN12MuseumInsect16setupGiantBeetleEv(void *self);
-void _ZN12MuseumInsect15setupStagBeetleEv(void *self);
-void _ZN12MuseumInsect18setupSawStagBeetleEv(void *self);
-void _ZN12MuseumInsect19setupDynastidBeetleEv(void *self);
-void _ZN12MuseumInsect16setupAtlasBeetleEv(void *self);
-void _ZN12MuseumInsect19setupElephantBeetleEv(void *self);
-void _ZN12MuseumInsect19setupHerculesBeetleEv(void *self);
-void _ZN12MuseumInsect13updatePerchedEv(void *self);
-void _ZN12MuseumInsect14updateMosquitoEv(void *self);
-void _ZN12MuseumInsect13setupMosquitoEv(void *self);
-void _ZN12MuseumInsect13updateFireflyEv(void *self);
-void _ZN12MuseumInsect12setupFireflyEv(void *self);
-void _ZN12MuseumInsect9setupMothEv(void *self);
-void _ZN12MuseumInsect10updateMothEv(void *self);
-void _ZN12MuseumInsect13setupBirdwingEv(void *self);
-void _ZN12MuseumInsect11setupAgriasEv(void *self);
-void _ZN12MuseumInsect12setupEmperorEv(void *self);
-void _ZN12MuseumInsect12setupMonarchEv(void *self);
-void _ZN12MuseumInsect12setupPeacockEv(void *self);
-void _ZN12MuseumInsect19setupTigerButterflyEv(void *self);
-void _ZN12MuseumInsect20setupYellowButterflyEv(void *self);
-void _ZN12MuseumInsect20setupCommonButterflyEv(void *self);
-void _ZN12MuseumInsect15updateButterflyEv(void *self);
-}
 
 extern "C" ProcProfile sMuseumInsectRoomProfile = {MuseumInsectRoom_Create, 0xbe, 0xc1};
 extern "C" s8 sMuseumScorpionSlot = -1;
@@ -523,64 +373,67 @@ extern "C" MuseumInsectParam sMuseumInsectParams[57] = {
     {0, 0, 0x7d0},
     {0, 0, 0xb00},
 };
+// the member functions in the table are called with the slot as `this`
+template <void (MuseumInsect::*M)()> static void MuseumInsect_Call(MuseumInsect *o) { (o->*M)(); }
+
 extern "C" MuseumInsectBehavior sMuseumInsectBehaviors[57] = {
-    {(void (*)(void *))_ZN12MuseumInsect20setupCommonButterflyEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect20setupYellowButterflyEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect19setupTigerButterflyEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect12setupPeacockEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect12setupMonarchEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect12setupEmperorEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect11setupAgriasEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect13setupBirdwingEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect15updateButterflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect9setupMothEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect10updateMothEv},
-    {(void (*)(void *))_ZN12MuseumInsect16setupOakSilkMothEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))MuseumInsect_SetupHoneybee, (void (*)(MuseumInsect *))MuseumInsect_UpdateHoneybee},
-    {(void (*)(void *))MuseumInsect_SetupBee, (void (*)(MuseumInsect *))MuseumInsect_UpdateBee},
-    {(void (*)(void *))MuseumInsect_SetupLongLocust, (void (*)(MuseumInsect *))MuseumInsect_UpdateHopper},
-    {(void (*)(void *))MuseumInsect_SetupMigratoryLocust, (void (*)(MuseumInsect *))MuseumInsect_UpdateHopper},
-    {(void (*)(void *))MuseumInsect_SetupMantis, (void (*)(MuseumInsect *))MuseumInsect_UpdateWalker},
-    {(void (*)(void *))MuseumInsect_SetupOrchidMantis, (void (*)(MuseumInsect *))MuseumInsect_UpdateWalker},
-    {(void (*)(void *))_ZN12MuseumInsect16setupBrownCicadaEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect12updateCicadaEv},
-    {(void (*)(void *))_ZN12MuseumInsect17setupRobustCicadaEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect12updateCicadaEv},
-    {(void (*)(void *))_ZN12MuseumInsect17setupWalkerCicadaEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect12updateCicadaEv},
-    {(void (*)(void *))_ZN12MuseumInsect18setupEveningCicadaEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect12updateCicadaEv},
-    {(void (*)(void *))_ZN12MuseumInsect15setupLanternFlyEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect12updateCicadaEv},
-    {(void (*)(void *))MuseumInsect_SetupRedDragonfly, (void (*)(MuseumInsect *))MuseumInsect_UpdateDragonfly},
-    {(void (*)(void *))MuseumInsect_SetupDarnerDragonfly, (void (*)(MuseumInsect *))MuseumInsect_UpdateDragonfly},
-    {(void (*)(void *))MuseumInsect_SetupBandedDragonfly, (void (*)(MuseumInsect *))MuseumInsect_UpdateDragonfly},
-    {(void (*)(void *))MuseumInsect_SetupAnt, (void (*)(MuseumInsect *))MuseumInsect_UpdateAnt},
-    {(void (*)(void *))MuseumInsect_SetupPondSkater, (void (*)(MuseumInsect *))MuseumInsect_UpdatePondSkater},
-    {(void (*)(void *))MuseumInsect_SetupSnail, (void (*)(MuseumInsect *))MuseumInsect_UpdateWalker},
-    {(void (*)(void *))MuseumInsect_SetupCricket, (void (*)(MuseumInsect *))MuseumInsect_UpdateHopper},
-    {(void (*)(void *))MuseumInsect_SetupBellCricket, (void (*)(MuseumInsect *))MuseumInsect_UpdateHopper},
-    {(void (*)(void *))MuseumInsect_SetupGrasshopper, (void (*)(MuseumInsect *))MuseumInsect_UpdateHopper},
-    {(void (*)(void *))MuseumInsect_SetupMoleCricket, (void (*)(MuseumInsect *))MuseumInsect_UpdateMoleCricket},
-    {(void (*)(void *))_ZN12MuseumInsect17setupWalkingstickEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))MuseumInsect_SetupLadybug, (void (*)(MuseumInsect *))MuseumInsect_UpdateWalker},
-    {(void (*)(void *))_ZN12MuseumInsect16setupFruitBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect17setupScarabBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))MuseumInsect_SetupDungBeetle, (void (*)(MuseumInsect *))MuseumInsect_UpdateDungBeetle},
-    {(void (*)(void *))_ZN12MuseumInsect18setupGoliathBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect12setupFireflyEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updateFireflyEv},
-    {(void (*)(void *))_ZN12MuseumInsect16setupJewelBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect19setupLonghornBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect18setupSawStagBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect15setupStagBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect16setupGiantBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect16setupRainbowStagEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect19setupDynastidBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect16setupAtlasBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect19setupElephantBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))_ZN12MuseumInsect19setupHerculesBeetleEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect13updatePerchedEv},
-    {(void (*)(void *))MuseumInsect_SetupFlea, (void (*)(MuseumInsect *))MuseumInsect_UpdateFlea},
-    {(void (*)(void *))MuseumInsect_SetupPillBug, (void (*)(MuseumInsect *))MuseumInsect_UpdatePillBug},
-    {(void (*)(void *))_ZN12MuseumInsect13setupMosquitoEv, (void (*)(MuseumInsect *))_ZN12MuseumInsect14updateMosquitoEv},
-    {(void (*)(void *))MuseumInsect_SetupFly, (void (*)(MuseumInsect *))MuseumInsect_UpdateFly},
-    {(void (*)(void *))MuseumInsect_SetupCockroach, (void (*)(MuseumInsect *))MuseumInsect_UpdateCockroach},
-    {(void (*)(void *))MuseumInsect_SetupSpider, (void (*)(MuseumInsect *))MuseumInsect_UpdateSpider},
-    {(void (*)(void *))MuseumInsect_SetupTarantula, (void (*)(MuseumInsect *))MuseumInsect_UpdateArachnid},
-    {(void (*)(void *))MuseumInsect_SetupScorpion, (void (*)(MuseumInsect *))MuseumInsect_UpdateArachnid},
-    {(void (*)(void *))MuseumInsect_SetupDungBeetle, (void (*)(MuseumInsect *))MuseumInsect_UpdateDungBeetle},
+    {MuseumInsect_Call<&MuseumInsect::setupCommonButterfly>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupYellowButterfly>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupTigerButterfly>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupPeacock>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupMonarch>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupEmperor>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupAgrias>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupBirdwing>, MuseumInsect_Call<&MuseumInsect::updateButterfly>},
+    {MuseumInsect_Call<&MuseumInsect::setupMoth>, MuseumInsect_Call<&MuseumInsect::updateMoth>},
+    {MuseumInsect_Call<&MuseumInsect::setupOakSilkMoth>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_SetupHoneybee, MuseumInsect_UpdateHoneybee},
+    {MuseumInsect_SetupBee, MuseumInsect_UpdateBee},
+    {MuseumInsect_SetupLongLocust, MuseumInsect_UpdateHopper},
+    {MuseumInsect_SetupMigratoryLocust, MuseumInsect_UpdateHopper},
+    {MuseumInsect_SetupMantis, MuseumInsect_UpdateWalker},
+    {MuseumInsect_SetupOrchidMantis, MuseumInsect_UpdateWalker},
+    {MuseumInsect_Call<&MuseumInsect::setupBrownCicada>, MuseumInsect_Call<&MuseumInsect::updateCicada>},
+    {MuseumInsect_Call<&MuseumInsect::setupRobustCicada>, MuseumInsect_Call<&MuseumInsect::updateCicada>},
+    {MuseumInsect_Call<&MuseumInsect::setupWalkerCicada>, MuseumInsect_Call<&MuseumInsect::updateCicada>},
+    {MuseumInsect_Call<&MuseumInsect::setupEveningCicada>, MuseumInsect_Call<&MuseumInsect::updateCicada>},
+    {MuseumInsect_Call<&MuseumInsect::setupLanternFly>, MuseumInsect_Call<&MuseumInsect::updateCicada>},
+    {MuseumInsect_SetupRedDragonfly, MuseumInsect_UpdateDragonfly},
+    {MuseumInsect_SetupDarnerDragonfly, MuseumInsect_UpdateDragonfly},
+    {MuseumInsect_SetupBandedDragonfly, MuseumInsect_UpdateDragonfly},
+    {MuseumInsect_SetupAnt, MuseumInsect_UpdateAnt},
+    {MuseumInsect_SetupPondSkater, MuseumInsect_UpdatePondSkater},
+    {MuseumInsect_SetupSnail, MuseumInsect_UpdateWalker},
+    {MuseumInsect_SetupCricket, MuseumInsect_UpdateHopper},
+    {MuseumInsect_SetupBellCricket, MuseumInsect_UpdateHopper},
+    {MuseumInsect_SetupGrasshopper, MuseumInsect_UpdateHopper},
+    {MuseumInsect_SetupMoleCricket, MuseumInsect_UpdateMoleCricket},
+    {MuseumInsect_Call<&MuseumInsect::setupWalkingstick>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_SetupLadybug, MuseumInsect_UpdateWalker},
+    {MuseumInsect_Call<&MuseumInsect::setupFruitBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupScarabBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_SetupDungBeetle, MuseumInsect_UpdateDungBeetle},
+    {MuseumInsect_Call<&MuseumInsect::setupGoliathBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupFirefly>, MuseumInsect_Call<&MuseumInsect::updateFirefly>},
+    {MuseumInsect_Call<&MuseumInsect::setupJewelBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupLonghornBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupSawStagBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupStagBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupGiantBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupRainbowStag>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupDynastidBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupAtlasBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupElephantBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_Call<&MuseumInsect::setupHerculesBeetle>, MuseumInsect_Call<&MuseumInsect::updatePerched>},
+    {MuseumInsect_SetupFlea, MuseumInsect_UpdateFlea},
+    {MuseumInsect_SetupPillBug, MuseumInsect_UpdatePillBug},
+    {MuseumInsect_Call<&MuseumInsect::setupMosquito>, MuseumInsect_Call<&MuseumInsect::updateMosquito>},
+    {MuseumInsect_SetupFly, MuseumInsect_UpdateFly},
+    {MuseumInsect_SetupCockroach, MuseumInsect_UpdateCockroach},
+    {MuseumInsect_SetupSpider, MuseumInsect_UpdateSpider},
+    {MuseumInsect_SetupTarantula, MuseumInsect_UpdateArachnid},
+    {MuseumInsect_SetupScorpion, MuseumInsect_UpdateArachnid},
+    {MuseumInsect_SetupDungBeetle, MuseumInsect_UpdateDungBeetle},
 };
 extern "C" {
 u8 sMuseumInsectFrame;
@@ -627,18 +480,16 @@ extern "C" u8 MuseumInsect_ProbeWalls(MuseumInsect *o) {
     u8 r = 0;
     V3_d800 *p = &o->probePoints[0];
     s32 lim = o->position.y;
-    u8 buf[0x30];
-    new (buf) CollisionState();
+    CollisionState buf;
     s16 ang = o->yaw;
-    Collision_Move(buf, p, p, ang, 0x266, NULL, 0xb);
+    Collision_Move(&buf, p, p, ang, 0x266, NULL, 0xb);
     if (p->y > lim) {
         r++;
     }
-    Collision_Move(buf, p + 1, p + 1, ang, 0x266, NULL, 0xb);
+    Collision_Move(&buf, p + 1, p + 1, ang, 0x266, NULL, 0xb);
     if (p[1].y > lim) {
         r = r + 2;
     }
-    ((CollisionState *)(buf))->~CollisionState();
     return r;
 }
 
@@ -795,7 +646,7 @@ extern "C" void MuseumInsect_ApproachHome(void *self_) {
 
 extern "C" void MuseumInsect_StateRest(void *self_) {
     MuseumInsect *self = (MuseumInsect *)self_;
-    u8 st = *(u8 *)&self->insectIndex;
+    u8 st = (u8)self->insectIndex;
     MuseumInsect_CheckScared(self);
     if (MuseumInsect_TickTimer(self) == 0 || self->isActive == 0) {
         if (self->isAlerted == 0) {
@@ -1015,15 +866,15 @@ extern "C" s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_) {
     s16 r4 = self->alertLevel;
     old = r4;
     s32 r7 = self->alertThreshold;
-    u8 *p = (u8 *)PlayerActor_GetActor(4);
+    Actor *p = (Actor *)PlayerActor_GetActor(4);
     if (p != 0) {
         out->hasPlayer = 1;
-        out->playerSpeed = *(s32 *)(p + 0x98);
-        VecFx32 *pv = (VecFx32 *)(p + 0x5c);
+        out->playerSpeed = p->speed;
+        VecFx32 *pv = &p->position;
         out->playerPos.x = pv->x;
         out->playerPos.y = pv->y;
         out->playerPos.z = pv->z;
-        out->playerDist = Vec_DistXZ(&self->position, out);
+        out->playerDist = Vec_DistXZ(&self->position, &out->playerPos);
         s32 t = out->playerDist;
         if (t < 0x2000) {
             r4 += 0x19;
@@ -1903,7 +1754,7 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(MuseumInsect *self)
             EffectSpl_CreateOneShot(0x80, v, NULL, gEffectSplDefaultInitCbs);
             self->subCounter = (Random_GlobalBelow(11) + 5) * 20;
             self->yaw = Math_AngleXZ(&o.playerPos.x, &v->x);
-            NNS_G3dMdlSetMdlAlpha(((PooledModel *)(self->pooledModel))->getModel(), 0, 31);
+            NNS_G3dMdlSetMdlAlpha(self->pooledModel.getModel(), 0, 31);
             VecFx32 *sp = &self->position;
             VecFx32 *dp = &self->targetPos;
             self->targetPos.x = sp->x;
@@ -1962,7 +1813,7 @@ extern "C" void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p)
         }
     } else {
         self->moveState = 16;
-        NNS_G3dMdlSetMdlAlpha(((PooledModel *)(self->pooledModel))->getModel(), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(self->pooledModel.getModel(), 0, 0);
         self->stateTimer = 60;
         *p = 0;
     }
@@ -2161,11 +2012,10 @@ extern "C" void MuseumInsect_MothHover(MuseumInsect *o)
 {
     u8 r6 = o->sideDir;
     V3_b1e8 *r4 = &o->position;
-    V3_b1e8 *tp = (V3_b1e8 *)o;
+    V3_b1e8 *tp = &o->homePos;
     volatile s32 c;
     u8 r7;
     VecFx32Ctor sv;
-    tp = (V3_b1e8 *)((u8 *)tp + 0x40);
     r7 = o->dirFlag;
     *(V3_b1e8 *)&sv = *r4;
     if (Random_GlobalBelow(100) > 30) {
@@ -2609,14 +2459,14 @@ extern "C" void MuseumInsect_FightClash(void *r_) {
 
 extern "C" void MuseumInsect_ArachnidWalk(void *r_) {
     MuseumInsect *r = (MuseumInsect *)r_;
-    void *p = _ZN12MuseumInsect5crawlEv(r);
+    s32 p = r->crawl();
     if (MuseumInsect_ClampToBounds(r, &r->position) != 0) {
         r->moveState = 3;
         return;
     }
     if (MuseumInsect_TickTimer(r) != 0) {
         if (p != 0) {
-            r->targetAngle = MuseumInsect_GetEscapeHeading(r->yaw, (s32)p);
+            r->targetAngle = MuseumInsect_GetEscapeHeading(r->yaw, p);
         } else {
             r->targetAngle = MuseumInsect_RandTurn(0x10);
         }
@@ -2725,7 +2575,7 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
     }
     switch (r->moveState) {
     case 4:
-        ((MuseumInsect *)(r))->scurry((VecFx32 *)(&l));
+        r->scurry(&l);
         break;
     case 3:
         ang = r->yaw;
@@ -2761,26 +2611,26 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
     }
 }
 
-void MuseumInsect::scurry(VecFx32 *v) {
+void MuseumInsect::scurry(MuseumInsectPlayerInfo *v) {
     s16 *cnt = &subCounter;
     VecFx32 *pos = &position;
     s32 res = crawl();
     s16 ang = yaw;
     VecFx32 d1;
-    Vec_Sub(&d1, v, (VecFx32 *)(HOST_AT(this, 0x2c8, position.x, 0)));
+    Vec_Sub(&d1, &v->playerPos, &position);
     VecFx32 d0;
     MuseumInsect_MakeStepDir(&d0, ang);
     Vec_SafeNormalize(&d0);
     Vec_SafeNormalize(&d1);
     s32 dot = Vec_DotXZ(&d0, &d1);
-    if (*((u8 *)v + 0x14) != 0 && dot > 0) {
-        if (Vec_DistXZ(pos, v) < 0x1800) {
+    if (v->hasPlayer != 0 && dot > 0) {
+        if (Vec_DistXZ(pos, &v->playerPos) < 0x1800) {
             if (dot > data_02136744[1]) {
                 *cnt = *cnt + 1;
             }
-        } else if (Vec_DistXZ(pos, v) < 0x2800) {
+        } else if (Vec_DistXZ(pos, &v->playerPos) < 0x2800) {
             if (res == 0) {
-                Math_StepAngle(&ang, Math_AngleXZ(&v->x, &pos->x), 0xaaa);
+                Math_StepAngle(&ang, Math_AngleXZ(&v->playerPos.x, &pos->x), 0xaaa);
                 yaw = ang;
             }
         }
@@ -2818,7 +2668,7 @@ s32 MuseumInsect::crawl() {
     s16 *cnt = &stateCounter;
     s32 speed = 5;
     s32 res = MuseumInsect_SteerFromEdges(this);
-    u32 st = *(u8 *)&insectIndex;
+    u32 st = (u8)insectIndex;
     VecFx32 dir;
     s32 hit, a, c, mul, k;
     MuseumInsect_MakeStepDir(&dir, yaw);
@@ -2830,14 +2680,15 @@ s32 MuseumInsect::crawl() {
         pos->x = pos->x + func_01ffcb0c(mul, dir.x);
         pos->z = pos->z + func_01ffcb0c(mul, dir.z);
         if (st == 0x34 || st == 0x30) {
-            GroundInfoStorage buf;
-            ((GroundInfo *)&buf)->initAtPos((VecFx32 *)pos, 0, 0);
-            if (((GroundInfo *)&buf)->getHeight(0) > 0x200) {
-                hit = 1;
-            } else {
-                hit = 0;
+            {
+                GroundInfo g;
+                g.initAtPos(pos, 0, 0);
+                if (g.getHeight(0) > 0x200) {
+                    hit = 1;
+                } else {
+                    hit = 0;
+                }
             }
-            GroundInfo_Destruct(&buf);
             if (hit != 0) {
                 if (res == 0 && st == 0x34) {
                     if (Random_GlobalBelow(100) < 0x32) {
@@ -2911,7 +2762,7 @@ void MuseumInsect::runSpider() {
             moveState = 0x19;
             roll = 0;
             position.x = speciesWork;
-            NNS_G3dMdlSetMdlAlpha(((PooledModel *)(pooledModel))->getModel(), 0, 0);
+            NNS_G3dMdlSetMdlAlpha(pooledModel.getModel(), 0, 0);
             subCounter = (Random_GlobalBelow(4) + 3) * 20;
         }
         break;
@@ -2940,7 +2791,7 @@ void MuseumInsect::runSpider() {
                 moveState = 1;
                 alertLevel = 0;
                 ((AnimFrameCtrl *)(&(AnimFrameCtrl &)model))->setup(0x21, 1, 0x1000, 0);
-                NNS_G3dMdlSetMdlAlpha(((PooledModel *)(pooledModel))->getModel(), 0, 0x1f);
+                NNS_G3dMdlSetMdlAlpha(pooledModel.getModel(), 0, 0x1f);
             }
         } else {
             model.playMode = 1;
@@ -2950,9 +2801,9 @@ void MuseumInsect::runSpider() {
 }
 
 BOOL MuseumInsect::isPlayerNear() {
-    u8 *r = (u8 *)PlayerActor_GetActor(4);
+    Actor *r = (Actor *)PlayerActor_GetActor(4);
     if (r != NULL) {
-        if (Vec_DistXZ(r + 0x5c, &position) < 0x4800) {
+        if (Vec_DistXZ(&r->position, &position) < 0x4800) {
             return TRUE;
         }
     }
@@ -3681,7 +3532,7 @@ extern "C" void MuseumInsect_SetupOrchidMantis(MuseumInsect *o) {
 
 extern "C" void MuseumInsect_SetupMoleCricket(MuseumInsect *o) {
     ((MuseumInsect *)(o))->init(0xc8, 0x3c, 0, 0, 0, 0);
-    NNS_G3dMdlSetMdlAlpha(((PooledModel *)(&o->pooledModel))->getModel(), 0, 0);
+    NNS_G3dMdlSetMdlAlpha(o->pooledModel.getModel(), 0, 0);
     s32 a[2], b[2];
     a[0] = 0xa6;
     a[1] = 0x106;
@@ -3807,7 +3658,7 @@ extern "C" void MuseumInsect_SetupAnt(MuseumInsect *o) {
     }
 }
 
-extern "C" void MuseumInsect_UpdateAnt() {}
+extern "C" void MuseumInsect_UpdateAnt(MuseumInsect *o) {}
 
 extern "C" void MuseumInsect_SetupDungBeetle(MuseumInsect *o) {
     if (o->insectIndex == 0x23) {
@@ -3836,234 +3687,234 @@ extern "C" void MuseumInsect_SetupDungBeetle(MuseumInsect *o) {
 
 extern "C" void MuseumInsect_UpdateDungBeetle(MuseumInsect *o) { MuseumInsect_RunDungBeetle(o); }
 
-extern "C" void MuseumInsect_InitPlacement(void *m, u8 *s) {
+extern "C" void MuseumInsect_InitPlacement(MuseumInsectRoom *m, MuseumInsect *s) {
     MuseumInsectPlaceStackPad pad;
-    s32 *v = (s32 *)(s + 0x2c8);
+    s32 *v = &s->position.x;  // x, y, z
     u32 r = MuseumInsect_GetTimeOfDayBit();
-    switch (*(s8 *)(s + 0x196)) {
+    switch (s->insectIndex) {
     case 0x0:
         v[0] = 0x176; v[1] = 0x13; v[2] = 0x71;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x1:
         v[0] = 0x170; v[1] = 0x13; v[2] = 0x9c;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x2:
         v[0] = 0x17f; v[1] = 0x13; v[2] = 0x85;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x3:
         v[0] = 0x177; v[1] = 0x13; v[2] = 0xd0;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x4:
         v[0] = 0x184; v[1] = 0x13; v[2] = 0xb5;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x5:
         v[0] = 0x187; v[1] = 0x13; v[2] = 0xe4;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x6:
         v[0] = 0x178; v[1] = 0x13; v[2] = 0xfb;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x7:
         v[0] = 0x170; v[1] = 0x13; v[2] = 0x123;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x8:
         v[0] = 0x128; v[1] = 0x40; v[2] = 0x66;
-        *(u8 *)(s + 0x22) = r & 0x21;
+        s->isActive = r & 0x21;
         break;
     case 0x9:
         v[0] = 0x82; v[1] = 0x1c; v[2] = 0x1aa;
-        *(u8 *)(s + 0x22) = r & 0x21;
+        s->isActive = r & 0x21;
         break;
     case 0xa:
         v[0] = 0xd0; v[1] = 0x13; v[2] = 0xfc;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0xb:
         v[0] = 0x86; v[1] = 0x26; v[2] = 0x1a6;
-        *(u8 *)(s + 0x22) = r & 0xe;
+        s->isActive = r & 0xe;
         break;
     case 0xc:
         v[0] = 0x146; v[1] = 0x8; v[2] = 0xf6;
-        *(u8 *)(s + 0x22) = r & 0x1c;
+        s->isActive = r & 0x1c;
         break;
     case 0xd:
         v[0] = 0x185; v[1] = 0x8; v[2] = 0x140;
-        *(u8 *)(s + 0x22) = r & 0x1c;
+        s->isActive = r & 0x1c;
         break;
     case 0xe:
         v[0] = 0xb5; v[1] = 0x13; v[2] = 0x141;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0xf:
         v[0] = 0x181; v[1] = 0x13; v[2] = 0x13f;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x10:
         v[0] = 0x8e; v[1] = 0x24; v[2] = 0xd1;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x11:
         v[0] = 0x8a; v[1] = 0x1a; v[2] = 0xd5;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x12:
         v[0] = 0xbe; v[1] = 0x1a; v[2] = 0x4d;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x13:
         v[0] = 0xb8; v[1] = 0x22; v[2] = 0x4b;
-        *(u8 *)(s + 0x22) = r & 0x1a;
+        s->isActive = r & 0x1a;
         break;
     case 0x14:
         v[0] = 0xf1; v[1] = 0x24; v[2] = 0x3d;
-        *(u8 *)(s + 0x22) = r & 0x1b;
+        s->isActive = r & 0x1b;
         break;
     case 0x15:
         v[0] = 0x16c; v[1] = 0x14; v[2] = 0xd2;
-        *(u8 *)(s + 0x22) = r & 0x1c;
+        s->isActive = r & 0x1c;
         break;
     case 0x16:
         v[0] = 0x132; v[1] = 0x14; v[2] = 0x10d;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x17:
         v[0] = 0x178; v[1] = 0x14; v[2] = 0x122;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x18:
         v[0] = 0x89; v[1] = 0x9; v[2] = 0x104;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x19:
         v[0] = 0x7a; v[1] = 0x0; v[2] = 0x12c;
-        *(u8 *)(s + 0x22) = r & 0x1c;
+        s->isActive = r & 0x1c;
         break;
     case 0x1a:
         v[0] = 0xaa; v[1] = 0x13; v[2] = 0xfa;
-        *(u8 *)(s + 0x22) = r & 0x1c;
+        s->isActive = r & 0x1c;
         break;
     case 0x1b:
         v[0] = 0x15e; v[1] = 0x8; v[2] = 0x118;
-        *(u8 *)(s + 0x22) = r & 0x33;
+        s->isActive = r & 0x33;
         break;
     case 0x1c:
         v[0] = 0x19f; v[1] = 0x8; v[2] = 0x11a;
-        *(u8 *)(s + 0x22) = r & 0x33;
+        s->isActive = r & 0x33;
         break;
     case 0x1d:
         v[0] = 0x16f; v[1] = 0x8; v[2] = 0xf2;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x1e:
         v[0] = 0xe2; v[1] = 0x8; v[2] = 0x13e;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x1f:
         v[0] = 0x1a2; v[1] = 0x24; v[2] = 0x4c;
-        *(u8 *)(s + 0x22) = r & 0x1e;
+        s->isActive = r & 0x1e;
         break;
     case 0x20:
         v[0] = 0x91; v[1] = 0x13; v[2] = 0xdf;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x21:
         v[0] = 0x82; v[1] = 0x18; v[2] = 0x65;
-        *(u8 *)(s + 0x22) = r & 0x33;
+        s->isActive = r & 0x33;
         break;
     case 0x22:
         v[0] = 0x88; v[1] = 0x22; v[2] = 0x62;
-        *(u8 *)(s + 0x22) = r & 0x3;
+        s->isActive = r & 0x3;
         break;
     case 0x23: case 0x38:
         v[0] = 0x165; v[1] = 0x8; v[2] = 0xec;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x24:
         v[0] = 0xae; v[1] = 0x2a; v[2] = 0xcd;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x25:
         v[0] = 0x53; v[1] = 0x13; v[2] = 0x146;
-        *(u8 *)(s + 0x22) = r & 0x21;
+        s->isActive = r & 0x21;
         break;
     case 0x26:
         v[0] = 0xeb; v[1] = 0x16; v[2] = 0x42;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x27:
         v[0] = 0x122; v[1] = 0x22; v[2] = 0x52;
-        *(u8 *)(s + 0x22) = r & 0xc;
+        s->isActive = r & 0xc;
         break;
     case 0x28:
         v[0] = 0x128; v[1] = 0x18; v[2] = 0x55;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x29:
         v[0] = 0x15e; v[1] = 0x16; v[2] = 0x47;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x2a:
         v[0] = 0x164; v[1] = 0x20; v[2] = 0x43;
-        *(u8 *)(s + 0x22) = r & 0x3;
+        s->isActive = r & 0x3;
         break;
     case 0x2b:
         v[0] = 0x82; v[1] = 0x21; v[2] = 0x138;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x2c:
         v[0] = 0x19c; v[1] = 0x16; v[2] = 0x51;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x2d:
         v[0] = 0xaa; v[1] = 0x1a; v[2] = 0xd3;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x2e:
         v[0] = 0x79; v[1] = 0x1a; v[2] = 0xe8;
-        *(u8 *)(s + 0x22) = r & 0x23;
+        s->isActive = r & 0x23;
         break;
     case 0x2f:
         v[0] = 0x7d; v[1] = 0x2a; v[2] = 0xe2;
-        *(u8 *)(s + 0x22) = r & 0x3;
+        s->isActive = r & 0x3;
         break;
     case 0x30:
         v[0] = 0x12c; v[1] = 0x0; v[2] = 0x12c;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x31:
         v[0] = 0x0; v[1] = 0x0; v[2] = 0x0;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x32:
         v[0] = 0xb4; v[1] = 0x19; v[2] = 0xfa;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x33:
         v[0] = 0x118; v[1] = 0x23; v[2] = 0xf0;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x34:
         v[0] = 0x14a; v[1] = 0x0; v[2] = 0xb4;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x35:
         v[0] = 0x96; v[1] = 0x29; v[2] = 0x133;
-        *(u8 *)(s + 0x22) = r & 0x3f;
+        s->isActive = r & 0x3f;
         break;
     case 0x36:
         v[0] = 0x134; v[1] = 0x8; v[2] = 0x11e;
-        *(u8 *)(s + 0x22) = r & 0x21;
+        s->isActive = r & 0x21;
         break;
     case 0x37:
         v[0] = 0x128; v[1] = 0x8; v[2] = 0x136;
-        *(u8 *)(s + 0x22) = r & 0x21;
+        s->isActive = r & 0x21;
         break;
     }
     v[0] = func_01ffcb0c(v[0] << 12, 0x100);
@@ -4072,40 +3923,41 @@ extern "C" void MuseumInsect_InitPlacement(void *m, u8 *s) {
 }
 
 extern "C" void *MuseumInsectRoom_Create() {
-    void *m = ProcBase::operator new(0x1a0);
-    if (m) _ZN16MuseumInsectRoomC1Ev(m);  // x86 constructors don't return `this`
+    void *m = ProcBase::operator new(sizeof(MuseumInsectRoom));
+    if (m) ::new (m) MuseumInsectRoom;
     return m;
 }
 
 extern "C" s32 MuseumInsectRoom_FindFreeSlot() {
-    u8 *p = ((u8 *)sMuseumInsects);
+    MuseumInsect *p = sMuseumInsects;
     u8 i;
-    for (i = 0; i < 0x20; p += 0x2d8, i++) {
-        if (*(u32 *)(p + 0x198) == 0) return i;
+    for (i = 0; i < 0x20; p++, i++) {
+        if (p->loadState == 0) return i;
     }
     return -1;
 }
 
-extern "C" BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v) {
+extern "C" BOOL MuseumInsectRoom_AddInsect(MuseumInsectRoom *m, s8 v) {
     s32 i = MuseumInsectRoom_FindFreeSlot();
     BOOL z = FALSE;
-    u8 *p;
+    MuseumInsect *p;
     if (i != -1) {
-    p = ((u8 *)sMuseumInsects) + i * 0x2d8;
-    p[0x196] = v;
-    *(s32 *)(p + 0x198) = 1;
-    ((ModelSlotPool *)(m + 0x180))->acquire((u16 *)(p + 0x284));
-    ((PooledModel *)(p + 0x288))->reset();
+    p = &sMuseumInsects[i];
+    p->insectIndex = v;
+    p->loadState = 1;
+    m->modelPool.acquire(&p->modelSlot.index);
+    p->pooledModel.reset();
     MuseumInsect_InitPlacement(m, p);
-    *(s32 *)(p + 0x18) = 0;
-    *(s32 *)(p + 0x1c) = 0;
+    p->matAnim.anmObj = 0;
+    p->matAnim.resMdl = 0;
     return TRUE;
     }
     return z;
 }
 
 BOOL MuseumInsectRoom::onCreate() {
-    ((ModelSlotPool *)(modelPool))->init(0x20, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)MuseumInsectHeap_Create), (ModelSlotFreeFunc)((void *)MuseumInsectHeap_Destroy));
+    // (MuseumInsectHeap_Create takes the parent heap as a pointer; the pool passes 0)
+    modelPool.init(0x20, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)MuseumInsectHeap_Create, MuseumInsectHeap_Destroy);
     spawnDonatedInsects();
     return TRUE;
 }
@@ -4117,8 +3969,8 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
     PooledModel *mdl;
     MuseumInsectParam *rec;
     void *sp1c;
-    res = ((ModelSlotPool *)(m->modelPool))->acquire(&s->modelSlot);
-    mdl = (PooledModel *)s->pooledModel;
+    res = m->modelPool.acquire(&s->modelSlot.index);
+    mdl = &s->pooledModel;
     char nm[0x10];
     char pth[0x18];
     char buf3[0x24];
@@ -4175,9 +4027,9 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
                 if (tmp) {
                     ok = TRUE;
                     if (rec->useVisAnim) {
-                        sp8 = func_021067a4(func_02106788(tmp), 0);
+                        sp8 = func_021067a4(func_02106788((u8 *)tmp), 0);
                     } else {
-                        sp8 = func_021065f8(func_021065dc(tmp), 0);
+                        sp8 = func_021065f8(func_021065dc((u8 *)tmp), 0);
                     }
                     if (r6->allocAnmObj(sp10)) {
                         s32 k = 0x1000;
@@ -4191,10 +4043,10 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
                         if (File_Exists(buf3)) {
                             void *file = File_LoadAlloc(buf3, sp10, 4, NULL);
                             if (file) {
-                                sp1c = func_02106670(func_02106654(file), ok);
-                                if (s->matAnim.allocMatAnm(MODEL_AT_RESMDL(r6), sp10)) {
-                                    ((ModelAnim *)(s))->init(sp1c, ok, 0x1000, ok);
-                                    ((ModelAnim *)(s))->addToRenderObj(Model_getRenderObj(r6));
+                                sp1c = func_02106670(func_02106654((u8 *)file), ok);
+                                if (s->matAnim.allocMatAnm(r6->resMdl, sp10)) {
+                                    s->matAnim.init(sp1c, ok, 0x1000, ok);
+                                    s->matAnim.addToRenderObj(r6->getRenderObj());
                                     ok = TRUE;
                                 }
                             }
@@ -4231,7 +4083,7 @@ void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
     u32 mode;
     s32 a;
     if (e->updateFn != 0) {
-        StaticCollider *obj = (StaticCollider *)e->hitBox;
+        StaticCollider *obj = &e->hitBox;
         V3_7690 *pos = &e->position;
         u8 id = e->insectIndex;
         prev = *pos;
@@ -4287,7 +4139,7 @@ void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
         if (sMuseumInsectParams[id].useVisAnim == 0) {
             ((AnimModel *)(&e->model))->stepAnim();
             if (id == 0x18) {
-                ((AnimFrameCtrl *)(e))->step();
+                e->matAnim.step();
                 *(s32 *)e->matAnim.anmObj = e->matAnim.curFrame;
             }
         }
@@ -4323,16 +4175,12 @@ BOOL MuseumInsectRoom::hasHitBox(u32 id, u8 flag) {
 BOOL MuseumInsectRoom::onExecute() {
     u8 r[6];
     V3_7690 rect[3];
-    // three colliders, indexed as obj[i * 0x9c] (separate arrays in the original stack frame, one after the other)
-    u8 obj[3 * 0x9c];
+    BoxCollider obj[3];
     u8 n;
     s32 k = 0;
     s32 z = 0;
     u8 i = 0;
     u8 *q;
-    func_02031c48(obj);
-    func_02031c48(obj + 0x9c);
-    func_02031c48(obj + 2 * 0x9c);
     if ((s32)param == 0) {
         rect[0].x = 0x3800;
         rect[0].z = 0x8000;
@@ -4356,9 +4204,9 @@ BOOL MuseumInsectRoom::onExecute() {
     q = &r[3];
     for (i = 0; i < n; i++) {
         if (q[i]) {
-            r[i] = BoxCollider_Register(&obj[i * 0x9c], 0x4000, 0x1000, 0x6000, &rect[i], k, k);
+            r[i] = BoxCollider_Register(&obj[i], 0x4000, 0x1000, 0x6000, &rect[i], k, NULL);
         } else {
-            r[i] = BoxCollider_Register(&obj[i * 0x9c], 0x1000, 0x4000, 0x6000, &rect[i], z, z);
+            r[i] = BoxCollider_Register(&obj[i], 0x1000, 0x4000, 0x6000, &rect[i], z, NULL);
         }
     }
     MuseumInsect *e = sMuseumInsects;
@@ -4376,12 +4224,9 @@ BOOL MuseumInsectRoom::onExecute() {
     }
     for (i = 0; i < n; i++) {
         if (r[i]) {
-            BoxCollider_Unregister(&obj[i * 0x9c]);
+            BoxCollider_Unregister(&obj[i]);
         }
     }
-    func_02031c10(obj + 2 * 0x9c);
-    func_02031c10(obj + 0x9c);
-    func_02031c10(obj);
     return TRUE;
 }
 
@@ -4428,8 +4273,8 @@ void MuseumInsectRoom::updateObstacles() {
         n = 2;
     }
     for (i = 0; i < n; i++) {
-        ((StaticCollider *)(obstacleHitBoxes[i]))->setupAtPos((VecFx32 *)(&pos[i]), sc[i], sb[i], 0x42, 0x80, z, 0xff, 0x1000);
-        ((ActorCollider *)(obstacleHitBoxes[i]))->submit();
+        obstacleHitBoxes[i].setupAtPos(&pos[i], sc[i], sb[i], 0x42, 0x80, z, 0xff, 0x1000);
+        obstacleHitBoxes[i].submit();
     }
 }
 
@@ -4441,15 +4286,15 @@ BOOL MuseumInsectRoom::onDraw() {
     for (; i < 0x20; e++, i++) {
         if (e->loadState == 2) {
             s8 id = e->insectIndex;
-            u8 *obj = (u8 *)&e->model;
+            AnimModel *obj = &e->model;
             if (id == 0x30) {
                 V3_7690 v = sMuseumFleaDrawScale;
-                ((AnimModel *)(obj))->drawAnimated(&v);
+                obj->drawAnimated(&v);
             } else {
-                ((AnimModel *)(obj))->drawAnimated((void *)z0);
+                obj->drawAnimated(NULL);
             }
             if (hasShadow(e)) {
-                u32 r = NNS_G3dMdlGetMdlAlpha((u32)PooledModel_getModel(e->pooledModel), z1);
+                u32 r = NNS_G3dMdlGetMdlAlpha(e->pooledModel.getModel(), z1);
                 CharaShadow_DrawFaded(&e->position, sMuseumInsectParams[id].radius, 0x9000, (u8)r);
             }
         }
@@ -4478,7 +4323,7 @@ BOOL MuseumInsectRoom::onDelete() {
     for (i = 0; i < 0x20; i++) {
         releaseInsect(i);
     }
-    ((ModelSlotPool *)(modelPool))->destroy();
+    modelPool.destroy();
     return TRUE;
 }
 
@@ -4499,10 +4344,10 @@ void MuseumInsectRoom::spawnDonatedInsects() {
             tmp = t;
             if (i == 0x38) {
                 if (flag) {
-                    MuseumInsectRoom_AddInsect((u8 *)this, i);
+                    MuseumInsectRoom_AddInsect(this, i);
                 }
-            } else if (((MuseumData *)(data_021ed0a0))->isDonated((u16 *)(&tmp))) {
-                MuseumInsectRoom_AddInsect((u8 *)this, i);
+            } else if (data_021ed0a0.isDonated(&tmp)) {
+                MuseumInsectRoom_AddInsect(this, i);
                 if (i == 0x23) {
                     flag = TRUE;
                 }
@@ -4555,23 +4400,13 @@ extern "C" MuseumInsect *MuseumInsect_FindDungBall() {
 }
 
 MuseumInsect::MuseumInsect() {
-    func_02135714(probePoints, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
-    new (&hitBox) StaticCollider();
-    new (cachedModel) CachedModel();
-    ModelSlotHandle_Init(&modelSlot);
-    new (pooledModel) PooledModel();
     insectIndex = -1;
-    ((PooledModel *)(pooledModel))->reset();
+    pooledModel.reset();
     updateFn = 0;
     loadState = 0;
 }
 
 MuseumInsect::~MuseumInsect() {
-    ((PooledModel *)(pooledModel))->~PooledModel();
-    ModelSlotHandle_Destroy(&modelSlot);
-    ((CachedModel *)(cachedModel))->CachedModel::~CachedModel();
-    ((StaticCollider *)(&hitBox))->~StaticCollider();
-    func_021355f0(probePoints, 2, 0xc, (void *)func_02000c8c);
 }
 
 void MuseumInsectRoom::releaseInsect(s32 idx) {
@@ -4598,20 +4433,16 @@ void MuseumInsectRoom::releaseInsect(s32 idx) {
         r->loadState = 0;
         r->stateCounter = 0;
         r->moveState = 0x19;
-        ((PooledModel *)(r->pooledModel))->unload();
-        ((ModelSlotPool *)(modelPool))->release(&r->modelSlot);
+        r->pooledModel.unload();
+        modelPool.release(&r->modelSlot.index);
         r->updateFn = 0;
     }
 }
 
 MuseumInsectRoom::MuseumInsectRoom() {
-    func_02135714(obstacleHitBoxes, 4, 0x4c, (void *)func_02088bc8, (void *)func_02088bb0);
-    new (modelPool) ModelSlotPool();
 }
 
 MuseumInsectRoom::~MuseumInsectRoom() {
-    ((ModelSlotPool *)(modelPool))->~ModelSlotPool();
-    func_021355f0(obstacleHitBoxes, 4, 0x4c, (void *)func_02088bb0);
 }
 
 MuseumInsectAnim::MuseumInsectAnim() {

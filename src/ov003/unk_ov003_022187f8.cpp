@@ -6,7 +6,7 @@
 #include "game/SceneInfo.h"
 
 // TU20 of ov003: the 21 static entries (0x22355c4, 0x1c bytes each) built by the 0x534-byte static initialiser, their
-// tables (used by ov005/ov006) and the 4-byte accessor PlayerHouseTex_Get (0x022187f8-0x022187fc)
+// tables (used by ov005/ov006) and the accessor PlayerHouseTex_Get (0x022187f8-0x022187fc)
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy)
 
@@ -43,6 +43,6 @@ SceneWarp sFieldSceneObjects[21] = {
 SceneWarpList sFieldSceneObjectList = {sFieldSceneObjects, 0x15};
 }
 
-extern "C" s32 PlayerHouseTex_Get(s32 *p) {
+extern "C" void *PlayerHouseTex_Get(void **p) {
     return *p;
 }

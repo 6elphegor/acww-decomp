@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/DebugColor.h"
@@ -21,63 +20,6 @@
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/ov004/unk_ov004_02227b44.h"
-
-// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
-// Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
-// 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
-// original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
-//   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
-// Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
-//    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
-//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
-//    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
-//  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
-//    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
-
-
-
-
-
-
-
-// ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-
-
-
-
-extern "C" {
-void *RoomObjRes_GetBca(void *self, u32 i);
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void *RoomObjTex_Get(void *self);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
-void RoomObj_PlaySe(void *self, s32 v);
-void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
-void RoomObj_ActivateSe(void *self);
-}
-
-// ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-
-
-
-
-
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
 
@@ -106,12 +48,10 @@ public:
 
 extern "C" {
 extern u8 data_021ed0a0[];
-void *RoomObjRes_GetBca(void *, u32);
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);
-void Item_MakeInsect();
+u16 Item_MakeInsect(u32 x);
 }
 
-#define F(T, off) (*(T *)((u8 *)this + off))
 // declarations (definition order below sets the data layout)
 extern "C" { extern DebugColor data_ov004_02250e08; }
 extern "C" { extern DebugColor data_ov004_02250e18; }
@@ -147,7 +87,7 @@ extern "C" DebugColor data_ov004_02250e10(20, 31, 31, 31);
 
 extern "C" const MuseumDisplayKind sMuseumDisplayKinds[2] = {
     {MuseumDisplay_GetPaintingItem, 0x14, sMuseumPictureArcPath, sMuseumPictureTexPath},
-    {(u16 (*)(u32))Item_MakeInsect, 0x38, sMuseumInsectArcPath, sMuseumInsectTexPath},
+    {Item_MakeInsect, 0x38, sMuseumInsectArcPath, sMuseumInsectTexPath},
 };
 
 extern "C" DebugColor data_ov004_02250e0c(20, 24, 24, 31);
@@ -190,9 +130,9 @@ MuseumDisplay::MuseumDisplay() {}
 MuseumDisplay::~MuseumDisplay() {}
 
 BOOL MuseumDisplay::onCreate() {
-    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
+    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(param);
     loadResources((char *)r->arcPath, (char *)r->texPath);
-    ((Model *)(HOST_AT(this, 0xec, model, 0)))->setInitCallback((void (*)(NNSG3dRS *))MuseumDisplay_InitRenderObj, this);
+    model.setInitCallback((void (*)(NNSG3dRS *))MuseumDisplay_InitRenderObj, this);
     selectNodes();
     return TRUE;
 }
@@ -202,7 +142,7 @@ BOOL MuseumDisplay::onExecute() {
 }
 
 BOOL MuseumDisplay::onDraw() {
-    ((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->drawAnimated((void *)(0));
+    model.drawAnimated(0);
     return TRUE;
 }
 
@@ -216,8 +156,8 @@ void MuseumDisplay::setNodeVisibility(s32 c, void *o) {
 }
 
 void MuseumDisplay::selectNodes() {
-    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
-    shownNodes = (s8 *)Heap_Alloc(gBgHeap, r->numItems);
+    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(param);
+    shownNodes = (s8 *)Heap_Alloc((Heap *)gBgHeap, r->numItems);
     u32 z = 0;
     u32 i;
     for (i = 0; i < r->numItems; i++) {
@@ -227,12 +167,12 @@ void MuseumDisplay::selectNodes() {
             f = 1;
         }
         Str_SPrintf(sMuseumDisplayNodeName, "p%d_%d", i, f);
-        shownNodes[i] = ((G3dResAccess *)(F(void *, 0x148)))->findNodeIdx(sMuseumDisplayNodeName);
+        shownNodes[i] = ((G3dResAccess *)model.resMdl)->findNodeIdx(sMuseumDisplayNodeName);
     }
 }
 
 BOOL MuseumDisplay::isShownNode(s32 c) {
-    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
+    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(param);
     u32 i = 0;
     u32 n = r->numItems;
     for (; i < n; i++) {

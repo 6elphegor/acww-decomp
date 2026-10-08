@@ -44,7 +44,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
 #define func_02000c8c _ZN6FxVec3D1Ev
-#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_02133150 _s32_div_f
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -492,7 +491,6 @@ s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
 void GroundInfo_Destruct(void *o);
-void *ModelSlot_getHeap(ModelSlot *slot);
 s32 Math_AngleXZ(void *, void *);
 void *Scene_GetTouchPicker(void);
 s32 Math_StepS32Alt(void *p, s32 a, s32 b);
@@ -3809,7 +3807,7 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
         (*p)->setup();
         q = &(*p)->model;
         q->setResource((NNSG3dResMdl *)(((PooledModel *)(b))->getModel()), 0);
-        c = ModelSlot_getHeap(a);
+        c = a->getHeap();
         if ((*p)->animFiles[0] == 0) {
             MuseumAquarium_ReleaseFish(o, idx);
             return 0;
@@ -3818,7 +3816,7 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
         if (q->allocAnmObj(c)) {
             q->initAnim(d, 0, 0x1000, 1, 0);
             q->attachAnim();
-            q->allocJointRecord(ModelSlot_getHeap(a));
+            q->allocJointRecord(a->getHeap());
             (*p)->loadState = 2;
             (*p)->contactFish = (*p)->fishIndex;
             MuseumAquarium_CalcFishMtx(o, p);
@@ -4133,11 +4131,9 @@ extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c
 }
 
 RoomItemDrop::RoomItemDrop() : unitX(0), unitZ(0) {
-    new (seEmitter) SndSeEmitter();
 }
 
 RoomItemDrop::~RoomItemDrop() {
-    ((SndSeEmitter *)(seEmitter))->SndSeEmitter::~SndSeEmitter();
 }
 
 extern "C" {

@@ -8,8 +8,6 @@
 
 extern "C" {
 extern void *gMenuHeap;
-// linker-provided absolute symbol (overlay id 93), no relocation in the original
-extern u32 OVERLAY_93_ID[];
 
 // ov093 methods of StaffRoll, called through their real symbols (object passed first)
 s32 _ZN9StaffRoll10isFinishedEv(void *self);
@@ -42,7 +40,7 @@ extern u8 sKkShowFxActive;
 extern void *sKkShowFx;
 
 void KkShowFx_Start(void) {
-    OverlayMgr_Acquire((u32)OVERLAY_93_ID);
+    OverlayMgr_Acquire(93 /* the staff roll's overlay */);
     sKkShowFx = Heap_Alloc(gMenuHeap, 0x1fc4);
     if (sKkShowFx) {
         func_ov093_022921b8(sKkShowFx);
@@ -70,7 +68,7 @@ void KkShowFx_Stop() {
         func_ov093_02292174(sKkShowFx);
         Heap_Free(heap, sKkShowFx);
         sKkShowFx = 0;
-        OverlayMgr_Release((u32)OVERLAY_93_ID);
+        OverlayMgr_Release(93 /* the staff roll's overlay */);
     }
     sKkShowFxActive = 0;
 }

@@ -39,12 +39,12 @@ struct Unk_ov003_02218c60_Grid {
 };
 
 // ---- the three statically constructed objects (constructors/destructors are this TU's own) ----
-// 4-byte object at 0x02235818
+// 4-byte object at 0x02235818 (a pointer: PlayerHouseTex_Load stores the texture in it)
 class PlayerHouseTex {
 public:
     PlayerHouseTex();
     ~PlayerHouseTex();
-    s32 tex;
+    void *tex;
 };
 
 // 0x20-byte object at 0x02235840

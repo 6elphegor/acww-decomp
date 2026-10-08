@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/Model.h"
 #include "gfx/ModelAnim.h"
 #include "types.h"
 class RoomShell;
@@ -50,7 +51,7 @@ void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, s32 *d);
 void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_RoomShellMatAnim_GetAnmObj
-u32 RoomShellMatAnim_GetAnmObj(ModelAnim *o);
+NNSG3dAnmObj *RoomShellMatAnim_GetAnmObj(ModelAnim *o);
 #endif
 #ifndef PROTO_LOCAL_RoomEntranceColliders_InHouseScene
 BOOL RoomEntranceColliders_InHouseScene();

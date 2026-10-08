@@ -82,7 +82,7 @@ typedef BOOL (CountdownSign::*Unk_02215680_Fn)();
 // ================================================================
 BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
-    void *r4 = ((Model *)model)->getRenderObj();
+    void *r4 = model.getRenderObj();
     void *r2 = getBtaAnim(0);
     matAnim.replace(r4, r2, 1, 0x1000, digit);
     return TRUE;
@@ -212,11 +212,11 @@ BOOL CountdownSign::initBuilding() {
         digits[i] = (CountdownDigit *)Actor::spawn((void *)0x26, (void *)0x501f, &v, (void *)(uptr)z, (void *)(uptr)z);
         i++;
     } while (i < 6);
-    ((Model *)model)->setInitCallback(CountdownSign_ModelCallback, this);
-    alphaMatIdx = ((G3dResAccess *)modelRes)->findMatIdx("m_cbs_Adt");
-    if (matAnim.allocMatAnm((NNSG3dResMdl *)modelRes, gFieldStructureHeap)) {
+    model.setInitCallback(CountdownSign_ModelCallback, this);
+    alphaMatIdx = ((G3dResAccess *)model.resMdl)->findMatIdx("m_cbs_Adt");
+    if (matAnim.allocMatAnm(model.resMdl, gFieldStructureHeap)) {
         matAnim.init(getBtaAnim(0), 0, 0x1000, 0);
-        matAnim.addToRenderObj(((Model *)model)->getRenderObj());
+        matAnim.addToRenderObj(model.getRenderObj());
     }
     ClockDateTimeWords tm;
     tm.words[0] = 0;

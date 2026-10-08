@@ -16,9 +16,6 @@ extern "C" {
 #ifndef PROTO_LOCAL_SpNpcKatrina_Create
 SpNpcKatrina *SpNpcKatrina_Create();
 #endif
-#ifndef PROTO_LOCAL_SpNpcKatrina_GetJointMtx
-u8 *SpNpcKatrina_GetJointMtx();
-#endif
 #ifndef PROTO_LOCAL_SpNpcKatrina_GetAnimFrame
 u32 SpNpcKatrina_GetAnimFrame();
 #endif
