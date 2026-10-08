@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_02055200.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/Mtx43.h"
 struct ResCacheEntry;
 #ifndef __cplusplus
 typedef struct ResCacheEntry ResCacheEntry;
@@ -63,7 +64,7 @@ BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, TexVramSlot *b);
 BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, TexVramSlot *b);
 #endif
 #ifndef PROTO_LOCAL_Model_GetJointWorldMtx
-BOOL Model_GetJointWorldMtx(Model *p, void *a, s32 b);
+BOOL Model_GetJointWorldMtx(Model *p, Mtx43 *a, s32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_sResCacheModelCount
