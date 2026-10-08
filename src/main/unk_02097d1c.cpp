@@ -514,7 +514,7 @@ void PlayerData::sendForeignVillagerLetter()
     if (((PlayerId *)(r8))->isValid()) {
         ForeignVillagerRecord *rec = (ForeignVillagerRecord *)foreignVillagerRecord;
         if (rec->isSet()) {
-            u8 *r7 = rec->villager;
+            u8 *r7 = (u8 *)&rec->villager;
             s32 a;
             u16 *l10 = &rec->present;
             s32 b;
@@ -543,7 +543,7 @@ void PlayerData::sendForeignVillagerLetter()
                 String_LoadResolveAltText(&o58, &c, (const char *)(uptr)r);
                 MailText_SetSlot(i + 2, &o58);
             }
-            TownId_GetNameString(rec->town, &o3c);
+            TownId_GetNameString(&rec->town, &o3c);
             MailText_SetSlot(8, &o3c);
             if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
                 rec->clear();

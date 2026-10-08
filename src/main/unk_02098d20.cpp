@@ -1,81 +1,52 @@
 #include "types.h"
 #include "item/ItemPickSpec.h"
 #include "npc/VillagerId.h"
-#define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_IsValid  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Copy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#include "player/ForeignVillagerRecord.h"
+#include "proto/main/unk_020030d8.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02098d20.h"
-
-extern "C" void VillagerId_Clear(void *);
-extern "C" void VillagerId_Destruct(void *);
-extern "C" void VillagerId_Construct(void *);
-extern "C" void VillagerId_Copy(void *, void *);
-extern "C" BOOL TownId_IsValid(void *);
-extern "C" void TownId_Clear(void *);
-extern "C" void TownId_Destruct(void *);
-extern "C" void TownId_Construct(void *);
 
 extern const u32 sForeignLetterPresentKinds[];
 const u32 sForeignLetterPresentKinds[] = {0, 4, 3};
 
 
 
-class ForeignVillagerRecord {
-public:
-    ForeignVillagerRecord();
-    ~ForeignVillagerRecord();
-    u8 town[0xa];
-    u8 villager[0xc];
-    u16 present;
-    s8 friendship;
-
-    BOOL offer(void *a1, s32 a2, void *a3);
-    void set(void *a1, s32 a2, void *a3, u16 *p);
-    BOOL isSet();
-    void clear();
-};
 
 extern "C" void Comm_OnFriendDeletedNop() {}
 
 ForeignVillagerRecord::ForeignVillagerRecord() {
-    TownId_Construct(this);
+    TownId_Construct();
     VillagerId_Construct(&villager);
     present = 0xfff1;
 }
 
 ForeignVillagerRecord::~ForeignVillagerRecord() {
     VillagerId_Destruct(&villager);
-    TownId_Destruct(this);
+    TownId_Destruct();
 }
 
 void ForeignVillagerRecord::clear() {
-    TownId_Clear(this);
+    TownId_Clear(&town.townId);
     VillagerId_Clear(&villager);
     present = 0xfff1;
     friendship = -0x80;
 }
 
 BOOL ForeignVillagerRecord::isSet() {
-    if (TownId_IsValid(this) && ((VillagerId *)&villager)->isValid()) return TRUE;
+    if (TownId_IsValid(&town.townId) && villager.isValid()) return TRUE;
     return FALSE;
 }
 
 void ForeignVillagerRecord::set(void *a1, s32 a2, void *a3, u16 *p) {
-    TownId_Assign(this, a3);
-    VillagerId_Copy(&villager, a1);
+    TownId_Assign(&town, a3);
+    VillagerId_Copy(&villager, (VillagerId *)a1);
     present = *p;
     friendship = a2;
 }
 
 BOOL ForeignVillagerRecord::offer(void *a1, s32 a2, void *a3) {
-    if (((VillagerId *)a1)->isValid() && TownId_IsValid(a3)) {
+    if (((VillagerId *)a1)->isValid() && TownId_IsValid((u16 *)a3)) {  // (a3: a TownId)
         u16 local = 0xfff1;
         u16 out;
         if (Random_GlobalBelow(4) == 0) {

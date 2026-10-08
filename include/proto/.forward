@@ -5,3 +5,4 @@ PlayerData
 BgAcreModel
 TouchPickResult  # game/TouchPicker.h is C++ the generator does not recognise (constructors in structs)
 FtrActor  # room/FtrActor.h brings the whole actor hierarchy
+BugNetTarget  # game/BugNetTarget.h brings the touch-pick classes

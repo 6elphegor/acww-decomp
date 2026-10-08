@@ -12,15 +12,16 @@
 #include "save/Pattern.h"
 #include "save/SaveRecord4.h"
 #include "town/TownBlockMap.h"
-#define PROTO_LOCAL_LostAndFound_InitRandom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Melody_ResetToDefault  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SaveData_InitCurrentPlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SaveData_InitNew  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownExchange_InitNop  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_InitWithName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFallbackTownName  // declared below: the shared prototype conflicts with the calls here
+#include "town/TownMap.h"
+#include "town/ResettiVisitFlag.h"
+#include "game/TurnipMarket.h"
+#include "item/ItemClassOrders.h"
+#include "field/LooseSnowballs.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0208f0b0.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02085940.h"
@@ -34,22 +35,14 @@
 
 extern "C" {
 void SaveData_SyncClockOffset(SaveData *p);
-void SaveData_InitNew(u8 *p);
-void SaveData_InitCurrentPlayer(u8 *p);
-void LostAndFound_InitRandom(void *);
 void TownState_InitNew(void *);
 void Town_ClearBorderTrees(void *);
 void HouseRoomMaps_BindBg(void);
 void HouseRoomMaps_UpdateAll(void);
 void *TownBlockMap_Get(void);
-void TownMap_Generate(void *, u32);
-void _ZN7TownMap18updateGroundSeasonEv(void *);
+void TownMap_Generate(void *, s32 heap);  // (TownMap keeps the heap in an s32)
 void FengShui_UpdateHouse(void);
 void HappyRoomDate_Reset(void *);
-void _ZN15ItemClassOrders12randomizeAllEv(void *);
-void TownId_InitWithName(void *, const void *);
-void TownId_Destruct(void *);
-void Melody_ResetToDefault(void *);
 void VillagerStates_SetBirthdayVisitor(s32);
 void SaveVillagers_UpdateAllRoomInfo(void *);
 void SaveVillagers_AssignErrands(void *);
@@ -59,41 +52,34 @@ void SaveVillagers_DailyUpdate(void *, s32);
 void SaveVillagers_UpdateOutdoor(void *, s32);
 void SaveVillagers_InitNewTown(void *);
 void ReddLastSale_Clear(void *);
-void _ZN12TurnipMarket4initEv(void *);
-void _ZN16ResettiVisitFlag5clearEv(void *);
-void TownExchange_InitNop(void *);
 s32 ClockOffset_Clear(void *p);
 void Clock_GetDate(void *p);
 void Clock_Init(void);
 void AbleShop_InitNew(void *);
 void NookShop_InitNew(void *);
-void _ZN14LooseSnowballs5resetEv(void *self);
 void Weather_RerollRainSlantAlt();
 void Weather_RerollRainSlantAlt2();
 void Weather_InitNew(void *);
-extern u32 gCurrentHeap;
 extern u8 gSaveData[];
-extern u32 sSndOutputModeTable[];
 }
 
 u8 sFallbackTownName[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
 
 
-
 void SaveData::setupNoSave() {
     ClockOffset_Clear(&clockOffset);
     Clock_Init();
-    TownMap_Generate(&townMap, gCurrentHeap);
+    TownMap_Generate(&townMap, (s32)(sptr)gCurrentHeap);
     SaveData_RefreshTownBlockMap(this);
-    TownId_InitWithName(&townId, sFallbackTownName);
+    TownId_InitWithName((u16 *)townId, sFallbackTownName);
     SaveData_InitNew((u8 *)this);
-    _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
-    _ZN7TownMap18updateGroundSeasonEv(&townMap);
+    LooseSnowballs_Get()->reset();
+    ((TownMap *)townMap)->updateGroundSeason();
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 0);
     ((SaveRecord4 *)(&footer))->clearState();
     Weather_RerollRainSlantAlt();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
+    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
 }
 
 void SaveData::setupLoaded() {
@@ -106,7 +92,7 @@ void SaveData::setupLoaded() {
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     Weather_RerollRainSlantAlt2();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
+    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
     s32 z, i;
     u8 *p = gSaveData;
     i = 0;
@@ -132,33 +118,33 @@ void SaveData::setupMode05() {
     SaveVillagers_PlaceMissingHouses(&villagers);
     VillagerStates_ResetErrands();
     SaveVillagers_AssignErrands(&villagers);
-    _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
-    _ZN7TownMap18updateGroundSeasonEv(&townMap);
+    LooseSnowballs_Get()->reset();
+    ((TownMap *)townMap)->updateGroundSeason();
     RoomEntry_Reset();
     ((PlayerData *)(a))->setSkyShotHits(0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
+    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
 void SaveData::setupMode06() {
     void *a = PlayerData_GetCurrent();
     SaveData_SyncClockOffset(this);
-    TownMap_Generate(&townMap, gCurrentHeap);
+    TownMap_Generate(&townMap, (s32)(sptr)gCurrentHeap);
     SaveData_RefreshTownBlockMap(this);
     ((SaveRecord4 *)(&unk_15fc5))->setDateToday((void *)(0));
     SaveData_InitCurrentPlayer((u8 *)this);
     SaveData_InitNew((u8 *)this);
-    _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
-    _ZN7TownMap18updateGroundSeasonEv(&townMap);
+    LooseSnowballs_Get()->reset();
+    ((TownMap *)townMap)->updateGroundSeason();
     RoomEntry_Reset();
     ((PlayerData *)(a))->setFlag(1);
     ((PlayerData *)(a))->setFlag(0x23);
     ((PlayerData *)(a))->clearFlag(9);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
+    ((ResettiVisitFlag *)TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()))->clear();
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -167,7 +153,7 @@ void SaveData_InitCurrentPlayer(u8 *p) {
     TownId l;
     l = *(TownId *)PlayerId_GetTownId(((PlayerData *)(r4))->getPlayerId());
     Clock_GetDate(((PlayerData *)(r4))->getDayUpdateDate());
-    ((TownId *)(((PlayerData *)(r4))->getPlayerId()))->setTown((TownId *)(p + 2));
+    ((TownId *)(((PlayerData *)(r4))->getPlayerId()))->setTown((TownId *)((SaveData *)p)->townId);
     void *r5 = ((PlayerData *)(r4))->getPatterns();
     ((PlayerPatterns *)(r5))->replaceAuthorTown((Unk_020942c8 *)(((PlayerData *)(r4))->getPlayerId()), (Unk_020942c8 *)(&l));
     ((PlayerData *)(r4))->clearFlag(0x24);
@@ -178,42 +164,43 @@ void SaveData_InitCurrentPlayer(u8 *p) {
     ((PlayerSpNpcRecord *)(((PlayerData *)(r4))->getSpNpcRecord()))->clearFestivalGift();
     ((LostChildRecord *)(((PlayerData *)(r4))->getLostChildRecord()))->clear();
     ((PlayerData *)(r4))->resetForNewTown();
-    TownId_Destruct(&l);
+    TownId_Destruct();
 }
 
 void SaveData_InitNew(u8 *p) {
+    SaveData *d = (SaveData *)p;
     p[0] = 0x8a;
-    ((SaveRecord4 *)(p + 0x15fdc))->setStateValid();
-    SaveVillagers_InitNewTown(p + 0x8a3c);
-    SaveVillagers_PlaceMissingHouses(p + 0x8a3c);
+    (&d->footer)->setStateValid();
+    SaveVillagers_InitNewTown(d->villagers);
+    SaveVillagers_PlaceMissingHouses(d->villagers);
     VillagerStates_ResetErrands();
     if (PlayerData_GetCurrent()) {
-        SaveVillagers_AssignErrands(p + 0x8a3c);
+        SaveVillagers_AssignErrands(d->villagers);
     }
-    TownStyleRecord_InitNew(p + 0x1592c);
-    ((HouseData *)(p + 0xe558))->resetDebt();
+    TownStyleRecord_InitNew(d->townStyle);
+    ((HouseData *)d->house)->resetDebt();
     HouseRoomMaps_UpdateAll();
     HouseRoomMaps_BindBg();
-    ((AbleSistersPatterns *)(p + 0xfafc))->initDefaultPatterns();
+    ((AbleSistersPatterns *)d->ableSistersPatterns)->initDefaultPatterns();
     FengShui_UpdateHouse();
-    _ZN15ItemClassOrders12randomizeAllEv(p + 0x15fbc);
-    ((BbsBoard *)(p + 0x11488))->reset();
-    NookShop_InitNew(p + 0x15db4);
-    AbleShop_InitNew(p + 0x15f84);
-    ((ReddShop *)(p + 0x15f70))->reset();
-    TownState_InitNew(p + 0x15e54);
-    Weather_InitNew(p + 0x15f66);
-    EventWeekSlots_InitNew(p + 0x15e18);
-    ((BlancaFaceRecord *)(p + 0x15700))->init();
-    _ZN12TurnipMarket4initEv(p + 0x15f4c);
-    ReddLastSale_Clear(p + 0x15f34);
-    GulliverQuest_Init(p + 0xe556);
-    ((ContestRecord *)(p + 0x15efc))->resetToday();
-    HappyRoomDate_Reset(p + 0x15fb0);
-    Melody_ResetToDefault(p + 0x15fa8);
-    LostAndFound_InitRandom(p + 0x15ec0);
-    RoostGuestRoll_Init(p + 0xe557);
-    TownExchange_InitNop(p + 0x10c3c);
+    ((ItemClassOrders *)d->itemClassOrders)->randomizeAll();
+    ((BbsBoard *)d->bbsBoard)->reset();
+    NookShop_InitNew(d->nookShop);
+    AbleShop_InitNew(d->ableShop);
+    ((ReddShop *)d->reddShop)->reset();
+    TownState_InitNew(&d->townState);
+    Weather_InitNew(&d->weather);
+    EventWeekSlots_InitNew(d->eventWeekSlots);
+    ((BlancaFaceRecord *)d->blancaFace)->init();
+    ((TurnipMarket *)d->turnipMarket)->init();
+    ReddLastSale_Clear(d->reddLastSale);
+    GulliverQuest_Init(d->gulliverQuest);
+    ((ContestRecord *)d->contestRecord)->resetToday();
+    HappyRoomDate_Reset(d->happyRoomDate);
+    Melody_ResetToDefault();  // (the town tune: d->townTune)
+    LostAndFound_InitRandom((u16 *)d->lostAndFound);
+    RoostGuestRoll_Init(d->roostGuestRoll);
+    TownExchange_InitNop();  // (d->townExchange)
 }
 
 void SaveData_RefreshTownBlockMap(void *) {

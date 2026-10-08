@@ -1,11 +1,12 @@
 #include "types.h"
+#include "item/ItemClassOrders.h"
 #include "item/ItemPickSpec.h"
 #include "item/RandomSource.h"
 #include "item/DateSeededRandomSource.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 
@@ -49,31 +50,6 @@ s32 ItemList_IsFullHeadwear(u16 *p);
 
 
 
-// One-byte element (value 0..5), 3-byte rows in sItemClassWeightOrders
-class ItemClassOrder {
-public:
-    ItemClassOrder();
-    ~ItemClassOrder();
-    u32 getClassOfWeight(u32 x);
-    u32 getIndex();
-    u32 pickClass(s32 mode, RandomSource *rng);
-    u8 *getWeights();
-    void randomize();
-
-    /* 0x00 */ u8 orderIndex;
-};
-
-class ItemClassOrders {
-public:
-    ItemClassOrders();
-    ~ItemClassOrders();
-    void randomizeAll();
-    ItemClassOrder *get(s32 i);
-
-    /* 0x00 */ ItemClassOrder orders[9];
-};
-
-
 struct ItemPickList {
     u16 (*unk_00)(u32);
     s32 (*unk_04)(u16 *);
@@ -84,7 +60,6 @@ struct ItemPickList {
 
 extern ItemClassOrders data_021ed30c;
 extern const u8 sItemClassWeightOrders[];
-extern u8 gRandom[];
 extern const u32 sItemClassRanks[];
 extern const ItemPickList sItemPickLists[];
 extern u8 gSaveData[];
@@ -217,7 +192,7 @@ RandomSource::RandomSource() {}
 
 RandomSource::~RandomSource() {}
 
-u32 RandomSource::random(u32 n) { return Random_NextBelow(gRandom, n); }
+u32 RandomSource::random(u32 n) { return Random_NextBelow(&gRandom.seed, n); }
 
 u8 RandomSource::getYear() {
     u32 t[2];
@@ -349,7 +324,7 @@ extern "C" s32 ItemPick_GetSeason(s32 a, u32 b) {
 
 extern "C" BOOL ItemPick_IsCatalogued(void *p, u16 *q) {
     if (p != NULL) {
-        return Catalog_HasItem(((PlayerData *)(p))->getCatalog(), q);
+        return Catalog_HasItem((u8 *)((PlayerData *)(p))->getCatalog(), q);
     }
     return FALSE;
 }
@@ -532,9 +507,9 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
         if (a9 && Item_TestInfoFlag4(&v[2])) continue;
         if (a5) {
             if (a6) {
-                if (Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
+                if (Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
             } else {
-                if (!Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
+                if (!Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
             }
         } else {
             count++;
@@ -593,7 +568,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
         if (a9 && Item_TestInfoFlag4(&v[3])) continue;
         if (a5) {
             if (a6) {
-                if (Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[3])) {
+                if (Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[3])) {
                     if (pick == idx) {
                         *out = v[3];
                         return;
@@ -601,7 +576,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
                     idx++;
                 }
             } else {
-                if (!Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[3])) {
+                if (!Catalog_HasItem((u8 *)((PlayerData *)(a5))->getCatalog(), &v[3])) {
                     if (pick == idx) {
                         *out = v[3];
                         return;

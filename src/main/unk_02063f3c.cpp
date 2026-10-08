@@ -3,8 +3,6 @@
 
 #include "ds_stdarg.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021127c0.h"
 #include "proto/autoload_2/unk_02119434.h"
@@ -15,22 +13,16 @@
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-BOOL FS_OpenFile(void *f, const char *path);
+BOOL FS_OpenFile(FSFile *f, const char *path);
 BOOL FS_LoadOverlay(s32 target, u32 id);
-BOOL FS_CloseFile(void *f);
-s32 FS_SeekFile(void *f, s32 off, s32 z);
-s32 FS_ReadFile(void *f, void *dst, u32 n);
+BOOL FS_CloseFile(FSFile *f);
+s32 FS_SeekFile(FSFile *f, s32 off, s32 z);
+s32 FS_ReadFile(FSFile *f, void *dst, u32 n);
 void MI_UncompressLZ8(const void *src, void *dst);
-#define Heap_setFlags _ZN4Heap8setFlagsEj
-u32 Heap_setFlags(void *h, u32 flags);
-#define Heap_getMaxFreeBlockSize _ZN4Heap19getMaxFreeBlockSizeEv
-u32 Heap_getMaxFreeBlockSize(void *h);
 void DC_StoreAll();
 void DC_FlushAll();
 void MI_InitUncompContextLZ(void *st, void *dst, void *src);
 s32 MI_ReadUncompLZ8(void *st, void *p, s32 n);
-extern void *gCurrentHeap;
-extern void *gRootHeap;
 
 }
 
@@ -38,9 +30,9 @@ BOOL File_LoadOverlayEx(s32 target, u32 id) {
     return FS_LoadOverlay(target, id);
 }
 
-BOOL File_Open(void *file, const char *path) {
-    FS_InitFile(file);
-    return FS_OpenFile(file, path);
+BOOL File_Open(void *file, const char *path) {  // (file: an FSFile)
+    FS_InitFile((FSFile *)file);
+    return FS_OpenFile((FSFile *)file, path);
 }
 
 void File_OpenOrPanic(void *file, const char *path) {
@@ -49,10 +41,11 @@ void File_OpenOrPanic(void *file, const char *path) {
     }
 }
 
-void *File_LoadAlloc(const char *path, void *heap, s32 align, u32 *outSize) {
+void *File_LoadAlloc(const char *path, void *heapArg, s32 align, u32 *outSize) {
+    Heap *heap = (Heap *)heapArg;
     void *ret;
     u32 flags;
-    void *h;
+    Heap *h;
     u32 usize;
     u32 hdr[2];
     u32 st[8]; // the LZ streaming context (MI_InitUncompContextLZ): pointer-sized destination on hosts
@@ -74,8 +67,8 @@ void *File_LoadAlloc(const char *path, void *heap, s32 align, u32 *outSize) {
             usize = hdr[1] >> 8;
             ret = Heap_AllocAligned(heap, usize, align);
             if (ret) {
-                flags = ((Heap *)(h))->setFlags(0);
-                ((Heap *)(h))->setFlags(flags & 0xffffbfff);
+                flags = h->setFlags(0);
+                h->setFlags(flags & 0xffffbfff);
                 p = Heap_Alloc(h, size - 4);
                 if (p) {
                     MI_CpuCopy8(&hdr[1], p, 4);
@@ -84,7 +77,7 @@ void *File_LoadAlloc(const char *path, void *heap, s32 align, u32 *outSize) {
                     size -= 8;
                     if (FS_ReadFile(&f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, ret);
                 } else {
-                    size = ((Heap *)(h))->getMaxFreeBlockSize();
+                    size = h->getMaxFreeBlockSize();
                     p = Heap_Alloc(h, size);
                     if (p) {
                         MI_InitUncompContextLZ(st, ret, &hdr[1]);
@@ -96,7 +89,7 @@ void *File_LoadAlloc(const char *path, void *heap, s32 align, u32 *outSize) {
                     }
                 }
                 if (p) Heap_Free(h, p);
-                ((Heap *)(h))->setFlags(flags);
+                h->setFlags(flags);
                 size = usize;
             }
         } else {
@@ -145,9 +138,9 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
     } else if (FS_ReadFile(f, &hdr, 8) != -1) {
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) {
             ret = hdr[1] >> 8;
-            void *h = gRootHeap;
-            flags = ((Heap *)(h))->setFlags(0);
-            ((Heap *)(h))->setFlags(flags & 0xffffbfff);
+            Heap *h = gRootHeap;
+            flags = h->setFlags(0);
+            h->setFlags(flags & 0xffffbfff);
             void *p = Heap_Alloc(h, size - 4);
             if (p) {
                 MI_CpuCopy8(&hdr[1], p, 4);
@@ -156,7 +149,7 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
                 size -= 8;
                 if (FS_ReadFile(f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, dst);
             } else {
-                size = ((Heap *)(h))->getMaxFreeBlockSize();
+                size = h->getMaxFreeBlockSize();
                 p = Heap_Alloc(h, size);
                 if (p) {
                     MI_InitUncompContextLZ(st, dst, &hdr[1]);
@@ -168,7 +161,7 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
                 }
             }
             if (p) Heap_Free(h, p);
-            ((Heap *)(h))->setFlags(flags);
+            h->setFlags(flags);
         } else if (size <= n) {
             MI_CpuCopy8(hdr, dst, 8);
             u8 *d8 = (u8 *)dst + 8;

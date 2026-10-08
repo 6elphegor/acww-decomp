@@ -203,6 +203,9 @@ def make_headers(defs, only=None):
         cpp_incs = sorted(i for i in includes if header_is_cpp(i))
         out += [f'#include "{i}"' for i in c_incs]
         out += sorted(fwd_c)
+        tags = [d.split()[1].rstrip(';') for d in sorted(fwd_c) if d.startswith('struct ')]
+        if tags:  # (C needs the struct keyword: the prototypes name the bare type)
+            out += ['#ifndef __cplusplus'] + [f'typedef struct {t} {t};' for t in tags] + ['#endif']
         if cpp_incs or fwd_cpp or cpp_protos:
             out += ['#ifdef __cplusplus'] + [f'#include "{i}"' for i in cpp_incs] + sorted(fwd_cpp) + ['#endif']
         out.append('')
