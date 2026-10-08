@@ -6839,7 +6839,7 @@ extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
             }
         }
     } else {
-        if (((AnimFrameCtrl *)(HeldItemModel_GetModel((u8 *)&o->heldItemModel) + 0x9c))->isFinished()) {
+        if (((AnimFrameCtrl *)(BlendAnimModel *)HeldItemModel_GetModel((u8 *)&o->heldItemModel))->isFinished()) {
             o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
             if (gCommManager->isLocalSlot(o->sessionSlot)) {
                 (o)->requestWait(9, 1, -1);
@@ -11327,7 +11327,7 @@ extern "C" void PlayerActor_FireworkUpdate(Obj *o) {
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_FireworkCheckEnd(Obj *o) {
-    if (((AnimFrameCtrl *)(HeldItemModel_GetModel((u8 *)&o->heldItemModel) + 0x9c))->isFinished()) {
+    if (((AnimFrameCtrl *)(BlendAnimModel *)HeldItemModel_GetModel((u8 *)&o->heldItemModel))->isFinished()) {
         u8 *q = (u8 *)&o->actionWork;
         u8 *r1 = q + 4;
         if (*r1 != 0) {

@@ -332,7 +332,7 @@ extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
 extern "C" BOOL Insect_IsAllowedOnline(s32 a);
 extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c);
 extern "C" void Insect_SetAnimSpeed(Insect *self, u32 v);
-extern "C" void Insect_TickFrame(u8 *self);
+extern "C" void Insect_TickFrame(Insect *self);
 extern "C" s32 Insect_GetTimeSlot();
 extern "C" BOOL Insect_RollKind(u8 *out);
 extern "C" BOOL Insect_IsAtWateringPoint(VecFx32 *p);
@@ -7331,12 +7331,12 @@ extern "C" s32 Insect_GetTimeSlot()
 #define func_02133150 _s32_div_f
 namespace s00 {
 // 0x222603c
-extern "C" void Insect_TickFrame(u8 *self)
+extern "C" void Insect_TickFrame(Insect *self)
 {
-    self += 0x24f;
-    (*self)++;
-    if (*self > 0x50) {
-        *self = 0;
+    u8 *p = &self->frameCounter;
+    (*p)++;
+    if (*p > 0x50) {
+        *p = 0;
     }
 }
 }

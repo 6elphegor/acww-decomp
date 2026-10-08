@@ -153,7 +153,7 @@ BOOL Insect_RollKind(u8 *out);
 s32 Insect_GetTimeSlot();
 #endif
 #ifndef PROTO_LOCAL_Insect_TickFrame
-void Insect_TickFrame(u8 *self);
+void Insect_TickFrame(Insect *self);
 #endif
 #ifndef PROTO_LOCAL_Insect_PickSpecialSpawn
 BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c);
