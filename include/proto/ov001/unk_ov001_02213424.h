@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02213424.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "ui/WfcTextEdit.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,6 +75,14 @@ void WfcTextEdit_WaitErrorDialog();
 void WfcTextEdit_ReturnToInput();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcTextEdit
+extern WfcTextEdit *sWfcTextEdit;
+#endif
 }
 #endif
 

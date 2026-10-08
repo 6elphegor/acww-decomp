@@ -5,22 +5,10 @@
 
 #include "types.h"
 #include "types64.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_data_0213c388
-extern char *data_0213c388[8];
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_memcpy
 void *memcpy(void *dst, const void *src, u32 n);
 #endif
@@ -54,6 +42,10 @@ s64 scalbn(s64 a, s32 delta);
 #ifndef PROTO_LOCAL_data_0213c400
 extern u16 data_0213c400[58];
 #endif
+#ifndef PROTO_LOCAL_data_0213c388
+extern char *data_0213c388[8];
+#endif
+#ifdef __cplusplus
 }
 #endif
 

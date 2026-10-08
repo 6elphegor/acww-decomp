@@ -4,8 +4,8 @@
 // Prototypes of the functions defined in src/ov110/unk_ov110_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
-#include "types.h"
 class LostFoundRecycleMenu;
 #endif
 
@@ -21,6 +21,9 @@ void LostFoundRecycleMenu_SetupBgLayers();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sLostFoundRecycleMenuProfile
+extern ProcProfile sLostFoundRecycleMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_LostFoundRecycleMenu_Create
 LostFoundRecycleMenu *LostFoundRecycleMenu_Create();
 #endif

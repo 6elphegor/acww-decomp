@@ -5,8 +5,10 @@
 
 #include "types.h"
 #include "uptr.h"
+struct EffectSplArchive;
 struct EffectSplPool;
 #ifndef __cplusplus
+typedef struct EffectSplArchive EffectSplArchive;
 typedef struct EffectSplPool EffectSplPool;
 #endif
 #ifdef __cplusplus
@@ -45,6 +47,9 @@ EffectSplProc *EffectSplProc_Create();
 #ifndef PROTO_LOCAL_EffectSpl_LoadTextures
 BOOL EffectSpl_LoadTextures(EffectSplProc *p);
 #endif
+#ifndef PROTO_LOCAL_EffectSpl_CopyResourceData
+void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p);
+#endif
 #ifndef PROTO_LOCAL_EffectSpl_GetSeasonTintVariant
 s16 EffectSpl_GetSeasonTintVariant(EffectSplEmitter *o);
 #endif
@@ -74,6 +79,12 @@ s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, VecFx32 *a2, s16 *a3, Ef
 #endif
 #ifndef PROTO_LOCAL_EffectSplEntry_Release
 void EffectSplEntry_Release(EffectEmitterEntry *e);
+#endif
+#ifndef PROTO_LOCAL_EffectSplPool_Update
+void EffectSplPool_Update(EffectSplPool *p);
+#endif
+#ifndef PROTO_LOCAL_EffectSplPool_ReleaseAll
+void EffectSplPool_ReleaseAll(EffectSplPool *p);
 #endif
 #ifndef PROTO_LOCAL_EffectSplPool_FindInactive
 EffectEmitterEntry *EffectSplPool_FindInactive(EffectSplPool *p, s32 id);

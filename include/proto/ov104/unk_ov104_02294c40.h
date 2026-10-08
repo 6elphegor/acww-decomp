@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov104/unk_ov104_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class PostOfficeMenu;
 #endif
@@ -22,6 +23,9 @@ void PostOfficeMenu_SetupBgLayers();
 extern "C" {
 #ifndef PROTO_LOCAL_PostOfficeMenu_Create
 PostOfficeMenu *PostOfficeMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sPostOfficeMenuProfile
+extern ProcProfile sPostOfficeMenuProfile;
 #endif
 }
 #endif

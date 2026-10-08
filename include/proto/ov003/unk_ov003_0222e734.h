@@ -6,10 +6,13 @@
 #include "types.h"
 struct UnitMaskChunk;
 struct UnitMaskPool;
+#ifndef __cplusplus
+typedef struct UnitMaskChunk UnitMaskChunk;
+typedef struct UnitMaskPool UnitMaskPool;
+#endif
 #ifdef __cplusplus
 #include "field/Snowball.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -48,6 +51,9 @@ Snowball *Snowball_GetLooseBall(u32 id);
 #ifndef PROTO_LOCAL_Snowball_FindOtherInBallState
 Snowball *Snowball_FindOtherInBallState(Snowball *self);
 #endif
+#ifndef PROTO_LOCAL_UnitMaskChunk_Clear
+void UnitMaskChunk_Clear(UnitMaskChunk *c);
+#endif
 #ifndef PROTO_LOCAL_UnitMaskChunk_Mark
 void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y);
 #endif
@@ -56,6 +62,9 @@ BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_UnitMaskChunk_PickRandom
 BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy);
+#endif
+#ifndef PROTO_LOCAL_UnitMaskPool_Clear
+void UnitMaskPool_Clear(UnitMaskPool *pool);
 #endif
 #ifndef PROTO_LOCAL_UnitMaskPool_CountFreeChunks
 s32 UnitMaskPool_CountFreeChunks(UnitMaskPool *pool);

@@ -4,6 +4,11 @@
 // Prototypes of the functions defined in src/ov120/unk_ov120_02292d00.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct Unk_ov120_02293a2c_Oam;
+#ifndef __cplusplus
+typedef struct Unk_ov120_02293a2c_Oam Unk_ov120_02293a2c_Oam;
+#endif
 #ifdef __cplusplus
 class MapViewerMenu;
 #endif
@@ -28,6 +33,12 @@ extern u8 sMapViewResidentsButtonCells[32];
 extern "C" {
 #ifndef PROTO_LOCAL_MapViewerMenu_Create
 MapViewerMenu *MapViewerMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sMapViewIconCell
+extern Unk_ov120_02293a2c_Oam sMapViewIconCell;
+#endif
+#ifndef PROTO_LOCAL_sMapViewerMenuProfile
+extern ProcProfile sMapViewerMenuProfile;
 #endif
 }
 #endif

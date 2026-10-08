@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02218844.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcSimpleStartRecvDone
+extern u8 sWfcSimpleStartRecvDone;
+#endif
+#ifndef PROTO_LOCAL_WfcSimpleStartRecv_IsLidClosed
+BOOL WfcSimpleStartRecv_IsLidClosed();
 #endif
 #ifndef PROTO_LOCAL_WfcSimpleStartRecv_Enter
 void WfcSimpleStartRecv_Enter();
@@ -57,17 +60,6 @@ void WfcSimpleStartRecv_FailDialog();
 void WfcSimpleStartRecv_WaitDialogClosed();
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcSimpleStartRecvDone
-extern u8 sWfcSimpleStartRecvDone;
-#endif
-#ifndef PROTO_LOCAL_WfcSimpleStartRecv_IsLidClosed
-BOOL WfcSimpleStartRecv_IsLidClosed();
-#endif
 }
 #endif
 

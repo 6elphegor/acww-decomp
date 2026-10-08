@@ -4,15 +4,18 @@
 // Prototypes of the functions defined in src/ov070/unk_022713c0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcGracieActEntry;
+#ifndef __cplusplus
+typedef struct SpNpcGracieActEntry SpNpcGracieActEntry;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 class SpNpcGracie;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_SpNpcGracie_Create
-SpNpcGracie *SpNpcGracie_Create();
 #endif
 #ifndef PROTO_LOCAL_data_ov070_022726e4
 extern u32 data_ov070_022726e4[1];
@@ -40,6 +43,39 @@ u8 SpNpcGracie_ScoreByPrice(void *unused, s32 a, s32 kind);
 #endif
 #ifndef PROTO_LOCAL_SpNpcGracie_IsEmptyItem
 BOOL SpNpcGracie_IsEmptyItem(u16 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SpNpcGracie_Create
+SpNpcGracie *SpNpcGracie_Create();
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022728c0
+extern DebugColor data_ov070_022728c0;
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022728c8
+extern DebugColor data_ov070_022728c8;
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022728d8
+extern DebugColor data_ov070_022728d8;
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022728d4
+extern DebugColor data_ov070_022728d4;
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022728cc
+extern DebugColor data_ov070_022728cc;
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022728c4
+extern DebugColor data_ov070_022728c4;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcGracieProfile
+extern ActorProfile sSpNpcGracieProfile;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcGracieActTable
+extern SpNpcGracieActEntry sSpNpcGracieActTable[3];
 #endif
 }
 #endif

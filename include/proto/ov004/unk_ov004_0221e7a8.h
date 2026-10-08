@@ -41,6 +41,15 @@ extern char sRoomErrorMsgFile[16];
 #ifndef PROTO_LOCAL_data_ov004_0224d4b4
 extern u32 data_ov004_0224d4b4;
 #endif
+#ifndef PROTO_LOCAL_RoomObj_ActivateSe
+void RoomObj_ActivateSe(void *a);
+#endif
+#ifndef PROTO_LOCAL_RoomObj_DeactivateSe
+void RoomObj_DeactivateSe(void *a);
+#endif
+#ifndef PROTO_LOCAL_RoomObj_PlaySe
+void RoomObj_PlaySe(void *a, s32 b);
+#endif
 #ifndef PROTO_LOCAL_RoomObj_PlaySeHeld
 void RoomObj_PlaySeHeld(void *a, s32 b);
 #endif

@@ -7,6 +7,9 @@
 #include "net/WfcMoveParams.h"
 #include "nitro/wm.h"
 struct WfcMoveWork;
+#ifndef __cplusplus
+typedef struct WfcMoveWork WfcMoveWork;
+#endif
 #ifdef __cplusplus
 #endif
 
@@ -76,6 +79,9 @@ s32 WfcMove_GetChildReply();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcMove
+extern WfcMoveWork *sWfcMove;
+#endif
 #ifndef PROTO_LOCAL_WfcMove_Init
 void WfcMove_Init(WfcMoveWork *self, const WfcMoveParams *a);
 #endif

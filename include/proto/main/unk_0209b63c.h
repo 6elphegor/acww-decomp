@@ -4,15 +4,14 @@
 // Prototypes of the functions defined in src/main/unk_0209b63c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_AcreType_GetRiverVariant
 s32 AcreType_GetRiverVariant(s32 v);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

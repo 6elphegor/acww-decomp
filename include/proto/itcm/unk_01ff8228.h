@@ -38,6 +38,9 @@ void OSi_IrqDma0(void);
 #ifndef PROTO_LOCAL_OSi_IrqCallback
 void OSi_IrqCallback(int index);
 #endif
+#ifndef PROTO_LOCAL_OS_SetIrqMask
+u32 OS_SetIrqMask(u32 intr);
+#endif
 #ifdef __cplusplus
 }
 #endif

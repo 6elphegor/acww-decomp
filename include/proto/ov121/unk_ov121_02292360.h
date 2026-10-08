@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class DesignTab;
 #endif
@@ -29,6 +30,9 @@ extern u16 sDesignItemBase[4];
 extern "C" {
 #ifndef PROTO_LOCAL_DesignTab_Create
 DesignTab *DesignTab_Create();
+#endif
+#ifndef PROTO_LOCAL_sDesignTabProfile
+extern ProcProfile sDesignTabProfile;
 #endif
 }
 #endif

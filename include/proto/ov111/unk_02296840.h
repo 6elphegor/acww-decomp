@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov111/unk_02296840.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class ChatMenu;
 #endif
@@ -34,6 +35,9 @@ extern char data_ov111_02298a10[];
 extern "C" {
 #ifndef PROTO_LOCAL_ChatMenu_Create
 ChatMenu *ChatMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_data_ov111_02298920
+extern ProcProfile data_ov111_02298920;
 #endif
 }
 #endif

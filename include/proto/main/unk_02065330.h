@@ -5,6 +5,9 @@
 
 #include "types.h"
 struct LetterDefaults;
+#ifndef __cplusplus
+typedef struct LetterDefaults LetterDefaults;
+#endif
 #ifdef __cplusplus
 #include "item/LetterView.h"
 #include "npc/VillagerId.h"

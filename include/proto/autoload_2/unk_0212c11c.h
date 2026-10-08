@@ -5,4 +5,14 @@
 
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_wmemcpy
+void *wmemcpy(void *d, const void *s, u32 n);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
 #endif

@@ -256,7 +256,8 @@ extern "C" void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, void *p
     data_021f48cc = (u32)((OS_GetTick() << 6) / 33514);
 }
 
-extern "C" void Net_WifiCallbackNop(void) {
+extern "C" s32 Net_WifiCallbackNop(s32 index, void *param) {  // (DwcNewClientCallback: the result is not used)
+    return 0;
 }
 
 extern "C" void Net_OnWifiServersUpdated(s32 result, s32 b, s32 arg) {
@@ -272,13 +273,13 @@ extern "C" void Net_OnWifiServersUpdated(s32 result, s32 b, s32 arg) {
     }
 }
 
-extern "C" void Net_OnWifiFriendStatus(u32 a) {
+extern "C" void Net_OnWifiFriendStatus(s32 a, s32 status, char *statusString, s32 param) {  // (DwcFriendStatusCallback)
     s32 local;
     NetWifiFriendStatus *st = &sWifiFriendList->status[a];
     st->status = DwcFriend_GetStatusData(&sWifiFriendList->friends[a], &st->b, &st->c, st->statusString, &local);
 }
 
-extern "C" void Net_OnWifiFriendDeleted(u32 a) {
+extern "C" void Net_OnWifiFriendDeleted(s32 a, s32 srcIndex, s32 param) {  // (DwcFriendDeleteCallback)
     MI_CpuFill8(&sWifiFriendList->friends[a], 0, sizeof(NetWifiFriendData));
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
     sWifiFriendList->status[a].status = 0;
@@ -288,8 +289,8 @@ extern "C" void Net_OnWifiFriendDeleted(u32 a) {
 extern "C" void Net_OnWifiLogin(s32 result, s32 b, s32 arg) {
     if (result != 0) return;
     DwcFriend_SetStatusData(sWifiUserData, 16);  // (the name and town)
-    DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, arg, NetWord((void *)Net_OnWifiFriendStatus), arg,
-                                 NetWord((void *)Net_OnWifiFriendDeleted), arg);  // (ov065: callbacks as integers)
+    DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, arg, Net_OnWifiFriendStatus, arg,
+                                 Net_OnWifiFriendDeleted, arg);
 }
 
 extern "C" void Net_OnGameStatsUploadDone(s32 data, s32 len, s32 result, u32 ud) {
@@ -943,7 +944,7 @@ extern "C" u8 *Net_GetWifiFriendList(void) {
 extern "C" BOOL Net_WifiStartHost(void) {
     if (sWifiConnectStep < 4) return FALSE;
     sNetMode = 3;
-    DwcMatch_SetupGameServer(data_021f488c, Net_OnWifiHostMatched, 0, NetWord((void *)Net_WifiCallbackNop), 0);  // (ov065: as an integer)
+    DwcMatch_SetupGameServer(data_021f488c, Net_OnWifiHostMatched, 0, Net_WifiCallbackNop, 0);
     DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
     DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
     DwcConn_SetClosedCallback(NetWord((void *)Net_OnWifiClosedNop), 0);  // (ov065: as an integer)
@@ -956,7 +957,7 @@ extern "C" BOOL Net_WifiConnectToHost(u32 a) {
     sNetMode = 4;
     r = Net_WifiFindFriend(a);
     if (r == (u32)-1) return FALSE;
-    DwcMatch_ConnectToFriendServer(r, Net_OnWifiClientMatched, 0, NetWord((void *)Net_WifiCallbackNop), 0);  // (ov065: as an integer)
+    DwcMatch_ConnectToFriendServer(r, Net_OnWifiClientMatched, 0, Net_WifiCallbackNop, 0);
     DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
     DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
     DwcConn_SetClosedCallback(NetWord((void *)Net_OnWifiClosedNop), 0);  // (ov065: as an integer)
@@ -1132,8 +1133,8 @@ extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
     sWifiFriendList->status[a].status = 0;
     data_0213b06c = 1;
-    r = DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, 0, NetWord((void *)Net_OnWifiFriendStatus), 0,
-                                     NetWord((void *)Net_OnWifiFriendDeleted), 0);  // (ov065: callbacks as integers)
+    r = DwcFriend_UpdateServersAsync(NULL, Net_OnWifiServersUpdated, 0, Net_OnWifiFriendStatus, 0,
+                                     Net_OnWifiFriendDeleted, 0);
     if (r == 0) data_0213b06c = 0;
     return r;
 }

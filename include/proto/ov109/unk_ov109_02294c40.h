@@ -4,12 +4,16 @@
 // Prototypes of the functions defined in src/ov109/unk_ov109_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class SongPickMenu;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSongPickMenuProfile
+extern ProcProfile sSongPickMenuProfile;
+#endif
 #ifndef PROTO_LOCAL_SongPickMenu_Create
 SongPickMenu *SongPickMenu_Create();
 #endif

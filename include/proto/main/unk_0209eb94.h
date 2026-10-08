@@ -6,12 +6,14 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct GuestSlotTriple;
+#ifndef __cplusplus
+typedef struct GuestSlotTriple GuestSlotTriple;
+#endif
 #ifdef __cplusplus
 #include "save/BlancaFaceRecord.h"
 #include "save/SaveManager.h"
 #include "save/SaveRecord4.h"
 #include "save/TownCompress.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -19,6 +21,24 @@ extern "C" {
 #endif
 #ifndef PROTO_LOCAL_Save_StoreCurrentPlayerToResident
 void Save_StoreCurrentPlayerToResident(void);
+#endif
+#ifndef PROTO_LOCAL_Save_LoadSync
+s32 Save_LoadSync(void);
+#endif
+#ifndef PROTO_LOCAL_Save_CheckSlot
+s32 Save_CheckSlot(s32 idx);
+#endif
+#ifndef PROTO_LOCAL_Save_ReadAndCheckSlot
+s32 Save_ReadAndCheckSlot(s32 idx, s32 flag);
+#endif
+#ifndef PROTO_LOCAL_Save_ReadSlot
+BOOL Save_ReadSlot(u32 idx);
+#endif
+#ifndef PROTO_LOCAL_Save_ReadSlotSync
+BOOL Save_ReadSlotSync(u32 idx, s32 flag);
+#endif
+#ifndef PROTO_LOCAL_Save_ReadSlotAsyncStep
+s32 Save_ReadSlotAsyncStep(s32 idx, u8 *buf);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_RequestAct01
 void SaveManager_RequestAct01(void);
@@ -71,90 +91,6 @@ void SaveManager_RequestAct1F(void);
 #ifndef PROTO_LOCAL_SaveManager_RequestAct1C
 void SaveManager_RequestAct1C(void);
 #endif
-#ifndef PROTO_LOCAL_GameStart_SetupSave
-void GameStart_SetupSave();
-#endif
-#ifndef PROTO_LOCAL_SaveManager_GetTownTransferBuf
-void *SaveManager_GetTownTransferBuf();
-#endif
-#ifndef PROTO_LOCAL_SaveManager_SetGatePassed
-void SaveManager_SetGatePassed();
-#endif
-#ifndef PROTO_LOCAL_GameStart_SetNewTown
-void GameStart_SetNewTown();
-#endif
-#ifndef PROTO_LOCAL_GameStart_SetNewResident
-void GameStart_SetNewResident();
-#endif
-#ifndef PROTO_LOCAL_GameStart_SetMode3
-void GameStart_SetMode3();
-#endif
-#ifndef PROTO_LOCAL_GameStart_SetMode4
-void GameStart_SetMode4();
-#endif
-#ifndef PROTO_LOCAL_GameStart_Clear
-void GameStart_Clear();
-#endif
-#ifndef PROTO_LOCAL_VillagerTransfer_PlanSwap
-void VillagerTransfer_PlanSwap(void *a);
-#endif
-#ifndef PROTO_LOCAL_VillagerTransfer_PlanRotate
-void VillagerTransfer_PlanRotate(void *a);
-#endif
-#ifndef PROTO_LOCAL_Wifi_StoreFriendList
-void Wifi_StoreFriendList(void);
-#endif
-#ifndef PROTO_LOCAL_NetOverlay_LoadWireless
-void NetOverlay_LoadWireless(void);
-#endif
-#ifndef PROTO_LOCAL_NetOverlay_LoadWifi
-void NetOverlay_LoadWifi(void);
-#endif
-#ifndef PROTO_LOCAL_NetOverlay_Restore
-void NetOverlay_Restore(void);
-#endif
-#ifndef PROTO_LOCAL_TownCompressThread_Main
-void TownCompressThread_Main(void *arg);
-#endif
-#ifndef PROTO_LOCAL_GameStats_ApplyDownload
-void GameStats_ApplyDownload(void);
-#endif
-#ifndef PROTO_LOCAL_AxMail_ApplyMail
-void AxMail_ApplyMail(void);
-#endif
-#ifndef PROTO_LOCAL_AxMail_ApplyBbs
-void AxMail_ApplyBbs();
-#endif
-#ifndef PROTO_LOCAL_JoinHistory_Clear
-void JoinHistory_Clear();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_SaveManager_Create
-SaveManager *SaveManager_Create();
-#endif
-#ifndef PROTO_LOCAL_Save_LoadSync
-s32 Save_LoadSync(void);
-#endif
-#ifndef PROTO_LOCAL_Save_CheckSlot
-s32 Save_CheckSlot(s32 idx);
-#endif
-#ifndef PROTO_LOCAL_Save_ReadAndCheckSlot
-s32 Save_ReadAndCheckSlot(s32 idx, s32 flag);
-#endif
-#ifndef PROTO_LOCAL_Save_ReadSlot
-BOOL Save_ReadSlot(u32 idx);
-#endif
-#ifndef PROTO_LOCAL_Save_ReadSlotSync
-BOOL Save_ReadSlotSync(u32 idx, s32 flag);
-#endif
-#ifndef PROTO_LOCAL_Save_ReadSlotAsyncStep
-s32 Save_ReadSlotAsyncStep(s32 idx, u8 *buf);
-#endif
 #ifndef PROTO_LOCAL_SaveManager_IsIdle
 BOOL SaveManager_IsIdle(void);
 #endif
@@ -182,9 +118,6 @@ BOOL Save_CheckFooterReadError(s32 idx);
 #ifndef PROTO_LOCAL_Save_CheckBackupError
 BOOL Save_CheckBackupError();
 #endif
-#ifndef PROTO_LOCAL_Save_ReadSlotFooter
-s32 Save_ReadSlotFooter(s32 idx, SaveRecord4 *d);
-#endif
 #ifndef PROTO_LOCAL_Save_SlotStampsMatch
 BOOL Save_SlotStampsMatch();
 #endif
@@ -203,6 +136,9 @@ BOOL Save_WritePlayerFriendList();
 #ifndef PROTO_LOCAL_Save_WriteVillagerTransfer
 BOOL Save_WriteVillagerTransfer();
 #endif
+#ifndef PROTO_LOCAL_GameStart_SetupSave
+void GameStart_SetupSave();
+#endif
 #ifndef PROTO_LOCAL_SaveManager_SetEraseResidentSlot
 void SaveManager_SetEraseResidentSlot(s32 v);
 #endif
@@ -212,8 +148,14 @@ u32 Net_GetJoiningAid();
 #ifndef PROTO_LOCAL_Net_SetJoiningAid
 void Net_SetJoiningAid(u32 v);
 #endif
+#ifndef PROTO_LOCAL_SaveManager_GetTownTransferBuf
+void *SaveManager_GetTownTransferBuf();
+#endif
 #ifndef PROTO_LOCAL_SaveManager_IsGatePassed
 u32 SaveManager_IsGatePassed();
+#endif
+#ifndef PROTO_LOCAL_SaveManager_SetGatePassed
+void SaveManager_SetGatePassed();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_IsSessionJoined
 u32 SaveManager_IsSessionJoined();
@@ -221,14 +163,17 @@ u32 SaveManager_IsSessionJoined();
 #ifndef PROTO_LOCAL_SaveManager_GetLetterStorage
 u8 *SaveManager_GetLetterStorage();
 #endif
-#ifndef PROTO_LOCAL_SaveManager_GetTownCompressBuf
-TownCompressBuffer *SaveManager_GetTownCompressBuf();
+#ifndef PROTO_LOCAL_GameStart_SetNewTown
+void GameStart_SetNewTown();
 #endif
-#ifndef PROTO_LOCAL_SaveManager_GetTownCompressThread
-TownCompressThread *SaveManager_GetTownCompressThread();
+#ifndef PROTO_LOCAL_GameStart_SetNewResident
+void GameStart_SetNewResident();
 #endif
-#ifndef PROTO_LOCAL_SaveManager_Get
-SaveManager *SaveManager_Get();
+#ifndef PROTO_LOCAL_GameStart_SetMode3
+void GameStart_SetMode3();
+#endif
+#ifndef PROTO_LOCAL_GameStart_SetMode4
+void GameStart_SetMode4();
 #endif
 #ifndef PROTO_LOCAL_GameStart_IsActive
 BOOL GameStart_IsActive();
@@ -244,6 +189,120 @@ BOOL GameStart_IsMode3();
 #endif
 #ifndef PROTO_LOCAL_GameStart_IsMode4
 BOOL GameStart_IsMode4();
+#endif
+#ifndef PROTO_LOCAL_GameStart_Clear
+void GameStart_Clear();
+#endif
+#ifndef PROTO_LOCAL_SaveManager_SetRecvAct03
+void SaveManager_SetRecvAct03(u32 v);
+#endif
+#ifndef PROTO_LOCAL_SaveManager_SetCtrlAct14Aid
+void SaveManager_SetCtrlAct14Aid(u32 v);
+#endif
+#ifndef PROTO_LOCAL_SaveManager_GetCtrlAct14Aid
+u32 SaveManager_GetCtrlAct14Aid();
+#endif
+#ifndef PROTO_LOCAL_NetSession_ReturnToSolo
+void NetSession_ReturnToSolo(void *a, s32 b, s32 c);
+#endif
+#ifndef PROTO_LOCAL_VillagerTransfer_PlanSwap
+void VillagerTransfer_PlanSwap(void *a);
+#endif
+#ifndef PROTO_LOCAL_VillagerTransfer_PlanRotate
+void VillagerTransfer_PlanRotate(void *a);
+#endif
+#ifndef PROTO_LOCAL_Wifi_StoreFriendList
+void Wifi_StoreFriendList(void);
+#endif
+#ifndef PROTO_LOCAL_SaveManager_IsEndSessionSave
+u8 SaveManager_IsEndSessionSave(void);
+#endif
+#ifndef PROTO_LOCAL_SaveManager_SetEndSessionSave
+void SaveManager_SetEndSessionSave(u32 v);
+#endif
+#ifndef PROTO_LOCAL_SaveManager_SetSaveCorrupted
+void SaveManager_SetSaveCorrupted(u32 v);
+#endif
+#ifndef PROTO_LOCAL_NetOverlay_LoadWireless
+void NetOverlay_LoadWireless(void);
+#endif
+#ifndef PROTO_LOCAL_NetOverlay_LoadWifi
+void NetOverlay_LoadWifi(void);
+#endif
+#ifndef PROTO_LOCAL_NetOverlay_Restore
+void NetOverlay_Restore(void);
+#endif
+#ifndef PROTO_LOCAL_TownCompressThread_Main
+void TownCompressThread_Main(void *arg);
+#endif
+#ifndef PROTO_LOCAL_Wifi_EndSession
+s32 Wifi_EndSession(void);
+#endif
+#ifndef PROTO_LOCAL_GameStats_Upload
+BOOL GameStats_Upload(void);
+#endif
+#ifndef PROTO_LOCAL_GameStats_Download
+BOOL GameStats_Download(void);
+#endif
+#ifndef PROTO_LOCAL_AxMail_DownloadMail
+BOOL AxMail_DownloadMail(void);
+#endif
+#ifndef PROTO_LOCAL_AxMail_DownloadBbs
+BOOL AxMail_DownloadBbs(void);
+#endif
+#ifndef PROTO_LOCAL_GameStats_PollDownload
+BOOL GameStats_PollDownload(void);
+#endif
+#ifndef PROTO_LOCAL_AxMail_PollMail
+BOOL AxMail_PollMail(void);
+#endif
+#ifndef PROTO_LOCAL_AxMail_PollBbs
+BOOL AxMail_PollBbs(void);
+#endif
+#ifndef PROTO_LOCAL_GameStats_PollUpload
+BOOL GameStats_PollUpload(void);
+#endif
+#ifndef PROTO_LOCAL_GameStats_ApplyDownload
+void GameStats_ApplyDownload(void);
+#endif
+#ifndef PROTO_LOCAL_AxMail_ApplyMail
+void AxMail_ApplyMail(void);
+#endif
+#ifndef PROTO_LOCAL_AxMail_ApplyBbs
+void AxMail_ApplyBbs();
+#endif
+#ifndef PROTO_LOCAL_JoinHistory_Push
+void JoinHistory_Push(u32 v);
+#endif
+#ifndef PROTO_LOCAL_JoinHistory_Remove
+void JoinHistory_Remove(u32 v);
+#endif
+#ifndef PROTO_LOCAL_JoinHistory_Clear
+void JoinHistory_Clear();
+#endif
+#ifndef PROTO_LOCAL_JoinHistory_GetLatest
+u32 JoinHistory_GetLatest();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SaveManager_Create
+SaveManager *SaveManager_Create();
+#endif
+#ifndef PROTO_LOCAL_Save_ReadSlotFooter
+s32 Save_ReadSlotFooter(s32 idx, SaveRecord4 *d);
+#endif
+#ifndef PROTO_LOCAL_SaveManager_GetTownCompressBuf
+TownCompressBuffer *SaveManager_GetTownCompressBuf();
+#endif
+#ifndef PROTO_LOCAL_SaveManager_GetTownCompressThread
+TownCompressThread *SaveManager_GetTownCompressThread();
+#endif
+#ifndef PROTO_LOCAL_SaveManager_Get
+SaveManager *SaveManager_Get();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_SetHostMemberMask
 void SaveManager_SetHostMemberMask(SaveManager *p, u32 v);
@@ -281,9 +340,6 @@ void SaveManager_SetCtrlAct0E(SaveManager *p, s32 i, u32 v);
 #ifndef PROTO_LOCAL_SaveManager_ClearCtrlAct0E
 void SaveManager_ClearCtrlAct0E(SaveManager *p);
 #endif
-#ifndef PROTO_LOCAL_SaveManager_SetRecvAct03
-void SaveManager_SetRecvAct03(u32 v);
-#endif
 #ifndef PROTO_LOCAL_SaveManager_SetRecvAct06
 void SaveManager_SetRecvAct06(SaveManager *p, s32 i, u32 v);
 #endif
@@ -293,17 +349,8 @@ void SaveManager_SetCtrlAct10(SaveManager *p, s32 i, u32 v);
 #ifndef PROTO_LOCAL_SaveManager_SetCtrlAct11
 void SaveManager_SetCtrlAct11(SaveManager *p, s32 i, u32 v);
 #endif
-#ifndef PROTO_LOCAL_SaveManager_SetCtrlAct14Aid
-void SaveManager_SetCtrlAct14Aid(u32 v);
-#endif
-#ifndef PROTO_LOCAL_SaveManager_GetCtrlAct14Aid
-u32 SaveManager_GetCtrlAct14Aid();
-#endif
 #ifndef PROTO_LOCAL_SaveManager_SetCtrlAct17
 void SaveManager_SetCtrlAct17(SaveManager *p, u32 v);
-#endif
-#ifndef PROTO_LOCAL_NetSession_ReturnToSolo
-void NetSession_ReturnToSolo(void *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_LostChild_ResetAndPairLast
 void LostChild_ResetAndPairLast(SaveManager *a);
@@ -337,51 +384,6 @@ void SaveManager_StartGatekeeperTalk(SaveManager *a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_StartSequence2Talk
 void SaveManager_StartSequence2Talk(SaveManager *a);
-#endif
-#ifndef PROTO_LOCAL_SaveManager_IsEndSessionSave
-u8 SaveManager_IsEndSessionSave(void);
-#endif
-#ifndef PROTO_LOCAL_SaveManager_SetEndSessionSave
-void SaveManager_SetEndSessionSave(u32 v);
-#endif
-#ifndef PROTO_LOCAL_SaveManager_SetSaveCorrupted
-void SaveManager_SetSaveCorrupted(u32 v);
-#endif
-#ifndef PROTO_LOCAL_Wifi_EndSession
-s32 Wifi_EndSession(void);
-#endif
-#ifndef PROTO_LOCAL_GameStats_Upload
-BOOL GameStats_Upload(void);
-#endif
-#ifndef PROTO_LOCAL_GameStats_Download
-BOOL GameStats_Download(void);
-#endif
-#ifndef PROTO_LOCAL_AxMail_DownloadMail
-BOOL AxMail_DownloadMail(void);
-#endif
-#ifndef PROTO_LOCAL_AxMail_DownloadBbs
-BOOL AxMail_DownloadBbs(void);
-#endif
-#ifndef PROTO_LOCAL_GameStats_PollDownload
-BOOL GameStats_PollDownload(void);
-#endif
-#ifndef PROTO_LOCAL_AxMail_PollMail
-BOOL AxMail_PollMail(void);
-#endif
-#ifndef PROTO_LOCAL_AxMail_PollBbs
-BOOL AxMail_PollBbs(void);
-#endif
-#ifndef PROTO_LOCAL_GameStats_PollUpload
-BOOL GameStats_PollUpload(void);
-#endif
-#ifndef PROTO_LOCAL_JoinHistory_Push
-void JoinHistory_Push(u32 v);
-#endif
-#ifndef PROTO_LOCAL_JoinHistory_Remove
-void JoinHistory_Remove(u32 v);
-#endif
-#ifndef PROTO_LOCAL_JoinHistory_GetLatest
-u32 JoinHistory_GetLatest();
 #endif
 }
 #ifndef PROTO_LOCAL_sAxMailBuf

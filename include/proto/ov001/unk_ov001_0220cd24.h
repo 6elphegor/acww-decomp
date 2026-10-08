@@ -4,8 +4,12 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220cd24.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/WfcMoveParams.h"
 #include "net/WfcTransfer.h"
 struct WfcTransferWork;
+#ifndef __cplusplus
+typedef struct WfcTransferWork WfcTransferWork;
+#endif
 #ifdef __cplusplus
 #endif
 
@@ -50,6 +54,11 @@ void WfcTransfer_Task(void *task);
 #endif
 
 #ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222aaa4
+extern WfcMoveParams data_ov001_0222aaa4;
+#endif
+}
 #ifndef PROTO_LOCAL_sWfcTransfer
 extern WfcTransferWork *sWfcTransfer;
 #endif

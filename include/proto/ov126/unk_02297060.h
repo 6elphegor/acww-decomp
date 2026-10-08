@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class NameEntryMenu;
 #endif
@@ -21,6 +22,9 @@ extern GXOamAttr data_ov126_02299ad0[2];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov126_022999e0
+extern ProcProfile data_ov126_022999e0;
+#endif
 #ifndef PROTO_LOCAL_NameEntryMenu_Create
 NameEntryMenu *NameEntryMenu_Create();
 #endif

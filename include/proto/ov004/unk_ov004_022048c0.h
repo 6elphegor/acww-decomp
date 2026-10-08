@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 class Atm;
 #endif
 
@@ -37,6 +38,9 @@ Atm *Atm_GetInstance();
 #endif
 #ifndef PROTO_LOCAL_sAtmInstance
 extern Atm *sAtmInstance;
+#endif
+#ifndef PROTO_LOCAL_sAtmProfile
+extern ActorProfile sAtmProfile;
 #endif
 }
 #endif

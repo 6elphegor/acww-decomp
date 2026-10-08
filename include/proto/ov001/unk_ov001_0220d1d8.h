@@ -4,7 +4,11 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220d1d8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/SimpleStart.h"
 struct WfcMsgBank;
+#ifndef __cplusplus
+typedef struct WfcMsgBank WfcMsgBank;
+#endif
 #ifdef __cplusplus
 #endif
 
@@ -32,6 +36,9 @@ extern char data_ov001_0222ab00[16];
 #ifndef PROTO_LOCAL_sWfcMsgFileNames
 extern void *sWfcMsgFileNames[6];
 #endif
+#ifndef PROTO_LOCAL_sWfcSimpleStartStatus
+extern SimpleStartStatus *sWfcSimpleStartStatus;
+#endif
 #ifndef PROTO_LOCAL_WfcBoot_Enter
 void WfcBoot_Enter();
 #endif
@@ -58,6 +65,9 @@ s32 WfcSimpleStart_GetState();
 #endif
 #ifndef PROTO_LOCAL_WfcSimpleStart_ApplyResult
 void WfcSimpleStart_ApplyResult();
+#endif
+#ifndef PROTO_LOCAL_WfcSimpleStart_StatusCallback
+void WfcSimpleStart_StatusCallback(SimpleStartStatus *p);
 #endif
 #ifndef PROTO_LOCAL_WfcSimpleStart_Alloc
 void *WfcSimpleStart_Alloc(u32 a);

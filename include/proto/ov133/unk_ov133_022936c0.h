@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class FriendCodeMenu;
 #endif
@@ -26,6 +27,9 @@ extern GXOamAttr sCaretCells[1];
 extern "C" {
 #ifndef PROTO_LOCAL_FriendCodeMenu_Create
 FriendCodeMenu *FriendCodeMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sFriendCodeMenuProfile
+extern ProcProfile sFriendCodeMenuProfile;
 #endif
 }
 #endif

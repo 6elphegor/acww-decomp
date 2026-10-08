@@ -6,7 +6,9 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "field/FieldStructureMgr.h"
+#include "game/FxVec3.h"
 #include "game/SceneInfo.h"
+#include "game/SceneWarp.h"
 class PlayerHouseTex;
 #endif
 
@@ -25,6 +27,12 @@ extern u32 sFieldSceneProfileCount;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov003_022355a0
+extern FxVec3 data_ov003_022355a0;
+#endif
+#ifndef PROTO_LOCAL_sFieldSceneObjects
+extern SceneWarp sFieldSceneObjects[21];
+#endif
 #ifndef PROTO_LOCAL_sFieldSceneObjectList
 extern SceneWarpList sFieldSceneObjectList;
 #endif

@@ -4,9 +4,17 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020e9a08.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "net/HexTable.h"
 #include "net/Net.h"
+#include "net/WifiPingState.h"
 #include "sys/OSMessageQueue.h"
 #include "types64.h"
+struct NetSlot;
+#ifndef __cplusplus
+typedef struct NetSlot NetSlot;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,16 +77,16 @@ void Net_OnWifiRecv(u32 aid, u8 *data, u32 size);
 void Net_OnWifiHostMatched(s32 a, s32 b, s32 c, s32 d, s32 e, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_WifiCallbackNop
-void Net_WifiCallbackNop(void);
+s32 Net_WifiCallbackNop(s32 index, void *param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiServersUpdated
 void Net_OnWifiServersUpdated(s32 result, s32 b, s32 arg);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiFriendStatus
-void Net_OnWifiFriendStatus(u32 a);
+void Net_OnWifiFriendStatus(s32 a, s32 status, char *statusString, s32 param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiFriendDeleted
-void Net_OnWifiFriendDeleted(u32 a);
+void Net_OnWifiFriendDeleted(s32 a, s32 srcIndex, s32 param);
 #endif
 #ifndef PROTO_LOCAL_Net_OnWifiLogin
 void Net_OnWifiLogin(s32 result, s32 b, s32 arg);
@@ -432,6 +440,23 @@ extern u8 data_021f488c;
 extern u8 data_0213b058;
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sSendSlots
+extern NetSlot sSendSlots[16];
+#endif
+#ifndef PROTO_LOCAL_sWifiPingState
+extern Ent sWifiPingState[20];
+#endif
+#ifndef PROTO_LOCAL_data_0213b070
+extern HexTable data_0213b070;
+#endif
+#ifndef PROTO_LOCAL_data_0213b084
+extern HexTable data_0213b084;
+#endif
 }
 #endif
 

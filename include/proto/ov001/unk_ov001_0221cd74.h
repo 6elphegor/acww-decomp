@@ -4,6 +4,14 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221cd74.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcBgMap;
+struct WfcPaletteCopy;
+#ifndef __cplusplus
+typedef struct WfcBgMap WfcBgMap;
+typedef struct WfcPaletteCopy WfcPaletteCopy;
+#endif
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,6 +44,17 @@ void WfcUtil_RequestBgPalette(void *a);
 void WfcUtil_BgPaletteTask(void *task);
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcBgMap
+extern WfcBgMap *sWfcBgMap;
+#endif
+#ifndef PROTO_LOCAL_sWfcPaletteCopy
+extern WfcPaletteCopy sWfcPaletteCopy;
+#endif
 }
 #endif
 

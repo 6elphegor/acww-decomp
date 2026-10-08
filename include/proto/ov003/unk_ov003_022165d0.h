@@ -5,7 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 #endif
 
 #ifdef __cplusplus
@@ -17,6 +17,9 @@ extern char data_ov003_02235358[0x20];
 #ifndef PROTO_LOCAL_PlayerHouse_Create
 void *PlayerHouse_Create();
 #endif
+#ifndef PROTO_LOCAL_PlayerHouse_GetTexIndex
+u8 PlayerHouse_GetTexIndex();
+#endif
 #ifndef PROTO_LOCAL_PlayerHouse_GetTexPath
 char *PlayerHouse_GetTexPath();
 #endif
@@ -26,8 +29,8 @@ char *PlayerHouse_GetTexPath();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_PlayerHouse_GetTexIndex
-u8 PlayerHouse_GetTexIndex();
+#ifndef PROTO_LOCAL_sPlayerHouseProfile
+extern ActorProfile sPlayerHouseProfile;
 #endif
 }
 #endif

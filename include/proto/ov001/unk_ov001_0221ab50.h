@@ -4,12 +4,18 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221ab50.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcSetupMethodColumn
+extern s8 sWfcSetupMethodColumn;
+#endif
+#ifndef PROTO_LOCAL_sWfcSetupMethodChosen
+extern u8 sWfcSetupMethodChosen;
+#endif
+#ifndef PROTO_LOCAL_sWfcSetupMethodCursor
+extern s8 sWfcSetupMethodCursor;
 #endif
 #ifndef PROTO_LOCAL_sWfcSetupMethodPalette
 extern void *sWfcSetupMethodPalette;
@@ -50,8 +56,14 @@ void WfcSetupMethod_FadeOut();
 #ifndef PROTO_LOCAL_WfcSetupMethod_Exit
 void WfcSetupMethod_Exit();
 #endif
+#ifndef PROTO_LOCAL_WfcSetupMethod_MoveCursor
+void WfcSetupMethod_MoveCursor(s32 p);
+#endif
 #ifndef PROTO_LOCAL_WfcSetupMethod_HighlightOption
 void WfcSetupMethod_HighlightOption();
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b2d0
+extern u8 data_ov001_0222b2d0[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov001_0222b304
 extern char data_ov001_0222b304[24];
@@ -60,26 +72,6 @@ extern char data_ov001_0222b304[24];
 extern char data_ov001_0222b2ec[24];
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcSetupMethodColumn
-extern s8 sWfcSetupMethodColumn;
-#endif
-#ifndef PROTO_LOCAL_sWfcSetupMethodChosen
-extern u8 sWfcSetupMethodChosen;
-#endif
-#ifndef PROTO_LOCAL_sWfcSetupMethodCursor
-extern s8 sWfcSetupMethodCursor;
-#endif
-#ifndef PROTO_LOCAL_WfcSetupMethod_MoveCursor
-void WfcSetupMethod_MoveCursor(s32 p);
-#endif
-#ifndef PROTO_LOCAL_data_ov001_0222b2d0
-extern u8 data_ov001_0222b2d0[4];
-#endif
 }
 #endif
 

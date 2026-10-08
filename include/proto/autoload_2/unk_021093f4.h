@@ -14,6 +14,21 @@ void NNS_SndInit(void);
 #ifndef PROTO_LOCAL_NNS_SndMain
 void NNS_SndMain(void);
 #endif
+#ifndef PROTO_LOCAL_NNS_SndSetMasterVolume
+void NNS_SndSetMasterVolume(u32 a);
+#endif
+#ifndef PROTO_LOCAL_NNS_SndUpdateDriverInfo
+BOOL NNS_SndUpdateDriverInfo(void);
+#endif
+#ifndef PROTO_LOCAL_NNSi_SndReadDriverPlayerInfo
+u32 NNSi_SndReadDriverPlayerInfo(u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_NNSi_SndReadDriverTrackInfo
+u32 NNSi_SndReadDriverTrackInfo(u32 a, u32 b, u32 c);
+#endif
+#ifndef PROTO_LOCAL_BeginSleep
+u32 BeginSleep(void);
+#endif
 #ifndef PROTO_LOCAL_EndSleep
 void EndSleep(void);
 #endif

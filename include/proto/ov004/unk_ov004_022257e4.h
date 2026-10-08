@@ -5,12 +5,23 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
+#include "gfx/NNSG3dRS.h"
 class CheckInGate;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_CheckInGate_Open
+BOOL CheckInGate_Open();
+#endif
+#ifndef PROTO_LOCAL_CheckInGate_Close
+BOOL CheckInGate_Close();
+#endif
+#ifndef PROTO_LOCAL_CheckInGate_IsOpen
+BOOL CheckInGate_IsOpen();
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d7ac
 extern char data_ov004_0224d7ac[];
@@ -45,14 +56,32 @@ extern "C" {
 #ifndef PROTO_LOCAL_CheckInGate_Create
 CheckInGate *CheckInGate_Create();
 #endif
-#ifndef PROTO_LOCAL_CheckInGate_Open
-BOOL CheckInGate_Open();
+#ifndef PROTO_LOCAL_CheckInGate_MatCallback
+void CheckInGate_MatCallback(NNSG3dRS *o);
 #endif
-#ifndef PROTO_LOCAL_CheckInGate_Close
-BOOL CheckInGate_Close();
+#ifndef PROTO_LOCAL_CheckInGate_InitRenderObj
+void CheckInGate_InitRenderObj(NNSG3dRS *o);
 #endif
-#ifndef PROTO_LOCAL_CheckInGate_IsOpen
-BOOL CheckInGate_IsOpen();
+#ifndef PROTO_LOCAL_data_ov004_02250c48
+extern DebugColor data_ov004_02250c48;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250c4c
+extern DebugColor data_ov004_02250c4c;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250c40
+extern DebugColor data_ov004_02250c40;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250c44
+extern DebugColor data_ov004_02250c44;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250c50
+extern DebugColor data_ov004_02250c50;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_02250c38
+extern DebugColor data_ov004_02250c38;
+#endif
+#ifndef PROTO_LOCAL_sCheckInGateProfile
+extern ActorProfile sCheckInGateProfile;
 #endif
 }
 #endif

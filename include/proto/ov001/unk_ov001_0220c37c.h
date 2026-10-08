@@ -4,27 +4,19 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220c37c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
+#include "net/AossParam.h"
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcAossSucceeded
+extern volatile u8 sWfcAossSucceeded;
+#endif
+#ifndef PROTO_LOCAL_sWfcAossConfig
+extern AossParam *sWfcAossConfig;
 #endif
 #ifndef PROTO_LOCAL_WfcAoss_Begin
 void WfcAoss_Begin();
-#endif
-#ifndef PROTO_LOCAL_WfcAoss_Free
-void WfcAoss_Free(void *p);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_sWfcAossSucceeded
-extern volatile u8 sWfcAossSucceeded;
 #endif
 #ifndef PROTO_LOCAL_WfcAoss_End
 void WfcAoss_End(s32 a);
@@ -35,6 +27,10 @@ u32 WfcAoss_Run();
 #ifndef PROTO_LOCAL_WfcAoss_Alloc
 void *WfcAoss_Alloc(s32 a);
 #endif
+#ifndef PROTO_LOCAL_WfcAoss_Free
+void WfcAoss_Free(void *p);
+#endif
+#ifdef __cplusplus
 }
 #endif
 

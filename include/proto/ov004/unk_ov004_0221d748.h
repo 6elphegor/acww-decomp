@@ -4,15 +4,19 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0221d748.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SpNpcBookerActEntry;
+struct SpNpcBookerTalkScript;
+#ifndef __cplusplus
+typedef struct SpNpcBookerActEntry SpNpcBookerActEntry;
+typedef struct SpNpcBookerTalkScript SpNpcBookerTalkScript;
+#endif
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
 class SpNpcBooker;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_SpNpcBooker_Create
-SpNpcBooker *SpNpcBooker_Create();
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d1e0
 extern u8 data_ov004_0224d1e0[19];
@@ -28,6 +32,24 @@ extern u8 *sSpNpcBookerModelPath;
 #endif
 #ifndef PROTO_LOCAL_sSpNpcBookerTexturePath
 extern u8 *sSpNpcBookerTexturePath;
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_SpNpcBooker_Create
+SpNpcBooker *SpNpcBooker_Create();
+#endif
+#ifndef PROTO_LOCAL_sSpNpcBookerProfile
+extern ActorProfile sSpNpcBookerProfile;
+#endif
+#ifndef PROTO_LOCAL_sSpNpcBookerTalkScripts
+extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[4];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcBookerActTable
+extern SpNpcBookerActEntry sSpNpcBookerActTable[7];
 #endif
 }
 #endif

@@ -4,9 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_020b8cf8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "item/ItemId.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "item/ItemId.h"
 #endif
 
 #ifdef __cplusplus

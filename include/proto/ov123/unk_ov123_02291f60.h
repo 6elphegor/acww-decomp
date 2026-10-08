@@ -5,6 +5,11 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
+struct PatternShapeCornerCell;
+#ifndef __cplusplus
+typedef struct PatternShapeCornerCell PatternShapeCornerCell;
+#endif
 #ifdef __cplusplus
 class PatternEditorMenu;
 #endif
@@ -81,6 +86,12 @@ extern GXOamAttr *sPatternEditorToolCursors[12];
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPatternEditorMenuProfile
+extern ProcProfile sPatternEditorMenuProfile;
+#endif
+#ifndef PROTO_LOCAL_data_ov123_022958c0
+extern PatternShapeCornerCell data_ov123_022958c0;
+#endif
 #ifndef PROTO_LOCAL_PatternEditorMenu_Create
 PatternEditorMenu *PatternEditorMenu_Create();
 #endif

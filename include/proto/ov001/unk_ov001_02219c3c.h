@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02219c3c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "menu/WfcConnSelectWork.h"
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -78,6 +81,14 @@ extern u8 data_ov001_0222b240[4];
 extern char data_ov001_0222b260[22];
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcConnSelect
+extern WfcConnSelectWork *sWfcConnSelect;
+#endif
 }
 #endif
 

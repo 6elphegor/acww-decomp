@@ -4,10 +4,15 @@
 // Prototypes of the functions defined in src/ov068/unk_ov068_0225f1a0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct FieldVillagerAiState;
 struct FieldVillagerFocusRange;
+#ifndef __cplusplus
+typedef struct FieldVillagerAiState FieldVillagerAiState;
+typedef struct FieldVillagerFocusRange FieldVillagerFocusRange;
+#endif
 #ifdef __cplusplus
+#include "actor/ActorProfile.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 class FieldVillager;
 class FieldVillagerAi;
 class FieldVillagerAiStates;
@@ -16,20 +21,11 @@ class FieldVillagerAiStates;
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_data_ov068_0226f878
-extern void *data_ov068_0226f878[2];
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_PickOtherAblePattern
-void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_sReactionStepsGuard
 extern u32 sReactionStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f878
+extern void *data_ov068_0226f878[2];
 #endif
 #ifndef PROTO_LOCAL_sHitTalkStepsGuard
 extern u32 sHitTalkStepsGuard;
@@ -96,6 +92,60 @@ extern u32 sPushedStepsGuard;
 #endif
 #ifndef PROTO_LOCAL_sTalkFacingArc
 extern s16 sTalkFacingArc;
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_PathCrossesPlayerTalk
+s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_IsNearPlayerTalkSpot
+BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_IsPlayerShowingCatch
+s32 FieldVillagerAi_IsPlayerShowingCatch(void *self);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_GetRelationLevel
+s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_GetPartnerRelationLevel
+s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_AddRelationByLevel
+void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, const s8 *t);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_AddPartnerRelation
+void FieldVillagerAi_AddPartnerRelation(void *a, void *o, const s8 *t);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_AddMood
+void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_AddRandomMood
+void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_OrderByFriendship
+s32 FieldVillagerAi_OrderByFriendship(void *unused, void **a, void **b, void *c, void *d);
+#endif
+#ifndef PROTO_LOCAL_FieldVillagerAi_PickOtherAblePattern
+void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
+#endif
+#ifndef PROTO_LOCAL_FieldVillager_StepToward
+void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sFieldVillagerAiTable
+extern FieldVillagerAiState sFieldVillagerAiTable[8];
+#endif
+#ifndef PROTO_LOCAL_sFieldVillagerAiTable2
+extern FieldVillagerAiState sFieldVillagerAiTable2[8];
+#endif
+#ifndef PROTO_LOCAL_sFieldVillagerAiTable3
+extern FieldVillagerAiState sFieldVillagerAiTable3[8];
+#endif
+#ifndef PROTO_LOCAL_sFieldVillagerProfile
+extern ActorProfile sFieldVillagerProfile;
 #endif
 #ifndef PROTO_LOCAL_FieldVillager_Create
 FieldVillager *FieldVillager_Create();
@@ -184,12 +234,6 @@ BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, VecFx32 *b);
 #ifndef PROTO_LOCAL_FieldVillagerAi_HeadingCrossesPlayerTalk
 s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, FieldVillager *o);
 #endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_PathCrossesPlayerTalk
-s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_IsNearPlayerTalkSpot
-BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
-#endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_GetRouteTarget
 BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o);
 #endif
@@ -214,38 +258,11 @@ BOOL FieldVillagerAi_TryFallInPitfall(void *self, FieldVillager *o);
 #ifndef PROTO_LOCAL_FieldVillagerAi_WasHitByNet
 s32 FieldVillagerAi_WasHitByNet(void *self, FieldVillager *o);
 #endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_IsPlayerShowingCatch
-s32 FieldVillagerAi_IsPlayerShowingCatch(void *self);
-#endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_ShouldAdmireCatch
 BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, FieldVillager *o);
 #endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_GetRelationLevel
-s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_GetPartnerRelationLevel
-s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_AddRelationByLevel
-void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, const s8 *t);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_AddPartnerRelation
-void FieldVillagerAi_AddPartnerRelation(void *a, void *o, const s8 *t);
-#endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_AddRandomPairRelation
 void FieldVillagerAi_AddRandomPairRelation(void *a, FieldVillager *unused, const s8 *t);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_AddMood
-void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_AddRandomMood
-void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
-#endif
-#ifndef PROTO_LOCAL_FieldVillagerAi_OrderByFriendship
-s32 FieldVillagerAi_OrderByFriendship(void *unused, void **a, void **b, void *c, void *d);
-#endif
-#ifndef PROTO_LOCAL_FieldVillager_StepToward
-void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
 #endif
 }
 #endif

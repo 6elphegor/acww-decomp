@@ -5,13 +5,19 @@
 
 #include "types.h"
 #include "net/SockAddrIn.h"
+#include "net/darray.h"
 #include "net/natneg.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_Matchup1Hostname
+extern u32 Matchup1Hostname;
+#endif
+#ifndef PROTO_LOCAL_matchup1ip
+extern u32 matchup1ip;
 #endif
 #ifndef PROTO_LOCAL_AddNegotiator
 void *AddNegotiator(void);
@@ -21,21 +27,6 @@ void RemoveNegotiator(void *key);
 #endif
 #ifndef PROTO_LOCAL_NNFreeNegotiateList
 void NNFreeNegotiateList(void);
-#endif
-#ifndef PROTO_LOCAL_NNThink
-void NNThink();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_Matchup1Hostname
-extern u32 Matchup1Hostname;
-#endif
-#ifndef PROTO_LOCAL_matchup1ip
-extern u32 matchup1ip;
 #endif
 #ifndef PROTO_LOCAL_CheckMagic
 BOOL CheckMagic(void *p);
@@ -73,8 +64,35 @@ extern u32 matchup2ip;
 #ifndef PROTO_LOCAL_NNCancel
 void NNCancel(u32 cookie);
 #endif
+#ifndef PROTO_LOCAL_NNThink
+void NNThink();
+#endif
 #ifndef PROTO_LOCAL_Matchup2Hostname
 extern u32 Matchup2Hostname;
+#endif
+#ifndef PROTO_LOCAL_NNProcessData
+void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_negotiateList
+extern DArrayImplementation *negotiateList;
+#endif
+#ifndef PROTO_LOCAL_SendInitPackets
+void SendInitPackets(_NATNegotiator *ctx);
+#endif
+#ifndef PROTO_LOCAL_SendPingPacket
+void SendPingPacket(_NATNegotiator *ctx);
+#endif
+#ifndef PROTO_LOCAL_NegotiateThink
+void NegotiateThink(_NATNegotiator *ctx);
+#endif
+#ifndef PROTO_LOCAL_SendConnectAck
+void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa);
 #endif
 #ifndef PROTO_LOCAL_ProcessConnectPacket
 void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
@@ -84,9 +102,6 @@ void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
 #endif
 #ifndef PROTO_LOCAL_ProcessInitPacket
 void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
-#endif
-#ifndef PROTO_LOCAL_NNProcessData
-void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
 #endif
 }
 #endif

@@ -5,24 +5,11 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_BedSpot_Release
-void BedSpot_Release();
-#endif
-#ifndef PROTO_LOCAL_Text_BuildCharWidthTable
-void Text_BuildCharWidthTable();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_BedSpot_RequestApproach
 void BedSpot_RequestApproach(s32 *p);
 #endif
@@ -35,6 +22,9 @@ void BedSpot_RequestGetOut(s32 *p);
 #ifndef PROTO_LOCAL_BedSpot_GetGetOutResult
 u32 BedSpot_GetGetOutResult();
 #endif
+#ifndef PROTO_LOCAL_BedSpot_Release
+void BedSpot_Release();
+#endif
 #ifndef PROTO_LOCAL_BedSpot_RequestRoll
 void BedSpot_RequestRoll(s32 *p);
 #endif
@@ -43,6 +33,9 @@ u32 BedSpot_GetRollResult();
 #endif
 #ifndef PROTO_LOCAL_Room_CanDropOnFurnitureAt
 BOOL Room_CanDropOnFurnitureAt(s32 x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_Text_BuildCharWidthTable
+void Text_BuildCharWidthTable();
 #endif
 #ifndef PROTO_LOCAL_Text_GetCharWidth
 u32 Text_GetCharWidth(u32 c);
@@ -71,7 +64,11 @@ void Mem_Clear(void *dst, u32 size);
 #ifndef PROTO_LOCAL_Text_EqualsTrimmed
 BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sTextCharWidths
 extern u8 sTextCharWidths[0xe0];
 #endif

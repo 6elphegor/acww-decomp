@@ -4,22 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_0203c23c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_CarpetTex_Init
-void *CarpetTex_Init(void *p);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_Catalog_GetBit
 u8 *Catalog_GetBit(u8 *base, u8 *out, u16 *p);
 #endif
@@ -56,9 +44,13 @@ s32 Catalog_CountInsects();
 #ifndef PROTO_LOCAL_Catalog_AddCreature
 BOOL Catalog_AddCreature(u16 *p);
 #endif
+#ifndef PROTO_LOCAL_CarpetTex_Init
+void *CarpetTex_Init(void *p);
+#endif
 #ifndef PROTO_LOCAL_CarpetTex_Load
 BOOL CarpetTex_Load(void *a, u16 *p);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

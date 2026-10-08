@@ -6,19 +6,22 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 struct FishHoldOffsets;
+struct HandOverItemAct;
+#ifndef __cplusplus
+typedef struct FishHoldOffsets FishHoldOffsets;
+typedef struct HandOverItemAct HandOverItemAct;
+#endif
 #ifdef __cplusplus
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
 #include "sys/ProcBase.h"
-#include "types.h"
 class HandOverItem;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sHandOverItem
-extern HandOverItem *sHandOverItem;
 #endif
 #ifndef PROTO_LOCAL_data_021c5a30
 extern u8 data_021c5a30[4];
@@ -37,6 +40,39 @@ extern s32 data_021c5ae8[4];
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_GetFishScale
 u32 HandOverItem_GetFishScale(u32 i);
+#endif
+#ifndef PROTO_LOCAL_HandOverItem_GetNextMode
+u8 HandOverItem_GetNextMode(void);
+#endif
+#ifndef PROTO_LOCAL_HandOverItem_IsModeActive
+BOOL HandOverItem_IsModeActive(u32 a);
+#endif
+#ifndef PROTO_LOCAL_HandOverItem_IsActive
+BOOL HandOverItem_IsActive(void);
+#endif
+#ifndef PROTO_LOCAL_HandOverItem_GetItem
+void HandOverItem_GetItem(u16 *out);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sHandOverItem
+extern HandOverItem *sHandOverItem;
+#endif
+#ifndef PROTO_LOCAL_sHandOverItemActs
+extern HandOverItemAct sHandOverItemActs[12][2];
+#endif
+#ifndef PROTO_LOCAL_sPutDownOffset
+extern FxVec3 sPutDownOffset;
+#endif
+#ifndef PROTO_LOCAL_data_021c5acc
+extern FxVec3 data_021c5acc;
+#endif
+#ifndef PROTO_LOCAL_data_021c5a84
+extern FxVec3 data_021c5a84;
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_GetFishHoldOffsetSet
 u32 HandOverItem_GetFishHoldOffsetSet(ProcBase *o);
@@ -65,9 +101,6 @@ s32 HandOverItem_IsMaster(Character *a);
 #ifndef PROTO_LOCAL_HandOverItem_RequestMode
 s32 HandOverItem_RequestMode(u8 a, Character *b);
 #endif
-#ifndef PROTO_LOCAL_HandOverItem_GetNextMode
-u8 HandOverItem_GetNextMode(void);
-#endif
 #ifndef PROTO_LOCAL_HandOverItem_End
 void HandOverItem_End(Character *a);
 #endif
@@ -79,15 +112,6 @@ BOOL HandOverItem_GetPos(VecFx32 *out);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_SwitchMaster
 s32 HandOverItem_SwitchMaster(Character *a);
-#endif
-#ifndef PROTO_LOCAL_HandOverItem_IsModeActive
-BOOL HandOverItem_IsModeActive(u32 a);
-#endif
-#ifndef PROTO_LOCAL_HandOverItem_IsActive
-BOOL HandOverItem_IsActive(void);
-#endif
-#ifndef PROTO_LOCAL_HandOverItem_GetItem
-void HandOverItem_GetItem(u16 *out);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_SetNextMode
 s32 HandOverItem_SetNextMode(u8 a, Character *b);

@@ -5,6 +5,8 @@
 
 #include "types.h"
 #include "net/WfcConfigSlot.h"
+#ifdef __cplusplus
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,6 +100,12 @@ u32 WfcUtil_HexDigitValue(u32 c);
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_sWfcConfig
+extern WfcConfigData *sWfcConfig;
+#endif
 #endif
 
 #endif

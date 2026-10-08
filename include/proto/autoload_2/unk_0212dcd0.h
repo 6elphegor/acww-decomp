@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL___ieee754_pow
-double __ieee754_pow(double x, double y) // __ieee754_pow;
+double __ieee754_pow(double x, double y);
 #endif
 #ifdef __cplusplus
 }

@@ -7,7 +7,6 @@
 #include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "menu/Keyboard.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -28,8 +27,23 @@ extern GXOamAttr data_ov095_022960dc[39];
 #ifndef PROTO_LOCAL_sLengthGaugeCells
 extern GXOamAttr *sLengthGaugeCells[32];
 #endif
+#ifndef PROTO_LOCAL_sKeyCodesPage3
+extern s16 sKeyCodesPage3[56];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage1Lower
+extern s16 sKeyCodesPage1Lower[54];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage1Upper
+extern s16 sKeyCodesPage1Upper[54];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage1Alt
+extern s16 sKeyCodesPage1Alt[54];
+#endif
 #ifndef PROTO_LOCAL_data_ov095_02295e48
 extern GXOamAttr data_ov095_02295e48[12];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage2
+extern s16 sKeyCodesPage2[34];
 #endif
 #ifndef PROTO_LOCAL_data_ov095_02295d44
 extern GXOamAttr data_ov095_02295d44[6];
@@ -217,6 +231,12 @@ extern char data_ov095_022955d0[20];
 #ifndef PROTO_LOCAL_data_ov095_022955e4
 extern char data_ov095_022955e4[20];
 #endif
+#ifndef PROTO_LOCAL_data_ov095_0229560c
+extern s32 data_ov095_0229560c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295634
+extern s32 data_ov095_02295634[5];
+#endif
 #ifndef PROTO_LOCAL_sKeyboardPageCells
 extern GXOamAttr *sKeyboardPageCells[4];
 #endif
@@ -228,6 +248,21 @@ extern GXOamAttr data_ov095_02295588[1];
 #endif
 #ifndef PROTO_LOCAL_data_ov095_02295580
 extern GXOamAttr data_ov095_02295580[1];
+#endif
+#ifndef PROTO_LOCAL_Keyboard_DeleteRange
+s32 Keyboard_DeleteRange(void *s, u8 *buf, s32 a, s32 b, s32 n);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_HitTestText
+u8 Keyboard_HitTestText(void *s, u8 *str, s32 a, s32 b, u8 limit0, u8 *out);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_DrawSendKey
+void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_TouchSendKey
+BOOL Keyboard_TouchSendKey();
+#endif
+#ifndef PROTO_LOCAL_Keyboard_DrawCaret
+void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_PlayCopySe
 void Keyboard_PlayCopySe();
@@ -241,27 +276,6 @@ void Keyboard_PlayPasteSe();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sKeyCodesPage3
-extern s16 sKeyCodesPage3[56];
-#endif
-#ifndef PROTO_LOCAL_sKeyCodesPage1Lower
-extern s16 sKeyCodesPage1Lower[54];
-#endif
-#ifndef PROTO_LOCAL_sKeyCodesPage1Upper
-extern s16 sKeyCodesPage1Upper[54];
-#endif
-#ifndef PROTO_LOCAL_sKeyCodesPage1Alt
-extern s16 sKeyCodesPage1Alt[54];
-#endif
-#ifndef PROTO_LOCAL_sKeyCodesPage2
-extern s16 sKeyCodesPage2[34];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_0229560c
-extern s32 data_ov095_0229560c[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295634
-extern s32 data_ov095_02295634[5];
-#endif
 #ifndef PROTO_LOCAL_Keyboard_IsSlotDisabled
 BOOL Keyboard_IsSlotDisabled(Keyboard *s, s32 i);
 #endif
@@ -436,9 +450,6 @@ BOOL Keyboard_InsertChar(Keyboard *s, u8 *a, s32 b, u8 *p, s32 c, s32 d, s32 e, 
 #ifndef PROTO_LOCAL_Keyboard_InsertCharMultiline
 BOOL Keyboard_InsertCharMultiline(Keyboard *s, void *p1, s32 p2, u8 *p3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9);
 #endif
-#ifndef PROTO_LOCAL_Keyboard_DeleteRange
-s32 Keyboard_DeleteRange(void *s, u8 *buf, s32 a, s32 b, s32 n);
-#endif
 #ifndef PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor
 BOOL Keyboard_ReplaceCharBeforeCursor(Keyboard *s, u8 *buf, s32 c, s32 n);
 #endif
@@ -450,9 +461,6 @@ s32 Keyboard_ModifyCharKey104(Keyboard *s, s32 a);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_ModifyCharKey105
 s32 Keyboard_ModifyCharKey105(Keyboard *s, s32 a);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_HitTestText
-u8 Keyboard_HitTestText(void *s, u8 *str, s32 a, s32 b, u8 limit0, u8 *out);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_HandleModeKey
 s32 Keyboard_HandleModeKey(Keyboard *s, s32 a, s32 b);
@@ -481,12 +489,6 @@ void Keyboard_LoadEmotionIcons(Keyboard *s);
 #ifndef PROTO_LOCAL_Keyboard_DrawEmotionKeys
 void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y);
 #endif
-#ifndef PROTO_LOCAL_Keyboard_DrawSendKey
-void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_TouchSendKey
-BOOL Keyboard_TouchSendKey();
-#endif
 #ifndef PROTO_LOCAL_Keyboard_TouchPageTab
 BOOL Keyboard_TouchPageTab(Keyboard *s);
 #endif
@@ -501,9 +503,6 @@ void Keyboard_SelectEmotionByCode(Keyboard *s, s32 v);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_GetSelectedEmotion
 s32 Keyboard_GetSelectedEmotion(Keyboard *s);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_DrawCaret
-void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_DrawCopyPasteKeysChat
 void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y);

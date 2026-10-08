@@ -4,20 +4,40 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0227931c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
 #include "net/ghttpBuffer.h"
 #include "net/ghttpConnection.h"
-#ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_ghiThrottleBufferSize
+extern s32 ghiThrottleBufferSize;
+#endif
+#ifndef PROTO_LOCAL_ghiThrottleTimeDelay
+extern u32 ghiThrottleTimeDelay;
+#endif
 #ifndef PROTO_LOCAL_ghiConnections
 extern void * *ghiConnections;
 #endif
+#ifndef PROTO_LOCAL_ghiNextUniqueID
+extern s32 ghiNextUniqueID;
+#endif
+#ifndef PROTO_LOCAL_ghiNumConnections
+extern s32 ghiNumConnections;
+#endif
+#ifndef PROTO_LOCAL_ghiConnectionsLen
+extern s32 ghiConnectionsLen;
+#endif
 #ifndef PROTO_LOCAL_ghiProxyAddress
 extern void *ghiProxyAddress;
+#endif
+#ifndef PROTO_LOCAL_ghiProxyPort
+extern u32 ghiProxyPort;
+#endif
+#ifndef PROTO_LOCAL_ghiReferenceCount
+extern s32 ghiReferenceCount;
 #endif
 #ifndef PROTO_LOCAL_ghttpStartup
 void ghttpStartup();
@@ -27,6 +47,15 @@ void ghttpCleanup();
 #endif
 #ifndef PROTO_LOCAL_ghttpThink
 void ghttpThink();
+#endif
+#ifndef PROTO_LOCAL_ghttpNewPost
+s32 ghttpNewPost();
+#endif
+#ifndef PROTO_LOCAL_ghttpPostAddStringA
+s32 ghttpPostAddStringA(void *a, const char *b, const char *c);
+#endif
+#ifndef PROTO_LOCAL_ghiFindFreeSlot
+s32 ghiFindFreeSlot();
 #endif
 #ifndef PROTO_LOCAL_ghiCleanupConnections
 void ghiCleanupConnections();
@@ -49,53 +78,29 @@ void ghiUnlock();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_ghiThrottleBufferSize
-extern s32 ghiThrottleBufferSize;
-#endif
-#ifndef PROTO_LOCAL_ghiThrottleTimeDelay
-extern u32 ghiThrottleTimeDelay;
-#endif
-#ifndef PROTO_LOCAL_ghiNextUniqueID
-extern s32 ghiNextUniqueID;
-#endif
-#ifndef PROTO_LOCAL_ghiNumConnections
-extern s32 ghiNumConnections;
-#endif
-#ifndef PROTO_LOCAL_ghiConnectionsLen
-extern s32 ghiConnectionsLen;
-#endif
-#ifndef PROTO_LOCAL_ghiProxyPort
-extern u32 ghiProxyPort;
-#endif
-#ifndef PROTO_LOCAL_ghiReferenceCount
-extern s32 ghiReferenceCount;
-#endif
 #ifndef PROTO_LOCAL_ghttpGetA
-s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d);
+s32 ghttpGetA(const char *a, s32 b, ghttpCompletedCallback c, void *d);
 #endif
 #ifndef PROTO_LOCAL_ghttpGetExA
-s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j);
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, ghttpProgressCallback h, ghttpCompletedCallback i, void *j);
 #endif
 #ifndef PROTO_LOCAL_ghttpPostA
-s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e);
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, ghttpCompletedCallback d, void *e);
 #endif
 #ifndef PROTO_LOCAL_ghttpPostExA
-s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h);
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, ghttpProgressCallback f, ghttpCompletedCallback g, void *h);
 #endif
-#ifndef PROTO_LOCAL_ghttpNewPost
-s32 ghttpNewPost();
-#endif
-#ifndef PROTO_LOCAL_ghttpPostAddStringA
-s32 ghttpPostAddStringA(void *a, const char *b, const char *c);
-#endif
-#ifndef PROTO_LOCAL_ghiFindFreeSlot
-s32 ghiFindFreeSlot();
+#ifndef PROTO_LOCAL_ghiNewConnection
+GHIConnection *ghiNewConnection();
 #endif
 #ifndef PROTO_LOCAL_ghiFreeConnection
 BOOL ghiFreeConnection(GHIConnection *s);
 #endif
 #ifndef PROTO_LOCAL_ghiEnumConnections
 void ghiEnumConnections(BOOL (*cb)(GHIConnection *));
+#endif
+#ifndef PROTO_LOCAL_ghiRedirectConnection
+void ghiRedirectConnection(GHIConnection *self);
 #endif
 #ifndef PROTO_LOCAL_ghiDecryptReceivedData
 BOOL ghiDecryptReceivedData(GHIConnection *self);
@@ -109,8 +114,14 @@ s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
 #ifndef PROTO_LOCAL_ghiTrySendThenBuffer
 s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len);
 #endif
+#ifndef PROTO_LOCAL_ghiCallCompletedCallback
+void ghiCallCompletedCallback(GHIConnection *self);
+#endif
 #ifndef PROTO_LOCAL_ghiCallProgressCallback
-void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2);
+void ghiCallProgressCallback(GHIConnection *self, char *p1, u32 p2);
+#endif
+#ifndef PROTO_LOCAL_ghiCallPostCallback
+void ghiCallPostCallback(GHIConnection *self);
 #endif
 #ifndef PROTO_LOCAL_ghiResizeBuffer
 s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
@@ -120,6 +131,9 @@ s32 ghiInitBuffer(GHIConnection *ow, GHIBuffer *o, s32 size, s32 grow);
 #endif
 #ifndef PROTO_LOCAL_ghiInitFixedBuffer
 s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size);
+#endif
+#ifndef PROTO_LOCAL_ghiFreeBuffer
+void ghiFreeBuffer(GHIBuffer *o);
 #endif
 #ifndef PROTO_LOCAL_ghiAppendDataToBuffer
 s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);

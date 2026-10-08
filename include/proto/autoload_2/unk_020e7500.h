@@ -6,24 +6,17 @@
 #include "types.h"
 #include "sys/ListNode.h"
 struct Tree;
+#ifndef __cplusplus
+typedef struct Tree Tree;
+#endif
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "sys/TreeNode.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_Main_ResetFrameCounter
-void Main_ResetFrameCounter(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_Random_SetSeed
 void Random_SetSeed(u32 *seed, u32 v);
 #endif
@@ -33,26 +26,11 @@ u32 Random_Next(u32 *seed);
 #ifndef PROTO_LOCAL_Random_NextBelow
 u32 Random_NextBelow(u32 *seed, u32 n);
 #endif
-#ifndef PROTO_LOCAL_Math_ApproachVec
-s32 Math_ApproachVec(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min);
-#endif
-#ifndef PROTO_LOCAL_Math_ApproachVecXZ
-s32 Math_ApproachVecXZ(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min);
+#ifndef PROTO_LOCAL_Main_ResetFrameCounter
+void Main_ResetFrameCounter(void);
 #endif
 #ifndef PROTO_LOCAL_Math_Atan2
 s16 Math_Atan2(s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_TreeNode_Construct
-TreeNode *TreeNode_Construct(TreeNode *n);
-#endif
-#ifndef PROTO_LOCAL_TreeNode_Init
-void TreeNode_Init(TreeNode *n);
-#endif
-#ifndef PROTO_LOCAL_TreeNode_Attach
-BOOL TreeNode_Attach(Tree *tree, TreeNode *node, TreeNode *parent);
-#endif
-#ifndef PROTO_LOCAL_TreeNode_Detach
-BOOL TreeNode_Detach(Tree *tree, TreeNode *node);
 #endif
 #ifndef PROTO_LOCAL_List_InsertAfter
 BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
@@ -101,6 +79,30 @@ u8 Math_CountDownU8(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_Math_CountDownU16
 u16 Math_CountDownU16(u16 *p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Math_ApproachVec
+s32 Math_ApproachVec(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min);
+#endif
+#ifndef PROTO_LOCAL_Math_ApproachVecXZ
+s32 Math_ApproachVecXZ(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min);
+#endif
+#ifndef PROTO_LOCAL_TreeNode_Construct
+TreeNode *TreeNode_Construct(TreeNode *n);
+#endif
+#ifndef PROTO_LOCAL_TreeNode_Init
+void TreeNode_Init(TreeNode *n);
+#endif
+#ifndef PROTO_LOCAL_TreeNode_Attach
+BOOL TreeNode_Attach(Tree *tree, TreeNode *node, TreeNode *parent);
+#endif
+#ifndef PROTO_LOCAL_TreeNode_Detach
+BOOL TreeNode_Detach(Tree *tree, TreeNode *node);
 #endif
 }
 #ifndef PROTO_LOCAL_data_0213a748

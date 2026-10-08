@@ -5,13 +5,18 @@
 
 #include "types.h"
 struct Unk_0205242c_Item;
+#ifndef __cplusplus
+typedef struct Unk_0205242c_Item Unk_0205242c_Item;
+#endif
 #ifdef __cplusplus
 #include "room/RoomFtrState.h"
 class FtrActor;
 class FtrPlaceRecord;
 class SpotReservationTable;
+class Unk_02051fcc_W;
 class Unk_020520a8_W;
 class Unk_02052134_W;
+class Unk_0205218c_B;
 class Unk_0205242c_Self;
 #endif
 
@@ -126,6 +131,9 @@ Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u32 idx);
 #ifndef PROTO_LOCAL_FtrSync_ApplyState
 s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i);
 #endif
+#ifndef PROTO_LOCAL_FtrSync_OnRoomLightRecord
+void FtrSync_OnRoomLightRecord(Unk_0205218c_B *p);
+#endif
 #ifndef PROTO_LOCAL_FtrSync_OnRemoveRecord
 void FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w);
 #endif
@@ -134,6 +142,9 @@ void FtrSync_OnPlaceRecord(s32 a, FtrPlaceRecord *w);
 #endif
 #ifndef PROTO_LOCAL_FtrSync_OnTopItemRecord
 void FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w);
+#endif
+#ifndef PROTO_LOCAL_FtrSync_OnToggleRecord
+void FtrSync_OnToggleRecord(Unk_02051fcc_W *p);
 #endif
 #ifndef PROTO_LOCAL_FtrSync_ChangeAct
 s32 FtrSync_ChangeAct(FtrActor *a, s32 b, u8 c, u8 d);
@@ -153,6 +164,9 @@ extern RoomFtrState sScene10FtrState;
 #endif
 #ifndef PROTO_LOCAL_sSpotReservations
 extern SpotReservationTable sSpotReservations;
+#endif
+#ifndef PROTO_LOCAL_data_021c4e34
+extern Unk_0205242c_Item data_021c4e34;
 #endif
 #ifndef PROTO_LOCAL_data_021c4e3c
 extern Unk_0205242c_Item data_021c4e3c[2];

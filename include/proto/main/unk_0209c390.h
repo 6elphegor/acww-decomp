@@ -6,7 +6,6 @@
 #include "types.h"
 #include "game/NibblePair.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus

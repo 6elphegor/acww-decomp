@@ -4,9 +4,6 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0226f9e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,18 +14,13 @@ extern char sNasBase64Alphabet[0x44];
 #ifndef PROTO_LOCAL_sNasBase64AlphabetPtr
 extern char *sNasBase64AlphabetPtr;
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_NasBase64_Encode
 s32 NasBase64_Encode(u8 *in, u32 len, u8 *out, u32 cap);
 #endif
 #ifndef PROTO_LOCAL_NasBase64_Decode
 s32 NasBase64_Decode(s8 *in, u32 len, u8 *out, u32 cap);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

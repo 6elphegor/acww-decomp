@@ -11,6 +11,9 @@ extern "C" {
 #ifndef PROTO_LOCAL_NNS_G3dGeWaitSendDL
 void NNS_G3dGeWaitSendDL(void);
 #endif
+#ifndef PROTO_LOCAL_NNS_G3dGeSendDL
+void NNS_G3dGeSendDL(const void *src, u32 szByte);
+#endif
 #ifndef PROTO_LOCAL_NNS_G3dGeFlushBuffer
 void NNS_G3dGeFlushBuffer(void);
 #endif

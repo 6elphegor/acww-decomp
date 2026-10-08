@@ -4,14 +4,16 @@
 // Prototypes of the functions defined in src/main/unk_02040234.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "game/EventWeekSlots.h"
 #include "sys/ClockDateTime.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "game/EventWeekSlots.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sEventWeekLastHour
+extern u32 sEventWeekLastHour;
 #endif
 #ifndef PROTO_LOCAL_EventWeekSlots_Update
 void EventWeekSlots_Update(void);
@@ -25,8 +27,8 @@ void EventWeekSlots_UpdateToday(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sEventWeekLastHour
-extern u32 sEventWeekLastHour;
+#ifndef PROTO_LOCAL_EventWeekSlots_ClearWeek
+void EventWeekSlots_ClearWeek(EventWeekSlots *s);
 #endif
 #ifndef PROTO_LOCAL_EventWeekSlots_PlaceVisitors
 void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, ClockDateTime *pd);
@@ -36,6 +38,9 @@ void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, ClockDateTi
 #endif
 #ifndef PROTO_LOCAL_EventWeekSlots_PlaceRedd
 void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, ClockDateTime *pd);
+#endif
+#ifndef PROTO_LOCAL_EventWeekSlots_MarkPastDays
+void EventWeekSlots_MarkPastDays(EventWeekSlots *s);
 #endif
 #ifndef PROTO_LOCAL_EventWeekSlots_UpdateWeek
 void EventWeekSlots_UpdateWeek(EventWeekSlots *s, s32 flag);

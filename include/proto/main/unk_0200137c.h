@@ -4,52 +4,26 @@
 // Prototypes of the functions defined in src/main/unk_0200137c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct Gfx2dAffine;
 struct Gfx2dBgScroll;
 struct Gfx2dDispCtrl;
+struct Gfx2dOffset;
 struct Gfx2dWindowBlend;
+struct Gfx2dWindowRect;
+#ifndef __cplusplus
+typedef struct Gfx2dAffine Gfx2dAffine;
+typedef struct Gfx2dBgScroll Gfx2dBgScroll;
+typedef struct Gfx2dDispCtrl Gfx2dDispCtrl;
+typedef struct Gfx2dOffset Gfx2dOffset;
+typedef struct Gfx2dWindowBlend Gfx2dWindowBlend;
+typedef struct Gfx2dWindowRect Gfx2dWindowRect;
+#endif
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_Gfx2d_LoadBackdropColor
-void Gfx2d_LoadBackdropColor(void);
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_ResetState
-void Gfx2d_ResetState();
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_BeginFrame
-void Gfx2d_BeginFrame();
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_ApplyDisplayControl
-void Gfx2d_ApplyDisplayControl();
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_FlushRegisters
-void Gfx2d_FlushRegisters();
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_BeginSubObjWinBrightness
-void Gfx2d_BeginSubObjWinBrightness(void);
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_EndSubObjWinBrightness
-void Gfx2d_EndSubObjWinBrightness(void);
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_SetSubBrightnessAllPlanes
-void Gfx2d_SetSubBrightnessAllPlanes(void);
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_ResetSubBlend
-void Gfx2d_ResetSubBlend(void);
-#endif
-#ifndef PROTO_LOCAL_Gfx2d_ResetMainBlend
-void Gfx2d_ResetMainBlend(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_Gfx2d_GetLayerBgIndex
 s32 Gfx2d_GetLayerBgIndex(u32 n);
 #endif
@@ -118,6 +92,21 @@ void Gfx2d_LinearToTiles4bpp(u32 *src, u32 *dst, s32 w, s32 h);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_TilesToLinear4bpp
 void Gfx2d_TilesToLinear4bpp(u32 *src, u32 *dst, s32 w, s32 h);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_LoadBackdropColor
+void Gfx2d_LoadBackdropColor(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_ResetState
+void Gfx2d_ResetState();
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_BeginFrame
+void Gfx2d_BeginFrame();
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_ApplyDisplayControl
+void Gfx2d_ApplyDisplayControl();
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_FlushRegisters
+void Gfx2d_FlushRegisters();
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_SetMainBg1Offset
 void Gfx2d_SetMainBg1Offset(u32 a, u32 b);
@@ -248,6 +237,15 @@ void Gfx2d_HideSubPlanes(u8 a);
 #ifndef PROTO_LOCAL_Gfx2d_SetBrightness
 void Gfx2d_SetBrightness(u32 a);
 #endif
+#ifndef PROTO_LOCAL_Gfx2d_BeginSubObjWinBrightness
+void Gfx2d_BeginSubObjWinBrightness(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_EndSubObjWinBrightness
+void Gfx2d_EndSubObjWinBrightness(void);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_SetSubBrightnessAllPlanes
+void Gfx2d_SetSubBrightnessAllPlanes(void);
+#endif
 #ifndef PROTO_LOCAL_Gfx2d_ExcludeSubBrightnessPlanes
 void Gfx2d_ExcludeSubBrightnessPlanes(u8 a);
 #endif
@@ -257,8 +255,29 @@ void Gfx2d_SetSubBrightness(u8 a);
 #ifndef PROTO_LOCAL_Gfx2d_SetSubAlphaBlend
 void Gfx2d_SetSubAlphaBlend(u8 a, u8 b, u8 c);
 #endif
+#ifndef PROTO_LOCAL_Gfx2d_ResetSubBlend
+void Gfx2d_ResetSubBlend(void);
+#endif
 #ifndef PROTO_LOCAL_Gfx2d_SetMainAlphaBlend
 void Gfx2d_SetMainAlphaBlend(u8 a, u8 b, u8 c);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_ResetMainBlend
+void Gfx2d_ResetMainBlend(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_Gfx2d_InitBgOffset
+void Gfx2d_InitBgOffset(Gfx2dOffset* p);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_InitBgAffine
+void Gfx2d_InitBgAffine(Gfx2dAffine* p);
+#endif
+#ifndef PROTO_LOCAL_Gfx2d_InitWindowRect
+void Gfx2d_InitWindowRect(Gfx2dWindowRect* p);
 #endif
 }
 #ifndef PROTO_LOCAL_sGfx2dBackdropColor

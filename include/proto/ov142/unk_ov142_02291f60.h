@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "nitro/gxoam.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class CatalogMenu;
 #endif
@@ -50,6 +51,9 @@ void CatalogMenu_PostInputUpdate(CatalogMenu *p);
 #endif
 #ifndef PROTO_LOCAL_CatalogMenu_SetupBgLayers
 void CatalogMenu_SetupBgLayers(CatalogMenu *);
+#endif
+#ifndef PROTO_LOCAL_sCatalogMenuProfile
+extern ProcProfile sCatalogMenuProfile;
 #endif
 }
 #endif

@@ -5,7 +5,6 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -23,8 +22,17 @@ void Main_WaitVBlank(void);
 #ifndef PROTO_LOCAL_Main_WaitFrame
 void Main_WaitFrame(void);
 #endif
+#ifndef PROTO_LOCAL_Main_PreTaskUpdate
+void Main_PreTaskUpdate(u32 r);
+#endif
+#ifndef PROTO_LOCAL_Main_PostTaskUpdate
+void Main_PostTaskUpdate(u32 r);
+#endif
 #ifndef PROTO_LOCAL_Main_PostFrameUpdate
 void Main_PostFrameUpdate(void);
+#endif
+#ifndef PROTO_LOCAL_Main_LateUpdate
+void Main_LateUpdate(u32 r);
 #endif
 #ifndef PROTO_LOCAL_Main_PreTaskHook
 void Main_PreTaskHook(void);
@@ -35,28 +43,17 @@ void Main_PostTaskHook(void);
 #ifndef PROTO_LOCAL_Main_Loop
 void Main_Loop(void);
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_Main_PreTaskUpdate
-void Main_PreTaskUpdate(u32 r);
-#endif
-#ifndef PROTO_LOCAL_Main_PostTaskUpdate
-void Main_PostTaskUpdate(u32 r);
-#endif
-#ifndef PROTO_LOCAL_Main_LateUpdate
-void Main_LateUpdate(u32 r);
-#endif
 #ifndef PROTO_LOCAL_Main_InitDwc
 u32 Main_InitDwc(void);
 #endif
 #ifndef PROTO_LOCAL_Main_TakeDwcInitResult
 u8 Main_TakeDwcInitResult(void);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sDwcInitResult
 extern u8 sDwcInitResult;
 #endif

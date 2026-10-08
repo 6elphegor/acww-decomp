@@ -4,12 +4,10 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0226aca8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_sWifiRssiCount
 extern volatile u8 sWifiRssiCount[4];
 #endif
@@ -25,6 +23,7 @@ u32 WifiLink_GetLinkLevel();
 #ifndef PROTO_LOCAL_WifiLink_AddRssiSample
 void WifiLink_AddRssiSample(s32 v);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

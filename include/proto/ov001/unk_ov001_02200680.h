@@ -12,6 +12,14 @@ struct AossRc4State;
 struct AossScanList;
 struct AossSession;
 struct AossSocConfig;
+#ifndef __cplusplus
+typedef struct AossPollFd AossPollFd;
+typedef struct AossRandState AossRandState;
+typedef struct AossRc4State AossRc4State;
+typedef struct AossScanList AossScanList;
+typedef struct AossSession AossSession;
+typedef struct AossSocConfig AossSocConfig;
+#endif
 #ifdef __cplusplus
 #endif
 

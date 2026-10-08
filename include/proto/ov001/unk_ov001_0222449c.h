@@ -6,9 +6,6 @@
 #include "types.h"
 #include "net/WfcObjGroup.h"
 #include "nitro/gxoam.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,14 +16,11 @@ void WfcObj_Init();
 #ifndef PROTO_LOCAL_WfcObj_Shutdown
 void WfcObj_Shutdown();
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_WfcObj_Alloc
 WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag);
+#endif
+#ifndef PROTO_LOCAL_WfcObj_Free
+void WfcObj_Free(WfcObjGroup *p);
 #endif
 #ifndef PROTO_LOCAL_WfcObj_GetOam
 GXOamAttr *WfcObj_GetOam(WfcObjGroup *p, s32 i);
@@ -49,6 +43,7 @@ void WfcObj_SetPriority(WfcObjGroup *self, s32 idx, s32 v);
 #ifndef PROTO_LOCAL_WfcObj_GetPos
 void WfcObj_GetPos(WfcObjGroup *self, s32 idx, u32 *o1, u32 *o2);
 #endif
+#ifdef __cplusplus
 }
 #endif
 

@@ -4,9 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_0205b69c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "gfx/HBlankTask.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "gfx/HBlankTask.h"
 #endif
 
 #ifdef __cplusplus

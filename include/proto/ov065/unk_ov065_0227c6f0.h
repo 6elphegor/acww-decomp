@@ -4,10 +4,9 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0227c6f0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
 #include "net/gp.h"
 #include "net/gpiProfile.h"
-#ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus

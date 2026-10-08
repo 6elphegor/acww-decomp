@@ -5,15 +5,19 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 #ifndef PROTO_LOCAL_WvrReceiveCallback
 void WvrReceiveCallback(u32 tag, u32 data);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_data_021f5c4c
 extern void (*data_021f5c4c) (u32, u32);
 #endif

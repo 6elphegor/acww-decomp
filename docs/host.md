@@ -36,8 +36,11 @@ declaring what they use themselves. A unit that still declares something itself 
 before the includes (the header then leaves that declaration out): its uses don't match the real type yet - each
 one is a call or an access to fix (a blob passed for a typed object, a pointer kept in an integer, an argument
 count that differs, an array declared for a scalar). `grep -rn 'define PROTO_LOCAL_' src` lists them; the goal is
-none. Definitions whose types are local to one source file are not in the headers yet (include/proto/.excluded and
-the functions using file-local typedefs): moving those types to headers comes with the rewrite of their files.
+none. include/proto/.excluded lists the definitions left out of the headers: prototypes that do not compile alone
+(types local to one source file: moving them to headers comes with the rewrite of their files) and prototypes that
+conflict with a unit that uses them (the unit's own declaration or calls differ: each one a call to fix). Full
+regeneration: `python3 tools/host_decls.py --json D.json && python3 tools/host_protos.py --decls D.json
+--headers-only` (it compiles every unit against the new headers); `--only SRC...` regenerates single files' headers.
 
 Declarations: `tools/host_decls.py` (libclang; `pip install --user clang==21.*`) compares every declaration written
 in a source file with the function's definition; `tools/host_method_calls.py` rewrote the calls of methods through

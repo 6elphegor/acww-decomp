@@ -5,26 +5,42 @@
 
 #include "types.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "actor/ActorProfile.h"
+#include "gfx/AnimModel.h"
+#include "gfx/NNSG3dRS.h"
+#include "room/RoomObjRes.h"
 class TaxiInterior;
-class AnimModel;
-class RoomObjRes;
-struct NNSG3dRS;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_sTaxiInterior
-extern TaxiInterior *sTaxiInterior;
-#endif
-#ifndef PROTO_LOCAL_TaxiInterior_Create
-TaxiInterior *TaxiInterior_Create();
 #endif
 #ifndef PROTO_LOCAL_TaxiInterior_StopRain
 BOOL TaxiInterior_StopRain();
 #endif
 #ifndef PROTO_LOCAL_TaxiInterior_StartDriverAnim
 BOOL TaxiInterior_StartDriverAnim();
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sTaxiInteriorProfile
+extern ActorProfile sTaxiInteriorProfile;
+#endif
+#ifndef PROTO_LOCAL_sTaxiInterior
+extern TaxiInterior *sTaxiInterior;
+#endif
+#ifndef PROTO_LOCAL_TaxiInterior_Create
+TaxiInterior *TaxiInterior_Create();
+#endif
+#ifndef PROTO_LOCAL_TaxiInterior_ModelCallback
+void TaxiInterior_ModelCallback(NNSG3dRS *p);
+#endif
+#ifndef PROTO_LOCAL_TaxiInterior_InitModelCallback
+void TaxiInterior_InitModelCallback(NNSG3dRS *p);
 #endif
 #ifndef PROTO_LOCAL_TaxiInterior_OnModelNode
 void TaxiInterior_OnModelNode(TaxiInterior *self, u32 node, NNSG3dRS *rs);

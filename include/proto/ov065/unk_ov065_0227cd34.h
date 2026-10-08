@@ -4,10 +4,9 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0227cd34.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
 #include "net/gp.h"
 #include "net/gpiProfile.h"
-#ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
@@ -22,7 +21,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s);
 s32 gpiSendServerBuddyMessage(GPConnection *h, s32 a, s32 b, const char *s);
 #endif
 #ifndef PROTO_LOCAL_gpiSendBuddyMessage
-s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t);
+s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, const char *t);
 #endif
 #ifndef PROTO_LOCAL_gpiAuthBuddyRequest
 s32 gpiAuthBuddyRequest(GPConnection *h, s32 id);

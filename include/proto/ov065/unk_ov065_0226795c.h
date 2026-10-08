@@ -5,29 +5,11 @@
 
 #include "types.h"
 #include "net/SslSha1Context.h"
-#ifdef __cplusplus
-#include "types.h"
 #include "uptr.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_SslSha1_Init
-void SslSha1_Init(SslSha1Context *ctx);
-#endif
-#ifndef PROTO_LOCAL_SslSha1_Final
-void SslSha1_Final(SslSha1Context *ctx, void *out);
-#endif
-#ifndef PROTO_LOCAL_SslSha1_FinalRaw
-void SslSha1_FinalRaw(SslSha1Context *ctx, void *out);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_SslBigNum_GetLength
 s32 SslBigNum_GetLength(u16 *a, s32 n);
 #endif
@@ -106,8 +88,17 @@ void SslSha1_Transform(u32 *ctx, const u8 *data);
 #ifndef PROTO_LOCAL_sSslSha1Padding
 extern u8 sSslSha1Padding[0x40];
 #endif
+#ifndef PROTO_LOCAL_SslSha1_Init
+void SslSha1_Init(SslSha1Context *ctx);
+#endif
 #ifndef PROTO_LOCAL_SslSha1_Update
 void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n);
+#endif
+#ifndef PROTO_LOCAL_SslSha1_Final
+void SslSha1_Final(SslSha1Context *ctx, void *out);
+#endif
+#ifndef PROTO_LOCAL_SslSha1_FinalRaw
+void SslSha1_FinalRaw(SslSha1Context *ctx, void *out);
 #endif
 #ifndef PROTO_LOCAL_SslMd5_Encode
 void SslMd5_Encode(void *dst, const void *src, s32 n);
@@ -115,6 +106,7 @@ void SslMd5_Encode(void *dst, const void *src, s32 n);
 #ifndef PROTO_LOCAL_SslMd5_Decode
 void SslMd5_Decode(void *dst, const void *src, s32 n);
 #endif
+#ifdef __cplusplus
 }
 #endif
 
