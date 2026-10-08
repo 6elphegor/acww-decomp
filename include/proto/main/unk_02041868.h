@@ -45,7 +45,7 @@ void TownBbs_PostEventsForDay(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostDays(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag0);
 #endif
 #ifndef PROTO_LOCAL_TownUpdateThread_Main
-void TownUpdateThread_Main(u8 *arg);
+void TownUpdateThread_Main(void *arg);
 #endif
 #ifndef PROTO_LOCAL_TownUpdateThread_SetArgs
 void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);

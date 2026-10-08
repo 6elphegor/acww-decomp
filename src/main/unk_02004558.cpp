@@ -2868,8 +2868,8 @@ void PlayerActor::setMouthAnimForBody(s32 *a, u8 *b) {
 void PlayerActor::setEyeAnim(s32 *a, u8 *b) {
     using namespace nS;
     ((CharaFaceAnimRef *)((u8 *)&faceAnimRef))->loadAnim(*a, 1, 0);
-    s32 r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getEyeAnimBuffer();
-    ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->setAnim((void *)(r), (void *)(0), 0, *b, (void *)(0x1000));
+    void *r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getEyeAnimBuffer();
+    ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->setAnim(r, (void *)(0), 0, *b, (void *)(0x1000));
     ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->update();
     eyeAnimId = *a;
 }
@@ -2877,8 +2877,8 @@ void PlayerActor::setEyeAnim(s32 *a, u8 *b) {
 void PlayerActor::setMouthAnim(s32 *a, u8 *b) {
     using namespace nS;
     ((CharaFaceAnimRef *)((u8 *)&faceAnimRef))->loadAnim(*a, 1, 0);
-    s32 r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getMouthAnimBuffer();
-    ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->setAnim((void *)(r), (void *)(0), 0, *b, (void *)(0x1000));
+    void *r = ((CharaFaceAnimRef *)(void *)((u8 *)&faceAnimRef))->getMouthAnimBuffer();
+    ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->setAnim(r, (void *)(0), 0, *b, (void *)(0x1000));
     ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->update();
     mouthAnimId = *a;
 }

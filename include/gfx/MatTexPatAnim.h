@@ -25,6 +25,7 @@ public:
     void release();
     BOOL init(void *r1, void *r2, u32 r3, void *heap);
     void clear();
+    void pauseMaterial(const char *matName);
 };
 
 #endif

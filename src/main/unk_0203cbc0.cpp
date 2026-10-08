@@ -1,6 +1,4 @@
-#include "uptr.h"
 #include "types.h"
-#include "game/Unk_0203ce24_Elem.h"
 #include "talk/MsgTag.h"
 #include "talk/BmgReader.h"
 #include "talk/MsgParser.h"
@@ -12,101 +10,17 @@
 #include "talk/MsgString33.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
-#define PROTO_LOCAL_MailText_SetSlotDayOrdinal  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MailText_SetSlotMonth  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_GetDayOrdinal  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_GetMonthName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gMailTextBuilder  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02097444.h"
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Classes of other units
-
-
-
-
-
-
+#include "proto/main/unk_020b2c50.h"
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 value, u32 size);
-void *__cxa_vec_ctor(void *p, u32 n, u32 size, void *ctor, void *dtor);
-void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
-void _ZN11MsgString33D1Ev(void *);
-void _ZN11MsgString33C1Ev(void *);
-void String_GetDayOrdinal(void *, s32);
-void String_GetMonthName(void *, s32);
 }
-
-extern "C" {
-void _ZN16MailTextExpander10insertSlotEv();
-void _ZN16MailTextExpander16handleGrammarTagEv();
-void _ZN16MailTextExpander14insertGlyphTagEv();
-}
-extern const uptr sMailFolderDirs[3];
-extern const uptr sMailPartDirs[8];
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Vtable 0x020d94b8 (message request), derived from MsgRequest
-
-
-// Buffer reader (vtable 0x020d94d0, derived from BmgReader)
-class BmgReader512 : public BmgReader {
-public:
-    BmgReader512();
-    virtual ~BmgReader512();
-    virtual u32 getBuffer();
-    virtual u32 getBufferSize();
-    void clearBuffer();
-
-    /* 0xa4 */ u8 buffer[0x200];
-};
-
-class MailTextExpander;
-typedef void (MailTextExpander::*Unk_020d94e8_Fn)();
-
-// Script interpreter (vtable 0x020d94e8): expands a mail message into gMailTextBuilder.output
-class MailTextExpander : public MsgWalker {
-public:
-    MailTextExpander(MailTextBuilder *owner);
-    virtual ~MailTextExpander();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 v);
-    virtual void onTag(u8 *p);
-    virtual BOOL canContinue();
-
-    void selectBySlotForm(MsgString33 *e);
-    void selectByUnkCondition(s32 sel);
-    void setCapitalizeNext(s32 sel);
-    void setUnkMode2(s32 sel);
-    void setUnkMode1(s32 sel);
-    void handleGrammarTag();
-    void insertGlyphTag();
-    void insertSlot();
-    void appendChar();
-    u8 expand(u8 flag);
-
-    /* 0x24 */ MailTextBuilder *builder;
-    /* 0x28 */ MsgTag tag;
-    /* 0x3c */ s32 curChar;
-    /* 0x40 */ s32 outLen;
-    /* 0x44 */ u8 success;
-    /* 0x45 */ u8 capitalizeNext;
-    /* 0x48 */ u8 *selectEnd;
-    /* 0x4c */ s32 articleMode;
-    /* 0x50 */ u8 trackNamePos;
-    /* 0x54 */ s32 charCount;
-    /* 0x58 */ s32 newlineCount;
-};
-
-
-// ---- container singleton at 0x021c3280 (a MailTextExpander at +0, a BmgReader512 at +0x5c)
-
-extern MailTextBuilder gMailTextBuilder;
+extern const char *const sMailFolderDirs[3];
+extern const char *const sMailPartDirs[8];
 
 enum Unk_0203d134_E { Unk_0203d134_E0 = 0, Unk_0203d134_E15 = 15 };
 
@@ -159,7 +73,7 @@ u8 MailTextExpander::expand(u8 flag) {
     charCount = 0;
     newlineCount = 0;
     reset();
-    begin((u8 *)((BmgReader *)builder->reader)->getBuffer());
+    begin((u8 *)(uptr)builder->reader.getBuffer());
     run(FALSE);
     return success;
 }
@@ -180,7 +94,7 @@ void MailTextExpander::onChar(u32 v) {
         curChar = v;
     }
     appendChar();
-    if ((u32)cursor == (u32)selectEnd) {
+    if (cursor == selectEnd) {
         selectEnd = 0;
         popText();
     }
@@ -189,13 +103,13 @@ void MailTextExpander::onChar(u32 v) {
 void MailTextExpander::onTag(u8 *p) {
     tag.parse(p);
     s32 r4 = tag.group;
-    Unk_020d94e8_Fn fn = 0;
+    MailTextExpanderFn fn = 0;
     if (r4 == 4 && tag.isSlotTag()) {
-        fn = *(Unk_020d94e8_Fn *)data_020d9460;
+        fn = data_020d9460;
     } else if (r4 == 0) {
-        fn = *(Unk_020d94e8_Fn *)data_020d9470;
+        fn = data_020d9470;
     } else if (r4 == 0xb) {
-        fn = *(Unk_020d94e8_Fn *)data_020d9468;
+        fn = data_020d9468;
     }
     if (fn) {
         (this->*fn)();
@@ -232,7 +146,7 @@ void MailTextExpander::appendChar() {
 
 void MailTextExpander::insertSlot() {
     s32 i = tag.getSlotIndex();
-    MsgString33 *e = (MsgString33 *)&builder->slots[i];
+    MsgString33 *e = &builder->slots[i];
     pushText(e->data());
     articleMode = 0;
 }
@@ -240,13 +154,13 @@ void MailTextExpander::insertSlot() {
 void MailTextExpander::insertGlyphTag() {
     s32 sel = tag.id;
     if (sel == 0) {
-        pushText(Text_GetSpecialCharStr6());
+        pushText((u8 *)Text_GetSpecialCharStr6());
     } else if (sel == 1) {
-        pushText(Text_GetSpecialCharStr7());
+        pushText((u8 *)Text_GetSpecialCharStr7());
     } else if (sel == 7) {
-        pushText(Text_GetSpecialCharStr4());
+        pushText((u8 *)Text_GetSpecialCharStr4());
     } else if (sel == 8) {
-        pushText(Text_GetSpecialCharStr1());
+        pushText((u8 *)Text_GetSpecialCharStr1());
     }
 }
 
@@ -264,7 +178,7 @@ void MailTextExpander::handleGrammarTag() {
     } else if (sel >= 5 && sel <= 15) {
         Unk_0203d134_E en = (Unk_0203d134_E)(sel - 5);
         MailTextBuilder *o = builder;
-        selectBySlotForm((MsgString33 *)&o->slots[en]);
+        selectBySlotForm(&o->slots[en]);
     }
 }
 
@@ -387,49 +301,42 @@ extern "C" BOOL MailText_LoadBbs(MsgString *a, u8 *p, const char *name) {
     return r;
 }
 
-extern "C" s32 MailText_SetSlot(s32 i, void *x) { return ((MsgString *)(&gMailTextBuilder.slots[i]))->copy((MsgString *)(x)); }
+extern "C" s32 MailText_SetSlot(s32 i, void *x) { return gMailTextBuilder.slots[i].copy((MsgString *)(x)); }
 
 extern "C" void MailText_SetSlotMonth(s32 i, s32 x) { String_GetMonthName(&gMailTextBuilder.slots[i], x); }
 
 extern "C" void MailText_SetSlotDayOrdinal(s32 i, s32 x) { String_GetDayOrdinal(&gMailTextBuilder.slots[i], x); }
 
-MailTextBuilder::MailTextBuilder() {
-    new (this) MailTextExpander((MailTextBuilder *)(this));
-    new (&reader) BmgReader512();
+MailTextBuilder::MailTextBuilder() : expander(this) {
     namePos = -1;
-    __cxa_vec_ctor(slots, 11, 0x34, (void *)_ZN11MsgString33C1Ev, (void *)_ZN11MsgString33D1Ev);
     MI_CpuFill8(output, 0, 0x200);
 }
 
-MailTextBuilder::~MailTextBuilder() {
-    __cxa_vec_cleanup(slots, 11, 0x34, (void *)_ZN11MsgString33D1Ev);
-    ((BmgReader512 *)(&reader))->BmgReader512::~BmgReader512();
-    ((MailTextExpander *)(this))->MailTextExpander::~MailTextExpander();
-}
+MailTextBuilder::~MailTextBuilder() {}
 
 void MailTextBuilder::reset() {
-    ((BmgReader512 *)reader)->clearBuffer();
+    reader.clearBuffer();
     MI_CpuFill8(output, 0, 0x200);
     namePos = -1;
 }
 
 BOOL MailTextBuilder::load(MailMsgRequest *p) {
     char buf[0x44];
-    u32 s = p->getPartDir();
-    if (s != 0) {
-        Str_SPrintf(buf, "%s/%s/%s.bmg", p->getMsgDir(), s, (char *)p + 4);
+    const char *s = p->getPartDir();
+    if (s != NULL) {
+        Str_SPrintf(buf, "%s/%s/%s.bmg", p->getMsgDir(), s, p->fileName);
     } else {
-        Str_SPrintf(buf, "%s/%s.bmg", p->getMsgDir(), (char *)p + 4);
+        Str_SPrintf(buf, "%s/%s.bmg", p->getMsgDir(), p->fileName);
     }
-    BOOL a = ((BmgReader *)reader)->open(buf);
-    BOOL b = a ? ((BmgReader *)reader)->loadMessage(&p->msgIndex) : 0;
+    BOOL a = reader.open(buf);
+    BOOL b = a ? reader.loadMessage(&p->msgIndex) : 0;
     bool ok = a & b;
-    ((BmgReader *)reader)->close();
+    reader.close();
     if (ok) {
         MsgString *q = p->getDest();
         u32 *out = p->getNamePosOut();
         BOOL m = p->isAppendPart();
-        ok &= ((MailTextExpander *)(this))->expand(out != 0 ? TRUE : FALSE);
+        ok &= expander.expand(out != 0 ? TRUE : FALSE);
         if (m) {
             ok &= (BOOL)q->append(output);
         } else {
@@ -444,14 +351,14 @@ MailMsgRequest::MailMsgRequest() : folder(0), part(0), dest(0), namePosOut(0) {}
 
 MailMsgRequest::~MailMsgRequest() {}
 
-const char *MailMsgRequest::getMsgDir() { return (const char *)sMailFolderDirs[folder]; }
+const char *MailMsgRequest::getMsgDir() { return sMailFolderDirs[folder]; }
 
 BOOL MailMsgRequest::isAppendPart() {
     if (part == 6) return TRUE;
     return FALSE;
 }
 
-u32 MailMsgRequest::getPartDir() { return sMailPartDirs[part]; }
+const char *MailMsgRequest::getPartDir() { return sMailPartDirs[part]; }
 
 void MailMsgRequest::setFolder(u32 v) { folder = v; }
 
@@ -468,16 +375,12 @@ MsgString *MailMsgRequest::getDest() { return dest; }
 u32 *MailMsgRequest::getNamePosOut() { return namePosOut; }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const uptr sMailPartDirs[8];
-extern const uptr sMailFolderDirs[3];
-extern MailTextBuilder gMailTextBuilder;
-
-const uptr sMailPartDirs[8] = {0, (uptr)data_020d9450, (uptr)data_020d943c, (uptr)data_020d9434, (uptr)data_020d9458, (uptr)data_020d9448, (uptr)data_020d9440, (uptr)data_020d9438};
+const char *const sMailPartDirs[8] = {NULL, data_020d9450, data_020d943c, data_020d9434, data_020d9458, data_020d9448, data_020d9440, data_020d9438};
 
 char data_020d943c[] = "msg";
 
 // ---- data
-const uptr sMailFolderDirs[3] = {(uptr)data_020d9488, (uptr)data_020d949c, (uptr)data_020d9478};
+const char *const sMailFolderDirs[3] = {data_020d9488, data_020d949c, data_020d9478};
 
 char data_020d9440[] = "msgb";
 
@@ -487,11 +390,12 @@ char data_020d9450[] = "super";
 
 char data_020d9458[] = "superz";
 
-void *data_020d9460[2] = {(void *)_ZN16MailTextExpander10insertSlotEv, 0};
+// the tag handlers of onTag
+MailTextExpanderFn data_020d9460 = &MailTextExpander::insertSlot;
 
-void *data_020d9468[2] = {(void *)_ZN16MailTextExpander16handleGrammarTagEv, 0};
+MailTextExpanderFn data_020d9468 = &MailTextExpander::handleGrammarTag;
 
-void *data_020d9470[2] = {(void *)_ZN16MailTextExpander14insertGlyphTagEv, 0};
+MailTextExpanderFn data_020d9470 = &MailTextExpander::insertGlyphTag;
 
 char data_020d9438[] = "psz";
 

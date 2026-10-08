@@ -7,12 +7,13 @@
 #include "talk/TalkWindowState.h"
 #include "sys/ProcProfile.h"
 #include "nitro/io_access.h"
-#include "snd/BgmSceneFade.h"
+#include "snd/BgmManager.h"
+#include "gfx/ScreenTransition.h"
+#include "town/ResettiVisitFlag.h"
 #include "talk/MsgRequest.h"
-#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065e88.h"
@@ -60,16 +61,13 @@ static inline BOOL Unk_02040ad8_IsTwo(u8 v)
 }
 
 extern "C" {
-void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
-s32 EventSchedule_CollectAtNoon(void *, s32, void *);
 void Clock_GetDate(void *);
 s32 Date_DaysBetween(void *, void *);
 void EventWeekSlots_UpdateWeek(void *, s32);
 void Event_RefreshToday(s32);
 void EventWeekSlots_ClearWeek(void *);
 s32 Scene_GetCurrent(void);
-s32 _ZN16ResettiVisitFlag5isSetEv(void *self);
 void Clock_GetDateTime(void *);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32, s32);
@@ -89,15 +87,13 @@ s32 TalkRequestFlags_SetSceneHold(void);
 s32 Scene_InTownUnk31(void);
 void Town_RefreshEventsOffline(void);
 void Town_UpdateDay(s32);
-void MIi_CpuClear16(u32 v, u32 dst, u32 size);
+void MIi_CpuClear16(u16 v, void *dst, u32 size);
 }
 
 extern CommManager *gCommManager;
-extern u8 gScreenTransition;
-extern ProcBase *gActorDefaultParent;
 extern u8 data_021ed170[];
 extern u8 gSaveData[];
-extern u8 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;
 
 static inline u8 Unk_02040cac_B2(u8 *p)
 {
@@ -116,7 +112,7 @@ extern const u8 sAnnouncedEventIds[12];
 const u8 sAnnouncedEventIds[12] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 0};
 EventAnnounceState sEventAnnounceState;
 
-static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
+static inline void Unk_02041104_Fill(u16 v, void *dst, u32 size) {
     volatile u16 t = v;
     MIi_CpuClear16(t, dst, size);
 }
@@ -128,14 +124,14 @@ extern "C" void ScreenTransition_ShowCover() {
     IO_W(r, (IO_R(r) & 0x43) | 0x600);
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, 0x5000000, 4);
+    Unk_02041104_Fill(0x8000, (void *)0x5000000, 4);  // the backdrop colours
     Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     IO_AND(r, ~3);
     IO_W(r, (IO_R(r) & 0x43) | 0xe04);
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, 0x5000400, 4);
+    Unk_02041104_Fill(0x8000, (void *)0x5000400, 4);
     Gfx2d_ShowSubPlanes(4);
 }
 
@@ -158,7 +154,7 @@ BOOL EventAnnouncer::onCreate()
         return FALSE;
     }
     r5 = gSaveData;
-    if (((CommManager *)(gCommManager))->isOnline() == 0 && Scene_GetCurrent() != 0xd) {
+    if (gCommManager->isOnline() == 0 && Scene_GetCurrent() != 0xd) {
         if (sEventAnnounceWasOnline != 0) {
             u32 k;
             t.a = 0;
@@ -219,8 +215,8 @@ BOOL EventAnnouncer::onCreate()
 
 BOOL EventAnnouncer::onExecute()
 {
-    s32 x = (s32)this;
-    if (((CommManager *)(gCommManager))->isOnline() == 0) {
+    EventAnnouncer *x = this;
+    if (gCommManager->isOnline() == 0) {
         EventAnnounce_Update();
         switch (sEventAnnounceState.announceState) {
         case 0:
@@ -239,7 +235,7 @@ BOOL EventAnnouncer::onExecute()
             EventAnnounce_RunIdle(x);
             break;
         case 5:
-            EventAnnounce_RunShowMessage((EventAnnouncer *)x);
+            EventAnnounce_RunShowMessage(x);
             break;
         case 6:
             EventAnnounce_RunWaitMessageEnd(x);
@@ -270,7 +266,7 @@ BOOL EventAnnouncer::onDelete()
         sEventAnnounceState.announceState = 2;
         break;
     }
-    if (((CommManager *)(gCommManager))->isOnline() == 0) {
+    if (gCommManager->isOnline() == 0) {
         data_021ed170[9] = sEventAnnounceCurEvent;
     }
     return TRUE;
@@ -289,14 +285,14 @@ extern "C" void EventAnnounce_Reset(void)
 extern "C" void EventAnnounce_Restart(void)
 {
     EventAnnounce_Reset();
-    if (((CommManager *)(gCommManager))->isOnline() == 0) {
+    if (gCommManager->isOnline() == 0) {
         EventAnnounce_CheckEvents();
     }
 }
 
 extern "C" BOOL EventAnnounce_CanCheck(void)
 {
-    if (!Unk_02040ad8_IsTwo(gScreenTransition)) {
+    if (!Unk_02040ad8_IsTwo(gScreenTransition.state)) {
         return FALSE;
     }
     if (Scene_GetCurrent() == 0x3f) {
@@ -391,18 +387,18 @@ extern "C" s32 EventAnnounce_GetCurrentEvent(void)
     return sEventAnnounceCurEvent;
 }
 
-extern "C" void EventAnnounce_RunIdle(s32)
+extern "C" void EventAnnounce_RunIdle(EventAnnouncer *)
 {
 }
 
-extern "C" void EventAnnounce_RunWaitChimeStart(s32)
+extern "C" void EventAnnounce_RunWaitChimeStart(EventAnnouncer *)
 {
     if (Melody_IsBusy() != 0) {
         sEventAnnounceState.announceState = 2;
     }
 }
 
-extern "C" void EventAnnounce_RunWaitChimeEnd(s32)
+extern "C" void EventAnnounce_RunWaitChimeEnd(EventAnnouncer *)
 {
     if (Melody_IsBusy() == 0) {
         EventAnnounce_SetState(3);
@@ -422,7 +418,7 @@ extern "C" BOOL EventAnnounce_RequestWarp(void)
     return r;
 }
 
-extern "C" void EventAnnounce_RunWarp(s32)
+extern "C" void EventAnnounce_RunWarp(EventAnnouncer *)
 {
     u8 buf[0x10];
     s32 r;
@@ -446,7 +442,7 @@ extern "C" void EventAnnounce_RunWarp(s32)
                 if (r != 0) {
                     Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
-                    ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->prepareEventWarp(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+                    data_021c1b3c->sceneFade.prepareEventWarp(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
                     sEventAnnounceState.announceState = 4;
                     sEventAnnounceBusy = 1;
                 }
@@ -457,24 +453,24 @@ extern "C" void EventAnnounce_RunWarp(s32)
 
 extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
 {
-    if (Unk_02040ad8_IsTwo(gScreenTransition)) {
+    if (Unk_02040ad8_IsTwo(gScreenTransition.state)) {
         TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
         o->msgRequest.resetMsg();
         ((MsgRequest *)(&o->msgRequest))->setFileName((const char *)((void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]));
-        *(HOST_AT(o, 0x72, msgRequest.msgIndex, 0)) = sEventAnnounceState.msgIndex;
+        o->msgRequest.msgIndex = sEventAnnounceState.msgIndex;
         ((TalkWindowState *)(p))->attachRequest((TalkMsgRequest *)(&o->msgRequest));
         p->nextState = 1;
         sEventAnnounceState.announceState = 6;
     }
 }
 
-extern "C" void EventAnnounce_RunWaitMessageEnd(s32)
+extern "C" void EventAnnounce_RunWaitMessageEnd(EventAnnouncer *)
 {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->state == 0) {
         ((TalkWindowState *)(p))->detachRequest();
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);
-        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->prepareEventReturn(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+        data_021c1b3c->sceneFade.prepareEventReturn(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
         sEventAnnounceBgmCode = 0;
         sEventAnnounceState.announceState = 0;
         sEventAnnounceState.busy = 0;
@@ -502,12 +498,12 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
 {
     s32 r4;
     s32 r6;
-    if (((CommManager *)(gCommManager))->isOnline()) {
+    if (gCommManager->isOnline()) {
         return;
     }
     if (Scene_GetCurrent() == 0) {
-        if (_ZN16ResettiVisitFlag5isSetEv(TownSessionState_GetResettiFlag(TownSessionState_Get()))) {
-            if (!((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
+        if (TownSessionState_GetResettiFlag(TownSessionState_Get())->isSet()) {
+            if (!gCommManager->isSlotActive(gCommManager->myAid)) {
                 return;
             }
         }

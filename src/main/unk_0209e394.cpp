@@ -10,9 +10,9 @@
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sAxBbsBuf  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/ScreenTransition.h"
 #include "proto/main/unk_02000b7c.h"
+#include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02038474.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065e88.h"
@@ -23,8 +23,6 @@
 #include "proto/main/unk_0209e394.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020a427c.h"
-
-
 
 
 class SaveMenu;
@@ -92,187 +90,24 @@ SaveMenuStateEntry sSaveMenuStates[6] = {
 extern u8 gTalkMsgIndexEnd[];
 extern void *gCommManager;
 extern u16 gPad[];
-extern u8 gScreenTransition;
-extern u8 sAxBbsBuf[];
 
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 s32 Scene_GetWarpRequest();
-}
-
-extern "C" {
 void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
-}
-
-extern "C" {
-}
-
-extern "C" {
 void Scene_SavePlayerPos(s32 a, s32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void TalkRequest_FinishSaveMenu();
-}
-
-extern "C" {
 s32 TalkRequest_IsSaveMenuRunning();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 s32 Scene_GetCurrent();
-}
-
-extern "C" {
 s32 TalkRequestFlags_IsResetti();
-}
-
-extern "C" {
 s32 TalkRequestFlags_IsSceneHold();
-}
-
-extern "C" {
 s32 TalkRequest_IsActive();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 s32 TalkRequest_AddSaveMenu();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 void Clock_GetDateTime(void *p);
-}
-
-extern "C" {
 s32 DateTime_Compare(void *a, void *b, s32 c);
-}
-
-extern "C" {
 void DateTime_AddDays(void *a, s32 b);
-}
-
-extern "C" {
 void Clock_GetDate(void *p);
-}
-
-extern "C" {
 void MI_CpuCopy8(void *src, void *dst, s32 n);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void AxBbsNotice_Construct(void *p);
-}
-
-extern "C" {
-void *AxBbsNotice_GetDigest(void *p);
-}
-
-extern "C" {
-void DGT_Hash1CalcHmac(void *a, void *b, s32 c, s32 d, s32 e);
-}
-
-extern "C" {
-void MI_CpuFill8(void *p, s32 v, s32 n);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void AxBbsNotice_Post(void *p);
-}
-
-extern "C" {
-void AxBbsNotice_Destruct(void *p);
 }
 
 static inline BOOL Unk_0209e7b4_Is2(u8 v) {
@@ -360,24 +195,24 @@ BOOL SaveMenu::onExecute() {
     if (*DebugVar_GetPtr(0, 0x4b) != 0) {
         PlayerData *pd = PlayerData_GetCurrent();
         if (pd != 0) {
-            r4 = pd->getBankAccount();
+            PlayerBank *bank = pd->getBankAccount();
             switch (*DebugVar_GetPtr(0, 0x4b)) {
             case 0:
                 break;
             case 1:
-                PlayerBank_SetBalance(r4, 1000000);
+                PlayerBank_SetBalance(bank, 1000000);
                 break;
             case 2:
-                PlayerBank_SetBalance(r4, 10000000);
+                PlayerBank_SetBalance(bank, 10000000);
                 break;
             case 3:
-                PlayerBank_SetBalance(r4, 100000000);
+                PlayerBank_SetBalance(bank, 100000000);
                 break;
             case 4:
-                PlayerBank_SetBalance(r4, 500000000);
+                PlayerBank_SetBalance(bank, 500000000);
                 break;
             case 5:
-                PlayerBank_SetBalance(r4, 999999999);
+                PlayerBank_SetBalance(bank, 999999999);
                 break;
             }
         }
@@ -410,7 +245,7 @@ BOOL SaveMenu::onExecute() {
         } else if (r4 > 0x1869f) {
             r4 = 0x1869f;
         }
-        PlayerInventory_SetWallet(r6->getInventory(), r4, 1);
+        PlayerInventory_SetWallet((PlayerInventory *)r6->getInventory(), r4, 1);
         *DebugVar_GetPtr(0, 0x48) = 0;
     }
     if (sSaveMenuStates[saveMenuState].update != 0) {
@@ -433,7 +268,7 @@ void SaveMenu::updateIdle() {
         if (Scene_GetCurrent() != 0x2d) {
             if (TalkRequestFlags_IsResetti() == 0) {
                 if (TalkRequestFlags_IsSceneHold() == 0) {
-                    if (Unk_0209e7b4_Is2(gScreenTransition) != 0) {
+                    if (Unk_0209e7b4_Is2(gScreenTransition.state) != 0) {
                         if (TalkRequest_IsActive() == 0) {
                             void *g = gCommManager;
                             if (((CommManager *)(g))->isOnline() != 0 && ((CommManager *)(g))->isMyAid(0) == 0) {

@@ -6,8 +6,6 @@
 #include "net/PlayerNetSync.h"
 #include "item/ItemPickSpec.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_PlayerSession_GetLastPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gPlayerSessionTable  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0206269c.h"
@@ -27,12 +25,6 @@
 #include "proto/main/unk_020a427c.h"
 
 
-
-
-
-
-
-
 inline BOOL Unk_0209579c_IsTwo(u8 v) {
     if (v == 2) return TRUE;
     return FALSE;
@@ -44,217 +36,7 @@ inline u16 Unk_02095f38_F(u32 v) {
 }
 
 extern CommManager *gCommManager;
-extern u32 sPlayerPosSyncVars[];
-extern u32 sPlayerAngleSyncVars[];
-extern u32 sPlayerStateSyncVars[];
-extern u8 sThrownBottleReturnOdds[];
-extern u8 gPlayerSessionTable[];
-extern u8 data_021e7f8c[];
-extern u8 data_021eceac[];
-extern u8 gU8None[];
-extern u8 data_020e1d68[];
-extern SaveTownStateView data_021ed150;
 
-extern "C" {
-BOOL func_020729bc(CommManager *p, s32 v);
-}
-
-extern "C" {
-u32 func_02072970(CommManager *p, u32 v);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL func_02072e44(CommManager *p);
-}
-
-extern "C" {
-s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-ProcBase *func_02002d3c(s32 a, s32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 *PlayerSession_GetLastPos(s32 idx);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_0208f1c0(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_02065578(void *p);
-}
-
-extern "C" {
-s32 func_0208f198(void *p);
-}
-
-extern "C" {
-s32 func_0208f15c(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_0208f168(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_02096e78(void *p);
-}
-
-extern "C" {
-void func_02096f10(void *p, s32 v);
-}
-
-extern "C" {
-TownBlockMap *TownBlockMap_Get();
-}
-
-extern "C" {
-void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-}
-
-extern "C" {
-void Town_GetUpdater();
-}
-
-extern "C" {
-s32 Town_WashUpBottle();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *func_020986c8(void *a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 }
@@ -286,7 +68,7 @@ BOOL PlayerNetSync::onExecute() {
     s32 i, m1;
     s32 *p8;
     u8 *pc;
-    s32 *r4;
+    VecFx32 *r4;
     s16 *p10;
     s32 idx;
     u8 c;
@@ -304,16 +86,16 @@ BOOL PlayerNetSync::onExecute() {
             r4 = PlayerSession_GetLastPos(idx);
             p10 = PlayerSession_GetLastAngle(idx);
             if (c != 0xc && c != 0xd && c != 0xe && c != 0x2f && c != 0x2e) {
-                if (PlayerActor_GetSlotAction(&v, m1, idx)) {
+                if (PlayerActor_GetSlotAction((u32 *)&v, m1, idx)) {
                     if (PlayerActor_GetSlotPosXZ(&c, &x, &y, m1, idx)) {
                         if (PlayerActor_GetSlotAngle(&s, m1, idx)) {
                             PlayerSession_RemovePitfallOnClimbOut(&idx, &c, p8, &v, &x, &y);
                             *p8 = v;
                             *pc = c;
                             s32 yt = y;
-                            r4[0] = x;
-                            r4[1] = 0;
-                            r4[2] = yt;
+                            r4->x = x;
+                            r4->y = 0;
+                            r4->z = yt;
                             *p10 = s;
                         }
                     }
@@ -323,7 +105,7 @@ BOOL PlayerNetSync::onExecute() {
         i--;
     } while (i >= 0);
     if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
-        Actor *o = PlayerActor_GetActor(4);
+        Actor *o = (Actor *)PlayerActor_GetActor(4);
         if (o) {
             s32 n = g->localSlot;
             if (n < 4) {

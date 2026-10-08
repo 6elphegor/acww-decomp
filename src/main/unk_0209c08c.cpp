@@ -109,7 +109,7 @@ BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {
         heap = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
     if (a != 0 || b != 0) {
-        if ((&vramSlot)->alloc(a, 0, b)) return TRUE;
+        if ((&vramSlot)->alloc((u32)(uptr)a, 0, (u32)(uptr)b)) return TRUE;  // (a, b: the sizes)
         return FALSE;
     }
     return TRUE;

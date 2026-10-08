@@ -1,7 +1,7 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_02038474.h"
@@ -14,24 +14,22 @@
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b0e60.h"
 
-extern u32 *gCurrentHeap;
-
 extern const u16 sGameRootChildProfiles[8];
 const u16 sGameRootChildProfiles[8] = { 0xd7, 0xce, 0xcf, 0xcb, 8, 0xa, 0xcc, 0 };
 
-u32 gGameRoot;
+GameProc *gGameRoot;
 
 extern "C" {
-void AcreAttr_Unload();
+BOOL AcreAttr_Unload();
 void ItemInfo_Exit();
-void FgData_Unload(u32);
-void TownBlockMap_Destroy(u32);
-void HouseRoomMaps_Destroy(u32);
-void AcreAttr_Load();
+void FgData_Unload(void *heap);
+s32 TownBlockMap_Destroy(void *heap);
+void HouseRoomMaps_Destroy(void *heap);
+BOOL AcreAttr_Load();
 void ItemInfo_Init();
-void FgData_Load(u32);
-void TownBlockMap_Create(u32);
-void HouseRoomMaps_Create(u32);
+BOOL FgData_Load(void *heap);
+BOOL TownBlockMap_Create(void *heap);
+BOOL HouseRoomMaps_Create(void *heap);
 }
 
 class GameRoot : public GameProc {
@@ -50,7 +48,7 @@ extern "C" GameRoot *GameRoot_Create() {
 ProcProfile sGameRootProfile = {(void *(*)())GameRoot_Create, 0x0, 0xd7};
 
 extern "C" void GameRoot_Boot() {
-    s32 r;
+    void *r;
     s32 i;
     Scene_RequestBoot();
     r = GameProc_CreateRoot(0, 0, 1);
@@ -66,16 +64,16 @@ extern "C" void SoftReset_ClearSystems() {
 }
 
 BOOL GameRoot::onCreate() {
-    gGameRoot = (u32)this;
+    gGameRoot = this;
     StrBSize_Load();
     AcreAttr_Load();
     FtrInfo_Init();
     ItemInfo_Init();
     PatternPresetInfo_Open(PatternPresetInfo_Get());
-    FgData_Load((u32)gCurrentHeap);
-    TownBlockMap_Create((u32)gCurrentHeap);
-    HouseRoomMaps_Create((u32)gCurrentHeap);
-    Comm_CreateHeap((Heap *)gCurrentHeap);
+    FgData_Load(gCurrentHeap);
+    TownBlockMap_Create(gCurrentHeap);
+    HouseRoomMaps_Create(gCurrentHeap);
+    Comm_CreateHeap(gCurrentHeap);
     NetSession_Init();
     NpcSpawn_ResetAll();
     return TRUE;
@@ -87,9 +85,9 @@ BOOL GameRoot::onDelete() {
     FtrInfo_Exit();
     ItemInfo_Exit();
     PatternPresetInfo_Close(PatternPresetInfo_Get());
-    FgData_Unload((u32)gCurrentHeap);
-    TownBlockMap_Destroy((u32)gCurrentHeap);
-    HouseRoomMaps_Destroy((u32)gCurrentHeap);
+    FgData_Unload(gCurrentHeap);
+    TownBlockMap_Destroy(gCurrentHeap);
+    HouseRoomMaps_Destroy(gCurrentHeap);
     Comm_DestroyHeap();
     NetSession_Exit();
     return TRUE;

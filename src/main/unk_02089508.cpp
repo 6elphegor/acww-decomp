@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -6,29 +5,15 @@
 #include "ui/UiWidget.h"
 #include "talk/LabelBalloonText.h"
 #include "ui/LabelBalloon.h"
-#define PROTO_LOCAL_data_020d5ce4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020d5cec  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontA  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontB  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02089508.h"
+#include "proto/main/unk_020d5ce4.h"
 
 extern "C" {
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 }
-
-
-
-
-
-
-
-extern u8 data_020d5ce4[];
-extern u8 data_020d5cec[];
-extern u8 gFontB[];
-extern u8 gFontA[];
 
 
 typedef void (LabelBalloon::*Unk_020e0d98_Fn)();
@@ -51,7 +36,7 @@ u32 LabelBalloonText::capacity() { return 0x21; }
 // ---------------------------------------------------------------------------------------------------------------------
 // LabelBalloonText and UiWidget members
 
-u8 *LabelBalloonText::data() { return HOST_AT(this, 4, unk_04[0], 0); }
+u8 *LabelBalloonText::data() { return unk_04; }
 
 LabelBalloon::LabelBalloon(s32 flag)
     : state(0), animTimer(0), x(0), posY(0), priority(-1), popOffsetX(0), popOffsetY(0), clampOffsetX(0), openRequest(0),
@@ -65,8 +50,8 @@ LabelBalloon::~LabelBalloon() { freeLabels(); }
 
 void LabelBalloon::draw() {
     if (state != 0) {
-        void *h0 = layer1.getCell();
-        void *h1 = layer2.getCell();
+        GXOamAttr *h0 = (GXOamAttr *)layer1.getCell();
+        GXOamAttr *h1 = (GXOamAttr *)layer2.getCell();
         s32 base = getDrawX();
         s32 base2 = getDrawY();
         s32 x0 = base + layer1.getFrameX(-1);
@@ -302,10 +287,10 @@ void LabelBalloon::reset() {
 }
 
 void LabelBalloon::initAnims() {
-    layer1.setSeq((SpriteAnimSeq *)data_020d5ce4);
+    layer1.setSeq(data_020d5ce4);
     layer1.setPlayOnce(1);
     layer1.setSpeed(0);
-    layer2.setSeq((SpriteAnimSeq *)data_020d5cec);
+    layer2.setSeq(data_020d5cec);
     layer2.setPlayOnce(1);
     layer2.setSpeed(0);
 }
@@ -374,9 +359,9 @@ void LabelBalloon::createLabels() {
                 label->copyMode = 2;
             }
             if (two) {
-                label->font = (GameFontDesc *)gFontB;
+                label->font = (GameFontDesc *)&gFontB;  // (a GameFont: a GameFontDesc)
             } else {
-                label->font = (GameFontDesc *)gFontA;
+                label->font = (GameFontDesc *)&gFontA;
             }
             label->rowStride1K = 1;
             label->bgColor = 0;
@@ -394,7 +379,7 @@ void LabelBalloon::createLabels() {
             if (onBufferA != 0) {
                 label2->copyMode = 2;
             }
-            label2->font = (GameFontDesc *)gFontB;
+            label2->font = (GameFontDesc *)&gFontB;
             label2->rowStride1K = 1;
             label2->bgColor = 0;
             label2->fgColor = 3;

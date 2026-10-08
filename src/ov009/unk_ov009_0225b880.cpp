@@ -1001,8 +1001,8 @@ void BuildingActor::execDoorIdle() {
             }
         }
         if ((colliderFlags & 2) != 0 && f == 0) {
-            s32 a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
-            s32 b = (s32)PlayerActor_GetActor(4);
+            void *a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
+            void *b = PlayerActor_GetActor(4);
             if (b != 0 && b == a) {
                 if (isOpen() == 0) {
                     clearTalkStartMode();

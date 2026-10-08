@@ -6,6 +6,7 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
+#include "sys/ProcBase.h"
 #include "sys/SceneBase.h"
 #include "types.h"
 class NetSessionState;
@@ -52,9 +53,6 @@ void SceneBase_SetupGraphics(void);
 #endif
 #ifndef PROTO_LOCAL_Scene_RequestBoot
 void Scene_RequestBoot(void);
-#endif
-#ifndef PROTO_LOCAL_Scene_CheckExit
-void Scene_CheckExit(void *p);
 #endif
 #ifdef __cplusplus
 }
@@ -167,6 +165,9 @@ void Scene_Request(u32 a, u32 b, u32 c, u32 d);
 #ifndef PROTO_LOCAL_Scene_CreateRequested
 BOOL Scene_CreateRequested(void);
 #endif
+#ifndef PROTO_LOCAL_Scene_CheckExit
+void Scene_CheckExit(ProcBase *p);
+#endif
 }
 #ifndef PROTO_LOCAL_sSceneFadeInType
 extern u8 sSceneFadeInType;
@@ -184,7 +185,7 @@ extern ProcProfile sSceneBaseProfile;
 extern u16 gNextSceneProfile;
 #endif
 #ifndef PROTO_LOCAL_gActorDefaultParent
-extern void *gActorDefaultParent;
+extern ProcBase *gActorDefaultParent;
 #endif
 #ifndef PROTO_LOCAL_sSceneFadeOutType
 extern u8 sSceneFadeOutType;

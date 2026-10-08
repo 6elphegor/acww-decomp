@@ -114,7 +114,7 @@ void PlayerGlassesModelPool::allocBuffers(void) {
     u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
-        vramSlots[i].alloc((void *)PlayerGlassesModel_GetTexVramSize(), (void *)PlayerGlassesModel_GetTex4x4VramSize(), (void *)PlayerGlassesModel_GetPlttVramSize());
+        vramSlots[i].alloc(PlayerGlassesModel_GetTexVramSize(), PlayerGlassesModel_GetTex4x4VramSize(), PlayerGlassesModel_GetPlttVramSize());
     }
     void *heap = gPlayerGlassesModelHeap;
     for (i = 0; i < n; i++) {

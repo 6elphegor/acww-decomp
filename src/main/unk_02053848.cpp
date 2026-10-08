@@ -33,7 +33,6 @@ struct NNSG3dResJntAnm {
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/ThreeLayerAnimModel.h"
 #include "gfx/Model.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/main/unk_020536dc.h"
@@ -59,7 +58,6 @@ void NNS_G3dAnmObjInit(void *a, void *b, void *c, void *d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
 extern char sJointAnmHeader2[];
-extern void *gCurrentHeap;
 void *NNS_G3dGetMdlSet(void *p);
 void *NNS_G3dGetTex(void *p);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
@@ -72,7 +70,6 @@ void NNS_G3dForceBindMdlTex(void *a, void *b, s32 c, s32 d);
 void NNS_G3dForceBindMdlPltt(void *a, void *b, s32 c, void *d);
 void *ResCache_GetModel(void *a, u32 tag);
 void *ResCache_FindModel(void *a);
-void *_ZN15PatternTexCache15getPlayerTexKeyEii(void *a, void *b, void *c);
 void AnimModel_SwitchAnmObj(void *p, void *q);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);
 u16 Anim_GetFrameCountForMode(u32 kind, NNSG3dResJntAnm *p);
@@ -89,7 +86,7 @@ CachedModel::CachedModel() : cacheKey(0x4e554c4c) {}
 CachedModel::~CachedModel() {}
 
 BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     void *h = File_LoadAlloc((const char *)res, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
@@ -112,7 +109,7 @@ BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
 }
 
 BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag) {
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     void *h = File_LoadAlloc((const char *)res, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
@@ -157,19 +154,19 @@ BOOL CachedModel::loadCached(void *a, void *b) {
         initRenderObj();
         return TRUE;
     }
-    cacheKey = (u32)a;
-    return loadKeyed(b, NULL, (u32)a);
+    cacheKey = (u32)(uptr)a;  // (a: the cache key)
+    return loadKeyed(b, NULL, (u32)(uptr)a);
 }
 
 BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     void *h = File_LoadAlloc((const char *)a, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     resMdl = (NNSG3dResMdl *)ResCache_GetModel(p, 0x4e554c4c);
-    void *r = _ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), b, c);
+    void *r = ((PatternTexCache *)PatternTexCache_Get())->getPlayerTexKey((s32)(sptr)b, (s32)(sptr)c);  // (b, c: the indices)
     NNS_G3dForceBindMdlTex(resMdl, r, 0, 0);
     NNS_G3dForceBindMdlPltt(resMdl, r, 0, 0);
     Heap_Free(heap, h);
@@ -191,7 +188,7 @@ BOOL CachedModel::allocJointRecord(void *heap) {
     if (heap == NULL) {
         heap = gCurrentHeap;
     }
-    void *p = Heap_Alloc(heap, size);
+    void *p = Heap_Alloc((Heap *)heap, size);
     if (p == NULL) {
         return FALSE;
     }
@@ -229,13 +226,13 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
     u8 *hdr2 = (u8 *)NNS_G3dGetMdlSet(res);
     t->numModels = hdr2[9];
     size = t->numModels << 4;
-    t->modelNames = (u8 *)Heap_Alloc(heap, size);
+    t->modelNames = (u8 *)Heap_Alloc((Heap *)heap, size);
     {
         u8 *p = hdr2 + 8;
         p = p + *(u16 *)(hdr2 + 0xe);
         MI_CpuCopy8(p + *(u16 *)(p + 2), t->modelNames, size);
     }
-    t->models = (CachedModel *)Heap_Alloc(heap, t->numModels * HOST_SIZED(0x9c, CachedModel));
+    t->models = (CachedModel *)Heap_Alloc((Heap *)heap, t->numModels * sizeof(CachedModel));  // (0x9c on the DS)
     for (i = 0; i < t->numModels; i++) {
         new (&t->models[i]) CachedModel();
     }
@@ -251,7 +248,7 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         void *r = Gfx3d_CopyModel(q, heap);
         ((Model *)(&t->models[i]))->setResourceAndBind((NNSG3dResMdl *)(r), (NNSG3dResTex *)hdr);
     }
-    Heap_Free(fileHeap, res);
+    Heap_Free((Heap *)fileHeap, res);
     return TRUE;
 }
 
@@ -260,7 +257,7 @@ extern "C" void *ModelSet_Find(ModelSet *t, void *name)
     u32 i = 0;
     u32 n = t->numModels;
     for (; i < n; i++) {
-        if (strcmp(name, t->modelNames + i * 16) == 0) {
+        if (strcmp((const char *)name, (const char *)t->modelNames + i * 16) == 0) {
             return &t->models[i];
         }
     }
@@ -421,7 +418,7 @@ extern "C" void JointCb_CalcCpuMatrix(void *unused, NNSG3dRS *o, void *p)
     }
     if (p != 0) {
         NNSG3dJntAnmResult *d = o->pJntAnmResult;
-        CpuMtx_MultRotScaledTrans(&d->rot, &d->trans, p);
+        CpuMtx_MultRotScaledTrans(&d->rot, &d->trans, (VecFx32 *)p);  // (p: the scale)
     } else {
         NNSG3dJntAnmResult *d = o->pJntAnmResult;
         u32 f = d->flag;

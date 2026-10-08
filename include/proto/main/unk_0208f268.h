@@ -4,12 +4,15 @@
 // Prototypes of the functions defined in src/main/unk_0208f268.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "uptr.h"
 struct EffectSplPool;
+#ifndef __cplusplus
+typedef struct EffectSplPool EffectSplPool;
+#endif
 #ifdef __cplusplus
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
-#include "uptr.h"
+#include "sys/Heap.h"
 class EffectModel;
 class EffectModelGroup;
 class EffectSplProc;
@@ -18,8 +21,17 @@ class EffectSplProc;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_EffectSpl_Alloc
+void *EffectSpl_Alloc(u32 size);
+#endif
 #ifndef PROTO_LOCAL_EffectSpl_LoadArchive
 void *EffectSpl_LoadArchive(void *unused);
+#endif
+#ifndef PROTO_LOCAL_EffectSpl_ToCurvedPos
+u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
+#endif
+#ifndef PROTO_LOCAL_EffectSpl_GetSeasonTint
+s16 EffectSpl_GetSeasonTint();
 #endif
 #ifdef __cplusplus
 }
@@ -30,20 +42,11 @@ extern "C" {
 #ifndef PROTO_LOCAL_EffectSplProc_Create
 EffectSplProc *EffectSplProc_Create();
 #endif
-#ifndef PROTO_LOCAL_EffectSpl_Alloc
-void *EffectSpl_Alloc(u32 size);
-#endif
 #ifndef PROTO_LOCAL_EffectSpl_LoadTextures
 BOOL EffectSpl_LoadTextures(EffectSplProc *p);
 #endif
-#ifndef PROTO_LOCAL_EffectSpl_ToCurvedPos
-u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
-#endif
 #ifndef PROTO_LOCAL_EffectSpl_GetSeasonTintVariant
 s16 EffectSpl_GetSeasonTintVariant(EffectSplEmitter *o);
-#endif
-#ifndef PROTO_LOCAL_EffectSpl_GetSeasonTint
-s16 EffectSpl_GetSeasonTint();
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_ApplySceneTint
 void EffectSpl_ApplySceneTint(EffectSplEmitter *o);
@@ -185,7 +188,7 @@ extern void *sEffectSplHeapMem;
 extern void *sEffectSplFrmHeap;
 #endif
 #ifndef PROTO_LOCAL_sEffectModelHeap
-extern void *sEffectModelHeap;
+extern Heap *sEffectModelHeap;
 #endif
 #ifndef PROTO_LOCAL_sEffectSplProc
 extern EffectSplProc *sEffectSplProc;

@@ -2,12 +2,6 @@
 #include "net/CommManager.h"
 #include "net/NetStateBlockHeader.h"
 #include "net/NetSessionParts.h"
-#define PROTO_LOCAL_NetStatusMsgBase_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetStatusMsgBase_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetStatusMsg_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetStatusMsg_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetStatusUpdateMsg_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetStatusUpdateMsg_Init  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_020a65fc.h"
 #include "proto/main/unk_020a6914.h"
@@ -15,40 +9,11 @@
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-}
-
-extern "C" {
 s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void NetStatusMsgBase_Fini(void *p);
-}
-
-extern "C" {
-void NetStatusMsgBase_Init(void *p);
 }
 
 extern CommManager *gCommManager;
 
-
-
-
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern void (*const sNetStateAWriters[2])(s32);
 void (*const sNetStateAWriters[2])(s32) = {(void (*)(s32))NetArea_WriteStateAPart0, (void (*)(s32))NetArea_WriteStateANpcTalk};
@@ -71,12 +36,12 @@ extern "C" void NetStatusMsgBase_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 
 }
 
 extern "C" void *NetStatusUpdateMsg_Init(void *p) {
-    NetStatusMsgBase_Init(p);
+    NetStatusMsgBase_Init();
     return p;
 }
 
 extern "C" void *NetStatusUpdateMsg_Fini(void *p) {
-    NetStatusMsgBase_Fini(p);
+    NetStatusMsgBase_Fini();
     return p;
 }
 
@@ -88,12 +53,12 @@ extern "C" void NetStatusUpdateMsg_Unpack(u8 *p, u8 *b, u8 *c, u8 *d, s32 *e) {
 }
 
 extern "C" void *NetStatusMsg_Init(void *p) {
-    NetStatusMsgBase_Init(p);
+    NetStatusMsgBase_Init();
     return p;
 }
 
 extern "C" void *NetStatusMsg_Fini(void *p) {
-    NetStatusMsgBase_Fini(p);
+    NetStatusMsgBase_Fini();
     return p;
 }
 
