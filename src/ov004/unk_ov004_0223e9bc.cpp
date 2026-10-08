@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
 #include "sys/ProcProfile.h"
+#include "room/FtrActorGrid.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 
@@ -37,15 +38,9 @@ s32 AbleShop_FindItem(void *tbl, u16 *p);
 s32 ReddShop_FindItem(void *tbl, u16 *p);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 BlockMap_SetItemAtUnit(void *g, u16 *v, s32 x, s32 y, u32 z);
-void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 x, s32 y, s32 z);
-#define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 s32 FtrActor_GetFtrIndex(void *o);
 
 u16 *ReddShop_GetItem(void *p, u32 a, void *b);
-void _ZN15ShopStockPlacer11setupNoShopEv();
-void _ZN15ShopStockPlacer16setupScene15ShopEv();
-void _ZN15ShopStockPlacer13setupNookShopEv();
-void _ZN15ShopStockPlacer16setupScene10ShopEv();
 }
 
 class ShopStockPlacer : public GameProc {
@@ -67,6 +62,7 @@ public:
     BOOL setupNoShop();
     BOOL setupScene15Shop();
     void placeScene15Stock();
+    static u16 *callGetItemAt(s32 x, s32 y);
 
     /* 0x50 */ s32 nookShop;
     /* 0x54 */ s32 shopKind;
@@ -103,12 +99,13 @@ static inline BOOL Unk_ov004_0223f210_R(u16 *p, u32 lo, u32 hi) {
 
 extern "C" ShopStockPlacer *ShopStockPlacer_Create() { return new ShopStockPlacer; }
 
-extern "C" u8 *ShopStock_GetLayout() {
+// The current shop's 16 x 16 layout of stock codes (rows of 16 words).
+extern "C" const u32 *ShopStock_GetLayout() {
     if (Scene_InNookShop()) {
-        return (u8 *)sNookShopLayouts + (Scene_GetNookShop() << 10);
+        return sNookShopLayouts + (Scene_GetNookShop() << 8);
     }
-    if (Scene_GetCurrent() == 10) return (u8 *)sScene10ShopLayout;
-    return (u8 *)sScene15ShopLayout;
+    if (Scene_GetCurrent() == 10) return sScene10ShopLayout;
+    return sScene15ShopLayout;
 }
 
 extern "C" s32 ShopStock_GetItemCode(u16 *p) {
@@ -267,14 +264,6 @@ const u32 sScene15ShopLayout[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-void *data_ov004_0224f254[2] = {(void *)_ZN15ShopStockPlacer13setupNookShopEv, 0};
-
-void *data_ov004_0224f25c[2] = {(void *)_ZN15ShopStockPlacer16setupScene10ShopEv, 0};
-
-void *data_ov004_0224f274[2] = {(void *)_ZN15ShopStockPlacer16setupScene15ShopEv, 0};
-
-void *data_ov004_0224f264[2] = {(void *)_ZN15ShopStockPlacer11setupNoShopEv, 0};
-
 BOOL ShopStockPlacer::onCreate() {
     nookShop = Scene_GetNookShop();
     if (Scene_InNookShop()) {
@@ -286,7 +275,8 @@ BOOL ShopStockPlacer::onCreate() {
     } else {
         shopKind = 3;
     }
-    static Fn tbl[4] = {*(Fn *)data_ov004_0224f254, *(Fn *)data_ov004_0224f25c, *(Fn *)data_ov004_0224f274, *(Fn *)data_ov004_0224f264};
+    static Fn tbl[4] = {&ShopStockPlacer::setupNookShop, &ShopStockPlacer::setupScene10Shop,
+                        &ShopStockPlacer::setupScene15Shop, &ShopStockPlacer::setupNoShop};
     (this->*tbl[shopKind])();
     return TRUE;
 }
@@ -298,19 +288,19 @@ BOOL ShopStockPlacer::onDraw() { return TRUE; }
 BOOL ShopStockPlacer::onDelete() { return TRUE; }
 
 BOOL ShopStockPlacer::placeItem(u16 *item, s32 code) {
-    u8 *tbl = ShopStock_GetLayout();
+    const u32 *tbl = ShopStock_GetLayout();
     void *g = gSceneBlockMap;
     s32 y;
     s32 x;
     s32 hx;
     s32 hy;
     u16 *t;
-    u32 *row;
+    const u32 *row;
     if (g) {
         s32 x0 = 0;
         for (y = 0; y < 16; y++) {
             x = x0;
-            row = (u32 *)(tbl + y * 0x40);
+            row = tbl + y * 16;
             if (x < 16) {
                 goto testx;
             loopx:
@@ -412,7 +402,7 @@ extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
         if (r4) {
             if (!Unk_ov004_0223ed40_Chk(r4, &cv[1], 0xfff1)) {
                 if (Item_IsFurnitureOrF031(r4)) {
-                    void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x, y, 0);
+                    FtrActor *o = FtrActorGrid_GetInstance()->getActor(x, y, 0);
                     if (!o) return &dflt.id;
                     static ItemId v2(0xfff1);
                     v2.id = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
@@ -429,7 +419,7 @@ extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
 }
 
 extern "C" s32 ShopStock_GetCode22Index(s32 x, s32 y) {
-    u8 *tbl = ShopStock_GetLayout();
+    const u32 *tbl = ShopStock_GetLayout();
     s32 n = 0;
     s32 j = n;
     s32 i0 = 0;
@@ -437,7 +427,7 @@ extern "C" s32 ShopStock_GetCode22Index(s32 x, s32 y) {
 loopj:
     {
         s32 i = i0;
-        u32 *row = (u32 *)(tbl + j * 0x40);
+        const u32 *row = tbl + j * 16;
         goto testi;
     loopi:
         if (row[i] == 0x22) {
@@ -455,7 +445,7 @@ testj:
 }
 
 extern "C" BOOL ShopStock_FindTileOfStock(s32 *px, s32 *py, s32 code) {
-    u8 *tbl = ShopStock_GetLayout();
+    const u32 *tbl = ShopStock_GetLayout();
     u16 c = 0xfff1;
     NookShop_GetItem(data_021ed104, code, &c);
     s32 key = ShopStock_GetItemCode(&c);
@@ -481,7 +471,7 @@ done0:
     loopy:
         {
             s32 x = x0;
-            u32 *row = (u32 *)(tbl + y * 0x40);
+            const u32 *row = tbl + y * 16;
             goto testx;
         loopx:
             if (key == row[x]) {
@@ -601,9 +591,8 @@ BOOL ShopStockPlacer::setupScene15Shop() {
     return TRUE;
 }
 
-// ShopStockPlacer::callGetItemAt(): declared without parameters, but it forwards r0/r1 (callers pass x, y)
-// straight to ShopStock_GetItemAt, so it is defined under its mangled name with the real parameters.
-extern "C" u16 *_ZN15ShopStockPlacer13callGetItemAtEv(s32 x, s32 y) {
+// (the DS symbol is callGetItemAt() without parameters: it forwards r0/r1, the x and y its callers pass)
+u16 *ShopStockPlacer::callGetItemAt(s32 x, s32 y) {
     return ShopStock_GetItemAt(x, y);
 }
 

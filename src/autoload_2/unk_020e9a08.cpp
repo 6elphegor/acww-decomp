@@ -136,7 +136,7 @@ void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
 s32 DwcFriend_GetProfileId(void);
 s32 DwcFriend_FindIndexByProfileId(void);
 s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
-s32 LocalWl_GetBeaconGameInfo(void *p);
+void *LocalWl_GetBeaconGameInfo(void *p);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(void);
 extern u8 data_021f49e0[];
@@ -181,7 +181,7 @@ void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
 s32 DwcFriend_GetProfileId(u32 a);
 s32 DwcFriend_FindIndexByProfileId(u32 a);
 s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
-s32 LocalWl_GetBeaconGameInfo(void *p);
+void *LocalWl_GetBeaconGameInfo(void *p);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(u32 *p);
 extern u8 data_021f49e0[];
@@ -1058,7 +1058,7 @@ extern "C" s32 Net_SetLocalGameInfo(void *a, u32 n) {
     return LocalWl_SetGameInfo(a, n);
 }
 
-extern "C" s32 Net_GetBeaconGameInfo(void *p) {
+extern "C" void *Net_GetBeaconGameInfo(void *p) {
     if (p == NULL) return 0;
     return LocalWl_GetBeaconGameInfo(p);
 }
@@ -1068,15 +1068,15 @@ extern "C" s32 Net_GetBeaconGameInfoSize(void *p) {
     return LocalWl_GetBeaconGameInfoSize(p);
 }
 
-extern "C" u32 *Net_GetScanResults(void) {
+extern "C" void **Net_GetScanResults(void) {
     u32 i;
     u32 n;
-    MI_CpuFill8(data_021f4910, 0, 32);
+    MI_CpuFill8(data_021f4910, 0, sizeof(data_021f4910));
     if (LocalWl_GetState() == 7) {
         n = i = 0;
         for (; i < 8; i++) {
             void *r = LocalWl_GetBeacon(0, i & 0xff);
-            if (LocalWl_IsBeaconValid(r) != 0) data_021f4910[n++] = (u32)r;
+            if (LocalWl_IsBeaconValid(r) != 0) data_021f4910[n++] = r;
         }
     }
     return data_021f4910;
@@ -1369,7 +1369,7 @@ u8 sSendSlots[0x100]; // send slots (data_021f4ac4 / 4ac8 / 4acc: interior label
 u8 data_021f49e0[0xe0];
 u8 sWifiPingState[0x50]; // ping state records (data_021f4992: interior label)
 u8 data_021f4950[0x40];
-u32 data_021f4910[8];
+void *data_021f4910[8];
 u8 sSendQueue[0x20];
 HexTable data_0213b070 = {"0123456789abcdef"};
 HexTable data_0213b084 = {"0123456789abcdef"};

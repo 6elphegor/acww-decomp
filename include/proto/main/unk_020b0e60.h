@@ -8,6 +8,7 @@
 #include "town/BuildingInfo.h"
 struct Flags1;
 #ifdef __cplusplus
+#include "game/StrBSizeData.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
 class FieldObjectShapeQuery;
@@ -89,7 +90,7 @@ u32 Math_CountBits4(s32 v);
 s32 Item_GetBuildingIndex(u32 arg);
 #endif
 #ifndef PROTO_LOCAL_StrBSize_Get
-u32 StrBSize_Get(u16 *p);
+StrBSizeData *StrBSize_Get(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_FieldStructureMgr_Register
 BOOL FieldStructureMgr_Register(u32 v);
@@ -285,7 +286,7 @@ extern u8 sHouseVisitorPresent;
 extern s32 sHourHandCos;
 #endif
 #ifndef PROTO_LOCAL_sStrBSizeTable
-extern u32 sStrBSizeTable[0x22];
+extern StrBSizeData *sStrBSizeTable[0x22];
 #endif
 #ifndef PROTO_LOCAL_sTaxiArriving
 extern u8 sTaxiArriving;

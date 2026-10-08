@@ -32,10 +32,10 @@ public:
 
 extern "C" {
 extern Unk_0204e858_Grid *gSceneBlockMap;
-s32 Item_IsFurniture(Unk_ov004_0222a374_Loc *l);
+s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void Item_SetFurnitureDirection(Unk_ov004_0222a374_Loc *l, s32 v);
-void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32 x, s32 y, s32 z);
+void Item_SetFurnitureDirection(u16 *p, s32 v);
+void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, u16 *item, s32 x, s32 y, s32 z);
 }
 
 
@@ -62,15 +62,15 @@ void Room_PlacePlayerBeds() {
         s32 i;
         BOOL z1 = FALSE, z0 = FALSE, z2 = FALSE;
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_Get(i);
+            PlayerData *p = PlayerData_Get(i);
             if (p != 0) {
                 Unk_ov004_0222a374_Pair &e = tbl[i & 3];
                 s32 x = e.a;
                 s32 y = e.b;
                 Unk_ov004_0222a374_Loc l;
-                l.a = *((PlayerData *)(p))->getBed();
+                l.a = *p->getBed();
                 BOOL r;
-                if (Item_IsFurniture(&l) != 0) {
+                if (Item_IsFurniture(&l.a) != 0) {
                     l.b = 0xfff1;
                     s32 t = Item_GetFurnitureIndex(&l.a);
                     r = (t == Item_GetFurnitureIndex(&l.b)) ? 1 : z1;
@@ -82,13 +82,13 @@ void Room_PlacePlayerBeds() {
                     }
                 }
                 if (r == 0) {
-                    Item_SetFurnitureDirection(&l, 3);
+                    Item_SetFurnitureDirection(&l.a, 3);
                     if (x < 8) {
-                        if (Ftr_GetUnk05(&l) == 2) {
+                        if (Ftr_GetUnk05(&l.a) == 2) {
                             x--;
                         }
                     }
-                    BlockMap_SetItemAtUnit(g, &l, x, y, z2);
+                    BlockMap_SetItemAtUnit(g, &l.a, x, y, z2);
                 }
             }
         }

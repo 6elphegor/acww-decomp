@@ -11,6 +11,16 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_PlayerHouseTex_Get
+void *PlayerHouseTex_Get(void **p);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_sFieldSceneProfiles
 extern u32 sFieldSceneProfiles[14];
 #endif
@@ -19,9 +29,6 @@ extern u32 sFieldSceneProfileCount;
 #endif
 #ifndef PROTO_LOCAL_sFieldSceneObjectList
 extern SceneWarpList sFieldSceneObjectList;
-#endif
-#ifndef PROTO_LOCAL_PlayerHouseTex_Get
-s32 PlayerHouseTex_Get(s32 *p);
 #endif
 }
 #endif

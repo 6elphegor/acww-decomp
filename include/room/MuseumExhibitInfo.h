@@ -4,6 +4,7 @@
 #include "types.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
+#include "game/TouchPickSphere.h"
 
 // Museum exhibit info sign (ov004): talks about the donated items of one exhibit kind (Character plus the
 // TalkMsgRequest secondary base at +0xec). Defined in src/ov004/unk_ov004_02213b90.cpp (and its _switch twin).
@@ -41,7 +42,7 @@ public:
     BOOL registerSelf();
 
     /* 0x130 */ s32 act;
-    /* 0x134 */ u32 touchSphere[0x1c / 4];  // a TouchPickSphere (ctor C1 / dtor D1 called by hand)
+    /* 0x134 */ TouchPickSphere touchSphere;
     /* 0x150 */ u8 index;
     /* 0x151 */ u8 cursor;
     /* 0x152 */ u8 pad_152[2];

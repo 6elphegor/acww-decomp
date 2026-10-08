@@ -20,13 +20,13 @@ static inline u32 Unk_0206fe34_Id(u32 i) {
     return 0x450c;
 }
 
-extern "C" s32 Museum_CountDonatedFossilsInGroup(u32 a, s32 b) {
+extern "C" s32 Museum_CountDonatedFossilsInGroup(MuseumData *a, s32 b) {
     s32 cnt = 0;
     u32 i;
     for (i = 0; i < 0x34; i++) {
         u16 v = Unk_0206fe34_Id(i);
         if (b == Item_GetFossilGroup(&v)) {
-            if (((MuseumData *)a)->isDonated(&v)) {
+            if (a->isDonated(&v)) {
                 cnt++;
             }
         }

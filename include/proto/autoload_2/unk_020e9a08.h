@@ -51,8 +51,17 @@ void Net_OnHeapDestroyNop(void);
 #ifndef PROTO_LOCAL_Net_Update
 void Net_Update(void);
 #endif
+#ifndef PROTO_LOCAL_Net_GetBeaconGameInfo
+void *Net_GetBeaconGameInfo(void *p);
+#endif
+#ifndef PROTO_LOCAL_Net_GetScanResults
+void **Net_GetScanResults(void);
+#endif
 #ifndef PROTO_LOCAL_Net_GetOwnFriendKey
 s64 Net_GetOwnFriendKey(void *p);
+#endif
+#ifndef PROTO_LOCAL_data_021f4910
+extern void *data_021f4910[8];
 #endif
 #ifdef __cplusplus
 }
@@ -219,14 +228,8 @@ s32 Net_ClearWifiError(void);
 #ifndef PROTO_LOCAL_Net_SetLocalGameInfo
 s32 Net_SetLocalGameInfo(void *a, u32 n);
 #endif
-#ifndef PROTO_LOCAL_Net_GetBeaconGameInfo
-s32 Net_GetBeaconGameInfo(void *p);
-#endif
 #ifndef PROTO_LOCAL_Net_GetBeaconGameInfoSize
 s32 Net_GetBeaconGameInfoSize(void *p);
-#endif
-#ifndef PROTO_LOCAL_Net_GetScanResults
-u32 *Net_GetScanResults(void);
 #endif
 #ifndef PROTO_LOCAL_Net_ConnectToParent
 s32 Net_ConnectToParent(void *p);
@@ -332,9 +335,6 @@ extern u8 sWifiPingState[0x50];
 #endif
 #ifndef PROTO_LOCAL_data_021f4950
 extern u8 data_021f4950[0x40];
-#endif
-#ifndef PROTO_LOCAL_data_021f4910
-extern u32 data_021f4910[8];
 #endif
 #ifndef PROTO_LOCAL_sSendQueue
 extern u8 sSendQueue[0x20];

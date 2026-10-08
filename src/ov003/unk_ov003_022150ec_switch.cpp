@@ -77,9 +77,9 @@ BOOL CountdownDigit::initBuilding() {
     digitIndex = sCountdownSpawnIndex;
     digit = 0;
     setCharId(digitIndex);
-    if (matAnim.allocMatAnm((NNSG3dResMdl *)modelRes, gFieldStructureHeap)) {
+    if (matAnim.allocMatAnm(model.resMdl, gFieldStructureHeap)) {
         matAnim.init(getBtaAnim(0), 1, 0x1000, 0);
-        matAnim.addToRenderObj(((Model *)model)->getRenderObj());
+        matAnim.addToRenderObj(model.getRenderObj());
     }
     isCounting = 1;
     prevDigit = 0xff;

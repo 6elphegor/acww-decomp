@@ -8,7 +8,6 @@
 #include "room/FtrSwitch.h"
 #include "room/FtrTopItems.h"
 #include "room/FtrVisNodes.h"
-#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -17,13 +16,17 @@
 #include "gfx/Mtx43.h"
 #include "room/FtrActorParts.h"
 #include "room/FtrManager.h"
+#include "room/FtrTileList.h"
+#include "room/FtrModelAnim.h"
+#include "room/FtrClockHands.h"
+#include "game/TouchPickCylinder.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 struct NNSG3dRS;
 
 // Furniture actor of the room overlay (ov004): Character with TalkMsgRequest as secondary base at +0xec.
 // Defined in src/ov004/unk_ov004_02204f24.cpp (ctor, all base methods); its 34 subclasses are in
-// src/ov004/unk_ov004_02209f70.cpp (+ _switch, same unit). The members are byte arrays where the real parts
-// (FtrStackLink, FtrTopItems, BlendAnimModel, FtrCollider, FtrSwitch ...) are constructed by hand. Size 0x840.
+// src/ov004/unk_ov004_02209f70.cpp (+ _switch, same unit). Size 0x840 on the DS (the offsets are the DS ones).
 class FtrActor : public Character, public TalkMsgRequest {
 public:
     FtrActor();
@@ -117,16 +120,17 @@ public:
     BOOL bindTvScreenTex(BOOL a);   // defined in 02209f70
 
     void initLamp();
-    void moveTiles(void *a, s32 b);
-    void writeTiles(s32 unused, void *x, s32 y, u8 flag);
+    void moveTiles(VecFx32 *offset, s32 angle);
+    void writeTiles(s32 unused, VecFx32 *offset, s32 angle, u8 flag);
     void clearTiles(s32 a, s32 b);
-    void getTiles(Unk_ov004_02207854_List *l, void *x, s32 y);
+    void getTiles(FtrTileList *l, VecFx32 *offset, s32 angle);
     void applyPolygonId();
     void setupModel();
     void setupFromSpawnArg();
 
-    /* 0x12e */ u16 modelSlot; // a ModelSlotHandle (ctor/dtor called by hand)
-    /* 0x130 */ u8 pad_130[0x14c - 0x130];
+    /* 0x12e */ u16 modelSlot;      // a ModelSlotHandle (sFtrMgrPool)
+    /* 0x130 */ u8 pad_130[0x10];
+    /* 0x140 */ VecFx32 modelOffset; // model offset in the furniture's frame (wide furniture slid by the player)
     /* 0x14c */ s32 drawScale;
     /* 0x150 */ s32 drawScaleY;
     /* 0x154 */ s32 drawScaleZ;
@@ -134,67 +138,43 @@ public:
     /* 0x15c */ u16 appearFrame;
     /* 0x15e */ u16 wobblePhase;
     /* 0x160 */ s16 wobbleSpeed;
-    /* 0x162 */ u8 pad_162[2];
     /* 0x164 */ s32 wobbleAmp;
     /* 0x168 */ s16 targetAngle;
-    /* 0x16a */ u8 pad_16a[2];
-    /* 0x16c */ s32 targetPos[3];
-    /* 0x178 */ u8 stackLink[HOST_SIZED(0x10, FtrStackLink)] HOST_ALIGN8;   // FtrStackLink
-    /* 0x188 */ u8 topItems[HOST_SIZED(0x44, FtrTopItems)] HOST_ALIGN8;   // FtrTopItems
-    /* 0x1cc */ u8 topItemCylinders[0x80];   // 4 x TouchPickCylinder (0x20)
-    union {
-        /* 0x24c */ u8 moveFlag[0x34];   // move-animation state (FtrMoveAnim_*)
-        struct {
-            /* 0x24c */ u8 pad_24c[4];
-            /* 0x250 */ Mtx43 worldMtx;  // read by getTiles / writeTiles / clearTiles
-        };
-    };
+    /* 0x16c */ VecFx32 targetPos;
+    /* 0x178 */ FtrStackLink stackLink;
+    /* 0x188 */ FtrTopItems topItems;
+    /* 0x1cc */ TouchPickCylinder topItemCylinders[4];
+    /* 0x24c */ u8 moveFlag;        // move animation running (FtrMoveAnim_*)
+    /* 0x250 */ Mtx43 worldMtx;     // read by getTiles / writeTiles / clearTiles
     /* 0x280 */ u32 ftrIndex;
     /* 0x284 */ u8 mapLayer;
     /* 0x285 */ u8 isSetUp;         // setupFromSpawnArg done
-    /* 0x286 */ u8 pad_286[2];
-    /* 0x288 */ u8 touchBox[HOST_SIZED(0x2a8, TouchPickBox)] HOST_ALIGN8;  // TouchPickBox
+    /* 0x288 */ TouchPickBox touchBox;
     /* 0x530 */ s32 baseAct;
-    /* 0x534 */ u8 model[0x590 - 0x534]; // BlendAnimModel
-    /* 0x590 */ void *modelResMdl;
-    /* 0x594 */ u8 pad_594[4];
-    /* 0x598 */ Mtx43 modelMtx;
-    /* 0x5c8 */ u8 pad_5c8[0x5d0 - 0x5c8];
-    /* 0x5d0 */ u8 animFrameCtrl[4];
-    /* 0x5d4 */ u32 animNumFrames;
-    /* 0x5d8 */ u32 animFrame;
-    /* 0x5dc */ u8 pad_5dc[4];
-    /* 0x5e0 */ s32 animFrameStep;
-    /* 0x5e4 */ u8 pad_5e4[0x628 - 0x5e4];
-    /* 0x628 */ u8 collider[HOST_SIZED(0xa0, FtrCollider)] HOST_ALIGN8;   // FtrCollider
-    /* 0x6c8 */ u8 modelRes[HOST_SIZED(0x74, FtrModelRes)] HOST_ALIGN8;   // FtrModelRes
-    /* 0x73c */ u8 switchState[HOST_SIZED(0x2, FtrSwitch)] HOST_ALIGN8;      // FtrSwitch
-    /* 0x73e */ s8 clockHands;         // FtrClockHands (3 bytes)
-    /* 0x73f */ s8 clockHandsMinJnt;
-    /* 0x740 */ u8 clockHandsValid;
-    /* 0x741 */ u8 pad_741[3];
-    /* 0x744 */ u8 lampMat[HOST_SIZED(0x1c, FtrGlowMat)] HOST_ALIGN8;   // FtrGlowMat
-    /* 0x760 */ u8 visNodes[HOST_SIZED(0x8, FtrVisNodes)] HOST_ALIGN8;      // FtrVisNodes
+    /* 0x534 */ BlendAnimModel model;
+    /* 0x628 */ FtrCollider collider;
+    /* 0x6c8 */ FtrModelRes modelRes;
+    /* 0x73c */ FtrSwitch switchState;
+    /* 0x73e */ FtrClockHands clockHands;
+    /* 0x744 */ FtrGlowMat lampMat;
+    /* 0x760 */ FtrVisNodes visNodes;
     /* 0x768 */ s32 spawnMode;
     /* 0x76c */ u16 actFrame;
-    /* 0x76e */ u8 pad_76e[2];
     /* 0x770 */ s32 commentPersonality;
     /* 0x774 */ s32 commentId;
     /* 0x778 */ u8 actAid;
     /* 0x779 */ u8 netRequestPending;
     /* 0x77a */ u8 isInitializing;
-    /* 0x77b */ u8 pad_77b;
     /* 0x77c */ s32 kind;
     /* 0x780 */ s32 footprint;
     /* 0x784 */ s32 hasTopSurface;
     /* 0x788 */ u8 noCollision;
     /* 0x789 */ u8 startsOff;
-    /* 0x78a */ u8 pad_78a[2];
     /* 0x78c */ s32 surfaceHeight;
     /* 0x790 */ s32 lightKind;
-    /* 0x794 */ u8 soundEmitter[HOST_SIZED(0x20, FtrSoundEmitter)] HOST_ALIGN8;   // FtrSoundEmitter (room/FtrManager.h)
-    /* 0x7b4 */ s32 centerPos[3];
-    /* 0x7c0 */ FtrModelAnimView anims[4];   // 4 x FtrModelAnim
+    /* 0x794 */ FtrSoundEmitter soundEmitter;
+    /* 0x7b4 */ VecFx32 centerPos;
+    /* 0x7c0 */ FtrModelAnim anims[4]; // material (bma), texture SRT (bta), pattern (btp), visibility (bva)
 };
 
 #endif // ROOM_FTRACTOR_H

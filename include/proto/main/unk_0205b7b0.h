@@ -266,7 +266,7 @@ void HeldInsectHeap_Create(u32 size, void *parent);
 void FieldInsectHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsectHeap_Create
-void MuseumInsectHeap_Create(u32 size, void *parent);
+void *MuseumInsectHeap_Create(u32 size, void *parent);
 #endif
 #ifndef PROTO_LOCAL_FishShadowHeap_Create
 void FishShadowHeap_Create(u32 size, void *parent);

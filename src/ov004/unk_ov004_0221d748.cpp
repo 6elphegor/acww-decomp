@@ -1,4 +1,3 @@
-#include "uptr.h"
 #include "types.h"
 
 
@@ -32,6 +31,7 @@
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
 #include "save/PatternOrder.h"
+#include "npc/SickVillagerRecord.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02039c08.h"
 #include "proto/main/unk_02063904.h"
@@ -76,45 +76,9 @@ struct SpNpcBookerTalkScript {
 
 struct SpNpcBookerActEntry {
     Unk_ov004_0224d2d8_Fn enter;
-    Unk_ov004_0224d2d8_Fn exit;
+    Unk_ov004_0224d2d8_Fn update;
 };
 
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
-#define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define func_0201b08c _ZN8NpcActor18onInteractionEventEi
-#define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
-#define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
-#define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
-#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
-#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
-#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
-#define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
-#define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
-#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
-#define PlayerPatterns_getPatternOrder _ZN14PlayerPatterns15getPatternOrderEv
-#define PatternOrder_getSlot _ZN12PatternOrder7getSlotEj
-#define PlayerData_getShirt _ZN10PlayerData8getShirtEv
-#define PlayerData_getHat _ZN10PlayerData6getHatEv
-#define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
-#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define SickVillagerRecord_resetRecord _ZN18SickVillagerRecord11resetRecordEv
 
 extern "C" {
 extern CommManager *gCommManager;
@@ -123,48 +87,12 @@ extern u16 data_020c6cc8;
 extern u8 gSaveVillagers[];
 extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[];
 extern SpNpcBookerActEntry sSpNpcBookerActTable[];
-// 0x02250b58 is a label inside the 0x70-byte table (second ptmf of entry 0)
-#define data_ov004_02250b58 ((SpNpcBookerActEntry *)((u8 *)sSpNpcBookerActTable + 8))
+extern const char *sSpNpcBookerMsgFiles[1];
 
-void func_0201b08c(void *self, u32 a, u32 b);
-s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
-BOOL NpcActor_isNetOwner(void *self);
-BOOL NpcActor_netIsTalkLocked(void *self);
-void NpcActor_setTalkRequest(void *self, void *p);
-s32 NpcActor_getAngleTo(void *self, void *p);
-void NpcActor_setCollisionRadius(void *self, s32 v);
-void NpcMoveAnimSet_setWalkAnim(void *self, s32 a);
-void NpcMoveAnimSet_setStandAnim(void *self, s32 a);
-void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
-void *ActorTalkRequest_getTalkPlayer(void *self);
-s32 NpcActionCtrl_getAction(void *self);
-s32 NpcActionCtrl_isActionDone(void *self);
-void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-void NpcActionCtrl_requestStand(void *self, s32 a, u16 b);
-s32 NpcTalkCtrl_isBusy(void *self);
-void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-void ActorTalkRequest_setSubSceneKind(void *self, s32 a, s32 b);
-void ActorTalkRequest_openSubScene(void *self, s32 a);
-void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
-void *PlayerData_getPatterns(void *p);
-void *PlayerPatterns_getPatternOrder(void *p);
-u32 PatternOrder_getSlot(void *p, u32 i);
-u16 *PlayerData_getShirt(void *p);
-u16 *PlayerData_getHat(void *p);
-void TalkWindowState_setNextMessage(void *o, void *p, u32 d);
-void *TalkWindowState_getChoiceList(void *o);
-s32 ChoiceList_getResult(void *p);
-void *PlayerData_getPlayerId(s32 v);
 s32 Talk_IsInOwnTown(void);
-s32 PlayerData_testFlag(void *p, s32 n);
-void PlayerData_setFlag(void *p, s32 n);
-s32 CommManager_isOnline(void *p);
-s32 CommManager_isSlotActive(void *p, u32 i);
 void TalkRequest_SetTargetDone(void *p);
 s32 SaveVillagers_GetUnk3830Index(void *p);
-void *SaveVillagers_GetUnk3830(void *p);
-s32 SickVillagerRecord_resetRecord(void *p);
+SickVillagerRecord *SaveVillagers_GetUnk3830(void *p);
 s32 Scene_GetCurrent(void);
 }
 
@@ -277,7 +205,7 @@ BOOL SpNpcBooker::onDelete() {
     if (((CommManager *)(g))->isSlotActive(g->myAid) && !((CommManager *)(g))->isOnline()) {
         void *p = gSaveVillagers;
         if (SaveVillagers_GetUnk3830Index(p) != -1) {
-            SickVillagerRecord_resetRecord(SaveVillagers_GetUnk3830(p));
+            SaveVillagers_GetUnk3830(p)->resetRecord();
         }
     }
     return TRUE;
@@ -289,8 +217,8 @@ u8 *SpNpcBooker::getModelPath() { return sSpNpcBookerModelPath; }
 
 BOOL SpNpcBooker::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcBookerActTable[act].exit) { // (the DS label is the table + one member: the exit member)
-        r = (this->*sSpNpcBookerActTable[act].exit)();
+    if (sSpNpcBookerActTable[act].update) {
+        r = (this->*sSpNpcBookerActTable[act].update)();
     }
     return r;
 }
@@ -409,12 +337,7 @@ void SpNpcBookerTalk::attachOwner(NpcActor *o) {
     owner = o;
 }
 
-void SpNpcBookerTalk::start(TalkStartMsg *arg) {
-    struct Msg {
-        u32 fileName;
-        u8 msgIndex;
-    };
-    Msg *out = (Msg *)arg;
+void SpNpcBookerTalk::start(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     if (Talk_IsInOwnTown() == 0 || GameStart_IsActive() != 0) {
         out->msgIndex = Random_GlobalBelow(3) + 8;
@@ -424,7 +347,7 @@ void SpNpcBookerTalk::start(TalkStartMsg *arg) {
     } else {
         out->msgIndex = Random_GlobalBelow(4) + 4;
     }
-    out->fileName = sSpNpcBookerMsgFiles[0];
+    out->msgKey = sSpNpcBookerMsgFiles[0];
 }
 
 void SpNpcBookerTalk::onMessageEnd(u32) {
@@ -447,7 +370,7 @@ void SpNpcBookerTalk::onChoice(u32) {
     u16 x;
     void *o = window;
     s32 t = ((ChoiceList *)(((TalkWindowState *)(o))->getChoiceList()))->getResult();
-    u32 d = sSpNpcBookerMsgFiles[0];
+    const char *d = sSpNpcBookerMsgFiles[0];
     u32 r = 0xff;
     switch (msgIndex) {
     case 0xf:
@@ -457,7 +380,7 @@ void SpNpcBookerTalk::onChoice(u32) {
                 if (((CommManager *)(s))->isOnline() != 0) {
                     PlayerData *q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
                     if (q != 0) {
-                        ((ActorTalkRequest *)this)->setPlayerNameSlot((PlayerId *)PlayerData_getPlayerId(q), 1);
+                        ((ActorTalkRequest *)this)->setPlayerNameSlot(q->getPlayerId(), 1);
                     }
                     r = 0x30;
                 } else {
@@ -559,10 +482,10 @@ void SpNpcBookerTalk::runScript01() {
         PatternSrc_Copy(9, t, 5, 0, 1);
         Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x50, 0x7f, 0);
         buf[0] = 0x18;
-        ((TalkWindowState *)(window))->setNextMessage((u8 *)(buf), (void *)(sSpNpcBookerMsgFiles[0]));
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(buf), (void *)sSpNpcBookerMsgFiles[0]);
     } else {
         buf[1] = 1;
-        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[1]), (void *)(sSpNpcBookerMsgFiles[0]));
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[1]), (void *)sSpNpcBookerMsgFiles[0]);
     }
 }
 
@@ -606,10 +529,10 @@ void SpNpcBookerTalk::runScript02() {
             }
         }
         m.c0 = 0x19;
-        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)(sSpNpcBookerMsgFiles[0]));
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)sSpNpcBookerMsgFiles[0]);
     } else {
         m.c1 = 1;
-        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m.c1), (void *)(sSpNpcBookerMsgFiles[0]));
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m.c1), (void *)sSpNpcBookerMsgFiles[0]);
     }
 }
 
@@ -630,7 +553,7 @@ void SpNpcBookerTalk::runScript03() {
             c = 0x1e;
         }
     }
-    ((TalkWindowState *)(o))->setNextMessage((u8 *)(&c), (void *)(sSpNpcBookerMsgFiles[0]));
+    ((TalkWindowState *)(o))->setNextMessage((u8 *)(&c), (void *)sSpNpcBookerMsgFiles[0]);
 }
 
 BOOL SpNpcBooker::acceptsInteraction(void *) {
@@ -713,61 +636,25 @@ void SpNpcBooker::onInteractionEvent(u32 cmd, u8 arg) {
 // SpNpcBooker
 
 
-extern "C" void _ZN11SpNpcBooker9mainAct04Ev();
-extern "C" void _ZN15SpNpcBookerTalk11runScript01Ev();
-extern "C" void _ZN15SpNpcBookerTalk11runScript03Ev();
-extern "C" void _ZN11SpNpcBooker9mainAct05Ev();
-extern "C" void _ZN11SpNpcBooker9mainAct03Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct05Ev();
-extern "C" void _ZN15SpNpcBookerTalk11runScript02Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct04Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct06Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct03Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct02Ev();
-extern "C" void _ZN11SpNpcBooker9mainAct02Ev();
-extern "C" void _ZN11SpNpcBooker9mainAct01Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct01Ev();
-extern "C" void _ZN11SpNpcBooker9mainAct00Ev();
-extern "C" void _ZN11SpNpcBooker10setupAct00Ev();
-extern "C" void _ZN11SpNpcBooker9mainAct06Ev();
 extern "C" u8 data_ov004_0224d1e0[19] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'g', 'a', 't', 'e', 'k', 'e', 'e', 'p', 'e', 'r', '2', 0};
 extern "C" u8 data_ov004_0224d1f4[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'l', 'a', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 data_ov004_0224d224[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'l', 'a', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" uptr sSpNpcBookerMsgFiles[1] = {(uptr)data_ov004_0224d1e0};
+extern "C" const char *sSpNpcBookerMsgFiles[1] = {(const char *)data_ov004_0224d1e0};
 extern "C" u8 *sSpNpcBookerModelPath = data_ov004_0224d1f4;
 extern "C" u8 *sSpNpcBookerTexturePath = data_ov004_0224d224;
 extern "C" ActorProfile sSpNpcBookerProfile = {(void *(*)())SpNpcBooker_Create, 0x73, 0x78, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov004_0224d1d8[2] = {(void *)_ZN11SpNpcBooker9mainAct06Ev, 0};
-extern "C" void *data_ov004_0224d1d0[2] = {(void *)_ZN11SpNpcBooker10setupAct00Ev, 0};
-extern "C" void *data_ov004_0224d1c8[2] = {(void *)_ZN11SpNpcBooker9mainAct00Ev, 0};
-extern "C" void *data_ov004_0224d1c0[2] = {(void *)_ZN11SpNpcBooker10setupAct01Ev, 0};
-extern "C" void *data_ov004_0224d1b8[2] = {(void *)_ZN11SpNpcBooker9mainAct01Ev, 0};
-extern "C" void *data_ov004_0224d190[2] = {(void *)_ZN11SpNpcBooker10setupAct04Ev, 0};
-extern "C" void *data_ov004_0224d1a8[2] = {(void *)_ZN11SpNpcBooker10setupAct02Ev, 0};
-extern "C" void *data_ov004_0224d1b0[2] = {(void *)_ZN11SpNpcBooker9mainAct02Ev, 0};
-extern "C" void *data_ov004_0224d170[2] = {(void *)_ZN11SpNpcBooker9mainAct05Ev, 0};
-extern "C" void *data_ov004_0224d160[2] = {(void *)_ZN15SpNpcBookerTalk11runScript01Ev, 0};
-extern "C" void *data_ov004_0224d158[2] = {(void *)_ZN11SpNpcBooker9mainAct04Ev, 0};
-extern "C" void *data_ov004_0224d180[2] = {(void *)_ZN11SpNpcBooker10setupAct05Ev, 0};
-extern "C" void *data_ov004_0224d178[2] = {(void *)_ZN11SpNpcBooker9mainAct03Ev, 0};
-extern "C" void *data_ov004_0224d1a0[2] = {(void *)_ZN11SpNpcBooker10setupAct03Ev, 0};
-extern "C" void *data_ov004_0224d168[2] = {(void *)_ZN15SpNpcBookerTalk11runScript03Ev, 0};
-extern "C" void *data_ov004_0224d198[2] = {(void *)_ZN11SpNpcBooker10setupAct06Ev, 0};
-extern "C" void *data_ov004_0224d188[2] = {(void *)_ZN15SpNpcBookerTalk11runScript02Ev, 0};
-typedef BOOL (SpNpcBooker::*Unk_ov004_O_Fn)();
-typedef void (SpNpcBookerTalk::*Unk_ov004_D_Fn)();
 extern "C" SpNpcBookerTalkScript sSpNpcBookerTalkScripts[4] = {
     {0, 0},
-    {*(Unk_ov004_D_Fn *)data_ov004_0224d160, 0},
-    {*(Unk_ov004_D_Fn *)data_ov004_0224d188, 0},
-    {*(Unk_ov004_D_Fn *)data_ov004_0224d168, 0},
+    {&SpNpcBookerTalk::runScript01, 0},
+    {&SpNpcBookerTalk::runScript02, 0},
+    {&SpNpcBookerTalk::runScript03, 0},
 };
 extern "C" SpNpcBookerActEntry sSpNpcBookerActTable[7] = {
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d1d0, *(Unk_ov004_O_Fn *)data_ov004_0224d1c8},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d1c0, *(Unk_ov004_O_Fn *)data_ov004_0224d1b8},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d1a8, *(Unk_ov004_O_Fn *)data_ov004_0224d1b0},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d1a0, *(Unk_ov004_O_Fn *)data_ov004_0224d178},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d190, *(Unk_ov004_O_Fn *)data_ov004_0224d158},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d180, *(Unk_ov004_O_Fn *)data_ov004_0224d170},
-    {*(Unk_ov004_O_Fn *)data_ov004_0224d198, *(Unk_ov004_O_Fn *)data_ov004_0224d1d8},
+    {&SpNpcBooker::setupAct00, &SpNpcBooker::mainAct00},
+    {&SpNpcBooker::setupAct01, &SpNpcBooker::mainAct01},
+    {&SpNpcBooker::setupAct02, &SpNpcBooker::mainAct02},
+    {&SpNpcBooker::setupAct03, &SpNpcBooker::mainAct03},
+    {&SpNpcBooker::setupAct04, &SpNpcBooker::mainAct04},
+    {&SpNpcBooker::setupAct05, &SpNpcBooker::mainAct05},
+    {&SpNpcBooker::setupAct06, &SpNpcBooker::mainAct06},
 };

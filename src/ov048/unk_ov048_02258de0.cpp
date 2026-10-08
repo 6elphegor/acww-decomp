@@ -38,21 +38,15 @@
 #include "talk/MsgString.h"
 #include "talk/MsgString9B.h"
 #include "talk/MsgString9C.h"
-#define PROTO_LOCAL_Comm_SendEmpty  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetOverlay_AssertAny  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetOverlay_AssertWifi  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetOverlay_AssertWireless  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_CountHostCandidates  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_GetScanResults  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_GetWifiFriendList  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_PollConnected  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_WifiShutdownStepExt  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Net_WifiStartHost  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "talk/MsgString25.h"
+#include "talk/EncodedString8B.h"
+#include "town/TownTravelState.h"
+#include "town/KatieVisitState.h"
+#include "save/SaveManager.h"
+#include "save/TownId.h"
+#include "gfx/ScreenTransition.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_020b2c50.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"
@@ -78,9 +72,6 @@ class NpcActor;
 class SpNpcCopper;
 class SpNpcCopperTalk;
 
-struct SpNpcCopperVecLocal : VecFx32 {
-    SpNpcCopperVecLocal() {}
-};
 
 
 
@@ -94,68 +85,38 @@ extern const VecFx32 sCopperSendOffExitPos;
 extern const VecFx32 sCopperArrivalWalkPos;
 extern const VecFx32 sCopperDepartWalkPos;
 extern CommManager *gCommManager;
-extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
-extern u8 gSaveTownId[];
-void _ZN11MsgString25C1Ev(void *);
-void _ZN11MsgString25D1Ev(void *);
-void String_FormatNumber(void *, s32, s32, s32, s32, s32);
-void _ZN11MsgString9CC2Ev(void *);
-void _ZN15EncodedString8BC2Ev(void *);
-void _ZN15EncodedString8BD1Ev(void *);
+extern TownId gSaveTownId;
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 BOOL Math_CountDownU16(void *);
 s32 Math_IsInRange(s32, s32, s32);
-BOOL Net_WifiShutdownStepExt(s32);
 void SpNpcKatie_ChangeAct05();
 s32 SpNpcKatie_ResetAct();
-BOOL Comm_SendEmpty();
-s32 Net_CountHostCandidates(s32);
-void * Net_GetScanResults(s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
-s32 Net_PollConnected(...);
-s32 Net_GetWifiFriendList(s32);
 s32 Talk_IsInOwnTown();
 u32 Clock_GetTimeOfDay();
 void * FriendList_GetEntries(void *);
 void * Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *, s32, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
-void _ZN15TownTravelState7setModeEj(void *, s32);
-void _ZN15TownTravelState8setAngleEi(void *, s32);
 s32 Scene_SetSavedPos(void *, s32, VecFx32 *, s32, s32, s32, s32);
 void Camera_SaveView();
 s32 SceneWarp_RequestAt(void *, s32, VecFx32 *, s32, s32, s32, s32);
 void SceneWarp_RequestExit(void *, s32);
-void PlayerActor_RequestWalkTo(void *, s32, s32);
-u8 * _ZN5Actor13findByProfileEjPS_(s32, s32);
 s32 Math_CountDownU8(void *);
 s32 Camera_SetMode15();
 s32 Camera_SetMode14();
 s32 Camera_IsBlending();
 void TalkRequest_SetTargetDone(void *);
-s32 Net_WifiStartHost(s32);
-void * TownId_GetName(void *);
-VecFx32 * PlayerActor_GetBodyPos(s32);
-s32 _ZN10SpNpcActor8onDeleteEv();
 s32 Scene_GetCurrent();
 void TalkRequestFlags_ClearSceneHold();
-s32 _ZN10SpNpcActor8onCreateEv();
-s32 _ZN15TownTravelState7getModeEv(void *);
-s32 _ZN15TownTravelState8getAngleEv(void *);
-void _ZN15TownTravelState9clearModeEv(void *);
 void TalkRequestFlags_SetSceneHold();
-s32 _ZN10SpNpcActor9preCreateEv();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 BOOL SpNpcKatie_IsIdle();
 BOOL TalkRequest_IsActive();
-BOOL _ZN15KatieVisitState11isFollowingEv(void *);
 
 }
-s32 NetOverlay_AssertWifi();
-s32 NetOverlay_AssertWireless();
-s32 NetOverlay_AssertAny();
 
 
 
@@ -205,6 +166,7 @@ public:
     void startMailDownload();
     void waitWifiLogin();
     void setScript(s32 s);
+    s32 getWifiErrorMsg(s32 id);
     void onChoiceUnk5F(s32 p);
     void onChoiceGateAlreadyOpen(s32 p);
     void onChoiceSaveAndQuit(s32 p);
@@ -251,7 +213,7 @@ public:
     void endComm();
     s32 getTopic();
     void setTopic(s32 v);
-    void attachOwner(u8 *p);
+    void attachOwner(SpNpcCopper *p);
     u32 getJoinErrorMsg();
     u32 getConnectErrorMsg();
     u32 getAnythingElseMsg();
@@ -260,16 +222,14 @@ public:
 
     s32 topic;
     s32 script;
-    u8 *owner;
+    SpNpcCopper *owner;
     /* 0x0b8 */ Pattern pattern;
     /* 0x2e0 */ u8 hostGameInfo[0x14];
     /* 0x2f4 */ u8 hostBeacon[0xe0];
     /* 0x3d4 */ s32 hostFriendId;
-    // Raw storage: constructed in the ctor body by plain calls after the Pattern member (AxMail_Construct /
-    // AxBbsNotice_Construct are C functions, so a BlancaFaceRecord member would be constructed before them).
-    /* 0x3d8 */ u8 mail[0x108];        // AxMail
-    /* 0x4e0 */ u8 bbsNotice[0xd4];    // AxBbsNotice
-    /* 0x5b4 */ u8 blancaFace[0x22c];  // BlancaFaceRecord
+    /* 0x3d8 */ AxMail mail;
+    /* 0x4e0 */ AxBbsNotice bbsNotice;
+    /* 0x5b4 */ BlancaFaceRecord blancaFace;
     u8 wifiIdChanged;
     u8 saveDone;
     u8 syncPayload;
@@ -306,7 +266,6 @@ public:
 
     BOOL canStartSave();
     BOOL checkPlayerAtGate();
-    s32 getWifiErrorMsg(s32 id);
     BOOL mainAct10();
     BOOL setupAct10();
     BOOL mainAct11();
@@ -389,26 +348,20 @@ extern SpNpcCopperTalkScript sSpNpcCopperTalkScripts[];
 }
 
 extern "C" {
-void AxBbsNotice_Destruct(void *);
-void AxBbsNotice_Construct(void *);
-void AxMail_Destruct(void *);
-void AxMail_Construct(void *);
-void _ZN7PatternD1Ev(void *);
-void _ZN7PatternC1Ev(void *);
 }
 
 #define RNG(v, lo, hi) (Math_IsInRange((v), (lo), (hi)) != 0)
 
 // ---- b444
 static inline BOOL Unk_ov048_0225b4e4_Is2() {
-    if (gScreenTransition == 2) {
+    if (gScreenTransition.state == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 static inline BOOL Unk_ov048_0225b854_Is0() {
-    if (gScreenTransition == 0) {
+    if (gScreenTransition.state == 0) {
         return TRUE;
     }
     return FALSE;
@@ -423,7 +376,7 @@ BOOL SpNpcCopper::preCreate() {
         return FALSE;
     }
     setTalkRequest((ActorTalkRequest *)&talk);
-    talk.attachOwner((u8 *)this);
+    talk.attachOwner(this);
     setCollisionRadius(0x100);
     ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xd9);
     ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xd8);
@@ -450,17 +403,17 @@ BOOL SpNpcCopper::onCreate() {
         }
         return TRUE;
     }
-    void *p = TownSessionState_GetTravelState(TownSessionState_Get());
-    if (_ZN15TownTravelState7getModeEv(p) == 1 || _ZN15TownTravelState7getModeEv(p) == 2) {
-        if (_ZN15TownTravelState7getModeEv(p) == 1) {
+    TownTravelState *p = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+    if (p->getMode() == 1 || p->getMode() == 2) {
+        if (p->getMode() == 1) {
             talk.setTopic(6);
         } else {
             talk.setTopic(7);
         }
         SpNpcCopper_ChangeAct(this, 0);
-        rotY = _ZN15TownTravelState8getAngleEv(p);
-        moveAngleY = _ZN15TownTravelState8getAngleEv(p);
-        _ZN15TownTravelState9clearModeEv(p);
+        rotY = p->getAngle();
+        moveAngleY = p->getAngle();
+        p->clearMode();
     } else if (Scene_GetCurrent() == 0xd) {
         TalkRequestFlags_SetSceneHold();
         SpNpcCopper_ChangeAct(this, 9);
@@ -499,8 +452,7 @@ BOOL SpNpcCopper::updateAct() {
     return r;
 }
 
-extern "C" void SpNpcCopper_ChangeAct(void *p, s32 s) {
-    SpNpcCopper *self = (SpNpcCopper *)p;
+extern "C" void SpNpcCopper_ChangeAct(SpNpcCopper *self, s32 s) {
     BOOL r = TRUE;
     if (sSpNpcCopperActTable[s].enter) {
         r = (self->*sSpNpcCopperActTable[s].enter)();
@@ -577,11 +529,11 @@ BOOL SpNpcCopper::setupAct05() {
 }
 
 BOOL SpNpcCopper::mainAct05() {
-    SpNpcCopperVecLocal a;
-    SpNpcCopperVecLocal b;
+    VecFx32Ctor a;
+    VecFx32Ctor b;
     PlayerData_GetCurrent();
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
-    *(VecFx32 *)&a = *p;
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    static_cast<VecFx32 &>(a) = *p;
     switch (talk.subStep) {
     case 0:
         if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
@@ -589,7 +541,7 @@ BOOL SpNpcCopper::mainAct05() {
         }
         break;
     case 1:
-        *(VecFx32 *)&b = sCopperTurnBackPos;
+        static_cast<VecFx32 &>(b) = sCopperTurnBackPos;
         PlayerActor_RequestWalkTo(&b, 0x266, 4);
         talk.subStep = 3;
         break;
@@ -624,7 +576,8 @@ BOOL SpNpcCopper::mainAct06() {
             talk.timer = 0x3c;
             talk.subStep = 2;
             if (Net_GetMode() == 4) {
-                Net_WifiStartHost(NetOverlay_AssertWifi());
+                NetOverlay_AssertWifi();
+                Net_WifiStartHost();
                 ((CommManager *)(gCommManager))->setErrorMode(0);
                 Comm_BeginHostSession();
             }
@@ -635,13 +588,14 @@ BOOL SpNpcCopper::mainAct06() {
             u8 t = talk.msgIndex;
             if (t == 0x46 || t == 0x6c) {
                 if (Net_GetMode() == 3) {
-                    if (Net_PollConnected(NetOverlay_AssertAny()) != 0) {
+                    NetOverlay_AssertAny();
+                    if (Net_PollConnected() != 0) {
                         TalkRequest_SetTargetDone(this);
                     }
                 } else {
                     talk.startComm(1, 0);
                     h = PlayerData_GetCurrent();
-                    MI_CpuCopy8(TownId_GetName(gSaveTownId), buf, 8);
+                    MI_CpuCopy8(TownId_GetName(&gSaveTownId.townId), buf, 8);
                     MI_CpuCopy8(((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getName(), buf + 8, 8);
                     buf[0x10] = 0;
                     NetOverlay_AssertWireless();
@@ -652,7 +606,8 @@ BOOL SpNpcCopper::mainAct06() {
             }
         } else {
             if (Net_GetMode() == 3) {
-                Net_PollConnected(NetOverlay_AssertAny());
+                NetOverlay_AssertAny();
+                Net_PollConnected();
             }
         }
         break;
@@ -689,10 +644,10 @@ BOOL SpNpcCopper::mainAct07() {
 }
 
 BOOL SpNpcCopper::act08Step0() {
-    VecFx32 v;
+    VecFx32Ctor v;
     if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         Camera_SetMode14();
-        v = sCopperSendOffWalkPos;
+        static_cast<VecFx32 &>(v) = sCopperSendOffWalkPos;
         PlayerActor_RequestWalkTo(&v, 0x400, 4);
         PlayerActor_SetNoFaceTalkTarget(1, 4);
         return TRUE;
@@ -712,17 +667,17 @@ BOOL SpNpcCopper::act08Step1() {
 
 BOOL SpNpcCopper::act08Step2() {
     if (Math_CountDownU16(&talk.timer) == 0) {
-        u8 *base = _ZN5Actor13findByProfileEjPS_(0x73, 0);
-        ((NpcActionCtrl *)(base + 0x564))->requestAction(3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
+        NpcActor *katie = (NpcActor *)Actor::findByProfile(0x73, NULL);
+        ((NpcActionCtrl *)(&katie->actionCtrl))->requestAction(3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL SpNpcCopper::act08Step3() {
-    u8 *base = _ZN5Actor13findByProfileEjPS_(0x73, 0);
-    u8 *r4 = base + 0x564;
-    VecFx32 v;
+    NpcActor *katie = (NpcActor *)Actor::findByProfile(0x73, NULL);
+    NpcActionCtrl *r4 = (NpcActionCtrl *)&katie->actionCtrl;
+    VecFx32Ctor v;
     if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, data_020c6cc8);
@@ -735,7 +690,7 @@ BOOL SpNpcCopper::act08Step3() {
     }
     if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 0) {
         if (((NpcActionCtrl *)(r4))->getAction() == 0) {
-            v = sCopperSendOffExitPos;
+            static_cast<VecFx32 &>(v) = sCopperSendOffExitPos;
             PlayerActor_RequestWalkTo(&v, 0x666, 4);
             ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x81, 1, data_020c6cc8, 0);
             talk.animTimer = Random_GlobalBelow(5) + 5;
@@ -748,11 +703,11 @@ BOOL SpNpcCopper::act08Step3() {
 }
 
 BOOL SpNpcCopper::act08Step4() {
-    u8 *base = _ZN5Actor13findByProfileEjPS_(0x73, 0);
-    u8 *r4 = base + 0x334;
-    u8 *r6 = base + 0x564;
-    u8 *r7 = base + 0x2a0;
-    u8 *sp8 = base + 0x3b0;
+    NpcActor *katie = (NpcActor *)Actor::findByProfile(0x73, NULL);
+    NpcAnimCtrl *r4 = (NpcAnimCtrl *)&katie->animCtrl;
+    NpcActionCtrl *r6 = (NpcActionCtrl *)&katie->actionCtrl;
+    void *r7 = &katie->moveAnimSet;
+    NpcLookAt *sp8 = (NpcLookAt *)&katie->lookAt;
     if (Math_CountDownU8(&talk.animTimer) == 0) {
         if (((NpcAnimCtrl *)(r4))->isPlayingAnim(0x81, r7) == 0) {
             if (((NpcAnimCtrl *)(r4))->isPlayingAnim(0x82, r7) == 0) {
@@ -793,10 +748,9 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
     if (LostChild_IsKatieDue()) {
         r4 = ((PlayerData *)(h))->getLostChildRecord();
         if (TownId_IsValid(((LostChildRecord *)(r4))->getTownId())) {
-            u16 *q = (u16 *)gSaveTownId;
-            u16 *p = (u16 *)((LostChildRecord *)(r4))->getTownId();
-            if (p[0] == q[0]) {
-                if (memcmp(p + 1, q + 1, 8) == 0) {
+            TownId *p = (TownId *)((LostChildRecord *)(r4))->getTownId();
+            if (p->townId == gSaveTownId.townId) {
+                if (memcmp(p->townName, gSaveTownId.townName, 8) == 0) {
                     goto skip;
                 }
             }
@@ -830,114 +784,7 @@ BOOL SpNpcCopper::setupAct08() {
     talk.subStep = 0;
     ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(talk.homeAngle);
     return TRUE;
-}extern "C" void _ZN15SpNpcCopperTalk18waitGoHomeAcceptedEv(void *self);
-extern "C" void _ZN15SpNpcCopperTalk13requestGoHomeEv();
-extern "C" void _ZN15SpNpcCopperTalk16waitJoinAcceptedEv();
-extern "C" void _ZN15SpNpcCopperTalk11requestJoinEv();
-extern "C" void _ZN15SpNpcCopperTalk13waitConnectedEv();
-extern "C" void _ZN15SpNpcCopperTalk13connectToTownEv();
-extern "C" void _ZN15SpNpcCopperTalk12waitSaveDoneEv();
-extern "C" void _ZN15SpNpcCopperTalk11requestSaveEv();
-extern "C" void _ZN15SpNpcCopperTalk12shutdownWifiEv();
-extern "C" void _ZN15SpNpcCopperTalk16onTownListClosedEv();
-extern "C" void _ZN15SpNpcCopperTalk18onFriendListClosedEv();
-extern "C" void _ZN15SpNpcCopperTalk16scanForOpenTownsEv();
-extern "C" void _ZN15SpNpcCopperTalk14onWifiLoggedInEv();
-extern "C" void _ZN15SpNpcCopperTalk21pollGameStatsDownloadEv();
-extern "C" void _ZN15SpNpcCopperTalk22startGameStatsDownloadEv();
-extern "C" void _ZN15SpNpcCopperTalk19pollGameStatsUploadEv();
-extern "C" void _ZN15SpNpcCopperTalk20startGameStatsUploadEv();
-extern "C" void _ZN15SpNpcCopperTalk15pollBbsDownloadEv();
-extern "C" void _ZN15SpNpcCopperTalk16startBbsDownloadEv();
-extern "C" void _ZN15SpNpcCopperTalk16pollMailDownloadEv();
-extern "C" void _ZN15SpNpcCopperTalk17startMailDownloadEv();
-extern "C" void _ZN15SpNpcCopperTalk13waitWifiLoginEv();
-extern "C" void _ZN15SpNpcCopperTalk13onChoiceUnk5FEi();
-extern "C" void _ZN15SpNpcCopperTalk23onChoiceGateAlreadyOpenEi();
-extern "C" void _ZN15SpNpcCopperTalk19onChoiceSaveAndQuitEi();
-extern "C" void _ZN15SpNpcCopperTalk17onChoiceRetryWifiEi();
-extern "C" void _ZN15SpNpcCopperTalk18onChoiceRetryLocalEi();
-extern "C" void _ZN15SpNpcCopperTalk20onChoiceGoOutInsteadEi();
-extern "C" void _ZN15SpNpcCopperTalk17onChoiceVisitWifiEi();
-extern "C" void _ZN15SpNpcCopperTalk18onChoiceVisitLocalEi();
-extern "C" void _ZN15SpNpcCopperTalk16onChoiceHostWifiEi();
-extern "C" void _ZN15SpNpcCopperTalk17onChoiceHostLocalEi();
-extern "C" void _ZN15SpNpcCopperTalk18onChoiceBackToMenuEi();
-extern "C" void _ZN15SpNpcCopperTalk16onChoiceHostMenuEi();
-extern "C" void _ZN15SpNpcCopperTalk16onChoiceMainMenuEi();
-extern "C" void _ZN15SpNpcCopperTalk14onChoiceGoHomeEi();
-extern "C" void _ZN15SpNpcCopperTalk18onChoiceHostMethodEi();
-extern "C" void _ZN15SpNpcCopperTalk19onChoiceVisitMethodEi();
-extern "C" void _ZN15SpNpcCopperTalk18onChoiceFriendCodeEi();
-extern "C" void _ZN15SpNpcCopperTalk19onChoiceConnectWifiEi();
-extern "C" void _ZN15SpNpcCopperTalk17onChoiceVisitTownEi();
-extern "C" void _ZN15SpNpcCopperTalk20onChoiceUpdateWifiIdEi();
-extern "C" void _ZN15SpNpcCopperTalk11startGoHomeEv();
-extern "C" void _ZN15SpNpcCopperTalk21showWifiIdSavedResultEv();
-extern "C" void _ZN15SpNpcCopperTalk20showAnythingElseMenuEv();
-extern "C" void _ZN15SpNpcCopperTalk16startFarewellActEv();
-extern "C" void _ZN15SpNpcCopperTalk15startSendOffActEv();
-extern "C" void _ZN15SpNpcCopperTalk14startWifiVisitEv();
-extern "C" void _ZN15SpNpcCopperTalk15startLocalVisitEv();
-extern "C" void _ZN15SpNpcCopperTalk14openFriendListEv();
-extern "C" void _ZN15SpNpcCopperTalk12openTownListEv();
-extern "C" void _ZN15SpNpcCopperTalk15startTownSearchEv();
-extern "C" void _ZN15SpNpcCopperTalk14startWifiLoginEv();
-extern "C" void _ZN15SpNpcCopperTalk16startOpenGateActEv();
-extern "C" void _ZN15SpNpcCopperTalk16startTurnBackActEv();
-extern "C" void _ZN15SpNpcCopperTalk9closeGateEv();
-extern "C" void _ZN15SpNpcCopperTalk12showMainMenuEv();
-extern "C" void _ZN15SpNpcCopperTalk9startSaveEv();
-extern "C" void _ZN11SpNpcCopper9mainAct10Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct10Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct11Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct11Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct0FEv();
-extern "C" void _ZN11SpNpcCopper10setupAct0FEv();
-extern "C" void _ZN11SpNpcCopper9mainAct0EEv();
-extern "C" void _ZN11SpNpcCopper10setupAct0EEv();
-extern "C" void _ZN11SpNpcCopper9mainAct0DEv();
-extern "C" void _ZN11SpNpcCopper10setupAct0DEv();
-extern "C" void _ZN11SpNpcCopper9mainAct0CEv();
-extern "C" void _ZN11SpNpcCopper10setupAct0CEv();
-extern "C" void _ZN11SpNpcCopper9mainAct0BEv();
-extern "C" void _ZN11SpNpcCopper10setupAct0BEv();
-extern "C" void _ZN11SpNpcCopper10act0BStep3Ev();
-extern "C" void _ZN11SpNpcCopper10act0BStep2Ev();
-extern "C" void _ZN11SpNpcCopper10act0BStep1Ev();
-extern "C" void _ZN11SpNpcCopper10act0BStep0Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct0AEv();
-extern "C" void _ZN11SpNpcCopper10setupAct0AEv();
-extern "C" void _ZN11SpNpcCopper9mainAct09Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct09Ev();
-extern "C" void _ZN11SpNpcCopper10act09Step3Ev();
-extern "C" void _ZN11SpNpcCopper10act09Step2Ev();
-extern "C" void _ZN11SpNpcCopper10act09Step1Ev();
-extern "C" void _ZN11SpNpcCopper10act09Step0Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct08Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct08Ev();
-extern "C" void _ZN11SpNpcCopper10act08Step5Ev();
-extern "C" void _ZN11SpNpcCopper10act08Step4Ev();
-extern "C" void _ZN11SpNpcCopper10act08Step3Ev();
-extern "C" void _ZN11SpNpcCopper10act08Step2Ev();
-extern "C" void _ZN11SpNpcCopper10act08Step1Ev();
-extern "C" void _ZN11SpNpcCopper10act08Step0Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct07Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct07Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct06Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct06Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct05Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct05Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct04Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct04Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct03Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct03Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct02Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct02Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct01Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct01Ev();
-extern "C" void _ZN11SpNpcCopper9mainAct00Ev();
-extern "C" void _ZN11SpNpcCopper10setupAct00Ev();
+}
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" char sSpNpcCopperSequence4Key[];
@@ -948,135 +795,6 @@ extern "C" SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23];
 extern "C" void *sSpNpcCopperMsgKey;
 extern "C" const VecFx32 sCopperDepartWalkPos;
 extern "C" Unk_ov048_State_Ent sSpNpcCopperActTable[18];
-extern "C" void *data_ov048_0225c8dc[2];
-extern "C" void *data_ov048_0225cacc[2];
-extern "C" void *data_ov048_0225c724[2];
-extern "C" void *data_ov048_0225c8cc[2];
-extern "C" void *data_ov048_0225c7ac[2];
-extern "C" void *data_ov048_0225c714[2];
-extern "C" void *data_ov048_0225c6ec[2];
-extern "C" void *data_ov048_0225c71c[2];
-extern "C" void *data_ov048_0225caec[2];
-extern "C" void *data_ov048_0225cae4[2];
-extern "C" void *data_ov048_0225cadc[2];
-extern "C" void *data_ov048_0225cad4[2];
-extern "C" void *data_ov048_0225c8a4[2];
-extern "C" void *data_ov048_0225cac4[2];
-extern "C" void *data_ov048_0225cabc[2];
-extern "C" void *data_ov048_0225cab4[2];
-extern "C" void *data_ov048_0225caac[2];
-extern "C" void *data_ov048_0225caa4[2];
-extern "C" void *data_ov048_0225c9cc[2];
-extern "C" void *data_ov048_0225ca4c[2];
-extern "C" void *data_ov048_0225ca8c[2];
-extern "C" void *data_ov048_0225ca84[2];
-extern "C" void *data_ov048_0225ca7c[2];
-extern "C" void *data_ov048_0225ca74[2];
-extern "C" void *data_ov048_0225ca6c[2];
-extern "C" void *data_ov048_0225ca64[2];
-extern "C" void *data_ov048_0225ca5c[2];
-extern "C" void *data_ov048_0225ca54[2];
-extern "C" void *data_ov048_0225c86c[2];
-extern "C" void *data_ov048_0225ca44[2];
-extern "C" void *data_ov048_0225ca3c[2];
-extern "C" void *data_ov048_0225ca34[2];
-extern "C" void *data_ov048_0225ca2c[2];
-extern "C" void *data_ov048_0225ca24[2];
-extern "C" void *data_ov048_0225ca1c[2];
-extern "C" void *data_ov048_0225ca14[2];
-extern "C" void *data_ov048_0225c84c[2];
-extern "C" void *data_ov048_0225ca04[2];
-extern "C" void *data_ov048_0225c9fc[2];
-extern "C" void *data_ov048_0225c9f4[2];
-extern "C" void *data_ov048_0225c9ec[2];
-extern "C" void *data_ov048_0225c9e4[2];
-extern "C" void *data_ov048_0225c9dc[2];
-extern "C" void *data_ov048_0225c9d4[2];
-extern "C" void *data_ov048_0225c82c[2];
-extern "C" void *data_ov048_0225c9c4[2];
-extern "C" void *data_ov048_0225c9bc[2];
-extern "C" void *data_ov048_0225c9b4[2];
-extern "C" void *data_ov048_0225c9ac[2];
-extern "C" void *data_ov048_0225c9a4[2];
-extern "C" void *data_ov048_0225c99c[2];
-extern "C" void *data_ov048_0225c994[2];
-extern "C" void *data_ov048_0225c80c[2];
-extern "C" void *data_ov048_0225c984[2];
-extern "C" void *data_ov048_0225c97c[2];
-extern "C" void *data_ov048_0225c974[2];
-extern "C" void *data_ov048_0225c96c[2];
-extern "C" void *data_ov048_0225c964[2];
-extern "C" void *data_ov048_0225c95c[2];
-extern "C" void *data_ov048_0225c954[2];
-extern "C" void *data_ov048_0225c94c[2];
-extern "C" void *data_ov048_0225c944[2];
-extern "C" void *data_ov048_0225c93c[2];
-extern "C" void *data_ov048_0225c934[2];
-extern "C" void *data_ov048_0225c92c[2];
-extern "C" void *data_ov048_0225c924[2];
-extern "C" void *data_ov048_0225c91c[2];
-extern "C" void *data_ov048_0225c914[2];
-extern "C" void *data_ov048_0225c904[2];
-extern "C" void *data_ov048_0225c8f4[2];
-extern "C" void *data_ov048_0225c78c[2];
-extern "C" void *data_ov048_0225c79c[2];
-extern "C" void *data_ov048_0225c8ec[2];
-extern "C" void *data_ov048_0225c8e4[2];
-extern "C" void *data_ov048_0225c794[2];
-extern "C" void *data_ov048_0225c8d4[2];
-extern "C" void *data_ov048_0225c7b4[2];
-extern "C" void *data_ov048_0225c8c4[2];
-extern "C" void *data_ov048_0225c8bc[2];
-extern "C" void *data_ov048_0225c89c[2];
-extern "C" void *data_ov048_0225c8ac[2];
-extern "C" void *data_ov048_0225c8fc[2];
-extern "C" void *data_ov048_0225c90c[2];
-extern "C" void *data_ov048_0225ca0c[2];
-extern "C" void *data_ov048_0225ca94[2];
-extern "C" void *data_ov048_0225c884[2];
-extern "C" void *data_ov048_0225c87c[2];
-extern "C" void *data_ov048_0225c874[2];
-extern "C" void *data_ov048_0225c77c[2];
-extern "C" void *data_ov048_0225c864[2];
-extern "C" void *data_ov048_0225c85c[2];
-extern "C" void *data_ov048_0225c854[2];
-extern "C" void *data_ov048_0225c76c[2];
-extern "C" void *data_ov048_0225c844[2];
-extern "C" void *data_ov048_0225c83c[2];
-extern "C" void *data_ov048_0225c834[2];
-extern "C" void *data_ov048_0225c75c[2];
-extern "C" void *data_ov048_0225c824[2];
-extern "C" void *data_ov048_0225c81c[2];
-extern "C" void *data_ov048_0225c814[2];
-extern "C" void *data_ov048_0225c74c[2];
-extern "C" void *data_ov048_0225c804[2];
-extern "C" void *data_ov048_0225c7fc[2];
-extern "C" void *data_ov048_0225c7f4[2];
-extern "C" void *data_ov048_0225c7ec[2];
-extern "C" void *data_ov048_0225c7e4[2];
-extern "C" void *data_ov048_0225c7dc[2];
-extern "C" void *data_ov048_0225c7d4[2];
-extern "C" void *data_ov048_0225c7cc[2];
-extern "C" void *data_ov048_0225c7c4[2];
-extern "C" void *data_ov048_0225c7bc[2];
-extern "C" void *data_ov048_0225c7a4[2];
-extern "C" void *data_ov048_0225c88c[2];
-extern "C" void *data_ov048_0225c894[2];
-extern "C" void *data_ov048_0225c8b4[2];
-extern "C" void *data_ov048_0225c98c[2];
-extern "C" void *data_ov048_0225ca9c[2];
-extern "C" void *data_ov048_0225c784[2];
-extern "C" void *data_ov048_0225c704[2];
-extern "C" void *data_ov048_0225c774[2];
-extern "C" void *data_ov048_0225c6fc[2];
-extern "C" void *data_ov048_0225c764[2];
-extern "C" void *data_ov048_0225c6f4[2];
-extern "C" void *data_ov048_0225c754[2];
-extern "C" void *data_ov048_0225c70c[2];
-extern "C" void *data_ov048_0225c744[2];
-extern "C" void *data_ov048_0225c73c[2];
-extern "C" void *data_ov048_0225c72c[2];
-extern "C" void *data_ov048_0225c734[2];
 extern "C" const VecFx32 sCopperGateCheckPos;
 extern "C" char sSpNpcCopperKey[];
 extern "C" void *sSpNpcCopperModelPathPtr;
@@ -1095,12 +813,12 @@ extern "C" const u8 sCopperWifiStartMsgs[4] = {0x24, 0x41, 0x7f, 0x00};
 
 BOOL SpNpcCopper::mainAct08() {
     static SpNpcCopper::Fn tbl[6] = {
-        *(SpNpcCopper::Fn *)data_ov048_0225c95c,
-        *(SpNpcCopper::Fn *)data_ov048_0225c954,
-        *(SpNpcCopper::Fn *)data_ov048_0225c94c,
-        *(SpNpcCopper::Fn *)data_ov048_0225c944,
-        *(SpNpcCopper::Fn *)data_ov048_0225c93c,
-        *(SpNpcCopper::Fn *)data_ov048_0225c934,
+        &SpNpcCopper::act08Step0,
+        &SpNpcCopper::act08Step1,
+        &SpNpcCopper::act08Step2,
+        &SpNpcCopper::act08Step3,
+        &SpNpcCopper::act08Step4,
+        &SpNpcCopper::act08Step5,
     };
     if (talk.subStep < 6) {
         if ((this->*tbl[talk.subStep])()) {
@@ -1111,12 +829,12 @@ BOOL SpNpcCopper::mainAct08() {
 }
 
 BOOL SpNpcCopper::act09Step0() {
-    VecFx32 v;
+    VecFx32Ctor v;
     s32 a = Net_GetJoiningAid();
     if (Unk_ov048_0225b4e4_Is2()) {
         if (PlayerActor_SetNetFollowPaused(1, a)) {
             PlayerActor_SetNoFaceTalkTarget(1, 4);
-            v = sCopperArrivalWalkPos;
+            static_cast<VecFx32 &>(v) = sCopperArrivalWalkPos;
             PlayerActor_RequestWalkTo(&v, 0x35c, a);
             return TRUE;
         }
@@ -1125,9 +843,8 @@ BOOL SpNpcCopper::act09Step0() {
 }
 
 BOOL SpNpcCopper::act09Step1() {
-    u8 buf[0x1c];
     void *h;
-    void *o;
+    TalkWindowState *o;
     s32 a = Net_GetJoiningAid();
     h = PlayerData_GetBySessionSlot(a);
     if (PlayerActor_IsScriptedWalking(a) == 0) {
@@ -1136,19 +853,18 @@ BOOL SpNpcCopper::act09Step1() {
         ((MsgRequest *)(&talk))->setFileName((const char *)sSpNpcCopperMsgKey);
         talk.msgIndex = 0x67;
         ((TalkWindowState *)(o))->attachRequest((TalkMsgRequest *)(&talk));
-        new (&buf[4]) MsgString9B();
-        ((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getNameString((MsgString *)(&buf[4]));
-        ((TalkWindowState *)(o))->setSlot(1, &buf[4]);
-        *(s32 *)((u8 *)o + 8) = 1;
-        ((MsgString9B *)(&buf[4]))->MsgString9B::~MsgString9B();
+        MsgString9B name;
+        ((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getNameString(&name);
+        ((TalkWindowState *)(o))->setSlot(1, &name);
+        o->nextState = 1;
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL SpNpcCopper::act09Step2() {
-    void *o = TalkWindow_Get(0);
-    if (*(s32 *)((u8 *)o + 4) == 0) {
+    TalkWindowState *o = TalkWindow_Get(0);
+    if (o->state == 0) {
         if (SaveManager_IsSessionJoined() == 0) {
             FieldInfoBalloon_ShowPleaseWait();
             return FALSE;
@@ -1172,10 +888,10 @@ extern "C" void *sSpNpcCopperTexturePathPtr = sSpNpcCopperTexturePath;
 
 BOOL SpNpcCopper::mainAct09() {
     static SpNpcCopper::Fn tbl[4] = {
-        *(SpNpcCopper::Fn *)data_ov048_0225c7cc,
-        *(SpNpcCopper::Fn *)data_ov048_0225caa4,
-        *(SpNpcCopper::Fn *)data_ov048_0225c744,
-        *(SpNpcCopper::Fn *)data_ov048_0225c8fc,
+        &SpNpcCopper::act09Step0,
+        &SpNpcCopper::act09Step1,
+        &SpNpcCopper::act09Step2,
+        &SpNpcCopper::act09Step3,
     };
     if (talk.subStep < 4) {
         if ((this->*tbl[talk.subStep])()) {
@@ -1194,9 +910,8 @@ BOOL SpNpcCopper::mainAct0A() {
 }
 
 BOOL SpNpcCopper::act0BStep0() {
-    u8 buf[0x1c];
     void *h;
-    void *o;
+    TalkWindowState *o;
     h = PlayerData_GetBySessionSlot(NetSession_GetLastSyncSlot());
     if (Unk_ov048_0225b4e4_Is2()) {
         o = TalkWindow_Get(0);
@@ -1204,11 +919,10 @@ BOOL SpNpcCopper::act0BStep0() {
         ((MsgRequest *)(&talk))->setFileName((const char *)sSpNpcCopperMsgKey);
         talk.msgIndex = 0x7b;
         ((TalkWindowState *)(o))->attachRequest((TalkMsgRequest *)(&talk));
-        new (&buf[4]) MsgString9B();
-        ((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getNameString((MsgString *)(&buf[4]));
-        ((TalkWindowState *)(o))->setSlot(1, &buf[4]);
-        *(s32 *)((u8 *)o + 8) = 1;
-        ((MsgString9B *)(&buf[4]))->MsgString9B::~MsgString9B();
+        MsgString9B name;
+        ((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getNameString(&name);
+        ((TalkWindowState *)(o))->setSlot(1, &name);
+        o->nextState = 1;
         return TRUE;
     }
     return FALSE;
@@ -1216,11 +930,11 @@ BOOL SpNpcCopper::act0BStep0() {
 
 BOOL SpNpcCopper::act0BStep1() {
     s32 a = NetSession_GetLastSyncSlot();
-    void *o = TalkWindow_Get(0);
-    if (*(s32 *)((u8 *)o + 4) == 0) {
-        VecFx32 v;
+    TalkWindowState *o = TalkWindow_Get(0);
+    if (o->state == 0) {
+        VecFx32Ctor v;
         ((TalkWindowState *)(o))->detachRequest();
-        v = sCopperDepartWalkPos;
+        static_cast<VecFx32 &>(v) = sCopperDepartWalkPos;
         PlayerActor_RequestWalkTo(&v, 0x35c, a);
         return TRUE;
     }
@@ -1248,28 +962,28 @@ BOOL SpNpcCopper::setupAct0B() {
 }
 extern "C" SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23] = {
     {NULL, 0},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c8ac, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c784, 0},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c7c4, 0},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225cac4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c8ec, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c70c, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c8e4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c714, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c7a4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c884, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225cad4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c7fc, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c73c, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c72c, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c8c4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225cae4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c71c, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225caec, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c8b4, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225cadc, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225c894, 1},
-    {*(SpNpcCopperTalk::Fn *)data_ov048_0225cacc, 1},
+    {&SpNpcCopperTalk::scanForOpenTowns, 1},
+    {&SpNpcCopperTalk::onFriendListClosed, 0},
+    {&SpNpcCopperTalk::onTownListClosed, 0},
+    {&SpNpcCopperTalk::connectToTown, 1},
+    {&SpNpcCopperTalk::waitConnected, 1},
+    {&SpNpcCopperTalk::requestJoin, 1},
+    {&SpNpcCopperTalk::waitJoinAccepted, 1},
+    {&SpNpcCopperTalk::requestGoHome, 1},
+    {&SpNpcCopperTalk::waitGoHomeAccepted, 1},
+    {&SpNpcCopperTalk::waitWifiLogin, 1},
+    {&SpNpcCopperTalk::startGameStatsUpload, 1},
+    {&SpNpcCopperTalk::pollGameStatsUpload, 1},
+    {&SpNpcCopperTalk::startGameStatsDownload, 1},
+    {&SpNpcCopperTalk::pollGameStatsDownload, 1},
+    {&SpNpcCopperTalk::startMailDownload, 1},
+    {&SpNpcCopperTalk::pollMailDownload, 1},
+    {&SpNpcCopperTalk::startBbsDownload, 1},
+    {&SpNpcCopperTalk::pollBbsDownload, 1},
+    {&SpNpcCopperTalk::onWifiLoggedIn, 1},
+    {&SpNpcCopperTalk::shutdownWifi, 1},
+    {&SpNpcCopperTalk::requestSave, 1},
+    {&SpNpcCopperTalk::waitSaveDone, 1},
 };
 
 extern "C" void *sSpNpcCopperMsgKey = sSpNpcCopperKey;
@@ -1277,290 +991,32 @@ extern "C" void *sSpNpcCopperMsgKey = sSpNpcCopperKey;
 extern "C" const VecFx32 sCopperDepartWalkPos = {0x10000, 0x0, 0x5000};
 
 extern "C" Unk_ov048_State_Ent sSpNpcCopperActTable[18] = {
-    {*(SpNpcCopper::Fn *)data_ov048_0225cabc, *(SpNpcCopper::Fn *)data_ov048_0225cab4},
-    {*(SpNpcCopper::Fn *)data_ov048_0225caac, *(SpNpcCopper::Fn *)data_ov048_0225c90c},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca9c, *(SpNpcCopper::Fn *)data_ov048_0225c924},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c98c, *(SpNpcCopper::Fn *)data_ov048_0225ca84},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca7c, *(SpNpcCopper::Fn *)data_ov048_0225ca74},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca6c, *(SpNpcCopper::Fn *)data_ov048_0225ca64},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca5c, *(SpNpcCopper::Fn *)data_ov048_0225ca54},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca4c, *(SpNpcCopper::Fn *)data_ov048_0225ca44},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca3c, *(SpNpcCopper::Fn *)data_ov048_0225ca34},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca2c, *(SpNpcCopper::Fn *)data_ov048_0225ca24},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca1c, *(SpNpcCopper::Fn *)data_ov048_0225ca14},
-    {*(SpNpcCopper::Fn *)data_ov048_0225ca0c, *(SpNpcCopper::Fn *)data_ov048_0225ca04},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c9fc, *(SpNpcCopper::Fn *)data_ov048_0225c9f4},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c9ec, *(SpNpcCopper::Fn *)data_ov048_0225c9e4},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c9dc, *(SpNpcCopper::Fn *)data_ov048_0225c9d4},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c9cc, *(SpNpcCopper::Fn *)data_ov048_0225c9c4},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c9bc, *(SpNpcCopper::Fn *)data_ov048_0225c9b4},
-    {*(SpNpcCopper::Fn *)data_ov048_0225c9ac, *(SpNpcCopper::Fn *)data_ov048_0225c9a4},
+    {&SpNpcCopper::setupAct00, &SpNpcCopper::mainAct00},
+    {&SpNpcCopper::setupAct01, &SpNpcCopper::mainAct01},
+    {&SpNpcCopper::setupAct02, &SpNpcCopper::mainAct02},
+    {&SpNpcCopper::setupAct03, &SpNpcCopper::mainAct03},
+    {&SpNpcCopper::setupAct04, &SpNpcCopper::mainAct04},
+    {&SpNpcCopper::setupAct05, &SpNpcCopper::mainAct05},
+    {&SpNpcCopper::setupAct06, &SpNpcCopper::mainAct06},
+    {&SpNpcCopper::setupAct07, &SpNpcCopper::mainAct07},
+    {&SpNpcCopper::setupAct08, &SpNpcCopper::mainAct08},
+    {&SpNpcCopper::setupAct09, &SpNpcCopper::mainAct09},
+    {&SpNpcCopper::setupAct0A, &SpNpcCopper::mainAct0A},
+    {&SpNpcCopper::setupAct0B, &SpNpcCopper::mainAct0B},
+    {&SpNpcCopper::setupAct0C, &SpNpcCopper::mainAct0C},
+    {&SpNpcCopper::setupAct0D, &SpNpcCopper::mainAct0D},
+    {&SpNpcCopper::setupAct0E, &SpNpcCopper::mainAct0E},
+    {&SpNpcCopper::setupAct0F, &SpNpcCopper::mainAct0F},
+    {&SpNpcCopper::setupAct10, &SpNpcCopper::mainAct10},
+    {&SpNpcCopper::setupAct11, &SpNpcCopper::mainAct11},
 };
-
-extern "C" void *data_ov048_0225c8dc[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceRetryWifiEi, 0};
-
-extern "C" void *data_ov048_0225cacc[2] = {(void *)_ZN15SpNpcCopperTalk12waitSaveDoneEv, 0};
-
-extern "C" void *data_ov048_0225c724[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceRetryLocalEi, 0};
-
-extern "C" void *data_ov048_0225c8cc[2] = {(void *)_ZN11SpNpcCopper10act0BStep1Ev, 0};
-
-extern "C" void *data_ov048_0225c7ac[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceHostMethodEi, 0};
-
-extern "C" void *data_ov048_0225c714[2] = {(void *)_ZN15SpNpcCopperTalk13requestGoHomeEv, 0};
-
-extern "C" void *data_ov048_0225c6ec[2] = {(void *)_ZN15SpNpcCopperTalk13onChoiceUnk5FEi, 0};
-
-extern "C" void *data_ov048_0225c71c[2] = {(void *)_ZN15SpNpcCopperTalk16startBbsDownloadEv, 0};
-
-extern "C" void *data_ov048_0225caec[2] = {(void *)_ZN15SpNpcCopperTalk15pollBbsDownloadEv, 0};
-
-extern "C" void *data_ov048_0225cae4[2] = {(void *)_ZN15SpNpcCopperTalk16pollMailDownloadEv, 0};
-
-extern "C" void *data_ov048_0225cadc[2] = {(void *)_ZN15SpNpcCopperTalk12shutdownWifiEv, 0};
-
-extern "C" void *data_ov048_0225cad4[2] = {(void *)_ZN15SpNpcCopperTalk20startGameStatsUploadEv, 0};
-
-extern "C" void *data_ov048_0225c8a4[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceRetryWifiEi, 0};
-
-extern "C" void *data_ov048_0225cac4[2] = {(void *)_ZN15SpNpcCopperTalk13connectToTownEv, 0};
-
-extern "C" void *data_ov048_0225cabc[2] = {(void *)_ZN11SpNpcCopper10setupAct00Ev, 0};
-
-extern "C" void *data_ov048_0225cab4[2] = {(void *)_ZN11SpNpcCopper9mainAct00Ev, 0};
-
-extern "C" void *data_ov048_0225caac[2] = {(void *)_ZN11SpNpcCopper10setupAct01Ev, 0};
-
-extern "C" void *data_ov048_0225caa4[2] = {(void *)_ZN11SpNpcCopper10act09Step1Ev, 0};
-
-extern "C" void *data_ov048_0225c9cc[2] = {(void *)_ZN11SpNpcCopper10setupAct0FEv, 0};
-
-extern "C" void *data_ov048_0225ca4c[2] = {(void *)_ZN11SpNpcCopper10setupAct07Ev, 0};
-
-extern "C" void *data_ov048_0225ca8c[2] = {(void *)_ZN15SpNpcCopperTalk12showMainMenuEv, 0};
-
-extern "C" void *data_ov048_0225ca84[2] = {(void *)_ZN11SpNpcCopper9mainAct03Ev, 0};
-
-extern "C" void *data_ov048_0225ca7c[2] = {(void *)_ZN11SpNpcCopper10setupAct04Ev, 0};
-
-extern "C" void *data_ov048_0225ca74[2] = {(void *)_ZN11SpNpcCopper9mainAct04Ev, 0};
-
-extern "C" void *data_ov048_0225ca6c[2] = {(void *)_ZN11SpNpcCopper10setupAct05Ev, 0};
-
-extern "C" void *data_ov048_0225ca64[2] = {(void *)_ZN11SpNpcCopper9mainAct05Ev, 0};
-
-extern "C" void *data_ov048_0225ca5c[2] = {(void *)_ZN11SpNpcCopper10setupAct06Ev, 0};
-
-extern "C" void *data_ov048_0225ca54[2] = {(void *)_ZN11SpNpcCopper9mainAct06Ev, 0};
-
-extern "C" void *data_ov048_0225c86c[2] = {(void *)_ZN15SpNpcCopperTalk12showMainMenuEv, 0};
-
-extern "C" void *data_ov048_0225ca44[2] = {(void *)_ZN11SpNpcCopper9mainAct07Ev, 0};
-
-extern "C" void *data_ov048_0225ca3c[2] = {(void *)_ZN11SpNpcCopper10setupAct08Ev, 0};
-
-extern "C" void *data_ov048_0225ca34[2] = {(void *)_ZN11SpNpcCopper9mainAct08Ev, 0};
-
-extern "C" void *data_ov048_0225ca2c[2] = {(void *)_ZN11SpNpcCopper10setupAct09Ev, 0};
-
-extern "C" void *data_ov048_0225ca24[2] = {(void *)_ZN11SpNpcCopper9mainAct09Ev, 0};
-
-extern "C" void *data_ov048_0225ca1c[2] = {(void *)_ZN11SpNpcCopper10setupAct0AEv, 0};
-
-extern "C" void *data_ov048_0225ca14[2] = {(void *)_ZN11SpNpcCopper9mainAct0AEv, 0};
-
-extern "C" void *data_ov048_0225c84c[2] = {(void *)_ZN15SpNpcCopperTalk14startWifiLoginEv, 0};
-
-extern "C" void *data_ov048_0225ca04[2] = {(void *)_ZN11SpNpcCopper9mainAct0BEv, 0};
-
-extern "C" void *data_ov048_0225c9fc[2] = {(void *)_ZN11SpNpcCopper10setupAct0CEv, 0};
-
-extern "C" void *data_ov048_0225c9f4[2] = {(void *)_ZN11SpNpcCopper9mainAct0CEv, 0};
-
-extern "C" void *data_ov048_0225c9ec[2] = {(void *)_ZN11SpNpcCopper10setupAct0DEv, 0};
-
-extern "C" void *data_ov048_0225c9e4[2] = {(void *)_ZN11SpNpcCopper9mainAct0DEv, 0};
-
-extern "C" void *data_ov048_0225c9dc[2] = {(void *)_ZN11SpNpcCopper10setupAct0EEv, 0};
-
-extern "C" void *data_ov048_0225c9d4[2] = {(void *)_ZN11SpNpcCopper9mainAct0EEv, 0};
-
-extern "C" void *data_ov048_0225c82c[2] = {(void *)_ZN15SpNpcCopperTalk16startTurnBackActEv, 0};
-
-extern "C" void *data_ov048_0225c9c4[2] = {(void *)_ZN11SpNpcCopper9mainAct0FEv, 0};
-
-extern "C" void *data_ov048_0225c9bc[2] = {(void *)_ZN11SpNpcCopper10setupAct10Ev, 0};
-
-extern "C" void *data_ov048_0225c9b4[2] = {(void *)_ZN11SpNpcCopper9mainAct10Ev, 0};
-
-extern "C" void *data_ov048_0225c9ac[2] = {(void *)_ZN11SpNpcCopper10setupAct11Ev, 0};
-
-extern "C" void *data_ov048_0225c9a4[2] = {(void *)_ZN11SpNpcCopper9mainAct11Ev, 0};
-
-extern "C" void *data_ov048_0225c99c[2] = {(void *)_ZN15SpNpcCopperTalk14openFriendListEv, 0};
-
-extern "C" void *data_ov048_0225c994[2] = {(void *)_ZN15SpNpcCopperTalk16onChoiceMainMenuEi, 0};
-
-extern "C" void *data_ov048_0225c80c[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceFriendCodeEi, 0};
-
-extern "C" void *data_ov048_0225c984[2] = {(void *)_ZN15SpNpcCopperTalk14openFriendListEv, 0};
-
-extern "C" void *data_ov048_0225c97c[2] = {(void *)_ZN15SpNpcCopperTalk12showMainMenuEv, 0};
-
-extern "C" void *data_ov048_0225c974[2] = {(void *)_ZN15SpNpcCopperTalk14startWifiVisitEv, 0};
-
-extern "C" void *data_ov048_0225c96c[2] = {(void *)_ZN15SpNpcCopperTalk20onChoiceGoOutInsteadEi, 0};
-
-extern "C" void *data_ov048_0225c964[2] = {(void *)_ZN15SpNpcCopperTalk15startLocalVisitEv, 0};
-
-extern "C" void *data_ov048_0225c95c[2] = {(void *)_ZN11SpNpcCopper10act08Step0Ev, 0};
-
-extern "C" void *data_ov048_0225c954[2] = {(void *)_ZN11SpNpcCopper10act08Step1Ev, 0};
-
-extern "C" void *data_ov048_0225c94c[2] = {(void *)_ZN11SpNpcCopper10act08Step2Ev, 0};
-
-extern "C" void *data_ov048_0225c944[2] = {(void *)_ZN11SpNpcCopper10act08Step3Ev, 0};
-
-extern "C" void *data_ov048_0225c93c[2] = {(void *)_ZN11SpNpcCopper10act08Step4Ev, 0};
-
-extern "C" void *data_ov048_0225c934[2] = {(void *)_ZN11SpNpcCopper10act08Step5Ev, 0};
-
-extern "C" void *data_ov048_0225c92c[2] = {(void *)_ZN15SpNpcCopperTalk20showAnythingElseMenuEv, 0};
-
-extern "C" void *data_ov048_0225c924[2] = {(void *)_ZN11SpNpcCopper9mainAct02Ev, 0};
-
-extern "C" void *data_ov048_0225c91c[2] = {(void *)_ZN15SpNpcCopperTalk20showAnythingElseMenuEv, 0};
-
-extern "C" void *data_ov048_0225c914[2] = {(void *)_ZN15SpNpcCopperTalk19onChoiceSaveAndQuitEi, 0};
-
-extern "C" void *data_ov048_0225c904[2] = {(void *)_ZN15SpNpcCopperTalk16onChoiceHostWifiEi, 0};
-
-extern "C" void *data_ov048_0225c8f4[2] = {(void *)_ZN15SpNpcCopperTalk11startGoHomeEv, 0};
-
-extern "C" void *data_ov048_0225c78c[2] = {(void *)_ZN15SpNpcCopperTalk21showWifiIdSavedResultEv, 0};
-
-extern "C" void *data_ov048_0225c79c[2] = {(void *)_ZN15SpNpcCopperTalk9startSaveEv, 0};
-
-extern "C" void *data_ov048_0225c8ec[2] = {(void *)_ZN15SpNpcCopperTalk13waitConnectedEv, 0};
-
-extern "C" void *data_ov048_0225c8e4[2] = {(void *)_ZN15SpNpcCopperTalk16waitJoinAcceptedEv, 0};
-
-extern "C" void *data_ov048_0225c794[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceRetryWifiEi, 0};
-
-extern "C" void *data_ov048_0225c8d4[2] = {(void *)_ZN11SpNpcCopper10act0BStep0Ev, 0};
-
-extern "C" void *data_ov048_0225c7b4[2] = {(void *)_ZN11SpNpcCopper10act0BStep2Ev, 0};
-
-extern "C" void *data_ov048_0225c8c4[2] = {(void *)_ZN15SpNpcCopperTalk17startMailDownloadEv, 0};
-
-extern "C" void *data_ov048_0225c8bc[2] = {(void *)_ZN11SpNpcCopper10act0BStep3Ev, 0};
-
-extern "C" void *data_ov048_0225c89c[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceHostLocalEi, 0};
-
-extern "C" void *data_ov048_0225c8ac[2] = {(void *)_ZN15SpNpcCopperTalk16scanForOpenTownsEv, 0};
-
-extern "C" void *data_ov048_0225c8fc[2] = {(void *)_ZN11SpNpcCopper10act09Step3Ev, 0};
-
-extern "C" void *data_ov048_0225c90c[2] = {(void *)_ZN11SpNpcCopper9mainAct01Ev, 0};
-
-extern "C" void *data_ov048_0225ca0c[2] = {(void *)_ZN11SpNpcCopper10setupAct0BEv, 0};
-
-extern "C" void *data_ov048_0225ca94[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceVisitLocalEi, 0};
-
-extern "C" void *data_ov048_0225c884[2] = {(void *)_ZN15SpNpcCopperTalk13waitWifiLoginEv, 0};
-
-extern "C" void *data_ov048_0225c87c[2] = {(void *)_ZN15SpNpcCopperTalk12showMainMenuEv, 0};
-
-extern "C" void *data_ov048_0225c874[2] = {(void *)_ZN15SpNpcCopperTalk12showMainMenuEv, 0};
-
-extern "C" void *data_ov048_0225c77c[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceVisitWifiEi, 0};
-
-extern "C" void *data_ov048_0225c864[2] = {(void *)_ZN15SpNpcCopperTalk9closeGateEv, 0};
-
-extern "C" void *data_ov048_0225c85c[2] = {(void *)_ZN15SpNpcCopperTalk16startOpenGateActEv, 0};
-
-extern "C" void *data_ov048_0225c854[2] = {(void *)_ZN15SpNpcCopperTalk15startTownSearchEv, 0};
-
-extern "C" void *data_ov048_0225c76c[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceBackToMenuEi, 0};
-
-extern "C" void *data_ov048_0225c844[2] = {(void *)_ZN15SpNpcCopperTalk14startWifiLoginEv, 0};
-
-extern "C" void *data_ov048_0225c83c[2] = {(void *)_ZN15SpNpcCopperTalk16startOpenGateActEv, 0};
-
-extern "C" void *data_ov048_0225c834[2] = {(void *)_ZN15SpNpcCopperTalk16startTurnBackActEv, 0};
-
-extern "C" void *data_ov048_0225c75c[2] = {(void *)_ZN15SpNpcCopperTalk16onChoiceHostMenuEi, 0};
-
-extern "C" void *data_ov048_0225c824[2] = {(void *)_ZN15SpNpcCopperTalk16startTurnBackActEv, 0};
-
-extern "C" void *data_ov048_0225c81c[2] = {(void *)_ZN15SpNpcCopperTalk14startWifiLoginEv, 0};
-
-extern "C" void *data_ov048_0225c814[2] = {(void *)_ZN15SpNpcCopperTalk12openTownListEv, 0};
-
-extern "C" void *data_ov048_0225c74c[2] = {(void *)_ZN15SpNpcCopperTalk16onChoiceMainMenuEi, 0};
-
-extern "C" void *data_ov048_0225c804[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceVisitTownEi, 0};
-
-extern "C" void *data_ov048_0225c7fc[2] = {(void *)_ZN15SpNpcCopperTalk19pollGameStatsUploadEv, 0};
-
-extern "C" void *data_ov048_0225c7f4[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceFriendCodeEi, 0};
-
-extern "C" void *data_ov048_0225c7ec[2] = {(void *)_ZN15SpNpcCopperTalk15startSendOffActEv, 0};
-
-extern "C" void *data_ov048_0225c7e4[2] = {(void *)_ZN15SpNpcCopperTalk16startFarewellActEv, 0};
-
-extern "C" void *data_ov048_0225c7dc[2] = {(void *)_ZN15SpNpcCopperTalk20showAnythingElseMenuEv, 0};
-
-extern "C" void *data_ov048_0225c7d4[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceRetryLocalEi, 0};
-
-extern "C" void *data_ov048_0225c7cc[2] = {(void *)_ZN11SpNpcCopper10act09Step0Ev, 0};
-
-extern "C" void *data_ov048_0225c7c4[2] = {(void *)_ZN15SpNpcCopperTalk16onTownListClosedEv, 0};
-
-extern "C" void *data_ov048_0225c7bc[2] = {(void *)_ZN15SpNpcCopperTalk17onChoiceRetryWifiEi, 0};
-
-extern "C" void *data_ov048_0225c7a4[2] = {(void *)_ZN15SpNpcCopperTalk18waitGoHomeAcceptedEv, 0};
-
-extern "C" void *data_ov048_0225c88c[2] = {(void *)_ZN15SpNpcCopperTalk19onChoiceConnectWifiEi, 0};
-
-extern "C" void *data_ov048_0225c894[2] = {(void *)_ZN15SpNpcCopperTalk11requestSaveEv, 0};
-
-extern "C" void *data_ov048_0225c8b4[2] = {(void *)_ZN15SpNpcCopperTalk14onWifiLoggedInEv, 0};
-
-extern "C" void *data_ov048_0225c98c[2] = {(void *)_ZN11SpNpcCopper10setupAct03Ev, 0};
-
-extern "C" void *data_ov048_0225ca9c[2] = {(void *)_ZN11SpNpcCopper10setupAct02Ev, 0};
-
-extern "C" void *data_ov048_0225c784[2] = {(void *)_ZN15SpNpcCopperTalk18onFriendListClosedEv, 0};
-
-extern "C" void *data_ov048_0225c704[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceFriendCodeEi, 0};
-
-extern "C" void *data_ov048_0225c774[2] = {(void *)_ZN15SpNpcCopperTalk18onChoiceBackToMenuEi, 0};
-
-extern "C" void *data_ov048_0225c6fc[2] = {(void *)_ZN15SpNpcCopperTalk23onChoiceGateAlreadyOpenEi, 0};
-
-extern "C" void *data_ov048_0225c764[2] = {(void *)_ZN15SpNpcCopperTalk14onChoiceGoHomeEi, 0};
-
-extern "C" void *data_ov048_0225c6f4[2] = {(void *)_ZN15SpNpcCopperTalk20onChoiceUpdateWifiIdEi, 0};
-
-extern "C" void *data_ov048_0225c754[2] = {(void *)_ZN15SpNpcCopperTalk16onChoiceHostMenuEi, 0};
-
-extern "C" void *data_ov048_0225c70c[2] = {(void *)_ZN15SpNpcCopperTalk11requestJoinEv, 0};
-
-extern "C" void *data_ov048_0225c744[2] = {(void *)_ZN11SpNpcCopper10act09Step2Ev, 0};
-
-extern "C" void *data_ov048_0225c73c[2] = {(void *)_ZN15SpNpcCopperTalk22startGameStatsDownloadEv, 0};
-
-extern "C" void *data_ov048_0225c72c[2] = {(void *)_ZN15SpNpcCopperTalk21pollGameStatsDownloadEv, 0};
-
-extern "C" void *data_ov048_0225c734[2] = {(void *)_ZN15SpNpcCopperTalk19onChoiceVisitMethodEi, 0};
 
 BOOL SpNpcCopper::mainAct0B() {
     static SpNpcCopper::Fn tbl[4] = {
-        *(SpNpcCopper::Fn *)data_ov048_0225c8d4,
-        *(SpNpcCopper::Fn *)data_ov048_0225c8cc,
-        *(SpNpcCopper::Fn *)data_ov048_0225c7b4,
-        *(SpNpcCopper::Fn *)data_ov048_0225c8bc,
+        &SpNpcCopper::act0BStep0,
+        &SpNpcCopper::act0BStep1,
+        &SpNpcCopper::act0BStep2,
+        &SpNpcCopper::act0BStep3,
     };
     if (talk.subStep < 4) {
         if ((this->*tbl[talk.subStep])() != 0) {
@@ -1576,13 +1032,13 @@ BOOL SpNpcCopper::setupAct0C() {
 
 BOOL SpNpcCopper::mainAct0C() {
     if (TalkWindow_Get(0)->state == 5) {
-        void *h;
+        TownTravelState *h;
         s32 a, b;
         s32 s;
         VecFx32 v;
         Actor *e;
-        h = TownSessionState_GetTravelState(TownSessionState_Get());
-        e = PlayerActor_GetActor(4);
+        h = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+        e = (Actor *)PlayerActor_GetActor(4);
         VecFx32 *pv = &e->position;
         v.x = pv->x;
         v.y = pv->y;
@@ -1591,8 +1047,8 @@ BOOL SpNpcCopper::mainAct0C() {
         a = 0;
         b = 0;
         FieldPos_ToUnit(&a, &b, &v);
-        _ZN15TownTravelState7setModeEj(h, 1);
-        _ZN15TownTravelState8setAngleEi(h, rotY);
+        h->setMode(1);
+        h->setAngle(rotY);
         Camera_SaveView();
         SaveManager_RequestAct14();
         SceneWarp_RequestAt(Scene_GetWarpRequest(), 0xc, &v, 0x800000, s, 2, 2);
@@ -1607,13 +1063,13 @@ BOOL SpNpcCopper::setupAct0D() {
 
 BOOL SpNpcCopper::mainAct0D() {
     if (TalkWindow_Get(0)->state == 5) {
-        void *h;
+        TownTravelState *h;
         s32 a, b;
         s32 s;
         VecFx32 v;
         Actor *e;
-        h = TownSessionState_GetTravelState(TownSessionState_Get());
-        e = PlayerActor_GetActor(4);
+        h = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
+        e = (Actor *)PlayerActor_GetActor(4);
         VecFx32 *pv = &e->position;
         v.x = pv->x;
         v.y = pv->y;
@@ -1622,8 +1078,8 @@ BOOL SpNpcCopper::mainAct0D() {
         a = 0;
         b = 0;
         FieldPos_ToUnit(&a, &b, &v);
-        _ZN15TownTravelState7setModeEj(h, 2);
-        _ZN15TownTravelState8setAngleEi(h, rotY);
+        h->setMode(2);
+        h->setAngle(rotY);
         Scene_SetSavedPos(Scene_GetWarpRequest(), 0xc, &v, 0x800000, s, a, b);
         Camera_SaveView();
         SaveManager_RequestAct17();
@@ -1699,19 +1155,11 @@ BOOL SpNpcCopper::mainAct10() {
     return TRUE;
 }
 
-SpNpcCopperTalk::SpNpcCopperTalk() {
-    AxMail_Construct(&mail);
-    AxBbsNotice_Construct(&bbsNotice);
-    ((BlancaFaceRecord *)(&blancaFace))->construct();
-}
+SpNpcCopperTalk::SpNpcCopperTalk() {}
 
-SpNpcCopperTalk::~SpNpcCopperTalk() {
-    ((BlancaFaceRecord *)(&blancaFace))->destruct();
-    AxBbsNotice_Destruct(&bbsNotice);
-    AxMail_Destruct(&mail);
-}
+SpNpcCopperTalk::~SpNpcCopperTalk() {}
 
-void SpNpcCopperTalk::attachOwner(u8 *p) {
+void SpNpcCopperTalk::attachOwner(SpNpcCopper *p) {
     resetMsg();
     owner = p;
     topic = 0xb;
@@ -1857,14 +1305,14 @@ void SpNpcCopperTalk::startOpenGateAct() {
 void SpNpcCopperTalk::startWifiLogin() {
     lockWindow(1);
     startComm(4, 2);
-    *(u16 *)(owner + 0xe3e) = 0x960;
+    owner->talk.timer = 0x960;
     setScript(0xa);
 }
 
 void SpNpcCopperTalk::startTownSearch() {
     lockWindow(1);
     startComm(2, 2);
-    *(u16 *)(owner + 0xe3e) = 200;
+    owner->talk.timer = 200;
     setScript(1);
 }
 
@@ -1887,7 +1335,7 @@ void SpNpcCopperTalk::startLocalVisit() {
     } else {
         startComm(2, 1);
     }
-    *(u16 *)(owner + 0xe3e) = 200;
+    owner->talk.timer = 200;
     setScript(4);
 }
 
@@ -1901,7 +1349,7 @@ void SpNpcCopperTalk::startWifiVisit() {
         t = hostFriendId;
         NetOverlay_AssertWifi();
         Net_WifiConnectToHost(t);
-        *(u16 *)(owner + 0xe3e) = 0x960;
+        owner->talk.timer = 0x960;
         setScript(5);
     }
 }
@@ -1936,7 +1384,7 @@ void SpNpcCopperTalk::showWifiIdSavedResult() {
 
 void SpNpcCopperTalk::startGoHome() {
     lockWindow(1);
-    *(u16 *)(owner + 0xe3e) = 200;
+    owner->talk.timer = 200;
     setScript(8);
 }
 extern "C" const VecFx32 sCopperGateCheckPos = {0x10000, 0x0, 0x10000};
@@ -1951,34 +1399,34 @@ extern "C" const VecFx32 sCopperSendOffExitPos = {0x10000, 0x0, 0x2000};
 
 void SpNpcCopperTalk::onMessageEnd(u32) {
     static Unk_ov048_0225a8d4_Row tbl[28] = {
-        {0x00, *(SpNpcCopperTalk::Fn *)data_ov048_0225c97c},
-        {0x04, *(SpNpcCopperTalk::Fn *)data_ov048_0225ca8c},
-        {0x05, *(SpNpcCopperTalk::Fn *)data_ov048_0225c87c},
-        {0x06, *(SpNpcCopperTalk::Fn *)data_ov048_0225c874},
-        {0x07, *(SpNpcCopperTalk::Fn *)data_ov048_0225c86c},
-        {0x38, *(SpNpcCopperTalk::Fn *)data_ov048_0225c864},
-        {0x46, *(SpNpcCopperTalk::Fn *)data_ov048_0225c85c},
-        {0x54, *(SpNpcCopperTalk::Fn *)data_ov048_0225c854},
-        {0x3e, *(SpNpcCopperTalk::Fn *)data_ov048_0225c84c},
-        {0x5b, *(SpNpcCopperTalk::Fn *)data_ov048_0225c844},
-        {0x6c, *(SpNpcCopperTalk::Fn *)data_ov048_0225c83c},
-        {0x47, *(SpNpcCopperTalk::Fn *)data_ov048_0225c834},
-        {0x48, *(SpNpcCopperTalk::Fn *)data_ov048_0225c82c},
-        {0x49, *(SpNpcCopperTalk::Fn *)data_ov048_0225c824},
-        {0x25, *(SpNpcCopperTalk::Fn *)data_ov048_0225c81c},
-        {0x55, *(SpNpcCopperTalk::Fn *)data_ov048_0225c814},
-        {0x5d, *(SpNpcCopperTalk::Fn *)data_ov048_0225c99c},
-        {0x6d, *(SpNpcCopperTalk::Fn *)data_ov048_0225c984},
-        {0x62, *(SpNpcCopperTalk::Fn *)data_ov048_0225c974},
-        {0x59, *(SpNpcCopperTalk::Fn *)data_ov048_0225c964},
-        {0x68, *(SpNpcCopperTalk::Fn *)data_ov048_0225c7ec},
-        {0x0d, *(SpNpcCopperTalk::Fn *)data_ov048_0225c7e4},
-        {0x11, *(SpNpcCopperTalk::Fn *)data_ov048_0225c7dc},
-        {0x58, *(SpNpcCopperTalk::Fn *)data_ov048_0225c92c},
-        {0x61, *(SpNpcCopperTalk::Fn *)data_ov048_0225c91c},
-        {0x75, *(SpNpcCopperTalk::Fn *)data_ov048_0225c78c},
-        {0x12, *(SpNpcCopperTalk::Fn *)data_ov048_0225c8f4},
-        {0x6a, *(SpNpcCopperTalk::Fn *)data_ov048_0225c79c},
+        {0x00, &SpNpcCopperTalk::showMainMenu},
+        {0x04, &SpNpcCopperTalk::showMainMenu},
+        {0x05, &SpNpcCopperTalk::showMainMenu},
+        {0x06, &SpNpcCopperTalk::showMainMenu},
+        {0x07, &SpNpcCopperTalk::showMainMenu},
+        {0x38, &SpNpcCopperTalk::closeGate},
+        {0x46, &SpNpcCopperTalk::startOpenGateAct},
+        {0x54, &SpNpcCopperTalk::startTownSearch},
+        {0x3e, &SpNpcCopperTalk::startWifiLogin},
+        {0x5b, &SpNpcCopperTalk::startWifiLogin},
+        {0x6c, &SpNpcCopperTalk::startOpenGateAct},
+        {0x47, &SpNpcCopperTalk::startTurnBackAct},
+        {0x48, &SpNpcCopperTalk::startTurnBackAct},
+        {0x49, &SpNpcCopperTalk::startTurnBackAct},
+        {0x25, &SpNpcCopperTalk::startWifiLogin},
+        {0x55, &SpNpcCopperTalk::openTownList},
+        {0x5d, &SpNpcCopperTalk::openFriendList},
+        {0x6d, &SpNpcCopperTalk::openFriendList},
+        {0x62, &SpNpcCopperTalk::startWifiVisit},
+        {0x59, &SpNpcCopperTalk::startLocalVisit},
+        {0x68, &SpNpcCopperTalk::startSendOffAct},
+        {0x0d, &SpNpcCopperTalk::startFarewellAct},
+        {0x11, &SpNpcCopperTalk::showAnythingElseMenu},
+        {0x58, &SpNpcCopperTalk::showAnythingElseMenu},
+        {0x61, &SpNpcCopperTalk::showAnythingElseMenu},
+        {0x75, &SpNpcCopperTalk::showWifiIdSavedResult},
+        {0x12, &SpNpcCopperTalk::startGoHome},
+        {0x6a, &SpNpcCopperTalk::startSave},
     };
     s32 i = 0;
     u8 *p = &msgIndex;
@@ -1994,7 +1442,7 @@ void SpNpcCopperTalk::onMessageEnd(u32) {
 void SpNpcCopperTalk::onChoiceUpdateWifiId(s32 p) {
     if (p == 0) {
         NetOverlay_LoadWifi();
-        PlayerWifiData_Create(PlayerData_GetCurrent()->getWifiUserData());
+        PlayerWifiData_Create((u8 *)PlayerData_GetCurrent()->getWifiUserData());
         NetOverlay_Restore();
     }
     onChoiceConnectWifi(p);
@@ -2282,35 +1730,35 @@ extern "C" const VecFx32 sCopperArrivalWalkPos = {0x10000, 0x0, 0x11800};
 void SpNpcCopperTalk::onChoice(u32) {
     if (GameStart_IsActive() == 0) {
         static SpNpcCopperChoiceHandler tbl[29] = {
-            {0x15, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c89c},
-            {0x41, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c904},
-            {0x14, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225ca94},
-            {0x7f, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c77c},
-            {0x24, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c774},
-            {0x56, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c76c},
-            {0x0a, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c764},
-            {0x10, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c75c},
-            {0x21, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c754},
-            {0x0f, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c74c},
-            {0x22, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c994},
-            {0x51, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c96c},
-            {0x63, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c724},
-            {0x65, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c7d4},
-            {0x7d, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c794},
-            {0x7e, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c7bc},
-            {0x80, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c8dc},
-            {0x82, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c8a4},
-            {0x2c, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c914},
-            {0x6b, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c6fc},
-            {0x5f, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c6ec},
-            {0x23, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c704},
-            {0x28, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c80c},
-            {0x2f, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c7f4},
-            {0x52, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c734},
-            {0x3d, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c7ac},
-            {0x71, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c88c},
-            {0x74, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c6f4},
-            {0x57, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c804},
+            {0x15, &SpNpcCopperTalk::onChoiceHostLocal},
+            {0x41, &SpNpcCopperTalk::onChoiceHostWifi},
+            {0x14, &SpNpcCopperTalk::onChoiceVisitLocal},
+            {0x7f, &SpNpcCopperTalk::onChoiceVisitWifi},
+            {0x24, &SpNpcCopperTalk::onChoiceBackToMenu},
+            {0x56, &SpNpcCopperTalk::onChoiceBackToMenu},
+            {0x0a, &SpNpcCopperTalk::onChoiceGoHome},
+            {0x10, &SpNpcCopperTalk::onChoiceHostMenu},
+            {0x21, &SpNpcCopperTalk::onChoiceHostMenu},
+            {0x0f, &SpNpcCopperTalk::onChoiceMainMenu},
+            {0x22, &SpNpcCopperTalk::onChoiceMainMenu},
+            {0x51, &SpNpcCopperTalk::onChoiceGoOutInstead},
+            {0x63, &SpNpcCopperTalk::onChoiceRetryLocal},
+            {0x65, &SpNpcCopperTalk::onChoiceRetryLocal},
+            {0x7d, &SpNpcCopperTalk::onChoiceRetryWifi},
+            {0x7e, &SpNpcCopperTalk::onChoiceRetryWifi},
+            {0x80, &SpNpcCopperTalk::onChoiceRetryWifi},
+            {0x82, &SpNpcCopperTalk::onChoiceRetryWifi},
+            {0x2c, &SpNpcCopperTalk::onChoiceSaveAndQuit},
+            {0x6b, &SpNpcCopperTalk::onChoiceGateAlreadyOpen},
+            {0x5f, &SpNpcCopperTalk::onChoiceUnk5F},
+            {0x23, &SpNpcCopperTalk::onChoiceFriendCode},
+            {0x28, &SpNpcCopperTalk::onChoiceFriendCode},
+            {0x2f, &SpNpcCopperTalk::onChoiceFriendCode},
+            {0x52, &SpNpcCopperTalk::onChoiceVisitMethod},
+            {0x3d, &SpNpcCopperTalk::onChoiceHostMethod},
+            {0x71, &SpNpcCopperTalk::onChoiceConnectWifi},
+            {0x74, &SpNpcCopperTalk::onChoiceUpdateWifiId},
+            {0x57, &SpNpcCopperTalk::onChoiceVisitTown},
         };
         s32 i = 0;
         u8 *p = &msgIndex;
@@ -2347,9 +1795,11 @@ void SpNpcCopperTalk::onTaskDone(u32) {
 void SpNpcCopperTalk::setScript(s32 s) { script = s; }
 
 void SpNpcCopperTalk::waitWifiLogin() {
-    Net_PollConnected(NetOverlay_AssertAny());
+    NetOverlay_AssertAny();
+    Net_PollConnected();
     if (checkWifiLoginError() == 0) {
-        if (Net_GetWifiFriendList(NetOverlay_AssertWifi()) != 0) {
+        NetOverlay_AssertWifi();
+        if (Net_GetWifiFriendList() != 0) {
             if (wifiPurpose == 0) {
                 setScript(0x13);
             } else {
@@ -2459,12 +1909,12 @@ void SpNpcCopperTalk::onWifiLoggedIn() {
             h = hostFriendId;
             NetOverlay_AssertWifi();
             Net_WifiConnectToHost(h);
-            *(u16 *)(owner + 0xe3e) = 0x960;
+            owner->talk.timer = 0x960;
             setScript(5);
         }
     } else {
         if (Net_CheckUserDataChanged(r4 + 0x10)) {
-            Net_MakeOwnFriendData(r4 + 0x10, DwcFriendData_GetBytes(PlayerWifiData_GetOwnFriendData(((PlayerData *)(r6))->getWifiUserData())));
+            Net_MakeOwnFriendData(r4 + 0x10, DwcFriendData_GetBytes(PlayerWifiData_GetOwnFriendData((u8 *)((PlayerData *)(r6))->getWifiUserData())));
             MI_CpuCopy8(r4 + 0x10, PlayerWifiData_GetDwcUserData(((PlayerData *)(r6))->getWifiUserData()), 0x40);
             if (Save_WritePlayerWifiData() == 0) {
                 mv = 0x75;
@@ -2492,18 +1942,16 @@ void SpNpcCopperTalk::scanForOpenTowns() {
     void *r7;
     u8 i;
     u8 buf[0x14];
-    u32 A[0x1c / 4];
-    u32 B[0x18 / 4];
-    u32 C[0x1c / 4];
-    u32 D[0x1c / 4];
     if (checkScanTimeout() == 0) {
-      n = Net_CountHostCandidates(Comm_SendEmpty());
+      Comm_SendEmpty();
+      n = Net_CountHostCandidates();
       if (n > 0) {
-        arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
-        _ZN11MsgString9CC2Ev(A);
-        _ZN15EncodedString8BC2Ev(B);
-        new (C) MsgString9B();
-        new (D) EncodedString8();
+        NetOverlay_AssertWireless();
+        arr = Net_GetScanResults();
+        MsgString9C A;
+        EncodedString8B B;
+        MsgString9B C;
+        EncodedString8 D;
         r7 = window;
         for (i = 0; i < n; i++) {
             p = arr[i];
@@ -2516,12 +1964,12 @@ void SpNpcCopperTalk::scanForOpenTowns() {
                     MI_CpuCopy8(Net_GetBeaconGameInfo(p), &buf[1], t);
                     if (buf[0x11] == 0) {
                         MI_CpuCopy8(p, hostBeacon, 0xe0);
-                        EncodedString_SetRaw(B, &buf[1], 8);
-                        ((MsgString *)(A))->fromEncoded((EncodedString *)(B), 0, 0);
-                        EncodedString_SetRaw(D, &buf[9], 8);
-                        ((MsgString *)(C))->fromEncoded((EncodedString *)(D), 0, 0);
-                        ((TalkWindowState *)(r7))->setSlot(3, A);
-                        ((TalkWindowState *)(r7))->setSlot(4, C);
+                        EncodedString_SetRaw(&B, &buf[1], 8);
+                        A.fromEncoded(&B, 0, 0);
+                        EncodedString_SetRaw(&D, &buf[9], 8);
+                        C.fromEncoded(&D, 0, 0);
+                        ((TalkWindowState *)(r7))->setSlot(3, &A);
+                        ((TalkWindowState *)(r7))->setSlot(4, &C);
                         buf[0] = 0x57;
                         ((TalkWindowState *)(r7))->setNextMessage(buf, sSpNpcCopperMsgKey);
                         unlockWindow();
@@ -2531,10 +1979,6 @@ void SpNpcCopperTalk::scanForOpenTowns() {
                 }
             }
         }
-        ((EncodedString8 *)(D))->EncodedString8::~EncodedString8();
-        ((MsgString9B *)(C))->MsgString9B::~MsgString9B();
-        _ZN15EncodedString8BD1Ev(B);
-        ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
     }
     }
 }
@@ -2573,7 +2017,8 @@ void SpNpcCopperTalk::shutdownWifi() {
     if (t) {
         ((TalkWindowState *)(t))->lockAdvance();
     }
-    if (Net_WifiShutdownStepExt(NetOverlay_AssertWifi())) {
+    NetOverlay_AssertWifi();
+    if (Net_WifiShutdownStepExt()) {
         if (t) {
             unlockWindow();
         }
@@ -2598,7 +2043,7 @@ void SpNpcCopperTalk::shutdownWifi() {
 }
 
 void SpNpcCopperTalk::requestSave() {
-    if (((SpNpcCopper *)owner)->canStartSave()) {
+    if (owner->canStartSave()) {
         SaveManager_RequestAct13();
         setScript(0x16);
     } else {
@@ -2627,8 +2072,6 @@ void SpNpcCopperTalk::waitSaveDone() {
 
 BOOL SpNpcCopperTalk::checkNetError(s32 flag) {
     s32 code = Net_GetError();
-    u32 a[0x2c / 4];
-    u32 b[0x2c / 4];
     if (code != 0 || flag != 0) {
         if (flag != 0) {
             s32 r = getConnectErrorMsg();
@@ -2640,12 +2083,12 @@ BOOL SpNpcCopperTalk::checkNetError(s32 flag) {
                 v = -v;
             }
             q = v / 1000;
-            _ZN11MsgString25C1Ev(a);
-            _ZN11MsgString25C1Ev(b);
-            String_FormatNumber(a, q, 2, 6, 0, 0);
-            String_FormatNumber(b, v - q * 1000, 3, 6, 0, 0);
-            ((TalkWindowState *)(window))->setSlot(6, a);
-            ((TalkWindowState *)(window))->setSlot(7, b);
+            MsgString25 a;
+            MsgString25 b;
+            String_FormatNumber(&a, q, 2, 6, 0, 0);
+            String_FormatNumber(&b, v - q * 1000, 3, 6, 0, 0);
+            ((TalkWindowState *)(window))->setSlot(6, &a);
+            ((TalkWindowState *)(window))->setSlot(7, &b);
             if (code == 0x400b) {
                 showErrorAndAbort(0x7d, 0);
             } else if (code == 0x400a) {
@@ -2655,8 +2098,6 @@ BOOL SpNpcCopperTalk::checkNetError(s32 flag) {
             } else {
                 showErrorAndAbort(0x7e, 0);
             }
-            _ZN11MsgString25D1Ev(b);
-            _ZN11MsgString25D1Ev(a);
         } else {
             s32 r = getConnectErrorMsg();
             showErrorAndAbort(r, 0);
@@ -2667,7 +2108,7 @@ BOOL SpNpcCopperTalk::checkNetError(s32 flag) {
 }
 
 BOOL SpNpcCopperTalk::checkConnectTimeout() {
-    if (Math_CountDownU16(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(&owner->talk.timer) == 0) {
         s32 r = getConnectErrorMsg();
         showErrorAndAbort(r, 0);
         return TRUE;
@@ -2676,7 +2117,7 @@ BOOL SpNpcCopperTalk::checkConnectTimeout() {
 }
 
 BOOL SpNpcCopperTalk::checkFindTownTimeout() {
-    if (Math_CountDownU16(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(&owner->talk.timer) == 0) {
         showErrorAndAbort(0x65, 0);
         return TRUE;
     }
@@ -2684,7 +2125,7 @@ BOOL SpNpcCopperTalk::checkFindTownTimeout() {
 }
 
 BOOL SpNpcCopperTalk::checkWifiLoginError() {
-    if (Math_CountDownU16(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(&owner->talk.timer) == 0) {
         showErrorAndAbort(0x7a, 1);
         return TRUE;
     }
@@ -2693,7 +2134,7 @@ BOOL SpNpcCopperTalk::checkWifiLoginError() {
         if (v < 0) {
             v = -v;
         }
-        s32 r = ((SpNpcCopper *)this)->getWifiErrorMsg(v);
+        s32 r = getWifiErrorMsg(v);
         showErrorAndAbort(r, 1);
         return TRUE;
     }
@@ -2701,7 +2142,7 @@ BOOL SpNpcCopperTalk::checkWifiLoginError() {
 }
 
 BOOL SpNpcCopperTalk::checkScanTimeout() {
-    if (Math_CountDownU16(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(&owner->talk.timer) == 0) {
         showErrorAndAbort(0x56, 0);
         return TRUE;
     }
@@ -2734,9 +2175,11 @@ void SpNpcCopperTalk::connectToTown() {
     if (checkFindTownTimeout()) {
         return;
     }
-    n = Net_CountHostCandidates(Comm_SendEmpty());
+    Comm_SendEmpty();
+    n = Net_CountHostCandidates();
     if (n > 0) {
-        arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
+        NetOverlay_AssertWireless();
+        arr = Net_GetScanResults();
         for (i = z; i < n; i++) {
             u8 *p = (u8 *)arr[i];
             s32 t;
@@ -2757,7 +2200,7 @@ void SpNpcCopperTalk::connectToTown() {
                         if (hit) {
                             NetOverlay_AssertWireless();
                             Net_ConnectToParent(p);
-                            *(u16 *)(owner + 0xe3e) = 200;
+                            owner->talk.timer = 200;
                             setScript(5);
                         }
                     }
@@ -2774,7 +2217,7 @@ void SpNpcCopperTalk::waitConnected() {
             if (Net_GetMode() != 3) {
                 Net_GetMode();
             }
-            *(u16 *)((u8 *)owner + 0xe3e) = 200;
+            owner->talk.timer = 200;
             setScript(6);
             Comm_PrepareJoin(Net_GetMyAid());
         }
@@ -2807,7 +2250,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     }
     if (checkNetError(b)) {
         Comm_ClearSyncState();
-        if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
+        if (((KatieVisitState *)TownSessionState_GetKatieState((u8 *)TownSessionState_Get()))->isFollowing()) {
             if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting()) {
                 ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->clearEscorting();
             }
@@ -2815,7 +2258,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     } else {
         s32 t = Comm_GetSyncState();
         if (t == 5) {
-            if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
+            if (((KatieVisitState *)TownSessionState_GetKatieState((u8 *)TownSessionState_Get()))->isFollowing()) {
                 if (((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->isEscorting() == 0) {
                     ((LostChildRecord *)(PlayerData_GetCurrent()->getLostChildRecord()))->setEscorting();
                 }
@@ -2934,7 +2377,7 @@ u32 SpNpcCopperTalk::getJoinErrorMsg() {
     return (u8)(r ? 0x80 : 0x63);
 }
 
-s32 SpNpcCopper::getWifiErrorMsg(s32 id) {
+s32 SpNpcCopperTalk::getWifiErrorMsg(s32 id) {
     s32 r = 0x84;
     if (id == 0x4e85 || id == 0x5bcf || RNG(id, 0x59d8, 0x5dbf)) {
         r = 0x83;
@@ -2962,9 +2405,8 @@ s32 SpNpcCopper::getWifiErrorMsg(s32 id) {
     MsgString25 b;
     String_FormatNumber(&a, q, 2, 6, 0, 0);
     String_FormatNumber(&b, id - q * 1000, 3, 6, 0, 0);
-    // the original reads this+0x3c (ProcBase::drawNode.next; the old per-file Character copy called it unk_3c)
-    ((TalkWindowState *)(drawNode.next))->setSlot(6, &a);
-    ((TalkWindowState *)(drawNode.next))->setSlot(7, &b);
+    window->setSlot(6, &a);
+    window->setSlot(7, &b);
     return r;
 }
 
@@ -3054,7 +2496,7 @@ void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
 
 BOOL SpNpcCopper::checkPlayerAtGate() {
     CommManager *g = gCommManager;
-    SpNpcCopperVecLocal v;
+    VecFx32Ctor v;
     if (((CommManager *)(g))->isOnline()) {
         return FALSE;
     }
@@ -3067,8 +2509,8 @@ BOOL SpNpcCopper::checkPlayerAtGate() {
     if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid) == 0) {
         return FALSE;
     }
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
-    *(VecFx32 *)&v = *p;
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    static_cast<VecFx32 &>(v) = *p;
     if (v.z <= sCopperGateCheckPos.z) {
         PlayerData_GetCurrent();
         if (((CommManager *)(g))->isOnline()) {

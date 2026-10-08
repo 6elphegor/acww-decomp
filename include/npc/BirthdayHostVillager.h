@@ -9,6 +9,7 @@
 #include "talk/TalkStartMsg.h"
 
 class BirthdayHostVillager;
+struct VillagerMemory;
 
 class BirthdayHostVillagerTalk : public VillagerTalk {
 public:
@@ -21,10 +22,10 @@ public:
     virtual void onTaskDone(u32 id);
 
     void attachOwner(BirthdayHostVillager *owner);
-    void *getFriendship();
+    s32 getFriendship();
     void addFriendship(s32 v);
     BOOL isLikedGift(u16 *p);
-    void *getPlayerMemory();
+    VillagerMemory *getPlayerMemory();
     void setReceivedGift();
     u32 hasReceivedGift();
     void setTalked();
@@ -95,8 +96,8 @@ public:
     /* 0xa4b */ u8 emotionTimer;
     /* 0xa4c */ s16 walkAngle;
     /* 0xa4e */ u16 walkTimer;
-    /* 0xa50 */ s32 waypoint[3];
-    /* 0xa5c */ s32 walkTarget[3];
+    /* 0xa50 */ VecFx32 waypoint;
+    /* 0xa5c */ VecFx32 walkTarget;
 };
 
 #endif

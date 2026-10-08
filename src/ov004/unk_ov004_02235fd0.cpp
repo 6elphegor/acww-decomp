@@ -22,11 +22,10 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "snd/SndEnvChannel.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -35,68 +34,12 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/ov004/unk_ov004_02235fd0.h"
-
-// main / runtime symbols by their real names
-#define func_02000c8c _ZN6FxVec3D1Ev
-#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
-#define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
-#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
-#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
-#define func_02031c10 _ZN11BoxColliderD2Ev
-#define func_02031c48 _ZN11BoxColliderC1Ev
-#define func_0203239c _ZN14CollisionStateD1Ev
-#define func_020323b0 _ZN14CollisionStateC1Ev
-#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
-#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
-#define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define func_020548a0 _ZN9AnimModelD1Ev
-#define func_020548d0 _ZN9AnimModelC1Ev
-#define CachedModel_release _ZN11CachedModel7releaseEv
-#define CachedModel_loadCached _ZN11CachedModel10loadCachedEPvS0_
-#define Model_setAlpha _ZN5Model8setAlphaEj
-#define Model_setPolygonId _ZN5Model12setPolygonIdEj
-#define ActorPlacedCollider_setupForActorAt _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi
-#define func_02088c34 _ZN19ActorPlacedColliderD2Ev
-#define func_02088c4c _ZN19ActorPlacedColliderC1Ev
-#define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
-#define ActorCollider_submit _ZN13ActorCollider6submitEv
-#define func_021355f0 __cxa_vec_cleanup
-#define func_02135714 __cxa_vec_ctor
+#include "game/BoxCollider.h"
+#include "game/FxVec3.h"
+#include "snd/CreatureSndChannel.h"
+#include "town/BlockMap.h"
 
 #pragma opt_loop_invariants off
-
-
-
-
-// a CollisionState built and destroyed by hand (C1/D1); a real CollisionState local would add implicit calls
-struct CollisionStateStorage {
-    u32 v[0x30 / 4];
-};
-
-struct Unk_ov004_0223717c_Grid {
-    /* 0x00 */ u8 pad_00[0xc];
-    /* 0x0c */ s32 unitsX;
-    /* 0x10 */ s32 unitsZ;
-};
-
-
-
-extern "C" {
-void func_02031c48(void *p);
-void func_02031c10(void *p);
-void List_Remove(void *list, void *node);
-}
-
-
-
-#define F08(o) (*(u32 *)((u8 *)(o) + 8))
 
 // vtable 0x0224ebe4, size 0x268
 class HouseRoach : public Actor {
@@ -127,27 +70,23 @@ public:
     void setSoundState(s32 v);
     s32 getSoundState();
 
+    // ProcBase::param (0x08) is the roach's alpha: it fades in to 0x1f, 0xffff marks it released
+
     /* 0xd4 */ s32 crawlSpeed;
     /* 0xd8 */ s32 jumpSpeed;
-    /* 0xdc */ u32 moveResult[12];
+    /* 0xdc */ CollisionState moveResult;
     /* 0x10c */ s32 roachState;
     /* 0x110 */ s32 lifeState;
-    /* 0x114 */ u32 sound[3];
-    /* 0x120 */ u8 model[0x5c];
-    /* 0x17c */ void *modelResMdl;
-    /* 0x180 */ u8 pad_180[4];
-    /* 0x184 */ Mtx43 modelMtx;
-    /* 0x1b4 */ u8 unk_1b4[0x24];
-    /* 0x1d8 */ u8 hitBox[0x3c];
-    /* 0x214 */ u8 isHit;
-    /* 0x215 */ u8 pad_215[0x228 - 0x215];
+    /* 0x114 */ CreatureSndChannel sound;
+    /* 0x120 */ AnimModel model;
+    /* 0x1d8 */ ActorPlacedCollider hitBox;
     /* 0x228 */ s16 spawnAngle;
     /* 0x22a */ u8 isJumping;
     /* 0x22b */ u8 pad_22b;
     /* 0x22c */ s16 stateTimer;
     /* 0x22e */ s16 jumpTimer;
-    /* 0x230 */ VecFx32 probePoints[2];
-    /* 0x248 */ VecFx32 probePrevPoints[2];
+    /* 0x230 */ FxVec3 probePoints[2];
+    /* 0x248 */ FxVec3 probePrevPoints[2];
     /* 0x260 */ s8 wallProbe;
     /* 0x261 */ u8 pad_261;
     /* 0x262 */ u8 wallTurnDir;
@@ -168,62 +107,26 @@ public:
 extern "C" {
 extern CommManager *gCommManager;
 extern u8 gSaveHouse[];
-extern Unk_ov004_0223717c_Grid *gSceneBlockMap;
-extern u32 gCurrentHeap;
-extern u8 data_0213b91c[];
-extern u8 data_0213b954[];
-extern s16 data_02135f44[];
+extern BlockMap *gSceneBlockMap;
+extern s16 data_02135f44[];  // sine / cosine pairs by angle >> 4
 
 BOOL Scene_InHouseRoom();
 s32 Scene_GetHouseRoom();
-void CachedModel_loadCached(void *p, u32 a, void *b);
-void AnimModel_allocAnmObj(void *p, void *q);
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *p);
-void *func_02106788(void *p);
-void *func_021067a4(void *p, u32 q);
-void AnimModel_attachAnim(void *p);
-void SndEnvChannel_callReset(void *p);
-void func_02088c34(void *p);
-void func_020548a0(void *p);
-void func_0203239c(void *p);
-void func_020323b0(void *p);
-void func_020548d0(void *p);
-void func_02088c4c(void *p);
-void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
-void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 y);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
-void *Item_GetFurnitureIndex(void *p);
+u8 *func_02106788(u8 *p);
+u8 *func_021067a4(u8 *p, u32 i);
+u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
+s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsFurniture(u16 *p);
-s32 Vec_DistXZ(void *a, void *b);
-void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
-void Clock_GetMinuteHour(void *p);
-s32 GroundInfo_initAtPos(void *o, void *v, s32 a, s32 b);
-void GroundInfo_Destruct(void *o);
-s32 GroundInfoBase_getHeight(void *o, s32 a);
-void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+// (main defines it with an integer for the actor and u16 for the angle)
+void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *prev, u16 angle, s32 radius, Actor *actor, u32 flags);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-s32 BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
-s32 BoxCollider_Unregister(void *p);
-void SndEnvChannel_callRelease(void *p);
-void SndEnvChannel_callRequest(void *p, u32 id);
-void SndEnvChannel_callRequestSustained(void *p, u32 id);
-s32 SndEnvChannel_callUpdateRelative(void *p, void *v);
-void CachedModel_release(void *p);
-void Model_setPolygonId(void *p, s32 a);
-void NNSi_G3dModifyPolygonAttrMask(u32 a, u32 b, u32 c);
-void Model_setAlpha(void *p, u32 v);
-void AnimModel_drawAnimated(void *p, u32 v);
-void AnimModel_stepAnim(void *p);
-void AnimModel_setFrame(void *p, s32 frame);
-BOOL ActorCollider_isHitByGroup(void *p, u32 mask);
-s32 Math_AngleXZ(void *a, void *b);
-s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 ActorCollider_submit(void *a);
-
+// (main defines the position as an integer)
+BOOL BoxCollider_Register(BoxCollider *n, s32 a, s32 b, s32 c, VecFx32 *pos, s16 angle, VecFx32 *scale);
+BOOL BoxCollider_Unregister(BoxCollider *n);
+void NNSi_G3dModifyPolygonAttrMask(u8 *res, BOOL on, u32 mask);
 }
 
 extern "C" ProcProfile sHouseRoachManagerProfile;
@@ -231,7 +134,7 @@ extern "C" char sHouseRoachModelPath[0x18];
 extern "C" ActorProfile sHouseRoachProfile;
 extern "C" s8 sHouseRoachTurnCounter;
 extern "C" volatile u8 sHouseRoachActiveCount;
-extern "C" void *sHouseRoachManager;
+extern "C" HouseRoachManager *sHouseRoachManager;
 extern "C" Actor *sHouseRoachVillager;
 extern "C" volatile u8 sHouseRoachTotal;
 extern "C" HouseRoach *sHouseRoaches[3];
@@ -265,8 +168,8 @@ BOOL HouseRoachManager::onExecute() {
     for (i = 0; i < 3; i++) {
         HouseRoach **s = &sHouseRoaches[i];
         if (*s != 0) {
-            if (*(s32 *)((u8 *)sHouseRoaches[i] + 8) == 0xffff) {
-                *(s32 *)((u8 *)*s + 8) = 0;
+            if (sHouseRoaches[i]->param == 0xffff) {
+                (*s)->param = 0;
                 (*s)->setSoundState(0);
                 ProcBase_RequestDelete(*s);
                 *s = 0;
@@ -284,10 +187,10 @@ BOOL HouseRoachManager::onExecute() {
         }
     }
     if (mask != 0xff && mask != 0) {
-        void *p = PlayerActor_GetActor(4);
+        Actor *p = (Actor *)PlayerActor_GetActor(4);
         s32 best = 0xfffffff;
         if (p != 0) {
-            void *q = (u8 *)p + 0x5c;
+            VecFx32 *q = &p->position;
             for (i = 0; i < 3; i++) {
                 HouseRoach *o = sHouseRoaches[i];
                 if (o != 0 && ((mask >> i) & 1) != 0) {
@@ -295,7 +198,7 @@ BOOL HouseRoachManager::onExecute() {
                         last = (s8)i;
                         break;
                     }
-                    s32 d = Vec_DistXZ(q, HOST_AT(o, 0x5c, position.x, 0));
+                    s32 d = Vec_DistXZ(q, &o->position);
                     if (best > d) {
                         best = d;
                         last = (s8)i;
@@ -316,7 +219,7 @@ BOOL HouseRoachManager::onCreate() {
     return TRUE;
 }
 
-extern "C" BOOL HouseRoach_SpawnFromFurniture(u32 a, u32 b) {
+extern "C" BOOL HouseRoach_SpawnFromFurniture(void *pos, u16 *angle) {
     BOOL r = FALSE;
     if (gCommManager->isOnline()) return r;
     u32 c = sHouseRoachActiveCount;
@@ -327,7 +230,7 @@ extern "C" BOOL HouseRoach_SpawnFromFurniture(u32 a, u32 b) {
             for (i = 0; i < 3; i++) {
                 HouseRoach **s = &sHouseRoaches[i];
                 if (*s == 0) {
-                    *s = (HouseRoach *)Actor::spawn((void *)(0xc0), (void *)(0), (void *)a, (void *)b, sHouseRoachManager);
+                    *s = (HouseRoach *)Actor::spawn((void *)(0xc0), (void *)(0), pos, angle, sHouseRoachManager);
                     sHouseRoachActiveCount = sHouseRoachActiveCount + 1;
                     r = TRUE;
                     break;
@@ -338,11 +241,11 @@ extern "C" BOOL HouseRoach_SpawnFromFurniture(u32 a, u32 b) {
     return r;
 }
 
-extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
+extern "C" BOOL HouseRoach_SpawnInitial(HouseRoachManager *owner) {
     s32 x2;
     s32 y2;
     u8 cnt = 0;
-    Unk_ov004_0223717c_Grid *g = gSceneBlockMap;
+    BlockMap *g = gSceneBlockMap;
     u32 rows[32];
     s32 x;
     s32 y;
@@ -365,15 +268,15 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
         goto xt0;
     xl0:
         if (g == 0) goto xn0;
-        if (BlockMap_canPlaceItem(g, x, y) == 0) goto xn0;
+        if (g->canPlaceItem(x, y) == 0) goto xn0;
         hx = x >> 4;
         hy = y >> 4;
         cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (cell == 0) goto xn0;
         if (Item_IsFurniture(cell) != 0) {
             u16 tmp = 0xfff1;
-            void *a = Item_GetFurnitureIndex(cell);
-            void *bb = Item_GetFurnitureIndex(&tmp);
+            s32 a = Item_GetFurnitureIndex(cell);
+            s32 bb = Item_GetFurnitureIndex(&tmp);
             ok = (a == bb) ? TRUE : FALSE;
         } else {
             if (*cell == 0xfff1) ok = TRUE;
@@ -428,23 +331,15 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     return TRUE;
 }
 
-extern "C" BOOL HouseRoach_LoadCount(void *self) {
+extern "C" BOOL HouseRoach_LoadCount(HouseRoachManager *self) {
     sHouseRoachTotal = ((HouseData *)gSaveHouse)->getRoachCount();
     if (sHouseRoachTotal != 0) return TRUE;
     return FALSE;
 }
 
 HouseRoach::HouseRoach() {
-    volatile u32 *p = sound;
     crawlSpeed = 0x614;
     jumpSpeed = 0x6b8;
-    new (moveResult) CollisionState();
-    *p = (u32)data_0213b91c;
-    *p = (u32)data_0213b954;
-    new (model) AnimModel();
-    new (hitBox) ActorPlacedCollider();
-    func_02135714(probePoints, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
-    func_02135714(probePrevPoints, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
     lifeState = 1;
     wallProbe = 0;
     wallTurnDir = 0;
@@ -453,17 +348,12 @@ HouseRoach::HouseRoach() {
 }
 
 HouseRoach::~HouseRoach() {
-    func_021355f0(probePrevPoints, 2, 12, (void *)func_02000c8c);
-    func_021355f0(probePoints, 2, 12, (void *)func_02000c8c);
-    func_02088c34(hitBox);
-    ((AnimModel *)(model))->AnimModel::~AnimModel();
-    ((CollisionState *)(moveResult))->~CollisionState();
 }
 
 extern "C" void HouseRoach_FindVillager(void *) {
     u8 i;
     for (i = 0; i < 8; i++) {
-        void *r = NpcRegistry_FindVillager(i);
+        NpcActor *r = NpcRegistry_FindVillager(i);
         if (r) sHouseRoachVillager = (Actor *)r;
     }
 }
@@ -477,20 +367,20 @@ void HouseRoach::setSoundState(s32 v) {
 }
 
 BOOL HouseRoach::setup() {
-    ((CachedModel *)(model))->loadCached((void *)(0x474f4b49), sHouseRoachModelPath);
-    void *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
+    model.loadCached((void *)(0x474f4b49), sHouseRoachModelPath);
+    Heap *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
     ProcBase_SetHeap(this, h);
-    ((AnimModel *)(model))->allocAnmObj(0);
-    void *t = File_Load("/insect/51/bug52.nsbva");
-    ((Heap *)(h))->adjust();
+    model.allocAnmObj(0);
+    u8 *t = (u8 *)File_Load("/insect/51/bug52.nsbva");
+    h->adjust();
     Heap_RestoreCurrent();
-    void *r = func_021067a4(func_02106788(t), 0);
-    ((BlendAnimModel *)(model))->initAnim(r, 0, 0x1000, 0, 0);
-    ((AnimModel *)(model))->attachAnim();
-    ((SndEnvChannel *)(sound))->callReset();
-    s16 *q = &moveAngleX;
-    q[1] = rotY;
-    spawnAngle = q[1];
+    u8 *r = func_021067a4(func_02106788(t), 0);
+    // BlendAnimModel::initAnim uses only AnimModel's members (the model is a plain AnimModel)
+    static_cast<BlendAnimModel *>(&model)->initAnim(r, 0, 0x1000, 0, 0);
+    model.attachAnim();
+    sound.callReset();
+    moveAngleY = rotY;
+    spawnAngle = moveAngleY;
     gravity = -819;
     speed = crawlSpeed;
     isJumping = 0;
@@ -521,7 +411,7 @@ void HouseRoach::updateState() {
         break;
     case 2:
         Effect_PlayById(0x50, &position, 0, 0);
-        F08(this) = F08(this) - 1;
+        param = param - 1;
         lifeState = 2;
         playSe(2);
         break;
@@ -535,17 +425,17 @@ void HouseRoach::updateState() {
         }
         break;
     }
-    VecFx32 *pv = (VecFx32 *)&position;
+    VecFx32 *pv = &position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
-    ((SndEnvChannel *)(sound))->callUpdateRelative((VecFx32 *)(&v));
+    sound.callUpdateRelative(&v);
 }
 
 void HouseRoach::updateCollision() {
     s32 ang;
     VecFx32 *p;
-    u32 colliders[4][0x9c / 4]; // four BoxColliders, built (C1) and destroyed (D2) by hand
+    BoxCollider colliders[4];
     u8 fr[4];
     u8 fm[4];
     VecFx32 v[4];
@@ -554,12 +444,7 @@ void HouseRoach::updateCollision() {
     u32 n;
     u8 i;
     s32 t;
-    func_02031c48(colliders[0]);
-    func_02031c48(colliders[1]);
-    func_02031c48(colliders[2]);
-    func_02031c48(colliders[3]);
-    p = (VecFx32 *)this;
-    p = (VecFx32 *)(ACTOR_POS_AT(p));
+    p = &position;
     n = 1;
     ang = rotY;
     t = FX_Div(0x1000, 0x2000);
@@ -602,11 +487,11 @@ void HouseRoach::updateCollision() {
         if (fm[i] != 0) {
             s32 a = func_01ffcb0c(0x4000, 0x1000);
             s32 b = func_01ffcb0c(0xa000, 0x1000);
-            fr[i] = BoxCollider_Register(colliders[i], a, 0x1000, b, &v[i], z2, z2);
+            fr[i] = BoxCollider_Register(&colliders[i], a, 0x1000, b, &v[i], z2, NULL);
         } else {
             s32 a = func_01ffcb0c(0x4000, 0x1000);
             s32 b = func_01ffcb0c(0xa000, 0x1000);
-            fr[i] = BoxCollider_Register(colliders[i], 0x1000, a, b, &v[i], z1, z1);
+            fr[i] = BoxCollider_Register(&colliders[i], 0x1000, a, b, &v[i], z1, NULL);
         }
     }
     if (roachState != 0) {
@@ -616,13 +501,9 @@ void HouseRoach::updateCollision() {
     Collision_Move(&moveResult, p, &prevPosition, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {
-            BoxCollider_Unregister(colliders[i]);
+            BoxCollider_Unregister(&colliders[i]);
         }
     }
-    func_02031c10(colliders[3]);
-    func_02031c10(colliders[2]);
-    func_02031c10(colliders[1]);
-    func_02031c10(colliders[0]);
 }
 
 void HouseRoach::updateAppear() {
@@ -630,17 +511,17 @@ void HouseRoach::updateAppear() {
     speed = crawlSpeed;
     updateCollision();
     position.y = prevPosition.y;
-    VecFx32 *pv = (VecFx32 *)&position;
+    VecFx32 *pv = &position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
-    ((SndEnvChannel *)(sound))->callUpdateRelative((VecFx32 *)(&v));
+    sound.callUpdateRelative(&v);
 }
 
 BOOL HouseRoach::execute() {
     u32 t;
     wantsCrawlSe = 0;
-    t = F08(this);
+    t = param;
     if (t >= 0x1f) {
         if (lifeState == 1) {
             if (sHouseRoachVillager == NULL) {
@@ -651,24 +532,24 @@ BOOL HouseRoach::execute() {
             updateState();
             checkHeight();
             if (isJumping != 0) {
-                ((AnimModel *)(model))->stepAnim();
+                model.stepAnim();
             }
         } else {
-            F08(this) = t - 1;
+            param = t - 1;
         }
     } else {
         if (lifeState == 1) {
-            F08(this) = t + 2;
+            param = t + 2;
             updateAppear();
         } else {
-            F08(this) = t - 1;
+            param = t - 1;
         }
     }
-    if (F08(this) != 0) {
+    if (param != 0) {
         Mtx43 buf;
         drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         calcModelMatrix(&buf);
-        modelMtx = buf;
+        model.mtx = buf;
     } else {
         release();
     }
@@ -681,12 +562,11 @@ BOOL HouseRoach::execute() {
 BOOL HouseRoach::checkHeight() {
     if (position.y >= 0xc00) {
         position.y = prevPosition.y;
-        if ((moveResult[1] & 1) != 0) {
-            u8 buf[0x40];
+        if ((moveResult.flags & 1) != 0) {
+            GroundInfo g;
             roachState = 2;
-            ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(&position), 0, 0);
-            position.y = ((GroundInfoBase *)(buf))->getHeight(1);
-            GroundInfo_Destruct(buf);
+            g.initAtPos(&position, 0, 0);
+            position.y = g.getHeight(1);
             return TRUE;
         }
     }
@@ -695,11 +575,11 @@ BOOL HouseRoach::checkHeight() {
 
 BOOL HouseRoach::checkStomped() {
     Actor *pl = (Actor *)PlayerActor_GetActor(4);
-    if (isHit != 0) {
+    if (hitBox.isHit != 0) {
         if (isJumping == 0) {
             if (pl != NULL) {
                 if (pl->speed > 0) {
-                    if (((ActorCollider *)(hitBox))->isHitByGroup(4) != 0) {
+                    if (hitBox.isHitByGroup(4) != 0) {
                         roachState = 2;
                         return TRUE;
                     }
@@ -707,7 +587,7 @@ BOOL HouseRoach::checkStomped() {
             }
             if (sHouseRoachVillager != NULL) {
                 if (sHouseRoachVillager->speed > 0) {
-                    if (((ActorCollider *)(hitBox))->isHitByGroup(8) != 0) {
+                    if (hitBox.isHitByGroup(8) != 0) {
                         roachState = 2;
                         return TRUE;
                     }
@@ -720,15 +600,15 @@ BOOL HouseRoach::checkStomped() {
 
 BOOL HouseRoach::draw() {
     if (lifeState != 4) {
-        VecFx32 *pv = (VecFx32 *)&position;
-        if (F08(this) > 0x1f) {
-            F08(this) = 0x1f;
+        VecFx32 *pv = &position;
+        if (param > 0x1f) {
+            param = 0x1f;
         }
-        ((Model *)(model))->setPolygonId(3);
-        NNSi_G3dModifyPolygonAttrMask(modelResMdl, 1, 0x1f0000);
-        ((Model *)(model))->setAlpha((u8)F08(this));
-        ((AnimModel *)(model))->drawAnimated((void *)(0));
-        if (F08(this) >= 0x1f && lifeState == 1) {
+        model.setPolygonId(3);
+        NNSi_G3dModifyPolygonAttrMask((u8 *)model.resMdl, 1, 0x1f0000);
+        model.setAlpha((u8)param);
+        model.drawAnimated((void *)(0));
+        if (param >= 0x1f && lifeState == 1) {
             CharaShadow_Draw(pv, 0x400, 0x4000, 0x1000);
         }
     }
@@ -736,10 +616,10 @@ BOOL HouseRoach::draw() {
 }
 
 BOOL HouseRoach::release() {
-    ((CachedModel *)(model))->release();
+    model.release();
     lifeState = 4;
-    F08(this) = 0xffff;
-    ((SndEnvChannel *)(sound))->callRelease();
+    param = 0xffff;
+    sound.callRelease();
     return TRUE;
 }
 
@@ -748,16 +628,16 @@ void HouseRoach::playSe(u32 sel) {
     case 0:
         wantsCrawlSe = 1;
         if (getSoundState() == 2) {
-            ((SndEnvChannel *)(sound))->callRequest((void *)(0x1d2));
+            sound.callRequest((void *)(0x1d2));
         } else {
             setSoundState(1);
         }
         break;
     case 1:
-        ((SndEnvChannel *)(sound))->callRequestSustained((void *)(0x1d3));
+        sound.callRequestSustained((void *)(0x1d3));
         break;
     default:
-        ((SndEnvChannel *)(sound))->callRequestSustained((void *)(0x1d4));
+        sound.callRequestSustained((void *)(0x1d4));
         break;
     }
 }
@@ -765,15 +645,14 @@ void HouseRoach::playSe(u32 sel) {
 u8 HouseRoach::probeWalls() {
     u8 r6 = 0;
     VecFx32 *r4r = &probePoints[0];
-    CollisionStateStorage o1;
-    u32 o2[16];
-    u32 o3[16];
+    CollisionState o1;
+    GroundInfo o2;
+    GroundInfo o3;
     volatile s32 t1;
     s16 t2;
     s16 t1v;
     s16 ang;
-    new (&o1) CollisionState();
-    ((GroundInfo *)(o2))->initAtPos((VecFx32 *)(r4r), r6, r6);
+    o2.initAtPos(r4r, r6, r6);
     ang = rotY;
     if (probePrevPoints[0].x == 0 || probePrevPoints[0].z == 0) {
         probePrevPoints[0].x = probePoints[0].x;
@@ -781,29 +660,26 @@ u8 HouseRoach::probeWalls() {
         probePrevPoints[0].z = probePoints[0].z;
     }
     Collision_Move(&o1, r4r, &probePrevPoints[0], ang, 0x19a, this, 0xf);
-    t1 = (s16)(u16)((CollisionState *)(u32)&o1)->contacts.numContacts;
-    if (((GroundInfoBase *)(o2))->getHeight(1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
+    t1 = (s16)(u16)o1.contacts.numContacts;
+    if (o2.getHeight(1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
         r6++;
     }
-    ((GroundInfo *)(o3))->initAtPos((VecFx32 *)(r4r + 1), 0, 0);
+    o3.initAtPos(r4r + 1, 0, 0);
     if (probePrevPoints[1].x == 0 || probePrevPoints[1].z == 0) {
         probePrevPoints[1].x = probePoints[1].x;
         probePrevPoints[1].y = probePoints[1].y;
         probePrevPoints[1].z = probePoints[1].z;
     }
     Collision_Move(&o1, r4r + 1, &probePrevPoints[1], ang, 0x19a, this, 0xf);
-    t2 = (s16)(u16)((CollisionState *)(u32)&o1)->contacts.numContacts;
-    if (((GroundInfoBase *)(o3))->getHeight(1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
+    t2 = (s16)(u16)o1.contacts.numContacts;
+    if (o3.getHeight(1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
         r6 += 2;
     }
-    GroundInfo_Destruct(o3);
-    GroundInfo_Destruct(o2);
-    ((CollisionState *)(&o1))->~CollisionState();
     return r6;
 }
 
 void HouseRoach::setProbePoints(s32 dist, s32 delta) {
-    VecFx32 *pv = (VecFx32 *)&position;
+    VecFx32 *pv = &position;
     s16 ang = rotY;
     u32 idx;
     probePoints[0].x = position.x;
@@ -839,9 +715,9 @@ Actor *HouseRoach::getNearestCharacter() {
     g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
-            a = (VecFx32 *)&position;
-            b = (VecFx32 *)&p->position;
-            c = (VecFx32 *)&g->position;
+            a = &position;
+            b = &p->position;
+            c = &g->position;
             d1 = position.x - p->position.x;
             if (d1 < 0) d1 = -d1;
             d2 = a->z - b->z;
@@ -860,26 +736,26 @@ Actor *HouseRoach::getNearestCharacter() {
 }
 
 void HouseRoach::updateCrawl() {
-    u8 *self0 = (u8 *)&position;
+    VecFx32 *self0 = &position;
     s32 res = 0;
     u8 i;
     s32 zero = 0;
     for (i = 0; i < 2; i++) {
-        s32 o;
+        Actor *o;
         if (i == 0) {
-            o = (s32)PlayerActor_GetActor(4);
+            o = (Actor *)PlayerActor_GetActor(4);
         } else {
-            o = (s32)sHouseRoachVillager;
+            o = sHouseRoachVillager;
         }
         if (o != 0 && res == 0) {
-            u8 *q = ACTOR_POS_AT(o);
+            VecFx32 *q = &o->position;
             stateTimer = stateTimer - 1;
             speed = zero;
             if (stateTimer <= 0) {
                 roachState = 1;
                 stateTimer = (Random_GlobalBelow(4) + 1) * 20;
                 res = 1;
-            } else if (*(s32 *)(o + 0x98) > 0) {
+            } else if (o->speed > 0) {
                 s32 d = Vec_DistXZ(self0, q);
                 if (d < func_01ffcb0c(0x1000, 0x4000)) {
                     stateTimer = (Random_GlobalBelow(4) + 2) * 20;
@@ -892,36 +768,35 @@ void HouseRoach::updateCrawl() {
     if (res == 2) {
         Actor *t = getNearestCharacter();
         if (t) {
-            s16 *q92 = &moveAngleX;
-            q92[1] = Math_AngleXZ(&t->position, self0);
-            rotY = q92[1];
+            moveAngleY = Math_AngleXZ(&t->position.x, &self0->x);
+            rotY = moveAngleY;
         }
     }
 }
 
 void HouseRoach::updateHitBox() {
-    ((ActorPlacedCollider *)(hitBox))->setupForActorAt(this, (VecFx32 *)(&position), 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
-    ((ActorCollider *)(hitBox))->submit();
+    hitBox.setupForActorAt(this, &position, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
+    hitBox.submit();
 }
 
 BOOL HouseRoach::move() {
     s32 a = rotY;
-    VecFx32 *p6 = (VecFx32 *)&position;
+    VecFx32 *p6 = &position;
     s32 hit = 0;
     u8 i;
     setProbePoints(0x3c, 0xe38);
     wallProbe = probeWalls();
     for (i = 0; i < 2; i++) {
-        s32 o;
+        Actor *o;
         if (i == 0) {
-            o = (s32)PlayerActor_GetActor(4);
+            o = (Actor *)PlayerActor_GetActor(4);
         } else {
-            o = (s32)sHouseRoachVillager;
+            o = sHouseRoachVillager;
         }
         if (o != 0 && hit == 0) {
-            VecFx32 *q = (VecFx32 *)(o + 0x5c);
+            VecFx32 *q = &o->position;
             if (Vec_DistXZ(p6, q) < 0x1800) {
-                s32 d = Math_AngleXZ(p6, q);
+                s32 d = Math_AngleXZ(&p6->x, &q->x);
                 if ((d >= 0 && a >= 0) || (d <= 0 && a <= 0)) {
                     s32 t = d - a;
                     if (t < 0) {
@@ -947,10 +822,10 @@ BOOL HouseRoach::move() {
             p6->y = 3;
             jumpTimer = 0;
             isJumping = 0;
-            ((AnimModel *)(model))->setFrame(0);
+            model.setFrame(0);
         } else {
             jumpTimer = jumpTimer + 1;
-            ((AnimModel *)(model))->stepAnim();
+            model.stepAnim();
         }
     } else {
         s32 m = wallProbe;
@@ -982,9 +857,8 @@ BOOL HouseRoach::move() {
         }
         playSe(m > 0 ? 0 : 0);
     }
-    s16 *q92 = &moveAngleX;
-    q92[1] = a;
-    rotY = q92[1];
+    moveAngleY = a;
+    rotY = moveAngleY;
     return TRUE;
 }
 
@@ -1021,7 +895,7 @@ extern "C" s8 sHouseRoachTurnCounter = 0;
 
 extern "C" volatile u8 sHouseRoachActiveCount = 0;
 
-extern "C" void *sHouseRoachManager = 0;
+extern "C" HouseRoachManager *sHouseRoachManager = 0;
 
 extern "C" Actor *sHouseRoachVillager = 0;
 

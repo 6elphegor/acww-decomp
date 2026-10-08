@@ -1,15 +1,13 @@
 #ifndef ROOM_ROOMITEMDROP_H
 #define ROOM_ROOMITEMDROP_H
 #include "snd/SndSeEmitter.h"
-#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
 
 // One item dropped into a room (0x94 bytes; ctor 0x0222c9d0 / dtor defined in ov004 unk_ov004_0222c9bc.cpp). 15 of
 // them form sRoomItemDrops (unk_ov004_0222bed0.cpp, 5 groups of 3), driven by ItemDrop_Init / SetTrajectory / Update
-// / Settle / Clear there. The SE emitter at 0x4c is a plain 0x40-byte SndSeEmitter, built and destroyed by hand
-// (SndSeEmitter C1 / D1).
+// / Settle / Clear there.
 class RoomItemDrop {
 public:
     RoomItemDrop();
@@ -28,7 +26,7 @@ public:
     /* 0x3c */ VecFx32 scale;
     /* 0x48 */ s16 unk_48;
     /* 0x4a */ s16 unk_4a;
-    /* 0x4c */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter
+    /* 0x4c */ SndSeEmitter seEmitter;
     /* 0x8c */ s8 bounceCount;
     /* 0x8d */ u8 frameCount;
     /* 0x8e */ u8 unk_8e;

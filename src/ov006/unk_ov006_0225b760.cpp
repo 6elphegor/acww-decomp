@@ -3,7 +3,6 @@
 #include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
-#define PROTO_LOCAL_sFieldSceneProfileCount  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov003/unk_ov003_022187f8.h"
 #include "proto/ov006/unk_ov006_0225b760.h"
 
@@ -15,7 +14,6 @@
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
 
-extern u8 sFieldSceneProfileCount;  // copied into the entry table by __sinit
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern u32 data_ov006_0225b7cc[36];
@@ -38,7 +36,7 @@ u32 data_ov006_0225b790[3] = {0xbc, 0xd0, 0xd4};
 SceneSpawnList data_ov006_0225b780 = {3, 0, data_ov006_0225b7b4};
 
 SceneSpawnGroup data_ov006_0225b7b4[3] = {
-    {2, sFieldSceneProfileCount, 0, sFieldSceneProfiles},
+    {2, (u8)sFieldSceneProfileCount, 0, sFieldSceneProfiles},
     {2, 3, 0, data_ov006_0225b790},
     {1, 0, 0, 0},
 };

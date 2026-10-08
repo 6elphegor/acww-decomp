@@ -293,7 +293,7 @@ BOOL FtrPhone::enterTalkAct01() {
 }
 
 void FtrPhone::execTalkAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         void *a = FtrContactSet_GetInstance();
         void *b = ((FtrContactSet *)(a))->findContact(this);
         s32 *v = &((FtrContact *)(b))->getClampedContactPoint()->x;
@@ -303,7 +303,7 @@ void FtrPhone::execTalkAct00() {
         pushAngle = ((FtrContact *)(b))->getPushAngle();
         p10::TalkRequest_AddPlayerTalk6(this, 0);
     }
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
 }
 
 BOOL FtrPhone::enterTalkAct00() { return TRUE; }
@@ -346,7 +346,7 @@ void FtrPhone::execFtrAct03() {
 }
 
 BOOL FtrPhone::enterFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     playSound1();
     return TRUE;
 }
@@ -354,7 +354,7 @@ BOOL FtrPhone::enterFtrAct03() {
 void FtrPhone::execFtrAct02() {}
 
 BOOL FtrPhone::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     return TRUE;
 }
 
@@ -363,7 +363,7 @@ void FtrPhone::execFtrAct01() {
 }
 
 BOOL FtrPhone::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     playSound1();
     return TRUE;
 }
@@ -371,7 +371,7 @@ BOOL FtrPhone::enterFtrAct01() {
 void FtrPhone::execFtrAct00() {}
 
 BOOL FtrPhone::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     return TRUE;
 }
 
@@ -433,9 +433,9 @@ BOOL FtrPhone::updateActive() {
 
 BOOL FtrPhone::initModel() {
     if (spawnMode == 1) {
-        ((FtrSwitch *)(switchState))->set(0, 0);
+        switchState.set(0, 0);
     }
-    if (((FtrSwitch *)(switchState))->isOn() != 0) {
+    if (switchState.isOn() != 0) {
         changeAct(2, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -517,14 +517,14 @@ void FtrComputer::execFtrAct01() {
     p11::FtrActor_StepAnims(this);
     ((FtrGlowMatSet *)(&glowMats))->setLit(1, 1, 0);
     ((FtrActor *)(this))->playSound0();
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p11::FtrSync_RequestAct((s32)(sptr)this, 0, 0xff, 1);
     }
 }
 
 BOOL FtrComputer::enterFtrAct01() {
     ((FtrActor *)(this))->playSound1();
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     ((FtrActor *)(this))->playAnim(1, 0, 0x1000, 0);
     return TRUE;
 }
@@ -532,14 +532,14 @@ BOOL FtrComputer::enterFtrAct01() {
 void FtrComputer::execFtrAct00() {
     p11::FtrActor_StepAnims(this);
     ((FtrGlowMatSet *)(&glowMats))->setLit(0, 1, 0);
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p11::FtrSync_RequestAct((s32)(sptr)this, 1, 0xff, 1);
     }
 }
 
 BOOL FtrComputer::enterFtrAct00() {
     ((FtrActor *)(this))->playSound2();
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     ((FtrActor *)(this))->playAnim(0, 1, 0x1000, 0);
     return TRUE;
 }
@@ -582,12 +582,12 @@ BOOL FtrComputer::updateActive() {
 
 BOOL FtrComputer::initModel() {
     ((FtrActor *)(this))->initAnims(0, 1, 0x1000, 0);
-    void *t = modelResMdl;
-    s32 r = ((FtrSwitch *)(switchState))->isOn();
+    void *t = model.resMdl;
+    s32 r = switchState.isOn();
     ((FtrGlowMatSet *)(&glowMats))->init(t, r);
     if (spawnMode == 1) {
         p11::FtrSync_ChangeAct((s32)(sptr)this, 0, 0xff, 1);
-    } else if (((FtrSwitch *)(switchState))->isOn() && !FtrMgr_IsShopScene()) {
+    } else if (switchState.isOn() && !FtrMgr_IsShopScene()) {
         changeAct(1, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -603,22 +603,22 @@ extern "C" void *FtrComputer_Create() {
 // FtrHeadwear
 
 void FtrHeadwear::execFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    switchState.set(1, 0);
+    visNodes.setVisible(1);
 }
 
 BOOL FtrHeadwear::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     return TRUE;
 }
 
 void FtrHeadwear::execFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    switchState.set(0, 0);
+    visNodes.setVisible(0);
 }
 
 BOOL FtrHeadwear::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     return TRUE;
 }
 
@@ -689,7 +689,7 @@ BOOL FtrHeadwear::initModel() {
     if (Unk_ov004_0220af74_Range(&v, 0x4124, 0x4223)) {
         alwaysVisible = 1;
     }
-    if (((FtrSwitch *)(switchState))->isOn()) {
+    if (switchState.isOn()) {
         changeAct(1, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -754,7 +754,7 @@ BOOL FtrCarpetSample::initModel() {
     }
     u16 v = w;
     CarpetTex_Load(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer(), &v);
-    void *h = modelResMdl;
+    void *h = model.resMdl;
     s32 r = p11::CarpetTex_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getFloorBuffer());
     if (((MatTexVramTask *)(&texTask))->request((void *)(h), (const char *)p11::data_ov004_0224bb50, (void *)(r), 0, 0)) {
         return TRUE;
@@ -850,7 +850,7 @@ BOOL FtrWallpaperSample::initModel() {
     tmp = v;
     p12::Wallpaper_LoadTexture(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getWallBuffer(), &tmp);
     t = Wallpaper_GetTex(((FtrPreviewer *)(FtrPreviewer_GetInstance()))->getWallBuffer());
-    if (((MatTexVramTask *)(&texTask))->request(modelResMdl, (const char *)(p12::data_ov004_0224bb60), (void *)t, 0, 0) != 0) return TRUE;
+    if (((MatTexVramTask *)(&texTask))->request(model.resMdl, (const char *)(p12::data_ov004_0224bb60), (void *)t, 0, 0) != 0) return TRUE;
     return FALSE;
 }
 
@@ -900,20 +900,20 @@ public:
 
 void FtrMetronome::execFtrAct04() {
     if (isPreview() == 0) {
-        ((FtrSoundEmitter *)((void *)soundEmitter))->playOnce(0x42a, (u32)(uptr)centerPos);
+        soundEmitter.playOnce(0x42a, &centerPos);
         if (pitchResetPending != 0) {
-            ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(1);
+            soundEmitter.setPitch(1);
             pitchResetPending = 0;
         }
     }
-    ((FtrSwitch *)((void *)switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (p12::FtrActor_StepAnims(this) != 0) {
         changeAct(0, 0xff);
     }
 }
 
 BOOL FtrMetronome::enterFtrAct04() {
-    ((FtrSwitch *)((void *)switchState))->set(0, 0);
+    switchState.set(0, 0);
     p12::FtrActor_PlayAnimsFromLastFrame(this, 0, 3, 0x1000);
     pitchResetPending = 1;
     return TRUE;
@@ -921,17 +921,17 @@ BOOL FtrMetronome::enterFtrAct04() {
 
 void FtrMetronome::execFtrAct03() {
     if (isPreview() == 0) {
-        ((FtrSoundEmitter *)((void *)soundEmitter))->playOnce(0x42a, (u32)(uptr)centerPos);
+        soundEmitter.playOnce(0x42a, &centerPos);
     }
-    ((FtrSwitch *)((void *)switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (isPreview() == 0) {
-        if (((AnimFrameCtrl *)((void *)animFrameCtrl))->hasPassedFrame(0) != 0) {
-            ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(1);
-        } else if (((AnimFrameCtrl *)((void *)animFrameCtrl))->hasPassedFrame(0x14) != 0) {
+        if (model.hasPassedFrame(0) != 0) {
+            soundEmitter.setPitch(1);
+        } else if (model.hasPassedFrame(0x14) != 0) {
             if ((tickCount & 1) != 0) {
-                ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(2);
+                soundEmitter.setPitch(2);
             } else {
-                ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(1);
+                soundEmitter.setPitch(1);
             }
             tickCount++;
         }
@@ -942,7 +942,7 @@ void FtrMetronome::execFtrAct03() {
 }
 
 BOOL FtrMetronome::enterFtrAct03() {
-    ((FtrSwitch *)((void *)switchState))->set(0, 0);
+    switchState.set(0, 0);
     playSound2();
     playAnim(1, 1, 0x1000, 0xffff);
     return TRUE;
@@ -950,57 +950,57 @@ BOOL FtrMetronome::enterFtrAct03() {
 
 void FtrMetronome::execFtrAct02() {
     if (isPreview() == 0) {
-        ((FtrSoundEmitter *)((void *)soundEmitter))->playOnce(0x42a, (u32)(uptr)centerPos);
+        soundEmitter.playOnce(0x42a, &centerPos);
     }
     p12::FtrActor_StepAnims(this);
     if (isPreview() == 0) {
-        if (((AnimFrameCtrl *)((void *)animFrameCtrl))->hasPassedFrame(0) != 0) {
-            ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(1);
-        } else if (((AnimFrameCtrl *)((void *)animFrameCtrl))->hasPassedFrame(0x14) != 0) {
+        if (model.hasPassedFrame(0) != 0) {
+            soundEmitter.setPitch(1);
+        } else if (model.hasPassedFrame(0x14) != 0) {
             if ((tickCount & 1) != 0) {
-                ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(2);
+                soundEmitter.setPitch(2);
             } else {
-                ((FtrSoundEmitter *)((void *)soundEmitter))->setPitch(1);
+                soundEmitter.setPitch(1);
             }
             tickCount++;
         }
     }
-    if (((FtrSwitch *)((void *)switchState))->isChanging() != 0) {
+    if (switchState.isChanging() != 0) {
         p12::FtrSync_RequestAct(this, 3, 0xff, 1);
     }
 }
 
 BOOL FtrMetronome::enterFtrAct02() {
-    ((FtrSwitch *)((void *)switchState))->set(1, 0);
+    switchState.set(1, 0);
     p12::FtrActor_PlayAnimsFromLastFrame(this, 1, 0, 0x1000);
     return TRUE;
 }
 
 void FtrMetronome::execFtrAct01() {
     if (isPreview() == 0) {
-        ((FtrSoundEmitter *)((void *)soundEmitter))->playOnce(0x42a, (u32)(uptr)centerPos);
+        soundEmitter.playOnce(0x42a, &centerPos);
     }
-    ((FtrSwitch *)((void *)switchState))->set(1, 0);
+    switchState.set(1, 0);
     if (p12::FtrActor_StepAnims(this) != 0) {
         changeAct(2, 0xff);
     }
 }
 
 BOOL FtrMetronome::enterFtrAct01() {
-    ((FtrSwitch *)((void *)switchState))->set(1, 0);
+    switchState.set(1, 0);
     playAnim(0, 1, 0x1000, 0);
     playSound1();
     return TRUE;
 }
 
 void FtrMetronome::execFtrAct00() {
-    if (((FtrSwitch *)((void *)switchState))->isChanging() != 0) {
+    if (switchState.isChanging() != 0) {
         p12::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
 BOOL FtrMetronome::enterFtrAct00() {
-    ((FtrSwitch *)((void *)switchState))->set(0, 0);
+    switchState.set(0, 0);
     playAnim(0, 3, 0x1000, 0);
     return TRUE;
 }
@@ -1041,7 +1041,7 @@ BOOL FtrMetronome::onDelete() {
 BOOL FtrMetronome::updateAppearRemove() {
     if (isPreview() == 0) {
         if (isRemoving() == 0) {
-            ((FtrSoundEmitter *)((void *)soundEmitter))->playOnce(0x42a, (u32)(uptr)centerPos);
+            soundEmitter.playOnce(0x42a, &centerPos);
         }
     }
     return TRUE;
@@ -1055,7 +1055,7 @@ BOOL FtrMetronome::updateActive() {
 BOOL FtrMetronome::initModel() {
     unk_840 = 0;
     initAnims(0, 1, 0x1000, 0);
-    if (((FtrSwitch *)((void *)switchState))->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
+    if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(2, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -1112,7 +1112,7 @@ BOOL FtrPiggyBank::enterFtrAct01() {
 }
 
 void FtrPiggyBank::execFtrAct00() {
-    if (((FtrSwitch *)((void *)switchState))->isChanging() != 0) {
+    if (switchState.isChanging() != 0) {
         p12::FtrSync_RequestAct(this, 1, p12::gCommManager->localSlot, 1);
     } else if (isPreview() != 0) {
         changeAct(1, 0xff);
@@ -1233,15 +1233,15 @@ BOOL FtrInstrument::onDelete() {
 
 BOOL FtrInstrument::updateAppearRemove() {
     VecFx32 v;
-    v.x = centerPos[0];
-    v.y = centerPos[1];
-    v.z = centerPos[2];
+    v.x = centerPos.x;
+    v.y = centerPos.y;
+    v.z = centerPos.z;
     Snd_MelodyBeatUpdate((Seq1 *)melodyBeat, &v);
     return TRUE;
 }
 
 BOOL FtrInstrument::updateActive() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p13::FtrSync_RequestAct(this, 0, 0xff, 1);
     }
     updateAppearRemove();
@@ -1338,7 +1338,7 @@ BOOL FtrVillagerPic::enterTalkAct01() {
 }
 
 void FtrVillagerPic::execTalkAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p13::TalkRequest_AddPlayerTalk6(this, 0);
     }
 }
@@ -1437,7 +1437,7 @@ void FtrCompass::onJointCalcPost(s32 a, void *b) {
         Actor *act = p13::FtrActor_GetParent(this);
         if (act) {
             s32 e = act->rotY;
-            ang = (s16)(r - (e + ((FtrStackLink *)(stackLink))->getRelAngle()));
+            ang = (s16)(r - (e + stackLink.getRelAngle()));
         } else {
             ang = (s16)(r - rotY);
         }
@@ -1486,7 +1486,7 @@ BOOL FtrCompass::updateActive() {
 }
 
 BOOL FtrCompass::initModel() {
-    compassNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx(p13::data_ov004_0224bb80);
+    compassNode = ((G3dResAccess *)(model.resMdl))->findNodeIdx(p13::data_ov004_0224bb80);
     return TRUE;
 }
 
@@ -1523,7 +1523,7 @@ BOOL FtrDesignDisplay::onDelete() {
 
 BOOL FtrDesignDisplay::updateActive() {
     if (seEmitterReady) {
-        VecFx32 v = *(VecFx32 *)centerPos;
+        VecFx32 v = centerPos;
         if (p13::_ZN15PatternTexCache21testAndClearAbleDirtyEi(PatternTexCache_Get(), designSlot)) {
             Snd_SeEmitterPlayOneShot(&seEmitter, 0x50, 0x7f, 0);
         }
@@ -1550,7 +1550,7 @@ BOOL FtrDesignDisplay::initModel() {
         void *o = PatternTexCache_Get();
         u32 q = p13::_ZN15PatternTexCache13getAbleTexKeyEi(o, (u8)designSlot);
         if (q != 0) {
-            Model_BindMatTexByIdx(modelResMdl, (const char *)p13::data_ov004_0224bb88, q, 0, 0);
+            Model_BindMatTexByIdx(model.resMdl, (const char *)p13::data_ov004_0224bb88, q, 0, 0);
             if (seEmitterReady == 0) {
                 seEmitter.callInit();
                 seEmitterReady = 1;
@@ -1748,12 +1748,12 @@ BOOL FtrMyDesign::initModel() {
     PlayerData *pd = PlayerData_Get(hi);
     if (pd) {
         if (pd->getPlayerId()->getGender() == 0) {
-            hiddenNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx((const char *)(p14::data_ov004_0224bb8c));
+            hiddenNode = ((G3dResAccess *)(model.resMdl))->findNodeIdx((const char *)(p14::data_ov004_0224bb8c));
         } else {
-            hiddenNode = ((G3dResAccess *)(modelResMdl))->findNodeIdx((const char *)(p14::data_ov004_0224bb90));
+            hiddenNode = ((G3dResAccess *)(model.resMdl))->findNodeIdx((const char *)(p14::data_ov004_0224bb90));
         }
     }
-    void *o = modelResMdl;
+    void *o = model.resMdl;
     Model_BindMatTexByIdx(o, (const char *)p14::data_ov004_0224bb88, p14::_ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), hi, lo), 0, 0);
     return TRUE;
 }
@@ -1770,7 +1770,7 @@ extern "C" FtrMyDesign *FtrMyDesign_Create() {
 
 // ---- C ----
 BOOL FtrShirt::execFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     return TRUE;  // (the DS returns set()'s r0: the switch's address)
 }
 
@@ -1778,11 +1778,11 @@ BOOL FtrShirt::enterFtrAct01() {
     s32 a, b;
     void *c;
     void *d;
-    ((FtrSwitch *)(switchState))->set(0, 0);
-    a = ((G3dResAccess *)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy()))->findTexIdx((const char *)p14::data_ov004_0224bb94);
-    b = ((G3dResAccess *)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy()))->findPlttIdx((const char *)p14::data_ov004_0224bb94);
-    c = modelResMdl;
-    d = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getTexCopy();
+    switchState.set(0, 0);
+    a = ((G3dResAccess *)(((FtrAnimSet *)(modelRes.getAnimSet()))->getTexCopy()))->findTexIdx((const char *)p14::data_ov004_0224bb94);
+    b = ((G3dResAccess *)(((FtrAnimSet *)(modelRes.getAnimSet()))->getTexCopy()))->findPlttIdx((const char *)p14::data_ov004_0224bb94);
+    c = model.resMdl;
+    d = ((FtrAnimSet *)(modelRes.getAnimSet()))->getTexCopy();
     if (((MatTexVramTask *)(f_844))->request(c, (const char *)(p14::data_ov004_0224bb88), d, a, b)) {
         unk_86c = 0;
     }
@@ -1790,13 +1790,13 @@ BOOL FtrShirt::enterFtrAct01() {
 }
 
 BOOL FtrShirt::execFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     return TRUE;  // (the DS returns set()'s r0: the switch's address)
 }
 
 BOOL FtrShirt::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
-    void *o = modelResMdl;
+    switchState.set(1, 0);
+    void *o = model.resMdl;
     ((MatTexVramTask *)(f_844))->request(o, (const char *)(p14::data_ov004_0224bb88), ClothTex_GetTex(clothTex), 0, 0);
     return TRUE;
 }
@@ -1862,7 +1862,7 @@ BOOL FtrShirt::initModel() {
         ModelSlot *h = p14::FtrActor_GetHeap(this);
         clothTex = Heap_Alloc(p14::_ZN9ModelSlot7getHeapEv(h), 0x2c4);
         ClothTex_LoadItem(clothTex, &w, 0);
-        if (((FtrSwitch *)(switchState))->isOn()) {
+        if (switchState.isOn()) {
             changeAct(0, 0xff);
         } else {
             changeAct(1, 0xff);
@@ -1888,8 +1888,8 @@ extern "C" FtrShirt *FtrShirt_Create() {
 
 // ---- D ----
 BOOL FtrCannon::execFtrAct01() {
-    ((BlendAnimModel *)(model))->stepBlend();
-    BOOL r = ((AnimFrameCtrl *)(animFrameCtrl))->isFinished();
+    model.stepBlend();
+    BOOL r = model.isFinished();
     if (r) {
         return p14::FtrSync_ChangeAct(this, 0, 0xff, 1);
     }
@@ -1897,14 +1897,14 @@ BOOL FtrCannon::execFtrAct01() {
 }
 
 BOOL FtrCannon::enterFtrAct01() {
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    visNodes.setVisible(1);
     playAnim(0, 1, 0x1000, 0);
     playSound1();
     return TRUE;
 }
 
 BOOL FtrCannon::execFtrAct00() {
-    BOOL r = ((FtrSwitch *)(switchState))->isChanging();
+    BOOL r = switchState.isChanging();
     if (r) {
         return p14::FtrSync_ChangeAct(this, 1, 0xff, 1);
     }
@@ -1912,7 +1912,7 @@ BOOL FtrCannon::execFtrAct00() {
 }
 
 BOOL FtrCannon::enterFtrAct00() {
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    visNodes.setVisible(0);
     playAnim(0, 1, 0x1000, 0);
     return TRUE;
 }
@@ -1942,12 +1942,12 @@ BOOL FtrCannon::changeAct(u32 a, u8 b) {
 void FtrCannon::onJointCalcPost(s32 a, void *b) {
     VecFx32 v;
     VecFx32 o;
-    if (((FtrVisNodes *)(visNodes))->hasNode(a) && ftrAct == 1) {
+    if (visNodes.hasNode(a) && ftrAct == 1) {
         VecFx32 *pv = (VecFx32 *)&((NNSG3dRS *)b)->pJntAnmResult->trans;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
-        *(Mtx43 *)p14::data_021f47e0 = modelMtx;
+        *(Mtx43 *)p14::data_021f47e0 = model.mtx;
         p14::MTX_MultVec43(&v, p14::data_021f47e0, &o);
         u8 obj[0x44];
         ((GroundInfo *)(obj))->initAtPos((VecFx32 *)(&o), 0, 0);
@@ -1963,7 +1963,7 @@ void FtrCannon::onRemove() {
 }
 
 BOOL FtrCannon::onDelete() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     return TRUE;
 }
 
@@ -2033,11 +2033,11 @@ extern "C" void *FtrCannon_Create() {
 }
 
 void FtrKind19::execFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
-    if (((FtrModelAnim *)(&anims[0]))->getAnmObj()) {
-        ((AnimFrameCtrl *)(&anims[0]))->step();
-        *anims[0].anmObj = anims[0].curFrame;
-        if (((AnimFrameCtrl *)(&anims[0]))->isFinished()) {
+    switchState.set(0, 0);
+    if (anims[0].getAnmObj()) {
+        anims[0].step();
+        ((G3dAnmObj *)anims[0].anmObj)->frame = anims[0].curFrame;
+        if (anims[0].isFinished()) {
             changeAct(0, 0xff);
         }
     } else {
@@ -2046,11 +2046,11 @@ void FtrKind19::execFtrAct03() {
 }
 
 BOOL FtrKind19::enterFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
-        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
-        if (((FtrModelAnim *)(&anims[0]))->getAnmObj()) {
-            ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 3, 0x1000, (u16)(r->numFrame - 1));
+    switchState.set(0, 0);
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0) != NULL) {
+        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0);
+        if (anims[0].getAnmObj()) {
+            anims[0].replace(model.getRenderObj(), r, 3, 0x1000, (u16)(r->numFrame - 1));
         }
     }
     playSound2();
@@ -2060,27 +2060,27 @@ BOOL FtrKind19::enterFtrAct03() {
 void FtrKind19::execFtrAct02() {
     hasIndoorFlag6();
     playSound0();
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p15::FtrSync_RequestAct(this, 3, 0xff, 1);
     }
 }
 
 BOOL FtrKind19::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
-        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
-        ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 1, 0x1000, (u16)(r->numFrame - 1));
+    switchState.set(1, 0);
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0) != NULL) {
+        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0);
+        anims[0].replace(model.getRenderObj(), r, 1, 0x1000, (u16)(r->numFrame - 1));
     }
     return TRUE;
 }
 
 void FtrKind19::execFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     playSound0();
-    if (((FtrModelAnim *)(&anims[0]))->getAnmObj()) {
-        ((AnimFrameCtrl *)(&anims[0]))->step();
-        *anims[0].anmObj = anims[0].curFrame;
-        if (((AnimFrameCtrl *)(&anims[0]))->isFinished()) {
+    if (anims[0].getAnmObj()) {
+        anims[0].step();
+        ((G3dAnmObj *)anims[0].anmObj)->frame = anims[0].curFrame;
+        if (anims[0].isFinished()) {
             changeAct(2, 0xff);
         }
     } else {
@@ -2089,11 +2089,11 @@ void FtrKind19::execFtrAct01() {
 }
 
 BOOL FtrKind19::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
-        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
-        if (((FtrModelAnim *)(&anims[0]))->getAnmObj()) {
-            ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 1, 0x1000, 0);
+    switchState.set(1, 0);
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0) != NULL) {
+        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0);
+        if (anims[0].getAnmObj()) {
+            anims[0].replace(model.getRenderObj(), r, 1, 0x1000, 0);
         }
     }
     playSound1();
@@ -2101,16 +2101,16 @@ BOOL FtrKind19::enterFtrAct01() {
 }
 
 void FtrKind19::execFtrAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p15::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
 BOOL FtrKind19::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
-        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0);
-        ((ModelAnim *)(&anims[0]))->replace(((Model *)(model))->getRenderObj(), r, 3, 0x1000, 0);
+    switchState.set(0, 0);
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0) != NULL) {
+        NNSG3dResAnmCommon *r = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0);
+        anims[0].replace(model.getRenderObj(), r, 3, 0x1000, 0);
     }
     return TRUE;
 }
@@ -2160,62 +2160,62 @@ BOOL FtrKind19::onDelete() {
 
 BOOL FtrKind19::updateActive() {
     execFtrAct();
-    if (((BlendAnimModel *)(model))->getAnmObj()) {
-        ((BlendAnimModel *)(model))->stepBlend();
+    if (model.getAnmObj()) {
+        model.stepBlend();
     }
-    if (((FtrModelAnim *)(&anims[1]))->getAnmObj()) {
-        ((AnimFrameCtrl *)(&anims[1]))->step();
-        *anims[1].anmObj = anims[1].curFrame;
+    if (anims[1].getAnmObj()) {
+        anims[1].step();
+        ((G3dAnmObj *)anims[1].anmObj)->frame = anims[1].curFrame;
     }
-    if (((FtrModelAnim *)(&anims[2]))->getAnmObj()) {
-        ((AnimFrameCtrl *)(&anims[2]))->step();
-        *anims[2].anmObj = anims[2].curFrame;
+    if (anims[2].getAnmObj()) {
+        anims[2].step();
+        ((G3dAnmObj *)anims[2].anmObj)->frame = anims[2].curFrame;
     }
-    if (((FtrModelAnim *)(&anims[3]))->getAnmObj()) {
-        ((AnimFrameCtrl *)(&anims[3]))->step();
-        *anims[3].anmObj = anims[3].curFrame;
+    if (anims[3].getAnmObj()) {
+        anims[3].step();
+        ((G3dAnmObj *)anims[3].anmObj)->frame = anims[3].curFrame;
     }
     return TRUE;
 }
 
 BOOL FtrKind19::initModel() {
     ModelSlot *r4 = p15::FtrActor_GetHeap(this);
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(0) != NULL) {
-        void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[3]))->allocJointAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((ModelAnim *)(&anims[3]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(0), 0, 0x1000, 0);
-            ((ModelAnim *)(&anims[3]))->addToRenderObj(((Model *)(model))->getRenderObj());
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBva(0) != NULL) {
+        void *t = model.resMdl;
+        if (anims[3].allocJointAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            anims[3].init(((FtrAnimSet *)(modelRes.getAnimSet()))->getBva(0), 0, 0x1000, 0);
+            anims[3].addToRenderObj(model.getRenderObj());
         }
     }
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0) != NULL) {
-        void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[1]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((ModelAnim *)(&anims[1]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(0), 0, 0x1000, 0);
-            ((ModelAnim *)(&anims[1]))->addToRenderObj(((Model *)(model))->getRenderObj());
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBta(0) != NULL) {
+        void *t = model.resMdl;
+        if (anims[1].allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            anims[1].init(((FtrAnimSet *)(modelRes.getAnimSet()))->getBta(0), 0, 0x1000, 0);
+            anims[1].addToRenderObj(model.getRenderObj());
         }
     }
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0) != NULL) {
-        if (((AnimModel *)(model))->allocAnmObj(p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
-            ((AnimModel *)(model))->attachAnim();
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0) != NULL) {
+        if (model.allocAnmObj(p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            model.initAnim(((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
+            model.attachAnim();
         }
     }
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(0) != NULL) {
-        void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[2]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(0);
-            ((ModelAnim *)(&anims[2]))->initWithTex(r, ((FtrModelRes *)(modelRes))->getTexture(), 0, 0x1000, 0);
-            ((ModelAnim *)(&anims[2]))->addToRenderObj(((Model *)(model))->getRenderObj());
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBtp(0) != NULL) {
+        void *t = model.resMdl;
+        if (anims[2].allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            NNSG3dResAnmCommon *r = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBtp(0);
+            anims[2].initWithTex(r, modelRes.getTexture(), 0, 0x1000, 0);
+            anims[2].addToRenderObj(model.getRenderObj());
         }
     }
-    if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0) != NULL) {
-        void *t = modelResMdl;
-        if (((ModelAnim *)(&anims[0]))->allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((ModelAnim *)(&anims[0]))->init(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(0), 3, 0x1000, 0);
-            ((ModelAnim *)(&anims[0]))->addToRenderObj(((Model *)(model))->getRenderObj());
+    if (((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0) != NULL) {
+        void *t = model.resMdl;
+        if (anims[0].allocMatAnm((NNSG3dResMdl *)(t), p15::_ZN9ModelSlot7getHeapEv(r4))) {
+            anims[0].init(((FtrAnimSet *)(modelRes.getAnimSet()))->getBma(0), 3, 0x1000, 0);
+            anims[0].addToRenderObj(model.getRenderObj());
         }
     }
-    if (((FtrSwitch *)(switchState))->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
+    if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(2, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -2296,17 +2296,17 @@ typedef void (FtrGyroid::*Unk_ov004_0220da7c_Fn)();
 typedef BOOL (FtrGyroid::*Unk_ov004_0220daf8_Fn)();
 
 BOOL FtrGyroid::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     ((FtrActor *)(this))->playAnim(0, 0, 0x1000, 0);
-    NNSG3dResAnmCommon *r = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0);
-    ((BlendAnimModel *)(model))->initAnim(r, 0, 0, 0, 0);
+    NNSG3dResAnmCommon *r = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0);
+    model.initAnim(r, 0, 0, 0, 0);
     return TRUE;
 }
 
 void FtrGyroid::execFtrAct01() {
     updateSync((VecFx32 *)&position);
     if (syncStartFrames != 0) {
-        ((BlendAnimModel *)(model))->stepBlend();
+        model.stepBlend();
         syncStartFrames--;
     }
     if (syncStartFrames == 0) {
@@ -2315,12 +2315,12 @@ void FtrGyroid::execFtrAct01() {
         s32 r = pollSyncStarted();
         if (r >= 0) {
             syncStartFrames = r;
-            NNSG3dResAnmCommon *q = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0);
-            ((BlendAnimModel *)(model))->playBlend(q, (u16)r, 0, 0, 0, 0);
+            NNSG3dResAnmCommon *q = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0);
+            model.playBlend(q, (u16)r, 0, 0, 0, 0);
         }
     }
-    if (((FtrSwitch *)(switchState))->isChanging()) {
-        ((FtrSwitch *)(switchState))->set(1, 0);
+    if (switchState.isChanging()) {
+        switchState.set(1, 0);
         s32 s = p16::Scene_GetCurrent();
         p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     }
@@ -2329,7 +2329,7 @@ void FtrGyroid::execFtrAct01() {
 BOOL FtrGyroid::enterFtrAct01() {
     s32 a, b;
     ((FtrActor *)(this))->playSound1();
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     syncStartFrames = 0xffff;
     p16::FieldPos_ToUnit(&a, &b, &position);
     if (isInitializing != 0) {
@@ -2338,9 +2338,9 @@ BOOL FtrGyroid::enterFtrAct01() {
             u32 r5 = Snd_BgmSyncReadBeat() & 0xf;
             RoomFtrState_SetGyroidBeat(a, b, (u8)r5, p16::Scene_GetCurrent());
             actAid = r5;
-            NNSG3dResAnmCommon *q = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0);
-            ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
-            ((BlendAnimModel *)(model))->stepBlend();
+            NNSG3dResAnmCommon *q = ((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0);
+            model.initAnim(q, 0, 0, 0, 0);
+            model.stepBlend();
             syncStartFrames = 0;
         } else {
             setSyncState(2);
@@ -2348,8 +2348,8 @@ BOOL FtrGyroid::enterFtrAct01() {
             setSyncStartBeat((u8)r5);
             actAid = r5;
             void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
-            ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
-            ((BlendAnimModel *)(model))->stepBlend();
+            model.initAnim(q, 0, 0, 0, 0);
+            model.stepBlend();
         }
     } else if (((CommManager *)(p16::gCommManager))->isOnline() != 0 && getActAid() != 0xff) {
         setSyncState(1);
@@ -2357,25 +2357,25 @@ BOOL FtrGyroid::enterFtrAct01() {
         u32 t = r5 & 0xf;
         RoomFtrState_SetGyroidBeat(a, b, (u8)t, p16::Scene_GetCurrent());
         void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
-        ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
-        ((BlendAnimModel *)(model))->stepBlend();
+        model.initAnim(q, 0, 0, 0, 0);
+        model.stepBlend();
     } else {
         setSyncState(1);
         u32 r5 = readSyncBeat() & 0xf;
         RoomFtrState_SetGyroidBeat(a, b, (u8)r5, p16::Scene_GetCurrent());
         actAid = r5;
         void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
-        ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
-        ((BlendAnimModel *)(model))->stepBlend();
+        model.initAnim(q, 0, 0, 0, 0);
+        model.stepBlend();
     }
     return TRUE;
 }
 
 void FtrGyroid::execFtrAct00() {
     updateSync((VecFx32 *)&position);
-    ((BlendAnimModel *)(model))->stepBlend();
-    if (((FtrSwitch *)(switchState))->isChanging()) {
-        ((FtrSwitch *)(switchState))->set(0, 0);
+    model.stepBlend();
+    if (switchState.isChanging()) {
+        switchState.set(0, 0);
         s32 s = p16::Scene_GetCurrent();
         p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     }
@@ -2388,13 +2388,13 @@ BOOL FtrGyroid::enterFtrAct00() {
     RoomFtrState_RemoveGyroidBeat(a, b, p16::Scene_GetCurrent());
     setSyncState(0);
     ((FtrActor *)(this))->playSound2();
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (FurnitureManager_GetMoveAnim() != 0) {
         void *q = FtrMoveAnim_GetHaniwaAnim((FtrMoveAnim *)FurnitureManager_GetMoveAnim());
         if (isInitializing != 0) {
-            ((BlendAnimModel *)(model))->initAnim(q, 0, 0, 0, 0);
+            model.initAnim(q, 0, 0, 0, 0);
         } else {
-            ((BlendAnimModel *)(model))->playBlend(q, 0x20, 0, 0, 0, 0);
+            model.playBlend(q, 0x20, 0, 0, 0, 0);
         }
     }
     return TRUE;
@@ -2498,12 +2498,12 @@ void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
     m->trans.x = v[0];
     m->trans.y = v[1];
     m->trans.z = v[2];
-    ((BlendAnimModel *)(model))->onJointCalcPost((BlendAnimModel *)(o));
+    model.onJointCalcPost((BlendAnimModel *)(o));
 }
 
 BOOL FtrGyroid::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
     // BlendAnimModel::onJointCalcPre is void; the original returns whatever it left in r0 (no caller uses it).
-    ((BlendAnimModel *)(this->model))->onJointCalcPre((BlendAnimModel *)(rs));
+    this->model.onJointCalcPre((BlendAnimModel *)(rs));
     return TRUE;
 }
 
@@ -2528,14 +2528,14 @@ BOOL FtrGyroid::initModel() {
     actAid = 0xff;
     initSync(FtrSound_GetSe3(p16::FtrActor_GetFtrIndex(this)));
     ((FtrActor *)(this))->initAnims(0, 1, 0x1000, 0);
-    ((CachedModel *)(model))->allocJointRecord(p16::_ZN9ModelSlot7getHeapEv(p16::FtrActor_GetHeap(this)));
+    model.allocJointRecord(p16::_ZN9ModelSlot7getHeapEv(p16::FtrActor_GetHeap(this)));
     if (spawnMode == 1) {
-        ((FtrSwitch *)(switchState))->set(0, 0);
+        switchState.set(0, 0);
         s32 s = p16::Scene_GetCurrent();
         p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     } else if (((FtrActor *)(this))->isPreview() != 0) {
         changeAct(0, 0xff);
-    } else if (((FtrSwitch *)(switchState))->isOn() != 0) {
+    } else if (switchState.isOn() != 0) {
         changeAct(1, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -2668,14 +2668,14 @@ extern "C" FtrActor *FtrCart_Create() {
 
 // ================================================================ FtrTvVcr
 void FtrTvVcr::execVcrAct03() {
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     if (p17::FtrActor_StepAnims(this)) {
         changeAct(0, 0xff);
     }
 }
 
 BOOL FtrTvVcr::enterVcrAct03() {
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     screenMat.setLit(0, 1, 0);
     bindTvScreenTex(0);
     p17::FtrActor_PlayAnimsFromLastFrame(this, 0, 3, 0x1000);
@@ -2684,13 +2684,13 @@ BOOL FtrTvVcr::enterVcrAct03() {
 }
 
 void FtrTvVcr::execVcrAct02() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p17::FtrSync_RequestAct(this, 3, 0xff, 1);
     }
 }
 
 BOOL FtrTvVcr::enterVcrAct02() {
-    ((FtrSwitch *)switchState)->set(1, 0);
+    switchState.set(1, 0);
     screenMat.setLit(1, 1, 0);
     bindTvScreenTex(1);
     p17::FtrActor_PlayAnimsFromLastFrame(this, 0, 1, 0x1000);
@@ -2698,14 +2698,14 @@ BOOL FtrTvVcr::enterVcrAct02() {
 }
 
 void FtrTvVcr::execVcrAct01() {
-    ((FtrSwitch *)switchState)->set(1, 0);
+    switchState.set(1, 0);
     if (p17::FtrActor_StepAnims(this)) {
         changeAct(2, 0xff);
     }
 }
 
 BOOL FtrTvVcr::enterVcrAct01() {
-    ((FtrSwitch *)switchState)->set(1, 0);
+    switchState.set(1, 0);
     screenMat.setLit(1, 1, 0);
     bindTvScreenTex(1);
     playAnim(0, 1, 0x1000, 0);
@@ -2714,13 +2714,13 @@ BOOL FtrTvVcr::enterVcrAct01() {
 }
 
 void FtrTvVcr::execVcrAct00() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p17::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
 BOOL FtrTvVcr::enterVcrAct00() {
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     screenMat.setLit(0, 1, 0);
     bindTvScreenTex(0);
     playAnim(0, 3, 0x1000, 0);
@@ -2776,10 +2776,10 @@ BOOL FtrTvVcr::updateActive() {
 
 BOOL FtrTvVcr::initModel() {
     initAnims(0, 1, 0x1000, 0);
-    void *res = modelResMdl;
-    u8 t = ((FtrSwitch *)switchState)->isOn();
+    void *res = model.resMdl;
+    u8 t = switchState.isOn();
     screenMat.bindMaterial((G3dResAccess *)res, (const char *)p17::data_ov004_0224bb98, t);
-    if (((FtrSwitch *)switchState)->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
+    if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(2, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -2799,7 +2799,7 @@ extern "C" FtrActor *FtrTvVcr_Create() {
 
 // ================================================================ FtrTv
 void FtrTv::execFtrAct01() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p17::FtrSync_RequestAct(this, 0, 0xff, 1);
     }
 }
@@ -2807,13 +2807,13 @@ void FtrTv::execFtrAct01() {
 BOOL FtrTv::enterFtrAct01() {
     playSound1();
     screenMat.setLit(1, 1, 0);
-    ((FtrSwitch *)switchState)->set(1, 0);
+    switchState.set(1, 0);
     bindTvScreenTex(1);
     return TRUE;
 }
 
 void FtrTv::execFtrAct00() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p17::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
@@ -2821,7 +2821,7 @@ void FtrTv::execFtrAct00() {
 BOOL FtrTv::enterFtrAct00() {
     playSound2();
     screenMat.setLit(0, 1, 0);
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     bindTvScreenTex(0);
     return TRUE;
 }
@@ -2875,10 +2875,10 @@ BOOL FtrTv::updateActive() {
 }
 
 BOOL FtrTv::initModel() {
-    void *res = modelResMdl;
-    u8 t = ((FtrSwitch *)switchState)->isOn();
+    void *res = model.resMdl;
+    u8 t = switchState.isOn();
     screenMat.bindMaterial((G3dResAccess *)res, (const char *)p17::data_ov004_0224bb98, t);
-    if (((FtrSwitch *)switchState)->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
+    if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(1, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -2901,12 +2901,12 @@ extern "C" FtrActor *FtrTv_Create() {
 // ================================================================ FtrActor
 BOOL FtrActor::bindTvScreenTex(BOOL a) {
     if (a != 0) {
-        void *r = modelResMdl;
+        void *r = model.resMdl;
         void *t = FurnitureManager_GetTvTex();
         Model_BindMatTexByIdx(r, (const char *)p17::data_ov004_0224bb98, t, 0, 0);
     } else {
-        void *r = modelResMdl;
-        void *t = ((FtrModelRes *)(modelRes))->getTexture();
+        void *r = model.resMdl;
+        void *t = modelRes.getTexture();
         Model_BindMatTexByName(r, (const char *)p17::data_ov004_0224bb98, t, (const char *)p17::data_ov004_0224bba0, (const char *)p17::data_ov004_0224bba8);
     }
     return TRUE;
@@ -3005,7 +3005,7 @@ static inline u16 Unk_ov004_0220ec30_Val(u32 t) {
 BOOL FtrStereo::enterFtrAct01() {
     playSound1();
     FtrMgr_SetSwitchAll(0, p18::_ZN8FtrActor10isStereoOnEv, 0);
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     u8 *p = &actAid;
     curSong = *p;
     startSong(*p);
@@ -3020,8 +3020,8 @@ void FtrStereo::execFtrAct00() {
         p18::FtrActor_StepAnims(this);
     }
     glowMats.setLit(0, 1, 0);
-    if (((FtrSwitch *)(switchState))->isChanging()) {
-        ((FtrSwitch *)(switchState))->set(0, 0);
+    if (switchState.isChanging()) {
+        switchState.set(0, 0);
         p18::TalkRequest_AddPlayerTalk6(this, 0);
         PlayerActor_KeepAnimForNextAction();
     }
@@ -3029,7 +3029,7 @@ void FtrStereo::execFtrAct00() {
 
 BOOL FtrStereo::enterFtrAct00() {
     playSound2();
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (isInitializing == 0) {
         stopSong(curSong, 1);
     }
@@ -3283,12 +3283,12 @@ BOOL FtrStereo::initModel() {
     if (kind == 0x29 || kind == 0x13) {
         initAnims(0, 0, 0x1000, 0);
     }
-    void *r4 = modelResMdl;
-    u32 c = ((FtrSwitch *)(switchState))->isOn();
+    void *r4 = model.resMdl;
+    u32 c = switchState.isOn();
     glowMats.init(r4, c);
     if (spawnMode == 1) {
         p18::FtrSync_ChangeAct(this, 0, 0xff, 1);
-    } else if (((FtrSwitch *)(switchState))->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
+    } else if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
             u32 r = p18::Scene_GetVillagerHouse();
@@ -3410,7 +3410,7 @@ BOOL FtrClock::updateActive() {
     p19::Clock_GetMinuteHour(&curTime);
     if (kind == 0x10) {
         if (!isPreview() && chimesLeft >= 0 && chimesLeft != prevChimesLeft && isNearestCabinClock != 0) {
-            ((FtrSoundEmitter *)(soundEmitter))->setPitch(1);
+            soundEmitter.setPitch(1);
         }
         prevChimesLeft = chimesLeft;
         if (chimesLeft == -1) {
@@ -3423,17 +3423,17 @@ BOOL FtrClock::updateActive() {
                     chimesLeft = 12;
                 }
                 if (!isPreview()) {
-                    ((FtrSoundEmitter *)(soundEmitter))->playOnce(0x42d, (u32)(uptr)centerPos);
+                    soundEmitter.playOnce(0x42d, &centerPos);
                 }
-                ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)((void *)((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
+                model.initAnim(((FtrAnimSet *)((void *)modelRes.getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
             }
         } else if (chimesLeft > 0) {
             if (!isPreview()) {
-                ((FtrSoundEmitter *)(soundEmitter))->playOnce(0x42d, (u32)(uptr)centerPos);
+                soundEmitter.playOnce(0x42d, &centerPos);
             }
-            ((BlendAnimModel *)(model))->stepBlend();
-            if (((AnimFrameCtrl *)(animFrameCtrl))->isFinished()) {
-                ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)((void *)((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
+            model.stepBlend();
+            if (model.isFinished()) {
+                model.initAnim(((FtrAnimSet *)((void *)modelRes.getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
                 if (!isPreview()) {
                     chimesLeft = chimesLeft - 1;
                 }
@@ -3447,11 +3447,11 @@ BOOL FtrClock::updateActive() {
     }
     s32 s = FtrMgr_GetCycleCounter();
     if (kind == 0x11) {
-        ((AnimModel *)(model))->setFrame(s);
+        model.setFrame(s);
     }
     if (isNearestSoundingClock != 0 && (s == 9 || s == 0x1d)) {
         if (kind == 0x10) {
-            ((FtrSoundEmitter *)(soundEmitter))->play(0x4d0, (u32)(uptr)centerPos);
+            soundEmitter.play(0x4d0, &centerPos);
         } else {
             playSound3();
         }
@@ -3467,14 +3467,14 @@ BOOL FtrClock::initModel() {
     curTime.h = prevTime.h;
     chimesLeft = -1;
     if (kind == 0x10) {
-        if (((AnimModel *)(model))->allocAnmObj(p19::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)((void *)((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
-            ((AnimModel *)(model))->attachAnim();
+        if (model.allocAnmObj(p19::_ZN9ModelSlot7getHeapEv(r4))) {
+            model.initAnim(((FtrAnimSet *)((void *)modelRes.getAnimSet()))->getBca(0), 1, 0x1000, 0, 0);
+            model.attachAnim();
         }
     } else if (kind == 0x11) {
-        if (((AnimModel *)(model))->allocAnmObj(p19::_ZN9ModelSlot7getHeapEv(r4))) {
-            ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)((void *)((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
-            ((AnimModel *)(model))->attachAnim();
+        if (model.allocAnmObj(p19::_ZN9ModelSlot7getHeapEv(r4))) {
+            model.initAnim(((FtrAnimSet *)((void *)modelRes.getAnimSet()))->getBca(0), 0, 0x1000, 0, 0);
+            model.attachAnim();
         }
     } else if (kind == 0x2b) {
         initAnims(0, 0, 0x1000, 0);
@@ -3639,14 +3639,14 @@ void FtrStorage::onInteractionEvent(u32 a, u8 b) {
 }
 
 void FtrStorage::execFtrAct03() {
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    visNodes.setVisible(1);
     if (p20::FtrActor_StepAnims(this)) {
         changeAct(0, 0xff);
     }
 }
 
 BOOL FtrStorage::enterFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     playSound2();
     if (kind == 0xf) {
         playAnim(1, 1, 0x1000, 0);
@@ -3657,16 +3657,16 @@ BOOL FtrStorage::enterFtrAct03() {
 }
 
 void FtrStorage::execFtrAct02() {
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    visNodes.setVisible(1);
     if (isPreview()) {
         changeAct(3, 0xff);
     }
 }
 
 BOOL FtrStorage::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (kind == 0xf) {
-        ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0);
+        ((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0);
         p20::FtrActor_PlayAnimsFromLastFrame(this, 0, 1, 0x1000);
     } else {
         p20::FtrActor_PlayAnimsFromLastFrame(this, 0, 1, 0x1000);
@@ -3675,14 +3675,14 @@ BOOL FtrStorage::enterFtrAct02() {
 }
 
 void FtrStorage::execFtrAct01() {
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    visNodes.setVisible(1);
     if (p20::FtrActor_StepAnims(this)) {
         changeAct(2, 0xff);
     }
 }
 
 BOOL FtrStorage::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     playSound1();
     playAnim(0, 1, 0x1000, 0);
     return TRUE;
@@ -3691,13 +3691,13 @@ BOOL FtrStorage::enterFtrAct01() {
 void FtrStorage::execFtrAct00() {
     s32 t;
     u32 i;
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    visNodes.setVisible(0);
     void *e = ((FtrContactSet *)(FtrContactSet_GetInstance()))->findContact(this);
-    if (((FtrSwitch *)(switchState))->isChanging() && e != NULL && ((FtrContact *)(e))->getSide() == 0) {
+    if (switchState.isChanging() && e != NULL && ((FtrContact *)(e))->getSide() == 0) {
         if (kind == 0xb) {
             FtrTileList arr;
             VecFx32 v;
-            ((FtrActor *)(this))->getTiles((Unk_ov004_02207854_List *)&arr, 0, 0);
+            ((FtrActor *)(this))->getTiles((FtrTileList *)&arr, 0, 0);
             v.x = 0;
             v.y = 0;
             v.z = 0x2000;
@@ -3711,7 +3711,7 @@ void FtrStorage::execFtrAct00() {
                 s32 a = p.x + arr.get(i)->x;
                 t = p.y + arr.get(i)->y;
                 if (FtrMgr_GetSurfaceHeight(a, t) != 0 || p20::Ground_GetExitAt(a, t) != -1) {
-                    ((FtrSwitch *)(switchState))->set(1, 0);
+                    switchState.set(1, 0);
                     arr.release();
                     return;
                 }
@@ -3728,7 +3728,7 @@ void FtrStorage::execFtrAct00() {
 }
 
 BOOL FtrStorage::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     if (kind == 0xf) {
         p20::FtrActor_PlayAnimsFromLastFrame(this, 1, 1, 0x1000);
     } else {
@@ -3793,16 +3793,16 @@ BOOL FtrStorage::updateActive() {
 }
 
 BOOL FtrStorage::initModel() {
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    visNodes.setVisible(0);
     if (spawnMode == 1) {
-        ((FtrSwitch *)(switchState))->set(1, 0);
+        switchState.set(1, 0);
     }
     if (kind == 0xf) {
         initAnims(0, 1, 0x1000, 0);
     } else {
         initAnims(0, 3, 0x1000, 0);
     }
-    if (((FtrSwitch *)(switchState))->isOn() || FtrMgr_IsShopScene()) {
+    if (switchState.isOn() || FtrMgr_IsShopScene()) {
         changeAct(0, 0xff);
     } else {
         changeAct(2, 0xff);
@@ -4510,7 +4510,7 @@ BOOL FtrBed::onDraw() {
 
 BOOL FtrBed::updateActive() {
     if (kind == 0x2a) {
-        ((FtrVisNodes *)(visNodes))->setVisible(0);
+        visNodes.setVisible(0);
         s32 z = 0;
         u32 i;
         u32 j;
@@ -4520,10 +4520,10 @@ BOOL FtrBed::updateActive() {
             if (p22::PlayerActor_GetPosIfInBed(&v, i)) {
                 p22::FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
-                ((FtrActor *)(this))->getTiles((Unk_ov004_02207854_List *)&list, z, z);
+                ((FtrActor *)(this))->getTiles(&list, NULL, z);
                 for (j = 0; j < list.getCount(); j++) {
                     if (x == list.get(j)->x && y == list.get(j)->y) {
-                        ((FtrVisNodes *)(visNodes))->setVisible(1);
+                        visNodes.setVisible(1);
                         ((FtrGlowMatSet *)(&glowMats))->update();
                         p22::FtrActor_StepAnims(this);
                         ((FtrActor *)(this))->playSound0();
@@ -4539,10 +4539,10 @@ BOOL FtrBed::updateActive() {
 }
 
 BOOL FtrBed::initModel() {
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    visNodes.setVisible(0);
     if (kind == 0x2a) {
         ((FtrActor *)(this))->initAnims(0, 0, 0x1000, 0);
-        glowMats.init(modelResMdl, 1);
+        glowMats.init(model.resMdl, 1);
     }
     if (p22::Scene_InUnk6To8()) {
         changeAct(1, 0xff);
@@ -4602,7 +4602,7 @@ BOOL FtrSeat::onDelete() {
 BOOL FtrSeat::updateActive() {
     s32 x, y;
     if (kind == 0x2c) {
-        ((FtrVisNodes *)(visNodes))->setVisible(0);
+        visNodes.setVisible(0);
         s32 z = 0;
         u32 i;
         u32 j;
@@ -4611,10 +4611,10 @@ BOOL FtrSeat::updateActive() {
             if (p22::PlayerActor_GetPosIfSitting(&v, i)) {
                 p22::FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
-                ((FtrActor *)(this))->getTiles((Unk_ov004_02207854_List *)&list, z, z);
+                ((FtrActor *)(this))->getTiles(&list, NULL, z);
                 for (j = 0; j < list.getCount(); j++) {
                     if (x == list.get(j)->x && y == list.get(j)->y) {
-                        ((FtrVisNodes *)(visNodes))->setVisible(1);
+                        visNodes.setVisible(1);
                         p22::FtrActor_StepAnims(this);
                         ((FtrActor *)(this))->playSound0();
                         break;
@@ -4674,7 +4674,7 @@ BOOL FtrSeat::updateActive() {
 }
 
 BOOL FtrSeat::initModel() {
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    visNodes.setVisible(0);
     if (kind == 9 || kind == 0x2c) {
         ((FtrActor *)(this))->initAnims(0, 0, 0x1000, 0);
     }
@@ -4693,14 +4693,14 @@ extern "C" void *FtrSeat_Create() {
 
 // ================================================================ FtrKind07 ==========
 void FtrKind07::execFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (p22::FtrActor_StepAnims(this)) {
         changeAct(0, 0xff);
     }
 }
 
 BOOL FtrKind07::enterFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     ((FtrActor *)(this))->playSound2();
     p22::FtrActor_PlayAnimsFromLastFrame(this, 0, 3, 0x1000);
     return TRUE;
@@ -4710,7 +4710,7 @@ void FtrKind07::execFtrAct02() {
     p22::FtrActor_StepAnims(this);
     (this)->hasIndoorFlag6();
     ((FtrActor *)(this))->playSound0();
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p22::FtrSync_RequestAct(this, 3, 0xff, 1);
     } else if (((FtrActor *)(this))->isPreview()) {
         changeAct(3, 0xff);
@@ -4718,27 +4718,27 @@ void FtrKind07::execFtrAct02() {
 }
 
 BOOL FtrKind07::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     p22::FtrActor_PlayAnimsFromLastFrame(this, 1, 0, 0x1000);
     return TRUE;
 }
 
 void FtrKind07::execFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     if (p22::FtrActor_StepAnims(this)) {
         changeAct(2, 0xff);
     }
 }
 
 BOOL FtrKind07::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     ((FtrActor *)(this))->playSound1();
     ((FtrActor *)(this))->playAnim(0, 1, 0x1000, 0);
     return TRUE;
 }
 
 void FtrKind07::execFtrAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p22::FtrSync_RequestAct(this, 1, 0xff, 1);
     } else if (((FtrActor *)(this))->isPreview()) {
         changeAct(1, 0xff);
@@ -4746,7 +4746,7 @@ void FtrKind07::execFtrAct00() {
 }
 
 BOOL FtrKind07::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     ((FtrActor *)(this))->playAnim(0, 3, 0x1000, 0);
     return TRUE;
 }
@@ -4800,7 +4800,7 @@ BOOL FtrKind07::updateActive() {
 BOOL FtrKind07::initModel() {
     unk_840 = 0;
     ((FtrActor *)(this))->initAnims(0, 1, 0x1000, 0);
-    if (((FtrSwitch *)(switchState))->isOn() && !FtrMgr_IsShopScene()) {
+    if (switchState.isOn() && !FtrMgr_IsShopScene()) {
         changeAct(2, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -4914,17 +4914,17 @@ extern "C" void *FtrKind07_Create() {
 
 // ---- class B (0x0224a2a8) ----
 void FtrKind06::execFtrAct03() {
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    visNodes.setVisible(1);
     playSound0();
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (p23::FtrActor_StepAnims(this)) {
         changeAct(0, 0xff);
     }
 }
 
 BOOL FtrKind06::enterFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    switchState.set(0, 0);
+    visNodes.setVisible(1);
     playAnim(1, 1, 0x1000, 0);
     playSound2();
     return TRUE;
@@ -4932,7 +4932,7 @@ BOOL FtrKind06::enterFtrAct03() {
 
 void FtrKind06::execFtrAct02() {
     playSound0();
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p23::FtrSync_RequestAct(this, 3, 0xff, 1);
     } else if (isPreview()) {
         changeAct(3, 0xff);
@@ -4940,14 +4940,14 @@ void FtrKind06::execFtrAct02() {
 }
 
 BOOL FtrKind06::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     p23::FtrActor_PlayAnimsFromLastFrame(this, 0, 1, 0x1000);
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    visNodes.setVisible(1);
     return TRUE;
 }
 
 void FtrKind06::execFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     playSound0();
     if (p23::FtrActor_StepAnims(this)) {
         changeAct(2, 0xff);
@@ -4955,15 +4955,15 @@ void FtrKind06::execFtrAct01() {
 }
 
 BOOL FtrKind06::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
-    ((FtrVisNodes *)(visNodes))->setVisible(1);
+    switchState.set(1, 0);
+    visNodes.setVisible(1);
     playAnim(0, 1, 0x1000, 0);
     playSound1();
     return TRUE;
 }
 
 void FtrKind06::execFtrAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p23::FtrSync_RequestAct(this, 1, 0xff, 1);
     } else if (isPreview()) {
         changeAct(1, 0xff);
@@ -4971,9 +4971,9 @@ void FtrKind06::execFtrAct00() {
 }
 
 BOOL FtrKind06::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     p23::FtrActor_PlayAnimsFromLastFrame(this, 1, 1, 0x1000);
-    ((FtrVisNodes *)(visNodes))->setVisible(0);
+    visNodes.setVisible(0);
     return TRUE;
 }
 
@@ -5024,7 +5024,7 @@ BOOL FtrKind06::updateActive() {
 
 BOOL FtrKind06::initModel() {
     initAnims(0, 1, 0x1000, 0);
-    if (!((FtrSwitch *)(switchState))->isOn() || FtrMgr_IsShopScene()) {
+    if (!switchState.isOn() || FtrMgr_IsShopScene()) {
         changeAct(0, 0xff);
     } else {
         changeAct(2, 0xff);
@@ -5044,21 +5044,21 @@ extern "C" void *FtrKind06_Create() {
 
 // ---- class C (0x0224ac08) ----
 void FtrKind05::execFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     if (p23::FtrActor_StepAnims(this)) {
         changeAct(0, 0xff);
     }
 }
 
 BOOL FtrKind05::enterFtrAct03() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     p23::FtrActor_PlayAnimsFromLastFrame(this, 0, 3, 0x1000);
     playSound2();
     return TRUE;
 }
 
 void FtrKind05::execFtrAct02() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p23::FtrSync_RequestAct(this, 3, 0xff, 1);
     } else if (isPreview()) {
         changeAct(3, 0xff);
@@ -5066,27 +5066,27 @@ void FtrKind05::execFtrAct02() {
 }
 
 BOOL FtrKind05::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     p23::FtrActor_PlayAnimsFromLastFrame(this, 0, 1, 0x1000);
     return TRUE;
 }
 
 void FtrKind05::execFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     if (p23::FtrActor_StepAnims(this)) {
         changeAct(2, 0xff);
     }
 }
 
 BOOL FtrKind05::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     playAnim(0, 1, 0x1000, 0);
     playSound1();
     return TRUE;
 }
 
 void FtrKind05::execFtrAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p23::FtrSync_RequestAct(this, 1, 0xff, 1);
     } else if (isPreview()) {
         changeAct(1, 0xff);
@@ -5094,7 +5094,7 @@ void FtrKind05::execFtrAct00() {
 }
 
 BOOL FtrKind05::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     playAnim(0, 3, 0x1000, 0);
     return TRUE;
 }
@@ -5146,7 +5146,7 @@ BOOL FtrKind05::updateActive() {
 
 BOOL FtrKind05::initModel() {
     initAnims(0, 1, 0x1000, 0);
-    if (((FtrSwitch *)(switchState))->isOn() && !FtrMgr_IsShopScene()) {
+    if (switchState.isOn() && !FtrMgr_IsShopScene()) {
         changeAct(2, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -5173,7 +5173,7 @@ void FtrKind04::execFtrAct02() {
 }
 
 BOOL FtrKind04::enterFtrAct02() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     playSound2();
     ((FtrGlowMatSet *)(&glowMats))->setLit(1, 1, 0);
     return TRUE;
@@ -5247,28 +5247,28 @@ public:
 void FtrKind04::execFtrAct01() {
     hasIndoorFlag6();
     playSound0();
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p24::FtrSync_RequestAct(this, 2, 0xff, 1);
     }
 }
 
 BOOL FtrKind04::enterFtrAct01() {
     animSpeed = 0x1000;
-    ((FtrSwitch *)switchState)->set(1, 0);
+    switchState.set(1, 0);
     playSound1();
     glowMats.setLit(1, 1, 0);
     return TRUE;
 }
 
 void FtrKind04::execFtrAct00() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p24::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
 BOOL FtrKind04::enterFtrAct00() {
     animSpeed = 0;
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     glowMats.setLit(0, 1, 0);
     return TRUE;
 }
@@ -5316,9 +5316,9 @@ BOOL FtrKind04::updateActive() {
     u32 i;
     glowMats.update();
     execFtrAct();
-    animFrameStep = animSpeed;
+    model.frameStep = animSpeed;
     for (i = 0; i < 4; i++) {
-        if (((FtrModelAnim *)&anims[i])->getAnmObj()) {
+        if (anims[i].getAnmObj()) {
             anims[i].frameStep = animSpeed;
         }
     }
@@ -5328,10 +5328,10 @@ BOOL FtrKind04::updateActive() {
 
 BOOL FtrKind04::initModel() {
     initAnims(0, 0, 0x1000, 0);
-    void *res = modelResMdl;
-    u8 t = ((FtrSwitch *)switchState)->isOn();
+    void *res = model.resMdl;
+    u8 t = switchState.isOn();
     glowMats.init(res, t);
-    if (((FtrSwitch *)switchState)->isOn() != 0 && FtrMgr_IsShopScene() == 0) {
+    if (switchState.isOn() != 0 && FtrMgr_IsShopScene() == 0) {
         changeAct(1, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -5354,26 +5354,26 @@ void FtrKind03::execFtrAct01() {
     p24::FtrActor_StepAnims(this);
     hasIndoorFlag6();
     playSound0();
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p24::FtrSync_RequestAct(this, 0, 0xff, 1);
     }
 }
 
 BOOL FtrKind03::enterFtrAct01() {
-    ((FtrSwitch *)switchState)->set(1, 0);
+    switchState.set(1, 0);
     playSound1();
     glowMats.setLit(1, 1, 0);
     return TRUE;
 }
 
 void FtrKind03::execFtrAct00() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p24::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
 
 BOOL FtrKind03::enterFtrAct00() {
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     playSound2();
     glowMats.setLit(0, 1, 0);
     return TRUE;
@@ -5424,10 +5424,10 @@ BOOL FtrKind03::updateActive() {
 
 BOOL FtrKind03::initModel() {
     initAnims(0, 0, 0x1000, 0);
-    void *res = modelResMdl;
-    u8 t = ((FtrSwitch *)switchState)->isOn();
+    void *res = model.resMdl;
+    u8 t = switchState.isOn();
     glowMats.init(res, t);
-    if (((FtrSwitch *)switchState)->isOn() == 0 || FtrMgr_IsShopScene() != 0) {
+    if (switchState.isOn() == 0 || FtrMgr_IsShopScene() != 0) {
         changeAct(0, 0xff);
     } else {
         changeAct(1, 0xff);
@@ -5449,19 +5449,19 @@ extern "C" FtrActor *FtrKind03_Create() {
 void FtrKind02::execFtrAct01() {
     u32 t = p24::FtrActor_GetFtrIndex(this);
     if (t != 0xb9 && t != 0xba) goto rest;
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p24::FtrSync_RequestAct(this, 1, 0xff, 1);
         goto end;
     }
 rest:
-    ((FtrSwitch *)switchState)->toggle(0);
+    switchState.toggle(0);
     if (p24::FtrActor_StepAnims(this)) {
         p24::FtrSync_RequestAct(this, 0, 0xff, 1);
     } else {
         playSound0();
     }
     if (p24::FtrActor_GetFtrIndex(this) == 0x207) {
-        if (((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(0x30)) {
+        if (model.hasPassedFrame(0x30)) {
             playSound2();
         }
     }
@@ -5475,7 +5475,7 @@ BOOL FtrKind02::enterFtrAct01() {
 }
 
 void FtrKind02::execFtrAct00() {
-    if (((FtrSwitch *)switchState)->isChanging()) {
+    if (switchState.isChanging()) {
         p24::FtrSync_RequestAct(this, 1, 0xff, 1);
     }
 }
@@ -5515,7 +5515,7 @@ BOOL FtrKind02::changeAct(u32 idx, u8 v) {
 }
 
 BOOL FtrKind02::onDelete() {
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     return TRUE;
 }
 
@@ -5525,7 +5525,7 @@ BOOL FtrKind02::updateActive() {
 }
 
 BOOL FtrKind02::initModel() {
-    ((FtrSwitch *)switchState)->set(0, 0);
+    switchState.set(0, 0);
     initAnims(0, 1, 0x1000, 0);
     p24::FtrActor_PlayAnimsFromLastFrame(this, 0, 1, 0x1000);
     changeAct(0, 0xff);
@@ -5590,19 +5590,19 @@ void FtrBasic::execFtrAct01() {
 }
 
 BOOL FtrBasic::enterFtrAct01() {
-    ((FtrSwitch *)(switchState))->set(1, 0);
+    switchState.set(1, 0);
     playSound1();
     return TRUE;
 }
 
 void FtrBasic::execFtrAct00() {
-    if (((FtrSwitch *)(switchState))->isChanging()) {
+    if (switchState.isChanging()) {
         p25::FtrSync_RequestAct(this, (ftrAct + 1) & 1, 0xff, 1);
     }
 }
 
 BOOL FtrBasic::enterFtrAct00() {
-    ((FtrSwitch *)(switchState))->set(0, 0);
+    switchState.set(0, 0);
     playSound2();
     return TRUE;
 }
@@ -5654,27 +5654,27 @@ BOOL FtrBasic::updateActive() {
     switch (p25::FtrActor_GetFtrIndex(this)) {
     case 0x123:
         if (!isPreview()) {
-            ((FtrSoundEmitter *)(soundEmitter))->playOnce(0x429, (u32)(uptr)centerPos);
-            if (((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(0x43)) {
-                ((FtrSoundEmitter *)(soundEmitter))->setPitch(1);
+            soundEmitter.playOnce(0x429, &centerPos);
+            if (model.hasPassedFrame(0x43)) {
+                soundEmitter.setPitch(1);
             }
         }
         break;
     case 0x1fb:
         if (!isPreview()) {
-            ((FtrSoundEmitter *)(soundEmitter))->playOnce(0x42b, (u32)(uptr)centerPos);
-            if (((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(4)) {
-                ((FtrSoundEmitter *)(soundEmitter))->setPitch(1);
-            } else if (((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(0x16)) {
-                ((FtrSoundEmitter *)(soundEmitter))->setPitch(2);
+            soundEmitter.playOnce(0x42b, &centerPos);
+            if (model.hasPassedFrame(4)) {
+                soundEmitter.setPitch(1);
+            } else if (model.hasPassedFrame(0x16)) {
+                soundEmitter.setPitch(2);
             }
         }
         break;
     case 0x1fc:
         if (!isPreview()) {
-            ((FtrSoundEmitter *)(soundEmitter))->playOnce(0x42c, (u32)(uptr)centerPos);
-            if (((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(5) || ((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(0x12)) {
-                ((FtrSoundEmitter *)(soundEmitter))->setPitch(1);
+            soundEmitter.playOnce(0x42c, &centerPos);
+            if (model.hasPassedFrame(5) || model.hasPassedFrame(0x12)) {
+                soundEmitter.setPitch(1);
             }
         }
         break;
@@ -5690,9 +5690,9 @@ BOOL FtrBasic::initModel() {
         s32 k = getAnimFrameCount(0);
         u32 t = (spawnMode == 1) ? 0 : Random_GlobalBelow(k);
         initAnims(0, 0, 0x1000, (u16)t);
-        glowMats.init(modelResMdl, 1);
+        glowMats.init(model.resMdl, 1);
     }
-    if (((FtrSwitch *)(switchState))->isOn()) {
+    if (switchState.isOn()) {
         changeAct(1, 0xff);
     } else {
         changeAct(0, 0xff);
@@ -5716,11 +5716,11 @@ void FtrGyroid::execFtrAct02() {
     s32 v = updateSync((VecFx32 *)&position.x);
     if (v >= 0) {
         s32 i = v >> 12;
-        ((BlendAnimModel *)(model))->initAnim(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(0), 0, v - (i << 12), (u16)i, 0);
-        ((BlendAnimModel *)(model))->stepBlend();
+        model.initAnim(((FtrAnimSet *)(modelRes.getAnimSet()))->getBca(0), 0, v - (i << 12), (u16)i, 0);
+        model.stepBlend();
     }
-    if (((FtrSwitch *)(switchState))->isChanging()) {
-        ((FtrSwitch *)(switchState))->set(1, 0);
+    if (switchState.isChanging()) {
+        switchState.set(1, 0);
         u32 r4 = p15::Scene_GetCurrent();
         p15::FtrSync_RequestToggleGyroid(r4, &position.x, p15::FtrActor_GetLayer(this));
     }
@@ -5730,7 +5730,7 @@ void FtrCart::onMoveStart(BOOL isPush) {
     void *p = ((FtrContactSet *)(FtrContactSet_GetInstance()))->findContact(this);
     BOOL c = FALSE;
     if (p != 0) {
-        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(this->modelRes))->getAnimSet()))->getBca(c);
+        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(this->modelRes.getAnimSet()))->getBca(c);
         if (this->kind == 0x16) {
             if (((FtrContact *)(p))->getSide() == 2) {
                 if (isPush) {
@@ -5781,9 +5781,9 @@ void FtrStereo::execFtrAct01() {
     p17::FtrActor_StepAnims(this);
     playSound0();
     glowMats.setLit(1, 1, 0);
-    ((FtrSoundEmitter *)(soundEmitter))->setPan((u32)(uptr)centerPos);
-    if (((FtrSwitch *)switchState)->isChanging()) {
-        ((FtrSwitch *)switchState)->set(1, 0);
+    soundEmitter.setPan(&centerPos);
+    if (switchState.isChanging()) {
+        switchState.set(1, 0);
         p17::TalkRequest_AddPlayerTalk6(this, 0);
         PlayerActor_KeepAnimForNextAction();
     }
@@ -5841,7 +5841,7 @@ BOOL FtrStorage::enterTalkAct09() {
         FtrTileList list;
     } l;
     FtrTileList &list = l.list;
-    ((FtrActor *)(this))->getTiles((Unk_ov004_02207854_List *)(void *)(&list), (void *)(0), 0);
+    ((FtrActor *)(this))->getTiles(&list, NULL, 0);
     u8 *grid = p19::gSceneBlockMap;
     if (grid != NULL) {
         u32 i;

@@ -21,12 +21,15 @@
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/ov004/unk_ov004_022257e4.h"
 #include "gfx/G3dResAccess.h"
+#include "gfx/BgModelCache.h"
+#include "town/TownTravelState.h"
+#include "nnsys/g3d_rt.h"
 
 
 
@@ -78,22 +81,21 @@ public:
     void setGroundMatFlags();
     BOOL bindTextures();
 
-    /* 0x290 */ ModelAnim matAnim; // curFrame (0x298) and anmObj (0x2a8) are read through F()
-    /* 0x2b0 */ u32 matIdx[3];      // material indices of m_lt / m_ltdoor / m_open (read through F())
-    /* 0x2bc */ u32 doorCollider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8;    // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
-    /* 0x358 */ u32 leftCollider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8;
-    /* 0x3f4 */ u32 rightCollider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8;
-    /* 0x490 */ u8 pad_490[8];
+    /* 0x290 */ ModelAnim matAnim;
+    /* 0x2b0 */ u32 matIdx[3];      // material indices of m_lt / m_ltdoor / m_open
+    /* 0x2bc */ BoxCollider doorCollider;
+    /* 0x358 */ BoxCollider leftCollider;
+    /* 0x3f4 */ BoxCollider rightCollider;
+    /* 0x490 */ u8 doorUpdate;      // the door collider is registered this frame
+    /* 0x494 */ s32 doorOffset;
 };
 
 typedef CheckInGate Cls;
 typedef void (Cls::*Fn1)();
 typedef BOOL (Cls::*Fn2)();
-#define F(T, off) (*(T *)((u8 *)this + off))
 
 extern "C" {
-extern u32 gBgHeap;
-extern void *gCommManager;
+extern CommManager *gCommManager;
 
 void *RoomObjRes_GetBca(void *, u32);
 void *RoomObjRes_GetBma(void *, u32);
@@ -103,18 +105,14 @@ void RoomObjRes_Free(void *);
 void CheckInGate_SetInstance(Cls *c);
 
 void Math_ApproachS32Max(s32 *, s32, s32, s32);
-s32 BoxCollider_Unregister(void *);
-s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
+s32 BoxCollider_Unregister(BoxCollider *);
+s32 BoxCollider_Register(BoxCollider *, s32, s32, s32, VecFx32 *, s16, VecFx32 *);
 void Clock_GetMinuteHour(u8 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 s32 Scene_GetCurrent(void);
 void NNS_G3dBindMdlTex(void *, void *);
 void NNS_G3dBindMdlPltt(void *, void *);
-void *_ZN12BgModelCache12getGroundTexEv(void *);
-s32 _ZN15TownTravelState7getModeEv(s32);
-void _ZN11BoxColliderC1Ev(void *self);
-void _ZN11BoxColliderD2Ev(void *self);
 }
 
 extern "C" const u8 sCheckInGateHourLight[];
@@ -163,29 +161,23 @@ extern "C" void CheckInGate_InitRenderObj(NNSG3dRS *o) {
 
 // @2226410
 CheckInGate::CheckInGate() {
-    _ZN11BoxColliderC1Ev(doorCollider);
-    _ZN11BoxColliderC1Ev(leftCollider);
-    _ZN11BoxColliderC1Ev(rightCollider);
 }
 
 // @2226374
 CheckInGate::~CheckInGate() {
-    _ZN11BoxColliderD2Ev(rightCollider);
-    _ZN11BoxColliderD2Ev(leftCollider);
-    _ZN11BoxColliderD2Ev(doorCollider);
 }
 
 // @2226158
 BOOL CheckInGate::onCreate() {
     s32 v;
-    s32 s = TownSessionState_GetTravelState(TownSessionState_Get());
+    TownTravelState *s = (TownTravelState *)TownSessionState_GetTravelState((u8 *)TownSessionState_Get());
     RoomObjRes_Load(&res, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&tex, "/roomObj/obj_check_in.nsbtx");
-    ((Model *)(&model))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(&res)), 0);
-    F(u32, 0x2b0) = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)("m_lt"));
-    F(u32, 0x2b4) = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)("m_ltdoor"));
-    F(u32, 0x2b8) = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)("m_open"));
-    ((Model *)(&model))->setInitCallback(CheckInGate_InitRenderObj, this);
+    model.setResource((NNSG3dResMdl *)RoomObjRes_GetModel(&res), 0);
+    matIdx[0] = ((G3dResAccess *)RoomObjRes_GetModel(&res))->findMatIdx("m_lt");
+    matIdx[1] = ((G3dResAccess *)RoomObjRes_GetModel(&res))->findMatIdx("m_ltdoor");
+    matIdx[2] = ((G3dResAccess *)RoomObjRes_GetModel(&res))->findMatIdx("m_open");
+    model.setInitCallback(CheckInGate_InitRenderObj, this);
     bindTextures();
     setGroundMatFlags();
     initBodyAnim();
@@ -193,14 +185,14 @@ BOOL CheckInGate::onCreate() {
     v = Scene_GetCurrent();
     switch (v) {
     case 0xb:
-        if (((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid)) {
+        if (gCommManager->isSlotActive(gCommManager->myAid)) {
             changeSyncState(2);
         } else {
             changeSyncState(0);
         }
         break;
     case 0xc:
-        if (_ZN15TownTravelState7getModeEv(s) == 1) {
+        if (s->getMode() == 1) {
             changeSyncState(0);
         } else {
             changeSyncState(2);
@@ -213,11 +205,11 @@ BOOL CheckInGate::onCreate() {
         break;
     }
     CheckInGate_SetInstance(this);
-    F(s32, 0x494) = -1;
+    doorOffset = -1;
     static FxVec3 sa(0xb000, 0, 0x10800);
     static FxVec3 sb(0x15000, 0, 0x10800);
-    BoxCollider_Register(leftCollider, 0x2000, 0x1c00, 0x2000, &sa, 0, 0);
-    BoxCollider_Register(rightCollider, 0x2000, 0x1c00, 0x2000, &sb, 0, 0);
+    BoxCollider_Register(&leftCollider, 0x2000, 0x1c00, 0x2000, &sa, 0, 0);
+    BoxCollider_Register(&rightCollider, 0x2000, 0x1c00, 0x2000, &sb, 0, 0);
     return TRUE;
 }
 
@@ -231,7 +223,7 @@ BOOL CheckInGate::onExecute() {
 
 // @2226128
 BOOL CheckInGate::onDraw() {
-    ((AnimModel *)(&model))->drawAnimated((void *)(0));
+    model.drawAnimated(0);
     return TRUE;
 }
 
@@ -240,8 +232,8 @@ BOOL CheckInGate::onDelete() {
     RoomObjRes_Free(&res);
     RoomObjTex_Reset(&tex);
     removeDoorCollision();
-    BoxCollider_Unregister(leftCollider);
-    BoxCollider_Unregister(rightCollider);
+    BoxCollider_Unregister(&leftCollider);
+    BoxCollider_Unregister(&rightCollider);
     return TRUE;
 }
 
@@ -249,13 +241,13 @@ BOOL CheckInGate::onDelete() {
 BOOL CheckInGate::bindTextures() {
     void *o;
     o = RoomObjRes_GetModel(&res);
-    NNS_G3dBindMdlTex(o, _ZN12BgModelCache12getGroundTexEv(BgModelCache_Get()));
+    NNS_G3dBindMdlTex(o, ((BgModelCache *)BgModelCache_Get())->getGroundTex());
     o = RoomObjRes_GetModel(&res);
-    NNS_G3dBindMdlPltt(o, _ZN12BgModelCache12getGroundTexEv(BgModelCache_Get()));
+    NNS_G3dBindMdlPltt(o, ((BgModelCache *)BgModelCache_Get())->getGroundTex());
     o = RoomObjRes_GetModel(&res);
-    NNS_G3dBindMdlTex(o, (void *)RoomObjTex_Get(&tex));
+    NNS_G3dBindMdlTex(o, RoomObjTex_Get(&tex));
     o = RoomObjRes_GetModel(&res);
-    NNS_G3dBindMdlPltt(o, (void *)RoomObjTex_Get(&tex));
+    NNS_G3dBindMdlPltt(o, RoomObjTex_Get(&tex));
     return TRUE;
 }
 
@@ -283,9 +275,9 @@ void CheckInGate::setGroundMatFlags() {
 
 // @2225f88
 BOOL CheckInGate::initBodyAnim() {
-    if (RoomObjRes_GetBca(&res, 0) != 0 && ((AnimModel *)(&model))->allocAnmObj((void *)(gBgHeap)) != 0) {
+    if (RoomObjRes_GetBca(&res, 0) != 0 && model.allocAnmObj(gBgHeap) != 0) {
         ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
-        ((AnimModel *)(&model))->attachAnim();
+        model.attachAnim();
         return TRUE;
     }
     return FALSE;
@@ -293,9 +285,9 @@ BOOL CheckInGate::initBodyAnim() {
 
 // @2225f10
 BOOL CheckInGate::initMatAnim() {
-    if (RoomObjRes_GetBma(&res, 0) != 0 && ((ModelAnim *)(&matAnim))->allocMatAnm(F(u32, 0x148), (void *)(gBgHeap))) {
-        ((ModelAnim *)(&matAnim))->init(RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
-        ((ModelAnim *)(&matAnim))->addToRenderObj(((Model *)(&model))->getRenderObj());
+    if (RoomObjRes_GetBma(&res, 0) != 0 && matAnim.allocMatAnm(model.resMdl, gBgHeap)) {
+        matAnim.init(RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
+        matAnim.addToRenderObj(model.getRenderObj());
         return TRUE;
     }
     return FALSE;
@@ -349,8 +341,8 @@ void CheckInGate::applyHourLight(u32 a, NNSG3dRS *p) {
     u16 pk = (u16)packed;
     w1 = ((0x1000 - f) * *(s32 *)(data_ov004_02240154 + i1) + f * *(s32 *)(data_ov004_02240154 + i0)) >> 12;
     w2 = ((0x1000 - f) * *(s32 *)(data_ov004_02240150 + i1) + f * *(s32 *)(data_ov004_02240150 + i0)) >> 12;
-    u32 e0 = F(u32, 0x2b0);
-    if (a == e0 || a == F(u32, 0x2b4) || a == F(u32, 0x2b8)) {
+    u32 e0 = matIdx[0];
+    if (a == e0 || a == matIdx[1] || a == matIdx[2]) {
         u8 b = (p->pMatAnmResult->prmPolygonAttr >> 16) & 0x1f;
         u8 r;
         if (a == e0) {
@@ -368,34 +360,34 @@ void CheckInGate::applyHourLight(u32 a, NNSG3dRS *p) {
 
 // @2225ce8
 void CheckInGate::clearDoorUpdate() {
-    F(u8, 0x490) = 0;
+    doorUpdate = 0;
 }
 
 // @2225cd4
 void CheckInGate::setDoorOffset(s32 a) {
-    F(u8, 0x490) = 1;
-    F(s32, 0x494) = a;
+    doorUpdate = 1;
+    doorOffset = a;
 }
 
 // @2225c6c
 void CheckInGate::updateDoorCollision() {
-    if (F(u8, 0x354)) {
-        BoxCollider_Unregister(doorCollider);
+    if (doorCollider.isActive) {
+        BoxCollider_Unregister(&doorCollider);
     }
-    if (F(u8, 0x490)) {
+    if (doorUpdate) {
         VecFx32 v;
-        s32 z = F(s32, 0x494) + 0x10000;
+        s32 z = doorOffset + 0x10000;
         v.x = 0x10000;
         v.y = 0;
         v.z = z;
-        BoxCollider_Register(doorCollider, 0x8000, 0, 0x2000, &v, 0, 0);
+        BoxCollider_Register(&doorCollider, 0x8000, 0, 0x2000, &v, 0, 0);
     }
 }
 
 // @2225c48
 void CheckInGate::removeDoorCollision() {
-    if (F(u8, 0x354)) {
-        BoxCollider_Unregister(doorCollider);
+    if (doorCollider.isActive) {
+        BoxCollider_Unregister(&doorCollider);
     }
 }
 
@@ -491,16 +483,16 @@ void CheckInGate::updateState() {
 BOOL CheckInGate::enterState00() {
     void *r = RoomObjRes_GetBca(&res, 0);
     ((BlendAnimModel *)(&model))->initAnim(r, 0, 0x1000, 0, 0);
-    void *o = ((Model *)(&model))->getRenderObj();
-    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
+    void *o = model.getRenderObj();
+    matAnim.replace(o, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @2225a84
 void CheckInGate::updateState00() {
-    ((AnimModel *)(&model))->stepAnim();
-    ((AnimFrameCtrl *)(&matAnim))->step();
-    *F(u32 *, 0x2a8) = F(u32, 0x298);
+    model.stepAnim();
+    matAnim.step();
+    ((G3dAnmObj *)matAnim.anmObj)->frame = matAnim.curFrame;
     setDoorOffset(0);
 }
 
@@ -508,8 +500,8 @@ void CheckInGate::updateState00() {
 BOOL CheckInGate::enterState01() {
     void *r = RoomObjRes_GetBca(&res, 1);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
-    void *o = ((Model *)(&model))->getRenderObj();
-    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 1), 1, 0x1000, 0);
+    void *o = model.getRenderObj();
+    matAnim.replace(o, RoomObjRes_GetBma(&res, 1), 1, 0x1000, 0);
     Snd_PlaySe(0x4eb);
     return TRUE;
 }
@@ -517,15 +509,15 @@ BOOL CheckInGate::enterState01() {
 // @2225984
 void CheckInGate::updateState01() {
     s32 v;
-    ((AnimModel *)(&model))->stepAnim();
-    ((AnimFrameCtrl *)(&matAnim))->step();
-    *F(u32 *, 0x2a8) = F(u32, 0x298);
-    v = F(s32, 0x494);
+    model.stepAnim();
+    matAnim.step();
+    ((G3dAnmObj *)matAnim.anmObj)->frame = matAnim.curFrame;
+    v = doorOffset;
     Math_ApproachS32Max(&v, -0x2000, 0x100, 0x1000);
     setDoorOffset(v);
-    if (((AnimFrameCtrl *)((HOST_AT(this, 0x188, model, 0))))->isFinished()) {
+    if (model.isFinished()) {
         changeSyncState(2);
-    } else if (((AnimFrameCtrl *)((HOST_AT(this, 0x188, model, 0))))->hasPassedFrame(0x3a)) {
+    } else if (model.hasPassedFrame(0x3a)) {
         Snd_PlaySe(0x4ed);
     }
 }
@@ -534,16 +526,16 @@ void CheckInGate::updateState01() {
 BOOL CheckInGate::enterState02() {
     void *r = RoomObjRes_GetBca(&res, 2);
     ((BlendAnimModel *)(&model))->initAnim(r, 0, 0x1000, 0, 0);
-    void *o = ((Model *)(&model))->getRenderObj();
-    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 2), 0, 0x1000, 0);
+    void *o = model.getRenderObj();
+    matAnim.replace(o, RoomObjRes_GetBma(&res, 2), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @22258e0
 void CheckInGate::updateState02() {
-    ((AnimModel *)(&model))->stepAnim();
-    ((AnimFrameCtrl *)(&matAnim))->step();
-    *F(u32 *, 0x2a8) = F(u32, 0x298);
+    model.stepAnim();
+    matAnim.step();
+    ((G3dAnmObj *)matAnim.anmObj)->frame = matAnim.curFrame;
     if (Scene_GetCurrent() == 0xb) {
         setDoorOffset(-0x2000);
     }
@@ -553,8 +545,8 @@ void CheckInGate::updateState02() {
 BOOL CheckInGate::enterState03() {
     void *r = RoomObjRes_GetBca(&res, 3);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
-    void *o = ((Model *)(&model))->getRenderObj();
-    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 3), 1, 0x1000, 0);
+    void *o = model.getRenderObj();
+    matAnim.replace(o, RoomObjRes_GetBma(&res, 3), 1, 0x1000, 0);
     Snd_PlaySe(0x4ec);
     return TRUE;
 }
@@ -562,9 +554,9 @@ BOOL CheckInGate::enterState03() {
 // @22257e4
 void CheckInGate::updateState03() {
     model.stepAnim();
-    ((AnimFrameCtrl *)(HOST_AT(this, 0x290, matAnim, 0)))->step();
-    *(u32 *)*(u32 *)(HOST_AT(this, 0x2a8, matAnim.anmObj, 0)) = *(u32 *)(HOST_AT(this, 0x298, matAnim.curFrame, 0));
-    u32 t = F(s32, 0x494);
+    matAnim.step();
+    ((G3dAnmObj *)matAnim.anmObj)->frame = matAnim.curFrame;
+    u32 t = doorOffset;
     Math_ApproachS32Max((s32 *)&t, 0, 0x100, 0x1000);
     setDoorOffset(t);
     if (model.isFinished() != 0) {

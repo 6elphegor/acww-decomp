@@ -214,12 +214,12 @@ void MuseumData::releasePlayerDonations(u32 v) {
     }
 }
 
-BOOL MuseumData::getDonorName(s32 x, u16 *id) {
+BOOL MuseumData::getDonorName(MsgString *x, u16 *id) {
     if (getDonationState(id) <= 1) {
         s32 q = (getDonor(id) - 1) & 3;
         void *p = PlayerData_GetResident(gSavePlayers, q);
         if (p) {
-            ((PlayerId *)(((PlayerData *)(p))->getPlayerId()))->getNameString((MsgString *)(x));
+            ((PlayerId *)(((PlayerData *)(p))->getPlayerId()))->getNameString(x);
             return TRUE;
         }
     }

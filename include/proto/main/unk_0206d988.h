@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "types.h"
 class MelodyPlayer;
 #endif
@@ -55,7 +56,7 @@ void Melody_PlayEditPattern(u32 a);
 void Melody_Play(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Melody_PlayAt
-void Melody_PlayAt(u32 a, u32 b);
+void Melody_PlayAt(VecFx32 *a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_Melody_StartTrackA
 void Melody_StartTrackA(s32 a);

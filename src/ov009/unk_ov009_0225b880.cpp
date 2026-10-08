@@ -32,20 +32,19 @@
 #include "gfx/AnimModel.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203e7d0.h"
 #include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0209c08c.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/main/unk_020b5e5c.h"
@@ -54,79 +53,18 @@
 #include "proto/ov003/unk_ov003_022187fc.h"
 #include "proto/ov009/unk_ov009_0225b880.h"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ---- main-module helper classes (declarations only)
-
-
-
-
-
-
-class BuildingActor;
-class Actor;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
 typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 
-// Real (mangled) symbols of the other modules, reached as plain functions with the object first.
-#define func_02002d9c _ZN5Actor7preDrawEv
-#define func_02002dd0 _ZN5Actor11postExecuteEv
-#define func_0203e638 _ZN9Character10preExecuteEv
-#define func_0203e650 _ZN9Character9preDeleteEv
-#define Character_setCharId _ZN9Character9setCharIdEj
-#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
-#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32
-#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
-#define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define func_020548a0 _ZN9AnimModelD1Ev
-#define func_020548d0 _ZN9AnimModelC1Ev
-#define Model_clearResource _ZN5Model13clearResourceEv
-#define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
-#define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define BuildingLights_isLit _ZN14BuildingLights5isLitEv
-#define BuildingLights_setLit _ZN14BuildingLights6setLitEiii
-#define BuildingLights_updateLights _ZN14BuildingLights12updateLightsEP3Ctx
-#define BuildingLights_bind _ZN14BuildingLights4bindEP3Ctxi
-#define func_020b200c _ZN14BuildingLightsD2Ev
-#define func_020b2034 _ZN14BuildingLightsC2Ev
-#define func_ov009_0225b934 _ZN12Unk_0213b9c4D1Ev
-#define func_ov009_0225b94c _ZN17BuildingSeEmitterC1Ev
+// BuildingLights (BuildingActor::lights) is a class local to src/main/unk_020b0e60.cpp: its methods by their names.
+extern "C" {
+void _ZN14BuildingLightsC2Ev(void *self);
+void _ZN14BuildingLightsD2Ev(void *self);
+BOOL _ZN14BuildingLights5isLitEv(void *self);
+BOOL _ZN14BuildingLights6setLitEiii(void *self, BOOL on, s32 a, s32 b);
+void _ZN14BuildingLights12updateLightsEP3Ctx(void *self, void *mdl);
+void _ZN14BuildingLights4bindEP3Ctxi(void *self, void *mdl, BOOL on);
+}
 
 extern "C" {
 extern char sBuildingDefaultMsgFile[];
@@ -148,95 +86,56 @@ extern char sBuildingLightTexPath[];
 extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
-extern u8 data_020d0a7c[];
-extern void *gCurrentHeap;
+extern BuildingInfo data_020d0a7c[0x22];
 extern BgmManager *data_021c1b3c;
 
-void *func_ov009_0225b934(void *self);
-void _ZN12SndSeEmitterD2Ev(void *self);
-extern u8 data_0213b9c4[];
-void func_ov009_0225b94c(void *self);
-
-void BuildingInfo_Copy(void *self, const u8 *src);
-void BuildingInfo_Destroy(void *self);
-
-void SndSeEmitter_callStop(void *);
-void SndSeEmitter_callUpdateRelative(void *, void *);
-void SndSeEmitter_callInit(void *);
-s32 BuildingLights_isLit(void *);
-void AnimModel_drawAnimated(void *, u32);
-s32 Math_Atan2(s32, s32);
+// (definitions in files whose types are local: include/proto/.excluded)
+void BuildingInfo_Copy(BuildingInfo *dst, const BuildingInfo *src);
+void BuildingInfo_Destroy(BuildingInfo *i);
 s32 func_01ffcb0c(s32, s32);
-void Vec_Add(VecFx32 *, void *, VecFx32 *);
-void *TriangleTrigger_getCenter(void *);
+// (src/autoload_2/unk_020e7500.cpp; its header's List_Remove conflicts with the one actor/Actor.h declares)
+s16 Math_Atan2(s32 x, s32 y);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-void *Scene_GetWarpRequest();
-void Scene_ResetTownReturnPos();
-s32 Math_AngleDiffAbs(s32, s32);
-s32 Vec_DistXZ(void *, void *);
-s32 *PlayerActor_GetBodyPos(u32);
-void Camera_SetMode3();
-void TalkRequest_SetTargetDone(void *);
-s32 Scene_GetCurrent();
-s32 SceneWarp_RequestExit(void *, s32);
-s32 Ground_GetDefaultY(u32);
-void Scene_SetTownReturnPos(void *, s32, VecFx32 *, u32, s32, u32, u32);
-
+u8 *Scene_GetWarpRequest(void);
+void Camera_SetMode3(void);
+BOOL TalkRequest_SetTargetDone(Character *c);  // (defined with u32: it is the Character)
+s32 Scene_GetCurrent(void);
+BOOL SceneWarp_RequestExit(u8 *request, s32 id);  // (defined with s32: it is the warp request)
+s32 Ground_GetDefaultY(void);
+BOOL Scene_SetTownReturnPos(u8 *unused, s32 id, VecFx32 *pos, u32 w, s16 s, s32 p, s32 q);  // (likewise)
 BOOL Item_IsNookShop(u16 *);
-void AnimModel_stepAnim(void *);
-BOOL AnimFrameCtrl_isFinished(void *);
-BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
-BOOL TalkRequestFlags_IsResetti();
-void TalkRequest_AddPlayerTalk6(void *, s32);
-TouchPicker *Scene_GetTouchPicker();
+BOOL TalkRequestFlags_IsResetti(void);
+BOOL TalkRequest_AddPlayerTalk6(Character *c, s32 b);  // (likewise)
+TouchPicker *Scene_GetTouchPicker(void);
+s32 TriangleTrigger_Unregister(TriangleTrigger *node);
+s32 TriangleTrigger_Register(TriangleTrigger *node);
+BOOL Gfx3d_LoadTex(void *tex, void *slot);
+BOOL Gfx3d_LoadTexAndPltt(void *tex, void *slot);
+void *Gfx3d_CopyTex(void *tex, void *heap);
+u16 Item_MakeBuilding(u32 x);
+void Clock_GetMinuteHour(u8 *out);
+void NookShop_SetVisitState(int v);
+BOOL Camera_IsBlockingFocusView(void *pos, s32 w, s32 h);
 
-s32 TriangleTrigger_Unregister(void *node);
-void TriangleTrigger_Register(void *node);
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
-void Mtx43_RotateX(void *m, s32 a);
-s32 NNS_FndMountArchive(void *buf, char *name, void *data);
-void NNS_FndUnmountArchive(void *buf);
+// SDK (NitroSystem / NitroSDK)
+void Mtx43_SetTranslate(Mtx43 *m, s32 a, s32 b, s32 c);
+void Mtx43_RotateX(Mtx43 *m, s32 a);
+s32 NNS_FndMountArchive(void *archive, const char *name, void *data);
+void NNS_FndUnmountArchive(void *archive);
 void *func_02106654(void *p);
 void *func_02106670(void *p, s32 a);
 void *func_02106690(void *p);
 void *func_021066ac(void *p, s32 a);
 void *NNS_G3dGetTex(void *p);
-BOOL Gfx3d_LoadTex(void *p, u32 a);
-BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
-void *Gfx3d_CopyTex(void *p, void *g);
-
-u16 Item_MakeBuilding(u32 x);
-void AnimModel_allocAnmObj(void *, void *);
-void AnimModel_attachAnim(void *);
-void Model_clearResource(void *);
-void func_020548a0(void *);
-void ModelSlotHandle_Destroy(void *);
-void Clock_GetMinuteHour(void *);
-void BuildingLights_setLit(void *, s32, s32, s32);
-void BuildingLights_updateLights(void *, void *);
-void BuildingLights_bind(void *, void *, s32);
-void func_020b200c(void *);
-void NookShop_SetVisitState(u32);
-BOOL func_02002d9c(void *);
-s32 func_02002dd0(void *, u32);
-BOOL func_0203e638(void *);
-BOOL func_0203e650(void *);
-void Character_setCharId(void *, u32);
-BOOL Camera_IsBlockingFocusView(void *, s32, s32);
 void NNS_G3dBindMdlPltt(void *, void *);
 void NNS_G3dBindMdlTex(void *, void *);
-
-void func_020548d0(void *);
-void func_020b2034(void *);
-void ModelSlotHandle_Init(void *);
 void *func_021065dc(void *p);
-u32 func_021065f8(void *, u32);
+void *func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet(void *p);
 void MTX_MultVec43(const VecFx32 *, const Mtx43 *, VecFx32 *);
-void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
-BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
 void *BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
@@ -291,9 +190,6 @@ static inline BOOL Unk_ov009_0225d858_Is(u16 *p, u32 v) {
     return FALSE;
 }
 
-
-
-
 extern "C" void *BuildingActor_Create() {
     return new BuildingActor();
 }
@@ -324,7 +220,6 @@ BuildingResources::BuildingResources() {
 }
 
 BuildingResources::~BuildingResources() {}
-
 
 extern "C" {
 DebugColor data_ov009_0225e4fc(31, 20, 20, 31);
@@ -366,22 +261,16 @@ extern "C" void *Building_GetFirstMdl(void *res) {
 
 extern "C" void *Building_GetFirstAnm(void *res) {
     void *p = func_021065dc(res);
-    return (void *)func_021065f8(p, 0);
+    return func_021065f8(p, 0);
 }
 
 BuildingActor::BuildingActor() {
     itemId = 0xfff1;
-    new (model) AnimModel();
-    func_020b2034(lights);
-    new (seEmitter) BuildingSeEmitter();
-    ModelSlotHandle_Init(modelSlot);
+    _ZN14BuildingLightsC2Ev(lights);
 }
 
 BuildingActor::~BuildingActor() {
-    ModelSlotHandle_Destroy(modelSlot);
-    func_ov009_0225b934(seEmitter);
-    func_020b200c(lights);
-    ((AnimModel *)(model))->AnimModel::~AnimModel();
+    _ZN14BuildingLightsD2Ev(lights);
 }
 
 BOOL BuildingActor::initBuilding() { return TRUE; }
@@ -389,14 +278,12 @@ BOOL BuildingActor::initBuilding() { return TRUE; }
 BOOL BuildingActor::onCreate() {
     Mtx43 b1;
     Mtx43 b2;
-    struct {
-        s32 v[12];
-    } m;
+    Mtx43 m;
     VecFx32 v;
     BuildingList_Add(this);
     gridX = position.x >> 13;
     gridZ = position.z >> 13;
-    ((Character *)(this))->setCharId((u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
+    setCharId((u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
     itemId = param;  // (ProcBase::param: the spawn parameter)
     buildingIndex = itemId & 0xfff;
     char *a = getArcPath();
@@ -406,15 +293,15 @@ BOOL BuildingActor::onCreate() {
     initEntryArea();
     setupAnims();
     updateBaseMatrix(&b1);
-    ((Model *)(model))->setInitCallback(Building_InitModelCallback, this);
+    model.setInitCallback(Building_InitModelCallback, this);
     b2 = b1;
     createShadows(&b2);
     s32 ang = WorldCurve_Apply(&v, &position);
     Mtx43_SetTranslate(&m, v.x, v.y, v.z);
     Mtx43_RotateX(&m, ang);
-    createColliders((Mtx43 *)&m);
+    createColliders(&m);
     BuildingResources *r = getResources();
-    BuildingLights_bind(lights, r ? r->bmd0 : NULL, 1);
+    _ZN14BuildingLights4bindEP3Ctxi(lights, r ? r->bmd0 : NULL, 1);
     setInteractionRange(0);
     if (getDoorPos(&entryPos, (s16 *)0)) {
         entryPos.z -= 0x4000;
@@ -425,10 +312,10 @@ BOOL BuildingActor::onCreate() {
 }
 
 BOOL BuildingActor::preExecute() {
-    if (!((Character *)(this))->Character::preExecute()) {
+    if (!Character::preExecute()) {
         return FALSE;
     }
-    ((BuildingSeEmitter *)seEmitter)->activate();
+    seEmitter.activate();
     u16 *p = getItemId();
     if (Unk_ov009_0225d858_Is(p, 0x501d)) {
         s32 t = BuildingState_Get(itemId);
@@ -446,8 +333,8 @@ BOOL BuildingActor::preExecute() {
     }
     BOOL on = areLightsOn();
     s32 b = hasFlickeringLights();
-    BuildingLights_setLit(lights, on, 1, b);
-    BuildingLights_updateLights(lights, modelRes);
+    _ZN14BuildingLights6setLitEiii(lights, on, 1, b);
+    _ZN14BuildingLights12updateLightsEP3Ctx(lights, model.resMdl);
     updateDoorExit();
     return TRUE;
 }
@@ -455,7 +342,7 @@ BOOL BuildingActor::preExecute() {
 BOOL BuildingActor::postExecute(u32 a) {
     VecFx32Ctor v = getSoundPos();
     u16 *pp = getItemId();
-    ((BuildingSeEmitter *)(seEmitter))->setPosition((VecFx32 *)&v);
+    seEmitter.setPosition(&v);
     if (colliderFlags & 2) {
         colliderFlags |= 8;
     } else {
@@ -463,11 +350,11 @@ BOOL BuildingActor::postExecute(u32 a) {
     }
     colliderFlags &= ~2;
     colliderFlags &= ~4;
-    return func_02002dd0(this, a);
+    return Actor::postExecute(a);
 }
 
 BOOL BuildingActor::preDraw() {
-    if (!((Actor *)(this))->Actor::preDraw()) {
+    if (!Actor::preDraw()) {
         return FALSE;
     }
     if ((colliderFlags & 1) == 0) {
@@ -484,13 +371,13 @@ BOOL BuildingActor::preDraw() {
 }
 
 BOOL BuildingActor::preDelete() {
-    if (!((Character *)(this))->Character::preDelete()) {
+    if (!Character::preDelete()) {
         return FALSE;
     }
-    ((BuildingSeEmitter *)seEmitter)->deactivate();
+    seEmitter.deactivate();
     destroyShadows();
     destroyColliders();
-    ((Model *)(model))->clearResource();
+    model.clearResource();
     BuildingList_Remove(this);
     if (entryFlags.f0) {
         CharInteractSync_ReleaseLock();
@@ -517,9 +404,9 @@ void BuildingActor::initEntryArea() {
 
 void BuildingActor::setupAnims() {
     if (getDoorInAnim() != 0 || getDoorOutAnim() != 0) {
-        ((AnimModel *)(model))->allocAnmObj(gFieldStructureHeap);
-        ((BlendAnimModel *)(model))->initAnim(getDoorInAnim(), 0, 0x1000, 0, 0);
-        ((AnimModel *)(model))->attachAnim();
+        model.allocAnmObj(gFieldStructureHeap);
+        static_cast<BlendAnimModel *>(&model)->initAnim(getDoorInAnim(), 0, 0x1000, 0, 0);
+        model.attachAnim();
     }
     if (getEntranceType() != 0) {
         u16 *p = getItemId();
@@ -544,7 +431,7 @@ s32 BuildingActor::getViewRangeX() {
         v = -1;
     }
     BuildingInfo t;
-    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    BuildingInfo_Copy(&t, v < 0x22 ? &data_020d0a7c[v] : &data_020d0a7c[0]);
     s32 r = BuildingInfo_GetViewRangeX(&t) << 13;
     BuildingInfo_Destroy(&t);
     return r;
@@ -563,7 +450,7 @@ s32 BuildingActor::getViewRangeBack() {
         v = -1;
     }
     BuildingInfo t;
-    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    BuildingInfo_Copy(&t, v < 0x22 ? &data_020d0a7c[v] : &data_020d0a7c[0]);
     s32 r = BuildingInfo_GetViewRangeBack(&t) << 13;
     BuildingInfo_Destroy(&t);
     return r;
@@ -582,7 +469,7 @@ s32 BuildingActor::getViewRangeFront() {
         v = -1;
     }
     BuildingInfo t;
-    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    BuildingInfo_Copy(&t, v < 0x22 ? &data_020d0a7c[v] : &data_020d0a7c[0]);
     s32 r = BuildingInfo_GetViewRangeFront(&t) << 13;
     BuildingInfo_Destroy(&t);
     return r;
@@ -635,7 +522,7 @@ s32 BuildingActor::getEntranceType() {
         v = -1;
     }
     BuildingInfo t;
-    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    BuildingInfo_Copy(&t, v < 0x22 ? &data_020d0a7c[v] : &data_020d0a7c[0]);
     s32 r = BuildingInfo_GetEntranceType(&t);
     BuildingInfo_Destroy(&t);
     return r;
@@ -651,11 +538,9 @@ BOOL BuildingActor::areLightsOn() {
 BOOL BuildingActor::isOpen() { return TRUE; }
 
 extern "C" BOOL Building_IsNight() {
-    struct {
-        u8 v[4];
-    } t;
-    Clock_GetMinuteHour(&t);
-    u32 b = t.v[1];
+    u8 t[4];
+    Clock_GetMinuteHour(t);
+    u32 b = t[1];
     if (b >= 6 && b < 0x12) {
         return FALSE;
     }
@@ -689,14 +574,14 @@ char *BuildingActor::getLightTexPath() {
 }
 
 BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
-    if (shadows != 0 || modelRes != 0) {
+    if (shadows != 0 || model.resMdl != 0) {
         return TRUE;
     }
     loadResources(a, b, c);
     BuildingResources *r = getResources();
     if (r != NULL && r->bmd0 != 0) {
-        if (((Model *)(model))->setResource((NNSG3dResMdl *)r->bmd0, NULL)) {
-            s32 x = PlayerHouseTex_Get(FieldStructureMgr_GetPlayerHouseTex());
+        if (model.setResource((NNSG3dResMdl *)r->bmd0, NULL)) {
+            void *x = PlayerHouseTex_Get((void **)FieldStructureMgr_GetPlayerHouseTex());
             NNS_G3dBindMdlPltt(r->bmd0, x);
             if (r->tex) {
                 NNS_G3dBindMdlTex(r->bmd0, r->tex);
@@ -727,7 +612,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
         if (data != NULL) {
             char b1[0x1e];
             char b2[0x1e];
-            Unk_ov009_0225d2a4_Obj obj;
+            NNSFndArchive obj;
             s32 z1, z2;
             u32 i;
             if (NNS_FndMountArchive(&obj, data_ov009_0225e3e8, data)) {
@@ -866,7 +751,7 @@ void BuildingActor::updateBaseMatrix(Mtx43 *out) {
         drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         makeCurvedMatrix(&blk);
     }
-    baseMatrix = blk;
+    model.mtx = blk;
     if (out != NULL) {
         *out = blk;
     }
@@ -876,9 +761,9 @@ void BuildingActor::createShadows(Mtx43 *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
         if (e->shadowTable != NULL) {
-            void *heap = gFieldStructureHeap;
+            Heap *heap = (Heap *)gFieldStructureHeap;
             u32 n = e->shadowTable->getCount();
-            shadows = (ObjShadowStrip *)Heap_Alloc(heap, n * HOST_SIZED(0x34, ObjShadowStrip));
+            shadows = (ObjShadowStrip *)Heap_Alloc(heap, n * sizeof(ObjShadowStrip));
             ObjShadowStrip *p = shadows;
             u32 i;
             s32 zero;
@@ -892,7 +777,7 @@ void BuildingActor::createShadows(Mtx43 *m) {
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
                 Building_LocalToWorld(&out, &v, m);
-                p->build((VecFx32 *)&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
+                p->build(&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
             }
         }
     }
@@ -910,7 +795,7 @@ void BuildingActor::updateShadows(Mtx43 *m) {
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
                 Building_LocalToWorld(&out, &v, m);
-                p->draw((VecFx32 *)&out);
+                p->draw(&out);
             }
         }
     }
@@ -941,8 +826,8 @@ void BuildingActor::createColliders(Mtx43 *m) {
             VecFx32 a, b, c;
             VecFx32 wa, wb, wc;
             VecFx32 la, lb, lc;
-            collisionShapes = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, colliderCount * HOST_SIZED(0x44, TouchPickTriangle));
-            colliders = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, colliderCount * HOST_SIZED(0x54, BuildingCollider));
+            collisionShapes = (TouchPickTriangle *)Heap_Alloc((Heap *)gFieldStructureHeap, colliderCount * sizeof(TouchPickTriangle));
+            colliders = (BuildingCollider *)Heap_Alloc((Heap *)gFieldStructureHeap, colliderCount * sizeof(BuildingCollider));
             e4 = colliders;
             e6 = collisionShapes;
             k = BuildingList_IndexOf(this);
@@ -955,11 +840,11 @@ void BuildingActor::createColliders(Mtx43 *m) {
                     Vec_Add(&lb, &position, &b);
                     Vec_Add(&lc, &position, &c);
                     e6 = new (e6) TouchPickTriangle;
-                    Scene_GetTouchPicker()->addTriangle(e6, (VecFx32 *)&wa, (VecFx32 *)&wb, (VecFx32 *)&wc, 7, k);
+                    Scene_GetTouchPicker()->addTriangle(e6, &wa, &wb, &wc, 7, k);
                     e4 = new (e4) BuildingCollider;
                     e4->building = this;
                     e4->entranceType = getEntranceType();
-                    e4->setupTrigger((VecFx32 *)&la, (VecFx32 *)&lb, (VecFx32 *)&lc, 0x3000);
+                    e4->setupTrigger(&la, &lb, &lc, 0x3000);
                     TriangleTrigger_Register(e4);
                 }
             }
@@ -1091,7 +976,7 @@ BOOL BuildingActor::enterDoorIdle() {
         if (r == 0) {
             return FALSE;
         }
-        ((BlendAnimModel *)(model))->initAnim(r, 0, 0x1000, 0, 0);
+        static_cast<BlendAnimModel *>(&model)->initAnim(r, 0, 0x1000, 0, 0);
         break;
     }
     }
@@ -1135,9 +1020,9 @@ void BuildingActor::execDoorIdle() {
 BOOL BuildingActor::enterDoorOpenIn() {
     void *r = (void *)getDoorInAnim();
     if (r != 0) {
-        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d1);
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d2);
+        static_cast<BlendAnimModel *>(&model)->initAnim(r, 1, 0x1000, 0, 0);
+        seEmitter.playSe(0x7d1);
+        seEmitter.playSe(0x7d2);
         if (playsDoorMelody()) {
             s32 m = 0;
             u16 v[3];
@@ -1204,22 +1089,22 @@ BOOL BuildingActor::enterDoorOpenIn() {
 }
 
 void BuildingActor::execDoorOpenIn() {
-    ((AnimModel *)(model))->stepAnim();
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
+    model.stepAnim();
+    if (model.isFinished()) {
         setDoorState(0);
-    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x14)) {
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d3);
-    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x1e)) {
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d4);
+    } else if (model.hasPassedFrame(0x14)) {
+        seEmitter.playSe(0x7d3);
+    } else if (model.hasPassedFrame(0x1e)) {
+        seEmitter.playSe(0x7d4);
     }
 }
 
 BOOL BuildingActor::enterDoorOpenOut() {
     void *r = (void *)getDoorOutAnim();
     if (r != 0) {
-        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d1);
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d2);
+        static_cast<BlendAnimModel *>(&model)->initAnim(r, 1, 0x1000, 0, 0);
+        seEmitter.playSe(0x7d1);
+        seEmitter.playSe(0x7d2);
         if (playsDoorMelody()) {
             s32 m = 0;
             u16 v[3];
@@ -1286,24 +1171,24 @@ BOOL BuildingActor::enterDoorOpenOut() {
 }
 
 void BuildingActor::execDoorOpenOut() {
-    ((AnimModel *)(model))->stepAnim();
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
+    model.stepAnim();
+    if (model.isFinished()) {
         setDoorState(0);
-    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x12)) {
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d3);
-    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x18)) {
-        ((BuildingSeEmitter *)seEmitter)->playSe(0x7d4);
+    } else if (model.hasPassedFrame(0x12)) {
+        seEmitter.playSe(0x7d3);
+    } else if (model.hasPassedFrame(0x18)) {
+        seEmitter.playSe(0x7d4);
     }
 }
 
 BOOL BuildingActor::enterDoorSlideOpen() {
     void *r = (void *)getDoorInAnim();
     if (r) {
-        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
+        static_cast<BlendAnimModel *>(&model)->initAnim(r, 1, 0x1000, 0, 0);
         if (Item_IsNookShop(&itemId)) {
-            ((BuildingSeEmitter *)seEmitter)->playSe(0x806);
+            seEmitter.playSe(0x806);
         } else {
-            ((BuildingSeEmitter *)seEmitter)->playSe(0x808);
+            seEmitter.playSe(0x808);
         }
         return TRUE;
     }
@@ -1311,8 +1196,8 @@ BOOL BuildingActor::enterDoorSlideOpen() {
 }
 
 void BuildingActor::execDoorSlideOpen() {
-    ((AnimModel *)(model))->stepAnim();
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
+    model.stepAnim();
+    if (model.isFinished()) {
         setDoorState(4);
     }
 }
@@ -1321,7 +1206,7 @@ BOOL BuildingActor::enterDoorSlideClose() {
     doorCloseSeDelay = 0x1a;
     void *r = (void *)getDoorOutAnim();
     if (r) {
-        ((BlendAnimModel *)(model))->initAnim(r, 1, 0x1000, 0, 0);
+        static_cast<BlendAnimModel *>(&model)->initAnim(r, 1, 0x1000, 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -1332,15 +1217,15 @@ void BuildingActor::execDoorSlideClose() {
         doorCloseSeDelay--;
         if (doorCloseSeDelay == 0) {
             if (Item_IsNookShop(&itemId)) {
-                ((BuildingSeEmitter *)seEmitter)->playSe(0x807);
+                seEmitter.playSe(0x807);
             } else {
-                ((BuildingSeEmitter *)seEmitter)->playSe(0x809);
+                seEmitter.playSe(0x809);
             }
         }
     }
     if (doorCloseSeDelay == 0) {
-        ((AnimModel *)(model))->stepAnim();
-        if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
+        model.stepAnim();
+        if (model.isFinished()) {
             setDoorState(0);
         }
     }
@@ -1419,7 +1304,7 @@ void BuildingActor::execEntryCheck() {
 }
 
 BOOL BuildingActor::enterEntryTalkOpen() {
-    ((Character *)(this))->attachTalkRequest(this);
+    attachTalkRequest(this);
     window->nextState = 1;
     setupTalkMsg();
     return TRUE;
@@ -1437,7 +1322,7 @@ BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 void BuildingActor::execEntryTalk() {
     if (window != NULL && window->state == 0) {
         onTalkEnded();
-        ((Character *)(this))->detachTalkRequest(this);
+        detachTalkRequest(this);
         TalkRequest_SetTargetDone(this);
     } else {
         updateTalk();
@@ -1462,9 +1347,9 @@ BOOL BuildingActor::enterEntry05() {
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (alignsPlayerToDoor() == 0) {
-            s32 *q = PlayerActor_GetBodyPos(4);
+            VecFx32 *q = (VecFx32 *)PlayerActor_GetBodyPos(4);
             if (q != NULL) {
-                p4 = *q;
+                p4 = q->x;
             }
         }
         if (usesDoorApproach()) {
@@ -1514,9 +1399,9 @@ void BuildingActor::execEntryWarp() {
         VecFx32 v;
         if (getDoorPos(&v, &ang)) {
             if (SceneWarp_RequestExit(Scene_GetWarpRequest(), r)) {
-                v.y = Ground_GetDefaultY(0);
+                v.y = Ground_GetDefaultY();
                 v.z = v.z + 0x1000;
-                void *o = Scene_GetWarpRequest();
+                u8 *o = Scene_GetWarpRequest();
                 s32 k = Scene_GetCurrent();
                 Scene_SetTownReturnPos(o, k, &v, 0xf000000, (s16)(ang + 0x8000), gridX, gridZ);
                 Building_SetLastEntranceType(getEntranceType());
@@ -1546,9 +1431,9 @@ void BuildingActor::execEntry08() {
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (alignsPlayerToDoor() == 0) {
-            s32 *q = PlayerActor_GetBodyPos(4);
+            VecFx32 *q = (VecFx32 *)PlayerActor_GetBodyPos(4);
             if (q != NULL) {
-                p4 = *q;
+                p4 = q->x;
             }
         }
         if (PlayerActor_LocalRequestDoorEnter(2, &p4, &v.z, ang)) {
@@ -1590,7 +1475,6 @@ BOOL BuildingActor::acceptsInteraction(void *other) {
     return FALSE;
 }
 
-
 void BuildingActor::onMessageEnd(u32) {
     BOOL ok;
     if (Item_IsFurniture(&itemId)) {
@@ -1625,10 +1509,10 @@ void BuildingActor::updateTalk() {}
 void BuildingActor::onTalkEnded() {}
 
 void BuildingActor::updateMatrix() {
-    if (modelRes != NULL) {
+    if (model.resMdl != NULL) {
         updateBaseMatrix(0);
-        ((AnimModel *)(model))->drawAnimated((void *)(0));
-        Mtx43 t = baseMatrix;
+        model.drawAnimated(NULL);
+        Mtx43 t = model.mtx;
         updateShadows(&t);
     }
 }
@@ -1646,7 +1530,7 @@ BOOL BuildingActor::getDoorPos(VecFx32 *out, s16 *ang) {
         }
         if (out != NULL) {
             VecFx32 r;
-            Vec_Add(&r, ((TriangleTrigger *)(colliders))->getCenter(), &v);
+            Vec_Add(&r, (VecFx32 *)colliders->getCenter(), &v);
             out->x = r.x;
             out->y = r.y;
             out->z = r.z;
@@ -1674,7 +1558,7 @@ s32 BuildingActor::getInteriorScene(){
         v = -1;
     }
     BuildingInfo t;
-    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    BuildingInfo_Copy(&t, v < 0x22 ? &data_020d0a7c[v] : &data_020d0a7c[0]);
     s32 r = BuildingInfo_GetInteriorScene(&t);
     BuildingInfo_Destroy(&t);
     return r;
@@ -1693,7 +1577,7 @@ s32 BuildingActor::hasFlickeringLights(){
         v = -1;
     }
     BuildingInfo t;
-    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    BuildingInfo_Copy(&t, v < 0x22 ? &data_020d0a7c[v] : &data_020d0a7c[0]);
     s32 r = BuildingInfo_GetFlickeringLights(&t);
     BuildingInfo_Destroy(&t);
     return r;
@@ -1783,22 +1667,18 @@ u32 BuildingActor::getGridX() { return gridX; }
 
 u32 BuildingActor::getGridZ() { return gridZ; }
 
-s32 BuildingActor::callIsLit() { return BuildingLights_isLit(lights); }
-
+s32 BuildingActor::callIsLit() { return _ZN14BuildingLights5isLitEv(lights); }
 
 BuildingSeEmitter::BuildingSeEmitter() {
     active = 0;
 }
 
-extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
-    *(void **)p = data_0213b9c4;
-    _ZN12SndSeEmitterD2Ev(p);
-    return p;
-}
+// The emitter's destructor (D1 of SndSeEmitterKind2, implicit in autoload_2; ov009 has its own copy).
+Unk_0213b9c4::~Unk_0213b9c4() {}
 
 void BuildingSeEmitter::activate() {
     if (active == 0) {
-        ((SndSeEmitter *)(this))->callInit();
+        emitter.callInit();
         active = 1;
     }
 }
@@ -1809,13 +1689,13 @@ void BuildingSeEmitter::setPosition(VecFx32 *v) {
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
-        ((SndSeEmitter *)(this))->callUpdateRelative((VecFx32 *)(&t));
+        emitter.callUpdateRelative(&t);
     }
 }
 
 void BuildingSeEmitter::deactivate() {
     if (active != 0) {
-        ((SndSeEmitter *)(this))->callStop();
+        emitter.callStop();
         active = 0;
     }
 }

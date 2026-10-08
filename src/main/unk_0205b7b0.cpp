@@ -450,8 +450,10 @@ extern "C" void FieldInsectHeap_Destroy(void) {
     sFieldInsectHeap = NULL;
 }
 
-extern "C" void MuseumInsectHeap_Create(u32 size, void *parent) {
+// the model slot pool's allocator: the heap it returns is the parent of the slots' heaps
+extern "C" void *MuseumInsectHeap_Create(u32 size, void *parent) {
     sMuseumInsectHeap = ExpHeap_Create(size, parent);
+    return sMuseumInsectHeap;
 }
 
 extern "C" void MuseumInsectHeap_Destroy(void) {
