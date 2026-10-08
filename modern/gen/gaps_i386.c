@@ -148,4 +148,4 @@ __asm__(".globl data_0220064c\n.set data_0220064c, host_gap26_1 + 0");
 __asm__(".globl data_02200650\n.set data_02200650, host_gap26_1 + 4");
 __asm__(".globl data_02200670\n.set data_02200670, host_gap27_1 + 0");
 
-// code in gaps (written in C in modern/host/gaps_code.c): __sinit_020c5fa0 (main_7.o), Sky_HBlankMain (itcm_1.o), Sky_HBlankSub (itcm_1.o), Snd_CalcListenerDistance (autoload_2_1.o), GX_SetBankForSubBG (autoload_2_2.o), GX_SetBankForARM7 (autoload_2_3.o), parse_format__wide (autoload_2_4.o)
+// code in gaps (written in C in modern/host/gaps_code.c): __sinit_020c5fa0 (main_7.o), Sky_HBlankMain (itcm_1.o), Sky_HBlankSub (itcm_1.o), GX_SetBankForSubBG (autoload_2_2.o), GX_SetBankForARM7 (autoload_2_3.o), parse_format__wide (autoload_2_4.o)
