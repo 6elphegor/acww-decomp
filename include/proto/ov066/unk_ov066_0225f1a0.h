@@ -161,7 +161,7 @@ void LocalWl_AllocScanWork(void);
 void LocalWl_FreeScanWork(void);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_OnScanTimer
-void LocalWl_OnScanTimer(void);
+void LocalWl_OnScanTimer(void *);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_ScanNextChannel
 void LocalWl_ScanNextChannel(void);
@@ -176,7 +176,7 @@ void LocalWl_SetupScanParam(void);
 void LocalWl_OnBeaconFound(WMStartScanCallback *m);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_OnScanStopTimer
-void LocalWl_OnScanStopTimer(void);
+void LocalWl_OnScanStopTimer(void *);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_StopScanSoon
 void LocalWl_StopScanSoon(void);
@@ -314,10 +314,10 @@ s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src);
 void LocalWlMp_OnMemberLeft(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_LocalWlMp_SetMpData
-s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
+s32 LocalWlMp_SetMpData(u32 port, void *data, u32 size, u32 destMask, void *done);
 #endif
 #ifndef PROTO_LOCAL_LocalWlMp_SendControl
-void LocalWlMp_SendControl(u32 a, u32 b, u32 c, u32 d);
+void LocalWlMp_SendControl(u8 *data, u32 size, u32 destMask, void (*done)(void));
 #endif
 #ifndef PROTO_LOCAL_LocalWlMp_FindFrame
 LocalWlMpFrame *LocalWlMp_FindFrame(u32 id, LocalWlMpFrame *head);
@@ -449,7 +449,7 @@ s32 LocalWl_FilterBeacon(void *a, u8 *b);
 s32 LocalWl_GetBeaconCount(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_GetBeacon
-s32 LocalWl_GetBeacon(u32 idx, u32 b);
+LocalWlBeacon *LocalWl_GetBeacon(u32 idx, u32 b);
 #endif
 #ifndef PROTO_LOCAL_LocalWl_EndScan
 s32 LocalWl_EndScan(void);

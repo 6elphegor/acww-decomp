@@ -12,9 +12,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_sSockDefaultSocket
-extern void *sSockDefaultSocket;
-#endif
 #ifndef PROTO_LOCAL_SockCore_SetupStackConfig
 void SockCore_SetupStackConfig(void);
 #endif

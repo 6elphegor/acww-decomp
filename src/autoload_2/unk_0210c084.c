@@ -1,220 +1,99 @@
 #include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef signed char s8;
-typedef short s16;
-typedef int s32;
-typedef int BOOL;
-#define NULL 0
-#define TRUE 1
-#define FALSE 0
+// NitroSystem (NNS) sound archive: sndarc_stream.c's MakeWaveData and stream thread, sndarc_player.c (starting
+// sequences of the archive) and sndarc_loader.c (loading its files into a sound heap), autoload_2 0x0210c084-0x0210da28.
+#include "types.h"
+#include "nitro/fs.h"       // the real FSFile and OSMutex: larger on 64-bit hosts
+#include "sys/OSThread.h"
+#include "nnsys/snd_arcstrm.h"
+#include "proto/autoload_2/unk_0210c084.h"
+#include "proto/autoload_2/unk_0210da28.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02114410.h"
 
+// the sound archive's records (in its info block: unk_0210b448.c returns pointers to them)
 typedef struct Pair { u32 a; u32 b; } Pair;
 typedef struct InstOut { u8 type; u8 pad; u16 h1; u16 h2; u16 h3; u16 h4; u16 h5; } InstOut;
-
-// externs: SND / archive helpers (K&R where callers pass different argument counts)
-extern u32 OS_DisableInterrupts(void);
-extern void OS_RestoreInterrupts(u32);
-extern void OS_SleepThread();
-extern void OS_UnlockMutex();
-extern void OS_LockMutex();
-extern void DC_StoreRange();
-extern void DC_FlushRange();
-extern void MI_CpuFill8();
-extern void MI_CpuCopy8();
-extern void SND_InvalidateWaveData();
-extern void SND_InvalidateBankData();
-extern void SND_InvalidateSeqData();
-extern Pair SND_GetFirstInstDataPos();
-extern u32 SND_GetNextInstData();
-extern void *SND_GetWaveDataAddress();
-extern void SND_SetWaveDataAddress();
-extern u32 SND_GetWaveDataCount();
-extern void SND_DestroyWaveArc();
-extern void SND_DestroyBank();
-extern void SND_AssignWaveArc();
-extern u32 FS_SeekFile();
-extern u32 FS_ReadFile();
-extern u32 NNS_SndArcSetFileAddress();
-extern u32 NNS_SndArcGetFileAddress();
-extern u32 NNS_SndArcReadFile();
-extern u32 NNS_SndArcGetFileSize();
-extern u32 NNS_SndArcGetGroupInfo();
-extern u32 NNS_SndArcGetPlayerInfo();
-extern u32 NNS_SndArcGetWaveArcInfo();
-extern u32 NNS_SndArcGetBankInfo();
-extern u32 NNS_SndArcGetSeqArcInfo();
-extern u32 NNS_SndArcGetSeqInfo();
-extern u32 NNS_SndArcGetCurrent();
-extern u32 NNS_SndArcSetCurrent();
-extern void *NNS_SndHeapAlloc();
-extern void *NNSi_SndSeqArcGetSeqInfo();
-extern void *NNSi_SndPlayerAllocSeqPlayer();
-extern u32 NNSi_SndPlayerAllocHeap();
-extern void NNSi_SndPlayerFreeSeqPlayer();
-extern void NNSi_SndPlayerStartSeq();
-extern void NNS_SndPlayerSetInitialVolume();
-extern void NNS_SndPlayerSetChannelPriority();
-extern void NNS_SndPlayerSetSeqArcNo();
-extern void NNS_SndPlayerSetSeqNo();
-extern u32 NNS_SndPlayerCreateHeap();
-extern void NNS_SndPlayerSetAllocatableChannel();
-extern void NNS_SndPlayerSetPlayableSeqCount();
-extern u32 PopCommandBuffer();
-extern void FreeCommandBuffer();
-extern void RequestNextStrm();
-extern u32 _u32_div_f();
-
-extern u8 data_021fbd6c[0x3c];
-extern u32 LoadSingleWaves();
-extern void WaveArcTableDisposeCallback();
-extern void WaveArcDisposeCallback();
-extern void BankDisposeCallback();
-extern void SeqDisposeCallback();
-extern u32 LoadWaveArcTable();
-extern u32 LoadWaveArc();
-extern u32 LoadBank();
-extern u32 LoadSeqArc();
-extern u32 LoadSeq();
-extern u32 NNSi_SndArcLoadFile();
-extern u32 NNSi_SndArcLoadWaveArc();
-extern u32 NNSi_SndArcLoadBank();
-extern u32 NNSi_SndArcLoadSeqArc();
-extern u32 NNSi_SndArcLoadSeq();
-extern u32 NNSi_SndArcLoadGroup();
-extern u32 StartSeqArc();
-extern u32 StartSeq();
-
-
-// archive records
 typedef struct FileRec { u32 fileId : 24; u32 loadFlag : 8; u16 wa[4]; } FileRec;   // wave archive / bank records
 typedef struct SeqRec { u32 fileId; u16 bank; u8 vol; u8 chPrio; u8 prio; u8 player; } SeqRec;
 typedef struct PlayerRec { u8 count; u8 pad; u16 bankNo; u32 heapSize; } PlayerRec;
 typedef struct GrpEnt { u8 type; u8 flags; u16 pad; u32 id; } GrpEnt;
 typedef struct GrpRec { u32 count; GrpEnt ent[1]; } GrpRec;
 typedef struct BankRec { u32 fileId; u16 wa[4]; } BankRec;
+typedef struct SeqArcRec { u32 fileId; } SeqArcRec;
 
+// a sound heap block's dispose callback (NNS_SndHeapAlloc, unk_0210b448.c)
+typedef void (*SndHeapDisposeCallback)(void *mem, u32 size, void *data1, u32 data2);
 
-// ---- NitroSystem sndarc_stream.c: MakeWaveData (0x0210d174), in the shape of SonicRushAdventure-Decomp's matched
-// version, with this older library's direct FS_SeekFile/FS_ReadFile reads (the file offset is added here) and
-// RequestNextStrm for OnDataEnd. Its two ADPCM tables are the file's .rodata (0x02135e80-0x02135f44).
-typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
-#include "nitro/fs.h"       // the real FSFile and OSMutex: larger on 64-bit hosts
-#include "sys/OSThread.h"
-#define PROTO_LOCAL_BankDisposeCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LoadBank  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LoadSeq  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LoadSeqArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LoadSingleWaves  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LoadWaveArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LoadWaveArcTable  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNS_SndArcLoadGroup  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNS_SndArcLoadSeqArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNS_SndArcLoadWaveArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNSi_SndArcLoadBank  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNSi_SndArcLoadFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNSi_SndArcLoadGroup  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNSi_SndArcLoadSeq  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNSi_SndArcLoadSeqArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NNSi_SndArcLoadWaveArc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SeqDisposeCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrmThreadProc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WaveArcDisposeCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WaveArcTableDisposeCallback  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_0210c084.h"
-typedef struct NNSSndFader { s32 a, b, c, d; } NNSSndFader;
-typedef enum { NNS_SND_STRM_FORMAT_PCM8, NNS_SND_STRM_FORMAT_PCM16 } NNSSndStrmFormat;
-typedef void (*NNSSndStrmCallback)(s32 status, int numChannels, void *buffer[], u32 len, NNSSndStrmFormat format, void *arg);
-typedef void (*NNSSndArcStrmCallback)(void);
+// externs (the headers of their files declare them for C++ only so far)
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void DC_StoreRange(const void *p, u32 n);
+extern void DC_FlushRange(const void *p, u32 n);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
+extern s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+// the sound driver's interface (unk_021163b0.c, unk_02117984.c): its commands and the bank / wave archive links (32-bit
+// slots in the files' data) take the addresses as the ARM7 sees them
+extern void SND_InvalidateWaveData(u32 start, u32 end);
+extern void SND_InvalidateBankData(u32 start, u32 end);
+extern void SND_InvalidateSeqData(u32 start, u32 end);
+extern void SND_GetFirstInstDataPos(Pair *pos);
+extern u32 SND_GetNextInstData(void *bank, InstOut *out, u32 *pos);
+extern void *SND_GetWaveDataAddress(u8 *waveArc, s32 idx);
+extern void SND_SetWaveDataAddress(u8 *waveArc, s32 idx, u32 addr);
+extern u32 SND_GetWaveDataCount(void *waveArc);
+extern void SND_DestroyWaveArc(void *waveArc);
+extern void SND_DestroyBank(void *bank);
+extern void SND_AssignWaveArc(void *bank, s32 idx, void *waveArc);
+// the sound archive (unk_0210b448.c)
+extern u32 NNS_SndArcGetFileAddress(u32 idx);
+extern void NNS_SndArcSetFileAddress(u32 idx, u32 addr);
+extern s32 NNS_SndArcReadFile(u32 idx, void *buf, u32 len, u32 offset);
+extern u32 NNS_SndArcGetFileSize(u32 idx);
+extern void *NNS_SndArcGetGroupInfo(s32 idx);
+extern void *NNS_SndArcGetPlayerInfo(s32 idx);
+extern void *NNS_SndArcGetWaveArcInfo(s32 idx);
+extern void *NNS_SndArcGetBankInfo(s32 idx);
+extern void *NNS_SndArcGetSeqArcInfo(s32 idx);
+extern void *NNS_SndArcGetSeqInfo(s32 idx);
+extern void *NNS_SndArcGetCurrent(void);
+extern void *NNS_SndArcSetCurrent(void *arc);
+extern void *NNS_SndHeapAlloc(void *heap, u32 size, SndHeapDisposeCallback cb, void *data1, u32 data2);
+// the sequence players (unk_02109830.c, unk_0210ec0c.c)
+extern void *NNSi_SndSeqArcGetSeqInfo(void *seqArc, s32 idx);
+extern void *NNSi_SndPlayerAllocSeqPlayer(void *handle, s32 playerNo, s32 prio);
+extern void *NNSi_SndPlayerAllocHeap(s32 playerNo, void *seq);
+extern void NNSi_SndPlayerFreeSeqPlayer(void *seq);
+extern void NNSi_SndPlayerStartSeq(void *seq, const void *seqBase, u32 seqOffset, const void *bank);
+extern void NNS_SndPlayerSetInitialVolume(void *handle, u8 vol);
+extern void NNS_SndPlayerSetChannelPriority(void *handle, u32 prio);
+extern void NNS_SndPlayerSetSeqArcNo(void *handle, u16 arcNo, u16 idx);
+extern void NNS_SndPlayerSetSeqNo(void *handle, u16 seqNo);
+extern BOOL NNS_SndPlayerCreateHeap(s32 playerNo, void *heap, u32 size);
+extern void NNS_SndPlayerSetAllocatableChannel(s32 playerNo, u32 mask);
+extern void NNS_SndPlayerSetPlayableSeqCount(s32 playerNo, u32 count);
 
-enum { STRM_FORMAT_PCM8, STRM_FORMAT_PCM16, STRM_FORMAT_ADPCM };
-
-typedef struct NNSSndStrmData {
-    u8 fileHeader[0x10];
-    u8 blockHeader[8];
-    u8 format;
-    u8 loopFlag;
-    u8 numChannels;
-    u8 pad_;
-    u16 sampleRate;
-    u16 timer;
-    u32 loopStart;
-    u32 loopEnd;
-    u32 dataOffset;
-    u32 numBlocks;
-    u32 blockSize;
-    u32 blockSamples;
-    u32 lastBlockSize;
-    u32 lastBlockSamples;
-} NNSSndStrmData;
-
-typedef struct AdpcmState {
-    s16 prevSample;
-    u8 prevIndex;
-    u8 padding;
-} AdpcmState;
-
-typedef struct NNSSndStrmPlayer {
-#ifdef HOST64
-    u8 stream[136] __attribute__((aligned(8)));  // NNSSndStrm (Strm in unk_0210a478.c: its 64-bit size, checked there)
-#else
-    u8 stream[0x5c];
-#endif
-    FSFile file;
-    u32 fileOffset;
-    NNSSndStrmData info;
-    NNSSndFader fader;
-    AdpcmState adpcmState[6];
-    BOOL activeFlag : 1;
-    BOOL playFlag : 1;
-    BOOL startFlag : 1;
-    BOOL fadeOutFlag : 1;
-    BOOL dirtyFlag : 1;
-    BOOL finishFlag : 1;
-    BOOL monoFlag : 1;
-    volatile int finishCounter;
-    volatile BOOL prepareFlag;
-    volatile int commandCount;
-    int allocChannelCount;
-    u8 numChannels;
-    u8 padding;
-    u8 chNoList[6];
-    void *buffer;
-    u32 bufSize;
-    NNSSndStrmCallback strmCallback;
-    void *strmCallbackArg;
-    NNSSndArcStrmCallback sndArcStrmCallback;
-    void *sndArcStrmCallbackArg;
-    int strmNo;
-    int playerNo;
-    void *handle;
-    int prio;
-    int initVolume;
-    int volume;
-    u32 curSample;
-} NNSSndStrmPlayer;
-
-typedef struct LoadCommand {
-    NNSFndLink link;
-    NNSSndStrmPlayer *player;
-    s32 status;
-    int numChannels;
-    void *buffer[6];
-    u32 bufLen;
-} LoadCommand;
-
-extern u8 *data_021fbdb0;   // sDecodeBuffer
+// the ADPCM decode buffer and its mutex (unk_0210da28.c's bss)
+extern u8 *data_021fbdb0;     // sDecodeBuffer
 extern OSMutex data_021fbdc0; // sDecodeBufferMutex
+extern u8 data_021fbd6c[0x3c]; // a wave archive's header (LoadWaveArcTable)
+
+// a file's address in the archive's FAT (a 32-bit slot of the archive's data: NNS_SndArcGetFileAddress)
+static inline void *GetFileAddress(u32 file) { return (void *)(uptr)NNS_SndArcGetFileAddress(file); }
+static inline void SetFileAddress(u32 file, const void *p) { NNS_SndArcSetFileAddress(file, (u32)(uptr)p); }
+static inline u32 SndAddr(const void *p) { return NNSi_SndArm7Addr(p); }
+
 #define cAdpcmIndexTable data_02135e80
 #define cAdpcmStepSizeTable data_02135e90
 #define sDecodeBuffer data_021fbdb0
 #define sDecodeBufferMutex data_021fbdc0
 static inline void MI_CpuClear8(void *dest, u32 size) { MI_CpuFill8(dest, 0, size); }
+
+// in-unit prototypes (with this file's record types)
+u32 StartSeq(void *handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u32 seqNo);
+u32 StartSeqArc(void *handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u8 *data, u32 arcNo, u32 idx);
 
 const s8 data_02135e80[16] = { // cAdpcmIndexTable
     -1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8,
@@ -229,7 +108,7 @@ const s16 data_02135e90[89] = { // cAdpcmStepSizeTable
     9493,  10442, 11487, 12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767,
 };
 
-static inline s16 DecodeAdpcm(int code, AdpcmState *state)
+static inline s16 DecodeAdpcm(int code, NNSSndStrmAdpcmState *state)
 {
     int step;
     int sample;
@@ -276,7 +155,7 @@ static inline s16 DecodeAdpcm(int code, AdpcmState *state)
 }
 
 // MakeWaveData
-void MakeWaveData(LoadCommand *command)
+void MakeWaveData(NNSSndStrmLoadCommand *command)
 {
     NNSSndStrmPlayer *player = command->player;
     BOOL loopFlag;
@@ -307,7 +186,7 @@ void MakeWaveData(LoadCommand *command)
         {
             for (ch = 0; ch < command->numChannels; ch++)
             {
-                MI_CpuClear8((u8 *)(command->buffer[ch]) + destOffset, restSize);
+                MI_CpuClear8((u8 *)NNSi_SndStrmBufPtr(command->buffer[ch]) + destOffset, restSize);
             }
             break;
         }
@@ -387,11 +266,11 @@ void MakeWaveData(LoadCommand *command)
                 readSize = endSample - blockOffset;
                 if (blockOffsetSample == 0)
                 {
-                    readSize += sizeof(AdpcmState);
+                    readSize += sizeof(NNSSndStrmAdpcmState);
                 }
                 else
                 {
-                    blockOffset += sizeof(AdpcmState);
+                    blockOffset += sizeof(NNSSndStrmAdpcmState);
                 }
                 size <<= 1;
 
@@ -409,7 +288,7 @@ void MakeWaveData(LoadCommand *command)
             void *dest;
             void *read_dest;
 
-            dest = read_dest = (u8 *)(command->buffer[ch]) + destOffset;
+            dest = read_dest = (u8 *)NNSi_SndStrmBufPtr(command->buffer[ch]) + destOffset;
 
             if (ch < player->info.numChannels)
             {
@@ -439,7 +318,7 @@ void MakeWaveData(LoadCommand *command)
 
                 if (player->info.format == STRM_FORMAT_ADPCM)
                 {
-                    AdpcmState *state = &player->adpcmState[ch];
+                    NNSSndStrmAdpcmState *state = &player->adpcmState[ch];
                     u8 *srcp          = sDecodeBuffer;
                     s16 *destp        = dest;
                     u32 i;
@@ -447,7 +326,8 @@ void MakeWaveData(LoadCommand *command)
 
                     if (blockOffsetSample == 0)
                     {
-                        *state = *(*(AdpcmState **)&srcp)++;
+                        *state = *(NNSSndStrmAdpcmState *)srcp;
+                        srcp += sizeof(NNSSndStrmAdpcmState);
                     }
 
                     end = blockOffsetSample + samples;
@@ -483,7 +363,7 @@ void MakeWaveData(LoadCommand *command)
                 }
                 else
                 {
-                    MI_CpuCopy8((u8 *)(command->buffer[0]) + destOffset, dest, size);
+                    MI_CpuCopy8((u8 *)NNSi_SndStrmBufPtr(command->buffer[0]) + destOffset, dest, size);
                 }
             }
         }
@@ -521,7 +401,7 @@ void MakeWaveData(LoadCommand *command)
 
     for (ch = 0; ch < command->numChannels; ch++)
     {
-        DC_FlushRange(command->buffer[ch], command->bufLen);
+        DC_FlushRange(NNSi_SndStrmBufPtr(command->buffer[ch]), command->bufLen);
     }
 
     if (command->status == 0)
@@ -531,34 +411,22 @@ void MakeWaveData(LoadCommand *command)
 }
 
 // stream/wave decode thread entry (never returns)
-void StrmThreadProc(u8 *obj)
+void StrmThreadProc(void *arg)
 {
-    u8 *queue;
-#ifdef HOST64
-    // (the thread record's members by its type: unk_0210da28.c)
-    extern void *SndStrmThread_Queue(void *), *SndStrmThread_Mutex(void *), *SndStrmThread_List(void *);
-    u8 *mutex = SndStrmThread_Mutex(obj);
-    u8 *list = SndStrmThread_List(obj);
-    u32 item;
-    queue = SndStrmThread_Queue(obj);
-#else
-    u8 *mutex = obj + 0x4cc;
-    u8 *list = obj + 0x4e4;
-    u32 item;
-    queue = obj + 0x4c0;
-#endif
+    NNSSndStrmThread *t = arg;
+    NNSSndStrmLoadCommand *item;
     for (;;) {
-        OS_SleepThread(queue);
+        OS_SleepThread(&t->queue);
         for (;;) {
-            OS_LockMutex(mutex);
-            item = PopCommandBuffer(list);
+            OS_LockMutex(&t->mutex);
+            item = PopCommandBuffer(&t->commandList);
             if (item == 0) {
-                OS_UnlockMutex(mutex);
+                OS_UnlockMutex(&t->mutex);
                 break;
             }
-            MakeWaveData((void *)item);
+            MakeWaveData(item);
             FreeCommandBuffer(item);
-            OS_UnlockMutex(mutex);
+            OS_UnlockMutex(&t->mutex);
         }
     }
 }
@@ -571,7 +439,7 @@ BOOL NNS_SndArcPlayerSetup(void *heap)
     s32 j;
     NNS_SndArcGetCurrent();
     for (i = 0; i < 32; i++) {
-        info = (PlayerRec *)NNS_SndArcGetPlayerInfo(i);
+        info = NNS_SndArcGetPlayerInfo(i);
         if (info != 0) {
             NNS_SndPlayerSetPlayableSeqCount(i, info->count);
             NNS_SndPlayerSetAllocatableChannel(i, info->bankNo);
@@ -588,9 +456,9 @@ BOOL NNS_SndArcPlayerSetup(void *heap)
 }
 
 // NNS_SndArcPlayerStartSeq(handle, seqNo)
-u32 NNS_SndArcPlayerStartSeq(u32 handle, u32 seqNo)
+u32 NNS_SndArcPlayerStartSeq(void *handle, u32 seqNo)
 {
-    SeqRec *rec = (SeqRec *)NNS_SndArcGetSeqInfo(seqNo);
+    SeqRec *rec = NNS_SndArcGetSeqInfo(seqNo);
     if (rec == 0) {
         return 0;
     }
@@ -598,19 +466,19 @@ u32 NNS_SndArcPlayerStartSeq(u32 handle, u32 seqNo)
 }
 
 // NNS_SndArcPlayerStartSeqArc(handle, seqArc, idx)
-u32 NNS_SndArcPlayerStartSeqArc(u32 handle, u32 arcNo, u32 idx)
+u32 NNS_SndArcPlayerStartSeqArc(void *handle, u32 arcNo, u32 idx)
 {
-    SeqRec *rec = (SeqRec *)NNS_SndArcGetSeqArcInfo(arcNo);
+    SeqArcRec *rec = NNS_SndArcGetSeqArcInfo(arcNo);
     u8 *data;
     SeqRec *info;
     if (rec == 0) {
         return 0;
     }
-    data = (u8 *)NNS_SndArcGetFileAddress(rec->fileId);
+    data = GetFileAddress(rec->fileId);
     if (data == 0) {
         return 0;
     }
-    info = (SeqRec *)NNSi_SndSeqArcGetSeqInfo(data, idx);
+    info = NNSi_SndSeqArcGetSeqInfo(data, idx);
     if (info == 0) {
         return 0;
     }
@@ -618,19 +486,19 @@ u32 NNS_SndArcPlayerStartSeqArc(u32 handle, u32 arcNo, u32 idx)
 }
 
 // NNS_SndArcPlayerStartSeqArcEx(handle, player, bank, prio, seqArc, idx)
-u32 NNS_SndArcPlayerStartSeqArcEx(u32 handle, s32 player, s32 bank, s32 prio, u32 arcNo, u32 idx)
+u32 NNS_SndArcPlayerStartSeqArcEx(void *handle, s32 player, s32 bank, s32 prio, u32 arcNo, u32 idx)
 {
-    SeqRec *rec = (SeqRec *)NNS_SndArcGetSeqArcInfo(arcNo);
+    SeqArcRec *rec = NNS_SndArcGetSeqArcInfo(arcNo);
     u8 *data;
     SeqRec *info;
     if (rec == 0) {
         return 0;
     }
-    data = (u8 *)NNS_SndArcGetFileAddress(rec->fileId);
+    data = GetFileAddress(rec->fileId);
     if (data == 0) {
         return 0;
     }
-    info = (SeqRec *)NNSi_SndSeqArcGetSeqInfo(data, idx);
+    info = NNSi_SndSeqArcGetSeqInfo(data, idx);
     if (info == 0) {
         return 0;
     }
@@ -647,22 +515,22 @@ u32 NNS_SndArcPlayerStartSeqArcEx(u32 handle, s32 player, s32 bank, s32 prio, u3
 }
 
 // NNSi_SndArcPlayerStartSeq-like (start sequence from a sequence file)
-u32 StartSeq(u32 handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u32 seqNo)
+u32 StartSeq(void *handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u32 seqNo)
 {
     void *seq;
     void *heap;
     u8 *seqData;
-    u32 bankData;
+    void *bankData;
     seq = NNSi_SndPlayerAllocSeqPlayer(handle, player, prio);
     if (seq == 0) {
         return 0;
     }
-    heap = (void *)NNSi_SndPlayerAllocHeap(player, seq);
+    heap = NNSi_SndPlayerAllocHeap(player, seq);
     if (NNSi_SndArcLoadBank(bank, 6, heap, 0, &bankData) != 0) {
         NNSi_SndPlayerFreeSeqPlayer(seq);
         return 0;
     }
-    if (NNSi_SndArcLoadSeq(seqNo, 1, heap, 0, &seqData) != 0) {
+    if (NNSi_SndArcLoadSeq(seqNo, 1, heap, 0, (void **)&seqData) != 0) {
         NNSi_SndPlayerFreeSeqPlayer(seq);
         return 0;
     }
@@ -674,16 +542,16 @@ u32 StartSeq(u32 handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u32 seqNo)
 }
 
 // NNSi_SndArcPlayerStartSeqArc-like (start sequence from sequence archive)
-u32 StartSeqArc(u32 handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u8 *data, u32 arcNo, u32 idx)
+u32 StartSeqArc(void *handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u8 *data, u32 arcNo, u32 idx)
 {
     void *seq;
     void *heap;
-    u32 bankData;
+    void *bankData;
     seq = NNSi_SndPlayerAllocSeqPlayer(handle, player, prio);
     if (seq == 0) {
         return 0;
     }
-    heap = (void *)NNSi_SndPlayerAllocHeap(player, seq);
+    heap = NNSi_SndPlayerAllocHeap(player, seq);
     if (NNSi_SndArcLoadBank(bank, 6, heap, 0, &bankData) != 0) {
         NNSi_SndPlayerFreeSeqPlayer(seq);
         return 0;
@@ -696,33 +564,33 @@ u32 StartSeqArc(u32 handle, s32 player, s32 bank, s32 prio, SeqRec *rec, u8 *dat
 }
 
 // NNS_SndArcLoadGroup(group, heap): TRUE on success
-BOOL NNS_SndArcLoadGroup(u32 a, u32 b)
+BOOL NNS_SndArcLoadGroup(u32 a, void *heap)
 {
-    return NNSi_SndArcLoadGroup(a, b) == 0;
+    return NNSi_SndArcLoadGroup(a, heap) == 0;
 }
 
 // NNS_SndArcLoadSeqArc(id, heap): TRUE on success
-BOOL NNS_SndArcLoadSeqArc(u32 id, u32 heap)
+BOOL NNS_SndArcLoadSeqArc(u32 id, void *heap)
 {
     return NNSi_SndArcLoadSeqArc(id, 255, heap, 1, 0) == 0;
 }
 
 // NNS_SndArcLoadBank(id, heap): TRUE on success
-BOOL NNS_SndArcLoadBank(u32 id, u32 heap)
+BOOL NNS_SndArcLoadBank(u32 id, void *heap)
 {
     return NNSi_SndArcLoadBank(id, 255, heap, 1, 0) == 0;
 }
 
 // NNS_SndArcLoadWaveArc(id, heap): TRUE on success
-BOOL NNS_SndArcLoadWaveArc(u32 id, u32 heap)
+BOOL NNS_SndArcLoadWaveArc(u32 id, void *heap)
 {
     return NNSi_SndArcLoadWaveArc(id, 255, heap, 1, 0) == 0;
 }
 
 // NNSi_SndArcLoadGroup-like: load every entry of a group
-u32 NNSi_SndArcLoadGroup(u32 grp, u32 heap)
+u32 NNSi_SndArcLoadGroup(u32 grp, void *heap)
 {
-    GrpRec *g = (GrpRec *)NNS_SndArcGetGroupInfo(grp);
+    GrpRec *g = NNS_SndArcGetGroupInfo(grp);
     u32 i;
     GrpEnt *e;
     u32 r;
@@ -762,11 +630,11 @@ u32 NNSi_SndArcLoadGroup(u32 grp, u32 heap)
 }
 
 // NNS_SndArcLoadSeq-like (internal; loads its bank first)
-u32 NNSi_SndArcLoadSeq(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
+u32 NNSi_SndArcLoadSeq(u32 id, u32 flags, void *heap, u32 flag, void **out)
 {
-    SeqRec *rec = (SeqRec *)NNS_SndArcGetSeqInfo(id);
+    SeqRec *rec = NNS_SndArcGetSeqInfo(id);
     u32 r;
-    u32 p;
+    void *p;
     if (rec == 0) {
         return 2;
     }
@@ -780,7 +648,7 @@ u32 NNSi_SndArcLoadSeq(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
             return 6;
         }
     } else {
-        p = NNS_SndArcGetFileAddress(rec->fileId);
+        p = GetFileAddress(rec->fileId);
     }
     if (out != 0) {
         *out = p;
@@ -789,20 +657,20 @@ u32 NNSi_SndArcLoadSeq(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
 }
 
 // NNS_SndArcLoadSeqArc-like (internal)
-u32 NNSi_SndArcLoadSeqArc(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
+u32 NNSi_SndArcLoadSeqArc(u32 id, u32 flags, void *heap, u32 flag, void **out)
 {
-    u32 *rec = (u32 *)NNS_SndArcGetSeqArcInfo(id);
-    u32 p;
+    SeqArcRec *rec = NNS_SndArcGetSeqArcInfo(id);
+    void *p;
     if (rec == 0) {
         return 3;
     }
     if (flags & 8) {
-        p = LoadSeqArc(rec[0], heap, flag);
+        p = LoadSeqArc(rec->fileId, heap, flag);
         if (p == 0) {
             return 7;
         }
     } else {
-        p = NNS_SndArcGetFileAddress(rec[0]);
+        p = GetFileAddress(rec->fileId);
     }
     if (out != 0) {
         *out = p;
@@ -811,11 +679,11 @@ u32 NNSi_SndArcLoadSeqArc(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
 }
 
 // NNS_SndArcLoadBank-like (internal, loads wave archives as needed)
-u32 NNSi_SndArcLoadBank(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
+u32 NNSi_SndArcLoadBank(u32 id, u32 flags, void *heap, u32 flag, void **out)
 {
-    BankRec *rec = (BankRec *)NNS_SndArcGetBankInfo(id);
-    u32 bank;
-    u32 wave;
+    BankRec *rec = NNS_SndArcGetBankInfo(id);
+    void *bank;
+    void *wave;
     s32 i;
     u32 load;
     u32 r;
@@ -828,7 +696,7 @@ u32 NNSi_SndArcLoadBank(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
             return 8;
         }
     } else {
-        bank = NNS_SndArcGetFileAddress(rec->fileId);
+        bank = GetFileAddress(rec->fileId);
     }
     load = flags & 4;
     for (i = 0; i < 4; i++) {
@@ -836,7 +704,7 @@ u32 NNSi_SndArcLoadBank(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
         if (rec->wa[i] == 0xffff) {
             continue;
         }
-        w = (FileRec *)NNS_SndArcGetWaveArcInfo(rec->wa[i]);
+        w = NNS_SndArcGetWaveArcInfo(rec->wa[i]);
         if (w == 0) {
             return 5;
         }
@@ -862,10 +730,10 @@ u32 NNSi_SndArcLoadBank(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
 }
 
 // NNS_SndArcLoadWaveArc-like (internal, with load flags)
-u32 NNSi_SndArcLoadWaveArc(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
+u32 NNSi_SndArcLoadWaveArc(u32 id, u32 flags, void *heap, u32 flag, void **out)
 {
-    FileRec *rec = (FileRec *)NNS_SndArcGetWaveArcInfo(id);
-    u32 p;
+    FileRec *rec = NNS_SndArcGetWaveArcInfo(id);
+    void *p;
     if (rec == 0) {
         return 5;
     }
@@ -879,7 +747,7 @@ u32 NNSi_SndArcLoadWaveArc(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
             return 9;
         }
     } else {
-        p = NNS_SndArcGetFileAddress(rec->fileId);
+        p = GetFileAddress(rec->fileId);
     }
     if (out != 0) {
         *out = p;
@@ -888,7 +756,7 @@ u32 NNSi_SndArcLoadWaveArc(u32 id, u32 flags, u32 heap, u32 flag, u32 *out)
 }
 
 // NNSi_SndArcLoadFile-like: alloc in sound heap + read file
-u32 NNSi_SndArcLoadFile(u32 file, void *cb, u32 arg1, u32 arg2, u32 heap)
+void *NNSi_SndArcLoadFile(u32 file, SndHeapDisposeCallback cb, void *arg1, u32 arg2, void *heap)
 {
     u32 size = NNS_SndArcGetFileSize(file);
     u8 *mem;
@@ -898,7 +766,7 @@ u32 NNSi_SndArcLoadFile(u32 file, void *cb, u32 arg1, u32 arg2, u32 heap)
     if (heap == 0) {
         return 0;
     }
-    mem = (u8 *)NNS_SndHeapAlloc(heap, size + 32, cb, arg1, arg2);
+    mem = NNS_SndHeapAlloc(heap, size + 32, cb, arg1, arg2);
     if (mem == 0) {
         return 0;
     }
@@ -906,78 +774,78 @@ u32 NNSi_SndArcLoadFile(u32 file, void *cb, u32 arg1, u32 arg2, u32 heap)
         return 0;
     }
     DC_StoreRange(mem, size);
-    return (u32)mem;
+    return mem;
 }
 
 // load a whole file once (callback 0210c338)
-u32 LoadSeq(u32 file, u32 heap, u32 flag)
+void *LoadSeq(u32 file, void *heap, u32 flag)
 {
-    u32 p = NNS_SndArcGetFileAddress(file);
-    u32 arc;
+    void *p = GetFileAddress(file);
+    void *arc;
     if (p == 0) {
         arc = flag ? NNS_SndArcGetCurrent() : 0;
         p = NNSi_SndArcLoadFile(file, SeqDisposeCallback, arc, file, heap);
         if (flag != 0 && p != 0) {
-            NNS_SndArcSetFileAddress(file, p);
+            SetFileAddress(file, p);
         }
     }
     return p;
 }
 
 // load a whole file once (callback 0210c338)
-u32 LoadSeqArc(u32 file, u32 heap, u32 flag)
+void *LoadSeqArc(u32 file, void *heap, u32 flag)
 {
-    u32 p = NNS_SndArcGetFileAddress(file);
-    u32 arc;
+    void *p = GetFileAddress(file);
+    void *arc;
     if (p == 0) {
         arc = flag ? NNS_SndArcGetCurrent() : 0;
         p = NNSi_SndArcLoadFile(file, SeqDisposeCallback, arc, file, heap);
         if (flag != 0 && p != 0) {
-            NNS_SndArcSetFileAddress(file, p);
+            SetFileAddress(file, p);
         }
     }
     return p;
 }
 
 // load a whole file once (callback 0210c2fc)
-u32 LoadBank(u32 file, u32 heap, u32 flag)
+void *LoadBank(u32 file, void *heap, u32 flag)
 {
-    u32 p = NNS_SndArcGetFileAddress(file);
-    u32 arc;
+    void *p = GetFileAddress(file);
+    void *arc;
     if (p == 0) {
         arc = flag ? NNS_SndArcGetCurrent() : 0;
         p = NNSi_SndArcLoadFile(file, BankDisposeCallback, arc, file, heap);
         if (flag != 0 && p != 0) {
-            NNS_SndArcSetFileAddress(file, p);
+            SetFileAddress(file, p);
         }
     }
     return p;
 }
 
 // load a whole file once (callback 0210c2c0)
-u32 LoadWaveArc(u32 file, u32 heap, u32 flag)
+void *LoadWaveArc(u32 file, void *heap, u32 flag)
 {
-    u32 p = NNS_SndArcGetFileAddress(file);
-    u32 arc;
+    void *p = GetFileAddress(file);
+    void *arc;
     if (p == 0) {
         arc = flag ? NNS_SndArcGetCurrent() : 0;
         p = NNSi_SndArcLoadFile(file, WaveArcDisposeCallback, arc, file, heap);
         if (flag != 0 && p != 0) {
-            NNS_SndArcSetFileAddress(file, p);
+            SetFileAddress(file, p);
         }
     }
     return p;
 }
 
 // NNSi_SndArcLoadWaveArcHeader-like (0x3c byte header + offset table)
-u32 LoadWaveArcTable(u32 file, u32 heap, u32 flag)
+void *LoadWaveArcTable(u32 file, void *heap, u32 flag)
 {
     u8 *p;
     u32 size;
     u32 n;
-    u32 arc;
+    void *arc;
     u32 r;
-    p = (u8 *)NNS_SndArcGetFileAddress(file);
+    p = GetFileAddress(file);
     if (p == 0) {
         if (NNS_SndArcReadFile(file, data_021fbd6c, 0x3c, 0) != 0x3c) {
             return 0;
@@ -988,7 +856,7 @@ u32 LoadWaveArcTable(u32 file, u32 heap, u32 flag)
             return 0;
         }
         arc = flag ? NNS_SndArcGetCurrent() : 0;
-        p = (u8 *)NNS_SndHeapAlloc(heap, size + 32, WaveArcTableDisposeCallback, arc, file);
+        p = NNS_SndHeapAlloc(heap, size + 32, WaveArcTableDisposeCallback, arc, file);
         if (p == 0) {
             return 0;
         }
@@ -1000,70 +868,70 @@ u32 LoadWaveArcTable(u32 file, u32 heap, u32 flag)
         MI_CpuFill8(p + 0x3c, 0, n);
         DC_StoreRange(p, size);
         if (flag != 0) {
-            NNS_SndArcSetFileAddress(file, p);
+            SetFileAddress(file, p);
         }
     }
-    return (u32)p;
+    return p;
 }
 
 // clear the loaded-data pointer of file idx in arc if it equals mem (irq-safe)
-void DisposeCallback(u32 mem, u32 arc, u32 idx)
+void DisposeCallback(void *mem, void *arc, u32 idx)
 {
-    u32 old;
+    void *old;
     u32 irq;
     if (arc == 0) {
         return;
     }
     irq = OS_DisableInterrupts();
     old = NNS_SndArcSetCurrent(arc);
-    if (mem == NNS_SndArcGetFileAddress(idx)) {
-        NNS_SndArcSetFileAddress(idx, 0);
+    if (mem == GetFileAddress(idx)) {
+        SetFileAddress(idx, 0);
     }
     NNS_SndArcSetCurrent(old);
     OS_RestoreInterrupts(irq);
 }
 
 // heap-free callback: wave archive data (invalidate 211682c)
-void SeqDisposeCallback(u32 mem, u32 size, u32 arc, u32 idx)
+void SeqDisposeCallback(void *mem, u32 size, void *arc, u32 idx)
 {
     DisposeCallback(mem, arc, idx);
-    SND_InvalidateSeqData(mem, mem + size);
+    SND_InvalidateSeqData(SndAddr(mem), SndAddr((u8 *)mem + size));
 }
 
 // heap-free callback: bank data (invalidate 2116800)
-void BankDisposeCallback(u32 mem, u32 size, u32 arc, u32 idx)
+void BankDisposeCallback(void *mem, u32 size, void *arc, u32 idx)
 {
     DisposeCallback(mem, arc, idx);
-    SND_InvalidateBankData(mem, mem + size);
+    SND_InvalidateBankData(SndAddr(mem), SndAddr((u8 *)mem + size));
     SND_DestroyBank(mem);
 }
 
 // heap-free callback: sequence data (invalidate 21167d4)
-void WaveArcDisposeCallback(u32 mem, u32 size, u32 arc, u32 idx)
+void WaveArcDisposeCallback(void *mem, u32 size, void *arc, u32 idx)
 {
     DisposeCallback(mem, arc, idx);
-    SND_InvalidateWaveData(mem, mem + size);
+    SND_InvalidateWaveData(SndAddr(mem), SndAddr((u8 *)mem + size));
     SND_DestroyWaveArc(mem);
 }
 
 // heap-free callback: wave archive header
-void WaveArcTableDisposeCallback(u32 mem, u32 size, u32 arc, u32 idx)
+void WaveArcTableDisposeCallback(void *mem, u32 size, void *arc, u32 idx)
 {
     DisposeCallback(mem, arc, idx);
     SND_DestroyWaveArc(mem);
 }
 
 // heap-free callback: unlink a loaded wave, then invalidate (21167d4)
-void SingleWaveDisposeCallback(u32 mem, u32 size, u32 base, u32 idx)
+void SingleWaveDisposeCallback(void *mem, u32 size, void *waveArc, u32 idx)
 {
-    if (mem == (u32)SND_GetWaveDataAddress(base, idx)) {
-        SND_SetWaveDataAddress(base, idx, 0);
+    if (mem == SND_GetWaveDataAddress(waveArc, idx)) {
+        SND_SetWaveDataAddress(waveArc, idx, 0);
     }
-    SND_InvalidateWaveData(mem, mem + size);
+    SND_InvalidateWaveData(SndAddr(mem), SndAddr((u8 *)mem + size));
 }
 
 // NNSi_SndArcLoadWave-like: read one wave of a wave archive into the heap and link it
-u32 LoadSingleWave(u8 *wa, u32 idx, u32 file, u32 heap)
+u32 LoadSingleWave(u8 *wa, u32 idx, u32 file, void *heap)
 {
     u32 size;
     u32 start;
@@ -1082,7 +950,7 @@ u32 LoadSingleWave(u8 *wa, u32 idx, u32 file, u32 heap)
     if (heap == 0) {
         return 0;
     }
-    mem = (u8 *)NNS_SndHeapAlloc(heap, size + 32, SingleWaveDisposeCallback, wa, idx);
+    mem = NNS_SndHeapAlloc(heap, size + 32, SingleWaveDisposeCallback, wa, idx);
     if (mem == 0) {
         return 0;
     }
@@ -1090,21 +958,22 @@ u32 LoadSingleWave(u8 *wa, u32 idx, u32 file, u32 heap)
         return 0;
     }
     DC_StoreRange(mem, size);
-    SND_SetWaveDataAddress(wa, idx, mem);
+    SND_SetWaveDataAddress(wa, idx, SndAddr(mem));
     return 1;
 }
 
 // NNSi_SndArcLoadWavesOfBank-like: load every wave a bank instrument uses from its wave archive (individual wave loading)
-u32 LoadSingleWaves(u32 wa, u32 bank, u32 arcNo, u32 file, u32 heap)
+u32 LoadSingleWaves(void *wa, void *bank, u32 arcNo, u32 file, void *heap)
 {
-    Pair pos = SND_GetFirstInstDataPos(bank);
+    Pair pos;
     InstOut inst;
+    SND_GetFirstInstDataPos(&pos);
     if (bank == 0) {
         return 0;
     }
-    while (SND_GetNextInstData(bank, &inst, &pos)) {
+    while (SND_GetNextInstData(bank, &inst, &pos.a)) {
         if (inst.type == 1 && arcNo == inst.h2) {
-            if (LoadSingleWave((u8 *)wa, inst.h1, file, heap) == 0) {
+            if (LoadSingleWave(wa, inst.h1, file, heap) == 0) {
                 return 0;
             }
         }

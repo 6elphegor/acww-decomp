@@ -6614,7 +6614,7 @@ extern "C" void Villager_HideFurniture(VillagerDataFurnitureView *p, s32 n) {
 namespace nI {
 extern "C" void Villager_ClearTalkedToday(u8 *p) {
     s32 i;
-    for (i = 0; i < 8; p += 0x68, i++) ((VillagerMemory *)(p))->clearTalkedToday();
+    for (i = 0; i < 8; p += sizeof(VillagerMemory), i++) ((VillagerMemory *)(p))->clearTalkedToday();
 }
 }
 
@@ -6856,7 +6856,7 @@ namespace nH {
 extern "C" void SaveVillagers_Clear(u8 *self) {
     s32 i;
     for (i = 0; i < 8; i++) {
-        ((VillagerData *)(self + i * 0x700))->clear();
+        ((VillagerData *)(self + i * sizeof(VillagerData)))->clear();
     }
     VillagerRelations_Clear(self + 0x3800);
     OutdoorSchedule_Clear(self + 0x381c);
@@ -6891,7 +6891,7 @@ extern "C" s32 SaveVillagers_FindIndex(u8 *base, VillagerId *p) {
     if (p->isValid()) {
         s32 i;
         for (i = 0; i < 8; i++) {
-            VillagerId *q = ((VillagerData *)(base + i * 0x700))->getVillagerId();
+            VillagerId *q = ((VillagerData *)(base + i * sizeof(VillagerData)))->getVillagerId();
             if (p->townId == q->townId && memcmp(p->townName, q->townName, 8) == 0 && p->species == q->species) {
                 result = i;
                 break;
@@ -6906,7 +6906,7 @@ namespace nH {
 extern "C" BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx) {
     BOOL r = FALSE;
     if (SaveVillagers_IsValidIndex(idx)) {
-        r = ((VillagerId *)(((VillagerData *)(base + idx * 0x700))->getVillagerId()))->isValid();
+        r = ((VillagerId *)(((VillagerData *)(base + idx * sizeof(VillagerData)))->getVillagerId()))->isValid();
     }
     return r;
 }
@@ -6916,7 +6916,7 @@ namespace nH {
 extern "C" u8 *SaveVillagers_Get(u8 *base, s32 idx) {
     u8 *r = NULL;
     if (SaveVillagers_IsValidIndex(idx)) {
-        r = base + idx * 0x700;
+        r = base + idx * sizeof(VillagerData);
     }
     return r;
 }
@@ -6927,7 +6927,7 @@ extern "C" u8 *SaveVillagers_Find(u8 *base, u16 *x) {
     u8 *r = NULL;
     s32 idx = SaveVillagers_FindIndex(base, (VillagerId *)x);
     if (SaveVillagers_IsValidIndex(idx)) {
-        r = base + idx * 0x700;
+        r = base + idx * sizeof(VillagerData);
     }
     return r;
 }
@@ -6984,7 +6984,7 @@ extern "C" u8 *SaveVillagers_FindByName(u8 *base, u8 *a1, s32 a2, void *a3) {
                     }
                 }
             }
-            p += 0x700;
+            p += sizeof(VillagerData);
         }
     }
     return result;
@@ -7045,7 +7045,7 @@ extern "C" void *SaveVillagers_PickRandomExcept(u8 *base, void **arr, s32 n) {
         for (i = 0; i < 8; i++) {
             if (flags[i] == 1) {
                 if (k == 0) {
-                    result = base + i * 0x700;
+                    result = base + i * sizeof(VillagerData);
                     break;
                 }
                 k--;
@@ -7103,7 +7103,7 @@ extern "C" void *SaveVillagers_PickRandomTalkPartner(u8 *base, void **arr, s32 n
             m2 |= 1 << i;
             cnt++;
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
     return SaveVillagers_Get(base, Random_PickSetBit(m2, cnt, 8));
 }
@@ -7134,7 +7134,7 @@ extern "C" void *SaveVillagers_FindBestFriendOf(u8 *base, void *x) {
                     }
                 }
             }
-            p += 0x700;
+            p += sizeof(VillagerData);
         }
     }
     if (best == NULL) {
@@ -7152,7 +7152,7 @@ extern "C" s32 SaveVillagers_CountImpl(u8 *base) {
         if (((VillagerId *)(((VillagerData *)(base))->getVillagerId()))->isValid()) {
             cnt++;
         }
-        base += 0x700;
+        base += sizeof(VillagerData);
     }
     return cnt;
 }
@@ -7682,7 +7682,7 @@ extern "C" s32 SaveVillagers_PickMoveOutCandidate(u8 *self) {
             mask = (u8)mask;
             cnt++;
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
     return Random_PickSetBit(mask, cnt, 8);
 }
@@ -7693,7 +7693,7 @@ extern "C" void SaveVillagers_TryStartMoveOut(u8 *self, u8 *x) {
     if (SaveVillagers_ShouldStartMoveOut(self, x)) {
         s32 r = SaveVillagers_PickMoveOutCandidate(self);
         if (r != -1) {
-            Villager_StartMovingOut(self + r * 0x700, x);
+            Villager_StartMovingOut(self + r * sizeof(VillagerData), x);
         }
     }
 }
@@ -7711,7 +7711,7 @@ extern "C" void SaveVillagers_UpdatePlanStates(u8 *self, ClockDateTime *x) {
                 PlanErrand_Clear(VillagerPlanBlock_GetErrand(Villager_GetPlan(p)));
             }
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
         i++;
     } while (i < 8);
 }
@@ -7730,7 +7730,7 @@ extern "C" void SaveVillagers_RefreshPlanStates(u8 *self) {
                 Villager_PickRoomLayout((VillagerData *)p, r1, r7);
             }
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
         i++;
     } while (i < 8);
 }
@@ -7750,7 +7750,7 @@ extern "C" void SaveVillagers_UpdatePlansNow(u8 *self) {
             if (((VillagerData *)(void *)(p))->getVillagerId()->isValid()) {
                 Villager_UpdatePlan(p, pb);
             }
-            p += 0x700;
+            p += sizeof(VillagerData);
         }
     }
 }
@@ -7796,7 +7796,7 @@ extern "C" void SaveVillagers_DailyFurnitureUpdate(u8 *self) {
         u8 *p = self;
         for (s32 i = 0; i < 8; i++) {
             Villager_DropRandomFurniture(p);
-            p += 0x700;
+            p += sizeof(VillagerData);
         }
         Clock_GetDate(self + 0x38ee);
     }
@@ -7891,7 +7891,7 @@ extern "C" void SaveVillagers_PlaceMissingHouses(u8 *self) {
                         break;
                     }
                 }
-                p += 0x700;
+                p += sizeof(VillagerData);
             }
         }
     }
@@ -8078,7 +8078,7 @@ extern "C" BOOL SaveVillagers_ShouldAssignErrands(u8 *self) {
                 c4++;
             }
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
         i++;
     } while (i < 8);
     if (n >= c4 && ((n - c4) >> 1) < c5) {
@@ -8118,7 +8118,7 @@ extern "C" void SaveVillagers_AssignErrands(void *bb) {
             }
         }
         for (i = 0; i < 8; i++) {
-            u8 *p = b + i * 0x700;
+            u8 *p = b + i * sizeof(VillagerData);
             if (((VillagerId *)((VillagerData *)(p))->getVillagerId())->isValid() && Villager_GetResidentStatus((VillagerData *)p) == 3 && i != self) {
                 u32 t = Villager_GetErrandKind(b, p, a);
                 if (t < 0x16) {
@@ -8141,7 +8141,7 @@ extern "C" void SaveVillagers_AssignErrands(void *bb) {
             u8 *p2;
             u8 *flag = &sErrandVillagerDone[i];
             if (*flag == 0) {
-                p2 = b + i * 0x700;
+                p2 = b + i * sizeof(VillagerData);
                 s32 e = VillagerPlanBlock_GetPlan(Villager_GetPlan(p2));
                 if (((VillagerPlan *)(void *)(e))->hasTrend()) {
                     if (((VillagerPlan *)(void *)(e))->getStateGroup() == 0) {
@@ -8167,7 +8167,7 @@ extern "C" void SaveVillagers_AssignErrands(void *bb) {
                 f = &sErrandVillagerDone[j];
                 if (*f == 0) {
                     if (k == 0) {
-                        x = VillagerState_GetErrand(Villager_GetState(b + j * 0x700));
+                        x = VillagerState_GetErrand(Villager_GetState(b + j * sizeof(VillagerData)));
                         k2 = Random_GlobalBelow(r5);
                         for (m = 0; m < 17; m++) {
                             g = &sErrandKindTaken[m];
@@ -8253,7 +8253,7 @@ extern "C" void SaveVillagers_DailyVillagerUpdate(u8 *p, s32 q) {
             }
             Villager_PlaceReceivedItems(p);
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
 }
 }
@@ -8298,7 +8298,7 @@ extern "C" s32 SaveVillagers_PickSickVillager(void *pp, u32 idx) {
                 }
             }
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
     s32 r4 = Random_PickSetBit(mask, cnt, 8);
     void *v = SaveVillagers_Get(b, r4);
@@ -8440,7 +8440,7 @@ extern "C" void SaveVillagers_PickGreeter(u8 *base) {
                 cnt++;
             }
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
     s32 r = Random_PickSetBit(mask, cnt, 8);
     if (r != -1) {
@@ -8463,7 +8463,7 @@ extern "C" void SaveVillagers_PickGreeter(u8 *base) {
                     }
                 }
             }
-            p2 += 0x700;
+            p2 += sizeof(VillagerData);
         }
         r = Random_PickSetBit(m2, c2, 8);
         if (r != -1) res = (u8)r;
@@ -8536,7 +8536,7 @@ extern "C" void SaveVillagers_InitTalkUrges(u8 *p, void *q) {
         if (((VillagerId *)((VillagerData *)(p))->getVillagerId())->isValid()) {
             Villager_InitTalkUrge(p, q);
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
 }
 }
@@ -8549,7 +8549,7 @@ extern "C" void SaveVillagers_DoubleTalkUrges(u8 *p) {
             if (((VillagerId *)((VillagerData *)(p))->getVillagerId())->isValid()) {
                 Villager_DoubleTalkUrge(p);
             }
-            p += 0x700;
+            p += sizeof(VillagerData);
         }
     }
 }
@@ -8560,7 +8560,7 @@ extern "C" void SaveVillagers_ApplyBadFortune(void *self0) {
     u8 *self = (u8 *)self0;
     if (gCommManager->isSlotActive(gCommManager->myAid) == 0) {
         s32 i;
-        for (i = 0; i < 8; self += 0x700, i++) {
+        for (i = 0; i < 8; self += sizeof(VillagerData), i++) {
             if (((VillagerId *)(((VillagerData *)(self))->getVillagerId()))->isValid() != 0) {
                 Villager_HalveTalkUrge(self);
             }
@@ -8577,7 +8577,7 @@ extern "C" void SaveVillagers_GiveFortuneGreeting(void *self0, void *p) {
         u8 mask = 0;
         s32 cnt = 0;
         s32 i;
-        for (i = 0; i < 8; s += 0x700, i++) {
+        for (i = 0; i < 8; s += sizeof(VillagerData), i++) {
             if (((VillagerId *)(((VillagerData *)(s))->getVillagerId()))->isValid() != 0) {
                 if (VillagerState_GetPresence(Villager_GetState(s)) == 0) {
                     if (Villager_FindMemory(s, p) != 0) {
@@ -8592,7 +8592,7 @@ extern "C" void SaveVillagers_GiveFortuneGreeting(void *self0, void *p) {
             mask = 0;
             cnt = 0;
             s = self;
-            for (i = 0; i < 8; s += 0x700, i++) {
+            for (i = 0; i < 8; s += sizeof(VillagerData), i++) {
                 if (((VillagerId *)(((VillagerData *)(s))->getVillagerId()))->isValid() != 0) {
                     if (Villager_GetResidentStatus((VillagerData *)s) == 3) {
                         if (i != SaveVillagers_GetUnk3830Index(self)) {
@@ -8642,7 +8642,7 @@ extern "C" void SaveVillagers_UpdateRoomInfo(void *self, s32 idx) {
             if (((VillagerId *)(((VillagerData *)(o))->getVillagerId()))->isValid() != 0) {
                 VillagerState *r5 = (VillagerState *)Villager_GetState(o);
                 if (r5 != NULL) {
-                    u32 x[4];
+                    u32 x[5];  // a RoomScoreEvaluator (0x14 bytes: its wallpaper / carpet at 0x10 overwrote the saved registers)
                     RoomScoreEvaluator_Construct(x);
                     h = 0;
                     r5->roomScore = HappyRoom_EvaluateVillagerRoom(x, idx, &h, &v5, &z1, &z2);
@@ -8668,7 +8668,7 @@ namespace nD {
 extern "C" void SaveVillagers_ResetMoods(u8 *self) {
     s32 i;
     for (i = 0; i < 8; i++) {
-        u8 *s = self + i * 0x700;
+        u8 *s = self + i * sizeof(VillagerData);
         if (((VillagerId *)(((VillagerData *)(s))->getVillagerId()))->isValid() != 0) {
             VillagerState_SetMood(Villager_GetState(s), 0);
             VillagerState_SetMoodTimer(Villager_GetState(s), 0);
@@ -8684,7 +8684,7 @@ extern "C" void SaveVillagers_UpdateBirthdayNotices(u8 *self) {
     buf[1] = 0;
     Clock_GetDateTime(buf);
     s32 i = 0;
-    for (; i < 8; self += 0x700, i++) {
+    for (; i < 8; self += sizeof(VillagerData), i++) {
         void *o = ((VillagerData *)(self))->getVillagerId();
         if (((VillagerId *)(o))->isValid() != 0) {
             if (Villager_GetResidentStatus((VillagerData *)self) == 3) {
@@ -8725,7 +8725,7 @@ extern "C" s32 SaveVillagers_PickBirthdayGuest(void *self0, s32 x) {
     u8 mask;
     mask = 0;
     cnt = 0;
-    for (i = 0; i < 8; s += 0x700, i++) {
+    for (i = 0; i < 8; s += sizeof(VillagerData), i++) {
         if (i != x && Villager_CanAttendParty((VillagerData *)s) != 0) {
             s32 v = VillagerRelations_GetScore(self + 0x3800, x, i);
             if (v > best) {
@@ -8753,7 +8753,7 @@ extern "C" s32 SaveVillagers_FindBirthdayVillager(void *self0, void *p0) {
         MI_CpuCopy8(p, &b, 8);
         s32 n = EventSchedule_CollectDayAll(out, &b);
         u32 i;
-        for (i = 0; (s32)i < 8; self += 0x700, i++) {
+        for (i = 0; (s32)i < 8; self += sizeof(VillagerData), i++) {
             if (((VillagerId *)(((VillagerData *)(self))->getVillagerId()))->isValid() != 0) {
                 if (Villager_GetResidentStatus((VillagerData *)self) == 3) {
                     u8 *e = out;
@@ -8804,7 +8804,7 @@ extern "C" void SaveVillagers_ApplyBirthdayParty(u8 *self) {
     s32 w = VillagerStates_GetBirthdayGuest();
     u8 *s = self;
     s32 i;
-    for (i = 0; i < 8; s += 0x700, i++) {
+    for (i = 0; i < 8; s += sizeof(VillagerData), i++) {
         if (((VillagerId *)(((VillagerData *)(s))->getVillagerId()))->isValid() != 0) {
             if (VillagerState_GetRole(Villager_GetState(s)) == 3) {
                 VillagerState_ResetRole(Villager_GetState(s));
@@ -8843,7 +8843,7 @@ extern "C" s32 SaveVillagers_PickFleaMarketBuyer(void *self0) {
         u8 mask = 0;
         s32 cnt = 0;
         s32 i;
-        for (i = 0; i < 8; self += 0x700, i++) {
+        for (i = 0; i < 8; self += sizeof(VillagerData), i++) {
             if (((VillagerId *)(((VillagerData *)(self))->getVillagerId()))->isValid() != 0) {
                 if (Villager_FindMemory(self, p) != 0) {
                     if (((VillagerMemory *)(void *)((void *)Villager_FindMemory(self, p)))->isFleaMarketVisited() == 0) {
@@ -8876,7 +8876,7 @@ extern "C" s32 SaveVillagers_FindBestFriendIndexOf(void *self0, void *p) {
         u8 mask;
         mask = 0;
         cnt = 0;
-        for (i = 0; i < 8; self += 0x700, i++) {
+        for (i = 0; i < 8; self += sizeof(VillagerData), i++) {
             if (((VillagerId *)(((VillagerData *)(self))->getVillagerId()))->isValid() != 0) {
                 if (Villager_GetResidentStatus((VillagerData *)self) == 3) {
                     void *o = (void *)Villager_FindMemory(self, p);
@@ -8972,7 +8972,7 @@ extern "C" BOOL SaveVillagers_AllKnowPlayer(u8 *self, void *p) {
     if (((PlayerId *)(p))->isValid() != 0) {
         u8 *s = (u8 *)SaveVillagers_Get(self, 0);
         u32 i;
-        for (i = 0; (s32)i < 8; s += 0x700, i++) {
+        for (i = 0; (s32)i < 8; s += sizeof(VillagerData), i++) {
             if (((VillagerId *)(((VillagerData *)(s))->getVillagerId()))->isValid() != 0) {
                 if (Villager_FindMemory(s, p) == 0) {
                     return FALSE;
@@ -9060,7 +9060,7 @@ extern "C" void SaveVillagers_ClearTalkedToday(u8 *p) {
         if (((VillagerId *)(void *)(((VillagerData *)(void *)(p))->getVillagerId()))->isValid()) {
             Villager_ClearTalkedToday(p);
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
 }
 }
@@ -9107,7 +9107,7 @@ extern "C" void SaveVillagers_PickFleaVillager(u8 *p, PlayerId *a1) {
                     mask = (u8)mask;
                     n++;
                 }
-                p += 0x700;
+                p += sizeof(VillagerData);
             }
             while (n > 0) {
                 r = Random_GlobalBelow(n);
@@ -9281,7 +9281,7 @@ extern "C" void OutdoorSchedule_InitOrder(s8 *out, u8 *p) {
         } else {
             out[i] = m1;
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
     }
 }
 }
@@ -9331,7 +9331,7 @@ extern "C" void OutdoorSchedule_PickRandom(OutdoorSchedule *self, s8 *out, s32 *
     for (i = 0; i < 8; q1++, i++) {
         v = *q1;
         if (SaveVillagers_IsValidIndex(v) && v != id) {
-            v = v * 0x700;
+            v = v * sizeof(VillagerData);
             if (Villager_CanGoOutdoors(players + v)) {
                 mask |= 1 << i;
                 mask = (u8)mask;
@@ -9418,7 +9418,7 @@ extern "C" void OutdoorSchedule_AddBirthdayVisitor(OutdoorSchedule *self, s8 *ou
         for (; i < 8; list++, i++) {
             v = *list;
             if (SaveVillagers_IsValidIndex(v) && v == id) {
-                if (((VillagerId *)(void *)(((VillagerData *)(void *)(players + v * 0x700))->getVillagerId()))->isValid()) {
+                if (((VillagerId *)(void *)(((VillagerData *)(void *)(players + v * sizeof(VillagerData)))->getVillagerId()))->isValid()) {
                     out[*cnt] = v;
                     *cnt = *cnt + 1;
                 }
@@ -9462,7 +9462,7 @@ extern "C" void OutdoorSchedule_ApplySleep(OutdoorSchedule *self, u8 *p, void *x
             VillagerState_SetPresence(s, 3);
             VillagerState_SetRole(s, 7);
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
         s++;
     }
 }
@@ -9516,7 +9516,7 @@ extern "C" void OutdoorSchedule_Apply(OutdoorSchedule *self, u8 *p) {
             VillagerState_SetPresence(s, 3);
             VillagerState_SetRole(s, 7);
         }
-        p += 0x700;
+        p += sizeof(VillagerData);
         s++;
     }
 }
@@ -10335,7 +10335,7 @@ extern "C" void SaveVillagers_OnNewDay(u8 *a, s32 b) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
-    for (i = 0; i < 8; a += 0x700, i++) {
+    for (i = 0; i < 8; a += sizeof(VillagerData), i++) {
         if (((VillagerId *)(((VillagerData *)(a))->getVillagerId()))->isValid()) {
             s32 j;
             u8 *e;
@@ -10343,7 +10343,7 @@ extern "C" void SaveVillagers_OnNewDay(u8 *a, s32 b) {
                 Villager_PickShownFurniture(a);
             }
             e = (u8 *)Villager_GetMemory(a, z1);
-            for (j = z2; j < 8; e += 0x68, j++) {
+            for (j = z2; j < 8; e += sizeof(VillagerMemory), j++) {
                 if (VillagerMemory_IsUsed(e)) {
                     ((VillagerMemory *)(e))->clearTalkedToday();
                     ((VillagerMemory *)(e))->clearPartyGiftReceived();

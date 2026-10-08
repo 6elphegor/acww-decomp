@@ -592,7 +592,7 @@ void NearbyTownsMenu::flushBgScreen() {
 
 void NearbyTownsMenu::scanTowns() {
     s32 cnt;
-    void **list;
+    void **list;  // the beacons (Net_GetScanResults)
     s32 n2;
     s32 z[3];
     NearbyTownBeaconInfo buf;

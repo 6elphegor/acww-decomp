@@ -1,6 +1,9 @@
 #include "uptr.h"
 #include "types.h"
 #include "save/SaveData.h"
+#include "save/VillagerData.h"
+#include "player/PlayerData.h"
+#include "item/BottleLetterRecord.h"
 #include "game/NookShop.h"
 #include "game/ReddShop.h"
 #include "item/LetterOutbox.h"
@@ -46,6 +49,11 @@ u8 *SaveVillagers_Construct(u8 *self);
 void *AbleShop_Construct(void *p);
 }
 
+static_assert(sizeof(((SaveData *)0)->players) == 4 * sizeof(PlayerData), "SaveData::players: PlayerData[4]");
+static_assert(sizeof(((SaveData *)0)->villagers) == sizeof(SaveVillagers), "SaveData::villagers: SaveVillagers");
+static_assert(sizeof(((SaveData *)0)->mailboxes[0]) == sizeof(PlayerMailbox), "SaveData::mailboxes: PlayerMailbox");
+static_assert(sizeof(((SaveData *)0)->letterOutbox) == sizeof(LetterOutbox), "SaveData::letterOutbox");
+static_assert(sizeof(((SaveData *)0)->bottleLetter) == sizeof(BottleLetterRecord), "SaveData::bottleLetter");
 static_assert(sizeof(TownMap) <= sizeof(((SaveData *)0)->townMap), "TownMap");
 static_assert(sizeof(ConstellationStore) <= sizeof(((SaveData *)0)->constellations), "ConstellationStore");
 static_assert(sizeof(TownStyleRecord) <= sizeof(((SaveData *)0)->townStyle), "TownStyleRecord");
@@ -68,8 +76,6 @@ inline SaveData::SaveData() {
     new (townExchange) TownExchangeRecord();
     new (bbsBoard) BbsBoard();
     for (s32 i = 0; i < 4; i++) {
-        // (64-bit: a PlayerMailbox's Letters have 8-byte vtable pointers, the mailbox is larger than its DS-sized
-        // block and its constructor reaches into the next block, constructed after it)
         new (mailboxes[i]) PlayerMailbox();
     }
     new (letterOutbox) LetterOutbox();
@@ -98,7 +104,7 @@ inline SaveData::SaveData() {
     new (itemClassOrders) ItemClassOrders();
     SaveData_ConstructDateRecord();
     LostChildRecord_Construct(lostChild);
-    ((SaveRecord4 *)footer)->construct();
+    footer.construct();
 }
 
 SaveData gSaveData;

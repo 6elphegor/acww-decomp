@@ -17,4 +17,6 @@ public:
     /* 0xf7 */ u8 unk_f7;
 };
 
+static_assert(sizeof(FutureLetter) == 0xf8, "FutureLetter: PlayerData::futureLetter");
+
 #endif

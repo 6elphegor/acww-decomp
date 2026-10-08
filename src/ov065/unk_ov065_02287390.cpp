@@ -8,13 +8,13 @@
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockHostEnt.h"
-#define PROTO_LOCAL_qr2_registered_key_list  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_02287390.h"
+#include "proto/ov065/unk_ov065_022884fc.h"
 
 extern "C" {
 extern qr2_implementation_s static_qr2_rec;
@@ -47,7 +47,6 @@ typedef DArrayImplementation Vec;
 extern "C" {
 extern Qr *current_rec;
 extern u8 data_ov065_0228e1b8[];
-extern char *qr2_registered_key_list[];
 extern s32 num_local_ips;
 extern u32 local_ip_list[];
 
@@ -86,7 +85,6 @@ namespace F02287b18 {
 // ov065_065: GameSpy query-and-report (qr2-like) module: response buffer, key lists, base64 / RC4 helpers, heartbeat (0x02287b18..0x02288380)
 
 extern "C" {
-extern const char *qr2_registered_key_list[];
 extern qr2_implementation_s *current_rec;
 extern qr2_implementation_s static_qr2_rec;
 extern volatile s32 num_local_ips;
@@ -149,7 +147,7 @@ s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *nam
     if (out == NULL) {
         q = &static_qr2_rec;
     } else {
-        *out = (qr2_implementation_s *)GsUtil_Alloc(HOST_SIZED(0x110, qr2_implementation_s));
+        *out = (qr2_implementation_s *)GsUtil_Alloc(sizeof(qr2_implementation_s));
         q = *out;
     }
     srand(current_time());
@@ -828,12 +826,12 @@ void qr_process_client_message(Qr *q, u8 *p, s32 n) {
     }
     if (ok) {
         qr2_natnegcallback_t cb;
-        u32 a = (u32)&l;
+        B4 *a = (B4 *)&l;
         B4 *s = (B4 *)(p + 6);
-        ((B4 *)a)->b[0] = s->b[0];
-        ((B4 *)a)->b[1] = s->b[1];
-        ((B4 *)a)->b[2] = s->b[2];
-        ((B4 *)a)->b[3] = s->b[3];
+        a->b[0] = s->b[0];
+        a->b[1] = s->b[1];
+        a->b[2] = s->b[2];
+        a->b[3] = s->b[3];
         cb = q->nn_callback;
         if (cb != NULL) {
             u32 v = l;

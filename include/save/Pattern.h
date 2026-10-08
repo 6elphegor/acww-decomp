@@ -45,7 +45,7 @@ class Pattern {
 public:
     Pattern();
     ~Pattern();
-    /* 0x000 */ long long pixels[0x40];
+    /* 0x000 */ s64 pixels[0x40]; // (s64: 4-byte aligned on every host, as on the DS)
     /* 0x200 */ PatternInfo info;
 
     PatternInfo *getInfo();
@@ -85,5 +85,10 @@ public:
     void replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b);
     void initDefaultPatterns(Unk_020942c8 *a);
 };
+
+static_assert(sizeof(PatternInfo) == 0x28, "PatternInfo: DS save layout");
+static_assert(sizeof(Pattern) == 0x228 && __alignof__(Pattern) == 4, "Pattern: DS save layout");
+static_assert(sizeof(AbleSistersPatterns) == 0x1140, "AbleSistersPatterns: SaveData::ableSistersPatterns");
+static_assert(sizeof(PlayerPatterns) == 0x1148, "PlayerPatterns: the head of PlayerData");
 
 #endif

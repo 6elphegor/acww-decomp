@@ -1,10 +1,8 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "uptr.h"
 #include "net/SslSha1Context.h"
-#define PROTO_LOCAL_SslSha1_StoreBe32  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SslSha1_Transform  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SslSha1_Update  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov065/unk_ov065_0226795c.h"
 #pragma opt_strength_reduction off
@@ -447,7 +445,7 @@ extern u8 *(*sIpAlloc)(u32);
 extern void (*sIpFree)(u8 *);
 
 void MI_CpuFill8(void *, s32, u32);
-void MI_CpuCopy8(void *, s32, u32);
+void MI_CpuCopy8(const void *, void *, u32);
 
 
 
@@ -462,8 +460,9 @@ void MI_CpuCopy8(void *, s32, u32);
 #define X(k) SslSha1_ExpandWord((k), w)
 
 
-void SslBigNum_MontgomeryStep(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3) {
-    MI_CpuCopy8(a, (s32)b, n * 2);
+// mode: 0 copy, 1 square, else the multiplier (u16 *)
+void SslBigNum_MontgomeryStep(u16 *a, u16 *b, uptr mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3) {
+    MI_CpuCopy8(a, b, n * 2);
     if (mode == 1) {
         SslBigNum_Square(a, b, n);
     } else if (mode != 0) {
@@ -514,7 +513,7 @@ void SslBigNum_ModExpMontgomery(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
     for (; (u32)i < (u32)bound; i++) {
         SslBigNum_MontgomeryStep(x, p5, 1, n, k, m, p1, p3, p4);
         if ((0x8000u >> (i & 15)) & z[k - (i >> 4) - 1]) {
-            SslBigNum_MontgomeryStep(x, p5, (u32)p2, n, k, m, p1, p3, p4);
+            SslBigNum_MontgomeryStep(x, p5, (uptr)p2, n, k, m, p1, p3, p4);
         }
     }
     SslBigNum_MontgomeryStep(x, p5, 0, n, k, m, p1, p3, p4);
@@ -597,7 +596,7 @@ u32 SslSha1_ExpandWord(s32 i, u32 *w) {
     return w[i];
 }
 
-void SslSha1_StoreBe32(u8 *dst, u32 *src, u32 n) {
+void SslSha1_StoreBe32(u8 *dst, const u32 *src, u32 n) {
     u32 i = 0;
     u32 cnt = n >> 2;
     for (; i < cnt; i++) {
@@ -611,7 +610,7 @@ void SslSha1_StoreBe32(u8 *dst, u32 *src, u32 n) {
     }
 }
 
-void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n) {
+void SslSha1_LoadBe32(u32 *dst, const u8 *src, u32 n) {
     u32 i;
     for (i = 0; i < n; i += 4) {
         u32 b3 = src[i + 3];
@@ -622,7 +621,7 @@ void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n) {
     }
 }
 
-void SslSha1_Transform(u32 *ctx, u8 *data) {
+void SslSha1_Transform(u32 *ctx, const u8 *data) {
     u32 a, b, c, d, e;
     u32 w[16];
     s32 i, j;
@@ -701,9 +700,6 @@ extern "C" {
 
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
-void SslSha1_StoreBe32(void *dst, const void *src, s32 n);
-void SslSha1_Transform(SslSha1Context *ctx, const u8 *block);
-void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n);
 
 u8 sSslSha1Padding[0x40] = {0x80};
 
@@ -732,9 +728,9 @@ void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n)
     if (n >= part) {
         MI_CpuCopy8(data, ctx->buf + idx, part);
         idx = 0;
-        SslSha1_Transform(ctx, ctx->buf);
+        SslSha1_Transform(ctx->st, ctx->buf);
         for (i = part; i + 63 < n; i += 64) {
-            SslSha1_Transform(ctx, data + i);
+            SslSha1_Transform(ctx->st, data + i);
         }
     } else {
         i = 0;
@@ -745,7 +741,7 @@ void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n)
 void SslSha1_Final(SslSha1Context *ctx, void *out)
 {
     u32 idx;
-    SslSha1_StoreBe32(out, &ctx->hi, 8);
+    SslSha1_StoreBe32((u8 *)out, &ctx->hi, 8);
     idx = (ctx->lo >> 3) & 0x3f;
     if ((s32)idx < 0x38) {
         idx = 0x38 - idx;
@@ -754,13 +750,13 @@ void SslSha1_Final(SslSha1Context *ctx, void *out)
     }
     SslSha1_Update(ctx, sSslSha1Padding, idx);
     SslSha1_Update(ctx, (u8 *)out, 8);
-    SslSha1_StoreBe32(out, ctx, 0x14);
+    SslSha1_StoreBe32((u8 *)out, ctx->st, 0x14);
 }
 
 void SslSha1_FinalRaw(SslSha1Context *ctx, void *out)
 {
     SslSha1_Update(ctx, (sSslSha1Padding + 1), 0x2c);
-    SslSha1_StoreBe32(out, ctx, 0x14);
+    SslSha1_StoreBe32((u8 *)out, ctx->st, 0x14);
 }
 
 void SslMd5_Encode(void *dst, const void *src, s32 n)

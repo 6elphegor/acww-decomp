@@ -1,38 +1,16 @@
 // mwcc-flags: -nothumb -O4,p
 // G006a: autoload_2 0x020ef150-0x020f0dec (45 functions). mwcc 1.2/base, C++, ARM, -O4,p.
 // The sound/BGM manager of the game (object gSndMgr, "SndMgr" here): volume ramps, sound-id dispatch,
-// BGM change/fade handling. PARTIAL unit: only extern "C" functions under their symbols.txt names, no data,
-// no vtable (the class SndObj only DECLARES its virtuals), all data and callees extern.
+// BGM change/fade handling. PARTIAL unit: only extern "C" functions under their symbols.txt names, and the file's data.
 #include "types.h"
 #include "snd/SndMgr.h"
-#define PROTO_LOCAL_sVoicePendingPitch  // declared below: the shared prototype conflicts with the calls here
+#include "snd/SndSceneBase.h"
+#include "snd/BgmBeatSync.h"
+#include "snd/SndSeqPlayer.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
 #include "proto/autoload_2/unk_020ee98c.h"
 #include "proto/autoload_2/unk_020ef150.h"
 #include "proto/autoload_2/unk_0210c084.h"
-
-class SndObj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28(u32 a, u32 b);
-
-    /* 0x04 */ s8 id;
-};
-
-struct SndHandle {
-    /* 0x00 */ u8 unk_00[0x38];
-    /* 0x38 */ u16 seqNo;
-    /* 0x3a */ u16 seqArcIndex;
-};
-
 
 struct SndEnt {
     u16 a;
@@ -42,13 +20,7 @@ struct SndEnt {
 };
 
 extern "C" {
-extern u32 sVoicePendingPitch;
-
 s32 FX_Div(s32 a, s32 b); // FX_Div
-void Snd_StartSeqArc(u16 a, u16 b, void *out);
-void Snd_StopHandle(void *p, u32 a);
-void Snd_StartSeqArcEx(void *p, u32 a, s32 b, s32 c, u32 d, u32 e);
-void Snd_StartSeqArcDefault(u16 a, u16 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
@@ -64,7 +36,6 @@ void NNS_SndArcStrmMoveVolume(void *p, s32 v, u32 w);
 void NNS_SndArcStrmStop(void *p, s32 v);
 void NNS_SndArcStrmStart(void *p, u32 a, u32 b);
 s32 func_0210e5fc(void *p);
-u32 Snd_GetHeap(void);
 void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
 
 }
@@ -73,6 +44,7 @@ static inline BOOL isSet(void *p) {
     return p != NULL;
 }
 
+// A sound id is arcNo * 1000 + index; the DS code narrows both to u16 when it passes them on.
 extern "C" void SndMgr_PlaySe(SndMgr *self, s32 id) {
     if (self->seDisabled != 0) {
         return;
@@ -112,26 +84,26 @@ extern "C" void SndMgr_PlaySe(SndMgr *self, s32 id) {
         case 0x880:
         case 0x881:
         case 0x882:
-            Snd_StartSeqArc(id % 1000, id / 1000, &self->seHandle);
+            Snd_StartSeqArc((u16)(id % 1000), (u16)(id / 1000), &self->seHandle);
             SndMgr_ApplyPan(self, 0);
             break;
         case 0x861:
-            Snd_StartSeqArc(id % 1000, id / 1000, &self->auxSeHandle);
+            Snd_StartSeqArc((u16)(id % 1000), (u16)(id / 1000), &self->auxSeHandle);
             SndMgr_ApplyPan(self, 0);
             break;
         case 1:
         case 2:
             self->curveDelay = 15;
-            Snd_StartSeqArcDefault(id % 1000, id / 1000);
+            Snd_StartSeqArcDefault((u16)(id % 1000), (u16)(id / 1000));
             break;
         default:
-            Snd_StartSeqArcDefault(id % 1000, id / 1000);
+            Snd_StartSeqArcDefault((u16)(id % 1000), (u16)(id / 1000));
             break;
     }
 }
 
 extern "C" void SndMgr_PlaySeOnHandle(SndMgr *self, s32 a) {
-    Snd_StartSeqArc(a % 1000, a / 1000, &self->seHandle);
+    Snd_StartSeqArc((u16)(a % 1000), (u16)(a / 1000), &self->seHandle);
     if (a == 0x862) {
         NNS_SndPlayerSetVolume(&self->seHandle, 0);
     }
@@ -167,15 +139,15 @@ extern "C" void SndMgr_PlayVoice(SndMgr *self, s32 a, u8 x, s32 y) {
             break;
         }
     }
-    Snd_StartSeqArc(a % 1000, a / 1000, &self->voiceHandle);
-    if (isSet(self->voiceHandle)) {
+    Snd_StartSeqArc((u16)(a % 1000), (u16)(a / 1000), &self->voiceHandle);
+    if (isSet(self->voiceHandle.p)) {
         NNS_SndPlayerSetVolume(&self->voiceHandle, x);
         NNS_SndPlayerSetTrackPitch(&self->voiceHandle, 15, y);
     }
 }
 
-extern "C" void SndMgr_LoadBank(SndMgr *self, void *a) {
-    NNS_SndArcLoadBank(a, Snd_GetHeap());
+extern "C" void SndMgr_LoadBank(SndMgr *self, u32 bankNo) {
+    NNS_SndArcLoadBank(bankNo, Snd_GetHeap());
 }
 
 extern "C" u16 SndMgr_Rand(SndMgr *self, u32 n) {
@@ -197,7 +169,7 @@ extern "C" void SndMgr_PlayBgm(SndMgr *self, u32 k) {
             self->strmTotalTime = func_0210e5fc(&self->strmHandle);
             return;
     }
-    self->scene->vfunc_28(0, k);
+    self->scene->onBgmChange(0, k);
     if (k >= 176 && k <= 245) {
         SndMgr_StartBgmSeq(self, k, 0);
         return;
@@ -212,7 +184,7 @@ extern "C" void SndMgr_PlayBgm(SndMgr *self, u32 k) {
 }
 
 extern "C" void SndMgr_StopBgm(SndMgr *self, s32 v) {
-    SndHandle *h = self->strmHandle;
+    void *h = self->strmHandle.p;
     if (isSet(h)) {
         if (self->scene->id == 51) {
             v += 1;
@@ -221,7 +193,7 @@ extern "C" void SndMgr_StopBgm(SndMgr *self, s32 v) {
         return;
     }
     SndMgr_StopBgmSeq(self, v);
-    self->scene->vfunc_28(1, 9999);
+    self->scene->onBgmChange(1, 9999);
 }
 
 extern "C" void SndMgr_MoveBgmVolume(SndMgr *self, s32 v, u32 w) {
@@ -230,7 +202,7 @@ extern "C" void SndMgr_MoveBgmVolume(SndMgr *self, s32 v, u32 w) {
     } else if (v < 0) {
         v = 0;
     }
-    SndHandle *h = self->strmHandle;
+    void *h = self->strmHandle.p;
     if (isSet(h)) {
         NNS_SndArcStrmMoveVolume(&self->strmHandle, v, w);
         return;
@@ -338,7 +310,7 @@ extern "C" void SndMgr_SetBgmTrackVariant(SndMgr *self, u32 st) {
     if (self->variantDirty == 0) {
         return;
     }
-    SndObj *o = self->scene;
+    SndSceneBase *o = self->scene;
     if (o == NULL) {
         return;
     }
@@ -346,7 +318,7 @@ extern "C" void SndMgr_SetBgmTrackVariant(SndMgr *self, u32 st) {
     if (t != 1 && t != 3 && t != 60) {
         return;
     }
-    SndHandle *h = self->bgmHandle;
+    SndSeqPlayer *h = SndSeqHandle_Player(&self->bgmHandle);
     if (!isSet(h)) {
         return;
     }
@@ -435,7 +407,7 @@ extern "C" void SndMgr_StopBgmSeq(SndMgr *self, s32 frames) {
 }
 
 extern "C" void SndMgr_UpdateTrackRamps(SndMgr *self) {
-    SndObj *o = self->scene;
+    SndSceneBase *o = self->scene;
     if (o == NULL) {
         return;
     }
@@ -465,7 +437,7 @@ extern "C" void SndMgr_UpdateTrackRamps(SndMgr *self) {
 }
 
 extern "C" void SndMgr_UpdateVolumeRamps(SndMgr *self) {
-    SndObj *o = self->scene;
+    SndSceneBase *o = self->scene;
     if (o == NULL) {
         return;
     }
@@ -514,7 +486,7 @@ extern "C" void SndMgr_ApplyPan(SndMgr *self, u32 flag) {
         NNS_SndPlayerSetTrackPan(&self->auxSeHandle, 255, v);
         return;
     }
-    SndHandle *h = self->seHandle;
+    SndSeqPlayer *h = SndSeqHandle_Player(&self->seHandle);
     if (!isSet(h)) {
         return;
     }
@@ -612,9 +584,9 @@ extern "C" void SndMgr_StartVolumeFadeIn(SndMgr *self) {
     SndRamp_Start(&self->fadeRamp, 127, 60);
 }
 
-extern "C" void *SndMgr_GetBeatState(SndMgr *self) {
-    if (self->beatSync != 0) {
-        return (void *)(self->beatSync + 20);
+extern "C" BgmBeatPhase *SndMgr_GetBeatState(SndMgr *self) {
+    if (self->beatSync != NULL) {
+        return &self->beatSync->sub;
     }
     return NULL;
 }

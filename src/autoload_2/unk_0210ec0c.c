@@ -19,8 +19,7 @@ typedef short s16;
 typedef int s32;
 typedef int BOOL;
 
-typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
-typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
+#include "nnsys/fnd_list.h"
 
 // NNSiSndFader
 typedef struct Fader {

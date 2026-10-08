@@ -33,8 +33,7 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "player/PlayerSpNpcRecord.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02034438.h"
@@ -165,12 +164,9 @@ extern const VecFx32 data_ov053_0225a1a0;
 extern const u8 sSpNpcHarrietStyleTable[];
 extern const VecFx32 sSpNpcHarrietRouteToStation[2];
 extern const VecFx32 sSpNpcHarrietRouteToCustomer[2];
-#define data_ov053_0225a1c4 ((const s32 *)((const u8 *)sSpNpcHarrietRouteToStation + 8))
-#define data_ov053_0225a1dc ((const s32 *)((const u8 *)sSpNpcHarrietRouteToCustomer + 8))
 extern const void *sSpNpcHarrietMsgKey;
 extern ActorProfile sSpNpcHarrietProfile;
 extern SpNpcHarrietActEntry sSpNpcHarrietActTable[11];
-#define data_ov053_0225a62c ((SpNpcHarrietActEntry *)((u8 *)sSpNpcHarrietActTable + 8))
 
 extern volatile u16 data_020c6cc8;
 extern s32 data_020c6d1c;
@@ -178,7 +174,6 @@ extern u8 gVec3Zero[];
 extern void *gCommManager;
 extern u8 gTalkMsgIndexEnd[];
 
-s32 Math_AngleXZ(void *a, void *b);
 NpcActor *func_02015aac(void *self);
 s32 Math_CountDownU8(void *);
 BOOL Camera_SetMode16At(VecFx32 *v);
@@ -195,102 +190,36 @@ s32 TalkRequest_AddPlayerTalk7(void *p, s32 a);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 s32 func_020aa514(void *p);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 }
 
 // Constants and tables (definition order sets the data layout)
-extern "C" void _ZN12SpNpcHarriet9mainAct00Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct09Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct01Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct0AEv();
-extern "C" void _ZN12SpNpcHarriet10setupAct05Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct03Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct09Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct08Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct08Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct0AEv();
-extern "C" void _ZN12SpNpcHarriet10setupAct06Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct06Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct07Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct07Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct05Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct04Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct04Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct00Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct03Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct02Ev();
-extern "C" void _ZN12SpNpcHarriet10setupAct02Ev();
-extern "C" void _ZN12SpNpcHarriet9mainAct01Ev();
 typedef BOOL (SpNpcHarriet::*SpNpcHarrietActFn)();
-extern "C" void *data_ov053_0225a344[2];
-extern "C" void *data_ov053_0225a34c[2];
-extern "C" void *data_ov053_0225a354[2];
-extern "C" void *data_ov053_0225a35c[2];
-extern "C" void *data_ov053_0225a364[2];
-extern "C" void *data_ov053_0225a36c[2];
-extern "C" void *data_ov053_0225a374[2];
-extern "C" void *data_ov053_0225a37c[2];
-extern "C" void *data_ov053_0225a384[2];
-extern "C" void *data_ov053_0225a38c[2];
-extern "C" void *data_ov053_0225a394[2];
-extern "C" void *data_ov053_0225a39c[2];
-extern "C" void *data_ov053_0225a3a4[2];
-extern "C" void *data_ov053_0225a3ac[2];
-extern "C" void *data_ov053_0225a3b4[2];
-extern "C" void *data_ov053_0225a3bc[2];
-extern "C" void *data_ov053_0225a3c4[2];
-extern "C" void *data_ov053_0225a3cc[2];
-extern "C" void *data_ov053_0225a3d4[2];
-extern "C" void *data_ov053_0225a3dc[2];
-extern "C" void *data_ov053_0225a3e4[2];
-extern "C" void *data_ov053_0225a3ec[2];
 
-extern "C" void *data_ov053_0225a374[2] = {(void *)_ZN12SpNpcHarriet10setupAct09Ev, 0};
 extern "C" ActorProfile sSpNpcHarrietProfile = {(void *(*)())SpNpcHarriet_Create, 0x61, 0x68, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov053_0225a39c[2] = {(void *)_ZN12SpNpcHarriet9mainAct06Ev, 0};
-extern "C" void *data_ov053_0225a38c[2] = {(void *)_ZN12SpNpcHarriet9mainAct0AEv, 0};
 extern "C" const void *sSpNpcHarrietMsgKey = sSpNpcHarrietKey;
 extern "C" const VecFx32 data_ov053_0225a1a0 = {0x300, 0x199, 0x199};
-extern "C" void *data_ov053_0225a3a4[2] = {(void *)_ZN12SpNpcHarriet10setupAct07Ev, 0};
-extern "C" void *data_ov053_0225a344[2] = {(void *)_ZN12SpNpcHarriet9mainAct00Ev, 0};
 extern "C" const VecFx32 sSpNpcHarrietRouteToCustomer[2] = {{0xe800, 0, 0x15800}, {0xc000, 0, 0x15000}};
 extern "C" const u8 sSpNpcHarrietWarmColors[] = {1, 4, 2, 6};
 extern "C" const VecFx32 sSpNpcHarrietExitLine = {0xb000, 0, 0x1d000};
-extern "C" void *data_ov053_0225a34c[2] = {(void *)_ZN12SpNpcHarriet9mainAct09Ev, 0};
-extern "C" void *data_ov053_0225a354[2] = {(void *)_ZN12SpNpcHarriet10setupAct01Ev, 0};
 extern "C" u8 sSpNpcHarrietTexturePath[] = "npc_sp/model/poo_tex.nsbtx";
-extern "C" void *data_ov053_0225a3e4[2] = {(void *)_ZN12SpNpcHarriet10setupAct02Ev, 0};
-extern "C" void *data_ov053_0225a3dc[2] = {(void *)_ZN12SpNpcHarriet9mainAct02Ev, 0};
 extern "C" char sSpNpcHarrietKey[] = "sp_npc_barber";
 extern "C" const u8 sSpNpcHarrietCoolColors[] = {0, 3, 5, 7};
-extern "C" void *data_ov053_0225a3c4[2] = {(void *)_ZN12SpNpcHarriet10setupAct04Ev, 0};
-extern "C" void *data_ov053_0225a3bc[2] = {(void *)_ZN12SpNpcHarriet9mainAct04Ev, 0};
-extern "C" void *data_ov053_0225a3b4[2] = {(void *)_ZN12SpNpcHarriet9mainAct05Ev, 0};
-extern "C" void *data_ov053_0225a35c[2] = {(void *)_ZN12SpNpcHarriet10setupAct0AEv, 0};
-extern "C" void *data_ov053_0225a394[2] = {(void *)_ZN12SpNpcHarriet10setupAct06Ev, 0};
-extern "C" void *data_ov053_0225a364[2] = {(void *)_ZN12SpNpcHarriet10setupAct05Ev, 0};
-extern "C" void *data_ov053_0225a3cc[2] = {(void *)_ZN12SpNpcHarriet10setupAct00Ev, 0};
 extern "C" u8 sSpNpcHarrietModelPath[] = "npc_sp/model/poo.nsbmd";
 extern "C" const VecFx32 sSpNpcHarrietRouteToStation[2] = {{0xe000, 0, 0x15000}, {0xf000, 0, 0x17000}};
-extern "C" void *data_ov053_0225a3ec[2] = {(void *)_ZN12SpNpcHarriet9mainAct01Ev, 0};
 extern "C" SpNpcHarrietActEntry sSpNpcHarrietActTable[11] = {
-    {*(SpNpcHarrietActFn *)data_ov053_0225a3cc, *(SpNpcHarrietActFn *)data_ov053_0225a344},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a354, *(SpNpcHarrietActFn *)data_ov053_0225a3ec},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a3e4, *(SpNpcHarrietActFn *)data_ov053_0225a3dc},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a3d4, *(SpNpcHarrietActFn *)data_ov053_0225a36c},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a3c4, *(SpNpcHarrietActFn *)data_ov053_0225a3bc},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a364, *(SpNpcHarrietActFn *)data_ov053_0225a3b4},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a394, *(SpNpcHarrietActFn *)data_ov053_0225a39c},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a3a4, *(SpNpcHarrietActFn *)data_ov053_0225a3ac},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a384, *(SpNpcHarrietActFn *)data_ov053_0225a37c},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a374, *(SpNpcHarrietActFn *)data_ov053_0225a34c},
-    {*(SpNpcHarrietActFn *)data_ov053_0225a35c, *(SpNpcHarrietActFn *)data_ov053_0225a38c},
+    {&SpNpcHarriet::setupAct00, &SpNpcHarriet::mainAct00},
+    {&SpNpcHarriet::setupAct01, &SpNpcHarriet::mainAct01},
+    {&SpNpcHarriet::setupAct02, &SpNpcHarriet::mainAct02},
+    {&SpNpcHarriet::setupAct03, &SpNpcHarriet::mainAct03},
+    {&SpNpcHarriet::setupAct04, &SpNpcHarriet::mainAct04},
+    {&SpNpcHarriet::setupAct05, &SpNpcHarriet::mainAct05},
+    {&SpNpcHarriet::setupAct06, &SpNpcHarriet::mainAct06},
+    {&SpNpcHarriet::setupAct07, &SpNpcHarriet::mainAct07},
+    {&SpNpcHarriet::setupAct08, &SpNpcHarriet::mainAct08},
+    {&SpNpcHarriet::setupAct09, &SpNpcHarriet::mainAct09},
+    {&SpNpcHarriet::setupAct0A, &SpNpcHarriet::mainAct0A},
 };
-extern "C" void *data_ov053_0225a36c[2] = {(void *)_ZN12SpNpcHarriet9mainAct03Ev, 0};
 extern "C" const u8 sSpNpcHarrietStyleTable[] = {3, 0xb, 2, 0xa, 6, 0xe, 4, 0xc, 7, 0xf, 0, 8, 1, 9, 5, 0xd};
-extern "C" void *data_ov053_0225a3ac[2] = {(void *)_ZN12SpNpcHarriet9mainAct07Ev, 0};
-extern "C" void *data_ov053_0225a3d4[2] = {(void *)_ZN12SpNpcHarriet10setupAct03Ev, 0};
-extern "C" void *data_ov053_0225a384[2] = {(void *)_ZN12SpNpcHarriet10setupAct08Ev, 0};
 extern "C" const VecFx32 sSpNpcHarrietReturnPos = {0x10000, 0, 0x1b000};
 
 SpNpcHarriet *SpNpcHarriet_Create() { return new SpNpcHarriet; }
@@ -484,8 +413,8 @@ BOOL SpNpcHarriet::mainAct05() {
         ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint(&v);
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             routeIndex++;
-            u32 off = *(volatile u8 *)&routeIndex * 0xc;
-            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            u32 off = routeIndex;
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, sSpNpcHarrietRouteToStation[off].x, sSpNpcHarrietRouteToStation[off].z, 0x800, 0, 0, 0, data_020c6cc8, 0);
             if (routeIndex >= 2) {
                 changeAct(4);
             }
@@ -494,8 +423,7 @@ BOOL SpNpcHarriet::mainAct05() {
     if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             u32 off = routeIndex;
-            off = off * 0xc;
-            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, sSpNpcHarrietRouteToStation[off].x, sSpNpcHarrietRouteToStation[off].z, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
@@ -508,7 +436,7 @@ BOOL SpNpcHarriet::setupAct06() {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    s32 r = Math_AngleXZ(&position, &v);
+    s32 r = Math_AngleXZ(&position.x, &v.x);
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -523,8 +451,8 @@ BOOL SpNpcHarriet::mainAct06() {
         ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint(&v);
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             routeIndex++;
-            u32 off = *(volatile u8 *)&routeIndex * 0xc;
-            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            u32 off = routeIndex;
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, sSpNpcHarrietRouteToCustomer[off].x, sSpNpcHarrietRouteToCustomer[off].z, 0x800, 0, 0, 0, data_020c6cc8, 0);
             if (routeIndex >= 2) {
                 changeAct(2);
             }
@@ -533,8 +461,7 @@ BOOL SpNpcHarriet::mainAct06() {
     if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             u32 off = routeIndex;
-            off = off * 0xc;
-            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, sSpNpcHarrietRouteToCustomer[off].x, sSpNpcHarrietRouteToCustomer[off].z, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
@@ -558,8 +485,8 @@ BOOL SpNpcHarriet::mainAct07() {
         if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             routeIndex++;
             u32 t = data_020c6cc8;
-            u32 off = *(volatile u8 *)&routeIndex * 0xc;
-            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            u32 off = routeIndex;
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, sSpNpcHarrietRouteToStation[off].x, sSpNpcHarrietRouteToStation[off].z, 0x800, 0, 0, 0, data_020c6cc8, 0);
             if (routeIndex >= 2) {
                 ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, -0x4000, 0, 0, t, 0);
             }
@@ -571,8 +498,7 @@ BOOL SpNpcHarriet::mainAct07() {
             if (off >= 2) {
                 changeAct(8);
             } else {
-                off = off * 0xc;
-                ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+                    ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, sSpNpcHarrietRouteToStation[off].x, sSpNpcHarrietRouteToStation[off].z, 0x800, 0, 0, 0, data_020c6cc8, 0);
             }
         }
     }
@@ -630,7 +556,7 @@ BOOL SpNpcHarriet::mainAct09() {
         }
         break;
     case 1: {
-        SpNpcHarrietVecLocal u;
+        VecFx32Ctor u;
         u.x = dx;
         u.y = dy;
         u.z = dz;
@@ -979,4 +905,3 @@ s32 SpNpcHarriet::isSessionPaid() {
 }
 
 
-extern "C" void *data_ov053_0225a37c[2] = {(void *)_ZN12SpNpcHarriet9mainAct08Ev, 0};

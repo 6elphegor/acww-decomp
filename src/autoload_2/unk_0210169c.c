@@ -152,7 +152,7 @@ extern GfdMan *data_0213bc28[];     // 5 entries: normal textures
 extern u16 data_021f5cb0;
 
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
-u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
+u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, u32 opt);
 s32 NNS_GfdFreeFrmTexVram();
 
 // prototypes
@@ -210,7 +210,7 @@ s32 AllocTexVram_();
 s32 FreePlttVram_();
 s32 AllocPlttVram_();
 s32 NNS_GfdFreeFrmTexVram();
-u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
+u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, u32 opt);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
@@ -230,7 +230,7 @@ void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs) {
     data_021f5cb0 = mode;
     NNS_GfdResetFrmTexVramState();
     if (setFuncs != 0) {
-        data_0213bc10 = (s32 (*)())NNS_GfdAllocFrmTexVram;
+        data_0213bc10 = NNS_GfdAllocFrmTexVram;
         data_0213bc14 = NNS_GfdFreeFrmTexVram;
     }
 }

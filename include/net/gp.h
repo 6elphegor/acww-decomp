@@ -114,7 +114,8 @@ struct GPErrorArg {
 struct GPConnectResponseArg {
     /* 0x00 */ s32 result;
     /* 0x04 */ s32 profile;
-    /* 0x08 */ u8 pad_08[0x18];
+    /* 0x08 */ char uniquenick[0x15];
+    /* 0x1d */ u8 pad_1d[3];
 };
 
 // GP buddy status (GameSpy GPBuddyStatus without quietModeFlags, 0x210) filled by gpGetBuddyStatus (DwcFriend_GetStatus etc. in src/ov065/unk_ov065_02270e34.cpp,

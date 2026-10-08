@@ -7,7 +7,8 @@
 #include "save/Pattern.h"
 #include "game/NibblePair.h"
 
-// One player's save record (0x228c bytes; gSavePlayers holds four, gGuestPlayers three): patterns, inventory, catalog,
+// One player's save record (0x228c bytes on every host: plain data, the save image; gSavePlayers holds four,
+// gGuestPlayers three; walked as PlayerData[] / with sizeof(PlayerData)): patterns, inventory, catalog,
 // letters, errands, friend list, appearance, ... Defined in src/main/unk_02097d1c.cpp (0x02097ff4..0x02098668).
 class PlayerId;
 class TownId;
@@ -138,5 +139,20 @@ public:
     void resetForNewTown();
     void rerollFlaggedPocketItems();
 };
+
+static_assert(sizeof(Unk_0209865c_Grp) == 0x9f8, "PlayerData::inventory");
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winvalid-offsetof"
+static_assert(sizeof(PlayerData) == 0x228c && __alignof__(PlayerData) == 4, "PlayerData: DS save layout");
+static_assert(__builtin_offsetof(PlayerData, inventory) == 0x1148, "PlayerData::inventory");
+static_assert(__builtin_offsetof(PlayerData, wallet) == 0x1b40, "PlayerData::wallet");
+static_assert(__builtin_offsetof(PlayerData, futureLetter) == 0x1c6c, "PlayerData::futureLetter");
+static_assert(__builtin_offsetof(PlayerData, errands) == 0x1d64, "PlayerData::errands");
+static_assert(__builtin_offsetof(PlayerData, flags) == 0x21fc, "PlayerData::flags");
+static_assert(__builtin_offsetof(PlayerData, heldItem) == 0x220a, "PlayerData::heldItem");
+static_assert(__builtin_offsetof(PlayerData, faceHair) == 0x223c, "PlayerData::faceHair");
+static_assert(__builtin_offsetof(PlayerData, id) == 0x2276, "PlayerData::id");
+#pragma GCC diagnostic pop
 
 #endif

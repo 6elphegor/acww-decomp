@@ -8,20 +8,37 @@
 #include "sys/Heap.h"
 #include "sys/ProcBase.h"
 #include "sys/TreeNode.h"
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL__ZN8ProcBasenwEm
+void *_ZN8ProcBasenwEm(u32 size);
+#endif
 #ifndef PROTO_LOCAL__ZN8ProcBasedlEPv
 void _ZN8ProcBasedlEPv(void *p);
+#endif
+#ifndef PROTO_LOCAL_Proc_CallCreateHook
+u32 Proc_CallCreateHook(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Proc_CallDeleteHook
+void Proc_CallDeleteHook(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Main_InitTick
 void Main_InitTick(void);
 #endif
+#ifndef PROTO_LOCAL_Mem_AllocForNew
+void *Mem_AllocForNew(u32 size);
+#endif
 #ifndef PROTO_LOCAL_Mem_FreeForDelete
 void Mem_FreeForDelete(void *p);
+#endif
+#ifndef PROTO_LOCAL__Znwm
+void *_Znwm(u32 size);
+#endif
+#ifndef PROTO_LOCAL__Znam
+void *_Znam(u32 size);
 #endif
 #ifndef PROTO_LOCAL__ZdlPv
 void _ZdlPv(void *p);
@@ -89,17 +106,8 @@ BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *parent);
 #ifndef PROTO_LOCAL__ZN8ProcBase14allocResourcesEv
 BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self);
 #endif
-#ifndef PROTO_LOCAL__ZN8ProcBasenwEm
-void *_ZN8ProcBasenwEm(u32 size);
-#endif
 #ifndef PROTO_LOCAL_ProcBase_StartCreate
 void ProcBase_StartCreate(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase10taskCreateEv
-void ProcBase_taskCreate(ProcBase *self);
-#endif
-#ifndef PROTO_LOCAL__ZN8ProcBase10taskDeleteEv
-u32 ProcBase_taskDelete(ProcBase *self);
 #endif
 #ifndef PROTO_LOCAL_ProcBase_HasCreatingChild
 BOOL ProcBase_HasCreatingChild(ProcBase *self);
@@ -110,26 +118,11 @@ void Proc_SetCreateParams(u32 a, TreeNode *parent, u32 c, u32 d);
 #ifndef PROTO_LOCAL_Proc_Create
 ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d);
 #endif
-#ifndef PROTO_LOCAL_Proc_CallCreateHook
-u32 Proc_CallCreateHook(u32 a);
-#endif
-#ifndef PROTO_LOCAL_Proc_CallDeleteHook
-void Proc_CallDeleteHook(u32 a);
-#endif
 #ifndef PROTO_LOCAL_Proc_CreateChild
 ProcBase *Proc_CreateChild(u32 a, ProcBase *parent, u32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_Proc_CreateRoot
 ProcBase *Proc_CreateRoot(u32 a, u32 b, u32 c);
-#endif
-#ifndef PROTO_LOCAL_Mem_AllocForNew
-void *Mem_AllocForNew(u32 size);
-#endif
-#ifndef PROTO_LOCAL__Znwm
-void *_Znwm(u32 size);
-#endif
-#ifndef PROTO_LOCAL__Znam
-void *_Znam(u32 size);
 #endif
 }
 #endif

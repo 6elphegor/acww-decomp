@@ -18,7 +18,7 @@ struct IpStackConfig {
     /* 0x10 */ s32 (*linkCheckCallback)(void);
     /* 0x14 */ u32 randSeed;
     /* 0x18 */ u32 randSeedHi;
-    /* 0x1c */ u32 recvRingBuf;
+    /* 0x1c */ u8 *recvRingBuf;
     /* 0x20 */ u32 recvRingSize;
     /* 0x24 */ u32 mss;
     /* 0x28 */ u32 requestedIp;

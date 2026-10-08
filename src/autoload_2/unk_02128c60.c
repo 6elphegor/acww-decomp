@@ -9,17 +9,9 @@ typedef signed short s16;
 typedef signed int s32;
 #include "types64.h"
 
-typedef char *va_list;
-#define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
-#define va_end(ap)
+#include "ds_stdarg.h"
 
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
-#define PROTO_LOCAL_data_0213c4fc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_mbtowc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_raise  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_rand  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_srand  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212a454.h"
@@ -36,21 +28,22 @@ typedef struct scan_format {
 
 typedef int (*ReadProc)(void *, int, int);
 
-extern u32 data_0213c4fc;                 // rand seed
+// (C: the shared headers declare what uses u32 / u16 for C++ only)
+extern u32 data_0213c4fc;                 // rand seed (defined below)
 extern scan_format data_0213c500;         // default_scan_format {0,0,0,0, 0x7fffffff, zeros}
 extern const u16 data_0213a510[];         // __ctype_map
 extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7])
 extern u32 data_02200250[];
 extern s32 data_02200274[];
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
-extern u32 data_02200650[];               // signal handler table
+extern u32 data_02200650[];               // signal handler table (0 = SIG_DFL, 1 = SIG_IGN, else a function)
 
 int OS_TryLockMutex(OSMutex *);
 void exit(int);
+int mbtowc(u16 *, const char *, u32);
 const char *parse_format(const char *format_string, scan_format *format);
 u32 __strtoul(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
 float _d2f(double);
-int mbtowc(u16 *, const char *, u32);
 int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap);
 int vsscanf(const char *s, const char *fmt, va_list ap);
 
@@ -101,7 +94,7 @@ char *strstr(const char *str, const char *pat) {
 
 // raise
 int raise(int sig) {
-    void (*handler)(int);
+    u32 handler;
     OSThread *t;
     if (sig < 1 || sig > 7) return -1;
     if (OS_TryLockMutex(&data_02200324) == 0) {
@@ -114,12 +107,13 @@ int raise(int sig) {
         data_02200250[7] = data_021fcc2c.list->id;
         data_02200274[7] = 1;
     }
-    handler = (void (*)(int))data_02200650[sig - 1];
-    if ((u32)handler != 1) data_02200650[sig - 1] = 0;
+    handler = data_02200650[sig - 1];
+    if (handler != 1) data_02200650[sig - 1] = 0;
     if (--data_02200274[7] == 0) OS_UnlockMutex(&data_02200324);
-    if ((u32)handler == 1 || ((u32)handler == 0 && sig == 1)) return 0;
+    if (handler == 1 || (handler == 0 && sig == 1)) return 0;  // SIG_IGN, or SIG_DFL for signal 1
     if (handler == 0) exit(0);
-    handler(sig);
+    // the table (gap data, no definition in the sources yet) has 32-bit slots: a handler is a code address below 4 GB
+    ((void (*)(int))(uptr)handler)(sig);
     return 0;
 }
 
@@ -324,7 +318,7 @@ int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap) {
         }
         format_ptr = (const u8 *)parse_format((const char *)format_ptr, &format);
         if (!format.suppress_assignment && format.conversion_char != '%') {
-            arg_ptr = *(u8 **)((ap += 4) - 4);
+            arg_ptr = va_arg(ap, u8 *);
         } else {
             arg_ptr = 0;
         }

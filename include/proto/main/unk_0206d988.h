@@ -4,20 +4,49 @@
 // Prototypes of the functions defined in src/main/unk_0206d988.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "snd/Melody.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
-#include "types.h"
-class MelodyPlayer;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_020ddf8c
+extern s32 data_020ddf8c;
+#endif
+#ifndef PROTO_LOCAL_Melody_Pack
+void Melody_Pack(u32 *dst, u8 *src);
+#endif
+#ifndef PROTO_LOCAL_Melody_Unpack
+void Melody_Unpack(u32 *src, u8 *dst);
+#endif
 #ifndef PROTO_LOCAL_Melody_ResetToDefault
 void Melody_ResetToDefault();
 #endif
+#ifndef PROTO_LOCAL_Melody_SetPacked
+void Melody_SetPacked(u32 *a);
+#endif
 #ifndef PROTO_LOCAL_Melody_ApplyEditPattern
 void Melody_ApplyEditPattern();
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayEditPattern
+void Melody_PlayEditPattern(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_Play
+void Melody_Play(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_StartTrackA
+void Melody_StartTrackA(s32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayNote
+void Melody_PlayNote(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Melody_IsBusy
+BOOL Melody_IsBusy();
+#endif
+#ifndef PROTO_LOCAL_Melody_PlayRandom
+void Melody_PlayRandom(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Melody_SaveRandomPattern
 void Melody_SaveRandomPattern();
@@ -37,38 +66,8 @@ void Melody_Update(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_020ddf8c
-extern s32 data_020ddf8c;
-#endif
-#ifndef PROTO_LOCAL_Melody_Pack
-void Melody_Pack(u32 *dst, u8 *src);
-#endif
-#ifndef PROTO_LOCAL_Melody_Unpack
-void Melody_Unpack(u32 *src, u8 *dst);
-#endif
-#ifndef PROTO_LOCAL_Melody_SetPacked
-void Melody_SetPacked(u32 *a);
-#endif
-#ifndef PROTO_LOCAL_Melody_PlayEditPattern
-void Melody_PlayEditPattern(u32 a);
-#endif
-#ifndef PROTO_LOCAL_Melody_Play
-void Melody_Play(u32 a);
-#endif
 #ifndef PROTO_LOCAL_Melody_PlayAt
 void Melody_PlayAt(VecFx32 *a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_Melody_StartTrackA
-void Melody_StartTrackA(s32 a);
-#endif
-#ifndef PROTO_LOCAL_Melody_PlayNote
-void Melody_PlayNote(u32 a);
-#endif
-#ifndef PROTO_LOCAL_Melody_IsBusy
-BOOL Melody_IsBusy();
-#endif
-#ifndef PROTO_LOCAL_Melody_PlayRandom
-void Melody_PlayRandom(u32 a);
 #endif
 }
 #ifndef PROTO_LOCAL_sMelodyTimer

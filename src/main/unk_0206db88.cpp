@@ -34,8 +34,6 @@ extern u8 gFieldSceneKind;
 extern u8 gCurrentHeap[];
 
 s64 func_02133540(u32, u32, u32);
-#define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
-void *MelodyTrack_dtor(void *);
 BOOL Camera_RestorePrevMode();
 void Sky_SetEngine(u32);
 void ScreenLayers_ReleaseStub(u32);

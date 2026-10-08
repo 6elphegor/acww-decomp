@@ -85,7 +85,7 @@ u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
 void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err);
-u32 WMi_GetStatusAddress(void);
+WMStatus *WMi_GetStatusAddress(void);
 void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
 void CARDi_SendtoPxi(u32 data, u32 n);
 void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);
@@ -110,8 +110,8 @@ WMOtherElements WM_GetOtherElements(WMBssDesc *b) {
     elems.count = (u8)b->otherElementCount;
     if (elems.count == 0) return elems;
     if (elems.count > 16) elems.count = 16;
-    p_elem = HOST_AT(b, 64, gameInfo.magicNumber, 0);
-    elems_len = (u8)((*(u16 *)b * sizeof(u16)) - 64);
+    p_elem = (u8 *)&b->gameInfo;
+    elems_len = (u8)((b->length * sizeof(u16)) - 64);
     cal_elems_len = 0;
     for (i = 0; i < elems.count; ++i) {
         elems.element[i].id = p_elem[0];

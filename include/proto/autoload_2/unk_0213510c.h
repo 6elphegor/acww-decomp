@@ -4,21 +4,15 @@
 // Prototypes of the functions defined in src/autoload_2/unk_0213510c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL__ZSt9dthandlerv
-void _ZSt9dthandlerv(void);
-#endif
-#ifndef PROTO_LOCAL__ZSt9terminatev
-void _ZSt9terminatev(void);
-#endif
 #ifndef PROTO_LOCAL___register_global_object
 void *__register_global_object(void *object, void *destructor, void *regmem);
+#endif
+#ifndef PROTO_LOCAL___throw_catch_compare
+int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
 #endif
 #ifndef PROTO_LOCAL___call_static_initializers
 void __call_static_initializers(void);
@@ -27,14 +21,6 @@ void __call_static_initializers(void);
 void __destroy_global_chain(void);
 #endif
 #ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL___throw_catch_compare
-int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
-#endif
 }
 #endif
 

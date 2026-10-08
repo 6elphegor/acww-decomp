@@ -1,4 +1,5 @@
 #include "types.h"
+#include "snd/Melody.h"
 #define PROTO_LOCAL_Melody_SaveDefaultPattern  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
@@ -13,22 +14,7 @@ s64 func_02133540(u32, u32, u32);
 void Melody_SaveDefaultPattern();
 }
 
-// 0x14-byte member, destructor MelodyTrack::~MelodyTrack (autoload_2, alias in aliases.txt)
-class MelodyTrack {
-public:
-    ~MelodyTrack();
-    u8 pad_00[0x14];
-};
-
-// 0x40-byte object gMelodyPlayer; destructor is func_0206db70 (renamed in renames.txt)
-class MelodyPlayer {
-public:
-    ~MelodyPlayer();
-    MelodyTrack trackA;
-    MelodyTrack trackB;
-    u8 pad_28[0x18];
-};
-
+// gMelodyPlayer (snd/Melody.h); its destructor is func_0206db70 (renamed in renames.txt)
 MelodyPlayer::~MelodyPlayer()
 {
 }

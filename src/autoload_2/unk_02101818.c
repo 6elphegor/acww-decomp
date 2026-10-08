@@ -1,5 +1,4 @@
-#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bc1c  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02101818.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) code: gfd palette VRAM frame manager + g2d font (NNSG2dFont): autoload_2 0x02101818-0x02101de8.
@@ -18,8 +17,6 @@ typedef struct FrmPlttMan {
     u32 size;   // 0x08
 } FrmPlttMan;
 extern FrmPlttMan data_021f5cb4;
-extern u32 (*data_0213bc18)(u32, BOOL, u32);   // gfd default palette alloc function
-extern u32 (*data_0213bc1c)(u32);              // gfd default palette free function
 
 // ---- g2d binary file header / block header
 typedef struct BinHeader {
@@ -67,7 +64,7 @@ typedef struct Font {
 } Font;
 typedef struct TextRect { s32 width; s32 height; } TextRect;
 
-u32 NNS_GfdFreeFrmPlttVram(u32 key);
+s32 NNS_GfdFreeFrmPlttVram(u32 key);
 u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt);
 extern s32 NNSi_G2dGetUnpackedFont(void *file, Font *font);
 extern u32 NNSi_G2dSplitCharUTF16(const void **);
@@ -259,7 +256,7 @@ u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt) {
 }
 
 // NNS_GfdDefaultFuncFreePlttVram (always returns 0)
-u32 NNS_GfdFreeFrmPlttVram(u32 key) {
+s32 NNS_GfdFreeFrmPlttVram(u32 key) {
     return 0;
 }
 

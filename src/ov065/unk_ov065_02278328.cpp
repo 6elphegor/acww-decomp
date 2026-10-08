@@ -106,7 +106,7 @@ HashImplementation *TableNew(s32 esize, s32 n, TableHashFn hash, ArrayCompareFn 
 
 HashImplementation *TableNew2(s32 esize, s32 n, s32 cap, TableHashFn hash, ArrayCompareFn cmp,
                                             ArrayElementFreeFn dtor) {
-    HashImplementation *t = (HashImplementation *)GsUtil_Alloc(HOST_SIZED(0x14, HashImplementation));
+    HashImplementation *t = (HashImplementation *)GsUtil_Alloc(sizeof(HashImplementation));
     s32 i;
     t->buckets = (DArrayImplementation **)GsUtil_Alloc(n * 4);
     i = 0;
@@ -237,7 +237,7 @@ void SetElement(DArrayImplementation *v, void *x, s32 i) {
 }
 
 DArrayImplementation *ArrayNew(s32 size, s32 cap, ArrayElementFreeFn dtor) {
-    DArrayImplementation *v = (DArrayImplementation *)GsUtil_Alloc(HOST_SIZED(0x18, DArrayImplementation));
+    DArrayImplementation *v = (DArrayImplementation *)GsUtil_Alloc(sizeof(DArrayImplementation));
     if (cap == 0) {
         cap = 8;
     }

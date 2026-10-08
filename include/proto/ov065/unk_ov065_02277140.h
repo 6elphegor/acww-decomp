@@ -74,10 +74,10 @@ u32 DwcNet_ParseHeader(void *src);
 s32 DwcNet_GetHeaderSize(s32 m);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_OnReceive
-void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d);
+void DwcNet_OnReceive(void *a, void *b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_OnPing
-void DwcNet_OnPing(s32 a, s32 b);
+void DwcNet_OnPing(void *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_ResetChannel
 void DwcNet_ResetChannel(s32 id);
@@ -95,10 +95,10 @@ u32 DwcNet_GetRecvState(s32 id);
 void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_RecvReliable
-void DwcNet_RecvReliable(s32 a, void *buf, s32 n);
+void DwcNet_RecvReliable(void *a, void *buf, s32 n);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_RecvUnreliable
-void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n);
+void DwcNet_RecvUnreliable(void *a, void *buf, s32 n);
 #endif
 #ifndef PROTO_LOCAL_DwcNet_RecvHeader
 void DwcNet_RecvHeader(s32 id, void *buf, s32 n);

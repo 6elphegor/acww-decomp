@@ -17,7 +17,6 @@
 #define PROTO_LOCAL_Main_LateUpdate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Main_WaitFrame  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Main_WaitVBlank  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_Update  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
@@ -28,6 +27,7 @@
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02114cd8.h"
 #include "proto/main/unk_02000c2c.h"
 #include "proto/main/unk_0200137c.h"
@@ -100,11 +100,11 @@ extern u32 gFrameCounter;
 }
 
 extern "C" {
-extern u8 gFrameWaitQueue[];
+extern OSThreadQueue gFrameWaitQueue;
 }
 
 extern "C" {
-extern u8 gVBlankQueue[];
+extern OSThreadQueue gVBlankQueue;
 }
 
 extern "C" {
@@ -345,10 +345,6 @@ void Clock_Update(u32 v);
 }
 
 extern "C" {
-void OS_SleepThread(void *p);
-}
-
-extern "C" {
 void Backup_GetStatus(void *p);
 }
 
@@ -549,11 +545,11 @@ extern "C" void Fatal_ExceptionCallback(void *arg, void *p) {
 extern "C" void Main_InitNop(void) {}
 
 extern "C" void Main_WaitVBlank(void) {
-    OS_SleepThread(gVBlankQueue);
+    OS_SleepThread(&gVBlankQueue);
 }
 
 extern "C" void Main_WaitFrame(void) {
-    OS_SleepThread(gFrameWaitQueue);
+    OS_SleepThread(&gFrameWaitQueue);
 }
 
 extern "C" void Main_PreTaskUpdate(u32 r) {

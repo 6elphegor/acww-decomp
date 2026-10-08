@@ -70,7 +70,7 @@ extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void OS_GetMacAddress(u8 *);
 extern int RTC_GetTime(u32 *);
-extern void WM_SetPortCallback(u16, u32, u32);
+extern u32 WM_SetPortCallback(u16 port, WMCallback cb, void *arg);
 
 BOOL func_0211f7e4(void);
 u32 WM_GetLinkLevel(void);
@@ -86,7 +86,7 @@ u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
 void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err);
-u32 WMi_GetStatusAddress(void);
+WMStatus *WMi_GetStatusAddress(void);
 void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
 void CARDi_SendtoPxi(u32 data, u32 n);
 void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);
@@ -104,8 +104,8 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
             if (data_021ff46c->cbC0 != 0) data_021ff46c->cbC0(m);
         } else if (m->id == 0x82) {
             if (data_021ff46c->portCb[m->f06] != 0) {
-                m->arg = (void *)data_021ff46c->portArg[m->f06];
-                DC_InvalidateRange((void *)m->f08, data_021ff46c->status->f46);
+                m->arg = data_021ff46c->portArg[m->f06];
+                DC_InvalidateRange(WMi_Arm7Ptr(m->f08), data_021ff46c->status->f46);
                 data_021ff46c->portCb[m->f06](m);
             }
         } else if (m->id == 0x81) {
@@ -120,7 +120,7 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
         u8 *r5;
         u8 *r4;
         if (m->id == 14 && (u16)(m->f04 + 0xfff5) <= 1 && m->errcode == 0)
-            DC_InvalidateRange((void *)m->f08, data_021ff46c->status->f46);
+            DC_InvalidateRange(WMi_Arm7Ptr(m->f08), data_021ff46c->status->f46);
         if (m->id == 2 && m->errcode == 0) {
             cb = data_021ff46c->cb18[m->id];
             WM_Finish();
@@ -134,8 +134,8 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
         }
         if (m->id == 8 || m->id == 12) {
             if (m->id == 8) {
-                r5 = HOST_AT(m, 10, f08, 2);
-                r4 = HOST_AT(m, 20, _14[0], 0);
+                r5 = (u8 *)&m->f0a;
+                r4 = m->_14;
                 r8 = m->f08w;
                 r7 = m->f10;
                 r6 = 0;
@@ -143,8 +143,8 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
                 r7 = 0;
                 r8 = m->f08w;
                 r6 = m->f10;
-                r4 = (u8 *)r7;
-                r5 = HOST_AT(m, 10, f08, 2);
+                r4 = NULL;
+                r5 = (u8 *)&m->f0a;
             }
             if (r8 == 7 || r8 == 9) {
                 u16 i;
@@ -167,7 +167,7 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
                 for (i = 0; i < 16; i++) {
                     data_021ff4b8.f06 = i;
                     if (data_021ff46c->portCb[i] != 0) {
-                        data_021ff4b8.arg = (void *)data_021ff46c->portArg[i];
+                        data_021ff4b8.arg = data_021ff46c->portArg[i];
                         data_021ff46c->portCb[i](&data_021ff4b8);
                     }
                 }
@@ -187,8 +187,8 @@ void WmClearFifoRecvFlag(void) {
     if (*p & 1) *p &= ~1;
 }
 
-u32 WMi_GetStatusAddress(void) {
-    return WMi_CheckInitialized() != 0 ? 0 : (u32)data_021ff46c->status;
+WMStatus *WMi_GetStatusAddress(void) {
+    return WMi_CheckInitialized() != 0 ? NULL : data_021ff46c->status;
 }
 
 // ---- file-scope objects (autoload_3 .bss 0x021ff4cc-0x021fff00; this definition order gives the original order after mwcc's size

@@ -4,5 +4,23 @@
 // Prototypes of the functions defined in src/autoload_2/unk_02107994.c (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "nnsys/g3d_rt.h"
+#include "types.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_GetTexSRTAnm_
+void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, G3dMatAnmResult *out);
+#endif
+#ifndef PROTO_LOCAL_NNSi_G3dAnmObjInitNsBta
+void NNSi_G3dAnmObjInitNsBta(G3dAnmObj *obj, u8 *res, u8 *blk);
+#endif
+#ifndef PROTO_LOCAL_NNSi_G3dAnmCalcNsBta
+void NNSi_G3dAnmCalcNsBta(G3dMatAnmResult *result, const G3dAnmObj *anm, u32 dataIdx);
+#endif
+}
+#endif
 
 #endif

@@ -37,12 +37,19 @@ struct GTI2IncomingBufferMessage {
 };
 
 // Incoming connection request: (socket, conn, ip, port, latency, message, len).
-typedef s32 (*gt2ConnectAttemptCallback)(GTI2Socket *, GTI2Connection *, s32, s32, s32, s32, s32);
+typedef s32 (*gt2ConnectAttemptCallback)(GTI2Socket *, GTI2Connection *, s32, s32, s32, u8 *, s32);
 typedef s32 (*gt2SocketErrorCallback)(GTI2Socket *);
 // Raw send/receive dump: (socket, conn, ip, port, reset, data, len).
-typedef s32 (*gt2DumpCallback)(GTI2Socket *, GTI2Connection *, s32, s32, s32, s32, s32);
+typedef s32 (*gt2DumpCallback)(GTI2Socket *, GTI2Connection *, s32, s32, s32, u8 *, s32);
 // Packet from an unknown sender: (socket, ip, port, data, len) -> handled.
-typedef s32 (*gt2UnrecognizedMessageCallback)(GTI2Socket *, s32, s32, s32, s32);
+typedef s32 (*gt2UnrecognizedMessageCallback)(GTI2Socket *, s32, s32, u8 *, s32);
+
+// The connection callbacks: connected (result, message, len), received (message, len, reliable), closed (reason),
+// ping (latency).
+typedef s32 (*gt2ConnectedCallback)(GTI2Connection *, s32, u8 *, s32);
+typedef s32 (*gt2ReceivedCallback)(GTI2Connection *, u8 *, s32, s32);
+typedef s32 (*gt2ClosedCallback)(GTI2Connection *, s32);
+typedef s32 (*gt2PingCallback)(GTI2Connection *, s32);
 
 struct GTI2Socket {
     /* 0x00 */ s32 socket;
@@ -65,13 +72,17 @@ struct GTI2Socket {
     /* 0x40 */ u8 pad_40[4];
 };
 
-// The four connection callbacks, copied as one block over GTI2Connection::connectedCallback by
-// gti2StartConnectionAttempt/DoAccept.
+// The four connection callbacks (gt2Connect / gt2Accept), copied to the GTI2Connection by
+// gti2StartConnectionAttempt / gti2AcceptConnection.
 struct GsTransportConnCallbacks {
-    /* 0x00 */ s32 v[4];
+    /* 0x00 */ gt2ConnectedCallback connected;
+    /* 0x04 */ gt2ReceivedCallback received;
+    /* 0x08 */ gt2ClosedCallback closed;
+    /* 0x0c */ gt2PingCallback ping;
 };
 
-typedef s32 (*GsTransportFilterCallback)(GTI2Connection *, s32, u32, u32, u32);
+// Send / receive filter: (connection, filter id, message, len, reliable).
+typedef s32 (*GsTransportFilterCallback)(GTI2Connection *, s32, u8 *, u32, u32);
 
 // 32-character challenge made by gti2GetChallenge (StartConnect's local).
 struct GsTransportChallengeBuf {
@@ -90,13 +101,13 @@ struct GTI2Connection {
     /* 0x1c */ u32 startTime;
     /* 0x20 */ u32 timeout;
     /* 0x24 */ s32 callbackLevel;
-    /* 0x28 */ s32 (*connectedCallback)(GTI2Connection *, s32, s32, s32);
-    /* 0x2c */ s32 (*receivedCallback)(GTI2Connection *, s32, s32, s32);
-    /* 0x30 */ s32 (*closedCallback)(GTI2Connection *, s32);
-    /* 0x34 */ s32 (*pingCallback)(GTI2Connection *, s32);
+    /* 0x28 */ gt2ConnectedCallback connectedCallback;
+    /* 0x2c */ gt2ReceivedCallback receivedCallback;
+    /* 0x30 */ gt2ClosedCallback closedCallback;
+    /* 0x34 */ gt2PingCallback pingCallback;
     /* 0x38 */ void *initialMessage;
     /* 0x3c */ s32 initialMessageLen;
-    /* 0x40 */ s32 data;
+    /* 0x40 */ void *data; // the user's (gt2SetConnectionData)
     /* 0x44 */ GTI2Buffer incomingBuffer;
     /* 0x50 */ GTI2Buffer outgoingBuffer;
     /* 0x5c */ void *incomingBufferMessages;

@@ -47,6 +47,8 @@ def header_is_cpp(h):
         try:
             body = open(os.path.join('include', h)).read()
             body = re.sub(r'//[^\n]*|/\*.*?\*/', '', body, flags=re.S)
+            # preprocessor lines (types.h: #if defined(MODERN) && defined(__cplusplus)) don't make a header C++-only
+            body = re.sub(r'^[ \t]*#.*(?:\\\n.*)*', '', body, flags=re.M)
             _hdr_cpp_cache[h] = bool(CPP_ONLY.search(body))
         except OSError:
             _hdr_cpp_cache[h] = True

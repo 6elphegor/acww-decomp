@@ -29,6 +29,7 @@
 #include "room/FtrTopItem.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "snd/Melody.h"
 #include "gfx/ModelAnim.h"
 #include "room/FtrCollider.h"
 #include "gfx/MatTexVramTask.h"
@@ -1214,20 +1215,20 @@ public:
     virtual BOOL updateActive();
     virtual BOOL updateAppearRemove();
 
-    /* 0x840 */ u32 melodyBeat[3];
+    /* 0x840 */ MelodyBeat melodyBeat;
 };
 
 BOOL FtrInstrument::changeAct(u32 a, u8 v) {
     FtrActor::changeAct(a, v);
     u32 c = FtrSound_GetSe1(p13::FtrActor_GetFtrIndex(this));
     if (c != p13::gFtrSoundNone) {
-        Snd_MelodyBeatStart(melodyBeat, c);
+        Snd_MelodyBeatStart(&melodyBeat, c);
     }
     return TRUE;
 }
 
 BOOL FtrInstrument::onDelete() {
-    Snd_MelodyBeatStop(melodyBeat);
+    Snd_MelodyBeatStop(&melodyBeat);
     return TRUE;
 }
 
@@ -1236,7 +1237,7 @@ BOOL FtrInstrument::updateAppearRemove() {
     v.x = centerPos.x;
     v.y = centerPos.y;
     v.z = centerPos.z;
-    Snd_MelodyBeatUpdate((Seq1 *)melodyBeat, &v);
+    Snd_MelodyBeatUpdate(&melodyBeat, &v);
     return TRUE;
 }
 
@@ -1249,7 +1250,7 @@ BOOL FtrInstrument::updateActive() {
 }
 
 BOOL FtrInstrument::initModel() {
-    Snd_MelodyBeatInit(melodyBeat);
+    Snd_MelodyBeatInit(&melodyBeat);
     return TRUE;
 }
 

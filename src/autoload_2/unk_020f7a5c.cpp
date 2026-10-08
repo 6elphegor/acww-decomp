@@ -15,106 +15,55 @@
 //   The "Rb" state machine (f83fc, f8604, f86c0..f8b08, called by name from main) stays plain extern "C" over a struct view.
 // The scene class file (unk_020f0fb4.cpp) and main call the constructors / destructors by their func_ names (aliases keep them).
 #include "types.h"
-#include "snd/BgmBeatPhase.h"
+#include "gfx/VecFx32.h"
+#include "snd/BgmBeatSync.h"
 #include "snd/SndBgmViews.h"
 #include "snd/SndBgmHd.h"
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "snd/SndMgr.h"
+#include "snd/SndScenes.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020f0dec.h"
 #include "proto/autoload_2/unk_020f7a5c.h"
 #include "proto/autoload_2/unk_0210c084.h"
 
 
-// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with NNS_SndPlayerReadVariable(&handle, selector, &out)
+// gSndBgmHandle (gSndMgr.bgmHandle): the BGM's NNS sound handle, its first word the sequence (Hd) or NULL; queried with
+// NNS_SndPlayerReadVariable(&handle, selector, &out)
 struct Hr {
     Hd *p;
 };
 
-
-class BgmBeatSync;
-// view of gSndMgr (the sound manager SndMgr, unk_020f0dec.cpp): +0 current animation object, +0x2c Q*, +0x3c Hd* (= gSndBgmHandle)
-struct Mg {
-    BgmBeatSync *cur;
-    u8 p4[0x28];
-    Q *q;
-    u8 p30[0xc];
-    Hd *h;
-};
-
-
-// base: BGM tempo follower (vtable 0x0213bb88), 0x14 bytes
-class BgmTempoTracker {
-public:
-    BgmTempoTracker();
-    ~BgmTempoTracker();
-    virtual void update(); // per-frame refresh
-
-    void syncTempo();
-    void setMode(u8 v);
-
-    /* 0x04 */ s32 w4;
-    /* 0x08 */ u8 c8;
-    /* 0x09 */ s8 c9;
-    /* 0x0a */ s8 c10;
-    /* 0x0b */ s8 c11;
-    /* 0x0c */ s8 c12;
-    /* 0x0e */ s16 h14;
-    /* 0x10 */ s8 c16;
-    /* 0x12 */ u16 h18;
-};
-
-// BGM-synchronised animation object (vtable 0x0213bb7c), 0x30 bytes; gSndMgr.cur points to the live one
-class BgmBeatSync : public BgmTempoTracker {
-public:
-    BgmBeatSync();
-    ~BgmBeatSync();
-    virtual void update(); // update
-
-    void setEnable(u8 v);
-    void pickAnim();
-    void readTempo();
-    void calcPhase();
-
-    /* 0x14 */ BgmBeatPhase sub;
-    /* 0x28 */ u8 c28;
-    /* 0x29 */ u8 c29;
-    /* 0x2a */ u8 c2a;
-    /* 0x2c */ s16 s2c;
-    /* 0x2e */ u8 c2e;
-};
-
+// the tempo follower of the current scene sound setup (gSndMgr.scene: SndScene10::tempo, or SndScene41::beatSync's base,
+// at the same place)
+static inline BgmTempoTracker *SceneTempo() {
+    return &((SndScene10 *)gSndMgr.scene)->tempo;
+}
 
 extern "C" {
-extern Mg gSndMgr;
 extern Hr gSndBgmHandle;
+// (not in the shared headers: not decompiled yet, or defined with file-local types)
 s32 FX_Div(s32 a, s32 b);
 void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
 void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
-void Snd_StopHandle(void *p, u32 v);
-void Snd_InitHandle(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTempoRatio(void *p, s32 v);
 void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
 void NNS_SndPlayerWriteGlobalVariable(u32 a, s32 b);
-s32 Snd_CalcListenerDistance(u32 a, u32 b);
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
 s32 Snd_DistanceToVolume(s32 d);
-s32 Snd_CalcPan(u32 a, u32 b);
+s32 Snd_CalcPan(VecFx32 *p, s32 m);
 u32 SND_RecvCommandReply(u32 a);
 void NNS_SndUpdateDriverInfo(void);
 void SND_FlushCommand(u32 a);
 s32 NNS_SndPlayerReadDriverPlayerInfo(void *p, void *out);
 s32 NNS_SndPlayerReadDriverTrackInfo(void *p, u32 a, void *out);
-void BgmSyncSnd_ReadHeader(Rb *r);
-void BgmSyncSnd_ReadVars(Rb *r);
-void BgmSyncSnd_SelectStep(Rb *r);
-void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
 }
 
 // beat counters (bss)
 s16 data_021f5c30;
 s16 data_021f5c34;
-
-static inline BOOL nz(u32 v) { return v != 0; }
 
 extern "C" void BgmSyncSnd_Init(Rb *r, u16 v) {
     Snd_InitHandle(r);
@@ -171,7 +120,7 @@ extern "C" s32 BgmSyncSnd_PollStarted(Rb *r) {
     return res;
 }
 
-extern "C" s32 BgmSyncSnd_Update(Rb *r, void *arg) {
+extern "C" s32 BgmSyncSnd_Update(Rb *r, VecFx32 *arg) {
     s32 res = -0x1000;
     switch (r->c8) {
     case 0:
@@ -230,8 +179,8 @@ extern "C" void BgmSyncSnd_ReadVars(Rb *r) {
     r->c12 = a[3];
     r->c13 = a[4];
     r->c14 = a[5];
-    if (!nz((u32)gSndMgr.h)) return;
-    if (gSndMgr.h->id == 240) data_021f5c34 = data_021f5c34 >> 1;
+    if (gSndBgmHandle.p == NULL) return;
+    if (gSndBgmHandle.p->id == 240) data_021f5c34 = data_021f5c34 >> 1;
 }
 
 extern "C" void BgmSyncSnd_ReadHeader(Rb *r) {
@@ -241,7 +190,7 @@ extern "C" void BgmSyncSnd_ReadHeader(Rb *r) {
         s16 v[4];
     } q;
     s32 i;
-    if (!nz(r->w0)) return;
+    if (r->handle == NULL) return;
     NNS_SndPlayerReadVariable(r, 0, &q.s0);
     NNS_SndPlayerReadVariable(r, 1, &q.v[0]);
     NNS_SndPlayerReadVariable(r, 2, &q.v[1]);
@@ -256,17 +205,17 @@ extern "C" void BgmSyncSnd_ReadHeader(Rb *r) {
     }
 }
 
-extern "C" void BgmSyncSnd_UpdatePosition(Rb *r, void *arg) {
+extern "C" void BgmSyncSnd_UpdatePosition(Rb *r, VecFx32 *arg) {
     s32 a, b;
     if (arg == 0) return;
-    a = Snd_DistanceToVolume(Snd_CalcListenerDistance((u32)arg, 0));
-    b = Snd_CalcPan((u32)arg, 0);
+    a = Snd_DistanceToVolume(Snd_CalcListenerDistance(arg, 0));
+    b = Snd_CalcPan(arg, 0);
     NNS_SndPlayerSetVolume(r, a);
     NNS_SndPlayerSetTrackPan(r, 15, b);
-    if (gSndMgr.q == 0) return;
-    s32 x = FX_Div(gSndMgr.q->s16v << 20, 0x78000) >> 12;
-    if (!nz((u32)gSndMgr.h)) return;
-    if (gSndMgr.h->id == 240) x >>= 1;
+    if (gSndMgr.scene == NULL) return;
+    s32 x = FX_Div(SceneTempo()->h14 << 20, 0x78000) >> 12;
+    if (gSndBgmHandle.p == NULL) return;
+    if (gSndBgmHandle.p->id == 240) x >>= 1;
     NNS_SndPlayerSetTempoRatio(r, x);
 }
 
@@ -281,8 +230,8 @@ extern "C" s32 BgmSyncSnd_CalcPhase(Rb *r) {
         d = data_021f5c30 - a;
         if (d < 0) d += 16;
         rv = d << 14;
-        if (gSndMgr.q == 0) return 0;
-        if (gSndMgr.q->s1a == 1) {
+        if (gSndMgr.scene == NULL) return 0;
+        if (SceneTempo()->h18 == 1) {
             s32 w = data_021f5c34;
             if (w < 32) {
                 rv += (w << 14) >> 5;
@@ -311,8 +260,8 @@ extern "C" s32 BgmSyncSnd_CalcPhase(Rb *r) {
         sc = r->c14;
         break;
     }
-    if (gSndMgr.q == 0) return 0;
-    switch (gSndMgr.q->s1a) {
+    if (gSndMgr.scene == NULL) return 0;
+    switch (SceneTempo()->h18) {
     case 0:
         rv = 24;
         break;
@@ -356,7 +305,7 @@ BgmTempoTracker::BgmTempoTracker() {
 }
 
 BgmTempoTracker::~BgmTempoTracker() {
-    gSndMgr.cur = 0;
+    gSndMgr.beatSync = NULL;
 }
 
 void BgmTempoTracker::setMode(u8 v) {
@@ -375,7 +324,7 @@ void BgmTempoTracker::setMode(u8 v) {
 
 void BgmTempoTracker::update() {
     s16 a[3];
-    if (!nz((u32)gSndMgr.h)) NNS_SndArcPlayerStartSeq(&gSndBgmHandle, 248);
+    if (gSndBgmHandle.p == NULL) NNS_SndArcPlayerStartSeq(&gSndBgmHandle, 248);
     NNS_SndPlayerReadGlobalVariable(1, &a[0]);
     NNS_SndPlayerReadGlobalVariable(2, &a[1]);
     NNS_SndPlayerReadVariable(&gSndBgmHandle, 6, &a[2]);
@@ -415,7 +364,7 @@ BgmBeatSync::BgmBeatSync() {
     c29 = 1;
     s2c = -1;
     c2e = 1;
-    gSndMgr.cur = this;
+    gSndMgr.beatSync = this;
 }
 
 BgmBeatSync::~BgmBeatSync() {
@@ -435,7 +384,7 @@ void BgmBeatSync::update() {
     if (sub.seqVar4 == -1) {
         Hr *h = &gSndBgmHandle;
         s32 id;
-        if (!nz((u32)h->p)) return;
+        if (h->p == NULL) return;
         NNS_SndPlayerReadVariable(h, 4, &v);
         sub.seqVar4 = v;
         sub.beatFrame = 0;
@@ -524,7 +473,7 @@ void BgmBeatSync::pickAnim() {
 void BgmBeatSync::readTempo() {
     Hr *const h = &gSndBgmHandle;
     s16 v[4];
-    if (!nz((u32)h->p)) return;
+    if (h->p == NULL) return;
     NNS_SndPlayerReadVariable(h, 1, &v[0]);
     NNS_SndPlayerReadVariable(h, 0, &v[1]);
     NNS_SndPlayerReadVariable(h, 2, &v[2]);

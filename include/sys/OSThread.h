@@ -36,8 +36,8 @@ struct OSThread {
     void *mutex;            // 0x84
     OSMutex *mutexHead;     // 0x88
     OSMutex *mutexTail;     // 0x8c
-    u32 stackTop;           // 0x90
-    u32 stackBottom;        // 0x94
+    u8 *stackTop;           // 0x90 (the stack's lowest address)
+    u8 *stackBottom;        // 0x94 (its end)
     u32 stackWarningOffset; // 0x98
     OSThreadQueue joinQueue; // 0x9c
     void *specific[3];      // 0xa4 (ov065 IP stack: specific[0] = the thread's IpSocket)

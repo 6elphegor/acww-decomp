@@ -23,8 +23,20 @@ struct WifiApFoundInfo {
     /* 0x0 */ u8 info[4];
 };
 
+// A user AP setting (0x100 bytes; WifiAp_SetApEntry, WifiAp_GetWepSetting): what WifiAp_GetWepSetting reads of it.
+struct WifiApUserSetting {
+    /* 0x00 */ u8 unk_00[0x80];
+    /* 0x80 */ u8 wepKey[0x50];
+    /* 0xd0 */ u8 unk_d0;
+    /* 0xd1 */ u8 key2[0x14]; // (the settings 3-5 of WifiAp_GetWepSetting)
+    /* 0xe5 */ u8 unk_e5;
+    /* 0xe6 */ u8 wepMode : 2;
+    /* 0xe6 */ u8 unk_e6 : 6;
+    /* 0xe7 */ u8 unk_e7[0x19];
+};
+
 struct WifiApContext {
-    /* 0x000 */ u8 pad000[0x300]; // the three user AP settings, 0x100 each (WifiAp_SetApEntry)
+    /* 0x000 */ WifiApUserSetting userSettings[3];
     /* 0x300 */ WifiApSearchEntry searchEntries[9];
     /* 0x444 */ u8 foundApInfo[0x2c]; // WifiApFoundInfo[11]
     /* 0x470 */ WMBssDesc foundApBss[11];

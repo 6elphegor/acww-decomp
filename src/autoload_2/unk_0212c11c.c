@@ -10,12 +10,7 @@ typedef int BOOL;
 typedef u16 wchar_t;
 #include "types64.h"
 #define NULL ((void *)0)
-#include "ds_stdarg.h"
 #include "ds_stdarg.h"  // DS_VA_ARG_C (both builds)
-#define PROTO_LOCAL_mbstowcs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_mbtowc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_memchr  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_memcpy  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212c11c.h"
 
 /* MSL C FILE (layout recovered from the code, see S020a) */

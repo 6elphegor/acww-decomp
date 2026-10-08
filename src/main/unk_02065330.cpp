@@ -186,7 +186,7 @@ extern "C" u32 LetterParty_IsType(LetterParty *self, u32 t) {
     return FALSE;
 }
 
-Letter::Letter() {}
+Letter::Letter() : dsVtable(LETTER_DS_VTABLE) {}
 
 Letter::~Letter() {}
 

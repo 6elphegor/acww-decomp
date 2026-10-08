@@ -8,76 +8,18 @@
 // function, vtable and report / update are in RC_020f5b9c). The class DECLARATION order (below) sets the vtable order: keep it.
 #include "types.h"
 #include "snd/TvSound.h"
-#define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "snd/SndMgr.h"
+#include "proto/autoload_2/unk_020ed8cc.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
 #include "proto/autoload_2/unk_020f6850.h"
 #include "proto/autoload_2/unk_0210c084.h"
 
-
-// 0x14 bytes
-class TvSoundProgram4 : public TvSound {
-public:
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    s32 pollVariable();
-
-    /* 0x0e */ s16 e14;
-    /* 0x10 */ s32 w16;
-};
-
-// 0x10 bytes
-class TvSoundProgram6 : public TvSound {
-public:
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0d */ u8 d13;
-};
-
-// 0x18 bytes
-class TvSoundProgram7 : public TvSound {
-public:
-    virtual void reset();
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0e */ u16 e14;
-    /* 0x10 */ u16 g16;
-    /* 0x12 */ u16 h18;
-    /* 0x14 */ u16 i20;
-};
-
-// 0x14 bytes
-class TvSoundProgram8 : public TvSound {
-public:
-    virtual void reset();
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0e */ u16 e14;
-    /* 0x10 */ u16 g16;
-};
-
-// 0x14 bytes
-class TvSoundProgram10 : public TvSound {
-public:
-    virtual void reset();
-    virtual void vfunc_08(s32 id, void *arg);
-    virtual void startSounds();
-
-    /* 0x0d */ u8 d13;
-    /* 0x0e */ u16 e14;
-    /* 0x10 */ u16 g16;
-    /* 0x12 */ u16 h18;
-};
+// (the classes: snd/TvSound.h)
 
 extern "C" {
-extern u8 gSndMgr[];
-u32 SndMgr_Rand(void *g, u32 n);
+// (not in the shared headers: not decompiled yet)
 void NNS_SndPlayerWriteVariable(void *p, u32 a, u32 b);
-void Snd_StopHandle(void *p, u32 v);
-void Snd_StartSeqArc(u32 code, u32 a, void *p);
 void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackMute(void *p, u32 a, u32 b);
 void NNS_SndPlayerReadVariable(void *p, u32 a, void *out);
@@ -183,36 +125,36 @@ void TvSoundProgram8::vfunc_08(s32 id, void *arg) {
         Snd_StartSeqArc(0x136, 1, &a);
         g16 = 0;
     } else if (id == 0) {
-        if (SndMgr_Rand(gSndMgr, 100) < 70) NNS_SndPlayerWriteVariable(&a, 0, 1);
+        if (SndMgr_Rand(&gSndMgr, 100) < 70) NNS_SndPlayerWriteVariable(&a, 0, 1);
         Snd_StopHandle(&b, 0);
         Snd_StartSeqArc(0x139, 1, &b);
     } else if (id == 90) {
-        if (SndMgr_Rand(gSndMgr, 100) < 60) {
+        if (SndMgr_Rand(&gSndMgr, 100) < 60) {
             NNS_SndPlayerWriteVariable(&a, 1, 1);
             e14 = 1;
         }
-        u32 r = SndMgr_Rand(gSndMgr, 100);
+        u32 r = SndMgr_Rand(&gSndMgr, 100);
         Snd_StopHandle(&b, 0);
         if (r < 33) Snd_StartSeqArc(0x13a, 1, &b);
         else if (r < 66) Snd_StartSeqArc(0x13b, 1, &b);
         else Snd_StartSeqArc(0x13c, 1, &b);
     } else if (id == 145) {
-        u32 r = SndMgr_Rand(gSndMgr, 100);
+        u32 r = SndMgr_Rand(&gSndMgr, 100);
         Snd_StopHandle(&b, 0);
         if (r < 33) Snd_StartSeqArc(0x13a, 1, &b);
         else if (r < 66) Snd_StartSeqArc(0x13b, 1, &b);
         else Snd_StartSeqArc(0x13c, 1, &b);
     } else if (id == 180) {
-        if (SndMgr_Rand(gSndMgr, 100) < 70 && e14 != 1) {
+        if (SndMgr_Rand(&gSndMgr, 100) < 70 && e14 != 1) {
             NNS_SndPlayerWriteVariable(&a, 1, 1);
             e14 = 2;
         }
-        if (SndMgr_Rand(gSndMgr, 100) < 60 && e14 != 1) {
+        if (SndMgr_Rand(&gSndMgr, 100) < 60 && e14 != 1) {
             NNS_SndPlayerWriteVariable(&a, 0, 1);
             e14 = 2;
         }
     } else if (id == 250) {
-        u32 r = SndMgr_Rand(gSndMgr, 100);
+        u32 r = SndMgr_Rand(&gSndMgr, 100);
         if (e14 != 2) {
             if (r < 70) {
                 NNS_SndPlayerWriteVariable(&a, 2, 1);
@@ -263,7 +205,7 @@ void TvSoundProgram7::vfunc_08(s32 id, void *arg) {
     } else if (id == 0) {
         Snd_StopHandle(&b, 0);
         Snd_StopHandle(&a, 0);
-        if (SndMgr_Rand(gSndMgr, 100) < 40) {
+        if (SndMgr_Rand(&gSndMgr, 100) < 40) {
             Snd_StartSeqArc(0x12e, 1, &b);
             Snd_StartSeqArc(0x132, 1, &a);
             i20 = 1;
@@ -273,7 +215,7 @@ void TvSoundProgram7::vfunc_08(s32 id, void *arg) {
             i20 = 2;
         }
     } else if (id == 90 && i20 != 0) {
-        u32 r = SndMgr_Rand(gSndMgr, 3);
+        u32 r = SndMgr_Rand(&gSndMgr, 3);
         Snd_StopHandle(&b, 0);
         Snd_StopHandle(&a, 0);
         if (r == 0) {
@@ -290,7 +232,7 @@ void TvSoundProgram7::vfunc_08(s32 id, void *arg) {
             i20 = 5;
         }
     } else if (id == 120 && i20 == 0) {
-        u32 r = SndMgr_Rand(gSndMgr, 2);
+        u32 r = SndMgr_Rand(&gSndMgr, 2);
         Snd_StopHandle(&b, 0);
         Snd_StopHandle(&a, 0);
         if (r == 0) {
@@ -307,7 +249,7 @@ void TvSoundProgram7::vfunc_08(s32 id, void *arg) {
         if (g16 == 0) {
             g16 = g16 + 1;
         } else if (g16 == 1) {
-            if (SndMgr_Rand(gSndMgr, 2) == 0) {
+            if (SndMgr_Rand(&gSndMgr, 2) == 0) {
                 g16 = g16 + 1;
             } else {
                 g16 = 0;
@@ -417,11 +359,11 @@ void TvSoundProgram10::vfunc_08(s32 id, void *arg) {
         s32 r;
         Snd_StopHandle(&b, 0);
         g16 = e14;
-        r = (s16)SndMgr_Rand(gSndMgr, 100);
+        r = (s16)SndMgr_Rand(&gSndMgr, 100);
         if (r <= t1) t2 = 0;
         else if (r <= t2) t2 = 5;
         else t2 = 10;
-        r = (s16)SndMgr_Rand(gSndMgr, 100);
+        r = (s16)SndMgr_Rand(&gSndMgr, 100);
         if (r <= t5) {
             e14 = t2;
             if (g16 % 5 != e14 % 5) {
@@ -456,7 +398,7 @@ void TvSoundProgram10::vfunc_08(s32 id, void *arg) {
         s32 q2 = t2 / 5;
         if (q2 == 0) {
             NNS_SndPlayerSetTrackVolume(&a, 3, 100);
-            if (SndMgr_Rand(gSndMgr, 100) < 40 && id > 90) {
+            if (SndMgr_Rand(&gSndMgr, 100) < 40 && id > 90) {
                 Snd_StartSeqArc(0x146, 1, &b);
                 NNS_SndPlayerSetTrackVolume(&b, 3, 100);
             }
@@ -465,13 +407,13 @@ void TvSoundProgram10::vfunc_08(s32 id, void *arg) {
             Snd_StartSeqArc(0x145, 1, &b);
         } else {
             NNS_SndPlayerSetTrackVolume(&a, 3, 127);
-            if (SndMgr_Rand(gSndMgr, 100) < 40 && id > 90 && e14 <= 13) {
+            if (SndMgr_Rand(&gSndMgr, 100) < 40 && id > 90 && e14 <= 13) {
                 Snd_StartSeqArc(0x146, 1, &b);
                 NNS_SndPlayerSetTrackVolume(&b, 3, 80);
             }
         }
         if (g16 == 11 || g16 == 13) {
-            r = (s16)SndMgr_Rand(gSndMgr, 100);
+            r = (s16)SndMgr_Rand(&gSndMgr, 100);
             if (r <= 20) {
                 Snd_StopHandle(&a, 0);
                 Snd_StartSeqArc(0x143, 1, &a);

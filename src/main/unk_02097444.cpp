@@ -180,7 +180,7 @@ extern "C" u8 *PlayerData_GetLetterStorage(void *p) {
 
 extern "C" u8 *PlayerData_GetMailbox(void *p) {
     s32 s = ((PlayerData *)(p))->getIndex();
-    if (s >= 0 && s < 4) return data_021e935c + s * 0x98c;
+    if (s >= 0 && s < 4) return data_021e935c + s * sizeof(PlayerMailbox);
     return 0;
 }
 
@@ -192,22 +192,22 @@ extern "C" u8 *PlayerData_GetDresser(void *p) {
 
 extern "C" s32 PlayerData_GetLastWifiMailId(void *p) {
     s32 s = ((PlayerData *)(p))->getIndex();
-    if (s >= 0 && s < 4) return ((PlayerMailbox *)(data_021e935c + s * 0x98c))->getLastWifiMailId();
+    if (s >= 0 && s < 4) return ((PlayerMailbox *)(data_021e935c + s * sizeof(PlayerMailbox)))->getLastWifiMailId();
     return 0;
 }
 
 extern "C" void PlayerData_SetLastWifiMailId(void *p, s32 v) {
     s32 s = ((PlayerData *)(p))->getIndex();
-    if (s >= 0 && s < 4) ((PlayerMailbox *)(data_021e935c + s * 0x98c))->setLastWifiMailId(v);
+    if (s >= 0 && s < 4) ((PlayerMailbox *)(data_021e935c + s * sizeof(PlayerMailbox)))->setLastWifiMailId(v);
 }
 
 extern "C" void *PlayerDataArray_Construct(void *p) {
-    __cxa_vec_ctor(p, 4, 0x228c, _ZN10PlayerDataC1Ev, _ZN10PlayerDataD1Ev);
+    __cxa_vec_ctor(p, 4, sizeof(PlayerData), _ZN10PlayerDataC1Ev, _ZN10PlayerDataD1Ev);
     return p;
 }
 
 extern "C" void *PlayerDataArray_Destruct(void *p) {
-    __cxa_vec_cleanup(p, 4, 0x228c, _ZN10PlayerDataD1Ev);
+    __cxa_vec_cleanup(p, 4, sizeof(PlayerData), _ZN10PlayerDataD1Ev);
     return p;
 }
 
@@ -218,7 +218,7 @@ extern "C" s32 PlayerData_IsResidentIndex(u32 idx) {
 
 extern "C" s32 PlayerDataArray_IsUsed(u8 *base, s32 idx) {
     if (PlayerData_IsResidentIndex(idx) != 0) {
-        if (((PlayerData *)(base + idx * 0x228c))->isUsed() != 0) return 1;
+        if (((PlayerData *)(base + idx * sizeof(PlayerData)))->isUsed() != 0) return 1;
     }
     return 0;
 }
@@ -236,7 +236,7 @@ extern "C" u8 *PlayerDataArray_GetById(u8 *base, u16 *p) { return PlayerData_Get
 
 extern "C" u8 *PlayerData_GetResident(u8 *base, s32 idx) {
     u8 *r = 0;
-    if (PlayerData_IsResidentIndex(idx) != 0) r = base + idx * 0x228c;
+    if (PlayerData_IsResidentIndex(idx) != 0) r = base + idx * sizeof(PlayerData);
     return r;
 }
 
@@ -250,7 +250,7 @@ extern "C" u8 *PlayerDataArray_GetRandomOther(u8 *base, u16 *p) {
         u32 t = Random_GlobalBelow(n);
         s32 i;
         for (i = 0; i < 4; i++) {
-            u8 *e = base + i * 0x228c;
+            u8 *e = base + i * sizeof(PlayerData);
             if (((PlayerData *)(e))->isUsed() == 1) {
                 if (p != 0) {
                     u16 *q = (u16 *)((PlayerData *)(e))->getPlayerId();
@@ -273,7 +273,7 @@ extern "C" u8 *PlayerDataArray_GetRandomOther(u8 *base, u16 *p) {
 
 extern "C" void PlayerDataArray_ResetAll(void *p) {
     s32 i;
-    for (i = 0; i < 4; i++) ((PlayerData *)((u8 *)p + i * 0x228c))->reset();
+    for (i = 0; i < 4; i++) ((PlayerData *)((u8 *)p + i * sizeof(PlayerData)))->reset();
 }
 
 extern "C" s32 PlayerDataArray_FindUnused(void *p) { return ((PlayerData *)(p))->findUnusedSlot(4); }
@@ -282,7 +282,7 @@ extern "C" s32 PlayerDataArray_FindById(u8 *base, u16 *p) {
     if (((PlayerId *)(p))->isValid() == 1) {
         s32 i;
         for (i = 0; i < 4; i++) {
-            u16 *q = (u16 *)((PlayerData *)(base + i * 0x228c))->getPlayerId();
+            u16 *q = (u16 *)((PlayerData *)(base + i * sizeof(PlayerData)))->getPlayerId();
             if (p[0] == q[0]) {
                 if (memcmp(p + 1, q + 1, 8) == 0) {
                     if (((PlayerId *)(p))->equals((PlayerId *)(q)) != 0) return i;
@@ -300,12 +300,12 @@ extern "C" u8 *PlayerDataArray_CreateResident(u8 *base, void *name, s32 a2, u32 
         u16 hdr;
         u16 v[3];
         s32 i;
-        r = base + idx * 0x228c;
+        r = base + idx * sizeof(PlayerData);
         u16 cnt = 0;
         MI_CpuFill8(v, 0, 6);
         for (i = 0; i < 4; i++) {
             if (i != idx) {
-                u8 *q = base + i * 0x228c;
+                u8 *q = base + i * sizeof(PlayerData);
                 if (((PlayerId *)(((PlayerData *)(q))->getPlayerId()))->isValid() == 1) {
                     v[cnt] = ((PlayerId *)(((PlayerData *)(q))->getPlayerId()))->getId();
                     cnt++;
@@ -335,7 +335,7 @@ extern "C" u8 *GuestPlayers_Get() { return (u8 *)&gGuestPlayers; }
 
 extern "C" void GuestPlayers_Reset(void *p) {
     s32 i;
-    for (i = 0; i < 3; i++) ((PlayerData *)((u8 *)p + i * 0x228c))->reset();
+    for (i = 0; i < 3; i++) ((PlayerData *)((u8 *)p + i * sizeof(PlayerData)))->reset();
 }
 
 extern "C" void GuestPlayers_ResetAll() { GuestPlayers_Reset(GuestPlayers_Get()); }
@@ -363,7 +363,7 @@ extern "C" PlayerData *PlayerData_Get(s32 idx) {
         if (gSavePlayers != NULL) r = (PlayerData *)PlayerData_GetResident(gSavePlayers, idx);
     } else if (PlayerData_IsGuestIndex(idx) == 1) {
         if (GuestPlayers_Get() != NULL) {
-            r = (PlayerData *)(GuestPlayers_Get() + PlayerData_GetGuestSlot(idx) * 0x228c);
+            r = (PlayerData *)(GuestPlayers_Get() + PlayerData_GetGuestSlot(idx) * sizeof(PlayerData));
         }
     }
     return r;
@@ -376,7 +376,7 @@ extern "C" s32 PlayerData_IsUsedByIndex(s32 idx) {
     } else if (PlayerData_IsGuestIndex(idx) == 1) {
         if (GuestPlayers_Get() != 0) {
             s32 t = PlayerData_GetGuestSlot(idx);
-            r = ((PlayerData *)(GuestPlayers_Get() + t * 0x228c))->isUsed();
+            r = ((PlayerData *)(GuestPlayers_Get() + t * sizeof(PlayerData)))->isUsed();
         }
     }
     return r;

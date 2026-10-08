@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "gfx/DebugColor.h"
+#include "sys/OSThread.h"
 #ifdef __cplusplus
 #include "game/Random.h"
 #include "types.h"
@@ -51,7 +52,7 @@ extern s32 sVBlankCount;
 extern DebugColor data_021cb3c8 (31, 31, 20, 31);
 #endif
 #ifndef PROTO_LOCAL_gFrameWaitQueue
-extern u32 gFrameWaitQueue[2];
+extern OSThreadQueue gFrameWaitQueue;
 #endif
 #ifndef PROTO_LOCAL_data_021cb3c4
 extern DebugColor data_021cb3c4 (20, 31, 20, 31);
@@ -63,7 +64,7 @@ extern DebugColor data_021cb3cc (20, 31, 31, 31);
 extern DebugColor data_021cb3d0 (20, 24, 24, 31);
 #endif
 #ifndef PROTO_LOCAL_gVBlankQueue
-extern u32 gVBlankQueue[2];
+extern OSThreadQueue gVBlankQueue;
 #endif
 #ifndef PROTO_LOCAL_data_021cb3d4
 extern Random data_021cb3d4;

@@ -1,7 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // autoload_2 0x02125c94-0x0212703c: wireless helper (WH-like) state callback, job-queue thread, chunk reassembly. mwcc 1.2/base, -O4,p.
 #include "sys/OSThread.h"
-#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02125c94.h"
 #include "proto/main/unk_0206d49c.h"
@@ -23,7 +22,7 @@ extern s32 _s32_div_f(s32, s32);
 extern s32 PXI_SendWordByFifo(s32, u32, u32);
 extern void WaitByLoop(u32);
 extern void OS_UnLockCartridge(u32);
-extern u32 OS_ReadOwnerOfLockWord(u32);
+extern u16 OS_ReadOwnerOfLockWord(volatile void *lock);  // (unk_02112458.c)
 extern u32 OS_TryLockCartridge(u32);
 
 typedef struct WJob WJob;
@@ -56,7 +55,6 @@ typedef struct {
 extern WSys *data_02200040;
 extern u32 OS_GetThreadPriority(void *);
 extern void OS_SetThreadPriority(void *, u32);
-extern void OS_SleepThread(u32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern u32 WM_GetAllowedChannel(void);
@@ -115,10 +113,10 @@ typedef struct { u8 pad[4]; u16 cur; } WRot;
 
 // lock acquire helper: spin on lock word 0x027fffe8 bit 0x40 / OS_TryLockCartridge
 void CTRDGi_LockByProcessor(u32 a, WLock *st) {
-    u32 *const p = (u32 *)0x027fffe8;
+    volatile u32 *const p = (volatile u32 *)0x027fffe8;  // the cartridge lock word
     for (;;) {
         st->irq = OS_DisableInterrupts();
-        st->flag = OS_ReadOwnerOfLockWord((u32)p) & 0x40;
+        st->flag = OS_ReadOwnerOfLockWord(p) & 0x40;
         if (st->flag != 0) return;
         if (OS_TryLockCartridge(a) == 0) return;
         OS_RestoreInterrupts(st->irq);
@@ -256,7 +254,7 @@ void MBi_TaskThread(WSys *sys) {
         irq = OS_DisableInterrupts();
         while (HEAD(sys) == 0) {
             OS_SetThreadPriority(sys, zero);
-            OS_SleepThread(zero);
+            OS_SleepThread(NULL);
         }
         job = HEAD(sys);
         HEAD(sys) = HEAD(sys)->next;

@@ -27,60 +27,7 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 #define FX_SinIdx(a) data_02135f44[((a) >> 4) * 2]
 #define FX_CosIdx(a) data_02135f44[((a) >> 4) * 2 + 1]
 
-extern "C" {
-void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
-void Net_Free(void *p); // free via hook sFreeHook
-void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
-void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
-void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
-
-s32 Wlx_GetState(void);
-s32 Wlx_StopExchange(void *p);
-s32 Wlx_StartExchange(void *p);
-void Wlx_Init(void *p, void *cb, u32 n);
-void Wlx_SetPacketSizes(u32 a, u32 b, u32 c);
-void Wlx_RegisterData(void *h, void *cb, void *a, u32 b, u32 c, u32 d);
-void DwcMatch_ClearServerLock(void);
-s32 DwcFriend_IsIdle(void);
-void DwcFriend_DeleteFriend(void *p);
-s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
-void DwcGsHttp_Get(void *a, void *b, void *c);
-void DWCi_Acc_LoginIdToUserName(void *a, u32 b, void *c);
-void Net_OnWlxStopped(void);
-void Net_OnWlxExchangeDone(void);
-void Net_OnGameStatsChallenge(void);
-void Net_OnWifiFriendDeleted(void);
-void Net_OnWifiServersUpdated(void);
-void Net_OnWifiFriendStatus(void);
-void Net_OnHttpDownloadDone(void);
-s64 Net_GetOwnFriendKey(void *p);
-s32 DWC_IsBuddyFriendData(void *p);
-s32 DWC_GetFriendDataType(void *p);
-s32 DWC_IsEqualFriendData(void *p, void *q);
-s32 DWC_CheckValidConsole(void *p);
-
-extern u16 sWifiConnectStep;
-extern u8 sNetMode;
-extern u8 *sWifiFriendList;
-extern u8 *sWifiUserData;
-extern u32 data_021f48e8;
-extern u32 data_021f48e0;
-extern void *data_021f48c0;
-extern void *data_021f48b8;
-extern u32 data_021f489c;
-extern u32 data_021f48cc;
-extern s32 data_0213b06c;
-extern s32 data_0213b068;
-extern s32 data_0213b064;
-extern u32 data_021f48dc;
-extern u32 data_021f48a4;
-extern u32 data_021f48b4;
-extern u32 data_021f48c4;
-extern u32 data_021f48ac;
-extern u32 data_021f48a8;
-extern u32 data_021f48e4;
-extern char data_0213b098[];
-}extern "C" s32 Math_Sqrt64(u64 x) {
+extern "C" s32 Math_Sqrt64(u64 x) {
     IO_W((vu16 *)0x040002b0, 1);
     IO_W((vu64 *)0x040002b8, x << 2);
     while (IO_R((vu16 *)0x040002b0) & 0x8000) {

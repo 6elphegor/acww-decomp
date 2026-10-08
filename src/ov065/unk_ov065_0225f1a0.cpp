@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "uptr.h"
 #include "net/SockCoreConfig.h"
 #include "net/SockCoreSocket.h"
 #include "net/IpStackConfig.h"
@@ -30,12 +31,12 @@ void IpStack_Init(void *);
 void Eth_OnFrameReceived(void);
 void SockCore_FreeClosedSockets(void);
 s32 SockCore_CreateMsgPool(s32);
-s32 SockCore_Create(SockCreateParams *);
+sptr SockCore_Create(SockCreateParams *);
 
 }
 
 extern "C" {
-void *sSockDefaultSocket;
+SockCoreSocket *sSockDefaultSocket;
 u32 sSockCoreState;
 u32 sSockLastHostIp;
 u32 sSockYieldMode;
@@ -44,7 +45,7 @@ IpStackConfig sIpStackParams;
 
 s32 SockCore_Startup(SockCoreConfig *cfg)
 {
-    OSi_ReferSymbol(0x2000bd4);
+    OSi_ReferSymbol((void *)0x2000bd4);
     if (sSockCoreConfig != NULL) {
         return 0;
     }
@@ -57,7 +58,7 @@ s32 SockCore_CreateMsgPoolAndDefaultSocket(void)
 {
     s32 r = SockCore_CreateMsgPool(sSockCoreConfig->msgPoolSize);
     if (r >= 0) {
-        sSockDefaultSocket = (void *)SockCore_Create(&sSockSendOnlyParams);
+        sSockDefaultSocket = (SockCoreSocket *)SockCore_Create(&sSockSendOnlyParams);
     }
     return r;
 }
@@ -68,7 +69,7 @@ void SockCore_SetupStackConfig(void)
     SockCoreConfig *c = sSockCoreConfig;
     s32 a;
     s32 b;
-    MI_CpuFill8(g, 0, 0x30);
+    MI_CpuFill8(g, 0, sizeof(*g));
     g->allocFunc = c->alloc;
     g->freeFunc = c->free;
     g->linkCheckCallback = SockCore_IsLinkUp;
@@ -83,7 +84,7 @@ void SockCore_SetupStackConfig(void)
     if (c->recvRingBuf != 0) {
         g->recvRingBuf = c->recvRingBuf;
     } else {
-        g->recvRingBuf = (u32)sSockCoreConfig->alloc(g->recvRingSize);
+        g->recvRingBuf = (u8 *)sSockCoreConfig->alloc(g->recvRingSize);
     }
     a = c->mtu;
     if (a == 0) {

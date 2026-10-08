@@ -4,43 +4,10 @@
 // Prototypes of the functions defined in src/autoload_2/unk_0212703c.c (generated: tools/host_protos.py)
 
 #include "types.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_nan
-double nan(const char *unused);
-#endif
-#ifndef PROTO_LOCAL_abort
-void abort(void);
-#endif
-#ifndef PROTO_LOCAL_STD_CopyString
-char *STD_CopyString(char *dst, const char *src);
-#endif
-#ifndef PROTO_LOCAL_STD_ConcatenateString
-char *STD_ConcatenateString(char *dst, const char *src);
-#endif
-#ifndef PROTO_LOCAL_CTRDG_Init
-void CTRDG_Init(void);
-#endif
-#ifndef PROTO_LOCAL_CTRDGi_InitModuleInfo
-void CTRDGi_InitModuleInfo(void);
-#endif
-#ifndef PROTO_LOCAL_CTRDG_TerminateForPulledOut
-void CTRDG_TerminateForPulledOut(void);
-#endif
-#ifndef PROTO_LOCAL_CTRDGi_InitCommon
-void CTRDGi_InitCommon(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL___convert_from_newlines
 void __convert_from_newlines(u8 *buf, u32 *count);
 #endif
@@ -56,17 +23,29 @@ s32 __flush_all(void);
 #ifndef PROTO_LOCAL___flush_line_buffered_output_files
 s32 __flush_line_buffered_output_files(void);
 #endif
+#ifndef PROTO_LOCAL_nan
+double nan(const char *unused);
+#endif
+#ifndef PROTO_LOCAL_abort
+void abort(void);
+#endif
 #ifndef PROTO_LOCAL_exit
 void exit(s32 status);
 #endif
 #ifndef PROTO_LOCAL___exit
 void __exit(s32 status);
 #endif
+#ifndef PROTO_LOCAL_STD_CopyString
+char *STD_CopyString(char *dst, const char *src);
+#endif
 #ifndef PROTO_LOCAL_STD_CopyLString
 void STD_CopyLString(char *dst, const char *src, s32 n);
 #endif
 #ifndef PROTO_LOCAL_STD_GetStringLength
 u32 STD_GetStringLength(const char *s);
+#endif
+#ifndef PROTO_LOCAL_STD_ConcatenateString
+char *STD_ConcatenateString(char *dst, const char *src);
 #endif
 #ifndef PROTO_LOCAL_MATH_CalcChecksum8
 u8 MATH_CalcChecksum8(const u8 *p, u32 len);
@@ -104,12 +83,25 @@ void MATH_CalcSHA1(void *digest, const void *data, u32 len);
 #ifndef PROTO_LOCAL_MATH_CountPopulation
 u32 MATH_CountPopulation(u32 x);
 #endif
+#ifndef PROTO_LOCAL_CTRDG_Init
+void CTRDG_Init(void);
+#endif
+#ifndef PROTO_LOCAL_CTRDGi_InitModuleInfo
+void CTRDGi_InitModuleInfo(void);
+#endif
 #ifndef PROTO_LOCAL_CTRDGi_CallbackForInitModuleInfo
 void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data);
 #endif
 #ifndef PROTO_LOCAL_CTRDGi_PulledOutCallback
 void CTRDGi_PulledOutCallback(u32 tag, u32 data);
 #endif
+#ifndef PROTO_LOCAL_CTRDG_TerminateForPulledOut
+void CTRDG_TerminateForPulledOut(void);
+#endif
+#ifndef PROTO_LOCAL_CTRDGi_InitCommon
+void CTRDGi_InitCommon(void);
+#endif
+#ifdef __cplusplus
 }
 #endif
 
