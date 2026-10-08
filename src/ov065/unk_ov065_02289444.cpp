@@ -77,7 +77,6 @@ s32 CheckValidKey(char *s);
 char *SBServerGetStringValueA(void *a, char *k, char *d);
 s32 ServerBrowserHalt(void *o);
 s32 ServerBrowserThink(void *o);
-s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
 void EngineCallback(void *, s32, _SBServer *, _ServerBrowser *);
 void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
 s32 SBListThink(SBServerList *sub);
