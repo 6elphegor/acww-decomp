@@ -182,6 +182,19 @@ static void run_events_body(void) {
         extern void host_heap_check(void);
         host_heap_check();
         host_screenshot();
+        {   // ACWW_EXIT_FRAME=<n>: end the run after frame n (sound file closed as on an interrupt) - test runs
+            // stop once they have what they compare instead of running out a timeout
+            static long exitAt = -2;
+            if (exitAt == -2) exitAt = getenv("ACWW_EXIT_FRAME") ? strtol(getenv("ACWW_EXIT_FRAME"), 0, 10) : -1;
+            if (exitAt >= 0 && (long)host_frame() >= exitAt) {
+                extern void snd7_output_close(void);
+                snd7_output_close();
+                extern void frontend_shutdown(void);
+                frontend_shutdown();
+                fprintf(stderr, "host: exit at frame %llu (ACWW_EXIT_FRAME)\n", (unsigned long long)host_frame());
+                _exit(0);
+            }
+        }
         {   // ACWW_RAMHASH=<file>: "frame hash" of main RAM (0x02000000, 4 MB: the game's data and heaps on 32-bit
             // hosts) every frame - two runs' first differing frame; ACWW_RAMDUMP=<frame>:<file>: main RAM at a frame
             // (ACWW_RAMDUMP="f1,f2,...:prefix": prefix-<frame>.bin at each frame)

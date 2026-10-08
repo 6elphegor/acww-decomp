@@ -16,6 +16,9 @@ that made the earlier captures depend on stack contents; `oracle.sh <binary> rec
 scripted play through the intro (A every second), screenshots to frame 25000. The 64-bit build is compared with
 the same captures (its virtual timing drifts by a frame or two after the first scene changes).
 
+`ACWW_EXIT_FRAME=<n>` ends a run after frame n (the sound file closed as on an interrupt): oracle.sh uses it, so a
+check takes as long as the frames it compares (quick ~40 s, play ~3 min).
+
 Finding where two builds part: `ACWW_RAMHASH=<file>` writes a hash of main RAM every frame and
 `ACWW_RAMDUMP=f1,f2,...:<prefix>` dumps it at frames (32-bit builds: the game's data and heaps live there). Diff
 the dumps, ignoring the bytes that differ at an early frame (code addresses in static data), then watch the first
