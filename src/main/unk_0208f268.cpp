@@ -20,10 +20,8 @@
 #include "gfx/CachedModel.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_EffectSpl_ToCurvedPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SPL_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_020027b4.h"
 #include "proto/autoload_2/unk_020f8b44.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063f3c.h"
@@ -51,7 +49,6 @@ void *SPL_Create(void *, s32, VecFx32 *);
 void *SPL_CreateWithInitialize(void *, u32, void (*)(EffectSplEmitter *));
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
 void func_020f8b44(void *, void *, VecFx32 *);
-void SPL_Draw(void *, void *, void *);
 void SPL_Calc(void *);
 void func_020f92d4(void *, void *);
 void NNS_FndDestroyFrmHeap(void *);
@@ -197,12 +194,10 @@ struct EffectModelAnimFiles {
 };
 
 extern "C" {
-extern u32 gViewMtx[];
 extern u8 data_021f47e0[];
 
 void EffectSplPool_ReleaseAll(EffectSplPool *p);
 void EffectSplPool_Update(EffectSplPool *p);
-u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
 void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p);
 }
 
@@ -817,7 +812,8 @@ extern "C" u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2,
 
 BOOL EffectSplProc::onDraw()
 {
-    SPL_Draw(splManager, gViewMtx, (void *)EffectSpl_ToCurvedPos);
+    // (the SPL manager keeps the view matrix and the position callback in u32 slots: SPL's own 64-bit work)
+    SPL_Draw((Mgr *)splManager, (u32)(uptr)&gViewMtx, (u32)(uptr)EffectSpl_ToCurvedPos);
     EffectModels_DrawAll(modelGroups);
     return TRUE;
 }
