@@ -1,4 +1,4 @@
-// Host build: where the mixed sound goes: the viewer's audio ring (frontend.h) and, with ACWW_WAV=path, a WAV file
+// Host build: where the mixed sound goes: the frontend's audio ring (frontend.h) and, with ACWW_WAV=path, a WAV file
 // (for headless runs).
 
 #include <stdio.h>
@@ -49,7 +49,7 @@ void snd7_output(const s16 *lr, u32 frames) {
         const char *p = getenv("ACWW_WAV");
         if (p && (sWav = fopen(p, "wb"))) {
             wav_header();
-            atexit(wav_close);  // (and from the interrupt handler, which leaves with _exit)
+            atexit(wav_close);  // (and from the interrupt handler, which leaves with _exit or _Exit)
         }
     }
     if (sWav) {
@@ -64,6 +64,5 @@ void snd7_output(const s16 *lr, u32 frames) {
         shm->audio[(w % ACWW_AUDIO_FRAMES) * 2] = lr[i * 2];
         shm->audio[(w % ACWW_AUDIO_FRAMES) * 2 + 1] = lr[i * 2 + 1];
     }
-    __sync_synchronize();
-    shm->audio_write = w;
+    __atomic_store_n(&shm->audio_write, w, __ATOMIC_RELEASE);  // (the frontend's audio callback reads it)
 }

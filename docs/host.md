@@ -105,7 +105,10 @@ host. The I/O registers are plain host arrays; nothing is mapped at the DS's I/O
 and the instruction decoding that used to catch missed accesses are gone since 2026-10-08: they had caught none
 in the play and save/continue scripts).
 
-Threads switch stacks with `coro_switch.S` (i386, x86-64, arm64; `coro.h`), not `ucontext`. Interrupts are
+Threads switch stacks with `coro_switch.S` (i386, x86-64 System V, x86-64 Windows, arm64; `coro.h`), not
+`ucontext`. The Windows variant (rdi, rsi and xmm6-15 saved too, the TIB's stack bounds switched with the stack) has
+not run on Windows yet; `ninja -f build_host64.ninja coro-win64-test` runs the same code on Linux, called with
+GCC's `ms_abi` and a stand-in TIB (`modern/host/tests/coro_win64_test.c`). The arm64 variant has never run. Interrupts are
 delivered only at safe points: register accesses, and when the game enables interrupts, halts or waits. No signal
 is involved in running the game (docs/portability.md phase 1): the integer divisions with a variable divisor go
 through `DS_DIV` / `DS_MOD` (`include/ds_div.h`, the DS's results for a zero divisor; `tools/host_div_rewrite.py`),
@@ -118,9 +121,18 @@ screenshots and sound). The debugging aids that use POSIX signals (crash report,
 Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
 viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
 `--sysroot`, `--sdl2`, `--melonds`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww <rom.nds>`: a window
-(`acww-viewer`, 64-bit SDL2, sharing memory with the game) shows both screens; keys: arrows, X = A, Z = B, S = X,
-A = Y, Q/W = L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches; M mutes. Sound goes to
-the default audio device (SDL), about 70 ms behind.
+shows both screens; keys (by position, so the same keys on other layouts): arrows, X = A, Z = B, S = X, A = Y, Q/W =
+L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches; M mutes. Sound goes to the default
+audio device (SDL), about 70 ms behind. The 64-bit builds have the frontend in the game's process
+(`frontend_sdl.c`, SDL2, linked with the system's libSDL2; docs/portability.md 4.1): also game controllers (D-pad or
+left stick; the face buttons by position as on the DS: right = A, bottom = B, top = X, left = Y; shoulders or
+triggers = L/R; Start; Back = Select), a finger on the bottom screen as the touch, F11 the window size 1x/2x/3x,
+Alt+Enter full screen. The i386 build, which can't load the system's 64-bit SDL, starts the viewer program
+(`acww-viewer`, `frontend_viewer.c` + `viewer/`, sharing memory with the game) instead. Without a display (testing):
+`SDL_VIDEODRIVER=dummy` (or `offscreen`) and `SDL_AUDIODRIVER=dummy` (or `disk`); `ACWW_WINSHOT="frame:file.ppm;..."`
+writes the window's picture as drawn. Window runs use the host's clock (see `ACWW_RTC`), so they differ from headless
+runs unless `ACWW_RTC` pins it; with the same clock a window run gives the same screenshots and sound as a headless
+one.
 
 Environment: `ACWW_SAVE=<file>` (the save memory - the card's 256 KB backup flash - is loaded from that file at the
 game's first access and every write goes through to it; a missing file is a blank memory, created at the first
@@ -135,15 +147,20 @@ that scripted runs stay reproducible; `ACWW_RTC=host` gives them the local time)
 at `ACWW_EXIT_FRAME`), `ACWW_POSLOG=<n>` (the local player's
 position every n frames: for writing input scripts that walk somewhere), `ACWW_WATCH=addr:len` (x86 Linux),
 `ACWW_PROFILE` (to `acww_profile.txt`, at the same points as `ACWW_IOHIST`), `ACWW_WATCHDOG`, `ACWW_HIGHMEM` (64-bit hosts: see below), `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
-`ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the viewer's audio
-device, underruns).
+`ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the frontend's audio
+device, underruns); window runs: `ACWW_WINSHOT` (above), `ACWW_VSYNC=1` (also wait for the display's vsync; the pacing
+is the runtime's either way), `ACWW_AUDIO_SAMPLES` (the audio device's buffer, default 512 frames).
 
 The runtime (`modern/host/`):
 
 - `hw.c`: the memory map (only main RAM with the game's data and bss is still at its DS address); the register model behind `HostIo_Read` / `HostIo_Write` (the registers in host arrays);
   virtual time (scanlines, timers, VBlank), DMA, the divider and square root; interrupts taken after register
   accesses; 60 Hz pacing; the watchdog.
-- `plat.h`, `plat_posix.c`, `plat_win32.c`: monotonic time, sleeping until a deadline, a background thread.
+- `plat.h`, `plat_posix.c`, `plat_win32.c`, `plat_common.c`: the operating-system services (docs/portability.md
+  4.2): monotonic time, sleeping until a deadline, the local time, a background thread, coroutine stacks (with a
+  guard page), reading a file into memory (the ROM), a backtrace. The rest of the runtime calls no POSIX function
+  except the memory setup (`hw.c`, `main.c`: goes with 3.3), the debugging aids (`debug_posix.c`, `guards.c`) and
+  the i386 viewer link (`frontend_viewer.c`). `plat_win32.c` is written but not compiled yet (no Windows build).
 - `debug_posix.c`: the signal-based debugging aids (`HOST_DEBUG_POSIX`).
 - `mem.c`: the DS memory the game reaches by address, as host objects (include/host_mem.h): the system work area
   (`gHostSysWork`, `HW_SYSWORK(T, member)`), DTCM and ITCM (16 / 32 KB blocks), palettes and OAM (`HW_PLTT`,
@@ -163,12 +180,13 @@ The runtime (`modern/host/`):
   shared structures checked against ACWW's ARM9 side, tables from ACWW's ARM7 program) in `driver.c`, `seq.c`,
   `exchannel.c`, `channel.c`; the sound hardware in software (`spu.c`: 16 channels with PCM8/PCM16/IMA-ADPCM, square
   waves and noise, the mixer, the two capture units that the game's effect path uses) clocked by the virtual time;
-  `output.c` to the viewer's audio ring and `ACWW_WAV`. Checked against melonDS running the original game: the logo
+  `output.c` to the frontend's audio ring and `ACWW_WAV`. Checked against melonDS running the original game: the logo
   jingle comes out with a waveform correlation of 0.998 at the same level, the title music at 0.97-0.997 once its
   fade-in (run by the ARM9 per frame) is over.
 - `card.c` (ROM reads), `sdk.c` (the SDK's assembly routines in C), `gaps_code.c` (undecompiled functions),
-  `frontend.c` + `viewer/` (window, input, sound; the viewer holds its audio queue at a target level by playing up
-  to 0.5% faster or slower).
+  `frontend.c` (the frame out, the input in, through `frontend.h`'s AcwwShm block) with `frontend_sdl.c` (64-bit:
+  SDL2 in-process, its calls on a stack of their own; an audio callback reads the ring) or `frontend_viewer.c` +
+  `viewer/` (i386); both hold the audio queue at a target level by playing up to 0.5% faster or slower.
 
 The build (`tools/configure_host.py`): the game linked as one object (its data and bss named `gdata`/`gbss`,
 `build/.../game.ld`; the variables where the compiler and linker put them - no code depends on the DS's variable
@@ -217,7 +235,8 @@ text) into the town scene with villagers, insects, fish and particle effects; th
 frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). Only the
 game's data and bss are still at their DS addresses (main RAM, 0x02000000), the program at 0x10000000
 (`-Wl,-Ttext-segment`); the rest of the DS memory is host objects (docs/portability.md 3.2). The root heap and the
-threads' stacks are below 4 GB by default (0x50000000, `host_stack_alloc` with MAP_32BIT). Making gdata/gbss ordinary
+threads' stacks are below 4 GB by default (0x50000000, `host_stack_alloc`: `host_plat_stack_alloc` with
+`HOST_PLAT_LOW4G`, MAP_32BIT). Making gdata/gbss ordinary
 data comes next (3.3).
 
 `ACWW_HIGHMEM=1` (x86-64 Linux) is the low-4 GB poisoning harness (docs/portability.md 3.0): the root heap and the

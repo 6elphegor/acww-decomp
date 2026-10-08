@@ -28,7 +28,8 @@ parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"
                     help="melonDS source tree patched with tools/host/melonds.patch and built for 32-bit x86 in build-core32 "
                          "(the display renderer)")
 parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
-                    help="directory with SDL2 development headers (usr/include/SDL2), for the viewer")
+                    help="directory with SDL2 development headers (usr/include/SDL2): the 64-bit builds' frontend "
+                         "(in the game's process, linked with the system's libSDL2) and the i386 build's viewer")
 parser.add_argument("--arch", choices=["i386", "x86_64"], default="i386",
                     help="i386: build_host.ninja, build/host_<v> (the working build); x86_64: build_host64.ninja, "
                          "build/host64_<v> (64-bit, in progress: docs/host.md)")
@@ -102,12 +103,16 @@ M = args.melonds
 GUARD_FLAGS = " -DHOST_GUARDS" if args.guards else ""
 if X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
-    HOST_FLAGS = "-m64 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude" + GUARD_FLAGS
+    HOST_FLAGS = ("-m64 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude -DHOST_FRONTEND_SDL=1"
+                  + GUARD_FLAGS)
     # the program above the DS's address space (0x02000000-0x08000000), still below 4 GB
     LINK_FLAGS = f"-m64 -no-pie -Wl,-Ttext-segment=0x10000000 {SECTIONS}"
     HOST_CXX_FLAGS = (f"-m64 -fno-pie -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
                       "-DHOST")
     MELON_LIBS = f"{M}/build-core/src/libcore.a {M}/build-core/src/teakra/src/libteakra.a"
+    # the frontend: SDL2 in the game's process (modern/host/frontend_sdl.c), the system's library
+    SDL_CFLAGS = f"-I{args.sdl2}/usr/include/SDL2 -I{args.sdl2}/usr/include/x86_64-linux-gnu"
+    SDL_LIBS = "-l:libSDL2-2.0.so.0"
     LIBDIR, LIBGCC = "/usr/lib/x86_64-linux-gnu", "/usr/lib/gcc/x86_64-linux-gnu/15/libgcc.a"
 else:
     HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
@@ -118,6 +123,8 @@ else:
                       f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "
                       f"-I{M}/src -I{M}/build-core32/src -DHOST")
     MELON_LIBS = f"{M}/build-core32/src/libcore.a {M}/build-core32/src/teakra/src/libteakra.a"
+    # the frontend: the 64-bit viewer process (modern/host/frontend_viewer.c, viewer/)
+    SDL_CFLAGS = SDL_LIBS = ""
     LIBDIR, LIBGCC = f"{R}/usr/lib32", f"{G}/libgcc.a"
 
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
@@ -158,7 +165,7 @@ def main():
         n.rule("hostas_S", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
-        n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
+        n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects {MELON_LIBS} {SDL_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
                description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
@@ -167,11 +174,12 @@ def main():
             n.build(o, "cxx" if s.suffix == ".cpp" else "cc", str(s), variables={"flags": " ".join(fl)} if fl else None)
             objs.append(o)
         for s in sources(Path("modern/host"), (".c", ".cpp", ".S")):
-            if "viewer" in s.parts:
+            if "viewer" in s.parts or "tests" in s.parts:
                 continue
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
-            n.build(o, rule, str(s))
+            sdl = s.name == "frontend_sdl.c" and SDL_CFLAGS
+            n.build(o, rule, str(s), variables={"flags": SDL_CFLAGS} if sdl else None)
             objs.append(o)
         # The data between the decomp's units (gap objects of the DS build's delinking): generated once from that
         # build, which this branch no longer runs, and kept in modern/gen/. --regen-gen rebuilds it from
@@ -236,9 +244,21 @@ def main():
         # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
         n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
                          "-l:libSDL2-2.0.so.0", description="VIEWER $out")
-        viewer = str(build / "acww-viewer")
-        n.build(viewer, "viewer", "modern/host/viewer/viewer.c", implicit=["modern/host/frontend.h"])
-        n.default([exe, viewer])
+        if X64:
+            n.default([exe])
+            # the Windows x64 stack switch (coro_switch.S), tested here with GCC's ms_abi:
+            # `ninja -f build_host64.ninja coro-win64-test` (modern/host/tests/coro_win64_test.c)
+            test = str(build / "coro_win64_test")
+            n.rule("coro_test", "gcc -O0 -g -fno-omit-frame-pointer -Wall -DHOST_CORO_WIN64_TEST -Imodern/host $in -o $out",
+                   description="CC $out")
+            n.build(test, "coro_test", ["modern/host/tests/coro_win64_test.c", "modern/host/coro.c",
+                                         "modern/host/coro_switch.S"], implicit=["modern/host/coro.h"])
+            n.rule("run", "$in", description="RUN $in")
+            n.build("coro-win64-test", "run", test)
+        else:
+            viewer = str(build / "acww-viewer")
+            n.build(viewer, "viewer", "modern/host/viewer/viewer.c", implicit=["modern/host/frontend.h"])
+            n.default([exe, viewer])
 
 
 if __name__ == "__main__":

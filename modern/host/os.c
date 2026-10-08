@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
+#include "plat.h"
 #include "coro.h"
 #include "host.h"
 #include "host_mem.h"
@@ -85,17 +85,15 @@ static void *sSaving;  // the thread whose OS_SaveContext is pending
 // A stack for the game's code. On 64-bit Linux below 4 GB: the game keeps addresses in 32-bit fields (for now:
 // docs/host.md, 64-bit), its locals' among them.
 // With ACWW_HIGHMEM above 4 GB instead, the low word of the addresses (0xb0000000...) in poisoned space.
+// (host_plat_stack_alloc: with a guard page below it)
 void *host_stack_alloc(size_t n) {
 #if defined(__x86_64__) && defined(__linux__)
     if (host_highmem()) {
         static uintptr_t hint = 0x6b0000000ull;
         return host_highmem_alloc(&hint, n);
     }
-    void *p = mmap(0, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
-    return p == MAP_FAILED ? 0 : p;
-#else
-    return malloc(n);
 #endif
+    return host_plat_stack_alloc(n, HOST_PLAT_LOW4G);
 }
 
 static HostCtx *ctx_of(void *key) {

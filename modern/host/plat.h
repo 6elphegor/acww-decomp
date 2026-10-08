@@ -1,14 +1,42 @@
 // Host build runtime: the operating-system services the runtime needs (docs/portability.md 1.4, 4.2). One
-// implementation per platform: plat_posix.c (Linux, macOS), plat_win32.c (Windows).
+// implementation per platform: plat_posix.c (Linux, macOS), plat_win32.c (Windows); the parts that are plain C
+// are in plat_common.c. Nothing else in modern/host calls the operating system directly, except the POSIX-only
+// debugging aids (debug_posix.c, guards.c), the i386 viewer link (frontend_viewer.c) and the memory setup in
+// hw.c / main.c (docs/portability.md 3.3).
 #ifndef HOST_PLAT_H
 #define HOST_PLAT_H
 
+#include <stddef.h>
 #include <stdint.h>
+#include <time.h>
 
+// ---- time
 uint64_t host_plat_time_ns(void);           // a monotonic clock in nanoseconds (any epoch)
 void host_plat_sleep_until_ns(uint64_t t);  // sleep until host_plat_time_ns() >= t
 void host_plat_sleep_ms(unsigned ms);
-// a detached background thread (the watchdog); 0 if it couldn't be started
+// the local (wall-clock) time now, broken down as localtime_r would; 0 if it isn't known
+int host_plat_localtime(struct tm *out);
+
+// ---- threads: a detached background thread (the watchdog); 0 if it couldn't be started
 int host_plat_thread_start(void (*fn)(void *), void *arg);
+
+// ---- memory
+// A stack of n bytes (rounded up to whole pages) for a coroutine (coro.h), with an inaccessible guard page below it
+// where the system can do that. HOST_PLAT_LOW4G: below 4 GB (x86-64 Linux: the game still keeps the addresses of its
+// locals in 32-bit fields there; other hosts ignore it). 0 if there is no memory.
+#define HOST_PLAT_LOW4G 1
+void *host_plat_stack_alloc(size_t n, int flags);
+void host_plat_stack_free(void *stack, size_t n);
+
+// ---- files
+// The whole file in memory (malloc'd, freed with free); *size its length. 0 (and errno / GetLastError set) if it
+// can't be read.
+void *host_plat_read_file(const char *path, size_t *size);
+
+// ---- crash reports
+// The calling thread's return addresses, innermost first: up to n into pcs; the count (0 where the platform can't).
+int host_plat_backtrace(void **pcs, int n);
+// The same, written to stderr (with symbol names where the platform has them).
+void host_plat_print_backtrace(void);
 
 #endif

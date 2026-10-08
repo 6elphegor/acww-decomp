@@ -1,51 +1,23 @@
-// Host build: the game's side of the frontend. Frames go to a shared memory block that the viewer
-// (modern/host/viewer/viewer.c, a 64-bit SDL program) shows; the viewer writes keys and the touch position back.
-// The viewer is started here unless ACWW_HEADLESS is set (or there is no display, or it can't be found).
+// Host build: the game's side of the frontend (frontend.h). At each VBlank the frame goes to the AcwwShm block and the
+// input comes from it, through the backend: frontend_sdl.c (in-process SDL2, the 64-bit builds) or frontend_viewer.c
+// (the 64-bit viewer process, the i386 build). With ACWW_HEADLESS there is no backend at all: no window, no sound
+// device, input only from ACWW_KEYS / ACWW_TOUCH.
 
-#define _GNU_SOURCE
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <unistd.h>
 
 #include "frontend.h"
 #include "host.h"
 #include "host_mem.h"
 
 static AcwwShm *sShm;
-static char sName[64];
 
 const u32 *melon_screen(int screen);
 
 void frontend_init(const char *argv0) {
-    if (getenv("ACWW_HEADLESS") || (!getenv("DISPLAY") && !getenv("WAYLAND_DISPLAY"))) return;
-    snprintf(sName, sizeof sName, "%s-%d", ACWW_SHM_NAME_DEFAULT, (int)getpid());
-    int fd = shm_open(sName, O_RDWR | O_CREAT | O_TRUNC, 0600);
-    if (fd < 0 || ftruncate(fd, sizeof(AcwwShm)) < 0) { perror("frontend: shm"); return; }
-    sShm = mmap(0, sizeof(AcwwShm), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    close(fd);
-    if (sShm == MAP_FAILED) { sShm = 0; return; }
-    memset(sShm, 0, sizeof *sShm);
-    sShm->magic = ACWW_SHM_MAGIC;
-    // the viewer: ACWW_VIEWER, or acww-viewer next to this program
-    char viewer[1024];
-    const char *v = getenv("ACWW_VIEWER");
-    if (v) snprintf(viewer, sizeof viewer, "%s", v);
-    else {
-        snprintf(viewer, sizeof viewer, "%s", argv0);
-        char *slash = strrchr(viewer, '/');
-        snprintf(slash ? slash + 1 : viewer, sizeof viewer - (slash ? slash + 1 - viewer : 0), "acww-viewer");
-    }
-    pid_t pid = fork();
-    if (pid == 0) {
-        // the viewer is a 64-bit program: drop the 32-bit sysroot's library path
-        unsetenv("LD_LIBRARY_PATH");
-        execl(viewer, viewer, sName, (char *)0);
-        perror(viewer);
-        _exit(1);
-    }
+    if (getenv("ACWW_HEADLESS")) return;
+    sShm = frontend_backend_open(argv0);
 }
 
 AcwwShm *frontend_shm(void) { return sShm; }
@@ -73,8 +45,9 @@ void frontend_frame(void) {
     u16 xy = 0x2c00;
     if (sShm) {
         for (int s = 0; s < 2; s++) memcpy(sShm->pixels + s * 256 * 192, melon_screen(s), 256 * 192 * 4);
-        __sync_synchronize();
+        __atomic_thread_fence(__ATOMIC_SEQ_CST);
         sShm->frame++;
+        frontend_backend_frame(sShm);
         if (sShm->quit) exit(0);
         u32 k = sShm->keys;
         keyinput = (u16)(~k & 0x3ff);
@@ -87,7 +60,7 @@ void frontend_frame(void) {
     *(volatile u16 *)&gHostSysWork.buttonXY = xy;
 }
 
-// for the touch panel service (pxi7.c): the viewer's mouse on the bottom screen
+// for the touch panel service (pxi7.c): the mouse or a finger on the bottom screen
 int frontend_touch(int *x, int *y) {
     if (!sShm || !sShm->touch_down) return 0;
     *x = sShm->touch_x;
@@ -96,5 +69,5 @@ int frontend_touch(int *x, int *y) {
 }
 
 void frontend_shutdown(void) {
-    if (sName[0]) shm_unlink(sName);
+    if (sShm) frontend_backend_close();
 }
