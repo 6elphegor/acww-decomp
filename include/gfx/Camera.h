@@ -13,7 +13,9 @@
 #include "gfx/FxMtx43.h"
 #include "gfx/CameraPose.h"
 #include "gfx/CameraSway.h"
+#include "gfx/CameraTownTour.h"
 
+class Actor;
 class Camera : public CameraBase, public FxMtx43 {
 public:
     Camera() {}
@@ -107,11 +109,13 @@ public:
     /* 0x1f4 */ u8 viewPushed, focusYawLocked, roomFocusSide, seMuted;
     /* 0x1f8 */ s32 mode, prevMode, startMode;
     /* 0x204 */ s32 restoreFocus, restoreFocusY, restoreFocusZ, restoreEye, restoreEyeY, restoreEyeZ;
-    /* 0x21c */ union {
-        sptr modeParam;  // (a pointer in some modes: the followed actor)
-        CameraSwayState sway; // ov068 sway mode
+    /* 0x21c */ union {  // the mode parameter block (0x18 bytes on the DS)
+        sptr modeParam;
+        Actor *followTarget;           // mode 7: the followed villager
+        CameraSwayState sway;          // ov068 sway mode
+        CameraTownTourState townTour;  // ov068 town tour mode
+        u8 modeParamBlock[0x18];
     };
-    /* 0x228 */ u8 pad_228[0x234 - 0x228];
 };
 
 #endif // GFX_CAMERA_H

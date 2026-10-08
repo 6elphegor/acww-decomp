@@ -178,7 +178,7 @@ BOOL RoomObjActor::changeSyncState(u32 v) {
     return TRUE;
 }
 
-extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb) {
+extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTexHandle *bb) {
     aa->RoomObjRes_Load(a);
     bb->RoomObjTex_Load(b);
     ((Model *)(m))->setResource((NNSG3dResMdl *)(aa->RoomObjRes_GetModel()), 0);
@@ -188,7 +188,7 @@ extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes
     NNS_G3dBindMdlPltt(q, bb->RoomObjTex_Get());
 }
 
-extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTex *b) {
+extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTexHandle *b) {
     char x[0x28];
     char y[0x28];
     Str_SPrintf(x, "/roomObj/%s.arc", name);
@@ -208,7 +208,7 @@ void RoomObjActor::loadResourcesByName(char *name) {
     loadResources(a, b);
 }
 
-extern "C" void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTex *b) {
+extern "C" void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTexHandle *b) {
     a->RoomObjRes_Free();
     b->RoomObjTex_Reset();
 }

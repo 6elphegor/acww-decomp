@@ -1,4 +1,3 @@
-#include "town/TownBlockCell.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "item/ItemPickSpec.h"
@@ -29,6 +28,12 @@
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
 #include "npc/NpcMoveAnimSet.h"
+#include "game/GulliverQuest.h"
+#include "save/SaveData.h"
+#include "town/BlockMap.h"
+#include "town/MapBlock.h"
+#include "town/TownBlockMap.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02098e90.h"
@@ -36,12 +41,6 @@
 
 
 class ActorTalkRequest;
-
-// Grid (unk_0204e858.cpp): cells are 0x28 bytes
-struct Unk_02071a58_Grid {
-    u8 *cells;
-    u32 w, h;
-};
 
 
 
@@ -53,31 +52,26 @@ struct SpNpcGulliverTalkScript {
     u8 flag;
 };
 
+extern SaveData gSaveData;
+
 extern "C" {
-extern u8 data_021e58a6;
-extern u8 gVec3Zero[];
 extern u32 data_020c6d1c;
 extern u16 data_020c6cc8;
 
-BOOL _ZN13GulliverQuest9isStartedEv(void *self);
-s32 _ZN13GulliverQuest12getPartCountEv(void *self);
-void _ZN13GulliverQuest7addPartEv(void *self);
-void _ZN13GulliverQuest5startEv(void *self);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void TalkRequest_SetTargetDone(void *p);
-void EventWeekSlots_MarkPlayer(s32 a);
-void *TownBlockMap_Get();
-void *MapBlock_GetItemPtr(void *cell, s32 a, s32 b, s32 c);
-void MapBlock_SetItem(void *cell, u16 *h, s32 a, s32 b, s32 c);
-BOOL _ZN8BlockMap23canPlaceItemAtBlockUnitEiiii(void *self, s32 x, s32 y, s32 z, s32 w);
-void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-BOOL Item_IsMarker(void *p);
-BOOL Item_IsTreeStage0(void *p);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
+BOOL TalkRequest_SetTargetDone(Character *c);
+void EventWeekSlots_MarkPlayer(u32 id);
+TownBlockMap *TownBlockMap_Get();
+u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z);
+void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
+u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+BOOL Item_IsMarker(u16 *p);
+BOOL Item_IsTreeStage0(u16 *p);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void SpNpcGulliver_ScatterShipParts();
-BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g);
-BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g);
+BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, BlockMap *g);
+BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, BlockMap *g);
 }
 
 
@@ -197,9 +191,14 @@ const TalkStartMsg sSpNpcGulliverTopicMsgs[8] = {
 };
 }
 
-static inline void *Unk_ov072_02271a58_Cell(Unk_02071a58_Grid *g, u32 x, u32 y) {
-    if (x < g->w && y < g->h && g->cells != NULL) {
-        return g->cells + (y * g->w + x) * MAPBLOCK_SIZE;
+// the town's UFO parts quest (one byte of the save data)
+static inline GulliverQuest *SpNpcGulliver_Quest() {
+    return (GulliverQuest *)gSaveData.gulliverQuest;
+}
+
+static inline MapBlock *Unk_ov072_02271a58_Cell(BlockMap *g, u32 x, u32 y) {
+    if (x < (u32)g->width && y < (u32)g->height && g->blocks != NULL) {
+        return &g->blocks[y * g->width + x];
     }
     return NULL;
 }
@@ -278,9 +277,9 @@ BOOL SpNpcGulliver::onCreate() {
     if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
-    u8 *const g = &data_021e58a6;
-    if (_ZN13GulliverQuest9isStartedEv(g)) {
-        if (_ZN13GulliverQuest12getPartCountEv(g) >= 5) {
+    GulliverQuest *const g = SpNpcGulliver_Quest();
+    if (g->isStarted()) {
+        if (g->getPartCount() >= 5) {
             repairing = 1;
         }
         changeAct(1);
@@ -325,7 +324,7 @@ extern "C" s32 SpNpcGulliver_TickTimer(void *self, s32 *p) {
 }
 
 BOOL SpNpcGulliver::setupAct00() {
-    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(void *)((u32 *)gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     actionCtrl.requestPlayAnim(1, 0xef, 1, data_020c6cc8, 0);
     ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xef);
     return TRUE;
@@ -337,7 +336,7 @@ BOOL SpNpcGulliver::mainAct00() {
 
 BOOL SpNpcGulliver::setupAct01() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(void *)((u32 *)gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     if (repairing != 0) {
         gestureDelay = 0x190;
         gestureDelay += Random_GlobalBelow(0x258);
@@ -375,7 +374,7 @@ BOOL SpNpcGulliver::mainAct01() {
     return TRUE;
 }
 
-extern "C" BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g) {
+extern "C" BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, BlockMap *g) {
     s32 x = 0, y = 0;
     s32 i;
     for (i = 1; i <= 2; i++) {
@@ -407,11 +406,10 @@ extern "C" BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g) {
     return TRUE;
 }
 
-extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g0) {
-    Unk_02071a58_Grid *g = (Unk_02071a58_Grid *)g0;
-    u8 *t;
+extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, BlockMap *g) {
+    u16 *t;
     s32 k, k2;
-    void *cell;
+    MapBlock *cell;
     u16 h;
     volatile s32 v[4];
     k = Random_GlobalBelow(*pe);
@@ -425,13 +423,13 @@ extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g0) {
                 if (k == 0) {
                     cell = Unk_ov072_02271a58_Cell(g, *(volatile s32 *)&v[0], *(volatile s32 *)&v[1]);
                     if (cell != NULL) {
-                        t = (u8 *)MapBlock_GetItemPtr(cell, 0, 0, 0);
+                        t = MapBlock_GetItemPtr(cell, 0, 0, 0);
                         if (t != NULL) {
                             k2 = Random_GlobalBelow(*cnt);
                             for (v[3] = 0; v[3] < 16; v[3]++) {
-                                for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
-                                    if (*(u16 *)t == 0xfff1) {
-                                        if (_ZN8BlockMap23canPlaceItemAtBlockUnitEiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
+                                for (v[2] = 0; v[2] < 16; t++, v[2]++) {
+                                    if (*t == 0xfff1) {
+                                        if (g->canPlaceItemAtBlockUnit(v[0], v[1], v[2], v[3])) {
                                             if (SpNpcGulliver_IsSpotClear((s32 *)&v[0], (s32 *)&v[2], g)) {
                                                 if (k2 == 0) {
                                                     h = 0x1568;
@@ -459,9 +457,10 @@ extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g0) {
 }
 
 extern "C" void SpNpcGulliver_ScatterShipParts() {
-    Unk_02071a58_Grid *g = (Unk_02071a58_Grid *)TownBlockMap_Get();
+    BlockMap *g = (BlockMap *)TownBlockMap_Get();
     s32 total, i;
-    u8 *cnt, *t;
+    u8 *cnt;
+    u16 *t;
     s32 v[5];
     u8 arr[16];
     if (g != NULL) {
@@ -475,14 +474,14 @@ extern "C" void SpNpcGulliver_ScatterShipParts() {
         MI_CpuFill8(cnt, total, 16);
         for (v[1] = 1; v[1] < 5; v[1]++) {
             for (v[0] = 1; v[0] < 5; cnt++, v[0]++) {
-                void *cell = Unk_ov072_02271a58_Cell(g, *(volatile s32 *)&v[0], *(volatile s32 *)&v[1]);
+                MapBlock *cell = Unk_ov072_02271a58_Cell(g, *(volatile s32 *)&v[0], *(volatile s32 *)&v[1]);
                 if (cell != NULL) {
-                    t = (u8 *)MapBlock_GetItemPtr(cell, 0, 0, 0);
+                    t = MapBlock_GetItemPtr(cell, 0, 0, 0);
                     if (t != NULL) {
                         for (v[3] = 0; v[3] < 16; v[3]++) {
-                            for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
-                                if (*(u16 *)t == 0xfff1) {
-                                    if (_ZN8BlockMap23canPlaceItemAtBlockUnitEiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
+                            for (v[2] = 0; v[2] < 16; t++, v[2]++) {
+                                if (*t == 0xfff1) {
+                                    if (g->canPlaceItemAtBlockUnit(v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
                                         if (SpNpcGulliver_IsSpotClear(&v[0], &v[2], g)) {
                                             (*cnt)++;
                                         }
@@ -501,8 +500,8 @@ extern "C" void SpNpcGulliver_ScatterShipParts() {
         if (total >= 5) {
             total = 5;
         }
-        for (i = 0, t = arr; i < total; i++) {
-            SpNpcGulliver_PlaceShipPart(t, &v[4], g);
+        for (i = 0, cnt = arr; i < total; i++) {
+            SpNpcGulliver_PlaceShipPart(cnt, &v[4], g);
             if (v[4] <= 0) {
                 break;
             }
@@ -512,7 +511,7 @@ extern "C" void SpNpcGulliver_ScatterShipParts() {
 
 BOOL SpNpcGulliver::setupAct02() {
     repairing = 0;
-    if (_ZN13GulliverQuest9isStartedEv(&data_021e58a6)) {
+    if (SpNpcGulliver_Quest()->isStarted()) {
         if (gestureTimer == 0) {
             void *p = talk.getTalkPlayer();
             s32 x = rotY;
@@ -593,7 +592,7 @@ void SpNpcGulliverTalk::scriptWakeUp() {
         if (ownerNpc->actionCtrl.getAction() == 3) {
             if (ownerNpc->actionCtrl.isActionDone()) {
                 u8 b;
-                _ZN13GulliverQuest5startEv(&data_021e58a6);
+                SpNpcGulliver_Quest()->start();
                 requestReopenWindow();
                 Talk_CheckAndSetPlayerFlag(0x14, 1);
                 b = Random_GlobalBelow(5) + 5;
@@ -622,21 +621,21 @@ void SpNpcGulliverTalk::start(TalkStartMsg *out) {
     h = 0x1568;
     t = Pocket_FindItem(&h);
     if (Talk_CheckAndSetPlayerFlag(0x14, 0) == 0) {
-        if (_ZN13GulliverQuest9isStartedEv(&data_021e58a6)) {
+        if (SpNpcGulliver_Quest()->isStarted()) {
             topic = 2;
             Talk_CheckAndSetPlayerFlag(0x14, 1);
         } else {
             topic = 0;
         }
-    } else if (_ZN13GulliverQuest12getPartCountEv(&data_021e58a6) >= 5) {
+    } else if (SpNpcGulliver_Quest()->getPartCount() >= 5) {
         topic = 3;
     } else if (t < 0) {
-        if (_ZN13GulliverQuest12getPartCountEv(&data_021e58a6) == 0) {
+        if (SpNpcGulliver_Quest()->getPartCount() == 0) {
             topic = 4;
         } else {
             s32 v;
             topic = 5;
-            v = 5 - _ZN13GulliverQuest12getPartCountEv(&data_021e58a6);
+            v = 5 - SpNpcGulliver_Quest()->getPartCount();
             if (v < 0) {
                 v = 0;
             }
@@ -652,8 +651,8 @@ void SpNpcGulliverTalk::start(TalkStartMsg *out) {
         }
         for (i = 1; i <= 15; i++) {
             Pocket_RemoveItem(t);
-            if (_ZN13GulliverQuest12getPartCountEv(&data_021e58a6) < 5) {
-                _ZN13GulliverQuest7addPartEv(&data_021e58a6);
+            if (SpNpcGulliver_Quest()->getPartCount() < 5) {
+                SpNpcGulliver_Quest()->addPart();
             }
             h2 = 0x1568;
             t = Pocket_FindItem(&h2);
@@ -671,7 +670,7 @@ void SpNpcGulliverTalk::start(TalkStartMsg *out) {
         } else if (topic == 3) {
             out->msgIndex = Random_GlobalBelow(5) + 13;
         } else {
-            out->msgIndex = *(u8 *)((u8 *)sSpNpcGulliverTopicMsgs + 4 + topic * 8);
+            out->msgIndex = sSpNpcGulliverTopicMsgs[topic].msgIndex;
         }
     }
 }
@@ -681,7 +680,7 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
     u16 h0;
     u16 h1;
     u16 h2;
-    u8 *const g = &data_021e58a6;
+    GulliverQuest *const g = SpNpcGulliver_Quest();
     h0 = 0xfff1;
     u8 *const m = sSpNpcGulliverKey;
     u32 r = 0xff;
@@ -700,10 +699,10 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
         r = 0x16;
         break;
     case 0x16:
-        if (_ZN13GulliverQuest12getPartCountEv(g) >= 5) {
+        if (g->getPartCount() >= 5) {
             r = 0x17;
         } else {
-            r = (u8)(_ZN13GulliverQuest12getPartCountEv(g) + 0x19);
+            r = (u8)(g->getPartCount() + 0x19);
         }
         break;
     case 0x17:
@@ -744,11 +743,11 @@ void SpNpcGulliver::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(2);
         break;
     case 8:
-        if (_ZN13GulliverQuest9isStartedEv(&data_021e58a6)) {
+        if (SpNpcGulliver_Quest()->isStarted()) {
             changeAct(1);
         } else {
             changeAct(0);

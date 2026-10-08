@@ -11,6 +11,7 @@ class MsgString;
 class PlayerId;
 class VillagerId;
 class NpcActor;
+class Character;
 
 // Talk request of an actor conversation (0xac bytes; vtable 0x020d7710): TalkMsgRequest plus the two talking actors,
 // emotion state, the deferred task runner and the sub-scene parameters (0x64..0xa8). Base of the SpNpc*Talk /
@@ -63,8 +64,8 @@ public:
     void setOwnerActor(NpcActor *p);
     NpcActor *getPartnerActor();
     void setPartnerActor(NpcActor *p);
-    void *getTalkPlayer();
-    void setTalkPlayer(u32 a);
+    Character *getTalkPlayer();
+    void setTalkPlayer(Character *player);
     void tick();
     // switch-speaker task and the item / melody tasks (0x02014258..0x02014d90, unk_02013b10.cpp / unk_02014420.cpp parts
     // of src/main/unk_020119cc.cpp; started through the task runner of Unk_020d7710)
@@ -135,7 +136,7 @@ public:
     void makePlayerTurnTo(NpcActor *actor);
     void makePlayerLookAt(NpcActor *actor);
 
-    /* 0x44 */ u32 talkPlayer;                  // player actor the talk / item hand-over is with
+    /* 0x44 */ Character *talkPlayer;           // player actor the talk / item hand-over is with
     /* 0x48 */ NpcActor *ownerActor;  // owner actor (speaker 0)
     /* 0x4c */ NpcActor *partnerActor; // partner actor (speaker 1)
     /* 0x50 */ u8 actionActorIndex;             // actor index the action tags apply to

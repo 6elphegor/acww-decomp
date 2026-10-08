@@ -1,88 +1,18 @@
-#include "uptr.h"
 #include "types.h"
 #include "talk/MsgString.h"
-#include "talk/MsgString193.h"
-#include "ui/LabelString.h"
-#include "gfx/BgVramTask.h"
+#include "menu/StaffRoll.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020b2c50.h"
 #include "proto/ov093/unk_ov093_022918e0.h"
 
-
-
-
-
 extern "C" {
-void String_Load(void *a, u8 *b, const char *c);
-s8 *Msg_SkipLines(void *a, s32 b);
-void MIi_CpuCopy16(void *a, void *b, s32 c);
+s8 *Msg_SkipLines(void *a, s32 b);  // defined in src/main/unk_020a6974.cpp with u32 arguments (not in the headers)
+void MIi_CpuCopy16(void *a, void *b, s32 c);  // SDK assembly (src/autoload_2/unk_02115e30.s)
 void MIi_CpuClear16(u32 a, void *b, s32 c);
-
-extern void *gCurrentHeap;
 }
-
-struct StaffRollLayer {
-    void clearFlags(u32 m);
-    void setFlags(u32 m);
-    BOOL testFlags(u32 m);
-    void reset();
-    StaffRollLayer();
-    ~StaffRollLayer();
-
-    /* 0x00 */ s16 rowCount;
-    /* 0x02 */ s16 lineIndex;
-    /* 0x04 */ u8 textSlot;
-    /* 0x05 */ u8 flags;
-    /* 0x06 */ u8 blankLines;
-    /* 0x07 */ u8 unk_07;
-    /* 0x08 */ u8 screen[0x800];
-};
-
-class StaffRoll {
-public:
-    StaffRoll();
-    ~StaffRoll();
-    void setFlags(u32 m);
-    BOOL testFlags(u32 m);
-    void loadLogo();
-    void resetLabels();
-    LabelString *allocLabel();
-    void scroll(BOOL b);
-    void fillNextRow(s32 a, StaffRollLayer *s);
-    s8 *getLine(s32 i);
-    void copyTemplateRow(u8 *src, u32 dstRow, u32 srcRow);
-    void clearRow(u8 *dst, u32 row);
-    void scrollLayer(s32 which, s32 y);
-    BOOL isFinished();
-    void startLogo();
-    void hide();
-    void start(s32 a);
-    void loadTextGraphics();
-    void loadTemplate();
-    void stop();
-    void uploadScreens();
-    void update();
-    void init();
-
-    /* 0x0000 */ u16 flags;
-    /* 0x0002 */ u16 unk_02;
-    /* 0x0004 */ u8 labelCount;
-    /* 0x0005 */ u8 state;
-    /* 0x0006 */ u8 logoTimer;
-    /* 0x0008 */ s32 scrollPos;
-    /* 0x000c */ s32 logoScrollPos;
-    /* 0x0010 */ s32 scrollSpeed;
-    /* 0x0014 */ s32 logoScrollSpeed;
-    /* 0x0018 */ StaffRollLayer layer0;
-    /* 0x0820 */ StaffRollLayer layer4;
-    /* 0x1028 */ u16 templateScreen[0x400];
-    /* 0x1828 */ MsgString193 staffText;
-    /* 0x18fc */ LabelString labels[26];
-    /* 0x1f7c */ BgVramTask screenTasks[2];
-};
 
 StaffRoll::StaffRoll()
 {
@@ -145,7 +75,7 @@ void StaffRoll::update()
                     c = 0x48 - c;
                 }
             }
-            *(volatile u8 *)&logoTimer = *(volatile u8 *)&logoTimer + 1;
+            logoTimer++;
             Gfx2d_SetMainAlphaBlend(2, 0x21, c);
         } else {
             hide();
@@ -208,16 +138,13 @@ void StaffRoll::loadTextGraphics()
 
 void StaffRoll::start(s32 a)
 {
-    volatile u16 t[2];
     scrollSpeed = a;
     logoScrollSpeed = 0x2000;
     scrollPos = 0;
     layer0.reset();
     layer4.reset();
-    t[0] = templateScreen[0];
-    MIi_CpuClear16(t[0], layer0.screen, 0x800);
-    t[1] = templateScreen[0];
-    MIi_CpuClear16(t[1], layer4.screen, 0x800);
+    MIi_CpuClear16(templateScreen[0], layer0.screen, 0x800);
+    MIi_CpuClear16(templateScreen[0], layer4.screen, 0x800);
     state = 1;
 }
 
@@ -269,8 +196,7 @@ void StaffRoll::scrollLayer(s32 which, s32 y)
 
 void StaffRoll::clearRow(u8 *dst, u32 row)
 {
-    volatile u16 t = templateScreen[0];
-    MIi_CpuClear16(t, dst + row * 0x40, 0x40);
+    MIi_CpuClear16(templateScreen[0], dst + row * 0x40, 0x40);
 }
 
 void StaffRoll::copyTemplateRow(u8 *src, u32 dstRow, u32 srcRow)
@@ -282,8 +208,8 @@ s8 *StaffRoll::getLine(s32 i)
 {
     s32 q = i / 6;
     u8 b = q;
-    String_Load((u8 *)&staffText + 0, &b, "st_staffroll");
-    return Msg_SkipLines(HOST_AT(this, 0x183a, staffText.text[0], 0), i - q * 6);
+    String_Load(&staffText, &b, "st_staffroll");
+    return Msg_SkipLines(staffText.text, i - q * 6);
 }
 
 void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)
@@ -369,7 +295,7 @@ void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)
             s->lineIndex = s->lineIndex + 1;
             s->rowCount = s->rowCount + 1;
         } else {
-            copyTemplateRow(s->screen, s->textSlot, s ? (s->rowCount & 0x1f) : (s->rowCount & 0x1f));
+            copyTemplateRow(s->screen, s->textSlot, s->rowCount & 0x1f);
             s->rowCount = s->rowCount + 1;
             s->textSlot = s->textSlot + 1;
             copyTemplateRow(s->screen, s->textSlot, s->rowCount & 0x1f);
@@ -398,7 +324,7 @@ void StaffRoll::scroll(BOOL b)
 LabelString *StaffRoll::allocLabel()
 {
     if (labelCount >= 26) {
-        return &labels[25] + 0;
+        return &labels[25];
     }
     labelCount++;
     return &labels[labelCount - 1];
@@ -414,7 +340,9 @@ void StaffRoll::resetLabels()
     for (i = 0; i < 2; i++) {
         screenTasks[i].cancel();
     }
-}// Declarations for data defined further down (definition order sets the data layout)
+}
+
+// Declarations for data defined further down (definition order sets the data layout)
 extern "C" char *sStaffRollLogoCharPath;
 extern "C" char data_ov093_0229225c[];
 extern "C" char *sStaffRollPalettePath;

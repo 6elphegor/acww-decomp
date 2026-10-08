@@ -6,7 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "field/Insect.h"
-#include "types.h"
+#include "gfx/VecFx32.h"
 #endif
 
 #ifdef __cplusplus
@@ -33,7 +33,7 @@ void Dragonfly_FlyToPerch(Insect *o);
 void Moth_CircleLight(Insect *o);
 #endif
 #ifndef PROTO_LOCAL_Bee_StretchSwarm
-void Bee_StretchSwarm(s32 *v, s32 up);
+void Bee_StretchSwarm(VecFx32 *v, s32 up);
 #endif
 #ifndef PROTO_LOCAL_Bee_StingAndLeave
 void Bee_StingAndLeave(Insect *o);
@@ -44,19 +44,19 @@ void Stinger_Walk(Insect *o, s16 *p, u32 mode);
 #ifndef PROTO_LOCAL_Stinger_UpdateChase
 s32 Stinger_UpdateChase(Insect *o, s16 *p);
 #endif
-#ifndef PROTO_LOCAL_Stinger_Threaten
-s32 Stinger_Threaten(Insect *o, u32 mode, u32 q);
-#endif
-#ifndef PROTO_LOCAL_Stinger_TryAttack
-s32 Stinger_TryAttack(Insect *o, u32 mode, u32 q, s16 *p);
-#endif
 #ifndef PROTO_LOCAL_Insect_ApproachFlower
 s32 Insect_ApproachFlower(Insect *o, s16 *p);
 #endif
 #ifndef PROTO_LOCAL_Insect_AdjustFlowerLandingPos
-void Insect_AdjustFlowerLandingPos(s32 code, s32 *v);
+void Insect_AdjustFlowerLandingPos(s32 code, VecFx32 *v);
 #endif
 }
+#ifndef PROTO_LOCAL_Stinger_Threaten
+s32 Stinger_Threaten(Insect *o, u32 mode, VecFx32 *q);
+#endif
+#ifndef PROTO_LOCAL_Stinger_TryAttack
+s32 Stinger_TryAttack(Insect *o, u32 mode, VecFx32 *q, s16 *p);
+#endif
 #endif
 
 #endif

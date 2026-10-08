@@ -26,9 +26,7 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov086_02271c20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov086_02271c24  // declared below: the shared prototype conflicts with the calls here
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -36,6 +34,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/ov086/unk_ov086_022713c0.h"
 
 #pragma opt_loop_invariants off
@@ -48,19 +47,10 @@ struct TalkStartMsg;
 
 
 extern "C" {
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
-void NookShop_PickFlowerBag(u16 *p);
-void Clock_GetDateTime(void *p);
-void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-void _ZN8SaveData7setFlagEj(void *p, s32 v);
-u32 Event_GetDaysSinceStart(s32 v);
+void Clock_GetDateTime(ClockDateTime *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
-extern u8 gSaveData[];
 }
 
 
@@ -123,12 +113,9 @@ struct Unk_ov086_022714e4_Ent {
 
 
 extern "C" {
-void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
-u32 Item_MakePaper(u32 a, u32 b);
-void Clock_GetDate(void *p);
+u16 Item_MakePaper(u32 a, s32 b);
+void Clock_GetDate(u8 *out);
 s32 Clock_GetTimeOfDay();
-extern u32 data_ov086_02271c20;
-extern u32 data_ov086_02271c24;
 extern const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4];
 }
 
@@ -140,34 +127,20 @@ extern "C" char sSpNpcTortimerCountdownFortuneStrKey[] = "st_fortune";
 extern "C" const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4] = {
     {sSpNpcTortimerCountdownFortuneStrKey, 0}, {sSpNpcTortimerCountdownFortuneStr2Key, 1}, {sSpNpcTortimerCountdownFortuneStr2Key, 2}, {sSpNpcTortimerCountdownFortuneStr2Key, 3},
 };
-extern "C" void _ZN22SpNpcTortimerCountdown10setupAct00Ev();
-extern "C" void _ZN22SpNpcTortimerCountdown9mainAct02Ev();
-extern "C" void _ZN22SpNpcTortimerCountdown9mainAct01Ev();
-extern "C" void _ZN22SpNpcTortimerCountdown9mainAct00Ev();
-extern "C" void _ZN22SpNpcTortimerCountdown10setupAct01Ev();
-extern "C" void *data_ov086_02271c38[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct01Ev, 0};
-extern "C" void *data_ov086_02271c48[2] = {(void *)_ZN22SpNpcTortimerCountdown10setupAct01Ev, 0};
-extern "C" void *data_ov086_02271c30[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct02Ev, 0};
-extern "C" void *data_ov086_02271c28[2] = {(void *)_ZN22SpNpcTortimerCountdown10setupAct00Ev, 0};
-extern "C" void *data_ov086_02271c40[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct00Ev, 0};
-typedef BOOL (SpNpcTortimerCountdown::*Unk_ov086_Fn)();
 SpNpcTortimerCountdownActEntry sSpNpcTortimerCountdownActTable[3] = {
-    {*(Unk_ov086_Fn *)data_ov086_02271c28, *(Unk_ov086_Fn *)data_ov086_02271c40},
-    {*(Unk_ov086_Fn *)data_ov086_02271c48, *(Unk_ov086_Fn *)data_ov086_02271c38},
-    {NULL, *(Unk_ov086_Fn *)data_ov086_02271c30},
+    {&SpNpcTortimerCountdown::setupAct00, &SpNpcTortimerCountdown::mainAct00},
+    {&SpNpcTortimerCountdown::setupAct01, &SpNpcTortimerCountdown::mainAct01},
+    {NULL, &SpNpcTortimerCountdown::mainAct02},
 };
 extern "C" char sSpNpcTortimerCountdownFortuneStr2Key[] = "st_fortune2";
 extern "C" u8 sSpNpcTortimerCountdownModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','.','n','s','b','m','d',0};
 extern "C" ActorProfile sSpNpcTortimerCountdownProfile = {(void *(*)())SpNpcTortimerCountdown_Create, 0x5c, 0x63, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" u8 sSpNpcTortimerCountdownTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 
+// What Clock_GetDate writes: day, month, year, 0
 struct TortimerCountdownDateLocals {
-    u8 b0, b1;
-    u8 pad[4];
-};
-struct TortimerCountdownTimeLocals {
-    u8 b0, b1, b2, b3;
-    u32 w;
+    u8 day, month, year, zero;
+    u8 pad[2];
 };
 
 extern "C" SpNpcTortimerCountdown *SpNpcTortimerCountdown_Create() {
@@ -188,7 +161,7 @@ BOOL SpNpcTortimerCountdown::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     return TRUE;
@@ -217,24 +190,24 @@ void SpNpcTortimerCountdown::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerCountdown::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerCountdown::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerCountdown::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     s32 x = 0;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerCountdown::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -256,7 +229,7 @@ void SpNpcTortimerCountdownTalk::attachOwner(SpNpcTortimerCountdown *owner) {
 void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     u16 h;
     TortimerCountdownDateLocals a;
-    TortimerCountdownTimeLocals t;
+    ClockDateTimeWords t;
     BOOL f;
     PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle6";
@@ -269,12 +242,12 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
             return;
         }
     }
-    Clock_GetDate(&a);
-    *(u32 *)&t = 0;
-    t.w = 0;
-    Clock_GetDateTime(&t);
+    Clock_GetDate(&a.day);
+    t.words[0] = 0;
+    t.words[1] = 0;
+    Clock_GetDateTime(&t.dt);
     f = FALSE;
-    if (a.b1 == 0xc) {
+    if (a.month == 0xc) {
         if (Clock_GetTimeOfDay() == 0) {
             out->msgIndex = Random_GlobalBelow(3);
         } else if (Clock_GetTimeOfDay() == 1) {
@@ -282,26 +255,26 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
             if (out->msgIndex != 0) {
                 out->msgIndex += 2;
             }
-        } else if (t.b2 < 0x17) {
+        } else if (t.dt.hour < 0x17) {
             out->msgIndex = Random_GlobalBelow(3);
             if (out->msgIndex != 0) {
                 out->msgIndex += 4;
             }
-        } else if (t.b2 == 0x17 && t.b1 < 0x1e) {
+        } else if (t.dt.hour == 0x17 && t.dt.minute < 0x1e) {
             out->msgIndex = Random_GlobalBelow(3);
             if (out->msgIndex != 0) {
                 out->msgIndex += 6;
             }
-        } else if (t.b2 == 0x17 && t.b1 < 0x37) {
+        } else if (t.dt.hour == 0x17 && t.dt.minute < 0x37) {
             out->msgIndex = Random_GlobalBelow(3) + 9;
-        } else if (t.b2 == 0x17 && t.b1 < 0x3b) {
+        } else if (t.dt.hour == 0x17 && t.dt.minute < 0x3b) {
             out->msgIndex = Random_GlobalBelow(2) + 0xc;
             f = TRUE;
         } else {
             out->msgIndex = Random_GlobalBelow(2) + 0xe;
             f = TRUE;
         }
-    } else if (t.b2 < 6) {
+    } else if (t.dt.hour < 6) {
         out->msgIndex = Random_GlobalBelow(3) + 0x10;
         f = TRUE;
     } else if (TownSessionState_TestFlag(TownSessionState_Get(), 4) != 0) {
@@ -328,8 +301,8 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
     const Unk_ov086_022714e4_Ent *e;
     u8 *s6 = (u8 *)"sp_npc_turtle6";
     u8 msg = 0xff;
-    void *p;
-    void *g;
+    Letter *p;
+    PlayerData *g;
     u32 v, base;
     s32 i;
     if (massageChairSlot >= 0) {
@@ -338,7 +311,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             l.h1 = 0x1559;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&l.h1, 0, 5, 0);
+            requestGiveItem(&l.h1, 0, 5, 0);
             l.h2 = 0x1559;
             Pocket_AddItem(&l.h2, 0);
             l.bb[1] = 4;
@@ -361,21 +334,21 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
                     do {
                         l.bb[0] = v;
                         e = &sSpNpcTortimerCountdownFortuneLines[i];
-                        String_Load(&obj, &l.bb[0], (s32)sSpNpcTortimerCountdownFortuneLines[i].a);
-                        MailText_SetSlot((void *)e->b, &obj);
+                        String_Load(&obj, &l.bb[0], sSpNpcTortimerCountdownFortuneLines[i].a);
+                        MailText_SetSlot(e->b, &obj);
                         v = base + Random_GlobalBelow(4);
                         v = v + (i << 4);
                         i++;
                     } while (i < 4);
                     l.bb[0] = 0;
-                    Letter_ComposeFromMail(p, &l.bb[0], (u8 *)"ev_fortune", &data_ov086_02271c20, &data_ov086_02271c24, ((PlayerData *)(g))->getPlayerId());
+                    Letter_ComposeFromMail((LetterView *)p, &l.bb[0], "ev_fortune", &data_ov086_02271c20, &data_ov086_02271c24, g->getPlayerId());
                     if (g != NULL) {
                         l.h3 = Item_MakePaper(0x1d, 4);
-                        Catalog_AddItem(((PlayerData *)(g))->getCatalog(), &l.h3, 0);
+                        Catalog_AddItem(g->getCatalog(), &l.h3, 0);
                     }
                     TownSessionState_SetFlag(TownSessionState_Get(), 4);
                     l.h4 = 0x1565;
-                    ((ActorTalkRequest *)(this))->requestGiveItem(&l.h4, 0, 5, 0);
+                    requestGiveItem(&l.h4, 0, 5, 0);
                     msg = 0x15;
                 }
             }
@@ -384,7 +357,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         case 0x1a:
         case 0x1b:
             l.h5 = 0x137d;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&l.h5, 0, 5, 0);
+            requestGiveItem(&l.h5, 0, 5, 0);
             l.h6 = 0x137d;
             Pocket_AddItem(&l.h6, 0);
             msg = 0x1c + Random_GlobalBelow(3);
@@ -409,7 +382,7 @@ void SpNpcTortimerCountdownTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                ((ActorTalkRequest *)(this))->requestTakeItem(&h, 0, 5, 0);
+                requestTakeItem(&h, 0, 5, 0);
             }
             msg = 2;
         }
@@ -422,7 +395,7 @@ void SpNpcTortimerCountdownTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerCountdown::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -432,7 +405,7 @@ void SpNpcTortimerCountdown::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

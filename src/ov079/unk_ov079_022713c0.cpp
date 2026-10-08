@@ -2,7 +2,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
-#include "game/Unk_0202368c_Obj.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -36,10 +35,10 @@
 #include "save/Pattern.h"
 #include "save/PatternOrder.h"
 #include "town/VisitorPos.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02060b9c.h"
@@ -65,37 +64,9 @@ class SpNpcWendellTalk;
 
 
 extern "C" {
-void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
-s32 _ZN8PlayerId7isValidEv(void *p);
-s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
-s32 _ZN10VillagerId7isValidEv(void *p);
-void *_ZN13ContestRecord15getHolderPlayerEv(void *p);
-void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
-s32 _ZN13ContestRecord7getSizeEv(void *p);
-void _ZN13ContestRecord7setSizeEi(void *p, s32 v);
-void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
-void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
-void *_ZN10PlayerData10getErrandsEv(void *p);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
-void _ZN8SaveData7setFlagEj(void *p, s32 v);
-void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
-void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
-void TalkRequest_SetTargetDone(void *p);
-void Clock_GetDateTime(void *p);
+BOOL TalkRequest_SetTargetDone(Character *c);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
-s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
-void *_ZN12VillagerData13getVillagerIdEv();
-void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *g, void *p);
-void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
-extern u8 gSaveData[];
-extern u8 gSaveVillagers[];
-extern u32 __ptmf_null[];
 }
 
 
@@ -161,7 +132,7 @@ public:
     BOOL mainAct02();
     BOOL checkCollisionWhileMoving();
     BOOL handleCollision();
-    BOOL getOffsetPosIfFree(VecFx32 *out, void *in);
+    BOOL getOffsetPosIfFree(VecFx32 *out, FxVec3 *offset);
     BOOL findRandomWalkTarget(s32 *x, s32 *z);
     BOOL isNearCameraTarget();
     BOOL isInViewBox(VecFx32 *a, VecFx32 *b);
@@ -189,22 +160,20 @@ void EventWeekSlots_MarkPlayer(u32 a);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFishWaterClass(u16 *p);
-void Math_CountDownU8(void *p);
-s32 Random_Next(void *p);
+u8 Math_CountDownU8(u8 *p);
+u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
-BOOL NpcActor_IsFrontAngle(s16 a);
-s32 Math_AngleXZ(void *a, void *b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
-extern u8 gRandom[];
-extern u8 gVec3Zero[];
-extern u32 gCamera;
-extern u8 gCameraLookAt[];
+extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 extern FxVec3 sSpNpcWendellSideStepOffsets[2];
 }
+
+class Camera;
+extern Camera *gCamera;
 
 struct SpNpcWendellMsgLocal {
     u8 msgIndex;
@@ -300,7 +269,7 @@ BOOL SpNpcWendell::setupAct02() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -332,10 +301,10 @@ BOOL SpNpcWendell::isNearCameraTarget() {
     VecFx32 *b = (VecFx32 *)&position;
     BOOL r = FALSE;
     VecFx32 v;
-    if (gCamera != 0) {
-        v.x = ((VecFx32 *)gCameraLookAt)->x;
-        v.y = ((VecFx32 *)gCameraLookAt)->y;
-        v.z = ((VecFx32 *)gCameraLookAt)->z;
+    if (gCamera != NULL) {
+        v.x = gCameraLookAt.x;
+        v.y = gCameraLookAt.y;
+        v.z = gCameraLookAt.z;
         r = isInViewBox(&v, b);
     }
     return r;
@@ -349,7 +318,7 @@ BOOL SpNpcWendell::findRandomWalkTarget(s32 *px, s32 *pz) {
     v.y = r;
     v.z = r;
     for (i = 0; i < 6; i++) {
-        s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
+        s32 idx = ((u16)(s16)Random_Next(&gRandom.seed) >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = t + position.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
@@ -365,10 +334,10 @@ BOOL SpNpcWendell::findRandomWalkTarget(s32 *px, s32 *pz) {
     return r;
 }
 
-BOOL SpNpcWendell::getOffsetPosIfFree(VecFx32 *out, void *in) {
+BOOL SpNpcWendell::getOffsetPosIfFree(VecFx32 *out, FxVec3 *offset) {
     BOOL r = FALSE;
     VecFx32 v;
-    Npc_RotateOffsetXZ(&v, &position, in, moveAngleY);
+    Npc_RotateOffsetXZ(&v, &position, offset, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
         out->y = v.y;
@@ -431,13 +400,13 @@ BOOL SpNpcWendell::mainAct02() {
             if (((NpcActionCtrl *)(p))->isActionDone()) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                } else if ((Random_Next(gRandom) & 7) == 0) {
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     VecFx32 v;
-                    v.x = ((VecFx32 *)gVec3Zero)->x;
-                    v.y = ((VecFx32 *)gVec3Zero)->y;
-                    v.z = ((VecFx32 *)gVec3Zero)->z;
+                    v.x = gVec3Zero.x;
+                    v.y = gVec3Zero.y;
+                    v.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        s32 t = Math_AngleXZ(&position, &v);
+                        s32 t = Math_AngleXZ(&position.x, &v.x);
                         if (NpcActor_IsFrontAngle((s16)(t - rotY))) {
                             t = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -467,7 +436,7 @@ BOOL SpNpcWendell::mainAct02() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &w.x) - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
@@ -521,38 +490,15 @@ BOOL SpNpcWendell::mainAct01() { return TRUE; }
 void SpNpcWendellTalk::onTaskDone(u32) {
     if (resultHandler != NULL) {
         (this->*resultHandler)();
-        Fn t = *(Fn *)__ptmf_null;
-        resultHandler = t;
+        resultHandler = NULL;
         if (nextResultHandler != NULL) {
             resultHandler = nextResultHandler;
-            nextResultHandler = t;
+            nextResultHandler = NULL;
         }
     }
 }
 
 
-// Named pointer-to-member constants of the static tables (definition order sets the data layout)
-extern "C" {
-void _ZN16SpNpcWendellTalk12onFoodPickedEv();
-void _ZN16SpNpcWendellTalk15resultHandler01Ev();
-void _ZN12SpNpcWendell9mainAct04Ev();
-void _ZN12SpNpcWendell10setupAct04Ev();
-void _ZN16SpNpcWendellTalk19onPatternSlotPickedEv();
-void _ZN12SpNpcWendell9mainAct00Ev();
-void _ZN12SpNpcWendell9mainAct01Ev();
-void _ZN12SpNpcWendell10setupAct02Ev();
-void _ZN12SpNpcWendell9mainAct02Ev();
-void _ZN12SpNpcWendell10setupAct03Ev();
-void _ZN12SpNpcWendell10setupAct00Ev();
-void _ZN12SpNpcWendell9mainAct03Ev();
-}
-typedef BOOL (SpNpcWendell::*SpNpcWendellActFn)();
-
-extern "C" void *data_ov079_022729a0[2] = {(void *)_ZN16SpNpcWendellTalk19onPatternSlotPickedEv, 0};
-
-extern "C" void *data_ov079_02272990[2] = {(void *)_ZN12SpNpcWendell9mainAct04Ev, 0};
-
-extern "C" void *data_ov079_02272988[2] = {(void *)_ZN16SpNpcWendellTalk15resultHandler01Ev, 0};
 
 extern "C" u8 sSpNpcWendellTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'w', 'r', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
@@ -562,47 +508,29 @@ extern "C" DebugColor data_ov079_02272b80(31, 20, 20, 31);
 
 extern "C" DebugColor data_ov079_02272b8c(20, 20, 31, 31);
 
-extern "C" void *data_ov079_022729b8[2] = {(void *)_ZN12SpNpcWendell10setupAct02Ev, 0};
-
-extern "C" void *data_ov079_022729d8[2] = {(void *)_ZN12SpNpcWendell9mainAct03Ev, 0};
-
 extern "C" DebugColor data_ov079_02272b94(31, 31, 20, 31);
 
 extern "C" DebugColor data_ov079_02272b98(20, 31, 20, 31);
 
 extern "C" DebugColor data_ov079_02272b88(20, 31, 31, 31);
 
-extern "C" void *data_ov079_022729c0[2] = {(void *)_ZN12SpNpcWendell9mainAct02Ev, 0};
-
 extern "C" DebugColor data_ov079_02272b90(20, 24, 24, 31);
 
 extern "C" SpNpcWendellActEntry sSpNpcWendellActTable[5] = {
-    {*(SpNpcWendellActFn *)data_ov079_022729d0, *(SpNpcWendellActFn *)data_ov079_022729a8},
-    {NULL, *(SpNpcWendellActFn *)data_ov079_022729b0},
-    {*(SpNpcWendellActFn *)data_ov079_022729b8, *(SpNpcWendellActFn *)data_ov079_022729c0},
-    {*(SpNpcWendellActFn *)data_ov079_022729c8, *(SpNpcWendellActFn *)data_ov079_022729d8},
-    {*(SpNpcWendellActFn *)data_ov079_02272998, *(SpNpcWendellActFn *)data_ov079_02272990},
+    {&SpNpcWendell::setupAct00, &SpNpcWendell::mainAct00},
+    {NULL, &SpNpcWendell::mainAct01},
+    {&SpNpcWendell::setupAct02, &SpNpcWendell::mainAct02},
+    {&SpNpcWendell::setupAct03, &SpNpcWendell::mainAct03},
+    {&SpNpcWendell::setupAct04, &SpNpcWendell::mainAct04},
 };
-
-extern "C" void *data_ov079_022729a8[2] = {(void *)_ZN12SpNpcWendell9mainAct00Ev, 0};
 
 extern "C" u8 sSpNpcWendellModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'w', 'r', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-extern "C" void *data_ov079_02272980[2] = {(void *)_ZN16SpNpcWendellTalk12onFoodPickedEv, 0};
-
-extern "C" void *data_ov079_02272998[2] = {(void *)_ZN12SpNpcWendell10setupAct04Ev, 0};
-
 
 void SpNpcWendellTalk::loadResultHandler(Fn *dst, s32 idx) {
-    static Fn tbl[3] = {*(Fn *)data_ov079_02272980, *(Fn *)data_ov079_02272988, *(Fn *)data_ov079_022729a0};
+    static Fn tbl[3] = {&SpNpcWendellTalk::onFoodPicked, &SpNpcWendellTalk::resultHandler01, &SpNpcWendellTalk::onPatternSlotPicked};
     *dst = tbl[idx];
 }
-
-extern "C" void *data_ov079_022729c8[2] = {(void *)_ZN12SpNpcWendell10setupAct03Ev, 0};
-
-extern "C" void *data_ov079_022729b0[2] = {(void *)_ZN12SpNpcWendell9mainAct01Ev, 0};
-
-extern "C" void *data_ov079_022729d0[2] = {(void *)_ZN12SpNpcWendell10setupAct00Ev, 0};
 
 extern "C" FxVec3 sSpNpcWendellSideStepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
 
@@ -761,11 +689,9 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
             }
         }
         void *h = ((PlayerPatterns *)(((PlayerData *)(g))->getPatterns()))->getPattern(r6);
-        u32 obj[HOST_SIZED(0x24, ItemName) / 4] HOST_ALIGN8;
-        new (obj) ItemName();
-        ((PatternInfo *)(((Pattern *)(h))->getInfo()))->getTitle(obj);
-        window->setNamedSlot(1, obj, 7);
-        ((ItemName *)(obj))->ItemName::~ItemName();
+        ItemName title;
+        ((Pattern *)h)->getInfo()->getTitle(&title);
+        window->setNamedSlot(1, &title, 7);
     }
     m->setNextMessage(&buf.msgIndex, (u8 *)"sp_npc_walrus");
 }
@@ -780,9 +706,8 @@ void SpNpcWendellTalk::resetMsg() {
     ActorTalkRequest::resetMsg();
     foodSlot = -1;
     foodItem = 0xfff1;
-    Fn t = *(Fn *)__ptmf_null;
-    resultHandler = t;
-    nextResultHandler = t;
+    resultHandler = NULL;
+    nextResultHandler = NULL;
 }
 
 void SpNpcWendellTalk::attachOwner(SpNpcWendell *owner) {
@@ -896,7 +821,7 @@ void SpNpcWendell::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

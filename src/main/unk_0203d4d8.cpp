@@ -840,10 +840,10 @@ extern "C" BOOL TalkRequest_AddTalk(u32 a, u32 b) {
     return TalkRequest_Add(((Character *)a)->getCharId(), t, 2, 3, 0);
 }
 
-extern "C" BOOL TalkRequest_AddPlayerTalk6(u32 a, s32 b) {
+extern "C" BOOL TalkRequest_AddPlayerTalk6(Character *a, s32 b) {
     if (b == 0) {
         u32 t = (PlayerActor_GetActor(4))->getCharId();
-        return TalkRequest_Add(t, ((Character *)a)->getCharId(), 6, 3, 0);
+        return TalkRequest_Add(t, a->getCharId(), 6, 3, 0);
     }
     return FALSE;
 }
@@ -856,12 +856,12 @@ extern "C" BOOL TalkRequest_AddPlayerTalk7(u32 a, s32 b) {
     return FALSE;
 }
 
-extern "C" BOOL TalkRequest_SetTargetDone(u32 x) {
+extern "C" BOOL TalkRequest_SetTargetDone(Character *x) {
     if (!TalkRequest_IsCurrentKind(2) && !TalkRequest_IsCurrentKind(6) && !TalkRequest_IsCurrentKind(7)) {
         return FALSE;
     }
     TalkRequestEntry *p = gTalkRequestCurrent;
-    u32 v = ((Character *)x)->getCharId();
+    u32 v = x->getCharId();
     if (p->targetId != v) {
         return FALSE;
     }

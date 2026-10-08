@@ -2,9 +2,11 @@
 #define MENU_INVENTORYBG_H
 
 #include "types.h"
+#include "gfx/BgVramTask.h"
+#include "ui/LabelString.h"
 
 // 0x15e0-byte background/bells panel of the inventory-style menus (members of the ov096..ov110 menus).
-// Ctor/dtor are plain-named in src/ov094/unk_ov094_02292360.cpp; the InventoryBg_* functions are in ov094.
+// Defined in src/ov094/unk_ov094_02292360.cpp (the InventoryBg_* functions).
 class InventoryBg {
 public:
     InventoryBg();
@@ -26,9 +28,10 @@ public:
     /* 0x016 */ u8 palette[0x1c];
     /* 0x032 */ u16 bellsColor;
     /* 0x034 */ u8 unk_34[4];
-    /* 0x038 */ u8 vramTasks[0xa8];
-    /* 0x0e0 */ u8 textWindows[0x80];
-    /* 0x160 */ u8 screenData[0x1480];
+    /* 0x038 */ BgVramTaskPair vramTasks[3];  // uploads of the screen, the picture's chars, the bells palette
+    /* 0x0e0 */ LabelString textWindows[2];   // town name, player name
+    /* 0x160 */ u16 screen[0x400];
+    /* 0x960 */ u8 picture[0xc80];            // chars of the picture of the held tool
 };
 
 #endif

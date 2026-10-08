@@ -1,98 +1,48 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "gfx/Camera.h"
+#include "gfx/CameraTownTour.h"
 #include "actor/Actor.h"
 #include "gfx/DebugColor.h"
-#define PROTO_LOCAL_Camera_GetLookAtPoint  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#include "town/BlockMap.h"
+#include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020943dc.h"
 #include "proto/ov068/unk_ov068_0226647c.h"
 
-
-class CameraEventModes;
-
-// Camera-mode sub-state at +0x21c of the camera
-struct CameraTownTourState {
-    u16 holdTimer;
-    s16 buildingIndex;
-    s32 buildingX, buildingY, buildingZ;
-    VecFx32 *offset;
-    s32 speed;
-};
-
+// The town tour's building table: the item range of each building (BlockMap_FindItemAllAttr)
 struct TownTourBuildingRange {
     u16 lo, hi;
 };
 
-
-
 extern "C" {
 extern VecFx32 gVec3Zero;
-extern void *gSceneBlockMap;
-extern CameraSwayPattern kCameraSwayPatterns[];
-extern s16 data_02135f44[];
-extern const u32 sTownTourBuildingAttrs[];
-VecFx32 *PlayerActor_GetBodyPos(s32 id);
-void Camera_StartBlend();
-void Camera_FinishBlend();
-void Camera_GetLookAtPoint(VecFx32 *out, CameraEventModes *self);
-void VEC_Add(VecFx32 *a, void *b, VecFx32 *c);
-void Math_StepS32Alt(void *a, s32 b, s32 c);
-s32 Math_ApproachVecXZ(void *a, VecFx32 *v, s32 c, s32 d, s32 e);
-s32 Math_StepS16(void *a, s32 b, s32 c);
-s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
-s32 Math_CountDownU16(void *);
-s32 func_01ffcb0c(s32, s32);
+extern BlockMap *gSceneBlockMap;
+extern s16 data_02135f44[];  // sin/cos table
+// (no shared prototypes: defined in .c files or with file-local types)
+s32 func_01ffcb0c(s32 v1, s32 v2);  // (fx32)
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+BOOL Math_StepS32Alt(s32 *p, s32 target, s32 step);
+s32 Math_ApproachVecXZ(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min);
+BOOL Math_StepS16(s16 *p, s16 target, s16 step);
+u16 Math_CountDownU16(u16 *p);
+void Camera_StartBlend(void);
+void Camera_FinishBlend(void);
+BOOL BlockMap_FindItemAllAttr(BlockMap *g, s32 *outx, s32 *outz, s32 *a3, s32 *p4, u16 *p5, u16 *p6, s32 filter, u8 p8);
+void FieldPos_FromBlockUnitCenter(VecFx32 *v, s32 a, s32 b, s32 c, s32 d);
 }
+extern const CameraSwayPattern kCameraSwayPatterns[4];  // src/main/unk_0203a0cc.cpp
 
-class CameraEventModes {
-public:
-    void updateModeSway();
-    BOOL initModeSway();
-    void updateMode13();
-    BOOL initMode13();
-    void updateModeTownTour();
-    BOOL initModeTownTour();
-    void updateModeFollowTarget();
-    BOOL initModeFollowTarget();
-
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in Camera)
-    u8 pad_00[0x150];  // DS +0x0 [0x110]
-    s32 targetFocus;  // DS +0x110
-    s32 targetFocusY;  // DS +0x114
-    s32 targetFocusZ;  // DS +0x118
-    u8 pad_11c[0xe0];  // DS +0x11c [0xe0]
-    s32 prevMode;  // DS +0x1fc
-    u8 pad_200[0x20];  // DS +0x200 [0x1c]
-    CameraTownTourState townTour;  // DS +0x21c
-#else
-    u8 pad_00[0x110];
-    s32 targetFocus, targetFocusY, targetFocusZ;
-    u8 pad_11c[0x1fc - 0x11c];
-    s32 prevMode;
-    u8 pad_200[0x21c - 0x200];
-    CameraTownTourState townTour;
-#endif
-};
-
-extern "C" {
-void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(void *self, VecFx32 *v, s32 a, s32 b, s32 c);
-void _ZN6Camera11updateBlendEv(void *self);
-s32 _ZN6Camera11getDistanceEv(void *self);
-s16 _ZN6Camera6getYawEv(void *self);
-s16 _ZN6Camera8getPitchEv(void *self);
+// the end of every mode's update: blend, then orbit the look-at point
+static inline void Camera_OrbitLookAtPoint(Camera *c) {
+    VecFx32 v;
+    c->updateBlend();
+    Camera_GetLookAtPoint(&v, c);
+    s32 a = c->getPitch();
+    s32 b = c->getYaw();
+    c->setLookAtOrbit(&v, a, b, c->getDistance());
 }
-
-#define R_TAIL(V) \
-    _ZN6Camera11updateBlendEv(this); \
-    Camera_GetLookAtPoint(&V, this); \
-    s32 a = _ZN6Camera8getPitchEv(this); \
-    s32 b = _ZN6Camera6getYawEv(this); \
-    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(this, &V, a, b, _ZN6Camera11getDistanceEv(this));
 
 // Definition order below reproduces the original data order (heapsort model); colours = sinit store order.
 extern "C" VecFx32 sTownTourOffsetPlayerHouse;
@@ -103,7 +53,7 @@ extern "C" VecFx32 sTownTourOffsetTownHall;
 extern "C" VecFx32 sTownTourOffsetGateHouse;
 extern "C" VecFx32 sTownTourOffsetVillagerHouse;
 extern "C" s32 data_ov068_0226fc48 = 0x100;
-extern "C" void *sTownTourOffsets[7] = {&sTownTourOffsetPlayerHouse, sTownTourOffsetsNookShop, &sTownTourOffsetVillagerHouse,
+extern "C" VecFx32 *sTownTourOffsets[7] = {&sTownTourOffsetPlayerHouse, sTownTourOffsetsNookShop, &sTownTourOffsetVillagerHouse,
                                            &sTownTourOffsetMuseum, &sTownTourOffsetAbleSisters, &sTownTourOffsetTownHall,
                                            &sTownTourOffsetGateHouse};
 extern "C" VecFx32 sTownTourOffsetVillagerHouse = {-0xc00, 0, 0x1c00};
@@ -121,21 +71,22 @@ extern "C" DebugColor data_ov068_02270fd8(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" VecFx32 sTownTourOffsetAbleSisters = {-0xc00, 0, 0x2400};
 extern "C" VecFx32 sTownTourOffsetPlayerHouse = {0, 0, 0x1c00};
 extern "C" VecFx32 sTownTourOffsetGateHouse = {0x1000, 0, 0x1000};
-extern "C" u16 sTownTourBuildings[14] = {0x5014, 0x501a, 0x500d, 0x500d, 0x5001, 0x5001, 0x5011,
-                                          0x5011, 0x500c, 0x500c, 0x5000, 0x5000, 0x500b, 0x500b};
+extern "C" TownTourBuildingRange sTownTourBuildings[7] = {{0x5014, 0x501a}, {0x500d, 0x500d}, {0x5001, 0x5001}, {0x5011, 0x5011},
+                                                           {0x500c, 0x500c}, {0x5000, 0x5000}, {0x500b, 0x500b}};
 extern "C" s32 data_ov068_0226fc40 = 1;
 extern "C" DebugColor data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
 
-BOOL CameraEventModes::initModeFollowTarget() {
-    ((Camera *)(this))->loadPose(0, (CameraPose *)(0));
-    ((Camera *)(this))->setBlendPreset(0);
+// The mode table entries (src/main/unk_0203a0cc.cpp)
+extern "C" BOOL CameraEventModes_InitModeFollowTarget(Camera *c) {
+    c->loadPose(0, NULL);
+    c->setBlendPreset(0);
     Camera_FinishBlend();
     return TRUE;
 }
 
-void CameraEventModes::updateModeFollowTarget() {
+extern "C" void CameraEventModes_UpdateModeFollowTarget(Camera *c) {
     VecFx32 d;
-    Actor *o = *(Actor **)(HOST_AT(this, 0x21c, townTour.holdTimer, 0)); // the followed villager (Camera::modeParam, set by main for mode 7)
+    Actor *o = c->followTarget;  // the followed villager (set by main for mode 7)
     d.x = 0;
     d.y = 0;
     d.z = 0;
@@ -145,63 +96,62 @@ void CameraEventModes::updateModeFollowTarget() {
         d.y = pv->y;
         d.z = pv->z;
     }
-    ((Camera *)(this))->dragFocusTo(&d);
-    VecFx32 v;
-    R_TAIL(v)
+    c->dragFocusTo(&d);
+    Camera_OrbitLookAtPoint(c);
 }
 
-BOOL CameraEventModes::initModeTownTour() {
+extern "C" BOOL CameraEventModes_InitModeTownTour(Camera *c) {
     u16 e[2];
-    ((Camera *)(this))->loadPose(0, (CameraPose *)(0));
-    ((Camera *)(this))->setBlendPreset(0);
+    c->loadPose(0, NULL);
+    c->setBlendPreset(0);
     Camera_FinishBlend();
-    void *g = gSceneBlockMap;
-    s32 a = 0, b = 0, c = 0, d = 0;
-    CameraTownTourState *s = &townTour;
+    BlockMap *g = gSceneBlockMap;
+    s32 bx = 0, bz = 0, ux = 0, uz = 0;
+    CameraTownTourState *s = &c->townTour;
     s->holdTimer = 0x3c;
     s->buildingIndex = 0;
     if (g) {
         e[0] = 0x5014;
         e[1] = 0x501a;
-        if (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &e[0], &e[1], 1, 0) == 1) {
+        if (BlockMap_FindItemAllAttr(g, &bx, &bz, &ux, &uz, &e[0], &e[1], 1, 0) == 1) {
             VecFx32 pos;
-            FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
-            s->offset = (VecFx32 *)sTownTourOffsets[0];
-            targetFocus = pos.x;
-            targetFocusY = pos.y;
-            targetFocusZ = pos.z;
+            FieldPos_FromBlockUnitCenter(&pos, bx, bz, ux, uz);
+            s->offset = sTownTourOffsets[0];
+            c->targetFocus.x = pos.x;
+            c->targetFocus.y = pos.y;
+            c->targetFocus.z = pos.z;
         }
     }
-    s->buildingX = targetFocus;
-    s->buildingY = targetFocusY;
-    s->buildingZ = targetFocusZ;
-    targetFocus += s->offset->x;
-    targetFocusY += s->offset->y;
-    targetFocusZ += s->offset->z;
+    s->building.x = c->targetFocus.x;
+    s->building.y = c->targetFocus.y;
+    s->building.z = c->targetFocus.z;
+    c->targetFocus.x += s->offset->x;
+    c->targetFocus.y += s->offset->y;
+    c->targetFocus.z += s->offset->z;
     s->speed = 0;
     return TRUE;
 }
 
-void CameraEventModes::updateModeTownTour() {
-    CameraTownTourState *s = &townTour;
+extern "C" void CameraEventModes_UpdateModeTownTour(Camera *c) {
+    CameraTownTourState *s = &c->townTour;
     VecFx32 v;
-    v.x = s->buildingX;
-    v.y = s->buildingY;
-    v.z = s->buildingZ;
+    v.x = s->building.x;
+    v.y = s->building.y;
+    v.z = s->building.z;
     VEC_Add(&v, s->offset, &v);
     Math_StepS32Alt(&s->speed, data_ov068_0226fc48, data_ov068_0226fc40);
-    if (Math_ApproachVecXZ(&targetFocus, &v, data_ov068_0226fc44, s->speed, 8) == 0) {
-        if (Math_StepS16(s, 0, 1) != 0) {
+    if (Math_ApproachVecXZ(&c->targetFocus, &v, data_ov068_0226fc44, s->speed, 8) == 0) {
+        if (Math_StepS16((s16 *)&s->holdTimer, 0, 1) != 0) {
             s->holdTimer = 0x3c;
             if (Math_StepS16(&s->buildingIndex, 7, 1) != 0) {
                 s->buildingIndex = 0;
             }
-            void *g = gSceneBlockMap;
+            BlockMap *g = gSceneBlockMap;
             s32 cnt = 0;
             struct { u16 a, b; } out;
-            s32 a = 0, b = 0, c = 0, d = 0;
-            if (g != 0) {
-                TownTourBuildingRange *tbl = (TownTourBuildingRange *)sTownTourBuildings;
+            s32 bx = 0, bz = 0, ux = 0, uz = 0;
+            if (g != NULL) {
+                TownTourBuildingRange *tbl = sTownTourBuildings;
                 do {
                     TownTourBuildingRange *e = &tbl[s->buildingIndex];
                     u16 t = e->lo;
@@ -235,61 +185,56 @@ void CameraEventModes::updateModeTownTour() {
                     }
                     out.a = tbl[s->buildingIndex].lo;
                     out.b = tbl[s->buildingIndex].hi;
-                } while (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &out.a, &out.b, sTownTourBuildingAttrs[s->buildingIndex], 0) == 0);
+                } while (BlockMap_FindItemAllAttr(g, &bx, &bz, &ux, &uz, &out.a, &out.b, sTownTourBuildingAttrs[s->buildingIndex], 0) == 0);
                 VecFx32 pos;
-                FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
-                s->buildingX = pos.x;
-                s->buildingY = pos.y;
-                s->buildingZ = pos.z;
-                u8 *bs = (u8 *)sTownTourOffsets[s->buildingIndex];
-                cnt = cnt * 12;
-                s->offset = (VecFx32 *)(bs + cnt);
+                FieldPos_FromBlockUnitCenter(&pos, bx, bz, ux, uz);
+                s->building.x = pos.x;
+                s->building.y = pos.y;
+                s->building.z = pos.z;
+                s->offset = &sTownTourOffsets[s->buildingIndex][cnt];  // (the Nook shop: one per shop stage)
                 s->speed = 0;
             }
         }
     }
-    VecFx32 vv;
-    R_TAIL(vv)
+    Camera_OrbitLookAtPoint(c);
 }
 
-BOOL CameraEventModes::initMode13() {
-    ((Camera *)(this))->loadPose(0x1a, (CameraPose *)(0));
+extern "C" BOOL CameraEventModes_InitMode13(Camera *c) {
+    c->loadPose(0x1a, NULL);
     Camera_FinishBlend();
     return TRUE;
 }
 
-void CameraEventModes::updateMode13() {
+extern "C" void CameraEventModes_UpdateMode13(Camera *c) {
     VecFx32 d;
     d = gVec3Zero;
-    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (p) {
         d = *p;
     }
-    ((Camera *)(this))->dragFocusTo(&d);
-    VecFx32 v;
-    R_TAIL(v)
+    c->dragFocusTo(&d);
+    Camera_OrbitLookAtPoint(c);
 }
 
-BOOL CameraEventModes::initModeSway() {
-    ((Camera *)(this))->loadPose(0x10, (CameraPose *)(0));
-    ((Camera *)(this))->setBlendPreset(0);
-    if (prevMode == 2) {
+extern "C" BOOL CameraEventModes_InitModeSway(Camera *c) {
+    c->loadPose(0x10, NULL);
+    c->setBlendPreset(0);
+    if (c->prevMode == 2) {
         Camera_StartBlend();
     } else {
         Camera_FinishBlend();
     }
-    ((Camera *)(this))->setFovy(0x1c71);
-    Camera_SetSwayPattern((Camera *)this, 0);
+    c->setFovy(0x1c71);
+    Camera_SetSwayPattern(c, 0);
     return TRUE;
 }
 
-void CameraEventModes::updateModeSway() {
-    VecFx32 v;
-    targetFocus = gVec3Zero.x;
-    targetFocusY = gVec3Zero.y;
-    targetFocusZ = gVec3Zero.z;
-    targetFocusY += Camera_UpdateSway((Camera *)this);
-    R_TAIL(v)
+extern "C" void CameraEventModes_UpdateModeSway(Camera *c) {
+    c->targetFocus.x = gVec3Zero.x;
+    c->targetFocus.y = gVec3Zero.y;
+    c->targetFocus.z = gVec3Zero.z;
+    c->targetFocus.y += Camera_UpdateSway(c);
+    Camera_OrbitLookAtPoint(c);
 }
 
 extern "C" void Camera_SetSwayPattern(Camera *c, s32 idx) {
@@ -367,24 +312,3 @@ extern "C" s32 Camera_UpdateSway(Camera *c) {
 }
 
 
-// The mode table entries (src/main/unk_0203a0cc.cpp): this class is a view of the Camera.
-extern "C" BOOL CameraEventModes_InitMode13(Camera *c) { return ((CameraEventModes *)c)->initMode13(); }
-extern "C" BOOL CameraEventModes_InitModeFollowTarget(Camera *c) { return ((CameraEventModes *)c)->initModeFollowTarget(); }
-extern "C" BOOL CameraEventModes_InitModeSway(Camera *c) { return ((CameraEventModes *)c)->initModeSway(); }
-extern "C" BOOL CameraEventModes_InitModeTownTour(Camera *c) { return ((CameraEventModes *)c)->initModeTownTour(); }
-extern "C" void CameraEventModes_UpdateMode13(Camera *c) { ((CameraEventModes *)c)->updateMode13(); }
-extern "C" void CameraEventModes_UpdateModeFollowTarget(Camera *c) { ((CameraEventModes *)c)->updateModeFollowTarget(); }
-extern "C" void CameraEventModes_UpdateModeSway(Camera *c) { ((CameraEventModes *)c)->updateModeSway(); }
-extern "C" void CameraEventModes_UpdateModeTownTour(Camera *c) { ((CameraEventModes *)c)->updateModeTownTour(); }
-
-#ifdef HOST64
-static_assert(__builtin_offsetof(CameraEventModes, pad_00) == 0x0, "CameraEventModes.pad_00");
-static_assert(__builtin_offsetof(CameraEventModes, targetFocus) == 0x150, "CameraEventModes.targetFocus");
-static_assert(__builtin_offsetof(CameraEventModes, targetFocusY) == 0x154, "CameraEventModes.targetFocusY");
-static_assert(__builtin_offsetof(CameraEventModes, targetFocusZ) == 0x158, "CameraEventModes.targetFocusZ");
-static_assert(__builtin_offsetof(CameraEventModes, pad_11c) == 0x15c, "CameraEventModes.pad_11c");
-static_assert(__builtin_offsetof(CameraEventModes, prevMode) == 0x23c, "CameraEventModes.prevMode");
-static_assert(__builtin_offsetof(CameraEventModes, pad_200) == 0x240, "CameraEventModes.pad_200");
-static_assert(__builtin_offsetof(CameraEventModes, townTour) == 0x260, "CameraEventModes.townTour");
-static_assert(sizeof(CameraEventModes) == sizeof(Camera), "CameraEventModes: regenerate (tools/host_view_layout.py --remove)");
-#endif

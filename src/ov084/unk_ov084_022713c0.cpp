@@ -28,9 +28,7 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "player/PlayerSpNpcRecord.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov084_02271d40  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov084_02271d44  // declared below: the shared prototype conflicts with the calls here
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -39,6 +37,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov084/unk_ov084_022713c0.h"
 
@@ -52,18 +51,12 @@ struct TalkStartMsg;
 
 
 extern "C" {
-void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void TalkRequest_SetTargetDone(void *p);
-void NookShop_PickFlowerBag(u16 *p);
-void Clock_GetDateTime(void *p);
-void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-void _ZN8SaveData7setFlagEj(void *p, s32 v);
-u32 Event_GetDaysSinceStart(s32 v);
+void Clock_GetDateTime(ClockDateTime *p);
+s32 Event_GetDaysSinceStart(u32 id);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 gContestRecord[];
-extern u8 gSaveData[];
 }
 
 
@@ -130,15 +123,10 @@ struct SpNpcTortimerFireworksFortuneLine {
 
 
 extern "C" {
-void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
-u32 Item_MakePaper(u32 a, u32 b);
+u16 Item_MakePaper(u32 a, s32 b);
 s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
-BOOL func_0202e3a4(void *p);
-BOOL func_0202e514(void *p);
-void Clock_GetDate(u8 *p);
-void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
-extern u32 data_ov084_02271d40;
-extern u32 data_ov084_02271d44;
+void Clock_GetDate(u8 *out);
+extern u8 gContestRecord[];
 extern const SpNpcTortimerFireworksFortuneLine sSpNpcTortimerFireworksFortuneLines[4];
 }
 
@@ -189,7 +177,7 @@ BOOL SpNpcTortimerFireworks::onCreate() {
     }
     changeAct(0);
     ContestRecord_BeginContestDay((ContestRecord *)gContestRecord, 0);
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     u8 buf[8];
@@ -224,24 +212,24 @@ void SpNpcTortimerFireworks::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerFireworks::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFireworks::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerFireworks::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     s32 x = 0;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFireworks::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -264,7 +252,7 @@ void SpNpcTortimerFireworksTalk::attachOwner(SpNpcTortimerFireworks *owner) {
 
 void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
     u16 h[4];
-    u32 loc[2];
+    ClockDateTimeWords loc;
     PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle4";
     if (massageChairSlot == -1) {
@@ -305,10 +293,10 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
             if (ownerNpc->showWeek == 1) {
                 out->msgIndex = 0;
             } else {
-                loc[0] = 0;
-                loc[1] = 0;
-                Clock_GetDateTime(&loc[0]);
-                s32 r = Date_GetNthWeekdayDay(((u8 *)loc)[5], ((u8 *)loc)[4], 6, 5);
+                loc.words[0] = 0;
+                loc.words[1] = 0;
+                Clock_GetDateTime(&loc.dt);
+                s32 r = Date_GetNthWeekdayDay(loc.dt.year, loc.dt.month, 6, 5);
                 if (r == -1) {
                     if (ownerNpc->showWeek <= 3) {
                         out->msgIndex = 1;
@@ -339,7 +327,7 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h[1] = 0x1559;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&h[1], 0, 5, 0);
+            requestGiveItem(&h[1], 0, 5, 0);
             h[2] = 0x1559;
             Pocket_AddItem(&h[2], 0);
             b = 4;
@@ -383,13 +371,13 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
             }
         after:
             if (r5 >= 0) {
-                void *g2 = PlayerData_GetCurrent()->getSpNpcRecord();
-                if (((PlayerSpNpcRecord *)(g2))->getFireworksGiven() < 10) {
-                    ((PlayerSpNpcRecord *)(g2))->addFireworksGiven();
+                PlayerSpNpcRecord *g2 = (PlayerSpNpcRecord *)PlayerData_GetCurrent()->getSpNpcRecord();
+                if (g2->getFireworksGiven() < 10) {
+                    g2->addFireworksGiven();
                     s32 r = ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender();
-                    ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
+                    requestGiveItem(&h[0], 0, 5, 0);
                     Pocket_AddItem(&h[0], 0);
-                    ((ActorTalkRequest *)(this))->setItemNameSlot(&h[0], 0, 7);
+                    setItemNameSlot(&h[0], 0, 7);
                     if (r == 0) {
                         msg = 3;
                     } else {
@@ -399,14 +387,14 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
                     msg = 0xb;
                 }
             } else {
-                ((ActorTalkRequest *)(this))->setItemNameSlot(&h[0], 0, 7);
+                setItemNameSlot(&h[0], 0, 7);
                 msg = 5;
             }
             break;
         }
         case 9:
             h[6] = 0x1565;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&h[6], 0, 5, 0);
+            requestGiveItem(&h[6], 0, 5, 0);
             msg = 0xa;
             break;
         }
@@ -431,7 +419,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
                 if (massageChairSlot >= 0) {
                     Pocket_RemoveItem(massageChairSlot);
                     h[0] = 0x37e0;
-                    ((ActorTalkRequest *)(this))->requestTakeItem(&h[0], 0, 5, 0);
+                    requestTakeItem(&h[0], 0, 5, 0);
                 }
                 msg = 2;
             }
@@ -445,10 +433,10 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
         if (msgIndex == 7 && t == 0) {
             msg = 0xc;
             if (Inventory_FindEmptyLetter() != -1) {
-                void *obj = Inventory_GetEmptyLetter();
+                Letter *obj = Inventory_GetEmptyLetter();
                 if (obj != NULL) {
                     msg = 9;
-                    void *g = PlayerData_GetCurrent();
+                    PlayerData *g = PlayerData_GetCurrent();
                     buf[0] = 2;
                     MsgString33 o;
                     u32 base = Random_GlobalBelow(4) + 8;
@@ -456,20 +444,19 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
                     u32 v = base;
                 loop0:
                     buf[0] = v;
-                    v = (u32)&((SpNpcTortimerFireworksFortuneLine *)sSpNpcTortimerFireworksFortuneLines)[i];
-                    String_Load(&o, &buf[0], (s32)((SpNpcTortimerFireworksFortuneLine *)sSpNpcTortimerFireworksFortuneLines)[i].a);
-                    MailText_SetSlot((void *)((SpNpcTortimerFireworksFortuneLine *)v)->b, &o);
+                    String_Load(&o, &buf[0], sSpNpcTortimerFireworksFortuneLines[i].a);
+                    MailText_SetSlot(sSpNpcTortimerFireworksFortuneLines[i].b, &o);
                     v = (base - 8) * 4;
                     v = v + Random_GlobalBelow(4);
                     v = v + i * 16;
                     i++;
                     if (i < 4) goto loop0;
                     buf[0] = 1;
-                    Letter_ComposeFromMail(obj, &buf[0], (u8 *)"ev_fortune", &data_ov084_02271d44, &data_ov084_02271d40,
-                                  ((PlayerData *)(g))->getPlayerId());
+                    Letter_ComposeFromMail((LetterView *)obj, &buf[0], "ev_fortune", &data_ov084_02271d44, &data_ov084_02271d40,
+                                           g->getPlayerId());
                     if (g != NULL) {
                         h[1] = Item_MakePaper(0x1d, 4);
-                        Catalog_AddItem(((PlayerData *)(g))->getCatalog(), &h[1], 0);
+                        Catalog_AddItem(g->getCatalog(), &h[1], 0);
                     }
                     TownSessionState_SetFlag(TownSessionState_Get(), 3);
                 }
@@ -484,7 +471,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerFireworks::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -495,7 +482,7 @@ void SpNpcTortimerFireworks::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

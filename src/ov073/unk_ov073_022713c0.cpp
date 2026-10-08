@@ -29,15 +29,18 @@
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
 #include "town/VisitorPos.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "item/PocketMatches.h"
+#include "game/TurnipMarket.h"
+#include "save/SaveData.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02089fbc.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/ov073/unk_ov073_022713c0.h"
 
 
@@ -50,29 +53,21 @@ extern "C" {
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
-extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
-extern VecFx32 gVec3Zero;
-extern u8 gRandom[];
-extern u8 data_021ed29c[];
-extern u8 gSaveData[];
 extern s16 data_02135f44[];
-extern u32 __ptmf_null[];
 
-void Pocket_CountMatching(void *buf, s32 (*cb)(u16 *));
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 TalkRequest_SetTargetDone(void *p);
-s32 Math_AngleXZ(void *a, void *b);
-void Math_CountDownU8(void *p);
-s32 Random_Next(void *p);
+BOOL TalkRequest_SetTargetDone(Character *c);
+u8 Math_CountDownU8(u8 *p);
+u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *p, s32 v);
-
-// Methods of other modules' classes, called by their real (mangled) names with the object as first argument.
-s32 _ZN12TurnipMarket8getPriceEv(void *p);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 }
+
+class Camera;
+extern Camera *gCamera;
+extern SaveData gSaveData;
 
 
 
@@ -91,13 +86,13 @@ public:
     virtual void start(TalkStartMsg *out);
     virtual void onTaskDone(u32 id);
 
-    void attachOwner(s32 v);
+    void attachOwner(SpNpcJoan *v);
     BOOL giveTurnips();
     void onAmountEntered();
     void setResultHandler(s32 i);
 
     /* 0xac */ s32 topic;
-    /* 0xb0 */ s32 owner;
+    /* 0xb0 */ SpNpcJoan *owner;
     /* 0xb4 */ Fn resultHandler;
     /* 0xbc */ s32 price;
     /* 0xc0 */ s32 amount;
@@ -135,7 +130,7 @@ public:
     BOOL mainAct02();
     BOOL tryAvoidObstacle();
     BOOL steerAroundObstacle();
-    BOOL findSidestepPos(VecFx32 *out, void *tbl);
+    BOOL findSidestepPos(VecFx32 *out, FxVec3 *offset);
     BOOL pickWanderTarget(s32 *a, s32 *b);
     BOOL isInCameraBox();
     BOOL isInFocusBox(VecFx32 *a, VecFx32 *b);
@@ -165,25 +160,6 @@ extern SpNpcJoanActEntry sSpNpcJoanActTable[5];
 extern FxVec3 sSpNpcJoanSidestepOffsets[2];   // [1] is at 0x022725c8
 extern "C" {
 extern ActorProfile sSpNpcJoanProfile;
-extern void *data_ov073_02272388[2];
-extern void *data_ov073_02272390[2];
-extern void *data_ov073_02272398[2];
-extern void *data_ov073_022723a0[2];
-extern void *data_ov073_022723a8[2];
-extern void *data_ov073_022723b0[2];
-extern void *data_ov073_022723b8[2];
-extern void *data_ov073_022723c0[2];
-extern void *data_ov073_022723c8[2];
-// the state functions under their link names, for the named member-function-pointer constants
-void _ZN9SpNpcJoan10setupAct00Ev();
-void _ZN9SpNpcJoan9mainAct04Ev();
-void _ZN9SpNpcJoan10setupAct04Ev();
-void _ZN9SpNpcJoan9mainAct00Ev();
-void _ZN9SpNpcJoan9mainAct01Ev();
-void _ZN9SpNpcJoan10setupAct02Ev();
-void _ZN9SpNpcJoan9mainAct02Ev();
-void _ZN9SpNpcJoan10setupAct03Ev();
-void _ZN9SpNpcJoan9mainAct03Ev();
 }
 
 extern "C" SpNpcJoan *SpNpcJoan_Create() {
@@ -197,7 +173,7 @@ BOOL SpNpcJoan::preCreate() {
         return FALSE;
     }
     setTalkRequest((ActorTalkRequest *)&talk);
-    talk.attachOwner((s32)this);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -289,7 +265,7 @@ BOOL SpNpcJoan::pickWanderTarget(s32 *a, s32 *b) {
     v.y = 0;
     v.z = 0;
     for (i = r; i < 6; i++) {
-        s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
+        s32 idx = ((u16)(s16)Random_Next(&gRandom.seed) >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = t + position.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
@@ -305,10 +281,10 @@ BOOL SpNpcJoan::pickWanderTarget(s32 *a, s32 *b) {
     return r;
 }
 
-BOOL SpNpcJoan::findSidestepPos(VecFx32 *out, void *tbl) {
+BOOL SpNpcJoan::findSidestepPos(VecFx32 *out, FxVec3 *offset) {
     BOOL r = FALSE;
     VecFx32 v;
-    Npc_RotateOffsetXZ(&v, &position, tbl, moveAngleY);
+    Npc_RotateOffsetXZ(&v, &position, offset, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
         out->y = v.y;
@@ -360,12 +336,12 @@ BOOL SpNpcJoan::tryAvoidObstacle() {
     return FALSE;
 }
 
-#define ZERO_CALL(p) _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
+#define ZERO_CALL(p) (p)->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
 
 BOOL SpNpcJoan::mainAct02() {
     VecFx32 va;
     VecFx32 vb;
-    void *r4 = &actionCtrl;
+    NpcActionCtrl *r4 = &actionCtrl;
     BOOL r6 = isInCameraBox();
     Math_CountDownU8(&actCounter);
     if (r6 != 0) {
@@ -373,10 +349,10 @@ BOOL SpNpcJoan::mainAct02() {
             if (((NpcActionCtrl *)(r4))->isActionDone()) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ZERO_CALL(r4);
-                } else if ((Random_Next(gRandom) & 7) == 0) {
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     va = gVec3Zero;
                     if (pickWanderTarget(&va.x, &va.z)) {
-                        s32 t = Math_AngleXZ(&position, &va);
+                        s32 t = Math_AngleXZ(&position.x, &va.x);
                         if (NpcActor_IsFrontAngle(t - rotY)) {
                             u32 k = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -402,7 +378,7 @@ BOOL SpNpcJoan::mainAct02() {
                         ZERO_CALL(r4);
                     } else {
                         vb = *((NpcMoveCtrl *)(&moveCtrl))->getDestination();
-                        s32 t = Math_AngleXZ(&position, &vb);
+                        s32 t = Math_AngleXZ(&position.x, &vb.x);
                         if (NpcActor_IsFrontAngle(t - rotY) == 0) {
                             ZERO_CALL(r4);
                         }
@@ -464,18 +440,10 @@ BOOL SpNpcJoan::mainAct04() {
 void SpNpcJoanTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
-        resultHandler = *(Fn *)__ptmf_null;
+        resultHandler = NULL;
     }
 }
 
-// Data. mwcc orders a file's data by a size heapsort over the reverse of the creation order, so the place of each
-// definition below (relative to the others and to func_02271910, which creates its local static table) is what
-// reproduces the original layout. The member-function-pointer constants of the state table are named objects
-// (data_ov073_02272388..022723c8) so that their order can be set; do not move or reorder these definitions and
-// do not run `linkprep.py reverse` on this file.
-void *data_ov073_022723c8[2] = {(void *)_ZN9SpNpcJoan9mainAct03Ev, 0};
-void *data_ov073_022723b0[2] = {(void *)_ZN9SpNpcJoan10setupAct02Ev, 0};
-void *data_ov073_022723b8[2] = {(void *)_ZN9SpNpcJoan9mainAct02Ev, 0};
 DebugColor data_ov073_02272584(31, 20, 20, 31);
 
 void SpNpcJoanTalk::setResultHandler(s32 i) {
@@ -483,26 +451,21 @@ void SpNpcJoanTalk::setResultHandler(s32 i) {
     resultHandler = tbl[i];
 }
 
-void *data_ov073_02272390[2] = {(void *)_ZN9SpNpcJoan9mainAct04Ev, 0};
 DebugColor data_ov073_02272598(20, 20, 31, 31);
 u8 sSpNpcJoanTexturePath[27] = "npc_sp/model/boa_tex.nsbtx";
 char sSpNpcJoanKey[12] = "sp_npc_boar";
 u8 sSpNpcJoanModelPath[23] = "npc_sp/model/boa.nsbmd";
-void *data_ov073_022723c0[2] = {(void *)_ZN9SpNpcJoan10setupAct03Ev, 0};
 DebugColor data_ov073_0227258c(31, 31, 20, 31);
-void *data_ov073_022723a8[2] = {(void *)_ZN9SpNpcJoan9mainAct01Ev, 0};
-void *data_ov073_022723a0[2] = {(void *)_ZN9SpNpcJoan9mainAct00Ev, 0};
-void *data_ov073_02272398[2] = {(void *)_ZN9SpNpcJoan10setupAct04Ev, 0};
 ActorProfile sSpNpcJoanProfile = {(void *(*)())SpNpcJoan_Create, 0x6f, 0x75, 2, 0x5000, 0x5000, 0x3e800};
 DebugColor data_ov073_02272594(20, 31, 20, 31);
 DebugColor data_ov073_02272580(20, 31, 31, 31);
 DebugColor data_ov073_02272588(20, 24, 24, 31);
 SpNpcJoanActEntry sSpNpcJoanActTable[5] = {
-    {*(SpNpcJoanActFn *)data_ov073_02272388, *(SpNpcJoanActFn *)data_ov073_022723a0},
-    {NULL, *(SpNpcJoanActFn *)data_ov073_022723a8},
-    {*(SpNpcJoanActFn *)data_ov073_022723b0, *(SpNpcJoanActFn *)data_ov073_022723b8},
-    {*(SpNpcJoanActFn *)data_ov073_022723c0, *(SpNpcJoanActFn *)data_ov073_022723c8},
-    {*(SpNpcJoanActFn *)data_ov073_02272398, *(SpNpcJoanActFn *)data_ov073_02272390},
+    {&SpNpcJoan::setupAct00, &SpNpcJoan::mainAct00},
+    {NULL, &SpNpcJoan::mainAct01},
+    {&SpNpcJoan::setupAct02, &SpNpcJoan::mainAct02},
+    {&SpNpcJoan::setupAct03, &SpNpcJoan::mainAct03},
+    {&SpNpcJoan::setupAct04, &SpNpcJoan::mainAct04},
 };
 const TalkStartMsg sSpNpcJoanTopicMsgs[3] = {
     {sSpNpcJoanKey, 0},
@@ -510,7 +473,6 @@ const TalkStartMsg sSpNpcJoanTopicMsgs[3] = {
     {NULL, 0},
 };
 FxVec3 sSpNpcJoanSidestepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
-void *data_ov073_02272388[2] = {(void *)_ZN9SpNpcJoan10setupAct00Ev, 0};
 
 void SpNpcJoanTalk::onAmountEntered() {
     void *obj = window;
@@ -519,7 +481,7 @@ void SpNpcJoanTalk::onAmountEntered() {
     if (MenuCtrl_IsResultOk()) {
         s32 a = MenuCtrl_GetAmount() * 10;
         amount = MenuCtrl_GetAmount();
-        price = a * _ZN12TurnipMarket8getPriceEv(data_021ed29c);
+        price = a * ((TurnipMarket *)gSaveData.turnipMarket)->getPrice();
         ((ActorTalkRequest *)(this))->setNumberSlot(a, 1, 3, 1, 0);
         ((ActorTalkRequest *)(this))->setNumberSlot(price, 2, 10, 1, 0);
         buf[0] = 0x13;
@@ -533,7 +495,7 @@ SpNpcJoanTalk::~SpNpcJoanTalk() {}
 
 void SpNpcJoanTalk::resetMsg() {
     ActorTalkRequest::resetMsg();
-    resultHandler = *(Fn *)__ptmf_null;
+    resultHandler = NULL;
 }
 
 extern "C" s32 SpNpcJoan_IsEmptyItem(u16 *p) {
@@ -548,7 +510,7 @@ BOOL SpNpcJoanTalk::giveTurnips() {
     s32 t = Pocket_FindEmpty();
     s32 i = 0;
     s32 m;
-    u8 buf[8];
+    PocketMatches buf;
     u16 a, b;
     for (; i < 10; i++) {
         if (amount >= 10) {
@@ -560,8 +522,8 @@ BOOL SpNpcJoanTalk::giveTurnips() {
     if (amount != 0) {
         m = n + 1;
     }
-    Pocket_CountMatching(buf, SpNpcJoan_IsEmptyItem);
-    if (t < 0 || buf[2] < m) {
+    Pocket_CountMatching(&buf, SpNpcJoan_IsEmptyItem);
+    if (t < 0 || buf.count < m) {
         return FALSE;
     }
     while (n > 0) {
@@ -577,7 +539,7 @@ BOOL SpNpcJoanTalk::giveTurnips() {
     return TRUE;
 }
 
-void SpNpcJoanTalk::attachOwner(s32 v) {
+void SpNpcJoanTalk::attachOwner(SpNpcJoan *v) {
     resetMsg();
     owner = v;
     topic = 0;
@@ -594,8 +556,8 @@ void SpNpcJoanTalk::start(TalkStartMsg *p) {
         }
     }
     if (topic >= 0 && topic < 3) {
-        out->msgIndex = ((u8 *)&sSpNpcJoanTopicMsgs[0].msgIndex)[topic * 8];
-        out->msgKey = (const char *)*(u32 *)((u8 *)sSpNpcJoanTopicMsgs + topic * 8);
+        out->msgIndex = sSpNpcJoanTopicMsgs[topic].msgIndex;
+        out->msgKey = sSpNpcJoanTopicMsgs[topic].msgKey;
     }
 }
 
@@ -703,7 +665,7 @@ b1:
     goto end;
 b3:
     if (res == 0) {
-        ((ActorTalkRequest *)(this))->setNumberSlot(_ZN12TurnipMarket8getPriceEv(data_021ed29c), 0, 10, 1, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(((TurnipMarket *)gSaveData.turnipMarket)->getPrice(), 0, 10, 1, 0);
         cmd = 0x10;
     } else if (res == 1) {
         cmd = 0x17;
@@ -751,7 +713,7 @@ b19:
     goto end;
 b23:
     if (res == 0) {
-        if (((SaveData *)(gSaveData))->testFlag(4)) {
+        if (gSaveData.testFlag(4)) {
             cmd = 0x18;
         } else {
             Hud_Hide();
@@ -768,7 +730,7 @@ b25:
             if (Pocket_AddItem(&b, 0)) {
                 cmd = 0x15;
                 NpcActor_ChargePlayer(owner, 0x3e8);
-                ((SaveData *)(gSaveData))->setFlag(4);
+                gSaveData.setFlag(4);
                 boughtSeeds = 1;
                 c = 0x1567;
                 ((ActorTalkRequest *)(this))->requestGiveItem(&c, 0, 5, 0);
@@ -800,7 +762,7 @@ void SpNpcJoan::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

@@ -72,13 +72,13 @@ extern s32 sRoomInteractDist;
 extern u32 data_ov004_0224d4b4;
 #endif
 #ifndef PROTO_LOCAL_RoomObj_LoadResources
-void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb);
+void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTexHandle *bb);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_LoadResourcesByName
-void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTex *b);
+void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTexHandle *b);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_ReleaseResources
-void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTex *b);
+void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTexHandle *b);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_PlaySeHeld
 void RoomObj_PlaySeHeld(void *a, s32 b);

@@ -54,7 +54,6 @@ void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
 void PopupChoice_Close(void *p, s32 x);
 void InventoryBg_LoadObjGraphics(void *a);
-void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
 extern void *gCommManager;
 extern u8 gSaveLostAndFound[];
 extern u8 gSaveRecycleBin[];

@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -8,15 +7,11 @@
 #include "gfx/AnimModel.h"
 #include "gfx/PooledModel.h"
 #include "town/BuildingActor.h"
-#define PROTO_LOCAL_Bee_StingAndLeave  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Dragonfly_FindPerch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Dragonfly_FlyToPerch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Insect_SetAnimSpeed  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Moth_CircleLight  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Stinger_Threaten  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Stinger_TryAttack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Stinger_Walk  // declared below: the shared prototype conflicts with the calls here
+#include "town/BlockMap.h"
+#include "player/PlayerActor.h"
+#include "field/Snowball.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -58,108 +53,86 @@ struct Unk_ov068_0226a004_Save {
 
 
 extern "C" {
-extern s32 data_020c7c1c;
-extern u8 *gSceneBlockMap;
-s32 FX_Div(s32 a, s32 b);
-s32 func_01ffcb0c(s32 a, s32 b);
-void *_ZN11PooledModel8getModelEv(void *);
-void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
-s16 Math_AngleXZ(void *, void *);
+// (no shared prototypes: excluded from include/proto, defined in .c files, or with file-local types)
+extern BlockMap *gSceneBlockMap;
+s32 FX_Div(s32 a, s32 b);         // (fx32)
+s32 func_01ffcb0c(s32 a, s32 b);  // (fx32)
 s32 _s32_div_f(s32 a, s32 b);
-void Insect_GetDirVec(void *, s32);
-s32 Field_IsRafflesiaNear(void *a, void *b);
-s32 Field_FindFlowerNear(void *a, void *b, s32 c);
-void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
-u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-s32 Flower_GetSpecies(void *cell);
-s32 Vec_DistXZ(void *a, void *b);
-s32 Vec_Distance(void *a, void *b);
-s32 Math_Atan2(s32 x, s32 z);
-s32 Math_AngleDiffAbs(s32 a, s32 b);
-BOOL Item_IsMarker(u16 *p);
-s32 Ground_GetDigKind(s32 x, s32 y);
-s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
-void func_020339bc(void *o, void *pos, s32 a, s32 b);
-s32 func_02033914(void *o, s32 f);
-void GroundInfo_Destruct(void *o);
-void FieldPos_SnapToUnitCenter(void *out, void *in);
-u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
-extern u8 data_021ed2e6[];
-s32 Insect_TickTimer(Insect *);
-s32 Insect_SetWanderBox(Insect *);
-s32 VEC_Subtract(void *, void *, void *);
-s32 VEC_Add(void *, void *, void *);
-s32 Insect_ClampStepXZ(void *, void *, s32);
-s32 NNS_G3dMdlGetMdlAlpha(s32, s32);
-void Insect_PlaySe(void *, s32, s32);
-s32 Insect_FadeOut(Insect *, s32);
-s32 Insect_Despawn(Insect *);
-void Math_StepAngle(s16 *, s32, s32);
-s32 Insect_UpdateAlarm(Insect *, V3 *);
-s32 Stinger_TryAttack(Insect *, u32, u32, s16 *);
-s32 Stinger_Threaten(Insect *, u32, u32);
-s32 Insect_GroundWalk(void *);
-void Town_ClearBeesReleased();
-void Bee_UpdateSwarmAnim(V3 *, AnimModel *, s32);
-s32 Math_ApproachS32(s32 *, s32, s32, s32, s32);
-void Insect_FlapWings(void *);
-s32 Insect_CheckAlarm(void *);
-void Insect_FlutterBob(void *, s32, s32, s32);
-s32 PlayerActor_IsLocalAct67HitAt(void *);
-void FieldPos_FromUnitCenter(void *, u32, u32);
-u16 Item_MakeBuilding(u32);
-void Vec_Sub(void *, void *, void *);
-void Vec_RotateY(void *, s32);
-void Insect_SetAnimSpeed(void *, s32);
-s32 Ground_GetWaterKind(s32, s32);
-s32 Insect_CheckObstacle(void *, s32, s32);
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+void VEC_Subtract(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v);  // (src/autoload_2/unk_02106020.c)
+u32 NNS_G3dMdlGetMdlAlpha(u8 *res, u32 i);
+BOOL Math_StepAngle(s16 *p, s16 target, s16 step);
+s32 Math_ApproachS32(s32 *p, s32 target, s32 ratio, s32 max, s32 min);
+void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
+u16 *BlockMap_GetItemPtr(BlockMap *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
+s32 Flower_GetSpecies(u16 *p);
+u16 Item_MakeBuilding(u32 x);
+s32 Ground_GetWaterKind(s32 x, s32 y);
+void Town_ClearBeesReleased(void);
+// src/ov003/unk_ov003_02225800.cpp (its Rec is Insect, its V3 VecFx32Ctor)
+void Insect_GetDirVec(VecFx32Ctor *o, s32 a);
+BOOL Insect_TickTimer(Insect *self);
+void Insect_SetWanderBox(Insect *self);
+void Insect_ClampStepXZ(VecFx32Ctor *out, VecFx32Ctor *in, s32 c);
+void Insect_PlaySe(Insect *o, s32 a, s32 b);
+BOOL Insect_FadeOut(Insect *self, s32 a);
+void Insect_Despawn(Insect *self);
+s32 Insect_UpdateAlarm(Insect *o, VecFx32 *out);
+BOOL Insect_GroundWalk(Insect *self);
+void Insect_FlapWings(Insect *self);
+s32 Insect_CheckAlarm(Insect *self);
+void Insect_FlutterBob(Insect *self, s32 a, s32 b, s32 c);
+s32 Insect_CheckObstacle(Insect *o, s32 a, s32 b);
+// src/ov003/unk_ov003_022192b4.cpp (its V3 is VecFx32Copy)
+s32 Field_IsRafflesiaNear(VecFx32Copy *out, VecFx32 *b);
+s32 Field_FindFlowerNear(VecFx32Copy *out, VecFx32Copy pos, s32 mask);
+s32 PlayerActor_IsLocalAct67HitAt(VecFx32Ctor *a);  // (src/ov003/unk_ov003_02204ce8.cpp)
+// this file's functions with V3 parameters
 void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out);
-s32 Dragonfly_FindPerch(Insect *o);
-void Dragonfly_FlyToPerch(Insect *o);
-void Moth_CircleLight(Insect *o);
 s32 Moth_SteerToLight(Insect *o, u16 *p, V3 *out);
 s32 Moth_FindNearestLight(Insect *o, V3 *out);
-void Bee_StingAndLeave(Insect *o);
-void Stinger_Walk(Insect *o, s16 *p, u32 mode);
+void Bee_UpdateSwarmAnim(V3 *a, AnimModel *b, s32 d);
 }
 
 #define FX32_CONST(x) ((s32)((x) > 0 ? (x) * 4096.0f + 0.5f : (x) * 4096.0f - 0.5f))
 
 
-void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out) {
+extern "C" void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out) {
     s32 best;
     s32 d;
     V3 *me;
     s32 zero;
     u8 flag;
     u8 i;
-    void *p;
+    Actor *p;
 
     best = 0xfffffff;
     flag = 1;
-    p = PlayerActor_GetActor(4);
+    p = (Actor *)PlayerActor_GetActor(4);
     me = &o->position;
-    if (p != 0) {
-        V3 *q = (V3 *)(ACTOR_POS_AT(p));
+    if (p != NULL) {
+        VecFx32 *q = &p->position;
         out->x = q->x;
         out->y = q->y;
         out->z = q->z;
         best = Vec_DistXZ(out, me);
-        Insect_AccumAlarmFromActor(o, &flag, ((Actor *)p)->speed, best);
+        Insect_AccumAlarmFromActor(o, &flag, p->speed, best);
         *fp = (*fp & flag) ? 1 : 0;
     }
     zero = 0;
     i = zero;
     for (; i < NpcRegistry_GetSlotCount(); i++) {
-        void *e = NpcRegistry_GetBySlot(i);
-        if (e != 0) {
-            V3 *q = (V3 *)(ACTOR_POS_AT(e));
+        NpcActor *e = NpcRegistry_GetBySlot(i);
+        if (e != NULL) {
+            VecFx32 *q = &e->position;
             V3 t;
             t.x = q->x;
             t.y = q->y;
             t.z = q->z;
             d = Vec_DistXZ(&t, me);
-            Insect_AccumAlarmFromActor(o, &flag, ((Actor *)e)->speed, d);
+            Insect_AccumAlarmFromActor(o, &flag, e->speed, d);
             *fp = (*fp & flag) ? 1 : zero;
             if (best > d) {
                 best = d;
@@ -203,7 +176,7 @@ s32 Dragonfly_FindPerch(Insect *o) {
     s32 t;
     u8 zlo, xhi, zhi;
     V3 *pos;
-    void *grid;
+    BlockMap *grid;
     s32 x, z;
     u8 xlo;
     u8 i, j;
@@ -259,7 +232,7 @@ s32 Dragonfly_FindPerch(Insect *o) {
                 o->behaviorWork = o->behaviorWork + 0x10;
                 {
                     s32 old = o->rotY;
-                    s32 rr = Math_AngleXZ(pos, v1e0);
+                    s32 rr = Math_AngleXZ(&pos->x, &v1e0->x);
                     o->turnAngle = rr + old;
                 }
                 o->state = 0xe;
@@ -365,7 +338,7 @@ void Dragonfly_FlyToPerch(Insect *o) {
     s32 d;
     V3 *pos = &o->position;
     V3 *v1e0 = &o->perchPos;
-    void *grid = gSceneBlockMap;
+    BlockMap *grid = gSceneBlockMap;
     s32 wx;
     s32 ang;
     s32 t;
@@ -396,7 +369,7 @@ void Dragonfly_FlyToPerch(Insect *o) {
     }
     if (t > 0 && o->isAlarmed == 0) {
         if (d > 0x266) {
-            ang = Math_AngleXZ(pos, v1e0);
+            ang = Math_AngleXZ(&pos->x, &v1e0->x);
             Insect_GetDirVec(&dv, ang);
             o->rotY = ang;
             pos->x = pos->x + func_01ffcb0c(dv.x, 0xa000);
@@ -437,9 +410,9 @@ void Moth_CircleLight(Insect *o) {
     save.z = pos->z;
     Insect_CheckAlarm(o);
     if (o->isAlarmed != 0) {
-        V3 *q = (V3 *)PlayerActor_GetActor(4);
-        if (q != 0) {
-            q = (V3 *)(ACTOR_POS_AT(q));
+        Actor *player = (Actor *)PlayerActor_GetActor(4);
+        if (player != NULL) {
+            VecFx32 *q = &player->position;
             if (o->rotX == 1 && o->kind == 8) {
                 s32 v;
                 if (pos->x > q->x) {
@@ -481,7 +454,7 @@ void Moth_CircleLight(Insect *o) {
 }
 
 
-s32 Moth_SteerToLight(Insect *o, u16 *p, V3 *out) {
+extern "C" s32 Moth_SteerToLight(Insect *o, u16 *p, V3 *out) {
     V3 a;
     V3 *pos;
     s32 r;
@@ -512,7 +485,7 @@ s32 Moth_SteerToLight(Insect *o, u16 *p, V3 *out) {
     return 0;
 }
 
-s32 Moth_FindNearestLight(Insect *o, V3 *out) {
+extern "C" s32 Moth_FindNearestLight(Insect *o, V3 *out) {
     s32 best;
     V3 bv;
     V3 cur;
@@ -538,21 +511,21 @@ s32 Moth_FindNearestLight(Insect *o, V3 *out) {
     cur.z = z;
     for (i = 0; i < 0x22; i++) {
         u16 id = Item_MakeBuilding(i);
-        void *obj = StrBSize_Get(&id);
-        if (obj != 0) {
-            u32 cnt = ((StrBSizeData *)(obj))->getLightUnitCount();
+        StrBSizeData *obj = StrBSize_Get(&id);
+        if (obj != NULL) {
+            u32 cnt = obj->getLightUnitCount();
             s32 px = zp, pz = zp;
             if (cnt != 0) {
-                void *q = BuildingList_FindByItem(id);
-                if (q != 0) {
+                BuildingActor *q = (BuildingActor *)BuildingList_FindByItem(id);
+                if (q != NULL) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
-                        if (((StrBSizeData *)(obj))->getLightUnit(&px, &pz, j) != 0 && ((BuildingActor *)(q))->callIsLit() == 1) {
+                        if (obj->getLightUnit(&px, &pz, j) != 0 && q->callIsLit() == 1) {
                             V3 t;
                             MothLightStackPad pad;
                             s32 d;
-                            s32 tx = px + ((BuildingActor *)(q))->getGridX();
-                            s32 tz = pz + ((BuildingActor *)(q))->getGridZ();
+                            s32 tx = px + q->getGridX();
+                            s32 tz = pz + q->getGridZ();
                             t.x = tx;
                             t.y = zt;
                             t.z = tz;
@@ -615,26 +588,23 @@ void Insect::dungBeetleWalk() {
 }
 
 
-namespace B20 { extern "C" s16 Math_AngleXZ(void *, void *); }
 void Insect::dungBeetlePushSnowball() {
     Snowball *a = Snowball_GetLooseBall(behaviorWork);
-    s32 *pos = &position.x;
-    s32 w2[3];
-    s32 w[3];
+    VecFx32 *pos = &position;
+    VecFx32Ctor w2;
+    VecFx32 w;
     s16 ang;
-    u8 *volatile q;
     volatile s32 c;
     volatile s32 tmp;
-    if (a != 0) {
+    if (a != NULL) {
         s32 rot, r6;
-        q = (u8 *)a;
-        q = (u8 *)&a->position;
+        VecFx32 *q = &a->position;
         r6 = Snowball_GetRadius(a);
-        ang = B20::Math_AngleXZ(q, pos);
+        ang = (s16)Math_AngleXZ(&q->x, &pos->x);
         rot = ang;
-        w[0] = a->position.x;
-        w[1] = *(s32 *)(q + 4);
-        w[2] = *(s32 *)(q + 8);
+        w.x = q->x;
+        w.y = q->y;
+        w.z = q->z;
         static s32 base = (tmp = Snowball_GetMaxRadius(), tmp - Snowball_GetMinRadius());
         r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - Snowball_GetMinRadius(), base));
         if (frameCounter % 0x14 == 0) {
@@ -653,42 +623,42 @@ void Insect::dungBeetlePushSnowball() {
             rot = (s16)(rot - 0x38e);
         }
         rotY = rot;
-        Insect_GetDirVec(w2, ang);
-        w[0] = w[0] - func_01ffcb0c(w2[0], 0x2666);
-        w[2] = w[2] - func_01ffcb0c(w2[2], 0x2666);
-        s32 d = Vec_DistXZ(w, pos);
+        Insect_GetDirVec(&w2, ang);
+        w.x = w.x - func_01ffcb0c(w2.x, 0x2666);
+        w.z = w.z - func_01ffcb0c(w2.z, 0x2666);
+        s32 d = Vec_DistXZ(&w, pos);
         if (d < r6) {
-            pos[0] = pos[0] - w2[0];
-            pos[2] = pos[2] - w2[2];
+            pos->x = pos->x - w2.x;
+            pos->z = pos->z - w2.z;
         } else if (d > r6 + 0x333) {
-            pos[0] = pos[0] - func_01ffcb0c(w2[0], 0x3000);
-            pos[2] = pos[2] - func_01ffcb0c(w2[2], 0x3000);
+            pos->x = pos->x - func_01ffcb0c(w2.x, 0x3000);
+            pos->z = pos->z - func_01ffcb0c(w2.z, 0x3000);
         } else {
-            pos[0] = pos[0] - func_01ffcb0c(w2[0], 0x2666);
-            pos[2] = pos[2] - func_01ffcb0c(w2[2], 0x2666);
+            pos->x = pos->x - func_01ffcb0c(w2.x, 0x2666);
+            pos->z = pos->z - func_01ffcb0c(w2.z, 0x2666);
         }
-        if (Snowball_TrySetPos(a, (VecFx32 *)w) == 0) {
+        if (Snowball_TrySetPos(a, &w) == 0) {
             state = 5;
-            ((AnimModel *)(&model))->setFrame(0);
+            model.setFrame(0);
             auxTimer = Random_GlobalBelow(0x14) + 0x28;
         }
     } else {
         state = 5;
-        ((AnimModel *)(&model))->setFrame(0);
+        model.setFrame(0);
         auxTimer = Random_GlobalBelow(0x14) + 0x28;
     }
 }
 
 
 BOOL Insect::spiderCheckPlayerHit() {
-    s32 *v = &position.x;
+    VecFx32Ctor *v = &position;
     if (PlayerActor_IsLocalAct67HitAt(v) != 0) {
-        u8 *p = (u8 *)PlayerActor_GetActor(4);
-        if (p != 0) {
-            if (v[0] < *(s32 *)(p + 0x5c)) {
-                v[0] = v[0] - FX_Div(0x14000, 0x10000);
+        Actor *p = (Actor *)PlayerActor_GetActor(4);
+        if (p != NULL) {
+            if (v->x < p->position.x) {
+                v->x = v->x - FX_Div(0x14000, 0x10000);
             } else {
-                v[0] = v[0] + FX_Div(0x14000, 0x10000);
+                v->x = v->x + FX_Div(0x14000, 0x10000);
             }
             if (Random_GlobalBelow(0x64) > 0x32) {
                 unk_24c = 0;
@@ -731,23 +701,23 @@ BOOL Insect::spiderSway() {
 void Insect::mosquitoChase(s16 *p) {
     s32 dist;
     u32 rnd;
-    u8 *tp = (u8 *)PlayerActor_GetActor(4);
-    s32 *pos = &position.x;
+    Actor *tp = (Actor *)PlayerActor_GetActor(4);
+    VecFx32 *pos = &position;
     s32 ang = 0;
-    s32 v[3];
-    v[0] = ang;
-    v[1] = ang;
-    v[2] = ang;
+    VecFx32Ctor v;
+    v.x = ang;
+    v.y = ang;
+    v.z = ang;
     *p = *p + 0xaaa;
     Insect_PlaySe(this, 0, 1);
     Insect_FlapWings(this);
-    if (tp != 0) {
-        u8 *pp = tp + 0x5c;
+    if (tp != NULL) {
+        VecFx32 *pp = &tp->position;
         dist = Vec_DistXZ(pp, pos);
         rnd = (u8)Random_GlobalBelow(0x64);
         s32 c = alarm;
         s32 h = rotY;
-        ang = (s16)(Math_AngleXZ(pos, pp) - h);
+        ang = (s16)(Math_AngleXZ(&pos->x, &pp->x) - h);
         if (isAlarmed != 0) {
             if (c < 0xfe) {
                 c = (s16)(c + 1);
@@ -797,25 +767,25 @@ void Insect::mosquitoChase(s16 *p) {
     }
     s16 na = ang + rotY;
     rotY = na;
-    Insect_GetDirVec(v, na);
-    pos[0] += func_01ffcb0c(v[0], 0x8000);
-    pos[2] += func_01ffcb0c(v[2], 0x8000);
+    Insect_GetDirVec(&v, na);
+    pos->x += func_01ffcb0c(v.x, 0x8000);
+    pos->z += func_01ffcb0c(v.z, 0x8000);
     s32 r = Random_GlobalBelow(8);
     Insect_FlutterBob(this, *p, 0x2800, (r + 0x12) << 12);
 }
 
 
 void Insect::beeEnterSwarm() {
-    u8 *tp = (u8 *)PlayerActor_GetActor(4);
-    s32 *v = &scale.x;
-    if (tp != 0) {
-        rotY = Math_AngleXZ(&position, tp + 0x5c);
+    Actor *tp = (Actor *)PlayerActor_GetActor(4);
+    VecFx32 *v = &scale;
+    if (tp != NULL) {
+        rotY = Math_AngleXZ(&position.x, &tp->position.x);
     }
-    NNS_G3dMdlSetMdlAlpha(((PooledModel *)(&pooledModel))->getModel(), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha((u8 *)pooledModel.getModel(), 0, 0x1f);
     state = 2;
-    v[0] = 1;
-    v[1] = 1;
-    v[2] = 1;
+    v->x = 1;
+    v->y = 1;
+    v->z = 1;
     auxTimer = 0x28;
     model.curFrame = 0x2d000;
     behaviorWork = 0xf0;
@@ -824,21 +794,21 @@ void Insect::beeEnterSwarm() {
 
 
 void Insect::beeSwarmDescend() {
-    s32 *pos = &position.x;
-    s32 *v = &scale.x;
-    s32 t = v[0];
+    VecFx32 *pos = &position;
+    VecFx32 *v = &scale;
+    s32 t = v->x;
     BOOL flag = FALSE;
     if (Math_ApproachS32(&t, 0x1000, 0x200, 0x1000, 0x19a) == 0) {
         flag = TRUE;
     }
-    v[0] = t;
-    v[1] = t;
-    v[2] = t;
-    if (Math_ApproachS32((s32 *)((u8 *)pos + 4), 0x2800, 0x199, 0x1000, 0x400) == 0 && flag) {
+    v->x = t;
+    v->y = t;
+    v->z = t;
+    if (Math_ApproachS32(&pos->y, 0x2800, 0x199, 0x1000, 0x400) == 0 && flag) {
         state = 0;
-        v[0] = 0x1000;
-        v[1] = 0x1000;
-        v[2] = 0x1000;
+        v->x = 0x1000;
+        v->y = 0x1000;
+        v->z = 0x1000;
         Bgm_ReleasePriority(0x19);
         Bgm_Request(0x1a, 0x3f, 0x7f, 0);
         PlayerActor_SetSlotFlag(0x1a, 4);
@@ -846,30 +816,30 @@ void Insect::beeSwarmDescend() {
 }
 
 
-extern "C" void Bee_StretchSwarm(s32 *v, s32 up) {
+extern "C" void Bee_StretchSwarm(VecFx32 *v, s32 up) {
     if (up == 0) {
-        v[2] = v[2] - 0x52;
+        v->z = v->z - 0x52;
     } else {
-        v[2] = v[2] + 0x52;
+        v->z = v->z + 0x52;
     }
-    s32 t = v[2];
+    s32 t = v->z;
     if (t < 0x1000) {
-        v[2] = 0x1000;
+        v->z = 0x1000;
         return;
     }
     if (t > 0x2000) {
-        v[2] = 0x2000;
+        v->z = 0x2000;
     }
 }
 
 void Insect::beeChasePlayer() {
-    u8 *tp = (u8 *)PlayerActor_GetActor(4);
+    Actor *tp = (Actor *)PlayerActor_GetActor(4);
     s32 ang, dist;
-    s32 *pos = &position.x;
+    VecFx32 *pos = &position;
     s32 cur = rotY;
     s16 h = cur;
-    s32 v[3];
-    s32 w[3];
+    VecFx32Ctor v;
+    VecFx32Ctor w;
     s32 t = auxTimer;
     u8 *cnt = &unk_256;
     if (t > 0) {
@@ -877,18 +847,18 @@ void Insect::beeChasePlayer() {
     } else if (MenuCtrl_IsMenuOpen() != 0) {
         h = h + 0x1554;
         rotY = h;
-        Insect_GetDirVec(v, h);
-        pos[0] += func_01ffcb0c(0x23000, v[0]);
-        pos[2] += func_01ffcb0c(0x23000, v[2]);
+        Insect_GetDirVec(&v, h);
+        pos->x += func_01ffcb0c(0x23000, v.x);
+        pos->z += func_01ffcb0c(0x23000, v.z);
         Bee_UpdateSwarmAnim(&scale, &model, cur - h);
         *cnt = 9;
         return;
     }
-    if (tp == 0) {
+    if (tp == NULL) {
         return;
     }
-    u8 *pp = tp + 0x5c;
-    ang = Math_AngleXZ(pos, pp);
+    VecFx32 *pp = &tp->position;
+    ang = Math_AngleXZ(&pos->x, &pp->x);
     s32 r6 = moveSpeed + behaviorWork;
     dist = Vec_DistXZ(pos, pp);
     if (dist < 0x1000) {
@@ -919,37 +889,37 @@ void Insect::beeChasePlayer() {
         behaviorWork = r6;
     }
     rotY = hh;
-    Insect_GetDirVec(w, h);
+    Insect_GetDirVec(&w, h);
     if (dist > 0xe000) {
         r6 <<= 12;
-        pos[0] += FX_Div(func_01ffcb0c(r6, w[0]), 0x3800);
-        pos[2] += FX_Div(func_01ffcb0c(r6, w[2]), 0x3800);
+        pos->x += FX_Div(func_01ffcb0c(r6, w.x), 0x3800);
+        pos->z += FX_Div(func_01ffcb0c(r6, w.z), 0x3800);
     } else {
         r6 <<= 12;
-        pos[0] += FX_Div(func_01ffcb0c(r6, w[0]), 0x5000);
-        pos[2] += FX_Div(func_01ffcb0c(r6, w[2]), 0x5000);
+        pos->x += FX_Div(func_01ffcb0c(r6, w.x), 0x5000);
+        pos->z += FX_Div(func_01ffcb0c(r6, w.z), 0x5000);
     }
     Bee_UpdateSwarmAnim(&scale, &model, (cur - h) * 5);
 }
 
 
-void Bee_UpdateSwarmAnim(V3 *a, AnimModel *b, s32 d) {
+extern "C" void Bee_UpdateSwarmAnim(V3 *a, AnimModel *b, s32 d) {
     s32 ang = (s16)((u32)(b->curFrame << 4) >> 16);
     s32 t = d;
     if (d < 0) t = -d;
     if (t > 0x38e) {
-        Bee_StretchSwarm((s32 *)a, 0);
+        Bee_StretchSwarm(a, 0);
         if (d > 0) {
-            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0, 3, 0x4000, (u16)ang);
+            static_cast<AnimFrameCtrl *>(b)->setup(0, 3, 0x4000, (u16)ang);
         } else {
-            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0x5a, 1, 0x4000, (u16)ang);
+            static_cast<AnimFrameCtrl *>(b)->setup(0x5a, 1, 0x4000, (u16)ang);
         }
     } else {
-        Bee_StretchSwarm((s32 *)a, 1);
+        Bee_StretchSwarm(a, 1);
         if (ang > 0x2d) {
-            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0x2e, 3, 0x4000, (u16)ang);
+            static_cast<AnimFrameCtrl *>(b)->setup(0x2e, 3, 0x4000, (u16)ang);
         } else {
-            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0x2e, 1, 0x4000, (u16)ang);
+            static_cast<AnimFrameCtrl *>(b)->setup(0x2e, 1, 0x4000, (u16)ang);
         }
     }
 }
@@ -961,12 +931,12 @@ void Bee_StingAndLeave(Insect *o) {
     V3 *r6 = &o->position;
     u32 st = o->state;
     if (st == 3) {
-        void *q = PlayerActor_GetActor(4);
+        Actor *q = (Actor *)PlayerActor_GetActor(4);
         if (q) {
             s16 c = o->rotY;
             s16 buf = c;
             V3 vec;
-            Math_StepAngle(&buf, Math_AngleXZ(r6, ACTOR_POS_AT(q)), 0x1554);
+            Math_StepAngle(&buf, Math_AngleXZ(&r6->x, &q->position.x), 0x1554);
             o->rotY = buf;
             Insect_GetDirVec(&vec, buf);
             r6->x = r6->x + func_01ffcb0c(0x23000, vec.x);
@@ -1014,7 +984,7 @@ void Bee_StingAndLeave(Insect *o) {
             z->z = 0;
             o->behaviorWork = 0;
             Town_ClearBeesReleased();
-            NNS_G3dMdlSetMdlAlpha((void *)((PooledModel *)(&o->pooledModel))->getModel(), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((u8 *)o->pooledModel.getModel(), 0, 0);
         }
     }
 }
@@ -1034,9 +1004,9 @@ void Stinger_Walk(Insect *o, s16 *p, u32 mode) {
             s32 t = *p;
             o->position.y = o->position.y + (func_01ffcb0c(FX_Div(0x1000, 0x12000), t << 12) + t * t * -10);
             if (*p == 0) {
-                void *q = PlayerActor_GetActor(4);
+                Actor *q = (Actor *)PlayerActor_GetActor(4);
                 if (q) {
-                    o->rotY = Math_AngleXZ(&o->position, ACTOR_POS_AT(q));
+                    o->rotY = Math_AngleXZ(&o->position.x, &q->position.x);
                     Insect_PlaySe(o, 1, 0);
                 }
             }
@@ -1061,9 +1031,9 @@ void Stinger_Walk(Insect *o, s16 *p, u32 mode) {
 
 s32 Stinger_UpdateChase(Insect *o, s16 *p) {
     s32 r = 0;
-    void *q = PlayerActor_GetActor(4);
+    Actor *q = (Actor *)PlayerActor_GetActor(4);
     if (q) {
-        u32 qq = (u32)q + 0x5c;
+        VecFx32 *qq = &q->position;
         V3 vec;
         s32 st = (s8)Insect_UpdateAlarm(o, &vec);
         s16 c = o->alarm;
@@ -1092,18 +1062,18 @@ done:
 }
 
 
-s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
+s32 Stinger_Threaten(Insect *o, u32 mode, VecFx32 *q) {
     V3 *v = &o->position;
     s32 c232 = o->auxTimer;
     s16 t23a = o->rotY;
     s16 *r6 = &o->unk_23e;
     AnimModel *s = &o->model;
     if (*r6 == 0 || o->kind == 0x37) {
-        if (NNS_G3dMdlGetMdlAlpha((s32)_ZN11PooledModel8getModelEv(&o->pooledModel), 0) == 0x1f) {
+        if (NNS_G3dMdlGetMdlAlpha((u8 *)o->pooledModel.getModel(), 0) == 0x1f) {
             if (mode == 1) {
                 if (*r6 == 0) {
                     Insect_PlaySe(o, 1, 0);
-                    t23a = Math_AngleXZ(v, (void *)q);
+                    t23a = Math_AngleXZ(&v->x, &q->x);
                 }
                 *r6 = *r6 + 1;
             }
@@ -1118,10 +1088,10 @@ s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
                 }
             }
             if (o->unk_24b) {
-                if (Vec_DistXZ(v, (void *)q) < 0x2000) {
-                    Math_StepAngle(&t23a, Math_AngleXZ(v, (void *)q), 0xe38);
+                if (Vec_DistXZ(v, q) < 0x2000) {
+                    Math_StepAngle(&t23a, Math_AngleXZ(&v->x, &q->x), 0xe38);
                 } else {
-                    Math_StepAngle(&t23a, Math_AngleXZ(v, (void *)q), 0x71c);
+                    Math_StepAngle(&t23a, Math_AngleXZ(&v->x, &q->x), 0x71c);
                 }
                 o->rotY = t23a;
             }
@@ -1134,9 +1104,9 @@ s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
         } else {
             s32 b = (s32)s->curFrame >> 12;
             if ((u16)b < 4 && (u16)a < 0xb) {
-                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*s))->setup(0xb, 1, 0x1000, 4);
+                static_cast<AnimFrameCtrl *>(s)->setup(0xb, 1, 0x1000, 4);
             } else if ((u16)a == 0xb && (u16)b == 0xa) {
-                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*s))->setup(0xe, 0, 0x1000, 10);
+                static_cast<AnimFrameCtrl *>(s)->setup(0xe, 0, 0x1000, 10);
             }
         }
     }
@@ -1144,16 +1114,16 @@ s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
 }
 
 
-s32 Stinger_TryAttack(Insect *o, u32 mode, u32 q, s16 *p) {
+s32 Stinger_TryAttack(Insect *o, u32 mode, VecFx32 *q, s16 *p) {
     V3 *v = &o->position;
-    if (o->playerHoldsNet != 0 && (*p == 0 || *p > 0x1f) && NNS_G3dMdlGetMdlAlpha((s32)_ZN11PooledModel8getModelEv(&o->pooledModel), 0) == 0x1f) {
+    if (o->playerHoldsNet != 0 && (*p == 0 || *p > 0x1f) && NNS_G3dMdlGetMdlAlpha((u8 *)o->pooledModel.getModel(), 0) == 0x1f) {
         if (mode == 3 || mode == 1) {
-            if (Vec_DistXZ((void *)q, v) < 0x1000) {
+            if (Vec_DistXZ(q, v) < 0x1000) {
                 s16 *pp = &o->unk_23e;
                 if (PlayerActor_LocalFaint(o->kind == 0x37 ? 1 : 0)) {
                     o->state = 0x13;
                     o->unk_24c = 1;
-                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0, 2, 0x1000, (u32)(o->model.curFrame << 4) >> 16);
+                    static_cast<AnimFrameCtrl *>(&o->model)->setup(0, 2, 0x1000, (u32)(o->model.curFrame << 4) >> 16);
                 } else {
                     s32 t = *pp;
                     if (t > 0 && o->kind == 0x36) {
@@ -1184,7 +1154,7 @@ s32 Stinger_TryAttack(Insect *o, u32 mode, u32 q, s16 *p) {
         } else if (o->unk_24b) {
             s16 t = o->rotY;
             Insect_PlaySe(o, 0, 1);
-            Math_StepAngle(&t, Math_AngleXZ((void *)q, v), 0x666);
+            Math_StepAngle(&t, Math_AngleXZ(&q->x, &v->x), 0x666);
             o->rotY = t;
             o->state = 7;
         }
@@ -1200,7 +1170,7 @@ s32 Insect_ApproachFlower(Insect *o, s16 *p) {
     s16 a;
     s32 b;
     V3 c;
-    if (o->insectFindFlowerTarget(&a, &b, (s32 *)&c) != 0) {
+    if (o->insectFindFlowerTarget(&a, &b, &c) != 0) {
         if (inside != 0) {
             if (b <= FX_Div(0x1000, 0x4000) && v->y <= c.y + FX_Div(0x1000, 0x8000) &&
                 v->y >= c.y - FX_Div(0x1000, 0x8000)) {
@@ -1250,19 +1220,19 @@ s32 Insect_ApproachFlower(Insect *o, s16 *p) {
 }
 
 
-BOOL Insect::insectFindFlowerTarget(s16 *out, s32 *dist, s32 *pos) {
+BOOL Insect::insectFindFlowerTarget(s16 *out, s32 *dist, VecFx32 *pos) {
     u32 x;
-    void *p = &position;
+    VecFx32Ctor *p = &position;
     u32 t = *(u8 *)&kind;
     BOOL ok;
     if (t == 0x33) {
-        if (Field_IsRafflesiaNear(pos, p) != 0) {
+        if (Field_IsRafflesiaNear((VecFx32Copy *)pos, p) != 0) {
             ok = TRUE;
         } else {
             ok = FALSE;
         }
     } else {
-        if (Field_FindFlowerNear(pos, p, Insect_GetFlowerSpeciesMask((s8)t)) != 0) {
+        if (Field_FindFlowerNear((VecFx32Copy *)pos, *(VecFx32Copy *)p, Insect_GetFlowerSpeciesMask((s8)t)) != 0) {
             ok = TRUE;
         } else {
             ok = FALSE;
@@ -1285,11 +1255,11 @@ BOOL Insect::insectFindFlowerTarget(s16 *out, s32 *dist, s32 *pos) {
     if (t != 0x33) {
         Insect_AdjustFlowerLandingPos((s8)Flower_GetSpecies(cell), pos);
     } else {
-        pos[0] += 0x1000;
-        pos[1] = FX_Div(0xb000, 0x10000);
-        pos[2] += 0x1000;
+        pos->x += 0x1000;
+        pos->y = FX_Div(0xb000, 0x10000);
+        pos->z += 0x1000;
     }
-    *out = Math_AngleXZ(p, pos);
+    *out = Math_AngleXZ(&p->x, &pos->x);
     *out = *out - rotY;
     if (*out > 0x38e) {
         *out = 0x38e;
@@ -1303,14 +1273,14 @@ BOOL Insect::insectFindFlowerTarget(s16 *out, s32 *dist, s32 *pos) {
 }
 
 
-extern "C" void Insect_AdjustFlowerLandingPos(s32 code, s32 *v) {
+extern "C" void Insect_AdjustFlowerLandingPos(s32 code, VecFx32 *v) {
     if (code == 1 || code == 4) {
-        v[0] += FX_Div(-0x1000, 0x10000);
-        v[1] = FX_Div(0x10000, 0x10000);
-        v[2] += FX_Div(-0x4000, 0x10000);
+        v->x += FX_Div(-0x1000, 0x10000);
+        v->y = FX_Div(0x10000, 0x10000);
+        v->z += FX_Div(-0x4000, 0x10000);
     } else {
-        v[1] = FX_Div(0x9000, 0x10000);
-        v[2] += FX_Div(0x3000, 0x10000);
+        v->y = FX_Div(0x9000, 0x10000);
+        v->z += FX_Div(0x3000, 0x10000);
     }
 }
 
@@ -1318,8 +1288,8 @@ extern "C" void Insect_AdjustFlowerLandingPos(s32 code, s32 *v) {
 void Insect::insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc) {
     u32 flag = unk_24b;
     u32 rnd = (u8)Random_GlobalBelow(100);
-    s32 *d = &position.x;
-    s32 vec[3];
+    VecFx32 *d = &position;
+    VecFx32Ctor vec;
     if (frameCounter % b == 0 && rnd > thr) {
         if (flag == 0) {
             flag = 1;
@@ -1335,25 +1305,25 @@ void Insect::insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc) {
             *p = *p - a;
         }
     }
-    Insect_GetDirVec(vec, *p);
+    Insect_GetDirVec(&vec, *p);
     rotY = *p;
     if (isAlarmed != 0) {
         float f = 1.25f;
         if (kind == 10 || kind == 0x33) {
             f = 1.5f;
         }
-        d[0] += func_01ffcb0c(func_01ffcb0c(FX32_CONST(f), sc), vec[0]);
-        d[2] += func_01ffcb0c(func_01ffcb0c(FX32_CONST(f), sc), vec[2]);
+        d->x += func_01ffcb0c(func_01ffcb0c(FX32_CONST(f), sc), vec.x);
+        d->z += func_01ffcb0c(func_01ffcb0c(FX32_CONST(f), sc), vec.z);
     } else {
-        d[0] += func_01ffcb0c(sc, vec[0]);
-        d[2] += func_01ffcb0c(sc, vec[2]);
+        d->x += func_01ffcb0c(sc, vec.x);
+        d->z += func_01ffcb0c(sc, vec.z);
     }
 }
 
 
-void Insect::insectFleeFrom(s32 *p) {
-    if (*p > 0 && isAlarmed == 0 && alarm >= alarmThreshold) {
-        turnAngle = Math_AngleXZ(p, &position);
+void Insect::insectFleeFrom(VecFx32 *p) {
+    if (p->x > 0 && isAlarmed == 0 && alarm >= alarmThreshold) {
+        turnAngle = Math_AngleXZ(&p->x, &position.x);
         waitTimer = (Random_GlobalBelow(4) + 7) * 20;
         state = 7;
         isAlarmed = 1;
@@ -1362,6 +1332,6 @@ void Insect::insectFleeFrom(s32 *p) {
 }
 
 void Insect::antsAppear() {
-    NNS_G3dMdlSetMdlAlpha(((PooledModel *)(&pooledModel))->getModel(), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha((u8 *)pooledModel.getModel(), 0, 0x1f);
     state = 0x12;
 }

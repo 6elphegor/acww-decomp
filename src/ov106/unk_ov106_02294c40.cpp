@@ -1573,7 +1573,7 @@ BOOL MailboxMenu::dropHeldOnSlot(u32 a) {
 
 void MailboxMenu::putLetterInSlot(u32 a, void *p) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        ((LetterGrid *)&letterGrid)->setLetter(toLetterGridIndex(a), (s32)p);
+        ((LetterGrid *)&letterGrid)->setLetter(toLetterGridIndex(a), p);
         if (isLetterSlot(a)) {
             registerLetterPaper(p);
         }

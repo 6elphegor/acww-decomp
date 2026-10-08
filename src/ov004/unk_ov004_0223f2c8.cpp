@@ -3,6 +3,7 @@
 #include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
+#include "menu/StaffRoll.h"
 
 // Static warp entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
 
@@ -41,7 +42,7 @@ extern void *sKkShowFx;
 
 void KkShowFx_Start(void) {
     OverlayMgr_Acquire(93 /* the staff roll's overlay */);
-    sKkShowFx = Heap_Alloc(gMenuHeap, 0x1fc4);
+    sKkShowFx = Heap_Alloc(gMenuHeap, sizeof(StaffRoll));
     if (sKkShowFx) {
         func_ov093_022921b8(sKkShowFx);
     }

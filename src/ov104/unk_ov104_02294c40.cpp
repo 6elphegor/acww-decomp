@@ -1337,7 +1337,7 @@ BOOL PostOfficeMenu::dropHeldOnSlot(u32 i) {
 
 void PostOfficeMenu::putLetterInSlot(u32 i, void *p) {
     if (isLetterSlot(i) || isBoxSlot(i)) {
-        letterGrid.setLetter(toLetterGridIndex(i), (s32)p);
+        letterGrid.setLetter(toLetterGridIndex(i), p);
     }
 }
 

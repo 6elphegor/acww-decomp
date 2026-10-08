@@ -89,7 +89,7 @@ extern u8 sInsectCatchResult;
 extern FxVec3NoCtor sWateringPos;
 #endif
 #ifndef PROTO_LOCAL_Insect_IsOverWater
-BOOL Insect_IsOverWater(s32 v);
+BOOL Insect_IsOverWater(VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_Insect_FindNearestPlayer
 Actor *Insect_FindNearestPlayer(VecFx32 *pos);

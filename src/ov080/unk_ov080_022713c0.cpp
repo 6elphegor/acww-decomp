@@ -30,17 +30,6 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov080/unk_ov080_022713c0.h"
 
-// Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
-#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
-#define PlayerData_isUsed _ZN10PlayerData6isUsedEv
-#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
-#define unk_618_func_020141b4 _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define unk_618_func_02014220 _ZN11NpcTalkCtrl6isBusyEv
-#define unk_564_func_020196b4 _ZN13NpcActionCtrl13requestActionEjiiissiitt
-
 class SpNpcTortimer;
 class SpNpcTortimerTalk;
 
@@ -48,15 +37,6 @@ extern "C" {
 BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequestFlags_SetEventWarpBlock();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
-void NpcAnimCtrl_playAnim(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
-BOOL unk_618_func_02014220(void *self);
-void unk_618_func_020141b4(void *self, u32 a, u32 b, u32 c);
-void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-s32 ChoiceList_getResult(void *self);
-s32 PlayerData_testFlag(void *p, u32 a);
-void PlayerData_setFlag(void *p, u32 a);
-BOOL PlayerData_isUsed(void *p);
 extern u16 data_020c6cc8;
 extern u8 gSavePlayers[];
 }
@@ -164,7 +144,7 @@ BOOL SpNpcTortimer::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     if (PlayerData_GetCurrent()->testFlag(1) == 0) {
@@ -203,24 +183,24 @@ void SpNpcTortimer::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimer::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
         x = getAngleTo((NpcActor *)p);
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -240,16 +220,16 @@ void SpNpcTortimerTalk::attachOwner(SpNpcTortimer *owner) {
 }
 
 void SpNpcTortimerTalk::start(TalkStartMsg *out) {
-    void *g = PlayerData_GetCurrent();
-    if (((PlayerData *)(g))->testFlag(1)) {
+    PlayerData *g = PlayerData_GetCurrent();
+    if (g->testFlag(1)) {
         out->msgKey = "sp_etc_sequence5_2";
-        if (((PlayerData *)(g))->testFlag(0xd) == 0) {
+        if (g->testFlag(0xd) == 0) {
             out->msgIndex = 0;
-            ((PlayerData *)(g))->setFlag(0xd);
+            g->setFlag(0xd);
         } else {
             out->msgIndex = Random_GlobalBelow(4) + 3;
         }
-        ((PlayerData *)(g))->setFlag(0xa);
+        g->setFlag(0xa);
     } else {
         if (massageChairSlot == -1) {
             u16 v = 0x37e0;
@@ -261,29 +241,29 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
             }
         }
         out->msgKey = "sp_npc_turtle7";
-        if (((PlayerData *)(g))->testFlag(0x21) == 0 && Catalog_HasAllFish()) {
+        if (g->testFlag(0x21) == 0 && Catalog_HasAllFish()) {
             out->msgIndex = 0;
             if (Pocket_FindEmpty() < 0) {
                 out->msgIndex = 9;
             } else {
                 s32 i;
                 for (i = 0; i < 4; i++) {
-                    void *p = PlayerData_GetResident(gSavePlayers, i);
-                    if (p != NULL && ((PlayerData *)(p))->isUsed() && p != g && ((PlayerData *)(p))->testFlag(0x21)) {
+                    PlayerData *p = (PlayerData *)PlayerData_GetResident(gSavePlayers, i);
+                    if (p != NULL && p->isUsed() && p != g && p->testFlag(0x21)) {
                         out->msgIndex = 2;
                         break;
                     }
                 }
             }
-        } else if (((PlayerData *)(g))->testFlag(0x22) == 0 && Catalog_HasAllInsects()) {
+        } else if (g->testFlag(0x22) == 0 && Catalog_HasAllInsects()) {
             out->msgIndex = 3;
             if (Pocket_FindEmpty() < 0) {
                 out->msgIndex = 0xa;
             } else {
                 s32 i;
                 for (i = 0; i < 4; i++) {
-                    void *p = PlayerData_GetResident(gSavePlayers, i);
-                    if (p != NULL && ((PlayerData *)(p))->isUsed() && p != g && ((PlayerData *)(p))->testFlag(0x22)) {
+                    PlayerData *p = (PlayerData *)PlayerData_GetResident(gSavePlayers, i);
+                    if (p != NULL && p->isUsed() && p != g && p->testFlag(0x22)) {
                         out->msgIndex = 5;
                         break;
                     }
@@ -311,9 +291,9 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
             window->setNextMessage(&buf.msgIndices[0], (u8 *)"sp_npc_turtle");
         }
     } else {
-        void *g = PlayerData_GetCurrent();
+        PlayerData *g = PlayerData_GetCurrent();
         u8 *str;
-        if (((PlayerData *)(g))->testFlag(1)) {
+        if (g->testFlag(1)) {
             str = (u8 *)"sp_etc_sequence5_2";
         } else {
             str = (u8 *)"sp_npc_turtle7";
@@ -324,7 +304,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
                 if (Pocket_AddItem(&buf.items[2], 0)) {
                     buf.items[3] = 0x1375;
                     this->requestGiveItem(&buf.items[3], 0, 5, 0);
-                    ((PlayerData *)(g))->setFlag(0x21);
+                    g->setFlag(0x21);
                     buf.items[4] = 0x1375;
                     this->setItemNameSlot(&buf.items[4], 0, 7);
                     r = 1;
@@ -336,7 +316,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
                 if (Pocket_AddItem(&buf.items[5], 0)) {
                     buf.items[6] = 0x1377;
                     this->requestGiveItem(&buf.items[6], 0, 5, 0);
-                    ((PlayerData *)(g))->setFlag(0x22);
+                    g->setFlag(0x22);
                     buf.items[7] = 0x1377;
                     this->setItemNameSlot(&buf.items[7], 0, 7);
                     r = 4;
@@ -353,8 +333,8 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
 
 void SpNpcTortimerTalk::onChoice(u32) {
     SpNpcTortimerChoiceLocal buf;
-    s32 t = ((ChoiceList *)(getChoiceList()))->getResult();
-    void *g = PlayerData_GetCurrent();
+    s32 t = getChoiceList()->getResult();
+    PlayerData *g = PlayerData_GetCurrent();
     u8 r = 0xff;
     if (massageChairSlot >= 0) {
         u8 *const str = (u8 *)"sp_npc_turtle";
@@ -362,7 +342,7 @@ void SpNpcTortimerTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 buf.item = 0x37e0;
-                ((ActorTalkRequest *)(this))->requestTakeItem(&buf.item, 0, 5, 0);
+                requestTakeItem(&buf.item, 0, 5, 0);
             }
             r = 2;
         }
@@ -371,13 +351,13 @@ void SpNpcTortimerTalk::onChoice(u32) {
             window->setNextMessage(&buf.msgIndex, str);
         }
     } else {
-        ((PlayerData *)(g))->testFlag(1);
+        g->testFlag(1);
     }
 }
 
 BOOL SpNpcTortimer::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;

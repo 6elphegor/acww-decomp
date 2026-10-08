@@ -765,7 +765,7 @@ void FieldObj_DrawItemModel(O *o, u32 t, VecFx32 *pos, VecFx32 *scale, s32 rx, s
 CachedModel *FieldObj_DrawItemIcon(O *o, u32 t, VecFx32 *a, s32 b, VecFx32 *c, s32 d, s32 e, s32 f);
 CachedModel *FieldObj_DrawIconModel(O *o, u32 idx, VecFx32 *a, s32 b, VecFx32 *c, s32 d, s32 e, s32 f);
 s32 Town_GetRafflesiaPos(V3 *o, s32 z);
-void Vec_Sub(V3 *out, V3 *a, s32 b);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void FieldPos_ToUnit(s32 *x, s32 *z, V3 *v);
 s32 Flower_GetSpecies(u16 *c);
 void ModelSet_Release(void *p);
@@ -889,7 +889,7 @@ static inline BOOL Chk_0221d37c(u16 *p) {
 // ---- prototypes of this file's functions
 extern "C" { void FieldObj_DrawUnits(O *o, void *g); }
 extern "C" { s32 Field_FindFlowerNear(V3 *out, V3 pos, s32 mask); }
-extern "C" { s32 Field_IsRafflesiaNear(V3 *out, s32 b); }
+extern "C" { s32 Field_IsRafflesiaNear(V3 *out, VecFx32 *b); }
 extern "C" { void Field_DrawIconModel(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e); }
 extern "C" { void Field_DrawItemIcon(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e); }
 extern "C" { void Field_DrawItemModel(u32 item, V3 a, V3 b, s32 c, s16 d, s16 e); }
@@ -4521,7 +4521,7 @@ end:
 
 namespace ns_0221cb54 {
 extern "C" {
-s32 Field_IsRafflesiaNear(V3 *out, s32 b) {
+s32 Field_IsRafflesiaNear(V3 *out, VecFx32 *b) {
     out->x = 0;
     out->y = 0;
     out->z = 0;

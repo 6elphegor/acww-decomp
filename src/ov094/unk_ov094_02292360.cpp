@@ -1,9 +1,5 @@
-#include "uptr.h"
 #include "types.h"
-#include "item/ItemIconCache.h"
 #include "menu/InventoryGridTypes.h"
-#include "menu/InventoryItemGrid.h"
-#include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
@@ -12,182 +8,26 @@
 #include "talk/MsgString9B.h"
 #include "talk/MsgString9C.h"
 #include "ui/LabelString.h"
-#define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_DrawSprite  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_PaintHighlight0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_PaintHighlight1  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_PaintNormal  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_SetBellsPanelMode  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InventoryBg_SetupTextWindows  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sInventoryBgSprite  // declared below: the shared prototype conflicts with the calls here
+#include "gfx/BgVramTask.h"
+#include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
-#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_020637e4.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
-#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02093ff0.h"
 #include "proto/main/unk_02097444.h"
-#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b2c50.h"
 #include "proto/ov094/unk_ov094_02292360.h"
-#include "proto/ov094/unk_ov094_02292da8.h"
-#include "proto/ov094/unk_ov094_02293b90.h"
-#include "gfx/BgVramTask.h"
-
-
 
 #define IN(x, lo, hi) ((x) >= (lo) && (x) <= (hi))
 
+InventoryBg::InventoryBg() {}
 
-
-
-typedef OamObjTemplate Ent8;
-typedef OamObjTemplateBits Rec;
-
-void operator delete(void *p);
-
-
-
-
-
-
-
-
-// symbols.txt names of main functions (called with the object first)
-#define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
-#define func_0206260c _ZN8ItemNameD1Ev
-#define func_0206267c _ZN8ItemNameC1Ev
-#define func_02063870 _ZN11MsgString9CD1Ev
-#define func_02063888 _ZN11MsgString9CC1Ev
-#define LetterView_getState _ZN10LetterView8getStateEv
-#define LetterView_getPresent _ZN10LetterView10getPresentEv
-#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
-#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
-#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
-#define func_0206fca8 _ZN11LabelStringD1Ev
-#define func_0206fcc8 _ZN11LabelStringC1Ev
-#define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
-#define func_02089f30 _ZN16LabelBalloonTextD1Ev
-#define func_02089f44 _ZN16LabelBalloonTextC1Ev
-#define func_02094018 _ZN11MsgString9BD1Ev
-#define func_02094030 _ZN11MsgString9BC1Ev
-#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
-#define PlayerId_getGender _ZN8PlayerId9getGenderEv
-#define PlayerInventory_getTotalBells _ZN15PlayerInventory13getTotalBellsEi
-#define PlayerInventory_getLetter _ZN15PlayerInventory9getLetterEi
-#define PlayerInventory_getPocketFlags _ZN15PlayerInventory14getPocketFlagsEi
-#define PlayerInventory_getPocket _ZN15PlayerInventory9getPocketEi
-#define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
-#define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define func_020b85f8 _ZN14BgVramTaskPairC1Ev
-#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define func_021355f0 __cxa_vec_cleanup
-#define func_02135714 __cxa_vec_ctor
-
-void operator delete(void *p);
-
-extern "C" {
-s32 Item_GetInfoUnk02(void *p);
-void ItemName_setFromItem(void *a, void *b);
-void func_0206260c(void *p);
-void func_0206267c(void *p);
-void func_02063870(void *p);
-void func_02063888(void *p);
-void TownId_GetNameString(s32 a, void *p);
-s32 LetterView_getState(void *o);
-s32 LetterView_getPresent(s32 a);
-void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void LabelString_redrawAligned(void *p, s32 a, s32 b);
-void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void LabelString_destroyLabel(void *p);
-void func_0206fca8(void *p);
-void func_0206fcc8(void *p);
-s32 Oam_DrawObj(s32 a, const void *b, s32 c, s32 d, ...);
-void LabelBalloon_setText(void *a, void *b);
-void func_02089f30(void *p);
-void func_02089f44(void *p);
-void func_02094018(void *p);
-void func_02094030(void *p);
-s32 PlayerId_GetTownId(s32 a);
-void PlayerId_getNameString(s32 a, void *p);
-s32 PlayerId_getGender(s32 id);
-s32 PlayerInventory_getTotalBells(s32 a, s32 b);
-void *PlayerInventory_getLetter(s32 a, s32 b);
-u32 PlayerInventory_getPocketFlags(s32 a, s32 b);
-u16 *PlayerInventory_getPocket(s32 a, s32 b);
-u16 *PlayerData_getHeldItem(s32 a);
-s32 PlayerData_getInventory(s32 a);
-s32 PlayerData_getPlayerId(...);
-void MsgString_copy(void *a, void *b);
-void String_SetSlot(s32 a, void *p);
-void func_020b85f8(void *p);
-void BgVramTask_cancel(void *p);
-void MI_CpuCopy8(void *dst, void *src, u32 n);
-s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
-s32 func_02135714(void *p, s32 n, u32 sz, void *ctor, void *dtor);
-extern void *gCurrentHeap;
-s32 _ZN13ItemIconCache15getPresentCharsEi(void *self, s32 i, s32 j);
-
-extern const u8 sPresentAnimScales[];
-extern const u8 sPresentAnimFrames[];
-extern const u32 sItemCursorLift[];
-extern const s32 sItemScaleTable[];
-extern const u8 sItemIconPalettes[];
-extern const u8 sLetterPopScales[];
-extern const u32 sLetterCursorLift[];
-extern const u8 sLetterKindMsgIds[];
-extern u8 sInventoryBgSprite[];
-extern OamObjTemplate sItemGridSlotSprites[];
-}
-
-extern "C" {
-InventoryBg *_ZN11InventoryBgC1Ev(InventoryBg *s) {
-    u8 *p = s->vramTasks;
-    u8 *e = s->textWindows;
-    do {
-        func_020b85f8(p);
-        p += 0x38;
-    } while (p != e);
-    func_02135714(e, 2, 0x40, (void *)func_0206fcc8, (void *)func_0206fca8);
-    return s;
-}
-
-InventoryBg *_ZN11InventoryBgD1Ev(InventoryBg *s) {
-    func_021355f0(s->textWindows, 2, 0x40, (void *)func_0206fca8);
-    return s;
-}
-
-Ent8 *InventoryItemGrid_GetSlotSprite(InventoryItemGrid *s, s32 i);
-void InventoryItemGrid_DrawSlot(InventoryItemGrid *s, Ent8 *e, s32 idx, s32 x, s32 y);
-void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c);
-void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m);
-void InventoryItemGrid_SetHeldItem(InventoryItemGrid *s, Rec *r, s32 m);
-void InventoryBg_SetBellsPanelMode(void *o, u32 n);
-void InventoryBg_DrawSprite(s32 a, void *o);
-void InventoryBg_PaintHighlight1(void *o);
-void InventoryBg_PaintHighlight0(void *o);
-void InventoryBg_PaintNormal(void *o);
-void InventoryBg_SetupTextWindows(void *o);
-}
-
-
-
-static inline void Unk_ov094_SetPal(OamObjTemplateAttr2 *o, s32 pal) {
-    o->v = (u16)((o->v & 0xffff0fff) | ((pal & 0xf) << 12));
-}
-
-static inline void Unk_ov094_SetName(OamObjTemplateAttr2 *o, s32 name) {
-    o->v = (u16)((o->v & 0xfffffc00) | (name & 0x3ff));
-}
+InventoryBg::~InventoryBg() {}
 
 #define data_ov094_02294888 "menu/inventory/itmp/m%d.bch"
 #define data_ov094_022948a4 "menu/inventory/itmp/w%d.bch"
@@ -204,41 +44,36 @@ static inline void Unk_ov094_SetName(OamObjTemplateAttr2 *o, s32 name) {
 #define data_ov094_022949d8 "menu/inventory/b_itm_bg_c.bsc"
 #define data_ov094_022949f8 "menu/inventory/b_itm0.bch"
 #define data_ov094_02294a14 "menu/inventory/b_itm1.bch"
-#define data_ov094_02294b80 "menu/icon/pre%d.bch"
-#define data_ov094_02294b94 "menu/icon/icon%02d.bch"
-#define data_ov094_02294a60 (sItemGridMarkSprites + 8)
-#define data_ov094_02294a68 (sItemGridMarkSprites + 16)
-#define data_ov094_02294be4 (sLetterMarkSprites + 8)
-#define data_ov094_02294bec (sLetterMarkSprites + 16)
 
-extern "C" u8 sInventoryBgSprite[8] = {0xf8, 0x00, 0xc3, 0x01, 0xfa, 0x61, 0xff, 0xff};
+extern "C" {
 
-void InventoryBg_Init(InventoryBg *s, u32 v) {
-    s->bgId = v;
-    s->dirtyFlags = 0;
-    InventoryBg_ResetBells(s);
-    s->paintedHighlight = 2;
-    s->highlight = 2;
-    s->pictureIndex = 8;
+OamObjTemplate sInventoryBgSprite = {{0xf8, 0x00, 0xc3, 0x01, 0xfa, 0x61, 0xff, 0xff}};
+
+void InventoryBg_Init(InventoryBg *p, u32 v) {
+    p->bgId = v;
+    p->dirtyFlags = 0;
+    InventoryBg_ResetBells(p);
+    p->paintedHighlight = 2;
+    p->highlight = 2;
+    p->pictureIndex = 8;
 }
 
-void InventoryBg_Load(InventoryBg *s, s32 flag) {
-    InventoryBg_LoadBg(s, flag);
-    InventoryBg_LoadGraphics(s);
+void InventoryBg_Load(InventoryBg *p, s32 flag) {
+    InventoryBg_LoadBg(p, flag);
+    InventoryBg_LoadGraphics(p);
 }
 
-void InventoryBg_LoadBg(InventoryBg *s, s32 flag) {
+void InventoryBg_LoadBg(InventoryBg *p, s32 flag) {
     void *h = gCurrentHeap;
-    Gfx2d_LoadPaletteFile(data_ov094_0229499c, h, s->bgId, 0, 1, 0xd);
-    File_LoadToBuffer(flag ? data_ov094_022949b8 : data_ov094_022949d8, s->screenData, 0x800);
-    Gfx2d_LoadScreen(s->screenData, s->bgId, 0x800, 0);
-    Gfx2d_LoadCharFile(data_ov094_022949f8, h, s->bgId, 0, 0x10, 0xff);
-    Gfx2d_LoadCharFile(data_ov094_02294a14, h, s->bgId, 0x100, 0x100, 0x1ff);
+    Gfx2d_LoadPaletteFile(data_ov094_0229499c, h, p->bgId, 0, 1, 0xd);
+    File_LoadToBuffer(flag ? data_ov094_022949b8 : data_ov094_022949d8, p->screen, 0x800);
+    Gfx2d_LoadScreen((u8 *)p->screen, p->bgId, 0x800, 0);
+    Gfx2d_LoadCharFile(data_ov094_022949f8, h, p->bgId, 0, 0x10, 0xff);
+    Gfx2d_LoadCharFile(data_ov094_02294a14, h, p->bgId, 0x100, 0x100, 0x1ff);
 }
 
-void InventoryBg_LoadGraphics(void *o)
+void InventoryBg_LoadGraphics(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     Gfx2d_LoadCharFile(data_ov094_02294928, gCurrentHeap, p->bgId, 0x200, 0x200, 0x2ff);
     InventoryBg_SetupTextWindows(p);
     InventoryBg_ResetBells(p);
@@ -250,25 +85,20 @@ void InventoryBg_LoadGraphics(void *o)
     File_LoadToBuffer(data_ov094_0229497c, p->palette, 0x20);
 }
 
-void InventoryBg_SetupTextWindows(void *o)
+void InventoryBg_SetupTextWindows(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
-    u8 buf[0x1c];
-    u8 buf2[0x1c];
     PlayerId *r = PlayerData_GetCurrent()->getPlayerId();
-    new (buf) MsgString9C();
-    TownId_GetNameString(PlayerId_GetTownId(r), buf);
-    String_SetSlot(0, buf);
-    ((LabelString *)(HOST_AT(p, 0xe0, textWindows[0], 0)))->createLabel(p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
-    String_Load2dMenu(HOST_AT(p, 0xe0, textWindows[0], 0), 0x66);
-    ((LabelString *)(HOST_AT(p, 0xe0, textWindows[0], 0)))->redrawAligned(1, 0);
-    new (buf2) MsgString9B();
-    r->getNameString((MsgString *)(buf2));
-    ((LabelString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->createLabel(p->bgId, 0x25, 8, 0xf, 0xc, 0);
-    ((MsgString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->copy((MsgString *)(buf2));
-    ((LabelString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->redrawAligned(1, 0);
-    ((MsgString9B *)(buf2))->MsgString9B::~MsgString9B();
-    ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
+    MsgString9C townName;
+    TownId_GetNameString(PlayerId_GetTownId(r), &townName);
+    String_SetSlot(0, &townName);
+    p->textWindows[0].createLabel(p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
+    String_Load2dMenu(&p->textWindows[0], 0x66);
+    p->textWindows[0].redrawAligned(1, 0);
+    MsgString9B playerName;
+    r->getNameString(&playerName);
+    p->textWindows[1].createLabel(p->bgId, 0x25, 8, 0xf, 0xc, 0);
+    p->textWindows[1].copy(&playerName);
+    p->textWindows[1].redrawAligned(1, 0);
 }
 
 void InventoryBg_LoadObjGraphics()
@@ -280,75 +110,70 @@ void InventoryBg_LoadObjGraphics()
     Gfx2d_LoadCharFile(data_ov094_02294910, g, 8, 0x160, 0x160, 0x1ff);
 }
 
-void InventoryBg_PreUpdate(void *o)
+void InventoryBg_PreUpdate(InventoryBg *p)
 {
-    InventoryBg_CancelUploads(o);
-    InventoryBg_ClearTextWindows(o);
+    InventoryBg_CancelUploads(p);
+    InventoryBg_ClearTextWindows(p);
 }
 
-void InventoryBg_Update(void *o)
+void InventoryBg_Update(InventoryBg *p)
 {
-    InventoryBg_UpdateBells(o);
-    InventoryBg_UpdateHighlight(o);
-    InventoryBg_UploadScreen(o);
-    InventoryBg_UploadPicture(o);
-    InventoryBg_UploadPalette(o);
+    InventoryBg_UpdateBells(p);
+    InventoryBg_UpdateHighlight(p);
+    InventoryBg_UploadScreen(p);
+    InventoryBg_UploadPicture(p);
+    InventoryBg_UploadPalette(p);
 }
 
-void InventoryBg_Exit(void *o)
+void InventoryBg_Exit(InventoryBg *p)
 {
-    InventoryBg_CancelUploads(o);
-    InventoryBg_ClearTextWindows(o);
-    if (((InventoryBg *)o)->bellRollTimer != 0) {
+    InventoryBg_CancelUploads(p);
+    InventoryBg_ClearTextWindows(p);
+    if (p->bellRollTimer != 0) {
         Snd_StopSe(0x2d, 1);
     }
 }
 
-void InventoryBg_CancelUploads(void *o)
+void InventoryBg_CancelUploads(InventoryBg *p)
 {
-    s32 i = 0;
-    u8 *b = (u8 *)o + 0x38;
-    for (; i < 3; i++) {
-        BgVramTask_cancel(b + i * 0x38);
+    for (s32 i = 0; i < 3; i++) {
+        p->vramTasks[i].cancel();
     }
 }
 
-void InventoryBg_ClearTextWindows(void *o)
+void InventoryBg_ClearTextWindows(InventoryBg *p)
 {
-    s32 i = 0;
-    u8 *b = (u8 *)o + 0xe0;
-    for (; i < 2; i++) {
-        ((LabelString *)(b + (i << 6)))->destroyLabel();
+    for (s32 i = 0; i < 2; i++) {
+        p->textWindows[i].destroyLabel();
     }
 }
 
-void InventoryBg_UploadScreen(void *o)
+void InventoryBg_UploadScreen(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 1)) {
-        if (((BgVramTask *)(HOST_AT(p, 0x38, vramTasks[0], 0)))->requestScreen(HOST_AT(p, 0x160, screenData[0], 0), p->bgId, 0x800, 0)) {
+        if (p->vramTasks[0].requestScreen(p->screen, p->bgId, 0x800, 0)) {
             InventoryBg_ClearDirty(p, 1);
         }
     }
 }
 
-void InventoryBg_PaintNormal(void *o)
+void InventoryBg_PaintNormal(InventoryBg *p)
 {
-    BgScreen_SetRectPalette((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 2);
-    InventoryBg_SetDirty(o, 1);
+    BgScreen_SetRectPalette(p->screen, 0xe, 3, 0x17, 0xc, 2);
+    InventoryBg_SetDirty(p, 1);
 }
 
-void InventoryBg_PaintHighlight0(void *o)
+void InventoryBg_PaintHighlight0(InventoryBg *p)
 {
-    BgScreen_SetRectPalette((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 7);
+    BgScreen_SetRectPalette(p->screen, 0xe, 3, 0x17, 0xc, 7);
 }
 
-void InventoryBg_PaintHighlight1(void *o)
+void InventoryBg_PaintHighlight1(InventoryBg *p)
 {
-    BgScreen_SetRectPalette((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 6);
+    BgScreen_SetRectPalette(p->screen, 0xe, 3, 0x17, 0xc, 6);
 }
 
-void InventoryBg_LoadPictureForHeldItem(void *o)
+void InventoryBg_LoadPictureForHeldItem(InventoryBg *p)
 {
     PlayerData *a = PlayerData_GetCurrent();
     s32 b = ((PlayerId *)(a->getPlayerId()))->getGender();
@@ -374,57 +199,54 @@ void InventoryBg_LoadPictureForHeldItem(void *o)
     } else if (IN(v, 0x137a, 0x137a) || IN(v, 0x137b, 0x137b)) {
         idx = 7;
     }
-    InventoryBg_LoadPicture(o, idx, b);
+    InventoryBg_LoadPicture(p, idx, b);
 }
 
-void InventoryBg_LoadPicture(void *o, s32 a, s32 b)
+void InventoryBg_LoadPicture(InventoryBg *p, s32 a, s32 b)
 {
-    InventoryBg *p = (InventoryBg *)o;
     char buf[0x2c];
     if (b == 0) {
         Str_SPrintf(buf, data_ov094_02294888, a);
     } else {
         Str_SPrintf(buf, data_ov094_022948a4, a);
     }
-    File_LoadToBuffer(buf, HOST_AT(p, 0x960, screenData[2048], 0), 0xc80);
+    File_LoadToBuffer(buf, p->picture, 0xc80);
     p->pictureIndex = a;
     InventoryBg_SetDirty(p, 4);
 }
 
-void InventoryBg_UploadPicture(void *o)
+void InventoryBg_UploadPicture(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 4)) {
-        if (((BgVramTask *)(HOST_AT(p, 0x70, vramTasks[56], 0)))->requestChars(HOST_AT(p, 0x960, screenData[2048], 0), p->bgId, 0x35, 0x35, 0x98)) {
+        if (p->vramTasks[1].requestChars(p->picture, p->bgId, 0x35, 0x35, 0x98)) {
             InventoryBg_ClearDirty(p, 4);
         }
     }
 }
 
-void InventoryBg_UploadPalette(void *o)
+void InventoryBg_UploadPalette(InventoryBg *p)
 {
-    if (InventoryBg_IsDirty(o, 8)) {
-        if (((BgVramTask *)((u8 *)o + 0xa8))->requestPalette((u8 *)o + 0x16, 8, 6)) {
-            InventoryBg_ClearDirty(o, 8);
+    if (InventoryBg_IsDirty(p, 8)) {
+        if (p->vramTasks[2].requestPalette(p->palette, 8, 6)) {
+            InventoryBg_ClearDirty(p, 8);
         }
     }
 }
 
-void InventoryBg_DrawSprite(s32 a, void *o)
+// (callers pass the panel and its slide offset; the DS code took the second argument as y and ignored the panel)
+void InventoryBg_DrawSprite(InventoryBg *p, s32 y)
 {
-    Oam_DrawObj(1, sInventoryBgSprite, 0x80, (s32)((u8 *)o + 0x60), -1, 2, 0);
+    Oam_DrawObj(1, &sInventoryBgSprite, 0x80, y + 0x60, -1, 2, NULL);
 }
 
-void InventoryBg_StartBlink(void *o, u32 v)
+void InventoryBg_StartBlink(InventoryBg *p, u32 v)
 {
-    InventoryBg *p = (InventoryBg *)o;
     p->blinkHighlight = v;
     p->blinkTimer = 14;
 }
 
-BOOL InventoryBg_UpdateBlink(void *o)
+BOOL InventoryBg_UpdateBlink(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     if (p->blinkTimer != 0) {
         p->blinkTimer = p->blinkTimer - 1;
         switch (p->blinkTimer % 5) {
@@ -442,15 +264,14 @@ zero:
     return FALSE;
 }
 
-void InventoryBg_StopBlink(void *o)
+void InventoryBg_StopBlink(InventoryBg *p)
 {
-    ((InventoryBg *)o)->blinkTimer = 0;
-    InventoryBg_ResetHighlight(o);
+    p->blinkTimer = 0;
+    InventoryBg_ResetHighlight(p);
 }
 
-void InventoryBg_StartBellRoll(void *o, u32 v)
+void InventoryBg_StartBellRoll(InventoryBg *p, u32 v)
 {
-    InventoryBg *p = (InventoryBg *)o;
     s32 t = InventoryBg_GetTotalBells();
     s32 c = p->shownBells;
     if (t != c) {
@@ -477,9 +298,8 @@ void InventoryBg_StartBellRoll(void *o, u32 v)
     }
 }
 
-void InventoryBg_SetBellsPanelMode(void *o, u32 n)
+void InventoryBg_SetBellsPanelMode(InventoryBg *p, u32 n)
 {
-    InventoryBg *p = (InventoryBg *)o;
     s32 x = 7;
     s32 y = 9;
     s32 z = 9;
@@ -498,7 +318,7 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
         z = 8;
         break;
     }
-    BgScreen_SetRectPalette(HOST_AT(p, 0x160, screenData[0], 0), x, 10, 11, 11, z);
+    BgScreen_SetRectPalette(p->screen, x, 10, 11, 11, z);
     InventoryBg_SetDirty(p, 8);
     switch (n) {
     case 0:
@@ -518,17 +338,15 @@ s32 InventoryBg_GetTotalBells()
     return ((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getTotalBells(0);
 }
 
-void InventoryBg_ResetBells(void *o)
+void InventoryBg_ResetBells(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     p->shownBells = InventoryBg_GetTotalBells();
     p->bellRollTimer = 0;
     InventoryBg_SetDirty(p, 2);
 }
 
-void InventoryBg_UpdateBells(void *o)
+void InventoryBg_UpdateBells(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     s32 t = InventoryBg_GetTotalBells();
     if (p->bellRollTimer != 0) {
         p->bellRollTimer = p->bellRollTimer - 1;
@@ -550,7 +368,7 @@ void InventoryBg_UpdateBells(void *o)
     if (InventoryBg_IsDirty(p, 2)) {
         s32 v = p->shownBells;
         InventoryBg_SetDirty(p, 1);
-        u16 *q = (u16 *)(HOST_AT(p, 0x3f6, screenData[662], 0));
+        u16 *q = &p->screen[0x14b];  // the last digit of the bells (row 10, column 11)
         s32 i;
         for (i = 0; i < 5; i++) {
             s32 base;
@@ -572,7 +390,6 @@ void InventoryBg_UpdateBells(void *o)
 
 BOOL InvItem_IsTurnipFishOrInsect(u32 v)
 {
-    InvItemStackPad pad;
     if (IN(v, 0x1531, 0x153a) || IN(v, 0x153b, 0x1541) || IN(v, 0x154a, 0x1553) ||
         IN(v, 0x12e8, 0x131f) || IN(v, 0x12b0, 0x12e7)) {
         return TRUE;
@@ -580,9 +397,8 @@ BOOL InvItem_IsTurnipFishOrInsect(u32 v)
     return FALSE;
 }
 
-void InventoryBg_UpdateHighlight(void *o)
+void InventoryBg_UpdateHighlight(InventoryBg *p)
 {
-    InventoryBg *p = (InventoryBg *)o;
     u32 a = p->highlight;
     if (a != p->paintedHighlight) {
         p->paintedHighlight = a;
@@ -599,19 +415,18 @@ void InventoryBg_UpdateHighlight(void *o)
     }
 }
 
-void InventoryBg_SetHighlight(void *o, u32 v)
+void InventoryBg_SetHighlight(InventoryBg *p, u32 v)
 {
-    ((InventoryBg *)o)->highlight = v;
+    p->highlight = v;
 }
 
-void InventoryBg_ResetHighlight(void *o)
+void InventoryBg_ResetHighlight(InventoryBg *p)
 {
-    ((InventoryBg *)o)->highlight = 2;
+    p->highlight = 2;
 }
 
 BOOL InvItem_IsDeliveryItem(u32 v)
 {
-    InvItemStackPad pad;
     if (IN(v, 0x155f, 0x1560) || IN(v, 0x1561, 0x1564)) {
         return TRUE;
     }
@@ -620,7 +435,6 @@ BOOL InvItem_IsDeliveryItem(u32 v)
 
 BOOL InvItem_IsDeliveryParcel(u32 v)
 {
-    InvItemStackPad pad;
     if (IN(v, 0x155f, 0x1560)) {
         return TRUE;
     }
@@ -629,7 +443,6 @@ BOOL InvItem_IsDeliveryParcel(u32 v)
 
 BOOL InvItem_IsNonTransferable(u32 v)
 {
-    InvItemStackPad pad;
     if (IN(v, 0x155d, 0x155d)) {
         return TRUE;
     }
@@ -638,7 +451,6 @@ BOOL InvItem_IsNonTransferable(u32 v)
 
 BOOL InvItem_IsNotFishInsectOrFlower(u32 v)
 {
-    InvItemStackPad pad;
     if (IN(v, 0x12e8, 0x131f) || IN(v, 0x12b0, 0x12e7)) {
         return FALSE;
     }
@@ -663,23 +475,22 @@ void Inventory_PlayPickUpSe()
     Snd_PlaySe(13);
 }
 
-s32 InventoryBg_IsDirty(void *o, u32 m)
+s32 InventoryBg_IsDirty(InventoryBg *p, u32 m)
 {
-    InventoryBg *p = (InventoryBg *)o;
     if (p->dirtyFlags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void InventoryBg_SetDirty(void *o, u32 m)
+void InventoryBg_SetDirty(InventoryBg *p, u32 m)
 {
-    InventoryBg *p = (InventoryBg *)o;
     p->dirtyFlags = p->dirtyFlags | m;
 }
 
-void InventoryBg_ClearDirty(void *o, u32 m)
+void InventoryBg_ClearDirty(InventoryBg *p, u32 m)
 {
-    InventoryBg *p = (InventoryBg *)o;
     p->dirtyFlags = p->dirtyFlags & ~m;
 }
+
+}  // extern "C"

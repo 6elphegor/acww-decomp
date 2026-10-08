@@ -56,7 +56,6 @@ void PopupChoice_Close(void *p, u32 v);
 BOOL PopupChoice_MoveCursor(void *p, u32 a, void *b, u32 c);
 BOOL PopupChoice_TickDecideDelay(void *p);
 
-void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
 void InventoryBg_LoadObjGraphics(void *p);
 }
 

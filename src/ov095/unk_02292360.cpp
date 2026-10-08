@@ -1,4 +1,3 @@
-#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "nitro/gxoam.h"
@@ -30,8 +29,7 @@
 extern "C" {
 extern volatile u16 sCharSortKeyZero;
 s32 _s32_div_f(s32 a, s32 b);
-void _ZN10BgVramTask6cancelEv(void *a);
-void MI_CpuCopy8(void *a, void *b, s32 c);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);  // SDK assembly
 
 }
 
@@ -884,7 +882,7 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     if (s->mode == mode && c != 0) {
         goto end;
     }
-    File_LoadToBuffer(sKeyboardModeCharFiles[mode], s->unk_34, 0x22c0);
+    File_LoadToBuffer(sKeyboardModeCharFiles[mode], s->keyChars, 0x22c0);
     if (Keyboard_TestFlags(s, 4) != 0) {
         path = sKeyboardModeScreensChat[mode];
     } else {
@@ -894,7 +892,7 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     MI_CpuCopy8(h + 0x240, &s->screenBuf[576], 0x380);
     Keyboard_MarkScreenDirty(s);
     Heap_Free(g, h);
-    ((BgVramTask *)(HOST_AT(s, 0x22f4, bgTasks[0], 0)))->requestChars(HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
+    s->bgTasks[0].requestChars(s->keyChars, a, 0x1ea, 0x1ea, 0x2ff);
     s->mode = mode;
     switch (s->mode) {
     case 0:
@@ -1028,10 +1026,10 @@ void Keyboard_Init(Keyboard *s, s32 a)
 
 void Keyboard_Shutdown(Keyboard *s)
 {
-    _ZN10BgVramTask6cancelEv(HOST_AT(s, 0x22f4, bgTasks[0], 0));
-    _ZN10BgVramTask6cancelEv(HOST_AT(s, 0x2318, bgTasks[1], 0));
-    ((LabelString *)(HOST_AT(s, 0x233c, labels[0], 0)))->destroyLabel();
-    ((LabelString *)(HOST_AT(s, 0x237c, labels[1], 0)))->destroyLabel();
+    s->bgTasks[0].cancel();
+    s->bgTasks[1].cancel();
+    s->labels[0].destroyLabel();
+    s->labels[1].destroyLabel();
     MenuCtrl_SetKeyboardPage(s->page);
 }
 
@@ -1052,14 +1050,14 @@ void Keyboard_LoadScreenFile(Keyboard *s, const char *a)
 
 void Keyboard_LoadScreenNow(Keyboard *s, s32 a)
 {
-    Gfx2d_LoadScreen(HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0);
+    Gfx2d_LoadScreen(s->screenBuf, a, 0x800, 0);
     Keyboard_ClearFlags(s, 1);
 }
 
 void Keyboard_EndFrame(Keyboard *s, s32 a)
 {
     if (Keyboard_TestFlags(s, 1) != 0) {
-        if (((BgVramTask *)(HOST_AT(s, 0x2318, bgTasks[1], 0)))->requestScreen(HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0) != 0) {
+        if (s->bgTasks[1].requestScreen(s->screenBuf, a, 0x800, 0) != 0) {
             Keyboard_ClearFlags(s, 1);
         }
     }
@@ -1097,8 +1095,8 @@ BOOL Keyboard_TickKeyRepeat(Keyboard *s)
     if (s->pressTimer > 1) {
         s->pressTimer--;
     }
-    if (*(volatile u8 *)&s->keyRepeatTimer != 0) {
-        s->keyRepeatTimer = *(volatile u8 *)&s->keyRepeatTimer - 1;
+    if (s->keyRepeatTimer != 0) {
+        s->keyRepeatTimer--;
     } else {
         s->keyRepeatTimer = 1;
         return TRUE;
@@ -1378,8 +1376,8 @@ void Keyboard_ResetTypedRun(Keyboard *s)
 
 void Keyboard_ShrinkTypedRun(Keyboard *s)
 {
-    if (((volatile Keyboard *)s)->typedRunLength != 0) {
-        s->typedRunLength = ((volatile Keyboard *)s)->typedRunLength - 1;
+    if (s->typedRunLength != 0) {
+        s->typedRunLength--;
     }
 }
 
@@ -1404,12 +1402,12 @@ void Keyboard_LoadObjGfx(Keyboard *s)
     Gfx2d_LoadPaletteFile("menu/chat2/b_cht_obj.bpl", h, 8, 4, 4, 0xe);
     Gfx2d_LoadCharFile("menu/chat2/b_cht_obj_0.bch", h, 8, 0xc0, 0xc0, 0x13f);
     Gfx2d_LoadCharFile("menu/chat2/b_cht_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
-    String_Load2dMenu(s->labels, 0x9c);
-    ((LabelString *)(s->labels))->createSmallLabel(8, 0xd8, 4, 0xa, 0, 0);
-    ((LabelString *)(s->labels))->redrawAligned(1, 0);
+    String_Load2dMenu(&s->labels[0], 0x9c);
+    s->labels[0].createSmallLabel(8, 0xd8, 4, 0xa, 0, 0);
+    s->labels[0].redrawAligned(1, 0);
     String_Load2dMenu(&s->labels[1], 0x9d);
-    ((LabelString *)(&s->labels[1]))->createSmallLabel(8, 0xf8, 4, 0xa, 0, 0);
-    ((LabelString *)(&s->labels[1]))->redrawAligned(1, 0);
+    s->labels[1].createSmallLabel(8, 0xf8, 4, 0xa, 0, 0);
+    s->labels[1].redrawAligned(1, 0);
 }
 
 void Keyboard_LoadEmotionIcons(Keyboard *s)
@@ -1448,9 +1446,9 @@ void Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
     }
     for (i = 0; i < 3; i++) {
         if (sel == i) {
-            Oam_DrawObj(1, (u32 *)&s->tabCells[i], x, y + 2, 0xb, z, NULL);
+            Oam_DrawObj(1, &s->tabCells[i], x, y + 2, 0xb, z, NULL);
         } else {
-            Oam_DrawObj(1, (u32 *)&s->tabCells[i], x, y, 0xa, z, NULL);
+            Oam_DrawObj(1, &s->tabCells[i], x, y, 0xa, z, NULL);
         }
     }
     Oam_DrawCell(1, &s->tabCells[3], x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -1485,16 +1483,16 @@ void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y)
             t10 = 0xb;
             t14 = y + 2;
         }
-        Oam_DrawObj(1, (u32 *)&data_ov095_02295e48[i], x, t14, -1, 2, NULL);
-        Oam_DrawObj(1, (u32 *)&data_ov095_02295e48[i + 4], x, t14, t10, 2, NULL);
-        Oam_DrawObj(1, (u32 *)&data_ov095_02295e48[i + 8], x, y, -1, 2, NULL);
+        Oam_DrawObj(1, &data_ov095_02295e48[i], x, t14, -1, 2, NULL);
+        Oam_DrawObj(1, &data_ov095_02295e48[i + 4], x, t14, t10, 2, NULL);
+        Oam_DrawObj(1, &data_ov095_02295e48[i + 8], x, y, -1, 2, NULL);
     }
 }
 
 void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w)
 {
-    Oam_DrawObj(1, (u32 *)data_ov095_02295588, x, y + w, z, 2, NULL);
-    Oam_DrawObj(1, (u32 *)data_ov095_02295580, x, y, -1, 2, NULL);
+    Oam_DrawObj(1, data_ov095_02295588, x, y + w, z, 2, NULL);
+    Oam_DrawObj(1, data_ov095_02295580, x, y, -1, 2, NULL);
 }
 
 BOOL Keyboard_TouchSendKey()
@@ -1561,7 +1559,7 @@ s32 Keyboard_GetSelectedEmotion(Keyboard *s)
 
 void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z)
 {
-    Oam_DrawObj(1, (u32 *)data_ov095_02295590, x, y, -1, z, NULL);
+    Oam_DrawObj(1, data_ov095_02295590, x, y, -1, z, NULL);
 }
 
 void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y)

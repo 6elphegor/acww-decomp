@@ -4,6 +4,9 @@
 #include "types.h"
 #include "menu/InventoryGridTypes.h"
 
+class LabelBalloon;
+class LetterView;
+
 // 0x28-byte letter grid of the letter/inventory menus (vtable 0x02294bd4 in ov094).
 // Defined in src/ov094/unk_ov094_02293b90.cpp; member of the ov096..ov110 menus.
 class LetterGrid {
@@ -11,12 +14,12 @@ public:
     LetterGrid();
     virtual ~LetterGrid();
 
-    void drawFocus(s32 a, s32 b, s32 c);
-    void drawUnderlay(s32 a, s32 b, s32 c, void *d);
+    void drawFocus(s32 a, s32 b, s32 *mtx);
+    void drawUnderlay(s32 a, s32 b, s32 c, s32 *mtx);
     void drawMark(s32 a, s32 b);
-    void drawLetterIcon(s32 a, s32 b, u32 c, void *e, void *f);
-    s32 getLetterPalette(void *o);
-    void drawHeldLetter(s32 a, s32 b, void *o);
+    void drawLetterIcon(s32 a, s32 b, u32 c, LetterView *e, s32 *mtx);
+    s32 getLetterPalette(LetterView *o);
+    void drawHeldLetter(s32 a, s32 b, void *letter);  // a Letter or LetterView
     void drawLetters2D(s32 a, s32 b);
     void drawLetters23(s32 a, s32 b);
     void drawLetters0A(s32 a, s32 b);
@@ -25,16 +28,16 @@ public:
     BOOL isHighlighted(s32 i);
     void highlightLetterKinds(u32 flags);
     void clearLetter(s32 i);
-    void setLetter(s32 i, s32 x);
-    void *getLetter(s32 i);
+    void setLetter(s32 i, const void *letter);  // a Letter or LetterView
+    LetterView *getLetter(s32 i);
     void markSlot(s32 i);
     void clearMarks();
     void setCursorSlot(u32 v);
     void clearCursorSlot();
     u32 getCursorLift();
     BOOL isCursorSlot(s32 v);
-    void showLetterName(void *out, s32 idx);
-    void setBalloonLetterText(void *out, void *o);
+    void showLetterName(LabelBalloon *out, s32 idx);
+    void setBalloonLetterText(LabelBalloon *out, LetterView *o);
     u32 findLetterInRange(s32 a, s32 b, s32 start, u8 end);
     u32 findLetterAt23(s32 a, s32 b);
     u32 findLetterAt0A(s32 a, s32 b);
@@ -43,7 +46,7 @@ public:
     void updateCursorLift();
     void init(s32 x);
 
-    /* 0x04 */ u8 *letterArray;
+    /* 0x04 */ LetterView *letterArray;  // the letters of the menu shown in slots 0xa..0x36
     /* 0x08 */ Bitset64 occupiedBits;
     /* 0x10 */ Bitset64 markedBits;
     /* 0x18 */ Bitset64 highlightedBits;

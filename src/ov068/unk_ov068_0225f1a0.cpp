@@ -5801,14 +5801,14 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             break;
         }
         ((VillagerTalk *)((&villagerTalk)))->begin((VillagerActor *)(this), talkType);
-        ((ActorTalkRequest *)((&villagerTalk)))->setTalkPlayer((u32)(((NpcActor *)(this))->getPlayerActor(4)));
+        ((ActorTalkRequest *)((&villagerTalk)))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         FieldVillagerAi_ChangeState(&ai, this, r6);
         break;
     }
     case 0:
         partnerPlayer = v;
         ((VillagerTalk *)((&villagerTalk)))->begin((VillagerActor *)(this), talkType);
-        ((ActorTalkRequest *)((&villagerTalk)))->setTalkPlayer((u32)(((NpcActor *)(this))->getPlayerActor(4)));
+        ((ActorTalkRequest *)((&villagerTalk)))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         if (talkPartner) {
             ((ActorTalkRequest *)((&villagerTalk)))->setPartnerActor((NpcActor *)(talkPartner));
         }

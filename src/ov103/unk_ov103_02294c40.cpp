@@ -251,7 +251,9 @@ typedef char MenuCursorBuf0_SizeCheck[(sizeof(MenuCursorBuf0) == 0x64) ? 1 : -1]
 #ifndef __LP64__ // pointers are 8 bytes on 64-bit hosts
 typedef char Letter_SizeCheck[(sizeof(Letter) == 0xf4) ? 1 : -1];
 #endif
+#ifndef __LP64__ // pointers are 8 bytes on 64-bit hosts
 typedef char InventoryBg_SizeCheck[(sizeof(InventoryBg) == 0x15e0) ? 1 : -1];
+#endif
 #ifndef __LP64__ // pointers are 8 bytes on 64-bit hosts
 typedef char CursorMotion_SizeCheck[(sizeof(CursorMotion) == 0x18) ? 1 : -1];
 #endif
@@ -939,7 +941,7 @@ BOOL PocketLettersMenu::dropHeldOnSlot(u32 a) {
 
 void PocketLettersMenu::putLetterInSlot(u32 a, void *b) {
     if (isLetterSlot(a)) {
-        letterGrid.setLetter(toLetterIndex(a), (s32)b);
+        letterGrid.setLetter(toLetterIndex(a), b);
     }
 }
 

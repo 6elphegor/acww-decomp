@@ -16,75 +16,11 @@
 #include "room/RoomObjTexAuto.h"
 #include "gfx/G3dResAccess.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_RoomObj_LoadResourcesByName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomObj_ReleaseResources  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0205b7b0.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov051/unk_ov051_02258de0.h"
 #include "proto/ov068/unk_ov068_0226b9a8.h"
-#define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
-#define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
-#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
-#define Model_getRenderObj _ZN5Model12getRenderObjEv
-
-// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
-// Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
-// 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
-// original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
-//   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
-// Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
-//    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
-//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
-//    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
-//  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
-//    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
-
-
-
-
-
-
-
-// ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-
-
-
-
-extern "C" {
-void *RoomObjRes_GetBca(void *self, u32 i);
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void *RoomObjTex_Get(void *self);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
-void RoomObj_PlaySe(void *self, s32 v);
-void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
-void RoomObj_ActivateSe(void *self);
-}
-
-// ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-
-
-
-
 struct Unk_ov068_022702b4_Bits {
     u32 lo : 12;
     u32 mid : 16;
@@ -93,26 +29,7 @@ struct Unk_ov068_022702b4_Bits {
 
 
 
-class TaxiInterior;
-
-
-extern "C" TaxiInterior *sTaxiInterior;
-extern "C" ActorProfile sTaxiInteriorProfile;
-
-extern "C" {
-BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 i);
-void *RoomObjRes_GetBma(void *p, u32 i);
-void *RoomObjRes_GetBta(void *p, u32 i);
-void RoomObj_LoadResourcesByName(char *s, void *a, void *b, void *c);
-void RoomObj_ReleaseResources(void *a, void *b);
-void AnimModel_attachAnim(void *p);
-BOOL AnimModel_allocAnmObj(void *p, void *q);
-void *Model_getRenderObj(void *p);
-void AnimModel_drawAnimated(void *p, u32 a);
-void AnimModel_stepAnim(void *p);
-void AnimFrameCtrl_step(void *p);
-void NNS_G3dMdlSetMdlAlpha(u32 p, s32 a, u8 b);
-}
+extern "C" void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v);  // src/autoload_2/unk_02106020.c (no shared header)
 
 class TaxiInterior : public RoomObjActor {
 public:
@@ -158,18 +75,12 @@ extern "C" {
 TaxiInterior *sTaxiInterior;
 }
 
-extern "C" void TaxiInterior_InitModelCallback(NNSG3dRS *p);
-extern "C" void TaxiInterior_ModelCallback(NNSG3dRS *p);
-
-extern "C" {
-}
-
 extern "C" TaxiInterior *TaxiInterior_Create() {
     return new TaxiInterior;
 }
 
 extern "C" void TaxiInterior_ModelCallback(NNSG3dRS *p) {
-    void *o = (void *)p->pRenderObj->ptrUser;
+    TaxiInterior *o = (TaxiInterior *)p->pRenderObj->ptrUser;
     if (o) {
         TaxiInterior_OnModelNode(o, p->c[1], p);
     }
@@ -187,10 +98,10 @@ TaxiInterior::~TaxiInterior() {}
 BOOL TaxiInterior::onCreate() {
     sTaxiInterior = this;
     loadModels();
-    ((Model *)(&model))->setInitCallback(TaxiInterior_InitModelCallback, this);
-    rainAMatIdx = ((G3dResAccess *)(MODEL_AT_RESMDL(&model)))->findMatIdx("m_rainA");
-    rainBMatIdx = ((G3dResAccess *)(MODEL_AT_RESMDL(&model)))->findMatIdx("m_rainB");
-    splashMatIdx = ((G3dResAccess *)(MODEL_AT_RESMDL(&model)))->findMatIdx("m_splash");
+    model.setInitCallback(TaxiInterior_InitModelCallback, this);
+    rainAMatIdx = ((G3dResAccess *)model.resMdl)->findMatIdx("m_rainA");
+    rainBMatIdx = ((G3dResAccess *)model.resMdl)->findMatIdx("m_rainB");
+    splashMatIdx = ((G3dResAccess *)model.resMdl)->findMatIdx("m_splash");
     setRainState(0);
     Snd_PlaySeOnHandle(0x884);
     Snd_PlaySeOnHandle(0x885);
@@ -199,13 +110,13 @@ BOOL TaxiInterior::onCreate() {
 
 BOOL TaxiInterior::onExecute() {
     updateRainState();
-    ((AnimFrameCtrl *)(&bodyTexAnim))->step();
-    *(u32 *)bodyTexAnim.anmObj = bodyTexAnim.curFrame;
-    ((AnimModel *)(&model))->stepAnim();
-    ((AnimFrameCtrl *)(&bodyMatAnim))->step();
-    *(u32 *)bodyMatAnim.anmObj = bodyMatAnim.curFrame;
+    bodyTexAnim.step();
+    ((G3dAnmObj *)bodyTexAnim.anmObj)->frame = bodyTexAnim.curFrame;
+    model.stepAnim();
+    bodyMatAnim.step();
+    ((G3dAnmObj *)bodyMatAnim.anmObj)->frame = bodyMatAnim.curFrame;
     if (isDriverAnimating) {
-        ((AnimModel *)(&driverModel))->stepAnim();
+        driverModel.stepAnim();
     }
     s32 t = SpNpcKappn_GetAnimState();
     SpNpcKappn_GetAnimFrame();
@@ -231,22 +142,22 @@ BOOL TaxiInterior::onExecute() {
         break;
     }
     TaxiInterior_SetPartAnim(this, k, &wheelModel, &wheelRes, 0, 0x1000, 0, 0);
-    ((AnimModel *)(&wheelModel))->stepAnim();
-    NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), rainAMatIdx, rainAlpha);
-    NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), rainBMatIdx, rainAlpha);
-    NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), splashMatIdx, rainAlpha);
+    wheelModel.stepAnim();
+    NNS_G3dMdlSetMdlAlpha((u8 *)model.resMdl, rainAMatIdx, (u8)rainAlpha);
+    NNS_G3dMdlSetMdlAlpha((u8 *)model.resMdl, rainBMatIdx, (u8)rainAlpha);
+    NNS_G3dMdlSetMdlAlpha((u8 *)model.resMdl, splashMatIdx, (u8)rainAlpha);
     return TRUE;
 }
 
 BOOL TaxiInterior::onDraw() {
-    ((AnimModel *)(&model))->drawAnimated((void *)(0));
-    ((AnimModel *)(&driverModel))->drawAnimated((void *)(0));
-    ((AnimModel *)(&wheelModel))->drawAnimated((void *)(0));
+    model.drawAnimated(NULL);
+    driverModel.drawAnimated(NULL);
+    wheelModel.drawAnimated(NULL);
     return TRUE;
 }
 
 BOOL TaxiInterior::onDelete() {
-    sTaxiInterior = 0;
+    sTaxiInterior = NULL;
     releaseResources();
     RoomObj_ReleaseResources(&driverRes, &driverTex);
     RoomObj_ReleaseResources(&wheelRes, &wheelTex);
@@ -257,46 +168,46 @@ BOOL TaxiInterior::onDelete() {
 
 void TaxiInterior::loadModels() {
     loadResourcesByName("obj_taxi");
-    if ((void *)RoomObjRes_GetBca(&res, 0)) {
-        if (((AnimModel *)(&model))->allocAnmObj(gBgHeap)) {
-            ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
-            ((AnimModel *)(&model))->attachAnim();
+    if (RoomObjRes_GetBca(&res, 0)) {
+        if (model.allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)&model)->initAnim(RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
+            model.attachAnim();
         }
     }
     if (RoomObjRes_GetBta(&res, 0)) {
-        if (((ModelAnim *)(&bodyTexAnim))->allocMatAnm(MODEL_AT_RESMDL(&model), gBgHeap)) {
-            ((ModelAnim *)(&bodyTexAnim))->init((s32)(RoomObjRes_GetBta(&res, 0)), 0, 0x1000, 0);
-            ((ModelAnim *)(&bodyTexAnim))->addToRenderObj(((Model *)(&model))->getRenderObj());
+        if (bodyTexAnim.allocMatAnm(model.resMdl, gBgHeap)) {
+            bodyTexAnim.init(RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
+            bodyTexAnim.addToRenderObj(model.getRenderObj());
         }
     }
     if (RoomObjRes_GetBma(&res, 0)) {
-        if (((ModelAnim *)(&bodyMatAnim))->allocMatAnm(MODEL_AT_RESMDL(&model), gBgHeap)) {
-            ((ModelAnim *)(&bodyMatAnim))->init((s32)(RoomObjRes_GetBma(&res, 0)), 0, 0x1000, 0);
-            ((ModelAnim *)(&bodyMatAnim))->addToRenderObj(((Model *)(&model))->getRenderObj());
+        if (bodyMatAnim.allocMatAnm(model.resMdl, gBgHeap)) {
+            bodyMatAnim.init(RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
+            bodyMatAnim.addToRenderObj(model.getRenderObj());
         }
     }
     RoomObj_LoadResourcesByName("obj_taxi_fig", &driverModel, &driverRes, &driverTex);
-    if ((void *)RoomObjRes_GetBca(&driverRes, 0)) {
-        if (((AnimModel *)(&driverModel))->allocAnmObj(gBgHeap)) {
-            ((BlendAnimModel *)(&driverModel))->initAnim(RoomObjRes_GetBca(&driverRes, 0), 1, 0x1000, 0, 0);
-            ((AnimModel *)(&driverModel))->attachAnim();
+    if (RoomObjRes_GetBca(&driverRes, 0)) {
+        if (driverModel.allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)&driverModel)->initAnim(RoomObjRes_GetBca(&driverRes, 0), 1, 0x1000, 0, 0);
+            driverModel.attachAnim();
         }
     }
     RoomObj_LoadResourcesByName("obj_taxi_hdl", &wheelModel, &wheelRes, &wheelTex);
-    if ((void *)RoomObjRes_GetBca(&wheelRes, 0)) {
-        if (((AnimModel *)(&wheelModel))->allocAnmObj(gBgHeap)) {
-            ((BlendAnimModel *)(&wheelModel))->initAnim(RoomObjRes_GetBca(&wheelRes, 0), 0, 0x1000, 0, 0);
-            ((AnimModel *)(&wheelModel))->attachAnim();
+    if (RoomObjRes_GetBca(&wheelRes, 0)) {
+        if (wheelModel.allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)&wheelModel)->initAnim(RoomObjRes_GetBca(&wheelRes, 0), 0, 0x1000, 0, 0);
+            wheelModel.attachAnim();
         }
     }
 }
 
 void TaxiInterior::playBodyAnim(s32 a) {
-    void *p = (void *)RoomObjRes_GetBca(&res, 0);
-    ((BlendAnimModel *)(&model))->initAnim(p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.curFrame)->mid, 0);
-    void *r6 = ((Model *)(&model))->getRenderObj();
+    void *p = RoomObjRes_GetBca(&res, 0);
+    ((BlendAnimModel *)&model)->initAnim(p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.curFrame)->mid, 0);
+    void *r6 = model.getRenderObj();
     void *q = RoomObjRes_GetBma(&res, 0);
-    ((ModelAnim *)(&bodyMatAnim))->replace((s32)(r6), (s32)(q), a, 0x1000, ((Unk_ov068_022702b4_Bits *)&bodyMatAnim.curFrame)->mid);
+    bodyMatAnim.replace(r6, q, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&bodyMatAnim.curFrame)->mid);
 }
 
 BOOL TaxiInterior::setRainState(s32 s) {
@@ -333,9 +244,9 @@ BOOL TaxiInterior::enterRaining() {
 }
 
 void TaxiInterior::execRaining() {
-    if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0)) {
+    if (model.hasPassedFrame(0)) {
         Snd_PlaySe(0x886);
-    } else if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0x1c)) {
+    } else if (model.hasPassedFrame(0x1c)) {
         Snd_PlaySe(0x887);
     }
 }
@@ -346,9 +257,9 @@ BOOL TaxiInterior::enterRainFading() {
 }
 
 void TaxiInterior::execRainFading() {
-    if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0)) {
+    if (model.hasPassedFrame(0)) {
         Snd_PlaySe(0x886);
-    } else if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0x1c)) {
+    } else if (model.hasPassedFrame(0x1c)) {
         Snd_PlaySe(0x887);
     }
     if (rainFadeFrame % 3 == 0) {
@@ -388,12 +299,12 @@ extern "C" BOOL TaxiInterior_StartDriverAnim() {
     return FALSE;
 }
 
-extern "C" void TaxiInterior_OnModelNode(void *p, u32 b, void *c) {
+extern "C" void TaxiInterior_OnModelNode(TaxiInterior *self, u32 node, NNSG3dRS *rs) {
 }
 
-extern "C" void TaxiInterior_SetPartAnim(void *self, u8 k, void *sub, void *obj, u8 s0, u32 s1, u16 s2, u16 s3) {
-    s32 cur = ((BlendAnimModel *)(sub))->getAnmRes();
-    if (cur != (s32)(void *)RoomObjRes_GetBca(obj, k)) {
-        ((BlendAnimModel *)(sub))->initAnim(RoomObjRes_GetBca(obj, k), s0, s1, s2, s3);
+extern "C" void TaxiInterior_SetPartAnim(TaxiInterior *self, u8 k, AnimModel *part, RoomObjRes *res, u8 s0, u32 s1, u16 s2, u16 s3) {
+    void *cur = ((BlendAnimModel *)part)->getAnmRes();
+    if (cur != RoomObjRes_GetBca(res, k)) {
+        ((BlendAnimModel *)part)->initAnim(RoomObjRes_GetBca(res, k), s0, s1, s2, s3);
     }
 }

@@ -28,6 +28,7 @@
 #include "player/PlayerSpNpcRecord.h"
 #include "save/ContestRecord.h"
 #include "save/SaveData.h"
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02097444.h"
@@ -43,15 +44,15 @@ class SpNpcTortimerFlowerFestTalk;
 
 
 extern "C" {
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
-void Clock_GetDateTime(void *p);
-u32 Event_GetDaysSinceStart(s32 v);
+void Clock_GetDateTime(ClockDateTime *p);
+s32 Event_GetDaysSinceStart(u32 id);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
-extern u8 gSaveData[];
+extern SaveData gSaveData;
 }
 
 
@@ -145,7 +146,7 @@ BOOL SpNpcTortimerFlowerFest::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
+    animCtrl.playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     festDay = Event_GetDaysSinceStart(0xe);
@@ -176,7 +177,7 @@ void SpNpcTortimerFlowerFest::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerFlowerFest::setupAct00() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -185,10 +186,10 @@ BOOL SpNpcTortimerFlowerFest::mainAct00() {
         return TRUE;
     }
     judgeTimer = 0x258;
-    u8 *const g = gContestRecord;
-    ContestRecord_JudgeGardens((ContestRecord *)g);
-    ((ContestRecord *)(g))->setKind(3);
-    ((SaveData *)(gSaveData))->setFlag(0xf);
+    ContestRecord *const g = (ContestRecord *)gContestRecord;
+    ContestRecord_JudgeGardens(g);
+    g->setKind(3);
+    gSaveData.setFlag(0xf);
     return TRUE;
 }
 
@@ -200,17 +201,17 @@ s32 SpNpcTortimerFlowerFest::tickTimer(s32 *p) {
 }
 
 BOOL SpNpcTortimerFlowerFest::setupAct01() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFlowerFest::mainAct01() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -231,7 +232,7 @@ void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
 
 void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     u16 h;
-    u32 w[2];
+    ClockDateTimeWords w;
     PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle3";
     if (massageChairSlot == -1) {
@@ -243,11 +244,11 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
             return;
         }
     }
-    w[0] = 0;
-    w[1] = 0;
-    Clock_GetDateTime(w);
+    w.words[0] = 0;
+    w.words[1] = 0;
+    Clock_GetDateTime(&w.dt);
     {
-        u32 v = ((u8 *)w)[2];
+        u32 v = w.dt.hour;
         if (v < 6 || v >= 0x12) {
             out->msgIndex = 0;
             return;
@@ -281,7 +282,7 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h1 = 0x1559;
-            ((ActorTalkRequest *)(this))->requestGiveItem(&h1, 0, 5, 0);
+            requestGiveItem(&h1, 0, 5, 0);
             h2 = 0x1559;
             Pocket_AddItem(&h2, 0);
             b1 = 4;
@@ -290,7 +291,7 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
     } else {
         if (msgIndex == 5 || msgIndex == 6 || msgIndex == 9) {
             if (!Talk_CheckAndSetPlayerFlag(0x1d, 1)) {
-                ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->setFestivalGift();
+                ((PlayerSpNpcRecord *)PlayerData_GetCurrent()->getSpNpcRecord())->setFestivalGift();
                 if (Pocket_FindEmpty() >= 0) {
                     msg = 7;
                     NookShop_PickFlowerBag(&h3);
@@ -299,9 +300,9 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
             }
         }
         if (msgIndex == 7) {
-            ((ActorTalkRequest *)(this))->requestGiveItem(&giftItem, 0, 5, 0);
+            requestGiveItem(&giftItem, 0, 5, 0);
             Pocket_AddItem(&giftItem, 0);
-            ((ActorTalkRequest *)(this))->setItemNameSlot(&giftItem, 0, 7);
+            setItemNameSlot(&giftItem, 0, 7);
             msg = 8;
         }
         if (msg != 0xff) {
@@ -324,7 +325,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                ((ActorTalkRequest *)(this))->requestTakeItem(&h, 0, 5, 0);
+                requestTakeItem(&h, 0, 5, 0);
             }
             msg = 2;
         }
@@ -349,7 +350,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerFlowerFest::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -359,7 +360,7 @@ void SpNpcTortimerFlowerFest::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

@@ -1643,7 +1643,7 @@ BOOL LetterStorageMenu::dropHeldOnSlot(u32 a) {
 
 void LetterStorageMenu::putLetterInSlot(u32 a, void *c) {
     if (isLetterSlot(a) || isStorageSlot(a)) {
-        letterGrid.setLetter(toLetterGridIndex(a), (s32)c);
+        letterGrid.setLetter(toLetterGridIndex(a), c);
     } else if (isPageTabSlot(a)) {
         Letter_Copy(&storageLetters[(heldOriginSlot - 0x24) + heldOriginPage * 0x19], c);
     }

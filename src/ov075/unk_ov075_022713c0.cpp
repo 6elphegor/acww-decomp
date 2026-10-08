@@ -31,11 +31,11 @@
 #include "npc/NpcMoveCtrl.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "town/PeteFallState.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020850e0.h"
@@ -43,101 +43,29 @@
 #include "proto/ov075/unk_ov075_022713c0.h"
 
 
-// Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
-#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
-#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define ActorTalkRequest_requestCloseWindow _ZN16ActorTalkRequest18requestCloseWindowEj
-#define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
-#define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
-#define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
-#define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
-#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
-#define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
-#define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
-#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP7VecFx32
-#define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
-#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
-#define PeteFallState_hasFallPos _ZN13PeteFallState10hasFallPosEv
-#define PeteFallState_getPos _ZN13PeteFallState6getPosEP7VecFx32
-#define PeteFallState_clear _ZN13PeteFallState5clearEv
-#define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
-#define Unk_ov075_0227188c_CallA() NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-
 class SpNpcPete;
 class SpNpcPeteTalk;
 struct TalkStartMsg;
-
-struct SpNpcPeteSidestepPos {
-    s32 v[4];
-};
-
+class Camera;
+extern Camera *gCamera;
 
 extern "C" {
-s32 ChoiceList_getResult(ChoiceList *p);
-s32 PlayerData_testFlag(void *p, s32 a);
-s32 PlayerData_setFlag(void *p, s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void ActorTalkRequest_requestCloseWindow(void *self, s32 a);
-s32 ActorTalkRequest_requestReopenWindow(void *self);
-BOOL NpcTalkCtrl_isBusy(void *self);
-void NpcTalkCtrl_requestTalk(void *self, s32 a, s32 b);
-void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-void TalkRequest_SetTargetDone(void *self);
-void NpcActionCtrl_requestPlayAnim(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void NpcMoveAnimSet_setStandAnim(void *p, s32 v);
-s32 NpcAnimCtrl_getAnimId(void *p, s32 a);
-s32 NpcActionCtrl_isActionDone(void *p);
-s32 NpcActionCtrl_getAction(void *p);
-s32 Unk_0201acf8_getLevel(void *p);
-s32 NpcLookAt_getObstacleBits(void *p);
-s32 NpcMoveCtrl_hasArrived(void *p, void *q, s32 a);
-s32 NpcMoveCtrl_hasNextLeg(void *p);
-void NpcMoveCtrl_resetDestination(void *p);
-void NpcMoveCtrl_setDestination(void *p, void *q);
-VecFx32 *NpcMoveCtrl_getDestination(void *p);
-void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
-s32 Npc_IsPosBlocked(void *p);
-s32 Math_AngleXZ(void *a, void *b);
-BOOL NpcActor_IsFrontAngle(s16 a);
-u32 NpcActor_getAngleToPlayer(void *p, s32 n);
-s32 NpcActor_getAngleTo(void *self, void *a);
-void Math_CountDownU8(void *p);
-s32 Random_Next(void *p);
+BOOL TalkRequest_SetTargetDone(Character *c);
+u8 Math_CountDownU8(u8 *p);
+u32 Random_Next(u32 *seed);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
-void NpcFootstepFx_enableFootsteps(void *p);
-s32 PeteFallState_hasFallPos(void *p);
-void PeteFallState_getPos(void *p, void *q);
-void PeteFallState_clear(void *p);
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern s32 data_020c6cf0;
-extern u8 gVec3Zero[];
-extern u8 gRandom[];
-extern void *gCamera;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 
-void SpNpcPete_ChangeAct(void *self, s32 state);
-s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b);
+void SpNpcPete_ChangeAct(SpNpcPete *self, s32 state);
+s32 SpNpcPete_IsInFocusBox(SpNpcPete *self, VecFx32 *a, VecFx32 *b);
 }
-
-
-
-
-
 
 class SpNpcPeteTalk : public SpNpcTalkRequest {
 public:
@@ -149,13 +77,13 @@ public:
     virtual void update();
     virtual void onTaskDone(u32 id);
 
-    void attachOwner(void *owner);
+    void attachOwner(SpNpcPete *owner);
     void scriptWakeUp();
     void setScript(s32 v);
 
     /* 0xac */ s32 script;
     /* 0xb0 */ u8 scriptStep;
-    /* 0xb4 */ u8 *ownerNpc;
+    /* 0xb4 */ SpNpcPete *ownerNpc;
 };
 
 
@@ -187,7 +115,7 @@ public:
     BOOL mainAct05();
     BOOL tryAvoidObstacle();
     BOOL steerAroundObstacle();
-    BOOL findSidestepPos(VecFx32 *out, void *p);
+    BOOL findSidestepPos(VecFx32 *out, FxVec3 *offset);
     BOOL pickWanderTarget(s32 *px, s32 *pz);
     s32 isInCameraBox();
     BOOL setupAct05();
@@ -216,30 +144,6 @@ struct SpNpcPeteTalkScript {
 
 extern "C" {
 SpNpcPete *SpNpcPete_Create();
-void _ZN13SpNpcPeteTalk12scriptWakeUpEv();
-extern void *data_ov075_02272280[2];
-void _ZN9SpNpcPete10setupAct00Ev();
-extern void *data_ov075_02272298[2];
-void _ZN9SpNpcPete9mainAct00Ev();
-extern void *data_ov075_022722a0[2];
-void _ZN9SpNpcPete10setupAct01Ev();
-extern void *data_ov075_022722b0[2];
-void _ZN9SpNpcPete9mainAct01Ev();
-extern void *data_ov075_022722b8[2];
-void _ZN9SpNpcPete10setupAct02Ev();
-extern void *data_ov075_02272288[2];
-void _ZN9SpNpcPete9mainAct02Ev();
-extern void *data_ov075_02272260[2];
-void _ZN9SpNpcPete9mainAct03Ev();
-extern void *data_ov075_02272268[2];
-void _ZN9SpNpcPete10setupAct04Ev();
-extern void *data_ov075_02272270[2];
-void _ZN9SpNpcPete9mainAct04Ev();
-extern void *data_ov075_02272278[2];
-void _ZN9SpNpcPete10setupAct05Ev();
-extern void *data_ov075_02272290[2];
-void _ZN9SpNpcPete9mainAct05Ev();
-extern void *data_ov075_022722a8[2];
 extern u8 sSpNpcPeteModelPath[];
 extern u8 sSpNpcPeteTexturePath[];
 extern DebugColor data_ov075_0227248c;
@@ -255,44 +159,29 @@ extern FxVec3 sSpNpcPeteSidestepOffsets[2];
 extern ActorProfile sSpNpcPeteProfile;
 }
 
-typedef BOOL (SpNpcPete::*SpNpcPeteActFn)();
-typedef void (SpNpcPeteTalk::*SpNpcPeteTalkScriptFn)();
-#define PM(i) (*(SpNpcPeteActFn *)data_ov075_##i)
 
-void *data_ov075_02272278[2] = {(void *)_ZN9SpNpcPete9mainAct04Ev, 0};
 u8 sSpNpcPeteTexturePath[] = "npc_sp/model/plb_tex.nsbtx";
-void *data_ov075_02272270[2] = {(void *)_ZN9SpNpcPete10setupAct04Ev, 0};
 ActorProfile sSpNpcPeteProfile = {(void *(*)())SpNpcPete_Create, 0x54, 0x5b, 2, 0x5000, 0x5000, 0x3e800};
-void *data_ov075_02272260[2] = {(void *)_ZN9SpNpcPete9mainAct02Ev, 0};
 DebugColor data_ov075_0227248c(31, 20, 20, 31);
 DebugColor data_ov075_02272494(20, 20, 31, 31);
 u8 sSpNpcPeteModelPath[] = "npc_sp/model/plb.nsbmd";
 DebugColor data_ov075_02272490(31, 31, 20, 31);
 DebugColor data_ov075_02272484(20, 31, 20, 31);
 DebugColor data_ov075_02272488(20, 31, 31, 31);
-void *data_ov075_022722a8[2] = {(void *)_ZN9SpNpcPete9mainAct05Ev, 0};
-void *data_ov075_022722b0[2] = {(void *)_ZN9SpNpcPete10setupAct01Ev, 0};
-void *data_ov075_02272298[2] = {(void *)_ZN9SpNpcPete10setupAct00Ev, 0};
-void *data_ov075_02272290[2] = {(void *)_ZN9SpNpcPete10setupAct05Ev, 0};
-void *data_ov075_022722a0[2] = {(void *)_ZN9SpNpcPete9mainAct00Ev, 0};
 DebugColor data_ov075_02272480(20, 24, 24, 31);
 SpNpcPeteTalkScript sSpNpcPeteTalkScripts[2] = {
     {NULL, 0},
-    {*(SpNpcPeteTalkScriptFn *)data_ov075_02272280, 1},
+    {&SpNpcPeteTalk::scriptWakeUp, 1},
 };
 SpNpcPeteActEntry sSpNpcPeteActTable[6] = {
-    {PM(02272298), PM(022722a0)},
-    {PM(022722b0), PM(022722b8)},
-    {PM(02272288), PM(02272260)},
-    {NULL, PM(02272268)},
-    {PM(02272270), PM(02272278)},
-    {PM(02272290), PM(022722a8)},
+    {&SpNpcPete::setupAct00, &SpNpcPete::mainAct00},
+    {&SpNpcPete::setupAct01, &SpNpcPete::mainAct01},
+    {&SpNpcPete::setupAct02, &SpNpcPete::mainAct02},
+    {NULL, &SpNpcPete::mainAct03},
+    {&SpNpcPete::setupAct04, &SpNpcPete::mainAct04},
+    {&SpNpcPete::setupAct05, &SpNpcPete::mainAct05},
 };
 FxVec3 sSpNpcPeteSidestepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
-void *data_ov075_02272288[2] = {(void *)_ZN9SpNpcPete10setupAct02Ev, 0};
-void *data_ov075_02272280[2] = {(void *)_ZN13SpNpcPeteTalk12scriptWakeUpEv, 0};
-void *data_ov075_022722b8[2] = {(void *)_ZN9SpNpcPete9mainAct01Ev, 0};
-void *data_ov075_02272268[2] = {(void *)_ZN9SpNpcPete9mainAct03Ev, 0};
 
 extern "C" SpNpcPete *SpNpcPete_Create() {
     return new SpNpcPete();
@@ -311,7 +200,7 @@ BOOL SpNpcPete::onCreate() {
     if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
-    if (PeteFallState_hasFallPos(TownSessionState_GetPeteFall(TownSessionState_Get())) != 0) {
+    if (TownSessionState_GetPeteFall(TownSessionState_Get())->hasFallPos() != 0) {
         SpNpcPete_ChangeAct(this, 0);
     } else {
         SpNpcPete_ChangeAct(this, 4);
@@ -327,7 +216,7 @@ BOOL SpNpcPete::onDelete() {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
-        PeteFallState_clear(TownSessionState_GetPeteFall(TownSessionState_Get()));
+        TownSessionState_GetPeteFall(TownSessionState_Get())->clear();
     }
     return TRUE;
 }
@@ -344,8 +233,7 @@ BOOL SpNpcPete::updateAct() {
     return result;
 }
 
-extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
-    SpNpcPete *o = (SpNpcPete *)self;
+extern "C" void SpNpcPete_ChangeAct(SpNpcPete *o, s32 state) {
     BOOL ok = TRUE;
     if (sSpNpcPeteActTable[state].enter != NULL) {
         ok = (o->*sSpNpcPeteActTable[state].enter)();
@@ -356,7 +244,7 @@ extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
 }
 
 BOOL SpNpcPete::setupAct00() {
-    lookAt.setTarget(0, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    lookAt.setTarget(0, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xef, 1, data_020c6cc8, 0);
     ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xef);
     return TRUE;
@@ -372,9 +260,9 @@ BOOL SpNpcPete::setupAct04() {
 }
 
 BOOL SpNpcPete::mainAct04() {
-    void *r5 = TownSessionState_GetPeteFall(TownSessionState_Get());
-    if (PeteFallState_hasFallPos(r5) != 0) {
-        PeteFallState_getPos(r5, &position);
+    PeteFallState *r5 = TownSessionState_GetPeteFall(TownSessionState_Get());
+    if (r5->hasFallPos() != 0) {
+        r5->getPos(&position);
         VecFx32 *s = (VecFx32 *)&position;
         VecFx32 *d = (VecFx32 *)&prevPosition;
         d->x = position.x;
@@ -391,13 +279,11 @@ BOOL SpNpcPete::setupAct05() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    lookAt.setTarget(1, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-extern "C" s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b) {
-    VecFx32 *pa = (VecFx32 *)a;
-    VecFx32 *pb = (VecFx32 *)b;
+extern "C" s32 SpNpcPete_IsInFocusBox(SpNpcPete *self, VecFx32 *pa, VecFx32 *pb) {
     s32 r = 0;
     BOOL f2 = FALSE;
     BOOL f1 = FALSE;
@@ -426,7 +312,7 @@ extern "C" s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b) {
 s32 SpNpcPete::isInCameraBox() {
     VecFx32 *p = (VecFx32 *)&position;
     s32 r = 0;
-    if (gCamera != 0) {
+    if (gCamera != NULL) {
         VecFx32 v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
@@ -444,7 +330,7 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
     v.y = 0;
     v.z = 0;
     for (i = 0; i < 6; i++) {
-        s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
+        s32 idx = ((u16)(s16)Random_Next(&gRandom.seed) >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = t + position.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
@@ -460,14 +346,14 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
     return r;
 }
 
-BOOL SpNpcPete::findSidestepPos(VecFx32 *out, void *p) {
+BOOL SpNpcPete::findSidestepPos(VecFx32 *out, FxVec3 *offset) {
     BOOL r = FALSE;
-    SpNpcPeteSidestepPos t;
-    Npc_RotateOffsetXZ(&t, &position, p, moveAngleY);
+    VecFx32 t;
+    Npc_RotateOffsetXZ(&t, &position, offset, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
-        out->x = t.v[0];
-        out->y = t.v[1];
-        out->z = t.v[2];
+        out->x = t.x;
+        out->y = t.y;
+        out->z = t.z;
         r = TRUE;
     }
     return r;
@@ -521,21 +407,21 @@ BOOL SpNpcPete::tryAvoidObstacle() {
 
 
 BOOL SpNpcPete::mainAct05() {
-    void *r4 = &actionCtrl;
+    NpcActionCtrl *r4 = &actionCtrl;
     s32 r6 = isInCameraBox();
     Math_CountDownU8(&moveTimer);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
             if (((NpcActionCtrl *)(r4))->isActionDone() != 0) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
-                    Unk_ov075_0227188c_CallA();
-                } else if ((Random_Next(gRandom) & 7) == 0) {
+                    r4->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     VecFx32 a;
-                    a.x = ((VecFx32 *)gVec3Zero)->x;
-                    a.y = ((VecFx32 *)gVec3Zero)->y;
-                    a.z = ((VecFx32 *)gVec3Zero)->z;
+                    a.x = gVec3Zero.x;
+                    a.y = gVec3Zero.y;
+                    a.z = gVec3Zero.z;
                     if (pickWanderTarget(&a.x, &a.z) != 0) {
-                        r6 = Math_AngleXZ(&position, &a);
+                        r6 = Math_AngleXZ(&position.x, &a.x);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY)) != 0) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -548,24 +434,24 @@ BOOL SpNpcPete::mainAct05() {
                             moveTimer = 80;
                         }
                     } else {
-                        Unk_ov075_0227188c_CallA();
+                        r4->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     }
                 } else {
-                    Unk_ov075_0227188c_CallA();
+                    r4->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             } else {
                 if (speed != 0) {
                     if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 2 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 4) {
                         if (moveTimer == 0) {
-                            Unk_ov075_0227188c_CallA();
+                            r4->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
                             VecFx32 b;
                             VecFx32 *q = ((NpcMoveCtrl *)(&moveCtrl))->getDestination();
                             b.x = q->x;
                             b.y = q->y;
                             b.z = q->z;
-                            if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &b) - rotY)) == 0) {
-                                Unk_ov075_0227188c_CallA();
+                            if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &b.x) - rotY)) == 0) {
+                                r4->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }
                         }
                     }
@@ -577,13 +463,13 @@ BOOL SpNpcPete::mainAct05() {
 }
 
 BOOL SpNpcPete::setupAct01() {
-    void *r4 = talk.getTalkPlayer();
+    Character *r4 = talk.getTalkPlayer();
     s32 r6 = rotY;
     if (isUp != 0) {
-        lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+        lookAt.setTarget(1, 0, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
         collider.groups &= ~2;
     }
-    if (r4 != 0) {
+    if (r4 != NULL) {
         r6 = ((NpcActor *)(this))->getAngleTo((NpcActor *)(r4));
     }
     ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r6, 0);
@@ -614,9 +500,8 @@ BOOL SpNpcPete::mainAct03() {
 }
 
 void SpNpcPeteTalk::update() {
-    s32 i = script * 12;
-    if (((u8 *)&sSpNpcPeteTalkScripts[0].flag)[i] != 0) {
-        SpNpcPeteTalkScript *e = (SpNpcPeteTalkScript *)((u8 *)sSpNpcPeteTalkScripts + i);
+    if (sSpNpcPeteTalkScripts[script].flag != 0) {
+        SpNpcPeteTalkScript *e = &sSpNpcPeteTalkScripts[script];
         if (e->fn != 0) {
             (this->*e->fn)();
         }
@@ -624,9 +509,8 @@ void SpNpcPeteTalk::update() {
 }
 
 void SpNpcPeteTalk::onTaskDone(u32) {
-    s32 i = script * 12;
-    if (((u8 *)&sSpNpcPeteTalkScripts[0].flag)[i] == 0) {
-        SpNpcPeteTalkScript *e = (SpNpcPeteTalkScript *)((u8 *)sSpNpcPeteTalkScripts + i);
+    if (sSpNpcPeteTalkScripts[script].flag == 0) {
+        SpNpcPeteTalkScript *e = &sSpNpcPeteTalkScripts[script];
         if (e->fn != 0) {
             (this->*e->fn)();
             setScript(0);
@@ -640,30 +524,29 @@ void SpNpcPeteTalk::setScript(s32 v) {
 }
 
 void SpNpcPeteTalk::scriptWakeUp() {
-    u8 *o;
     switch (scriptStep) {
     case 0:
         if (window->state == 5) {
-            ((NpcActionCtrl *)(ownerNpc + 0x564))->requestPlayAnim(2, 0xd5, 1, data_020c6cc8, 0);
-            ((NpcMoveAnimSet *)(ownerNpc + 0x2a0))->setStandAnim(0);
+            ownerNpc->actionCtrl.requestPlayAnim(2, 0xd5, 1, data_020c6cc8, 0);
+            ownerNpc->moveAnimSet.setStandAnim(0);
             scriptStep = scriptStep + 1;
         }
         break;
     case 1:
-        if (((NpcAnimCtrl *)(ownerNpc + 0x334))->getAnimId(0) == 0xd5) {
-            if (((NpcActionCtrl *)(ownerNpc + 0x564))->isActionDone() != 0) {
-                u32 r = ((NpcActor *)(ownerNpc))->getAngleToPlayer(4);
-                ((NpcActionCtrl *)(ownerNpc + 0x564))->requestAction(3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
+        if (ownerNpc->animCtrl.getAnimId(0) == 0xd5) {
+            if (ownerNpc->actionCtrl.isActionDone() != 0) {
+                u32 r = ownerNpc->getAngleToPlayer(4);
+                ownerNpc->actionCtrl.requestAction(3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
                 scriptStep = scriptStep + 1;
             }
         }
         break;
     case 2:
-        if (((NpcActionCtrl *)(ownerNpc + 0x564))->getAction() == 3) {
-            if (((NpcActionCtrl *)(ownerNpc + 0x564))->isActionDone() != 0) {
+        if (ownerNpc->actionCtrl.getAction() == 3) {
+            if (ownerNpc->actionCtrl.isActionDone() != 0) {
                 void *p = PlayerData_GetCurrent();
                 u8 buf[2];
-                ownerNpc[0x714] = 1;
+                ownerNpc->isUp = 1;
                 ((ActorTalkRequest *)(this))->requestReopenWindow();
                 if (((PlayerData *)(p))->testFlag(6) == 0) {
                     ((PlayerData *)(p))->setFlag(6);
@@ -686,14 +569,14 @@ SpNpcPeteTalk::SpNpcPeteTalk() {}
 
 SpNpcPeteTalk::~SpNpcPeteTalk() {}
 
-void SpNpcPeteTalk::attachOwner(void *owner) {
+void SpNpcPeteTalk::attachOwner(SpNpcPete *owner) {
     resetMsg();
-    ownerNpc = (u8 *)owner;
+    ownerNpc = owner;
 }
 
 void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->msgIndex = 0x1a;
-    if (ownerNpc[0x714] != 0) {
+    if (ownerNpc->isUp != 0) {
         if (PlayerData_GetCurrent()->testFlag(6) != 0) {
             out->msgIndex = Random_GlobalBelow(4) + 12;
         }

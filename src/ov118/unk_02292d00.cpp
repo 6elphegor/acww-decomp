@@ -747,7 +747,7 @@ void MapTab::loadMapImage() {
     a = mapChars;
     TownMapMarkers_Clear(&townMarkers);
     b = (u8 *)&townMarkers;
-    InventoryBg_ClearDirty(a, b);
+    InventoryBg_ClearDirty((InventoryBg *)a, b);  // (as the DS code: clears bits of mapChars[8] by the address of townMarkers)
     Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
     setupMarkers(b);
 }

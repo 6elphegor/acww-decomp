@@ -7,6 +7,9 @@
 #ifdef __cplusplus
 #include "types.h"
 class TaxiInterior;
+class AnimModel;
+class RoomObjRes;
+struct NNSG3dRS;
 #endif
 
 #ifdef __cplusplus
@@ -24,10 +27,10 @@ BOOL TaxiInterior_StopRain();
 BOOL TaxiInterior_StartDriverAnim();
 #endif
 #ifndef PROTO_LOCAL_TaxiInterior_OnModelNode
-void TaxiInterior_OnModelNode(void *p, u32 b, void *c);
+void TaxiInterior_OnModelNode(TaxiInterior *self, u32 node, NNSG3dRS *rs);
 #endif
 #ifndef PROTO_LOCAL_TaxiInterior_SetPartAnim
-void TaxiInterior_SetPartAnim(void *self, u8 k, void *sub, void *obj, u8 s0, u32 s1, u16 s2, u16 s3);
+void TaxiInterior_SetPartAnim(TaxiInterior *self, u8 k, AnimModel *part, RoomObjRes *res, u8 s0, u32 s1, u16 s2, u16 s3);
 #endif
 }
 #endif

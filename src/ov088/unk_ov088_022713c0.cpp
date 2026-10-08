@@ -34,16 +34,15 @@
 #include "game/Unk_0201acf8.h"
 #include "player/PlayerData.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#include "game/Random.h"
+#include "proto/autoload_2/unk_020e92f4.h"
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02060b7c.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020a8c9c.h"
 #include "proto/main/unk_020b2c50.h"
@@ -53,7 +52,7 @@
 class ActorTalkRequest;
 class SpNpcShrunk;
 class SpNpcShrunkTalk;
-struct VisitorPos;
+class Camera;
 
 
 
@@ -62,32 +61,22 @@ struct VisitorPos;
 
 
 extern "C" {
-void *_ZN10PlayerData10getErrandsEv(void *p);
 void EventWeekSlots_MarkPlayer(s32 v);
-BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 Math_AngleXZ(void *p, void *q);
-BOOL NpcActor_IsFrontAngle(s32 v);
-u32 Math_CountDownU8(void *p);
-u32 Random_Next(void *p);
+BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
+// (src/autoload_2/unk_020e7500.cpp; its header conflicts with the declarations of Random.h and actor/Actor.h)
+u32 Random_Next(u32 *seed);
+u8 Math_CountDownU8(u8 *p);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
-extern u32 gCamera;
+extern Camera *gCamera;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 BOOL TownMap_IsPosWalkable(VecFx32 *a, s32 b);
-BOOL Npc_IsPosBlocked(void *p);
-void Npc_RotateOffsetXZ(void *out, VecFx32 *a, VecFx32 *b, s32 c);
 void TalkRequest_SetTargetDone(void *p);
-void *TownSessionState_Get();
-VisitorPos *TownSessionState_GetVisitorPos(void *p);
-extern u32 gRandom[];
-extern VecFx32 gVec3Zero;
 void MI_CpuFill8(void *p, s32 v, u32 n);
-BOOL func_0202e360();
-extern u32 __ptmf_null[];
 }
 
 
@@ -182,36 +171,8 @@ struct SpNpcShrunkActEntry {
 
 extern "C" SpNpcShrunk *SpNpcShrunk_Create();
 
-typedef void (SpNpcShrunkTalk::*Unk_ov088_02272618_Fn)();
-typedef BOOL (SpNpcShrunk::*Unk_ov088_022726ac_Fn)();
 
 extern "C" {
-void _ZN11SpNpcShrunk10setupAct02Ev();
-void _ZN11SpNpcShrunk9mainAct02Ev();
-void _ZN11SpNpcShrunk10setupAct03Ev();
-void _ZN15SpNpcShrunkTalk17scriptFirstLessonEv();
-void _ZN11SpNpcShrunk9mainAct01Ev();
-void _ZN15SpNpcShrunkTalk26scriptCheckTriggerReactionEv();
-void _ZN11SpNpcShrunk10setupAct04Ev();
-void _ZN15SpNpcShrunkTalk17scriptWaitThenEndEv();
-void _ZN11SpNpcShrunk9mainAct04Ev();
-void _ZN11SpNpcShrunk10setupAct00Ev();
-void _ZN15SpNpcShrunkTalk23scriptOpenEmotionChoiceEv();
-void _ZN11SpNpcShrunk9mainAct00Ev();
-void _ZN11SpNpcShrunk9mainAct03Ev();
-extern void *data_ov088_02272520[2];
-extern void *data_ov088_02272528[2];
-extern void *data_ov088_02272530[2];
-extern void *data_ov088_02272538[2];
-extern void *data_ov088_02272540[2];
-extern void *data_ov088_02272548[2];
-extern void *data_ov088_02272550[2];
-extern void *data_ov088_02272558[2];
-extern void *data_ov088_02272560[2];
-extern void *data_ov088_02272568[2];
-extern void *data_ov088_02272570[2];
-extern void *data_ov088_02272578[2];
-extern void *data_ov088_02272580[2];
 extern SpNpcShrunkTalkScript sSpNpcShrunkTalkScripts[5];
 extern SpNpcShrunkActEntry sSpNpcShrunkActTable[5];
 extern FxVec3 sSpNpcShrunkSideStepOffsets[2];
@@ -223,43 +184,28 @@ extern u8 sSpNpcShrunkTexturePath[];
 extern "C" DebugColor data_ov088_022727b4(31, 20, 20, 31);
 extern "C" DebugColor data_ov088_022727a8(20, 20, 31, 31);
 extern "C" DebugColor data_ov088_022727a4(31, 31, 20, 31);
-extern "C" void *data_ov088_02272570[2] = {(void *)_ZN15SpNpcShrunkTalk23scriptOpenEmotionChoiceEv, 0};
 extern "C" DebugColor data_ov088_022727a0(20, 31, 20, 31);
-extern "C" void *data_ov088_02272528[2] = {(void *)_ZN11SpNpcShrunk9mainAct02Ev, 0};
-extern "C" void *data_ov088_02272580[2] = {(void *)_ZN11SpNpcShrunk9mainAct03Ev, 0};
-extern "C" void *data_ov088_02272550[2] = {(void *)_ZN11SpNpcShrunk10setupAct04Ev, 0};
 extern "C" u8 sSpNpcShrunkTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'u', 'p', 'a', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" void *data_ov088_02272540[2] = {(void *)_ZN11SpNpcShrunk9mainAct01Ev, 0};
-extern "C" void *data_ov088_02272578[2] = {(void *)_ZN11SpNpcShrunk9mainAct00Ev, 0};
 extern "C" u8 sSpNpcShrunkModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'u', 'p', 'a', '.', 'n', 's', 'b', 'm', 'd', 0};
-extern "C" void *data_ov088_02272568[2] = {(void *)_ZN11SpNpcShrunk10setupAct00Ev, 0};
 extern "C" DebugColor data_ov088_022727b0(20, 31, 31, 31);
 extern "C" ActorProfile sSpNpcShrunkProfile = {(void *(*)())SpNpcShrunk_Create, 0x62, 0x69, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov088_02272520[2] = {(void *)_ZN11SpNpcShrunk10setupAct02Ev, 0};
-extern "C" void *data_ov088_02272548[2] = {(void *)_ZN15SpNpcShrunkTalk26scriptCheckTriggerReactionEv, 0};
 extern "C" DebugColor data_ov088_022727ac(20, 24, 24, 31);
-extern "C" void *data_ov088_02272538[2] = {(void *)_ZN15SpNpcShrunkTalk17scriptFirstLessonEv, 0};
-
 SpNpcShrunkTalkScript sSpNpcShrunkTalkScripts[5] = {
     {NULL, 0},
-    {*(Unk_ov088_02272618_Fn *)data_ov088_02272538, 1},
-    {*(Unk_ov088_02272618_Fn *)data_ov088_02272570, 1},
-    {*(Unk_ov088_02272618_Fn *)data_ov088_02272548, 1},
-    {*(Unk_ov088_02272618_Fn *)data_ov088_02272558, 1},
+    {&SpNpcShrunkTalk::scriptFirstLesson, 1},
+    {&SpNpcShrunkTalk::scriptOpenEmotionChoice, 1},
+    {&SpNpcShrunkTalk::scriptCheckTriggerReaction, 1},
+    {&SpNpcShrunkTalk::scriptWaitThenEnd, 1},
 };
-
-extern "C" void *data_ov088_02272560[2] = {(void *)_ZN11SpNpcShrunk9mainAct04Ev, 0};
 
 SpNpcShrunkActEntry sSpNpcShrunkActTable[5] = {
-    {*(Unk_ov088_022726ac_Fn *)data_ov088_02272568, *(Unk_ov088_022726ac_Fn *)data_ov088_02272578},
-    {NULL, *(Unk_ov088_022726ac_Fn *)data_ov088_02272540},
-    {*(Unk_ov088_022726ac_Fn *)data_ov088_02272520, *(Unk_ov088_022726ac_Fn *)data_ov088_02272528},
-    {*(Unk_ov088_022726ac_Fn *)data_ov088_02272530, *(Unk_ov088_022726ac_Fn *)data_ov088_02272580},
-    {*(Unk_ov088_022726ac_Fn *)data_ov088_02272550, *(Unk_ov088_022726ac_Fn *)data_ov088_02272560},
+    {&SpNpcShrunk::setupAct00, &SpNpcShrunk::mainAct00},
+    {NULL, &SpNpcShrunk::mainAct01},
+    {&SpNpcShrunk::setupAct02, &SpNpcShrunk::mainAct02},
+    {&SpNpcShrunk::setupAct03, &SpNpcShrunk::mainAct03},
+    {&SpNpcShrunk::setupAct04, &SpNpcShrunk::mainAct04},
 };
 
-extern "C" void *data_ov088_02272558[2] = {(void *)_ZN15SpNpcShrunkTalk17scriptWaitThenEndEv, 0};
-extern "C" void *data_ov088_02272530[2] = {(void *)_ZN11SpNpcShrunk10setupAct03Ev, 0};
 FxVec3 sSpNpcShrunkSideStepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
 
 extern "C" SpNpcShrunk *SpNpcShrunk_Create() {
@@ -290,7 +236,7 @@ BOOL SpNpcShrunk::onDelete() {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
-        TownSessionState_GetVisitorPos(TownSessionState_Get())->pickRandomPos();
+        ((VisitorPos *)TownSessionState_GetVisitorPos(TownSessionState_Get()))->pickRandomPos();
     }
     return TRUE;
 }
@@ -320,7 +266,7 @@ void SpNpcShrunk::changeAct(s32 state) {
 BOOL SpNpcShrunk::setupAct00() { return TRUE; }
 
 BOOL SpNpcShrunk::mainAct00() {
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -331,7 +277,7 @@ BOOL SpNpcShrunk::mainAct01() { return TRUE; }
 
 BOOL SpNpcShrunk::setupAct02() {
     waitTimer = 0;
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(&gVec3Zero), 4, data_020c6d1c, 1);
@@ -387,7 +333,7 @@ BOOL SpNpcShrunk::findRandomWalkTarget(s32 *a, s32 *b) {
     v.y = 0;
     v.z = 0;
     for (i = 0; i < 6; i++) {
-        s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
+        s32 idx = ((u16)(s16)Random_Next(&gRandom.seed) >> 4) * 2;
         s32 g = func_01ffcb0c(0xc000, data_02135f44[idx]);
         v.x = g + position.x;
         g = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
@@ -405,7 +351,7 @@ BOOL SpNpcShrunk::findRandomWalkTarget(s32 *a, s32 *b) {
 
 BOOL SpNpcShrunk::getOffsetPosIfFree(VecFx32 *out, VecFx32 *p) {
     BOOL r = FALSE;
-    struct { s32 x, y, z, w; } t;
+    VecFx32 t;
     Npc_RotateOffsetXZ(&t, (VecFx32 *)&position, p, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.x;
@@ -472,12 +418,12 @@ BOOL SpNpcShrunk::mainAct02() {
             if (p->isActionDone() != 0) {
                 if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                } else if ((Random_Next(gRandom) & 7) == 0) {
+                } else if ((Random_Next(&gRandom.seed) & 7) == 0) {
                     v.x = gVec3Zero.x;
                     v.y = gVec3Zero.y;
                     v.z = gVec3Zero.z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        r6 = Math_AngleXZ(&position, &v);
+                        r6 = Math_AngleXZ(&position.x, &v.x);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY))) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
@@ -506,7 +452,7 @@ BOOL SpNpcShrunk::mainAct02() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position.x, &w.x) - rotY)) == 0) {
                             ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
@@ -520,7 +466,7 @@ BOOL SpNpcShrunk::mainAct02() {
 }
 
 BOOL SpNpcShrunk::setupAct03() {
-    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     waitTimer = 0;
     ((NpcFootstepFx *)(&footstepFx))->disableFootsteps();
     return TRUE;
@@ -534,12 +480,12 @@ BOOL SpNpcShrunk::mainAct03() {
 }
 
 BOOL SpNpcShrunk::setupAct04() {
-    void *p = talk.getTalkPlayer();
+    Character *p = talk.getTalkPlayer();
     s32 x = rotY;
     if (p != NULL) {
-        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
+        x = getAngleTo((NpcActor *)(p));
     }
-    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
+    talkCtrl.requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
@@ -723,7 +669,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
 void SpNpcShrunkTalk::scriptWaitThenEnd() {
     if (Math_CountDownU8(&ownerNpc->waitTimer) == 0) {
         setScript(0);
-        ((ActorTalkRequest *)(this))->requestReopenWindow();
+        requestReopenWindow();
     }
 }
 
@@ -792,7 +738,7 @@ void SpNpcShrunkTalk::onChoice(u32) {
     switch (msgIndex) {
     case 0x17:
     case 0x18: {
-        u8 v = *(u8 *)((u8 *)this + t + 0xd7);
+        u8 v = offeredEmotions[t];
         msg = (u8)(v + 0x1c);
         pendingEmotion = v;
         break;
@@ -818,7 +764,7 @@ void SpNpcShrunkTalk::onChoice(u32) {
 
 BOOL SpNpcShrunk::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         r = TRUE;
     }
     return r;
@@ -831,7 +777,7 @@ void SpNpcShrunk::onInteractionEvent(u32 v, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer((u32)getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(4);
         break;
     case 8:
@@ -842,7 +788,7 @@ void SpNpcShrunk::onInteractionEvent(u32 v, u8) {
 
 s32 SpNpcShrunk::getTeachableEmotion() {
     if (reactionWindow != 0) {
-        return ((NpcActor *)(this))->getNewEmotionToLearn();
+        return getNewEmotionToLearn();
     }
     return -1;
 }

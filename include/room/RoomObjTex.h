@@ -6,14 +6,20 @@
 // hand (the ov068 taxi TUs use their own 4-byte RoomObjTexAuto, whose inline destructor does it implicitly).
 #include "room/RoomObjRes.h"
 
-class RoomObjTex {
-public:
-    inline RoomObjTex() { RoomObjTex_Construct(this); }
+// The texture handle itself (the part the RoomObj_* resource functions use): shared by RoomObjTex and the 4-byte
+// RoomObjTexAuto (room/RoomObjTexAuto.h).
+struct RoomObjTexHandle {
     inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline void *RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
     /* 0x0 */ void *texture;
+};
+
+class RoomObjTex : public RoomObjTexHandle {
+public:
+    inline RoomObjTex() { RoomObjTex_Construct(this); }
+
     /* 0x4 */ u8 syncState;
 };
 
