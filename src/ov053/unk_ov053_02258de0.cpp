@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "host_overlay_vars.h"
 #include "gfx/VecFx32.h"
 
@@ -521,7 +522,7 @@ BOOL SpNpcHarriet::mainAct08() {
         out[1] = talk.getNewHairColor();
         out[0] = talk.getNewHairStyle();
         PlayerActor_LocalRequestHaircutStart(&out[0], &out[1]);
-        BarberMachine_Start();
+        Shared_BarberMachine_Start();
         Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x41, 0x7f, 0);
     }
     if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0xf1, &moveAnimSet)) {

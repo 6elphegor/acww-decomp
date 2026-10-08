@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "uptr.h"
 #include "talk/EncodedString8B.h"
 #include "talk/MsgString9B.h"
@@ -528,7 +529,7 @@ void FriendRosterTab::preStateUpdate() {
 
 void FriendRosterTab::postStateUpdate() {
     uploadScreen();
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
 }
 
 void FriendRosterTab::preInputUpdate() {

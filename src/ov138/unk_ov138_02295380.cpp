@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
@@ -268,7 +269,7 @@ void DateSelectMenu::postInputUpdate() {
 
 void DateSelectMenu::preStateUpdate() {
     bottomButtons.freeTexts();
-    DateTimePicker_BeginFrame(&picker);
+    Shared_DateTimePicker_BeginFrame(&picker);
 }
 
 void DateSelectMenu::postStateUpdate() {
@@ -326,7 +327,7 @@ void DateSelectMenu::stateListTouch() {
         ok = FALSE;
     }
     if (ok) {
-        switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
+        switch (Shared_DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
         case 0:
             decideList();
             break;
@@ -490,13 +491,13 @@ void DateSelectMenu::stateExit() {
 }
 
 void DateSelectMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&picker)) {
+    if (Shared_DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void DateSelectMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&picker)) {
+    if (Shared_DateTimePicker_UpdateListClose(&picker)) {
         s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
             cursorSlot = 3;
@@ -554,14 +555,14 @@ void DateSelectMenu::openFieldList(u32 a) {
 void DateSelectMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&picker);
+    Shared_DateTimePicker_DecideList(&picker);
     setMainState(0xd);
 }
 
 void DateSelectMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&picker);
+    Shared_DateTimePicker_CancelList(&picker);
     setMainState(0xd);
 }
 

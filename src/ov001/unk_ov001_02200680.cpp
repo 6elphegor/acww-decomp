@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -1705,7 +1706,7 @@ extern "C" s32 Aoss_NetStartup(u32 a, u32 b, u32 c) {
     sAossSocConfig.ipAddress = Aoss_Htonl(a);
     sAossSocConfig.netmask = Aoss_Htonl(b);
     sAossSocConfig.gateway = Aoss_Htonl(c);
-    if (Sock_Startup(&sAossSocConfig) < 0) {
+    if (Shared_Sock_Startup(&sAossSocConfig) < 0) {
         return -1;
     }
     if (gOwnIp == 0) {
@@ -1779,7 +1780,7 @@ extern "C" s32 Aoss_SocketCreate(s32 a, s32 b, s32 c) {
 
 extern "C" s32 Aoss_SocketBind(s32 a, u8 *b, s32 c) {
     *b = c;
-    return Sock_Bind(a, b);
+    return Shared_Sock_Bind(a, b);
 }
 
 extern "C" s32 Aoss_SocketClose(s32 s) {

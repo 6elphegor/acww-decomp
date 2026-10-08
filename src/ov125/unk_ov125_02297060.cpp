@@ -1,4 +1,5 @@
 #include "talk/EncodedString16Buf.h"
+#include "host_shared_calls.h"
 #include "talk/LabelBalloonText.h"
 // ov125: scene overlay (class PatternSelectMenu, vtable 0x02298478, 0x6bc bytes).
 #include "types.h"
@@ -345,7 +346,7 @@ void PatternSelectMenu::preStateUpdate() {
 }
 
 void PatternSelectMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     if (nameBalloon.updatePrompt()) {
         refreshNameLabel();
     }

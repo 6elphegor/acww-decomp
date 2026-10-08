@@ -1,5 +1,6 @@
 // ov121: scene overlay (class DesignTab, vtable 0x02294d68, size 0x107c). Linked unit.
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
@@ -570,7 +571,7 @@ void DesignTab::postStateUpdate() {
     if (((TouchPromptBalloon *)(&nameBalloon))->updatePrompt()) {
         refreshNameLabel();
     }
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
 }
 
 void DesignTab::setupBgLayers() {

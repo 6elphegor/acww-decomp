@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_shared_calls.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -994,7 +995,7 @@ void Camera::updateModeTrackPair() {
     VecFx32 d;
     d = gVec3Zero;
     VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
-    VecFx32 *q = PlayerActor_GetTrackTarget(4);
+    VecFx32 *q = (VecFx32 *)Shared_PlayerActor_GetTrackTarget(4);
     if (p && q) {
         VecFx32 t;
         Vec_Sub(&t, p, q);

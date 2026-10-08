@@ -1,5 +1,6 @@
 // ov109: scene overlay (class SongPickMenu, vtable 0x02296698, 0x2802 bytes).
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "menu/InventoryItemGrid.h"
@@ -261,7 +262,7 @@ BOOL SongPickMenu::onDraw() {
         s32 t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
         letterGrid.drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&inventoryBg, t);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, t);
     }
     return TRUE;
 }
@@ -337,9 +338,9 @@ void SongPickMenu::stateLoad() {
 void SongPickMenu::stateOpen() {
     startPanels();
     bottomButtons.setLayoutSingle05(0x65);
-    InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
     SongPickMenu_DisableNonSongs((S *)this);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -390,7 +391,7 @@ void SongPickMenu::initSongPick() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     letterGrid.init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x10;
     flyMotion.reset();
     u32 z = 0;
@@ -403,7 +404,7 @@ void SongPickMenu::initSongPick() {
 void SongPickMenu::releaseResources() {
     SongPickMenu_CancelBgTask((S *)this);
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     bottomButtons.freeTexts();
 }
@@ -419,14 +420,14 @@ void SongPickMenu::postInputUpdate() { postStateUpdate(); }
 
 void SongPickMenu::preStateUpdate() {
     SongPickMenu_CancelBgTask((S *)this);
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     letterGrid.updateCursorLift();
     bottomButtons.freeTexts();
 }
 
 void SongPickMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (nameBalloon.updatePrompt()) {
         refreshNameLabel();
@@ -781,7 +782,7 @@ void SongPickMenu_DisableNonSongs(S *s) {
 
 BOOL SongPickMenu_IsSlotDisabled(S *s, u32 a) {
     if (SongPickMenu_IsPocketSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
     }
     return FALSE;
 }
@@ -796,7 +797,7 @@ BOOL SongPickMenu_IsSlotEmpty(S *s, u32 a) {
 s32 SongPickMenu::getSlotItem(u32 idx) {
     if (SongPickMenu_IsPocketSlot((S *)this, idx)) {
         s32 r = SongPickMenu_SlotToPocket((S *)this, idx);
-        return InventoryItemGrid_GetSlotItem(&pocketGrid, r);
+        return Shared_InventoryItemGrid_GetSlotItem(&pocketGrid, r);
     }
     return 0xfff1;
 }
@@ -817,7 +818,7 @@ void SongPickMenu::hideSlotFocus() {
 void SongPickMenu::showSlotFocus(u32 idx) {
     if (SongPickMenu_IsPocketSlot((S *)this, idx)) {
         s32 r = SongPickMenu_SlotToPocket((S *)this, idx);
-        InventoryItemGrid_SetCursorSlot(&pocketGrid, r);
+        Shared_InventoryItemGrid_SetCursorSlot(&pocketGrid, r);
         letterGrid.clearCursorSlot();
     } else {
         hideSlotFocus();
@@ -833,7 +834,7 @@ void SongPickMenu::refreshNameLabel() {
     ((LabelBalloon *)&nameBalloon)->setPos(x, y);
     if (SongPickMenu_IsPocketSlot((S *)this, balloonSlot)) {
         s32 r = SongPickMenu_SlotToPocket((S *)this, balloonSlot);
-        InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, r);
+        Shared_InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, r);
     }
 }
 

@@ -175,7 +175,10 @@ def main():
         gaps_c = gen_gaps
         n.build(str(build / "gaps.o"), "hostcc", gaps_c)
         objs.append(str(build / "gaps.o"))
-        for s in sources(Path("modern/ds"), (".c",)):
+        # game-side runtime pieces: the loaded overlays and the dispatchers of calls to addresses several overlays share
+        # (generated C, committed: tools/host_shared_calls.py)
+        for s in list(sources(Path("modern/ds"), (".c",))) + [Path("modern/gen/shared_calls.c"),
+                                                                Path("modern/gen/shared_table.c")]:
             o = str(build / s.with_suffix(".o"))
             n.build(o, "cc", str(s))
             objs.append(o)
@@ -198,15 +201,6 @@ def main():
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
-        # thunks for calls to addresses several overlays share (tools/modern_shared.py; ld --wrap in the partial
-        # link, where the references are still undefined)
-        n.rule("shared", f"python3 tools/modern_shared.py --arch {'x86_64' if X64 else 'x86'} --nm nm --objects $list --config config/{args.version}/arm9 "
-                         f"--asm {build}/shared.s --wrap {build}/wrap.txt > {build}/shared.log", description="SHARED")
-        n.build([str(build / "shared.s"), str(build / "wrap.txt")], "shared", game_objs,
-                implicit=["tools/modern_shared.py", str(game_list)], variables={"list": str(game_list)})
-        n.rule("hostas", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
-        n.build(str(build / "shared.o"), "hostas", str(build / "shared.s"))
-        host_objs.append(str(build / "shared.o"))
         # the variables in their original order (tools/host_order.py)
         n.rule("order", "python3 tools/host_order.py $in $out", description="ORDER $out")
         order_ld = str(build / "order.ld")
@@ -216,10 +210,9 @@ def main():
         n.build(str(build / "overlay_table.o"), "hostcc", "modern/gen/overlay_table.c",
                 variables={"flags": "-Imodern/host"})
         host_objs.append(str(build / "overlay_table.o"))
-        n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list @$wrap",
-               description="LD -r $out")
-        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt"), order_ld],
-                variables={"list": str(game_list), "wrap": str(build / "wrap.txt"), "order": order_ld})
+        n.rule("partial", f"ld -m {LD_EMU} -r -T $order -o $out @$list", description="LD -r $out")
+        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), order_ld],
+                variables={"list": str(game_list), "order": order_ld})
         # (the game's C library names don't clash with the host's: include/host_libc_rename.h)
         game_o = str(build / "game_all.o")
         objects_file = build / "objects.txt"

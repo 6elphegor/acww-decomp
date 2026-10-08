@@ -1,5 +1,6 @@
 // ov122: scene overlay (class LetterWriteMenu, vtable 0x0229a1b8, 0x4664 bytes): chat keyboard/text-entry list screen.
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/LetterRenderer.h"
@@ -324,7 +325,7 @@ BOOL LetterWriteMenu::onDraw() {
         s32 p = keyboardSlideY + 0x60;
         Oam_DrawCell(1, (GXOamAttr *)data_ov122_0229a180, 0x80, p - 0x10, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         Keyboard_Draw(&keyboard, 0x80, p, 1);
-        Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, p);
+        Shared_Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, p);
         if (MenuCtrl_IsButtons()) {
             Oam_DrawObj(1, data_ov122_0229a030, 0x80, p, -1, 1, 0);
         }
@@ -350,7 +351,7 @@ BOOL LetterWriteMenu::onDraw() {
     if (testFlags(1)) {
         scrollKnob.moveTo(0x64, keyboardSlideY - 0x58 + (scrollY >> 1));
         s32 t = ((MenuScrollKnob *)(&scrollKnob))->getGripX();
-        Keyboard_SetTextFieldPos(&keyboard, t, ((MenuScrollKnob *)(&scrollKnob))->getGripY());
+        Shared_Keyboard_SetTextFieldPos(&keyboard, t, ((MenuScrollKnob *)(&scrollKnob))->getGripY());
         scrollKnob.draw();
     }
     if (MenuCtrl_IsButtons()) {
@@ -490,7 +491,7 @@ void LetterWriteMenu::forceClose() {
 void LetterWriteMenu::transitionAct00() {
     LetterWriteMenu_SetupBgLayers();
     loadBg();
-    Keyboard_RestoreLastPage(&keyboard, 6);
+    Shared_Keyboard_RestoreLastPage(&keyboard, 6);
     Keyboard_EndFrame(&keyboard, 6);
     beginSubSlideIn(0xb, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -599,7 +600,7 @@ void LetterWriteMenu::transitionAct09() {
 }
 
 void LetterWriteMenu::transitionAct0A() {
-    Keyboard_Reload(&keyboard, 6);
+    Shared_Keyboard_Reload(&keyboard, 6);
     Gfx2d_SetLayerPriority(6, 1);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -686,7 +687,7 @@ void LetterWriteMenu::preInputUpdate() {
 void LetterWriteMenu::postInputUpdate() {
     ((LetterRenderer *)(&renderer))->redraw();
     Keyboard_EndFrame(&keyboard, 6);
-    PopupChoice_Update(&addresseeMenu);
+    Shared_PopupChoice_Update(&addresseeMenu);
     postStateUpdate();
 }
 
@@ -776,7 +777,7 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
         }
     } else {
         flag = 1;
-        n = Keyboard_GetTypedRunLength(&keyboard);
+        n = Shared_Keyboard_GetTypedRunLength(&keyboard);
         if (n != 0) {
             lo = caretIndex - n;
         }
@@ -804,8 +805,8 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
 void LetterWriteMenu::refreshKeys() {
     if (editPart == 2) {
         u8 c = caretIndex;
-        if (Keyboard_InsertCharMultiline(&keyboard, letter->body, 0x86, &c, 0x80, 0x28, 4, 0x96, 1, 1)) {
-            Keyboard_EnableKey(&keyboard, 0);
+        if (Shared_Keyboard_InsertCharMultiline(&keyboard, letter->body, 0x86, &c, 0x80, 0x28, 4, 0x96, 1, 1)) {
+            Shared_Keyboard_EnableKey(&keyboard, 0);
         } else {
             Keyboard_DisableKey(&keyboard, 0);
         }
@@ -813,20 +814,20 @@ void LetterWriteMenu::refreshKeys() {
         Keyboard_DisableKey(&keyboard, 0);
     }
     if (hasSelection()) {
-        Keyboard_EnableKey(&keyboard, 0xb);
+        Shared_Keyboard_EnableKey(&keyboard, 0xb);
     } else {
         Keyboard_DisableKey(&keyboard, 0xb);
     }
     if (testFlags(0x400)) {
-        Keyboard_EnableKey(&keyboard, 0xc);
+        Shared_Keyboard_EnableKey(&keyboard, 0xc);
     } else {
         Keyboard_DisableKey(&keyboard, 0xc);
     }
     if (hasSelection()) {
-        Keyboard_DisableModifierKeys(&keyboard);
-        Keyboard_EnableKey(&keyboard, 6);
+        Shared_Keyboard_DisableModifierKeys(&keyboard);
+        Shared_Keyboard_EnableKey(&keyboard, 6);
     } else if (caretIndex == 0) {
-        Keyboard_DisableModifierKeys(&keyboard);
+        Shared_Keyboard_DisableModifierKeys(&keyboard);
     } else {
         Keyboard_UpdateModifierKeys(&keyboard, getCharBeforeCursor());
     }
@@ -863,7 +864,7 @@ void C::mainAct00() {
             if (x < 0xe0) {
                 if (touchTextArea()) {
                     setMainState(3);
-                    Keyboard_ResetTypedRun(&keyboard);
+                    Shared_Keyboard_ResetTypedRun(&keyboard);
                     redrawText(1, 1);
                     return;
                 }
@@ -892,11 +893,11 @@ void C::mainAct00() {
 void C::mainAct01() {
     if (gTouchHeld == 0) {
         setMainState(0);
-    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&keyboard)) {
         s32 t = Keyboard_GetPressedKey(&keyboard);
         s32 h = Keyboard_GetKeyCode(&keyboard, t, 8);
         pressKeyCode(h);
-        Keyboard_HighlightKey(&keyboard, t);
+        Shared_Keyboard_HighlightKey(&keyboard, t);
     }
 }
 
@@ -962,21 +963,21 @@ void C::mainAct05() {
 }
 
 s32 C::touchKey() {
-    Keyboard_ClearHighlight(&keyboard);
-    s32 t = Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
+    Shared_Keyboard_ClearHighlight(&keyboard);
+    s32 t = Shared_Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
     if (t == -1) {
         return 0;
     }
     s32 h = Keyboard_GetKeyCode(&keyboard, t, 8);
     s32 r = pressKeyCode(h);
-    Keyboard_HighlightKey(&keyboard, t);
+    Shared_Keyboard_HighlightKey(&keyboard, t);
     Keyboard_StartKeyRepeat(&keyboard);
     return r;
 }
 
 BOOL C::backspace(BOOL flag) {
     if (hasSelection()) {
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
         Snd_PlaySe(0x35);
     } else {
         u8 a = caretIndex;
@@ -1014,7 +1015,7 @@ BOOL C::applyModifierKey(u32 key) {
         p = Keyboard_ModifyCharKey103(&keyboard, p);
         break;
     case 0x104:
-        p = Keyboard_ModifyCharKey104(&keyboard, p);
+        p = Shared_Keyboard_ModifyCharKey104(&keyboard, p);
         break;
     case 0x105:
         p = Keyboard_ModifyCharKey105(&keyboard, p);
@@ -1026,7 +1027,7 @@ BOOL C::applyModifierKey(u32 key) {
     u8 v = getFieldCursor();
     u8 *q = getFieldBuffer();
     u32 sz = getFieldCapacity();
-    if (!Keyboard_ReplaceCharBeforeCursor(&keyboard, q, p, v)) {
+    if (!Shared_Keyboard_ReplaceCharBeforeCursor(&keyboard, q, p, v)) {
         return FALSE;
     }
     redrawText(0, 1);
@@ -1041,7 +1042,7 @@ BOOL C::insertCharRaw(u32 a, u32 b) {
     u8 *p = getFieldBuffer();
     u32 sz = getFieldCapacity();
     if (editPart == 2) {
-        if (Keyboard_InsertCharMultiline(&keyboard, p, a, &v, 0x80, 0x28, 4, 0x96, 0, b)) {
+        if (Shared_Keyboard_InsertCharMultiline(&keyboard, p, a, &v, 0x80, 0x28, 4, 0x96, 0, b)) {
             setCursorIndex(v);
             goto ok;
         }
@@ -1074,7 +1075,7 @@ ok:
 BOOL C::insertChar(u32 key) {
     if (hasSelection()) {
         deleteSelection();
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
     }
     BOOL r = insertCharRaw(key, 1);
     redrawText(0, 1);
@@ -1088,7 +1089,7 @@ void C::closeKeyboard() {
     setScrollTarget(0);
     clearFlags(4);
     clearSelection();
-    Keyboard_ResetTypedRun(&keyboard);
+    Shared_Keyboard_ResetTypedRun(&keyboard);
     redrawText(1, 0);
     hideCursor();
 }
@@ -1112,7 +1113,7 @@ void C::copy() {
         Mem_Clear(partTextBuf, 0x80);
         Mem_Copy(getPartText() + lo, partTextBuf, n);
         setFlags(0x400);
-        Keyboard_PlayCopySe();
+        Shared_Keyboard_PlayCopySe();
         refreshKeys();
     }
 }
@@ -1122,7 +1123,7 @@ void C::paste() {
         if (hasSelection()) {
             deleteSelection();
         }
-        Keyboard_ResetTypedRun(&keyboard);
+        Shared_Keyboard_ResetTypedRun(&keyboard);
         Keyboard_BeginPaste(&keyboard);
         s32 n = Text_GetLength(partTextBuf, 0x80);
         s32 i;
@@ -1143,7 +1144,7 @@ void C::paste() {
 
 s32 C::pressKeyCode(s32 key) {
     s32 r = 1;
-    s32 t = Keyboard_HandleModeKey(&keyboard, key, 6);
+    s32 t = Shared_Keyboard_HandleModeKey(&keyboard, key, 6);
     if (t != 0) {
         redrawText(0, r);
         return t;
@@ -1205,7 +1206,7 @@ void C::mainAct06() {
     }
     u8 b = takeRepeatedKeys();
     if (testFlags(0x10) == 1) {
-        if (Keyboard_PressCursorKey(&keyboard) == 0xd6) {
+        if (Shared_Keyboard_PressCursorKey(&keyboard) == 0xd6) {
             if (isRepeatLeft()) {
                 b &= ~0x20;
             }
@@ -1253,7 +1254,7 @@ void LetterWriteMenu::mainAct08()
     if (!((HandCursor *)(&cursor))->isAnimDone()) {
         return;
     }
-    r4 = Keyboard_PressCursorKey(&keyboard);
+    r4 = Shared_Keyboard_PressCursorKey(&keyboard);
     t = Keyboard_GetKeyCode(&keyboard, r4, 8);
     if (t == 0x112) {
         setMainState(0x10);
@@ -1272,10 +1273,10 @@ void LetterWriteMenu::mainAct08()
     if (r == 1 && (gPad[0] & 1)) {
         Keyboard_StartKeyRepeat(&keyboard);
         setMainState(9);
-        Keyboard_HighlightKey(&keyboard, r4);
+        Shared_Keyboard_HighlightKey(&keyboard, r4);
     } else if (r == 3) {
     } else if (r == 4) {
-        Keyboard_ClearHighlight(&keyboard);
+        Shared_Keyboard_ClearHighlight(&keyboard);
     } else {
         releaseCursor();
     }
@@ -1287,10 +1288,10 @@ void LetterWriteMenu::mainAct09()
 
     if ((gPad[0] & 1) == 0) {
         releaseCursor();
-    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&keyboard)) {
         r5 = Keyboard_GetPressedKey(&keyboard);
         pressKeyCode(Keyboard_GetKeyCode(&keyboard, r5, 8));
-        Keyboard_HighlightKey(&keyboard, r5);
+        Shared_Keyboard_HighlightKey(&keyboard, r5);
     }
 }
 
@@ -1306,7 +1307,7 @@ void LetterWriteMenu::mainAct0B()
 {
     if ((gPad[0] & 2) == 0) {
         setMainState(returnState);
-    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+    } else if (Shared_Keyboard_TickKeyRepeat(&keyboard)) {
         pressKeyCode(0x100);
         if (testFlags(0x100)) {
             snapCursor();
@@ -1323,8 +1324,8 @@ void LetterWriteMenu::mainAct0C()
         return;
     }
     if (navigateText(takeRepeatedKeys(), 1)) {
-        if (Keyboard_GetTypedRunLength(&keyboard) || hasSelection()) {
-            Keyboard_ResetTypedRun(&keyboard);
+        if (Shared_Keyboard_GetTypedRunLength(&keyboard) || hasSelection()) {
+            Shared_Keyboard_ResetTypedRun(&keyboard);
             clearSelection();
             redrawText(1, 1);
         } else {
@@ -1621,12 +1622,12 @@ BOOL LetterWriteMenu::tryPressKey()
     if ((gPad[1] & 1) == 0) {
         return FALSE;
     }
-    r4 = Keyboard_PressCursorKey(&keyboard);
+    r4 = Shared_Keyboard_PressCursorKey(&keyboard);
     if (r4 == -1) {
         return FALSE;
     }
     Keyboard_GetKeyCode(&keyboard, r4, 8);
-    Keyboard_HighlightKey(&keyboard, r4);
+    Shared_Keyboard_HighlightKey(&keyboard, r4);
     pressCursor();
     return TRUE;
 }
@@ -1651,7 +1652,7 @@ BOOL C::toggleTextFocus() {
         setFlags(0x100);
         scrollToCaret();
     }
-    if (Keyboard_IsOnButtonKey(&keyboard, -1)) {
+    if (Shared_Keyboard_IsOnButtonKey(&keyboard, -1)) {
         if (testFlags(0x100)) {
             ((MenuCursor *)(&cursor))->switchToAnim01();
             setMainState(0xc);
@@ -1670,7 +1671,7 @@ BOOL C::tryPasteButton() {
     if ((gPad[1] & 0x100) == 0) return FALSE;
     if (Keyboard_IsSlotDisabled(&keyboard, 0xc)) return FALSE;
     pressKeyCode(0x119);
-    Keyboard_HighlightKey(&keyboard, 0xdc);
+    Shared_Keyboard_HighlightKey(&keyboard, 0xdc);
     snapCursor();
     returnState = mainState;
     setMainState(0xf);
@@ -1681,7 +1682,7 @@ BOOL C::tryCopyButton() {
     if ((gPad[1] & 0x200) == 0) return FALSE;
     if (Keyboard_IsSlotDisabled(&keyboard, 0xb)) return FALSE;
     pressKeyCode(0x118);
-    Keyboard_HighlightKey(&keyboard, 0xdb);
+    Shared_Keyboard_HighlightKey(&keyboard, 0xdb);
     returnState = mainState;
     setMainState(0xe);
     return TRUE;
@@ -1990,7 +1991,7 @@ void C::deleteSelection() {
         break;
     }
     }
-    u8 r = (u8)Keyboard_DeleteRange(&keyboard, p, lo, hi, q);
+    u8 r = (u8)Shared_Keyboard_DeleteRange(&keyboard, p, lo, hi, q);
     if (editPart == 1) {
         r = (u8)(r - letter->namePos);
     }
@@ -2307,7 +2308,7 @@ void LetterWriteMenu::pressCursor() {
 }
 
 void LetterWriteMenu::releaseCursor() {
-    Keyboard_ClearHighlight(&keyboard);
+    Shared_Keyboard_ClearHighlight(&keyboard);
     ((MenuCursorBase *)(&cursor))->setPoseRelease();
     setMainState(0xa);
 }

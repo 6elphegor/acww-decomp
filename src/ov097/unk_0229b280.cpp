@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "menu/MenuSlide.h"
@@ -56,7 +57,7 @@ void PocketMenu::actionUseCarpet() {
         r = TRUE;
     }
     if (r) {
-        PocketMenu_SetSlotItem(this, k, x, 0);
+        Shared_PocketMenu_SetSlotItem(this, k, x, 0);
     } else {
         PocketMenu_ClearSlotItem(this, k);
     }
@@ -82,7 +83,7 @@ void PocketMenu::actionUseWallpaper() {
         r = TRUE;
     }
     if (r) {
-        PocketMenu_SetSlotItem(this, k, x, 0);
+        Shared_PocketMenu_SetSlotItem(this, k, x, 0);
     } else {
         PocketMenu_ClearSlotItem(this, k);
     }

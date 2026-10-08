@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
@@ -140,7 +141,7 @@ BOOL FishBookTab::onDraw() {
         cursor.drawWrapped();
     }
     bookPanel.drawButtons(slideY);
-    CreatureBook_DrawRows(&bookPanel, slideY);
+    Shared_CreatureBook_DrawRows(&bookPanel, slideY);
     bookPanel.drawScrollKnob();
     return TRUE;
 }
@@ -318,7 +319,7 @@ void FishBookTab::loadBgGfx() {
 
 void FishBookTab::loadObjGfx() {
     bookPanel.loadObjGraphics();
-    CreatureBook_RefreshRowIcons(&bookPanel);
+    Shared_CreatureBook_RefreshRowIcons(&bookPanel);
 }
 
 void FishBookTab::updateTouch() {
@@ -341,7 +342,7 @@ void FishBookTab::mainAct01() {
     if (gTouchHeld != 0) {
         CreatureBook_UpdateScrollTouch(&bookPanel, gTouchCurX);
     } else {
-        CreatureBook_EndScrollTouch(&bookPanel);
+        Shared_CreatureBook_EndScrollTouch(&bookPanel);
         setMainState(0);
     }
 }
@@ -375,14 +376,14 @@ void FishBookTab::updateCursorMove() {
 
 void FishBookTab::updateCursorPress() {
     if (cursor.isAnimDone()) {
-        s32 r = CreatureBook_GetFocusedTab(&bookPanel);
+        s32 r = Shared_CreatureBook_GetFocusedTab(&bookPanel);
         if (r != -1) {
             if (requestTab(r) != 0) {
                 return;
             }
             goto bea;
         } else {
-            if (CreatureBook_ActivateFocus(&bookPanel) == 0) {
+            if (Shared_CreatureBook_ActivateFocus(&bookPanel) == 0) {
                 goto bea;
             }
             setMainState(6);
@@ -403,7 +404,7 @@ void FishBookTab::updateCursorRelease() {
 }
 
 void FishBookTab::mainAct06() {
-    if (CreatureBook_WaitScrollHoldStart(&bookPanel)) {
+    if (Shared_CreatureBook_WaitScrollHoldStart(&bookPanel)) {
         setMainState(7);
     }
     bookPanel.placeScrollKnob(slideY);
@@ -465,8 +466,8 @@ void FishBookTab::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     cursor.warpTo(a, b);
-    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
-    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+    s32 r = Shared_CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || Shared_CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
         ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
     } else {
         ((MenuCursor *)&cursor)->setAnimIfChanged(1);
@@ -475,11 +476,11 @@ void FishBookTab::showCursor() {
 }
 
 s32 FishBookTab::getCursorTargetX() {
-    return CreatureBook_GetFocusX(&bookPanel);
+    return Shared_CreatureBook_GetFocusX(&bookPanel);
 }
 
 s32 FishBookTab::getCursorTargetY() {
-    return CreatureBook_GetFocusY(&bookPanel);
+    return Shared_CreatureBook_GetFocusY(&bookPanel);
 }
 
 void FishBookTab::hideCursor() {
@@ -488,8 +489,8 @@ void FishBookTab::hideCursor() {
 }
 
 void FishBookTab::moveCursorToTarget() {
-    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
-    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+    s32 r = Shared_CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || Shared_CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
         ((MenuCursor *)&cursor)->switchToAnim0D();
     } else {
         ((MenuCursor *)&cursor)->switchToAnim01();

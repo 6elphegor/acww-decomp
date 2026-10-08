@@ -1,4 +1,5 @@
 #include "town/TownBlockCell.h"
+#include "host_shared_calls.h"
 #include "sys/NNSFndArchive.h"
 #include "types.h"
 #include "town/BuildingInfo.h"
@@ -1325,7 +1326,7 @@ extern "C" BOOL Building_ApplyStateRecord(u16 *p) {
     u32 a = Item_MakeBuilding(f->a);
     u8 b = f->b;
     if (IsEnabled()) {
-        BuildingActor *o = BuildingList_FindByItem(a);
+        BuildingActor *o = (BuildingActor *)Shared_BuildingList_FindByItem(a);
         if (o) {
             return o->setDoorState(b);
         }

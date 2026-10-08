@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_shared_calls.h"
 #include "talk/ConstellationEncodedString16.h"
 #include "types.h"
 #include "sdk_linker_symbols.h"
@@ -347,7 +348,7 @@ BOOL Constellation_AddReceived(Entry *e) {
         return FALSE;
     }
     Constellation_AcquireSkyOverlay();
-    r = StarSky_IsConstellationFree(e);
+    r = Shared_StarSky_IsConstellationFree(e);
     Constellation_ReleaseSkyOverlay();
     if (r) {
         Constellation_Store(e, idx, 1);

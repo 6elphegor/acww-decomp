@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_shared_calls.h"
 #include "host_overlay_vars.h"
 #include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
@@ -536,13 +537,13 @@ extern "C" BOOL Building_IsNight() {
 
 char *BuildingActor::getArcPath() {
     u32 i = buildingIndex;
-    Str_SPrintf(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingArcPath, sBuildingArcPathFmt, i, i, Shared_Field_GetStructureTexSuffix());
     return sBuildingArcPath;
 }
 
 char *BuildingActor::getTexPath() {
     u32 i = buildingIndex;
-    Str_SPrintf(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingTexPath, sBuildingTexPathFmt, i, i, Shared_Field_GetStructureTexSuffix());
     return sBuildingTexPath;
 }
 
@@ -556,7 +557,7 @@ char *BuildingActor::getLightTexPath() {
         return 0;
     }
     u32 i = buildingIndex;
-    Str_SPrintf(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Shared_Field_GetStructureTexSuffix());
     return sBuildingLightTexPath;
 }
 
@@ -1340,7 +1341,7 @@ BOOL BuildingActor::enterEntry05() {
             }
         }
         if (usesDoorApproach()) {
-            if (PlayerActor_LocalRequestDoorApproach(&p4, &v.z, &ang)) {
+            if (Shared_PlayerActor_LocalRequestDoorApproach(&p4, &v.z, &ang)) {
                 return TRUE;
             }
         } else {

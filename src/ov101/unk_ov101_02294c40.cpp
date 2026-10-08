@@ -1,5 +1,6 @@
 // ov101: scene overlay (class PocketItemSelectMenu, vtable 0x02296b38, 0x2804 bytes).
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "menu/InventoryItemGrid.h"
@@ -261,7 +262,7 @@ BOOL PocketItemSelectMenu::onDraw() {
         t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
         letterGrid.drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&inventoryBg, t);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, t);
     }
     return TRUE;
 }
@@ -327,9 +328,9 @@ void PocketItemSelectMenu::transitionAct00() {
 void PocketItemSelectMenu::transitionAct01() {
     loadObjGraphics();
     bottomButtons.setLayoutSingle05(0x65);
-    InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
     disableFilteredPockets();
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -375,7 +376,7 @@ void PocketItemSelectMenu::initParts() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     letterGrid.init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x10;
     flyMotion.reset();
     handKind = 0;
@@ -387,7 +388,7 @@ void PocketItemSelectMenu::initParts() {
 void PocketItemSelectMenu::releaseResources() {
     cancelBgTasks();
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     bottomButtons.freeTexts();
 }
@@ -403,14 +404,14 @@ void PocketItemSelectMenu::postInputUpdate() {
 
 void PocketItemSelectMenu::preStateUpdate() {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     letterGrid.updateCursorLift();
     bottomButtons.freeTexts();
 }
 
 void PocketItemSelectMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (nameBalloon.updatePrompt()) {
         placeBalloon();
@@ -878,7 +879,7 @@ void PocketItemSelectMenu::disableFilteredPockets() {
 
 BOOL PocketItemSelectMenu::isSlotDisabled(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_IsSlotDisabled(&pocketGrid, toPocketIndex(a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&pocketGrid, toPocketIndex(a));
     }
     return FALSE;
 }
@@ -892,7 +893,7 @@ BOOL PocketItemSelectMenu::isSlotEmpty(u32 a) {
 
 u32 PocketItemSelectMenu::getSlotItem(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_GetSlotItem(&pocketGrid, toPocketIndex(a));
+        return Shared_InventoryItemGrid_GetSlotItem(&pocketGrid, toPocketIndex(a));
     }
     return 0xfff1;
 }
@@ -911,7 +912,7 @@ void PocketItemSelectMenu::clearFocusSlot() {
 
 void PocketItemSelectMenu::setFocusSlot(u32 a) {
     if (isPocketSlot(a)) {
-        InventoryItemGrid_SetCursorSlot(&pocketGrid, toPocketIndex(a));
+        Shared_InventoryItemGrid_SetCursorSlot(&pocketGrid, toPocketIndex(a));
         letterGrid.clearCursorSlot();
     } else {
         clearFocusSlot();
@@ -919,7 +920,7 @@ void PocketItemSelectMenu::setFocusSlot(u32 a) {
 }
 
 void PocketItemSelectMenu::clearHoverSlot() {
-    InventoryItemGrid_ClearMarks(&pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&pocketGrid);
     letterGrid.clearMarks();
 }
 
@@ -935,7 +936,7 @@ void PocketItemSelectMenu::placeBalloon() {
     if (MenuCtrl_IsButtons()) r4 -= 8;
     nameBalloon.setPos(r6, r4);
     if (isPocketSlot(balloonSlot)) {
-        InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, toPocketIndex(balloonSlot));
+        Shared_InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, toPocketIndex(balloonSlot));
     }
 }
 
@@ -971,10 +972,10 @@ void PocketItemSelectMenu::pickUpFrom(u32 idx) {
     if (isPocketSlot(idx)) {
         s32 r4 = toPocketIndex(idx);
         handKind = 1;
-        handItem = InventoryItemGrid_GetSlotItem(&pocketGrid, r4);
+        handItem = Shared_InventoryItemGrid_GetSlotItem(&pocketGrid, r4);
         handItemFlags = InventoryItemGrid_GetSlotFlags(&pocketGrid, r4);
-        InventoryItemGrid_ClearSlot(&pocketGrid, r4);
-        InventoryItemGrid_SetHeldItem(&pocketGrid, handItem, handItemFlags);
+        Shared_InventoryItemGrid_ClearSlot(&pocketGrid, r4);
+        Shared_InventoryItemGrid_SetHeldItem(&pocketGrid, handItem, handItemFlags);
     }
 }
 

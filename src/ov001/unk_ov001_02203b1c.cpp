@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #pragma opt_dead_assignments off
 #include "types.h"
+#include "host_shared_calls.h"
 #include "net/WifiLinkEvent.h"
 #include "net/WifiLinkConfig.h"
 #include "nitro/os_alarm.h"
@@ -1258,7 +1259,7 @@ s32 SimpleStart_ConnectAp(void) {
     }
     if (res > 0) {
         data_ov001_0222c870 = 1;
-        if (Sock_Startup(&sSimpleStartSocConfig) < 0) {
+        if (Shared_Sock_Startup(&sSimpleStartSocConfig) < 0) {
             res = -2;
         } else {
             data_ov001_0222c874 = 1;
@@ -1895,7 +1896,7 @@ s32 SimpleStart_RunProtocol()
             l.req.family = 2;
             l.req.port = 0x1e6;
             l.req.addr = 0;
-            result = Sock_Bind(h, &l.req);
+            result = Shared_Sock_Bind(h, &l.req);
             if (result < 0) {
                 result = -2;
                 done = 1;

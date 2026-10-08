@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "host_shared_calls.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
@@ -499,7 +500,7 @@ void KappnTaxi::execTaxiDepart() {
                     departFrameCount = departFrameCount + 1;
                 }
                 if (departFrameCount == 0x10) {
-                    BuildingActor *q = BuildingList_FindByItem(0x5000);
+                    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
                     if (q != NULL) {
                         s16 doorAngle;
                         VecFx32 door;
@@ -536,7 +537,7 @@ BOOL KappnTaxi::enterTaxiEnterTownHall() {
 }
 
 void KappnTaxi::execTaxiEnterTownHall() {
-    BuildingActor *q = BuildingList_FindByItem(0x5000);
+    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         q->openDoorForEntry();
         townHallGridX = q->getGridX();
@@ -557,7 +558,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
         warpDelayTimer = warpDelayTimer - 1;
     }
     if (warpDelayTimer == 0) {
-        BuildingActor *q = BuildingList_FindByItem(0x5000);
+        BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
         if (q != NULL) {
             if (q->getDoorPos(&v, &sv) != 0) {
                 SceneWarp_RequestExit(Scene_GetWarpRequest(), 9);
@@ -580,7 +581,7 @@ void KappnTaxi::execTaxiLeave() {
 }
 
 BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
-    BuildingActor *q = BuildingList_FindByItem(0x5000);
+    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         exitWalkDelay = 0x10;
         return q->openDoorForExit();
@@ -589,7 +590,7 @@ BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
 }
 
 void KappnTaxi::execTaxiPlayerExitTownHall() {
-    BuildingActor *q = BuildingList_FindByItem(0x5000);
+    BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(0x5000);
     if (q != NULL) {
         if (q->isDoorIdle() != 0) {
             PlayerActor *o = (PlayerActor *)PlayerActor_GetActor(4);

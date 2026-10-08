@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerId.h"
@@ -207,7 +208,7 @@ BOOL FriendCodeMenu::onDraw() {
         cursor.drawWrapped();
     }
     bottomButtons.drawAt(slideY);
-    NumberPad_DrawKeypadFrame(slideY);
+    Shared_NumberPad_DrawKeypadFrame(slideY);
     if (caretBlinkTimer & 0x10) {
         Oam_DrawCell(1, sCaretCells, (caretPos << 4) + 0x20, slideY + 0x40, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
@@ -946,7 +947,7 @@ BOOL FriendCodeMenu::applyKey(s32 a) {
     case 11:
         if (a) {
             clearCode();
-            NumberPad_PlayCancelSe();
+            Shared_NumberPad_PlayCancelSe();
         }
         repeatTimer = 0;
         return FALSE;

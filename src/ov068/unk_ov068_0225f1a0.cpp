@@ -1,4 +1,5 @@
 #include "gfx/Model.h"
+#include "host_shared_calls.h"
 #include "host_overlay_vars.h"
 #include "npc/VillagerState.h"
 #include "uptr.h"
@@ -6025,7 +6026,7 @@ void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, Character 
 
 s32 FieldVillagerLook::getInsectIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
-    s32 t = FieldInsect_GetPosAndKind((VecFx32Ctor *)v, i);
+    s32 t = Shared_FieldInsect_GetPosAndKind((VecFx32Ctor *)v, i);
     if (t != -1 && Vec_DistXZ(p, v) < lim) {
         return t;
     }

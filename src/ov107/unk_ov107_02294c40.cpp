@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "ui/CursorMotion.h"
@@ -287,7 +288,7 @@ BOOL PocketsFullMenu::onDraw() {
         s32 t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
         ((LetterGrid *)(&letterGrid))->drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&inventoryBg, t);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, t);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -363,9 +364,9 @@ void PocketsFullMenu::transitionAct00() {
 void PocketsFullMenu::transitionAct01() {
     loadObjGraphics();
     ((MenuBottomButtons *)(&bottomButtons))->setLayoutSingle05(0x65);
-    InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
     disableLockedPockets();
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     ((LetterGrid *)(&letterGrid))->highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -413,7 +414,7 @@ void PocketsFullMenu::initParts()
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     ((LetterGrid *)(&letterGrid))->init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x10;
     ((CursorMotion *)(&flyMotion))->reset();
     handKind = 0;
@@ -429,7 +430,7 @@ void PocketsFullMenu::releaseResources()
 {
     cancelBgTasks();
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
 }
@@ -448,7 +449,7 @@ void PocketsFullMenu::postInputUpdate()
 void PocketsFullMenu::preStateUpdate()
 {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     ((LetterGrid *)(&letterGrid))->updateCursorLift();
     ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
@@ -456,7 +457,7 @@ void PocketsFullMenu::preStateUpdate()
 
 void PocketsFullMenu::postStateUpdate()
 {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (((TouchPromptBalloon *)(&nameBalloon))->updatePrompt()) {
         placeBalloon();
@@ -851,7 +852,7 @@ BOOL PocketsFullMenu::isPocketLocked(s32 a) {
 
 BOOL PocketsFullMenu::isSlotDisabled(s32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_IsSlotDisabled(&pocketGrid, toPocketIndex(a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&pocketGrid, toPocketIndex(a));
     }
     return FALSE;
 }
@@ -865,7 +866,7 @@ BOOL PocketsFullMenu::isSlotEmpty(s32 a) {
 
 u32 PocketsFullMenu::getSlotItem(s32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_GetSlotItem(&pocketGrid, toPocketIndex(a));
+        return Shared_InventoryItemGrid_GetSlotItem(&pocketGrid, toPocketIndex(a));
     }
     return 0xfff1;
 }
@@ -884,7 +885,7 @@ void PocketsFullMenu::clearFocusSlot() {
 
 void PocketsFullMenu::setFocusSlot(s32 a) {
     if (isPocketSlot(a)) {
-        InventoryItemGrid_SetCursorSlot(&pocketGrid, toPocketIndex(a));
+        Shared_InventoryItemGrid_SetCursorSlot(&pocketGrid, toPocketIndex(a));
         ((LetterGrid *)(&letterGrid))->clearCursorSlot();
     } else {
         clearFocusSlot();
@@ -897,7 +898,7 @@ void PocketsFullMenu::placeBalloon() {
     if (MenuCtrl_IsButtons()) r4 -= 8;
     ((LabelBalloon *)(&nameBalloon))->setPos(r6, r4);
     if (isPocketSlot(balloonSlot)) {
-        InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, toPocketIndex(balloonSlot));
+        Shared_InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, toPocketIndex(balloonSlot));
     }
 }
 
@@ -1104,7 +1105,7 @@ void PocketsFullMenu::setPopupChoices() {
     } else if (t == 0x2a) {
         ChoiceIdList_Add((u8 *)&choiceList, 0x10, 3);
     }
-    if (InvItem_IsNotFishInsectOrFlower(r6)) {
+    if (Shared_InvItem_IsNotFishInsectOrFlower(r6)) {
         if (t == 0x2a) {
             ChoiceIdList_Add((u8 *)&choiceList, 1, 1);
         } else {

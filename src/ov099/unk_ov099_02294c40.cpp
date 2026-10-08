@@ -1,5 +1,6 @@
 // ov099: scene overlay (class PocketMenuUnk, vtable 0x02296b00, 0x2794 bytes).
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "item/Letter.h"
@@ -88,7 +89,7 @@ BOOL PocketMenuUnk::onDraw() {
     if (testFlags(2)) {
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, slideY);
         letterGrid.drawPocketLetters(0, slideY);
-        InventoryBg_DrawSprite(&inventoryBg, slideY);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, slideY);
     }
     return TRUE;
 }
@@ -140,8 +141,8 @@ void PocketMenuUnk::stateLoad() {
 
 void PocketMenuUnk::stateSlideIn() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&pocketGrid);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, 0);
@@ -188,7 +189,7 @@ void PocketMenuUnk::initPocketMenuUnk() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     letterGrid.init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonTarget = 0x1d;
     flyMotion.reset();
     handKind = 0;
@@ -203,7 +204,7 @@ void PocketMenuUnk::initPocketMenuUnk() {
 void PocketMenuUnk::releaseResources() {
     PocketMenuUnk_CancelVramTasks(this);
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(PocketMenuUnk_Popup(this));
 }
 
@@ -218,13 +219,13 @@ void PocketMenuUnk::postInputUpdate() {
 
 void PocketMenuUnk::preStateUpdate() {
     PocketMenuUnk_CancelVramTasks(this);
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     letterGrid.updateCursorLift();
 }
 
 void PocketMenuUnk::postStateUpdate() {
-    PopupChoice_Update(PocketMenuUnk_Popup(this));
+    Shared_PopupChoice_Update(PocketMenuUnk_Popup(this));
     InventoryBg_Update(&inventoryBg);
     if (nameBalloon.updatePrompt()) {
         positionLabelBalloon();
@@ -670,14 +671,14 @@ extern "C" s32 PocketMenuUnk_GetTargetY(PocketMenuUnk *s, u32 a) {
     if (PocketMenuUnk_IsPocketTarget(s, a)) {
         return InventoryItemGrid_GetSlotY(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
     } else if (PocketMenuUnk_IsLetterTarget(s, a)) {
-        return LetterGrid_GetSlotY(&s->letterGrid, PocketMenuUnk_TargetToLetterIndex(s, a));
+        return Shared_LetterGrid_GetSlotY(&s->letterGrid, PocketMenuUnk_TargetToLetterIndex(s, a));
     }
     return 0;
 }
 
 extern "C" BOOL PocketMenuUnk_IsSlotDisabled(PocketMenuUnk *s, u32 a) {
     if (PocketMenuUnk_IsPocketTarget(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
+        return Shared_InventoryItemGrid_IsSlotDisabled(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
     } else if (PocketMenuUnk_IsLetterTarget(s, a)) {
         return s->letterGrid.isHighlighted(PocketMenuUnk_TargetToLetterIndex(s, a));
     }
@@ -695,7 +696,7 @@ extern "C" BOOL PocketMenuUnk_IsSlotEmpty(PocketMenuUnk *s, u32 a) {
 
 extern "C" u32 PocketMenuUnk_GetItem(PocketMenuUnk *s, u32 a) {
     if (PocketMenuUnk_IsPocketTarget(s, a)) {
-        return InventoryItemGrid_GetSlotItem(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
+        return Shared_InventoryItemGrid_GetSlotItem(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
     }
     return 0xfff1;
 }
@@ -714,7 +715,7 @@ extern "C" void PocketMenuUnk_ClearSelection(PocketMenuUnk *s) {
 
 extern "C" void PocketMenuUnk_SelectTarget(PocketMenuUnk *s, u32 a) {
     if (PocketMenuUnk_IsPocketTarget(s, a)) {
-        InventoryItemGrid_SetCursorSlot(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
+        Shared_InventoryItemGrid_SetCursorSlot(&s->pocketGrid, PocketMenuUnk_TargetToGridIndex(s, a));
         s->letterGrid.clearCursorSlot();
     } else if (PocketMenuUnk_IsLetterTarget(s, a)) {
         s->letterGrid.setCursorSlot(PocketMenuUnk_TargetToLetterIndex(s, a));
@@ -725,7 +726,7 @@ extern "C" void PocketMenuUnk_SelectTarget(PocketMenuUnk *s, u32 a) {
 }
 
 extern "C" void PocketMenuUnk_ClearHighlights(PocketMenuUnk *s) {
-    InventoryItemGrid_ClearMarks(&s->pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&s->pocketGrid);
     s->letterGrid.clearMarks();
 }
 
@@ -764,7 +765,7 @@ void PocketMenuUnk::positionLabelBalloon() {
     nameBalloon.setPos(x, y);
     if (PocketMenuUnk_IsPocketTarget(this, balloonTarget)) {
         s32 r = PocketMenuUnk_TargetToGridIndex(this, balloonTarget);
-        InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, r);
+        Shared_InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, r);
     } else if (PocketMenuUnk_IsLetterTarget(this, balloonTarget)) {
         s32 r = PocketMenuUnk_TargetToLetterIndex(this, balloonTarget);
         letterGrid.showLetterName(&nameBalloon, r);
@@ -815,10 +816,10 @@ void PocketMenuUnk::pickUp(u32 idx) {
     if (PocketMenuUnk_IsPocketTarget(this, idx)) {
         s32 r4 = PocketMenuUnk_TargetToGridIndex(this, idx);
         handKind = 2;
-        handItem = InventoryItemGrid_GetSlotItem(&pocketGrid, r4);
+        handItem = Shared_InventoryItemGrid_GetSlotItem(&pocketGrid, r4);
         handItemFlags = InventoryItemGrid_GetSlotFlags(&pocketGrid, r4);
-        InventoryItemGrid_ClearSlot(&pocketGrid, r4);
-        InventoryItemGrid_SetHeldItem(&pocketGrid, handItem, handItemFlags);
+        Shared_InventoryItemGrid_ClearSlot(&pocketGrid, r4);
+        Shared_InventoryItemGrid_SetHeldItem(&pocketGrid, handItem, handItemFlags);
     } else {
         if (PocketMenuUnk_IsLetterTarget(this, idx) != 0) {
             return;

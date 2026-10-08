@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
@@ -284,7 +285,7 @@ void ClockAdjustMenu::postInputUpdate() {
 
 void ClockAdjustMenu::preStateUpdate() {
     bottomButtons.freeTexts();
-    DateTimePicker_BeginFrame(&picker);
+    Shared_DateTimePicker_BeginFrame(&picker);
 }
 
 void ClockAdjustMenu::postStateUpdate() {
@@ -323,7 +324,7 @@ void ClockAdjustMenu::updateTouch() {
             } else {
                 u32 a = gTouchCurX;
                 u32 b = gTouchCurY;
-                if (DateTimePicker_GrabHand(&picker, a, b)) {
+                if (Shared_DateTimePicker_GrabHand(&picker, a, b)) {
                     MenuCtrl_SetClockEdited();
                     setMainState(1);
                 }
@@ -338,7 +339,7 @@ void ClockAdjustMenu::updateTouch() {
 
 void ClockAdjustMenu::stateHandDrag() {
     if (gTouchHeld == 0) {
-        if (DateTimePicker_EndHandDrag(&picker)) {
+        if (Shared_DateTimePicker_EndHandDrag(&picker)) {
             setMainState(2);
         } else {
             setMainState(0);
@@ -349,7 +350,7 @@ void ClockAdjustMenu::stateHandDrag() {
 }
 
 void ClockAdjustMenu::stateHandAnim() {
-    if (DateTimePicker_UpdateHandAnim(&picker)) {
+    if (Shared_DateTimePicker_UpdateHandAnim(&picker)) {
         setMainState(0);
     }
 }
@@ -359,7 +360,7 @@ void ClockAdjustMenu::stateListTouch() {
         enterListButtonMode();
     } else {
         if (Unk_ov135_Both()) {
-            switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
+            switch (Shared_DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
             case 0:
                 decideList();
                 break;
@@ -525,13 +526,13 @@ void ClockAdjustMenu::stateExit() {
 }
 
 void ClockAdjustMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&picker)) {
+    if (Shared_DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void ClockAdjustMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&picker)) {
+    if (Shared_DateTimePicker_UpdateListClose(&picker)) {
         s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
             cursorSlot = 5;
@@ -605,14 +606,14 @@ void ClockAdjustMenu::openFieldList(u32 a) {
 void ClockAdjustMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&picker);
+    Shared_DateTimePicker_DecideList(&picker);
     setMainState(0xf);
 }
 
 void ClockAdjustMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&picker);
+    Shared_DateTimePicker_CancelList(&picker);
     setMainState(0xf);
 }
 

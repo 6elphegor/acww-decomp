@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerData.h"
@@ -88,7 +89,7 @@ extern "C" s32 PocketMenu_CanDropOutdoor(PocketMenu *self, u32 b) {
             return 0;
         }
     }
-    return InvItem_IsNotFishInsectOrFlower(b);
+    return Shared_InvItem_IsNotFishInsectOrFlower(b);
 }
 
 void PocketMenu::addFieldOptions(u16 v) {
@@ -163,7 +164,7 @@ void PocketMenu::actionReleaseFish() {
 }
 
 void PocketMenu::mainAct30() {
-    u32 r6 = PocketMenu_GetPlayerSlot();
+    u32 r6 = Shared_PocketMenu_GetPlayerSlot();
     s32 a = PocketMenu_GetItem(this, actionTarget);
     if (FishCatch_StartRelease(r6, a, &waterPos)) {
         struct {
@@ -185,7 +186,7 @@ void PocketMenu::mainAct30() {
         }
         sendFishReleasePacket((u8)r1);
         PlayerActor_LocalReleaseCatch(1);
-        PocketMenu_StartRemoveBlink(this);
+        Shared_PocketMenu_StartRemoveBlink(this);
     }
 }
 
@@ -213,7 +214,7 @@ void PocketMenu::actionReleaseInsect() {
 }
 
 void PocketMenu::mainAct2C() {
-    u32 r7 = PocketMenu_GetPlayerSlot();
+    u32 r7 = Shared_PocketMenu_GetPlayerSlot();
     if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
         l.a = PocketMenu_GetItem(this, actionTarget);
@@ -232,7 +233,7 @@ void PocketMenu::mainAct2C() {
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
         sendInsectReleasePacket((u8)r5, t);
-        PocketMenu_StartRemoveBlink(this);
+        Shared_PocketMenu_StartRemoveBlink(this);
     }
 }
 
@@ -374,19 +375,19 @@ void PocketMenu::actionPlantItem() {
 void PocketMenu::actionThrowBottle() {
     sendBottleLetter();
     PlayerActor_LocalRequestThrowBottle();
-    BottleThrow_SetTarget(&waterPos, PocketMenu_GetPlayerSlot());
+    BottleThrow_SetTarget(&waterPos, Shared_PocketMenu_GetPlayerSlot());
     PocketMenu_ClearLetter(this, actionTarget);
     setMainState(0x33);
 }
 
 void PocketMenu::mainAct33() {
-    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot()) == 1) {
+    if (BottleThrow_IsActive(Shared_PocketMenu_GetPlayerSlot()) == 1) {
         setMainState(0x34);
     }
 }
 
 void PocketMenu::mainAct34() {
-    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot()) == 0) {
+    if (BottleThrow_IsActive(Shared_PocketMenu_GetPlayerSlot()) == 0) {
         PocketMenu_ReturnToIdle(this);
     }
 }

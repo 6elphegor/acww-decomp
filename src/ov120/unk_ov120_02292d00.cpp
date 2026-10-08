@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "host_overlay_vars.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -549,7 +550,7 @@ void MapViewerMenu::loadMapImage() {
         HOST_STATIC_CONSTRUCT(MapViewerMenu_loadMapImage_obj);
         MapViewerMenu_loadMapImage_obj_init = 1;
     }
-    TownMapMarkers_Clear(&MapViewerMenu_loadMapImage_obj);
+    Shared_TownMapMarkers_Clear(&MapViewerMenu_loadMapImage_obj);
     TownMapImage_Build(p, &MapViewerMenu_loadMapImage_obj);
     Gfx2d_LoadCharRange(p, 4, 0x60, 0x60, 0x15f);
     setupMarkers(&MapViewerMenu_loadMapImage_obj);
@@ -931,7 +932,7 @@ void MapViewerMenu::setupMarkers(TownMapMarkers *src) {
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
-        rec = TownMapMarkers_Get(src, i);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(src, i);
         if (rec != 0) {
             switch (TownMapMarkers_GetKind(src, i)) {
             case 0:
@@ -959,7 +960,7 @@ void MapViewerMenu::setupMarkers(TownMapMarkers *src) {
     j = 3;
     k = 0;
     for (; k < 0xe; j++, k++) {
-        rec = TownMapMarkers_Get(src, j);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(src, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
                 buildingMarkers[k].cell = 0;

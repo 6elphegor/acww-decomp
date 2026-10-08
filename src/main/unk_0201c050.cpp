@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_shared_calls.h"
 #include "town/TownBlockCell.h"
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -2809,7 +2810,7 @@ extern "C" s32 Talk_FindNearbyInsectOfKinds(VecFx32Ctor *a, const s8 *b, s32 c, 
     if (Unk_0202c094_IsZero(gFieldSceneKind)) {
         s32 i;
         for (i = 0; i < 8; i++) {
-            s32 t = Talk_FindInS8Array(FieldInsect_GetPosAndKind(a, (u8)i), b, c);
+            s32 t = Talk_FindInS8Array(Shared_FieldInsect_GetPosAndKind(a, (u8)i), b, c);
             if (t != -1) {
                 if (Vec_DistXZ(d, a) < e) {
                     return t;

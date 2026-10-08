@@ -1,4 +1,5 @@
 #include "gfx/TexPatVramAnim.h"
+#include "host_shared_calls.h"
 #include "gfx/TexPatVramUploader.h"
 #include "gfx/PatternTexCache.h"
 #include "uptr.h"
@@ -605,7 +606,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
     case 5:
         if (Unk_0207116c_Eq0(gFieldSceneKind)) {
             if (Scene_InTown()) {
-                BuildingActor *gate = BuildingList_FindByItem(0x500b);
+                BuildingActor *gate = (BuildingActor *)Shared_BuildingList_FindByItem(0x500b);
                 if (gate) GateHouse_ApplyTownFlag((GateHouse *)gate);
             }
         }

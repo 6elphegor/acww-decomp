@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "host_shared_calls.h"
 #include "npc/VillagerId.h"
 #include "player/PlayerErrands.h"
 #include "save/VillagerData.h"
@@ -828,7 +829,7 @@ void HouseVisitVillager::execVisitWander() {
             wanderTimer--;
         }
         if (wanderTimer == 0) {
-            wanderAngle = Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
+            wanderAngle = Shared_Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;

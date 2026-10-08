@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "field/Insect.h"
@@ -517,7 +518,7 @@ extern "C" s32 Moth_FindNearestLight(Insect *o, V3 *out) {
             u32 cnt = obj->getLightUnitCount();
             s32 px = zp, pz = zp;
             if (cnt != 0) {
-                BuildingActor *q = BuildingList_FindByItem(id);
+                BuildingActor *q = (BuildingActor *)Shared_BuildingList_FindByItem(id);
                 if (q != NULL) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/StarTwinkle.h"
 #include "game/StarSkyView.h"
@@ -164,7 +165,7 @@ BOOL StargazingMenu::onDraw() {
     drawNameLabel();
     if (testFlags(1)) {
         closeButton.drawAt(0, slideY >> 2, 1);
-        StarSky_DrawArrows(&skyView, slideY, 6);
+        Shared_StarSky_DrawArrows(&skyView, slideY, 6);
     }
     if (testFlags(1)) {
         drawScrollStrips(slideY);
@@ -314,7 +315,7 @@ void StargazingMenu::initMembers() {
 
 void StargazingMenu::releaseResources() {
     StarTwinkle_Stop(&twinkle);
-    StarSky_CancelUpload(&skyView);
+    Shared_StarSky_CancelUpload(&skyView);
     closeButton.freeText();
     nameLabel.destroyLabel();
     PlayerActor_RequestAct10();
@@ -364,9 +365,9 @@ void StargazingMenu::mainAct00() {
     } else if (Unk_ov128_02294b44_Both()) {
         s32 x = gTouchCurX;
         s32 y = gTouchCurY;
-        scrollDir = StarSky_HitArrow(&skyView, x, y);
+        scrollDir = Shared_StarSky_HitArrow(&skyView, x, y);
         if (scrollDir != 4) {
-            StarSky_ScrollInDir(&skyView, scrollDir, 1);
+            Shared_StarSky_ScrollInDir(&skyView, scrollDir, 1);
             updateSkyScroll();
             setMainState(1);
         } else if (x >= 0xc0 && y > 0xab) {
@@ -381,7 +382,7 @@ void StargazingMenu::mainAct01() {
         StarSky_StartBounce(&skyView, scrollDir);
         updateSkyScroll();
     } else {
-        StarSky_ScrollInDir(&skyView, scrollDir, 1);
+        Shared_StarSky_ScrollInDir(&skyView, scrollDir, 1);
         updateSkyScroll();
     }
 }
@@ -389,9 +390,9 @@ void StargazingMenu::mainAct01() {
 void StargazingMenu::mainAct02() {
     if (StarSky_UpdateBounce(&skyView)) {
         if (gTouchHeld != 0) {
-            scrollDir = StarSky_HitArrow(&skyView, gTouchPressX, gTouchPressY);
+            scrollDir = Shared_StarSky_HitArrow(&skyView, gTouchPressX, gTouchPressY);
             if (scrollDir != 4) {
-                StarSky_ScrollInDir(&skyView, scrollDir, 1);
+                Shared_StarSky_ScrollInDir(&skyView, scrollDir, 1);
                 updateSkyScroll();
                 setMainState(1);
                 return;
@@ -434,11 +435,11 @@ void StargazingMenu::mainAct03() {
             if (ox != nx || oy != pointerY) {
                 if (nx < 0x30) {
                     pointerX = 0x30;
-                    StarSky_ScrollX(&skyView, -4);
+                    Shared_StarSky_ScrollX(&skyView, -4);
                     updateSkyScroll();
                 } else if (nx > 0xd0) {
                     pointerX = 0xd0;
-                    StarSky_ScrollX(&skyView, 4);
+                    Shared_StarSky_ScrollX(&skyView, 4);
                     updateSkyScroll();
                 }
                 s32 ny = pointerY;
@@ -468,7 +469,7 @@ void StargazingMenu::mainAct04() {
             u8 *q = &scrollDir;
             *q = getPadDirection();
             if (*q != 4) {
-                StarSky_ScrollInDir(&skyView, *q, 1);
+                Shared_StarSky_ScrollInDir(&skyView, *q, 1);
                 updateSkyScroll();
                 setMainState(5);
             }
@@ -483,7 +484,7 @@ void StargazingMenu::mainAct05() {
         StarSky_StartBounce(&skyView, scrollDir);
         updateSkyScroll();
     } else {
-        StarSky_ScrollInDir(&skyView, scrollDir, 1);
+        Shared_StarSky_ScrollInDir(&skyView, scrollDir, 1);
         updateSkyScroll();
     }
 }
@@ -663,10 +664,10 @@ void StargazingMenu::resetNameLabel() {
 void StargazingMenu::findCenterConstellation() {
     s32 a, b;
     s32 y = StarSky_GetOverscroll(&skyView) + 0x60;
-    if (StarSky_ScreenToCell(&skyView, 0x80, y, &a, &b)) {
+    if (Shared_StarSky_ScreenToCell(&skyView, 0x80, y, &a, &b)) {
         s32 r = StarSky_GetLineAt(a, b);
         if (r != -1) {
-            centerConstellation = StarSky_FindConstellationByLine((u16)r);
+            centerConstellation = Shared_StarSky_FindConstellationByLine((u16)r);
         }
     }
 }

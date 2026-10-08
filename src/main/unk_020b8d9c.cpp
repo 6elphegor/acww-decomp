@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "gfx/HBlankTask.h"
 #include "uptr.h"
 #include "types.h"
@@ -3278,7 +3279,7 @@ void SkyShotSequence::actBalloonDrop() {
         splashSePending = 0;
     }
     if (balloonDropEnded != 0) {
-        PlayerActor_LocalEndWatch();
+        Shared_PlayerActor_LocalEndWatch();
         reset();
     }
 }
@@ -3304,7 +3305,7 @@ void SkyShotSequence::actUfoCrashed() {
     relaxHead(0x190, 0x190);
     timer--;
     if (timer <= 0) {
-        PlayerActor_LocalEndWatch();
+        Shared_PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
             PlayerData *p = (PlayerData *)PlayerData_GetResident(gSaveData.players, i);
@@ -3344,7 +3345,7 @@ void SkyShotSequence::actPeteFallen() {
         if (p) {
             ((PeteFallState *)(TownSessionState_GetPeteFall(TownSessionState_Get())))->pickFallPos((VecFx32 *)p, fallDir);
         }
-        PlayerActor_LocalEndWatch();
+        Shared_PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         reset();
     }

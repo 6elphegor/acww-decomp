@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_shared_calls.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
@@ -373,7 +374,7 @@ BOOL MailboxMenu::onDraw() {
         s32 t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
         ((LetterGrid *)&letterGrid)->drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&inventoryBg, t);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, t);
     }
     if (testFlags(0x200)) {
         ((LetterGrid *)&letterGrid)->drawLetters23(boxSlideX, -0x10);
@@ -492,8 +493,8 @@ void MailboxMenu::transitionAct00() {
 
 void MailboxMenu::transitionAct01() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&pocketGrid);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     LetterGrid_SetLetters23(&letterGrid, (u8 *)mailboxLetters);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
@@ -641,7 +642,7 @@ void MailboxMenu::initParts() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     ((LetterGrid *)&letterGrid)->init(1);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x20;
     ((CursorMotion *)&flyMotion)->reset();
     handKind = 0;
@@ -662,7 +663,7 @@ void MailboxMenu::initParts() {
 void MailboxMenu::releaseResources() {
     cancelBgTasks();
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     ((LetterRenderer *)&letterView)->release();
     ((MenuBottomButtons *)&bottomButtons)->freeTexts();
@@ -679,14 +680,14 @@ void MailboxMenu::postInputUpdate() {
 
 void MailboxMenu::preStateUpdate() {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     ((LetterGrid *)&letterGrid)->updateCursorLift();
     ((MenuBottomButtons *)&bottomButtons)->freeTexts();
 }
 
 void MailboxMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (((TouchPromptBalloon *)&nameBalloon)->updatePrompt()) {
         placeBalloon();
@@ -1089,7 +1090,7 @@ void MailboxMenu::mainAct14() {
     if (((MenuCursorBase *)&cursor)->isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
-            Inventory_PlayPickUpSe();
+            Shared_Inventory_PlayPickUpSe();
         }
         getHandPos();
     }
@@ -1331,7 +1332,7 @@ void MailboxMenu::mainAct25() {
 }
 
 void MailboxMenu::mainAct26() {
-    if (LetterGrid_UpdatePopAnim(&letterGrid)) {
+    if (Shared_LetterGrid_UpdatePopAnim(&letterGrid)) {
         handKind = 0;
         resumeInput();
     }
@@ -1411,7 +1412,7 @@ void MailboxMenu::beginDragFromSlot(u32 a) {
         setMainState(4);
     }
     getDragPos();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void MailboxMenu::pickUpAtSlot(u32 a) {
@@ -1422,7 +1423,7 @@ void MailboxMenu::pickUpAtSlot(u32 a) {
         returnState = 8;
     }
     getHandPos();
-    Inventory_PlayPickUpSe();
+    Shared_Inventory_PlayPickUpSe();
 }
 
 void MailboxMenu::flyHeldTo(u32 a, u32 b) {
@@ -1589,14 +1590,14 @@ s32 MailboxMenu::getSlotX(u32 a) {
 
 s32 MailboxMenu::getSlotY(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        return LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(a)) - 0x10;
+        return Shared_LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(a)) - 0x10;
     }
     if (a == 0x1f) return 0xb6;
     return 0;
 }
 
 void MailboxMenu::disableAllPockets() {
-    InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
+    Shared_InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
     ((LetterGrid *)&letterGrid)->highlightLetterKinds(4);
 }
 
@@ -1629,7 +1630,7 @@ void MailboxMenu::setFocusSlot(u32 a) {
 }
 
 void MailboxMenu::clearHoverSlot() {
-    InventoryItemGrid_ClearMarks(&pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&pocketGrid);
     ((LetterGrid *)&letterGrid)->clearMarks();
 }
 

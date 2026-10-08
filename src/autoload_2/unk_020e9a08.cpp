@@ -6,6 +6,7 @@
 // one file with one set of typed declarations. Its .data (0x0213b058-0x0213b120) and bss (autoload_3
 // 0x021f488c-0x021f5974) are defined at the end of the file.
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "types.h"
 #include "net/HexTable.h"
 #include "net/Net.h"
@@ -421,7 +422,7 @@ extern "C" void Net_StartLocal(u32 mode, NetRecvFn recv) {
     init.b7 = 2;
     init.b5 = 8;
     LocalWl_Init(data_0213b05c, Net_Alloc, Net_Free, NULL);
-    LocalWl_SetEventCallback(Net_OnLocalPeerEvent);
+    Shared_LocalWl_SetEventCallback((void *)Net_OnLocalPeerEvent);
     LocalWlMp_Start((u8 *)&init);
     LocalWl_SetRecvCallback(Net_OnLocalRecv);
     if (mode == 1) {
@@ -589,7 +590,7 @@ extern "C" BOOL Net_WifiShutdownStep(void) {
 }
 
 extern "C" BOOL Net_ShutdownOv067(void) {
-    Wlx_Stop();
+    Shared_Wlx_Stop();
     while (data_021f48e0 == 0) {
         Net_WaitFrame();
     }
@@ -918,7 +919,7 @@ extern "C" s32 Net_WifiFindFriend(u32 a) {
 
 extern "C" s32 Net_WifiGetFriendProfileId(u32 a) {
     if (sWifiConnectStep < 4) return -1;
-    return DwcFriend_GetProfileId(a);
+    return Shared_DwcFriend_GetProfileId(a);
 }
 
 extern "C" u8 *Net_GetWifiFriendList(void) {
@@ -1113,7 +1114,7 @@ extern "C" BOOL Net_IsBuddyFriendData(void *p) {
 
 extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
     s32 r;
-    if (DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return 0;
+    if (Shared_DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return 0;
     MI_CpuCopy8(b, &sWifiFriendList->friends[a], sizeof(NetWifiFriendData));
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
     sWifiFriendList->status[a].status = 0;
@@ -1125,7 +1126,7 @@ extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
 }
 
 extern "C" BOOL Net_WifiDeleteFriend(u32 a) {
-    if (DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return FALSE;
+    if (Shared_DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return FALSE;
     DwcFriend_DeleteFriend(&sWifiFriendList->friends[a]);
     MI_CpuFill8(&sWifiFriendList->friends[a], 0, sizeof(NetWifiFriendData));
     MI_CpuFill8(&sWifiFriendList->status[a], 0, sizeof(NetWifiFriendStatus));
@@ -1162,7 +1163,7 @@ extern "C" void Net_StartOv067(void *send, void *recv, u32 n) {
 
 // (Wlx_StartExchange / Wlx_StopExchange have no result; the callers don't use one)
 extern "C" void Net_WlxStartExchange(void *p) {
-    Wlx_StartExchange();
+    Shared_Wlx_StartExchange();
 }
 
 extern "C" void Net_WlxStopExchange(void *p) {

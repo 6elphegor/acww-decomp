@@ -1,4 +1,5 @@
 #include "game/CollisionState.h"
+#include "host_shared_calls.h"
 #include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/sp2
 // Translation unit 0x02004558-0x0201106c (the player object, class PlayerActor). Built by two compilers:
@@ -1302,7 +1303,7 @@ extern "C" {
 
 namespace nB {
 extern "C" {
-PM_02005294 data_020d622c = {{(PMF)nPM::PlayerActor_MainReleaseCreature, 0}};
+PM_02005294 data_020d622c = {{(PMF)Shared_PlayerActor_MainReleaseCreature, 0}};
 PM_02005294 data_020d621c = {{(PMF)nPM::PlayerActor_MainLieInBed, 0}};
 PM_02005294 data_020d6214 = {{(PMF)nPM::PlayerActor_MainGetOutOfBedCheck, 0}};
 PM_02005294 data_020d619c = {{(PMF)nPM::PlayerActor_MainGetOutOfBed, 0}};
@@ -1319,17 +1320,17 @@ PM_02005294 data_020d617c = {{(PMF)nPM::PlayerActor_MainPickUpItem, 0}};
 PM_02005294 data_020d6174 = {{(PMF)nPM::PlayerActor_MainFtrGrabApproach, 0}};
 PM_02005294 data_020d616c = {{(PMF)nPM::PlayerActor_MainFtrHold, 0}};
 PM_02005294 data_020d6164 = {{(PMF)nPM::PlayerActor_MainFtrRotate, 0}};
-PM_02005294 data_020d615c = {{(PMF)nPM::FishCatch_StateStart, 0}};
+PM_02005294 data_020d615c = {{(PMF)Shared_FishCatch_StateStart, 0}};
 PM_02005294 data_020d6154 = {{(PMF)nPM::PlayerActor_MainFtrPull, 0}};
 PM_02005294 data_020d614c = {{(PMF)nPM::PlayerActor_MainFtrPushMove, 0}};
-PM_02005294 data_020d6144 = {{(PMF)nPM::FishCatch_Reset, 0}};
+PM_02005294 data_020d6144 = {{(PMF)Shared_FishCatch_Reset, 0}};
 PM_02005294 data_020d613c = {{(PMF)nPM::PlayerActor_MainSeatApproach, 0}};
 PM_02005294 data_020d6134 = {{(PMF)nPM::PlayerActor_MainSitDownFront, 0}};
 PM_02005294 data_020d612c = {{(PMF)nPM::PlayerActor_MainSitDownSide2, 0}};
 PM_02005294 data_020d64bc = {{(PMF)nPM::PlayerActor_MainSitDownSide1, 0}};
 PM_02005294 data_020d64ac = {{(PMF)nPM::PlayerActor_MainSit, 0}};
 PM_02005294 data_020d6114 = {{(PMF)nPM::PlayerActor_MainStandUpSide2, 0}};
-PM_02005294 data_020d5e5c = {{(PMF)FishShadow_EnterSpawn, 0}};
+PM_02005294 data_020d5e5c = {{(PMF)Shared_FishShadow_EnterSpawn, 0}};
 PM_02005294 data_020d6104 = {{(PMF)nPM::PlayerActor_MainStandUpCheck, 0}};
 PM_02005294 data_020d60fc = {{(PMF)nPM::PlayerActor_MainStandUpFront, 0}};
 PM_02005294 data_020d60f4 = {{(PMF)nPM::PlayerActor_MainStorageOpen, 0}};
@@ -1372,8 +1373,8 @@ PM_02005294 data_020d668c = {{(PMF)nPM::PlayerActor_MainInsectStore, 0}};
 PM_02005294 data_020d698c = {{(PMF)nPM::PlayerActor_MainShovelReady, 0}};
 PM_02005294 data_020d6d9c = {{(PMF)nPM::PlayerActor_MainShovelWait, 0}};
 PM_02005294 data_020d5f84 = {{(PMF)nPM::PlayerActor_MainAct5B, 0}};
-PM_02005294 data_020d5f7c = {{(PMF)nPM::PlayerActor_MainAct5C, 0}};
-PM_02005294 data_020d5f74 = {{(PMF)nPM::PlayerActor_MainShovelStrike, 0}};
+PM_02005294 data_020d5f7c = {{(PMF)Shared_PlayerActor_MainAct5C, 0}};
+PM_02005294 data_020d5f74 = {{(PMF)Shared_PlayerActor_MainShovelStrike, 0}};
 PM_02005294 data_020d5f6c = {{(PMF)nPM::PlayerActor_MainDig, 0}};
 PM_02005294 data_020d5f64 = {{(PMF)nPM::PlayerActor_MainDigUpItem, 0}};
 PM_02005294 data_020d5f5c = {{(PMF)nPM::PlayerActor_MainDugItemStore, 0}};
@@ -1387,7 +1388,7 @@ PM_02005294 data_020d5f24 = {{(PMF)nPM::PlayerActor_MainAct67, 0}};
 PM_02005294 data_020d5f1c = {{(PMF)nPM::PlayerActor_MainTreeShake, 0}};
 PM_02005294 data_020d5f14 = {{(PMF)nPM::PlayerActor_MainTreeShakeRelease, 0}};
 PM_02005294 data_020d5eb4 = {{(PMF)nPM::PlayerActor_MainMailboxOpen, 0}};
-PM_02005294 data_020d5f04 = {{(PMF)nPM::PlayerActor_MainMailboxWait, 0}};
+PM_02005294 data_020d5f04 = {{(PMF)Shared_PlayerActor_MainMailboxWait, 0}};
 PM_02005294 data_020d5efc = {{(PMF)nPM::PlayerActor_MainMailboxClose, 0}};
 PM_02005294 data_020d5ef4 = {{(PMF)nPM::PlayerActor_MainFaint, 0}};
 PM_02005294 data_020d5ed4 = {{(PMF)nPM::PlayerActor_MainAct6E, 0}};
@@ -1397,7 +1398,7 @@ PM_02005294 data_020d6004 = {{(PMF)nPM::PlayerActor_MainPitfallFall, 0}};
 PM_02005294 data_020d6264 = {{(PMF)nPM::PlayerActor_MainPitfallStruggle, 0}};
 PM_02005294 data_020d618c = {{(PMF)nPM::PlayerActor_MainPitfallClimbOut, 0}};
 PM_02005294 data_020d659c = {{(PMF)nPM::PlayerActor_MainBeeSting, 0}};
-PM_02005294 data_020d6dcc = {{(PMF)FieldObj_LoadIconModels, 0}};
+PM_02005294 data_020d6dcc = {{(PMF)Shared_FieldObj_LoadIconModels, 0}};
 PM_02005294 data_020d5e84 = {{(PMF)nPM::PlayerActor_MainHaircutCut, 0}};
 PM_02005294 data_020d5e7c = {{(PMF)nPM::PlayerActor_MainHaircutFinish, 0}};
 PM_02005294 data_020d5e74 = {{(PMF)nPM::PlayerActor_MainPhonePickUp, 0}};
@@ -1406,9 +1407,9 @@ PM_02005294 data_020d5e8c = {{(PMF)nPM::PlayerActor_MainPhoneHangUp, 0}};
 PM_02005294 data_020d5e94 = {{(PMF)nPM::PlayerActor_MainAct80, 0}};
 PM_02005294 data_020d5ea4 = {{(PMF)nPM::PlayerActor_MainFirework, 0}};
 PM_02005294 data_020d5ebc = {{(PMF)nPM::PlayerActor_MainAct82, 0}};
-PM_02005294 data_020d65a4 = {{(PMF)nPM::PlayerActor_MainThrowBottle, 0}};
+PM_02005294 data_020d65a4 = {{(PMF)Shared_PlayerActor_MainThrowBottle, 0}};
 PM_02005294 data_020d6994 = {{(PMF)nPM::PlayerActor_MainDrinkCoffee, 0}};
-PM_02005294 data_020d5e54 = {{(PMF)nPM::FieldObj_FreeCedarFileBufs, 0}};
+PM_02005294 data_020d5e54 = {{(PMF)Shared_FieldObj_FreeCedarFileBufs, 0}};
 PM_02005294 data_020d611c = {{(PMF)nPM::PlayerActor_MainDoorWalkOut, 0}};
 PM_02005294 data_020d5e9c = {{(PMF)nPM::PlayerActor_MainExitWalkOut, 0}};
 PM_02005294 data_020d5ec4 = {{(PMF)nPM::PlayerActor_MainExitWalkIn, 0}};
@@ -1428,7 +1429,7 @@ PM_020063a0 data_020d66b4 = {{(PMF)nPM::PlayerActor_NetBedRoll, 0}};
 PM_020063a0 data_020d66ac = {{(PMF)nPM::PlayerActor_NetBedApproach, 0}};
 PM_020063a0 data_020d66a4 = {{(PMF)nPM::PlayerActor_NetGetIntoBed, 0}};
 PM_020063a0 data_020d6694 = {{(PMF)nPM::PlayerActor_NetAct11, 0}};
-PM_020063a0 data_020d620c = {{(PMF)PlayerActor_NetAct12, 0}};
+PM_020063a0 data_020d620c = {{(PMF)Shared_PlayerActor_NetAct12, 0}};
 PM_020063a0 data_020d666c = {{(PMF)nPM::PlayerActor_NetPluckReach, 0}};
 PM_020063a0 data_020d6664 = {{(PMF)PlayerActor_NetPluck, 0}};
 PM_020063a0 data_020d663c = {{(PMF)PlayerActor_NetPickUpItem, 0}};
@@ -1437,7 +1438,7 @@ PM_020063a0 data_020d662c = {{(PMF)nPM::PlayerActor_NetFtrHold, 0}};
 PM_020063a0 data_020d6624 = {{(PMF)PlayerActor_NetFtrRotate, 0}};
 PM_020063a0 data_020d661c = {{(PMF)nPM::PlayerActor_NetFtrPush, 0}};
 PM_020063a0 data_020d6614 = {{(PMF)nPM::PlayerActor_NetFtrPull, 0}};
-PM_020063a0 data_020d5f54 = {{(PMF)PlayerActor_NetFtrPushMove, 0}};
+PM_020063a0 data_020d5f54 = {{(PMF)Shared_PlayerActor_NetFtrPushMove, 0}};
 PM_020063a0 data_020d5e6c = {{(PMF)PlayerActor_NetFtrPullMove, 0}};
 PM_020063a0 data_020d6be4 = {{(PMF)nPM::PlayerActor_NetSeatApproach, 0}};
 PM_020063a0 data_020d65b4 = {{(PMF)nPM::PlayerActor_NetSitDownFront, 0}};
@@ -1464,18 +1465,18 @@ PM_020063a0 data_020d651c = {{(PMF)nPM::PlayerActor_NetLeaveRoom, 0}};
 PM_020063a0 data_020d6514 = {{(PMF)nPM::PlayerActor_NetAct41, 0}};
 PM_020063a0 data_020d650c = {{(PMF)nPM::PlayerActor_NetAct42, 0}};
 PM_020063a0 data_020d6504 = {{(PMF)nPM::PlayerActor_NetAct43, 0}};
-PM_020063a0 data_020d64fc = {{(PMF)FieldObjectManager_Create, 0}};
+PM_020063a0 data_020d64fc = {{(PMF)Shared_FieldObjectManager_Create, 0}};
 PM_020063a0 data_020d64f4 = {{(PMF)nPM::PlayerActor_NetUmbrellaSpin, 0}};
 PM_020063a0 data_020d64ec = {{(PMF)nPM::PlayerActor_NetAxeSwing, 0}};
-PM_020063a0 data_020d64e4 = {{(PMF)nPM::PlayerActor_NetAxeFollowThrough, 0}};
+PM_020063a0 data_020d64e4 = {{(PMF)Shared_PlayerActor_NetAxeFollowThrough, 0}};
 PM_020063a0 data_020d64dc = {{(PMF)nPM::PlayerActor_NetAct48, 0}};
 PM_020063a0 data_020d64d4 = {{(PMF)nPM::PlayerActor_NetAxeStrike, 0}};
 PM_020063a0 data_020d64cc = {{(PMF)nPM::PlayerActor_NetAxeChop, 0}};
-PM_020063a0 data_020d64c4 = {{(PMF)nPM::PlayerActor_NetAxeBreak, 0}};
+PM_020063a0 data_020d64c4 = {{(PMF)Shared_PlayerActor_NetAxeBreak, 0}};
 PM_020063a0 data_020d6bec = {{(PMF)nPM::PlayerActor_NetAxeBrokenMessage, 0}};
 PM_020063a0 data_020d6bdc = {{(PMF)nPM::PlayerActor_NetFishCast, 0}};
 PM_020063a0 data_020d6bd4 = {{(PMF)nPM::PlayerActor_NetFishCastFail, 0}};
-PM_020063a0 data_020d64a4 = {{(PMF)nPM::PlayerActor_NetFishWait, 0}};
+PM_020063a0 data_020d64a4 = {{(PMF)Shared_PlayerActor_NetFishWait, 0}};
 PM_020063a0 data_020d649c = {{(PMF)nPM::PlayerActor_NetFishHook, 0}};
 PM_020063a0 data_020d6494 = {{(PMF)nPM::PlayerActor_NetFishReelIn, 0}};
 PM_020063a0 data_020d5f4c = {{(PMF)nPM::PlayerActor_NetFishEscape, 0}};
@@ -1521,7 +1522,7 @@ PM_020063a0 data_020d632c = {{(PMF)nPM::PlayerActor_NetPhoneHold, 0}};
 PM_020063a0 data_020d6324 = {{(PMF)nPM::PlayerActor_NetPhoneHangUp, 0}};
 PM_020063a0 data_020d631c = {{(PMF)nPM::PlayerActor_NetAct80, 0}};
 PM_020063a0 data_020d6314 = {{(PMF)nPM::PlayerActor_NetFirework, 0}};
-PM_020063a0 data_020d630c = {{(PMF)nPM::PlayerActor_NetAct82, 0}};
+PM_020063a0 data_020d630c = {{(PMF)Shared_PlayerActor_NetAct82, 0}};
 PM_020063a0 data_020d62d4 = {{(PMF)nPM::PlayerActor_NetThrowBottle, 0}};
 PM_020063a0 data_020d62cc = {{(PMF)PlayerActor_NetDrinkCoffee, 0}};
 PM_020063a0 data_020d62c4 = {{(PMF)nPM::PlayerActor_NetDoorWalkIn, 0}};
@@ -1566,14 +1567,14 @@ PM_02006d14 data_020d6a74 = {{(PMF)nPM::PlayerActor_SetupStandUpCheck, 0}};
 PM_02006d14 data_020d6a6c = {{(PMF)nPM::PlayerActor_SetupStandUpFront, 0}};
 PM_02006d14 data_020d6a64 = {{(PMF)nPM::PlayerActor_SetupStorageOpen, 0}};
 PM_02006d14 data_020d6a5c = {{(PMF)nPM::PlayerActor_SetupStorageHold, 0}};
-PM_02006d14 data_020d6a54 = {{(PMF)nPM::PlayerActor_SetupStorageClose, 0}};
+PM_02006d14 data_020d6a54 = {{(PMF)Shared_PlayerActor_SetupStorageClose, 0}};
 PM_02006d14 data_020d6a1c = {{(PMF)nPM::PlayerActor_SetupAct36, 0}};
 PM_02006d14 data_020d6a14 = {{(PMF)nPM::PlayerActor_SetupAct37, 0}};
 PM_02006d14 data_020d6a0c = {{(PMF)nPM::PlayerActor_SetupDoorApproach, 0}};
 PM_02006d14 data_020d6a04 = {{(PMF)nPM::PlayerActor_SetupDoorEnter, 0}};
 PM_02006d14 data_020d69fc = {{(PMF)nPM::PlayerActor_SetupDoorEntered, 0}};
 PM_02006d14 data_020d69f4 = {{(PMF)nPM::PlayerActor_SetupDoorExit, 0}};
-PM_02006d14 data_020d69ec = {{(PMF)nPM::PlayerActor_SetupAct3C, 0}};
+PM_02006d14 data_020d69ec = {{(PMF)Shared_PlayerActor_SetupAct3C, 0}};
 PM_02006d14 data_020d69e4 = {{(PMF)nPM::PlayerActor_SetupStowItem, 0}};
 PM_02006d14 data_020d69dc = {{(PMF)nPM::PlayerActor_SetupStowUmbrella, 0}};
 PM_02006d14 data_020d69cc = {{(PMF)nPM::PlayerActor_SetupLeaveRoom, 0}};
@@ -1583,7 +1584,7 @@ PM_02006d14 data_020d69b4 = {{(PMF)nPM::PlayerActor_SetupAct43, 0}};
 PM_02006d14 data_020d69ac = {{(PMF)nPM::PlayerActor_SetupAct44, 0}};
 PM_02006d14 data_020d69a4 = {{(PMF)nPM::PlayerActor_SetupUmbrellaSpin, 0}};
 PM_02006d14 data_020d699c = {{(PMF)nPM::PlayerActor_SetupAxeSwing, 0}};
-PM_02006d14 data_020d638c = {{(PMF)nPM::PlayerActor_SetupAxeFollowThrough, 0}};
+PM_02006d14 data_020d638c = {{(PMF)Shared_PlayerActor_SetupAxeFollowThrough, 0}};
 PM_02006d14 data_020d608c = {{(PMF)nPM::PlayerActor_SetupAct48, 0}};
 PM_02006d14 data_020d6984 = {{(PMF)nPM::PlayerActor_SetupAxeStrike, 0}};
 PM_02006d14 data_020d697c = {{(PMF)nPM::PlayerActor_SetupAxeChop, 0}};
@@ -1594,7 +1595,7 @@ PM_02006d14 data_020d695c = {{(PMF)nPM::PlayerActor_SetupFishCastFail, 0}};
 PM_02006d14 data_020d6954 = {{(PMF)nPM::PlayerActor_SetupFishWait, 0}};
 PM_02006d14 data_020d694c = {{(PMF)nPM::PlayerActor_SetupFishHook, 0}};
 PM_02006d14 data_020d6944 = {{(PMF)nPM::PlayerActor_SetupFishReelIn, 0}};
-PM_02006d14 data_020d693c = {{(PMF)nPM::PlayerActor_SetupFishEscape, 0}};
+PM_02006d14 data_020d693c = {{(PMF)Shared_PlayerActor_SetupFishEscape, 0}};
 PM_02006d14 data_020d6934 = {{(PMF)nPM::PlayerActor_SetupFishLand, 0}};
 PM_02006d14 data_020d692c = {{(PMF)nPM::PlayerActor_SetupFishShowCatch, 0}};
 PM_02006d14 data_020d6924 = {{(PMF)nPM::PlayerActor_SetupFishStore, 0}};
@@ -1617,7 +1618,7 @@ PM_02006d14 data_020d68a4 = {{(PMF)nPM::PlayerActor_SetupSlingshotWatch, 0}};
 PM_02006d14 data_020d689c = {{(PMF)nPM::PlayerActor_SetupAct66, 0}};
 PM_02006d14 data_020d6894 = {{(PMF)nPM::PlayerActor_SetupAct67, 0}};
 PM_02006d14 data_020d688c = {{(PMF)nPM::PlayerActor_SetupTreeShake, 0}};
-PM_02006d14 data_020d6884 = {{(PMF)nPM::PlayerActor_SetupTreeShakeRelease, 0}};
+PM_02006d14 data_020d6884 = {{(PMF)Shared_PlayerActor_SetupTreeShakeRelease, 0}};
 PM_02006d14 data_020d687c = {{(PMF)nPM::PlayerActor_SetupMailboxOpen, 0}};
 PM_02006d14 data_020d6874 = {{(PMF)nPM::PlayerActor_SetupMailboxWait, 0}};
 PM_02006d14 data_020d686c = {{(PMF)nPM::PlayerActor_SetupMailboxClose, 0}};
@@ -1630,13 +1631,13 @@ PM_02006d14 data_020d682c = {{(PMF)nPM::PlayerActor_SetupPitfallStruggle, 0}};
 PM_02006d14 data_020d6824 = {{(PMF)nPM::PlayerActor_SetupPitfallClimbOut, 0}};
 PM_02006d14 data_020d680c = {{(PMF)nPM::PlayerActor_SetupBeeSting, 0}};
 PM_02006d14 data_020d67fc = {{(PMF)nPM::PlayerActor_SetupHaircutStart, 0}};
-PM_02006d14 data_020d67f4 = {{(PMF)FieldObj_LoadStones, 0}};
+PM_02006d14 data_020d67f4 = {{(PMF)Shared_FieldObj_LoadStones, 0}};
 PM_02006d14 data_020d67ec = {{(PMF)nPM::PlayerActor_SetupHaircutFinish, 0}};
 PM_02006d14 data_020d67e4 = {{(PMF)nPM::PlayerActor_SetupPhonePickUp, 0}};
 PM_02006d14 data_020d67dc = {{(PMF)nPM::PlayerActor_SetupPhoneHold, 0}};
 PM_02006d14 data_020d67d4 = {{(PMF)nPM::PlayerActor_SetupPhoneHangUp, 0}};
 PM_02006d14 data_020d67cc = {{(PMF)nPM::PlayerActor_SetupAct80, 0}};
-PM_02006d14 data_020d67c4 = {{(PMF)nPM::PlayerActor_SetupFirework, 0}};
+PM_02006d14 data_020d67c4 = {{(PMF)Shared_PlayerActor_SetupFirework, 0}};
 PM_02006d14 data_020d67bc = {{(PMF)nPM::PlayerActor_SetupAct82, 0}};
 PM_02006d14 data_020d6784 = {{(PMF)nPM::PlayerActor_SetupThrowBottle, 0}};
 PM_02006d14 data_020d677c = {{(PMF)nPM::PlayerActor_SetupDrinkCoffee, 0}};
@@ -1668,23 +1669,23 @@ PM_020076f0 data_020d6ce4 = {{(PMF)nPM::PlayerActor_EndSit, 0}};
 PM_020076f0 data_020d6cdc = {{(PMF)nPM::PlayerActor_EndStandUpSide2, 0}};
 PM_020076f0 data_020d6cd4 = {{(PMF)nPM::PlayerActor_EndStandUpSide1, 0}};
 PM_020076f0 data_020d6ccc = {{(PMF)nPM::PlayerActor_EndStandUpFront, 0}};
-PM_020076f0 data_020d6cc4 = {{(PMF)nPM::PlayerActor_EndAct3C, 0}};
+PM_020076f0 data_020d6cc4 = {{(PMF)Shared_PlayerActor_EndAct3C, 0}};
 PM_020076f0 data_020d6cbc = {{(PMF)nPM::PlayerActor_EndStowItem, 0}};
-PM_020076f0 data_020d6cac = {{(PMF)nPM::PlayerActor_EndUmbrellaSpin, 0}};
+PM_020076f0 data_020d6cac = {{(PMF)Shared_PlayerActor_EndUmbrellaSpin, 0}};
 PM_020076f0 data_020d6ca4 = {{(PMF)nPM::PlayerActor_EndAxeStrike, 0}};
 PM_020076f0 data_020d6c9c = {{(PMF)nPM::PlayerActor_EndAxeChop, 0}};
 PM_020076f0 data_020d6c94 = {{(PMF)nPM::PlayerActor_EndAxeBreak, 0}};
 PM_020076f0 data_020d6c8c = {{(PMF)nPM::PlayerActor_EndAxeBrokenMessage, 0}};
-PM_020076f0 data_020d6c84 = {{(PMF)nPM::PlayerActor_EndFishWait, 0}};
+PM_020076f0 data_020d6c84 = {{(PMF)Shared_PlayerActor_EndFishWait, 0}};
 PM_020076f0 data_020d6c7c = {{(PMF)nPM::PlayerActor_EndInsectShowCatch, 0}};
 PM_020076f0 data_020d6c74 = {{(PMF)nPM::PlayerActor_EndInsectStore, 0}};
-PM_020076f0 data_020d6c6c = {{(PMF)nPM::PlayerActor_EndShovelStrike, 0}};
+PM_020076f0 data_020d6c6c = {{(PMF)Shared_PlayerActor_EndShovelStrike, 0}};
 PM_020076f0 data_020d6c64 = {{(PMF)nPM::PlayerActor_EndDig, 0}};
 PM_020076f0 data_020d6c5c = {{(PMF)nPM::PlayerActor_EndDigUpItem, 0}};
-PM_020076f0 data_020d6c54 = {{(PMF)nPM::PlayerActor_EndFillHole, 0}};
+PM_020076f0 data_020d6c54 = {{(PMF)Shared_PlayerActor_EndFillHole, 0}};
 PM_020076f0 data_020d6c4c = {{(PMF)nPM::PlayerActor_EndWateringCan, 0}};
 PM_020076f0 data_020d6c44 = {{(PMF)nPM::PlayerActor_EndAct66, 0}};
-PM_020076f0 data_020d6c3c = {{(PMF)nPM::PlayerActor_EndTreeShake, 0}};
+PM_020076f0 data_020d6c3c = {{(PMF)Shared_PlayerActor_EndTreeShake, 0}};
 PM_020076f0 data_020d6c34 = {{(PMF)nPM::PlayerActor_EndPitfallFall, 0}};
 PM_020076f0 data_020d6c2c = {{(PMF)nPM::PlayerActor_EndPitfallStruggle, 0}};
 PM_020076f0 data_020d6c24 = {{(PMF)nPM::PlayerActor_EndHaircutFinish, 0}};
@@ -2584,7 +2585,7 @@ s32 PlayerActor::useHeldTool() {
 s32 PlayerActor::interactAt(s32 a) {
     using namespace nR;
     if (Unk_0200f9d4_IsOne(gFieldSceneKind)) {
-        return PlayerActor_RoomInteractAt(((PlayerActor *)this), a, 0);
+        return Shared_PlayerActor_RoomInteractAt(((PlayerActor *)this), a, 0);
     } else {
         return PlayerActor_FieldInteractAt(((PlayerActor *)this), a);
     }
@@ -3659,12 +3660,12 @@ void PlayerActor::startFirstAction(s32 *p) {
         break;
     case 8:
         if (Scene_InUnk6To8()) {
-            FishShadow_RunAi(((PlayerActor *)this), 0, 6, -1);
+            Shared_FishShadow_RunAi(((PlayerActor *)this), 0, 6, -1);
         } else {
             if (!((PlayerActor *)(this))->testActionFlag(0x1b)) {
                 f = 1;
             }
-            FishShadow_RunAi(((PlayerActor *)this), 1, 6, -1);
+            Shared_FishShadow_RunAi(((PlayerActor *)this), 1, 6, -1);
         }
         break;
     case 0x3b:
@@ -3676,7 +3677,7 @@ void PlayerActor::startFirstAction(s32 *p) {
             PlayerActor_RequestFaint(((PlayerActor *)this), 0, 7, -1);
             r4 = 0x6d;
         } else {
-            PlayerActor_RequestAct3C(((PlayerActor *)this), 1, -1);
+            Shared_PlayerActor_RequestAct3C(((PlayerActor *)this), 1, -1);
         }
         break;
     case 0x6d:

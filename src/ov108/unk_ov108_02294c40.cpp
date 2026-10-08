@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_shared_calls.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "item/Letter.h"
@@ -266,7 +267,7 @@ BOOL LetterGiveMenu::onDraw() {
         t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
         letterGrid.drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&inventoryBg, t);
+        Shared_InventoryBg_DrawSprite(&inventoryBg, t);
     }
     return TRUE;
 }
@@ -324,8 +325,8 @@ void LetterGiveMenu::stateLoad() {
 void LetterGiveMenu::stateOpen() {
     startPanels();
     bottomButtons.setLayoutSingle05(0x65);
-    InventoryItemGrid_LoadPockets(&pocketGrid);
-    LetterGrid_LoadPocketLetters(&letterGrid);
+    Shared_InventoryItemGrid_LoadPockets(&pocketGrid);
+    Shared_LetterGrid_LoadPocketLetters(&letterGrid);
     setupLetterPanels();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -371,7 +372,7 @@ void LetterGiveMenu::initLetterGive() {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
     letterGrid.init(2);
-    InventoryBg_Init(&inventoryBg, 6);
+    Shared_InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x16;
     flyMotion.reset();
     handKind = 0;
@@ -383,7 +384,7 @@ void LetterGiveMenu::initLetterGive() {
 void LetterGiveMenu::releaseResources() {
     cancelBgTask();
     InventoryBg_Exit(&inventoryBg);
-    InventoryItemGrid_Exit(&pocketGrid);
+    Shared_InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
     bottomButtons.freeTexts();
 }
@@ -399,14 +400,14 @@ void LetterGiveMenu::postInputUpdate() {
 
 void LetterGiveMenu::preStateUpdate() {
     cancelBgTask();
-    InventoryBg_PreUpdate(&inventoryBg);
+    Shared_InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
     letterGrid.updateCursorLift();
     bottomButtons.freeTexts();
 }
 
 void LetterGiveMenu::postStateUpdate() {
-    PopupChoice_Update(&popup);
+    Shared_PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
     if (nameBalloon.updatePrompt()) {
         refreshNameLabel();
@@ -876,7 +877,7 @@ s32 LetterGiveMenu::getSlotX(u32 b) {
 
 s32 LetterGiveMenu::getSlotY(u32 b) {
     if (isLetterSlot(b)) {
-        return LetterGrid_GetSlotY(&letterGrid, slotToLetterIndex(b)) - 0x10;
+        return Shared_LetterGrid_GetSlotY(&letterGrid, slotToLetterIndex(b)) - 0x10;
     }
     if (b == 0x15) {
         return 0xb6;
@@ -885,7 +886,7 @@ s32 LetterGiveMenu::getSlotY(u32 b) {
 }
 
 void LetterGiveMenu::setupLetterPanels() {
-    InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
+    Shared_InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
     letterGrid.highlightLetterKinds(3);
 }
 
@@ -918,7 +919,7 @@ void LetterGiveMenu::showSlotFocus(u32 b) {
 }
 
 void LetterGiveMenu::clearDropHighlight() {
-    InventoryItemGrid_ClearMarks(&pocketGrid);
+    Shared_InventoryItemGrid_ClearMarks(&pocketGrid);
     letterGrid.clearMarks();
 }
 

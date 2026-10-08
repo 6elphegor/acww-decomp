@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_shared_calls.h"
 #include "talk/MsgString9C.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -615,10 +616,10 @@ void MapTab::loadBgGfx() {
 }
 
 void MapTab::loadMapStep1() {
-    TownMapImage_AllocGlobal();
+    Shared_TownMapImage_AllocGlobal();
     TownMapImage_DrawRowGlobal(0);
-    TownMapImage_BuildMarkersGlobal(0);
-    TownMapImage_BuildMarkersGlobal(1);
+    Shared_TownMapImage_BuildMarkersGlobal(0);
+    Shared_TownMapImage_BuildMarkersGlobal(1);
 }
 
 void MapTab::loadMapStep2() {
@@ -631,9 +632,9 @@ void MapTab::loadMapImage() {
     TownMapMarkers *b;
     TownMapImage_DrawRowGlobal(3);
     a = mapChars;
-    TownMapMarkers_Clear(&townMarkers);
+    Shared_TownMapMarkers_Clear(&townMarkers);
     b = &townMarkers;
-    TownMapImage_FinishGlobal(a, b); // ov117 (the decompiler named ov094's function at the same address)
+    Shared_TownMapImage_FinishGlobal(a, b); // ov117 (the decompiler named ov094's function at the same address)
     Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
     setupMarkers(b);
 }
@@ -1099,7 +1100,7 @@ void MapTab::setupMarkers(TownMapMarkers *p) {
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
-        rec = TownMapMarkers_Get(p, i);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(p, i);
         if (rec != 0) {
             switch (TownMapMarkers_GetKind(p, i)) {
             case 0:
@@ -1127,7 +1128,7 @@ void MapTab::setupMarkers(TownMapMarkers *p) {
     j = 3;
     k = 0;
     for (; k < 0xe; j++, k++) {
-        rec = TownMapMarkers_Get(p, j);
+        rec = (TownMapMarker *)Shared_TownMapMarkers_Get(p, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
                 buildingMarkers[k].cell = 0;
