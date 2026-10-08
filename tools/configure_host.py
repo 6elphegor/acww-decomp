@@ -9,8 +9,10 @@ aliases, interior labels) come from the modern build's script (build/modern_usa/
 Needs a 32-bit sysroot (memory: acww-host-toolchain): --sysroot <dir>.
 """
 import argparse
+import glob
 import os
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -18,7 +20,9 @@ import ninja_syntax
 
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument("--sysroot", default=os.path.expanduser("~/acww/toolchains/i386-sysroot"))
-parser.add_argument("--cc", default="gcc")
+parser.add_argument("--cc", default="gcc",
+                    help="the C compiler: gcc, or clang (a separate build: suffix _clang; the LLVM release in "
+                         "~/acww/toolchains/LLVM-*/bin when no clang is on the PATH)")
 parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"),
                     help="melonDS source tree patched with tools/host/melonds.patch and built for 32-bit x86 in build-core32 "
                          "(the display renderer)")
@@ -38,6 +42,14 @@ parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
 root = Path(__file__).resolve().parent.parent
+CLANG = os.path.basename(args.cc).startswith("clang")
+if CLANG:
+    if not args.suffix:
+        args.suffix = "_clang"
+    if not shutil.which(args.cc):
+        found = sorted(glob.glob(os.path.expanduser(f"~/acww/toolchains/LLVM-*/bin/{args.cc}")))
+        if found:
+            args.cc = found[-1]
 X64 = args.arch == "x86_64"
 build = Path("build") / (f"host64{args.suffix}_{args.version}" if X64 else f"host{args.suffix}_{args.version}")
 NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
@@ -60,6 +72,13 @@ if X64:
 # every unit with the full class definitions, in both builds: the layout tools (tools/host_view_layout.py) read the
 # types from the 32-bit and the 64-bit debug information (debug information only: the code is the same)
 CXX_FLAGS += " -femit-class-debug-always"
+if CLANG:
+    # GCC-only game flags: -malign-data (GCC's), -fpcc-struct-return (clang: i386 only); clang's name for the class
+    # debug information
+    GAME_FLAGS = GAME_FLAGS.replace(" -malign-data=abi", "")
+    if X64:
+        GAME_FLAGS = GAME_FLAGS.replace(" -fpcc-struct-return", "")
+    CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
 SECTIONS = ("-Wl,--allow-multiple-definition -Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
