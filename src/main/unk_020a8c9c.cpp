@@ -52,7 +52,7 @@ class BufferBmgReader : public BmgReader {
 public:
     BufferBmgReader();
     virtual ~BufferBmgReader();
-    virtual u32 getBuffer();
+    virtual u8 *getBuffer();
     virtual u32 getBufferSize();
 
     void clearBuffer();
@@ -923,7 +923,7 @@ void BufferBmgReader::clearBuffer() {
     bufferSize = 0;
 }
 
-u32 BufferBmgReader::getBuffer() { return (u32)buffer; }
+u8 *BufferBmgReader::getBuffer() { return buffer; }
 
 u32 BufferBmgReader::getBufferSize() { return bufferSize; }
 

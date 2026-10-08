@@ -13,6 +13,7 @@ typedef struct Flags1 Flags1;
 #ifdef __cplusplus
 #include "game/StrBSizeData.h"
 #include "gfx/VecFx32.h"
+#include "town/BuildingActor.h"
 class FieldObjectShapeQuery;
 class FieldStructureMgr;
 #endif
@@ -244,6 +245,9 @@ FieldStructureMgr *FieldStructureMgr_Get(void);
 #endif
 #ifndef PROTO_LOCAL_Building_GetDoorAnimParamAt
 u32 Building_GetDoorAnimParamAt(VecFx32 *a);
+#endif
+#ifndef PROTO_LOCAL_Building_RequestState
+BOOL Building_RequestState(BuildingActor *o, s32 v);
 #endif
 #ifndef PROTO_LOCAL_BuildingOccupancy_OnEnterRecord
 void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit);

@@ -42,7 +42,7 @@ class BmgReader {
 public:
     BmgReader(u8 arg1);
     virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
+    virtual u8 *getBuffer() = 0;  // the buffer the message is read into
     virtual u32 getBufferSize() = 0;
 
     BOOL readText();

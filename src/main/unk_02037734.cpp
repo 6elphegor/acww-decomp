@@ -7,6 +7,7 @@
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgString.h"
 #include "gfx/TexVramTask.h"
+#include "gfx/G3dMatData.h"
 #include "talk/MsgString25.h"
 #include "gfx/CachedModel.h"
 #include "sys/ProcBase.h"
@@ -71,8 +72,7 @@ u32 TextLabel_MeasureMsgWidth(MsgString *obj);
 MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
 void MsgTextLabel_Destroy(MsgTextLabel *obj);
 void MI_CpuFill8(void *p, u32 v, u32 n);
-u32 _ZN10G3dMatData10getTexAddrEv(void *p);
-void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -387,7 +387,7 @@ void CommCautionWindow::updateBlendRegs() {
 }
 
 void CommCautionWindow::setupModelMatrix() {
-    Mtx43_SetTranslate(&data_021f47e0, 0, 0, -0x1000, 0, 0, -0x1000);
+    Mtx43_SetTranslate(&data_021f47e0, 0, 0, -0x1000);
     model.mtx = data_021f47e0;
 }
 
@@ -395,7 +395,7 @@ void CommCautionWindow::uploadLine(s32 i) {
     u8 *b = (u8 *)model.resMdl;
     b += *(s32 *)(b + 8);
     u8 *c = b + *(u16 *)(b + 0xa);
-    u32 v = _ZN10G3dMatData10getTexAddrEv(b + *(s32 *)(c + 8));
+    u32 v = reinterpret_cast<G3dMatData *>(b + *(s32 *)(c + 8))->getTexAddr();
     texUpload.requestTex(lineTiles, v + (i << 11), 0x800, 2);
 }
 

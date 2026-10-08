@@ -283,7 +283,7 @@ void Clock_GetDateTime(void *p);
 s32 SaveVillagers_FindBirthdayVillager(void *p, void *q);
 void VillagerStates_SetBirthdayHost(s32 v);
 void VillagerStates_SetBirthdayGuest(s32 v);
-void SaveVillagers_PickFleaVillager(void *p, s32 v);
+void SaveVillagers_PickFleaVillager(u8 *p, PlayerId *a1);
 s32 Scene_InVillagerHouse();
 s32 Scene_InHouseRoom();
 s32 VillagerEvent_GetTodayIndex();
@@ -301,7 +301,7 @@ s32 Scene_GetVillagerHouse();
 void *SaveVillagers_Get(void *p, s32 i);
 s32 VillagerStates_GetBirthdayGuest();
 s32 SaveVillagers_GetUnk3830Index(void *p);
-s32 SaveVillagers_GetUnk3830(void *p);
+SickVillagerRecord *SaveVillagers_GetUnk3830(void *p);
 s32 Villager_GetResidentStatus(void *p);
 s32 Town_GetMaxOutdoorVillagers();
 s32 SaveVillagers_IsOutdoors(void *p, void *q);
@@ -658,7 +658,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(NpcSpawner *a)
                     r6 = 0x81;
                 }
             } else if (r7 == F4::SaveVillagers_GetUnk3830Index(F4::gSaveVillagers)) {
-                if (((SickVillagerRecord *)(F4::SaveVillagers_GetUnk3830(F4::gSaveVillagers)))->isRecovered() == 0) {
+                if (F4::SaveVillagers_GetUnk3830(F4::gSaveVillagers)->isRecovered() == 0) {
                     c = 0x83;
                 }
             } else if (F4::VillagerEvent_GetTodayIndex() == 0xa) {
@@ -796,11 +796,11 @@ BOOL NpcSpawner::onCreate()
     if (F4::Unk_020845a8_IsZero(F4::gFieldSceneKind)) {
         if (Visitor_IsTaxiActive() == 0) {
             if (((CommManager *)(F4::gCommManager))->isSlotActive(F4::gCommManager->myAid) == 0) {
-                s32 r1;
+                PlayerId *r1;
                 if (PlayerData_GetCurrent()) {
                     r1 = PlayerData_GetCurrent()->getPlayerId();
                 } else {
-                    r1 = 0;
+                    r1 = NULL;
                 }
                 F4::SaveVillagers_PickFleaVillager(g, r1);
             }

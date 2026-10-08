@@ -80,38 +80,6 @@ struct Pal {
 
 struct Ctx;
 
-class Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual u16 *vfunc_64();
-    virtual void vfunc_68();
-    virtual BOOL vfunc_6c(u32 a);
-};
-
 typedef ItemId Marker2;
 
 // Info table of the next unit
@@ -249,7 +217,7 @@ u32 MapBlock_HasAnyAttr(u8 *cell, u32 mask);
 BOOL MapBlock_FindItemInRange(u8 *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u32 d);
 u16 *MapBlock_GetItemPtr(u8 *cell, s32 a, s32 b, s32 c);
 BOOL MapBlock_SetItem(u8 *cell, u16 *t, u32 x, u32 y, u32 z);
-void TownUpdater_MarkEventApplied(u32 a);
+void TownUpdater_MarkEventApplied(u32 id);
 u16 Item_MakePlayerHouse(u32 a);
 BOOL Item_IsPlayerHouse(u16 *p);
 s32 Item_GetSnowmanIndex(void *p);
@@ -260,14 +228,14 @@ u32 Item_MakeBuilding(u32 v);
 s32 Item_GetFurnitureIndex(const u16 *p);
 BOOL Item_IsFurniture(u16 *p);
 BOOL BlockMap_RemoveStructureAt(Grid *g, u32 x, u32 y, u32 a, u32 b, Marker2 *m);
-BOOL BlockMap_RemoveStructure(Map *m, s32 x, s32 y, s32 z);
+BOOL BlockMap_RemoveStructure(Map *m, s32 x, s32 y, u16 *removed);
 void BlockMap_PutStructure(Map *m, u16 *p, s32 x, s32 y);
 Map *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 void Pattern_CopyFields(void *dst, void *src);
-BOOL SaveVillagers_Get(void *a, u32 b);
+u8 *SaveVillagers_Get(u8 *base, s32 idx);
 u32 Villager_GetWhereabouts(void *a);
 void Clock_GetMinuteHour(u8 *out);
 void Scene_GetWarpRequest(void);
@@ -294,7 +262,7 @@ extern const u16 sSceneBuildingTable[52];
 extern "C" {
 void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
 void BuildingInfo_Destroy(BuildingInfo *i);
-BOOL Building_RequestState(Obj *o, s32 v);
+BOOL Building_RequestState(BuildingActor *o, s32 v);
 }
 
 
@@ -1067,7 +1035,7 @@ extern "C" void TownStructure_PlaceAtEventPlot(u16 id)
             Map *m = TownBlockMap_Get();
             if (m) {
                 if (InRange(*p)) {
-                    BlockMap_RemoveStructure(m, x, y, 0);
+                    BlockMap_RemoveStructure(m, x, y, NULL);
                 }
                 BlockMap_PutStructure(m, t, x, y);
             }
@@ -1093,7 +1061,7 @@ extern "C" BOOL TownStructure_RemoveFromEventPlot(u16 id)
             if (eq) {
                 Map *m = TownBlockMap_Get();
                 if (m) {
-                    return BlockMap_RemoveStructure(m, x, y, 0);
+                    return BlockMap_RemoveStructure(m, x, y, NULL);
                 }
             }
         }
@@ -1299,14 +1267,14 @@ extern "C" u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c) { return Buil
 extern "C" u32 BuildingKey_Make(u32 a, u32 b, u32 c) { return (a << 16) | (((c & 0xff) << 8) | (b & 0xff)); }
 
 extern "C" u32 Building_GetDoorAnimParamAt(VecFx32 *a) {
-    Obj *o;
+    BuildingActor *o;
     if (!IsEnabled()) {
         return 1;
     }
-    o = Building_FindNearPos(a);
+    o = static_cast<BuildingActor *>(Building_FindNearPos(a));
     if (o) {
-        if (((BuildingActor *)(o))->getEntranceType() == 1) {
-            u16 *i = o->vfunc_64();
+        if (o->getEntranceType() == 1) {
+            u16 *i = static_cast<u16 *>(o->getDoorInAnim());
             if (i) {
                 return i[2];
             }
@@ -1378,13 +1346,13 @@ extern "C" u32 Field_GetExitedBuildingKey(void) {
     return 0;
 }
 
-extern "C" BOOL Building_RequestState(Obj *o, s32 v) {
+extern "C" BOOL Building_RequestState(BuildingActor *o, s32 v) {
     if (IsEnabled()) {
-        if (o->vfunc_6c(v)) {
+        if (o->setDoorState(v)) {
             if (((CommManager *)(gCommManager))->isOnline()) {
                 u16 f;
                 void *d;
-                f = (f & ~0x3f) | (((BuildingActor *)(void *)(o))->getItemId()[0] & 0x3f);
+                f = (f & ~0x3f) | (o->getItemId()[0] & 0x3f);
                 f = (f & ~0xfc0) | ((v & 0x3f) << 6);
                 f &= ~0xf000;
                 d = gCommManager;
@@ -1399,9 +1367,9 @@ extern "C" BOOL Building_RequestState(Obj *o, s32 v) {
 }
 
 extern "C" u32 SaveVillager_IsAsleepAt(s32 v) {
-    BOOL villager = SaveVillagers_Get(&gSaveVillagers, v);
+    u8 *villager = SaveVillagers_Get(&gSaveVillagers, v);
     if (villager) {
-        if (Villager_GetWhereabouts((void *)villager) == 2) {
+        if (Villager_GetWhereabouts(villager) == 2) {
             return TRUE;
         }
         return FALSE;
@@ -1433,9 +1401,9 @@ extern "C" BOOL Building_ApplyStateRecord(u16 *p) {
     u32 a = Item_MakeBuilding(f->a);
     u8 b = f->b;
     if (IsEnabled()) {
-        Obj *o = BuildingList_FindByItem(a);
+        BuildingActor *o = static_cast<BuildingActor *>(BuildingList_FindByItem(a));
         if (o) {
-            return o->vfunc_6c(b);
+            return o->setDoorState(b);
         }
     }
     return BuildingState_Set(a, b);

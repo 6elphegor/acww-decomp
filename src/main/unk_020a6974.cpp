@@ -508,13 +508,13 @@ BOOL BmgReader::readInfEntryWithAttr() {
 }
 
 BOOL BmgReader::readText() {
-    u32 a = getBuffer();
+    u8 *a = getBuffer();
     u32 b = getBufferSize();
     u32 off = textOffset + 8;
     if (b >= textSize) {
         b = textSize;
     }
-    File_ReadRange(&file, (void *)a, b, sBmgInfHeader.size + 0x20 + off);
+    File_ReadRange(&file, a, b, sBmgInfHeader.size + 0x20 + off);
     return TRUE;
 }
 

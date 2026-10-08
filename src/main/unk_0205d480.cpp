@@ -59,7 +59,7 @@ const u8 sPlayerGlassesAccessoryModelIds[0x40] = {
 char sPlayerGlassesModelPathBuf[0x14];
 PlayerGlassesModelPool sPlayerGlassesModelPool;
 
-extern "C" void PlayerGlassesModelPool_Create(void *parent) {
+extern "C" void PlayerGlassesModelPool_Create(Heap *parent) {
     PlayerGlassesModelHeap_Create(parent);
     sPlayerGlassesModelPool.allocBuffers();
     if (gPlayerGlassesModelHeap) {

@@ -5,6 +5,7 @@
 #include "gfx/VramTask.h"
 #include "gfx/MatTexVramTask.h"
 #include "gfx/G3dResAccess.h"
+#include "gfx/G3dMatData.h"
 #include "proto/autoload_2/unk_02111ccc.h"
 #include "proto/autoload_2/unk_0211220c.h"
 #include "proto/main/unk_0200137c.h"
@@ -12,9 +13,6 @@
 
 extern "C" {
 // Other files
-u32 _ZN10G3dMatData10getTexSizeEv(void *p);
-u32 _ZN10G3dMatData10getTexAddrEv(void *p);
-u32 _ZN10G3dMatData11getPlttAddrEv(void *p);
 void DC_FlushRange(void *p, u32 x);
 void NNS_G3dTexLoad(void *p, u32 x);
 void NNS_G3dPlttLoad(void *p, u32 x);
@@ -282,9 +280,9 @@ BOOL TexVramTask::requestMatTex(void *a, u32 b, void *c) {
     u16 off = *(u16 *)(base + 0xa);
     u8 *ent = tbl + off;
     ent += *(u16 *)ent * b;
-    u8 *rec = base + *(u32 *)(ent + 4);
-    u32 v1 = _ZN10G3dMatData10getTexSizeEv(rec);
-    u32 v2 = _ZN10G3dMatData10getTexAddrEv(rec);
+    G3dMatData *rec = reinterpret_cast<G3dMatData *>(base + *(u32 *)(ent + 4));
+    u32 v1 = rec->getTexSize();
+    u32 v2 = rec->getTexAddr();
     return requestTex(c, v2, v1, 2);
 }
 
@@ -325,14 +323,14 @@ BOOL MatTexVramTask::request(void *a, const char *b, void *c, u32 d, u32 e) {
     u16 off = *(u16 *)(base + 0xa);
     u8 *ent = tbl + off;
     ent += *(u16 *)ent * idx;
-    u8 *rec = base + *(u32 *)(ent + 4);
+    G3dMatData *rec = reinterpret_cast<G3dMatData *>(base + *(u32 *)(ent + 4));
     void *v1 = ((G3dResAccess *)c)->getTexData(d);
     void *v2 = ((G3dResAccess *)c)->getPlttData(e);
-    u32 v3 = _ZN10G3dMatData10getTexSizeEv(rec);
+    u32 v3 = rec->getTexSize();
     u32 v4 = ((G3dResAccess *)(c))->getPlttSize(e);
     kind = 3;
-    texXfer.set(_ZN10G3dMatData10getTexAddrEv(rec), v1, v3);
-    plttXfer.set(_ZN10G3dMatData11getPlttAddrEv(rec), v2, v4);
+    texXfer.set(rec->getTexAddr(), v1, v3);
+    plttXfer.set(rec->getPlttAddr(), v2, v4);
     cost = texXfer.getTexCost() + TexTransfer_GetPlttCost(&plttXfer);
     priority = 0;
     if (enqueueTex()) {

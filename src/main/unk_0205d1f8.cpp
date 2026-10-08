@@ -28,7 +28,7 @@ u32 Scene_GetMaxCharacters(u32 a);
 }
 
 
-extern "C" void CharaFaceAnimWorkPool_Create(void *parent) {
+extern "C" void CharaFaceAnimWorkPool_Create(Heap *parent) {
     CharaFaceAnimWorkHeap_Create(parent);
     sCharaFaceAnimWorkPool.createHeaps();
     if (gCharaFaceAnimWorkHeap) static_cast<Heap *>(gCharaFaceAnimWorkHeap)->adjust();

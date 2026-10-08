@@ -131,7 +131,7 @@ class BmgReader1K : public BmgReader {
 public:
     BmgReader1K();
     virtual ~BmgReader1K();
-    virtual u32 getBuffer();
+    virtual u8 *getBuffer();
     virtual u32 getBufferSize();
     void clearBuffer();
 
@@ -224,8 +224,8 @@ void BmgReader1K::clearBuffer() {
     MI_CpuFill8(buffer, 0, 0x400);
 }
 
-u32 BmgReader1K::getBuffer() {
-    return (u32)buffer;
+u8 *BmgReader1K::getBuffer() {
+    return buffer;
 }
 
 u32 BmgReader1K::getBufferSize() {
@@ -252,7 +252,7 @@ u8 StringExpander::expand(u8 a, u8 b) {
     capitalizeNext = 0;
     curChar = 0;
     reset();
-    begin((u8 *)bank->reader.getBuffer());
+    begin(bank->reader.getBuffer());
     run(FALSE);
     if (success && nicknameMode) {
         if (!canCheckName() || !differsFromName()) {
