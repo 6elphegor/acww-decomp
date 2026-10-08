@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_mem.h"
 #include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I001c: itcm 0x01ff8228-0x01ff8ab4, NitroSDK OS IRQ (SetIrqMask, IrqCallback, DMA/timer IRQ stubs) + NitroSystem g3d (DL callback, texture SRT, hint bits, render-state init, SBC loop) (22 functions). ARM, mwcc 1.2/base, -O4,p.
@@ -621,7 +622,7 @@ void OSi_IrqCallback(int index) {
     if (callback) {
         callback(data_027e0058[index].arg);
     }
-    *(vu32 *)(data_027e0000 + 0x3ff8) |= imask;  // HW_INTR_CHECK_BUF (DTCM + 0x3ff8)
+    *HW_INTR_CHECK_BUF |= imask;  // (DTCM + 0x3ff8)
     if (!data_027e0058[index].enable) {
         (void)OS_DisableIrqMask(imask);
     }

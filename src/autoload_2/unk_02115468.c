@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/os_rtc.h"
+#include "host_mem.h"
 #include "nitro/os_alarm.h"
 // NitroSDK OS reset / owner info (os_reset.c, os_ownerInfo.c), autoload_2 0x02115468-0x0211565c (the former unit 0x02114ef4-0x0211565c split into its files by
 // their bss). ARM code, mwcc 1.2/base.
@@ -64,12 +65,12 @@ void OSi_SendToPxi(u32 data);
 #define reg_OS_TM1CNT_H (*(volatile u16 *)0x04000106)
 // OS_GetMacAddress
 void OS_GetMacAddress(u8 *macAddr) {
-    MI_CpuCopy8((void *)0x027ffcf4, macAddr, 6);
+    MI_CpuCopy8(HW_SYSWORK_AT(void, nvramUserInfo, 0x74), macAddr, 6);
 }
 
 // OS_GetOwnerInfo
 void OS_GetOwnerInfo(OSOwnerInfo *info) {
-    OSSharedUserInfo *src = (OSSharedUserInfo *)0x027ffc80;
+    OSSharedUserInfo *src = HW_SYSWORK(OSSharedUserInfo, nvramUserInfo);
     info->language = src->language;
     info->favoriteColor = src->favoriteColor;
     info->birthMonth = src->birthMonth;
@@ -108,7 +109,7 @@ void OSi_SendToPxi(u32 data) {
 
 // OS_ResetSystem
 void OS_ResetSystem(u32 parameter) {
-    if (*(volatile u16 *)0x027ffc40 == 2) Fatal_Trap();
+    if (*HW_SYSWORK(volatile u16, wmBootBuf) == 2) Fatal_Trap();
     CARD_LockRom((u16)OS_GetLockID());
     MI_StopDma(0);
     MI_StopDma(1);
@@ -116,7 +117,7 @@ void OS_ResetSystem(u32 parameter) {
     MI_StopDma(3);
     OS_SetIrqMask(0x40000);
     OS_ResetRequestIrqMask(0xffffffff);
-    *(volatile u32 *)0x027ffc20 = parameter;
+    *HW_SYSWORK(volatile u32, resetParameter) = parameter;
     OSi_SendToPxi(0x10);
     OSi_DoResetSystem();
 }

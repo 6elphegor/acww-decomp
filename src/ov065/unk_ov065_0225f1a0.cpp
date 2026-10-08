@@ -45,7 +45,7 @@ IpStackConfig sIpStackParams;
 
 s32 SockCore_Startup(SockCoreConfig *cfg)
 {
-    OSi_ReferSymbol((void *)0x2000bd4);
+    OSi_ReferSymbol(0);  // (the DS address 0x2000bd4 of an SDK version string; an empty function)
     if (sSockCoreConfig != NULL) {
         return 0;
     }

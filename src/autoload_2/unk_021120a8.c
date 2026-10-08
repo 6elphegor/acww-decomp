@@ -4,6 +4,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "uptr.h"
+#include "host_mem.h"
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
@@ -37,17 +38,17 @@ void GX_LoadTex(const void *pSrc, u32 dstSlotOffset, u32 szByte) {
     void *pLCDC;
 
     if (0 == data_021fcc04) {
-        pLCDC = (void *)(uptr)(data_021fcbf4 + dstSlotOffset);
+        pLCDC = HostVram_CpuPtr(data_021fcbf4 + dstSlotOffset);
     } else {
         if (dstSlotOffset + szByte < data_021fcc08) {
-            pLCDC = (void *)(uptr)(data_021fcbf4 + dstSlotOffset);
+            pLCDC = HostVram_CpuPtr(data_021fcbf4 + dstSlotOffset);
         } else if (dstSlotOffset >= data_021fcc08) {
-            pLCDC = (void *)(uptr)(data_021fcc04 + dstSlotOffset - data_021fcc08);
+            pLCDC = HostVram_CpuPtr(data_021fcc04 + dstSlotOffset - data_021fcc08);
         } else {
-            void *pLCDC2 = (void *)(uptr)data_021fcc04;
+            void *pLCDC2 = HostVram_CpuPtr(data_021fcc04);
             u32 sz = data_021fcc08 - dstSlotOffset;
 
-            pLCDC = (void *)(uptr)(data_021fcbf4 + dstSlotOffset);
+            pLCDC = HostVram_CpuPtr(data_021fcbf4 + dstSlotOffset);
             GXi_DmaCopy32(data_0213bfec, pSrc, pLCDC, sz);
             GXi_DmaCopy32Async(data_0213bfec, (void *)((u8 *)pSrc + sz), pLCDC2, szByte - sz, 0, 0);
             return;

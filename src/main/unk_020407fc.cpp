@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_mem.h"
 #include "host_labels.h"
 #include "types.h"
 
@@ -120,14 +121,14 @@ extern "C" void ScreenTransition_ShowCover() {
     IO_W(r, (IO_R(r) & 0x43) | 0x600);
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, (void *)0x5000000, 4);  // the backdrop colours
+    Unk_02041104_Fill(0x8000, (void *)HW_PLTT, 4);  // the backdrop colours
     Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     IO_AND(r, ~3);
     IO_W(r, (IO_R(r) & 0x43) | 0xe04);
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, (void *)0x5000400, 4);
+    Unk_02041104_Fill(0x8000, (void *)(HW_PLTT + 0x400), 4);
     Gfx2d_ShowSubPlanes(4);
 }
 

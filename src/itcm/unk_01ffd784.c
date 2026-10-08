@@ -2,6 +2,7 @@
 // I004e: itcm 0x01ffd784-0x01ffdae0, NitroSDK OS reset / card ROM read + MI DMA parameter setters (6 functions). ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long
 #include "uptr.h"
+#include "host_mem.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
@@ -86,18 +87,18 @@ void OSi_DoResetSystem(void) {
 
 // OSi_ReloadRomData
 void OSi_ReloadRomData(void) {
-    u32 base = *(u32 *)0x027ffc2c;
+    u32 base = *HW_SYSWORK(u32, romBaseOffset);
     u32 a, b, c, d, e, f;
     BOOL en;
     if (base >= 0x8000) {
-        OSi_ReadCardRom32(base, (void *)0x027ffe00, 0x160);
+        OSi_ReadCardRom32(base, HW_SYSWORK(void, romHeader), 0x160);
     }
-    a = *(u32 *)0x027ffe20;
-    b = *(u32 *)0x027ffe28;
-    c = *(u32 *)0x027ffe2c;
-    d = *(u32 *)0x027ffe30;
-    e = *(u32 *)0x027ffe38;
-    f = *(u32 *)0x027ffe3c;
+    a = *HW_SYSWORK_AT(u32, romHeader, 0x20);
+    b = *HW_SYSWORK_AT(u32, romHeader, 0x28);
+    c = *HW_SYSWORK_AT(u32, romHeader, 0x2c);
+    d = *HW_SYSWORK_AT(u32, romHeader, 0x30);
+    e = *HW_SYSWORK_AT(u32, romHeader, 0x38);
+    f = *HW_SYSWORK_AT(u32, romHeader, 0x3c);
     en = OS_DisableInterrupts();
     DC_StoreAll();
     DC_InvalidateAll();
@@ -118,7 +119,7 @@ void OSi_ReloadRomData(void) {
 
 // OSi_ReadCardRom32
 void OSi_ReadCardRom32(u32 src, void *dst, s32 len) {
-    u32 ctrl = (*(vu32 *)0x027ffe60 & ~0x07000000) | 0xa1000000;
+    u32 ctrl = (*HW_SYSWORK_AT(vu32, romHeader, 0x60) & ~0x07000000) | 0xa1000000;
     s32 i = -(s32)(src & 0x1ff);
     while (IO_R((vu32 *)0x040001a4) & 0x80000000) {
     }

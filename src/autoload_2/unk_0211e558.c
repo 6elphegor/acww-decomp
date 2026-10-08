@@ -1,4 +1,5 @@
 #include "nitro/pxi_ptr.h"
+#include "host_mem.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 #include "nitro/io_access.h"
@@ -95,7 +96,7 @@ BOOL CARDi_Request(CardCommon *c, u32 arg, int retry);
 BOOL CARDi_ReadFromCache(u8 *cache);
 void CARDi_SetRomOp(u32 hi, u32 lo);
 BOOL CARDi_TryReadCardDma(CardCommon *req);void CARD_TerminateForPulledOut(void) {
-    if ((*(u16 *)0x027fffa8 & 0x8000) >> 15) PM_ForceToPowerOff();
+    if ((*HW_SYSWORK(u16, buttonXY) & 0x8000) >> 15) PM_ForceToPowerOff();
     CARDi_SendtoPxi(1, 1);
     Fatal_Trap();
 }

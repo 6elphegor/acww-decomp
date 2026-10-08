@@ -1,4 +1,5 @@
 #include "sys/PMCbInfo.h"
+#include "host_mem.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK TP (touch panel) / PM (power management) / RTC, ARM9 side: autoload_2 0x0211c8e8-0x0211cbd0. mwcc 1.2/base.
 #include "uptr.h"
@@ -245,7 +246,7 @@ void PM_Init(void) {
         data_021feb6c[i].flag = 0;
     }
     OS_InitMutex(&data_021feb54);
-    data_021feb3c = *(volatile u32 *)0x027ffc3c;
+    data_021feb3c = *HW_SYSWORK(volatile u32, vblankCount);
 }
 
 // PMi_CommonCallback? (PXI tag 8 receive callback)

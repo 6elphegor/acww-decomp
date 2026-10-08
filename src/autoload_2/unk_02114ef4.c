@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "ds_div.h"
+#include "host_mem.h"
 #include "nitro/os_rtc.h"
 #include "nitro/os_alarm.h"
 // NitroSDK OS alarm (os_alarm.c), autoload_2 0x02114ef4-0x021153f8 (the former unit 0x02114ef4-0x0211565c split into its files by
@@ -188,7 +189,7 @@ void OSi_ArrangeTimer(void) {
     void (*handler)(void *);
     u64 tick;
     OSAlarm *next;
-    u32 *dtcm = (u32 *)0x027e0000;
+    u32 *dtcm = (u32 *)HW_DTCM_BLOCK;
     IO_W(&reg_OS_TM1CNT_H, 0);
     OS_DisableIrqMask(0x10);
     dtcm[0x3ff8 / 4] |= 0x10;

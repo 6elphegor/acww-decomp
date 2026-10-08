@@ -1,4 +1,5 @@
 #include "types.h"
+#include "host_mem.h"
 #include "gfx/HBlankTask.h"
 #include "gfx/ScreenTransition.h"
 #include "snd/BgmManager.h"
@@ -115,14 +116,14 @@ extern "C" void IrisWipe_SetupLayers() {
     IO_W(r, (IO_R(r) & 0x43) | 0x600);
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, (void *)0x5000000, 4);  // the main screen's backdrop colour
+    Unk_02041104_Fill(0x8000, (void *)HW_PLTT, 4);  // the main screen's backdrop colour
     Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     IO_AND(r, ~3);
     IO_W(r, (IO_R(r) & 0x43) | 0xe04);
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, (void *)0x5000400, 4);  // the sub screen's
+    Unk_02041104_Fill(0x8000, (void *)(HW_PLTT + 0x400), 4);  // the sub screen's
     Gfx2d_ShowSubPlanes(4);
 }
 

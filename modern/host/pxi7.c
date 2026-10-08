@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 #include "host.h"
+#include "host_mem.h"
 #include "sys/CardCmd.h"
 
 #define FIFOCNT 0x04000184u
@@ -158,7 +159,7 @@ static u32 bcd(int v) { return (u32)(v / 10 << 4 | v % 10); }
 
 static void rtc_command(u32 data) {
     u32 cmd = (data & 0x7f00) >> 8;
-    volatile u32 *raw = (volatile u32 *)0x027ffde8;
+    volatile u32 *raw = gHostSysWork.realTimeClock;  // HW_REAL_TIME_CLOCK_BUF
     struct tm t;
     if (sRtcFixed < 0) rtc_setup();
     if (sRtcFixed) t = sRtcTime;
@@ -259,7 +260,7 @@ static void card_request(u32 data) {
 }
 
 // ---- touch panel (tag 6): request type in bits 8-14 (0 one sample, 1 start auto sampling, 2 stop, 3 stability);
-// the reply has the type, result 0 and bit 24. Samples (x:12, y:12, touch:1, validity:2) go to 0x027fffaa as raw
+// the reply has the type, result 0 and bit 24. Samples (x:12, y:12, touch:1, validity:2) go to HW_TOUCHPANEL_BUF as raw
 // ADC values, from screen coordinates through the firmware's calibration points. During auto sampling one sample
 // (type 16) is sent per frame. Touches come from ACWW_TOUCH="frame:frames:x,y;..." for now.
 static int sTpAuto;
@@ -283,8 +284,8 @@ static void tp_sample(void) {
     if (frontend_touch(&lx, &ly)) raw = tp_raw(lx, ly);  // the viewer's mouse
     for (int i = 0; i < sTouchCount; i++)                // ACWW_TOUCH
         if (f >= sTouch[i].frame && f < sTouch[i].frame + sTouch[i].len) raw = tp_raw((s32)sTouch[i].x, (s32)sTouch[i].y);
-    *(volatile u16 *)0x027fffaa = (u16)raw;
-    *(volatile u16 *)0x027fffac = (u16)(raw >> 16);
+    ((volatile u16 *)gHostSysWork.touchPanel)[0] = (u16)raw;  // HW_TOUCHPANEL_BUF
+    ((volatile u16 *)gHostSysWork.touchPanel)[1] = (u16)(raw >> 16);
 }
 
 static void tp_command(u32 data) {
@@ -398,5 +399,5 @@ void pxi7_init(void) {
     if (f) { sNvramSize = (u32)fread(sNvram, 1, sizeof sNvram, f); fclose(f); }
     else fprintf(stderr, "pxi7: no firmware image (ACWW_FIRMWARE): NVRAM reads give 0xff\n");
     // ARM7 callbacks ready for every tag (OSSystemWork.pxiHandleChecker[1])
-    *(volatile u32 *)0x027fff8c = 0xffffffff;
+    ((volatile u32 *)gHostSysWork.pxiHandleChecker)[1] = 0xffffffff;
 }

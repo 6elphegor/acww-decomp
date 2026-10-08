@@ -1,4 +1,5 @@
 #include "sys/PMCbInfo.h"
+#include "host_mem.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK TP (touch panel) / PM (power management) / RTC, ARM9 side: autoload_2 0x0211bcdc-0x0211c870. mwcc 1.2/base.
 typedef unsigned char u8;
@@ -333,7 +334,7 @@ u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync) {
     switch (mode) {
     case 1:
         if (noWait == 0) {
-            if (*(volatile u32 *)0x027ffc3c - data_021feb3c <= 7) {
+            if (*HW_SYSWORK(volatile u32, vblankCount) - data_021feb3c <= 7) {
                 return 0;
             }
         }
@@ -348,7 +349,7 @@ u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync) {
         break;
     case 0:
         IO_AND((volatile u16 *)0x04000304, ~1);
-        data_021feb3c = *(volatile u32 *)0x027ffc3c;
+        data_021feb3c = *HW_SYSWORK(volatile u32, vblankCount);
         if (target != 0) {
             if (sync != 0) {
                 PMi_SetLED(target);
@@ -506,8 +507,8 @@ void TPi_TpCallback(u32 tag, u32 data, u32 err) {
             data_021feaf4.index = 0;
         }
         e = &((TPData *)data_021feaf4.buf)[data_021feaf4.index];
-        tp.half[0] = *(volatile u16 *)0x027fffaa;
-        tp.half[1] = *(volatile u16 *)0x027fffac;
+        tp.half[0] = *HW_SYSWORK(volatile u16, touchPanel);
+        tp.half[1] = *HW_SYSWORK_AT(volatile u16, touchPanel, 0x2);
         e->x = tp.b.x;
         e->y = tp.b.y;
         e->touch = (u8)tp.b.touch;
@@ -527,8 +528,8 @@ void TPi_TpCallback(u32 tag, u32 data, u32 err) {
             switch (type) {
             case 0: {
                 TPRaw tp;
-                tp.half[0] = *(volatile u16 *)0x027fffaa;
-                tp.half[1] = *(volatile u16 *)0x027fffac;
+                tp.half[0] = *HW_SYSWORK(volatile u16, touchPanel);
+                tp.half[1] = *HW_SYSWORK_AT(volatile u16, touchPanel, 0x2);
                 data_021feaf4.state = 0;
                 data_021feaf4.x = tp.b.x;
                 data_021feaf4.y = tp.b.y;
@@ -591,7 +592,7 @@ void TP_Init(void) {
 BOOL TP_GetUserInfo(TPCalibrateParam *p) {
     // the declaration order of the locals decides the register allocation; the goto gives the second
     // `return 1` block the original has after the zeroing code
-    u8 *nv = (u8 *)0x027ffc80;
+    u8 *nv = HW_SYSWORK(u8, nvramUserInfo);
     u8 dy2;
     u16 x2;
     u16 y2;

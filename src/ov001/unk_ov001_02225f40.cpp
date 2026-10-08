@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "net/WfcRect.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_0211ba58.h"
@@ -116,7 +117,7 @@ void WfcInput_UpdateKeys()
     u16 cur;
     u32 v;
     p = sWfcInput;
-    v = IO_R((volatile u16 *)0x4000130) | *(volatile u16 *)0x27fffa8;
+    v = IO_R((volatile u16 *)0x4000130) | *HW_SYSWORK(volatile u16, buttonXY);
     cur = ((v ^ 0x2fff) & 0x2fff);
     cnt = sWfcKeyRepeatCounters;
     p->pressedKeys = (p->heldKeys ^ cur) & cur;

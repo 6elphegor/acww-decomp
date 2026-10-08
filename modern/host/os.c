@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include "coro.h"
 #include "host.h"
+#include "host_mem.h"
 #include "sys/OSThread.h"  // the game's thread structures (their layout differs on 64-bit hosts: no fixed offsets)
 
 // ---- interrupt masking (the CPSR I bit)
@@ -185,7 +186,7 @@ void OS_UnLockCartridge(u32 id) { (void)id; }
 // ---- waits
 void OS_Halt(void) { host_advance_to_next_event(); host_deliver_irqs(); }
 void VBlankIntrWait(void) {
-    volatile u32 *check = (volatile u32 *)0x027e3ff8;  // HW_INTR_CHECK_BUF
+    volatile u32 *check = HW_INTR_CHECK_BUF;  // (DTCM + 0x3ff8)
     while (!(*check & 1)) {
         host_advance_to_next_event();
         u32 old = sIrqDisabled;

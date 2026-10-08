@@ -240,7 +240,7 @@ s32 IpStack_ReturnTrue(void) {
 }
 
 void IpStack_Init(IpStackConfig *c) {
-    OSi_ReferSymbol((void *)0x2000bfc);
+    OSi_ReferSymbol(0);  // (the DS address 0x2000bfc of an SDK version string; an empty function)
     u64 seed = *(u64 *)&c->randSeed;
     if (seed != 0) {
         sIpRandState.x = seed;

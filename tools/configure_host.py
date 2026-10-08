@@ -89,8 +89,7 @@ if CLANG:
     CXX_FLAGS = CXX_FLAGS.replace("-femit-class-debug-always", "-fstandalone-debug")
 if args.extra_cflags:
     GAME_FLAGS += " " + args.extra_cflags
-SECTIONS = ("-Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
-            "-Wl,--section-start=gbss=0x02040000")
+SECTIONS = "-Wl,--section-start=gdata=0x02001000 -Wl,--section-start=gbss=0x02040000"
 M = args.melonds
 if X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
@@ -184,17 +183,8 @@ def main():
             objs.append(o)
         # the game (and its own C library) in one object
         game_objs = [o for o in objs if "/modern/host/" not in o and not o.endswith("/gaps.o")]
-        # DTCM's variables at their DS address (0x027e0000): the SDK computes DTCM addresses from its first one
-        dtcm_objs = [o for o in game_objs if "/src/dtcm/" in o]
-        game_objs = [o for o in game_objs if o not in dtcm_objs]
-        build.mkdir(parents=True, exist_ok=True)
-        dtcm_ld = build / "dtcm.ld"
-        dtcm_ld.write_text("SECTIONS {\n    .dtcm : { *(.data .data.*) *(.bss .bss.*) *(COMMON) . = 0x4000; }\n}\n")
-        n.rule("dtcmld", f"ld -m {LD_EMU} -r -T $script -o $out $in", description="LD -r $out")
-        n.build(str(build / "dtcm.o"), "dtcmld", dtcm_objs, implicit=[str(dtcm_ld)], variables={"script": str(dtcm_ld)})
-        game_objs.append(str(build / "dtcm.o"))
-        # (the DTCM units are in dtcm.o: not linked a second time)
-        host_objs = [o for o in objs if o not in game_objs and o not in dtcm_objs]
+        # (DTCM's variables, src/dtcm, are ordinary game variables; DTCM itself is a host block: include/host_mem.h)
+        host_objs = [o for o in objs if o not in game_objs]
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
         game_list.write_text("".join(f"{o}\n" for o in game_objs))

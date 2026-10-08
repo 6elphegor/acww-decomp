@@ -1,4 +1,5 @@
 #include "nitro/fs.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_021239ec.h"
@@ -119,13 +120,13 @@ BOOL MB_ReadSegment(FSFile *file, void *buf, u32 len) {
             }
             romSize = GetRomSize(rom);
         } else {
-            romSize = GetRomSize((const MBRomImageHeader *)0x027ffe00);
+            romSize = GetRomSize(HW_SYSWORK(const MBRomImageHeader, romHeader));
             own = TRUE;
             FS_InitFile(&tmp);
             FS_OpenFileDirect(&tmp, FS_FindArchive("rom", 3), 0, romSize + 0x88, -1);
             file = &tmp;
             top = (u32)(file->prop.file.pos - file->prop.file.start);
-            MI_CpuCopy8((void *)0x027ffe00, buf, 0x160);
+            MI_CpuCopy8(HW_SYSWORK(void, romHeader), buf, 0x160);
             rom->romCtrl |= 0x00406000;
         }
         if (rest < 0x88) {

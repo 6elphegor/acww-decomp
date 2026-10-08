@@ -1,4 +1,5 @@
 #include "nitro/wm.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_0211ef94.h"
 #include "proto/autoload_2/unk_0211f800.h"
 #include "proto/autoload_2/unk_02120fe8.h"
@@ -559,5 +560,5 @@ u8 *WM_ReadMPData(WMSet *p, u32 ch) {
 // WM_GetAllowedChannel
 u32 WM_GetAllowedChannel(void) {
     if (WMi_CheckInitialized() != 0) return 0x8000;
-    return *(u16 *)0x027ffcfa;
+    return *HW_SYSWORK_AT(u16, nvramUserInfo, 0x7a);
 }

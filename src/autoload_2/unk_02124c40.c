@@ -1,4 +1,5 @@
 #include "proto/autoload_2/unk_02122e24.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_02124480.h"
 #include "proto/autoload_2/unk_02124c40.h"
 #include "proto/autoload_2/unk_02125c94.h"
@@ -371,7 +372,7 @@ u32 MBi_GetBeaconPeriodDispersion(void) {
     OS_GetMacAddress(mac);
     sum = i = 0;
     for (; i < 6; i++) sum += mac[i];
-    return (sum + *(u32 *)0x027ffc3c) * 7 % 20;
+    return (sum + *HW_SYSWORK(u32, vblankCount)) * 7 % 20;
 }
 
 // library setup (probably WC_Initialize front half): aligns the work buffer, clears G and W, copies the channel list

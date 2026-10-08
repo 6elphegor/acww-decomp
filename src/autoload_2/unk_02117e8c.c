@@ -2,6 +2,7 @@
 // NitroSDK pxi_fifo.c: PXI_InitFifo, PXI_SetFifoRecvCallback, PXI_IsCallbackReady,
 // autoload_2 0x02117e8c-0x0211802c. ARM code, mwcc 1.2/base.
 #include "nitro/io_access.h"
+#include "host_mem.h"
 #include "proto/autoload_2/unk_02117e8c.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 typedef unsigned char u8;
@@ -12,15 +13,10 @@ typedef int BOOL;
 
 typedef void (*PXIFifoCallback)(u32 tag, u32 data, BOOL err);
 
-// The system work area at the end of main RAM. 0x027ffc00 is a plain number, NOT a linker symbol: each function
-// takes it into a local pointer first (`OSSystemWork *p = OS_GetSystemWork();`, as the SDK source does). The
-// compiler then keeps the base in the literal pool and adds the member offset (ldr rX,=0x027ffc00;
-// ldr rY,[rX,#0x388]); written as `OS_GetSystemWork()->member` directly it folds the offset into the address.
-typedef struct {
-    u8 pad_000[0x388];
-    u32 pxiHandleChecker[2]; // 0x388: per processor, bit n = a callback is set for tag n
-} OSSystemWork;
-#define OS_GetSystemWork() ((OSSystemWork *)0x027ffc00)
+// The system work area (include/host_mem.h; OSSystemWork at 0x027ffc00 on the DS): pxiHandleChecker[proc], bit n =
+// a callback is set for tag n
+typedef HostSysWork OSSystemWork;
+#define OS_GetSystemWork() (&gHostSysWork)
 
 extern u16 data_021fea64;                 // FifoCtrlInit
 extern PXIFifoCallback data_027e0394[32]; // FifoRecvCallbackTable (dtcm)

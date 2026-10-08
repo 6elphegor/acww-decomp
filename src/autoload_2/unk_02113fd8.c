@@ -1,4 +1,5 @@
 #include "ds_div.h"
+#include "host_mem.h"
 #include "sys/OSThread.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS (os_printf.c tail, os_thread.c, os_system.c, os_message.c, os_mutex.c): autoload_2 0x02113088-0x02114410.
@@ -46,7 +47,6 @@ extern OSThread data_021fcc3c;
 extern OSThread data_021fccfc;
 extern u32 data_021fce84;
 extern u32 data_0213bff0;
-#define data_027fffa0 (*(volatile u32 *)0x027fffa0)  // the system area: a 32-bit address (OSThreadInfo *)
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 e);
@@ -228,7 +228,7 @@ u32 OS_GetConsoleType(void) {
         else if (func_02113ed0() != 0) v = base | 0x40000000;
         else if (base & 0x01000000) v = base | 0x20000000;
         else v = base | 0x80000000;
-        data_0213bff0 = v | *(volatile u16 *)0x027ffffa;
+        data_0213bff0 = v | *HW_SYSWORK(volatile u16, mmemCheckerSub);
     }
     return data_0213bff0;
 }

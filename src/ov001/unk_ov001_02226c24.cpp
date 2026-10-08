@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/ov001/unk_ov001_02226c24.h"
@@ -92,18 +93,18 @@ void WfcGx_ClearVram()
     volatile u32 a, b, c, d, e, f;
     GX_SetBankForLCDC(0x1f3);
     c = 0;
-    MIi_CpuClearFast(c, (void *)0x6800000, 0x40000);
+    MIi_CpuClearFast(c, HostVram_CpuPtr(0x06800000), 0x40000);
     d = 0;
-    MIi_CpuClearFast(d, (void *)0x6880000, 0x24000);
+    MIi_CpuClearFast(d, HostVram_CpuPtr(0x06880000), 0x24000);
     GX_DisableBankForLCDC();
     a = 0x200;
-    MIi_CpuClearFast(a, (void *)0x7000000, 0x400);
+    MIi_CpuClearFast(a, (void *)HW_OAM, 0x400);
     e = 0;
-    MIi_CpuClearFast(e, (void *)0x5000000, 0x400);
+    MIi_CpuClearFast(e, (void *)HW_PLTT, 0x400);
     b = 0x200;
-    MIi_CpuClearFast(b, (void *)0x7000400, 0x400);
+    MIi_CpuClearFast(b, (void *)(HW_OAM + 0x400), 0x400);
     f = 0;
-    MIi_CpuClearFast(f, (void *)0x5000400, 0x400);
+    MIi_CpuClearFast(f, (void *)(HW_PLTT + 0x400), 0x400);
 }
 
 void WfcUtil_UpdateLed()

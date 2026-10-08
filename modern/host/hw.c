@@ -1,7 +1,8 @@
 // Host build: the DS memory map and the ARM9 I/O registers.
 //
-// The game's memory is mapped at the DS addresses, so hardcoded addresses keep working. The I/O registers are
-// plain host arrays (host_io). The game reaches them only through HostIo_Read / HostIo_Write
+// Only the game's data and bss are at their DS addresses (main RAM, below); the rest of the DS memory the game reaches
+// by address is host objects (include/host_mem.h: the system work area, DTCM, ITCM, palettes, OAM, VRAM through
+// vram.c's windows, the main RAM arena). The I/O registers are plain host arrays (host_io). The game reaches them only through HostIo_Read / HostIo_Write
 // (include/nitro/io_access.h), which carry out the access and its side effects. Nothing is mapped at the DS's I/O
 // addresses: a stray access there crashes (debug_posix.c reports where).
 //
@@ -18,6 +19,7 @@
 #include <unistd.h>
 
 #include "host.h"
+#include "host_mem.h"
 #include "plat.h"
 
 // 3D command port writes since the last ACWW_STATS line (register writes and GX FIFO DMA)
@@ -150,6 +152,22 @@ static void host_screenshot(void) {
     }
 }
 
+// ---- the main RAM image for the debug dumps (ACWW_RAMHASH, ACWW_RAMDUMP): 4 MB as the DS's main RAM from
+// 0x02000000 - the arena block (gHostMainRam, 0x02200000-0x023fffff), the game's data and bss at their places, and the
+// system work area as main RAM's last 4 KB (its first 4 KB on 64-bit hosts, whose layout differs). On 32-bit hosts
+// the same bytes at the same offsets as when all of it was mapped there.
+extern char __start_gdata[], __stop_gdata[], __start_gbss[], __stop_gbss[];
+static const u8 *host_ram_image(void) {
+    static u8 *img;
+    if (!img && !(img = malloc(0x400000))) host_fatal("no memory for the RAM image");
+    memset(img, 0, 0x400000);
+    memcpy(img + (HOST_MAIN_RAM_LO - 0x02000000), gHostMainRam, sizeof gHostMainRam);
+    memcpy(img + ((uintptr_t)__start_gdata - 0x02000000), __start_gdata, __stop_gdata - __start_gdata);
+    memcpy(img + ((uintptr_t)__start_gbss - 0x02000000), __start_gbss, __stop_gbss - __start_gbss);
+    memcpy(img + 0x3ff000, &gHostSysWork, 0x1000);
+    return img;
+}
+
 u32 host_irq_state(void);
 // ---- events
 static u64 sNextVblank = 192u * LINE_CYCLES;
@@ -222,9 +240,10 @@ static void run_events_body(void) {
                 _exit(0);
             }
         }
-        {   // ACWW_RAMHASH=<file>: "frame hash" of main RAM (0x02000000, 4 MB: the game's data and heaps on 32-bit
-            // hosts) every frame - two runs' first differing frame; ACWW_RAMDUMP=<frame>:<file>: main RAM at a frame
-            // (ACWW_RAMDUMP="f1,f2,...:prefix": prefix-<frame>.bin at each frame)
+        {   // ACWW_RAMHASH=<file>: "frame hash" of main RAM (host_ram_image: the game's data and heaps on 32-bit
+            // hosts; then DTCM and the whole system work area) every frame - two runs' first differing frame;
+            // ACWW_RAMDUMP=<frame>:<file>: the main RAM image at a frame (ACWW_RAMDUMP="f1,f2,...:prefix":
+            // prefix-<frame>.bin at each frame)
             static FILE *hf; static int hinit; static const char *ramList, *ramTo;
             if (!hinit) {
                 hinit = 1;
@@ -233,9 +252,11 @@ static void run_events_body(void) {
                 ramTo = ramList && strchr(ramList, ':') ? strchr(ramList, ':') + 1 : 0;
             }
             if (hf) {
-                const u64 *p = (const u64 *)0x02000000;
+                const u64 *p = (const u64 *)host_ram_image();
                 u64 h = 0x9e3779b97f4a7c15ull;
                 for (u32 i = 0; i < 0x400000 / 8; i++) h = (h ^ p[i]) * 0x100000001b3ull;
+                for (u32 i = 0; i < sizeof gHostDtcm / 8; i++) h = (h ^ ((const u64 *)gHostDtcm)[i]) * 0x100000001b3ull;
+                for (u32 i = 0; i < sizeof gHostSysWork / 8; i++) h = (h ^ ((const u64 *)&gHostSysWork)[i]) * 0x100000001b3ull;
                 fprintf(hf, "%llu %016llx\n", (unsigned long long)host_frame(), (unsigned long long)h);
                 fflush(hf);
             }
@@ -248,7 +269,7 @@ static void run_events_body(void) {
                         char name[512];
                         snprintf(name, sizeof name, "%s-%ld.bin", ramTo, at);
                         FILE *df = fopen(name, "wb");
-                        if (df) { fwrite((u8 *)0x02000000, 1, 0x400000, df); fclose(df); }
+                        if (df) { fwrite(host_ram_image(), 1, 0x400000, df); fclose(df); }
                     }
                     q = end + (*end == ',');
                 }
@@ -264,11 +285,13 @@ static void run_events_body(void) {
             if (dumpAt >= 0 && dumpTo && (long)host_frame() == dumpAt) {
                 extern u8 *host_vram_bank(int i);
                 extern u32 host_vram_bank_size(int i);
+                extern void host_vram_flush(void);
+                host_vram_flush();
                 FILE *df = fopen(dumpTo, "wb");
                 if (df) {
                     for (int b = 0; b < 9; b++) fwrite(host_vram_bank(b), 1, host_vram_bank_size(b), df);
-                    fwrite((u8 *)0x05000000, 1, 0x800, df);
-                    fwrite((u8 *)0x07000000, 1, 0x800, df);
+                    fwrite(gHostPltt, 1, sizeof gHostPltt, df);
+                    fwrite(gHostOam, 1, sizeof gHostOam, df);
                     for (u32 w = 0x04000000; w < 0x04001100; w += 4) { u32 v = R32(w); fwrite(&v, 4, 1, df); }  // display I/O
                     fclose(df);
                 }
@@ -279,7 +302,9 @@ static void run_events_body(void) {
         if (statsEvery && host_frame() % statsEvery == 0) {
             extern u8 *host_vram_bank(int i);
             extern u32 host_vram_bank_size(int i);
-            int pal = 0; for (int i = 0; i < 0x800; i++) pal += ((u8 *)0x05000000)[i] != 0;
+            extern void host_vram_flush(void);
+            host_vram_flush();
+            int pal = 0; for (int i = 0; i < 0x800; i++) pal += gHostPltt[i] != 0;
             fprintf(stderr, "stats: frame %llu dispcnt %08x/%08x bright %04x/%04x pal %d banks", (unsigned long long)host_frame(),
                     R32(0x04000000), R32(0x04001000), R16(0x0400006c), R16(0x0400106c), pal);
             for (int b = 0; b < 9; b++) { int nz = 0; u8 *p = host_vram_bank(b); for (u32 i = 0; i < host_vram_bank_size(b); i++) nz += p[i] != 0; fprintf(stderr, " %d", nz); }
@@ -365,7 +390,7 @@ static void dma_run(int ch) {
     u32 n = cnt & 0x1fffff, w = (cnt >> 26 & 1) ? 4 : 2;
     int dc = cnt >> 21 & 3, sc = cnt >> 23 & 3;
     if (n == 0) n = 0x200000;
-    if (src < 0x01ff8000 || dst < 0x01ff8000) {
+    if (src < 0x10000 || dst < 0x10000) {  // (a null pointer, a small number)
         fprintf(stderr, "host: DMA%d from %08lx to %08lx, control %08x: bad address\n", ch, (unsigned long)src,
                 (unsigned long)dst, cnt);
         R32(base + 8) = cnt & ~0x80000000u;
@@ -578,49 +603,42 @@ unsigned long long HostIo_Write(uintptr_t addr, unsigned int size, unsigned long
 }
 
 // ---- the memory map
-static void map_fixed(u32 a, u32 n) {
-    void *p = mmap((void *)(uintptr_t)a, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
-    if (p != (void *)(uintptr_t)a) { fprintf(stderr, "host: can't map %08x\n", a); exit(1); }
-}
-// main RAM: a memfd mapped at 0x02000000 and mirrored up to 0x02ffffff, as on the DS (the system work area at
-// 0x027ff000 is main RAM's last pages). The program's .gdata/.gbss (the game's variables) were placed at
-// 0x02000000 by the loader: they are copied into the memfd before it replaces them.
+// Only main RAM is still mapped at its DS address (0x02000000, 4 MB): the program's .gdata/.gbss (the game's
+// variables) are placed there by the loader (step 3.3 of docs/portability.md makes them ordinary data). Everything
+// else the game reaches by a DS address is a host object (include/host_mem.h, mem.c, vram.c). Main RAM is a memfd so
+// that the loaded pages can be copied into it before it replaces them; its mirrors (0x02400000-0x02ffffff) aren't
+// mapped any more (the system work area at 0x027ff000, which the game reached through them, is gHostSysWork).
+// With ACWW_HIGHMEM=2 nothing is mapped: only the loader's pages of gdata and gbss remain (the harness, below).
 extern char __stop_gdata[], __start_gbss[], __stop_gbss[];
-static u8 *sMainRam;
-u8 *host_main_ram(void) { return sMainRam; }
 static void map_main_ram(void) {
     int fd = memfd_create("dsram", 0);
     if (fd < 0 || ftruncate(fd, 0x400000) < 0) host_fatal("main RAM memfd");
-    sMainRam = mmap(0, 0x400000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (sMainRam == MAP_FAILED) host_fatal("main RAM map");
+    u8 *ram = mmap(0, 0x400000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (ram == MAP_FAILED) host_fatal("main RAM map");
     // the loaded pages: the one with the ELF headers and gdata from 0x02000000, gbss from 0x02040000
     u32 gdata_end = ((u32)(uintptr_t)__stop_gdata + 0xfff) & ~0xfffu;
-    memcpy(sMainRam, (void *)0x02000000, gdata_end - 0x02000000);
-    memcpy(sMainRam + ((u32)(uintptr_t)__start_gbss - 0x02000000), __start_gbss, __stop_gbss - __start_gbss);
-    // DTCM (0x027e0000-0x027e3fff, the program's .dtcm) takes precedence over the mirror there, as on the DS
-    static const struct { u32 at, n, off; } kMaps[] = {
-        {0x02000000, 0x400000, 0}, {0x02400000, 0x3e0000, 0}, {0x027e4000, 0x1c000, 0x3e4000},
-        {0x02800000, 0x400000, 0}, {0x02c00000, 0x400000, 0},
-    };
-    for (unsigned i = 0; i < sizeof kMaps / sizeof kMaps[0]; i++)
-        if (mmap((void *)(uintptr_t)kMaps[i].at, kMaps[i].n, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd,
-                 kMaps[i].off) == MAP_FAILED)
-            host_fatal("main RAM mirror");
+    memcpy(ram, (void *)0x02000000, gdata_end - 0x02000000);
+    memcpy(ram + ((u32)(uintptr_t)__start_gbss - 0x02000000), __start_gbss, __stop_gbss - __start_gbss);
+    if (mmap((void *)0x02000000, 0x400000, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd, 0) == MAP_FAILED)
+        host_fatal("main RAM");
+    munmap(ram, 0x400000);
+    close(fd);
 }
 
 // ---- ACWW_HIGHMEM=1 (x86-64 Linux): the low-4 GB poisoning harness (docs/portability.md 3.0). The root heap and
 // the game's thread stacks go above 4 GB (main.c, os.c: at addresses whose low word is in poisoned space), and
 // every range below 4 GB that isn't mapped when the game starts is reserved without access (as macOS's
-// __PAGEZERO): only the DS mappings still in use (ITCM, main RAM and its mirrors, DTCM, WRAM, palette, VRAM, OAM),
-// the program image and what the C library mapped before (its first brk heap) remain. A pointer cut to 32 bits
-// then faults at a low address (or, sign-extended, at a non-canonical one), and the crash report (debug_posix.c)
-// says where. A heap that would grow by brk can't: malloc falls back to mmap, above 4 GB.
+// __PAGEZERO): only main RAM (gdata/gbss), the program image and what the C library mapped before (its first brk
+// heap) remain. ACWW_HIGHMEM=2 doesn't map main RAM either (3.2): of the DS's address space only the loader's pages
+// of gdata and gbss remain. A pointer cut to 32 bits, or a DS address used as a pointer, then faults at a low
+// address (or, sign-extended, at a non-canonical one), and the crash report (debug_posix.c) says where. A heap that
+// would grow by brk can't: malloc falls back to mmap, above 4 GB.
 int host_highmem(void) {
     static int on = -1;
     if (on < 0) {
 #if defined(__x86_64__) && defined(__linux__)
         const char *e = getenv("ACWW_HIGHMEM");
-        on = e && *e && strcmp(e, "0");
+        on = e && *e && strcmp(e, "0") ? (atoi(e) >= 2 ? 2 : 1) : 0;
 #else
         on = 0;
 #endif
@@ -677,19 +695,13 @@ static void highmem_poison(void) {
 #endif
 }
 
-// after every fixed mapping is in place (main.c's early_init: the DS memory and the VRAM windows)
+// after main RAM is mapped (main.c's early_init)
 void host_highmem_init(void) {
     if (host_highmem()) highmem_poison();
 }
 
 void host_map_memory(void) {
-    map_fixed(0x01ff8000, 0x8000);    // ITCM
-    map_main_ram();                   // main RAM, 4 MB at 0x02000000 and its mirrors (the game's data is in it)
-    // DTCM (0x027e0000): the program's .dtcm section (the DTCM module's variables), mapped by the loader
-    map_fixed(0x03000000, 0x10000);   // shared WRAM
-    map_fixed(0x05000000, 0x800);     // palettes
-    map_fixed(0x06000000, 0x900000);  // VRAM: vram.c maps the banks into it
-    map_fixed(0x07000000, 0x800);     // OAM
+    if (host_highmem() < 2) map_main_ram();  // main RAM, 4 MB at 0x02000000 (the game's data is in it)
     host_debug_init();
     R16(0x04000130) = 0x3ff;
     if (getenv("ACWW_IOHIST")) atexit(io_hist_dump);

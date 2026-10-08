@@ -1,11 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "host_mem.h"
 #include "nitro/io_access.h"
 #include "proto/ov001/unk_ov001_022265ac.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
 extern "C" {
-extern u8 data_027e0000[];
 s32 OS_DisableIrqMask(s32);
 s32 OS_EnableIrqMask(s32);
 void OS_SetIrqMask(u32);
@@ -44,7 +44,7 @@ void WfcIrq_Restore()
 void WfcIrq_VBlank()
 {
     WfcTask_RunList(1);
-    u32 *g = (u32 *)data_027e0000;
+    u32 *g = (u32 *)HW_DTCM_BLOCK;
     g += 0xc00;
     g[0x3fe] |= 1;
 }

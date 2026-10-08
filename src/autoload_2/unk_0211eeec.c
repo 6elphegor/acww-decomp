@@ -49,7 +49,7 @@ extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
-extern u32 OS_GetDTCMAddress(void);
+extern void *OS_GetDTCMAddress(void);  // (the host's DTCM block)
 extern void MI_StopDma(u32);
 extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);

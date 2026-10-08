@@ -2,6 +2,7 @@
 // G001a part 3: the key-pad file, autoload_2 .text 0x020e8208-0x020e82bc (Pad_Update and an empty function).
 // mwcc 1.2/base, C++, ARM, -O4,p. Owns .rodata 0x02135914-0x02135934 and autoload_3 .bss 0x021f47d0-0x021f47e0.
 #include "types.h"
+#include "host_mem.h"
 #include "sys/TreeNode.h"
 #include "gfx/VecFx32.h"
 #include "sys/ListNode.h"
@@ -79,10 +80,10 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 // PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work X/Y/fold word 0x027fffa8)
 static inline u16 PAD_Read(void) {
-    return (u16)(((IO_R((vu16 *)0x04000130) | *(vu16 *)0x027fffa8) ^ 0x2fff) & 0x2fff);
+    return (u16)(((IO_R((vu16 *)0x04000130) | *HW_SYSWORK(vu16, buttonXY)) ^ 0x2fff) & 0x2fff);
 }
 static inline BOOL PAD_DetectFold(void) {
-    return (*(vu16 *)0x027fffa8 & 0x8000) >> 15;
+    return (*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15;
 }
 
 #define FX_SinIdx(a) data_02135f44[((a) >> 4) * 2]

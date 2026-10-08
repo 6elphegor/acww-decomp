@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_mem.h"
 #include "types.h"
 #include "sdk_linker_symbols.h"
 #include "nitro/io_access.h"
@@ -50,7 +51,7 @@ u32 Ground_GetExitAtPos(void *p);
 u32 GroundAttr_GetFootstepSe(u32 a);
 u32 ItemInfo_GetIndoorUnk1(u16 *p);
 extern u8 gFieldSceneKind;
-void MIi_CpuClearFast(u32 value, u32 dst, u32 size);
+void MIi_CpuClearFast(u32 value, void *dst, u32 size);
 void GX_SetBankForLCDC(u32 a);
 void GX_DisableBankForLCDC(void);
 u32 OS_EnableInterrupts(void);
@@ -58,7 +59,7 @@ void OS_RestoreInterrupts(u32 a);
 void FS_Init(u32 a);
 void DC_FlushRange(u32 a, u32 b);
 void OS_SetProtectionRegion2(u32 a);
-void OS_SetArenaHi(u32 a, u32 b);
+void OS_SetArenaHi(s32 id, void *hi);
 void Math_InitSqrt64(void);
 void HBlank_Init(void);
 void OS_SetIrqFunction(u32 a, void (*cb)(void));
@@ -230,7 +231,7 @@ extern "C" void Startup_OnWvrStartUp(u32 a, u32 b) {
 
 extern "C" void Startup_SetupMainArena(void) {
     OS_SetProtectionRegion2(0x23ff017);
-    OS_SetArenaHi(0, 0x23ff000);
+    OS_SetArenaHi(0, HostMainRam_Ptr(0x023ff000));  // (main RAM up to the system area: the host's main RAM block)
 }
 
 // (the DS filled the overlay area with a trap pattern: the host build links the overlays in, its variables can
@@ -247,7 +248,7 @@ extern "C" void NitroStartUp(void) {
     GX_Init();
     GX_SetBankForLCDC(8);
     zero = 0;
-    MIi_CpuClearFast(zero, 0x6800000, 0x20000);
+    MIi_CpuClearFast(zero, HostVram_CpuPtr(0x06800000), 0x20000);
     GX_DisableBankForLCDC();
     old = IO_R(ime);
     IO_W(ime, 1);

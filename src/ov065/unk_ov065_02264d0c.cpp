@@ -1829,7 +1829,7 @@ void Ssl_Shutdown(IpSocket *o) {
 }
 
 void Ssl_EnableOnCurrentSocket(u32 v) {
-    OSi_ReferSymbol((void *)0x2000c14);
+    OSi_ReferSymbol(0);  // (the DS address 0x2000c14 of an SDK version string; an empty function)
     IpSocket *s = (IpSocket *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         s->useSsl = v;

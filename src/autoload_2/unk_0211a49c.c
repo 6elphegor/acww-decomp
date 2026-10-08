@@ -1,4 +1,5 @@
 #include "sys/DtorEntry.h"
+#include "host_mem.h"
 #include "nitro/fs.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02119020.h"
@@ -66,7 +67,7 @@ extern DtorEntry *data_0220066c;
 extern Digest20 data_020e74ec[];
 extern Digest20 data_020e74ec_end[];
 
-#define REG_BOOTTYPE (*(volatile u16 *)0x027ffc40)
+#define REG_BOOTTYPE (*HW_SYSWORK(volatile u16, wmBootBuf))
 
 static inline BOOL IsBusy(volatile FSFile *f) {
     BOOL r;
@@ -94,10 +95,10 @@ static inline BOOL IsStarted(volatile FSArc *a) {
     return r;
 }
 static inline const FSROMTable *GetFNT(void) {
-    return (const FSROMTable *)0x027ffe40;
+    return HW_SYSWORK_AT(const FSROMTable, romHeader, 0x40);
 }
 static inline const FSROMTable *GetFAT(void) {
-    return (const FSROMTable *)0x027ffe48;
+    return HW_SYSWORK_AT(const FSROMTable, romHeader, 0x48);
 }
 static inline BOOL IsLoaded(volatile FSArc *a) {
     BOOL r;
@@ -179,7 +180,7 @@ BOOL FSi_LoadOverlayInfoCore(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u
 
 // FS_LoadOverlayInfo
 static inline const FSROMTable *GetOVT(int target) {
-    return (target == 0) ? (const FSROMTable *)0x027ffe50 : (const FSROMTable *)0x027ffe58;
+    return (target == 0) ? HW_SYSWORK_AT(const FSROMTable, romHeader, 0x50) : HW_SYSWORK_AT(const FSROMTable, romHeader, 0x58);
 }
 BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id) {
     const FSOvtCache *t = (target == 0) ? &data_021fea84 : &data_021fea8c;

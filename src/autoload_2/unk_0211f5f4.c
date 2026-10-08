@@ -1,4 +1,5 @@
 #include "sys/CardCommon.h"
+#include "host_mem.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK region, autoload_2 0x0211f5f4-0x0211f800. ARM code, mwcc 1.2/base.
@@ -49,7 +50,7 @@ extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
-extern u32 OS_GetDTCMAddress(void);
+extern void *OS_GetDTCMAddress(void);  // (the host's DTCM block)
 extern void MI_StopDma(u32);
 extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
@@ -95,7 +96,7 @@ void CARDi_SetRomOp(u32 hi, u32 lo);
 BOOL CARDi_TryReadCardDma(CardCommon *req);
 
 BOOL func_0211f7e4(void) {
-    return *(u16 *)0x027ffcf4 != 0;
+    return *HW_SYSWORK_AT(u16, nvramUserInfo, 0x74) != 0;
 }
 
 u32 WM_GetLinkLevel(void) {
@@ -125,7 +126,7 @@ u32 WM_GetDispersionBeaconPeriod(void) {
     OS_GetMacAddress(mac);
     sum = i = 0;
     for (; i < 6; i++) sum = sum + mac[i];
-    sum = sum + *(u32 *)0x027ffc3c;
+    sum = sum + *HW_SYSWORK(u32, vblankCount);
     sum = sum * 7;
     return (u16)(sum % 20 + 200);
 }
@@ -137,7 +138,7 @@ u32 WM_GetDispersionScanPeriod(void) {
     OS_GetMacAddress(mac);
     sum = i = 0;
     for (; i < 6; i++) sum = sum + mac[i];
-    sum = sum + *(u32 *)0x027ffc3c;
+    sum = sum + *HW_SYSWORK(u32, vblankCount);
     sum = sum * 13;
     return (u16)(sum % 10 + 30);
 }

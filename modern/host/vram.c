@@ -1,34 +1,49 @@
-// Host build: DS VRAM banking. The nine banks (A-I) live in one memfd; VRAMCNT decides where the CPU sees each one
-// (the LCDC window at 0x06800000, the engines' BG and OBJ windows), and every change remaps the windows with mmap.
-// Banks used for textures, texture palettes, extended palettes or the ARM7 aren't visible to the CPU. The
-// renderer (melon.cpp) reads the banks through host_vram_bank().
+// Host build: DS VRAM banking without fixed mappings. The nine banks (A-I) are host memory (the renderer's view:
+// host_vram_bank); the CPU sees VRAM through five windows (engine A's BG and OBJ, engine B's BG and OBJ, the LCDC
+// window), host arrays that HostVram_CpuPtr resolves a DS address into. VRAMCNT decides which bank shows where in
+// the windows, as on the DS: a window holds the contents of the banks mapped into it, kept in step with the banks -
+// the windows are written back to their banks before anything reads the banks (host_vram_flush: the renderer at
+// each frame, the debug dumps) and at every VRAMCNT change, which then fills the windows from the banks' new places
+// (the parts with no bank read 0, as before, when the windows were remapped with mmap). So a pointer the game keeps
+// across a VRAMCNT change sees what the DS would show at that address, and a copy that runs from one bank into the
+// next in a window works as on the DS. Banks used for textures, texture palettes, extended palettes or the ARM7
+// aren't visible to the CPU. Where two banks overlap in a window the later one (in A-I order) shows.
 
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <unistd.h>
 
 #include "host.h"
+#include "host_mem.h"
 
+enum { BANK_TOTAL = 0xa4000, GRANULE = 0x4000 };
 static const u32 kSize[9] = {0x20000, 0x20000, 0x20000, 0x20000, 0x10000, 0x4000, 0x4000, 0x8000, 0x4000};
 static const u32 kLcdc[9] = {0x06800000, 0x06820000, 0x06840000, 0x06860000, 0x06880000, 0x06890000, 0x06894000,
                              0x06898000, 0x068a0000};
 static u32 sOffset[9];
-static int sFd = -1;
-static u8 *sBanks;
+static u8 sBanks[BANK_TOTAL] __attribute__((aligned(0x20000)));
 static u8 sCnt[9];
 
 u8 *host_vram_bank(int i) { return sBanks + sOffset[i]; }
 u32 host_vram_bank_size(int i) { return kSize[i]; }
 
-static const struct { u32 base, size; } kWindows[] = {
-    {0x06000000, 0x80000},  // engine A BG
-    {0x06200000, 0x20000},  // engine B BG
-    {0x06400000, 0x40000},  // engine A OBJ
-    {0x06600000, 0x20000},  // engine B OBJ
-    {0x06800000, 0xa4000},  // LCDC
+static u8 sWinBgA[0x80000] __attribute__((aligned(0x80000)));
+static u8 sWinBgB[0x20000] __attribute__((aligned(0x20000)));
+static u8 sWinObjA[0x40000] __attribute__((aligned(0x40000)));
+static u8 sWinObjB[0x20000] __attribute__((aligned(0x20000)));
+static u8 sWinLcdc[0xa4000] __attribute__((aligned(0x20000)));
+static const struct { u32 base, size; u8 *mem; } kWindows[] = {
+    {0x06000000, sizeof sWinBgA, sWinBgA},    // engine A BG
+    {0x06200000, sizeof sWinBgB, sWinBgB},    // engine B BG
+    {0x06400000, sizeof sWinObjA, sWinObjA},  // engine A OBJ
+    {0x06600000, sizeof sWinObjB, sWinObjB},  // engine B OBJ
+    {0x06800000, sizeof sWinLcdc, sWinLcdc},  // LCDC
 };
+#define NWIN (sizeof kWindows / sizeof kWindows[0])
+
+// the windows in granules of 16 KB (every bank's size and place is a multiple): which bank shows there (-1: none)
+// and at which offset in the bank
+enum { NGRAN = (0x80000 + 0x20000 + 0x40000 + 0x20000 + 0xa4000) / GRANULE };
+static struct { u8 *win; s32 bank; u32 off; } sGran[NGRAN];
 
 // the CPU address of bank i under control value c, or 0
 static u32 bank_address(int i, u8 c) {
@@ -68,15 +83,38 @@ static u32 bank_address(int i, u8 c) {
     return 0;
 }
 
+// the granule index of CPU address a, or -1
+static int granule(u32 a) {
+    int g = 0;
+    for (unsigned w = 0; w < NWIN; w++) {
+        if (a >= kWindows[w].base && a - kWindows[w].base < kWindows[w].size) return g + (int)((a - kWindows[w].base) / GRANULE);
+        g += (int)(kWindows[w].size / GRANULE);
+    }
+    return -1;
+}
+
+// the windows' contents back into the banks that show there
+void host_vram_flush(void) {
+    for (int g = 0; g < NGRAN; g++)
+        if (sGran[g].bank >= 0) memcpy(sBanks + sOffset[sGran[g].bank] + sGran[g].off, sGran[g].win, GRANULE);
+}
+
 static void remap(void) {
-    for (unsigned w = 0; w < sizeof kWindows / sizeof kWindows[0]; w++)
-        mmap((void *)(uintptr_t)kWindows[w].base, kWindows[w].size, PROT_READ | PROT_WRITE,
-             MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1, 0);
+    host_vram_flush();
+    for (int g = 0; g < NGRAN; g++) sGran[g].bank = -1;
     for (int i = 0; i < 9; i++) {
         u32 a = bank_address(i, sCnt[i]);
-        if (a && mmap((void *)(uintptr_t)a, kSize[i], PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, sFd,
-                      sOffset[i]) == MAP_FAILED)
-            fprintf(stderr, "vram: can't map bank %c at %08x\n", 'A' + i, a);
+        if (!a) continue;
+        for (u32 off = 0; off < kSize[i]; off += GRANULE) {
+            int g = granule(a + off);
+            if (g < 0) { fprintf(stderr, "vram: bank %c at %08x outside the windows\n", 'A' + i, a + off); continue; }
+            sGran[g].bank = i;
+            sGran[g].off = off;
+        }
+    }
+    for (int g = 0; g < NGRAN; g++) {
+        if (sGran[g].bank >= 0) memcpy(sGran[g].win, sBanks + sOffset[sGran[g].bank] + sGran[g].off, GRANULE);
+        else memset(sGran[g].win, 0, GRANULE);
     }
 }
 
@@ -89,12 +127,22 @@ void host_vram_control(u32 addr, u8 value) {
     remap();
 }
 
+// the CPU's view of VRAM address a. An address outside the windows (a mirror the DS has and the host doesn't) is
+// reported once and gets a scratch area, as the anonymous pages there did before
+static u8 sScratch[0x80000];
+void *HostVram_CpuPtr(unsigned int a) {
+    for (unsigned w = 0; w < NWIN; w++)
+        if (a >= kWindows[w].base && a - kWindows[w].base < kWindows[w].size) return kWindows[w].mem + (a - kWindows[w].base);
+    static int reported;
+    if (!reported++) fprintf(stderr, "vram: CPU address %08x outside the VRAM windows (frame %llu)\n", a, (unsigned long long)host_frame());
+    return sScratch;
+}
+
 void host_vram_init(void) {
     u32 total = 0;
     for (int i = 0; i < 9; i++) { sOffset[i] = total; total += kSize[i]; }
-    sFd = memfd_create("dsvram", 0);
-    if (sFd < 0 || ftruncate(sFd, total) < 0) host_fatal("vram memfd");
-    sBanks = mmap(0, total, PROT_READ | PROT_WRITE, MAP_SHARED, sFd, 0);
-    if (sBanks == MAP_FAILED) host_fatal("vram map");
+    int g = 0;
+    for (unsigned w = 0; w < NWIN; w++)
+        for (u32 off = 0; off < kWindows[w].size; off += GRANULE, g++) sGran[g].win = kWindows[w].mem + off;
     remap();
 }

@@ -1,4 +1,5 @@
 #include "game/CollisionState.h"
+#include "host_mem.h"
 #include "host_shared_calls.h"
 #include "proto/main/unk_0202fa70.h"
 // mwcc-version: 1.2/sp2
@@ -2919,7 +2920,7 @@ BOOL PlayerActor::checkLidAndError() {
             (((PlayerActor *)this))->requestErrorMessage(0, 6, -1);
             return TRUE;
         }
-        if ((s32)(*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) {
+        if ((s32)(*HW_SYSWORK(volatile u16, buttonXY) & 0x8000) >> 15) {
             (((PlayerActor *)this))->requestLidClosed(1, -1);
             return TRUE;
         }
@@ -6475,7 +6476,7 @@ void PlayerActor::lidClosedUpdateAnim() {
 
 void PlayerActor::lidClosedCheckOpen() {
     using namespace nF;
-    if (((*(vu16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
+    if (((*HW_SYSWORK(vu16, buttonXY) & 0x8000) >> 15) == 0) {
         (this)->requestWait(3, 1, -1);
     }
 }

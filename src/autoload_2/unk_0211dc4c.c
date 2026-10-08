@@ -245,7 +245,7 @@ void CARDi_RequestStreamCommandCore(CARDCommon *c) {
     void (*cb)(void *);
     void *arg;
     u32 irq;
-    OSi_ReferSymbol((void *)0x02000bbc);
+    OSi_ReferSymbol(0);  // (the DS address 0x02000bbc of an SDK version string; an empty function)
     do {
         u32 len = c->len;
         if (len > pg) len = pg;
@@ -290,7 +290,7 @@ void CARDi_RequestStreamCommandCore(CARDCommon *c) {
 BOOL CARDi_RequestStreamCommand(uptr a, uptr b, u32 len, void (*cb)(void *), void *arg, BOOL async, u32 g, u32 h, u32 mode) {
     CARDCommon *const c = &data_021fec00;
     u32 irq;
-    OSi_ReferSymbol((void *)0x02000bbc);
+    OSi_ReferSymbol(0);  // (the DS address 0x02000bbc of an SDK version string; an empty function)
     irq = OS_DisableInterrupts();
     while (c->flag & 4) OS_SleepThread(&c->tq);
     c->flag |= 4;
@@ -323,7 +323,7 @@ BOOL CARD_IdentifyBackup(u32 op) {
     void (*cb)(void *);
     void *arg;
     u32 irq;
-    OSi_ReferSymbol((void *)0x02000bbc);
+    OSi_ReferSymbol(0);  // (the DS address 0x02000bbc of an SDK version string; an empty function)
     if (op == 0) Fatal_Trap();
     CARD_CheckEnabled();
     irq = OS_DisableInterrupts();

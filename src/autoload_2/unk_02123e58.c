@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_mem.h"
 #include "nitro/fs.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
@@ -326,7 +327,7 @@ u32 MB_GetSegmentLength(FSFile *file) {
         if ((u32)FS_ReadFile(file, buf, 0x60) >= 0x60) hdr = buf;
         FS_SeekFile(file, pos, 0);
     } else {
-        hdr = (u32 *)0x027ffe00;
+        hdr = HW_SYSWORK(u32, romHeader);
     }
     if (hdr != 0) {
         size = hdr[11] + 0x268 + hdr[15];

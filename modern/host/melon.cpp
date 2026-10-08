@@ -1,7 +1,8 @@
 // Host build: the DS display (2D engines and 3D engine) rendered by melonDS (GPL-3.0; docs/host.md). A melonDS NDS
 // object is created with both of its CPUs halted for good: the game runs natively, and this file feeds the GPU what
 // the game writes - display and 3D registers (3D commands are executed at once, so the matrix and test results the
-// game reads back are current), VRAM banks, palettes and OAM - and has it render one frame per VBlank.
+// game reads back are current), VRAM banks, palettes and OAM (the host objects: vram.c, include/host_mem.h) - and
+// has it render one frame per VBlank.
 // Built against a melonDS core patched for this (tools/host/melonds.patch: GPU3D::HostDrain and friends).
 
 #include "NDS.h"
@@ -17,6 +18,8 @@ using namespace melonDS;
 extern "C" {
 u8 *host_vram_bank(int i);
 u32 host_vram_bank_size(int i);
+void host_vram_flush(void);
+extern unsigned char gHostPltt[0x800], gHostOam[0x800];  // include/host_mem.h
 }
 
 static NDS *sNds;
@@ -63,6 +66,7 @@ extern "C" u32 melon_read32(u32 addr) {
 // copy what changed in the host's VRAM banks into the GPU's (marking it dirty for the renderer's caches)
 static void sync_vram(void) {
     GPU &g = sNds->GPU;
+    host_vram_flush();  // (the CPU's windows into the banks)
     for (int b = 0; b < 9; b++) {
         const u8 *src = host_vram_bank(b);
         u8 *dst = g.VRAM[b];
@@ -74,8 +78,9 @@ static void sync_vram(void) {
             }
         }
     }
-    memcpy(g.Palette, (const void *)0x05000000, sizeof g.Palette);
-    memcpy(g.OAM, (const void *)0x07000000, sizeof g.OAM);
+    static_assert(sizeof g.Palette == sizeof gHostPltt && sizeof g.OAM == sizeof gHostOam, "palette, OAM");
+    memcpy(g.Palette, gHostPltt, sizeof g.Palette);
+    memcpy(g.OAM, gHostOam, sizeof g.OAM);
     g.HostMarkPaletteOAMDirty();
 }
 

@@ -1,4 +1,5 @@
 #include "sys/CardCommon.h"
+#include "host_mem.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK CARD (ROM read) + WM (wireless manager) region, autoload_2 0x0211e3fc-0x0211f800. ARM code, mwcc 1.2/base.
@@ -49,7 +50,7 @@ extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
-extern u32 OS_GetDTCMAddress(void);
+extern void *OS_GetDTCMAddress(void);  // (the host's DTCM block)
 extern void MI_StopDma(u32);
 extern void MIi_CardDmaCopy32(u32, uptr, uptr, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
@@ -97,8 +98,8 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);
 // NOT in S013's range (starts at 0x0211e3fc < 0x0211e400); handed to the unit below.
 
 static inline BOOL CARDi_IsInTcm(uptr buf, u32 len) {
-const uptr i = 0x01ff8000;
-    const uptr d = OS_GetDTCMAddress();
+const uptr i = (uptr)HW_ITCM_BLOCK;  // (the host's ITCM and DTCM blocks, include/host_mem.h)
+    const uptr d = (uptr)OS_GetDTCMAddress();
 return ((i < buf + len) && (i + 0x8000 > buf)) || ((d < buf + len) && (d + 0x4000 > buf));
 }
 BOOL CARDi_TryReadCardDma(CardCommon *req) {
@@ -115,7 +116,7 @@ if ((dst & 3) == 0 && c->dma <= 3) { if (!CARDi_IsInTcm(dst, len)) ok = 1; }
     if (aligned) {
         if (len != 0) use = 1;
     }
-    req->arg = (*(u32 *)0x027ffe60 & ~0x7000000) | 0xa1000000;
+    req->arg = (*HW_SYSWORK_AT(u32, romHeader, 0x60) & ~0x7000000) | 0xa1000000;
     if (use) {
         u32 irq = OS_DisableInterrupts();
         IC_InvalidateRange((void *)dst, len);

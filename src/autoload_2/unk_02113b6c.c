@@ -1,4 +1,5 @@
 #include "sys/OSThread.h"
+#include "host_mem.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK os_thread.c: OS_InitThread, autoload_2 0x02113b6c-0x02113cc8. ARM code, mwcc 1.2/base.
 #include "uptr.h"
@@ -20,11 +21,9 @@ extern OSThread *data_021fcc30;    // OSi_ThreadInfo.current
 extern OSThread data_021fcc3c;     // OSi_IdleThread
 extern OSThread data_021fccfc;     // OSi_LauncherThread
 extern u32 data_021fcdbc[50];      // OSi_IdleThreadStack (200 bytes; the original passes its end, data_021fce84)
-extern u8 data_027e0000[];         // SDK_AUTOLOAD_DTCM_START (HW_DTCM): a real relocation to the dtcm module
 
-#define data_027fffa0 (*(volatile u32 *)0x027fffa0)  // the system area: a 32-bit address (OSThreadInfo *)
 
-#define HW_DTCM data_027e0000
+#define HW_DTCM HW_DTCM_BLOCK  // (the host's DTCM block, include/host_mem.h)
 #define HW_DTCM_SVC_STACK (HW_DTCM + 0x3f80)
 #define OSi_SYS_STACK_SIZE SDK_SYS_STACKSIZE
 #define OSi_IRQ_STACK_SIZE SDK_IRQ_STACKSIZE
@@ -45,7 +44,7 @@ void OS_InitThread(void) {
     data_021fccfc.profiler = 0;
     data_021fcc2c.list = &data_021fccfc;
     data_021fcc2c.current = &data_021fccfc;
-    stackLo = (OSi_SYS_STACK_SIZE <= 0) ? (u8 *)(uptr)SDK_SECTION_ARENA_DTCM_START - OSi_SYS_STACK_SIZE
+    stackLo = (OSi_SYS_STACK_SIZE <= 0) ? HW_DTCM - OSi_SYS_STACK_SIZE
                                         : HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE - OSi_SYS_STACK_SIZE;
     data_021fccfc.stackBottom = HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE;
     data_021fccfc.stackTop = stackLo;
@@ -56,7 +55,7 @@ void OS_InitThread(void) {
     data_021fccfc.joinQueue.head = 0;
     data_021fcc2c.isNeedRescheduling = 0;
     data_021fcc2c.irqDepth = 0;
-    data_027fffa0 = (u32)(uptr)&data_021fcc2c;
+    gHostSysWork.threadInfoMain = &data_021fcc2c;  // HW_THREADINFO_MAIN
     OS_SetSwitchThreadCallback(0);
     // (the idle thread's procedure takes no argument)
     OS_CreateThread(&data_021fcc3c, (void (*)(void *))OSi_IdleThreadProc, 0, data_021fcdbc + 50, 200, 31);

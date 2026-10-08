@@ -19,11 +19,11 @@ No worktree was needed. All compiles read the main checkout and wrote only to th
 
 | # | Dependency | Size (measured) | Blocks | Portable replacement |
 |---|---|---|---|---|
-| A | Game data and memory at fixed DS addresses (gdata 0x02001000, gbss 0x02040000, .dtcm 0x027e0000, main RAM memfd and its mirrors, ITCM, WRAM, palette, VRAM, OAM, I/O pages) | 7 fixed mappings in hw.c, 3 `--section-start` options, `-Ttext-segment`, `MAP_32BIT`, root heap at 0x50000000 | macOS (`__PAGEZERO` covers the low 4 GB), Windows (no fixed low mappings in practice), PIE everywhere | Ordinary data/bss and heap blocks; host arrays for the system work area, DTCM, palette, OAM and VRAM banks |
+| A | Game data and memory at fixed DS addresses (gdata 0x02001000, gbss 0x02040000, .dtcm 0x027e0000, main RAM memfd and its mirrors, ITCM, WRAM, palette, VRAM, OAM, I/O pages) | 7 fixed mappings in hw.c, 3 `--section-start` options, `-Ttext-segment`, `MAP_32BIT`, root heap at 0x50000000 | macOS (`__PAGEZERO` covers the low 4 GB), Windows (no fixed low mappings in practice), PIE everywhere | Ordinary data/bss and heap blocks; host arrays for the system work area, DTCM, palette, OAM and VRAM banks. **Step 3.2 done:** only main RAM (gdata/gbss) is still mapped, 2 `--section-start` options left (3.3) |
 | B | Pointers kept in 32-bit integers (works only below 4 GB) | C: 121 pointer-to-int + 96 int-to-pointer casts (55 files); C++: 186 int-to-pointer casts (67 files); explicit `(u32)(uptr)` 92 and `(T*)(uptr)` 31; PXI 26-bit pointers; snd7 38 conversions; DMA source/destination registers; resource offsets relocated in place | macOS arm64 and every build with memory above 4 GB | Real pointer types; offsets resolved when used; ARM7 services called directly. A low-4 GB poisoning harness finds the remaining sites on Linux. **Steps 3.0/3.1 done:** the harness (`ACWW_HIGHMEM`) runs every script; 0 C and 0 C++ int/pointer casts left (`--strict-c` clean); PXI, snd7 and DMA with real pointers |
-| C | DS addresses used as numbers in the source | Casts of DS constants to pointers (I/O excluded): 229 (system work area/DTCM 160 in 56 files, VRAM 32, palette 18, OAM 5, main RAM 10, WRAM 2, GBA slot 2). Address range checks: about 25 in 8 files. VRAM address tables: 2. I/O register casts: 830 in 121 files (harmless: only used as numbers by `IO_*`) | A, B | Named host objects through macros (`HW_SYSWORK`, `HW_PLTT`, `HW_OAM`, `HostVram_CpuPtr`) |
+| C | DS addresses used as numbers in the source | Casts of DS constants to pointers (I/O excluded): 229 (system work area/DTCM 160 in 56 files, VRAM 32, palette 18, OAM 5, main RAM 10, WRAM 2, GBA slot 2). Address range checks: about 25 in 8 files. VRAM address tables: 2. I/O register casts: 830 in 121 files (harmless: only used as numbers by `IO_*`) | A, B | Named host objects through macros (`HW_SYSWORK`, `HW_PLTT`, `HW_OAM`, `HostVram_CpuPtr`). **Done (3.2):** 0 casts of DS constants to pointers outside I/O |
 | D | Signals and CPU tricks | SIGSEGV I/O emulation and single-stepping (x86 only), interrupt injection under SP (`-mno-red-zone`, irq_entry.S), SIGFPE division emulation, SIGVTALRM hang guard, SIGPROF, `ucontext` gregs | macOS (different ucontext, no x86), Windows (no signals), arm64 (no division trap) | Already almost unused: 0 trapped I/O accesses in 11043 attract-demo frames (`ACWW_IOHIST`); hang guard silent over 25001 play frames; 1 division-by-zero site (`spl_scl_in_out`). Replace with explicit code. **Done 2026-10-08 (phase 1): only debug aids remain, behind `HOST_DEBUG_POSIX`** |
-| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except the two partial links** (2.4-2.7, 2.9-2.11, 0.2): left are `ld -r -T order.ld` (variable order, 2.8), `ld -r -T dtcm.ld` (3.2) and the `--section-start`/`-Ttext-segment` options (3.3) |
+| E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except the two partial links** (2.4-2.7, 2.9-2.11, 0.2): left are `ld -r -T order.ld` (variable order, 2.8) and the `--section-start`/`-Ttext-segment` options (3.3); `ld -r -T dtcm.ld` gone (3.2) |
 | F | GCC-only leniency and flags | Clang (Apple's only compiler) rejects 47 units with 2370 errors (1735 distinct) that GCC accepts. **0 after step 2.1.** GCC-only flags: `-malign-data=abi`, `-fpcc-struct-return` (unsupported by clang off i386; changes 39 functions in 17 units) | macOS | Fix the declarations (the PROTO_LOCAL backlog); drop the flags after testing them |
 | G | LLP64 (Windows) | 831 errors (mostly `IO_ADDR_`'s `(unsigned long)` cast), 8 `__LP64__` checks, `unsigned long` pointer words in modern/ds/overlays.c. **0 beyond the baseline with `-mno-ms-bitfields` after step 2.3.** MS bitfield layout breaks the save `static_assert`s (696 + 54 + others); the MSVC ABI also breaks member-pointer casts (133) and the MWCC_LAYOUT tail-padding trick | Windows | One-line `IO_ADDR_` fix; MinGW-w64 (clang or gcc, Itanium C++ ABI) with `-mno-ms-bitfields`, **not MSVC**. With these, only 11 extra diagnostics remain |
 | H | Display and frontend | melonDS (GPL-3.0, patched, 32-bit core for i386) behind 8 `melon_*` functions; a separate SDL2 viewer process through `shm_open` + `fork`/`execl` | Licence; process model on Windows | In-process SDL frontend; own renderer behind the same 8-function interface |
@@ -43,18 +43,18 @@ The good news:
 |---|---|---|---|
 | Game initialised data `gdata` | 0x02001000 | `-Wl,--section-start=gdata=0x02001000`; variables in DS order (order.ld) | tools/configure_host.py:65-66; tools/host_order.py |
 | Game bss `gbss` | 0x02040000 | `--section-start=gbss=0x02040000` (x86-64: 0x11bbf0 bytes, ends at 0x0215bbf0) | configure_host.py:66; `readelf -S build/host64_usa/acww` |
-| DTCM module variables `.dtcm` | 0x027e0000 (16 KB) | separate `ld -r -T dtcm.ld` of `src/dtcm/*` (9 units), `--section-start=.dtcm` | configure_host.py:160-167, :65 |
-| Main RAM, 4 MB, mirrored to 0x02ffffff | 0x02000000 | `memfd_create` + 5 `MAP_FIXED` mappings; gdata/gbss copied into it via `__stop_gdata`, `__start_gbss`, `__stop_gbss` | modern/host/hw.c:859-883 |
-| ITCM | 0x01ff8000 | `map_fixed` (`MAP_FIXED_NOREPLACE`) | hw.c:855-858, :895 |
-| Shared WRAM | 0x03000000 | `map_fixed` 64 KB (the WRAM arena constant 0x037f8000 is **not** mapped) | hw.c:898; src/autoload_2/unk_02114810.c:31 |
-| Palette, OAM | 0x05000000, 0x07000000 | `map_fixed` 0x800 each | hw.c:899, :901 |
-| VRAM windows | 0x06000000-0x068a3fff | 9 banks in a memfd, remapped with `MAP_FIXED` into 5 windows on every VRAMCNT change | modern/host/vram.c:71-80, :95 |
+| DTCM module variables `.dtcm` | 0x027e0000 (16 KB) | **3.2:** ordinary variables; DTCM is a 16 KB host block (`gHostDtcm`, include/host_mem.h) | was configure_host.py:160-167, :65 |
+| Main RAM, 4 MB, mirrored to 0x02ffffff | 0x02000000 | `memfd_create` + 5 `MAP_FIXED` mappings; gdata/gbss copied into it via `__stop_gdata`, `__start_gbss`, `__stop_gbss`. **3.2:** one mapping, no mirrors (`ACWW_HIGHMEM=2`: none); the arena past the data is a host block (`gHostMainRam`, DS 0x02200000-0x023fffff) | modern/host/hw.c `map_main_ram` |
+| ITCM | 0x01ff8000 | **3.2:** a 32 KB host block (`gHostItcm`: only an arena on the host) | modern/host/mem.c |
+| Shared WRAM | 0x03000000 | **3.2:** not mapped (unused); the empty WRAM arena (0x037f8000) is `gHostWramArena` | mem.c |
+| Palette, OAM | 0x05000000, 0x07000000 | **3.2:** host arrays `gHostPltt`, `gHostOam` (`HW_PLTT`, `HW_OAM`) | mem.c |
+| VRAM windows | 0x06000000-0x068a3fff | **3.2:** 9 banks and 5 CPU window arrays (`HostVram_CpuPtr`), kept in step on every VRAMCNT change and before the renderer reads the banks | modern/host/vram.c |
 | I/O pages | 0x04000000, 0x04001000, 0x04100000 | memfd mapped twice (`PROT_NONE` for the game, read/write for the runtime) | hw.c:885-892, :902-904 |
 | x86-64 program image | 0x10000000 | `-Wl,-Ttext-segment=0x10000000`, `-no-pie` | configure_host.py:72 |
 | x86-64 root heap | 0x50000000 (8 MB); above 4 GB (0x5a0000000) with `ACWW_HIGHMEM` | `host_root_heap_region` | modern/host/main.c |
 | x86-64 thread stacks | below 4 GB (`mmap(... MAP_32BIT)`); above 4 GB (0x6b0000000 up) with `ACWW_HIGHMEM` | `host_stack_alloc` | modern/host/os.c |
 | Arena constants | 0x0229bdc0 etc. | `.set` absolute symbols `SDK_MAIN_ARENA_LO`, `SDK_SECTION_ARENA_*`, `OVERLAY_n_ID` | main.c:58-68 (68 references in 15 files) |
-| ROM header / system work area writes | 0x027ffe00, 0x027ffc00, 0x027ffc40, 0x027fff8c, 0x027ffde8, 0x027fffaa | host runtime writes the DS addresses directly | main.c:91-93; pxi7.c:159, :282-283, :396; frontend.c:86 |
+| ROM header / system work area writes | 0x027ffe00, 0x027ffc00, 0x027ffc40, 0x027fff8c, 0x027ffde8, 0x027fffaa | **3.2:** the host runtime writes `gHostSysWork`'s members (`HostSysWork`, include/host_mem.h) | main.c, pxi7.c, frontend.c, os.c |
 
 On macOS arm64 none of these can be mapped: the 4 GB `__PAGEZERO` covers all of them, and binaries are always PIE. On Windows fixed low mappings are not reliable and there is no `memfd`, `MAP_FIXED` or `MAP_32BIT`. The plan therefore makes everything ordinary, relocatable memory, and DS addresses survive only as numbers where a hardware register needs one.
 
@@ -118,7 +118,7 @@ there**). They worked on x86-64 only because everything was kept below 4 GB.
 
 | Feature | Where | What for | Replacement |
 |---|---|---|---|
-| `ld -r -T dtcm.ld` | configure_host.py:163-167 | DTCM variables in one 0x4000 block at 0x027e0000 | DTCM block as a host array; DTCM variables as ordinary variables |
+| ~~`ld -r -T dtcm.ld`~~ | – | **Gone (3.2)**: DTCM is a host block (`gHostDtcm`), its variables ordinary variables | – |
 | `ld -r -T order.ld` with `-fdata-sections` and `-malign-data=abi` | configure_host.py:51, :201-203; tools/host_order.py | Variables in DS order (some code runs from one variable into the next); per-overlay data/bss/constructor ranges | Find and fix the overruns (guard-padding variant of order.ld on Linux), then drop the ordering. Overlay reset by a generated C table (`{&var, sizeof var}` per overlay) |
 | ~~`.init_array` → `host_ovinit` ranges~~ | – | **Gone (2.9)**: each overlay unit lists its variables (`HOST_OVERLAY_VARS`), explicit `StaticInit_<unit>`; modern/gen/overlay_table.c | – |
 | ~~`--wrap` (291) and x86 asm thunks~~ | – | **Gone (2.10)**: typed C dispatchers, call sites renamed | – |
@@ -367,8 +367,8 @@ After phase 1 the runtime has no ucontext, no x86 decoding and no `-mno-red-zone
 
 After phase 2 the game links with a plain `cc *.o`: no `ld -r`, linker script, `--wrap`, `objcopy` or PROVIDE.
 **Status (2026-10-08):** no `--wrap`, `objcopy`, PROVIDE, `--defsym` or DWARF reading. Left: the two partial links
-(`ld -r -T order.ld` for the variables' DS order, step 2.8; `ld -r -T dtcm.ld` for the DTCM block, step 3.2) and the
-final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
+(`ld -r -T order.ld` for the variables' DS order, step 2.8; `ld -r -T dtcm.ld`, gone in step 3.2) and the final
+link's `--section-start=gdata/gbss` and `-Ttext-segment` (step 3.3).
 
 ### Phase 3: memory anywhere (Linux x86-64 above 4 GB, 3-6 weeks)
 19. **3.0** Low-4 GB poisoning harness (`ACWW_HIGHMEM=1` on x86-64):
@@ -485,7 +485,74 @@ final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
     - the debug tools (`RAMHASH`, `RAMDUMP`, `HEAPCHECK`, `VRAMDUMP`) walk the host objects instead.
 
     Check: the harness with *all* DS mappings removed; oracle.
-22. **3.3** gdata/gbss become ordinary `.data`/`.bss`: drop the `--section-start` options, the main RAM memfd and mirrors and `__start_/__stop_`. Then `-fPIE -pie`, dropping `-Ttext-segment`, `-no-pie` and `MAP_32BIT`. Check: x86-64 PIE build under ASLR, oracle, and the harness poisoning the whole low 4 GB.
+
+    **Done (2026-10-08).** Re-measured first (refs/heads/modern 549c0c7c, `tools/portcheck/dsaddr.py`): casts of DS
+    constants to pointers outside I/O 207 in 70 files - system work area/DTCM 161 (57 files), palette 18, OAM 5, VRAM
+    8, main RAM 10 (7 `OSi_ReferSymbol` no-ops, 3 arena bounds), WRAM 2, GBA slot 2 - plus VRAM addresses made
+    pointers at run time (24 in `G2_GetBG*Ptr` / `G2S_*`, 6 from the LCDC tables in `GX_LoadTex` / `GX_LoadTexPltt`),
+    4 palette writes through a `REG16(0x05000000)` macro and 1 computed palette address; DS addresses used by the host
+    runtime: main.c 3, pxi7.c 4, frontend.c 1, os.c 1, sdk.c 1 (`OS_GetDTCMAddress`), melon.cpp 2, hw.c's debug dumps
+    5 and the heap check. Now **0** casts of DS constants to pointers outside I/O, and the runtime writes no DS address
+    except main RAM's mapping itself:
+    - **The host objects** (include/host_mem.h, modern/host/mem.c): `HostSysWork gHostSysWork` (0x027ff000-0x027fffff:
+      the SDK's members by name - the shared arena, the ROM headers, boot info, vblank count, NVRAM user info, arena
+      bounds, RTC, PXI handle checkers, thread info, buttons, touch panel, the lock words; the DS's layout on 32-bit
+      hosts, checked by `_Static_assert`s; the arena bounds, the main thread info and the exception vector are pointers,
+      8 bytes on 64-bit hosts), `gHostDtcm[0x4000]`, `gHostItcm[0x8000]`, `gHostPltt`/`gHostOam` (0x800 each),
+      `gHostMainRam` (DS 0x02200000-0x023fffff: the main arena past the program's data, `HostMainRam_Ptr(dsaddr)`) and
+      the empty WRAM arena. Each block is aligned so that its addresses keep the DS's low bits.
+    - **The rewrite**: `tools/host_hwaddr_rewrite.py` (`--check` lists what is left) turned 182 literal casts in 70
+      files into `HW_SYSWORK(T, member)` / `HW_SYSWORK_AT(T, member, offset)`, `(T *)(HW_DTCM_BLOCK + o)`,
+      `(T *)(HW_PLTT + o)`, `(T *)(HW_OAM + o)`, `HostVram_CpuPtr(dsaddr)`; it leaves the casts to pointer members for
+      a hand edit (11: `OS_SetArenaLo/Hi` and `OS_GetArenaLo/Hi` keep `void *` now, `OS_InitThread` stores the thread
+      info pointer, `OS_InitException` the vector). By hand: the two units with their own partial `OSSystemWork`
+      (`OS_GetLowEntropyData`, the PXI FIFO init: at DS offsets past the pointer members, which move on 64-bit hosts)
+      use `HostSysWork`'s members; the users of the DTCM variable `data_027e0000` as DTCM's start (`HW_INTR_CHECK_BUF`,
+      the IRQ stack checks, the arena, the Wi-Fi VBlank) use `HW_DTCM_BLOCK`; the VRAM addresses made at run time go
+      through `HostVram_CpuPtr` where the number becomes a pointer (the tables keep their DS numbers); the 7
+      `OSi_ReferSymbol` arguments are 0; the GBA slot check reads the open bus of an empty slot (unreachable, as before).
+    - **VRAM** (modern/host/vram.c): the banks are host memory and the CPU sees VRAM through five window arrays (the
+      engines' BG and OBJ windows, LCDC) in 16 KB granules mapped to banks by VRAMCNT. At a VRAMCNT change the windows
+      are written back to their banks and filled from the banks' new places (the parts without a bank read 0, as with
+      the mmap remapping); before the renderer reads the banks (and the dumps) the windows are written back. This is a
+      lookup by address, but into windows rather than banks: a pointer kept across a VRAMCNT change sees what the DS
+      would show at that address, and a copy that runs from one bank into the next in a window works as on the DS, so
+      there is nothing to assert (a lookup straight into the banks would have needed the assertion and a size at every
+      use). An address outside the windows is reported once and gets a scratch area. Cost: the mapped banks copied
+      once per frame (at most 1.6 MB).
+    - **DTCM**: the 9 `src/dtcm` units are ordinary game objects; `ld -r -T dtcm.ld` and `--section-start=.dtcm` are
+      gone. **Arenas**: `OS_GetInitArenaLo/Hi` return the host blocks (main: `HostMainRam_Ptr(SDK_MAIN_ARENA_LO)` to
+      0x023e0000, then `OS_SetArenaHi(0, HostMainRam_Ptr(0x023ff000))`; ITCM, DTCM, the shared arena in the system
+      work area, the empty WRAM arena; no extended arena, as on a retail DS).
+    - **Range checks** (the comparisons with DS addresses, in 9 functions, plus host code): against the host
+      blocks where they test the game's memory - `CrashScreen_IsValidAddress` and `::operator delete`'s
+      `host_is_game_heap` (`HostMem_IsGameRam`), `CARDi_IsInTcm` (the ITCM and DTCM blocks), hw.c's DMA check (a null
+      or small address); `MIi_CheckDma0SourceAddress` keeps the I/O rule only (the GBA slot range is host memory on
+      32-bit hosts); the debugger's exception buffer range in `OS_InitException` is never true on the host. Left as
+      they are, because they test DS addresses as data, not host memory: the download-play checks of a child
+      program's segment addresses (`MBi_IsAbleToRecv`, `IsAbleToLoad`, `MBi_SetSegmentInfo`: 17 comparisons), the
+      sound file slots' "offset below 0x02000000" (`SND_GetWaveDataAddress`, snd7's driver), and the CTRDG module's
+      main-RAM offset in a PXI word (only with POSTFLG bit 0, never on the host).
+    - **The host runtime** writes `gHostSysWork` (main.c: ROM header, card id, boot type; pxi7.c: RTC, touch panel,
+      the ARM7 handle checker; frontend.c: the button word), os.c waits on `HW_INTR_CHECK_BUF`, sdk.c's
+      `OS_GetDTCMAddress` returns the DTCM block, melon.cpp copies the palettes and OAM from the host arrays.
+    - **Debug dumps**: `ACWW_RAMDUMP` writes a 4 MB main RAM image assembled from gdata/gbss, `gHostMainRam` and the
+      system work area at their DS offsets (on 32-bit builds the same layout as before: comparable with older dumps);
+      `ACWW_RAMHASH` hashes that image, DTCM and the system work area; `ACWW_HEAPCHECK` walks the NNS heaps in the main
+      RAM block and the 64-bit root heap block with the pointer-sized header; `ACWW_VRAMDUMP` / `ACWW_STATS` write the
+      windows back first and read the host palette and OAM. Checked: the i386 VRAM dump at frame 3000 equals the
+      pre-change build's except DMA3's address registers (low words of host pointers).
+    - **The harness**: `ACWW_HIGHMEM=2` doesn't map main RAM either; of the DS's address space only the loader's pages
+      of gdata and gbss remain (and nothing else is mapped by default any more: ITCM, WRAM, palette, VRAM windows,
+      OAM, main RAM's mirrors are gone; main RAM itself stays mapped by default until 3.3).
+
+    Checks: i386 oracle quick (pictures and sound) and play identical to the captures; i386 save/continue script:
+    all screenshots and the save file (after the save and after the continue) identical to the pre-change build; the
+    64-bit build's quick and play identical to its pre-change run, and under `ACWW_HIGHMEM=2` quick, play, the town
+    script (to frame 32000) and the continue run from the i386 save (to frame 8000, save file included) without a
+    fault and identical to the pre-change 64-bit runs without the harness; `--strict-c` 0, `host_strict_errors.sh` 0,
+    `host_portcheck.py` 0 beyond the baseline on macos-arm64 and win64-gnu-nomsbf.
+22. **3.3** gdata/gbss become ordinary `.data`/`.bss`: drop the `--section-start` options, the main RAM memfd (its mirrors went in 3.2) and `__start_/__stop_`. Then `-fPIE -pie`, dropping `-Ttext-segment`, `-no-pie` and `MAP_32BIT`. Check: x86-64 PIE build under ASLR, oracle, and the harness poisoning the whole low 4 GB.
 23. **3.4** Retire the i386 build as the reference: re-record the oracle from the x86-64 build. First make virtual time independent of code shape, so arm64 matches too. Today the 64-bit timing drifts by a frame or two after scene changes.
 
 ### Phase 4: platform layer and frontend (Linux first, about 1-2 weeks)

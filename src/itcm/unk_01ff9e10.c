@@ -462,7 +462,9 @@ void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 dir) {
             break;
         }
         addEnd &= 0xff000000;
-        if (addStart == 0x04000000 || addStart >= 0x08000000 || addEnd == 0x04000000 || addEnd >= 0x08000000) {
+        // (the DS: not from the I/O registers nor the GBA slot, 0x08000000 up. On the host the registers' addresses
+        // are still these numbers, the GBA slot doesn't exist and host memory lies anywhere: the I/O rule only)
+        if (addStart == 0x04000000 || addEnd == 0x04000000) {
             Fatal_Trap();
         }
     }

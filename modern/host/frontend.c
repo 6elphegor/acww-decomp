@@ -12,6 +12,7 @@
 
 #include "frontend.h"
 #include "host.h"
+#include "host_mem.h"
 
 static AcwwShm *sShm;
 static char sName[64];
@@ -67,7 +68,7 @@ static u32 scripted_keys(void) {
 // at each VBlank: publish the frame, take the input
 void frontend_frame(void) {
     u16 keyinput = 0x3ff;  // KEYINPUT: released bits are 1
-    // the ARM7's button word (0x027fffa8), OR-ed into KEYINPUT by PAD_Read: X bit 10, Y bit 11, debug bit 13
+    // the ARM7's button word (HW_BUTTON_XY_BUF, the system work area), OR-ed into KEYINPUT by PAD_Read: X bit 10, Y bit 11, debug bit 13
     // (released = 1); bit 15 clear = not folded
     u16 xy = 0x2c00;
     if (sShm) {
@@ -83,7 +84,7 @@ void frontend_frame(void) {
     keyinput &= (u16)~(sk & 0x3ff);
     xy &= (u16)~(sk & 0x0c00);
     *(u16 *)host_io(0x04000130) = keyinput;
-    *(volatile u16 *)0x027fffa8 = xy;
+    *(volatile u16 *)&gHostSysWork.buttonXY = xy;
 }
 
 // for the touch panel service (pxi7.c): the viewer's mouse on the bottom screen
