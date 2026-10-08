@@ -6,6 +6,7 @@
 #include "types.h"
 #include "gfx/Mtx43.h"
 #ifdef __cplusplus
+#include "actor/Actor.h"
 #include "field/Insect.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
@@ -14,9 +15,6 @@ class FxVec3NoCtor;
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_sInsectBehaviors
-extern void *sInsectBehaviors[120];
 #endif
 #ifndef PROTO_LOCAL_InsectManager_Create
 void *InsectManager_Create();
@@ -55,7 +53,7 @@ extern u16 data_ov003_02258f10;
 extern u8 sWateringActive;
 #endif
 #ifndef PROTO_LOCAL_sInsectSpawnMaskDry
-extern u8 sInsectSpawnMaskDry[0x200];
+extern u16 sInsectSpawnMaskDry[4][4][16];
 #endif
 #ifndef PROTO_LOCAL_sSpecialInsects
 extern Insect sSpecialInsects[2];
@@ -79,10 +77,7 @@ extern u8 data_ov003_02258f04;
 extern u8 sInsectSpawnTimer;
 #endif
 #ifndef PROTO_LOCAL_sInsectSpawnMaskLand
-extern u8 sInsectSpawnMaskLand[0x200];
-#endif
-#ifndef PROTO_LOCAL_sInsectModelParams
-extern u16 sInsectModelParams[180];
+extern u16 sInsectSpawnMaskLand[4][4][16];
 #endif
 #ifndef PROTO_LOCAL_sFieldInsectPurgeTimer
 extern u16 sFieldInsectPurgeTimer;
@@ -96,8 +91,11 @@ extern FxVec3NoCtor sWateringPos;
 #ifndef PROTO_LOCAL_Insect_IsOverWater
 BOOL Insect_IsOverWater(s32 v);
 #endif
+#ifndef PROTO_LOCAL_Insect_FindNearestPlayer
+Actor *Insect_FindNearestPlayer(VecFx32 *pos);
+#endif
 #ifndef PROTO_LOCAL_Insect_LikesFlower
-BOOL Insect_LikesFlower(s32 a, s32 b);
+BOOL Insect_LikesFlower(s32 a, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_Insect_GetSeId
 s32 Insect_GetSeId(s32 a, s32 b);
@@ -259,10 +257,10 @@ void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
 void InsectPool_UpdateInView(s32 obj, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Insect_Spawn
-BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag);
+BOOL Insect_Spawn(void *obj, s32 kind, u8 sub, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Insect_TrySpawnRandom
-s32 Insect_TrySpawnRandom(s32 a, s32 b, s8 c, u32 d);
+s32 Insect_TrySpawnRandom(void *a, s32 b, s8 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_Insect_SpawnBeeSwarm
 void Insect_SpawnBeeSwarm(VecFx32Ctor *v);
@@ -289,7 +287,7 @@ s32 Insect_GetTimeSlot();
 void Insect_TickFrame(u8 *self);
 #endif
 #ifndef PROTO_LOCAL_Insect_SetAnimSpeed
-void Insect_SetAnimSpeed(u8 *self, u32 v);
+void Insect_SetAnimSpeed(Insect *self, u32 v);
 #endif
 #ifndef PROTO_LOCAL_Insect_PickSpecialSpawn
 BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c);
@@ -307,7 +305,7 @@ s32 Insect_GetWeatherReaction(s32 a, s32 b);
 void InsectSpawn_CopyMask(void *p, s32 t);
 #endif
 #ifndef PROTO_LOCAL_InsectSpawn_PickPos
-s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag);
+s32 InsectSpawn_PickPos(Insect *self, u16 *a, s32 code, u32 flag);
 #endif
 #ifndef PROTO_LOCAL_InsectSpawn_BuildLightMask
 void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);

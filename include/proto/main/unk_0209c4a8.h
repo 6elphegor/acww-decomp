@@ -94,7 +94,7 @@ void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, VecFx32 *v);
 u32 RoomEntry_IsExclusiveScene(u32 v);
 #endif
 #ifndef PROTO_LOCAL_RoomEntry_IsExclusiveExit
-s32 RoomEntry_IsExclusiveExit(void *p);
+s32 RoomEntry_IsExclusiveExit(u32 p);
 #endif
 #ifndef PROTO_LOCAL_RoomEntry_Request
 BOOL RoomEntry_Request(u32 id);

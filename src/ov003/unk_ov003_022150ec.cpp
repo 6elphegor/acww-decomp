@@ -20,6 +20,7 @@
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_022150ec.h"
 #include "proto/ov003/unk_ov003_022150ec_switch.h"
@@ -59,10 +60,8 @@ extern u32 sCountdownMinutes;
 extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
-extern void *gFieldStructureHeap;
-
 void CountdownSign_ModelCallback(NNSG3dRS *p);
-void Clock_GetDateTime(void *p);
+void Clock_GetDateTime(ClockDateTime *p);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
@@ -85,7 +84,7 @@ BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
     void *r4 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    ((ModelAnim *)(&matAnim))->replace(r4, r2, 1, 0x1000, digit);
+    matAnim.replace(r4, r2, 1, 0x1000, digit);
     return TRUE;
 }
 
@@ -93,7 +92,7 @@ CountdownDigit::CountdownDigit() {}
 CountdownDigit::~CountdownDigit() {}
 
 void *CountdownDigit::operator new(size_t size) {
-    void *p = Heap_Alloc(gFieldStructureHeap, size);
+    void *p = Heap_Alloc((Heap *)gFieldStructureHeap, size);
     memset(p, 0, size);
     return p;
 }
@@ -102,33 +101,31 @@ void CountdownDigit::operator delete(void *p) {}
 
 // ---------------------------------------------------------------- Y methods
 void CountdownSign::execNewYear() {
-    ((AnimFrameCtrl *)(&matAnim))->step();
+    matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL CountdownSign::enterNewYear() {
-    s32 r1 = (s32)getBtaAnim(1);
-    ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
+    matAnim.init(getBtaAnim(1), 0, 0x1000, 0);
     matAlpha = 1;
     return TRUE;
 }
 
 void CountdownSign::execCountdown() {
-    ((AnimFrameCtrl *)(&matAnim))->step();
+    matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
-    u32 tm[2];
-    tm[0] = 0;
-    tm[1] = 0;
-    Clock_GetDateTime(tm);
-    if (((u8 *)tm)[4] == 1) {
+    ClockDateTimeWords tm;
+    tm.words[0] = 0;
+    tm.words[1] = 0;
+    Clock_GetDateTime(&tm.dt);
+    if (tm.dt.month == 1) {
         Snd_PlaySe(0x61);
         setDoorState(1);
     }
 }
 
 BOOL CountdownSign::enterCountdown() {
-    s32 r1 = (s32)getBtaAnim(0);
-    ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
+    matAnim.init(getBtaAnim(0), 0, 0x1000, 0);
     matAlpha = 0x1f;
     return TRUE;
 }
@@ -172,7 +169,7 @@ BOOL CountdownSign::postDraw(s32 a) {
                 CountdownDigit *p = digits[i];
                 if (p) {
                     if (p->isCounting) {
-                        ((BuildingActor *)(p))->updateMatrix();
+                        p->updateMatrix();
                     }
                 }
             }
@@ -182,10 +179,11 @@ BOOL CountdownSign::postDraw(s32 a) {
 }
 
 BOOL CountdownSign::onExecute() {
-    ClockDateTime t;
-    ((u32 *)&t)[0] = 0;
-    ((u32 *)&t)[1] = 0;
-    Clock_GetDateTime(&t);
+    ClockDateTimeWords tw;
+    tw.words[0] = 0;
+    tw.words[1] = 0;
+    Clock_GetDateTime(&tw.dt);
+    ClockDateTime &t = tw.dt;
     u32 secs = 0x15180 - (t.second + (t.minute * 0x3c + t.hour * 0xe10));
     sCountdownSeconds = secs;
     u32 h = sCountdownSeconds / 0xe10;
@@ -202,30 +200,29 @@ BOOL CountdownSign::initBuilding() {
     onExecute();
     s32 z = 0;
     u32 i = 0;
-    s32 v[3];
+    VecFx32 v;
     do {
         s32 c = position.z + 0x500;
         s32 b = position.y + 0x2500;
         s32 a = position.x + sCountdownDigitOffsetsX[i];
-        v[0] = a;
-        v[1] = b;
-        v[2] = c;
+        v.x = a;
+        v.y = b;
+        v.z = c;
         sCountdownSpawnIndex = i;
-        digits[i] = (CountdownDigit *)Actor::spawn((void *)(0x26), (void *)(0x501f), v, (void *)(z), (void *)(z));
+        digits[i] = (CountdownDigit *)Actor::spawn((void *)0x26, (void *)0x501f, &v, (void *)(uptr)z, (void *)(uptr)z);
         i++;
     } while (i < 6);
-    ((Model *)(model))->setInitCallback(CountdownSign_ModelCallback, this);
-    alphaMatIdx = ((G3dResAccess *)(modelRes))->findMatIdx((const char *)("m_cbs_Adt"));
-    if (((ModelAnim *)(&matAnim))->allocMatAnm((NNSG3dResMdl *)(modelRes), gFieldStructureHeap)) {
-        s32 r1 = (s32)getBtaAnim(0);
-        ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
-        ((ModelAnim *)(&matAnim))->addToRenderObj(((Model *)model)->getRenderObj());
+    ((Model *)model)->setInitCallback(CountdownSign_ModelCallback, this);
+    alphaMatIdx = ((G3dResAccess *)modelRes)->findMatIdx("m_cbs_Adt");
+    if (matAnim.allocMatAnm((NNSG3dResMdl *)modelRes, gFieldStructureHeap)) {
+        matAnim.init(getBtaAnim(0), 0, 0x1000, 0);
+        matAnim.addToRenderObj(((Model *)model)->getRenderObj());
     }
-    u32 tm[2];
-    tm[0] = 0;
-    tm[1] = 0;
-    Clock_GetDateTime(tm);
-    if (((u8 *)tm)[4] == 1) {
+    ClockDateTimeWords tm;
+    tm.words[0] = 0;
+    tm.words[1] = 0;
+    Clock_GetDateTime(&tm.dt);
+    if (tm.dt.month == 1) {
         setDoorState(1);
     } else {
         setDoorState(0);

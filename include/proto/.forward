@@ -2,3 +2,4 @@
 # headers, where the prototypes use them only through pointers: their headers bring types that some units
 # define their own copies of (ItemId: src/main/unk_0204a780.cpp, src/main/unk_02070560.cpp).
 PlayerData
+BgAcreModel

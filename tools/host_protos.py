@@ -182,6 +182,8 @@ def make_headers(defs, only=None):
                     else:
                         fwd_c.add(decl)
             text = strip_defaults(' '.join(r['proto'].split())) if not r.get('var') else pretty(r['proto'])
+            if r.get('var'):  # a variable built by a constructor call: its declaration leaves the arguments out
+                text = re.sub(r'(\b%s)\s*\(.*\)$' % re.escape(r['name']), r'\1', text)
             if CPP_ONLY.search(text):
                 cpp = True
             line = f'#ifndef PROTO_LOCAL_{r["name"]}\n{"extern " if r.get("var") else ""}{text};\n#endif'

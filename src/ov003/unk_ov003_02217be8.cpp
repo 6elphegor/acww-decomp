@@ -17,18 +17,9 @@
 #include "gfx/BgModelCache.h"
 #include "gfx/Camera.h"
 #include "gfx/G3dResAccess.h"
-#define PROTO_LOCAL_FieldGround_DestroyEnvChannel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_DrawBackdrop  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_EndSoundSrc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_FindSoundSrc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_GetSoundSrcKind  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_GetSoundSrcPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_InitEnvChannel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_PlayEnvSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_ReleaseBackdrop  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_ReleaseEnvChannel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldGround_ResetEnvChannel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
+#include "field/GroundSoundSrc.h"
+#include "snd/RainSndChannel.h"
+#include "town/MapBlockAcre.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_02037260.h"
@@ -36,6 +27,8 @@
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"
+#include "proto/main/unk_02088b98.h"
+#include "proto/ov003/unk_ov003_02217908.h"
 #include "proto/ov003/unk_ov003_02217be8.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
@@ -92,15 +85,6 @@ public:
     /* 0xb4 */ ModelAnim matAnims[2];
 };
 
-
-struct SndEnvChannelStorage {
-    u32 pad[0xc / 4];
-};
-
-struct GroundSoundSrcView {
-    u32 pad[0x1c / 4];
-};
-
 class FieldGround : public GameProc {
 public:
     /* 0x50 */ FieldGroundBlock *blocks;
@@ -110,7 +94,7 @@ public:
     /* 0x150 */ FieldGroundBackdrop backdrop;
     /* 0x1f0 */ TexPatVramAnim riverPatAnim;
     /* 0x280 */ TexPatVramAnim beachPatAnim;
-    /* 0x310 */ SndEnvChannelStorage envChannel;
+    /* 0x310 */ RainSndChannel envChannel;  // (0xc bytes on the DS: no volume)
 
     FieldGround();
     virtual BOOL onCreate();
@@ -121,46 +105,24 @@ public:
     void updateAmbientSe();
 };
 
-// other modules' methods are reached through their real mangled symbols (object first)
-#define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
-#define Camera_getEyeCurveAngle _ZN6Camera16getEyeCurveAngleEv
-#define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
-
 extern "C" {
-extern void *gCamera;
+extern Camera *gCamera;
 extern VecFx32Ctor gCameraLookAt;
 extern Unk_0204e858_Grid *gSceneBlockMap;
-extern s32 data_021ce63c;
 extern s32 data_020c8cbc;
-extern u8 data_021f47e0[];
+extern Mtx43 data_021f47e0;
 
-void *BgModelCache_getAcre(void *self, s32 i);
-s32 MapBlockAcre_getAcreId(void *self);
-s32 Camera_getEyeCurveAngle(void *self);
-void Camera_GetLookAtBlock(void *, s32 *, s32 *);
+void Camera_GetLookAtBlock(Camera *, s32 *, s32 *);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
-void FieldPos_FromBlockUnitCenter(VecFx32Ctor *, s32, s32, s32, s32);
-void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
-void Mtx43_RotateX(void *m, s32 a);
+void FieldPos_FromBlockUnitCenter(VecFx32 *, s32, s32, s32, s32);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Mtx43 *m, s32 a);
 void Ground_SetWaveLevel(s32 v);
 s32 FX_Div(s32 a, s32 b);
-s32 TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
-
-// TU17 functions (the nearest-record class, sound handle helpers)
-void FieldGround_ReleaseEnvChannel(void *p);
-void FieldGround_PlayEnvSe(void *p, void *a, u16 b);
-void FieldGround_ResetEnvChannel(void *p);
-void FieldGround_DestroyEnvChannel(void *p);
-void FieldGround_InitEnvChannel(void *p);
-s32 FieldGround_GetSoundSrcKind(void *p);
-void *FieldGround_GetSoundSrcPos(void *p);
-void FieldGround_EndSoundSrc(void *p);
-void FieldGround_FindSoundSrc(void *out, VecFx32Ctor *pos);
-s32 FieldGround_ReleaseBackdrop(void *p);
-s32 FieldGround_DrawBackdrop(void *p);
-
 }
+
+static inline BgModelCache *BgCache() { return (BgModelCache *)BgModelCache_Get(); }
 
 
 
@@ -206,29 +168,28 @@ extern "C" void FieldGround_OnModelInit(NNSG3dRS *rs) {
     rs->cbVecTiming[4] = 2;
 }
 
+// (the channel is constructed as a member: FieldGround_InitEnvChannel; its destructor does nothing)
 FieldGround::FieldGround() {
-    FieldGround_InitEnvChannel(&envChannel);
 }
 
 FieldGround::~FieldGround() {
-    FieldGround_DestroyEnvChannel(&envChannel);
 }
 
 BOOL FieldGround::onCreate() {
     backdrop.clear();
     backdrop.init();
-    void *r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
-    void *r4 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatTex();
-    void *r0 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatAnm();
-    ((TexPatVramAnim *)(&riverPatAnim))->init((u8 *)r6, "grd_riv.0", "grd_riv_pl", (u8 *)r4, (u8 *)r0, 0);
-    r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
-    r4 = ((BgModelCache *)(BgModelCache_Get()))->getBeBPatTex();
-    r0 = ((BgModelCache *)(BgModelCache_Get()))->getBeBPatAnm();
-    ((TexPatVramAnim *)(&beachPatAnim))->init((u8 *)r6, "grd_beB", "grd_beB_pl", (u8 *)r4, (u8 *)r0, 1);
+    u8 *r6 = (u8 *)BgCache()->getGroundTex();
+    u8 *r4 = (u8 *)BgCache()->getRiverPatTex();
+    u8 *r0 = (u8 *)BgCache()->getRiverPatAnm();
+    riverPatAnim.init(r6, "grd_riv.0", "grd_riv_pl", r4, r0, 0);
+    r6 = (u8 *)BgCache()->getGroundTex();
+    r4 = (u8 *)BgCache()->getBeBPatTex();
+    r0 = (u8 *)BgCache()->getBeBPatAnm();
+    beachPatAnim.init(r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
     Unk_0204e858_Grid *g = gSceneBlockMap;
     numBlocksX = g->width;
     numBlocksZ = g->height;
-    blocks = (FieldGroundBlock *)Heap_Alloc(gBgHeap, numBlocksZ * (numBlocksX * HOST_SIZED(0xec, FieldGroundBlock)));
+    blocks = (FieldGroundBlock *)Heap_Alloc((Heap *)gBgHeap, numBlocksZ * (numBlocksX * sizeof(FieldGroundBlock)));
     {
         FieldGroundBlock *e = blocks;
         for (; e < blocks + numBlocksX * numBlocksZ; e++) {
@@ -249,7 +210,7 @@ BOOL FieldGround::onCreate() {
                         v.x = 0;
                         v.y = 0;
                         v.z = 0;
-                        FieldPos_FromBlockUnitCenter((VecFx32Ctor *)&v, bx, by, tx, ty);
+                        FieldPos_FromBlockUnitCenter(&v, bx, by, tx, ty);
                         piece.setup(&v, t);
                     }
                 }
@@ -310,18 +271,18 @@ static inline BOOL Unk_ov003_022181bc_Chk(s32 x, s32 y, s32 cx, s32 cy) {
 BOOL FieldGround::onDraw() {
     s32 a, cx, cy, b, cam_r, found;
     s32 x, y, idx;
-    void *cam;
+    Camera *cam;
     data_ov003_02235494 = 0;
     ObjShadow_Update();
     CharaShadow_UpdateColor();
     a = 0;
     cx = 0;
     cy = 0;
-    b = ((s32 *)piece.getPos())[2];
+    b = piece.getPos()->z;
     cam_r = 0;
     cam = gCamera;
     if (cam != 0) {
-        cam_r = ((Camera *)(cam))->getEyeCurveAngle();
+        cam_r = cam->getEyeCurveAngle();
         Camera_GetLookAtBlock(cam, &cx, &cy);
         a = WorldCurve_AngleToDistance(cam_r);
     }
@@ -338,7 +299,7 @@ BOOL FieldGround::onDraw() {
         }
     }
     if (found == 0) {
-        FieldGround_DrawBackdrop(&backdrop);
+        FieldGround_DrawBackdrop(&backdrop.model);
     }
     if (found == 0) {
         idx = 0;
@@ -354,9 +315,9 @@ BOOL FieldGround::onDraw() {
         if (piece.getCurveAngle() < cam_r) {
             if (b < a) {
                 piece.draw();
-                FieldGround_DrawBackdrop(&backdrop);
+                FieldGround_DrawBackdrop(&backdrop.model);
             } else {
-                FieldGround_DrawBackdrop(&backdrop);
+                FieldGround_DrawBackdrop(&backdrop.model);
                 piece.draw();
             }
             idx = 0;
@@ -369,7 +330,7 @@ BOOL FieldGround::onDraw() {
                 }
             }
         } else {
-            FieldGround_DrawBackdrop(&backdrop);
+            FieldGround_DrawBackdrop(&backdrop.model);
             idx = 0;
             for (y = 0; y < numBlocksZ; y++) {
                 for (x = 0; x < numBlocksX; x++) {
@@ -395,7 +356,7 @@ BOOL FieldGround::onDelete() {
             (blocks + idx++)->release();
         }
     }
-    FieldGround_ReleaseBackdrop(&backdrop);
+    FieldGround_ReleaseBackdrop(&backdrop.model);
     FieldGround_ReleaseEnvChannel(&envChannel);
     return TRUE;
 }
@@ -404,9 +365,9 @@ void FieldGround::updateAmbientSe() {
     data_ov003_02235490 = 0;
     if (gCamera != 0) {
         VecFx32Ctor v = gCameraLookAt;
-        GroundSoundSrcView q;
+        GroundSoundSrc q;
         FieldGround_FindSoundSrc(&q, &v);
-        void *r6 = (void *)FieldGround_GetSoundSrcPos(&q);
+        VecFx32 *r6 = FieldGround_GetSoundSrcPos(&q);
         if (r6 != 0) {
             u32 r4 = 0x80d;
             switch (FieldGround_GetSoundSrcKind(&q)) {
@@ -425,7 +386,7 @@ void FieldGround::updateAmbientSe() {
             }
             FieldGround_PlayEnvSe(&envChannel, r6, r4);
         }
-        FieldGround_EndSoundSrc(&q);
+        FieldGround_EndSoundSrc();
     }
 }
 
@@ -494,23 +455,23 @@ BOOL FieldGroundPiece::setup(VecFx32 *pos, s32 idx) {
     position.x = pos->x;
     position.y = pos->y;
     position.z = pos->z;
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)((BgModelCache *)(BgModelCache_Get()))->getAcre(sFieldGroundPieceAcres[idx]);
-    void *t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
-    NNSG3dResMdl *res = e->modelRes;
-    ((Model *)&model)->setResourceAndBind(res, (NNSG3dResTex *)t);
-    if (matAnims[0].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
-        matAnims[0].init(((BgModelCache *)(BgModelCache_Get()))->getGroundMatAnm(), 0, 0x1000, 0);
-        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
+    BgAcreModel *e = BgCache()->getAcre(sFieldGroundPieceAcres[idx]);
+    void *t = BgCache()->getGroundTex();
+    NNSG3dResMdl *res = (NNSG3dResMdl *)e->mdl;
+    model.setResourceAndBind(res, (NNSG3dResTex *)t);
+    if (matAnims[0].allocMatAnm(res, gBgHeap)) {
+        matAnims[0].init(BgCache()->getGroundMatAnm(), 0, 0x1000, 0);
+        matAnims[0].addToRenderObj(model.getRenderObj());
     }
-    if (matAnims[1].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
-        matAnims[1].init(((BgModelCache *)(BgModelCache_Get()))->getGroundTexSrtAnm(), 0, 0x1000, 0);
-        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
+    if (matAnims[1].allocMatAnm(res, gBgHeap)) {
+        matAnims[1].init(BgCache()->getGroundTexSrtAnm(), 0, 0x1000, 0);
+        matAnims[1].addToRenderObj(model.getRenderObj());
     }
     VecFx32 tmp;
     curveAngle = WorldCurve_ToCurved(&tmp, &position);
-    Mtx43_SetTranslate(data_021f47e0, position.x, 0, 0);
-    Mtx43_RotateX(data_021f47e0, curveAngle);
-    MODEL_AT_MTX(&model) = *(Mtx43 *)data_021f47e0;
+    Mtx43_SetTranslate(&data_021f47e0, position.x, 0, 0);
+    Mtx43_RotateX(&data_021f47e0, curveAngle);
+    model.mtx = data_021f47e0;
     blockX = pos->x >> 17;
     blockZ = pos->z >> 17;
     return TRUE;
@@ -531,7 +492,7 @@ BOOL FieldGroundPiece::updateAnims() {
 
 BOOL FieldGroundPiece::draw() {
     if (isActive()) {
-        ((Model *)&model)->drawScaled(0);
+        model.drawScaled(0);
         return TRUE;
     }
     return FALSE;
@@ -539,7 +500,7 @@ BOOL FieldGroundPiece::draw() {
 
 BOOL FieldGroundPiece::release() {
     if (isActive()) {
-        ((Model *)&model)->clearResource();
+        model.clearResource();
         blockZ = -1;
         blockX = blockZ;
         return TRUE;
@@ -556,29 +517,29 @@ FieldGroundBlock::FieldGroundBlock() {
 BOOL FieldGroundBlock::init(TownBlockCell *o, s32 a, s32 b) {
     blockX = a;
     blockZ = b;
-    acreId = MapBlockAcre_getAcreId(o);
-    void *t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    acreId = ((MapBlockAcre *)o)->getAcreId();
+    void *t = BgCache()->getGroundTex();
     BgAcreModel *p = o->bgModel;
     void *q = p->tex;
     if (q != 0) t = q;
     NNSG3dResMdl *res = (NNSG3dResMdl *)p->mdl;
-    ((Model *)&model)->setResourceAndBind(res, (NNSG3dResTex *)t);
-    if (matAnims[0].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
-        matAnims[0].init(((BgModelCache *)(BgModelCache_Get()))->getGroundMatAnm(), 0, 0x1000, 0);
-        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
+    model.setResourceAndBind(res, (NNSG3dResTex *)t);
+    if (matAnims[0].allocMatAnm(res, gBgHeap)) {
+        matAnims[0].init(BgCache()->getGroundMatAnm(), 0, 0x1000, 0);
+        matAnims[0].addToRenderObj(model.getRenderObj());
     }
-    if (matAnims[1].allocMatAnm((NNSG3dResMdl *)(res), gBgHeap)) {
-        matAnims[1].init(((BgModelCache *)(BgModelCache_Get()))->getGroundTexSrtAnm(), 0, 0x1000, 0);
-        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
+    if (matAnims[1].allocMatAnm(res, gBgHeap)) {
+        matAnims[1].init(BgCache()->getGroundTexSrtAnm(), 0, 0x1000, 0);
+        matAnims[1].addToRenderObj(model.getRenderObj());
     }
-    Mtx43_SetTranslate(data_021f47e0, a * data_020c8cbc, 0, 0);
+    Mtx43_SetTranslate(&data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
-    Mtx43_RotateX(data_021f47e0, ang);
-    MODEL_AT_MTX(&model) = *(Mtx43 *)data_021f47e0;
+    Mtx43_RotateX(&data_021f47e0, ang);
+    model.mtx = data_021f47e0;
     if (Acre_GetAttr(acreId) & 8) {
-        beachMatIdx = ((G3dResAccess *)(res))->findMatIdx((const char *)("m_grd_beA"));
+        beachMatIdx = ((G3dResAccess *)res)->findMatIdx("m_grd_beA");
         if (beachMatIdx != -1) {
-            ((Model *)&model)->setInitCallback(FieldGround_OnModelInit, this);
+            model.setInitCallback(FieldGround_OnModelInit, this);
         }
     }
     FieldGround_SetWaterMatFlags(&model, 1);
@@ -598,11 +559,11 @@ BOOL FieldGroundBlock::updateAnims() {
 }
 
 BOOL FieldGroundBlock::draw() {
-    ((Model *)&model)->drawScaled(0);
+    model.drawScaled(0);
     return TRUE;
 }
 
 BOOL FieldGroundBlock::release() {
-    ((Model *)&model)->clearResource();
+    model.clearResource();
     return TRUE;
 }

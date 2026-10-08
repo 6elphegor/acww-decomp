@@ -224,11 +224,11 @@ extern "C" u32 RoomEntry_IsExclusiveScene(u32 v) {
     return FALSE;
 }
 
-extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
+extern "C" s32 RoomEntry_IsExclusiveExit(u32 p) {
     SceneExitResolveOut t;
     s32 b, a;
     u32 c[3];
-    if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (VecFx32 *)c, (u32 *)&a, (u16 *)&b, &t.fadeOut, &t.fadeIn, 0, 0)) {
+    if (SceneExit_Resolve(Scene_GetWarpRequest(), p, (u8 *)&t, (VecFx32 *)c, (u32 *)&a, (u16 *)&b, &t.fadeOut, &t.fadeIn, 0, 0)) {
         return RoomEntry_IsExclusiveScene(t.scene);
     }
     return 0;

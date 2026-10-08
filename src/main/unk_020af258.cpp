@@ -330,7 +330,7 @@ static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; 
 // prototypes
 
 
-extern "C" s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e) {
+extern "C" s32 Field_TryPushSnowball(VecFx32 *a, s16 *b, s32 *c, s32 d, s16 e) {
     BOOL z = gFieldSceneKind == 0;
     if (z && d > 0) return Snowball_TryPushAny(a, b, c, d, e);
     return 0;

@@ -16,6 +16,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "gfx/Mtx43.h"
 #include "room/FtrActorParts.h"
+#include "room/FtrManager.h"
 
 struct NNSG3dRS;
 
@@ -191,7 +192,7 @@ public:
     /* 0x78a */ u8 pad_78a[2];
     /* 0x78c */ s32 surfaceHeight;
     /* 0x790 */ s32 lightKind;
-    /* 0x794 */ u8 soundEmitter[0x20];   // FtrSoundEmitter
+    /* 0x794 */ u8 soundEmitter[HOST_SIZED(0x20, FtrSoundEmitter)] HOST_ALIGN8;   // FtrSoundEmitter (room/FtrManager.h)
     /* 0x7b4 */ s32 centerPos[3];
     /* 0x7c0 */ FtrModelAnimView anims[4];   // 4 x FtrModelAnim
 };

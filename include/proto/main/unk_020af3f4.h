@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "field/LooseSnowballs.h"
 #include "types.h"
 #endif
 
@@ -24,7 +25,7 @@ extern "C" {
 void Snowman_SendLetter(u32 idx);
 #endif
 #ifndef PROTO_LOCAL_LooseSnowballs_Get
-u8 *LooseSnowballs_Get();
+LooseSnowballs *LooseSnowballs_Get();
 #endif
 }
 #ifndef PROTO_LOCAL_data_020e2ebc

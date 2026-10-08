@@ -15,6 +15,8 @@
 #include "town/ReddTent.h"
 #include "gfx/DebugColor.h"
 #include "game/ReddShop.h"
+#include "talk/ReddPasswordString.h"
+#include "sys/ClockDateTime.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020b0e60.h"
@@ -51,18 +53,9 @@ s32 Scene_GetCurrent();
 void Scene_SetTownReturnPos(void *o, s32 a, VecFx32 *v, u32 b, s32 c, u32 d, u32 e);
 s32 Ground_GetDefaultY(u32 a);
 s32 ReddPassword_LearnCurrentPlayer();
-extern u8 data_021ed2c0[];
-ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
 s32 ReddPassword_CurrentPlayerKnows();
-}
-
-extern "C" {
-extern u8 data_021ed2c0[];
-void _ZN18ReddPasswordStringC1Ev(void *);
-void _ZN18ReddPasswordStringD1Ev(void *);
-ReddPassword *_ZN8ReddShop11getPasswordEv(void *);
-void Clock_GetDateTime(void *);
-s32 Scene_GetCurrent();
+extern ReddShop data_021ed2c0;
+void Clock_GetDateTime(ClockDateTime *p);
 }
 
 
@@ -80,11 +73,11 @@ ReddTent::~ReddTent() {
 
 
 BOOL ReddTent::initBuilding() {
-    Unk_ov003_02214890_Buf l;
-    l.w0 = 0;
-    l.w1 = 0;
-    Clock_GetDateTime(&l);
-    createHour = ((u8 *)&l)[2];
+    ClockDateTimeWords l;
+    l.words[0] = 0;
+    l.words[1] = 0;
+    Clock_GetDateTime(&l.dt);
+    createHour = l.dt.hour;
     return TRUE;
 }
 
@@ -96,11 +89,11 @@ BOOL ReddTent::onExecute() {
 
 
 BOOL ReddTent::isOpen() {
-    Unk_ov003_02214890_Buf l;
-    l.w0 = 0;
-    l.w1 = 0;
-    Clock_GetDateTime(&l);
-    if (((u8 *)&l)[2] < 6) {
+    ClockDateTimeWords l;
+    l.words[0] = 0;
+    l.words[1] = 0;
+    Clock_GetDateTime(&l.dt);
+    if (l.dt.hour < 6) {
         goto no;
     }
     if (createHour >= 6) {
@@ -116,12 +109,10 @@ no:
 
 void ReddTent::onMessageStart(u32) {
     if (msgIndex == 2) {
-        u32 obj[0x38 / 4];
-        _ZN18ReddPasswordStringC1Ev(obj);
-        if (((ReddShop *)(data_021ed2c0))->getPassword()->getPromptText(obj)) {
-            ((TalkWindowState *)(window))->setSlot(0, obj);
+        ReddPasswordString obj;
+        if (data_021ed2c0.getPassword()->getPromptText(&obj)) {
+            window->setSlot(0, &obj);
         }
-        _ZN18ReddPasswordStringD1Ev(obj);
     }
 }
 
@@ -273,7 +264,7 @@ BOOL ReddTent::enterTentMenuWait() {
 
 void ReddTent::execTentMenuWait() {
     if (window->state == 5) {
-        MenuCtrl_OpenLauncherWithIndex(0xe, (((ReddShop *)(data_021ed2c0))->getPassword())->getAnswerIndex());
+        MenuCtrl_OpenLauncherWithIndex(0xe, data_021ed2c0.getPassword()->getAnswerIndex());
         setTentState(5);
     }
 }
@@ -290,12 +281,12 @@ void ReddTent::execTentMenu() {
         if (MenuCtrl_IsResultOk()) {
             ReddPassword_LearnCurrentPlayer();
             r[0] = 3;
-            ((TalkWindowState *)(window))->setNextMessage(&r[0], (void *)("sp_npc_fox"));
+            window->setNextMessage(&r[0], (void *)("sp_npc_fox"));
             window->nextState = 1;
             setTentState(3);
         } else {
             r[1] = 4;
-            ((TalkWindowState *)(window))->setNextMessage(&r[1], (void *)("sp_npc_fox"));
+            window->setNextMessage(&r[1], (void *)("sp_npc_fox"));
             window->nextState = 1;
             setTentState(3);
             BuildingOccupancy_Leave(itemId, 0);

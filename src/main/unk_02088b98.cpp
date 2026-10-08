@@ -11,6 +11,7 @@
 
 // Included here, after the twins above: the class definition order decides the vtable order in .data.
 #include "actor/ActorCollider.h"
+#include "actor/Actor.h"
 #include "gfx/SpriteAnim.h"
 #define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02088b98.h"
@@ -27,7 +28,6 @@ u32 data_021ce63c;
 extern "C" {
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 _ZN5Actor8findByIdEj(s32 v);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -95,9 +95,9 @@ BOOL ActorCollider::isPushedFromAngle(s32 a) {
     return FALSE;
 }
 
-s32 ActorCollider::getHitActor() {
+Actor *ActorCollider::getHitActor() {
     if (hitOwnerId != 0) {
-        return _ZN5Actor8findByIdEj(hitOwnerId);
+        return (Actor *)Actor::findById(hitOwnerId);
     }
     return 0;
 }

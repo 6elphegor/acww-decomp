@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "types.h"
 #endif
 
@@ -48,7 +49,7 @@ extern u32 sLidSleepBacklightBottom;
 extern u32 sLidSleepBacklightTop;
 #endif
 #ifndef PROTO_LOCAL_Field_TryPushSnowball
-s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e);
+s32 Field_TryPushSnowball(VecFx32 *a, s16 *b, s32 *c, s32 d, s16 e);
 #endif
 #ifndef PROTO_LOCAL_LidSleep_TestFlag
 BOOL LidSleep_TestFlag(s32 m);

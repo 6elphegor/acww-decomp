@@ -6,9 +6,6 @@
 #include "field/BottleThrow.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
-#define PROTO_LOCAL_sFishShadows  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sInsectSpawnMaskDry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sInsectSpawnMaskLand  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"
@@ -17,56 +14,16 @@
 #include "proto/ov003/unk_ov003_02225238.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 
-typedef VecFx32 V3;
 
 
 
-static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
-{
-    if ((f & m) != 0) return TRUE;
-    return FALSE;
-}
 
 
 
 
 extern "C" {
-extern BottleThrow sBottleThrows[4];
-extern V3 data_ov003_02257d50;
-extern CommManager *gCommManager;
-
-void func_0203239c(void *p);
-void func_020323b0(void *p);
-void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-s32 BottleThrow_IsOffscreen(BottleThrow *e);
-void func_ov003_02221874(void *p);
-void func_ov003_02221998(void *p);
-void FieldPos_FromBlockUnitCenter(V3 *out, s32 a, s32 b, s32 c, s32 d);
-void *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 Item_IsBuildingOrOccupied();
-s32 Ground_GetWaterKind(s32 x, s32 y);
-void *MI_CpuFill8(void *p, s32 v, u32 n);
-extern u16 sInsectSpawnMaskLand[];
-extern u16 sInsectSpawnMaskDry[];
-u32 MapBlock_GetAttr();
-s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
-s32 Ground_IsGrassUnit(s32 x, s32 y);
-s32 Ground_IsPond(s32 x, s32 y);
-s32 Ground_GetDigKind(s32 x, s32 y);
-void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-extern u8 sFishCatches[];
-extern u8 sFishShadows[];
-
-V3 *BottleThrow_GetPos(s32 i);
-void BottleThrow_SetTarget(V3 *v, s32 i);
-void *func_ov003_02224d80(void *p);
-void func_ov003_02224dc4();
-void func_ov003_02224dc8();
-void func_ov003_02224e04();
-void func_ov003_02224e24();
-void func_ov003_02224e44();
-BottleThrow *func_ov003_02224d90(BottleThrow *p);
+void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
 }
 
 BOOL Field_IsGrownTreeItem(u16 *p)
@@ -108,7 +65,7 @@ void SpawnMask_PickFreeUnit(u32 n0, u16 *tbl, s32 *px, s32 *py)
         for (; x < 16; x++) {
             if (((*row >> x) & 1) == 0) {
                 if (n-- == 0) {
-                    V3 t;
+                    VecFx32 t;
                     FieldPos_FromBlockUnitCenter(&t, *px + 1, *py + 1, x, y);
                     *px = t.x;
                     *py = t.z;
@@ -142,7 +99,7 @@ void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b)
     s32 h1;
     s32 i;
     s32 lo;
-    s32 bx32;
+    s32 bx16;
     u16 m0;
     u16 *p2;
     u16 *pp;
@@ -186,15 +143,15 @@ void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b)
         }
         lo = lx > 0 ? (2 << lx) - 1 : 0;
         m0 = (2 << w1) - 1 - lo;
-        bx32 = bx << 5;
-        p0 = (u16 *)((u8 *)buf + ((by - 1) << 7) + bx32);
+        bx16 = bx << 4;
+        p0 = buf + (by - 1) * 0x40 + bx16;  // (a mask: 4 x 4 blocks of 16 rows)
         pp = p0 - 0x10;
         for (i = ly; i < h1; i++) {
             pp[i] |= m0;
         }
         if (e2 > 0x10 && by < 4) {
             n = e2 - 0x10;
-            p1 = (u16 *)((u8 *)buf + (by << 7) + bx32) - 0x10;
+            p1 = buf + by * 0x40 + bx16 - 0x10;
             for (i = 0; i < n; i++) {
                 p1[i] |= m0;
             }
@@ -209,7 +166,7 @@ void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b)
             e1 -= 0x10;
             m3 = (2 << e1) - 1;
             n = e2 - 0x10;
-            p2 = (u16 *)((u8 *)buf + (by << 7) + bx32);
+            p2 = buf + by * 0x40 + bx16;
             for (i = 0; i < n; i++) {
                 p2[i] |= m3;
             }

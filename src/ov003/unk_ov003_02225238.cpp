@@ -7,9 +7,6 @@
 #include "field/BottleThrow.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
-#define PROTO_LOCAL_sFishShadows  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sInsectSpawnMaskDry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sInsectSpawnMaskLand  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"
@@ -18,56 +15,23 @@
 #include "proto/ov003/unk_ov003_02225238.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 
-typedef VecFx32 V3;
 
 
 
-static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
-{
-    if ((f & m) != 0) return TRUE;
-    return FALSE;
-}
 
 
 
 
 extern "C" {
-extern BottleThrow sBottleThrows[4];
-extern V3 data_ov003_02257d50;
-extern CommManager *gCommManager;
 
-void func_0203239c(void *p);
-void func_020323b0(void *p);
-void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-s32 BottleThrow_IsOffscreen(BottleThrow *e);
-void func_ov003_02221874(void *p);
-void func_ov003_02221998(void *p);
-void FieldPos_FromBlockUnitCenter(V3 *out, s32 a, s32 b, s32 c, s32 d);
-void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 Item_IsBuildingOrOccupied();
 s32 Ground_GetWaterKind(s32 x, s32 y);
-void *MI_CpuFill8(void *p, s32 v, u32 n);
-extern u16 sInsectSpawnMaskLand[];
-extern u16 sInsectSpawnMaskDry[];
 u32 MapBlock_GetAttr(void *block);
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
 s32 Ground_IsGrassUnit(s32 x, s32 y);
 s32 Ground_IsPond(s32 x, s32 y);
 s32 Ground_GetDigKind(s32 x, s32 y);
-void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-extern u8 sFishCatches[];
-extern u8 sFishShadows[];
 
-V3 *BottleThrow_GetPos(s32 i);
-void BottleThrow_SetTarget(V3 *v, s32 i);
-void *func_ov003_02224d80(void *p);
-void func_ov003_02224dc4();
-void func_ov003_02224dc8();
-void func_ov003_02224e04();
-void func_ov003_02224e24();
-void func_ov003_02224e44();
-BottleThrow *func_ov003_02224d90(BottleThrow *p);
 }
 
 static inline u8 *Unk_ov003_02225238_Cell(Unk_ov003_02225238_Grid *g, u32 x, u32 y)
