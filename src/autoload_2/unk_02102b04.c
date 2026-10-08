@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef int s32;
 
 typedef struct CharWidths { s8 left; u8 glyphWidth; s8 charWidth; } CharWidths;
@@ -16,9 +17,9 @@ typedef struct FontInfo {           // NNSG2dFontInformation
     u16 alterCharIndex;             // 0x02
     CharWidths defaultWidth;        // 0x04
     u8 encoding;                    // 0x07
-    GlyphBlock *pGlyph;             // 0x08
-    void *pWidth;                   // 0x0c
-    void *pMap;                     // 0x10
+    u32 pGlyph;                     // 0x08 (GlyphBlock *, ptr32: include/host_ptr32.h)
+    u32 pWidth;                     // 0x0c (FontWidth *, ptr32: include/host_ptr32.h)
+    u32 pMap;                       // 0x10 (FontCodeMap *, ptr32: include/host_ptr32.h)
 } FontInfo;
 typedef struct Font { FontInfo *info; } Font;   // NNSG2dFont (partial)
 typedef struct Glyph {
@@ -73,7 +74,7 @@ void DrawGlyphLine(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, Glyph *gly
     s32 cy1;
     tileBytes = cc->colorMode * 64 / 8;
     gw = glyph->pWidths->glyphWidth;
-    pGlyph = font->info->pGlyph;
+    pGlyph = HostPtr32_Get(font->info->pGlyph);
     areaW = cc->areaWidth;
     areaH = cc->areaHeight;
     charBase = cc->charBase;
@@ -99,9 +100,9 @@ void DrawGlyphLine(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, Glyph *gly
     args.w = gw;
     args.h = gh;
     args.colorOfs = clr - 1;
-    args.pixBits = font->info->pGlyph->bpp;
+    args.pixBits = pGlyph->bpp;
     args.mode = cc->colorMode;
-    args.rowStep = args.pixBits * font->info->pGlyph->cellWidth;
+    args.rowStep = args.pixBits * pGlyph->cellWidth;
     xEnd = x - cw * 8;
     yEnd = y - ch * 8;
     for (yy = y; yy > yEnd; yy -= 8) {

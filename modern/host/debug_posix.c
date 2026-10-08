@@ -172,7 +172,9 @@ static void on_fatal_signal(int sig, siginfo_t *si, void *ctx) {
     _exit(5);
 }
 
-void host_debug_init(void) {
+// the crash handlers; again after melon_init: melonDS's JIT installs a SIGSEGV handler of its own (for its fast
+// memory, unused here) that doesn't hand other faults on to this one
+void host_debug_crash_handlers(void) {
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
     sa.sa_flags = SA_SIGINFO | SA_NODEFER;
@@ -181,6 +183,13 @@ void host_debug_init(void) {
     sigaction(SIGBUS, &sa, 0);
     sigaction(SIGILL, &sa, 0);
     sigaction(SIGFPE, &sa, 0);
+}
+
+void host_debug_init(void) {
+    struct sigaction sa;
+    memset(&sa, 0, sizeof sa);
+    sa.sa_flags = SA_SIGINFO | SA_NODEFER;
+    host_debug_crash_handlers();
 #if HAVE_UC_REGS
     sa.sa_sigaction = on_trap;
     sigaction(SIGTRAP, &sa, 0);
@@ -201,6 +210,7 @@ void host_debug_init(void) {
 #else
 
 void host_debug_init(void) {}
+void host_debug_crash_handlers(void) {}
 void host_debug_exit_dumps(void) {}
 
 #endif

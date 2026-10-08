@@ -49,7 +49,7 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
+extern void *WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
@@ -125,7 +125,7 @@ void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf) {
         if ((mask & ds->pkt[idx].hdr) == 0) return;
     }
     x = ds->f80e;
-    addr = (void *)WmGetSharedDataAddress(ds, x, ds->pkt[idx].data, n);
+    addr = WmGetSharedDataAddress(ds, x, ds->pkt[idx].data, n);
     if (buf != 0) {
         MIi_CpuCopy16(buf, addr, ds->f810);
     } else {

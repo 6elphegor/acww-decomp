@@ -20,7 +20,6 @@ PlayerActor_GetFrontUnitCenter
 PlayerActor_GetHairColor
 PlayerActor_GetHairStyle
 PlayerActor_GetHeldItem
-PlayerActor_GetPlayerData
 PlayerActor_GetTan
 PlayerActor_SetLastPlayDate
 PlayerActor_StepTowardPose

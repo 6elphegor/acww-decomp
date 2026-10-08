@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma.c, mi_dma_gxcommand.c): autoload_2 0x02115bac-0x02115e30.
+#include "uptr.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_02115bac.h"
 #include "proto/main/unk_0206d49c.h"
@@ -13,36 +14,30 @@ typedef void (*MIDmaCallback)(void *arg);
 
 extern u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 extern void OS_RestoreInterrupts(u32 mode); // OS_RestoreInterrupts
-extern void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress
+extern void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress
 extern void MI_WaitDma(u32 dmaNo); // MI_WaitDma
 extern void OSi_EnterDmaCallback(u32 dmaNo, MIDmaCallback cb, void *arg); // MIi_SetDmaCallback
-extern void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 cnt); // MIi_DmaSetParams
-extern void MIi_DmaSetParams_wait_noInt(u32 dmaNo, u32 src, u32 dest, u32 cnt);
-extern void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 cnt);
-extern void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 cnt);
+extern void MIi_DmaSetParams(u32 dmaNo, uptr src, uptr dest, u32 cnt); // MIi_DmaSetParams
+extern void MIi_DmaSetParams_wait_noInt(u32 dmaNo, uptr src, uptr dest, u32 cnt);
+extern void MIi_DmaSetParams_noInt(u32 dmaNo, uptr src, uptr dest, u32 cnt);
+extern void MIi_DmaSetParams_wait(u32 dmaNo, uptr src, uptr dest, u32 cnt);
 
-typedef struct {
-    u32 busy;
-    u32 dmaNo;
-    u32 pad8;
-    u32 padC;
-    MIDmaCallback callback;
-    void *arg;
-} MIiGxDmaState;
+#include "nitro/mi_gxdma.h"
+typedef MIGXDmaParams MIiGxDmaState;
 
 extern MIiGxDmaState data_027e0414;
 
 void MIi_CheckAnotherAutoDMA(u32 dmaNo, u32 mode);
 
 // MIi_GXDmaSend / MI_SendGXCommandAsync
-void MI_SendGXCommandAsyncFast(u32 dmaNo, u32 src, u32 size, MIDmaCallback callback, void *arg) {
+void MI_SendGXCommandAsyncFast(u32 dmaNo, uptr src, u32 size, MIDmaCallback callback, void *arg) {
     if (size == 0) {
         if (callback) callback(arg);
         return;
     }
-    while (((volatile MIiGxDmaState *)&data_027e0414)->busy)
+    while (((volatile MIiGxDmaState *)&data_027e0414)->isBusy)
         ;
-    data_027e0414.busy = 1;
+    data_027e0414.isBusy = 1;
     data_027e0414.dmaNo = dmaNo;
     data_027e0414.callback = callback;
     data_027e0414.arg = arg;
@@ -56,13 +51,13 @@ void MI_SendGXCommandAsyncFast(u32 dmaNo, u32 src, u32 size, MIDmaCallback callb
 // GX DMA completion callback
 void MIi_DMAFastCallback(void) {
     void *arg;
-    data_027e0414.busy = 0;
+    data_027e0414.isBusy = 0;
     arg = data_027e0414.arg;
     if (data_027e0414.callback) data_027e0414.callback(arg);
 }
 
 // MI_DmaFill32 (sync)
-void MI_DmaFill32(u32 dmaNo, u32 dest, u32 data, u32 size) {
+void MI_DmaFill32(u32 dmaNo, uptr dest, u32 data, u32 size) {
     vu32 *dmaCntp;
     u32 e;
     if (size == 0) return;
@@ -71,14 +66,14 @@ void MI_DmaFill32(u32 dmaNo, u32 dest, u32 data, u32 size) {
         ;
     e = OS_DisableInterrupts();
     IO_W(&((vu32 *)0x040000e0)[dmaNo], data);
-    MIi_DmaSetParams_wait_noInt(dmaNo, (u32)&((vu32 *)0x040000e0)[dmaNo], dest, (size >> 2) | 0x85000000);
+    MIi_DmaSetParams_wait_noInt(dmaNo, (uptr)&((vu32 *)0x040000e0)[dmaNo], dest, (size >> 2) | 0x85000000);
     OS_RestoreInterrupts(e);
     while (IO_R(dmaCntp) & 0x80000000)
         ;
 }
 
 // MI_DmaCopy32 (sync)
-void MI_DmaCopy32(u32 dmaNo, u32 src, u32 dest, u32 size) {
+void MI_DmaCopy32(u32 dmaNo, uptr src, uptr dest, u32 size) {
     vu32 *dmaCntp;
     MIi_CheckDma0SourceAddress(dmaNo, src, size, 0);
     if (size == 0) return;
@@ -91,7 +86,7 @@ void MI_DmaCopy32(u32 dmaNo, u32 src, u32 dest, u32 size) {
 }
 
 // MI_DmaCopy16 (sync)
-void MI_DmaCopy16(u32 dmaNo, u32 src, u32 dest, u32 size) {
+void MI_DmaCopy16(u32 dmaNo, uptr src, uptr dest, u32 size) {
     vu32 *dmaCntp;
     if (size == 0) return;
     MIi_CheckDma0SourceAddress(dmaNo, src, size, 0);

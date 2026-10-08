@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/itcm/unk_01ff9e10.c (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "uptr.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,13 +13,13 @@ extern "C" {
 void MIi_FIFOCallback(void);
 #endif
 #ifndef PROTO_LOCAL_MIi_DmaSetParams
-void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
+void MIi_DmaSetParams(u32 dmaNo, uptr src, uptr dest, u32 ctrl);
 #endif
 #ifndef PROTO_LOCAL_MIi_DMACallback
 void MIi_DMACallback(void *arg);
 #endif
 #ifndef PROTO_LOCAL_MIi_CheckDma0SourceAddress
-void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
+void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 dir);
 #endif
 #ifndef PROTO_LOCAL_MI_WaitDma
 void MI_WaitDma(u32 dmaNo);

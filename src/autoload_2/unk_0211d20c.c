@@ -34,16 +34,7 @@ typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers ther
     u32 result;
 } RTCWork;
 
-typedef struct {
-    u32 result;
-    u32 command;
-    u32 f8;
-    u32 srcBuf;
-    u32 dstBuf;
-    u32 len;
-    u32 f18;
-    u32 f1c, f20, f24, f28, f2c, f30, f34, f38, f3c;
-} CARDCmd;
+#include "sys/CardCmd.h"
 
 typedef struct CARDCommon {
     CARDCmd *cmd;
@@ -52,8 +43,8 @@ typedef struct CARDCommon {
     volatile u32 lockCount;
     OSQ queue;
     u32 lockType;
-    u32 src;
-    u32 dst;
+    uptr src;  // (card addresses or ARM9 memory: pointer-sized)
+    uptr dst;
     u32 len;
     u32 op;
     u32 f2c, f30, f34;
@@ -114,9 +105,9 @@ void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
 BOOL CARDi_TryReadCardDma(void *);
 
-u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
-u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
-u32 RTC_GetDateAsync(u32, void (*)(void), u32);
+u32 RTC_GetDateTimeAsync(void *, void *, void (*)(void), void *);
+u32 RTC_GetTimeAsync(void *, void (*)(void), void *);
+u32 RTC_GetDateAsync(void *, void (*)(void), void *);
 BOOL RtcSendPxiCommand(u32);
 BOOL RTCi_ReadRawDateAsync(void);
 BOOL RTCi_ReadRawTimeAsync(void);
@@ -203,7 +194,7 @@ void RTC_Init(void) {
 }
 
 // RTC_ReadDateAsync (date, callback, arg)
-u32 RTC_GetDateAsync(u32 a, void (*cb)(void), u32 arg) {
+u32 RTC_GetDateAsync(void *a, void (*cb)(void), void *arg) {
     u32 irq = OS_DisableInterrupts();
     if (data_021feb90.lock) {
         OS_RestoreInterrupts(irq);
@@ -213,14 +204,14 @@ u32 RTC_GetDateAsync(u32 a, void (*cb)(void), u32 arg) {
     OS_RestoreInterrupts(irq);
     data_021feb90.command = 0;
     data_021feb90.f18 = 0;
-    data_021feb90.f8 = a;
+    data_021feb90.f8 = (uptr)a;
     data_021feb90.f4 = (uptr)cb;
-    data_021feb90.f10 = arg;
+    data_021feb90.f10 = (uptr)arg;
     return RTCi_ReadRawDateAsync() ? 0 : 3;
 }
 
 // RTC_ReadDate (sync)
-u32 RTC_GetDate(u32 a) {
+u32 RTC_GetDate(void *a) {
     u32 r = RTC_GetDateAsync(a, RtcGetResultCallback, 0);
     data_021feb90.result = r;
     if (!r) RtcWaitBusy();
@@ -228,7 +219,7 @@ u32 RTC_GetDate(u32 a) {
 }
 
 // RTC_ReadTimeAsync (time, callback, arg)
-u32 RTC_GetTimeAsync(u32 a, void (*cb)(void), u32 arg) {
+u32 RTC_GetTimeAsync(void *a, void (*cb)(void), void *arg) {
     u32 irq = OS_DisableInterrupts();
     if (data_021feb90.lock) {
         OS_RestoreInterrupts(irq);
@@ -238,14 +229,14 @@ u32 RTC_GetTimeAsync(u32 a, void (*cb)(void), u32 arg) {
     OS_RestoreInterrupts(irq);
     data_021feb90.command = 1;
     data_021feb90.f18 = 0;
-    data_021feb90.f8 = a;
+    data_021feb90.f8 = (uptr)a;
     data_021feb90.f4 = (uptr)cb;
-    data_021feb90.f10 = arg;
+    data_021feb90.f10 = (uptr)arg;
     return RTCi_ReadRawTimeAsync() ? 0 : 3;
 }
 
 // RTC_ReadTime (sync)
-u32 RTC_GetTime(u32 a) {
+u32 RTC_GetTime(void *a) {
     u32 r = RTC_GetTimeAsync(a, RtcGetResultCallback, 0);
     data_021feb90.result = r;
     if (!r) RtcWaitBusy();
@@ -253,7 +244,7 @@ u32 RTC_GetTime(u32 a) {
 }
 
 // RTC_ReadDateTimeAsync (date, time, callback, arg)
-u32 RTC_GetDateTimeAsync(u32 a, u32 b, void (*cb)(void), u32 arg) {
+u32 RTC_GetDateTimeAsync(void *a, void *b, void (*cb)(void), void *arg) {
     u32 irq = OS_DisableInterrupts();
     if (data_021feb90.lock) {
         OS_RestoreInterrupts(irq);
@@ -263,15 +254,15 @@ u32 RTC_GetDateTimeAsync(u32 a, u32 b, void (*cb)(void), u32 arg) {
     OS_RestoreInterrupts(irq);
     data_021feb90.command = 2;
     data_021feb90.f18 = 0;
-    data_021feb90.f8 = a;
-    data_021feb90.fc = b;
+    data_021feb90.f8 = (uptr)a;
+    data_021feb90.fc = (uptr)b;
     data_021feb90.f4 = (uptr)cb;
-    data_021feb90.f10 = arg;
+    data_021feb90.f10 = (uptr)arg;
     return RTCi_ReadRawDateTimeAsync() ? 0 : 3;
 }
 
 // RTC_ReadDateTime (sync wrapper of RTC_ReadDateTimeAsync; waits in RtcWaitBusy)
-u32 RTC_GetDateTime(u32 a, u32 b) {
+u32 RTC_GetDateTime(void *a, void *b) {
     u32 r = RTC_GetDateTimeAsync(a, b, RtcGetResultCallback, 0);
     data_021feb90.result = r;
     if (!r) RtcWaitBusy();

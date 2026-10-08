@@ -5,6 +5,7 @@
 // size on its own): snd main (0x021093f4), resource manager (0x021096d4), player (0x02109830), stream (0x0210a478,
 // continued in unk_0210a9c4.c); its first part, the end of the XSI texture-SRT file, is in unk_02108d44.c. Every
 // part keeps the common declarations.
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -69,8 +70,8 @@ struct Seq {
     u8 pad42[2];
 };
 
-typedef struct StrmEnt { u32 buf; u32 pos; } StrmEnt;
-typedef void (*StrmCb)(s32, s32, u32 *, u32, s32, void *);
+typedef struct StrmEnt { uptr buf; u32 pos; } StrmEnt;  // buf: a channel buffer's address
+typedef void (*StrmCb)(s32, s32, uptr *, u32, s32, void *);
 
 typedef struct Strm {
     NNSFndLink link;        // 0x00
@@ -108,7 +109,7 @@ extern NNSFndList data_021fadd8;
 extern Seq data_021fade4[];
 extern Player data_021fb224[];
 extern NNSFndList data_021fb6a8;
-extern u32 data_021fb6b4[];
+extern uptr data_021fb6b4[];
 extern StrmEnt data_021fb6f4[];
 extern s16 data_02139fb4[];
 
@@ -153,13 +154,13 @@ extern void SND_SetPlayerChannelPriority();
 extern void SND_SetPlayerVolume(u32, s32);
 extern void SND_SetPlayerTempoRatio();
 extern void SND_StartPreparedSeq(u32);
-extern void SND_PrepareSeq(u32 player, u32 seqBase, u32 seqOffset, u32 bank);
+extern void SND_PrepareSeq(u32 player, uptr seqBase, u32 seqOffset, uptr bank);
 extern void SND_StopSeq(u32);
 extern u32 SND_IsFinishedCommandTag(u32);
 extern u32 SND_GetCurrentCommandTag(void);
 extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
-extern u32 SND_RecvCommandReply(u32);
+extern void *SND_RecvCommandReply(u32);
 extern u32 SND_ReadTrackInfo();
 extern u32 SND_ReadPlayerInfo();
 extern s32 SND_GetPlayerGlobalVariable(s32);
@@ -190,8 +191,8 @@ void NNSi_SndPlayerStopSeq(Seq *, s32);
 void InitPlayer(Seq *);
 void PlayerHeapDisposeCallback(HeapBlk *);
 u32 BeginSleep(void);
-u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
-u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
+u32 NNSi_SndReadDriverPlayerInfo(u32, void *);
+u32 NNSi_SndReadDriverTrackInfo(u32, u32, void *);
 
 typedef struct TexSrt {
     u8 pad[0x18];
@@ -447,7 +448,7 @@ BOOL NNS_SndPlayerWriteGlobalVariable(u32 a, u32 b)
 }
 
 // NNS_SndHandleGetChannelInfo-like
-u32 NNS_SndPlayerReadDriverPlayerInfo(Handle *h, u32 b)
+u32 NNS_SndPlayerReadDriverPlayerInfo(Handle *h, void *b)
 {
     if (h->seq == 0) {
         return 0;
@@ -456,7 +457,7 @@ u32 NNS_SndPlayerReadDriverPlayerInfo(Handle *h, u32 b)
 }
 
 // NNS_SndHandleGetTrackInfo-like
-u32 NNS_SndPlayerReadDriverTrackInfo(Handle *h, u32 b, u32 c)
+u32 NNS_SndPlayerReadDriverTrackInfo(Handle *h, u32 b, void *c)
 {
     if (h->seq == 0) {
         return 0;
@@ -470,8 +471,8 @@ void NNSi_SndPlayerInit(void)
     s32 i;
     Seq *s;
     Player *p;
-    NNS_FndInitList(&data_021fadd8, (u32)&((Seq *)0)->glink);  // (20 on the DS)
-    NNS_FndInitList(&data_021fadcc, (u32)&((Seq *)0)->glink);
+    NNS_FndInitList(&data_021fadd8, __builtin_offsetof(Seq, glink));  // (20 on the DS)
+    NNS_FndInitList(&data_021fadcc, __builtin_offsetof(Seq, glink));
     s = data_021fade4;
     for (i = 0; i < 16; i++, s++) {
         s->status = 0;
@@ -480,7 +481,7 @@ void NNSi_SndPlayerInit(void)
     }
     p = data_021fb224;
     for (i = 0; i < 32; i++, p++) {
-        NNS_FndInitList(&p->seqList, (u32)&((Seq *)0)->plink);  // (12 on the DS)
+        NNS_FndInitList(&p->seqList, __builtin_offsetof(Seq, plink));  // (12 on the DS)
         NNS_FndInitList(&p->heapList, 0);
         p->vol = 127;
         p->playable = 1;
@@ -576,7 +577,7 @@ void NNSi_SndPlayerFreeSeqPlayer(Seq *s)
 void NNSi_SndPlayerStartSeq(Seq *s, const void *seqBase, u32 seqOffset, const void *bank)
 {
     Player *p = s->player;
-    SND_PrepareSeq(s->id, (u32)seqBase, seqOffset, (u32)bank);
+    SND_PrepareSeq(s->id, (uptr)seqBase, seqOffset, (uptr)bank);
     if (p->bank != 0) {
         SND_SetTrackAllocatableChannel(s->id, 0xffff, p->bank);
     }

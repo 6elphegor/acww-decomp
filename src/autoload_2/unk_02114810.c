@@ -2,13 +2,14 @@
 // NitroSDK os_arena.c: OS_GetInitArenaHi, autoload_2 0x02114810-0x02114940. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 #include "sdk_linker_symbols.h"
 
 extern s32 data_021fce88;
 extern u8 data_027e0000[]; // SDK_AUTOLOAD_DTCM_START (HW_DTCM): a real relocation to the dtcm module
 
-#define HW_DTCM ((u32)data_027e0000)
+#define HW_DTCM ((uptr)data_027e0000)
 #define HW_DTCM_SVC_STACK (HW_DTCM + 0x3f80)
 #define OSi_SYS_STACK_SIZE SDK_SYS_STACKSIZE
 #define OSi_IRQ_STACK_SIZE SDK_IRQ_STACKSIZE
@@ -24,8 +25,8 @@ void *OS_GetInitArenaHi(s32 id) {
         return (void *)0x02700000;
     case 3: return (void *)0x02000000;
     case 4: {
-        u32 irqStackLo = HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE;
-        u32 sysStackLo;
+        uptr irqStackLo = HW_DTCM_SVC_STACK - OSi_IRQ_STACK_SIZE;
+        uptr sysStackLo;
         if (!OSi_SYS_STACK_SIZE) {
             sysStackLo = HW_DTCM;
             if (sysStackLo < SDK_SECTION_ARENA_DTCM_START) sysStackLo = SDK_SECTION_ARENA_DTCM_START;

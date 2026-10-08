@@ -29,6 +29,9 @@ extern const char *gHostRomPath;
 
 // hw.c: memory map, I/O registers, time, DMA
 void host_map_memory(void);
+int host_highmem(void);                // ACWW_HIGHMEM: the low-4 GB poisoning harness (x86-64 Linux)
+void host_highmem_init(void);          // reserve the unused low 4 GB (after the fixed mappings)
+void *host_highmem_alloc(uintptr_t *hint, size_t n);  // memory above 4 GB, from *hint upwards
 u8 *host_io(u32 addr);                 // an I/O register (the register model's storage)
 // the game's register accesses (include/nitro/io_access.h): the register's address as a pointer-sized number
 unsigned long long HostIo_Read(uintptr_t addr, unsigned int size);
@@ -38,6 +41,7 @@ void host_exit_dumps(void);            // the reports written at exit (ACWW_IOHI
 
 // debug_posix.c (empty without HOST_DEBUG_POSIX)
 void host_debug_init(void);
+void host_debug_crash_handlers(void);  // (re)install the crash report's handlers
 void host_debug_exit_dumps(void);
 u32 host_irq_pending(void);            // IE & IF when IME is set
 void host_irq_ack(u32 mask);
@@ -47,7 +51,7 @@ u64 host_frame(void);
 u64 host_cycles(void);
 
 // os.c
-void *host_stack_alloc(size_t n);  // a stack for game code (below 4 GB on 64-bit Linux)
+void *host_stack_alloc(size_t n);  // a stack for game code (below 4 GB on 64-bit Linux, above with ACWW_HIGHMEM)
 void host_deliver_irqs(void);
 
 // pxi7.c: the ARM7 side of the PXI FIFO

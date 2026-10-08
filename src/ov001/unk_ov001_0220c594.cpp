@@ -31,7 +31,7 @@ extern "C" {
 u8 sWfcLanguage;
 u32 sWfcParams;
 u8 sWfcExitRequested;
-u32 sWfcWorkArea;
+void *sWfcWorkArea;
 void (*sWfcSceneFunc)();
 u32 sWfcScreenFlags[4];
 //ENDDEFS
@@ -62,7 +62,7 @@ extern void WfcInput_Shutdown();
 extern void WfcObj_Shutdown();
 extern s32 WfcHeap_Destroy();
 extern void WfcObj_Init();
-extern void WfcHeap_Init(u32);
+extern void WfcHeap_Init(void *);
 extern void WfcInput_Init();
 extern void WfcInput_Update();
 extern void *WfcPool_Get(void *);
@@ -72,7 +72,7 @@ extern void WfcPool_Put(void *, void *);
 #pragma thumb off
 
 
-s32 WfcUtil_Run(u32 a, s32 b, u32 c) {
+s32 WfcUtil_Run(void *a, s32 b, u32 c) {
     sWfcWorkArea = a;
     if (WfcUtil_CheckParams(b, c) == 0) return -1;
     sWfcExitRequested = 0;

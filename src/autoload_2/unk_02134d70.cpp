@@ -51,6 +51,10 @@ typedef struct ActionIterator {
 
 #define EXCEPTION_ACTION_MASK 0x1f
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
+// (The ARM exception runtime: it walks the DS's exception tables and saved ARM registers, 32-bit words that hold
+// DS addresses. The host has no such tables - __FindExceptionTable finds none, a throw is fatal - so it never runs
+// there: the words become pointers through uptr.)
+#define GET_PTR(p) ((uptr)(u32)GET_LONG(p))
 
 extern "C" {
 void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info); // __SetupFrameInfo
@@ -73,7 +77,7 @@ extern "C" u8 NextAction(ActionIterator *iter) {
 
     for (;;) {
         if (!info->action_pointer || *info->action_pointer & 0x80) {
-            FindExceptionRecord((char *)__PopStackFrame(context, info), info);
+            FindExceptionRecord((char *)(uptr)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
                 msl::terminate();
             }

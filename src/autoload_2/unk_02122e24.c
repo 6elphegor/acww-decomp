@@ -10,6 +10,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -30,7 +31,7 @@ extern u32 IsChildAidValid(u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern u8 *WM_ReadMPData(void *, u32);
 extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
-extern u32 FS_ReadFile(void *, u32, u32);
+extern u32 FS_ReadFile(void *, void *, u32);
 extern void FS_CloseFile(void *);
 extern u8 *MBi_SetRecvBufferFromChild(void *, void *, u32);
 extern u32 MBi_calc_nextsendblock(u32, u32);
@@ -188,7 +189,7 @@ BOOL IsAbleToLoad(u32 idx, u32 addr, u32 size) {
 // (set callback at work+0x14e4 with interrupts disabled)
 void MB_CommSetParentStateCallback(void (*cb)()) {
     u32 irq = OS_DisableInterrupts();
-    W32(data_0220001c + 0x1000, 0x4e4) = (u32)cb;
+    W32(data_0220001c + 0x1000, 0x4e4) = HostPtr32_Of((const void *)cb);  // (a 32-bit slot of the DS-layout work)
     OS_RestoreInterrupts(irq);
 }
 // (copy 22-byte per-aid record into the work scratch buffer, returns pointer to it)
@@ -248,7 +249,7 @@ void MBi_CommChangeParentState(u32 a, u32 b, void *c) {
 
 // (call state callback work+0x14e4 if set)
 void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c) {
-    void (*cb)() = (void (*)())W32(data_0220001c + 0x1000, 0x4e4);
+    void (*cb)() = (void (*)())HostPtr32_Get(W32(data_0220001c + 0x1000, 0x4e4));
     if (cb != 0) cb(a, b, c);
 }
 

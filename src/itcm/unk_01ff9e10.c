@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I001e: itcm 0x01ff9e10-0x01ffa2ec, NitroSystem g3d Maya texture matrix + NitroSDK MI GX-command DMA (MI_SendGXCommandAsync, MI_WaitDma, MIi_DmaSetParams, FIFO callbacks) (8 functions). ARM, mwcc 1.2/base, -O4,p.
@@ -327,16 +328,8 @@ static inline void BitVecSet(u32 *vec, u32 idx)
 
 /* ---------------------------------------------------------------- NitroSDK MI (GX command DMA) */
 // MIi_GXDmaParams (DTCM)
-typedef struct MIGXDmaParams {
-    volatile BOOL isBusy;   // 0x00
-    u32 dmaNo;              // 0x04
-    u32 src;                // 0x08
-    u32 length;             // 0x0c
-    void (*callback)(void *); // 0x10
-    void *arg;              // 0x14
-    u32 fifoCond;           // 0x18
-    void (*fifoFunc)(void); // 0x1c
-} MIGXDmaParams;
+#include "nitro/mi_gxdma.h"
+#include "nitro/dma_host.h"
 extern MIGXDmaParams data_027e0414;
 
 #define reg_G3X_GXSTAT (*(vu32 *)0x04000600)
@@ -408,13 +401,13 @@ void NNSi_G3dSendJointSRTMaya(JntAnm *pResult);
 void NNSi_G3dSendTexSRTMaya(MatAnm *pResult);
 void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
 void MI_WaitDma(u32 dmaNo);
-void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
-void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
+void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 dir);
+void MIi_DmaSetParams(u32 dmaNo, uptr src, uptr dest, u32 ctrl);
 
 // MIi_FIFOCallback
 void MIi_FIFOCallback(void) {
     u32 length;
-    u32 src;
+    uptr src;
     if (data_027e0414.length == 0) {
         return;
     }
@@ -433,9 +426,10 @@ void MIi_FIFOCallback(void) {
 }
 
 // MIi_DmaSetParams
-void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
+void MIi_DmaSetParams(u32 dmaNo, uptr src, uptr dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
     vu32 *p = (vu32 *)0x040000b0 + dmaNo * 3;  // DMAn: SAD, DAD, CNT
+    HostDma_Addresses(dmaNo, src, dest);
     IO_W(p, src);
     IO_W((p + 1), dest);
     IO_W((p + 2), ctrl);
@@ -452,8 +446,8 @@ void MIi_DMACallback(void *arg) {
 }
 
 // MIi_CheckDma0SourceAddress
-void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir) {
-    if (dmaNo == 0) {
+void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 dir) {
+    if (dmaNo == 0 && src <= 0xffffffffu) {  // (the DS's DMA0 rule, about its address map: DS addresses only)
         u32 addStart = src & 0xff000000;
         u32 addEnd;
         switch (dir) {
@@ -503,7 +497,7 @@ void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (
     }
     data_027e0414.isBusy = TRUE;
     data_027e0414.dmaNo = dmaNo;
-    data_027e0414.src = (u32)(uptr)src;  // a DMA source address (the bus is 32 bits: the DS memory is mapped below 4 GB)
+    data_027e0414.src = (uptr)src;
     data_027e0414.length = commandLength;
     data_027e0414.callback = callback;
     data_027e0414.arg = arg;

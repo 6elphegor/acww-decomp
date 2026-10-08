@@ -26,7 +26,7 @@ void NNS_SndHeapLoadState(void *heap, s32 level);
 s32 NNS_SndHeapGetCurrentLevel(void *heap);
 s32 NNS_SndHeapSaveState(void *heap);
 void *NNS_SndHeapAlloc(void *heap, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b);
-void *NNS_SndHeapCreate(u32 start, u32 size);
+void *NNS_SndHeapCreate(void *start, u32 size);
 void NNS_SndArcInit(NNSSndArc *arc, const char *path, void *heap, BOOL loadSymb);
 void NNS_SndArcInitOnMemory(NNSSndArc *arc, void *base);
 void NNS_SndCaptureStartOutputEffect(void *buf, u32 size, s32 effect);
@@ -72,7 +72,7 @@ extern "C" void *Snd_GetHeap(void) {
 extern "C" void Snd_InitSystem(void *heapStart, u32 heapSize, const char *arcPath, void *arcMem) {
     NNS_SndInit();
     if (gSndHeap != NULL) Fatal_Trap();
-    gSndHeap = NNS_SndHeapCreate((uptr)heapStart, heapSize);  // (NNS_SndHeapCreate still takes the address as u32)
+    gSndHeap = NNS_SndHeapCreate(heapStart, heapSize);
     if (gSndHeap == NULL) Fatal_Trap();
     Snd_AllocCaptureBuffer();
     if (arcPath != NULL) {

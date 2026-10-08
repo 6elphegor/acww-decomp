@@ -82,9 +82,9 @@ extern "C" void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info) {
     }
     if (has_fp) {
         if (fp_is_r7) {
-            context->FP = (char *)context->state.regs[7];
+            context->FP = (char *)(uptr)context->state.regs[7];  // (saved ARM registers: DS addresses; never on the host)
         } else {
-            context->FP = (char *)context->state.regs[11];
+            context->FP = (char *)(uptr)context->state.regs[11];
         }
     } else {
         context->FP = context->SP;

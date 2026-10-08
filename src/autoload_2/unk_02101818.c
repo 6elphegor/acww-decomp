@@ -7,6 +7,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -34,7 +35,7 @@ typedef struct CharWidths { s8 left; u8 glyphWidth; s8 charWidth; } CharWidths;
 typedef struct FontWidth {          // NNSG2dFontWidth block
     u16 indexBegin;                 // 0x00
     u16 indexEnd;                   // 0x02
-    struct FontWidth *next;         // 0x04
+    u32 next;                       // 0x04 (struct FontWidth *, ptr32)
     CharWidths widths[1];           // 0x08
 } FontWidth;
 typedef struct CodeMapPair { u16 code; u16 index; } CodeMapPair;
@@ -43,7 +44,7 @@ typedef struct FontCodeMap {        // NNSG2dFontCodeMap
     u16 ccodeEnd;                   // 0x02
     u16 mappingMethod;              // 0x04
     u16 reserved;                   // 0x06
-    struct FontCodeMap *next;       // 0x08
+    u32 next;                       // 0x08 (struct FontCodeMap *, ptr32)
     u16 mapInfo[1];                 // 0x0c
 } FontCodeMap;
 typedef struct FontInfo {           // NNSG2dFontInformation
@@ -52,9 +53,9 @@ typedef struct FontInfo {           // NNSG2dFontInformation
     u16 alterCharIndex;             // 0x02
     CharWidths defaultWidth;        // 0x04
     u8 encoding;                    // 0x07
-    void *pGlyph;                   // 0x08
-    FontWidth *pWidth;              // 0x0c
-    FontCodeMap *pMap;              // 0x10
+    u32 pGlyph;                     // 0x08 (GlyphBlock *, ptr32: include/host_ptr32.h)
+    u32 pWidth;                     // 0x0c (FontWidth *, ptr32: include/host_ptr32.h)
+    u32 pMap;                       // 0x10 (FontCodeMap *, ptr32: include/host_ptr32.h)
 } FontInfo;
 typedef struct Font {
     FontInfo *info;                 // 0x00
@@ -148,21 +149,21 @@ void NNS_G2dFontInitUTF16(Font *font, void *file) {
 
 // NNS_G2dFontGetGlyphIndexFromCharCode
 u32 NNS_G2dFontFindGlyphIndex(Font *font, u32 c) {
-    FontCodeMap *m = font->info->pMap;
+    FontCodeMap *m = HostPtr32_Get(font->info->pMap);
     while (m != 0) {
         if (m->ccodeBegin <= c && c <= m->ccodeEnd) return GetGlyphIndex(m, c);
-        m = m->next;
+        m = HostPtr32_Get(m->next);
     }
     return 0xffff;
 }
 
 // NNS_G2dFontGetCharWidthsFromIndex
 CharWidths *NNS_G2dFontGetCharWidthsFromIndex(Font *font, u32 idx) {
-    FontWidth *w = font->info->pWidth;
+    FontWidth *w = HostPtr32_Get(font->info->pWidth);
     while (w != 0) {
         if (w->indexBegin <= idx && idx <= w->indexEnd)
             return (CharWidths *)((u8 *)w->widths + (idx - w->indexBegin) * font->stride);
-        w = w->next;
+        w = HostPtr32_Get(w->next);
     }
     return &font->info->defaultWidth;
 }

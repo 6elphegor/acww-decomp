@@ -152,7 +152,7 @@ struct FSArc {
         FSFile *prev;
         FSFile *next;
     } list;
-    /* 0x28 */ u32 base;
+    /* 0x28 */ uptr base;  // a ROM offset, or the image of an archive in memory (pointer-sized)
     /* 0x2c */ u32 fat;
     /* 0x30 */ u32 fat_size;
     /* 0x34 */ u32 fnt;

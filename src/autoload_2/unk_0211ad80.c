@@ -2,6 +2,7 @@
 // NitroSDK MATH library (MD5, SHA-1, HMAC-SHA1), autoload_2 0x0211a8d4-0x0211b40c. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
 typedef unsigned int u32;
+#include "uptr.h"
 #include "types64.h"
 typedef signed int s32;
 
@@ -84,7 +85,7 @@ void DGT_Hash2SetSource(SHA1Context *ctx, const void *data, u32 len) {
     if (len >= 64) {
         n = len & ~63;
         len -= n;
-        if (((u32)data & 3) == 0) {
+        if (((uptr)data & 3) == 0) {
             data_0213c1c8(ctx, data, n);
             data = (const u8 *)data + n;
         } else {

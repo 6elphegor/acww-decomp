@@ -93,6 +93,10 @@ typedef struct ExSpecification {
 
 #define EXCEPTION_ACTION_MASK 0x1f
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
+// (The ARM exception runtime: it walks the DS's exception tables and saved ARM registers, 32-bit words that hold
+// DS addresses. The host has no such tables - __FindExceptionTable finds none, a throw is fatal - so it never runs
+// there: the words become pointers through uptr.)
+#define GET_PTR(p) ((uptr)(u32)GET_LONG(p))
 
 extern VoidFunc p__sinit_020c2cd0[]; // start of main's .ctor table
 extern DestructorChain *data_0220066c; // __global_destructor_chain
@@ -130,7 +134,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
 #pragma exception_terminate // as in the original runtime: no exception may leave the unwinder
     for (;;) {
         if (info->action_pointer == 0) {
-            FindExceptionRecord((char *)__PopStackFrame(context, info), info);
+            FindExceptionRecord((char *)(uptr)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
                 msl::terminate();
             }
@@ -151,7 +155,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
         case 2: {
             s32 local;
             p = __DecodeSignedNumber(p + 1, &local);
-            ((DtorFunc)GET_LONG(p))(context->FP + local, -1);
+            ((DtorFunc)GET_PTR(p))(context->FP + local, -1);
             info->action_pointer = p + 4;
             break;
         }
@@ -161,7 +165,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 local;
             DtorFunc dtor;
             p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &cond), &local);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
             if (inreg ? (u8)context->state.regs[cond] : *(u8 *)(context->FP + cond)) {
                 dtor(context->FP + local, -1);
@@ -174,9 +178,9 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 pointer;
             DtorFunc dtor;
             p = __DecodeSignedNumber(p + 1, &pointer);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
-            dtor((void *)FRAME_VALUE(context, inreg, pointer), -1);
+            dtor((void *)(uptr)FRAME_VALUE(context, inreg, pointer), -1);
             info->action_pointer = next;
             break;
         }
@@ -188,7 +192,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             u32 n;
             char *ptr;
             p = __DecodeUnsignedNumber(__DecodeUnsignedNumber(__DecodeSignedNumber(p + 1, &local), &count), &size);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
             ptr = context->FP + local;
             n = count;
@@ -205,9 +209,9 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 offset;
             DtorFunc dtor;
             p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
-            dtor((char *)FRAME_VALUE(context, inreg, object) + offset, 0);
+            dtor((char *)(uptr)FRAME_VALUE(context, inreg, object) + offset, 0);
             info->action_pointer = next;
             break;
         }
@@ -217,9 +221,9 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 offset;
             DtorFunc dtor;
             p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
-            dtor((char *)FRAME_VALUE(context, inreg, object) + offset, -1);
+            dtor((char *)(uptr)FRAME_VALUE(context, inreg, object) + offset, -1);
             info->action_pointer = next;
             break;
         }
@@ -230,10 +234,10 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 offset;
             DtorFunc dtor;
             p = __DecodeSignedNumber(__DecodeSignedNumber(__DecodeSignedNumber(p + 1, &cond), &object), &offset);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
             if ((action & 0x40) ? (s16)context->state.regs[cond] : *(s16 *)(context->FP + cond)) {
-                dtor((char *)FRAME_VALUE(context, inreg, object) + offset, -1);
+                dtor((char *)(uptr)FRAME_VALUE(context, inreg, object) + offset, -1);
             }
             info->action_pointer = next;
             break;
@@ -248,12 +252,12 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             u32 n;
             char *ptr;
             p = __DecodeUnsignedNumber(__DecodeUnsignedNumber(__DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset), &count), &size);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
             if (inreg) {
-                ptr = (char *)context->state.regs[object] + offset;
+                ptr = (char *)(uptr)context->state.regs[object] + offset;
             } else {
-                ptr = (char *)*(u32 *)(context->FP + object) + offset;
+                ptr = (char *)(uptr)*(u32 *)(context->FP + object) + offset;
             }
             n = count;
             for (ptr += n * size; n; n--) {
@@ -268,9 +272,9 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 pointer;
             ObjFunc del;
             p = __DecodeSignedNumber(p + 1, &pointer);
-            del = (ObjFunc)GET_LONG(p);
+            del = (ObjFunc)GET_PTR(p);
             next = p + 4;
-            del((void *)FRAME_VALUE(context, inreg, pointer));
+            del((void *)(uptr)FRAME_VALUE(context, inreg, pointer));
             info->action_pointer = next;
             break;
         }
@@ -280,10 +284,10 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             s32 pointer;
             ObjFunc del;
             p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &cond), &pointer);
-            del = (ObjFunc)GET_LONG(p);
+            del = (ObjFunc)GET_PTR(p);
             next = p + 4;
             if ((action & 0x40) ? (u8)context->state.regs[cond] : *(u8 *)(context->FP + cond)) {
-                del((void *)FRAME_VALUE(context, inreg, pointer));
+                del((void *)(uptr)FRAME_VALUE(context, inreg, pointer));
             }
             info->action_pointer = next;
             break;
@@ -335,9 +339,9 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset);
             s.base2 = GET_LONG(p);
             p = __DecodeSignedNumber(p + 4, &s.offset2);
-            func = (PairFunc)GET_LONG(p);
+            func = (PairFunc)GET_PTR(p);
             next = p + 4;
-            func((char *)FRAME_VALUE(context, inreg, object) + offset, (char *)s.base2 + s.offset2);
+            func((char *)(uptr)FRAME_VALUE(context, inreg, object) + offset, (char *)(uptr)s.base2 + s.offset2);
             info->action_pointer = next;
             break;
         }
@@ -352,12 +356,12 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object1), &offset1);
             inreg2 = *p++ & 0x20;
             p = __DecodeSignedNumber(__DecodeSignedNumber(p, &object2), &offset2);
-            func = (PairFunc)GET_LONG(p);
+            func = (PairFunc)GET_PTR(p);
             next = p + 4;
             {
                 u32 v1 = FRAME_VALUE(context, inreg, object1);
                 u32 v2 = FRAME_VALUE(context, inreg2, object2);
-                func((char *)v1 + offset1, (char *)v2 + offset2);
+                func((char *)(uptr)v1 + offset1, (char *)(uptr)v2 + offset2);
             }
             info->action_pointer = next;
             break;
@@ -375,10 +379,10 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             p = __DecodeSignedNumber(p + 1, &object);
             inreg2 = *p++ & 0x20;
             p = __DecodeUnsignedNumber(__DecodeSignedNumber(p, &bytes), &size);
-            dtor = (DtorFunc)GET_LONG(p);
+            dtor = (DtorFunc)GET_PTR(p);
             next = p + 4;
             if (inreg) {
-                ptr = (char *)context->state.regs[object];
+                ptr = (char *)(uptr)context->state.regs[object];
             } else {
                 ptr = *(char **)(context->FP + object);
             }
@@ -467,7 +471,7 @@ extern "C" int IsInSpecification(const char *throwtype, ExSpecification *spec) {
     u32 i;
 
     for (i = 0; i < spec->specs; i++) {
-        s.catch_type = (char *)GET_LONG(p);
+        s.catch_type = (char *)GET_PTR(p);
         if (__throw_catch_compare(throwtype, s.catch_type, &s.offset)) {
             return 1;
         }
@@ -502,7 +506,7 @@ extern "C" u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, 
     for (action = CurrentAction(&iter);; action = NextAction(&iter)) {
         switch (action) {
         case 12:
-            catchblock.catch_type = (char *)GET_LONG(iter.info.action_pointer + 1);
+            catchblock.catch_type = (char *)GET_PTR(iter.info.action_pointer + 1);
             __DecodeSignedNumber(__DecodeUnsignedNumber(iter.info.action_pointer + 5, &catchblock.catch_pcoffset),
                           &catchblock.cinfo_ref);
             if (!__throw_catch_compare(context->throwtype, catchblock.catch_type, result_offset)) {
@@ -578,7 +582,7 @@ extern "C" void __ThrowHandler(ThrowContext *context) {
         context->catchinfo = 0;
     }
     p = FindExceptionHandler(context, &info, &offset);
-    catchblock.catch_type = (char *)GET_LONG(p + 1);
+    catchblock.catch_type = (char *)GET_PTR(p + 1);
     __DecodeSignedNumber(__DecodeUnsignedNumber(p + 5, &catchblock.catch_pcoffset), &catchblock.cinfo_ref);
     UnwindStack(context, &info, p);
     SetupCatchInfo(context, catchblock.cinfo_ref, offset);

@@ -31,16 +31,7 @@ typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers ther
     u32 result;
 } RTCWork;
 
-typedef struct {
-    u32 result;
-    u32 command;
-    u32 f8;
-    u32 srcBuf;
-    u32 dstBuf;
-    u32 len;
-    u32 f18;
-    u32 f1c, f20, f24, f28, f2c, f30, f34, f38, f3c;
-} CARDCmd;
+#include "sys/CardCmd.h"
 
 typedef struct CARDCommon {
     CARDCmd *cmd;
@@ -49,8 +40,8 @@ typedef struct CARDCommon {
     volatile u32 lockCount;
     OSQ queue;
     u32 lockType;
-    u32 src;
-    u32 dst;
+    uptr src;  // (card addresses or ARM9 memory: pointer-sized)
+    uptr dst;
     u32 len;
     u32 op;
     u32 f2c, f30, f34;
@@ -83,7 +74,6 @@ extern u8 data_021febc0[];
 extern u32 data_021ff220;
 extern RomDev data_021ff240;
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
-extern u32 data_0213c1c8[];
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
@@ -111,9 +101,9 @@ void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
 BOOL CARDi_TryReadCardDma(void *);
 
-u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
-u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
-u32 RTC_GetDateAsync(u32, void (*)(void), u32);
+u32 RTC_GetDateTimeAsync(void *, void *, void (*)(void), void *);
+u32 RTC_GetTimeAsync(void *, void (*)(void), void *);
+u32 RTC_GetDateAsync(void *, void (*)(void), void *);
 BOOL RtcSendPxiCommand(u32);
 BOOL RTCi_ReadRawDateAsync(void);
 BOOL RTCi_ReadRawTimeAsync(void);
@@ -136,7 +126,7 @@ BOOL CARDi_WaitAsync(void);
 typedef struct {
     u32 total_size, sect_size, page_size, addr_width, program_page, write_page, write_page_total, erase_chip, erase_chip_total, erase_sector;
 } Spec;
-typedef struct { u32 result; s32 type; u32 id, src, dst, len; Spec spec; } Arg;
+typedef struct { u32 result; s32 type; u32 id; uptr src, dst; u32 len; Spec spec; } Arg;  // (CARDCmd: include/sys/CardCmd.h)
 // CARDi_IdentifyBackupCore (SDK text shape: nested spec struct, switch with default: goto invalid_type first)
 void CARDi_IdentifyBackupCore(s32 type) {
     Arg *const p = (Arg *)data_021fec00.cmd;

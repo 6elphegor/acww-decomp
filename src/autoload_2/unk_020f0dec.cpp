@@ -22,7 +22,7 @@
 SndMgr gSndMgr;
 
 extern "C" {
-void *NNS_SndHeapCreate(u32 a, u32 b);
+void *NNS_SndHeapCreate(void *a, u32 b);
 u32 CARD_GetThreadPriority(void);
 void NNS_SndCaptureCreateThread(u32 a);
 void NNS_SndSetMasterVolume(u32 a);
@@ -45,8 +45,7 @@ SndMgr::SndMgr() {
 void SndMgr::init(void *heap, u32 size, const char *arcPath) {
     subHeap = NULL;
     if (subHeap != NULL) Fatal_Trap();
-    // (NNS_SndHeapCreate still takes the address as u32, unk_0210b448.c)
-    subHeap = NNS_SndHeapCreate((uptr)heap, 0x339c);
+    subHeap = NNS_SndHeapCreate(heap, 0x339c);
     if (subHeap == NULL) Fatal_Trap();
     Snd_InitSystem((u8 *)heap + 0x339c, size - 0x339c, arcPath, NULL);
     NNS_SndCaptureCreateThread(CARD_GetThreadPriority() - 1);

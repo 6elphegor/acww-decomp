@@ -34,7 +34,7 @@ extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
 extern void FSi_ReleaseCommand(FSFile *file, u32 result);
 extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern void FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
 extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
@@ -339,18 +339,20 @@ u32 FSi_GetPackedName(const char *name, int len) {
     return ret;
 }
 
+// (a memory archive's positions are offsets from its base, the tables before the image negative: s32)
 int FSi_ReadMemCallback(FSArc *arc, void *dst, u32 src, u32 len) {
-    MI_CpuCopy8((void *)(arc->base + src), dst, len);
+    MI_CpuCopy8((void *)(arc->base + (s32)src), dst, len);
     return 0;
 }
 
 int FSi_WriteMemCallback(FSArc *arc, void *src, u32 dst, u32 len) {
-    MI_CpuCopy8(src, (void *)(arc->base + dst), len);
+    MI_CpuCopy8(src, (void *)(arc->base + (s32)dst), len);
     return 0;
 }
 
+// the tables loaded into memory (FS_LoadArchiveTables): src is their offset in arc->load_mem
 int FSi_ReadMemoryCore(FSArc *arc, void *dst, u32 src, u32 len) {
-    MI_CpuCopy8((void *)src, dst, len);
+    MI_CpuCopy8((u8 *)arc->load_mem + src, dst, len);
     return 0;
 }
 

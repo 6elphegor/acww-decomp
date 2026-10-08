@@ -1,3 +1,4 @@
+#include "nitro/pxi_ptr.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
@@ -50,7 +51,7 @@ extern void IC_InvalidateRange(void *, u32);
 extern void DC_WaitWriteBufferEmpty(void);
 extern u32 OS_GetDTCMAddress(void);
 extern void MI_StopDma(u32);
-extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
+extern void MIi_CardDmaCopy32(u32, uptr, uptr, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern int PXI_IsCallbackReady(u32, u32);
@@ -126,7 +127,7 @@ u32 WmInitCore(void *buf, u16 dmaNo, u32 size) {
         data_021ff468 = 0;
         return 6;
     }
-    if (((u32)buf & 31) != 0) {
+    if (((uptr)buf & 31) != 0) {
         data_021ff468 = 0;
         return 6;
     }
@@ -195,7 +196,7 @@ u32 WMi_SendCommand(u32 id, u16 paramNum, ...) {
         ((struct { u16 id; u16 pad; u32 p[1]; } *)msg)->p[i] = va_arg(va, u32);
     }
     DC_StoreRange(msg, 0x100);
-    r = PXI_SendWordByFifo(10, (u32)msg, 0);
+    r = PXI_SendWordByFifo(10, PXI_PointerWord(10, msg), 0);
     OS_SendMessage(data_021ff470, msg, 1);
     return r < 0 ? 8 : 2;
 }

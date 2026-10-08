@@ -4,6 +4,7 @@
 // the DWC account code (DWCUserData / DWCFriendData style records, CRC7 key check, base-32 friend key text).
 // Several functions rely on the mwcc quirk that an inline helper called with constants keeps its parameters as
 // variables (see clr / fld below), and on stack zero temporaries the compiler creates itself.
+#include "nitro/pxi_ptr.h"
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -100,16 +101,16 @@ static inline BOOL SPI_NvramWriteDisable(void)
 static inline BOOL SPI_NvramReadStatusRegister(u8 *pData)
 {
     if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
-                          SPI_PXI_START_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_RDSR << 8) | ((u32)pData >> 24), 0))
+                          SPI_PXI_START_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_RDSR << 8) | (PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) >> 24), 0))
     {
         return FALSE;
     }
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (((u32)pData >> 8) & 0x0000ffff), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | ((PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) >> 8) & 0x0000ffff), 0))
     {
         return FALSE;
     }
     if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
-                          SPI_PXI_END_BIT | (2 << SPI_PXI_INDEX_SHIFT) | (((u32)pData << 8) & 0x0000ff00), 0))
+                          SPI_PXI_END_BIT | (2 << SPI_PXI_INDEX_SHIFT) | ((PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) << 8) & 0x0000ff00), 0))
     {
         return FALSE;
     }
@@ -135,12 +136,12 @@ static inline BOOL SPI_NvramReadDataBytes(u32 address, u32 size, u8 *pData)
     {
         return FALSE;
     }
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (4 << SPI_PXI_INDEX_SHIFT) | ((u32)pData >> 16), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (4 << SPI_PXI_INDEX_SHIFT) | (PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) >> 16), 0))
     {
         return FALSE;
     }
     if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
-                          SPI_PXI_END_BIT | (5 << SPI_PXI_INDEX_SHIFT) | ((u32)pData & 0x0000ffff), 0))
+                          SPI_PXI_END_BIT | (5 << SPI_PXI_INDEX_SHIFT) | (PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) & 0x0000ffff), 0))
     {
         return FALSE;
     }
@@ -162,12 +163,12 @@ static inline BOOL SPI_NvramPageWrite(u32 address, u16 size, const u8 *pData)
     {
         return FALSE;
     }
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << SPI_PXI_INDEX_SHIFT) | ((u32)pData >> 16), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << SPI_PXI_INDEX_SHIFT) | (PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) >> 16), 0))
     {
         return FALSE;
     }
     if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
-                          SPI_PXI_END_BIT | (4 << SPI_PXI_INDEX_SHIFT) | ((u32)pData & 0x0000ffff), 0))
+                          SPI_PXI_END_BIT | (4 << SPI_PXI_INDEX_SHIFT) | (PXI_PointerWord(PXI_FIFO_TAG_NVRAM, pData) & 0x0000ffff), 0))
     {
         return FALSE;
     }

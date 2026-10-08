@@ -40,12 +40,6 @@ extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 void spl_push_front(void *list, void *e);
 void spl_gen_ptcl(void *e, void *l);
-void sDrawChild(Pm *m, u32 a);
-void sDrawParent(Pm *m, u32 a);
-void spl_draw_chld_bb(Mc *m, Node *n, u32 a);
-void spl_draw_chld_dbb(Mc *m, Node *n, u32 a);
-void spl_draw_bb(Mc *m, Node *n, u32 a);
-void spl_draw_dbb(Mc *m, Node *n, u32 a);
 }
 
 

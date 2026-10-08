@@ -35,7 +35,7 @@ extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
 extern void FSi_ReleaseCommand(FSFile *file, u32 result);
 extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern void FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
 extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);

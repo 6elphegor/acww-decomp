@@ -32,16 +32,7 @@ typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers ther
     u32 result;
 } RTCWork;
 
-typedef struct {
-    u32 result;
-    u32 command;
-    u32 f8;
-    u32 srcBuf;
-    u32 dstBuf;
-    u32 len;
-    u32 f18;
-    u32 f1c, f20, f24, f28, f2c, f30, f34, f38, f3c;
-} CARDCmd;
+#include "sys/CardCmd.h"
 
 typedef struct CARDCommon {
     CARDCmd *cmd;
@@ -50,8 +41,8 @@ typedef struct CARDCommon {
     volatile u32 lockCount;
     OSQ queue;
     u32 lockType;
-    u32 src;
-    u32 dst;
+    uptr src;  // (card addresses or ARM9 memory: pointer-sized)
+    uptr dst;
     u32 len;
     u32 op;
     u32 f2c, f30, f34;
@@ -80,7 +71,7 @@ extern RTCWork data_021feb90;
 extern u16 data_021feb8c;
 extern CARDCommon data_021fec00;
 extern u32 data_021febb4;
-extern u8 data_021febc0[0x40];
+extern u8 data_021febc0[];
 extern u32 data_021fee20[0x100]; // the CARD thread's stack, defined below
 extern RomDev data_021ff240;
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
@@ -112,9 +103,9 @@ void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
 BOOL CARDi_TryReadCardDma(void *);
 
-u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
-u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
-u32 RTC_GetDateAsync(u32, void (*)(void), u32);
+u32 RTC_GetDateTimeAsync(void *, void *, void (*)(void), void *);
+u32 RTC_GetTimeAsync(void *, void (*)(void), void *);
+u32 RTC_GetDateAsync(void *, void (*)(void), void *);
 BOOL RtcSendPxiCommand(u32);
 BOOL RTCi_ReadRawDateAsync(void);
 BOOL RTCi_ReadRawTimeAsync(void);
@@ -189,8 +180,8 @@ void CARDi_InitCommon(void) {
     zero = 0;
     data_021fec00.lockType = 0;
     data_021fec00.cmd = (CARDCmd *)data_021febc0;
-    MIi_CpuClearFast(zero, data_021febc0, 64);
-    DC_FlushRange(data_021febc0, 64);
+    MIi_CpuClearFast(zero, data_021febc0, sizeof(CARDCmd));
+    DC_FlushRange(data_021febc0, sizeof(CARDCmd));
     if (*(u16 *)0x027ffc40 != 2) MI_CpuCopy8((void *)0x027ffe00, (void *)0x027ffa80, 0x160);
     c->queue.head = c->queue.tail = 0;
     c->tq.head = c->tq.tail = 0;
@@ -272,6 +263,6 @@ void CARD_UnlockBackup(u32 id) {
 // ---- file-scope objects (autoload_3 .bss 0x021febb4-0x021ff220; the CARD thread's stack ends at data_021ff220, the
 // name CARDi_InitCommon uses. This definition order gives the original order after mwcc's size sort.)
 u32 data_021febb4;
-u8 data_021febc0[0x40] __attribute__((aligned(32)));
+u8 data_021febc0[(sizeof(CARDCmd) + 31) & ~31] __attribute__((aligned(32)));  // (0x40 on the DS)
 CARDCommon data_021fec00 __attribute__((aligned(32)));
 u32 data_021fee20[0x100]; // the CARD thread's stack

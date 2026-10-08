@@ -3,16 +3,17 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 
 extern void *SND_AllocCommand(u32 n);
 extern void SND_PushCommand(void *p);
-extern u32 SNDi_SetAlarmHandler(u32 a, u32 b, u32 c);
+extern u32 SNDi_SetAlarmHandler(u32 a, uptr b, uptr c);
 extern void SNDi_IncAlarmId(u32 a);
 
 extern void MI_SetWramBank(u32 v);
 extern void MI_StopDma(u32 dmaNo);
 
-void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d);
+void PushCommand_impl(u32 cmd, uptr a, uptr b, uptr c, uptr d);
 void SNDi_SetPlayerParam(u32 a, u32 b, u32 c, u32 d);
 void SNDi_SetTrackParam(u32 a, u32 b, u32 c, u32 d, u32 e);
 
@@ -57,11 +58,11 @@ void SND_StopTimer(u32 a, u32 b, u32 c, u32 d) {
     PushCommand_impl(13, a, b, c, d);
 }
 
-void SND_SetupCapture(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g) {
+void SND_SetupCapture(u32 a, u32 b, uptr c, u32 d, u32 e, u32 f, u32 g) {  // c: the buffer
     PushCommand_impl(17, c, d, (a << 31) | (b << 30) | (e << 29) | (f << 28) | (g << 27), 0);
 }
 
-void SND_SetupAlarm(u32 a, u32 b, u32 c, u32 d, u32 e) {
+void SND_SetupAlarm(u32 a, u32 b, u32 c, uptr d, uptr e) {  // d, e: callback, argument
     u32 x = SNDi_SetAlarmHandler(a, d, e);
     PushCommand_impl(18, a, b, c, x);
 }
@@ -76,21 +77,21 @@ void SND_SetChannelVolume(u32 a, u32 b, u32 c) { PushCommand_impl(20, a, b, c, 0
 
 void SND_SetChannelPan(u32 a, u32 b) { PushCommand_impl(21, a, b, 0, 0); }
 
-void SND_SetupChannelPcm(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9) {
+void SND_SetupChannelPcm(u32 a0, u32 a1, uptr a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9) {  // a2: the data
     PushCommand_impl(14, a0 | (a8 << 16), a2, a5 | ((a6 << 24) | (a7 << 22)), a4 | (((a3 << 26) | (a1 << 24)) | (a9 << 16)));
 }
 
-void SND_InvalidateSeqData(u32 a, u32 b) { PushCommand_impl(30, a, b, 0, 0); }
+void SND_InvalidateSeqData(uptr a, uptr b) { PushCommand_impl(30, a, b, 0, 0); }
 
-void SND_InvalidateBankData(u32 a, u32 b) { PushCommand_impl(31, a, b, 0, 0); }
+void SND_InvalidateBankData(uptr a, uptr b) { PushCommand_impl(31, a, b, 0, 0); }
 
-void SND_InvalidateWaveData(u32 a, u32 b) { PushCommand_impl(32, a, b, 0, 0); }
+void SND_InvalidateWaveData(uptr a, uptr b) { PushCommand_impl(32, a, b, 0, 0); }
 
 void SND_SetMasterVolume(u32 a) { PushCommand_impl(23, a, 0, 0, 0); }
 
 void SND_SetOutputSelector(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(25, a, b, c, d); }
 
-void SND_ReadDriverInfo(u32 a) { PushCommand_impl(33, a, 0, 0, 0); }
+void SND_ReadDriverInfo(uptr a) { PushCommand_impl(33, a, 0, 0, 0); }
 
 void SNDi_SetPlayerParam(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(6, a, b, c, d); }
 
@@ -102,10 +103,10 @@ void SND_SetSurroundDecay(u32 a) { PushCommand_impl(22, a, 0, 0, 0); }
 typedef struct SndCommand {
     struct SndCommand *next;
     u32 id;
-    u32 arg[4];
+    uptr arg[4];  // (addresses among them: pointer-sized)
 } SndCommand;
 
-void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d) {
+void PushCommand_impl(u32 cmd, uptr a, uptr b, uptr c, uptr d) {
     SndCommand *p = (SndCommand *)SND_AllocCommand(1);
     if (p == 0) return;
     p->id = cmd;

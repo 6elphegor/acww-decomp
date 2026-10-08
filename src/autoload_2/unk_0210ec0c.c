@@ -267,7 +267,7 @@ void *NNSi_SndSeqArcGetSeqInfo(ArcTbl *t, s32 i)
 }
 
 // NNS_SndCaptureStartEffect-like (select effect and start the capture)
-void NNS_SndCaptureStartOutputEffect(void *a, void *b, s32 effect)
+void NNS_SndCaptureStartOutputEffect(void *a, u32 b, s32 effect)
 {
     NNS_SndCaptureChangeOutputEffect(effect);
     NNS_SndCaptureStartEffect(a, b, 0, 32000, 2, OutputEffectCallback, &data_0213bf10);

@@ -11,6 +11,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef signed char s8;
 typedef int BOOL;
@@ -205,9 +206,9 @@ void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear) {
     if (hi > base + len) hi = base + len;
     if (lo >= hi) return;
     if (clear) {
-        MI_CpuFill8((u8 *)seg[2] + lo, 0, hi - lo);
+        MI_CpuFill8((u8 *)(uptr)seg[2] + lo, 0, hi - lo);  // (DS-layout segment info: 32-bit addresses)
     } else {
-        MI_CpuCopy8((u8 *)seg[1] + lo, (u8 *)seg[2] + lo, hi - lo);
+        MI_CpuCopy8((u8 *)(uptr)seg[1] + lo, (u8 *)(uptr)seg[2] + lo, hi - lo);
     }
 }
 

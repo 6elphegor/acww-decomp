@@ -14,6 +14,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -35,7 +36,7 @@ extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
 extern void FSi_ReleaseCommand(FSFile *file, u32 result);
 extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern void FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
 extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
@@ -143,7 +144,7 @@ BOOL FS_LoadOverlayImage(FSOverlayInfo *p) {
     if (!FS_OpenFileFast(&file, id)) return 0;
     len = FSi_GetOverlayBinarySize(&p->header);
     FS_ClearOverlayImage(&p->header);
-    if (len != FS_ReadFile(&file, (void *)p->header.ram_address, len)) {
+    if (len != FS_ReadFile(&file, (void *)(uptr)p->header.ram_address, len)) {  // (DS addresses)
         FS_CloseFile(&file);
         return 0;
     }

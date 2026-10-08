@@ -15,8 +15,8 @@ struct CardCommon {
     /* 0x0c */ volatile u32 lockCount;
     /* 0x10 */ OSThreadQueue lockQueue;
     /* 0x18 */ u32 lockType;
-    /* 0x1c */ u32 src;
-    /* 0x20 */ u32 dst;
+    /* 0x1c */ uptr src;                 // (card addresses or ARM9 memory)
+    /* 0x20 */ uptr dst;
     /* 0x24 */ u32 len;
     /* 0x28 */ u32 dma;
     /* 0x2c */ u32 _2c[3];

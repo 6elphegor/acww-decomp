@@ -3,10 +3,11 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
-extern u32 data_021fcbf4; // sTexLCDCBlk1
+extern u32 data_021fcbf4; // sTexLCDCBlk1 (VRAM addresses: LCDC)
 extern u32 data_021fcc04; // sTexLCDCBlk2
 extern u32 data_021fcc08; // sSzTexBlk1
 void MI_DmaCopy32(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
@@ -36,17 +37,17 @@ void GX_LoadTex(const void *pSrc, u32 dstSlotOffset, u32 szByte) {
     void *pLCDC;
 
     if (0 == data_021fcc04) {
-        pLCDC = (void *)(data_021fcbf4 + dstSlotOffset);
+        pLCDC = (void *)(uptr)(data_021fcbf4 + dstSlotOffset);
     } else {
         if (dstSlotOffset + szByte < data_021fcc08) {
-            pLCDC = (void *)(data_021fcbf4 + dstSlotOffset);
+            pLCDC = (void *)(uptr)(data_021fcbf4 + dstSlotOffset);
         } else if (dstSlotOffset >= data_021fcc08) {
-            pLCDC = (void *)(data_021fcc04 + dstSlotOffset - data_021fcc08);
+            pLCDC = (void *)(uptr)(data_021fcc04 + dstSlotOffset - data_021fcc08);
         } else {
-            void *pLCDC2 = (void *)data_021fcc04;
+            void *pLCDC2 = (void *)(uptr)data_021fcc04;
             u32 sz = data_021fcc08 - dstSlotOffset;
 
-            pLCDC = (void *)(data_021fcbf4 + dstSlotOffset);
+            pLCDC = (void *)(uptr)(data_021fcbf4 + dstSlotOffset);
             GXi_DmaCopy32(data_0213bfec, pSrc, pLCDC, sz);
             GXi_DmaCopy32Async(data_0213bfec, (void *)((u8 *)pSrc + sz), pLCDC2, szByte - sz, 0, 0);
             return;

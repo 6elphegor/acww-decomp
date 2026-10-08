@@ -32,16 +32,7 @@ typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers ther
     u32 result;
 } RTCWork;
 
-typedef struct {
-    u32 result;
-    u32 command;
-    u32 f8;
-    u32 srcBuf;
-    u32 dstBuf;
-    u32 len;
-    u32 f18;
-    u32 f1c, f20, f24, f28, f2c, f30, f34, f38, f3c;
-} CARDCmd;
+#include "sys/CardCmd.h"
 
 typedef struct CARDCommon {
     CARDCmd *cmd;
@@ -50,8 +41,8 @@ typedef struct CARDCommon {
     volatile u32 lockCount;
     OSQ queue;
     u32 lockType;
-    u32 src;
-    u32 dst;
+    uptr src;  // (card addresses or ARM9 memory: pointer-sized)
+    uptr dst;
     u32 len;
     u32 op;
     u32 f2c, f30, f34;
@@ -84,7 +75,6 @@ extern u8 data_021febc0[];
 extern u32 data_021ff220;
 extern RomDev data_021ff240;
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
-extern u32 data_0213c1c8[];
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
@@ -112,9 +102,9 @@ void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
 BOOL CARDi_TryReadCardDma(void *);
 
-u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
-u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
-u32 RTC_GetDateAsync(u32, void (*)(void), u32);
+u32 RTC_GetDateTimeAsync(void *, void *, void (*)(void), void *);
+u32 RTC_GetTimeAsync(void *, void (*)(void), void *);
+u32 RTC_GetDateAsync(void *, void (*)(void), void *);
 BOOL RtcSendPxiCommand(u32);
 BOOL RTCi_ReadRawDateAsync(void);
 BOOL RTCi_ReadRawTimeAsync(void);
@@ -148,7 +138,7 @@ void CARDi_ReadCard(void *p) {
         u32 page = src & mask;
         u32 n;
         u32 st;
-        if (page != src || (dst = (u32 *)c->dst, ((u32)dst & 3)) || c->len < 512) {
+        if (page != src || (dst = (u32 *)c->dst, ((uptr)dst & 3)) || c->len < 512) {
             dst = buf;
             d->f8 = page;
         }
@@ -191,7 +181,7 @@ void CARDi_ReadRomSyncCore(CARDCommon *unused) {
 }
 
 // CARDi_ReadRom
-void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void *arg, BOOL async) {
+void CARDi_ReadRom(u32 cmd, u32 off, void *dst, u32 len, void (*cb)(void *), void *arg, BOOL async) {
     CARDCommon *const c = &data_021fec00;
     RomDev *d = &data_021ff240;
     u32 irq;
@@ -204,7 +194,7 @@ void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void 
     OS_RestoreInterrupts(irq);
     c->op = cmd;
     c->src = off + data_021ff220;
-    c->dst = dst;
+    c->dst = (uptr)dst;
     c->len = len;
     if (cmd <= 3) MI_StopDma(cmd);
     if (CARDi_TryReadCardDma(d)) {
@@ -268,12 +258,12 @@ void CARDi_RequestStreamCommandCore(CARDCommon *c) {
         if (mode == 0) {
             DC_InvalidateRange(c->buf, len);
             c->cmd->srcBuf = c->src;
-            c->cmd->dstBuf = (u32)(void *)c->buf;
+            c->cmd->dstBuf = (uptr)c->buf;
         } else {
             MI_CpuCopy8((void *)c->src, c->buf, len);
             DC_FlushRange(c->buf, len);
             DC_WaitWriteBufferEmpty();
-            c->cmd->srcBuf = (u32)c->buf;
+            c->cmd->srcBuf = (uptr)c->buf;
             c->cmd->dstBuf = c->dst;
         }
         if (!CARDi_Request(c, g, h)) break;
@@ -297,7 +287,7 @@ void CARDi_RequestStreamCommandCore(CARDCommon *c) {
 }
 
 // CARDi_RequestStreamCommand~ (src, dst, len, callback, arg, is_async, req_type, retry, mode)
-BOOL CARDi_RequestStreamCommand(u32 a, u32 b, u32 len, void (*cb)(void *), void *arg, BOOL async, u32 g, u32 h, u32 mode) {
+BOOL CARDi_RequestStreamCommand(uptr a, uptr b, u32 len, void (*cb)(void *), void *arg, BOOL async, u32 g, u32 h, u32 mode) {
     CARDCommon *const c = &data_021fec00;
     u32 irq;
     OSi_ReferSymbol((void *)0x02000bbc);
@@ -346,7 +336,7 @@ BOOL CARD_IdentifyBackup(u32 op) {
     data_021fec00.curThread = data_021fcc2c.current;
     CARDi_Request(c, 2, 1);
     c->cmd->srcBuf = 0;
-    c->cmd->dstBuf = (u32)c->buf;
+    c->cmd->dstBuf = (uptr)c->buf;
     c->cmd->len = 1;
     CARDi_Request(c, 6, 1);
     cb = c->callback;

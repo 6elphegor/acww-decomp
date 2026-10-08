@@ -151,7 +151,7 @@ extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
-extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_SetMPDataToPortEx(WCb cb, void *arg, void *data, u16 size, u16 bitmap, u16 port, u16 prio);
 extern u32 WM_StartMPEx(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
 extern u32 MBi_IsSendEnabled(void);
@@ -182,7 +182,7 @@ void MBi_SetMaxScanTime(u32 t) {
 
 // WM send helper: WM_SetMPDataToPortEx(cb, 0, data, size, bitmap, 1, 3) then report the result via MBi_CheckWmErrcode(15, ret)
 u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d) {
-    u32 r = WM_SetMPDataToPortEx((u32)cb, 0, (u32)a, b, d, 1, 3);
+    u32 r = WM_SetMPDataToPortEx(cb, 0, a, b, d, 1, 3);
     MBi_CheckWmErrcode(15, r);
     return r;
 }

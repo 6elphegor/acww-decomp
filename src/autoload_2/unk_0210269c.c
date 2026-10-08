@@ -4,6 +4,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "host_ptr32.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -15,9 +16,9 @@ typedef struct FontInfo {           // NNSG2dFontInformation
     u16 alterCharIndex;             // 0x02
     CharWidths defaultWidth;        // 0x04
     u8 encoding;                    // 0x07
-    GlyphBlock *pGlyph;             // 0x08
-    void *pWidth;                   // 0x0c
-    void *pMap;                     // 0x10
+    u32 pGlyph;                     // 0x08 (GlyphBlock *, ptr32: include/host_ptr32.h)
+    u32 pWidth;                     // 0x0c (FontWidth *, ptr32: include/host_ptr32.h)
+    u32 pMap;                       // 0x10 (FontCodeMap *, ptr32: include/host_ptr32.h)
 } FontInfo;
 typedef struct Font {
     FontInfo *info;                 // 0x00

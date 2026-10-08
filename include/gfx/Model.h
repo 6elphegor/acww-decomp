@@ -81,6 +81,5 @@ public:
 // Model members reached by their DS offsets from a Model's storage (code that keeps the model as raw storage): the
 // DS expression there, the member on hosts
 #define MODEL_AT_MTX(p) (((Model *)(p))->mtx)
-#define MODEL_AT_RESMDL(p) ((u32)(uptr)((Model *)(p))->resMdl)
 
 #endif

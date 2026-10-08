@@ -902,7 +902,7 @@ s32 PlayerActor_RoomUseTool(void *);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
 void *NNS_G3dGetTex(void *p);
-BOOL Character_FindInteractionTarget(void *);
+void *Character_FindInteractionTarget(void *);
 s32 func_01ffcb0c(s32, s32);
 void *func_021065dc(void *a);
 void *func_021065f8(void *, u32);

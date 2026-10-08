@@ -20,7 +20,7 @@ No worktree was needed. All compiles read the main checkout and wrote only to th
 | # | Dependency | Size (measured) | Blocks | Portable replacement |
 |---|---|---|---|---|
 | A | Game data and memory at fixed DS addresses (gdata 0x02001000, gbss 0x02040000, .dtcm 0x027e0000, main RAM memfd and its mirrors, ITCM, WRAM, palette, VRAM, OAM, I/O pages) | 7 fixed mappings in hw.c, 3 `--section-start` options, `-Ttext-segment`, `MAP_32BIT`, root heap at 0x50000000 | macOS (`__PAGEZERO` covers the low 4 GB), Windows (no fixed low mappings in practice), PIE everywhere | Ordinary data/bss and heap blocks; host arrays for the system work area, DTCM, palette, OAM and VRAM banks |
-| B | Pointers kept in 32-bit integers (works only below 4 GB) | C: 121 pointer-to-int + 96 int-to-pointer casts (55 files); C++: 186 int-to-pointer casts (67 files); explicit `(u32)(uptr)` 92 and `(T*)(uptr)` 31; PXI 26-bit pointers; snd7 38 conversions; DMA source/destination registers; resource offsets relocated in place | macOS arm64 and every build with memory above 4 GB | Real pointer types; offsets resolved when used; ARM7 services called directly. A low-4 GB poisoning harness finds the remaining sites on Linux |
+| B | Pointers kept in 32-bit integers (works only below 4 GB) | C: 121 pointer-to-int + 96 int-to-pointer casts (55 files); C++: 186 int-to-pointer casts (67 files); explicit `(u32)(uptr)` 92 and `(T*)(uptr)` 31; PXI 26-bit pointers; snd7 38 conversions; DMA source/destination registers; resource offsets relocated in place | macOS arm64 and every build with memory above 4 GB | Real pointer types; offsets resolved when used; ARM7 services called directly. A low-4 GB poisoning harness finds the remaining sites on Linux. **Steps 3.0/3.1 done:** the harness (`ACWW_HIGHMEM`) runs every script; 0 C and 0 C++ int/pointer casts left (`--strict-c` clean); PXI, snd7 and DMA with real pointers |
 | C | DS addresses used as numbers in the source | Casts of DS constants to pointers (I/O excluded): 229 (system work area/DTCM 160 in 56 files, VRAM 32, palette 18, OAM 5, main RAM 10, WRAM 2, GBA slot 2). Address range checks: about 25 in 8 files. VRAM address tables: 2. I/O register casts: 830 in 121 files (harmless: only used as numbers by `IO_*`) | A, B | Named host objects through macros (`HW_SYSWORK`, `HW_PLTT`, `HW_OAM`, `HostVram_CpuPtr`) |
 | D | Signals and CPU tricks | SIGSEGV I/O emulation and single-stepping (x86 only), interrupt injection under SP (`-mno-red-zone`, irq_entry.S), SIGFPE division emulation, SIGVTALRM hang guard, SIGPROF, `ucontext` gregs | macOS (different ucontext, no x86), Windows (no signals), arm64 (no division trap) | Already almost unused: 0 trapped I/O accesses in 11043 attract-demo frames (`ACWW_IOHIST`); hang guard silent over 25001 play frames; 1 division-by-zero site (`spl_scl_in_out`). Replace with explicit code. **Done 2026-10-08 (phase 1): only debug aids remain, behind `HOST_DEBUG_POSIX`** |
 | E | ELF / GNU-ld-only build steps | `ld -r -T` (2 partial links), 291 `--wrap` thunks in x86 asm, `--defsym`, `objcopy --localize-symbols` (76 names), provides.ld (7784 PROVIDE, of which 99 labels + 133 aliases are referenced), `.init_array` per-overlay ranges, `__start_/__stop_` symbols, gap data as ELF inline asm (113 objects), `.set` absolute symbols, `--allow-multiple-definition` | ld64 (Mac), lld-link / ld.bfd for PE (Windows) | Generated C instead of linker features; source-level fixes. **Done except the two partial links** (2.4-2.7, 2.9-2.11, 0.2): left are `ld -r -T order.ld` (variable order, 2.8), `ld -r -T dtcm.ld` (3.2) and the `--section-start`/`-Ttext-segment` options (3.3) |
@@ -51,8 +51,8 @@ The good news:
 | VRAM windows | 0x06000000-0x068a3fff | 9 banks in a memfd, remapped with `MAP_FIXED` into 5 windows on every VRAMCNT change | modern/host/vram.c:71-80, :95 |
 | I/O pages | 0x04000000, 0x04001000, 0x04100000 | memfd mapped twice (`PROT_NONE` for the game, read/write for the runtime) | hw.c:885-892, :902-904 |
 | x86-64 program image | 0x10000000 | `-Wl,-Ttext-segment=0x10000000`, `-no-pie` | configure_host.py:72 |
-| x86-64 root heap | 0x50000000 (8 MB, must be below 4 GB) | `host_root_heap_region` | modern/host/main.c:142-153 |
-| x86-64 thread stacks | below 4 GB | `mmap(... MAP_32BIT)` | modern/host/os.c:99-106 |
+| x86-64 root heap | 0x50000000 (8 MB); above 4 GB (0x5a0000000) with `ACWW_HIGHMEM` | `host_root_heap_region` | modern/host/main.c |
+| x86-64 thread stacks | below 4 GB (`mmap(... MAP_32BIT)`); above 4 GB (0x6b0000000 up) with `ACWW_HIGHMEM` | `host_stack_alloc` | modern/host/os.c |
 | Arena constants | 0x0229bdc0 etc. | `.set` absolute symbols `SDK_MAIN_ARENA_LO`, `SDK_SECTION_ARENA_*`, `OVERLAY_n_ID` | main.c:58-68 (68 references in 15 files) |
 | ROM header / system work area writes | 0x027ffe00, 0x027ffc00, 0x027ffc40, 0x027fff8c, 0x027ffde8, 0x027fffaa | host runtime writes the DS addresses directly | main.c:91-93; pxi7.c:159, :282-283, :396; frontend.c:86 |
 
@@ -82,7 +82,8 @@ Measured with the literal scan (comments and strings stripped). "Cast" means a l
 
 ### 1.3 Pointers kept in 32 bits
 
-These are the things that make "the game's memory anywhere" hard. Today they work on x86-64 only because everything is kept below 4 GB.
+These are the things that made "the game's memory anywhere" hard (the audit's counts; **steps 3.0 and 3.1 removed them, see
+there**). They worked on x86-64 only because everything was kept below 4 GB.
 
 - **C units.** gcc `-Wpointer-to-int-cast -Wint-to-pointer-cast`, x86-64: 246 warnings in 55 of 218 C files (121 pointer to int, 124 int to pointer). libclang: 121 + 128, of which 32 are DS register constants, which are fine. These are mostly NitroSDK/NNS C code in `autoload_2`, for example `u32 base = (u32)h;` in the font unpacker.
 - **C++ units.** -fpermissive is already gone, so a bare cast is an error, but clang still flags 186 int-to-pointer casts from 32-bit integers (in 67 files). There are also 92 explicit `(u32)(uptr)` / `(s32)(uptr)` and 31 `(T *)(uptr)` conversions (grep).
@@ -376,6 +377,24 @@ final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
     - every *unused* range below 4 GB reserved `PROT_NONE` (an emulation of `__PAGEZERO`), keeping only the DS mappings still in use.
 
     A truncated pointer then faults at a low address with a backtrace. Run quick, play, the town script and save/continue.
+
+    **Done (2026-10-08).** `ACWW_HIGHMEM=1` (x86-64 Linux; modern/host/hw.c `highmem_poison`, called from main.c's
+    `early_init` once the DS mappings and the VRAM windows exist): every gap below 4 GB in /proc/self/maps is
+    reserved `PROT_NONE | MAP_NORESERVE` (6-7 ranges, 3934 of the 4095 MB). What stays: the DS mappings (ITCM, main
+    RAM and its mirrors with DTCM, WRAM, palette, the VRAM windows, OAM), the program image at 0x10000000 and the C
+    library's first brk heap (it can't grow any more: malloc maps above 4 GB then). The root heap is an 8 MB block at
+    0x5a0000000 and the thread stacks are mapped from 0x6b0000000 up (`host_highmem_alloc`, `MAP_FIXED_NOREPLACE`):
+    the low words of their addresses (0xa..., 0xb...) lie in poisoned space, so a pointer cut to 32 bits faults
+    (sign-extended: a non-canonical address, also a fault). The crash report (debug_posix.c) is installed again after
+    `melon_init`: melonDS's JIT (compiled in, unused) installs a SIGSEGV handler of its own, and before this a
+    64-bit crash ended without a report. Scripts run (all without a fault): `oracle.sh quick-raw` and `play-raw`;
+    the x86-64 town script (docs/host.md: A every 60 frames 2400-26500, Start 7650-21050, the Confirm touch every
+    600 frames 7630-21050, B 26520-27000, Down 27100-27500, then Right 28200, Down 28700, Left 29200, Up 29700,
+    Right 30200, Down 30900, 400-600 frames each; screenshots to frame 32000: out of the town hall and around
+    town); the save/continue script (i386 timing; the x86-64 build doesn't reach the save with it) and the continue
+    run from a save the i386 build wrote (wakes in the house, saves its start-of-session state, out in front of the
+    house at frame 8000). The pictures and sound are the same with and without the harness (no behaviour depends
+    on the addresses).
 20. **3.1** Fix the pointer-in-32-bit sites:
     - the 246 C warnings, the 186 C++ int-to-pointer casts, and the 92 + 31 explicit `uptr` round trips (each one an integer that should be a pointer, or an offset);
     - in-place resource relocation (NFTR unpack, SndArc `e->ptr`, ...): resolve the offset when used;
@@ -383,6 +402,79 @@ final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
     - DMA: implement the SDK DMA entry points (`MI_Dma*`, GX/GXS loads) in sdk.c with real pointers, as the CPU copies already are; register DMA only for the remaining GX FIFO/HBlank cases with resolvable addresses.
 
     Check: the harness runs every script without a fault, the oracle is identical, and `--strict-c` is clean.
+
+    **Done (2026-10-08).** Re-measured first (after phases 1 and 2): `--strict-c` 220 distinct sites (105 pointer to
+    int, 115 int to pointer) in 54 files; libclang (x86_64-linux, every unit) 269 int/pointer cast warnings, 34 of
+    them C++ int-to-pointer casts in 4 files (the rest were fixed during phase 2); explicit round trips of a pointer
+    through a 32-bit integer by grep: 15 `(u32)(uptr)`-style and 15 `(T *)(uptr)`. Now: `--strict-c` **0**,
+    libclang casts **0** (C and C++), `tools/host_strict_errors.sh` 0, `tools/host_portcheck.py` 0 on every target.
+    The remaining `(u32)(uptr)` / `(T *)(uptr)` are DS addresses used as numbers (VRAM, the system work area's arena
+    bounds and thread-info pointer, overlay load addresses, I/O register addresses: step 3.2), ids made from
+    addresses (an echo id, an aid bit) and the download-play / wireless code (DS-layout records; not reached on the
+    host, which has no WM service). What was done:
+    - **NNS heaps** (expheap/frmheap, 11 units with copies of the same structures): `Region`, `HeapHead.start/end`,
+      `FrmHead/FrmState.head/tail` are `uptr`; the creation, free and resize functions take `void *` (as the SDK's)
+      instead of u32 - the callers declared them with pointers, so a 64-bit host passed whole pointers and the
+      definitions used the low halves. The sound heap the same (`NNS_SndHeapCreate(void *, u32)`).
+    - **In-place relocation resolved when used.** The sound archive's FAT keeps a loaded file's address in the
+      entry's pointer word and the reserved word after it (8 bytes on 64-bit hosts: `FatEnt_Ptr`). The NFTR font
+      links (`NNSi_G2dUnpackNFT`), a sound bank's wave archive links and a wave archive's banks
+      (`SND_AssignWaveArc` ...), a wave loaded on its own (`SND_SetWaveDataAddress`) and two DS-layout callback slots
+      of the wireless code keep their 32-bit file slots: they hold a `ptr32` (include/host_ptr32.h, modern/host/
+      ptr32.c): the pointer itself while it fits (always on 32-bit hosts and for DS memory: the i386 build is
+      unchanged), else a handle into a host table, resolved by the readers (`HostPtr32_Get`; snd7's `dsptr`
+      helpers are gone). The FS tables loaded into memory (`FS_LoadArchiveTables`) are offsets into `load_mem`; a
+      memory archive's base is pointer-sized and its positions are signed offsets (the NARC's tables lie before the
+      image).
+    - **PXI.** `ptr26` is gone. A message that carries an address hands the pointer to the ARM7 side first
+      (`PXI_PointerWord(tag, p)`, include/nitro/pxi_ptr.h; pxi7.c `HostPxi_PutPointer` / `take_pointer`) and is then
+      sent unchanged, so the register traffic - and virtual time - is the DS's: the sound command list (snd7_receive
+      takes the list), the card request block (`CARDCmd`, include/sys/CardCmd.h, now shared by the ARM9 units and
+      pxi7.c, buffers pointer-sized), the NVRAM buffer, the WM request.
+    - **snd7.** The SND commands' arguments are pointer-sized on both sides (`SndCommand.arg`, `PushCommand_impl`,
+      `SND_PrepareSeq` / `SND_SetupChannelPcm` / `SND_SetupCapture` / the invalidations / `SND_ReadDriverInfo`);
+      no 26-bit masks (`& 0x7fffffc`); `SOUNDxSAD` and the capture destinations are `uintptr_t`; a channel reads its
+      samples only within its own buffer (`SOUNDxPNT + SOUNDxLEN` words; the ADPCM header at least) and a capture
+      writes only within `SNDCAPxLEN` words, instead of "anywhere in 0x02000000-0x03000000". The stream library's
+      channel buffers (`NNSSndStrmBufAddr`) and the capture library's buffers are pointers.
+    - **DMA.** The functions that set a channel (`MIi_DmaSetParams` and its three variants) take `uptr` addresses
+      and give them whole to the DMA model first (`HostDma_Addresses`, include/nitro/dma_host.h); hw.c's `dma_run`
+      uses them while the registers still hold their low words (a register written otherwise - an I/O address, 0 -
+      is taken as it is). The entry points (`MI_DmaCopy32/16`, `MI_DmaFill32`, the async ones,
+      `MI_SendGXCommandAsyncFast`, `MIi_CardDmaCopy32`, the GX command DMA state `MIGXDmaParams`, now one header)
+      take pointer-sized addresses. This keeps the DMA register sequence (the DS's), unlike a CPU copy, and so the
+      i386 oracle.
+    - **Declarations that disagreed with their definitions across a pointer and an integer** (tools/host_decls.py;
+      a 64-bit host passes the whole register and the other side uses half of it): fixed where a pointer flowed -
+      RTC dates (`RTC_GetDate(void *)`...), the thread parameter (`OS_SetThreadParameter`: the per-thread current
+      heap, cut at the first thread switch under the harness), `OS_InitContext` / `OSContext.r[]` (a thread's
+      argument), `OSi_EnterTimerCallback`, the backup reads/writes (`Backup_Read(..., void *)`), `CARDi_ReadRom`,
+      the driver info reads, `SND_RecvCommandReply`, `NookShop_InitNew` (the shop through an `int`), `WfcUtil_Run`
+      (the WFC work area through a u32), the G3D render object callbacks, `Character_FindInteractionTarget` (a
+      pointer result read as `BOOL`), a view of `gSceneBlockMap` as u32 (ov068) and the crash screen's view of the
+      thread info. 179 mismatching declarations of that kind are left (94 functions; 112 of them in the network and
+      wireless code); outside it, the calls through them pass constants (0, a DS register address) or ids.
+    - **Real 64-bit bugs found on the way**: the SND alarm records (`SlotEnt`) had the DS stride in the u32 view
+      (12 bytes, 24 in the definition), so the ARM9 side registered alarm callbacks where the PXI handler didn't
+      look and the stream's refills never ran: from ~24 s of the attract demo (the title music) the 64-bit build
+      played a stuck buffer; now its sound follows the i386 reference (the RMS level per 2 s matches; the samples
+      part at 24.6 s with the build's usual timing drift). The capture messages (`CapMsg[8]`, 160 bytes on the DS,
+      192 needed) ran into the capture thread's `OSThread`, and the capture message array (`OSMessage[8]` as
+      `u32[8]`) into the capture state. The FS memory archive read from `base + (u32)offset` with negative offsets
+      (the NNS file system's mount of a NARC). NNS fonts on 64-bit read their glyph/width/map links as 8-byte
+      pointers from 4-byte file slots (only the Wi-Fi menus use them). `Insect_NetClaim` read through the packed id
+      as an address when neither flag was set (the DS read low memory there; now "no insect"). The room score
+      sources (`VillagerRoomScoreSource` / `HouseRoomScoreSource`, src/main/unk_020594dc.cpp: the happy-room
+      evaluation when a new town is set up and when the game saves) had their struct-returning virtuals written in
+      ARM's shape (the result slot as `this`; i386 with `-fpcc-struct-return` shares it): on x86-64 they wrote the
+      item into the caller's object - its vtable pointer. Whether the next virtual call then crashed depended on
+      the vtable's address: after the merge of steps 2.9-2.11 it did, at frame 12228 of the town script and 4344
+      of the continue run, in both 64-bit builds of refs/heads/modern d0eb4763 (with and without the harness). Now
+      real `RoomSurfaceItem` results; the i386 save/continue run is unchanged (pictures and save file).
+    - Check: the i386 oracle (quick: pictures and sound; play) identical after every step; the 64-bit build's quick,
+      play and town runs identical to the same tree without these changes (refs/heads/modern 1700271b), except the
+      quick sound from 24.34 s - and that is the alarm fix alone: with only `SlotEnt` put back, quick (pictures and
+      sound) is identical to modern's; `--strict-c`, `host_strict_errors.sh`, `host_portcheck.py` 0.
 21. **3.2** System work area, DTCM, palette, OAM, VRAM and arenas become host objects:
     - a rewrite tool turns the 160 system-work/DTCM casts into `HW_SYSWORK(...)` over a `HostSysWork` block, and the 18 + 5 palette/OAM casts into `HW_PLTT`/`HW_OAM`;
     - VRAM: 32 casts plus 2 tables through `HostVram_CpuPtr(dsaddr)`. This replaces vram.c's mmap aliasing: each bank appears in at most one CPU window at a time, so a lookup suffices. Assert that no pointer is kept across a VRAMCNT change;
@@ -414,7 +506,7 @@ final link's `--section-start=gdata/gbss/.dtcm` and `-Ttext-segment` (step 3.3).
 
 ## 7. Notes and side findings
 
-- **Latent `ptr26` bug.** `ptr26` (pxi7.c:72-75) assumes the program image is at 0x08000000. On x86-64 it is at 0x10000000. It only works because everything sent over PXI lives in gdata/gbss/DS RAM.
+- **Latent `ptr26` bug.** `ptr26` (pxi7.c:72-75) assumes the program image is at 0x08000000. On x86-64 it is at 0x10000000. It only works because everything sent over PXI lives in gdata/gbss/DS RAM. **Gone (3.1):** the pointers are handed over whole (`PXI_PointerWord`).
 - **Truncation in `is_reg`.** `is_reg` (sdk.c:35) and `io_check_addr` truncate pointers to 32 bits; this must be fixed before memory goes above 4 GB. **Fixed (2026-10-08):** `HostIo_Read`/`HostIo_Write` take a pointer-sized address (`IO_ADDR_` is `(__UINTPTR_TYPE__)(p)`, which also removes the `unsigned long` cast that step 2.3 lists), hw.c checks the whole value, sdk.c's `is_reg` and `units` keep `uintptr_t`.
 - **`_s32_div_f` disagrees with the DS.** sdk.c:199-200 returns 0 for a zero divisor, while the DS routine and hw.c's emulation give the dividend. **Fixed (2026-10-08)** with `DS_DIV`/`DS_UDIV`.
 - **Unreachable on today's host.** The `*(u32 *)0x08000000` cartridge check (autoload_2/unk_02113f04.c:31) and the WRAM arena 0x037f8000 point at unmapped memory and must be unreachable today.

@@ -65,21 +65,16 @@ public:
 };
 
 
-// call-site view of the callback tables (struct-returning virtuals)
-class RoomScoreSourceCallView {
-public:
-    virtual void *getRoomMap(s32 i) = 0;
-    virtual RoomSurfaceItem getWallpaper(s32 i) = 0;
-    virtual RoomSurfaceItem getCarpet(s32 i) = 0;
-};
-
+// The rooms' item sources: struct-returning virtuals. (The DS code wrote the implementations in ARM's shape - the
+// result slot as `this`, the object as the first argument, which i386 with -fpcc-struct-return shares; on x86-64
+// the result comes back in a register and those implementations wrote the item over the caller's vtable pointer.)
 class RoomScoreSource {
 public:
     RoomScoreSource();
     ~RoomScoreSource();
     virtual void *getRoomMap(s32 i) = 0;
-    virtual void getWallpaper(s32 a, s32 key) = 0;
-    virtual void getCarpet(s32 a, s32 key) = 0;
+    virtual RoomSurfaceItem getWallpaper(s32 key) = 0;
+    virtual RoomSurfaceItem getCarpet(s32 key) = 0;
 };
 
 class VillagerRoomScoreSource : public RoomScoreSource {
@@ -87,8 +82,8 @@ public:
     VillagerRoomScoreSource();
     ~VillagerRoomScoreSource();
     virtual void *getRoomMap(s32 i);
-    virtual void getWallpaper(s32 a, s32 key);
-    virtual void getCarpet(s32 a, s32 key);
+    virtual RoomSurfaceItem getWallpaper(s32 key);
+    virtual RoomSurfaceItem getCarpet(s32 key);
 };
 
 class HouseRoomScoreSource : public RoomScoreSource {
@@ -96,8 +91,8 @@ public:
     HouseRoomScoreSource();
     ~HouseRoomScoreSource();
     virtual void *getRoomMap(s32 i);
-    virtual void getWallpaper(s32 a, s32 key);
-    virtual void getCarpet(s32 a, s32 key);
+    virtual RoomSurfaceItem getWallpaper(s32 key);
+    virtual RoomSurfaceItem getCarpet(s32 key);
 };
 
 // ---- data of other units ----
@@ -172,7 +167,7 @@ extern "C" {
 u8 FengShui_GetEastTotal();
 u8 FengShui_GetSouthTotal();
 u8 FengShui_GetWestTotal();
-s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *source, s32 count, s32 base, u8 flag);
+s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSource *source, s32 count, s32 base, u8 flag);
 void HappyRoom_SendPrizeLetter(void *self, s32 n);
 BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n);
 BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, BlockMap *grid);
@@ -450,14 +445,18 @@ extern "C" void *HouseRoomScoreSource::getRoomMap(s32 i) {
     return HouseRoomMaps_Get(i);
 }
 
-extern "C" void HouseRoomScoreSource::getWallpaper(s32 a, s32 key) {
+extern "C" RoomSurfaceItem HouseRoomScoreSource::getWallpaper(s32 key) {
+    RoomSurfaceItem r;
     void *h = ((HouseData *)(gSaveHouse))->getRoom(key);
-    *(u16 *)this = *((HouseRoom *)(h))->getWallpaper((s32 *)(0));
+    r.item = *((HouseRoom *)(h))->getWallpaper((s32 *)(0));
+    return r;
 }
 
-extern "C" void HouseRoomScoreSource::getCarpet(s32 a, s32 key) {
+extern "C" RoomSurfaceItem HouseRoomScoreSource::getCarpet(s32 key) {
+    RoomSurfaceItem r;
     void *h = ((HouseData *)(gSaveHouse))->getRoom(key);
-    *(u16 *)this = *((HouseRoom *)(h))->getCarpet((s32 *)(0));
+    r.item = *((HouseRoom *)(h))->getCarpet((s32 *)(0));
+    return r;
 }
 
 extern "C" VillagerRoomScoreSource::VillagerRoomScoreSource() {}
@@ -468,30 +467,30 @@ extern "C" void *VillagerRoomScoreSource::getRoomMap(s32 i) {
     return sHappyRoomVillagerMap;
 }
 
-extern "C" void VillagerRoomScoreSource::getWallpaper(s32 a, s32 key) {
-    u16 v;
+extern "C" RoomSurfaceItem VillagerRoomScoreSource::getWallpaper(s32 key) {
+    RoomSurfaceItem r;
     void *vd = SaveVillagers_Get(gSaveVillagers, key);
     if (vd != 0) {
         u32 t = Villager_GetWallpaper(vd);
-        if (t < 0x44) v = (u16)(t + 0x1100);
-        else v = 0x1100;
-        *(u16 *)this = v;
+        if (t < 0x44) r.item = (u16)(t + 0x1100);
+        else r.item = 0x1100;
     } else {
-        *(u16 *)this = 0x1100;
+        r.item = 0x1100;
     }
+    return r;
 }
 
-extern "C" void VillagerRoomScoreSource::getCarpet(s32 a, s32 key) {
-    u16 v;
+extern "C" RoomSurfaceItem VillagerRoomScoreSource::getCarpet(s32 key) {
+    RoomSurfaceItem r;
     void *vd = SaveVillagers_Get(gSaveVillagers, key);
     if (vd != 0) {
         u32 t = Villager_GetCarpet(vd);
-        if (t < 0x44) v = (u16)(t + 0x1144);
-        else v = 0x1144;
-        *(u16 *)this = v;
+        if (t < 0x44) r.item = (u16)(t + 0x1144);
+        else r.item = 0x1144;
     } else {
-        *(u16 *)this = 0x1144;
+        r.item = 0x1144;
     }
+    return r;
 }
 
 #pragma thumb off
@@ -576,7 +575,7 @@ extern "C" void HappyRoom_EvaluateHouse(void *evaluator) {  // (the caller's Roo
     s32 v0;
     HouseRoomScoreSource ops;
     s32 v1, v2, v3;
-    HappyRoom_Evaluate(a, (u16 *)&v0, &v1, &v2, &v3, (RoomScoreSourceCallView *)&ops, 5, 0, 1);
+    HappyRoom_Evaluate(a, (u16 *)&v0, &v1, &v2, &v3, &ops, 5, 0, 1);
 }
 
 extern "C" s32 HappyRoom_EvaluateVillagerRoom(void *evaluator, s32 b, u16 *c, s32 *d, s32 *e, s32 *f) {
@@ -586,7 +585,7 @@ extern "C" s32 HappyRoom_EvaluateVillagerRoom(void *evaluator, s32 b, u16 *c, s3
         sHappyRoomVillagerMap = VillagerRoomMap_Create(b, gCurrentHeap);
     }
     VillagerRoomScoreSource ops;
-    r = HappyRoom_Evaluate(a, c, d, e, f, (RoomScoreSourceCallView *)&ops, 1, b, 0);
+    r = HappyRoom_Evaluate(a, c, d, e, f, &ops, 1, b, 0);
     if (sHappyRoomVillagerMap != NULL) {
         VillagerRoomMap_Destroy(gCurrentHeap);
         sHappyRoomVillagerMap = NULL;
@@ -594,7 +593,7 @@ extern "C" s32 HappyRoom_EvaluateVillagerRoom(void *evaluator, s32 b, u16 *c, s3
     return r;
 }
 
-extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *source, s32 count, s32 base, u8 flag)
+extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSource *source, s32 count, s32 base, u8 flag)
 {
     s32 total;
     s32 sel;

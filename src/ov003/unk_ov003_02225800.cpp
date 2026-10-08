@@ -6899,11 +6899,13 @@ namespace s01 {
 // 0x2226180
 extern "C" BOOL Insect_NetClaim(s32 x) {
     u8 idx = x & 0xf;
-    Rec *r = (Rec *)x;
+    Rec *r;
     if ((x >> 4) & 1) {
         r = sFieldInsects + idx;
     } else if ((x >> 5) & 1) {
         r = sSpecialInsects + idx;
+    } else {
+        return TRUE;  // (no insect: the DS read the record at the address x - low memory - here)
     }
     u32 t = r->state;
     if (t != 0xa && t != 0xb && t != 9 && t != 0x10 && r->lifeState == 3) {

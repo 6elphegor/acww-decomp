@@ -34,7 +34,7 @@ s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 BOOL FS_CloseFile(FSFile *file);
 void MI_UncompressLZ8(const void *src, void *dst);
 void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
-void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void *arg, BOOL async);
+void CARDi_ReadRom(u32 cmd, u32 off, void *dst, u32 len, void (*cb)(void *), void *arg, BOOL async);
 void CARD_LockRom(u32 id);
 void CARD_UnlockRom(u32 id);
 BOOL FS_ChangeDir(const char *path);
@@ -43,7 +43,7 @@ void OS_ReleaseLockID(u16 id);
 u32 OS_GetLockID();
 BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+BOOL FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
 u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
 s32 OS_SPrintf(char *dst, const char *fmt, ...);
 }
@@ -111,9 +111,8 @@ extern "C" int WfcFs_ArchiveProc(FSFile *file, u32 cmd) {
     }
 }
 
-// (CARDi_ReadRom takes the destination as an address)
 extern "C" int WfcFs_ReadCallback(FSArc *arc, void *dst, u32 pos, u32 size) {
-    CARDi_ReadRom(-1, pos + arc->base, (uptr)dst, size, WfcFs_OnReadDone, arc, 1);
+    CARDi_ReadRom(-1, pos + arc->base, dst, size, WfcFs_OnReadDone, arc, 1);
     return 6;
 }
 

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I001a: itcm 0x01ff8000-0x01ff8164, NitroSDK CP context + OS IRQ mask (5 functions). ARM, mwcc 1.2/base, -O4,p.
@@ -327,16 +328,7 @@ static inline void BitVecSet(u32 *vec, u32 idx)
 
 /* ---------------------------------------------------------------- NitroSDK MI (GX command DMA) */
 // MIi_GXDmaParams (DTCM)
-typedef struct MIGXDmaParams {
-    volatile BOOL isBusy;   // 0x00
-    u32 dmaNo;              // 0x04
-    u32 src;                // 0x08
-    u32 length;             // 0x0c
-    void (*callback)(void *); // 0x10
-    void *arg;              // 0x14
-    u32 fifoCond;           // 0x18
-    void (*fifoFunc)(void); // 0x1c
-} MIGXDmaParams;
+#include "nitro/mi_gxdma.h"
 extern MIGXDmaParams data_027e0414;
 
 #define reg_G3X_GXSTAT (*(vu32 *)0x04000600)
@@ -408,8 +400,8 @@ void NNSi_G3dSendJointSRTMaya(JntAnm *pResult);
 void NNSi_G3dSendTexSRTMaya(MatAnm *pResult);
 void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
 void MI_WaitDma(u32 dmaNo);
-void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
-void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
+void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 dir);
+void MIi_DmaSetParams(u32 dmaNo, uptr src, uptr dest, u32 ctrl);
 
 // (empty function)
 void OS_IrqDummy(void) {

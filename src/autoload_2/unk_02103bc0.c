@@ -67,7 +67,7 @@ BOOL removeLink_(Node **head, Node *n)
 }
 
 // remove a node from any of the three lists
-// (the members by name; the callers pass the callbacks as u32: the program is below 4 GB)
+// (the members by name)
 void NNS_G3dRenderObjRemoveAnmObj(u8 *o, Node *n)
 {
     if (removeLink_((Node **)&RO(o)->anmMat, n) || removeLink_((Node **)&RO(o)->anmJnt, n) ||
@@ -76,14 +76,14 @@ void NNS_G3dRenderObjRemoveAnmObj(u8 *o, Node *n)
     }
 }
 
-void NNS_G3dRenderObjSetCallBack(u8 *o, u32 a, u32 b, u32 c, u32 d)
+void NNS_G3dRenderObjSetCallBack(u8 *o, void *a, u8 *b, u32 c, u32 d)
 {
-    RO(o)->cbFunc = (void *)(__UINTPTR_TYPE__)a;
+    RO(o)->cbFunc = a;
     RO(o)->cbCmd = c;
     RO(o)->cbTiming = d;
 }
 
-void NNS_G3dRenderObjSetInitFunc(u8 *o, u32 v) { RO(o)->cbInitFunc = (void *)(__UINTPTR_TYPE__)v; }
+void NNS_G3dRenderObjSetInitFunc(u8 *o, void *v) { RO(o)->cbInitFunc = v; }
 
 // palette size in bytes
 u32 NNS_G3dTexGetRequiredSize(TexData *o) { return o->plttSize << 3; }

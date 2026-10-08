@@ -10,6 +10,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef signed char s8;
 typedef int BOOL;
@@ -200,8 +201,8 @@ void MBi_MakeGameInfo(MBBuf *b, const u32 *info, const void *name) {
     u32 ok;
     MIi_CpuClear16(zero16, b, 0x4c0);
     b->f4b2 = 0;
-    ok = MBi_ReadIconInfo((const char *)info[3], (void *)b, 1) == 0;
-    ok |= MBi_ReadIconInfo((const char *)info[4], (void *)b, 0) == 0;
+    ok = MBi_ReadIconInfo((const char *)(uptr)info[3], b, 1) == 0;
+    ok |= MBi_ReadIconInfo((const char *)(uptr)info[4], b, 0) == 0;
     if (ok) {
         volatile u32 zero32;
         b->f4b2 = 1;
@@ -211,8 +212,8 @@ void MBi_MakeGameInfo(MBBuf *b, const u32 *info, const void *name) {
     b->f4b8 = info[5];
     if (name != 0) MIi_CpuCopy16(name, b->f220, 0x16);
     b->f236 = ((u8 *)info)[0x18];
-    MIi_CpuCopy16((const void *)info[1], b->f238, (u16)(mystrlen((const u16 *)info[1]) << 1));
-    MIi_CpuCopy16((const void *)info[2], b->f298, 0xc0);
+    MIi_CpuCopy16((const void *)(uptr)info[1], b->f238, (u16)(mystrlen((const u16 *)(uptr)info[1]) << 1));  // (a DS-layout record: 32-bit addresses)
+    MIi_CpuCopy16((const void *)(uptr)info[2], b->f298, 0xc0);
     b->f358 = 1;
     b->f35a = 1;
     b->f4b0 = 1;

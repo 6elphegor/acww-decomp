@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
 
@@ -350,34 +351,46 @@ static void square_root(void) {
 static void io_write(u32 a, u32 old);
 
 // ---- DMA (0x040000b0 + 12n: source, destination, control)
+// The registers are 32 bits; the functions that set them (MIi_DmaSetParams ...: include/nitro/dma_host.h) give the
+// whole addresses first. They are used while the registers hold their low words (a register written otherwise - a
+// register address, a DS constant - is taken as it is).
+static uintptr_t sDmaSrc[4], sDmaDst[4];
+void HostDma_Addresses(unsigned int ch, uintptr_t src, uintptr_t dst) {
+    if (ch < 4) { sDmaSrc[ch] = src; sDmaDst[ch] = dst; }
+}
+static uintptr_t dma_address(u32 reg, uintptr_t full) { return (u32)full == reg ? full : reg; }
+static int dma_is_io(uintptr_t a) { return a <= 0xffffffffu && is_io((u32)a); }
 void gx_fifo_write(u32 addr, u32 value);
 static void dma_run(int ch) {
     u32 base = 0x040000b0 + ch * 12, cnt = R32(base + 8);
-    u32 src = R32(base), dst = R32(base + 4), n = cnt & 0x1fffff, w = (cnt >> 26 & 1) ? 4 : 2;
+    uintptr_t src = dma_address(R32(base), sDmaSrc[ch]), dst = dma_address(R32(base + 4), sDmaDst[ch]);
+    u32 n = cnt & 0x1fffff, w = (cnt >> 26 & 1) ? 4 : 2;
     int dc = cnt >> 21 & 3, sc = cnt >> 23 & 3;
     if (n == 0) n = 0x200000;
     if (src < 0x01ff8000 || dst < 0x01ff8000) {
-        fprintf(stderr, "host: DMA%d from %08x to %08x, control %08x: bad address\n", ch, src, dst, cnt);
+        fprintf(stderr, "host: DMA%d from %08lx to %08lx, control %08x: bad address\n", ch, (unsigned long)src,
+                (unsigned long)dst, cnt);
         R32(base + 8) = cnt & ~0x80000000u;
         return;
     }
     for (u32 i = 0; i < n; i++) {
         u32 v;
         if (src == IO1 + 0x10) v = card_read_data();
-        else if (is_io(src)) v = w == 4 ? R32(src) : R16(src);
-        else v = w == 4 ? *(volatile u32 *)(uintptr_t)src : *(volatile u16 *)(uintptr_t)src;
-        if (is_io(dst)) {
+        else if (dma_is_io(src)) v = w == 4 ? R32((u32)src) : R16((u32)src);
+        else v = w == 4 ? *(volatile u32 *)src : *(volatile u16 *)src;
+        if (dma_is_io(dst)) {
             // as a CPU write would be (the display registers go to the renderer)
-            u32 old = R32(dst & ~3u);
-            if (w == 4) R32(dst) = v; else R16(dst) = (u16)v;
-            io_write(dst, old);
-        } else if (w == 4) *(volatile u32 *)(uintptr_t)dst = v;
-        else *(volatile u16 *)(uintptr_t)dst = (u16)v;
+            u32 old = R32((u32)dst & ~3u);
+            if (w == 4) R32((u32)dst) = v; else R16((u32)dst) = (u16)v;
+            io_write((u32)dst, old);
+        } else if (w == 4) *(volatile u32 *)dst = v;
+        else *(volatile u16 *)dst = (u16)v;
         if (sc == 0) src += w; else if (sc == 1) src -= w;
         if (dc == 0 || dc == 3) dst += w; else if (dc == 1) dst -= w;
     }
-    if (dc != 3) R32(base + 4) = dst;
-    R32(base) = src;
+    if (dc != 3) { R32(base + 4) = (u32)dst; sDmaDst[ch] = dst; }
+    R32(base) = (u32)src;
+    sDmaSrc[ch] = src;
     if (!(cnt >> 25 & 1) || ((cnt >> 27 & 7) == 0)) R32(base + 8) = cnt & ~0x80000000u;
     if (cnt >> 30 & 1) host_irq_raise(1u << (8 + ch));
 }
@@ -596,6 +609,80 @@ static void map_main_ram(void) {
         if (mmap((void *)(uintptr_t)kMaps[i].at, kMaps[i].n, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd,
                  kMaps[i].off) == MAP_FAILED)
             host_fatal("main RAM mirror");
+}
+
+// ---- ACWW_HIGHMEM=1 (x86-64 Linux): the low-4 GB poisoning harness (docs/portability.md 3.0). The root heap and
+// the game's thread stacks go above 4 GB (main.c, os.c: at addresses whose low word is in poisoned space), and
+// every range below 4 GB that isn't mapped when the game starts is reserved without access (as macOS's
+// __PAGEZERO): only the DS mappings still in use (ITCM, main RAM and its mirrors, DTCM, WRAM, palette, VRAM, OAM),
+// the program image and what the C library mapped before (its first brk heap) remain. A pointer cut to 32 bits
+// then faults at a low address (or, sign-extended, at a non-canonical one), and the crash report (debug_posix.c)
+// says where. A heap that would grow by brk can't: malloc falls back to mmap, above 4 GB.
+int host_highmem(void) {
+    static int on = -1;
+    if (on < 0) {
+#if defined(__x86_64__) && defined(__linux__)
+        const char *e = getenv("ACWW_HIGHMEM");
+        on = e && *e && strcmp(e, "0");
+#else
+        on = 0;
+#endif
+    }
+    return on;
+}
+
+// an anonymous mapping of n bytes above 4 GB, from `hint` on (successive calls with the same hint walk upwards;
+// MAP_FIXED_NOREPLACE: never over an existing mapping)
+void *host_highmem_alloc(uintptr_t *hint, size_t n) {
+    n = (n + 0xfff) & ~(size_t)0xfff;
+    for (int i = 0; i < 4096; i++) {
+        uintptr_t at = *hint;
+        void *p = mmap((void *)at, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
+        *hint += ((n + 0xfffff) & ~(size_t)0xfffff) + 0x100000;  // the next one further up, with a gap between
+        if (p == (void *)at) return p;
+        if (p != MAP_FAILED) munmap(p, n);
+    }
+    return 0;
+}
+
+static void highmem_poison(void) {
+#if defined(__x86_64__) && defined(__linux__)
+    static char maps[1 << 16];
+    int fd = open("/proc/self/maps", O_RDONLY);
+    if (fd < 0) host_fatal("ACWW_HIGHMEM: /proc/self/maps");
+    size_t len = 0;
+    for (ssize_t r; len < sizeof maps - 1 && (r = read(fd, maps + len, sizeof maps - 1 - len)) > 0;) len += (size_t)r;
+    close(fd);
+    maps[len] = 0;
+    // the mappings in address order (the file lists them so); reserve every gap below 4 GB
+    uintptr_t at = 0x10000;  // (vm.mmap_min_addr: nothing can be mapped lower anyway)
+    const uintptr_t top = 0x100000000ull;
+    u64 reserved = 0;
+    int ranges = 0;
+    for (char *l = maps; at < top;) {
+        unsigned long lo, hi;
+        uintptr_t end = top;
+        int last = sscanf(l, "%lx-%lx", &lo, &hi) != 2;
+        if (!last) end = lo < top ? lo : top;
+        if (end > at) {
+            if (mmap((void *)at, end - at, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE | MAP_FIXED_NOREPLACE,
+                     -1, 0) != (void *)at)
+                fprintf(stderr, "host: ACWW_HIGHMEM: can't reserve %08lx-%08lx\n", (unsigned long)at, (unsigned long)end);
+            else { reserved += end - at; ranges++; }
+        }
+        if (last) break;
+        if (hi > at) at = hi;
+        char *nl = strchr(l, '\n');
+        l = nl ? nl + 1 : l + strlen(l);
+    }
+    fprintf(stderr, "host: ACWW_HIGHMEM: %d ranges below 4 GB reserved (%llu MB of %llu MB)\n", ranges,
+            (unsigned long long)(reserved >> 20), (unsigned long long)((top - 0x10000) >> 20));
+#endif
+}
+
+// after every fixed mapping is in place (main.c's early_init: the DS memory and the VRAM windows)
+void host_highmem_init(void) {
+    if (host_highmem()) highmem_poison();
 }
 
 void host_map_memory(void) {

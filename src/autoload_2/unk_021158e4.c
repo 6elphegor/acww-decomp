@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma.c): autoload_2 0x021158e4-0x02115ad4.
+#include "uptr.h"
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_021158e4.h"
 #include "proto/autoload_2/unk_02115bac.h"
@@ -14,29 +15,23 @@ typedef void (*MIDmaCallback)(void *arg);
 
 extern u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 extern void OS_RestoreInterrupts(u32 mode); // OS_RestoreInterrupts
-extern void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress
+extern void MIi_CheckDma0SourceAddress(u32 dmaNo, uptr src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress
 extern void MI_WaitDma(u32 dmaNo); // MI_WaitDma
 extern void OSi_EnterDmaCallback(u32 dmaNo, MIDmaCallback cb, void *arg); // MIi_SetDmaCallback
-extern void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 cnt); // MIi_DmaSetParams
-extern void MIi_DmaSetParams_wait_noInt(u32 dmaNo, u32 src, u32 dest, u32 cnt);
-extern void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 cnt);
-extern void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 cnt);
+extern void MIi_DmaSetParams(u32 dmaNo, uptr src, uptr dest, u32 cnt); // MIi_DmaSetParams
+extern void MIi_DmaSetParams_wait_noInt(u32 dmaNo, uptr src, uptr dest, u32 cnt);
+extern void MIi_DmaSetParams_noInt(u32 dmaNo, uptr src, uptr dest, u32 cnt);
+extern void MIi_DmaSetParams_wait(u32 dmaNo, uptr src, uptr dest, u32 cnt);
 
-typedef struct {
-    u32 busy;
-    u32 dmaNo;
-    u32 pad8;
-    u32 padC;
-    MIDmaCallback callback;
-    void *arg;
-} MIiGxDmaState;
+#include "nitro/mi_gxdma.h"
+typedef MIGXDmaParams MIiGxDmaState;
 
 extern MIiGxDmaState data_027e0414;
 
 void MIi_CheckAnotherAutoDMA(u32 dmaNo, u32 mode);
 
 // MI_DmaCopy32Async
-void MI_DmaCopy32Async(u32 dmaNo, u32 src, u32 dest, u32 size, MIDmaCallback callback, void *arg) {
+void MI_DmaCopy32Async(u32 dmaNo, uptr src, uptr dest, u32 size, MIDmaCallback callback, void *arg) {
     MIi_CheckDma0SourceAddress(dmaNo, src, size, 0);
     if (size == 0) {
         if (callback) callback(arg);
@@ -63,8 +58,8 @@ void MI_StopDma(u32 dmaNo) {
     tmp = IO_R(dmaCntp);
     if (dmaNo == 0) {
         vu32 *p;
-        p = (vu32 *)(0x040000b0 + dmaNo * 12);
-        IO_W(&((vu32 *)(0x04000000 + dmaNo * 12))[0xb0 / 4], 0);
+        p = (vu32 *)(uptr)(0x040000b0 + dmaNo * 12);
+        IO_W(&((vu32 *)(uptr)(0x04000000 + dmaNo * 12))[0xb0 / 4], 0);
         IO_W(&p[1], 0);
         IO_W(&p[2], 0x81400001);
     }

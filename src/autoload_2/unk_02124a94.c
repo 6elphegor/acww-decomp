@@ -151,7 +151,7 @@ extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
-extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_SetMPDataToPortEx(WCb cb, void *arg, void *data, u16 size, u16 bitmap, u16 port, u16 prio);
 extern u32 WM_StartMPEx(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
 extern u32 MBi_IsSendEnabled(void);

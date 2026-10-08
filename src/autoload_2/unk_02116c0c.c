@@ -13,7 +13,7 @@ extern u32 data_021fcf6c;
 extern OSMutex data_021fcf70;
 
 // (unk_021163b0.c; the player parameter command is in the undecompiled code)
-extern void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d);
+extern void PushCommand_impl(u32 cmd, uptr a, uptr b, uptr c, uptr d);
 extern void SNDi_SetPlayerParam(u32 player, u32 offset, u32 data, u32 size);
 
 // SND_Init
@@ -41,7 +41,7 @@ void SND_StopSeq(u32 a) {
     PushCommand_impl(1, a, 0, 0, 0);
 }
 
-void SND_PrepareSeq(u32 a, u32 b, u32 c, u32 d) {
+void SND_PrepareSeq(u32 a, uptr b, u32 c, uptr d) {  // b, d: the sequence data, the bank
     PushCommand_impl(2, a, b, c, d);
 }
 

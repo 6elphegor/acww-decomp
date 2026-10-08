@@ -1,4 +1,5 @@
 #include "uptr.h"
+#include "host_ptr32.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK SND: snd_bank.c (wave data / instrument access) and the PXI init / FIFO send, autoload_2
 // 0x02117984-0x02117e8c. ARM code, mwcc 1.2/base, -O4,p.
@@ -22,7 +23,7 @@ typedef signed int s32;
 typedef struct Cmd {
     struct Cmd *next;
     u32 id;
-    u32 arg[4];
+    uptr arg[4];  // (addresses among them: pointer-sized)
 } Cmd;
 
 typedef struct SndWork {
@@ -105,9 +106,9 @@ typedef struct ChRec {
     u8 pad26[10];
 } ChRec;
 
-typedef struct SlotEnt {
-    u32 a;
-    u32 b;
+typedef struct SlotEnt {  // AlarmCallbackInfo (src/dtcm/unk_027e032c.c): callback, argument, id
+    uptr a;
+    uptr b;
     u8 cnt;
 } SlotEnt;
 
@@ -137,7 +138,7 @@ extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void SNDi_SetPlayerParam(u32, u32, u32, u32);
-extern void PushCommand_impl(u32, u32, u32, u32, u32);
+extern void PushCommand_impl(u32, uptr, uptr, uptr, uptr);
 
 typedef union PxiMsg {
     u32 raw;
@@ -194,7 +195,7 @@ void PXI_Init(void) {
 
 // SND_... slot attach
 // The wave archive links live in the bank and wave archive files (SNDBankData / SNDWaveArc): 32-bit slots, also on
-// 64-bit hosts (the files' layout, the ARM7 side reads them too). The functions through 32-bit accessors.
+// 64-bit hosts (the files' layout, the ARM7 side reads them too): pointers through include/host_ptr32.h.
 typedef struct Slot32 {
     u32 a;
     u32 next;
@@ -203,8 +204,8 @@ typedef struct Obj32 {
     u8 pad[0x18];
     Slot32 s[4];
 } Obj32;
-#define P32(v) ((void *)(uptr)(v))
-#define U32(p) ((u32)(uptr)(p))
+#define P32(v) HostPtr32_Get(v)
+#define U32(p) HostPtr32_Of(p)
 
 void SND_AssignWaveArc(Obj *p_, s32 i, Obj *item_) {
     Obj32 *p = (Obj32 *)p_, *item = (Obj32 *)item_;
@@ -353,9 +354,9 @@ u32 SND_GetWaveDataCount(Bank *b) {
     return b->count;
 }
 
-void SND_SetWaveDataAddress(u8 *base, s32 i, u32 v) {
+void SND_SetWaveDataAddress(u8 *base, s32 i, const void *p) {
     SNDi_LockMutex();
-    *(u32 *)(base + i * 4 + 0x3c) = v;
+    *(u32 *)(base + i * 4 + 0x3c) = HostPtr32_Of(p);
     DC_StoreRange(base + 0x3c + i * 4, 4);
     SNDi_UnlockMutex();
 }
@@ -366,7 +367,7 @@ void *SND_GetWaveDataAddress(u8 *base, s32 i) {
     SNDi_LockMutex();
     off = *(u32 *)(base + i * 4 + 0x3c);
     if (off != 0) {
-        r = (u8 *)off;
+        r = (u8 *)HostPtr32_Get(off);
         if (off < 0x2000000) {
             r = base + off;
         }

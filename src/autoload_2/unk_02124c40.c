@@ -9,6 +9,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef unsigned int u32;
+#include "uptr.h"
 typedef int s32;
 typedef int BOOL;
 
@@ -150,7 +151,7 @@ extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
-extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_SetMPDataToPortEx(WCb cb, void *arg, void *data, u16 size, u16 bitmap, u16 port, u16 prio);
 extern u32 WM_StartMPEx(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
 extern u32 MBi_IsSendEnabled(void);
@@ -387,8 +388,8 @@ u32 MB_Init(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
     if (data_0220001c != 0) {
         if (data_0220001c->f1316 != 0) return 2;
     }
-    g = (WCtl *)(((u32)buf + 31) & ~31);
-    w = (WWork *)(((u32)g + 0x1e1f) & ~31);
+    g = (WCtl *)(((uptr)buf + 31) & ~(uptr)31);
+    w = (WWork *)(((uptr)g + 0x1e1f) & ~(uptr)31);
     if (b == 0x10000) b = WM_GetNextTgid();
     e = OS_DisableInterrupts();
     zero32 = 0;
@@ -492,7 +493,7 @@ u32 MBi_StartParentCore(u32 a) {
     int i;
     e = OS_DisableInterrupts();
     data_02200018->f32 = a;
-    data_02200014 = (u8 *)(((u32)data_0220001c + 0x7d1f) & ~31);
+    data_02200014 = (u8 *)(((uptr)data_0220001c + 0x7d1f) & ~(uptr)31);
     cb = data_0220001c->cb;
     zero1 = 0;
     MIi_CpuClear16(zero1, data_0220001c->ent, 0x69c0);

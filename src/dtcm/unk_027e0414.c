@@ -8,16 +8,7 @@
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 typedef int BOOL;
 
-typedef struct MIGXDmaParams {
-    volatile BOOL isBusy;     // 0x00
-    u32 dmaNo;                // 0x04
-    u32 src;                  // 0x08
-    u32 length;               // 0x0c
-    void (*callback)(void *); // 0x10
-    void *arg;                // 0x14
-    u32 fifoCond;             // 0x18
-    void (*fifoFunc)(void);   // 0x1c
-} MIGXDmaParams;
+#include "nitro/mi_gxdma.h"
 
 #pragma section DTCM begin
 

@@ -2,6 +2,7 @@
 // NitroSDK OS exception init (os_exception.c), autoload_2 0x02114cd8-0x02114d84 (the former unit 0x02114cd8-0x02114ee4
 // split into its two files by their bss; os_tick.c is unk_02114d84.c). ARM code, mwcc 1.2/base.
 #include "uptr.h"
+#include "host_ptr32.h"
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
@@ -29,15 +30,16 @@ void OSi_SetTimerReserved(s32 n);
 // OS_InitException
 void OS_InitException(void) {
     void *buf = (void *)(uptr)*(u32 *)0x027ffd9c;  // the system area: 32-bit addresses
-    if ((u32)buf >= 0x02600000 && (u32)buf < 0x02800000) {
+    if ((uptr)buf >= 0x02600000 && (uptr)buf < 0x02800000) {
         data_021fce94 = buf;
     } else {
         data_021fce94 = 0;
     }
     if (data_021fce94 == 0 || (OS_GetConsoleType() & 0x40000000) == 0) {
         u32 *vec = (u32 *)0x027e3000;
-        *(u32 *)0x027ffd9c = (u32)(uptr)OSi_ExceptionHandler;
-        vec[0xfdc / 4] = (u32)OSi_ExceptionHandler;
+        // (the DS's exception vectors: 32-bit slots, unused on the host; include/host_ptr32.h)
+        *(u32 *)0x027ffd9c = HostPtr32_Of((const void *)OSi_ExceptionHandler);
+        vec[0xfdc / 4] = HostPtr32_Of((const void *)OSi_ExceptionHandler);
     }
     data_021fce8c = 0;
 }

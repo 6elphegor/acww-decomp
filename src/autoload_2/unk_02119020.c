@@ -83,7 +83,7 @@ BOOL FS_ResumeArchive(FSArc *arc);
 BOOL FS_SuspendArchive();
 u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
 BOOL FS_UnloadArchive(FSArc *arc);
-BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+BOOL FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
 BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
 BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
@@ -213,7 +213,7 @@ void FS_ReleaseArchiveName(FSArc *arc) {
 }
 
 // FS_LoadArchive
-BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr) {
+BOOL FS_LoadArchive(FSArc *arc, uptr base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr) {
     FSIoFunc r;
     FSIoFunc w;
     arc->base = base;

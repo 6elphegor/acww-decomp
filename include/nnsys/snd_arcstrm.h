@@ -23,11 +23,11 @@ typedef enum { NNS_SND_STRM_FORMAT_PCM8, NNS_SND_STRM_FORMAT_PCM16 } NNSSndStrmF
 // the stream data's format (NNSSndStrmData.format)
 enum { STRM_FORMAT_PCM8, STRM_FORMAT_PCM16, STRM_FORMAT_ADPCM };
 
-// a block callback's channel buffers: the stream library (unk_0210a478.c) keeps them as 32-bit addresses (they are
-// the sound channels' buffers)
-typedef u32 NNSSndStrmBufAddr;
-static inline void *NNSi_SndStrmBufPtr(NNSSndStrmBufAddr a) { return (void *)(__UINTPTR_TYPE__)a; }
-static inline u32 NNSi_SndArm7Addr(const void *p) { return (u32)(__UINTPTR_TYPE__)p; }
+// a block callback's channel buffers: the stream library (unk_0210a478.c) keeps them as addresses (they are the
+// sound channels' buffers; the ARM7 side, snd7, is in the same process)
+typedef __UINTPTR_TYPE__ NNSSndStrmBufAddr;
+static inline void *NNSi_SndStrmBufPtr(NNSSndStrmBufAddr a) { return (void *)a; }
+static inline __UINTPTR_TYPE__ NNSi_SndArm7Addr(const void *p) { return (__UINTPTR_TYPE__)p; }
 
 typedef void (*NNSSndStrmCallback)(s32 status, int numChannels, NNSSndStrmBufAddr buffer[], u32 len,
                                    NNSSndStrmFormat format, void *arg);

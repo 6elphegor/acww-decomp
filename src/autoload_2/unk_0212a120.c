@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
 typedef unsigned int u32;
+#include "uptr.h"
 
 // strlen
 u32 strlen(const char *s) {
@@ -17,7 +18,7 @@ char *strcpy(char *dst, const char *src) {
     register u8 *destb, *fromb = (u8 *)src;
     register u32 w, t, align;
     destb = (u8 *)dst;
-    if ((align = ((u32)fromb & 3)) != ((u32)destb & 3)) goto bytecopy;
+    if ((align = ((uptr)fromb & 3)) != ((uptr)destb & 3)) goto bytecopy;
     if (align) {
         if ((*destb = *fromb) == 0) return dst;
         for (align = 3 - align; align; align--) {
@@ -84,7 +85,7 @@ int strcmp(const char *s1, const char *s2) {
     register u8 *left = (u8 *)s1, *right = (u8 *)s2;
     register u32 l, r, align, mask1, mask2, t;
     if ((l = *left) - (r = *right)) return l - r;
-    if ((align = ((u32)left & 3)) != ((u32)right & 3)) goto bytecompare;
+    if ((align = ((uptr)left & 3)) != ((uptr)right & 3)) goto bytecompare;
     if (align) {
         if (!l) return 0;
         for (align = 3 - align; align; align--) {

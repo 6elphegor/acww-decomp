@@ -44,7 +44,7 @@ extern u32 OS_SetIrqMask(u32);
 extern u32 OS_GetLockID(void);
 extern void DC_FlushAll(void);
 extern void DC_InvalidateRange(void *, u32);
-extern void MI_DmaCopy16(u32, u32, void *, u32);
+extern void MI_DmaCopy16(u32, uptr, void *, u32);
 extern void MIi_CpuCopy32(u32, void *, u32);
 extern void DGT_Hash2GetDigest(void *, void *);
 extern void DGT_Hash2SetSource(void *, const void *, u32);

@@ -51,14 +51,14 @@ void OS_SetArenaLo(s32 id, void *lo) {
 
 // OS_AllocFromArenaLo
 void *OS_AllocFromArenaLo(s32 id, u32 size, u32 align) {
-    u32 arenaLo = (u32)OS_GetArenaLo(id);
-    u32 arenaHi;
-    u32 ptr;
+    uptr arenaLo = (uptr)OS_GetArenaLo(id);
+    uptr arenaHi;
+    uptr ptr;
     if (arenaLo == 0) return 0;
-    arenaLo = ptr = ((arenaLo) + (align) - 1) & ~((align) - 1);
+    arenaLo = ptr = ((arenaLo) + (align) - 1) & ~(uptr)((align) - 1);
     arenaLo += size;
-    arenaLo = ((arenaLo) + (align) - 1) & ~((align) - 1);
-    arenaHi = (u32)OS_GetArenaHi(id);
+    arenaLo = ((arenaLo) + (align) - 1) & ~(uptr)((align) - 1);
+    arenaHi = (uptr)OS_GetArenaHi(id);
     if (arenaLo > arenaHi) return 0;
     OS_SetArenaLo(id, (void *)arenaLo);
     return (void *)ptr;
