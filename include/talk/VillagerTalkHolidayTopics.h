@@ -18,7 +18,7 @@ public:
     void selectTsuSpotOnce(TalkTopicMsg *out);
     void selectTsuAlwaysOnce(TalkTopicMsg *out);
     void openSmallTalkChoiceCountdown();
-    void selectEtcConnectCountdown();
+    void selectEtcConnectCountdown(TalkTopicMsg *out);
     void continueEvCountdownMsg18();
     void selectEvCountdownMsg18(TalkTopicMsg *out);
     void selectEvCountdownMsg16(TalkTopicMsg *out);
@@ -26,12 +26,12 @@ public:
     void selectEvCountdownB(TalkTopicMsg *out);
     void selectEvCountdown(TalkTopicMsg *out);
     void openEvCountdownChoice();
-    void selectEtcConnectCountdownB();
+    void selectEtcConnectCountdownB(TalkTopicMsg *out);
     void continueGreetingCountdown();
-    void selectGreetingCountdown();
+    void selectGreetingCountdown(TalkTopicMsg *out);
     void selectEvCountdownTalk(TalkTopicMsg *out);
     void openSmallTalkChoiceSnowfes();
-    void selectEtcConnectSnowfes();
+    void selectEtcConnectSnowfes(TalkTopicMsg *out);
     void continueEvSnowfesC();
     void selectEvSnowfesC(TalkTopicMsg *out);
     void selectEvSnowfesB(TalkTopicMsg *out);

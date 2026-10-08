@@ -11,6 +11,7 @@
 // sys/ClockDateTime.h is not included: unk_02077ac4.cpp includes this header and still has its own ClockDateTime.
 union ClockDateTimeWords;
 struct PlanErrand;
+struct VillagerData;
 
 // Base of the town villagers (0x894 bytes). Defined in src/main/unk_0201c050.cpp (ctor, dtor, vtable, overrides
 // 0x0202daf8..).
@@ -58,7 +59,7 @@ public:
     /* 0x820 */ u8 habitTopicKind; // which habit topic set the villager talks about next (random 0/1, toggled)
     /* 0x821 */ u8 pad_821[3];
     /* 0x824 */ VillagerAnimHeapHandle animHeapHandle;
-    /* 0x82c */ void *villagerData;
+    /* 0x82c */ VillagerData *villagerData;
     /* 0x830 */ void *villagerState;
     /* 0x834 */ u8 unk_834;
     /* 0x838 */ VillagerMood mood;
