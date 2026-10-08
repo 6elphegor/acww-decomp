@@ -8,7 +8,6 @@ extern "C" {
 }
 
 
-extern u32 data_020c6190[];
 // the object sizes by type (TvSound_GetMaxSize: the heap TvSound_Create allocates from)
 extern const u32 sTvSoundSizes[];
 const u32 sTvSoundSizes[] = {
@@ -43,7 +42,7 @@ extern "C" TvSound *TvSound_Create(Heap *heap, s32 type) {
 
 extern "C" u32 TvSound_GetMaxSize() {
     u32 m = 0;
-    for (const u32 *p = sTvSoundSizes; p < (const u32 *)data_020c6190; p++) {
+    for (const u32 *p = sTvSoundSizes; p < sTvSoundSizes + sizeof sTvSoundSizes / sizeof sTvSoundSizes[0]; p++) {
         if (*p > m) {
             m = *p;
         }
