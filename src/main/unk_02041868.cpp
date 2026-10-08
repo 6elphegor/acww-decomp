@@ -3,7 +3,6 @@
 #include "town/TownUpdateThread.h"
 #include "game/EventDayEntry.h"
 #include "game/Unk_02042104_Date.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/main/unk_02041868.h"
@@ -18,7 +17,6 @@ extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 
 extern CommManager *gCommManager;
 extern TownUpdater gTownUpdater;
-extern uptr gCurrentHeap;  // Heap *
 extern volatile u32 gTownEval[];
 extern u8 gSaveData[];
 extern u8 data_021ed20c[];
@@ -29,11 +27,10 @@ TownJunkInsectFlags gTownJunkInsectFlags;
 
 extern "C" {
 void Town_GetEnvironmentRank();
-s32 _ZN11CommManager12isSlotActiveEi(u32, u32);
 s32 Scene_InTown();
 s32 Scene_InTownUnk31();
-s32 OS_IsThreadTerminated(void *t);
-void OS_KillThread(u32, u32);
+BOOL OS_IsThreadTerminated(OSThread *t);
+void OS_KillThread(OSThread *t, void *arg);
 void TownUpdateThread_Kill(TownUpdateThread *p);
 void TownUpdateThread_Destroy();
 void TownJunkInsects_InitFromEval(TownJunkInsectFlags *p);
@@ -54,15 +51,15 @@ void TownBbs_PostPelicanNotice(void *o, struct SaveData *save, Unk_02042104_Date
 void TownBbs_PostSlogan(void *o, struct SaveData *save, Unk_02042104_Date *d);
 s32 EventSchedule_CollectDayAll(EventDayEntry *z, Unk_02042104_Date *d);
 void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
-void TownUpdateThread_Main(u8 *arg);
+void TownUpdateThread_Main(void *arg);
 u32 DC_FlushAll();
 void Town_AdvanceDays(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
 void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
 void TownUpdateThread_Init(TownUpdateThread *p);
-void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
-void OS_WakeupThreadDirect(void *th);
+void OS_CreateThread(OSThread *th, void (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
+void OS_WakeupThreadDirect(OSThread *th);
 }
 
 extern "C" s32 TownBbs_GetDaysToPost(void *o, u8 *a, Unk_02042104_Date *d) {
@@ -189,10 +186,12 @@ extern "C" void TownBbs_UpdateDaily() {
     }
 }
 
-extern "C" void TownUpdateThread_Main(u8 *arg) {
+// The thread's entry: its argument is the context's lastDate (the arguments follow it)
+extern "C" void TownUpdateThread_Main(void *arg) {
     DC_FlushAll();
     TownUpdateThread *g = gTownUpdater.updateThread;
-    Town_AdvanceDays(&gTownUpdater, arg, arg + 8, *(u32 *)(arg + 0x10), arg[0x14], 1);
+    (void)arg;
+    Town_AdvanceDays(&gTownUpdater, g->lastDate, g->curDate, g->elapsedDays, g->prevDayRain, 1);
     Heap_SetThreadHeap(g->callerThread, g->heap);
     g->done = 1;
     OS_ExitThread();
@@ -235,12 +234,12 @@ extern "C" s32 TownUpdateThread_StartCtx(TownUpdateThread *p) {
     p->stackGuardHigh = 0x3039;
     p->done = 0;
     p->started = 1;
-    OS_CreateThread(p, (void *)TownUpdateThread_Main, p->lastDate, &p->stackGuardHigh, 0x1000, 0x1e);
-    p->callerThread = (uptr)data_021fcc2c.current;
+    OS_CreateThread(&p->thread, TownUpdateThread_Main, p->lastDate, &p->stackGuardHigh, 0x1000, 0x1e);
+    p->callerThread = data_021fcc2c.current;
     p->heap = gCurrentHeap;
-    Heap_SetThreadHeap(p->callerThread, 0);
-    Heap_SetThreadHeap((uptr)p, p->heap);
-    OS_WakeupThreadDirect(p);
+    Heap_SetThreadHeap(p->callerThread, NULL);
+    Heap_SetThreadHeap(&p->thread, p->heap);
+    OS_WakeupThreadDirect(&p->thread);
     return 1;
 }
 
@@ -269,7 +268,7 @@ extern "C" BOOL TownUpdateThread_PollDone() {
 
 extern "C" void TownUpdateThread_Kill(TownUpdateThread *p) {
     if (p->started != 0) {
-        if (OS_IsThreadTerminated(p) == 0) OS_KillThread((u32)p, 0);
+        if (OS_IsThreadTerminated(&p->thread) == 0) OS_KillThread(&p->thread, NULL);
     }
 }
 
@@ -277,7 +276,7 @@ extern "C" void TownUpdateThread_Destroy() {
     TownUpdateThread *p = gTownUpdater.updateThread;
     if (p != 0) {
         TownUpdateThread_Kill(p);
-        Heap_Free(gCurrentHeap, (u32)p);
+        Heap_Free(gCurrentHeap, p);
         gTownUpdater.updateThread = 0;
     }
 }
@@ -296,7 +295,7 @@ extern "C" void TownJunkInsects_InitFromEval(TownJunkInsectFlags *p) {
 }
 
 extern "C" void TownJunkInsects_Apply(TownJunkInsectFlags *p) {
-    if (_ZN11CommManager12isSlotActiveEi((u32)gCommManager, gCommManager->myAid) != 0) return;
+    if (gCommManager->isSlotActive(gCommManager->myAid) != 0) return;
     if (Scene_InTown() == 0) {
         if (Scene_InTownUnk31() == 0) return;
     }

@@ -70,8 +70,8 @@ void LetterRenderer::show(LetterView *src, u32 a, u32 b, s32 c) {
     Gfx2d_SetLayerControl(a, 0, 0, 0);
     loadRecipientName(src);
     setGreeting(src, 0);
-    setBody(HOST_AT(src, 0x4c, body[0], 0), 0);
-    setSignature(HOST_AT(src, 0xcc, signature[0], 0));
+    setBody(src->body, 0);
+    setSignature(src->signature);
     loadLetterScreen(a);
     redraw();
     Gfx2d_SetLayerOffset(a, 0, 0);
@@ -83,7 +83,7 @@ s32 LetterRenderer::getRecipientNameLength() {
 
 void LetterRenderer::loadRecipientName(void *src) {
     Mem_Clear(recipientName, 0x28);
-    Letter_GetRecipientNameBytes(src, recipientName);
+    Letter_GetRecipientNameBytes((LetterView *)src, recipientName);
     recipientNameLength = Text_GetLength(recipientName, 0x28);
     recipientNameWidth = Text_MeasureWidth(recipientName, 0x28);
 }
@@ -190,8 +190,8 @@ void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void LetterLayout_HighlightSignature(u8 *self, u32 a, u32 b, u32 c) {
-    ((LetterTextLine *)(self + 0x4c))->setHighlight(a, b, c);
+extern "C" void LetterLayout_HighlightSignature(LetterLayout *self, u32 a, u32 b, u32 c) {
+    self->signatureLine.setHighlight(a, b, c);
 }
 
 
@@ -256,7 +256,7 @@ void LetterLayout::redrawAll() {
 }
 
 u32 EncodedString40::capacity() { return 0x28; }
-u8 *EncodedString40::data() { return HOST_AT(this, 0xe, text[0], 0); }
+u8 *EncodedString40::data() { return text; }
 
 LetterTextLine::LetterTextLine() {
     clear();
@@ -279,7 +279,7 @@ void LetterTextLine::setTarget(u16 v, u32 x) {
     bgIndex = Gfx2d_GetLayerBgIndex(x);
 }
 
-u8 *LetterTextLine::data() { return HOST_AT(this, 0x12, text[0], 0); }
+u8 *LetterTextLine::data() { return text; }
 
 void LetterTextLine::freeLabel() {
     if (textLabel != NULL) {

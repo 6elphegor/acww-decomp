@@ -29,7 +29,7 @@ CXX = ['gcc', '-x', 'c++', '-fsyntax-only', '-fno-short-enums', '-fsigned-char',
        '-fno-exceptions', '-fno-rtti', '-fpermissive', '-w']
 CC = ['gcc', '-x', 'c', '-fsyntax-only', '-fno-short-enums', '-fsigned-char', '-fshort-wchar', '-ffreestanding',
       '-nostdinc', '-fno-builtin', '-DMODERN', '-DHOST', '-DGAME_VERSION_USA', '-Iinclude', '-std=gnu11', '-w']
-CPP_ONLY = re.compile(r'\bclass\b|\bnamespace\b|\btemplate\s*<|::|\bpublic\s*:|\bprivate\s*:|\bvirtual\b|&')
+CPP_ONLY = re.compile(r'\bbool\b|\bclass\b|\bnamespace\b|\btemplate\s*<|::|\bpublic\s*:|\bprivate\s*:|\bvirtual\b|&')
 DEFS = {}
 HEADER_OF = {}       # function name -> header (relative to include/)
 
@@ -207,6 +207,9 @@ def make_headers(defs, only=None):
         cpp_incs = sorted(i for i in includes if header_is_cpp(i))
         out += [f'#include "{i}"' for i in c_incs]
         out += sorted(fwd_c)
+        tags = [d.split()[1].rstrip(';') for d in sorted(fwd_c) if d.startswith('struct ')]
+        if tags:  # (C needs the struct keyword: the prototypes name the bare type)
+            out += ['#ifndef __cplusplus'] + [f'typedef struct {t} {t};' for t in tags] + ['#endif']
         if cpp_incs or fwd_cpp or cpp_protos:
             out += ['#ifdef __cplusplus'] + [f'#include "{i}"' for i in cpp_incs] + sorted(fwd_cpp) + ['#endif']
         out.append('')

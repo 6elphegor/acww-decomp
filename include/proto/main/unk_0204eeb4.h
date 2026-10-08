@@ -6,21 +6,11 @@
 #include "types.h"
 #include "sys/OverlaySlot.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_OverlayMgr_Init
-void OverlayMgr_Init();
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_FishTable_GetHourSlot
 u32 FishTable_GetHourSlot(u32 r);
 #endif
@@ -51,7 +41,14 @@ void OverlayMgr_Acquire(u32 id);
 #ifndef PROTO_LOCAL_OverlayMgr_Release
 void OverlayMgr_Release(u32 id);
 #endif
+#ifndef PROTO_LOCAL_OverlayMgr_Init
+void OverlayMgr_Init();
+#endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_sOverlaySlots
 extern OverlaySlot sOverlaySlots[12];
 #endif

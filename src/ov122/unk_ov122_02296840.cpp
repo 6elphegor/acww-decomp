@@ -793,7 +793,7 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
             ((LetterLayout *)(&renderer))->highlightBodyRange(lo, n, flag);
             break;
         case 3:
-            LetterLayout_HighlightSignature((u8 *)(LetterLayout *)&renderer, lo, n, flag);
+            LetterLayout_HighlightSignature(&renderer, lo, n, flag);
             break;
         }
     }

@@ -5,6 +5,10 @@
 
 // 10-byte building info record (table data_020d0a7c, 0x22 entries indexed by building item id & 0xfff), read through
 // BuildingInfo_Copy / BuildingInfo_Get* (src/main/unk_020b0e60.cpp); ov009 BuildingActor copies one to the stack.
+#ifndef __cplusplus
+typedef struct BuildingInfo BuildingInfo;
+#endif
+
 struct BuildingInfo {
     /* 0x0 */ u16 profile;
     /* 0x2 */ u8 entranceType;

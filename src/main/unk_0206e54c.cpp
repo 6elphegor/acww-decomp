@@ -8,15 +8,8 @@
 #include "item/FutureLetter.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
-#define PROTO_LOCAL_InputMode_SetButtons  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InputMode_SetTouch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_ReturnFutureLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_SetButtons  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_SetFutureLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_SetTouch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_StoreFutureLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#include "sys/ClockDateTime.h"
+#include "proto/autoload_2/unk_020e7500.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_0202e840.h"
@@ -36,19 +29,16 @@
 #include "proto/main/unk_020b7d84.h"
 
 
-// list head sOpenMenuList (a List: two pointers, 16 bytes on 64-bit hosts): inline constructor, no destructor
-class Unk_021cb4e8 : public List {};
-
-// 8-byte object sMenuDateTime: destructor is func_020044dc (alias in aliases.txt)
+// The date and time a menu was opened with (sMenuDateTime): cleared as two words by its inline constructor;
+// destructor func_020044dc (alias in aliases.txt)
 class Unk_021cb4f0 {
 public:
     Unk_021cb4f0() {
-        a = 0;
-        b = 0;
+        w.words[0] = 0;
+        w.words[1] = 0;
     }
     ~Unk_021cb4f0();
-    u32 a;
-    u32 b;
+    ClockDateTimeWords w;
 };
 
 class MenuManager : public GameProc {
@@ -67,31 +57,12 @@ extern "C" {
 extern u16 gPad[];
 
 // functions of other units
-void MI_CpuCopy8(void *, const void *, u32);
-void Letter_Copy(void *, void *);
-void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
-s32 InputMode_SetTouch();
-s32 InputMode_SetButtons();
-void List_Remove(void *, void *);
-void List_PushBack(void *, u32);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 Scene_GetCurrent();
 BOOL TalkRequest_IsActive();
 void TalkRequest_AddMenu(u32);
-void PrioList_Init(void *);
+void PrioList_Init(List *list);
 void PendingUnit_ClearActiveOfAid(u32);
-
-// functions of this unit
-s32 MenuCtrl_SetButtons();
-s32 MenuCtrl_SetTouch();
-}
-
-// prototypes of the unit's functions
-extern "C" {
-s32 MenuCtrl_SetTouch();
-s32 MenuCtrl_SetButtons();
-void MenuCtrl_SetFutureLetter(void *a);
-void MenuCtrl_StoreFutureLetter(void);
-void MenuCtrl_ReturnFutureLetter(void);
 }
 
 // ---- data ----
@@ -99,7 +70,7 @@ void MenuCtrl_ReturnFutureLetter(void);
 u8 sMenuIndex;
 u32 kMenuOverlayList18[3] = {0x6b, 0x5e, 0xffffffff};
 u32 kMenuOverlayList28[3] = {0x6c, 0x5e, 0xffffffff};
-Unk_021cb4e8 sOpenMenuList;
+List sOpenMenuList;  // the open menus (their MenuProc::openMenuLink), the newest last
 u32 kMenuOverlayList03[2] = {0x79, 0xffffffff};
 u8 sMenuMode;
 Letter sFutureLetter;
@@ -153,7 +124,7 @@ u32 kMenuOverlayList21[3] = {0x8c, 0x8b, 0xffffffff};
 u32 kMenuOverlayList22[3] = {0x8d, 0x8b, 0xffffffff};
 u32 kMenuOverlayList0E[3] = {0x7c, 0x7d, 0xffffffff};
 u32 kMenuOverlayList11[3] = {0x64, 0x5e, 0xffffffff};
-u32 gMenuManager;
+GameProc *gMenuManager;
 u32 kMenuOverlayList14[3] = {0x67, 0x5e, 0xffffffff};
 u16 sPostOfficeResult;
 Unk_021cb4f0 sMenuDateTime;
@@ -205,7 +176,7 @@ BOOL MenuManager::onCreate() {
     sMenuReleaseMask[0] = sMenuReleaseMask[1] = sMenuReleaseMask[2] = 0;
     sMenuRequest[1] = 0x2e;
     sMenuRequest[0] = 1;
-    gMenuManager = (u32)this;
+    gMenuManager = this;
     sMenuFlags = 0;
     MenuCtrl_ResetFlags();
     MenuScreen_ClearState();
@@ -225,7 +196,7 @@ BOOL MenuManager::onDelete() {
     PrioList_Init(&sOpenMenuList);
     sMenuRequest[1] = 0x2e;
     sMenuRequest[0] = 0;
-    gMenuManager = 0;
+    gMenuManager = NULL;
     return TRUE;
 }
 
@@ -298,10 +269,10 @@ extern "C" void MenuCtrl_ReleaseClosedMenus() {
 }
 
 extern "C" BOOL MenuCtrl_CreateRequestedMenu() {
-    void *t;
+    GameProc *t;
     if (sMenuRequest[0] != 3) return FALSE;
-    if (sOpenMenuList.head != 0) t = ((OpenMenuLink *)sOpenMenuList.head)->owner;
-    else t = (void *)(uptr)gMenuManager;
+    if (sOpenMenuList.head != NULL) t = ((OpenMenuLink *)sOpenMenuList.head)->owner;  // (the link comes first)
+    else t = gMenuManager;
     MenuCtrl_ResetForceClose();
     if (!GameProc_CreateChild(kMenuProfileIds[sMenuRequest[1]], t, sMenuRequest[1], 4)) return FALSE;
     sMenuRequest[0] = 1;
@@ -342,13 +313,13 @@ extern "C" void MenuCtrl_ResetFlags() {
 
 extern "C" BOOL MenuCtrl_IsIdle() {
     if (sMenuRequest[0] != 1) return FALSE;
-    if (sOpenMenuList.head == 0) return TRUE;
+    if (sOpenMenuList.head == NULL) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL MenuCtrl_IsMenuOpen() {
     if (sMenuRequest[0] == 0) return FALSE;
-    if (sOpenMenuList.head != 0) return TRUE;
+    if (sOpenMenuList.head != NULL) return TRUE;
     return FALSE;
 }
 
@@ -361,7 +332,7 @@ extern "C" BOOL MenuCtrl_RequestOpen(u32 v) {
 
 extern "C" BOOL MenuCtrl_RequestOpenNested(u32 v) {
     if (sMenuRequest[0] != 1) return FALSE;
-    if (sOpenMenuList.head == 0) return FALSE;
+    if (sOpenMenuList.head == NULL) return FALSE;
     if (MenuCtrl_IsLoaded(v)) return FALSE;
     sMenuRequest[1] = v;
     sMenuRequest[0] = 2;
@@ -409,14 +380,14 @@ extern "C" void MenuCtrl_SetMenuOnTop() { MenuCtrl_SetFlags(1); }
 
 extern "C" BOOL MenuCtrl_IsMenuOnTop() { return MenuCtrl_HasFlags(1); }
 
-extern "C" s32 MenuCtrl_SetTouch() {
+extern "C" void MenuCtrl_SetTouch() {
     MenuCtrl_ClearFlags(2);
-    return InputMode_SetTouch();
+    InputMode_SetTouch();
 }
 
-extern "C" s32 MenuCtrl_SetButtons() {
+extern "C" void MenuCtrl_SetButtons() {
     MenuCtrl_SetFlags(2);
-    return InputMode_SetButtons();
+    InputMode_SetButtons();
 }
 
 extern "C" BOOL MenuCtrl_IsTouch() {
@@ -544,12 +515,12 @@ extern "C" void MenuCtrl_SetSavedSlot(u32 v) { sMenuSavedSlot = v; }
 extern "C" u32 MenuCtrl_GetSavedSlot() { return sMenuSavedSlot; }
 
 extern "C" void MenuCtrl_BackupPockets() {
-    void *p;
+    PlayerInventory *p;
     s32 i;
-    p = PlayerData_GetCurrent()->getInventory();
+    p = (PlayerInventory *)PlayerData_GetCurrent()->getInventory();
     for (i = 0; i < 15; i++) {
-        sPocketBackupItems[i] = *((PlayerInventory *)(p))->getPocket(i);
-        sPocketBackupFlags[i] = (u32)_ZN15PlayerInventory14getPocketFlagsEi(p, i);
+        sPocketBackupItems[i] = *p->getPocket(i);
+        sPocketBackupFlags[i] = p->getPocketFlags(i);
     }
 }
 
@@ -645,29 +616,29 @@ extern "C" BOOL MenuCtrl_OpenPostOffice(void) {
 extern "C" void MenuCtrl_SetPostOfficeResult(u32 v) { sPostOfficeResult = v; }
 
 extern "C" void MenuCtrl_SetFutureLetter(void *a) {
-    Letter_Copy(&sFutureLetter, a);
+    Letter_Copy((LetterView *)&sFutureLetter, (LetterView *)a);
 }
 
 extern "C" void MenuCtrl_StoreFutureLetter(void) {
     PlayerData *a = PlayerData_GetCurrent();
-    void *p = FutureLetter_GetLetter(PlayerData_GetFutureLetter(a));
+    LetterView *p = (LetterView *)FutureLetter_GetLetter(PlayerData_GetFutureLetter(a));
     u8 *q;
-    Letter_Copy(p, &sFutureLetter);
+    Letter_Copy(p, (LetterView *)&sFutureLetter);
     Letter_MarkSent(p);
     q = ((FutureLetter *)(PlayerData_GetFutureLetter(a)))->getDeliveryDate();
     q[0] = 1;
     q[1] = 1;
     q[2] = 0;
     q[3] = 0;
-    q[0] = ((u8 *)&sMenuDateTime)[3];
-    q[1] = ((u8 *)&sMenuDateTime)[4];
-    q[2] = ((u8 *)&sMenuDateTime)[5];
+    q[0] = sMenuDateTime.w.dt.day;
+    q[1] = sMenuDateTime.w.dt.month;
+    q[2] = sMenuDateTime.w.dt.year;
 }
 
 extern "C" void MenuCtrl_ReturnFutureLetter(void) {
-    void *p = Inventory_GetEmptyLetter();
+    LetterView *p = (LetterView *)(sptr)Inventory_GetEmptyLetter();  // (returns the letter's address as an s32)
     if (p) {
-        Letter_Copy(p, &sFutureLetter);
+        Letter_Copy(p, (LetterView *)&sFutureLetter);
     }
 }
 
@@ -888,7 +859,7 @@ extern "C" void *MenuCtrl_GetChatDraft(void) {
     return sChatDraft;
 }
 
-extern "C" void MenuCtrl_SetChatDraft(const u8 *a) {
+extern "C" void MenuCtrl_SetChatDraft(const void *a) {
     Mem_Copy(a, sChatDraft, 0x20);
 }
 

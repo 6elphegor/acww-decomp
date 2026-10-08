@@ -3,10 +3,9 @@
 #include "net/CommManager.h"
 #include "save/TownExchangeRecord.h"
 #include "ui/HudController.h"
-#define PROTO_LOCAL_CommSub_RecvTownTune  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Melody_Pack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gMelodyEditPattern  // declared below: the shared prototype conflicts with the calls here
+#include "actor/Actor.h"
+#include "item/Letter.h"
+#include "item/LetterView.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02065330.h"
@@ -25,11 +24,9 @@
 
 
 extern "C" {
-extern u32 gMelodyEditPattern[];
 extern u32 gSaveTownTune[];
+extern CommManager *gCommManager;
 extern u32 gSaveVillagers[];
-extern void *gCurrentHeap;
-extern void *gCommManager;
 extern u8 data_021eceac[];
 extern u8 data_021e7f8c[];
 extern u8 gSaveLostAndFound[];
@@ -37,12 +34,9 @@ extern u8 gSaveRecycleBin[];
 extern u8 gFieldSceneKind;
 extern u32 data_020c7c1c;
 
-s32 MI_CpuCopy8(void *src, void *dst, u32 n);
-void Melody_Pack(void *a, void *b);
+s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 void SaveVillagers_ClearTuneRequester(void *a);
-s32 BottleThrow_SetTarget(void *a, u8 b);
-
-void CommSub_RecvTownTune(u8 *p);
+void BottleThrow_SetTarget(VecFx32 *pos, s32 idx);
 }
 
 u8 sCommSubPostReply = 0x18;
@@ -53,7 +47,7 @@ u32 sCommCountdownKinds[5] = {0, 1, 2, 3, 4};
 static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 extern "C" void CommSub_RecvBbsPost(u8 *p) {
-    void *heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     void *buf = Heap_AllocTail(heap, 0xc0);
     MI_CpuCopy8(p + 1, buf, 0xc0);
     Bbs_AddPost(buf);
@@ -68,9 +62,9 @@ extern "C" void CommSub_RecvInsectRelease(u8 *p, u32 id) {
         q = p + 1;
         id8 = id;
         off = (p[2] - 0x1e) * 0xb6;
-        u8 *r = PlayerActor_GetActor(id8);
+        Actor *r = (Actor *)PlayerActor_GetActor(id8);
         if (r != NULL) {
-            off = off + *(s16 *)(r + 0x8e);
+            off = off + r->rotY;
             if (HeldInsect_GetStage(id8) == 0) {
                 HeldInsect_Start(q[0], id8);
                 HeldInsect_Release(id8, off);
@@ -85,7 +79,7 @@ extern "C" void CommSub_RecvReleaseOrThrow(u8 *p, u32 id) {
     if (Unk_0206f6fc_IsZero(gFieldSceneKind)) {
         u8 id8 = id;
         MI_CpuCopy8(p + 2, buf, 5);
-        NetBuf_UnpackPair20(buf, &pos.x, &pos.z);
+        NetBuf_UnpackPair20(buf, (u32 *)&pos.x, (u32 *)&pos.z);
         pos.y = data_020c7c1c;
         if (p[0] == 2) {
             u32 v = p[1];
@@ -116,19 +110,19 @@ extern "C" void CommSub_RecvItemList15(u8 *p) {
 }
 
 extern "C" void CommSub_RecvBottleLetter(u8 *p) {
-    void *heap = gCurrentHeap;
-    void *buf = Heap_AllocTail(heap, 0xf4);
+    Heap *heap = gCurrentHeap;
+    LetterView *buf = (LetterView *)Heap_AllocTail(heap, 0xf4);
     MI_CpuCopy8(p + 1, buf, 0xf4);
-    u8 *const g = data_021e7f8c;
-    void *t = TownExchange_GetLetter(g);
+    TownExchangeRecord *g = (TownExchangeRecord *)data_021e7f8c;
+    LetterView *t = (LetterView *)TownExchange_GetLetter(g);
     Letter_Copy(t, buf);
-    ((TownExchangeRecord *)(g))->resetCounter();
-    ((TownExchangeRecord *)(g))->setUnkFlag(0);
+    g->resetCounter();
+    g->setUnkFlag(0);
     Heap_Free(heap, buf);
 }
 
 extern "C" void CommSub_ClearBottleLetter() {
-    Letter_Clear(BottleLetterRecord_GetLetter(data_021eceac));
+    Letter_Clear((LetterView *)BottleLetterRecord_GetLetter(data_021eceac));
 }
 
 extern "C" u8 CommSub_GetPostReply() { return sCommSubPostReply; }
@@ -136,15 +130,15 @@ extern "C" u8 CommSub_GetPostReply() { return sCommSubPostReply; }
 extern "C" void CommSub_SetPostReply(u8 v) { sCommSubPostReply = v; }
 
 extern "C" void CommSub_Send(u32 a, u32 b, ...) {
-    void *g = gCommManager;
-    ((CommManager *)(g))->beginRecord();
-    ((CommManager *)(g))->writeRecord((u8 *)(&a), 1);
-    ((CommManager *)(g))->endRecord(0x16, b);
+    CommManager *g = gCommManager;
+    g->beginRecord();
+    g->writeRecord((u8 *)(&a), 1);
+    g->endRecord(0x16, b);
 }
 
 extern "C" void CommSub_RecvPostLetter(u8 *p, u32 code) {
-    void *heap = gCurrentHeap;
-    void *buf = Heap_AllocTail(heap, 0xf4);
+    Heap *heap = gCurrentHeap;
+    Letter *buf = (Letter *)Heap_AllocTail(heap, 0xf4);
     s32 r = 0xb;
     MI_CpuCopy8(p + 1, buf, 0xf4);
     if (LetterDelivery_QueueOutgoing(buf, 1)) {
@@ -173,8 +167,8 @@ extern "C" void HudCountdown_StartWithSe(u32 x) {
     } else {
         Snd_PlaySe(0x66);
     }
-    void *r = Hud_GetCountdown();
-    ((HudCountdown *)(r))->start(sCommCountdownKinds[x], 0);
+    HudCountdown *r = (HudCountdown *)Hud_GetCountdown();
+    r->start(sCommCountdownKinds[x], 0);
 }
 
 extern "C" void CommSub_RecvCountdownRequest(u8 *p) {

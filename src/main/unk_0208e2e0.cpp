@@ -9,16 +9,6 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0208e2e0.h"
 
-extern "C" {
-}
-
-
-
-
-
-
-
-
 LabelButtonText::LabelButtonText() { clear(); }
 
 LabelButtonText::~LabelButtonText() {}
@@ -26,7 +16,7 @@ LabelButtonText::~LabelButtonText() {}
 // ---- LabelButtonText ----
 u32 LabelButtonText::capacity() { return 9; }
 
-u8 *LabelButtonText::data() { return HOST_AT(this, 0x12, unk_12[0], 0); }
+u8 *LabelButtonText::data() { return unk_12; }
 
 LabelButton::LabelButton(u8 a, s32 b) : posX(0), posY(0), palette(-1), kind(b), state(0), label(0) {
     textColor = 0x50c0;
@@ -43,8 +33,8 @@ LabelButton::~LabelButton() {
 
 void LabelButton::draw() {
     if (state != 0) {
-        void *h0 = layer1.getCell();
-        void *h1 = layer2.getCell();
+        GXOamAttr *h0 = (GXOamAttr *)layer1.getCell();
+        GXOamAttr *h1 = (GXOamAttr *)layer2.getCell();
         s32 a = layer1.getFrameX(-1);
         s32 b = layer1.getFrameY(-1);
         s32 c = layer2.getFrameX(-1);

@@ -112,7 +112,7 @@ static void host_pace_frame(void) {
     sNextFrame.tv_nsec += 16715000;  // 59.83 Hz
     if (sNextFrame.tv_nsec >= 1000000000) { sNextFrame.tv_nsec -= 1000000000; sNextFrame.tv_sec++; }
     if (now.tv_sec > sNextFrame.tv_sec + 1) sNextFrame = now;  // far behind: don't try to catch up
-    while (clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sNextFrame, 0) == EINTR) {}  // SIGALRM interrupts it
+    while (clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sNextFrame, 0) == EINTR) {}  // SIGVTALRM interrupts it
 }
 
 // ---- screenshots: ACWW_SHOT="frame:path.ppm;..." (both screens, 256x384)
@@ -639,7 +639,7 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
         sWatchStep = 1;
         mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ | PROT_WRITE);
         uc->uc_mcontext.gregs[REG_EFL] |= 0x100;
-        sigaddset(&uc->uc_sigmask, SIGALRM);
+        sigaddset(&uc->uc_sigmask, SIGVTALRM);
         return;
     }
     if (!is_io(a)) {
@@ -670,7 +670,7 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
     if (!sFaultWrite) io_read(a);
     mprotect(page_of(a), PAGE, PROT_READ | PROT_WRITE);
     uc->uc_mcontext.gregs[REG_EFL] |= 0x100;  // trap after the instruction
-    sigaddset(&uc->uc_sigmask, SIGALRM);      // no interrupt between the access and its handling
+    sigaddset(&uc->uc_sigmask, SIGVTALRM);      // no interrupt between the access and its handling
 }
 
 static void on_trap(int sig, siginfo_t *si, void *ctx) {
@@ -679,7 +679,7 @@ static void on_trap(int sig, siginfo_t *si, void *ctx) {
     if (sWatchStep) {
         sWatchStep = 0;
         uc->uc_mcontext.gregs[REG_EFL] &= ~0x100;
-        sigdelset(&uc->uc_sigmask, SIGALRM);
+        sigdelset(&uc->uc_sigmask, SIGVTALRM);
         if (memcmp(sWatchOld, (void *)(uintptr_t)sWatchLo, sWatchHi - sWatchLo)) {
             fprintf(stderr, "watch: frame %llu eip %08x:", (unsigned long long)host_frame(), sWatchEip);
             for (u32 i = 0; i < sWatchHi - sWatchLo; i += 4) fprintf(stderr, " %08x", *(u32 *)(uintptr_t)(sWatchLo + i));
@@ -690,7 +690,7 @@ static void on_trap(int sig, siginfo_t *si, void *ctx) {
         return;
     }
     uc->uc_mcontext.gregs[REG_EFL] &= ~0x100;
-    sigdelset(&uc->uc_sigmask, SIGALRM);
+    sigdelset(&uc->uc_sigmask, SIGVTALRM);
     mprotect(page_of(sFaultAddr), PAGE, PROT_NONE);
     if (sFaultWrite) io_write(sFaultAddr, sFaultOld);
     host_irq_inject(uc);
@@ -751,7 +751,7 @@ static void on_alarm(int sig, siginfo_t *si, void *ctx) {
     u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
     int in_game = eip >= (u32)(uintptr_t)host_game_text_start && eip < (u32)(uintptr_t)host_game_text_end;
     // The game spinning on memory (waiting for an interrupt handler without touching a register, so virtual time
-    // stands still): after 100 ms of that, let time pass and take the interrupts it raised. Only a hang guard:
+    // stands still): after 100 ms of the game's CPU time of that, let time pass and take the interrupts it raised. Only a hang guard:
     // the game reaches registers or waits far more often, and acting sooner would make runs depend on the real
     // clock. Each site is reported (it wants an explicit wait). Never in the runtime's or a library's code.
     static u32 still;
@@ -894,7 +894,7 @@ void host_map_memory(void) {
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
     sa.sa_flags = SA_SIGINFO | SA_NODEFER;
-    sigaddset(&sa.sa_mask, SIGALRM);
+    sigaddset(&sa.sa_mask, SIGVTALRM);
     sa.sa_sigaction = on_segv;
     sigaction(SIGSEGV, &sa, 0);
     sa.sa_sigaction = on_trap;
@@ -905,14 +905,16 @@ void host_map_memory(void) {
     sigaction(SIGFPE, &sa, 0);
     sigaction(SIGILL, &sa, 0);
     sigaction(SIGBUS, &sa, 0);
-    // SIGALRM is blocked while an I/O access is being single-stepped (the handlers' sa_mask) and inside itself
+    // SIGVTALRM is blocked while an I/O access is being single-stepped (the handlers' sa_mask) and inside itself
     struct sigaction al;
     memset(&al, 0, sizeof al);
     al.sa_flags = SA_SIGINFO;
     al.sa_sigaction = on_alarm;
-    sigaction(SIGALRM, &al, 0);
+    sigaction(SIGVTALRM, &al, 0);
+    // (the process's own CPU time, not the wall clock: on a loaded machine a long stretch of the game's work must not
+    // look like a hang - that made runs depend on the machine's load)
     struct itimerval it = {{0, 2000}, {0, 2000}};
-    setitimer(ITIMER_REAL, &it, 0);
+    setitimer(ITIMER_VIRTUAL, &it, 0);
     if (getenv("ACWW_PROFILE")) {
         sa.sa_sigaction = on_prof;
         sigaction(SIGPROF, &sa, 0);

@@ -4,153 +4,32 @@
 // Prototypes of the functions defined in src/main/unk_0206e54c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ListNode.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "item/Letter.h"
-#include "types.h"
+#include "sys/ProcBase.h"
 class MenuManager;
-struct ListNode;
-class Unk_021cb4e8;
 class Unk_021cb4f0;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_MenuCtrl_ReleaseClosedMenus
-void MenuCtrl_ReleaseClosedMenus();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ResetFlags
-void MenuCtrl_ResetFlags();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearMenuOnTop
-void MenuCtrl_ClearMenuOnTop();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetMenuOnTop
-void MenuCtrl_SetMenuOnTop();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SyncFromInputMode
-void MenuCtrl_SyncFromInputMode();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetTransitionActive
-void MenuCtrl_SetTransitionActive();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearTransitionActive
-void MenuCtrl_ClearTransitionActive();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetScreenChanging
-void MenuCtrl_SetScreenChanging();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearScreenChanging
-void MenuCtrl_ClearScreenChanging();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetArg
-void *MenuCtrl_GetArg();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetArg
-void MenuCtrl_SetArg(void *v);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetText
-void *MenuCtrl_GetText();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearSavedSlot
-void MenuCtrl_ClearSavedSlot();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_BackupPockets
-void MenuCtrl_BackupPockets();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_RestorePockets
-void MenuCtrl_RestorePockets();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ReturnChosenItems
-void MenuCtrl_ReturnChosenItems(void *p);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetFutureLetter
-void MenuCtrl_SetFutureLetter(void *a);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_StoreFutureLetter
-void MenuCtrl_StoreFutureLetter(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ReturnFutureLetter
-void MenuCtrl_ReturnFutureLetter(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetDateTime
-void MenuCtrl_SetDateTime(void *a);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetDateTime
-void MenuCtrl_GetDateTime(void *a);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearPtrArgs
-void MenuCtrl_ClearPtrArgs(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg0
-void *MenuCtrl_GetPtrArg0(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg1
-void *MenuCtrl_GetPtrArg1(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetClockMovedBack
-void MenuCtrl_SetClockMovedBack(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetClockMovedForward
-void MenuCtrl_SetClockMovedForward(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetClockEdited
-void MenuCtrl_SetClockEdited(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearClockChangeFlags
-void MenuCtrl_ClearClockChangeFlags(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_InitKeyboardState
-void MenuCtrl_InitKeyboardState(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_RequestForceClose
-void MenuCtrl_RequestForceClose(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ResetForceClose
-void MenuCtrl_ResetForceClose(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_TickForceClose
-void MenuCtrl_TickForceClose(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetSyncMsgMenu
-void MenuCtrl_SetSyncMsgMenu(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearSyncMsgMenu
-void MenuCtrl_ClearSyncMsgMenu(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetFriendPageFromIndex
-void MenuCtrl_SetFriendPageFromIndex(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearFriendPageFromIndex
-void MenuCtrl_ClearFriendPageFromIndex(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetChatDraft
-void *MenuCtrl_GetChatDraft(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_ClearChatDraft
-void MenuCtrl_ClearChatDraft(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_CommSub_StartCountdown
 void CommSub_StartCountdown(u8 *o);
 #endif
 #ifndef PROTO_LOCAL_CommSub_RecvClearPendingUnit
 void CommSub_RecvClearPendingUnit(u8 *o);
 #endif
-#ifndef PROTO_LOCAL_MenuManager_Create
-MenuManager *MenuManager_Create();
-#endif
 #ifndef PROTO_LOCAL_MenuCtrl_AddOpenMenu
 void MenuCtrl_AddOpenMenu(ListNode *v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_RemoveOpenMenu
 void MenuCtrl_RemoveOpenMenu(ListNode *o);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ReleaseClosedMenus
+void MenuCtrl_ReleaseClosedMenus();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_CreateRequestedMenu
 BOOL MenuCtrl_CreateRequestedMenu();
@@ -160,6 +39,9 @@ BOOL MenuCtrl_LoadRequestedOverlays();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_ReleaseOverlays
 BOOL MenuCtrl_ReleaseOverlays(u32 i);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ResetFlags
+void MenuCtrl_ResetFlags();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsIdle
 BOOL MenuCtrl_IsIdle();
@@ -203,20 +85,29 @@ void MenuCtrl_ClearFlags(u32 m);
 #ifndef PROTO_LOCAL_MenuCtrl_HasFlags
 BOOL MenuCtrl_HasFlags(u32 m);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearMenuOnTop
+void MenuCtrl_ClearMenuOnTop();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetMenuOnTop
+void MenuCtrl_SetMenuOnTop();
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsMenuOnTop
 BOOL MenuCtrl_IsMenuOnTop();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetTouch
-s32 MenuCtrl_SetTouch();
+void MenuCtrl_SetTouch();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetButtons
-s32 MenuCtrl_SetButtons();
+void MenuCtrl_SetButtons();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsTouch
 BOOL MenuCtrl_IsTouch();
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsButtons
 BOOL MenuCtrl_IsButtons();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SyncFromInputMode
+void MenuCtrl_SyncFromInputMode();
 #endif
 #ifndef PROTO_LOCAL_Menu_GetIconCharIndex
 s32 Menu_GetIconCharIndex(s32 v);
@@ -239,8 +130,26 @@ s32 MenuCtrl_GetTransitionProgressOrFull();
 #ifndef PROTO_LOCAL_MenuCtrl_IsTransitionActive
 BOOL MenuCtrl_IsTransitionActive();
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetTransitionActive
+void MenuCtrl_SetTransitionActive();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearTransitionActive
+void MenuCtrl_ClearTransitionActive();
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsScreenChanging
 BOOL MenuCtrl_IsScreenChanging();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetScreenChanging
+void MenuCtrl_SetScreenChanging();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearScreenChanging
+void MenuCtrl_ClearScreenChanging();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetArg
+void *MenuCtrl_GetArg();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetArg
+void MenuCtrl_SetArg(void *v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetMode
 u32 MenuCtrl_GetMode();
@@ -263,6 +172,9 @@ BOOL MenuCtrl_IsResultDuplicateName();
 #ifndef PROTO_LOCAL_MenuCtrl_SetResult
 void MenuCtrl_SetResult(u32 v);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetText
+void *MenuCtrl_GetText();
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetText
 void MenuCtrl_SetText(const void *a, u32 b);
 #endif
@@ -275,17 +187,29 @@ BOOL MenuCtrl_OpenLauncherWithIndex(u32 a, u32 b);
 #ifndef PROTO_LOCAL_MenuCtrl_IsFinished
 BOOL MenuCtrl_IsFinished();
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearSavedSlot
+void MenuCtrl_ClearSavedSlot();
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetSavedSlot
 void MenuCtrl_SetSavedSlot(u32 v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetSavedSlot
 u32 MenuCtrl_GetSavedSlot();
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_BackupPockets
+void MenuCtrl_BackupPockets();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_RestorePockets
+void MenuCtrl_RestorePockets();
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetChosenItems
 void MenuCtrl_SetChosenItems(u16 *src);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetChosenItems
 u16 *MenuCtrl_GetChosenItems(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ReturnChosenItems
+void MenuCtrl_ReturnChosenItems(void *p);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_ReplaceBackupItem
 void MenuCtrl_ReplaceBackupItem(u32 key, u16 val);
@@ -307,6 +231,15 @@ BOOL MenuCtrl_OpenPostOffice(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetPostOfficeResult
 void MenuCtrl_SetPostOfficeResult(u32 v);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetFutureLetter
+void MenuCtrl_SetFutureLetter(void *a);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_StoreFutureLetter
+void MenuCtrl_StoreFutureLetter(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ReturnFutureLetter
+void MenuCtrl_ReturnFutureLetter(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetPostOfficeOutcome
 u32 MenuCtrl_GetPostOfficeOutcome(void);
@@ -338,8 +271,23 @@ u32 MenuCtrl_GetAmount(void);
 #ifndef PROTO_LOCAL_MenuCtrl_SetAmount
 void MenuCtrl_SetAmount(u32 v);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetDateTime
+void MenuCtrl_SetDateTime(void *a);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetDateTime
+void MenuCtrl_GetDateTime(void *a);
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenNearbyTowns
 BOOL MenuCtrl_OpenNearbyTowns(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearPtrArgs
+void MenuCtrl_ClearPtrArgs(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg0
+void *MenuCtrl_GetPtrArg0(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg1
+void *MenuCtrl_GetPtrArg1(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsClockMovedBack
 BOOL MenuCtrl_IsClockMovedBack(void);
@@ -349,6 +297,18 @@ BOOL MenuCtrl_IsClockMovedForward(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsClockEdited
 BOOL MenuCtrl_IsClockEdited(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetClockMovedBack
+void MenuCtrl_SetClockMovedBack(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetClockMovedForward
+void MenuCtrl_SetClockMovedForward(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetClockEdited
+void MenuCtrl_SetClockEdited(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearClockChangeFlags
+void MenuCtrl_ClearClockChangeFlags(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenPocketsFullInsect
 BOOL MenuCtrl_OpenPocketsFullInsect(u32 v);
@@ -383,6 +343,9 @@ u16 MenuCtrl_GetSongItem(void);
 #ifndef PROTO_LOCAL_MenuCtrl_OpenLauncherWithText
 BOOL MenuCtrl_OpenLauncherWithText(u32 a, const void *b, u32 c);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_InitKeyboardState
+void MenuCtrl_InitKeyboardState(void);
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetKeyboardPage
 u8 MenuCtrl_GetKeyboardPage(void);
 #endif
@@ -395,8 +358,23 @@ u8 MenuCtrl_GetKeyboardPageMode(u32 i);
 #ifndef PROTO_LOCAL_MenuCtrl_SetKeyboardPageMode
 void MenuCtrl_SetKeyboardPageMode(u32 i, u32 v);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_RequestForceClose
+void MenuCtrl_RequestForceClose(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ResetForceClose
+void MenuCtrl_ResetForceClose(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_TickForceClose
+void MenuCtrl_TickForceClose(void);
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsForceCloseDue
 s32 MenuCtrl_IsForceCloseDue(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetSyncMsgMenu
+void MenuCtrl_SetSyncMsgMenu(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearSyncMsgMenu
+void MenuCtrl_ClearSyncMsgMenu(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsSyncMsgMenu
 BOOL MenuCtrl_IsSyncMsgMenu(void);
@@ -404,8 +382,29 @@ BOOL MenuCtrl_IsSyncMsgMenu(void);
 #ifndef PROTO_LOCAL_MenuCtrl_IsFriendPageFromIndex
 BOOL MenuCtrl_IsFriendPageFromIndex(void);
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetFriendPageFromIndex
+void MenuCtrl_SetFriendPageFromIndex(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearFriendPageFromIndex
+void MenuCtrl_ClearFriendPageFromIndex(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetChatDraft
+void *MenuCtrl_GetChatDraft(void);
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetChatDraft
-void MenuCtrl_SetChatDraft(const u8 *a);
+void MenuCtrl_SetChatDraft(const void *a);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_ClearChatDraft
+void MenuCtrl_ClearChatDraft(void);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_MenuManager_Create
+MenuManager *MenuManager_Create();
 #endif
 }
 #ifndef PROTO_LOCAL_sMenuIndex
@@ -418,7 +417,7 @@ extern u32 kMenuOverlayList18[3];
 extern u32 kMenuOverlayList28[3];
 #endif
 #ifndef PROTO_LOCAL_sOpenMenuList
-extern Unk_021cb4e8 sOpenMenuList;
+extern List sOpenMenuList;
 #endif
 #ifndef PROTO_LOCAL_kMenuOverlayList03
 extern u32 kMenuOverlayList03[2];
@@ -580,7 +579,7 @@ extern u32 kMenuOverlayList0E[3];
 extern u32 kMenuOverlayList11[3];
 #endif
 #ifndef PROTO_LOCAL_gMenuManager
-extern u32 gMenuManager;
+extern GameProc *gMenuManager;
 #endif
 #ifndef PROTO_LOCAL_kMenuOverlayList14
 extern u32 kMenuOverlayList14[3];

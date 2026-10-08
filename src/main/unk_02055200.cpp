@@ -8,9 +8,7 @@
 #include "gfx/G3dResAccess.h"
 #include "gfx/NNSG3dResAnmCommon.h"
 #include "gfx/NNSG3dRS.h"
-#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021040ac.h"
 #include "proto/main/unk_02055200.h"
@@ -37,14 +35,11 @@ struct ResCacheEntry {
 };
 
 
-
-
 class ModelBase {
 public:
     ModelBase();
     virtual ~ModelBase();
 };
-
 
 
 s32 sResCacheModelCount;
@@ -81,17 +76,11 @@ void NNS_G3dTexLoad(void *p, s32 a);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
 void NNS_G3dAnmObjInit(void *p, void *q, void *r, void *s);
-u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-s32 func_02057110(u32 p);
-void func_02056714(void *p);
 s32 NNS_G3dGetResultMtx(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);
 void MTX_Concat43(void *a, void *b, void *c);
 extern u8 gFieldSceneKind;
-extern void *gCurrentHeap;
-extern u32 (*data_0213bc18)(u32, u32, u32);
-extern u32 (*data_0213bc10)(u32, u32, u32);
 }
 
 extern "C" {
@@ -100,8 +89,8 @@ BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, TexVramSlot *b);
 BOOL Gfx3d_LoadPlttWithKey(NNSG3dResTex *a, u32 x);
 BOOL Gfx3d_LoadTex(NNSG3dResTex *a, TexVramSlot *b);
 BOOL Gfx3d_LoadTexWithKeys(NNSG3dResTex *a, u32 y, u32 z);
-u32 ResCache_FindTex(u32 key);
-u32 ResCache_FindModel(u32 key);
+void *ResCache_FindTex(u32 key);
+void *ResCache_FindModel(u32 key);
 void *Gfx3d_CopyTex(void *a, void *heap);
 void *Gfx3d_CopyModel(u32 *a, void *heap);
 }
@@ -160,37 +149,37 @@ extern "C" void ResCache_Destroy(void) {
     ModelCacheHeap_Destroy();
 }
 
-extern "C" u32 ResCache_FindModel(u32 key) {
+extern "C" void *ResCache_FindModel(u32 key) {
     s32 i;
     s32 n;
     if (key == 0x4e554c4c) {
-        return 0;
+        return NULL;
     }
     i = 0;
     n = sResCacheModelCount;
     for (; i < n; i++) {
         if (key == sResCacheModels[i].key) {
-            return (u32)sResCacheModels[i].data;
+            return sResCacheModels[i].data;
         }
     }
-    return 0;
+    return NULL;
 }
 
-extern "C" u32 ResCache_FindTex(u32 key) {
+extern "C" void *ResCache_FindTex(u32 key) {
     s32 i;
     if (key == 0x4e554c4c) {
-        return 0;
+        return NULL;
     }
     for (i = 0; i < 0x3c; i++) {
         if (key == sResCacheTexs[i].key) {
-            return (u32)sResCacheTexs[i].data;
+            return sResCacheTexs[i].data;
         }
     }
-    return 0;
+    return NULL;
 }
 
 extern "C" void *Gfx3d_CopyModel(u32 *a, void *heap) {
-    void *p = Heap_Alloc(heap, *a);
+    void *p = Heap_Alloc((Heap *)heap, *a);
     if (p == NULL) {
         return NULL;
     }
@@ -199,9 +188,9 @@ extern "C" void *Gfx3d_CopyModel(u32 *a, void *heap) {
 }
 
 extern "C" void *ResCache_GetModel(u32 *a, u32 key) {
-    void *heap = gModelCacheHeap;
+    Heap *heap = (Heap *)gModelCacheHeap;
     void *r;
-    if (key == 0x4e554c4c || (r = (void *)ResCache_FindModel(key)) == NULL) {
+    if (key == 0x4e554c4c || (r = ResCache_FindModel(key)) == NULL) {
         if (sResCacheModelCount >= 0x96) {
             Fatal_Trap();
             return NULL;
@@ -221,7 +210,7 @@ extern "C" void *ResCache_GetModel(u32 *a, u32 key) {
 
 extern "C" void *Gfx3d_CopyTex(void *a, void *heap) {
     u32 n = ((G3dResAccess *)(a))->getTexImageOffset();
-    void *p = Heap_Alloc(heap, n);
+    void *p = Heap_Alloc((Heap *)heap, n);
     if (p == NULL) {
         return NULL;
     }
@@ -230,9 +219,9 @@ extern "C" void *Gfx3d_CopyTex(void *a, void *heap) {
 }
 
 extern "C" void *ResCache_GetTex(void *a, u32 key) {
-    void *heap = gModelCacheHeap;
+    Heap *heap = (Heap *)gModelCacheHeap;
     void *r;
-    if (key == 0x4e554c4c || (r = (void *)ResCache_FindTex(key)) == NULL) {
+    if (key == 0x4e554c4c || (r = ResCache_FindTex(key)) == NULL) {
         if (sResCacheTexCount >= 0x3c) {
             Fatal_Trap();
             return NULL;
@@ -469,15 +458,16 @@ TexVramSlot::TexVramSlot() {
 
 TexVramSlot::~TexVramSlot() {}
 
-BOOL TexVramSlot::alloc(void *a, void *b, void *c) {
-    if (a != NULL) {
-        texKeyBase = data_0213bc10((u32)a, 0, 0);
+// Allocates the texture / 4x4 texture / palette VRAM of the sizes (none for a size 0)
+BOOL TexVramSlot::alloc(u32 texSize, u32 tex4x4Size, u32 plttSize) {
+    if (texSize != 0) {
+        texKeyBase = data_0213bc10(texSize, 0, 0);
     }
-    if (b != NULL) {
-        tex4x4KeyBase = data_0213bc10((u32)b, 1, 0);
+    if (tex4x4Size != 0) {
+        tex4x4KeyBase = data_0213bc10(tex4x4Size, 1, 0);
     }
-    if (c != NULL) {
-        plttKeyBase = data_0213bc18((u32)c, 0, 0);
+    if (plttSize != 0) {
+        plttKeyBase = data_0213bc18(plttSize, 0, 0);
     }
     unk_10 = 1;
     return TRUE;

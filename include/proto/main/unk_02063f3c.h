@@ -7,29 +7,19 @@
 #include "ds_stdarg.h"
 #include "nitro/fs.h"
 #ifdef __cplusplus
-#include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-#ifndef PROTO_LOCAL_File_OpenOrPanic
-void File_OpenOrPanic(void *file, const char *path);
-#endif
-#ifndef PROTO_LOCAL_File_LoadF
-void *File_LoadF(const char *fmt, ...);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_File_LoadOverlayEx
 BOOL File_LoadOverlayEx(s32 target, u32 id);
 #endif
 #ifndef PROTO_LOCAL_File_Open
 BOOL File_Open(void *file, const char *path);
+#endif
+#ifndef PROTO_LOCAL_File_OpenOrPanic
+void File_OpenOrPanic(void *file, const char *path);
 #endif
 #ifndef PROTO_LOCAL_File_LoadToBuffer
 s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
@@ -37,12 +27,19 @@ s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 #ifndef PROTO_LOCAL_File_ReadAll
 s32 File_ReadAll(FSFile *f, void *dst, u32 n);
 #endif
+#ifndef PROTO_LOCAL_File_LoadF
+void *File_LoadF(const char *fmt, ...);
+#endif
 #ifndef PROTO_LOCAL_File_GetDecodedSize
 s32 File_GetDecodedSize(FSFile *f);
 #endif
+#ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
 #ifndef PROTO_LOCAL_File_LoadAlloc
-void *File_LoadAlloc(const char *path, void *heap, s32 align, u32 *outSize);
+void *File_LoadAlloc(const char *path, void *heapArg, s32 align, u32 *outSize);
 #endif
 #ifndef PROTO_LOCAL_File_Load
 void *File_Load(const char *path);

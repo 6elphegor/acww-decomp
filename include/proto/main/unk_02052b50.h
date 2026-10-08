@@ -81,7 +81,7 @@ s32 Ftr_GetSeries(u16 *n);
 s32 FtrInfo_GetClass(s32 n);
 #endif
 #ifndef PROTO_LOCAL_Ftr_GetClass
-s32 Ftr_GetClass(s32 n);
+s32 Ftr_GetClass(u16 *n);
 #endif
 #ifndef PROTO_LOCAL_FtrInfo_GetUnk05
 s32 FtrInfo_GetUnk05(s32 n);

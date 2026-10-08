@@ -9,16 +9,10 @@
 #include "talk/EncodedString.h"
 #include "ui/LabelString.h"
 #include "talk/EncodedString41.h"
-#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_ToEncodedBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontB  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontC  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gFontD  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gMelodyEditPattern  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02051218.h"
@@ -40,360 +34,23 @@
 #include "proto/ov003/unk_ov003_0221ffb8.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Classes from other files (see unk_020a6914.cpp)
-
-
 
 
 class MsgString;
 
 
-
 // ---------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-extern u32 gMelodyEditPattern[];
-}
-
-extern "C" {
-extern u32 gSaveTownTune[];
-}
-
-extern "C" {
-extern u32 gSaveVillagers[];
-}
-
-extern "C" {
-extern void *gCurrentHeap;
-}
-
-extern "C" {
-extern void *gCommManager;
-}
-
-extern "C" {
-extern u8 data_021eceac[];
-}
-
-extern "C" {
-extern u8 data_021e7f8c[];
-}
-
-extern "C" {
-extern u8 gSaveLostAndFound[];
-}
-
-extern "C" {
-extern u8 gSaveRecycleBin[];
-}
-
-extern "C" {
-extern u8 gFieldSceneKind;
-}
-
-extern "C" {
-extern u32 data_020c7c1c;
-}
-
-extern "C" {
-typedef void (*CommSubHandler)(u8 *, u32);
-}
-
-extern "C" {
-extern CommSubHandler sCommSubHandlers[];
-}
-
-extern "C" {
-extern GameFontDesc gFontD;
-}
-
-extern "C" {
-extern GameFontDesc gFontB;
-}
-
-extern "C" {
-extern GameFontDesc gFontC;
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_0208c134(void *a, u32 b, u32 c);
-}
-
-extern "C" {
-s32 MI_CpuCopy8(void *src, void *dst, u32 n);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void SaveVillagers_ClearTuneRequester(void *a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_020728d4(void *p);
-}
-
-extern "C" {
-void func_020728a4(void *p, void *d, s32 n);
-}
-
-extern "C" {
-void func_02072824(void *p, s32 a, s32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_0208f168(void *p);
-}
-
-extern "C" {
-void func_0208f1a8(void *p, s32 v);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 BottleThrow_SetTarget(void *a, u8 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
 
 extern "C" {
 BOOL EncodedString_SetRaw(EncodedString41 *buf, const void *src, s32 len);
-}
-
-extern "C" {
-BOOL StrBuf_GetBytes(EncodedString41 *buf, u8 *dst, s32 size);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 u32 Msg_MeasureWidth(u32 arg);
-}
-
-extern "C" {
-}
-
-extern "C" {
 TextLabel *MsgTextLabel_CreateBuffer(u32 a, u32 b, u32 c);
-}
-
-extern "C" {
 TextLabel *MsgTextLabel_CreateVram(u32 a, u32 b, u32 c);
-}
-
-extern "C" {
-void MsgTextLabel_Destroy(TextLabel *obj);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void MTX_Copy33To43_(void *a, void *b);
-}
-
-extern "C" {
-s32 func_01ffcb0c(s32 a, s32 b);
-}
-
-extern "C" {
-void MTX_Concat43(void *a, void *b, void *c);
-}
-
-extern "C" {
-void MTX_Identity43_(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-BOOL func_02070358(u32 a, u16 *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void String_ToEncodedBytes(MsgString *a, u8 *b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
-// prototypes (test harness)
-void String_ToEncodedBytes(MsgString *a, u8 *b);
 
 
 void LabelString::setLayerColors(u32 id, u8 x, u8 y) {
@@ -422,7 +79,7 @@ void LabelString::createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
     label = MsgTextLabel_CreateVram(a, b, 2);
     setLayerColors(id, x, y);
     if (flag != 0) {
-        label->font = &gFontC;
+        label->font = (GameFontDesc *)&gFontC;  // (a GameFont: a GameFontDesc)
     }
 }
 
@@ -433,9 +90,9 @@ void LabelString::createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
     label = MsgTextLabel_CreateVram(a, b, 1);
     setLayerColors(id, x, y);
     if (flag != 0) {
-        label->font = &gFontD;
+        label->font = (GameFontDesc *)&gFontD;  // (a GameFont: a GameFontDesc)
     } else {
-        label->font = &gFontB;
+        label->font = (GameFontDesc *)&gFontB;  // (a GameFont: a GameFontDesc)
     }
 }
 
@@ -501,9 +158,10 @@ void LabelString::redrawAt(s32 v) {
     }
 }
 
-u32 LabelString::getTextWidth() { return Msg_MeasureWidth((u32)this + 0x12); }
+// (Msg_MeasureWidth takes the text's address as a u32: TextLabel::textStart's type)
+u32 LabelString::getTextWidth() { return Msg_MeasureWidth((u32)(uptr)text); }
 
-void String_Load2dMenuByRef(void *a, u8 *p) { String_Load2d(a, p, 0); }
+void String_Load2dMenuByRef(void *a, u8 *p) { String_Load2d((MsgString *)a, p, NULL); }
 
 void String_Load2dMenu(void *a, u8 v) {
     u8 t = v;
@@ -512,10 +170,10 @@ void String_Load2dMenu(void *a, u8 v) {
 
 void String_LoadByIndex(void *a, const char *c, u8 v) {
     u8 t = v;
-    String_Load(a, &t, c);
+    String_Load((MsgString *)a, &t, (const char *)c);
 }
 
-void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e) { String_FormatNumber(o, a, b, c, d, e); }
+void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e) { String_FormatNumber((MsgString *)o, a, b, c, d, e); }
 
 void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len) {
     EncodedString41 l;
@@ -526,7 +184,7 @@ void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len) {
 void String_ToEncodedBytes(MsgString *a, u8 *b) {
     EncodedString41 l;
     l.fromMsgString(a);
-    StrBuf_GetBytes(&l, b, 0x29);
+    StrBuf_GetBytes((StrBuf *)&l, b, 0x29);
 }
 
 void String_FromEncodedBytesEx(MsgString *dst, const void *s, s32 len, BOOL a, u8 b) {

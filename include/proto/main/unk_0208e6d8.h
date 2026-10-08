@@ -6,13 +6,18 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
-#include "types.h"
 class TransitionCommIcon;
 class TransitionCommIconProc;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_TransitionCommIcon_RequestShow
+void TransitionCommIcon_RequestShow(u32 i);
+#endif
+#ifndef PROTO_LOCAL_TransitionCommIcon_RequestHide
+void TransitionCommIcon_RequestHide(u32 i);
 #endif
 #ifndef PROTO_LOCAL_TransitionCommIcon_Resume
 void TransitionCommIcon_Resume();
@@ -41,12 +46,6 @@ void TransitionCommIcon_Draw();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_TransitionCommIcon_RequestShow
-void TransitionCommIcon_RequestShow(u32 i);
-#endif
-#ifndef PROTO_LOCAL_TransitionCommIcon_RequestHide
-void TransitionCommIcon_RequestHide(u32 i);
-#endif
 #ifndef PROTO_LOCAL_TransitionCommIconProc_Create
 TransitionCommIconProc *TransitionCommIconProc_Create();
 #endif

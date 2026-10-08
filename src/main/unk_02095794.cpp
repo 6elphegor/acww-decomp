@@ -7,8 +7,6 @@
 #include "net/PlayerNetSync.h"
 #include "item/ItemPickSpec.h"
 #include "sys/ProcProfile.h"
-#define PROTO_LOCAL_PlayerSession_GetLastPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gPlayerSessionTable  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0206269c.h"
@@ -28,12 +26,6 @@
 #include "proto/main/unk_020a427c.h"
 
 
-
-
-
-
-
-
 inline BOOL Unk_0209579c_IsTwo(u8 v) {
     if (v == 2) return TRUE;
     return FALSE;
@@ -45,219 +37,10 @@ inline u16 Unk_02095f38_F(u32 v) {
 }
 
 extern CommManager *gCommManager;
-extern u32 sPlayerPosSyncVars[];
-extern u32 sPlayerAngleSyncVars[];
-extern u32 sPlayerStateSyncVars[];
-extern u8 sThrownBottleReturnOdds[];
-extern u8 gPlayerSessionTable[];
-extern u8 data_021e7f8c[];
-extern u8 data_021eceac[];
-extern u8 gU8None[];
-extern u8 data_020e1d68[];
-extern SaveTownStateView data_021ed150;
 
-extern "C" {
-}
-
-extern "C" {
-u32 func_02072970(CommManager *p, u32 v);
-}
-
-extern "C" {
-}
-
-extern "C" {
-u32 func_020729cc(CommManager *p, s32 v);
-}
-
-extern "C" {
-BOOL func_02072e44(CommManager *p);
-}
 
 extern "C" {
 s32 Scene_GetCurrent();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-ProcBase *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 *PlayerSession_GetLastPos(s32 idx);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_0208f1c0(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_02065578(void *p);
-}
-
-extern "C" {
-s32 func_0208f198(void *p);
-}
-
-extern "C" {
-s32 func_0208f15c(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-void func_0208f168(void *p);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-s32 func_02096e78(void *p);
-}
-
-extern "C" {
-void func_02096f10(void *p, s32 v);
-}
-
-extern "C" {
-TownBlockMap *TownBlockMap_Get();
-}
-
-extern "C" {
-void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-}
-
-extern "C" {
-void Town_GetUpdater();
-}
-
-extern "C" {
-s32 Town_WashUpBottle();
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-void *func_020986c8(void *a);
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
-}
-
-extern "C" {
 }
 
 inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
@@ -309,7 +92,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     if (Scene_GetCurrent() == 0x2e) goto ret1;
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f || Scene_GetCurrent() == 0xe) {
         if (SaveManager_IsGatePassed()) return TRUE;
-        ProcBase *rec = _ZN5Actor13findByProfileEjPS_(0x72, 0);
+        ProcBase *rec = (ProcBase *)Actor::findByProfile(0x72, NULL);
         if (rec == NULL) goto ret1;
         if (Unk_0209579c_IsTwo(rec->state)) goto ret1;
         if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
@@ -350,7 +133,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     i = 0;
     do {
         if (!(g)->isLocalSlot(i) && (g)->isSlotActive(i) && !PlayerActor_GetActor(i)) {
-            if (PlayerActor_GetSlotAction(&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
+            if (PlayerActor_GetSlotAction((u32 *)&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
                 la == Scene_GetCurrent() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
                 p2.x = lx1;
                 p2.y = 2;
@@ -362,10 +145,10 @@ BOOL RemotePlayerSpawner::onExecute() {
                 u8 *bp = PlayerSession_GetLastScene(i);
                 s32 *ip = PlayerSession_GetLastAction(i);
                 if (*bp == Scene_GetCurrent() && *ip != 0x93) {
-                    s32 *pp = PlayerSession_GetLastPos(i);
-                    p3.x = pp[0];
-                    p3.y = pp[1];
-                    p3.z = pp[2];
+                    VecFx32 *pp = PlayerSession_GetLastPos(i);
+                    p3.x = pp->x;
+                    p3.y = pp->y;
+                    p3.z = pp->z;
                     Unk_0209579c_Set(lr3, 0, *PlayerSession_GetLastAngle(i), 0);
                     PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
                     PlayerActor_Spawn(i, &p3, lr3, (*ip << 22) & 0x3fc00000);
@@ -377,10 +160,10 @@ BOOL RemotePlayerSpawner::onExecute() {
     j = 0;
     do {
         if (!(g)->isLocalSlot(j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
-            Actor *e = PlayerActor_GetActor(j);
+            Actor *e = (Actor *)PlayerActor_GetActor(j);
             if (e) {
                 if (!Unk_0209579c_IsTwo(((ProcBase *)e)->state)) {
-                    if (PlayerActor_GetSlotAction(&lv2, -1, j)) {
+                    if (PlayerActor_GetSlotAction((u32 *)&lv2, -1, j)) {
                         if (lv2 >= 0x93) {
                             ProcBase_RequestDelete(e);
                         } else if (PlayerActor_GetSlotPosXZ(&lb, &lx2, &ly2, -1, j)) {

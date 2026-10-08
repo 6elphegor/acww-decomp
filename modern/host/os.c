@@ -74,7 +74,7 @@ void host_irq_entry(void) {
 }
 int host_irq_ready(void) { return !sIrqDisabled && !sInIrq && host_irq_pending(); }
 
-// SIGALRM (hw.c): the game is spinning on memory that an interrupt handler changes (no I/O, no wait, so virtual
+// SIGVTALRM (hw.c): the game is spinning on memory that an interrupt handler changes (no I/O, no wait, so virtual
 // time stands still): let time pass and deliver what's due.
 int host_async_tick(void) {
     if (sIrqDisabled || sInIrq) return 0;

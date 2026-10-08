@@ -5,33 +5,18 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "talk/ArticleCacheEntry.h"
 #include "talk/MsgString.h"
+#include "talk/MsgString256.h"
 #include "talk/MsgStringBase.h"
-#include "types.h"
-class ArticleCacheEntry;
-class MsgString256;
 class StringBank;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_String_GetTabooScratch
-MsgString256 *String_GetTabooScratch(void);
 #endif
 #ifndef PROTO_LOCAL_String_IsNonNullChar
 BOOL String_IsNonNullChar(u32 x);
-#endif
-#ifndef PROTO_LOCAL_String_Load
-BOOL String_Load(MsgString *buf, u8 *key, const char *name);
-#endif
-#ifndef PROTO_LOCAL_String_LoadResolveAltText
-BOOL String_LoadResolveAltText(MsgString *buf, u8 *key, const char *name);
-#endif
-#ifndef PROTO_LOCAL_String_Load2d
-BOOL String_Load2d(MsgString *buf, u8 *key, const char *name);
-#endif
-#ifndef PROTO_LOCAL_String_SetSlot
-u8 String_SetSlot(u32 idx, MsgString *other);
 #endif
 #ifndef PROTO_LOCAL_Str_LenN
 s32 Str_LenN(const char *s, u32 max);
@@ -56,6 +41,30 @@ void Str_InsertThousandsSeparators(char *s, u32 size, s32 minRun);
 #endif
 #ifndef PROTO_LOCAL_Str_Reverse
 void Str_Reverse(char *s, u32 size);
+#endif
+#ifndef PROTO_LOCAL_String_CharEqualsIgnoreCase
+BOOL String_CharEqualsIgnoreCase(u32 a, u32 b);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_String_GetTabooScratch
+MsgString256 *String_GetTabooScratch(void);
+#endif
+#ifndef PROTO_LOCAL_String_Load
+BOOL String_Load(MsgString *buf, u8 *key, const char *name);
+#endif
+#ifndef PROTO_LOCAL_String_LoadResolveAltText
+BOOL String_LoadResolveAltText(MsgString *buf, u8 *key, const char *name);
+#endif
+#ifndef PROTO_LOCAL_String_Load2d
+BOOL String_Load2d(MsgString *buf, u8 *key, const char *name);
+#endif
+#ifndef PROTO_LOCAL_String_SetSlot
+u8 String_SetSlot(u32 idx, MsgString *other);
 #endif
 #ifndef PROTO_LOCAL_String_AppendUnitSuffix
 BOOL String_AppendUnitSuffix(MsgString *out, s32 val, s32 kind);
@@ -83,9 +92,6 @@ BOOL String_CensorTaboo(MsgString *buf);
 #endif
 #ifndef PROTO_LOCAL_String_GetArticle
 ArticleCacheEntry *String_GetArticle(u8 *key);
-#endif
-#ifndef PROTO_LOCAL_String_CharEqualsIgnoreCase
-BOOL String_CharEqualsIgnoreCase(u32 a, u32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_gStringBank

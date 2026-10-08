@@ -8,7 +8,6 @@
 #include "gfx/EffectSlot.h"
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/VecFx32.h"
-#include "types.h"
 class EffectManager;
 class EffectModelObj;
 #endif
@@ -16,14 +15,182 @@ class EffectModelObj;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_EffectCb_TintOnly
+s32 EffectCb_TintOnly(void *o);
+#endif
+#ifndef PROTO_LOCAL_Effect_EndDefault
+s32 Effect_EndDefault(s32 x);
+#endif
 #ifndef PROTO_LOCAL_EffectModel_InitDefault
 void EffectModel_InitDefault(void *o);
+#endif
+#ifndef PROTO_LOCAL_EffectKind07_InitEmitter0
+s32 EffectKind07_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind07_InitEmitter1
+s32 EffectKind07_InitEmitter1(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind09_InitEmitter0
+s32 EffectKind09_InitEmitter0(void *a);
 #endif
 #ifndef PROTO_LOCAL_EffectModel_InitUnitScale
 void EffectModel_InitUnitScale(void *o);
 #endif
+#ifndef PROTO_LOCAL_EffectKind13_InitEmitter0
+s32 EffectKind13_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind13_InitEmitter1
+s32 EffectKind13_InitEmitter1(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind13_UpdateEmitter0
+s32 EffectKind13_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind14_InitEmitter0B
+s32 EffectKind14_InitEmitter0B(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind14_InitEmitter2
+s32 EffectKind14_InitEmitter2(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind15_InitEmitter0
+s32 EffectKind15_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind15_InitEmitter2
+s32 EffectKind15_InitEmitter2(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind16_InitEmitter0A
+s32 EffectKind16_InitEmitter0A(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind16_InitModel
+s32 EffectKind16_InitModel(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind17_InitEmitter0A
+s32 EffectKind17_InitEmitter0A(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind17_InitModel
+s32 EffectKind17_InitModel(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind19_InitEmitter0A
+s32 EffectKind19_InitEmitter0A(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind19_InitModel
+s32 EffectKind19_InitModel(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind23_InitEmitter0
+s32 EffectKind23_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind24_InitEmitter0
+s32 EffectKind24_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind26_InitEmitter0
+s32 EffectKind26_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind2D_InitEmitter0
+s32 EffectKind2D_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind2E_InitEmitter0
+s32 EffectKind2E_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind2E_InitEmitter1
+s32 EffectKind2E_InitEmitter1(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind2E_InitEmitter2
+s32 EffectKind2E_InitEmitter2(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind31_InitEmitter0
+s32 EffectKind31_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind31_UpdateEmitter0
+s32 EffectKind31_UpdateEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind32_InitEmitter0
+void EffectKind32_InitEmitter0(u8 *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind33_InitEmitter0
+s32 EffectKind33_InitEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind33_UpdateEmitter0
+s32 EffectKind33_UpdateEmitter0(void *a);
+#endif
+#ifndef PROTO_LOCAL_EffectKind39_InitEmitter0
+s32 EffectKind39_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind39_UpdateEmitter0B
+s32 EffectKind39_UpdateEmitter0B(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind39_UpdateEmitter0A
+s32 EffectKind39_UpdateEmitter0A(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind3B_InitEmitter0
+s32 EffectKind3B_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind3B_UpdateEmitter0
+s32 EffectKind3B_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind3D_InitEmitter0
+s32 EffectKind3D_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind3F_InitEmitter0A
+void EffectKind3F_InitEmitter0A(s32 p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind3F_InitModel
+void EffectKind3F_InitModel(s32 p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind3F_UpdateEmitter0
+s32 EffectKind3F_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind40_InitEmitter0
+s32 EffectKind40_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind40_UpdateEmitter0
+s32 EffectKind40_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind41_InitEmitter0
+s32 EffectKind41_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind41_InitEmitter1
+s32 EffectKind41_InitEmitter1(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind41_InitEmitter2
+s32 EffectKind41_InitEmitter2(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind41_UpdateEmitter0
+s32 EffectKind41_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind41_UpdateEmitter1
+s32 EffectKind41_UpdateEmitter1(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind41_UpdateEmitter2
+s32 EffectKind41_UpdateEmitter2(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind49_InitEmitter0
+s32 EffectKind49_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind49_UpdateEmitter0
+s32 EffectKind49_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind4A_InitEmitter0
+s32 EffectKind4A_InitEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_EffectKind4A_UpdateEmitter0
+s32 EffectKind4A_UpdateEmitter0(void *p);
+#endif
+#ifndef PROTO_LOCAL_Effect_EndKind56
+void Effect_EndKind56(s32 id);
+#endif
+#ifndef PROTO_LOCAL_EffectKind5A_InitEmitter0
+s32 EffectKind5A_InitEmitter0(s32 x);
+#endif
+#ifndef PROTO_LOCAL_EffectKind5F_InitEmitter0
+s32 EffectKind5F_InitEmitter0(s32 x);
+#endif
+#ifndef PROTO_LOCAL_EffectKind60_InitEmitter0
+s32 EffectKind60_InitEmitter0(s32 x);
+#endif
 #ifndef PROTO_LOCAL_Effect_ResetAll
 void Effect_ResetAll();
+#endif
+#ifndef PROTO_LOCAL_Effect_End
+void Effect_End(s32 id);
 #endif
 #ifdef __cplusplus
 }
@@ -31,9 +198,6 @@ void Effect_ResetAll();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_EffectCb_TintOnly
-s32 EffectCb_TintOnly(void *o);
-#endif
 #ifndef PROTO_LOCAL_EffectCb_InitOneShot
 s32 EffectCb_InitOneShot(EffectSplEmitter *o);
 #endif
@@ -60,9 +224,6 @@ s32 EffectCb_InitOneShotOffset(EffectSplEmitter *o, VecFx32 *a, VecFx32 *b);
 #endif
 #ifndef PROTO_LOCAL_Effect_StartOneShot
 s32 Effect_StartOneShot(s32 p0, s32 p1, VecFx32 *p2, s16 *p3, s16 *e, const void *f);
-#endif
-#ifndef PROTO_LOCAL_Effect_EndDefault
-s32 Effect_EndDefault(s32 x);
 #endif
 #ifndef PROTO_LOCAL_EffectCb_CountdownTracked
 s32 EffectCb_CountdownTracked(EffectEmitterEntry *o);
@@ -100,20 +261,11 @@ s32 Effect_CreateKind03(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind06
 s32 Effect_CreateKind06(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind07_InitEmitter0
-s32 EffectKind07_InitEmitter0(void *a);
-#endif
-#ifndef PROTO_LOCAL_EffectKind07_InitEmitter1
-s32 EffectKind07_InitEmitter1(void *a);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind07
 s32 Effect_CreateKind07(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind08
 s32 Effect_CreateKind08(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind09_InitEmitter0
-s32 EffectKind09_InitEmitter0(void *a);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind09
 s32 Effect_CreateKind09(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -154,23 +306,8 @@ s32 Effect_CreateKind11(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind12
 s32 Effect_CreateKind12(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind13_InitEmitter0
-s32 EffectKind13_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind13_InitEmitter1
-s32 EffectKind13_InitEmitter1(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind13_UpdateEmitter0
-s32 EffectKind13_UpdateEmitter0(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind13
 s32 Effect_CreateKind13(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind14_InitEmitter0B
-s32 EffectKind14_InitEmitter0B(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind14_InitEmitter2
-s32 EffectKind14_InitEmitter2(void *p);
 #endif
 #ifndef PROTO_LOCAL_EffectKind14_InitEmitter0A
 void EffectKind14_InitEmitter0A(EffectEmitterEntry *p);
@@ -178,23 +315,11 @@ void EffectKind14_InitEmitter0A(EffectEmitterEntry *p);
 #ifndef PROTO_LOCAL_Effect_CreateKind14
 s32 Effect_CreateKind14(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind15_InitEmitter0
-s32 EffectKind15_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind15_InitEmitter2
-s32 EffectKind15_InitEmitter2(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind15
 s32 Effect_CreateKind15(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
 #ifndef PROTO_LOCAL_EffectKind16_InitEmitter0B
 void EffectKind16_InitEmitter0B(EffectEmitterEntry *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind16_InitEmitter0A
-s32 EffectKind16_InitEmitter0A(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind16_InitModel
-s32 EffectKind16_InitModel(void *p);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind16
 s32 Effect_CreateKind16(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -202,23 +327,11 @@ s32 Effect_CreateKind16(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_EffectKind17_InitEmitter0B
 void EffectKind17_InitEmitter0B(EffectEmitterEntry *p);
 #endif
-#ifndef PROTO_LOCAL_EffectKind17_InitEmitter0A
-s32 EffectKind17_InitEmitter0A(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind17_InitModel
-s32 EffectKind17_InitModel(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind17
 s32 Effect_CreateKind17(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
 #ifndef PROTO_LOCAL_EffectKind19_InitEmitter0B
 void EffectKind19_InitEmitter0B(EffectEmitterEntry *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind19_InitEmitter0A
-s32 EffectKind19_InitEmitter0A(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind19_InitModel
-s32 EffectKind19_InitModel(void *p);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind19
 s32 Effect_CreateKind19(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -265,14 +378,8 @@ s32 Effect_CreateKind21(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind22
 s32 Effect_CreateKind22(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind23_InitEmitter0
-s32 EffectKind23_InitEmitter0(void *a);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind23
 s32 Effect_CreateKind23(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind24_InitEmitter0
-s32 EffectKind24_InitEmitter0(void *a);
 #endif
 #ifndef PROTO_LOCAL_EffectKind24_InitModel
 void EffectKind24_InitModel(EffectModelObj *o);
@@ -285,9 +392,6 @@ s32 EffectKind25_UpdateEmitter0(EffectEmitterEntry *o);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind25
 s32 Effect_CreateKind25(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind26_InitEmitter0
-s32 EffectKind26_InitEmitter0(void *a);
 #endif
 #ifndef PROTO_LOCAL_EffectKind26_UpdateEmitter0
 s32 EffectKind26_UpdateEmitter0(EffectEmitterEntry *o);
@@ -340,20 +444,8 @@ void EffectKind2C_InitEmitter0A(EffectSplEmitter *o);
 #ifndef PROTO_LOCAL_Effect_CreateKind2C
 s32 Effect_CreateKind2C(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind2D_InitEmitter0
-s32 EffectKind2D_InitEmitter0(void *a);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind2D
 s32 Effect_CreateKind2D(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind2E_InitEmitter0
-s32 EffectKind2E_InitEmitter0(void *a);
-#endif
-#ifndef PROTO_LOCAL_EffectKind2E_InitEmitter1
-s32 EffectKind2E_InitEmitter1(void *a);
-#endif
-#ifndef PROTO_LOCAL_EffectKind2E_InitEmitter2
-s32 EffectKind2E_InitEmitter2(void *a);
 #endif
 #ifndef PROTO_LOCAL_EffectKind2E_Start
 s32 EffectKind2E_Start(s32 a, VecFx32 *b, s16 *c, s16 *d, s32 e);
@@ -367,26 +459,11 @@ s32 Effect_CreateKind2F(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind30
 s32 Effect_CreateKind30(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind31_InitEmitter0
-s32 EffectKind31_InitEmitter0(void *a);
-#endif
-#ifndef PROTO_LOCAL_EffectKind31_UpdateEmitter0
-s32 EffectKind31_UpdateEmitter0(void *a);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind31
 s32 Effect_CreateKind31(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind32_InitEmitter0
-void EffectKind32_InitEmitter0(u8 *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind32
 s32 Effect_CreateKind32(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind33_InitEmitter0
-s32 EffectKind33_InitEmitter0(void *a);
-#endif
-#ifndef PROTO_LOCAL_EffectKind33_UpdateEmitter0
-s32 EffectKind33_UpdateEmitter0(void *a);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind33
 s32 Effect_CreateKind33(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -442,15 +519,6 @@ s32 Effect_CreateKind37(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind38
 s32 Effect_CreateKind38(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind39_InitEmitter0
-s32 EffectKind39_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind39_UpdateEmitter0B
-s32 EffectKind39_UpdateEmitter0B(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind39_UpdateEmitter0A
-s32 EffectKind39_UpdateEmitter0A(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind39
 s32 Effect_CreateKind39(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
@@ -463,20 +531,11 @@ s32 EffectKind3A_UpdateEmitter0(EffectEmitterEntry *p);
 #ifndef PROTO_LOCAL_Effect_CreateKind3A
 s32 Effect_CreateKind3A(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind3B_InitEmitter0
-s32 EffectKind3B_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind3B_UpdateEmitter0
-s32 EffectKind3B_UpdateEmitter0(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind3B
 s32 Effect_CreateKind3B(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind3C
 s32 Effect_CreateKind3C(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind3D_InitEmitter0
-s32 EffectKind3D_InitEmitter0(void *p);
 #endif
 #ifndef PROTO_LOCAL_EffectKind3D_UpdateEmitter0
 s32 EffectKind3D_UpdateEmitter0(EffectEmitterEntry *p);
@@ -499,44 +558,11 @@ s32 Effect_CreateKind3E(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_EffectKind3F_InitEmitter0B
 void EffectKind3F_InitEmitter0B(EffectEmitterEntry *o);
 #endif
-#ifndef PROTO_LOCAL_EffectKind3F_InitEmitter0A
-void EffectKind3F_InitEmitter0A(s32 p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind3F_InitModel
-void EffectKind3F_InitModel(s32 p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind3F_UpdateEmitter0
-s32 EffectKind3F_UpdateEmitter0(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind3F
 s32 Effect_CreateKind3F(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind40_InitEmitter0
-s32 EffectKind40_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind40_UpdateEmitter0
-s32 EffectKind40_UpdateEmitter0(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind40
 s32 Effect_CreateKind40(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind41_InitEmitter0
-s32 EffectKind41_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind41_InitEmitter1
-s32 EffectKind41_InitEmitter1(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind41_InitEmitter2
-s32 EffectKind41_InitEmitter2(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind41_UpdateEmitter0
-s32 EffectKind41_UpdateEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind41_UpdateEmitter1
-s32 EffectKind41_UpdateEmitter1(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind41_UpdateEmitter2
-s32 EffectKind41_UpdateEmitter2(void *p);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind41
 s32 Effect_CreateKind41(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -562,20 +588,8 @@ s32 Effect_CreateKind47(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind48
 s32 Effect_CreateKind48(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind49_InitEmitter0
-s32 EffectKind49_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind49_UpdateEmitter0
-s32 EffectKind49_UpdateEmitter0(void *p);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind49
 s32 Effect_CreateKind49(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind4A_InitEmitter0
-s32 EffectKind4A_InitEmitter0(void *p);
-#endif
-#ifndef PROTO_LOCAL_EffectKind4A_UpdateEmitter0
-s32 EffectKind4A_UpdateEmitter0(void *p);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind4A
 s32 Effect_CreateKind4A(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -640,9 +654,6 @@ s32 Effect_CreateKind55(s32 p0, VecFx32 *p1, s16 *p2, s16 *p3);
 #ifndef PROTO_LOCAL_Effect_CreateKind56
 s32 Effect_CreateKind56(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_Effect_EndKind56
-void Effect_EndKind56(s32 id);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind57
 s32 Effect_CreateKind57(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
@@ -651,9 +662,6 @@ s32 Effect_CreateKind58(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind59
 s32 Effect_CreateKind59(s32 p0, VecFx32 *p1, s16 *p2, s16 *p3);
-#endif
-#ifndef PROTO_LOCAL_EffectKind5A_InitEmitter0
-s32 EffectKind5A_InitEmitter0(s32 x);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind5A
 s32 Effect_CreateKind5A(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -670,14 +678,8 @@ s32 Effect_CreateKind5D(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #ifndef PROTO_LOCAL_Effect_CreateKind5E
 s32 Effect_CreateKind5E(s32 a, VecFx32 *b, s16 *c, s16 *d);
 #endif
-#ifndef PROTO_LOCAL_EffectKind5F_InitEmitter0
-s32 EffectKind5F_InitEmitter0(s32 x);
-#endif
 #ifndef PROTO_LOCAL_Effect_CreateKind5F
 s32 Effect_CreateKind5F(s32 a, VecFx32 *b, s16 *c, s16 *d);
-#endif
-#ifndef PROTO_LOCAL_EffectKind60_InitEmitter0
-s32 EffectKind60_InitEmitter0(s32 x);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateKind60
 s32 Effect_CreateKind60(s32 a, VecFx32 *b, s16 *c, s16 *d);
@@ -702,9 +704,6 @@ s32 Effect_Create(u32 kind, VecFx32 *a, s16 *b, s16 *c);
 #endif
 #ifndef PROTO_LOCAL_Effect_CreateWithParam
 s32 Effect_CreateWithParam(u32 kind, s16 v0, VecFx32 *a, s16 *b);
-#endif
-#ifndef PROTO_LOCAL_Effect_End
-void Effect_End(s32 id);
 #endif
 #ifndef PROTO_LOCAL_Effect_SetPosition
 void Effect_SetPosition(s32 id, VecFx32 *pos, s16 *a, s16 *b);

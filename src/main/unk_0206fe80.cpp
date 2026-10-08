@@ -9,21 +9,17 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e0498  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e049c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_020637e4.h"
 #include "proto/main/unk_0206fe80.h"
 #include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b0e60.h"
 
 
-extern u32 data_020e0498;
-extern u32 data_020e049c;
 
 extern "C" {
 extern u8 gSavePlayers[];
@@ -37,7 +33,6 @@ extern s32 (*sPatternSourceGetters[])(s32);
 
 s32 FX_Div(s32 a, s32 b);
 void Clock_GetDateTime(void *p);
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
 s32 func_02071b00(void *p, s32 i);
 void func_02056e88(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void *func_020986d4(void *p);
@@ -104,15 +99,15 @@ u8 *MuseumData::getEntry(u16 *id, s32 *out) {
     }
     if (v >= 0x3894 && v <= 0x38e3) {
         if (out) *out = (v >= 0x3894 && v <= 0x38e3) ? (v - 0x3894) >> 2 : -1;
-        return HOST_AT(this, 0x55, paintingDonors[0], 0);
+        return paintingDonors;
     }
     if (v >= 0x12b0 && v <= 0x12e7) {
         if (out) *out = (v >= 0x12b0 && v <= 0x12e7) ? v - 0x12b0 : -1;
-        return HOST_AT(this, 0x38, insectDonors[0], 0);
+        return insectDonors;
     }
     if (v >= 0x12e8 && v <= 0x131f) {
         if (out) *out = (v >= 0x12e8 && v <= 0x131f) ? v - 0x12e8 : -1;
-        return HOST_AT(this, 0x1b, fishDonors[0], 0);
+        return fishDonors;
     }
     return 0;
 }
@@ -164,7 +159,8 @@ BOOL MuseumData::sendCompletionLetters() {
         if (p && ((PlayerData *)(p))->isUsed()) {
             Letter big;
             b = 0;
-            Letter_ComposeFromMail(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, ((PlayerData *)(p))->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c,
+                                   ((PlayerData *)(p))->getPlayerId());
             ((LetterView *)(&big))->setPresent(0x3870, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&big)) r = TRUE;
         }

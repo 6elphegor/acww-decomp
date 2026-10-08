@@ -6,10 +6,7 @@
 #include "game/Unk_02037674_V3.h"
 #include "game/Unk_021e5890_T.h"
 #include "gfx/BgModelCache.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sNewYearDayDate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sNewYearEveDate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sNewYearEveTime  // declared below: the shared prototype conflicts with the calls here
+#include "town/TownMap.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02133d04.h"
@@ -23,12 +20,8 @@ extern "C" const u32 data_020c8b9c;
 extern "C" const u32 data_020c8ba0;
 
 extern "C" {
-s32 Clock_GetYear(void);
-void Clock_GetDayMonth(u16 *);
-void Clock_GetMinuteHour(u16 *);
-s32 Clock_GetSecond(void);
-s32 NNS_FndMountArchive(void *, const void *, void *);
-void NNS_FndUnmountArchive(void *);
+s32 NNS_FndMountArchive(NNSFndArchive *, const void *, void *);
+void NNS_FndUnmountArchive(NNSFndArchive *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_021065dc(void *);
 void *func_021065f8(void *, s32);
@@ -42,20 +35,14 @@ void *NNS_G3dGetTex(void *);
 void Gfx3d_LoadTexAndPltt(void *, s32);
 void *Gfx3d_CopyTex(void *, void *);
 void MI_CpuCopy8(void *, void *, u32);
-void *_ZN7TownMap12getGrassTypeEv(void *);
-extern u16 sNewYearEveDate, sNewYearDayDate, sNewYearEveTime;
-extern u16 sHourlyBgmIds[];
-extern void *gCurrentHeap;
 extern Unk_021e5890_T data_021e5890;}
 
 extern "C" {
-extern char gSaveTownMap[];
+extern TownMap gSaveTownMap;
 s32 Scene_GetCurrent(void);
-void _ZN7TownMap18updateGroundSeasonEv(char *);
 }
 class BgModelCacheObj;
 extern const u8 sBgHeapSizeByRoom[];
-
 
 
 class BgModelCacheObj {
@@ -84,9 +71,7 @@ public:
 };
 
 
-
 // ---- BgModelCache ----
-
 
 
 extern "C" void *BgModel_LoadFile(const char *a, u32 *b) {
@@ -136,7 +121,7 @@ void BgModelCacheObj::clearEntries() {
 BOOL BgModelCacheObj::setup(u32 flag) {
     s32 t = Scene_GetCurrent();
     if (t == 0x2c) {
-        _ZN7TownMap18updateGroundSeasonEv(gSaveTownMap);
+        gSaveTownMap.updateGroundSeason();
     }
     clearEntries();
     withAnims = flag;
@@ -160,7 +145,7 @@ BOOL BgModelCacheObj::setup(u32 flag) {
 
 extern "C" s32 BgModel_GetGrassType(void *)
 {
-    return (s32)_ZN7TownMap12getGrassTypeEv(gSaveTownMap);
+    return gSaveTownMap.getGrassType();
 }
 
 void BgModelCache::loadGroundTexture()
@@ -182,31 +167,31 @@ void BgModelCache::loadGroundTexture()
 
 void BgModelCache::loadGroundAnims()
 {
-    u8 file[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8;
+    NNSFndArchive file;
     void *p = BgModel_LoadFile("/bg/grd_anm.arc", 0);
-    if (NNS_FndMountArchive(file, "BG", p)) {
+    if (NNS_FndMountArchive(&file, "BG", p)) {
         groundMatAnm = func_02106634(func_02106618(NNS_FndGetArchiveFileByName("BG:a/grd_set.nsbma")), 0);
         groundTexSrtAnm = func_02106670(func_02106654(NNS_FndGetArchiveFileByName("BG:a/grd_set.nsbta")), 0);
         riverPatAnm = func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("BG:a/riv.nsbtp")), 0);
         riverPatTex = NNS_G3dGetTex(NNS_FndGetArchiveFileByName("BG:a/riv_itp.nsbtx"));
         beBPatAnm = func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("BG:a/beB.nsbtp")), 0);
         beBPatTex = NNS_G3dGetTex(NNS_FndGetArchiveFileByName("BG:a/beB_itp.nsbtx"));
-        NNS_FndUnmountArchive(file);
+        NNS_FndUnmountArchive(&file);
     }
 }
 
 void *BgModel_LoadBcl(s32 id, void *heap)
 {
     char buf[0x20];
-    u8 file[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8;
+    NNSFndArchive file;
     void *p, *r, *t;
     Str_SPrintf(buf, "/bg/a%d/%04x.arc", id >> 4, id);
     p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
     r = 0;
-    if (NNS_FndMountArchive(file, "BG", p)) {
+    if (NNS_FndMountArchive(&file, "BG", p)) {
         t = NNS_FndGetArchiveFileByName("BG:a/bcl/bcl0");
-        NNS_FndUnmountArchive(file);
-        r = Heap_Alloc(heap, 0x180);
+        NNS_FndUnmountArchive(&file);
+        r = Heap_Alloc((Heap *)heap, 0x180);
         MI_CpuCopy8(t, r, 0x180);
     }
     if (p) {
@@ -250,7 +235,7 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
 {
     void *heap = gBgHeap;
     BgAcreModel *e = acres;
-    struct { s32 tmp; char buf[0x20]; u8 file[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8; } l;
+    struct { void *tmp; char buf[0x20]; NNSFndArchive file; } l;
     u32 i;
     for (i = 0; i < 0x1f; e++, i++) {
         if (e->arc == 0) {
@@ -258,7 +243,7 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
             void *p;
             Str_SPrintf(l.buf, "/bg/a%d/%04x.arc", hi, id);
             e->arc = BgModel_LoadFile(l.buf, &e->arcSize);
-            if (NNS_FndMountArchive(l.file, "BG", e->arc)) {
+            if (NNS_FndMountArchive(&l.file, "BG", e->arc)) {
                 u8 *q = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName("BG:a/bmd/bmd0"));
                 e->mdl = q + *(s32 *)(q + *(u16 *)(q + 0xe) + 0xc);
                 e->bcl = NNS_FndGetArchiveFileByName("BG:a/bcl/bcl0");
@@ -280,15 +265,15 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
                     e->mgt = (u8 *)p + 2;
                     e->mgtCount = *(s16 *)p;
                 }
-                NNS_FndUnmountArchive(l.file);
+                NNS_FndUnmountArchive(&l.file);
             }
             if (((id & 0xf000) >> 12) == 1) {
                 Str_SPrintf(l.buf, "/bg/t%d/%04x.nsbtx", hi, id);
                 p = File_LoadAlloc(l.buf, gCurrentHeap, -4, 0);
                 if (p) {
-                    l.tmp = (s32)NNS_G3dGetTex(p);
-                    Gfx3d_LoadTexAndPltt((void *)l.tmp, 0);
-                    e->tex = Gfx3d_CopyTex((void *)l.tmp, heap);
+                    l.tmp = NNS_G3dGetTex(p);
+                    Gfx3d_LoadTexAndPltt(l.tmp, 0);
+                    e->tex = Gfx3d_CopyTex(l.tmp, heap);
                     if (p) {
                         Mem_Free(p);
                     }

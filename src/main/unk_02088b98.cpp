@@ -13,14 +13,13 @@
 #include "actor/ActorCollider.h"
 #include "actor/Actor.h"
 #include "gfx/SpriteAnim.h"
-#define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02088b98.h"
 
 // A bss word of this file, used by other files through its address.
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
 // size order (linkprep check); the original file is this one or another file between those neighbours.
-extern "C" { extern u32 data_021ce63c; }
-u32 data_021ce63c;
+#include "game/BugNetTarget.h"
+BugNetTarget *data_021ce63c;  // the bug-net targets of the frame (BugNetTarget::submit)
 
 
 
