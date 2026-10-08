@@ -14,7 +14,7 @@ values (or ACWW_GUARDS_ALT, another fill for a range of guards) that behave diff
 
 Merged constants (.rodata.str*, .rodata.cst*) are left without guards (the linker merges them).
 
-Usage: host_guards.py <map> <out.ld> <out.c> [--guard N]
+Usage: host_guards.py <map> <out.ld> <out.c> [--guard N] [--only LO-HI]
 """
 import argparse
 import re
@@ -66,7 +66,11 @@ def main():
     ap.add_argument("out_ld")
     ap.add_argument("out_c")
     ap.add_argument("--guard", type=int, default=64)
+    ap.add_argument("--only", metavar="LO-HI",
+                    help="guards only after the variables LO..HI-1 (in map order): bisecting a layout dependence")
     a = ap.parse_args()
+    lo, hi = (int(x) for x in a.only.split("-")) if a.only else (0, 1 << 30)
+    n = 0
     entries = parse_map(a.map)
     seen = set()
     body = {s: [] for s in OUT_SECTIONS}
@@ -80,6 +84,9 @@ def main():
             continue  # (placed by the catch-all lines)
         body[osec].append(f"        {f}({isec})")
         if size and osec in KIND:
+            n += 1
+            if not lo <= n - 1 < hi:
+                continue
             i = len(guards)
             guards.append((i, KIND[osec], var_name(isec), size, f))
             body[osec].append(f"        __acww_guard_{i} = .; . += {a.guard};")
