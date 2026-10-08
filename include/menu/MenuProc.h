@@ -2,18 +2,10 @@
 #define MENU_MENUPROC_H
 
 #include "types.h"
+#include "sys/ListNode.h"
 #include "sys/ProcBase.h"
 #include "sys/KeyRepeat.h"
 #include "menu/MenuSlide.h"
-#include "sys/ListNode.h"
-
-class MenuProc;
-
-// A menu's entry in the open-menu list (sOpenMenuList, src/main/unk_0206e54c.cpp): the node, then its menu
-struct MenuProcLink {
-    ListNode node;
-    MenuProc *owner;
-};
 
 // Library base class of the menu overlays ov090-ov150 (vtable 0x022044e4, size 0x94). Defined in
 // src/ov002/unk_ov002_02200840.cpp. onExecute runs the exec* hook of the current phase (slots 0x44-0x58).
@@ -65,7 +57,8 @@ public:
 
     /* 0x50 */ KeyRepeat keyRepeat;         // vptr; the repeat state (KeyRepeatView) continues to 0x64
     /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ MenuProcLink openMenu;
+    /* 0x64 */ ListNode openMenuLink;      // in the open menus' list (MenuCtrl_AddOpenMenu / MenuCtrl_RemoveOpenMenu)
+    /* 0x6c */ MenuProc *openMenuOwner;    // follows the link: MenuCtrl_RemoveOpenMenu reaches the menu through it
     /* 0x70 */ MenuSlide slide;
     /* 0x8c */ u8 transitionState;
     /* 0x8d */ u8 mainState;

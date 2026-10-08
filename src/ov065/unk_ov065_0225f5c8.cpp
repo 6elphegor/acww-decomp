@@ -1,11 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "uptr.h"
+#include "sys/OSMessageQueue.h"
 #include "net/SockUdpDropCounters.h"
 #include "net/SockCoreCommand.h"
 #include "net/SockCoreConfig.h"
 #include "net/SockCoreSocket.h"
-#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSockDefaultSocket  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/ov065/unk_ov065_0225f5c8.h"
@@ -44,7 +44,6 @@ typedef SockCoreCommand Msg;
 extern "C" {
 // own data (other TUs of the overlay)
 extern SockCoreConfig *sSockCoreConfig;
-extern Obj *sSockDefaultSocket;
 extern SockCreateParams sSockTcpParams;
 
 // main module
@@ -53,7 +52,6 @@ void OS_RestoreInterrupts(u32 v);
 void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
 s32 OS_InitMessageQueue(void *, void *, s32);
-void OS_InitMutex(void *);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
@@ -72,7 +70,7 @@ void IpSoc_SetUdp(void);
 void IpSoc_SetUdpCallback(void *);
 void IpSoc_Bind(u32, u32, void *);
 void IpSoc_TcpListen(void);
-void *IpSoc_GetPeer(u16 *, s32 *);
+u32 IpSoc_GetPeer(u16 *, u32 *);
 s32 IpSoc_TcpConnect(void);
 
 // this TU
@@ -82,17 +80,17 @@ s32 SockCore_Connect(Sess *s, u16 a, u32 b);
 s32 SockCore_PostConnect(Sess *s);
 s32 SockCore_CmdConnect(Job *j);
 s32 SockCore_Listen(Obj *);
-s32 SockCore_Accept(Obj *, u32 *, u32 *);
+sptr SockCore_Accept(Obj *, u32 *, u32 *);
 s32 SockCore_StartAccept(Obj *, u32 *, u32 *);
 s32 SockCore_CmdAccept(Msg *);
-s32 SockCore_Create(SockCreateParams *);
+sptr SockCore_Create(SockCreateParams *);
 s32 SockCore_CmdOpen(Msg *);
 Obj *SockCore_Alloc(SockCreateParams *);
 u32 SockCore_CalcSize(SockCreateParams *);
 u32 SockCore_CalcThreadAreaSize(SockThreadParams *);
 u8 *SockCore_InitLayout(Obj *, SockCreateParams *);
-u8 *SockCore_CarveBuffer(u8 *, SockBuffer *, u32);
-u32 SockCore_StartCommandThread(void *, void *, SockThreadParams *);
+u8 *SockCore_CarveBuffer(u8 *, u8 **, u32);
+u8 *SockCore_StartCommandThread(u8 *, OSMessageQueue *, OSThread *, OSMutex *, void *, SockThreadParams *);
 }
 
 static inline BOOL Unk_ov065_0225f8dc_IsOpen(Obj *o)
@@ -230,8 +228,7 @@ s32 SockCore_Connect(Sess *s, u16 a, u32 b)
 
 s32 SockCore_PostConnect(Sess *s)
 {
-    u32 r0 = (u32)SockCore_AllocMsg((void *)SockCore_CmdConnect, (Obj *)s, s->blocking);
-    Job *j = (Job *)r0;
+    Job *j = (Job *)SockCore_AllocMsg((void *)SockCore_CmdConnect, (Obj *)s, s->blocking);
     if (j == NULL) {
         return -0x21;
     }
@@ -284,9 +281,10 @@ s32 SockCore_Listen(Obj *o)
     return -6;
 }
 
-s32 SockCore_Accept(Obj *o, u32 *x, u32 *y)
+// the handle of the accepting socket, or a negative error
+sptr SockCore_Accept(Obj *o, u32 *x, u32 *y)
 {
-    s32 h;
+    sptr h;
     if (SockCore_IsInvalidHandle(o) != 0) {
         return -0x1c;
     }
@@ -304,7 +302,7 @@ s32 SockCore_Accept(Obj *o, u32 *x, u32 *y)
     }
     h = SockCore_Create(&sSockTcpParams);
     if (h >= 0) {
-        s32 r = SockCore_Bind((Sess *)h, o->boundPort);
+        sptr r = SockCore_Bind((Sess *)h, o->boundPort);
         if (r >= 0) {
             r = SockCore_StartAccept((Obj *)h, x, y);
             if (r >= 0) {
@@ -352,13 +350,13 @@ s32 SockCore_CmdAccept(Msg *m)
     Obj *o = m->sock;
     SockRecvPipe *s = o->recvPipe;
     u16 a;
-    s32 b;
+    u32 b;
     s32 r;
     OS_LockMutex(&s->mutex);
     IpSoc_Bind(m->localPort, 0, 0);
     IpSoc_TcpListen();
     s->pos = 0;
-    r = (s32)IpSoc_GetPeer(&a, &b);
+    r = IpSoc_GetPeer(&a, &b);
     *(u16 *)m->outPort = a;
     *(s32 *)m->outAddr = r;
     o->flags = o->flags | 4;
@@ -366,14 +364,15 @@ s32 SockCore_CmdAccept(Msg *m)
     return 0;
 }
 
-s32 SockCore_Create(SockCreateParams *p)
+// the handle: the socket, or a negative error
+sptr SockCore_Create(SockCreateParams *p)
 {
     Obj *o = SockCore_Alloc(p);
     if (o == NULL) {
         return -0x31;
     }
     SockCore_ExecCommand(o, SockCore_AllocMsg((void *)SockCore_CmdOpen, o, 1));
-    return (s32)o;
+    return (sptr)o;
 }
 
 s32 SockCore_CmdOpen(Msg *m)
@@ -419,15 +418,15 @@ Obj *SockCore_Alloc(SockCreateParams *p)
 
 u32 SockCore_CalcSize(SockCreateParams *p)
 {
-    u32 sz = 0x80;
+    u32 sz = sizeof(SockCoreSocket);
     if (p->rxBufSize != 0) {
-        sz += 0x114;
+        sz += sizeof(SockRecvPipe);
         sz += SockCore_Align4(p->rxBufSize);
         sz += SockCore_Align4(p->rxAuxBufSize);
         sz += SockCore_CalcThreadAreaSize(&p->recvThread);
     }
     if (p->txBufSize != 0) {
-        sz += 0x110;
+        sz += sizeof(SockSendPipe);
         sz += SockCore_Align4(p->txBufSize);
         sz += SockCore_Align4(p->pendingTxBufSize);
         sz += SockCore_Align4(p->sendRingSize);
@@ -438,7 +437,7 @@ u32 SockCore_CalcSize(SockCreateParams *p)
 
 u32 SockCore_CalcThreadAreaSize(SockThreadParams *t)
 {
-    u32 a = SockCore_Align4(t->msgQueueSize << 2);
+    u32 a = SockCore_Align4(t->msgQueueSize * sizeof(OSMessage));
     return a + SockCore_Align4(t->stackSize);
 }
 
@@ -454,9 +453,11 @@ u8 *SockCore_InitLayout(Obj *o, SockCreateParams *p)
         s1 = (SockRecvPipe *)cur;
         o->recvPipe = s1;
         s1->limit = p->rxConsumeLimit;
-        cur = (u8 *)SockCore_StartCommandThread(s1 + 1, s1, &p->recvThread);
-        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->rxBufSize, p->rxBufSize);
-        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->rxAuxBufSize, p->rxAuxBufSize);
+        cur = SockCore_StartCommandThread((u8 *)(s1 + 1), &s1->msgQueue, &s1->thread, &s1->mutex, s1, &p->recvThread);
+        cur = SockCore_CarveBuffer(cur, &o->rxBuf, p->rxBufSize);
+        o->rxBufSize = p->rxBufSize;
+        cur = SockCore_CarveBuffer(cur, &o->rxAuxBuf, p->rxAuxBufSize);
+        o->rxAuxBufSize = p->rxAuxBufSize;
         s1->cap = p->udpQueueCap;
         s1->waitQueue.head = s1->waitQueue.tail = 0;
     }
@@ -464,10 +465,13 @@ u8 *SockCore_InitLayout(Obj *o, SockCreateParams *p)
         s2 = (SockSendPipe *)cur;
         o->sendPipe = s2;
         s2->owner = o;
-        cur = (u8 *)SockCore_StartCommandThread(s2 + 1, s2, &p->sendThread);
-        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->txBufSize, p->txBufSize);
-        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->pendingTxBufSize, p->pendingTxBufSize);
-        cur = SockCore_CarveBuffer(cur, &s2->ring, p->sendRingSize);
+        cur = SockCore_StartCommandThread((u8 *)(s2 + 1), &s2->msgQueue, &s2->thread, &s2->mutex, s2, &p->sendThread);
+        cur = SockCore_CarveBuffer(cur, &o->txBuf, p->txBufSize);
+        o->txBufSize = p->txBufSize;
+        cur = SockCore_CarveBuffer(cur, &o->pendingTx, p->pendingTxBufSize);
+        o->pendingTxBufSize = p->pendingTxBufSize;
+        cur = SockCore_CarveBuffer(cur, &s2->ring.buf, p->sendRingSize);
+        s2->ring.size = p->sendRingSize;
         s2->spaceWaitQueue.head = s2->spaceWaitQueue.tail = 0;
     } else {
         o->sendPipe = sSockDefaultSocket->sendPipe;
@@ -475,24 +479,26 @@ u8 *SockCore_InitLayout(Obj *o, SockCreateParams *p)
     return cur;
 }
 
-u8 *SockCore_CarveBuffer(u8 *base, SockBuffer *dst, u32 n)
+// the next n bytes from base (NULL if n is 0) to *buf; returns the area after them
+u8 *SockCore_CarveBuffer(u8 *base, u8 **buf, u32 n)
 {
     u8 *v = base;
     if (n == 0) {
         v = NULL;
     }
-    dst->buf = v;
-    dst->size = n;
+    *buf = v;
     return base + SockCore_Align4(n);
 }
 
-u32 SockCore_StartCommandThread(void *a, void *b, SockThreadParams *c)
+// the command thread of a pipe: its message array and stack at area (SockCore_CalcThreadAreaSize bytes); returns the
+// area after them
+u8 *SockCore_StartCommandThread(u8 *area, OSMessageQueue *queue, OSThread *thread, OSMutex *mutex, void *pipe, SockThreadParams *c)
 {
-    u32 r = (u32)a + SockCore_CalcThreadAreaSize(c);
-    OS_InitMessageQueue(b, a, c->msgQueueSize);
-    OS_InitMutex((u8 *)b + 0xe0);
-    OS_CreateThread((u8 *)b + 0x20, (void *)SockCore_CommandThreadMain, b, (void *)r, c->stackSize, c->priority);
-    OS_WakeupThreadDirect((u8 *)b + 0x20);
+    u8 *r = area + SockCore_CalcThreadAreaSize(c);
+    OS_InitMessageQueue(queue, area, c->msgQueueSize);
+    OS_InitMutex(mutex);
+    OS_CreateThread(thread, (void *)SockCore_CommandThreadMain, pipe, r, c->stackSize, c->priority);
+    OS_WakeupThreadDirect(thread);
     return r;
 }
 }

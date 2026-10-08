@@ -5,6 +5,7 @@
 
 // SHA-1 context of the SSL code (SslSha1_*, src/ov065/unk_ov065_0226795c.cpp).
 
+typedef struct SslSha1Context SslSha1Context;
 struct SslSha1Context {
     /* 0x00 */ u32 st[5];
     /* 0x14 */ u32 hi;

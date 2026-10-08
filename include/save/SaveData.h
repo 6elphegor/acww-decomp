@@ -2,12 +2,15 @@
 #define SAVE_SAVEDATA_H
 
 #include "types.h"
+#include "game/WeatherRecord.h"
+#include "save/SaveRecord4.h"
+#include "town/TownState.h"
 
 // Game-wide save state (0x15fe0 bytes, one global gSaveData at 0x021d7350 constructed by __sinit): every
 // data_021d73xx..gSaveFooter label of symbols.txt is a member of it. gSaveData and the constructor are in
 // src/main/unk_0209d70c.cpp; the setup modes 05/06/Loaded/NoSave in src/main/unk_0209d81c.cpp; the destructor and the
-// other members in src/main/unk_0209dc94.cpp. The sub-records are still opaque byte blocks (their classes are
-// constructed through their mangled symbols).
+// other members in src/main/unk_0209dc94.cpp. Most sub-records are still byte blocks their classes are constructed in
+// (the classes have constructors or are declared by other units as views).
 
 
 struct SaveData {
@@ -57,31 +60,42 @@ struct SaveData {
     /* 0x15e18 */ u8 eventWeekSlots[0x8];
     /* 0x15e20 */ u8 unk_15e20[0x4];
     /* 0x15e24 */ u8 unk_15e24[0x30];
-    /* 0x15e54 */ u8 townState[0xc];
-    /* 0x15e60 */ u8 bbsPelicanUsed[0xa]; // the pelican notices posted (TownBbs_PostPelicanNotice)
-    /* 0x15e6a */ u8 bbsSloganUsed[0xb]; // the slogans posted (TownBbs_PostSlogan)
-    /* 0x15e75 */ u8 unk_15e75[0x3];
-    /* 0x15e78 */ u8 townEvents[0x30];
-    /* 0x15ea8 */ u8 townEventDate[0x14];
-    /* 0x15ebc */ u8 unk_15ebc[0x4];
+    /* 0x15e54 */ TownState townState; // with the bulletin board's used notices / slogans and the town events
     /* 0x15ec0 */ u8 lostAndFound[0x1e];
     /* 0x15ede */ u8 recycleBin[0x1e];
     /* 0x15efc */ u8 contestRecord[0x38];
     /* 0x15f34 */ u8 reddLastSale[0x18];
     /* 0x15f4c */ u8 turnipMarket[0x1a];
-    /* 0x15f66 */ u8 weather[0xa];
+    /* 0x15f66 */ WeatherRecord weather;
+    /* 0x15f6e */ u8 unk_15f6e[0x2];
     /* 0x15f70 */ u8 reddShop[0x10];
     /* 0x15f80 */ u8 unk_15f80[0x4];
     /* 0x15f84 */ u8 ableShop[0x12];
     /* 0x15f96 */ u8 snowmen[0x12];
-    /* 0x15fa8 */ u8 townTune[0x8];
+    /* 0x15fa8 */ s64 townTune; // the packed melody (Melody_SetPacked)
     /* 0x15fb0 */ u8 happyRoomDate[0x4];
     /* 0x15fb4 */ u8 clockOffset[0x8];
     /* 0x15fbc */ u8 itemClassOrders[0x9];
     /* 0x15fc5 */ u8 unk_15fc5[0x5];
     /* 0x15fca */ u8 lostChild[0xe];
     /* 0x15fd8 */ u32 flags[1]; // testFlag / setFlag / clearFlag bits
-    /* 0x15fdc */ u8 footer[0x4];
+    /* 0x15fdc */ SaveRecord4 footer;
 };
+
+// The save image: the same bytes on every host (members are plain data; records with behaviour are constructed in
+// their blocks and checked against them where they are defined).
+static_assert(sizeof(SaveData) == 0x15fe0 && __alignof__(SaveData) == 4, "SaveData: DS save layout");
+static_assert(__builtin_offsetof(SaveData, players) == 0xc, "SaveData::players");
+static_assert(__builtin_offsetof(SaveData, villagers) == 0x8a3c, "SaveData::villagers");
+static_assert(__builtin_offsetof(SaveData, townMap) == 0xc330, "SaveData::townMap");
+static_assert(__builtin_offsetof(SaveData, house) == 0xe558, "SaveData::house");
+static_assert(__builtin_offsetof(SaveData, mailboxes) == 0x1200c, "SaveData::mailboxes");
+static_assert(__builtin_offsetof(SaveData, letterOutbox) == 0x1463c, "SaveData::letterOutbox");
+static_assert(__builtin_offsetof(SaveData, townState) == 0x15e54, "SaveData::townState");
+static_assert(__builtin_offsetof(SaveData, lostAndFound) == 0x15ec0, "SaveData::lostAndFound");
+static_assert(__builtin_offsetof(SaveData, weather) == 0x15f66, "SaveData::weather");
+static_assert(__builtin_offsetof(SaveData, townTune) == 0x15fa8, "SaveData::townTune");
+static_assert(__builtin_offsetof(SaveData, flags) == 0x15fd8, "SaveData::flags");
+static_assert(__builtin_offsetof(SaveData, footer) == 0x15fdc, "SaveData::footer");
 
 #endif // SAVE_SAVEDATA_H

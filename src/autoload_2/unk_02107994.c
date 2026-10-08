@@ -7,8 +7,11 @@ typedef short s16;
 typedef int BOOL;
 #define NULL 0
 
+// NNSG3dAnmObj / NNSG3dMatAnmResult by their members (include/nnsys/g3d_rt.h)
+#include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_02104000.h"
+#include "proto/autoload_2/unk_02107994.h"
 
-extern u32 data_0213bcc0;
 extern void MIi_CpuClear16(u16 data, void *dest, u32 size);
 extern s32 NNS_G3dGetResDictIdxByName(void *dict, void *name);
 extern s32 GetTexSRTAnmVectorVal_(u8 *base, u32 info, u32 offs, u32 frame);
@@ -16,13 +19,13 @@ extern u32 GetTexSRTAnmSinCosVal_(u8 *base, u32 info, u32 offs, u32 frame);
 
 
 // NNS g3d (NNSi_G3dAnmCalcMatAnm-like): evaluate material SRT animation at a frame into the result (flag bits 1 scale==1, 2 rot==0, 4 trans==0)
-void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, u32 *out)
+void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, G3dMatAnmResult *out)
 {
     u8 *base = res + 8;
     u32 off = *(u16 *)(res + 14);
     u32 stride = *(u16 *)(base + off);
     u32 *p = (u32 *)(base + off + 4 + stride * idx);
-    u32 flags = out[0];
+    u32 flags = out->flag;
     s32 a, b;
     u32 rot;
     a = GetTexSRTAnmVectorVal_(res, p[6], p[7], frame);
@@ -30,16 +33,16 @@ void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, u32 *out)
     if (a == 0 && b == 0) {
         flags |= 4;
     } else {
-        out[9] = a;
-        out[10] = b;
+        out->transS = a;
+        out->transT = b;
         flags &= ~4;
     }
     rot = GetTexSRTAnmSinCosVal_(res, p[4], p[5], frame);
     if (rot == 0x10000000) {
         flags |= 2;
     } else {
-        *(u16 *)((u8 *)out + 32) = rot;
-        *(u16 *)((u8 *)out + 34) = rot >> 16;
+        out->sinR = rot;
+        out->cosR = rot >> 16;
         flags &= ~2;
     }
     a = GetTexSRTAnmVectorVal_(res, p[0], p[1], frame);
@@ -47,25 +50,20 @@ void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, u32 *out)
     if (a == 0x1000 && b == 0x1000) {
         flags |= 1;
     } else {
-        out[6] = a;
-        out[7] = b;
+        out->scaleS = a;
+        out->scaleT = b;
         flags &= ~1;
     }
-    out[0] = flags;
+    out->flag = flags;
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitMatAnm-like): bind a material animation block to the model, build the material -> animation index table
-#include "nnsys/g3d_rt.h"
-#define PROTO_LOCAL_data_0213bcc0  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_02107994.h"
-// (by the members: include/nnsys/g3d_rt.h)
-void NNSi_G3dAnmObjInitNsBta(u8 *obj_, u8 *res, u8 *blk)
+void NNSi_G3dAnmObjInitNsBta(G3dAnmObj *obj, u8 *res, u8 *blk)
 {
-    G3dAnmObj *obj = (G3dAnmObj *)obj_;
     u8 *dict = blk + *(u32 *)(blk + 8);
     u32 i;
     volatile u16 zero;
-    obj->funcAnm = (void *)(__UINTPTR_TYPE__)data_0213bcc0;
+    obj->funcAnm = data_0213bcc0;
     obj->numMapData = blk[24];
     zero = 0;
     MIi_CpuClear16(zero, obj->mapData, obj->numMapData * 2);
@@ -79,11 +77,11 @@ void NNSi_G3dAnmObjInitNsBta(u8 *obj_, u8 *res, u8 *blk)
 }
 
 // NNS g3d (material animation, NNSi_G3dAnmObj*): evaluate one material at a frame (calls GetTexSRTAnm_), mark result as valid
-void NNSi_G3dAnmCalcNsBta(u32 *obj, s32 *a, u32 frame)
+void NNSi_G3dAnmCalcNsBta(G3dMatAnmResult *result, const G3dAnmObj *anm, u32 dataIdx)
 {
-    GetTexSRTAnm_((u8 *)a[2], (u16)frame, a[0] >> 12, obj);
-    obj[4] &= ~0xc0000000;
-    obj[4] |= 0x40000000;
-    obj[0] |= 8;
+    GetTexSRTAnm_((u8 *)anm->resAnm, (u16)dataIdx, anm->frame >> 12, result);
+    result->prmTexImage &= ~0xc0000000;
+    result->prmTexImage |= 0x40000000;
+    result->flag |= 8;
 }
 

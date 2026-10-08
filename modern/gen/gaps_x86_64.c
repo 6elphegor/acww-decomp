@@ -106,6 +106,7 @@ __asm__(".section .rodata.data_0213b14c,\"a\"\n.balign 8\n.globl data_0213b14c\n
 __asm__(".section .data.data_01ff8ab4,\"aw\"\n.balign 8\n.globl data_01ff8ab4\ndata_01ff8ab4:\n.quad texmtxCalc_flag_ + 0x0, texmtxCalc_flagS_ + 0x0, texmtxCalc_flagR_ + 0x0, texmtxCalc_flagRS_ + 0x0, texmtxCalc_flagT_ + 0x0, texmtxCalc_flagTS_ + 0x0, texmtxCalc_flagTR_ + 0x0, texmtxCalc_flagTRS_ + 0x0\n.size data_01ff8ab4, 64\n.text");
 __asm__(".section .data.data_021c1b3c,\"aw\"\n.balign 8\n.globl data_021c1b3c\ndata_021c1b3c:\n.quad 0x0\n.size data_021c1b3c, 8\n.text");
 __asm__(".section .data.gSceneBlockMap,\"aw\"\n.balign 8\n.globl gSceneBlockMap\ngSceneBlockMap:\n.quad 0x0\n.size gSceneBlockMap, 8\n.text");
+__asm__(".section .data.sProcCreateParent,\"aw\"\n.balign 8\n.globl sProcCreateParent\nsProcCreateParent:\n.quad 0x0\n.size sProcCreateParent, 8\n.text");
 __asm__(".section .data.sProcCreateHook,\"aw\"\n.balign 8\n.globl sProcCreateHook\nsProcCreateHook:\n.quad 0x0\n.size sProcCreateHook, 8\n.text");
 __asm__(".section .data.sProcDeleteHook,\"aw\"\n.balign 8\n.globl sProcDeleteHook\nsProcDeleteHook:\n.quad 0x0\n.size sProcDeleteHook, 8\n.text");
 __asm__(".section .data.gProfileTable,\"aw\"\n.balign 8\n.globl gProfileTable\ngProfileTable:\n.quad 0x0\n.size gProfileTable, 8\n.text");
@@ -141,7 +142,6 @@ __asm__(".globl gProcCreateStep\n.set gProcCreateStep, host_gap19_1 + 0");
 __asm__(".globl sProcCreateGroup\n.set sProcCreateGroup, host_gap19_1 + 4");
 __asm__(".globl gProcCreateProfile\n.set gProcCreateProfile, host_gap19_1 + 8");
 __asm__(".globl sProcCreateProfile\n.set sProcCreateProfile, host_gap19_1 + 12");
-__asm__(".globl sProcCreateParent\n.set sProcCreateParent, host_gap19_1 + 16");
 __asm__(".globl sProcCreateParam\n.set sProcCreateParam, host_gap19_1 + 28");
 __asm__(".globl data_021f5c50\n.set data_021f5c50, host_gap21_1 + 0");
 __asm__(".globl data_021f5c54\n.set data_021f5c54, host_gap21_1 + 4");

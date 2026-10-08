@@ -11,18 +11,6 @@
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/itcm/unk_01ffd0e4.h"
 
-class Heap;
-class ProcBase;
-
-
-
-struct FlagView {
-    u8 pad_00[0x13];
-    u8 procFlags;
-};
-
-
-
 typedef BOOL (ProcBase::*PmfBool)();
 typedef void (ProcBase::*PmfStatus)(s32);
 
@@ -79,102 +67,104 @@ extern "C" s32 ProcBase_RunPhase(ProcBase *p, PmfBool a, PmfBool b, PmfStatus c)
     return r;
 }
 
-extern "C" BOOL _ZN8ProcBase9onExecuteEv(ProcBase *self) {
+BOOL ProcBase::onExecute() {
     return TRUE;
 }
 
-extern "C" BOOL _ZN8ProcBase10preExecuteEv(ProcBase *self) {
-    if (self->deletePending != 0 || (self->procFlags & 2) != 0) {
+BOOL ProcBase::preExecute() {
+    if (deletePending != 0 || (procFlags & 2) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
+// The post hooks are empty (`bx lr`; the DS returned the object pointer still in r0). Their result is never used: the
+// phase dispatcher calls them through a void member pointer and the overrides only pass the base's result on. They keep
+// the symbol names without parameters (_ZN8ProcBase11postExecuteEv, _ZN8ProcBase8postDrawEv) that the ROM's vtable
+// (gap data) and modern/gen/provides.ld refer to, so they stay extern "C" functions with these names.
 extern "C" BOOL _ZN8ProcBase11postExecuteEv(ProcBase *self) {
-    return (BOOL)self; // the original is `bx lr`: it returns its argument (non-zero)
-}
-
-extern "C" BOOL _ZN8ProcBase6onDrawEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" BOOL _ZN8ProcBase7preDrawEv(ProcBase *self) {
-    if (self->deletePending != 0 || (self->procFlags & 8) != 0) {
+BOOL ProcBase::onDraw() {
+    return TRUE;
+}
+
+BOOL ProcBase::preDraw() {
+    if (deletePending != 0 || (procFlags & 8) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 extern "C" BOOL _ZN8ProcBase8postDrawEv(ProcBase *self) {
-    return (BOOL)self; // the original is `bx lr`: it returns its argument (non-zero)
-}
-
-#define ProcBase_taskConnect _ZN8ProcBase11taskConnectEv
-extern "C" BOOL ProcBase_taskConnect(ProcBase *self) {
-    if (self->deletePending != 0) {
-        self->deletePending = 0;
-        if (isOne(self->state)) {
-            List_Remove(&gTaskExecuteList, &self->executeNode);
-            List_Remove(&gTaskDrawList, &self->drawNode);
-        } else {
-            List_Remove(&gTaskCreateList, &self->executeNode);
-        }
-        List_PushFront(&gTaskDeleteList, &self->executeNode);
-        self->state = 2;
-        for (TreeNode *c = self->treeNode.child; c != NULL; c = c->next) {
-            ProcBase_RequestDelete(c->owner);
-        }
-    } else {
-        ProcBase *parent = ProcBase_GetParent(self);
-        if (parent != NULL) {
-            if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) {
-                self->procFlags |= 2;
-            } else if (*(const u8 *)&self->procFlags & 2) {
-                self->procFlags &= ~2;
-            }
-            if ((parent->procFlags & 4) != 0 || (parent->procFlags & 8) != 0) {
-                self->procFlags |= 8;
-            } else if (*(const u8 *)&self->procFlags & 8) {
-                self->procFlags &= ~8;
-            }
-        }
-        if (isOne(self->state)) {
-            QNode *q = &self->executeNode;
-            if (changed(q)) {
-                List_Remove(&gTaskExecuteList, &self->executeNode);
-                q = &self->executeNode;
-                q->priority = q->pendingPriority;
-                Task_InsertByPriority(&gTaskExecuteList, q);
-            }
-            q = &self->drawNode;
-            if (changed(q)) {
-                List_Remove(&gTaskDrawList, &self->drawNode);
-                q = &self->drawNode;
-                q->priority = q->pendingPriority;
-                Task_InsertByPriority(&gTaskDrawList, q);
-            }
-        } else if (!isTwo(self->state)) {
-            if (self->createRetry != 0) {
-                self->createRetry = 0;
-                List_PushBack(&gTaskCreateList, &self->executeNode);
-            } else if (self->activatePending != 0) {
-                self->activatePending = 0;
-                Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
-                Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
-                self->state = 1;
-            }
-        }
-    }
     return TRUE;
 }
 
-#define ProcBase_taskExecute _ZN8ProcBase11taskExecuteEv
-extern "C" s32 ProcBase_taskExecute(ProcBase *p) {
-    return ProcBase_RunPhase(p, data_01ffd0cc, data_01ffd0d4, data_01ffd0b4);
+void ProcBase::taskConnect() {
+    if (deletePending != 0) {
+        deletePending = 0;
+        if (isOne(state)) {
+            List_Remove(&gTaskExecuteList, &executeNode);
+            List_Remove(&gTaskDrawList, &drawNode);
+        } else {
+            List_Remove(&gTaskCreateList, &executeNode);
+        }
+        List_PushFront(&gTaskDeleteList, &executeNode);
+        state = 2;
+        for (TreeNode *c = treeNode.child; c != NULL; c = c->next) {
+            ProcBase_RequestDelete(c->owner);
+        }
+    } else {
+        ProcBase *parent = ProcBase_GetParent(this);
+        if (parent != NULL) {
+            if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) {
+                procFlags |= 2;
+            } else if (procFlags & 2) {
+                procFlags &= ~2;
+            }
+            if ((parent->procFlags & 4) != 0 || (parent->procFlags & 8) != 0) {
+                procFlags |= 8;
+            } else if (procFlags & 8) {
+                procFlags &= ~8;
+            }
+        }
+        if (isOne(state)) {
+            QNode *q = &executeNode;
+            if (changed(q)) {
+                List_Remove(&gTaskExecuteList, &executeNode);
+                q = &executeNode;
+                q->priority = q->pendingPriority;
+                Task_InsertByPriority(&gTaskExecuteList, q);
+            }
+            q = &drawNode;
+            if (changed(q)) {
+                List_Remove(&gTaskDrawList, &drawNode);
+                q = &drawNode;
+                q->priority = q->pendingPriority;
+                Task_InsertByPriority(&gTaskDrawList, q);
+            }
+        } else if (!isTwo(state)) {
+            if (createRetry != 0) {
+                createRetry = 0;
+                List_PushBack(&gTaskCreateList, &executeNode);
+            } else if (activatePending != 0) {
+                activatePending = 0;
+                Task_InsertByPriority(&gTaskExecuteList, &executeNode);
+                Task_InsertByPriority(&gTaskDrawList, &drawNode);
+                state = 1;
+            }
+        }
+    }
 }
 
-#define ProcBase_taskDraw _ZN8ProcBase8taskDrawEv
-extern "C" s32 ProcBase_taskDraw(ProcBase *p) {
-    return ProcBase_RunPhase(p, data_01ffd0bc, data_01ffd0c4, data_01ffd0dc);
+// the execute phase: onExecute / preExecute / postExecute (the member pointers in .text)
+void ProcBase::taskExecute() {
+    ProcBase_RunPhase(this, data_01ffd0cc, data_01ffd0d4, data_01ffd0b4);
+}
+
+// the draw phase: onDraw / preDraw / postDraw
+void ProcBase::taskDraw() {
+    ProcBase_RunPhase(this, data_01ffd0bc, data_01ffd0c4, data_01ffd0dc);
 }
 

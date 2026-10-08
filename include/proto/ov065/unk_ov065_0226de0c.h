@@ -6,6 +6,7 @@
 #include "types.h"
 #include "net/DwcHttp.h"
 #include "net/SslConnection.h"
+#include "net/SslRootCa.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -14,7 +15,7 @@
 extern "C" {
 #endif
 #ifndef PROTO_LOCAL_sDwcHttpRootCaList
-extern void *sDwcHttpRootCaList[11];
+extern SslRootCa *sDwcHttpRootCaList[11];
 #endif
 #ifdef __cplusplus
 }

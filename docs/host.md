@@ -184,6 +184,20 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
 - Data in the ROM's file formats keeps its 32-bit slots (the sound banks' wave archive links, offsets in G3D
   resources).
 - Hand-written varargs: `DS_VA_ARG` (`include/ds_stdarg.h`).
+- The save data (`gSaveData`, include/save/SaveData.h) is written to and read from the save file as it is in memory,
+  so its records are plain data with the DS layout on every host, checked by `static_assert`s of their sizes and key
+  offsets (SaveData, PlayerData, VillagerData / SaveVillagers, Letter and the letter containers, Pattern, TownState,
+  PlayerErrands). No vtable or pointer member inside a save record: `Letter` had a virtual destructor only (no
+  letter is deleted through a base pointer), so it keeps the DS's vtable pointer as a data word (`dsVtable`, the
+  constructor writes the DS value 0x020dd458, `Letter_Clear` zeroes it); 64-bit integers in save records are `s64`
+  / `u64` (4-byte aligned, as on the DS: a `long long` member made PlayerData 8-byte aligned and its array stride
+  0x2290). Walks over the records use `sizeof` of the stored type (`sizeof(PlayerData)`, `sizeof(Letter)`, ...).
+  Checked by cutting `gSaveData` out of `ACWW_RAMDUMP`s of both builds at the same frames of the scripted intro: the
+  images differ only in content (random ids once the two runs' random numbers part, the bulletin board's default
+  posts: the mail text builder's members are still DS-sized blobs, `include/talk/MailTextBuilder.h`), not in
+  layout. Neither build reaches the intro's first save yet (the i386 build crashes on arriving in town: ov009's
+  `sBuildingResources` still hold the title demo's freed resources, overlay data not being reset on reload - see
+  below; the x86-64 build stalls after the name entry: its name entry menu is never deleted).
 - A C-style cast from a base pointer to a derived class is a static downcast (it subtracts the base's offset):
   converting a derived pointer to its base subobject's address needs `reinterpret_cast` after the `static_cast`.
 - Members reached by a DS offset from a pointer: `tools/host_this_offsets.py` rewrites `(u8 *)this + N` (and

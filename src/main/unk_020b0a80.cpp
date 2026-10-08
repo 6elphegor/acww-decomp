@@ -1,6 +1,7 @@
 #include "uptr.h"
 #include "types.h"
 #include "nitro/io_access.h"
+#include "sys/OSThread.h"
 #include "game/GroundInfo.h"
 #define PROTO_LOCAL_Main_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
@@ -445,11 +446,11 @@ extern u32 gProfileTable;
 }
 
 extern "C" {
-extern u32 gVBlankQueue[2];
+extern OSThreadQueue gVBlankQueue;
 }
 
 extern "C" {
-extern u32 gFrameWaitQueue[2];
+extern OSThreadQueue gFrameWaitQueue;
 }
 
 extern "C" {
@@ -535,10 +536,10 @@ extern "C" u32 Footstep_GetSeAtPos(VecFx32 *a) {
 }
 
 extern "C" void Main_InitVBlank(void) {
-    gVBlankQueue[1] = 0;
-    gVBlankQueue[0] = 0;
-    gFrameWaitQueue[1] = 0;
-    gFrameWaitQueue[0] = 0;
+    gVBlankQueue.tail = NULL;
+    gVBlankQueue.head = NULL;
+    gFrameWaitQueue.tail = NULL;
+    gFrameWaitQueue.head = NULL;
     OS_SetIrqFunction(1, Main_VBlankCallback);
     sVBlankReady = 1;
 }

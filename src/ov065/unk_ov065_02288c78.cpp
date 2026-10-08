@@ -5,7 +5,6 @@
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
 #include "net/gsPlatformUtil.h"
-#define PROTO_LOCAL_qr2_registered_key_list  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212a120.h"
@@ -33,11 +32,10 @@ namespace F022884fc {
 
 
 extern "C" {
-extern uptr qr2_registered_key_list[];
 extern u8 data_ov065_0228e8fc[];
 extern GsSrvQueryBasicInfoStr data_ov065_0228e904;
 extern GsSrvQueryStatusStr data_ov065_0228e914;
-extern u32 SBNullServer;
+extern _SBServer *SBNullServer;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
@@ -49,7 +47,7 @@ s32 closesocket(s32 s);
 s32 socket(s32 a, s32 b, s32 c);
 void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
 s32 NTSLengthSB(u8 *buf, s32 n);
-void SBReleaseStr(s32 a, void *p);
+void SBReleaseStr(SBServerList *a, const char *p);
 void SBServerAddKeyValue(void *e, u32 v, u8 *buf);
 void SBServerParseQR2FullKeysSingle(void *e, u8 *buf, s32 n);
 void SBServerParseKeyVals(void *e, u8 *buf);
@@ -77,9 +75,9 @@ void FIFOClear(List *l);
 Ent *FIFOGetFirst(List *l);
 void FIFOAddFront(List *l, Ent *e);
 void FIFOAddRear(List *l, Ent *e);
-void KeyValCompareKey(u32 *a, u32 *b);
-u32 KeyValHashKey(u32 *p, u32 n);
-void KeyValFree(u32 *p);
+s32 KeyValCompareKey(SBKeyValuePair *a, SBKeyValuePair *b);
+u32 KeyValHashKey(SBKeyValuePair *p, u32 n);
+void KeyValFree(SBKeyValuePair *p);
 u32 StringHash(u8 *s, u32 n);
 
 }
@@ -111,7 +109,7 @@ extern void *g_SBRefStrList;
 extern char *data_ov065_0228e928[2];
 extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
-extern s32 SBNullServer;
+extern _SBServer *SBNullServer;
 
 s32 OS_SPrintf(char *, const char *, ...);
 
@@ -134,9 +132,9 @@ s32 SBEngineCleanup(void *);
 s32 SBEngineHaltUpdates(void *);
 s32 SBQueryEngineSetPublicIP(void *, s32);
 s32 SBQueryEngineInit(void *, s32, s32, s32, void *, void *);
-s32 SBIsNullServer(void *);
+s32 SBIsNullServer(_SBServer *);
 s32 SBServerSetFlags(void *, s32);
-void *SBAllocServer(void *, u32, u32);
+_SBServer *SBAllocServer(void *, u32, u32);
 s32 SBServerGetPing(void *);
 s32 StringHash(void *, s32);
 s32 SBServerListCleanup(void *);
@@ -144,15 +142,15 @@ s32 SBServerListDisconnect(void *);
 s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
 s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
 s32 NTSLengthSB(char *, s32);
-s32 SBRefStr(s32, char *);
+char *SBRefStr(SBServerList *, const char *);
 s32 SBServerListClear(void *);
 s32 SBFreeDeadList(void *);
-s32 SBServerListNth(void *, s32);
+_SBServer *SBServerListNth(void *, s32);
 s32 SBServerListCount(void *);
 s32 SBServerListRemoveAt(void *, s32);
 s32 SBServerListFindServerByIP(void *, u32, u32);
-s32 SBServerListFindServer(void *c, u32 key);
-s32 SBServerListAppendServer(void *, void *);
+s32 SBServerListFindServer(void *c, _SBServer *key);
+void SBServerListAppendServer(void *, _SBServer *);
 void SBServerListSort(void *c, s32 a, char *b, u32 mode);
 s32 ProcessIncomingData(void *);
 s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
@@ -161,7 +159,7 @@ s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
 s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
 char *mytok(char *s, s32 ch);
 s32 CheckValidKey(char *s);
-s32 SBServerGetStringValueA(void *a, char *k, s32 d);
+char *SBServerGetStringValueA(void *a, char *k, char *d);
 s32 ServerBrowserHalt(void *o);
 s32 ServerBrowserThink(void *o);
 s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
@@ -241,7 +239,7 @@ s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b
 
 namespace F02288e2c {
 extern "C" {
-void ServerBrowserRemoveServer(_ServerBrowser *o, u32 key) {
+void ServerBrowserRemoveServer(_ServerBrowser *o, _SBServer *key) {
     s32 r = SBServerListFindServer(&o->list, key);
     if (r != -1) {
         SBServerListRemoveAt(&o->list, r);
@@ -279,7 +277,7 @@ void ServerBrowserClear(_ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserGetServer(_ServerBrowser *o, s32 index) {
+_SBServer *ServerBrowserGetServer(_ServerBrowser *o, s32 index) {
     return SBServerListNth(&o->list, index);
 }
 }
@@ -338,7 +336,7 @@ namespace F02288e2c {
 extern "C" {
 void *SBRefStrHash() {
     if (g_SBRefStrList == NULL) {
-        g_SBRefStrList = TableNew2(8, 100, 2, (void *)RefStringHash, (void *)RefStringCompare, (void *)RefStringFree);
+        g_SBRefStrList = TableNew2(sizeof(SBRefString), 100, 2, (void *)RefStringHash, (void *)RefStringCompare, (void *)RefStringFree);
     }
     return g_SBRefStrList;
 }
@@ -392,14 +390,14 @@ void SBServerAddIntKeyValue(void *a, char *b) {
 
 namespace F02288e2c {
 extern "C" {
-s32 SBServerGetStringValueA(void *a, char *k, s32 d) {
+char *SBServerGetStringValueA(void *a, char *k, char *d) {
     SBKeyValuePair *e;
-    s32 key[2];
+    SBKeyValuePair key;
     if (a == NULL) {
         return 0;
     }
-    key[0] = (s32)k;
-    e = (SBKeyValuePair *)TableLookup(((_SBServer *)a)->keyvals, key);
+    key.key = k;
+    e = (SBKeyValuePair *)TableLookup(((_SBServer *)a)->keyvals, &key);
     if (e != NULL) {
         d = e->value;
     }
@@ -497,16 +495,16 @@ u16 SBServerGetPrivateQueryPort(_SBServer *o) {
 
 namespace F02288e2c {
 extern "C" {
-void SBServerSetNext(_SBServer *o, s32 v) {
-    o->next = (_SBServer *)v;
+void SBServerSetNext(_SBServer *o, _SBServer *v) {
+    o->next = v;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 SBServerGetNext(_SBServer *o) {
-    return (s32)o->next;
+_SBServer *SBServerGetNext(_SBServer *o) {
+    return o->next;
 }
 }
 }
@@ -686,25 +684,25 @@ u32 StringHash(u8 *s, u32 n) {
 
 namespace F022884fc {
 extern "C" {
-void KeyValFree(u32 *p) {
-    SBReleaseStr(0, (void *)p[0]);
-    SBReleaseStr(0, (void *)p[1]);
+void KeyValFree(SBKeyValuePair *p) {
+    SBReleaseStr(0, p->key);
+    SBReleaseStr(0, p->value);
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-u32 KeyValHashKey(u32 *p, u32 n) {
-    return StringHash((u8 *)*p, n);
+u32 KeyValHashKey(SBKeyValuePair *p, u32 n) {
+    return StringHash((u8 *)p->key, n);
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-void KeyValCompareKey(u32 *a, u32 *b) {
-    func_02130b04((void *)*a, (void *)*b);
+s32 KeyValCompareKey(SBKeyValuePair *a, SBKeyValuePair *b) {
+    return func_02130b04(a->key, b->key);
 }
 }
 }
@@ -719,12 +717,12 @@ u32 SBServerGetPing(Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-Ent *SBAllocServer(s32 unused, u32 addr, u32 port) {
-    Ent *e = (Ent *)GsUtil_Alloc(0x24);
+Ent *SBAllocServer(SBServerList *unused, u32 addr, u32 port) {
+    Ent *e = (Ent *)GsUtil_Alloc(sizeof(Ent));
     if (e == 0) {
         return 0;
     }
-    e->keyvals = TableNew2(8, 8, 4, (void *)KeyValHashKey, (void *)KeyValCompareKey, (void *)KeyValFree);
+    e->keyvals = TableNew2(sizeof(SBKeyValuePair), 8, 4, (void *)KeyValHashKey, (void *)KeyValCompareKey, (void *)KeyValFree);
     if (e->keyvals == 0) {
         GsUtil_Free(e);
         return 0;
@@ -786,7 +784,7 @@ u32 SBServerGetState(Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-BOOL SBIsNullServer(u32 v) {
+BOOL SBIsNullServer(_SBServer *v) {
     if (v == SBNullServer) {
         return TRUE;
     }

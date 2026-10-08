@@ -10,6 +10,7 @@
 #include "proto/autoload_2/unk_02133b68.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/autoload_2/unk_0213510c.h"
+#include "sys/std_terminate.h"
 
 typedef void (*VoidFunc)(void);
 typedef void (*DtorFunc)(void *, int);
@@ -132,7 +133,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
         if (info->action_pointer == 0) {
             FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                _ZSt9terminatev();
+                std::terminate();
             }
             __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
@@ -401,7 +402,7 @@ extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catc
             break;
         }
         default:
-            _ZSt9terminatev();
+            std::terminate();
             break;
         }
         if (action & 0x80) {
@@ -443,7 +444,7 @@ extern "C" CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionIn
         case 1:
         case 14:
         default:
-            _ZSt9terminatev();
+            std::terminate();
             break;
         }
         break;
@@ -537,7 +538,7 @@ extern "C" u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, 
         case 1:
         case 14:
         default:
-            _ZSt9terminatev();
+            std::terminate();
             break;
         }
         break;
@@ -569,7 +570,7 @@ extern "C" void __ThrowHandler(ThrowContext *context) {
 
     FindExceptionRecord(context->returnaddr, &info);
     if (info.exception_record == 0) {
-        _ZSt9terminatev();
+        std::terminate();
     }
     __SetupFrameInfo(context, &info);
     if (context->throwtype == 0) {

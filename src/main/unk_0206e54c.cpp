@@ -1,14 +1,14 @@
+#include "uptr.h"
 #include "types.h"
+#include "menu/MenuProc.h"
+#include "sys/ListNode.h"
 #include "Unk_020d8c7c.h"
 #include "item/Letter.h"
 #include "sys/ProcProfile.h"
 #include "item/FutureLetter.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
-#include "sys/ListNode.h"
 #include "sys/ClockDateTime.h"
-#include "menu/MenuProc.h"
-#include "player/PlayerInventory.h"
 #include "proto/autoload_2/unk_020e7500.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_020116e0.h"
@@ -70,7 +70,7 @@ void PendingUnit_ClearActiveOfAid(u32);
 u8 sMenuIndex;
 u32 kMenuOverlayList18[3] = {0x6b, 0x5e, 0xffffffff};
 u32 kMenuOverlayList28[3] = {0x6c, 0x5e, 0xffffffff};
-List sOpenMenuList;  // the open menus (MenuProcLink nodes), the newest last
+List sOpenMenuList;  // the open menus (their MenuProc::openMenuLink), the newest last
 u32 kMenuOverlayList03[2] = {0x79, 0xffffffff};
 u8 sMenuMode;
 Letter sFutureLetter;
@@ -245,11 +245,18 @@ BOOL MenuManager::onExecute() {
 
 BOOL MenuManager::onDraw() { return TRUE; }
 
-extern "C" void MenuCtrl_AddOpenMenu(MenuProcLink *v) { List_PushBack(&sOpenMenuList, &v->node); }
+// An open menu's link in sOpenMenuList, followed by its owner (MenuProc::openMenuLink, openMenuOwner). (The DS
+// offsets, owner at link + 4 + 4 and its menu id at + 0x90, read the cleared link on 64-bit hosts.)
+struct OpenMenuLink {
+    ListNode link;
+    MenuProc *owner;
+};
 
-extern "C" void MenuCtrl_RemoveOpenMenu(MenuProcLink *o) {
-    List_Remove(&sOpenMenuList, &o->node);
-    MenuCtrl_SetReleasePending(o->owner->menuId);
+extern "C" void MenuCtrl_AddOpenMenu(ListNode *v) { List_PushBack(&sOpenMenuList, v); }
+
+extern "C" void MenuCtrl_RemoveOpenMenu(ListNode *o) {
+    List_Remove(&sOpenMenuList, o);
+    MenuCtrl_SetReleasePending(((OpenMenuLink *)o)->owner->menuId);
 }
 
 extern "C" void MenuCtrl_ReleaseClosedMenus() {
@@ -264,7 +271,7 @@ extern "C" void MenuCtrl_ReleaseClosedMenus() {
 extern "C" BOOL MenuCtrl_CreateRequestedMenu() {
     GameProc *t;
     if (sMenuRequest[0] != 3) return FALSE;
-    if (sOpenMenuList.head != NULL) t = ((MenuProcLink *)sOpenMenuList.head)->owner;  // (the node comes first)
+    if (sOpenMenuList.head != NULL) t = ((OpenMenuLink *)sOpenMenuList.head)->owner;  // (the link comes first)
     else t = gMenuManager;
     MenuCtrl_ResetForceClose();
     if (!GameProc_CreateChild(kMenuProfileIds[sMenuRequest[1]], t, sMenuRequest[1], 4)) return FALSE;

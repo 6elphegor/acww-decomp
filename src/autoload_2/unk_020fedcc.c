@@ -12,15 +12,10 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "types64.h"
-#define PROTO_LOCAL_MATH_CalcCRC16  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MATH_CalcCRC32  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MATH_CalcCRC8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MATHi_CRC16InitTableRev  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MATHi_CRC32InitTableRev  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MATHi_CRC8InitTable  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_memcmp  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020fedcc.h"
 #include "proto/autoload_2/unk_0211d20c.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "uptr.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_02000b44.h"
 #include "proto/main/unk_0206d49c.h"
@@ -42,11 +37,11 @@ typedef struct { u32 year, month, day; s32 week; } Date;
 typedef struct { u32 hour, minute, second; } Time;
 
 extern void MI_CpuFill8(void *dst, u32 val, u32 len);
-extern u32 MATHi_CRC32InitTableRev(void *table, u32 poly);
-extern u32 MATH_CalcCRC32(void *table, void *data, u32 len);
+extern void MATHi_CRC32InitTableRev(u32 *table, u32 poly);          // src/autoload_2/unk_0212703c.c
+extern u32 MATH_CalcCRC32(const u32 *table, const void *data, u32 len);
 extern u64 func_02133100(u64 a, u64 b);
-extern void MATHi_CRC8InitTable(void *table, u32 poly);
-extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
+extern void MATHi_CRC8InitTable(u8 *table, u32 poly);
+extern u8 MATH_CalcCRC8(const u8 *table, const void *data, u32 len);
 extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern u32 data_0213bba8[];
@@ -60,14 +55,14 @@ extern volatile u16 data_021f5c50;
 extern volatile u32 data_021f5c54;
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[4];
-extern s32 memcmp(const void *a, const void *b, u32 n);
+extern int memcmp(const void *a, const void *b, u32 n);            // src/autoload_2/unk_02128030.c
 extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern void DC_StoreRange(void *p, u32 n);
 extern void DC_InvalidateRange(void *p, u32 n);
 extern void MIi_CpuClear16(u16 v, void *dst, u32 n);
-extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
-extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
+extern u16 MATH_CalcCRC16(const u16 *table, const void *data, u32 len);
+extern void MATHi_CRC16InitTableRev(u16 *table, u32 poly);
 extern void WaitByLoop(u32 n);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
@@ -93,7 +88,7 @@ BOOL writeDisable(void);
 BOOL verify(void *ref, u32 addr, u32 size, void *tmp);
 void writeNvram(u32 addr, u16 size, void *src);
 BOOL readNvram(u32 addr, u32 size, void *dst);
-u32 NVRAMm_ExecuteCommand(u32 cmd, u32 a1, u16 a2, u32 a3);
+u32 NVRAMm_ExecuteCommand(u32 cmd, u32 a1, u16 a2, void *data); // src/autoload_2/unk_020fea34.c
 BOOL DWC_BACKUPlCheckAddress(u8 *p);
 BOOL DWC_BACKUPlCheckIp(u8 *a, u8 *b);
 BOOL DWC_BACKUPlCheckSsid(u8 *p);
@@ -111,8 +106,8 @@ BOOL checkAp(u8 *page);
 s32 DWC_BM_Init(u8 *p);
 u8 *DWCi_BACKUPlConvWifiInfo(S *p);
 s32 DWC_BM_Init(u8 *p);
-BOOL DWCi_AUTH_MakeWiFiID(u32 v);
-BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v);
+BOOL DWCi_AUTH_MakeWiFiID(u8 *buf);
+BOOL DWCi_AUTH_UpDateWiFiID(S *p, u8 *buf);
 extern s32 RTC_GetDate(Date *d);
 extern s32 RTC_GetTime(Time *t);
 extern s32 OS_IsTickAvailable(void);
@@ -203,6 +198,9 @@ static inline u64 fld(u64 v, u64 mask, s32 shift) { return (v & mask) << shift; 
 
 static inline u32 orr(u32 a, u32 b) { return a | b; }
 
+// the DWC_BM work buffer (0x700 bytes): the four 0x100-byte settings pages, a page buffer, the CRC16 table
+#define BM_CRC_TABLE(buf) ((u16 *)((buf) + 0x500))
+
 // top level: load, validate and repair the Wi-Fi settings and WFC-ID; returns 0 ok, 1 repaired, 2 repaired+bad, 3 bad
 u32 DWC_Init(u8 *p) {
     BOOL r4 = 0;
@@ -210,7 +208,7 @@ u32 DWC_Init(u8 *p) {
     OSi_ReferSymbol((void *)0x02000b84);
     r6 = DWC_BM_Init(p);
     if (DWC_Auth_CheckWiFiIDNeedCreate()) {
-        DWCi_AUTH_MakeWiFiID((u32)p);
+        DWCi_AUTH_MakeWiFiID(p);
         r4 = 1;
     }
     if (r6 < 0) {
@@ -692,7 +690,7 @@ BOOL DWCi_AUTH_GetNewWiFiInfo(S *p) {
         return 0;
     }
     if (OS_IsTickAvailable()) {
-        seed += (u32)OS_GetTick; // original bug: the address of OS_GetTick, not its result
+        seed += (u32)(uptr)OS_GetTick; // original bug: the address of OS_GetTick, not its result
     }
     OS_GetMacAddress(mac);
     x0 = (u8)(((mac[0] << 16) | (mac[1] << 8) | mac[2]) != 0x9bf);
@@ -722,24 +720,24 @@ BOOL DWCi_AUTH_GetNewWiFiInfo(S *p) {
 }
 
 // create a WFC-ID (variant) and write it
-BOOL DWCi_AUTH_MakeWiFiID(u32 v) {
+BOOL DWCi_AUTH_MakeWiFiID(u8 *buf) {
     S t;
     if (!DWCi_AUTH_GetNewWiFiInfo(&t)) {
         return 0;
     }
-    if (DWCi_BM_SetWiFiInfo(&t, (u8 *)v)) {
+    if (DWCi_BM_SetWiFiInfo(&t, buf)) {
         return 1;
     }
     return 0;
 }
 
 // rotate the WFC-ID records and write them
-BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v) {
+BOOL DWCi_AUTH_UpDateWiFiID(S *p, u8 *buf) {
     S t;
     DWCi_BM_GetWiFiInfo(&t);
     p->a = p->b;
     p->b = t.b;
-    if (DWCi_BM_SetWiFiInfo(p, (u8 *)v)) {
+    if (DWCi_BM_SetWiFiInfo(p, buf)) {
         return 1;
     }
     return 0;
@@ -767,7 +765,7 @@ BOOL DWCi_AUTH_RemakeWiFiID(S *p) {
         return 0;
     }
     if (OS_IsTickAvailable()) {
-        seed += (u32)OS_GetTick; // original bug: the address of OS_GetTick, not its result
+        seed += (u32)(uptr)OS_GetTick; // original bug: the address of OS_GetTick, not its result
     }
     OS_GetMacAddress(mac);
     x0 = (u8)(((mac[0] << 16) | (mac[1] << 8) | mac[2]) != 0x9bf);
@@ -822,7 +820,7 @@ s32 DWC_BM_Init(u8 *buf) {
     if (!DWCi_BACKUPlInit((u16 *)buf)) {
         return -10001;
     }
-    MATHi_CRC16InitTableRev(buf + 0x500, 0xa001);
+    MATHi_CRC16InitTableRev(BM_CRC_TABLE(buf), 0xa001);
     if (!DWCi_BACKUPlRead(buf)) {
         return -10001;
     }
@@ -832,7 +830,7 @@ s32 DWC_BM_Init(u8 *buf) {
     r7 = buf;
     r6 = f;
     do {
-        crc = MATH_CalcCRC16(buf + 0x500, r4, 0xfe);
+        crc = MATH_CalcCRC16(BM_CRC_TABLE(buf), r4, 0xfe);
         if (crc == *(u16 *)(r4 + 0xfe)) {
             if (checkAp(r7)) {
                 *r6 = 1;
@@ -843,7 +841,7 @@ s32 DWC_BM_Init(u8 *buf) {
         r6++;
         i++;
     } while (i < 3);
-    crc = MATH_CalcCRC16(buf + 0x500, buf + 0x300, 0xfe);
+    crc = MATH_CalcCRC16(BM_CRC_TABLE(buf), buf + 0x300, 0xfe);
     if (crc == *(u16 *)(buf + 0x3fe)) {
         f[3] = 1;
     }
@@ -997,7 +995,7 @@ BOOL DWCi_BM_SetWiFiInfo(S *p, u8 *buf) {
     u32 nv = data_021f5c58;
     s32 j;
     DWCi_BACKUPlConvWifiInfo(p);
-    MATHi_CRC16InitTableRev(buf + 0x200, 0xa001);
+    MATHi_CRC16InitTableRev((u16 *)(buf + 0x200), 0xa001); // (the CRC table after the two pages)
     j = 0;
     do {
         if (!readNvram(nv, 0x100, buf)) {
@@ -1005,7 +1003,7 @@ BOOL DWCi_BM_SetWiFiInfo(S *p, u8 *buf) {
             return 0;
         }
         MI_CpuCopy8(data_021f5c5c, buf + 0xf0, 14);
-        *(u16 *)(buf + 0xfe) = MATH_CalcCRC16(buf + 0x200, buf, 0xfe);
+        *(u16 *)(buf + 0xfe) = MATH_CalcCRC16((u16 *)(buf + 0x200), buf, 0xfe);
         do {
             writeNvram(nv, 0x100, buf);
         } while (!verify(buf, nv, 0x100, buf + 0x100));
@@ -1062,7 +1060,7 @@ BOOL DWCi_BACKUPlWriteAll(u8 *buf) {
     s32 i = 0;
     u8 *r4 = buf;
     do {
-        *(u16 *)(r4 + 0xfe) = MATH_CalcCRC16(buf + 0x500, r4, 0xfe);
+        *(u16 *)(r4 + 0xfe) = MATH_CalcCRC16(BM_CRC_TABLE(buf), r4, 0xfe);
         do {
             writeNvram(nv, 0x100, r4);
         } while (!verify(r4, nv, 0x100, buf + 0x400));

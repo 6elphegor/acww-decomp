@@ -5,9 +5,6 @@
 #include "net/NasAuthWork.h"
 
 #include "types64.h"
-#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/autoload_2/unk_0212b770.h"
 #include "proto/ov065/unk_ov065_0226ec94.h"
@@ -59,8 +56,8 @@ void DwcHttp_Abort(DwcHttp *c);
 void NasAuth_Abort();
 s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *r);
 s32 DwcHttp_FinishHeaders(DwcHttp *c);
-s32 DwcHttp_StartThread(DwcHttp *c);
-s32 DwcHttp_ParseResponse(void *tbl, s32 n, s32 a, s32 b);
+void DwcHttp_StartThread(DwcHttp *c);
+s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text);
 char *DwcHttp_FindField(void *tbl, s32 n, const char *name);
 s32 DwcHttp_GetFieldDecoded(void *tbl, s32 n, const char *name, char *out, s32 cap);
 s32 NasAuth_BuildRequest(DwcHttp *c, const char *a, const char *b, void *tbl, s32 n, s32 k);
@@ -97,21 +94,21 @@ s32 NetCheck_Start(NetCheckParams *cfg) {
     if (sNetCheck != 0) {
         return 4;
     }
-    sNetCheck = (NetCheckWork *)cfg->allocFunc("DWCnetcheck", 0x1200);
+    sNetCheck = (NetCheckWork *)cfg->allocFunc("DWCnetcheck", sizeof(NetCheckWork));
     if (sNetCheck == 0) {
         return 4;
     }
-    MI_CpuFill8(sNetCheck, 0, 0x1200);
+    MI_CpuFill8(sNetCheck, 0, sizeof(NetCheckWork));
     sNetCheck->errorCode = -0x1869f;
     *(NetCheckParamsWords *)&sNetCheck->allocFunc = *(NetCheckParamsWords *)cfg;
     if (sNetCheckHttp != 0) {
         return 4;
     }
-    sNetCheckHttp = (DwcHttp *)sNetCheck->allocFunc("DWChttp", 0x1a60);
+    sNetCheckHttp = (DwcHttp *)sNetCheck->allocFunc("DWChttp", sizeof(DwcHttp));
     if (sNetCheckHttp == 0) {
         return 4;
     }
-    OS_InitMutex(sNetCheck->mutex);
+    OS_InitMutex(&sNetCheck->mutex);
     NetCheck_StartThread();
     return 0;
 }
@@ -142,11 +139,11 @@ void NetCheck_Destroy() {
 
 void NetCheck_StartThread() {
     NetCheckWork *g = sNetCheck;
-    if (g->threadId == 0 || OS_IsThreadTerminated(g->thread) != 0) {
+    if (g->thread.id == 0 || OS_IsThreadTerminated(&g->thread) != 0) {
         g = sNetCheck;
-        OS_CreateThread(g->thread, NetCheck_ThreadMain, g, (u8 *)g + 0x1200, 0x1000, 0x10);
+        OS_CreateThread(&g->thread, NetCheck_ThreadMain, g, g->stack + sizeof(g->stack), sizeof(g->stack), 0x10);
         g = sNetCheck;
-        OS_WakeupThreadDirect(g->thread);
+        OS_WakeupThreadDirect(&g->thread);
     }
 }
 
@@ -156,8 +153,8 @@ void NetCheck_Abort() {
             DwcHttp_Abort(sNetCheckHttp);
         }
         NasAuth_Abort();
-        if (sNetCheck->threadId != 0) {
-            OS_JoinThread(sNetCheck->thread);
+        if (sNetCheck->thread.id != 0) {
+            OS_JoinThread(&sNetCheck->thread);
         }
         sNetCheck->errorCode = -7;
     }
@@ -204,8 +201,8 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         DwcHttp_StartThread(sNetCheckHttp);
-        if (sNetCheckHttp->threadId) {
-            OS_JoinThread(sNetCheckHttp->thread);
+        if (sNetCheckHttp->thread.id) {
+            OS_JoinThread(&sNetCheckHttp->thread);
         }
         cx = sNetCheckHttp;
         switch (cx->result) {
@@ -218,7 +215,7 @@ void NetCheck_ThreadMain(void) {
         case 8:
             break;
         }
-        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 0, (s32)cx->responseBuffer.base) != 1) {
+        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 0, (char *)cx->responseBuffer.base) != 1) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
@@ -285,8 +282,8 @@ void NetCheck_ThreadMain(void) {
                 goto end;
             }
             DwcHttp_StartThread(sNetCheckHttp);
-            if (sNetCheckHttp->threadId) {
-                OS_JoinThread(sNetCheckHttp->thread);
+            if (sNetCheckHttp->thread.id) {
+                OS_JoinThread(&sNetCheckHttp->thread);
             }
             switch (sNetCheckHttp->result) {
             case 2:
@@ -406,8 +403,8 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         DwcHttp_StartThread(sNetCheckHttp);
-        if (sNetCheckHttp->threadId) {
-            OS_JoinThread(sNetCheckHttp->thread);
+        if (sNetCheckHttp->thread.id) {
+            OS_JoinThread(&sNetCheckHttp->thread);
         }
         cx = sNetCheckHttp;
         switch (cx->result) {
@@ -420,7 +417,7 @@ void NetCheck_ThreadMain(void) {
         case 8:
             break;
         }
-        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 0, (s32)cx->responseBuffer.base) != 1) {
+        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 0, (char *)cx->responseBuffer.base) != 1) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
@@ -544,8 +541,8 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         DwcHttp_StartThread(sNetCheckHttp);
-        if (sNetCheckHttp->threadId) {
-            OS_JoinThread(sNetCheckHttp->thread);
+        if (sNetCheckHttp->thread.id) {
+            OS_JoinThread(&sNetCheckHttp->thread);
         }
         cx = sNetCheckHttp;
         switch (cx->result) {
@@ -558,7 +555,7 @@ void NetCheck_ThreadMain(void) {
         case 8:
             break;
         }
-        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 1, (s32)cx->responseBuffer.base) != 1) {
+        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 1, (char *)cx->responseBuffer.base) != 1) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
@@ -596,16 +593,16 @@ end:
 s32 NetCheck_GetState(void) {
     NetCheckWork *g;
     s32 r;
-    OS_LockMutex(sNetCheck->mutex);
+    OS_LockMutex(&sNetCheck->mutex);
     r = sNetCheck->state;
-    OS_UnlockMutex(sNetCheck->mutex);
+    OS_UnlockMutex(&sNetCheck->mutex);
     return r;
 }
 
 void NetCheck_SetState(s32 v) {
-    OS_LockMutex(sNetCheck->mutex);
+    OS_LockMutex(&sNetCheck->mutex);
     sNetCheck->state = v;
-    OS_UnlockMutex(sNetCheck->mutex);
+    OS_UnlockMutex(&sNetCheck->mutex);
 }
 
 s32 NetCheck_GetErrorCode(void) {

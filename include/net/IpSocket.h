@@ -8,8 +8,8 @@
 // OSThread specific[0]; the TCP/UDP code finds it through OSi_ThreadInfo (data_021fcc2c: current / list)
 // (src/ov065/unk_ov065_02261638.cpp, unk_ov065_02264d0c.cpp, unk_ov065_022671a0.cpp).
 
-struct IpSocket;
-struct SslConnection;
+typedef struct IpSocket IpSocket;
+typedef struct SslConnection SslConnection;
 
 // UDP receive hook (IpSoc_SetUdpCallback); Udp_Input drops the data when it returns non-zero.
 typedef s32 (*IpSocketUdpCallback)(u8 *, u32, IpSocket *);

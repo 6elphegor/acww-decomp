@@ -6,12 +6,13 @@
 // DWC matchmaking control (sDwcMatch, 0x464 bytes; src/ov065/unk_ov065_022723b8.cpp DwcMatch_*, and
 // src/ov065/unk_ov065_02270e34.cpp). All sDwcMatch views of unk_ov065_022723b8.cpp are folded into it.
 
-typedef void (*DwcMatchedScCallback)(s32, s32, s32, s32, s32, s32); // server-client match done
-typedef s32 (*DwcNewClientCallback)(s32, u32);
-typedef s32 (*DwcEvalCallback)(s32, u32);
+typedef void (*DwcMatchedScCallback)(s32, s32, s32, s32, s32, void *); // server-client match done (..., param)
+typedef s32 (*DwcNewClientCallback)(s32, void *);
+typedef s32 (*DwcEvalCallback)(s32, void *);
 
+// DwcControl::transportSocket, the GT2 socket (DwcMatchControl::transportSocketPtr points there)
 struct Unk_ov065_02290814_Sub {
-    /* 0x00 */ u32 transportSocket;
+    /* 0x00 */ void *transportSocket;
 };
 
 // NAT negotiation request (sDwcMatch->nnRequest; DwcMatch_SendNnRequest)
@@ -24,14 +25,14 @@ struct DwcNnRequest {
 };
 
 struct DwcMatchControl {
-    /* 0x000 */ u32 gpConnection;
+    /* 0x000 */ void *gpConnection; // &DwcControl::gpConnection
     /* 0x004 */ Unk_ov065_02290814_Sub *transportSocketPtr;
-    /* 0x008 */ u32 transportCallbacks;
+    /* 0x008 */ void *transportCallbacks; // &DwcControl::gt2ConnectedCallback: the four GT2 connection callbacks
     /* 0x00c */ u8 connectRetryCount;
     /* 0x00d */ u8 numClients;
     /* 0x00e */ u8 numValidClients;
     /* 0x00f */ u8 unk_0f;
-    /* 0x010 */ u32 qr2Object;
+    /* 0x010 */ void *qr2Object;
     /* 0x014 */ volatile u8 numPlayers;
     /* 0x015 */ volatile u8 matchType;
     /* 0x016 */ u8 maxPlayers;
@@ -43,7 +44,7 @@ struct DwcMatchControl {
     /* 0x020 */ u32 reservation;
     /* 0x024 */ u32 memberIps[32];
     /* 0x0a4 */ u16 memberPorts[32];
-    /* 0x0e4 */ u32 serverBrowser;
+    /* 0x0e4 */ void *serverBrowser;
     /* 0x0e8 */ s32 queryRetryMode;
     /* 0x0ec */ u32 queryRetryTick;
     /* 0x0f0 */ u32 queryRetryTickHi;
@@ -94,8 +95,8 @@ struct DwcMatchControl {
     /* 0x278 */ u16 memberConnectPorts[32];
     /* 0x2b8 */ u8 aids[0x20];
     /* 0x2d8 */ u32 validAidMask;
-    /* 0x2dc */ u32 gameName;
-    /* 0x2e0 */ u32 secretKey;
+    /* 0x2dc */ char *gameName;
+    /* 0x2e0 */ char *secretKey;
     /* 0x2e4 */ u8 *friendList;
     /* 0x2e8 */ u32 friendCount;
     /* 0x2ec */ u8 friendIndices[0x40];
@@ -113,11 +114,11 @@ struct DwcMatchControl {
     /* 0x444 */ u32 cmdTime;
     /* 0x448 */ u32 cmdTimeHi;
     /* 0x44c */ DwcMatchedScCallback matchCallback;
-    /* 0x450 */ u32 matchCallbackParam;
+    /* 0x450 */ void *matchCallbackParam;
     /* 0x454 */ DwcNewClientCallback newClientCallback;
-    /* 0x458 */ u32 newClientCallbackParam;
+    /* 0x458 */ void *newClientCallbackParam;
     /* 0x45c */ DwcEvalCallback evalCallback;
-    /* 0x460 */ u32 evalCallbackParam;
+    /* 0x460 */ void *evalCallbackParam;
 };
 
 // DwcMatch_SetOption(0): synchronised match start (sDwcMatchSyncOption, 0x20 bytes)

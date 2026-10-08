@@ -5,6 +5,7 @@
 #include "snd/SndSceneBase.h"
 #include "snd/BgmSceneFade.h"
 #include "snd/SndMgr.h"
+#include "snd/Melody.h"
 struct Rb;  // (snd/SndBgmViews.h)
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_020f4a5c.h"
@@ -40,15 +41,6 @@ u8 gSndHeapBuffer[0x80000];
 
 
 
-
-// (not in the shared headers: their units' file-local types)
-extern "C" {
-void MelodyPlayer_Init(Ctl2 *c);
-void MelodyPlayer_StartTrackA(Ctl2 *c);
-void BgmSyncSnd_Release(Rb *r);
-void MelodyBeat_Init(Seq1 *self);
-void MelodyBeat_Stop(Seq1 *self);
-}
 
 extern "C" {
 void Clock_GetMinuteHour(void *);
@@ -184,7 +176,7 @@ extern s32 gCameraDistance;
 
 extern "C" void Snd_Init() {
     gSndScene = 0;
-    gSndMgr.init((u32)(gSndHeapBuffer), 0x80000, (u32)("/sound_dataENG.sdat"));
+    gSndMgr.init(gSndHeapBuffer, 0x80000, "/sound_dataENG.sdat");
     Melody_Init();
 }
 
@@ -363,7 +355,7 @@ extern "C" void Snd_SetOutputMode(u32 a) { gSndMgr.setOutputMode(a); }
 
 extern "C" void Snd_BeginTalk(u32 a) { gSndScene->beginTalk(a); }
 
-extern "C" void Snd_PlayTalkVoice(u32 a, u32 b, u32 c, u32 d) { SndMgr_PlayTalkVoice((BgmObj *)&gSndMgr, a, b, c, d); }
+extern "C" void Snd_PlayTalkVoice(u32 a, u32 b, u32 c, u32 d) { SndMgr_PlayTalkVoice(&gSndMgr, a, b, c, d); }
 
 extern "C" void Snd_EndTalk() { gSndScene->endTalk(); }
 
@@ -527,11 +519,11 @@ extern "C" void Snd_SetPanIfChanged(u32 a) { SndMgr_SetPanIfChanged(&gSndMgr, a)
 
 extern "C" void Snd_SetPan(u32 a) { SndMgr_SetPan(&gSndMgr, a); }
 
-extern "C" void Snd_MelodyInit(void *c) { MelodyPlayer_Init((Ctl2 *)c); }
+extern "C" void Snd_MelodyInit(void *c) { MelodyPlayer_Init((MelodyPlayer *)c); }
 
-extern "C" void Snd_MelodySetPattern(void *c, u8 *src) { MelodyPlayer_SetPattern((Ctl2 *)c, src); }
+extern "C" void Snd_MelodySetPattern(void *c, u8 *src) { MelodyPlayer_SetPattern((MelodyPlayer *)c, src); }
 
-extern "C" void Snd_MelodyPlayPattern(void *c, u32 v, u8 *pat) { MelodyPlayer_PlayPattern((Ctl2 *)c, v, pat); }
+extern "C" void Snd_MelodyPlayPattern(void *c, u32 v, u8 *pat) { MelodyPlayer_PlayPattern((MelodyPlayer *)c, v, pat); }
 
 extern "C" void Snd_MelodyPlayAt(void *a, VecFx32 *v, u32 c) {
     VecFx32 t;
@@ -539,23 +531,23 @@ extern "C" void Snd_MelodyPlayAt(void *a, VecFx32 *v, u32 c) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
         t.z = v->z - gCameraEye.z;
-        MelodyPlayer_PlayAt((Ctl2 *)a, &t, c);
+        MelodyPlayer_PlayAt((MelodyPlayer *)a, &t, c);
     }
 }
 
-extern "C" void Snd_MelodyPlay(void *c, u32 v) { MelodyPlayer_Play((Ctl2 *)c, v); }
+extern "C" void Snd_MelodyPlay(void *c, u32 v) { MelodyPlayer_Play((MelodyPlayer *)c, v); }
 
-extern "C" void Snd_MelodyStartTrackA(void *c) { MelodyPlayer_StartTrackA((Ctl2 *)c); }
+extern "C" void Snd_MelodyStartTrackA(void *c) { MelodyPlayer_StartTrackA((MelodyPlayer *)c); }
 
-extern "C" void Snd_MelodyPlayNote(void *c, u32 idx) { MelodyPlayer_PlayNote((Ctl2 *)c, idx); }
+extern "C" void Snd_MelodyPlayNote(void *c, u32 idx) { MelodyPlayer_PlayNote((MelodyPlayer *)c, idx); }
 
-extern "C" s32 Snd_MelodyUpdate(void *c) { return MelodyPlayer_Update((Ctl2 *)c); }
+extern "C" s32 Snd_MelodyUpdate(void *c) { return MelodyPlayer_Update((MelodyPlayer *)c); }
 
-extern "C" u8 Snd_MelodyIsPlaying(void *c) { return MelodyPlayer_IsPlaying((Ctl2 *)c); }
+extern "C" u8 Snd_MelodyIsPlaying(void *c) { return MelodyPlayer_IsPlaying((MelodyPlayer *)c); }
 
-extern "C" void Snd_MelodyPlayRandom(void *c, u32 v) { MelodyPlayer_PlayRandom((Ctl2 *)c, v); }
+extern "C" void Snd_MelodyPlayRandom(void *c, u32 v) { MelodyPlayer_PlayRandom((MelodyPlayer *)c, v); }
 
-extern "C" u8 *Snd_MelodyApplyRandomPattern(void *c) { return MelodyPlayer_ApplyRandomPattern((Ctl2 *)c); }
+extern "C" u8 *Snd_MelodyApplyRandomPattern(void *c) { return MelodyPlayer_ApplyRandomPattern((MelodyPlayer *)c); }
 
 extern "C" u8 *Snd_MelodyGetDefaultPattern() { return Melody_GetDefaultPattern(); }
 
@@ -589,11 +581,11 @@ extern "C" u32 Snd_BgmSyncReadBeat() { return BgmSyncSnd_ReadBeat(); }
 
 extern "C" s32 Snd_BgmSyncPollStarted(void *r) { return BgmSyncSnd_PollStarted((Rb *)r); }
 
-extern "C" void Snd_MelodyBeatInit(void *s) { MelodyBeat_Init((Seq1 *)s); }
+extern "C" void Snd_MelodyBeatInit(void *s) { MelodyBeat_Init((MelodyBeat *)s); }
 
-extern "C" void Snd_MelodyBeatStart(void *s, u16 id) { MelodyBeat_Start((Seq1 *)s, id); }
+extern "C" void Snd_MelodyBeatStart(void *s, u16 id) { MelodyBeat_Start((MelodyBeat *)s, id); }
 
-extern "C" void Snd_MelodyBeatUpdate(Seq1 *a, VecFx32 *v) {
+extern "C" void Snd_MelodyBeatUpdate(MelodyBeat *a, VecFx32 *v) {
     VecFx32 t;
     if (v != NULL) {
         if (gCamera != 0) {
@@ -607,5 +599,5 @@ extern "C" void Snd_MelodyBeatUpdate(Seq1 *a, VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_MelodyBeatStop(void *s) { MelodyBeat_Stop((Seq1 *)s); }
+extern "C" void Snd_MelodyBeatStop(void *s) { MelodyBeat_Stop((MelodyBeat *)s); }
 

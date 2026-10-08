@@ -16,7 +16,7 @@ struct SockCoreConfig {
     /* 0x1c */ void (*free)(void *);
     /* 0x20 */ s32 msgPoolSize;
     /* 0x24 */ u32 recvRingSize;
-    /* 0x28 */ u32 recvRingBuf;
+    /* 0x28 */ u8 *recvRingBuf;
     /* 0x2c */ s32 threadPriority;
     /* 0x30 */ s32 mtu;
     /* 0x34 */ s32 recvWindow;

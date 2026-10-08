@@ -49,9 +49,9 @@ public:
     virtual u32 doGetMaxFreeBlockSize();
     virtual u32 vfunc_3c(s32 align);
     virtual u32 getTotalFreeSize();
-    virtual void *changeGroupId(u16 id);
-    virtual void *getGroupId();
-    virtual void *doAdjust();
+    virtual u16 changeGroupId(u16 id);
+    virtual u16 getGroupId();
+    virtual u32 doAdjust();
 };
 
 // expanded heap (vtable 0x0213af50), 0x30 bytes
@@ -74,9 +74,9 @@ public:
     virtual u32 doGetMaxFreeBlockSize();
     virtual u32 vfunc_3c(s32 align);
     virtual u32 getTotalFreeSize();
-    virtual void *changeGroupId(u16 id);
-    virtual void *getGroupId();
-    virtual void *doAdjust();
+    virtual u16 changeGroupId(u16 id);
+    virtual u16 getGroupId();
+    virtual u32 doAdjust();
 
     /* 0x18 */ OSMutex mutex;
 };
@@ -89,9 +89,9 @@ extern "C" {
 u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 u32 OS_RestoreInterrupts(u32); // OS_RestoreInterrupts
 u32 OS_GetProcMode(void); // OS_GetProcMode
-void *NNS_FndAdjustFrmHeap(void *heap);
-u32 NNS_FndGetGroupIDForExpHeap(void *heap);
-u32 NNS_FndSetGroupIDForExpHeap(void *heap, u16 id);
+u32 NNS_FndAdjustFrmHeap(void *heap);
+u16 NNS_FndGetGroupIDForExpHeap(void *heap);
+u16 NNS_FndSetGroupIDForExpHeap(void *heap, u16 id);
 u32 NNS_FndGetSizeForMBlockExpHeap(void *p);
 u32 NNS_FndFreeToFrmHeap(void *heap, s32);
 void NNS_FndVisitAllocatedForExpHeap(void *heap, void (*visitor)(void *block, void *heap, u32 param), u32 param);
@@ -108,9 +108,9 @@ void NNS_FndDestroyExpHeap(void *heap);
 void *NNS_FndCreateFrmHeapEx(void *p, u32 size, u32 opt);
 void *NNS_FndCreateExpHeapEx(void *p, u32 size, u32 opt);
 BOOL OS_TryLockMutex(void *p);
-u32 OS_GetArenaLo(u32); // OS_GetArenaLo(id)
-u32 OS_GetArenaHi(u32);
-void *OS_AllocFromArenaLo(u32, u32, u32);
+void *OS_GetArenaLo(s32 id);
+void *OS_GetArenaHi(s32 id);
+void *OS_AllocFromArenaLo(s32 id, u32 size, u32 align);
 ThreadHook OS_SetSwitchThreadCallback(ThreadHook);
 void OS_SetThreadParameter(void *thread, void *v);
 void *OS_GetThreadParameter(void *thread);
@@ -180,8 +180,8 @@ extern "C" void Heap_InitSystem(void) {
     t = *(s32 *)&sRootHeapSize;
     size = sRootHeapSize;
     if (t == 0) {
-        size = OS_GetArenaLo(0);
-        size = OS_GetArenaHi(sRootHeapArenaId) - ((size + 31) & ~31);
+        uptr lo = (uptr)OS_GetArenaLo(0);
+        size = (uptr)OS_GetArenaHi(sRootHeapArenaId) - ((lo + 31) & ~(uptr)31);
     }
 #ifdef HOST64
     {
@@ -197,22 +197,22 @@ extern "C" void Heap_InitSystem(void) {
     if (Heap_CreateRootHeap(OS_AllocFromArenaLo(sRootHeapArenaId, size, 32), size) != NULL) Heap_InstallThreadSwitchCallback();
 }
 
-Heap::Heap(u32 a, u32 b, Heap *parent) {
-    regionStart = a;
-    regionSize = b;
+Heap::Heap(void *start, u32 size, Heap *parent) {
+    regionStart = start;
+    regionSize = size;
     parentHeap = parent;
     heapFlags = 0;
     heapFlags = 0x4000;
 }
 
 ExpHeap::ExpHeap(void *block, u32 size, Heap *parent, void *handle)
-    : Heap((u32)block, size, parent) {
+    : Heap(block, size, parent) {
     heapHandle = handle;
     OS_InitMutex(&mutex);
 }
 
 FrameHeap::FrameHeap(void *block, u32 size, Heap *parent, void *handle)
-    : Heap((u32)block, size, parent) {
+    : Heap(block, size, parent) {
     heapHandle = handle;
 }
 
@@ -341,7 +341,7 @@ void Heap::destroy() {
     Heap *parent;
     lock();
     doDestroy();
-    regionStart = 0;
+    regionStart = NULL;
     regionSize = 0;
     unlock();
     parent = parentHeap;
@@ -471,7 +471,7 @@ s32 ExpHeap::doResize(void *p, u32 size) {
 }
 
 s32 FrameHeap::doResize(void *p, u32 size) {
-    return (s32)NNS_FndResizeForMBlockFrmHeap(heapHandle, (u32)p, size);
+    return (s32)NNS_FndResizeForMBlockFrmHeap(heapHandle, (uptr)p, size);  // (the block as u32: unk_02100d44.c)
 }
 
 void Heap::free(void *p) {
@@ -519,43 +519,44 @@ u32 FrameHeap::vfunc_30(void *p) {
     return (u32)-1;
 }
 
-void *ExpHeap::changeGroupId(u16 id) {
-    return (void *)NNS_FndSetGroupIDForExpHeap(heapHandle, id);
+u16 ExpHeap::changeGroupId(u16 id) {
+    return NNS_FndSetGroupIDForExpHeap(heapHandle, id);
 }
 
-void *FrameHeap::changeGroupId(u16 id) {
-    return NULL;
+u16 FrameHeap::changeGroupId(u16 id) {
+    return 0;
 }
 
-void *ExpHeap::getGroupId() {
-    return (void *)NNS_FndGetGroupIDForExpHeap(heapHandle);
+u16 ExpHeap::getGroupId() {
+    return NNS_FndGetGroupIDForExpHeap(heapHandle);
 }
 
-void *FrameHeap::getGroupId() {
-    return NULL;
+u16 FrameHeap::getGroupId() {
+    return 0;
 }
 
-void *Heap::adjust() {
-    void *r;
+u32 Heap::adjust() {
+    u32 r;
     lock();
     r = doAdjust();
-    if (r == NULL && (heapFlags & 0x4000)) Fatal_Trap();
+    if (r == 0 && (heapFlags & 0x4000)) Fatal_Trap();
     unlock();
     return r;
 }
 
-void *ExpHeap::doAdjust() {
-    return NULL;
+u32 ExpHeap::doAdjust() {
+    return 0;
 }
 
-void *FrameHeap::doAdjust() {
-    void *state = NNS_FndAdjustFrmHeap(heapHandle);
-    void *p;
-    if (state == NULL) return NULL;
-    p = (u8 *)state + sizeof(FrameHeap);
-    if (parentHeap->resize(this, (u32)p) < 0) return NULL;
-    regionSize = (u32)state;
-    return p;
+// shrinks the frame heap to its content, then its block in the parent (the FrameHeap object and the frame heap)
+u32 FrameHeap::doAdjust() {
+    u32 heapSize = NNS_FndAdjustFrmHeap(heapHandle);
+    u32 total;
+    if (heapSize == 0) return 0;
+    total = heapSize + sizeof(FrameHeap);
+    if (parentHeap->resize(this, total) < 0) return 0;
+    regionSize = heapSize;
+    return total;
 }
 
 u32 Heap::setFlags(u32 flags) {

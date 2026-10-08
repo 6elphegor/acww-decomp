@@ -182,7 +182,7 @@ static inline BOOL SPI_NvramSoftwareReset(void)
 
 // NVRAM access state machine (PXI tag 4): sends the SPI NVRAM command words through the NitroSDK-style
 // SPI_Nvram* inline helpers, then polls the PXI result flag / status register.
-u32 NVRAMm_ExecuteCommand(u32 cmd, u32 address, u16 size, u32 data)
+u32 NVRAMm_ExecuteCommand(u32 cmd, u32 address, u16 size, void *data)
 {
     BOOL result = FALSE;
     u64 start;
@@ -191,13 +191,13 @@ u32 NVRAMm_ExecuteCommand(u32 cmd, u32 address, u16 size, u32 data)
             data_021f5c54 = 0;
             switch (cmd) {
             case 1:
-                result = SPI_NvramReadDataBytes(address, size, (u8 *)data);
+                result = SPI_NvramReadDataBytes(address, size, data);
                 break;
             case 2:
                 result = SPI_NvramWriteEnable();
                 break;
             case 3:
-                result = SPI_NvramPageWrite(address, size, (const u8 *)data);
+                result = SPI_NvramPageWrite(address, size, data);
                 start = OS_GetTick();
                 break;
             case 4:

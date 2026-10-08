@@ -1,9 +1,9 @@
-#define PROTO_LOCAL_abs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02100234.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_0210169c.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) code, list.c, heap.c, expheap.c (first part): autoload_2 0x02100234-0x02100708. ARM code, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
@@ -63,13 +63,13 @@ typedef struct ExpHead {
     union { u16 raw; struct { u16 allocMode : 1; u16 pad : 15; } f; } feature;
 } ExpHead;
 
-extern u32 abs(s32);          // abs
+extern s32 abs(s32 x);        // src/autoload_2/unk_0212703c.c
 extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32(data, dest, size)
 extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
+#define HH(e) ((HeapHead *)((u8 *)(e) - __builtin_offsetof(HeapHead, u)))  // from its ExpHead / FrmHead part
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -89,14 +89,6 @@ static inline void SetGroupID(MBlock *b, u32 g) {
 static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
-}
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
-static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
-static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
-    if (GetOptFlag(h) & 1) {
-        volatile u32 zero = 0;
-        MIi_CpuClear32(zero, (void *)dst, size);
-    }
 }
 
 void NNSi_FndFinalizeHeap(HeapHead *heap);
@@ -244,9 +236,9 @@ u32 NNS_FndGetAllocatableSizeForExpHeapEx(HeapHead *heap, s32 alignment) {
         maxSize = 0;
         offsetMin = -1;
         for (b = heap->u.exp.freeHead; b != 0; b = b->next) {
-            u32 mblock = (u32)b + sizeof(MBlock);
-            u32 start = (alignment - 1 + mblock) & ~(alignment - 1);
-            u32 end = b->size + mblock;
+            uptr mblock = (uptr)(b + 1);
+            uptr start = (alignment - 1 + mblock) & ~(uptr)(alignment - 1);
+            uptr end = b->size + mblock;
             if (start < end) {
                 u32 sz = end - start;
                 u32 off = start - mblock;
@@ -292,7 +284,7 @@ u32 NNS_FndGetSizeForMBlockExpHeap(u32 memBlock) {
 HeapHead *FindContainHeap(NNSFndList *list, HeapHead *mem) {
     HeapHead *child = 0;
     while ((child = NNS_FndGetNextListObject(list, child)) != 0) {
-        if (child->start <= (u32)mem && (u32)mem < child->end) {
+        if (child->start <= (uptr)mem && (uptr)mem < child->end) {
             HeapHead *r = FindContainHeap(&child->childList, mem);
             if (r == 0) r = child;
             return r;
@@ -317,9 +309,9 @@ void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt) 
     heap->attr.raw = 0;
     heap->attr.raw &= ~0xff;
     heap->attr.raw |= opt & 0xff;
-    NNS_FndInitList(&heap->childList, (u32)&((HeapHead *)0)->link);  // (4 on the DS)
+    NNS_FndInitList(&heap->childList, __builtin_offsetof(HeapHead, link));
     if (data_021f5ca0 == 0) {
-        NNS_FndInitList(&data_021f5ca4, (u32)&((HeapHead *)0)->link);
+        NNS_FndInitList(&data_021f5ca4, __builtin_offsetof(HeapHead, link));
         data_021f5ca0 = 1;
     }
     NNS_FndAppendListObject(FindListContainHeap(heap), heap);

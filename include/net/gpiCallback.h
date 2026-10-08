@@ -6,9 +6,12 @@
 // GP callback (cf. GameSpy GP SDK gpiCallback.h GPICallback) and a queued callback call (GPICallbackData), see gpiAddCallback /
 // gpiCallCallback (src/ov065/unk_ov065_0227df0c.cpp gpiCallback.c).
 
+// A GP callback: (connection, the operation's result argument, the caller's param).
+typedef void (*GPCallback)(void *, void *, void *);
+
 struct GPICallback {
-    /* 0x0 */ s32 callback;
-    /* 0x4 */ s32 param;
+    /* 0x0 */ GPCallback callback;
+    /* 0x4 */ void *param;
 };
 
 // One-member wrapper of a GPICallback (not an SDK type): the code copies callbacks through it, and a plain GPICallback
@@ -19,8 +22,8 @@ struct GPICallbackCopy {
 
 // GPICallbackData: the SDK has a GPICallback member at 0x00; here it is spelled out as callback / param.
 struct GPICallbackData {
-    /* 0x00 */ void (*callback)(void *, void *, s32);
-    /* 0x04 */ s32 param;
+    /* 0x00 */ GPCallback callback;
+    /* 0x04 */ void *param;
     /* 0x08 */ void *arg;
     /* 0x0c */ s32 type;
     /* 0x10 */ void *operationID;

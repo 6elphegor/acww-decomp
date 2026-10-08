@@ -12,7 +12,6 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "types64.h"
-#define PROTO_LOCAL_memcmp  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020fe848.h"
 #include "proto/autoload_2/unk_0211d20c.h"
 #include "proto/autoload_2/unk_0212703c.h"
@@ -51,7 +50,7 @@ extern volatile u16 data_021f5c50;
 extern volatile u32 data_021f5c54;
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[];
-extern s32 memcmp(const void *a, const void *b, u32 n);
+extern int memcmp(const void *a, const void *b, u32 n);            // src/autoload_2/unk_02128030.c
 extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern void DC_StoreRange(void *p, u32 n);
@@ -84,7 +83,7 @@ BOOL writeDisable(void);
 BOOL verify(void *ref, u32 addr, u32 size, void *tmp);
 void writeNvram(u32 addr, u16 size, void *src);
 BOOL readNvram(u32 addr, u32 size, void *dst);
-u32 NVRAMm_ExecuteCommand(u32 cmd, u32 a1, u16 a2, u32 a3);
+u32 NVRAMm_ExecuteCommand(u32 cmd, u32 a1, u16 a2, void *data); // src/autoload_2/unk_020fea34.c
 BOOL DWC_BACKUPlCheckAddress(u8 *p);
 BOOL DWC_BACKUPlCheckIp(u8 *a, u8 *b);
 BOOL DWC_BACKUPlCheckSsid(u8 *p);
@@ -102,8 +101,8 @@ BOOL checkAp(u8 *page);
 s32 DWC_BM_Init(u8 *p);
 u8 *DWCi_BACKUPlConvWifiInfo(S *p);
 s32 DWC_BM_Init(u8 *p);
-BOOL DWCi_AUTH_MakeWiFiID(u32 v);
-BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v);
+BOOL DWCi_AUTH_MakeWiFiID(u8 *buf);
+BOOL DWCi_AUTH_UpDateWiFiID(S *p, u8 *buf);
 extern s32 RTC_GetDate(Date *d);
 extern s32 RTC_GetTime(Time *t);
 extern s32 OS_IsTickAvailable(void);
@@ -201,7 +200,7 @@ BOOL readNvram(u32 addr, u32 size, void *dst) {
     }
     PXI_SetFifoRecvCallback(4, Callback_NVRAM);
     for (;;) {
-        if (NVRAMm_ExecuteCommand(1, addr, size, (u32)dst) == 1) {
+        if (NVRAMm_ExecuteCommand(1, addr, size, dst) == 1) {
             break;
         }
         WaitByLoop(0x40000);
@@ -217,7 +216,7 @@ void writeNvram(u32 addr, u16 size, void *src) {
     PXI_SetFifoRecvCallback(4, Callback_NVRAM);
     DC_StoreRange(src, size);
     for (;;) {
-        if (NVRAMm_ExecuteCommand(2, addr, size, (u32)src) == 1) {
+        if (NVRAMm_ExecuteCommand(2, addr, size, src) == 1) {
             break;
         }
         WaitByLoop(0x40000);

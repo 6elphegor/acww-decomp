@@ -13,9 +13,8 @@
 #include "gfx/SplViews.h"
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
-#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020f92d4.h"
+#include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_020fa398.h"
 #include "proto/autoload_2/unk_020fa39c.h"
 #include "proto/autoload_2/unk_021104ac.h"
@@ -89,10 +88,6 @@ void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 }
 
 
-extern "C" {
-extern u32 (*data_0213bc18)(u32, u32, u32);
-extern u32 (*data_0213bc10)(u32, u32, u32);
-}
 
 typedef void (*TexFn)(void *);
 typedef void (*DrawFn)(Mc *, Node *, u32);
@@ -149,7 +144,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
     s32 acc[3];
     if (e->cb) e->cb(e, 0);
     if (hp->h56 == 0 || e->h56 < hp->h56) {
-        if (e->h56 % e->c104 == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) spl_gen_ptcl(e, HOST_AT(m, 20, freelist, 0));
+        if (e->h56 % e->c104 == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) spl_gen_ptcl(e, &m->freelist);
     }
     if (h.b8) {
         arr[n].fn = spl_scl_in_out;
@@ -202,7 +197,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
             if (h.b16) {
                 s32 d = (p->h38 << 12) - (FxMul(p->h36 << 12, b14->c13 << 12) >> 8);
                 if (d >= 0) {
-                    if ((d >> 12) % b14->c14 == 0) spl_gen_child(p, e, HOST_AT(m, 20, freelist, 0));
+                    if ((d >> 12) % b14->c14 == 0) spl_gen_child(p, e, &m->freelist);
                 }
             }
             if (((HdrU *)e->res->p0)->b30) {
@@ -213,7 +208,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
                 if (m->b12 > m->b6) m->b12 = m->b0;
             }
             p->h38 = p->h38 + 1;
-            if (p->h38 > p->h36) spl_push_front(HOST_AT(m, 20, freelist, 0), spl_del(HOST_AT(e, 8, l8, 0), p));
+            if (p->h38 > p->h36) spl_push_front(&m->freelist, spl_del(&e->l8, p));
             p = next;
         } while (p != 0);
     }
@@ -259,7 +254,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
                     if (m->b12 > m->b6) m->b12 = m->b0;
                 }
                 p->h38 = p->h38 + 1;
-                if (p->h38 > p->h36) spl_push_front(HOST_AT(m, 20, freelist, 0), spl_del(HOST_AT(e, 16, l16, 0), p));
+                if (p->h38 > p->h36) spl_push_front(&m->freelist, spl_del(&e->l16, p));
                 p = next;
             } while (p != 0);
         }

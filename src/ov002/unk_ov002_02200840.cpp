@@ -646,8 +646,8 @@ extern "C" void *_ZN8MenuProcC2Ev(MenuProc *self) {
     *(void *volatile *)self = _ZTV8GameProc + 8;
     *(void **)self = _ZTV8MenuProc + 8;
     new (&self->keyRepeat) KeyRepeat();
-    self->openMenu.node.prev = NULL;
-    self->openMenu.node.next = NULL;
+    self->openMenuLink.prev = 0;
+    self->openMenuLink.next = 0;
     new (&self->slide) MenuSlide();
     return self;
 }
@@ -659,13 +659,13 @@ BOOL MenuProc::preCreate() {
         return FALSE;
     }
     menuId = (s32)param;
-    openMenu.owner = this;
+    openMenuOwner = this;
     ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7);
     return TRUE;
 }
 
 void MenuProc::postCreate(s32 a) {
-    MenuCtrl_AddOpenMenu(&openMenu);
+    MenuCtrl_AddOpenMenu(&openMenuLink);
     if (a == 2) {
         void *p = ProcBase_GetParent(this);
         if (p != 0) {
@@ -686,7 +686,7 @@ BOOL MenuProc::preDelete() {
 
 BOOL MenuProc::postDelete(s32 a) {
     if (a == 2) {
-        MenuCtrl_RemoveOpenMenu(&openMenu);
+        MenuCtrl_RemoveOpenMenu(&openMenuLink);
     }
     return _ZN8ProcBase10postDeleteEv(this, a);
 }

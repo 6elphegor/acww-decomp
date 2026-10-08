@@ -1,14 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK-era library code, autoload_2 0x0212703c-0x02128030. ARM code, mwcc 1.2/base, -O4,p.
+#include "types.h"
 #include "nitro/io_access.h"
-typedef unsigned char u8;
-typedef signed char s8;
-typedef unsigned short u16;
-typedef short s16;
-typedef unsigned int u32;
-typedef int s32;
-typedef int BOOL;
-#define NULL ((void *)0)
 
 typedef struct { u32 c1; u32 c2; } Cycle;
 typedef struct { u16 a; u8 b[3]; u8 pad; u16 c; u32 d; } Work;
@@ -21,27 +14,16 @@ extern Buf data_02200080;
 extern u8 data_02200084[];
 extern u32 data_0220005c;
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
-#define PROTO_LOCAL_CTRDG_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CTRDGi_CallbackForInitModuleInfo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CTRDGi_PulledOutCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL___close_console  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL___exit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL___flush_line_buffered_output_files  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL___read_console  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL___write_console  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_abort  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_memcpy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02117984.h"
 #include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_02133ad0.h"
 #include "proto/autoload_2/unk_0213510c.h"
 #include "proto/main/unk_0206d49c.h"
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
-extern u8 data_02200298[];
+extern OSMutex data_02200298[9];  // the C library's critical-region mutexes (unk_02128030.c); [0]: exit
 extern u32 data_02200250;
 extern s32 data_02200274;
 extern s32 data_02200148;
@@ -49,9 +31,7 @@ extern u32 data_0220014c;
 extern void (*data_02200144)(void);
 extern void (*data_02200150[])(void);
 extern void (*data_02200140)(void);
-extern BOOL OS_TryLockMutex(void *);
-extern void OS_LockMutex(void *);
-extern void OS_UnlockMutex(void *);
+extern BOOL OS_TryLockMutex(OSMutex *mutex);  // (assembly)
 
 extern void CpuSet(void *src, void *dst, u32 mode);
 extern void WaitByLoop(u32);
@@ -106,33 +86,25 @@ typedef struct _FILE {
     u32 save_buffer_len;
     u32 buffer_pos;
     int (*position_proc)();
-    int (*read_proc)(u32 handle, u8 *buf, u32 *count, void *ref);
-    int (*write_proc)(u32 handle, u8 *buf, u32 *count, void *ref);
-    int (*close_proc)();
+    int (*read_proc)(u32 handle, u8 *buf, size_t *count, void *ref);
+    int (*write_proc)(u32 handle, u8 *buf, size_t *count, void *ref);
+    int (*close_proc)(u32 handle);
     void *ref_con;
 } FILE;
 extern FILE data_0213c238[3];
 extern s32 fflush(FILE *);
+extern void *memcpy(void *dst, const void *src, u32 n);  // (unk_02128030.c; its header declares it for C++ only)
 extern u32 data_0213c320;
 extern double _f2d(u32);
 extern void __prep_buffer(FILE *);
 extern s32 fwide(FILE *, s32);
-extern void *memcpy(void *, const void *, u32);
 extern u32 func_0213335c(u32, u32);
-extern s32 __flush_line_buffered_output_files(void);
 extern s32 __load_buffer(FILE *, u32 *, s32);
 /* prototypes */
 u32 __fread(void *ptr, u32 memb_size, u32 num_memb, FILE *file);
 void __prep_buffer(FILE *file);
 s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment);
 s32 __flush_buffer(FILE *file, u32 *bytes_flushed);
-s32 __flush_line_buffered_output_files(void);
-void abort(void);
-void exit(s32 status);
-void __exit(s32 status);
-void CTRDG_Init(void);
-void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data);
-void CTRDGi_PulledOutCallback(u32 tag, u32 data);
 void CTRDGi_ChangeLatestAccessCycle(Cycle *p);
 void CTRDGi_RestoreAccessCycle(Cycle *p);
 
@@ -269,7 +241,11 @@ s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment) {
     s32 ret;
     __prep_buffer(file);
     if (alignment == 1) file->buffer_len = file->buffer_size;
-    ret = file->read_proc(file->handle, file->buffer, &file->buffer_len, file->ref_con);
+    {
+        size_t n = file->buffer_len;  // (the procedures take a size_t count)
+        ret = file->read_proc(file->handle, file->buffer, &n, file->ref_con);
+        file->buffer_len = n;
+    }
     if (ret == 2) file->buffer_len = 0;
     if (bytes_loaded) *bytes_loaded = file->buffer_len;
     if (ret != 0) return ret;
@@ -285,7 +261,11 @@ s32 __flush_buffer(FILE *file, u32 *bytes_flushed) {
     if (n != 0) {
         file->buffer_len = n;
         if (!file->mode.binary_io) __convert_from_newlines(file->buffer, &file->buffer_len);
-        ret = file->write_proc(file->handle, file->buffer, &file->buffer_len, file->ref_con);
+        {
+            size_t len = file->buffer_len;  // (the procedures take a size_t count)
+            ret = file->write_proc(file->handle, file->buffer, &len, file->ref_con);
+            file->buffer_len = len;
+        }
         if (bytes_flushed) *bytes_flushed = file->buffer_len;
         if (ret != 0) return ret;
         file->position += file->buffer_len;
@@ -354,13 +334,13 @@ void exit(s32 status) {
 
 // MSL __exit: recursive exit-mutex lock, run atexit table, termination hook, shut down C library
 void __exit(s32 status) {
-    if (OS_TryLockMutex(data_02200298) == 0) {
+    if (OS_TryLockMutex(&data_02200298[0]) == 0) {
         data_02200250 = data_021fcc2c.list->id;
         data_02200274 = 1;
     } else if (data_02200250 == data_021fcc2c.list->id) {
         data_02200274++;
     } else {
-        OS_LockMutex(data_02200298);
+        OS_LockMutex(&data_02200298[0]);
         data_02200250 = data_021fcc2c.list->id;
         data_02200274 = 1;
     }
@@ -368,7 +348,7 @@ void __exit(s32 status) {
         data_02200150[--data_02200148]();
     }
     if (--data_02200274 == 0) {
-        OS_UnlockMutex(data_02200298);
+        OS_UnlockMutex(&data_02200298[0]);
     }
     if (data_02200140 != NULL) {
         data_02200140();
@@ -429,7 +409,7 @@ u8 MATH_CalcChecksum8(const u8 *p, u32 len) {
     u32 n;
     u32 blk;
     u32 sum = 0;
-    if ((u32)p & 1) {
+    if ((uptr)p & 1) {
         sum += *p++;
         len--;
     }
@@ -625,7 +605,7 @@ void CTRDGi_InitModuleInfo(void) {
     w->d = b->f_ac;
     MIi_CpuCopy32(0xffff0020, data_02200084, 0x9c);
     DC_FlushAll();
-    CTRDGi_SendtoPxi(((((u32)&data_02200080 - 0x02000000) >> 5) << 6) | 1);
+    CTRDGi_SendtoPxi(((((uptr)&data_02200080 - 0x02000000) >> 5) << 6) | 1);  // (main RAM offset in a PXI word)
     while (data_02200054[0] != 1) {
         WaitByLoop(1);
     }
@@ -687,9 +667,10 @@ void CTRDGi_RestoreAccessCycle(Cycle *p) {
 extern u8 data_0220034c[0x100], data_0220044c[0x100], data_0220054c[0x100]; // their 256-byte buffers (bss, defined below)
 // the console procedures (C++ runtime area); in this FILE layout they sit in the read/write/close slots, one word after
 // position_proc
-int __read_console();
-int __write_console(u32 handle, u8 *buf, u32 *count, void *ref);
-int __close_console(u32 handle, u8 *buf, u32 *count, void *ref);
+// (unk_02133d04.cpp; its generated header declares them for C++ only)
+int __read_console(u32 handle, u8 *buffer, size_t *count, void *idle_proc);
+int __write_console(u32 handle, u8 *buffer, size_t *count, void *idle_proc);
+int __close_console(u32 handle);
 // autoload_3 .bss 0x0220034c-0x0220064c: the console streams' buffers (defined before __files: this order gives the
 // original one after mwcc's size sort)
 u8 data_0220054c[0x100];

@@ -6,8 +6,8 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
-#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PM_Init  // declared below: the shared prototype conflicts with the calls here
+#include "sys/OSThread.h"
+#include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02117984.h"
 #include "proto/autoload_2/unk_0211c8e8.h"
 #include "proto/main/unk_0206d49c.h"
@@ -166,7 +166,7 @@ extern u32 data_021feb34;
 extern PMCbInfo *data_021feb38;
 extern u32 data_021feb3c;
 extern PMCbInfo *data_021feb40;
-extern u8 data_021feb54[0x18];
+extern OSMutex data_021feb54;
 extern PMFlag data_021feb6c[4];
 extern PMDest data_021feb70[4];
 extern RTCWork data_021feb90;
@@ -177,7 +177,6 @@ extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8
 extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
-extern void OS_InitMutex(void *p);
 extern BOOL RTCi_WriteRawStatus2Async(void);
 
 void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
@@ -255,7 +254,7 @@ void PM_Init(void) {
     for (i = 0; i < 4; i++) {
         data_021feb6c[i].flag = 0;
     }
-    OS_InitMutex(data_021feb54);
+    OS_InitMutex(&data_021feb54);
     data_021feb3c = *(volatile u32 *)0x027ffc3c;
 }
 
@@ -314,4 +313,4 @@ u32 data_021feb34;
 PMCbInfo *data_021feb38;
 u32 data_021feb30;
 PMWork data_021feb44;
-u8 data_021feb54[0x18];
+OSMutex data_021feb54; // (a DS-sized byte array before: OS_InitMutex wrote past it on 64-bit hosts)

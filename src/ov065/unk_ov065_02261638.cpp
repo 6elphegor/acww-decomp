@@ -14,16 +14,23 @@
 #include "proto/main/unk_02000b44.h"
 #include "proto/ov065/unk_ov065_02261638.h"
 
+// ARP cache entry (sArpCache, 8 entries; Arp_UpdateCache, IpStack_TimerThreadMain)
+struct ArpCacheEntry {
+    s32 ipAddr;
+    u8 macAddr[6];
+    u16 lastUsed;
+};
+
 extern "C" u8 data_ov065_0228f3c0[0x800] = {0};
 extern "C" u8 sIpRecvThreadStack[0x800] = {0};
-extern "C" u8 sIpFragTable[0x1c0] = {0};
+extern "C" IpFragEntry sIpFragTable[8] = {};
 extern "C" u8 sTimerThreadTxBuf[0x180] = {0};
 extern "C" u8 sTimerThreadRxBuf[0x180] = {0};
-extern "C" u8 sIpTimerThread[0xc0] = {0};
-extern "C" u8 sIpRecvThread[0xc0] = {0};
-extern "C" u32 sTimerThreadSoc[25] = {0};
-extern "C" u32 sTcpResetSoc[25] = {0};
-extern "C" u8 sArpCache[0x60] = {0};
+extern "C" OSThread sIpTimerThread = {};
+extern "C" OSThread sIpRecvThread = {};
+extern "C" IpSocket sTimerThreadSoc = {};
+extern "C" IpSocket sTcpResetSoc = {};
+extern "C" ArpCacheEntry sArpCache[8] = {};
 extern "C" u8 data_ov065_0228ec1c[0x3c] = {0};
 extern "C" u64 sIpRandState[3] = {0};
 extern "C" u8 sLlcSnapHeader[12] = {0xaa, 0xaa, 3, 0, 0, 0, 8, 0, 0, 0, 0, 0};
@@ -80,17 +87,17 @@ extern u32 sGateway;
 extern u32 sNetmask;
 extern u32 gOwnIp;
 extern u32 sIpThreadPriority;
-extern u8 sIpRecvThread[];
-extern u8 sIpTimerThread[];
+extern OSThread sIpRecvThread;
+extern OSThread sIpTimerThread;
 extern u32 sRecvRingWaiter;
-extern u32 sRecvRingBuf;
+extern u8 *sRecvRingBuf;
 extern u32 sRecvRingSize;
 extern void (*sIpIdleCallback)(void);
 extern u32 sIpTimerStopRequest;
 extern u32 sIpStackStatus;
 extern u32 sDnsServers[2];
 extern u32 sDhcpServerId;
-extern u8 sArpCache[];
+extern ArpCacheEntry sArpCache[8];
 extern OSThreadInfo data_021fcc2c;
 extern IpFragEntry sIpFragTable[8];
 extern void (*sIpFree)(void *);
@@ -121,13 +128,13 @@ s32 Ssl_ReadRecord(IpSocket *);
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void OS_SetThreadPriority(void *, u32);
-void OS_JoinThread(void *);
-void OS_DestroyThread(void *);
-s32 OS_IsThreadTerminated(void *);
-void OS_WakeupThreadDirect(void *);
+void OS_SetThreadPriority(OSThread *, u32);
+void OS_JoinThread(OSThread *);
+void OS_DestroyThread(OSThread *);
+s32 OS_IsThreadTerminated(OSThread *);
+void OS_WakeupThreadDirect(OSThread *);
 void OS_Sleep(u32 msec);
-void OS_CreateThread(void *, void *, u32, void *, u32, u32);
+void OS_CreateThread(OSThread *, void *, u32, void *, u32, u32);
 void OS_GetMacAddress(void *);
 void *MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
@@ -177,7 +184,7 @@ void IpStack_ResetAddress(u32 a) {
     sDnsServers[1] = 0;
     sDhcpServerId = 0;
     if (f) {
-        MI_CpuFill8(sArpCache, 0, 0x60);
+        MI_CpuFill8(sArpCache, 0, sizeof(sArpCache));
         {
             OSThread *t = data_021fcc2c.list;
             if (t != 0) {
@@ -228,7 +235,7 @@ s32 IpStack_ReturnTrue(void) {
 }
 
 void IpStack_Init(IpStackConfig *c) {
-    OSi_ReferSymbol(0x2000bfc);
+    OSi_ReferSymbol((void *)0x2000bfc);
     u64 seed = *(u64 *)&c->randSeed;
     if (seed != 0) {
         sIpRandState.x = seed;
@@ -276,19 +283,19 @@ void IpStack_Init(IpStackConfig *c) {
     }
     OS_GetMacAddress(sOwnMac);
     sArpConflict = 0;
-    OS_CreateThread(sIpRecvThread, (void *)IpStack_RecvThreadMain, 0, sIpRecvThreadStack + 0x800, 0x800, sIpThreadPriority);
-    OS_CreateThread(sIpTimerThread, (void *)IpStack_TimerThreadMain, 0, data_ov065_0228f3c0 + 0x800, 0x800, sIpThreadPriority);
-    OS_WakeupThreadDirect(sIpRecvThread);
-    OS_WakeupThreadDirect(sIpTimerThread);
+    OS_CreateThread(&sIpRecvThread, (void *)IpStack_RecvThreadMain, 0, sIpRecvThreadStack + 0x800, 0x800, sIpThreadPriority);
+    OS_CreateThread(&sIpTimerThread, (void *)IpStack_TimerThreadMain, 0, data_ov065_0228f3c0 + 0x800, 0x800, sIpThreadPriority);
+    OS_WakeupThreadDirect(&sIpRecvThread);
+    OS_WakeupThreadDirect(&sIpTimerThread);
 }
 
 s32 IpStack_RequestStop(void) {
     u32 s = OS_DisableInterrupts();
-    s32 r = OS_IsThreadTerminated(sIpTimerThread);
+    s32 r = OS_IsThreadTerminated(&sIpTimerThread);
     if (r == 0) {
         if (sIpTimerStopRequest == 0) {
             sIpTimerStopRequest = 1;
-            OS_WakeupThreadDirect(sIpTimerThread);
+            OS_WakeupThreadDirect(&sIpTimerThread);
         }
     }
     OS_RestoreInterrupts(s);
@@ -301,8 +308,8 @@ void IpStack_SetIdleCallback(void (*f)(void)) {
 
 void IpStack_Shutdown(void) {
     IpStack_RequestStop();
-    OS_JoinThread(sIpTimerThread);
-    OS_DestroyThread(sIpRecvThread);
+    OS_JoinThread(&sIpTimerThread);
+    OS_DestroyThread(&sIpRecvThread);
     sRecvRingWaiter = 0;
     IpStack_ResetAddress(0);
     sRecvRingBuf = 0;
@@ -311,13 +318,13 @@ void IpStack_Shutdown(void) {
 
 void IpStack_SetThreadPriority(u32 a) {
     sIpThreadPriority = a;
-    OS_SetThreadPriority(sIpRecvThread, a);
-    OS_SetThreadPriority(sIpTimerThread, a);
+    OS_SetThreadPriority(&sIpRecvThread, a);
+    OS_SetThreadPriority(&sIpTimerThread, a);
 }
 
 u32 Ip_ChecksumAdd(u8 *p, u32 len, u32 sum) {
     u32 t;
-    if (((u32)p & 1) != 0) {
+    if (((uptr)p & 1) != 0) {
         while (len > 1) {
             t = (u16)((p[0] << 8) | p[1]);
             sum += t;
@@ -396,13 +403,6 @@ u32 Ip_GetNextHop(u32 a) {
 }
 
 }
-
-// ARP cache entry (sArpCache, 8 entries; Arp_UpdateCache, IpStack_TimerThreadMain)
-struct ArpCacheEntry {
-    s32 ipAddr;
-    u8 macAddr[6];
-    u16 lastUsed;
-};
 
 namespace Unk_ov065_02263f24_Ns {
 
@@ -889,7 +889,7 @@ void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c)
     u8 *h = c->txBuf;
     u8 *q = h + 0x22;
     *(u16 *)(h + 0x22) = 8;
-    *(u16 *)(q + 4) = (u32)data_021fcc2c.current;
+    *(u16 *)(q + 4) = (u16)(uptr)data_021fcc2c.current;  // echo id: the thread's address
     *(u16 *)(q + 2) = 0;
     u16 id = sIcmpSeq;
     c->localPort = id;
@@ -918,7 +918,7 @@ typedef OSThread Thr;
 extern "C" {
 extern OSThreadInfo data_021fcc2c;
 extern Sess sTcpResetSoc;
-extern u8 sIpRecvThread[];
+extern OSThread sIpRecvThread;
 extern u32 sIcmpEchoReplyEnabled;
 extern u32 gOwnIp;
 extern u8 sOwnMac[];
@@ -929,7 +929,7 @@ extern u16 sMss;
 // main module
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(void *, void *, u32);
-void OS_WakeupThreadDirect(u32);
+void OS_WakeupThreadDirect(OSThread *);
 
 // same overlay, out of range
 s32 Arp_SendRequest(u32);
@@ -942,7 +942,7 @@ u32 Ip_ChecksumAdd(u8 *, u32, u32);
 s32 Eth_MacDiffers(u8 *, u8 *);
 s32 Arp_UpdateCache(u8 *, u32, u32);
 s32 Eth_SendFrame(u8 *, u32, u32, u32);
-s32 Ip_Send(u8 *, u32, u32, u32, u32, u32);
+void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
 
 // in range
 void Tcp_AcceptSyn(u8 *, u8 *, Sess *);
@@ -1009,7 +1009,7 @@ void Udp_Send(u8 *a, u32 b, Sess *s) {
     *(u16 *)(p + 6) = 0;
     u32 v = Ip_ChecksumFinish((u16)Ip_ChecksumAdd(a, b, Ip_ChecksumAdd(p - 0xc, 0x14, 0)));
     *(u16 *)(p + 6) = BS16(v);
-    Ip_Send(p, 8, (u32)a, b, s->remoteAddr, 0x11);
+    Ip_Send(p, 8, a, b, s->remoteAddr, 0x11);
 }
 
 void Tcp_SendSegment(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
@@ -1017,7 +1017,7 @@ void Tcp_SendSegment(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
     u32 hl;
     u32 f2;
     if (s->state != 0) {
-        if ((u8 *)data_021fcc2c.current == sIpRecvThread) {
+        if (data_021fcc2c.current == &sIpRecvThread) {
             p = sRecvThreadTxBuf;
         } else {
             p = s->txBuf + 0x22;
@@ -1051,7 +1051,7 @@ void Tcp_SendSegment(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
         }
         u32 v = Ip_ChecksumFinish((u16)Ip_ChecksumAdd(x, y, Ip_ChecksumAdd(p - 0xc, hl + 0xc, 0)));
         *(u16 *)(p + 0x10) = BS16(v);
-        Ip_Send(p, hl, (u32)x, y, s->remoteAddr, 6);
+        Ip_Send(p, hl, x, y, s->remoteAddr, 6);
         s->sendNext = s->sendNext + y;
         flags &= 3;
         if (flags != 0) {
@@ -1131,7 +1131,7 @@ void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c) {
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
         Sess *s = (Sess *)t->specific[0];
-        if (s != 0 && s->ownerThread != 0 && s->state == 11 && (u16)(u32)s->ownerThread == *(u16 *)(b + 4)
+        if (s != 0 && s->ownerThread != 0 && s->state == 11 && (u16)(uptr)s->ownerThread == *(u16 *)(b + 4)
             && s->localPort == *(u16 *)(b + 6) && s->rxLen == 0 && s->remoteAddr == Swap32(a + 0xc)) {
             u32 m = s->rxBufSize;
             c -= 8;
@@ -1143,7 +1143,7 @@ void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c) {
             MI_CpuCopy8(b + 8, s->rxBuf, s->rxLen);
             if (s->waitReason == 3) {
                 s->waitReason = 0;
-                OS_WakeupThreadDirect((u32)s->ownerThread);
+                OS_WakeupThreadDirect(s->ownerThread);
             }
             return;
         }
@@ -1261,7 +1261,7 @@ s32 Ip_IsNextHopResolved(u32 x) {
 }
 
 void Tcp_SendControl(Sess *s, u32 a, u32 b) {
-    if (Ip_IsNextHopResolved(s->remoteAddr) != 0 || (u8 *)data_021fcc2c.current != sIpRecvThread) {
+    if (Ip_IsNextHopResolved(s->remoteAddr) != 0 || data_021fcc2c.current != &sIpRecvThread) {
         Tcp_SendSegment(0, 0, s, a, b);
     } else {
         Arp_SendRequest(Ip_GetNextHop(s->remoteAddr));
@@ -1329,6 +1329,13 @@ struct IpHeader {
     u16 dstAddrLo;
 };
 
+struct UdpHeader {
+    u16 srcPort;
+    u16 dstPort;
+    u16 length;
+    u16 checksum;
+};
+
 struct TcpHeader {
     u16 srcPort;
     u16 dstPort;
@@ -1358,7 +1365,7 @@ void OS_WakeupThreadDirect(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 
-s32 Ip_VerifyPseudoChecksum(TcpHeader *, u32, IpHeader *, u32);
+s32 Ip_VerifyPseudoChecksum(void *, u32, IpHeader *, u32);
 s32 Tcp_SendReset(IpHeader *, TcpHeader *, u32, u16);
 s32 Tcp_SendAck(IpSocket *, u16);
 s32 Tcp_SendFinAck(IpSocket *, u16);
@@ -1383,7 +1390,7 @@ void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r);
 void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r);
 void Tcp_InputRst(IpHeader *p, TcpHeader *q);
 void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r);
-void Udp_Input(IpHeader *p, TcpHeader *q, u32 c);
+void Udp_Input(IpHeader *p, UdpHeader *q, u32 c);
 u8 *Ip_Reassemble(IpHeader *p, s32 *out);
 }
 
@@ -1610,8 +1617,8 @@ void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r) {
     }
 }
 
-void Udp_Input(IpHeader *p, TcpHeader *q, u32 c) {
-    if (q->h6 != 0 && Ip_VerifyPseudoChecksum(q, c, p, 0x11) != 0) return;
+void Udp_Input(IpHeader *p, UdpHeader *q, u32 c) {
+    if (q->checksum != 0 && Ip_VerifyPseudoChecksum(q, c, p, 0x11) != 0) return;
     OSThread *s = data_021fcc2c.list;
     for (; s != 0; s = s->next) {
         IpSocket *k = (IpSocket *)s->specific[0];
@@ -1629,7 +1636,7 @@ void Udp_Input(IpHeader *p, TcpHeader *q, u32 c) {
             c -= 8;
             if (c > m) k->rxLen = m;
             else k->rxLen = c;
-            MI_CpuCopy8(HOST_AT(q, 8, ackHi, 0), k->rxBuf, k->rxLen);
+            MI_CpuCopy8(q + 1, k->rxBuf, k->rxLen);  // the payload after the header
             if (k->waitReason == 3) {
                 k->waitReason = 0;
                 OS_WakeupThreadDirect(k->ownerThread);
@@ -1780,7 +1787,7 @@ u8 *Ip_Reassemble(u8 *, s32 *);
 void Arp_ProbeAddressConflict();
 void IpSoc_FlushPending();
 s32 IpSoc_GetReadLength();
-u32 IpSoc_Write(u32, u32);
+u32 IpSoc_Write(const u8 *, u32);
 u32 IpSoc_WriteTwo(u8 *, u32, u8 *, u32);
 u32 Tcp_Write(u8 *, u32, u8 *, u32, Sess *);
 void Tcp_SendTwoBuffers(u8 *, u32, u8 *, u32, Sess *, u32);
@@ -1846,7 +1853,7 @@ u32 Tcp_SendSegments(u8 *a, u32 b, Sess *s, u32 flag);
 void Tcp_SendTwoBuffers(u8 *a, u32 b, u8 *c, u32 d, Sess *s, u32 flag);
 u32 Tcp_Write(u8 *a, u32 b, u8 *c, u32 d, Sess *s);
 u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d);
-u32 IpSoc_Write(u32 a, u32 b);
+u32 IpSoc_Write(const u8 *a, u32 b);
 s32 IpSoc_GetReadLength();
 void IpSoc_FlushPending();
 void Arp_ProbeAddressConflict();
@@ -2310,7 +2317,7 @@ u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d) {
     return 0;
 }
 
-u32 IpSoc_Write(u32 a, u32 b) {
+u32 IpSoc_Write(const u8 *a, u32 b) {
     Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         u32 r;
@@ -2401,9 +2408,9 @@ extern u32 sOwnMac[];
 extern u32 sDnsServers[2];
 extern MATHRandContext32 sIpRandState;
 extern ArpCacheEntry sArpCache[8];
-extern u32 sTimerThreadSoc[25];
+extern IpSocket sTimerThreadSoc;
 extern u8 sTimerThreadTxBuf[];
-extern u32 sTimerThreadRxBuf;
+extern u8 sTimerThreadRxBuf[];
 extern IpFragEntry sIpFragTable[8];
 extern u8 sDhcpHostName[];
 extern OSThreadInfo data_021fcc2c;
@@ -2424,7 +2431,7 @@ void Ssl_ExpireSessions(u32 a);
 s32 Eth_MacDiffers(const void *a, const void *b);
 void IpSoc_Init(void);
 void IpSoc_SetUdp(void);
-void IpSoc_Bind(u32 a, u32 b, s32 c);
+void IpSoc_Bind(u32 a, u32 b, u32 c);
 void IpSoc_Release(void);
 void IpSoc_Unuse(void);
 void IpSoc_Use(void *a);
@@ -2461,7 +2468,7 @@ u8 *Dns_SkipName(u8 *p);
 s32 Dns_Query(const u8 *name, u32 type, s32 xid);
 u32 IpAddr_ParseDecimal(const u8 *p, const u8 **end);
 s32 IpAddr_Parse(const u8 *s, u32 *out);
-s32 Dns_QueryServer(const u8 *a, const u8 *b, s32 c);
+s32 Dns_QueryServer(const u8 *a, u32 server, s32 c);
 }
 
 void IpStack_TimerThreadMain(void) {
@@ -2476,12 +2483,12 @@ void IpStack_TimerThreadMain(void) {
     IpFragEntry *q;
 
     sIpTimerStopRequest = 0;
-    MI_CpuFill8(sTimerThreadSoc, 0, 0x64);
-    sTimerThreadSoc[15] = 0x180;
-    sTimerThreadSoc[16] = (u32)&sTimerThreadRxBuf;
-    sTimerThreadSoc[18] = 0x180;
-    sTimerThreadSoc[19] = (u32)&sTimerThreadTxBuf;
-    IpSoc_Use(sTimerThreadSoc);
+    MI_CpuFill8(&sTimerThreadSoc, 0, sizeof(sTimerThreadSoc));
+    sTimerThreadSoc.rxBufSize = 0x180;
+    sTimerThreadSoc.rxBuf = sTimerThreadRxBuf;
+    sTimerThreadSoc.txBufSize = 0x180;
+    sTimerThreadSoc.txBuf = sTimerThreadTxBuf;
+    IpSoc_Use(&sTimerThreadSoc);
     state = 0;
     first = 1;
     cnt = 1;
@@ -3009,14 +3016,15 @@ s32 IpAddr_Parse(const u8 *s, u32 *out) {
     return 1;
 }
 
-s32 Dns_QueryServer(const u8 *a, const u8 *b, s32 c) {
+// query the DNS server (an IP address; 0: none) for name
+s32 Dns_QueryServer(const u8 *a, u32 server, s32 c) {
     s32 r;
-    if (b == NULL) {
+    if (server == 0) {
         return -1;
     } else {
         IpSoc_Init();
         IpSoc_SetUdp();
-        IpSoc_Bind(0, 0x35, (s32)b);
+        IpSoc_Bind(0, 0x35, server);
         r = Dns_Query(a, 1, c);
         IpSoc_Release();
     }
@@ -3033,16 +3041,17 @@ namespace Unk_ov065_02260de4_Ns {
 
 extern "C" {
 s64 _ll_mul(s64, s64);
-s32 Dns_QueryServer(s32, u32, u32);
-s32 IpAddr_Parse(s32, s32 *);
+s32 Dns_QueryServer(const u8 *, u32, s32);
+s32 IpAddr_Parse(const u8 *, u32 *);
 extern u32 sDnsServers[2];
 extern IpRandStateSignedStep sIpRandState;
 
 extern "C" {
-s32 Dns_Resolve(s32 self);
+s32 Dns_Resolve(const char *self);
 }
 
-s32 Dns_Resolve(s32 self) {
+// the IP address of the host name (or dotted address) self; 0 if not found
+s32 Dns_Resolve(const char *self) {
     struct {
         u8 flag[2];
         s32 res;
@@ -3058,7 +3067,7 @@ s32 Dns_Resolve(s32 self) {
     l.port[0] = (u32)(((g->x >> 32) * 0x10000) >> 32);
     g->x = _ll_mul(g->mul, g->x) + g->add;
     l.port[1] = (u32)(((g->x >> 32) * 0x10000) >> 32);
-    if (IpAddr_Parse(self, &l.res)) {
+    if (IpAddr_Parse((const u8 *)self, (u32 *)&l.res)) {
         return l.res;
     }
     l.flag[0] = 1;
@@ -3070,7 +3079,7 @@ s32 Dns_Resolve(s32 self) {
         pt = sDnsServers;
         for (; j < 2; pf++, pp++, pt++, j++) {
             if (*pf) {
-                l.res = Dns_QueryServer(self, *pt, *pp);
+                l.res = Dns_QueryServer((const u8 *)self, *pt, *pp);
                 if (l.res != 0 && l.res != -1) {
                     goto done;
                 }

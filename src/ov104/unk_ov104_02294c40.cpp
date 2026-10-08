@@ -652,7 +652,7 @@ void PostOfficeMenu_InitParts(S *s) {
     s->popup.init(3, 0, 0);
     s->letterView.setLayer(3);
     for (i = 0; i < 10; i++) {
-        Letter_Clear((u8 *)s->boxLetters + i * 0xf4);
+        Letter_Clear((u8 *)s->boxLetters + i * sizeof(Letter));
     }
     PostOfficeMenu_BackupPocketLetters(s);
     s->touchHoldDelay = 0;
@@ -1257,7 +1257,7 @@ u8 PostOfficeMenu::findFreePocketSlot() {
 u8 PostOfficeMenu::findFreeBoxSlot() {
     u8 *p = (u8 *)boxLetters;
     s32 i;
-    for (i = 0; i < 10; p += 0xf4, i++) {
+    for (i = 0; i < 10; p += sizeof(Letter), i++) {
         if (((LetterView *)p)->getState() == 0) {
             return i + 0x15;
         }
@@ -1812,7 +1812,7 @@ void PostOfficeMenu_BackupPocketLetters(S *s) {
     u8 id;
     s32 i = 0;
     for (id = 0xb; id <= 0x14; i++, id++) {
-        Letter_Copy((u8 *)s->pocketLettersBackup + i * 0xf4, s->getSlotLetter(id));
+        Letter_Copy((u8 *)s->pocketLettersBackup + i * sizeof(Letter), s->getSlotLetter(id));
     }
 }
 
@@ -1820,14 +1820,14 @@ void PostOfficeMenu_RestorePocketLetters(S *s) {
     u8 id;
     s32 i = 0;
     for (id = 0xb; id <= 0x14; i++, id++) {
-        s->putLetterInSlot(id, (u8 *)s->pocketLettersBackup + i * 0xf4);
+        s->putLetterInSlot(id, (u8 *)s->pocketLettersBackup + i * sizeof(Letter));
     }
 }
 
 void PostOfficeMenu::returnUnsentLetters(s32 flag) {
     s32 i;
     u8 *e = (u8 *)boxLetters;
-    for (i = 0; i < 10; e += 0xf4, i++) {
+    for (i = 0; i < 10; e += sizeof(Letter), i++) {
         if (flag != 0 && (sentLetterMask & (1 << i))) {
             Letter_Clear(e);
         } else if (((LetterView *)e)->getState() != 0) {
@@ -1863,7 +1863,7 @@ void PostOfficeMenu::pressCancelButton() {
 BOOL PostOfficeMenu::hasFutureLetter(void *p) {
     u8 *q = (u8 *)p;
     s32 i;
-    for (i = 0; i < 10; q += 0xf4, i++) {
+    for (i = 0; i < 10; q += sizeof(Letter), i++) {
         if (((LetterView *)q)->getState() == 1 && ((LetterView *)q)->isToFutureSelf() != 0) {
             return TRUE;
         }
@@ -1876,7 +1876,7 @@ u32 PostOfficeMenu::takeFutureLetter(void *p) {
     s32 t = -1;
     u8 *q = (u8 *)p;
     s32 i;
-    for (i = 0; i < 10; q += 0xf4, i++) {
+    for (i = 0; i < 10; q += sizeof(Letter), i++) {
         if (((LetterView *)q)->getState() == 1 && ((LetterView *)q)->isToFutureSelf() != 0) {
             if (t == -1) {
                 t = i;
@@ -1890,7 +1890,7 @@ u32 PostOfficeMenu::takeFutureLetter(void *p) {
             r |= 2;
         } else {
             r |= 1;
-            u8 *e = (u8 *)p + t * 0xf4;
+            u8 *e = (u8 *)p + t * sizeof(Letter);
             MenuCtrl_SetFutureLetter(e);
             Letter_Clear(e);
         }
@@ -1905,7 +1905,7 @@ u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
     u16 r = 0;
     u8 *q = (u8 *)p;
     s32 i;
-    for (i = 0; i < 10; q += 0xf4, i++) {
+    for (i = 0; i < 10; q += sizeof(Letter), i++) {
         if (((LetterView *)q)->getState() != 0) {
             if (((LetterView *)q)->getState() != 1) {
                 if (flag != 0) {
@@ -1942,7 +1942,7 @@ u32 PostOfficeMenu::queueLetters(void *p) {
     }
     u8 *q = (u8 *)p;
     s32 i;
-    for (i = 0; i < n; q += 0xf4, i++) {
+    for (i = 0; i < n; q += sizeof(Letter), i++) {
         if (((LetterView *)q)->getState() != 1) {
             Letter_Clear(q);
         } else if (((LetterView *)q)->isToFutureSelf() == 0) {
@@ -1977,7 +1977,7 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     TalkWindowState *obj;
     s32 z;
     s32 j;
-    for (; i < n; q += 0xf4, i++) {
+    for (; i < n; q += sizeof(Letter), i++) {
         if (((LetterView *)q)->isToFutureSelf() == 0) {
             t = LetterDelivery_FindAddresseePlayer(q);
             if (t != -2) {
@@ -2036,7 +2036,7 @@ u32 PostOfficeMenu::deliverVillagerLettersNow(void *p) {
     }
     u8 *q = (u8 *)p;
     s32 i;
-    for (i = 0; i < n; q += 0xf4, i++) {
+    for (i = 0; i < n; q += sizeof(Letter), i++) {
         if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
             LetterDelivery_SendToVillager(q);
             Letter_Clear(q);

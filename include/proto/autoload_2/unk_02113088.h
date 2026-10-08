@@ -30,6 +30,9 @@ void OSi_RescheduleThread(void);
 #ifndef PROTO_LOCAL_OS_YieldThread
 void OS_YieldThread(void);
 #endif
+#ifndef PROTO_LOCAL_OSi_SleepAlarmCallback
+void OSi_SleepAlarmCallback(void *arg);
+#endif
 #ifdef __cplusplus
 }
 #endif

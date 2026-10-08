@@ -110,7 +110,8 @@ typedef struct ResMatData {
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct A3 { s32 a[3]; } A3;
 
-// NNSG3dJntAnmResult (0x58 bytes)
+// NNSG3dJntAnmResult (0x58 bytes; include/nnsys/g3d_rt.h's G3dJntAnmResult has the same layout with arrays, as
+// getMdlTrans_ / getMdlRot_ / getMdlScale_ in autoload_2 take it)
 typedef struct JntAnm {
     u32 flag;          // 0x00
     VecFx32 scale;     // 0x04
@@ -234,13 +235,9 @@ extern fx32 FX_Div(fx32 a, fx32 b);                     // FX_Div
 extern void VEC_Normalize(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
 extern void VEC_CrossProduct(VecFx32 *a, VecFx32 *b, VecFx32 *dst); // VEC_CrossProduct
 extern void blendScaleVec_(VecFx32 *dst, const VecFx32 *src, fx32 ratio, u32 isOne);   // blend scale
-extern void getTransDataEx_(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void getTransData_(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getRotDataEx_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getScaleDataEx_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getScaleData_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void getMdlTrans_(JntAnm *pResult);
-extern void getMdlRot_(JntAnm *pResult);
 extern void getRotData_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult);
 
@@ -406,7 +403,7 @@ void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntA
         if (info & 2) {
             pResult->flag |= 4;
         } else {
-            getMdlTrans_(pResult);
+            getMdlTrans_((G3dJntAnmResult *)pResult);
         }
     }
     if (!(info & 0xc0)) {
@@ -434,7 +431,7 @@ void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntA
         if (info & 0x40) {
             pResult->flag |= 2;
         } else {
-            getMdlRot_(pResult);
+            getMdlRot_((G3dJntAnmResult *)pResult);
         }
     }
     if (!(info & 0x600)) {
@@ -478,7 +475,7 @@ void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntA
         if (info & 0x200) {
             pResult->flag |= 1;
         } else {
-            getMdlScale_(pResult);
+            getMdlScale_((G3dJntAnmResult *)pResult);
             return;
         }
     }

@@ -7,7 +7,6 @@
 #include "net/SockHostEnt.h"
 #include "net/gpi.h"
 #include "net/gpiPeer.h"
-#define PROTO_LOCAL_strzcpy  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
@@ -72,8 +71,8 @@ s32 shutdown(s32, s32);
 s32 closesocket(s32);
 s32 gpiRemoveOperation(void *, void *);
 s32 gpiDestroyPeer(void *, void *);
-s32 gpiProfileMap(void *, s32, s32);
-s32 gpiDisconnectCleanupProfile(void);
+s32 gpiProfileMap(GPConnection *, s32 (*)(GPConnection *, GPIProfile *, void *), void *);
+s32 gpiDisconnectCleanupProfile(GPConnection *h, GPIProfile *n);
 
 s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
 s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
@@ -128,14 +127,14 @@ void randomString(void *, s32);
 void gpiFindProfileByUser(GPConnection *, char *, char *, u32 **);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
 void gpiRemoveProfileByID(GPConnection *, s32);
-u32 *gpiProfileListAdd(GPConnection *, s32);
+GPIProfile *gpiProfileListAdd(GPConnection *, s32);
 void gpiRemoveOperation(GPConnection *, GPIOperation *);
 void gpiSetErrorString(GPConnection *, const char *);
 void gpiSetError(GPConnection *, s32, const void *);
 s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
 s32 gpiCheckForError(GPConnection *, char *, s32);
-void strzcpy(void *, char *, s32);
+void strzcpy(char *, const char *, s32);
 s32 gpiSendNewuser(GPConnection *, GPIConnectData *);
 s32 gpiSendLogin(GPConnection *, GPIConnectData *);
 
@@ -194,7 +193,7 @@ void gpiCallErrorCallback(GPConnection *, s32, s32);
 void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 char *goastrdup(const char *);
-s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
+s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, GPCallback, void *);
 void gpiFailedOpCallback(GPConnection *, GPIOperation *);
 void gpiDisconnect(GPConnection *, s32);
 s32 gpiProcess(GPConnection *, s32);
@@ -309,7 +308,7 @@ s32 gpiStartConnect(GPConnection *h, GPIOperation *n) {
 namespace Nc {
 extern "C" {
 s32 gpiConnect(GPConnection *h, const char *a1, const char *a2, const char *a3, const char *a4, const char *a5,
-                        const char *a6, const char *a7, s32 mode, s32 a9, s32 a10, s32 a11, s32 a12) {
+                        const char *a6, const char *a7, s32 mode, s32 a9, s32 a10, GPCallback a11, void *a12) {
     GPIConnection *ctx = *h;
     GPIConnectData *obj;
     GPIOperation *node;
@@ -341,12 +340,12 @@ s32 gpiConnect(GPConnection *h, const char *a1, const char *a2, const char *a3, 
     strzcpy(ctx->email, a3, 0x33);
     strzcpy(ctx->password, a4, 0x1f);
     _strlwr(ctx->email);
-    obj = (GPIConnectData *)GsUtil_Alloc(HOST_SIZED(0x308, GPIConnectData));
+    obj = (GPIConnectData *)GsUtil_Alloc(sizeof(GPIConnectData));
     if (obj == 0) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
-    memset(obj, 0, 0x308);
+    memset(obj, 0, sizeof(GPIConnectData));
     obj->newuser = a9;
     if (*a5 != 0 && *a6 != 0) {
         strzcpy(obj->authtoken, a5, 0x100);
@@ -656,22 +655,22 @@ s32 gpiProcessConnect(GPConnection *h, GPIOperation *n, char *line) {
             return 3;
         }
         if (c->infoCaching != 0) {
-            u32 *e = gpiProfileListAdd(h, c->profileid);
-            e[0] = c->profileid;
-            e[1] = c->userid;
+            GPIProfile *e = gpiProfileListAdd(h, c->profileid);
+            e->profileId = c->profileid;
+            e->userId = c->userid;
         }
         c->connectState = 3;
         pr = n->callback;
         if (pr.p.callback != 0) {
-            u32 *q = (u32 *)GsUtil_Alloc(0x20);
+            GPConnectResponseArg *q = (GPConnectResponseArg *)GsUtil_Alloc(sizeof(GPConnectResponseArg));
             if (q == NULL) {
                 gpiSetErrorString(h, "Out of memory.");
                 return 1;
             }
-            memset(q, 0, 0x20);
-            q[1] = c->profileid;
-            q[0] = 0;
-            strzcpy(q + 2, b2, 0x15);
+            memset(q, 0, sizeof(GPConnectResponseArg));
+            q->profile = c->profileid;
+            q->result = 0;
+            strzcpy(q->uniquenick, b2, 0x15);
             t = gpiAddCallback(h, pr.p, q, n, 0);
             if (t != 0) {
                 return t;
@@ -788,7 +787,7 @@ void gpiDisconnect(GPConnection *h, s32 a) {
         gpiDestroyPeer(h, cur);
     }
     ctx->peerList = NULL;
-    while (gpiProfileMap(h, (s32)gpiDisconnectCleanupProfile, 0) == 0) {
+    while (gpiProfileMap(h, (s32 (*)(GPConnection *, GPIProfile *, void *))gpiDisconnectCleanupProfile, NULL) == 0) {
     }
     }
 }
@@ -806,7 +805,7 @@ void gpiCallErrorCallback(GPConnection *h, s32 a, s32 b) {
     }
     p = *(GPICallbackCopy *)&ctx->callbacks[0];
     if (p.p.callback != 0) {
-        m = (GPErrorArg *)GsUtil_Alloc(HOST_SIZED(0x10, GPErrorArg));
+        m = (GPErrorArg *)GsUtil_Alloc(sizeof(GPErrorArg));
         if (m != NULL) {
             m->result = a;
             m->fatal = b;

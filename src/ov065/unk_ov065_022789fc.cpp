@@ -84,7 +84,7 @@ void OS_Sleep(s32 ms);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 CheckRcode(s32 a, s32 b);
-s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e);
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
 s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
@@ -284,7 +284,7 @@ s32 SetSockBlocking(s32 sock, s32 flag) {
 namespace FB {
 extern "C" {
 s32 SetReceiveBufferSize(s32 sock, s32 val) {
-    s32 t = setsockopt(sock, 0xffff, 0x1002, (s32)&val, 4);
+    s32 t = setsockopt(sock, 0xffff, 0x1002, &val, 4);
     BOOL r = FALSE;
     if (t != -1) {
         r = TRUE;
@@ -297,7 +297,7 @@ s32 SetReceiveBufferSize(s32 sock, s32 val) {
 namespace FB {
 extern "C" {
 s32 SetSendBufferSize(s32 sock, s32 val) {
-    s32 t = setsockopt(sock, 0xffff, 0x1001, (s32)&val, 4);
+    s32 t = setsockopt(sock, 0xffff, 0x1001, &val, 4);
     BOOL r = FALSE;
     if (t != -1) {
         r = TRUE;
@@ -407,7 +407,7 @@ s32 CanSendOnSocket(s32 a) {
 
 namespace FB {
 extern "C" {
-s32 getlocalhost() {
+SockHostEnt *getlocalhost() {
     localhost.hostName = (char *)"localhost";
     localhost.aliases = (char **)data_ov065_0229107c;
     localhost.addrType = 2;
@@ -416,12 +416,12 @@ s32 getlocalhost() {
     data_ov065_02291094.hostIp = 0;
     IpAddr_StoreBe32(SockCore_GetHostIp(), (u32 *)&data_ov065_02291094);
     if (data_ov065_02291094.hostIp == 0) {
-        return 0;
+        return NULL;
     }
     data_ov065_022910a8.firstAddr = (u32 *)&data_ov065_02291094;
     localhost.addrLength = 4;
     data_ov065_022910a8.listEnd = 0;
-    return (s32)&localhost;
+    return &localhost;
 }
 }
 }
@@ -581,7 +581,7 @@ s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len) {
 
 namespace FB {
 extern "C" {
-s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e) {
+s32 setsockopt(s32 a, s32 b, s32 c, const void *d, s32 e) {
     return CheckRcode(0, -1);
 }
 }

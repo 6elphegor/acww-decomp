@@ -97,7 +97,7 @@ typedef struct G3dRS {
     unsigned char *pResShp;              // 0xdc
     int posScale;                        // 0xe0
     int invPosScale;                     // 0xe4
-    void (*funcJntScale)(void *, void *, void *, void *); // 0xe8
+    void (*funcJntScale)(G3dJntAnmResult *, const int *, const unsigned char *, unsigned int); // 0xe8
     void (*funcJntMtx)(void *);          // 0xec
     void (*funcTexMtx)(void *);          // 0xf0
     G3dMatAnmResult tmpMatAnmResult;     // 0xf4

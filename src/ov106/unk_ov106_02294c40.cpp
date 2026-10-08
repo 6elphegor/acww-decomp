@@ -493,8 +493,8 @@ BOOL MailboxMenu::execClosed() {
     s32 i = 0;
     u8 *q = (u8 *)mailboxLetters;
     for (; i < 10; i++) {
-        Letter_Copy(p, q + i * 0xf4);
-        p += 0xf4;
+        Letter_Copy(p, q + i * sizeof(Letter));
+        p += sizeof(Letter);
     }
     ProcBase_RequestDelete(this);
     return TRUE;
@@ -665,12 +665,12 @@ void MailboxMenu::initParts() {
     ((PopupChoiceMenu *)&popup)->init(3, 0, 0);
     ((LetterRenderer *)&letterView)->setLayer(3);
     for (i = 0; i < 10; i++) {
-        Letter_Clear((u8 *)mailboxLetters + i * 0xf4);
+        Letter_Clear((u8 *)mailboxLetters + i * sizeof(Letter));
     }
     p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
     for (i = 0; i < 10; i++) {
-        Letter_Copy((u8 *)mailboxLetters + i * 0xf4, p);
-        p += 0xf4;
+        Letter_Copy((u8 *)mailboxLetters + i * sizeof(Letter), p);
+        p += sizeof(Letter);
     }
     setFlags(0x4000);
     touchHoldDelay = 0;
