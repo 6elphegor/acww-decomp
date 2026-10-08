@@ -11,7 +11,7 @@ class ReddShop {
 public:
     /* 0x00 */ ItemId arr[3];
     /* 0x08 */ ReddPassword s;
-    /* 0x10 */ u16 tbl[3];
+    /* 0x10 */ u8 sold[6];  // a bit per item (StockList_*)
 
     ReddShop();                             // C1 0x020ad414
     ~ReddShop();                            // D1 0x020ad3f0
