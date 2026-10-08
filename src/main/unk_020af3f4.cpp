@@ -6,13 +6,10 @@
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
 #include "field/LooseSnowballs.h"
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snowman_SendLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e2eb8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e2ebc  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02065330.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020af3f4.h"
@@ -20,23 +17,21 @@
 
 
 extern "C" {
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
-void Snowman_SendLetter(u32 a);
 extern const u16 sSnowmanPrizeItems[];
-extern u32 data_020e2eb8, data_020e2ebc;
 }
 
 extern "C" void Snowman_SendLetter(u32 idx) {
     if (idx < 13) {
         Loc488 l;
         l.b = sSnowmanPrizeItems[idx];
-        void *obj = PlayerData_GetCurrent();
+        PlayerData *obj = PlayerData_GetCurrent();
         if (obj) {
             Letter big;
             l.a = idx;
             ItemName s(&l.b);
             MailText_SetSlot(1, &s);
-            Letter_ComposeFromMail(&big, &l, "sp_npc_snowman", &data_020e2eb8, &data_020e2ebc, ((PlayerData *)(obj))->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&big, &l, (void *)"sp_npc_snowman", (u8 *)&data_020e2eb8,
+                                   (u8 *)&data_020e2ebc, obj->getPlayerId());
             ((LetterView *)(&big))->setPresent(l.b, 1);
             LetterDelivery_QueueOutgoing(&big, 0);
         }
@@ -44,19 +39,19 @@ extern "C" void Snowman_SendLetter(u32 idx) {
 }
 
 extern "C" void Snowman_SendPrizeLetter() {
-    void *obj = PlayerData_GetCurrent();
+    PlayerData *obj = PlayerData_GetCurrent();
     if (obj) {
         u32 count = 0;
         for (u32 i = 0; i < 13; i++) {
             u16 t = sSnowmanPrizeItems[i];
-            if (!Catalog_HasItem(((PlayerData *)(obj))->getCatalog(), &t)) count++;
+            if (!Catalog_HasItem((u8 *)obj->getCatalog(), &t)) count++;
         }
         if (count) {
             u32 r = (u32)Random_GlobalBelow(count);
             u32 c = 0;
             for (u32 i = 0; i < 13; i++) {
                 u16 t = sSnowmanPrizeItems[i];
-                if (!Catalog_HasItem(((PlayerData *)(obj))->getCatalog(), &t)) {
+                if (!Catalog_HasItem((u8 *)obj->getCatalog(), &t)) {
                     if (c == r) {
                         Snowman_SendLetter(i);
                         return;

@@ -7,63 +7,71 @@
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "types.h"
+struct TouchPickResult;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef PROTO_LOCAL_TouchTarget_ResolveNone
+void *TouchTarget_ResolveNone(void);
+#endif
+#ifndef PROTO_LOCAL_TouchTarget_ResolveAtm
+void *TouchTarget_ResolveAtm(void);
+#endif
+#ifndef PROTO_LOCAL_TouchTarget_ResolveRecycleBox
+void *TouchTarget_ResolveRecycleBox(void);
+#endif
+#ifndef PROTO_LOCAL_TouchTarget_ResolvePhone
+void *TouchTarget_ResolvePhone(void);
+#endif
+#ifdef __cplusplus
+}
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_TouchPickResult_GetTarget
-BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32 *out, s32 *a, u8 *b);
+BOOL TouchPickResult_GetTarget(TouchPickResult *obj, VecFx32 *out, s32 *a, u8 *b);
 #endif
 #ifndef PROTO_LOCAL_TouchPick_GetTargetObject
-s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb);
+void *TouchPick_GetTargetObject(TouchPickResult *a, s32 *pa, u8 *pb);
 #endif
 #ifndef PROTO_LOCAL_TouchPick_GetTappedObject
-s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb);
-#endif
-#ifndef PROTO_LOCAL_TouchTarget_ResolveNone
-s32 TouchTarget_ResolveNone(void);
+void *TouchPick_GetTappedObject(TouchPickResult *a, s32 *pa, u8 *pb);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolvePlayer
-s32 TouchTarget_ResolvePlayer(s32 a);
+void *TouchTarget_ResolvePlayer(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveVillager
-s32 TouchTarget_ResolveVillager(s32 a);
+void *TouchTarget_ResolveVillager(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveSpNpc
-s32 TouchTarget_ResolveSpNpc(s32 a);
+void *TouchTarget_ResolveSpNpc(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveBuilding
-s32 TouchTarget_ResolveBuilding(s32 a);
+void *TouchTarget_ResolveBuilding(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveBuildingAlt
-s32 TouchTarget_ResolveBuildingAlt(s32 a);
+void *TouchTarget_ResolveBuildingAlt(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveFurniture
-s32 TouchTarget_ResolveFurniture(s32 a);
+void *TouchTarget_ResolveFurniture(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveVillagerBoard
-s32 TouchTarget_ResolveVillagerBoard(s32 a);
-#endif
-#ifndef PROTO_LOCAL_TouchTarget_ResolveAtm
-s32 TouchTarget_ResolveAtm(void);
+void *TouchTarget_ResolveVillagerBoard(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveMuseumInfo
-s32 TouchTarget_ResolveMuseumInfo(s32 a);
-#endif
-#ifndef PROTO_LOCAL_TouchTarget_ResolveRecycleBox
-s32 TouchTarget_ResolveRecycleBox(void);
-#endif
-#ifndef PROTO_LOCAL_TouchTarget_ResolvePhone
-s32 TouchTarget_ResolvePhone(void);
+void *TouchTarget_ResolveMuseumInfo(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveBoardSign
-s32 TouchTarget_ResolveBoardSign(s32 a);
+void *TouchTarget_ResolveBoardSign(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_ResolveSnowball
-s32 TouchTarget_ResolveSnowball(s32 a);
+void *TouchTarget_ResolveSnowball(s32 a);
 #endif
 #ifndef PROTO_LOCAL_TouchTarget_Resolve
-s32 TouchTarget_Resolve(s32 idx, s32 arg);
+void *TouchTarget_Resolve(s32 idx, s32 arg);
 #endif
 }
 #endif

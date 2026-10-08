@@ -6,7 +6,7 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #ifdef __cplusplus
-#include "types.h"
+#include "sys/ProcBase.h"
 class GameRoot;
 #endif
 
@@ -30,7 +30,7 @@ GameRoot *GameRoot_Create();
 #endif
 }
 #ifndef PROTO_LOCAL_gGameRoot
-extern u32 gGameRoot;
+extern GameProc *gGameRoot;
 #endif
 #ifndef PROTO_LOCAL_sGameRootProfile
 extern ProcProfile sGameRootProfile;

@@ -4441,7 +4441,7 @@ extern "C" BOOL TvScreen_SetProgram(TvScreen *o, s32 a, s32 b) {
                     o->tvSound = 0;
                 }
                 ((Heap *)o->soundHeap)->freeAll();
-                o->tvSound = TvSound_Create((u32)(uptr)o->soundHeap, a);
+                o->tvSound = TvSound_Create((Heap *)o->soundHeap, a);  // (FrameHeap: a Heap)
                 if (o->tvSound) o->tvSound->callReset();
             }
         }

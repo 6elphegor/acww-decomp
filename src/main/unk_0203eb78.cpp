@@ -34,7 +34,6 @@ extern EventScheduleRule sEventSchedule[99];
 }
 
 extern "C" {
-extern s32 (*sCharInteractSyncRecvFns[])(u8 *, s32);
 }
 
 extern "C" {

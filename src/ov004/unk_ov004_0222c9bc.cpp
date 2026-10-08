@@ -2842,7 +2842,7 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
     u8 b;
     s32 t;
     VecFx32 v;
-    if (TouchPickResult_GetTarget((u8 *)Scene_GetTouchPicker(), &v, &t, &b)) {
+    if (TouchPickResult_GetTarget((TouchPickResult *)Scene_GetTouchPicker(), &v, &t, &b)) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {

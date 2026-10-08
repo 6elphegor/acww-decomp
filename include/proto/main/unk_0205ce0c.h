@@ -6,6 +6,7 @@
 #include "types.h"
 struct CharaFaceAnimPool;
 #ifdef __cplusplus
+#include "sys/Heap.h"
 #include "types.h"
 #endif
 
@@ -22,10 +23,10 @@ void CharaFaceAnimPool_Destroy();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_CharaFaceAnimPool_Create
-void CharaFaceAnimPool_Create(u32 parent);
+void CharaFaceAnimPool_Create(Heap *parent);
 #endif
 #ifndef PROTO_LOCAL_CharaFaceAnim_GetPath
-u8 *CharaFaceAnim_GetPath(u32 x);
+char *CharaFaceAnim_GetPath(u32 x);
 #endif
 #ifndef PROTO_LOCAL_CharaFaceAnim_GetAnimSize
 u32 CharaFaceAnim_GetAnimSize();
@@ -38,7 +39,7 @@ u32 CharaFaceAnim_GetKind(u32 x);
 #endif
 }
 #ifndef PROTO_LOCAL_sCharaFaceAnimPathBuf
-extern u8 sCharaFaceAnimPathBuf[0x14];
+extern char sCharaFaceAnimPathBuf[0x14];
 #endif
 #ifndef PROTO_LOCAL_sCharaFaceAnimPool
 extern CharaFaceAnimPool sCharaFaceAnimPool;

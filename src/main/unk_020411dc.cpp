@@ -1,40 +1,23 @@
-#include "uptr.h"
-#include "gfx/HBlankTask.h"
 #include "types.h"
-#include "snd/BgmSceneFade.h"
+#include "gfx/HBlankTask.h"
+#include "gfx/ScreenTransition.h"
+#include "snd/BgmManager.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_IrisWipe_End  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_IrisWipe_SetupLayers  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenTransition_HideCover  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ScreenTransition_OnHidden  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7500.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02037734.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_0205b69c.h"
 #include "proto/main/unk_0208e6d8.h"
 
-
+// A transition kind's handlers: begin, end, update (per frame), at VBlank
 struct ScreenTransitionType {
     void (*handlers[4])();
 };
-
-struct ScreenTransition {
-    u8 state;
-    u8 type;
-    u8 unk_02[2];
-    s32 progress;
-    s32 step;
-    s32 brightness;
-    s32 unk_10;
-};
-
-extern "C" {
-void IrisWipe_End();
-}
 
 extern const ScreenTransitionType sTransitionTypeTable[4];
 const ScreenTransitionType sTransitionTypeTable[4] = {
@@ -48,31 +31,20 @@ u8 sIrisWipeFlags;
 u8 data_021c3cb8;
 u16 *sIrisWipeActiveTable;
 ScreenTransition gScreenTransition;
-u8 sIrisWipeHBlankTask[HOST_SIZED(0x1c, HBlankTask)] HOST_ALIGN8;  // HBlankTask
+HBlankTask sIrisWipeHBlankTask;
 u16 sIrisWipeTableA[0x60];
 u16 sIrisWipeTableB[0x60];
 
-extern u32 data_021c1b3c;
-extern volatile u32 gTownEval[];
+extern BgmManager *data_021c1b3c;
 
 extern "C" {
-void MIi_CpuClear16(u32 v, u32 dst, u32 size);
-}
-static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
-    volatile u16 t = v;
-    MIi_CpuClear16(t, dst, size);
-}
-extern "C" {
-void ScreenLayers_ReleaseStub(u32);
-void ScreenLayers_AcquireStub(u32);
-s32 Math_StepS32Alt(void *, u32, s32);
+void MIi_CpuClear16(u16 v, void *dst, u32 size);
 s32 FX_Div(s32, s32);
 s32 FX_Sqrt(s32);
-void HBlank_Remove(void *);
-s32 HBlank_Add(void *, void *, void *, u32);
-void ScreenTransition_OnHidden();
-void ScreenTransition_HideCover();
-void IrisWipe_SetupLayers();
+}
+static inline void Unk_02041104_Fill(u16 v, void *dst, u32 size) {
+    volatile u16 t = v;
+    MIi_CpuClear16(t, dst, size);
 }
 
 extern "C" void ScreenFade_Begin() {
@@ -124,7 +96,7 @@ extern "C" void IrisWipe_VBlankRegs() {
 
 extern "C" void IrisWipe_SetupLayers() {
     volatile u16 *r;
-    ScreenLayers_AcquireStub(0);
+    ScreenLayers_AcquireStub();
     Gfx2d_EnableMainWindows(1);
     Gfx2d_EnableSubWindows(1);
     Gfx2d_SetMainWin0Planes(0x1b);
@@ -143,25 +115,26 @@ extern "C" void IrisWipe_SetupLayers() {
     IO_W(r, (IO_R(r) & 0x43) | 0x600);
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, 0x5000000, 4);
+    Unk_02041104_Fill(0x8000, (void *)0x5000000, 4);  // the main screen's backdrop colour
     Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     IO_AND(r, ~3);
     IO_W(r, (IO_R(r) & 0x43) | 0xe04);
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
-    Unk_02041104_Fill(0x8000, 0x5000400, 4);
+    Unk_02041104_Fill(0x8000, (void *)0x5000400, 4);  // the sub screen's
     Gfx2d_ShowSubPlanes(4);
 }
 
 extern "C" void IrisWipe_Begin() {
     volatile u16 z = 0;
     // the two tables are cleared together (they are adjacent in the original)
-    MIi_CpuClear16(z, (u32)sIrisWipeTableA, sizeof sIrisWipeTableA);
-    MIi_CpuClear16(z, (u32)sIrisWipeTableB, sizeof sIrisWipeTableB);
+    MIi_CpuClear16(z, sIrisWipeTableA, sizeof sIrisWipeTableA);
+    MIi_CpuClear16(z, sIrisWipeTableB, sizeof sIrisWipeTableB);
     sIrisWipeActiveTable = sIrisWipeTableA;
     IrisWipe_SetupLayers();
-    if (HBlank_Add(sIrisWipeHBlankTask, (void *)IrisWipe_HBlank, (void *)IrisWipe_VBlankRegs, 0) != 0) {
+    // (the H-blank handler goes to the task's parameter: HBlankTask keeps it in an s32)
+    if (HBlank_Add(&sIrisWipeHBlankTask, (s32)(uptr)IrisWipe_HBlank, IrisWipe_VBlankRegs, NULL) != 0) {
         sIrisWipeFlags |= 1;
     }
     if (gScreenTransition.progress == 0x1000) Gfx2d_SetBrightness(0);
@@ -171,12 +144,12 @@ extern "C" void IrisWipe_End() {
     Gfx2d_DisableMainWindows(1);
     Gfx2d_DisableSubWindows(1);
     if (sIrisWipeFlags & 1) {
-        HBlank_Remove(sIrisWipeHBlankTask);
+        HBlank_Remove(&sIrisWipeHBlankTask);
         sIrisWipeFlags &= ~1;
     }
     Gfx2d_HideMainPlanes(4);
     Gfx2d_HideSubPlanes(4);
-    ScreenLayers_ReleaseStub(0);
+    ScreenLayers_ReleaseStub();
 }
 
 extern "C" void IrisWipe_Update() {
@@ -187,12 +160,12 @@ extern "C" void IrisWipe_Update() {
     s32 v = s->progress;
     if (v == 0) {
         volatile u16 c = 0xff;
-        MIi_CpuClear16(c, (u32)p, 0xc0);
+        MIi_CpuClear16(c, p, 0xc0);
     } else if (v == 0x1000) {
         volatile u16 c = 0x8080;
     // the two tables are cleared together (they are adjacent in the original)
-    MIi_CpuClear16(c, (u32)sIrisWipeTableA, sizeof sIrisWipeTableA);
-    MIi_CpuClear16(c, (u32)sIrisWipeTableB, sizeof sIrisWipeTableB);
+    MIi_CpuClear16(c, sIrisWipeTableA, sizeof sIrisWipeTableA);
+    MIi_CpuClear16(c, sIrisWipeTableB, sizeof sIrisWipeTableB);
     } else {
         s32 h = ((0x1000 - v) * 160) >> 12;
         s32 h2 = (h * h) << 12;
@@ -260,7 +233,7 @@ extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
     fn = sTransitionTypeTable[a].handlers[0];
     if (fn) {
         fn();
-        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeOut();
+        data_021c1b3c->sceneFade.onFadeOut();
         TransitionCommIcon_RequestShow(a);
         if (a == 2) Snd_FadeOutScene();
     }
@@ -288,7 +261,7 @@ extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
         gScreenTransition.step = FX_Div(-0x1000, b << 12);
     }
     if (c == 0) {
-        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeIn();
+        data_021c1b3c->sceneFade.onFadeIn();
         TransitionCommIcon_RequestHide(a);
     }
     return TRUE;
@@ -334,7 +307,7 @@ extern "C" void ScreenTransition_VBlank() {
 }
 
 extern "C" void ScreenTransition_OnHidden() {
-    ScreenLayers_AcquireStub(0);
+    ScreenLayers_AcquireStub();
     Gfx2d_SetMainPlanes(0x10);
     Gfx2d_SetSubPlanes(0);
     ScreenTransition_ShowCover();
@@ -344,6 +317,6 @@ extern "C" void ScreenTransition_OnHidden() {
 extern "C" void ScreenTransition_HideCover() {
     Gfx2d_HideMainPlanes(4);
     Gfx2d_HideSubPlanes(4);
-    ScreenLayers_ReleaseStub(0);
+    ScreenLayers_ReleaseStub();
 }
 
