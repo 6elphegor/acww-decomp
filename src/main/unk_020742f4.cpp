@@ -34,6 +34,7 @@ struct VillagerShirtRecvStackPad {
 // ======== types of unk_020767f8.cpp ========
 #include "net/FriendEntry.h"
 #include "net/DwcFriendControl.h"
+#include "game/SaveManager.h"
 
 struct VillagerSyncLocals {
     u8 b;
@@ -177,14 +178,6 @@ void NpcTexPatBufPool_Free(void **);
 }
 extern "C" {
 void NpcTexPatBufPool_Alloc(void **);
-}
-extern "C" {
-#define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll(void *);
-}
-extern "C" {
-#define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void *);
 }
 extern "C" {
 s32 Town_GetMaxOutdoorVillagers();
@@ -1037,8 +1030,10 @@ extern "C" void Bbs_AddPost(void *dst) {
 
 extern "C" u8 Bbs_GetPostCount(void) { return ((BbsBoard *)(data_021e87d8))->getPostCount(); }
 
+}
 DwcFriendData::DwcFriendData() {}
 DwcFriendData::~DwcFriendData() {}
+namespace n5 {
 
 extern "C" void *DwcFriendData_Copy(void *p, void *q) {
     MI_CpuCopy8(q, p, 12);
@@ -1140,9 +1135,9 @@ extern "C" void FriendList_Compact(FriendEntry *list) {
         }
     }
 }
-extern "C" void FriendList_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x380) = v; }
+extern "C" void FriendList_SetChecksum(u8 *p, u16 v) { ((FriendList *)p)->checksum = v; }
 
-extern "C" u16 FriendList_GetChecksum(u8 *p) { return *(u16 *)(p + 0x380); }
+extern "C" u16 FriendList_GetChecksum(u8 *p) { return ((FriendList *)p)->checksum; }
 
 extern "C" void *FriendEntry_Construct(void *p) {
     new (p) DwcFriendData();
@@ -1161,29 +1156,29 @@ extern "C" void *FriendEntry_Copy(void *p, void *q) {
 
 
 extern "C" void FriendEntry_Clear(void *pp) {
-    u8 *p = (u8 *)pp;
-    DwcFriendData_Clear(p);
-    Mem_Clear(p + 0xc, 8);
-    Mem_Clear(p + 0x14, 8);
+    FriendEntry *p = (FriendEntry *)pp;
+    DwcFriendData_Clear(p->friendData);
+    Mem_Clear(p->playerName, 8);
+    Mem_Clear(p->townName, 8);
 }
 extern "C" void *FriendEntry_GetFriendData(void *p) { return p; }
-extern "C" u8 *FriendEntry_GetPlayerName(u8 *p) { return p + 0xc; }
+extern "C" u8 *FriendEntry_GetPlayerName(u8 *p) { return ((FriendEntry *)p)->playerName; }
 
-extern "C" u8 *FriendEntry_GetTownName(u8 *p) { return p + 0x14; }
+extern "C" u8 *FriendEntry_GetTownName(u8 *p) { return ((FriendEntry *)p)->townName; }
 
 extern "C" u8 *PlayerWifiData_Construct(u8 *p) {
-    new (p + 0x40) DwcFriendData();
+    new (((PlayerWifiData *)p)->ownFriendData) DwcFriendData();
     return p;
 }
 
 extern "C" u8 *PlayerWifiData_Destruct(u8 *p) {
-    ((DwcFriendData *)(p + 0x40))->~DwcFriendData();
+    ((DwcFriendData *)((PlayerWifiData *)p)->ownFriendData)->~DwcFriendData();
     return p;
 }
 
 extern "C" void PlayerWifiData_Create(u8 *p) {
     Net_CreateUserData(p, 0x41444d45);
-    void *r = DwcFriendData_GetBytes(p + 0x40);
+    void *r = DwcFriendData_GetBytes(((PlayerWifiData *)p)->ownFriendData);
     Net_MakeOwnFriendData(p, r);
 }
 extern "C" s64 PlayerWifiData_GetFriendCode(void *p) { return Net_GetOwnFriendKey(p); }
@@ -1193,11 +1188,11 @@ extern "C" s32 PlayerWifiData_IsConfigValid(void *p) { return Net_IsWifiConfigVa
 
 extern "C" void *PlayerWifiData_GetDwcUserData(void *p) { return p; }
 
-extern "C" u8 *PlayerWifiData_GetOwnFriendData(u8 *p) { return p + 0x40; }
+extern "C" u8 *PlayerWifiData_GetOwnFriendData(u8 *p) { return ((PlayerWifiData *)p)->ownFriendData; }
 
-extern "C" void PlayerWifiData_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x4c) = v; }
+extern "C" void PlayerWifiData_SetChecksum(u8 *p, u16 v) { ((PlayerWifiData *)p)->checksum = v; }
 
-extern "C" u16 PlayerWifiData_GetChecksum(u8 *p) { return *(u16 *)(p + 0x4c); }
+extern "C" u16 PlayerWifiData_GetChecksum(u8 *p) { return ((PlayerWifiData *)p)->checksum; }
 
 }
 OverlayHandle::~OverlayHandle() {}
@@ -2164,7 +2159,7 @@ extern "C" void CommRecv_Act3C() {
             }
         case 5:
             if (((ErrandRecord *)(PlanErrand_GetRecord(r4)))->isActive()) {
-                *((u8 *)r4 + 0x26) = l.b;  // (PlanErrand::count; PlanErrand is local to unk_02098e90.cpp)
+                r4->count = l.b;
             }
             break;
         }
@@ -2641,12 +2636,6 @@ extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-u32 _ZN15SaveManagerTalk13func_020a148cEv(SaveManager *);
-}
-extern "C" {
-}
-extern "C" {
-void _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager *, u32, u8);
 }
 extern "C" {
 }
@@ -2824,7 +2813,7 @@ extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
     }
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
-            _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), c, 1);
+            SaveManager_Get()->setTransferReceived(c, 1);
         }
     }
 }
@@ -2838,7 +2827,7 @@ extern "C" void CommCtrl_RecvVillagerTransferReply(u8 *a, s32 b) {
     }
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), gCommManager->myAid, 1);
+            SaveManager_Get()->setTransferReceived(gCommManager->myAid, 1);
         }
     }
 }
@@ -2962,7 +2951,7 @@ extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, &n, 4);
-            s32 r = _ZN15SaveManagerTalk13func_020a148cEv(SaveManager_Get());
+            s32 r = SaveManager_Get()->func_020a148c();
             CommManager *g = gCommManager;
             g->localSlot = 0;
             PlayerSession_SetDataIndex(g->localSlot, r);

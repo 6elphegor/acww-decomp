@@ -43,10 +43,9 @@ extern SaveData gSaveData;
 #include "proto/main/unk_020b0e60.h"
 #include "proto/main/unk_02097444.h"
 
-struct VisitorSpawner;
 struct VisitorSchedule;
-typedef void (VisitorSpawner::*Unk_02083c28_Fn)(VecFx32 *, u16 *, VisitorSchedule *);
-typedef u16 *(VisitorSpawner::*Unk_02083d14_Fn)();
+typedef void (NpcSpawner::*Unk_02083c28_Fn)(VecFx32 *, u16 *, VisitorSchedule *);
+typedef u16 *(NpcSpawner::*Unk_02083d14_Fn)();
 
 struct Unk_02083c28_VecZ {
     s32 x, y, z;
@@ -88,43 +87,6 @@ struct NpcNetRecord {
 };
 
 
-
-struct VisitorSpawner {
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcSpawner)
-    u8 pad[0xb0];  // DS +0x0 [0x70]
-    u8 overlayLoaded;  // DS +0x70
-    u8 pad2[0x3];  // DS +0x71 [0x3]
-    u32 overlayId;  // DS +0x74
-#else
-    u8 pad[0x70];
-    u8 overlayLoaded;
-    u8 pad2[3];
-    u32 overlayId;
-#endif
-
-    u16 *spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n);
-    BOOL pickVisitor();
-    void clearVisitorOverlay();
-    void setVisitorOverlay(u32 *p);
-};
-
-struct NpcSpawnerOverlayView {
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcSpawner)
-    u8 pad_00[0xb0];  // DS +0x0 [0x70]
-    u8 overlayLoaded;  // DS +0x70
-    u8 pad_71[0x3];  // DS +0x71 [0x3]
-    u32 overlayId;  // DS +0x74
-#else
-    u8 pad_00[0x70];
-    u8 overlayLoaded;
-    u8 pad_71[3];
-    u32 overlayId;
-#endif
-
-    void releaseVisitorOverlay();
-};
 
 struct Unk_02083314_K {
     u16 a;
@@ -859,8 +821,8 @@ BOOL NpcSpawner::onCreate()
             NpcSpawner_SpawnPlayerHouseVisitor(a);
         }
     }
-    ((VisitorSpawner *)(a))->pickVisitor();
-    u16 *r4 = (u16 *)((VisitorSpawner *)(a))->spawnScheduledVisitor(sVisitorSpawnTable, saved);
+    pickVisitor();
+    u16 *r4 = spawnScheduledVisitor(sVisitorSpawnTable, saved);
     if (r4) {
         ((VisitorSpawnFlags *)(TownSessionState_GetVisitorFlags((u8 *)TownSessionState_Get())))->setVisitorSpawned();
         if (r4[1] != 0xd008 || ((PeteFallState *)(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get())))->hasFallPos() != 0) {
@@ -876,7 +838,7 @@ BOOL NpcSpawner::onCreate()
 
 BOOL NpcSpawner::onDelete()
 {
-    ((NpcSpawnerOverlayView *)(this))->releaseVisitorOverlay();
+    releaseVisitorOverlay();
     F4::VisitorSchedule_Clear(&sVisitorSchedule);
     F4::VillagerStates_ClearFleaVillager();
     if (F4::Scene_InTown()) {
@@ -1217,12 +1179,12 @@ extern "C" BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g) {
     return r;
 }
 
-void VisitorSpawner::setVisitorOverlay(u32 *p) {
-    overlayLoaded = 1;
-    overlayId = *p;
+void NpcSpawner::setVisitorOverlay(u32 *p) {
+    visitorOverlayLoaded = 1;
+    visitorOverlayId = *p;
 }
 
-void VisitorSpawner::clearVisitorOverlay() { overlayLoaded = 0; }
+void NpcSpawner::clearVisitorOverlay() { visitorOverlayLoaded = 0; }
 
 extern "C" u16 *VisitorTable_FindByNpc(const u16 *key, VisitorSpawnEntry *tbl, s32 n) {
     s32 i;
@@ -1255,7 +1217,7 @@ extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos) {
     return 0;
 }
 
-BOOL VisitorSpawner::pickVisitor() {
+BOOL NpcSpawner::pickVisitor() {
     VisitorCheckEntry *e = sVisitorCheckTable;
     s32 ovl = F3::Scene_GetCurrent();
     s32 i = 0;
@@ -1272,7 +1234,7 @@ BOOL VisitorSpawner::pickVisitor() {
     return FALSE;
 }
 
-u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
+u16 *NpcSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
     u16 *result = 0;
     if (VisitorSchedule_IsSet(this, &sVisitorSchedule)) {
         VisitorSpawnEntry *e = (VisitorSpawnEntry *)VisitorTable_FindByProfile(&sVisitorSchedule.profile, tbl, n);
@@ -1311,11 +1273,11 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
     return result;
 }
 
-void NpcSpawnerOverlayView::releaseVisitorOverlay()
+void NpcSpawner::releaseVisitorOverlay()
 {
-    if (overlayLoaded != 0) {
-        OverlayMgr_Release(overlayId);
-        ((VisitorSpawner *)this)->clearVisitorOverlay();
+    if (visitorOverlayLoaded != 0) {
+        OverlayMgr_Release(visitorOverlayId);
+        clearVisitorOverlay();
     }
 }
 
@@ -1966,18 +1928,3 @@ void *sVisitorPlacePmf_Lyle[2] = {(void *)VisitorPlace_Lyle, 0};
 void *sVisitorCheckPmf_Tortimer[2] = {(void *)Visitor_CheckTortimer, 0};
 void *sVisitorPlacePmf_Resetti[2] = {(void *)VisitorPlace_Resetti, 0};
 
-#ifdef HOST64
-static_assert(__builtin_offsetof(NpcSpawnerOverlayView, pad_00) == 0x0, "NpcSpawnerOverlayView.pad_00");
-static_assert(__builtin_offsetof(NpcSpawnerOverlayView, overlayLoaded) == 0xb0, "NpcSpawnerOverlayView.overlayLoaded");
-static_assert(__builtin_offsetof(NpcSpawnerOverlayView, pad_71) == 0xb1, "NpcSpawnerOverlayView.pad_71");
-static_assert(__builtin_offsetof(NpcSpawnerOverlayView, overlayId) == 0xb4, "NpcSpawnerOverlayView.overlayId");
-static_assert(sizeof(NpcSpawnerOverlayView) == sizeof(NpcSpawner), "NpcSpawnerOverlayView: regenerate (tools/host_view_layout.py --remove)");
-#endif
-
-#ifdef HOST64
-static_assert(__builtin_offsetof(VisitorSpawner, pad) == 0x0, "VisitorSpawner.pad");
-static_assert(__builtin_offsetof(VisitorSpawner, overlayLoaded) == 0xb0, "VisitorSpawner.overlayLoaded");
-static_assert(__builtin_offsetof(VisitorSpawner, pad2) == 0xb1, "VisitorSpawner.pad2");
-static_assert(__builtin_offsetof(VisitorSpawner, overlayId) == 0xb4, "VisitorSpawner.overlayId");
-static_assert(sizeof(VisitorSpawner) == sizeof(NpcSpawner), "VisitorSpawner: regenerate (tools/host_view_layout.py --remove)");
-#endif

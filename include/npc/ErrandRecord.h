@@ -36,4 +36,18 @@ struct ErrandRecord {
     void init();
 };
 
+// A villager's planned errand for a player (0x29 bytes in the villager's plan block, VillagerPlanBlock_GetErrand):
+// the errand, the player, the step and the shown item. Defined in src/main/unk_02098e90.cpp (which still keeps its
+// own copy of the struct: switch it to this header).
+struct PlanErrand {
+    u8 errand[0xc];
+    u8 player[0x22 - 0xc];
+    u8 step;
+    u8 pad_23;
+    u16 shownItem;
+    u8 count;
+    u8 fossilGroup;
+    u8 flags;
+};
+
 #endif

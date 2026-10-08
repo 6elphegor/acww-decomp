@@ -907,7 +907,7 @@ extern "C" {
 
 extern CommManager *gCommManager;
 extern u16 gTownUpdater[];
-extern char gTownEval[];
+extern TownEval gTownEval;
 extern s32 sSeashellWeights[];
 extern char gSaveTownState[];
 extern char gContestRecord[];
@@ -927,7 +927,7 @@ s32 SceneId_IsTown(u32);
 s32 SceneId_IsTownUnk31(u32);
 TownBlockMap *TownBlockMap_Get();
 void Town_SpawnSeashellsInAcre(void *, void *, s32);
-void TownEval_EvaluateAcreAt(void *, void *, s32, s32);
+void TownEval_EvaluateAcreAt(TownEval *a, void *b, s32 i, s32 j);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, u32, void *, s32);
 s32 Town_IsSandAt(void *p, s32 x, s32 y);
 u16 Item_RandomSeashell(void *);
@@ -1044,7 +1044,7 @@ struct DayMonthYear { u8 b[3]; };
 extern u8 data_020da2a0[];
 extern u8 gSaveTownState[];
 extern u8 data_020c910c[];
-extern volatile u32 gTownEval[];
+extern TownEval gTownEval;
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
@@ -1428,7 +1428,7 @@ void BlockMap_PlaceItemAt(void *a0, void *a1, s32 a2, s32 a3, s32 a4, s32 a5, u1
 void BlockMap_PlaceItem(void *a, s32 x, s32 y, u32 v, s32 flag);
 void Area_PlaceItem(void *a, s32 x, s32 y, u32 v, s32 flag);
 void Scene_SetUnitItem(s32 x, s32 y, u32 item, s32 flag);
-void TownEval_EvaluateAcreAt(u8 *a, void *b, s32 i, s32 j);
+void TownEval_EvaluateAcreAt(TownEval *a, void *b, s32 i, s32 j);
 s32 TownEval_GetTownRank(void *a, s32 *p, s32 w, s32 h);
 }
 }
@@ -2838,8 +2838,8 @@ extern "C" s32 TownEval_GetTownRank(void *a, s32 *p, s32 w, s32 h) {
 }
 
 namespace nN {
-extern "C" void TownEval_EvaluateAcreAt(u8 *a, void *b, s32 i, s32 j) {
-    TownEval_EvaluateAcre((TownEvalAcre *)(a + 0x44 + i * 0x90 + j * 0x24), (TownBlockMap *)b, i + 1, j + 1);
+extern "C" void TownEval_EvaluateAcreAt(TownEval *a, void *b, s32 i, s32 j) {
+    TownEval_EvaluateAcre(&a->acres[i][j], (TownBlockMap *)b, i + 1, j + 1);
 }
 }
 
@@ -2921,7 +2921,7 @@ extern "C" void Town_WitherSapling(void *a, u32 v, s32 x, s32 y) {
     }
     s32 bx = x >> 4;
     s32 by = y >> 4;
-    u8 *p = &((TownEvalAcre (*)[4])nZ::gTownEval.acres)[bx][by].trees[0][0];
+    u8 *p = &nZ::gTownEval.acres[bx][by].trees[0][0];
     p += ((x - (bx << 4)) >> 3) * 2;
     s32 yi = (y - (by << 4)) >> 3;
     p[yi]--;
@@ -3653,7 +3653,7 @@ extern "C" void Town_LimitSaplingsPerQuadrant(void *a, void *q, s32 w, s32 h) {
     for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
             t = BlockMap_GetItemPtr(q, x + 1, y + 1, 0, 0, 0);
-            TreeQuota_InitAll(s, &((TownEvalAcre (*)[4])nZ::gTownEval.acres)[x][y]);
+            TreeQuota_InitAll(s, &nZ::gTownEval.acres[x][y]);
             for (i = 0; i < 256; t++, i++) {
                 if (t != NULL && Item_IsTreeStage0(t) != 0) {
                     TreeQuota_AddAt(s, *t, x + 1, y + 1, i & 15, (i >> 4) & 15);
@@ -3931,7 +3931,7 @@ extern "C" void Town_SpawnBeeTrees(void *a, void *b, s32 w, s32 h) {
     for (x = 0; x < w; x++) {
         ok = TRUE;
         for (y = 0; y < h; y++) {
-            if (((TownEvalAcre (*)[4])nZ::gTownEval.acres)[x][y].bits.beeTree != 0) {
+            if (nZ::gTownEval.acres[x][y].bits.beeTree != 0) {
                 ok = FALSE;
                 break;
             }
@@ -3961,7 +3961,7 @@ extern "C" void Town_SpawnBellTrees(void *a, void *b, s32 w, s32 h) {
     s32 x, y;
     for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
-            if (((TownEvalAcre (*)[4])nZ::gTownEval.acres)[x][y].bits.bellTree == 0) {
+            if (nZ::gTownEval.acres[x][y].bits.bellTree == 0) {
                 Town_MakeSpecialTree(a, b, x + 1, y + 1, 2);
             }
         }
@@ -4164,7 +4164,7 @@ extern "C" void Town_PickJacobsLadderAcre(Vec2 *out, void *a, s32 c, s32 d) {
         s32 x, y;
         for (y = 0; y < d; y++) {
             for (x = 0; x < c; x++) {
-                if (((TownEvalAcre (*)[4])nZ::gTownEval.acres)[x][y].bits.jacobsLadder == 0) {
+                if (nZ::gTownEval.acres[x][y].bits.jacobsLadder == 0) {
                     if (n == 0) {
                         out->x = x;
                         out->y = y;
@@ -4293,7 +4293,7 @@ extern "C" s32 Town_ConvertRandomRock(void *a, void *b, s32 c, s32 d, s32 e, s32
     s32 x, y;
     for (y = 0; y < d; y++) {
         for (x = 0; x < c; x++) {
-            TownEvalAcre *cell = &((TownEvalAcre (*)[4])nZ::gTownEval.acres)[x][y];
+            TownEvalAcre *cell = &nZ::gTownEval.acres[x][y];
             s32 v = cell->rocks;
             if (v > 0) {
                 r -= v;
@@ -4420,7 +4420,7 @@ extern "C" void Town_UpdateRedTurnips(void *a, TownBlockMap *b, s32 c) {
 
 namespace nJ {
 extern "C" void Town_SpawnCoconut(void *a, void *b, s32 c) {
-    if (((s32)(gTownEval[0x30 / 4] << 27) >> 31) == 0) {
+    if (gTownEval.townBits.coconut == 0) {
         if (Random_GlobalBelow(100) < 10) {
             s32 t = Random_GlobalBelow(c) + 1;
             Town_SpawnItemInAcre(a, b, t, 4, 0x1548, (void *)Town_GetSandAttr, 0);
@@ -4563,7 +4563,7 @@ extern "C" void Town_DropAcorns(void *a, void *b, EventDayEntry *c, s32 d, s32 e
         s32 x, y;
         for (y = 0; y < e; y++) {
             for (x = 0; x < d; x++) {
-                if (((s32)(*(u32 *)(((u8 *)nZ::gTownEval.acres) + x * 0x90 + y * 0x24 + 0x20) << 20) >> 31) != 0) {
+                if ((nZ::gTownEval.acres[x][y].flags & 0x800) != 0) {  // (flag bit 11: unk_b11's first bit)
                     Town_DropAcornsInAcre(a, b, x, y);
                 }
             }
@@ -4825,7 +4825,7 @@ extern "C" void Town_RefreshEvents(void *a, s32 b) {
         Clock_GetDateTime(&s);
         x = p->width - 2;
         y = p->height - 2;
-        TownEval_Evaluate(gTownEval, p);
+        TownEval_Evaluate(&gTownEval, p);
         Town_UpdateEvents(a, p, x, y, &s, b);
     }
 }
@@ -4905,8 +4905,8 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Unk_0204674c_O obj;
         Town_ClearBorderTrees(p);
         if (e) Town_WaterAll(a, p, x, y);
-        TownEval_EvaluateAndClean(gTownEval, p, x, y);
-        TownState_UpdatePerfectStreak(gSaveTownState, *(s32 *)gTownEval, n);
+        TownEval_EvaluateAndClean(&gTownEval, p, x, y);
+        TownState_UpdatePerfectStreak(gSaveTownState, (s32)gTownEval.rank, n);
         lim1 = n;
         if (lim1 > 5) lim1 = 5;
         for (i = 0; i < lim1; i++) Town_UpdateTrees(a, p, x, y);
@@ -5033,8 +5033,8 @@ extern "C" u16 Item_RandomSeashell(void *a) {
 
 namespace nI {
 extern "C" void Town_SpawnSeashellsInAcre(void *a, void *b, s32 c) {
-    TownEval_EvaluateAcreAt(gTownEval, b, c, 3);
-    s32 lv = *(u8 *)(((char *)nZ::gTownEval.acres) + c * 0x90 + 0x88);
+    TownEval_EvaluateAcreAt(&gTownEval, b, c, 3);
+    s32 lv = nZ::gTownEval.acres[c][3].shells;
     if (lv < 4) {
         Town_SpawnItemInAcre(a, b, c + 1, 4, Item_RandomSeashell(a), (void *)Town_IsSandAt, 0);
     }
@@ -5112,7 +5112,7 @@ extern "C" void Town_RefillSeashells(void *p, void *q) {
     s32 h = m->width - 2;
     s32 i;
     for (i = 0; i < h; i++) {
-        s32 n = 2 - ((TownEvalAcre (*)[4])nZ::gTownEval.acres)[i][3].shells;
+        s32 n = 2 - nZ::gTownEval.acres[i][3].shells;
         while (n > 0) {
             Town_SpawnItemInAcre(p, q, i + 1, 4, Item_RandomSeashell(p), (void *)Town_IsSandAt, 0);
             n--;
@@ -5454,11 +5454,11 @@ extern "C" void Town_OnLoad() {
         s32 i, j;
         s32 z = 0;
         for (i = 0; i < w; i++) {
-            u8 *row;
+            TownEvalAcre *row;
             j = z;
-            row = ((u8 *)nZ::gTownEval.acres) + i * 0x90;
+            row = nZ::gTownEval.acres[i];
             for (; j < h; j++) {
-                TownEval_EvaluateAcre(row + j * 0x24, p, i + 1, j + 1);
+                TownEval_EvaluateAcre(&row[j], p, i + 1, j + 1);
             }
         }
         Town_RefillSeashells(gTownUpdater, p);

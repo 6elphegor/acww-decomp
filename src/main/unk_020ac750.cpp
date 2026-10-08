@@ -116,7 +116,13 @@ struct V8 { u8 b0, b1, b2, b3, b4, b5, b6, b7; };
 struct B4 { u8 b[4]; };
 struct E12 { u16 h; u8 pad[10]; };
 struct G { u8 p0, p1, p2, p3; };
-struct S1 { u8 pad[0xc]; u8 c, d, e, f; u16 arr[6]; };
+// Able Sisters' stock (SaveData::ableShop, 0x12 bytes): the items, the stock date, the restock flag, the sold bits
+struct S1 {
+    /* 0x00 */ u16 items[6];
+    /* 0x0c */ u8 c, d, e;  // stock date: day, month, year
+    /* 0x0f */ u8 f;        // 1: restock
+    /* 0x10 */ u8 arr[2];   // sold bits (StockList_*)
+};
 // Unk_020adb70: text-entry object; 0x4 = u16 str[0x24], 0x52..0x55 = date bytes, 0x5a = flag bitfield
 struct S { u8 pad0[4]; u16 str[0x24]; u8 pad1[6]; u8 f52, f53, f54, f55; u8 pad2[4]; u16 lo : 5; u16 cnt : 4; u16 kind : 2; u16 rest : 5; };
 // ======== types of unk_020ae290.cpp ========
@@ -1489,7 +1495,7 @@ extern "C" void* AbleShop_Destruct(void *p) {
     return p;
 }
 extern "C" void AbleShop_Clear(S1 *s) {
-    StockList_Clear(s, s->arr, 6);
+    StockList_Clear(s->items, s->arr, 6);
     s->f = 1;
 }
 extern "C" void AbleShop_Reset(S1 *s) { AbleShop_Clear(s); }
@@ -1531,10 +1537,10 @@ extern "C" void AbleShop_SetStockDate(S1 *s, void *p) {
     s->f = 0;
 }
 extern "C" u16* AbleShop_GetItem(S1 *s, u32 a, u16 *c) {
-    return StockList_GetItem(a, (u16 *)s, (u8 *)s->arr, 6, c);
+    return StockList_GetItem(a, s->items, s->arr, 6, c);
 }
 extern "C" s32 AbleShop_FindItem(S1 *s, u16 *key) {
-    return StockList_FindItem(key, (u16 *)s, (u8 *)s->arr, 6);
+    return StockList_FindItem(key, s->items, s->arr, 6);
 }
 extern "C" u32 AbleShop_MarkSold(S1 *s, u32 a) {
     return StockList_MarkSold(a, 6, s->arr);
@@ -2099,11 +2105,11 @@ extern "C" u32 ReddShop_MarkSoldItem(ReddShop *g, u16 *ptr) {
 }
 
 extern "C" u16 *ReddShop_GetItem(ReddShop *g, u32 a, u16 *b) {
-    return StockList_GetItem(a, (u16 *)g, (u8 *)g->tbl, 3, b);
+    return StockList_GetItem(a, (u16 *)g->arr, (u8 *)g->tbl, 3, b);
 }
 
 extern "C" s32 ReddShop_FindItem(ReddShop *g, u16 *key) {
-    return StockList_FindItem(key, (u16 *)g, (u8 *)g->tbl, 3);
+    return StockList_FindItem(key, (u16 *)g->arr, (u8 *)g->tbl, 3);
 }
 
 extern "C" NookPoints *NookPoints_Create(NookPoints *p) {
@@ -2705,7 +2711,7 @@ extern "C" void ReddShop_RecordPurchase(u32 a, u32 b, u8 c, u32 d) {
 }
 
 extern "C" void ReddShop_BuyAt(u32 a, u32 b, u32 c) {
-    u32 r = ReddShop_FindItem(data_021ed2c0, _ZN15ShopStockPlacer13callGetItemAtEv(a, b));
+    u32 r = ReddShop_FindItem(data_021ed2c0, ShopStock_GetItemAt(a, b));  // (ShopStockPlacer::callGetItemAt forwards to it)
     if (r != (u32)-1) {
         ShopAckCounter_Start(sShopAckCounter);
         ReddShop_RecordPurchase(r, c, 1, 0);

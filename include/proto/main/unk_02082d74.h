@@ -297,6 +297,9 @@ extern void *sVisitorCheckPmf_TomNook[2];
 #ifndef PROTO_LOCAL_sVisitorSchedule
 extern VisitorSchedule sVisitorSchedule;
 #endif
+#ifndef PROTO_LOCAL_sSpNpcNetRecords
+extern NpcNetRecord sSpNpcNetRecords[0x26];
+#endif
 #ifndef PROTO_LOCAL_sVisitorCheckPmf_Kaitlin
 extern void *sVisitorCheckPmf_Kaitlin[2];
 #endif
@@ -317,9 +320,6 @@ extern void *sVisitorPlacePmf_Shrunk[2];
 #endif
 #ifndef PROTO_LOCAL_sVisitorPlacePmf_Tortimer
 extern void *sVisitorPlacePmf_Tortimer[2];
-#endif
-#ifndef PROTO_LOCAL_sSpNpcNetRecords
-extern NpcNetRecord sSpNpcNetRecords[0x26];
 #endif
 #ifndef PROTO_LOCAL_sVisitorPlacePmf_BugOff
 extern void *sVisitorPlacePmf_BugOff[2];
@@ -351,14 +351,14 @@ extern void *sVisitorPlacePmf_BrightNights[2];
 #ifndef PROTO_LOCAL_sVisitorCheckPmf_EventHost
 extern void *sVisitorCheckPmf_EventHost[2];
 #endif
+#ifndef PROTO_LOCAL_sVillagerNetRecordPacked
+extern u8 sVillagerNetRecordPacked;
+#endif
 #ifndef PROTO_LOCAL_sVisitorCheckPmf_DateVisitors
 extern void *sVisitorCheckPmf_DateVisitors[2];
 #endif
 #ifndef PROTO_LOCAL_sVisitorCheckPmf_Lyle
 extern void *sVisitorCheckPmf_Lyle[2];
-#endif
-#ifndef PROTO_LOCAL_sVillagerNetRecordPacked
-extern u8 sVillagerNetRecordPacked;
 #endif
 #ifndef PROTO_LOCAL_sVisitorPlacePmf_FishingTourney
 extern void *sVisitorPlacePmf_FishingTourney[2];
