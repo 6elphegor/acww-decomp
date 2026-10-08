@@ -86,9 +86,6 @@ void MuseumInsect_RunDungBeetle(void *r_);
 #ifndef PROTO_LOCAL_MuseumInsect_RunCockroach
 void MuseumInsect_RunCockroach(void *r_);
 #endif
-#ifndef PROTO_LOCAL_MuseumInsect_UpdateAnt
-void MuseumInsect_UpdateAnt();
-#endif
 #ifndef PROTO_LOCAL_MuseumInsectRoom_Create
 void *MuseumInsectRoom_Create();
 #endif
@@ -380,6 +377,9 @@ void MuseumInsect_UpdateFlea(MuseumInsect *o);
 #ifndef PROTO_LOCAL_MuseumInsect_SetupAnt
 void MuseumInsect_SetupAnt(MuseumInsect *o);
 #endif
+#ifndef PROTO_LOCAL_MuseumInsect_UpdateAnt
+void MuseumInsect_UpdateAnt(MuseumInsect *o);
+#endif
 #ifndef PROTO_LOCAL_MuseumInsect_SetupDungBeetle
 void MuseumInsect_SetupDungBeetle(MuseumInsect *o);
 #endif
@@ -387,13 +387,13 @@ void MuseumInsect_SetupDungBeetle(MuseumInsect *o);
 void MuseumInsect_UpdateDungBeetle(MuseumInsect *o);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_InitPlacement
-void MuseumInsect_InitPlacement(void *m, u8 *s);
+void MuseumInsect_InitPlacement(MuseumInsectRoom *m, MuseumInsect *s);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsectRoom_FindFreeSlot
 s32 MuseumInsectRoom_FindFreeSlot();
 #endif
 #ifndef PROTO_LOCAL_MuseumInsectRoom_AddInsect
-BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v);
+BOOL MuseumInsectRoom_AddInsect(MuseumInsectRoom *m, s8 v);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsectRoom_LoadInsect
 void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s);

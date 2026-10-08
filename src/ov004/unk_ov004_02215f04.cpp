@@ -26,7 +26,8 @@
 #include "npc/NpcMoveCtrl.h"
 #include "npc/NpcTalkCtrl.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_BirthdayHostVillager_Get  // declared below: the shared prototype conflicts with the calls here
+#include "save/VillagerData.h"
+#include "npc/BirthdayGuestVillager.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_0206269c.h"
@@ -53,174 +54,34 @@
 
 
 
-class BirthdayGuestVillager;
-
-class BirthdayGuestVillagerTalk : public VillagerTalk {
-public:
-    BirthdayGuestVillagerTalk() {}
-    virtual void onMessageStart(u32 attr);
-    virtual void onMessageEnd(u32 attr);
-    virtual void onChoice(u32 attr);
-    virtual void start(TalkStartMsg *out);
-
-    void attachOwner(VillagerActor *owner);
-    void setTalked();
-    BOOL isNotTalkedYet();
-    void *getPlayerMemory();
-
-    BirthdayGuestVillager *villager;
-};
-
-typedef void (BirthdayGuestVillager::*Unk_ov004_0224c228_VFn)();
-typedef BOOL (BirthdayGuestVillager::*Unk_ov004_0224c228_BFn)();
-
-class BirthdayGuestVillager : public VillagerActor {
-public:
-    BirthdayGuestVillager() {}
-    virtual BOOL onCreate();
-    virtual BOOL preCreate();
-    virtual BOOL preDelete();
-    virtual BOOL onDraw();
-    virtual BOOL acceptsInteraction(void *other);
-    virtual void onInteractionEvent(u32 a, u8 b);
-    virtual BOOL updateAct();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-
-    void mainAct06();
-    void mainAct05();
-    void mainAct04();
-    void mainAct03();
-    void mainAct02();
-    void mainAct01();
-    void mainAct00();
-    void execAct();
-    BOOL setupAct06();
-    BOOL setupAct02();
-    BOOL setupAct05();
-    BOOL setupAct03();
-    BOOL setupAct04();
-    BOOL setupAct01();
-    BOOL setupAct00();
-    BOOL changeAct(s32 idx);
-    void recordPlayerTalk();
-    void blockFurnitureCells();
-    BOOL drawModel();
-
-    /* 0x894 */ s32 act;
-    /* 0x898 */ BirthdayGuestVillagerTalk talk;
-    /* 0xa3c */ Unk_ov004_0224c228_BFn drawFn;
-    /* 0xa44 */ u8 emotionTimer;
-    /* 0xa45 */ u8 pad_a45;
-    /* 0xa46 */ u16 chatCooldown;
-    /* 0xa48 */ s16 walkAngle;
-    /* 0xa4a */ u16 walkTimer;
-    /* 0xa4c */ VecFx32 waypoint;
-    /* 0xa58 */ VecFx32 walkTarget;
-};
-
-
-
-
-#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
-#define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
-#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
-#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define VillagerMemory_isTalkedToday _ZN14VillagerMemory13isTalkedTodayEv
-#define VillagerMemory_setTalkedToday _ZN14VillagerMemory14setTalkedTodayEv
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 
 extern "C" {
 extern s32 data_020c8cbc;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern u8 gSaveData[];
 extern u8 gSaveVillagers[];
 extern Unk_0204e858_Grid *gSceneBlockMap;
-BirthdayHostVillager *BirthdayHostVillager_Get(...);
-s32 Vec_DistXZ(void *, void *);
-s32 Vec_NotEqual(void *, void *);
-s32 Math_Atan2(s32, s32);
-s32 Math_AngleDiffAbs(s32, s32);
-s32 NpcActionCtrl_getAction(void *);
-s32 NpcActionCtrl_isActionDone(void *);
-s32 NpcActionCtrl_requestStand(void *, u32, u32);
-s32 NpcActionCtrl_requestAction(void *, u32, s32, s32, s32, s16, s16, s32, s32, u16, u16);
-void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 NpcActor_findAvoidPos(void *, void *);
-s32 NpcTalkCtrl_isBusy(void *);
-void NpcFootstepFx_enableFootsteps(void *);
-void Camera_FocusOnPoint(void *);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+s32 Vec_NotEqual(VecFx32 *a, VecFx32 *b);
+s16 Math_Atan2(s32 x, s32 y);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+BOOL Camera_FocusOnPoint(VecFx32 *a);
 void Camera_SetModeDefault();
-s32 VillagerMemory_RecordTalk(void *, s32, s32, s32);
-void *Villager_FindOrCreateMemory(void *, void *);
-void *PlayerData_getPlayerId(void *);
-void *VillagerData_getVillagerId(void *);
-s32 VillagerMemory_isTalkedToday(void *);
-void VillagerMemory_setTalkedToday(void *);
-s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
-s32 Item_IsFurnitureOrF031(u16 *p);
-void Ground_UnlinkUnit(s32, s32);
+void VillagerMemory_RecordTalk(VillagerMemory *self, void *a, u8 *b, u8 *c);
+VillagerMemory *Villager_FindOrCreateMemory(VillagerMemory *t, void *b);
+u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+BOOL Item_IsFurnitureOrF031(u16 *p);
+void Ground_UnlinkUnit(s32 x, s32 z);
 s32 Ground_GetWalkLinks(s32, s32);
-void FieldPos_FromUnitCenter(void *, s32, s32);
-void FieldPos_ToUnit(s32 *, s32 *, void *);
-void *Scene_GetVillagerHouse();
-s32 SaveVillagers_IsOccupied(void *, void *);
-void *SaveVillagers_Get(void *, void *);
-s32 func_0201bd20(void *, u32);
-void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
-s32 NpcActor_getAngleTo(void *, void *);
-s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
-void func_02067a84(void *, void *, s32);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
+void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
+s32 Scene_GetVillagerHouse();
+BOOL SaveVillagers_IsOccupied(u8 *base, s32 idx);
+u8 *SaveVillagers_Get(u8 *base, s32 idx);
 s32 TalkRequest_SetTargetDone(void *);
-s32 TalkRequest_AddPlayerTalk6(void *, u32);
-extern u8 gTalkMsgIndexEnd[];
-void *func_020679b4(void *);
-s32 func_020aa514(void *);
-void func_02067abc(void *, void *, s32);
-void func_02014e60(void *, void *, s32, s32, s32);
-void *func_02080dd8(void *);
-void func_02080da4(void *, s8);
-void func_0201578c(void *, void *, s32, s32);
-void func_0206338c(void *, s32, s32);
-void ItemPickSpec_Destruct(void *);
-s32 Item_GetPrice(u16 *);
-void func_02014ce4(void *, void *, s32, s32, s32);
-void *Villager_GetPlan(void *);
-u32 func_0209b354(u32);
-s32 Item_IsFurniture(void *);
-void VillagerTalk_begin(void *, void *, u32);
-s32 func_0202d948(void *self);
-s32 func_0202dab0(void *self);
-s32 func_0202d928(void *self);
-void NpcActor_setTalkRequest(void *self, void *p);
-void *func_0201bc4c(void *self, s32 n);
-void func_02015ab0(void *p, void *q);
-s32 func_02080a64(void *p);
-s32 func_02080a40(void *p);
-s32 func_02080a2c(void *p);
-s32 func_02080a04(void *p);
-s32 func_0201b138(void *p);
-s32 Item_GetFurnitureIndex(u16 *p);
-extern s32 data_020c8cb4;
-extern s32 data_020c8cb8;
 }
 
-
-
-extern "C" void _ZN21BirthdayGuestVillager9drawModelEv();
-extern "C" void *data_ov004_0224c158[2];
 extern "C" DebugColor data_ov004_02250588(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov004_02250598(0x14, 0x14, 0x1f, 0x1f);
 extern "C" DebugColor data_ov004_0225057c(0x1f, 0x1f, 0x14, 0x1f);
@@ -231,12 +92,11 @@ extern "C" ActorProfile sBirthdayGuestVillagerProfile = { (void *(*)())BirthdayG
 extern "C" {
 BirthdayGuestVillager *sBirthdayGuestVillager;
 }
-extern "C" void *data_ov004_0224c158[2] = { (void *)_ZN21BirthdayGuestVillager9drawModelEv, 0 };
+extern "C" Unk_ov004_0224c228_BFn data_ov004_0224c158 = &BirthdayGuestVillager::drawModel;
 extern "C" {
 u8 sBirthdayGuestMsgFile[0x28];
 }
 
-extern "C" BirthdayHostVillager *sBirthdayHostVillager;
 
 
 extern "C" BirthdayGuestVillager *BirthdayGuestVillager_Create() {
@@ -298,7 +158,7 @@ BOOL BirthdayGuestVillager::preCreate() {
         return FALSE;
     }
     sBirthdayGuestVillager = this;
-    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
+    setTalkRequest(&talk);
     talk.attachOwner(this);
     changeAct(0);
     return TRUE;
@@ -308,9 +168,9 @@ BOOL BirthdayGuestVillager::onCreate() {
     if (!VillagerActor::onCreate()) {
         return FALSE;
     }
-    drawFn = *(Unk_ov004_0224c228_BFn *)data_ov004_0224c158;
+    drawFn = data_ov004_0224c158;
     blockFurnitureCells();
-    ((NpcFootstepFx *)((u8 *)&footstepFx))->enableFootsteps();
+    footstepFx.enableFootsteps();
     return TRUE;
 }
 
@@ -343,9 +203,9 @@ BOOL BirthdayGuestVillager::updateAct() {
 
 void BirthdayGuestVillager::blockFurnitureCells() {
     Unk_0204e858_Grid *g = gSceneBlockMap;
-    void *c;
+    TownBlockCell *c;
     s32 y, x;
-    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks) {
+    if (g->width > 0 && g->height > 0 && g->blocks) {
         c = g->blocks;
     } else {
         c = 0;
@@ -354,9 +214,9 @@ void BirthdayGuestVillager::blockFurnitureCells() {
     volatile s32 z = 0;
     for (; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            s32 it = MapBlock_GetItemPtr(c, x, y, z);
+            u16 *it = MapBlock_GetItemPtr(c, x, y, z);
             if (it) {
-                if (Item_IsFurnitureOrF031((u16 *)it)) {
+                if (Item_IsFurnitureOrF031(it)) {
                     Ground_UnlinkUnit(x, y);
                 }
             }
@@ -365,17 +225,17 @@ void BirthdayGuestVillager::blockFurnitureCells() {
 }
 
 void BirthdayGuestVillager::recordPlayerTalk() {
-    void *p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (p) {
         if (villagerData) {
-            void *r = ((PlayerData *)(p))->getPlayerId();
-            VillagerMemory_RecordTalk(Villager_FindOrCreateMemory(villagerData, r), 0, 0, 0);
+            PlayerId *r = p->getPlayerId();
+            VillagerMemory_RecordTalk(Villager_FindOrCreateMemory(((VillagerData *)villagerData)->memories, r), 0, 0, 0);
         }
     }
 }
 
 BOOL BirthdayGuestVillager::acceptsInteraction(void *) {
-    if (((NpcTalkCtrl *)((u8 *)&talkCtrl))->isBusy()) {
+    if (talkCtrl.isBusy()) {
         return FALSE;
     }
     if (act <= 3) {
@@ -392,11 +252,11 @@ void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
     v.y += 0x2000;
     switch (a) {
     case 3:
-        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
+        partnerPlayer = b;
         changeAct(4);
         break;
     case 0:
-        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
+        partnerPlayer = b;
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
@@ -417,19 +277,19 @@ void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
     }
 }
 
-void *BirthdayGuestVillagerTalk::getPlayerMemory() {
+VillagerMemory *BirthdayGuestVillagerTalk::getPlayerMemory() {
     BirthdayGuestVillager *o = villager;
     if (o && o->villagerData) {
-        void *r = PlayerData_GetCurrent()->getPlayerId();
-        return Villager_FindOrCreateMemory(villager->villagerData, r);
+        PlayerId *r = PlayerData_GetCurrent()->getPlayerId();
+        return Villager_FindOrCreateMemory(((VillagerData *)villager->villagerData)->memories, r);
     }
     return 0;
 }
 
 BOOL BirthdayGuestVillagerTalk::isNotTalkedYet() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        if (VillagerMemory_isTalkedToday(p)) {
+        if (p->isTalkedToday()) {
             return FALSE;
         }
         return TRUE;
@@ -438,22 +298,21 @@ BOOL BirthdayGuestVillagerTalk::isNotTalkedYet() {
 }
 
 void BirthdayGuestVillagerTalk::setTalked() {
-    void *p = getPlayerMemory();
+    VillagerMemory *p = getPlayerMemory();
     if (p) {
-        VillagerMemory_setTalkedToday(p);
+        p->setTalkedToday();
     }
 }
 
 void BirthdayGuestVillagerTalk::attachOwner(VillagerActor *owner) {
-    ((VillagerTalk *)(this))->begin((VillagerActor *)(owner), 0x11);
-    villager = (BirthdayGuestVillager *)owner;
+    begin(owner, 0x11);
+    villager = static_cast<BirthdayGuestVillager *>(owner);
 }
 
 void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
     BirthdayGuestVillager *o = villager;
-    u32 *out = (u32 *)arg;
-    ((VillagerId *)VillagerData_getVillagerId(o->villagerData))->makeFileName(sBirthdayGuestMsgFile, 0x28, "ev_nbirth");
-    out[0] = (u32)sBirthdayGuestMsgFile;
+    ((VillagerData *)o->villagerData)->getVillagerId()->makeFileName(sBirthdayGuestMsgFile, 0x28, "ev_nbirth");
+    arg->msgKey = (const char *)sBirthdayGuestMsgFile;
     s32 r6 = 2;
     if (isNotTalkedYet()) {
         r6 = 0;
@@ -463,28 +322,27 @@ void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
     setTalked();
     switch (r6) {
     case 0:
-        ((u8 *)arg)[4] = Random_GlobalBelow(2) + 0x1a;
+        arg->msgIndex = Random_GlobalBelow(2) + 0x1a;
         break;
     case 1:
-        ((u8 *)arg)[4] = Random_GlobalBelow(4) + 0x1e;
+        arg->msgIndex = Random_GlobalBelow(4) + 0x1e;
         break;
     default:
-        ((u8 *)arg)[4] = Random_GlobalBelow(2) + 0x1c;
+        arg->msgIndex = Random_GlobalBelow(2) + 0x1c;
         break;
     }
     o = villager;
-    if (*(void **)(HOST_AT(o, 0x8d4, talk.window, 0))) {
-        u8 *const g = gSaveData;
-        void *p = Scene_GetVillagerHouse();
+    if (o->talk.window) {
+        s32 p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
             MsgString9B loc;
-            ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((VillagerId *)VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
+            o->talk.setVillagerNameSlot(((VillagerData *)SaveVillagers_Get(gSaveVillagers, p))->getVillagerId(), 1);
         }
         BirthdayGuestVillager *o2 = villager;
         if (o2) {
             void *m = o2->villagerData;
             if (m) {
-                ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((VillagerId *)VillagerData_getVillagerId(m), 0);
+                o->talk.setVillagerNameSlot(((VillagerData *)m)->getVillagerId(), 0);
             }
         }
     }
@@ -526,8 +384,8 @@ void BirthdayGuestVillager::execAct() {
 }
 
 BOOL BirthdayGuestVillager::setupAct00() {
-    if (((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8)) {
-        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    if (actionCtrl.requestStand(1, data_020c6cc8)) {
+        lookAt.setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
@@ -535,7 +393,7 @@ BOOL BirthdayGuestVillager::setupAct00() {
 
 void BirthdayGuestVillager::mainAct00() {
     VecFx32 v;
-    BirthdayHostVillager *a = BirthdayHostVillager_Get(this);
+    BirthdayHostVillager *a = BirthdayHostVillager_Get();
     s32 d;
     if (a) {
         d = Vec_DistXZ(&a->position, &position);
@@ -546,8 +404,8 @@ void BirthdayGuestVillager::mainAct00() {
         chatCooldown--;
     }
     if (collider.isHit != 0) {
-        if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 1) {
-            if (((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8)) {
+        if (actionCtrl.getAction() == 1) {
+            if (actionCtrl.requestStand(1, data_020c6cc8)) {
                 goto end;
             }
         }
@@ -557,12 +415,12 @@ void BirthdayGuestVillager::mainAct00() {
             goto end;
         }
     }
-    if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 0) {
+    if (actionCtrl.getAction() == 0) {
         if (walkTimer != 0) {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (VecFx32 *)&position, rotY);
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, &position, rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
@@ -584,37 +442,37 @@ void BirthdayGuestVillager::mainAct00() {
             }
             s16 t = walkAngle;
             if (t != rotY) {
-                if (!((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0)) {
+                if (!actionCtrl.requestAction(3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
                 walkTimer = Random_GlobalBelow(0x46) + 0x14;
             } else {
-                if (!((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0)) {
+                if (!actionCtrl.requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
                 walkTimer = Random_GlobalBelow(0x50) + 0x14;
             }
         } else {
-            if (((NpcActionCtrl *)((u8 *)&actionCtrl))->isActionDone()) {
-                ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8);
+            if (actionCtrl.isActionDone()) {
+                actionCtrl.requestStand(1, data_020c6cc8);
             }
         }
     } else {
-        if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 3) {
-            if (((NpcActionCtrl *)((u8 *)&actionCtrl))->isActionDone()) {
-                ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (actionCtrl.getAction() == 3) {
+            if (actionCtrl.isActionDone()) {
+                actionCtrl.requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
-        } else if (((NpcActionCtrl *)((u8 *)&actionCtrl))->getAction() == 1) {
-            switch (((NpcActor *)(this))->findAvoidPos((VecFx32 *)(&v))) {
+        } else if (actionCtrl.getAction() == 1) {
+            switch (findAvoidPos(&v)) {
             case 1:
-                ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8);
+                actionCtrl.requestStand(1, data_020c6cc8);
                 break;
             case 2: {
                 VecFx32 *pv = &waypoint;
                 pv->x = v.x;
                 waypoint.y = v.y;
                 waypoint.z = v.z;
-                ((NpcMoveCtrl *)((u8 *)&moveCtrl))->setWaypoint((VecFx32 *)(&waypoint));
+                moveCtrl.setWaypoint(&waypoint);
                 break;
             }
             default:
@@ -623,9 +481,9 @@ void BirthdayGuestVillager::mainAct00() {
                     waypoint.x = pw->x;
                     waypoint.y = walkTarget.y;
                     waypoint.z = walkTarget.z;
-                    ((NpcMoveCtrl *)((u8 *)&moveCtrl))->setWaypoint((VecFx32 *)(pw));
+                    moveCtrl.setWaypoint(pw);
                 } else if (Vec_DistXZ(&walkTarget, &position) < 0x200) {
-                    ((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8);
+                    actionCtrl.requestStand(1, data_020c6cc8);
                 }
                 break;
             }
@@ -636,7 +494,6 @@ end:;
 
 BOOL BirthdayGuestVillager::setupAct01() {
     if (chatCooldown == 0) {
-        void *p = &actionCtrl;
         BirthdayHostVillager *o = BirthdayHostVillager_Get();
         if (o != NULL) {
             walkAngle = Math_Atan2(o->position.x - position.x, o->position.z - position.z);
@@ -648,8 +505,8 @@ BOOL BirthdayGuestVillager::setupAct01() {
                 r = FALSE;
             }
             if (r) {
-                ((NpcActionCtrl *)(p))->requestAction(3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0);
-                lookAt.setTarget(2, 0, (Character *)o, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+                actionCtrl.requestAction(3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0);
+                lookAt.setTarget(2, 0, o, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
                 return TRUE;
             }
         }
@@ -687,7 +544,7 @@ BOOL BirthdayGuestVillager::setupAct02() {
         r = FALSE;
     }
     if (r) {
-        if (((NpcActionCtrl *)(&actionCtrl))->requestEmotion(1, 3, data_020c6cc8)) {
+        if (actionCtrl.requestEmotion(1, 3, data_020c6cc8)) {
             emotionTimer = 0x1e;
             return TRUE;
         }
@@ -701,7 +558,7 @@ void BirthdayGuestVillager::mainAct02() {
     }
     switch (emotionTimer) {
     case 1:
-        ((NpcActionCtrl *)(&actionCtrl))->requestEmotion(1, 0, data_020c6cc8);
+        actionCtrl.requestEmotion(1, 0, data_020c6cc8);
         break;
     case 0:
         changeAct(0);
@@ -717,7 +574,7 @@ BOOL BirthdayGuestVillager::setupAct03() {
         r = FALSE;
     }
     if (r) {
-        if (((NpcActionCtrl *)(&actionCtrl))->requestEmotion(1, 0x1a, data_020c6cc8)) {
+        if (actionCtrl.requestEmotion(1, 0x1a, data_020c6cc8)) {
             emotionTimer = 0x32;
             return TRUE;
         }
@@ -731,7 +588,7 @@ void BirthdayGuestVillager::mainAct03() {
     }
     switch (emotionTimer) {
     case 1:
-        ((NpcActionCtrl *)(&actionCtrl))->requestEmotion(1, 0, data_020c6cc8);
+        actionCtrl.requestEmotion(1, 0, data_020c6cc8);
         break;
     case 0:
         changeAct(0);
@@ -740,7 +597,7 @@ void BirthdayGuestVillager::mainAct03() {
 
 BOOL BirthdayGuestVillager::setupAct04() {
     if ((u32)(act - 1) <= 2) {
-        ((NpcActionCtrl *)(&actionCtrl))->requestEmotion(2, 0, data_020c6cc8);
+        actionCtrl.requestEmotion(2, 0, data_020c6cc8);
     }
     return TRUE;
 }
@@ -750,7 +607,7 @@ void BirthdayGuestVillager::mainAct04() {}
 BOOL BirthdayGuestVillager::setupAct05() {
     void *p = PlayerActor_GetActor(4);
     if (p != NULL) {
-        ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, ((NpcActor *)(this))->getAngleTo((NpcActor *)(p)), 0);
+        talkCtrl.requestTurnAndTalk(0, getAngleTo((NpcActor *)p), 0);
         return TRUE;
     }
     return FALSE;
@@ -761,18 +618,18 @@ void BirthdayGuestVillager::mainAct05() { changeAct(6); }
 BOOL BirthdayGuestVillager::setupAct06() { return TRUE; }
 
 void BirthdayGuestVillager::mainAct06() {
-    void *p = *(void **)(HOST_AT(this, 0x8d4, talk.window, 0));
-    if (p != NULL && *(u32 *)((u8 *)p + 4) == 0) {
+    TalkWindowState *p = talk.window;
+    if (p != NULL && p->state == 0) {
         TalkRequest_SetTargetDone(this);
     }
 }
 
 void BirthdayGuestVillager::onTalkMelodyPlayed() {
-    *(HOST_AT(this, 0x893, mood.severeSickness, 0)) = 1;
+    mood.severeSickness = 1;
 }
 
 BOOL BirthdayGuestVillager::canPlayTalkMelody() {
-    if (*(HOST_AT(this, 0x893, mood.severeSickness, 0)) == 0) {
+    if (mood.severeSickness == 0) {
         return TRUE;
     }
     return FALSE;

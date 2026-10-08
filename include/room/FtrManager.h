@@ -86,11 +86,10 @@ class FtrSoundEmitter {
 public:
     SndPosNode posNode;
     u8 isAttached;
-    // (pos: a VecFx32 *; other units call these by their symbols, with the position's address as a u32)
     void setPitch(u32 a);
-    void setPan(u32 pos);
-    void playOnce(u32 id, u32 pos);
-    void play(u32 id, u32 pos);
+    void setPan(VecFx32 *pos);
+    void playOnce(u32 id, VecFx32 *pos);
+    void play(u32 id, VecFx32 *pos);
     void release();
     void attach();
     void resetAttached();

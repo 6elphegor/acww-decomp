@@ -358,7 +358,7 @@ void KappnTaxi::startEffect41() {
 }
 
 void KappnTaxi::updateEffect41() {
-    u32 v = doorAnimFrame.mid;
+    u32 v = (u16)(model.curFrame >> 12);
     if (v >= 0x2d && v <= 0x31) {
         if (v == 0x2d) {
             startEffect41();
@@ -379,7 +379,7 @@ void KappnTaxi::startEffect42() {
 }
 
 void KappnTaxi::updateEffect42() {
-    u32 v = doorAnimFrame.mid;
+    u32 v = (u16)(model.curFrame >> 12);
     if (v >= 0x25 && v <= 0x32) {
         if (v == 0x25) {
             startEffect42();
@@ -438,7 +438,7 @@ s16 sKappnTaxiLeaveTimer;
 }
 
 BOOL KappnTaxi::enterTaxiIdle() {
-    ((BlendAnimModel *)(model))->initAnim(getDoorInAnim(), 1, 0x1000, 0, 0);
+    static_cast<BlendAnimModel *>(&model)->initAnim(getDoorInAnim(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -446,7 +446,7 @@ void KappnTaxi::execTaxiIdle() {
 }
 
 BOOL KappnTaxi::enterTaxiArrive() {
-    ((BlendAnimModel *)(model))->initAnim(getDoorInAnim(), 1, 0x1000, 0, 0);
+    static_cast<BlendAnimModel *>(&model)->initAnim(getDoorInAnim(), 1, 0x1000, 0, 0);
     TalkRequestFlags_SetSceneHold();
     return TRUE;
 }
@@ -458,31 +458,31 @@ void KappnTaxi::execTaxiArrive() {
 }
 
 BOOL KappnTaxi::enterTaxiDoorOpen() {
-    ((BlendAnimModel *)(model))->initAnim(getDoorInAnim(), 1, 0x1000, 0, 0);
+    static_cast<BlendAnimModel *>(&model)->initAnim(getDoorInAnim(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiDoorOpen() {
-    ((BuildingSeEmitter *)(seEmitter))->playSeHeld(0x888);
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
+    seEmitter.playSeHeld(0x888);
+    if (model.isFinished()) {
         setTaxiState(3);
     }
     updateEffect41();
-    ((AnimModel *)(model))->stepAnim();
+    model.stepAnim();
 }
 
 BOOL KappnTaxi::enterTaxiPlayerGetOut() {
     getOutFrameCount = 0;
     if (KappnTaxi_RequestPlayerGetOut()) {
-        ((BlendAnimModel *)(model))->initAnim(getDoorOutAnim(), 1, 0x1000, 0, 0);
-        ((BuildingSeEmitter *)(seEmitter))->playSe(0x88a);
+        static_cast<BlendAnimModel *>(&model)->initAnim(getDoorOutAnim(), 1, 0x1000, 0, 0);
+        seEmitter.playSe(0x88a);
         return TRUE;
     }
     return FALSE;
 }
 
 void KappnTaxi::execTaxiPlayerGetOut() {
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
+    if (model.isFinished()) {
         switch (getOutFrameCount) {
         case 0x12:
             PlayerActor_KeepAnimForNextAction();
@@ -496,7 +496,7 @@ void KappnTaxi::execTaxiPlayerGetOut() {
             getOutFrameCount++;
         }
     } else {
-        ((AnimModel *)(model))->stepAnim();
+        model.stepAnim();
     }
 }
 
@@ -542,19 +542,19 @@ void KappnTaxi::execTaxiTalkWait() {
 
 BOOL KappnTaxi::enterTaxiDepart() {
     void *r1 = callGetBca2Anim();
-    ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
-    ((BuildingSeEmitter *)(seEmitter))->playSe(0x88b);
+    static_cast<BlendAnimModel *>(&model)->initAnim(r1, 1, 0x1000, 0, 0);
+    seEmitter.playSe(0x88b);
     departFrameCount = 0;
     return TRUE;
 }
 
 void KappnTaxi::execTaxiDepart() {
-    ((BuildingSeEmitter *)(seEmitter))->playSeHeld(0x889);
+    seEmitter.playSeHeld(0x889);
     updateEffect42();
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished() != 0) {
+    if (model.isFinished() != 0) {
         setTaxiState(7);
     } else {
-        ((AnimModel *)(model))->stepAnim();
+        model.stepAnim();
         u8 *o = (u8 *)PlayerActor_GetActor(4);
         if (o != 0) {
             s32 r4 = *(s16 *)(o + 0x8e);
@@ -684,17 +684,17 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
 
 BOOL KappnTaxi::enterTaxiLeaveDoorOpen() {
     void *r1 = getDoorInAnim();
-    ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
+    static_cast<BlendAnimModel *>(&model)->initAnim(r1, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiLeaveDoorOpen() {
-    ((BuildingSeEmitter *)(seEmitter))->playSeHeld(0x888);
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished() != 0) {
+    seEmitter.playSeHeld(0x888);
+    if (model.isFinished() != 0) {
         setTaxiState(0xd);
     }
     updateEffect41();
-    ((AnimModel *)(model))->stepAnim();
+    model.stepAnim();
     u8 *o = (u8 *)PlayerActor_GetActor(4);
     if (o != 0) {
         s32 r4 = *(s16 *)(o + 0x8e);
@@ -706,16 +706,16 @@ void KappnTaxi::execTaxiLeaveDoorOpen() {
 
 BOOL KappnTaxi::enterTaxiLeaveDoorAnim() {
     void *r1 = getDoorOutAnim();
-    ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
-    ((BuildingSeEmitter *)(seEmitter))->playSe(0x88a);
+    static_cast<BlendAnimModel *>(&model)->initAnim(r1, 1, 0x1000, 0, 0);
+    seEmitter.playSe(0x88a);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiLeaveDoorAnim() {
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished() != 0) {
+    if (model.isFinished() != 0) {
         setTaxiState(0xe);
     }
-    ((AnimModel *)(model))->stepAnim();
+    model.stepAnim();
 }
 
 BOOL KappnTaxi::enterTaxiPlayerGetIn() {
@@ -734,23 +734,23 @@ void KappnTaxi::execTaxiPlayerGetIn() {
         PlayerActor_SetHeadTilt(0, 0, 4);
         getInTimer = getInTimer - 1;
     }
-    ((AnimModel *)(model))->stepAnim();
+    model.stepAnim();
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDrive() {
     void *r1 = callGetBca2Anim();
-    ((BlendAnimModel *)(model))->initAnim(r1, 1, 0x1000, 0, 0);
-    ((BuildingSeEmitter *)(seEmitter))->playSe(0x88b);
+    static_cast<BlendAnimModel *>(&model)->initAnim(r1, 1, 0x1000, 0, 0);
+    seEmitter.playSe(0x88b);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiLeaveDrive() {
-    ((BuildingSeEmitter *)(seEmitter))->playSeHeld(0x889);
-    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished() != 0) {
+    seEmitter.playSeHeld(0x889);
+    if (model.isFinished() != 0) {
         setTaxiState(0x10);
     }
     updateEffect42();
-    ((AnimModel *)(model))->stepAnim();
+    model.stepAnim();
 }
 
 BOOL KappnTaxi::enterTaxiLeaveEnd() {

@@ -5,6 +5,9 @@
 #include "gfx/VecFx32.h"
 #include "room/RoomObjActor.h"
 #include "talk/TalkMsgRequest.h"
+#include "game/BoxCollider.h"
+#include "game/TouchPickTriangle.h"
+#include "game/TouchPickSphere.h"
 
 struct PhoneChoiceSet;
 
@@ -59,9 +62,9 @@ public:
     void changeAct(s32 state);
     void openChoices(PhoneChoiceSet *p, s32 v);
 
-    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
-    /* 0x370 */ u32 touchBox[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
-    /* 0x618 */ u32 touchSphere[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
+    /* 0x2d4 */ BoxCollider collider;
+    /* 0x370 */ TouchPickBox touchBox;
+    /* 0x618 */ TouchPickSphere touchSphere;
     /* 0x634 */ s32 act;
     /* 0x638 */ u8 isTalking;
     /* 0x639 */ u8 pad_639[3];

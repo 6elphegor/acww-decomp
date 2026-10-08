@@ -4133,11 +4133,9 @@ extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c
 }
 
 RoomItemDrop::RoomItemDrop() : unitX(0), unitZ(0) {
-    new (seEmitter) SndSeEmitter();
 }
 
 RoomItemDrop::~RoomItemDrop() {
-    ((SndSeEmitter *)(seEmitter))->SndSeEmitter::~SndSeEmitter();
 }
 
 extern "C" {

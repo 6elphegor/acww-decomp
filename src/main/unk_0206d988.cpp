@@ -57,7 +57,7 @@ void Melody_PlayEditPattern(u32 a) { Snd_MelodyPlayPattern(&gMelodyPlayer, a, gM
 
 void Melody_Play(u32 a) { Snd_MelodyPlay(&gMelodyPlayer, a); }
 
-void Melody_PlayAt(u32 a, u32 b) { Snd_MelodyPlayAt(&gMelodyPlayer, a, b); }
+void Melody_PlayAt(VecFx32 *a, u32 b) { Snd_MelodyPlayAt(&gMelodyPlayer, a, b); }
 
 void Melody_StartTrackA(s32 a) {
     Snd_MelodyStartTrackA(&gMelodyPlayer);

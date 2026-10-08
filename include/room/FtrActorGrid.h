@@ -15,8 +15,8 @@ public:
     FtrActor *getActorAtPos(void *p, s32 layer);
     FtrActor *getActor(s32 x, s32 y, s32 layer);
     s32 getIndex(s32 x, s32 y, s32 layer);
-    BOOL clearCell(s32 id, s32 x, s32 y, u8 layer);
-    BOOL setCell(s32 id, s32 x, s32 y, u8 layer);
+    BOOL clearCell(FtrActor *actor, s32 x, s32 y, u8 layer);
+    BOOL setCell(FtrActor *actor, s32 x, s32 y, u8 layer);
     void clear();
 };
 

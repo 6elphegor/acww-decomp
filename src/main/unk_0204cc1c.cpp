@@ -298,7 +298,7 @@ void Clock_GetMinuteHour(void *p);
 
 // own functions
 extern "C" {
-s32 FgData_GetVillagerLayout(s32 a, s32 b, s32 c);
+void *FgData_GetVillagerLayout(s32 *size, s32 villager, void *heap);
 void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d);
 void *FgData_ReadLayoutEntries(void *a, s32 *b, s32 c, s32 d, void *heap);
 BOOL FgData_ApplyLayout(FgDataIndex *t, u16 *dst, s32 i, s32 j, void *heap);
@@ -395,7 +395,7 @@ void *MapBlockEntry_NewArray(s32 n, void *heap);
 s32 FgData_HasLayout(s32 a, u32 b);
 u32 FgData_CreateLayoutGrid(s32 a, u32 b, void *heap, s32 n);
 Unk_0204da0c_Map *HouseRoomMaps_GetForScene(s32 a);
-s32 FgData_ReadVillagerLayout(void *a, s32 b, s32 c, s32 d);
+void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d);
 }
 }
 
@@ -1971,8 +1971,8 @@ extern "C" void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d) {
     return 0;
 }
 
-extern "C" s32 FgData_GetVillagerLayout(s32 a, s32 b, s32 c) {
-    if (gFgDataIndex != NULL) return Ns_0204c318::FgData_ReadVillagerLayout(gFgDataIndex, a, b, c);
+extern "C" void *FgData_GetVillagerLayout(s32 *size, s32 villager, void *heap) {
+    if (gFgDataIndex != NULL) return Ns_0204c318::FgData_ReadVillagerLayout(gFgDataIndex, size, villager, heap);
     return 0;
 }
 
