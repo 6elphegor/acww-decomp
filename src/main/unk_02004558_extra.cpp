@@ -1647,12 +1647,12 @@ void Unk_02005e7c::handleNetEvent() {
     case 1:
     case 2: {
         if (action == 0x68) {
-            pa = (Unk_02005f50_Area *)actionWork;
+            pa = (Unk_02005f50_Area *)actionWorkRaw;
             s32 t = pa->a[1]; q1.x = pa->a[0]; q1.y = 0; q1.z = t;
             FieldPos_ToUnit(&ux, &uy, &q1);
             if (ux == x && uy == y) {
                 pa->e[0] = 1;
-                bodyAnimPlayMode = 1;
+                static_cast<AnimFrameCtrl &>(bodyModel).playMode = 1;  // (DS +0x2e0)
                 return;
             }
         }
@@ -1664,7 +1664,7 @@ void Unk_02005e7c::handleNetEvent() {
     case 21:
     case 22:
         if (action == 0x18) {
-            u8 *p = actionWork;
+            u8 *p = actionWorkRaw;
             ux = p[5];
             uy = p[5];
             if (ux == x && uy == y) {
@@ -1693,7 +1693,7 @@ void Unk_02005e7c::handleNetEvent() {
         break;
     case 5:
         if (action == 0x16) {
-            u8 *p = actionWork;
+            u8 *p = actionWorkRaw;
             ux = p[0];
             uy = p[1];
             if (ux == x && uy == y) {
@@ -1740,7 +1740,7 @@ void Unk_02005e7c::handleNetEvent() {
     }
     case 20:
         if (action == 0x66) {
-            pa = (Unk_02005f50_Area *)actionWork;
+            pa = (Unk_02005f50_Area *)actionWorkRaw;
             ux2 = 0;
             uy2 = 0;
             q20.x = pa->a[0]; q20.y = pa->a[1]; q20.z = pa->a[2];

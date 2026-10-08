@@ -3754,7 +3754,7 @@ BOOL PlayerActor::doCreate() {
     ((PlayerActor *)this)->gravity = 0xffffb000;
     ((PlayerActor *)this)->maxFallSpeed = 0xffff6000;
     ((PlayerActor *)(this))->requestInit(PlayerActor_ParamGetAction(r6), 9, -1);
-    ((PlayerActor *)this)->pendingEvent &= ~0x80;
+    ((PlayerActor *)this)->pendingEvent.set = 0;
     ((Unk_02005e7c *)(this))->processRequests();
     ((PlayerActor *)this)->actionFlags = 0;
     ((PlayerActor *)(this))->setActionFlag(1);
@@ -7273,7 +7273,7 @@ void Unk_02005e7c::followNetAction() {
     lastNetAction = st;
     u8 *r = PlayerActor_GetNetStateVar(sessionSlot);
     if (r != NULL) {
-        MI_CpuCopy8(r + 4, netData, 8);
+        MI_CpuCopy8(r + 4, netData.bytes, 8);
     }
     s32 a = ((PlayerActor *)(this))->isLocomotionAction(action);
     s32 b = ((PlayerActor *)(this))->isLocomotionAction(st);

@@ -33,6 +33,7 @@
 #include "player/AnimSlotRef.h"
 #include "player/PlayerPaletteRef.h"
 #include "player/PlayerNetActionArgs.h"
+#include "player/PendingFieldActionFx.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "snd/SndSeEmitterKind99.h"
 
@@ -463,7 +464,7 @@ public:
     /* 0x8f4 */ s32 lastNetAction;
     /* 0x8f8 */ s32 pendingEventUnitX;
     /* 0x8fc */ s32 pendingEventUnitZ;
-    /* 0x900 */ u8 pendingEvent;
+    /* 0x900 */ PendingFieldActionFx pendingEvent;  // a field event deferred by handleNetEvent
     /* 0x901 */ u8 pad_901[3];
     /* 0x904 */ Unk_0200b908_Obj *emotionEntry;
     /* 0x908 */ NpcEmotionFx emotionFx;
