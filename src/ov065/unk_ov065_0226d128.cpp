@@ -140,9 +140,9 @@ s32 NasAuth_Start(NasAuthParams *cfg, DwcHttp *http) {
     MI_CpuFill8(&sNasAuth->resultCode, 0, 0x1c4);
     sNasAuth->resultCode = -1;
     sNasAuth->config = *(NasAuthParams *)cfg;  // (allocFunc / freeFunc: pointers, wider on 64-bit hosts)
-    *((u8 *)sNasAuth + 0x1e0) = 0;
-    *((u8 *)sNasAuth + 0x1e1) = 0;
-    *((u8 *)sNasAuth + 0x1ed) = 0;
+    sNasAuth->config.inGameName[0x14] = 0; // (the u16 name ends after 10 characters)
+    sNasAuth->config.inGameName[0x15] = 0;
+    sNasAuth->config.gsbrcd[0xb] = 0;
     sNasHttpParams.allocFunc = cfg->allocFunc;
     sNasHttpParams.freeFunc = cfg->freeFunc;
     sNasAuth->state = NasAuth_SendRequest(1);
@@ -230,8 +230,8 @@ s32 NasAuth_SendRequest(s32 a) {
         DWCi_BM_GetWiFiInfo(&sNasUserId);
     }
     sNasAuth->state = NasAuth_BuildRequest(
-        sNasAuth->http, (char *)sNasAuth + 0x1e2, (u16 *)((u8 *)sNasAuth + 0x1cc),
-        (DwcHttpField *)((u8 *)sNasAuth + 0x1f8), 0x20, 0);
+        sNasAuth->http, sNasAuth->config.gsbrcd, (u16 *)sNasAuth->config.inGameName,
+        sNasAuth->httpFields, 0x20, 0);
     if (sNasAuth->state != 0) {
         return 4;
     }

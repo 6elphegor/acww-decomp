@@ -474,7 +474,7 @@ again:
                 s32 idx;
                 GPProfileSearchMatch *base;
                 s1.numMatches++;
-                base = (GPProfileSearchMatch *)GsUtil_Realloc(s1.matches, s1.numMatches * 0xac);
+                base = (GPProfileSearchMatch *)GsUtil_Realloc(s1.matches, s1.numMatches * sizeof(GPProfileSearchMatch));
                 s1.matches = base;
                 if (base == 0) ERRMEM("Out of memory.")
                 idx = s1.numMatches - 1;
@@ -561,7 +561,7 @@ again:
         do {
             GETTOK(tok)
             if (strcmp(tok, "nick") == 0) {
-                void *t = GsUtil_Realloc(p->nicks, (p->numNicks + 1) * 4);
+                void *t = GsUtil_Realloc(p->nicks, (p->numNicks + 1) * sizeof(char *));
                 if (t == 0) ERRMEM("Out of memory.")
                 p->nicks = (char **)t;
                 t = GsUtil_Alloc(0x1f);
@@ -571,7 +571,7 @@ again:
                 p->numNicks++;
             } else if (strcmp(tok, "uniquenick") == 0) {
                 if (p->numNicks > 0) {
-                    void *t = GsUtil_Realloc(p->uniquenicks, p->numNicks * 4);
+                    void *t = GsUtil_Realloc(p->uniquenicks, p->numNicks * sizeof(char *));
                     if (t == 0) ERRMEM("Out of memory.")
                     p->uniquenicks = (char **)t;
                     t = GsUtil_Alloc(0x15);
@@ -611,7 +611,7 @@ again:
                 s32 idx;
                 GPFindPlayerMatch *base;
                 p4->numMatches++;
-                p4->matches = (GPFindPlayerMatch *)GsUtil_Realloc(p4->matches, p4->numMatches * 0x128);
+                p4->matches = (GPFindPlayerMatch *)GsUtil_Realloc(p4->matches, p4->numMatches * sizeof(GPFindPlayerMatch));
                 base = p4->matches;
                 if (base == 0) ERRMEM("Out of memory.")
                 idx = p4->numMatches - 1;
@@ -721,7 +721,7 @@ again:
                 GPProfileSearchMatch *e;
                 s32 idx;
                 GPProfileSearchMatch *base;
-                void *t = GsUtil_Realloc(p7->profiles, (p7->numProfiles + 1) * 0xac);
+                void *t = GsUtil_Realloc(p7->profiles, (p7->numProfiles + 1) * sizeof(GPProfileSearchMatch));
                 if (t == 0) ERRMEM("Out of memory.")
                 p7->profiles = (GPProfileSearchMatch *)t;
                 base = p7->profiles;
@@ -773,7 +773,7 @@ again:
         GETTOK(tok)
         if (strcmp(tok, "us") != 0) ERR3()
         p->numSuggestedNicks = atol(buf);
-        p->suggestedNicks = (char **)GsUtil_Alloc(p->numSuggestedNicks * 4);
+        p->suggestedNicks = (char **)GsUtil_Alloc(p->numSuggestedNicks * sizeof(char *));
         if (p->suggestedNicks == 0) ERRMEM("Out of memory.")
         done = 0;
         do {
@@ -816,7 +816,7 @@ s32 gpiProcessSearches(GPConnection *h) {
     GPIOperation *nd;
     s32 z = 0;
     if (c->numSearches > 0) {
-        arr = (GPIOperation **)GsUtil_Alloc(c->numSearches * 4);
+        arr = (GPIOperation **)GsUtil_Alloc(c->numSearches * sizeof(GPIOperation *));
         if (arr == 0) {
             gpiSetErrorString(h, "Out of memory.");
             return 1;

@@ -44,12 +44,28 @@ _hdr_cpp_cache = {}
 
 def header_is_cpp(h):
     if h not in _hdr_cpp_cache:
+        _hdr_cpp_cache[h] = False  # (include cycles)
         try:
             body = open(os.path.join('include', h)).read()
             body = re.sub(r'//[^\n]*|/\*.*?\*/', '', body, flags=re.S)
+            # a header that includes a C++-only header unconditionally is C++-only too (game/SceneWarp.h: gfx/VecFx32.h)
+            incs, conds = [], []
+            for ln in body.split('\n'):
+                d = re.match(r'[ \t]*#[ \t]*(\w+)(.*)', ln)
+                if not d:
+                    continue
+                if d.group(1) in ('if', 'ifdef', 'ifndef'):
+                    conds.append('__cplusplus' in d.group(2))
+                elif d.group(1) == 'endif' and conds:
+                    conds.pop()
+                elif d.group(1) == 'include' and not any(conds):
+                    m = re.match(r'\s*"([^"]+)"', d.group(2))
+                    if m:
+                        incs.append(m.group(1))
             # preprocessor lines (types.h: #if defined(MODERN) && defined(__cplusplus)) don't make a header C++-only
             body = re.sub(r'^[ \t]*#.*(?:\\\n.*)*', '', body, flags=re.M)
-            _hdr_cpp_cache[h] = bool(CPP_ONLY.search(body))
+            _hdr_cpp_cache[h] = bool(CPP_ONLY.search(body)) or any(
+                os.path.exists(os.path.join('include', i)) and header_is_cpp(i) for i in incs)
         except OSError:
             _hdr_cpp_cache[h] = True
     return _hdr_cpp_cache[h]

@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "game/TouchPicker.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -377,7 +378,7 @@ BOOL SceneWarp_RequestExit(s32 a, s32 b);
 u8 *Scene_GetTouchPicker();
 u8 Scene_GetPrevious();
 u32 Scene_GetCurrent();
-BOOL TouchPick_GetGroundPos(void *a, VecFx32 *b);
+BOOL TouchPick_GetGroundPos(TouchPickResult *a, VecFx32 *b);
 u16 Math_CountDownU16(u16 *p);
 u8 Math_CountDownU8(u8 *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -3047,13 +3048,13 @@ BOOL SpNpcNookShop::pickItemTopic() {
     if (f) {
         void *o = FtrActorGrid_GetInstance()->getActor(bx, by, 0);
         if (o != 0) {
-            if (o != TouchPick_GetTargetObject((TouchPickResult *)Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject((TouchPicker *)Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             VecFx32 v2;
-            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
+            TouchPick_GetGroundPos((TouchPicker *)Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

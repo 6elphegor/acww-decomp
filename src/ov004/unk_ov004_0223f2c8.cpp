@@ -7,67 +7,43 @@
 
 // Static warp entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
 
-extern "C" {
-extern void *gMenuHeap;
-
-// ov093 methods of StaffRoll, called through their real symbols (object passed first)
-s32 _ZN9StaffRoll10isFinishedEv(void *self);
-void _ZN9StaffRoll9startLogoEv(void *self);
-void _ZN9StaffRoll5startEi(void *self, s32 a);
-void _ZN9StaffRoll4stopEv(void *self);
-void _ZN9StaffRoll13uploadScreensEv(void *self);
-void _ZN9StaffRoll6updateEv(void *self);
-void _ZN9StaffRoll4initEv(void *self);
-void _ZN9StaffRollD1Ev(void *self);
-void _ZN9StaffRollC1Ev(void *self);
-#define func_ov093_02291dd8 _ZN9StaffRoll10isFinishedEv
-#define func_ov093_02291de4 _ZN9StaffRoll9startLogoEv
-#define func_ov093_02291e6c _ZN9StaffRoll5startEi
-#define func_ov093_02291f5c _ZN9StaffRoll4stopEv
-#define func_ov093_02291f70 _ZN9StaffRoll13uploadScreensEv
-#define func_ov093_02291ff0 _ZN9StaffRoll6updateEv
-#define func_ov093_0229212c _ZN9StaffRoll4initEv
-#define func_ov093_02292174 _ZN9StaffRollD1Ev
-#define func_ov093_022921b8 _ZN9StaffRollC1Ev
-void Heap_Free(void *heap, void *p);
-void *Heap_Alloc(void *heap, u32 size);
-void OverlayMgr_Release(u32 id);
-void OverlayMgr_Acquire(u32 id);
-}
+#include "sys/Heap.h"
+#include "sys/new.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/ov004/unk_ov004_0223f2c8.h"
 
 extern "C" {
-
-extern u8 sKkShowFxActive;
-extern void *sKkShowFx;
 
 void KkShowFx_Start(void) {
     OverlayMgr_Acquire(93 /* the staff roll's overlay */);
-    sKkShowFx = Heap_Alloc(gMenuHeap, sizeof(StaffRoll));
+    sKkShowFx = (StaffRoll *)Heap_Alloc((Heap *)gMenuHeap, sizeof(StaffRoll));  // (gMenuHeap: void *, main)
     if (sKkShowFx) {
-        func_ov093_022921b8(sKkShowFx);
+        new (sKkShowFx) StaffRoll;
     }
-    func_ov093_0229212c(sKkShowFx);
+    sKkShowFx->init();
     sKkShowFxActive = 1;
 }
 
 void KkShowFx_Update(void) {
     if (sKkShowFxActive & 1) {
-        func_ov093_02291ff0(sKkShowFx);
+        sKkShowFx->update();
     }
 }
 
 void KkShowFx_CallUnk1f70(void) {
     if (sKkShowFxActive & 1) {
-        func_ov093_02291f70(sKkShowFx);
+        sKkShowFx->uploadScreens();
     }
 }
 
 void KkShowFx_Stop() {
     if (sKkShowFxActive & 1) {
-        func_ov093_02291f5c(sKkShowFx);
+        sKkShowFx->stop();
         void *heap = gMenuHeap;
-        func_ov093_02292174(sKkShowFx);
-        Heap_Free(heap, sKkShowFx);
+        sKkShowFx->~StaffRoll();
+        Heap_Free((Heap *)heap, sKkShowFx);
         sKkShowFx = 0;
         OverlayMgr_Release(93 /* the staff roll's overlay */);
     }
@@ -77,26 +53,25 @@ void KkShowFx_Stop() {
 void KkShowFx_SetParam(s32 a) {
     if (sKkShowFxActive & 1) {
         if (a <= 0) a = 0x1400;
-        func_ov093_02291e6c(sKkShowFx, a);
+        sKkShowFx->start(a);
     }
 }
 
 void KkShowFx_CallUnk1de4() {
-    if (sKkShowFxActive & 1) func_ov093_02291de4(sKkShowFx);
+    if (sKkShowFxActive & 1) sKkShowFx->startLogo();
 }
 
 s32 KkShowFx_GetState() {
-    if (sKkShowFxActive & 1) return func_ov093_02291dd8(sKkShowFx);
+    if (sKkShowFxActive & 1) return sKkShowFx->isFinished();
     return 0;
 }
 
 }
 
 // file-scope objects (the static initialiser); the definition order sets the data/bss order
-extern SceneWarp data_ov004_0225893c;
 
 u8 sKkShowFxActive;
-void *sKkShowFx;
+StaffRoll *sKkShowFx;
 // {pointer to the first static entry, count}
 // (a SceneWarpList: the count is the next variable on the DS, the pointer is larger here)
 SceneWarpList sRoomSceneEntryList = {&data_ov004_0225893c, 3};

@@ -32,7 +32,6 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_02094810.h"
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the calls pass V3 / VecFx32 / s32 positions alike
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_020943dc.h"
@@ -491,7 +490,6 @@ s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
 void GroundInfo_Destruct(void *o);
-s32 Math_AngleXZ(void *, void *);
 void *Scene_GetTouchPicker(void);
 s32 Math_StepS32Alt(void *p, s32 a, s32 b);
 s32 Math_StepS16(void *p, s32 a, s32 b);
@@ -550,7 +548,7 @@ extern "C" void AquariumFish_Bob(E864 *o, s32 m, s32 lim, u32 mode);
 extern "C" s32 Aquarium_RandFx(s32 a, s32 b);
 extern "C" s16 Aquarium_RandAngle(s32 a, s32 b);
 extern "C" s32 Aquarium_RandRange(s32 a, s32 b);
-extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max);
+extern "C" BOOL Aquarium_TurnTowardHome(void *obj, V3 *a, s32 *b, s32 max);
 extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v);
 extern "C" BOOL Aquarium_TestHeight800At(V3 *pos);
 extern "C" BOOL AquariumFish_IsNearWall(E864 *o);
@@ -1239,11 +1237,11 @@ extern "C" s32 Aquarium_RandRange(s32 a, s32 b)
     return a + Random_GlobalBelow(b - a);
 }
 
-extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max)
+extern "C" BOOL Aquarium_TurnTowardHome(void *obj, V3 *a, s32 *b, s32 max)
 {
     BOOL r = TRUE;
     if (Vec_Distance(a, b) > max) {
-        Math_StepS16(obj, Math_AngleXZ(a, b), 0x38e);
+        Math_StepS16(obj, Math_AngleXZ(&a->x, b), 0x38e);
         r = FALSE;
     }
     return r;
@@ -1832,7 +1830,7 @@ void AquariumSeaButterfly::setup() {
 void AquariumSeaButterfly::update() {
     E7bc *e = this;
     if ((u8)(e->state + 0xfd) <= 1) {
-        Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, &e->homePos, 0x1000);
+        Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, e->homePos, 0x1000);
     }
     (e->*sAquariumSwimStates[e->state])();
     Aquarium_Oscillate(&e->pitch, &e->swayUp, &e->swayCounter, 0x2aac, 0x12c);
@@ -1907,7 +1905,7 @@ void AquariumSeahorse::setup() {
 
 void AquariumSeahorse::update() {
     E7a4 *e = this;
-    Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, &e->homePos, 0x1000);
+    Aquarium_TurnTowardHome(&e->unk_1c0, &e->pos, e->homePos, 0x1000);
     switch (e->subState) {
     case 1: {
         s32 r = Aquarium_RandRange(0, 0x64);
@@ -2096,7 +2094,7 @@ extern "C" void AquariumPiranha_StateApproach(E75c *o) {
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
-    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos, (s32 *)&v), 0x222);
+    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos.x, &v.x), 0x222);
     Aquarium_StepXZ(&o->pos, o->maxSpeed, o->unk_1c0);
     if (p->speed != 0) {
         if (o->pitch != 0) Math_StepS16(&o->pitch, 0, 0x222);
@@ -2145,7 +2143,7 @@ extern "C" void AquariumPiranha_StateBite(E75c *o) {
         AquariumPiranha_BiteIdle(o);
         break;
     }
-    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos, (s32 *)p), 0x222);
+    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos.x, &p->x), 0x222);
     long long d = Vec_DistSqXZ(p, &o->pos);
     if (0x10000 < d) {
         o->subState = 0;
@@ -2486,7 +2484,7 @@ extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f) {
             o->hideTime = Aquarium_RandRange(0x3c, 0x78);
         }
     } else {
-        o->unk_1c0 = Math_AngleXZ(&o->pos, &o->hideoutX);
+        o->unk_1c0 = Math_AngleXZ(&o->pos.x, &o->hideoutX);
         if (f != 0) {
             Aquarium_StepXZ(&o->pos, o->maxSpeed << 1, o->unk_1c0);
         } else {
@@ -2896,14 +2894,14 @@ extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p) {
         e->stateTimer = 0;
         if ((u8)(e->rank + 0xfc) <= 1) {
             if (e->contactTimer >= 0x7d) {
-                e->fleeAngle = Math_AngleXZ(p, &e->pos);
+                e->fleeAngle = Math_AngleXZ(&p->x, &e->pos.x);
             } else if (e->unk_1c0 >= 0) {
                 e->fleeAngle = Aquarium_RandRange(0x38e4, 0x471c);
             } else {
                 e->fleeAngle = -Aquarium_RandRange(0x38e4, 0x471c);
             }
         } else {
-            e->fleeAngle = Math_AngleXZ(p, &e->pos);
+            e->fleeAngle = Math_AngleXZ(&p->x, &e->pos.x);
         }
         if (e->wallTurnState == 1) {
             AquariumFish_CancelTurn(e);
@@ -3180,7 +3178,7 @@ extern "C" void AquariumFish_AvoidOther(R *e) {
             }
             AquariumFish_SplitDepth(e, slot);
         } else {
-            s32 r = Math_AngleXZ(v, &e->pos);
+            s32 r = Math_AngleXZ(&v->x, &e->pos.x);
             s32 d = (s16)(r - e->unk_1c0);
             if (d < 0) {
                 e->avoidAngle = r - 0x4000;
@@ -3209,7 +3207,7 @@ extern "C" void AquariumFish_ClearContact(R *e) {
 extern "C" s32 Aquarium_GetContactSide(R *a, R **b) {
     s32 r4 = (*b)->unk_1c0;
     s32 y, x;
-    s32 t = (s16)(Math_AngleXZ(&a->pos, &(*b)->pos) - 0x4000);
+    s32 t = (s16)(Math_AngleXZ(&a->pos.x, &(*b)->pos.x) - 0x4000);
     x = (s16)(a->unk_1c0 - t);
     y = (s16)(r4 - t);
     if (x * y < 0) {

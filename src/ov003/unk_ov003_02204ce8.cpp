@@ -21,6 +21,7 @@
 #include "field/FishShadow.h"
 #include "actor/ActorCollider.h"
 #include "game/GroundInfo.h"
+#include "game/FxVec3.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/ItemName.h"
@@ -32,7 +33,6 @@
 #include "snd/BgmManager.h"
 #include "snd/BgmVolumeMixer.h"
 #include "ui/HudController.h"
-#define PROTO_LOCAL_sWateringPos  // declared below: its definition (src/ov003/unk_ov003_02225800.cpp) is an untyped FxVec3NoCtor
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02034438.h"
@@ -264,7 +264,6 @@ typedef PlayerActionRequest Msg;
 extern "C" {
 extern CommManager *gCommManager;
 extern BgmManager *data_021c1b3c;
-extern V3 sWateringPos;
 
 s32 Math_Atan2(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
@@ -823,7 +822,6 @@ typedef PlayerActionRequest Msg;
 extern "C" {
 extern CommManager *gCommManager;
 extern void *gSceneBlockMap;
-extern V3 sWateringPos;
 
 s32 TalkRequest_AddSlingshot();
 void Sky_OnSlingshotFired(s32 h);

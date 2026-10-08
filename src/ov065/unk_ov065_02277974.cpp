@@ -229,8 +229,8 @@ void *DwcNet_Free(s32 a, void *b, s32 c) {
     return sDwcFreeHook(a, b, c);
 }
 
-void *DwcNet_Realloc(s32 a, s32 b, s32 c, s32 d) {
-    return DwcNet_ReallocAligned(a, (void *)b, c, d, 0x20);
+void *DwcNet_Realloc(s32 a, void *b, s32 c, s32 d) {
+    return DwcNet_ReallocAligned(a, b, c, d, 0x20);
 }
 
 void *DwcNet_ReallocAligned(s32 a, void *b, s32 c, s32 d, s32 e) {
@@ -249,20 +249,20 @@ void *GsUtil_Alloc(s32 a) {
     return DwcNet_Alloc(5, a);
 }
 
-void *GsUtil_Realloc(s32 a, s32 b) {
+void *GsUtil_Realloc(void *a, s32 b) {
     return DwcNet_Realloc(5, a, b, b);
 }
 
-void *GsUtil_Free(s32 a) {
-    return DwcNet_Free(5, (void *)a, 0);
+void *GsUtil_Free(void *a) {
+    return DwcNet_Free(5, a, 0);
 }
 
-s32 GsUtil_FormatKeyValue(s32 a, s32 b, char *dst, s32 d) {
+s32 GsUtil_FormatKeyValue(const char *a, const char *b, char *dst, s32 d) {
     OS_SNPrintf(dst, 0x1000, "%c%s%c%s", d, a, d, b);
     return STD_GetStringLength(dst);
 }
 
-s32 GsUtil_AppendKeyValue(s32 a, s32 b, char *s, s32 d) {
+s32 GsUtil_AppendKeyValue(const char *a, const char *b, char *s, s32 d) {
     char *e = strchr(s, 0);
     GsUtil_FormatKeyValue(a, b, e, d);
     return STD_GetStringLength(s);

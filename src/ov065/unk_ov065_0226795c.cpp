@@ -705,7 +705,7 @@ u8 sSslSha1Padding[0x40] = {0x80};
 
 void SslSha1_Init(SslSha1Context *ctx)
 {
-    MI_CpuFill8(ctx, 0, 0x5c);
+    MI_CpuFill8(ctx, 0, sizeof(*ctx));
     ctx->st[0] = 0x67452301;
     ctx->st[1] = 0xefcdab89;
     ctx->st[2] = 0x98badcfe;

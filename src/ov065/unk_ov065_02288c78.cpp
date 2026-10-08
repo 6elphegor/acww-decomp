@@ -168,7 +168,7 @@ void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
 s32 SBListThink(void *);
 s32 ProcessLanData(SBServerList *);
 s32 RefStringCompare(char **, char **);
-s32 RefStringFree(void **);
+void RefStringFree(void **);
 s32 RefStringHash(void **, s32);
 
 }
@@ -326,8 +326,8 @@ s32 RefStringCompare(char **a, char **b) {
 
 namespace F02288e2c {
 extern "C" {
-s32 RefStringFree(void **p) {
-    return GsUtil_Free(*p);
+void RefStringFree(void **p) {
+    GsUtil_Free(*p);
 }
 }
 }
