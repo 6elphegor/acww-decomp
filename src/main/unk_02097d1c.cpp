@@ -537,10 +537,10 @@ void PlayerData::sendForeignVillagerLetter()
             MailText_SetSlot(1, &o20);
             s32 i;
             for (i = 0; i < 6; i++) {
-                u32 r = TopicWord_PickRandom(&t, i);  // (the list's file name, returned as u32 by unk_02098e90.cpp)
+                char *r = TopicWord_PickRandom(&t, i);  // the word list's file name
                 o58.clear();
                 c = t;
-                String_LoadResolveAltText(&o58, &c, (const char *)(uptr)r);
+                String_LoadResolveAltText(&o58, &c, r);
                 MailText_SetSlot(i + 2, &o58);
             }
             TownId_GetNameString(&rec->town, &o3c);

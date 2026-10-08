@@ -5,8 +5,12 @@
 
 #include "types.h"
 struct PlayerPalettePool;
+#ifndef __cplusplus
+typedef struct PlayerPalettePool PlayerPalettePool;
+#endif
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
+#include "sys/Heap.h"
 #endif
 
 #ifdef __cplusplus
@@ -20,9 +24,6 @@ void ItemSync_ApplyAndBroadcast(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_ItemSync_SetAtUnit
 void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
-#endif
-#ifndef PROTO_LOCAL_PlayerPalettePool_Create
-void PlayerPalettePool_Create(void *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerPalettePool_Destroy
 void PlayerPalettePool_Destroy();
@@ -74,6 +75,9 @@ void PlayerPaletteRef_LoadHair(u8 *x, u32 y);
 extern "C" {
 #ifndef PROTO_LOCAL_Fishing_StepArc
 BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag);
+#endif
+#ifndef PROTO_LOCAL_PlayerPalettePool_Create
+void PlayerPalettePool_Create(Heap *parent);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerPalettePool

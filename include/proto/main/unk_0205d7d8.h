@@ -8,14 +8,12 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "player/HeldItemModel.h"
+#include "sys/Heap.h"
 class PlayerHeadBank;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL_PlayerHeadBank_Init
-void PlayerHeadBank_Init(void *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerHeadBank_Destroy
 void PlayerHeadBank_Destroy(void);
@@ -94,6 +92,9 @@ void PlayerHead_SetModelId(u8 *p, s32 j, u32 v);
 extern "C" {
 #ifndef PROTO_LOCAL_HeldItemModel_IsBobberLanded
 BOOL HeldItemModel_IsBobberLanded(HeldItemModel *p);
+#endif
+#ifndef PROTO_LOCAL_PlayerHeadBank_Init
+void PlayerHeadBank_Init(Heap *parent);
 #endif
 #ifndef PROTO_LOCAL_PlayerHead_GetVramSlot
 TexVramSlot *PlayerHead_GetVramSlot(u8 *p, s32 j);

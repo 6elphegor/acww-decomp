@@ -17,7 +17,7 @@ class BmgReader512 : public BmgReader {
 public:
     BmgReader512();
     virtual ~BmgReader512();
-    virtual u32 getBuffer();
+    virtual u8 *getBuffer();
     virtual u32 getBufferSize();
     void clearBuffer();
 

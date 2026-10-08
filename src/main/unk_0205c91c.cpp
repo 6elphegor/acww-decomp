@@ -40,7 +40,7 @@ struct CharaClothTexPool {
     void allocBuffers();
 };
 
-extern "C" void CharaClothTexPool_Create(void *parent) {
+extern "C" void CharaClothTexPool_Create(Heap *parent) {
     CharaClothTexHeap_Create(parent);
     sCharaClothTexPool.allocBuffers();
     if (gCharaClothTexHeap) static_cast<Heap *>(gCharaClothTexHeap)->adjust();

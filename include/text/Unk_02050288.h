@@ -72,8 +72,8 @@ public:
 
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ Unk_02050288_08 listLink;
-    /* 0x10 */ u32 textStart;
-    /* 0x14 */ u32 textEnd;
+    /* 0x10 */ u8 *textStart;  // the message text drawn (MsgProcessor::begin)
+    /* 0x14 */ u8 *textEnd;    // its end (MsgProcessor::run)
     /* 0x18 */ s32 tileIndex;
     /* 0x1c */ s32 destBuffer;
     /* 0x20 */ s32 widthTiles;

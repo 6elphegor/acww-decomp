@@ -37,6 +37,8 @@
 #include "snd/BgmManager.h"
 #include "save/SaveData.h"
 #include "npc/VillagerDataItemView.h"
+#include "npc/VillagerDataProfileView.h"
+#include "save/VillagerData.h"
 #include "talk/TalkFrame.h"
 #include "talk/TalkTextBox.h"
 #include "talk/TalkParser.h"
@@ -60,8 +62,6 @@
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02097444.h"
 
-class VillagerData;
-class VillagerMemory;
 struct VillagerState;
 
 // Declared here: defined in units whose prototypes are not shared yet (include/proto/.excluded), in assembly or in
@@ -85,21 +85,18 @@ u32 BmgMsgAttr_LookupUnkB(BmgMsgAttr *s);
 u32 BmgMsgAttr_LookupUnkC(BmgMsgAttr *s);
 // src/main/unk_02077ac4.cpp (the villager data: VillagerDataProfileView, VillagerMemory are declared there only)
 u32 Villager_GetAnimalKind(u32 a);
-VillagerMemory *Villager_FindMemory(u32 a, void *b);
+VillagerMemory *Villager_FindMemory(void *a, void *b);
 s32 Villager_FindMemoryIndex(VillagerMemory *t, void *id);
 VillagerMemory *Villager_GetMemory(VillagerMemory *t, u32 i);
-void Villager_GetNicknameFor(u32 a, void *b, void *c);
+void Villager_GetNicknameFor(void *a, void *b, void *c);
 s32 Villager_GetTrend(VillagerData *a, s32 b);
 void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_GetEnemyName(void *a, MsgString *b);
 void Villager_GetRandomOtherName(void *a, MsgString *b);
-void Villager_GetImpressionText(void *self, void *out, s32 p);
+void Villager_GetImpressionText(void *self, void *out, PlayerData *p);
 s32 Villager_GetState(VillagerData *a);
 u32 VillagerState_GetMood(VillagerState *e);
 s32 SaveVillagers_Count(u8 *base);
-s32 _ZN14VillagerMemory13getFriendshipEv(VillagerMemory *self);
-s32 _ZN14VillagerMemory13addFriendshipEi(VillagerMemory *self, s32 d);
-void _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(void *self, void *dst, void *flag);
 // the clock, input, weather
 u32 Clock_GetYear();
 void Clock_GetDayMonth(u8 *out);
@@ -175,8 +172,8 @@ typedef void (TalkRenderProcessor::*Unk_020ddc64_Fn)();
 void TalkBmgReader::clear() {
     MI_CpuFill8(buffer, 0, 0x800);
 }
-u32 TalkBmgReader::getBuffer() {
-    return (u32)(uptr)buffer;
+u8 *TalkBmgReader::getBuffer() {
+    return buffer;
 }
 u32 TalkBmgReader::getBufferSize() {
     return 0x800;
@@ -195,7 +192,7 @@ s32 TalkRenderProcessor::measureLine(u8 *text, BOOL centered) {
     s32 r = 0;
     if (centered != 0) {
         if (measureLabel != 0) {
-            measureLabel->textStart = (u32)(uptr)text;
+            measureLabel->textStart = text;
             measureLabel->alignCenter();
             r = measureLabel->xOffset;
             measureLabel->textStart = 0;
@@ -550,7 +547,7 @@ void TalkTextBox::redrawLines() {
     for (i = 0; i < numLines; i++) {
         MsgTextLabel *e = labels[i];
         if (e != 0 && lineDirty[i] != 0) {
-            e->textStart = (u32)(uptr)lineStarts[i];
+            e->textStart = lineStarts[i];
             e->textEnd = 0;
             e->xOffset = lineOffsets[i];
             e->fgColor = Talk_ColorTagToTextColor(lineColors[i]);
@@ -559,7 +556,7 @@ void TalkTextBox::redrawLines() {
     }
     if (numLines < 3) {
         MsgTextLabel *e = labels[numLines];
-        if (e != 0) e->textEnd = (u32)(uptr)(text + length);
+        if (e != 0) e->textEnd = text + length;
     }
 }
 void TalkTextBox::endText() {}
@@ -1484,8 +1481,8 @@ void TalkParser::tagBranchFriendship() {
     if (p) {
         PlayerId *v = pd->getPlayerId();
         VillagerMemory *m;
-        if ((m = Villager_FindMemory((u32)(uptr)p, v)) != 0) {
-            if (_ZN14VillagerMemory13getFriendshipEv(m) < r[0]) k = 1;
+        if ((m = Villager_FindMemory(p, v)) != 0) {
+            if (m->getFriendship() < r[0]) k = 1;
         }
     } else {
         debugPrintMissing(0xd64, data_020dde2c);
@@ -2531,7 +2528,7 @@ BOOL TalkWindowState::buildCatchphrase() {
     BOOL r4 = FALSE;
     catchphrase.clear();
     if (r6 != 0) {
-        _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(r6, &catchphrase, (void *)1);
+        static_cast<VillagerDataProfileView *>(r6)->getCatchphrase(&catchphrase, (void *)1);
         r4 = TRUE;
     }
     return r4;
@@ -2630,7 +2627,7 @@ BOOL TalkWindowState::buildImpression() {
     BOOL r4 = FALSE;
     impression.clear();
     if (r6 != 0) {
-        Villager_GetImpressionText(r6, &impression, 0);
+        Villager_GetImpressionText(r6, &impression, NULL);
         r4 = TRUE;
     }
     return r4;
@@ -2642,7 +2639,7 @@ BOOL TalkWindowState::buildNickname() {
     nickname.clear();
     if (r6 != 0) {
         PlayerData *g = PlayerData_GetCurrent();
-        Villager_GetNicknameFor((u32)(uptr)r6, &nickname, g->getPlayerId());
+        Villager_GetNicknameFor(r6, &nickname, g->getPlayerId());
         r4 = TRUE;
     }
     return r4;
@@ -2696,8 +2693,8 @@ void TalkWindowState::applyFriendshipDelta(s32 idx) {
             s32 r7 = Villager_FindMemoryIndex((VillagerMemory *)r4, g->getPlayerId());
             VillagerMemory *r6 = Villager_GetMemory((VillagerMemory *)r4, r7);
             if (r6 != 0) {
-                _ZN14VillagerMemory13addFriendshipEi(r6, sTalkFriendshipDeltas[idx]);
-                VillagerSync_Friendship(r4, r7, _ZN14VillagerMemory13getFriendshipEv(r6));
+                r6->addFriendship(sTalkFriendshipDeltas[idx]);
+                VillagerSync_Friendship(r4, r7, r6->getFriendship());
             }
         }
     }
@@ -2709,7 +2706,7 @@ void TalkWindowState::createNameLabel() {
         nameLabel->bgColor = 0xe;
         MsgString9 *o = request->getSpeakerName();
         MsgTextLabel *t = nameLabel;
-        t->textStart = (u32)(uptr)o->data();
+        t->textStart = o->data();
         nameLabel->alignCenter();
         nameLabel->fgColor = 2;
         nameLabel->requestRedraw();

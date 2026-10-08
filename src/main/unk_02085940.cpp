@@ -421,7 +421,7 @@ BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
     c = 0;
     PlayerData *o = PlayerData_GetCurrent();
     c = idx;
-    Letter_ComposeFromMail((LetterView *)&big, &c, (void *)"sp_npc_insurance", data_020e0c4c, data_020e0c54, o->getPlayerId());
+    Letter_ComposeFromMail((LetterView *)&big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, o->getPlayerId());
     ((LetterView *)&big)->setPresent(*v, 1);
     if (LetterDelivery_QueueOutgoing(&big, 0)) {
         r = TRUE;
@@ -1921,7 +1921,7 @@ char data_020e0c98[] = "bbs_gardening";
 
 char *sContestResultBbsFiles[4] = {data_020e0c7c, data_020e0c7c, data_020e0c64, data_020e0c98};
 
-void *sContestResultMailFiles[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
+char *sContestResultMailFiles[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
 
 char data_020e0c70[] = "ev_fishing";
 

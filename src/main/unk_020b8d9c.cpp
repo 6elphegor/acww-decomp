@@ -3481,9 +3481,6 @@ SkySprites::SkySprites() {
 
 
 // ======== unk_020bc58c.cpp ========
-#define data_020e6794 ((u8 *)"ev_star")
-
-
 void SkySprites::reloadAllGfx() {
     SkyObjGfxSlot *p, *end = &gfxSlots[5];
     for (p = &gfxSlots[0]; p < end; p++) {
@@ -3717,7 +3714,7 @@ void SkySprites::sendWishLetters() {
             Letter ctx;
             StarWishLetterVars l;
             l.msgVariant = Random_GlobalBelow(3);
-            Letter_ComposeFromMail((LetterView *)&ctx, &l.msgVariant, data_020e6794, data_020e4634, data_020e4630, o->getPlayerId());
+            Letter_ComposeFromMail((LetterView *)&ctx, &l.msgVariant, "ev_star", data_020e4634, data_020e4630, o->getPlayerId());
             ItemPickSpec q(0, 4);
             ItemPick_One(&l.present, &q, NULL, NULL, 1, 1, NULL);
             ((LetterView *)(&ctx))->setPresent(l.present, 1);

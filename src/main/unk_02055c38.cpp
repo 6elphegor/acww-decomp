@@ -3,6 +3,7 @@
 #include "gfx/VecFx32.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/G3dResAccess.h"
+#include "gfx/G3dMatData.h"
 #include "gfx/MatTexBinder.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/MatTexPatAnim.h"
@@ -79,18 +80,6 @@ static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {
     return t + stride * idx;
 }
 
-
-class G3dMatData {
-public:
-    u32 getPlttAddr(void);
-    u32 getTexAddr(void);
-    u32 getTexSize(void);
-
-    /* 0x00 */ u32 unk_00[5];
-    /* 0x14 */ u32 texImageParam;
-    /* 0x18 */ u32 texImageParamMask;
-    /* 0x1c */ u16 texPlttBase;
-};
 
 s32 G3dRes_FindDictIdx(void *p, const char *a) {
     u32 buf[4];

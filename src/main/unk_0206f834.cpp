@@ -111,7 +111,7 @@ void LabelString::createBufferLabel(u32 a, u32 b, u8 x, u8 y) {
 void LabelString::redrawAligned(s32 a, s32 b) {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         if (b != 0) {
             label->underline = 1;
         } else {
@@ -129,7 +129,7 @@ void LabelString::redrawAligned(s32 a, s32 b) {
 void LabelString::redrawOffset(s32 a, s32 b) {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         if (a != 0) {
             label->alignCenter();
         } else {
@@ -143,7 +143,7 @@ void LabelString::redrawOffset(s32 a, s32 b) {
 void LabelString::redrawRight() {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         label->alignRight();
         label->requestRedraw();
     }
@@ -152,7 +152,7 @@ void LabelString::redrawRight() {
 void LabelString::redrawAt(s32 v) {
     TextLabel *o = label;
     if (o != NULL) {
-        o->textStart = (u32)data();
+        o->textStart = data();
         label->xOffset = v;
         label->requestRedraw();
     }

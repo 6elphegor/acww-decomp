@@ -48,7 +48,6 @@ extern "C" {
 extern CommManager *gCommManager;
 extern Mtx43 data_021f47e0;
 
-BOOL Building_RequestState(void *o, s32 v);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Ground_GetDefaultY();
 BOOL PlayerActor_LocalRequestMailboxOpen(VecFx32 *p);

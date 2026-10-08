@@ -44,8 +44,8 @@ void BmgReader512::clearBuffer() {
     MI_CpuFill8(buffer, 0, 0x200);
 }
 
-u32 BmgReader512::getBuffer() {
-    return (u32)buffer;
+u8 *BmgReader512::getBuffer() {
+    return buffer;
 }
 
 u32 BmgReader512::getBufferSize() {
@@ -73,7 +73,7 @@ u8 MailTextExpander::expand(u8 flag) {
     charCount = 0;
     newlineCount = 0;
     reset();
-    begin((u8 *)(uptr)builder->reader.getBuffer());
+    begin(builder->reader.getBuffer());
     run(FALSE);
     return success;
 }
