@@ -68,7 +68,7 @@ extern "C" {
 }
 
 extern "C" {
-const s16 sSeatSideAngles[4] = {0, -0x4000, 0x4000, 0};
+extern const s16 sSeatSideAngles[4] = {0, -0x4000, 0x4000, 0};
 u32 data_ov004_0224d4a4 = 0x400;
 char sRoomPlayerMsgFile[16] = "obj_etc_player";
 u32 data_ov004_0224d4a8 = 0x400;
@@ -92,21 +92,6 @@ u32 data_ov004_0224d4b4 = 0x400;
 
 
 
-extern "C" {
-void RoomObjRes_Free(void *self);
-void RoomObjRes_Load(void *self, const char *s);
-void *RoomObjRes_GetModel(void *self);
-void RoomObjTex_Construct(void *self);
-void RoomObjTex_Destruct(void *self);
-void RoomObjTex_Reset(void *self);
-void RoomObjTex_Load(void *self, const char *s);
-void RoomObj_ConstructSe(void *self);
-void RoomObj_DestructSe(void *self);
-void RoomObj_PlaySe(void *self, s32 v);
-void RoomObj_DeactivateSe(void *self);
-void RoomObj_SetSePos(void *self, void *v);
-void RoomObj_ActivateSe(void *self);
-}
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
 
@@ -259,6 +244,39 @@ void RoomObjRes::clear() {
 }
 
 
+namespace ns_0222459c { struct GetOutOfBedCheckWork; }
+namespace ns_02223314 { struct BedApproachWork; }
+namespace ns_022215a8 { struct PlayerSitDownArgs; }
+
+// the player actions defined in this file (and their helpers elsewhere), as defined
+extern "C" {
+extern u8 gFieldSceneKind;
+s32 PlayerActor_RequestLieInBed(PlayerActor *o, u32 a, u32 b, u32 c);
+void PlayerActor_GetOutOfBedCheckSetWork(ns_0222459c::GetOutOfBedCheckWork *r, VecFx32 *v, u32 f);
+s32 PlayerActor_RequestBedRollCheck(PlayerActor *o, u32 a, s32 b, s32 c);
+s32 PlayerActor_RequestGetOutOfBed(PlayerActor *o, u32 a, u32 b, s32 c, s32 d);
+void PlayerActor_BedApproachSetArgs(ns_02223314::BedApproachWork *t, s32 x, s32 z, s16 h, u8 a, u8 b);
+s32 PlayerActor_RequestAct12(PlayerActor *o, s32 a, s32 b);
+s32 PlayerActor_RequestBedApproach(PlayerActor *o, s32 x, s32 z, s32 h, u8 a, s32 b, s32 c);
+void PlayerActor_StepTowardPose(PlayerActor *o, s32 a, s32 b, s32 c);
+s32 Item_GetFurnitureIndex(u16 *p);
+void PlayerActor_PickUpItemUpdateAnim(PlayerActor *o);
+void PlayerActor_PickUpItemUpdateScale(PlayerActor *o);
+s32 PlayerActor_RequestFtrHold(PlayerActor *o, u32 a, u32 b, u32 c, s32 e);
+s32 PlayerActor_RequestSeatApproach(PlayerActor *o, s32 x, s32 z, s16 h, u8 d, s32 a, s32 b);
+void PlayerActor_SitDownFrontSetArgs(ns_022215a8::PlayerSitDownArgs *t, s32 x, s32 z, s16 h);
+s32 PlayerActor_RequestSit(PlayerActor *o, u32 a, u32 b, u32 c);
+s32 PlayerActor_RequestStandUpSide2(PlayerActor *o, u32 a, u32 b);
+s32 PlayerActor_RequestStandUpCheck(PlayerActor *o, u32 a, s32 b, s32 c);
+s32 PlayerActor_RequestStorageClose(PlayerActor *o, u32 a, s32 b, s32 c);
+s32 PlayerActor_RequestAct42(PlayerActor *o, s32 a, s32 b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void PlayerActor_ApproachValue(s32 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
+s32 PlayerActor_RequestFtrGrabApproach(PlayerActor *o, s32 x, s32 z, s16 h, u32 a, s32 b);
+s32 PlayerActor_RequestPickUpItem(PlayerActor *o, Vec2 *p, s32 c, u32 b, s16 d);
+void PlayerActor_RoomWalkToward(PlayerActor *o, VecFx32 *tgt, s32 *out, s32 *lim);
+}
+
 namespace ns_0222459c {
 
 struct GetOutOfBedCheckWork {
@@ -295,10 +313,7 @@ void *func_02106634(void *p, u32 a);
 void *func_02106654(void *p);
 void *func_02106670(void *p, u32 a);
 
-s32 PlayerActor_RequestBedRollCheck(Obj *o, u32 a, u32 b, u32 c);
 s32 PlayerActor_RequestDrinkCoffee(Obj *o, u32 a, u32 b);
-s32 PlayerActor_RequestAct12(Obj *o, u32 a, u32 b);
-s32 PlayerActor_RequestSit(Obj *o, u32 a, u32 b, u32 c);
 s32 PlayerActor_RequestPhoneHangUp(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestPhonePickUp(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestHaircutStart(Obj *o, u32 a, u32 b, u32 c, s32 e);
@@ -306,23 +321,16 @@ s32 PlayerActor_RequestAct37(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, Character *e, s32 f, s16 g);
 s32 PlayerActor_RequestDoorWalkOut(Obj *o, V3 *v, u32 a, u32 b);
 s32 PlayerActor_RequestLeaveRoom(Obj *o, s32 a, s32 b);
-s32 PlayerActor_RequestStorageClose(Obj *o, u32 a, s32 b, s32 c);
 s32 PlayerActor_RequestStorageOpen(Obj *o, u8 b, u32 x, u32 y, s16 c, s32 d, s32 e);
 s32 PlayerActor_RequestStandUpFront(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestStandUpSide1(Obj *o, s32 a, s32 b);
-s32 PlayerActor_RequestStandUpSide2(Obj *o, u32 a, u32 b);
-s32 PlayerActor_RequestSeatApproach(Obj *o, u32 a, u32 b, s16 c, u32 d, s32 e, s32 f);
-s32 PlayerActor_RequestGetOutOfBed(Obj *o, u32 a, u32 b, u32 c, s32 d);
-s32 PlayerActor_RequestBedApproach(Obj *o, u32 a, u32 b, s32 c, u32 d, s32 e, s32 f);
 
-void PlayerActor_GetOutOfBedCheckSetWork(Rec *r, V3 *v, u32 f);
 s32 PlayerActor_RequestGetOutOfBedCheck(Obj *o, u32 a, u32 b, u32 c);
 void PlayerActor_MainLieInBed(Obj *o);
 void PlayerActor_LieInBedReadInput(Obj *o);
 void PlayerActor_EndLieInBed(Obj *o, s32 a);
 void PlayerActor_NetLieInBed(Obj *o, s32 a);
 void PlayerActor_SetupLieInBed(Obj *o, u8 *p, s32 c);
-s32 PlayerActor_RequestLieInBed(Obj *o, u32 a, u32 b, u32 c);
 s32 PlayerActor_GetPosIfInAction(V3 *out, u32 idx, s32 st);
 }
 
@@ -411,40 +419,40 @@ extern "C" void *RoomObjRes_GetModel(Res *p) {
     return p->model;
 }
 
-extern "C" void RoomObjTex_Construct(Res *p) {
-    p->archive = 0;
+extern "C" void RoomObjTex_Construct(RoomObjTexHandle *p) {
+    p->texture = 0;
 }
 
-extern "C" void RoomObjTex_Destruct(void) {
+extern "C" void RoomObjTex_Destruct(RoomObjTexHandle *p) {
 }
 
-extern "C" s32 RoomObjTex_Load(Res *self, const char *id) {
+extern "C" s32 RoomObjTex_Load(RoomObjTexHandle *self, const char *id) {
     void *r4 = File_LoadAlloc(id, gCurrentHeap, -4, 0);
     if (r4) {
         void *r6 = NNS_G3dGetTex((u8 *)r4);
         Gfx3d_LoadTexAndPltt(r6, 0);
-        self->archive = Gfx3d_CopyTex(r6, gBgHeap);
+        self->texture = Gfx3d_CopyTex(r6, gBgHeap);
         Mem_Free(r4);
         return 1;
     }
     return 0;
 }
 
-extern "C" void RoomObjTex_Reset(Res *p) {
-    p->archive = 0;
+extern "C" void RoomObjTex_Reset(RoomObjTexHandle *p) {
+    p->texture = 0;
 }
 
-extern "C" void *RoomObjTex_Get(Res *p) {
-    return p->archive;
+extern "C" void *RoomObjTex_Get(RoomObjTexHandle *p) {
+    return p->texture;
 }
 
-extern "C" Res *RoomObj_ConstructSe(Res *p) {
-    new (p) SndSeEmitter();
+extern "C" RoomObjSe *RoomObj_ConstructSe(RoomObjSe *p) {
+    new (&p->emitter) SndSeEmitter();
     return p;
 }
 
-extern "C" Res *RoomObj_DestructSe(Res *p) {
-    ((SndSeEmitter *)(p))->SndSeEmitter::~SndSeEmitter();
+extern "C" RoomObjSe *RoomObj_DestructSe(RoomObjSe *p) {
+    p->emitter.SndSeEmitter::~SndSeEmitter();
     return p;
 }
 
@@ -452,12 +460,12 @@ extern "C" void RoomObj_ActivateSe(void *a) {
     ((SndSeEmitter *)a)->callInit();
 }
 
-extern "C" void RoomObj_SetSePos(void *a, V3 *p) {
+extern "C" void RoomObj_SetSePos(RoomObjSe *a, V3 *p) {
     V3 v;
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    ((SndSeEmitter *)a)->callUpdateRelative(&v);
+    a->emitter.callUpdateRelative(&v);
 }
 
 extern "C" void RoomObj_DeactivateSe(void *a) {
@@ -835,13 +843,9 @@ Bits16 *PlayerSession_GetLastPlayDate(void);
 void *PlayerActor_GetPlayerData(void *p);
 u32 PlayerActor_GetTan(Obj *o);
 s32 PlayerActor_CompareLastPlayDateNow(Obj *o);
-s32 Ground_GetDefaultY(u32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 
-s32 PlayerActor_RequestLieInBed(Obj *o, u32 a, s32 b, s32 c);
-s32 PlayerActor_GetOutOfBedCheckSetWork(Rec *r, V3 *v, u32 c);
 
-void PlayerActor_BedApproachSetArgs(Rec *t, s32 x, s32 z, s16 h, u8 a, u8 b);
 void PlayerActor_MainBedRoll(Obj *o);
 void PlayerActor_BedRollCheckEnd(Obj *o);
 void PlayerActor_EndBedRoll(Obj *o);
@@ -857,7 +861,6 @@ void PlayerActor_MainBedRollCheck(Obj *o);
 void PlayerActor_BedRollCheckResult(Obj *o);
 void PlayerActor_NetBedRollCheck(Obj *o, s32 a);
 void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m);
-s32 PlayerActor_RequestBedRollCheck(Obj *o, u32 a, s32 b, s32 c);
 void PlayerActor_MainGetOutOfBed(Obj *o);
 void PlayerActor_GetOutOfBedCheckEnd(Obj *o);
 void PlayerActor_GetOutOfBedUpdateHeight(Obj *o);
@@ -866,7 +869,6 @@ void PlayerActor_EndGetOutOfBed(Obj *o);
 void PlayerActor_NetGetOutOfBed(Obj *o, s32 a);
 void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m);
 void PlayerActor_GetOutOfBedSetWork(Rec *r, s32 x, s32 z, s16 h, u8 a);
-s32 PlayerActor_RequestGetOutOfBed(Obj *o, u32 a, u32 b, s32 c, s32 d);
 void PlayerActor_MainGetOutOfBedCheck(Obj *o);
 void PlayerActor_GetOutOfBedCheckResult(Obj *o);
 void PlayerActor_GetOutOfBedCheckTurn(Obj *o);
@@ -880,7 +882,8 @@ static inline BOOL Unk_ov004_02224284_IsOne(u8 v) {
 extern "C" void PlayerActor_SetupGetOutOfBedCheck(Obj *o, Msg *m) {
     u8 c = m->unk_0c_b[0];
     s32 ang = o->rotY;
-    Rec *r = (Rec *)&o->actionWork;
+    // the get-out-of-bed check's work (this setup belongs to that action)
+    ns_0222459c::GetOutOfBedCheckWork *r = (ns_0222459c::GetOutOfBedCheckWork *)&o->actionWork;
     V3 v;
     V3 w;
     {
@@ -1045,7 +1048,7 @@ extern "C" void PlayerActor_GetOutOfBedUpdateHeight(Obj *o) {
     V3 v;
     Rec *r = (Rec *)&o->actionWork;
     v.x = r->x;
-    v.y = Ground_GetDefaultY(0);
+    v.y = Ground_GetDefaultY();
     v.z = r->z;
     (o)->updateCollidersAtDrawPos((u32 *)(void *)(&v));
 }
@@ -1311,13 +1314,6 @@ extern "C" void PlayerActor_MainBedRoll(Obj *o) {
     PlayerActor_BedRollCheckEnd(o);
 }
 
-extern "C" void PlayerActor_BedApproachSetArgs(Rec *t, s32 x, s32 z, s16 h, u8 a, u8 b) {
-    t->x = x;
-    t->z = z;
-    t->h = h;
-    t->afterSleep = a;
-    t->unk_0b = b;
-}
 
 
 }  // namespace ns_02223c38
@@ -1367,26 +1363,17 @@ extern u8 gFieldSceneKind;
 extern void *gCommManager;
 extern BlockMap *gSceneBlockMap;
 
-void PlayerActor_ApproachValue(void *p, s32 a, u32 b, u32 c, u32 d);
 void PlayerActor_StepTowardXZ(Obj *o, s32 a, s32 b);
-void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 s32 Camera_SnapToFocus(V3 *v);
 s32 Scene_InHouseRoom(void);
 s32 Item_IsFurniture(void *p);
-s32 Item_GetFurnitureIndex(void *p);
 void PendingUnit_ApplyAt(void *p, s32 a);
 
-s32 PlayerActor_RequestLieInBed(Obj *o, u32 a, s32 b, s32 c);
-void PlayerActor_BedApproachSetArgs(void *out, s32 x, s32 z, s32 h, u32 e, u32 f);
 
-void PlayerActor_PickUpItemUpdateScale(Obj *o);
-void PlayerActor_PickUpItemUpdateAnim(Obj *o);
 void PlayerActor_SetupPickUpItem(Obj *o, Msg *m);
-s32 PlayerActor_RequestPickUpItem(Obj *o, s32 *p, s32 c, u32 b, s16 d);
 void PlayerActor_MainAct12(Obj *o);
 void PlayerActor_Act12Move(Obj *o);
 void PlayerActor_SetupAct12(Obj *o);
-s32 PlayerActor_RequestAct12(Obj *o, s32 a, s32 b);
 void PlayerActor_MainGetIntoBed(Obj *o);
 void PlayerActor_GetIntoBedCheckEnd(Obj *o);
 void PlayerActor_GetIntoBedUpdateAnim(Obj *o);
@@ -1403,17 +1390,24 @@ void PlayerActor_EndBedApproach(Obj *o);
 void PlayerActor_NetBedApproach(Obj *o, u32 a);
 void PlayerActor_SetupBedApproach(Obj *o, Msg *m);
 void PlayerActor_BedApproachSetWork(Rec *r, s32 a, s32 b, s16 c, u8 d, u8 e);
-s32 PlayerActor_RequestBedApproach(Obj *o, s32 x, s32 z, s32 h, u8 a, s32 b, s32 c);
 }
 
 static inline BOOL Unk_ov004_02223314_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
 
+extern "C" void PlayerActor_BedApproachSetArgs(Rec *t, s32 x, s32 z, s16 h, u8 a, u8 b) {
+    t->targetX = x;
+    t->targetZ = z;
+    t->targetAngle = h;
+    t->unk_0a = a;
+    t->unk_0b = b;
+}
+
 extern "C" s32 PlayerActor_RequestBedApproach(Obj *o, s32 x, s32 z, s32 h, u8 a, s32 b, s32 c) {
     Msg m;
     ((PlayerActionRequest *)(&m))->assign(0xe, b, *(s16 *)&c);
-    PlayerActor_BedApproachSetArgs((Pl *)m.unk_0c_b, x, z, h, a, b == 6 ? 1 : 0);
+    PlayerActor_BedApproachSetArgs((Rec *)m.unk_0c_b, x, z, h, a, b == 6 ? 1 : 0);
     s32 r = (o)->pushRequest(&m);
     return r;
 }
@@ -1591,15 +1585,14 @@ extern "C" void PlayerActor_EndGetIntoBed(Obj *o) {
 
 extern "C" void PlayerActor_GetIntoBedSlide(Obj *o) {
     Rec *r = (Rec *)&o->actionWork;
-    u8 *p;
+    s32 *p;
     s32 v;
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        p = (u8 *)o;
-        p += 0x5c;
+        p = &o->position.x;
         if ((r->targetAngle & 0x4000) != 0) {
             v = r->targetX;
         } else {
-            p += 8;
+            p = &o->position.z;
             v = r->targetZ;
         }
         PlayerActor_ApproachValue(p, v, 0x399, 0x1ec, 0x31);
@@ -1674,15 +1667,15 @@ extern "C" void PlayerActor_PickUpItemSetArgs(void *out, s32 *in, s32 c) {
     *(s32 *)((u8 *)out + 4) = c;
 }
 
-extern "C" s32 PlayerActor_RequestPickUpItem(Obj *o, s32 *p, s32 c, u32 b, s16 d) {
+extern "C" s32 PlayerActor_RequestPickUpItem(Obj *o, Vec2 *p, s32 c, u32 b, s16 d) {
     Msg m;
     struct {
         s32 x;
         s32 z;
     } v;
     ((PlayerActionRequest *)(&m))->assign(0x1c, b, d);
-    v.x = p[0];
-    v.z = p[1];
+    v.x = p->x;
+    v.z = p->y;
     PlayerActor_PickUpItemSetArgs((Pl *)m.unk_0c_b, &v.x, c);
     s32 r = (o)->pushRequest(&m);
     return r;
@@ -1849,15 +1842,11 @@ extern void *gCommManager;
 s32 Scene_InHouseRoom(void);
 s32 TalkRequest_AddPlayerMessage(void);
 void TalkRequest_FinishPlayerMessage(void);
-s32 PlayerActor_StepTowardPose(Obj *o, s32 x, s32 z, s32 h);
 s32 Item_IsFurniture(void *p);
-u32 Item_GetFurnitureIndex(void *p);
 s32 FieldAction_RequestPlaceAtPendingForAid(u32 a, u32 b);
 
 s32 PlayerActor_RequestFtrPush(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFtrPull(Obj *o, s32 a, s32 b);
-s32 PlayerActor_PickUpItemUpdateAnim(Obj *o);
-s32 PlayerActor_PickUpItemUpdateScale(Obj *o);
 
 void PlayerActor_SetupFtrRotate(Obj *o, Obj *arg);
 s32 PlayerActor_RequestFtrRotate(Obj *o, u32 a, s32 b, s32 c);
@@ -1865,7 +1854,6 @@ void PlayerActor_MainFtrHold(Obj *o);
 void PlayerActor_FtrHoldUpdate(Obj *o);
 void PlayerActor_NetFtrHold(Obj *o, s32 c);
 void PlayerActor_SetupFtrHold(Obj *o, Obj *arg);
-s32 PlayerActor_RequestFtrHold(Obj *o, u32 a, u32 b, u32 c, s32 e);
 void PlayerActor_MainFtrGrabApproach(Obj *o);
 void PlayerActor_FtrGrabApproachCheckArrive(Obj *o);
 void PlayerActor_FtrGrabApproachMove(Obj *o);
@@ -1873,7 +1861,6 @@ void PlayerActor_EndFtrGrabApproach(Obj *o);
 s32 PlayerActor_NetFtrGrabApproach(Obj *o, s32 c);
 void PlayerActor_SetupFtrGrabApproach(Obj *o, Obj *arg);
 void PlayerActor_FtrGrabApproachSetWork(Rec *r, s32 x, s32 z, s16 h);
-s32 PlayerActor_RequestFtrGrabApproach(Obj *o, s32 x, s32 z, s16 h, u32 a, s32 b);
 void PlayerActor_FtrGrabApproachSetArgs(Tgt *t, s32 x, s32 z, s16 h);
 void PlayerActor_MainPickUpItem(Obj *o);
 void PlayerActor_PickUpItemUpdateState(Obj *o);
@@ -2402,18 +2389,14 @@ typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern void *gCommManager;
-extern s16 sSeatSideAngles[];
 
-void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 
-s32 PlayerActor_RequestFtrHold(Obj *o, s32 a, s32 b, s32 c, s32 d);
 s32 Scene_InHouseRoom(void);
 
 s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestSitDownSide1(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestSitDownSide2(Obj *o, u32 a, u32 b);
 
-void PlayerActor_SitDownFrontSetArgs(Rec *t, s32 x, s32 z, s16 h);
 void PlayerActor_MainSeatApproach(Obj *o);
 void PlayerActor_SeatApproachCheckArrive(Obj *o);
 void PlayerActor_SeatApproachMove(Obj *o);
@@ -2421,7 +2404,6 @@ void PlayerActor_EndSeatApproach(Obj *o);
 void PlayerActor_NetSeatApproach(Obj *o, s32 a);
 void PlayerActor_SetupSeatApproach(Obj *o, Msg *m);
 void PlayerActor_SeatApproachSetWork(Rec *r, s32 x, s32 z, s16 h, u8 d);
-s32 PlayerActor_RequestSeatApproach(Obj *o, s32 x, s32 z, s16 h, u8 d, s32 a, s32 b);
 void PlayerActor_SeatApproachSetArgs(Rec *r, s32 x, s32 z, s16 h, u8 d);
 void PlayerActor_MainFtrPullMove(Obj *o);
 void PlayerActor_FtrPullMoveCheckEnd(Obj *o);
@@ -2855,11 +2837,6 @@ extern "C" void PlayerActor_MainSeatApproach(Obj *o) {
     PlayerActor_SeatApproachCheckArrive(o);
 }
 
-extern "C" void PlayerActor_SitDownFrontSetArgs(Rec *t, s32 x, s32 z, s16 h) {
-    t->x = x;
-    t->z = z;
-    t->h = h;
-}
 
 
 }  // namespace ns_02221ed0
@@ -2909,16 +2886,13 @@ extern void *gCommManager;
 
 s32 Math_IsInRange(s32 a, s32 b, s32 c);
 
-s32 PlayerActor_RequestStandUpCheck(Obj *o, s32 a, s32 b, s32 c);
 
-s32 PlayerActor_RequestStandUpSide2(Obj *o, u32 a, u32 b);
 void PlayerActor_MainSit(Obj *o);
 void PlayerActor_SitReadInput(Obj *o);
 void PlayerActor_SitUpdateAnim(Obj *o);
 void PlayerActor_EndSit(Obj *o);
 s32 PlayerActor_NetSit(Obj *o, s32 a);
 void PlayerActor_SetupSit(Obj *o, Obj *arg);
-s32 PlayerActor_RequestSit(Obj *o, u32 a, u32 b, u32 c);
 void PlayerActor_MainSitDownSide1(Obj *o);
 void PlayerActor_SitDownSide1CheckEnd(Obj *o);
 void PlayerActor_SitDownSide1Update(Obj *o);
@@ -2948,11 +2922,16 @@ void PlayerActor_SetupSitDownFront(Obj *o, Obj *arg);
 void PlayerActor_SitDownFrontSetWork(Tgt *t, s32 x, s32 z, s16 h);
 s32 PlayerActor_RequestSitDownFrontAt(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b);
 s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b);
-void PlayerActor_SitDownFrontSetArgs(Tgt *t, s32 x, s32 z, s16 h);
 }
 
 static inline BOOL Unk_ov004_022215a8_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
+}
+
+extern "C" void PlayerActor_SitDownFrontSetArgs(Tgt *t, s32 x, s32 z, s16 h) {
+    t->x = x;
+    t->z = z;
+    t->h = h;
 }
 
 extern "C" s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b) {
@@ -3364,15 +3343,9 @@ typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern void *gCommManager;
-extern u8 gFieldSceneKind[];
-extern s16 sSeatSideAngles[];
 
-void PlayerActor_StepTowardPose(Obj *o, u32 a, u32 b, s32 c);
 
-s32 PlayerActor_RequestSit(Obj *o, s32 a, s32 b, s32 c);
-s32 PlayerActor_RequestStandUpSide2(Obj *o, s32 a, s32 b);
 
-s32 PlayerActor_RequestStorageClose(Obj *o, u32 a, s32 b, s32 c);
 s32 PlayerActor_RequestStorageHold(Obj *o, u32 a, s32 b, s32 c);
 void PlayerActor_StorageOpenCheckEnd(Obj *o);
 void PlayerActor_StorageOpenStartAnim(Obj *o);
@@ -3387,7 +3360,6 @@ s32 PlayerActor_RequestStandUpFront(Obj *o, s32 a, s32 b);
 void PlayerActor_StandUpCheckResult(Obj *o);
 void PlayerActor_StandUpCheckTurn(Obj *o);
 void PlayerActor_StandUpCheckSetWork(V3 *d, V3 *s, u8 b);
-s32 PlayerActor_RequestStandUpCheck(Obj *o, u32 a, s32 b, s32 c);
 void PlayerActor_StandUpSide1CheckEnd(Obj *o);
 s32 PlayerActor_RequestStandUpSide1(Obj *o, s32 a, s32 b);
 void PlayerActor_StandUpSide2CheckEnd(Obj *o);
@@ -3398,7 +3370,7 @@ static inline BOOL Unk_ov004_02220e48_IsZero(u32 v) {
 }
 
 static inline BOOL Unk_ov004_022211ac_Flag() {
-    if (gFieldSceneKind[0] == 1) return TRUE;
+    if (gFieldSceneKind == 1) return TRUE;
     return FALSE;
 }
 
@@ -3855,16 +3827,11 @@ extern "C" {
 extern void *gCommManager;
 
 s32 Scene_GetCurrent(void);
-void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 void Vec_Sub(V3 *o, V3 *a, V3 *b);
 s32 Vec_MagXZ(V3 *v);
-s32 Vec_DistXZ(V3 *a, V3 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-s32 Ground_GetDefaultY(u32 a);
 void PlayerActor_StepAlpha(Obj *o, u32 a, u32 b);
-void PlayerActor_RequestAct42(Obj *o, s32 a, s32 b);
-void PlayerActor_RequestStorageClose(Obj *o, u32 a, u32 b, s32 c);
 
 s32 PlayerActor_NetAct41(Obj *o, s32 a);
 void PlayerActor_SetupAct41(Obj *o);
@@ -4146,7 +4113,7 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
         }
         Collision_Move(sel, p, &o->prevPosition, ang, 0xfd7, o, 0xf);
     }
-    p->y = Ground_GetDefaultY(0);
+    p->y = Ground_GetDefaultY();
     Rec *r = (Rec *)&o->actionWork;
     s32 m = r->leaveMode;
     if ((u32)(m - 1) <= 1) {
@@ -4358,7 +4325,6 @@ void PlayerActor_Act42UpdateRemote(Obj *o, s32 a);
 void PlayerActor_Act42UpdateAnim(Obj *o);
 s32 PlayerActor_NetAct42(Obj *o, s32 a);
 void PlayerActor_SetupAct42(Obj *o);
-s32 PlayerActor_RequestAct42(Obj *o, s32 a, s32 b);
 void PlayerActor_MainAct41(Obj *o);
 void PlayerActor_Act41CheckSceneChange(Obj *o);
 void PlayerActor_Act41FadeOut(Obj *o);
@@ -4715,11 +4681,8 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 TalkRequest_FinishSceneEntry();
 s32 Scene_InHouseRoom();
 s32 Scene_InVillagerHouse();
-s32 PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 
-s32 PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim);
-s32 PlayerActor_RequestSit(Obj *o, s32 a, s32 b, s32 c);
 s32 PlayerActor_RequestStandUpFront(Obj *o, s32 a, s32 b);
 void PlayerActor_HaircutFinishUpdate(Obj *o);
 
@@ -5159,11 +5122,9 @@ extern s16 data_02135f44[];
 extern BlockMap *gSceneBlockMap;
 
 s32 Vec_MagXZ(V3 *v);
-s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);
-void PlayerActor_ApproachValue(s32 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void *a, s32 b);
@@ -5172,10 +5133,7 @@ BOOL Item_IsNormalItem(u16 *p);
 
 void PlayerActor_RoomWalkUpdateAnim(Obj *o);
 void PlayerActor_RoomWalkCheckEnd(Obj *o);
-s32 PlayerActor_RequestFtrGrabApproach(Obj *o, s32 x, s32 z, s32 a, s32 b, s32 c);
-s32 PlayerActor_RequestPickUpItem(Obj *o, Pair *p, s32 a, u32 b, s32 c);
 
-void PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim);
 void PlayerActor_ExitWalkInMove(Obj *o);
 void PlayerActor_ExitWalkOutMove(Obj *o);
 void PlayerActor_DoorWalkOutMove(Obj *o);

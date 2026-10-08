@@ -1770,12 +1770,12 @@ BOOL VillagerActor::isFlag834() {
     return FALSE;
 }
 
-extern "C" void Npc_GetStateHeldItem(u16 *out, VillagerTalk *obj) {
+extern "C" void Npc_GetStateHeldItem(u16 *out, VillagerActor *obj) {
     *out = 0xfff1;
-    if (((VillagerActor *)obj)->getVillagerData() != 0) {
-        if ((((VillagerData *)(((VillagerActor *)obj)->getVillagerData()))->getVillagerId())->isValid() != 0) {
-            if (Villager_GetState(((VillagerActor *)obj)->getVillagerData()) != 0) {
-                *out = *VillagerState_GetHeldItem(Villager_GetState(((VillagerActor *)obj)->getVillagerData()));
+    if (obj->getVillagerData() != 0) {
+        if ((((VillagerData *)(obj->getVillagerData()))->getVillagerId())->isValid() != 0) {
+            if (Villager_GetState(obj->getVillagerData()) != 0) {
+                *out = *VillagerState_GetHeldItem(Villager_GetState(obj->getVillagerData()));
             }
         }
     }
@@ -4717,7 +4717,7 @@ BOOL VillagerTalkTopics::tryAddCollectRequestChoice(void *a, void *b, u32 c) {
             switch (((VillagerTalk *)this)->getErrandRecord()->getKind()) {
             case 0:
                 if (Unk_0202849c_F(r7)) {
-                    Npc_GetStateHeldItem((u16 *)(&v2), (VillagerTalk *)actor);
+                    Npc_GetStateHeldItem((u16 *)(&v2), actor);
                     if (!Unk_0202849c_R(&v2, 0x1376, 0x1376)) goto done;
                 }
                 if (r6 == 2) {
@@ -4734,7 +4734,7 @@ BOOL VillagerTalkTopics::tryAddCollectRequestChoice(void *a, void *b, u32 c) {
                 break;
             case 1:
                 if (Unk_0202849c_F(r7)) {
-                    Npc_GetStateHeldItem((u16 *)(&v4), (VillagerTalk *)actor);
+                    Npc_GetStateHeldItem((u16 *)(&v4), actor);
                     if (!Unk_0202849c_R(&v4, 0x1374, 0x1374)) goto done;
                 }
                 if (r6 == 2) {
@@ -4751,7 +4751,7 @@ BOOL VillagerTalkTopics::tryAddCollectRequestChoice(void *a, void *b, u32 c) {
                 break;
             case 2:
                 if (Unk_0202849c_F(r7)) {
-                    Npc_GetStateHeldItem((u16 *)(&v6), (VillagerTalk *)actor);
+                    Npc_GetStateHeldItem((u16 *)(&v6), actor);
                     if (!Unk_0202849c_R(&v6, 0x1369, 0x1369)) goto done;
                 }
                 {
@@ -4764,9 +4764,9 @@ BOOL VillagerTalkTopics::tryAddCollectRequestChoice(void *a, void *b, u32 c) {
                 break;
             default:
                 if (Unk_0202849c_F(r7)) {
-                    Npc_GetStateHeldItem((u16 *)(&v7), (VillagerTalk *)actor);
+                    Npc_GetStateHeldItem((u16 *)(&v7), actor);
                     if (v7 != 0xfff1) {
-                        Npc_GetStateHeldItem((u16 *)(&v8), (VillagerTalk *)actor);
+                        Npc_GetStateHeldItem((u16 *)(&v8), actor);
                         if (!Unk_0202849c_R(&v8, 0x1380, 0x139f)) goto done;
                     }
                 }
@@ -4956,7 +4956,7 @@ BOOL VillagerTalkTopics::tryOfferCollectRequest(void *a) {
         switch (r6->getKind()) {
         case 0:
             if (Unk_0202849c_F(r4)) {
-                Npc_GetStateHeldItem((u16 *)(&v[1]), (VillagerTalk *)actor);
+                Npc_GetStateHeldItem((u16 *)(&v[1]), actor);
                 if (!Unk_0202849c_R(&v[1], 0x1376, 0x1376)) goto end;
             }
             VillagerRequest_PickInsectForStep((u16 *)(&v[2]), this, 0);
@@ -4975,7 +4975,7 @@ BOOL VillagerTalkTopics::tryOfferCollectRequest(void *a) {
             break;
         case 1:
             if (Unk_0202849c_F(r4)) {
-                Npc_GetStateHeldItem((u16 *)(&v[3]), (VillagerTalk *)actor);
+                Npc_GetStateHeldItem((u16 *)(&v[3]), actor);
                 if (!Unk_0202849c_R(&v[3], 0x1374, 0x1374)) goto end;
             }
             VillagerRequest_PickFishForStep((u16 *)(&v[4]), this, 0);
@@ -4994,16 +4994,16 @@ BOOL VillagerTalkTopics::tryOfferCollectRequest(void *a) {
             break;
         case 2:
             if (Unk_0202849c_F(r4)) {
-                Npc_GetStateHeldItem((u16 *)(&v[5]), (VillagerTalk *)actor);
+                Npc_GetStateHeldItem((u16 *)(&v[5]), actor);
                 if (!Unk_0202849c_R(&v[5], 0x1369, 0x1369)) goto end;
             }
             r4 = TRUE;
             break;
         default:
             if (Unk_0202849c_F(r4)) {
-                Npc_GetStateHeldItem((u16 *)(&v[6]), (VillagerTalk *)actor);
+                Npc_GetStateHeldItem((u16 *)(&v[6]), actor);
                 if (v[6] != 0xfff1) {
-                    Npc_GetStateHeldItem((u16 *)(&v[7]), (VillagerTalk *)actor);
+                    Npc_GetStateHeldItem((u16 *)(&v[7]), actor);
                     if (!Unk_0202849c_R(&v[7], 0x1380, 0x139f)) goto end;
                 }
             }
@@ -8075,7 +8075,7 @@ void VillagerTalkTopics::selectTsuActMessage(s32 r1, const TalkTopic *d) {
 BOOL VillagerTalkTopics::selectTsuInAct() {
     s32 r4 = -1;
     u16 h[2];
-    Npc_GetStateHeldItem(&h[1], (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h[1], actor);
     if (Unk_02021d50_R(&h[1], 0x1376, 0x1376)) {
         r4 = 0;
         if ((VillagerPlanBlock_GetPlan(Villager_GetPlan(actor->villagerData)))->getState() != 0) {
@@ -8097,7 +8097,7 @@ BOOL VillagerTalkTopics::selectTsuInAct() {
 BOOL VillagerTalkTopics::selectTsuFiAct() {
     s32 r4 = -1;
     u16 h[2];
-    Npc_GetStateHeldItem(&h[1], (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h[1], actor);
     if (Unk_02021d50_R(&h[1], 0x1374, 0x1374)) {
         r4 = 0;
         if ((VillagerPlanBlock_GetPlan(Villager_GetPlan(actor->villagerData)))->getState() != 1) {
@@ -8118,7 +8118,7 @@ BOOL VillagerTalkTopics::selectTsuFiAct() {
 
 BOOL VillagerTalkTopics::selectTsuFoAct() {
     u16 h[4];
-    Npc_GetStateHeldItem(h, (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(h, actor);
     if (Unk_02021d50_R(h, 0x1369, 0x1369)) {
         selectTsuActMessage(2, &sTalkTopicTsuFoAct);
         return TRUE;
@@ -8128,7 +8128,7 @@ BOOL VillagerTalkTopics::selectTsuFoAct() {
 
 BOOL VillagerTalkTopics::selectTsuClAct() {
     u16 h;
-    Npc_GetStateHeldItem(&h, (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h, actor);
     volatile u16 *p = &h;
     u32 a = *p;
     u32 b = *p;
@@ -8142,7 +8142,7 @@ BOOL VillagerTalkTopics::selectTsuClAct() {
 
 BOOL VillagerTalkTopics::selectTsuFuAct() {
     u16 h;
-    Npc_GetStateHeldItem(&h, (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h, actor);
     volatile u16 *p = &h;
     u32 a = *p;
     u32 b = *p;
@@ -8156,7 +8156,7 @@ BOOL VillagerTalkTopics::selectTsuFuAct() {
 BOOL VillagerTalkTopics::selectTsuFlAct() {
     s32 r4 = -1;
     u16 h;
-    Npc_GetStateHeldItem(&h, (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h, actor);
     if (Unk_02021d50_R(&h, 0x1378, 0x1378)) {
         r4 = 0;
         if ((VillagerPlanBlock_GetPlan(Villager_GetPlan(actor->villagerData)))->getState() != 5) {
@@ -8174,7 +8174,7 @@ BOOL VillagerTalkTopics::selectTsuSeAct() {
     u16 h;
     BlockMap *r5 = gSceneBlockMap;
     BOOL r4;
-    Npc_GetStateHeldItem(&h, (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h, actor);
     r4 = FALSE;
     if (r5 != 0) {
         VecFx32 *v = (&actor->position);
@@ -8198,7 +8198,7 @@ BOOL VillagerTalkTopics::selectTsuSeAct() {
 
 BOOL VillagerTalkTopics::selectTsuNoAct() {
     u16 h;
-    Npc_GetStateHeldItem(&h, (VillagerTalk *)actor);
+    Npc_GetStateHeldItem(&h, actor);
     volatile u16 *p = &h;
     u32 a = *p;
     u32 b = *p;
