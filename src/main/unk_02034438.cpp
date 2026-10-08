@@ -12,35 +12,8 @@
 #include "snd/BgmManager.h"
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_BgmClock_Exit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmClock_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmClock_Reset  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmClock_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmSceneFade_Reset  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmSceneFade_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmTracks_FadeInForScene  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmTracks_FadeOutForScene  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmTracks_OnBgmStart  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BgmTracks_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_GetClock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_GetPlayingRequest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_GetSceneFade  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_GetTracks  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_Release  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_ReleasePriority  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_ReleaseTransient  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_Request  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_RequestSilence  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_RequestTransient  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Bgm_ResetAll  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FaintBgm_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Taxi_IsArriving  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gBgModelCache  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "player/PlayerErrands.h"
+#include "net/CommManager.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02133d04.h"
@@ -60,120 +33,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov004/unk_ov004_0222a500.h"
 
-extern "C" {
-extern u8 gFieldSceneKind;
-extern u8 sSceneCarpets[];
-extern u8 sSceneWallpapers[];
-extern u8 sRoomWallFloorNoItem[];
-extern void *gCommManager;
-extern u8 gSavePlayers[];
-void func_02004b60();
-s32 Item_SetDesign(u16 *out, s32 a, s32 b);
-u32 func_0209888c();
-BOOL _ZN11CommManager8isOnlineEv(void *p);
-s32 Scene_GetCurrent();
-void func_020728d4(void *p);
-void func_020728a4(void *p, void *q, s32 n);
-void func_02072824(void *p, s32 a, s32 b);
-BOOL Scene_GetSkyKind(s32 v);
-BOOL Scene_InTown();
-BOOL Taxi_IsArriving();
-void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
-s32 Weather_GetPrecipKind(void);
-void Weather_GetLevels(s32 *a, s32 *b);
-s32 Scene_GetPrevious(void);
-s32 Scene_InTownUnk31(void);
-s32 Scene_GetWarpRequest(void);
-s32 SceneWarp_GetScene(s32 req);
-s32 Item_IsFurniture(void *p);
-s32 Item_GetFurnitureIndex(void *p);
-s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
-s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
-void Snd_DuckSubPlayers(s32);
-s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
-s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN12BgmSceneFade6updateEv(void *p);
-s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
-s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
-void Clock_GetDateTime(void *);
-void MI_CpuCopy8(void *, void *, u32);
-s32 Event_GetState(u32, void *, u32);
-s32 _ZN10PlayerData10getErrandsEv(s32 a);
-extern u16 data_020c8b9c[];
-s32 Clock_GetYear(void);
-void Clock_GetDayMonth(u16 *);
-void Clock_GetMinuteHour(u16 *);
-s32 Clock_GetSecond(void);
-s32 NNS_FndMountArchive(void *, const void *, void *);
-void NNS_FndUnmountArchive(void *);
-void *NNS_G3dGetMdlSet(void *);
-void *func_021065dc(void *);
-void *func_021065f8(void *, s32);
-void *func_02106618(void *);
-void *func_02106634(void *, s32);
-void *func_02106654(void *);
-void *func_02106670(void *, s32);
-void *func_02106690(void *);
-void *func_021066ac(void *, s32);
-void *NNS_G3dGetTex(void *);
-void Gfx3d_LoadTexAndPltt(void *, s32);
-void *Gfx3d_CopyTex(void *, void *);
-void *func_0204df64(void *);
-extern u8 sBgAcreArcPathFmt[], sBgArchiveName[], sBgAcreBmdPath[], sBgAcreBclPath[], sBgAcreBsdPath[];
-extern u8 sBgAcreBcaPath[], sBgAcreBmaPath[], sBgAcreBtaPath[], sBgAcreMgtPath[], sBgAcreTexPathFmt[];
-extern u8 sBgGroundAnimArcPath[], sBgGroundSetBmaPath[], sBgGroundSetBtaPath[], sBgRiverBtpPath[], sBgRiverItpTexPath[];
-extern u8 sBgBeBBtpPath[], sBgBeBItpTexPath[], sBgGroundSetTexPathFmt[];
-extern void *gCurrentHeap;
-extern u8 gSaveTownMap[];
-extern u8 gBgModelCache[];
-}
-// ---- unified class definitions of the unit (union of the views of the five source files) ----
-class BgmRequest;
-class BgmManagerView;
-class BgmManagerOwnerView;
-class BgmVolumeMixer;
-class BgmVolumeChannel;
-
-
-
-typedef BOOL (BgmRequestView::*Unk_02034574_Fn)();
-
-
-
-
-
-typedef void (BgmManagerOwnerView::*Unk_02035780_OwnerFn)();
-
-class BgmManagerOwnerView {
-public:
-    void forEachRequest(Unk_02035780_OwnerFn fn);
-    void clearVolumePending();
-
-    u8 pad_00[4];
-    u16 bgmId;
-    u8 pad_06[6];
-    s32 volume;
-    u8 muteDucks;
-    u8 pad_11;
-    u8 playing;
-    u8 pad_13;
-    u8 volumePending;
-    u8 pad_15[0x1c0 - 0x15];
-    s32 numRequests;
-    u8 pad_1c4[0x2b4 - 0x1c4];
-    BgmCommandQueue commands;
-};
-
-
-
 typedef void (BgmVolumeMixer::*Unk_02035758_Fn)(BgmVolumeChannel *);
-
-
-
-
-
-
-
 
 // Vtable at 0x020d8e74.
 class BgmProc : public GameProc {
@@ -188,78 +48,6 @@ public:
     /* 0x50 */ BgmManager bgmManager;
 };
 
-// composite object seen by the second file
-class BgmManagerView {
-public:
-    BgmRequest requests[16];
-    s32 numRequests;
-    BgmVolumeMixer mixer;
-    BgmClock clock;
-    FieldBgm fieldBgm;
-    RoomBgm roomBgm;
-    BgmCommandQueue commands;
-    BgmSceneFade sceneFade;
-    FaintBgm faintBgm;
-    BgmTracks tracks;
-    u8 hourChimeDisabled;
-    BgmManagerView();
-    ~BgmManagerView();
-    void exit();
-    void init();
-};
-
-// plain functions that take the sub-object as `this`
-namespace Ns_this {
-extern "C" {
-void BgmClock_Init(void *);
-void BgmClock_Exit(void *);
-void BgmClock_Update(void *);
-void BgmClock_Reset(void *);
-void BgmSceneFade_Reset(void *);
-void BgmSceneFade_Update(void *);
-void FaintBgm_Update(void *);
-void BgmTracks_Update(void *);
-}
-}
-
-
-class BgmRequest;
-
-
-class BgmManagerView;
-
-
-class BgmManagerOwnerView;
-
-class RoomBgmClosingView {
-public:
-    void updateClosingMusic();
-    void stopClosingMusic();
-
-    u8 pad_00[0xc];
-    u8 closingFadeActive;
-    u8 closingMusicPlaying;
-    u8 closingForced;
-};
-
-class RoomBgmSceneView {
-public:
-    void updateSceneBgm();
-    void stopSceneBgm();
-    void playSceneBgm(s32 t);
-
-    u8 pad_00[8];
-    u8 currentScene;
-    u8 pad_09;
-    u16 sceneBgm;
-};
-
-
-extern "C" {
-}
-
-
-
 // ---- BgModelCache ----
 
 
@@ -270,26 +58,20 @@ extern u8 gFieldSceneKind;
 extern u8 sSceneCarpets[];
 extern u8 sSceneWallpapers[];
 extern u8 sRoomWallFloorNoItem[];
-extern void *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gSavePlayers[];
 extern Unk_02034574_Fn data_020d8dac;
 void func_02004b60();
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 u32 func_0209888c();
-BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
-BOOL Taxi_IsArriving();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 extern BgmManager *data_021c1b3c;
-s32 _ZN10BgmManager11findPlayingEv(BgmManagerView *o);
-void _ZN10BgmManager10releaseBgmEt(BgmManagerView *o, s32 a, s32 b);
-void _ZN10BgmManager15releasePriorityEi(BgmManagerView *o, s32 a);
-void _ZN10BgmManager4pushEP14BgmRequestView(BgmManagerView *o, BgmRequest *e);
 s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
 s32 Scene_GetPrevious(void);
@@ -299,19 +81,9 @@ s32 SceneWarp_GetScene(s32 req);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 extern ProcBase *gActorDefaultParent;
-s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
-s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
-void Snd_DuckSubPlayers(s32);
-VecFx32Ctor *PlayerActor_GetBodyPos(u32 n);
-s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
-s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN12BgmSceneFade6updateEv(void *p);
-s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
-s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-s32 _ZN10PlayerData10getErrandsEv(s32 a);
 extern u16 data_020c8b9c[];
 s32 Clock_GetYear(void);
 void Clock_GetDayMonth(u16 *);
@@ -336,9 +108,7 @@ extern u8 sBgAcreArcPathFmt[], sBgArchiveName[], sBgAcreBmdPath[], sBgAcreBclPat
 extern u8 sBgAcreBcaPath[], sBgAcreBmaPath[], sBgAcreBtaPath[], sBgAcreMgtPath[], sBgAcreTexPathFmt[];
 extern u8 sBgGroundAnimArcPath[], sBgGroundSetBmaPath[], sBgGroundSetBtaPath[], sBgRiverBtpPath[], sBgRiverItpTexPath[];
 extern u8 sBgBeBBtpPath[], sBgBeBItpTexPath[], sBgGroundSetTexPathFmt[];
-extern void *gCurrentHeap;
 extern u8 gSaveTownMap[];
-extern u8 gBgModelCache[];
 extern Unk_021e5890_T data_021e5890;
 }
 
@@ -348,88 +118,6 @@ extern const u16 sSceneBgmTable[0x3a];
 extern const u8 sBgmSceneFadeDelays[8];
 extern const s32 sBgmMenuDuckStates[3];
 extern const u16 sHourlyBgmIds[0x18];
-
-// own functions
-extern "C" {
-BgmRequest *Bgm_GetPlayingRequest();
-void Bgm_ResetAll();
-void Bgm_ReleaseTransient(s32 a);
-void Bgm_ReleasePriority(s32 a);
-void Bgm_Release(s32 a);
-void Bgm_RequestTransient(s32 a, s32 b);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
-void Bgm_Request(s32 a, s32 b, s32 c, u8 d);
-void BgmTracks_Update(s32 a);
-void BgmTracks_OnBgmStart(s32 a, s32 b);
-void BgmTracks_FadeInForScene(void);
-void BgmTracks_FadeOutForScene(void);
-void FaintBgm_Update(void);
-BgmSceneFade *Bgm_GetSceneFade(void);
-void *Bgm_GetTracks(void);
-void *Bgm_GetClock(void);
-void BgmSceneFade_Update(void *p);
-void BgmSceneFade_Reset(BgmSceneFade *p);
-void BgmClock_Reset(BgmClock *p);
-void BgmClock_Update(BgmClock *p);
-void BgmClock_Exit(void);
-void BgmClock_Init(BgmClock *p);
-#define BgmClock_dtor _ZN8BgmClockD1Ev
-#define BgmClock_ctor _ZN8BgmClockC1Ev
-}
-
-namespace Ns_02034ae8 {
-extern "C" {
-extern BgmManagerView *data_021c1b3c;
-s32 Scene_GetCurrent(void);
-s32 Scene_InTown(void);
-void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-BgmRequest *Bgm_GetPlayingRequest(void);
-}
-}
-
-namespace Ns_020354d8 {
-extern "C" {
-extern u8 *data_021c1b3c;
-s32 Bgm_ReleasePriority(s32 a);
-s32 Bgm_Release(s32 a);
-s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
-s32 Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-s32 BgmTracks_FadeInForScene(void *p);
-s32 BgmTracks_FadeOutForScene(void *p);
-s32 BgmTracks_OnBgmStart(void *p, u32 a);
-s32 Scene_GetCurrent(void);
-}
-}
-
-namespace Ns_02035e2c {
-extern "C" {
-void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
-void Bgm_ReleasePriority(u32 a);
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Bgm_Release(u32 a);
-void Bgm_ReleaseTransient(u32 a);
-void Bgm_RequestTransient(s32 a, s32 b);
-s32 Scene_GetCurrent(void);
-s32 Bgm_GetSceneFade(void);
-s32 Scene_InTown(void);
-s32 Bgm_GetClock(void);
-s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-extern u32 gCommManager;
-s32 _ZN11CommManager8isOnlineEv(u32 a);
-s32 Taxi_IsArriving(void);
-s32 _ZN10PlayerData8testFlagEj(PlayerData *a, s32 b);
-}
-}
-
-namespace Ns_020367e8 {
-extern "C" {
-void Bgm_ReleasePriority(u32);
-void Bgm_RequestSilence(u32, u32, u32);
-void Bgm_Request(u32, u32, u32, u32);
-void Bgm_Release(u32 a);
-BgmClock *Bgm_GetClock(void);
-}
-}
 
 static inline BOOL Unk_020341c0_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
@@ -501,11 +189,11 @@ BOOL BgmRequest::tickLifetime()
     return r;
 }
 
-extern "C" void BgmClock_ctor(void)
+BgmClock::BgmClock()
 {
 }
 
-extern "C" void BgmClock_dtor(void)
+BgmClock::~BgmClock()
 {
 }
 
@@ -568,7 +256,7 @@ BOOL BgmClock::isTimeInRange(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
 
 BOOL BgmClock::hasHourChanged()
 {
-    if (*(HOST_AT(this, 0x13, prevMinuteHour, 1)) != hour) {
+    if ((u8)(prevMinuteHour >> 8) != hour) {  // (the hour byte of the previous minute / hour pair)
         return TRUE;
     }
     return FALSE;
@@ -595,7 +283,7 @@ void BgmClock::update()
     second = Clock_GetSecond();
 }
 
-HourlyBgm::HourlyBgm(u32 v) : manager(v), hour(0x18), currentBgm(0xffff), hourFadeActive(0), keep(0), active(0)
+HourlyBgm::HourlyBgm(BgmManager *v) : manager(v), hour(0x18), currentBgm(0xffff), hourFadeActive(0), keep(0), active(0)
 {
 }
 
@@ -659,7 +347,7 @@ void HourlyBgm::setKeep(u32 v)
 void HourlyBgm::playHourBgm()
 {
     u16 t = sHourlyBgmIds[hour];
-    Ns_020367e8::Bgm_Request(0x24, t, 0x7f, 0);
+    Bgm_Request(0x24, t, 0x7f, 0);
     currentBgm = t;
 }
 
@@ -667,14 +355,14 @@ void HourlyBgm::stopHourBgm()
 {
     u16 t = currentBgm;
     if (t != 0xffff) {
-        Ns_020367e8::Bgm_Release(t);
+        Bgm_Release(t);
         currentBgm = 0xffff;
     }
 }
 
 void HourlyBgm::updateHour()
 {
-    u32 v = Ns_020367e8::Bgm_GetClock()->hour;
+    u32 v = Bgm_GetClock()->hour;
     if (v != hour) {
         stopHourBgm();
         hour = v;
@@ -685,7 +373,7 @@ void HourlyBgm::updateHour()
 void HourlyBgm::startHourFade(u32 x)
 {
     if (hourFadeActive == 0) {
-        Ns_020367e8::Bgm_RequestSilence(0x1b, x, 0);
+        Bgm_RequestSilence(0x1b, x, 0);
         hourFadeActive = 1;
     }
 }
@@ -693,14 +381,14 @@ void HourlyBgm::startHourFade(u32 x)
 void HourlyBgm::stopHourFade()
 {
     if (hourFadeActive != 0) {
-        Ns_020367e8::Bgm_ReleasePriority(0x1b);
+        Bgm_ReleasePriority(0x1b);
         hourFadeActive = 0;
     }
 }
 
 void HourlyBgm::updateHourFade()
 {
-    BgmClock *p = Ns_020367e8::Bgm_GetClock();
+    BgmClock *p = Bgm_GetClock();
     BOOL r = p->isMinuteInRange(0x3b, 0x32, 0, 0x10);
     u16 a[4];
     a[0] = sNewYearEveDate[0];
@@ -717,7 +405,7 @@ void HourlyBgm::updateHourFade()
     }
 }
 
-FieldSpecialBgm::FieldSpecialBgm(u32 v) : manager(v), currentBgm(0xffff), keep(0), active(0)
+FieldSpecialBgm::FieldSpecialBgm(BgmManager *v) : manager(v), currentBgm(0xffff), keep(0), active(0)
 {
 }
 
@@ -752,14 +440,14 @@ void FieldSpecialBgm::start() {
     active = 1;
     if (currentBgm == 0xffff) {
         PlayerData *r5 = PlayerData_GetCurrent();
-        if (Ns_02035e2c::Taxi_IsArriving() != 0) {
-            Ns_02035e2c::Bgm_RequestSilence(3, 0, 5);
+        if (Taxi_IsArriving() != 0) {
+            Bgm_RequestSilence(3, 0, 5);
             play(4, 0x45, 1);
         } else if (Taxi_IsLeaving() != 0) {
             play(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(r5->getErrands()) == 0))) {
+        } else if (r5 != 0 && (((PlayerData *)r5)->testFlag(0x23) != 0 || (((PlayerData *)r5)->testFlag(1) != 0 && PlayerErrands_IsJobActive((PlayerErrands *)r5->getErrands()) == 0))) {
             play(0x1c, 0x46, 0);
-        } else if (r5 != 0 && Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0) {
+        } else if (r5 != 0 && ((PlayerData *)r5)->testFlag(1) != 0) {
             play(0x1d, 0x48, 0);
         }
     }
@@ -773,15 +461,15 @@ void FieldSpecialBgm::end() {
 void FieldSpecialBgm::setKeep(u32 a) { keep = a; }
 
 void FieldSpecialBgm::play(s32 a, u32 b, u32 c) {
-    Ns_02035e2c::Bgm_Request(a, b, 0x7f, c);
+    Bgm_Request(a, b, 0x7f, c);
     currentBgm = b;
 }
 
 void FieldSpecialBgm::stopBgm() {
-    if (currentBgm != 0xffff) { Ns_02035e2c::Bgm_Release(currentBgm); currentBgm = 0xffff; }
+    if (currentBgm != 0xffff) { Bgm_Release(currentBgm); currentBgm = 0xffff; }
 }
 
-EventBgm::EventBgm(u32 a) {
+EventBgm::EventBgm(BgmManager *a) {
     manager = a;
     newYearFanfareBgm = 0xffff;
     newYearNightBgm = 0xffff;
@@ -863,7 +551,7 @@ void EventBgm::updateEvents() {
         MI_CpuCopy8(t, b1, 8);
         if (Event_GetState(0x12, b1, 0) != 3) r7 = FALSE;
     }
-    if (Ns_02035e2c::_ZN11CommManager8isOnlineEv(Ns_02035e2c::gCommManager) != 0) {
+    if (((CommManager *)gCommManager)->isOnline() != 0) {
         MI_CpuCopy8(t, b2, 8);
         r5 = Event_GetState(0xf, b2, 0);
     } else if (r5 == 0xf) {
@@ -880,9 +568,9 @@ void EventBgm::updateEvents() {
 
 void EventBgm::updateNewYearDay(BOOL a) {
     if (a != 0) {
-        s32 o = Ns_02035e2c::Bgm_GetClock();
-        s32 r0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0, 0, 0, 2, 0, 0);
-        s32 r1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 2, 0, 0, 0, 0, 0);
+        BgmClock *o = Bgm_GetClock();
+        s32 r0 = o->isTimeInRange(0, 0, 0, 2, 0, 0);
+        s32 r1 = o->isTimeInRange(2, 0, 0, 0, 0, 0);
         if (r0 != 0) {
             if (yearChanged != 0) {
                 if (newYearFanfareBgm != 0x35) {
@@ -916,12 +604,12 @@ void EventBgm::updateNewYearDay(BOOL a) {
 
 void EventBgm::updateCountdown(BOOL a) {
     if (a != 0) {
-        s32 o = Ns_02035e2c::Bgm_GetClock();
+        BgmClock *o = Bgm_GetClock();
         u32 c = 0xffff;
-        s32 r0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0, 0, 0x17, 0x1e, 0);
-        s32 r1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x1e, 0, 0x17, 0x32, 0);
-        s32 r2 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x32, 0, 0x17, 0x37, 0);
-        s32 r3 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x37, 0, 0, 0, 0);
+        s32 r0 = o->isTimeInRange(0x17, 0, 0, 0x17, 0x1e, 0);
+        s32 r1 = o->isTimeInRange(0x17, 0x1e, 0, 0x17, 0x32, 0);
+        s32 r2 = o->isTimeInRange(0x17, 0x32, 0, 0x17, 0x37, 0);
+        s32 r3 = o->isTimeInRange(0x17, 0x37, 0, 0, 0, 0);
         if (r0 != 0) c = 0x31;
         else if (r1 != 0) c = 0x32;
         else if (r2 != 0) c = 0x33;
@@ -934,10 +622,10 @@ void EventBgm::updateCountdown(BOOL a) {
         } else {
             stopCountdown();
         }
-        s32 q0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x1d, 0x32, 0x17, 0x1e, 0);
-        s32 q1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x31, 0x32, 0x17, 0x32, 0);
-        s32 q2 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x36, 0x32, 0x17, 0x37, 0);
-        s32 q3 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x3a, 0x32, 0, 0, 0);
+        s32 q0 = o->isTimeInRange(0x17, 0x1d, 0x32, 0x17, 0x1e, 0);
+        s32 q1 = o->isTimeInRange(0x17, 0x31, 0x32, 0x17, 0x32, 0);
+        s32 q2 = o->isTimeInRange(0x17, 0x36, 0x32, 0x17, 0x37, 0);
+        s32 q3 = o->isTimeInRange(0x17, 0x3a, 0x32, 0, 0, 0);
         if (q0 != 0 || q1 != 0 || q2 != 0 || q3 != 0) {
             startCountdownFade(200);
         } else {
@@ -960,58 +648,58 @@ void EventBgm::updateFireworks(BOOL a) {
     }
 }
 
-void EventBgm::playNewYearFanfare(u32 a) { Ns_02035e2c::Bgm_RequestTransient(0x1f, a); newYearFanfareBgm = a; }
+void EventBgm::playNewYearFanfare(u32 a) { Bgm_RequestTransient(0x1f, a); newYearFanfareBgm = a; }
 
-void EventBgm::playNewYearNight(u32 a) { Ns_02035e2c::Bgm_Request(0x20, a, 0x7f, 0); newYearNightBgm = a; }
+void EventBgm::playNewYearNight(u32 a) { Bgm_Request(0x20, a, 0x7f, 0); newYearNightBgm = a; }
 
-void EventBgm::playNewYearDay(u32 a) { Ns_02035e2c::Bgm_Request(0x21, a, 0x7f, 0); newYearDayBgm = a; }
+void EventBgm::playNewYearDay(u32 a) { Bgm_Request(0x21, a, 0x7f, 0); newYearDayBgm = a; }
 
-void EventBgm::playCountdown(u32 a) { Ns_02035e2c::Bgm_Request(0x22, a, 0x7f, 0); countdownBgm = a; }
+void EventBgm::playCountdown(u32 a) { Bgm_Request(0x22, a, 0x7f, 0); countdownBgm = a; }
 
-void EventBgm::playFireworks(u32 a) { Ns_02035e2c::Bgm_Request(0x23, a, 0x7f, 0); fireworksBgm = a; }
+void EventBgm::playFireworks(u32 a) { Bgm_Request(0x23, a, 0x7f, 0); fireworksBgm = a; }
 
 void EventBgm::stopNewYearFanfare() {
-    if (newYearFanfareBgm != 0xffff) { Ns_02035e2c::Bgm_ReleaseTransient(newYearFanfareBgm); newYearFanfareBgm = 0xffff; }
+    if (newYearFanfareBgm != 0xffff) { Bgm_ReleaseTransient(newYearFanfareBgm); newYearFanfareBgm = 0xffff; }
 }
 
 void EventBgm::stopNewYearNight() {
-    if (newYearNightBgm != 0xffff) { Ns_02035e2c::Bgm_Release(newYearNightBgm); newYearNightBgm = 0xffff; }
+    if (newYearNightBgm != 0xffff) { Bgm_Release(newYearNightBgm); newYearNightBgm = 0xffff; }
 }
 
 void EventBgm::stopNewYearDay() {
-    if (newYearDayBgm != 0xffff) { Ns_02035e2c::Bgm_Release(newYearDayBgm); newYearDayBgm = 0xffff; }
+    if (newYearDayBgm != 0xffff) { Bgm_Release(newYearDayBgm); newYearDayBgm = 0xffff; }
 }
 
 void EventBgm::stopCountdown() {
-    if (countdownBgm != 0xffff) { Ns_02035e2c::Bgm_Release(countdownBgm); countdownBgm = 0xffff; }
+    if (countdownBgm != 0xffff) { Bgm_Release(countdownBgm); countdownBgm = 0xffff; }
 }
 
 void EventBgm::stopFireworks() {
-    if (fireworksBgm != 0xffff) { Ns_02035e2c::Bgm_Release(fireworksBgm); fireworksBgm = 0xffff; }
+    if (fireworksBgm != 0xffff) { Bgm_Release(fireworksBgm); fireworksBgm = 0xffff; }
 }
 
 void EventBgm::startCountdownFade(u32 a) {
     if (countdownFadeActive == 0) {
-        Ns_02035e2c::Bgm_RequestSilence(0x1e, a, 0);
+        Bgm_RequestSilence(0x1e, a, 0);
         countdownFadeActive = 1;
     }
 }
 
 void EventBgm::stopCountdownFade() {
     if (countdownFadeActive != 0) {
-        Ns_02035e2c::Bgm_ReleasePriority(0x1e);
+        Bgm_ReleasePriority(0x1e);
         countdownFadeActive = 0;
     }
 }
 
 void EventBgm::updateYearChanged() {
     u8 *p = &yearChanged;
-    s32 r = _ZN8BgmClock14hasYearChangedEv(Ns_02035e2c::Bgm_GetClock());
+    s32 r = Bgm_GetClock()->hasYearChanged();
     if ((yearChanged | r) != 0) r = 1; else r = 0;
     *p = r;
 }
 
-FieldBgm::FieldBgm(u32 a) : hourlyBgm(a), specialBgm(a), eventBgm(a) {}
+FieldBgm::FieldBgm(BgmManager *a) : hourlyBgm(a), specialBgm(a), eventBgm(a) {}
 
 FieldBgm::~FieldBgm() {}
 
@@ -1040,7 +728,7 @@ void FieldBgm::stop() {
 }
 
 void FieldBgm::start() {
-    if (Ns_02035e2c::Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
+    if (Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
         hourlyBgm.start();
         specialBgm.start();
         eventBgm.start();
@@ -1048,7 +736,7 @@ void FieldBgm::start() {
 }
 
 void FieldBgm::end() {
-    if (Ns_02035e2c::Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
+    if (Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
         eventBgm.end();
         specialBgm.end();
         hourlyBgm.end();
@@ -1061,7 +749,7 @@ void FieldBgm::setKeep(u32 a) {
     eventBgm.setKeep(a);
 }
 
-RoomBgm::RoomBgm(u32 a) {
+RoomBgm::RoomBgm(BgmManager *a) {
     manager = a;
     currentScene = 0x3f;
     sceneBgm = 0xffff;
@@ -1112,7 +800,7 @@ void RoomBgm::start() {
 void RoomBgm::end() {
     if (keep == 0) {
         BOOL r;
-        if (closingMusicPlaying != 0 && _ZN12BgmSceneFade14hasExitSilenceEv(Ns_02035e2c::Bgm_GetSceneFade()) != 0) r = TRUE; else r = FALSE;
+        if (closingMusicPlaying != 0 && Bgm_GetSceneFade()->hasExitSilence() != 0) r = TRUE; else r = FALSE;
         stopSceneBgm();
         currentScene = 0x3f;
         stopClosingMusic();
@@ -1134,7 +822,7 @@ extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
 }
 
 extern "C" s32 Bgm_IsSameSceneBgm(void) {
-    s32 a = Ns_02035e2c::Scene_GetCurrent();
+    s32 a = Scene_GetCurrent();
     s32 b = SceneWarp_GetScene(Scene_GetWarpRequest());
     s32 x = Bgm_GetSceneBgmId(a);
     s32 y = Bgm_GetSceneBgmId(b);
@@ -1147,19 +835,19 @@ void RoomBgm::playSceneBgm(s32 a) {
     u32 c = 0x7f, d = 0;
     if (r == 1) c = 0x38;
     if (r == 0x14 || r == 0x5c) d = 1;
-    Ns_02035e2c::Bgm_Request(0x11, r, c, d);
+    Bgm_Request(0x11, r, c, d);
     sceneBgm = r;
 }
 
-void RoomBgmSceneView::stopSceneBgm() {
+void RoomBgm::stopSceneBgm() {
     if (sceneBgm != 0xffff) {
-        Ns_020354d8::Bgm_Release(sceneBgm);
+        Bgm_Release(sceneBgm);
         sceneBgm = 0xffff;
     }
 }
 
-void RoomBgmSceneView::updateSceneBgm() {
-    s32 t = Ns_020354d8::Scene_GetCurrent();
+void RoomBgm::updateSceneBgm() {
+    s32 t = Scene_GetCurrent();
     if (currentScene != t) {
         if (sceneBgm != Bgm_GetSceneBgmId(t)) {
             stopSceneBgm();
@@ -1169,21 +857,21 @@ void RoomBgmSceneView::updateSceneBgm() {
     }
 }
 
-void RoomBgmClosingView::stopClosingMusic() {
+void RoomBgm::stopClosingMusic() {
     if (closingFadeActive != 0) {
-        Ns_020354d8::Bgm_ReleasePriority(0x10);
+        Bgm_ReleasePriority(0x10);
         closingFadeActive = 0;
     }
     if (closingMusicPlaying != 0) {
-        Ns_020354d8::Bgm_Release(0x51);
+        Bgm_Release(0x51);
         closingMusicPlaying = 0;
     }
     closingForced = 0;
 }
 
-extern "C" void *Bgm_GetClock(void) { return Ns_020354d8::data_021c1b3c + 0x24c; }
+extern "C" BgmClock *Bgm_GetClock(void) { return &data_021c1b3c->clock; }
 
-void RoomBgmClosingView::updateClosingMusic() {
+void RoomBgm::updateClosingMusic() {
     BOOL a;
     void *p = PlayerData_GetCurrent();
     if (p) {
@@ -1195,23 +883,23 @@ void RoomBgmClosingView::updateClosingMusic() {
     } else {
         a = FALSE;
     }
-    s32 t = Ns_020354d8::Scene_GetCurrent();
+    s32 t = Scene_GetCurrent();
     BOOL b = t == 0x1f ? TRUE : FALSE;
     BOOL c = TRUE;
     if ((u8)(t + 0xe6) > 4 && b == 0) {
         c = FALSE;
     }
     if (a == 0 && c != 0) {
-        void *pl = Bgm_GetClock();
+        BgmClock *pl = Bgm_GetClock();
         if (closingFadeActive == 0) {
-            if (((BgmClock *)(pl))->isTimeInRange(0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
-                Ns_020354d8::Bgm_RequestSilence(0x10, 0xc8, 0);
+            if (pl->isTimeInRange(0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
+                Bgm_RequestSilence(0x10, 0xc8, 0);
                 closingFadeActive = 1;
             }
         }
         if (closingMusicPlaying == 0) {
-            if (((BgmClock *)(pl))->isTimeInRange(0x16, 0x32, 0, 0, 0, 0) != 0 || closingForced != 0) {
-                Ns_020354d8::Bgm_Request(0xf, 0x51, 0x7f, 0);
+            if (pl->isTimeInRange(0x16, 0x32, 0, 0, 0, 0) != 0 || closingForced != 0) {
+                Bgm_Request(0xf, 0x51, 0x7f, 0);
                 closingMusicPlaying = 1;
             }
         }
@@ -1238,7 +926,7 @@ void BgmVolumeChannel::set(s32 a, s32 b, u8 c) {
     changed = c;
 }
 
-BgmVolumeMixer::BgmVolumeMixer(BgmManagerOwnerView *owner) : manager(owner) {}
+BgmVolumeMixer::BgmVolumeMixer(BgmManager *owner) : manager(owner) {}
 
 BgmVolumeMixer::~BgmVolumeMixer() {}
 
@@ -1345,7 +1033,7 @@ void BgmVolumeMixer::updateTalkDuck(BgmVolumeChannel *e) {
         e->set(0x28, 5, 1);
         e->state = 8;
         talkDuckHold = 0;
-        Snd_DuckSubPlayers(0);
+        Snd_DuckSubPlayers();
     } else if (st != 8) {
         if (st == 9) {
             if (talkDuckHold > 0) {
@@ -1389,7 +1077,7 @@ void BgmVolumeMixer::updateFireworkDuck(BgmVolumeChannel *e) {
 void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
     s32 st = e->state;
     s32 flag = 0;
-    VecFx32Ctor *p = PlayerActor_GetBodyPos(4);
+    VecFx32Ctor *p = (VecFx32Ctor *)PlayerActor_GetBodyPos(4);
     if (p) {
         GroundInfo b1;
         (&b1)->initAtPos((VecFx32 *)(void *)(p), 0, 0);
@@ -1417,7 +1105,7 @@ void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
 
 void BgmVolumeMixer::updateSceneDuck(BgmVolumeChannel *e) {
     s32 st = e->state;
-    s32 t = Ns_020354d8::Scene_GetCurrent();
+    s32 t = Scene_GetCurrent();
     BOOL a = t == 0x27 ? TRUE : FALSE;
     BOOL b = t == 0x28 ? TRUE : FALSE;
     if (st == 0) {
@@ -1433,19 +1121,22 @@ void BgmVolumeMixer::updateSceneDuck(BgmVolumeChannel *e) {
     }
 }
 
-void BgmManagerOwnerView::clearVolumePending() {
+// (on the DS one void function serves the requests and the owner view: it clears the request's flag; the result is
+// unused)
+BOOL BgmRequestView::clearVolumePending() {
     volumePending = 0;
+    return FALSE;
 }
 //DEF sBgmSceneFadeDelays
 const u8 sBgmSceneFadeDelays[8] = {0x01, 0x2f, 0x1b, 0x34, 0x2f, 0x00, 0x00, 0x00};
 
 void BgmVolumeMixer::updateRequestVolume(BgmVolumeChannel *e) {
-    BgmManagerOwnerView *o = manager;
+    BgmManager *o = manager;
     if (o->numRequests > 0) {
-        if (o->volumePending != 0 && o->volume != 0) {
-            e->set(o->volume, 0, 1);
+        if (o->requests[0].volumePending != 0 && o->requests[0].volume != 0) {
+            e->set(o->requests[0].volume, 0, 1);
         }
-        manager->forEachRequest(&BgmManagerOwnerView::clearVolumePending);
+        manager->forEachRequest(&BgmRequestView::clearVolumePending);
         e->state = 0x12;
     } else {
         e->state = 0;
@@ -1453,8 +1144,8 @@ void BgmVolumeMixer::updateRequestVolume(BgmVolumeChannel *e) {
 }
 
 void BgmVolumeMixer::maskForTopRequest() {
-    BgmManagerOwnerView *o = manager;
-    if (o->numRequests > 0 && o->muteDucks != 0) {
+    BgmManager *o = manager;
+    if (o->numRequests > 0 && o->requests[0].muteDucks != 0) {
         BgmVolumeChannel *p = &channels[2];
         BgmVolumeChannel *end = &channels[7];
         for (; p < end; p++) {
@@ -1470,9 +1161,9 @@ void BgmVolumeMixer::applyVolume() {
     BOOL ok = FALSE;
     s32 t;
     s32 b;
-    BgmManagerOwnerView *o = manager;
+    BgmManager *o = manager;
     BgmVolumeChannel *p;
-    if (o->numRequests > 0 && o->playing != 0 && o->bgmId != 0xffff) {
+    if (o->numRequests > 0 && o->requests[0].playing != 0 && o->requests[0].bgmId != 0xffff) {
         ok = TRUE;
     }
     if (ok) {
@@ -1511,8 +1202,13 @@ void BgmVolumeMixer::clearMasks() {
     }
 }
 
-BgmCommandQueue *BgmCommandQueue::init(void *owner) {
-    manager = (u32)owner;
+// (on the DS the constructor is init() itself: aliases.txt)
+BgmCommandQueue::BgmCommandQueue(BgmManager *owner) {
+    init(owner);
+}
+
+BgmCommandQueue *BgmCommandQueue::init(BgmManager *owner) {
+    manager = owner;
     clear();
     return this;
 }
@@ -1553,7 +1249,7 @@ void BgmCommandQueue::flush() {
     if (playPending != 0) {
         playPending = 0;
         Snd_PlayBgm(playBgmId);
-        Ns_020354d8::BgmTracks_OnBgmStart(Ns_020354d8::data_021c1b3c + 0x2f0, playBgmId);
+        BgmTracks_OnBgmStart(&data_021c1b3c->tracks, playBgmId);
     }
     if (volumePending != 0) {
         volumePending = 0;
@@ -1561,7 +1257,7 @@ void BgmCommandQueue::flush() {
     }
 }
 
-BgmSceneFade::BgmSceneFade(u32 owner) {
+BgmSceneFade::BgmSceneFade(BgmManager *owner) {
     manager = owner;
     keepForWarp = 0;
     sameSceneBgm = 0;
@@ -1576,35 +1272,35 @@ BgmSceneFade::~BgmSceneFade() {}
 void BgmSceneFade::onFadeOut() {
     if (gActorDefaultParent->profile != 5) {
         if (exitSilenceState == 1) {
-            Ns_020354d8::Bgm_RequestSilence(8, 0xf, 0);
+            Bgm_RequestSilence(8, 0xf, 0);
             exitSilenceState = 2;
         } else if (exitSilenceState == 3) {
-            Ns_020354d8::Bgm_ReleasePriority(8);
+            Bgm_ReleasePriority(8);
             exitSilenceState = 0;
         }
         sameSceneBgm = Bgm_IsSameSceneBgm();
-        ((RoomBgm *)(Bgm_GetRoomBgm()))->setKeep(sameSceneBgm);
+        Bgm_GetRoomBgm()->setKeep(sameSceneBgm);
         if (keepForWarp == 0 && sameSceneBgm == 0 && keepRequested == 0) {
             if (fadeDelay != 0 || releaseTimer != 0) {
-                Ns_020354d8::Bgm_ReleasePriority(7);
+                Bgm_ReleasePriority(7);
             }
             fadeDelay = -1;
             releaseTimer = 0;
-            Ns_020354d8::Bgm_RequestSilence(7, 0xf, 0);
+            Bgm_RequestSilence(7, 0xf, 0);
         } else {
-            ((FieldBgm *)(Bgm_GetFieldBgm()))->setKeep(1);
+            Bgm_GetFieldBgm()->setKeep(1);
             if (sameSceneBgm != 0) {
-                Ns_020354d8::BgmTracks_FadeOutForScene(Bgm_GetTracks());
+                BgmTracks_FadeOutForScene();
             }
         }
     }
 }
 
-extern "C" void *Bgm_GetTracks(void) { return Ns_020354d8::data_021c1b3c + 0x2f0; }
+extern "C" BgmTracks *Bgm_GetTracks(void) { return &data_021c1b3c->tracks; }
 
-extern "C" void *Bgm_GetFieldBgm(void) { return Ns_020354d8::data_021c1b3c + 0x264; }
+extern "C" FieldBgm *Bgm_GetFieldBgm(void) { return &data_021c1b3c->fieldBgm; }
 
-extern "C" void *Bgm_GetRoomBgm(void) { return Ns_020354d8::data_021c1b3c + 0x2a0; }
+extern "C" RoomBgm *Bgm_GetRoomBgm(void) { return &data_021c1b3c->roomBgm; }
 
 void BgmSceneFade::onFadeIn() {
     if (gActorDefaultParent->profile != 5) {
@@ -1627,13 +1323,13 @@ void BgmSceneFade::onFadeIn() {
             }
         }
         if (sameSceneBgm != 0) {
-            Ns_020354d8::BgmTracks_FadeInForScene(Bgm_GetTracks());
+            BgmTracks_FadeInForScene();
         }
         keepForWarp = 0;
         sameSceneBgm = 0;
         keepRequested = 0;
-        ((FieldBgm *)(Bgm_GetFieldBgm()))->setKeep(0);
-        ((RoomBgm *)(Bgm_GetRoomBgm()))->setKeep(0);
+        Bgm_GetFieldBgm()->setKeep(0);
+        Bgm_GetRoomBgm()->setKeep(0);
     }
 }
 
@@ -1649,7 +1345,7 @@ void BgmSceneFade::reset() {
     keepRequested = 0;
     exitSilenceState = 0;
     if (fadeDelay != 0 || releaseTimer != 0) {
-        Ns_020354d8::Bgm_ReleasePriority(7);
+        Bgm_ReleasePriority(7);
         fadeDelay = 0;
         releaseTimer = 0;
     }
@@ -1658,13 +1354,13 @@ void BgmSceneFade::reset() {
 void BgmSceneFade::prepareEventWarp(s32 a, s32 b) {
     s32 res = 0;
     s32 f = 0;
-    if (Ns_02034ae8::Scene_InTown()) {
+    if (Scene_InTown()) {
         s32 a0 = (a == 0) ? 1 : 0;
         s32 a1 = (a == 1) ? 1 : 0;
         s32 a2 = (a == 2) ? 1 : 0;
         s32 b9 = (b == 9) ? 1 : 0;
         s32 b6 = (b == 6) ? 1 : 0;
-        BgmRequest *rec = Ns_02034ae8::Bgm_GetPlayingRequest();
+        BgmRequest *rec = Bgm_GetPlayingRequest();
         u32 x;
         s32 y;
         if (rec) x = rec->bgmId; else x = 0xffff;
@@ -1730,7 +1426,7 @@ void BgmSceneFade::update() {
         fadeDelay--;
         if (fadeDelay <= 0) {
             s32 v = 1;
-            if (IsZero(gFieldSceneKind) && Ns_02034ae8::Scene_InTown()) {
+            if (IsZero(gFieldSceneKind) && Scene_InTown()) {
                 u16 buf[2];
                 BOOL ok;
                 PlayerActor_GetSlotHeldItem(buf, 4);
@@ -1753,7 +1449,7 @@ void BgmSceneFade::update() {
     }
 }
 
-FaintBgm::FaintBgm(BgmManagerView *o) {
+FaintBgm::FaintBgm(BgmManager *o) {
     manager = o;
     currentBgm = 0xffff;
     silenceActive = 0;
@@ -1761,11 +1457,11 @@ FaintBgm::FaintBgm(BgmManagerView *o) {
 
 FaintBgm::~FaintBgm() {}
 
-extern "C" BgmSceneFade *Bgm_GetSceneFade(void) { return &Ns_02034ae8::data_021c1b3c->sceneFade; }
+extern "C" BgmSceneFade *Bgm_GetSceneFade(void) { return &data_021c1b3c->sceneFade; }
 
 void FaintBgm::play() {
     currentBgm = 0x41;
-    Ns_02034ae8::Bgm_Request(0xb, 0x41, 0x7f, 1);
+    Bgm_Request(0xb, 0x41, 0x7f, 1);
     Bgm_GetSceneFade()->setKeepBgm();
 }
 
@@ -1809,7 +1505,7 @@ BgmTracks::BgmTracks() {}
 BgmTracks::~BgmTracks() {}
 
 extern "C" void BgmTracks_FadeOutForScene(void) {
-    s32 r = Ns_02034ae8::Scene_GetCurrent();
+    s32 r = Scene_GetCurrent();
     s32 s;
     s = SceneWarp_GetScene(Scene_GetWarpRequest());
     s32 a22 = (r == 0x22) ? 1 : 0;
@@ -1831,7 +1527,7 @@ extern "C" void BgmTracks_FadeOutForScene(void) {
 
 extern "C" void BgmTracks_FadeInForScene(void) {
     s32 t = Scene_GetPrevious();
-    s32 r = Ns_02034ae8::Scene_GetCurrent();
+    s32 r = Scene_GetCurrent();
     s32 e20 = (t == 0x20) ? 1 : 0;
     s32 a22 = (t == 0x22) ? 1 : 0;
     s32 a23 = (t == 0x23) ? 1 : 0;
@@ -1850,23 +1546,23 @@ extern "C" void BgmTracks_FadeInForScene(void) {
 }
 
 extern "C" void BgmTracks_FadeOutScene22(void) {
-    if (Ns_02034ae8::Scene_GetCurrent() == 0x22) Snd_FadeOutBgmTracks(5);
+    if (Scene_GetCurrent() == 0x22) Snd_FadeOutBgmTracks(5);
 }
 
 extern "C" void BgmTracks_FadeInScene22(void) {
-    if (Ns_02034ae8::Scene_GetCurrent() == 0x22) Snd_FadeInBgmTracks(5);
+    if (Scene_GetCurrent() == 0x22) Snd_FadeInBgmTracks(5);
 }
 
-extern "C" void BgmTracks_OnBgmStart(s32 a, s32 b) {
+extern "C" void BgmTracks_OnBgmStart(BgmTracks *a, s32 b) {
     if (b == 0x62) BgmTracks_ApplySceneMask();
 }
 
-extern "C" void BgmTracks_Update(s32 a) {
-    if (Ns_02034ae8::Scene_InTown() || Scene_InTownUnk31()) BgmTracks_UpdateWeatherVariant(a);
+extern "C" void BgmTracks_Update(BgmTracks *a) {
+    if (Scene_InTown() || Scene_InTownUnk31()) BgmTracks_UpdateWeatherVariant(a);
 }
 
 extern "C" void BgmTracks_ApplySceneMask(void) {
-    s32 r = Ns_02034ae8::Scene_GetCurrent();
+    s32 r = Scene_GetCurrent();
     s32 a22 = (r == 0x22) ? 1 : 0;
     s32 a23 = (r == 0x23) ? 1 : 0;
     s32 a24 = (r == 0x24) ? 1 : 0;
@@ -1884,7 +1580,7 @@ extern "C" void BgmTracks_ApplySceneMask(void) {
     if (v) Snd_FadeOutBgmTracks(v);
 }
 
-extern "C" void BgmTracks_UpdateWeatherVariant(s32 x) {
+extern "C" void BgmTracks_UpdateWeatherVariant(BgmTracks *x) {
     s32 r = Weather_GetPrecipKind();
     s32 a, b;
     BOOL c, d, e;
@@ -1903,54 +1599,54 @@ extern "C" void BgmTracks_UpdateWeatherVariant(s32 x) {
 
 extern "C" void Bgm_Request(s32 a, s32 b, s32 c, u8 d) {
     BgmRequest e(a, b, c, 0, d);
-    _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
+    data_021c1b3c->push(static_cast<BgmRequestView *>(&e));
 }
 
 extern "C" void Bgm_RequestSilence(s32 a, s32 b, s32 c) {
     BgmRequest e(a, 0xffff, 0, b, 0);
     if (c > 0) e.lifetime = c;
-    _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
+    data_021c1b3c->push(static_cast<BgmRequestView *>(&e));
 }
 
 extern "C" void Bgm_RequestTransient(s32 a, s32 b) {
     BgmRequest e(a, b, 0x7f, 0, 0);
     e.transient = 1;
-    _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
+    data_021c1b3c->push(static_cast<BgmRequestView *>(&e));
 }
 
-extern "C" void Bgm_Release(s32 a) { _ZN10BgmManager10releaseBgmEt(Ns_02034ae8::data_021c1b3c, a, 0); }
+extern "C" void Bgm_Release(s32 a) { data_021c1b3c->releaseBgm(a); }
 
-extern "C" void Bgm_ReleasePriority(s32 a) { _ZN10BgmManager15releasePriorityEi(Ns_02034ae8::data_021c1b3c, a); }
+extern "C" void Bgm_ReleasePriority(s32 a) { data_021c1b3c->releasePriority(a); }
 
-extern "C" void Bgm_ReleaseTransient(s32 a) { _ZN10BgmManager10releaseBgmEt(Ns_02034ae8::data_021c1b3c, a, 1); }
+extern "C" void Bgm_ReleaseTransient(s32 a) { data_021c1b3c->releaseBgm(a); }  // (the DS code passes 1 in a third register that releaseBgm ignores)
 
 extern "C" u16 Bgm_GetCurrent(void) {
-    s32 i = _ZN10BgmManager11findPlayingEv(Ns_02034ae8::data_021c1b3c);
+    s32 i = ((BgmManager *)data_021c1b3c)->findPlaying();
     u16 r = 0xffff;
-    if (i >= 0) r = Ns_02034ae8::data_021c1b3c->requests[i].bgmId;
+    if (i >= 0) r = data_021c1b3c->requests[i].bgmId;
     return r;
 }
 
-extern "C" void Bgm_EnableHourChime(void) { Ns_02034ae8::data_021c1b3c->hourChimeDisabled = 0; }
+extern "C" void Bgm_EnableHourChime(void) { data_021c1b3c->hourChimeDisabled = 0; }
 
-extern "C" void Bgm_DisableHourChime(void) { Ns_02034ae8::data_021c1b3c->hourChimeDisabled = 1; }
+extern "C" void Bgm_DisableHourChime(void) { data_021c1b3c->hourChimeDisabled = 1; }
 
-BgmManagerView::BgmManagerView() : numRequests(0), mixer((BgmManagerOwnerView *)this), fieldBgm((u32)this), roomBgm((u32)this), commands(this), sceneFade((u32)this), faintBgm(this) {
+BgmManager::BgmManager() : numRequests(0), mixer(this), fieldBgm(this), roomBgm(this), commands(this), sceneFade(this), faintBgm(this) {
     hourChimeDisabled = 0;
 }
 
-BgmManagerView::~BgmManagerView() {}
+BgmManager::~BgmManager() {}
 
-void BgmManagerView::init() {
+void BgmManager::init() {
     BgmRequest *p, *end;
-    Ns_02034ae8::data_021c1b3c = this;
+    data_021c1b3c = this;
     end = (BgmRequest *)&numRequests;
     for (p = requests; p < end; p++) {
         p->clear();
     }
     numRequests = 0;
     mixer.init();
-    Ns_this::BgmClock_Init(&clock);
+    BgmClock_Init(&clock);
     fieldBgm.init();
     roomBgm.init();
     commands.clear();
@@ -1959,21 +1655,21 @@ void BgmManagerView::init() {
     hourChimeDisabled = 0;
 }
 
-void BgmManagerView::exit() {
+void BgmManager::exit() {
     faintBgm.exit();
-    Ns_this::BgmSceneFade_Reset(&sceneFade);
+    BgmSceneFade_Reset(&sceneFade);
     commands.clear();
     roomBgm.exit();
     fieldBgm.exit();
-    Ns_this::BgmClock_Exit(&clock);
+    BgmClock_Exit();
     mixer.exit();
-    Ns_02034ae8::data_021c1b3c = 0;
+    data_021c1b3c = 0;
 }
 
 void BgmManager::update() {
-    Ns_this::FaintBgm_Update(&faintBgm);
-    Ns_this::BgmSceneFade_Update(&sceneFade);
-    Ns_this::BgmClock_Update(&clock);
+    FaintBgm_Update();
+    BgmSceneFade_Update(&sceneFade);
+    BgmClock_Update(&clock);
     fieldBgm.update();
     roomBgm.update();
     updateRequests();
@@ -1989,7 +1685,7 @@ extern "C" void Bgm_ResetAll() {
     data_021c1b3c->commands.clear();
     data_021c1b3c->roomBgm.stop();
     data_021c1b3c->fieldBgm.stop();
-    Ns_this::BgmClock_Reset(&data_021c1b3c->clock);
+    BgmClock_Reset(&data_021c1b3c->clock);
     data_021c1b3c->mixer.reset();
     e = data_021c1b3c->requests;
     end = &data_021c1b3c->requests[16];
@@ -2053,7 +1749,7 @@ void BgmManager::updateRequests() {
     startTop();
     mixer.update();
     commands.flush();
-    Ns_this::BgmTracks_Update(&tracks);
+    BgmTracks_Update(&tracks);
     tickRequests();
 }
 

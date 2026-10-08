@@ -33,7 +33,7 @@
 #include "proto/main/unk_020b0e60.h"
 
 extern "C" {
-void SaveData_SyncClockOffset(void *);
+void SaveData_SyncClockOffset(SaveData *p);
 void SaveData_InitNew(u8 *p);
 void SaveData_InitCurrentPlayer(u8 *p);
 void LostAndFound_InitRandom(void *);

@@ -5,82 +5,43 @@
 #include "sys/OSThread.h"
 #include "nitro/io_access.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_CrashScreen_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_DrawMain  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_DrawStack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_DumpWords  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_Fill  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_Frame  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_InitDisplay  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_IsValidAddress  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CrashScreen_WaitVBlank  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DebugText_Print  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DebugText_Printf  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Fatal_ExceptionCallback  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Fatal_PanicV  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Fatal_Trap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_G2S_GetBG1ScrPtr  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_G2_GetBG1ScrPtr  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_GX_DispOn  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_GX_SetBankForBG  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Gfx_ResetDisplayRegs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Main_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Main_InitDwc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Main_Loop  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_GetTick  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_InitAlarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_InitThread  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_InitTick  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_SetUserExceptionHandler  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OS_VSNPrintf  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gBuildTime  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gProcHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashFontChars  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashFontPalette  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashPC  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashSP  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashScreenMain  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashScreenSub  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCrashTimeMs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPanicFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPanicLine  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02000c2c.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_0210f154.h"
+#include "proto/autoload_2/unk_0210fa84.h"
+#include "proto/autoload_2/unk_021104ac.h"
+#include "proto/autoload_2/unk_021127c0.h"
+#include "proto/autoload_2/unk_02113b6c.h"
+#include "proto/autoload_2/unk_02114cd8.h"
+#include "proto/autoload_2/unk_02114d84.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/main/unk_020376c0.h"
+#include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0206d49c.h"
+#include "proto/main/unk_0206d5b8.h"
+#include "proto/main/unk_020b0a80.h"
+#include "proto/main/unk_020b7f7c.h"
+#include "proto/main/unk_020de408.h"
+#include "proto/main/unk_020e0408.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 
-
-
-
-
-
-
 extern "C" {
 
-extern u32 sCrashPC;
-extern u32 sCrashScreenMain;
-extern u32 sCrashSP;
-extern u32 sCrashScreenSub;
-extern u32 sPanicFile;
 extern u32 gTaskPhase;
-extern u32 gRootHeap;
-extern u32 gCurrentHeap;
-extern u32 gProcHeap;
 extern QNode *gTaskCurrentNode;
 extern u16 gProcCreateProfile;
 extern u8 gProcCreateStep;
 extern OSThread *data_021fcc2c[3];
 extern u32 data_021fce88;
 extern char data_02135f44[];
-extern char gBuildTime[];
-extern u16 sCrashFontChars[], sCrashFontPalette[];
 extern u8 data_021fccfc[];
 extern const char sCrashRegNames[55];
 
 // The definition order below gives the original .bss order (inverted heapsort); do not reorder.
-u32 sPanicFile;
+const char *sPanicFile;
 const char sCrashRegNames[55] = "CPSR00R01R02R03R04R05R06R07R08R09R10R11R12SP LR PC4SPs";
 const char *sPanicMessage;
 u32 *sCrashContext;
@@ -90,57 +51,26 @@ u32 sCrashTimeMs;
 u32 sPanicLine;
 u32 sCrashPC;
 u32 sCrashPrevKeys;
-u32 sCrashScreenMain;
-u32 sCrashScreenSub;
+u16 *sCrashScreenMain;
+u16 *sCrashScreenSub;
 
-void OS_InitTick(void);
-void OS_InitAlarm(void);
-void OS_InitThread(void);
-void OS_SetUserExceptionHandler(void (*fn)(void), void *p);
-void Fatal_ExceptionCallback(void);
+// SDK functions without a shared declaration
 void OS_EnableInterrupts(void);
-void Main_InitDwc(void);
 void Main_RunWifiUtility(void);
 void OS_ResetSystem(u32 a);
-void Main_Init(void);
-s32 Main_Loop(void);
-
-void CrashScreen_Frame(void);
-void CrashScreen_Fill(u32 a, u32 b, u32 c);
-void CrashScreen_WaitVBlank(void);
-void CrashScreen_InitDisplay(void);
-void CrashScreen_Clear(void);
-void CrashScreen_DrawMain(void);
-void CrashScreen_DrawStack(void);
-BOOL CrashScreen_IsValidAddress(u32 addr, u32 len);
-void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size);
-void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
-
-u64 OS_GetTick(void);
 u32 OS_GetProcMode(void);
 void OS_DisableInterrupts(void);
-void Gfx_ResetDisplayRegs(void);
-void GX_SetBankForBG(u32 a);
 void GX_SetBankForSubBG(u32 a);
 void GX_LoadBG1Char(void *a, u32 b, u32 c);
 void GXS_LoadBG1Char(void *a, u32 b, u32 c);
 void GX_LoadBGPltt(void *a, u32 b, u32 c);
 void GXS_LoadBGPltt(void *a, u32 b, u32 c);
-u32 G2_GetBG1ScrPtr(void);
-u32 G2S_GetBG1ScrPtr(void);
-void GX_DispOn(void);
-void MIi_CpuClearFast(u32 a);
-void DebugText_Printf(DebugText *c, u8 *dst, const char *fmt, ...);
-void DebugText_Print(DebugText *c, u8 *dst, const char *fmt);
-u32 Task_GetPhaseName(u32 a);
+void MIi_CpuClearFast(u32 data, void *dest, u32 size);
+const char *Task_GetPhaseName(u32 a);
 u32 OS_GetIrqStackStatus(void);
 u32 OS_GetStackStatus(OSThread *a);
-#define Heap_dump _ZN4Heap4dumpEv
-void Heap_dump(u32 a);
 void BlockMap_DebugStub(void);
 u8 *OS_GetDTCMAddress(void);
-void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
-s32 Fatal_Trap(void);
 
 void Fatal_PanicV(const char *a, u32 b, const char *c, void *d) {
     {
@@ -149,10 +79,10 @@ void Fatal_PanicV(const char *a, u32 b, const char *c, void *d) {
         host_panic(a, b, c, d);
     }
     OS_DisableInterrupts();
-    sPanicFile = (u32)a;
+    sPanicFile = a;
     sPanicLine = b;
     sPanicMessage = data_02135f44;
-    OS_VSNPrintf(data_02135f44, 0x80, c, d);
+    OS_VSNPrintf(data_02135f44, 0x80, c, *(DS_VA_LIST *)&d);
     Fatal_Trap();
 }
 
@@ -164,41 +94,43 @@ void Fatal_Panic(const char *fmt, ...) {
     host_panic_v("", 0, fmt, &ap);
 }
 
-BOOL CrashScreen_IsValidAddress(u32 addr, u32 len) {
-    u32 end = addr + len;
+// (DS addresses: main RAM and the DTCM)
+BOOL CrashScreen_IsValidAddress(uptr addr, u32 len) {
+    uptr end = addr + len;
     u8 *base = OS_GetDTCMAddress();
-    u32 lim2 = (u32)base + 0x4000;
-    u32 lim1 = data_021fce88 != 0 ? 0x27e0000 : 0x23ff000;
-    if ((addr >= 0x2000000 && end <= lim1) || ((u32)base <= addr && end <= lim2)) {
+    uptr lim2 = (uptr)base + 0x4000;
+    uptr lim1 = data_021fce88 != 0 ? 0x27e0000 : 0x23ff000;
+    if ((addr >= 0x2000000 && end <= lim1) || ((uptr)base <= addr && end <= lim2)) {
         return TRUE;
     }
     return FALSE;
 }
 
-void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
+void CrashScreen_DumpWords(u16 *dst, uptr src, u32 size) {
     u16 color = 0xd000;
     DebugText col;
     u32 *p;
-    u32 end;
+    uptr end;
     col.unk_00 = color;
     col.charBase = color;
-    p = (u32 *)(src & ~3);
+    p = (u32 *)(src & ~(uptr)3);
     size &= ~3;
     end = src + size;
-    while ((u32)p < end) {
-        if (!CrashScreen_IsValidAddress((u32)p, 4)) {
+    while ((uptr)p < end) {
+        if (!CrashScreen_IsValidAddress((uptr)p, 4)) {
             break;
         }
         col.charBase = color;
         DebugText_Printf(&col, dst, "%08x", *p);
-        dst += 0x10;
+        dst += 8;
         color ^= 0x3000;
         p++;
     }
 }
 
+// (the screens are 32 x 24 maps of u16 entries: a row is 0x20 entries)
 void CrashScreen_DrawStack(void) {
-    u8 *buf = (u8 *)sCrashScreenSub;
+    u16 *buf = sCrashScreenSub;
     DebugText col;
     OSContext *ctx;
     u32 v;
@@ -210,14 +142,14 @@ void CrashScreen_DrawStack(void) {
     } else {
         v = sCrashSP;
     }
-    DebugText_Printf(&col, buf + 0x40, "SP = %08X", v);
+    DebugText_Printf(&col, buf + 0x20, "SP = %08X", v);
     if (CrashScreen_IsValidAddress(v, 4)) {
-        CrashScreen_DumpWords(buf + 0x80, v, 0x160);
+        CrashScreen_DumpWords(buf + 0x40, v, 0x160);
     }
 }
 
 void CrashScreen_DrawMain(void) {
-    u8 *buf = (u8 *)sCrashScreenMain;
+    u16 *buf = sCrashScreenMain;
     DebugText col;
     u32 n;
     u32 v;
@@ -230,11 +162,11 @@ void CrashScreen_DrawMain(void) {
     u32 r;
     col.unk_00 = 0xd000;
     col.charBase = 0xd000;
-    DebugText_Printf(&col, buf + 0x40, "%10ums", sCrashTimeMs);
-    DebugText_Print(&col, buf, gBuildTime);
+    DebugText_Printf(&col, buf + 0x20, "%10ums", sCrashTimeMs);
+    DebugText_Print(&col, buf, (const char *)gBuildTime);
     n = gTaskPhase;
     if (n != 0 && (s32)n < 6) {
-        DebugText_Printf(&col, buf + 0x180, "LoopProc %1u:%s", n, Task_GetPhaseName(n));
+        DebugText_Printf(&col, buf + 0xc0, "LoopProc %1u:%s", n, Task_GetPhaseName(n));
     }
     v = 0xffff;
     pp = gTaskCurrentNode;
@@ -247,33 +179,32 @@ void CrashScreen_DrawMain(void) {
         v = gProcCreateProfile;
     }
     if (v != 0xffff) {
-        DebugText_Printf(&col, buf + 0x1c0, "ProfName[%d]Step[%u]", v, gProcCreateStep);
+        DebugText_Printf(&col, buf + 0xe0, "ProfName[%d]Step[%u]", v, gProcCreateStep);
     }
     p6 = sCrashContext;
     if (p6 != NULL) {
         for (i = 0; (u32)i < 0x12; i++) {
-            DebugText_Printf(&col, buf + ((i + 2) << 6) + 0x28, "%.3s:%08X", sCrashRegNames + i * 3, p6[i]);
+            DebugText_Printf(&col, buf + ((i + 2) << 5) + 0x14, "%.3s:%08X", sCrashRegNames + i * 3, p6[i]);
         }
         p6 = sCrashContext;
         q = &p6[0x19];
-        DebugText_Printf(&col, buf + 0x528, "SPSR%08X", p6[0x19]);
-        DebugText_Printf(&col, buf + 0x568, "CP15%08X", q[1]);
+        DebugText_Printf(&col, buf + 0x294, "SPSR%08X", p6[0x19]);
+        DebugText_Printf(&col, buf + 0x2b4, "CP15%08X", q[1]);
     } else {
-        DebugText_Printf(&col, buf + 0x428, "SP  %08X", sCrashSP);
-        DebugText_Printf(&col, buf + 0x4a8, "PC4 %08X", sCrashPC);
+        DebugText_Printf(&col, buf + 0x214, "SP  %08X", sCrashSP);
+        DebugText_Printf(&col, buf + 0x254, "PC4 %08X", sCrashPC);
     }
-    r = sPanicFile;
-    if (r != 0) {
-        DebugText_Printf(&col, buf + 0x480, "%s:%u", r, sPanicLine);
-        DebugText_Print(&col, buf + 0x4c0, sPanicMessage);
+    if (sPanicFile != 0) {
+        DebugText_Printf(&col, buf + 0x240, "%s:%u", sPanicFile, sPanicLine);
+        DebugText_Print(&col, buf + 0x260, sPanicMessage);
     }
     r = OS_GetProcMode();
     thr = data_021fcc2c[1];
-    DebugText_Printf(&col, buf + 0x80, "ID:%u mode:%02x", thr->id, r);
-    DebugText_Printf(&col, buf + 0xc0, "S:%08x-%08x", thr->stackTop, thr->stackBottom);
+    DebugText_Printf(&col, buf + 0x40, "ID:%u mode:%02x", thr->id, r);
+    DebugText_Printf(&col, buf + 0x60, "S:%08x-%08x", thr->stackTop, thr->stackBottom);
     r = OS_GetIrqStackStatus();
     if (r != 0) {
-        DebugText_Printf(&col, buf + 0x100, "IrqStkErr%u", r);
+        DebugText_Printf(&col, buf + 0x80, "IrqStkErr%u", r);
     } else {
         node = data_021fcc2c[2];
         r = 0;
@@ -285,18 +216,18 @@ void CrashScreen_DrawMain(void) {
             node = node->next;
         }
         if (node != NULL) {
-            DebugText_Printf(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->id, node->stackWarningOffset);
+            DebugText_Printf(&col, buf + 0x80, "StkErr%u:%u:%x", r, node->id, node->stackWarningOffset);
         }
     }
 }
 
-void CrashScreen_Fill(u32 a, u32 b, u32 c) {
-    volatile u32 v = a;
-    MIi_CpuClearFast(v);
+// (the DS code passed the screen and the size on in r1 / r2: MIi_CpuClearFast(data, dest, size))
+void CrashScreen_Fill(u32 a, u16 *b, u32 c) {
+    MIi_CpuClearFast(a, b, c);
 }
 
 void CrashScreen_Clear(void) {
-    u32 t = sCrashScreenSub;
+    u16 *t = sCrashScreenSub;
     CrashScreen_Fill(0x7f007f, sCrashScreenMain, 0x800);
     CrashScreen_Fill(0x7f007f, t, 0x800);
 }
@@ -320,8 +251,8 @@ void CrashScreen_InitDisplay(void) {
     *(vu16 *)0x5000018 = 0x7c00;
     *(vu16 *)0x5000400 = 0x7c00;
     *(vu16 *)0x5000418 = 0x7c00;
-    sCrashScreenMain = G2_GetBG1ScrPtr();
-    sCrashScreenSub = G2S_GetBG1ScrPtr();
+    sCrashScreenMain = (u16 *)G2_GetBG1ScrPtr();
+    sCrashScreenSub = (u16 *)G2S_GetBG1ScrPtr();
     CrashScreen_Clear();
     GX_DispOn();
     IO_OR((vu32 *)0x4001000, 0x10000);
@@ -388,15 +319,15 @@ void CrashScreen_Frame(void) {
         if (held != 0) {
             if ((trig & 1) != 0 && held != 0) {
                 if (OS_GetProcMode() == 0x1f) {
-                    u32 a = gRootHeap;
-                    u32 b = gCurrentHeap;
-                    u32 c = gProcHeap;
+                    Heap *a = gRootHeap;
+                    Heap *b = gCurrentHeap;
+                    Heap *c = gProcHeap;
                     if ((keys & 0x20) != 0) {
-                        ((Heap *)(a))->dump();
+                        a->dump();
                     } else if ((keys & 0x10) != 0) {
-                        ((Heap *)(c))->dump();
+                        c->dump();
                     } else if ((keys & 0x40) != 0) {
-                        ((Heap *)(b))->dump();
+                        b->dump();
                     }
                 }
             }
@@ -440,7 +371,7 @@ void NitroMain(void) {
     OS_InitTick();
     OS_InitAlarm();
     OS_InitThread();
-    OS_SetUserExceptionHandler(Fatal_ExceptionCallback, data_021fccfc);
+    OS_SetUserExceptionHandler((void *)Fatal_ExceptionCallback, data_021fccfc);
     ime = (vu16 *)0x4000208;
     (void)IO_R(ime);
     IO_W(ime, 1);

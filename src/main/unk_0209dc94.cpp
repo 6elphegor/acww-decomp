@@ -57,7 +57,7 @@
 
 
 extern "C" {
-void SaveData_SyncClockOffset(void *);
+void SaveData_SyncClockOffset(SaveData *p);
 void Clock_Init();
 void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();

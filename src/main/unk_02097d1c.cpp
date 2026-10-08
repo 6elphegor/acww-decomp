@@ -18,36 +18,17 @@
 #include "save/MotherLetterState.h"
 #include "save/SaveData.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_Catalog_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Catalog_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DramaRecord_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_DramaRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_EmotionSlots_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FutureLetter_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FutureLetter_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HouseVisitInvite_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MotherLetterState_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MotherLetterState_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBank_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBank_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerDailyTalkFlags_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerDailyTalkFlags_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerDataArray_GetRandomOther  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_UpdateDay  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrands_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerInventory_SetWallet  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerOptions_ConstructInPlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerOptions_DestructInPlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerSpNpcRecord_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerSpNpcRecord_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerSpNpcRecord_InitNop  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerSpNpcRecord_SendMissingLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerWifiData_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerWifiData_Create  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerWifiData_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_LoadResolveAltText  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#include "player/PlayerErrands.h"
+#include "net/FriendEntry.h"
+#include "player/ForeignVillagerRecord.h"
+#include "player/PlayerDailyTalkFlags.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0203c92c.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020637e4.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/main/unk_020b2c50.h"
 #include "proto/main/unk_020030d8.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -63,101 +44,42 @@
 
 class PlayerData;
 
+// (not in the shared headers: their units' file-local types)
 extern "C" {
 s32 Item_GetPrice(u16 *p);
-void Letter_Clear(void *p);
 void LetterDefaults_Init(void *p);
-s32 Date_DaysBetween(void *a, void *b);
-void PlayerSpNpcRecord_SendMissingLetter(void *p);
-void _ZN20PlayerDailyTalkFlags8clearAllEv(void *p);
-extern u8 gSaveData[];
-extern u8 data_020e1e20[];
+s32 Date_DaysBetween(u8 *a, u8 *b);
 extern u8 gSavePlayers[];
-void *_ZN11MsgString9CC2Ev(void *p);
-void String_LoadResolveAltText(void *a, u8 *b, s32 c);
-void TownId_GetNameString(void *a, void *b);
 s32 Villager_SendLetter4(const char *a, s32 b, s32 c, void *d, void *e, void *f);
-s32 PlayerDataArray_GetRandomOther(void *a, void *b);
-void HouseVisitInvite_Clear(void *p);
-void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-void _ZN12ItemPickSpec3setEii(void *a, s32 b, s32 c);
-void ItemPickSpec_Destruct(void *a);
 void NookPoints_Init(void *);
 void Catalog_Init(void *);
-void PlayerWifiData_Create(void *);
-void FriendList_Clear(void *);
-void PlayerSpNpcRecord_InitNop(void *);
-void PlayerBank_Clear(void *);
-void EmotionSlots_Clear(void *);
-void MI_CpuFill8(void *, s32, u32);
 void Catalog_Clear(void *);
-void PlayerErrands_Clear(void *);
 void NookPoints_Reset(void *);
-void MotherLetterState_Destruct(void *);
-void DramaRecord_Destruct(void *);
-void PlayerSpNpcRecord_Destruct(void *);
 void NookPoints_Destroy(void *);
-void PlayerDailyTalkFlags_Destruct(void *);
-void PlayerBank_Destruct(void *);
-void PlayerWifiData_Destruct(void *);
-void _ZN13PlayerErrandsD1Ev(void *);
-void FutureLetter_Destruct(void *);
-void PlayerOptions_DestructInPlayer(void *);
-void Catalog_Destruct(void *);
-void Catalog_Construct(void *);
-void PlayerOptions_ConstructInPlayer(void *);
-void FutureLetter_Construct(void *);
-void _ZN13PlayerErrandsC1Ev(void *);
-void PlayerWifiData_Construct(void *);
-void PlayerBank_Construct(void *);
-void PlayerDailyTalkFlags_Construct(void *);
 void NookPoints_Create(void *);
-void PlayerSpNpcRecord_Construct(void *);
-void DramaRecord_Construct(void *);
-void MotherLetterState_Construct(void *);
-u16 *func_02097f6c(void *, u32);
-s32 func_02097e98(void *, s32);
-s32 Item_IsFurniture(void *);
-s32 Item_GetFurnitureIndex(void *);
 void PocketMatches_Init(void *);
 BOOL func_020030b4(void *);
-void ItemPickSpec_Destruct(void *);
 extern u32 sForeignLetterPresentKinds[];
-void _ZN21ForeignVillagerRecordC1Ev(void *);
-void _ZN21ForeignVillagerRecordD1Ev(void *);
-void PlayerInventory_SetWallet(void *p, s32 a, s32 b);
-BOOL _ZN21ForeignVillagerRecord5isSetEv(void *p);
-void _ZN21ForeignVillagerRecord5clearEv(void *p);
 void Clock_GetDate(void *out);
+void MI_CpuFill8(void *, s32, u32);
+void FriendList_Clear(FriendEntry *base);
+void PlayerBank_Clear(PlayerBank *p);
 }
-
-
-
-
-
-
-
-
-
-
-extern "C" {
-extern u8 gSaveData[];
-extern u8 gSavePlayers[];
-}
+extern SaveData gSaveData;
 
 struct Unk_020981f8_Pos { u8 a, b, c, d; };
 
 PlayerData::PlayerData() {
-    Catalog_Construct(&catalog);
-    PlayerOptions_ConstructInPlayer(&options);
-    FutureLetter_Construct(&futureLetter);
-    _ZN13PlayerErrandsC1Ev(&errands);
-    PlayerWifiData_Construct(&wifiUserData);
-    FriendList_Construct(&friendList);
-    PlayerBank_Construct(&bank);
-    PlayerDailyTalkFlags_Construct(&dailyTalkFlags);
+    Catalog_Construct();
+    PlayerOptions_ConstructInPlayer();
+    FutureLetter_Construct((Letter *)futureLetter);
+    new (errands) PlayerErrands();
+    PlayerWifiData_Construct(wifiUserData);
+    FriendList_Construct(friendList);
+    PlayerBank_Construct();
+    PlayerDailyTalkFlags_Construct();
     NookPoints_Create(&nookPoints);
     heldItem = 0xfff1;
     shirt = 0xfff1;
@@ -165,30 +87,30 @@ PlayerData::PlayerData() {
     faceItem = 0xfff1;
     bed = 0xfff1;
     inventoryBackground = 0xfff1;
-    PlayerSpNpcRecord_Construct(&spNpcRecord);
-    DramaRecord_Construct(&dramaRecord);
+    PlayerSpNpcRecord_Construct();
+    DramaRecord_Construct();
     LostChildRecord_Construct(&lostChildRecord);
-    MotherLetterState_Construct(&motherLetterState);
-    _ZN21ForeignVillagerRecordC1Ev(&foreignVillagerRecord);
+    MotherLetterState_Construct();
+    new (foreignVillagerRecord) ForeignVillagerRecord();
     new (&id) PlayerId();
 }
 
 PlayerData::~PlayerData() {
     new (&id) PlayerId();
-    _ZN21ForeignVillagerRecordD1Ev(&foreignVillagerRecord);
-    MotherLetterState_Destruct(&motherLetterState);
+    ((ForeignVillagerRecord *)foreignVillagerRecord)->~ForeignVillagerRecord();
+    MotherLetterState_Destruct();
     LostChildRecord_Destruct(&lostChildRecord);
-    DramaRecord_Destruct(&dramaRecord);
-    PlayerSpNpcRecord_Destruct(&spNpcRecord);
+    DramaRecord_Destruct();
+    PlayerSpNpcRecord_Destruct();
     NookPoints_Destroy(&nookPoints);
-    PlayerDailyTalkFlags_Destruct(&dailyTalkFlags);
-    PlayerBank_Destruct(&bank);
-    FriendList_Destruct(&friendList);
-    PlayerWifiData_Destruct(&wifiUserData);
-    _ZN13PlayerErrandsD1Ev(&errands);
-    FutureLetter_Destruct(&futureLetter);
-    PlayerOptions_DestructInPlayer(&options);
-    Catalog_Destruct(&catalog);
+    PlayerDailyTalkFlags_Destruct();
+    PlayerBank_Destruct();
+    FriendList_Destruct(friendList);
+    PlayerWifiData_Destruct(wifiUserData);
+    ((PlayerErrands *)errands)->~PlayerErrands();
+    FutureLetter_Destruct((Letter *)futureLetter);
+    PlayerOptions_DestructInPlayer();
+    Catalog_Destruct();
 }
 
 void PlayerData::fillZero() { MI_CpuFill8(this, 0, 0x228c); }
@@ -198,13 +120,13 @@ void PlayerData::reset() {
     ((PlayerId *)(&id))->clear();
     ((PlayerInventory *)&inventory)->clear();
     Catalog_Clear(&catalog);
-    PlayerErrands_Clear(&errands);
+    PlayerErrands_Clear((PlayerErrands *)errands);
     heldItem = 0xfff1;
     NookPoints_Reset(&nookPoints);
     bed = 0xfff1;
     birthdayTalkYear = 0xff;
     MI_CpuFill8(&birthdayNoticeDays, 0xff, 8);
-    _ZN21ForeignVillagerRecord5clearEv(&foreignVillagerRecord);
+    ((ForeignVillagerRecord *)foreignVillagerRecord)->clear();
 }
 
 BOOL PlayerData::isUsed() { return ((PlayerId *)(&id))->isValid(); }
@@ -219,15 +141,15 @@ void PlayerData::setupNew(void *name, u32 p2, u32 p3, TownId *town, u8 s1, u8 s2
     setFortune(0);
     PlayerData_SetStungFace(this, s5);
     ((PlayerInventory *)&inventory)->clear();
-    PlayerInventory_SetWallet(&inventory, s6, 1);
+    PlayerInventory_SetWallet((PlayerInventory *)&inventory, s6, 1);
     heldItem = *s7;
     ((PlayerPatterns *)(this))->initDefaultPatterns((Unk_020942c8 *)(&id));
     NookPoints_Init(&nookPoints);
     Catalog_Init(&catalog);
     ((FutureLetter *)(&futureLetter))->clearFutureLetter();
     ((MotherLetterState *)(&motherLetterState))->clear();
-    PlayerWifiData_Create(&wifiUserData);
-    FriendList_Clear(&friendList);
+    PlayerWifiData_Create(wifiUserData);
+    FriendList_Clear((FriendEntry *)friendList);
     bed = 0x3884;
     bits.a = 0;
     bits.b = 1;
@@ -235,13 +157,13 @@ void PlayerData::setupNew(void *name, u32 p2, u32 p3, TownId *town, u8 s1, u8 s2
     setLastPlayDate(bits);
     clearBirthday();
     shirt = 0x11a8;
-    PlayerSpNpcRecord_InitNop(&spNpcRecord);
+    PlayerSpNpcRecord_InitNop();
     faceItem = 0xfff1;
     hat = 0xfff1;
     inventoryBackground = 0x11fa;
     DramaRecord_Clear(&dramaRecord);
-    PlayerBank_Clear(&bank);
-    EmotionSlots_Clear(&emotions);
+    PlayerBank_Clear((PlayerBank *)bank);
+    EmotionSlots_Clear(emotions);
     Clock_GetDate(getDayUpdateDate());
     MI_CpuFill8(&birthdayNoticeDays, 0xff, 8);
 }
@@ -341,7 +263,7 @@ void PlayerData::rerollFlaggedPocketItems()
         u32 k = 1;
         s32 z28 = 0, z2c = 0, z40 = 0, z44 = 0, z3c = 0, z34 = 0, z38 = 0, z30 = 0, z4c = 0, z48 = 0, z20 = 0;
         v0 = 0xfff1;
-        ParcelErrand_Clear(_ZN18SickVillagerRecord15getParcelErrandEv(getErrands()));
+        ParcelErrand_Clear((u8 *)&((PlayerErrands *)getErrands())->parcelErrand);
         in = (PlayerInventory *)getInventory();
         p = in->getPocket(0);
         i = 0;
@@ -361,27 +283,27 @@ void PlayerData::rerollFlaggedPocketItems()
                     r = (*p == 0x1560) ? k : z2c;
                 }
                 if (r) {
-                    ItemPick_FromRange(&v1, 0x1100, 0x44, z30, z30, this, k, 10, z30, k);
+                    ItemPick_FromRange(&v1, 0x1100, 0x44, NULL, z30, this, k, 10, NULL, k);
                     v0 = v1;
                     if (v0 == 0xfff1) {
                         ItemPickSpec o5c;
                         o5c.set(4, z34);
-                        ItemPick_One(&v2, &o5c, z38, z38, k, k, z38);
+                        ItemPick_One(&v2, &o5c, NULL, NULL, k, k, NULL);
                         v0 = v2;
                     }
                 } else {
-                    ItemPick_FromRange(&v3, 0x1144, 0x44, z3c, z3c, this, k, 10, z3c, k);
+                    ItemPick_FromRange(&v3, 0x1144, 0x44, NULL, z3c, this, k, 10, NULL, k);
                     v0 = v3;
                     if (v0 == 0xfff1) {
                         ItemPickSpec o64;
                         o64.set(3, z40);
-                        ItemPick_One(&v4, &o64, z44, z44, k, k, z44);
+                        ItemPick_One(&v4, &o64, NULL, NULL, k, k, NULL);
                         v0 = v4;
                     }
                 }
                 in->setPocket((u16 *)&v0, i, z48);
                 if (v0 != 0xfff1) {
-                    Catalog_SetItem(getCatalog(), (u16 *)&v0, z4c, k);
+                    Catalog_SetItem((u8 *)getCatalog(), (u16 *)&v0, z4c, k);
                 }
             }
         }
@@ -393,9 +315,10 @@ void PlayerData::resetForNewTown()
     if (isUsed()) {
         PlayerInventory *r7 = (PlayerInventory *)getInventory();
         u16 *r5 = r7->getPocket(0);
-        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(getErrands(), 0));
-        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(getErrands(), 1));
-        HouseVisitInvite_Clear((u8 *)getErrands() + 0x88);
+        PlayerErrands *errandList = (PlayerErrands *)getErrands();
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(errandList, 0));
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(errandList, 1));
+        HouseVisitInvite_Clear(&errandList->houseVisitInvite);
         s32 i = 0;
         s32 z = i;
         BOOL zz = i;
@@ -406,14 +329,14 @@ void PlayerData::resetForNewTown()
                 if (c >= 0x11a8 && c <= 0x12a7) ok = TRUE;
                 if (ok) {
                     r7->setPocket(r5, i, 1);
-                    Catalog_SetItem(getCatalog(), r5, z, 1);
+                    Catalog_SetItem((u8 *)getCatalog(), r5, z, 1);
                 }
             }
         }
         u8 *e = (u8 *)r7->getLetter(0);
         for (i = 0; i < 10; i++) {
             if ((u8)(((LetterView *)(e))->getState() + 0xf9) <= 1) {
-                Letter_Clear(e);
+                Letter_Clear((LetterView *)e);
             }
             e += 0xf4;
         }
@@ -430,19 +353,19 @@ void PlayerData::setInventoryBackground(u16 *p)
     inventoryBackground = *p;
 }
 
-s32 PlayerData::pickOtherResident()
+PlayerData *PlayerData::pickOtherResident()
 {
-    return PlayerDataArray_GetRandomOther(gSavePlayers, getPlayerId());
+    return (PlayerData *)PlayerDataArray_GetRandomOther(gSavePlayers, (u16 *)getPlayerId());
 }
 
 BOOL PlayerData::getOtherResidentName(void *q)
 {
-    void *id = getPlayerId();
+    PlayerId *id = getPlayerId();
     BOOL r = FALSE;
     if (PlayerId_FindResidentIndex(id) != -1) {
-        s32 o;
+        PlayerData *o;
         if ((o = pickOtherResident()) != 0) {
-            ((PlayerId *)(((PlayerData *)((void *)o))->getPlayerId()))->getNameString((MsgString *)(q));
+            o->getPlayerId()->getNameString((MsgString *)(q));
             r = TRUE;
         }
     }
@@ -507,19 +430,18 @@ u32 PlayerData::getBirthdayTalkYear()
 
 extern "C" void PlayerData_UpdateDay()
 {
-    u8 *g = gSaveData;
     PlayerData *p = PlayerData_GetCurrent();
     if (p) {
         Unk_020981f8_Pos loc;
         Clock_GetDate(&loc);
         u8 *q = p->getDayUpdateDate();
-        s32 r4 = Date_DaysBetween(&loc, q);
+        s32 r4 = Date_DaysBetween(&loc.a, q);
         s32 t = (loc.b - q[1]) + (loc.c - q[2]) * 12;
         PlayerBank_PayInterest(t);
         PlayerBank_SendMilestoneLetter(r4);
         PlayerBank_SendDonationLetter(r4);
         ((PlayerSpNpcRecord *)(((PlayerData *)p)->getSpNpcRecord()))->sendInsuranceLetters();
-        PlayerSpNpcRecord_SendMissingLetter(((PlayerData *)p)->getSpNpcRecord());
+        PlayerSpNpcRecord_SendMissingLetter();
         if (r4) {
             p->rerollFlaggedPocketItems();
         }
@@ -527,14 +449,14 @@ extern "C" void PlayerData_UpdateDay()
             p->setBirthdayTalkYear(0xff);
         }
         if (r4) {
-            _ZN20PlayerDailyTalkFlags8clearAllEv(((PlayerData *)p)->getDailyTalkFlags());
+            ((PlayerDailyTalkFlags *)p->getDailyTalkFlags())->clearAll();
             ((PlayerData *)p)->setFortune(0);
             ((PlayerSpNpcRecord *)(((PlayerData *)p)->getSpNpcRecord()))->resetFireworksGiven();
-            ((SaveData *)(gSaveData))->clearFlag(16);
+            gSaveData.clearFlag(16);
         }
         if (r4 < 0) {
             ((LostChildRecord *)(((PlayerData *)p)->getLostChildRecord()))->clear();
-            ((LostChildRecord *)(g + 0x15fca))->clear();
+            ((LostChildRecord *)gSaveData.lostChild)->clear();
         }
         Clock_GetDate(p->getDayUpdateDate());
     }
@@ -590,46 +512,42 @@ void PlayerData::sendForeignVillagerLetter()
 {
     void *r8 = getPlayerId();
     if (((PlayerId *)(r8))->isValid()) {
-        if (_ZN21ForeignVillagerRecord5isSetEv(foreignVillagerRecord)) {
-            u8 *r7 = foreignVillagerRecord + 0xa;
+        ForeignVillagerRecord *rec = (ForeignVillagerRecord *)foreignVillagerRecord;
+        if (rec->isSet()) {
+            u8 *r7 = rec->villager;
             s32 a;
-            u8 *l10 = foreignVillagerRecord + 0x16;
-            u8 o20[HOST_SIZED(0x1c, MsgString9B) / 1] HOST_ALIGN8;
-            u8 o3c[HOST_SIZED(0x1c, MsgString9C) / 1] HOST_ALIGN8;
-            u8 o58[HOST_SIZED(0x34, MsgString33) / 1] HOST_ALIGN8;
-            s32 b, t;
+            u16 *l10 = &rec->present;
+            s32 b;
+            u32 t;
             u8 c;
-            new (o20) MsgString9B();
-            _ZN11MsgString9CC2Ev(o3c);
-            new (o58) MsgString33();
+            MsgString9B o20;
+            MsgString9C o3c;
+            MsgString33 o58;
             a = 0;
             b = 10;
             t = 0;
-            if (*(u16 *)(foreignVillagerRecord + 0x16) != 0xfff1) {
+            if (rec->present != 0xfff1) {
                 a = 10;
                 b = 5;
             }
-            ((PlayerId *)(r8))->getNameString((MsgString *)(o20));
-            MailText_SetSlot(0, o20);
-            ((MsgString *)(o20))->clear();
-            ((VillagerId *)(r7))->getName((MsgString *)o20);
-            MailText_SetSlot(1, o20);
+            ((PlayerId *)(r8))->getNameString(&o20);
+            MailText_SetSlot(0, &o20);
+            o20.clear();
+            ((VillagerId *)(r7))->getName(&o20);
+            MailText_SetSlot(1, &o20);
             s32 i;
             for (i = 0; i < 6; i++) {
-                s32 r = TopicWord_PickRandom(&t, i);
-                ((MsgString *)(o58))->clear();
+                u32 r = TopicWord_PickRandom(&t, i);  // (the list's file name, returned as u32 by unk_02098e90.cpp)
+                o58.clear();
                 c = t;
-                String_LoadResolveAltText(o58, &c, r);
-                MailText_SetSlot(i + 2, o58);
+                String_LoadResolveAltText(&o58, &c, (const char *)(uptr)r);
+                MailText_SetSlot(i + 2, &o58);
             }
-            TownId_GetNameString(foreignVillagerRecord, o3c);
-            MailText_SetSlot(8, o3c);
+            TownId_GetNameString(rec->town, &o3c);
+            MailText_SetSlot(8, &o3c);
             if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
-                _ZN21ForeignVillagerRecord5clearEv(foreignVillagerRecord);
+                rec->clear();
             }
-            ((MsgString33 *)(o58))->MsgString33::~MsgString33();
-            ((MsgString9C *)(o3c))->MsgString9C::~MsgString9C();
-            ((MsgString9B *)(o20))->MsgString9B::~MsgString9B();
         }
     }
 }
@@ -676,7 +594,7 @@ void PlayerInventory::clear()
 {
     s32 i;
     for (i = 0; i < 10; i++) {
-        Letter_Clear(letters + i * 0xf4);
+        Letter_Clear((LetterView *)(letters + i * 0xf4));
     }
     LetterDefaults_Init(letterDefaults);
     for (i = 0; i < 15; i++) {

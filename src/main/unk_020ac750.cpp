@@ -38,22 +38,15 @@
 #include "net/CommManager.h"
 #include "player/PlayerData.h"
 #include "room/FtrActorTable.h"
+#include "room/FtrActorGrid.h"
+#include "player/PlayerId.h"
+#include "proto/main/unk_02065330.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_020742f4.h"
+
+extern DateSeededRandomSource sShopRandom;
 #include "save/SaveData.h"
 #include "save/TownId.h"
-#define PROTO_LOCAL_Bbs_PostMsgToday  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_FillFromRange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_OneEx  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Item_ToPlacedForm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e2eb8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_020e2ebc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gLooseSnowballs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sCharaShadowModel  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/itcm/unk_01ff8ad4.h"
@@ -188,21 +181,10 @@ extern "C" {
 u8 *NookShop_GetRenovation(void *p);
 }
 extern "C" {
-u8 *NookShop_GetLevel(void *p);
+u32 NookShop_GetLevel(void *p);
 }
 extern "C" {
-s32 Bbs_PostMsgToday(u8 *a, const void *b);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-BOOL _ZN11CommManager8isOnlineEv(void *p);
+
 }
 extern "C" {
 u32 Scene_GetCurrent();
@@ -229,24 +211,16 @@ extern "C" {
 void BlockMap_SetItemAtUnit(void *a, void *b, s32 c, s32 d, s32 e);
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 void *func_0223xxxx();
 }
 extern "C" {
+
 }
 extern "C" {
-void ItemPick_FillFromRange(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, const void *h, s32 i);
+
 }
 extern "C" {
-void Item_ToPlacedForm(void *a, void *b, s32 c);
-}
-extern "C" {
-void ItemPick_OneEx(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, s32 h);
+
 }
 extern "C" {
 s32 PM_GetLCDPower();
@@ -261,65 +235,22 @@ extern "C" {
 void PM_GetBackLight(void *a, void *b);
 }
 extern "C" {
-}
-extern "C" {
 void *func_020986c8(void *a);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN12FtrActorGrid8getActorEiii(void *a, s32 b, s32 c, s32 d);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 }
 extern "C" {
 void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b);
 }
 extern "C" {
-u32 _ZN10PlayerData11getPlayerIdEv(void *a);
+
 }
 extern "C" {
-void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
-}
-extern "C" {
-void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
-}
-extern "C" {
-void LetterDelivery_QueueOutgoing(void *a, s32 b);
-}
-extern "C" {
-void _ZN6LetterC1Ev(void *a);
-}
-extern "C" {
-void _ZN6LetterD1Ev(void *a);
-}
-extern "C" {
+
 }
 extern "C" {
 BOOL StockList_IsSold(u32 i, u32 n, u8 *bits);
 }
 extern "C" {
 u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 }
 extern "C" {
 void ShopAckCounter_Clear(Counter *p);
@@ -349,20 +280,6 @@ extern "C" {
 extern u16 sStockSoldOutItem;
 }
 extern "C" {
-extern u8 sShopRandom[];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-extern u8 gLooseSnowballs[];
-}
-extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
@@ -370,12 +287,6 @@ extern Unk_021c47c4 *gSceneBlockMap;
 }
 extern "C" {
 extern u16 sSnowmanPrizeItems[];
-}
-extern "C" {
-extern u8 data_020e2ebc[], data_020e2ec0[], data_020e2eb8[];
-}
-extern "C" {
-void _ZN6ItemIdD1Ev(void *p);
 }
 extern "C" {
 static inline BOOL R1(u16 *p, u32 lo, u32 hi) { BOOL r = FALSE; if (*p >= lo && *p <= hi) r = TRUE; return r; }
@@ -392,8 +303,6 @@ static inline BOOL IsEq(u32 c, u32 v) { if (c >= v && c <= v) return TRUE; retur
 extern "C" {
 static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
 }
-extern "C" {
-}
 
 extern "C" void NookShop_Clear(NookShop *p);
 
@@ -401,8 +310,6 @@ extern "C" void NookShop_Clear(NookShop *p);
 extern "C" ShopAckCounter::ShopAckCounter() {
     using namespace n5; ShopAckCounter_Clear((Counter *)this); }
 
-namespace n5 {
-}
 extern "C" ShopAckCounter::~ShopAckCounter() {
     using namespace n5; ShopAckCounter_Clear((Counter *)this); }
 
@@ -430,13 +337,12 @@ extern "C" void StockList_AddFromPickList(u16 *buf, u32 *pos, s32 r2, s32 r3, u3
         u16 tmp;
         {
             ItemPickSpec o(r2, r3);
-            ItemPick_OneEx((u8 *)buf + *pos * 2, n, &o, 0, sShopRandom, 0, 1, 0);
+            ItemPick_OneEx(buf + *pos, n, &o, NULL, &sShopRandom, 0, 1, NULL);
         }
         if (flag) {
             for (u32 i = 0; i < n; i++) {
-                s32 off = (i + *pos) * 2;
-                Item_ToPlacedForm(&tmp, (u8 *)buf + off, 1);
-                *(u16 *)((u8 *)buf + off) = tmp;
+                Item_ToPlacedForm(&tmp, buf + i + *pos, 1);
+                buf[i + *pos] = tmp;
             }
         }
         *pos += n;
@@ -445,12 +351,11 @@ extern "C" void StockList_AddFromPickList(u16 *buf, u32 *pos, s32 r2, s32 r3, u3
 extern "C" void StockList_AddFromRange(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
     if (n != 0) {
         u16 tmp;
-        ItemPick_FillFromRange((u8 *)buf + *pos * 2, n, r2, r3, 0, 0, 10, sShopRandom, 0);
+        ItemPick_FillFromRange(buf + *pos, n, r2, r3, NULL, 0, 10, &sShopRandom, 0);
         if (flag) {
             for (u32 i = 0; i < n; i++) {
-                s32 off = (i + *pos) * 2;
-                Item_ToPlacedForm(&tmp, (u8 *)buf + off, 1);
-                *(u16 *)((u8 *)buf + off) = tmp;
+                Item_ToPlacedForm(&tmp, buf + i + *pos, 1);
+                buf[i + *pos] = tmp;
             }
         }
         *pos += n;
@@ -510,7 +415,7 @@ extern "C" void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b) {
     if (o == 0) return;
     if (Item_IsFurnitureOrF031(o)) {
         void *r = FtrActorGrid_GetInstance();
-        void *t = _ZN12FtrActorGrid8getActorEiii(r, x, y, 0);
+        void *t = ((FtrActorGrid *)r)->getActor(x, y, 0);
         if (t != 0) {
             FtrMgr_RemoveActorByIndex(((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(t));
         }
@@ -569,8 +474,8 @@ extern "C" void NookShop_PostRenovationNotice(s32 a, s32 b) {
     MailText_SetSlotDayOrdinal(3, b);
     Bbs_PostMsgToday(NookShop_GetLevel(data_021ed104), "bbs_raccoon");
 }
-extern "C" s32 NookShop_PostReopenNotice() {
-    return Bbs_PostMsgToday(NookShop_GetLevel(data_021ed104) + 3, "bbs_raccoon");
+extern "C" void NookShop_PostReopenNotice() {
+    Bbs_PostMsgToday(NookShop_GetLevel(data_021ed104) + 3, "bbs_raccoon");
 }
 extern "C" BOOL NookShop_GetReopenDateTime(Unk_020aec74_Out *out) {
     u8 *h = data_021ed104;
@@ -596,10 +501,13 @@ extern "C" BOOL Shop_IsPurchaseSynced() {
 extern "C" NookShop::NookShop() {
     using namespace n5; NookShop_Clear(this); }
 
-namespace n5 {
-}
 extern "C" Unk_020aec00::Unk_020aec00() {
-    using namespace n5; __cxa_vec_cleanup(&e, 0x25, 2, (void *)_ZN6ItemIdD1Ev); }
+    using namespace n5;
+    // (as the DS code: the items destroyed in reverse order, __cxa_vec_cleanup)
+    for (s32 i = 0x25 - 1; i >= 0; i--) {
+        ((ItemId *)&e[i])->~ItemId();  // (the slots hold ItemIds)
+    }
+}
 
 namespace n5 {
 extern "C" void NookShop_Clear(NookShop *p) {
@@ -615,7 +523,7 @@ extern "C" void NookShop_Clear(NookShop *p) {
 // ======== unk_020ae290.cpp ========
 namespace n4 {
 extern "C" {
-extern u8 data_021ed2d4[], gCommManager[], gSavePlayers[], sShopRandom[], data_021ee17c[], data_021ee180[],
+extern u8 data_021ed2d4[], gCommManager[], gSavePlayers[], data_021ee17c[], data_021ee180[],
     data_021ee20c[], gSaveData[], data_021ed104[];
 }
 extern "C" {
@@ -652,23 +560,7 @@ extern "C" {
 int DateTime_Compare(D*, D*, int);
 }
 extern "C" {
-int _ZN11CommManager8isOnlineEv(int);
-}
-extern "C" {
 void NookPoints_SendMemberLetters();
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-int _ZN10PlayerData6isUsedEv(void*);
-}
-extern "C" {
-int _ZN10PlayerData8testFlagEj(void*, int);
-}
-extern "C" {
-int _ZN22DateSeededRandomSource6randomEj(void*, int);
 }
 extern "C" {
 void NookShop_PostSaleNotice(u8);
@@ -683,15 +575,7 @@ extern "C" {
 int Item_IsFurniture(u16*);
 }
 extern "C" {
-Z ItemPick_One(ItemPickSpec, int, void*, int, int, int);
-}
-extern "C" {
-}
-extern "C" {
 int NookShop_GetReopenDateTime(D*);
-}
-extern "C" {
-void _ZN22DateSeededRandomSource4seedEhhh(void*, int, int, int);
 }
 extern "C" {
 void NookShop_StockTools(Obj*, int*);
@@ -733,13 +617,7 @@ extern "C" {
 void NookShop_UpdatePointSpecial(Obj*, D*);
 }
 extern "C" {
-int _ZN8SaveData8testFlagEj(void*, int);
-}
-extern "C" {
-void _ZN8SaveData7setFlagEj(void*, int);
-}
-extern "C" {
-int StockList_FindItem(int, u16*, u8*, int);
+s32 StockList_FindItem(u16 *key, u16 *arr, u8 *bits, u32 n);
 }
 extern "C" {
 u16* StockList_GetItem(int, u16*, u8*, int, u16*);
@@ -974,8 +852,8 @@ extern "C" int NookShop_IsSold(Obj* self, int idx) {
 extern "C" u16* NookShop_GetItem(Obj* self, int idx, u16* p) {
     return StockList_GetItem(idx, self->items, self->mask, 0x25, p);
 }
-extern "C" int NookShop_FindItem(Obj* self, int arg) {
-    return StockList_FindItem(arg, self->items, self->mask, 0x25);
+extern "C" int NookShop_FindItem(Obj* self, u16 *key) {
+    return StockList_FindItem(key, self->items, self->mask, 0x25);
 }
 extern "C" void NookShop_ScheduleRenovation(Obj* self) {
     D d;
@@ -1043,7 +921,7 @@ extern "C" int NookShop_HasVisitorBought(void*) {
 }
 }
 u32 data_020e2e34 = 3;
-DateSeededRandomSource sShopRandom;
+DateSeededRandomSource sShopRandom;  // (declared at the top)
 const u8 kNookSaplingCounts[4] = {0, 1, 2, 3};
 namespace n4 {
 extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
@@ -1091,17 +969,18 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     }
     if (ok == 0 && NookShop_GetRenovation(self)->flag == 0) {
         NookShop_UpdatePointSpecial(self, &d);
-        if (((DateSeededRandomSource *)(sShopRandom))->DateSeededRandomSource::random(0xe) == 0) {
-            self->flags.v = (u8)(((DateSeededRandomSource *)(sShopRandom))->DateSeededRandomSource::random(4) + 0x11);
+        if (sShopRandom.random(0xe) == 0) {
+            self->flags.v = (u8)(sShopRandom.random(4) + 0x11);
             if (fresh != 0) NookShop_PostSaleNotice(self->flags.v);
         }
         if (self->flags.v == 0 && NookShop_IsPointSpecialDay(self, &d) == 0) {
             static ItemPickSpec sx(0, 4);
-            if (((DateSeededRandomSource *)(sShopRandom))->DateSeededRandomSource::random(5) == 0) {
+            if (sShopRandom.random(5) == 0) {
                 for (i = 0; (u32)i < 0x25; i++) {
                     u16* q = &self->items[i];
                     if (Item_IsFurniture(q) != 0) {
-                        *q = ItemPick_One(sx, 0, sShopRandom, 0, 1, 0).v;
+                        ItemPickSpec spec = sx;
+                        ItemPick_One(q, &spec, NULL, &sShopRandom, 0, 1, NULL);
                         if (fresh != 0) NookShop_PostSpecialItemNotice(q);
                         break;
                     }
@@ -1123,7 +1002,10 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
             if (Item_IsFurniture(q) != 0) {
                 if (n == 1) {
                     ItemPickSpec tmp(0, t);
-                    *q = ItemPick_One(tmp, 0, sShopRandom, 0, 1, 0).v;
+                    {
+                        ItemPickSpec spec = tmp;
+                        ItemPick_One(q, &spec, NULL, &sShopRandom, 0, 1, NULL);
+                    }
                     break;
                 }
                 n++;
@@ -1135,7 +1017,7 @@ extern "C" void NookShop_Restock(Obj* self, int a, int b, int c) {
     int z;
     NookShop_ClearStock(self);
     z = 0;
-    ((DateSeededRandomSource *)(sShopRandom))->seed(a, b, c);
+    sShopRandom.seed(a, b, c);
     NookShop_StockTools(self, &z);
     NookShop_StockFurniture(self, &z);
     NookShop_StockFlowerBags(self, &z);
@@ -1180,19 +1062,10 @@ extern "C" {
 extern u8 data_021ed104[];
 }
 extern "C" {
-extern u8 sShopRandom[];
-}
-extern "C" {
 extern u8 gSaveData[];
 }
 extern "C" {
 extern u32 gCommManager;
-}
-extern "C" {
-void _ZN6ItemIdD1Ev(void*);
-}
-extern "C" {
-void _ZN6ItemIdC1Ev(void*);
 }
 extern "C" {
 void __cxa_vec_cleanup(void*, u32, u32, void (*)(void*));
@@ -1207,10 +1080,10 @@ extern "C" {
 u32 StockList_MarkSold(u32, u32, void*);
 }
 extern "C" {
-s32 StockList_FindItem(u32, void*, void*, u32);
+s32 StockList_FindItem(u16 *key, u16 *arr, u8 *bits, u32 n);
 }
 extern "C" {
-u16* StockList_GetItem(u32, void*, void*, u32, u32);
+u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 extern "C" {
 void StockList_Clear(void*, void*, u32);
@@ -1228,18 +1101,10 @@ extern "C" {
 void DateTime_SubDays(V8*, u32);
 }
 extern "C" {
-u32 _ZN11CommManager8isOnlineEv(u32);
-}
-extern "C" {
-void _ZN22DateSeededRandomSource4seedEhhh(void*, u32, u32, u32);
-}
-extern "C" {
 u32 Item_IsFurniture(u16 *p);
 }
 extern "C" {
 u32 Item_GetFurnitureIndex(u16*);
-}
-extern "C" {
 }
 extern "C" {
 void AbleShop_RestockEnd(S1*);
@@ -1290,22 +1155,10 @@ extern "C" {
 void NookShop_UpdateDaily(void*, u32);
 }
 extern "C" {
-s32 _ZN22DateSeededRandomSource6randomEj(void*, u32);
-}
-extern "C" {
-BOOL _ZN8SaveData8testFlagEj(void*, u32);
-}
-extern "C" {
 void Clock_GetDate(B4*);
 }
 extern "C" {
 s32 Date_DaysBetween(B4*, u8*);
-}
-extern "C" {
-void _ZN8SaveData9clearFlagEj(void*, u32);
-}
-extern "C" {
-void _ZN8SaveData7setFlagEj(void*, u32);
 }
 extern "C" {
 s32 Date_GetWeekday(u32, u32, u32);
@@ -1368,7 +1221,7 @@ extern "C" {
 u32 AbleShop_MarkSold(S1*, u32);
 }
 extern "C" {
-u16* AbleShop_GetItem(S1*, u32, u32);
+u16* AbleShop_GetItem(S1*, u32, u16 *);
 }
 extern "C" {
 void AbleShop_SetStockDate(S1*, void*);
@@ -1406,7 +1259,7 @@ void NookShop_UpdatePointSpecial(S *s, V8 *p) {
     u8 e3;
     s32 k, i, cnt1, cnt2, r, r5;
     MI_CpuCopy8(p, &A, 8);
-    mode = _ZN22DateSeededRandomSource6randomEj(sShopRandom, 2);
+    mode = sShopRandom.random(2);
     if (((SaveData *)(gSaveData))->testFlag(5)) {
         Clock_GetDate(&B);
         r = Date_DaysBetween(&B, &s->f52);
@@ -1416,7 +1269,7 @@ void NookShop_UpdatePointSpecial(S *s, V8 *p) {
             ((SaveData *)(gSaveData))->clearFlag(5);
         }
     }
-    if (!_ZN8SaveData8testFlagEj(gSaveData, 5)) {
+    if (!((SaveData *)gSaveData)->testFlag(5)) {
         MI_CpuCopy8(p, &C, 8);
         k = Date_GetWeekday(C.b5, C.b4, C.b3);
         if (k != 6 && k != 0) {
@@ -1476,7 +1329,7 @@ void NookShop_UpdatePointSpecial(S *s, V8 *p) {
             DateTime_SubDays(&G, 4);
             if (DateTime_Compare(&G, &A, 0x38) == -1) {
                 if (DateTime_Compare(&A, &F, 0x38) == -1) {
-                    if (!_ZN8SaveData8testFlagEj(gSaveData, 6)) {
+                    if (!((SaveData *)gSaveData)->testFlag(6)) {
                         NookShop_PostPointSpecialNotice(s->f53, s->f52);
                         ((SaveData *)(gSaveData))->setFlag(6);
                     }
@@ -1622,11 +1475,17 @@ extern "C" u32 NookShop_ApplyRenovation(void) {
     return 0;
 }
 extern "C" void* AbleShop_Construct(void *p) {
-    __cxa_vec_ctor(p, 6, 2, _ZN6ItemIdC1Ev, _ZN6ItemIdD1Ev);
+    ItemId *items = (ItemId *)p;
+    for (s32 i = 0; i < 6; i++) {
+        new (&items[i]) ItemId();
+    }
     return p;
 }
 extern "C" void* AbleShop_Destruct(void *p) {
-    __cxa_vec_cleanup(p, 6, 2, _ZN6ItemIdD1Ev);
+    ItemId *items = (ItemId *)p;
+    for (s32 i = 6 - 1; i >= 0; i--) {
+        items[i].~ItemId();
+    }
     return p;
 }
 extern "C" void AbleShop_Clear(S1 *s) {
@@ -1641,7 +1500,7 @@ extern "C" void AbleShop_UpdateDaily(S1 *s) {
     ((u32*)&t)[1] = 0;
     Clock_GetDateTime(&t);
     if (t.b2 < 6) DateTime_SubDays(&t, 1);
-    if (!_ZN11CommManager8isOnlineEv(gCommManager) && AbleShop_IsStockStale(s, &t)) {
+    if (!((CommManager *)gCommManager)->isOnline() && AbleShop_IsStockStale(s, &t)) {
         AbleShop_Restock(s, t.b5, t.b4, t.b3);
         AbleShop_SetStockDate(s, &t);
     }
@@ -1649,7 +1508,7 @@ extern "C" void AbleShop_UpdateDaily(S1 *s) {
 extern "C" void AbleShop_Restock(S1 *s, u32 a, u32 b, u32 c) {
     u32 x;
     AbleShop_Clear(s);
-    ((DateSeededRandomSource *)(&sShopRandom))->seed(a, b, c);
+    sShopRandom.seed(a, b, c);
     x = 0;
     AbleShop_StockUmbrella(s, &x);
     AbleShop_StockShirts(s, &x);
@@ -1671,11 +1530,11 @@ extern "C" void AbleShop_SetStockDate(S1 *s, void *p) {
     s->c = buf.b3;
     s->f = 0;
 }
-extern "C" u16* AbleShop_GetItem(S1 *s, u32 a, u32 c) {
-    return StockList_GetItem(a, s, s->arr, 6, c);
+extern "C" u16* AbleShop_GetItem(S1 *s, u32 a, u16 *c) {
+    return StockList_GetItem(a, (u16 *)s, (u8 *)s->arr, 6, c);
 }
-extern "C" s32 AbleShop_FindItem(S1 *s, u32 a) {
-    return StockList_FindItem(a, s, s->arr, 6);
+extern "C" s32 AbleShop_FindItem(S1 *s, u16 *key) {
+    return StockList_FindItem(key, (u16 *)s, (u8 *)s->arr, 6);
 }
 extern "C" u32 AbleShop_MarkSold(S1 *s, u32 a) {
     return StockList_MarkSold(a, 6, s->arr);
@@ -1716,14 +1575,6 @@ extern "C" {
 s32 FengShui_GetSouthTotal();
 }
 extern "C" {
-}
-extern "C" {
-PickedItem ItemPick_One(ItemPickSpec *q, u32 a, u32 b, u32 c, u32 d, u32 e);
-}
-extern "C" {
-u32 _ZN22DateSeededRandomSource6randomEj(void *p, u32 v);
-}
-extern "C" {
 u32 ItemInfo_GetFullHeadwearClass1dCount();
 }
 extern "C" {
@@ -1739,46 +1590,10 @@ extern "C" {
 void ReddLastSale_Clear(void *p);
 }
 extern "C" {
-void _ZN8SaveData9clearFlagEj(void *p, u32 n);
+
 }
 extern "C" {
-void _ZN8SaveData7setFlagEj(void *p, u32 n);
-}
-extern "C" {
-u32 _ZN8SaveData8testFlagEj(void *p, u32 n);
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
-}
-extern "C" {
-u32 _ZN6TownId15getTownRelationEv(void *p);
-}
-extern "C" {
-u32 _ZN11CommManager8isOnlineEv(u32 v);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-int _ZN10PlayerData6isUsedEv(void *p);
-}
-extern "C" {
-u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
-}
-extern "C" {
-}
-extern "C" {
-void Letter_ComposeFromMail(Letter *c, u8 *a, const char *s, const u32 *p, const u32 *q, void *r);
-}
-extern "C" {
-}
-extern "C" {
-void LetterDelivery_QueueOutgoing(Letter *c, u32 i);
-}
-extern "C" {
+
 }
 extern "C" {
 u32 TownBlockMap_Get();
@@ -1799,19 +1614,16 @@ extern "C" {
 void func_02135558(void *a, void *b, void *c);
 }
 extern "C" {
-void _ZN6ItemIdD1Ev();
-}
-extern "C" {
 u32 Item_IsFurniture(u16 *p);
 }
 extern "C" {
 u32 Item_GetFurnitureIndex(void *p);
 }
 extern "C" {
-s32 StockList_FindItem(u32 a, void *b, void *c, u32 d);
+s32 StockList_FindItem(u16 *key, u16 *arr, u8 *bits, u32 n);
 }
 extern "C" {
-void *StockList_GetItem(u32 a, void *b, void *c, u32 d, u32 e);
+u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 extern "C" {
 u32 StockList_MarkSold(u32 a, u32 b, void *c);
@@ -1829,16 +1641,13 @@ extern "C" {
 extern u8 data_021ed284[];
 }
 extern "C" {
-extern u8 sShopRandom[];
-}
-extern "C" {
 extern u32 gCommManager;
 }
 extern "C" {
-extern const u32 data_020e2e44;
+extern u32 data_020e2e44;
 }
 extern "C" {
-extern const u32 data_020e2e48;
+extern u32 data_020e2e48;
 }
 extern "C" {
 extern const char data_020e2e80[];
@@ -1880,14 +1689,14 @@ extern "C" {
 void NookPoints_Reset(NookPoints *p);
 }
 
-extern "C" void *ReddShop_GetItem(ReddShop *g, u32 a, u32 b);
+extern "C" u16 *ReddShop_GetItem(ReddShop *g, u32 a, u16 *b);
 
 
 
 extern "C" void AbleShop_StockHeadwear(void *a, void *b) {
     u32 x = ItemInfo_GetHatClass1dCount();
     u32 y = ItemInfo_GetFullHeadwearClass1dCount();
-    if (((DateSeededRandomSource *)(sShopRandom))->DateSeededRandomSource::random(x + y) < ItemInfo_GetHatClass1dCount()) {
+    if (sShopRandom.random(x + y) < ItemInfo_GetHatClass1dCount()) {
         StockList_AddFromPickList(a, b, 6, 0x1d, 1, 6, 1);
     } else {
         StockList_AddFromPickList(a, b, 8, 0x1d, 1, 6, 1);
@@ -1905,21 +1714,15 @@ ReddPasswordString::ReddPasswordString() {
     using namespace n2;
     clear();
 }
-namespace n2 {
-}
 
 
 ReddPasswordString::~ReddPasswordString() {
     using namespace n2;}
-namespace n2 {
-}
 
 
 u8 *ReddPasswordString::data() {
     using namespace n2;
-    return HOST_AT(this, 0x12, text[0], 0);
-}
-namespace n2 {
+    return text;
 }
 
 
@@ -1927,22 +1730,16 @@ u32 ReddPasswordString::capacity() {
     using namespace n2;
     return 0x21;
 }
-namespace n2 {
-}
 
 
 ReddPassword::ReddPassword() {
     using namespace n2;
     clear();
 }
-namespace n2 {
-}
 
 
 ReddPassword::~ReddPassword() {
     using namespace n2;}
-namespace n2 {
-}
 
 
 // ---- ReddPassword ----
@@ -1952,8 +1749,6 @@ void ReddPassword::clear() {
     slot = -1;
     clearAllResidentKnows();
     ((SaveData *)(gSaveData))->clearFlag(8);
-}
-namespace n2 {
 }
 
 
@@ -1984,8 +1779,6 @@ BOOL ReddPassword::pickPassword() {
     }
     return TRUE;
 }
-namespace n2 {
-}
 
 
 BOOL ReddPassword::dropPassword() {
@@ -1998,19 +1791,15 @@ BOOL ReddPassword::dropPassword() {
     ((SaveData *)(gSaveData))->clearFlag(8);
     return TRUE;
 }
-namespace n2 {
-}
 
 
 u32 ReddPassword::getPromptText(void *w) {
     using namespace n2;
     if (slot != -1) {
         u8 b = (slot & 0x1f) << 1;
-        return String_LoadResolveAltText(w, &b, "st_password");
+        return String_LoadResolveAltText((MsgString *)w, &b, "st_password");
     }
     return 0;
-}
-namespace n2 {
 }
 
 
@@ -2021,19 +1810,15 @@ u8 ReddPassword::getAnswerIndex() {
     }
     return 0;
 }
-namespace n2 {
-}
 
 
 u32 ReddPassword::getAnswerText(void *w) {
     using namespace n2;
     if (slot != -1) {
         u8 b = ((slot & 0x1f) << 1) + 1;
-        return String_LoadResolveAltText(w, &b, "st_password");
+        return String_LoadResolveAltText((MsgString *)w, &b, "st_password");
     }
     return 0;
-}
-namespace n2 {
 }
 
 
@@ -2046,8 +1831,6 @@ BOOL ReddPassword::needsLetter() {
     }
     return FALSE;
 }
-namespace n2 {
-}
 
 
 void ReddPassword::markLetterSent() {
@@ -2056,15 +1839,11 @@ void ReddPassword::markLetterSent() {
         ((SaveData *)(gSaveData))->setFlag(8);
     }
 }
-namespace n2 {
-}
 
 
 void ReddPassword::clearAllResidentKnows() {
     using namespace n2;
     flags = 0;
-}
-namespace n2 {
 }
 
 
@@ -2075,8 +1854,6 @@ BOOL ReddPassword::residentKnows(u32 i) {
     }
     return FALSE;
 }
-namespace n2 {
-}
 
 
 void ReddPassword::setResidentKnows(u32 i) {
@@ -2084,8 +1861,6 @@ void ReddPassword::setResidentKnows(u32 i) {
     if (slot != -1) {
         flags |= 1 << (i & 3);
     }
-}
-namespace n2 {
 }
 
 
@@ -2101,7 +1876,7 @@ extern "C" void ReddPassword_ForgetVisitor() {
 }
 
 extern "C" BOOL ReddPassword_VisitorKnows() {
-    if (_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
+    if (((TownId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getTownRelation() == 1) {
         return sReddVisitorKnowsPassword;
     }
     return FALSE;
@@ -2111,14 +1886,12 @@ extern "C" BOOL ReddPassword_VisitorKnows() {
 BOOL ReddPassword::setVisitorKnows() {
     using namespace n2;
     if (slot != -1) {
-        if (_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
+        if (((TownId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getTownRelation() == 1) {
             n2::sReddVisitorKnowsPassword = 1;
             return TRUE;
         }
     }
     return FALSE;
-}
-namespace n2 {
 }
 
 
@@ -2133,15 +1906,11 @@ u32 ReddPassword::countUnused() {
     }
     return n;
 }
-namespace n2 {
-}
 
 
 BOOL ReddPassword::isUsed(u32 i) {
     using namespace n2;
     return (bits & (1 << (i & 0x1f))) != 0;
-}
-namespace n2 {
 }
 
 
@@ -2149,28 +1918,20 @@ void ReddPassword::markUsed(u32 i) {
     using namespace n2;
     bits |= 1 << (i & 0x1f);
 }
-namespace n2 {
-}
 
 
 ReddShop::ReddShop() {
     using namespace n2;}
-namespace n2 {
-}
 
 
 ReddShop::~ReddShop() {
     using namespace n2;}
-namespace n2 {
-}
 
 
 void ReddShop::reset() {
     using namespace n2;
     clearStock();
     s.clear();
-}
-namespace n2 {
 }
 
 
@@ -2227,11 +1988,11 @@ extern "C" void ReddPassword_ForgetResident(u32 i) {
 extern "C" BOOL ReddPassword_CurrentPlayerKnows() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        void *q = _ZN10PlayerData11getPlayerIdEv(p);
-        if (((TownId *)(q))->getTownRelation() == 1) {
+        PlayerId *q = ((PlayerData *)p)->getPlayerId();
+        if (q->getTownRelation() == 1) {
             return ReddPassword_VisitorKnows();
         }
-        u8 v = PlayerDataArray_FindById(gSavePlayers, q) & 3;
+        u8 v = PlayerDataArray_FindById(gSavePlayers, (u16 *)q) & 3;
         return data_021ed2c0.getPassword()->residentKnows(v);
     }
     return FALSE;
@@ -2240,11 +2001,11 @@ extern "C" BOOL ReddPassword_CurrentPlayerKnows() {
 extern "C" BOOL ReddPassword_LearnCurrentPlayer() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        void *q = _ZN10PlayerData11getPlayerIdEv(p);
-        if (((TownId *)(q))->getTownRelation() == 1) {
+        PlayerId *q = ((PlayerData *)p)->getPlayerId();
+        if (q->getTownRelation() == 1) {
             return data_021ed2c0.getPassword()->setVisitorKnows();
         }
-        u8 v = PlayerDataArray_FindById(gSavePlayers, q) & 3;
+        u8 v = PlayerDataArray_FindById(gSavePlayers, (u16 *)q) & 3;
         data_021ed2c0.getPassword()->setResidentKnows(v);
         return TRUE;
     }
@@ -2255,7 +2016,7 @@ extern "C" BOOL ReddPassword_LearnCurrentPlayer() {
 extern "C" void ReddShop_SendPasswordLetters() {
     data_021ed2c0.getPassword()->pickPassword();
     if (data_021ed2c0.getPassword()->needsLetter()) {
-        if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+        if (((CommManager *)gCommManager)->isOnline() == 0) {
             Letter ctx;
             u8 r = Random_GlobalBelow(3);
             ReddPasswordString w;
@@ -2264,8 +2025,8 @@ extern "C" void ReddShop_SendPasswordLetters() {
             s32 i;
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(gSavePlayers, i);
-                if (p != NULL && _ZN10PlayerData6isUsedEv(p) != 0 && _ZN10PlayerData8testFlagEj(p, 12) != 0) {
-                    Letter_ComposeFromMail(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
+                if (p != NULL && ((PlayerData *)p)->isUsed() != 0 && ((PlayerData *)p)->testFlag(12) != 0) {
+                    Letter_ComposeFromMail((LetterView *)&ctx, &r, (void *)"sp_npc_foxmail", (u8 *)&data_020e2e44, (u8 *)&data_020e2e48, ((PlayerData *)p)->getPlayerId());
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
                         LetterDelivery_QueueOutgoing(&ctx, 0);
                     }
@@ -2287,19 +2048,19 @@ void ReddShop::restock() {
     a = FengShui_GetTotal() / 10 + 0x32;
     if (Random_GlobalBelow(100) < a) {
         ItemPickSpec q(0, 0x26);
-        arr[0].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+        ItemPick_One(&arr[0].id, &q, NULL, NULL, 0, 1, NULL);
     } else {
         ItemPickSpec q(0, 0x27);
-        arr[0].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+        ItemPick_One(&arr[0].id, &q, NULL, NULL, 0, 1, NULL);
     }
     b = (FengShui_GetEastTotal() + FengShui_GetSouthTotal()) / 10 + 0x32;
     for (i = 1; i < 3; i++) {
         if (Random_GlobalBelow(100) < b) {
             ItemPickSpec q(0, 5);
-            arr[i].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+            ItemPick_One(&arr[i].id, &q, NULL, NULL, 0, 1, NULL);
         } else {
             ItemPickSpec q(0, 0);
-            arr[i].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+            ItemPick_One(&arr[i].id, &q, NULL, NULL, 0, 1, NULL);
         }
     }
     buf[0] = 0xfff1;
@@ -2337,12 +2098,12 @@ extern "C" u32 ReddShop_MarkSoldItem(ReddShop *g, u16 *ptr) {
     return 0;
 }
 
-extern "C" void *ReddShop_GetItem(ReddShop *g, u32 a, u32 b) {
-    return StockList_GetItem(a, g, g->tbl, 3, b);
+extern "C" u16 *ReddShop_GetItem(ReddShop *g, u32 a, u16 *b) {
+    return StockList_GetItem(a, (u16 *)g, (u8 *)g->tbl, 3, b);
 }
 
-extern "C" s32 ReddShop_FindItem(ReddShop *g, u32 a) {
-    return StockList_FindItem(a, g, g->tbl, 3);
+extern "C" s32 ReddShop_FindItem(ReddShop *g, u16 *key) {
+    return StockList_FindItem(key, (u16 *)g, (u8 *)g->tbl, 3);
 }
 
 extern "C" NookPoints *NookPoints_Create(NookPoints *p) {
@@ -2386,17 +2147,7 @@ extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 u32 _s32_div_f(u32 a, u32 b);
-}
-extern "C" {
-}
-extern "C" {
 }
 extern "C" {
 void func_02135558(void (*f)(), void *p);
@@ -2438,10 +2189,6 @@ extern "C" {
 BOOL Scene_InMuseumRoom(void);
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 void func_0205553c(void *a, VecFx32 *scale);
 }
 extern "C" {
@@ -2469,19 +2216,7 @@ extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 extern u32 sCharaShadowModelPath;
-}
-extern "C" {
-extern s32 gCurrentHeap;
-}
-extern "C" {
-extern s32 gBgHeap;
 }
 extern "C" {
 extern u8 data_021f47e0[];
@@ -2490,18 +2225,7 @@ extern "C" {
 extern u8 data_021edf04[];
 }
 extern "C" {
-}
-extern "C" {
-extern u8 sCharaShadowModel[];
-}
-extern "C" {
-}
-extern "C" {
 extern s32 sObjShadowCoordShift;
-}
-extern "C" {
-}
-extern "C" {
 }
 extern "C" {
 extern u32 data_021edf3c;
@@ -2516,8 +2240,6 @@ extern "C" {
 extern u8 sObjShadowPlttNameFmt[];
 }
 extern "C" {
-}
-extern "C" {
 u8 *NNS_G3dGetTex(void *p);
 }
 extern "C" {
@@ -2525,10 +2247,6 @@ void Gfx3d_LoadTexAndPltt(void *p, s32 a);
 }
 extern "C" {
 u8 *Gfx3d_CopyTex(void *p, s32 heap);
-}
-extern "C" {
-}
-extern "C" {
 }
 extern "C" {
 u32 func_02057100(u8 *base, char *name);
@@ -2549,13 +2267,6 @@ extern "C" {
 extern VecFx32 gCameraLookAt;
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-extern u8 gViewMtx[];
-}
-extern "C" {
 BOOL Scene_InTown(void);
 }
 extern "C" {
@@ -2565,15 +2276,10 @@ extern "C" {
 void NookShop_SetVisitState(int v);
 }
 extern "C" {
-void *_ZN11CommManager8isOnlineEv(void *h);
-}
-extern "C" {
 void NookShop_ApplyRenovation(void);
 }
 extern "C" {
 void NookShop_UpdateDaily(void *p, int v);
-}
-extern "C" {
 }
 extern "C" {
 u32 ShopAckCounter_Add(void *p);
@@ -2591,22 +2297,10 @@ extern "C" {
 BOOL SceneId_IsNookShop(u32 v);
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 u32 Shop_IsPurchaseSynced(void);
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-u32 ReddShop_FindItem(void *p, u32 v);
+u32 ReddShop_FindItem(void *p, u16 *key);
 }
 extern "C" {
 u32 AbleShop_FindItem(void *p, u16 *v);
@@ -2618,50 +2312,25 @@ extern "C" {
 void Item_FromPlacedForm(void *a, void *b);
 }
 extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void _ZN6LetterC1Ev(void *p);
-}
-extern "C" {
-}
-extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
-}
-extern "C" {
 u32 NookShop_GetLevel(void *p);
 }
 extern "C" {
-void Letter_ComposeFromMail(void *o, void *a, const void *b, void *c, void *d, void *e);
-}
-extern "C" {
-void _ZN10LetterView10setPresentEtj(void *o, u32 a, u32 b);
+
 }
 extern "C" {
 u32 Item_GetMemberPrice(void *p);
 }
 extern "C" {
-BOOL LetterDelivery_QueueOutgoing(void *o, int z);
+
 }
 extern "C" {
 void NookShop_AddSales(void *p, u32 a, u32 b);
-}
-extern "C" {
-void *_ZN10PlayerData13getNookPointsEv(void *p);
 }
 extern "C" {
 u16 *NookPoints_GetValuePtr(void *p);
 }
 extern "C" {
 void NookPoints_AddForPurchase(u16 *p, u32 v);
-}
-extern "C" {
-void _ZN6LetterD1Ev(void *p);
-}
-extern "C" {
-}
-extern "C" {
 }
 extern "C" {
 u32 Scene_GetCurrent(void);
@@ -2673,14 +2342,7 @@ extern "C" {
 u32 NookShop_FindItem(void *p, u16 *v);
 }
 extern "C" {
-}
-extern "C" {
-u32 _ZN6TownId15getTownRelationEv(void *p);
-}
-extern "C" {
 u32 NookShop_SellSlot(void *p, u32 a, u32 b, u32 c);
-}
-extern "C" {
 }
 extern "C" {
 void Shop_RemoveSoldItemAt(u32 x, u32 y, u32 c, u32 e);
@@ -2692,10 +2354,10 @@ extern "C" {
 u32 Item_GetFurnitureIndex(u16 *p);
 }
 extern "C" {
-u16 *AbleShop_GetItem(void *p, u32 a, u32 b);
+u16 *AbleShop_GetItem(void *p, u32 a, u16 *b);
 }
 extern "C" {
-u16 *ReddShop_GetItem(void *p, u32 a, u32 b);
+u16 *ReddShop_GetItem(void *p, u32 a, u16 *b);
 }
 extern "C" {
 void AbleShop_MarkSoldItem(void *p, u16 *v);
@@ -2720,11 +2382,6 @@ void NookPoints_Add(u16 *p, u32 add);
 }
 extern "C" {
 void NookPoints_SendMemberLetters(void);
-}
-extern "C" {
-BOOL _ZN10PlayerData8testFlagEj(void *p, u32 i);
-}
-extern "C" {
 }
 extern "C" {
 extern void *gCommManager;
@@ -2757,32 +2414,22 @@ extern "C" {
 extern u16 kNookMemberGiftItems[];
 }
 extern "C" {
-extern u8 data_020e2e38[];
+extern u32 data_020e2e38;
 }
 extern "C" {
-extern u8 data_020e2e3c[];
+extern u32 data_020e2e3c;
 }
 extern "C" {
-extern u8 data_020e2e40[];
+extern u32 data_020e2e40;
 }
 extern "C" {
 extern u8 data_020e2e64[];
 }
 extern "C" {
-extern u8 data_020e2e34[];
+extern u32 data_020e2e34;
 }
 extern "C" {
 extern u8 data_020e2e74[];
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
 }
 
 static inline BOOL inRange2(const u16 &a, const u16 &b) {
@@ -2831,26 +2478,24 @@ static inline NNSG3dResDictPlttData *Unk_020ac500_PlttData(const NNSG3dResTex *t
 
 
 extern "C" void NookPoints_SendMemberLetters(void) {
-    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (!((CommManager *)gCommManager)->isOnline()) {
         void *r5 = PlayerData_GetCurrent();
         if (r5) {
-            u32 n = NookPoints_GetRank(*NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(r5)));
+            u32 n = NookPoints_GetRank(*NookPoints_GetValuePtr(((PlayerData *)r5)->getNookPoints()));
             if (n) {
                 u32 i;
                 int z = 0;
                 for (i = 0; i < n; i++) {
                     u32 j = i + 0x1c;
-                    if (i < 4 && !_ZN10PlayerData8testFlagEj(r5, j)) {
-                        u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
+                    if (i < 4 && !((PlayerData *)r5)->testFlag(j)) {
+                        Letter obj;
                         u8 ib;
-                        new (obj) Letter();
                         ib = i;
-                        Letter_ComposeFromMail(obj, &ib, "sp_npc_atm", data_020e2e34, data_020e2e38, _ZN10PlayerData11getPlayerIdEv(r5));
-                        ((LetterView *)(obj))->setPresent(kNookMemberGiftItems[i & 3], 1);
-                        if (LetterDelivery_QueueOutgoing(obj, z)) {
+                        Letter_ComposeFromMail((LetterView *)&obj, &ib, (void *)"sp_npc_atm", (u8 *)&data_020e2e34, (u8 *)&data_020e2e38, ((PlayerData *)r5)->getPlayerId());
+                        ((LetterView *)&obj)->setPresent(kNookMemberGiftItems[i & 3], 1);
+                        if (LetterDelivery_QueueOutgoing(&obj, z)) {
                             ((PlayerData *)(r5))->setFlag(j);
                         }
-                        ((Letter *)(obj))->Letter::~Letter();
                     }
                 }
             }
@@ -2906,12 +2551,12 @@ extern "C" u16 NookPoints_GetToNextRank(u16 *p) {
 extern "C" void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int e) {
     u16 cur;
     Pack p1;
-    u32 x, y;
+    s32 x, y;
     Pack p2;
     e = e;
     if (a == 0x3f) {
         NookShop_AddSales(data_021ed104, b, d);
-        if (_ZN11CommManager8isOnlineEv(gCommManager) && flag) {
+        if (((CommManager *)gCommManager)->isOnline() && flag) {
             p1.a = a;
             p1.b = b;
             p1.c = d;
@@ -2939,7 +2584,7 @@ extern "C" void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 fla
             case 0:
                 NookShop_SellSlot(data_021ed104, a, b, d);
                 if (flag) {
-                    NookPoints_AddForPurchase(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(PlayerData_GetCurrent())), b);
+                    NookPoints_AddForPurchase(NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints()), b);
                 }
                 if (isOne()) {
                     if (ShopStock_FindTileOfStock(&x, &y, a)) {
@@ -2959,7 +2604,7 @@ extern "C" void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 fla
                 Shop_RemoveSoldItem(&cur, c, e);
                 break;
             }
-            if (_ZN11CommManager8isOnlineEv(gCommManager) && flag) {
+            if (((CommManager *)gCommManager)->isOnline() && flag) {
                 p2.a = a;
                 p2.b = b;
                 p2.c = d;
@@ -2974,7 +2619,7 @@ extern "C" void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 fla
 }
 
 extern "C" void NookShop_RecordBuyback(int a) {
-    BOOL x = _ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
+    BOOL x = ((TownId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getTownRelation() == 0;
     if (a > 0x249f0) {
         a = 0x249f0;
     }
@@ -2999,7 +2644,7 @@ extern "C" void NookShop_BuyAt(u32 a, u32 b, u32 c, u32 d) {
         r = NookShop_FindItem(data_021ed104, v);
     }
     if (r != (u32)-1) {
-        BOOL x = _ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
+        BOOL x = ((TownId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getTownRelation() == 0;
         ShopAckCounter_Start(sShopAckCounter);
         Shop_RecordPurchase(r, c, d, x, 0, 1, 0);
     }
@@ -3010,7 +2655,7 @@ extern "C" u32 NookShop_IsPurchaseSynced(void) {
 }
 
 extern "C" BOOL NookShop_CanTakeCatalogOrder(void) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)gCommManager)->isOnline()) {
         return FALSE;
     }
     if (LetterDelivery_HasFreeOutgoingSlot()) {
@@ -3023,27 +2668,21 @@ extern "C" BOOL NookShop_SendCatalogOrder(void *name) {
     if (NookShop_CanTakeCatalogOrder()) {
         u16 id;
         u8 by;
-        u32 s1[9];
-        u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
         Item_FromPlacedForm(&id, name);
-        new (s1) ItemName((u16 *)(&id));
-        MailText_SetSlot(1, s1);
-        new (obj) Letter();
+        ItemName s1(&id);  // (the DS kept it in a 0x24-byte buffer: an ItemName is larger on 64-bit hosts)
+        MailText_SetSlot(1, &s1);
+        Letter obj;
         void *r4 = PlayerData_GetCurrent();
         u8 *d = data_021ed104;
         by = NookShop_GetLevel(d);
-        Letter_ComposeFromMail(obj, &by, "sp_npc_raccoon", data_020e2e40, data_020e2e3c, _ZN10PlayerData11getPlayerIdEv(r4));
-        ((LetterView *)(obj))->setPresent(id, 1);
+        Letter_ComposeFromMail((LetterView *)&obj, &by, (void *)"sp_npc_raccoon", (u8 *)&data_020e2e40, (u8 *)&data_020e2e3c, ((PlayerData *)r4)->getPlayerId());
+        ((LetterView *)&obj)->setPresent(id, 1);
         u32 r = Item_GetMemberPrice(&id);
-        if (LetterDelivery_QueueOutgoing(obj, 0)) {
+        if (LetterDelivery_QueueOutgoing(&obj, 0)) {
             NookShop_AddSales(d, r, 1);
-            NookPoints_AddForPurchase(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(PlayerData_GetCurrent())), r);
-            ((Letter *)(obj))->Letter::~Letter();
-            ((ItemName *)(s1))->ItemName::~ItemName();
+            NookPoints_AddForPurchase(NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints()), r);
             return TRUE;
         }
-        ((Letter *)(obj))->Letter::~Letter();
-        ((ItemName *)(s1))->ItemName::~ItemName();
     }
     return FALSE;
 }
@@ -3123,7 +2762,7 @@ extern "C" void NookShop_SetVisitState(int v) {
 extern "C" void NookShop_OnSceneLoad(void) {
     if (Scene_InTown()) {
         if (NookShop_GetVisitState() == 2) {
-            if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
+            if (!((CommManager *)gCommManager)->isOnline()) {
                 NookShop_ApplyRenovation();
                 NookShop_UpdateDaily(data_021ed104, 0);
             }

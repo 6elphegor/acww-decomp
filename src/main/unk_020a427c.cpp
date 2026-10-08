@@ -371,9 +371,9 @@ extern "C" void NetArea_SendStateA(s32 a) {
     NetArea_BuildStateA(a);
     CommManager *o = gCommManager;
     o->beginRecord();
-    u32 r6 = ((CommManager *)(o))->getAuxBufA();
-    u32 r2 = ((CommManager *)(o))->getAuxLenA();
-    o->writeRecord((u8 *)r6, r2);
+    u8 *r6 = o->getAuxBufA();
+    u32 r2 = o->getAuxLenA();
+    o->writeRecord(r6, r2);
     o->endRecord(0xf, a);
     ((CommManager *)(o))->clearAuxLenA();
 }
@@ -382,9 +382,9 @@ extern "C" void NetArea_SendStateB(s32 a) {
     NetArea_BuildStateB(a);
     CommManager *o = gCommManager;
     o->beginRecord();
-    u32 r6 = ((CommManager *)(o))->getAuxBufB();
-    u32 r2 = ((CommManager *)(o))->getAuxLenB();
-    o->writeRecord((u8 *)r6, r2);
+    u8 *r6 = o->getAuxBufB();
+    u32 r2 = o->getAuxLenB();
+    o->writeRecord(r6, r2);
     o->endRecord(0x10, a);
     ((CommManager *)(o))->clearAuxLenB();
 }

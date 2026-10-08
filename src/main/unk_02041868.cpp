@@ -50,8 +50,8 @@ s32 Game_IsIntroPeriod();
 s32 DateTime_DiffDays(Unk_02042104_Date *a, Unk_02042104_Date *b);
 void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
 void TownState_PickNextWeekDate(void *a, u8 *b);
-void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *d);
-void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
+void TownBbs_PostPelicanNotice(void *o, struct SaveData *save, Unk_02042104_Date *d);
+void TownBbs_PostSlogan(void *o, struct SaveData *save, Unk_02042104_Date *d);
 s32 EventSchedule_CollectDayAll(EventDayEntry *z, Unk_02042104_Date *d);
 void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
 void TownUpdateThread_Main(u8 *arg);
@@ -149,12 +149,12 @@ extern "C" void TownBbs_PostDays(void *o, u8 *base, s32 cnt, Unk_02042104_Date *
         a.c3 = p[0];
         if (DateTime_DiffDays(&b, &a) == 0) {
             MI_CpuCopy8(&a, &c, 8);
-            TownBbs_PostPelicanNotice(o, base, &c);
+            TownBbs_PostPelicanNotice(o, (struct SaveData *)base, &c);
             TownState_PickNextWeekDate(base + 0x15e54, p);
         }
         if (flag == 1) {
             MI_CpuCopy8(&b, &e, 8);
-            TownBbs_PostSlogan(o, base, &e);
+            TownBbs_PostSlogan(o, (struct SaveData *)base, &e);
         }
         if (f4 != 0) {
             TownBbs_PostEventsForDay(o, base, &b);

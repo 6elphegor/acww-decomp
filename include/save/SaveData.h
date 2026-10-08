@@ -33,8 +33,7 @@ struct SaveData {
     /* 0x00002 */ u8 townId[0xa];
     /* 0x0000c */ u8 players[0x8a30];
     /* 0x08a3c */ u8 villagers[0x38f4];
-    /* 0x0c330 */ u8 townMap[0x2210];
-    /* 0x0e540 */ u8 unk_e540[0x16];
+    /* 0x0c330 */ u8 townMap[0x2226]; // TownMap
     /* 0x0e556 */ u8 gulliverQuest[0x1];
     /* 0x0e557 */ u8 roostGuestRoll[0x1];
     /* 0x0e558 */ u8 house[0x1594];
@@ -59,7 +58,9 @@ struct SaveData {
     /* 0x15e20 */ u8 unk_15e20[0x4];
     /* 0x15e24 */ u8 unk_15e24[0x30];
     /* 0x15e54 */ u8 townState[0xc];
-    /* 0x15e60 */ u8 unk_15e60[0x18];
+    /* 0x15e60 */ u8 bbsPelicanUsed[0xa]; // the pelican notices posted (TownBbs_PostPelicanNotice)
+    /* 0x15e6a */ u8 bbsSloganUsed[0xb]; // the slogans posted (TownBbs_PostSlogan)
+    /* 0x15e75 */ u8 unk_15e75[0x3];
     /* 0x15e78 */ u8 townEvents[0x30];
     /* 0x15ea8 */ u8 townEventDate[0x14];
     /* 0x15ebc */ u8 unk_15ebc[0x4];
