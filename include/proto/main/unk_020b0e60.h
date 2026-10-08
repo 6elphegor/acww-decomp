@@ -8,6 +8,7 @@
 #include "town/BuildingInfo.h"
 struct Flags1;
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "types.h"
 class FieldObjectShapeQuery;
 #endif
@@ -187,7 +188,7 @@ u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c);
 u32 BuildingKey_Make(u32 a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_Building_GetDoorAnimParamAt
-u32 Building_GetDoorAnimParamAt(u32 a);
+u32 Building_GetDoorAnimParamAt(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_Field_HasExitedBuildingKey
 BOOL Field_HasExitedBuildingKey(void);

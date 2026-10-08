@@ -979,22 +979,22 @@ char *TreeAnimSet_GetAnimPath(TreeAnimSet *self, u32 a, u32 b);
 void FieldItemFx_SplashPosCallback(EffectModel *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartDigHole
-s32 FieldItemFx_StartDigHole(s32 type, s32 v, s32 w);
+s32 FieldItemFx_StartDigHole(s32 type, VecFx32 *v, s32 w);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartPitfallHole
-s32 FieldItemFx_StartPitfallHole(s32 type, s32 v);
+s32 FieldItemFx_StartPitfallHole(s32 type, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartFillHole
-s32 FieldItemFx_StartFillHole(s32 type, s32 v);
+s32 FieldItemFx_StartFillHole(s32 type, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartFillHoleWithItem
-s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b);
+s32 FieldItemFx_StartFillHoleWithItem(s32 a, VecFx32 *b);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartDigUpTree
-s32 FieldItemFx_StartDigUpTree(s32 a, s32 b, s32 c);
+s32 FieldItemFx_StartDigUpTree(s32 a, VecFx32 *b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartHoleShrink
-s32 FieldItemFx_StartHoleShrink(s32 a, s32 b);
+s32 FieldItemFx_StartHoleShrink(s32 a, VecFx32 *b);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartBalloonDrop
 s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n);
@@ -1003,7 +1003,7 @@ s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n);
 s32 FieldItemFx_FindLandingUnit(s32 *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartPitfallClose
-s32 FieldItemFx_StartPitfallClose(s32 a, s32 b);
+s32 FieldItemFx_StartPitfallClose(s32 a, VecFx32 *b);
 #endif
 }
 #ifndef PROTO_LOCAL_sTreeLeafFx

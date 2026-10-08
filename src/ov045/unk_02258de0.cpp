@@ -27,7 +27,6 @@
 #include "npc/VillagerId.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_02063904.h"
@@ -95,7 +94,6 @@ void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 Math_CountDownU8(void *p);
-void Effect_SetPosition(s32 id, void *pos, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gSaveData[];
 extern u8 *gCommManager;
@@ -332,14 +330,14 @@ BOOL SpNpcKatrina::updateAct() {
     }
     if (effectHandle == -1) {
         if (t == 0x21 && ((((u32)model.curFrame << 4) >> 16)) >= 0x12) {
-            effectHandle = Effect_Create(0x3d, HOST_AT(this, 0x478, jointPos[0].x, 0), 0, 0);
+            effectHandle = Effect_Create(0x3d, &jointPos[0], 0, 0);
             effectTimer = 0x16;
         }
     } else if (Math_CountDownU8(&effectTimer) == 0) {
         Effect_End(effectHandle);
         effectHandle = -1;
     } else {
-        Effect_SetPosition(effectHandle, HOST_AT(this, 0x478, jointPos[0].x, 0), 0, 0);
+        Effect_SetPosition(effectHandle, &jointPos[0], 0, 0);
     }
     BOOL r = FALSE;
     if (sSpNpcKatrinaActTable[act].exit) {

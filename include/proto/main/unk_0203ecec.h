@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "gfx/WorldCurve.h"
 #include "types.h"
 #endif
@@ -39,16 +40,16 @@ s32 Emotion_FindSlot(u32 id);
 u32 WorldCurve_AngleToDistance(u32 x);
 #endif
 #ifndef PROTO_LOCAL_WorldCurve_ToCurved
-s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in);
+s32 WorldCurve_ToCurved(VecFx32 *out, const VecFx32 *in);
 #endif
 #ifndef PROTO_LOCAL_WorldCurve_Apply
-s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in);
+s32 WorldCurve_Apply(VecFx32 *out, const VecFx32 *in);
 #endif
 #ifndef PROTO_LOCAL_WorldCurve_FromCurved
-s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in);
+s32 WorldCurve_FromCurved(VecFx32 *out, const VecFx32 *in);
 #endif
 #ifndef PROTO_LOCAL_WorldCurve_GetHorizonAngle
-s16 WorldCurve_GetHorizonAngle(WorldCurve *o);
+s16 WorldCurve_GetHorizonAngle(const VecFx32 *o);
 #endif
 #ifndef PROTO_LOCAL_WorldCurve_GetAngleScale
 s32 WorldCurve_GetAngleScale(void);
@@ -57,7 +58,7 @@ s32 WorldCurve_GetAngleScale(void);
 s32 WorldCurve_GetRadius(void);
 #endif
 #ifndef PROTO_LOCAL_WorldCurve_Update
-void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
+void WorldCurve_Update(WorldCurve *o, const VecFx32 *in);
 #endif
 }
 #ifndef PROTO_LOCAL_sWorldCurveZScale

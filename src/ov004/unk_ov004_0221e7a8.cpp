@@ -31,6 +31,7 @@
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_020514a4.h"
@@ -493,12 +494,12 @@ extern "C" s32 RoomObj_DeactivateSe(s32 a) {
     return _ZN12SndSeEmitter8callStopEv(a);
 }
 
-extern "C" void RoomObj_PlaySe(s32 a, s32 b) {
-    Snd_SeEmitterPlayOneShot(a, b, 0x7f, 0);
+extern "C" void RoomObj_PlaySe(void *a, s32 b) {
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)a, b, 0x7f, 0);
 }
 
-extern "C" void RoomObj_PlaySeHeld(s32 a, s32 b) {
-    Snd_SeEmitterPlayHeld(a, b, 0x7f, 0);
+extern "C" void RoomObj_PlaySeHeld(void *a, s32 b) {
+    Snd_SeEmitterPlayHeld((SndSeEmitter *)a, b, 0x7f, 0);
 }
 
 extern "C" s32 PlayerActor_TestLocalFlag0F(void) {
@@ -563,7 +564,8 @@ extern "C" s32 PlayerActor_LocalSetHeadwearHidden(u32 a) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_LocalRequestBedApproach(u32 *a, u32 *b, s16 *c, s32 d) {
+// e: passed by the callers (FtrBed), not used here
+extern "C" s32 PlayerActor_LocalRequestBedApproach(const s32 *a, const s32 *b, const s16 *c, s32 d, s32 e) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         Unk_ov004_02224a80_Limit k = Unk_ov004_02224a80_LIMIT_6;
@@ -587,7 +589,7 @@ extern "C" s32 PlayerActor_LocalRequestGetOutOfBed(u32 a, u32 b) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_LocalRequestSeatApproach(u32 *a, u32 *b, s16 *c, u8 *d) {
+extern "C" s32 PlayerActor_LocalRequestSeatApproach(const s32 *a, const s32 *b, const s16 *c, const u8 *d) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         Unk_ov004_02224a80_Limit k = Unk_ov004_02224a80_LIMIT_6;
@@ -617,7 +619,7 @@ extern "C" s32 PlayerActor_LocalRequestStandUp(s32 t) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_LocalRequestStorageOpen(u32 *a, u32 *b, u32 *c, s16 *d) {
+extern "C" s32 PlayerActor_LocalRequestStorageOpen(const s32 *a, const s32 *b, const s32 *c, const s16 *d) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         return PlayerActor_RequestStorageOpen(o, *a, *b, *c, *d, 6, -1);
@@ -625,7 +627,7 @@ extern "C" s32 PlayerActor_LocalRequestStorageOpen(u32 *a, u32 *b, u32 *c, s16 *
     return 0;
 }
 
-extern "C" s32 PlayerActor_LocalRequestStorageClose(u32 *p) {
+extern "C" s32 PlayerActor_LocalRequestStorageClose(const s32 *p) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         return PlayerActor_RequestStorageClose(o, *p, 6, -1);
@@ -870,7 +872,6 @@ s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, u32 a);
 void _ZN11PlayerActor12requestAct10Esji(Obj *o, u32 a, u32 b, s32 c);
 void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
@@ -1173,7 +1174,7 @@ extern "C" void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m) {
             d = 0x2000;
         }
         ang = o->rotY + 0x4000;
-        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &ang, &d);
+        PlayerActor_OffsetByAngle(&v, o, &o->position, &ang, &d);
         w.x = v.x;
         w.y = v.y;
         w.z = v.z;
@@ -1318,7 +1319,7 @@ extern "C" void PlayerActor_SetupBedRoll(Obj *o, Msg *m) {
         d = 0x2000;
     }
     ang = o->rotY + 0x4000;
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &ang, &d);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &ang, &d);
     s32 tx = v.x;
     w.x = tx;
     w.y = v.y;
@@ -1429,7 +1430,6 @@ void _ZN11PlayerActor13startAnimOnceEijt(Obj *o, s32 a, s32 b, s32 c);
 void _ZN11PlayerActor9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN11PlayerActor9setAngleYEPs(Obj *o, s16 *a);
 void PlayerActor_ApproachValue(void *p, s32 a, u32 b, u32 c, u32 d);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_StepTowardXZ(Obj *o, s32 a, s32 b);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 s32 Camera_SnapToFocus(V3 *v);
@@ -2512,7 +2512,6 @@ void _ZN11PlayerActor9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN11PlayerActor9setAngleYEPs(Obj *o, s16 *a);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN13AnimFrameCtrl5setupEihit(void *p, s32 a, s32 b, s32 c, u32 d);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 
 s32 PlayerActor_RequestFtrHold(Obj *o, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN13FtrContactSet7canPullEv(void *self);
@@ -2735,7 +2734,7 @@ extern "C" void PlayerActor_FtrPushMoveSetWork(Rec *r, s32 x, s32 z) {
 extern "C" void PlayerActor_SetupFtrPushMove(Obj *o) {
     V3 v;
     (o)->startAnimOnce(0x1f, 3, 0);
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
     PlayerActor_FtrPushMoveSetWork((Rec *)&o->actionWork, v.x, v.z);
 }
 
@@ -2782,7 +2781,7 @@ extern "C" void PlayerActor_FtrPullMoveSetWork(Rec *r, s32 x, s32 z) {
 extern "C" void PlayerActor_SetupFtrPullMove(Obj *o) {
     V3 v;
     (o)->startAnimOnce(0x20, 3, 0);
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, &sFtrPullDist);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, &sFtrPullDist);
     PlayerActor_FtrPullMoveSetWork((Rec *)&o->actionWork, v.x, v.z);
 }
 
@@ -3036,7 +3035,6 @@ s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
 s32 _ZN11PlayerActor13getInputAngleEv(Obj *o);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 
 s32 PlayerActor_RequestStandUpCheck(Obj *o, s32 a, s32 b, s32 c);
 
@@ -3088,7 +3086,7 @@ extern "C" s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
     ((PlayerActionRequest *)(&m))->assign(0x25, a, b);
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
     PlayerActor_SitDownFrontSetArgs((PlayerSitDownArgs *)m.unk_0c_b, v.x, v.z, (s16)(o->rotY + 0x8000));
     s32 r = (o)->pushRequest(&m);
     return r;
@@ -3187,7 +3185,7 @@ extern "C" s32 PlayerActor_RequestSitDownSide2(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
     ((PlayerActionRequest *)(&m))->assign(0x26, a, b);
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
     PlayerActor_SitDownSide2SetArgs((PlayerSitDownArgs *)m.unk_0c_b, v.x, v.z, (s16)(o->rotY + 0x4000));
     s32 r = (o)->pushRequest(&m);
     return r;
@@ -3286,7 +3284,7 @@ extern "C" s32 PlayerActor_RequestSitDownSide1(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
     ((PlayerActionRequest *)(&m))->assign(0x27, a, b);
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
     PlayerActor_SitDownSide1SetArgs((PlayerSitDownArgs *)m.unk_0c_b, v.x, v.z, (s16)(o->rotY - 0x4000));
     s32 r = (o)->pushRequest(&m);
     return r;
@@ -3513,7 +3511,6 @@ void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 void _ZN11PlayerActor14setSubColliderEjjj(Obj *o, V3 *v, s32 a, s32 b);
 void _ZN13ActorCollider6submitEv(void *p);
 void _ZN11PlayerActor9setAngleYEPs(Obj *o, s16 *a);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 
 s32 PlayerActor_RequestSit(Obj *o, s32 a, s32 b, s32 c);
 s32 PlayerActor_RequestStandUpSide2(Obj *o, s32 a, s32 b);
@@ -3636,7 +3633,7 @@ extern "C" void PlayerActor_SetupStandUpCheck(Obj *o, Msg *m) {
     s16 t;
     u8 idx = m->unk_0c_b[0];
     t = o->rotY - sSeatSideAngles[idx];
-    PlayerActor_OffsetByAngle(&pos, o, (V3 *)&o->position, &t, (s32 *)&sAct12Pos[3]);
+    PlayerActor_OffsetByAngle(&pos, o, &o->position, &t, (s32 *)&sAct12Pos[3]);
     tmp.x = pos.x;
     tmp.y = pos.y;
     tmp.z = pos.z;
@@ -3716,7 +3713,7 @@ extern "C" void PlayerActor_StandUpFrontSetWork(V3 *d, V3 *s) {
 extern "C" void PlayerActor_SetupStandUpFront(Obj *o) {
     V3 v;
     (o)->startAnimOnce(0x27, 0, 0);
-    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
+    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
     PlayerActor_StandUpFrontSetWork((V3 *)&o->actionWork, &v);
     if (Unk_ov004_022211ac_Flag()) {
         FtrMgr_PlaySeatSound2At((V3 *)&o->position);
@@ -4862,7 +4859,7 @@ extern "C" void PlayerActor_EndHaircutFinish(Obj *o) {
 extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
     (o)->advanceAnim();
     if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->bodyModel))->hasPassedFrame(10)) {
-        EffectSpl_CreateOneShot(0x60, &o->headTopPos, NULL, (u32 *)gEffectSplDefaultInitCbs);
+        EffectSpl_CreateOneShot(0x60, &o->headTopPos, NULL, gEffectSplDefaultInitCbs);
     }
     if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 0xb) {
         Rec *r = (Rec *)&o->actionWork;
@@ -5394,7 +5391,6 @@ s32 BlockMap_GetItemPtrAtPos(void *a, V3 *v, u32 b);
 s32 Item_IsNormalItem(s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 _ZN11PlayerActor18requestPickUpReachE17Unk_0200b750_Pairijs(Obj *o, Pair *p, s32 a, u32 b, s32 c);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 
 void PlayerActor_RoomWalkUpdateAnim(Obj *o);
 void PlayerActor_RoomWalkCheckEnd(Obj *o);
@@ -5654,7 +5650,7 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
     r6 = gSceneBlockMap;
     if (r5 == -2) {
         if (o->inputMode == 1) {
-            PlayerActor_OffsetByAngle(&tmp1, o, (V3 *)&o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
+            PlayerActor_OffsetByAngle(&tmp1, o, &o->position, &o->rotY, (s32 *)&sAct12Pos[3]);
             tgt.x = tmp1.x;
             tgt.y = tmp1.y;
             tgt.z = tmp1.z;
@@ -5689,7 +5685,7 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
     }
 second:
     if (o->inputMode == 1) {
-        PlayerActor_OffsetByAngle(&tmp2, o, (V3 *)&o->position, &o->rotY, &sRoomInteractDist);
+        PlayerActor_OffsetByAngle(&tmp2, o, &o->position, &o->rotY, &sRoomInteractDist);
         tgt.x = tmp2.x;
         tgt.y = tmp2.y;
         tgt.z = tmp2.z;

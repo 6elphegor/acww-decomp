@@ -305,7 +305,7 @@ extern "C" u32 WorldCurve_AngleToDistance(u32 x) {
 }
 #pragma thumb on
 
-extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
+extern "C" s32 WorldCurve_ToCurved(VecFx32 *out, const VecFx32 *in) {
     if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 base = in->y + 0x1f576;
         if (in->z <= (*(volatile s32 *)&gWorldCurve.z) - gWorldCurve.flatDistance) {
@@ -328,7 +328,7 @@ extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
     return 0;
 }
 
-extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
+extern "C" s32 WorldCurve_Apply(VecFx32 *out, const VecFx32 *in) {
     if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 base = in->y + 0x1f576;
         s32 ang = (FX_Div(in->z, sWorldCurveZScale) * 0x2999) << 4 >> 16;
@@ -344,7 +344,7 @@ extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
     return 0;
 }
 
-extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
+extern "C" s32 WorldCurve_FromCurved(VecFx32 *out, const VecFx32 *in) {
     if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 ang = Math_Atan2(in->z, in->y);
         out->x = in->x;
@@ -360,7 +360,7 @@ extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
     return 0;
 }
 
-extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o) {
+extern "C" s16 WorldCurve_GetHorizonAngle(const VecFx32 *o) {
     if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 a = func_01ffcb0c(o->z, o->z);
         s32 b = func_01ffcb0c(o->y, o->y);
@@ -388,7 +388,7 @@ WorldCurve::WorldCurve() {
 
 WorldCurve::~WorldCurve() {}
 
-extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
+extern "C" void WorldCurve_Update(WorldCurve *o, const VecFx32 *in) {
     o->x = in->x;
     o->y = in->y;
     o->z = in->z;

@@ -126,7 +126,7 @@ s32 BuildingActor_tryOpenDoorForExit(void *p);
 s32 BuildingActor_tryOpenDoorForEntry(void *p);
 s32 BuildingActor_openDoorForExit(void *p);
 s32 BuildingActor_openDoorForEntry(void *p);
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void FieldStructureHeap_Destroy(s32 a);
 s32 StrBSizeData_getSolidUnitCount(void *self);
@@ -406,7 +406,7 @@ u32 Field_GetDoorExitMode() { return sDoorExitMode; }
 
 void Field_SetDoorExitMode(u32 v) { sDoorExitMode = v; }
 
-s32 Building_OpenDoorForEntryAt(s32 a) {
+s32 Building_OpenDoorForEntryAt(VecFx32 *a) {
     void *r = Building_FindNearPos(a);
     if (r != 0) {
         return ((BuildingActor *)(r))->openDoorForEntry();
@@ -414,7 +414,7 @@ s32 Building_OpenDoorForEntryAt(s32 a) {
     return 0;
 }
 
-s32 Building_OpenDoorForExitAt(s32 a) {
+s32 Building_OpenDoorForExitAt(VecFx32 *a) {
     void *r = Building_FindNearPos(a);
     if (r != 0) {
         return ((BuildingActor *)(r))->openDoorForExit();
@@ -438,7 +438,7 @@ s32 VillagerHouse_TryOpenDoorForExit(s32 a) {
     return 0;
 }
 
-void *Building_FindNearPos(s32 a) {
+void *Building_FindNearPos(VecFx32 *a) {
     Unk_ov003_02218c60_Grid *g = gSceneBlockMap;
     s32 xy[2];
     if (g != 0) {

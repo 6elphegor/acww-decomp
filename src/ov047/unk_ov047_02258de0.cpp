@@ -32,7 +32,6 @@
 #include "save/SaveData.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
@@ -96,7 +95,6 @@ BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
 void TalkRequest_SetTargetDone(void *self);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void Effect_SetPosition(s32 h, void *b, void *c, void *d);
 s32 Clock_GetTimeOfDay();
 s32 Math_CountDownU16(void *p);
 s32 strncmp(const char *a, const char *b, u32 n);
@@ -595,9 +593,9 @@ BOOL SpNpcBlathers::setupAct02() {
 
 BOOL SpNpcBlathers::mainAct02() {
     if (effectHandle == -1) {
-        effectHandle = Effect_Create(0x3c, HOST_AT(this, 0x478, jointPos[0].x, 0), &rotY, 0);
+        effectHandle = Effect_Create(0x3c, &jointPos[0], &rotY, 0);
     } else {
-        Effect_SetPosition(effectHandle, HOST_AT(this, 0x478, jointPos[0].x, 0), &rotY, 0);
+        Effect_SetPosition(effectHandle, &jointPos[0], &rotY, 0);
     }
     return TRUE;
 }

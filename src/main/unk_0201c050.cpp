@@ -12633,14 +12633,14 @@ void VillagerMood::requestApply() {
 
 void VillagerMood::playMoodEffect(VillagerTalk *s, u32 a, u32 b) {
     if (effectsEnabled()) {
-        u32 v[3];
+        VecFx32 v;
         s16 h;
-        v[0] = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x478, jointPos[0].x, 0)));
-        v[1] = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x47c, jointPos[0].y, 0)));
-        v[2] = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x480, jointPos[0].z, 0)));
+        v.x = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x478, jointPos[0].x, 0)));
+        v.y = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x47c, jointPos[0].y, 0)));
+        v.z = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x480, jointPos[0].z, 0)));
         h = *(s16 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x8e, rotY, 0)));
-        Snd_SeEmitterPlayOneShot(this, b, 0x7f, 0);
-        Effect_Create(a, v, &h, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)pad_00, b, 0x7f, 0);
+        Effect_Create(a, &v, &h, 0);
     }
 }
 

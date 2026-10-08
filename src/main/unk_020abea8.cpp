@@ -14,7 +14,6 @@
 #include "gfx/ObjShadowStrip.h"
 #include "nitro/io_access.h"
 #include "gfx/G3dResAccess.h"
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
@@ -22,6 +21,7 @@
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/itcm/unk_01ff8ad4.h"
 #include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020abea8.h"
@@ -48,7 +48,6 @@ void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
 void MTX_Concat43(void *a, void *b, void *c);
 void VEC_Normalize(void *a, void *b);
 s32 Ground_GetDefaultY(s32 a);
-void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 Col SceneLights_GetRoomColor(void);
 RGB SceneLights_GetFlashColor(void);
 s32 SceneLights_GetLightParam(s32 a);

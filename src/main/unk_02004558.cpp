@@ -131,14 +131,8 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "snd/BgmManager.h"
 #include "sys/Heap.h"
 // gScreenTransition: its type (ScreenTransition) is local to src/main/unk_020411dc.cpp; only its first byte (state)
-// is read here. Footstep_GetSeAtPos: the definition (src/main/unk_020b0a80.cpp) takes the position as a u32.
+// is read here.
 #define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
-// WorldCurve_ToCurved / _FromCurved / _Apply: the definitions (src/main/unk_0203ecec.cpp) type their vectors as
-// WorldCurve * (the curvature parameters) instead of VecFx32 *.
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
@@ -199,10 +193,6 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/ov004/unk_ov004_02235fd0.h"
 extern "C" {
 extern u8 gScreenTransition;
-u32 Footstep_GetSeAtPos(VecFx32 *v);
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
-s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
-s32 WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 }
 
 
@@ -1409,7 +1399,6 @@ BOOL _ZN11PlayerActor14testActionFlagEj(void *, s32 id);
 void _ZN11PlayerActor9setAngleYEPs(void *, u16 *p);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32 a, u32 b, u32 c);
 u32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, PlayerActionRequest *p);
-VecFx32Ctor PlayerActor_OffsetByAngle(void *, VecFx32Ctor *a, s16 *b, void *c);
 BOOL PlayerActor_IsWaitingForSlots(void *);
 void _ZN11PlayerActor15clearActionFlagEj(void *, s32 id);
 BOOL _ZN11PlayerActor15getHeldToolKindEv(void *);
@@ -1480,7 +1469,6 @@ s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 s32 _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *p);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_GetTan(PlayerActor *p);
@@ -1523,7 +1511,6 @@ void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, VecFx32 *v);
@@ -1559,7 +1546,6 @@ void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p);
 void PlayerActor_SetLastPlayDate(PlayerActor *o, PlayerData *a, Unk_0200f17c_Date *d);
 s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
 s32 PlayerActor_CompareLastPlayDateNow(void *o);
-void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
@@ -1604,7 +1590,6 @@ s32 Item_GetFlowerAltOrdinal(u16 *);
 BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
-void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
 s32 func_01ffcb0c(s32, s32);
@@ -3431,7 +3416,7 @@ s32 PlayerActor::tryInteract() {
         saved.x = ((PlayerActor *)this)->targetPos.x;
         saved.y = ((PlayerActor *)this)->targetPos.y;
         saved.z = ((PlayerActor *)this)->targetPos.z;
-        PlayerActor_OffsetByAngle(&res, ((PlayerActor *)this), (u8 *)&((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, data_020d5e38);
+        PlayerActor_OffsetByAngle(&res, ((PlayerActor *)this), &((PlayerActor *)this)->position, &((PlayerActor *)this)->rotY, (const s32 *)data_020d5e38);
         ((PlayerActor *)this)->targetPos.x = res.x;
         ((PlayerActor *)this)->targetPos.y = res.y;
         ((PlayerActor *)this)->targetPos.z = res.z;
@@ -3834,16 +3819,16 @@ extern "C" void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b) {
 
 namespace nQ {
 extern "C" void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o) {
-    PlayerActor_OffsetByAngle(out, o, (VecFx32 *)&o->position, (u16 *)&o->rotY, &sPlayerFrontPointDist);
+    PlayerActor_OffsetByAngle(out, o, &o->position, &o->rotY, &sPlayerFrontPointDist);
 }
 }
 
 namespace nQ {
-extern "C" void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p) {
+extern "C" void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, const VecFx32 *in, const s16 *ang, const s32 *p) {
     s32 i;
     s32 s, c;
     *out = *in;
-    i = (*ang >> 4) * 2;
+    i = ((u16)*ang >> 4) * 2;
     s = func_01ffcb0c(data_02135f44[i + 1], *p);
     c = func_01ffcb0c(data_02135f44[i], *p);
     out->x += c;
@@ -4123,7 +4108,7 @@ BOOL PlayerActor::getHeldItemPos(VecFx32 *out) {
     out->x = a;
     out->y = ((PlayerActor *)this)->itemHandMtx.m[10];
     out->z = ((PlayerActor *)this)->itemHandMtx.m[11];
-    WorldCurve_FromCurved((VecFx32 *)out, (VecFx32 *)out);
+    WorldCurve_FromCurved(out, out);
     return TRUE;
 }
 
@@ -4217,7 +4202,7 @@ void PlayerActor::netUpdateBodyCollider() {
                         } else {
                             s.angle = s.angle - 0x4000;
                         }
-                        PlayerActor_OffsetByAngle(&out, ((PlayerActor *)this), &v2, (u16 *)&s.angle, (s32 *)&data_020d5e40);
+                        PlayerActor_OffsetByAngle(&out, ((PlayerActor *)this), &v2, &s.angle, (s32 *)&data_020d5e40);
                         VecFx32 *q3 = (VecFx32 *)&((PlayerActor *)this)->position;
                         *q3 = out;
                     }
@@ -4658,12 +4643,12 @@ void PlayerActor::startFirstAction(s32 *p) {
         ((NpcEmotionFx *)(&((PlayerActor *)this)->emotionFx))->reset();
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot) || (Scene_InUnk6To8() && r4 == 8)) {
             ((SndSeEmitter *)(&((PlayerActor *)this)->seEmitterLocal))->callInit();
-            ((PlayerActor *)this)->emotionFx.seEmitter = (s32)&((PlayerActor *)this)->seEmitterLocal;
+            ((PlayerActor *)this)->emotionFx.seEmitter = &((PlayerActor *)this)->seEmitterLocal;
             ((PlayerActor *)this)->emotionFx.useGlobalSe = 1;
             ((PlayerActor *)(this))->setActionFlag(0x19);
         } else {
             ((SndSeEmitter *)(&((PlayerActor *)this)->seEmitterRemote))->callInit();
-            ((PlayerActor *)this)->emotionFx.seEmitter = (s32)&((PlayerActor *)this)->seEmitterRemote;
+            ((PlayerActor *)this)->emotionFx.seEmitter = &((PlayerActor *)this)->seEmitterRemote;
         }
         ((PlayerActor *)(this))->setActionFlag(0xa);
     }
@@ -5240,7 +5225,7 @@ void Unk_02007694::skidDecelerate() {
     t = PlayerActor_DecelerateSkid(v, 0);
     ((PlayerActor *)(this))->setSpeed((u32 *)(void *)(&t));
     if (t == 0 && v != 0) {
-        Effect_Create(0x29, &((Unk_02007694 *)this)->position[0], &p->skidEffectAngle, 0);
+        Effect_Create(0x29, &((PlayerActor *)this)->position, &p->skidEffectAngle, 0);
     }
 }
 
@@ -5355,7 +5340,7 @@ void Unk_02007694::setupChangeClothes(PlayerActionRequest *item) {
     } else {
         ((PlayerActor *)(this))->playSe(0x76);
     }
-    Effect_PlayById2(0x61, &((Unk_02007694 *)this)->position[0], 0, 0);
+    Effect_PlayById2(0x61, &((PlayerActor *)this)->position, 0, 0);
 }
 
 void Unk_02007694::netChangeClothes(s16 a) {
@@ -5370,7 +5355,7 @@ void Unk_02007694::changeClothesEffects() {
     using namespace nL;
     ((PlayerActor *)(this))->advanceAnim();
     if (((AnimFrameCtrl *)(&((Unk_02007694 *)this)->bodyAnimCtrl[0]))->hasPassedFrame(0xd)) {
-        Effect_Create(0x22, &((Unk_02007694 *)this)->position[0], 0, 0);
+        Effect_Create(0x22, &((PlayerActor *)this)->position, 0, 0);
     } else if (((AnimFrameCtrl *)(&((Unk_02007694 *)this)->bodyAnimCtrl[0]))->hasPassedFrame(3)) {
         s16 x = ((Unk_02007694 *)this)->rotY;
         VecFx32 v;
@@ -8321,7 +8306,7 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
             t3.x = c.m[9];
             t3.y = ((PlayerActor *)(r6))->getJointGroundY(c.m[10]);
             t3.z = c.m[11];
-            WorldCurve_FromCurved((VecFx32 *)&r6->bodyPos, &t3);
+            WorldCurve_FromCurved(&r6->bodyPos, &t3);
         }
     }
     p->cbVecFunc[6] = (void *)PlayerActor_JointCbStart;

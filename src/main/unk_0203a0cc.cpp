@@ -20,14 +20,11 @@
 #define PROTO_LOCAL_Camera_GetLookAtPoint  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_GetHorizonAngle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gWorldCurve  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02060b9c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -198,7 +195,6 @@ extern const CameraPoseGridRow sCameraPoseGrid[3];
 extern s32 data_020c8cb8;
 extern Unk_021c47c4 *gSceneBlockMap;
 extern u8 gViewFrustum[];
-extern u32 gWorldCurve[];
 extern u32 data_021c3240;
 extern u16 data_021c323c;
 extern u8 data_020d9400[];
@@ -217,7 +213,6 @@ extern CameraSetup sCameraSavedSetup;
 extern s32 gCameraDistance;
 
 extern "C" {
-s32 WorldCurve_Apply(void *p, void *q);
 void MTX_MultVec43(void *in, void *m, void *out);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -242,7 +237,6 @@ s32 Scene_InMuseumRoom();
 void Camera_UpdateRoomFocus(void *self, s32 a);
 BOOL Vec_SafeNormalize(void *v);
 void Vec_RotateZ(void *v, s32 a);
-s32 WorldCurve_GetHorizonAngle(void *p);
 s32 FX_Inv(s32);
 s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
@@ -250,7 +244,6 @@ void MTX_Inverse43(void *a, void *b);
 void Vec_ScaleTo(void *out, void *a, s32 n);
 void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
-void WorldCurve_Update(void *a, void *b);
 void *Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(void *a);
 s32 NNS_G3dGetTex(void *p);
@@ -511,7 +504,7 @@ BOOL Camera::onExecute() {
     s32 v[4];
     updateMode();
     Camera_GetLookAtPoint(v, this);
-    WorldCurve_Update(gWorldCurve, v);
+    WorldCurve_Update(&gWorldCurve, (VecFx32 *)v);
     return TRUE;
 }
 
@@ -638,7 +631,7 @@ void Camera::setFovy(s32 a)
 
 void Camera::updateEyeCurveAngle()
 {
-    M(s16, 0x1ac) = WorldCurve_GetHorizonAngle(&M(u8, 0x194));
+    M(s16, 0x1ac) = WorldCurve_GetHorizonAngle(&M(VecFx32, 0x194));
 }
 
 extern "C" void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z)
@@ -836,8 +829,8 @@ void Camera::setLookAtOrbit(V3 *a, s32 r, s32 s, s32 z)
     M(s32, 0x168) = o.x;
     M(s32, 0x16c) = o.y;
     M(s32, 0x170) = o.z;
-    s32 ang = WorldCurve_Apply(&M(u8, 0x188), a);
-    WorldCurve_Apply(&M(u8, 0x194), getEye());
+    s32 ang = WorldCurve_Apply(&M(VecFx32, 0x188), a);
+    WorldCurve_Apply(&M(VecFx32, 0x194), getEye());
     M(s32, 0x1a0) = 0;
     M(s32, 0x1a4) = 0x1000;
     M(s32, 0x1a8) = 0;
@@ -856,8 +849,8 @@ void Camera::setLookAtOrbit(V3 *a, s32 r, s32 s, s32 z)
 void Camera::setLookAt(V3 *a, V3 *b)
 {
     V3 d;
-    s32 ang = WorldCurve_Apply(&M(u8, 0x188), a);
-    WorldCurve_Apply(&M(u8, 0x194), b);
+    s32 ang = WorldCurve_Apply(&M(VecFx32, 0x188), a);
+    WorldCurve_Apply(&M(VecFx32, 0x194), b);
     M(s32, 0x1a0) = 0;
     M(s32, 0x1a4) = 0x1000;
     M(s32, 0x1a8) = 0;

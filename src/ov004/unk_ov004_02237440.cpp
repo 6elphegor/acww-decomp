@@ -1911,7 +1911,7 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(MuseumInsect *self)
         }
         if ((s32)idx > self->alertThreshold) {
             self->moveState = 5;
-            EffectSpl_CreateOneShot(0x80, v, NULL, (u32 *)gEffectSplDefaultInitCbs);
+            EffectSpl_CreateOneShot(0x80, v, NULL, gEffectSplDefaultInitCbs);
             self->subCounter = (Random_GlobalBelow(11) + 5) * 20;
             self->yaw = Math_AngleXZ(&o.playerPos.x, &v->x);
             NNS_G3dMdlSetMdlAlpha(((PooledModel *)(self->pooledModel))->getModel(), 0, 31);
@@ -1969,7 +1969,7 @@ extern "C" void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p)
                 }
             }
         } else if (*q == 5) {
-            EffectSpl_CreateOneShot(0x80, &self->position, NULL, (u32 *)gEffectSplDefaultInitCbs);
+            EffectSpl_CreateOneShot(0x80, &self->position, NULL, gEffectSplDefaultInitCbs);
         }
     } else {
         self->moveState = 16;
@@ -4266,7 +4266,7 @@ void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
             if (id == 0x38) {
                 if (Model_GetJointWorldMtx(&e->model, &buf, 0)) {
                     q = *(V3_7690 *)&buf.m[9];
-                    WorldCurve_FromCurved((WorldCurve *)&p2, (WorldCurve *)&q);
+                    WorldCurve_FromCurved(&p2, &q);
                 }
                 mode = 0x42;
                 a = 0x1200;
@@ -4306,7 +4306,7 @@ void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
             t = *pos;
             ((SndEnvChannel *)(&e->sound))->callUpdateRelative((VecFx32 *)(&t));
         }
-        s32 r = WorldCurve_ToCurved((WorldCurve *)&out, (WorldCurve *)&e->position);
+        s32 r = WorldCurve_ToCurved(&out, &e->position);
         Mtx43_SetTranslate(&data_021f47e0, out.x, out.y, out.z);
         Mtx43_RotateX(&data_021f47e0, r + e->pitch);
         Mtx43_RotateY(&data_021f47e0, e->yaw);

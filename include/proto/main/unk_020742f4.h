@@ -829,7 +829,7 @@ BOOL CommSend_MemberInfo(u32 a);
 BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 maskw);
 #endif
 #ifndef PROTO_LOCAL_CommSend_TownChunk
-void CommSend_TownChunk(u8 *p, u32 v);
+BOOL CommSend_TownChunk(u8 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerTransfer
 BOOL CommSend_VillagerTransfer(u8 *p);
@@ -841,7 +841,7 @@ BOOL CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL CommSend_PlayerData(u8 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_CommSend_SyncVarChunk
-void CommSend_SyncVarChunk(u8 *p, u32 v);
+BOOL CommSend_SyncVarChunk(u8 *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_CommSend_BuiltPacket
 BOOL CommSend_BuiltPacket(u32 a);

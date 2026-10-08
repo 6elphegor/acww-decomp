@@ -73,15 +73,7 @@
 #define PROTO_LOCAL_MenuCtrl_BuildPocketMask  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Model_BindMatTexByIdx  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Model_BindMatTexByName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_LocalRequestBedApproach  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_LocalRequestSeatApproach  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_LocalRequestStorageClose  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_LocalRequestStorageOpen  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_BgmSyncReadBeat  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_BgmSyncUpdate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_MelodyBeatUpdate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_SeEmitterPlayOneShot  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov004/unk_ov004_02209f70.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -1202,7 +1194,6 @@ extern s16 data_02135f44[];
 
 BOOL _ZN9FtrSwitch10isChangingEv(void *p);
 u32 Item_MakeFurniture(u32 a, s32 b);
-void Snd_MelodyBeatUpdate(void *p, void *v);
 void FtrSync_RequestAct(void *p, s32 a, s32 b, s32 c);
 void _ZN9Character17detachTalkRequestEi(void *p, TalkMsgRequest *q);
 void _ZN9Character17attachTalkRequestEi(void *p, TalkMsgRequest *q);
@@ -1214,7 +1205,6 @@ void MTX_RotY33_(void *out, s32 a, s32 b);
 void MTX_Concat33(void *a, void *b, void *c);
 s32 Math_StepS32(s32 *p, s32 target, s32 step);
 s32 _ZN12G3dResAccess11findNodeIdxEi(u32 a, const char *s);
-void Snd_SeEmitterPlayOneShot(void *p, s32 a, s32 b, s32 c);
 u32 _ZN15PatternTexCache13getAbleTexKeyEi(void *a, u32 b);
 s32 _ZN15PatternTexCache21testAndClearAbleDirtyEi(void *a, u32 b);
 void Model_BindMatTexByIdx(u32 a, const char *s, u32 c, s32 d, s32 e);
@@ -1296,7 +1286,7 @@ BOOL FtrInstrument::updateAppearRemove() {
     v.x = centerPos[0];
     v.y = centerPos[1];
     v.z = centerPos[2];
-    p13::Snd_MelodyBeatUpdate(melodyBeat, &v);
+    Snd_MelodyBeatUpdate((Seq1 *)melodyBeat, &v);
     return TRUE;
 }
 
@@ -1570,7 +1560,7 @@ public:
     virtual BOOL updateActive();
 
     /* 0x840 */ s32 designSlot;
-    /* 0x844 */ u32 seEmitter[0x40 / 4];
+    /* 0x844 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (larger on 64-bit hosts)
     /* 0x884 */ u8 seEmitterReady;
 };
 
@@ -1585,7 +1575,7 @@ BOOL FtrDesignDisplay::updateActive() {
     if (seEmitterReady) {
         VecFx32 v = *(VecFx32 *)centerPos;
         if (p13::_ZN15PatternTexCache21testAndClearAbleDirtyEi(PatternTexCache_Get(), designSlot)) {
-            p13::Snd_SeEmitterPlayOneShot(&seEmitter, 0x50, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter, 0x50, 0x7f, 0);
         }
         ((SndSeEmitter *)(&seEmitter))->callUpdateRelative((VecFx32 *)(&v));
     }
@@ -2355,8 +2345,6 @@ s32 _ZN8FtrActor10playSound1Ev(void *);
 void *_ZN13FtrContactSet11findContactEPv(void *, void *);
 s32 _ZN10FtrContact7getSideEv(void *);
 
-s32 Snd_BgmSyncReadBeat(void *);
-s32 Snd_BgmSyncUpdate(void *, VecFx32 *);
 s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
 s32 _ZN14BlendAnimModel9playBlendEiiiitt(void *, s32, u16, s32, s32, s32, s32);
@@ -2398,7 +2386,7 @@ public:
     s32 updateSync(VecFx32 *v);
     void initSync(u32 v);
 
-    /* 0x840 */ u8 bgmSync[0x854 - 0x840];
+    /* 0x840 */ Rb bgmSync;
     /* 0x854 */ u8 bgmSyncActive;
     /* 0x855 */ u8 pad_855[3];
     /* 0x858 */ s32 frameCount;
@@ -2449,8 +2437,8 @@ BOOL FtrGyroid::enterFtrAct01() {
     p16::FieldPos_ToUnit(&a, &b, &position);
     if (isInitializing != 0) {
         if (spawnMode != 0 || p16::Scene_InVillagerHouse() != 0) {
-            Snd_BgmSyncSetState(bgmSync, 1);
-            u32 r5 = p16::Snd_BgmSyncReadBeat(bgmSync) & 0xf;
+            Snd_BgmSyncSetState(&bgmSync, 1);
+            u32 r5 = Snd_BgmSyncReadBeat() & 0xf;
             RoomFtrState_SetGyroidBeat(a, b, (u8)r5, p16::Scene_GetCurrent());
             actAid = r5;
             u16 *q = p16::_ZN10FtrAnimSet6getBcaEj(p16::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0);
@@ -2552,33 +2540,33 @@ u8 FtrGyroid::getActSwitchState(u32 idx) {
 
 s32 FtrGyroid::pollSyncStarted() {
     if (bgmSyncActive != 0) {
-        return Snd_BgmSyncPollStarted(bgmSync);
+        return Snd_BgmSyncPollStarted(&bgmSync);
     }
     return -1;
 }
 
 u32 FtrGyroid::readSyncBeat() {
     if (bgmSyncActive != 0) {
-        return p16::Snd_BgmSyncReadBeat(bgmSync);
+        return Snd_BgmSyncReadBeat();
     }
     return 0;
 }
 
 void FtrGyroid::setSyncStartBeat(u32 v) {
     if (bgmSyncActive != 0) {
-        Snd_BgmSyncSetStartBeat(bgmSync, v);
+        Snd_BgmSyncSetStartBeat(&bgmSync, v);
     }
 }
 
 void FtrGyroid::setSyncState(u32 v) {
     if (bgmSyncActive != 0) {
-        Snd_BgmSyncSetState(bgmSync, v);
+        Snd_BgmSyncSetState(&bgmSync, v);
     }
 }
 
 void FtrGyroid::releaseSync() {
     if (bgmSyncActive != 0) {
-        Snd_BgmSyncRelease(bgmSync);
+        Snd_BgmSyncRelease(&bgmSync);
         bgmSyncActive = 0;
     }
 }
@@ -2589,14 +2577,14 @@ s32 FtrGyroid::updateSync(VecFx32 *v) {
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
-        return p16::Snd_BgmSyncUpdate(bgmSync, &t);
+        return Snd_BgmSyncUpdate(&bgmSync, &t);
     }
     return -1;
 }
 
 void FtrGyroid::initSync(u32 v) {
     if (bgmSyncActive == 0) {
-        Snd_BgmSyncInit(bgmSync, v);
+        Snd_BgmSyncInit(&bgmSync, v);
         bgmSyncActive = 1;
     }
 }
@@ -3534,8 +3522,6 @@ void _ZN15FtrSoundEmitter4playEjj(void *, s32, void *);
 void *_ZN13FtrContactSet11findContactEPv(void *, void *);
 u16 _ZN10FtrContact12getPushAngleEv(void *);
 void *_ZN10FtrContact22getClampedContactPointEv(void *);
-BOOL PlayerActor_LocalRequestStorageClose(s32 *);
-BOOL PlayerActor_LocalRequestStorageOpen(s32 *, void *, void *, u16 *);
 void _ZN9Character17detachTalkRequestEi(void *, TalkMsgRequest *);
 void _ZN9Character17attachTalkRequestEi(void *, TalkMsgRequest *);
 void TalkRequest_SetTargetDone(void *);
@@ -4037,7 +4023,6 @@ s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN11CommManager8isOnlineEv(void *p);
-BOOL PlayerActor_LocalRequestBedApproach(Unk_ov004_0221076c_R *a, s32 *b, u16 *c, s16 d, s32 e);
 void *_ZN13FtrContactSet11findContactEPv(void *a, void *b);
 u16 _ZN10FtrContact12getPushAngleEv(void *o);
 Unk_ov004_0221076c_R *_ZN10FtrContact15getContactPointEv(void *o);
@@ -4283,10 +4268,10 @@ BOOL FtrBed::enterFtrAct03() {
 
 void FtrBed::execFtrAct02() {
     void *o = p21::_ZN13FtrContactSet11findContactEPv(FtrContactSet_GetInstance(), this);
-    u16 v = p21::_ZN10FtrContact12getPushAngleEv(o);
+    s16 v = p21::_ZN10FtrContact12getPushAngleEv(o);
     Unk_ov004_0221076c_R *a = p21::_ZN10FtrContact15getContactPointEv(o);
     Unk_ov004_0221076c_R *b = p21::_ZN10FtrContact15getContactPointEv(o);
-    if (p21::PlayerActor_LocalRequestBedApproach(a, &b->z, &v, (s16)(rotY - 0x4000), 1)) {
+    if (PlayerActor_LocalRequestBedApproach(&a->x, &b->z, &v, (s16)(rotY - 0x4000), 1)) {
         changeAct(3, 0xff);
     }
 }
@@ -4401,7 +4386,7 @@ void FtrBed::execFtrAct00() {
                                     v = p21::_ZN10FtrContact12getPushAngleEv(o);
                                     Unk_ov004_0221076c_R *ra = p21::_ZN10FtrContact15getContactPointEv(o);
                                     Unk_ov004_0221076c_R *rb = p21::_ZN10FtrContact15getContactPointEv(o);
-                                    p21::PlayerActor_LocalRequestBedApproach(ra, &rb->z, &v, (s16)(rotY - 0x4000), 0);
+                                    PlayerActor_LocalRequestBedApproach(&ra->x, &rb->z, (s16 *)&v, (s16)(rotY - 0x4000), 0);
                                     pushFrames = 0;
                                 }
                             }
@@ -4596,7 +4581,6 @@ BOOL _ZN9FtrSwitch10isChangingEv(void *p);
 BOOL _ZN9FtrSwitch4isOnEv(void *p);
 BOOL PlayerActor_GetPosIfInBed(void *out, u32 i);
 BOOL PlayerActor_GetPosIfSitting(void *out, u32 i);
-void PlayerActor_LocalRequestSeatApproach(void *a, void *b, void *c, void *d);
 void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(FtrActor *o, FtrTileList *l, s32 a, s32 b);
 BOOL FtrActor_StepAnims(FtrActor *o);
 BOOL _ZN8FtrActor10playSound0Ev(FtrActor *o);
@@ -4859,7 +4843,7 @@ BOOL FtrSeat::updateActive() {
                 }
                 if (p22::_ZN10FtrContact15getStepDistanceEv(r6) > 0x200) {
                     if (pushFrames >= 7) {
-                        p22::PlayerActor_LocalRequestSeatApproach(&pos, &pos.z, &rotY, &mode);
+                        PlayerActor_LocalRequestSeatApproach(&pos.x, &pos.z, &rotY, &mode);
                         pushFrames = 0;
                     }
                 }
@@ -6023,7 +6007,7 @@ void FtrStorage::execTalkAct0B() {
 BOOL FtrStorage::enterTalkAct0B() {
     s32 v = getStorageType();
     if (v != -1) {
-        if (p19::PlayerActor_LocalRequestStorageClose(&v)) {
+        if (PlayerActor_LocalRequestStorageClose(&v)) {
             return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
         }
         return FALSE;
@@ -6104,9 +6088,9 @@ BOOL FtrStorage::enterTalkAct07() {
     void *r4 = p19::_ZN13FtrContactSet11findContactEPv(FtrContactSet_GetInstance(), this);
     s32 v = getStorageType();
     if (v != -1) {
-        u16 h = p19::_ZN10FtrContact12getPushAngleEv(r4);
-        void *a = p19::_ZN10FtrContact22getClampedContactPointEv(r4);
-        p19::PlayerActor_LocalRequestStorageOpen(&v, a, (u8 *)p19::_ZN10FtrContact22getClampedContactPointEv(r4) + 8, &h);
+        s16 h = p19::_ZN10FtrContact12getPushAngleEv(r4);
+        VecFx32 *a = (VecFx32 *)p19::_ZN10FtrContact22getClampedContactPointEv(r4);
+        PlayerActor_LocalRequestStorageOpen(&v, &a->x, &((VecFx32 *)p19::_ZN10FtrContact22getClampedContactPointEv(r4))->z, &h);
         return TRUE;
     }
     return TRUE;
@@ -6129,7 +6113,7 @@ void FtrStorage::execTalkAct05() {
 BOOL FtrStorage::enterTalkAct05() {
     s32 v = getStorageType();
     if (v != -1) {
-        if (p19::PlayerActor_LocalRequestStorageClose(&v)) {
+        if (PlayerActor_LocalRequestStorageClose(&v)) {
             return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
         }
         return FALSE;
@@ -6173,9 +6157,9 @@ BOOL FtrStorage::enterTalkAct02() {
     void *r4 = p19::_ZN13FtrContactSet11findContactEPv(FtrContactSet_GetInstance(), this);
     s32 v = getStorageType();
     if (v != -1) {
-        u16 h = p19::_ZN10FtrContact12getPushAngleEv(r4);
-        void *a = p19::_ZN10FtrContact22getClampedContactPointEv(r4);
-        if (p19::PlayerActor_LocalRequestStorageOpen(&v, a, (u8 *)p19::_ZN10FtrContact22getClampedContactPointEv(r4) + 8, &h)) {
+        s16 h = p19::_ZN10FtrContact12getPushAngleEv(r4);
+        VecFx32 *a = (VecFx32 *)p19::_ZN10FtrContact22getClampedContactPointEv(r4);
+        if (PlayerActor_LocalRequestStorageOpen(&v, &a->x, &((VecFx32 *)p19::_ZN10FtrContact22getClampedContactPointEv(r4))->z, &h)) {
             return TRUE;
         }
         return FALSE;

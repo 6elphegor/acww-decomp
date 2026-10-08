@@ -10,8 +10,8 @@
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02085940.h"
 #include "proto/main/unk_02087e0c.h"
 #include "proto/main/unk_02087e70.h"
@@ -28,7 +28,6 @@ extern BugNetTarget *data_021ce63c;
 s32 Oam_AllocAffine(void *base, s32 *cnt, s32 *m);
 s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 WorldCurve_Apply(VecFx32 *out, void *in);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s64 Vec_DistSq(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);

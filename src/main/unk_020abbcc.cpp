@@ -8,7 +8,7 @@
 #include "gfx/CachedModel.h"
 #include "game/GroundInfo.h"
 #define PROTO_LOCAL_CharaShadow_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"
 
@@ -29,7 +29,6 @@ void Mtx43_RotateX(void *m, s32 a);
 s32 Ground_GetDefaultY(s32 a);
 void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL Scene_InMuseumRoom(void);
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 Col SceneLights_GetRoomColor(void);
 extern u8 gFieldSceneKind;
 extern u8 data_021f47e0[];

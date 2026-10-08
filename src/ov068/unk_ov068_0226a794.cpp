@@ -23,7 +23,6 @@
 #include "player/Unk_02007694.h"
 #include "save/SaveData.h"
 #include "snd/BuildingSeEmitter.h"
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_LocalRequestDoorEnter  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
@@ -213,7 +212,6 @@ u32 *TalkWindow_Get(s32);
 void func_02094030(void *);
 void Npc_GetName(void *, void *);
 void func_02094018(void *);
-void Effect_SetPosition(s32, void *, s32, s32);
 VecFx32Copy *PlayerActor_GetBodyPos(s32);
 void Vec_Sub(VecFx32Copy *, VecFx32Copy *, VecFx32Copy *);
 void Vec_Add(VecFx32Copy *, void *, VecFx32Copy *);

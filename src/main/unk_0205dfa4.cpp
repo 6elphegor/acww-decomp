@@ -23,8 +23,8 @@
 #include "sys/Heap.h"
 #define PROTO_LOCAL_FishBobber_Draw  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HeldItemModel_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205c91c.h"
 #include "proto/main/unk_0205dfa4.h"
@@ -111,7 +111,6 @@ void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
 
 void Model_GetJointWorldMtx(void *slot, Mtx43 *out, u32 a);
 void FishBobber_Draw(void *sub, Mtx43 *o, VecFx32 *v);
-void WorldCurve_FromCurved(VecFx32 *o, VecFx32 *v);
 u32 CharaClothTexPool_GetOwnRef(void);
 void _ZN9AnimModel11allocAnmObjEPv(void *slot, u32 a);
 void _ZN11CachedModel16allocJointRecordEPv(void *slot, u32 a);

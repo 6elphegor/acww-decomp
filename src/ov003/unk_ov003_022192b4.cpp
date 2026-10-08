@@ -39,12 +39,10 @@ typedef u32 FileBufSlot;
 #include "gfx/TwoLayerAnimModel.h"
 #include "player/PlayerData.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the definition (src/main/unk_0208f268.cpp) takes the position as s32 and the callbacks as u32 *
-#define PROTO_LOCAL_EffectSpl_CreateTracked  // declared below: the definition (src/main/unk_0208f268.cpp) takes the position as s32
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the definition takes WorldCurve * (src/main/unk_0203ecec.cpp), the calls pass vectors
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0208f268.h"
@@ -326,7 +324,7 @@ extern CommManager *gCommManager;
 BOOL CommManager_isOnline(CommManager *g);
 
 void *TownBlockMap_Get();
-void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *c);
 BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 PendingUnit_Find(void *p, s32 a);
@@ -400,14 +398,13 @@ extern void *gCommManager;
 extern Blk data_021f47e0;
 
 void *TownBlockMap_Get();
-void FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
+void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 BlockMap_getDigKind(void *m, s32 x, s32 y);
 s32 CommManager_isOnline(void *g);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
 void SndSeEmitter_callStop(void *);
 void SndSeEmitter_callUpdateRelative(void *, void *);
 void SndSeEmitter_callInit(void *);
-s32 WorldCurve_ToCurved(V3 *, V3 *);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 void Mtx43_Scale(Blk *m, s32 x, s32 y, s32 z);
@@ -501,9 +498,6 @@ extern "C" { s32 FieldItemFxTable_Start(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g,
 extern "C" { s32 FieldItemFxTable_StartForPlayer(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g, s32 h, s32 i); }
 extern "C" { s32 FieldItemFx_CancelAt(s32 idx, P2 *q); }
 extern "C" { s32 FieldItemFx_StartDrop(s32 a, u32 b, P2 p, V3 v); }
-extern "C" { s32 FieldItemFx_StartDigHole(s32 type, s32 v, s32 w); }
-extern "C" { s32 FieldItemFx_StartPitfallHole(s32 type, s32 v); }
-extern "C" { s32 FieldItemFx_StartFillHole(s32 type, s32 v); }
 }
 
 namespace ns_0221a4a0 {
@@ -547,7 +541,6 @@ extern s32 sItemPopScaleY[];
 void GroundInfo_initAtPos(GroundInfoBase *b, void *pos, s32 a, s32 c);
 void GroundInfo_Destruct(GroundInfoBase *b);
 void VEC_Add(void *a, void *b, void *out);
-s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
 void Sky_PlayBalloonDropSe(s32 a);
 void Sky_EndBalloonDrop(void);
 void PlayerActor_LocalRequestAct77From(void *p);
@@ -767,7 +760,6 @@ void PendingUnit_ApplyAtIfAid(VecXZ *p, s32 id, s32 a);
 void TreeAnim_Reset(TreeAnim *o);
 void CachedModel_release(void *p);
 void SndSeEmitter_callStop(void *p);
-s32 WorldCurve_ToCurved(VecFx32 *out, void *v);
 void Mtx43_SetTranslate(void *p, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *p, s32 a);
 void AnimModel_drawAnimated(void *p, s32 a);
@@ -827,7 +819,6 @@ void *func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02133150(s32 a, s32 b);
 u32 TownState_GetSeasonPeriod();
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-s32 EffectSpl_CreateTracked(s32, void *, s32, void *);
 s32 Scene_InTown();
 s32 BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 BlockMap_SetBuriedAtUnit(void *grid, s32 x, s32 y);
@@ -959,7 +950,6 @@ void FieldObj_DrawUnits(O *o, void *g);
 extern V3 gCameraLookAt;
 extern Blk data_021f47e0;
 void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
-s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 u16 *BlockMap_GetItemPtrAtPos(void *g, V3 *pos, s32 layer);
@@ -1147,7 +1137,6 @@ s32 Item_GetTreeStage(u16 *p);
 s32 Item_GetFruitTreeFruit(u16 *p);
 s32 Item_IsTreeGrown(u16 *p);
 s32 LitCedarList_Find(s32 a, s32 b);
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *p);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 s32 func_02133150(s32 a, s32 b);
@@ -1195,7 +1184,6 @@ extern Blk data_021f47e0;
 extern void *data_021f482c_v;
 extern u8 sFieldObjectModelHeapBuf[];
 
-s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 void Mtx43_RotateXYZ(Blk *m, s32 x, s32 y, s32 z);
@@ -5291,7 +5279,7 @@ Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p
             out2 = out;
             TreeLeafFx_SetRecord(r, v14, 0, p1, p2, &out2, p5);
             if (TreeLeafFx_GetParams(r) != 0) {
-                EffectSpl_CreateTracked(data_ov003_0222f298[v14], &out, 0, &q);
+                EffectSpl_CreateTracked(data_ov003_0222f298[v14], &out, 0, q.emitters);
             } else {
                 r->treeType = 3;
             }
@@ -5319,7 +5307,7 @@ Rec *TreeLeafFx_SpawnLeaves(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5)
         out2 = out;
         TreeLeafFx_SetRecord(r, v14, 1, p1, p2, &out2, p5);
         if (TreeLeafFx_GetParams(r) != 0) {
-            EffectSpl_CreateTracked(v18, &out, 0, &q);
+            EffectSpl_CreateTracked(v18, &out, 0, q.emitters);
         } else {
             r->treeType = 3;
         }
@@ -5701,7 +5689,7 @@ void TreeAnim_Update(TreeAnim *o) {
                 case 1:
                     if (o->animFrame.b >= 0x14) {
                         r5 = 1;
-                        Snd_SeEmitterPlayOneShot(o->seEmitter, 0x7ea, 0x7f, 0);
+                        Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x7ea, 0x7f, 0);
                     }
                     break;
                 }
@@ -5723,7 +5711,7 @@ void TreeAnim_Update(TreeAnim *o) {
                 case 1:
                     if (o->animFrame.b >= 0xd) {
                         r5 = 1;
-                        Snd_SeEmitterPlayOneShot(o->seEmitter, 0x7ea, 0x7f, 0);
+                        Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x7ea, 0x7f, 0);
                     }
                     break;
                 }
@@ -5822,7 +5810,7 @@ void TreeAnim_Draw(TreeAnim *o) {
     if (o->active == 1) {
         volatile Unk_ov003_0221b8bc_Col2 l;
         VecFx32 v;
-        s32 r = WorldCurve_ToCurved(&v, &o->posX);
+        s32 r = WorldCurve_ToCurved(&v, (VecFx32 *)&o->posX);
         Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
         Mtx43_RotateX(&data_021f47e0, r);
         o->baseMatrix = data_021f47e0;
@@ -5883,10 +5871,10 @@ void TreeAnim_Begin(TreeAnim *o, s32 flag) {
         case 0:
         case 2:
         case 3:
-            Snd_SeEmitterPlayOneShot(o->seEmitter, 0x7dc, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x7dc, 0x7f, 0);
             break;
         case 1:
-            Snd_SeEmitterPlayOneShot(o->seEmitter, 0x7d9, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x7d9, 0x7f, 0);
             break;
         }
     } else {
@@ -5895,10 +5883,10 @@ void TreeAnim_Begin(TreeAnim *o, s32 flag) {
         case 5:
         case 6:
         case 7:
-            Snd_SeEmitterPlayOneShot(o->seEmitter, 0x855, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x855, 0x7f, 0);
             break;
         default:
-            Snd_SeEmitterPlayOneShot(o->seEmitter, 0x7dd, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)o->seEmitter, 0x7dd, 0x7f, 0);
             break;
         }
     }
@@ -6354,7 +6342,7 @@ extern "C" void FieldItemFx_InitToss(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
         k = 0x75;
     }
     if (k >= 0) {
-        Snd_SeEmitterPlayOneShot(self->seEmitter, k, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, k, 0x7f, 0);
     }
 }
 }
@@ -6383,7 +6371,7 @@ extern "C" void FieldItemFx_UpdateToss(Unk_ov003_0221aed4_Fx *self)
             u32 b = t;
             if (b >= 0x1492 && a <= 0x14fd) f = TRUE;
             if (f) {
-                Snd_SeEmitterPlayOneShot(self->seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x70, 0x7f, 0);
             }
         } else {
             self->step = 2;
@@ -6541,7 +6529,7 @@ extern "C" void FieldItemFx_InitPop(Unk_ov003_0221a4a0 *self, Vec2 *p)
     if (z) {
         id = 0x7f0;
     }
-    Snd_SeEmitterPlayOneShot(self->seEmitter, id, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, id, 0x7f, 0);
 }
 }
 
@@ -6584,7 +6572,7 @@ extern "C" void FieldItemFx_InitTreeDrop(Unk_ov003_0221a4a0 *self, Vec2 *p, VecF
         if (c >= 0x1492 && a <= 0x14fd) {
             r = TRUE;
         }
-        Snd_SeEmitterPlayOneShot(self->seEmitter, r ? 0x74 : 0x7d6, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, r ? 0x74 : 0x7d6, 0x7f, 0);
     }
 }
 }
@@ -6613,7 +6601,7 @@ extern "C" void FieldItemFx_UpdateTreeDrop(Unk_ov003_0221a4a0 *self)
                 z = 1;
             }
             if (z) {
-                Snd_SeEmitterPlayOneShot(self->seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x70, 0x7f, 0);
             }
         } else {
             self->velocityX = 0;
@@ -6645,7 +6633,7 @@ extern "C" void FieldItemFx_InitTreeDropFloat(Unk_ov003_0221a4a0 *self, Vec2 *p,
     if (self->startArg != 0) {
         FieldItemFx_ReleasePending(self);
     }
-    Snd_SeEmitterPlayOneShot(self->seEmitter, 0x7eb, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7eb, 0x7f, 0);
 }
 }
 
@@ -6677,7 +6665,7 @@ extern "C" void FieldItemFx_InitBeeHiveDrop(Unk_ov003_0221a4a0 *self, s32 a, Vec
     self->scaleX = 0x1000;
     self->scaleY = 0x1000;
     self->scaleZ = 0x1000;
-    Snd_SeEmitterPlayOneShot(self->seEmitter, 0x7d6, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7d6, 0x7f, 0);
     FieldItemFx_ReleasePending(self);
     Town_SetBeesReleased();
 }
@@ -6791,7 +6779,7 @@ extern "C" void FieldItemFx_InitPlant(Unk_ov003_0221a4a0 *self, Vec2 *p, VecFx32
     if (c >= 0x1492 && a <= 0x14fd) {
         z = 1;
     }
-    Snd_SeEmitterPlayOneShot(self->seEmitter, z ? 0x74 : 0x75, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, z ? 0x74 : 0x75, 0x7f, 0);
 }
 }
 
@@ -6821,7 +6809,7 @@ extern "C" void FieldItemFx_UpdatePlant(Unk_ov003_0221a4a0 *self)
                 r = TRUE;
             }
             if (r) {
-                Snd_SeEmitterPlayOneShot(self->seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x70, 0x7f, 0);
             }
         }
         self->step = 1;
@@ -7292,7 +7280,7 @@ s32 FieldItemFx_StartDrop(s32 a, u32 b, P2 p, V3 v) {
 
 namespace ns_02219b84 {
 extern "C" {
-s32 FieldItemFx_StartDigHole(s32 type, s32 v, s32 w) {
+s32 FieldItemFx_StartDigHole(s32 type, VecFx32 *v, s32 w) {
     void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
@@ -7313,7 +7301,7 @@ s32 FieldItemFx_StartDigHole(s32 type, s32 v, s32 w) {
 
 namespace ns_02219b84 {
 extern "C" {
-s32 FieldItemFx_StartPitfallHole(s32 type, s32 v) {
+s32 FieldItemFx_StartPitfallHole(s32 type, VecFx32 *v) {
     void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
@@ -7334,7 +7322,7 @@ s32 FieldItemFx_StartPitfallHole(s32 type, s32 v) {
 
 namespace ns_02219b84 {
 extern "C" {
-s32 FieldItemFx_StartFillHole(s32 type, s32 v) {
+s32 FieldItemFx_StartFillHole(s32 type, VecFx32 *v) {
     void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
@@ -7354,7 +7342,7 @@ s32 FieldItemFx_StartFillHole(s32 type, s32 v) {
 }
 
 namespace ns_0221927c {
-extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b)
+extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, VecFx32 *b)
 {
     s32 p0 = 0;
     s32 p1 = 0;
@@ -7403,7 +7391,7 @@ extern "C" void FieldItemFx_StartBeeHiveDrop(s32 a, s32 v, P2 p, V3 q)
 }
 
 namespace ns_0221927c {
-extern "C" s32 FieldItemFx_StartDigUpTree(s32 a, s32 b, s32 c)
+extern "C" s32 FieldItemFx_StartDigUpTree(s32 a, VecFx32 *b, s32 c)
 {
     void *g = TownBlockMap_Get();
     if (g == NULL) {
@@ -7467,7 +7455,7 @@ extern "C" void FieldItemFx_StartPlant(s32 a, s32 b, P2 c, V3 d)
 }
 
 namespace ns_0221927c {
-extern "C" s32 FieldItemFx_StartHoleShrink(s32 a, s32 b)
+extern "C" s32 FieldItemFx_StartHoleShrink(s32 a, VecFx32 *b)
 {
     void *g = TownBlockMap_Get();
     if (g == NULL) {
@@ -7584,7 +7572,7 @@ extern "C" void FieldItemFx_StartStrikeEject(s32 a, s32 v, P2 p, V3 q)
 }
 
 namespace ns_0221927c {
-extern "C" s32 FieldItemFx_StartPitfallClose(s32 a, s32 b)
+extern "C" s32 FieldItemFx_StartPitfallClose(s32 a, VecFx32 *b)
 {
     void *g = TownBlockMap_Get();
     if (g == NULL) {

@@ -5,6 +5,7 @@
 #include "snd/SndSceneBase.h"
 #include "snd/BgmSceneFade.h"
 #include "snd/SndMgr.h"
+struct Rb;  // (snd/SndBgmViews.h)
 #define PROTO_LOCAL_SndMgr_BeginMenuDuck  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_EndMenuDuck  // declared below: the shared prototype conflicts with the calls here
@@ -770,9 +771,9 @@ void SndSeEmitter::callUpdateRelative(VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { ((SndSeEmitter *)(a))->playOneShot(b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShot(SndSeEmitter *a, u32 b, u32 c, u32 d) { a->playOneShot(b, c, d); }
 
-extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { ((SndSeEmitter *)(a))->playHeld(b, c, d); }
+extern "C" void Snd_SeEmitterPlayHeld(SndSeEmitter *a, u32 b, u32 c, u32 d) { a->playHeld(b, c, d); }
 
 void SndSeEmitter::callStop() { stop(); }
 
@@ -794,7 +795,7 @@ void SndSeEmitter::callUpdateRelativeAlt(VecFx32 *v) {
 
 extern "C" void Snd_SeEmitterPlayAlternate(void *e, u16 s) { ((SndSeEmitter *)(e))->playAlternate(s); }
 
-extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { ((SndSeEmitter *)(a))->playOneShot(b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShotAlt(SndSeEmitter *a, u32 b, u32 c, u32 d) { a->playOneShot(b, c, d); }
 
 void SndSeEmitter::callStopAlt() { stop(); }
 
@@ -926,7 +927,7 @@ extern "C" void Snd_BgmSyncInit(void *r, u16 v) { BgmSyncSnd_Init(r, v); }
 
 extern "C" void Snd_BgmSyncSetState(void *r, u32 mode) { BgmSyncSnd_SetState(r, mode); }
 
-extern "C" s32 Snd_BgmSyncUpdate(u32 a, VecFx32 *v) {
+extern "C" s32 Snd_BgmSyncUpdate(Rb *a, VecFx32 *v) {
     VecFx32 t;
     s32 r;
     if (v != NULL) {
@@ -948,7 +949,7 @@ extern "C" void Snd_BgmSyncRelease(void *r) { BgmSyncSnd_Release(r); }
 
 extern "C" void Snd_BgmSyncSetStartBeat(void *r, s8 v) { BgmSyncSnd_SetStartBeat(r, v); }
 
-extern "C" void Snd_BgmSyncReadBeat() { BgmSyncSnd_ReadBeat(); }
+extern "C" u32 Snd_BgmSyncReadBeat() { return BgmSyncSnd_ReadBeat(); }
 
 extern "C" s32 Snd_BgmSyncPollStarted(void *r) { return BgmSyncSnd_PollStarted(r); }
 
@@ -956,7 +957,7 @@ extern "C" void Snd_MelodyBeatInit(void *s) { MelodyBeat_Init(s); }
 
 extern "C" void Snd_MelodyBeatStart(void *s, u16 id) { MelodyBeat_Start(s, id); }
 
-extern "C" void Snd_MelodyBeatUpdate(u32 a, VecFx32 *v) {
+extern "C" void Snd_MelodyBeatUpdate(Seq1 *a, VecFx32 *v) {
     VecFx32 t;
     if (v != NULL) {
         if (gCamera != 0) {

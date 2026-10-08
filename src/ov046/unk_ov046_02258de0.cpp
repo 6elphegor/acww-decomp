@@ -32,7 +32,6 @@
 #include "net/CommManager.h"
 #include "npc/NpcLookAt.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -73,7 +72,6 @@ void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_SetTargetDone(void *self);
 s32 Clock_GetTimeOfDay();
 s32 Math_CountDownU16(void *p);
-void Effect_SetPosition(s32 h, void *b, void *c, void *d);
 
 }
 
@@ -331,9 +329,9 @@ BOOL SpNpcCeleste::mainAct02() {
         return TRUE;
     }
     if (effectHandle == -1) {
-        effectHandle = Effect_Create(0x3c, HOST_AT(this, 0x478, jointPos[0].x, 0), &rotY, 0);
+        effectHandle = Effect_Create(0x3c, &jointPos[0], &rotY, 0);
     } else {
-        Effect_SetPosition(effectHandle, HOST_AT(this, 0x478, jointPos[0].x, 0), &rotY, 0);
+        Effect_SetPosition(effectHandle, &jointPos[0], &rotY, 0);
     }
     return TRUE;
 }

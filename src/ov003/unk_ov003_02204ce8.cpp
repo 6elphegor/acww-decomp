@@ -34,6 +34,7 @@
 #include "ui/HudController.h"
 #define PROTO_LOCAL_sWateringPos  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203ecec.h"
@@ -222,7 +223,6 @@ void PlayerActor_RequestFirework(PlayerActor *self, s32 a, s32 b);
 void PlayerActor_RequestTreeShake(PlayerActor *self, s32 x, s32 z, s32 f, s32 a, s32 b, s32 c);
 void PlayerActor_RequestUmbrellaSpin(PlayerActor *self, s32 a, s32 b);
 void PlayerActor_RequestAct72(PlayerActor *self, s32 a, s32 b);
-void PlayerActor_OffsetByAngle(VecFx32 *out, PlayerActor *o, s32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontUnitCenter(VecFx32 *out, PlayerActor *o);
 BOOL Vec_Equal(s32 *a, s32 *b);
 s32 Math_Atan2(s32 a, s32 b);
@@ -288,7 +288,6 @@ s32 FieldAction_RequestPitfall(s32 a, V2 *p, s32 k);
 s32 Unk_02006d14_getFieldAnswerKind(Obj *o);
 void PlayerActor_clearRequests(Obj *o);
 s32 Flower_Trample(V2 *p);
-void PlayerActor_OffsetByAngle(V3 *out, Obj *o, V3 *pos, s16 *ang, void *arg);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void Tree_RequestShake(s32 a, V2 *p, s32 b);
 s32 Vec_Equal(V3 *a, V3 *b);
@@ -626,7 +625,6 @@ s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_02006d14_getHeldToolKind(Obj *o);
 s32 PlayerActor_StepTowardPose(Obj *o, s32 x, s32 z, s16 a);
 s32 Unk_02006d14_turnToCamera(Obj *o, u32 a);
-s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, s32 *arg);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
@@ -1621,7 +1619,6 @@ s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 void Unk_02006d14_turnToward(Obj *o, s32 a);
-s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
 void Character_detachTalkRequest(Obj *o, Sec *s);
@@ -1809,7 +1806,6 @@ s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 void Flower_PlayTrampleFx(void *p);
-s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
 s32 Ground_GetHeightAt(V3 *a, s32 *b, s32 c);
 void FieldPos_SnapToUnitCenter(V3 *a, V3 *b);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
@@ -3582,7 +3578,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         v5c.x = b.m[9];
         v5c.y = b.m[10];
         v5c.z = b.m[11];
-        WorldCurve_FromCurved((WorldCurve *)&v5c, (WorldCurve *)&v5c);
+        WorldCurve_FromCurved(&v5c, &v5c);
         Effect_SetPosition(*r7, (VecFx32 *)&v5c, NULL, NULL);
     } else if (*r7 == -1) {
         *r7 = -2;
@@ -3592,7 +3588,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
                 v5c.x = b.m[9];
                 v5c.y = b.m[10];
                 v5c.z = b.m[11];
-                WorldCurve_FromCurved((WorldCurve *)&v5c, (WorldCurve *)&v5c);
+                WorldCurve_FromCurved(&v5c, &v5c);
                 *r7 = Effect_CreateById(0x5a, &v5c, 0, 0);
             }
         }
@@ -3634,7 +3630,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         v5c.x = b.m[9];
         v5c.y = b.m[10];
         v5c.z = b.m[11];
-        WorldCurve_FromCurved((WorldCurve *)&v5c, (WorldCurve *)&v5c);
+        WorldCurve_FromCurved(&v5c, &v5c);
         i = Idx(&t.item, 0x12e8, 0x131f);
         FishDisplay_SetEntry(r6->fishDisplay, i, &v5c, &v68, 0, 0, 0, 1, 1, 0x1f);
     }
@@ -4213,7 +4209,7 @@ extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     s16 ang = *(s16 *)(p + 8);
     Unk_ov003_02210f7c_Ns::PlayerActor_DoorEnterSetWork(r, id, t.a, t.b, ang, k);
     PlayerActor_DoorEnterSetNetData(o->netData.bytes, id, t.a, t.b, ang);
-    Building_OpenDoorForEntryAt((V3 *)&o->position);
+    Building_OpenDoorForEntryAt(&o->position);
 }
 }
 
@@ -4404,7 +4400,7 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
         u = 0;
         o->drawStep = 1;
     } else {
-        u = (u8)Building_GetDoorAnimParamAt((u8 *)&o->position);
+        u = (u8)Building_GetDoorAnimParamAt(&o->position);
         if (u <= 1) {
             (o)->startAnimOnce(0x35, 0, 0);
         } else {
@@ -4415,7 +4411,7 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     rec->b = u;
     rec->a = t;
     PlayerActor_DoorExitSetNetData(o->netData.bytes, n, t);
-    return Building_OpenDoorForExitAt((u8 *)&o->position);
+    return Building_OpenDoorForExitAt(&o->position);
 }
 }
 
@@ -5043,7 +5039,7 @@ extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o) {
     (o)->advanceAnim();
     s32 *p = (s32 *)&o->actionWorkRaw[4]; // RecB.a
     V3 v(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
-    WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
+    WorldCurve_FromCurved(&v, &v);
     if (((RecB *)&o->actionWork)->a == -1) {
         *p = Effect_Create(0x33, &v, &o->rotY, 0);
     } else {
@@ -5256,7 +5252,7 @@ extern "C" void PlayerActor_MainAxeSwing(Obj *o) {
         PlayerActor_AxeSwingCheckEndRemote(o);
     }
     if (old != 0 && o->speed == 0) {
-        Effect_Create(0x2c, &o->position.x, &o->rotY, 0);
+        Effect_Create(0x2c, &o->position, &o->rotY, 0);
     }
 }
 }
@@ -5720,7 +5716,7 @@ extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
     (o)->playSe(0x83b);
     u32 x = r->b0;
     u32 y = r->b1;
-    u16 v;
+    s16 v;
     V3 pos;
     FieldPos_FromUnitCenter(&pos, r->b0, r->b1);
     v = o->rotY + 0x2000;
@@ -5877,7 +5873,7 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
             pos.x = t.m[9];
             pos.y = t.m[10];
             pos.z = t.m[11];
-            WorldCurve_FromCurved((WorldCurve *)&pos, (WorldCurve *)&pos);
+            WorldCurve_FromCurved(&pos, &pos);
             Effect_PlayById(0x8c, &pos, 0, 0);
             pos.x = t.m[9];
             pos.y = t.m[10];
@@ -5892,7 +5888,7 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
             pos.x = pos.x + out.x;
             pos.y = pos.y + out.y;
             pos.z = pos.z + out.z;
-            WorldCurve_FromCurved((WorldCurve *)&pos, (WorldCurve *)&pos);
+            WorldCurve_FromCurved(&pos, &pos);
             Effect_PlayById(0x8b, &pos, 0, 0);
         }
         (o)->turnToCamera(0x200);
@@ -6690,7 +6686,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         v60.x = b.m[9];
         v60.y = b.m[10];
         v60.z = b.m[11];
-        WorldCurve_FromCurved((WorldCurve *)&v60, (WorldCurve *)&v60);
+        WorldCurve_FromCurved(&v60, &v60);
         v6c.x = v60.x;
         v6c.y = v60.y;
         v6c.z = v60.z;
@@ -6916,7 +6912,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
     v[0] = 0xfff1;
     if (p5) {
         V3 a, b;
-        WorldCurve_FromCurved((WorldCurve *)&v48, (WorldCurve *)&v48);
+        WorldCurve_FromCurved(&v48, &v48);
         a.x = v48.x;
         a.y = v48.y;
         a.z = v48.z;
@@ -7136,7 +7132,7 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
     st.a = 0;
     st.b = 0;
     v0c = V3(o->toolHandMtx.m[9], o->toolHandMtx.m[10], o->toolHandMtx.m[11]);
-    WorldCurve_FromCurved((WorldCurve *)&v0c, (WorldCurve *)&v0c);
+    WorldCurve_FromCurved(&v0c, &v0c);
     v18.x = v0c.x;
     v18.y = v0c.y;
     v18.z = v0c.z;
@@ -7239,7 +7235,7 @@ extern "C" void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *out) {
     }
     Mtx43 l = o->heldItemJointMtx;
     V3 t(l.m[9], l.m[10], l.m[11]);
-    WorldCurve_FromCurved((WorldCurve *)&t, (WorldCurve *)&t);
+    WorldCurve_FromCurved(&t, &t);
     *out = t;
 }
 }
@@ -7262,7 +7258,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
             }
             return 2;
         }
-        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230adc);
+        PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, &data_ov003_02230adc);
         FieldPos_SnapToUnitCenter(&v, &v);
         if (Ground_GetHeightAt(&v, &t, 0x19) >= 0x400) {
             (o)->setActionFlag(9);
@@ -7281,7 +7277,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
         if (a[0] != 0) {
             V3 w;
             s32 u;
-            PlayerActor_OffsetByAngle(&w, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230ae0);
+            PlayerActor_OffsetByAngle(&w, o, &o->position, &o->rotY, &data_ov003_02230ae0);
             FieldPos_SnapToUnitCenter(&w, &w);
             if (Ground_GetHeightAt(&w, &u, 0x19) >= 0x400) {
                 if (PlayerActor_BugNetSwingCanReach(o, &w, b, c)) {
@@ -7357,7 +7353,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckWall(Obj *o) {
             HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
             return 1;
         }
-        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230ad4);
+        PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, &data_ov003_02230ad4);
         if (Ground_GetHeightAt(&v, &t, 0x19) >= 0x400) {
             (o)->setActionFlag(9);
             (o)->playSe(0x846);
@@ -7424,7 +7420,7 @@ extern "C" void PlayerActor_BugNetSwingUpdateRemote(Obj *o) {
         if (PlayerActor_BugNetSwingCheckWall(o) == 0) {
             V3 a(o->toolHandMtx.m[9], o->toolHandMtx.m[10], o->toolHandMtx.m[11]);
             V3 b, c, d, e;
-            WorldCurve_FromCurved((WorldCurve *)&a, (WorldCurve *)&a);
+            WorldCurve_FromCurved(&a, &a);
             b = a;
             PlayerActor_BugNetSwingGetSweep(o, &b, &c, &d);
             e = a;
@@ -7500,7 +7496,7 @@ extern "C" void PlayerActor_MainBugNetSwing(Obj *o) {
     }
     u8 *p = &o->actionWorkRaw[0];
     V3 a, b(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
-    WorldCurve_FromCurved((WorldCurve *)&a, (WorldCurve *)&b);
+    WorldCurve_FromCurved(&a, &b);
     *(V3 *)(p + 8) = a;
 }
 }
@@ -7670,7 +7666,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             vv.x = ((V3 *)((u8 *)&t + 0x24))->x;
             vv.y = ((V3 *)((u8 *)&t + 0x24))->y;
             vv.z = ((V3 *)((u8 *)&t + 0x24))->z;
-            WorldCurve_FromCurved((WorldCurve *)&vv, (WorldCurve *)&vv);
+            WorldCurve_FromCurved(&vv, &vv);
             rec->effect = Effect_Create(0x25, &vv, 0, 0);
         }
         HeldInsect_Start(b8, (u8)r7);
@@ -7699,7 +7695,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         w.x = ((V3 *)((u8 *)&t2 + 0x24))->x;
         w.y = ((V3 *)((u8 *)&t2 + 0x24))->y;
         w.z = ((V3 *)((u8 *)&t2 + 0x24))->z;
-        WorldCurve_FromCurved((WorldCurve *)&w, (WorldCurve *)&w);
+        WorldCurve_FromCurved(&w, &w);
         Effect_SetPosition(rec->effect, &w, 0, 0);
     }
     L2.scale[0] = 0;
@@ -8092,7 +8088,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         pos.x -= 0x400;
         pos.y += 0x1b34;
         pos.z += 0x1400;
-        WorldCurve_ToCurved((WorldCurve *)&pos, (WorldCurve *)&pos);
+        WorldCurve_ToCurved(&pos, &pos);
         cp.m[9] = pos.x;
         cp.m[10] = pos.y;
         cp.m[11] = pos.z;
@@ -8288,7 +8284,7 @@ extern "C" void PlayerActor_SetupShovelReady(Obj *o, Msg *r) {
                 d = 0;
             }
         }
-        PlayerActor_OffsetByAngle(&out, o, (V3 *)&o->position, &o->rotY, &acc);
+        PlayerActor_OffsetByAngle(&out, o, &o->position, &o->rotY, &acc);
         pos.x = out.x;
         pos.y = out.y;
         pos.z = out.z;
@@ -9145,7 +9141,7 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     o->shownItemPosX = x2;
     o->shownItemPosY = y2;
     o->shownItemPosZ = z2;
-    WorldCurve_FromCurved((WorldCurve *)&o->shownItemPosX, (WorldCurve *)&o->shownItemPosX);
+    WorldCurve_FromCurved((VecFx32 *)&o->shownItemPosX, (VecFx32 *)&o->shownItemPosX);
     o->shownItemScaleX = 0x1000;
     o->shownItemScaleY = 0x1000;
     o->shownItemScaleZ = 0x1000;
@@ -9274,7 +9270,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             o->shownItemPosX = x2;
             o->shownItemPosY = y2;
             o->shownItemPosZ = z2;
-            WorldCurve_FromCurved((WorldCurve *)&o->shownItemPosX, (WorldCurve *)&o->shownItemPosX);
+            WorldCurve_FromCurved((VecFx32 *)&o->shownItemPosX, (VecFx32 *)&o->shownItemPosX);
         }
     }
 }
@@ -9913,7 +9909,7 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
         v.x = o->heldItemJointMtx.m[9];
         v.y = y;
         v.z = z;
-        WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
+        WorldCurve_FromCurved(&v, &v);
         if (*h == -1) {
             *h = Effect_Create(0x26, &v, &o->rotY, 0);
             (o)->playSe(0x854);
@@ -10846,7 +10842,7 @@ extern "C" void PlayerActor_SetupFaint(Obj *o, Msg *m) {
     }
     TalkRequest_AddLeaveRoom();
     s32 *r4 = &o->actionWork;
-    *r4 = Effect_Create(0x34, (u8 *)&o->headTopPos, 0, 0);
+    *r4 = Effect_Create(0x34, &o->headTopPos, 0, 0);
     ((u8 *)r4)[4] = b;
     if (b >= 2) {
         Snd_PlaySe(0x51);
@@ -10873,7 +10869,7 @@ extern "C" void PlayerActor_FaintEffect(Obj *o) {
     (o)->advanceAnim();
     r4 = &o->actionWork;
     if (*r4 == -1) {
-        *r4 = Effect_Create(0x34, (u8 *)&o->headTopPos, 0, 0);
+        *r4 = Effect_Create(0x34, &o->headTopPos, 0, 0);
     } else {
         Effect_SetPosition(*r4, &o->headTopPos, NULL, NULL);
     }
@@ -11085,25 +11081,25 @@ extern "C" void PlayerActor_TripEffects(Obj *o) {
                     va.x = t;
                     va.y = o->toolHandMtx.m[10];
                     va.z = o->toolHandMtx.m[11];
-                    WorldCurve_FromCurved((WorldCurve *)&va, (WorldCurve *)&va);
+                    WorldCurve_FromCurved(&va, &va);
                 }
                 Effect_Create(0x32, &va, 0, 0);
                 PlayerActor_SetHoldableItem(0, o->sessionSlot);
             }
         }
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(7) != 0) {
-            PlayerActor_OffsetByAngle(&out1, o, (V3 *)&o->position, &hh[0], &data_ov003_02230ad0);
+            PlayerActor_OffsetByAngle(&out1, o, &o->position, (s16 *)&hh[0], &data_ov003_02230ad0);
             vb.x = out1.x;
             vb.y = out1.y;
             vb.z = out1.z;
-            Effect_Create(0x39, &vb, (s32)&hh[0], 0);
+            Effect_Create(0x39, &vb, (s16 *)&hh[0], 0);
         }
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(9) != 0) {
-            PlayerActor_OffsetByAngle(&out2, o, (V3 *)&o->position, &hh[0], &data_ov003_02230ad8);
+            PlayerActor_OffsetByAngle(&out2, o, &o->position, (s16 *)&hh[0], &data_ov003_02230ad8);
             vb.x = out2.x;
             vb.y = out2.y;
             vb.z = out2.z;
-            Effect_Create(0x37, &vb, (s32)&hh[0], 0);
+            Effect_Create(0x37, &vb, (s16 *)&hh[0], 0);
         }
     }
 }
@@ -11333,7 +11329,7 @@ extern "C" s32 PlayerActor_PitfallFallEffect(Obj *o) {
     s32 *p = (s32 *)&o->actionWorkRaw[8]; // TripPitfallWork.unk_08
     s32 z = 0;
     if (*p == -1) {
-        *p = Effect_Create(0x4c, (u8 *)&o->headTopPos, z, z);
+        *p = Effect_Create(0x4c, &o->headTopPos, NULL, NULL);
     } else {
         Effect_SetPosition(*p, &o->headTopPos, NULL, NULL);
     }
@@ -11488,7 +11484,7 @@ extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o) {
     s32 *r4b = &r6->f18;
     s32 z = 0;
     if (r6->f18 == -1) {
-        *r4b = Effect_Create(0x4c, (V3 *)(u8 *)&o->headTopPos, (void *)z, z);
+        *r4b = Effect_Create(0x4c, &o->headTopPos, NULL, NULL);
     } else {
         Effect_SetPosition(r6->f18, &o->headTopPos, NULL, NULL);
     }
@@ -11823,7 +11819,7 @@ extern "C" void PlayerActor_Act80Update(Obj *o) {
         v.x = tx;
         v.y = ty;
         v.z = tz;
-        WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
+        WorldCurve_FromCurved(&v, &v);
         Effect_Create(0x24, &v, &o->rotY, 0);
         (o)->setActionFlag(9);
     }
@@ -11917,7 +11913,7 @@ extern "C" void PlayerActor_FireworkUpdate(Obj *o) {
     s32 *r6 = &o->actionWork;
     u8 *r4 = (u8 *)r6 + 4;
     VecFx32Ctor v(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
-    WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
+    WorldCurve_FromCurved(&v, &v);
     s32 z = 0;
     s32 m1 = ~z;
     if (o->actionWork == m1) {
@@ -11941,9 +11937,9 @@ extern "C" void PlayerActor_FireworkUpdate(Obj *o) {
             }
             PlayerActor_GetHeldItem(&t[1], o);
             if (t[1] == 0x137f) {
-                *r6 = Effect_Create(0x35, (V3 *)&v, &o->rotY, z);
+                *r6 = Effect_Create(0x35, (V3 *)&v, &o->rotY, NULL);
             } else {
-                *r6 = Effect_Create(0x36, (V3 *)&v, &o->rotY, z);
+                *r6 = Effect_Create(0x36, (V3 *)&v, &o->rotY, NULL);
             }
         }
     } else {
@@ -12034,7 +12030,7 @@ extern "C" void PlayerActor_Act82Update(Obj *o) {
     if (f >= 0xe && f <= 0x18) {
         s32 *r4 = &o->actionWork;
         VecFx32Ctor v(o->toolHandMtx.m[9], o->toolHandMtx.m[10], o->toolHandMtx.m[11]);
-        WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
+        WorldCurve_FromCurved(&v, &v);
         if (o->actionWork == -1) {
             *r4 = Effect_Create(0x31, (V3 *)&v, &o->rotY, 0);
         } else {
@@ -12286,7 +12282,7 @@ extern "C" BOOL PlayerActor_FieldInteractFront(Obj *o, s32 *pa) {
     V3 v;
     if (o->inputMode == 1) {
         V3 t;
-        PlayerActor_OffsetByAngle(&t, o, (V3 *)&o->position, &o->rotY, sFieldFrontDist);
+        PlayerActor_OffsetByAngle(&t, o, &o->position, &o->rotY, (const s32 *)sFieldFrontDist);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;
@@ -12407,12 +12403,12 @@ extern "C" BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt) {
     } else {
         ang = Math_Atan2(tgt->x - o->position.x, tgt->z - o->position.z);
     }
-    PlayerActor_OffsetByAngle(&t0, o, (V3 *)&o->position, &ang, &sFishCastFarDist);
+    PlayerActor_OffsetByAngle(&t0, o, &o->position, &ang, &sFishCastFarDist);
     out->x = t0.x;
     out->y = t0.y;
     out->z = t0.z;
     BOOL r4 = Ground_IsWaterAt(out);
-    PlayerActor_OffsetByAngle(&t1, o, (V3 *)&o->position, &ang, &sFishCastNearDist);
+    PlayerActor_OffsetByAngle(&t1, o, &o->position, &ang, &sFishCastNearDist);
     if (r4 && Ground_IsWaterAt(&t1)) return TRUE;
     return FALSE;
 }
@@ -12424,7 +12420,7 @@ extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o) {
     V3 out;
     p.x = 0;
     p.y = 0;
-    PlayerActor_OffsetByAngle(&out, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230ae8);
+    PlayerActor_OffsetByAngle(&out, o, &o->position, &o->rotY, &data_ov003_02230ae8);
     FieldPos_ToUnit(&p.x, &p.y, &out);
     BOOL same = FALSE;
     s32 x = p.x;
@@ -12642,7 +12638,7 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
 namespace ns_02204d90 {
 extern "C" BOOL PlayerActor_FieldUseTool(PlayerActor *self) {
     s32 mode = (self)->getHeldToolKind();
-    u16 ang;
+    s16 ang;
     s32 xy[2];
     struct {
         StackPad12 pad;
@@ -12774,7 +12770,7 @@ after_tile:
         switch (mode) {
         case 1: {
             ang = Math_Atan2(self->targetPos.x - self->bodyPos.x, self->targetPos.z - self->bodyPos.z);
-            PlayerActor_OffsetByAngle(&l.t, self, &self->position.x, &ang, sFieldFrontDist);
+            PlayerActor_OffsetByAngle(&l.t, self, &self->position, &ang, sFieldFrontDist);
             if ((self)->isPosInReach(&l.t.x, mode)) {
                 s32 *pa = &self->targetPos.x;
                 s32 *pb = &self->targetPos.y;
@@ -12925,7 +12921,7 @@ extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a) {
     }
     if (self->inputMode == 1) {
         VecFx32 t;
-        PlayerActor_OffsetByAngle(&t, self, &self->position.x, (u16 *)&self->rotY, &data_ov003_02230af0);
+        PlayerActor_OffsetByAngle(&t, self, &self->position, &self->rotY, &data_ov003_02230af0);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;

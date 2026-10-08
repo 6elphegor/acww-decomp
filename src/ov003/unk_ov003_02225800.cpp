@@ -23,6 +23,9 @@
 #include "game/StrBSizeData.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_0208f268.h"
+#include "proto/main/unk_02090268.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -389,7 +392,6 @@ extern u8 sTrashFlySpawnEnabled;
 BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 s32 PooledModel_getModel(void *p);
 s32 NNS_G3dMdlGetMdlAlpha(s32 a, s32 b);
-void WorldCurve_FromCurved(void *dst, void *src);
 s32 func_01ffcb0c(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
@@ -473,8 +475,6 @@ extern CommManager *gCommManager;
 extern Blk data_021f47e0;
 extern s16 data_02135f44[];
 s32 InsectPool_Draw(Obj *self, void *a, s32 n);
-s32 WorldCurve_ToCurved(V3 *out, void *in);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 Mtx43_RotateY(void *m, s32 a);
 s32 Mtx43_RotateZ(void *m, s32 a);
@@ -482,7 +482,6 @@ s32 Mtx43_RotateX(void *m, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
-s32 Effect_Create(s32 a, V3 *v, s32 b, u16 *c);
 s32 Effect_SetPosition(s32 h, V3 *v, s32 a, u16 *c);
 s32 Effect_End(s32 h);
 void *PooledModel_getModel(void *p);
@@ -1326,7 +1325,6 @@ typedef Insect Rec;
 
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 gEffectSplDefaultInitCbs[];
 BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 BOOL Ground_GetDigKind(s32 x, s32 y);
@@ -1342,7 +1340,6 @@ void TownJunkInsects_Refresh();
 void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void EffectSpl_CreateOneShot(u32 a, void *b, u32 c, void *d);
 void Insect_Despawn(Rec *e);
 void Crawler_Wander(Rec *o);
 BOOL Insect_IsAtWateringPoint(void *p);
@@ -1677,7 +1674,6 @@ s32 func_01ffcb0c(s32 a, s32 b);
 Unk_02095204_Obj *PlayerActor_GetActor(u32 n);
 s32 SndEnvChannel_callRequest(void *p, s32 v);
 s32 SndEnvChannel_callRequestSustained(void *p, s32 v);
-s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 s32 Flower_GetColor(s32 a);
 s32 Flower_GetSpecies(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -9851,7 +9847,7 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
         Blk m2 = m;
         V3 vin;
         V3 vout;
-        u16 arr[2];
+        s16 arr[2];
         vin.y = 0;
         vin.x = 0;
         vin.z = func_01ffcb0c(o->scale.x, -0x333);

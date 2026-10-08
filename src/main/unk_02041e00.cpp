@@ -25,7 +25,6 @@
 #include "save/MuseumData.h"
 #include "save/SaveRecord4.h"
 #include "talk/MsgString9B.h"
-#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ItemDrop_StartToUnit  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_LostAndFound_AddDailyItems  // declared below: the shared prototype conflicts with the calls here
@@ -33,7 +32,6 @@
 #define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_RecycleBin_AdvanceDays  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gEffectSplDefaultInitCbs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/main/unk_02002b1c.h"
@@ -48,6 +46,7 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02085940.h"
+#include "proto/main/unk_0208f268.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
@@ -547,9 +546,8 @@ namespace nE {
 extern "C" {
 
 extern CommManager *gCommManager;
-extern u8 gEffectSplDefaultInitCbs[];
-extern u8 data_020da2a4[];
-extern u8 data_020da2a8[];
+extern void (*data_020da2a4[1])(EffectSplEmitter *);
+extern void (*data_020da2a8[1])(EffectSplEmitter *);
 s32 Flower_GetSpecies(u16 *a);
 s32 Flower_GetColor(u16 *a);
 void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, VecFx32 *v, s16 e);
@@ -560,7 +558,6 @@ void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Item_IsFlower(u16 *p);
 s32 Scene_GetCurrent(void);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
 void Flower_TrampleAt(VecXZ *p, s32 f);
 void Flower_TrampleTile(void *m, VecXZ *p, s32 f);
 void Flower_SpawnPetalFx(u16 *a, VecXZ *p, s16 c, s32 d);
@@ -1509,8 +1506,8 @@ void TownEval_PickAdvice(TownEvalAdvice *out, TownEvalAcrePos *in, TownEvalAcre 
 
 namespace nZ {
 extern "C" {
-void FlowerFx_InitBySpecies(void);
-void FlowerFx_InitByColor(void);
+void FlowerFx_InitBySpecies(EffectSplEmitter *p);
+void FlowerFx_InitByColor(EffectSplEmitter *p);
 extern const u32 data_020c90e4[1];
 extern const u32 data_020c90e8[1];
 extern const u32 data_020c90ec[1];
@@ -1677,8 +1674,8 @@ extern const u32 sFlowerParchChanceExtraDay[27];
 extern const u32 sBbsEventMsgs[30];
 extern const u32 sDropUnitOrder[72];
 extern u8 data_020da2a0[4];
-extern void * data_020da2a4[1];
-extern void * data_020da2a8[1];
+extern void (*data_020da2a4[1])(EffectSplEmitter *);
+extern void (*data_020da2a8[1])(EffectSplEmitter *);
 extern void * data_020da2ac[7];
 extern void * data_020da2c8[7];
 extern void * data_020da2e4[7];
@@ -2076,8 +2073,8 @@ const u32 data_020c94a8[4] = {
 const u32 data_020c916c[2] = {
     0x00000064, 0x00000007,
 };
-void * data_020da2a8[1] = {
-    (void *)FlowerFx_InitByColor,
+void (*data_020da2a8[1])(EffectSplEmitter *) = {
+    FlowerFx_InitByColor,
 };
 const u32 sDropUnitOrder[72] = {
     0x00000000, 0x00000008, 0x00000006, 0x00000007, 0x00000004, 0x00000005, 0x00000002, 0x00000003,
@@ -2149,8 +2146,8 @@ const u32 data_020c92e8[4] = {
 const u32 data_020c970c[6] = {
     0x00000023, 0x0000000d, 0x00000023, 0x0000000e, 0x0000001e, 0x00000010,
 };
-void * data_020da2a4[1] = {
-    (void *)FlowerFx_InitBySpecies,
+void (*data_020da2a4[1])(EffectSplEmitter *) = {
+    FlowerFx_InitBySpecies,
 };
 const u32 data_020c92b8[4] = {
     0x00000032, 0x00000009, 0x00000032, 0x0000000b,

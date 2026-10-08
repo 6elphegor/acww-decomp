@@ -15,8 +15,8 @@
 #include "gfx/TwoLayerAnimModel.h"
 #define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0204f2a4.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
@@ -65,7 +65,6 @@ void *_ZN9ModelSlot7getHeapEv(void *);
 s32 func_021065dc(void *p);
 s32 func_021065f8(s32, s32);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
-s32 WorldCurve_ToCurved(void *, void *);
 void Mtx43_SetTranslate(void *, s32, s32, s32);
 void Mtx43_RotateX(void *, s32);
 void Mtx43_RotateXYZ(void *, s32, s32, s32);
@@ -290,7 +289,7 @@ BOOL FishDisplay::onExecute() {
                     t.z = p->z;
                     ((SndSeEmitter *)(e))->callUpdateRelative((VecFx32 *)(&t));
                     if (((AnimFrameCtrl *)(HOST_AT(e, 0x134, model[156], 0)))->hasPassedFrame(1)) {
-                        Snd_SeEmitterPlayOneShot(e, 0x84d, 0x7f, v4);
+                        Snd_SeEmitterPlayOneShot((SndSeEmitter *)e->pad_00, 0x84d, 0x7f, v4);
                     }
                 }
             }

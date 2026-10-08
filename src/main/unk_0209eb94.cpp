@@ -18,13 +18,10 @@
 #include "save/SaveData.h"
 #include "save/TownExchangeRecord.h"
 #include "ui/HudController.h"
-#define PROTO_LOCAL_CommSend_SyncVarChunk  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSend_TownChunk  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_CommSend_VillagerTransferReply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_DwcFriendData_GetBytes  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FriendEntry_GetFriendData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Melody_SetPacked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSession_GetCtrl07Received  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GameStatsDownload  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GameStatsUpload  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetBrid  // declared below: the shared prototype conflicts with the calls here
@@ -601,12 +598,9 @@ BOOL _ZN11SaveManager18isTransferReceivedEj(SaveManager *p, s32 v);
 void _ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(SaveManager *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void *PlayerData_GetCurrent();
 void _ZN10PlayerData7setFlagEj(void *p, s32 v);
-BOOL NetSession_GetCtrl07Received();
-BOOL CommSend_SyncVarChunk(u8 *p, u32 v);
 void _ZN18TownCompressThread5startEj(u32 a, s32 b);
 BOOL _ZN18TownCompressThread6isDoneEv(u32 a);
 void DC_FlushAll();
-BOOL CommSend_TownChunk(u8 *p, u32 v);
 void *PlayerData_Get(u32 v);
 u32 ClockOffset_CalcMinutes(u32 *a, void *b);
 u32 ClockOffset_CalcSeconds(u32 *a, void *b);
@@ -1715,7 +1709,7 @@ extern "C" void SaveManager_ExecAct15(SaveManager *p) {
         r5 |= 1 << NetSession_GetLastSyncSlot();
         if (Comm_IsConnectionLost(r5)) {
             Comm_SetLostFlag();
-        } else if (NH::NetSession_GetCtrl07Received()) {
+        } else if (NetSession_GetCtrl07Received()) {
             p->actStep = 1;
         }
         break;
@@ -1763,7 +1757,7 @@ extern "C" void SaveManager_ExecAct15(SaveManager *p) {
     case 6:
         if (Comm_IsConnectionLost(Comm_GetRemoteMask())) {
             Comm_SetLostFlag();
-        } else if (NH::CommSend_SyncVarChunk(&p->sendChunk, (u16)(1 << sJoiningAid))) {
+        } else if (CommSend_SyncVarChunk(&p->sendChunk, (u16)(1 << sJoiningAid))) {
             p->actStep = 7;
         }
         break;
@@ -1781,7 +1775,7 @@ extern "C" void SaveManager_ExecAct15(SaveManager *p) {
             Comm_SetLostFlag();
         } else if (NH::_ZN18TownCompressThread6isDoneEv((u32)p->townCompressThread)) {
             NH::DC_FlushAll();
-            if (NH::CommSend_TownChunk(&p->sendChunk, (u16)(1 << sJoiningAid))) {
+            if (CommSend_TownChunk(&p->sendChunk, (u16)(1 << sJoiningAid))) {
                 p->actStep = 9;
             }
         }

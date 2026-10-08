@@ -23,11 +23,11 @@
 #include "snd/SndEnvChannel.h"
 #include "sys/Heap.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020815f8.h"
@@ -222,7 +222,6 @@ void AnimModel_drawAnimated(void *p, u32 v);
 void AnimModel_stepAnim(void *p);
 void AnimModel_setFrame(void *p, s32 frame);
 BOOL ActorCollider_isHitByGroup(void *p, u32 mask);
-u32 WorldCurve_ToCurved(void *a, void *b);
 s32 Math_AngleXZ(void *a, void *b);
 s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 ActorCollider_submit(void *a);

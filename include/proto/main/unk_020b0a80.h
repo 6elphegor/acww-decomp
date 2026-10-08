@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/VecFx32.h"
 #include "types.h"
 #endif
 
@@ -42,13 +43,13 @@ u32 Footstep_AttrToSe(u32 a);
 u32 GroundAttr_ResolveCarpet(u32 a);
 #endif
 #ifndef PROTO_LOCAL_GroundAttr_GetAtPos
-u32 GroundAttr_GetAtPos(u32 a);
+u32 GroundAttr_GetAtPos(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_Footstep_GetSeForAttr
 u32 Footstep_GetSeForAttr(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Footstep_GetSeAtPos
-u32 Footstep_GetSeAtPos(u32 a);
+u32 Footstep_GetSeAtPos(VecFx32 *a);
 #endif
 #ifndef PROTO_LOCAL_Startup_OnWvrStartUp
 void Startup_OnWvrStartUp(u32 a, u32 b);

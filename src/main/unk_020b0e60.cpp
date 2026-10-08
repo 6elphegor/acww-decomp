@@ -1322,7 +1322,7 @@ extern "C" u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c) { return Buil
 
 extern "C" u32 BuildingKey_Make(u32 a, u32 b, u32 c) { return (a << 16) | (((c & 0xff) << 8) | (b & 0xff)); }
 
-extern "C" u32 Building_GetDoorAnimParamAt(u32 a) {
+extern "C" u32 Building_GetDoorAnimParamAt(VecFx32 *a) {
     Obj *o;
     if (!IsEnabled()) {
         return 1;

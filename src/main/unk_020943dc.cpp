@@ -6,7 +6,8 @@
 #include "player/PlayerData.h"
 #include "player/PlayerFaceTexRef.h"
 #define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_02004558.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205dfa4.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020943dc.h"
@@ -69,11 +70,9 @@ extern "C" {
 }
 
 extern "C" {
-void WorldCurve_FromCurved(VecFx32Ctor *a, VecFx32Ctor *b);
 }
 
 extern "C" {
-void PlayerActor_OffsetByAngle(void *out, void *a, void *b, void *c, void *d);
 }
 
 extern "C" {
@@ -301,24 +300,24 @@ extern "C" void PlayerActor_GetHandMtx(Mtx43 *out, u32 idx) {
 extern "C" u16 *PlayerActor_GetItemInFront() {
     PlayerActor *o = PlayerActor_Get(4);
     u16 *r = 0;
-    u32 buf[3];
+    VecFx32 buf;
     s32 a, b;
     if (!o) return 0;
     if (o->action != 2) return 0;
-    PlayerActor_OffsetByAngle(buf, o, &o->position, (u8 *)o + 0x8e, &sPlayerFrontItemDist);
+    PlayerActor_OffsetByAngle(&buf, o, &o->position, &o->rotY, &sPlayerFrontItemDist);
     BOOL t = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (t) {
         if (Scene_InHouseRoom()) {
             if (gCommManager->localSlot == 0) {
                 if (FtrMgr_FindFurnitureFacingPlayer(&a, &b, 0, 0) < 0) {
-                    r = BlockMap_GetItemPtrAtPos(gSceneBlockMap, buf, 0);
+                    r = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &buf, 0);
                 }
             }
         }
     } else {
         void *g = gSceneBlockMap;
-        if (BlockMap_IsBuriedAtPos(g, buf)) return 0;
-        r = BlockMap_GetItemPtrAtPos(g, buf, 0);
+        if (BlockMap_IsBuriedAtPos(g, &buf)) return 0;
+        r = BlockMap_GetItemPtrAtPos(g, &buf, 0);
     }
     return r;
 }

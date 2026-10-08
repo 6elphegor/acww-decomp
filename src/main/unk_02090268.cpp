@@ -11,6 +11,7 @@
 #include "game/GroundInfo.h"
 #include "gfx/Rgb555.h"
 #include "game/GroundInfoBase.h"
+#include "proto/main/unk_0208f268.h"
 
 
 
@@ -18,7 +19,7 @@ class EffectManager {
 public:
     void end(s32 id);
     u32 getKind(s32 id);
-    s32 create(u32 kind, s32 a, s32 b, s32 c, s32 d);
+    s32 create(u32 kind, VecFx32 *pos, s16 *angle, s16 *param, s32 id);
     void reset();
     void setLife(s32 id, s16 v);
     void setPosition(s32 id, VecFx32 *pos, s16 *a, s16 *b);
@@ -30,10 +31,21 @@ public:
     /* 0x39c */ u16 nextHandle;
 };
 
+// An effect kind's start function: the effect slot it fills (EffectSlot::set) takes the position, the angle and the
+// parameter (each optional but the position); id: the resource of the generic kinds 0x64 / 0x65, -1 for the others.
+// It returns 0 (started, with a handle), 1 (started, no handle), 2 (started, handle used) or 3 (nothing started).
+typedef s32 (*EffectCreateFn)(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, s32 id);
+
 struct EffectKindEntry {
-    s32 (*fn)(s32, s32, s32, s32, s32);
-    s32 end;
+    EffectCreateFn fn;
+    void (*end)(s32 id);
 };
+
+// The callback tables passed to the Effect_Start* helpers (data_020e14xx..., declared here as plain arrays): the init
+// callbacks of a one-shot effect's emitters, or the (init, update) pairs of a tracked effect's emitters.
+typedef void (*EffectOneShotCb)(EffectSplEmitter *);
+static inline EffectOneShotCb const *Effect_OneShotCbs(const void *p) { return (EffectOneShotCb const *)p; }
+static inline EffectEmitterCbs *Effect_TrackedCbs(const void *p) { return (EffectEmitterCbs *)p; }
 
 
 
@@ -166,17 +178,16 @@ s32 SPL_LoadTexByVRAMManager(u32 h);
 
 s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 
-s32 Effect_StartOneShot(s32, s32, s32, s32, s32, void *);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 Effect_StartTracked(s32, s32, s32, s32, s32, void *);
+s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 Effect_StartModel(s32, s32, s32, s32, s32, void *);
+s32 Effect_StartModel(s32 modelKind, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, EffectModelInitFn fn);
 
 s32 EffectCb_InitOneShotOffset(s32, void *, void *);
 
 s32 EffectCb_FollowTrackedOffset(void *, void *, void *);
 
-s32 EffectSpl_CreateTracked(s32, s32, s32, void *);
 
 void EffectSplPool_Construct(void *);
 
@@ -214,13 +225,13 @@ s32 EffectCb_FollowTrackedOffset(void *p, const char *a, const char *b);
 
 s32 EffectCb_InitTrackedOffset(void *p, const char *a, const char *b);
 
-s32 Effect_StartTracked(s32 id, s32 a, s32 b, s32 c, void *d, const char *e);
+s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 Effect_StartOneShot(s32 id, s32 a, s32 b, s32 c, void *d, const char *e);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 s32 _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(void *p, s32 a, const char *b, s32 c, const char *d, s32 e, const char *f, s32 g, s32 h);
 
-s32 Effect_StartWaterColumn(s32 a, s32 b, s32 c, void *p, const char *d, const char *e, void (*f)(s32));
+s32 Effect_StartWaterColumn(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *trackedCbs, const void *oneShotCbs, EffectModelInitFn fn);
 
 s32 _ZN14EffectModelObj10initAtSlotEi(s32 a, s32 b);
 
@@ -256,9 +267,9 @@ s32 _ZN13EffectManager7setLifeEis(void *a, void *b, s32 c);
 
 void _ZN10EffectSlot5clearEv(void *r);
 
-s32 Effect_StartTracked(s32 id, s32 a, s32 b, s32 c, s32 d, const char *e);
+s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 Effect_StartOneShot(s32 id, s32 a, s32 b, s32 c, s32 d, const char *e);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 s32 EffectCb_FollowTrackedOffset(void *p, const char *a, const char *b);
 
@@ -270,7 +281,6 @@ s32 EffectCb_InitTracked(void *p);
 
 s32 EffectSpl_ApplySceneTint(void *p);
 
-s32 EffectSpl_CreateTracked(s32 a, s32 b, s32 c, const char *d);
 
 s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 
@@ -374,17 +384,16 @@ s32 EffectCb_FollowTrackedOffset(void *a, s32 b, void *c);
 
 s32 EffectCb_InitOneShotOffset(void *a, void *b, void *c);
 
-s32 Effect_StartTracked(s32 id, s32 a, s32 b, s32 c, s32 d, void *e);
+s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
-s32 Effect_StartOneShot(s32 id, s32 a, s32 b, s32 c, s32 d, void *e);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
-s32 EffectSpl_CreateOneShot(s32 a, s32 b, s32 c, void *d);
 
 s32 _ZN16EffectSplEmitter19spawnLandingEffectsEiPviS0_iS0_iS0_(EffectSplEmitter *o, s32 a, void *b, s32 c, s32 d, s32 e, void *f, s32 g, void *h);
 
-s32 Effect_StartModel(s32 a, s32 b, s32 c, s32 d, s32 e, void *f);
+s32 Effect_StartModel(s32 modelKind, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, EffectModelInitFn fn);
 
 void _ZN10EffectSlot5clearEv(void *e);
 
@@ -412,13 +421,13 @@ s32 Math_Atan2(s32 a, s32 b);
 
 void EffectKind35_InitParams(EffectEmitterEntry *o, u8 a, s32 b, s32 c);
 
-s32 Effect_StartOnSandOrSnow(s32 a, s32 b, s32 c, s32 d, s32 e, void *f);
+s32 Effect_StartOnSandOrSnow(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, s32 splId, const void *cbs);
 
 void EffectCb_PlaceRotatedOffset(EffectSplEmitter *o, VecFx32 *v, s32 ang);
 
 void EffectCb_AlignFirstParticle(EffectSplEmitter *o, s32 flag);
 
-s32 EffectKind2E_Start(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 EffectKind2E_Start(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, s32 splId);
 
 void EffectKind24_InitModel(EffectModelObj *o);
 
@@ -446,7 +455,7 @@ extern uptr data_020e15ec[];
 
 extern EffectSlot gEffectManager[];
 
-s32 Effect_StartTracked(s32, s32, s32, s32, s32, void *);
+s32 Effect_StartTracked(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 s32 EffectCb_InitTrackedOffset(void *, s32, s32);
 
@@ -458,19 +467,18 @@ s32 _ZN14EffectModelObj10initAtSlotEi(void *, s32);
 
 s32 EffectCb_InitOneShot(void *);
 
-s32 Effect_StartOneShot(s32, s32, s32, s32, s32, void *);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *, s32, s32, s32, s32, s32, s32);
 
-s32 EffectSpl_CreateTracked(s32, s32, s32, void *);
 
 s32 _ZN10EffectSlot5clearEv(void *);
 
 s32 _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(void *, s32, void *, s32, s32, s32, s32, s32, s32);
 
-s32 Effect_SpawnParticleLandings(void *, s32, void *, s32, s32, s32, s32, s32, s32);
+s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 waterId1, const void *waterCbs1, s32 waterId2, const void *waterCbs2, s32 groundId1, const void *groundCbs1, s32 groundId2, const void *groundCbs2);
 
-s32 Effect_StartWaterColumn(s32, s32, s32, s32, void *, void *, void *);
+s32 Effect_StartWaterColumn(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *trackedCbs, const void *oneShotCbs, EffectModelInitFn fn);
 
 void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *, void *, s32, s32);
 
@@ -534,17 +542,15 @@ extern EffectSlot gEffectManager[];
 
 extern VecFx32 gVec3Zero;
 
-s32 Effect_StartOneShot(s32 kind, s32 a, void *b, void *c, s32 d, void *data);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 s32 EffectCb_InitOneShotOffset(void *obj, const void *a, const void *b);
 
 s32 _ZN10EffectSlot3setEijP7VecFx32PsS2_s(void *obj, s32 h, s32 a, void *b, void *c, s32 d, s32 e);
 
-s32 EffectSpl_CreateTracked(s32 kind, void *b, void *c, void *data);
 
 s32 EffectModel_Start(s32 kind, EffectModelInitFn fn);
 
-s32 EffectSpl_CreateOneShot(s32 kind, void *b, void *c, void *data);
 
 s32 _ZN10EffectSlot5clearEv(void *obj);
 
@@ -562,15 +568,15 @@ void Vec_RotateY(VecFx32 *v, s32 a);
 
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 
-s32 Effect_StartModel(s32 kind, s32 a, void *b, void *c, s32 d, EffectModelInitFn fn);
+s32 Effect_StartModel(s32 modelKind, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, EffectModelInitFn fn);
 
-s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, s32 f, EffectModelInitFn fn);
+s32 Effect_StartWaterColumn(s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *trackedCbs, const void *oneShotCbs, EffectModelInitFn fn);
 
 void EffectModel_InitUnitScale(void *o);
 
 void EffectModel_InitDefault(void *o);
 
-s32 Effect_SpawnParticleLandings(void *o, s32 a, void *b, s32 c, void *d, s32 e, void *f, s32 g, void *h);
+s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 waterId1, const void *waterCbs1, s32 waterId2, const void *waterCbs2, s32 groundId1, const void *groundCbs1, s32 groundId2, const void *groundCbs2);
 }
 }
 
@@ -588,9 +594,7 @@ extern uptr sEffectDefaultOneShotCbs[];
 
 extern s16 data_02135f44[];
 
-s32 EffectSpl_CreateTracked(void *, s32, s32, void *);
 
-s32 EffectSpl_CreateOneShot(void *, s32, s32, void *);
 
 s32 EffectSpl_ApplySceneTint(void *);
 
@@ -616,7 +620,7 @@ s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 
 s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 
-s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
+s32 Effect_StartOneShot(s32 splId, s32 kind, VecFx32 *pos, s16 *angle, s16 *param, const void *cbs);
 
 void EffectCb_PlaceEmitter(EffectSplEmitter *o, EffectSlot *e, VecFx32 *a, VecFx32 *b);
 
@@ -633,7 +637,8 @@ s32 EffectCb_InitOneShot(EffectSplEmitter *o);
 namespace R7 {
 extern "C" s32 EffectCb_TintOnly(void *o)
 {
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
@@ -643,7 +648,8 @@ extern "C" s32 EffectCb_InitOneShot(EffectSplEmitter *o)
     o->posX = (*(EffectScratchSlot *)&gEffectManager[32]).x + o->resource->p_base->pos.x;
     o->posY = (*(EffectScratchSlot *)&gEffectManager[32]).y + o->resource->p_base->pos.y;
     o->posZ = (*(EffectScratchSlot *)&gEffectManager[32]).z + o->resource->p_base->pos.z;
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
@@ -659,7 +665,8 @@ extern "C" s32 EffectCb_PlaceFacing(EffectSplEmitter *o, EffectSlot *e)
     o->axis.x = data_02135f44[idx];
     o->axis.y = 0;
     o->axis.z = data_02135f44[idx + 1];
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
@@ -682,7 +689,8 @@ extern "C" s32 EffectCb_PlaceFacingBack(EffectSplEmitter *o, EffectSlot *e)
     o->axis.x = data_02135f44[idx];
     o->axis.y = 0;
     o->axis.z = data_02135f44[idx + 1];
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
@@ -741,19 +749,20 @@ namespace R7 {
 extern "C" s32 EffectCb_InitOneShotOffset(EffectSplEmitter *o, VecFx32 *a, VecFx32 *b)
 {
     EffectCb_PlaceEmitter(o, &(*(EffectScratchSlot *)&gEffectManager[32]), a, b);
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
 namespace R7 {
-extern "C" s32 Effect_StartOneShot(s32 p0, s32 p1, void *p2, s32 p3, s32 e, void *f)
+extern "C" s32 Effect_StartOneShot(s32 p0, s32 p1, VecFx32 *p2, s16 *p3, s16 *e, const void *f)
 {
-    void *t = f;
+    const void *t = f;
     s32 r;
     if (t == NULL) t = sEffectDefaultOneShotCbs;
     r = 3;
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectScratchSlot *)&gEffectManager[32]), -1, p1, (s32)p2, p3, e, -1);
-    if (EffectSpl_CreateOneShot((void *)p0, (s32)p2, p3, t)) r = 1;
+    ((EffectSlot *)&gEffectManager[32])->set(-1, p1, p2, p3, e, -1);
+    if (EffectSpl_CreateOneShot(p0, p2, p3, Effect_OneShotCbs(t))) r = 1;
     return r;
 }
 }
@@ -823,22 +832,22 @@ extern "C" s32 EffectCb_FollowTracked(EffectEmitterEntry *o)
 }
 
 namespace R7 {
-extern "C" s32 Effect_StartTracked(void *p0, s32 p1, s32 p2, s32 p3, s32 e, void *f)
+extern "C" s32 Effect_StartTracked(s32 p0, s32 p1, VecFx32 *p2, s16 *p3, s16 *e, const void *f)
 {
-    void *t = f;
+    const void *t = f;
     s32 r;
     if (t == NULL) t = sEffectDefaultTrackedCbs;
     r = 3;
     EffectScratchSlot *const g = &(*(EffectScratchSlot *)&gEffectManager[32]);
-    ((EffectSlot *)(g))->set(g->nextHandle, p1, (VecFx32 *)(p2), (s16 *)(p3), (s16 *)(e), -1);
-    if (EffectSpl_CreateTracked(p0, p2, p3, t)) r = 0;
+    ((EffectSlot *)(g))->set(g->nextHandle, p1, p2, p3, e, -1);
+    if (EffectSpl_CreateTracked(p0, p2, p3, Effect_TrackedCbs(t))) r = 0;
     ((EffectSlot *)(g))->clear();
     return r;
 }
 }
 
 namespace R7 {
-extern "C" s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 p1, s32 p2, s32 p3, s32 s0, s32 p5, s32 s2, s32 p6, s32 s4)
+extern "C" s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 p1, const void *p2, s32 p3, const void *s0, s32 p5, const void *s2, s32 p6, const void *s4)
 {
     P *n;
     VecFx32 pos;
@@ -857,18 +866,18 @@ extern "C" s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 p1, s32 p2,
             if (g.waterKind != 0) {
                 if (pos.y <= g.waterSurfaceY) {
                     pos.y = g.waterSurfaceY;
-                    if (p1 != -1) Effect_StartOneShot(p1, 100, &pos, 0, 0, (void *)p2);
-                    if (p3 != -1) Effect_StartOneShot(p3, 100, &pos, 0, 0, (void *)s0);
+                    if (p1 != -1) Effect_StartOneShot(p1, 100, &pos, 0, 0, p2);
+                    if (p3 != -1) Effect_StartOneShot(p3, 100, &pos, 0, 0, s0);
                     n->age = n->life;
                 }
             } else if (pos.y <= 0) {
                 if (p5 != -1) {
                     pos.y = 0;
-                    Effect_StartOneShot(p5, 100, &pos, 0, 0, (void *)s2);
+                    Effect_StartOneShot(p5, 100, &pos, 0, 0, s2);
                 }
                 if (p6 != -1) {
                     pos.y = 0;
-                    Effect_StartOneShot(p6, 100, &pos, 0, 0, (void *)s4);
+                    Effect_StartOneShot(p6, 100, &pos, 0, 0, s4);
                 }
                 n->age = n->life;
             }
@@ -971,25 +980,25 @@ extern "C" void EffectModel_InitDefault(void *o)
 }
 
 namespace R6 {
-extern "C" s32 Effect_StartModel(s32 kind, s32 a, void *b, void *c, s32 d, EffectModelInitFn fn)
+extern "C" s32 Effect_StartModel(s32 kind, s32 a, VecFx32 *b, s16 *c, s16 *d, EffectModelInitFn fn)
 {
     EffectModelInitFn f = fn;
     if (f == 0) {
         f = EffectModel_InitDefault;
     }
-    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, b, c, d, -1);
     EffectModel_Start(kind, f);
     return 1;
 }
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind00(s32 a, void *b, u16 *c, s32 d)
+extern "C" s32 Effect_CreateKind00(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     GroundInfo o;
     s32 t, result, kind;
     const void *p;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     t = o.attr;
     p = data_020e1480;
     result = 3;
@@ -1053,12 +1062,12 @@ void EffectEmitterEntry::updateLanding1F1EB()
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind01(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind01(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     u8 *const g = (u8 *)gEffectManager;
     GroundInfo o;
     s32 t, result;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     t = o.attr;
     result = 3;
     if (Unk_020935e8_IsOne(*gFieldSceneKind)) {
@@ -1066,13 +1075,13 @@ extern "C" s32 Effect_CreateKind01(s32 a, void *b, void *c, s32 d)
             result = Effect_StartOneShot(0x19, a, b, c, d, data_020e14b4);
         }
     } else if (t == 0x16 || Weather_GetFallingPrecip() == 1) {
-        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(0), -1);
-        if (EffectSpl_CreateTracked(0x1b, b, c, data_020e14d4) != 0) {
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, b, c, 0, -1);
+        if (EffectSpl_CreateTracked(0x1b, b, c, Effect_TrackedCbs(data_020e14d4)) != 0) {
             result = 2;
         }
     } else if (t == 3 && GroundSeason_IsSnow() != 0) {
-        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(0), -1);
-        if (EffectSpl_CreateTracked(0x1c, b, c, data_020e14ec) != 0) {
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, b, c, 0, -1);
+        if (EffectSpl_CreateTracked(0x1c, b, c, Effect_TrackedCbs(data_020e14ec)) != 0) {
             result = 2;
         }
     } else {
@@ -1110,25 +1119,25 @@ void EffectSplEmitter::initKind02()
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind02(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind02(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     return Effect_StartOneShot(0x29, a, b, c, d, data_020e1474);
 }
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind03(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind03(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     return Effect_StartOneShot(0x2a, a, b, c, d, data_020e150c);
 }
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind06(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind06(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     GroundInfo o;
     s32 r, kind;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     if (o.attr == 0x13) {
         kind = 0x2d;
     } else {
@@ -1154,11 +1163,11 @@ extern "C" s32 EffectKind07_InitEmitter1(void *a)
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind07(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind07(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     GroundInfo o;
     s32 r, kind;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     if (o.attr == 0x13) {
         kind = 0x2e;
     } else {
@@ -1170,11 +1179,11 @@ extern "C" s32 Effect_CreateKind07(s32 a, void *b, void *c, s32 d)
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind08(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind08(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     GroundInfo o;
     s32 r, kind;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     if (o.attr == 0x13) {
         kind = 0x30;
     } else {
@@ -1193,11 +1202,11 @@ extern "C" s32 EffectKind09_InitEmitter0(void *a)
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind09(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind09(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     GroundInfo o;
     s32 r, kind;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     if (o.attr == 0x13) {
         kind = 0x32;
     } else {
@@ -1209,22 +1218,22 @@ extern "C" s32 Effect_CreateKind09(s32 a, void *b, void *c, s32 d)
 }
 
 namespace R6 {
-extern "C" s32 Effect_CreateKind0A(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind0A(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     u8 *const g = (u8 *)gEffectManager;
     GroundInfo o;
     s32 t, result;
-    o.initAtPos((VecFx32 *)b, 0, 0);
+    o.initAtPos(b, 0, 0);
     t = o.attr;
     result = 3;
     if (Weather_GetFallingPrecip() == 1) {
-        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
-        if (EffectSpl_CreateTracked(0x36, b, c, data_020e1594) != 0) {
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, b, c, d, -1);
+        if (EffectSpl_CreateTracked(0x36, b, c, Effect_TrackedCbs(data_020e1594)) != 0) {
             result = 2;
         }
     } else if (GroundSeason_IsSnow() != 0 && t == 3) {
-        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(0), -1);
-        if (EffectSpl_CreateTracked(0x35, b, c, data_020e15e4) != 0) {
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, b, c, 0, -1);
+        if (EffectSpl_CreateTracked(0x35, b, c, Effect_TrackedCbs(data_020e15e4)) != 0) {
             result = 2;
         }
     } else {
@@ -1270,9 +1279,9 @@ void EffectEmitterEntry::updateLanding1F1E()
 }
 
 namespace R6 {
-extern "C" s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, s32 f, EffectModelInitFn fn)
+extern "C" s32 Effect_StartWaterColumn(s32 a, VecFx32 *b, s16 *c, s16 *d, const void *e, const void *f, EffectModelInitFn fn)
 {
-    VecFx32 *v = (VecFx32 *)b;
+    VecFx32 *v = b;
     u8 *const g = (u8 *)gEffectManager;
     GroundInfo o;
     s32 result;
@@ -1281,10 +1290,10 @@ extern "C" s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, 
     if (o.waterKind != 0) {
         v->y = o.waterSurfaceY;
     }
-    if (Effect_StartOneShot(0x4a, a, v, c, d, (void *)f) < 3) {
+    if (Effect_StartOneShot(0x4a, a, v, c, d, f) < 3) {
         Effect_StartModel(2, a, v, c, d, fn);
-        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(v), (s16 *)(c), (s16 *)(d), -1);
-        if (EffectSpl_CreateTracked(0x45, v, c, e) != 0) {
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, v, c, d, -1);
+        if (EffectSpl_CreateTracked(0x45, v, c, Effect_TrackedCbs(e)) != 0) {
             result = 2;
         }
     }
@@ -1294,9 +1303,9 @@ extern "C" s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, 
 }
 
 namespace R6 {
-extern "C" void Effect_CreateKind0B(s32 a, void *b, void *c, s32 d)
+extern "C" s32 Effect_CreateKind0B(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
-    Effect_StartWaterColumn(a, b, c, d, data_020e152c, 0, EffectModel_InitUnitScale);
+    return Effect_StartWaterColumn(a, b, c, d, data_020e152c, 0, EffectModel_InitUnitScale);
 }
 }
 
@@ -1306,13 +1315,13 @@ void EffectEmitterEntry::updateLanding5F()
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind0C(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind0C(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x37, a, b, c, d, 0); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x5e, b, c, data_020e15ec) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x5e, b, c, Effect_TrackedCbs(data_020e15ec)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1320,13 +1329,13 @@ extern "C" s32 Effect_CreateKind0C(s32 a, s32 b, s32 c, s32 d) {
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind0D(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind0D(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x38, a, b, c, d, 0); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x5e, b, c, data_020e14fc) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x5e, b, c, Effect_TrackedCbs(data_020e14fc)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1334,17 +1343,17 @@ extern "C" s32 Effect_CreateKind0D(s32 a, s32 b, s32 c, s32 d) {
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind0F(s32 a, s32 b, s32 c, s32 d) { return Effect_StartOneShot(0x3a, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind0F(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0x3a, a, b, c, d, 0); }
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind10(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind10(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x3b, a, b, c, d, 0); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x5e, b, c, data_020e15dc) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x5e, b, c, Effect_TrackedCbs(data_020e15dc)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1433,7 +1442,7 @@ extern "C" s32 EffectKind0E_UpdateEmitter0(EffectEmitterEntry *p) {
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind0E(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x39, a, b, c, d, data_020e1504); }
+extern "C" s32 Effect_CreateKind0E(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x39, a, b, c, d, data_020e1504); }
 }
 
 namespace R5 {
@@ -1465,17 +1474,17 @@ extern "C" s32 EffectKind11_UpdateEmitter2(EffectEmitterEntry *p) {
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind11(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x3c, a, b, c, d, data_020e16a4); }
+extern "C" s32 Effect_CreateKind11(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x3c, a, b, c, d, data_020e16a4); }
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind12(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind12(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x46, a, b, c, d, 0); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x5e, b, c, data_020e1584) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x5e, b, c, Effect_TrackedCbs(data_020e1584)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1495,13 +1504,13 @@ extern "C" s32 EffectKind13_UpdateEmitter0(void *p) { return _ZN18EffectEmitterE
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind13(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind13(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x47, a, b, c, d, data_020e15a4); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x75, b, c, data_020e157c) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x75, b, c, Effect_TrackedCbs(data_020e157c)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1521,13 +1530,13 @@ extern "C" void EffectKind14_InitEmitter0A(EffectEmitterEntry *p) { EffectCb_Ini
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind14(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind14(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x48, a, b, c, d, data_020e1614); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x75, b, c, data_020e15b4) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x75, b, c, Effect_TrackedCbs(data_020e15b4)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1543,13 +1552,13 @@ extern "C" s32 EffectKind15_InitEmitter2(void *p) { return EffectCb_InitOneShotS
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind15(s32 a, s32 b, s32 c, s32 d) { 
+extern "C" s32 Effect_CreateKind15(s32 a, VecFx32 *b, s16 *c, s16 *d) { 
     u8 *s = (u8 *)gEffectManager; 
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x49, a, b, c, d, data_020e1620); 
     if (t < 3) { 
-        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
-        if (EffectSpl_CreateTracked(0x75, b, c, data_020e151c) != 0) r = 2; 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        if (EffectSpl_CreateTracked(0x75, b, c, Effect_TrackedCbs(data_020e151c)) != 0) r = 2; 
     } 
     ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
@@ -1569,8 +1578,8 @@ extern "C" s32 EffectKind16_InitModel(void *p) { return _ZN14EffectModelObj10ini
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind16(s32 a, s32 b, s32 c, s32 d) {
-    return Effect_StartWaterColumn(a, b, c, d, data_020e1574, data_020e147c, (void *)EffectKind16_InitModel);
+extern "C" s32 Effect_CreateKind16(s32 a, VecFx32 *b, s16 *c, s16 *d) {
+    return Effect_StartWaterColumn(a, b, c, d, data_020e1574, data_020e147c, (EffectModelInitFn)EffectKind16_InitModel);
 }
 }
 
@@ -1587,8 +1596,8 @@ extern "C" s32 EffectKind17_InitModel(void *p) { return _ZN14EffectModelObj10ini
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind17(s32 a, s32 b, s32 c, s32 d) {
-    return Effect_StartWaterColumn(a, b, c, d, data_020e1524, data_020e14bc, (void *)EffectKind17_InitModel);
+extern "C" s32 Effect_CreateKind17(s32 a, VecFx32 *b, s16 *c, s16 *d) {
+    return Effect_StartWaterColumn(a, b, c, d, data_020e1524, data_020e14bc, (EffectModelInitFn)EffectKind17_InitModel);
 }
 }
 
@@ -1605,8 +1614,8 @@ extern "C" s32 EffectKind19_InitModel(void *p) { return _ZN14EffectModelObj10ini
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind19(s32 a, s32 b, s32 c, s32 d) {
-    return Effect_StartWaterColumn(a, b, c, d, data_020e15f4, data_020e1494, (void *)EffectKind19_InitModel);
+extern "C" s32 Effect_CreateKind19(s32 a, VecFx32 *b, s16 *c, s16 *d) {
+    return Effect_StartWaterColumn(a, b, c, d, data_020e15f4, data_020e1494, (EffectModelInitFn)EffectKind19_InitModel);
 }
 }
 
@@ -1615,7 +1624,7 @@ extern "C" void EffectKind1A_InitEmitter0(EffectEmitterEntry *p) { EffectCb_Init
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind1A(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e1534); }
+extern "C" s32 Effect_CreateKind1A(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e1534); }
 }
 
 namespace R5 {
@@ -1623,7 +1632,7 @@ extern "C" void EffectKind1B_InitEmitter0(EffectEmitterEntry *p) { EffectCb_Init
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind1B(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e153c); }
+extern "C" s32 Effect_CreateKind1B(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e153c); }
 }
 
 namespace R5 {
@@ -1631,7 +1640,7 @@ extern "C" void EffectKind1C_InitEmitter0(EffectEmitterEntry *p) { EffectCb_Init
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind1C(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e15ac); }
+extern "C" s32 Effect_CreateKind1C(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e15ac); }
 }
 
 namespace R5 {
@@ -1639,7 +1648,7 @@ extern "C" void EffectKind1D_InitEmitter0(EffectEmitterEntry *p) { EffectCb_Init
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind1D(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e154c); }
+extern "C" s32 Effect_CreateKind1D(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e154c); }
 }
 
 namespace R5 {
@@ -1647,7 +1656,7 @@ extern "C" void EffectKind1E_InitEmitter0(EffectEmitterEntry *p) { EffectCb_Init
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind1E(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e14e4); }
+extern "C" s32 Effect_CreateKind1E(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e14e4); }
 }
 
 namespace R5 {
@@ -1655,18 +1664,18 @@ extern "C" void EffectKind1F_InitEmitter0(EffectEmitterEntry *p) { EffectCb_Init
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind1F(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e14dc); }
+extern "C" s32 Effect_CreateKind1F(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, data_020e14dc); }
 }
 
 namespace R5 {
-extern "C" s32 Effect_CreateKind21(s32 a, s32 b, s32 c, s32 d) { return Effect_StartTracked(0x73, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind21(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x73, a, b, c, d, 0); }
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind22(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind22(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     u32 buf[17];
     s32 r;
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     u32 t = buf[13];
     r = 3;
     if (Unk_02092770_IsOne(gFieldSceneKind)) {
@@ -1692,9 +1701,9 @@ extern "C" s32 EffectKind23_InitEmitter0(void *a) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind23(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind23(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     u32 buf[16];
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     s32 id;
     if (buf[13] == 0x13) {
         id = 0x6f;
@@ -1731,10 +1740,10 @@ extern "C" void EffectKind24_InitModel(EffectModelObj *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind24(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind24(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     s32 r = 3;
     if (Effect_StartOneShot(0x59, a, b, c, d, data_020e165c) < 3) {
-        Effect_StartModel(r, a, b, c, d, (void *)EffectKind24_InitModel);
+        Effect_StartModel(r, a, b, c, d, (EffectModelInitFn)EffectKind24_InitModel);
         r = 1;
     }
     return r;
@@ -1754,7 +1763,7 @@ extern "C" s32 EffectKind25_UpdateEmitter0(EffectEmitterEntry *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind25(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind25(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x5a, a, b, c, d, data_020e175c);
 }
 }
@@ -1809,15 +1818,15 @@ extern "C" s32 EffectKind26_UpdateEmitter0(EffectEmitterEntry *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind26(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind26(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x70, a, b, c, d, data_020e15bc);
 }
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind27(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind27(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     u32 buf[16];
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     u32 t = buf[13];
     if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         s32 res = Effect_StartOneShot(0x55, a, b, c, d, data_020e16d4);
@@ -1830,9 +1839,9 @@ extern "C" s32 Effect_CreateKind27(s32 a, s32 b, s32 c, s32 d) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind28(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind28(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     u32 buf[16];
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     u32 t = buf[13];
     if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         s32 res = Effect_StartOneShot(0x56, a, b, c, d, data_020e16d4);
@@ -1885,9 +1894,9 @@ extern "C" void EffectKind29_InitEmitter0(EffectSplEmitter *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_StartOnSandOrSnow(s32 a, s32 b, s32 c, s32 d, s32 e, void *f) {
+extern "C" s32 Effect_StartOnSandOrSnow(s32 a, VecFx32 *b, s16 *c, s16 *d, s32 e, const void *f) {
     u32 buf[16];
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     u32 t = buf[13];
     s32 r = -1;
     if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
@@ -1904,7 +1913,7 @@ extern "C" s32 Effect_StartOnSandOrSnow(s32 a, s32 b, s32 c, s32 d, s32 e, void 
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind29(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind29(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOnSandOrSnow(a, b, c, d, 0x58, data_020e1484);
 }
 }
@@ -1916,7 +1925,7 @@ extern "C" void EffectKind2A_InitEmitter0(EffectSplEmitter *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind2A(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind2A(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOnSandOrSnow(a, b, c, d, 0x58, data_020e14ac);
 }
 }
@@ -1934,7 +1943,7 @@ extern "C" void EffectKind2B_InitEmitter0A(EffectSplEmitter *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind2B(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind2B(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     if (Effect_StartOnSandOrSnow(a, b, c, d, 0x57, data_020e14a4) == 1) {
         return Effect_StartOnSandOrSnow(a, b, c, d, 0x57, data_020e1478);
     }
@@ -1955,7 +1964,7 @@ extern "C" void EffectKind2C_InitEmitter0A(EffectSplEmitter *o) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind2C(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind2C(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     if (Effect_StartOnSandOrSnow(a, b, c, d, 0x57, data_020e1488) == 1) {
         return Effect_StartOnSandOrSnow(a, b, c, d, 0x57, data_020e14b0);
     }
@@ -1970,10 +1979,10 @@ extern "C" s32 EffectKind2D_InitEmitter0(void *a) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind2D(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind2D(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     s32 r = 3;
-    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
-    if (EffectSpl_CreateOneShot(0x76, b, c, data_020e14c0) && EffectSpl_CreateOneShot(0x54, b, c, sEffectDefaultOneShotCbs)) {
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, b, c, d, -1);
+    if (EffectSpl_CreateOneShot(0x76, b, c, Effect_OneShotCbs(data_020e14c0)) && EffectSpl_CreateOneShot(0x54, b, c, Effect_OneShotCbs(sEffectDefaultOneShotCbs))) {
         r = 1;
     }
     return r;
@@ -1999,11 +2008,11 @@ extern "C" s32 EffectKind2E_InitEmitter2(void *a) {
 }
 
 namespace R4 {
-extern "C" s32 EffectKind2E_Start(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
-    if (EffectSpl_CreateOneShot(e, b, c, data_020e14c0) != 0) {
+extern "C" s32 EffectKind2E_Start(s32 a, VecFx32 *b, s16 *c, s16 *d, s32 e) {
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, b, c, d, -1);
+    if (EffectSpl_CreateOneShot(e, b, c, Effect_OneShotCbs(data_020e14c0)) != 0) {
         for (s32 i = 0; i < 3; i++) {
-            if (EffectSpl_CreateOneShot(0x54, b, c, data_020e15fc + i * 4) == 0) {
+            if (EffectSpl_CreateOneShot(0x54, b, c, Effect_OneShotCbs((void *const *)data_020e15fc + i)) == 0) {
                 return 3;
             }
         }
@@ -2014,19 +2023,19 @@ extern "C" s32 EffectKind2E_Start(s32 a, s32 b, s32 c, s32 d, s32 e) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind2E(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind2E(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return EffectKind2E_Start(a, b, c, d, 0x77);
 }
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind2F(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind2F(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return EffectKind2E_Start(a, b, c, d, 0x78);
 }
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind30(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind30(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x79, a, b, c, d, data_020e159c);
 }
 }
@@ -2048,7 +2057,7 @@ extern "C" s32 EffectKind31_UpdateEmitter0(void *a) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind31(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind31(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x7a, a, b, c, d, data_020e14f4);
 }
 }
@@ -2069,7 +2078,7 @@ extern "C" void EffectKind32_InitEmitter0(u8 *p) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind32(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind32(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x63, a, b, c, d, data_020e149c);
 }
 }
@@ -2087,7 +2096,7 @@ extern "C" s32 EffectKind33_UpdateEmitter0(void *a) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind33(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind33(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     if (Weather_GetFallingPrecip() == 1) {
         return Effect_StartTracked(0x74, a, b, c, d, data_020e15cc);
     }
@@ -2096,7 +2105,7 @@ extern "C" s32 Effect_CreateKind33(s32 a, s32 b, s32 c, s32 d) {
 }
 
 namespace R4 {
-extern "C" s32 Effect_CreateKind34(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind34(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x52, a, b, c, d, 0);
 }
 }
@@ -2288,12 +2297,12 @@ extern "C" s32 EffectKind35_UpdateEmitter4(EffectEmitterEntry *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind35(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind35(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     EffectScratchSlot *e = &(*(EffectScratchSlot *)&gEffectManager[32]);
     s32 r = 3;
-    ((EffectSlot *)(e))->set(e->nextHandle, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -0xb5);
-    if (EffectSpl_CreateTracked(0x7e, b, c, data_020e1734) != 0) {
+    ((EffectSlot *)(e))->set(e->nextHandle, a, b, c, d, -0xb5);
+    if (EffectSpl_CreateTracked(0x7e, b, c, Effect_TrackedCbs(data_020e1734)) != 0) {
         r = 0;
     }
     ((EffectSlot *)(e))->clear();
@@ -2352,12 +2361,12 @@ extern "C" s32 EffectKind36_UpdateEmitter2(EffectEmitterEntry *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind36(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind36(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     EffectScratchSlot *e = &(*(EffectScratchSlot *)&gEffectManager[32]);
     s32 r = 3;
-    ((EffectSlot *)(e))->set(e->nextHandle, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -0xb5);
-    if (EffectSpl_CreateTracked(0x7f, b, c, data_020e1784) != 0) {
+    ((EffectSlot *)(e))->set(e->nextHandle, a, b, c, d, -0xb5);
+    if (EffectSpl_CreateTracked(0x7f, b, c, Effect_TrackedCbs(data_020e1784)) != 0) {
         r = 0;
     }
     ((EffectSlot *)(e))->clear();
@@ -2396,13 +2405,13 @@ extern "C" void EffectKind37_InitEmitter0(EffectSplEmitter *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind37(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind37(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     u32 buf[17];
     s32 k;
     s32 id;
     s32 r;
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     k = buf[13];
     id = -1;
     if (GroundSeason_IsSnow() != 0 && k == 3) {
@@ -2421,13 +2430,13 @@ extern "C" s32 Effect_CreateKind37(s32 a, s32 b, s32 c, s32 d)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind38(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind38(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     u32 buf[17];
     s32 k;
     s32 id;
     s32 r;
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     k = buf[13];
     id = -1;
     if (GroundSeason_IsSnow() != 0 && k == 3) {
@@ -2467,12 +2476,12 @@ extern "C" s32 EffectKind39_UpdateEmitter0A(void *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind39(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind39(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     u32 buf[17];
     s32 result;
     s32 k;
-    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
+    ((GroundInfo *)(buf))->initAtPos(b, 0, 0);
     k = buf[13];
     result = 3;
     if (k == 0x16 || Weather_GetFallingPrecip() == 1) {
@@ -2550,7 +2559,7 @@ extern "C" s32 EffectKind3A_UpdateEmitter0(EffectEmitterEntry *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind3A(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind3A(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     return Effect_StartTracked(0x8d, a, b, c, d, data_020e1544);
 }
@@ -2571,14 +2580,14 @@ extern "C" s32 EffectKind3B_UpdateEmitter0(void *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind3B(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind3B(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     return Effect_StartTracked(0x4f, a, b, c, d, data_020e156c);
 }
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind3C(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind3C(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     return Effect_StartTracked(0x92, a, b, c, d, data_020e164c);
 }
@@ -2616,7 +2625,7 @@ extern "C" s32 EffectKind3D_UpdateEmitter0(EffectEmitterEntry *p)
 }
 
 namespace R3 {
-extern "C" s32 Effect_CreateKind3D(s32 a, s32 b, s32 c, s32 d)
+extern "C" s32 Effect_CreateKind3D(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     return Effect_StartTracked(0x53, a, b, c, d, data_020e166c);
 }
@@ -2652,7 +2661,8 @@ extern "C" s32 EffectKind3E_InitEmitter0B(EffectSplEmitter *o)
     o->posX = g->x + o->resource->p_base->pos.x;
     o->posY = g->y + o->resource->p_base->pos.y;
     o->posZ = g->z + o->resource->p_base->pos.z;
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
@@ -2676,12 +2686,13 @@ extern "C" s32 EffectKind3E_InitEmitter0A(EffectSplEmitter *o)
     o->posY = v.y + o->resource->p_base->pos.y;
     o->posZ = v.z + o->resource->p_base->pos.z;
     o->simpleCollisionY = 0x99a;
-    return EffectSpl_ApplySceneTint(o);
+    EffectSpl_ApplySceneTint(o);  // (void: the callers ignore these init callbacks' results)
+    return 0;
 }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind3E(s32 a, s32 b, s32 c, s16 *d)
+extern "C" s32 Effect_CreateKind3E(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     s32 r = 3;
     if (d != 0) {
@@ -2731,11 +2742,11 @@ extern "C" s32 EffectKind3F_UpdateEmitter0(void *p)
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind3F(s32 a, s32 b, s32 c, s16 *d)
+extern "C" s32 Effect_CreateKind3F(s32 a, VecFx32 *b, s16 *c, s16 *d)
 {
     if (d != 0) {
         s16 t = FX_Div(*d - 0x600, 0x1200);
-        return Effect_StartWaterColumn(a, b, c, &t, data_020e15d4, data_020e14a8, EffectKind3F_InitModel);
+        return Effect_StartWaterColumn(a, b, c, &t, data_020e15d4, data_020e14a8, (EffectModelInitFn)EffectKind3F_InitModel);
     }
     return 3;
 }
@@ -2750,7 +2761,7 @@ extern "C" s32 EffectKind40_UpdateEmitter0(void *p) { return EffectCb_FollowTrac
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind40(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x95, a, b, c, d, data_020e14cc); }
+extern "C" s32 Effect_CreateKind40(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x95, a, b, c, d, data_020e14cc); }
 }
 
 namespace R2 {
@@ -2778,35 +2789,35 @@ extern "C" s32 EffectKind41_UpdateEmitter2(void *p) { return EffectCb_FollowTrac
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind41(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x96, a, b, c, d, data_020e168c); }
+extern "C" s32 Effect_CreateKind41(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x96, a, b, c, d, data_020e168c); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind42(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x97, a, b, c, d, data_020e168c); }
+extern "C" s32 Effect_CreateKind42(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x97, a, b, c, d, data_020e168c); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind43(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind43(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind44(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x1, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind44(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x1, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind45(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0x3, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind45(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0x3, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind46(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0x4, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind46(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0x4, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind47(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0x5, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind47(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0x5, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind48(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x6, a, b, c, d, data_020e17fc); }
+extern "C" s32 Effect_CreateKind48(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x6, a, b, c, d, data_020e17fc); }
 }
 
 namespace R2 {
@@ -2818,7 +2829,7 @@ extern "C" s32 EffectKind49_UpdateEmitter0(void *p) { return EffectCb_FollowTrac
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind49(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x7, a, b, c, d, data_020e1514); }
+extern "C" s32 Effect_CreateKind49(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x7, a, b, c, d, data_020e1514); }
 }
 
 namespace R2 {
@@ -2830,19 +2841,19 @@ extern "C" s32 EffectKind4A_UpdateEmitter0(void *p) { return EffectCb_FollowTrac
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind4A(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x5b, a, b, c, d, data_020e158c); }
+extern "C" s32 Effect_CreateKind4A(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x5b, a, b, c, d, data_020e158c); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind4B(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x5c, a, b, c, d, data_020e158c); }
+extern "C" s32 Effect_CreateKind4B(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x5c, a, b, c, d, data_020e158c); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind4C(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x8, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind4C(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x8, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind4D(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x16, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind4D(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x16, a, b, c, d, 0); }
 }
 
 namespace R2 {
@@ -2884,19 +2895,19 @@ extern "C" void EffectKind4E_UpdateEmitter1(EffectEmitterEntry *p)
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind4E(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0x9, a, b, c, d, data_020e16bc); }
+extern "C" s32 Effect_CreateKind4E(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0x9, a, b, c, d, data_020e16bc); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind4F(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0xa, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind4F(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0xa, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind50(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0xb, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind50(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0xb, a, b, c, d, 0); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind51(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0xc, a, b, c, d, 0); }
+extern "C" s32 Effect_CreateKind51(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0xc, a, b, c, d, 0); }
 }
 
 namespace R2 {
@@ -2916,11 +2927,11 @@ extern "C" void EffectKind52_InitEmitter0(EffectSplEmitter *o)
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind52(s32 a, s32 b, s32 c, void *d) { return Effect_StartOneShot(0x5d, a, b, c, d, data_020e14b8); }
+extern "C" s32 Effect_CreateKind52(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartOneShot(0x5d, a, b, c, d, data_020e14b8); }
 }
 
 namespace R2 {
-extern "C" s32 Effect_CreateKind53(s32 a, s32 b, s32 c, void *d) { return Effect_StartTracked(0xd, a, b, c, d, data_020e167c); }
+extern "C" s32 Effect_CreateKind53(s32 a, VecFx32 *b, s16 *c, s16 *d) { return Effect_StartTracked(0xd, a, b, c, d, data_020e167c); }
 }
 
 namespace R2 {
@@ -2959,7 +2970,7 @@ void EffectEmitterEntry::updateKind54B() { using namespace R1;
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind54(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind54(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0xe, a, b, c, d, data_020e162c);
 }
 }
@@ -2969,7 +2980,7 @@ extern "C" s32 Effect_CreateKind55(s32 p0, VecFx32 *p1, s16 *p2, s16 *p3) {
     EffectScratchSlot *e = &(*(EffectScratchSlot *)&gEffectManager.scratchSlot);
     s32 r = 3;
     e->set(e->nextHandle, p0, p1, p2, p3, 0xf);
-    if (EffectSpl_CreateTracked(0xf, (s32)p1, (s32)p2, sEffectDefaultTrackedCbs)) {
+    if (EffectSpl_CreateTracked(0xf, p1, p2, Effect_TrackedCbs(sEffectDefaultTrackedCbs))) {
         r = 2;
     }
     e->clear();
@@ -3024,7 +3035,7 @@ BOOL EffectEmitterEntry::updateKind56Fade() { using namespace R1;
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind56(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind56(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x10, a, b, c, d, data_020e1714);
 }
 }
@@ -3036,13 +3047,13 @@ extern "C" void Effect_EndKind56(s32 id) {
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind57(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind57(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x11, a, b, c, d, NULL);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind58(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind58(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x12, a, b, c, d, NULL);
 }
 }
@@ -3077,10 +3088,10 @@ BOOL EffectEmitterEntry::updateKind59() { using namespace R1;
 namespace R1 {
 extern "C" s32 Effect_CreateKind59(s32 p0, VecFx32 *p1, s16 *p2, s16 *p3) {
     s32 r = 3;
-    Effect_StartOneShot(0x13, p0, (s32)p1, (s32)p2, (s32)p3, NULL);
+    Effect_StartOneShot(0x13, p0, p1, p2, p3, NULL);
     EffectScratchSlot *e = &(*(EffectScratchSlot *)&gEffectManager.scratchSlot);
     e->set(e->nextHandle, p0, p1, p2, p3, 0x25);
-    if (EffectSpl_CreateTracked(0x62, (s32)p1, (s32)p2, data_020e163c)) {
+    if (EffectSpl_CreateTracked(0x62, p1, p2, Effect_TrackedCbs(data_020e163c))) {
         r = 2;
     }
     e->clear();
@@ -3095,31 +3106,31 @@ extern "C" s32 EffectKind5A_InitEmitter0(s32 x) {
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind5A(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind5A(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x14, a, b, c, d, data_020e14c8);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind5B(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind5B(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x82, a, b, c, d, data_020e14c8);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind5C(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind5C(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x15, a, b, c, d, NULL);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind5D(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind5D(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartModel(0, a, b, c, d, NULL);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind5E(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind5E(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartModel(1, a, b, c, d, NULL);
 }
 }
@@ -3131,7 +3142,7 @@ extern "C" s32 EffectKind5F_InitEmitter0(s32 x) {
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind5F(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind5F(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x51, a, b, c, d, data_020e1564);
 }
 }
@@ -3143,37 +3154,37 @@ extern "C" s32 EffectKind60_InitEmitter0(s32 x) {
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind60(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind60(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x7b, a, b, c, d, data_020e1490);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind61(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind61(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartTracked(0x7c, a, b, c, d, NULL);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateKind62(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateKind62(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return Effect_StartOneShot(0x7d, a, b, c, d, NULL);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateNone() {
+extern "C" s32 Effect_CreateNone(s32 a, VecFx32 *b, s16 *c, s16 *d, s32 id) {
     return 3;
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateOneShotRes(s32 a, s32 b, s32 c, s32 d, s32 id) {
+extern "C" s32 Effect_CreateOneShotRes(s32 a, VecFx32 *b, s16 *c, s16 *d, s32 id) {
     return Effect_StartOneShot(id, a, b, c, d, NULL);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateTrackedRes(s32 a, s32 b, s32 c, s32 d, s32 id) {
+extern "C" s32 Effect_CreateTrackedRes(s32 a, VecFx32 *b, s16 *c, s16 *d, s32 id) {
     return Effect_StartTracked(id, a, b, c, d, NULL);
 }
 }
@@ -3257,7 +3268,7 @@ void EffectManager::reset() { using namespace R1;
     nextHandle = 0;
 }
 
-s32 EffectManager::create(u32 kind, s32 a, s32 b, s32 c, s32 d) { using namespace R1;
+s32 EffectManager::create(u32 kind, VecFx32 *a, s16 *b, s16 *c, s32 d) { using namespace R1;
     s32 r = -1;
     if (kind < 0x66) {
         EffectKindEntry *ent = &sEffectKindTable[kind];
@@ -3278,7 +3289,7 @@ void EffectManager::end(s32 id) { using namespace R1;
     if (id != -1) {
         u32 t = getKind(id);
         if (t < 0x66) {
-            void (*f)(s32) = ((void (**)(s32))sEffectKindTable)[t * 2 + 1]; // (the entry's end function)
+            void (*f)(s32) = sEffectKindTable[t].end;
             if (f) {
                 f(id);
             }
@@ -3302,15 +3313,15 @@ extern "C" void Effect_ResetAll() {
 }
 
 namespace R1 {
-extern "C" s32 Effect_Create(u32 kind, s32 a, s32 b, s32 c) {
+extern "C" s32 Effect_Create(u32 kind, VecFx32 *a, s16 *b, s16 *c) {
     return gEffectManager.create(kind, a, b, c, -1);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateWithParam(u32 kind, u16 v0, s32 a, s32 b) {
-    u16 v = v0;
-    return gEffectManager.create(kind, a, b, (s32)&v, -1);
+extern "C" s32 Effect_CreateWithParam(u32 kind, s16 v0, VecFx32 *a, s16 *b) {
+    s16 v = v0;
+    return gEffectManager.create(kind, a, b, &v, -1);
 }
 }
 
@@ -3327,19 +3338,19 @@ extern "C" void Effect_SetPosition(s32 id, VecFx32 *pos, s16 *a, s16 *b) {
 }
 
 namespace R1 {
-extern "C" s32 Effect_PlayById(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_PlayById(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return gEffectManager.create(0x64, b, c, d, a);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_PlayById2(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_PlayById2(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return gEffectManager.create(0x64, b, c, d, a);
 }
 }
 
 namespace R1 {
-extern "C" s32 Effect_CreateById(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 Effect_CreateById(s32 a, VecFx32 *b, s16 *c, s16 *d) {
     return gEffectManager.create(0x65, b, c, d, a);
 }
 }

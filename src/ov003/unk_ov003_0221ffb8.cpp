@@ -31,12 +31,11 @@
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0204f134.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205f284.h"
@@ -417,8 +416,6 @@ void func_020323b0(void *p);
 void GroundInfo_Destruct(void *o);
 void GroundInfo_initAtPos(void *o, void *p, s32 a, s32 b);
 s32 MapBlockAcre_hasPond(void *c);
-void WorldCurve_FromCurved(V3_f5 *a, V3_f5 *b);
-s32 WorldCurve_Apply(V3_f3 *v, V3_f3 *in);
 s32 FieldAction_FindDropUnit(s32 a, s32 *p, s32 c);
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
@@ -1430,7 +1427,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv)) {
             self->stateTimer = r;
             ((s32 (*)(void *, u32))FishBobber_setState)(p, 5);
-            Snd_SeEmitterPlayOneShot(self, 0x84f, 0x7f, r);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x84f, 0x7f, r);
             {
                 s32 t = self->fishId;
                 if (t != 0x38 && t != 0x39 && t != 0x3a) {
@@ -2582,9 +2579,9 @@ extern "C" void FishCatch_Update(FishCatch *self, void *arg)
         b = a;
         ((void (*)(void *, V3_f6 *))SndSeEmitter_callUpdateRelative)(self, &a);
         if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 1) {
-            Snd_SeEmitterPlayOneShot(self, 0x7e0, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e0, 0x7f, 0);
         } else if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 2) {
-            Snd_SeEmitterPlayOneShot(self, 0x7e1, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e1, 0x7f, 0);
             b.y = data_020c7c1c;
             ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x15, &b, 0, 0);
         }
@@ -2892,42 +2889,42 @@ extern "C" void FishCatch_StartSwimAway(Self_f5 *self, s32 a) {
     case 0:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x12, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1a, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e2, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e2, 0x7f, 0);
         break;
     case 1:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x13, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1b, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e2, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e2, 0x7f, 0);
         break;
     case 2:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x14, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1c, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e2, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e2, 0x7f, 0);
         break;
     case 3:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x15, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1d, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e3, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e3, 0x7f, 0);
         break;
     case 4:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x16, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1e, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e3, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e3, 0x7f, 0);
         break;
     case 5:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x17, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1f, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e4, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e4, 0x7f, 0);
         break;
     case 6:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x19, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x21, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e4, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e4, 0x7f, 0);
         break;
     case 7:
         ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x18, &v, 0, 0);
         *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x20, &v, 0, 0);
-        Snd_SeEmitterPlayOneShot(self, 0x7e3, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot((SndSeEmitter *)self->seEmitter, 0x7e3, 0x7f, 0);
         break;
     }
     self->mode = 5;

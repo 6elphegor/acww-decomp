@@ -18,7 +18,6 @@
 #include "room/RoomObjActor.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -209,7 +208,6 @@ s32 Camera_MuteSe(void);
 s32 Camera_SetMode4(void);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 s32 Math_IsInRange(void *p, u32 a, u32 b);
-s32 Effect_SetPosition(s32 a, void *b, u32 c, u32 d);
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 void RoomObjTex_Construct(void *);
@@ -428,16 +426,16 @@ BOOL CafeCoffeeSet::onExecute() {
     }
     CafeCoffeeSet_UpdateState(o);
     if (o->pourEffect != -1) {
-        Effect_SetPosition(o->pourEffect, HOST_AT(o, 0xf10, pourEffectX, 0), 0, 0);
+        Effect_SetPosition(o->pourEffect, (VecFx32 *)&o->pourEffectX, 0, 0);
     }
     if (o->partVisible[4] != 0) {
         if (o->part4Effect == -1) {
-            o->part4Effect = Effect_CreateById(0x6b, HOST_AT(o, 0xf1c, pad_f1c[0], 0), HOST_AT(o, 0xf34, pad_f1c[24], 0), 0);
+            o->part4Effect = Effect_CreateById(0x6b, (VecFx32 *)HOST_AT(o, 0xf1c, pad_f1c[0], 0), (s16 *)HOST_AT(o, 0xf34, pad_f1c[24], 0), 0);
         }
     }
     if (o->partVisible[6] != 0) {
         if (o->part6Effect == -1) {
-            o->part6Effect = Effect_CreateById(0x6b, HOST_AT(o, 0xf28, pad_f1c[12], 0), HOST_AT(o, 0xf36, pad_f1c[26], 0), 0);
+            o->part6Effect = Effect_CreateById(0x6b, (VecFx32 *)HOST_AT(o, 0xf28, pad_f1c[12], 0), (s16 *)HOST_AT(o, 0xf36, pad_f1c[26], 0), 0);
         }
     }
     return TRUE;
@@ -715,7 +713,7 @@ void CafeCoffeeSet_UpdateState05(ObjA *o) {
         UP(6, M1, R1, 1, 0);
         UP(4, M2, R2, 1, 0);
         if (t == 0x3b) {
-            o->pourEffect = Effect_CreateById(0x6b, HOST_AT(o, 0xf10, pad_f00[16], 0), HOST_AT(o, 0x8e, pad_00[142], 0), 0);
+            o->pourEffect = Effect_CreateById(0x6b, (VecFx32 *)HOST_AT(o, 0xf10, pad_f00[16], 0), (s16 *)HOST_AT(o, 0x8e, pad_00[142], 0), 0);
         }
     }
 }

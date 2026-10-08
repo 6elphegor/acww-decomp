@@ -5,6 +5,7 @@
 #include "player/PlayerActor.h"
 #include "player/Unk_02007694.h"
 #include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_02004558.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02094810.h"
@@ -72,7 +73,6 @@ void PlayerActor_EndStandUpSide2(PlayerActor *o, s32 a);
 void PlayerActor_EndGetOutOfBed(PlayerActor *o, s32 a);
 void PlayerActor_EndGetIntoBed(PlayerActor *o, s32 a);
 void PlayerActor_EndBedRoll(PlayerActor *o, s32 a);
-void PlayerActor_OffsetByAngle(Unk_02006d14_V3 *out, PlayerActor *o, Unk_02006d14_V3 *in, u16 *ang, s32 *p);
 void __cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, s32 n, s32 size, void *dtor);
 s32 Scene_GetCurrent();
@@ -524,7 +524,7 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
                 PlayerActor_EndStandUpSide2(o, 0x2c);
             }
             st = 2;
-            PlayerActor_OffsetByAngle(&tmp, o, &saved, (u16 *)&o->rotY, (s32 *)&data_020d0428);
+            PlayerActor_OffsetByAngle(&tmp, o, &saved, &o->rotY, (s32 *)&data_020d0428);
             {
                 Unk_02006d14_V3 *pv = (Unk_02006d14_V3 *)&o->position;
                 *pv = tmp;

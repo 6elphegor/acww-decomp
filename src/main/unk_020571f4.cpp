@@ -1051,7 +1051,7 @@ void HandOverItem::act01V1Phase2()
             BOOL r = FALSE;
             if (item >= 0x1492 && item <= 0x14fd) r = TRUE;
             if (r) {
-                Snd_SeEmitterPlayOneShot(&seEmitter, 0x70, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot((SndSeEmitter *)seEmitter.unk_00, 0x70, 0x7f, 0);
             }
             phase = 3;
             setBusy(0);
