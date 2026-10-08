@@ -66,7 +66,6 @@
 #define MapBlockAcre_hasPond _ZN12MapBlockAcre7hasPondEv
 #define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
@@ -77,10 +76,6 @@
 #define func_02054e24 _ZN11CachedModelD1Ev
 #define func_02054e3c _ZN11CachedModelC1Ev
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define func_02055c38 _ZN9ModelAnimD2Ev
 #define func_02055cac _ZN9ModelAnimC2Ev
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
@@ -387,7 +382,6 @@ u32 MapBlock_GetAttr(void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void FishDisplay_PostRequest(u32 i, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_attachAnim(void *o);
-void BlendAnimModel_initAnim(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL AnimModel_allocAnmObj(void *o, void *t);
 s32 FishBobber_setState(void *p, s32 a);
 void FishBobber_setFish(void *e, void *o);
@@ -440,10 +434,6 @@ BOOL CachedModel_loadCached(void *a, s32 b, void *c);
 void func_02054e24(void *p);
 void func_02054e3c(void *p);
 void *Model_getRenderObj(void *a);
-void Model_setResource(void *a, void *b, s32 c);
-void ModelAnim_addToRenderObj(void *a, void *b);
-void ModelAnim_init(void *a, s32 b, s32 c, s32 d, s32 e);
-BOOL ModelAnim_allocMatAnm(void *a, void *b, void *c);
 void func_02055c38(void *p);
 void func_02055cac(void *p);
 BOOL AnimFrameCtrl_hasPassedFrame(void *o, s32 a);
@@ -4413,9 +4403,9 @@ extern "C" BOOL FishFinModel_Load(u8 *self, void *a)
             return FALSE;
         }
         s32 w = func_02106670(func_02106654((s32)File_LoadAlloc((*(void * *)((u8 *)&sFishFinTexAnimPath)), nm, 4, 0)), 0);
-        if (((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->allocMatAnm((u32)(*(void **)(r4 + 0x5c)), nm)) {
+        if (((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->allocMatAnm((NNSG3dResMdl *)(*(void **)(r4 + 0x5c)), nm)) {
             ((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->init(w, 0, 0x1000, 1);
-            ((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->addToRenderObj((u32)(((Model *)(r4))->getRenderObj()));
+            ((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->addToRenderObj(((Model *)(r4))->getRenderObj());
         } else {
             return FALSE;
         }

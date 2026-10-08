@@ -51,7 +51,6 @@ typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
 #define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define MsgString_clear _ZN9MsgString5clearEv
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_02133150 _s32_div_f
 #define MenuProc_restartKeyRepeat _ZN8MenuProc16restartKeyRepeatEv
@@ -95,7 +94,6 @@ extern u32 gCurrentHeap;
 
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
-BOOL BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 MenuCursorBase_getScreenY(void *p);
 BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
@@ -505,7 +503,7 @@ void C::setupBgLayers() {
 }
 
 void C::loadBgGfx() {
-    u32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/music/bg0.bch", h, 6, 0x11, 0x11, 0x98);
     Gfx2d_LoadCharFile("menu/music/bg1.bch", h, 6, 0x26e, 0x26e, 0x27e);
     Gfx2d_LoadPaletteFile("menu/music/bg.bpl", h, 6, 1, 1, 0xa);
@@ -516,7 +514,7 @@ void C::loadBgGfx() {
 
 void C::loadObjGfx() {
     MenuButtons_LoadTextColors(&bottomButtons);
-    u32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/music/obj.bch", h, 8, 0xc0, 0xc0, 0x120);
     Gfx2d_LoadPaletteFile("menu/music/obj.bpl", h, 8, 4, 4, 5);
 }
@@ -1086,7 +1084,7 @@ void MusicMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(&screenTasks[1], &frameScreen, 6, 0x800, 0)) {
+        if (((BgVramTask *)(&screenTasks[1]))->requestScreen(&frameScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -1152,7 +1150,7 @@ void MusicMenu::uploadListScreen() {
         paintListRow(playingSong, 9);
         paintListRow(selectedSong, 5);
     }
-    if (BgVramTask_requestScreen(screenTasks, listScreen, 4, 0x800, 0)) {
+    if (((BgVramTask *)(screenTasks))->requestScreen(listScreen, 4, 0x800, 0)) {
         clearFlags(8);
     }
 }

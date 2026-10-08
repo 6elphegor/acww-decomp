@@ -14,13 +14,13 @@ s32 NpcTexPatHeapPool_Get();
 s32 NpcHeldItemModelPool_Get();
 s32 SpNpcAnimHeapRefPool_Get();
 s32 _ZN20NpcHeldItemModelPool8getModelEj(void *, s32);
-s32 _ZN20NpcHeldItemModelPool8loadItemEjPt(void *, s32, s32);
+BOOL _ZN20NpcHeldItemModelPool8loadItemEjPt(void *, u32, u16 *);
 s32 _ZN17NpcTexPatHeapPool10getHeapRefEj(void *, s32);
 s32 _ZN15NpcFaceAnimPool11getFaceAnimEj(void *, s32);
 s32 _ZN19NpcTexPatBufRefPool9getBufRefEj(void *, s32);
 s32 _ZN15NpcClothTexPool11getClothTexEj(void *, s32);
 s32 _ZN20SpNpcAnimHeapRefPool10getHeapRefEj(void *, s32);
-s32 _ZN15NpcBodyAnimPool8getLayerEjj(void *, s32, u32);
+AnimSlotRef *_ZN15NpcBodyAnimPool8getLayerEjj(void *, s32, u32);
 }
 
 
@@ -68,11 +68,11 @@ NpcBodyAnimHandle::NpcBodyAnimHandle() {}
 
 NpcBodyAnimHandle::~NpcBodyAnimHandle() {}
 
-void *NpcResHandle::getBodyAnimLayer(u32 off) {
+AnimSlotRef *NpcResHandle::getBodyAnimLayer(u32 off) {
     NpcResPool *c = getPool();
-    void *r = 0;
+    AnimSlotRef *r = 0;
     if (c) {
-        r = (void *)_ZN15NpcBodyAnimPool8getLayerEjj(c, slot, off);
+        r = _ZN15NpcBodyAnimPool8getLayerEjj(c, slot, off);
     }
     return r;
 }
@@ -159,7 +159,7 @@ NpcHeldItemModelHandle::NpcHeldItemModelHandle() {}
 
 NpcHeldItemModelHandle::~NpcHeldItemModelHandle() {}
 
-void *NpcResHandleView::loadHeldItem(s32 a) {
+void *NpcResHandleView::loadHeldItem(u16 *a) {
     void *p = getPool();
     void *r = 0;
     if (p) {

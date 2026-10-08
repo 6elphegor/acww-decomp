@@ -15,7 +15,7 @@ struct BgAcreModel {
     /* 0x18 */ void *matAnm;
     /* 0x1c */ void *texSrtAnm;
     /* 0x20 */ void *tex;
-    /* 0x24 */ u8 unk_24[4];
+    /* 0x24 */ u32 arcSize; // the archive file's size (BgModel_LoadFile)
     /* 0x28 */ void *mgt;
     /* 0x2c */ s32 mgtCount;
 };
@@ -32,21 +32,21 @@ struct BgModelCache {
     /* 0x619 */ u8 pad_619[3];
     /* 0x61c */ s32 heapSize;
     /* 0x620 */ u8 pad_620[0x10];
-    /* 0x630 */ s32 groundTex;
-    /* 0x634 */ s32 groundMatAnm;
-    /* 0x638 */ s32 groundTexSrtAnm;
-    /* 0x63c */ s32 riverPatAnm;
-    /* 0x640 */ s32 riverPatTex;
-    /* 0x644 */ s32 beBPatAnm;
-    /* 0x648 */ s32 beBPatTex;
+    /* 0x630 */ void *groundTex;
+    /* 0x634 */ void *groundMatAnm;
+    /* 0x638 */ void *groundTexSrtAnm;
+    /* 0x63c */ void *riverPatAnm;
+    /* 0x640 */ void *riverPatTex;
+    /* 0x644 */ void *beBPatAnm;
+    /* 0x648 */ void *beBPatTex;
 
-    s32 getBeBPatTex();
-    s32 getBeBPatAnm();
-    s32 getRiverPatTex();
-    s32 getRiverPatAnm();
-    s32 getGroundTexSrtAnm();
-    s32 getGroundMatAnm();
-    s32 getGroundTex();
+    void *getBeBPatTex();
+    void *getBeBPatAnm();
+    void *getRiverPatTex();
+    void *getRiverPatAnm();
+    void *getGroundTexSrtAnm();
+    void *getGroundMatAnm();
+    void *getGroundTex();
     BOOL reset();
     BgAcreModel *getAcre(s32 id);
     void *getAcreBcl(s32 id);

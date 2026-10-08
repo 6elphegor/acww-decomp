@@ -261,13 +261,13 @@ extern "C" void AbAllObjGfx_Upload(void) {
 extern "C" void AbAllObjGfx_InitFile(void *p) { FS_InitFile(p); }
 
 BOOL AbAllObjGfx::loadPalette() {
-    paletteBuf = File_Load((void *)"/ab_all/ab_all_obj_ncl.bin");
+    paletteBuf = File_Load("/ab_all/ab_all_obj_ncl.bin");
     if (paletteBuf) return TRUE;
     return FALSE;
 }
 
 BOOL AbAllObjGfx::loadChars() {
-    void *p = File_Load((void *)"/ab_all/ab_all_obj_ncg.bin");
+    void *p = File_Load("/ab_all/ab_all_obj_ncg.bin");
     charBuf = p;
     if (p) return TRUE;
     return FALSE;

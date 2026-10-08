@@ -9,13 +9,13 @@
 
 char sJointAnmHeader[4] = {'J', 0, 'A', 'C'};
 
-BOOL ModelAnim::allocJointAnm(u32 a, void *c) {
-    if (anmObj != 0 || resMdl != 0) {
+BOOL ModelAnim::allocJointAnm(NNSG3dResMdl *a, void *c) {
+    if (anmObj != NULL || resMdl != NULL) {
         return FALSE;
     }
-    anmObj = (u32)Gfx3d_AllocAnmObj(a, sJointAnmHeader, c);
+    anmObj = (NNSG3dAnmObj *)Gfx3d_AllocAnmObj(a, sJointAnmHeader, c);
     resMdl = a;
-    if (anmObj != 0) {
+    if (anmObj != NULL) {
         return TRUE;
     }
     return FALSE;

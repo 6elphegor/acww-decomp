@@ -978,7 +978,7 @@ namespace n3 {
 void PatternPaletteFile::load() {
     using namespace n3;
     if (fileData == 0) {
-        fileData = (u8 *)File_Load((void *)"/menu/desi/b_myd_ten0_obj.bpl");
+        fileData = (u8 *)File_Load("/menu/desi/b_myd_ten0_obj.bpl");
         if (fileData != 0) {
             for (u32 i = 0; i < 16; i++) palettes[i] = fileData + i * 32;
         }

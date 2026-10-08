@@ -12,16 +12,9 @@ class BgModelCacheObj;
 
 #ifdef __cplusplus
 extern "C" {
-#endif
 #ifndef PROTO_LOCAL_BgModel_LoadFile
-void *BgModel_LoadFile(void *a, void *b);
+void *BgModel_LoadFile(const char *a, u32 *b);
 #endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #ifndef PROTO_LOCAL_BgModel_GetGrassType
 s32 BgModel_GetGrassType(void *);
 #endif

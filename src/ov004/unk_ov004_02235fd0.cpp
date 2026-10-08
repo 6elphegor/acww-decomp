@@ -52,7 +52,6 @@
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
 #define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
@@ -135,7 +134,7 @@ public:
     /* 0x110 */ s32 lifeState;
     /* 0x114 */ u32 sound[3];
     /* 0x120 */ u8 model[0x5c];
-    /* 0x17c */ u32 modelResMdl;
+    /* 0x17c */ void *modelResMdl;
     /* 0x180 */ u8 pad_180[4];
     /* 0x184 */ Mtx43 modelMtx;
     /* 0x1b4 */ u8 unk_1b4[0x24];
@@ -183,7 +182,6 @@ void AnimModel_allocAnmObj(void *p, void *q);
 void Heap_adjust(void *p);
 void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 q);
-void BlendAnimModel_initAnim(void *p, void *a, s32 b, s32 c, u16 d, u16 e);
 void AnimModel_attachAnim(void *p);
 void SndEnvChannel_callReset(void *p);
 void func_02088c34(void *p);
@@ -488,7 +486,7 @@ BOOL HouseRoach::setup() {
     ((Heap *)(h))->adjust();
     Heap_RestoreCurrent();
     void *r = func_021067a4(func_02106788(t), 0);
-    ((BlendAnimModel *)(model))->initAnim((s32)(r), 0, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim(r, 0, 0x1000, 0, 0);
     ((AnimModel *)(model))->attachAnim();
     ((SndEnvChannel *)(sound))->callReset();
     s16 *q = &moveAngleX;

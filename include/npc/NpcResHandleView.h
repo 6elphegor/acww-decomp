@@ -8,6 +8,7 @@
 #include "types.h"
 
 class NpcResPool;
+class AnimSlotRef;
 
 struct NpcResHandleView {
     /* 0x00 */ s8 slot;
@@ -15,7 +16,7 @@ struct NpcResHandleView {
     virtual ~NpcResHandleView();
     virtual NpcResPool *getPool() = 0;
     void *getHeldItemModel();
-    void *loadHeldItem(s32 a);
+    void *loadHeldItem(u16 *item);
 };
 
 struct NpcTexPatBufRefHandle : NpcResHandleView {
@@ -56,7 +57,7 @@ struct NpcResHandle {
     NpcResHandle();
     virtual ~NpcResHandle();
     virtual NpcResPool *getPool() = 0;
-    void *getBodyAnimLayer(u32 off);
+    AnimSlotRef *getBodyAnimLayer(u32 off);
     void release();
     BOOL acquire();
 };

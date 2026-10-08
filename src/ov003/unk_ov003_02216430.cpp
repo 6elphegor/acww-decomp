@@ -7,6 +7,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/Model.h"
+#include "gfx/G3dResAccess.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
@@ -58,9 +59,7 @@
 
 
 extern "C" {
-s32 _ZN12G3dResAccess11findNodeIdxEi(void *self, s32 i);
 }
-#define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi
 
 extern "C" void TownHall_NodeCallback(NNSG3dRS *a);
 extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs);
@@ -103,10 +102,10 @@ TownHall::~TownHall() {
 }
 
 BOOL TownHall::initBuilding() {
-    hourHandNode = G3dResAccess_findNodeIdx(modelRes, (s32) "kh_j");
-    minuteHandNode = G3dResAccess_findNodeIdx(modelRes, (s32) "km_j");
+    hourHandNode = ((G3dResAccess *)modelRes)->findNodeIdx("kh_j");
+    minuteHandNode = ((G3dResAccess *)modelRes)->findNodeIdx("km_j");
     if (hourHandNode != -1 && minuteHandNode != -1) {
-        ((Model *)model)->setCallback((s32)TownHall_NodeCallback, 6, 2, (s32)this, 0);
+        ((Model *)model)->setCallback(TownHall_NodeCallback, 6, 2, this, 0);
     }
     return TRUE;
 }

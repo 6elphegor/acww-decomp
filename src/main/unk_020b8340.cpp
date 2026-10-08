@@ -34,7 +34,7 @@ BOOL VramQueue2d_Enqueue(VramTask *p);
 
 
 
-BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g) {
+BOOL BgVramTaskPair::requestCharPair(void *a, void *b, u8 c, u32 d, u32 e, u32 f, u32 g) {
     prepare();
     kind = 8;
     xfer.setChars(a, c, d, d, e);
@@ -49,7 +49,7 @@ BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u3
     return FALSE;
 }
 
-BOOL BgVramTaskPair::requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g) {
+BOOL BgVramTaskPair::requestCharsAndPalette(void *a, u8 b, u32 c, u32 d, u32 e, void *f, u8 g) {
     prepare();
     kind = 9;
     xfer.setChars(a, b, c, d, e);

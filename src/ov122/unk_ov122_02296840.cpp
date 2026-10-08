@@ -866,7 +866,7 @@ extern "C" void LetterWriteMenu_SetupBgLayers() {
 }
 
 void LetterWriteMenu::loadBg() {
-    u32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", h, 6, 1, 1, 9);
     Keyboard_LoadScreenFile(&keyboard, "menu/chat2/b_key0.bsc");
     refreshKeys();

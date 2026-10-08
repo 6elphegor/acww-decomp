@@ -34,7 +34,7 @@ void CharaClothTexRef_LoadPattern(u8 *p, void *q);
 void CharaClothTexRef_CopyFromSlot(void *pp, s32 x);
 #endif
 #ifndef PROTO_LOCAL_CharaClothTexRef_GetBuffer
-u32 CharaClothTexRef_GetBuffer(u8 *p);
+void *CharaClothTexRef_GetBuffer(u8 *p);
 #endif
 }
 #ifndef PROTO_LOCAL_sCharaClothTexPool

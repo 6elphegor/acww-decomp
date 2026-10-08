@@ -90,11 +90,7 @@ void operator delete(void *p);
 #define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
-#define BgVramTaskPair_requestCharPair _ZN14BgVramTaskPair15requestCharPairEjjhjjjj
 #define func_020b85f8 _ZN14BgVramTaskPairC1Ev
-#define BgVramTask_requestPalette _ZN10BgVramTask14requestPaletteEjhj
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
-#define BgVramTask_requestChars _ZN10BgVramTask12requestCharsEjhjjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_021355f0 __cxa_vec_cleanup
 #define func_02135714 __cxa_vec_ctor
@@ -135,11 +131,7 @@ s32 PlayerData_getInventory(s32 a);
 s32 PlayerData_getPlayerId(...);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
-void BgVramTaskPair_requestCharPair(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void func_020b85f8(void *p);
-s32 BgVramTask_requestPalette(void *a, void *b, s32 c, s32 d);
-s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
-s32 BgVramTask_requestChars(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void BgVramTask_cancel(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
@@ -576,7 +568,7 @@ void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c
     MI_CpuCopy8(dst, p, 0x40);
     MI_CpuCopy8((u8 *)dst + 0x400, q, 0x40);
     k *= 0x38;
-    ((BgVramTaskPair *)(s->iconUploadTasks + k))->requestCharPair((u32)(p), (u32)(q), 8, t, t + 1, t + 0x20, t + 0x21);
+    ((BgVramTaskPair *)(s->iconUploadTasks + k))->requestCharPair(p, q, 8, t, t + 1, t + 0x20, t + 0x21);
     c &= 0xf;
     ((u32 *)r)[1] = (((u32 *)r)[1] & 0xffff0fff) | (c << 12);
 }

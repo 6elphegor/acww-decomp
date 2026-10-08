@@ -154,7 +154,6 @@ extern u8 data_020d02b8[];
 
 extern u32 sEffectSplFrmHeap;
 
-s32 File_Load(void *);
 
 void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
 

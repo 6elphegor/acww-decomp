@@ -37,6 +37,7 @@
 #include "proto/main/unk_020abbcc.h"
 #include "proto/ov004/unk_ov004_02213b90.h"
 #include "proto/ov004/unk_ov004_02237440.h"
+#include "gfx/Model.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -52,7 +53,6 @@
 #define AnimModel_detachVisAnim _ZN9AnimModel13detachVisAnimEv
 #define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
@@ -62,10 +62,6 @@
 #define func_02054e24 _ZN11CachedModelD1Ev
 #define func_02054e3c _ZN11CachedModelC1Ev
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
@@ -327,7 +323,6 @@ extern MuseumInsectParam sMuseumInsectParams[];
 BOOL AnimModel_allocAnmObj(void *self, u32 a);
 void *func_02106788(void *a);
 void *func_021067a4(void *a, s32 b);
-void BlendAnimModel_initAnim(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
 void AnimModel_attachAnim(void *p);
 void SndEnvChannel_callReset(void *p);
 void func_020548a0(void *p);
@@ -380,11 +375,7 @@ u32 ModelSlotPool_acquire(void *self, void *p);
 void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 BOOL PooledModel_loadFromSlot(void *self, u32 a, void *s);
 void *ModelSlot_getHeap(ModelSlot *self);
-void Model_setResource(void *self, NNSG3dResMdl *a, s32 b);
-BOOL ModelAnim_allocMatAnm(void *self, u32 a, u32 b);
-void ModelAnim_init(void *self, void *a, s32 b, s32 c, s32 d);
-u32 Model_getRenderObj(void *self);
-void ModelAnim_addToRenderObj(void *self, u32 a);
+void *Model_getRenderObj(void *self);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
 void *func_02106654(void *p);
@@ -4167,7 +4158,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
     if (File_Exists(pth + 1)) {
         if (mdl->loadFromSlot(res, (const char *)(pth + 1))) {
             r6 = &s->model;
-            Model_setResource(r6, (NNSG3dResMdl *)mdl->getModel(), 0);
+            ((Model *)(r6))->setResource((NNSG3dResMdl *)mdl->getModel(), NULL);
             rec = &sMuseumInsectParams[t];
             if (rec->useVisAnim) {
                 Str_SPrintf(pth + 1, "%s.nsbva", nm);
@@ -4205,7 +4196,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s
                                 sp1c = func_02106670(func_02106654(file), ok);
                                 if (s->matAnim.allocMatAnm(MODEL_AT_RESMDL(r6), sp10)) {
                                     ((ModelAnim *)(s))->init(sp1c, ok, 0x1000, ok);
-                                    ModelAnim_addToRenderObj(s, Model_getRenderObj(r6));
+                                    ((ModelAnim *)(s))->addToRenderObj(Model_getRenderObj(r6));
                                     ok = TRUE;
                                 }
                             }

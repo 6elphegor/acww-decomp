@@ -6,6 +6,7 @@
 #include "types.h"
 struct PlayerBodyWorkPool;
 #ifdef __cplusplus
+#include "sys/Heap.h"
 #include "types.h"
 #endif
 
@@ -31,19 +32,19 @@ extern "C" {
 u32 PlayerBodyWork_GetHeapSize(void);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyWorkPool_CreateHeaps
-void PlayerBodyWorkPool_CreateHeaps(u32 *tbl);
+void PlayerBodyWorkPool_CreateHeaps(Heap **tbl);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyWorkPool_DestroyHeaps
-void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl);
+void PlayerBodyWorkPool_DestroyHeaps(Heap **tbl);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyWorkPool_GetHeap
-u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx);
+Heap *PlayerBodyWorkPool_GetHeap(Heap **base, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyWorkRef_Assign
 void PlayerBodyWorkRef_Assign(u8 *p, u8 v);
 #endif
 #ifndef PROTO_LOCAL_PlayerBodyWorkRef_GetHeap
-u32 PlayerBodyWorkRef_GetHeap(u8 *p);
+Heap *PlayerBodyWorkRef_GetHeap(u8 *p);
 #endif
 }
 #ifndef PROTO_LOCAL_sPlayerBodyWorkPool

@@ -117,7 +117,6 @@ struct Unk_ov074_02271e54_V {
 #define PlayerId_isValid _ZN8PlayerId7isValidEv
 #define func_020942c8 _ZN8PlayerIdC1Ev
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
 
 extern "C" {
 extern u8 gSaveBlancaFace[];
@@ -163,7 +162,6 @@ s32 NpcActionCtrl_isActionDone(void *p);
 s32 NpcActionCtrl_getAction(void *p);
 s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 VecFx32 *NpcMoveCtrl_getDestination(void *p);
-s32 MatTexVramTask_request(void *p, u32 a, u32 *b, u32 c, s32 d, s32 e);
 void NpcFootstepFx_disableFootsteps(void *p);
 void NpcFootstepFx_enableFootsteps(void *p);
 BOOL NpcTalkCtrl_isBusy(void *p);
@@ -884,7 +882,7 @@ void SpNpcBlancaFaceTexture::apply(void *e) {
         if (ClothTex_LoadPatternThunk(texBuffer, t) != 0) {
             h = getTextureData();
             if (h != 0) {
-                MatTexVramTask_request(&texTask, (u32)ent->resMdl, data_ov074_022724e4, h, 0, 0);
+                ((MatTexVramTask *)(&texTask))->request(ent->resMdl, (const char *)(data_ov074_022724e4), h, 0, 0);
             }
         }
     }

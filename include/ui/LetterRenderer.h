@@ -18,7 +18,7 @@ public:
     void setGreeting(LetterView *src, u8 *out);
     void loadRecipientName(void *src);
     s32 getRecipientNameLength();
-    void show(LetterView *src, void *a, void *b, s32 c);
+    void show(LetterView *src, u32 a, u32 b, s32 c);
     void redraw();
     void release();
     void setLayer(s32 v);

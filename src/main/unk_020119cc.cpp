@@ -706,15 +706,14 @@ s32 Npc_GetVoiceType(void *p);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
 s32 _ZN14NpcSpeechState10isSpeakingEv(void *p);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *p, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3);
 s32 *_ZN11NpcMoveCtrl17getCurSpeedPresetEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *p, u32 idx);
 s32 _ZN12NpcResHandle7releaseEv(void *p);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 s0, u32 s1, u32 s2, u32 s3);
-s32 func_021065dc(s32 a);
-s32 func_021065f8(s32 a, s32 b);
+void *func_021065dc(void *a);
+void *func_021065f8(void *a, s32 b);
 ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
 }
 }
@@ -726,15 +725,14 @@ extern "C" {
 BOOL Item_IsHoldable(u16 *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
 void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *a, s32 b, s32 c);
-void BlendAnimModel_Play2(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
+void BlendAnimModel_Play2(void *p, void *anm, s32 blend, s32 mode, s32 speed, u16 frame, u16 numFrames);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *a, s32 b);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *a);
 void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *a, s32 b);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
 BOOL _ZN12NpcResHandle7acquireEv(void *a);
-void NpcActor_JointCalcLayer3Cb(void);
+void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p);
 BOOL _ZN8NpcActor15netReadPositionEPiPh(void *o, VecFx32 *v, s16 *a);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *a, void *b);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, s32 c, s32 d, u32 e);
@@ -3140,11 +3138,11 @@ void NpcFaceAnim::setFaceAnimsFrom(u32 a, s32 b, s32 c) {
     }
 }
 
-BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, u32 r) {
+BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, const char *r) {
     using namespace nO;
     if (isLoaded()) {
         _ZN13MatTexPatAnim13pauseMaterialEv(m, q);
-        if (m->setMaterialTex((s32)(q), r)) {
+        if (m->setMaterialTex(q, r)) {
             return TRUE;
         }
         MatTexPatAnim_ResumeMaterial(m, (void *)q);
@@ -3152,7 +3150,7 @@ BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, u32 r) {
     return FALSE;
 }
 
-BOOL NpcFaceAnim::setMouthTexture(u32 a) {
+BOOL NpcFaceAnim::setMouthTexture(const char *a) {
     using namespace nO;
     return setMaterialTex(&mouthTexAnim, "m", a);
 }
@@ -5211,7 +5209,7 @@ BOOL NpcAnimCtrl::initForActor(NpcActor *o, s32 a) {
     if (!((NpcResHandle *)(this))->acquire()) return FALSE;
     playAnim(o, 0, 0, 0, 0x1000, 0, 0);
     ((AnimModel *)(&o->model))->attachAnim();
-    ((Model *)(&o->model))->setCallback((s32)((void *)NpcActor_JointCalcLayer3Cb), 6, 1, (s32)(o), 0);
+    ((Model *)(&o->model))->setCallback(NpcActor_JointCalcLayer3Cb, 6, 1, o, 0);
     talkGestureVariant = 2;
     if (!((NpcAnimCtrl *)(this))->hasTalkGesture()) ((NpcAnimCtrl *)(this))->loadTalkGesture();
     talkGestureActive = 0;
@@ -5220,7 +5218,7 @@ BOOL NpcAnimCtrl::initForActor(NpcActor *o, s32 a) {
 
 void *NpcAnimCtrl::getAnimResource(s32 a, s32 b) {
     using namespace nI;
-    void *p = _ZN12NpcResHandle16getBodyAnimLayerEj(this, b);
+    AnimSlotRef *p = ((NpcResHandle *)this)->getBodyAnimLayer(b);
     void *r = 0;
     if (p) {
         AnimSlotRef_Load(p, a, 0, 0);
@@ -5287,14 +5285,14 @@ vdone:
     case 1: {
         void *r = getAnimResource(kind, mode);
         if (r) {
-            ((TwoLayerAnimModel *)(&o->model))->playLayer2((u32)(r), a3, a4, a5, v, 0, 0);
+            ((TwoLayerAnimModel *)(&o->model))->playLayer2(r, a3, a4, a5, v, 0, 0);
         }
         break;
     }
     case 2: {
         void *r = getAnimResource(kind, mode);
         if (r) {
-            ((ThreeLayerAnimModel *)(&o->model))->playLayer3((u32)(r), a3, a4, a5, v, 0, 0);
+            ((ThreeLayerAnimModel *)(&o->model))->playLayer3(r, a3, a4, a5, v, 0, 0);
         }
         break;
     }
@@ -5308,7 +5306,7 @@ void NpcAnimCtrl::playHoldItemPose(NpcActor *o, u16 *p, void *q, u16 x) {
             if (Unk_02015fe0_R(p, 0x1369, 0x1369)) {
                 void *r = getAnimResource(0x13f, 1);
                 if (r) {
-                    ((TwoLayerAnimModel *)(&o->model))->playLayer2((u32)(r), x, 0, 0x1000, 0, 0, 0);
+                    ((TwoLayerAnimModel *)(&o->model))->playLayer2(r, x, 0, 0x1000, 0, 0, 0);
                     ThreeLayerAnimModel_AssignJointsToLayer2(&o->model, 0xc, 0xe);
                 }
             } else {
@@ -5316,7 +5314,7 @@ void NpcAnimCtrl::playHoldItemPose(NpcActor *o, u16 *p, void *q, u16 x) {
                 if (id != 0x144) {
                     void *r = getAnimResource(id, 1);
                     if (r) {
-                        ((TwoLayerAnimModel *)(&o->model))->playLayer2((u32)(r), x, 0, 0x1000, 0, 0, 0);
+                        ((TwoLayerAnimModel *)(&o->model))->playLayer2(r, x, 0, 0x1000, 0, 0, 0);
                         s32 t = CharaAnim_GetJointGroup(id);
                         if (t < 4) {
                             u32 n = JointGroup_GetRangeCount(t);
@@ -5350,19 +5348,19 @@ BOOL NpcAnimCtrl::hasTalkGesture() {
 
 void NpcAnimCtrl::loadTalkGesture() {
     using namespace nH;
-    void *p = ((NpcResHandle *)(this))->getBodyAnimLayer(2);
+    AnimSlotRef *p = ((NpcResHandle *)(this))->getBodyAnimLayer(2);
     if (p != NULL) {
         AnimSlotRef_Load(p, 0x143, 0, 0);
     }
 }
 
-u32 NpcAnimCtrl::getTalkGestureData() {
+void *NpcAnimCtrl::getTalkGestureData() {
     using namespace nH;
-    u32 r = 0;
+    void *r = NULL;
     if (hasTalkGesture()) {
-        void *p = ((NpcResHandle *)(this))->getBodyAnimLayer(2);
+        AnimSlotRef *p = ((NpcResHandle *)(this))->getBodyAnimLayer(2);
         if (p != NULL) {
-            r = func_021065f8(func_021065dc(AnimSlotRef_GetData(p)), r);
+            r = func_021065f8(func_021065dc(AnimSlotRef_GetData(p)), 0);
         }
     }
     return r;
@@ -5370,8 +5368,8 @@ u32 NpcAnimCtrl::getTalkGestureData() {
 
 void NpcAnimCtrl::playTalkGesture(NpcActor *scene, u32 a, u32 b) {
     using namespace nH;
-    u32 r1 = getTalkGestureData();
-    if (r1 != 0) {
+    void *r1 = getTalkGestureData();
+    if (r1 != NULL) {
         ((ThreeLayerAnimModel *)(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))))->playLayer3(r1, 0, 1, 0x1000, a, b, 0);
         s32 t = CharaAnim_GetJointGroup(0x143);
         if (t < 4) {
@@ -8517,7 +8515,7 @@ HeldToolModel *HeldToolModel::destroy() {
     return this;
 }
 
-BOOL HeldToolModel::load(u32 a) {
+BOOL HeldToolModel::load(u16 *a) {
     using namespace nB;
     if (!((NpcResHandle *)(&modelHandle))->acquire()) return FALSE;
     if (!((NpcResHandleView *)(&modelHandle))->loadHeldItem(a)) return FALSE;
@@ -8525,12 +8523,12 @@ BOOL HeldToolModel::load(u32 a) {
     return TRUE;
 }
 
-BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
+BOOL HeldToolModel::attach(NpcActor *a, u16 *b, u32 c, u16 d) {
     using namespace nB;
     HeldItemModel *p = (HeldItemModel *)_ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
-        ((NpcAnimCtrl *)((void *)&((NpcActor *)(uptr)a)->animCtrl))->playHoldItemPose((NpcActor *)(a), (u16 *)(b), (void *)(c), d);
+        ((NpcAnimCtrl *)((void *)&a->animCtrl))->playHoldItemPose(a, b, (void *)c, d);
         heldItem = *b;
         return TRUE;
     }

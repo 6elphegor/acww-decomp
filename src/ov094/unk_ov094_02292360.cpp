@@ -39,6 +39,7 @@
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov094/unk_ov094_02293b90.h"
+#include "gfx/BgVramTask.h"
 
 
 
@@ -87,11 +88,7 @@ void operator delete(void *p);
 #define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
-#define BgVramTaskPair_requestCharPair _ZN14BgVramTaskPair15requestCharPairEjjhjjjj
 #define func_020b85f8 _ZN14BgVramTaskPairC1Ev
-#define BgVramTask_requestPalette _ZN10BgVramTask14requestPaletteEjhj
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
-#define BgVramTask_requestChars _ZN10BgVramTask12requestCharsEjhjjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_021355f0 __cxa_vec_cleanup
 #define func_02135714 __cxa_vec_ctor
@@ -132,16 +129,12 @@ s32 PlayerData_getInventory(s32 a);
 s32 PlayerData_getPlayerId(...);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
-void BgVramTaskPair_requestCharPair(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void func_020b85f8(void *p);
-s32 BgVramTask_requestPalette(void *a, void *b, s32 c, s32 d);
-s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
-s32 BgVramTask_requestChars(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void BgVramTask_cancel(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
 s32 func_02135714(void *p, s32 n, u32 sz, void *ctor, void *dtor);
-extern u32 gCurrentHeap;
+extern void *gCurrentHeap;
 s32 _ZN13ItemIconCache15getPresentCharsEi(void *self, s32 i, s32 j);
 
 extern const u8 sPresentAnimScales[];
@@ -235,7 +228,7 @@ void InventoryBg_Load(InventoryBg *s, s32 flag) {
 }
 
 void InventoryBg_LoadBg(InventoryBg *s, s32 flag) {
-    u32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile(data_ov094_0229499c, h, s->bgId, 0, 1, 0xd);
     File_LoadToBuffer(flag ? data_ov094_022949b8 : data_ov094_022949d8, s->screenData, 0x800);
     Gfx2d_LoadScreen(s->screenData, s->bgId, 0x800, 0);
@@ -280,7 +273,7 @@ void InventoryBg_SetupTextWindows(void *o)
 
 void InventoryBg_LoadObjGraphics()
 {
-    s32 g = gCurrentHeap;
+    void *g = gCurrentHeap;
     Gfx2d_LoadPaletteFile(data_ov094_022948c0, g, 8, 4, 4, 6);
     Gfx2d_LoadPaletteFile(data_ov094_022948e0, g, 8, 7, 7, 0xe);
     Gfx2d_LoadCharFile(data_ov094_022948f8, g, 8, 0xc0, 0xc0, 0x15f);
@@ -333,7 +326,7 @@ void InventoryBg_UploadScreen(void *o)
 {
     InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 1)) {
-        if (BgVramTask_requestScreen(HOST_AT(p, 0x38, vramTasks[0], 0), HOST_AT(p, 0x160, screenData[0], 0), p->bgId, 0x800, 0)) {
+        if (((BgVramTask *)(HOST_AT(p, 0x38, vramTasks[0], 0)))->requestScreen(HOST_AT(p, 0x160, screenData[0], 0), p->bgId, 0x800, 0)) {
             InventoryBg_ClearDirty(p, 1);
         }
     }
@@ -402,7 +395,7 @@ void InventoryBg_UploadPicture(void *o)
 {
     InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 4)) {
-        if (BgVramTask_requestChars(HOST_AT(p, 0x70, vramTasks[56], 0), HOST_AT(p, 0x960, screenData[2048], 0), p->bgId, 0x35, 0x35, 0x98)) {
+        if (((BgVramTask *)(HOST_AT(p, 0x70, vramTasks[56], 0)))->requestChars(HOST_AT(p, 0x960, screenData[2048], 0), p->bgId, 0x35, 0x35, 0x98)) {
             InventoryBg_ClearDirty(p, 4);
         }
     }
@@ -411,7 +404,7 @@ void InventoryBg_UploadPicture(void *o)
 void InventoryBg_UploadPalette(void *o)
 {
     if (InventoryBg_IsDirty(o, 8)) {
-        if (BgVramTask_requestPalette((u8 *)o + 0xa8, (u8 *)o + 0x16, 8, 6)) {
+        if (((BgVramTask *)((u8 *)o + 0xa8))->requestPalette((u8 *)o + 0x16, 8, 6)) {
             InventoryBg_ClearDirty(o, 8);
         }
     }

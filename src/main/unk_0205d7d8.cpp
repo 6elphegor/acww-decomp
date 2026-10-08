@@ -300,10 +300,10 @@ extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
                 if (Unk_0205da08_InRange(c)) {
                     void *x = CharaClothTexPool_GetOwnRef();
                     ((CharaClothTexRef *)(x))->loadItem((u16 *)(c), d, 0, 0);
-                    void *m = NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(x));
+                    void *m = NNS_G3dGetTex(CharaClothTexRef_GetBuffer((u8 *)x));
                     void *n = NNS_G3dGetTex(buf);
-                    G3dRes_CopyTexByName(m, n, (void *)"cloth", (void *)"myD");
-                    G3dRes_CopyPlttByName(m, n, (void *)"cloth", (void *)"myD");
+                    G3dRes_CopyTexByName(m, n, "cloth", "myD");
+                    G3dRes_CopyPlttByName(m, n, "cloth", "myD");
                 }
             } else {
                 PlayerHead_SetModelId(p, 1, 0x9e);

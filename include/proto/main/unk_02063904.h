@@ -20,6 +20,12 @@ void BlinkTimer_Construct();
 #ifndef PROTO_LOCAL_BlinkTimer_Destruct
 void BlinkTimer_Destruct();
 #endif
+#ifndef PROTO_LOCAL_G3dRes_CopyTexByName
+void G3dRes_CopyTexByName(void *a, void *b, const char *c, const char *d);
+#endif
+#ifndef PROTO_LOCAL_G3dRes_CopyPlttByName
+void G3dRes_CopyPlttByName(void *a, void *b, const char *c, const char *d);
+#endif
 #ifndef PROTO_LOCAL_TownId_Construct
 void TownId_Construct();
 #endif
@@ -36,13 +42,13 @@ void TownId_Assign(void *dst, void *src);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_File_Exists
-BOOL File_Exists(u32 a);
+BOOL File_Exists(const char *a);
 #endif
 #ifndef PROTO_LOCAL_File_ReadRangeByPath
-void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off);
+void File_ReadRangeByPath(const char *a, void *dst, u32 size, u32 off);
 #endif
 #ifndef PROTO_LOCAL_File_ReadRangeById
-void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c);
+void File_ReadRangeById(FSFileID id, void *dst, u32 size, u32 off);
 #endif
 #ifndef PROTO_LOCAL_File_ReadRange
 void File_ReadRange(FSFile *f, void *dst, u32 size, u32 off);
@@ -82,12 +88,6 @@ u32 Random_GlobalBelow2(u32 n);
 #endif
 #ifndef PROTO_LOCAL_Math_EaseRampProgress
 s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_G3dRes_CopyTexByName
-void G3dRes_CopyTexByName(void *a, void *b, s32 c, s32 d);
-#endif
-#ifndef PROTO_LOCAL_G3dRes_CopyPlttByName
-void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_Mem_Differs
 BOOL Mem_Differs(const void *a, const void *b, u32 n);

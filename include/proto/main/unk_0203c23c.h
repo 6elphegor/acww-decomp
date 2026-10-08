@@ -57,7 +57,7 @@ s32 Catalog_CountInsects();
 BOOL Catalog_AddCreature(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_CarpetTex_Load
-BOOL CarpetTex_Load(u32 a, u16 *p);
+BOOL CarpetTex_Load(void *a, u16 *p);
 #endif
 }
 #endif

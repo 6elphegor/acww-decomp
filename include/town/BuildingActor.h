@@ -42,8 +42,8 @@ public:
     virtual void onInteractionEvent(u32 a, u8 b);
     virtual VecFx32 *getInteractionPos();
     virtual void onJointCalcPost(u32 a, void *b);
-    virtual s32 getDoorInAnim();                                   // bca anim (door open)
-    virtual s32 getDoorOutAnim();                                   // bca anim (door close)
+    virtual void *getDoorInAnim();                                   // bca anim (door open)
+    virtual void *getDoorOutAnim();                                   // bca anim (door close)
     virtual s32 setDoorState(s32 a);                              // set door state
     virtual BOOL initBuilding();
     virtual void updateDoorState();                                  // update door state
@@ -103,7 +103,7 @@ public:
     BOOL loadResources(char *a, char *b, char *c);
     BOOL setupModel(char *a, char *b, char *c);
     void *getBtaAnim(u32 idx);
-    s32 getBca2Anim();
+    void *getBca2Anim();
     void setupAnims();
     void initEntryArea();
 

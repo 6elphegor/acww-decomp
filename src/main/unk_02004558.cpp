@@ -1357,7 +1357,6 @@ namespace nN {
 extern "C" {
 
 void _ZN11CachedModel11setFromFileEPv(void *p, void *v);
-void _ZN5Model11setCallbackEiiiii(void *p, void (*f)(void *), u32 a, u32 b, void *c, u32 d);
 void PlayerActor_JointCbPre(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Scene_GetCurrent();
@@ -1605,12 +1604,10 @@ BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
-BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
 s32 func_01ffcb0c(s32, s32);
-s32 func_021065dc(s32 a);
-s32 func_021065f8(s32, s32);
-void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *, s32, s32, u32, u32, u32, u32, u32);
+void *func_021065dc(void *a);
+void *func_021065f8(void *, u32);
 void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *, s32, s32);
 void PlayerActor_GetHeldItem(u16 *, void *);
 inline BOOL Unk_02010154_In(u16 *p) { BOOL r = FALSE; u16 v = *p; if (*p >= 0x1380 && v <= 0x139f) r = TRUE; return r; }
@@ -1636,9 +1633,9 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *a, u32 b);
 BOOL Scene_InUnk6To8(void);
 u32 Scene_GetCurrent(void);
 u32 Scene_GetTouchPicker(void);
-u32 func_021065dc(u32 a);
-u32 func_021065f8(u32 a, u32 b);
-void BlendAnimModel_Play(void *a, u32 b, u32 c, u32 d, s32 e, u32 f, u32 g);
+void *func_021065dc(void *a);
+void *func_021065f8(void *a, u32 b);
+void BlendAnimModel_Play(void *p, void *anm, s32 blend, s32 mode, s32 speed, u16 frame, u16 numFrames);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *a);
 void _ZN11PlayerActor17applyHeldItemPoseEiPv(PlayerActor *a, s32 b, u32 c);
 s32 _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *a);
@@ -3278,8 +3275,8 @@ void PlayerActor::playAnim(s32 a, u32 b, u8 c, s32 d, u32 e, u16 f, s32 g) {
     }
     v = g >= 0x137 ? getAnimResIndex((u32 *)&a) : g;
     if (!(a == 0 && t == 0 && *(u16 *)&e == 0 && b != 0 && g >= 0x137)) {
-        AnimSlotRef_Load(&bodyAnimSlot.slot, v, 1, 0);
-        u32 r = func_021065f8(func_021065dc(AnimSlotRef_GetData(&bodyAnimSlot.slot)), 0);
+        AnimSlotRef_Load(&bodyAnimSlot, v, 1, 0);
+        void *r = func_021065f8(func_021065dc(AnimSlotRef_GetData(&bodyAnimSlot)), 0);
         BlendAnimModel_Play((u8 *)&bodyModel, r, b, c, d, *(u16 *)&e, 0);
         animId = a;
         animMode = c;
@@ -3341,8 +3338,8 @@ void PlayerActor::applyHoldPose(u16 *p, s32 b, void *c) {
     {
         s32 n, cnt, item;
         s32 i;
-        AnimSlotRef_Load(&((PlayerActor *)this)->holdAnimSlot.slot, r6, 1, 0);
-        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(&((PlayerActor *)this)->bodyModel, func_021065f8(func_021065dc(AnimSlotRef_GetData(&((PlayerActor *)this)->holdAnimSlot.slot)), 0), (s32)c, 0, 0x1000, 0, 0, 0);
+        AnimSlotRef_Load(&((PlayerActor *)this)->holdAnimSlot, r6, 1, 0);
+        ((PlayerActor *)this)->bodyModel.playLayer2(func_021065f8(func_021065dc(AnimSlotRef_GetData(&((PlayerActor *)this)->holdAnimSlot)), 0), (u32)(uptr)c, 0, 0x1000, 0, 0, 0);
         n = CharaAnim_GetJointGroup(r6);
         if (n < 4) {
             cnt = JointGroup_GetRangeCount(n);
@@ -3406,8 +3403,8 @@ void PlayerActor::setShirtTexture(void *p) {
 
 BOOL PlayerActor::requestShirtTexUpload() {
     using namespace nR;
-    u32 r4 = (u32)((PlayerActor *)this)->bodyModel.resMdl;
-    return _ZN14MatTexVramTask7requestEPvjS0_jj(&((PlayerActor *)this)->shirtTexUpload, r4, sPlayerShirtTexName,
+    void *r4 = ((PlayerActor *)this)->bodyModel.resMdl;
+    return ((PlayerActor *)this)->shirtTexUpload.request(r4, (const char *)sPlayerShirtTexName,
                                          ClothTex_GetTexThunk(CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex.v)), 0, 0);
 }
 
@@ -3583,12 +3580,12 @@ BOOL PlayerActor::requestHatChange(u16 *p, u8 b, u8 c, u8 d) {
 
 void PlayerActor::bindTextureByName(void *a, void *b, void *c, void *d) {
     using namespace nR;
-    G3dRes_CopyTexByName(a, b, c, d);
+    G3dRes_CopyTexByName(a, b, (const char *)c, (const char *)d);
 }
 
 void PlayerActor::bindPaletteByName(void *a, void *b, void *c, void *d) {
     using namespace nR;
-    G3dRes_CopyPlttByName(a, b, c, d);
+    G3dRes_CopyPlttByName(a, b, (const char *)c, (const char *)d);
 }
 
 BOOL PlayerActor::isPosInReach(s32 *pos, u32 idx) {
@@ -4620,15 +4617,15 @@ BOOL PlayerActor::finishModelSetup() {
         if (a && b && c) {
             ((CachedModel *)(&((PlayerActor *)this)->bodyModel))->setFromFile(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef.slot));
             PlayerBodyWorkRef_Assign(&((PlayerActor *)this)->bodyWork.slot, data_020c6190[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
-            ((TwoLayerAnimModel *)(&((PlayerActor *)this)->bodyModel))->allocLayerAnims((u32)(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork.slot)));
+            ((TwoLayerAnimModel *)(&((PlayerActor *)this)->bodyModel))->allocLayerAnims(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork.slot));
             ((CachedModel *)(&((PlayerActor *)this)->bodyModel))->allocJointRecord(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork.slot));
             ((PlayerActor *)(this))->initFaceAnims();
             s32 i = PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot) * 2;
-            AnimSlotRef_Assign(&((PlayerActor *)this)->bodyAnimSlot.slot, data_020c61b8[i]);
-            AnimSlotRef_Assign(&((PlayerActor *)this)->holdAnimSlot.slot, (data_020c61b8 + 1)[i]);
+            AnimSlotRef_Assign(&((PlayerActor *)this)->bodyAnimSlot, data_020c61b8[i]);
+            AnimSlotRef_Assign(&((PlayerActor *)this)->holdAnimSlot, (data_020c61b8 + 1)[i]);
             ((PlayerActor *)(this))->startAnim(0, 0, 0);
             ((AnimModel *)(&((PlayerActor *)this)->bodyModel))->attachAnim();
-            _ZN5Model11setCallbackEiiiii(&((PlayerActor *)this)->bodyModel, PlayerActor_JointCbPre, 6, 1, ((PlayerActor *)this), 0);
+            ((Model *)&((PlayerActor *)this)->bodyModel)->setCallback((void (*)(NNSG3dRS *))PlayerActor_JointCbPre, 6, 1, (PlayerActor *)this, 0);
             ((MatTexPatAnim *)(&((PlayerActor *)this)->eyeTexAnim))->applyFrame();
             ((MatTexPatAnim *)(&((PlayerActor *)this)->mouthTexAnim))->applyFrame();
             result = TRUE;
@@ -5665,7 +5662,7 @@ void PlayerActor::endEmotion() {
 void PlayerActor::emotionUpdateAnim() {
     using namespace nK;
     Unk_0200b908_Obj *p;
-    u32 t = AnimSlotRef_GetAnimId(&((PlayerActor *)this)->bodyAnimSlot.slot);
+    u32 t = AnimSlotRef_GetAnimId(&((PlayerActor *)this)->bodyAnimSlot);
     ((NpcEmotionFx *)(&((PlayerActor *)this)->emotionFx))->update(&((PlayerActor *)this)->headTopPos, ((PlayerActor *)this)->rotY, t, (u32)(((PlayerActor *)this)->bodyModel.curFrame << 4) >> 16);
     ((PlayerActor *)(this))->advanceAnim();
     if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel))->isFinished()) {
@@ -8288,7 +8285,7 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
     if (p->c[1] == 0xf && o != 0) {
         s16 a = o->headPitch;
         if (a != 0 || o->headYaw != 0) {
-            pm = (MtxFx33 *)&p->pJntAnmResult->rot;  // Mtx33: the same s32[9]
+            pm = &p->pJntAnmResult->rot;
             s32 i = (u16)a >> 4;
             MTX_RotY33_(&m1, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
             MTX_Concat33(pm, &m1, pm);

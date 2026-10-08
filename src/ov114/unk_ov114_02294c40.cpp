@@ -45,7 +45,6 @@ s32 Msg_SkipLines(void *p, s32 i);
 void _ZN10BgVramTask6cancelEv(void *p);
 void Math_StepS32(void *p, s32 a, s32 b);
 
-s32 _ZN10BgVramTask14requestPaletteEjhj(void *a, void *b, s32 c, s32 d);
 void func_020b8800(void *p);
 void func_020b85f8(void *p);
 void MIi_CpuCopy16(void *, void *, u32);
@@ -124,7 +123,7 @@ void CreatureBookPanel::postUpdate() {
     scrollKnob.updateRelease();
     CreatureBook_UpdatePictureFade(this);
     if (CreatureBook_HasFlags(this, 1)) {
-        if (paletteTask.requestPalette((u32)paletteBuf, mainLayer, 4)) {
+        if (paletteTask.requestPalette(paletteBuf, mainLayer, 4)) {
             CreatureBook_ClearFlags(this, 1);
         }
     }
@@ -733,7 +732,7 @@ extern "C" void CreatureBook_SetRowIcon(CreatureBookPanel *s, u16 *item, s32 idx
         u8 *src2 = src + 0x40;
         MI_CpuCopy8(dst, src, 0x40);
         MI_CpuCopy8((u8 *)dst + 0x400, src2, 0x40);
-        ((BgVramTaskPair *)(&s->rowIconTasks[n]))->requestCharPair((u32)(src), (u32)(src2), 8, lo, lo + 1, lo + 0x20, lo + 0x21);
+        ((BgVramTaskPair *)(&s->rowIconTasks[n]))->requestCharPair(src, src2, 8, lo, lo + 1, lo + 0x20, lo + 0x21);
         e->cell.cParam = InventoryItemGrid_GetIconPalette(s, key);
     }
 }

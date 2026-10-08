@@ -434,40 +434,40 @@ extern "C" s32 Gfx2d_GetLayerBlendMask(u32 n) {
     }
 }
 
-extern "C" s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f) {
+extern "C" s32 Gfx2d_LoadPaletteFile(const char *p0, void *p1, u32 p2, s32 p3, u8 e, u8 f) {
     u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, 0);
     s32 r = Gfx2d_LoadPaletteRange(buf, p2, p3, e, f);
-    Heap_Free(p1, buf);
+    Heap_Free((Heap *)p1, buf);
     return r;
 }
 
-extern "C" s32 Gfx2d_LoadPaletteFileSlot(u32 p0, u32 p1, u32 p2, s32 p3, u8 e) {
-    s32 out;
+extern "C" s32 Gfx2d_LoadPaletteFileSlot(const char *p0, void *p1, u32 p2, s32 p3, u8 e) {
+    u32 out;
     u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, &out);
     u8 *q = buf;
     q += p3 * 32;
     s32 r = Gfx2d_LoadPaletteRange(q, p2, e, e, e);
-    Heap_Free(p1, buf);
+    Heap_Free((Heap *)p1, buf);
     return r;
 }
 
-extern "C" s32 Gfx2d_LoadScreenFile(u32 p0, u32 p1, u32 p2) {
-    s32 out;
+extern "C" s32 Gfx2d_LoadScreenFile(const char *p0, void *p1, u32 p2) {
+    u32 out;
     u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, &out);
     s32 r = Gfx2d_LoadScreen(buf, p2, out, 0);
-    Heap_Free(p1, buf);
+    Heap_Free((Heap *)p1, buf);
     return r;
 }
 
-extern "C" s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f) {
-    s32 out;
+extern "C" s32 Gfx2d_LoadCharFile(const char *p0, void *p1, u32 p2, s32 p3, s32 e, s32 f) {
+    u32 out;
     u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, &out);
     s32 r = Gfx2d_LoadCharRange(buf, p2, p3, e, f);
-    Heap_Free(p1, buf);
+    Heap_Free((Heap *)p1, buf);
     return r;
 }
 
-extern "C" s32 Gfx2d_LoadCharFile8bpp(u32 p0, u32 p1, u32 p2, s32 p3, s32 a, s32 b) {
+extern "C" s32 Gfx2d_LoadCharFile8bpp(const char *p0, void *p1, u32 p2, s32 p3, s32 a, s32 b) {
     return Gfx2d_LoadCharFile(p0, p1, p2, p3 << 1, a << 1, (b << 1) + 1);
 }
 

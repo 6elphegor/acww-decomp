@@ -36,7 +36,6 @@
 #define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Weather_UpdateDaily  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02133d04.h"
@@ -850,7 +849,7 @@ extern void *data_020e4aa0[3];
 extern void *data_020e4aac[3];
 extern void *data_020e4ab8[3];
 extern void *data_020e4ac4[3];
-extern void *sCloudScreenFiles[3];
+extern char **sCloudScreenFiles[3];
 extern void *data_020e4adc[3];
 extern void *data_020e4ae8[3];
 extern void *data_020e4af4[3];
@@ -882,7 +881,7 @@ extern u32 data_020e4c64[4];
 extern u32 data_020e4c74[4];
 extern u32 data_020e4c84[4];
 extern u32 data_020e4c94[4];
-extern void *sSkyPaletteFiles[4];
+extern char *sSkyPaletteFiles[2][2];
 extern u32 data_020e4cb4[4];
 extern u32 data_020e4cc4[4];
 extern u32 data_020e4cd4[4];
@@ -891,12 +890,12 @@ extern u32 data_020e4cf4[4];
 extern u32 data_020e4d04[4];
 extern u32 data_020e4d14[4];
 extern u32 data_020e4d24[4];
-extern void *sCloudCharFiles[5];
+extern char *sCloudCharFiles[5];
 extern void *sSkyLightColorTables[5];
 extern void *sSkyFogOffsetTables[5];
-extern void *data_020e4d70[5];
+extern char *data_020e4d70[5];
 extern void *sSkyLightParamTables[5];
-extern void *data_020e4d98[5];
+extern char *data_020e4d98[5];
 extern char data_020e4dac[23];
 extern void *data_020e4ddc[6];
 extern char data_020e4df4[27];
@@ -931,7 +930,7 @@ extern void *data_020e519c[9];
 extern void *data_020e51c0[9];
 extern void *data_020e51e4[9];
 extern u32 data_020e5208[10];
-extern void *data_020e5230[10];
+extern char *data_020e5230[10];
 extern void *data_020e5258[12];
 extern void *data_020e5288[12];
 extern u32 data_020e52b8[12];
@@ -2996,8 +2995,8 @@ const u32 sSnowAnimIds[3] = {0x5, 0x6, 0x7};
 u32 data_020e4c34[4] = {0x51fc80e0, 0x9d, 0x51fc8000, 0xffff011d};
 const u8 sSkyObjPalOverrideSlots[15] = {0xde, 0xdf, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xcb, 0xcc, 0xcd, 0xce,
     0xcf};
-void *data_020e4d70[5] = {(void *)data_020e4fe8, (void *)data_020e5008, (void *)data_020e5028,
-    (void *)data_020e5048, (void *)data_020e5048};
+char *data_020e4d70[5] = {data_020e4fe8, data_020e5008, data_020e5028,
+    data_020e5048, data_020e5048};
 const u32 data_020d1178[12] = {0x8f0096, 0x800087, 0x780078, 0x960078, 0xbc00b4, 0xc100c3, 0xd200d2, 0xd200d2,
     0xd200d2, 0xd200d2, 0xc300d2, 0xa500b4};
 void *data_020e49dc[2] = {(void *)_ZN9SkySprite10updateBirdEv, 0};
@@ -3271,8 +3270,8 @@ u32 sSkyOutdoors;
 u32 data_020e487c[2] = {0x0, 0xffff0094};
 void *data_020e4a34[2] = {(void *)SkySprite_InitShootingStar, 0};
 void *data_020e49bc[2] = {(void *)SkySprite_UpdateMoon, 0};
-void *data_020e4d98[5] = {(void *)data_020e5068, (void *)data_020e5068, (void *)data_020e5088,
-    (void *)data_020e50a8, (void *)data_020e50c8};
+char *data_020e4d98[5] = {data_020e5068, data_020e5068, data_020e5088,
+    data_020e50a8, data_020e50c8};
 char data_020e4fa8[30] = "/sky/d_2d_b_cld_r0_bg_ncl.bin";
 void *sSkySpriteAnimSeqs[138] = {(void *)data_020e5318, (void *)0x4, (void *)0x1, (void *)data_020e5704, (void *)0x8,
     0, (void *)data_020e4adc, (void *)0x1, (void *)0x1, (void *)data_020e4ae8, (void *)0x1, (void *)0x1,
@@ -5296,13 +5295,13 @@ void *data_020e4a04[2] = {(void *)_ZN9SkySprite12initFireworkEj, 0};
 void *data_020e5154[9] = {(void *)data_020e4ba4, (void *)0x2, 0, (void *)data_020e4c74, (void *)0x1, 0,
     (void *)data_020e4c84, (void *)0x1, 0};
 u32 data_020e4bd4[4] = {0x1600e7, 0x30d4, 0x1e90002, 0xffff30f6};
-void *data_020e5230[10] = {(void *)data_020e4e48, (void *)data_020e4e48, (void *)data_020e4e68,
-    (void *)data_020e4e88, (void *)data_020e4ea8, (void *)data_020e4ec8, (void *)data_020e4ee8,
-    (void *)data_020e4f08, (void *)data_020e4f28, (void *)data_020e4f48};
+char *data_020e5230[10] = {data_020e4e48, data_020e4e48, data_020e4e68,
+    data_020e4e88, data_020e4ea8, data_020e4ec8, data_020e4ee8,
+    data_020e4f08, data_020e4f28, data_020e4f48};
 void *data_020e4944[2] = {(void *)SkySprite_EndMoon, 0};
 u32 data_020e4a24[2] = {0x81f000f0, 0xffff2118};
 u32 data_020e4be4[4] = {0x1800e7, 0x30f7, 0x1eb0004, 0xffff30d4};
-void *sCloudScreenFiles[3] = {(void *)data_020e5230, (void *)data_020e4d98, (void *)data_020e4d70};
+char **sCloudScreenFiles[3] = {data_020e5230, data_020e4d98, data_020e4d70};
 void *sSkyLightColorTables[5] = {(void *)data_020e4b74, (void *)data_020e4b74, (void *)data_020e4b84,
     (void *)data_020e4b84, (void *)data_020e4b84};
 u32 data_020e488c[2] = {0x0, 0xffff00b4};
@@ -5457,8 +5456,7 @@ void *data_020e493c[2] = {(void *)SkySprite_EndBalloon, 0};
 void *data_020e5288[12] = {(void *)data_020e4884, (void *)0x2, 0, (void *)data_020e48bc, (void *)0x2, 0,
     (void *)data_020e4a24, (void *)0x2, 0, (void *)data_020e497c, (void *)0x2, 0};
 u32 data_020e46ec[2] = {0x1fc00fc, 0xffff0058};
-void *sSkyPaletteFiles[4] = {(void *)data_020e4f68, (void *)data_020e4f88, (void *)data_020e4fa8,
-    (void *)data_020e4fc8};
+char *sSkyPaletteFiles[2][2] = {{data_020e4f68, data_020e4f88}, {data_020e4fa8, data_020e4fc8}};
 u32 data_020e49fc[2] = {0x81e003e0, 0xffff909c};
 u32 data_020e4a0c[2] = {0x41fb80f0, 0xffff9096};
 void *data_020e6334[132] = {0, (void *)0x2, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc,
@@ -5536,8 +5534,8 @@ const u32 data_020d1088[12] = {0x10010000, 0x30232022, 0x48a83c44, 0x5dee554c, 0
     0x668f668f, 0x668f668f, 0x5a2f668f, 0x45084d8c, 0x2c633cc6, 0xc211c42};
 u32 data_020e498c[2] = {0x41f003f0, 0xffff0810};
 u32 data_020e489c[2] = {0x81f880f0, 0xffff409c};
-void *sCloudCharFiles[5] = {(void *)data_020e4e10, (void *)data_020e4e10, (void *)data_020e4e10,
-    (void *)data_020e4e10, (void *)data_020e4e10};
+char *sCloudCharFiles[5] = {data_020e4e10, data_020e4e10, data_020e4e10,
+    data_020e4e10, data_020e4e10};
 void *data_020e471c[2] = {(void *)SkySprite_InitBalloon, 0};
 void *data_020e5f14[132] = {0, (void *)0x2, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
     (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
@@ -7025,16 +7023,15 @@ extern "C" {
 void Math_StepS32Alt(s32 *p, s32 a, s32 b);
 }
 extern "C" {
-extern u32 gCurrentHeap;
 }
 extern "C" {
 extern WeatherManager gWeatherManager;
 }
 extern "C" {
-extern uptr *sCloudScreenFiles[];  // (tables of path pointers)
+extern char **sCloudScreenFiles[];  // (tables of path pointers)
 }
 extern "C" {
-extern uptr sCloudCharFiles[];  // (path pointers)
+extern char *sCloudCharFiles[];  // (path pointers)
 }
 extern "C" {
 extern s8 sWeatherHourTable[];
@@ -7056,7 +7053,7 @@ extern "C" {
 extern s32 sSkyPaletteSetByLevel[];
 }
 extern "C" {
-extern uptr sSkyPaletteFiles[2][2];  // (pointers)
+extern char *sSkyPaletteFiles[2][2];  // (pointers)
 }
 
 extern "C" s32 Sky_LoadPalettes(s32 x);
@@ -7098,7 +7095,7 @@ extern "C" BOOL Sky_LoadPaletteFiles() {
         for (j = 0; j < 2; j++) {
             if (gWeatherManager.paletteFiles[i][j] == 0) {
                 u8 **dst = &gWeatherManager.paletteFiles[i][j];
-                *dst = File_LoadAlloc(sSkyPaletteFiles[i][j], (void *)gCurrentHeap, -4, &gWeatherManager.paletteFileSizes[i][j]);
+                *dst = (u8 *)File_LoadAlloc(sSkyPaletteFiles[i][j], gCurrentHeap, -4, &gWeatherManager.paletteFileSizes[i][j]);
                 if (!*dst) {
                     return FALSE;
                 }
@@ -7430,7 +7427,7 @@ namespace n03 {
 BOOL WeatherManager::loadCloudChars(s32 idx, s32 unused) {
     using namespace n03;
     BOOL ok = FALSE;
-    if (Gfx2d_LoadCharFile8bpp(sCloudCharFiles[idx], (void *)gCurrentHeap, unused, 16, 16, 47)) {
+    if (Gfx2d_LoadCharFile8bpp(sCloudCharFiles[idx], gCurrentHeap, unused, 16, 16, 47)) {
         ok = TRUE;
     }
     return ok;
@@ -7442,7 +7439,7 @@ BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     using namespace n03;
     BOOL ok = FALSE;
     s32 i;
-    uptr res;
+    const char *res;
     if (mode == 0) {
         s32 t = idx * 2;
         i = t + cloudVariant;
@@ -7451,7 +7448,7 @@ BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     }
     res = sCloudScreenFiles[mode][i];
     if (*p1 == NULL) {
-        *p1 = File_LoadAlloc(res, (void *)gCurrentHeap, -4, p2);
+        *p1 = (u8 *)File_LoadAlloc(res, gCurrentHeap, -4, p2);
         if (*p1 != NULL) {
             ok = TRUE;
         }
@@ -7989,7 +7986,6 @@ extern u8 sSkyBlackBackdrop[];
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[5]; } gSkySprites; } }
 #define data_021f3010 (*(decltype(&n01::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
 extern "C" {
-extern void *gCurrentHeap;
 }
 extern "C" {
 extern u32 sSkyOutdoors;

@@ -31,7 +31,7 @@ extern "C" {
 BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out);
 #endif
 #ifndef PROTO_LOCAL_Oam_DrawObj
-s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, const void *obj, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 #endif
 #ifndef PROTO_LOCAL_Oam_DrawObjRotated
 GXOamAttr *Oam_DrawObjRotated(u32 mode, GXOamAttr *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz);

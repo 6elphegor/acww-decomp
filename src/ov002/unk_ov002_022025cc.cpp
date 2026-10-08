@@ -225,15 +225,15 @@ extern "C" void Menu_PlayScrollTickSe() { Snd_PlaySe(0x19); }
 
 extern "C" void Menu_PlayScrollGrabSe() { Snd_PlaySe(0x33); }
 
-extern "C" void Menu_LoadPaperBg(s32 a, void *b) {
+extern "C" void Menu_LoadPaperBg(s32 a, u32 b) {
     void *h = gCurrentHeap;
     char buf[0x20];
     Str_SPrintf(buf, "menu/paper/chr/%03d.bch", a);
-    Gfx2d_LoadCharFile(buf, h, (s32)b, 0x10, 0x10, 0x74);
+    Gfx2d_LoadCharFile(buf, h, b, 0x10, 0x10, 0x74);
     Str_SPrintf(buf, "menu/paper/scr/%03d.bsc", a);
-    Gfx2d_LoadScreenFile(buf, h, (s32)b);
+    Gfx2d_LoadScreenFile(buf, h, b);
     Str_SPrintf(buf, "menu/paper/plt/%03d.bpl", a, a);
-    Gfx2d_LoadPaletteFile(buf, h, (s32)b, 0xc, 0xc, 0xe);
+    Gfx2d_LoadPaletteFile(buf, h, b, 0xc, 0xc, 0xe);
 }
 
 extern "C" void *_ZN10MenuCursorC1Ei(MenuCursor *self, BOOL flag) {

@@ -590,7 +590,7 @@ void MailboxMenu::transitionAct07() {
     void *t = getSlotLetter(selectedSlot);
     registerLetterPaper(t);
     Letter_MarkRead(t);
-    ((LetterRenderer *)&letterView)->show((LetterView *)t, (void *)3, (void *)4, 1);
+    ((LetterRenderer *)&letterView)->show((LetterView *)t, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -722,7 +722,7 @@ void MailboxMenu::loadInventoryBg() {
 }
 
 void MailboxMenu::loadBoxBg() {
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/inventory/b_itm_post.bpl", h, 4, 4, 4, 4);
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_ltr2.bsc", h, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_post.bch", h, 4, 0x1e2, 0x1e2, 0x227);

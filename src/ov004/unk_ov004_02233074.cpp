@@ -63,15 +63,12 @@
 #define func_02004b60 _ZN6ItemIdD1Ev
 #define func_0203442c _ZN6ItemIdC1Ev
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define func_020548a0 _ZN9AnimModelD1Ev
 #define func_020548d0 _ZN9AnimModelC1Ev
-#define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_drawNoGeCmd _ZN5Model11drawNoGeCmdEv
-#define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define TexPatVramAnim_update _ZN14TexPatVramAnim6updateEv
@@ -154,9 +151,9 @@ struct TvClockDateBuf {
 // P: 0xa8-byte TV/ftr resource slot (member sub-object TexPatVramAnim at +0x10)
 struct TvProgSlot {
     void *heap;
-    u32 screenTex;
-    u32 progTex;
-    u32 progTexPat;
+    void *screenTex;
+    void *progTex;
+    void *progTexPat;
     u32 texPatAnim[0x90 / 4];
     s32 program;
     s16 weather;
@@ -167,10 +164,15 @@ struct TvProgSlot {
 struct TvScreen {
     s16 curSlot;
     TvProgSlot slots[2];
-    u32 screenTex;
+    void *screenTex;
     void *soundHeap;
     void *tvSound;
 };
+// (not in the generated header: it spells the file's struct without the C struct keyword)
+extern "C" void *TvScreen_GetTex(TvScreen *o);
+extern "C" void *FtrMoveAnim_GetPushAnim(FtrMoveAnim *r);
+extern "C" void *FtrMoveAnim_GetPullAnim(FtrMoveAnim *r);
+extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 
 // R: furniture model wrapper (AnimModel at +0x2c)
 struct FtrMoveAnim {
@@ -180,11 +182,11 @@ struct FtrMoveAnim {
     s32 posZ;
     void *heap;
     void *anmArc;
-    u32 pushAnim;
-    u32 pullAnim;
-    u32 haniwaAnim;
+    void *pushAnim;
+    void *pullAnim;
+    void *haniwaAnim;
     void *modelArc;
-    u32 resMdl;
+    void *resMdl;
     // the BlendAnimModel (constructed in place by FtrMoveAnim_Construct); its matrix and frame control are the
     // modelMtx / animFrameCtrl of the DS layout below (the host types are larger: storage of the real size)
     alignas(8) u8 model[sizeof(BlendAnimModel)];
@@ -409,15 +411,12 @@ u32 FtrFootprint_GetTileCount(FtrFootprint *b);
 void FtrFootprint_Destruct(FtrFootprint *b);
 void FtrFootprint_Init(FtrFootprint *b, void *cell);
 void AnimModel_attachAnim(void *self);
-void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void AnimModel_setFrame(void *p);
 void AnimModel_stepAnim(void *p);
 BOOL AnimModel_allocAnmObj(void *self, void *x);
 void func_020548a0(void *self);
 void func_020548d0(void *self);
-void Model_setInitCallback(void *self, void *cb, void *arg);
 void Model_drawNoGeCmd(void *self);
-BOOL Model_setResourceAndBind(void *self, void *res, u32 a);
 void Gfx3d_LoadTexAndPltt(void *a, void *b);
 void *Gfx3d_CopyTex(void *a, void *heap);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
@@ -4194,7 +4193,7 @@ extern "C" BOOL FtrMgr_OnRemoteStorageClose(void) {
 }
 
 // @0x2233cdc unk_0223349c.cpp
-extern "C" s32 FurnitureManager_GetTvTex(void) {
+extern "C" void *FurnitureManager_GetTvTex(void) {
     FurnitureManager *s = sFurnitureManager;
     if (s) {
         return TvScreen_GetTex(&s->tvScreen);
@@ -4350,7 +4349,7 @@ extern "C" void FtrMoveAnim_SetPos(FtrMoveAnim *r, VecFx32 *v) {
 }
 
 // @0x2233a70 unk_0223349c.cpp
-extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, VecFx32 *pos, s32 e) {
+extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, void *x, volatile u8 *flag, VecFx32 *pos, s32 e) {
     if (*flag == 0 && r->isPlaying == 0 && x != 0) {
         ((BlendAnimModel *)(r->model))->initAnim(x, 1, 0x1000, 0, 0);
         r->isPlaying = 1;
@@ -4426,15 +4425,15 @@ extern "C" BOOL FtrMoveAnim_LoadAnims(FtrMoveAnim *r) {
         if (NNS_FndMountArchive(&arc, "ANM", r->anmArc)) {
             void *x = NNS_FndGetArchiveFileByName("ANM:a/bca/ft_push1.nsbca");
             if (x) {
-                r->pushAnim = (u32)func_021065f8(func_021065dc(x), 0);
+                r->pushAnim = func_021065f8(func_021065dc(x), 0);
             }
             x = NNS_FndGetArchiveFileByName("ANM:a/bca/ft_pull1.nsbca");
             if (x) {
-                r->pullAnim = (u32)func_021065f8(func_021065dc(x), 0);
+                r->pullAnim = func_021065f8(func_021065dc(x), 0);
             }
             x = NNS_FndGetArchiveFileByName("ANM:a/bca/ft_kb_hw_def_anim.nsbca");
             if (x) {
-                r->haniwaAnim = (u32)func_021065f8(func_021065dc(x), 0);
+                r->haniwaAnim = func_021065f8(func_021065dc(x), 0);
             }
             NNS_FndUnmountArchive(&arc);
             return TRUE;
@@ -4474,12 +4473,12 @@ extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
             BOOL ok = FALSE;
             u8 *p;
             p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(sFtrMoveAnimModelNamePtr));
-            r->resMdl = (u32)p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
-            if (((Model *)(r->model))->setResourceAndBind((NNSG3dResMdl *)((void *)r->resMdl), ok)) {
+            r->resMdl = p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
+            if (((Model *)(r->model))->setResourceAndBind((NNSG3dResMdl *)r->resMdl, NULL)) {
                 if (((AnimModel *)(r->model))->allocAnmObj(r->heap)) {
                     ((BlendAnimModel *)(r->model))->initAnim(FtrMoveAnim_GetPushAnim(r), 1, 0x1000, ok, ok);
                     ((AnimModel *)(r->model))->attachAnim();
-                    ((Model *)(r->model))->setInitCallback((s32)((void *)FtrMoveAnim_InstallCallback), (s32)(r));
+                    ((Model *)(r->model))->setInitCallback(FtrMoveAnim_InstallCallback, r);
                     ok = TRUE;
                 }
             }
@@ -4498,17 +4497,17 @@ extern "C" BOOL FtrMoveAnim_ClearModel(FtrMoveAnim *r) {
 }
 
 // @0x22337c4 unk_0223349c.cpp
-extern "C" u32 FtrMoveAnim_GetPushAnim(FtrMoveAnim *r) {
+extern "C" void *FtrMoveAnim_GetPushAnim(FtrMoveAnim *r) {
     return r->pushAnim;
 }
 
 // @0x22337c0 unk_0223349c.cpp
-extern "C" u32 FtrMoveAnim_GetPullAnim(FtrMoveAnim *r) {
+extern "C" void *FtrMoveAnim_GetPullAnim(FtrMoveAnim *r) {
     return r->pullAnim;
 }
 
 // @0x22337bc unk_0223349c.cpp
-extern "C" u32 FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r) {
+extern "C" void *FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r) {
     return r->haniwaAnim;
 }
 
@@ -4529,7 +4528,7 @@ extern "C" void *TvProgSlot_Destruct(TvProgSlot *p) {
 }
 
 // @0x2233744 unk_0223349c.cpp
-extern "C" void TvProgSlot_Init(TvProgSlot *p, u32 a) {
+extern "C" void TvProgSlot_Init(TvProgSlot *p, void *a) {
     p->program = -1;
     p->weather = -1;
     p->heap = FrameHeap_Create(0xe00, gCurrentHeap);
@@ -4560,9 +4559,9 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
         Str_SPrintf(buf2, "/ftr/tv/weather/%s.nsbtp", r6);
         r6 = x;
     }
-    p->progTex = (u32)NNS_G3dGetTex(File_LoadAlloc(buf1, p->heap, 4, 0));
-    p->progTexPat = (u32)func_021066ac(func_02106690(File_LoadAlloc(buf2, p->heap, 4, 0)), 0);
-    if (((TexPatVramAnim *)(&p->texPatAnim))->init((u8 *)((void *)p->screenTex), "tv.0", "tv_pl", (u8 *)((void *)p->progTex), (u8 *)((void *)p->progTexPat), 0)) {
+    p->progTex = NNS_G3dGetTex(File_LoadAlloc(buf1, p->heap, 4, 0));
+    p->progTexPat = func_021066ac(func_02106690(File_LoadAlloc(buf2, p->heap, 4, 0)), 0);
+    if (((TexPatVramAnim *)(&p->texPatAnim))->init((u8 *)p->screenTex, "tv.0", "tv_pl", (u8 *)p->progTex, (u8 *)p->progTexPat, 0)) {
         p->program = id;
         p->weather = r6;
         p->loopCount = 0;
@@ -4631,7 +4630,7 @@ extern "C" u32 TvProgSlot_GetFrame(TvProgSlot *p) {
 
 // @0x2233560 unk_0223349c.cpp
 extern "C" void *TvScreen_Construct(TvScreen *q) {
-    __cxa_vec_ctor(&q->slots, 2, 0xa8, (void *(*)(void *))TvProgSlot_Construct, (void *(*)(void *, s32))TvProgSlot_Destruct);
+    __cxa_vec_ctor(&q->slots, 2, sizeof(TvProgSlot), (void *(*)(void *))TvProgSlot_Construct, (void *(*)(void *, s32))TvProgSlot_Destruct);
     q->curSlot = -1;
     q->screenTex = 0;
     q->soundHeap = 0;
@@ -4641,7 +4640,7 @@ extern "C" void *TvScreen_Construct(TvScreen *q) {
 
 // @0x2233544 unk_0223349c.cpp
 extern "C" void *TvScreen_Destruct(TvScreen *q) {
-    __cxa_vec_cleanup(&q->slots, 2, 0xa8, (void *(*)(void *, s32))TvProgSlot_Destruct);
+    __cxa_vec_cleanup(&q->slots, 2, sizeof(TvProgSlot), (void *(*)(void *, s32))TvProgSlot_Destruct);
     return q;
 }
 
@@ -4654,7 +4653,7 @@ extern "C" void TvScreen_Load(TvScreen *q) {
     if (h) {
         void *r6 = NNS_G3dGetTex(h);
         Gfx3d_LoadTexAndPltt(r6, 0);
-        q->screenTex = (u32)Gfx3d_CopyTex(r6, gBgHeap);
+        q->screenTex = Gfx3d_CopyTex(r6, gBgHeap);
         Mem_Free(h);
     }
     TvProgSlot_Init(&q->slots[0], q->screenTex);
@@ -4815,7 +4814,7 @@ extern "C" s32 TvScreen_GetWeather(TvScreen *o) {
 }
 
 // @0x2233194 unk_02232b1c.cpp
-extern "C" s32 TvScreen_GetTex(TvScreen *o) {
+extern "C" void *TvScreen_GetTex(TvScreen *o) {
     return o->screenTex;
 }
 

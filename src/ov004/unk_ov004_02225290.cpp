@@ -54,7 +54,7 @@ void func_020566bc(void *p);
 void Math_ApproachS32Max(void *a, s32 b, s32 c, s32 d);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
-s32 RoomObjRes_GetBca(void *o, u32 i);
+void *RoomObjRes_GetBca(void *o, u32 i);
 void RoomObj_PlaySe(void *o, s32 v);
 }
 
@@ -123,7 +123,7 @@ BOOL BarberMachine::onCreate() {
     initCollision();
     if (RoomObjRes_GetBca(&res, 0) != 0) {
         if (model.allocAnmObj(gBgHeap) != 0) {
-            s32 r = RoomObjRes_GetBca(&res, 0);
+            void *r = RoomObjRes_GetBca(&res, 0);
             ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
             model.attachAnim();
         }
@@ -190,7 +190,7 @@ void BarberMachine::updateState() {
 
 // @222548c
 BOOL BarberMachine::enterState00() {
-    s32 r = RoomObjRes_GetBca(&res, 0);
+    void *r = RoomObjRes_GetBca(&res, 0);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     return TRUE;
 }
@@ -201,7 +201,7 @@ void BarberMachine::updateState00() {
 
 // @2225440
 BOOL BarberMachine::enterState01() {
-    s32 r = RoomObjRes_GetBca(&res, 0);
+    void *r = RoomObjRes_GetBca(&res, 0);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&se, 0x4d8);
     return TRUE;
@@ -222,7 +222,7 @@ void BarberMachine::updateState01() {
 
 // @22253c4
 BOOL BarberMachine::enterState02() {
-    s32 r = RoomObjRes_GetBca(&res, 1);
+    void *r = RoomObjRes_GetBca(&res, 1);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     return TRUE;
 }
@@ -242,7 +242,7 @@ void BarberMachine::updateState02() {
 
 // @222532c
 BOOL BarberMachine::enterState03() {
-    s32 r = RoomObjRes_GetBca(&res, 2);
+    void *r = RoomObjRes_GetBca(&res, 2);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&se, 0x4d9);
     isStartedLocally = 0;

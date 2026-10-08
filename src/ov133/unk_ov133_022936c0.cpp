@@ -1238,12 +1238,12 @@ void FriendCodeMenu::flushScreens() {
         setFlags(4);
     }
     if (testFlags(2)) {
-        if (screenTasks[0].requestScreen((u32)keypadScreen, 4, 0x800, 0)) {
+        if (screenTasks[0].requestScreen(keypadScreen, 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(4)) {
-        if (screenTasks[1].requestScreen((u32)codeScreen, 6, 0x800, 0)) {
+        if (screenTasks[1].requestScreen(codeScreen, 6, 0x800, 0)) {
             clearFlags(4);
         }
     }

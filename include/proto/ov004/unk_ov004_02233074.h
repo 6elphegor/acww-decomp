@@ -65,6 +65,9 @@ void FtrMgr_NotifyNearestCabinClock(void *);
 #ifndef PROTO_LOCAL_FtrMgr_NotifyNearestSoundingClock
 void FtrMgr_NotifyNearestSoundingClock(void *);
 #endif
+#ifndef PROTO_LOCAL_FurnitureManager_GetTvTex
+void *FurnitureManager_GetTvTex(void);
+#endif
 #ifndef PROTO_LOCAL_FurnitureManager_SetTvProgramChanged
 void FurnitureManager_SetTvProgramChanged(void);
 #endif
@@ -245,9 +248,6 @@ BOOL FtrMgr_OnRemoteStorageHold(void);
 #ifndef PROTO_LOCAL_FtrMgr_OnRemoteStorageClose
 BOOL FtrMgr_OnRemoteStorageClose(void);
 #endif
-#ifndef PROTO_LOCAL_FurnitureManager_GetTvTex
-s32 FurnitureManager_GetTvTex(void);
-#endif
 #ifndef PROTO_LOCAL_FurnitureManager_GetTvProgram
 s32 FurnitureManager_GetTvProgram(void);
 #endif
@@ -273,7 +273,7 @@ void FtrMoveFlag_Destroy(u8 *p);
 void FtrMoveAnim_SetPos(FtrMoveAnim *r, VecFx32 *v);
 #endif
 #ifndef PROTO_LOCAL_FtrMoveAnim_Start
-BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, VecFx32 *pos, s32 e);
+BOOL FtrMoveAnim_Start(FtrMoveAnim *r, void *x, volatile u8 *flag, VecFx32 *pos, s32 e);
 #endif
 #ifndef PROTO_LOCAL_FtrMoveAnim_StartPush
 BOOL FtrMoveAnim_StartPush(FtrMoveAnim *r, volatile u8 *a, VecFx32 *b, s32 c);
@@ -301,18 +301,6 @@ BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r);
 #endif
 #ifndef PROTO_LOCAL_FtrMoveAnim_ClearModel
 BOOL FtrMoveAnim_ClearModel(FtrMoveAnim *r);
-#endif
-#ifndef PROTO_LOCAL_FtrMoveAnim_GetPushAnim
-u32 FtrMoveAnim_GetPushAnim(FtrMoveAnim *r);
-#endif
-#ifndef PROTO_LOCAL_FtrMoveAnim_GetPullAnim
-u32 FtrMoveAnim_GetPullAnim(FtrMoveAnim *r);
-#endif
-#ifndef PROTO_LOCAL_FtrMoveAnim_GetHaniwaAnim
-u32 FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
-#endif
-#ifndef PROTO_LOCAL_TvProgSlot_Init
-void TvProgSlot_Init(TvProgSlot *p, u32 a);
 #endif
 #ifndef PROTO_LOCAL_TvWeather_GetName
 s32 TvWeather_GetName(u32 i);
@@ -352,9 +340,6 @@ s32 TvScreen_GetProgram(TvScreen *o);
 #endif
 #ifndef PROTO_LOCAL_TvScreen_GetWeather
 s32 TvScreen_GetWeather(TvScreen *o);
-#endif
-#ifndef PROTO_LOCAL_TvScreen_GetTex
-s32 TvScreen_GetTex(TvScreen *o);
 #endif
 #ifndef PROTO_LOCAL_TvScreen_GetSound
 s32 TvScreen_GetSound(TvScreen *o);

@@ -41,7 +41,6 @@
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -92,7 +91,6 @@ void PopupChoice_Open(void *p, s32 a);
 void MenuButtons_LoadTextColors(void *p);
 
 extern u16 gPad[];
-extern u32 gCurrentHeap;
 extern u8 gSavePlayers[];
 }
 
@@ -641,7 +639,7 @@ void LetterStorageMenu::transitionAct07() {
         break;
     }
     Letter_MarkRead((u32)p);
-    letterView.show((LetterView *)p, (void *)3, (void *)4, 1);
+    letterView.show((LetterView *)p, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -851,7 +849,7 @@ void LetterStorageMenu::loadInventoryBg() {
 }
 
 void LetterStorageMenu::loadBoxBg() {
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/inventory/b_itm_post.bpl", h, 4, 4, 4, 4);
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_ltr0.bsc", h, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_post.bch", h, 4, 0x1e2, 0x1e2, 0x227);

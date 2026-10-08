@@ -96,7 +96,7 @@ void MenuTownListPanel::preStateUpdate() {
 
 void MenuTownListPanel::flushPalette() {
     if (testFlags(1)) {
-        if (paletteTask.requestPalette((u32)workPalette, bgLayer, 7)) {
+        if (paletteTask.requestPalette(workPalette, bgLayer, 7)) {
             clearFlags(1);
         }
     }
@@ -108,9 +108,9 @@ void MenuTownListPanel::drawTitle(s32 a, s32 b) {
 }
 
 void MenuTownListPanel::loadBgGfx() {
-    u32 h = gCurrentHeap;
-    Gfx2d_LoadCharFile((u32)"menu/res/bg.bch", h, bgLayer, 0x11, 0x11, 0x36);
-    Gfx2d_LoadPaletteFile((u32)"menu/res/bg.bpl", h, bgLayer, 1, 1, 8);
+    void *h = gCurrentHeap;
+    Gfx2d_LoadCharFile("menu/res/bg.bch", h, bgLayer, 0x11, 0x11, 0x36);
+    Gfx2d_LoadPaletteFile("menu/res/bg.bpl", h, bgLayer, 1, 1, 8);
     File_LoadToBuffer((void *)"menu/res/bg7.bpl", basePalette, 0x20);
     MIi_CpuCopy16(basePalette, workPalette, 0x20);
 }
@@ -124,10 +124,10 @@ void MenuTownListPanel::clearAllRows() {
 }
 
 void MenuTownListPanel::loadObjGfx() {
-    u32 h = gCurrentHeap;
-    Gfx2d_LoadCharFile((u32)"menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
-    Gfx2d_LoadCharFile((u32)"menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
-    Gfx2d_LoadPaletteFile((u32)"menu/res/obj.bpl", h, 8, 4, 4, 0xd);
+    void *h = gCurrentHeap;
+    Gfx2d_LoadCharFile("menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
+    Gfx2d_LoadCharFile("menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
+    Gfx2d_LoadPaletteFile("menu/res/obj.bpl", h, 8, 4, 4, 0xd);
 }
 
 void MenuTownListPanel::setRowFadeColor(s32 a, s32 x, s32 n, s32 e) {

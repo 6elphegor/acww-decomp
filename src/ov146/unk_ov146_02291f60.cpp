@@ -49,8 +49,6 @@
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define ScrollKnob_areAnimsDone _ZN10ScrollKnob12areAnimsDoneEv
 #define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
-#define BgVramTask_requestPalette _ZN10BgVramTask14requestPaletteEjhj
-#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_02133150 _s32_div_f
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
@@ -100,8 +98,6 @@ void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void BgVramTask_cancel(void *p);
-BOOL BgVramTask_requestScreen(void *a, void *b, u32 c, u32 d, u32 e);
-BOOL BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
 BOOL EncodedString_SetRaw(void *dst, const void *src, s32 n);
 s32 func_02133150(s32 a, s32 b);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -1130,12 +1126,12 @@ BOOL WfcFriendListMenu::isFriendSelectable(s32 idx) {
 
 void WfcFriendListMenu::flushVram() {
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(HOST_AT(this, 0x1930, vramTasks[0], 0), HOST_AT(this, 0xb8a, listScreen[0], 0), 4, 0x800, 0)) {
+        if (((BgVramTask *)(HOST_AT(this, 0x1930, vramTasks[0], 0)))->requestScreen(HOST_AT(this, 0xb8a, listScreen[0], 0), 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(8)) {
-        if (BgVramTask_requestPalette(HOST_AT(this, 0x1954, vramTasks[1], 0), HOST_AT(this, 0x13aa, rowPalette[0], 0), 4, 7)) {
+        if (((BgVramTask *)(HOST_AT(this, 0x1954, vramTasks[1], 0)))->requestPalette(HOST_AT(this, 0x13aa, rowPalette[0], 0), 4, 7)) {
             clearFlags(8);
         }
     }

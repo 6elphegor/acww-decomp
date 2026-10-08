@@ -407,7 +407,7 @@ void CommCautionWindow::uploadLine(s32 i) {
     b += *(s32 *)(b + 8);
     u8 *c = b + *(u16 *)(b + 0xa);
     u32 v = _ZN10G3dMatData10getTexAddrEv(b + *(s32 *)(c + 8));
-    texUpload.requestTex((u32)lineTiles, v + (i << 11), 0x800, 2);
+    texUpload.requestTex(lineTiles, v + (i << 11), 0x800, 2);
 }
 
 void CommCautionWindow::clearLines() {

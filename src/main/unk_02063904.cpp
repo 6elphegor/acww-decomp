@@ -217,25 +217,25 @@ enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_
 
 
 
-extern "C" BOOL File_Exists(u32 a) {
+extern "C" BOOL File_Exists(const char *a) {
     FSFile f;
     BOOL r = File_Open(&f, a);
     if (r) FS_CloseFile(&f);
     return r;
 }
 
-extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off) {
+extern "C" void File_ReadRangeByPath(const char *a, void *dst, u32 size, u32 off) {
     FSFile f;
     File_OpenOrPanic(&f, a);
     File_ReadRange(&f, dst, size, off);
     FS_CloseFile(&f);
 }
 
-extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c) {
+extern "C" void File_ReadRangeById(FSFileID id, void *dst, u32 size, u32 off) {
     FSFile f;
     FS_InitFile(&f);
     if (FS_OpenFileFast(&f, id)) {
-        File_ReadRange(&f, (void *)a, b, c);
+        File_ReadRange(&f, dst, size, off);
         FS_CloseFile(&f);
     }
 }
@@ -399,19 +399,19 @@ extern "C" s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
     return r;
 }
 
-extern "C" void G3dRes_CopyTexByName(void *a, void *b, s32 c, s32 d) {
-    void *p = _ZN12G3dResAccess11findTexDataEv(a, c);
-    s32 i = ((G3dResAccess *)(b))->findTexIdx(d);
-    void *q = ((G3dResAccess *)(b))->getTexData(i);
-    u32 n = ((G3dResAccess *)(b))->getTexSize(i);
+extern "C" void G3dRes_CopyTexByName(void *a, void *b, const char *c, const char *d) {
+    void *p = ((G3dResAccess *)a)->findTexData(c);
+    s32 i = ((G3dResAccess *)b)->findTexIdx(d);
+    void *q = ((G3dResAccess *)b)->getTexData(i);
+    u32 n = ((G3dResAccess *)b)->getTexSize(i);
     MI_CpuCopy8(p, q, n);
 }
 
-extern "C" void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d) {
-    void *p = _ZN12G3dResAccess12findPlttDataEv(a, c);
-    s32 i = ((G3dResAccess *)(b))->findPlttIdx(d);
-    void *q = ((G3dResAccess *)(b))->getPlttData(i);
-    u32 n = ((G3dResAccess *)(b))->getPlttSize(i);
+extern "C" void G3dRes_CopyPlttByName(void *a, void *b, const char *c, const char *d) {
+    void *p = ((G3dResAccess *)a)->findPlttData(c);
+    s32 i = ((G3dResAccess *)b)->findPlttIdx(d);
+    void *q = ((G3dResAccess *)b)->getPlttData(i);
+    u32 n = ((G3dResAccess *)b)->getPlttSize(i);
     MI_CpuCopy8(p, q, n);
 }
 

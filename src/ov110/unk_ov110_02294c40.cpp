@@ -597,7 +597,7 @@ extern "C" void LostFoundRecycleMenu_LoadInventoryBg(LostFoundRecycleMenu *s) {
 }
 
 extern "C" void LostFoundRecycleMenu_LoadTopBg(LostFoundRecycleMenu *s) {
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_tra2.bsc", h, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
     s32 v = MenuCtrl_GetMode();

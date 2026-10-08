@@ -539,7 +539,7 @@ void PocketMenu::stateWaitSlideOut() {
 void PocketMenu::stateOpenLetterView() {
     void *r4 = getActionLetter();
     Letter_MarkRead(r4);
-    ((LetterRenderer *)(unk_2904))->show((LetterView *)(r4), (void *)(3), (void *)(4), 1);
+    ((LetterRenderer *)(unk_2904))->show((LetterView *)(r4), 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);

@@ -62,8 +62,8 @@ extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 gFieldSceneKind;
 void *_ZN9ModelSlot7getHeapEv(void *);
-s32 func_021065dc(void *p);
-s32 func_021065f8(s32, s32);
+void *func_021065dc(void *p);
+void *func_021065f8(void *p, u32 i);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
 s32 WorldCurve_ToCurved(void *, void *);
 void Mtx43_SetTranslate(void *, s32, s32, s32);
@@ -118,7 +118,7 @@ FishDisplay *FishDisplay_Create(void);
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern char *sFishShadowMdlPath;
-extern void *sFishShadowAnmPath;
+extern const char *sFishShadowAnmPath;
 extern char sFishMdl56File[];
 extern char sFishMdl57File[];
 extern char sFishMdl58File[];
@@ -354,7 +354,7 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
         } else {
             Str_SPrintf(buf, "/fish/0%d/fish%d.nsbca", q, id);
         }
-        s32 u = func_021065f8(func_021065dc(File_LoadAlloc(buf, t, 4, 0)), 0);
+        void *u = func_021065f8(func_021065dc(File_LoadAlloc(buf, t, 4, 0)), 0);
         s32 flag = 0x1000;
         if (e->animate == 0) flag = 0;
         if (((AnimModel *)(m))->allocAnmObj(t)) {
@@ -375,7 +375,7 @@ BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
     void *x = ((ModelSlotPool *)(p))->acquire((u16 *)(HOST_AT(e, 0x48, modelSlot[0], 0)));
     void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
     if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), sFishStaticMdlPaths[id - 0x38])) {
-        ((Model *)(HOST_AT(e, 0x98, model[0], 0)))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), r);
+        ((Model *)(HOST_AT(e, 0x98, model[0], 0)))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), NULL);
         e->entryState = 3;
         updateTransform(e);
         r = TRUE;
@@ -391,11 +391,11 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
     void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
     if (((PooledModel *)(y))->loadFromSlot((ModelSlot *)(x), sFishShadowMdlPath)) {
         u8 *m = HOST_AT(e, 0x98, model[0], 0);
-        ((Model *)(m))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), r);
+        ((Model *)(m))->setResource((NNSG3dResMdl *)(((PooledModel *)(y))->getModel()), NULL);
         void *t = _ZN9ModelSlot7getHeapEv(x);
-        s32 u = func_021065f8(func_021065dc(File_LoadAlloc(sFishShadowAnmPath, t, 4, r)), r);
+        void *u = func_021065f8(func_021065dc(File_LoadAlloc(sFishShadowAnmPath, t, 4, NULL)), 0);
         if (((AnimModel *)(m))->allocAnmObj(t)) {
-            ((BlendAnimModel *)(m))->initAnim(u, r, 0x1000, 1, r);
+            ((BlendAnimModel *)(m))->initAnim(u, 0, 0x1000, 1, 0);
             ((AnimModel *)(m))->attachAnim();
             e->entryState = 3;
             updateTransform(e);
@@ -578,7 +578,7 @@ extern "C" u32 Fish_GetSizeClass(u32 x) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern void *sFishShadowAnmPath;
+extern const char *sFishShadowAnmPath;
 extern char *sFishShadowMdlPath;
 extern char sFishMdl56File[];
 extern char sFishMdl57File[];
@@ -594,7 +594,7 @@ extern Backup gBackup;
 extern FishDisplay *gFishDisplay;
 extern const u8 data_020ca314[4];
 
-void *sFishShadowAnmPath = sFishShadowAnmFile;
+const char *sFishShadowAnmPath = sFishShadowAnmFile;
 
 char *sFishShadowMdlPath = sFishShadowMdlFile;
 

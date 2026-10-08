@@ -54,7 +54,7 @@
 
 
 extern "C" {
-s32 RoomObjRes_GetBca(void *self, u32 i);
+void *RoomObjRes_GetBca(void *self, u32 i);
 void RoomObjRes_Free(void *self);
 void RoomObjRes_Load(void *self, const char *s);
 void *RoomObjRes_GetModel(void *self);
@@ -62,7 +62,7 @@ void RoomObjTex_Construct(void *self);
 void RoomObjTex_Destruct(void *self);
 void RoomObjTex_Reset(void *self);
 void RoomObjTex_Load(void *self, const char *s);
-u32 RoomObjTex_Get(void *self);
+void *RoomObjTex_Get(void *self);
 void RoomObj_ConstructSe(void *self);
 void RoomObj_DestructSe(void *self);
 void RoomObj_PlaySe(void *self, s32 v);
@@ -127,13 +127,12 @@ void RoomObjTex_Reset(void *);
 void RoomObjRes_Load(void *, const char *);
 void RoomObjTex_Load(void *, const char *);
 void *RoomObjRes_GetModel(void *);
-u32 RoomObjTex_Get(void *);
-s32 RoomObjRes_GetBca(void *, u32);
-s32 RoomObjRes_GetBta(void *, u32);
+void *RoomObjTex_Get(void *);
+void *RoomObjRes_GetBca(void *, u32);
+void *RoomObjRes_GetBta(void *, u32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
-s32 _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, void *);
 Mtx43 *SpNpcKatrina_GetJointMtx(void);
 void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
@@ -174,9 +173,9 @@ BOOL TarotProps::onCreate() {
             partModels[2].frameStep = 0;
         }
     }
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&part1MatAnim, (u32)partModels[1].resMdl, gBgHeap)) {
+    if (((ModelAnim *)(&part1MatAnim))->allocMatAnm((NNSG3dResMdl *)(partModels[1].resMdl), gBgHeap)) {
         ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
-        ((ModelAnim *)(&part1MatAnim))->addToRenderObj((u32)(((Model *)(&partModels[1]))->getRenderObj()));
+        ((ModelAnim *)(&part1MatAnim))->addToRenderObj(((Model *)(&partModels[1]))->getRenderObj());
         part1MatAnim.frameStep = 0;
     }
     changeAct(0);

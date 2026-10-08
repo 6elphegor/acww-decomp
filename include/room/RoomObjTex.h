@@ -11,9 +11,9 @@ public:
     inline RoomObjTex() { RoomObjTex_Construct(this); }
     inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
-    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
+    inline void *RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    /* 0x0 */ u32 texture;
+    /* 0x0 */ void *texture;
     /* 0x4 */ u8 syncState;
 };
 

@@ -6,6 +6,7 @@
 #include "types.h"
 struct CharaAnimCache;
 #ifdef __cplusplus
+#include "player/AnimSlotRef.h"
 #include "types.h"
 #endif
 
@@ -217,25 +218,25 @@ u32 CharaAnim_GetJointGroup(u32 i);
 u32 CharaAnim_GetHoldPoseMode(u32 i);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_Init
-void AnimSlotRef_Init(u8 *p);
+void AnimSlotRef_Init(AnimSlotRef *p);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_Assign
-void AnimSlotRef_Assign(u8 *p, u32 v);
+void AnimSlotRef_Assign(AnimSlotRef *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_SetSlot
-void AnimSlotRef_SetSlot(u8 *p, u32 v);
+void AnimSlotRef_SetSlot(AnimSlotRef *p, u32 v);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_Load
-void AnimSlotRef_Load(u8 *p, s32 a, s32 b, s32 c);
+void AnimSlotRef_Load(AnimSlotRef *p, s32 a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_CopyFromSlot
-void AnimSlotRef_CopyFromSlot(u8 *p, s32 v);
+void AnimSlotRef_CopyFromSlot(AnimSlotRef *p, s32 v);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_GetData
-u32 AnimSlotRef_GetData(u8 *p);
+void *AnimSlotRef_GetData(AnimSlotRef *p);
 #endif
 #ifndef PROTO_LOCAL_AnimSlotRef_GetAnimId
-u32 AnimSlotRef_GetAnimId(u8 *p);
+u32 AnimSlotRef_GetAnimId(AnimSlotRef *p);
 #endif
 #ifndef PROTO_LOCAL_NetHeap_Create
 void NetHeap_Create(u32 size, void *parent);

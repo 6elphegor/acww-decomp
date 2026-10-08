@@ -370,14 +370,14 @@ extern "C" BOOL Catalog_AddCreature(u16 *p) {
 
 extern "C" void *CarpetTex_Init(void *p) { return p; }
 
-extern "C" BOOL CarpetTex_Load(u32 a, u16 *p) {
+extern "C" BOOL CarpetTex_Load(void *a, u16 *p) {
     u16 c = *p;
     BOOL ok = Unk_0203c23c_InRange(c, 0x1144, 0x1187);
     s32 idx;
     if (ok) idx = c - 0x1144;
     else idx = -1;
     if (idx != -1) {
-        if (File_LoadToBufferF(a, -1, (void *)"/carpet/floor_%d.nsbtx", idx)) return TRUE;
+        if (File_LoadToBufferF(a, -1, "/carpet/floor_%d.nsbtx", idx)) return TRUE;
         return FALSE;
     }
     static ItemId s(0x1144);

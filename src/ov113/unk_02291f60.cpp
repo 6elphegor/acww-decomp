@@ -427,7 +427,7 @@ void BbsReadMenu::postInputUpdate() { postStateUpdate(); }
 
 void BbsReadMenu::postStateUpdate() {
     if (testFlags(1)) {
-        if (bgTasks[1].requestScreen((u32)bgScreenBuf, 2, 0x800, 0)) {
+        if (bgTasks[1].requestScreen(bgScreenBuf, 2, 0x800, 0)) {
             clearFlags(1);
         }
     }
@@ -441,10 +441,10 @@ void BbsReadMenu::setupBgLayer() {
 
 void BbsReadMenu::loadBg() {
     void *h = gCurrentHeap;
-    Gfx2d_LoadPaletteFile((void *)"menu/bbs/b_bbs.bpl", h, 2, 8, 8, 0xe);
+    Gfx2d_LoadPaletteFile("menu/bbs/b_bbs.bpl", h, 2, 8, 8, 0xe);
     File_LoadToBuffer((void *)"menu/bbs/b_bbs_us.bsc", bgScreenBuf, 0x800);
     Gfx2d_LoadScreen(bgScreenBuf, 2, 0x800, 0);
-    Gfx2d_LoadCharFile((void *)"menu/bbs/b_bbs.bch", h, 2, 0x10, 0x10, 0x13f);
+    Gfx2d_LoadCharFile("menu/bbs/b_bbs.bch", h, 2, 0x10, 0x10, 0x13f);
 }
 
 void BbsReadMenu::mainAct00() {
@@ -543,7 +543,7 @@ void BbsReadMenu::showPostText(void *unused) {
         o->createBufferLabel((u32)lineCharBufs[i], 0x14, 0xe, 0xd);
         o->redrawAligned(z2, z2);
     }
-    bgTasks[0].requestChars((u32)lineCharBufs, 2, 0x11, 0x11, 0x100);
+    bgTasks[0].requestChars(lineCharBufs, 2, 0x11, 0x11, 0x100);
 }
 
 void BbsReadMenu::showPostDate(void *unused) {

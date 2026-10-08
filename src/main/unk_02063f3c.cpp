@@ -49,7 +49,7 @@ void File_OpenOrPanic(void *file, const char *path) {
     }
 }
 
-void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
+void *File_LoadAlloc(const char *path, void *heap, s32 align, u32 *outSize) {
     void *ret;
     u32 flags;
     void *h;
@@ -64,9 +64,8 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     ret = 0;
     h = gRootHeap;
     if (heap == 0) heap = gCurrentHeap;
-    File_OpenOrPanic(&f, (const char *)path);
-    path = f.prop.file.end - f.prop.file.start;
-    size = path;
+    File_OpenOrPanic(&f, path);
+    size = f.prop.file.end - f.prop.file.start;
     if (size < 8) {
         ret = Heap_AllocAligned(heap, size, align);
         if (ret) FS_ReadFile(&f, ret, size);
@@ -120,8 +119,8 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     return ret;
 }
 
-void *File_Load(u32 a) {
-    return File_LoadAlloc(a, 0, 4, 0);
+void *File_Load(const char *path) {
+    return File_LoadAlloc(path, 0, 4, 0);
 }
 
 s32 File_LoadToBuffer(const char *buf, void *a, u32 b) {
@@ -149,26 +148,26 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
             void *h = gRootHeap;
             flags = ((Heap *)(h))->setFlags(0);
             ((Heap *)(h))->setFlags(flags & 0xffffbfff);
-            n = (u32)Heap_Alloc(h, size - 4);
-            if (n) {
-                MI_CpuCopy8(&hdr[1], (void *)n, 4);
+            void *p = Heap_Alloc(h, size - 4);
+            if (p) {
+                MI_CpuCopy8(&hdr[1], p, 4);
                 DC_StoreAll();
                 DC_FlushAll();
                 size -= 8;
-                if (FS_ReadFile(f, (u8 *)n + 4, size) != -1) MI_UncompressLZ8((void *)n, dst);
+                if (FS_ReadFile(f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, dst);
             } else {
                 size = ((Heap *)(h))->getMaxFreeBlockSize();
-                n = (u32)Heap_Alloc(h, size);
-                if (n) {
+                p = Heap_Alloc(h, size);
+                if (p) {
                     MI_InitUncompContextLZ(st, dst, &hdr[1]);
                     do {
-                        s32 r = FS_ReadFile(f, (void *)n, size);
+                        s32 r = FS_ReadFile(f, p, size);
                         if (r == -1) break;
-                        if (MI_ReadUncompLZ8(st, (void *)n, r) == 0) break;
+                        if (MI_ReadUncompLZ8(st, p, r) == 0) break;
                     } while (1);
                 }
             }
-            if (n) Heap_Free(h, (void *)n);
+            if (p) Heap_Free(h, p);
             ((Heap *)(h))->setFlags(flags);
         } else if (size <= n) {
             MI_CpuCopy8(hdr, dst, 8);
@@ -185,30 +184,30 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
     return ret;
 }
 
-s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va) {
+void *File_LoadAllocV(void *heap, s32 align, u32 *outSize, const char *fmt, va_list va) {
     char buf[0x80];
     Str_VSNPrintf(buf, 0x80, fmt, va);
-    return (s32)File_LoadAlloc((u32)buf, (void *)a, b, (u32 *)c);
+    return File_LoadAlloc(buf, heap, align, outSize);
 }
 
-void *File_LoadAllocF(s32 a, s32 b, const char *fmt, ...) {
+void *File_LoadAllocF(void *heap, s32 align, const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    return (void *)File_LoadAllocV(a, b, 0, fmt, va);
+    return File_LoadAllocV(heap, align, 0, fmt, va);
 }
 
 void *File_LoadF(const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    return (void *)File_LoadAllocV(0, 4, 0, fmt, va);
+    return File_LoadAllocV(0, 4, 0, fmt, va);
 }
 
-s32 File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
+s32 File_LoadToBufferF(void *dst, u32 n, const char *fmt, ...) {
     char buf[0x80];
     va_list va;
     va_start(va, fmt);
     Str_VSNPrintf(buf, 0x80, fmt, va);
-    return File_LoadToBuffer(buf, (void *)a, b);
+    return File_LoadToBuffer(buf, dst, n);
 }
 
 s32 File_GetDecodedSize(FSFile *f) {
@@ -229,9 +228,9 @@ fail:
     return e;
 }
 
-s32 File_GetDecodedSizeByPath(u32 a) {
+s32 File_GetDecodedSizeByPath(const char *path) {
     FSFile f;
-    File_OpenOrPanic(&f, (const char *)a);
+    File_OpenOrPanic(&f, path);
     s32 r = File_GetDecodedSize(&f);
     FS_CloseFile(&f);
     return r;

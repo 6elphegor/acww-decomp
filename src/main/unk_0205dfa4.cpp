@@ -59,7 +59,7 @@ public:
     void *texAnimBuffers[9];
     u16 texAnimBufferSizes[9];
     u16 pad_b6;
-    u32 matAnmHeaps[9];
+    void *matAnmHeaps[9];
     TexVramSlot vramSlots[9];
     TexVramTask texTasks[9];
     BlendAnimModel models[9];
@@ -112,12 +112,11 @@ void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
 void Model_GetJointWorldMtx(void *slot, Mtx43 *out, u32 a);
 void FishBobber_Draw(void *sub, Mtx43 *o, VecFx32 *v);
 void WorldCurve_FromCurved(VecFx32 *o, VecFx32 *v);
-u32 CharaClothTexPool_GetOwnRef(void);
+CharaClothTexRef *CharaClothTexPool_GetOwnRef(void);
 void _ZN9AnimModel11allocAnmObjEPv(void *slot, u32 a);
 void _ZN11CachedModel16allocJointRecordEPv(void *slot, u32 a);
 #define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
 u32 Heap_getFreeSize(u32 a);
-void _ZN9ModelAnim14addToRenderObjEj(u32 *p, u32 a);
 
 }
 
@@ -324,11 +323,11 @@ extern "C" u32 HeldItemModels_GetTexAnimBufferSize(HeldItemModelBank *self, u32 
     return self->texAnimBufferSizes[idx];
 }
 
-extern "C" u32 HeldItemModels_GetMatAnmHeap(HeldItemModelBank *self, u32 idx) {
+extern "C" void *HeldItemModels_GetMatAnmHeap(HeldItemModelBank *self, u32 idx) {
     return self->matAnmHeaps[idx];
 }
 
-extern "C" void HeldItemModels_SetMatAnmHeap(HeldItemModelBank *self, u32 idx, u32 v) {
+extern "C" void HeldItemModels_SetMatAnmHeap(HeldItemModelBank *self, u32 idx, void *v) {
     self->matAnmHeaps[idx] = v;
 }
 
@@ -348,7 +347,7 @@ extern "C" void HeldItemModels_PlayAnim(HeldItemModelBank *self, u32 idx, u32 x,
     HeldItemModels_LoadAnim(&sHeldItemModelBank, idx, x);
     void *a = func_021065dc(HeldItemModels_GetAnimBuffer(&sHeldItemModelBank, idx));
     void *b = func_021065f8(a, 0);
-    HeldItemModels_GetModel(&sHeldItemModelBank, idx)->playBlend((s32)b, (s32)y, z, 0x1000, 0, 0);
+    HeldItemModels_GetModel(&sHeldItemModelBank, idx)->playBlend(b, (s32)y, z, 0x1000, 0, 0);
 }
 
 extern "C" void HeldItemModels_PlayTexAnim(HeldItemModelBank *self, u32 idx, u32 x, u32 y) {
@@ -466,12 +465,12 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
         s = (u32)HeldItemModels_GetModelBuffer(&sHeldItemModelBank, id);
         if (flag == 0) {
             if (Unk_0205ddc8_In(code, 0x13a0, 0x13a7)) {
-                u32 f = CharaClothTexPool_GetOwnRef();
-                ((CharaClothTexRef *)(f))->loadItem(code, a5, 0, 0);
-                u32 h = (u32)NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(f));
-                u32 h2 = (u32)NNS_G3dGetTex((void *)s);
-                G3dRes_CopyTexByName(h, h2, (char *)"cloth", (char *)"myD");
-                G3dRes_CopyPlttByName(h, h2, (char *)"cloth", (char *)"myD");
+                CharaClothTexRef *f = CharaClothTexPool_GetOwnRef();
+                f->loadItem(code, a5, 0, 0);
+                void *h = NNS_G3dGetTex(CharaClothTexRef_GetBuffer((u8 *)f));
+                void *h2 = NNS_G3dGetTex((void *)s);
+                G3dRes_CopyTexByName(h, h2, "cloth", "myD");
+                G3dRes_CopyPlttByName(h, h2, "cloth", "myD");
             }
         }
         HeldItemModels_RelocateTexture(&sHeldItemModelBank, id);
@@ -487,17 +486,16 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
         if (kind == 0x27) {
             void *a1 = HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id);
             HeldItemModels_SetTexAnimBuffer(&sHeldItemModelBank, id, Heap_AllocAligned(a1, 0x210, 4), 0x210);
-            HeldItemModels_SetMatAnmHeap(&sHeldItemModelBank, id, (u32)a1);
+            HeldItemModels_SetMatAnmHeap(&sHeldItemModelBank, id, a1);
             Heap_AllocAligned(a1, 0x1c, 4);
             u32 *p = (u32 *)HeldItemModels_GetTexAnim(&sHeldItemModelBank, id);
             ((ModelAnim *)p)->anmObj = 0;  // (the members after the frame control's vtable pointer)
             ((ModelAnim *)p)->resMdl = 0;
             HeldItemModels_LoadTexAnim(&sHeldItemModelBank, id, 0);
-            u32 q = (u32)func_02106670(func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id)), 0);
-            u32 w = MODEL_AT_RESMDL(slot);
-            ((ModelAnim *)(void *)(p))->allocMatAnm(w, (void *)(HeldItemModels_GetMatAnmHeap(&sHeldItemModelBank, id)));
+            void *q = func_02106670(func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id)), 0);
+            ((ModelAnim *)(void *)(p))->allocMatAnm(((Model *)slot)->resMdl, HeldItemModels_GetMatAnmHeap(&sHeldItemModelBank, id));
             ((ModelAnim *)(void *)(p))->init(q, 1, 0x1000, 0);
-            _ZN9ModelAnim14addToRenderObjEj(p, (u32)((Model *)slot)->getRenderObj());
+            ((ModelAnim *)(void *)(p))->addToRenderObj(((Model *)slot)->getRenderObj());
         }
         void *a2;
         a2 = HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id);
@@ -507,7 +505,7 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
         HeldItemModels_PlayAnim(&sHeldItemModelBank, id, kind, 0, 0);
         ((AnimModel *)(slot))->attachAnim();
         if (flag == 0)
-            ((Model *)(slot))->setCallback((s32)((void (*)(void *))HeldItemModels_OnJointCalcPre), 6, 1, (s32)(o), 0);
+            ((Model *)(slot))->setCallback(HeldItemModels_OnJointCalcPre, 6, 1, o, 0);
         goto done;
     err:
         *HeldItemModels_GetItem(&sHeldItemModelBank, id) = 0xfff1;

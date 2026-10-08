@@ -16,15 +16,16 @@ public:
     BlendAnimModel();
     virtual ~BlendAnimModel();
 
-    void playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
+    // anm: the joint animation resource (an entry of a .bca file); blend: frames of blending from the current pose
+    void playBlend(void *anm, s32 blend, s32 mode, s32 speed, u16 frame, u16 numFrames);
     void stepBlend();
     void onJointCalcPost(BlendAnimModel *x);
     void applyJointBlend(BlendAnimModel *x);
     void onJointCalcPre(BlendAnimModel *x);
     void captureJointPose(BlendAnimModel *x);
     NNSG3dAnmObj *getAnmObj();
-    u32 getAnmRes();
-    void initAnim(s32 a, s32 b, s32 c, u16 d, u16 e);
+    void *getAnmRes();
+    void initAnim(void *anm, s32 mode, s32 speed, u16 frame, u16 numFrames);
 };
 
 class TwoLayerAnimModel : public BlendAnimModel {
@@ -35,10 +36,10 @@ public:
     void releaseJointsFromLayer2(u32 a, u32 b);
     void assignJointsToLayer2(u32 a, u32 b);
     void playLayer2FromBase(u32 a, u32 b);
-    void playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
+    void playLayer2(void *anm, u32 blend, u32 mode, u32 speed, u32 frame, u32 numFrames, BOOL g);
     void drawLayered(u32 a);
     void updateLayers();
-    BOOL allocLayerAnims(u32 a);
+    BOOL allocLayerAnims(void *heap);
     void onJointCalcPostLayer2(NNSG3dRS *m);
     void applyLayer2Blend(NNSG3dRS *m);
     void onJointCalcPreLayer2(NNSG3dRS *m);

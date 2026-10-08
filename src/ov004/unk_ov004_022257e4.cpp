@@ -26,6 +26,7 @@
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/ov004/unk_ov004_022257e4.h"
+#include "gfx/G3dResAccess.h"
 
 
 
@@ -94,16 +95,14 @@ extern "C" {
 extern u32 gBgHeap;
 extern void *gCommManager;
 
-s32 RoomObjRes_GetBca(void *, u32);
-s32 RoomObjRes_GetBma(void *, u32);
-u32 RoomObjTex_Get(void *);
+void *RoomObjRes_GetBca(void *, u32);
+void *RoomObjRes_GetBma(void *, u32);
+void *RoomObjTex_Get(void *);
 void RoomObjTex_Reset(void *);
 void RoomObjRes_Free(void *);
 void CheckInGate_SetInstance(Cls *c);
 
-void _ZN9ModelAnim7replaceEiiiit(void *, s32, s32, s32, s32, u16);
 void Math_ApproachS32Max(s32 *, s32, s32, s32);
-s32 _ZN12G3dResAccess10findMatIdxEi(void *, u32);
 s32 BoxCollider_Unregister(void *);
 s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
 void Clock_GetMinuteHour(u8 *);
@@ -183,10 +182,10 @@ BOOL CheckInGate::onCreate() {
     RoomObjRes_Load(&res, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&tex, "/roomObj/obj_check_in.nsbtx");
     ((Model *)(&model))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(&res)), 0);
-    F(u32, 0x2b0) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_lt");
-    F(u32, 0x2b4) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_ltdoor");
-    F(u32, 0x2b8) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_open");
-    ((Model *)(&model))->setInitCallback((s32)((void *)CheckInGate_InitRenderObj), (s32)(this));
+    F(u32, 0x2b0) = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)("m_lt"));
+    F(u32, 0x2b4) = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)("m_ltdoor"));
+    F(u32, 0x2b8) = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)("m_open"));
+    ((Model *)(&model))->setInitCallback(CheckInGate_InitRenderObj, this);
     bindTextures();
     setGroundMatFlags();
     initBodyAnim();
@@ -269,7 +268,7 @@ void CheckInGate::setGroundMatFlags() {
     i = 0;
     col = ((const u32 *)data_ov004_0224016c)[0x40];
     for (; i < 7; i++) {
-        s32 x = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)sCheckInGateGroundMats[i]);
+        s32 x = ((G3dResAccess *)(RoomObjRes_GetModel(&res)))->findMatIdx((const char *)(sCheckInGateGroundMats[i]));
         u8 *t = base + 4 + *(u16 *)(base + 0xa);
         u8 *q = t + *(u16 *)t * x;
         u32 *rec = (u32 *)(base + *(s32 *)(q + 4));
@@ -296,7 +295,7 @@ BOOL CheckInGate::initBodyAnim() {
 BOOL CheckInGate::initMatAnim() {
     if (RoomObjRes_GetBma(&res, 0) != 0 && ((ModelAnim *)(&matAnim))->allocMatAnm(F(u32, 0x148), (void *)(gBgHeap))) {
         ((ModelAnim *)(&matAnim))->init(RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
-        ((ModelAnim *)(&matAnim))->addToRenderObj((u32)(((Model *)(&model))->getRenderObj()));
+        ((ModelAnim *)(&matAnim))->addToRenderObj(((Model *)(&model))->getRenderObj());
         return TRUE;
     }
     return FALSE;
@@ -490,10 +489,10 @@ void CheckInGate::updateState() {
 
 // @2225abc
 BOOL CheckInGate::enterState00() {
-    s32 r = RoomObjRes_GetBca(&res, 0);
+    void *r = RoomObjRes_GetBca(&res, 0);
     ((BlendAnimModel *)(&model))->initAnim(r, 0, 0x1000, 0, 0);
     void *o = ((Model *)(&model))->getRenderObj();
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
     return TRUE;
 }
 
@@ -507,10 +506,10 @@ void CheckInGate::updateState00() {
 
 // @2225a14
 BOOL CheckInGate::enterState01() {
-    s32 r = RoomObjRes_GetBca(&res, 1);
+    void *r = RoomObjRes_GetBca(&res, 1);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     void *o = ((Model *)(&model))->getRenderObj();
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 1), 1, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 1), 1, 0x1000, 0);
     Snd_PlaySe(0x4eb);
     return TRUE;
 }
@@ -533,10 +532,10 @@ void CheckInGate::updateState01() {
 
 // @2225924
 BOOL CheckInGate::enterState02() {
-    s32 r = RoomObjRes_GetBca(&res, 2);
+    void *r = RoomObjRes_GetBca(&res, 2);
     ((BlendAnimModel *)(&model))->initAnim(r, 0, 0x1000, 0, 0);
     void *o = ((Model *)(&model))->getRenderObj();
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 2), 0, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 2), 0, 0x1000, 0);
     return TRUE;
 }
 
@@ -552,10 +551,10 @@ void CheckInGate::updateState02() {
 
 // @2225870
 BOOL CheckInGate::enterState03() {
-    s32 r = RoomObjRes_GetBca(&res, 3);
+    void *r = RoomObjRes_GetBca(&res, 3);
     ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     void *o = ((Model *)(&model))->getRenderObj();
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 3), 1, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->replace(o, RoomObjRes_GetBma(&res, 3), 1, 0x1000, 0);
     Snd_PlaySe(0x4ec);
     return TRUE;
 }

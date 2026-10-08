@@ -326,7 +326,6 @@ extern char data_ov004_0224bb50[];
 s32 Random_GlobalBelow(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
 s32 CarpetTex_GetTex(s32 a);
-BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 FtrActor_GetFtrIndex(void *p);
@@ -340,7 +339,6 @@ s32 _ZN9FtrSwitch10isChangingEv(void *p);
 void _ZN9FtrSwitch3setEji(void *p, s32 a, s32 b);
 void _ZN13FtrGlowMatSet6updateEv(void *p);
 s32 _ZN9FtrSwitch4isOnEv(void *p);
-void _ZN13FtrGlowMatSet4initEjj(void *p, s32 a, s32 b);
 void _ZN11FtrVisNodes10setVisibleEj(void *p, s32 a);
 s32 _ZN12FtrPreviewer14getFloorBufferEv(s32 a);
 s32 _ZN12FtrPreviewer14getSampleIndexEv(s32 a);

@@ -151,9 +151,9 @@ Mailbox::~Mailbox() {
 
 BOOL Mailbox::initBuilding() {
     if (getBtaAnim(0)) {
-        if (matAnim.allocMatAnm((u32)modelRes, gFieldStructureHeap)) {
+        if (matAnim.allocMatAnm((NNSG3dResMdl *)(modelRes), gFieldStructureHeap)) {
             matAnim.init((s32)getBtaAnim(0), 1, 0x1000, 0);
-            matAnim.addToRenderObj((u32)((Model *)model)->getRenderObj());
+            matAnim.addToRenderObj(((Model *)model)->getRenderObj());
         }
     }
     u8 b = (u8)BuildingList_IndexOf(this);
@@ -389,7 +389,7 @@ void Mailbox::updateDoorState() {
 
 BOOL Mailbox::enterNoMail() {
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
     ((ModelAnim *)(&matAnim))->replace((s32)(r4), (s32)(r2), 1, 0x1000, 0);
@@ -404,7 +404,7 @@ void Mailbox::execNoMail() {
 
 BOOL Mailbox::enterMailArrive() {
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -419,7 +419,7 @@ void Mailbox::execMailArrive() {
 BOOL Mailbox::enterHasMail() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorInAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, a->numFrame - 1, 0);
     void *r5 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
     ((ModelAnim *)(&matAnim))->replace((s32)(r5), (s32)(r2), 0, 0x1000, 0);
@@ -433,7 +433,7 @@ void Mailbox::execHasMail() {
 
 BOOL Mailbox::enterLidOpen() {
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x819);
     return TRUE;
 }
@@ -450,7 +450,7 @@ void Mailbox::execLidOpen() {
 BOOL Mailbox::enterLidOpened() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorOutAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 1, 0x1000, a->numFrame - 1, 0);
     return TRUE;
 }
 
@@ -462,7 +462,7 @@ void Mailbox::execLidOpened() {
 BOOL Mailbox::enterLidClose() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorOutAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 3, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x81a);
     return TRUE;
 }
@@ -484,7 +484,7 @@ void Mailbox::execLidClose() {
 BOOL Mailbox::enterMailGone() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorInAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    ((BlendAnimModel *)(model))->initAnim((s32)(b), 3, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim(b, 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x81b);
     return TRUE;
 }

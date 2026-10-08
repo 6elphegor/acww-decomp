@@ -24,7 +24,7 @@ extern char data_ov124_02296e70[20];
 extern char data_ov124_02296f24[20];
 #endif
 #ifndef PROTO_LOCAL_sGeneralHeaderObjChars
-extern void *sGeneralHeaderObjChars[4];
+extern char *sGeneralHeaderObjChars[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov124_02296ee8
 extern char data_ov124_02296ee8[20];

@@ -7,7 +7,7 @@
 // (0x020b8c1c-0x020b8cbe).
 struct TexTransfer {
     /* 0x00 */ u32 dstAddr;
-    /* 0x04 */ u32 src;
+    /* 0x04 */ void *src;
     /* 0x08 */ u32 size;
 
     u8 getResCost(void);
@@ -15,7 +15,7 @@ struct TexTransfer {
     void loadTexResource(void);
     void loadTexPltt(void);
     void loadTex(void);
-    void set(u32 a, u32 b, u32 c);
+    void set(u32 dst, void *src, u32 size);
     void clear(void);
 };
 

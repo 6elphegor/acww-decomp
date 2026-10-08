@@ -12,7 +12,7 @@ struct FtrGlowMat : public LightLevel {
     FtrGlowMat();
     ~FtrGlowMat();
     BOOL setLit(BOOL on, s32 a, s32 b);
-    BOOL bindMaterial(G3dResAccess *res, s32 idx, BOOL on);
+    BOOL bindMaterial(G3dResAccess *res, const char *matName, BOOL on);
     void updateEmission();
     /* 0x14 */ s8 matIdx;
     /* 0x18 */ G3dResAccess *resMdl;

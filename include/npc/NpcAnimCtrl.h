@@ -40,7 +40,7 @@ public:
     void setAnimSpeedFixed(u8 v);
     void stopTalkGesture(NpcActor *scene);
     void playTalkGesture(NpcActor *scene, u32 a, u32 b);
-    u32 getTalkGestureData();
+    void *getTalkGestureData();
     void loadTalkGesture();
     BOOL hasTalkGesture();
     s32 release();

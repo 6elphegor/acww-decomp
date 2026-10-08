@@ -552,7 +552,7 @@ void ChestMenu::loadInventoryBg() {
 }
 
 void ChestMenu::loadTopBg() {
-    s32 h = gCurrentHeap;
+    void *h = gCurrentHeap;
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_tra0.bsc", h, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_chest.bch", h, 4, 0x1b9, 0x1b9, 0x238);
     setOkLabel(0);

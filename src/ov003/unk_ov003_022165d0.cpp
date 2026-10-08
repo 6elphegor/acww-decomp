@@ -11,7 +11,6 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
@@ -64,7 +63,6 @@
 
 
 extern "C" {
-extern u32 gCurrentHeap;
 extern HouseData gSaveHouse;
 extern const s8 sHexDigits[];
 

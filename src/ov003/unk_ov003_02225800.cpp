@@ -23,6 +23,8 @@
 #include "game/StrBSizeData.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -663,14 +665,9 @@ extern "C" void FieldInsect_UpdateAll(void *a);
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -727,7 +724,6 @@ void *PlayerActor_GetActor(s32 a);
 VillagerActor *NpcRegistry_FindVillager(s32 i);
 s32 Vec_DistXZ(void *a, void *b);
 void Insect_antsAppear(void *p);
-BOOL File_Exists(char *s);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
 void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void BugNetTarget_submit(void *obj, void *v, s32 a, s32 b, s32 flags);
@@ -739,23 +735,17 @@ void func_02133ef8(void *p, s32 n);
 void *ModelSlotPool_acquire(void *sub, void *p);
 BOOL PooledModel_loadFromSlot(void *p, void *h, char *path);
 void *PooledModel_getModel(void *p);
-void Model_setResource(void *o, void *a, s32 b);
 void *ModelSlot_getHeap(void *h);
-void *File_LoadAlloc(char *path, void *h, s32 a, s32 b);
-s32 func_02106788(void *r);
-s32 func_021067a4(s32 a, s32 b);
-s32 func_021065dc(void *r);
-s32 func_021065f8(s32 a, s32 b);
+void *func_02106788(void *r);
+void *func_021067a4(void *a, u32 b);
+void *func_021065dc(void *r);
+void *func_021065f8(void *a, u32 b);
 BOOL AnimModel_allocAnmObj(void *o, void *h);
-void BlendAnimModel_initAnim(void *o, s32 m, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_attachAnim(void *o);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-s32 func_02106654(void *p);
-s32 func_02106670(s32 a, s32 b);
-BOOL ModelAnim_allocMatAnm(Rec *e, void *a, void *b);
-void ModelAnim_init(Rec *e, s32 m, s32 a, s32 b, s32 c);
+void *func_02106654(void *p);
+void *func_02106670(void *a, u32 b);
 void *Model_getRenderObj(void *o);
-void ModelAnim_addToRenderObj(Rec *e, void *a);
 void FieldInsect_PurgeStale();
 BOOL Insect_PickSpecialSpawn(s8 *a, s8 *b, s32 c);
 BOOL PlayerActor_TestSlotFlag9(s32 a);
@@ -7750,14 +7740,9 @@ BOOL InsectManager::onCreate() { using namespace s05;
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -7783,7 +7768,7 @@ namespace s04 {
 // 0x22283d0
 extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     struct { char name[0x11]; char path[0x17]; } l;
-    s32 m;
+    void *m;
     void *h2;
     BOOL ok;
     void *p130;
@@ -7825,7 +7810,7 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
         return;
     }
     obj = (u8 *)&e->model;
-    Model_setResource(obj, PooledModel_getModel(p130), 0);
+    ((Model *)(obj))->setResource((NNSG3dResMdl *)(PooledModel_getModel(p130)), NULL);
     rec = &sInsectModelParams[t4];
     if (rec->hasVisAnim != 0) {
         Str_SPrintf(l.path, sInsectVisAnimExtFmt, l.name);
@@ -7875,10 +7860,10 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
         if (File_Exists(l.path)) {
             void *tex = File_LoadAlloc(l.path, h2, 4, 0);
             if (r7 != 0) {
-                r7 = (void *)func_02106670(func_02106654(tex), 0);
-                if (((ModelAnim *)(void *)(e))->allocMatAnm((u32)(((Model *)obj)->resMdl), h2)) {
-                    ModelAnim_init(e, (s32)r7, 0, 0x1000, 0);
-                    ((ModelAnim *)(void *)(e))->addToRenderObj((u32)(((Model *)(obj))->getRenderObj()));
+                r7 = func_02106670(func_02106654(tex), 0);
+                if (((ModelAnim *)(void *)(e))->allocMatAnm((NNSG3dResMdl *)(((Model *)obj)->resMdl), h2)) {
+                    ((ModelAnim *)(e))->init(r7, 0, 0x1000, 0);
+                    ((ModelAnim *)(void *)(e))->addToRenderObj(((Model *)(obj))->getRenderObj());
                     ok = TRUE;
                 }
             }
@@ -7938,14 +7923,9 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8052,14 +8032,9 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8238,14 +8213,9 @@ L268:
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8314,14 +8284,9 @@ BOOL InsectManager::onExecute() { using namespace s04;
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8435,14 +8400,9 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8515,14 +8475,9 @@ extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8604,14 +8559,9 @@ extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -8680,14 +8630,9 @@ extern "C" s32 FieldInsect_GetPosAndKind(VecFx32Ctor *out, u32 idx) {
 #define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
-#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define ModelAnim_init _ZN9ModelAnim4initEiiit
-#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi

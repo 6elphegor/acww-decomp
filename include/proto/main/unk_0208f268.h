@@ -16,14 +16,21 @@ class EffectSplProc;
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_EffectSpl_LoadArchive
+void *EffectSpl_LoadArchive(void *unused);
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_EffectSplProc_Create
 EffectSplProc *EffectSplProc_Create();
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_Alloc
 void *EffectSpl_Alloc(u32 size);
-#endif
-#ifndef PROTO_LOCAL_EffectSpl_LoadArchive
-s32 EffectSpl_LoadArchive(void *unused);
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_LoadTextures
 BOOL EffectSpl_LoadTextures(EffectSplProc *p);
@@ -117,7 +124,7 @@ extern s16 sEffectSeasonTint3[24];
 extern s16 sEffectSeasonTint[24];
 #endif
 #ifndef PROTO_LOCAL_sEffectModelAnimFiles
-extern uptr sEffectModelAnimFiles[4][3];
+extern char *sEffectModelAnimFiles[4][3];
 #endif
 #ifndef PROTO_LOCAL_gEffectSplDefaultInitCbs
 extern void (*gEffectSplDefaultInitCbs[10]) (EffectSplEmitter *);

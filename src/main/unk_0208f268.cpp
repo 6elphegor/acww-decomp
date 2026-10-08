@@ -34,14 +34,13 @@
 struct Unk_0209002c_Handle;
 
 extern "C" {
-s32 func_021065dc(void *p);
-s32 func_021065f8(s32 a, s32 b);
-s32 func_02106618(void *p);
-s32 func_02106634(s32 a, s32 b);
-s32 func_02106788(void *p);
-s32 func_021067a4(s32 a, s32 b);
+void *func_021065dc(void *p);
+void *func_021065f8(void *p, u32 i);
+void *func_02106618(void *p);
+void *func_02106634(void *p, u32 i);
+void *func_02106788(void *p);
+void *func_021067a4(void *p, u32 i);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
-void _ZN9ModelAnim14addToRenderObjEj(void *p, u32 a);
 u32 _ZN5Model12getRenderObjEv(void *p);
 s32 WorldCurve_ToCurved(void *out, void *in);
 s32 SceneLights_GetRoomColor();
@@ -109,7 +108,7 @@ public:
 
     /* 0x000 */ s32 modelIndex;
     /* 0x004 */ EffectModel models[4];
-    /* 0x524 */ u32 animFiles[3];
+    /* 0x524 */ void *animFiles[3];
 };
 
 struct EffectEmitterEntry;
@@ -198,7 +197,7 @@ struct EffectModelAnimFiles {
     void free();
     void load(EffectModelGroup *src);
 
-    /* 0x00 */ u32 files[3];
+    /* 0x00 */ void *files[3];
 };
 
 extern "C" {
@@ -525,7 +524,7 @@ s16 sEffectSeasonTint1[24] = {0x55f9, 0x61f1, 0x3330, 0x33eb, 0x33eb, 0x66ff, 0x
 s16 sEffectSeasonTint2[24] = {0x55f9, 0x61f1, 0x3330, 0x33eb, 0x33eb, 0x5be7, 0x5be7, 0x73a4, 0x17af, 0x17af, 0x1ff5, 0x275f, 0x275f, 0x165f, 0x9ff, 0x5bf, 0xd5f, 0x11f, 0x289f, 0x3ddf, 0x4e5e, 0x4e5e, 0x55f9, 0x0};
 s16 sEffectSeasonTint3[24] = {0x7f72, 0x7f2c, 0x4ff8, 0x53ea, 0x53ea, 0x67ea, 0x67ea, 0x7f85, 0x4fee, 0x238f, 0x238f, 0x27b5, 0x27b5, 0x27b5, 0x27b5, 0x27b5, 0x3f4c, 0x5b0d, 0x5b0d, 0x5b0d, 0x6f0e, 0x7f72, 0x7f72, 0x0};
 s16 sEffectSeasonTint[24] = {0x4a97, 0x4a97, 0x4a97, 0x4bc6, 0x53a3, 0x53a3, 0x53a3, 0x52e0, 0x3344, 0xb71, 0xb71, 0xb71, 0xb56, 0xb56, 0xb56, 0x39a, 0x39a, 0x39a, 0x22fb, 0x22fb, 0x329c, 0x329c, 0x4a97, 0x0};
-uptr sEffectModelAnimFiles[4][3] = {{(uptr)sPathMpSiturenNsbca, (uptr)sPathMpSiturenNsbma, (uptr)sPathMpSiturenNsbva}, {(uptr)sPathMpLoveNsbca, (uptr)sPathMpLoveNsbma, 0}, {(uptr)sPathEfWaterColNsbca, (uptr)sPathEfWaterColNsbma, 0}, {(uptr)sPathCraRibbon1Nsbca, (uptr)sPathCraRibbon1Nsbma, 0}};
+char *sEffectModelAnimFiles[4][3] = {{sPathMpSiturenNsbca, sPathMpSiturenNsbma, sPathMpSiturenNsbva}, {sPathMpLoveNsbca, sPathMpLoveNsbma, 0}, {sPathEfWaterColNsbca, sPathEfWaterColNsbma, 0}, {sPathCraRibbon1Nsbca, sPathCraRibbon1Nsbma, 0}};
 void (*gEffectSplDefaultInitCbs[10])(EffectSplEmitter *) = {EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos, EffectSpl_InitEmitterAtPos};
 const u32 sEffectRes06EmitterIds[8] = {4, 5, 6, 7, 8, 9, 0xa, 0xb};
 const u32 sEffectRes7FEmitterIds[7] = {0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca};
@@ -737,8 +736,8 @@ extern "C" void *EffectSpl_Alloc(u32 size) {
     return NNS_FndAllocFromFrmHeapEx((u32)sEffectSplFrmHeap, size, 4);
 }
 
-extern "C" s32 EffectSpl_LoadArchive(void *unused) {
-    return File_Load((void *)"/spl/spl.spa");
+extern "C" void *EffectSpl_LoadArchive(void *unused) {
+    return File_Load("/spl/spl.spa");
 }
 
 extern "C" BOOL EffectSpl_LoadTextures(EffectSplProc *p) {
@@ -776,7 +775,7 @@ BOOL EffectSplProc::onCreate()
         splManager = SPL_Init((void *)EffectSpl_Alloc, 0x20, 0x64, 0x14, 0x15, 0x32);
         splManager->unk_30 = 0x8800;
         if (splManager != NULL) {
-            h = (void *)EffectSpl_LoadArchive(this);
+            h = EffectSpl_LoadArchive(this);
             if (h != NULL) {
                 func_020f92d4(splManager, h);
                 if (EffectSpl_LoadTextures(this) != 0) {
@@ -1300,11 +1299,10 @@ void EffectModelAnimFiles::load(EffectModelGroup *src) {
 
 void EffectModelAnimFiles::free() {
     s32 i;
-    u32 *z = 0;
     for (i = 0; i < 3; i++) {
         if (files[i] != 0) {
-            Heap_Free(sEffectModelHeap, (void *)files[i]);
-            files[i] = (u32)z;
+            Heap_Free(sEffectModelHeap, files[i]);
+            files[i] = NULL;
         }
     }
 }
@@ -1321,31 +1319,31 @@ void EffectModel::load(EffectModelGroup *src) {
     s32 idx = src->modelIndex;
     active = 0;
     if (loadModel(idx)) {
-        u32 *r = src->animFiles;
+        void **r = src->animFiles;
         if (r[0] != 0) {
             ((CachedModel *)(&model))->allocJointRecord(sEffectModelHeap);
             ((AnimModel *)(&model))->allocAnmObj(sEffectModelHeap);
-            s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
+            void *t = func_021065f8(func_021065dc(r[0]), 0);
             ((BlendAnimModel *)(&model))->initAnim(t, 1, 0x1000, 0, 0);
             ((AnimModel *)(&model))->attachAnim();
         }
         if (r[1] != 0) {
             hasMatAnim = 1;
             ModelAnim *e = &anims[1];
-            ((ModelAnim *)(e))->allocMatAnm((u32)(model.resMdl), sEffectModelHeap);
-            s32 u = func_02106634(func_02106618((void *)r[1]), 0);
+            ((ModelAnim *)(e))->allocMatAnm(model.resMdl, sEffectModelHeap);
+            void *u = func_02106634(func_02106618(r[1]), 0);
             ((ModelAnim *)(e))->init(u, 1, 0x1000, 0);
-            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
+            e->addToRenderObj(((Model *)&model)->getRenderObj());
         } else {
             hasMatAnim = 0;
         }
         if (r[2] != 0) {
             hasJointAnim = 1;
             ModelAnim *e = &anims[2];
-            ((ModelAnim *)(e))->allocJointAnm((u32)(model.resMdl), sEffectModelHeap);
-            s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
+            ((ModelAnim *)(e))->allocJointAnm(model.resMdl, sEffectModelHeap);
+            void *u = func_021067a4(func_02106788(r[2]), 0);
             ((ModelAnim *)(e))->init(u, 1, 0x1000, 0);
-            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
+            e->addToRenderObj(((Model *)&model)->getRenderObj());
         } else {
             hasJointAnim = 0;
         }
@@ -1397,15 +1395,15 @@ void EffectModel::start(EffectModelGroup *src, void (*cb)(EffectModel *)) {
     rotX = 0;
     rotY = 0;
     rotZ = 0;
-    u32 *r = src->animFiles;
-    s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
+    void **r = src->animFiles;
+    void *t = func_021065f8(func_021065dc(r[0]), 0);
     ((BlendAnimModel *)(&model))->initAnim(t, 1, 0x1000, 0, 0);
     if (hasMatAnim != 0) {
-        s32 u = func_02106634(func_02106618((void *)r[1]), 0);
+        void *u = func_02106634(func_02106618(r[1]), 0);
         ((ModelAnim *)(&anims[1]))->init(u, 1, 0x1000, 0);
     }
     if (hasJointAnim != 0) {
-        s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
+        void *u = func_021067a4(func_02106788(r[2]), 0);
         ((ModelAnim *)(&anims[2]))->init(u, 1, 0x1000, 0);
     }
     cb(this);

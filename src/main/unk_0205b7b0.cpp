@@ -1,5 +1,6 @@
 #include "sys/Heap.h"
 #include "types.h"
+#include "player/AnimSlotRef.h"
 #include "net/CommManager.h"
 #define PROTO_LOCAL_FrameHeap_Create  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_RoomBclHeap_Create  // declared below: the shared prototype conflicts with the calls here
@@ -31,7 +32,7 @@ static inline u32 AL(u32 v, u32 a) {
 
 // sCharaAnimCache object
 struct CharaAnimCache {
-    u32 buffers[25];
+    void *buffers[25];
     u16 animIds[25];
     u16 dataSizes[25];
 
@@ -42,7 +43,7 @@ struct CharaAnimCache {
     s32 findSlotByAnim(s32 v);
     void setAnimId(s32 i, u32 v);
     u32 getAnimId(s32 i);
-    u32 getBuffer(s32 i);
+    void *getBuffer(s32 i);
     void freeBuffers();
     void allocBuffers();
 };
@@ -280,7 +281,7 @@ CharaAnimCache::CharaAnimCache() {
 CharaAnimCache::~CharaAnimCache() {}
 
 void CharaAnimCache::allocBuffers() {
-    void *heap = sCharaAnimHeap;
+    Heap *heap = (Heap *)sCharaAnimHeap;
     u32 n = gCommManager->memberCount;
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
@@ -291,12 +292,12 @@ void CharaAnimCache::allocBuffers() {
     v[2] = CharaAnim_GetPartSlotSize();
     v[3] = CharaAnim_GetExtraSlotSize();
     u32 i;
-    for (i = 0; i < m; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
-    for (i = 4; i < v[0] + 4; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
-    for (i = 9; i < m + 9; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[2], 4);
+    for (i = 0; i < m; i++) buffers[i] = Heap_AllocAligned(heap, v[1], 4);
+    for (i = 4; i < v[0] + 4; i++) buffers[i] = Heap_AllocAligned(heap, v[1], 4);
+    for (i = 9; i < m + 9; i++) buffers[i] = Heap_AllocAligned(heap, v[2], 4);
     m = 4;
-    for (i = 0xd; i < v[0] + 0xd; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[2], m);
-    for (i = 0x12; i < v[0] + 0x12; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[3], m);
+    for (i = 0xd; i < v[0] + 0xd; i++) buffers[i] = Heap_AllocAligned(heap, v[2], m);
+    for (i = 0x12; i < v[0] + 0x12; i++) buffers[i] = Heap_AllocAligned(heap, v[3], m);
 }
 
 void CharaAnimCache::freeBuffers() {
@@ -309,7 +310,7 @@ void CharaAnimCache::freeBuffers() {
     if (sCharaAnimHeap) ((Heap *)(sCharaAnimHeap))->freeAll();
 }
 
-u32 CharaAnimCache::getBuffer(s32 i) { return buffers[i]; }
+void *CharaAnimCache::getBuffer(s32 i) { return buffers[i]; }
 
 u32 CharaAnimCache::getAnimId(s32 i) { return animIds[i]; }
 
@@ -330,19 +331,19 @@ u32 CharaAnimCache::getDataSize(s32 i) { return dataSizes[i]; }
 
 void CharaAnimCache::setDataSize(s32 i, u32 v) { dataSizes[i] = v; }
 
-extern "C" void AnimSlotRef_Init(u8 *p) { *p = 0x19; }
+extern "C" void AnimSlotRef_Init(AnimSlotRef *p) { p->slot = 0x19; }
 
 extern "C" void AnimSlotRef_Destruct() {}
 
-extern "C" void AnimSlotRef_Assign(u8 *p, u32 v) {
+extern "C" void AnimSlotRef_Assign(AnimSlotRef *p, u32 v) {
     AnimSlotRef_SetSlot(p, v);
     AnimSlotRef_Load(p, 0x144, 0, 0);
 }
 
-extern "C" void AnimSlotRef_SetSlot(u8 *p, u32 v) { *p = v; }
+extern "C" void AnimSlotRef_SetSlot(AnimSlotRef *p, u32 v) { p->slot = v; }
 
-extern "C" void AnimSlotRef_Load(u8 *p, s32 a, s32 b, s32 c) {
-    u32 cur = *p;
+extern "C" void AnimSlotRef_Load(AnimSlotRef *p, s32 a, s32 b, s32 c) {
+    u32 cur = p->slot;
     if (a >= 0x144) {
         sCharaAnimCache.setAnimId(cur, 0x144);
         sCharaAnimCache.setDataSize(cur, 0);
@@ -356,28 +357,28 @@ extern "C" void AnimSlotRef_Load(u8 *p, s32 a, s32 b, s32 c) {
             return;
         }
     }
-    u32 buf = sCharaAnimCache.getBuffer(cur);
+    void *buf = sCharaAnimCache.getBuffer(cur);
     u32 sz;
     if ((s32)cur > 8) sz = CharaAnim_GetPartSlotSize();
     else sz = CharaAnim_GetBodySlotSize();
-    s32 r = File_LoadToBuffer(CharaAnim_GetPath(a), (void *)buf, sz);
+    s32 r = File_LoadToBuffer(CharaAnim_GetPath(a), buf, sz);
     if (r != 0) {
         sCharaAnimCache.setAnimId(cur, a);
         sCharaAnimCache.setDataSize(cur, r);
     }
 }
 
-extern "C" void AnimSlotRef_CopyFromSlot(u8 *p, s32 v) {
-    u32 cur = *p;
+extern "C" void AnimSlotRef_CopyFromSlot(AnimSlotRef *p, s32 v) {
+    u32 cur = p->slot;
     if (v != cur) {
         u32 x = sCharaAnimCache.getAnimId(v);
         if (x != sCharaAnimCache.getAnimId(cur)) {
             u32 sz = sCharaAnimCache.getDataSize(v);
             if (sz != 0) {
-                u32 a = sCharaAnimCache.getBuffer(v);
-                u32 b = sCharaAnimCache.getBuffer(cur);
+                void *a = sCharaAnimCache.getBuffer(v);
+                void *b = sCharaAnimCache.getBuffer(cur);
                 if (a != 0 && b != 0) {
-                    MI_CpuCopy8((void *)a, (void *)b, sz);
+                    MI_CpuCopy8(a, b, sz);
                     sCharaAnimCache.setAnimId(cur, x);
                     sCharaAnimCache.setDataSize(cur, sz);
                 }
@@ -386,9 +387,9 @@ extern "C" void AnimSlotRef_CopyFromSlot(u8 *p, s32 v) {
     }
 }
 
-extern "C" u32 AnimSlotRef_GetData(u8 *p) { return sCharaAnimCache.getBuffer(*p); }
+extern "C" void *AnimSlotRef_GetData(AnimSlotRef *p) { return sCharaAnimCache.getBuffer(p->slot); }
 
-extern "C" u32 AnimSlotRef_GetAnimId(u8 *p) { return sCharaAnimCache.getAnimId(*p); }
+extern "C" u32 AnimSlotRef_GetAnimId(AnimSlotRef *p) { return sCharaAnimCache.getAnimId(p->slot); }
 
 extern "C" void NetHeap_Create(u32 size, void *parent) { gNetHeap = ExpHeap_Create(size, parent); }
 

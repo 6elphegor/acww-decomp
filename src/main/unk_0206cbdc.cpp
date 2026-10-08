@@ -59,7 +59,7 @@ void LetterRenderer::redraw() {
     redrawAll();
 }
 
-void LetterRenderer::show(LetterView *src, void *a, void *b, s32 c) {
+void LetterRenderer::show(LetterView *src, u32 a, u32 b, s32 c) {
     Gfx2d_HideLayer(b);
     Gfx2d_SetLayerPriority(b, 1);
     Gfx2d_SetLayerControl(b, 0, 0, 0);
@@ -72,7 +72,7 @@ void LetterRenderer::show(LetterView *src, void *a, void *b, s32 c) {
     setGreeting(src, 0);
     setBody(HOST_AT(src, 0x4c, body[0], 0), 0);
     setSignature(HOST_AT(src, 0xcc, signature[0], 0));
-    loadLetterScreen((u32)a);
+    loadLetterScreen(a);
     redraw();
     Gfx2d_SetLayerOffset(a, 0, 0);
 }

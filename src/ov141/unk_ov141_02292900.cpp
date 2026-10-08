@@ -30,7 +30,7 @@ class NearbyTownsMenu;
 
 extern "C" {
 extern u16 gPad[];
-extern u32 gCurrentHeap;
+extern void *gCurrentHeap;
 
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -343,7 +343,7 @@ void NearbyTownsMenu::loadBgGfx() {
     BgScreen_SetRectPalette(bgScreen, 7, 8, 0x10, 0x13, 7);
     BgScreen_SetRectPalette(bgScreen, 0x12, 8, 0x19, 0x13, 7);
     setFlags(4);
-    Gfx2d_LoadPaletteFile((void *)"menu/res/ten0.bpl", gCurrentHeap, 6, 3, 3, 3);
+    Gfx2d_LoadPaletteFile("menu/res/ten0.bpl", gCurrentHeap, 6, 3, 3, 3);
 }
 
 void NearbyTownsMenu::loadObjGfx() {
@@ -584,7 +584,7 @@ BOOL NearbyTownsMenu::moveCursorByPad(u32 pad) {
 
 void NearbyTownsMenu::flushBgScreen() {
     if (testFlags(4)) {
-        if (screenTask.requestScreen((u32)bgScreen, 6, 0x800, 0)) {
+        if (screenTask.requestScreen(bgScreen, 6, 0x800, 0)) {
             clearFlags(4);
         }
     }

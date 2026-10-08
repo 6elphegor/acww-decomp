@@ -7,7 +7,6 @@
 #ifdef __cplusplus
 #include "gfx/Model.h"
 #include "types.h"
-#include "uptr.h"
 class FieldGround;
 #endif
 
@@ -20,6 +19,9 @@ extern char data_ov003_022323f4[0xc];
 #ifndef PROTO_LOCAL_data_ov003_02232400
 extern char data_ov003_02232400[0x10];
 #endif
+#ifndef PROTO_LOCAL_sWaterMatNames
+extern char *sWaterMatNames[2];
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -31,9 +33,6 @@ extern u8 data_ov003_02235490;
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02235494
 extern s32 data_ov003_02235494;
-#endif
-#ifndef PROTO_LOCAL_sWaterMatNames
-extern uptr sWaterMatNames[2];
 #endif
 #ifndef PROTO_LOCAL_FieldGround_Create
 FieldGround *FieldGround_Create();

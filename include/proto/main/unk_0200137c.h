@@ -60,19 +60,19 @@ s32 Gfx2d_GetLayerPlaneMask(u32 n);
 s32 Gfx2d_GetLayerBlendMask(u32 n);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_LoadPaletteFile
-s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
+s32 Gfx2d_LoadPaletteFile(const char *p0, void *p1, u32 p2, s32 p3, u8 e, u8 f);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_LoadPaletteFileSlot
-s32 Gfx2d_LoadPaletteFileSlot(u32 p0, u32 p1, u32 p2, s32 p3, u8 e);
+s32 Gfx2d_LoadPaletteFileSlot(const char *p0, void *p1, u32 p2, s32 p3, u8 e);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_LoadScreenFile
-s32 Gfx2d_LoadScreenFile(u32 p0, u32 p1, u32 p2);
+s32 Gfx2d_LoadScreenFile(const char *p0, void *p1, u32 p2);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_LoadCharFile
-s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
+s32 Gfx2d_LoadCharFile(const char *p0, void *p1, u32 p2, s32 p3, s32 e, s32 f);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_LoadCharFile8bpp
-s32 Gfx2d_LoadCharFile8bpp(u32 p0, u32 p1, u32 p2, s32 p3, s32 a, s32 b);
+s32 Gfx2d_LoadCharFile8bpp(const char *p0, void *p1, u32 p2, s32 p3, s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_Gfx2d_LoadPaletteRange
 s32 Gfx2d_LoadPaletteRange(u8 *dst, u32 n, s32 a, s32 b, u8 c);
