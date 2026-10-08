@@ -78,15 +78,6 @@ typedef union {
     } b;
 } TPRaw;
 
-typedef struct {  // PMRegInfo (unk_0211c870.c): pad2 is a pointer there
-    volatile u16 flag;
-    u16 pad;
-    uptr pad2;
-} PMFlag;
-typedef struct {
-    u16 *ptr;
-    u32 pad;
-} PMDest;
 
 typedef struct PMCbInfo PMCbInfo;
 
@@ -167,8 +158,7 @@ extern PMCbInfo *data_021feb38;
 extern u32 data_021feb3c;
 extern PMCbInfo *data_021feb40;
 extern OSMutex data_021feb54;
-extern PMFlag data_021feb6c[4];
-extern PMDest data_021feb70[4];
+extern PMRegInfo data_021feb6c[4];
 extern RTCWork data_021feb90;
 
 extern u32 OS_DisableInterrupts(void);
@@ -270,7 +260,7 @@ void PMi_CommonCallback(u32 tag, u32 data, u32 err) {
         u16 val = (u16)(data & 0xff);
         result = val;
         if (cmd >= 0x70 && cmd <= 0x73) {
-            u16 *p = data_021feb70[cmd - 0x70].ptr;
+            u16 *p = data_021feb6c[cmd - 0x70].ptr;
             u16 w = (u16)(result & 0xff);
             if (p != 0) {
                 *p = w;

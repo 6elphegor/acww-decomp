@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "snd/BgmVolumeMixer.h"
+#include "snd/BgmManager.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
@@ -16,7 +17,7 @@
 #include "proto/ov091/unk_022918e0.h"
 
 extern "C" {
-extern u8 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;  // (the BGM manager)
 extern u16 gPad[];
 }
 
@@ -130,7 +131,7 @@ BOOL LetterViewMenu::execClosed() {
 
 void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
-    ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
+    data_021c1b3c->mixer.setMenuDuck(0);
     Gfx2d_SetMainBgModeState(0);
     letterRenderer.show((LetterView *)MenuCtrl_GetArg(), 0, 2, 1);
     beginMainSlideIn(0xa, 0, 0, 0x30);
@@ -180,7 +181,7 @@ void LetterViewMenu::stateWaitButton() {
 
 void LetterViewMenu::stateSlideOut() {
     Snd_PlaySe(2);
-    ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->endMenuDuck();
+    data_021c1b3c->mixer.endMenuDuck();
     beginMainSlideOut(0xa, 0, 0, 0x30);
     applySlideOffset(0, 0, 0);
     applySlideOffset(2, 0, 0);

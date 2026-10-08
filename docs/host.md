@@ -215,8 +215,17 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   walks around town (checked to frame 34000: villagers, beach, no stop). With A and Start kept going after the
   tutorial the player only talks to Pelly again and again (Start opens the save menu, "I can't save right now" in a
   new town until the first save). The
-  x86-64 build gets through both name entries with that script and loads the town (frame ~12430), then crashes in
-  `spl_calc` (particles, `EffectSplProc::onExecute`) at frame ~13540. A script that gets through the
+  x86-64 build plays the same way: the name entries, the town (frame ~12430), Kapp'n's warp to the town hall, the
+  tutorial, then out of the town hall and around town (checked to frame 44000, no stop). Its virtual timing drifts
+  from the i386 build's by more than a few frames in the town hall (a Start press lands in the save menu: "I can't
+  save right now"), so its script keeps A going to 26500, then B every 60 frames to 27000, Down 27100-27500 (town
+  at ~28000), then Right / Down / Left / Up for a walk. The bugs on the way (the `spl_calc` crash reported earlier
+  no longer occurs): the PMIC register-read table (`PMRegInfo`, its destination read through a DS label at the DS
+  stride, the table larger than its gap object), and three views of objects at DS offsets: `Unk_02005e7c` and
+  `Unk_02007694`, the PlayerActor's net-event and action handlers, declared the actor's members at their DS
+  offsets (a pending field event read from other bytes: a pick-up fanfare at unit (-1183, 968) crashed in the town
+  hall; the player and Pelly not drawn); they now derive from PlayerActor without members of their own. The BGM
+  manager reached as bytes (`data_021c1b3c + 0x248` / `0x1c4` / `0x2e4`) is a `BgmManager *`. A script that gets through the
   name entries: the oracle's play script (A every second from frame 2400) plus, every 600 frames from 7630, a touch
   on the keyboard's Confirm button (218,180) (it only dismisses the "no room" message: touches on the keys don't
   register) and Start every 60 frames from 7650 (Start confirms a name); presses and touches 6 frames each.

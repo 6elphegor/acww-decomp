@@ -78,15 +78,6 @@ typedef union {
     } b;
 } TPRaw;
 
-typedef struct {
-    volatile u16 flag;
-    u16 pad;
-    u32 pad2;
-} PMFlag;
-typedef struct {
-    u16 *ptr;
-    u32 pad;
-} PMDest;
 
 typedef struct PMCbInfo PMCbInfo;
 
@@ -167,7 +158,6 @@ extern PMCbInfo *data_021feb38;
 extern u32 data_021feb3c;
 extern PMCbInfo *data_021feb40;
 extern u8 data_021feb54[];
-extern PMDest data_021feb70[4];
 extern RTCWork data_021feb90;
 
 extern u32 OS_DisableInterrupts(void);
@@ -199,11 +189,6 @@ void TPi_TpCallback(u32 tag, u32 data, u32 err);
 void PMi_CommonCallback(u32 tag, u32 data, u32 err);
 u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync);
 
-typedef struct {
-    u16 flag;
-    u16 pad;
-    u16 *ptr;
-} PMRegInfo;
 extern PMRegInfo data_021feb6c[4];
 u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg) {
     if (!PMi_Lock()) {
