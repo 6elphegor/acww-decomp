@@ -11,7 +11,7 @@ void __fill_mem(void *dst, int val, unsigned long n) {
     unsigned long i;
     
     if (n >= 32) {
-        i = (-(unsigned long)dst) & 3;
+        i = (-(__UINTPTR_TYPE__)dst) & 3;
         if (i) {
             n -= i;
             do

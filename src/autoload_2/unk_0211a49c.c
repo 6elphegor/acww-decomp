@@ -137,8 +137,8 @@ static void FSi_SetOverlayHeader(FSOverlayInfoHeader *h, const u32 *r) {
     h->ram_address = r[1];
     h->ram_size = r[2];
     h->bss_size = r[3];
-    h->sinit_init = (void (**)(void))(unsigned long)r[4];
-    h->sinit_init_end = (void (**)(void))(unsigned long)r[5];
+    h->sinit_init = (void (**)(void))(uptr)r[4];
+    h->sinit_init_end = (void (**)(void))(uptr)r[5];
     h->file_id = r[6];
     h->compressed = r[7] & 0xffffff;
     h->flag = r[7] >> 24;

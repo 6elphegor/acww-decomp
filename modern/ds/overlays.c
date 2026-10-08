@@ -43,12 +43,12 @@ BOOL Modern_IsOverlayLoaded(u32 id) {
 // entry: count, then (overlay id, address) pairs, the name the source uses first. An address of 0 is a candidate
 // the modern build doesn't define (a weak reference).
 // entry: count, then (overlay, address) pairs; pointer-sized words (32 bits on the DS and i386, 64 on x86-64)
-void *Modern_SharedResolve(const unsigned long *entry) {
-    unsigned long n = entry[0];
-    unsigned long i;
+void *Modern_SharedResolve(const uptr *entry) {
+    uptr n = entry[0];
+    uptr i;
     for (i = 0; i < n; i++) {
-        unsigned long id = entry[1 + 2 * i];
-        unsigned long addr = entry[2 + 2 * i];
+        uptr id = entry[1 + 2 * i];
+        uptr addr = entry[2 + 2 * i];
         if (addr != 0 && Modern_IsOverlayLoaded(id)) {
             return (void *)addr;
         }
