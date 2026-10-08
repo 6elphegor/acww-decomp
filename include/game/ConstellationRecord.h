@@ -10,7 +10,7 @@ public:
     ~ConstellationRecord();
     /* 0x00 */ u8 unk_00[0x16];
     /* 0x16 */ u8 name[0x10];
-    /* 0x26 */ u16 lines[0x10];
+    /* 0x26 */ u16 lines[0x10];  // the line slots (0xffff: none)
 };
 
 #endif

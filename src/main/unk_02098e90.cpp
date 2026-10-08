@@ -972,14 +972,13 @@ extern "C" void FossilGroup_GetItem(u16 *out, s32 a, s32 b) {
     }
 }
 
-// (the Ftr_Get* helpers of unk_02052b50.cpp take the item as an integer)
 extern "C" s32 Furniture_ScoreAttribute(u16 *self, u32 kind, s32 val) {
     s32 r = 0;
     if (Item_IsFurniture(self)) {
         {
             switch (kind) {
             case 0:
-                if (val == Ftr_GetFlagPairB((s32)(uptr)self)) r = 2;
+                if (val == Ftr_GetFlagPairB(self)) r = 2;
                 break;
             case 1: {
                 s32 idx = Item_GetFurnitureIndex(self);
@@ -988,13 +987,13 @@ extern "C" s32 Furniture_ScoreAttribute(u16 *self, u32 kind, s32 val) {
                 break;
             }
             case 2:
-                if (val == Ftr_GetFlagPairA((s32)(uptr)self)) r = 2;
+                if (val == Ftr_GetFlagPairA(self)) r = 2;
                 break;
             case 3:
-                if (val == Ftr_GetCollectionGroup((s32)(uptr)self)) r = 2;
+                if (val == Ftr_GetCollectionGroup(self)) r = 2;
                 break;
             case 4:
-                if (val == Ftr_GetSeries((s32)(uptr)self)) r = 2;
+                if (val == Ftr_GetSeries(self)) r = 2;
                 break;
             }
         }
