@@ -23,7 +23,7 @@ s32 gpiProcessCallbacks(GPConnection *h, s32 key);
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_gpiAddCallback
-s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, GPICallbackData *m, GPIOperation *g, s32 k);
+s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, void *m, GPIOperation *g, s32 k);
 #endif
 #ifndef PROTO_LOCAL_gpiCallCallback
 s32 gpiCallCallback(GPConnection *h, GPICallbackData *n);

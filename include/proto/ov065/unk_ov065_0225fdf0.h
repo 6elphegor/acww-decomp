@@ -97,7 +97,7 @@ s32 Sock_Startup(SockStartupConfig *s);
 s32 Sock_Cleanup();
 #endif
 #ifndef PROTO_LOCAL_Sock_InetNtoA
-char *Sock_InetNtoA(u32 a, ...);
+char *Sock_InetNtoA(u32 a);
 #endif
 #ifndef PROTO_LOCAL_Sock_InetAtoN
 s32 Sock_InetAtoN(const char *a, u32 *out);

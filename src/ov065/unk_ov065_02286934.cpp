@@ -12,6 +12,7 @@
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02278328.h"
 #include "proto/ov065/unk_ov065_02285778.h"
 #include "proto/ov065/unk_ov065_02286934.h"
 #include "proto/ov065/unk_ov065_022884fc.h"
@@ -53,8 +54,6 @@ s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 
 char *Sock_InetNtoA(GsInAddr a);
 SockHostEnt *Sock_GetHostByName(const char *name);
-void *ArrayNth(void *list, s32 i);
-s32 ArrayLength(void *list);
 s32 inet_addr(const char *s);
 s32 getsockname(s32 fd, SockAddrIn *sa, s32 *len);
 s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, SockAddrIn *from, s32 *len);
@@ -127,17 +126,10 @@ extern char data_ov065_0228e340[];
 extern char data_ov065_0228e348[];
 extern char data_ov065_0228e34c[];
 extern s32 num_local_ips;
-extern u32 local_ip_list[];
 
 s32 OS_SPrintf(char *, const char *, ...);
 s32 sendto(s32, void *, s32, s32, void *, s32);
 s32 closesocket(s32);
-void ArrayFree(Vec *);
-s32 ArrayLength(Vec *);
-void *ArrayNth(Vec *, s32);
-void ArrayAppend(Vec *, void *);
-void ArrayRemoveAt(Vec *, s32);
-Vec *ArrayNew(s32, s32, void *);
 char *Sock_InetNtoA(GsInAddr);
 void qr_add_packet_header(Buf *, s32, u8 *);
 void qr2_buffer_addA(Buf *, const char *);
@@ -146,7 +138,7 @@ void qr_build_query_reply(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
 void handle_public_address(Qr *, u8 *);
 void compute_challenge_response(Qr *, Buf *, u8 *, s32);
 
-void GsNatNeg_FreeEntry(Ent *e);
+void GsNatNeg_FreeEntry(void *elem);
 void qr_build_partial_old_query_reply(Qr *q, Buf *buf, s32 kind);
 void qr_process_old_query(Qr *q, Buf *buf);
 BOOL qr_got_recent_message(Qr *q, u32 v);
@@ -179,7 +171,7 @@ void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n);
 extern "C" { char *Matchup1Hostname; } //@
 extern "C" { DArrayImplementation *negotiateList; } //@
 namespace N02287200 { extern "C" {
-Ent *FindNegotiatorForCookie(s32 x) {
+Ent *FindNegotiatorForCookie(u32 x) {
     s32 i;
     Ent *e;
     if (negotiateList == NULL) {
@@ -196,7 +188,8 @@ Ent *FindNegotiatorForCookie(s32 x) {
 } }
 
 namespace N02287200 { extern "C" {
-void GsNatNeg_FreeEntry(Ent *e) {
+void GsNatNeg_FreeEntry(void *elem) { // an ArrayElementFreeFn: the element of negotiateList
+    Ent *e = (Ent *)elem;
     if (e->negotiateSock != -1) {
         closesocket(e->negotiateSock);
     }
@@ -210,7 +203,7 @@ namespace N02287200 { extern "C" {
 void *AddNegotiator(void) {
     Ent z = {0};
     if (negotiateList == NULL) {
-        negotiateList = ArrayNew(sizeof(Ent), 4, (void *)GsNatNeg_FreeEntry);
+        negotiateList = ArrayNew(sizeof(Ent), 4, GsNatNeg_FreeEntry);
     }
     ArrayAppend(negotiateList, &z);
     return ArrayNth(negotiateList, ArrayLength(negotiateList) - 1);

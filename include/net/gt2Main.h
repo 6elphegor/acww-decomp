@@ -2,6 +2,8 @@
 #define NET_GT2MAIN_H
 
 #include "types.h"
+#include "net/darray.h"
+#include "net/hashtable.h"
 
 // GameSpy gt2 (reliable UDP transport, gt2Main.h): a GTI2Socket owns a hash of GTI2Connections; packets start
 // with fe fe (GTI2_MAGIC_STRING), reliable types 0-7 (data, challenge/response handshake, accept, reject, close,
@@ -10,6 +12,8 @@
 
 struct GTI2Socket;
 struct GTI2Connection;
+struct DArrayImplementation;
+struct HashImplementation;
 
 // Growable byte buffer (gti2AllocateBuffer, gti2BufferWrite*): the connections' incoming and outgoing buffers.
 struct GTI2Buffer {
@@ -56,8 +60,8 @@ struct GTI2Socket {
     /* 0x04 */ u32 ip;
     /* 0x08 */ u16 port;
     /* 0x0a */ u8 pad_0a[2];
-    /* 0x0c */ void *connections;
-    /* 0x10 */ void *closedConnections;
+    /* 0x0c */ HashImplementation *connections;
+    /* 0x10 */ DArrayImplementation *closedConnections;
     /* 0x14 */ s32 close;
     /* 0x18 */ s32 error;
     /* 0x1c */ s32 callbackLevel;
@@ -86,7 +90,7 @@ typedef s32 (*GsTransportFilterCallback)(GTI2Connection *, s32, u8 *, u32, u32);
 
 // 32-character challenge made by gti2GetChallenge (StartConnect's local).
 struct GsTransportChallengeBuf {
-    /* 0x00 */ u32 v[9];
+    /* 0x00 */ u8 bytes[0x24];
 };
 
 struct GTI2Connection {
@@ -105,13 +109,13 @@ struct GTI2Connection {
     /* 0x2c */ gt2ReceivedCallback receivedCallback;
     /* 0x30 */ gt2ClosedCallback closedCallback;
     /* 0x34 */ gt2PingCallback pingCallback;
-    /* 0x38 */ void *initialMessage;
+    /* 0x38 */ u8 *initialMessage;
     /* 0x3c */ s32 initialMessageLen;
     /* 0x40 */ void *data; // the user's (gt2SetConnectionData)
     /* 0x44 */ GTI2Buffer incomingBuffer;
     /* 0x50 */ GTI2Buffer outgoingBuffer;
-    /* 0x5c */ void *incomingBufferMessages;
-    /* 0x60 */ void *outgoingBufferMessages;
+    /* 0x5c */ DArrayImplementation *incomingBufferMessages;
+    /* 0x60 */ DArrayImplementation *outgoingBufferMessages;
     /* 0x64 */ u16 serialNumber;
     /* 0x66 */ u16 expectedSerialNumber;
     /* 0x68 */ u8 response[0x20];
@@ -119,8 +123,8 @@ struct GTI2Connection {
     /* 0x8c */ s32 challengeTime;
     /* 0x90 */ s32 pendingAck;
     /* 0x94 */ u32 pendingAckTime;
-    /* 0x98 */ void *sendFilters;
-    /* 0x9c */ void *receiveFilters;
+    /* 0x98 */ DArrayImplementation *sendFilters;
+    /* 0x9c */ DArrayImplementation *receiveFilters;
 };
 
 #endif

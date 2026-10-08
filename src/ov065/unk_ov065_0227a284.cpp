@@ -13,6 +13,13 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_0227a284.h"
 #include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_02278328.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
+#include "proto/ov065/unk_ov065_0227931c.h"
+extern "C" {
+s32 OS_SPrintf(char *dst, const char *fmt, ...);
+int strncmp(const char *a, const char *b, u32 n);
+}
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
 
@@ -33,12 +40,10 @@ namespace Nm {
 
 extern "C" {
 extern s32 ghiReferenceCount;
-extern void *ghiProxyAddress;
 extern u32 ghiThrottleTimeDelay;
 extern s32 ghiThrottleBufferSize;
 extern char data_ov065_0228ca58[4];
 
-s32 ghiPostAddString(void *, const char *, const char *);
 GHIPost *ghiNewPost();
 void ghiEnumConnections(s32 (*)(GHIConnection *));
 char *goastrdup(const char *);
@@ -62,17 +67,7 @@ void ghiLock();
 void ghiFreeLock();
 void ghiCreateLock();
 void ghiCleanupConnections();
-s32 ArrayLength(void *);
-GHIPostState *ArrayNth(void *, s32);
 s32 ghiSendBufferedData(GHIConnection *);
-void ghiResetBuffer(void *);
-s32 ghiTrySendThenBuffer(GHIConnection *, const void *, s32);
-s32 ghiDoSend(GHIConnection *, const void *, s32);
-BOOL ghiInitFixedBuffer(GHIConnection *, void *, void *, s32);
-BOOL ghiInitBuffer(GHIConnection *, void *, s32, s32);
-void ghiAppendCharToBuffer(void *, s32);
-BOOL ghiAppendDataToBuffer(void *, const void *, s32);
-s32 OS_SPrintf(char *, const char *, ...);
 s32 fread(void *, s32, s32, u32);
 
 s32 ghiProcessConnection(GHIConnection *);
@@ -110,25 +105,16 @@ extern volatile s32 data_ov065_022910e0;
 extern volatile s32 data_ov065_022910dc;
 extern u16 data_0213a510[];
 
-s32 ArrayLength(DArrayImplementation *);
-void *ArrayNth(DArrayImplementation *, s32);
 void ArrayFree(DArrayImplementation *);
 void ArrayAppend(DArrayImplementation *, void *);
 DArrayImplementation *ArrayNew(s32, s32, ArrayElementFreeFn);
 char *goastrdup(const char *);
-s32 ghiDoReceive(void *, u8 *, s32 *);
-s32 ghiAppendDataToBuffer(void *, u8 *, s32);
-void ghiResetBuffer(void *);
-void ghiCallProgressCallback(void *, char *, u32);
 s32 GOAGetLastError(s32);
-s32 ghiProcessIncomingFileData(void *, u8 *, s32);
 void fclose(s32);
 s32 fseek(s32, s32, s32);
 s32 ftell(s32);
 void rewind(s32);
 u32 strspn(char *, char *);
-s32 strncmp(char *, char *, s32);
-s32 OS_SPrintf(char *, char *, ...);
 
 s32 ghiPostGetContentLength(GHIConnection *self);
 void ghiPostStateCleanup(GHIPostState *it);
@@ -154,7 +140,6 @@ s32 ghiPostGetContentLength(GHIConnection *self);
 s32 ghiPostGetHasFilesContentLength(GHIConnection *self);
 s32 ghiPostGetNoFilesContentLength(GHIConnection *self);
 char *ghiPostGetContentType(GHIConnection *self);
-s32 ghiPostAddString(GHIPost *self, char *a, char *b);
 void ghiFreePost(GHIPost *t);
 s32 ghiIsPostAutoFree(GHIPost *t);
 GHIPost *ghiNewPost(void);
@@ -169,33 +154,18 @@ namespace Nb {
 
 extern "C" {
 extern s32 ghiThrottleBufferSize;
-extern char *ghiProxyAddress;
-extern u16 ghiProxyPort;
 extern u16 data_0213a510[];
 
-s32 strncmp(const char *, const char *, u32);
-s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 GOAGetLastError(s32);
-s32 inet_addr(char *);
-s32 connect(s32 a, void *src, u32 len);
-s32 socket(s32 a, s32 b, s32 c);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
 s32 SetReceiveBufferSize(s32 sock, s32 val);
 s32 SetSockBlocking(s32 sock, s32 flag);
-s32 SocketStartUp();
 s32 ghiSendBufferedData(GHIConnection *);
-s32 ghiResetBuffer(void *);
 s32 ghiAppendIntToBuffer(GHIBuffer *, s32);
-s32 ghiAppendCharToBuffer(GHIBuffer *, s32);
-s32 ghiAppendHeaderToBuffer(GHIBuffer *, const char *, const char *);
-s32 ghiAppendDataToBuffer(void *, const char *, s32);
-s32 ghiCallPostCallback(GHIConnection *);
-void ghiCallProgressCallback(GHIConnection *, char *, u32);
-s32 ghiDoReceive(GHIConnection *, char *, s32 *);
 s32 ghiPostDoPosting(GHIConnection *);
-s32 ghiPostCleanupState(GHIConnection *);
 char *ghiPostGetContentType(GHIConnection *);
+void ghiPostCleanupState(GHIConnection *self);
 SockHostEnt *Sock_GetHostByName(char *);
 s32 ghiParseURL(GHIConnection *);
 
@@ -222,7 +192,6 @@ static inline s32 Unk_ov065_0227b5d4_Chk(char *s, s32 i) {
     return v;
 }
 extern "C" {
-s32 ghiProcessIncomingFileData(GHIConnection *self, char *p, s32 n);
 void ghiAppendToChunkHeaderBuffer(GHIConnection *self, char *p, s32 n);
 s32 ghiParseChunkSize(GHIConnection *self);
 s32 ghiDeliverIncomingFileData(GHIConnection *self, char *p, s32 n);
@@ -249,7 +218,6 @@ typedef void (*GPCallback)(void *, void *, void *);
 
 
 extern "C" {
-s32 strncmp(const char *, const char *, s32);
 char *goastrdup(const char *);
 void gpiSetErrorString(void *, const char *);
 s32 gpiSendBuddyMessage(void *, s32, s32, const char *);
@@ -783,11 +751,11 @@ namespace Na {
 extern "C" {
 void ghiDoReceivingHeaders(GHIConnection *self) {
     s32 len;
-    u8 buf[0x1000];
+    char buf[0x1000];
     s32 r4;
     s32 off;
     u8 *p;
-    u8 *rest;
+    char *rest;
     s32 rem;
     char *q;
     char *digits;
@@ -815,8 +783,8 @@ void ghiDoReceivingHeaders(GHIConnection *self) {
         goto nomatch;
     }
     q[2] = 0;
-    rest = (u8 *)q + 4;
-    rem = self->recvBuffer.len - (rest - (u8 *)self->recvBuffer.data);
+    rest = q + 4;
+    rem = self->recvBuffer.len - (rest - self->recvBuffer.data);
     self->recvBuffer.len = (u8 *)(q + 2) - (u8 *)self->recvBuffer.data;
     self->headersEnd = (u8 *)(q + 2) - (u8 *)self->recvBuffer.data;
     self->recvBuffer.pos = self->headersEnd;
@@ -971,7 +939,7 @@ namespace Na {
 extern "C" {
 void ghiDoReceivingFile(GHIConnection *self) {
     s32 len;
-    u8 buf[0x2000];
+    char buf[0x2000];
     s32 start = current_time();
     u32 elapsed = 0;
     s32 r;
@@ -1342,7 +1310,7 @@ s32 ghiPostStringStateDoPosting(GHIPostState *st, GHIConnection *c) {
                 } else {
                     tmp.b[1] = "0123456789ABCDEF"[ch / 16];
                     tmp.b[2] = "0123456789ABCDEF"[ch % 16];
-                    ghiAppendDataToBuffer(&c->sendBuffer, &tmp, 3);
+                    ghiAppendDataToBuffer(&c->sendBuffer, tmp.b, 3);
                 }
                 i++;
                 ch = s[i];
@@ -1491,7 +1459,7 @@ s32 ghiPostDoPosting(GHIConnection *c) {
         }
     }
     for (; l->index < cnt; l->index++) {
-        GHIPostState *s = ArrayNth(l->states, l->index);
+        GHIPostState *s = (GHIPostState *)ArrayNth(l->states, l->index);
         s32 r = ghiPostStateDoPosting(s, c, l->index == 0 ? 1 : 0);
         if (r == 0) {
             return 0;

@@ -51,7 +51,7 @@ struct DwcMatchControl {
     /* 0x020 */ u32 reservation;
     /* 0x024 */ u32 memberIps[32];
     /* 0x0a4 */ u16 memberPorts[32];
-    /* 0x0e4 */ void *serverBrowser;
+    /* 0x0e4 */ struct _ServerBrowser *serverBrowser;
     /* 0x0e8 */ s32 queryRetryMode;
     /* 0x0ec */ u32 queryRetryTick;
     /* 0x0f0 */ u32 queryRetryTickHi;
@@ -104,7 +104,7 @@ struct DwcMatchControl {
     /* 0x2d8 */ u32 validAidMask;
     /* 0x2dc */ char *gameName;
     /* 0x2e0 */ char *secretKey;
-    /* 0x2e4 */ u8 *friendList;
+    /* 0x2e4 */ struct DwcFriendData *friendList; // (12-byte entries)
     /* 0x2e8 */ u32 friendCount;
     /* 0x2ec */ u8 friendIndices[0x40];
     /* 0x32c */ s32 friendIndexCount;

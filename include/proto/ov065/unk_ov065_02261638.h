@@ -5,10 +5,11 @@
 
 #include "types.h"
 #include "net/IpFragEntry.h"
+#include "net/IpHeader.h"
 #include "net/IpSocket.h"
 #include "net/IpStackConfig.h"
+#include "nitro/math.h"
 #include "sys/OSThread.h"
-#include "types64.h"
 struct ArpCacheEntry;
 #ifndef __cplusplus
 typedef struct ArpCacheEntry ArpCacheEntry;
@@ -47,7 +48,7 @@ extern IpSocket sTcpResetSoc;
 extern u8 data_ov065_0228ec1c[0x3c];
 #endif
 #ifndef PROTO_LOCAL_sIpRandState
-extern u64 sIpRandState[3];
+extern MATHRandContext32 sIpRandState;
 #endif
 #ifndef PROTO_LOCAL_sLlcSnapHeader
 extern u8 sLlcSnapHeader[12];
@@ -71,7 +72,7 @@ extern u32 sRecvRingSize;
 extern u32 sDhcpServerId;
 #endif
 #ifndef PROTO_LOCAL_sRecvRingWaiter
-extern void *sRecvRingWaiter;
+extern OSThread *sRecvRingWaiter;
 #endif
 #ifndef PROTO_LOCAL_sDhcpRequestedIp
 extern u32 sDhcpRequestedIp;
@@ -203,7 +204,7 @@ s32 Ip_IsMulticast(u32 ip);
 s32 Ip_IsForMe(u32 ip);
 #endif
 #ifndef PROTO_LOCAL_Eth_MacDiffers
-s32 Eth_MacDiffers(u16 *a, u16 *b);
+s32 Eth_MacDiffers(const void *pa, const void *pb);
 #endif
 #ifndef PROTO_LOCAL_Eth_SendFrame
 void Eth_SendFrame(u8 *hdr, u32 hlen, u8 *data, u32 n);
@@ -244,8 +245,158 @@ void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
 #ifndef PROTO_LOCAL_Icmp_SendEchoRequest
 void Icmp_SendEchoRequest(u8 *a, u32 b, IpSocket *c);
 #endif
+#ifndef PROTO_LOCAL_Udp_Send
+void Udp_Send(u8 *a, u32 b, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendSegment
+void Tcp_SendSegment(u8 *x, u32 y, IpSocket *s, u32 flags, u32 z);
+#endif
+#ifndef PROTO_LOCAL_Arp_SendReply
+void Arp_SendReply(u8 *a);
+#endif
+#ifndef PROTO_LOCAL_Arp_Input
+void Arp_Input(u8 *a, u32 len);
+#endif
+#ifndef PROTO_LOCAL_Icmp_SendEchoReply
+void Icmp_SendEchoReply(u8 *a, u8 *b, u32 c);
+#endif
+#ifndef PROTO_LOCAL_Icmp_DeliverEchoReply
+void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c);
+#endif
+#ifndef PROTO_LOCAL_Ip_AreAddrsValid
+s32 Ip_AreAddrsValid(u32 x, u32 y);
+#endif
+#ifndef PROTO_LOCAL_Icmp_Input
+void Icmp_Input(u8 *a, u8 *b, u32 c);
+#endif
+#ifndef PROTO_LOCAL_Tcp_FindListener
+IpSocket *Tcp_FindListener(u8 *a, u8 *b);
+#endif
+#ifndef PROTO_LOCAL_Tcp_MatchConnection
+s32 Tcp_MatchConnection(u8 *a, u8 *b, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_Tcp_FindConnection
+IpSocket *Tcp_FindConnection(u8 *a, u8 *b);
+#endif
+#ifndef PROTO_LOCAL_Tcp_ParseOptions
+void Tcp_ParseOptions(u8 *a, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_Ip_IsNextHopResolved
+s32 Ip_IsNextHopResolved(u32 x);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendControl
+void Tcp_SendControl(IpSocket *s, u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendAck
+void Tcp_SendAck(IpSocket *s, u32 x);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendFinAck
+void Tcp_SendFinAck(IpSocket *s, u32 x);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendReset
+void Tcp_SendReset(u8 *a, u8 *b, u32 c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_Tcp_AcceptSyn
+void Tcp_AcceptSyn(u8 *a, u8 *b, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_Ip_Input
+void Ip_Input(u8 *p, u32 len);
+#endif
+#ifndef PROTO_LOCAL_IpStack_RecvThreadMain
+void IpStack_RecvThreadMain();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_AllocEphemeralPort
+u16 IpSoc_AllocEphemeralPort();
+#endif
+#ifndef PROTO_LOCAL_IpStack_Rand32
+u32 IpStack_Rand32();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Use
+void IpSoc_Use(IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Unuse
+void IpSoc_Unuse();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_SetUdp
+void IpSoc_SetUdp();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Bind
+void IpSoc_Bind(u32 a, u32 b, u32 c);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Init
+void IpSoc_Init();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Release
+void IpSoc_Release();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_ShareWithThread
+void IpSoc_ShareWithThread(OSThread *t);
+#endif
+#ifndef PROTO_LOCAL_Tcp_Listen
+void Tcp_Listen(IpSocket *s);
+#endif
 #ifndef PROTO_LOCAL_IpSoc_SetUdpCallback
 void IpSoc_SetUdpCallback(IpSocketUdpCallback v);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_TcpListen
+void IpSoc_TcpListen();
+#endif
+#ifndef PROTO_LOCAL_Tcp_Connect
+s32 Tcp_Connect(IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_TcpConnect
+s32 IpSoc_TcpConnect();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_GetPeer
+u32 IpSoc_GetPeer(u16 *a, u32 *b);
+#endif
+#ifndef PROTO_LOCAL_Tcp_Shutdown
+void Tcp_Shutdown(IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_TcpShutdown
+void IpSoc_TcpShutdown();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_TcpWaitClosed
+void IpSoc_TcpWaitClosed();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_WaitDatagram
+u8 *IpSoc_WaitDatagram(u32 *out, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_Tcp_Read
+u8 *Tcp_Read(u32 *out, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Read
+u8 *IpSoc_Read(u32 *out);
+#endif
+#ifndef PROTO_LOCAL_Tcp_Consume
+void Tcp_Consume(u32 a, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Consume
+void IpSoc_Consume(u32 a);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendSegments
+u32 Tcp_SendSegments(u8 *a, u32 b, IpSocket *s, u32 flag);
+#endif
+#ifndef PROTO_LOCAL_Tcp_SendTwoBuffers
+void Tcp_SendTwoBuffers(u8 *a, u32 b, u8 *c, u32 d, IpSocket *s, u32 flag);
+#endif
+#ifndef PROTO_LOCAL_Tcp_Write
+u32 Tcp_Write(u8 *a, u32 b, u8 *c, u32 d, IpSocket *s);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_WriteTwo
+u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_Write
+u32 IpSoc_Write(const u8 *a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_IpSoc_GetReadLength
+s32 IpSoc_GetReadLength();
+#endif
+#ifndef PROTO_LOCAL_IpSoc_FlushPending
+void IpSoc_FlushPending();
+#endif
+#ifndef PROTO_LOCAL_Arp_ProbeAddressConflict
+void Arp_ProbeAddressConflict();
 #endif
 #ifndef PROTO_LOCAL_IpStack_TimerThreadMain
 void IpStack_TimerThreadMain(void);
@@ -307,101 +458,33 @@ extern ArpCacheEntry sArpCache[8];
 #ifndef PROTO_LOCAL_IpStack_Init
 void IpStack_Init(IpStackConfig *c);
 #endif
-}
-namespace Unk_ov065_02262240_Ns {
-extern "C" {
-#ifndef PROTO_LOCAL_Ip_Input
-void Ip_Input(u8 *p, u32 len);
+#ifndef PROTO_LOCAL_Tcp_InputSynExisting
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r);
 #endif
-#ifndef PROTO_LOCAL_IpStack_RecvThreadMain
-void IpStack_RecvThreadMain();
+#ifndef PROTO_LOCAL_Tcp_InputSyn
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_AllocEphemeralPort
-u16 IpSoc_AllocEphemeralPort();
+#ifndef PROTO_LOCAL_Tcp_InputSynAck
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r);
 #endif
-#ifndef PROTO_LOCAL_IpStack_Rand32
-u32 IpStack_Rand32();
+#ifndef PROTO_LOCAL_Tcp_InputAck
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_Unuse
-void IpSoc_Unuse();
+#ifndef PROTO_LOCAL_Tcp_InputFin
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_SetUdp
-void IpSoc_SetUdp();
+#ifndef PROTO_LOCAL_Tcp_InputRst
+void Tcp_InputRst(IpHeader *p, TcpHeader *q);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_Bind
-void IpSoc_Bind(u32 a, u32 b, u32 c);
+#ifndef PROTO_LOCAL_Tcp_Input
+void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_Init
-void IpSoc_Init();
+#ifndef PROTO_LOCAL_Udp_Input
+void Udp_Input(IpHeader *p, UdpHeader *q, u32 c);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_Release
-void IpSoc_Release();
+#ifndef PROTO_LOCAL_Ip_Reassemble
+u8 *Ip_Reassemble(IpHeader *p, s32 *out);
 #endif
-#ifndef PROTO_LOCAL_IpSoc_TcpListen
-void IpSoc_TcpListen();
-#endif
-#ifndef PROTO_LOCAL_IpSoc_TcpConnect
-s32 IpSoc_TcpConnect();
-#endif
-#ifndef PROTO_LOCAL_IpSoc_GetPeer
-u32 IpSoc_GetPeer(u16 *a, u32 *b);
-#endif
-#ifndef PROTO_LOCAL_IpSoc_TcpShutdown
-void IpSoc_TcpShutdown();
-#endif
-#ifndef PROTO_LOCAL_IpSoc_TcpWaitClosed
-void IpSoc_TcpWaitClosed();
-#endif
-#ifndef PROTO_LOCAL_IpSoc_Read
-u8 *IpSoc_Read(u32 *out);
-#endif
-#ifndef PROTO_LOCAL_IpSoc_Consume
-void IpSoc_Consume(u32 a);
-#endif
-#ifndef PROTO_LOCAL_IpSoc_WriteTwo
-u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d);
-#endif
-#ifndef PROTO_LOCAL_IpSoc_Write
-u32 IpSoc_Write(const u8 *a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_IpSoc_GetReadLength
-s32 IpSoc_GetReadLength();
-#endif
-#ifndef PROTO_LOCAL_IpSoc_FlushPending
-void IpSoc_FlushPending();
-#endif
-#ifndef PROTO_LOCAL_Arp_ProbeAddressConflict
-void Arp_ProbeAddressConflict();
-#endif
-}
-}
-namespace Unk_ov065_02263578_Ns {
-extern "C" {
-#ifndef PROTO_LOCAL_Arp_SendReply
-void Arp_SendReply(u8 *a);
-#endif
-#ifndef PROTO_LOCAL_Arp_Input
-void Arp_Input(u8 *a, u32 len);
-#endif
-#ifndef PROTO_LOCAL_Icmp_SendEchoReply
-void Icmp_SendEchoReply(u8 *a, u8 *b, u32 c);
-#endif
-#ifndef PROTO_LOCAL_Icmp_DeliverEchoReply
-void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c);
-#endif
-#ifndef PROTO_LOCAL_Ip_AreAddrsValid
-s32 Ip_AreAddrsValid(u32 x, u32 y);
-#endif
-#ifndef PROTO_LOCAL_Icmp_Input
-void Icmp_Input(u8 *a, u8 *b, u32 c);
-#endif
-#ifndef PROTO_LOCAL_Ip_IsNextHopResolved
-s32 Ip_IsNextHopResolved(u32 x);
-#endif
-#ifndef PROTO_LOCAL_Tcp_SendReset
-void Tcp_SendReset(u8 *a, u8 *b, u32 c, u32 d);
-#endif
-}
 }
 #endif
 

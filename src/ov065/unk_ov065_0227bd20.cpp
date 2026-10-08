@@ -11,6 +11,22 @@
 #include "proto/ov065/unk_ov065_02277974.h"
 #include "proto/ov065/unk_ov065_0227bd20.h"
 #include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_02278328.h"
+#include "proto/ov065/unk_ov065_022789fc.h"
+#include "proto/ov065/unk_ov065_0227c6f0.h"
+#include "proto/ov065/unk_ov065_0227cd34.h"
+#include "proto/ov065/unk_ov065_0227d96c.h"
+#include "proto/ov065/unk_ov065_0227df0c.h"
+#include "proto/ov065/unk_ov065_0227e160.h"
+#include "proto/ov065/unk_ov065_0227f2a4.h"
+#include "proto/ov065/unk_ov065_02280740.h"
+#include "proto/ov065/unk_ov065_02280c08.h"
+#include "proto/ov065/unk_ov065_0228176c.h"
+#include "proto/ov065/unk_ov065_02281a5c.h"
+#include "proto/ov065/unk_ov065_02283304.h"
+extern "C" {
+int strncmp(const char *a, const char *b, u32 n);
+}
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
@@ -24,21 +40,6 @@ namespace Nb {
 
 typedef void (*GPCallback)(void *, void *, void *);
 extern "C" {
-s32 strncmp(const char *, const char *, s32);
-char *goastrdup(const char *);
-void gpiSetErrorString(void *, const char *);
-s32 gpiSendBuddyMessage(GPConnection *, s32, s32, const char *);
-s32 gpiDeleteBuddy(void *, s32);
-s32 gpiAuthBuddyRequest(void *, s32);
-s32 gpiSetInfos(void *, s32, s32);
-s32 gpiGetInfo(void *, s32, s32, s32, GPCallback, void *);
-s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, GPCallback, void *);
-s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
-s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
-s32 gpiGetProfile(void *, s32, void *);
-void *gpiFindBuddy(void *, s32);
-s32 gpiCanFreeProfile(void *);
-s32 gpiRemoveProfile(void *, void *);
 }
 }
 
@@ -49,46 +50,9 @@ extern "C" {
 
 typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, void *);
 
-void gpiDisconnect(GPConnection *, s32);
-void gpiSetErrorString(GPConnection *, const char *);
-s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
-                        const char *, const char *, s32, s32, s32, GPCallback, void *);
-s32 gpiCheckConnect(GPConnection *);
-void msleep(s32);
-s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
-s32 gpiProcessCallbacks(GPConnection *, s32);
-s32 gpiProcessPeers(GPConnection *);
-s32 gpiProcessSearches(GPConnection *);
-void gpiFailedOpCallback(GPConnection *, GPIOperation *);
-void gpiRemoveOperation(GPConnection *, GPIOperation *);
-void gpiAddLocalInfo(GPConnection *, char **);
-s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
-s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
-void gpiSetError(GPConnection *, s32, const char *);
-void gpiCallErrorCallback(GPConnection *, s32, s32);
-s32 gpiCheckForError(GPConnection *, char *, s32);
-s32 gpiProcessRecvBuddyMessage(GPConnection *, char *);
-s32 gpiOperationsAreBlocking(GPConnection *);
-s32 gpiProcessOperation(GPConnection *, GPIOperation *, char *);
 void gpiProfileMap(GPConnection *, s32 (*)(GPConnection *, GPIProfile *, s32), s32);
-s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
-void gpiAppendStringToBuffer(GPConnection *, char **, const char *);
-void gpiAppendIntToBuffer(GPConnection *, char **, s32);
-s32 gpiCanFreeProfile(GPIProfile *);
-void gpiRemoveProfile(GPConnection *, GPIProfile *);
-s32 gpiInitProfiles(GPConnection *);
-void SocketStartUp();
-void TableFree(void *);
 
-s32 strncmp(const char *, const char *, u32);
 
-s32 gpiReset(GPConnection *h);
-s32 gpiDestroy(GPConnection *h);
-s32 gpiInitialize(GPConnection *h, s32 a, s32 b);
-s32 gpiProcess(GPConnection *h, s32 a);
-s32 gpiProcessConnectionManager(GPConnection *h);
-s32 gpiResetProfile(GPConnection *h, GPIProfile *n, s32 m);
-s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, s32 m);
 }
 }
 
@@ -243,7 +207,7 @@ s32 gpGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, GPCallback cb, void *arg)
 
 namespace Nb {
 extern "C" {
-s32 gpSetInfosA(GPConnection *h, s32 a, s32 b) {
+s32 gpSetInfosA(GPConnection *h, s32 a, char *b) {
     GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;

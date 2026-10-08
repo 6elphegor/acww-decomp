@@ -16,6 +16,10 @@
 #include "proto/ov065/unk_ov065_02264d0c.h"
 #include "proto/ov065/unk_ov065_022671a0.h"
 #include "proto/ov065/unk_ov065_0226795c.h"
+extern "C" {
+void MI_CpuFill8(void *dst, u32 data, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+}
 
 namespace Unk_ov065_0226650c_Ns {
 
@@ -36,8 +40,6 @@ extern char *sSslCertOidTable[6];
 extern OSThreadInfo data_021fcc2c;
 
 // main module
-void MI_CpuCopy8(const void *, void *, u32);
-void MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 u32 strlen(const char *);
 void RTC_GetDate(RTCDate *);
@@ -45,8 +47,6 @@ u32 OS_GetThreadPriority(OSThread *);
 void OS_SetThreadPriority(OSThread *, u32);
 
 // same overlay, out of range
-SslSession *SslSession_FindById(u8 *);
-SslSession *SslSession_Add(u8 *);
 
 // in range
 void Ssl_DeriveMasterSecret(Ctx *);
@@ -621,8 +621,6 @@ extern void *(*sIpAlloc)(u32);
 extern void (*sIpFree)(void *);
 
 // main module
-void *MI_CpuFill8(void *, s32, u32);
-void *MI_CpuCopy8(const void *, void *, u32);
 
 // same overlay, out of range
 u8 *Tcp_Read(u32 *, Sess *);
@@ -1112,8 +1110,6 @@ extern OSThreadInfo data_021fcc2c;
 // main module
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-void MI_CpuFill8(void *, s32, u32);
-void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 s64 _ll_mul(s64, s64);
 u32 OS_GetThreadPriority(OSThread *);
@@ -1124,12 +1120,11 @@ s32 Tcp_Connect(Sess *);
 void Tcp_Listen(Sess *);
 void Tcp_Shutdown(Sess *);
 u32 Tcp_Write(u8 *, u32, u8 *, u32, Sess *);
-SslSession *SslSession_Add(u8 *);
 void Ssl_DeriveKeyBlock(Ctx *);
 void Ssl_DeriveMasterSecret(Ctx *);
 void Ssl_CalcFinishedMd5(Ctx *, u8 *, u32);
 void Ssl_CalcFinishedSha1(Ctx *, u8 *, u32);
-s32 Ssl_ReadRecord(Sess *);
+u8 Ssl_ReadRecord(Sess *);
 s32 Ssl_EncryptRecord(Ctx *, u8 *);
 
 // in range
@@ -1624,23 +1619,21 @@ extern u32 sRecvRingWrite;
 extern u16 sNextEphemeralPort;
 extern u8 sOwnMac[];
 extern u8 sArpConflict;
-extern MATHRandContext32 sIpRandState;
-extern u8 sSslRandSeeded[];
 extern u8 sIpRecvThreadStack[];
 
 void IpStack_RecvThreadMain(void);
 void IpStack_TimerThreadMain(void);
-u32 Ssl_EncryptRecord(void *, void *);
-u32 Tcp_Write(void *, u32, u32, u32, IpSocket *);
+s32 Ssl_EncryptRecord(SslConnection *, u8 *);
+u32 Tcp_Write(u8 *, u32, u8 *, u32, IpSocket *);
 u8 *Tcp_Read(u32 *, IpSocket *);
 void Tcp_Consume(u32, IpSocket *);
-void Ssl_ProcessRecord(void *, void *);
-s32 Ssl_ReadExact(void *, u32, IpSocket *);
-s32 Ssl_ReadRecord(IpSocket *);
+void Ssl_ProcessRecord(SslConnection *, u8 *);
+s32 Ssl_ReadExact(u8 *, s32, IpSocket *);
+u8 Ssl_ReadRecord(IpSocket *);
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void OS_SetThreadPriority(void *, u32);
+void OS_SetThreadPriority(OSThread *, u32);
 void OS_JoinThread(void *);
 void OS_DestroyThread(void *);
 s32 OS_IsThreadTerminated(void *);
@@ -1648,8 +1641,6 @@ void OS_WakeupThreadDirect(void *);
 void OS_Sleep(void);
 void OS_CreateThread(void *, void *, u32, void *, u32, u32);
 void OS_GetMacAddress(void *);
-void *MI_CpuFill8(void *, s32, u32);
-void MI_CpuCopy8(void *, void *, u32);
 
 u32 Ip_ChecksumAdd(u8 *p, u32 len, u32 sum);
 s32 Ip_IsOnLocalNet(u32 a);
@@ -1803,7 +1794,7 @@ u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, IpSocket *o) {
         rec[3] = chunk >> 8;
         rec[4] = chunk;
         len = Ssl_EncryptRecord(c, rec);
-        if (Tcp_Write(rec, len, z2, z2, o) < len) {
+        if (Tcp_Write(rec, len, NULL, z2, o) < len) {
             chunk = z3;
         }
         sIpFree(rec);

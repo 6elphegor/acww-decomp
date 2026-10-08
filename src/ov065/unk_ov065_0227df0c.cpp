@@ -52,12 +52,12 @@ s32 gpiAppendCharToBuffer(GPConnection *, GPIBuffer *, char);
 s32 gpiSendOrBufferStringLen(GPConnection *, GPIPeer *, const char *, s32);
 s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
 s32 gpiCallCallback(GPConnection *, GPICallbackData *);
-s32 gpiAddCallback(GPConnection *, GPICallbackCopy, GPICallbackData *, GPIOperation *, s32);
+s32 gpiAddCallback(GPConnection *, GPICallbackCopy, void *, GPIOperation *, s32);
 void gpiCallErrorCallback(GPConnection *, s32, s32);
 }
 
 extern "C" {
-s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, GPICallbackData *m, GPIOperation *g, s32 k) {
+s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, void *m, GPIOperation *g, s32 k) {
     GPIConnection *ctx = *h;
     GPICallbackData *node = (GPICallbackData *)GsUtil_Alloc(sizeof(GPICallbackData));
     if (node == NULL) {
